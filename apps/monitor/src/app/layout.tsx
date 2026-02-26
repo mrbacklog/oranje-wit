@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
-import { Sidebar } from "@/components/layout/sidebar";
+import { AppShell } from "@/components/layout/app-shell";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -14,14 +13,7 @@ export default function RootLayout({
   return (
     <html lang="nl">
       <body className="bg-gray-50 text-gray-900 antialiased">
-        <div className="flex h-screen">
-          <Suspense>
-            <Sidebar />
-          </Suspense>
-          <main className="flex-1 overflow-y-auto p-8">
-            {children}
-          </main>
-        </div>
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );

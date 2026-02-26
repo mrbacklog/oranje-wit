@@ -14,7 +14,11 @@ const NAV_ITEMS = [
   { href: "/signalering", label: "Signalering", icon: "⚠️" },
 ];
 
-export function Sidebar() {
+interface SidebarProps {
+  onClose?: () => void;
+}
+
+export function Sidebar({ onClose }: SidebarProps) {
   const pathname = usePathname();
   const params = useSearchParams();
   const seizoen = params.get("seizoen") || "";
@@ -36,6 +40,7 @@ export function Sidebar() {
             <Link
               key={href}
               href={href + qs}
+              onClick={onClose}
               className={`mb-1 flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
                 active
                   ? "bg-ow-oranje-bg text-ow-oranje font-semibold"
