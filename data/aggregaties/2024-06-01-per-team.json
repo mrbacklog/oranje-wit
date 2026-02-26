@@ -124,8 +124,8 @@
     "categorie": null,
     "kleur": "Groen",
     "niveau": null,
-    "spelers_M": 2,
-    "spelers_V": 3,
+    "spelers_M": 1,
+    "spelers_V": 4,
     "totaal": 5,
     "gem_leeftijd": 9.0
   },
@@ -134,9 +134,9 @@
     "categorie": null,
     "kleur": "Groen",
     "niveau": null,
-    "spelers_M": 2,
+    "spelers_M": 3,
     "spelers_V": 3,
-    "totaal": 5,
+    "totaal": 6,
     "gem_leeftijd": 9.0
   },
   {
@@ -145,9 +145,9 @@
     "kleur": "Groen",
     "niveau": null,
     "spelers_M": 1,
-    "spelers_V": 4,
-    "totaal": 5,
-    "gem_leeftijd": 8.6
+    "spelers_V": 3,
+    "totaal": 4,
+    "gem_leeftijd": 8.5
   },
   {
     "team": "E4",
@@ -174,20 +174,40 @@
     "categorie": null,
     "kleur": "Blauw",
     "niveau": null,
-    "spelers_M": 3,
-    "spelers_V": 4,
-    "totaal": 7,
+    "spelers_M": 1,
+    "spelers_V": 3,
+    "totaal": 4,
+    "gem_leeftijd": 6.8
+  },
+  {
+    "team": "F3",
+    "categorie": null,
+    "kleur": "Blauw",
+    "niveau": null,
+    "spelers_M": 2,
+    "spelers_V": 1,
+    "totaal": 3,
     "gem_leeftijd": 6.7
+  },
+  {
+    "team": "F4",
+    "categorie": null,
+    "kleur": "Kangoeroe",
+    "niveau": null,
+    "spelers_M": 1,
+    "spelers_V": 0,
+    "totaal": 1,
+    "gem_leeftijd": 5.0
   },
   {
     "team": "K",
     "categorie": null,
     "kleur": "Kangoeroe",
     "niveau": null,
-    "spelers_M": 2,
+    "spelers_M": 1,
     "spelers_V": 1,
-    "totaal": 3,
-    "gem_leeftijd": 4.7
+    "totaal": 2,
+    "gem_leeftijd": 4.5
   },
   {
     "team": "MW1",
@@ -214,10 +234,10 @@
     "categorie": null,
     "kleur": "Senioren",
     "niveau": null,
-    "spelers_M": 12,
+    "spelers_M": 10,
     "spelers_V": 12,
-    "totaal": 24,
-    "gem_leeftijd": 22.5
+    "totaal": 22,
+    "gem_leeftijd": 22.8
   },
   {
     "team": "S3",
@@ -234,10 +254,10 @@
     "categorie": null,
     "kleur": "Senioren",
     "niveau": null,
-    "spelers_M": 3,
+    "spelers_M": 5,
     "spelers_V": 4,
-    "totaal": 7,
-    "gem_leeftijd": 20.9
+    "totaal": 9,
+    "gem_leeftijd": 20.4
   },
   {
     "team": "S5",

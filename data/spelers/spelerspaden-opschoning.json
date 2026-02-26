@@ -1,0 +1,83 @@
+{
+  "_meta": {
+    "datum": "2026-02-26",
+    "modus": "toegepast"
+  },
+  "seizoenen": {
+    "2010-2011": {
+      "telling_totaal": 368,
+      "paden_totaal": 400,
+      "matched": 351,
+      "telling_only": 17,
+      "paden_only": 49,
+      "match_pct": 95.4
+    },
+    "2011-2012": {
+      "telling_totaal": 383,
+      "paden_totaal": 409,
+      "matched": 349,
+      "telling_only": 34,
+      "paden_only": 60,
+      "match_pct": 91.1
+    },
+    "2012-2013": {
+      "telling_totaal": 362,
+      "paden_totaal": 410,
+      "matched": 354,
+      "telling_only": 8,
+      "paden_only": 56,
+      "match_pct": 97.8
+    },
+    "2013-2014": {
+      "telling_totaal": 371,
+      "paden_totaal": 357,
+      "matched": 348,
+      "telling_only": 23,
+      "paden_only": 9,
+      "match_pct": 93.8
+    },
+    "2014-2015": {
+      "telling_totaal": 351,
+      "paden_totaal": 356,
+      "matched": 332,
+      "telling_only": 19,
+      "paden_only": 24,
+      "match_pct": 94.6
+    },
+    "2015-2016": {
+      "telling_totaal": 364,
+      "paden_totaal": 369,
+      "matched": 343,
+      "telling_only": 21,
+      "paden_only": 26,
+      "match_pct": 94.2
+    },
+    "2016-2017": {
+      "telling_totaal": 343,
+      "paden_totaal": 351,
+      "matched": 315,
+      "telling_only": 28,
+      "paden_only": 36,
+      "match_pct": 91.8
+    },
+    "2017-2018": {
+      "telling_totaal": 332,
+      "paden_totaal": 344,
+      "matched": 322,
+      "telling_only": 10,
+      "paden_only": 22,
+      "match_pct": 97.0
+    },
+    "2019-2020": {
+      "telling_totaal": 290,
+      "paden_totaal": 311,
+      "matched": 278,
+      "telling_only": 12,
+      "paden_only": 33,
+      "match_pct": 95.9
+    }
+  },
+  "verrijken_count": 1095,
+  "verwijderen_count": 98,
+  "toevoegen_count": 128
+}

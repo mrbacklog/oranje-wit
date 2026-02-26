@@ -1,0 +1,1335 @@
+============================================================
+STAP 1: Supersheets 2021-2026 (met Rel.nr)
+============================================================
+
+  Supersheet 2021-2022...
+    Spelerslijst: 353 speler-seizoenen
+    Stoppers: 50
+
+  Supersheet 2022-2023...
+    Spelerslijst: 306 speler-seizoenen
+    Stoppers: 25
+
+  Supersheet 2023-2024...
+    Spelerslijst: 304 speler-seizoenen
+    Stoppers: 39
+
+  Supersheet 2024-2025...
+    Spelerslijst: 304 speler-seizoenen
+    Stoppers: 27
+
+  Supersheet 2025-2026...
+C:\Users\Antjan\AppData\Local\Programs\Python\Python314\Lib\site-packages\openpyxl\worksheet\_reader.py:329: UserWarning: Data Validation extension is not supported and will be removed
+  warn(msg)
+    Spelerslijst: 283 speler-seizoenen
+    Stoppers: 24
+
+  >> 474 spelers na Supersheets
+
+============================================================
+STAP 2: A2 formulieren 2018-2022 (met Rel.nr)
+============================================================
+
+  A2 formulier 2018-2019 (A2 zwt - Oranje Wit (D) 2018 2019.xlsm)...
+    Leden: 403 spelers (met Rel.nr)
+
+  A2 formulier 2019-2020 (A2 zwt - Oranje Wit (D) 06-2020.xlsm)...
+    Leden: 312 spelers (met Rel.nr)
+
+  A2 formulier 2020-2021 (A2 mix - Oranje Wit (D)  09-2021.xlsm)...
+    Leden: 302 spelers (met Rel.nr)
+
+  A2 formulier 2021-2022 (A2 mix - Oranje Wit (D) 20-2022.xlsm)...
+    Leden: 314 spelers (met Rel.nr)
+
+  >> 615 spelers na A2
+
+============================================================
+STAP 3: Opstellingen met geboortedatum (2017-2020)
+============================================================
+
+  Opstelling 2017-2018...
+    Totaal: 346 speler-seizoenen
+
+  Opstelling 2019-2020...
+    Totaal: 285 speler-seizoenen
+
+  >> 670 spelers na 2017-2020
+
+============================================================
+STAP 3b: Teamindeling 2020-2021 (COVID-seizoen)
+============================================================
+
+  Opstelling 2020-2021...
+    Totaal: 317 speler-seizoenen
+
+  >> 685 spelers na 2020-2021
+
+============================================================
+STAP 4: Opstellingen zonder geboortedatum (2010-2016)
+============================================================
+
+  Opstelling 2012-2013...
+    Totaal: 417 speler-seizoenen
+
+  Opstelling 2016-2017...
+    Totaal: 355 speler-seizoenen
+
+  Opstelling 2010-2011...
+    Totaal: 411 speler-seizoenen
+
+  Opstelling 2011-2012...
+    Totaal: 440 speler-seizoenen
+
+  Opstelling 2013-2014...
+    Totaal: 362 speler-seizoenen
+
+  Opstelling 2014-2015...
+    Totaal: 360 speler-seizoenen
+
+  Opstelling 2015-2016...
+    Totaal: 381 speler-seizoenen
+
+  >> 1071 spelers totaal
+
+============================================================
+STAP 5: Deduplicatie
+============================================================
+  23 duplicaten samengevoegd
+  >> 1048 spelers na deduplicatie
+
+============================================================
+STAP 6: Verrijking met Complete Ledenlijst
+============================================================
+  Ledenlijst geladen: 765 leden
+  OW >> Sportlink upgrade:   64
+  OW >> bestaande gemerged:  0
+  Velden verrijkt:           0
+  Geslacht via naam-match:   4
+  >> 1048 spelers na verrijking
+
+============================================================
+STAP 6b: Deduplicatie (tweede pass na verrijking)
+============================================================
+  3 extra duplicaten samengevoegd
+  >> 1045 spelers na tweede deduplicatie
+
+============================================================
+DIAGNOSTIEK: Potentiële gemiste matches
+============================================================
+
+  127 OW-spelers met potentiële Sportlink-match:
+
+  OW-0052: Kuis, Fabiënne (roep: Fabiënne, geb: 1999-07-30, seizoenen: 2019-2020)
+    >>NKS62Q7: Seijner, Fabiënne (roep: Fabiënne, geb: 2003-02-21)
+      reden: aangrenzende seizoenen + voornaam (Fabiënne)
+
+  OW-0056: Maarten van Vliet (roep: Maarten, geb: None, seizoenen: 2020-2021)
+    >>NLP78Q4: Sas, M. (roep: Maarten, geb: 2008-08-26)
+      reden: aangrenzende seizoenen + voornaam (Maarten)
+    >>NML47R6: Rutten, M. (roep: Maarten, geb: 2010-02-18)
+      reden: aangrenzende seizoenen + voornaam (Maarten)
+
+  OW-0061: Peter Batenburg* (A2) (roep: Peter, geb: None, seizoenen: 2020-2021)
+    >>NJH51W3: Berendsen, Peter (roep: Peter, geb: 1997-02-27)
+      reden: aangrenzende seizoenen + voornaam (Peter)
+
+  OW-0064: Rob van Dongen (roep: Rob, geb: None, seizoenen: 2013-2014, 2020-2021)
+    >>NFY89D8: Tol, van R.J.P. (roep: Rob, geb: 1988-03-03)
+      reden: aangrenzende seizoenen + voornaam (Rob)
+    >>NLG57K0: Barneveld, Rob van (roep: Rob van, geb: 2004-01-06)
+      reden: aangrenzende seizoenen + voornaam (Rob)
+
+  OW-0066: Lianne vd Burgt (roep: Lianne, geb: None, seizoenen: 2020-2021)
+    >>NKY54N3: Bouwknegt, L.V. (roep: Lianne, geb: 2007-04-27)
+      reden: aangrenzende seizoenen + voornaam (Lianne)
+
+  OW-0068: Erik van de Burgt (roep: Erik, geb: None, seizoenen: 2020-2021)
+    >>NKM14K0: Jong, Erik de (roep: Erik, geb: 2000-11-13)
+      reden: aangrenzende seizoenen + voornaam (Erik)
+
+  OW-0069: Annemarie de Boer - Schipper (roep: Annemarie, geb: None, seizoenen: 2020-2021)
+    >>NMC30G4: Boshoven-Valk, A. (roep: Annemarie, geb: 1977-08-09)
+      reden: aangrenzende seizoenen + voornaam (Annemarie)
+
+  OW-0070: Tom van de Ven (roep: Tom, geb: None, seizoenen: 2020-2021)
+    >>NJF34K6: Hendriks, T. (roep: Tom, geb: 1996-01-28)
+      reden: aangrenzende seizoenen + voornaam (Tom)
+
+  OW-0071: Ballegooijen, van I (Irene) (roep: Irene, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013, 2013-2014, 2014-2015, 2015-2016)
+    >>NHY54X2: Dongen, Irene van (roep: Irene van, geb: 1992-09-27)
+      reden: aangrenzende seizoenen + voornaam (Irene)
+
+  OW-0076: Lijster, de E (Edwin) (roep: Edwin, geb: None, seizoenen: 2012-2013, 2013-2014, 2014-2015)
+    >>NGH43G1: Broek, Edwin van den (roep: Edwin, geb: 1987-08-15)
+      reden: aangrenzende seizoenen + voornaam (Edwin)
+
+  OW-0077: Nieuwland, L (Lieke) (roep: Lieke, geb: None, seizoenen: 2012-2013)
+    >>NFW28G4: Bakker-Verwaal, L. (roep: Lieke, geb: 1983-01-28)
+      reden: aangrenzende seizoenen + voornaam (Lieke)
+    >>NJK34W5: Ploeg, L (roep: Lieke, geb: 1986-11-16)
+      reden: aangrenzende seizoenen + voornaam (Lieke)
+    >>NJF06S3: Drooge, Lieke van (roep: Lieke, geb: 1996-03-18)
+      reden: aangrenzende seizoenen + voornaam (Lieke)
+
+  OW-0079: Ewijk, van K. (Kim) (roep: Kim, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013, 2013-2014, 2014-2015, 2015-2016)
+    >>NKG59H8: Dommisse, K. (roep: Kim, geb: 2001-04-12)
+      reden: aangrenzende seizoenen + voornaam (Kim)
+    >>NKL60P7: Reus, de K. (roep: Kim, geb: 2004-06-21)
+      reden: aangrenzende seizoenen + voornaam (Kim)
+    >>NJK09N2: Starre, Kim van der (roep: Kim, geb: 1989-12-01)
+      reden: aangrenzende seizoenen + voornaam (Kim)
+    >>NJF95V6: Ardon, Kim (roep: Kim, geb: 1996-03-29)
+      reden: aangrenzende seizoenen + voornaam (Kim)
+    >>NFT48H8: Boom, Kim (roep: Kim, geb: 1987-10-08)
+      reden: aangrenzende seizoenen + voornaam (Kim)
+    >>NJQ72Q3: Oord, Kim van (roep: Kim van, geb: 1999-06-12)
+      reden: aangrenzende seizoenen + voornaam (Kim)
+
+  OW-0087: Vermeeren,  D.B. (Danique) (roep: Danique, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013, 2013-2014, 2014-2015)
+    >>NLP77Z4: Klooster, van der D. (roep: Danique, geb: 2010-03-02)
+      reden: aangrenzende seizoenen + voornaam (Danique)
+    >>NLP78L9: Wiel, van der D.N. (roep: Danique, geb: 2010-12-26)
+      reden: aangrenzende seizoenen + voornaam (Danique)
+    >>NJV63S0: Bezooijen, D. van (roep: Danique, geb: 2000-01-05)
+      reden: aangrenzende seizoenen + voornaam (Danique)
+    >>NLL37R4: Willigen, Danique van (roep: Danique van, geb: 2004-09-10)
+      reden: aangrenzende seizoenen + voornaam (Danique)
+
+  OW-0088: Bothoff,  J E (Annelies) (roep: Annelies, geb: None, seizoenen: 2011-2012, 2012-2013, 2013-2014, 2014-2015, 2015-2016)
+    >>NJY57X5: Tol, Annelies van (roep: Annelies, geb: 1960-08-17)
+      reden: aangrenzende seizoenen + voornaam (Annelies)
+
+  OW-0090: Moerman, B (Barbara) (roep: Barbara, geb: None, seizoenen: 2012-2013)
+    >>NFW41S7: Camphens-Moerman, B. (roep: Barbara, geb: 1981-10-26)
+      reden: aangrenzende seizoenen + voornaam (Barbara)
+
+  OW-0094: Giessen, van der S (Stefan) (roep: Stefan, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013)
+    >>NJK05M3: Goudriaan, S (roep: Stefan, geb: 1993-10-13)
+      reden: aangrenzende seizoenen + voornaam (Stefan)
+    >>NGT16K5: Naaktgeboren, S. (roep: Stefan, geb: 1991-01-03)
+      reden: aangrenzende seizoenen + voornaam (Stefan)
+    >>NJF06N8: Verwaal, Stefan (roep: Stefan, geb: 1997-05-14)
+      reden: aangrenzende seizoenen + voornaam (Stefan)
+
+  OW-0096: Hooimeijer,  R.P.J. (Roy) (roep: Roy, geb: None, seizoenen: 2011-2012, 2012-2013, 2013-2014, 2014-2015)
+    >>NKQ40P2: Vlaming, de R. (roep: Roy, geb: 1984-11-08)
+      reden: aangrenzende seizoenen + voornaam (Roy)
+    >>NFW28Q4: Helmos, Roy (roep: Roy, geb: 1983-05-04)
+      reden: aangrenzende seizoenen + voornaam (Roy)
+
+  OW-0098: Wittekoek,  W B (Bas) (roep: Bas, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013, 2013-2014, 2014-2015, 2015-2016)
+    >>NGW10M4: Jong, de B. (roep: Bas, geb: 1990-05-26)
+      reden: aangrenzende seizoenen + voornaam (Bas)
+
+  OW-0100: Elshout,  B (Bart) (roep: Bart, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013, 2013-2014, 2014-2015, 2015-2016)
+    >>NKD19Y4: Driesprong, B. (roep: Bart, geb: 1998-10-09)
+      reden: aangrenzende seizoenen + voornaam (Bart)
+    >>NJH39X4: Brugge, van der B.R. (roep: Bart, geb: 1995-07-20)
+      reden: aangrenzende seizoenen + voornaam (Bart)
+    >>NFY07G3: Tijssen, Bart (roep: Bart, geb: 1983-07-24)
+      reden: aangrenzende seizoenen + voornaam (Bart)
+
+  OW-0102: Vanhooydonck,  S (Simone) (roep: Simone, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013)
+    >>NJQ72J4: Zwoll, Simone van (roep: Simone, geb: 1994-10-28)
+      reden: aangrenzende seizoenen + voornaam (Simone)
+    >>NGL91R1: Kuijper-Vanhooydonck, Simone (roep: Simone, geb: 1986-10-01)
+      reden: aangrenzende seizoenen + voornaam (Simone)
+
+  OW-0103: Muller,  A (Amy) (roep: Amy, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013, 2013-2014)
+    >>NKW21K6: Dielessen, Amy (roep: Amy, geb: 2003-08-25)
+      reden: aangrenzende seizoenen + voornaam (Amy)
+
+  OW-0105: Vos,  R (Robin) (roep: Robin, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013, 2013-2014, 2014-2015, 2015-2016, 2016-2017)
+    >>NJQ72K1: Dommisse, R. (roep: Robin, geb: 1998-11-12)
+      reden: aangrenzende seizoenen + voornaam (Robin)
+    >>NJF17P0: Leijdsman, R. (roep: Robin, geb: 1996-05-10)
+      reden: aangrenzende seizoenen + voornaam (Robin)
+    >>NJF24X2: Kalkeren, van R. (roep: Robin, geb: 1996-06-30)
+      reden: aangrenzende seizoenen + voornaam (Robin)
+    >>NLS76C3: Zwanenburg, R.J. (roep: Robin, geb: 2009-10-11)
+      reden: aangrenzende seizoenen + voornaam (Robin)
+
+  OW-0110: Dongen, van J (Jeroen) (roep: Jeroen, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013, 2013-2014, 2014-2015, 2015-2016, 2016-2017)
+    >>NJH51J2: Huijgen, J (roep: Jeroen, geb: 1996-03-21)
+      reden: aangrenzende seizoenen + voornaam (Jeroen)
+
+  OW-0118: Vogel-de Jong, E (Elise) (roep: Elise, geb: None, seizoenen: 2011-2012, 2012-2013)
+    >>NKT05Q7: Oostlander, Elise (roep: Elise, geb: 2002-08-26)
+      reden: aangrenzende seizoenen + voornaam (Elise)
+
+  OW-0120: Kuperus, S (Suzanne) (roep: Suzanne, geb: None, seizoenen: 2011-2012, 2012-2013)
+    >>NKR09G7: Klink, S.L. (roep: Suzanne, geb: 2003-06-29)
+      reden: aangrenzende seizoenen + voornaam (Suzanne)
+
+  OW-0121: Jonker, J (Jeroen) (roep: Jeroen, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013, 2016-2017)
+    >>NJH51J2: Huijgen, J (roep: Jeroen, geb: 1996-03-21)
+      reden: aangrenzende seizoenen + voornaam (Jeroen)
+
+  OW-0123: Wibbens, L (Liesbeth) (roep: Liesbeth, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013)
+    >>NGT42S4: Brand, Liesbeth (roep: Liesbeth, geb: 1990-08-01)
+      reden: aangrenzende seizoenen + voornaam (Liesbeth)
+
+  OW-0124: Fruyt van Hertog, H (Hans) (roep: Hans, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013)
+    >>NGG54S2: Ploeg, H (Hans) (roep: Hans, geb: 1988-01-28)
+      reden: aangrenzende seizoenen + voornaam (Hans)
+
+  OW-0128: Barendregt, A M (Anouk) (roep: Anouk, geb: None, seizoenen: 2011-2012, 2012-2013)
+    >>NKT92K1: Jongh, de A. (roep: Anouk, geb: 2005-09-02)
+      reden: aangrenzende seizoenen + voornaam (Anouk)
+    >>NKG18Q8: Reus, Anouk de (roep: Anouk, geb: 2002-07-29)
+      reden: aangrenzende seizoenen + voornaam (Anouk)
+
+  OW-0136: Zomer, M (Mark) (roep: Mark, geb: None, seizoenen: 2011-2012, 2012-2013)
+    >>NKD39Q8: Schindler, M. (roep: Mark, geb: 1999-05-28)
+      reden: aangrenzende seizoenen + voornaam (Mark)
+
+  OW-0137: Erik van Dijk (roep: Erik, geb: None, seizoenen: 2012-2013)
+    >>NKM14K0: Jong, Erik de (roep: Erik, geb: 2000-11-13)
+      reden: aangrenzende seizoenen + voornaam (Erik)
+    >>NFT37Y9: Heumen, Erik van (roep: Erik, geb: 1982-01-19)
+      reden: aangrenzende seizoenen + voornaam (Erik)
+
+  OW-0143: Jager-Zwaan, de L. (Linda) (roep: Linda, geb: None, seizoenen: 2011-2012, 2012-2013)
+    >>NJK42D1: Ardon, L (roep: Linda, geb: 1992-04-02)
+      reden: aangrenzende seizoenen + voornaam (Linda)
+
+  OW-0147: Wijngaarden-van den Berg, van E.J. (Esther) (roep: Esther, geb: None, seizoenen: 2011-2012, 2012-2013)
+    >>NJG13L1: Ardon, E. (roep: Esther, geb: 1996-09-29)
+      reden: aangrenzende seizoenen + voornaam (Esther)
+    >>NJC46R3: Wibbens, E. (roep: Esther, geb: 1992-03-27)
+      reden: aangrenzende seizoenen + voornaam (Esther)
+    >>NLG57J3: Torn, Esther (roep: Esther, geb: 2001-03-19)
+      reden: aangrenzende seizoenen + voornaam (Esther)
+    >>NJF77V2: Honschoten, Esther van (roep: Esther, geb: 1996-06-24)
+      reden: aangrenzende seizoenen + voornaam (Esther)
+
+  OW-0152: Nelemans,  T (Tessa) (roep: Tessa, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013, 2013-2014)
+    >>NJY82Z9: Dubbeld, T. (roep: Tessa, geb: 2000-12-05)
+      reden: aangrenzende seizoenen + voornaam (Tessa)
+    >>NLJ47P3: Everdingen, van T. (roep: Tessa, geb: 2006-07-02)
+      reden: aangrenzende seizoenen + voornaam (Tessa)
+
+  OW-0158: Vonk,  E.D. (Esther) (roep: Esther, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013, 2013-2014)
+    >>NJG13L1: Ardon, E. (roep: Esther, geb: 1996-09-29)
+      reden: aangrenzende seizoenen + voornaam (Esther)
+    >>NJC46R3: Wibbens, E. (roep: Esther, geb: 1992-03-27)
+      reden: aangrenzende seizoenen + voornaam (Esther)
+    >>NLG57J3: Torn, Esther (roep: Esther, geb: 2001-03-19)
+      reden: aangrenzende seizoenen + voornaam (Esther)
+    >>NJF77V2: Honschoten, Esther van (roep: Esther, geb: 1996-06-24)
+      reden: aangrenzende seizoenen + voornaam (Esther)
+
+  OW-0159: Zouwen, van der E (Emma) (roep: Emma, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013, 2013-2014)
+    >>NKQ46X6: Don, Emma (roep: Emma, geb: 2005-07-22)
+      reden: aangrenzende seizoenen + voornaam (Emma)
+
+  OW-0161: Geerling,  Q (Quinty) (roep: Quinty, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013, 2013-2014, 2014-2015, 2015-2016)
+    >>NKL22V5: Schild, Quinty (roep: Quinty, geb: 2002-10-11)
+      reden: aangrenzende seizoenen + voornaam (Quinty)
+
+  OW-0162: Hendriks,  I.A. (Iris) (roep: Iris, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013, 2013-2014, 2014-2015, 2015-2016)
+    >>NKK27F7: Mol, Iris (roep: Iris, geb: 2002-09-17)
+      reden: aangrenzende seizoenen + voornaam (Iris)
+
+  OW-0164: Kik,  M (Marijn) (roep: Marijn, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013)
+    >>NJF77Y3: Klink, M (roep: Marijn, geb: 1997-04-30)
+      reden: aangrenzende seizoenen + voornaam (Marijn)
+    >>NGP49D6: Ameijden, Marijn van (roep: Marijn, geb: 1990-02-07)
+      reden: aangrenzende seizoenen + voornaam (Marijn)
+
+  OW-0165: Kruithof,  L. (Lisa) (roep: Lisa, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013, 2013-2014, 2014-2015, 2015-2016, 2016-2017)
+    >>NLS08H9: Reuvers, L. (roep: Lisa, geb: 2009-06-29)
+      reden: aangrenzende seizoenen + voornaam (Lisa)
+    >>NKW49Y8: Volker, L.A. (roep: Lisa, geb: 2003-04-01)
+      reden: aangrenzende seizoenen + voornaam (Lisa)
+    >>NLD26P4: Taal, Lisa (roep: Lisa, geb: 2003-11-06)
+      reden: aangrenzende seizoenen + voornaam (Lisa)
+
+  OW-0167: Nelemans,  A. (Anouk) (roep: Anouk, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013, 2013-2014, 2014-2015, 2015-2016, 2016-2017)
+    >>NLZ39C9: Bakker, A. (roep: Anouk, geb: 2012-11-01)
+      reden: aangrenzende seizoenen + voornaam (Anouk)
+    >>NKT92K1: Jongh, de A. (roep: Anouk, geb: 2005-09-02)
+      reden: aangrenzende seizoenen + voornaam (Anouk)
+    >>NKG18Q8: Reus, Anouk de (roep: Anouk, geb: 2002-07-29)
+      reden: aangrenzende seizoenen + voornaam (Anouk)
+
+  OW-0169: Schmidt,  J. (Julia) (roep: Julia, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013, 2013-2014)
+    >>NLP78G4: Bozuwa, J. (roep: Julia, geb: 2007-07-11)
+      reden: aangrenzende seizoenen + voornaam (Julia)
+    >>NKT65Z0: Kleingeld, J.N. (roep: Julia, geb: 2010-09-25)
+      reden: aangrenzende seizoenen + voornaam (Julia)
+    >>NLP78B9: Verkerke, Julia (roep: Julia, geb: 2006-11-23)
+      reden: aangrenzende seizoenen + voornaam (Julia)
+
+  OW-0171: Kortekaas,  D. (Demi) (roep: Demi, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013, 2013-2014)
+    >>NKG59L6: Dijk, van D. (roep: Demi, geb: 2001-02-16)
+      reden: aangrenzende seizoenen + voornaam (Demi)
+
+  OW-0172: Mol,  D. (Daan) (roep: Daan, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013, 2013-2014, 2014-2015, 2015-2016)
+    >>NLP77Y7: Klein, D.H. (roep: Daan, geb: 2005-11-11)
+      reden: aangrenzende seizoenen + voornaam (Daan)
+    >>NKG18P1: Dalen, Daan van (roep: Daan van, geb: 2002-06-25)
+      reden: aangrenzende seizoenen + voornaam (Daan)
+
+  OW-0183: Spoel, van der R. (Romy) (roep: Romy, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013, 2013-2014, 2014-2015)
+    >>NKP42S8: Klaveren, Romy van (roep: Romy van, geb: 2002-11-30)
+      reden: aangrenzende seizoenen + voornaam (Romy)
+
+  OW-0186: Antwerpen, van L. (Lisa) (roep: Lisa, geb: None, seizoenen: 2012-2013, 2013-2014, 2014-2015, 2015-2016)
+    >>NLS08H9: Reuvers, L. (roep: Lisa, geb: 2009-06-29)
+      reden: aangrenzende seizoenen + voornaam (Lisa)
+    >>NKW49Y8: Volker, L.A. (roep: Lisa, geb: 2003-04-01)
+      reden: aangrenzende seizoenen + voornaam (Lisa)
+    >>NLD26P4: Taal, Lisa (roep: Lisa, geb: 2003-11-06)
+      reden: aangrenzende seizoenen + voornaam (Lisa)
+
+  OW-0187: Bras,  M. (Martijn) (roep: Martijn, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013, 2013-2014, 2014-2015, 2015-2016)
+    >>NFW40G0: Elshout, Martijn (roep: Martijn, geb: 1975-09-26)
+      reden: aangrenzende seizoenen + voornaam (Martijn)
+    >>NFW26R5: Wiel, Martijn van der (roep: Martijn, geb: 1981-01-17)
+      reden: aangrenzende seizoenen + voornaam (Martijn)
+
+  OW-0189: Berg, van de A (Anouk) (roep: Anouk, geb: None, seizoenen: 2012-2013, 2013-2014)
+    >>NKT92K1: Jongh, de A. (roep: Anouk, geb: 2005-09-02)
+      reden: aangrenzende seizoenen + voornaam (Anouk)
+    >>NKG18Q8: Reus, Anouk de (roep: Anouk, geb: 2002-07-29)
+      reden: aangrenzende seizoenen + voornaam (Anouk)
+
+  OW-0191: Hooijdonk, van J. (Jana) (roep: Jana, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013, 2013-2014, 2014-2015, 2015-2016)
+    >>NKW52X5: Driesprong, J. (roep: Jana, geb: 2007-05-03)
+      reden: aangrenzende seizoenen + voornaam (Jana)
+
+  OW-0193: Hendriks,  N. (Niek) (roep: Niek, geb: None, seizoenen: 2011-2012, 2012-2013, 2013-2014, 2014-2015, 2015-2016)
+    >>NLD36P9: Driesprong, N. (roep: Niek, geb: 2008-07-26)
+      reden: aangrenzende seizoenen + voornaam (Niek)
+    >>NLP78P7: Sas, N. (roep: Niek, geb: 2010-07-22)
+      reden: aangrenzende seizoenen + voornaam (Niek)
+
+  OW-0194: Naaktgeboren,  B.D. (Benthe) (roep: Benthe, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013, 2013-2014, 2016-2017)
+    >>NLP78D3: Linden, van der B.S. (roep: Benthe, geb: 2008-06-30)
+      reden: aangrenzende seizoenen + voornaam (Benthe)
+
+  OW-0195: Hofmeester,  B. (Bob) (roep: Bob, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013, 2013-2014, 2014-2015, 2015-2016)
+    >>NJF95S5: Mans, B. (roep: Bob, geb: 1996-11-03)
+      reden: aangrenzende seizoenen + voornaam (Bob)
+
+  OW-0196: Veth,  S. (Sanne) (roep: Sanne, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013, 2013-2014, 2014-2015, 2015-2016)
+    >>NLS08G2: Dubbeld, S. (roep: Sanne, geb: 2002-02-08)
+      reden: aangrenzende seizoenen + voornaam (Sanne)
+    >>NJK27R4: Andel, Sanne van (roep: Sanne, geb: 1990-12-04)
+      reden: aangrenzende seizoenen + voornaam (Sanne)
+    >>NFW28B9: Stolk, Sanne (roep: Sanne, geb: 1983-05-31)
+      reden: aangrenzende seizoenen + voornaam (Sanne)
+
+  OW-0200: Kurpershoek,  A. (Anne) (roep: Anne, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013, 2013-2014, 2014-2015)
+    >>NKD19X7: Driesprong, A. (roep: Anne, geb: 2000-07-20)
+      reden: aangrenzende seizoenen + voornaam (Anne)
+    >>NJD38L3: Slijkhuis, Anne (roep: Anne, geb: 1992-07-01)
+      reden: aangrenzende seizoenen + voornaam (Anne)
+    >>NGL45C3: Haan, Anne de (roep: Anne, geb: 1989-12-19)
+      reden: aangrenzende seizoenen + voornaam (Anne)
+
+  OW-0203: Es, van D. (Dagmar) (roep: Dagmar, geb: None, seizoenen: 2011-2012, 2012-2013, 2013-2014)
+    >>NKR24N1: Wijngaarden, Dagmar van (roep: Dagmar, geb: 2001-10-13)
+      reden: aangrenzende seizoenen + voornaam (Dagmar)
+
+  OW-0210: Zeevaart,  B. (Britt) (roep: Britt, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013)
+    >>NKV67G5: Zuijderwijk, Britt (roep: Britt, geb: 2005-02-18)
+      reden: aangrenzende seizoenen + voornaam (Britt)
+
+  OW-0211: Versluis, R (Robin) (roep: Robin, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013, 2013-2014, 2014-2015, 2015-2016)
+    >>NJQ72K1: Dommisse, R. (roep: Robin, geb: 1998-11-12)
+      reden: aangrenzende seizoenen + voornaam (Robin)
+    >>NJF17P0: Leijdsman, R. (roep: Robin, geb: 1996-05-10)
+      reden: aangrenzende seizoenen + voornaam (Robin)
+    >>NJF24X2: Kalkeren, van R. (roep: Robin, geb: 1996-06-30)
+      reden: aangrenzende seizoenen + voornaam (Robin)
+    >>NLS76C3: Zwanenburg, R.J. (roep: Robin, geb: 2009-10-11)
+      reden: aangrenzende seizoenen + voornaam (Robin)
+
+  OW-0215: Klingens,  I. (Iris) (roep: Iris, geb: None, seizoenen: 2011-2012, 2012-2013, 2013-2014, 2014-2015, 2015-2016)
+    >>NKK27F7: Mol, Iris (roep: Iris, geb: 2002-09-17)
+      reden: aangrenzende seizoenen + voornaam (Iris)
+
+  OW-0216: Hofmeester,  D. (Daan) (roep: Daan, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013)
+    >>NKG18P1: Dalen, Daan van (roep: Daan van, geb: 2002-06-25)
+      reden: aangrenzende seizoenen + voornaam (Daan)
+
+  OW-0217: Oppe,  C.L. (Carmen) (roep: Carmen, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013, 2013-2014, 2014-2015, 2015-2016)
+    >>NLN05N7: Klooster, van der C. (roep: Carmen, geb: 2008-11-08)
+      reden: aangrenzende seizoenen + voornaam (Carmen)
+
+  OW-0221: Filius,  D. (Dani) (roep: Dani, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013, 2013-2014, 2014-2015, 2015-2016, 2016-2017)
+    >>NLS75Y4: Heersping, D.B.A.C. (roep: Dani, geb: 2008-11-01)
+      reden: aangrenzende seizoenen + voornaam (Dani)
+
+  OW-0223: Buring,  R. (Rick) (roep: Rick, geb: None, seizoenen: 2012-2013)
+    >>NJK08W2: Goudriaan, Rick (roep: Rick, geb: 1993-10-13)
+      reden: aangrenzende seizoenen + voornaam (Rick)
+    >>NKV67F8: Schindler, Rick (roep: Rick, geb: 2002-07-16)
+      reden: aangrenzende seizoenen + voornaam (Rick)
+
+  OW-0226: Verschoor,  K.R. (Koen) (roep: Koen, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013)
+    >>NLH06P8: Est, van K.H.T. (roep: Koen, geb: 2008-09-02)
+      reden: aangrenzende seizoenen + voornaam (Koen)
+    >>NJJ38C6: Meijer, Koen (roep: Koen, geb: 1990-02-27)
+      reden: aangrenzende seizoenen + voornaam (Koen)
+
+  OW-0227: Verschoor,  I.E. (Ilse) (roep: Ilse, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013)
+    >>NLG57S6: Raab, I.A.S. (roep: Ilse, geb: 2005-06-03)
+      reden: aangrenzende seizoenen + voornaam (Ilse)
+    >>NKD20B1: Zuijderwijk, I.D. (roep: Ilse, geb: 2001-07-19)
+      reden: aangrenzende seizoenen + voornaam (Ilse)
+
+  OW-0232: Flier,  N.G. (Naomi) (roep: Naomi, geb: None, seizoenen: 2011-2012, 2012-2013, 2013-2014)
+    >>NLM86T1: Blankenstijn, Naomi (roep: Naomi, geb: 2007-05-18)
+      reden: aangrenzende seizoenen + voornaam (Naomi)
+
+  OW-0236: Weijde, van der T. (Thijs) (roep: Thijs, geb: None, seizoenen: 2012-2013)
+    >>NKW50C2: Boon, T. (roep: Thijs, geb: 2003-12-05)
+      reden: aangrenzende seizoenen + voornaam (Thijs)
+
+  OW-0239: Molenaar, L. (Lisa) (roep: Lisa, geb: None, seizoenen: 2012-2013, 2013-2014)
+    >>NKW49Y8: Volker, L.A. (roep: Lisa, geb: 2003-04-01)
+      reden: aangrenzende seizoenen + voornaam (Lisa)
+    >>NLD26P4: Taal, Lisa (roep: Lisa, geb: 2003-11-06)
+      reden: aangrenzende seizoenen + voornaam (Lisa)
+
+  OW-0240: Rijn, van M. (Maarten) (roep: Maarten, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013, 2013-2014)
+    >>NLP78Q4: Sas, M. (roep: Maarten, geb: 2008-08-26)
+      reden: aangrenzende seizoenen + voornaam (Maarten)
+
+  OW-0241: Filius,  E. (Esmee) (roep: Esmee, geb: None, seizoenen: 2010-2011, 2011-2012, 2012-2013, 2013-2014, 2014-2015, 2015-2016, 2016-2017)
+    >>NLX64V0: Boer, de E.M. (roep: Esmée, geb: 2010-05-30)
+      reden: aangrenzende seizoenen + voornaam (Esmee)
+
+  OW-0243: Bouman, S (Sophie) (roep: Sophie, geb: None, seizoenen: 2012-2013, 2013-2014, 2014-2015)
+    >>NLS45N2: Kilsdonk, S.A (roep: Sophie, geb: 2008-03-31)
+      reden: aangrenzende seizoenen + voornaam (Sophie)
+
+  OW-0246: Schenk, R (Ruben) (roep: Ruben, geb: None, seizoenen: 2012-2013, 2013-2014)
+    >>NJY83B4: Dubbeld, R. (roep: Ruben, geb: 2000-12-05)
+      reden: aangrenzende seizoenen + voornaam (Ruben)
+    >>NLL20C3: Zijde, Ruben van der (roep: Ruben, geb: 2006-12-03)
+      reden: aangrenzende seizoenen + voornaam (Ruben)
+
+  OW-0249: Everaarts, A. (Anne) (roep: Anne, geb: None, seizoenen: 2012-2013)
+    >>NKD19X7: Driesprong, A. (roep: Anne, geb: 2000-07-20)
+      reden: aangrenzende seizoenen + voornaam (Anne)
+    >>NJD38L3: Slijkhuis, Anne (roep: Anne, geb: 1992-07-01)
+      reden: aangrenzende seizoenen + voornaam (Anne)
+
+  OW-0253: Dolderman, I.(Iris) (roep: Iris, geb: None, seizoenen: 2015-2016, 2016-2017)
+    >>NKK27F7: Mol, Iris (roep: Iris, geb: 2002-09-17)
+      reden: aangrenzende seizoenen + voornaam (Iris)
+
+  OW-0260: Vaartmans, I.(Ingrid) (roep: Ingrid, geb: None, seizoenen: 2016-2017)
+    >>NGQ19P6: Laban-Sinke, I.W. (roep: Ingrid, geb: 1985-06-11)
+      reden: aangrenzende seizoenen + voornaam (Ingrid)
+    >>NFX00K9: Nelemans, Ingrid (roep: Ingrid, geb: 1967-02-22)
+      reden: aangrenzende seizoenen + voornaam (Ingrid)
+
+  OW-0261: Blaay, de S.M.(Stefan) (roep: Stefan, geb: None, seizoenen: 2010-2011, 2015-2016, 2016-2017)
+    >>NJK05M3: Goudriaan, S (roep: Stefan, geb: 1993-10-13)
+      reden: aangrenzende seizoenen + voornaam (Stefan)
+    >>NGT16K5: Naaktgeboren, S. (roep: Stefan, geb: 1991-01-03)
+      reden: aangrenzende seizoenen + voornaam (Stefan)
+    >>NLS75Z1: Verhoef, Stefan (roep: Stefan, geb: 2008-12-28)
+      reden: aangrenzende seizoenen + voornaam (Stefan)
+    >>NJF06N8: Verwaal, Stefan (roep: Stefan, geb: 1997-05-14)
+      reden: aangrenzende seizoenen + voornaam (Stefan)
+
+  OW-0263: Johan Dubbeldam (roep: Johan, geb: None, seizoenen: 2016-2017)
+    >>NFW15F3: Wall, van der J (roep: Johan, geb: 1965-09-18)
+      reden: aangrenzende seizoenen + voornaam (Johan)
+
+  OW-0270: Tun?yürek, S.(Süeda) (roep: Süeda, geb: None, seizoenen: 2016-2017)
+    >>NLR80P0: Tunςyürek, Süeda (roep: Süeda, geb: 2005-09-23)
+      reden: aangrenzende seizoenen + voornaam (Süeda)
+
+  OW-0273: Tun?yürek, S.(Sümeyra) (roep: Sümeyra, geb: None, seizoenen: 2016-2017)
+    >>NLR80N6: Tunςyürek, Sümeyra (roep: Sümeyra, geb: 2007-03-26)
+      reden: aangrenzende seizoenen + voornaam (Sümeyra)
+
+  OW-0281: Rick de Vries (roep: Rick, geb: None, seizoenen: 2010-2011)
+    >>NJK08W2: Goudriaan, Rick (roep: Rick, geb: 1993-10-13)
+      reden: aangrenzende seizoenen + voornaam (Rick)
+    >>NKV67F8: Schindler, Rick (roep: Rick, geb: 2002-07-16)
+      reden: aangrenzende seizoenen + voornaam (Rick)
+
+  OW-0282: Lotte van Andel (roep: Lotte, geb: None, seizoenen: 2010-2011, 2011-2012, 2014-2015)
+    >>NKW21M0: Zwets, Lotte (roep: Lotte, geb: 1998-06-22)
+      reden: aangrenzende seizoenen + voornaam (Lotte)
+    >>NKN64T9: Koornneef, Lotte (roep: Lotte, geb: 2003-02-21)
+      reden: aangrenzende seizoenen + voornaam (Lotte)
+
+  OW-0283: Suzanne Dusseldorp (roep: Suzanne, geb: None, seizoenen: 2010-2011, 2011-2012)
+    >>NKR09G7: Klink, S.L. (roep: Suzanne, geb: 2003-06-29)
+      reden: aangrenzende seizoenen + voornaam (Suzanne)
+
+  OW-0291: Elise de Jong (roep: Elise, geb: None, seizoenen: 2010-2011)
+    >>NKT05Q7: Oostlander, Elise (roep: Elise, geb: 2002-08-26)
+      reden: aangrenzende seizoenen + voornaam (Elise)
+
+  OW-0293: Leo Kardinaal (roep: Leo, geb: None, seizoenen: 2010-2011)
+    >>NFW14K5: Mans, Leo (roep: Leo, geb: 1967-01-15)
+      reden: aangrenzende seizoenen + voornaam (Leo)
+
+  OW-0303: Suzanne Kupers (roep: Suzanne, geb: None, seizoenen: 2010-2011)
+    >>NKR09G7: Klink, S.L. (roep: Suzanne, geb: 2003-06-29)
+      reden: aangrenzende seizoenen + voornaam (Suzanne)
+
+  OW-0307: Mark Goudriaan (roep: Mark, geb: None, seizoenen: 2010-2011)
+    >>NKD39Q8: Schindler, M. (roep: Mark, geb: 1999-05-28)
+      reden: aangrenzende seizoenen + voornaam (Mark)
+
+  OW-0309: Leon ter Horst (roep: Leon, geb: None, seizoenen: 2010-2011)
+    >>NGZ13W6: Steen Redeker, Leon (roep: Leon, geb: 1991-06-19)
+      reden: aangrenzende seizoenen + voornaam (Leon)
+
+  OW-0312: Erik Keller (roep: Erik, geb: None, seizoenen: 2010-2011, 2011-2012)
+    >>NKM14K0: Jong, Erik de (roep: Erik, geb: 2000-11-13)
+      reden: aangrenzende seizoenen + voornaam (Erik)
+    >>NFT37Y9: Heumen, Erik van (roep: Erik, geb: 1982-01-19)
+      reden: aangrenzende seizoenen + voornaam (Erik)
+
+  OW-0320: Mathijs Boersma (roep: Mathijs, geb: None, seizoenen: 2010-2011)
+    >>NKW50D9: Lange, M.J.D. (roep: Mathijs, geb: 2004-07-01)
+      reden: aangrenzende seizoenen + voornaam (Mathijs)
+
+  OW-0325: Bart van Strien (roep: Bart, geb: None, seizoenen: 2010-2011)
+    >>NKD19Y4: Driesprong, B. (roep: Bart, geb: 1998-10-09)
+      reden: aangrenzende seizoenen + voornaam (Bart)
+    >>NJH39X4: Brugge, van der B.R. (roep: Bart, geb: 1995-07-20)
+      reden: aangrenzende seizoenen + voornaam (Bart)
+    >>NFY07G3: Tijssen, Bart (roep: Bart, geb: 1983-07-24)
+      reden: aangrenzende seizoenen + voornaam (Bart)
+
+  OW-0332: Ilse Temmink (roep: Ilse, geb: None, seizoenen: 2010-2011, 2011-2012)
+    >>NLG57S6: Raab, I.A.S. (roep: Ilse, geb: 2005-06-03)
+      reden: aangrenzende seizoenen + voornaam (Ilse)
+    >>NKD20B1: Zuijderwijk, I.D. (roep: Ilse, geb: 2001-07-19)
+      reden: aangrenzende seizoenen + voornaam (Ilse)
+
+  OW-0334: Eva Durinck (roep: Eva, geb: None, seizoenen: 2010-2011, 2011-2012)
+    >>NKG18N7: Teerds, E.L. (roep: Eva, geb: 2002-10-22)
+      reden: aangrenzende seizoenen + voornaam (Eva)
+    >>NLC20P5: Uijl, Eva den (roep: Eva, geb: 2005-10-25)
+      reden: aangrenzende seizoenen + voornaam (Eva)
+
+  OW-0335: Kees de Koff (roep: Kees, geb: None, seizoenen: 2010-2011, 2011-2012)
+    >>NFY88Q6: Oppe, Kees Jan (roep: Kees Jan, geb: 1968-07-29)
+      reden: aangrenzende seizoenen + voornaam (Kees)
+
+  OW-0337: Mirjam Vossepoel (roep: Mirjam, geb: None, seizoenen: 2010-2011, 2011-2012)
+    >>NGT43H0: Noordam, M. (roep: Mirjam, geb: 1987-12-08)
+      reden: aangrenzende seizoenen + voornaam (Mirjam)
+
+  OW-0340: Mariette Bellaard (roep: Mariette, geb: None, seizoenen: 2010-2011, 2011-2012)
+    >>NFW40Y6: Grootenboer-Dijk, Mariette van (roep: Mariette, geb: 1981-04-11)
+      reden: aangrenzende seizoenen + voornaam (Mariette)
+
+  OW-0342: Ruben Borsje (roep: Ruben, geb: None, seizoenen: 2010-2011, 2011-2012)
+    >>NJY83B4: Dubbeld, R. (roep: Ruben, geb: 2000-12-05)
+      reden: aangrenzende seizoenen + voornaam (Ruben)
+    >>NFW28S8: Kamerbeek, Ruben (roep: Ruben, geb: 1985-10-24)
+      reden: aangrenzende seizoenen + voornaam (Ruben)
+
+  OW-0346: Michelle Stehouwer (roep: Michelle, geb: None, seizoenen: 2010-2011, 2011-2012)
+    >>NJQ72R0: Blom, M. (roep: Michelle, geb: 1999-11-15)
+      reden: aangrenzende seizoenen + voornaam (Michelle)
+
+  OW-0352: Lisa Durinck (roep: Lisa, geb: None, seizoenen: 2010-2011, 2011-2012)
+    >>NKW49Y8: Volker, L.A. (roep: Lisa, geb: 2003-04-01)
+      reden: aangrenzende seizoenen + voornaam (Lisa)
+    >>NLD26P4: Taal, Lisa (roep: Lisa, geb: 2003-11-06)
+      reden: aangrenzende seizoenen + voornaam (Lisa)
+
+  OW-0360: Jeroen von Wasserthal (roep: Jeroen, geb: None, seizoenen: 2010-2011)
+    >>NJH51J2: Huijgen, J (roep: Jeroen, geb: 1996-03-21)
+      reden: aangrenzende seizoenen + voornaam (Jeroen)
+
+  OW-0365: Anne Grundlehner (roep: Anne, geb: None, seizoenen: 2010-2011)
+    >>NKD19X7: Driesprong, A. (roep: Anne, geb: 2000-07-20)
+      reden: aangrenzende seizoenen + voornaam (Anne)
+    >>NJD38L3: Slijkhuis, Anne (roep: Anne, geb: 1992-07-01)
+      reden: aangrenzende seizoenen + voornaam (Anne)
+
+  OW-0367: Lisa Kalkman (roep: Lisa, geb: None, seizoenen: 2010-2011, 2011-2012)
+    >>NKW49Y8: Volker, L.A. (roep: Lisa, geb: 2003-04-01)
+      reden: aangrenzende seizoenen + voornaam (Lisa)
+    >>NLD26P4: Taal, Lisa (roep: Lisa, geb: 2003-11-06)
+      reden: aangrenzende seizoenen + voornaam (Lisa)
+
+  OW-0368: Amy Kalkman (roep: Amy, geb: None, seizoenen: 2010-2011, 2011-2012)
+    >>NKW21K6: Dielessen, Amy (roep: Amy, geb: 2003-08-25)
+      reden: aangrenzende seizoenen + voornaam (Amy)
+
+  OW-0372: Bente Langerak (roep: Bente, geb: None, seizoenen: 2010-2011)
+    >>NKS24S7: Wijngaarden, van B.D. (roep: Bente, geb: 2006-07-30)
+      reden: aangrenzende seizoenen + voornaam (Bente)
+
+  OW-0374: Jeroen Spierings (roep: Jeroen, geb: None, seizoenen: 2010-2011, 2011-2012)
+    >>NJH51J2: Huijgen, J (roep: Jeroen, geb: 1996-03-21)
+      reden: aangrenzende seizoenen + voornaam (Jeroen)
+
+  OW-0382: Jeroen van Stappershoef (roep: Jeroen, geb: None, seizoenen: 2010-2011, 2011-2012)
+    >>NJH51J2: Huijgen, J (roep: Jeroen, geb: 1996-03-21)
+      reden: aangrenzende seizoenen + voornaam (Jeroen)
+
+  OW-0392: Elise Don (roep: Elise, geb: None, seizoenen: 2010-2011, 2011-2012)
+    >>NKT05Q7: Oostlander, Elise (roep: Elise, geb: 2002-08-26)
+      reden: aangrenzende seizoenen + voornaam (Elise)
+
+  OW-0393: Liesbeth Barendregt (roep: Liesbeth, geb: None, seizoenen: 2010-2011, 2011-2012)
+    >>NGT42S4: Brand, Liesbeth (roep: Liesbeth, geb: 1990-08-01)
+      reden: aangrenzende seizoenen + voornaam (Liesbeth)
+
+  OW-0397: Peters, L (Laura) (roep: Laura, geb: None, seizoenen: 2011-2012, 2015-2016)
+    >>NKC46T4: Koote, L.D. (roep: Laura, geb: 2002-01-13)
+      reden: aangrenzende seizoenen + voornaam (Laura)
+    >>NKK48D6: Mol, L.N.A. (roep: Laura, geb: 2004-04-02)
+      reden: aangrenzende seizoenen + voornaam (Laura)
+    >>NGT43L8: Schenau, Laura (roep: Laura, geb: 1991-03-18)
+      reden: aangrenzende seizoenen + voornaam (Laura)
+
+  OW-0400: Paul de Roijer (roep: Paul, geb: None, seizoenen: 2011-2012)
+    >>NFX10D5: Wolff, Paul (roep: Paul, geb: 1958-04-17)
+      reden: aangrenzende seizoenen + voornaam (Paul)
+
+  OW-0403: Nanninga, R (Robin) (roep: Robin, geb: None, seizoenen: 2011-2012)
+    >>NJQ72K1: Dommisse, R. (roep: Robin, geb: 1998-11-12)
+      reden: aangrenzende seizoenen + voornaam (Robin)
+    >>NJF17P0: Leijdsman, R. (roep: Robin, geb: 1996-05-10)
+      reden: aangrenzende seizoenen + voornaam (Robin)
+    >>NJF24X2: Kalkeren, van R. (roep: Robin, geb: 1996-06-30)
+      reden: aangrenzende seizoenen + voornaam (Robin)
+
+  OW-0407: Bas van Bodegom (roep: Bas, geb: None, seizoenen: 2011-2012)
+    >>NGW10M4: Jong, de B. (roep: Bas, geb: 1990-05-26)
+      reden: aangrenzende seizoenen + voornaam (Bas)
+
+  OW-0409: Kakes, B.R. (Britt) (roep: Britt, geb: None, seizoenen: 2011-2012)
+    >>NKV67G5: Zuijderwijk, Britt (roep: Britt, geb: 2005-02-18)
+      reden: aangrenzende seizoenen + voornaam (Britt)
+
+  OW-0410: Goudriaan, S. (Steven) (roep: Steven, geb: None, seizoenen: 2013-2014, 2014-2015)
+    >>NFW42L1: Belder, S. (roep: Steven, geb: 1981-05-03)
+      reden: aangrenzende seizoenen + voornaam (Steven)
+    >>NGT92Q5: Kuperus, S. (roep: Steven, geb: 1990-07-04)
+      reden: aangrenzende seizoenen + voornaam (Steven)
+
+  OW-0411: Kuijper - Vanhooydonck,  S (Simone) (roep: Simone, geb: None, seizoenen: 2013-2014, 2014-2015)
+    >>NJQ72J4: Zwoll, Simone van (roep: Simone, geb: 1994-10-28)
+      reden: aangrenzende seizoenen + voornaam (Simone)
+    >>NGL91R1: Kuijper-Vanhooydonck, Simone (roep: Simone, geb: 1986-10-01)
+      reden: aangrenzende seizoenen + voornaam (Simone)
+
+  OW-0416: Zwetsloot,  E.P.M (Eva) (roep: Eva, geb: None, seizoenen: 2013-2014, 2014-2015, 2015-2016)
+    >>NKG18N7: Teerds, E.L. (roep: Eva, geb: 2002-10-22)
+      reden: aangrenzende seizoenen + voornaam (Eva)
+    >>NLC20P5: Uijl, Eva den (roep: Eva, geb: 2005-10-25)
+      reden: aangrenzende seizoenen + voornaam (Eva)
+
+  OW-0417: Euser, S (Suzanne) (roep: Suzanne, geb: None, seizoenen: 2013-2014, 2014-2015)
+    >>NKR09G7: Klink, S.L. (roep: Suzanne, geb: 2003-06-29)
+      reden: aangrenzende seizoenen + voornaam (Suzanne)
+
+  OW-0422: Raab, M. (Marit) (roep: Marit, geb: None, seizoenen: 2013-2014, 2014-2015)
+    >>NLG59D7: Leen, Marit van (roep: Marit van, geb: 2005-10-09)
+      reden: aangrenzende seizoenen + voornaam (Marit)
+
+  OW-0424: Nes van, V (Vera) (roep: Vera, geb: None, seizoenen: 2013-2014)
+    >>NKW30H7: Manduapessy, Vera (roep: Vera, geb: 2004-11-12)
+      reden: aangrenzende seizoenen + voornaam (Vera)
+
+  OW-0425: Bakker,  N.J. (Niels) (roep: Niels, geb: None, seizoenen: 2013-2014)
+    >>NKG59M3: Bras, Niels (roep: Niels, geb: 2002-02-05)
+      reden: aangrenzende seizoenen + voornaam (Niels)
+    >>NFW28X3: Mastijn, Niels (roep: Niels, geb: 1986-09-21)
+      reden: aangrenzende seizoenen + voornaam (Niels)
+
+  OW-0426: Verhoef, S. (Suzan) (roep: Suzan, geb: None, seizoenen: 2013-2014, 2014-2015)
+    >>NHP43T7: Haan-van Dijk, Suzan de (roep: Suzan de, geb: 1993-02-28)
+      reden: aangrenzende seizoenen + voornaam (Suzan)
+
+  OW-0434: Kuipers (Johan) (roep: Johan, geb: None, seizoenen: 2014-2015)
+    >>NFW15F3: Wall, van der J (roep: Johan, geb: 1965-09-18)
+      reden: aangrenzende seizoenen + voornaam (Johan)
+
+  OW-0436: Euser, N. (Niels) (roep: Niels, geb: None, seizoenen: 2014-2015, 2015-2016)
+    >>NKG59M3: Bras, Niels (roep: Niels, geb: 2002-02-05)
+      reden: aangrenzende seizoenen + voornaam (Niels)
+
+  OW-0439: Oostlander, J. (Jasper) (roep: Jasper, geb: None, seizoenen: 2014-2015, 2015-2016)
+    >>NFW28T5: Kleingeld, J (roep: Jasper, geb: 1985-02-05)
+      reden: aangrenzende seizoenen + voornaam (Jasper)
+    >>NLX00G3: Sempel, J.D. (roep: Jasper, geb: 2009-10-14)
+      reden: aangrenzende seizoenen + voornaam (Jasper)
+
+  OW-0443: Peenstra, I. (Iris) (roep: Iris, geb: None, seizoenen: 2014-2015, 2015-2016)
+    >>NKK27F7: Mol, Iris (roep: Iris, geb: 2002-09-17)
+      reden: aangrenzende seizoenen + voornaam (Iris)
+
+  OW-0445: Vogel, de M. (Merel) (roep: Merel, geb: None, seizoenen: 2014-2015)
+    >>NJK08X9: Gurp, van M (roep: Merel, geb: 1992-08-12)
+      reden: aangrenzende seizoenen + voornaam (Merel)
+    >>NLL81G4: Manduapessy, M. (roep: Merel, geb: 2007-08-30)
+      reden: aangrenzende seizoenen + voornaam (Merel)
+    >>NJW77M6: Schram, M.C. (roep: Merel, geb: 1999-09-29)
+      reden: aangrenzende seizoenen + voornaam (Merel)
+
+  OW-0446: Jong, de L. (Leon) (roep: Leon, geb: None, seizoenen: 2014-2015)
+    >>NGZ13W6: Steen Redeker, Leon (roep: Leon, geb: 1991-06-19)
+      reden: aangrenzende seizoenen + voornaam (Leon)
+
+  OW-0449: Donkevoort, T. (tim) (roep: tim, geb: None, seizoenen: 2015-2016)
+    >>NKR20M2: Seevinck, T. (roep: Tim, geb: 2003-11-07)
+      reden: aangrenzende seizoenen + voornaam (tim)
+    >>NJZ00W3: Gent, van T. (roep: Tim, geb: 2000-02-11)
+      reden: aangrenzende seizoenen + voornaam (tim)
+    >>NKG59J2: Groeneweg, T.D. (roep: Tim, geb: 2001-12-21)
+      reden: aangrenzende seizoenen + voornaam (tim)
+    >>NLT96S6: Huijgen, Tim (roep: Tim, geb: 2008-10-21)
+      reden: aangrenzende seizoenen + voornaam (tim)
+
+  OW-0450: Kleingeld-van der Windt, J. (Johanna) (roep: Johanna, geb: None, seizoenen: 2015-2016)
+    >>NJF95Y7: Petegem, Johanna van (roep: Johanna van, geb: 1991-12-12)
+      reden: aangrenzende seizoenen + voornaam (Johanna)
+
+
+============================================================
+STATISTIEKEN
+============================================================
+  Totaal spelers: 1045
+  Met Sportlink Rel.nr: 667
+  Met OW-code (name-match): 378
+  Met geboortedatum: 668
+  Gestopt: 145
+
+  Aantal seizoenen per speler:
+    0 seizoen(en): 26 spelers
+    1 seizoen(en): 216 spelers
+    2 seizoen(en): 160 spelers
+    3 seizoen(en): 105 spelers
+    4 seizoen(en): 68 spelers
+    5 seizoen(en): 59 spelers
+    6 seizoen(en): 86 spelers
+    7 seizoen(en): 53 spelers
+    8 seizoen(en): 46 spelers
+    9 seizoen(en): 26 spelers
+    10 seizoen(en): 39 spelers
+    11 seizoen(en): 35 spelers
+    12 seizoen(en): 21 spelers
+    13 seizoen(en): 35 spelers
+    14 seizoen(en): 16 spelers
+    15 seizoen(en): 28 spelers
+    16 seizoen(en): 26 spelers
+
+  Spelers per seizoen:
+    2010-2011: 400 spelers
+    2011-2012: 409 spelers
+    2012-2013: 411 spelers
+    2013-2014: 359 spelers
+    2014-2015: 357 spelers
+    2015-2016: 370 spelers
+    2016-2017: 352 spelers
+    2017-2018: 345 spelers
+    2018-2019: 282 spelers
+    2019-2020: 311 spelers
+    2020-2021: 331 spelers
+    2021-2022: 347 spelers
+    2022-2023: 305 spelers
+    2023-2024: 304 spelers
+    2024-2025: 304 spelers
+    2025-2026: 262 spelers
+
+============================================================
+OPSLAAN
+============================================================
+
+  Gefilterd: 26 leden zonder teamtoewijzing verwijderd
+  >> C:\Oranje Wit\data\spelers\spelerspaden.json (1019 spelers)
+
+============================================================
+HERTELLING PER SEIZOEN
+============================================================
+
+  2010-2011: 400 spelers (176M / 224V), 26 teams
+    A1             9M + 10V =  19
+    A3             7M + 20V =  27
+    B1              4M + 4V =   8
+    B2             4M + 14V =  18
+    B4              3M + 6V =   9
+    C1              4M + 4V =   8
+    C2              4M + 5V =   9
+    C3              5M + 4V =   9
+    C4             7M + 11V =  18
+    D1              4M + 4V =   8
+    D2              5M + 5V =  10
+    D3              4M + 5V =   9
+    D4              5M + 6V =  11
+    D5              5M + 5V =  10
+    E1              4M + 5V =   9
+    E2              5M + 5V =  10
+    E3              2M + 7V =   9
+    E4              2M + 6V =   8
+    E5              3M + 4V =   7
+    F1              2M + 3V =   5
+    F2              2M + 3V =   5
+    F3                   6V =   6
+    F4              5M + 8V =  13
+    MW1             6M + 6V =  12
+    MW2           19M + 17V =  36
+    S1            56M + 51V = 107
+
+  2011-2012: 409 spelers (184M / 225V), 33 teams
+    A2             9M + 12V =  21
+    A3                   6V =   6
+    A4                  10V =  10
+    A5              2M + 6V =   8
+    B1              6M + 5V =  11
+    B2              3M + 4V =   7
+    B3              3M + 6V =   9
+    B4              3M + 5V =   8
+    C1              4M + 4V =   8
+    C2              5M + 5V =  10
+    C3              4M + 4V =   8
+    C4              4M + 4V =   8
+    C5              4M + 4V =   8
+    D1              4M + 4V =   8
+    D2              5M + 5V =  10
+    D3              4M + 6V =  10
+    D4              4M + 5V =   9
+    D5              4M + 4V =   8
+    E1              4M + 4V =   8
+    E2              3M + 6V =   9
+    E3                   8V =   8
+    E4              3M + 6V =   9
+    E5              3M + 6V =   9
+    F1              2M + 3V =   5
+    F2              2M + 3V =   5
+    F3              2M + 3V =   5
+    F4              3M + 2V =   5
+    F5              3M + 2V =   5
+    F6              6M + 5V =  11
+    MW1             6M + 6V =  12
+    MW2             4M + 5V =   9
+    MW3           31M + 21V =  52
+    S1            44M + 46V =  90
+
+  2012-2013: 411 spelers (183M / 228V), 32 teams
+    A1              4M + 4V =   8
+    A2              5M + 6V =  11
+    A3                   9V =   9
+    B1              4M + 4V =   8
+    B2              5M + 6V =  11
+    B3              5M + 6V =  11
+    B4              5M + 6V =  11
+    C1              4M + 4V =   8
+    C2              4M + 6V =  10
+    C3              5M + 5V =  10
+    C4              5M + 4V =   9
+    C5              4M + 6V =  10
+    D1              4M + 4V =   8
+    D2              5M + 4V =   9
+    D3              4M + 6V =  10
+    D4              3M + 7V =  10
+    D5              4M + 7V =  11
+    E1              4M + 4V =   8
+    E2              4M + 6V =  10
+    E3              4M + 7V =  11
+    E4              3M + 6V =   9
+    E5              3M + 5V =   8
+    F1              2M + 3V =   5
+    F2              2M + 4V =   6
+    F3              1M + 4V =   5
+    F4              2M + 4V =   6
+    F5              2M + 5V =   7
+    K               4M + 3V =   7
+    MW1             4M + 5V =   9
+    MW2             4M + 6V =  10
+    S1            48M + 50V =  98
+    Senioren      26M + 22V =  48
+
+  2013-2014: 359 spelers (149M / 192V), 35 teams
+    A1             9M + 11V =  20
+    A3         7M + 12V + 1? =  20
+    B1              4M + 5V =   9
+    B2         4M + 3V + 1? =   8
+    B3              4M + 6V =  10
+    B4         3M + 5V + 1? =   9
+    B5         2M + 6V + 1? =   9
+    C1              4M + 4V =   8
+    C2              5M + 5V =  10
+    C3              5M + 4V =   9
+    C4         2M + 6V + 1? =   9
+    D1              4M + 4V =   8
+    D2              5M + 5V =  10
+    D3              3M + 6V =   9
+    D4                  10V =  10
+    D5         4M + 4V + 2? =  10
+    E1              4M + 5V =   9
+    E2              4M + 5V =   9
+    E3              3M + 5V =   8
+    E4         4M + 4V + 1? =   9
+    E5         3M + 5V + 1? =   9
+    E6         3M + 6V + 1? =  10
+    F1              1M + 3V =   4
+    F2         1M + 3V + 2? =   6
+    F3              2M + 4V =   6
+    F4         6M + 2V + 1? =   9
+    MW1             6M + 4V =  10
+    MW2             3M + 4V =   7
+    S1            10M + 10V =  20
+    S3         11M + 10V + 1? =  22
+    S5              5M + 6V =  11
+    S6              4M + 4V =   8
+    S7              5M + 5V =  10
+    S8         7M + 6V + 1? =  14
+    S9         2M + 5V + 3? =  10
+
+  2014-2015: 357 spelers (147M / 183V), 40 teams
+    A1              3M + 4V =   7
+    A2              4M + 2V =   6
+    A3                   2M =   2
+    B1         4M + 4V + 1? =   9
+    B2         4M + 4V + 1? =   9
+    B3              5M + 3V =   8
+    B4              4M + 5V =   9
+    B5         3M + 3V + 2? =   8
+    C1              4M + 4V =   8
+    C2              6M + 5V =  11
+    C3              5M + 6V =  11
+    C4         2M + 5V + 1? =   8
+    D1              4M + 4V =   8
+    D2              5M + 5V =  10
+    D3              3M + 6V =   9
+    D4                   9V =   9
+    D5         7M + 4V + 2? =  13
+    E1              4M + 5V =   9
+    E2              2M + 5V =   7
+    E3              3M + 5V =   8
+    E4         3M + 2V + 1? =   6
+    E5              2M + 5V =   7
+    E6         2M + 5V + 1? =   8
+    F1              5M + 4V =   9
+    F2         3M + 4V + 3? =  10
+    F3         4M + 5V + 1? =  10
+    F4         3M + 7V + 5? =  15
+    F5              1M + 1V =   2
+    MW1             5M + 4V =   9
+    MW2        7M + 8V + 2? =  17
+    S1         6M + 9V + 2? =  17
+    S3             9M + 11V =  20
+    S5              5M + 6V =  11
+    S6         4M + 4V + 1? =   9
+    S7              6M + 6V =  12
+    S8         5M + 6V + 1? =  12
+    S9         3M + 6V + 2? =  11
+    b2                   1V =   1
+    b3                   1V =   1
+    b4                   1? =   1
+
+  2015-2016: 370 spelers (157M / 201V), 37 teams
+    A1         10M + 10V + 1? =  21
+    A3              3M + 5V =   8
+    A4         5M + 5V + 1? =  11
+    B1              4M + 4V =   8
+    B2              5M + 5V =  10
+    B3              5M + 5V =  10
+    B4         2M + 6V + 1? =   9
+    C1              4M + 4V =   8
+    C2              5M + 5V =  10
+    C3                   9V =   9
+    C4              3M + 7V =  10
+    C5         3M + 5V + 1? =   9
+    D1              4M + 4V =   8
+    D2              5M + 5V =  10
+    D3              5M + 5V =  10
+    D4              5M + 7V =  12
+    D5         3M + 7V + 1? =  11
+    E1              3M + 3V =   6
+    E2              2M + 4V =   6
+    E3         2M + 3V + 1? =   6
+    E4         2M + 2V + 2? =   6
+    E5         2M + 3V + 1? =   6
+    E6         2M + 3V + 1? =   6
+    E7              1M + 5V =   6
+    F1              2M + 2V =   4
+    F2              2M + 3V =   5
+    F3              3M + 2V =   5
+    F4              1M + 9V =  10
+    MW1             6M + 4V =  10
+    MW2        12M + 13V + 1? =  26
+    S1         10M + 10V + 1? =  21
+    S3            12M + 12V =  24
+    S5              6M + 4V =  10
+    S6              5M + 4V =   9
+    S7              4M + 5V =   9
+    S8              5M + 6V =  11
+    S9              4M + 6V =  10
+
+  2016-2017: 352 spelers (139M / 213V), 40 teams
+    A1              1M + 5V =   6
+    A2                   7V =   7
+    A3              1M + 5V =   6
+    A4                   4V =   4
+    B1              4M + 4V =   8
+    B2              4M + 5V =   9
+    B3              2M + 7V =   9
+    B4                   8V =   8
+    B5              4M + 4V =   8
+    C1              4M + 4V =   8
+    C2              5M + 5V =  10
+    C3              4M + 7V =  11
+    C4              2M + 6V =   8
+    C5              7M + 2V =   9
+    D1              4M + 5V =   9
+    D2              3M + 8V =  11
+    D3              2M + 8V =  10
+    D4              4M + 5V =   9
+    D5                   9V =   9
+    E1              3M + 2V =   5
+    E2              2M + 3V =   5
+    E3              2M + 3V =   5
+    E4              3M + 2V =   5
+    E5              3M + 3V =   6
+    E6              3M + 2V =   5
+    E7              3M + 2V =   5
+    E8              1M + 5V =   6
+    F1              2M + 3V =   5
+    F2              3M + 3V =   6
+    F3              1M + 5V =   6
+    F4              3M + 9V =  12
+    MW1             5M + 3V =   8
+    MW2           18M + 18V =  36
+    S1            10M + 11V =  21
+    S3              5M + 5V =  10
+    S4              5M + 5V =  10
+    S5              4M + 5V =   9
+    S6              5M + 5V =  10
+    S7              3M + 6V =   9
+    S8              4M + 5V =   9
+
+  2017-2018: 345 spelers (142M / 203V), 36 teams
+    A1              4M + 5V =   9
+    A2              5M + 5V =  10
+    A3              4M + 6V =  10
+    A4              3M + 9V =  12
+    B1              5M + 4V =   9
+    B2              4M + 6V =  10
+    B3              2M + 7V =   9
+    B4              2M + 8V =  10
+    B5              2M + 8V =  10
+    C1              4M + 4V =   8
+    C2              4M + 5V =   9
+    C3              2M + 9V =  11
+    C4              3M + 8V =  11
+    C5              7M + 4V =  11
+    D1              4M + 5V =   9
+    D2              5M + 5V =  10
+    D3              3M + 5V =   8
+    D4              3M + 6V =   9
+    D5              5M + 5V =  10
+    E1              3M + 3V =   6
+    E2              3M + 3V =   6
+    E3              2M + 3V =   5
+    E4              3M + 3V =   6
+    E5              1M + 4V =   5
+    F1              3M + 3V =   6
+    F2                   6V =   6
+    F3              2M + 4V =   6
+    F4                   5V =   5
+    F5              3M + 5V =   8
+    MW1           16M + 10V =  26
+    S1             9M + 11V =  20
+    S3              6M + 6V =  12
+    S4              4M + 6V =  10
+    S5              5M + 5V =  10
+    S6              5M + 5V =  10
+    S7              6M + 7V =  13
+
+  2018-2019: 282 spelers (123M / 159V), 32 teams
+    A1              4M + 5V =   9
+    A2              5M + 6V =  11
+    A3              2M + 7V =   9
+    A4              3M + 8V =  11
+    B1              4M + 4V =   8
+    B2              6M + 5V =  11
+    B3              3M + 8V =  11
+    B4              5M + 3V =   8
+    C1              5M + 5V =  10
+    C2              4M + 6V =  10
+    C3                   9V =   9
+    C4              6M + 4V =  10
+    D1              4M + 4V =   8
+    D2              6M + 6V =  12
+    D3              5M + 5V =  10
+    D4              7M + 4V =  11
+    E1              2M + 4V =   6
+    E2              3M + 3V =   6
+    E3              1M + 5V =   6
+    E4              2M + 4V =   6
+    E5                   6V =   6
+    E6              4M + 3V =   7
+    F1              1M + 3V =   4
+    F2              2M + 3V =   5
+    F3              2M + 3V =   5
+    F4              2M + 3V =   5
+    MW1             6M + 6V =  12
+    S1              4M + 4V =   8
+    S2              6M + 5V =  11
+    S3              7M + 6V =  13
+    S4              6M + 6V =  12
+    S6              6M + 6V =  12
+
+  2019-2020: 311 spelers (144M / 167V), 36 teams
+    A               2M + 1V =   3
+    A1              5M + 5V =  10
+    A2              5M + 5V =  10
+    A3              2M + 9V =  11
+    A4              4M + 6V =  10
+    B               2M + 2V =   4
+    B1              4M + 4V =   8
+    B2              2M + 7V =   9
+    B3              2M + 7V =   9
+    C               2M + 3V =   5
+    C1              5M + 5V =  10
+    C2              5M + 5V =  10
+    C3              5M + 6V =  11
+    C4              8M + 2V =  10
+    D                    2M =   2
+    D1              3M + 6V =   9
+    D2              4M + 5V =   9
+    D3              3M + 6V =   9
+    D4              4M + 7V =  11
+    E               1M + 2V =   3
+    E1              3M + 3V =   6
+    E2              1M + 3V =   4
+    E3              3M + 2V =   5
+    E4              2M + 3V =   5
+    F1              2M + 2V =   4
+    F2              2M + 2V =   4
+    F3              1M + 2V =   3
+    MW1             5M + 6V =  11
+    S1              5M + 4V =   9
+    S1S2                 5V =   5
+    S2              5M + 5V =  10
+    S3              5M + 5V =  10
+    S4              6M + 6V =  12
+    S5              7M + 5V =  12
+    S6              5M + 7V =  12
+    Senioren      22M + 14V =  36
+
+  2020-2021: 331 spelers (154M / 177V), 33 teams
+    A1              7M + 8V =  15
+    A2              5M + 5V =  10
+    A3             3M + 10V =  13
+    A4              7M + 8V =  15
+    B1              5M + 5V =  10
+    B2              5M + 7V =  12
+    B3              8M + 9V =  17
+    C1              5M + 5V =  10
+    C2              6M + 5V =  11
+    C3              8M + 5V =  13
+    C4              1M + 1V =   2
+    D1              7M + 5V =  12
+    D2              4M + 8V =  12
+    D3              4M + 6V =  10
+    D4              3M + 9V =  12
+    E1              2M + 4V =   6
+    E2              3M + 2V =   5
+    E3              2M + 3V =   5
+    E4                   7V =   7
+    E5              2M + 3V =   5
+    E6              3M + 3V =   6
+    F                    3M =   3
+    F1              3M + 3V =   6
+    F2              3M + 3V =   6
+    F3              4M + 3V =   7
+    MW1             5M + 6V =  11
+    S1             14M + 9V =  23
+    S2              5M + 5V =  10
+    S3              5M + 6V =  11
+    S4              6M + 7V =  13
+    S5              8M + 7V =  15
+    S6              4M + 5V =   9
+    S7              4M + 5V =   9
+
+  2021-2022: 347 spelers (159M / 188V), 12 teams
+    A             24M + 30V =  54
+    B             15M + 15V =  30
+    B3                   1V =   1
+    C             19M + 19V =  38
+    D             14M + 27V =  41
+    E             13M + 23V =  36
+    E3                   1V =   1
+    F              12M + 9V =  21
+    F3                   1V =   1
+    K                    3V =   3
+    S7                   1V =   1
+    Senioren      62M + 58V = 120
+
+  2022-2023: 305 spelers (141M / 164V), 8 teams
+    A             16M + 23V =  39
+    B             22M + 17V =  39
+    C             14M + 26V =  40
+    D             12M + 21V =  33
+    E             17M + 18V =  35
+    F               1M + 6V =   7
+    K               1M + 4V =   5
+    Senioren      58M + 49V = 107
+
+  2023-2024: 304 spelers (141M / 163V), 8 teams
+    A             20M + 18V =  38
+    B             16M + 18V =  34
+    C             15M + 23V =  38
+    D             12M + 22V =  34
+    E             15M + 13V =  28
+    F               2M + 8V =  10
+    K               1M + 2V =   3
+    Senioren      60M + 59V = 119
+
+  2024-2025: 304 spelers (142M / 162V), 8 teams
+    A             18M + 14V =  32
+    B             15M + 25V =  40
+    C             13M + 18V =  31
+    D             20M + 20V =  40
+    E              6M + 14V =  20
+    F               5M + 8V =  13
+    K               3M + 1V =   4
+    Senioren      62M + 62V = 124
+
+  2025-2026: 262 spelers (115M / 147V), 27 teams
+    J1              4M + 5V =   9
+    J10             5M + 4V =   9
+    J11                  5V =   5
+    J12             2M + 4V =   6
+    J13             2M + 3V =   5
+    J14             2M + 3V =   5
+    J15             3M + 2V =   5
+    J16             3M + 3V =   6
+    J17             3M + 3V =   6
+    J2              3M + 8V =  11
+    J3              5M + 6V =  11
+    J4              3M + 7V =  10
+    J5              3M + 8V =  11
+    J6              4M + 6V =  10
+    J7              5M + 5V =  10
+    J8              5M + 4V =   9
+    J9              4M + 5V =   9
+    K               1M + 1V =   2
+    MW1             3M + 5V =   8
+    S1S2          11M + 11V =  22
+    S3              6M + 7V =  13
+    S4              4M + 7V =  11
+    S5              4M + 6V =  10
+    S6              8M + 6V =  14
+    U15-1           5M + 4V =   9
+    U17            8M + 10V =  18
+    U19             9M + 9V =  18
+
+  >> C:\Oranje Wit\data\spelers\hertelling.json
+  >> C:\Oranje Wit\data\spelers\spelerspaden-meta.json

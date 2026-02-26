@@ -33,24 +33,24 @@
     "spelers_M": 22,
     "spelers_V": 24,
     "totaal": 46,
-    "gem_leeftijd": 12.5
+    "gem_leeftijd": 12.7
   },
   {
     "kleur": "Rood",
     "categorie": null,
     "teams": 9,
-    "spelers_M": 16,
-    "spelers_V": 49,
-    "totaal": 65,
-    "gem_leeftijd": 15.9
+    "spelers_M": 31,
+    "spelers_V": 48,
+    "totaal": 79,
+    "gem_leeftijd": 16.6
   },
   {
     "kleur": "Senioren",
     "categorie": null,
-    "teams": 9,
-    "spelers_M": 59,
+    "teams": 11,
+    "spelers_M": 57,
     "spelers_V": 63,
-    "totaal": 122,
+    "totaal": 120,
     "gem_leeftijd": 30.3
   }
 ]

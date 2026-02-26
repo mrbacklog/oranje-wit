@@ -5,9 +5,9 @@
     "kleur": "Rood",
     "niveau": null,
     "spelers_M": 4,
-    "spelers_V": 5,
-    "totaal": 9,
-    "gem_leeftijd": 16.1
+    "spelers_V": 6,
+    "totaal": 10,
+    "gem_leeftijd": 16.0
   },
   {
     "team": "J10",
@@ -105,8 +105,8 @@
     "kleur": "Oranje",
     "niveau": null,
     "spelers_M": 5,
-    "spelers_V": 6,
-    "totaal": 11,
+    "spelers_V": 7,
+    "totaal": 12,
     "gem_leeftijd": 13.5
   },
   {
@@ -115,22 +115,12 @@
     "kleur": "Oranje",
     "niveau": null,
     "spelers_M": 3,
-    "spelers_V": 7,
-    "totaal": 10,
-    "gem_leeftijd": 13.5
+    "spelers_V": 6,
+    "totaal": 9,
+    "gem_leeftijd": 13.3
   },
   {
     "team": "J5",
-    "categorie": null,
-    "kleur": "Geel",
-    "niveau": null,
-    "spelers_M": 3,
-    "spelers_V": 8,
-    "totaal": 11,
-    "gem_leeftijd": 12.2
-  },
-  {
-    "team": "J6",
     "categorie": null,
     "kleur": "Geel",
     "niveau": null,
@@ -138,6 +128,16 @@
     "spelers_V": 6,
     "totaal": 10,
     "gem_leeftijd": 11.9
+  },
+  {
+    "team": "J6",
+    "categorie": null,
+    "kleur": "Geel",
+    "niveau": null,
+    "spelers_M": 3,
+    "spelers_V": 7,
+    "totaal": 10,
+    "gem_leeftijd": 12.1
   },
   {
     "team": "J7",

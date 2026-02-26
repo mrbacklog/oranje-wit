@@ -5,13 +5,13 @@
     "bronnen": [
       "data/spelers/spelerspaden.json"
     ],
-    "totaal_leden": 370,
-    "totaal_spelers": 370,
+    "totaal_leden": 366,
+    "totaal_spelers": 366,
     "bron_type": "spelerspaden",
     "betrouwbaarheid": "matig",
     "datakwaliteit": {
-      "geboortejaar_pct": 81.1,
-      "geslacht_pct": 96.8
+      "geboortejaar_pct": 99.5,
+      "geslacht_pct": 100.0
     }
   },
   "leden": [
@@ -26,7 +26,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "A1",
+      "team": "A1/A2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Rood",
@@ -184,12 +184,12 @@
       "leeftijd_peildatum": 25
     },
     {
-      "rel_code": "OW-0186",
+      "rel_code": "NLB71H6",
       "roepnaam": "Lisa",
       "achternaam": "Antwerpen",
       "tussenvoegsel": null,
       "geslacht": "V",
-      "geboortejaar": null,
+      "geboortejaar": 1998,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -202,7 +202,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 17
     },
     {
       "rel_code": "NKM15X4",
@@ -226,12 +226,12 @@
       "leeftijd_peildatum": 15
     },
     {
-      "rel_code": "OW-0176",
+      "rel_code": "NKB10W1",
       "roepnaam": "Nigel",
       "achternaam": "Appelboom",
       "tussenvoegsel": null,
       "geslacht": "M",
-      "geboortejaar": null,
+      "geboortejaar": 1998,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -244,7 +244,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 17
     },
     {
       "rel_code": "NKX97P5",
@@ -278,7 +278,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S1",
+      "team": "S1/S2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -299,7 +299,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S1",
+      "team": "S1/S2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -320,7 +320,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S1",
+      "team": "S1/S2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -457,17 +457,17 @@
       "leeftijd_peildatum": 32
     },
     {
-      "rel_code": "OW-0071",
+      "rel_code": "NJS12Y1",
       "roepnaam": "Irene",
       "achternaam": "Ballegooijen",
       "tussenvoegsel": null,
       "geslacht": "V",
-      "geboortejaar": null,
+      "geboortejaar": 1939,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S1",
+      "team": "S1/S2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -475,7 +475,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 76
     },
     {
       "rel_code": "NKX06P7",
@@ -530,7 +530,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S3",
+      "team": "S3/S4",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -551,7 +551,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "A1",
+      "team": "A1/A2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Rood",
@@ -625,12 +625,12 @@
       "leeftijd_peildatum": 18
     },
     {
-      "rel_code": "OW-0257",
+      "rel_code": "NKC66S7",
       "roepnaam": "Natascha",
       "achternaam": "Bernaards",
       "tussenvoegsel": null,
       "geslacht": "V",
-      "geboortejaar": null,
+      "geboortejaar": 1993,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -643,7 +643,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 22
     },
     {
       "rel_code": "NGW66P8",
@@ -688,17 +688,17 @@
       "leeftijd_peildatum": 15
     },
     {
-      "rel_code": "OW-0261",
+      "rel_code": "NJK12T8",
       "roepnaam": "Stefan",
       "achternaam": "Blaay",
       "tussenvoegsel": null,
       "geslacht": "M",
-      "geboortejaar": null,
+      "geboortejaar": 1991,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S3",
+      "team": "S3/S4",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -706,7 +706,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 24
     },
     {
       "rel_code": "NLM86T1",
@@ -791,27 +791,6 @@
       "a_categorie": null,
       "a_jaars": null,
       "leeftijd_peildatum": 8
-    },
-    {
-      "rel_code": "NMG13P0",
-      "roepnaam": "Layla",
-      "achternaam": "Boer",
-      "tussenvoegsel": null,
-      "geslacht": "V",
-      "geboortejaar": 2013,
-      "lidsoort": null,
-      "spelactiviteit": "korfbal",
-      "lid_sinds": null,
-      "status": "actief",
-      "team": "C5",
-      "teamrol": null,
-      "categorie": null,
-      "kleur": "Oranje",
-      "pool_veld": null,
-      "pool_zaal": null,
-      "a_categorie": null,
-      "a_jaars": null,
-      "leeftijd_peildatum": 2
     },
     {
       "rel_code": "NGT44B1",
@@ -919,12 +898,12 @@
       "leeftijd_peildatum": 10
     },
     {
-      "rel_code": "OW-0088",
+      "rel_code": "NJT88G9",
       "roepnaam": "Annelies",
       "achternaam": "Bothoff",
       "tussenvoegsel": null,
       "geslacht": "V",
-      "geboortejaar": null,
+      "geboortejaar": 1985,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -937,7 +916,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 30
     },
     {
       "rel_code": "NLM40K0",
@@ -950,7 +929,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "F4",
+      "team": "Kangoeroes",
       "teamrol": null,
       "categorie": null,
       "kleur": "Groen",
@@ -1003,17 +982,17 @@
       "leeftijd_peildatum": 8
     },
     {
-      "rel_code": "OW-0187",
+      "rel_code": "NJT90H7",
       "roepnaam": "Martijn",
       "achternaam": "Bras",
       "tussenvoegsel": null,
       "geslacht": "M",
-      "geboortejaar": null,
+      "geboortejaar": 1999,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "A1",
+      "team": "A1/A2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Rood",
@@ -1021,7 +1000,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 16
     },
     {
       "rel_code": "NKG59M3",
@@ -1055,7 +1034,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S3",
+      "team": "S3/S4",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -1076,7 +1055,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S3",
+      "team": "S3/S4",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -1108,12 +1087,12 @@
       "leeftijd_peildatum": 16
     },
     {
-      "rel_code": "OW-0435",
+      "rel_code": "NFK75Y4",
       "roepnaam": "Aard",
       "achternaam": "Brouwer",
       "tussenvoegsel": null,
-      "geslacht": null,
-      "geboortejaar": null,
+      "geslacht": "M",
+      "geboortejaar": 1963,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -1126,7 +1105,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 52
     },
     {
       "rel_code": "NJT90M2",
@@ -1139,7 +1118,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "A1",
+      "team": "A1/A2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Rood",
@@ -1181,7 +1160,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S3",
+      "team": "S3/S4",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -1223,7 +1202,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "F4",
+      "team": "Kangoeroes",
       "teamrol": null,
       "categorie": null,
       "kleur": "Groen",
@@ -1538,7 +1517,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "A1",
+      "team": "A1/A2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Rood",
@@ -1549,17 +1528,17 @@
       "leeftijd_peildatum": 17
     },
     {
-      "rel_code": "OW-0253",
+      "rel_code": "NJJ96C0",
       "roepnaam": "Iris",
       "achternaam": "Dolderman",
       "tussenvoegsel": null,
       "geslacht": "V",
-      "geboortejaar": null,
+      "geboortejaar": 1994,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S1",
+      "team": "S1/S2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -1567,7 +1546,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 21
     },
     {
       "rel_code": "NKG59H8",
@@ -1601,7 +1580,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "A1",
+      "team": "A1/A2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Rood",
@@ -1675,12 +1654,12 @@
       "leeftijd_peildatum": 23
     },
     {
-      "rel_code": "OW-0110",
+      "rel_code": "NFY07H0",
       "roepnaam": "Jeroen",
       "achternaam": "Dongen",
       "tussenvoegsel": null,
       "geslacht": "M",
-      "geboortejaar": null,
+      "geboortejaar": 1978,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -1693,7 +1672,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 37
     },
     {
       "rel_code": "NLL53K3",
@@ -1721,13 +1700,13 @@
       "roepnaam": "tim",
       "achternaam": "Donkevoort",
       "tussenvoegsel": null,
-      "geslacht": null,
+      "geslacht": "M",
       "geboortejaar": null,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S1",
+      "team": "S1/S2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -1748,7 +1727,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S3",
+      "team": "S3/S4",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -1801,12 +1780,12 @@
       "leeftijd_peildatum": 44
     },
     {
-      "rel_code": "OW-0266",
+      "rel_code": "NLJ31L2",
       "roepnaam": "Merijn",
       "achternaam": "Dreef",
       "tussenvoegsel": null,
       "geslacht": "M",
-      "geboortejaar": null,
+      "geboortejaar": 2002,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -1819,7 +1798,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 13
     },
     {
       "rel_code": "NKW24B2",
@@ -1895,7 +1874,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "A1",
+      "team": "A1/A2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Rood",
@@ -1979,7 +1958,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S1",
+      "team": "S1/S2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -2032,12 +2011,12 @@
       "leeftijd_peildatum": 15
     },
     {
-      "rel_code": "OW-0100",
+      "rel_code": "NFW42S0",
       "roepnaam": "Bart",
       "achternaam": "Elshout",
       "tussenvoegsel": null,
       "geslacht": "M",
-      "geboortejaar": null,
+      "geboortejaar": 1979,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -2050,7 +2029,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 36
     },
     {
       "rel_code": "NLH06P8",
@@ -2074,17 +2053,17 @@
       "leeftijd_peildatum": 7
     },
     {
-      "rel_code": "OW-0436",
+      "rel_code": "NJH22F2",
       "roepnaam": "Niels",
       "achternaam": "Euser",
       "tussenvoegsel": null,
-      "geslacht": null,
-      "geboortejaar": null,
+      "geslacht": "M",
+      "geboortejaar": 1997,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "A1",
+      "team": "A1/A2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Rood",
@@ -2092,7 +2071,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 18
     },
     {
       "rel_code": "NJG60C4",
@@ -2179,17 +2158,17 @@
       "leeftijd_peildatum": 9
     },
     {
-      "rel_code": "OW-0079",
+      "rel_code": "NGM12S2",
       "roepnaam": "Kim",
       "achternaam": "Ewijk",
       "tussenvoegsel": null,
       "geslacht": "V",
-      "geboortejaar": null,
+      "geboortejaar": 1987,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S3",
+      "team": "S3/S4",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -2197,7 +2176,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 28
     },
     {
       "rel_code": "NLF50K8",
@@ -2284,12 +2263,12 @@
       "leeftijd_peildatum": 12
     },
     {
-      "rel_code": "OW-0221",
+      "rel_code": "NKB62H7",
       "roepnaam": "Dani",
       "achternaam": "Filius",
       "tussenvoegsel": null,
       "geslacht": "M",
-      "geboortejaar": null,
+      "geboortejaar": 2001,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -2302,15 +2281,15 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 14
     },
     {
-      "rel_code": "OW-0241",
+      "rel_code": "NKR09B2",
       "roepnaam": "Esmee",
       "achternaam": "Filius",
       "tussenvoegsel": null,
       "geslacht": "V",
-      "geboortejaar": null,
+      "geboortejaar": 2005,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -2323,7 +2302,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 10
     },
     {
       "rel_code": "NKX56P2",
@@ -2410,17 +2389,17 @@
       "leeftijd_peildatum": 26
     },
     {
-      "rel_code": "OW-0161",
+      "rel_code": "NJH51P4",
       "roepnaam": "Quinty",
       "achternaam": "Geerling",
       "tussenvoegsel": null,
       "geslacht": "V",
-      "geboortejaar": null,
+      "geboortejaar": 1996,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "A1",
+      "team": "A1/A2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Rood",
@@ -2428,7 +2407,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 19
     },
     {
       "rel_code": "NKW50B5",
@@ -2483,7 +2462,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S1",
+      "team": "S1/S2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -2578,12 +2557,12 @@
       "leeftijd_peildatum": 34
     },
     {
-      "rel_code": "OW-0456",
+      "rel_code": "NLN28Z0",
       "roepnaam": "Irmak",
       "achternaam": "Gundogdu",
       "tussenvoegsel": null,
-      "geslacht": null,
-      "geboortejaar": null,
+      "geslacht": "V",
+      "geboortejaar": 2006,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -2596,7 +2575,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 9
     },
     {
       "rel_code": "NJK08X9",
@@ -2609,7 +2588,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S1",
+      "team": "S1/S2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -2620,12 +2599,12 @@
       "leeftijd_peildatum": 23
     },
     {
-      "rel_code": "OW-0455",
+      "rel_code": "NLM40H9",
       "roepnaam": "Dilara",
       "achternaam": "Gökgün",
       "tussenvoegsel": null,
-      "geslacht": null,
-      "geboortejaar": null,
+      "geslacht": "V",
+      "geboortejaar": 2006,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -2638,7 +2617,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 9
     },
     {
       "rel_code": "NLP77X0",
@@ -2662,17 +2641,17 @@
       "leeftijd_peildatum": 8
     },
     {
-      "rel_code": "OW-0092",
+      "rel_code": "NGG43J1",
       "roepnaam": "Raymond",
       "achternaam": "Haren",
       "tussenvoegsel": null,
       "geslacht": "M",
-      "geboortejaar": null,
+      "geboortejaar": 1989,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "MW2",
+      "team": "S3/S4",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -2680,15 +2659,15 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 26
     },
     {
-      "rel_code": "OW-0258",
+      "rel_code": "NJC21L6",
       "roepnaam": "Victor",
       "achternaam": "Hartman",
       "tussenvoegsel": null,
       "geslacht": "M",
-      "geboortejaar": null,
+      "geboortejaar": 1994,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -2701,7 +2680,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 21
     },
     {
       "rel_code": "NFW28Q4",
@@ -2725,17 +2704,17 @@
       "leeftijd_peildatum": 32
     },
     {
-      "rel_code": "OW-0162",
+      "rel_code": "NJD71J8",
       "roepnaam": "Iris",
       "achternaam": "Hendriks",
       "tussenvoegsel": null,
       "geslacht": "V",
-      "geboortejaar": null,
+      "geboortejaar": 1997,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "A1",
+      "team": "A1/A2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Rood",
@@ -2743,15 +2722,15 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 18
     },
     {
-      "rel_code": "OW-0193",
+      "rel_code": "NJV32Y4",
       "roepnaam": "Niek",
       "achternaam": "Hendriks",
       "tussenvoegsel": null,
       "geslacht": "M",
-      "geboortejaar": null,
+      "geboortejaar": 1999,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -2764,7 +2743,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 16
     },
     {
       "rel_code": "NJF34K6",
@@ -2788,12 +2767,12 @@
       "leeftijd_peildatum": 19
     },
     {
-      "rel_code": "OW-0267",
+      "rel_code": "NLD36N5",
       "roepnaam": "Dylan",
       "achternaam": "Herbold",
       "tussenvoegsel": null,
       "geslacht": "M",
-      "geboortejaar": null,
+      "geboortejaar": 2002,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -2806,7 +2785,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 13
     },
     {
       "rel_code": "NKR24P5",
@@ -2830,12 +2809,12 @@
       "leeftijd_peildatum": 12
     },
     {
-      "rel_code": "OW-0195",
+      "rel_code": "NJT90G0",
       "roepnaam": "Bob",
       "achternaam": "Hofmeester",
       "tussenvoegsel": null,
       "geslacht": "M",
-      "geboortejaar": null,
+      "geboortejaar": 1999,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -2848,7 +2827,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 16
     },
     {
       "rel_code": "NJF77V2",
@@ -2893,17 +2872,17 @@
       "leeftijd_peildatum": 23
     },
     {
-      "rel_code": "OW-0191",
+      "rel_code": "NKR17B1",
       "roepnaam": "Jana",
       "achternaam": "Hooijdonk",
       "tussenvoegsel": null,
       "geslacht": "V",
-      "geboortejaar": null,
+      "geboortejaar": 1999,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "A1",
+      "team": "A1/A2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Rood",
@@ -2911,7 +2890,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 16
     },
     {
       "rel_code": "NKR57N5",
@@ -3008,7 +2987,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S3",
+      "team": "S3/S4",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -3071,7 +3050,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "A1",
+      "team": "A1/A2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Rood",
@@ -3113,7 +3092,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S3",
+      "team": "S3/S4",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -3281,7 +3260,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S1",
+      "team": "S1/S2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -3397,38 +3376,38 @@
       "leeftijd_peildatum": 58
     },
     {
-      "rel_code": "OW-0450",
-      "roepnaam": "Johanna",
-      "achternaam": "Kleingeld-van der Windt",
+      "rel_code": "NLD55M5",
+      "roepnaam": "Ayda",
+      "achternaam": "Klerk",
       "tussenvoegsel": null,
       "geslacht": "V",
-      "geboortejaar": null,
+      "geboortejaar": 2003,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "MW2",
+      "team": "C5",
       "teamrol": null,
       "categorie": null,
-      "kleur": "Senioren",
+      "kleur": "Oranje",
       "pool_veld": null,
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 12
     },
     {
-      "rel_code": "OW-0080",
+      "rel_code": "NGV02Z5",
       "roepnaam": "Lisanne",
       "achternaam": "Klerk",
       "tussenvoegsel": null,
       "geslacht": "V",
-      "geboortejaar": null,
+      "geboortejaar": 1990,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S3",
+      "team": "S3/S4",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -3436,7 +3415,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 25
     },
     {
       "rel_code": "NKQ70H1",
@@ -3460,12 +3439,12 @@
       "leeftijd_peildatum": 15
     },
     {
-      "rel_code": "OW-0215",
+      "rel_code": "NKW50V5",
       "roepnaam": "Iris",
       "achternaam": "Klingens",
       "tussenvoegsel": null,
       "geslacht": "V",
-      "geboortejaar": null,
+      "geboortejaar": 2001,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -3478,7 +3457,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 14
     },
     {
       "rel_code": "NJF77Y3",
@@ -3491,7 +3470,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "A1",
+      "team": "A1/A2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Rood",
@@ -3512,7 +3491,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "A1",
+      "team": "A1/A2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Rood",
@@ -3565,12 +3544,12 @@
       "leeftijd_peildatum": 12
     },
     {
-      "rel_code": "OW-0262",
+      "rel_code": "NLJ52N9",
       "roepnaam": "Vivianne",
       "achternaam": "Klink",
       "tussenvoegsel": null,
       "geslacht": "V",
-      "geboortejaar": null,
+      "geboortejaar": 1998,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -3583,7 +3562,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 17
     },
     {
       "rel_code": "NJF85B1",
@@ -3596,7 +3575,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S1",
+      "team": "S1/S2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -3638,7 +3617,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "F4",
+      "team": "Kangoeroes",
       "teamrol": null,
       "categorie": null,
       "kleur": "Groen",
@@ -3859,17 +3838,17 @@
       "leeftijd_peildatum": 10
     },
     {
-      "rel_code": "OW-0165",
+      "rel_code": "NJM75B3",
       "roepnaam": "Lisa",
       "achternaam": "Kruithof",
       "tussenvoegsel": null,
       "geslacht": "V",
-      "geboortejaar": null,
+      "geboortejaar": 1998,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "A1",
+      "team": "A1/A2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Rood",
@@ -3877,7 +3856,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 17
     },
     {
       "rel_code": "NKW21H5",
@@ -3901,12 +3880,12 @@
       "leeftijd_peildatum": 12
     },
     {
-      "rel_code": "OW-0129",
+      "rel_code": "NGJ79J7",
       "roepnaam": "Ivar",
       "achternaam": "Kuijper",
       "tussenvoegsel": null,
       "geslacht": "M",
-      "geboortejaar": null,
+      "geboortejaar": 1982,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -3919,7 +3898,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 33
     },
     {
       "rel_code": "NLN28Y3",
@@ -3974,7 +3953,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S1",
+      "team": "S1/S2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -4121,7 +4100,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S1",
+      "team": "S1/S2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -4258,12 +4237,12 @@
       "leeftijd_peildatum": 13
     },
     {
-      "rel_code": "OW-0230",
+      "rel_code": "NKV67D4",
       "roepnaam": "Serena",
       "achternaam": "Louwman",
       "tussenvoegsel": null,
       "geslacht": "V",
-      "geboortejaar": null,
+      "geboortejaar": 2004,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -4276,7 +4255,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 11
     },
     {
       "rel_code": "NKM80L0",
@@ -4373,7 +4352,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "A1",
+      "team": "A1/A2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Rood",
@@ -4384,38 +4363,17 @@
       "leeftijd_peildatum": 19
     },
     {
-      "rel_code": "OW-0125",
-      "roepnaam": "Elsa",
-      "achternaam": "Mastijn",
-      "tussenvoegsel": null,
-      "geslacht": "V",
-      "geboortejaar": null,
-      "lidsoort": null,
-      "spelactiviteit": "korfbal",
-      "lid_sinds": null,
-      "status": "actief",
-      "team": "MW2",
-      "teamrol": null,
-      "categorie": null,
-      "kleur": "Senioren",
-      "pool_veld": null,
-      "pool_zaal": null,
-      "a_categorie": null,
-      "a_jaars": null,
-      "leeftijd_peildatum": null
-    },
-    {
-      "rel_code": "OW-0074",
+      "rel_code": "NGL92K5",
       "roepnaam": "Lennart",
       "achternaam": "Mastijn",
       "tussenvoegsel": null,
       "geslacht": "M",
-      "geboortejaar": null,
+      "geboortejaar": 1991,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S3",
+      "team": "S3/S4",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -4423,7 +4381,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 24
     },
     {
       "rel_code": "NLB70Y2",
@@ -4510,27 +4468,6 @@
       "leeftijd_peildatum": 9
     },
     {
-      "rel_code": "OW-0089",
-      "roepnaam": "Melina",
-      "achternaam": "Merwe",
-      "tussenvoegsel": null,
-      "geslacht": "V",
-      "geboortejaar": null,
-      "lidsoort": null,
-      "spelactiviteit": "korfbal",
-      "lid_sinds": null,
-      "status": "actief",
-      "team": "MW2",
-      "teamrol": null,
-      "categorie": null,
-      "kleur": "Senioren",
-      "pool_veld": null,
-      "pool_zaal": null,
-      "a_categorie": null,
-      "a_jaars": null,
-      "leeftijd_peildatum": null
-    },
-    {
       "rel_code": "NKW21L3",
       "roepnaam": "Jonathan",
       "achternaam": "Minkelis",
@@ -4552,12 +4489,12 @@
       "leeftijd_peildatum": 11
     },
     {
-      "rel_code": "OW-0172",
+      "rel_code": "NKK27D3",
       "roepnaam": "Daan",
       "achternaam": "Mol",
       "tussenvoegsel": null,
       "geslacht": "M",
-      "geboortejaar": null,
+      "geboortejaar": 1998,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -4570,7 +4507,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 17
     },
     {
       "rel_code": "NKK48D6",
@@ -4604,7 +4541,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S3",
+      "team": "S3/S4",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -4636,12 +4573,12 @@
       "leeftijd_peildatum": 15
     },
     {
-      "rel_code": "OW-0265",
+      "rel_code": "NLG57H9",
       "roepnaam": "Babet",
       "achternaam": "Muehlhaus",
       "tussenvoegsel": null,
       "geslacht": "V",
-      "geboortejaar": null,
+      "geboortejaar": 1998,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -4654,15 +4591,15 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 17
     },
     {
-      "rel_code": "OW-0453",
+      "rel_code": "NLL61F7",
       "roepnaam": "Abel",
       "achternaam": "Musch",
       "tussenvoegsel": null,
-      "geslacht": null,
-      "geboortejaar": null,
+      "geslacht": "M",
+      "geboortejaar": 2004,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -4675,7 +4612,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 11
     },
     {
       "rel_code": "NGT16K5",
@@ -4688,7 +4625,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S1",
+      "team": "S1/S2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -4699,17 +4636,17 @@
       "leeftijd_peildatum": 24
     },
     {
-      "rel_code": "OW-0084",
+      "rel_code": "NFY08D5",
       "roepnaam": "Saskia",
       "achternaam": "Nagtegaal",
       "tussenvoegsel": null,
       "geslacht": "V",
-      "geboortejaar": null,
+      "geboortejaar": 1988,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S3",
+      "team": "S3/S4",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -4717,20 +4654,20 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 27
     },
     {
-      "rel_code": "OW-0167",
+      "rel_code": "NJM75F1",
       "roepnaam": "Anouk",
       "achternaam": "Nelemans",
       "tussenvoegsel": null,
       "geslacht": "V",
-      "geboortejaar": null,
+      "geboortejaar": 1998,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "A1",
+      "team": "A1/A2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Rood",
@@ -4738,7 +4675,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 17
     },
     {
       "rel_code": "NFX00K9",
@@ -4762,12 +4699,12 @@
       "leeftijd_peildatum": 48
     },
     {
-      "rel_code": "OW-0415",
+      "rel_code": "NFW26F1",
       "roepnaam": "Staffan",
       "achternaam": "Nelemans",
       "tussenvoegsel": null,
       "geslacht": "M",
-      "geboortejaar": null,
+      "geboortejaar": 1980,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -4780,7 +4717,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 35
     },
     {
       "rel_code": "NLG58Z8",
@@ -4814,7 +4751,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S3",
+      "team": "S3/S4",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -4835,7 +4772,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S3",
+      "team": "S3/S4",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -4877,7 +4814,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S1",
+      "team": "S1/S2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -4930,12 +4867,12 @@
       "leeftijd_peildatum": 13
     },
     {
-      "rel_code": "OW-0439",
+      "rel_code": "NLL19Z6",
       "roepnaam": "Jasper",
       "achternaam": "Oostlander",
       "tussenvoegsel": null,
       "geslacht": "M",
-      "geboortejaar": null,
+      "geboortejaar": 1999,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -4948,7 +4885,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 16
     },
     {
       "rel_code": "NJR12K2",
@@ -4961,7 +4898,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "A1",
+      "team": "A1/A2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Rood",
@@ -4972,12 +4909,12 @@
       "leeftijd_peildatum": 16
     },
     {
-      "rel_code": "OW-0217",
+      "rel_code": "NKJ95J3",
       "roepnaam": "Carmen",
       "achternaam": "Oppe",
       "tussenvoegsel": null,
       "geslacht": "V",
-      "geboortejaar": null,
+      "geboortejaar": 2002,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -4990,7 +4927,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 13
     },
     {
       "rel_code": "NFY88Q6",
@@ -5077,12 +5014,12 @@
       "leeftijd_peildatum": 27
     },
     {
-      "rel_code": "OW-0443",
+      "rel_code": "NLG79Z1",
       "roepnaam": "Iris",
       "achternaam": "Peenstra",
       "tussenvoegsel": null,
-      "geslacht": null,
-      "geboortejaar": null,
+      "geslacht": "V",
+      "geboortejaar": 2006,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -5095,20 +5032,20 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 9
     },
     {
-      "rel_code": "OW-0397",
+      "rel_code": "NGZ14H4",
       "roepnaam": "Laura",
       "achternaam": "Peters",
       "tussenvoegsel": null,
       "geslacht": "V",
-      "geboortejaar": null,
+      "geboortejaar": 1989,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S3",
+      "team": "S3/S4",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -5116,7 +5053,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 26
     },
     {
       "rel_code": "NJG52P6",
@@ -5129,7 +5066,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S1",
+      "team": "S1/S2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -5171,7 +5108,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S3",
+      "team": "S3/S4",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -5192,7 +5129,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S1",
+      "team": "S1/S2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -5350,12 +5287,12 @@
       "leeftijd_peildatum": 9
     },
     {
-      "rel_code": "OW-0451",
+      "rel_code": "NLN68N6",
       "roepnaam": "Sheila",
       "achternaam": "Rijn",
       "tussenvoegsel": null,
-      "geslacht": null,
-      "geboortejaar": null,
+      "geslacht": "V",
+      "geboortejaar": 2000,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -5368,7 +5305,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 15
     },
     {
       "rel_code": "NKN65D0",
@@ -5455,17 +5392,17 @@
       "leeftijd_peildatum": 8
     },
     {
-      "rel_code": "OW-0314",
+      "rel_code": "NJK09F6",
       "roepnaam": "Minouk",
       "achternaam": "Ruiter",
       "tussenvoegsel": null,
       "geslacht": "V",
-      "geboortejaar": null,
+      "geboortejaar": 1992,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S3",
+      "team": "S3/S4",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -5473,7 +5410,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 23
     },
     {
       "rel_code": "NLP78Q4",
@@ -5516,27 +5453,6 @@
       "a_categorie": null,
       "a_jaars": null,
       "leeftijd_peildatum": 24
-    },
-    {
-      "rel_code": "OW-0117",
-      "roepnaam": "Andre",
-      "achternaam": "Schenk",
-      "tussenvoegsel": null,
-      "geslacht": "M",
-      "geboortejaar": null,
-      "lidsoort": null,
-      "spelactiviteit": "korfbal",
-      "lid_sinds": null,
-      "status": "actief",
-      "team": "MW2",
-      "teamrol": null,
-      "categorie": null,
-      "kleur": "Senioren",
-      "pool_veld": null,
-      "pool_zaal": null,
-      "a_categorie": null,
-      "a_jaars": null,
-      "leeftijd_peildatum": null
     },
     {
       "rel_code": "NJB72K6",
@@ -5623,17 +5539,17 @@
       "leeftijd_peildatum": 13
     },
     {
-      "rel_code": "OW-0166",
+      "rel_code": "NJT90K8",
       "roepnaam": "Berend",
       "achternaam": "Schmidt",
       "tussenvoegsel": null,
       "geslacht": "M",
-      "geboortejaar": null,
+      "geboortejaar": 1998,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "A1",
+      "team": "A1/A2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Rood",
@@ -5641,15 +5557,15 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 17
     },
     {
-      "rel_code": "OW-0114",
+      "rel_code": "NJY57Y2",
       "roepnaam": "Michael",
       "achternaam": "Schmidt",
       "tussenvoegsel": null,
       "geslacht": "M",
-      "geboortejaar": null,
+      "geboortejaar": 1958,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -5662,7 +5578,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 57
     },
     {
       "rel_code": "NKC46S7",
@@ -5696,7 +5612,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "A1",
+      "team": "A1/A2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Rood",
@@ -5728,12 +5644,12 @@
       "leeftijd_peildatum": 15
     },
     {
-      "rel_code": "OW-0269",
+      "rel_code": "NKN22H9",
       "roepnaam": "Charlotte",
       "achternaam": "Schröder",
       "tussenvoegsel": null,
       "geslacht": "V",
-      "geboortejaar": null,
+      "geboortejaar": 2005,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -5746,7 +5662,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 10
     },
     {
       "rel_code": "NKR20L5",
@@ -5906,7 +5822,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S3",
+      "team": "S3/S4",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -5938,12 +5854,12 @@
       "leeftijd_peildatum": 10
     },
     {
-      "rel_code": "OW-0185",
+      "rel_code": "NJR87N3",
       "roepnaam": "Miranda",
       "achternaam": "Steen Redeker",
       "tussenvoegsel": null,
       "geslacht": "V",
-      "geboortejaar": null,
+      "geboortejaar": 1998,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -5956,15 +5872,15 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 17
     },
     {
-      "rel_code": "OW-0268",
+      "rel_code": "NKZ72Z2",
       "roepnaam": "Tjarda",
       "achternaam": "Steenhuis",
       "tussenvoegsel": null,
       "geslacht": "V",
-      "geboortejaar": null,
+      "geboortejaar": 2003,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -5977,7 +5893,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 12
     },
     {
       "rel_code": "NGZ14L2",
@@ -6001,27 +5917,6 @@
       "leeftijd_peildatum": 24
     },
     {
-      "rel_code": "OW-0142",
-      "roepnaam": "Huib",
-      "achternaam": "Stehouwer",
-      "tussenvoegsel": null,
-      "geslacht": "M",
-      "geboortejaar": null,
-      "lidsoort": null,
-      "spelactiviteit": "korfbal",
-      "lid_sinds": null,
-      "status": "actief",
-      "team": "MW2",
-      "teamrol": null,
-      "categorie": null,
-      "kleur": "Senioren",
-      "pool_veld": null,
-      "pool_zaal": null,
-      "a_categorie": null,
-      "a_jaars": null,
-      "leeftijd_peildatum": null
-    },
-    {
       "rel_code": "NLN41L1",
       "roepnaam": "Noa",
       "achternaam": "Stomp",
@@ -6032,7 +5927,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "F4",
+      "team": "Kangoeroes",
       "teamrol": null,
       "categorie": null,
       "kleur": "Groen",
@@ -6053,7 +5948,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S1",
+      "team": "S1/S2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -6064,12 +5959,12 @@
       "leeftijd_peildatum": 19
     },
     {
-      "rel_code": "OW-0233",
+      "rel_code": "NKW50S4",
       "roepnaam": "Jessy",
       "achternaam": "Struik",
       "tussenvoegsel": null,
       "geslacht": "V",
-      "geboortejaar": null,
+      "geboortejaar": 2004,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -6082,7 +5977,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 11
     },
     {
       "rel_code": "NLD26P4",
@@ -6106,6 +6001,27 @@
       "leeftijd_peildatum": 12
     },
     {
+      "rel_code": "OW-0535",
+      "roepnaam": "Moniek",
+      "achternaam": "Talens",
+      "tussenvoegsel": null,
+      "geslacht": "V",
+      "geboortejaar": null,
+      "lidsoort": null,
+      "spelactiviteit": "korfbal",
+      "lid_sinds": null,
+      "status": "actief",
+      "team": "S7",
+      "teamrol": null,
+      "categorie": null,
+      "kleur": "Senioren",
+      "pool_veld": null,
+      "pool_zaal": null,
+      "a_categorie": null,
+      "a_jaars": null,
+      "leeftijd_peildatum": null
+    },
+    {
       "rel_code": "NKG18N7",
       "roepnaam": "Eva",
       "achternaam": "Teerds",
@@ -6127,12 +6043,12 @@
       "leeftijd_peildatum": 13
     },
     {
-      "rel_code": "OW-0212",
+      "rel_code": "NKM09V7",
       "roepnaam": "Nick",
       "achternaam": "Teerds",
       "tussenvoegsel": null,
       "geslacht": "M",
-      "geboortejaar": null,
+      "geboortejaar": 2001,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -6145,7 +6061,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 14
     },
     {
       "rel_code": "NFY07G3",
@@ -6442,12 +6358,12 @@
       "leeftijd_peildatum": 20
     },
     {
-      "rel_code": "OW-0101",
+      "rel_code": "NJK09M5",
       "roepnaam": "Roel",
       "achternaam": "Vanhooydonck",
       "tussenvoegsel": null,
       "geslacht": "M",
-      "geboortejaar": null,
+      "geboortejaar": 1989,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -6460,7 +6376,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 26
     },
     {
       "rel_code": "NLL19W5",
@@ -6484,12 +6400,12 @@
       "leeftijd_peildatum": 8
     },
     {
-      "rel_code": "OW-0420",
+      "rel_code": "NLD80Z6",
       "roepnaam": "Aljona",
       "achternaam": "Vasiljev",
       "tussenvoegsel": null,
       "geslacht": "V",
-      "geboortejaar": null,
+      "geboortejaar": 2001,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -6502,15 +6418,15 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 14
     },
     {
-      "rel_code": "OW-0452",
+      "rel_code": "NLM86W2",
       "roepnaam": "Viktor",
       "achternaam": "Vasiljev",
       "tussenvoegsel": null,
-      "geslacht": null,
-      "geboortejaar": null,
+      "geslacht": "M",
+      "geboortejaar": 2003,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -6523,7 +6439,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 12
     },
     {
       "rel_code": "NLL49V3",
@@ -6568,12 +6484,12 @@
       "leeftijd_peildatum": 10
     },
     {
-      "rel_code": "OW-0454",
+      "rel_code": "NLM94K7",
       "roepnaam": "Wesley",
       "achternaam": "Vegt",
       "tussenvoegsel": null,
-      "geslacht": null,
-      "geboortejaar": null,
+      "geslacht": "M",
+      "geboortejaar": 2007,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -6586,7 +6502,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 8
     },
     {
       "rel_code": "NFW28D3",
@@ -6736,12 +6652,12 @@
       "leeftijd_peildatum": 9
     },
     {
-      "rel_code": "OW-0211",
+      "rel_code": "NKG59G1",
       "roepnaam": "Robin",
       "achternaam": "Versluis",
       "tussenvoegsel": null,
       "geslacht": "M",
-      "geboortejaar": null,
+      "geboortejaar": 2001,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -6754,7 +6670,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 14
     },
     {
       "rel_code": "NFZ27D3",
@@ -6851,7 +6767,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S1",
+      "team": "S1/S2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -6862,12 +6778,12 @@
       "leeftijd_peildatum": 21
     },
     {
-      "rel_code": "OW-0196",
+      "rel_code": "NKD67C9",
       "roepnaam": "Sanne",
       "achternaam": "Veth",
       "tussenvoegsel": null,
       "geslacht": "V",
-      "geboortejaar": null,
+      "geboortejaar": 1999,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -6880,7 +6796,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 16
     },
     {
       "rel_code": "NKG15N8",
@@ -6914,7 +6830,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S3",
+      "team": "S3/S4",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -6935,7 +6851,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "A1",
+      "team": "A1/A2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Rood",
@@ -6956,7 +6872,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S3",
+      "team": "S3/S4",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -6998,7 +6914,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S1",
+      "team": "S1/S2",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -7114,12 +7030,12 @@
       "leeftijd_peildatum": 34
     },
     {
-      "rel_code": "OW-0105",
+      "rel_code": "NJB99G9",
       "roepnaam": "Robin",
       "achternaam": "Vos",
       "tussenvoegsel": null,
       "geslacht": "V",
-      "geboortejaar": null,
+      "geboortejaar": 1990,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -7132,7 +7048,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 25
     },
     {
       "rel_code": "NKZ78H4",
@@ -7166,7 +7082,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S3",
+      "team": "S3/S4",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -7198,12 +7114,12 @@
       "leeftijd_peildatum": 15
     },
     {
-      "rel_code": "OW-0108",
+      "rel_code": "NGT43V8",
       "roepnaam": "larissa",
       "achternaam": "Welgraven",
       "tussenvoegsel": null,
       "geslacht": "V",
-      "geboortejaar": null,
+      "geboortejaar": 1992,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -7216,7 +7132,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 23
     },
     {
       "rel_code": "NLL20B6",
@@ -7240,12 +7156,12 @@
       "leeftijd_peildatum": 10
     },
     {
-      "rel_code": "OW-0222",
+      "rel_code": "NKG59P4",
       "roepnaam": "Luca",
       "achternaam": "Wesenick",
       "tussenvoegsel": null,
       "geslacht": "V",
-      "geboortejaar": null,
+      "geboortejaar": 2002,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -7258,7 +7174,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 13
     },
     {
       "rel_code": "NJC46R3",
@@ -7271,7 +7187,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S3",
+      "team": "S3/S4",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",
@@ -7408,12 +7324,12 @@
       "leeftijd_peildatum": 11
     },
     {
-      "rel_code": "OW-0444",
+      "rel_code": "NLK34W9",
       "roepnaam": "Evy",
       "achternaam": "Willigen",
       "tussenvoegsel": null,
-      "geslacht": null,
-      "geboortejaar": null,
+      "geslacht": "V",
+      "geboortejaar": 2006,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -7426,7 +7342,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 9
     },
     {
       "rel_code": "NLL19T4",
@@ -7513,12 +7429,12 @@
       "leeftijd_peildatum": 6
     },
     {
-      "rel_code": "OW-0098",
+      "rel_code": "NJH51N0",
       "roepnaam": "Bas",
       "achternaam": "Wittekoek",
       "tussenvoegsel": null,
       "geslacht": "M",
-      "geboortejaar": null,
+      "geboortejaar": 1990,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -7531,7 +7447,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 25
     },
     {
       "rel_code": "NKH56N2",
@@ -7744,12 +7660,12 @@
       "leeftijd_peildatum": 17
     },
     {
-      "rel_code": "OW-0416",
+      "rel_code": "NLD62W1",
       "roepnaam": "Eva",
       "achternaam": "Zwetsloot",
       "tussenvoegsel": null,
-      "geslacht": null,
-      "geboortejaar": null,
+      "geslacht": "V",
+      "geboortejaar": 1997,
       "lidsoort": null,
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
@@ -7762,7 +7678,7 @@
       "pool_zaal": null,
       "a_categorie": null,
       "a_jaars": null,
-      "leeftijd_peildatum": null
+      "leeftijd_peildatum": 18
     },
     {
       "rel_code": "NJQ72J4",
@@ -7775,7 +7691,7 @@
       "spelactiviteit": "korfbal",
       "lid_sinds": null,
       "status": "actief",
-      "team": "S3",
+      "team": "S3/S4",
       "teamrol": null,
       "categorie": null,
       "kleur": "Senioren",

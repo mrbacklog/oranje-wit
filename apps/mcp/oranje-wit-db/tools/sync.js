@@ -24,29 +24,34 @@ async function syncSeizoenen() {
   return seizoenen.length;
 }
 
-// --- Leden importeren uit snapshot ---
+// --- Leden importeren uit snapshot of alle-leden.json ---
 async function syncLeden(snapshotPath) {
   const data = readJSON(snapshotPath);
   const leden = Array.isArray(data) ? data : data.leden || [];
   let count = 0;
   let skipped = 0;
   for (const lid of leden) {
-    if (!lid.rel_code) continue;
-    // Skip leden zonder verplichte velden
-    if (!lid.geboortejaar || !lid.geslacht) { skipped++; continue; }
+    if (!lid.rel_code) { skipped++; continue; }
     await pool.query(
-      `INSERT INTO leden (rel_code, roepnaam, achternaam, tussenvoegsel, geslacht, geboortejaar, lid_sinds)
-       VALUES ($1, $2, $3, $4, $5, $6, $7)
+      `INSERT INTO leden (rel_code, roepnaam, achternaam, tussenvoegsel, voorletters,
+         geslacht, geboortejaar, geboortedatum, lid_sinds, afmelddatum, lidsoort)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
        ON CONFLICT (rel_code) DO UPDATE SET
          roepnaam = COALESCE(NULLIF(EXCLUDED.roepnaam, ''), leden.roepnaam),
          achternaam = COALESCE(NULLIF(EXCLUDED.achternaam, ''), leden.achternaam),
          tussenvoegsel = COALESCE(EXCLUDED.tussenvoegsel, leden.tussenvoegsel),
-         geslacht = EXCLUDED.geslacht,
-         geboortejaar = EXCLUDED.geboortejaar,
+         voorletters = COALESCE(EXCLUDED.voorletters, leden.voorletters),
+         geslacht = COALESCE(EXCLUDED.geslacht, leden.geslacht),
+         geboortejaar = COALESCE(EXCLUDED.geboortejaar, leden.geboortejaar),
+         geboortedatum = COALESCE(EXCLUDED.geboortedatum, leden.geboortedatum),
          lid_sinds = COALESCE(EXCLUDED.lid_sinds, leden.lid_sinds),
+         afmelddatum = COALESCE(EXCLUDED.afmelddatum, leden.afmelddatum),
+         lidsoort = COALESCE(EXCLUDED.lidsoort, leden.lidsoort),
          updated_at = now()`,
       [lid.rel_code, lid.roepnaam || '', lid.achternaam || '', lid.tussenvoegsel || null,
-       lid.geslacht, lid.geboortejaar, lid.lid_sinds || null]
+       lid.voorletters || null, lid.geslacht || null, lid.geboortejaar || null,
+       lid.geboortedatum || null, lid.lid_sinds || null, lid.afmelddatum || null,
+       lid.lidsoort || null]
     );
     count++;
   }
@@ -73,7 +78,7 @@ async function syncSnapshot(snapshotPath) {
     [seizoen, startJaar, startJaar + 1]
   );
 
-  // Importeer leden (upsert, skipt leden zonder geboortejaar/geslacht)
+  // Importeer leden (upsert naar leden-tabel)
   await syncLeden(snapshotPath);
 
   // Snapshot metadata
@@ -94,7 +99,7 @@ async function syncSnapshot(snapshotPath) {
   // Lid-status per snapshot (alleen leden die in de leden-tabel zitten)
   let inserted = 0;
   for (const lid of leden) {
-    if (!lid.rel_code || !lid.geboortejaar || !lid.geslacht) continue;
+    if (!lid.rel_code) continue;
     await pool.query(
       `INSERT INTO leden_snapshot (snapshot_id, rel_code, lidsoort, spelactiviteit, status, team, ow_code,
         teamrol, categorie, kleur, a_categorie, a_jaars, leeftijd_peildatum, pool_veld, pool_zaal)
@@ -262,6 +267,15 @@ async function syncAlles() {
   const results = {};
 
   results.seizoenen = await syncSeizoenen();
+
+  // Sync master ledenregister (alle-leden.json) als dat bestaat
+  const allLedenPath = 'data/leden/alle-leden.json';
+  try {
+    const allLedenFull = path.resolve(ROOT, allLedenPath);
+    if (fs.existsSync(allLedenFull)) {
+      results.leden_master = await syncLeden(allLedenPath);
+    }
+  } catch (err) { results.leden_master = { error: err.message }; }
 
   const snapshotDir = path.resolve(ROOT, 'data/leden/snapshots');
   const snapshotFiles = fs.readdirSync(snapshotDir)

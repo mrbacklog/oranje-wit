@@ -77,7 +77,7 @@
     "spelers_M": 2,
     "spelers_V": 8,
     "totaal": 10,
-    "gem_leeftijd": 13.7
+    "gem_leeftijd": 14.7
   },
   {
     "team": "B5",
@@ -125,8 +125,8 @@
     "kleur": "Oranje",
     "niveau": null,
     "spelers_M": 3,
-    "spelers_V": 8,
-    "totaal": 11,
+    "spelers_V": 9,
+    "totaal": 12,
     "gem_leeftijd": 12.3
   },
   {
@@ -235,8 +235,8 @@
     "kleur": "Groen",
     "niveau": null,
     "spelers_M": 1,
-    "spelers_V": 4,
-    "totaal": 5,
+    "spelers_V": 5,
+    "totaal": 6,
     "gem_leeftijd": 8.0
   },
   {
@@ -304,10 +304,20 @@
     "categorie": null,
     "kleur": "Senioren",
     "niveau": null,
+    "spelers_M": 0,
+    "spelers_V": 1,
+    "totaal": 1,
+    "gem_leeftijd": 25.0
+  },
+  {
+    "team": "S1/S2",
+    "categorie": null,
+    "kleur": "Senioren",
+    "niveau": null,
     "spelers_M": 9,
     "spelers_V": 11,
     "totaal": 20,
-    "gem_leeftijd": 21.8
+    "gem_leeftijd": 21.4
   },
   {
     "team": "S3",
@@ -324,10 +334,10 @@
     "categorie": null,
     "kleur": "Senioren",
     "niveau": null,
-    "spelers_M": 4,
-    "spelers_V": 6,
+    "spelers_M": 5,
+    "spelers_V": 5,
     "totaal": 10,
-    "gem_leeftijd": 22.9
+    "gem_leeftijd": 22.4
   },
   {
     "team": "S5",

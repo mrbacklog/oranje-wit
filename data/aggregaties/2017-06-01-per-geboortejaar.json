@@ -512,7 +512,7 @@
   {
     "geboortejaar": 2003,
     "geslacht": "M",
-    "aantal": 12,
+    "aantal": 13,
     "a_categorie": null,
     "a_jaars": null,
     "streef": null,
@@ -522,7 +522,7 @@
   {
     "geboortejaar": 2003,
     "geslacht": "V",
-    "aantal": 13,
+    "aantal": 14,
     "a_categorie": null,
     "a_jaars": null,
     "streef": null,
@@ -712,16 +712,6 @@
   {
     "geboortejaar": 2013,
     "geslacht": "M",
-    "aantal": 1,
-    "a_categorie": null,
-    "a_jaars": null,
-    "streef": null,
-    "vulgraad": null,
-    "signalering": null
-  },
-  {
-    "geboortejaar": 2013,
-    "geslacht": "V",
     "aantal": 1,
     "a_categorie": null,
     "a_jaars": null,

@@ -1,0 +1,5889 @@
+{
+  "datum": "2026-02-26",
+  "dry_run": false,
+  "ow_totaal_voor_dedup": 456,
+  "nep_entries": 11,
+  "interne_merges": 34,
+  "ow_na_dedup": 407,
+  "gematcht": 373,
+  "niet_gematcht": 34,
+  "wijzigingen": 304,
+  "merges": [
+    {
+      "ow_id": "OW-0055",
+      "rel_code": "NMG18G2",
+      "naam": "Belder, Len",
+      "ow_seizoenen": [
+        "2019-2020"
+      ],
+      "bestaande_seizoenen": [
+        "2019-2020",
+        "2020-2021",
+        "2021-2022",
+        "2022-2023",
+        "2023-2024",
+        "2024-2025",
+        "2025-2026"
+      ]
+    },
+    {
+      "ow_id": "OW-0061",
+      "rel_code": "NFZ85W0",
+      "naam": "Peter Batenburg* (A2)",
+      "ow_seizoenen": [
+        "2020-2021"
+      ],
+      "bestaande_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2012-2013",
+        "2023-2024"
+      ]
+    },
+    {
+      "ow_id": "OW-0256",
+      "rel_code": "NJF95Y7",
+      "naam": "Petegem, J. (Johanna",
+      "ow_seizoenen": [
+        "2016-2017"
+      ],
+      "bestaande_seizoenen": [
+        "2017-2018"
+      ]
+    },
+    {
+      "ow_id": "OW-0281",
+      "rel_code": "NGX37Q4",
+      "naam": "Rick de Vries",
+      "ow_seizoenen": [
+        "2010-2011"
+      ],
+      "bestaande_seizoenen": [
+        "2011-2012",
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2017-2018",
+        "2019-2020"
+      ]
+    },
+    {
+      "ow_id": "OW-0286",
+      "rel_code": "NFZ27D3",
+      "naam": "Phillippe Verstappen",
+      "ow_seizoenen": [
+        "2010-2011"
+      ],
+      "bestaande_seizoenen": [
+        "2011-2012",
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2016-2017",
+        "2017-2018"
+      ]
+    },
+    {
+      "ow_id": "OW-0349",
+      "rel_code": "NLC24S8",
+      "naam": "Marijke de Jong",
+      "ow_seizoenen": [
+        "2010-2011",
+        "2011-2012"
+      ],
+      "bestaande_seizoenen": [
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2016-2017"
+      ]
+    },
+    {
+      "ow_id": "OW-0396",
+      "rel_code": "NFT37Y9",
+      "naam": "Heumen, van (E) Erik",
+      "ow_seizoenen": [
+        "2011-2012"
+      ],
+      "bestaande_seizoenen": [
+        "2012-2013",
+        "2013-2014",
+        "2014-2015"
+      ]
+    },
+    {
+      "ow_id": "OW-0417",
+      "rel_code": "NJG60C4",
+      "naam": "Euser, S (Suzanne)",
+      "ow_seizoenen": [
+        "2013-2014",
+        "2014-2015"
+      ],
+      "bestaande_seizoenen": [
+        "2015-2016",
+        "2016-2017",
+        "2017-2018"
+      ]
+    },
+    {
+      "ow_id": "OW-0463",
+      "rel_code": "NFW28Q4",
+      "naam": "Roy Helmos",
+      "ow_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2013-2014",
+        "2012-2013"
+      ],
+      "bestaande_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2016-2017",
+        "2017-2018"
+      ]
+    },
+    {
+      "ow_id": "OW-0466",
+      "rel_code": "NJH39X4",
+      "naam": "Bart v.d. Brugge",
+      "ow_seizoenen": [
+        "2010-2011",
+        "2011-2012"
+      ],
+      "bestaande_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2016-2017",
+        "2018-2019",
+        "2019-2020",
+        "2020-2021",
+        "2021-2022",
+        "2025-2026"
+      ]
+    },
+    {
+      "ow_id": "OW-0471",
+      "rel_code": "NJX60W1",
+      "naam": "Stijn Klink",
+      "ow_seizoenen": [
+        "2010-2011",
+        "2015-2016",
+        "2011-2012",
+        "2014-2015",
+        "2013-2014",
+        "2012-2013",
+        "2016-2017",
+        "2017-2018",
+        "2019-2020"
+      ],
+      "bestaande_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2016-2017",
+        "2017-2018",
+        "2019-2020"
+      ]
+    },
+    {
+      "ow_id": "OW-0482",
+      "rel_code": "NJF85B1",
+      "naam": "Klink, X (Xanne)",
+      "ow_seizoenen": [
+        "2011-2012"
+      ],
+      "bestaande_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2016-2017",
+        "2017-2018",
+        "2018-2019",
+        "2019-2020",
+        "2020-2021",
+        "2021-2022",
+        "2022-2023",
+        "2023-2024",
+        "2024-2025",
+        "2025-2026"
+      ]
+    },
+    {
+      "ow_id": "OW-0488",
+      "rel_code": "NJQ72J4",
+      "naam": "Zwoll, van S. (Simone)",
+      "ow_seizoenen": [
+        "2011-2012"
+      ],
+      "bestaande_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2016-2017",
+        "2017-2018",
+        "2018-2019",
+        "2019-2020",
+        "2020-2021",
+        "2023-2024"
+      ]
+    },
+    {
+      "ow_id": "OW-0492",
+      "rel_code": "NJK08W2",
+      "naam": "Goudriaan, R (Rick)",
+      "ow_seizoenen": [
+        "2011-2012"
+      ],
+      "bestaande_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2012-2013",
+        "2013-2014",
+        "2020-2021"
+      ]
+    },
+    {
+      "ow_id": "OW-0493",
+      "rel_code": "NJK05M3",
+      "naam": "Goudriaan, S (Stefan)",
+      "ow_seizoenen": [
+        "2011-2012"
+      ],
+      "bestaande_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2012-2013",
+        "2016-2017"
+      ]
+    },
+    {
+      "ow_id": "OW-0497",
+      "rel_code": "NJC15Q8",
+      "naam": "Pierse, J (Jorik)",
+      "ow_seizoenen": [
+        "2011-2012"
+      ],
+      "bestaande_seizoenen": [
+        "2011-2012",
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2016-2017",
+        "2017-2018"
+      ]
+    },
+    {
+      "ow_id": "OW-0515",
+      "rel_code": "NGT43H0",
+      "naam": "Noordam,  M (Mirjam)",
+      "ow_seizoenen": [
+        "2013-2014",
+        "2014-2015"
+      ],
+      "bestaande_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2016-2017",
+        "2017-2018",
+        "2018-2019",
+        "2019-2020",
+        "2020-2021",
+        "2021-2022",
+        "2022-2023"
+      ]
+    },
+    {
+      "ow_id": "OW-0516",
+      "rel_code": "NGD97S8",
+      "naam": "Veld, in 't L (Lisette)",
+      "ow_seizoenen": [
+        "2015-2016",
+        "2013-2014",
+        "2014-2015"
+      ],
+      "bestaande_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2016-2017",
+        "2017-2018"
+      ]
+    },
+    {
+      "ow_id": "OW-0527",
+      "rel_code": "NLG57L7",
+      "naam": "Valk (Jarno)",
+      "ow_seizoenen": [
+        "2013-2014",
+        "2014-2015"
+      ],
+      "bestaande_seizoenen": [
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2016-2017",
+        "2017-2018",
+        "2018-2019",
+        "2019-2020",
+        "2020-2021",
+        "2021-2022",
+        "2022-2023",
+        "2023-2024",
+        "2024-2025",
+        "2025-2026"
+      ]
+    },
+    {
+      "ow_id": "OW-0532",
+      "rel_code": "NJH77J0",
+      "naam": "Schröder, I. (Isabel)",
+      "ow_seizoenen": [
+        "2015-2016",
+        "2014-2015",
+        "2016-2017"
+      ],
+      "bestaande_seizoenen": [
+        "2014-2015",
+        "2015-2016",
+        "2016-2017",
+        "2017-2018",
+        "2020-2021"
+      ]
+    },
+    {
+      "ow_id": "OW-0536",
+      "rel_code": "NJF85H3",
+      "naam": "Honschoten, van S (Sylvia)",
+      "ow_seizoenen": [
+        "2015-2016",
+        "2016-2017"
+      ],
+      "bestaande_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2016-2017",
+        "2017-2018",
+        "2018-2019"
+      ]
+    },
+    {
+      "ow_id": "OW-0538",
+      "rel_code": "NKW30H7",
+      "naam": "Manduapessy, V.P. (Vera)",
+      "ow_seizoenen": [
+        "2015-2016"
+      ],
+      "bestaande_seizoenen": [
+        "2011-2012",
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2016-2017",
+        "2017-2018",
+        "2018-2019",
+        "2019-2020",
+        "2020-2021"
+      ]
+    },
+    {
+      "ow_id": "OW-0539",
+      "rel_code": "NLG59F1",
+      "naam": "Lohuis, J.A. (Jens)",
+      "ow_seizoenen": [
+        "2015-2016"
+      ],
+      "bestaande_seizoenen": [
+        "2013-2014",
+        "2015-2016",
+        "2016-2017",
+        "2017-2018",
+        "2018-2019",
+        "2019-2020",
+        "2020-2021",
+        "2021-2022",
+        "2022-2023",
+        "2023-2024",
+        "2024-2025",
+        "2025-2026"
+      ]
+    },
+    {
+      "ow_id": "OW-0540",
+      "rel_code": "NLP77V6",
+      "naam": "Boeije (Thomas)",
+      "ow_seizoenen": [
+        "2015-2016"
+      ],
+      "bestaande_seizoenen": [
+        "2015-2016",
+        "2016-2017",
+        "2017-2018",
+        "2018-2019",
+        "2019-2020"
+      ]
+    },
+    {
+      "ow_id": "OW-0541",
+      "rel_code": "NLN28Y3",
+      "naam": "Kuijper (Raoul)",
+      "ow_seizoenen": [
+        "2015-2016"
+      ],
+      "bestaande_seizoenen": [
+        "2015-2016",
+        "2016-2017",
+        "2017-2018",
+        "2018-2019",
+        "2019-2020",
+        "2020-2021",
+        "2021-2022",
+        "2022-2023",
+        "2023-2024",
+        "2024-2025",
+        "2025-2026"
+      ]
+    },
+    {
+      "ow_id": "OW-0546",
+      "rel_code": "NJT90M2",
+      "naam": "Brouwer, J.(Jop)",
+      "ow_seizoenen": [
+        "2016-2017"
+      ],
+      "bestaande_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2017-2018",
+        "2018-2019"
+      ]
+    },
+    {
+      "ow_id": "OW-0547",
+      "rel_code": "NJD65S8",
+      "naam": "Dijk, van J.(Joeri)",
+      "ow_seizoenen": [
+        "2016-2017"
+      ],
+      "bestaande_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2017-2018",
+        "2018-2019",
+        "2019-2020",
+        "2020-2021",
+        "2021-2022",
+        "2022-2023",
+        "2023-2024",
+        "2024-2025"
+      ]
+    },
+    {
+      "ow_id": "OW-0548",
+      "rel_code": "NKD19Y4",
+      "naam": "Driesprong, B.(Bart)",
+      "ow_seizoenen": [
+        "2016-2017",
+        "2017-2018"
+      ],
+      "bestaande_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2017-2018",
+        "2018-2019",
+        "2019-2020",
+        "2020-2021",
+        "2021-2022",
+        "2022-2023",
+        "2023-2024",
+        "2024-2025",
+        "2025-2026"
+      ]
+    },
+    {
+      "ow_id": "OW-0549",
+      "rel_code": "NJW77N3",
+      "naam": "Aanholt, van M.(Max)",
+      "ow_seizoenen": [
+        "2016-2017"
+      ],
+      "bestaande_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016"
+      ]
+    },
+    {
+      "ow_id": "OW-0550",
+      "rel_code": "NJZ00W3",
+      "naam": "Gent, van T.(Tim)",
+      "ow_seizoenen": [
+        "2016-2017"
+      ],
+      "bestaande_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2017-2018",
+        "2018-2019",
+        "2019-2020",
+        "2020-2021",
+        "2021-2022",
+        "2022-2023",
+        "2023-2024",
+        "2024-2025",
+        "2025-2026"
+      ]
+    },
+    {
+      "ow_id": "OW-0551",
+      "rel_code": "NJZ00Y7",
+      "naam": "Jager, de S.(Sam)",
+      "ow_seizoenen": [
+        "2016-2017"
+      ],
+      "bestaande_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2017-2018",
+        "2018-2019",
+        "2019-2020",
+        "2020-2021"
+      ]
+    },
+    {
+      "ow_id": "OW-0552",
+      "rel_code": "NJH76N5",
+      "naam": "Klink, O.C.(Olivier)",
+      "ow_seizoenen": [
+        "2016-2017"
+      ],
+      "bestaande_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2019-2020",
+        "2020-2021",
+        "2023-2024",
+        "2024-2025",
+        "2025-2026"
+      ]
+    },
+    {
+      "ow_id": "OW-0554",
+      "rel_code": "NLB70W8",
+      "naam": "Friebel, L.(Luuk)",
+      "ow_seizoenen": [
+        "2016-2017"
+      ],
+      "bestaande_seizoenen": [
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2017-2018",
+        "2018-2019",
+        "2019-2020",
+        "2020-2021"
+      ]
+    },
+    {
+      "ow_id": "OW-0556",
+      "rel_code": "NKQ70H1",
+      "naam": "Klijn, C.L.(Calvin)",
+      "ow_seizoenen": [
+        "2016-2017"
+      ],
+      "bestaande_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2017-2018",
+        "2018-2019",
+        "2019-2020",
+        "2020-2021",
+        "2021-2022"
+      ]
+    },
+    {
+      "ow_id": "OW-0559",
+      "rel_code": "NKX56P2",
+      "naam": "Flach, J.H.(Joram)",
+      "ow_seizoenen": [
+        "2016-2017"
+      ],
+      "bestaande_seizoenen": [
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2017-2018",
+        "2018-2019",
+        "2019-2020",
+        "2020-2021",
+        "2021-2022",
+        "2022-2023",
+        "2023-2024",
+        "2024-2025",
+        "2025-2026"
+      ]
+    },
+    {
+      "ow_id": "OW-0560",
+      "rel_code": "NKD39Q8",
+      "naam": "Schindler, M.(Mark)",
+      "ow_seizoenen": [
+        "2016-2017"
+      ],
+      "bestaande_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2017-2018",
+        "2018-2019",
+        "2019-2020",
+        "2020-2021",
+        "2021-2022",
+        "2022-2023",
+        "2023-2024",
+        "2024-2025",
+        "2025-2026"
+      ]
+    },
+    {
+      "ow_id": "OW-0561",
+      "rel_code": "NJF06N8",
+      "naam": "Verwaal, S.(Stefan)",
+      "ow_seizoenen": [
+        "2016-2017"
+      ],
+      "bestaande_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2017-2018",
+        "2019-2020"
+      ]
+    },
+    {
+      "ow_id": "OW-0572",
+      "rel_code": "NKV48H5",
+      "naam": "Jong, Jouke de",
+      "ow_seizoenen": [
+        "2017-2018"
+      ],
+      "bestaande_seizoenen": [
+        "2011-2012",
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016"
+      ]
+    },
+    {
+      "ow_id": "OW-0460",
+      "rel_code": "NFW15F3",
+      "naam": "Johan van de Wall",
+      "ow_seizoenen": [
+        "2010-2011"
+      ],
+      "bestaande_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2012-2013",
+        "2016-2017"
+      ]
+    },
+    {
+      "ow_id": "OW-0464",
+      "rel_code": "NKH71P1",
+      "naam": "Wilco Kooij",
+      "ow_seizoenen": [
+        "2010-2011"
+      ],
+      "bestaande_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2016-2017",
+        "2017-2018",
+        "2018-2019",
+        "2019-2020",
+        "2020-2021",
+        "2021-2022",
+        "2022-2023",
+        "2023-2024",
+        "2024-2025",
+        "2025-2026"
+      ]
+    },
+    {
+      "ow_id": "OW-0467",
+      "rel_code": "NKC46P6",
+      "naam": "Jeffrey van de Wall",
+      "ow_seizoenen": [
+        "2010-2011",
+        "2012-2013",
+        "2011-2012"
+      ],
+      "bestaande_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2019-2020",
+        "2020-2021"
+      ]
+    },
+    {
+      "ow_id": "OW-0469",
+      "rel_code": "NKJ95L7",
+      "naam": "Milou Oppe",
+      "ow_seizoenen": [
+        "2010-2011",
+        "2015-2016",
+        "2011-2012",
+        "2013-2014",
+        "2014-2015",
+        "2016-2017",
+        "2017-2018",
+        "2019-2020"
+      ],
+      "bestaande_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2016-2017",
+        "2017-2018",
+        "2018-2019",
+        "2019-2020",
+        "2020-2021",
+        "2021-2022",
+        "2022-2023",
+        "2023-2024",
+        "2024-2025",
+        "2025-2026"
+      ]
+    },
+    {
+      "ow_id": "OW-0470",
+      "rel_code": "NKJ95G2",
+      "naam": "Mees Oppe",
+      "ow_seizoenen": [
+        "2010-2011",
+        "2015-2016",
+        "2011-2012",
+        "2013-2014",
+        "2014-2015",
+        "2016-2017",
+        "2017-2018",
+        "2019-2020"
+      ],
+      "bestaande_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2016-2017",
+        "2017-2018",
+        "2018-2019",
+        "2019-2020",
+        "2020-2021",
+        "2021-2022"
+      ]
+    },
+    {
+      "ow_id": "OW-0474",
+      "rel_code": "NGT92Q5",
+      "naam": "Kuperus, S (Steven)",
+      "ow_seizoenen": [
+        "2011-2012",
+        "2012-2013"
+      ],
+      "bestaande_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2012-2013",
+        "2015-2016",
+        "2016-2017",
+        "2017-2018",
+        "2018-2019",
+        "2019-2020",
+        "2020-2021",
+        "2021-2022",
+        "2022-2023",
+        "2023-2024"
+      ]
+    },
+    {
+      "ow_id": "OW-0491",
+      "rel_code": "NJC17J5",
+      "naam": "Gent, van L (Lex)",
+      "ow_seizoenen": [
+        "2011-2012"
+      ],
+      "bestaande_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2016-2017",
+        "2017-2018",
+        "2018-2019",
+        "2019-2020",
+        "2020-2021",
+        "2021-2022",
+        "2022-2023",
+        "2023-2024",
+        "2024-2025",
+        "2025-2026"
+      ]
+    },
+    {
+      "ow_id": "OW-0534",
+      "rel_code": "NFW28T5",
+      "naam": "Kleingeld, J (Jasper)",
+      "ow_seizoenen": [
+        "2015-2016"
+      ],
+      "bestaande_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2016-2017",
+        "2018-2019",
+        "2020-2021"
+      ]
+    },
+    {
+      "ow_id": "OW-0542",
+      "rel_code": "NKT65Z0",
+      "naam": "Kleingeld, J.N. (Julia)",
+      "ow_seizoenen": [
+        "2015-2016",
+        "2016-2017"
+      ],
+      "bestaande_seizoenen": [
+        "2015-2016",
+        "2016-2017",
+        "2017-2018",
+        "2018-2019",
+        "2019-2020",
+        "2020-2021",
+        "2021-2022",
+        "2022-2023",
+        "2023-2024",
+        "2024-2025",
+        "2025-2026"
+      ]
+    },
+    {
+      "ow_id": "OW-0570",
+      "rel_code": "NJG35B7",
+      "naam": "Visser, Renske",
+      "ow_seizoenen": [
+        "2017-2018"
+      ],
+      "bestaande_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2016-2017",
+        "2017-2018",
+        "2018-2019",
+        "2019-2020",
+        "2020-2021",
+        "2021-2022",
+        "2022-2023",
+        "2023-2024",
+        "2025-2026"
+      ]
+    },
+    {
+      "ow_id": "OW-0582",
+      "rel_code": "NLY54F4",
+      "naam": "Vos, Justin",
+      "ow_seizoenen": [
+        "2019-2020"
+      ],
+      "bestaande_seizoenen": [
+        "2018-2019",
+        "2019-2020",
+        "2020-2021",
+        "2021-2022",
+        "2022-2023",
+        "2023-2024",
+        "2024-2025"
+      ]
+    },
+    {
+      "ow_id": "OW-0583",
+      "rel_code": "NMB03R4",
+      "naam": "Exalto, Laura",
+      "ow_seizoenen": [
+        "2019-2020"
+      ],
+      "bestaande_seizoenen": [
+        "2018-2019",
+        "2019-2020",
+        "2020-2021",
+        "2021-2022",
+        "2022-2023",
+        "2023-2024",
+        "2024-2025",
+        "2025-2026"
+      ]
+    },
+    {
+      "ow_id": "OW-0584",
+      "rel_code": "NMC29Z9",
+      "naam": "Vos, Juda",
+      "ow_seizoenen": [
+        "2019-2020"
+      ],
+      "bestaande_seizoenen": [
+        "2018-2019",
+        "2019-2020",
+        "2020-2021",
+        "2021-2022",
+        "2022-2023",
+        "2023-2024",
+        "2024-2025",
+        "2025-2026"
+      ]
+    },
+    {
+      "ow_id": "OW-0065",
+      "rel_code": "NKR62S0",
+      "naam": "Wilma Dekker",
+      "ow_seizoenen": [
+        "2020-2021"
+      ],
+      "bestaande_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2016-2017",
+        "2017-2018",
+        "2018-2019",
+        "2019-2020",
+        "2020-2021",
+        "2021-2022"
+      ]
+    },
+    {
+      "ow_id": "OW-0344",
+      "rel_code": "NKJ29C1",
+      "naam": "Yorik Pierse",
+      "ow_seizoenen": [
+        "2010-2011"
+      ],
+      "bestaande_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2016-2017",
+        "2017-2018",
+        "2018-2019",
+        "2019-2020",
+        "2020-2021",
+        "2021-2022",
+        "2022-2023",
+        "2023-2024",
+        "2024-2025",
+        "2025-2026"
+      ]
+    },
+    {
+      "ow_id": "OW-0447",
+      "rel_code": "NLL49T9",
+      "naam": "Mahabier, J. (Jeewan)",
+      "ow_seizoenen": [
+        "2014-2015"
+      ],
+      "bestaande_seizoenen": [
+        "2015-2016",
+        "2016-2017",
+        "2017-2018",
+        "2018-2019",
+        "2019-2020",
+        "2020-2021",
+        "2021-2022"
+      ]
+    },
+    {
+      "ow_id": "OW-0567",
+      "rel_code": "NLS45P6",
+      "naam": "De Geus, N.E.J.(Noa)",
+      "ow_seizoenen": [
+        "2016-2017"
+      ],
+      "bestaande_seizoenen": [
+        "2016-2017",
+        "2017-2018"
+      ]
+    },
+    {
+      "ow_id": "OW-0066",
+      "rel_code": "NFV12W2",
+      "naam": "Lianne vd Burgt",
+      "ow_seizoenen": [
+        "2020-2021"
+      ],
+      "bestaande_seizoenen": [
+        "2013-2014",
+        "2014-2015"
+      ]
+    },
+    {
+      "ow_id": "OW-0090",
+      "rel_code": "NFW41S7",
+      "naam": "Moerman, B (Barbara)",
+      "ow_seizoenen": [
+        "2012-2013"
+      ],
+      "bestaande_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2016-2017",
+        "2019-2020",
+        "2020-2021",
+        "2021-2022",
+        "2022-2023",
+        "2023-2024"
+      ]
+    },
+    {
+      "ow_id": "OW-0102",
+      "rel_code": "NGL91R1",
+      "naam": "Vanhooydonck,  S (Simone)",
+      "ow_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2012-2013"
+      ],
+      "bestaande_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2016-2017",
+        "2017-2018"
+      ]
+    },
+    {
+      "ow_id": "OW-0127",
+      "rel_code": "NJC90M5",
+      "naam": "Zwijnenburg, I (Ilonka)",
+      "ow_seizoenen": [
+        "2010-2011"
+      ],
+      "bestaande_seizoenen": [
+        "2020-2021"
+      ]
+    },
+    {
+      "ow_id": "OW-0485",
+      "rel_code": "NJH51Q1",
+      "naam": "Verweij, M (Mirthe)",
+      "ow_seizoenen": [
+        "2011-2012"
+      ],
+      "bestaande_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2016-2017",
+        "2017-2018",
+        "2018-2019",
+        "2019-2020",
+        "2020-2021",
+        "2021-2022",
+        "2022-2023",
+        "2025-2026"
+      ]
+    },
+    {
+      "ow_id": "OW-0207",
+      "rel_code": "NKZ02T5",
+      "naam": "Trooyen, van D. (Danny)",
+      "ow_seizoenen": [
+        "2011-2012",
+        "2012-2013"
+      ],
+      "bestaande_seizoenen": [
+        "2012-2013",
+        "2015-2016",
+        "2016-2017"
+      ]
+    },
+    {
+      "ow_id": "OW-0432",
+      "rel_code": "NJT89Y8",
+      "naam": "Ooyen, N (Nando",
+      "ow_seizoenen": [
+        "2014-2015"
+      ],
+      "bestaande_seizoenen": [
+        "2015-2016",
+        "2016-2017"
+      ]
+    },
+    {
+      "ow_id": "OW-0248",
+      "rel_code": "NLL37S1",
+      "naam": "Camphens, T. (Tijn",
+      "ow_seizoenen": [
+        "2012-2013"
+      ],
+      "bestaande_seizoenen": [
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2016-2017",
+        "2017-2018",
+        "2018-2019",
+        "2019-2020",
+        "2020-2021",
+        "2021-2022",
+        "2022-2023",
+        "2023-2024",
+        "2024-2025",
+        "2025-2026"
+      ]
+    },
+    {
+      "ow_id": "OW-0249",
+      "rel_code": "NLC07S7",
+      "naam": "Everaarts, A. (Anne)",
+      "ow_seizoenen": [
+        "2012-2013"
+      ],
+      "bestaande_seizoenen": [
+        "2015-2016",
+        "2016-2017",
+        "2017-2018",
+        "2018-2019",
+        "2019-2020",
+        "2020-2021",
+        "2021-2022",
+        "2022-2023"
+      ]
+    },
+    {
+      "ow_id": "OW-0295",
+      "rel_code": "NLG58Z8",
+      "naam": "Martine Nobel",
+      "ow_seizoenen": [
+        "2010-2011"
+      ],
+      "bestaande_seizoenen": [
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2016-2017",
+        "2017-2018",
+        "2018-2019",
+        "2019-2020",
+        "2020-2021"
+      ]
+    },
+    {
+      "ow_id": "OW-0473",
+      "rel_code": "NKR09G7",
+      "naam": "Suzanne Klink",
+      "ow_seizoenen": [
+        "2010-2011",
+        "2015-2016",
+        "2011-2012",
+        "2014-2015",
+        "2013-2014",
+        "2012-2013",
+        "2016-2017",
+        "2017-2018",
+        "2019-2020"
+      ],
+      "bestaande_seizoenen": [
+        "2010-2011",
+        "2011-2012",
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2016-2017",
+        "2017-2018",
+        "2018-2019",
+        "2019-2020",
+        "2020-2021",
+        "2021-2022"
+      ]
+    },
+    {
+      "ow_id": "OW-0133",
+      "rel_code": "NLT04D0",
+      "naam": "Steenis, van R (Rianne)",
+      "ow_seizoenen": [
+        "2010-2011"
+      ],
+      "bestaande_seizoenen": [
+        "2016-2017",
+        "2017-2018",
+        "2018-2019"
+      ]
+    },
+    {
+      "ow_id": "OW-0461",
+      "rel_code": "NLV35B6",
+      "naam": "Martha Quarre",
+      "ow_seizoenen": [
+        "2010-2011"
+      ],
+      "bestaande_seizoenen": [
+        "2016-2017",
+        "2017-2018",
+        "2018-2019",
+        "2019-2020",
+        "2020-2021",
+        "2021-2022",
+        "2022-2023",
+        "2023-2024",
+        "2024-2025",
+        "2025-2026"
+      ]
+    },
+    {
+      "ow_id": "OW-0279",
+      "rel_code": "NFW40D9",
+      "naam": "Dave Boshoven",
+      "ow_seizoenen": [
+        "2010-2011"
+      ],
+      "bestaande_seizoenen": [
+        "2011-2012",
+        "2012-2013",
+        "2013-2014",
+        "2014-2015",
+        "2015-2016",
+        "2016-2017",
+        "2017-2018",
+        "2018-2019",
+        "2019-2020",
+        "2020-2021",
+        "2021-2022"
+      ]
+    }
+  ],
+  "per_methode": {
+    "ach+ini": 300,
+    "ach+roep": 36,
+    "gehuwde": 7,
+    "ach+ini_nodate": 7,
+    "basis_als_vol": 6,
+    "ach+vnaam": 4,
+    "spelling_norm": 4,
+    "ach_vol": 2,
+    "ach_enig_nodate": 2,
+    "fuzzy_roep": 2,
+    "ach_enig": 1,
+    "ach+ini+roep_nodate": 1,
+    "ach_vol_nodate": 1
+  },
+  "changes": [
+    {
+      "ow_id": "OW-0052",
+      "rel_code": "NHJ74B3",
+      "naam": "Kuis, Fabiënne",
+      "lid_naam": "Fabiënne Kuis",
+      "method": "ach+ini",
+      "verrijkingen": []
+    },
+    {
+      "ow_id": "OW-0057",
+      "rel_code": "NLL18Q0",
+      "naam": "Ron Appelboom",
+      "lid_naam": "Ron Appelboom",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1973-03-17"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0059",
+      "rel_code": "NKP92V4",
+      "naam": "Theo Anrochte",
+      "lid_naam": "Theo Anrochte",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1967-06-15"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0062",
+      "rel_code": "NFT76J1",
+      "naam": "Robert Koster",
+      "lid_naam": "Robert Koster",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1968-03-30"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0064",
+      "rel_code": "NFW42R3",
+      "naam": "Rob van Dongen",
+      "lid_naam": "Rob van Dongen",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1980-09-12"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0070",
+      "rel_code": "NMG69P3",
+      "naam": "Tom van de Ven",
+      "lid_naam": "Tom van de Ven",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1980-01-01"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0072",
+      "rel_code": "NGG43C2",
+      "naam": "Beenen,  S (Shanna)",
+      "lid_naam": "Shanna Beenen",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1989-04-24"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0074",
+      "rel_code": "NGL92K5",
+      "naam": "Mastijn,  L (Lennart)",
+      "lid_naam": "Lennart Mastijn",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1991-04-14"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0076",
+      "rel_code": "NLB70B1",
+      "naam": "Lijster, de E (Edwin)",
+      "lid_naam": "Edwin de Lijster",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1986-09-02"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0077",
+      "rel_code": "NGP78L4",
+      "naam": "Nieuwland, L (Lieke)",
+      "lid_naam": "Lieke Nieuwland",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1991-10-21"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0079",
+      "rel_code": "NGM12S2",
+      "naam": "Ewijk, van K. (Kim)",
+      "lid_naam": "Kim van Ewijk",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1987-07-15"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0080",
+      "rel_code": "NGV02Z5",
+      "naam": "Klerk, de L (Lisanne)",
+      "lid_naam": "Lisanne de Klerk",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1990-09-19"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0082",
+      "rel_code": "NJK27N6",
+      "naam": "Jonge, de S (Serena)",
+      "lid_naam": "Serena de Jonge",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1990-12-07"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0084",
+      "rel_code": "NFY08D5",
+      "naam": "Nagtegaal,  S (Saskia)",
+      "lid_naam": "Saskia Nagtegaal",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1988-10-15"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0086",
+      "rel_code": "NFV52T1",
+      "naam": "Tanis,  R. (Remco)",
+      "lid_naam": "Remco Tanis",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1970-05-01"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0087",
+      "rel_code": "NJF31H6",
+      "naam": "Vermeeren,  D.B. (Danique)",
+      "lid_naam": "Danique Vermeeren",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1989-04-11"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0088",
+      "rel_code": "NJT88G9",
+      "naam": "Bothoff,  J E (Annelies)",
+      "lid_naam": "Annelies Bothoff",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1985-11-22"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0089",
+      "rel_code": "NFW41R0",
+      "naam": "Merwe, van de M (Melina)",
+      "lid_naam": "Melina van de Merwe",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1979-07-21"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0091",
+      "rel_code": "NJJ75F8",
+      "naam": "Vries, de J (Jaspert)",
+      "lid_naam": "Jaspert de Vries",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1993-01-15"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0093",
+      "rel_code": "NJD38K6",
+      "naam": "Pierse,  S (Sandrine)",
+      "lid_naam": "Sandrine Pierse",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1993-06-28"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0094",
+      "rel_code": "NGD51P9",
+      "naam": "Giessen, van der S (Stefan)",
+      "lid_naam": "Stefan van der Giessen",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1988-04-24"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0095",
+      "rel_code": "NJF04R0",
+      "naam": "Scheurwater,  D (Diede)",
+      "lid_naam": "Diede Scheurwater",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1993-09-18"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0096",
+      "rel_code": "NJC32M1",
+      "naam": "Hooimeijer,  R.P.J. (Roy)",
+      "lid_naam": "Roy Hooimeijer",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1993-01-11"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0097",
+      "rel_code": "NJC01B6",
+      "naam": "Broere, E. (Eline)",
+      "lid_naam": "Eline Broere",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1992-10-21"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0098",
+      "rel_code": "NJH51N0",
+      "naam": "Wittekoek,  W B (Bas)",
+      "lid_naam": "Bas Wittekoek",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1990-07-03"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0100",
+      "rel_code": "NFW42S0",
+      "naam": "Elshout,  B (Bart)",
+      "lid_naam": "Bart Elshout",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1979-07-29"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0101",
+      "rel_code": "NJK09M5",
+      "naam": "Vanhooydonck,  R (Roel)",
+      "lid_naam": "Roel Vanhooydonck",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1989-04-07"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0104",
+      "rel_code": "NKY78H3",
+      "naam": "Knobbe,  T.P.N. (Tjeerd)",
+      "lid_naam": "Tjeerd Knobbe",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1991-06-13"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0105",
+      "rel_code": "NJB99G9",
+      "naam": "Vos,  R (Robin)",
+      "lid_naam": "Robin Vos",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1990-12-28"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0106",
+      "rel_code": "NJP10N5",
+      "naam": "Matse , K (kimberley)",
+      "lid_naam": "Kimberley Matse",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1992-11-06"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0107",
+      "rel_code": "NFD44K1",
+      "naam": "Meijerink,  A.A. (Andre)",
+      "lid_naam": "Andre Meijerink",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1970-09-09"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0108",
+      "rel_code": "NGT43V8",
+      "naam": "Welgraven, L (larissa)",
+      "lid_naam": "Larissa Welgraven",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1992-04-15"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0109",
+      "rel_code": "NJY57Z9",
+      "naam": "Kramer,  A. (Alice)",
+      "lid_naam": "Alice Kramer",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1966-09-13"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0110",
+      "rel_code": "NFY07H0",
+      "naam": "Dongen, van J (Jeroen)",
+      "lid_naam": "Jeroen van Dongen",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1978-12-04"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0111",
+      "rel_code": "NFW42B1",
+      "naam": "Verwaal,  T (Tanja)",
+      "lid_naam": "Tanja Verwaal",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1980-02-03"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0112",
+      "rel_code": "NJZ00Z4",
+      "naam": "Verhoef,  A.M. (Antoine)",
+      "lid_naam": "Antoine Verhoef",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1972-09-27"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0113",
+      "rel_code": "NFV97T6",
+      "naam": "Hartog, den G. (Gerard)",
+      "lid_naam": "Gerard den Hartog",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1964-02-20"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0114",
+      "rel_code": "NJY57Y2",
+      "naam": "Schmidt,  M.G. (Michael)",
+      "lid_naam": "Michael Schmidt",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1958-02-11"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0117",
+      "rel_code": "NGV03J6",
+      "naam": "Schenk, A (Andre)",
+      "lid_naam": "André Schenk",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1968-03-18"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0118",
+      "rel_code": "NFW15P3",
+      "naam": "Vogel-de Jong, E (Elise)",
+      "lid_naam": "Elise Vogel-de Jong",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1977-02-05"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0124",
+      "rel_code": "NFW13N3",
+      "naam": "Fruyt van Hertog, H (Hans)",
+      "lid_naam": "Hans Fruyt van Hertog",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1957-12-12"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0125",
+      "rel_code": "NFW12L6",
+      "naam": "Mastijn, E (Elsa)",
+      "lid_naam": "Elsa Mastijn",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1956-11-18"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0129",
+      "rel_code": "NGJ79J7",
+      "naam": "Kuijper, I C W (Ivar)",
+      "lid_naam": "Ivar Kuijper",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1982-04-20"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0132",
+      "rel_code": "NFW13D3",
+      "naam": "Wedemeyer, P (Petra)",
+      "lid_naam": "Petra Wedemeyer",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1968-10-28"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0138",
+      "rel_code": "NKQ40R6",
+      "naam": "Dalen-van Helden, van S. (Sietske)",
+      "lid_naam": "Sietske van Dalen-van Helden",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1973-04-17"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0144",
+      "rel_code": "NJR61Q6",
+      "naam": "Ruiter, de P. (Piet)",
+      "lid_naam": "Piet de Ruiter",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1962-05-22"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0148",
+      "rel_code": "NJC16H8",
+      "naam": "Bruin, de I (Imke)",
+      "lid_naam": "Imke de Bruin",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1994-04-02"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0150",
+      "rel_code": "NJF62K5",
+      "naam": "Holster,  V (Veerle)",
+      "lid_naam": "Veerle Holster",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1994-01-18"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0151",
+      "rel_code": "NJH63X1",
+      "naam": "Wit, de B (Bianca)",
+      "lid_naam": "Bianca de Wit",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1996-06-08"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0152",
+      "rel_code": "NJH51M3",
+      "naam": "Nelemans,  T (Tessa)",
+      "lid_naam": "Tessa Nelemans",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1996-09-04"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0153",
+      "rel_code": "NJF01L9",
+      "naam": "Baan Hofman,  H (Hanna)",
+      "lid_naam": "Hanna Baan Hofman",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1994-12-20"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0156",
+      "rel_code": "NJQ72M5",
+      "naam": "Veen, van der M. (Manu)",
+      "lid_naam": "Manu van der Veen",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1995-07-15"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0157",
+      "rel_code": "NJG58T2",
+      "naam": "Blenman,  F (Fabriëne)",
+      "lid_naam": "Fabriëne Blenman",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1997-07-20"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0158",
+      "rel_code": "NKN65F4",
+      "naam": "Vonk,  E.D. (Esther)",
+      "lid_naam": "Esther Vonk",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1996-05-14"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0159",
+      "rel_code": "NJF01K2",
+      "naam": "Zouwen, van der E (Emma)",
+      "lid_naam": "Emma van der Zouwen",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1995-03-14"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0160",
+      "rel_code": "NJF85Q6",
+      "naam": "Barendregt,  I (Inge)",
+      "lid_naam": "Inge Barendregt",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1996-10-26"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0161",
+      "rel_code": "NJH51P4",
+      "naam": "Geerling,  Q (Quinty)",
+      "lid_naam": "Quinty Geerling",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1996-12-16"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0162",
+      "rel_code": "NJD71J8",
+      "naam": "Hendriks,  I.A. (Iris)",
+      "lid_naam": "Iris Hendriks",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1997-11-13"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0163",
+      "rel_code": "NKD67B2",
+      "naam": "Veth,  D. (Danny)",
+      "lid_naam": "Danny Veth",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1997-03-14"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0164",
+      "rel_code": "NJH76J7",
+      "naam": "Kik,  M (Marijn)",
+      "lid_naam": "Marijn Kik",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1997-08-06"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0165",
+      "rel_code": "NJM75B3",
+      "naam": "Kruithof,  L. (Lisa)",
+      "lid_naam": "Lisa Kruithof",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1998-06-20"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0166",
+      "rel_code": "NJT90K8",
+      "naam": "Schmidt,  B. (Berend)",
+      "lid_naam": "Berend Schmidt",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1998-06-17"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0169",
+      "rel_code": "NJT90L5",
+      "naam": "Schmidt,  J. (Julia)",
+      "lid_naam": "Julia Schmidt",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1997-01-17"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0170",
+      "rel_code": "NJH76H3",
+      "naam": "Boom,  D (Dennis)",
+      "lid_naam": "Dennis Boom",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1997-05-12"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0171",
+      "rel_code": "NKD19V3",
+      "naam": "Kortekaas,  D. (Demi)",
+      "lid_naam": "Demi Kortekaas",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1996-10-14"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0172",
+      "rel_code": "NKK27D3",
+      "naam": "Mol,  D. (Daan)",
+      "lid_naam": "Daan Mol",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1998-04-11"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0173",
+      "rel_code": "NJW26X5",
+      "naam": "Korver, de F. (Fleur)",
+      "lid_naam": "Fleur de Korver",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1997-06-22"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0174",
+      "rel_code": "NJM75D7",
+      "naam": "Ligtenberg,  K. (Kars)",
+      "lid_naam": "Kars Ligtenberg",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1997-01-12"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0175",
+      "rel_code": "NKJ12L8",
+      "naam": "Verboon,  K. (Kyra)",
+      "lid_naam": "Kyra Verboon",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1996-11-04"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0176",
+      "rel_code": "NKB10W1",
+      "naam": "Appelboom,  N. (Nigel)",
+      "lid_naam": "Nigel Appelboom",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1998-12-29"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0177",
+      "rel_code": "NJZ00X0",
+      "naam": "Kurpershoek,  I. (Ilja)",
+      "lid_naam": "Ilja Kurpershoek",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1997-11-11"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0178",
+      "rel_code": "NJH76F9",
+      "naam": "Antwerpen, van T (Timo)",
+      "lid_naam": "Timo van Antwerpen",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1996-05-29"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0180",
+      "rel_code": "NKZ45Y9",
+      "naam": "Herik, van den M.N. (Maxime)",
+      "lid_naam": "Maxime van den Herik",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1998-04-23"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0182",
+      "rel_code": "NKS24P6",
+      "naam": "Lubbelinkhof,  R. (Remco)",
+      "lid_naam": "Remco Lubbelinkhof",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1998-10-08"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0183",
+      "rel_code": "NKD39N7",
+      "naam": "Spoel, van der R. (Romy)",
+      "lid_naam": "Romy van der Spoel",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1997-12-09"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0184",
+      "rel_code": "NKS51B4",
+      "naam": "Schweertman,  B.Q.L. (Bjarne)",
+      "lid_naam": "Bjarne Schweertman",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1998-11-13"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0185",
+      "rel_code": "NJR87N3",
+      "naam": "Steen Redeker,  M. (Miranda)",
+      "lid_naam": "Miranda Steen Redeker",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1998-07-20"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0186",
+      "rel_code": "NLB71H6",
+      "naam": "Antwerpen, van L. (Lisa)",
+      "lid_naam": "Lisa van Antwerpen",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1998-12-07"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0187",
+      "rel_code": "NJT90H7",
+      "naam": "Bras,  M. (Martijn)",
+      "lid_naam": "Martijn Bras",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1999-04-28"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0188",
+      "rel_code": "NJY83D8",
+      "naam": "Hermans,  M.D. (Mylene)",
+      "lid_naam": "Mylene Hermans",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2000-04-06"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0189",
+      "rel_code": "NJJ07P9",
+      "naam": "Berg, van de A (Anouk)",
+      "lid_naam": "Anouk van den Berg",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1998-12-17"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0190",
+      "rel_code": "NJT52P9",
+      "naam": "Versluis, I (Ivo)",
+      "lid_naam": "Ivo Versluis",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1999-03-20"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0191",
+      "rel_code": "NKR17B1",
+      "naam": "Hooijdonk, van J. (Jana)",
+      "lid_naam": "Jana van Hooijdonk",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1999-08-25"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0193",
+      "rel_code": "NJV32Y4",
+      "naam": "Hendriks,  N. (Niek)",
+      "lid_naam": "Niek Hendriks",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1999-08-25"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0195",
+      "rel_code": "NJT90G0",
+      "naam": "Hofmeester,  B. (Bob)",
+      "lid_naam": "Bob Hofmeester",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1999-08-19"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0196",
+      "rel_code": "NKD67C9",
+      "naam": "Veth,  S. (Sanne)",
+      "lid_naam": "Sanne Veth",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1999-09-02"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0197",
+      "rel_code": "NKG59K9",
+      "naam": "Wijngaarden, van O.D. (Olaf)",
+      "lid_naam": "Olaf van Wijngaarden",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1999-11-16"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0198",
+      "rel_code": "NKS24V8",
+      "naam": "Jegen,  S.Y.M. (Stella)",
+      "lid_naam": "Stella Jegen",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1999-12-02"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0199",
+      "rel_code": "NKR09D6",
+      "naam": "Pellikaan,  S.C. (Stef)",
+      "lid_naam": "Stef Pellikaan",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2000-04-29"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0200",
+      "rel_code": "NKF94J6",
+      "naam": "Kurpershoek,  A. (Anne)",
+      "lid_naam": "Anne Kurpershoek",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1999-12-07"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0201",
+      "rel_code": "NKN65G1",
+      "naam": "Rijsdijk,  T. (Thijmen)",
+      "lid_naam": "Thijmen Rijsdijk",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2000-03-31"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0202",
+      "rel_code": "NJW62N3",
+      "naam": "Vermeij,  M. (Mitzy)",
+      "lid_naam": "Mitzy Vermeij",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1999-11-04"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0203",
+      "rel_code": "NKV48J9",
+      "naam": "Es, van D. (Dagmar)",
+      "lid_naam": "Dagmar van Es",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1998-10-29"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0205",
+      "rel_code": "NKT15F5",
+      "naam": "Laar, van E. (Esmee)",
+      "lid_naam": "Esmee van Laar",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1999-01-30"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0208",
+      "rel_code": "NKN65C3",
+      "naam": "Valen, van S. (Sofia)",
+      "lid_naam": "Sofia van Valen",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2000-07-19"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0209",
+      "rel_code": "NLB70V1",
+      "naam": "Trebels, N (Nikki)",
+      "lid_naam": "Nikki Trebels",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1999-04-28"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0210",
+      "rel_code": "NJY83F2",
+      "naam": "Zeevaart,  B. (Britt)",
+      "lid_naam": "Britt Zeevaart",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2000-11-19"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0211",
+      "rel_code": "NKG59G1",
+      "naam": "Versluis, R (Robin)",
+      "lid_naam": "Robin Versluis",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2001-12-28"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0212",
+      "rel_code": "NKM09V7",
+      "naam": "Teerds,  N.J. (Nick)",
+      "lid_naam": "Nick Teerds",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2001-05-28"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0213",
+      "rel_code": "NKH04K0",
+      "naam": "Hendriks,  S. (Stan)",
+      "lid_naam": "Stan Hendriks",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2002-01-12"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0214",
+      "rel_code": "NKY17Q3",
+      "naam": "Elwuar,  A.J. (Alex)",
+      "lid_naam": "Alex Elwuar",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2002-07-23"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0215",
+      "rel_code": "NKW50V5",
+      "naam": "Klingens,  I. (Iris)",
+      "lid_naam": "Iris Klingens",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2001-10-12"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0216",
+      "rel_code": "NKG59Q1",
+      "naam": "Hofmeester,  D. (Daan)",
+      "lid_naam": "Daan Hofmeester",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2001-08-17"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0217",
+      "rel_code": "NKJ95J3",
+      "naam": "Oppe,  C.L. (Carmen)",
+      "lid_naam": "Carmen Oppe",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2002-01-23"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0218",
+      "rel_code": "NKS24R0",
+      "naam": "Zaal,  L. (Letterio)",
+      "lid_naam": "Letterio Zaal",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2001-03-05"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0219",
+      "rel_code": "NKV18G3",
+      "naam": "Alberts,  J. (Julie)",
+      "lid_naam": "Julie Alberts",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2002-06-23"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0220",
+      "rel_code": "NKN18F8",
+      "naam": "Knol,  N. (Noëlle)",
+      "lid_naam": "Noëlle Knol",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2002-08-09"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0221",
+      "rel_code": "NKB62H7",
+      "naam": "Filius,  D. (Dani)",
+      "lid_naam": "Dani Filius",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2001-11-04"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0222",
+      "rel_code": "NKG59P4",
+      "naam": "Wesenick,  L. (Luca)",
+      "lid_naam": "Luca Wesenick",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2002-03-22"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0223",
+      "rel_code": "NKX56R6",
+      "naam": "Buring,  R. (Rick)",
+      "lid_naam": "Rick Buring",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2002-01-10"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0224",
+      "rel_code": "NKS24Q3",
+      "naam": "Lubbelinkhof,  S. (Silvia)",
+      "lid_naam": "Silvia Lubbelinkhof",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2002-05-13"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0226",
+      "rel_code": "NKR99J3",
+      "naam": "Verschoor,  K.R. (Koen)",
+      "lid_naam": "Koen Verschoor",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2002-04-18"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0230",
+      "rel_code": "NKV67D4",
+      "naam": "Louwman,  S. (Serena)",
+      "lid_naam": "Serena Louwman",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2004-07-13"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0231",
+      "rel_code": "NKS24N2",
+      "naam": "Schweertman,  J.Q.B. (Jirina)",
+      "lid_naam": "Jirina Schweertman",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2003-03-04"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0232",
+      "rel_code": "NKW50R7",
+      "naam": "Flier,  N.G. (Naomi)",
+      "lid_naam": "Naomi Flier",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2004-06-15"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0233",
+      "rel_code": "NKW50S4",
+      "naam": "Struik,  J.E. (Jessy)",
+      "lid_naam": "Jessy Struik",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2004-02-24"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0234",
+      "rel_code": "NLB71C1",
+      "naam": "Zwaan, N. (Nienke)",
+      "lid_naam": "Nienke Zwaan",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2003-07-10"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0236",
+      "rel_code": "NLC83Q1",
+      "naam": "Weijde, van der T. (Thijs)",
+      "lid_naam": "Thijs van der Weijde",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2004-01-11"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0238",
+      "rel_code": "NLC93M8",
+      "naam": "Drinkwaard, M. (Mitchel)",
+      "lid_naam": "Mitchel Drinkwaard",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2002-03-18"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0239",
+      "rel_code": "NLB70Q6",
+      "naam": "Molenaar, L. (Lisa)",
+      "lid_naam": "Lisa Molenaar",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2004-04-08"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0240",
+      "rel_code": "NKR87B6",
+      "naam": "Rijn, van M. (Maarten)",
+      "lid_naam": "Maarten van Rijn",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2004-12-25"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0241",
+      "rel_code": "NKR09B2",
+      "naam": "Filius,  E. (Esmee)",
+      "lid_naam": "Esmee Filius",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2005-09-19"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0242",
+      "rel_code": "NKZ02V9",
+      "naam": "Lodder,  D. (Donna)",
+      "lid_naam": "Donna Lodder",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2005-02-08"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0244",
+      "rel_code": "NLB71K7",
+      "naam": "Evera, S (Samuel)",
+      "lid_naam": "Samuel Evera",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2005-09-29"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0245",
+      "rel_code": "NLB94R5",
+      "naam": "Heer, de C (Cayleigh)",
+      "lid_naam": "Cayleigh de Heer",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2005-11-30"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0246",
+      "rel_code": "NLB71G9",
+      "naam": "Schenk, R (Ruben)",
+      "lid_naam": "Ruben Schenk",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2005-08-31"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0247",
+      "rel_code": "NLC71P3",
+      "naam": "Vastenhout, J. (Josephine)",
+      "lid_naam": "Josephine Vastenhout",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2006-03-02"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0251",
+      "rel_code": "NJF43V5",
+      "naam": "Donkervoort, M.E.(Max)",
+      "lid_naam": "Max Donkervoort",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1995-07-16"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0253",
+      "rel_code": "NJJ96C0",
+      "naam": "Dolderman, I.(Iris)",
+      "lid_naam": "Iris Dolderman",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1994-01-12"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0257",
+      "rel_code": "NKC66S7",
+      "naam": "Bernaards, N.(Natascha)",
+      "lid_naam": "Natascha Bernaards",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1993-04-15"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0258",
+      "rel_code": "NJC21L6",
+      "naam": "Hartman, V.J.W.A.D.(Victor)",
+      "lid_naam": "Victor Hartman",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1994-03-28"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0259",
+      "rel_code": "NFW01Y9",
+      "naam": "Mans, Y.(Yvonne)",
+      "lid_naam": "Yvonne Mans",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1968-12-18"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0260",
+      "rel_code": "NLS07R6",
+      "naam": "Vaartmans, I.(Ingrid)",
+      "lid_naam": "Ingrid Vaartmans",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1980-06-13"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0261",
+      "rel_code": "NJK12T8",
+      "naam": "Blaay, de S.M.(Stefan)",
+      "lid_naam": "Stefan de Blaay",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1991-09-10"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0262",
+      "rel_code": "NLJ52N9",
+      "naam": "Klink, V.A.(Vivianne)",
+      "lid_naam": "Vivianne Klink",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1998-05-18"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0264",
+      "rel_code": "NFS68P3",
+      "naam": "Fred Lichteveld",
+      "lid_naam": "Fred Lichteveld",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1967-07-22"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0265",
+      "rel_code": "NLG57H9",
+      "naam": "Muehlhaus, B.(Babet)",
+      "lid_naam": "Babet Muehlhaus",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1998-06-19"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0266",
+      "rel_code": "NLJ31L2",
+      "naam": "Dreef, M.G.(Merijn)",
+      "lid_naam": "Merijn Dreef",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2002-08-30"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0267",
+      "rel_code": "NLD36N5",
+      "naam": "Herbold, D.J.(Dylan)",
+      "lid_naam": "Dylan Herbold",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2002-09-25"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0268",
+      "rel_code": "NKZ72Z2",
+      "naam": "Steenhuis, T.(Tjarda)",
+      "lid_naam": "Tjarda Steenhuis",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2003-05-02"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0269",
+      "rel_code": "NKN22H9",
+      "naam": "Schröder, C.(Charlotte)",
+      "lid_naam": "Charlotte Schröder",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2005-08-01"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0272",
+      "rel_code": "NLS27Q9",
+      "naam": "Folles, A.C.(Annelouise)",
+      "lid_naam": "Annelouise Folles",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2007-12-04"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0274",
+      "rel_code": "NFW27P4",
+      "naam": "Xandra Molendijk",
+      "lid_naam": "Xandra Molendijk",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1986-02-04"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0275",
+      "rel_code": "NFW41Z6",
+      "naam": "Saskia van der Ven",
+      "lid_naam": "Saskia van der Ven",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1981-08-13"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0276",
+      "rel_code": "NJC57V9",
+      "naam": "Lydia Maasson",
+      "lid_naam": "Lydia Maasson",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1988-08-15"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0278",
+      "rel_code": "NFW40N9",
+      "naam": "Jos Swets",
+      "lid_naam": "Jos Swets",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1976-02-21"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0280",
+      "rel_code": "NJC15X7",
+      "naam": "Sigrid Vogelezang",
+      "lid_naam": "Sigrid Vogelezang",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1992-04-19"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0283",
+      "rel_code": "NGK72D5",
+      "naam": "Suzanne Dusseldorp",
+      "lid_naam": "Suzanne Dusseldorp",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1990-10-31"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0284",
+      "rel_code": "NJG73Q6",
+      "naam": "Nikki de Jager",
+      "lid_naam": "Nikki de Jager",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1991-05-15"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0287",
+      "rel_code": "NGP49F0",
+      "naam": "Nienke Franssens",
+      "lid_naam": "Nienke Franssens",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1990-10-22"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0288",
+      "rel_code": "NGZ14P0",
+      "naam": "Bert Wittekoek",
+      "lid_naam": "Bert Wittekoek",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1990-07-03"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0290",
+      "rel_code": "NFW13H1",
+      "naam": "Walter Boshoven",
+      "lid_naam": "Walter Boshoven",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1950-06-17"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0292",
+      "rel_code": "NFW13J5",
+      "naam": "Rende van den Broek",
+      "lid_naam": "Rende van den Broek",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1970-12-21"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0296",
+      "rel_code": "NFW43B4",
+      "naam": "Tom Kolsters",
+      "lid_naam": "Tom Kolsters",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1982-09-06"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0297",
+      "rel_code": "NFW26P1",
+      "naam": "Sander Verhoef",
+      "lid_naam": "Sander Verhoef",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1981-09-18"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0311",
+      "rel_code": "NFW14V2",
+      "naam": "Leendert Valk",
+      "lid_naam": "Leendert Valk",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1973-05-01"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0312",
+      "rel_code": "NGV03M7",
+      "naam": "Erik Keller",
+      "lid_naam": "Erik Keller",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1993-01-11"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0313",
+      "rel_code": "NJC16D0",
+      "naam": "Okko Muilkens",
+      "lid_naam": "Okko Muilkens",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1993-06-08"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0314",
+      "rel_code": "NJK09F6",
+      "naam": "Minouk de Ruiter",
+      "lid_naam": "Minouk de Ruiter",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1992-11-20"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0315",
+      "rel_code": "NJK09L8",
+      "naam": "Tom Gerritsen",
+      "lid_naam": "Tom Gerritsen",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1992-08-31"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0316",
+      "rel_code": "NJF27L7",
+      "naam": "Matthijs van Es",
+      "lid_naam": "Matthijs van Es",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1994-09-30"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0319",
+      "rel_code": "NJC35T9",
+      "naam": "Brigit Zomer",
+      "lid_naam": "Brigit Zomer",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1993-11-11"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0321",
+      "rel_code": "NHR84Q1",
+      "naam": "Jojan Heinen",
+      "lid_naam": "Jojan Heinen",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1993-01-27"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0322",
+      "rel_code": "NJG42S2",
+      "naam": "Magnus Souverein",
+      "lid_naam": "Magnus Souverein",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1994-04-18"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0323",
+      "rel_code": "NJK49X2",
+      "naam": "Marloes Verdonk",
+      "lid_naam": "Marloes Verdonk",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1993-10-01"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0324",
+      "rel_code": "NJC16B6",
+      "naam": "Nelleke Wittekoek",
+      "lid_naam": "Nelleke Wittekoek",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1993-10-11"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0325",
+      "rel_code": "NJD18S2",
+      "naam": "Bart van Strien",
+      "lid_naam": "Bart van Strien",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1992-11-20"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0326",
+      "rel_code": "NJR84M7",
+      "naam": "Daisy Zeevaart",
+      "lid_naam": "Daisy Zeevaart",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1995-01-09"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0327",
+      "rel_code": "NJC41T2",
+      "naam": "Eef Lans",
+      "lid_naam": "Eef Lans",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1992-11-17"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0328",
+      "rel_code": "NJF04Q3",
+      "naam": "Gaby Cecchini",
+      "lid_naam": "Gaby Cecchini",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1993-07-21"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0329",
+      "rel_code": "NJC15G8",
+      "naam": "Rian Abrahamse",
+      "lid_naam": "Rian Abrahamse",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1994-08-08"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0330",
+      "rel_code": "NJG25G7",
+      "naam": "Nienke Wilbrink",
+      "lid_naam": "Nyncke Wilbrink",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1993-11-29"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0331",
+      "rel_code": "NJK09J4",
+      "naam": "Ashley van Woerkom",
+      "lid_naam": "Ashley van Woerkom",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1994-02-07"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0332",
+      "rel_code": "NJD21W4",
+      "naam": "Ilse Temmink",
+      "lid_naam": "Ilse Temmink",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1993-03-05"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0333",
+      "rel_code": "NJZ52X1",
+      "naam": "Madelon Boerman",
+      "lid_naam": "Madelon Boerman",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1993-02-18"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0334",
+      "rel_code": "NJC15K6",
+      "naam": "Eva Durinck",
+      "lid_naam": "Eva Durinck",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1994-03-22"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0335",
+      "rel_code": "NJF95X0",
+      "naam": "Kees de Koff",
+      "lid_naam": "Kees de Koff",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1961-10-02"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0336",
+      "rel_code": "NJC35R5",
+      "naam": "Janette van der Linden",
+      "lid_naam": "Janette van der Linden",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1994-05-03"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0339",
+      "rel_code": "NJC81H8",
+      "naam": "Lisanne Bunk",
+      "lid_naam": "Lisanne Bunk",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1994-02-24"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0341",
+      "rel_code": "NJM71G6",
+      "naam": "Stephanie Dingemans",
+      "lid_naam": "Stephanie Dingemans",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1992-08-16"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0343",
+      "rel_code": "NJF62M9",
+      "naam": "Eline Slijkhuis",
+      "lid_naam": "Eline Slijkhuis",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1995-02-14"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0345",
+      "rel_code": "NJF77W9",
+      "naam": "Judith Versteeg",
+      "lid_naam": "Judith Versteeg",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1995-06-18"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0346",
+      "rel_code": "NJC67X8",
+      "naam": "Michelle Stehouwer",
+      "lid_naam": "Michelle Stehouwer",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1995-03-17"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0347",
+      "rel_code": "NJH51C3",
+      "naam": "Elleke Ploeg",
+      "lid_naam": "Elleke Ploeg",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1995-06-01"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0348",
+      "rel_code": "NJG73R3",
+      "naam": "Lisanne Visser",
+      "lid_naam": "Lisanne Visser",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1995-07-07"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0350",
+      "rel_code": "NKH71M0",
+      "naam": "Wiek van Gurp",
+      "lid_naam": "Wiek van Gurp",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1994-11-24"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0352",
+      "rel_code": "NJC15J9",
+      "naam": "Lisa Durinck",
+      "lid_naam": "Lisa Durinck",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1995-07-11"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0353",
+      "rel_code": "NJF75W3",
+      "naam": "Daphne Punt",
+      "lid_naam": "Daphne Punt",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1996-02-08"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0354",
+      "rel_code": "NKL60M6",
+      "naam": "Iris Vermeij",
+      "lid_naam": "Iris Vermeij",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1996-06-21"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0355",
+      "rel_code": "NJQ72P6",
+      "naam": "Roel Brouwer",
+      "lid_naam": "Roel Brouwer",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1997-11-12"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0356",
+      "rel_code": "NJH51R8",
+      "naam": "Chloë Collignon",
+      "lid_naam": "Chloé Collignon",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1996-12-31"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0357",
+      "rel_code": "NJX04G1",
+      "naam": "Shanne Bakker",
+      "lid_naam": "Shanne Bakker",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1997-01-08"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0361",
+      "rel_code": "NKR16Y9",
+      "naam": "Jeremy Barroso",
+      "lid_naam": "Jeremy Barroso",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1998-08-08"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0363",
+      "rel_code": "NHM18T4",
+      "naam": "Amando Vermond",
+      "lid_naam": "Amando Vermond",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1997-04-10"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0364",
+      "rel_code": "NKG68V8",
+      "naam": "Emy de Bliek",
+      "lid_naam": "Emy de Bliek",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1997-04-01"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0365",
+      "rel_code": "NKB86G2",
+      "naam": "Anne Grundlehner",
+      "lid_naam": "Anne Grundlehner",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1997-04-27"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0367",
+      "rel_code": "NJX43H5",
+      "naam": "Lisa Kalkman",
+      "lid_naam": "Lisa Kalkman",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1997-02-12"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0368",
+      "rel_code": "NJX43J9",
+      "naam": "Amy Kalkman",
+      "lid_naam": "Amy Kalkman",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1998-05-21"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0370",
+      "rel_code": "NJH93R4",
+      "naam": "Damaris Scheper",
+      "lid_naam": "Damaris Scheper",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1999-05-08"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0371",
+      "rel_code": "NJT90N9",
+      "naam": "Kevin Collignon",
+      "lid_naam": "Kevin Collignon",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2000-03-28"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0372",
+      "rel_code": "NJY83C1",
+      "naam": "Bente Langerak",
+      "lid_naam": "Bente Langerak",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2000-06-27"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0373",
+      "rel_code": "NKC46Q3",
+      "naam": "Larissa van Doesburg",
+      "lid_naam": "Larissa van Doesburg",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1999-08-01"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0374",
+      "rel_code": "NKR09C9",
+      "naam": "Jeroen Spierings",
+      "lid_naam": "Jeroen Spierings",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1999-10-06"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0375",
+      "rel_code": "NJR12H1",
+      "naam": "Romina Cecchini",
+      "lid_naam": "Romina Cecchini",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1999-09-29"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0376",
+      "rel_code": "NJT00L0",
+      "naam": "Katinka Bakker",
+      "lid_naam": "Katinka Bakker",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1999-05-11"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0377",
+      "rel_code": "NKM01S2",
+      "naam": "Jisk van der Veen",
+      "lid_naam": "Jisk van der Veen",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2000-08-04"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0378",
+      "rel_code": "NKN64Z1",
+      "naam": "Jessy Wouters",
+      "lid_naam": "Jessy Wouters",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2000-02-11"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0379",
+      "rel_code": "NKD20C8",
+      "naam": "Fer Schmidt",
+      "lid_naam": "Fer Schmidt",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1998-11-30"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0380",
+      "rel_code": "NKN64W0",
+      "naam": "Yasmeen Kooijman",
+      "lid_naam": "Yasmeen Kooijman",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2000-03-31"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0382",
+      "rel_code": "NKN08C2",
+      "naam": "Jeroen van Stappershoef",
+      "lid_naam": "Jeroen van Stappershoef",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1999-05-18"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0383",
+      "rel_code": "NKR62R3",
+      "naam": "Sigrid Dielhoff",
+      "lid_naam": "Sigrid Dielhoff",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1999-12-25"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0384",
+      "rel_code": "NKH99L7",
+      "naam": "Esmee Baas",
+      "lid_naam": "Esmee Baas",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2001-03-24"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0385",
+      "rel_code": "NKM01R5",
+      "naam": "Siska Verschoor",
+      "lid_naam": "Siska Verschoor",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2001-05-29"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0386",
+      "rel_code": "NKR09F0",
+      "naam": "Danilo Westenberger",
+      "lid_naam": "Danilo Westenberger",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2001-08-31"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0387",
+      "rel_code": "NKP93T3",
+      "naam": "Jo-Ann Vietsch",
+      "lid_naam": "Jo-Ann Vietsch",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2001-10-16"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0388",
+      "rel_code": "NKL61V2",
+      "naam": "Serena de Visser",
+      "lid_naam": "Serena de Visser",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2002-03-31"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0390",
+      "rel_code": "NKR65H2",
+      "naam": "Simon van Rijn",
+      "lid_naam": "Simon van Rijn",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2003-01-22"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0391",
+      "rel_code": "NKK48B2",
+      "naam": "Fiore Kardienaal",
+      "lid_naam": "Fiore Kardienaal",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2003-05-14"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0395",
+      "rel_code": "NKS24T4",
+      "naam": "Marloes Kooij",
+      "lid_naam": "Marloes Kooij",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2005-06-01"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0397",
+      "rel_code": "NGZ14H4",
+      "naam": "Peters, L (Laura)",
+      "lid_naam": "Laura Peters",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1989-01-23"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0398",
+      "rel_code": "NKQ76R9",
+      "naam": "Stenis-Visser, van R (Rianne)",
+      "lid_naam": "Rianne van Stenis-Visser",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1989-05-31"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0399",
+      "rel_code": "NFW39Z5",
+      "naam": "Nobel-Verwaal, M M (Martine)",
+      "lid_naam": "Martine Nobel-Verwaal",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1977-03-02"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0402",
+      "rel_code": "NJC43N6",
+      "naam": "Hauer, D. (Dolany)",
+      "lid_naam": "Dolany Hauer",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1995-08-10"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0403",
+      "rel_code": "NJB72J9",
+      "naam": "Nanninga, R (Robin)",
+      "lid_naam": "Robin Nanninga",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1995-02-20"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0404",
+      "rel_code": "NKW49X1",
+      "naam": "Bakker, D.P. (Dimitri)",
+      "lid_naam": "Dimitri Bakker",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2001-01-15"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0405",
+      "rel_code": "NKX06Q4",
+      "naam": "Isra Kooijman",
+      "lid_naam": "Isra Kooijman",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2002-08-09"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0406",
+      "rel_code": "NKV54Q1",
+      "naam": "Oord, van J. (Joyce)",
+      "lid_naam": "Joyce van Oord",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2003-10-21"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0408",
+      "rel_code": "NKT08B1",
+      "naam": "Dekker, C. (Chris)",
+      "lid_naam": "Chris Dekker",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2006-05-08"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0409",
+      "rel_code": "NKV48D7",
+      "naam": "Kakes, B.R. (Britt)",
+      "lid_naam": "Britt Kakes",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2006-11-07"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0412",
+      "rel_code": "NJB42V8",
+      "naam": "Koolmees,  L. (Lindsay)",
+      "lid_naam": "Lindsay Koolmees",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1992-11-17"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0413",
+      "rel_code": "NJD42Y1",
+      "naam": "Bondt, de S. (Shirley)",
+      "lid_naam": "Shirley de Bondt",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1992-07-24"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0414",
+      "rel_code": "NJF25P9",
+      "naam": "Kloosterhuis,  Y.F. (Yvonne)",
+      "lid_naam": "Yvonne Kloosterhuis",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1993-05-16"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0415",
+      "rel_code": "NFW26F1",
+      "naam": "Nelemans, S (Staffan)",
+      "lid_naam": "Staffan Nelemans",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1980-02-23"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0416",
+      "rel_code": "NLD62W1",
+      "naam": "Zwetsloot,  E.P.M (Eva)",
+      "lid_naam": "Eva Zwetsloot",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1997-09-01"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0419",
+      "rel_code": "NLD41Y2",
+      "naam": "Berg, Van den J.J. (Joanna)",
+      "lid_naam": "Joanne van den Berg",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1998-06-29"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0420",
+      "rel_code": "NLD80Z6",
+      "naam": "Vasiljev,  A. (Aljona)",
+      "lid_naam": "Aljona Vasiljev",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2001-08-19"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0422",
+      "rel_code": "NLG57R9",
+      "naam": "Raab, M. (Marit)",
+      "lid_naam": "Marit Raab",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2002-09-23"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0423",
+      "rel_code": "NLG59C0",
+      "naam": "Verhoef, F. (Florien)",
+      "lid_naam": "Florien Verhoef",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2002-11-25"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0425",
+      "rel_code": "NLC24R1",
+      "naam": "Bakker,  N.J. (Niels)",
+      "lid_naam": "Niels Bakker",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2005-03-02"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0426",
+      "rel_code": "NLG59B3",
+      "naam": "Verhoef, S. (Suzan)",
+      "lid_naam": "Suzan Verhoef",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2004-06-08"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0428",
+      "rel_code": "NLG59H5",
+      "naam": "Spijk, L. (Luka)",
+      "lid_naam": "Luka Spijk",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2006-03-17"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0429",
+      "rel_code": "NLG58V0",
+      "naam": "Amraoui, S. (Sarah)",
+      "lid_naam": "Sarah Amraoui",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2006-03-17"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0431",
+      "rel_code": "NJD16N1",
+      "naam": "Bolte, K. (Keely)",
+      "lid_naam": "Keeley Bolte",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1995-09-22"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0433",
+      "rel_code": "NJG11C2",
+      "naam": "Baars, M (Marije)",
+      "lid_naam": "Marije Baars",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1994-10-20"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0434",
+      "rel_code": "NGC32X7",
+      "naam": "Kuipers (Johan)",
+      "lid_naam": "Johan Kuipers",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1987-12-31"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0435",
+      "rel_code": "NFK75Y4",
+      "naam": "Brouwer, A (Aard)",
+      "lid_naam": "Aard Brouwer",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1963-04-27"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0436",
+      "rel_code": "NJH22F2",
+      "naam": "Euser, N. (Niels)",
+      "lid_naam": "Niels Euser",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1997-09-12"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0439",
+      "rel_code": "NLL19Z6",
+      "naam": "Oostlander, J. (Jasper)",
+      "lid_naam": "Jasper Oostlander",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1999-05-03"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0441",
+      "rel_code": "NLF71K1",
+      "naam": "Ruisch, M. (Manon)",
+      "lid_naam": "Manon Ruisch",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2002-10-09"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0443",
+      "rel_code": "NLG79Z1",
+      "naam": "Peenstra, I. (Iris)",
+      "lid_naam": "Iris Peenstra",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2006-01-11"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0445",
+      "rel_code": "NLH59J0",
+      "naam": "Vogel, de M. (Merel)",
+      "lid_naam": "Merel de Vogel",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2007-01-08"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0446",
+      "rel_code": "NLH59G9",
+      "naam": "Jong, de L. (Leon)",
+      "lid_naam": "Léon de Jong",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2006-12-08"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0451",
+      "rel_code": "NLN68N6",
+      "naam": "Rijn, van S. (Sheila)",
+      "lid_naam": "Sheila van Rijn",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2000-07-02"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0452",
+      "rel_code": "NLM86W2",
+      "naam": "Vasiljev, V. (Viktor)",
+      "lid_naam": "Viktor Vasiljev",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2003-08-16"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0453",
+      "rel_code": "NLL61F7",
+      "naam": "Musch, A. (Abel)",
+      "lid_naam": "Abel Musch",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2004-08-26"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0454",
+      "rel_code": "NLM94K7",
+      "naam": "Vegt, van der W. (Wesley)",
+      "lid_naam": "Wesley van der Vegt",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2007-05-09"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0455",
+      "rel_code": "NLM40H9",
+      "naam": "Gökgün, D.H. (Dilara)",
+      "lid_naam": "Dilara Gökgün",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2006-12-04"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0456",
+      "rel_code": "NLN28Z0",
+      "naam": "Gundogdu, I. (Irmak)",
+      "lid_naam": "Irmak Gundogdu",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2006-08-02"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0462",
+      "rel_code": "NFS68L5",
+      "naam": "Leo Kardienaal",
+      "lid_naam": "Leo Kardienaal",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1966-03-30"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0465",
+      "rel_code": "NGZ14B2",
+      "naam": "Simone van Haren",
+      "lid_naam": "Simone van Haren",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1992-11-02"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0500",
+      "rel_code": "NJH25Z1",
+      "naam": "Ozbek, E (Esre)",
+      "lid_naam": "Esre Ozbek",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1996-12-20"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0511",
+      "rel_code": "NLD55M5",
+      "naam": "Klerk, de A. (Ayda)",
+      "lid_naam": "Ayda de Klerk",
+      "method": "ach+ini",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2003-04-09"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0068",
+      "rel_code": "NFX13H2",
+      "naam": "Erik van de Burgt",
+      "lid_naam": "Erik van de Burgt",
+      "method": "ach+roep",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1977-10-26"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0103",
+      "rel_code": "NGL91L9",
+      "naam": "Muller,  A (Amy)",
+      "lid_naam": "Amy Muller",
+      "method": "ach+roep",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1989-03-27"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0167",
+      "rel_code": "NJM75F1",
+      "naam": "Nelemans,  A. (Anouk)",
+      "lid_naam": "Anouk Nelemans",
+      "method": "ach+roep",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1998-05-20"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0181",
+      "rel_code": "NKZ78G7",
+      "naam": "Ouwehand,  D. (Daphne)",
+      "lid_naam": "Daphne Ouwehand",
+      "method": "ach+roep",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1997-12-09"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0192",
+      "rel_code": "NJT00K3",
+      "naam": "Dalen, van J.J. (Joost)",
+      "lid_naam": "Joost van Dalen",
+      "method": "ach+roep",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1998-11-15"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0204",
+      "rel_code": "NKZ78F0",
+      "naam": "Ouwehand,  D. (Dave)",
+      "lid_naam": "Dave Ouwehand",
+      "method": "ach+roep",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1999-01-29"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0206",
+      "rel_code": "NKT92M5",
+      "naam": "Mol,  J.R. (Jennifer)",
+      "lid_naam": "Jennifer Mol",
+      "method": "ach+roep",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1999-06-08"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0227",
+      "rel_code": "NKN65K9",
+      "naam": "Verschoor,  I.E. (Ilse)",
+      "lid_naam": "Ilse Verschoor",
+      "method": "ach+roep",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2001-03-17"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0228",
+      "rel_code": "NLB70C8",
+      "naam": "Bouman, S (Sissy)",
+      "lid_naam": "Sissy Bouman",
+      "method": "ach+roep",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2002-09-16"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0237",
+      "rel_code": "NLB70P9",
+      "naam": "Verschoor, I. (Isa)",
+      "lid_naam": "Isa Verschoor",
+      "method": "ach+roep",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2004-01-16"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0243",
+      "rel_code": "NLB70D5",
+      "naam": "Bouman, S (Sophie)",
+      "lid_naam": "Sophie Bouman",
+      "method": "ach+roep",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2005-01-14"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0282",
+      "rel_code": "NJK27V2",
+      "naam": "Lotte van Andel",
+      "lid_naam": "Lotte van Andel",
+      "method": "ach+roep",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1990-12-04"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0317",
+      "rel_code": "NJC15W0",
+      "naam": "Matthijs Nelemans",
+      "lid_naam": "Matthijs Nelemans",
+      "method": "ach+roep",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1994-03-25"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0337",
+      "rel_code": "NJC16G1",
+      "naam": "Mirjam Vossepoel",
+      "lid_naam": "Mirjam Vossepoel",
+      "method": "ach+roep",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1993-11-10"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0338",
+      "rel_code": "NKP72D8",
+      "naam": "Jonneke v.d. Berg",
+      "lid_naam": "Jonneke van den Berg",
+      "method": "ach+roep",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1994-08-16"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0340",
+      "rel_code": "NJW82X3",
+      "naam": "Mariette Bellaard",
+      "lid_naam": "Mariette Bellaard",
+      "method": "ach+roep",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1995-05-31"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0342",
+      "rel_code": "NJC01C3",
+      "naam": "Ruben Borsje",
+      "lid_naam": "Ruben Borsje",
+      "method": "ach+roep",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1994-11-11"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0351",
+      "rel_code": "NJH89B5",
+      "naam": "Roald Bakker",
+      "lid_naam": "Roald Bakker",
+      "method": "ach+roep",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1996-06-19"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0362",
+      "rel_code": "NKR87C3",
+      "naam": "Tevfik Toprak",
+      "lid_naam": "Tevfik Toprak",
+      "method": "ach+roep",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1997-11-15"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0381",
+      "rel_code": "NKN65H8",
+      "naam": "Iris Verschoor",
+      "lid_naam": "Iris Verschoor",
+      "method": "ach+roep",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1999-04-30"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0392",
+      "rel_code": "NKQ46W9",
+      "naam": "Elise Don",
+      "lid_naam": "Elise Don",
+      "method": "ach+roep",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2003-07-08"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0421",
+      "rel_code": "NLG57G2",
+      "naam": "Goudriaan, S (Sarah)",
+      "lid_naam": "Sarah Goudriaan",
+      "method": "ach+roep",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2000-09-07"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0430",
+      "rel_code": "NLH06S9",
+      "naam": "Mahabier, J. (Jeslyn)",
+      "lid_naam": "Jeslyn Mahabier",
+      "method": "ach+roep",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2006-01-22"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0444",
+      "rel_code": "NLK34W9",
+      "naam": "Willigen, v. E. (Evy)",
+      "lid_naam": "Evy van Willigen",
+      "method": "ach+roep",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2006-10-17"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0448",
+      "rel_code": "NLJ31M9",
+      "naam": "Riet, v. O. (Olav)",
+      "lid_naam": "Olav Van Riet",
+      "method": "ach+roep",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2008-09-12"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0468",
+      "rel_code": "NJZ80M3",
+      "naam": "Danny van Trooijen",
+      "lid_naam": "Danny van Trooijen",
+      "method": "ach+roep",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2000-02-16"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0525",
+      "rel_code": "NJZ80J2",
+      "naam": "Trooijen, van D. (Damien)",
+      "lid_naam": "Damien van Trooijen",
+      "method": "ach+roep",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2002-01-11"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0071",
+      "rel_code": "NJS12Y1",
+      "naam": "Ballegooijen, van I (Irene)",
+      "lid_naam": "Chris van Ballegooijen",
+      "method": "ach_vol",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1939-10-04"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0099",
+      "rel_code": "NJK27P0",
+      "naam": "Berkel, van A (Anthony)",
+      "lid_naam": "Roxanne van Berkel",
+      "method": "ach_vol",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1990-08-12"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0235",
+      "rel_code": "WFZQ282",
+      "naam": "Barendrecht, M. (Menno)",
+      "lid_naam": "Laurens Barendrecht",
+      "method": "basis_als_vol",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1981-02-27"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0360",
+      "rel_code": "NKR16Z6",
+      "naam": "Jeroen von Wasserthal",
+      "lid_naam": "Jeroen von Wasserthal",
+      "method": "basis_als_vol",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1997-11-18"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0075",
+      "rel_code": "NJG52M5",
+      "naam": "Sijde, van de L (Lisanne)",
+      "lid_naam": "Ad van der Sijde",
+      "method": "ach_enig",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1955-06-08"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0069",
+      "rel_code": "NFW42M8",
+      "naam": "Annemarie de Boer - Schipper",
+      "lid_naam": "Alexander de Boer",
+      "method": "gehuwde",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1979-11-30"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0179",
+      "rel_code": "NKP98W9",
+      "naam": "Bakker, den C. (Claire)",
+      "lid_naam": "Karin Kardienaal-Bakker",
+      "method": "gehuwde",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1967-03-16"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0389",
+      "rel_code": "NKR22S0",
+      "naam": "Melissa Duyndam",
+      "lid_naam": "Melissa Duijndam",
+      "method": "spelling_norm",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2003-09-29"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0507",
+      "rel_code": "NJV63M8",
+      "naam": "Haaren, van. S (Simone)",
+      "lid_naam": "Joop van Haren",
+      "method": "spelling_norm",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1948-04-14"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0073",
+      "rel_code": "NGL92B2",
+      "naam": "Isarin,  M (Maritte)",
+      "lid_naam": "Maritte Isarin",
+      "method": "ach+ini+roep_nodate",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1991-06-06"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0092",
+      "rel_code": "NGG43J1",
+      "naam": "Haren, van R (Raymond)",
+      "lid_naam": "Raymond van Haren",
+      "method": "ach+ini_nodate",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1989-03-02"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0194",
+      "rel_code": "NJF95M3",
+      "naam": "Naaktgeboren,  B.D. (Benthe)",
+      "lid_naam": "Benthe Naaktgeboren",
+      "method": "ach+ini_nodate",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1999-03-08"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0294",
+      "rel_code": "NJZ00V6",
+      "naam": "Vincent Jonkers",
+      "lid_naam": "Vincent Jonkers",
+      "method": "ach+ini_nodate",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1971-10-02"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0293",
+      "rel_code": "NLB71J0",
+      "naam": "Leo Kardinaal",
+      "lid_naam": "Duco Kardinaal",
+      "method": "ach_enig_nodate",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "2004-12-13"
+        ]
+      ]
+    },
+    {
+      "ow_id": "OW-0320",
+      "rel_code": "NJC45V8",
+      "naam": "Mathijs Boersma",
+      "lid_naam": "Matthijs Boersma",
+      "method": "fuzzy_roep",
+      "verrijkingen": [
+        [
+          "geboortedatum",
+          null,
+          "1993-03-18"
+        ]
+      ]
+    }
+  ],
+  "niet_gematcht_lijst": [
+    {
+      "ow_id": "OW-0056",
+      "naam": "Maarten van Vliet",
+      "seizoenen": [
+        "2020-2021"
+      ]
+    },
+    {
+      "ow_id": "OW-0058",
+      "naam": "Desiree Schepers",
+      "seizoenen": [
+        "2020-2021"
+      ]
+    },
+    {
+      "ow_id": "OW-0225",
+      "naam": "Trooyen, van D. (Damien)",
+      "seizoenen": [
+        "2011-2012",
+        "2012-2013"
+      ]
+    },
+    {
+      "ow_id": "OW-0270",
+      "naam": "Tun?yürek, S.(Süeda)",
+      "seizoenen": [
+        "2016-2017"
+      ]
+    },
+    {
+      "ow_id": "OW-0273",
+      "naam": "Tun?yürek, S.(Sümeyra)",
+      "seizoenen": [
+        "2016-2017"
+      ]
+    },
+    {
+      "ow_id": "OW-0277",
+      "naam": "Jan Peter Verwaal",
+      "seizoenen": [
+        "2010-2011"
+      ]
+    },
+    {
+      "ow_id": "OW-0289",
+      "naam": "Arno Bosje",
+      "seizoenen": [
+        "2010-2011"
+      ]
+    },
+    {
+      "ow_id": "OW-0291",
+      "naam": "Elise de Jong",
+      "seizoenen": [
+        "2010-2011"
+      ]
+    },
+    {
+      "ow_id": "OW-0318",
+      "naam": "Ymke de Bruin",
+      "seizoenen": [
+        "2010-2011"
+      ]
+    },
+    {
+      "ow_id": "OW-0358",
+      "naam": "Fabriënne Blenman",
+      "seizoenen": [
+        "2010-2011"
+      ]
+    },
+    {
+      "ow_id": "OW-0359",
+      "naam": "Maarten van ’t Noordende",
+      "seizoenen": [
+        "2010-2011"
+      ]
+    },
+    {
+      "ow_id": "OW-0369",
+      "naam": "Esre Özbek",
+      "seizoenen": [
+        "2010-2011"
+      ]
+    },
+    {
+      "ow_id": "OW-0400",
+      "naam": "Paul de Roijer",
+      "seizoenen": [
+        "2011-2012"
+      ]
+    },
+    {
+      "ow_id": "OW-0407",
+      "naam": "Bas van Bodegom",
+      "seizoenen": [
+        "2011-2012"
+      ]
+    },
+    {
+      "ow_id": "OW-0410",
+      "naam": "Goudriaan, S. (Steven)",
+      "seizoenen": [
+        "2013-2014",
+        "2014-2015"
+      ]
+    },
+    {
+      "ow_id": "OW-0411",
+      "naam": "Kuijper - Vanhooydonck,  S (Simone)",
+      "seizoenen": [
+        "2013-2014",
+        "2014-2015"
+      ]
+    },
+    {
+      "ow_id": "OW-0418",
+      "naam": "Meuhlhaus, B (Babette)",
+      "seizoenen": [
+        "2013-2014",
+        "2014-2015"
+      ]
+    },
+    {
+      "ow_id": "OW-0424",
+      "naam": "Nes van, V (Vera)",
+      "seizoenen": [
+        "2013-2014"
+      ]
+    },
+    {
+      "ow_id": "OW-0440",
+      "naam": "Willigen v., F. (Floris)",
+      "seizoenen": [
+        "2014-2015"
+      ]
+    },
+    {
+      "ow_id": "OW-0449",
+      "naam": "Donkevoort, T. (tim)",
+      "seizoenen": [
+        "2015-2016"
+      ]
+    },
+    {
+      "ow_id": "OW-0457",
+      "naam": "Dorien in't Veld",
+      "seizoenen": [
+        "2010-2011"
+      ]
+    },
+    {
+      "ow_id": "OW-0458",
+      "naam": "Lisette in't Veld",
+      "seizoenen": [
+        "2010-2011"
+      ]
+    },
+    {
+      "ow_id": "OW-0472",
+      "naam": "Damiën van Trooijen",
+      "seizoenen": [
+        "2010-2011"
+      ]
+    },
+    {
+      "ow_id": "OW-0475",
+      "naam": "Vries de, R (Rik)",
+      "seizoenen": [
+        "2011-2012"
+      ]
+    },
+    {
+      "ow_id": "OW-0499",
+      "naam": "Peuter de, F (Freek)",
+      "seizoenen": [
+        "2011-2012"
+      ]
+    },
+    {
+      "ow_id": "OW-0526",
+      "naam": "Rubio, E. (Estelle)",
+      "seizoenen": [
+        "2013-2014",
+        "2014-2015"
+      ]
+    },
+    {
+      "ow_id": "OW-0531",
+      "naam": "Wondergem (Mark-Jan)",
+      "seizoenen": [
+        "2014-2015"
+      ]
+    },
+    {
+      "ow_id": "OW-0533",
+      "naam": "Willigen v., D (Danique)",
+      "seizoenen": [
+        "2014-2015"
+      ]
+    },
+    {
+      "ow_id": "OW-0535",
+      "naam": "Talens, M. (Moniek)",
+      "seizoenen": [
+        "2015-2016",
+        "2016-2017"
+      ]
+    },
+    {
+      "ow_id": "OW-0543",
+      "naam": "Bruin, de D.(Daphne)",
+      "seizoenen": [
+        "2016-2017"
+      ]
+    },
+    {
+      "ow_id": "OW-0578",
+      "naam": "Dekkers, Daniëlle",
+      "seizoenen": [
+        "2017-2018",
+        "2019-2020"
+      ]
+    },
+    {
+      "ow_id": "OW-0579",
+      "naam": "Kamezman, Zoe",
+      "seizoenen": [
+        "2017-2018",
+        "2019-2020"
+      ]
+    },
+    {
+      "ow_id": "OW-0580",
+      "naam": "Fernout, Tirsa",
+      "seizoenen": [
+        "2019-2020"
+      ]
+    },
+    {
+      "ow_id": "OW-0581",
+      "naam": "Zwanenburg, Debita",
+      "seizoenen": [
+        "2019-2020"
+      ]
+    }
+  ]
+}

@@ -362,7 +362,7 @@
       "geslacht": "M",
       "leeftijd_vorig": 25,
       "leeftijd_nieuw": 26,
-      "team_vorig": "S1S2",
+      "team_vorig": "AR",
       "team_nieuw": "S1S2"
     },
     {
@@ -813,7 +813,7 @@
       "leeftijd_vorig": 18,
       "leeftijd_nieuw": 19,
       "team_vorig": "A2",
-      "team_nieuw": "S1S2"
+      "team_nieuw": "S4"
     },
     {
       "rel_code": "NKY17P6",
@@ -1003,7 +1003,7 @@
       "leeftijd_vorig": 18,
       "leeftijd_nieuw": 19,
       "team_vorig": "A1",
-      "team_nieuw": "S1S2"
+      "team_nieuw": "S4"
     },
     {
       "rel_code": "NLG59G8",
@@ -2413,7 +2413,7 @@
       "leeftijd_vorig": 8,
       "leeftijd_nieuw": 9,
       "team_vorig": "E3",
-      "team_nieuw": "E3"
+      "team_nieuw": "E1"
     },
     {
       "rel_code": "NMT10Q1",
@@ -2453,7 +2453,7 @@
       "leeftijd_vorig": 8,
       "leeftijd_nieuw": 9,
       "team_vorig": "E4",
-      "team_nieuw": "E1"
+      "team_nieuw": "E2"
     },
     {
       "rel_code": "NMV37K2",
@@ -2553,7 +2553,7 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 6,
       "team_vorig": null,
-      "team_nieuw": "F2"
+      "team_nieuw": "F3"
     },
     {
       "rel_code": "NMW39Z4",
@@ -2633,7 +2633,7 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 7,
       "team_vorig": null,
-      "team_nieuw": "F2"
+      "team_nieuw": "F3"
     },
     {
       "rel_code": "NMX53X3",
@@ -2723,7 +2723,7 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 7,
       "team_vorig": null,
-      "team_nieuw": "F2"
+      "team_nieuw": "F3"
     },
     {
       "rel_code": "NMZ29T0",
@@ -2733,7 +2733,7 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 5,
       "team_vorig": null,
-      "team_nieuw": "K"
+      "team_nieuw": "F4"
     },
     {
       "rel_code": "NMZ32V8",

@@ -4,13 +4,13 @@
     "snapshot_vorig": "2010-06-01",
     "snapshot_nieuw": "2011-06-01",
     "gegenereerd": "2026-02-24",
-    "totaal_vorig": 400,
-    "totaal_nieuw": 409,
+    "totaal_vorig": 379,
+    "totaal_nieuw": 386,
     "samenvatting": {
-      "behouden": 323,
-      "nieuw": 86,
+      "behouden": 306,
+      "nieuw": 80,
       "herinschrijver": 0,
-      "uitgestroomd": 77,
+      "uitgestroomd": 73,
       "niet_spelend_geworden": 0
     }
   },
@@ -26,14 +26,34 @@
       "team_nieuw": "MW3"
     },
     {
+      "rel_code": "NFS68L5",
+      "status": "uitgestroomd",
+      "geboortejaar": 1966,
+      "geslacht": "M",
+      "leeftijd_vorig": 44,
+      "leeftijd_nieuw": null,
+      "team_vorig": "MW2",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "NFT37Y9",
+      "status": "nieuw",
+      "geboortejaar": 1982,
+      "geslacht": "M",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 29,
+      "team_vorig": null,
+      "team_nieuw": "S1/S2"
+    },
+    {
       "rel_code": "NFT48H8",
       "status": "behouden",
       "geboortejaar": 1987,
       "geslacht": "V",
       "leeftijd_vorig": 23,
       "leeftijd_nieuw": 24,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S1/S2",
+      "team_nieuw": "S1/S2"
     },
     {
       "rel_code": "NFV13X2",
@@ -46,13 +66,33 @@
       "team_nieuw": "MW3"
     },
     {
+      "rel_code": "NFV52T1",
+      "status": "behouden",
+      "geboortejaar": 1970,
+      "geslacht": "M",
+      "leeftijd_vorig": 40,
+      "leeftijd_nieuw": 41,
+      "team_vorig": "S3/S4",
+      "team_nieuw": "S3/S4"
+    },
+    {
+      "rel_code": "NFV97T6",
+      "status": "nieuw",
+      "geboortejaar": 1964,
+      "geslacht": "M",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 47,
+      "team_vorig": null,
+      "team_nieuw": "MW2"
+    },
+    {
       "rel_code": "NFW01C5",
       "status": "behouden",
       "geboortejaar": 1970,
       "geslacht": "V",
       "leeftijd_vorig": 40,
       "leeftijd_nieuw": 41,
-      "team_vorig": "S1",
+      "team_vorig": "S10",
       "team_nieuw": "MW3"
     },
     {
@@ -62,8 +102,18 @@
       "geslacht": "V",
       "leeftijd_vorig": 46,
       "leeftijd_nieuw": 47,
-      "team_vorig": "S1",
+      "team_vorig": "S10",
       "team_nieuw": "MW3"
+    },
+    {
+      "rel_code": "NFW12L6",
+      "status": "uitgestroomd",
+      "geboortejaar": 1956,
+      "geslacht": "V",
+      "leeftijd_vorig": 54,
+      "leeftijd_nieuw": null,
+      "team_vorig": "S10",
+      "team_nieuw": null
     },
     {
       "rel_code": "NFW12Z4",
@@ -76,14 +126,54 @@
       "team_nieuw": "MW2"
     },
     {
+      "rel_code": "NFW13D3",
+      "status": "uitgestroomd",
+      "geboortejaar": 1968,
+      "geslacht": "V",
+      "leeftijd_vorig": 42,
+      "leeftijd_nieuw": null,
+      "team_vorig": "S10",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "NFW13H1",
+      "status": "uitgestroomd",
+      "geboortejaar": 1950,
+      "geslacht": "M",
+      "leeftijd_vorig": 60,
+      "leeftijd_nieuw": null,
+      "team_vorig": "S10",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "NFW13J5",
+      "status": "uitgestroomd",
+      "geboortejaar": 1970,
+      "geslacht": "M",
+      "leeftijd_vorig": 40,
+      "leeftijd_nieuw": null,
+      "team_vorig": "S10",
+      "team_nieuw": null
+    },
+    {
       "rel_code": "NFW13L9",
       "status": "behouden",
       "geboortejaar": 1964,
       "geslacht": "M",
       "leeftijd_vorig": 46,
       "leeftijd_nieuw": 47,
-      "team_vorig": "MW2",
+      "team_vorig": "S8",
       "team_nieuw": "MW3"
+    },
+    {
+      "rel_code": "NFW13N3",
+      "status": "uitgestroomd",
+      "geboortejaar": 1957,
+      "geslacht": "M",
+      "leeftijd_vorig": 53,
+      "leeftijd_nieuw": null,
+      "team_vorig": "S10",
+      "team_nieuw": null
     },
     {
       "rel_code": "NFW13X3",
@@ -102,8 +192,8 @@
       "geslacht": "M",
       "leeftijd_vorig": 41,
       "leeftijd_nieuw": 42,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S5",
+      "team_nieuw": "S5"
     },
     {
       "rel_code": "NFW14K5",
@@ -112,8 +202,18 @@
       "geslacht": "M",
       "leeftijd_vorig": 43,
       "leeftijd_nieuw": 44,
-      "team_vorig": "S1",
+      "team_vorig": "S10",
       "team_nieuw": "MW3"
+    },
+    {
+      "rel_code": "NFW14V2",
+      "status": "uitgestroomd",
+      "geboortejaar": 1973,
+      "geslacht": "M",
+      "leeftijd_vorig": 37,
+      "leeftijd_nieuw": null,
+      "team_vorig": "MW2",
+      "team_nieuw": null
     },
     {
       "rel_code": "NFW14X6",
@@ -142,7 +242,7 @@
       "geslacht": "M",
       "leeftijd_vorig": 55,
       "leeftijd_nieuw": 56,
-      "team_vorig": "S1",
+      "team_vorig": "S10",
       "team_nieuw": "MW3"
     },
     {
@@ -186,14 +286,34 @@
       "team_nieuw": "MW2"
     },
     {
+      "rel_code": "NFW15P3",
+      "status": "nieuw",
+      "geboortejaar": 1977,
+      "geslacht": "V",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 34,
+      "team_vorig": null,
+      "team_nieuw": "MW3"
+    },
+    {
       "rel_code": "NFW26G8",
       "status": "behouden",
       "geboortejaar": 1980,
       "geslacht": "M",
       "leeftijd_vorig": 30,
       "leeftijd_nieuw": 31,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S1/S2",
+      "team_nieuw": "S1/S2"
+    },
+    {
+      "rel_code": "NFW26P1",
+      "status": "behouden",
+      "geboortejaar": 1981,
+      "geslacht": "M",
+      "leeftijd_vorig": 29,
+      "leeftijd_nieuw": 30,
+      "team_vorig": "MW1",
+      "team_nieuw": "MW1"
     },
     {
       "rel_code": "NFW26Q8",
@@ -212,8 +332,8 @@
       "geslacht": "M",
       "leeftijd_vorig": 29,
       "leeftijd_nieuw": 30,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S8",
+      "team_nieuw": "S8/S9"
     },
     {
       "rel_code": "NFW26V3",
@@ -222,8 +342,18 @@
       "geslacht": "V",
       "leeftijd_vorig": 27,
       "leeftijd_nieuw": 28,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S5",
+      "team_nieuw": "S1/S2"
+    },
+    {
+      "rel_code": "NFW27P4",
+      "status": "behouden",
+      "geboortejaar": 1986,
+      "geslacht": "V",
+      "leeftijd_vorig": 24,
+      "leeftijd_nieuw": 25,
+      "team_vorig": "S1/S2",
+      "team_nieuw": "S1/S2"
     },
     {
       "rel_code": "NFW28B9",
@@ -232,8 +362,8 @@
       "geslacht": "V",
       "leeftijd_vorig": 27,
       "leeftijd_nieuw": 28,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S1/S2",
+      "team_nieuw": "S1/S2"
     },
     {
       "rel_code": "NFW28D3",
@@ -243,7 +373,7 @@
       "leeftijd_vorig": 25,
       "leeftijd_nieuw": 26,
       "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_nieuw": "S8/S9"
     },
     {
       "rel_code": "NFW28G4",
@@ -262,8 +392,8 @@
       "geslacht": "M",
       "leeftijd_vorig": 27,
       "leeftijd_nieuw": 28,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S8",
+      "team_nieuw": "S8/S9"
     },
     {
       "rel_code": "NFW28S8",
@@ -272,7 +402,7 @@
       "geslacht": "M",
       "leeftijd_vorig": 25,
       "leeftijd_nieuw": null,
-      "team_vorig": "S1",
+      "team_vorig": "S1/S2",
       "team_nieuw": null
     },
     {
@@ -282,8 +412,8 @@
       "geslacht": "M",
       "leeftijd_vorig": 25,
       "leeftijd_nieuw": 26,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S1/S2",
+      "team_nieuw": "S1/S2"
     },
     {
       "rel_code": "NFW28X3",
@@ -312,8 +442,18 @@
       "geslacht": "M",
       "leeftijd_vorig": 24,
       "leeftijd_nieuw": 25,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S1/S2",
+      "team_nieuw": "S1/S2"
+    },
+    {
+      "rel_code": "NFW39Z5",
+      "status": "nieuw",
+      "geboortejaar": 1977,
+      "geslacht": "V",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 34,
+      "team_vorig": null,
+      "team_nieuw": "MW1"
     },
     {
       "rel_code": "NFW40B5",
@@ -327,13 +467,13 @@
     },
     {
       "rel_code": "NFW40D9",
-      "status": "nieuw",
+      "status": "behouden",
       "geboortejaar": 1975,
       "geslacht": "M",
-      "leeftijd_vorig": null,
+      "leeftijd_vorig": 35,
       "leeftijd_nieuw": 36,
-      "team_vorig": null,
-      "team_nieuw": "S1"
+      "team_vorig": "S5",
+      "team_nieuw": "S5"
     },
     {
       "rel_code": "NFW40F3",
@@ -342,7 +482,7 @@
       "geslacht": "M",
       "leeftijd_vorig": 32,
       "leeftijd_nieuw": 33,
-      "team_vorig": "S1",
+      "team_vorig": "S5",
       "team_nieuw": "MW1"
     },
     {
@@ -356,6 +496,16 @@
       "team_nieuw": null
     },
     {
+      "rel_code": "NFW40N9",
+      "status": "behouden",
+      "geboortejaar": 1976,
+      "geslacht": "M",
+      "leeftijd_vorig": 34,
+      "leeftijd_nieuw": 35,
+      "team_vorig": "S5",
+      "team_nieuw": "S5"
+    },
+    {
       "rel_code": "NFW40Y6",
       "status": "behouden",
       "geboortejaar": 1981,
@@ -363,7 +513,7 @@
       "leeftijd_vorig": 29,
       "leeftijd_nieuw": 30,
       "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_nieuw": "S8/S9"
     },
     {
       "rel_code": "NFW41J4",
@@ -376,14 +526,44 @@
       "team_nieuw": "MW1"
     },
     {
+      "rel_code": "NFW41R0",
+      "status": "behouden",
+      "geboortejaar": 1979,
+      "geslacht": "V",
+      "leeftijd_vorig": 31,
+      "leeftijd_nieuw": 32,
+      "team_vorig": "S5",
+      "team_nieuw": "S5"
+    },
+    {
       "rel_code": "NFW41S7",
       "status": "behouden",
       "geboortejaar": 1981,
       "geslacht": "V",
       "leeftijd_vorig": 29,
       "leeftijd_nieuw": 30,
-      "team_vorig": "S1",
+      "team_vorig": "S5",
       "team_nieuw": "MW3"
+    },
+    {
+      "rel_code": "NFW41Z6",
+      "status": "uitgestroomd",
+      "geboortejaar": 1981,
+      "geslacht": "V",
+      "leeftijd_vorig": 29,
+      "leeftijd_nieuw": null,
+      "team_vorig": "S1/S2",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "NFW42B1",
+      "status": "behouden",
+      "geboortejaar": 1980,
+      "geslacht": "V",
+      "leeftijd_vorig": 30,
+      "leeftijd_nieuw": 31,
+      "team_vorig": "MW1",
+      "team_nieuw": "MW1"
     },
     {
       "rel_code": "NFW42L1",
@@ -392,8 +572,28 @@
       "geslacht": "M",
       "leeftijd_vorig": 29,
       "leeftijd_nieuw": 30,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S1/S2",
+      "team_nieuw": "S1/S2"
+    },
+    {
+      "rel_code": "NFW42S0",
+      "status": "behouden",
+      "geboortejaar": 1979,
+      "geslacht": "M",
+      "leeftijd_vorig": 31,
+      "leeftijd_nieuw": 32,
+      "team_vorig": "S8",
+      "team_nieuw": "S8/S9"
+    },
+    {
+      "rel_code": "NFW43B4",
+      "status": "uitgestroomd",
+      "geboortejaar": 1982,
+      "geslacht": "M",
+      "leeftijd_vorig": 28,
+      "leeftijd_nieuw": null,
+      "team_vorig": "MW1",
+      "team_nieuw": null
     },
     {
       "rel_code": "NFW54H4",
@@ -412,8 +612,8 @@
       "geslacht": "M",
       "leeftijd_vorig": 30,
       "leeftijd_nieuw": 31,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S3/S4",
+      "team_nieuw": "S1/S2"
     },
     {
       "rel_code": "NFX00K9",
@@ -422,8 +622,8 @@
       "geslacht": "V",
       "leeftijd_vorig": 43,
       "leeftijd_nieuw": 44,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S5",
+      "team_nieuw": "S5"
     },
     {
       "rel_code": "NFX10D5",
@@ -462,8 +662,28 @@
       "geslacht": "M",
       "leeftijd_vorig": 27,
       "leeftijd_nieuw": 28,
-      "team_vorig": "S1",
+      "team_vorig": "S6",
       "team_nieuw": "MW3"
+    },
+    {
+      "rel_code": "NFY07H0",
+      "status": "behouden",
+      "geboortejaar": 1978,
+      "geslacht": "M",
+      "leeftijd_vorig": 32,
+      "leeftijd_nieuw": 33,
+      "team_vorig": "MW1",
+      "team_nieuw": "MW1"
+    },
+    {
+      "rel_code": "NFY08D5",
+      "status": "behouden",
+      "geboortejaar": 1988,
+      "geslacht": "V",
+      "leeftijd_vorig": 22,
+      "leeftijd_nieuw": 23,
+      "team_vorig": "S3/S4",
+      "team_nieuw": "S3/S4"
     },
     {
       "rel_code": "NFY88Q6",
@@ -482,18 +702,18 @@
       "geslacht": "M",
       "leeftijd_vorig": 22,
       "leeftijd_nieuw": 23,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S7",
+      "team_nieuw": "S7/S8"
     },
     {
       "rel_code": "NFZ27D3",
-      "status": "nieuw",
+      "status": "behouden",
       "geboortejaar": 1986,
       "geslacht": "M",
-      "leeftijd_vorig": null,
+      "leeftijd_vorig": 24,
       "leeftijd_nieuw": 25,
-      "team_vorig": null,
-      "team_nieuw": "S1"
+      "team_vorig": "S8",
+      "team_nieuw": "S8/S9"
     },
     {
       "rel_code": "NFZ85W0",
@@ -512,8 +732,18 @@
       "geslacht": "M",
       "leeftijd_vorig": 22,
       "leeftijd_nieuw": 23,
-      "team_vorig": "S1",
+      "team_vorig": "S3/S4",
       "team_nieuw": "MW3"
+    },
+    {
+      "rel_code": "NGD51P9",
+      "status": "behouden",
+      "geboortejaar": 1988,
+      "geslacht": "M",
+      "leeftijd_vorig": 22,
+      "leeftijd_nieuw": 23,
+      "team_vorig": "S7",
+      "team_nieuw": "S3/S4"
     },
     {
       "rel_code": "NGD97S8",
@@ -523,7 +753,27 @@
       "leeftijd_vorig": 39,
       "leeftijd_nieuw": 40,
       "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_nieuw": "S8/S9"
+    },
+    {
+      "rel_code": "NGG43C2",
+      "status": "behouden",
+      "geboortejaar": 1989,
+      "geslacht": "V",
+      "leeftijd_vorig": 21,
+      "leeftijd_nieuw": 22,
+      "team_vorig": "S1/S2",
+      "team_nieuw": "S1/S2"
+    },
+    {
+      "rel_code": "NGG43J1",
+      "status": "behouden",
+      "geboortejaar": 1989,
+      "geslacht": "M",
+      "leeftijd_vorig": 21,
+      "leeftijd_nieuw": 22,
+      "team_vorig": "S6",
+      "team_nieuw": "S3/S4"
     },
     {
       "rel_code": "NGG54S2",
@@ -532,8 +782,8 @@
       "geslacht": "M",
       "leeftijd_vorig": 22,
       "leeftijd_nieuw": 23,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S7",
+      "team_nieuw": "S7/S8"
     },
     {
       "rel_code": "NGG54V3",
@@ -542,8 +792,8 @@
       "geslacht": "V",
       "leeftijd_vorig": 23,
       "leeftijd_nieuw": 24,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S1/S2",
+      "team_nieuw": "S1/S2"
     },
     {
       "rel_code": "NGH43G1",
@@ -552,8 +802,38 @@
       "geslacht": "M",
       "leeftijd_vorig": 23,
       "leeftijd_nieuw": 24,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S3/S4",
+      "team_nieuw": "S1/S2"
+    },
+    {
+      "rel_code": "NGJ79J7",
+      "status": "uitgestroomd",
+      "geboortejaar": 1982,
+      "geslacht": "M",
+      "leeftijd_vorig": 28,
+      "leeftijd_nieuw": null,
+      "team_vorig": "S8",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "NGK72D5",
+      "status": "behouden",
+      "geboortejaar": 1990,
+      "geslacht": "V",
+      "leeftijd_vorig": 20,
+      "leeftijd_nieuw": 21,
+      "team_vorig": "S7",
+      "team_nieuw": "S7/S8"
+    },
+    {
+      "rel_code": "NGL91L9",
+      "status": "nieuw",
+      "geboortejaar": 1989,
+      "geslacht": "V",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 22,
+      "team_vorig": null,
+      "team_nieuw": "S9/S10"
     },
     {
       "rel_code": "NGL91R1",
@@ -572,8 +852,38 @@
       "geslacht": "M",
       "leeftijd_vorig": 21,
       "leeftijd_nieuw": 22,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S7",
+      "team_nieuw": "S7/S8"
+    },
+    {
+      "rel_code": "NGL92B2",
+      "status": "behouden",
+      "geboortejaar": 1991,
+      "geslacht": "V",
+      "leeftijd_vorig": 19,
+      "leeftijd_nieuw": 20,
+      "team_vorig": "S1/S2",
+      "team_nieuw": "S1/S2"
+    },
+    {
+      "rel_code": "NGL92K5",
+      "status": "behouden",
+      "geboortejaar": 1991,
+      "geslacht": "M",
+      "leeftijd_vorig": 19,
+      "leeftijd_nieuw": 20,
+      "team_vorig": "S1/S2",
+      "team_nieuw": "S1/S2"
+    },
+    {
+      "rel_code": "NGM12S2",
+      "status": "behouden",
+      "geboortejaar": 1987,
+      "geslacht": "V",
+      "leeftijd_vorig": 23,
+      "leeftijd_nieuw": 24,
+      "team_vorig": "S3/S4",
+      "team_nieuw": "S1/S2"
     },
     {
       "rel_code": "NGP49B2",
@@ -582,8 +892,8 @@
       "geslacht": "M",
       "leeftijd_vorig": 20,
       "leeftijd_nieuw": 21,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S9",
+      "team_nieuw": "S9/S10"
     },
     {
       "rel_code": "NGP49D6",
@@ -592,8 +902,18 @@
       "geslacht": "M",
       "leeftijd_vorig": 20,
       "leeftijd_nieuw": 21,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S7",
+      "team_nieuw": "S7/S8"
+    },
+    {
+      "rel_code": "NGP49F0",
+      "status": "uitgestroomd",
+      "geboortejaar": 1990,
+      "geslacht": "V",
+      "leeftijd_vorig": 20,
+      "leeftijd_nieuw": null,
+      "team_vorig": "S9",
+      "team_nieuw": null
     },
     {
       "rel_code": "NGP79X1",
@@ -602,8 +922,8 @@
       "geslacht": "M",
       "leeftijd_vorig": 20,
       "leeftijd_nieuw": 21,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S3/S4",
+      "team_nieuw": "S1/S2"
     },
     {
       "rel_code": "NGQ19P6",
@@ -613,7 +933,7 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 26,
       "team_vorig": null,
-      "team_nieuw": "S1"
+      "team_nieuw": "S5"
     },
     {
       "rel_code": "NGT09H8",
@@ -632,8 +952,8 @@
       "geslacht": "M",
       "leeftijd_vorig": 19,
       "leeftijd_nieuw": 20,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S1/S2",
+      "team_nieuw": "S1/S2"
     },
     {
       "rel_code": "NGT42S4",
@@ -642,8 +962,8 @@
       "geslacht": "V",
       "leeftijd_vorig": 20,
       "leeftijd_nieuw": 21,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S7",
+      "team_nieuw": "S7/S8"
     },
     {
       "rel_code": "NGT42V5",
@@ -652,8 +972,8 @@
       "geslacht": "M",
       "leeftijd_vorig": 20,
       "leeftijd_nieuw": 21,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S9",
+      "team_nieuw": "S9/S10"
     },
     {
       "rel_code": "NGT42X9",
@@ -662,8 +982,8 @@
       "geslacht": "V",
       "leeftijd_vorig": 21,
       "leeftijd_nieuw": 22,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S8",
+      "team_nieuw": "S8/S9"
     },
     {
       "rel_code": "NGT42Z3",
@@ -672,8 +992,8 @@
       "geslacht": "M",
       "leeftijd_vorig": 20,
       "leeftijd_nieuw": 21,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S3/S4",
+      "team_nieuw": "S3/S4"
     },
     {
       "rel_code": "NGT43H0",
@@ -682,8 +1002,8 @@
       "geslacht": "V",
       "leeftijd_vorig": 23,
       "leeftijd_nieuw": 24,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S8",
+      "team_nieuw": "S8/S9"
     },
     {
       "rel_code": "NGT43L8",
@@ -692,8 +1012,8 @@
       "geslacht": "V",
       "leeftijd_vorig": 19,
       "leeftijd_nieuw": 20,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S6",
+      "team_nieuw": "S6/S7"
     },
     {
       "rel_code": "NGT43N2",
@@ -702,8 +1022,8 @@
       "geslacht": "V",
       "leeftijd_vorig": 20,
       "leeftijd_nieuw": 21,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S3/S4",
+      "team_nieuw": "S3/S4"
     },
     {
       "rel_code": "NGT44B1",
@@ -712,8 +1032,8 @@
       "geslacht": "V",
       "leeftijd_vorig": 24,
       "leeftijd_nieuw": 25,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S8",
+      "team_nieuw": "S8/S9"
     },
     {
       "rel_code": "NGT92Q5",
@@ -722,8 +1042,28 @@
       "geslacht": "M",
       "leeftijd_vorig": 20,
       "leeftijd_nieuw": 21,
-      "team_vorig": "S1",
+      "team_vorig": "S1/S2",
       "team_nieuw": "S1"
+    },
+    {
+      "rel_code": "NGV02Z5",
+      "status": "behouden",
+      "geboortejaar": 1990,
+      "geslacht": "V",
+      "leeftijd_vorig": 20,
+      "leeftijd_nieuw": 21,
+      "team_vorig": "S3/S4",
+      "team_nieuw": "S3/S4"
+    },
+    {
+      "rel_code": "NGV03M7",
+      "status": "behouden",
+      "geboortejaar": 1993,
+      "geslacht": "M",
+      "leeftijd_vorig": 17,
+      "leeftijd_nieuw": 18,
+      "team_vorig": "A1/A2",
+      "team_nieuw": "A1"
     },
     {
       "rel_code": "NGW10M4",
@@ -732,8 +1072,8 @@
       "geslacht": "M",
       "leeftijd_vorig": 20,
       "leeftijd_nieuw": 21,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S3/S4",
+      "team_nieuw": "S3/S4"
     },
     {
       "rel_code": "NGW66P8",
@@ -742,17 +1082,17 @@
       "geslacht": "V",
       "leeftijd_vorig": 19,
       "leeftijd_nieuw": 20,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S6",
+      "team_nieuw": "S6/S7"
     },
     {
       "rel_code": "NGX37Q4",
-      "status": "nieuw",
+      "status": "behouden",
       "geboortejaar": 1991,
       "geslacht": "M",
-      "leeftijd_vorig": null,
+      "leeftijd_vorig": 19,
       "leeftijd_nieuw": 20,
-      "team_vorig": null,
+      "team_vorig": "S6",
       "team_nieuw": "S1"
     },
     {
@@ -762,8 +1102,28 @@
       "geslacht": "M",
       "leeftijd_vorig": 19,
       "leeftijd_nieuw": 20,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S6",
+      "team_nieuw": "S3/S4"
+    },
+    {
+      "rel_code": "NGZ14B2",
+      "status": "behouden",
+      "geboortejaar": 1992,
+      "geslacht": "V",
+      "leeftijd_vorig": 18,
+      "leeftijd_nieuw": 19,
+      "team_vorig": "A1/A2",
+      "team_nieuw": "A1"
+    },
+    {
+      "rel_code": "NGZ14H4",
+      "status": "nieuw",
+      "geboortejaar": 1989,
+      "geslacht": "V",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 22,
+      "team_vorig": null,
+      "team_nieuw": "S5"
     },
     {
       "rel_code": "NGZ14L2",
@@ -772,8 +1132,38 @@
       "geslacht": "M",
       "leeftijd_vorig": 19,
       "leeftijd_nieuw": 20,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S6",
+      "team_nieuw": "S3/S4"
+    },
+    {
+      "rel_code": "NGZ14P0",
+      "status": "behouden",
+      "geboortejaar": 1990,
+      "geslacht": "M",
+      "leeftijd_vorig": 20,
+      "leeftijd_nieuw": 21,
+      "team_vorig": "S7",
+      "team_nieuw": "S9/S10"
+    },
+    {
+      "rel_code": "NHM18T4",
+      "status": "uitgestroomd",
+      "geboortejaar": 1997,
+      "geslacht": "M",
+      "leeftijd_vorig": 13,
+      "leeftijd_nieuw": null,
+      "team_vorig": "C4",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "NHR84Q1",
+      "status": "behouden",
+      "geboortejaar": 1993,
+      "geslacht": "M",
+      "leeftijd_vorig": 17,
+      "leeftijd_nieuw": 18,
+      "team_vorig": "A3/A4",
+      "team_nieuw": "A1"
     },
     {
       "rel_code": "NHY54X2",
@@ -782,8 +1172,8 @@
       "geslacht": "V",
       "leeftijd_vorig": 18,
       "leeftijd_nieuw": 19,
-      "team_vorig": "A3",
-      "team_nieuw": "S1"
+      "team_vorig": "A3/A4",
+      "team_nieuw": "S6/S7"
     },
     {
       "rel_code": "NHY59B3",
@@ -792,8 +1182,18 @@
       "geslacht": "M",
       "leeftijd_vorig": 19,
       "leeftijd_nieuw": 20,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S9",
+      "team_nieuw": "S9/S10"
+    },
+    {
+      "rel_code": "NJB72J9",
+      "status": "nieuw",
+      "geboortejaar": 1995,
+      "geslacht": "V",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 16,
+      "team_vorig": null,
+      "team_nieuw": "A3"
     },
     {
       "rel_code": "NJB72K6",
@@ -802,8 +1202,8 @@
       "geslacht": "M",
       "leeftijd_vorig": 20,
       "leeftijd_nieuw": 21,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S7",
+      "team_nieuw": "S7/S8"
     },
     {
       "rel_code": "NJB81P3",
@@ -812,8 +1212,68 @@
       "geslacht": "M",
       "leeftijd_vorig": 19,
       "leeftijd_nieuw": 20,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S3/S4",
+      "team_nieuw": "S3/S4"
+    },
+    {
+      "rel_code": "NJB99G9",
+      "status": "behouden",
+      "geboortejaar": 1990,
+      "geslacht": "V",
+      "leeftijd_vorig": 20,
+      "leeftijd_nieuw": 21,
+      "team_vorig": "S9",
+      "team_nieuw": "S9/S10"
+    },
+    {
+      "rel_code": "NJC01B6",
+      "status": "behouden",
+      "geboortejaar": 1992,
+      "geslacht": "V",
+      "leeftijd_vorig": 18,
+      "leeftijd_nieuw": 19,
+      "team_vorig": "A1/A2",
+      "team_nieuw": "A1"
+    },
+    {
+      "rel_code": "NJC01C3",
+      "status": "behouden",
+      "geboortejaar": 1994,
+      "geslacht": "M",
+      "leeftijd_vorig": 16,
+      "leeftijd_nieuw": 17,
+      "team_vorig": "B2",
+      "team_nieuw": "A1"
+    },
+    {
+      "rel_code": "NJC15G8",
+      "status": "uitgestroomd",
+      "geboortejaar": 1994,
+      "geslacht": "V",
+      "leeftijd_vorig": 16,
+      "leeftijd_nieuw": null,
+      "team_vorig": "A3/A4",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "NJC15J9",
+      "status": "behouden",
+      "geboortejaar": 1995,
+      "geslacht": "V",
+      "leeftijd_vorig": 15,
+      "leeftijd_nieuw": 16,
+      "team_vorig": "B4",
+      "team_nieuw": "A3"
+    },
+    {
+      "rel_code": "NJC15K6",
+      "status": "behouden",
+      "geboortejaar": 1994,
+      "geslacht": "V",
+      "leeftijd_vorig": 16,
+      "leeftijd_nieuw": 17,
+      "team_vorig": "A3/A4",
+      "team_nieuw": "A3"
     },
     {
       "rel_code": "NJC15N7",
@@ -822,8 +1282,8 @@
       "geslacht": "V",
       "leeftijd_vorig": 15,
       "leeftijd_nieuw": 16,
-      "team_vorig": "B2",
-      "team_nieuw": "A4"
+      "team_vorig": "BM3",
+      "team_nieuw": "A3"
     },
     {
       "rel_code": "NJC15P1",
@@ -833,7 +1293,7 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 16,
       "team_vorig": null,
-      "team_nieuw": "A5"
+      "team_nieuw": "A3"
     },
     {
       "rel_code": "NJC15Q8",
@@ -843,7 +1303,7 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 16,
       "team_vorig": null,
-      "team_nieuw": "A2"
+      "team_nieuw": "A1"
     },
     {
       "rel_code": "NJC15T9",
@@ -852,8 +1312,68 @@
       "geslacht": "V",
       "leeftijd_vorig": 18,
       "leeftijd_nieuw": 19,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S3/S4",
+      "team_nieuw": "S3/S4"
+    },
+    {
+      "rel_code": "NJC15W0",
+      "status": "uitgestroomd",
+      "geboortejaar": 1994,
+      "geslacht": "M",
+      "leeftijd_vorig": 16,
+      "leeftijd_nieuw": null,
+      "team_vorig": "A1/A2",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "NJC15X7",
+      "status": "behouden",
+      "geboortejaar": 1992,
+      "geslacht": "V",
+      "leeftijd_vorig": 18,
+      "leeftijd_nieuw": 19,
+      "team_vorig": "S6",
+      "team_nieuw": "S7/S8"
+    },
+    {
+      "rel_code": "NJC16B6",
+      "status": "behouden",
+      "geboortejaar": 1993,
+      "geslacht": "V",
+      "leeftijd_vorig": 17,
+      "leeftijd_nieuw": 18,
+      "team_vorig": "A3/A4",
+      "team_nieuw": "A1"
+    },
+    {
+      "rel_code": "NJC16D0",
+      "status": "uitgestroomd",
+      "geboortejaar": 1993,
+      "geslacht": "M",
+      "leeftijd_vorig": 17,
+      "leeftijd_nieuw": null,
+      "team_vorig": "A1/A2",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "NJC16G1",
+      "status": "behouden",
+      "geboortejaar": 1993,
+      "geslacht": "V",
+      "leeftijd_vorig": 17,
+      "leeftijd_nieuw": 18,
+      "team_vorig": "AM5",
+      "team_nieuw": "A3"
+    },
+    {
+      "rel_code": "NJC16H8",
+      "status": "nieuw",
+      "geboortejaar": 1994,
+      "geslacht": "V",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 17,
+      "team_vorig": null,
+      "team_nieuw": "A1"
     },
     {
       "rel_code": "NJC17J5",
@@ -863,7 +1383,67 @@
       "leeftijd_vorig": 15,
       "leeftijd_nieuw": 16,
       "team_vorig": "B1",
-      "team_nieuw": "A2"
+      "team_nieuw": "A1"
+    },
+    {
+      "rel_code": "NJC32M1",
+      "status": "nieuw",
+      "geboortejaar": 1993,
+      "geslacht": "M",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 18,
+      "team_vorig": null,
+      "team_nieuw": "A1"
+    },
+    {
+      "rel_code": "NJC35R5",
+      "status": "behouden",
+      "geboortejaar": 1994,
+      "geslacht": "V",
+      "leeftijd_vorig": 16,
+      "leeftijd_nieuw": 17,
+      "team_vorig": "AM5",
+      "team_nieuw": "A3"
+    },
+    {
+      "rel_code": "NJC35T9",
+      "status": "behouden",
+      "geboortejaar": 1993,
+      "geslacht": "V",
+      "leeftijd_vorig": 17,
+      "leeftijd_nieuw": 18,
+      "team_vorig": "A1/A2",
+      "team_nieuw": "A1"
+    },
+    {
+      "rel_code": "NJC41T2",
+      "status": "uitgestroomd",
+      "geboortejaar": 1992,
+      "geslacht": "M",
+      "leeftijd_vorig": 18,
+      "leeftijd_nieuw": null,
+      "team_vorig": "A3/A4",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "NJC43N6",
+      "status": "nieuw",
+      "geboortejaar": 1995,
+      "geslacht": "V",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 16,
+      "team_vorig": null,
+      "team_nieuw": "A1"
+    },
+    {
+      "rel_code": "NJC45V8",
+      "status": "uitgestroomd",
+      "geboortejaar": 1993,
+      "geslacht": "M",
+      "leeftijd_vorig": 17,
+      "leeftijd_nieuw": null,
+      "team_vorig": "A1/A2",
+      "team_nieuw": null
     },
     {
       "rel_code": "NJC46R3",
@@ -872,8 +1452,78 @@
       "geslacht": "V",
       "leeftijd_vorig": 18,
       "leeftijd_nieuw": 19,
-      "team_vorig": "A1",
-      "team_nieuw": "S1"
+      "team_vorig": "A1/A2",
+      "team_nieuw": "S1/S2"
+    },
+    {
+      "rel_code": "NJC57V9",
+      "status": "uitgestroomd",
+      "geboortejaar": 1988,
+      "geslacht": "V",
+      "leeftijd_vorig": 22,
+      "leeftijd_nieuw": null,
+      "team_vorig": "S3/S4",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "NJC67X8",
+      "status": "behouden",
+      "geboortejaar": 1995,
+      "geslacht": "V",
+      "leeftijd_vorig": 15,
+      "leeftijd_nieuw": 16,
+      "team_vorig": "BM3",
+      "team_nieuw": "A3"
+    },
+    {
+      "rel_code": "NJC81H8",
+      "status": "behouden",
+      "geboortejaar": 1994,
+      "geslacht": "V",
+      "leeftijd_vorig": 16,
+      "leeftijd_nieuw": 17,
+      "team_vorig": "AM5",
+      "team_nieuw": "A3"
+    },
+    {
+      "rel_code": "NJC90M5",
+      "status": "uitgestroomd",
+      "geboortejaar": 1976,
+      "geslacht": "V",
+      "leeftijd_vorig": 34,
+      "leeftijd_nieuw": null,
+      "team_vorig": "S10",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "NJD18S2",
+      "status": "uitgestroomd",
+      "geboortejaar": 1992,
+      "geslacht": "M",
+      "leeftijd_vorig": 18,
+      "leeftijd_nieuw": null,
+      "team_vorig": "A3/A4",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "NJD21W4",
+      "status": "behouden",
+      "geboortejaar": 1993,
+      "geslacht": "V",
+      "leeftijd_vorig": 17,
+      "leeftijd_nieuw": 18,
+      "team_vorig": "A3/A4",
+      "team_nieuw": "A3"
+    },
+    {
+      "rel_code": "NJD38K6",
+      "status": "behouden",
+      "geboortejaar": 1993,
+      "geslacht": "V",
+      "leeftijd_vorig": 17,
+      "leeftijd_nieuw": 18,
+      "team_vorig": "A1/A2",
+      "team_nieuw": "A1"
     },
     {
       "rel_code": "NJD38L3",
@@ -882,7 +1532,7 @@
       "geslacht": "V",
       "leeftijd_vorig": 18,
       "leeftijd_nieuw": null,
-      "team_vorig": "S1",
+      "team_vorig": "S9",
       "team_nieuw": null
     },
     {
@@ -892,8 +1542,8 @@
       "geslacht": "V",
       "leeftijd_vorig": 18,
       "leeftijd_nieuw": 19,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S3/S4",
+      "team_nieuw": "S3/S4"
     },
     {
       "rel_code": "NJD65S8",
@@ -904,6 +1554,56 @@
       "leeftijd_nieuw": 13,
       "team_vorig": "C2",
       "team_nieuw": "C2"
+    },
+    {
+      "rel_code": "NJD71J8",
+      "status": "behouden",
+      "geboortejaar": 1997,
+      "geslacht": "V",
+      "leeftijd_vorig": 13,
+      "leeftijd_nieuw": 14,
+      "team_vorig": "C2",
+      "team_nieuw": "C1"
+    },
+    {
+      "rel_code": "NJF01K2",
+      "status": "behouden",
+      "geboortejaar": 1995,
+      "geslacht": "V",
+      "leeftijd_vorig": 15,
+      "leeftijd_nieuw": 16,
+      "team_vorig": "AM5",
+      "team_nieuw": "A3"
+    },
+    {
+      "rel_code": "NJF01L9",
+      "status": "behouden",
+      "geboortejaar": 1994,
+      "geslacht": "V",
+      "leeftijd_vorig": 16,
+      "leeftijd_nieuw": 17,
+      "team_vorig": "AM5",
+      "team_nieuw": "A3"
+    },
+    {
+      "rel_code": "NJF04Q3",
+      "status": "behouden",
+      "geboortejaar": 1993,
+      "geslacht": "V",
+      "leeftijd_vorig": 17,
+      "leeftijd_nieuw": 18,
+      "team_vorig": "A3/A4",
+      "team_nieuw": "A3"
+    },
+    {
+      "rel_code": "NJF04R0",
+      "status": "behouden",
+      "geboortejaar": 1993,
+      "geslacht": "V",
+      "leeftijd_vorig": 17,
+      "leeftijd_nieuw": 18,
+      "team_vorig": "A1/A2",
+      "team_nieuw": "A1"
     },
     {
       "rel_code": "NJF06N8",
@@ -922,7 +1622,7 @@
       "geslacht": "V",
       "leeftijd_vorig": 15,
       "leeftijd_nieuw": 16,
-      "team_vorig": "B2",
+      "team_vorig": "BM3",
       "team_nieuw": "A3"
     },
     {
@@ -966,6 +1666,26 @@
       "team_nieuw": "B1"
     },
     {
+      "rel_code": "NJF27L7",
+      "status": "uitgestroomd",
+      "geboortejaar": 1994,
+      "geslacht": "M",
+      "leeftijd_vorig": 16,
+      "leeftijd_nieuw": null,
+      "team_vorig": "A1/A2",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "NJF31H6",
+      "status": "behouden",
+      "geboortejaar": 1989,
+      "geslacht": "V",
+      "leeftijd_vorig": 21,
+      "leeftijd_nieuw": 22,
+      "team_vorig": "S3/S4",
+      "team_nieuw": "S3/S4"
+    },
+    {
       "rel_code": "NJF53H2",
       "status": "behouden",
       "geboortejaar": 1996,
@@ -976,6 +1696,36 @@
       "team_nieuw": "B1"
     },
     {
+      "rel_code": "NJF62K5",
+      "status": "behouden",
+      "geboortejaar": 1994,
+      "geslacht": "V",
+      "leeftijd_vorig": 16,
+      "leeftijd_nieuw": 17,
+      "team_vorig": "A1/A2",
+      "team_nieuw": "A1"
+    },
+    {
+      "rel_code": "NJF62M9",
+      "status": "behouden",
+      "geboortejaar": 1995,
+      "geslacht": "V",
+      "leeftijd_vorig": 15,
+      "leeftijd_nieuw": 16,
+      "team_vorig": "B2",
+      "team_nieuw": "A3"
+    },
+    {
+      "rel_code": "NJF75W3",
+      "status": "uitgestroomd",
+      "geboortejaar": 1996,
+      "geslacht": "V",
+      "leeftijd_vorig": 14,
+      "leeftijd_nieuw": null,
+      "team_vorig": "B4",
+      "team_nieuw": null
+    },
+    {
       "rel_code": "NJF77V2",
       "status": "behouden",
       "geboortejaar": 1996,
@@ -984,6 +1734,16 @@
       "leeftijd_nieuw": 15,
       "team_vorig": "B4",
       "team_nieuw": "B3"
+    },
+    {
+      "rel_code": "NJF77W9",
+      "status": "uitgestroomd",
+      "geboortejaar": 1995,
+      "geslacht": "V",
+      "leeftijd_vorig": 15,
+      "leeftijd_nieuw": null,
+      "team_vorig": "BM3",
+      "team_nieuw": null
     },
     {
       "rel_code": "NJF77Y3",
@@ -1003,7 +1763,7 @@
       "leeftijd_vorig": 15,
       "leeftijd_nieuw": 16,
       "team_vorig": "B1",
-      "team_nieuw": "A2"
+      "team_nieuw": "A1"
     },
     {
       "rel_code": "NJF85H3",
@@ -1012,8 +1772,28 @@
       "geslacht": "V",
       "leeftijd_vorig": 18,
       "leeftijd_nieuw": 19,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S9",
+      "team_nieuw": "S9/S10"
+    },
+    {
+      "rel_code": "NJF85Q6",
+      "status": "behouden",
+      "geboortejaar": 1996,
+      "geslacht": "V",
+      "leeftijd_vorig": 14,
+      "leeftijd_nieuw": 15,
+      "team_vorig": "C1",
+      "team_nieuw": "B2"
+    },
+    {
+      "rel_code": "NJF95M3",
+      "status": "behouden",
+      "geboortejaar": 1999,
+      "geslacht": "V",
+      "leeftijd_vorig": 11,
+      "leeftijd_nieuw": 12,
+      "team_vorig": "D3",
+      "team_nieuw": "C3"
     },
     {
       "rel_code": "NJF95S5",
@@ -1036,6 +1816,16 @@
       "team_nieuw": "B1"
     },
     {
+      "rel_code": "NJF95X0",
+      "status": "nieuw",
+      "geboortejaar": 1961,
+      "geslacht": "M",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 50,
+      "team_vorig": null,
+      "team_nieuw": "MW3"
+    },
+    {
       "rel_code": "NJG13L1",
       "status": "behouden",
       "geboortejaar": 1996,
@@ -1044,6 +1834,16 @@
       "leeftijd_nieuw": 15,
       "team_vorig": "B2",
       "team_nieuw": "B1"
+    },
+    {
+      "rel_code": "NJG25G7",
+      "status": "uitgestroomd",
+      "geboortejaar": 1993,
+      "geslacht": "V",
+      "leeftijd_vorig": 17,
+      "leeftijd_nieuw": null,
+      "team_vorig": "A3/A4",
+      "team_nieuw": null
     },
     {
       "rel_code": "NJG35B7",
@@ -1056,14 +1856,34 @@
       "team_nieuw": "C2"
     },
     {
+      "rel_code": "NJG42S2",
+      "status": "uitgestroomd",
+      "geboortejaar": 1994,
+      "geslacht": "M",
+      "leeftijd_vorig": 16,
+      "leeftijd_nieuw": null,
+      "team_vorig": "A3/A4",
+      "team_nieuw": null
+    },
+    {
       "rel_code": "NJG42T9",
       "status": "behouden",
       "geboortejaar": 1995,
       "geslacht": "V",
       "leeftijd_vorig": 15,
       "leeftijd_nieuw": 16,
-      "team_vorig": "B2",
-      "team_nieuw": "A4"
+      "team_vorig": "BM3",
+      "team_nieuw": "A3"
+    },
+    {
+      "rel_code": "NJG52M5",
+      "status": "behouden",
+      "geboortejaar": 1955,
+      "geslacht": "V",
+      "leeftijd_vorig": 55,
+      "leeftijd_nieuw": 56,
+      "team_vorig": "S1/S2",
+      "team_nieuw": "S1/S2"
     },
     {
       "rel_code": "NJG52P6",
@@ -1076,6 +1896,46 @@
       "team_nieuw": "B1"
     },
     {
+      "rel_code": "NJG58T2",
+      "status": "nieuw",
+      "geboortejaar": 1997,
+      "geslacht": "V",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 14,
+      "team_vorig": null,
+      "team_nieuw": "B3"
+    },
+    {
+      "rel_code": "NJG73Q6",
+      "status": "uitgestroomd",
+      "geboortejaar": 1991,
+      "geslacht": "V",
+      "leeftijd_vorig": 19,
+      "leeftijd_nieuw": null,
+      "team_vorig": "S7",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "NJG73R3",
+      "status": "behouden",
+      "geboortejaar": 1995,
+      "geslacht": "V",
+      "leeftijd_vorig": 15,
+      "leeftijd_nieuw": 16,
+      "team_vorig": "BM3",
+      "team_nieuw": "A3"
+    },
+    {
+      "rel_code": "NJH25Z1",
+      "status": "nieuw",
+      "geboortejaar": 1996,
+      "geslacht": "V",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 15,
+      "team_vorig": null,
+      "team_nieuw": "B4"
+    },
+    {
       "rel_code": "NJH39X4",
       "status": "behouden",
       "geboortejaar": 1995,
@@ -1083,7 +1943,7 @@
       "leeftijd_vorig": 15,
       "leeftijd_nieuw": 16,
       "team_vorig": "B1",
-      "team_nieuw": "A2"
+      "team_nieuw": "A1"
     },
     {
       "rel_code": "NJH50Y4",
@@ -1096,6 +1956,16 @@
       "team_nieuw": "MW1"
     },
     {
+      "rel_code": "NJH51C3",
+      "status": "behouden",
+      "geboortejaar": 1995,
+      "geslacht": "V",
+      "leeftijd_vorig": 15,
+      "leeftijd_nieuw": 16,
+      "team_vorig": "BM3",
+      "team_nieuw": "A3"
+    },
+    {
       "rel_code": "NJH51J2",
       "status": "behouden",
       "geboortejaar": 1996,
@@ -1106,6 +1976,36 @@
       "team_nieuw": "B1"
     },
     {
+      "rel_code": "NJH51M3",
+      "status": "behouden",
+      "geboortejaar": 1996,
+      "geslacht": "V",
+      "leeftijd_vorig": 14,
+      "leeftijd_nieuw": 15,
+      "team_vorig": "BM3",
+      "team_nieuw": "B2"
+    },
+    {
+      "rel_code": "NJH51N0",
+      "status": "behouden",
+      "geboortejaar": 1990,
+      "geslacht": "M",
+      "leeftijd_vorig": 20,
+      "leeftijd_nieuw": 21,
+      "team_vorig": "S9",
+      "team_nieuw": "S7/S8"
+    },
+    {
+      "rel_code": "NJH51P4",
+      "status": "behouden",
+      "geboortejaar": 1996,
+      "geslacht": "V",
+      "leeftijd_vorig": 14,
+      "leeftijd_nieuw": 15,
+      "team_vorig": "C1",
+      "team_nieuw": "B1"
+    },
+    {
       "rel_code": "NJH51Q1",
       "status": "behouden",
       "geboortejaar": 1994,
@@ -1113,7 +2013,17 @@
       "leeftijd_vorig": 16,
       "leeftijd_nieuw": 17,
       "team_vorig": "B2",
-      "team_nieuw": "A2"
+      "team_nieuw": "A1"
+    },
+    {
+      "rel_code": "NJH51R8",
+      "status": "uitgestroomd",
+      "geboortejaar": 1996,
+      "geslacht": "V",
+      "leeftijd_vorig": 14,
+      "leeftijd_nieuw": null,
+      "team_vorig": "C1",
+      "team_nieuw": null
     },
     {
       "rel_code": "NJH51W3",
@@ -1126,6 +2036,46 @@
       "team_nieuw": "B4"
     },
     {
+      "rel_code": "NJH63X1",
+      "status": "behouden",
+      "geboortejaar": 1996,
+      "geslacht": "V",
+      "leeftijd_vorig": 14,
+      "leeftijd_nieuw": 15,
+      "team_vorig": "B2",
+      "team_nieuw": "B2"
+    },
+    {
+      "rel_code": "NJH76F9",
+      "status": "behouden",
+      "geboortejaar": 1996,
+      "geslacht": "M",
+      "leeftijd_vorig": 14,
+      "leeftijd_nieuw": 15,
+      "team_vorig": "B4",
+      "team_nieuw": "B4"
+    },
+    {
+      "rel_code": "NJH76H3",
+      "status": "behouden",
+      "geboortejaar": 1997,
+      "geslacht": "M",
+      "leeftijd_vorig": 13,
+      "leeftijd_nieuw": 14,
+      "team_vorig": "C3",
+      "team_nieuw": "B3"
+    },
+    {
+      "rel_code": "NJH76J7",
+      "status": "behouden",
+      "geboortejaar": 1997,
+      "geslacht": "M",
+      "leeftijd_vorig": 13,
+      "leeftijd_nieuw": 14,
+      "team_vorig": "C2",
+      "team_nieuw": "B2"
+    },
+    {
       "rel_code": "NJH76N5",
       "status": "behouden",
       "geboortejaar": 1998,
@@ -1136,14 +2086,44 @@
       "team_nieuw": "C2"
     },
     {
+      "rel_code": "NJH89B5",
+      "status": "uitgestroomd",
+      "geboortejaar": 1996,
+      "geslacht": "M",
+      "leeftijd_vorig": 14,
+      "leeftijd_nieuw": null,
+      "team_vorig": "B4",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "NJH93R4",
+      "status": "behouden",
+      "geboortejaar": 1999,
+      "geslacht": "V",
+      "leeftijd_vorig": 11,
+      "leeftijd_nieuw": 12,
+      "team_vorig": "D1",
+      "team_nieuw": "C1"
+    },
+    {
+      "rel_code": "NJJ75F8",
+      "status": "behouden",
+      "geboortejaar": 1993,
+      "geslacht": "M",
+      "leeftijd_vorig": 17,
+      "leeftijd_nieuw": 18,
+      "team_vorig": "A1/A2",
+      "team_nieuw": "S6/S7"
+    },
+    {
       "rel_code": "NJJ89L7",
       "status": "behouden",
       "geboortejaar": 1989,
       "geslacht": "M",
       "leeftijd_vorig": 21,
       "leeftijd_nieuw": 22,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S1/S2",
+      "team_nieuw": "S1/S2"
     },
     {
       "rel_code": "NJK05M3",
@@ -1152,8 +2132,8 @@
       "geslacht": "M",
       "leeftijd_vorig": 17,
       "leeftijd_nieuw": 18,
-      "team_vorig": "A1",
-      "team_nieuw": "A2"
+      "team_vorig": "A1/A2",
+      "team_nieuw": "A1"
     },
     {
       "rel_code": "NJK08W2",
@@ -1162,8 +2142,8 @@
       "geslacht": "M",
       "leeftijd_vorig": 17,
       "leeftijd_nieuw": 18,
-      "team_vorig": "A1",
-      "team_nieuw": "A2"
+      "team_vorig": "A1/A2",
+      "team_nieuw": "A1"
     },
     {
       "rel_code": "NJK08X9",
@@ -1172,8 +2152,48 @@
       "geslacht": "V",
       "leeftijd_vorig": 18,
       "leeftijd_nieuw": 19,
-      "team_vorig": "A1",
-      "team_nieuw": "S1"
+      "team_vorig": "A1/A2",
+      "team_nieuw": "S1/S2"
+    },
+    {
+      "rel_code": "NJK09F6",
+      "status": "uitgestroomd",
+      "geboortejaar": 1992,
+      "geslacht": "V",
+      "leeftijd_vorig": 18,
+      "leeftijd_nieuw": null,
+      "team_vorig": "A1/A2",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "NJK09J4",
+      "status": "uitgestroomd",
+      "geboortejaar": 1994,
+      "geslacht": "V",
+      "leeftijd_vorig": 16,
+      "leeftijd_nieuw": null,
+      "team_vorig": "A3/A4",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "NJK09L8",
+      "status": "uitgestroomd",
+      "geboortejaar": 1992,
+      "geslacht": "M",
+      "leeftijd_vorig": 18,
+      "leeftijd_nieuw": null,
+      "team_vorig": "A1/A2",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "NJK09M5",
+      "status": "behouden",
+      "geboortejaar": 1989,
+      "geslacht": "M",
+      "leeftijd_vorig": 21,
+      "leeftijd_nieuw": 22,
+      "team_vorig": "S9",
+      "team_nieuw": "S9/S10"
     },
     {
       "rel_code": "NJK09N2",
@@ -1182,8 +2202,38 @@
       "geslacht": "V",
       "leeftijd_vorig": 21,
       "leeftijd_nieuw": 22,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S7",
+      "team_nieuw": "S7/S8"
+    },
+    {
+      "rel_code": "NJK12T8",
+      "status": "uitgestroomd",
+      "geboortejaar": 1991,
+      "geslacht": "M",
+      "leeftijd_vorig": 19,
+      "leeftijd_nieuw": null,
+      "team_vorig": "S3/S4",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "NJK27N6",
+      "status": "behouden",
+      "geboortejaar": 1990,
+      "geslacht": "V",
+      "leeftijd_vorig": 20,
+      "leeftijd_nieuw": 21,
+      "team_vorig": "S3/S4",
+      "team_nieuw": "S3/S4"
+    },
+    {
+      "rel_code": "NJK27P0",
+      "status": "behouden",
+      "geboortejaar": 1990,
+      "geslacht": "M",
+      "leeftijd_vorig": 20,
+      "leeftijd_nieuw": 21,
+      "team_vorig": "A3/A4",
+      "team_nieuw": "S8/S9"
     },
     {
       "rel_code": "NJK27R4",
@@ -1192,8 +2242,18 @@
       "geslacht": "V",
       "leeftijd_vorig": 20,
       "leeftijd_nieuw": 21,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S7",
+      "team_nieuw": "S7/S8"
+    },
+    {
+      "rel_code": "NJK27V2",
+      "status": "behouden",
+      "geboortejaar": 1990,
+      "geslacht": "V",
+      "leeftijd_vorig": 20,
+      "leeftijd_nieuw": 21,
+      "team_vorig": "S7",
+      "team_nieuw": "S7/S8"
     },
     {
       "rel_code": "NJK34W5",
@@ -1202,8 +2262,8 @@
       "geslacht": "V",
       "leeftijd_vorig": 24,
       "leeftijd_nieuw": 25,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S3/S4",
+      "team_nieuw": "S3/S4"
     },
     {
       "rel_code": "NJK42D1",
@@ -1212,8 +2272,58 @@
       "geslacht": "V",
       "leeftijd_vorig": 18,
       "leeftijd_nieuw": 19,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S1/S2",
+      "team_nieuw": "S1/S2"
+    },
+    {
+      "rel_code": "NJK49X2",
+      "status": "uitgestroomd",
+      "geboortejaar": 1993,
+      "geslacht": "V",
+      "leeftijd_vorig": 17,
+      "leeftijd_nieuw": null,
+      "team_vorig": "A3/A4",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "NJM71G6",
+      "status": "uitgestroomd",
+      "geboortejaar": 1992,
+      "geslacht": "V",
+      "leeftijd_vorig": 18,
+      "leeftijd_nieuw": null,
+      "team_vorig": "AM5",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "NJM75B3",
+      "status": "behouden",
+      "geboortejaar": 1998,
+      "geslacht": "V",
+      "leeftijd_vorig": 12,
+      "leeftijd_nieuw": 13,
+      "team_vorig": "C3",
+      "team_nieuw": "C2"
+    },
+    {
+      "rel_code": "NJM75D7",
+      "status": "behouden",
+      "geboortejaar": 1997,
+      "geslacht": "M",
+      "leeftijd_vorig": 13,
+      "leeftijd_nieuw": 14,
+      "team_vorig": "C3",
+      "team_nieuw": "B3"
+    },
+    {
+      "rel_code": "NJM75F1",
+      "status": "behouden",
+      "geboortejaar": 1998,
+      "geslacht": "V",
+      "leeftijd_vorig": 12,
+      "leeftijd_nieuw": 13,
+      "team_vorig": "C2",
+      "team_nieuw": "C1"
     },
     {
       "rel_code": "NJM89M7",
@@ -1226,6 +2336,16 @@
       "team_nieuw": "MW3"
     },
     {
+      "rel_code": "NJP10N5",
+      "status": "uitgestroomd",
+      "geboortejaar": 1992,
+      "geslacht": "V",
+      "leeftijd_vorig": 18,
+      "leeftijd_nieuw": null,
+      "team_vorig": "A3/A4",
+      "team_nieuw": null
+    },
+    {
       "rel_code": "NJQ72J4",
       "status": "behouden",
       "geboortejaar": 1994,
@@ -1233,7 +2353,7 @@
       "leeftijd_vorig": 16,
       "leeftijd_nieuw": 17,
       "team_vorig": "B2",
-      "team_nieuw": "A2"
+      "team_nieuw": "A1"
     },
     {
       "rel_code": "NJQ72K1",
@@ -1243,6 +2363,26 @@
       "leeftijd_vorig": 12,
       "leeftijd_nieuw": 13,
       "team_vorig": "D1",
+      "team_nieuw": "C1"
+    },
+    {
+      "rel_code": "NJQ72M5",
+      "status": "behouden",
+      "geboortejaar": 1995,
+      "geslacht": "V",
+      "leeftijd_vorig": 15,
+      "leeftijd_nieuw": 16,
+      "team_vorig": "B4",
+      "team_nieuw": "A3"
+    },
+    {
+      "rel_code": "NJQ72P6",
+      "status": "behouden",
+      "geboortejaar": 1997,
+      "geslacht": "M",
+      "leeftijd_vorig": 13,
+      "leeftijd_nieuw": 14,
+      "team_vorig": "C1",
       "team_nieuw": "C1"
     },
     {
@@ -1266,6 +2406,16 @@
       "team_nieuw": "D2"
     },
     {
+      "rel_code": "NJR12H1",
+      "status": "behouden",
+      "geboortejaar": 1999,
+      "geslacht": "V",
+      "leeftijd_vorig": 11,
+      "leeftijd_nieuw": 12,
+      "team_vorig": "D4",
+      "team_nieuw": "C4"
+    },
+    {
       "rel_code": "NJR12K2",
       "status": "behouden",
       "geboortejaar": 1999,
@@ -1274,6 +2424,126 @@
       "leeftijd_nieuw": 12,
       "team_vorig": "D1",
       "team_nieuw": "C1"
+    },
+    {
+      "rel_code": "NJR61Q6",
+      "status": "behouden",
+      "geboortejaar": 1962,
+      "geslacht": "M",
+      "leeftijd_vorig": 48,
+      "leeftijd_nieuw": 49,
+      "team_vorig": "MW2",
+      "team_nieuw": "MW2"
+    },
+    {
+      "rel_code": "NJR84M7",
+      "status": "uitgestroomd",
+      "geboortejaar": 1995,
+      "geslacht": "V",
+      "leeftijd_vorig": 15,
+      "leeftijd_nieuw": null,
+      "team_vorig": "A3/A4",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "NJR87N3",
+      "status": "behouden",
+      "geboortejaar": 1998,
+      "geslacht": "V",
+      "leeftijd_vorig": 12,
+      "leeftijd_nieuw": 13,
+      "team_vorig": "CM5",
+      "team_nieuw": "C4"
+    },
+    {
+      "rel_code": "NJS12Y1",
+      "status": "behouden",
+      "geboortejaar": 1939,
+      "geslacht": "V",
+      "leeftijd_vorig": 71,
+      "leeftijd_nieuw": 72,
+      "team_vorig": "S1/S2",
+      "team_nieuw": "S1/S2"
+    },
+    {
+      "rel_code": "NJT00K3",
+      "status": "behouden",
+      "geboortejaar": 1998,
+      "geslacht": "M",
+      "leeftijd_vorig": 12,
+      "leeftijd_nieuw": 13,
+      "team_vorig": "D3",
+      "team_nieuw": "C3"
+    },
+    {
+      "rel_code": "NJT00L0",
+      "status": "uitgestroomd",
+      "geboortejaar": 1999,
+      "geslacht": "V",
+      "leeftijd_vorig": 11,
+      "leeftijd_nieuw": null,
+      "team_vorig": "D4",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "NJT52P9",
+      "status": "behouden",
+      "geboortejaar": 1999,
+      "geslacht": "M",
+      "leeftijd_vorig": 11,
+      "leeftijd_nieuw": 12,
+      "team_vorig": "D3",
+      "team_nieuw": "C4"
+    },
+    {
+      "rel_code": "NJT88G9",
+      "status": "nieuw",
+      "geboortejaar": 1985,
+      "geslacht": "V",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 26,
+      "team_vorig": null,
+      "team_nieuw": "S5"
+    },
+    {
+      "rel_code": "NJT90G0",
+      "status": "behouden",
+      "geboortejaar": 1999,
+      "geslacht": "M",
+      "leeftijd_vorig": 11,
+      "leeftijd_nieuw": 12,
+      "team_vorig": "D3",
+      "team_nieuw": "C4"
+    },
+    {
+      "rel_code": "NJT90H7",
+      "status": "behouden",
+      "geboortejaar": 1999,
+      "geslacht": "M",
+      "leeftijd_vorig": 11,
+      "leeftijd_nieuw": 12,
+      "team_vorig": "D2",
+      "team_nieuw": "C2"
+    },
+    {
+      "rel_code": "NJT90K8",
+      "status": "behouden",
+      "geboortejaar": 1998,
+      "geslacht": "M",
+      "leeftijd_vorig": 12,
+      "leeftijd_nieuw": 13,
+      "team_vorig": "C2",
+      "team_nieuw": "C2"
+    },
+    {
+      "rel_code": "NJT90L5",
+      "status": "behouden",
+      "geboortejaar": 1997,
+      "geslacht": "V",
+      "leeftijd_vorig": 13,
+      "leeftijd_nieuw": 14,
+      "team_vorig": "C2",
+      "team_nieuw": "B3"
     },
     {
       "rel_code": "NJT90M2",
@@ -1286,6 +2556,16 @@
       "team_nieuw": "C1"
     },
     {
+      "rel_code": "NJT90N9",
+      "status": "behouden",
+      "geboortejaar": 2000,
+      "geslacht": "M",
+      "leeftijd_vorig": 10,
+      "leeftijd_nieuw": 11,
+      "team_vorig": "D1",
+      "team_nieuw": "D1"
+    },
+    {
       "rel_code": "NJT90P3",
       "status": "behouden",
       "geboortejaar": 1996,
@@ -1296,6 +2576,16 @@
       "team_nieuw": "B2"
     },
     {
+      "rel_code": "NJV32Y4",
+      "status": "nieuw",
+      "geboortejaar": 1999,
+      "geslacht": "M",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 12,
+      "team_vorig": null,
+      "team_nieuw": "C4"
+    },
+    {
       "rel_code": "NJV63S0",
       "status": "behouden",
       "geboortejaar": 2000,
@@ -1304,6 +2594,26 @@
       "leeftijd_nieuw": 11,
       "team_vorig": "D2",
       "team_nieuw": "D2"
+    },
+    {
+      "rel_code": "NJW26X5",
+      "status": "nieuw",
+      "geboortejaar": 1997,
+      "geslacht": "V",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 14,
+      "team_vorig": null,
+      "team_nieuw": "B3"
+    },
+    {
+      "rel_code": "NJW62N3",
+      "status": "behouden",
+      "geboortejaar": 1999,
+      "geslacht": "V",
+      "leeftijd_vorig": 11,
+      "leeftijd_nieuw": 12,
+      "team_vorig": "D4",
+      "team_nieuw": "D4"
     },
     {
       "rel_code": "NJW77M6",
@@ -1326,6 +2636,46 @@
       "team_nieuw": "C2"
     },
     {
+      "rel_code": "NJW82X3",
+      "status": "behouden",
+      "geboortejaar": 1995,
+      "geslacht": "V",
+      "leeftijd_vorig": 15,
+      "leeftijd_nieuw": 16,
+      "team_vorig": "AM5",
+      "team_nieuw": "A3"
+    },
+    {
+      "rel_code": "NJX04G1",
+      "status": "uitgestroomd",
+      "geboortejaar": 1997,
+      "geslacht": "V",
+      "leeftijd_vorig": 13,
+      "leeftijd_nieuw": null,
+      "team_vorig": "MW1",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "NJX43H5",
+      "status": "behouden",
+      "geboortejaar": 1997,
+      "geslacht": "V",
+      "leeftijd_vorig": 13,
+      "leeftijd_nieuw": 14,
+      "team_vorig": "CM5",
+      "team_nieuw": "B4"
+    },
+    {
+      "rel_code": "NJX43J9",
+      "status": "behouden",
+      "geboortejaar": 1998,
+      "geslacht": "V",
+      "leeftijd_vorig": 12,
+      "leeftijd_nieuw": 13,
+      "team_vorig": "CM5",
+      "team_nieuw": "B4"
+    },
+    {
       "rel_code": "NJX60W1",
       "status": "behouden",
       "geboortejaar": 2000,
@@ -1344,6 +2694,26 @@
       "leeftijd_nieuw": 51,
       "team_vorig": "MW2",
       "team_nieuw": "MW3"
+    },
+    {
+      "rel_code": "NJY57Y2",
+      "status": "behouden",
+      "geboortejaar": 1958,
+      "geslacht": "M",
+      "leeftijd_vorig": 52,
+      "leeftijd_nieuw": 53,
+      "team_vorig": "MW2",
+      "team_nieuw": "MW2"
+    },
+    {
+      "rel_code": "NJY57Z9",
+      "status": "behouden",
+      "geboortejaar": 1966,
+      "geslacht": "V",
+      "leeftijd_vorig": 44,
+      "leeftijd_nieuw": 45,
+      "team_vorig": "MW1",
+      "team_nieuw": "MW1"
     },
     {
       "rel_code": "NJY82Z9",
@@ -1366,6 +2736,46 @@
       "team_nieuw": "D2"
     },
     {
+      "rel_code": "NJY83C1",
+      "status": "uitgestroomd",
+      "geboortejaar": 2000,
+      "geslacht": "V",
+      "leeftijd_vorig": 10,
+      "leeftijd_nieuw": null,
+      "team_vorig": "D2",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "NJY83D8",
+      "status": "behouden",
+      "geboortejaar": 2000,
+      "geslacht": "V",
+      "leeftijd_vorig": 10,
+      "leeftijd_nieuw": 11,
+      "team_vorig": "D2",
+      "team_nieuw": "D2"
+    },
+    {
+      "rel_code": "NJY83F2",
+      "status": "behouden",
+      "geboortejaar": 2000,
+      "geslacht": "V",
+      "leeftijd_vorig": 10,
+      "leeftijd_nieuw": 11,
+      "team_vorig": "E1",
+      "team_nieuw": "D1"
+    },
+    {
+      "rel_code": "NJZ00V6",
+      "status": "behouden",
+      "geboortejaar": 1971,
+      "geslacht": "M",
+      "leeftijd_vorig": 39,
+      "leeftijd_nieuw": 40,
+      "team_vorig": "MW1",
+      "team_nieuw": "MW1"
+    },
+    {
       "rel_code": "NJZ00W3",
       "status": "behouden",
       "geboortejaar": 2000,
@@ -1374,6 +2784,16 @@
       "leeftijd_nieuw": 11,
       "team_vorig": "D2",
       "team_nieuw": "D1"
+    },
+    {
+      "rel_code": "NJZ00X0",
+      "status": "behouden",
+      "geboortejaar": 1997,
+      "geslacht": "V",
+      "leeftijd_vorig": 13,
+      "leeftijd_nieuw": 14,
+      "team_vorig": "C3",
+      "team_nieuw": "C2"
     },
     {
       "rel_code": "NJZ00Y7",
@@ -1386,6 +2806,56 @@
       "team_nieuw": "D2"
     },
     {
+      "rel_code": "NJZ00Z4",
+      "status": "behouden",
+      "geboortejaar": 1972,
+      "geslacht": "M",
+      "leeftijd_vorig": 38,
+      "leeftijd_nieuw": 39,
+      "team_vorig": "MW1",
+      "team_nieuw": "MW1"
+    },
+    {
+      "rel_code": "NJZ52X1",
+      "status": "uitgestroomd",
+      "geboortejaar": 1993,
+      "geslacht": "V",
+      "leeftijd_vorig": 17,
+      "leeftijd_nieuw": null,
+      "team_vorig": "A3/A4",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "NJZ80M3",
+      "status": "uitgestroomd",
+      "geboortejaar": 2000,
+      "geslacht": "M",
+      "leeftijd_vorig": 10,
+      "leeftijd_nieuw": null,
+      "team_vorig": "D5",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "NKB10W1",
+      "status": "nieuw",
+      "geboortejaar": 1998,
+      "geslacht": "M",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 13,
+      "team_vorig": null,
+      "team_nieuw": "C3"
+    },
+    {
+      "rel_code": "NKB62H7",
+      "status": "behouden",
+      "geboortejaar": 2001,
+      "geslacht": "M",
+      "leeftijd_vorig": 9,
+      "leeftijd_nieuw": 10,
+      "team_vorig": "E5",
+      "team_nieuw": "E5"
+    },
+    {
       "rel_code": "NKB62K8",
       "status": "behouden",
       "geboortejaar": 1999,
@@ -1396,6 +2866,16 @@
       "team_nieuw": "C2"
     },
     {
+      "rel_code": "NKB86G2",
+      "status": "uitgestroomd",
+      "geboortejaar": 1997,
+      "geslacht": "V",
+      "leeftijd_vorig": 13,
+      "leeftijd_nieuw": null,
+      "team_vorig": "CM5",
+      "team_nieuw": null
+    },
+    {
       "rel_code": "NKC46P6",
       "status": "behouden",
       "geboortejaar": 2000,
@@ -1404,6 +2884,16 @@
       "leeftijd_nieuw": 11,
       "team_vorig": "D2",
       "team_nieuw": "D1"
+    },
+    {
+      "rel_code": "NKC46Q3",
+      "status": "uitgestroomd",
+      "geboortejaar": 1999,
+      "geslacht": "V",
+      "leeftijd_vorig": 11,
+      "leeftijd_nieuw": null,
+      "team_vorig": "D4",
+      "team_nieuw": null
     },
     {
       "rel_code": "NKC46R0",
@@ -1446,6 +2936,16 @@
       "team_nieuw": "D1"
     },
     {
+      "rel_code": "NKD19V3",
+      "status": "behouden",
+      "geboortejaar": 1996,
+      "geslacht": "V",
+      "leeftijd_vorig": 14,
+      "leeftijd_nieuw": 15,
+      "team_vorig": "C3",
+      "team_nieuw": "B3"
+    },
+    {
       "rel_code": "NKD19X7",
       "status": "behouden",
       "geboortejaar": 2000,
@@ -1476,6 +2976,26 @@
       "team_nieuw": "D1"
     },
     {
+      "rel_code": "NKD20C8",
+      "status": "uitgestroomd",
+      "geboortejaar": 1998,
+      "geslacht": "M",
+      "leeftijd_vorig": 12,
+      "leeftijd_nieuw": null,
+      "team_vorig": "D5",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "NKD39N7",
+      "status": "behouden",
+      "geboortejaar": 1997,
+      "geslacht": "V",
+      "leeftijd_vorig": 13,
+      "leeftijd_nieuw": 14,
+      "team_vorig": "CM5",
+      "team_nieuw": "C4"
+    },
+    {
       "rel_code": "NKD39Q8",
       "status": "behouden",
       "geboortejaar": 1999,
@@ -1486,6 +3006,26 @@
       "team_nieuw": "C5"
     },
     {
+      "rel_code": "NKD67B2",
+      "status": "behouden",
+      "geboortejaar": 1997,
+      "geslacht": "M",
+      "leeftijd_vorig": 13,
+      "leeftijd_nieuw": 14,
+      "team_vorig": "C3",
+      "team_nieuw": "B3"
+    },
+    {
+      "rel_code": "NKD67C9",
+      "status": "behouden",
+      "geboortejaar": 1999,
+      "geslacht": "V",
+      "leeftijd_vorig": 11,
+      "leeftijd_nieuw": 12,
+      "team_vorig": "D4",
+      "team_nieuw": "C3"
+    },
+    {
       "rel_code": "NKF94H2",
       "status": "uitgestroomd",
       "geboortejaar": 1998,
@@ -1494,6 +3034,16 @@
       "leeftijd_nieuw": null,
       "team_vorig": "C2",
       "team_nieuw": null
+    },
+    {
+      "rel_code": "NKF94J6",
+      "status": "behouden",
+      "geboortejaar": 1999,
+      "geslacht": "V",
+      "leeftijd_vorig": 11,
+      "leeftijd_nieuw": 12,
+      "team_vorig": "D4",
+      "team_nieuw": "D4"
     },
     {
       "rel_code": "NKG18N7",
@@ -1526,6 +3076,16 @@
       "team_nieuw": null
     },
     {
+      "rel_code": "NKG59G1",
+      "status": "behouden",
+      "geboortejaar": 2001,
+      "geslacht": "M",
+      "leeftijd_vorig": 9,
+      "leeftijd_nieuw": 10,
+      "team_vorig": "E2",
+      "team_nieuw": "E1"
+    },
+    {
       "rel_code": "NKG59H8",
       "status": "behouden",
       "geboortejaar": 2001,
@@ -1544,6 +3104,16 @@
       "leeftijd_nieuw": 10,
       "team_vorig": "E2",
       "team_nieuw": "E1"
+    },
+    {
+      "rel_code": "NKG59K9",
+      "status": "behouden",
+      "geboortejaar": 1999,
+      "geslacht": "M",
+      "leeftijd_vorig": 11,
+      "leeftijd_nieuw": 12,
+      "team_vorig": "D3",
+      "team_nieuw": "D3"
     },
     {
       "rel_code": "NKG59L6",
@@ -1566,6 +3136,46 @@
       "team_nieuw": "E1"
     },
     {
+      "rel_code": "NKG59P4",
+      "status": "behouden",
+      "geboortejaar": 2002,
+      "geslacht": "V",
+      "leeftijd_vorig": 8,
+      "leeftijd_nieuw": 9,
+      "team_vorig": "E4",
+      "team_nieuw": "E3"
+    },
+    {
+      "rel_code": "NKG59Q1",
+      "status": "behouden",
+      "geboortejaar": 2001,
+      "geslacht": "M",
+      "leeftijd_vorig": 9,
+      "leeftijd_nieuw": 10,
+      "team_vorig": "E2",
+      "team_nieuw": "D3"
+    },
+    {
+      "rel_code": "NKG68V8",
+      "status": "behouden",
+      "geboortejaar": 1997,
+      "geslacht": "V",
+      "leeftijd_vorig": 13,
+      "leeftijd_nieuw": 14,
+      "team_vorig": "CM5",
+      "team_nieuw": "B4"
+    },
+    {
+      "rel_code": "NKH04K0",
+      "status": "nieuw",
+      "geboortejaar": 2002,
+      "geslacht": "M",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 9,
+      "team_vorig": null,
+      "team_nieuw": "E2"
+    },
+    {
       "rel_code": "NKH35N9",
       "status": "behouden",
       "geboortejaar": 1998,
@@ -1586,14 +3196,44 @@
       "team_nieuw": "B2"
     },
     {
+      "rel_code": "NKH71M0",
+      "status": "behouden",
+      "geboortejaar": 1994,
+      "geslacht": "M",
+      "leeftijd_vorig": 16,
+      "leeftijd_nieuw": 17,
+      "team_vorig": "B4",
+      "team_nieuw": "A3"
+    },
+    {
       "rel_code": "NKH71P1",
       "status": "behouden",
       "geboortejaar": 1975,
       "geslacht": "M",
       "leeftijd_vorig": 35,
       "leeftijd_nieuw": 36,
-      "team_vorig": "S1",
+      "team_vorig": "S8",
       "team_nieuw": "MW2"
+    },
+    {
+      "rel_code": "NKH99L7",
+      "status": "behouden",
+      "geboortejaar": 2001,
+      "geslacht": "V",
+      "leeftijd_vorig": 9,
+      "leeftijd_nieuw": 10,
+      "team_vorig": "E2",
+      "team_nieuw": "D3"
+    },
+    {
+      "rel_code": "NKJ12L8",
+      "status": "behouden",
+      "geboortejaar": 1996,
+      "geslacht": "V",
+      "leeftijd_vorig": 14,
+      "leeftijd_nieuw": 15,
+      "team_vorig": "C3",
+      "team_nieuw": "B3"
     },
     {
       "rel_code": "NKJ29C1",
@@ -1624,6 +3264,16 @@
       "leeftijd_nieuw": 9,
       "team_vorig": "E2",
       "team_nieuw": "E1"
+    },
+    {
+      "rel_code": "NKJ95J3",
+      "status": "behouden",
+      "geboortejaar": 2002,
+      "geslacht": "V",
+      "leeftijd_vorig": 8,
+      "leeftijd_nieuw": 9,
+      "team_vorig": "E2",
+      "team_nieuw": "E2"
     },
     {
       "rel_code": "NKJ95K0",
@@ -1666,6 +3316,16 @@
       "team_nieuw": "E2"
     },
     {
+      "rel_code": "NKK27D3",
+      "status": "behouden",
+      "geboortejaar": 1998,
+      "geslacht": "M",
+      "leeftijd_vorig": 12,
+      "leeftijd_nieuw": 13,
+      "team_vorig": "C3",
+      "team_nieuw": "C3"
+    },
+    {
       "rel_code": "NKK27G4",
       "status": "behouden",
       "geboortejaar": 2003,
@@ -1676,14 +3336,24 @@
       "team_nieuw": "E2"
     },
     {
+      "rel_code": "NKK48B2",
+      "status": "behouden",
+      "geboortejaar": 2003,
+      "geslacht": "V",
+      "leeftijd_vorig": 7,
+      "leeftijd_nieuw": 8,
+      "team_vorig": "F4",
+      "team_nieuw": "E4"
+    },
+    {
       "rel_code": "NKK48C9",
       "status": "behouden",
       "geboortejaar": 1974,
       "geslacht": "M",
       "leeftijd_vorig": 36,
       "leeftijd_nieuw": 37,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S6",
+      "team_nieuw": "S3/S4"
     },
     {
       "rel_code": "NKK48D6",
@@ -1706,6 +3376,16 @@
       "team_nieuw": "E3"
     },
     {
+      "rel_code": "NKL60M6",
+      "status": "uitgestroomd",
+      "geboortejaar": 1996,
+      "geslacht": "V",
+      "leeftijd_vorig": 14,
+      "leeftijd_nieuw": null,
+      "team_vorig": "B4",
+      "team_nieuw": null
+    },
+    {
       "rel_code": "NKL60P7",
       "status": "behouden",
       "geboortejaar": 2004,
@@ -1714,6 +3394,46 @@
       "leeftijd_nieuw": 7,
       "team_vorig": "F4",
       "team_nieuw": "F2"
+    },
+    {
+      "rel_code": "NKL61V2",
+      "status": "uitgestroomd",
+      "geboortejaar": 2002,
+      "geslacht": "V",
+      "leeftijd_vorig": 8,
+      "leeftijd_nieuw": null,
+      "team_vorig": "E5",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "NKM01R5",
+      "status": "behouden",
+      "geboortejaar": 2001,
+      "geslacht": "V",
+      "leeftijd_vorig": 9,
+      "leeftijd_nieuw": 10,
+      "team_vorig": "E3",
+      "team_nieuw": "D5"
+    },
+    {
+      "rel_code": "NKM01S2",
+      "status": "uitgestroomd",
+      "geboortejaar": 2000,
+      "geslacht": "M",
+      "leeftijd_vorig": 10,
+      "leeftijd_nieuw": null,
+      "team_vorig": "D5",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "NKM09V7",
+      "status": "behouden",
+      "geboortejaar": 2001,
+      "geslacht": "M",
+      "leeftijd_vorig": 9,
+      "leeftijd_nieuw": 10,
+      "team_vorig": "E2",
+      "team_nieuw": "D2"
     },
     {
       "rel_code": "NKM14K0",
@@ -1736,6 +3456,26 @@
       "team_nieuw": "D3"
     },
     {
+      "rel_code": "NKN08C2",
+      "status": "behouden",
+      "geboortejaar": 1999,
+      "geslacht": "M",
+      "leeftijd_vorig": 11,
+      "leeftijd_nieuw": 12,
+      "team_vorig": "D5",
+      "team_nieuw": "C5"
+    },
+    {
+      "rel_code": "NKN18F8",
+      "status": "behouden",
+      "geboortejaar": 2002,
+      "geslacht": "V",
+      "leeftijd_vorig": 8,
+      "leeftijd_nieuw": 9,
+      "team_vorig": "E3",
+      "team_nieuw": "E3"
+    },
+    {
       "rel_code": "NKN64T9",
       "status": "behouden",
       "geboortejaar": 2003,
@@ -1744,6 +3484,26 @@
       "leeftijd_nieuw": 8,
       "team_vorig": "F2",
       "team_nieuw": "E4"
+    },
+    {
+      "rel_code": "NKN64W0",
+      "status": "behouden",
+      "geboortejaar": 2000,
+      "geslacht": "V",
+      "leeftijd_vorig": 10,
+      "leeftijd_nieuw": 11,
+      "team_vorig": "D5",
+      "team_nieuw": "D5"
+    },
+    {
+      "rel_code": "NKN64Z1",
+      "status": "uitgestroomd",
+      "geboortejaar": 2000,
+      "geslacht": "V",
+      "leeftijd_vorig": 10,
+      "leeftijd_nieuw": null,
+      "team_vorig": "D5",
+      "team_nieuw": null
     },
     {
       "rel_code": "NKN65B6",
@@ -1756,6 +3516,16 @@
       "team_nieuw": "D2"
     },
     {
+      "rel_code": "NKN65C3",
+      "status": "behouden",
+      "geboortejaar": 2000,
+      "geslacht": "V",
+      "leeftijd_vorig": 10,
+      "leeftijd_nieuw": 11,
+      "team_vorig": "D5",
+      "team_nieuw": "D5"
+    },
+    {
       "rel_code": "NKN65D0",
       "status": "behouden",
       "geboortejaar": 2001,
@@ -1764,6 +3534,36 @@
       "leeftijd_nieuw": 10,
       "team_vorig": "E2",
       "team_nieuw": "E1"
+    },
+    {
+      "rel_code": "NKN65F4",
+      "status": "behouden",
+      "geboortejaar": 1996,
+      "geslacht": "V",
+      "leeftijd_vorig": 14,
+      "leeftijd_nieuw": 15,
+      "team_vorig": "B4",
+      "team_nieuw": "A3"
+    },
+    {
+      "rel_code": "NKN65G1",
+      "status": "behouden",
+      "geboortejaar": 2000,
+      "geslacht": "M",
+      "leeftijd_vorig": 10,
+      "leeftijd_nieuw": 11,
+      "team_vorig": "D4",
+      "team_nieuw": "D4"
+    },
+    {
+      "rel_code": "NKN65H8",
+      "status": "behouden",
+      "geboortejaar": 1999,
+      "geslacht": "V",
+      "leeftijd_vorig": 11,
+      "leeftijd_nieuw": 12,
+      "team_vorig": "D5",
+      "team_nieuw": "C5"
     },
     {
       "rel_code": "NKN65J2",
@@ -1776,6 +3576,16 @@
       "team_nieuw": "E2"
     },
     {
+      "rel_code": "NKN65K9",
+      "status": "behouden",
+      "geboortejaar": 2001,
+      "geslacht": "V",
+      "leeftijd_vorig": 9,
+      "leeftijd_nieuw": 10,
+      "team_vorig": "E4",
+      "team_nieuw": "D5"
+    },
+    {
       "rel_code": "NKP41W3",
       "status": "behouden",
       "geboortejaar": 2004,
@@ -1786,6 +3596,26 @@
       "team_nieuw": "F2"
     },
     {
+      "rel_code": "NKP72D8",
+      "status": "behouden",
+      "geboortejaar": 1994,
+      "geslacht": "V",
+      "leeftijd_vorig": 16,
+      "leeftijd_nieuw": 17,
+      "team_vorig": "AM5",
+      "team_nieuw": "A3"
+    },
+    {
+      "rel_code": "NKP93T3",
+      "status": "uitgestroomd",
+      "geboortejaar": 2001,
+      "geslacht": "V",
+      "leeftijd_vorig": 9,
+      "leeftijd_nieuw": null,
+      "team_vorig": "E5",
+      "team_nieuw": null
+    },
+    {
       "rel_code": "NKP97Z7",
       "status": "behouden",
       "geboortejaar": 1972,
@@ -1794,6 +3624,16 @@
       "leeftijd_nieuw": 39,
       "team_vorig": "MW2",
       "team_nieuw": "MW2"
+    },
+    {
+      "rel_code": "NKP98W9",
+      "status": "behouden",
+      "geboortejaar": 1967,
+      "geslacht": "V",
+      "leeftijd_vorig": 43,
+      "leeftijd_nieuw": 44,
+      "team_vorig": "C4",
+      "team_nieuw": "B4"
     },
     {
       "rel_code": "NKQ13Q3",
@@ -1822,8 +3662,8 @@
       "geslacht": "M",
       "leeftijd_vorig": 26,
       "leeftijd_nieuw": 27,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_vorig": "S1/S2",
+      "team_nieuw": "S1/S2"
     },
     {
       "rel_code": "NKQ40Q9",
@@ -1836,13 +3676,33 @@
       "team_nieuw": "F1"
     },
     {
+      "rel_code": "NKQ40R6",
+      "status": "nieuw",
+      "geboortejaar": 1973,
+      "geslacht": "V",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 38,
+      "team_vorig": null,
+      "team_nieuw": "MW3"
+    },
+    {
+      "rel_code": "NKQ46W9",
+      "status": "behouden",
+      "geboortejaar": 2003,
+      "geslacht": "V",
+      "leeftijd_vorig": 7,
+      "leeftijd_nieuw": 8,
+      "team_vorig": "F4",
+      "team_nieuw": "E4"
+    },
+    {
       "rel_code": "NKQ46X6",
       "status": "behouden",
       "geboortejaar": 2005,
       "geslacht": "V",
       "leeftijd_vorig": 5,
       "leeftijd_nieuw": 6,
-      "team_vorig": "F4",
+      "team_vorig": "Kangoeroes",
       "team_nieuw": "F6"
     },
     {
@@ -1856,6 +3716,56 @@
       "team_nieuw": "D4"
     },
     {
+      "rel_code": "NKQ76R9",
+      "status": "nieuw",
+      "geboortejaar": 1989,
+      "geslacht": "V",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 22,
+      "team_vorig": null,
+      "team_nieuw": "S6/S7"
+    },
+    {
+      "rel_code": "NKR09B2",
+      "status": "behouden",
+      "geboortejaar": 2005,
+      "geslacht": "V",
+      "leeftijd_vorig": 5,
+      "leeftijd_nieuw": 6,
+      "team_vorig": "Kangoeroes",
+      "team_nieuw": "F6"
+    },
+    {
+      "rel_code": "NKR09C9",
+      "status": "behouden",
+      "geboortejaar": 1999,
+      "geslacht": "M",
+      "leeftijd_vorig": 11,
+      "leeftijd_nieuw": 12,
+      "team_vorig": "D4",
+      "team_nieuw": "D4"
+    },
+    {
+      "rel_code": "NKR09D6",
+      "status": "behouden",
+      "geboortejaar": 2000,
+      "geslacht": "M",
+      "leeftijd_vorig": 10,
+      "leeftijd_nieuw": 11,
+      "team_vorig": "D4",
+      "team_nieuw": "D4"
+    },
+    {
+      "rel_code": "NKR09F0",
+      "status": "behouden",
+      "geboortejaar": 2001,
+      "geslacht": "M",
+      "leeftijd_vorig": 9,
+      "leeftijd_nieuw": 10,
+      "team_vorig": "E5",
+      "team_nieuw": "D5"
+    },
+    {
       "rel_code": "NKR09G7",
       "status": "behouden",
       "geboortejaar": 2003,
@@ -1864,6 +3774,36 @@
       "leeftijd_nieuw": 8,
       "team_vorig": "F3",
       "team_nieuw": "E2"
+    },
+    {
+      "rel_code": "NKR16Y9",
+      "status": "behouden",
+      "geboortejaar": 1998,
+      "geslacht": "M",
+      "leeftijd_vorig": 12,
+      "leeftijd_nieuw": 13,
+      "team_vorig": "C4",
+      "team_nieuw": "C4"
+    },
+    {
+      "rel_code": "NKR16Z6",
+      "status": "uitgestroomd",
+      "geboortejaar": 1997,
+      "geslacht": "M",
+      "leeftijd_vorig": 13,
+      "leeftijd_nieuw": null,
+      "team_vorig": "C4",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "NKR17B1",
+      "status": "behouden",
+      "geboortejaar": 1999,
+      "geslacht": "V",
+      "leeftijd_vorig": 11,
+      "leeftijd_nieuw": 12,
+      "team_vorig": "D3",
+      "team_nieuw": "C3"
     },
     {
       "rel_code": "NKR20L5",
@@ -1884,6 +3824,16 @@
       "leeftijd_nieuw": 8,
       "team_vorig": "F2",
       "team_nieuw": "F1"
+    },
+    {
+      "rel_code": "NKR22S0",
+      "status": "behouden",
+      "geboortejaar": 2003,
+      "geslacht": "V",
+      "leeftijd_vorig": 7,
+      "leeftijd_nieuw": 8,
+      "team_vorig": "F2",
+      "team_nieuw": "E4"
     },
     {
       "rel_code": "NKR24N1",
@@ -1926,6 +3876,16 @@
       "team_nieuw": "E3"
     },
     {
+      "rel_code": "NKR62R3",
+      "status": "behouden",
+      "geboortejaar": 1999,
+      "geslacht": "V",
+      "leeftijd_vorig": 11,
+      "leeftijd_nieuw": 12,
+      "team_vorig": "D5",
+      "team_nieuw": "D4"
+    },
+    {
       "rel_code": "NKR62S0",
       "status": "behouden",
       "geboortejaar": 2004,
@@ -1934,6 +3894,46 @@
       "leeftijd_nieuw": 7,
       "team_vorig": "F4",
       "team_nieuw": "F1"
+    },
+    {
+      "rel_code": "NKR65H2",
+      "status": "uitgestroomd",
+      "geboortejaar": 2003,
+      "geslacht": "M",
+      "leeftijd_vorig": 7,
+      "leeftijd_nieuw": null,
+      "team_vorig": "F4",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "NKR87B6",
+      "status": "behouden",
+      "geboortejaar": 2004,
+      "geslacht": "M",
+      "leeftijd_vorig": 6,
+      "leeftijd_nieuw": 7,
+      "team_vorig": "Kangoeroes",
+      "team_nieuw": "F2"
+    },
+    {
+      "rel_code": "NKR87C3",
+      "status": "uitgestroomd",
+      "geboortejaar": 1997,
+      "geslacht": "M",
+      "leeftijd_vorig": 13,
+      "leeftijd_nieuw": null,
+      "team_vorig": "C4",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "NKR99J3",
+      "status": "behouden",
+      "geboortejaar": 2002,
+      "geslacht": "M",
+      "leeftijd_vorig": 8,
+      "leeftijd_nieuw": 9,
+      "team_vorig": "E4",
+      "team_nieuw": "E4"
     },
     {
       "rel_code": "NKS24M5",
@@ -1946,6 +3946,46 @@
       "team_nieuw": "F1"
     },
     {
+      "rel_code": "NKS24N2",
+      "status": "behouden",
+      "geboortejaar": 2003,
+      "geslacht": "V",
+      "leeftijd_vorig": 7,
+      "leeftijd_nieuw": 8,
+      "team_vorig": "F3",
+      "team_nieuw": "E3"
+    },
+    {
+      "rel_code": "NKS24P6",
+      "status": "behouden",
+      "geboortejaar": 1998,
+      "geslacht": "M",
+      "leeftijd_vorig": 12,
+      "leeftijd_nieuw": 13,
+      "team_vorig": "D4",
+      "team_nieuw": "C5"
+    },
+    {
+      "rel_code": "NKS24Q3",
+      "status": "behouden",
+      "geboortejaar": 2002,
+      "geslacht": "V",
+      "leeftijd_vorig": 8,
+      "leeftijd_nieuw": 9,
+      "team_vorig": "E5",
+      "team_nieuw": "E5"
+    },
+    {
+      "rel_code": "NKS24R0",
+      "status": "behouden",
+      "geboortejaar": 2001,
+      "geslacht": "M",
+      "leeftijd_vorig": 9,
+      "leeftijd_nieuw": 10,
+      "team_vorig": "E5",
+      "team_nieuw": "D5"
+    },
+    {
       "rel_code": "NKS24S7",
       "status": "nieuw",
       "geboortejaar": 2006,
@@ -1953,7 +3993,37 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 5,
       "team_vorig": null,
-      "team_nieuw": "F6"
+      "team_nieuw": "Kangoeroes"
+    },
+    {
+      "rel_code": "NKS24T4",
+      "status": "uitgestroomd",
+      "geboortejaar": 2005,
+      "geslacht": "V",
+      "leeftijd_vorig": 5,
+      "leeftijd_nieuw": null,
+      "team_vorig": "Kangoeroes",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "NKS24V8",
+      "status": "nieuw",
+      "geboortejaar": 1999,
+      "geslacht": "V",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 12,
+      "team_vorig": null,
+      "team_nieuw": "D3"
+    },
+    {
+      "rel_code": "NKS51B4",
+      "status": "nieuw",
+      "geboortejaar": 1998,
+      "geslacht": "M",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 13,
+      "team_vorig": null,
+      "team_nieuw": "C5"
     },
     {
       "rel_code": "NKT05Q7",
@@ -1964,6 +4034,26 @@
       "leeftijd_nieuw": 9,
       "team_vorig": null,
       "team_nieuw": "E5"
+    },
+    {
+      "rel_code": "NKT08B1",
+      "status": "nieuw",
+      "geboortejaar": 2006,
+      "geslacht": "M",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 5,
+      "team_vorig": null,
+      "team_nieuw": "Kangoeroes"
+    },
+    {
+      "rel_code": "NKT15F5",
+      "status": "nieuw",
+      "geboortejaar": 1999,
+      "geslacht": "V",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 12,
+      "team_vorig": null,
+      "team_nieuw": "C5"
     },
     {
       "rel_code": "NKT15G2",
@@ -1996,12 +4086,72 @@
       "team_nieuw": "F6"
     },
     {
+      "rel_code": "NKT92M5",
+      "status": "nieuw",
+      "geboortejaar": 1999,
+      "geslacht": "V",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 12,
+      "team_vorig": null,
+      "team_nieuw": "C5"
+    },
+    {
+      "rel_code": "NKV18G3",
+      "status": "nieuw",
+      "geboortejaar": 2002,
+      "geslacht": "V",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 9,
+      "team_vorig": null,
+      "team_nieuw": "E4"
+    },
+    {
+      "rel_code": "NKV48D7",
+      "status": "nieuw",
+      "geboortejaar": 2006,
+      "geslacht": "V",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 5,
+      "team_vorig": null,
+      "team_nieuw": "Kangoeroes"
+    },
+    {
       "rel_code": "NKV48H5",
       "status": "nieuw",
       "geboortejaar": 2003,
       "geslacht": "M",
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 8,
+      "team_vorig": null,
+      "team_nieuw": "F3"
+    },
+    {
+      "rel_code": "NKV48J9",
+      "status": "nieuw",
+      "geboortejaar": 1998,
+      "geslacht": "V",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 13,
+      "team_vorig": null,
+      "team_nieuw": "C4"
+    },
+    {
+      "rel_code": "NKV54Q1",
+      "status": "nieuw",
+      "geboortejaar": 2003,
+      "geslacht": "V",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 8,
+      "team_vorig": null,
+      "team_nieuw": "F3"
+    },
+    {
+      "rel_code": "NKV67D4",
+      "status": "nieuw",
+      "geboortejaar": 2004,
+      "geslacht": "V",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 7,
       "team_vorig": null,
       "team_nieuw": "F3"
     },
@@ -2106,6 +4256,16 @@
       "team_nieuw": "F4"
     },
     {
+      "rel_code": "NKW49X1",
+      "status": "nieuw",
+      "geboortejaar": 2001,
+      "geslacht": "M",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 10,
+      "team_vorig": null,
+      "team_nieuw": "D5"
+    },
+    {
       "rel_code": "NKW49Y8",
       "status": "nieuw",
       "geboortejaar": 2003,
@@ -2156,6 +4316,26 @@
       "team_nieuw": "F4"
     },
     {
+      "rel_code": "NKW50R7",
+      "status": "nieuw",
+      "geboortejaar": 2004,
+      "geslacht": "V",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 7,
+      "team_vorig": null,
+      "team_nieuw": "F4"
+    },
+    {
+      "rel_code": "NKW50S4",
+      "status": "nieuw",
+      "geboortejaar": 2004,
+      "geslacht": "V",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 7,
+      "team_vorig": null,
+      "team_nieuw": "F5"
+    },
+    {
       "rel_code": "NKW50T1",
       "status": "nieuw",
       "geboortejaar": 2001,
@@ -2164,6 +4344,16 @@
       "leeftijd_nieuw": 10,
       "team_vorig": null,
       "team_nieuw": "D3"
+    },
+    {
+      "rel_code": "NKW50V5",
+      "status": "nieuw",
+      "geboortejaar": 2001,
+      "geslacht": "V",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 10,
+      "team_vorig": null,
+      "team_nieuw": "E5"
     },
     {
       "rel_code": "NKX06P7",
@@ -2176,6 +4366,16 @@
       "team_nieuw": "F4"
     },
     {
+      "rel_code": "NKX06Q4",
+      "status": "nieuw",
+      "geboortejaar": 2002,
+      "geslacht": "V",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 9,
+      "team_vorig": null,
+      "team_nieuw": "E5"
+    },
+    {
       "rel_code": "NKX66T5",
       "status": "nieuw",
       "geboortejaar": 2005,
@@ -2186,1384 +4386,84 @@
       "team_nieuw": "F6"
     },
     {
+      "rel_code": "NKZ02T5",
+      "status": "nieuw",
+      "geboortejaar": 1967,
+      "geslacht": "V",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 44,
+      "team_vorig": null,
+      "team_nieuw": "D5"
+    },
+    {
       "rel_code": "NLB71F2",
       "status": "uitgestroomd",
       "geboortejaar": 2005,
       "geslacht": "M",
       "leeftijd_vorig": 5,
       "leeftijd_nieuw": null,
-      "team_vorig": "F4",
+      "team_vorig": "Kangoeroes",
       "team_nieuw": null
     },
     {
-      "rel_code": "OW-0071",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
-    },
-    {
-      "rel_code": "OW-0072",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
-    },
-    {
-      "rel_code": "OW-0073",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
-    },
-    {
-      "rel_code": "OW-0074",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
-    },
-    {
-      "rel_code": "OW-0075",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
-    },
-    {
-      "rel_code": "OW-0079",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
-    },
-    {
-      "rel_code": "OW-0080",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
-    },
-    {
-      "rel_code": "OW-0082",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
-    },
-    {
-      "rel_code": "OW-0084",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
-    },
-    {
-      "rel_code": "OW-0086",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
-    },
-    {
-      "rel_code": "OW-0087",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
-    },
-    {
-      "rel_code": "OW-0088",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "S1"
-    },
-    {
-      "rel_code": "OW-0089",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
-    },
-    {
-      "rel_code": "OW-0091",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "A1",
-      "team_nieuw": "S1"
-    },
-    {
-      "rel_code": "OW-0092",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
-    },
-    {
-      "rel_code": "OW-0093",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "A1",
-      "team_nieuw": "A2"
-    },
-    {
-      "rel_code": "OW-0094",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
-    },
-    {
-      "rel_code": "OW-0095",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "A1",
-      "team_nieuw": "A2"
-    },
-    {
-      "rel_code": "OW-0096",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "A2"
-    },
-    {
-      "rel_code": "OW-0097",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "A1",
-      "team_nieuw": "A2"
-    },
-    {
-      "rel_code": "OW-0098",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
-    },
-    {
-      "rel_code": "OW-0099",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "A3",
-      "team_nieuw": "S1"
-    },
-    {
-      "rel_code": "OW-0100",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
-    },
-    {
-      "rel_code": "OW-0101",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
-    },
-    {
-      "rel_code": "OW-0102",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
-    },
-    {
-      "rel_code": "OW-0103",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "MW2",
-      "team_nieuw": "S1"
-    },
-    {
-      "rel_code": "OW-0105",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
-    },
-    {
-      "rel_code": "OW-0106",
+      "rel_code": "NLB71J0",
       "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
+      "geboortejaar": 2004,
+      "geslacht": "M",
+      "leeftijd_vorig": 6,
       "leeftijd_nieuw": null,
-      "team_vorig": "A3",
+      "team_vorig": "S10",
       "team_nieuw": null
     },
     {
-      "rel_code": "OW-0109",
+      "rel_code": "NLC24S8",
       "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "MW1",
-      "team_nieuw": "MW1"
-    },
-    {
-      "rel_code": "OW-0110",
-      "status": "behouden",
-      "geboortejaar": null,
+      "geboortejaar": 2006,
       "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "MW1",
-      "team_nieuw": "MW1"
-    },
-    {
-      "rel_code": "OW-0111",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "MW1",
-      "team_nieuw": "MW1"
-    },
-    {
-      "rel_code": "OW-0112",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "MW1",
-      "team_nieuw": "MW1"
-    },
-    {
-      "rel_code": "OW-0113",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "MW2"
-    },
-    {
-      "rel_code": "OW-0114",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "MW2",
-      "team_nieuw": "MW2"
-    },
-    {
-      "rel_code": "OW-0118",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "MW3"
-    },
-    {
-      "rel_code": "OW-0119",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "MW2",
-      "team_nieuw": "MW3"
-    },
-    {
-      "rel_code": "OW-0120",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "MW3"
-    },
-    {
-      "rel_code": "OW-0121",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "MW2",
-      "team_nieuw": "MW3"
-    },
-    {
-      "rel_code": "OW-0122",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "MW3"
-    },
-    {
-      "rel_code": "OW-0123",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "MW2",
-      "team_nieuw": "MW3"
-    },
-    {
-      "rel_code": "OW-0124",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "S1",
-      "team_nieuw": "MW3"
-    },
-    {
-      "rel_code": "OW-0125",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "S1",
-      "team_nieuw": "MW3"
-    },
-    {
-      "rel_code": "OW-0126",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "MW3"
-    },
-    {
-      "rel_code": "OW-0127",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "S1",
-      "team_nieuw": "MW3"
-    },
-    {
-      "rel_code": "OW-0128",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "MW3"
-    },
-    {
-      "rel_code": "OW-0129",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "S1",
-      "team_nieuw": "MW3"
-    },
-    {
-      "rel_code": "OW-0130",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "MW3"
-    },
-    {
-      "rel_code": "OW-0132",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "S1",
-      "team_nieuw": "MW3"
-    },
-    {
-      "rel_code": "OW-0133",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "S1",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0135",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "MW3"
-    },
-    {
-      "rel_code": "OW-0136",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "MW3"
-    },
-    {
-      "rel_code": "OW-0138",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "MW2",
-      "team_nieuw": "MW3"
-    },
-    {
-      "rel_code": "OW-0140",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "MW2",
-      "team_nieuw": "MW3"
-    },
-    {
-      "rel_code": "OW-0141",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "MW3"
-    },
-    {
-      "rel_code": "OW-0142",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "MW2",
-      "team_nieuw": "MW3"
-    },
-    {
-      "rel_code": "OW-0143",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "MW3"
-    },
-    {
-      "rel_code": "OW-0144",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "MW2",
-      "team_nieuw": "MW2"
-    },
-    {
-      "rel_code": "OW-0145",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "MW2",
-      "team_nieuw": "MW3"
-    },
-    {
-      "rel_code": "OW-0147",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "MW3"
-    },
-    {
-      "rel_code": "OW-0148",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "A2"
-    },
-    {
-      "rel_code": "OW-0150",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "A1",
-      "team_nieuw": "A2"
-    },
-    {
-      "rel_code": "OW-0151",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "B2",
-      "team_nieuw": "B2"
-    },
-    {
-      "rel_code": "OW-0152",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "B2",
-      "team_nieuw": "B2"
-    },
-    {
-      "rel_code": "OW-0153",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "A3",
+      "leeftijd_vorig": 4,
+      "leeftijd_nieuw": 5,
+      "team_vorig": "BM3",
       "team_nieuw": "A3"
     },
     {
-      "rel_code": "OW-0156",
-      "status": "behouden",
-      "geboortejaar": null,
+      "rel_code": "NLG58Z8",
+      "status": "uitgestroomd",
+      "geboortejaar": 2006,
       "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "B4",
-      "team_nieuw": "A4"
+      "leeftijd_vorig": 4,
+      "leeftijd_nieuw": null,
+      "team_vorig": "MW1",
+      "team_nieuw": null
     },
     {
-      "rel_code": "OW-0157",
-      "status": "nieuw",
-      "geboortejaar": null,
+      "rel_code": "NLT04D0",
+      "status": "uitgestroomd",
+      "geboortejaar": 2007,
       "geslacht": "V",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "B3"
+      "leeftijd_vorig": 3,
+      "leeftijd_nieuw": null,
+      "team_vorig": "S6",
+      "team_nieuw": null
     },
     {
-      "rel_code": "OW-0158",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "B4",
-      "team_nieuw": "A5"
-    },
-    {
-      "rel_code": "OW-0159",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "A3",
-      "team_nieuw": "A5"
-    },
-    {
-      "rel_code": "OW-0160",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "C1",
-      "team_nieuw": "B2"
-    },
-    {
-      "rel_code": "OW-0161",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "C1",
-      "team_nieuw": "B1"
-    },
-    {
-      "rel_code": "OW-0162",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "C2",
-      "team_nieuw": "C1"
-    },
-    {
-      "rel_code": "OW-0163",
-      "status": "behouden",
-      "geboortejaar": null,
+      "rel_code": "NLV35B6",
+      "status": "uitgestroomd",
+      "geboortejaar": 2009,
       "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "C3",
-      "team_nieuw": "B3"
-    },
-    {
-      "rel_code": "OW-0164",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "C2",
-      "team_nieuw": "B2"
-    },
-    {
-      "rel_code": "OW-0165",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "C3",
-      "team_nieuw": "C2"
-    },
-    {
-      "rel_code": "OW-0166",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "C2",
-      "team_nieuw": "C2"
-    },
-    {
-      "rel_code": "OW-0167",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "C2",
-      "team_nieuw": "C1"
-    },
-    {
-      "rel_code": "OW-0169",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "C2",
-      "team_nieuw": "B3"
-    },
-    {
-      "rel_code": "OW-0170",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "C3",
-      "team_nieuw": "B3"
-    },
-    {
-      "rel_code": "OW-0171",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "C3",
-      "team_nieuw": "B3"
-    },
-    {
-      "rel_code": "OW-0172",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "C3",
-      "team_nieuw": "C3"
-    },
-    {
-      "rel_code": "OW-0173",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "B3"
-    },
-    {
-      "rel_code": "OW-0174",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "C3",
-      "team_nieuw": "B3"
-    },
-    {
-      "rel_code": "OW-0175",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "C3",
-      "team_nieuw": "B3"
-    },
-    {
-      "rel_code": "OW-0176",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "C3"
-    },
-    {
-      "rel_code": "OW-0177",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "C3",
-      "team_nieuw": "C2"
-    },
-    {
-      "rel_code": "OW-0178",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "B4",
-      "team_nieuw": "B4"
-    },
-    {
-      "rel_code": "OW-0179",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "C4",
-      "team_nieuw": "B4"
-    },
-    {
-      "rel_code": "OW-0182",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "D4",
-      "team_nieuw": "C5"
-    },
-    {
-      "rel_code": "OW-0183",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "C4",
-      "team_nieuw": "C4"
-    },
-    {
-      "rel_code": "OW-0184",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "C5"
-    },
-    {
-      "rel_code": "OW-0185",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "C4",
-      "team_nieuw": "C4"
-    },
-    {
-      "rel_code": "OW-0187",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "D2",
-      "team_nieuw": "C2"
-    },
-    {
-      "rel_code": "OW-0188",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "D2",
-      "team_nieuw": "D2"
-    },
-    {
-      "rel_code": "OW-0190",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "D3",
-      "team_nieuw": "C4"
-    },
-    {
-      "rel_code": "OW-0191",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "D3",
-      "team_nieuw": "C3"
-    },
-    {
-      "rel_code": "OW-0192",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "D3",
-      "team_nieuw": "C3"
-    },
-    {
-      "rel_code": "OW-0193",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "C4"
-    },
-    {
-      "rel_code": "OW-0194",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "D3",
-      "team_nieuw": "C3"
-    },
-    {
-      "rel_code": "OW-0195",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "D3",
-      "team_nieuw": "C4"
-    },
-    {
-      "rel_code": "OW-0196",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "D4",
-      "team_nieuw": "C3"
-    },
-    {
-      "rel_code": "OW-0197",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "D3",
-      "team_nieuw": "D3"
-    },
-    {
-      "rel_code": "OW-0198",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "D3"
-    },
-    {
-      "rel_code": "OW-0199",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "D4",
-      "team_nieuw": "D4"
-    },
-    {
-      "rel_code": "OW-0200",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "D4",
-      "team_nieuw": "D4"
-    },
-    {
-      "rel_code": "OW-0201",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "D4",
-      "team_nieuw": "D4"
-    },
-    {
-      "rel_code": "OW-0202",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "D4",
-      "team_nieuw": "D4"
-    },
-    {
-      "rel_code": "OW-0203",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "C4"
-    },
-    {
-      "rel_code": "OW-0205",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "C5"
-    },
-    {
-      "rel_code": "OW-0206",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "C5"
-    },
-    {
-      "rel_code": "OW-0207",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "D5",
-      "team_nieuw": "D5"
-    },
-    {
-      "rel_code": "OW-0208",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "D5",
-      "team_nieuw": "D5"
-    },
-    {
-      "rel_code": "OW-0210",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "E1",
-      "team_nieuw": "D1"
-    },
-    {
-      "rel_code": "OW-0211",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "E2",
-      "team_nieuw": "E1"
-    },
-    {
-      "rel_code": "OW-0212",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "E2",
-      "team_nieuw": "D2"
-    },
-    {
-      "rel_code": "OW-0213",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "E2"
-    },
-    {
-      "rel_code": "OW-0215",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "E5"
-    },
-    {
-      "rel_code": "OW-0216",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "E2",
-      "team_nieuw": "D3"
-    },
-    {
-      "rel_code": "OW-0217",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "E2",
-      "team_nieuw": "E2"
-    },
-    {
-      "rel_code": "OW-0218",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "E5",
-      "team_nieuw": "D5"
-    },
-    {
-      "rel_code": "OW-0219",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "E4"
-    },
-    {
-      "rel_code": "OW-0220",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "E3",
-      "team_nieuw": "E3"
-    },
-    {
-      "rel_code": "OW-0221",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "E5",
-      "team_nieuw": "E5"
-    },
-    {
-      "rel_code": "OW-0222",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "E4",
-      "team_nieuw": "E3"
-    },
-    {
-      "rel_code": "OW-0224",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "E5",
-      "team_nieuw": "E5"
+      "leeftijd_vorig": 1,
+      "leeftijd_nieuw": null,
+      "team_vorig": "MW1",
+      "team_nieuw": null
     },
     {
       "rel_code": "OW-0225",
-      "status": "behouden",
+      "status": "nieuw",
       "geboortejaar": null,
       "geslacht": "M",
-      "leeftijd_vorig": 2010,
+      "leeftijd_vorig": null,
       "leeftijd_nieuw": 2011,
-      "team_vorig": "E4",
+      "team_vorig": null,
       "team_nieuw": "E4"
-    },
-    {
-      "rel_code": "OW-0226",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "E4",
-      "team_nieuw": "E4"
-    },
-    {
-      "rel_code": "OW-0227",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "E4",
-      "team_nieuw": "D5"
-    },
-    {
-      "rel_code": "OW-0230",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "F3"
-    },
-    {
-      "rel_code": "OW-0231",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "F3",
-      "team_nieuw": "E3"
-    },
-    {
-      "rel_code": "OW-0232",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "F4"
-    },
-    {
-      "rel_code": "OW-0233",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "F5"
-    },
-    {
-      "rel_code": "OW-0240",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "F4",
-      "team_nieuw": "F2"
-    },
-    {
-      "rel_code": "OW-0241",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "F4",
-      "team_nieuw": "F6"
-    },
-    {
-      "rel_code": "OW-0261",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "S1",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0274",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
-    },
-    {
-      "rel_code": "OW-0275",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "S1",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0276",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "S1",
-      "team_nieuw": null
     },
     {
       "rel_code": "OW-0277",
@@ -3572,108 +4472,8 @@
       "geslacht": "M",
       "leeftijd_vorig": 2010,
       "leeftijd_nieuw": null,
-      "team_vorig": "S1",
+      "team_vorig": "S5",
       "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0278",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
-    },
-    {
-      "rel_code": "OW-0279",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "S1",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0280",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
-    },
-    {
-      "rel_code": "OW-0281",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "S1",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0282",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
-    },
-    {
-      "rel_code": "OW-0283",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
-    },
-    {
-      "rel_code": "OW-0284",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "S1",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0286",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "S1",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0287",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "S1",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0288",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "S1",
-      "team_nieuw": "S1"
     },
     {
       "rel_code": "OW-0289",
@@ -3682,18 +4482,8 @@
       "geslacht": "M",
       "leeftijd_vorig": 2010,
       "leeftijd_nieuw": null,
-      "team_vorig": "S1",
+      "team_vorig": "S9",
       "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0290",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "S1",
-      "team_nieuw": "MW3"
     },
     {
       "rel_code": "OW-0291",
@@ -3702,257 +4492,7 @@
       "geslacht": "V",
       "leeftijd_vorig": 2010,
       "leeftijd_nieuw": null,
-      "team_vorig": "S1",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0292",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "S1",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0293",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "S1",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0294",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "MW1",
-      "team_nieuw": "MW1"
-    },
-    {
-      "rel_code": "OW-0295",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "MW1",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0296",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "MW1",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0297",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "MW1",
-      "team_nieuw": "MW1"
-    },
-    {
-      "rel_code": "OW-0299",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "MW2",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0300",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "MW2",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0301",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "MW2",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0302",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "MW2",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0303",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "MW2",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0304",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "MW2",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0305",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "MW2",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0306",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "MW2",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0307",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "MW2",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0308",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "MW2",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0309",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "MW2",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0310",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "MW2",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0311",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "MW2",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0312",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "A1",
-      "team_nieuw": "A2"
-    },
-    {
-      "rel_code": "OW-0313",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "A1",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0314",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "A1",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0315",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "A1",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0316",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "A1",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0317",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "A1",
+      "team_vorig": "S10",
       "team_nieuw": null
     },
     {
@@ -3962,397 +4502,7 @@
       "geslacht": "V",
       "leeftijd_vorig": 2010,
       "leeftijd_nieuw": null,
-      "team_vorig": "A1",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0319",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "A1",
-      "team_nieuw": "A2"
-    },
-    {
-      "rel_code": "OW-0320",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "A1",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0321",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "A3",
-      "team_nieuw": "A2"
-    },
-    {
-      "rel_code": "OW-0322",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "A3",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0323",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "A3",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0324",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "A3",
-      "team_nieuw": "A2"
-    },
-    {
-      "rel_code": "OW-0325",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "A3",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0326",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "A3",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0327",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "A3",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0328",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "A3",
-      "team_nieuw": "A3"
-    },
-    {
-      "rel_code": "OW-0329",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "A3",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0330",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "A3",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0331",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "A3",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0332",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "A3",
-      "team_nieuw": "A3"
-    },
-    {
-      "rel_code": "OW-0333",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "A3",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0334",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "A3",
-      "team_nieuw": "A5"
-    },
-    {
-      "rel_code": "OW-0335",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "A3",
-      "team_nieuw": "MW3"
-    },
-    {
-      "rel_code": "OW-0336",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "A3",
-      "team_nieuw": "A4"
-    },
-    {
-      "rel_code": "OW-0337",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "A3",
-      "team_nieuw": "A4"
-    },
-    {
-      "rel_code": "OW-0338",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "A3",
-      "team_nieuw": "A4"
-    },
-    {
-      "rel_code": "OW-0339",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "A3",
-      "team_nieuw": "A5"
-    },
-    {
-      "rel_code": "OW-0340",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "A3",
-      "team_nieuw": "A5"
-    },
-    {
-      "rel_code": "OW-0341",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "A3",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0342",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "B2",
-      "team_nieuw": "A2"
-    },
-    {
-      "rel_code": "OW-0343",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "B2",
-      "team_nieuw": "A3"
-    },
-    {
-      "rel_code": "OW-0344",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "B2",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0345",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "B2",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0346",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "B2",
-      "team_nieuw": "A3"
-    },
-    {
-      "rel_code": "OW-0347",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "B2",
-      "team_nieuw": "A4"
-    },
-    {
-      "rel_code": "OW-0348",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "B2",
-      "team_nieuw": "A4"
-    },
-    {
-      "rel_code": "OW-0349",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "B2",
-      "team_nieuw": "A4"
-    },
-    {
-      "rel_code": "OW-0350",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "B4",
-      "team_nieuw": "A5"
-    },
-    {
-      "rel_code": "OW-0351",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "B4",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0352",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "B4",
-      "team_nieuw": "A5"
-    },
-    {
-      "rel_code": "OW-0353",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "B4",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0354",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "B4",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0355",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "C1",
-      "team_nieuw": "C1"
-    },
-    {
-      "rel_code": "OW-0356",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "C1",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0357",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "C4",
+      "team_vorig": "A1/A2",
       "team_nieuw": null
     },
     {
@@ -4376,404 +4526,14 @@
       "team_nieuw": null
     },
     {
-      "rel_code": "OW-0360",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "C4",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0361",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "C4",
-      "team_nieuw": "C4"
-    },
-    {
-      "rel_code": "OW-0362",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "C4",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0363",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "C4",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0364",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "C4",
-      "team_nieuw": "B4"
-    },
-    {
-      "rel_code": "OW-0365",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "C4",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0366",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "C4",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0367",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "C4",
-      "team_nieuw": "B4"
-    },
-    {
-      "rel_code": "OW-0368",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "C4",
-      "team_nieuw": "B4"
-    },
-    {
       "rel_code": "OW-0369",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "C4",
-      "team_nieuw": "B4"
-    },
-    {
-      "rel_code": "OW-0370",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "D1",
-      "team_nieuw": "C1"
-    },
-    {
-      "rel_code": "OW-0371",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "D1",
-      "team_nieuw": "D1"
-    },
-    {
-      "rel_code": "OW-0372",
       "status": "uitgestroomd",
       "geboortejaar": null,
       "geslacht": "V",
       "leeftijd_vorig": 2010,
       "leeftijd_nieuw": null,
-      "team_vorig": "D2",
+      "team_vorig": "CM5",
       "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0373",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "D4",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0374",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "D4",
-      "team_nieuw": "D4"
-    },
-    {
-      "rel_code": "OW-0375",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "D4",
-      "team_nieuw": "C4"
-    },
-    {
-      "rel_code": "OW-0376",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "D4",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0377",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "D5",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0378",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "D5",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0379",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "D5",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0380",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "D5",
-      "team_nieuw": "D5"
-    },
-    {
-      "rel_code": "OW-0381",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "D5",
-      "team_nieuw": "C5"
-    },
-    {
-      "rel_code": "OW-0382",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "D5",
-      "team_nieuw": "C5"
-    },
-    {
-      "rel_code": "OW-0383",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "D5",
-      "team_nieuw": "D4"
-    },
-    {
-      "rel_code": "OW-0384",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "E2",
-      "team_nieuw": "D3"
-    },
-    {
-      "rel_code": "OW-0385",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "E3",
-      "team_nieuw": "D5"
-    },
-    {
-      "rel_code": "OW-0386",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "E5",
-      "team_nieuw": "D5"
-    },
-    {
-      "rel_code": "OW-0387",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "E5",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0388",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "E5",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0389",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "F2",
-      "team_nieuw": "E4"
-    },
-    {
-      "rel_code": "OW-0390",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "F4",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0391",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "F4",
-      "team_nieuw": "E4"
-    },
-    {
-      "rel_code": "OW-0392",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "F4",
-      "team_nieuw": "E4"
-    },
-    {
-      "rel_code": "OW-0393",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "F4",
-      "team_nieuw": "F6"
-    },
-    {
-      "rel_code": "OW-0394",
-      "status": "behouden",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": "F4",
-      "team_nieuw": "F6"
-    },
-    {
-      "rel_code": "OW-0395",
-      "status": "uitgestroomd",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": 2010,
-      "leeftijd_nieuw": null,
-      "team_vorig": "F4",
-      "team_nieuw": null
-    },
-    {
-      "rel_code": "OW-0396",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "S1"
-    },
-    {
-      "rel_code": "OW-0397",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "S1"
-    },
-    {
-      "rel_code": "OW-0398",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "S1"
-    },
-    {
-      "rel_code": "OW-0399",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "MW1"
     },
     {
       "rel_code": "OW-0400",
@@ -4786,66 +4546,6 @@
       "team_nieuw": "MW3"
     },
     {
-      "rel_code": "OW-0401",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "MW3"
-    },
-    {
-      "rel_code": "OW-0402",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "A2"
-    },
-    {
-      "rel_code": "OW-0403",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "A4"
-    },
-    {
-      "rel_code": "OW-0404",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "M",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "D5"
-    },
-    {
-      "rel_code": "OW-0405",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "E5"
-    },
-    {
-      "rel_code": "OW-0406",
-      "status": "nieuw",
-      "geboortejaar": null,
-      "geslacht": "V",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 2011,
-      "team_vorig": null,
-      "team_nieuw": "F3"
-    },
-    {
       "rel_code": "OW-0407",
       "status": "nieuw",
       "geboortejaar": null,
@@ -4856,24 +4556,54 @@
       "team_nieuw": "F3"
     },
     {
-      "rel_code": "OW-0408",
+      "rel_code": "OW-0457",
+      "status": "uitgestroomd",
+      "geboortejaar": null,
+      "geslacht": "V",
+      "leeftijd_vorig": 2010,
+      "leeftijd_nieuw": null,
+      "team_vorig": "S8",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "OW-0458",
+      "status": "uitgestroomd",
+      "geboortejaar": null,
+      "geslacht": "V",
+      "leeftijd_vorig": 2010,
+      "leeftijd_nieuw": null,
+      "team_vorig": "S8",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "OW-0472",
+      "status": "uitgestroomd",
+      "geboortejaar": null,
+      "geslacht": "M",
+      "leeftijd_vorig": 2010,
+      "leeftijd_nieuw": null,
+      "team_vorig": "E4",
+      "team_nieuw": null
+    },
+    {
+      "rel_code": "OW-0475",
       "status": "nieuw",
       "geboortejaar": null,
       "geslacht": "M",
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 2011,
       "team_vorig": null,
-      "team_nieuw": "F6"
+      "team_nieuw": "S3/S4"
     },
     {
-      "rel_code": "OW-0409",
+      "rel_code": "OW-0499",
       "status": "nieuw",
       "geboortejaar": null,
-      "geslacht": "V",
+      "geslacht": "M",
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 2011,
       "team_vorig": null,
-      "team_nieuw": "F6"
+      "team_nieuw": "B1"
     }
   ]
 }

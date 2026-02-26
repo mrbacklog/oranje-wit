@@ -782,7 +782,7 @@
       "geslacht": "V",
       "leeftijd_vorig": 15,
       "leeftijd_nieuw": 13,
-      "team_vorig": "J4",
+      "team_vorig": "J1",
       "team_nieuw": "J4"
     },
     {
@@ -1372,7 +1372,7 @@
       "geslacht": "M",
       "leeftijd_vorig": 11,
       "leeftijd_nieuw": 11,
-      "team_vorig": "J6",
+      "team_vorig": "J5",
       "team_nieuw": "J6"
     },
     {
@@ -1472,7 +1472,7 @@
       "geslacht": "V",
       "leeftijd_vorig": 12,
       "leeftijd_nieuw": 12,
-      "team_vorig": "J6",
+      "team_vorig": "J5",
       "team_nieuw": "J6"
     },
     {
@@ -1492,7 +1492,7 @@
       "geslacht": "V",
       "leeftijd_vorig": 11,
       "leeftijd_nieuw": 11,
-      "team_vorig": "J5",
+      "team_vorig": "J6",
       "team_nieuw": "J5"
     },
     {
@@ -1512,7 +1512,7 @@
       "geslacht": "V",
       "leeftijd_vorig": 12,
       "leeftijd_nieuw": 12,
-      "team_vorig": "J6",
+      "team_vorig": "J5",
       "team_nieuw": "J6"
     },
     {
@@ -1522,7 +1522,7 @@
       "geslacht": "V",
       "leeftijd_vorig": 12,
       "leeftijd_nieuw": 12,
-      "team_vorig": "J6",
+      "team_vorig": "J5",
       "team_nieuw": "J6"
     },
     {
@@ -1612,7 +1612,7 @@
       "geslacht": "M",
       "leeftijd_vorig": 12,
       "leeftijd_nieuw": 12,
-      "team_vorig": "J6",
+      "team_vorig": "J5",
       "team_nieuw": "J6"
     },
     {
@@ -1622,7 +1622,7 @@
       "geslacht": "M",
       "leeftijd_vorig": 12,
       "leeftijd_nieuw": 12,
-      "team_vorig": "J6",
+      "team_vorig": "J5",
       "team_nieuw": "J6"
     },
     {
@@ -1632,7 +1632,7 @@
       "geslacht": "V",
       "leeftijd_vorig": 13,
       "leeftijd_nieuw": 13,
-      "team_vorig": "J5",
+      "team_vorig": "J3",
       "team_nieuw": "J5"
     },
     {
@@ -1652,7 +1652,7 @@
       "geslacht": "V",
       "leeftijd_vorig": 13,
       "leeftijd_nieuw": 13,
-      "team_vorig": "J5",
+      "team_vorig": "J6",
       "team_nieuw": "J5"
     },
     {
@@ -1662,7 +1662,7 @@
       "geslacht": "V",
       "leeftijd_vorig": 12,
       "leeftijd_nieuw": 12,
-      "team_vorig": "J6",
+      "team_vorig": "J5",
       "team_nieuw": "J6"
     },
     {
@@ -1782,7 +1782,7 @@
       "geslacht": "V",
       "leeftijd_vorig": 12,
       "leeftijd_nieuw": 12,
-      "team_vorig": "J5",
+      "team_vorig": "J6",
       "team_nieuw": "J5"
     },
     {
@@ -1842,7 +1842,7 @@
       "geslacht": "V",
       "leeftijd_vorig": 12,
       "leeftijd_nieuw": 12,
-      "team_vorig": "J6",
+      "team_vorig": "J5",
       "team_nieuw": "J6"
     },
     {
@@ -1852,7 +1852,7 @@
       "geslacht": "M",
       "leeftijd_vorig": 12,
       "leeftijd_nieuw": 12,
-      "team_vorig": "J5",
+      "team_vorig": "J6",
       "team_nieuw": "J5"
     },
     {
@@ -1862,7 +1862,7 @@
       "geslacht": "M",
       "leeftijd_vorig": 12,
       "leeftijd_nieuw": 12,
-      "team_vorig": "J5",
+      "team_vorig": "J6",
       "team_nieuw": "J5"
     },
     {
@@ -1902,7 +1902,7 @@
       "geslacht": "M",
       "leeftijd_vorig": 12,
       "leeftijd_nieuw": 12,
-      "team_vorig": "J6",
+      "team_vorig": "J5",
       "team_nieuw": "J6"
     },
     {
@@ -1962,7 +1962,7 @@
       "geslacht": "V",
       "leeftijd_vorig": 12,
       "leeftijd_nieuw": 12,
-      "team_vorig": "J5",
+      "team_vorig": "J6",
       "team_nieuw": "J5"
     },
     {
@@ -1982,7 +1982,7 @@
       "geslacht": "V",
       "leeftijd_vorig": 12,
       "leeftijd_nieuw": 12,
-      "team_vorig": "J6",
+      "team_vorig": "J5",
       "team_nieuw": null
     },
     {
@@ -2052,7 +2052,7 @@
       "geslacht": "M",
       "leeftijd_vorig": 12,
       "leeftijd_nieuw": 12,
-      "team_vorig": "J5",
+      "team_vorig": "J6",
       "team_nieuw": "J5"
     },
     {
@@ -2062,7 +2062,7 @@
       "geslacht": "V",
       "leeftijd_vorig": 12,
       "leeftijd_nieuw": 12,
-      "team_vorig": "J5",
+      "team_vorig": "J6",
       "team_nieuw": "J5"
     },
     {
@@ -2322,7 +2322,7 @@
       "geslacht": "V",
       "leeftijd_vorig": 13,
       "leeftijd_nieuw": 13,
-      "team_vorig": "J5",
+      "team_vorig": "J6",
       "team_nieuw": "J5"
     },
     {
@@ -2632,7 +2632,7 @@
       "geslacht": "V",
       "leeftijd_vorig": 12,
       "leeftijd_nieuw": 12,
-      "team_vorig": "J5",
+      "team_vorig": "J6",
       "team_nieuw": "J5"
     },
     {

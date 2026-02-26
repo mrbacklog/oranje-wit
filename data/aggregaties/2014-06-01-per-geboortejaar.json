@@ -1,6 +1,36 @@
 [
   {
+    "geboortejaar": 1939,
+    "geslacht": "V",
+    "aantal": 1,
+    "a_categorie": null,
+    "a_jaars": null,
+    "streef": null,
+    "vulgraad": null,
+    "signalering": null
+  },
+  {
+    "geboortejaar": 1958,
+    "geslacht": "M",
+    "aantal": 1,
+    "a_categorie": null,
+    "a_jaars": null,
+    "streef": null,
+    "vulgraad": null,
+    "signalering": null
+  },
+  {
     "geboortejaar": 1962,
+    "geslacht": "M",
+    "aantal": 1,
+    "a_categorie": null,
+    "a_jaars": null,
+    "streef": null,
+    "vulgraad": null,
+    "signalering": null
+  },
+  {
+    "geboortejaar": 1963,
     "geslacht": "M",
     "aantal": 1,
     "a_categorie": null,
@@ -102,7 +132,7 @@
   {
     "geboortejaar": 1978,
     "geslacht": "M",
-    "aantal": 1,
+    "aantal": 2,
     "a_categorie": null,
     "a_jaars": null,
     "streef": null,
@@ -120,9 +150,29 @@
     "signalering": null
   },
   {
+    "geboortejaar": 1979,
+    "geslacht": "M",
+    "aantal": 1,
+    "a_categorie": null,
+    "a_jaars": null,
+    "streef": null,
+    "vulgraad": null,
+    "signalering": null
+  },
+  {
+    "geboortejaar": 1979,
+    "geslacht": "V",
+    "aantal": 1,
+    "a_categorie": null,
+    "a_jaars": null,
+    "streef": null,
+    "vulgraad": null,
+    "signalering": null
+  },
+  {
     "geboortejaar": 1980,
     "geslacht": "M",
-    "aantal": 2,
+    "aantal": 3,
     "a_categorie": null,
     "a_jaars": null,
     "streef": null,
@@ -152,7 +202,7 @@
   {
     "geboortejaar": 1982,
     "geslacht": "M",
-    "aantal": 1,
+    "aantal": 2,
     "a_categorie": null,
     "a_jaars": null,
     "streef": null,
@@ -202,7 +252,7 @@
   {
     "geboortejaar": 1985,
     "geslacht": "V",
-    "aantal": 3,
+    "aantal": 4,
     "a_categorie": null,
     "a_jaars": null,
     "streef": null,
@@ -212,7 +262,7 @@
   {
     "geboortejaar": 1986,
     "geslacht": "M",
-    "aantal": 3,
+    "aantal": 4,
     "a_categorie": null,
     "a_jaars": null,
     "streef": null,
@@ -231,6 +281,106 @@
   },
   {
     "geboortejaar": 1987,
+    "geslacht": "M",
+    "aantal": 2,
+    "a_categorie": null,
+    "a_jaars": null,
+    "streef": null,
+    "vulgraad": null,
+    "signalering": null
+  },
+  {
+    "geboortejaar": 1987,
+    "geslacht": "V",
+    "aantal": 3,
+    "a_categorie": null,
+    "a_jaars": null,
+    "streef": null,
+    "vulgraad": null,
+    "signalering": null
+  },
+  {
+    "geboortejaar": 1988,
+    "geslacht": "M",
+    "aantal": 2,
+    "a_categorie": null,
+    "a_jaars": null,
+    "streef": null,
+    "vulgraad": null,
+    "signalering": null
+  },
+  {
+    "geboortejaar": 1988,
+    "geslacht": "V",
+    "aantal": 3,
+    "a_categorie": null,
+    "a_jaars": null,
+    "streef": null,
+    "vulgraad": null,
+    "signalering": null
+  },
+  {
+    "geboortejaar": 1989,
+    "geslacht": "M",
+    "aantal": 4,
+    "a_categorie": null,
+    "a_jaars": null,
+    "streef": null,
+    "vulgraad": null,
+    "signalering": null
+  },
+  {
+    "geboortejaar": 1989,
+    "geslacht": "V",
+    "aantal": 3,
+    "a_categorie": null,
+    "a_jaars": null,
+    "streef": null,
+    "vulgraad": null,
+    "signalering": null
+  },
+  {
+    "geboortejaar": 1990,
+    "geslacht": "M",
+    "aantal": 8,
+    "a_categorie": null,
+    "a_jaars": null,
+    "streef": null,
+    "vulgraad": null,
+    "signalering": null
+  },
+  {
+    "geboortejaar": 1990,
+    "geslacht": "V",
+    "aantal": 7,
+    "a_categorie": null,
+    "a_jaars": null,
+    "streef": null,
+    "vulgraad": null,
+    "signalering": null
+  },
+  {
+    "geboortejaar": 1991,
+    "geslacht": "M",
+    "aantal": 5,
+    "a_categorie": null,
+    "a_jaars": null,
+    "streef": null,
+    "vulgraad": null,
+    "signalering": null
+  },
+  {
+    "geboortejaar": 1991,
+    "geslacht": "V",
+    "aantal": 4,
+    "a_categorie": null,
+    "a_jaars": null,
+    "streef": null,
+    "vulgraad": null,
+    "signalering": null
+  },
+  {
+    "geboortejaar": 1992,
     "geslacht": "M",
     "aantal": 1,
     "a_categorie": null,
@@ -240,99 +390,29 @@
     "signalering": null
   },
   {
-    "geboortejaar": 1987,
-    "geslacht": "V",
-    "aantal": 3,
-    "a_categorie": null,
-    "a_jaars": null,
-    "streef": null,
-    "vulgraad": null,
-    "signalering": null
-  },
-  {
-    "geboortejaar": 1988,
-    "geslacht": "M",
-    "aantal": 2,
-    "a_categorie": null,
-    "a_jaars": null,
-    "streef": null,
-    "vulgraad": null,
-    "signalering": null
-  },
-  {
-    "geboortejaar": 1988,
-    "geslacht": "V",
-    "aantal": 2,
-    "a_categorie": null,
-    "a_jaars": null,
-    "streef": null,
-    "vulgraad": null,
-    "signalering": null
-  },
-  {
-    "geboortejaar": 1989,
-    "geslacht": "M",
-    "aantal": 2,
-    "a_categorie": null,
-    "a_jaars": null,
-    "streef": null,
-    "vulgraad": null,
-    "signalering": null
-  },
-  {
-    "geboortejaar": 1989,
-    "geslacht": "V",
-    "aantal": 2,
-    "a_categorie": null,
-    "a_jaars": null,
-    "streef": null,
-    "vulgraad": null,
-    "signalering": null
-  },
-  {
-    "geboortejaar": 1990,
-    "geslacht": "M",
-    "aantal": 7,
-    "a_categorie": null,
-    "a_jaars": null,
-    "streef": null,
-    "vulgraad": null,
-    "signalering": null
-  },
-  {
-    "geboortejaar": 1990,
-    "geslacht": "V",
-    "aantal": 3,
-    "a_categorie": null,
-    "a_jaars": null,
-    "streef": null,
-    "vulgraad": null,
-    "signalering": null
-  },
-  {
-    "geboortejaar": 1991,
-    "geslacht": "M",
-    "aantal": 4,
-    "a_categorie": null,
-    "a_jaars": null,
-    "streef": null,
-    "vulgraad": null,
-    "signalering": null
-  },
-  {
-    "geboortejaar": 1991,
-    "geslacht": "V",
-    "aantal": 3,
-    "a_categorie": null,
-    "a_jaars": null,
-    "streef": null,
-    "vulgraad": null,
-    "signalering": null
-  },
-  {
     "geboortejaar": 1992,
     "geslacht": "V",
-    "aantal": 8,
+    "aantal": 10,
+    "a_categorie": null,
+    "a_jaars": null,
+    "streef": null,
+    "vulgraad": null,
+    "signalering": null
+  },
+  {
+    "geboortejaar": 1993,
+    "geslacht": "M",
+    "aantal": 2,
+    "a_categorie": null,
+    "a_jaars": null,
+    "streef": null,
+    "vulgraad": null,
+    "signalering": null
+  },
+  {
+    "geboortejaar": 1993,
+    "geslacht": "V",
+    "aantal": 3,
     "a_categorie": null,
     "a_jaars": null,
     "streef": null,
@@ -342,7 +422,7 @@
   {
     "geboortejaar": 1994,
     "geslacht": "V",
-    "aantal": 2,
+    "aantal": 4,
     "a_categorie": null,
     "a_jaars": null,
     "streef": null,
@@ -362,7 +442,7 @@
   {
     "geboortejaar": 1995,
     "geslacht": "V",
-    "aantal": 4,
+    "aantal": 5,
     "a_categorie": null,
     "a_jaars": null,
     "streef": null,
@@ -372,7 +452,7 @@
   {
     "geboortejaar": 1996,
     "geslacht": "M",
-    "aantal": 7,
+    "aantal": 8,
     "a_categorie": null,
     "a_jaars": null,
     "streef": null,
@@ -382,7 +462,7 @@
   {
     "geboortejaar": 1996,
     "geslacht": "V",
-    "aantal": 6,
+    "aantal": 8,
     "a_categorie": null,
     "a_jaars": null,
     "streef": null,
@@ -392,6 +472,16 @@
   {
     "geboortejaar": 1997,
     "geslacht": "M",
+    "aantal": 5,
+    "a_categorie": null,
+    "a_jaars": null,
+    "streef": null,
+    "vulgraad": null,
+    "signalering": null
+  },
+  {
+    "geboortejaar": 1997,
+    "geslacht": "V",
     "aantal": 3,
     "a_categorie": null,
     "a_jaars": null,
@@ -402,7 +492,7 @@
   {
     "geboortejaar": 1998,
     "geslacht": "M",
-    "aantal": 5,
+    "aantal": 9,
     "a_categorie": null,
     "a_jaars": null,
     "streef": null,
@@ -412,7 +502,7 @@
   {
     "geboortejaar": 1998,
     "geslacht": "V",
-    "aantal": 7,
+    "aantal": 13,
     "a_categorie": null,
     "a_jaars": null,
     "streef": null,
@@ -421,26 +511,6 @@
   },
   {
     "geboortejaar": 1999,
-    "geslacht": "M",
-    "aantal": 5,
-    "a_categorie": null,
-    "a_jaars": null,
-    "streef": null,
-    "vulgraad": null,
-    "signalering": null
-  },
-  {
-    "geboortejaar": 1999,
-    "geslacht": "V",
-    "aantal": 5,
-    "a_categorie": null,
-    "a_jaars": null,
-    "streef": null,
-    "vulgraad": null,
-    "signalering": null
-  },
-  {
-    "geboortejaar": 2000,
     "geslacht": "M",
     "aantal": 10,
     "a_categorie": null,
@@ -450,6 +520,26 @@
     "signalering": null
   },
   {
+    "geboortejaar": 1999,
+    "geslacht": "V",
+    "aantal": 9,
+    "a_categorie": null,
+    "a_jaars": null,
+    "streef": null,
+    "vulgraad": null,
+    "signalering": null
+  },
+  {
+    "geboortejaar": 2000,
+    "geslacht": "M",
+    "aantal": 11,
+    "a_categorie": null,
+    "a_jaars": null,
+    "streef": null,
+    "vulgraad": null,
+    "signalering": null
+  },
+  {
     "geboortejaar": 2000,
     "geslacht": "V",
     "aantal": 9,
@@ -462,7 +552,7 @@
   {
     "geboortejaar": 2001,
     "geslacht": "M",
-    "aantal": 4,
+    "aantal": 8,
     "a_categorie": null,
     "a_jaars": null,
     "streef": null,
@@ -472,7 +562,7 @@
   {
     "geboortejaar": 2001,
     "geslacht": "V",
-    "aantal": 9,
+    "aantal": 11,
     "a_categorie": null,
     "a_jaars": null,
     "streef": null,
@@ -482,7 +572,7 @@
   {
     "geboortejaar": 2002,
     "geslacht": "M",
-    "aantal": 3,
+    "aantal": 7,
     "a_categorie": null,
     "a_jaars": null,
     "streef": null,
@@ -492,7 +582,7 @@
   {
     "geboortejaar": 2002,
     "geslacht": "V",
-    "aantal": 11,
+    "aantal": 17,
     "a_categorie": null,
     "a_jaars": null,
     "streef": null,
@@ -512,7 +602,7 @@
   {
     "geboortejaar": 2003,
     "geslacht": "V",
-    "aantal": 11,
+    "aantal": 14,
     "a_categorie": null,
     "a_jaars": null,
     "streef": null,
@@ -532,7 +622,7 @@
   {
     "geboortejaar": 2004,
     "geslacht": "V",
-    "aantal": 11,
+    "aantal": 14,
     "a_categorie": null,
     "a_jaars": null,
     "streef": null,
@@ -552,7 +642,7 @@
   {
     "geboortejaar": 2005,
     "geslacht": "V",
-    "aantal": 18,
+    "aantal": 22,
     "a_categorie": null,
     "a_jaars": null,
     "streef": null,
@@ -562,7 +652,7 @@
   {
     "geboortejaar": 2006,
     "geslacht": "M",
-    "aantal": 4,
+    "aantal": 6,
     "a_categorie": null,
     "a_jaars": null,
     "streef": null,
@@ -571,6 +661,26 @@
   },
   {
     "geboortejaar": 2006,
+    "geslacht": "V",
+    "aantal": 8,
+    "a_categorie": null,
+    "a_jaars": null,
+    "streef": null,
+    "vulgraad": null,
+    "signalering": null
+  },
+  {
+    "geboortejaar": 2007,
+    "geslacht": "M",
+    "aantal": 6,
+    "a_categorie": null,
+    "a_jaars": null,
+    "streef": null,
+    "vulgraad": null,
+    "signalering": null
+  },
+  {
+    "geboortejaar": 2007,
     "geslacht": "V",
     "aantal": 5,
     "a_categorie": null,
@@ -580,29 +690,9 @@
     "signalering": null
   },
   {
-    "geboortejaar": 2007,
-    "geslacht": "M",
-    "aantal": 6,
-    "a_categorie": null,
-    "a_jaars": null,
-    "streef": null,
-    "vulgraad": null,
-    "signalering": null
-  },
-  {
-    "geboortejaar": 2007,
-    "geslacht": "V",
-    "aantal": 4,
-    "a_categorie": null,
-    "a_jaars": null,
-    "streef": null,
-    "vulgraad": null,
-    "signalering": null
-  },
-  {
     "geboortejaar": 2008,
     "geslacht": "M",
-    "aantal": 3,
+    "aantal": 5,
     "a_categorie": null,
     "a_jaars": null,
     "streef": null,
@@ -613,16 +703,6 @@
     "geboortejaar": 2009,
     "geslacht": "V",
     "aantal": 2,
-    "a_categorie": null,
-    "a_jaars": null,
-    "streef": null,
-    "vulgraad": null,
-    "signalering": null
-  },
-  {
-    "geboortejaar": 2013,
-    "geslacht": "V",
-    "aantal": 1,
     "a_categorie": null,
     "a_jaars": null,
     "streef": null,

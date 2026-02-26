@@ -12,7 +12,7 @@
   {
     "geboortejaar": 1967,
     "geslacht": "M",
-    "aantal": 1,
+    "aantal": 2,
     "a_categorie": null,
     "a_jaars": null,
     "streef": null,
@@ -22,7 +22,7 @@
   {
     "geboortejaar": 1967,
     "geslacht": "V",
-    "aantal": 3,
+    "aantal": 2,
     "a_categorie": null,
     "a_jaars": null,
     "streef": null,
@@ -32,7 +32,7 @@
   {
     "geboortejaar": 1968,
     "geslacht": "M",
-    "aantal": 1,
+    "aantal": 2,
     "a_categorie": null,
     "a_jaars": null,
     "streef": null,
@@ -41,6 +41,16 @@
   },
   {
     "geboortejaar": 1969,
+    "geslacht": "M",
+    "aantal": 1,
+    "a_categorie": null,
+    "a_jaars": null,
+    "streef": null,
+    "vulgraad": null,
+    "signalering": null
+  },
+  {
+    "geboortejaar": 1973,
     "geslacht": "M",
     "aantal": 1,
     "a_categorie": null,
@@ -82,7 +92,7 @@
   {
     "geboortejaar": 1977,
     "geslacht": "M",
-    "aantal": 1,
+    "aantal": 2,
     "a_categorie": null,
     "a_jaars": null,
     "streef": null,
@@ -102,7 +112,7 @@
   {
     "geboortejaar": 1979,
     "geslacht": "M",
-    "aantal": 1,
+    "aantal": 2,
     "a_categorie": null,
     "a_jaars": null,
     "streef": null,
@@ -122,7 +132,7 @@
   {
     "geboortejaar": 1980,
     "geslacht": "M",
-    "aantal": 2,
+    "aantal": 4,
     "a_categorie": null,
     "a_jaars": null,
     "streef": null,
@@ -142,6 +152,16 @@
   {
     "geboortejaar": 1981,
     "geslacht": "V",
+    "aantal": 1,
+    "a_categorie": null,
+    "a_jaars": null,
+    "streef": null,
+    "vulgraad": null,
+    "signalering": null
+  },
+  {
+    "geboortejaar": 1982,
+    "geslacht": "M",
     "aantal": 1,
     "a_categorie": null,
     "a_jaars": null,
@@ -192,7 +212,7 @@
   {
     "geboortejaar": 1985,
     "geslacht": "V",
-    "aantal": 2,
+    "aantal": 3,
     "a_categorie": null,
     "a_jaars": null,
     "streef": null,
@@ -322,7 +342,7 @@
   {
     "geboortejaar": 1996,
     "geslacht": "M",
-    "aantal": 6,
+    "aantal": 5,
     "a_categorie": null,
     "a_jaars": null,
     "streef": null,

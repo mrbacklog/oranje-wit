@@ -30,6 +30,16 @@
     "gem_leeftijd": 17.0
   },
   {
+    "team": "AR",
+    "categorie": null,
+    "kleur": "Senioren",
+    "niveau": null,
+    "spelers_M": 1,
+    "spelers_V": 0,
+    "totaal": 1,
+    "gem_leeftijd": 25.0
+  },
+  {
     "team": "B1",
     "categorie": null,
     "kleur": "Rood",
@@ -234,10 +244,10 @@
     "categorie": null,
     "kleur": "Senioren",
     "niveau": null,
-    "spelers_M": 10,
+    "spelers_M": 9,
     "spelers_V": 10,
-    "totaal": 20,
-    "gem_leeftijd": 23.8
+    "totaal": 19,
+    "gem_leeftijd": 23.7
   },
   {
     "team": "S3",

@@ -11,7 +11,7 @@
   {
     "kleur": "Geel",
     "categorie": null,
-    "teams": 4,
+    "teams": 5,
     "spelers_M": 12,
     "spelers_V": 19,
     "totaal": 31,
@@ -56,7 +56,7 @@
   {
     "kleur": "Senioren",
     "categorie": null,
-    "teams": 5,
+    "teams": 6,
     "spelers_M": 38,
     "spelers_V": 44,
     "totaal": 82,

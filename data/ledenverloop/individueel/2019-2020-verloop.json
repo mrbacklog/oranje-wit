@@ -5,11 +5,11 @@
     "snapshot_nieuw": "2019-06-01",
     "gegenereerd": "2026-02-24",
     "totaal_vorig": 282,
-    "totaal_nieuw": 311,
+    "totaal_nieuw": 315,
     "samenvatting": {
       "behouden": 252,
-      "nieuw": 27,
-      "herinschrijver": 32,
+      "nieuw": 29,
+      "herinschrijver": 34,
       "uitgestroomd": 30,
       "niet_spelend_geworden": 0
     }
@@ -33,7 +33,7 @@
       "leeftijd_vorig": 31,
       "leeftijd_nieuw": 32,
       "team_vorig": "S4",
-      "team_nieuw": "Senioren"
+      "team_nieuw": "S3"
     },
     {
       "rel_code": "NFV13V8",
@@ -73,7 +73,7 @@
       "leeftijd_vorig": 49,
       "leeftijd_nieuw": 50,
       "team_vorig": "S3",
-      "team_nieuw": "Senioren"
+      "team_nieuw": "S4"
     },
     {
       "rel_code": "NFW15M2",
@@ -83,7 +83,7 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 44,
       "team_vorig": null,
-      "team_nieuw": "Senioren"
+      "team_nieuw": "MW1"
     },
     {
       "rel_code": "NFW15S4",
@@ -133,7 +133,7 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 36,
       "team_vorig": null,
-      "team_nieuw": "Senioren"
+      "team_nieuw": "S3"
     },
     {
       "rel_code": "NFW28D3",
@@ -153,7 +153,7 @@
       "leeftijd_vorig": 35,
       "leeftijd_nieuw": 36,
       "team_vorig": "MW1",
-      "team_nieuw": "Senioren"
+      "team_nieuw": "MW1"
     },
     {
       "rel_code": "NFW28T5",
@@ -213,7 +213,7 @@
       "leeftijd_vorig": 40,
       "leeftijd_nieuw": 41,
       "team_vorig": "MW1",
-      "team_nieuw": "Senioren"
+      "team_nieuw": "MW1"
     },
     {
       "rel_code": "NFW41S7",
@@ -233,7 +233,7 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 38,
       "team_vorig": null,
-      "team_nieuw": "Senioren"
+      "team_nieuw": "MW1"
     },
     {
       "rel_code": "NFW42X5",
@@ -283,7 +283,7 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 52,
       "team_vorig": null,
-      "team_nieuw": "Senioren"
+      "team_nieuw": "MW1"
     },
     {
       "rel_code": "NFX24T4",
@@ -303,7 +303,7 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 31,
       "team_vorig": null,
-      "team_nieuw": "Senioren"
+      "team_nieuw": "MW1"
     },
     {
       "rel_code": "NGD51N5",
@@ -323,7 +323,7 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 32,
       "team_vorig": null,
-      "team_nieuw": "S3"
+      "team_nieuw": "MW1"
     },
     {
       "rel_code": "NGL45C3",
@@ -333,7 +333,7 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 30,
       "team_vorig": null,
-      "team_nieuw": "Senioren"
+      "team_nieuw": "MW1"
     },
     {
       "rel_code": "NGP49B2",
@@ -343,7 +343,7 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 29,
       "team_vorig": null,
-      "team_nieuw": "Senioren"
+      "team_nieuw": "MW1"
     },
     {
       "rel_code": "NGP49D6",
@@ -353,7 +353,7 @@
       "leeftijd_vorig": 28,
       "leeftijd_nieuw": 29,
       "team_vorig": "S6",
-      "team_nieuw": "Senioren"
+      "team_nieuw": "MW1"
     },
     {
       "rel_code": "NGQ19P6",
@@ -373,7 +373,7 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 28,
       "team_vorig": null,
-      "team_nieuw": "S2"
+      "team_nieuw": "S1/S2"
     },
     {
       "rel_code": "NGT42S4",
@@ -393,7 +393,7 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 29,
       "team_vorig": null,
-      "team_nieuw": "Senioren"
+      "team_nieuw": "MW1"
     },
     {
       "rel_code": "NGT42Z3",
@@ -403,7 +403,7 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 29,
       "team_vorig": null,
-      "team_nieuw": "Senioren"
+      "team_nieuw": "MW1"
     },
     {
       "rel_code": "NGT43H0",
@@ -423,7 +423,7 @@
       "leeftijd_vorig": 28,
       "leeftijd_nieuw": 29,
       "team_vorig": "S4",
-      "team_nieuw": "Senioren"
+      "team_nieuw": "MW1"
     },
     {
       "rel_code": "NGT92Q5",
@@ -463,7 +463,7 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 28,
       "team_vorig": null,
-      "team_nieuw": "Senioren"
+      "team_nieuw": "MW1"
     },
     {
       "rel_code": "NGZ13W6",
@@ -473,7 +473,17 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 28,
       "team_vorig": null,
-      "team_nieuw": "Senioren"
+      "team_nieuw": "MW1"
+    },
+    {
+      "rel_code": "NHJ74B3",
+      "status": "nieuw",
+      "geboortejaar": 1999,
+      "geslacht": "V",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 20,
+      "team_vorig": null,
+      "team_nieuw": "S1/S2"
     },
     {
       "rel_code": "NHY59B3",
@@ -483,7 +493,7 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 28,
       "team_vorig": null,
-      "team_nieuw": "Senioren"
+      "team_nieuw": "MW1"
     },
     {
       "rel_code": "NJB72K6",
@@ -493,7 +503,7 @@
       "leeftijd_vorig": 28,
       "leeftijd_nieuw": 29,
       "team_vorig": "S6",
-      "team_nieuw": "Senioren"
+      "team_nieuw": "MW1"
     },
     {
       "rel_code": "NJB81P3",
@@ -503,7 +513,7 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 28,
       "team_vorig": null,
-      "team_nieuw": "Senioren"
+      "team_nieuw": "MW1"
     },
     {
       "rel_code": "NJC15P1",
@@ -513,7 +523,7 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 24,
       "team_vorig": null,
-      "team_nieuw": "Senioren"
+      "team_nieuw": "MW1"
     },
     {
       "rel_code": "NJC17J5",
@@ -563,7 +573,7 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 28,
       "team_vorig": null,
-      "team_nieuw": "Senioren"
+      "team_nieuw": "MW1"
     },
     {
       "rel_code": "NJD65S8",
@@ -573,7 +583,7 @@
       "leeftijd_vorig": 20,
       "leeftijd_nieuw": 21,
       "team_vorig": "S2",
-      "team_nieuw": "S2"
+      "team_nieuw": "S1/S2"
     },
     {
       "rel_code": "NJF06N8",
@@ -583,7 +593,7 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 22,
       "team_vorig": null,
-      "team_nieuw": "Senioren"
+      "team_nieuw": "MW1"
     },
     {
       "rel_code": "NJF06P2",
@@ -593,7 +603,7 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 24,
       "team_vorig": null,
-      "team_nieuw": "Senioren"
+      "team_nieuw": "MW1"
     },
     {
       "rel_code": "NJF17P0",
@@ -613,7 +623,7 @@
       "leeftijd_vorig": 22,
       "leeftijd_nieuw": 23,
       "team_vorig": "S2",
-      "team_nieuw": "S1"
+      "team_nieuw": "S1/S2"
     },
     {
       "rel_code": "NJF34K6",
@@ -623,7 +633,7 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 23,
       "team_vorig": null,
-      "team_nieuw": "Senioren"
+      "team_nieuw": "MW1"
     },
     {
       "rel_code": "NJF53H2",
@@ -633,7 +643,7 @@
       "leeftijd_vorig": 22,
       "leeftijd_nieuw": 23,
       "team_vorig": "S4",
-      "team_nieuw": "S1"
+      "team_nieuw": "S1/S2"
     },
     {
       "rel_code": "NJF62V2",
@@ -653,7 +663,7 @@
       "leeftijd_vorig": 21,
       "leeftijd_nieuw": 22,
       "team_vorig": "S2",
-      "team_nieuw": "S1"
+      "team_nieuw": "S1/S2"
     },
     {
       "rel_code": "NJF85B1",
@@ -663,7 +673,7 @@
       "leeftijd_vorig": 23,
       "leeftijd_nieuw": 24,
       "team_vorig": "S2",
-      "team_nieuw": "S1"
+      "team_nieuw": "S1/S2"
     },
     {
       "rel_code": "NJF85H3",
@@ -683,7 +693,7 @@
       "leeftijd_vorig": 22,
       "leeftijd_nieuw": 23,
       "team_vorig": "S2",
-      "team_nieuw": "S2"
+      "team_nieuw": "S1/S2"
     },
     {
       "rel_code": "NJG13L1",
@@ -703,7 +713,7 @@
       "leeftijd_vorig": 20,
       "leeftijd_nieuw": 21,
       "team_vorig": "S2",
-      "team_nieuw": "S2"
+      "team_nieuw": "S1/S2"
     },
     {
       "rel_code": "NJG42T9",
@@ -713,7 +723,7 @@
       "leeftijd_vorig": 23,
       "leeftijd_nieuw": 24,
       "team_vorig": "S6",
-      "team_nieuw": "Senioren"
+      "team_nieuw": "MW1"
     },
     {
       "rel_code": "NJG52P6",
@@ -723,7 +733,7 @@
       "leeftijd_vorig": 22,
       "leeftijd_nieuw": 23,
       "team_vorig": "S2",
-      "team_nieuw": "S1"
+      "team_nieuw": "S1/S2"
     },
     {
       "rel_code": "NJH13R4",
@@ -733,7 +743,7 @@
       "leeftijd_vorig": 20,
       "leeftijd_nieuw": 21,
       "team_vorig": "S6",
-      "team_nieuw": "S5"
+      "team_nieuw": "S5/S6"
     },
     {
       "rel_code": "NJH39X4",
@@ -763,7 +773,7 @@
       "leeftijd_vorig": 24,
       "leeftijd_nieuw": 25,
       "team_vorig": "S1",
-      "team_nieuw": "S1"
+      "team_nieuw": "S1/S2"
     },
     {
       "rel_code": "NJH51W3",
@@ -773,7 +783,7 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 22,
       "team_vorig": null,
-      "team_nieuw": "Senioren"
+      "team_nieuw": "MW1"
     },
     {
       "rel_code": "NJH76N5",
@@ -783,7 +793,7 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 21,
       "team_vorig": null,
-      "team_nieuw": "S5"
+      "team_nieuw": "S5/S6"
     },
     {
       "rel_code": "NJJ38C6",
@@ -813,7 +823,7 @@
       "leeftijd_vorig": 28,
       "leeftijd_nieuw": 29,
       "team_vorig": "S6",
-      "team_nieuw": "Senioren"
+      "team_nieuw": "MW1"
     },
     {
       "rel_code": "NJK34W5",
@@ -843,7 +853,7 @@
       "leeftijd_vorig": 24,
       "leeftijd_nieuw": 25,
       "team_vorig": "S2",
-      "team_nieuw": "S5"
+      "team_nieuw": "MW1"
     },
     {
       "rel_code": "NJQ72K1",
@@ -853,7 +863,7 @@
       "leeftijd_vorig": 20,
       "leeftijd_nieuw": 21,
       "team_vorig": "S2",
-      "team_nieuw": "S1"
+      "team_nieuw": "S1/S2"
     },
     {
       "rel_code": "NJR12K2",
@@ -873,7 +883,7 @@
       "leeftijd_vorig": 19,
       "leeftijd_nieuw": 20,
       "team_vorig": "S2",
-      "team_nieuw": "Senioren"
+      "team_nieuw": "S1/S2"
     },
     {
       "rel_code": "NJT90M2",
@@ -893,7 +903,7 @@
       "leeftijd_vorig": 20,
       "leeftijd_nieuw": 21,
       "team_vorig": "S2",
-      "team_nieuw": "Senioren"
+      "team_nieuw": "S1/S2"
     },
     {
       "rel_code": "NJW77M6",
@@ -903,7 +913,7 @@
       "leeftijd_vorig": 19,
       "leeftijd_nieuw": 20,
       "team_vorig": "S1",
-      "team_nieuw": "S2"
+      "team_nieuw": "S1/S2"
     },
     {
       "rel_code": "NJX04V6",
@@ -913,7 +923,7 @@
       "leeftijd_vorig": 18,
       "leeftijd_nieuw": 19,
       "team_vorig": "A1",
-      "team_nieuw": "S2"
+      "team_nieuw": "S1/S2"
     },
     {
       "rel_code": "NJX60W1",
@@ -933,7 +943,7 @@
       "leeftijd_vorig": 18,
       "leeftijd_nieuw": 19,
       "team_vorig": "A3",
-      "team_nieuw": "S6"
+      "team_nieuw": "S5/S6"
     },
     {
       "rel_code": "NJY83B4",
@@ -943,7 +953,7 @@
       "leeftijd_vorig": 18,
       "leeftijd_nieuw": 19,
       "team_vorig": "A2",
-      "team_nieuw": "S5"
+      "team_nieuw": "S5/S6"
     },
     {
       "rel_code": "NJZ00W3",
@@ -953,7 +963,7 @@
       "leeftijd_vorig": 18,
       "leeftijd_nieuw": 19,
       "team_vorig": "A1",
-      "team_nieuw": "S2"
+      "team_nieuw": "S1/S2"
     },
     {
       "rel_code": "NJZ00Y7",
@@ -973,7 +983,7 @@
       "leeftijd_vorig": 19,
       "leeftijd_nieuw": 20,
       "team_vorig": "S6",
-      "team_nieuw": "S6"
+      "team_nieuw": "S5/S6"
     },
     {
       "rel_code": "NKC46P6",
@@ -983,7 +993,7 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 19,
       "team_vorig": null,
-      "team_nieuw": "S5"
+      "team_nieuw": "S5/S6"
     },
     {
       "rel_code": "NKC46R0",
@@ -993,7 +1003,7 @@
       "leeftijd_vorig": 19,
       "leeftijd_nieuw": 20,
       "team_vorig": "S1",
-      "team_nieuw": "S2"
+      "team_nieuw": "S1/S2"
     },
     {
       "rel_code": "NKC46S7",
@@ -1003,7 +1013,7 @@
       "leeftijd_vorig": 18,
       "leeftijd_nieuw": 19,
       "team_vorig": "A2",
-      "team_nieuw": "S6"
+      "team_nieuw": "S5/S6"
     },
     {
       "rel_code": "NKC46T4",
@@ -1023,7 +1033,7 @@
       "leeftijd_vorig": 18,
       "leeftijd_nieuw": 19,
       "team_vorig": "A1",
-      "team_nieuw": "S5"
+      "team_nieuw": "S1/S2"
     },
     {
       "rel_code": "NKD19X7",
@@ -1033,7 +1043,7 @@
       "leeftijd_vorig": 18,
       "leeftijd_nieuw": 19,
       "team_vorig": "A1",
-      "team_nieuw": "S5"
+      "team_nieuw": "S1/S2"
     },
     {
       "rel_code": "NKD19Y4",
@@ -1043,7 +1053,7 @@
       "leeftijd_vorig": 20,
       "leeftijd_nieuw": 21,
       "team_vorig": "S4",
-      "team_nieuw": "S1"
+      "team_nieuw": "S1/S2"
     },
     {
       "rel_code": "NKD20B1",
@@ -1053,7 +1063,7 @@
       "leeftijd_vorig": 17,
       "leeftijd_nieuw": 18,
       "team_vorig": "A1",
-      "team_nieuw": "S1"
+      "team_nieuw": "S1/S2"
     },
     {
       "rel_code": "NKD39Q8",
@@ -1063,7 +1073,7 @@
       "leeftijd_vorig": 19,
       "leeftijd_nieuw": 20,
       "team_vorig": "A4",
-      "team_nieuw": "S6"
+      "team_nieuw": "S5/S6"
     },
     {
       "rel_code": "NKF94H2",
@@ -1093,7 +1103,7 @@
       "leeftijd_vorig": 16,
       "leeftijd_nieuw": 17,
       "team_vorig": "A2",
-      "team_nieuw": "A2"
+      "team_nieuw": "A1/A2"
     },
     {
       "rel_code": "NKG18Q8",
@@ -1103,7 +1113,7 @@
       "leeftijd_vorig": 16,
       "leeftijd_nieuw": 17,
       "team_vorig": "A4",
-      "team_nieuw": "S1S2"
+      "team_nieuw": "A4"
     },
     {
       "rel_code": "NKG59H8",
@@ -1113,7 +1123,7 @@
       "leeftijd_vorig": 17,
       "leeftijd_nieuw": 18,
       "team_vorig": "A2",
-      "team_nieuw": "S6"
+      "team_nieuw": "S5/S6"
     },
     {
       "rel_code": "NKG59J2",
@@ -1123,7 +1133,7 @@
       "leeftijd_vorig": 17,
       "leeftijd_nieuw": 18,
       "team_vorig": "A2",
-      "team_nieuw": "S5"
+      "team_nieuw": "A1/A2"
     },
     {
       "rel_code": "NKG59L6",
@@ -1133,7 +1143,7 @@
       "leeftijd_vorig": 17,
       "leeftijd_nieuw": 18,
       "team_vorig": "A2",
-      "team_nieuw": "S5"
+      "team_nieuw": "A1/A2"
     },
     {
       "rel_code": "NKG59M3",
@@ -1143,7 +1153,7 @@
       "leeftijd_vorig": 16,
       "leeftijd_nieuw": 17,
       "team_vorig": "A2",
-      "team_nieuw": "A"
+      "team_nieuw": "A1/A2"
     },
     {
       "rel_code": "NKH35N9",
@@ -1153,7 +1163,7 @@
       "leeftijd_vorig": 20,
       "leeftijd_nieuw": 21,
       "team_vorig": "S6",
-      "team_nieuw": "S5"
+      "team_nieuw": "S5/S6"
     },
     {
       "rel_code": "NKH56N2",
@@ -1163,7 +1173,7 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 23,
       "team_vorig": null,
-      "team_nieuw": "Senioren"
+      "team_nieuw": "MW1"
     },
     {
       "rel_code": "NKH71P1",
@@ -1183,7 +1193,7 @@
       "leeftijd_vorig": 16,
       "leeftijd_nieuw": 17,
       "team_vorig": "A4",
-      "team_nieuw": "S1S2"
+      "team_nieuw": "A3"
     },
     {
       "rel_code": "NKJ95G2",
@@ -1213,7 +1223,7 @@
       "leeftijd_vorig": 15,
       "leeftijd_nieuw": 16,
       "team_vorig": "B1",
-      "team_nieuw": "A1"
+      "team_nieuw": "A1/A2"
     },
     {
       "rel_code": "NKK27B9",
@@ -1223,7 +1233,7 @@
       "leeftijd_vorig": 15,
       "leeftijd_nieuw": 16,
       "team_vorig": "B2",
-      "team_nieuw": "A2"
+      "team_nieuw": "A1/A2"
     },
     {
       "rel_code": "NKK27G4",
@@ -1243,7 +1253,7 @@
       "leeftijd_vorig": 14,
       "leeftijd_nieuw": 15,
       "team_vorig": "B2",
-      "team_nieuw": "A1"
+      "team_nieuw": "B1/B2"
     },
     {
       "rel_code": "NKK88P0",
@@ -1253,7 +1263,7 @@
       "leeftijd_vorig": 17,
       "leeftijd_nieuw": 18,
       "team_vorig": "A3",
-      "team_nieuw": "S6"
+      "team_nieuw": "S5/S6"
     },
     {
       "rel_code": "NKL22V5",
@@ -1263,7 +1273,7 @@
       "leeftijd_vorig": 16,
       "leeftijd_nieuw": 17,
       "team_vorig": "A2",
-      "team_nieuw": "A"
+      "team_nieuw": "A1/A2"
     },
     {
       "rel_code": "NKL60P7",
@@ -1273,7 +1283,7 @@
       "leeftijd_vorig": 14,
       "leeftijd_nieuw": 15,
       "team_vorig": "B3",
-      "team_nieuw": "A3"
+      "team_nieuw": "B1/B2"
     },
     {
       "rel_code": "NKM14K0",
@@ -1283,7 +1293,7 @@
       "leeftijd_vorig": 18,
       "leeftijd_nieuw": 19,
       "team_vorig": "A2",
-      "team_nieuw": "Senioren"
+      "team_nieuw": "S5/S6"
     },
     {
       "rel_code": "NKM15X4",
@@ -1293,7 +1303,7 @@
       "leeftijd_vorig": 18,
       "leeftijd_nieuw": 19,
       "team_vorig": "A3",
-      "team_nieuw": "Senioren"
+      "team_nieuw": "S5/S6"
     },
     {
       "rel_code": "NKN65B6",
@@ -1303,7 +1313,7 @@
       "leeftijd_vorig": 17,
       "leeftijd_nieuw": 18,
       "team_vorig": "A3",
-      "team_nieuw": "S6"
+      "team_nieuw": "S5/S6"
     },
     {
       "rel_code": "NKN65J2",
@@ -1313,7 +1323,7 @@
       "leeftijd_vorig": 15,
       "leeftijd_nieuw": 16,
       "team_vorig": "B2",
-      "team_nieuw": "A"
+      "team_nieuw": "A1/A2"
     },
     {
       "rel_code": "NKP41W3",
@@ -1323,7 +1333,7 @@
       "leeftijd_vorig": 14,
       "leeftijd_nieuw": 15,
       "team_vorig": "B3",
-      "team_nieuw": "A3"
+      "team_nieuw": "B1/B2"
     },
     {
       "rel_code": "NKQ13Q3",
@@ -1333,7 +1343,7 @@
       "leeftijd_vorig": 17,
       "leeftijd_nieuw": 18,
       "team_vorig": "A3",
-      "team_nieuw": "S6"
+      "team_nieuw": "S5/S6"
     },
     {
       "rel_code": "NKQ14R3",
@@ -1343,7 +1353,7 @@
       "leeftijd_vorig": 17,
       "leeftijd_nieuw": 18,
       "team_vorig": "A3",
-      "team_nieuw": "S6"
+      "team_nieuw": "S5/S6"
     },
     {
       "rel_code": "NKQ39J2",
@@ -1353,7 +1363,7 @@
       "leeftijd_vorig": 12,
       "leeftijd_nieuw": 13,
       "team_vorig": "C1",
-      "team_nieuw": "C"
+      "team_nieuw": "C1/C2"
     },
     {
       "rel_code": "NKQ40P2",
@@ -1373,7 +1383,7 @@
       "leeftijd_vorig": 14,
       "leeftijd_nieuw": 15,
       "team_vorig": "B1",
-      "team_nieuw": "A1"
+      "team_nieuw": "A1/A2"
     },
     {
       "rel_code": "NKQ46X6",
@@ -1383,7 +1393,7 @@
       "leeftijd_vorig": 13,
       "leeftijd_nieuw": 14,
       "team_vorig": "C3",
-      "team_nieuw": "B3"
+      "team_nieuw": "B4"
     },
     {
       "rel_code": "NKQ70H1",
@@ -1393,7 +1403,7 @@
       "leeftijd_vorig": 18,
       "leeftijd_nieuw": 19,
       "team_vorig": "A3",
-      "team_nieuw": "S6"
+      "team_nieuw": "S5/S6"
     },
     {
       "rel_code": "NKR09G7",
@@ -1413,7 +1423,7 @@
       "leeftijd_vorig": 17,
       "leeftijd_nieuw": 18,
       "team_vorig": "A1",
-      "team_nieuw": "S2"
+      "team_nieuw": "A1/A2"
     },
     {
       "rel_code": "NKR20M2",
@@ -1423,7 +1433,7 @@
       "leeftijd_vorig": 15,
       "leeftijd_nieuw": 16,
       "team_vorig": "B2",
-      "team_nieuw": "A1"
+      "team_nieuw": "B1/B2"
     },
     {
       "rel_code": "NKR24N1",
@@ -1443,7 +1453,7 @@
       "leeftijd_vorig": 15,
       "leeftijd_nieuw": 16,
       "team_vorig": "B1",
-      "team_nieuw": "A1"
+      "team_nieuw": "B1/B2"
     },
     {
       "rel_code": "NKR57N5",
@@ -1453,7 +1463,7 @@
       "leeftijd_vorig": 15,
       "leeftijd_nieuw": 16,
       "team_vorig": "B1",
-      "team_nieuw": "A1"
+      "team_nieuw": "A1/A2"
     },
     {
       "rel_code": "NKR57P9",
@@ -1483,7 +1493,7 @@
       "leeftijd_vorig": 13,
       "leeftijd_nieuw": 14,
       "team_vorig": "C2",
-      "team_nieuw": "B2"
+      "team_nieuw": "B3"
     },
     {
       "rel_code": "NKR88F7",
@@ -1493,7 +1503,7 @@
       "leeftijd_vorig": 15,
       "leeftijd_nieuw": 16,
       "team_vorig": "B1",
-      "team_nieuw": "A2"
+      "team_nieuw": "A1/A2"
     },
     {
       "rel_code": "NKS24M5",
@@ -1503,7 +1513,7 @@
       "leeftijd_vorig": 14,
       "leeftijd_nieuw": 15,
       "team_vorig": "B2",
-      "team_nieuw": "A1"
+      "team_nieuw": "B1/B2"
     },
     {
       "rel_code": "NKS24S7",
@@ -1513,7 +1523,7 @@
       "leeftijd_vorig": 12,
       "leeftijd_nieuw": 13,
       "team_vorig": "C2",
-      "team_nieuw": "B2"
+      "team_nieuw": "B3"
     },
     {
       "rel_code": "NKS62Q7",
@@ -1523,7 +1533,7 @@
       "leeftijd_vorig": 15,
       "leeftijd_nieuw": 16,
       "team_vorig": "B2",
-      "team_nieuw": "A2"
+      "team_nieuw": "A1/A2"
     },
     {
       "rel_code": "NKT05Q7",
@@ -1533,7 +1543,7 @@
       "leeftijd_vorig": 16,
       "leeftijd_nieuw": 17,
       "team_vorig": "A4",
-      "team_nieuw": "S1S2"
+      "team_nieuw": "A3"
     },
     {
       "rel_code": "NKT15G2",
@@ -1543,7 +1553,7 @@
       "leeftijd_vorig": 14,
       "leeftijd_nieuw": 15,
       "team_vorig": "B2",
-      "team_nieuw": "A1"
+      "team_nieuw": "B1/B2"
     },
     {
       "rel_code": "NKT65Z0",
@@ -1553,7 +1563,7 @@
       "leeftijd_vorig": 8,
       "leeftijd_nieuw": 9,
       "team_vorig": "E3",
-      "team_nieuw": "D2"
+      "team_nieuw": "E2"
     },
     {
       "rel_code": "NKT73W8",
@@ -1563,7 +1573,7 @@
       "leeftijd_vorig": 18,
       "leeftijd_nieuw": 19,
       "team_vorig": "A2",
-      "team_nieuw": "S5"
+      "team_nieuw": "S5/S6"
     },
     {
       "rel_code": "NKT92K1",
@@ -1573,7 +1583,7 @@
       "leeftijd_vorig": 13,
       "leeftijd_nieuw": 14,
       "team_vorig": "C2",
-      "team_nieuw": "B2"
+      "team_nieuw": "B3"
     },
     {
       "rel_code": "NKV67G5",
@@ -1583,7 +1593,7 @@
       "leeftijd_vorig": 13,
       "leeftijd_nieuw": 14,
       "team_vorig": "C1",
-      "team_nieuw": "B"
+      "team_nieuw": "B1/B2"
     },
     {
       "rel_code": "NKV95Q4",
@@ -1593,7 +1603,7 @@
       "leeftijd_vorig": 15,
       "leeftijd_nieuw": 16,
       "team_vorig": "B2",
-      "team_nieuw": "A2"
+      "team_nieuw": "A1/A2"
     },
     {
       "rel_code": "NKW21H5",
@@ -1603,7 +1613,7 @@
       "leeftijd_vorig": 15,
       "leeftijd_nieuw": 16,
       "team_vorig": "B2",
-      "team_nieuw": "A2"
+      "team_nieuw": "A1/A2"
     },
     {
       "rel_code": "NKW21L3",
@@ -1613,7 +1623,7 @@
       "leeftijd_vorig": 14,
       "leeftijd_nieuw": 15,
       "team_vorig": "C1",
-      "team_nieuw": "A1"
+      "team_nieuw": "B1/B2"
     },
     {
       "rel_code": "NKW30G0",
@@ -1623,7 +1633,7 @@
       "leeftijd_vorig": 15,
       "leeftijd_nieuw": 16,
       "team_vorig": "B3",
-      "team_nieuw": "A2"
+      "team_nieuw": "A3"
     },
     {
       "rel_code": "NKW30H7",
@@ -1633,7 +1643,7 @@
       "leeftijd_vorig": 14,
       "leeftijd_nieuw": 15,
       "team_vorig": "B3",
-      "team_nieuw": "A3"
+      "team_nieuw": "B3"
     },
     {
       "rel_code": "NKW49Y8",
@@ -1643,7 +1653,7 @@
       "leeftijd_vorig": 15,
       "leeftijd_nieuw": 16,
       "team_vorig": "B1",
-      "team_nieuw": "A2"
+      "team_nieuw": "A1/A2"
     },
     {
       "rel_code": "NKW49Z5",
@@ -1653,7 +1663,7 @@
       "leeftijd_vorig": 15,
       "leeftijd_nieuw": 16,
       "team_vorig": "B4",
-      "team_nieuw": "S1S2"
+      "team_nieuw": "A4"
     },
     {
       "rel_code": "NKW50B5",
@@ -1663,7 +1673,7 @@
       "leeftijd_vorig": 13,
       "leeftijd_nieuw": 14,
       "team_vorig": "C2",
-      "team_nieuw": "B"
+      "team_nieuw": "B1/B2"
     },
     {
       "rel_code": "NKW50C2",
@@ -1673,7 +1683,7 @@
       "leeftijd_vorig": 15,
       "leeftijd_nieuw": 16,
       "team_vorig": "B3",
-      "team_nieuw": "A2"
+      "team_nieuw": "A3"
     },
     {
       "rel_code": "NKW50D9",
@@ -1683,7 +1693,7 @@
       "leeftijd_vorig": 14,
       "leeftijd_nieuw": 15,
       "team_vorig": "B4",
-      "team_nieuw": "A4"
+      "team_nieuw": "B4"
     },
     {
       "rel_code": "NKW52X5",
@@ -1693,7 +1703,7 @@
       "leeftijd_vorig": 11,
       "leeftijd_nieuw": 12,
       "team_vorig": "D1",
-      "team_nieuw": "C1"
+      "team_nieuw": "C1/C2"
     },
     {
       "rel_code": "NKX06P7",
@@ -1723,7 +1733,7 @@
       "leeftijd_vorig": 19,
       "leeftijd_nieuw": 20,
       "team_vorig": "A4",
-      "team_nieuw": "S6"
+      "team_nieuw": "S5/S6"
     },
     {
       "rel_code": "NKX56Q9",
@@ -1743,7 +1753,7 @@
       "leeftijd_vorig": 14,
       "leeftijd_nieuw": 15,
       "team_vorig": "B4",
-      "team_nieuw": "A4"
+      "team_nieuw": "B4"
     },
     {
       "rel_code": "NKX56V4",
@@ -1763,7 +1773,7 @@
       "leeftijd_vorig": 13,
       "leeftijd_nieuw": 14,
       "team_vorig": "C4",
-      "team_nieuw": "B1"
+      "team_nieuw": "B1/B2"
     },
     {
       "rel_code": "NKY17P6",
@@ -1773,7 +1783,7 @@
       "leeftijd_vorig": 13,
       "leeftijd_nieuw": 14,
       "team_vorig": "C2",
-      "team_nieuw": "B1"
+      "team_nieuw": "B3"
     },
     {
       "rel_code": "NKY54N3",
@@ -1783,7 +1793,7 @@
       "leeftijd_vorig": 11,
       "leeftijd_nieuw": 12,
       "team_vorig": "C4",
-      "team_nieuw": "C3"
+      "team_nieuw": "C1/C2"
     },
     {
       "rel_code": "NKY88T2",
@@ -1793,7 +1803,7 @@
       "leeftijd_vorig": 15,
       "leeftijd_nieuw": 16,
       "team_vorig": "B2",
-      "team_nieuw": "A2"
+      "team_nieuw": "A1/A2"
     },
     {
       "rel_code": "NKZ28R9",
@@ -1803,7 +1813,7 @@
       "leeftijd_vorig": 11,
       "leeftijd_nieuw": 12,
       "team_vorig": "D4",
-      "team_nieuw": "C4"
+      "team_nieuw": "C3"
     },
     {
       "rel_code": "NLB70F9",
@@ -1823,7 +1833,7 @@
       "leeftijd_vorig": 13,
       "leeftijd_nieuw": 14,
       "team_vorig": "C2",
-      "team_nieuw": "B2"
+      "team_nieuw": "B3"
     },
     {
       "rel_code": "NLB70S0",
@@ -1833,7 +1843,7 @@
       "leeftijd_vorig": 13,
       "leeftijd_nieuw": 14,
       "team_vorig": "C2",
-      "team_nieuw": "B2"
+      "team_nieuw": "B3"
     },
     {
       "rel_code": "NLB70T7",
@@ -1843,7 +1853,7 @@
       "leeftijd_vorig": 13,
       "leeftijd_nieuw": 14,
       "team_vorig": "C3",
-      "team_nieuw": "B2"
+      "team_nieuw": "B4"
     },
     {
       "rel_code": "NLB70W8",
@@ -1863,7 +1873,7 @@
       "leeftijd_vorig": 16,
       "leeftijd_nieuw": 17,
       "team_vorig": "A4",
-      "team_nieuw": "A3"
+      "team_nieuw": "A4"
     },
     {
       "rel_code": "NLB70Y2",
@@ -1873,7 +1883,7 @@
       "leeftijd_vorig": 13,
       "leeftijd_nieuw": 14,
       "team_vorig": "C2",
-      "team_nieuw": "B2"
+      "team_nieuw": "B3"
     },
     {
       "rel_code": "NLB70Z9",
@@ -1883,7 +1893,7 @@
       "leeftijd_vorig": 14,
       "leeftijd_nieuw": 15,
       "team_vorig": "B2",
-      "team_nieuw": "A3"
+      "team_nieuw": "B1/B2"
     },
     {
       "rel_code": "NLB71B4",
@@ -1893,7 +1903,7 @@
       "leeftijd_vorig": 11,
       "leeftijd_nieuw": 12,
       "team_vorig": "D4",
-      "team_nieuw": "C4"
+      "team_nieuw": "C3"
     },
     {
       "rel_code": "NLB71D8",
@@ -1903,7 +1913,7 @@
       "leeftijd_vorig": 13,
       "leeftijd_nieuw": 14,
       "team_vorig": "C1",
-      "team_nieuw": "B1"
+      "team_nieuw": "B1/B2"
     },
     {
       "rel_code": "NLB71F2",
@@ -1913,7 +1923,7 @@
       "leeftijd_vorig": 13,
       "leeftijd_nieuw": 14,
       "team_vorig": "C2",
-      "team_nieuw": "B2"
+      "team_nieuw": "B3"
     },
     {
       "rel_code": "NLC07S7",
@@ -1923,7 +1933,7 @@
       "leeftijd_vorig": 10,
       "leeftijd_nieuw": 11,
       "team_vorig": "D2",
-      "team_nieuw": "C2"
+      "team_nieuw": "D1"
     },
     {
       "rel_code": "NLC07T4",
@@ -1933,7 +1943,7 @@
       "leeftijd_vorig": 14,
       "leeftijd_nieuw": 15,
       "team_vorig": "B4",
-      "team_nieuw": "A4"
+      "team_nieuw": "B4"
     },
     {
       "rel_code": "NLD26P4",
@@ -1943,7 +1953,7 @@
       "leeftijd_vorig": 15,
       "leeftijd_nieuw": 16,
       "team_vorig": "B4",
-      "team_nieuw": "S1S2"
+      "team_nieuw": "A4"
     },
     {
       "rel_code": "NLD36P9",
@@ -1953,7 +1963,7 @@
       "leeftijd_vorig": 10,
       "leeftijd_nieuw": 11,
       "team_vorig": "D2",
-      "team_nieuw": "C2"
+      "team_nieuw": "D1"
     },
     {
       "rel_code": "NLD42V4",
@@ -1963,7 +1973,17 @@
       "leeftijd_vorig": 13,
       "leeftijd_nieuw": 14,
       "team_vorig": "C1",
-      "team_nieuw": "B"
+      "team_nieuw": "B1/B2"
+    },
+    {
+      "rel_code": "NLD55M5",
+      "status": "herinschrijver",
+      "geboortejaar": 2003,
+      "geslacht": "V",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 16,
+      "team_vorig": null,
+      "team_nieuw": "A4"
     },
     {
       "rel_code": "NLF26P6",
@@ -1973,7 +1993,7 @@
       "leeftijd_vorig": 12,
       "leeftijd_nieuw": 13,
       "team_vorig": "C3",
-      "team_nieuw": "B"
+      "team_nieuw": "B4"
     },
     {
       "rel_code": "NLF50K8",
@@ -1983,7 +2003,7 @@
       "leeftijd_vorig": 13,
       "leeftijd_nieuw": 14,
       "team_vorig": "C1",
-      "team_nieuw": "B1"
+      "team_nieuw": "B1/B2"
     },
     {
       "rel_code": "NLG15C8",
@@ -2003,7 +2023,7 @@
       "leeftijd_vorig": 11,
       "leeftijd_nieuw": 12,
       "team_vorig": "D1",
-      "team_nieuw": "C1"
+      "team_nieuw": "C1/C2"
     },
     {
       "rel_code": "NLG57M4",
@@ -2023,7 +2043,7 @@
       "leeftijd_vorig": 11,
       "leeftijd_nieuw": 12,
       "team_vorig": "D1",
-      "team_nieuw": "C1"
+      "team_nieuw": "C1/C2"
     },
     {
       "rel_code": "NLG57S6",
@@ -2033,7 +2053,7 @@
       "leeftijd_vorig": 13,
       "leeftijd_nieuw": 14,
       "team_vorig": "C3",
-      "team_nieuw": "B2"
+      "team_nieuw": "B4"
     },
     {
       "rel_code": "NLG58W7",
@@ -2043,7 +2063,7 @@
       "leeftijd_vorig": 12,
       "leeftijd_nieuw": 13,
       "team_vorig": "C1",
-      "team_nieuw": "C1"
+      "team_nieuw": "C1/C2"
     },
     {
       "rel_code": "NLG58X4",
@@ -2053,7 +2073,7 @@
       "leeftijd_vorig": 11,
       "leeftijd_nieuw": 12,
       "team_vorig": "D2",
-      "team_nieuw": "C2"
+      "team_nieuw": "C1/C2"
     },
     {
       "rel_code": "NLG58Z8",
@@ -2063,7 +2083,7 @@
       "leeftijd_vorig": 12,
       "leeftijd_nieuw": 13,
       "team_vorig": "C3",
-      "team_nieuw": "B3"
+      "team_nieuw": "B4"
     },
     {
       "rel_code": "NLG59F1",
@@ -2073,7 +2093,7 @@
       "leeftijd_vorig": 13,
       "leeftijd_nieuw": 14,
       "team_vorig": "C1",
-      "team_nieuw": "B1"
+      "team_nieuw": "B1/B2"
     },
     {
       "rel_code": "NLG59G8",
@@ -2083,7 +2103,7 @@
       "leeftijd_vorig": 13,
       "leeftijd_nieuw": 14,
       "team_vorig": "C1",
-      "team_nieuw": "B1"
+      "team_nieuw": "B1/B2"
     },
     {
       "rel_code": "NLH06P8",
@@ -2093,7 +2113,7 @@
       "leeftijd_vorig": 10,
       "leeftijd_nieuw": 11,
       "team_vorig": "D3",
-      "team_nieuw": "C3"
+      "team_nieuw": "D2"
     },
     {
       "rel_code": "NLJ04Z4",
@@ -2103,7 +2123,7 @@
       "leeftijd_vorig": 9,
       "leeftijd_nieuw": 10,
       "team_vorig": "E1",
-      "team_nieuw": "D1"
+      "team_nieuw": "D2"
     },
     {
       "rel_code": "NLJ05D3",
@@ -2113,7 +2133,7 @@
       "leeftijd_vorig": 11,
       "leeftijd_nieuw": 12,
       "team_vorig": "D2",
-      "team_nieuw": "C"
+      "team_nieuw": "C1/C2"
     },
     {
       "rel_code": "NLJ47N9",
@@ -2123,7 +2143,7 @@
       "leeftijd_vorig": 13,
       "leeftijd_nieuw": 14,
       "team_vorig": "C4",
-      "team_nieuw": "B1"
+      "team_nieuw": "B3"
     },
     {
       "rel_code": "NLJ47P3",
@@ -2133,7 +2153,7 @@
       "leeftijd_vorig": 12,
       "leeftijd_nieuw": 13,
       "team_vorig": "C3",
-      "team_nieuw": "B3"
+      "team_nieuw": "B4"
     },
     {
       "rel_code": "NLL19S7",
@@ -2153,7 +2173,7 @@
       "leeftijd_vorig": 11,
       "leeftijd_nieuw": 12,
       "team_vorig": "D1",
-      "team_nieuw": "C1"
+      "team_nieuw": "C1/C2"
     },
     {
       "rel_code": "NLL19V8",
@@ -2163,7 +2183,7 @@
       "leeftijd_vorig": 11,
       "leeftijd_nieuw": 12,
       "team_vorig": "D1",
-      "team_nieuw": "C1"
+      "team_nieuw": "C1/C2"
     },
     {
       "rel_code": "NLL19X2",
@@ -2173,7 +2193,7 @@
       "leeftijd_vorig": 11,
       "leeftijd_nieuw": 12,
       "team_vorig": "C4",
-      "team_nieuw": "C4"
+      "team_nieuw": "C3"
     },
     {
       "rel_code": "NLL19Y9",
@@ -2193,7 +2213,7 @@
       "leeftijd_vorig": 13,
       "leeftijd_nieuw": 14,
       "team_vorig": "C1",
-      "team_nieuw": "B1"
+      "team_nieuw": "B1/B2"
     },
     {
       "rel_code": "NLL20F4",
@@ -2203,7 +2223,7 @@
       "leeftijd_vorig": 12,
       "leeftijd_nieuw": 13,
       "team_vorig": "C2",
-      "team_nieuw": "C2"
+      "team_nieuw": "C1/C2"
     },
     {
       "rel_code": "NLL20G1",
@@ -2213,7 +2233,7 @@
       "leeftijd_vorig": 10,
       "leeftijd_nieuw": 11,
       "team_vorig": "D3",
-      "team_nieuw": "C3"
+      "team_nieuw": "D2"
     },
     {
       "rel_code": "NLL20H8",
@@ -2223,7 +2243,7 @@
       "leeftijd_vorig": 8,
       "leeftijd_nieuw": 9,
       "team_vorig": "E4",
-      "team_nieuw": "D2"
+      "team_nieuw": "E2"
     },
     {
       "rel_code": "NLL37Q7",
@@ -2233,7 +2253,7 @@
       "leeftijd_vorig": 14,
       "leeftijd_nieuw": 15,
       "team_vorig": "B3",
-      "team_nieuw": "A3"
+      "team_nieuw": "B1/B2"
     },
     {
       "rel_code": "NLL37S1",
@@ -2243,7 +2263,7 @@
       "leeftijd_vorig": 10,
       "leeftijd_nieuw": 11,
       "team_vorig": "D2",
-      "team_nieuw": "C2"
+      "team_nieuw": "D1"
     },
     {
       "rel_code": "NLL49T9",
@@ -2253,7 +2273,7 @@
       "leeftijd_vorig": 10,
       "leeftijd_nieuw": 11,
       "team_vorig": "D2",
-      "team_nieuw": "C3"
+      "team_nieuw": "D1"
     },
     {
       "rel_code": "NLL49V3",
@@ -2283,7 +2303,7 @@
       "leeftijd_vorig": 11,
       "leeftijd_nieuw": 12,
       "team_vorig": "D1",
-      "team_nieuw": "C1"
+      "team_nieuw": "C1/C2"
     },
     {
       "rel_code": "NLM05B2",
@@ -2293,7 +2313,7 @@
       "leeftijd_vorig": 11,
       "leeftijd_nieuw": 12,
       "team_vorig": "D3",
-      "team_nieuw": "C3"
+      "team_nieuw": "C1/C2"
     },
     {
       "rel_code": "NLM40K0",
@@ -2303,7 +2323,7 @@
       "leeftijd_vorig": 8,
       "leeftijd_nieuw": 9,
       "team_vorig": "E5",
-      "team_nieuw": "D4"
+      "team_nieuw": "E4"
     },
     {
       "rel_code": "NLM86T1",
@@ -2313,7 +2333,7 @@
       "leeftijd_vorig": 11,
       "leeftijd_nieuw": 12,
       "team_vorig": "D2",
-      "team_nieuw": "C"
+      "team_nieuw": "C1/C2"
     },
     {
       "rel_code": "NLM86V5",
@@ -2323,7 +2343,7 @@
       "leeftijd_vorig": 7,
       "leeftijd_nieuw": 8,
       "team_vorig": "F1",
-      "team_nieuw": "E1"
+      "team_nieuw": "E6"
     },
     {
       "rel_code": "NLN05N7",
@@ -2333,7 +2353,7 @@
       "leeftijd_vorig": 10,
       "leeftijd_nieuw": 11,
       "team_vorig": "D2",
-      "team_nieuw": "C1"
+      "team_nieuw": "D1"
     },
     {
       "rel_code": "NLN28Y3",
@@ -2343,7 +2363,7 @@
       "leeftijd_vorig": 10,
       "leeftijd_nieuw": 11,
       "team_vorig": "D3",
-      "team_nieuw": "C3"
+      "team_nieuw": "D2"
     },
     {
       "rel_code": "NLN41L1",
@@ -2353,7 +2373,7 @@
       "leeftijd_vorig": 8,
       "leeftijd_nieuw": 9,
       "team_vorig": "E3",
-      "team_nieuw": "D1"
+      "team_nieuw": "E1"
     },
     {
       "rel_code": "NLN68P0",
@@ -2373,7 +2393,7 @@
       "leeftijd_vorig": 11,
       "leeftijd_nieuw": 12,
       "team_vorig": "D2",
-      "team_nieuw": "C"
+      "team_nieuw": "C1/C2"
     },
     {
       "rel_code": "NLP77W3",
@@ -2383,7 +2403,7 @@
       "leeftijd_vorig": 12,
       "leeftijd_nieuw": 13,
       "team_vorig": "C3",
-      "team_nieuw": "C2"
+      "team_nieuw": "C1/C2"
     },
     {
       "rel_code": "NLP77X0",
@@ -2403,7 +2423,7 @@
       "leeftijd_vorig": 13,
       "leeftijd_nieuw": 14,
       "team_vorig": "C4",
-      "team_nieuw": "B3"
+      "team_nieuw": "B4"
     },
     {
       "rel_code": "NLP77Z4",
@@ -2413,7 +2433,7 @@
       "leeftijd_vorig": 8,
       "leeftijd_nieuw": 9,
       "team_vorig": "E3",
-      "team_nieuw": "D1"
+      "team_nieuw": "E1"
     },
     {
       "rel_code": "NLP78B9",
@@ -2423,7 +2443,7 @@
       "leeftijd_vorig": 12,
       "leeftijd_nieuw": 13,
       "team_vorig": "C4",
-      "team_nieuw": "B3"
+      "team_nieuw": "C3"
     },
     {
       "rel_code": "NLP78C6",
@@ -2433,7 +2453,7 @@
       "leeftijd_vorig": 10,
       "leeftijd_nieuw": 11,
       "team_vorig": "D3",
-      "team_nieuw": "C2"
+      "team_nieuw": "D1"
     },
     {
       "rel_code": "NLP78D3",
@@ -2443,7 +2463,7 @@
       "leeftijd_vorig": 10,
       "leeftijd_nieuw": 11,
       "team_vorig": "D2",
-      "team_nieuw": "C2"
+      "team_nieuw": "D1"
     },
     {
       "rel_code": "NLP78G4",
@@ -2453,7 +2473,7 @@
       "leeftijd_vorig": 11,
       "leeftijd_nieuw": 12,
       "team_vorig": "D4",
-      "team_nieuw": "C3"
+      "team_nieuw": "C1/C2"
     },
     {
       "rel_code": "NLP78J5",
@@ -2463,7 +2483,7 @@
       "leeftijd_vorig": 12,
       "leeftijd_nieuw": 13,
       "team_vorig": "C4",
-      "team_nieuw": "B3"
+      "team_nieuw": "C3"
     },
     {
       "rel_code": "NLP78K2",
@@ -2473,7 +2493,7 @@
       "leeftijd_vorig": 12,
       "leeftijd_nieuw": 13,
       "team_vorig": "C4",
-      "team_nieuw": "B3"
+      "team_nieuw": "C3"
     },
     {
       "rel_code": "NLP78L9",
@@ -2483,7 +2503,7 @@
       "leeftijd_vorig": 8,
       "leeftijd_nieuw": 9,
       "team_vorig": "E6",
-      "team_nieuw": "D3"
+      "team_nieuw": "E5"
     },
     {
       "rel_code": "NLP78N3",
@@ -2493,7 +2513,7 @@
       "leeftijd_vorig": 11,
       "leeftijd_nieuw": 12,
       "team_vorig": "D1",
-      "team_nieuw": "C1"
+      "team_nieuw": "C1/C2"
     },
     {
       "rel_code": "NLP78P7",
@@ -2503,7 +2523,7 @@
       "leeftijd_vorig": 8,
       "leeftijd_nieuw": 9,
       "team_vorig": "E3",
-      "team_nieuw": "D1"
+      "team_nieuw": "E1"
     },
     {
       "rel_code": "NLP78Q4",
@@ -2513,7 +2533,7 @@
       "leeftijd_vorig": 10,
       "leeftijd_nieuw": 11,
       "team_vorig": "D1",
-      "team_nieuw": "C1"
+      "team_nieuw": "C1/C2"
     },
     {
       "rel_code": "NLP89T3",
@@ -2523,7 +2543,7 @@
       "leeftijd_vorig": 7,
       "leeftijd_nieuw": 8,
       "team_vorig": "F2",
-      "team_nieuw": "D4"
+      "team_nieuw": "E7"
     },
     {
       "rel_code": "NLP89W4",
@@ -2533,7 +2553,7 @@
       "leeftijd_vorig": 8,
       "leeftijd_nieuw": 9,
       "team_vorig": "E3",
-      "team_nieuw": "D1"
+      "team_nieuw": "E1"
     },
     {
       "rel_code": "NLQ98H2",
@@ -2543,7 +2563,7 @@
       "leeftijd_vorig": 8,
       "leeftijd_nieuw": 9,
       "team_vorig": "E4",
-      "team_nieuw": "D4"
+      "team_nieuw": "E3"
     },
     {
       "rel_code": "NLR06X4",
@@ -2553,7 +2573,7 @@
       "leeftijd_vorig": 11,
       "leeftijd_nieuw": 12,
       "team_vorig": "D4",
-      "team_nieuw": "C4"
+      "team_nieuw": "C3"
     },
     {
       "rel_code": "NLR23F9",
@@ -2563,7 +2583,7 @@
       "leeftijd_vorig": 15,
       "leeftijd_nieuw": 16,
       "team_vorig": "B4",
-      "team_nieuw": "A3"
+      "team_nieuw": "A4"
     },
     {
       "rel_code": "NLR34F7",
@@ -2573,7 +2593,7 @@
       "leeftijd_vorig": 8,
       "leeftijd_nieuw": 9,
       "team_vorig": "E5",
-      "team_nieuw": "D4"
+      "team_nieuw": "E4"
     },
     {
       "rel_code": "NLR59C1",
@@ -2593,7 +2613,7 @@
       "leeftijd_vorig": 11,
       "leeftijd_nieuw": 12,
       "team_vorig": "D3",
-      "team_nieuw": "C"
+      "team_nieuw": "C1/C2"
     },
     {
       "rel_code": "NLS08G2",
@@ -2613,7 +2633,7 @@
       "leeftijd_vorig": 9,
       "leeftijd_nieuw": 10,
       "team_vorig": "E2",
-      "team_nieuw": "D1"
+      "team_nieuw": "D2"
     },
     {
       "rel_code": "NLS08K0",
@@ -2623,7 +2643,7 @@
       "leeftijd_vorig": 10,
       "leeftijd_nieuw": 11,
       "team_vorig": "D3",
-      "team_nieuw": "C3"
+      "team_nieuw": "D2"
     },
     {
       "rel_code": "NLS34M7",
@@ -2633,7 +2653,7 @@
       "leeftijd_vorig": 7,
       "leeftijd_nieuw": 8,
       "team_vorig": "F1",
-      "team_nieuw": "E1"
+      "team_nieuw": "E6"
     },
     {
       "rel_code": "NLS45N2",
@@ -2643,7 +2663,7 @@
       "leeftijd_vorig": 10,
       "leeftijd_nieuw": 11,
       "team_vorig": "D2",
-      "team_nieuw": "C2"
+      "team_nieuw": "D1"
     },
     {
       "rel_code": "NLS54M7",
@@ -2653,7 +2673,7 @@
       "leeftijd_vorig": 8,
       "leeftijd_nieuw": 9,
       "team_vorig": "E4",
-      "team_nieuw": "D4"
+      "team_nieuw": "E3"
     },
     {
       "rel_code": "NLS75Y4",
@@ -2663,7 +2683,7 @@
       "leeftijd_vorig": 10,
       "leeftijd_nieuw": 11,
       "team_vorig": "D3",
-      "team_nieuw": "C3"
+      "team_nieuw": "D1"
     },
     {
       "rel_code": "NLS75Z1",
@@ -2703,7 +2723,7 @@
       "leeftijd_vorig": 10,
       "leeftijd_nieuw": 11,
       "team_vorig": "D2",
-      "team_nieuw": "C2"
+      "team_nieuw": "D1"
     },
     {
       "rel_code": "NLS85J4",
@@ -2713,7 +2733,7 @@
       "leeftijd_vorig": 9,
       "leeftijd_nieuw": 10,
       "team_vorig": "E1",
-      "team_nieuw": "D1"
+      "team_nieuw": "D2"
     },
     {
       "rel_code": "NLT04D0",
@@ -2733,7 +2753,7 @@
       "leeftijd_vorig": 7,
       "leeftijd_nieuw": 8,
       "team_vorig": "F1",
-      "team_nieuw": "E1"
+      "team_nieuw": "E6"
     },
     {
       "rel_code": "NLT96R9",
@@ -2743,7 +2763,7 @@
       "leeftijd_vorig": 10,
       "leeftijd_nieuw": 11,
       "team_vorig": "D3",
-      "team_nieuw": "C3"
+      "team_nieuw": "D2"
     },
     {
       "rel_code": "NLV35B6",
@@ -2763,7 +2783,7 @@
       "leeftijd_vorig": 10,
       "leeftijd_nieuw": 11,
       "team_vorig": "D3",
-      "team_nieuw": "C3"
+      "team_nieuw": "D2"
     },
     {
       "rel_code": "NLV80M3",
@@ -2773,7 +2793,7 @@
       "leeftijd_vorig": 6,
       "leeftijd_nieuw": 7,
       "team_vorig": "F3",
-      "team_nieuw": "E4"
+      "team_nieuw": "F2"
     },
     {
       "rel_code": "NLV80N0",
@@ -2783,7 +2803,7 @@
       "leeftijd_vorig": 8,
       "leeftijd_nieuw": 9,
       "team_vorig": "E4",
-      "team_nieuw": "D4"
+      "team_nieuw": "E3"
     },
     {
       "rel_code": "NLV80P4",
@@ -2793,7 +2813,7 @@
       "leeftijd_vorig": 7,
       "leeftijd_nieuw": 8,
       "team_vorig": "F1",
-      "team_nieuw": "E1"
+      "team_nieuw": "E6"
     },
     {
       "rel_code": "NLV84L8",
@@ -2803,7 +2823,7 @@
       "leeftijd_vorig": 8,
       "leeftijd_nieuw": 9,
       "team_vorig": "E5",
-      "team_nieuw": "E2"
+      "team_nieuw": "E7"
     },
     {
       "rel_code": "NLV84M5",
@@ -2813,7 +2833,7 @@
       "leeftijd_vorig": 6,
       "leeftijd_nieuw": 7,
       "team_vorig": "F3",
-      "team_nieuw": "E4"
+      "team_nieuw": "F2"
     },
     {
       "rel_code": "NLW47J4",
@@ -2823,7 +2843,7 @@
       "leeftijd_vorig": 11,
       "leeftijd_nieuw": 12,
       "team_vorig": "D4",
-      "team_nieuw": "C4"
+      "team_nieuw": "C3"
     },
     {
       "rel_code": "NLW81C7",
@@ -2833,7 +2853,7 @@
       "leeftijd_vorig": 12,
       "leeftijd_nieuw": 13,
       "team_vorig": "C4",
-      "team_nieuw": "B3"
+      "team_nieuw": "B4"
     },
     {
       "rel_code": "NLW88N5",
@@ -2843,7 +2863,7 @@
       "leeftijd_vorig": 9,
       "leeftijd_nieuw": 10,
       "team_vorig": "E1",
-      "team_nieuw": "D"
+      "team_nieuw": "D2"
     },
     {
       "rel_code": "NLX00G3",
@@ -2853,7 +2873,7 @@
       "leeftijd_vorig": 9,
       "leeftijd_nieuw": 10,
       "team_vorig": "E2",
-      "team_nieuw": "D2"
+      "team_nieuw": "D3"
     },
     {
       "rel_code": "NLX00H0",
@@ -2863,7 +2883,7 @@
       "leeftijd_vorig": 9,
       "leeftijd_nieuw": 10,
       "team_vorig": "E2",
-      "team_nieuw": "D2"
+      "team_nieuw": "D3"
     },
     {
       "rel_code": "NLX00J4",
@@ -2873,7 +2893,7 @@
       "leeftijd_vorig": 8,
       "leeftijd_nieuw": 9,
       "team_vorig": "E5",
-      "team_nieuw": "D2"
+      "team_nieuw": "E3"
     },
     {
       "rel_code": "NLX04H2",
@@ -2883,7 +2903,7 @@
       "leeftijd_vorig": 8,
       "leeftijd_nieuw": 9,
       "team_vorig": "E6",
-      "team_nieuw": "D4"
+      "team_nieuw": "E5"
     },
     {
       "rel_code": "NLX08D6",
@@ -2903,7 +2923,7 @@
       "leeftijd_vorig": 8,
       "leeftijd_nieuw": 9,
       "team_vorig": "E4",
-      "team_nieuw": "D2"
+      "team_nieuw": "E2"
     },
     {
       "rel_code": "NLX08G7",
@@ -2923,7 +2943,7 @@
       "leeftijd_vorig": 8,
       "leeftijd_nieuw": 9,
       "team_vorig": "E6",
-      "team_nieuw": "D3"
+      "team_nieuw": "E5"
     },
     {
       "rel_code": "NLX64V0",
@@ -2933,7 +2953,7 @@
       "leeftijd_vorig": 8,
       "leeftijd_nieuw": 9,
       "team_vorig": "E6",
-      "team_nieuw": "D3"
+      "team_nieuw": "E5"
     },
     {
       "rel_code": "NLY32T6",
@@ -2943,7 +2963,7 @@
       "leeftijd_vorig": 8,
       "leeftijd_nieuw": 9,
       "team_vorig": "E4",
-      "team_nieuw": "D1"
+      "team_nieuw": "E1"
     },
     {
       "rel_code": "NLY40X3",
@@ -2963,7 +2983,7 @@
       "leeftijd_vorig": 8,
       "leeftijd_nieuw": 9,
       "team_vorig": "E3",
-      "team_nieuw": "E"
+      "team_nieuw": "E2"
     },
     {
       "rel_code": "NLY54F4",
@@ -2983,7 +3003,7 @@
       "leeftijd_vorig": 10,
       "leeftijd_nieuw": 11,
       "team_vorig": "D4",
-      "team_nieuw": "C4"
+      "team_nieuw": "D3"
     },
     {
       "rel_code": "NLZ21F1",
@@ -2993,7 +3013,7 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 5,
       "team_vorig": null,
-      "team_nieuw": "F1"
+      "team_nieuw": "F3"
     },
     {
       "rel_code": "NLZ36K6",
@@ -3003,7 +3023,7 @@
       "leeftijd_vorig": 8,
       "leeftijd_nieuw": 9,
       "team_vorig": "E6",
-      "team_nieuw": "D4"
+      "team_nieuw": "E5"
     },
     {
       "rel_code": "NLZ39C9",
@@ -3013,7 +3033,7 @@
       "leeftijd_vorig": 6,
       "leeftijd_nieuw": 7,
       "team_vorig": "F3",
-      "team_nieuw": "E4"
+      "team_nieuw": "F2"
     },
     {
       "rel_code": "NLZ65N9",
@@ -3023,7 +3043,7 @@
       "leeftijd_vorig": 7,
       "leeftijd_nieuw": 8,
       "team_vorig": "F2",
-      "team_nieuw": "E2"
+      "team_nieuw": "E7"
     },
     {
       "rel_code": "NLZ81W0",
@@ -3063,7 +3083,7 @@
       "leeftijd_vorig": 8,
       "leeftijd_nieuw": 9,
       "team_vorig": "E6",
-      "team_nieuw": "D4"
+      "team_nieuw": "E4"
     },
     {
       "rel_code": "NMB60Y4",
@@ -3073,7 +3093,7 @@
       "leeftijd_vorig": 8,
       "leeftijd_nieuw": 9,
       "team_vorig": "E5",
-      "team_nieuw": "D2"
+      "team_nieuw": "E3"
     },
     {
       "rel_code": "NMC29Z9",
@@ -3093,7 +3113,7 @@
       "leeftijd_vorig": 9,
       "leeftijd_nieuw": 10,
       "team_vorig": "E6",
-      "team_nieuw": "D4"
+      "team_nieuw": "E4"
     },
     {
       "rel_code": "NMC41F5",
@@ -3103,7 +3123,7 @@
       "leeftijd_vorig": 10,
       "leeftijd_nieuw": 11,
       "team_vorig": "D4",
-      "team_nieuw": "D"
+      "team_nieuw": "D3"
     },
     {
       "rel_code": "NMC41W4",
@@ -3113,7 +3133,7 @@
       "leeftijd_vorig": 6,
       "leeftijd_nieuw": 7,
       "team_vorig": "F2",
-      "team_nieuw": "E3"
+      "team_nieuw": "F1"
     },
     {
       "rel_code": "NMC50D3",
@@ -3123,7 +3143,7 @@
       "leeftijd_vorig": 11,
       "leeftijd_nieuw": 12,
       "team_vorig": "C4",
-      "team_nieuw": "C4"
+      "team_nieuw": "C3"
     },
     {
       "rel_code": "NMC61N1",
@@ -3143,7 +3163,7 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 8,
       "team_vorig": null,
-      "team_nieuw": "E1"
+      "team_nieuw": "E6"
     },
     {
       "rel_code": "NMC74J7",
@@ -3163,7 +3183,7 @@
       "leeftijd_vorig": 5,
       "leeftijd_nieuw": 6,
       "team_vorig": "F4",
-      "team_nieuw": "F1"
+      "team_nieuw": "F3"
     },
     {
       "rel_code": "NMD22V1",
@@ -3173,7 +3193,7 @@
       "leeftijd_vorig": 6,
       "leeftijd_nieuw": 7,
       "team_vorig": "F2",
-      "team_nieuw": "E3"
+      "team_nieuw": "F1"
     },
     {
       "rel_code": "NMD34T8",
@@ -3193,7 +3213,7 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 9,
       "team_vorig": null,
-      "team_nieuw": "D2"
+      "team_nieuw": "E2"
     },
     {
       "rel_code": "NMD71P1",
@@ -3203,7 +3223,7 @@
       "leeftijd_vorig": 5,
       "leeftijd_nieuw": 6,
       "team_vorig": "F4",
-      "team_nieuw": "F2"
+      "team_nieuw": "F3"
     },
     {
       "rel_code": "NMD90G5",
@@ -3213,7 +3233,7 @@
       "leeftijd_vorig": 6,
       "leeftijd_nieuw": 7,
       "team_vorig": "F4",
-      "team_nieuw": "E3"
+      "team_nieuw": "F1"
     },
     {
       "rel_code": "NMF09H6",
@@ -3223,7 +3243,7 @@
       "leeftijd_vorig": 6,
       "leeftijd_nieuw": 7,
       "team_vorig": "F4",
-      "team_nieuw": "E3"
+      "team_nieuw": "F1"
     },
     {
       "rel_code": "NMF22Q8",
@@ -3233,7 +3253,7 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 8,
       "team_vorig": null,
-      "team_nieuw": "E2"
+      "team_nieuw": "E7"
     },
     {
       "rel_code": "NMF43M3",
@@ -3243,7 +3263,7 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 8,
       "team_vorig": null,
-      "team_nieuw": "E"
+      "team_nieuw": "E7"
     },
     {
       "rel_code": "NMG03C4",
@@ -3253,17 +3273,17 @@
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 7,
       "team_vorig": null,
-      "team_nieuw": "E3"
+      "team_nieuw": "F1"
     },
     {
       "rel_code": "NMG13P0",
-      "status": "herinschrijver",
+      "status": "nieuw",
       "geboortejaar": 2013,
       "geslacht": "V",
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 6,
       "team_vorig": null,
-      "team_nieuw": "F1"
+      "team_nieuw": "F3"
     },
     {
       "rel_code": "NMG18G2",
@@ -3406,24 +3426,44 @@
       "team_nieuw": "F2"
     },
     {
-      "rel_code": "OW-0052",
-      "status": "nieuw",
-      "geboortejaar": 1999,
-      "geslacht": "V",
-      "leeftijd_vorig": null,
-      "leeftijd_nieuw": 20,
-      "team_vorig": null,
-      "team_nieuw": "Senioren"
-    },
-    {
-      "rel_code": "OW-0055",
-      "status": "nieuw",
+      "rel_code": "OW-0578",
+      "status": "herinschrijver",
       "geboortejaar": null,
-      "geslacht": "M",
+      "geslacht": "V",
       "leeftijd_vorig": null,
       "leeftijd_nieuw": 2019,
       "team_vorig": null,
-      "team_nieuw": "E"
+      "team_nieuw": "A3"
+    },
+    {
+      "rel_code": "OW-0579",
+      "status": "herinschrijver",
+      "geboortejaar": null,
+      "geslacht": "V",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 2019,
+      "team_vorig": null,
+      "team_nieuw": "D3"
+    },
+    {
+      "rel_code": "OW-0580",
+      "status": "nieuw",
+      "geboortejaar": null,
+      "geslacht": "V",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 2019,
+      "team_vorig": null,
+      "team_nieuw": "MW1"
+    },
+    {
+      "rel_code": "OW-0581",
+      "status": "nieuw",
+      "geboortejaar": null,
+      "geslacht": "V",
+      "leeftijd_vorig": null,
+      "leeftijd_nieuw": 2019,
+      "team_vorig": null,
+      "team_nieuw": "MW1"
     }
   ]
 }
