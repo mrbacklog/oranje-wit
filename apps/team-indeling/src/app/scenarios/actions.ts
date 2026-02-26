@@ -289,3 +289,34 @@ export async function ontkoppelSelectie(groepLeiderId: string) {
   });
   revalidatePath("/scenarios");
 }
+
+/**
+ * Markeer een scenario als DEFINITIEF.
+ * Alle andere scenario's in hetzelfde concept worden GEARCHIVEERD.
+ */
+export async function markeerDefinitief(scenarioId: string) {
+  // Haal het scenario op om de conceptId te kennen
+  const scenario = await prisma.scenario.findUniqueOrThrow({
+    where: { id: scenarioId },
+    select: { conceptId: true },
+  });
+
+  // Archiveer alle andere scenario's in hetzelfde concept
+  await prisma.scenario.updateMany({
+    where: {
+      conceptId: scenario.conceptId,
+      id: { not: scenarioId },
+    },
+    data: { status: "GEARCHIVEERD" },
+  });
+
+  // Zet dit scenario op DEFINITIEF
+  await prisma.scenario.update({
+    where: { id: scenarioId },
+    data: { status: "DEFINITIEF" },
+  });
+
+  revalidatePath("/scenarios");
+  revalidatePath("/definitief");
+  redirect("/definitief");
+}

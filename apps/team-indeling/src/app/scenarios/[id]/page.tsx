@@ -2,6 +2,7 @@ import { getScenario, getAlleSpelers } from "../actions";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import ScenarioEditor from "@/components/scenario/ScenarioEditor";
+import MaakDefinitiefKnop from "@/components/scenario/MaakDefinitiefKnop";
 import type { ScenarioData, SpelerData } from "@/components/scenario/types";
 
 export const dynamic = "force-dynamic";
@@ -44,21 +45,27 @@ export default async function ScenarioEditorPage({
               </p>
             )}
           </div>
-          <span
-            className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-              scenario.status === "DEFINITIEF"
-                ? "bg-green-100 text-green-700"
+          <div className="flex items-center gap-3">
+            {scenario.status !== "DEFINITIEF" &&
+              scenario.status !== "GEARCHIVEERD" && (
+                <MaakDefinitiefKnop scenarioId={scenario.id} />
+              )}
+            <span
+              className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+                scenario.status === "DEFINITIEF"
+                  ? "bg-green-100 text-green-700"
+                  : scenario.status === "GEARCHIVEERD"
+                  ? "bg-gray-100 text-gray-500"
+                  : "bg-orange-100 text-orange-700"
+              }`}
+            >
+              {scenario.status === "DEFINITIEF"
+                ? "Definitief"
                 : scenario.status === "GEARCHIVEERD"
-                ? "bg-gray-100 text-gray-500"
-                : "bg-orange-100 text-orange-700"
-            }`}
-          >
-            {scenario.status === "DEFINITIEF"
-              ? "Definitief"
-              : scenario.status === "GEARCHIVEERD"
-              ? "Gearchiveerd"
-              : "Actief"}
-          </span>
+                ? "Gearchiveerd"
+                : "Actief"}
+            </span>
+          </div>
         </div>
       </div>
 
