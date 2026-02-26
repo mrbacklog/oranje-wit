@@ -34,8 +34,9 @@ async function syncLeden(snapshotPath) {
     if (!lid.rel_code) { skipped++; continue; }
     await pool.query(
       `INSERT INTO leden (rel_code, roepnaam, achternaam, tussenvoegsel, voorletters,
-         geslacht, geboortejaar, geboortedatum, lid_sinds, afmelddatum, lidsoort)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+         geslacht, geboortejaar, geboortedatum, lid_sinds, afmelddatum, lidsoort,
+         email, registratie_datum)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
        ON CONFLICT (rel_code) DO UPDATE SET
          roepnaam = COALESCE(NULLIF(EXCLUDED.roepnaam, ''), leden.roepnaam),
          achternaam = COALESCE(NULLIF(EXCLUDED.achternaam, ''), leden.achternaam),
@@ -47,11 +48,13 @@ async function syncLeden(snapshotPath) {
          lid_sinds = COALESCE(EXCLUDED.lid_sinds, leden.lid_sinds),
          afmelddatum = COALESCE(EXCLUDED.afmelddatum, leden.afmelddatum),
          lidsoort = COALESCE(EXCLUDED.lidsoort, leden.lidsoort),
+         email = COALESCE(EXCLUDED.email, leden.email),
+         registratie_datum = COALESCE(EXCLUDED.registratie_datum, leden.registratie_datum),
          updated_at = now()`,
       [lid.rel_code, lid.roepnaam || '', lid.achternaam || '', lid.tussenvoegsel || null,
        lid.voorletters || null, lid.geslacht || null, lid.geboortejaar || null,
        lid.geboortedatum || null, lid.lid_sinds || null, lid.afmelddatum || null,
-       lid.lidsoort || null]
+       lid.lidsoort || null, lid.email || null, lid.registratie_datum || null]
     );
     count++;
   }

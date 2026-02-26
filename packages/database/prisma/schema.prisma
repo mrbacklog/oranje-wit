@@ -14,15 +14,21 @@ datasource db {
 
 // Permanente ledenrecords (1 rij per lid, ooit ingeschreven)
 model Lid {
-  relCode      String    @id @map("rel_code")
-  roepnaam     String
-  achternaam   String
-  tussenvoegsel String?
-  geslacht     String    // "M" | "V"
-  geboortejaar Int
-  lidSinds     DateTime? @map("lid_sinds") @db.Date
-  createdAt    DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt    DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
+  relCode          String    @id @map("rel_code")
+  roepnaam         String
+  achternaam       String
+  tussenvoegsel    String?
+  voorletters      String?
+  geslacht         String    // "M" | "V"
+  geboortejaar     Int?
+  geboortedatum    DateTime? @db.Date
+  lidSinds         DateTime? @map("lid_sinds") @db.Date
+  afmelddatum      DateTime? @db.Date
+  lidsoort         String?
+  email            String?
+  registratieDatum DateTime? @map("registratie_datum") @db.Date
+  createdAt        DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
 
   // Relaties
   snapshots    LidSnapshot[]
@@ -32,9 +38,12 @@ model Lid {
 
 // Seizoenen
 model Seizoen {
-  seizoen   String @id
-  startJaar Int    @map("start_jaar")
-  eindJaar  Int    @map("eind_jaar")
+  seizoen    String   @id
+  startJaar  Int      @map("start_jaar")
+  eindJaar   Int      @map("eind_jaar")
+  startDatum DateTime @map("start_datum") @db.Date  // 1 augustus
+  eindDatum  DateTime @map("eind_datum") @db.Date   // 30 juni
+  peildatum  DateTime @map("peildatum") @db.Date    // 31 december van startJaar
 
   // Relaties
   snapshots        Snapshot[]
