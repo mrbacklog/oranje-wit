@@ -517,9 +517,10 @@ model Scenario {
   concept     Concept @relation(fields: [conceptId], references: [id], onDelete: Cascade)
   conceptId   String
 
-  naam        String
-  toelichting String?  @db.Text
-  aannames    Json?
+  naam          String
+  toelichting   String?  @db.Text
+  aannames      Json?
+  keuzeWaardes  Json?    // { [keuzeId]: gekozenOptie }
 
   status      ScenarioStatus @default(ACTIEF)
 
