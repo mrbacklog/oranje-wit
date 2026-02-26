@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-ow-oranje: #FF6B00;
+  --color-ow-oranje-light: #FF8C33;
+  --color-ow-oranje-bg: #FFF3E8;
+
+  --color-band-blauw: #4A90D9;
+  --color-band-groen: #52B788;
+  --color-band-geel: #F4D35E;
+  --color-band-oranje: #F28C28;
+  --color-band-rood: #D62828;
+
+  --color-signal-groen: #4CAF50;
+  --color-signal-geel: #FFC107;
+  --color-signal-rood: #F44336;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+}
