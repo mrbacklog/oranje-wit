@@ -1,7 +1,9 @@
 import { getBlauwdruk } from "./actions";
+import { prisma } from "@/lib/db/prisma";
 import KadersEditor from "@/components/blauwdruk/KadersEditor";
 import SpeerpuntenEditor from "@/components/blauwdruk/SpeerpuntenEditor";
 import ToelichtingEditor from "@/components/blauwdruk/ToelichtingEditor";
+import SpelerStatusOverzicht from "@/components/blauwdruk/SpelerStatusOverzicht";
 
 const SEIZOEN = "2026-2027";
 
@@ -11,6 +13,19 @@ export default async function BlauwdrukPage() {
   const blauwdruk = await getBlauwdruk(SEIZOEN);
 
   const kaders = (blauwdruk.kaders ?? {}) as Record<string, unknown>;
+
+  const spelers = await prisma.speler.findMany({
+    select: {
+      id: true,
+      roepnaam: true,
+      achternaam: true,
+      geboortejaar: true,
+      geslacht: true,
+      status: true,
+      huidig: true,
+    },
+    orderBy: [{ achternaam: "asc" }, { roepnaam: "asc" }],
+  });
 
   return (
     <div className="max-w-4xl space-y-8">
@@ -50,6 +65,27 @@ export default async function BlauwdrukPage() {
           KNKV-regels en OW-voorkeuren uit de import. Deze zijn niet bewerkbaar.
         </p>
         <KadersEditor kaders={kaders} />
+      </section>
+
+      {/* Spelerstatus */}
+      <section>
+        <h3 className="text-lg font-semibold text-gray-700 mb-3">
+          Spelerstatus
+        </h3>
+        <p className="text-sm text-gray-500 mb-4">
+          Geef per speler aan of ze beschikbaar zijn, twijfelen, gaan stoppen of
+          nieuw zijn.
+        </p>
+        <SpelerStatusOverzicht
+          spelers={spelers.map((s) => ({
+            ...s,
+            huidig: s.huidig as {
+              team?: string | null;
+              categorie?: string | null;
+              kleur?: string | null;
+            } | null,
+          }))}
+        />
       </section>
     </div>
   );

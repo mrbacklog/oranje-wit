@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/db/prisma";
 import type { Prisma } from "@oranje-wit/database";
+import type { SpelerStatus } from "@oranje-wit/database";
 
 /**
  * Haal de blauwdruk voor een seizoen op, of maak een nieuwe aan.
@@ -55,5 +56,18 @@ export async function updateToelichting(
   return prisma.blauwdruk.update({
     where: { id: blauwdrukId },
     data: { toelichting },
+  });
+}
+
+/**
+ * Update de status van een speler (beschikbaar/twijfelt/stopt/nieuw).
+ */
+export async function updateSpelerStatus(
+  spelerId: string,
+  status: SpelerStatus
+) {
+  await prisma.speler.update({
+    where: { id: spelerId },
+    data: { status },
   });
 }

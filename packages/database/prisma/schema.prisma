@@ -31,7 +31,8 @@ model Lid {
   updatedAt        DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
 
   // Relaties
-  snapshots    LidSnapshot[]
+  snapshots       LidSnapshot[]
+  spelerSeizoenen SpelerSeizoen[]
 
   @@map("leden")
 }
@@ -46,12 +47,15 @@ model Seizoen {
   peildatum  DateTime @map("peildatum") @db.Date    // 31 december van startJaar
 
   // Relaties
-  snapshots        Snapshot[]
-  owTeams          OWTeam[]
-  spelerspaden     SpelersPad[]
-  ledenverloop     Ledenverloop[]
-  cohortSeizoenen  CohortSeizoen[]
-  signaleringen    Signalering[]
+  snapshots          Snapshot[]
+  owTeams            OWTeam[]
+  spelerspaden       SpelersPad[]
+  spelerSeizoenen    SpelerSeizoen[]
+  competitieRondes   CompetitieRonde[]
+  ledenverloop       Ledenverloop[]
+  cohortSeizoenen    CohortSeizoen[]
+  signaleringen      Signalering[]
+  poolStanden        PoolStand[]
 
   @@map("seizoenen")
 }
@@ -141,7 +145,55 @@ model TeamPeriode {
   @@map("team_periodes")
 }
 
-// Spelerspaden (longitudinaal: speler × seizoen)
+// Competitierondes per seizoen (welke periodes zijn gespeeld)
+model CompetitieRonde {
+  id        Int      @id @default(autoincrement())
+  seizoen   String
+  periode   String   // "veld_najaar" | "zaal" | "zaal_deel1" | "zaal_deel2" | "veld_voorjaar"
+  spelvorm  String?  // "8-korfbal" | "4-korfbal" | null
+  volgorde  Int      // 1, 2, 3, 4
+
+  seizoenRef Seizoen @relation(fields: [seizoen], references: [seizoen])
+
+  @@unique([seizoen, periode])
+  @@map("competitie_rondes")
+}
+
+// Speler × seizoen (vervangt SpelersPad)
+model SpelerSeizoen {
+  id          Int      @id @default(autoincrement())
+  relCode     String   @map("rel_code")
+  seizoen     String
+  team        String   // primair team dit seizoen
+  geslacht    String?  // "M" | "V" (gedenormaliseerd)
+  bron        String   // "telling" | "preseason" | "a2" | "sportlink" | "snapshot"
+  betrouwbaar Boolean  @default(true)
+
+  lid        Lid      @relation(fields: [relCode], references: [relCode])
+  seizoenRef Seizoen  @relation(fields: [seizoen], references: [seizoen])
+  periodes   SpelerPeriode[]
+
+  @@unique([relCode, seizoen])
+  @@index([seizoen], map: "idx_speler_seizoenen_seizoen")
+  @@index([relCode], map: "idx_speler_seizoenen_relcode")
+  @@map("speler_seizoenen")
+}
+
+// Speler × team × competitieronde
+model SpelerPeriode {
+  id               Int      @id @default(autoincrement())
+  spelerSeizoenId  Int      @map("speler_seizoen_id")
+  periode          String   // "veld_najaar" | "zaal" | "zaal_deel1" | "zaal_deel2" | "veld_voorjaar"
+  team             String
+  bron             String   // "telling" | "preseason" | "a2" | "sportlink" | "snapshot"
+
+  spelerSeizoen SpelerSeizoen @relation(fields: [spelerSeizoenId], references: [id], onDelete: Cascade)
+
+  @@unique([spelerSeizoenId, periode])
+  @@map("speler_periodes")
+}
+
+// [DEPRECATED] Spelerspaden — wordt vervangen door SpelerSeizoen + SpelerPeriode
 model SpelersPad {
   id        Int     @id @default(autoincrement())
   spelerId  String  @map("speler_id")
@@ -240,6 +292,54 @@ model Streefmodel {
   @@map("streefmodel")
 }
 
+// Competitiestand per poule per periode
+model PoolStand {
+  id           Int       @id @default(autoincrement())
+  seizoen      String
+  periode      String    // "veld_najaar" | "zaal" | "veld_voorjaar"
+  pool         String    // "HK-08", "Ro-135", "1-12", etc.
+  niveau       String?   // "Hoofdklasse", "Rood", "1e klasse", etc.
+  regio        String?   // "ZWT" | "LND"
+  standDatum   DateTime? @map("stand_datum") @db.Date
+  bronBestand  String?   @map("bron_bestand")
+
+  // Relaties
+  seizoenRef Seizoen          @relation(fields: [seizoen], references: [seizoen])
+  regels     PoolStandRegel[]
+
+  @@unique([seizoen, periode, pool])
+  @@index([seizoen], map: "idx_pool_stand_seizoen")
+  @@map("pool_standen")
+}
+
+// Individuele teamregel in een poulestand
+model PoolStandRegel {
+  id              Int     @id @default(autoincrement())
+  poolStandId     Int     @map("pool_stand_id")
+  positie         Int
+  teamNaam        String  @map("team_naam")
+  isOW            Boolean @default(false) @map("is_ow")
+  gespeeld        Int     @map("gs")
+  gewonnen        Int     @map("wn")
+  gelijk          Int     @map("gl")
+  verloren        Int     @map("vl")
+  punten          Int     @map("pt")
+  doelpuntenVoor  Int     @map("vr")
+  doelpuntenTegen Int     @map("tg")
+
+  // Extensie-velden (later)
+  teamscore       Decimal? @db.Decimal(6, 2)
+  gemLeeftijd     Decimal? @map("gem_leeftijd") @db.Decimal(5, 2)
+
+  // Relaties
+  poolStand PoolStand @relation(fields: [poolStandId], references: [id], onDelete: Cascade)
+
+  @@unique([poolStandId, positie])
+  @@index([poolStandId], map: "idx_pool_stand_regel_stand")
+  @@index([isOW], map: "idx_pool_stand_regel_ow")
+  @@map("pool_stand_regels")
+}
+
 // ╔═══════════════════════════════════════════════════════════╗
 // ║  TEAM-INDELING — procesdata (dit project)                ║
 // ║  Tabelnamen: PascalCase (Prisma default)                 ║
@@ -286,6 +386,7 @@ model Speler {
   teamgenotenHistorie Json? // [{ speler_id, naam, seizoenen_samen }]
   seizoenenActief Int?
   instroomLeeftijd Int?
+  status        SpelerStatus @default(BESCHIKBAAR)
   notitie       String? @db.Text
 
   // Relaties
