@@ -7,6 +7,7 @@
     "dev:monitor": "pnpm --filter @oranje-wit/monitor dev",
     "dev:ti": "pnpm --filter @oranje-wit/team-indeling dev",
     "build:ti": "pnpm --filter @oranje-wit/team-indeling build",
+    "build:monitor": "pnpm --filter @oranje-wit/monitor build",
     "db:generate": "pnpm --filter @oranje-wit/database generate",
     "db:push": "pnpm --filter @oranje-wit/database db:push",
     "import": "npx tsx scripts/import/import-data.ts",
