@@ -1,0 +1,10 @@
+{
+  "name": "railway-mcp",
+  "version": "1.0.0",
+  "description": "MCP server voor Railway platform management via GraphQL API v2",
+  "main": "server.js",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "zod": "^3.24.0"
+  }
+}

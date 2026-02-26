@@ -1,0 +1,25 @@
+{
+  "name": "oranje-wit",
+  "version": "1.0.0",
+  "description": "c.k.v. Oranje Wit — Monorepo: Verenigingsmonitor + Team-Indeling",
+  "private": true,
+  "scripts": {
+    "dev:monitor": "pnpm --filter @oranje-wit/monitor dev",
+    "dev:ti": "pnpm --filter @oranje-wit/team-indeling dev",
+    "build:ti": "pnpm --filter @oranje-wit/team-indeling build",
+    "db:generate": "pnpm --filter @oranje-wit/database generate",
+    "db:push": "pnpm --filter @oranje-wit/database db:push",
+    "import": "npx tsx scripts/import/import-data.ts",
+    "import:check": "npx tsx scripts/import/import-check.ts",
+    "import:evaluaties": "npx tsx scripts/import/import-evaluaties.ts",
+    "test:db": "npx tsx scripts/import/test-db.ts",
+    "pipeline:verloop": "node scripts/js/bereken-verloop.js",
+    "pipeline:cohorten": "node scripts/js/bereken-cohorten.js",
+    "pipeline:signalering": "node scripts/js/genereer-signalering.js",
+    "pipeline:export": "node scripts/js/export-voor-teamindeling.js"
+  },
+  "packageManager": "pnpm@9.15.0",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

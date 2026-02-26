@@ -1,0 +1,1856 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verenigingsmonitor — c.k.v. Oranje Wit</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3"></script>
+<style>
+/* ===== Design System ===== */
+:root {
+  --ow-oranje: #FF6B00;
+  --ow-oranje-light: #FF8C33;
+  --ow-oranje-bg: #FFF3E8;
+  --ow-wit: #FFFFFF;
+  --ow-grijs-50: #F8F9FA;
+  --ow-grijs-100: #F1F3F5;
+  --ow-grijs-200: #E9ECEF;
+  --ow-grijs-300: #DEE2E6;
+  --ow-grijs-600: #868E96;
+  --ow-grijs-800: #343A40;
+  --ow-grijs-900: #212529;
+  --band-blauw: #4A90D9;
+  --band-groen: #52B788;
+  --band-geel: #F4D35E;
+  --band-oranje: #F28C28;
+  --band-rood: #D62828;
+  --a-u15: #1E3A5F;
+  --a-u17: #2D6A4F;
+  --a-u19: #6B2D5B;
+  --signal-groen: #4CAF50;
+  --signal-geel: #FFC107;
+  --signal-rood: #F44336;
+  --radius: 8px;
+  --shadow: 0 1px 3px rgba(0,0,0,.1);
+  --shadow-lg: 0 4px 12px rgba(0,0,0,.12);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: var(--ow-grijs-50); color: var(--ow-grijs-900); line-height: 1.5; }
+
+/* ===== Header & Nav ===== */
+header { background: var(--ow-grijs-900); color: var(--ow-wit); position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-lg); }
+.header-top { display: flex; align-items: center; gap: 12px; padding: 12px 24px; border-bottom: 3px solid var(--ow-oranje); }
+.header-top h1 { font-size: 1.1rem; font-weight: 600; white-space: nowrap; }
+.header-top .badge { background: var(--ow-oranje); color: var(--ow-wit); font-size: .7rem; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+.header-top .seizoen { margin-left: auto; font-size: .85rem; color: var(--ow-grijs-300); }
+nav { display: flex; gap: 0; overflow-x: auto; padding: 0 16px; }
+nav button { background: none; border: none; color: var(--ow-grijs-300); padding: 10px 16px; font-size: .85rem; cursor: pointer; white-space: nowrap; border-bottom: 2px solid transparent; transition: all .2s; font-family: inherit; }
+nav button:hover { color: var(--ow-wit); background: rgba(255,255,255,.05); }
+nav button.active { color: var(--ow-oranje); border-bottom-color: var(--ow-oranje); font-weight: 600; }
+
+/* ===== Layout ===== */
+main { max-width: 1200px; margin: 0 auto; padding: 24px 16px 60px; }
+.tab { display: none; }
+.tab.active { display: block; }
+.tab-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; color: var(--ow-grijs-900); }
+.tab-subtitle { font-size: .95rem; color: var(--ow-grijs-600); margin-bottom: 24px; }
+
+/* ===== Cards ===== */
+.card { background: var(--ow-wit); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px; margin-bottom: 16px; }
+.card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 12px; color: var(--ow-grijs-800); }
+
+/* ===== Grid ===== */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.grid-6 { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+
+/* ===== KPI Cards ===== */
+.kpi { text-align: center; padding: 16px 12px; }
+.kpi .value { font-size: 2rem; font-weight: 700; color: var(--ow-oranje); }
+.kpi .value.neg { color: var(--signal-rood); }
+.kpi .value.pos { color: var(--signal-groen); }
+.kpi .value.warn { color: var(--signal-geel); }
+.kpi .label { font-size: .8rem; color: var(--ow-grijs-600); margin-top: 2px; }
+.kpi .trend { font-size: .75rem; margin-top: 4px; }
+.kpi .signal { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
+
+/* ===== Tables ===== */
+table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+th { text-align: left; padding: 8px 10px; background: var(--ow-grijs-100); font-weight: 600; font-size: .75rem; color: var(--ow-grijs-600); text-transform: uppercase; border-bottom: 2px solid var(--ow-grijs-300); }
+td { padding: 8px 10px; border-bottom: 1px solid var(--ow-grijs-200); }
+tr:hover td { background: var(--ow-grijs-50); }
+.text-right { text-align: right; }
+.text-center { text-align: center; }
+.font-bold { font-weight: 600; }
+.text-sm { font-size: .8rem; }
+.text-muted { color: var(--ow-grijs-600); }
+.text-oranje { color: var(--ow-oranje); }
+
+/* ===== Band pills ===== */
+.band-pill { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: .7rem; font-weight: 600; color: #fff; }
+.band-Blauw { background: var(--band-blauw); }
+.band-Groen { background: var(--band-groen); }
+.band-Geel { background: var(--band-geel); color: #333; }
+.band-Oranje { background: var(--band-oranje); }
+.band-Rood { background: var(--band-rood); }
+.band-Senioren { background: #4A4A4A; }
+
+/* ===== Alert cards ===== */
+.alert-card { padding: 14px 16px; border-radius: 6px; margin-bottom: 10px; display: flex; align-items: flex-start; gap: 12px; cursor: pointer; transition: transform .1s; }
+.alert-card:hover { transform: translateX(2px); }
+.alert-card.kritiek { background: #FDE8E8; border-left: 4px solid var(--signal-rood); }
+.alert-card.aandacht { background: #FFF9E0; border-left: 4px solid var(--signal-geel); }
+.alert-card.opkoers { background: #E8F8EE; border-left: 4px solid var(--signal-groen); }
+.alert-badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: .65rem; font-weight: 700; text-transform: uppercase; color: #fff; flex-shrink: 0; }
+.alert-badge.kritiek { background: var(--signal-rood); }
+.alert-badge.aandacht { background: var(--signal-geel); color: #333; }
+.alert-text { font-size: .85rem; }
+.alert-text strong { display: block; margin-bottom: 2px; }
+.alert-text .detail { font-size: .8rem; color: var(--ow-grijs-600); }
+
+/* ===== Chart containers ===== */
+.chart-container { position: relative; width: 100%; max-height: 400px; }
+
+/* ===== Filter buttons ===== */
+.filter-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.filter-btn { border: 1px solid var(--ow-grijs-300); background: var(--ow-wit); padding: 6px 16px; border-radius: 20px; font-size: .8rem; cursor: pointer; font-family: inherit; transition: all .15s; }
+.filter-btn:hover { border-color: var(--ow-oranje); }
+.filter-btn.active { background: var(--ow-oranje); color: var(--ow-wit); border-color: var(--ow-oranje); }
+
+/* ===== Signal dots ===== */
+.signal-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
+.signal-kritiek { background: var(--signal-rood); }
+.signal-aandacht { background: var(--signal-geel); }
+.signal-opkoers { background: var(--signal-groen); }
+
+/* ===== Heatmap ===== */
+.heatmap { border-collapse: collapse; font-size: .75rem; }
+.heatmap th, .heatmap td { padding: 4px 6px; text-align: center; white-space: nowrap; }
+.heatmap th { background: var(--ow-grijs-100); font-size: .65rem; }
+.heatmap td.heat { min-width: 36px; border-radius: 3px; font-weight: 600; font-size: .7rem; }
+.heatmap .row-label { text-align: left; font-weight: 600; padding-right: 8px; background: var(--ow-wit); position: sticky; left: 0; z-index: 1; }
+
+/* ===== Placeholder ===== */
+.placeholder-box { background: var(--ow-grijs-100); border: 2px dashed var(--ow-grijs-300); border-radius: var(--radius); padding: 40px 20px; text-align: center; color: var(--ow-grijs-600); }
+.placeholder-box h4 { font-size: 1rem; margin-bottom: 8px; }
+
+/* ===== Loading ===== */
+.loading-overlay { position: fixed; inset: 0; background: var(--ow-grijs-50); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; }
+.loading-overlay .spinner { width: 48px; height: 48px; border: 4px solid var(--ow-grijs-200); border-top-color: var(--ow-oranje); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 16px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-overlay p { color: var(--ow-grijs-600); font-size: .9rem; }
+.loading-overlay.hidden { display: none; }
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .grid-2, .grid-3, .grid-4, .grid-6 { grid-template-columns: 1fr 1fr; }
+  nav button { padding: 8px 12px; font-size: .8rem; }
+  .header-top h1 { font-size: .95rem; }
+}
+@media (max-width: 480px) {
+  .grid-2, .grid-3, .grid-4, .grid-6 { grid-template-columns: 1fr; }
+  main { padding: 16px 8px; }
+  .card { padding: 14px; }
+}
+
+/* ===== Print ===== */
+@media print {
+  header { position: static; }
+  .tab { display: block !important; page-break-before: always; }
+  nav { display: none; }
+  .loading-overlay { display: none !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- Loading overlay -->
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+  <p>Verenigingsmonitor laden...</p>
+</div>
+
+<header>
+  <div class="header-top">
+    <h1>c.k.v. Oranje Wit</h1>
+    <span class="badge">Verenigingsmonitor</span>
+    <span class="seizoen" id="header-seizoen"></span>
+  </div>
+  <nav id="tabs">
+    <button class="active" data-tab="overzicht">Overzicht</button>
+    <button data-tab="samenstelling">Samenstelling</button>
+    <button data-tab="dynamiek">Dynamiek</button>
+    <button data-tab="streefmodel">Streefmodel</button>
+    <button data-tab="teamindeling">Teamindeling</button>
+    <button data-tab="signalering">Signalering</button>
+  </nav>
+</header>
+
+<main>
+
+<!-- ==================== TAB 1: OVERZICHT ==================== -->
+<section id="tab-overzicht" class="tab active">
+  <h2 class="tab-title">Overzicht</h2>
+  <p class="tab-subtitle">Hoe staat c.k.v. Oranje Wit ervoor? De belangrijkste cijfers in één oogopslag.</p>
+
+  <!-- KPI Cards -->
+  <div class="grid-6" id="kpi-grid" style="margin-bottom: 20px;"></div>
+
+  <!-- Charts row -->
+  <div class="grid-2">
+    <div class="card">
+      <h3>Actieve leden per seizoen</h3>
+      <div class="chart-container"><canvas id="chart-leden-trend"></canvas></div>
+    </div>
+    <div class="card">
+      <h3>Instroom vs Uitstroom</h3>
+      <div class="chart-container"><canvas id="chart-instroom-uitstroom"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Top signaleringen -->
+  <div class="card">
+    <h3>Belangrijkste signaleringen</h3>
+    <div id="top-alerts"></div>
+  </div>
+
+</section>
+
+<!-- ==================== TAB 2: SAMENSTELLING ==================== -->
+<section id="tab-samenstelling" class="tab">
+  <h2 class="tab-title">Samenstelling</h2>
+  <p class="tab-subtitle">Wie zijn onze leden? Populatiestructuur, banden en teams.</p>
+
+  <!-- Populatiepiramide -->
+  <div class="card">
+    <h3>Ledenboog — populatie per leeftijd</h3>
+    <div class="chart-container" style="max-height:500px"><canvas id="chart-piramide"></canvas></div>
+  </div>
+
+  <!-- Genderbalans -->
+  <div class="card">
+    <h3>Genderbalans per geboortejaar (jeugd)</h3>
+    <div class="chart-container"><canvas id="chart-gender-geboortejaar-tab2"></canvas></div>
+  </div>
+
+  <!-- Teamkaarten -->
+  <div class="card">
+    <h3>Teams</h3>
+    <div id="team-cards-container"></div>
+  </div>
+
+  <!-- Samenvattingstabel -->
+  <div class="card">
+    <h3>Overzicht per geboortejaar</h3>
+    <div style="overflow-x: auto;">
+      <table id="tabel-samenstelling"></table>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== TAB 3: DYNAMIEK ==================== -->
+<section id="tab-dynamiek" class="tab">
+  <h2 class="tab-title">Dynamiek</h2>
+  <p class="tab-subtitle">Wat verandert er? Retentie, instroom, uitstroom en cohort-trajecten.</p>
+
+  <div class="card">
+    <h3>Retentie per leeftijdsgroep over seizoenen</h3>
+    <div class="chart-container" style="max-height:350px"><canvas id="chart-retentie-groep"></canvas></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>Instroomvenster — bij welke leeftijd komen leden?</h3>
+      <div class="chart-container"><canvas id="chart-instroom-leeftijd"></canvas></div>
+    </div>
+    <div class="card">
+      <h3>Uitstroom per leeftijd</h3>
+      <div class="chart-container"><canvas id="chart-uitstroom-leeftijd"></canvas></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Retentiecurve per leeftijdsjaar (alle seizoenen)</h3>
+    <div class="chart-container" style="max-height:300px"><canvas id="chart-retentie-leeftijd"></canvas></div>
+  </div>
+
+  <!-- Cohort-heatmap -->
+  <div class="card">
+    <h3>Cohort-heatmap — actieve spelers per geboortejaar</h3>
+    <div class="filter-bar" id="cohort-filter"></div>
+    <div style="overflow-x:auto" id="cohort-heatmap"></div>
+  </div>
+
+  <!-- Uitstroom-heatmap -->
+  <div class="card">
+    <h3>Uitstroom-heatmap — waar verliest de vereniging leden?</h3>
+    <div style="overflow-x:auto" id="uitstroom-heatmap"></div>
+  </div>
+
+  <!-- Kritieke overgangsmomenten -->
+  <div class="card">
+    <h3>Kritieke overgangsmomenten</h3>
+    <p class="text-sm text-muted" style="margin-bottom:12px">Retentie-% bij leeftijdsovergangen waar veel uitstroom plaatsvindt.</p>
+    <div style="overflow-x:auto" id="overgangen-tabel"></div>
+  </div>
+
+  <!-- Instroomfasen -->
+  <div class="card">
+    <h3>Instroomfasen per seizoen</h3>
+    <p class="text-sm text-muted" style="margin-bottom:12px">Verdeling van instroom over kerninstroom (5-9j), naloop (10-12j) en overstappers (13+).</p>
+    <div style="overflow-x:auto" id="instroomfasen-tabel"></div>
+  </div>
+
+</section>
+
+<!-- ==================== TAB 4: STREEFMODEL ==================== -->
+<section id="tab-streefmodel" class="tab">
+  <h2 class="tab-title">Streefmodel</h2>
+  <p class="tab-subtitle">Waar willen we naartoe? Projecties voor 2028 en 2030 op basis van OW-retentiecijfers.</p>
+
+  <div class="card">
+    <h3>Jeugd-ledenboog — huidig vs projectie</h3>
+    <div class="chart-container" style="max-height:400px"><canvas id="chart-streef-boog"></canvas></div>
+  </div>
+
+  <div class="card">
+    <h3>Projectie per leeftijdsgroep</h3>
+    <div style="overflow-x: auto;">
+      <table id="tabel-streefmodel"></table>
+    </div>
+  </div>
+
+  <!-- Groeipad per geboortejaar -->
+  <div class="card">
+    <h3>Groeipad per geboortejaar</h3>
+    <p class="text-sm text-muted" style="margin-bottom:12px">Trajecten per jaargang: huidig, projectie 2028 en 2030.</p>
+    <div style="overflow-x:auto" id="groeipad-tabel"></div>
+  </div>
+
+  <!-- Vulgraad + actiepunten -->
+  <div class="card">
+    <h3>Vulgraad per leeftijdsjaar</h3>
+    <p class="text-sm text-muted" style="margin-bottom:12px">Huidig vs streef 2028 met stoplicht en gender-gap per leeftijd.</p>
+    <div style="overflow-x:auto" id="vulgraad-tabel"></div>
+  </div>
+
+  <!-- Top-5 actiepunten -->
+  <div class="card">
+    <h3>Actiepunten — grootste gaps</h3>
+    <div id="streef-actiepunten"></div>
+  </div>
+</section>
+
+<!-- ==================== TAB 5: TEAMINDELING ==================== -->
+<section id="tab-teamindeling" class="tab">
+  <h2 class="tab-title">Teamindeling</h2>
+  <p class="tab-subtitle">Voorbereiding teamindeling volgend seizoen. Pool-analyse per leeftijd en categorie.</p>
+
+  <!-- Leeftijdsmapping volgend seizoen -->
+  <div class="card">
+    <h3>Leeftijdsmapping 2026-2027</h3>
+    <p class="text-sm text-muted" style="margin-bottom:12px">Per geboortejaar: leeftijd, band-referentie, beschikbare spelers voor volgend seizoen.</p>
+    <div style="overflow-x:auto" id="leeftijdsmapping"></div>
+  </div>
+
+  <!-- A-categorie pools -->
+  <div class="card">
+    <h3>A-categorie pool-analyse</h3>
+    <p class="text-sm text-muted" style="margin-bottom:12px">Beschikbare spelers per wedstrijdkorfbal-leeftijdsgroep (U15/U17/U19). Ideaal: 2 teams van 5M + 5V per groep.</p>
+    <div class="grid-3" id="a-cat-pools"></div>
+  </div>
+
+  <!-- B-categorie pools -->
+  <div class="card">
+    <h3>B-categorie pool-analyse</h3>
+    <p class="text-sm text-muted" style="margin-bottom:12px">Beschikbare spelers voor breedtekorfbal-teams per leeftijdsgroep.</p>
+    <div id="b-cat-pools"></div>
+  </div>
+
+  <!-- Aanbevelingen -->
+  <div class="card">
+    <h3>Aanbevelingen teamindeling</h3>
+    <div id="teamindeling-advies"></div>
+  </div>
+</section>
+
+<!-- ==================== TAB 6: SIGNALERING ==================== -->
+<section id="tab-signalering" class="tab">
+  <h2 class="tab-title">Signalering & Acties</h2>
+  <p class="tab-subtitle">Wat moeten we doen? Concrete acties op basis van de data.</p>
+
+  <div class="grid-2" id="signal-kpi-grid" style="margin-bottom:20px"></div>
+
+  <div class="card">
+    <h3>Alle signaleringen</h3>
+    <div id="all-alerts"></div>
+  </div>
+</section>
+
+</main>
+
+<script>
+// ===================================================================
+// DATA LOADING
+// ===================================================================
+const DATA = {};
+let CONFIG = null;
+
+async function loadConfig() {
+  const resp = await fetch('monitor-config.json');
+  CONFIG = await resp.json();
+  return CONFIG;
+}
+
+async function loadAllData() {
+  await loadConfig();
+  const root = CONFIG.root || '';
+  const entries = Object.entries(CONFIG.bestanden);
+
+  const results = await Promise.allSettled(
+    entries.map(async ([key, path]) => {
+      const url = path.startsWith('/') ? path : `${root}/${path}`;
+      const resp = await fetch(url);
+      if (!resp.ok) throw new Error(`${path}: ${resp.status}`);
+      DATA[key] = await resp.json();
+    })
+  );
+
+  const failed = results.filter(r => r.status === 'rejected');
+  if (failed.length > 0) {
+    console.warn('Sommige bestanden konden niet geladen worden:', failed.map(f => f.reason.message));
+  }
+
+  return DATA;
+}
+
+// ===================================================================
+// TAB NAVIGATION
+// ===================================================================
+function initTabs() {
+  const buttons = document.querySelectorAll('#tabs button');
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      buttons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+}
+
+// ===================================================================
+// HELPERS
+// ===================================================================
+function fmt(n, decimals = 0) {
+  if (n == null || isNaN(n)) return '–';
+  return Number(n).toLocaleString('nl-NL', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+}
+
+function signalClass(value, thresholds) {
+  // thresholds: { groen: [min, max], geel: [min, max] } — rest is rood
+  if (thresholds.groen && value >= thresholds.groen[0] && value <= thresholds.groen[1]) return 'pos';
+  if (thresholds.geel && value >= thresholds.geel[0] && value <= thresholds.geel[1]) return 'warn';
+  return 'neg';
+}
+
+function shortSeason(s) {
+  // "2024-2025" → "'24-'25"
+  if (!s) return '';
+  const parts = s.split('-');
+  return "'" + parts[0].slice(2) + "-'" + parts[1].slice(2);
+}
+
+// Band-leeftijd mapping (voor referentie-annotaties)
+const BAND_LEEFTIJDEN = [
+  { band: 'Blauw', min: 5, max: 7, color: '#4A90D9' },
+  { band: 'Groen', min: 8, max: 9, color: '#52B788' },
+  { band: 'Geel', min: 10, max: 12, color: '#F4D35E' },
+  { band: 'Oranje', min: 13, max: 15, color: '#F28C28' },
+  { band: 'Rood', min: 16, max: 18, color: '#D62828' }
+];
+// U-categorie op basis van geboortejaar en seizoen-startjaar
+// KNKV regel: leeftijd = seizoenStartJaar - geboortejaar
+// U15: 13-14, U17: 15-16, U19: 17-18
+const SEIZOEN_START = 2025; // huidig seizoen 2025-2026
+function getUCat(geboortejaar, seizoenStartJaar) {
+  const l = seizoenStartJaar - geboortejaar;
+  if (l >= 13 && l <= 14) return 'U15';
+  if (l >= 15 && l <= 16) return 'U17';
+  if (l >= 17 && l <= 18) return 'U19';
+  if (l >= 19) return 'Senioren';
+  return '';
+}
+
+function getBandForAge(leeftijd) {
+  for (const b of BAND_LEEFTIJDEN) {
+    if (leeftijd >= b.min && leeftijd <= b.max) return b;
+  }
+  return { band: 'Senioren', min: 19, max: 99, color: '#4A4A4A' };
+}
+
+function getBandColor(leeftijd) {
+  return getBandForAge(leeftijd).color;
+}
+
+// Chart.js defaults
+Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif";
+Chart.defaults.font.size = 12;
+Chart.defaults.color = '#868E96';
+
+// ===================================================================
+// TAB 1: OVERZICHT
+// ===================================================================
+function renderOverzicht() {
+  const cohorten = DATA.cohorten;
+  const signalering = DATA.signalering;
+
+  if (!cohorten || !cohorten._totalen) {
+    console.warn('Cohorten data niet beschikbaar');
+    return;
+  }
+
+  const totalen = cohorten._totalen.per_seizoen;
+  const huidig = totalen[totalen.length - 1];
+  const vorig = totalen.length > 1 ? totalen[totalen.length - 2] : null;
+
+  // Bereken jeugd totaal uit per_kleur (B-categorie = jeugdbanden)
+  let jeugdTotaal = 0;
+  const kleurData = DATA.per_kleur && DATA.per_kleur.data ? DATA.per_kleur.data : (Array.isArray(DATA.per_kleur) ? DATA.per_kleur : []);
+  const jeugdBanden = kleurData.filter(k => k.categorie === 'b');
+  jeugdTotaal = jeugdBanden.reduce((sum, k) => sum + (k.totaal || 0), 0);
+
+  // Update header
+  document.getElementById('header-seizoen').textContent =
+    `Seizoen ${CONFIG.seizoen} · Snapshot ${CONFIG.snapshot}`;
+
+  // KPI Cards
+  const kpis = [
+    {
+      label: 'Actieve Spelers',
+      value: huidig.totaal_nieuw,
+      format: v => fmt(v),
+      cls: () => '',
+      trend: vorig ? `${huidig.totaal_nieuw - vorig.totaal_nieuw > 0 ? '+' : ''}${huidig.totaal_nieuw - vorig.totaal_nieuw} t.o.v. vorig seizoen` : ''
+    },
+    {
+      label: 'Retentie',
+      value: huidig.retentie_pct,
+      format: v => fmt(v, 1) + '%',
+      cls: v => v >= 85 ? 'pos' : v >= 75 ? 'warn' : 'neg',
+      trend: vorig ? `Vorig: ${fmt(vorig.retentie_pct, 1)}%` : ''
+    },
+    {
+      label: 'Netto Groei',
+      value: huidig.netto_groei,
+      format: v => (v > 0 ? '+' : '') + fmt(v),
+      cls: v => v > 0 ? 'pos' : v >= -5 ? 'warn' : 'neg',
+      trend: `${fmt(huidig.netto_groei_pct, 1)}%`
+    },
+    {
+      label: 'Instroom',
+      value: huidig.nieuw + (huidig.herinschrijver || 0),
+      format: v => fmt(v),
+      cls: v => v >= 30 ? 'pos' : v >= 20 ? 'warn' : 'neg',
+      trend: `${fmt(huidig.nieuw)} nieuw + ${fmt(huidig.herinschrijver || 0)} terug`
+    },
+    {
+      label: 'Jeugd Totaal',
+      value: jeugdTotaal,
+      format: v => fmt(v),
+      cls: () => '',
+      trend: (() => {
+        // Per leeftijdsgroep in plaats van per band
+        const ageGroups = [
+          { label: '5-7j', min: 5, max: 7 },
+          { label: '8-9j', min: 8, max: 9 },
+          { label: '10-12j', min: 10, max: 12 },
+          { label: '13-15j', min: 13, max: 15 },
+          { label: '16-18j', min: 16, max: 18 }
+        ];
+        const gbjData = DATA.per_geboortejaar && DATA.per_geboortejaar.data ? DATA.per_geboortejaar.data : [];
+        const yr = new Date().getFullYear();
+        const grp = {};
+        gbjData.forEach(d => {
+          if (!d.geboortejaar) return;
+          const age = yr - d.geboortejaar;
+          const g = ageGroups.find(a => age >= a.min && age <= a.max);
+          if (g) grp[g.label] = (grp[g.label] || 0) + d.aantal;
+        });
+        return ageGroups.map(a => `${a.label}:${grp[a.label] || 0}`).join(' · ');
+      })()
+    },
+    {
+      label: 'Signaleringen',
+      value: signalering ? signalering._meta.totaal_alerts : 0,
+      format: v => fmt(v),
+      cls: () => {
+        if (!signalering) return '';
+        return signalering._meta.kritiek > 0 ? 'neg' : signalering._meta.aandacht > 0 ? 'warn' : 'pos';
+      },
+      trend: signalering ? `${signalering._meta.kritiek} kritiek · ${signalering._meta.aandacht} aandacht` : ''
+    }
+  ];
+
+  const kpiGrid = document.getElementById('kpi-grid');
+  kpiGrid.innerHTML = kpis.map(k => {
+    const valClass = typeof k.cls === 'function' ? k.cls(k.value) : '';
+    return `<div class="card kpi">
+      <div class="value ${valClass}">${k.format(k.value)}</div>
+      <div class="label">${k.label}</div>
+      <div class="trend text-muted">${k.trend}</div>
+    </div>`;
+  }).join('');
+
+  // Chart: Leden per seizoen (trendlijn)
+  renderLedenTrend(totalen);
+
+  // Chart: Instroom vs Uitstroom
+  renderInstroomUitstroom(totalen);
+
+  // Top signaleringen
+  renderTopAlerts(signalering);
+}
+
+function renderLedenTrend(totalen) {
+  // We need the first season too (totaal_vorig of the first entry)
+  const labels = [];
+  const data = [];
+
+  // Add the season before the first comparison
+  if (totalen.length > 0) {
+    const firstSeason = totalen[0].seizoen;
+    const startYear = parseInt(firstSeason.split('-')[0]) - 1;
+    labels.push(`${startYear}-${startYear + 1}`);
+    data.push(totalen[0].totaal_vorig);
+  }
+
+  totalen.forEach(s => {
+    labels.push(s.seizoen);
+    data.push(s.totaal_nieuw);
+  });
+
+  new Chart(document.getElementById('chart-leden-trend'), {
+    type: 'line',
+    data: {
+      labels: labels.map(shortSeason),
+      datasets: [{
+        label: 'Actieve leden',
+        data: data,
+        borderColor: '#FF6B00',
+        backgroundColor: 'rgba(255, 107, 0, 0.1)',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 3,
+        pointHoverRadius: 6,
+        borderWidth: 2.5
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title: (items) => labels[items[0].dataIndex],
+            label: (item) => `${item.raw} leden`
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: false,
+          grid: { color: 'rgba(0,0,0,.05)' },
+          ticks: { callback: v => fmt(v) }
+        },
+        x: {
+          grid: { display: false }
+        }
+      }
+    }
+  });
+}
+
+function renderInstroomUitstroom(totalen) {
+  const labels = totalen.map(s => shortSeason(s.seizoen));
+
+  new Chart(document.getElementById('chart-instroom-uitstroom'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Instroom (nieuw)',
+          data: totalen.map(s => s.nieuw),
+          backgroundColor: '#52B788',
+          stack: 'instroom'
+        },
+        {
+          label: 'Herinschrijvers',
+          data: totalen.map(s => s.herinschrijver || 0),
+          backgroundColor: '#A8D5BA',
+          stack: 'instroom'
+        },
+        {
+          label: 'Uitstroom',
+          data: totalen.map(s => -(s.uitgestroomd || 0)),
+          backgroundColor: '#D62828',
+          stack: 'uitstroom'
+        },
+        {
+          label: 'Niet-spelend',
+          data: totalen.map(s => -(s.niet_spelend_geworden || 0)),
+          backgroundColor: '#E88A8A',
+          stack: 'uitstroom'
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } },
+        tooltip: {
+          callbacks: {
+            label: (item) => `${item.dataset.label}: ${Math.abs(item.raw)}`
+          }
+        }
+      },
+      scales: {
+        y: {
+          grid: { color: 'rgba(0,0,0,.05)' },
+          ticks: { callback: v => Math.abs(v) }
+        },
+        x: { grid: { display: false }, stacked: true }
+      }
+    }
+  });
+}
+
+function renderTopAlerts(signalering) {
+  const container = document.getElementById('top-alerts');
+  if (!signalering || !signalering.alerts || signalering.alerts.length === 0) {
+    container.innerHTML = '<div class="alert-card opkoers"><span class="alert-badge" style="background:var(--signal-groen)">OK</span><div class="alert-text"><strong>Geen signaleringen</strong><span class="detail">Alle indicatoren zijn op koers.</span></div></div>';
+    return;
+  }
+
+  // Show top 5 alerts (kritiek first, then aandacht)
+  const sorted = [...signalering.alerts].sort((a, b) => {
+    const order = { kritiek: 0, aandacht: 1 };
+    return (order[a.ernst] ?? 2) - (order[b.ernst] ?? 2);
+  });
+
+  const top = sorted.slice(0, 5);
+  container.innerHTML = top.map(alert => {
+    const typeLabels = {
+      genderdisbalans: 'Genderbalans',
+      retentie: 'Retentie',
+      trendbreuk: 'Trendbreuk',
+      krimp: 'Krimp'
+    };
+    return `<div class="alert-card ${alert.ernst}" onclick="switchToTab('signalering')">
+      <span class="alert-badge ${alert.ernst}">${alert.ernst}</span>
+      <div class="alert-text">
+        <strong>${typeLabels[alert.type] || alert.type}</strong>
+        <span class="detail">${alert.beschrijving}</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  if (sorted.length > 5) {
+    container.innerHTML += `<p class="text-sm text-muted" style="margin-top:8px; cursor:pointer;" onclick="switchToTab('signalering')">+ ${sorted.length - 5} meer → Signalering tab</p>`;
+  }
+}
+
+function switchToTab(tabName) {
+  const btn = document.querySelector(`#tabs button[data-tab="${tabName}"]`);
+  if (btn) btn.click();
+}
+
+// ===================================================================
+// TAB 2: SAMENSTELLING
+// ===================================================================
+const BAND_ORDER = ['Blauw', 'Groen', 'Geel', 'Oranje', 'Rood'];
+const BAND_COLORS = {
+  Blauw: '#4A90D9', Groen: '#52B788', Geel: '#F4D35E', Oranje: '#F28C28', Rood: '#D62828',
+  Senioren: '#4A4A4A', 'A-categorie': '#1E3A5F'
+};
+
+function renderSamenstelling() {
+  const geboortejaarData = DATA.per_geboortejaar && DATA.per_geboortejaar.data ? DATA.per_geboortejaar.data : [];
+  const kleurData = DATA.per_kleur && DATA.per_kleur.data ? DATA.per_kleur.data : [];
+  const teamData = DATA.per_team && DATA.per_team.data ? DATA.per_team.data : [];
+
+  if (geboortejaarData.length === 0) {
+    console.warn('Geen geboortejaar-data beschikbaar');
+    return;
+  }
+
+  renderPiramide(geboortejaarData);
+  renderGenderPerGeboortejaar(geboortejaarData, 'chart-gender-geboortejaar-tab2');
+  renderTeamCards(teamData, kleurData);
+  renderSamenstellingTabel(geboortejaarData);
+}
+
+function renderPiramide(data) {
+  // Groepeer per geboortejaar: M links (negatief), V rechts (positief)
+  const jaarMap = {};
+  data.forEach(d => {
+    if (!d.geboortejaar) return;
+    if (!jaarMap[d.geboortejaar]) jaarMap[d.geboortejaar] = { M: 0, V: 0 };
+    jaarMap[d.geboortejaar][d.geslacht] = (jaarMap[d.geboortejaar][d.geslacht] || 0) + d.aantal;
+  });
+
+  const jaren = Object.keys(jaarMap).map(Number).sort();
+  // Filter op relevante leeftijden (5-70+) - alleen jaren met data
+  const currentYear = new Date().getFullYear();
+  const labels = jaren.map(j => {
+    const leeftijd = currentYear - j;
+    return `${j} (${leeftijd}j)`;
+  });
+
+  // Bepaal bandkleur per geboortejaar (referentie)
+  const barColorsM = jaren.map(j => getBandColor(currentYear - j));
+  const barColorsV = barColorsM.map(c => c + 'CC'); // lichtere variant
+
+  new Chart(document.getElementById('chart-piramide'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Heren (M)',
+          data: jaren.map(j => -(jaarMap[j].M || 0)),
+          backgroundColor: barColorsM,
+          borderRadius: 2
+        },
+        {
+          label: 'Dames (V)',
+          data: jaren.map(j => jaarMap[j].V || 0),
+          backgroundColor: barColorsV,
+          borderRadius: 2
+        }
+      ]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 12 } },
+        tooltip: {
+          callbacks: {
+            label: item => `${item.dataset.label}: ${Math.abs(item.raw)}`
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: 'rgba(0,0,0,.05)' },
+          ticks: { callback: v => Math.abs(v) }
+        },
+        y: {
+          grid: { display: false },
+          ticks: { font: { size: 10 } }
+        }
+      }
+    }
+  });
+}
+
+function renderGenderPerGeboortejaar(data, canvasId) {
+  // Genderbalans per geboortejaar, jeugd (5-18 op seizoen-basis)
+  const currentYear = new Date().getFullYear();
+  const jaarMap = {};
+  data.forEach(d => {
+    if (!d.geboortejaar) return;
+    const leeftijd = SEIZOEN_START - d.geboortejaar;
+    if (leeftijd < 5 || leeftijd > 18) return;
+    if (!jaarMap[d.geboortejaar]) jaarMap[d.geboortejaar] = { M: 0, V: 0 };
+    jaarMap[d.geboortejaar][d.geslacht] = (jaarMap[d.geboortejaar][d.geslacht] || 0) + d.aantal;
+  });
+
+  const jaren = Object.keys(jaarMap).map(Number).sort();
+  const pctM = jaren.map(j => {
+    const total = jaarMap[j].M + jaarMap[j].V;
+    return total > 0 ? Math.round((jaarMap[j].M / total) * 100) : 50;
+  });
+
+  new Chart(document.getElementById(canvasId), {
+    type: 'bar',
+    data: {
+      labels: jaren.map(j => `${j} (${currentYear - j}j)`),
+      datasets: [
+        { label: '% Heren', data: pctM, backgroundColor: pctM.map(v => v >= 40 && v <= 60 ? '#5B9BD5' : '#5B9BD5CC'), stack: 'g', borderRadius: 2 },
+        { label: '% Dames', data: pctM.map(v => 100 - v), backgroundColor: pctM.map(v => v >= 40 && v <= 60 ? '#E88A8A' : '#D62828CC'), stack: 'g', borderRadius: 2 }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 12 } },
+        tooltip: { callbacks: { label: item => `${item.dataset.label}: ${item.raw}%` } },
+        annotation: { annotations: {
+          lo: { type: 'line', yMin: 40, yMax: 40, borderColor: '#FF6B00', borderWidth: 1.5, borderDash: [5,5],
+            label: { content: '40% streef', display: true, position: 'start', font: { size: 10 }, color: '#FF6B00', backgroundColor: 'transparent' }
+          },
+          hi: { type: 'line', yMin: 60, yMax: 60, borderColor: '#FF6B00', borderWidth: 1.5, borderDash: [5,5] }
+        }}
+      },
+      scales: {
+        y: { max: 100, stacked: true, grid: { color: 'rgba(0,0,0,.05)' }, ticks: { callback: v => v + '%' } },
+        x: { stacked: true, grid: { display: false }, ticks: { font: { size: 10 } } }
+      }
+    }
+  });
+}
+
+function renderTeamCards(teamData, kleurData) {
+  const container = document.getElementById('team-cards-container');
+
+  // Organiseer teams per leeftijdsgroep
+  const groepen = [
+    { label: '16-18 jaar', ref: 'Rood · U17/U19', filter: t => t.categorie === 'b' && t.kleur === 'Rood', color: '#D62828' },
+    { label: '13-15 jaar', ref: 'Oranje · U15', filter: t => t.categorie === 'b' && t.kleur === 'Oranje', color: '#F28C28' },
+    { label: '10-12 jaar', ref: 'Geel', filter: t => t.categorie === 'b' && t.kleur === 'Geel', color: '#F4D35E' },
+    { label: '8-9 jaar', ref: 'Groen', filter: t => t.categorie === 'b' && t.kleur === 'Groen', color: '#52B788' },
+    { label: '5-7 jaar', ref: 'Blauw', filter: t => t.categorie === 'b' && t.kleur === 'Blauw', color: '#4A90D9' },
+    { label: 'A-jeugd', ref: 'U15/U17/U19', filter: t => t.categorie === 'a' && t.team.startsWith('U'), color: '#1E3A5F' },
+    { label: 'Senioren (19+)', ref: '', filter: t => t.categorie === 'a' && !t.team.startsWith('U'), color: '#4A4A4A' }
+  ];
+
+  let html = '';
+  groepen.forEach(g => {
+    const teams = teamData.filter(g.filter);
+    if (!teams || teams.length === 0) return;
+    html += `<div style="margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <span class="font-bold" style="font-size:.9rem">${g.label}</span>
+        ${g.ref ? `<span class="text-sm text-muted">(${g.ref})</span>` : ''}
+        <span class="text-sm text-muted" style="margin-left:auto">${teams.length} teams · ${teams.reduce((s,t) => s + t.totaal, 0)} spelers</span>
+      </div>
+      <div class="grid-4">${teams.map(t => teamCardHtml(t, g.color)).join('')}</div>
+    </div>`;
+  });
+
+  container.innerHTML = html;
+}
+
+function teamCardHtml(t, color) {
+  color = color || '#868E96';
+  const genderBar = t.totaal > 0 ? Math.round((t.spelers_M / t.totaal) * 100) : 50;
+  return `<div style="background:var(--ow-wit);border-radius:6px;border:1px solid var(--ow-grijs-200);padding:12px;border-top:3px solid ${color}">
+    <div style="font-weight:700;font-size:.95rem;margin-bottom:4px">${t.team}</div>
+    <div class="text-sm text-muted" style="margin-bottom:6px">${t.niveau || t.kleur || ''}</div>
+    <div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:4px">
+      <span>${t.spelers_M}M / ${t.spelers_V}V</span>
+      <span class="font-bold">${t.totaal}</span>
+    </div>
+    <div style="height:4px;background:#E88A8A;border-radius:2px;overflow:hidden">
+      <div style="height:100%;width:${genderBar}%;background:#5B9BD5"></div>
+    </div>
+    <div class="text-sm text-muted" style="margin-top:4px">gem. ${fmt(t.gem_leeftijd, 1)} jaar</div>
+  </div>`;
+}
+
+function renderSamenstellingTabel(geboortejaarData) {
+  const table = document.getElementById('tabel-samenstelling');
+  const currentYear = new Date().getFullYear();
+
+  const header = `<thead><tr>
+    <th>Geboortejaar</th><th>Leeftijd</th><th>Ref.</th>
+    <th class="text-right">Heren</th>
+    <th class="text-right">Dames</th>
+    <th class="text-right">Totaal</th>
+    <th class="text-right">% H</th>
+  </tr></thead>`;
+
+  // Groepeer per geboortejaar, filter jeugd (op basis van seizoen-leeftijd)
+  const jaarMap = {};
+  geboortejaarData.forEach(d => {
+    if (!d.geboortejaar) return;
+    const leeftijd = SEIZOEN_START - d.geboortejaar;
+    if (leeftijd < 5 || leeftijd > 18) return;
+    if (!jaarMap[d.geboortejaar]) jaarMap[d.geboortejaar] = { M: 0, V: 0 };
+    jaarMap[d.geboortejaar][d.geslacht] = (jaarMap[d.geboortejaar][d.geslacht] || 0) + d.aantal;
+  });
+
+  const jaren = Object.keys(jaarMap).map(Number).sort();
+  let rows = '';
+  let totM = 0, totV = 0;
+  let prevBand = '';
+
+  jaren.forEach(j => {
+    const leeftijd = SEIZOEN_START - j;
+    const band = getBandForAge(leeftijd);
+    const m = jaarMap[j].M || 0;
+    const v = jaarMap[j].V || 0;
+    const totaal = m + v;
+    const pctM = totaal > 0 ? Math.round((m / totaal) * 100) : 0;
+    const pctCls = pctM >= 40 && pctM <= 60 ? 'pos' : pctM >= 30 && pctM <= 70 ? 'warn' : 'neg';
+
+    // A-categorie referentie (op basis van seizoen-startjaar)
+    const aCatRef = getUCat(j, SEIZOEN_START) ? ' · ' + getUCat(j, SEIZOEN_START) : '';
+
+    // Visuele scheiding bij bandovergang
+    const separator = band.band !== prevBand && prevBand ? 'border-top:2px solid var(--ow-grijs-200)' : '';
+    prevBand = band.band;
+
+    rows += `<tr style="${separator}">
+      <td class="font-bold">${j}</td>
+      <td>${leeftijd} jaar</td>
+      <td><span class="band-pill band-${band.band}" style="font-size:.6rem">${band.band}</span>${aCatRef ? `<span class="text-sm text-muted">${aCatRef}</span>` : ''}</td>
+      <td class="text-right">${m}</td>
+      <td class="text-right">${v}</td>
+      <td class="text-right font-bold">${totaal}</td>
+      <td class="text-right"><span class="value ${pctCls}" style="font-size:.8rem">${pctM}%</span></td>
+    </tr>`;
+    totM += m; totV += v;
+  });
+
+  // Totaalrij
+  const totT = totM + totV;
+  const totPctM = totT > 0 ? Math.round((totM / totT) * 100) : 0;
+  rows += `<tr style="border-top:2px solid var(--ow-grijs-300)">
+    <td class="font-bold" colspan="3">Totaal jeugd</td>
+    <td class="text-right font-bold">${totM}</td>
+    <td class="text-right font-bold">${totV}</td>
+    <td class="text-right font-bold" style="color:var(--ow-oranje)">${totT}</td>
+    <td class="text-right font-bold">${totPctM}%</td>
+  </tr>`;
+
+  table.innerHTML = header + '<tbody>' + rows + '</tbody>';
+}
+
+// ===================================================================
+// TAB 3: DYNAMIEK
+// ===================================================================
+function renderDynamiek() {
+  const cohorten = DATA.cohorten;
+  const instroomData = DATA.instroom_uitstroom;
+  if (!cohorten || !cohorten._totalen) return;
+
+  renderRetentieGroep(cohorten._totalen.per_leeftijdsgroep, cohorten._meta.seizoenen);
+  if (instroomData) {
+    renderInstroomLeeftijd(instroomData.instroom_per_leeftijd || []);
+    renderUitstroomLeeftijd(instroomData.uitstroom_per_leeftijd || []);
+    renderRetentieLeeftijd(instroomData.retentie_alle_seizoenen || []);
+  }
+  renderCohortHeatmap(cohorten);
+  renderUitstroomHeatmap(cohorten);
+  renderOvergangen(cohorten._totalen.per_leeftijdsgroep, cohorten._meta.seizoenen);
+  renderInstroomfasen(cohorten._totalen.instroom_leeftijd);
+}
+
+function renderRetentieGroep(groepen, seizoenen) {
+  if (!groepen || groepen.length === 0) return;
+  const groepKleuren = {
+    '6-12': '#52B788', '13-14': '#F4D35E', '15-16': '#F28C28',
+    '17-18': '#D62828', '19-23': '#6B2D5B', '24+': '#4A4A4A'
+  };
+  // Gebruik recente 8 seizoenen
+  const recentSeasons = seizoenen.slice(-8);
+
+  const datasets = groepen.map(g => ({
+    label: g.groep + ' jaar',
+    data: recentSeasons.map(s => g.per_seizoen[s] ? g.per_seizoen[s].retentie_pct : null),
+    borderColor: groepKleuren[g.groep] || '#868E96',
+    backgroundColor: 'transparent',
+    tension: 0.3,
+    pointRadius: 3,
+    borderWidth: 2,
+    spanGaps: true
+  }));
+
+  new Chart(document.getElementById('chart-retentie-groep'), {
+    type: 'line',
+    data: { labels: recentSeasons.map(shortSeason), datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } },
+        annotation: { annotations: {
+          target: { type: 'line', yMin: 80, yMax: 80, borderColor: '#FF6B00', borderWidth: 1.5, borderDash: [5,5],
+            label: { content: '80% streef', display: true, position: 'end', font: { size: 10 }, color: '#FF6B00', backgroundColor: 'transparent' }
+          }
+        }}
+      },
+      scales: {
+        y: { min: 40, max: 105, grid: { color: 'rgba(0,0,0,.05)' }, ticks: { callback: v => v + '%' } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+}
+
+function renderInstroomLeeftijd(data) {
+  if (data.length === 0) return;
+  const filtered = data.filter(d => d.leeftijd >= 5 && d.leeftijd <= 25);
+
+  new Chart(document.getElementById('chart-instroom-leeftijd'), {
+    type: 'bar',
+    data: {
+      labels: filtered.map(d => d.leeftijd + 'j'),
+      datasets: [
+        { label: 'Heren', data: filtered.map(d => d.M), backgroundColor: '#5B9BD5', borderRadius: 2 },
+        { label: 'Dames', data: filtered.map(d => d.V), backgroundColor: '#E88A8A', borderRadius: 2 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,.05)' } },
+        x: { grid: { display: false }, stacked: true }
+      }
+    }
+  });
+}
+
+function renderUitstroomLeeftijd(data) {
+  if (data.length === 0) return;
+  const filtered = data.filter(d => d.leeftijd >= 5 && d.leeftijd <= 25);
+
+  new Chart(document.getElementById('chart-uitstroom-leeftijd'), {
+    type: 'bar',
+    data: {
+      labels: filtered.map(d => d.leeftijd + 'j'),
+      datasets: [
+        { label: 'Heren', data: filtered.map(d => d.M), backgroundColor: '#5B9BD5', borderRadius: 2 },
+        { label: 'Dames', data: filtered.map(d => d.V), backgroundColor: '#E88A8A', borderRadius: 2 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,.05)' } },
+        x: { grid: { display: false }, stacked: true }
+      }
+    }
+  });
+}
+
+function renderRetentieLeeftijd(data) {
+  if (data.length === 0) return;
+  const filtered = data.filter(d => d.leeftijd >= 5 && d.leeftijd <= 25 && d.aanwezig_totaal >= 5);
+
+  // Achtergrondkleuren per leeftijd (band als visuele referentie)
+  const bgColors = filtered.map(d => getBandColor(d.leeftijd) + '80');
+
+  new Chart(document.getElementById('chart-retentie-leeftijd'), {
+    type: 'bar',
+    data: {
+      labels: filtered.map(d => d.leeftijd + 'j'),
+      datasets: [{
+        label: 'Retentie %',
+        data: filtered.map(d => Math.round(d.retentie_totaal * 100)),
+        backgroundColor: bgColors,
+        borderColor: filtered.map(d => {
+          const r = d.retentie_totaal;
+          return r >= 0.85 ? '#4CAF50' : r >= 0.7 ? '#FFC107' : '#F44336';
+        }),
+        borderWidth: 2,
+        borderRadius: 3
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: item => `Retentie: ${item.raw}% (n=${filtered[item.dataIndex].aanwezig_totaal})` } },
+        annotation: { annotations: {
+          streef: { type: 'line', yMin: 80, yMax: 80, borderColor: '#FF6B00', borderWidth: 1.5, borderDash: [5,5] }
+        }}
+      },
+      scales: {
+        y: { min: 50, max: 100, grid: { color: 'rgba(0,0,0,.05)' }, ticks: { callback: v => v + '%' } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+}
+
+// --- Cohort-heatmap: geboortejaar × seizoen, cel = actieve spelers ---
+function renderCohortHeatmap(cohorten) {
+  const container = document.getElementById('cohort-heatmap');
+  const filterBar = document.getElementById('cohort-filter');
+  if (!cohorten || !cohorten.per_cohort) return;
+
+  const seizoenen = cohorten._meta.seizoenen.slice(-8);
+  let activeFilter = 'Alles';
+
+  function render(filter) {
+    let data = cohorten.per_cohort;
+    if (filter === 'M' || filter === 'V') data = data.filter(c => c.geslacht === filter);
+
+    // Aggregeer per geboortejaar
+    const gjMap = {};
+    data.forEach(c => {
+      const gj = c.geboortejaar;
+      if (!gj) return;
+      if (!gjMap[gj]) gjMap[gj] = {};
+      const szn = c.seizoenen || {};
+      seizoenen.forEach(s => {
+        if (szn[s]) gjMap[gj][s] = (gjMap[gj][s] || 0) + szn[s].actief;
+      });
+    });
+
+    // Filter op geboortejaren met minstens 1 actief in bereik
+    const jaren = Object.keys(gjMap).map(Number).filter(gj => {
+      return seizoenen.some(s => (gjMap[gj][s] || 0) > 0);
+    }).sort((a, b) => b - a);
+
+    const currentYear = new Date().getFullYear();
+    let html = `<table class="heatmap"><thead><tr><th class="row-label">Geboortejaar</th>`;
+    seizoenen.forEach(s => { html += `<th>${shortSeason(s)}</th>`; });
+    html += '</tr></thead><tbody>';
+
+    jaren.forEach(gj => {
+      const leeftijd = currentYear - gj;
+      const band = getBandForAge(leeftijd);
+      html += `<tr><td class="row-label">${gj} <span class="text-muted" style="font-size:.6rem">(${leeftijd}j)</span></td>`;
+      seizoenen.forEach((s, i) => {
+        const val = gjMap[gj][s] || 0;
+        const prev = i > 0 ? (gjMap[gj][seizoenen[i-1]] || 0) : val;
+        let bg = 'var(--ow-grijs-100)';
+        if (val > 0) {
+          const diff = val - prev;
+          if (diff > 0) bg = `rgba(76,175,80,${Math.min(0.15 + diff * 0.12, 0.6)})`;
+          else if (diff < 0) bg = `rgba(244,67,54,${Math.min(0.15 + Math.abs(diff) * 0.12, 0.6)})`;
+          else bg = `rgba(0,0,0,0.04)`;
+        }
+        html += `<td class="heat" style="background:${bg}">${val || ''}</td>`;
+      });
+      html += '</tr>';
+    });
+    html += '</tbody></table>';
+    container.innerHTML = html;
+  }
+
+  // Filter knoppen
+  filterBar.innerHTML = ['Alles', 'M', 'V'].map(f =>
+    `<button class="filter-btn ${f === activeFilter ? 'active' : ''}" data-f="${f}">${f === 'Alles' ? 'Alles' : f === 'M' ? 'Heren' : 'Dames'}</button>`
+  ).join('');
+  filterBar.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeFilter = btn.dataset.f;
+      filterBar.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      render(activeFilter);
+    });
+  });
+  render(activeFilter);
+}
+
+// --- Uitstroom-heatmap: leeftijdsjaar × seizoen ---
+function renderUitstroomHeatmap(cohorten) {
+  const container = document.getElementById('uitstroom-heatmap');
+  if (!cohorten || !cohorten.per_cohort) return;
+
+  const seizoenen = cohorten._meta.seizoenen.slice(-8);
+
+  // Aggregeer uitstroom per leeftijdsjaar × seizoen
+  const leeftijdMap = {};
+  cohorten.per_cohort.forEach(c => {
+    const szn = c.seizoenen || {};
+    seizoenen.forEach(s => {
+      if (szn[s] && szn[s].uitgestroomd > 0) {
+        const leeftijd = szn[s].leeftijd;
+        if (leeftijd < 5 || leeftijd > 30) return;
+        if (!leeftijdMap[leeftijd]) leeftijdMap[leeftijd] = {};
+        leeftijdMap[leeftijd][s] = (leeftijdMap[leeftijd][s] || 0) + szn[s].uitgestroomd;
+      }
+    });
+  });
+
+  const leeftijden = Object.keys(leeftijdMap).map(Number).sort((a, b) => a - b);
+  // Bereken max voor kleurschaal
+  let maxVal = 1;
+  leeftijden.forEach(l => { seizoenen.forEach(s => { maxVal = Math.max(maxVal, leeftijdMap[l][s] || 0); }); });
+
+  let html = `<table class="heatmap"><thead><tr><th class="row-label">Leeftijd</th>`;
+  seizoenen.forEach(s => { html += `<th>${shortSeason(s)}</th>`; });
+  html += '</tr></thead><tbody>';
+
+  leeftijden.forEach(l => {
+    const band = getBandForAge(l);
+    html += `<tr><td class="row-label">${l}j <span style="color:${band.color};font-size:.55rem">${band.band}</span></td>`;
+    seizoenen.forEach(s => {
+      const val = leeftijdMap[l] ? (leeftijdMap[l][s] || 0) : 0;
+      const intensity = val > 0 ? Math.min(0.15 + (val / maxVal) * 0.55, 0.7) : 0;
+      const bg = val > 0 ? `rgba(244,67,54,${intensity})` : '';
+      html += `<td class="heat" style="background:${bg}">${val || ''}</td>`;
+    });
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+  container.innerHTML = html;
+}
+
+// --- Kritieke overgangsmomenten ---
+function renderOvergangen(groepen, seizoenen) {
+  const container = document.getElementById('overgangen-tabel');
+  if (!groepen) return;
+
+  const recentSzn = seizoenen.slice(-6);
+  const overgangen = [
+    { label: '6→7 jaar', omschrijving: 'Start competitie', groep: '6-12' },
+    { label: '12→13 jaar', omschrijving: 'Naar A-categorie (U15)', groep: '13-14' },
+    { label: '14→15 jaar', omschrijving: 'U15 → U17', groep: '15-16' },
+    { label: '18→19 jaar', omschrijving: 'Jeugd → Senioren', groep: '19-23' },
+    { label: '23+ jaar', omschrijving: 'Seniorenverloop', groep: '24+' }
+  ];
+
+  let html = `<table><thead><tr><th>Overgang</th><th>Omschrijving</th>`;
+  recentSzn.forEach(s => { html += `<th class="text-center">${shortSeason(s)}</th>`; });
+  html += '</tr></thead><tbody>';
+
+  overgangen.forEach(o => {
+    const groep = groepen.find(g => g.groep === o.groep);
+    html += `<tr><td class="font-bold">${o.label}</td><td class="text-sm text-muted">${o.omschrijving}</td>`;
+    recentSzn.forEach(s => {
+      if (groep && groep.per_seizoen[s]) {
+        const ret = groep.per_seizoen[s].retentie_pct;
+        const cls = ret >= 85 ? 'pos' : ret >= 70 ? 'warn' : 'neg';
+        html += `<td class="text-center"><span class="value ${cls}" style="font-size:.8rem">${fmt(ret, 0)}%</span></td>`;
+      } else {
+        html += '<td class="text-center text-muted">–</td>';
+      }
+    });
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+  container.innerHTML = html;
+}
+
+// --- Instroomfasen per seizoen ---
+function renderInstroomfasen(instroomLeeftijd) {
+  const container = document.getElementById('instroomfasen-tabel');
+  if (!instroomLeeftijd || instroomLeeftijd.length === 0) return;
+
+  const recent = instroomLeeftijd.slice(-8);
+
+  let html = `<table><thead><tr>
+    <th>Seizoen</th>
+    <th class="text-center">Kern (5-9j)</th>
+    <th class="text-center">Naloop (10-12j)</th>
+    <th class="text-center">Overstap (13+)</th>
+    <th class="text-center">Totaal</th>
+  </tr></thead><tbody>`;
+
+  recent.forEach(sz => {
+    const v = sz.verdeling || {};
+    const kern = (v['5']||0) + (v['6']||0) + (v['7']||0) + (v['8']||0) + (v['9']||0);
+    const naloop = (v['10']||0) + (v['11']||0) + (v['12']||0);
+    const overstap = (v['13']||0) + (v['14']||0) + (v['15+']||0);
+    const totaal = kern + naloop + overstap;
+    const kernPct = totaal > 0 ? Math.round((kern/totaal)*100) : 0;
+    const naloopPct = totaal > 0 ? Math.round((naloop/totaal)*100) : 0;
+    const overstapPct = totaal > 0 ? Math.round((overstap/totaal)*100) : 0;
+
+    html += `<tr>
+      <td class="font-bold">${shortSeason(sz.seizoen)}</td>
+      <td class="text-center">${kern} <span class="text-muted text-sm">(${kernPct}%)</span></td>
+      <td class="text-center">${naloop} <span class="text-muted text-sm">(${naloopPct}%)</span></td>
+      <td class="text-center">${overstap} <span class="text-muted text-sm">(${overstapPct}%)</span></td>
+      <td class="text-center font-bold">${totaal}</td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  container.innerHTML = html;
+}
+
+// ===================================================================
+// TAB 4: STREEFMODEL
+// ===================================================================
+function renderStreefmodel() {
+  const streef = DATA.streefmodel;
+  if (!streef) return;
+
+  renderStreefBoog(streef);
+  renderStreefTabel(streef);
+  renderGroeipad(streef);
+  renderVulgraad(streef);
+}
+
+function renderStreefBoog(streef) {
+  const huidig = streef.boog_huidig.per_leeftijd;
+  const p2028 = streef.boog_2028.per_leeftijd;
+  const p2030 = streef.boog_2030.per_leeftijd;
+
+  // Gebruik leeftijden 5-18
+  const leeftijden = [];
+  for (let i = 5; i <= 18; i++) leeftijden.push(i);
+
+  const getVal = (boog, leeftijd) => {
+    const item = boog.find(b => b.leeftijd === leeftijd);
+    return item ? item.totaal : 0;
+  };
+
+  new Chart(document.getElementById('chart-streef-boog'), {
+    type: 'line',
+    data: {
+      labels: leeftijden.map(l => l + 'j'),
+      datasets: [
+        {
+          label: 'Huidig (2025-2026)',
+          data: leeftijden.map(l => getVal(huidig, l)),
+          borderColor: '#FF6B00', backgroundColor: 'rgba(255,107,0,0.1)',
+          fill: true, tension: 0.3, borderWidth: 3, pointRadius: 4
+        },
+        {
+          label: 'Projectie 2028',
+          data: leeftijden.map(l => getVal(p2028, l)),
+          borderColor: '#4A90D9', backgroundColor: 'transparent',
+          borderDash: [8, 4], tension: 0.3, borderWidth: 2, pointRadius: 3
+        },
+        {
+          label: 'Projectie 2030',
+          data: leeftijden.map(l => getVal(p2030, l)),
+          borderColor: '#52B788', backgroundColor: 'transparent',
+          borderDash: [4, 4], tension: 0.3, borderWidth: 2, pointRadius: 3
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,.05)' } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+}
+
+function renderStreefTabel(streef) {
+  // Per leeftijd: huidig vs 2028 vs 2030 met band-referentie
+  const table = document.getElementById('tabel-streefmodel');
+  const huidig = streef.boog_huidig.per_leeftijd;
+  const p2028 = streef.boog_2028.per_leeftijd;
+  const p2030 = streef.boog_2030.per_leeftijd;
+
+  const getVal = (boog, leeftijd) => {
+    const item = boog.find(b => b.leeftijd === leeftijd);
+    return item ? item.totaal : 0;
+  };
+
+  let header = `<thead><tr>
+    <th>Leeftijd</th><th>Ref.</th>
+    <th class="text-center">Huidig</th>
+    <th class="text-center">2028</th>
+    <th class="text-center">2030</th>
+    <th class="text-center">Groei</th>
+  </tr></thead>`;
+
+  let rows = '';
+  let totH = 0, tot28 = 0, tot30 = 0;
+  let prevBand = '';
+
+  for (let l = 5; l <= 18; l++) {
+    const band = getBandForAge(l);
+    const h = getVal(huidig, l);
+    const v28 = getVal(p2028, l);
+    const v30 = getVal(p2030, l);
+    const groei = v30 - h;
+    const groeiCls = groei > 0 ? 'pos' : groei < 0 ? 'neg' : '';
+
+    // A-categorie referentie
+    let aCatRef = '';
+    if (l >= 13 && l <= 14) aCatRef = ' · U15';
+    else if (l >= 15 && l <= 16) aCatRef = ' · U17';
+    else if (l >= 17 && l <= 18) aCatRef = ' · U19';
+
+    const separator = band.band !== prevBand && prevBand ? 'border-top:2px solid var(--ow-grijs-200)' : '';
+    prevBand = band.band;
+
+    rows += `<tr style="${separator}">
+      <td class="font-bold">${l} jaar</td>
+      <td><span class="band-pill band-${band.band}" style="font-size:.6rem">${band.band}</span>${aCatRef ? `<span class="text-sm text-muted">${aCatRef}</span>` : ''}</td>
+      <td class="text-center font-bold">${h}</td>
+      <td class="text-center">${v28}</td>
+      <td class="text-center">${v30}</td>
+      <td class="text-center"><span class="value ${groeiCls}" style="font-size:.8rem">${groei > 0 ? '+' : ''}${groei}</span></td>
+    </tr>`;
+    totH += h; tot28 += v28; tot30 += v30;
+  }
+
+  const totGroei = tot30 - totH;
+  rows += `<tr style="border-top:2px solid var(--ow-grijs-300)">
+    <td class="font-bold" colspan="2">Totaal jeugd</td>
+    <td class="text-center font-bold" style="color:var(--ow-oranje)">${totH}</td>
+    <td class="text-center font-bold">${tot28}</td>
+    <td class="text-center font-bold">${tot30}</td>
+    <td class="text-center font-bold"><span class="value ${totGroei > 0 ? 'pos' : 'neg'}" style="font-size:.8rem">${totGroei > 0 ? '+' : ''}${totGroei}</span></td>
+  </tr>`;
+
+  table.innerHTML = header + '<tbody>' + rows + '</tbody>';
+}
+
+// --- Groeipad per geboortejaar ---
+function renderGroeipad(streef) {
+  const container = document.getElementById('groeipad-tabel');
+  if (!streef.groeipad) return;
+
+  const currentYear = new Date().getFullYear();
+  let html = `<table><thead><tr>
+    <th>Geboortejaar</th><th>Leeftijd nu</th><th>Ref.</th>
+    <th class="text-center">Huidig M/V</th>
+    <th class="text-center">Leeftijd '28</th><th class="text-center">Streef '28</th>
+    <th class="text-center">Leeftijd '30</th><th class="text-center">Streef '30</th>
+    <th>Status</th>
+  </tr></thead><tbody>`;
+
+  streef.groeipad.forEach(gp => {
+    const gj = gp.geboortejaar;
+    const szn = gp.seizoenen;
+    const huidig = szn['2025-2026'];
+    const p28 = szn['2027-2028'];
+    const p30 = szn['2029-2030'];
+
+    const leeftijdNu = currentYear - gj;
+    const band = getBandForAge(leeftijdNu);
+    const hudM = huidig && huidig.huidig_m != null ? huidig.huidig_m : '–';
+    const hudV = huidig && huidig.huidig_v != null ? huidig.huidig_v : '–';
+    const hudT = huidig && huidig.huidig_totaal != null ? huidig.huidig_totaal : '–';
+
+    const l28 = p28 && typeof p28 === 'object' ? p28.leeftijd : (p28 === 'senioren' ? '19+' : '–');
+    const s28 = p28 && typeof p28 === 'object' ? p28.streef_totaal : (p28 === 'senioren' ? 'Sen' : '–');
+    const l30 = p30 && typeof p30 === 'object' ? p30.leeftijd : (p30 === 'senioren' ? '19+' : '–');
+    const s30 = p30 && typeof p30 === 'object' ? p30.streef_totaal : (p30 === 'senioren' ? 'Sen' : '–');
+
+    let status = '';
+    if (p28 === 'senioren' || p30 === 'senioren') status = '<span class="text-sm" style="color:var(--ow-grijs-600)">→ Senioren</span>';
+    else if (!huidig) status = '<span class="text-sm" style="color:var(--band-blauw)">Nog niet actief</span>';
+
+    html += `<tr>
+      <td class="font-bold">${gj}</td>
+      <td>${leeftijdNu}j</td>
+      <td><span class="band-pill band-${band.band}" style="font-size:.55rem">${band.band}</span></td>
+      <td class="text-center">${hudT !== '–' ? `${hudM}M/${hudV}V = ${hudT}` : '–'}</td>
+      <td class="text-center">${l28}${typeof l28 === 'number' ? 'j' : ''}</td>
+      <td class="text-center font-bold">${s28}</td>
+      <td class="text-center">${l30}${typeof l30 === 'number' ? 'j' : ''}</td>
+      <td class="text-center font-bold">${s30}</td>
+      <td>${status}</td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  container.innerHTML = html;
+}
+
+// --- Vulgraad per leeftijdsjaar + actiepunten ---
+function renderVulgraad(streef) {
+  const vulContainer = document.getElementById('vulgraad-tabel');
+  const actieContainer = document.getElementById('streef-actiepunten');
+  if (!streef.boog_huidig || !streef.boog_2028) return;
+
+  const huidig = streef.boog_huidig.per_leeftijd;
+  const p2028 = streef.boog_2028.per_leeftijd;
+  const gbjData = DATA.per_geboortejaar && DATA.per_geboortejaar.data ? DATA.per_geboortejaar.data : [];
+
+  // Build per-leeftijd overview
+  const currentYear = new Date().getFullYear();
+  const gaps = [];
+
+  let html = `<table><thead><tr>
+    <th>Leeftijd</th><th>Ref.</th>
+    <th class="text-right">Huidig</th>
+    <th class="text-right">Streef '28</th>
+    <th class="text-right">Vulgraad</th>
+    <th class="text-center">Stoplicht</th>
+    <th class="text-right">%M/%V</th>
+  </tr></thead><tbody>`;
+
+  for (let l = 5; l <= 18; l++) {
+    const h = huidig.find(b => b.leeftijd === l);
+    const s = p2028.find(b => b.leeftijd === l);
+    const hVal = h ? h.totaal : 0;
+    const sVal = s ? s.totaal : 0;
+    const vulgraad = sVal > 0 ? Math.round((hVal / sVal) * 100) : (hVal > 0 ? 999 : 0);
+    const band = getBandForAge(l);
+    const gap = sVal - hVal;
+
+    // Gender-verdeling uit per_geboortejaar
+    const gj = currentYear - l;
+    const gjRows = gbjData.filter(d => d.geboortejaar === gj);
+    const m = gjRows.filter(d => d.geslacht === 'M').reduce((s, d) => s + d.aantal, 0);
+    const v = gjRows.filter(d => d.geslacht === 'V').reduce((s, d) => s + d.aantal, 0);
+    const tot = m + v;
+    const pctM = tot > 0 ? Math.round((m / tot) * 100) : 0;
+    const pctCls = pctM >= 40 && pctM <= 60 ? 'pos' : pctM >= 30 && pctM <= 70 ? 'warn' : 'neg';
+
+    const vgCls = vulgraad >= 90 ? 'pos' : vulgraad >= 70 ? 'warn' : 'neg';
+    const dot = vulgraad >= 90 ? 'signal-opkoers' : vulgraad >= 70 ? 'signal-aandacht' : 'signal-kritiek';
+
+    if (gap > 0) gaps.push({ leeftijd: l, band: band.band, gap, huidig: hVal, streef: sVal, vulgraad, pctM });
+
+    html += `<tr>
+      <td class="font-bold">${l} jaar</td>
+      <td><span class="band-pill band-${band.band}" style="font-size:.55rem">${band.band}</span></td>
+      <td class="text-right font-bold">${hVal}</td>
+      <td class="text-right">${sVal}</td>
+      <td class="text-right"><span class="value ${vgCls}" style="font-size:.8rem">${vulgraad}%</span></td>
+      <td class="text-center"><span class="signal-dot ${dot}"></span></td>
+      <td class="text-right"><span class="value ${pctCls}" style="font-size:.8rem">${pctM}/${100-pctM}</span></td>
+    </tr>`;
+  }
+  html += '</tbody></table>';
+  vulContainer.innerHTML = html;
+
+  // Top-5 actiepunten: grootste gap
+  gaps.sort((a, b) => b.gap - a.gap);
+  const top5 = gaps.slice(0, 5);
+  if (top5.length === 0) {
+    actieContainer.innerHTML = '<p class="text-muted">Geen significante gaps gevonden.</p>';
+    return;
+  }
+
+  actieContainer.innerHTML = top5.map((g, i) => {
+    const genderTip = g.pctM < 35 ? 'Vooral jongens werven.' : g.pctM > 65 ? 'Vooral meisjes werven.' : '';
+    return `<div class="alert-card aandacht" style="flex-direction:column;align-items:stretch;margin-bottom:8px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+        <span class="alert-badge aandacht">#${i+1}</span>
+        <strong style="font-size:.9rem">${g.leeftijd} jaar (${g.band}): ${g.gap} spelers onder streef</strong>
+      </div>
+      <div class="text-sm text-muted">Huidig ${g.huidig}, streef ${g.streef} (vulgraad ${g.vulgraad}%). ${genderTip}</div>
+    </div>`;
+  }).join('');
+}
+
+// ===================================================================
+// TAB 5: TEAMINDELING
+// ===================================================================
+function renderTeamindeling() {
+  const gbjData = DATA.per_geboortejaar && DATA.per_geboortejaar.data ? DATA.per_geboortejaar.data : [];
+  if (gbjData.length === 0) return;
+
+  const volgendSeizoenStart = SEIZOEN_START + 1; // 2026-2027
+  const currentYear = new Date().getFullYear();
+
+  // Build per geboortejaar: M, V, totaal, leeftijd volgend seizoen
+  const jaarMap = {};
+  gbjData.forEach(d => {
+    if (!d.geboortejaar) return;
+    if (!jaarMap[d.geboortejaar]) jaarMap[d.geboortejaar] = { M: 0, V: 0 };
+    jaarMap[d.geboortejaar][d.geslacht] = (jaarMap[d.geboortejaar][d.geslacht] || 0) + d.aantal;
+  });
+
+  // --- Leeftijdsmapping ---
+  const mappingContainer = document.getElementById('leeftijdsmapping');
+  const jaren = Object.keys(jaarMap).map(Number).filter(gj => {
+    const leeftijd = volgendSeizoenStart - gj;
+    return leeftijd >= 5 && leeftijd <= 19;
+  }).sort((a, b) => b - a);
+
+  let html = `<table><thead><tr>
+    <th>Geboortejaar</th><th>Leeftijd '26-'27</th><th>Ref. band</th><th>A-cat ref.</th>
+    <th class="text-right">M</th><th class="text-right">V</th><th class="text-right">Totaal</th>
+  </tr></thead><tbody>`;
+
+  let prevBand = '';
+  jaren.forEach(gj => {
+    const leeftijd = volgendSeizoenStart - gj;
+    const band = getBandForAge(leeftijd);
+    const m = jaarMap[gj].M || 0;
+    const v = jaarMap[gj].V || 0;
+    const aCat = getUCat(gj, volgendSeizoenStart);
+
+    const separator = band.band !== prevBand && prevBand ? 'border-top:2px solid var(--ow-grijs-200)' : '';
+    prevBand = band.band;
+
+    html += `<tr style="${separator}">
+      <td class="font-bold">${gj}</td>
+      <td>${leeftijd}j</td>
+      <td><span class="band-pill band-${band.band}" style="font-size:.55rem">${band.band}</span></td>
+      <td>${aCat ? `<span class="text-sm font-bold">${aCat}</span>` : ''}</td>
+      <td class="text-right">${m}</td>
+      <td class="text-right">${v}</td>
+      <td class="text-right font-bold">${m + v}</td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  mappingContainer.innerHTML = html;
+
+  // --- A-categorie pools ---
+  const aCatPools = document.getElementById('a-cat-pools');
+  const aCats = [
+    { label: 'U15', ages: [13, 14], color: 'var(--a-u15)' },
+    { label: 'U17', ages: [15, 16], color: 'var(--a-u17)' },
+    { label: 'U19', ages: [17, 18], color: 'var(--a-u19)' }
+  ];
+
+  aCatPools.innerHTML = aCats.map(cat => {
+    let m = 0, v = 0;
+    cat.ages.forEach(age => {
+      const gj = volgendSeizoenStart - age;
+      if (jaarMap[gj]) { m += jaarMap[gj].M || 0; v += jaarMap[gj].V || 0; }
+    });
+    const totaal = m + v;
+    const ideaal = 10; // 5M + 5V per team
+    const teams = Math.floor(totaal / ideaal);
+    const gapM = Math.max(0, 5 * Math.max(1, teams) - m);
+    const gapV = Math.max(0, 5 * Math.max(1, teams) - v);
+
+    return `<div class="card" style="border-top:3px solid ${cat.color}">
+      <div style="font-size:1.1rem;font-weight:700;margin-bottom:8px">${cat.label}</div>
+      <div class="text-sm text-muted" style="margin-bottom:8px">${cat.ages.join('-')} jaar (gj ${cat.ages.map(a => volgendSeizoenStart - a).join(', ')})</div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:12px">
+        <div class="text-center" style="flex:1"><div class="value" style="font-size:1.5rem;color:#5B9BD5">${m}</div><div class="text-sm text-muted">Heren</div></div>
+        <div class="text-center" style="flex:1"><div class="value" style="font-size:1.5rem;color:#E88A8A">${v}</div><div class="text-sm text-muted">Dames</div></div>
+        <div class="text-center" style="flex:1"><div class="value" style="font-size:1.5rem;color:var(--ow-oranje)">${totaal}</div><div class="text-sm text-muted">Totaal</div></div>
+      </div>
+      <div class="text-sm">Teams (à 10): <span class="font-bold">${teams}</span> volledig${totaal % ideaal > 0 ? ` + ${totaal % ideaal} rest` : ''}</div>
+      ${gapM > 0 || gapV > 0 ? `<div class="text-sm" style="color:var(--signal-rood);margin-top:4px">Gap: ${gapM > 0 ? gapM + 'M' : ''}${gapM > 0 && gapV > 0 ? ' + ' : ''}${gapV > 0 ? gapV + 'V' : ''} tekort</div>` : '<div class="text-sm" style="color:var(--signal-groen);margin-top:4px">Pool compleet</div>'}
+    </div>`;
+  }).join('');
+
+  // --- B-categorie pools ---
+  const bCatPools = document.getElementById('b-cat-pools');
+  const bCats = [
+    { label: 'Rood', ages: [16, 17, 18], teamSize: 10 },
+    { label: 'Oranje', ages: [13, 14, 15], teamSize: 10 },
+    { label: 'Geel', ages: [10, 11, 12], teamSize: 10 },
+    { label: 'Groen', ages: [8, 9], teamSize: 8 },
+    { label: 'Blauw', ages: [5, 6, 7], teamSize: 8 }
+  ];
+
+  let bHtml = `<table><thead><tr><th>Band</th><th>Leeftijd</th><th class="text-right">M</th><th class="text-right">V</th><th class="text-right">Totaal</th><th class="text-right">Verwacht teams</th></tr></thead><tbody>`;
+  bCats.forEach(cat => {
+    let m = 0, v = 0;
+    cat.ages.forEach(age => {
+      const gj = volgendSeizoenStart - age;
+      if (jaarMap[gj]) { m += jaarMap[gj].M || 0; v += jaarMap[gj].V || 0; }
+    });
+    const totaal = m + v;
+    const teams = Math.ceil(totaal / cat.teamSize);
+    bHtml += `<tr>
+      <td><span class="band-pill band-${cat.label}">${cat.label}</span></td>
+      <td>${cat.ages[0]}-${cat.ages[cat.ages.length-1]}j</td>
+      <td class="text-right">${m}</td>
+      <td class="text-right">${v}</td>
+      <td class="text-right font-bold">${totaal}</td>
+      <td class="text-right font-bold">${teams}</td>
+    </tr>`;
+  });
+  bHtml += '</tbody></table>';
+  bCatPools.innerHTML = bHtml;
+
+  // --- Aanbevelingen ---
+  const adviesContainer = document.getElementById('teamindeling-advies');
+  const advies = [];
+
+  aCats.forEach(cat => {
+    let m = 0, v = 0;
+    cat.ages.forEach(age => {
+      const gj = volgendSeizoenStart - age;
+      if (jaarMap[gj]) { m += jaarMap[gj].M || 0; v += jaarMap[gj].V || 0; }
+    });
+    const totaal = m + v;
+    if (totaal < 10) advies.push({ ernst: 'kritiek', tekst: `${cat.label}: slechts ${totaal} spelers (${m}M/${v}V). Onvoldoende voor 1 volledig A-team.` });
+    else if (m < 5 || v < 5) advies.push({ ernst: 'aandacht', tekst: `${cat.label}: genderdisbalans in pool (${m}M/${v}V). Mogelijk aanvulling nodig.` });
+  });
+
+  // Check B-categorie kleine groepen
+  bCats.forEach(cat => {
+    let totaal = 0;
+    cat.ages.forEach(age => {
+      const gj = volgendSeizoenStart - age;
+      if (jaarMap[gj]) totaal += (jaarMap[gj].M || 0) + (jaarMap[gj].V || 0);
+    });
+    if (totaal < cat.teamSize) advies.push({ ernst: 'aandacht', tekst: `${cat.label} (${cat.ages[0]}-${cat.ages[cat.ages.length-1]}j): ${totaal} spelers, minder dan 1 vol team.` });
+  });
+
+  if (advies.length === 0) {
+    adviesContainer.innerHTML = '<p class="text-sm" style="color:var(--signal-groen)">Geen significante knelpunten gevonden voor de teamindeling.</p>';
+  } else {
+    adviesContainer.innerHTML = advies.map(a =>
+      `<div class="alert-card ${a.ernst}" style="margin-bottom:8px">
+        <span class="alert-badge ${a.ernst}">${a.ernst}</span>
+        <div class="alert-text">${a.tekst}</div>
+      </div>`
+    ).join('');
+  }
+}
+
+// ===================================================================
+// TAB 6: SIGNALERING & ACTIES
+// ===================================================================
+function renderSignalering() {
+  const signalering = DATA.signalering;
+  if (!signalering) return;
+
+  // KPI cards — alleen Kritiek en Aandacht
+  const grid = document.getElementById('signal-kpi-grid');
+  const kritiek = signalering._meta.kritiek || 0;
+  const aandacht = signalering._meta.aandacht || 0;
+
+  grid.innerHTML = [
+    { label: 'Kritiek', value: kritiek, cls: kritiek > 0 ? 'neg' : 'pos', dot: 'signal-kritiek' },
+    { label: 'Aandacht', value: aandacht, cls: aandacht > 0 ? 'warn' : 'pos', dot: 'signal-aandacht' }
+  ].map(k => `<div class="card kpi">
+    <div class="value ${k.cls}">${k.value}</div>
+    <div class="label"><span class="signal-dot ${k.dot}"></span>${k.label}</div>
+  </div>`).join('');
+
+  // Alle alerts met actie-aanbevelingen
+  const container = document.getElementById('all-alerts');
+  const sorted = [...signalering.alerts].sort((a, b) => (({ kritiek: 0, aandacht: 1 }[a.ernst] ?? 2) - ({ kritiek: 0, aandacht: 1 }[b.ernst] ?? 2)));
+
+  const actieMap = {
+    genderdisbalans: (a) => a.geslacht === 'V'
+      ? `Gerichte jongenswerving voor ${a.leeftijdsgroep}. Benader sportverenigingen, scholen en BSO's in de buurt.`
+      : `Gerichte meisjeswerving voor ${a.leeftijdsgroep}. Organiseer meidenmiddagen en vriendinnen-acties.`,
+    retentie: () => 'Exitgesprekken voeren, oorzaken in kaart brengen. Herinschrijfacties en alumni-evenementen organiseren.',
+    trendbreuk: () => 'Onderliggende data onderzoeken. Controleer of dit een datakwaliteitsissue is (Sportlink-migratie) of een echte trend.',
+    instroom: () => 'Wervingsacties intensiveren. Focus op kerninstroom (5-9 jaar) via scholen, BSO\'s en open dagen.'
+  };
+
+  container.innerHTML = sorted.map(alert => {
+    const actie = actieMap[alert.type] ? actieMap[alert.type](alert) : 'Nader onderzoeken en actieplan opstellen.';
+    return `<div class="alert-card ${alert.ernst}" style="flex-direction:column;align-items:stretch">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+        <span class="alert-badge ${alert.ernst}">${alert.ernst}</span>
+        <strong style="font-size:.9rem">${alert.beschrijving}</strong>
+      </div>
+      <div style="background:rgba(255,255,255,.6);padding:8px 12px;border-radius:4px;font-size:.82rem">
+        <strong style="color:var(--ow-oranje)">Aanbevolen actie:</strong> ${actie}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ===================================================================
+// STARTUP
+// ===================================================================
+async function init() {
+  initTabs();
+
+  try {
+    await loadAllData();
+    renderOverzicht();
+    renderSamenstelling();
+    renderDynamiek();
+    renderStreefmodel();
+    renderTeamindeling();
+    renderSignalering();
+  } catch (err) {
+    console.error('Fout bij laden data:', err);
+    document.getElementById('loading').innerHTML =
+      `<p style="color: var(--signal-rood);">Fout bij laden: ${err.message}</p>
+       <p class="text-muted" style="margin-top:8px">Controleer dat de app wordt geopend via een webserver (niet file://)</p>`;
+    return;
+  }
+
+  document.getElementById('loading').classList.add('hidden');
+}
+
+init();
+</script>
+</body>
+</html>

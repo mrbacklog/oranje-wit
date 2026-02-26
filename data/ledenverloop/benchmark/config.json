@@ -1,0 +1,11 @@
+{
+  "_meta": {
+    "beschrijving": "Configuratie voor KNKV-benchmarking"
+  },
+  "eigen_vereniging": "Oranje Wit",
+  "concurrenten": {
+    "lokaal": ["DeetosSnel", "Sporting Delta", "Movado"],
+    "regionaal": ["PKC", "Albatros", "Merwede", "Kinderdijk"]
+  },
+  "knkv_bron_url": "https://www.knkv.nl/kennisbank/ledencijfers/"
+}

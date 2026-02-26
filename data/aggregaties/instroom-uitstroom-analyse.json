@@ -1,0 +1,832 @@
+{
+  "_meta": {
+    "gegenereerd": "2026-02-24 20:58",
+    "bron": "spelerspaden.json",
+    "spelers_met_geboortedatum": 642,
+    "toelichting": "Retentie = % spelers dat volgend seizoen terugkeert. Betrouwbaar = A2 + Supersheets 2018-2026 met Sportlink ID's."
+  },
+  "instroom_per_leeftijd": [
+    {
+      "leeftijd": 5,
+      "M": 4,
+      "V": 4,
+      "totaal": 8
+    },
+    {
+      "leeftijd": 6,
+      "M": 13,
+      "V": 28,
+      "totaal": 41
+    },
+    {
+      "leeftijd": 7,
+      "M": 25,
+      "V": 28,
+      "totaal": 53
+    },
+    {
+      "leeftijd": 8,
+      "M": 31,
+      "V": 51,
+      "totaal": 82
+    },
+    {
+      "leeftijd": 9,
+      "M": 36,
+      "V": 43,
+      "totaal": 79
+    },
+    {
+      "leeftijd": 10,
+      "M": 22,
+      "V": 35,
+      "totaal": 57
+    },
+    {
+      "leeftijd": 11,
+      "M": 22,
+      "V": 21,
+      "totaal": 43
+    },
+    {
+      "leeftijd": 12,
+      "M": 14,
+      "V": 14,
+      "totaal": 28
+    },
+    {
+      "leeftijd": 13,
+      "M": 10,
+      "V": 14,
+      "totaal": 24
+    },
+    {
+      "leeftijd": 14,
+      "M": 10,
+      "V": 5,
+      "totaal": 15
+    },
+    {
+      "leeftijd": 15,
+      "M": 9,
+      "V": 17,
+      "totaal": 26
+    },
+    {
+      "leeftijd": 16,
+      "M": 4,
+      "V": 9,
+      "totaal": 13
+    },
+    {
+      "leeftijd": 17,
+      "M": 3,
+      "V": 4,
+      "totaal": 7
+    },
+    {
+      "leeftijd": 18,
+      "M": 2,
+      "V": 3,
+      "totaal": 5
+    },
+    {
+      "leeftijd": 19,
+      "M": 2,
+      "V": 9,
+      "totaal": 11
+    },
+    {
+      "leeftijd": 20,
+      "M": 6,
+      "V": 6,
+      "totaal": 12
+    },
+    {
+      "leeftijd": 21,
+      "M": 10,
+      "V": 4,
+      "totaal": 14
+    },
+    {
+      "leeftijd": 22,
+      "M": 2,
+      "V": 3,
+      "totaal": 5
+    },
+    {
+      "leeftijd": 23,
+      "M": 3,
+      "V": 4,
+      "totaal": 7
+    },
+    {
+      "leeftijd": 24,
+      "M": 3,
+      "V": 5,
+      "totaal": 8
+    },
+    {
+      "leeftijd": 25,
+      "M": 2,
+      "V": 3,
+      "totaal": 5
+    }
+  ],
+  "uitstroom_per_leeftijd": [
+    {
+      "leeftijd": 6,
+      "M": 1,
+      "V": 1,
+      "totaal": 2
+    },
+    {
+      "leeftijd": 7,
+      "M": 3,
+      "V": 2,
+      "totaal": 5
+    },
+    {
+      "leeftijd": 8,
+      "M": 1,
+      "V": 1,
+      "totaal": 2
+    },
+    {
+      "leeftijd": 9,
+      "M": 3,
+      "V": 4,
+      "totaal": 7
+    },
+    {
+      "leeftijd": 10,
+      "M": 2,
+      "V": 6,
+      "totaal": 8
+    },
+    {
+      "leeftijd": 11,
+      "M": 10,
+      "V": 6,
+      "totaal": 16
+    },
+    {
+      "leeftijd": 12,
+      "M": 5,
+      "V": 11,
+      "totaal": 16
+    },
+    {
+      "leeftijd": 13,
+      "M": 6,
+      "V": 10,
+      "totaal": 16
+    },
+    {
+      "leeftijd": 14,
+      "M": 4,
+      "V": 8,
+      "totaal": 12
+    },
+    {
+      "leeftijd": 15,
+      "M": 9,
+      "V": 9,
+      "totaal": 18
+    },
+    {
+      "leeftijd": 16,
+      "M": 5,
+      "V": 13,
+      "totaal": 18
+    },
+    {
+      "leeftijd": 17,
+      "M": 8,
+      "V": 10,
+      "totaal": 18
+    },
+    {
+      "leeftijd": 18,
+      "M": 4,
+      "V": 11,
+      "totaal": 15
+    },
+    {
+      "leeftijd": 19,
+      "M": 5,
+      "V": 13,
+      "totaal": 18
+    },
+    {
+      "leeftijd": 20,
+      "M": 8,
+      "V": 10,
+      "totaal": 18
+    },
+    {
+      "leeftijd": 21,
+      "M": 4,
+      "V": 11,
+      "totaal": 15
+    },
+    {
+      "leeftijd": 22,
+      "M": 8,
+      "V": 5,
+      "totaal": 13
+    },
+    {
+      "leeftijd": 23,
+      "M": 2,
+      "V": 4,
+      "totaal": 6
+    },
+    {
+      "leeftijd": 24,
+      "M": 0,
+      "V": 2,
+      "totaal": 2
+    },
+    {
+      "leeftijd": 25,
+      "M": 3,
+      "V": 9,
+      "totaal": 12
+    }
+  ],
+  "retentie_alle_seizoenen": [
+    {
+      "leeftijd": 5,
+      "aanwezig_totaal": 9,
+      "terug_totaal": 7,
+      "retentie_totaal": 0.778,
+      "aanwezig_M": 4,
+      "terug_M": 3,
+      "retentie_M": 0.75,
+      "aanwezig_V": 5,
+      "terug_V": 4,
+      "retentie_V": 0.8
+    },
+    {
+      "leeftijd": 6,
+      "aanwezig_totaal": 46,
+      "terug_totaal": 41,
+      "retentie_totaal": 0.891,
+      "aanwezig_M": 15,
+      "terug_M": 13,
+      "retentie_M": 0.867,
+      "aanwezig_V": 31,
+      "terug_V": 28,
+      "retentie_V": 0.903
+    },
+    {
+      "leeftijd": 7,
+      "aanwezig_totaal": 89,
+      "terug_totaal": 82,
+      "retentie_totaal": 0.921,
+      "aanwezig_M": 36,
+      "terug_M": 31,
+      "retentie_M": 0.861,
+      "aanwezig_V": 53,
+      "terug_V": 51,
+      "retentie_V": 0.962
+    },
+    {
+      "leeftijd": 8,
+      "aanwezig_totaal": 158,
+      "terug_totaal": 155,
+      "retentie_totaal": 0.981,
+      "aanwezig_M": 59,
+      "terug_M": 58,
+      "retentie_M": 0.983,
+      "aanwezig_V": 99,
+      "terug_V": 97,
+      "retentie_V": 0.98
+    },
+    {
+      "leeftijd": 9,
+      "aanwezig_totaal": 221,
+      "terug_totaal": 209,
+      "retentie_totaal": 0.946,
+      "aanwezig_M": 87,
+      "terug_M": 82,
+      "retentie_M": 0.943,
+      "aanwezig_V": 134,
+      "terug_V": 127,
+      "retentie_V": 0.948
+    },
+    {
+      "leeftijd": 10,
+      "aanwezig_totaal": 260,
+      "terug_totaal": 251,
+      "retentie_totaal": 0.965,
+      "aanwezig_M": 103,
+      "terug_M": 101,
+      "retentie_M": 0.981,
+      "aanwezig_V": 157,
+      "terug_V": 150,
+      "retentie_V": 0.955
+    },
+    {
+      "leeftijd": 11,
+      "aanwezig_totaal": 283,
+      "terug_totaal": 266,
+      "retentie_totaal": 0.94,
+      "aanwezig_M": 120,
+      "terug_M": 110,
+      "retentie_M": 0.917,
+      "aanwezig_V": 163,
+      "terug_V": 156,
+      "retentie_V": 0.957
+    },
+    {
+      "leeftijd": 12,
+      "aanwezig_totaal": 274,
+      "terug_totaal": 258,
+      "retentie_totaal": 0.942,
+      "aanwezig_M": 110,
+      "terug_M": 105,
+      "retentie_M": 0.955,
+      "aanwezig_V": 164,
+      "terug_V": 153,
+      "retentie_V": 0.933
+    },
+    {
+      "leeftijd": 13,
+      "aanwezig_totaal": 262,
+      "terug_totaal": 244,
+      "retentie_totaal": 0.931,
+      "aanwezig_M": 109,
+      "terug_M": 103,
+      "retentie_M": 0.945,
+      "aanwezig_V": 153,
+      "terug_V": 141,
+      "retentie_V": 0.922
+    },
+    {
+      "leeftijd": 14,
+      "aanwezig_totaal": 244,
+      "terug_totaal": 232,
+      "retentie_totaal": 0.951,
+      "aanwezig_M": 109,
+      "terug_M": 105,
+      "retentie_M": 0.963,
+      "aanwezig_V": 135,
+      "terug_V": 127,
+      "retentie_V": 0.941
+    },
+    {
+      "leeftijd": 15,
+      "aanwezig_totaal": 244,
+      "terug_totaal": 226,
+      "retentie_totaal": 0.926,
+      "aanwezig_M": 105,
+      "terug_M": 96,
+      "retentie_M": 0.914,
+      "aanwezig_V": 139,
+      "terug_V": 130,
+      "retentie_V": 0.935
+    },
+    {
+      "leeftijd": 16,
+      "aanwezig_totaal": 215,
+      "terug_totaal": 191,
+      "retentie_totaal": 0.888,
+      "aanwezig_M": 94,
+      "terug_M": 83,
+      "retentie_M": 0.883,
+      "aanwezig_V": 121,
+      "terug_V": 108,
+      "retentie_V": 0.893
+    },
+    {
+      "leeftijd": 17,
+      "aanwezig_totaal": 184,
+      "terug_totaal": 158,
+      "retentie_totaal": 0.859,
+      "aanwezig_M": 79,
+      "terug_M": 65,
+      "retentie_M": 0.823,
+      "aanwezig_V": 105,
+      "terug_V": 93,
+      "retentie_V": 0.886
+    },
+    {
+      "leeftijd": 18,
+      "aanwezig_totaal": 157,
+      "terug_totaal": 135,
+      "retentie_totaal": 0.86,
+      "aanwezig_M": 67,
+      "terug_M": 58,
+      "retentie_M": 0.866,
+      "aanwezig_V": 90,
+      "terug_V": 77,
+      "retentie_V": 0.856
+    },
+    {
+      "leeftijd": 19,
+      "aanwezig_totaal": 141,
+      "terug_totaal": 121,
+      "retentie_totaal": 0.858,
+      "aanwezig_M": 57,
+      "terug_M": 51,
+      "retentie_M": 0.895,
+      "aanwezig_V": 84,
+      "terug_V": 70,
+      "retentie_V": 0.833
+    },
+    {
+      "leeftijd": 20,
+      "aanwezig_totaal": 137,
+      "terug_totaal": 113,
+      "retentie_totaal": 0.825,
+      "aanwezig_M": 60,
+      "terug_M": 48,
+      "retentie_M": 0.8,
+      "aanwezig_V": 77,
+      "terug_V": 65,
+      "retentie_V": 0.844
+    },
+    {
+      "leeftijd": 21,
+      "aanwezig_totaal": 119,
+      "terug_totaal": 96,
+      "retentie_totaal": 0.807,
+      "aanwezig_M": 55,
+      "terug_M": 46,
+      "retentie_M": 0.836,
+      "aanwezig_V": 64,
+      "terug_V": 50,
+      "retentie_V": 0.781
+    },
+    {
+      "leeftijd": 22,
+      "aanwezig_totaal": 100,
+      "terug_totaal": 82,
+      "retentie_totaal": 0.82,
+      "aanwezig_M": 50,
+      "terug_M": 38,
+      "retentie_M": 0.76,
+      "aanwezig_V": 50,
+      "terug_V": 44,
+      "retentie_V": 0.88
+    },
+    {
+      "leeftijd": 23,
+      "aanwezig_totaal": 89,
+      "terug_totaal": 76,
+      "retentie_totaal": 0.854,
+      "aanwezig_M": 39,
+      "terug_M": 32,
+      "retentie_M": 0.821,
+      "aanwezig_V": 50,
+      "terug_V": 44,
+      "retentie_V": 0.88
+    },
+    {
+      "leeftijd": 24,
+      "aanwezig_totaal": 83,
+      "terug_totaal": 78,
+      "retentie_totaal": 0.94,
+      "aanwezig_M": 39,
+      "terug_M": 37,
+      "retentie_M": 0.949,
+      "aanwezig_V": 44,
+      "terug_V": 41,
+      "retentie_V": 0.932
+    },
+    {
+      "leeftijd": 25,
+      "aanwezig_totaal": 84,
+      "terug_totaal": 66,
+      "retentie_totaal": 0.786,
+      "aanwezig_M": 41,
+      "terug_M": 34,
+      "retentie_M": 0.829,
+      "aanwezig_V": 43,
+      "terug_V": 32,
+      "retentie_V": 0.744
+    }
+  ],
+  "retentie_betrouwbaar_2018_2026": [
+    {
+      "leeftijd": 5,
+      "aanwezig_totaal": 5,
+      "terug_totaal": 5,
+      "retentie_totaal": 1.0,
+      "aanwezig_M": 2,
+      "terug_M": 2,
+      "retentie_M": 1.0,
+      "aanwezig_V": 3,
+      "terug_V": 3,
+      "retentie_V": 1.0
+    },
+    {
+      "leeftijd": 6,
+      "aanwezig_totaal": 21,
+      "terug_totaal": 19,
+      "retentie_totaal": 0.905,
+      "aanwezig_M": 6,
+      "terug_M": 5,
+      "retentie_M": 0.833,
+      "aanwezig_V": 15,
+      "terug_V": 14,
+      "retentie_V": 0.933
+    },
+    {
+      "leeftijd": 7,
+      "aanwezig_totaal": 48,
+      "terug_totaal": 43,
+      "retentie_totaal": 0.896,
+      "aanwezig_M": 23,
+      "terug_M": 20,
+      "retentie_M": 0.87,
+      "aanwezig_V": 25,
+      "terug_V": 23,
+      "retentie_V": 0.92
+    },
+    {
+      "leeftijd": 8,
+      "aanwezig_totaal": 64,
+      "terug_totaal": 62,
+      "retentie_totaal": 0.969,
+      "aanwezig_M": 25,
+      "terug_M": 24,
+      "retentie_M": 0.96,
+      "aanwezig_V": 39,
+      "terug_V": 38,
+      "retentie_V": 0.974
+    },
+    {
+      "leeftijd": 9,
+      "aanwezig_totaal": 100,
+      "terug_totaal": 93,
+      "retentie_totaal": 0.93,
+      "aanwezig_M": 38,
+      "terug_M": 35,
+      "retentie_M": 0.921,
+      "aanwezig_V": 62,
+      "terug_V": 58,
+      "retentie_V": 0.935
+    },
+    {
+      "leeftijd": 10,
+      "aanwezig_totaal": 121,
+      "terug_totaal": 114,
+      "retentie_totaal": 0.942,
+      "aanwezig_M": 48,
+      "terug_M": 47,
+      "retentie_M": 0.979,
+      "aanwezig_V": 73,
+      "terug_V": 67,
+      "retentie_V": 0.918
+    },
+    {
+      "leeftijd": 11,
+      "aanwezig_totaal": 135,
+      "terug_totaal": 125,
+      "retentie_totaal": 0.926,
+      "aanwezig_M": 59,
+      "terug_M": 53,
+      "retentie_M": 0.898,
+      "aanwezig_V": 76,
+      "terug_V": 72,
+      "retentie_V": 0.947
+    },
+    {
+      "leeftijd": 12,
+      "aanwezig_totaal": 139,
+      "terug_totaal": 126,
+      "retentie_totaal": 0.906,
+      "aanwezig_M": 58,
+      "terug_M": 54,
+      "retentie_M": 0.931,
+      "aanwezig_V": 81,
+      "terug_V": 72,
+      "retentie_V": 0.889
+    },
+    {
+      "leeftijd": 13,
+      "aanwezig_totaal": 129,
+      "terug_totaal": 120,
+      "retentie_totaal": 0.93,
+      "aanwezig_M": 54,
+      "terug_M": 50,
+      "retentie_M": 0.926,
+      "aanwezig_V": 75,
+      "terug_V": 70,
+      "retentie_V": 0.933
+    },
+    {
+      "leeftijd": 14,
+      "aanwezig_totaal": 132,
+      "terug_totaal": 125,
+      "retentie_totaal": 0.947,
+      "aanwezig_M": 58,
+      "terug_M": 57,
+      "retentie_M": 0.983,
+      "aanwezig_V": 74,
+      "terug_V": 68,
+      "retentie_V": 0.919
+    },
+    {
+      "leeftijd": 15,
+      "aanwezig_totaal": 132,
+      "terug_totaal": 118,
+      "retentie_totaal": 0.894,
+      "aanwezig_M": 58,
+      "terug_M": 50,
+      "retentie_M": 0.862,
+      "aanwezig_V": 74,
+      "terug_V": 68,
+      "retentie_V": 0.919
+    },
+    {
+      "leeftijd": 16,
+      "aanwezig_totaal": 118,
+      "terug_totaal": 108,
+      "retentie_totaal": 0.915,
+      "aanwezig_M": 55,
+      "terug_M": 52,
+      "retentie_M": 0.945,
+      "aanwezig_V": 63,
+      "terug_V": 56,
+      "retentie_V": 0.889
+    },
+    {
+      "leeftijd": 17,
+      "aanwezig_totaal": 108,
+      "terug_totaal": 92,
+      "retentie_totaal": 0.852,
+      "aanwezig_M": 47,
+      "terug_M": 39,
+      "retentie_M": 0.83,
+      "aanwezig_V": 61,
+      "terug_V": 53,
+      "retentie_V": 0.869
+    },
+    {
+      "leeftijd": 18,
+      "aanwezig_totaal": 93,
+      "terug_totaal": 81,
+      "retentie_totaal": 0.871,
+      "aanwezig_M": 37,
+      "terug_M": 34,
+      "retentie_M": 0.919,
+      "aanwezig_V": 56,
+      "terug_V": 47,
+      "retentie_V": 0.839
+    },
+    {
+      "leeftijd": 19,
+      "aanwezig_totaal": 88,
+      "terug_totaal": 74,
+      "retentie_totaal": 0.841,
+      "aanwezig_M": 37,
+      "terug_M": 32,
+      "retentie_M": 0.865,
+      "aanwezig_V": 51,
+      "terug_V": 42,
+      "retentie_V": 0.824
+    },
+    {
+      "leeftijd": 20,
+      "aanwezig_totaal": 85,
+      "terug_totaal": 67,
+      "retentie_totaal": 0.788,
+      "aanwezig_M": 37,
+      "terug_M": 27,
+      "retentie_M": 0.73,
+      "aanwezig_V": 48,
+      "terug_V": 40,
+      "retentie_V": 0.833
+    },
+    {
+      "leeftijd": 21,
+      "aanwezig_totaal": 67,
+      "terug_totaal": 54,
+      "retentie_totaal": 0.806,
+      "aanwezig_M": 27,
+      "terug_M": 23,
+      "retentie_M": 0.852,
+      "aanwezig_V": 40,
+      "terug_V": 31,
+      "retentie_V": 0.775
+    },
+    {
+      "leeftijd": 22,
+      "aanwezig_totaal": 54,
+      "terug_totaal": 41,
+      "retentie_totaal": 0.759,
+      "aanwezig_M": 26,
+      "terug_M": 19,
+      "retentie_M": 0.731,
+      "aanwezig_V": 28,
+      "terug_V": 22,
+      "retentie_V": 0.786
+    },
+    {
+      "leeftijd": 23,
+      "aanwezig_totaal": 45,
+      "terug_totaal": 40,
+      "retentie_totaal": 0.889,
+      "aanwezig_M": 19,
+      "terug_M": 17,
+      "retentie_M": 0.895,
+      "aanwezig_V": 26,
+      "terug_V": 23,
+      "retentie_V": 0.885
+    },
+    {
+      "leeftijd": 24,
+      "aanwezig_totaal": 40,
+      "terug_totaal": 37,
+      "retentie_totaal": 0.925,
+      "aanwezig_M": 20,
+      "terug_M": 19,
+      "retentie_M": 0.95,
+      "aanwezig_V": 20,
+      "terug_V": 18,
+      "retentie_V": 0.9
+    },
+    {
+      "leeftijd": 25,
+      "aanwezig_totaal": 38,
+      "terug_totaal": 29,
+      "retentie_totaal": 0.763,
+      "aanwezig_M": 19,
+      "terug_M": 17,
+      "retentie_M": 0.895,
+      "aanwezig_V": 19,
+      "terug_V": 12,
+      "retentie_V": 0.632
+    }
+  ],
+  "verblijfsduur": [
+    {
+      "seizoenen": 1,
+      "spelers": 74
+    },
+    {
+      "seizoenen": 2,
+      "spelers": 58
+    },
+    {
+      "seizoenen": 3,
+      "spelers": 55
+    },
+    {
+      "seizoenen": 4,
+      "spelers": 40
+    },
+    {
+      "seizoenen": 5,
+      "spelers": 35
+    },
+    {
+      "seizoenen": 6,
+      "spelers": 63
+    },
+    {
+      "seizoenen": 7,
+      "spelers": 45
+    },
+    {
+      "seizoenen": 8,
+      "spelers": 46
+    },
+    {
+      "seizoenen": 9,
+      "spelers": 26
+    },
+    {
+      "seizoenen": 10,
+      "spelers": 39
+    },
+    {
+      "seizoenen": 11,
+      "spelers": 35
+    },
+    {
+      "seizoenen": 12,
+      "spelers": 21
+    },
+    {
+      "seizoenen": 13,
+      "spelers": 35
+    },
+    {
+      "seizoenen": 14,
+      "spelers": 16
+    },
+    {
+      "seizoenen": 15,
+      "spelers": 28
+    },
+    {
+      "seizoenen": 16,
+      "spelers": 26
+    }
+  ]
+}

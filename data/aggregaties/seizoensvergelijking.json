@@ -1,0 +1,7433 @@
+{
+  "_meta": {
+    "beschrijving": "Ledenaantallen per geboortejaar x geslacht over seizoenen",
+    "seizoenen": [
+      "2010-2011",
+      "2011-2012",
+      "2012-2013",
+      "2013-2014",
+      "2014-2015",
+      "2015-2016",
+      "2016-2017",
+      "2017-2018",
+      "2018-2019",
+      "2019-2020",
+      "2020-2021",
+      "2021-2022",
+      "2022-2023",
+      "2023-2024",
+      "2024-2025",
+      "2025-2026"
+    ],
+    "gegenereerd": "2026-02-25"
+  },
+  "per_cohort": [
+    {
+      "geboortejaar": 1954,
+      "geslacht": "M",
+      "band_huidig": null,
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 2,
+          "leeftijd": 56,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 2,
+          "leeftijd": 57,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 1,
+          "leeftijd": 58,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": -1,
+        "retentie_laatste": 0.5
+      }
+    },
+    {
+      "geboortejaar": 1955,
+      "geslacht": "M",
+      "band_huidig": null,
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 1,
+          "leeftijd": 55,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 1,
+          "leeftijd": 56,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 1,
+          "leeftijd": 57,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1957,
+      "geslacht": "M",
+      "band_huidig": null,
+      "seizoenen": {
+        "2015-2016": {
+          "aantal": 1,
+          "leeftijd": 58,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 1,
+          "leeftijd": 59,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1958,
+      "geslacht": "M",
+      "band_huidig": null,
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 1,
+          "leeftijd": 52,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 1,
+          "leeftijd": 53,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 1,
+          "leeftijd": 54,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 1,
+          "leeftijd": 57,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 1,
+          "leeftijd": 58,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 1,
+          "leeftijd": 59,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1960,
+      "geslacht": "M",
+      "band_huidig": null,
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 1,
+          "leeftijd": 50,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 1,
+          "leeftijd": 51,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 1,
+          "leeftijd": 52,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1960,
+      "geslacht": "V",
+      "band_huidig": null,
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 1,
+          "leeftijd": 50,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 1,
+          "leeftijd": 51,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 1,
+          "leeftijd": 52,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1961,
+      "geslacht": "M",
+      "band_huidig": null,
+      "seizoenen": {
+        "2016-2017": {
+          "aantal": 1,
+          "leeftijd": 55,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": null
+      }
+    },
+    {
+      "geboortejaar": 1962,
+      "geslacht": "M",
+      "band_huidig": null,
+      "seizoenen": {
+        "2011-2012": {
+          "aantal": 1,
+          "leeftijd": 49,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 1,
+          "leeftijd": 50,
+          "band": "Senioren"
+        },
+        "2014-2015": {
+          "aantal": 1,
+          "leeftijd": 52,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 1,
+          "leeftijd": 53,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1964,
+      "geslacht": "M",
+      "band_huidig": null,
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 1,
+          "leeftijd": 46,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 1,
+          "leeftijd": 47,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 1,
+          "leeftijd": 48,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1964,
+      "geslacht": "V",
+      "band_huidig": null,
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 1,
+          "leeftijd": 46,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 1,
+          "leeftijd": 47,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 1,
+          "leeftijd": 48,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 1,
+          "leeftijd": 51,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 1,
+          "leeftijd": 52,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 1,
+          "leeftijd": 53,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1965,
+      "geslacht": "M",
+      "band_huidig": null,
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 1,
+          "leeftijd": 45,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 1,
+          "leeftijd": 46,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 1,
+          "leeftijd": 47,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 1,
+          "leeftijd": 51,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1965,
+      "geslacht": "V",
+      "band_huidig": null,
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 2,
+          "leeftijd": 45,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 2,
+          "leeftijd": 46,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 2,
+          "leeftijd": 47,
+          "band": "Senioren"
+        },
+        "2013-2014": {
+          "aantal": 1,
+          "leeftijd": 48,
+          "band": "Senioren"
+        },
+        "2014-2015": {
+          "aantal": 1,
+          "leeftijd": 49,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 1,
+          "leeftijd": 50,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 1,
+          "leeftijd": 51,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 1,
+          "leeftijd": 55,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": -1,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1967,
+      "geslacht": "M",
+      "band_huidig": null,
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 1,
+          "leeftijd": 43,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 2,
+          "leeftijd": 44,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 2,
+          "leeftijd": 45,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 1,
+          "leeftijd": 48,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 1,
+          "leeftijd": 49,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 1,
+          "leeftijd": 52,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 1,
+          "leeftijd": 53,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1967,
+      "geslacht": "V",
+      "band_huidig": null,
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 1,
+          "leeftijd": 43,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 2,
+          "leeftijd": 44,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 3,
+          "leeftijd": 45,
+          "band": "Senioren"
+        },
+        "2013-2014": {
+          "aantal": 1,
+          "leeftijd": 46,
+          "band": "Senioren"
+        },
+        "2014-2015": {
+          "aantal": 1,
+          "leeftijd": 47,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 2,
+          "leeftijd": 48,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 2,
+          "leeftijd": 49,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 1,
+          "leeftijd": 50,
+          "band": "Senioren"
+        },
+        "2018-2019": {
+          "aantal": 1,
+          "leeftijd": 51,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 1,
+          "leeftijd": 52,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 3,
+          "leeftijd": 53,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 2,
+        "retentie_laatste": 3.0
+      }
+    },
+    {
+      "geboortejaar": 1968,
+      "geslacht": "M",
+      "band_huidig": null,
+      "seizoenen": {
+        "2011-2012": {
+          "aantal": 1,
+          "leeftijd": 43,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 1,
+          "leeftijd": 44,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 1,
+          "leeftijd": 47,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 1,
+          "leeftijd": 52,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1969,
+      "geslacht": "M",
+      "band_huidig": null,
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 1,
+          "leeftijd": 41,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 2,
+          "leeftijd": 42,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 2,
+          "leeftijd": 43,
+          "band": "Senioren"
+        },
+        "2013-2014": {
+          "aantal": 1,
+          "leeftijd": 44,
+          "band": "Senioren"
+        },
+        "2014-2015": {
+          "aantal": 1,
+          "leeftijd": 45,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 2,
+          "leeftijd": 46,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 2,
+          "leeftijd": 47,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 2,
+          "leeftijd": 48,
+          "band": "Senioren"
+        },
+        "2018-2019": {
+          "aantal": 1,
+          "leeftijd": 49,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 2,
+          "leeftijd": 50,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 1,
+          "leeftijd": 51,
+          "band": "Senioren"
+        },
+        "2021-2022": {
+          "aantal": 2,
+          "leeftijd": 52,
+          "band": "Senioren"
+        },
+        "2022-2023": {
+          "aantal": 2,
+          "leeftijd": 53,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 1,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1970,
+      "geslacht": "V",
+      "band_huidig": null,
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 2,
+          "leeftijd": 40,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 3,
+          "leeftijd": 41,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 3,
+          "leeftijd": 42,
+          "band": "Senioren"
+        },
+        "2013-2014": {
+          "aantal": 1,
+          "leeftijd": 43,
+          "band": "Senioren"
+        },
+        "2014-2015": {
+          "aantal": 1,
+          "leeftijd": 44,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 1,
+          "leeftijd": 45,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 2,
+          "leeftijd": 46,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 1,
+          "leeftijd": 47,
+          "band": "Senioren"
+        },
+        "2018-2019": {
+          "aantal": 1,
+          "leeftijd": 48,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": -1,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1971,
+      "geslacht": "M",
+      "band_huidig": null,
+      "seizoenen": {
+        "2015-2016": {
+          "aantal": 1,
+          "leeftijd": 44,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 1,
+          "leeftijd": 45,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1971,
+      "geslacht": "V",
+      "band_huidig": null,
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 1,
+          "leeftijd": 39,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 1,
+          "leeftijd": 40,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 1,
+          "leeftijd": 41,
+          "band": "Senioren"
+        },
+        "2013-2014": {
+          "aantal": 1,
+          "leeftijd": 42,
+          "band": "Senioren"
+        },
+        "2014-2015": {
+          "aantal": 1,
+          "leeftijd": 43,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 2,
+          "leeftijd": 44,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 2,
+          "leeftijd": 45,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 2,
+          "leeftijd": 46,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 1,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1972,
+      "geslacht": "V",
+      "band_huidig": null,
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 1,
+          "leeftijd": 38,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 1,
+          "leeftijd": 39,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 1,
+          "leeftijd": 40,
+          "band": "Senioren"
+        },
+        "2013-2014": {
+          "aantal": 1,
+          "leeftijd": 41,
+          "band": "Senioren"
+        },
+        "2014-2015": {
+          "aantal": 1,
+          "leeftijd": 42,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 1,
+          "leeftijd": 43,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 1,
+          "leeftijd": 44,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 1,
+          "leeftijd": 45,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1974,
+      "geslacht": "M",
+      "band_huidig": null,
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 1,
+          "leeftijd": 36,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 1,
+          "leeftijd": 37,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 1,
+          "leeftijd": 38,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 1,
+          "leeftijd": 42,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1974,
+      "geslacht": "V",
+      "band_huidig": null,
+      "seizoenen": {
+        "2015-2016": {
+          "aantal": 1,
+          "leeftijd": 41,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 1,
+          "leeftijd": 45,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 1,
+          "leeftijd": 46,
+          "band": "Senioren"
+        },
+        "2021-2022": {
+          "aantal": 1,
+          "leeftijd": 47,
+          "band": "Senioren"
+        },
+        "2022-2023": {
+          "aantal": 1,
+          "leeftijd": 48,
+          "band": "Senioren"
+        },
+        "2023-2024": {
+          "aantal": 1,
+          "leeftijd": 49,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1975,
+      "geslacht": "M",
+      "band_huidig": "Senioren",
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 2,
+          "leeftijd": 35,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 2,
+          "leeftijd": 36,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 2,
+          "leeftijd": 37,
+          "band": "Senioren"
+        },
+        "2013-2014": {
+          "aantal": 2,
+          "leeftijd": 38,
+          "band": "Senioren"
+        },
+        "2014-2015": {
+          "aantal": 2,
+          "leeftijd": 39,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 2,
+          "leeftijd": 40,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 2,
+          "leeftijd": 41,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 2,
+          "leeftijd": 42,
+          "band": "Senioren"
+        },
+        "2018-2019": {
+          "aantal": 2,
+          "leeftijd": 43,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 2,
+          "leeftijd": 44,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 2,
+          "leeftijd": 45,
+          "band": "Senioren"
+        },
+        "2021-2022": {
+          "aantal": 2,
+          "leeftijd": 46,
+          "band": "Senioren"
+        },
+        "2022-2023": {
+          "aantal": 1,
+          "leeftijd": 47,
+          "band": "Senioren"
+        },
+        "2023-2024": {
+          "aantal": 1,
+          "leeftijd": 48,
+          "band": "Senioren"
+        },
+        "2024-2025": {
+          "aantal": 1,
+          "leeftijd": 49,
+          "band": "Senioren"
+        },
+        "2025-2026": {
+          "aantal": 1,
+          "leeftijd": 50,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": -1,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1975,
+      "geslacht": "V",
+      "band_huidig": null,
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 1,
+          "leeftijd": 35,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 1,
+          "leeftijd": 36,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 1,
+          "leeftijd": 37,
+          "band": "Senioren"
+        },
+        "2013-2014": {
+          "aantal": 1,
+          "leeftijd": 38,
+          "band": "Senioren"
+        },
+        "2014-2015": {
+          "aantal": 1,
+          "leeftijd": 39,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 1,
+          "leeftijd": 40,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 1,
+          "leeftijd": 41,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 1,
+          "leeftijd": 42,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 1,
+          "leeftijd": 44,
+          "band": "Senioren"
+        },
+        "2021-2022": {
+          "aantal": 1,
+          "leeftijd": 46,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1976,
+      "geslacht": "V",
+      "band_huidig": null,
+      "seizoenen": {
+        "2020-2021": {
+          "aantal": 1,
+          "leeftijd": 44,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": null
+      }
+    },
+    {
+      "geboortejaar": 1977,
+      "geslacht": "M",
+      "band_huidig": null,
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 1,
+          "leeftijd": 33,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 1,
+          "leeftijd": 34,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 1,
+          "leeftijd": 35,
+          "band": "Senioren"
+        },
+        "2013-2014": {
+          "aantal": 1,
+          "leeftijd": 36,
+          "band": "Senioren"
+        },
+        "2014-2015": {
+          "aantal": 1,
+          "leeftijd": 37,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 1,
+          "leeftijd": 38,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 1,
+          "leeftijd": 39,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 1,
+          "leeftijd": 40,
+          "band": "Senioren"
+        },
+        "2018-2019": {
+          "aantal": 1,
+          "leeftijd": 41,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 1,
+          "leeftijd": 42,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 1,
+          "leeftijd": 43,
+          "band": "Senioren"
+        },
+        "2021-2022": {
+          "aantal": 1,
+          "leeftijd": 44,
+          "band": "Senioren"
+        },
+        "2023-2024": {
+          "aantal": 1,
+          "leeftijd": 46,
+          "band": "Senioren"
+        },
+        "2024-2025": {
+          "aantal": 1,
+          "leeftijd": 47,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1977,
+      "geslacht": "V",
+      "band_huidig": null,
+      "seizoenen": {
+        "2016-2017": {
+          "aantal": 1,
+          "leeftijd": 39,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 1,
+          "leeftijd": 42,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 1,
+          "leeftijd": 43,
+          "band": "Senioren"
+        },
+        "2021-2022": {
+          "aantal": 2,
+          "leeftijd": 44,
+          "band": "Senioren"
+        },
+        "2022-2023": {
+          "aantal": 1,
+          "leeftijd": 45,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": 0.5
+      }
+    },
+    {
+      "geboortejaar": 1978,
+      "geslacht": "M",
+      "band_huidig": null,
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 1,
+          "leeftijd": 32,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 1,
+          "leeftijd": 33,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 1,
+          "leeftijd": 34,
+          "band": "Senioren"
+        },
+        "2013-2014": {
+          "aantal": 1,
+          "leeftijd": 35,
+          "band": "Senioren"
+        },
+        "2014-2015": {
+          "aantal": 1,
+          "leeftijd": 36,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 1,
+          "leeftijd": 37,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 1,
+          "leeftijd": 38,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 1,
+          "leeftijd": 39,
+          "band": "Senioren"
+        },
+        "2018-2019": {
+          "aantal": 1,
+          "leeftijd": 40,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1978,
+      "geslacht": "V",
+      "band_huidig": null,
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 1,
+          "leeftijd": 32,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 1,
+          "leeftijd": 33,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 1,
+          "leeftijd": 34,
+          "band": "Senioren"
+        },
+        "2013-2014": {
+          "aantal": 1,
+          "leeftijd": 35,
+          "band": "Senioren"
+        },
+        "2014-2015": {
+          "aantal": 1,
+          "leeftijd": 36,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 1,
+          "leeftijd": 37,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 1,
+          "leeftijd": 38,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 1,
+          "leeftijd": 39,
+          "band": "Senioren"
+        },
+        "2018-2019": {
+          "aantal": 1,
+          "leeftijd": 40,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 1,
+          "leeftijd": 41,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1979,
+      "geslacht": "M",
+      "band_huidig": null,
+      "seizoenen": {
+        "2018-2019": {
+          "aantal": 1,
+          "leeftijd": 39,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 1,
+          "leeftijd": 40,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 1,
+          "leeftijd": 41,
+          "band": "Senioren"
+        },
+        "2021-2022": {
+          "aantal": 1,
+          "leeftijd": 42,
+          "band": "Senioren"
+        },
+        "2022-2023": {
+          "aantal": 1,
+          "leeftijd": 43,
+          "band": "Senioren"
+        },
+        "2023-2024": {
+          "aantal": 1,
+          "leeftijd": 44,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1979,
+      "geslacht": "V",
+      "band_huidig": null,
+      "seizoenen": {
+        "2017-2018": {
+          "aantal": 1,
+          "leeftijd": 38,
+          "band": "Senioren"
+        },
+        "2018-2019": {
+          "aantal": 1,
+          "leeftijd": 39,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 1,
+          "leeftijd": 40,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 1,
+          "leeftijd": 41,
+          "band": "Senioren"
+        },
+        "2021-2022": {
+          "aantal": 1,
+          "leeftijd": 42,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1980,
+      "geslacht": "M",
+      "band_huidig": null,
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 2,
+          "leeftijd": 30,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 2,
+          "leeftijd": 31,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 1,
+          "leeftijd": 32,
+          "band": "Senioren"
+        },
+        "2013-2014": {
+          "aantal": 2,
+          "leeftijd": 33,
+          "band": "Senioren"
+        },
+        "2014-2015": {
+          "aantal": 2,
+          "leeftijd": 34,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 2,
+          "leeftijd": 35,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 1,
+          "leeftijd": 36,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 2,
+          "leeftijd": 37,
+          "band": "Senioren"
+        },
+        "2018-2019": {
+          "aantal": 3,
+          "leeftijd": 38,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 2,
+          "leeftijd": 39,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 2,
+          "leeftijd": 40,
+          "band": "Senioren"
+        },
+        "2021-2022": {
+          "aantal": 2,
+          "leeftijd": 41,
+          "band": "Senioren"
+        },
+        "2022-2023": {
+          "aantal": 2,
+          "leeftijd": 42,
+          "band": "Senioren"
+        },
+        "2023-2024": {
+          "aantal": 2,
+          "leeftijd": 43,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1980,
+      "geslacht": "V",
+      "band_huidig": null,
+      "seizoenen": {
+        "2023-2024": {
+          "aantal": 1,
+          "leeftijd": 43,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": null
+      }
+    },
+    {
+      "geboortejaar": 1981,
+      "geslacht": "M",
+      "band_huidig": "Senioren",
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 2,
+          "leeftijd": 29,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 3,
+          "leeftijd": 30,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 3,
+          "leeftijd": 31,
+          "band": "Senioren"
+        },
+        "2013-2014": {
+          "aantal": 2,
+          "leeftijd": 32,
+          "band": "Senioren"
+        },
+        "2014-2015": {
+          "aantal": 2,
+          "leeftijd": 33,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 3,
+          "leeftijd": 34,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 3,
+          "leeftijd": 35,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 4,
+          "leeftijd": 36,
+          "band": "Senioren"
+        },
+        "2018-2019": {
+          "aantal": 2,
+          "leeftijd": 37,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 2,
+          "leeftijd": 38,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 2,
+          "leeftijd": 39,
+          "band": "Senioren"
+        },
+        "2021-2022": {
+          "aantal": 1,
+          "leeftijd": 40,
+          "band": "Senioren"
+        },
+        "2022-2023": {
+          "aantal": 2,
+          "leeftijd": 41,
+          "band": "Senioren"
+        },
+        "2023-2024": {
+          "aantal": 1,
+          "leeftijd": 42,
+          "band": "Senioren"
+        },
+        "2024-2025": {
+          "aantal": 1,
+          "leeftijd": 43,
+          "band": "Senioren"
+        },
+        "2025-2026": {
+          "aantal": 1,
+          "leeftijd": 44,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": -1,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1981,
+      "geslacht": "V",
+      "band_huidig": null,
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 2,
+          "leeftijd": 29,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 2,
+          "leeftijd": 30,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 1,
+          "leeftijd": 31,
+          "band": "Senioren"
+        },
+        "2013-2014": {
+          "aantal": 2,
+          "leeftijd": 32,
+          "band": "Senioren"
+        },
+        "2014-2015": {
+          "aantal": 2,
+          "leeftijd": 33,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 2,
+          "leeftijd": 34,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 2,
+          "leeftijd": 35,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 1,
+          "leeftijd": 36,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 1,
+          "leeftijd": 38,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 1,
+          "leeftijd": 39,
+          "band": "Senioren"
+        },
+        "2021-2022": {
+          "aantal": 1,
+          "leeftijd": 40,
+          "band": "Senioren"
+        },
+        "2022-2023": {
+          "aantal": 1,
+          "leeftijd": 41,
+          "band": "Senioren"
+        },
+        "2023-2024": {
+          "aantal": 1,
+          "leeftijd": 42,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": -1,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1982,
+      "geslacht": "M",
+      "band_huidig": null,
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 1,
+          "leeftijd": 28,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 1,
+          "leeftijd": 29,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 2,
+          "leeftijd": 30,
+          "band": "Senioren"
+        },
+        "2013-2014": {
+          "aantal": 1,
+          "leeftijd": 31,
+          "band": "Senioren"
+        },
+        "2014-2015": {
+          "aantal": 1,
+          "leeftijd": 32,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 1,
+          "leeftijd": 35,
+          "band": "Senioren"
+        },
+        "2018-2019": {
+          "aantal": 1,
+          "leeftijd": 36,
+          "band": "Senioren"
+        },
+        "2023-2024": {
+          "aantal": 1,
+          "leeftijd": 41,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1983,
+      "geslacht": "M",
+      "band_huidig": null,
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 2,
+          "leeftijd": 27,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 3,
+          "leeftijd": 28,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 3,
+          "leeftijd": 29,
+          "band": "Senioren"
+        },
+        "2013-2014": {
+          "aantal": 2,
+          "leeftijd": 30,
+          "band": "Senioren"
+        },
+        "2014-2015": {
+          "aantal": 2,
+          "leeftijd": 31,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 2,
+          "leeftijd": 32,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 1,
+          "leeftijd": 33,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 1,
+          "leeftijd": 34,
+          "band": "Senioren"
+        },
+        "2018-2019": {
+          "aantal": 1,
+          "leeftijd": 35,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 1,
+          "leeftijd": 36,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 1,
+          "leeftijd": 37,
+          "band": "Senioren"
+        },
+        "2021-2022": {
+          "aantal": 1,
+          "leeftijd": 38,
+          "band": "Senioren"
+        },
+        "2022-2023": {
+          "aantal": 1,
+          "leeftijd": 39,
+          "band": "Senioren"
+        },
+        "2023-2024": {
+          "aantal": 1,
+          "leeftijd": 40,
+          "band": "Senioren"
+        },
+        "2024-2025": {
+          "aantal": 1,
+          "leeftijd": 41,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": -1,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1983,
+      "geslacht": "V",
+      "band_huidig": null,
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 3,
+          "leeftijd": 27,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 3,
+          "leeftijd": 28,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 3,
+          "leeftijd": 29,
+          "band": "Senioren"
+        },
+        "2013-2014": {
+          "aantal": 3,
+          "leeftijd": 30,
+          "band": "Senioren"
+        },
+        "2014-2015": {
+          "aantal": 3,
+          "leeftijd": 31,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 2,
+          "leeftijd": 32,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 2,
+          "leeftijd": 33,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 2,
+          "leeftijd": 34,
+          "band": "Senioren"
+        },
+        "2018-2019": {
+          "aantal": 2,
+          "leeftijd": 35,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 3,
+          "leeftijd": 36,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 1,
+          "leeftijd": 37,
+          "band": "Senioren"
+        },
+        "2021-2022": {
+          "aantal": 1,
+          "leeftijd": 38,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": -2,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1984,
+      "geslacht": "M",
+      "band_huidig": "Senioren",
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 1,
+          "leeftijd": 26,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 2,
+          "leeftijd": 27,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 2,
+          "leeftijd": 28,
+          "band": "Senioren"
+        },
+        "2013-2014": {
+          "aantal": 1,
+          "leeftijd": 29,
+          "band": "Senioren"
+        },
+        "2014-2015": {
+          "aantal": 1,
+          "leeftijd": 30,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 1,
+          "leeftijd": 31,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 1,
+          "leeftijd": 32,
+          "band": "Senioren"
+        },
+        "2018-2019": {
+          "aantal": 1,
+          "leeftijd": 34,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 1,
+          "leeftijd": 35,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 1,
+          "leeftijd": 36,
+          "band": "Senioren"
+        },
+        "2021-2022": {
+          "aantal": 1,
+          "leeftijd": 37,
+          "band": "Senioren"
+        },
+        "2022-2023": {
+          "aantal": 1,
+          "leeftijd": 38,
+          "band": "Senioren"
+        },
+        "2023-2024": {
+          "aantal": 1,
+          "leeftijd": 39,
+          "band": "Senioren"
+        },
+        "2024-2025": {
+          "aantal": 1,
+          "leeftijd": 40,
+          "band": "Senioren"
+        },
+        "2025-2026": {
+          "aantal": 1,
+          "leeftijd": 41,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1985,
+      "geslacht": "M",
+      "band_huidig": null,
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 2,
+          "leeftijd": 25,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 1,
+          "leeftijd": 26,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 1,
+          "leeftijd": 27,
+          "band": "Senioren"
+        },
+        "2013-2014": {
+          "aantal": 1,
+          "leeftijd": 28,
+          "band": "Senioren"
+        },
+        "2014-2015": {
+          "aantal": 2,
+          "leeftijd": 29,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 2,
+          "leeftijd": 30,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 2,
+          "leeftijd": 31,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 1,
+          "leeftijd": 32,
+          "band": "Senioren"
+        },
+        "2018-2019": {
+          "aantal": 1,
+          "leeftijd": 33,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 2,
+          "leeftijd": 35,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1985,
+      "geslacht": "V",
+      "band_huidig": "Senioren",
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 1,
+          "leeftijd": 25,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 2,
+          "leeftijd": 26,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 2,
+          "leeftijd": 27,
+          "band": "Senioren"
+        },
+        "2013-2014": {
+          "aantal": 3,
+          "leeftijd": 28,
+          "band": "Senioren"
+        },
+        "2014-2015": {
+          "aantal": 3,
+          "leeftijd": 29,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 2,
+          "leeftijd": 30,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 2,
+          "leeftijd": 31,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 2,
+          "leeftijd": 32,
+          "band": "Senioren"
+        },
+        "2018-2019": {
+          "aantal": 1,
+          "leeftijd": 33,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 2,
+          "leeftijd": 34,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 2,
+          "leeftijd": 35,
+          "band": "Senioren"
+        },
+        "2021-2022": {
+          "aantal": 2,
+          "leeftijd": 36,
+          "band": "Senioren"
+        },
+        "2022-2023": {
+          "aantal": 1,
+          "leeftijd": 37,
+          "band": "Senioren"
+        },
+        "2023-2024": {
+          "aantal": 1,
+          "leeftijd": 38,
+          "band": "Senioren"
+        },
+        "2024-2025": {
+          "aantal": 1,
+          "leeftijd": 39,
+          "band": "Senioren"
+        },
+        "2025-2026": {
+          "aantal": 1,
+          "leeftijd": 40,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1986,
+      "geslacht": "M",
+      "band_huidig": null,
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 2,
+          "leeftijd": 24,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 4,
+          "leeftijd": 25,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 4,
+          "leeftijd": 26,
+          "band": "Senioren"
+        },
+        "2013-2014": {
+          "aantal": 4,
+          "leeftijd": 27,
+          "band": "Senioren"
+        },
+        "2014-2015": {
+          "aantal": 3,
+          "leeftijd": 28,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 2,
+          "leeftijd": 29,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 2,
+          "leeftijd": 30,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 1,
+          "leeftijd": 31,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 1,
+          "leeftijd": 34,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": -1,
+        "retentie_laatste": 0.5
+      }
+    },
+    {
+      "geboortejaar": 1986,
+      "geslacht": "V",
+      "band_huidig": "Senioren",
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 3,
+          "leeftijd": 24,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 3,
+          "leeftijd": 25,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 3,
+          "leeftijd": 26,
+          "band": "Senioren"
+        },
+        "2013-2014": {
+          "aantal": 2,
+          "leeftijd": 27,
+          "band": "Senioren"
+        },
+        "2014-2015": {
+          "aantal": 2,
+          "leeftijd": 28,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 2,
+          "leeftijd": 29,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 2,
+          "leeftijd": 30,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 2,
+          "leeftijd": 31,
+          "band": "Senioren"
+        },
+        "2018-2019": {
+          "aantal": 1,
+          "leeftijd": 32,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 1,
+          "leeftijd": 33,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 1,
+          "leeftijd": 34,
+          "band": "Senioren"
+        },
+        "2021-2022": {
+          "aantal": 1,
+          "leeftijd": 35,
+          "band": "Senioren"
+        },
+        "2022-2023": {
+          "aantal": 1,
+          "leeftijd": 36,
+          "band": "Senioren"
+        },
+        "2023-2024": {
+          "aantal": 1,
+          "leeftijd": 37,
+          "band": "Senioren"
+        },
+        "2024-2025": {
+          "aantal": 1,
+          "leeftijd": 38,
+          "band": "Senioren"
+        },
+        "2025-2026": {
+          "aantal": 1,
+          "leeftijd": 39,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": -2,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1987,
+      "geslacht": "M",
+      "band_huidig": null,
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 1,
+          "leeftijd": 23,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 1,
+          "leeftijd": 24,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 1,
+          "leeftijd": 25,
+          "band": "Senioren"
+        },
+        "2013-2014": {
+          "aantal": 1,
+          "leeftijd": 26,
+          "band": "Senioren"
+        },
+        "2014-2015": {
+          "aantal": 1,
+          "leeftijd": 27,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 1,
+          "leeftijd": 28,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1987,
+      "geslacht": "V",
+      "band_huidig": "Senioren",
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 3,
+          "leeftijd": 23,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 3,
+          "leeftijd": 24,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 3,
+          "leeftijd": 25,
+          "band": "Senioren"
+        },
+        "2013-2014": {
+          "aantal": 2,
+          "leeftijd": 26,
+          "band": "Senioren"
+        },
+        "2014-2015": {
+          "aantal": 3,
+          "leeftijd": 27,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 2,
+          "leeftijd": 28,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 2,
+          "leeftijd": 29,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 1,
+          "leeftijd": 30,
+          "band": "Senioren"
+        },
+        "2018-2019": {
+          "aantal": 2,
+          "leeftijd": 31,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 3,
+          "leeftijd": 32,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 2,
+          "leeftijd": 33,
+          "band": "Senioren"
+        },
+        "2021-2022": {
+          "aantal": 3,
+          "leeftijd": 34,
+          "band": "Senioren"
+        },
+        "2022-2023": {
+          "aantal": 2,
+          "leeftijd": 35,
+          "band": "Senioren"
+        },
+        "2023-2024": {
+          "aantal": 2,
+          "leeftijd": 36,
+          "band": "Senioren"
+        },
+        "2024-2025": {
+          "aantal": 1,
+          "leeftijd": 37,
+          "band": "Senioren"
+        },
+        "2025-2026": {
+          "aantal": 2,
+          "leeftijd": 38,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": -1,
+        "retentie_laatste": 2.0
+      }
+    },
+    {
+      "geboortejaar": 1988,
+      "geslacht": "M",
+      "band_huidig": "Senioren",
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 3,
+          "leeftijd": 22,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 3,
+          "leeftijd": 23,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 3,
+          "leeftijd": 24,
+          "band": "Senioren"
+        },
+        "2013-2014": {
+          "aantal": 2,
+          "leeftijd": 25,
+          "band": "Senioren"
+        },
+        "2014-2015": {
+          "aantal": 2,
+          "leeftijd": 26,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 1,
+          "leeftijd": 27,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 3,
+          "leeftijd": 28,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 3,
+          "leeftijd": 29,
+          "band": "Senioren"
+        },
+        "2018-2019": {
+          "aantal": 1,
+          "leeftijd": 30,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 2,
+          "leeftijd": 31,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 1,
+          "leeftijd": 32,
+          "band": "Senioren"
+        },
+        "2021-2022": {
+          "aantal": 1,
+          "leeftijd": 33,
+          "band": "Senioren"
+        },
+        "2022-2023": {
+          "aantal": 1,
+          "leeftijd": 34,
+          "band": "Senioren"
+        },
+        "2023-2024": {
+          "aantal": 1,
+          "leeftijd": 35,
+          "band": "Senioren"
+        },
+        "2024-2025": {
+          "aantal": 2,
+          "leeftijd": 36,
+          "band": "Senioren"
+        },
+        "2025-2026": {
+          "aantal": 2,
+          "leeftijd": 37,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": -1,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1988,
+      "geslacht": "V",
+      "band_huidig": "Senioren",
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 1,
+          "leeftijd": 22,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 1,
+          "leeftijd": 23,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 1,
+          "leeftijd": 24,
+          "band": "Senioren"
+        },
+        "2013-2014": {
+          "aantal": 2,
+          "leeftijd": 25,
+          "band": "Senioren"
+        },
+        "2014-2015": {
+          "aantal": 2,
+          "leeftijd": 26,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 2,
+          "leeftijd": 27,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 2,
+          "leeftijd": 28,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 2,
+          "leeftijd": 29,
+          "band": "Senioren"
+        },
+        "2018-2019": {
+          "aantal": 1,
+          "leeftijd": 30,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 1,
+          "leeftijd": 31,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 1,
+          "leeftijd": 32,
+          "band": "Senioren"
+        },
+        "2021-2022": {
+          "aantal": 1,
+          "leeftijd": 33,
+          "band": "Senioren"
+        },
+        "2022-2023": {
+          "aantal": 1,
+          "leeftijd": 34,
+          "band": "Senioren"
+        },
+        "2023-2024": {
+          "aantal": 1,
+          "leeftijd": 35,
+          "band": "Senioren"
+        },
+        "2024-2025": {
+          "aantal": 1,
+          "leeftijd": 36,
+          "band": "Senioren"
+        },
+        "2025-2026": {
+          "aantal": 1,
+          "leeftijd": 37,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1989,
+      "geslacht": "M",
+      "band_huidig": null,
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 2,
+          "leeftijd": 21,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 2,
+          "leeftijd": 22,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 2,
+          "leeftijd": 23,
+          "band": "Senioren"
+        },
+        "2013-2014": {
+          "aantal": 2,
+          "leeftijd": 24,
+          "band": "Senioren"
+        },
+        "2014-2015": {
+          "aantal": 2,
+          "leeftijd": 25,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 1,
+          "leeftijd": 26,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 2,
+          "leeftijd": 27,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 2,
+          "leeftijd": 28,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 1,
+          "leeftijd": 30,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": -1,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1989,
+      "geslacht": "V",
+      "band_huidig": "Senioren",
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 2,
+          "leeftijd": 21,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 2,
+          "leeftijd": 22,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 2,
+          "leeftijd": 23,
+          "band": "Senioren"
+        },
+        "2013-2014": {
+          "aantal": 2,
+          "leeftijd": 24,
+          "band": "Senioren"
+        },
+        "2014-2015": {
+          "aantal": 2,
+          "leeftijd": 25,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 2,
+          "leeftijd": 26,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 3,
+          "leeftijd": 27,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 2,
+          "leeftijd": 28,
+          "band": "Senioren"
+        },
+        "2024-2025": {
+          "aantal": 1,
+          "leeftijd": 35,
+          "band": "Senioren"
+        },
+        "2025-2026": {
+          "aantal": 1,
+          "leeftijd": 36,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": -1,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1990,
+      "geslacht": "M",
+      "band_huidig": null,
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 8,
+          "leeftijd": 20,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 8,
+          "leeftijd": 21,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 7,
+          "leeftijd": 22,
+          "band": "Senioren"
+        },
+        "2013-2014": {
+          "aantal": 7,
+          "leeftijd": 23,
+          "band": "Senioren"
+        },
+        "2014-2015": {
+          "aantal": 7,
+          "leeftijd": 24,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 7,
+          "leeftijd": 25,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 8,
+          "leeftijd": 26,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 9,
+          "leeftijd": 27,
+          "band": "Senioren"
+        },
+        "2018-2019": {
+          "aantal": 6,
+          "leeftijd": 28,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 8,
+          "leeftijd": 29,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 5,
+          "leeftijd": 30,
+          "band": "Senioren"
+        },
+        "2021-2022": {
+          "aantal": 4,
+          "leeftijd": 31,
+          "band": "Senioren"
+        },
+        "2022-2023": {
+          "aantal": 3,
+          "leeftijd": 32,
+          "band": "Senioren"
+        },
+        "2023-2024": {
+          "aantal": 3,
+          "leeftijd": 33,
+          "band": "Senioren"
+        },
+        "2024-2025": {
+          "aantal": 1,
+          "leeftijd": 34,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": -7,
+        "retentie_laatste": 0.33
+      }
+    },
+    {
+      "geboortejaar": 1990,
+      "geslacht": "V",
+      "band_huidig": "Senioren",
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 3,
+          "leeftijd": 20,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 3,
+          "leeftijd": 21,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 3,
+          "leeftijd": 22,
+          "band": "Senioren"
+        },
+        "2013-2014": {
+          "aantal": 3,
+          "leeftijd": 23,
+          "band": "Senioren"
+        },
+        "2014-2015": {
+          "aantal": 3,
+          "leeftijd": 24,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 2,
+          "leeftijd": 25,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 3,
+          "leeftijd": 26,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 3,
+          "leeftijd": 27,
+          "band": "Senioren"
+        },
+        "2018-2019": {
+          "aantal": 3,
+          "leeftijd": 28,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 2,
+          "leeftijd": 29,
+          "band": "Senioren"
+        },
+        "2021-2022": {
+          "aantal": 2,
+          "leeftijd": 31,
+          "band": "Senioren"
+        },
+        "2022-2023": {
+          "aantal": 1,
+          "leeftijd": 32,
+          "band": "Senioren"
+        },
+        "2023-2024": {
+          "aantal": 3,
+          "leeftijd": 33,
+          "band": "Senioren"
+        },
+        "2024-2025": {
+          "aantal": 2,
+          "leeftijd": 34,
+          "band": "Senioren"
+        },
+        "2025-2026": {
+          "aantal": 1,
+          "leeftijd": 35,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": -2,
+        "retentie_laatste": 0.5
+      }
+    },
+    {
+      "geboortejaar": 1991,
+      "geslacht": "M",
+      "band_huidig": null,
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 5,
+          "leeftijd": 19,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 6,
+          "leeftijd": 20,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 5,
+          "leeftijd": 21,
+          "band": "Senioren"
+        },
+        "2013-2014": {
+          "aantal": 5,
+          "leeftijd": 22,
+          "band": "Senioren"
+        },
+        "2014-2015": {
+          "aantal": 4,
+          "leeftijd": 23,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 6,
+          "leeftijd": 24,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 4,
+          "leeftijd": 25,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 5,
+          "leeftijd": 26,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 5,
+          "leeftijd": 28,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 1,
+          "leeftijd": 29,
+          "band": "Senioren"
+        },
+        "2021-2022": {
+          "aantal": 1,
+          "leeftijd": 30,
+          "band": "Senioren"
+        },
+        "2022-2023": {
+          "aantal": 1,
+          "leeftijd": 31,
+          "band": "Senioren"
+        },
+        "2023-2024": {
+          "aantal": 1,
+          "leeftijd": 32,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": -4,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1991,
+      "geslacht": "V",
+      "band_huidig": null,
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 2,
+          "leeftijd": 19,
+          "band": "Senioren"
+        },
+        "2011-2012": {
+          "aantal": 2,
+          "leeftijd": 20,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 3,
+          "leeftijd": 21,
+          "band": "Senioren"
+        },
+        "2013-2014": {
+          "aantal": 3,
+          "leeftijd": 22,
+          "band": "Senioren"
+        },
+        "2014-2015": {
+          "aantal": 3,
+          "leeftijd": 23,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 3,
+          "leeftijd": 24,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 2,
+          "leeftijd": 25,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 3,
+          "leeftijd": 26,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 1,
+          "leeftijd": 28,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": -1,
+        "retentie_laatste": 1.5
+      }
+    },
+    {
+      "geboortejaar": 1992,
+      "geslacht": "M",
+      "band_huidig": null,
+      "seizoenen": {
+        "2015-2016": {
+          "aantal": 1,
+          "leeftijd": 23,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 1,
+          "leeftijd": 24,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1992,
+      "geslacht": "V",
+      "band_huidig": "Senioren",
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 8,
+          "leeftijd": 18,
+          "band": "Rood"
+        },
+        "2011-2012": {
+          "aantal": 7,
+          "leeftijd": 19,
+          "band": "Senioren"
+        },
+        "2012-2013": {
+          "aantal": 8,
+          "leeftijd": 20,
+          "band": "Senioren"
+        },
+        "2013-2014": {
+          "aantal": 8,
+          "leeftijd": 21,
+          "band": "Senioren"
+        },
+        "2014-2015": {
+          "aantal": 8,
+          "leeftijd": 22,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 9,
+          "leeftijd": 23,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 8,
+          "leeftijd": 24,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 8,
+          "leeftijd": 25,
+          "band": "Senioren"
+        },
+        "2018-2019": {
+          "aantal": 5,
+          "leeftijd": 26,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 3,
+          "leeftijd": 27,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 4,
+          "leeftijd": 28,
+          "band": "Senioren"
+        },
+        "2021-2022": {
+          "aantal": 3,
+          "leeftijd": 29,
+          "band": "Senioren"
+        },
+        "2022-2023": {
+          "aantal": 4,
+          "leeftijd": 30,
+          "band": "Senioren"
+        },
+        "2023-2024": {
+          "aantal": 4,
+          "leeftijd": 31,
+          "band": "Senioren"
+        },
+        "2024-2025": {
+          "aantal": 2,
+          "leeftijd": 32,
+          "band": "Senioren"
+        },
+        "2025-2026": {
+          "aantal": 2,
+          "leeftijd": 33,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": -6,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1993,
+      "geslacht": "M",
+      "band_huidig": null,
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 2,
+          "leeftijd": 17,
+          "band": "Rood"
+        },
+        "2011-2012": {
+          "aantal": 2,
+          "leeftijd": 18,
+          "band": "Rood"
+        },
+        "2012-2013": {
+          "aantal": 2,
+          "leeftijd": 19,
+          "band": "Senioren"
+        },
+        "2013-2014": {
+          "aantal": 1,
+          "leeftijd": 20,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 1,
+          "leeftijd": 23,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 1,
+          "leeftijd": 27,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": -1,
+        "retentie_laatste": 0.5
+      }
+    },
+    {
+      "geboortejaar": 1993,
+      "geslacht": "V",
+      "band_huidig": null,
+      "seizoenen": {
+        "2016-2017": {
+          "aantal": 1,
+          "leeftijd": 23,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 1,
+          "leeftijd": 24,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1994,
+      "geslacht": "M",
+      "band_huidig": "Senioren",
+      "seizoenen": {
+        "2023-2024": {
+          "aantal": 1,
+          "leeftijd": 29,
+          "band": "Senioren"
+        },
+        "2024-2025": {
+          "aantal": 1,
+          "leeftijd": 30,
+          "band": "Senioren"
+        },
+        "2025-2026": {
+          "aantal": 1,
+          "leeftijd": 31,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1994,
+      "geslacht": "V",
+      "band_huidig": "Senioren",
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 2,
+          "leeftijd": 16,
+          "band": "Rood"
+        },
+        "2011-2012": {
+          "aantal": 2,
+          "leeftijd": 17,
+          "band": "Rood"
+        },
+        "2012-2013": {
+          "aantal": 2,
+          "leeftijd": 18,
+          "band": "Rood"
+        },
+        "2013-2014": {
+          "aantal": 2,
+          "leeftijd": 19,
+          "band": "Senioren"
+        },
+        "2014-2015": {
+          "aantal": 2,
+          "leeftijd": 20,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 2,
+          "leeftijd": 21,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 2,
+          "leeftijd": 22,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 2,
+          "leeftijd": 23,
+          "band": "Senioren"
+        },
+        "2018-2019": {
+          "aantal": 2,
+          "leeftijd": 24,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 2,
+          "leeftijd": 25,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 2,
+          "leeftijd": 26,
+          "band": "Senioren"
+        },
+        "2021-2022": {
+          "aantal": 1,
+          "leeftijd": 27,
+          "band": "Senioren"
+        },
+        "2022-2023": {
+          "aantal": 1,
+          "leeftijd": 28,
+          "band": "Senioren"
+        },
+        "2023-2024": {
+          "aantal": 1,
+          "leeftijd": 29,
+          "band": "Senioren"
+        },
+        "2025-2026": {
+          "aantal": 1,
+          "leeftijd": 31,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": -1,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1995,
+      "geslacht": "M",
+      "band_huidig": "Senioren",
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 2,
+          "leeftijd": 15,
+          "band": "Oranje"
+        },
+        "2011-2012": {
+          "aantal": 4,
+          "leeftijd": 16,
+          "band": "Rood"
+        },
+        "2012-2013": {
+          "aantal": 3,
+          "leeftijd": 17,
+          "band": "Rood"
+        },
+        "2013-2014": {
+          "aantal": 3,
+          "leeftijd": 18,
+          "band": "Rood"
+        },
+        "2014-2015": {
+          "aantal": 3,
+          "leeftijd": 19,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 3,
+          "leeftijd": 20,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 3,
+          "leeftijd": 21,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 3,
+          "leeftijd": 22,
+          "band": "Senioren"
+        },
+        "2018-2019": {
+          "aantal": 2,
+          "leeftijd": 23,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 3,
+          "leeftijd": 24,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 2,
+          "leeftijd": 25,
+          "band": "Senioren"
+        },
+        "2021-2022": {
+          "aantal": 2,
+          "leeftijd": 26,
+          "band": "Senioren"
+        },
+        "2022-2023": {
+          "aantal": 1,
+          "leeftijd": 27,
+          "band": "Senioren"
+        },
+        "2023-2024": {
+          "aantal": 1,
+          "leeftijd": 28,
+          "band": "Senioren"
+        },
+        "2024-2025": {
+          "aantal": 1,
+          "leeftijd": 29,
+          "band": "Senioren"
+        },
+        "2025-2026": {
+          "aantal": 2,
+          "leeftijd": 30,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": 2.0
+      }
+    },
+    {
+      "geboortejaar": 1995,
+      "geslacht": "V",
+      "band_huidig": "Senioren",
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 4,
+          "leeftijd": 15,
+          "band": "Oranje"
+        },
+        "2011-2012": {
+          "aantal": 4,
+          "leeftijd": 16,
+          "band": "Rood"
+        },
+        "2012-2013": {
+          "aantal": 4,
+          "leeftijd": 17,
+          "band": "Rood"
+        },
+        "2013-2014": {
+          "aantal": 4,
+          "leeftijd": 18,
+          "band": "Rood"
+        },
+        "2014-2015": {
+          "aantal": 4,
+          "leeftijd": 19,
+          "band": "Senioren"
+        },
+        "2015-2016": {
+          "aantal": 4,
+          "leeftijd": 20,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 3,
+          "leeftijd": 21,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 5,
+          "leeftijd": 22,
+          "band": "Senioren"
+        },
+        "2018-2019": {
+          "aantal": 2,
+          "leeftijd": 23,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 3,
+          "leeftijd": 24,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 1,
+          "leeftijd": 25,
+          "band": "Senioren"
+        },
+        "2021-2022": {
+          "aantal": 1,
+          "leeftijd": 26,
+          "band": "Senioren"
+        },
+        "2022-2023": {
+          "aantal": 1,
+          "leeftijd": 27,
+          "band": "Senioren"
+        },
+        "2023-2024": {
+          "aantal": 1,
+          "leeftijd": 28,
+          "band": "Senioren"
+        },
+        "2024-2025": {
+          "aantal": 1,
+          "leeftijd": 29,
+          "band": "Senioren"
+        },
+        "2025-2026": {
+          "aantal": 1,
+          "leeftijd": 30,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": -3,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1996,
+      "geslacht": "M",
+      "band_huidig": "Senioren",
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 6,
+          "leeftijd": 14,
+          "band": "Oranje"
+        },
+        "2011-2012": {
+          "aantal": 7,
+          "leeftijd": 15,
+          "band": "Oranje"
+        },
+        "2012-2013": {
+          "aantal": 7,
+          "leeftijd": 16,
+          "band": "Rood"
+        },
+        "2013-2014": {
+          "aantal": 7,
+          "leeftijd": 17,
+          "band": "Rood"
+        },
+        "2014-2015": {
+          "aantal": 7,
+          "leeftijd": 18,
+          "band": "Rood"
+        },
+        "2015-2016": {
+          "aantal": 8,
+          "leeftijd": 19,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 7,
+          "leeftijd": 20,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 6,
+          "leeftijd": 21,
+          "band": "Senioren"
+        },
+        "2018-2019": {
+          "aantal": 4,
+          "leeftijd": 22,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 6,
+          "leeftijd": 23,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 6,
+          "leeftijd": 24,
+          "band": "Senioren"
+        },
+        "2021-2022": {
+          "aantal": 4,
+          "leeftijd": 25,
+          "band": "Senioren"
+        },
+        "2022-2023": {
+          "aantal": 3,
+          "leeftijd": 26,
+          "band": "Senioren"
+        },
+        "2023-2024": {
+          "aantal": 2,
+          "leeftijd": 27,
+          "band": "Senioren"
+        },
+        "2024-2025": {
+          "aantal": 2,
+          "leeftijd": 28,
+          "band": "Senioren"
+        },
+        "2025-2026": {
+          "aantal": 2,
+          "leeftijd": 29,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": -4,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1996,
+      "geslacht": "V",
+      "band_huidig": "Senioren",
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 6,
+          "leeftijd": 14,
+          "band": "Oranje"
+        },
+        "2011-2012": {
+          "aantal": 6,
+          "leeftijd": 15,
+          "band": "Oranje"
+        },
+        "2012-2013": {
+          "aantal": 6,
+          "leeftijd": 16,
+          "band": "Rood"
+        },
+        "2013-2014": {
+          "aantal": 6,
+          "leeftijd": 17,
+          "band": "Rood"
+        },
+        "2014-2015": {
+          "aantal": 6,
+          "leeftijd": 18,
+          "band": "Rood"
+        },
+        "2015-2016": {
+          "aantal": 6,
+          "leeftijd": 19,
+          "band": "Senioren"
+        },
+        "2016-2017": {
+          "aantal": 4,
+          "leeftijd": 20,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 1,
+          "leeftijd": 21,
+          "band": "Senioren"
+        },
+        "2018-2019": {
+          "aantal": 2,
+          "leeftijd": 22,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 2,
+          "leeftijd": 23,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 3,
+          "leeftijd": 24,
+          "band": "Senioren"
+        },
+        "2021-2022": {
+          "aantal": 2,
+          "leeftijd": 25,
+          "band": "Senioren"
+        },
+        "2022-2023": {
+          "aantal": 2,
+          "leeftijd": 26,
+          "band": "Senioren"
+        },
+        "2023-2024": {
+          "aantal": 2,
+          "leeftijd": 27,
+          "band": "Senioren"
+        },
+        "2024-2025": {
+          "aantal": 2,
+          "leeftijd": 28,
+          "band": "Senioren"
+        },
+        "2025-2026": {
+          "aantal": 1,
+          "leeftijd": 29,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": -5,
+        "retentie_laatste": 0.5
+      }
+    },
+    {
+      "geboortejaar": 1997,
+      "geslacht": "M",
+      "band_huidig": "Senioren",
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 3,
+          "leeftijd": 13,
+          "band": "Oranje"
+        },
+        "2011-2012": {
+          "aantal": 3,
+          "leeftijd": 14,
+          "band": "Oranje"
+        },
+        "2012-2013": {
+          "aantal": 3,
+          "leeftijd": 15,
+          "band": "Oranje"
+        },
+        "2013-2014": {
+          "aantal": 3,
+          "leeftijd": 16,
+          "band": "Rood"
+        },
+        "2014-2015": {
+          "aantal": 3,
+          "leeftijd": 17,
+          "band": "Rood"
+        },
+        "2015-2016": {
+          "aantal": 3,
+          "leeftijd": 18,
+          "band": "Rood"
+        },
+        "2016-2017": {
+          "aantal": 2,
+          "leeftijd": 19,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 3,
+          "leeftijd": 20,
+          "band": "Senioren"
+        },
+        "2018-2019": {
+          "aantal": 1,
+          "leeftijd": 21,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 3,
+          "leeftijd": 22,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 1,
+          "leeftijd": 23,
+          "band": "Senioren"
+        },
+        "2021-2022": {
+          "aantal": 1,
+          "leeftijd": 24,
+          "band": "Senioren"
+        },
+        "2022-2023": {
+          "aantal": 1,
+          "leeftijd": 25,
+          "band": "Senioren"
+        },
+        "2023-2024": {
+          "aantal": 1,
+          "leeftijd": 26,
+          "band": "Senioren"
+        },
+        "2024-2025": {
+          "aantal": 1,
+          "leeftijd": 27,
+          "band": "Senioren"
+        },
+        "2025-2026": {
+          "aantal": 1,
+          "leeftijd": 28,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": -2,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1997,
+      "geslacht": "V",
+      "band_huidig": null,
+      "seizoenen": {
+        "2016-2017": {
+          "aantal": 1,
+          "leeftijd": 19,
+          "band": "Senioren"
+        },
+        "2017-2018": {
+          "aantal": 1,
+          "leeftijd": 20,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1998,
+      "geslacht": "M",
+      "band_huidig": "Senioren",
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 5,
+          "leeftijd": 12,
+          "band": "Geel"
+        },
+        "2011-2012": {
+          "aantal": 5,
+          "leeftijd": 13,
+          "band": "Oranje"
+        },
+        "2012-2013": {
+          "aantal": 5,
+          "leeftijd": 14,
+          "band": "Oranje"
+        },
+        "2013-2014": {
+          "aantal": 5,
+          "leeftijd": 15,
+          "band": "Oranje"
+        },
+        "2014-2015": {
+          "aantal": 5,
+          "leeftijd": 16,
+          "band": "Rood"
+        },
+        "2015-2016": {
+          "aantal": 5,
+          "leeftijd": 17,
+          "band": "Rood"
+        },
+        "2017-2018": {
+          "aantal": 3,
+          "leeftijd": 19,
+          "band": "Senioren"
+        },
+        "2018-2019": {
+          "aantal": 3,
+          "leeftijd": 20,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 4,
+          "leeftijd": 21,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 4,
+          "leeftijd": 22,
+          "band": "Senioren"
+        },
+        "2021-2022": {
+          "aantal": 3,
+          "leeftijd": 23,
+          "band": "Senioren"
+        },
+        "2022-2023": {
+          "aantal": 2,
+          "leeftijd": 24,
+          "band": "Senioren"
+        },
+        "2023-2024": {
+          "aantal": 3,
+          "leeftijd": 25,
+          "band": "Senioren"
+        },
+        "2024-2025": {
+          "aantal": 3,
+          "leeftijd": 26,
+          "band": "Senioren"
+        },
+        "2025-2026": {
+          "aantal": 2,
+          "leeftijd": 27,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": -3,
+        "retentie_laatste": 0.67
+      }
+    },
+    {
+      "geboortejaar": 1998,
+      "geslacht": "V",
+      "band_huidig": "Senioren",
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 3,
+          "leeftijd": 12,
+          "band": "Geel"
+        },
+        "2011-2012": {
+          "aantal": 3,
+          "leeftijd": 13,
+          "band": "Oranje"
+        },
+        "2012-2013": {
+          "aantal": 7,
+          "leeftijd": 14,
+          "band": "Oranje"
+        },
+        "2013-2014": {
+          "aantal": 7,
+          "leeftijd": 15,
+          "band": "Oranje"
+        },
+        "2014-2015": {
+          "aantal": 7,
+          "leeftijd": 16,
+          "band": "Rood"
+        },
+        "2015-2016": {
+          "aantal": 6,
+          "leeftijd": 17,
+          "band": "Rood"
+        },
+        "2016-2017": {
+          "aantal": 7,
+          "leeftijd": 18,
+          "band": "Rood"
+        },
+        "2017-2018": {
+          "aantal": 7,
+          "leeftijd": 19,
+          "band": "Senioren"
+        },
+        "2018-2019": {
+          "aantal": 5,
+          "leeftijd": 20,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 5,
+          "leeftijd": 21,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 4,
+          "leeftijd": 22,
+          "band": "Senioren"
+        },
+        "2021-2022": {
+          "aantal": 5,
+          "leeftijd": 23,
+          "band": "Senioren"
+        },
+        "2022-2023": {
+          "aantal": 3,
+          "leeftijd": 24,
+          "band": "Senioren"
+        },
+        "2023-2024": {
+          "aantal": 3,
+          "leeftijd": 25,
+          "band": "Senioren"
+        },
+        "2024-2025": {
+          "aantal": 2,
+          "leeftijd": 26,
+          "band": "Senioren"
+        },
+        "2025-2026": {
+          "aantal": 2,
+          "leeftijd": 27,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": -1,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1999,
+      "geslacht": "M",
+      "band_huidig": "Senioren",
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 3,
+          "leeftijd": 11,
+          "band": "Geel"
+        },
+        "2011-2012": {
+          "aantal": 3,
+          "leeftijd": 12,
+          "band": "Geel"
+        },
+        "2012-2013": {
+          "aantal": 4,
+          "leeftijd": 13,
+          "band": "Oranje"
+        },
+        "2013-2014": {
+          "aantal": 4,
+          "leeftijd": 14,
+          "band": "Oranje"
+        },
+        "2014-2015": {
+          "aantal": 5,
+          "leeftijd": 15,
+          "band": "Oranje"
+        },
+        "2015-2016": {
+          "aantal": 5,
+          "leeftijd": 16,
+          "band": "Rood"
+        },
+        "2016-2017": {
+          "aantal": 1,
+          "leeftijd": 17,
+          "band": "Rood"
+        },
+        "2017-2018": {
+          "aantal": 5,
+          "leeftijd": 18,
+          "band": "Rood"
+        },
+        "2018-2019": {
+          "aantal": 5,
+          "leeftijd": 19,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 3,
+          "leeftijd": 20,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 2,
+          "leeftijd": 21,
+          "band": "Senioren"
+        },
+        "2021-2022": {
+          "aantal": 2,
+          "leeftijd": 22,
+          "band": "Senioren"
+        },
+        "2022-2023": {
+          "aantal": 2,
+          "leeftijd": 23,
+          "band": "Senioren"
+        },
+        "2023-2024": {
+          "aantal": 2,
+          "leeftijd": 24,
+          "band": "Senioren"
+        },
+        "2024-2025": {
+          "aantal": 2,
+          "leeftijd": 25,
+          "band": "Senioren"
+        },
+        "2025-2026": {
+          "aantal": 2,
+          "leeftijd": 26,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": -1,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 1999,
+      "geslacht": "V",
+      "band_huidig": "Senioren",
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 5,
+          "leeftijd": 11,
+          "band": "Geel"
+        },
+        "2011-2012": {
+          "aantal": 5,
+          "leeftijd": 12,
+          "band": "Geel"
+        },
+        "2012-2013": {
+          "aantal": 5,
+          "leeftijd": 13,
+          "band": "Oranje"
+        },
+        "2013-2014": {
+          "aantal": 5,
+          "leeftijd": 14,
+          "band": "Oranje"
+        },
+        "2014-2015": {
+          "aantal": 5,
+          "leeftijd": 15,
+          "band": "Oranje"
+        },
+        "2015-2016": {
+          "aantal": 6,
+          "leeftijd": 16,
+          "band": "Rood"
+        },
+        "2016-2017": {
+          "aantal": 7,
+          "leeftijd": 17,
+          "band": "Rood"
+        },
+        "2017-2018": {
+          "aantal": 6,
+          "leeftijd": 18,
+          "band": "Rood"
+        },
+        "2018-2019": {
+          "aantal": 3,
+          "leeftijd": 19,
+          "band": "Senioren"
+        },
+        "2019-2020": {
+          "aantal": 4,
+          "leeftijd": 20,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 3,
+          "leeftijd": 21,
+          "band": "Senioren"
+        },
+        "2021-2022": {
+          "aantal": 5,
+          "leeftijd": 22,
+          "band": "Senioren"
+        },
+        "2022-2023": {
+          "aantal": 2,
+          "leeftijd": 23,
+          "band": "Senioren"
+        },
+        "2025-2026": {
+          "aantal": 1,
+          "leeftijd": 26,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": -4,
+        "retentie_laatste": 0.4
+      }
+    },
+    {
+      "geboortejaar": 2000,
+      "geslacht": "M",
+      "band_huidig": "Senioren",
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 7,
+          "leeftijd": 10,
+          "band": "Geel"
+        },
+        "2011-2012": {
+          "aantal": 8,
+          "leeftijd": 11,
+          "band": "Geel"
+        },
+        "2012-2013": {
+          "aantal": 9,
+          "leeftijd": 12,
+          "band": "Geel"
+        },
+        "2013-2014": {
+          "aantal": 9,
+          "leeftijd": 13,
+          "band": "Oranje"
+        },
+        "2014-2015": {
+          "aantal": 10,
+          "leeftijd": 14,
+          "band": "Oranje"
+        },
+        "2015-2016": {
+          "aantal": 10,
+          "leeftijd": 15,
+          "band": "Oranje"
+        },
+        "2016-2017": {
+          "aantal": 4,
+          "leeftijd": 16,
+          "band": "Rood"
+        },
+        "2017-2018": {
+          "aantal": 9,
+          "leeftijd": 17,
+          "band": "Rood"
+        },
+        "2018-2019": {
+          "aantal": 8,
+          "leeftijd": 18,
+          "band": "Rood"
+        },
+        "2019-2020": {
+          "aantal": 9,
+          "leeftijd": 19,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 7,
+          "leeftijd": 20,
+          "band": "Senioren"
+        },
+        "2021-2022": {
+          "aantal": 4,
+          "leeftijd": 21,
+          "band": "Senioren"
+        },
+        "2022-2023": {
+          "aantal": 3,
+          "leeftijd": 22,
+          "band": "Senioren"
+        },
+        "2023-2024": {
+          "aantal": 3,
+          "leeftijd": 23,
+          "band": "Senioren"
+        },
+        "2024-2025": {
+          "aantal": 3,
+          "leeftijd": 24,
+          "band": "Senioren"
+        },
+        "2025-2026": {
+          "aantal": 3,
+          "leeftijd": 25,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": -4,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 2000,
+      "geslacht": "V",
+      "band_huidig": "Senioren",
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 5,
+          "leeftijd": 10,
+          "band": "Geel"
+        },
+        "2011-2012": {
+          "aantal": 6,
+          "leeftijd": 11,
+          "band": "Geel"
+        },
+        "2012-2013": {
+          "aantal": 7,
+          "leeftijd": 12,
+          "band": "Geel"
+        },
+        "2013-2014": {
+          "aantal": 7,
+          "leeftijd": 13,
+          "band": "Oranje"
+        },
+        "2014-2015": {
+          "aantal": 9,
+          "leeftijd": 14,
+          "band": "Oranje"
+        },
+        "2015-2016": {
+          "aantal": 9,
+          "leeftijd": 15,
+          "band": "Oranje"
+        },
+        "2016-2017": {
+          "aantal": 8,
+          "leeftijd": 16,
+          "band": "Rood"
+        },
+        "2017-2018": {
+          "aantal": 9,
+          "leeftijd": 17,
+          "band": "Rood"
+        },
+        "2018-2019": {
+          "aantal": 6,
+          "leeftijd": 18,
+          "band": "Rood"
+        },
+        "2019-2020": {
+          "aantal": 6,
+          "leeftijd": 19,
+          "band": "Senioren"
+        },
+        "2020-2021": {
+          "aantal": 6,
+          "leeftijd": 20,
+          "band": "Senioren"
+        },
+        "2021-2022": {
+          "aantal": 5,
+          "leeftijd": 21,
+          "band": "Senioren"
+        },
+        "2022-2023": {
+          "aantal": 2,
+          "leeftijd": 22,
+          "band": "Senioren"
+        },
+        "2023-2024": {
+          "aantal": 2,
+          "leeftijd": 23,
+          "band": "Senioren"
+        },
+        "2024-2025": {
+          "aantal": 2,
+          "leeftijd": 24,
+          "band": "Senioren"
+        },
+        "2025-2026": {
+          "aantal": 2,
+          "leeftijd": 25,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": -3,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 2001,
+      "geslacht": "M",
+      "band_huidig": "Senioren",
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 2,
+          "leeftijd": 9,
+          "band": "Groen"
+        },
+        "2011-2012": {
+          "aantal": 3,
+          "leeftijd": 10,
+          "band": "Geel"
+        },
+        "2012-2013": {
+          "aantal": 3,
+          "leeftijd": 11,
+          "band": "Geel"
+        },
+        "2013-2014": {
+          "aantal": 3,
+          "leeftijd": 12,
+          "band": "Geel"
+        },
+        "2014-2015": {
+          "aantal": 4,
+          "leeftijd": 13,
+          "band": "Oranje"
+        },
+        "2015-2016": {
+          "aantal": 4,
+          "leeftijd": 14,
+          "band": "Oranje"
+        },
+        "2016-2017": {
+          "aantal": 4,
+          "leeftijd": 15,
+          "band": "Oranje"
+        },
+        "2017-2018": {
+          "aantal": 4,
+          "leeftijd": 16,
+          "band": "Rood"
+        },
+        "2018-2019": {
+          "aantal": 3,
+          "leeftijd": 17,
+          "band": "Rood"
+        },
+        "2019-2020": {
+          "aantal": 3,
+          "leeftijd": 18,
+          "band": "Rood"
+        },
+        "2020-2021": {
+          "aantal": 3,
+          "leeftijd": 19,
+          "band": "Senioren"
+        },
+        "2021-2022": {
+          "aantal": 2,
+          "leeftijd": 20,
+          "band": "Senioren"
+        },
+        "2022-2023": {
+          "aantal": 2,
+          "leeftijd": 21,
+          "band": "Senioren"
+        },
+        "2023-2024": {
+          "aantal": 1,
+          "leeftijd": 22,
+          "band": "Senioren"
+        },
+        "2024-2025": {
+          "aantal": 1,
+          "leeftijd": 23,
+          "band": "Senioren"
+        },
+        "2025-2026": {
+          "aantal": 2,
+          "leeftijd": 24,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": 2.0
+      }
+    },
+    {
+      "geboortejaar": 2001,
+      "geslacht": "V",
+      "band_huidig": "Senioren",
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 8,
+          "leeftijd": 9,
+          "band": "Groen"
+        },
+        "2011-2012": {
+          "aantal": 8,
+          "leeftijd": 10,
+          "band": "Geel"
+        },
+        "2012-2013": {
+          "aantal": 8,
+          "leeftijd": 11,
+          "band": "Geel"
+        },
+        "2013-2014": {
+          "aantal": 9,
+          "leeftijd": 12,
+          "band": "Geel"
+        },
+        "2014-2015": {
+          "aantal": 9,
+          "leeftijd": 13,
+          "band": "Oranje"
+        },
+        "2015-2016": {
+          "aantal": 10,
+          "leeftijd": 14,
+          "band": "Oranje"
+        },
+        "2016-2017": {
+          "aantal": 11,
+          "leeftijd": 15,
+          "band": "Oranje"
+        },
+        "2017-2018": {
+          "aantal": 11,
+          "leeftijd": 16,
+          "band": "Rood"
+        },
+        "2018-2019": {
+          "aantal": 8,
+          "leeftijd": 17,
+          "band": "Rood"
+        },
+        "2019-2020": {
+          "aantal": 8,
+          "leeftijd": 18,
+          "band": "Rood"
+        },
+        "2020-2021": {
+          "aantal": 8,
+          "leeftijd": 19,
+          "band": "Senioren"
+        },
+        "2021-2022": {
+          "aantal": 6,
+          "leeftijd": 20,
+          "band": "Senioren"
+        },
+        "2022-2023": {
+          "aantal": 5,
+          "leeftijd": 21,
+          "band": "Senioren"
+        },
+        "2023-2024": {
+          "aantal": 5,
+          "leeftijd": 22,
+          "band": "Senioren"
+        },
+        "2024-2025": {
+          "aantal": 4,
+          "leeftijd": 23,
+          "band": "Senioren"
+        },
+        "2025-2026": {
+          "aantal": 4,
+          "leeftijd": 24,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": -4,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 2002,
+      "geslacht": "M",
+      "band_huidig": "Senioren",
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 2,
+          "leeftijd": 8,
+          "band": "Groen"
+        },
+        "2011-2012": {
+          "aantal": 3,
+          "leeftijd": 9,
+          "band": "Groen"
+        },
+        "2012-2013": {
+          "aantal": 3,
+          "leeftijd": 10,
+          "band": "Geel"
+        },
+        "2013-2014": {
+          "aantal": 3,
+          "leeftijd": 11,
+          "band": "Geel"
+        },
+        "2014-2015": {
+          "aantal": 3,
+          "leeftijd": 12,
+          "band": "Geel"
+        },
+        "2015-2016": {
+          "aantal": 3,
+          "leeftijd": 13,
+          "band": "Oranje"
+        },
+        "2016-2017": {
+          "aantal": 3,
+          "leeftijd": 14,
+          "band": "Oranje"
+        },
+        "2017-2018": {
+          "aantal": 3,
+          "leeftijd": 15,
+          "band": "Oranje"
+        },
+        "2018-2019": {
+          "aantal": 1,
+          "leeftijd": 16,
+          "band": "Rood"
+        },
+        "2019-2020": {
+          "aantal": 1,
+          "leeftijd": 17,
+          "band": "Rood"
+        },
+        "2022-2023": {
+          "aantal": 1,
+          "leeftijd": 20,
+          "band": "Senioren"
+        },
+        "2023-2024": {
+          "aantal": 1,
+          "leeftijd": 21,
+          "band": "Senioren"
+        },
+        "2024-2025": {
+          "aantal": 1,
+          "leeftijd": 22,
+          "band": "Senioren"
+        },
+        "2025-2026": {
+          "aantal": 1,
+          "leeftijd": 23,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": -1,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 2002,
+      "geslacht": "V",
+      "band_huidig": "Senioren",
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 8,
+          "leeftijd": 8,
+          "band": "Groen"
+        },
+        "2011-2012": {
+          "aantal": 8,
+          "leeftijd": 9,
+          "band": "Groen"
+        },
+        "2012-2013": {
+          "aantal": 10,
+          "leeftijd": 10,
+          "band": "Geel"
+        },
+        "2013-2014": {
+          "aantal": 11,
+          "leeftijd": 11,
+          "band": "Geel"
+        },
+        "2014-2015": {
+          "aantal": 11,
+          "leeftijd": 12,
+          "band": "Geel"
+        },
+        "2015-2016": {
+          "aantal": 12,
+          "leeftijd": 13,
+          "band": "Oranje"
+        },
+        "2016-2017": {
+          "aantal": 15,
+          "leeftijd": 14,
+          "band": "Oranje"
+        },
+        "2017-2018": {
+          "aantal": 16,
+          "leeftijd": 15,
+          "band": "Oranje"
+        },
+        "2018-2019": {
+          "aantal": 11,
+          "leeftijd": 16,
+          "band": "Rood"
+        },
+        "2019-2020": {
+          "aantal": 10,
+          "leeftijd": 17,
+          "band": "Rood"
+        },
+        "2020-2021": {
+          "aantal": 8,
+          "leeftijd": 18,
+          "band": "Rood"
+        },
+        "2021-2022": {
+          "aantal": 9,
+          "leeftijd": 19,
+          "band": "Senioren"
+        },
+        "2022-2023": {
+          "aantal": 6,
+          "leeftijd": 20,
+          "band": "Senioren"
+        },
+        "2023-2024": {
+          "aantal": 6,
+          "leeftijd": 21,
+          "band": "Senioren"
+        },
+        "2024-2025": {
+          "aantal": 6,
+          "leeftijd": 22,
+          "band": "Senioren"
+        },
+        "2025-2026": {
+          "aantal": 6,
+          "leeftijd": 23,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": -2,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 2003,
+      "geslacht": "M",
+      "band_huidig": "Senioren",
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 5,
+          "leeftijd": 7,
+          "band": "Blauw"
+        },
+        "2011-2012": {
+          "aantal": 10,
+          "leeftijd": 8,
+          "band": "Groen"
+        },
+        "2012-2013": {
+          "aantal": 12,
+          "leeftijd": 9,
+          "band": "Groen"
+        },
+        "2013-2014": {
+          "aantal": 12,
+          "leeftijd": 10,
+          "band": "Geel"
+        },
+        "2014-2015": {
+          "aantal": 12,
+          "leeftijd": 11,
+          "band": "Geel"
+        },
+        "2015-2016": {
+          "aantal": 12,
+          "leeftijd": 12,
+          "band": "Geel"
+        },
+        "2016-2017": {
+          "aantal": 12,
+          "leeftijd": 13,
+          "band": "Oranje"
+        },
+        "2017-2018": {
+          "aantal": 12,
+          "leeftijd": 14,
+          "band": "Oranje"
+        },
+        "2018-2019": {
+          "aantal": 11,
+          "leeftijd": 15,
+          "band": "Oranje"
+        },
+        "2019-2020": {
+          "aantal": 11,
+          "leeftijd": 16,
+          "band": "Rood"
+        },
+        "2020-2021": {
+          "aantal": 10,
+          "leeftijd": 17,
+          "band": "Rood"
+        },
+        "2021-2022": {
+          "aantal": 10,
+          "leeftijd": 18,
+          "band": "Rood"
+        },
+        "2022-2023": {
+          "aantal": 7,
+          "leeftijd": 19,
+          "band": "Senioren"
+        },
+        "2023-2024": {
+          "aantal": 6,
+          "leeftijd": 20,
+          "band": "Senioren"
+        },
+        "2024-2025": {
+          "aantal": 7,
+          "leeftijd": 21,
+          "band": "Senioren"
+        },
+        "2025-2026": {
+          "aantal": 6,
+          "leeftijd": 22,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 1,
+        "retentie_laatste": 0.86
+      }
+    },
+    {
+      "geboortejaar": 2003,
+      "geslacht": "V",
+      "band_huidig": "Senioren",
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 6,
+          "leeftijd": 7,
+          "band": "Blauw"
+        },
+        "2011-2012": {
+          "aantal": 9,
+          "leeftijd": 8,
+          "band": "Groen"
+        },
+        "2012-2013": {
+          "aantal": 11,
+          "leeftijd": 9,
+          "band": "Groen"
+        },
+        "2013-2014": {
+          "aantal": 11,
+          "leeftijd": 10,
+          "band": "Geel"
+        },
+        "2014-2015": {
+          "aantal": 11,
+          "leeftijd": 11,
+          "band": "Geel"
+        },
+        "2015-2016": {
+          "aantal": 12,
+          "leeftijd": 12,
+          "band": "Geel"
+        },
+        "2016-2017": {
+          "aantal": 13,
+          "leeftijd": 13,
+          "band": "Oranje"
+        },
+        "2017-2018": {
+          "aantal": 13,
+          "leeftijd": 14,
+          "band": "Oranje"
+        },
+        "2018-2019": {
+          "aantal": 11,
+          "leeftijd": 15,
+          "band": "Oranje"
+        },
+        "2019-2020": {
+          "aantal": 11,
+          "leeftijd": 16,
+          "band": "Rood"
+        },
+        "2020-2021": {
+          "aantal": 10,
+          "leeftijd": 17,
+          "band": "Rood"
+        },
+        "2021-2022": {
+          "aantal": 9,
+          "leeftijd": 18,
+          "band": "Rood"
+        },
+        "2022-2023": {
+          "aantal": 6,
+          "leeftijd": 19,
+          "band": "Senioren"
+        },
+        "2023-2024": {
+          "aantal": 4,
+          "leeftijd": 20,
+          "band": "Senioren"
+        },
+        "2024-2025": {
+          "aantal": 3,
+          "leeftijd": 21,
+          "band": "Senioren"
+        },
+        "2025-2026": {
+          "aantal": 2,
+          "leeftijd": 22,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": -4,
+        "retentie_laatste": 0.67
+      }
+    },
+    {
+      "geboortejaar": 2004,
+      "geslacht": "M",
+      "band_huidig": "Senioren",
+      "seizoenen": {
+        "2011-2012": {
+          "aantal": 5,
+          "leeftijd": 7,
+          "band": "Blauw"
+        },
+        "2012-2013": {
+          "aantal": 7,
+          "leeftijd": 8,
+          "band": "Groen"
+        },
+        "2013-2014": {
+          "aantal": 8,
+          "leeftijd": 9,
+          "band": "Groen"
+        },
+        "2014-2015": {
+          "aantal": 9,
+          "leeftijd": 10,
+          "band": "Geel"
+        },
+        "2015-2016": {
+          "aantal": 10,
+          "leeftijd": 11,
+          "band": "Geel"
+        },
+        "2016-2017": {
+          "aantal": 11,
+          "leeftijd": 12,
+          "band": "Geel"
+        },
+        "2017-2018": {
+          "aantal": 11,
+          "leeftijd": 13,
+          "band": "Oranje"
+        },
+        "2018-2019": {
+          "aantal": 8,
+          "leeftijd": 14,
+          "band": "Oranje"
+        },
+        "2019-2020": {
+          "aantal": 6,
+          "leeftijd": 15,
+          "band": "Oranje"
+        },
+        "2020-2021": {
+          "aantal": 6,
+          "leeftijd": 16,
+          "band": "Rood"
+        },
+        "2021-2022": {
+          "aantal": 5,
+          "leeftijd": 17,
+          "band": "Rood"
+        },
+        "2022-2023": {
+          "aantal": 7,
+          "leeftijd": 18,
+          "band": "Rood"
+        },
+        "2023-2024": {
+          "aantal": 3,
+          "leeftijd": 19,
+          "band": "Senioren"
+        },
+        "2024-2025": {
+          "aantal": 2,
+          "leeftijd": 20,
+          "band": "Senioren"
+        },
+        "2025-2026": {
+          "aantal": 1,
+          "leeftijd": 21,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": -4,
+        "retentie_laatste": 0.5
+      }
+    },
+    {
+      "geboortejaar": 2004,
+      "geslacht": "V",
+      "band_huidig": "Senioren",
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 6,
+          "leeftijd": 6,
+          "band": "Blauw"
+        },
+        "2011-2012": {
+          "aantal": 7,
+          "leeftijd": 7,
+          "band": "Blauw"
+        },
+        "2012-2013": {
+          "aantal": 9,
+          "leeftijd": 8,
+          "band": "Groen"
+        },
+        "2013-2014": {
+          "aantal": 10,
+          "leeftijd": 9,
+          "band": "Groen"
+        },
+        "2014-2015": {
+          "aantal": 11,
+          "leeftijd": 10,
+          "band": "Geel"
+        },
+        "2015-2016": {
+          "aantal": 12,
+          "leeftijd": 11,
+          "band": "Geel"
+        },
+        "2016-2017": {
+          "aantal": 12,
+          "leeftijd": 12,
+          "band": "Geel"
+        },
+        "2017-2018": {
+          "aantal": 12,
+          "leeftijd": 13,
+          "band": "Oranje"
+        },
+        "2018-2019": {
+          "aantal": 10,
+          "leeftijd": 14,
+          "band": "Oranje"
+        },
+        "2019-2020": {
+          "aantal": 9,
+          "leeftijd": 15,
+          "band": "Oranje"
+        },
+        "2020-2021": {
+          "aantal": 10,
+          "leeftijd": 16,
+          "band": "Rood"
+        },
+        "2021-2022": {
+          "aantal": 10,
+          "leeftijd": 17,
+          "band": "Rood"
+        },
+        "2022-2023": {
+          "aantal": 7,
+          "leeftijd": 18,
+          "band": "Rood"
+        },
+        "2023-2024": {
+          "aantal": 3,
+          "leeftijd": 19,
+          "band": "Senioren"
+        },
+        "2024-2025": {
+          "aantal": 3,
+          "leeftijd": 20,
+          "band": "Senioren"
+        },
+        "2025-2026": {
+          "aantal": 4,
+          "leeftijd": 21,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": -2,
+        "retentie_laatste": 1.33
+      }
+    },
+    {
+      "geboortejaar": 2005,
+      "geslacht": "M",
+      "band_huidig": "Senioren",
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 1,
+          "leeftijd": 5,
+          "band": "Kangoeroe"
+        },
+        "2011-2012": {
+          "aantal": 2,
+          "leeftijd": 6,
+          "band": "Blauw"
+        },
+        "2012-2013": {
+          "aantal": 3,
+          "leeftijd": 7,
+          "band": "Blauw"
+        },
+        "2013-2014": {
+          "aantal": 5,
+          "leeftijd": 8,
+          "band": "Groen"
+        },
+        "2014-2015": {
+          "aantal": 6,
+          "leeftijd": 9,
+          "band": "Groen"
+        },
+        "2015-2016": {
+          "aantal": 9,
+          "leeftijd": 10,
+          "band": "Geel"
+        },
+        "2016-2017": {
+          "aantal": 9,
+          "leeftijd": 11,
+          "band": "Geel"
+        },
+        "2017-2018": {
+          "aantal": 9,
+          "leeftijd": 12,
+          "band": "Geel"
+        },
+        "2018-2019": {
+          "aantal": 9,
+          "leeftijd": 13,
+          "band": "Oranje"
+        },
+        "2019-2020": {
+          "aantal": 9,
+          "leeftijd": 14,
+          "band": "Oranje"
+        },
+        "2020-2021": {
+          "aantal": 7,
+          "leeftijd": 15,
+          "band": "Oranje"
+        },
+        "2021-2022": {
+          "aantal": 7,
+          "leeftijd": 16,
+          "band": "Rood"
+        },
+        "2022-2023": {
+          "aantal": 6,
+          "leeftijd": 17,
+          "band": "Rood"
+        },
+        "2023-2024": {
+          "aantal": 4,
+          "leeftijd": 18,
+          "band": "Rood"
+        },
+        "2024-2025": {
+          "aantal": 4,
+          "leeftijd": 19,
+          "band": "Senioren"
+        },
+        "2025-2026": {
+          "aantal": 4,
+          "leeftijd": 20,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 3,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 2005,
+      "geslacht": "V",
+      "band_huidig": "Senioren",
+      "seizoenen": {
+        "2010-2011": {
+          "aantal": 1,
+          "leeftijd": 5,
+          "band": "Kangoeroe"
+        },
+        "2011-2012": {
+          "aantal": 3,
+          "leeftijd": 6,
+          "band": "Blauw"
+        },
+        "2012-2013": {
+          "aantal": 12,
+          "leeftijd": 7,
+          "band": "Blauw"
+        },
+        "2013-2014": {
+          "aantal": 16,
+          "leeftijd": 8,
+          "band": "Groen"
+        },
+        "2014-2015": {
+          "aantal": 18,
+          "leeftijd": 9,
+          "band": "Groen"
+        },
+        "2015-2016": {
+          "aantal": 18,
+          "leeftijd": 10,
+          "band": "Geel"
+        },
+        "2016-2017": {
+          "aantal": 18,
+          "leeftijd": 11,
+          "band": "Geel"
+        },
+        "2017-2018": {
+          "aantal": 19,
+          "leeftijd": 12,
+          "band": "Geel"
+        },
+        "2018-2019": {
+          "aantal": 13,
+          "leeftijd": 13,
+          "band": "Oranje"
+        },
+        "2019-2020": {
+          "aantal": 12,
+          "leeftijd": 14,
+          "band": "Oranje"
+        },
+        "2020-2021": {
+          "aantal": 11,
+          "leeftijd": 15,
+          "band": "Oranje"
+        },
+        "2021-2022": {
+          "aantal": 10,
+          "leeftijd": 16,
+          "band": "Rood"
+        },
+        "2022-2023": {
+          "aantal": 7,
+          "leeftijd": 17,
+          "band": "Rood"
+        },
+        "2023-2024": {
+          "aantal": 7,
+          "leeftijd": 18,
+          "band": "Rood"
+        },
+        "2024-2025": {
+          "aantal": 8,
+          "leeftijd": 19,
+          "band": "Senioren"
+        },
+        "2025-2026": {
+          "aantal": 7,
+          "leeftijd": 20,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 6,
+        "retentie_laatste": 0.88
+      }
+    },
+    {
+      "geboortejaar": 2006,
+      "geslacht": "M",
+      "band_huidig": "Senioren",
+      "seizoenen": {
+        "2012-2013": {
+          "aantal": 1,
+          "leeftijd": 6,
+          "band": "Blauw"
+        },
+        "2013-2014": {
+          "aantal": 2,
+          "leeftijd": 7,
+          "band": "Blauw"
+        },
+        "2014-2015": {
+          "aantal": 4,
+          "leeftijd": 8,
+          "band": "Groen"
+        },
+        "2015-2016": {
+          "aantal": 5,
+          "leeftijd": 9,
+          "band": "Groen"
+        },
+        "2016-2017": {
+          "aantal": 5,
+          "leeftijd": 10,
+          "band": "Geel"
+        },
+        "2017-2018": {
+          "aantal": 4,
+          "leeftijd": 11,
+          "band": "Geel"
+        },
+        "2018-2019": {
+          "aantal": 3,
+          "leeftijd": 12,
+          "band": "Geel"
+        },
+        "2019-2020": {
+          "aantal": 3,
+          "leeftijd": 13,
+          "band": "Oranje"
+        },
+        "2020-2021": {
+          "aantal": 3,
+          "leeftijd": 14,
+          "band": "Oranje"
+        },
+        "2021-2022": {
+          "aantal": 2,
+          "leeftijd": 15,
+          "band": "Oranje"
+        },
+        "2022-2023": {
+          "aantal": 2,
+          "leeftijd": 16,
+          "band": "Rood"
+        },
+        "2023-2024": {
+          "aantal": 2,
+          "leeftijd": 17,
+          "band": "Rood"
+        },
+        "2024-2025": {
+          "aantal": 2,
+          "leeftijd": 18,
+          "band": "Rood"
+        },
+        "2025-2026": {
+          "aantal": 2,
+          "leeftijd": 19,
+          "band": "Senioren"
+        }
+      },
+      "trend": {
+        "groei_totaal": 1,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 2006,
+      "geslacht": "V",
+      "band_huidig": null,
+      "seizoenen": {
+        "2011-2012": {
+          "aantal": 1,
+          "leeftijd": 5,
+          "band": "Kangoeroe"
+        },
+        "2012-2013": {
+          "aantal": 1,
+          "leeftijd": 6,
+          "band": "Blauw"
+        },
+        "2013-2014": {
+          "aantal": 4,
+          "leeftijd": 7,
+          "band": "Blauw"
+        },
+        "2014-2015": {
+          "aantal": 5,
+          "leeftijd": 8,
+          "band": "Groen"
+        },
+        "2015-2016": {
+          "aantal": 8,
+          "leeftijd": 9,
+          "band": "Groen"
+        },
+        "2016-2017": {
+          "aantal": 11,
+          "leeftijd": 10,
+          "band": "Geel"
+        },
+        "2017-2018": {
+          "aantal": 12,
+          "leeftijd": 11,
+          "band": "Geel"
+        },
+        "2018-2019": {
+          "aantal": 10,
+          "leeftijd": 12,
+          "band": "Geel"
+        },
+        "2019-2020": {
+          "aantal": 10,
+          "leeftijd": 13,
+          "band": "Oranje"
+        },
+        "2020-2021": {
+          "aantal": 8,
+          "leeftijd": 14,
+          "band": "Oranje"
+        },
+        "2021-2022": {
+          "aantal": 7,
+          "leeftijd": 15,
+          "band": "Oranje"
+        },
+        "2022-2023": {
+          "aantal": 4,
+          "leeftijd": 16,
+          "band": "Rood"
+        },
+        "2023-2024": {
+          "aantal": 2,
+          "leeftijd": 17,
+          "band": "Rood"
+        },
+        "2024-2025": {
+          "aantal": 1,
+          "leeftijd": 18,
+          "band": "Rood"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": 0.5
+      }
+    },
+    {
+      "geboortejaar": 2007,
+      "geslacht": "M",
+      "band_huidig": "Rood",
+      "seizoenen": {
+        "2012-2013": {
+          "aantal": 2,
+          "leeftijd": 5,
+          "band": "Kangoeroe"
+        },
+        "2013-2014": {
+          "aantal": 4,
+          "leeftijd": 6,
+          "band": "Blauw"
+        },
+        "2014-2015": {
+          "aantal": 6,
+          "leeftijd": 7,
+          "band": "Blauw"
+        },
+        "2015-2016": {
+          "aantal": 8,
+          "leeftijd": 8,
+          "band": "Groen"
+        },
+        "2016-2017": {
+          "aantal": 10,
+          "leeftijd": 9,
+          "band": "Groen"
+        },
+        "2017-2018": {
+          "aantal": 13,
+          "leeftijd": 10,
+          "band": "Geel"
+        },
+        "2018-2019": {
+          "aantal": 13,
+          "leeftijd": 11,
+          "band": "Geel"
+        },
+        "2019-2020": {
+          "aantal": 14,
+          "leeftijd": 12,
+          "band": "Geel"
+        },
+        "2020-2021": {
+          "aantal": 13,
+          "leeftijd": 13,
+          "band": "Oranje"
+        },
+        "2021-2022": {
+          "aantal": 12,
+          "leeftijd": 14,
+          "band": "Oranje"
+        },
+        "2022-2023": {
+          "aantal": 12,
+          "leeftijd": 15,
+          "band": "Oranje"
+        },
+        "2023-2024": {
+          "aantal": 8,
+          "leeftijd": 16,
+          "band": "Rood"
+        },
+        "2024-2025": {
+          "aantal": 8,
+          "leeftijd": 17,
+          "band": "Rood"
+        },
+        "2025-2026": {
+          "aantal": 8,
+          "leeftijd": 18,
+          "band": "Rood"
+        }
+      },
+      "trend": {
+        "groei_totaal": 6,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 2007,
+      "geslacht": "V",
+      "band_huidig": "Rood",
+      "seizoenen": {
+        "2012-2013": {
+          "aantal": 2,
+          "leeftijd": 5,
+          "band": "Kangoeroe"
+        },
+        "2013-2014": {
+          "aantal": 1,
+          "leeftijd": 6,
+          "band": "Blauw"
+        },
+        "2014-2015": {
+          "aantal": 4,
+          "leeftijd": 7,
+          "band": "Blauw"
+        },
+        "2015-2016": {
+          "aantal": 10,
+          "leeftijd": 8,
+          "band": "Groen"
+        },
+        "2016-2017": {
+          "aantal": 12,
+          "leeftijd": 9,
+          "band": "Groen"
+        },
+        "2017-2018": {
+          "aantal": 13,
+          "leeftijd": 10,
+          "band": "Geel"
+        },
+        "2018-2019": {
+          "aantal": 10,
+          "leeftijd": 11,
+          "band": "Geel"
+        },
+        "2019-2020": {
+          "aantal": 9,
+          "leeftijd": 12,
+          "band": "Geel"
+        },
+        "2020-2021": {
+          "aantal": 8,
+          "leeftijd": 13,
+          "band": "Oranje"
+        },
+        "2021-2022": {
+          "aantal": 8,
+          "leeftijd": 14,
+          "band": "Oranje"
+        },
+        "2022-2023": {
+          "aantal": 8,
+          "leeftijd": 15,
+          "band": "Oranje"
+        },
+        "2023-2024": {
+          "aantal": 6,
+          "leeftijd": 16,
+          "band": "Rood"
+        },
+        "2024-2025": {
+          "aantal": 5,
+          "leeftijd": 17,
+          "band": "Rood"
+        },
+        "2025-2026": {
+          "aantal": 3,
+          "leeftijd": 18,
+          "band": "Rood"
+        }
+      },
+      "trend": {
+        "groei_totaal": 1,
+        "retentie_laatste": 0.6
+      }
+    },
+    {
+      "geboortejaar": 2008,
+      "geslacht": "M",
+      "band_huidig": "Rood",
+      "seizoenen": {
+        "2013-2014": {
+          "aantal": 3,
+          "leeftijd": 5,
+          "band": "Kangoeroe"
+        },
+        "2014-2015": {
+          "aantal": 3,
+          "leeftijd": 6,
+          "band": "Blauw"
+        },
+        "2015-2016": {
+          "aantal": 6,
+          "leeftijd": 7,
+          "band": "Blauw"
+        },
+        "2016-2017": {
+          "aantal": 9,
+          "leeftijd": 8,
+          "band": "Groen"
+        },
+        "2017-2018": {
+          "aantal": 9,
+          "leeftijd": 9,
+          "band": "Groen"
+        },
+        "2018-2019": {
+          "aantal": 11,
+          "leeftijd": 10,
+          "band": "Geel"
+        },
+        "2019-2020": {
+          "aantal": 10,
+          "leeftijd": 11,
+          "band": "Geel"
+        },
+        "2020-2021": {
+          "aantal": 10,
+          "leeftijd": 12,
+          "band": "Geel"
+        },
+        "2021-2022": {
+          "aantal": 10,
+          "leeftijd": 13,
+          "band": "Oranje"
+        },
+        "2022-2023": {
+          "aantal": 8,
+          "leeftijd": 14,
+          "band": "Oranje"
+        },
+        "2023-2024": {
+          "aantal": 7,
+          "leeftijd": 15,
+          "band": "Oranje"
+        },
+        "2024-2025": {
+          "aantal": 8,
+          "leeftijd": 16,
+          "band": "Rood"
+        },
+        "2025-2026": {
+          "aantal": 5,
+          "leeftijd": 17,
+          "band": "Rood"
+        }
+      },
+      "trend": {
+        "groei_totaal": 2,
+        "retentie_laatste": 0.62
+      }
+    },
+    {
+      "geboortejaar": 2008,
+      "geslacht": "V",
+      "band_huidig": "Rood",
+      "seizoenen": {
+        "2015-2016": {
+          "aantal": 5,
+          "leeftijd": 7,
+          "band": "Blauw"
+        },
+        "2016-2017": {
+          "aantal": 8,
+          "leeftijd": 8,
+          "band": "Groen"
+        },
+        "2017-2018": {
+          "aantal": 9,
+          "leeftijd": 9,
+          "band": "Groen"
+        },
+        "2018-2019": {
+          "aantal": 10,
+          "leeftijd": 10,
+          "band": "Geel"
+        },
+        "2019-2020": {
+          "aantal": 10,
+          "leeftijd": 11,
+          "band": "Geel"
+        },
+        "2020-2021": {
+          "aantal": 11,
+          "leeftijd": 12,
+          "band": "Geel"
+        },
+        "2021-2022": {
+          "aantal": 11,
+          "leeftijd": 13,
+          "band": "Oranje"
+        },
+        "2022-2023": {
+          "aantal": 9,
+          "leeftijd": 14,
+          "band": "Oranje"
+        },
+        "2023-2024": {
+          "aantal": 6,
+          "leeftijd": 15,
+          "band": "Oranje"
+        },
+        "2024-2025": {
+          "aantal": 6,
+          "leeftijd": 16,
+          "band": "Rood"
+        },
+        "2025-2026": {
+          "aantal": 6,
+          "leeftijd": 17,
+          "band": "Rood"
+        }
+      },
+      "trend": {
+        "groei_totaal": 1,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 2009,
+      "geslacht": "M",
+      "band_huidig": "Rood",
+      "seizoenen": {
+        "2016-2017": {
+          "aantal": 3,
+          "leeftijd": 7,
+          "band": "Blauw"
+        },
+        "2017-2018": {
+          "aantal": 4,
+          "leeftijd": 8,
+          "band": "Groen"
+        },
+        "2018-2019": {
+          "aantal": 6,
+          "leeftijd": 9,
+          "band": "Groen"
+        },
+        "2019-2020": {
+          "aantal": 8,
+          "leeftijd": 10,
+          "band": "Geel"
+        },
+        "2020-2021": {
+          "aantal": 8,
+          "leeftijd": 11,
+          "band": "Geel"
+        },
+        "2021-2022": {
+          "aantal": 8,
+          "leeftijd": 12,
+          "band": "Geel"
+        },
+        "2022-2023": {
+          "aantal": 8,
+          "leeftijd": 13,
+          "band": "Oranje"
+        },
+        "2023-2024": {
+          "aantal": 8,
+          "leeftijd": 14,
+          "band": "Oranje"
+        },
+        "2024-2025": {
+          "aantal": 8,
+          "leeftijd": 15,
+          "band": "Oranje"
+        },
+        "2025-2026": {
+          "aantal": 7,
+          "leeftijd": 16,
+          "band": "Rood"
+        }
+      },
+      "trend": {
+        "groei_totaal": 4,
+        "retentie_laatste": 0.88
+      }
+    },
+    {
+      "geboortejaar": 2009,
+      "geslacht": "V",
+      "band_huidig": "Rood",
+      "seizoenen": {
+        "2014-2015": {
+          "aantal": 2,
+          "leeftijd": 5,
+          "band": "Kangoeroe"
+        },
+        "2015-2016": {
+          "aantal": 3,
+          "leeftijd": 6,
+          "band": "Blauw"
+        },
+        "2016-2017": {
+          "aantal": 5,
+          "leeftijd": 7,
+          "band": "Blauw"
+        },
+        "2017-2018": {
+          "aantal": 7,
+          "leeftijd": 8,
+          "band": "Groen"
+        },
+        "2018-2019": {
+          "aantal": 7,
+          "leeftijd": 9,
+          "band": "Groen"
+        },
+        "2019-2020": {
+          "aantal": 8,
+          "leeftijd": 10,
+          "band": "Geel"
+        },
+        "2020-2021": {
+          "aantal": 9,
+          "leeftijd": 11,
+          "band": "Geel"
+        },
+        "2021-2022": {
+          "aantal": 9,
+          "leeftijd": 12,
+          "band": "Geel"
+        },
+        "2022-2023": {
+          "aantal": 9,
+          "leeftijd": 13,
+          "band": "Oranje"
+        },
+        "2023-2024": {
+          "aantal": 7,
+          "leeftijd": 14,
+          "band": "Oranje"
+        },
+        "2024-2025": {
+          "aantal": 7,
+          "leeftijd": 15,
+          "band": "Oranje"
+        },
+        "2025-2026": {
+          "aantal": 7,
+          "leeftijd": 16,
+          "band": "Rood"
+        }
+      },
+      "trend": {
+        "groei_totaal": 5,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 2010,
+      "geslacht": "M",
+      "band_huidig": "Oranje",
+      "seizoenen": {
+        "2016-2017": {
+          "aantal": 1,
+          "leeftijd": 6,
+          "band": "Blauw"
+        },
+        "2017-2018": {
+          "aantal": 4,
+          "leeftijd": 7,
+          "band": "Blauw"
+        },
+        "2018-2019": {
+          "aantal": 7,
+          "leeftijd": 8,
+          "band": "Groen"
+        },
+        "2019-2020": {
+          "aantal": 7,
+          "leeftijd": 9,
+          "band": "Groen"
+        },
+        "2020-2021": {
+          "aantal": 8,
+          "leeftijd": 10,
+          "band": "Geel"
+        },
+        "2021-2022": {
+          "aantal": 6,
+          "leeftijd": 11,
+          "band": "Geel"
+        },
+        "2022-2023": {
+          "aantal": 6,
+          "leeftijd": 12,
+          "band": "Geel"
+        },
+        "2023-2024": {
+          "aantal": 7,
+          "leeftijd": 13,
+          "band": "Oranje"
+        },
+        "2024-2025": {
+          "aantal": 6,
+          "leeftijd": 14,
+          "band": "Oranje"
+        },
+        "2025-2026": {
+          "aantal": 6,
+          "leeftijd": 15,
+          "band": "Oranje"
+        }
+      },
+      "trend": {
+        "groei_totaal": 5,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 2010,
+      "geslacht": "V",
+      "band_huidig": "Oranje",
+      "seizoenen": {
+        "2015-2016": {
+          "aantal": 5,
+          "leeftijd": 5,
+          "band": "Kangoeroe"
+        },
+        "2016-2017": {
+          "aantal": 9,
+          "leeftijd": 6,
+          "band": "Blauw"
+        },
+        "2017-2018": {
+          "aantal": 17,
+          "leeftijd": 7,
+          "band": "Blauw"
+        },
+        "2018-2019": {
+          "aantal": 18,
+          "leeftijd": 8,
+          "band": "Groen"
+        },
+        "2019-2020": {
+          "aantal": 17,
+          "leeftijd": 9,
+          "band": "Groen"
+        },
+        "2020-2021": {
+          "aantal": 18,
+          "leeftijd": 10,
+          "band": "Geel"
+        },
+        "2021-2022": {
+          "aantal": 18,
+          "leeftijd": 11,
+          "band": "Geel"
+        },
+        "2022-2023": {
+          "aantal": 17,
+          "leeftijd": 12,
+          "band": "Geel"
+        },
+        "2023-2024": {
+          "aantal": 18,
+          "leeftijd": 13,
+          "band": "Oranje"
+        },
+        "2024-2025": {
+          "aantal": 17,
+          "leeftijd": 14,
+          "band": "Oranje"
+        },
+        "2025-2026": {
+          "aantal": 18,
+          "leeftijd": 15,
+          "band": "Oranje"
+        }
+      },
+      "trend": {
+        "groei_totaal": 13,
+        "retentie_laatste": 1.06
+      }
+    },
+    {
+      "geboortejaar": 2011,
+      "geslacht": "M",
+      "band_huidig": "Oranje",
+      "seizoenen": {
+        "2016-2017": {
+          "aantal": 2,
+          "leeftijd": 5,
+          "band": "Kangoeroe"
+        },
+        "2017-2018": {
+          "aantal": 2,
+          "leeftijd": 6,
+          "band": "Blauw"
+        },
+        "2018-2019": {
+          "aantal": 1,
+          "leeftijd": 7,
+          "band": "Blauw"
+        },
+        "2019-2020": {
+          "aantal": 4,
+          "leeftijd": 8,
+          "band": "Groen"
+        },
+        "2020-2021": {
+          "aantal": 6,
+          "leeftijd": 9,
+          "band": "Groen"
+        },
+        "2021-2022": {
+          "aantal": 5,
+          "leeftijd": 10,
+          "band": "Geel"
+        },
+        "2022-2023": {
+          "aantal": 7,
+          "leeftijd": 11,
+          "band": "Geel"
+        },
+        "2023-2024": {
+          "aantal": 8,
+          "leeftijd": 12,
+          "band": "Geel"
+        },
+        "2024-2025": {
+          "aantal": 8,
+          "leeftijd": 13,
+          "band": "Oranje"
+        },
+        "2025-2026": {
+          "aantal": 9,
+          "leeftijd": 14,
+          "band": "Oranje"
+        }
+      },
+      "trend": {
+        "groei_totaal": 7,
+        "retentie_laatste": 1.12
+      }
+    },
+    {
+      "geboortejaar": 2011,
+      "geslacht": "V",
+      "band_huidig": "Oranje",
+      "seizoenen": {
+        "2016-2017": {
+          "aantal": 4,
+          "leeftijd": 5,
+          "band": "Kangoeroe"
+        },
+        "2017-2018": {
+          "aantal": 5,
+          "leeftijd": 6,
+          "band": "Blauw"
+        },
+        "2018-2019": {
+          "aantal": 5,
+          "leeftijd": 7,
+          "band": "Blauw"
+        },
+        "2019-2020": {
+          "aantal": 6,
+          "leeftijd": 8,
+          "band": "Groen"
+        },
+        "2020-2021": {
+          "aantal": 9,
+          "leeftijd": 9,
+          "band": "Groen"
+        },
+        "2021-2022": {
+          "aantal": 10,
+          "leeftijd": 10,
+          "band": "Geel"
+        },
+        "2022-2023": {
+          "aantal": 8,
+          "leeftijd": 11,
+          "band": "Geel"
+        },
+        "2023-2024": {
+          "aantal": 5,
+          "leeftijd": 12,
+          "band": "Geel"
+        },
+        "2024-2025": {
+          "aantal": 5,
+          "leeftijd": 13,
+          "band": "Oranje"
+        },
+        "2025-2026": {
+          "aantal": 7,
+          "leeftijd": 14,
+          "band": "Oranje"
+        }
+      },
+      "trend": {
+        "groei_totaal": 3,
+        "retentie_laatste": 1.4
+      }
+    },
+    {
+      "geboortejaar": 2012,
+      "geslacht": "M",
+      "band_huidig": "Oranje",
+      "seizoenen": {
+        "2016-2017": {
+          "aantal": 1,
+          "leeftijd": 4,
+          "band": "Kangoeroe"
+        },
+        "2017-2018": {
+          "aantal": 1,
+          "leeftijd": 5,
+          "band": "Kangoeroe"
+        },
+        "2018-2019": {
+          "aantal": 5,
+          "leeftijd": 6,
+          "band": "Blauw"
+        },
+        "2019-2020": {
+          "aantal": 5,
+          "leeftijd": 7,
+          "band": "Blauw"
+        },
+        "2020-2021": {
+          "aantal": 6,
+          "leeftijd": 8,
+          "band": "Groen"
+        },
+        "2021-2022": {
+          "aantal": 6,
+          "leeftijd": 9,
+          "band": "Groen"
+        },
+        "2022-2023": {
+          "aantal": 5,
+          "leeftijd": 10,
+          "band": "Geel"
+        },
+        "2023-2024": {
+          "aantal": 5,
+          "leeftijd": 11,
+          "band": "Geel"
+        },
+        "2024-2025": {
+          "aantal": 3,
+          "leeftijd": 12,
+          "band": "Geel"
+        },
+        "2025-2026": {
+          "aantal": 4,
+          "leeftijd": 13,
+          "band": "Oranje"
+        }
+      },
+      "trend": {
+        "groei_totaal": 3,
+        "retentie_laatste": 1.33
+      }
+    },
+    {
+      "geboortejaar": 2012,
+      "geslacht": "V",
+      "band_huidig": "Oranje",
+      "seizoenen": {
+        "2016-2017": {
+          "aantal": 1,
+          "leeftijd": 4,
+          "band": "Kangoeroe"
+        },
+        "2017-2018": {
+          "aantal": 1,
+          "leeftijd": 5,
+          "band": "Kangoeroe"
+        },
+        "2018-2019": {
+          "aantal": 5,
+          "leeftijd": 6,
+          "band": "Blauw"
+        },
+        "2019-2020": {
+          "aantal": 6,
+          "leeftijd": 7,
+          "band": "Blauw"
+        },
+        "2020-2021": {
+          "aantal": 11,
+          "leeftijd": 8,
+          "band": "Groen"
+        },
+        "2021-2022": {
+          "aantal": 12,
+          "leeftijd": 9,
+          "band": "Groen"
+        },
+        "2022-2023": {
+          "aantal": 11,
+          "leeftijd": 10,
+          "band": "Geel"
+        },
+        "2023-2024": {
+          "aantal": 9,
+          "leeftijd": 11,
+          "band": "Geel"
+        },
+        "2024-2025": {
+          "aantal": 12,
+          "leeftijd": 12,
+          "band": "Geel"
+        },
+        "2025-2026": {
+          "aantal": 13,
+          "leeftijd": 13,
+          "band": "Oranje"
+        }
+      },
+      "trend": {
+        "groei_totaal": 12,
+        "retentie_laatste": 1.08
+      }
+    },
+    {
+      "geboortejaar": 2013,
+      "geslacht": "M",
+      "band_huidig": "Geel",
+      "seizoenen": {
+        "2017-2018": {
+          "aantal": 1,
+          "leeftijd": 4,
+          "band": "Kangoeroe"
+        },
+        "2019-2020": {
+          "aantal": 2,
+          "leeftijd": 6,
+          "band": "Blauw"
+        },
+        "2020-2021": {
+          "aantal": 5,
+          "leeftijd": 7,
+          "band": "Blauw"
+        },
+        "2021-2022": {
+          "aantal": 5,
+          "leeftijd": 8,
+          "band": "Groen"
+        },
+        "2022-2023": {
+          "aantal": 6,
+          "leeftijd": 9,
+          "band": "Groen"
+        },
+        "2023-2024": {
+          "aantal": 6,
+          "leeftijd": 10,
+          "band": "Geel"
+        },
+        "2024-2025": {
+          "aantal": 6,
+          "leeftijd": 11,
+          "band": "Geel"
+        },
+        "2025-2026": {
+          "aantal": 6,
+          "leeftijd": 12,
+          "band": "Geel"
+        }
+      },
+      "trend": {
+        "groei_totaal": 5,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 2013,
+      "geslacht": "V",
+      "band_huidig": "Geel",
+      "seizoenen": {
+        "2012-2013": {
+          "aantal": 1,
+          "leeftijd": -1,
+          "band": null
+        },
+        "2013-2014": {
+          "aantal": 1,
+          "leeftijd": 0,
+          "band": null
+        },
+        "2014-2015": {
+          "aantal": 1,
+          "leeftijd": 1,
+          "band": null
+        },
+        "2015-2016": {
+          "aantal": 1,
+          "leeftijd": 2,
+          "band": null
+        },
+        "2016-2017": {
+          "aantal": 1,
+          "leeftijd": 3,
+          "band": null
+        },
+        "2017-2018": {
+          "aantal": 1,
+          "leeftijd": 4,
+          "band": "Kangoeroe"
+        },
+        "2018-2019": {
+          "aantal": 2,
+          "leeftijd": 5,
+          "band": "Kangoeroe"
+        },
+        "2019-2020": {
+          "aantal": 3,
+          "leeftijd": 6,
+          "band": "Blauw"
+        },
+        "2020-2021": {
+          "aantal": 8,
+          "leeftijd": 7,
+          "band": "Blauw"
+        },
+        "2021-2022": {
+          "aantal": 9,
+          "leeftijd": 8,
+          "band": "Groen"
+        },
+        "2022-2023": {
+          "aantal": 11,
+          "leeftijd": 9,
+          "band": "Groen"
+        },
+        "2023-2024": {
+          "aantal": 12,
+          "leeftijd": 10,
+          "band": "Geel"
+        },
+        "2024-2025": {
+          "aantal": 14,
+          "leeftijd": 11,
+          "band": "Geel"
+        },
+        "2025-2026": {
+          "aantal": 14,
+          "leeftijd": 12,
+          "band": "Geel"
+        }
+      },
+      "trend": {
+        "groei_totaal": 13,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 2014,
+      "geslacht": "M",
+      "band_huidig": "Geel",
+      "seizoenen": {
+        "2019-2020": {
+          "aantal": 3,
+          "leeftijd": 5,
+          "band": "Kangoeroe"
+        },
+        "2020-2021": {
+          "aantal": 10,
+          "leeftijd": 6,
+          "band": "Blauw"
+        },
+        "2021-2022": {
+          "aantal": 10,
+          "leeftijd": 7,
+          "band": "Blauw"
+        },
+        "2022-2023": {
+          "aantal": 11,
+          "leeftijd": 8,
+          "band": "Groen"
+        },
+        "2023-2024": {
+          "aantal": 12,
+          "leeftijd": 9,
+          "band": "Groen"
+        },
+        "2024-2025": {
+          "aantal": 13,
+          "leeftijd": 10,
+          "band": "Geel"
+        },
+        "2025-2026": {
+          "aantal": 14,
+          "leeftijd": 11,
+          "band": "Geel"
+        }
+      },
+      "trend": {
+        "groei_totaal": 11,
+        "retentie_laatste": 1.08
+      }
+    },
+    {
+      "geboortejaar": 2014,
+      "geslacht": "V",
+      "band_huidig": "Geel",
+      "seizoenen": {
+        "2019-2020": {
+          "aantal": 3,
+          "leeftijd": 5,
+          "band": "Kangoeroe"
+        },
+        "2020-2021": {
+          "aantal": 6,
+          "leeftijd": 6,
+          "band": "Blauw"
+        },
+        "2021-2022": {
+          "aantal": 6,
+          "leeftijd": 7,
+          "band": "Blauw"
+        },
+        "2022-2023": {
+          "aantal": 5,
+          "leeftijd": 8,
+          "band": "Groen"
+        },
+        "2023-2024": {
+          "aantal": 4,
+          "leeftijd": 9,
+          "band": "Groen"
+        },
+        "2024-2025": {
+          "aantal": 6,
+          "leeftijd": 10,
+          "band": "Geel"
+        },
+        "2025-2026": {
+          "aantal": 7,
+          "leeftijd": 11,
+          "band": "Geel"
+        }
+      },
+      "trend": {
+        "groei_totaal": 4,
+        "retentie_laatste": 1.17
+      }
+    },
+    {
+      "geboortejaar": 2015,
+      "geslacht": "M",
+      "band_huidig": "Geel",
+      "seizoenen": {
+        "2020-2021": {
+          "aantal": 1,
+          "leeftijd": 5,
+          "band": "Kangoeroe"
+        },
+        "2021-2022": {
+          "aantal": 1,
+          "leeftijd": 6,
+          "band": "Blauw"
+        },
+        "2022-2023": {
+          "aantal": 1,
+          "leeftijd": 7,
+          "band": "Blauw"
+        },
+        "2023-2024": {
+          "aantal": 3,
+          "leeftijd": 8,
+          "band": "Groen"
+        },
+        "2024-2025": {
+          "aantal": 5,
+          "leeftijd": 9,
+          "band": "Groen"
+        },
+        "2025-2026": {
+          "aantal": 6,
+          "leeftijd": 10,
+          "band": "Geel"
+        }
+      },
+      "trend": {
+        "groei_totaal": 5,
+        "retentie_laatste": 1.2
+      }
+    },
+    {
+      "geboortejaar": 2015,
+      "geslacht": "V",
+      "band_huidig": "Geel",
+      "seizoenen": {
+        "2020-2021": {
+          "aantal": 3,
+          "leeftijd": 5,
+          "band": "Kangoeroe"
+        },
+        "2021-2022": {
+          "aantal": 3,
+          "leeftijd": 6,
+          "band": "Blauw"
+        },
+        "2022-2023": {
+          "aantal": 5,
+          "leeftijd": 7,
+          "band": "Blauw"
+        },
+        "2023-2024": {
+          "aantal": 8,
+          "leeftijd": 8,
+          "band": "Groen"
+        },
+        "2024-2025": {
+          "aantal": 9,
+          "leeftijd": 9,
+          "band": "Groen"
+        },
+        "2025-2026": {
+          "aantal": 10,
+          "leeftijd": 10,
+          "band": "Geel"
+        }
+      },
+      "trend": {
+        "groei_totaal": 7,
+        "retentie_laatste": 1.11
+      }
+    },
+    {
+      "geboortejaar": 2016,
+      "geslacht": "M",
+      "band_huidig": "Groen",
+      "seizoenen": {
+        "2025-2026": {
+          "aantal": 2,
+          "leeftijd": 9,
+          "band": "Groen"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": null
+      }
+    },
+    {
+      "geboortejaar": 2016,
+      "geslacht": "V",
+      "band_huidig": "Groen",
+      "seizoenen": {
+        "2022-2023": {
+          "aantal": 1,
+          "leeftijd": 6,
+          "band": "Blauw"
+        },
+        "2023-2024": {
+          "aantal": 3,
+          "leeftijd": 7,
+          "band": "Blauw"
+        },
+        "2024-2025": {
+          "aantal": 4,
+          "leeftijd": 8,
+          "band": "Groen"
+        },
+        "2025-2026": {
+          "aantal": 6,
+          "leeftijd": 9,
+          "band": "Groen"
+        }
+      },
+      "trend": {
+        "groei_totaal": 5,
+        "retentie_laatste": 1.5
+      }
+    },
+    {
+      "geboortejaar": 2017,
+      "geslacht": "M",
+      "band_huidig": "Groen",
+      "seizoenen": {
+        "2023-2024": {
+          "aantal": 2,
+          "leeftijd": 6,
+          "band": "Blauw"
+        },
+        "2024-2025": {
+          "aantal": 2,
+          "leeftijd": 7,
+          "band": "Blauw"
+        },
+        "2025-2026": {
+          "aantal": 7,
+          "leeftijd": 8,
+          "band": "Groen"
+        }
+      },
+      "trend": {
+        "groei_totaal": 5,
+        "retentie_laatste": 3.5
+      }
+    },
+    {
+      "geboortejaar": 2017,
+      "geslacht": "V",
+      "band_huidig": "Groen",
+      "seizoenen": {
+        "2021-2022": {
+          "aantal": 2,
+          "leeftijd": 4,
+          "band": "Kangoeroe"
+        },
+        "2022-2023": {
+          "aantal": 3,
+          "leeftijd": 5,
+          "band": "Kangoeroe"
+        },
+        "2023-2024": {
+          "aantal": 4,
+          "leeftijd": 6,
+          "band": "Blauw"
+        },
+        "2024-2025": {
+          "aantal": 6,
+          "leeftijd": 7,
+          "band": "Blauw"
+        },
+        "2025-2026": {
+          "aantal": 7,
+          "leeftijd": 8,
+          "band": "Groen"
+        }
+      },
+      "trend": {
+        "groei_totaal": 5,
+        "retentie_laatste": 1.17
+      }
+    },
+    {
+      "geboortejaar": 2018,
+      "geslacht": "M",
+      "band_huidig": "Blauw",
+      "seizoenen": {
+        "2022-2023": {
+          "aantal": 1,
+          "leeftijd": 4,
+          "band": "Kangoeroe"
+        },
+        "2024-2025": {
+          "aantal": 2,
+          "leeftijd": 6,
+          "band": "Blauw"
+        },
+        "2025-2026": {
+          "aantal": 4,
+          "leeftijd": 7,
+          "band": "Blauw"
+        }
+      },
+      "trend": {
+        "groei_totaal": 3,
+        "retentie_laatste": 2.0
+      }
+    },
+    {
+      "geboortejaar": 2018,
+      "geslacht": "V",
+      "band_huidig": "Blauw",
+      "seizoenen": {
+        "2023-2024": {
+          "aantal": 2,
+          "leeftijd": 5,
+          "band": "Kangoeroe"
+        },
+        "2024-2025": {
+          "aantal": 1,
+          "leeftijd": 6,
+          "band": "Blauw"
+        },
+        "2025-2026": {
+          "aantal": 4,
+          "leeftijd": 7,
+          "band": "Blauw"
+        }
+      },
+      "trend": {
+        "groei_totaal": 2,
+        "retentie_laatste": 4.0
+      }
+    },
+    {
+      "geboortejaar": 2019,
+      "geslacht": "M",
+      "band_huidig": "Blauw",
+      "seizoenen": {
+        "2024-2025": {
+          "aantal": 1,
+          "leeftijd": 5,
+          "band": "Kangoeroe"
+        },
+        "2025-2026": {
+          "aantal": 2,
+          "leeftijd": 6,
+          "band": "Blauw"
+        }
+      },
+      "trend": {
+        "groei_totaal": 1,
+        "retentie_laatste": 2.0
+      }
+    },
+    {
+      "geboortejaar": 2019,
+      "geslacht": "V",
+      "band_huidig": "Blauw",
+      "seizoenen": {
+        "2024-2025": {
+          "aantal": 1,
+          "leeftijd": 5,
+          "band": "Kangoeroe"
+        },
+        "2025-2026": {
+          "aantal": 4,
+          "leeftijd": 6,
+          "band": "Blauw"
+        }
+      },
+      "trend": {
+        "groei_totaal": 3,
+        "retentie_laatste": 4.0
+      }
+    },
+    {
+      "geboortejaar": 2020,
+      "geslacht": "M",
+      "band_huidig": "Kangoeroe",
+      "seizoenen": {
+        "2024-2025": {
+          "aantal": 1,
+          "leeftijd": 4,
+          "band": "Kangoeroe"
+        },
+        "2025-2026": {
+          "aantal": 1,
+          "leeftijd": 5,
+          "band": "Kangoeroe"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": 1.0
+      }
+    },
+    {
+      "geboortejaar": 2020,
+      "geslacht": "V",
+      "band_huidig": "Kangoeroe",
+      "seizoenen": {
+        "2025-2026": {
+          "aantal": 1,
+          "leeftijd": 5,
+          "band": "Kangoeroe"
+        }
+      },
+      "trend": {
+        "groei_totaal": 0,
+        "retentie_laatste": null
+      }
+    }
+  ],
+  "per_band": [
+    {
+      "band": "Kangoeroe",
+      "seizoenen": {
+        "2010-2011": {
+          "totaal": 2,
+          "m": 1,
+          "v": 1
+        },
+        "2011-2012": {
+          "totaal": 1,
+          "m": 0,
+          "v": 1
+        },
+        "2012-2013": {
+          "totaal": 4,
+          "m": 2,
+          "v": 2
+        },
+        "2013-2014": {
+          "totaal": 3,
+          "m": 3,
+          "v": 0
+        },
+        "2014-2015": {
+          "totaal": 2,
+          "m": 0,
+          "v": 2
+        },
+        "2015-2016": {
+          "totaal": 5,
+          "m": 0,
+          "v": 5
+        },
+        "2016-2017": {
+          "totaal": 8,
+          "m": 3,
+          "v": 5
+        },
+        "2017-2018": {
+          "totaal": 4,
+          "m": 2,
+          "v": 2
+        },
+        "2018-2019": {
+          "totaal": 2,
+          "m": 0,
+          "v": 2
+        },
+        "2019-2020": {
+          "totaal": 6,
+          "m": 3,
+          "v": 3
+        },
+        "2020-2021": {
+          "totaal": 4,
+          "m": 1,
+          "v": 3
+        },
+        "2021-2022": {
+          "totaal": 2,
+          "m": 0,
+          "v": 2
+        },
+        "2022-2023": {
+          "totaal": 4,
+          "m": 1,
+          "v": 3
+        },
+        "2023-2024": {
+          "totaal": 2,
+          "m": 0,
+          "v": 2
+        },
+        "2024-2025": {
+          "totaal": 3,
+          "m": 2,
+          "v": 1
+        },
+        "2025-2026": {
+          "totaal": 2,
+          "m": 1,
+          "v": 1
+        }
+      }
+    },
+    {
+      "band": "Blauw",
+      "seizoenen": {
+        "2010-2011": {
+          "totaal": 17,
+          "m": 5,
+          "v": 12
+        },
+        "2011-2012": {
+          "totaal": 17,
+          "m": 7,
+          "v": 10
+        },
+        "2012-2013": {
+          "totaal": 17,
+          "m": 4,
+          "v": 13
+        },
+        "2013-2014": {
+          "totaal": 11,
+          "m": 6,
+          "v": 5
+        },
+        "2014-2015": {
+          "totaal": 13,
+          "m": 9,
+          "v": 4
+        },
+        "2015-2016": {
+          "totaal": 14,
+          "m": 6,
+          "v": 8
+        },
+        "2016-2017": {
+          "totaal": 18,
+          "m": 4,
+          "v": 14
+        },
+        "2017-2018": {
+          "totaal": 28,
+          "m": 6,
+          "v": 22
+        },
+        "2018-2019": {
+          "totaal": 16,
+          "m": 6,
+          "v": 10
+        },
+        "2019-2020": {
+          "totaal": 16,
+          "m": 7,
+          "v": 9
+        },
+        "2020-2021": {
+          "totaal": 29,
+          "m": 15,
+          "v": 14
+        },
+        "2021-2022": {
+          "totaal": 20,
+          "m": 11,
+          "v": 9
+        },
+        "2022-2023": {
+          "totaal": 7,
+          "m": 1,
+          "v": 6
+        },
+        "2023-2024": {
+          "totaal": 9,
+          "m": 2,
+          "v": 7
+        },
+        "2024-2025": {
+          "totaal": 11,
+          "m": 4,
+          "v": 7
+        },
+        "2025-2026": {
+          "totaal": 14,
+          "m": 6,
+          "v": 8
+        }
+      }
+    },
+    {
+      "band": "Groen",
+      "seizoenen": {
+        "2010-2011": {
+          "totaal": 20,
+          "m": 4,
+          "v": 16
+        },
+        "2011-2012": {
+          "totaal": 30,
+          "m": 13,
+          "v": 17
+        },
+        "2012-2013": {
+          "totaal": 39,
+          "m": 19,
+          "v": 20
+        },
+        "2013-2014": {
+          "totaal": 39,
+          "m": 13,
+          "v": 26
+        },
+        "2014-2015": {
+          "totaal": 33,
+          "m": 10,
+          "v": 23
+        },
+        "2015-2016": {
+          "totaal": 31,
+          "m": 13,
+          "v": 18
+        },
+        "2016-2017": {
+          "totaal": 39,
+          "m": 19,
+          "v": 20
+        },
+        "2017-2018": {
+          "totaal": 29,
+          "m": 13,
+          "v": 16
+        },
+        "2018-2019": {
+          "totaal": 38,
+          "m": 13,
+          "v": 25
+        },
+        "2019-2020": {
+          "totaal": 34,
+          "m": 11,
+          "v": 23
+        },
+        "2020-2021": {
+          "totaal": 32,
+          "m": 12,
+          "v": 20
+        },
+        "2021-2022": {
+          "totaal": 32,
+          "m": 11,
+          "v": 21
+        },
+        "2022-2023": {
+          "totaal": 33,
+          "m": 17,
+          "v": 16
+        },
+        "2023-2024": {
+          "totaal": 27,
+          "m": 15,
+          "v": 12
+        },
+        "2024-2025": {
+          "totaal": 18,
+          "m": 5,
+          "v": 13
+        },
+        "2025-2026": {
+          "totaal": 22,
+          "m": 9,
+          "v": 13
+        }
+      }
+    },
+    {
+      "band": "Geel",
+      "seizoenen": {
+        "2010-2011": {
+          "totaal": 28,
+          "m": 15,
+          "v": 13
+        },
+        "2011-2012": {
+          "totaal": 33,
+          "m": 14,
+          "v": 19
+        },
+        "2012-2013": {
+          "totaal": 40,
+          "m": 15,
+          "v": 25
+        },
+        "2013-2014": {
+          "totaal": 49,
+          "m": 18,
+          "v": 31
+        },
+        "2014-2015": {
+          "totaal": 57,
+          "m": 24,
+          "v": 33
+        },
+        "2015-2016": {
+          "totaal": 73,
+          "m": 31,
+          "v": 42
+        },
+        "2016-2017": {
+          "totaal": 66,
+          "m": 25,
+          "v": 41
+        },
+        "2017-2018": {
+          "totaal": 70,
+          "m": 26,
+          "v": 44
+        },
+        "2018-2019": {
+          "totaal": 57,
+          "m": 27,
+          "v": 30
+        },
+        "2019-2020": {
+          "totaal": 59,
+          "m": 32,
+          "v": 27
+        },
+        "2020-2021": {
+          "totaal": 64,
+          "m": 26,
+          "v": 38
+        },
+        "2021-2022": {
+          "totaal": 56,
+          "m": 19,
+          "v": 37
+        },
+        "2022-2023": {
+          "totaal": 54,
+          "m": 18,
+          "v": 36
+        },
+        "2023-2024": {
+          "totaal": 45,
+          "m": 19,
+          "v": 26
+        },
+        "2024-2025": {
+          "totaal": 54,
+          "m": 22,
+          "v": 32
+        },
+        "2025-2026": {
+          "totaal": 57,
+          "m": 26,
+          "v": 31
+        }
+      }
+    },
+    {
+      "band": "Oranje",
+      "seizoenen": {
+        "2010-2011": {
+          "totaal": 21,
+          "m": 11,
+          "v": 10
+        },
+        "2011-2012": {
+          "totaal": 24,
+          "m": 15,
+          "v": 9
+        },
+        "2012-2013": {
+          "totaal": 24,
+          "m": 12,
+          "v": 12
+        },
+        "2013-2014": {
+          "totaal": 37,
+          "m": 18,
+          "v": 19
+        },
+        "2014-2015": {
+          "totaal": 42,
+          "m": 19,
+          "v": 23
+        },
+        "2015-2016": {
+          "totaal": 48,
+          "m": 17,
+          "v": 31
+        },
+        "2016-2017": {
+          "totaal": 58,
+          "m": 19,
+          "v": 39
+        },
+        "2017-2018": {
+          "totaal": 67,
+          "m": 26,
+          "v": 41
+        },
+        "2018-2019": {
+          "totaal": 62,
+          "m": 28,
+          "v": 34
+        },
+        "2019-2020": {
+          "totaal": 49,
+          "m": 18,
+          "v": 31
+        },
+        "2020-2021": {
+          "totaal": 50,
+          "m": 23,
+          "v": 27
+        },
+        "2021-2022": {
+          "totaal": 50,
+          "m": 24,
+          "v": 26
+        },
+        "2022-2023": {
+          "totaal": 54,
+          "m": 28,
+          "v": 26
+        },
+        "2023-2024": {
+          "totaal": 53,
+          "m": 22,
+          "v": 31
+        },
+        "2024-2025": {
+          "totaal": 51,
+          "m": 22,
+          "v": 29
+        },
+        "2025-2026": {
+          "totaal": 57,
+          "m": 19,
+          "v": 38
+        }
+      }
+    },
+    {
+      "band": "Rood",
+      "seizoenen": {
+        "2010-2011": {
+          "totaal": 12,
+          "m": 2,
+          "v": 10
+        },
+        "2011-2012": {
+          "totaal": 12,
+          "m": 6,
+          "v": 6
+        },
+        "2012-2013": {
+          "totaal": 22,
+          "m": 10,
+          "v": 12
+        },
+        "2013-2014": {
+          "totaal": 23,
+          "m": 13,
+          "v": 10
+        },
+        "2014-2015": {
+          "totaal": 28,
+          "m": 15,
+          "v": 13
+        },
+        "2015-2016": {
+          "totaal": 25,
+          "m": 13,
+          "v": 12
+        },
+        "2016-2017": {
+          "totaal": 27,
+          "m": 5,
+          "v": 22
+        },
+        "2017-2018": {
+          "totaal": 44,
+          "m": 18,
+          "v": 26
+        },
+        "2018-2019": {
+          "totaal": 37,
+          "m": 12,
+          "v": 25
+        },
+        "2019-2020": {
+          "totaal": 44,
+          "m": 15,
+          "v": 29
+        },
+        "2020-2021": {
+          "totaal": 44,
+          "m": 16,
+          "v": 28
+        },
+        "2021-2022": {
+          "totaal": 51,
+          "m": 22,
+          "v": 29
+        },
+        "2022-2023": {
+          "totaal": 33,
+          "m": 15,
+          "v": 18
+        },
+        "2023-2024": {
+          "totaal": 29,
+          "m": 14,
+          "v": 15
+        },
+        "2024-2025": {
+          "totaal": 30,
+          "m": 18,
+          "v": 12
+        },
+        "2025-2026": {
+          "totaal": 36,
+          "m": 20,
+          "v": 16
+        }
+      }
+    },
+    {
+      "band": "Senioren",
+      "seizoenen": {
+        "2010-2011": {
+          "totaal": 76,
+          "m": 45,
+          "v": 31
+        },
+        "2011-2012": {
+          "totaal": 95,
+          "m": 54,
+          "v": 41
+        },
+        "2012-2013": {
+          "totaal": 96,
+          "m": 53,
+          "v": 43
+        },
+        "2013-2014": {
+          "totaal": 75,
+          "m": 36,
+          "v": 39
+        },
+        "2014-2015": {
+          "totaal": 82,
+          "m": 38,
+          "v": 44
+        },
+        "2015-2016": {
+          "totaal": 103,
+          "m": 52,
+          "v": 51
+        },
+        "2016-2017": {
+          "totaal": 105,
+          "m": 54,
+          "v": 51
+        },
+        "2017-2018": {
+          "totaal": 103,
+          "m": 51,
+          "v": 52
+        },
+        "2018-2019": {
+          "totaal": 70,
+          "m": 37,
+          "v": 33
+        },
+        "2019-2020": {
+          "totaal": 102,
+          "m": 57,
+          "v": 45
+        },
+        "2020-2021": {
+          "totaal": 96,
+          "m": 49,
+          "v": 47
+        },
+        "2021-2022": {
+          "totaal": 88,
+          "m": 35,
+          "v": 53
+        },
+        "2022-2023": {
+          "totaal": 78,
+          "m": 37,
+          "v": 41
+        },
+        "2023-2024": {
+          "totaal": 80,
+          "m": 38,
+          "v": 42
+        },
+        "2024-2025": {
+          "totaal": 76,
+          "m": 36,
+          "v": 40
+        },
+        "2025-2026": {
+          "totaal": 74,
+          "m": 34,
+          "v": 40
+        }
+      }
+    }
+  ],
+  "totalen": {
+    "2010-2011": {
+      "spelers": 400,
+      "m": 176,
+      "v": 224
+    },
+    "2011-2012": {
+      "spelers": 409,
+      "m": 184,
+      "v": 225
+    },
+    "2012-2013": {
+      "spelers": 411,
+      "m": 183,
+      "v": 228
+    },
+    "2013-2014": {
+      "spelers": 341,
+      "m": 149,
+      "v": 192
+    },
+    "2014-2015": {
+      "spelers": 330,
+      "m": 147,
+      "v": 183
+    },
+    "2015-2016": {
+      "spelers": 358,
+      "m": 157,
+      "v": 201
+    },
+    "2016-2017": {
+      "spelers": 352,
+      "m": 139,
+      "v": 213
+    },
+    "2017-2018": {
+      "spelers": 345,
+      "m": 142,
+      "v": 203
+    },
+    "2018-2019": {
+      "spelers": 282,
+      "m": 123,
+      "v": 159
+    },
+    "2019-2020": {
+      "spelers": 311,
+      "m": 144,
+      "v": 167
+    },
+    "2020-2021": {
+      "spelers": 331,
+      "m": 154,
+      "v": 177
+    },
+    "2021-2022": {
+      "spelers": 299,
+      "m": 122,
+      "v": 177
+    },
+    "2022-2023": {
+      "spelers": 263,
+      "m": 117,
+      "v": 146
+    },
+    "2023-2024": {
+      "spelers": 245,
+      "m": 110,
+      "v": 135
+    },
+    "2024-2025": {
+      "spelers": 243,
+      "m": 109,
+      "v": 134
+    },
+    "2025-2026": {
+      "spelers": 262,
+      "m": 115,
+      "v": 147
+    }
+  },
+  "stromen": [
+    {
+      "van": "2010-2011",
+      "naar": "2011-2012",
+      "instroom": 86,
+      "uitstroom": 77,
+      "behouden": 323,
+      "netto": 9
+    },
+    {
+      "van": "2011-2012",
+      "naar": "2012-2013",
+      "instroom": 76,
+      "uitstroom": 74,
+      "behouden": 335,
+      "netto": 2
+    },
+    {
+      "van": "2012-2013",
+      "naar": "2013-2014",
+      "instroom": 48,
+      "uitstroom": 100,
+      "behouden": 311,
+      "netto": -52
+    },
+    {
+      "van": "2013-2014",
+      "naar": "2014-2015",
+      "instroom": 45,
+      "uitstroom": 47,
+      "behouden": 312,
+      "netto": -2
+    },
+    {
+      "van": "2014-2015",
+      "naar": "2015-2016",
+      "instroom": 71,
+      "uitstroom": 58,
+      "behouden": 299,
+      "netto": 13
+    },
+    {
+      "van": "2015-2016",
+      "naar": "2016-2017",
+      "instroom": 68,
+      "uitstroom": 86,
+      "behouden": 284,
+      "netto": -18
+    },
+    {
+      "van": "2016-2017",
+      "naar": "2017-2018",
+      "instroom": 54,
+      "uitstroom": 61,
+      "behouden": 291,
+      "netto": -7
+    },
+    {
+      "van": "2017-2018",
+      "naar": "2018-2019",
+      "instroom": 34,
+      "uitstroom": 97,
+      "behouden": 248,
+      "netto": -63
+    },
+    {
+      "van": "2018-2019",
+      "naar": "2019-2020",
+      "instroom": 59,
+      "uitstroom": 30,
+      "behouden": 252,
+      "netto": 29
+    },
+    {
+      "van": "2019-2020",
+      "naar": "2020-2021",
+      "instroom": 73,
+      "uitstroom": 53,
+      "behouden": 258,
+      "netto": 20
+    },
+    {
+      "van": "2020-2021",
+      "naar": "2021-2022",
+      "instroom": 17,
+      "uitstroom": 49,
+      "behouden": 282,
+      "netto": -32
+    },
+    {
+      "van": "2021-2022",
+      "naar": "2022-2023",
+      "instroom": 22,
+      "uitstroom": 58,
+      "behouden": 241,
+      "netto": -36
+    },
+    {
+      "van": "2022-2023",
+      "naar": "2023-2024",
+      "instroom": 29,
+      "uitstroom": 47,
+      "behouden": 216,
+      "netto": -18
+    },
+    {
+      "van": "2023-2024",
+      "naar": "2024-2025",
+      "instroom": 29,
+      "uitstroom": 31,
+      "behouden": 214,
+      "netto": -2
+    },
+    {
+      "van": "2024-2025",
+      "naar": "2025-2026",
+      "instroom": 45,
+      "uitstroom": 26,
+      "behouden": 217,
+      "netto": 19
+    }
+  ]
+}

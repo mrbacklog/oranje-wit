@@ -1,0 +1,250 @@
+{
+  "_meta": {
+    "seizoen": "2025-2026",
+    "club_id": "NCX19J3",
+    "opgehaald": "2026-02-23",
+    "bron": "https://api-mijn.korfbal.nl/api/v2/clubs/NCX19J3/teams"
+  },
+  "teams": [
+    {
+      "team": "1",
+      "categorie": "a",
+      "leeftijdsgroep": "Senioren",
+      "niveau": "Hoofdklasse",
+      "pool_veld": "HK-08",
+      "pool_zaal": "1H"
+    },
+    {
+      "team": "2",
+      "categorie": "a",
+      "leeftijdsgroep": "Senioren",
+      "niveau": "Reserve Overgangsklasse",
+      "pool_veld": "ROK-07",
+      "pool_zaal": "ROKD"
+    },
+    {
+      "team": "3",
+      "categorie": "a",
+      "leeftijdsgroep": "Senioren",
+      "niveau": "Reserve Overgangsklasse",
+      "pool_veld": "ROK-06",
+      "pool_zaal": "R1D"
+    },
+    {
+      "team": "4",
+      "categorie": "a",
+      "leeftijdsgroep": "Senioren",
+      "niveau": "Reserve 2e klasse",
+      "pool_veld": "R2-28",
+      "pool_zaal": "R3W"
+    },
+    {
+      "team": "5",
+      "categorie": "a",
+      "leeftijdsgroep": "Senioren",
+      "niveau": "S-klasse",
+      "pool_veld": "S-096",
+      "pool_zaal": "S-055"
+    },
+    {
+      "team": "6",
+      "categorie": "a",
+      "leeftijdsgroep": "Senioren",
+      "niveau": "S-klasse",
+      "pool_veld": "S-100",
+      "pool_zaal": "S-056"
+    },
+    {
+      "team": "MW1",
+      "categorie": "a",
+      "leeftijdsgroep": "Senioren",
+      "niveau": "Midweek",
+      "pool_veld": "MW-40",
+      "pool_zaal": null
+    },
+    {
+      "team": "J1",
+      "categorie": "b",
+      "kleur": "Rood",
+      "spelvorm": "8-tal",
+      "pool_veld": "Ro-135",
+      "pool_zaal": "Ro-074"
+    },
+    {
+      "team": "J2",
+      "categorie": "b",
+      "kleur": "Rood",
+      "spelvorm": "8-tal",
+      "pool_veld": "Ro-134",
+      "pool_zaal": "Ro-071"
+    },
+    {
+      "team": "J3",
+      "categorie": "b",
+      "kleur": "Oranje",
+      "spelvorm": "8-tal",
+      "pool_veld": "Or-111",
+      "pool_zaal": "Or-060"
+    },
+    {
+      "team": "J4",
+      "categorie": "b",
+      "kleur": "Rood",
+      "spelvorm": "8-tal",
+      "pool_veld": "Ro-138",
+      "pool_zaal": "Ro-073"
+    },
+    {
+      "team": "J5",
+      "categorie": "b",
+      "kleur": "Oranje",
+      "spelvorm": "8-tal",
+      "pool_veld": "Or-098",
+      "pool_zaal": "Or-059"
+    },
+    {
+      "team": "J6",
+      "categorie": "b",
+      "kleur": "Oranje",
+      "spelvorm": "8-tal",
+      "pool_veld": "Or-094",
+      "pool_zaal": "Or-056"
+    },
+    {
+      "team": "J7",
+      "categorie": "b",
+      "kleur": "Geel",
+      "spelvorm": "8-tal",
+      "pool_veld": "Ge-132",
+      "pool_zaal": "Ge-075"
+    },
+    {
+      "team": "J8",
+      "categorie": "b",
+      "kleur": "Geel",
+      "spelvorm": "8-tal",
+      "pool_veld": "Ge-116",
+      "pool_zaal": "Ge-069"
+    },
+    {
+      "team": "J9",
+      "categorie": "b",
+      "kleur": "Geel",
+      "spelvorm": "8-tal",
+      "pool_veld": "Ge-119",
+      "pool_zaal": "Ge-070"
+    },
+    {
+      "team": "J10",
+      "categorie": "b",
+      "kleur": "Geel",
+      "spelvorm": "8-tal",
+      "pool_veld": "Ge-126",
+      "pool_zaal": "Ge-067"
+    },
+    {
+      "team": "J11",
+      "categorie": "b",
+      "kleur": "Groen",
+      "spelvorm": "4-tal",
+      "pool_veld": "Gr4-173",
+      "pool_zaal": "Gr4-119"
+    },
+    {
+      "team": "J12",
+      "categorie": "b",
+      "kleur": "Groen",
+      "spelvorm": "4-tal",
+      "pool_veld": "Gr4-176",
+      "pool_zaal": "Gr4-115"
+    },
+    {
+      "team": "J13",
+      "categorie": "b",
+      "kleur": "Groen",
+      "spelvorm": "4-tal",
+      "pool_veld": "Gr4-172",
+      "pool_zaal": "Gr4-111"
+    },
+    {
+      "team": "J14",
+      "categorie": "b",
+      "kleur": "Groen",
+      "spelvorm": "4-tal",
+      "pool_veld": "Gr4-174",
+      "pool_zaal": "Gr4-117"
+    },
+    {
+      "team": "J15",
+      "categorie": "b",
+      "kleur": "Blauw",
+      "spelvorm": "4-tal",
+      "pool_veld": "Bl4-084",
+      "pool_zaal": "Bl4-059"
+    },
+    {
+      "team": "J16",
+      "categorie": "b",
+      "kleur": "Blauw",
+      "spelvorm": "4-tal",
+      "pool_veld": "Bl4-087",
+      "pool_zaal": "Bl4-062"
+    },
+    {
+      "team": "J17",
+      "categorie": "b",
+      "kleur": "Blauw",
+      "spelvorm": "4-tal",
+      "pool_veld": "Bl4-088",
+      "pool_zaal": "Bl4-063"
+    },
+    {
+      "team": "J18",
+      "categorie": "b",
+      "kleur": "Blauw",
+      "spelvorm": "4-tal",
+      "pool_veld": null,
+      "pool_zaal": "Bl4-099"
+    },
+    {
+      "team": "U15-1",
+      "categorie": "a",
+      "leeftijdsgroep": "U15",
+      "niveau": "Hoofdklasse",
+      "pool_veld": "U15-HK-08",
+      "pool_zaal": "U15-HKD"
+    },
+    {
+      "team": "U17-1",
+      "categorie": "a",
+      "leeftijdsgroep": "U17",
+      "niveau": "Hoofdklasse",
+      "pool_veld": "U17-HK-07",
+      "pool_zaal": "U17-HKD"
+    },
+    {
+      "team": "U17-2",
+      "categorie": "a",
+      "leeftijdsgroep": "U17",
+      "niveau": "1e klasse",
+      "pool_veld": "U17-1-11",
+      "pool_zaal": "U17-1G"
+    },
+    {
+      "team": "U19-1",
+      "categorie": "a",
+      "leeftijdsgroep": "U19",
+      "niveau": "Overgangsklasse",
+      "pool_veld": "U19-OK-07",
+      "pool_zaal": "U19-OKD"
+    },
+    {
+      "team": "U19-2",
+      "categorie": "a",
+      "leeftijdsgroep": "U19",
+      "niveau": "2e klasse",
+      "pool_veld": "U19-2-08",
+      "pool_zaal": "U19-2E"
+    }
+  ]
+}

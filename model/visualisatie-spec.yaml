@@ -1,0 +1,262 @@
+# Visualisatie-specificatie — Statistisch Jeugdmodel c.k.v. Oranje Wit
+# Beschrijft twee weergaven die app-projecten kunnen implementeren.
+# Versie: 1.0
+
+meta:
+  naam: "Geboortejaar-Categorie Visualisatie"
+  bron_model: "model/jeugdmodel.yaml"
+  versie: "1.0"
+
+# --- Kleurpalet ---
+kleurpalet:
+  a_categorie:
+    U15:
+      achtergrond: "#1E3A5F"     # donkerblauw
+      tekst: "#FFFFFF"
+      label: "U15"
+    U17:
+      achtergrond: "#2D6A4F"     # donkergroen
+      tekst: "#FFFFFF"
+      label: "U17"
+    U19:
+      achtergrond: "#6B2D5B"     # donkerpaars
+      tekst: "#FFFFFF"
+      label: "U19"
+    Senioren_A:
+      achtergrond: "#4A4A4A"     # donkergrijs
+      tekst: "#FFFFFF"
+      label: "Senioren"
+
+  b_categorie:
+    # Werkelijke KNKV-kleuren als achtergrond
+    Blauw:
+      achtergrond: "#4A90D9"     # blauw
+      tekst: "#FFFFFF"
+      label: "Blauw"
+    Groen:
+      achtergrond: "#52B788"     # groen
+      tekst: "#FFFFFF"
+      label: "Groen"
+    Geel:
+      achtergrond: "#F4D35E"     # geel
+      tekst: "#333333"
+      label: "Geel"
+    Oranje:
+      achtergrond: "#F28C28"     # oranje
+      tekst: "#FFFFFF"
+      label: "Oranje"
+    Rood:
+      achtergrond: "#D62828"     # rood
+      tekst: "#FFFFFF"
+      label: "Rood"
+    Senioren_B:
+      achtergrond: "#7A3B69"     # donkerroze/paars
+      tekst: "#FFFFFF"
+      label: "Senioren (B)"
+
+  jaars_markering:
+    eerste_jaars: "lichtere tint van categoriekleur (opacity 0.7)"
+    tweede_jaars: "volle tint van categoriekleur (opacity 1.0)"
+
+  stoplicht_rand:
+    kritiek: "#D62828"           # rode rand
+    aandacht: "#F4D35E"          # gele rand
+    op_koers: "#52B788"          # groene rand
+
+# --- View 1: Cohort Flow Matrix ---
+cohort_flow_matrix:
+  beschrijving: >
+    Matrix met geboortejaren als rijen en seizoenen als kolommen.
+    Elke cel is gekleurd op basis van de categorie waar dat
+    geboortejaar in dat seizoen valt. De diagonale stroom maakt
+    zichtbaar hoe een geboortejaarcohorte door het systeem beweegt.
+
+  assen:
+    x:
+      naam: "Seizoen"
+      type: "categorisch"
+      voorbeeld: ["2025-2026", "2026-2027", "2027-2028", "2028-2029"]
+      interactie: "seizoen-slider of dropdown"
+    y:
+      naam: "Geboortejaar"
+      type: "numeriek (aflopend: nieuwste bovenaan of onderaan)"
+      voorbeeld: [2006, 2007, 2008, "...", 2020, 2021]
+      sortering: "oudste bovenaan (aflopend)"
+
+  cel:
+    inhoud:
+      - veld: "categorie"
+        voorbeeld: "U15"
+      - veld: "jaars"
+        voorbeeld: "1e jaars"
+        weergave: "subtekst of kleur-tint"
+      - veld: "aantal_dames"
+        voorbeeld: 18
+        bron: "ledenlijst"
+      - veld: "aantal_heren"
+        voorbeeld: 21
+        bron: "ledenlijst"
+      - veld: "streef_per_gender"
+        voorbeeld: 22
+        bron: "model berekening"
+      - veld: "vulgraad"
+        voorbeeld: 0.82
+        weergave: "stoplicht-rand om de cel"
+
+    kleur: "achtergrondkleur uit kleurpalet op basis van categorie"
+    tint: "1e jaars = lichter, 2e jaars = voller"
+    rand: "stoplicht-kleur op basis van vulgraad"
+
+  hover_tooltip:
+    velden:
+      - "Geboortejaar: 2012"
+      - "Seizoen: 2026-2027"
+      - "Categorie: U15 (2e jaars)"
+      - "Dames: 18 / 22 (82%)"
+      - "Heren: 21 / 22 (95%)"
+      - "Status: Op koers"
+
+  kenmerken:
+    - "Diagonale stroom: elk geboortejaar verschuift 1 cel per seizoen"
+    - "A-categorie cellen zijn donkerder/intenser dan B-categorie"
+    - "Grens A/B is visueel duidelijk (dikke horizontale lijn)"
+    - "Lege cellen (geen leden) zijn grijs met stippellijn"
+
+# --- View 2: Gestapelde Tijdlijn ---
+gestapelde_tijdlijn:
+  beschrijving: >
+    Per seizoen een verticale kolom met gestapelde blokken per categorie.
+    Bovenaan de oudste (Senioren/U19), onderaan de jongste (Blauw).
+    Geeft snel overzicht van de pipeline zonder detail per geboortejaar.
+
+  layout:
+    richting: "verticaal (oudste boven, jongste onder)"
+    kolommen: "1 per seizoen, naast elkaar"
+
+  blok:
+    inhoud:
+      - veld: "categorie_naam"
+        voorbeeld: "U15"
+      - veld: "geboortejaren"
+        voorbeeld: "2012 / 2013"
+      - veld: "totaal_leden"
+        voorbeeld: 39
+      - veld: "streef_totaal"
+        voorbeeld: 88
+      - veld: "vulgraad"
+        voorbeeld: 0.44
+
+    kleur: "achtergrondkleur uit kleurpalet"
+    hoogte: "proportioneel aan aantal leden OF vast per categorie"
+    rand: "stoplicht-kleur op basis van vulgraad"
+
+  volgorde_blokken_top_naar_bottom:
+    - "Senioren (A)"
+    - "U19"
+    - "U17"
+    - "U15"
+    - "--- scheiding A/B ---"
+    - "Rood"
+    - "Oranje"
+    - "Geel"
+    - "Groen"
+    - "Blauw"
+
+  hover_tooltip:
+    velden:
+      - "Categorie: U15"
+      - "Seizoen: 2026-2027"
+      - "Geboortejaren: 2012 / 2013"
+      - "Leden: 39 (22D + 17H)"
+      - "Streef: 88 (44D + 44H)"
+      - "Vulgraad: 44%"
+      - "Status: Kritiek — actief werven"
+
+# --- B-categorie indicatieve leeftijdsranges ---
+# NB: Deze zijn INDICATIEF. De KNKV kent kleuren per seizoen toe.
+# Voor de visualisatie gebruiken we deze als benadering.
+b_categorie_indicatief:
+  toelichting: >
+    Kleuren in de B-categorie zijn niet leeftijdsvast. De KNKV kent
+    ze per seizoen toe op basis van gemiddelde leeftijd, teamsterkte
+    en reisafstand. Onderstaande ranges zijn indicatief voor planning.
+    De werkelijke kleur wordt pas bij de teamindeling bekend.
+
+  # Mapping wordt berekend t.o.v. peildatum 31/12 van het seizoen.
+  # Leeftijd = peildatumjaar - geboortejaar.
+  indicatieve_ranges:
+    Blauw:
+      leeftijd_range: [5, 7]
+      spelvorm: "4-tal"
+      toelichting: "Jongste instromers, equivalent oud F-welpen"
+    Groen:
+      leeftijd_range: [7, 10]
+      spelvorm: "4-tal"
+      toelichting: "Equivalent oud E-welpen"
+    Geel:
+      leeftijd_range: [9, 12]
+      spelvorm: "8-tal (OW-voorkeur)"
+      toelichting: "Overgang naar groter veld, equivalent oud D-pupillen"
+    Oranje:
+      leeftijd_range: [11, 15]
+      spelvorm: "8-tal"
+      toelichting: "Pre-competitief, overlapgebied met U15 leeftijd"
+    Rood:
+      leeftijd_range: [14, 18]
+      spelvorm: "8-tal"
+      toelichting: "Hoogste B-niveau, gelijke specs als A-categorie"
+
+# --- Interactie-specificatie ---
+interactie:
+  seizoen_selector:
+    type: "slider of dropdown"
+    beschrijving: "Kies welke seizoenen worden getoond (range of individueel)"
+    default: "huidig seizoen + 2 toekomstige"
+
+  gender_filter:
+    type: "toggle"
+    opties: ["Alle", "Dames", "Heren"]
+    default: "Alle"
+
+  ratio_slider:
+    type: "slider"
+    range: [0.15, 0.35]
+    default: 0.225
+    stap: 0.025
+    beschrijving: "Pas talent-ratio aan om effect op streefaantallen te zien"
+
+  view_toggle:
+    type: "tab of toggle"
+    opties: ["Cohort Flow Matrix", "Gestapelde Tijdlijn"]
+    default: "Cohort Flow Matrix"
+
+# --- Voorbeeld-dataset (seizoenen 2025-2028) ---
+voorbeeld_data:
+  seizoenen:
+    - seizoen: "2025-2026"
+      peildatum: "2025-12-31"
+      a_categorie:
+        U19: { tweede_jaars: 2007, eerste_jaars: 2008 }
+        U17: { tweede_jaars: 2009, eerste_jaars: 2010 }
+        U15: { tweede_jaars: 2011, eerste_jaars: 2012 }
+
+    - seizoen: "2026-2027"
+      peildatum: "2026-12-31"
+      a_categorie:
+        U19: { tweede_jaars: 2008, eerste_jaars: 2009 }
+        U17: { tweede_jaars: 2010, eerste_jaars: 2011 }
+        U15: { tweede_jaars: 2012, eerste_jaars: 2013 }
+
+    - seizoen: "2027-2028"
+      peildatum: "2027-12-31"
+      a_categorie:
+        U19: { tweede_jaars: 2009, eerste_jaars: 2010 }
+        U17: { tweede_jaars: 2011, eerste_jaars: 2012 }
+        U15: { tweede_jaars: 2013, eerste_jaars: 2014 }
+
+    - seizoen: "2028-2029"
+      peildatum: "2028-12-31"
+      a_categorie:
+        U19: { tweede_jaars: 2010, eerste_jaars: 2011 }
+        U17: { tweede_jaars: 2012, eerste_jaars: 2013 }
+        U15: { tweede_jaars: 2014, eerste_jaars: 2015 }

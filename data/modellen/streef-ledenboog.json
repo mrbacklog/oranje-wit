@@ -1,0 +1,856 @@
+{
+  "_meta": {
+    "beschrijving": "Streefmodel jeugd c.k.v. Oranje Wit v2.0 - groeipad 2026 -> 2028 -> 2030",
+    "aangemaakt": "2026-02-24",
+    "versie": "2.0",
+    "methode": "Projectie op basis van OW-eigen retentie per leeftijdsjaar en instroomverdeling",
+    "parameters": {
+      "retentie": "per leeftijdsjaar, gender-specifiek (jeugdmodel v2.0)",
+      "instroom_per_seizoen": 24,
+      "mv_ratio_instroom": "40/60",
+      "bron_retentie": "spelerspaden.json 2010-2026 (1246 spelers, 629 met geboortedatum)",
+      "bron_instroom": "spelerspaden.json 16 seizoenen (piek bij 8-9 jaar)"
+    },
+    "banden": {
+      "Blauw": {
+        "leeftijd": [
+          5,
+          6,
+          7
+        ],
+        "spelvorm": "4-tallen"
+      },
+      "Groen": {
+        "leeftijd": [
+          8,
+          9
+        ],
+        "spelvorm": "4-tallen"
+      },
+      "Geel": {
+        "leeftijd": [
+          10,
+          11,
+          12
+        ],
+        "spelvorm": "8-tallen"
+      },
+      "Oranje": {
+        "leeftijd": [
+          13,
+          14,
+          15
+        ],
+        "spelvorm": "8-tallen"
+      },
+      "Rood": {
+        "leeftijd": [
+          16,
+          17,
+          18
+        ],
+        "spelvorm": "8-tallen"
+      }
+    }
+  },
+  "boog_huidig": {
+    "beschrijving": "Huidig seizoen 2025-2026",
+    "per_leeftijd": [
+      {
+        "leeftijd": 5,
+        "band": "Blauw",
+        "totaal": 0,
+        "m": 0,
+        "v": 0
+      },
+      {
+        "leeftijd": 6,
+        "band": "Blauw",
+        "totaal": 5,
+        "m": 1,
+        "v": 4
+      },
+      {
+        "leeftijd": 7,
+        "band": "Blauw",
+        "totaal": 10,
+        "m": 4,
+        "v": 6
+      },
+      {
+        "leeftijd": 8,
+        "band": "Groen",
+        "totaal": 12,
+        "m": 6,
+        "v": 6
+      },
+      {
+        "leeftijd": 9,
+        "band": "Groen",
+        "totaal": 15,
+        "m": 8,
+        "v": 7
+      },
+      {
+        "leeftijd": 10,
+        "band": "Geel",
+        "totaal": 9,
+        "m": 2,
+        "v": 7
+      },
+      {
+        "leeftijd": 11,
+        "band": "Geel",
+        "totaal": 15,
+        "m": 7,
+        "v": 8
+      },
+      {
+        "leeftijd": 12,
+        "band": "Geel",
+        "totaal": 22,
+        "m": 14,
+        "v": 8
+      },
+      {
+        "leeftijd": 13,
+        "band": "Oranje",
+        "totaal": 17,
+        "m": 6,
+        "v": 11,
+        "transitie_b_naar_a": true
+      },
+      {
+        "leeftijd": 14,
+        "band": "Oranje",
+        "totaal": 18,
+        "m": 4,
+        "v": 14
+      },
+      {
+        "leeftijd": 15,
+        "band": "Oranje",
+        "totaal": 15,
+        "m": 9,
+        "v": 6
+      },
+      {
+        "leeftijd": 16,
+        "band": "Rood",
+        "totaal": 24,
+        "m": 6,
+        "v": 18
+      },
+      {
+        "leeftijd": 17,
+        "band": "Rood",
+        "totaal": 12,
+        "m": 7,
+        "v": 5
+      },
+      {
+        "leeftijd": 18,
+        "band": "Rood",
+        "totaal": 11,
+        "m": 5,
+        "v": 6
+      }
+    ],
+    "totaal": 185
+  },
+  "boog_2028": {
+    "beschrijving": "Projectie seizoen 2027-2028 (realistisch scenario, 24 nieuwe leden/jaar)",
+    "per_leeftijd": [
+      {
+        "leeftijd": 5,
+        "band": "Blauw",
+        "totaal": 0,
+        "m": 0,
+        "v": 0
+      },
+      {
+        "leeftijd": 6,
+        "band": "Blauw",
+        "totaal": 2,
+        "m": 1,
+        "v": 1
+      },
+      {
+        "leeftijd": 7,
+        "band": "Blauw",
+        "totaal": 4,
+        "m": 2,
+        "v": 2
+      },
+      {
+        "leeftijd": 8,
+        "band": "Groen",
+        "totaal": 10,
+        "m": 3,
+        "v": 7
+      },
+      {
+        "leeftijd": 9,
+        "band": "Groen",
+        "totaal": 17,
+        "m": 7,
+        "v": 10
+      },
+      {
+        "leeftijd": 10,
+        "band": "Geel",
+        "totaal": 17,
+        "m": 8,
+        "v": 9
+      },
+      {
+        "leeftijd": 11,
+        "band": "Geel",
+        "totaal": 18,
+        "m": 9,
+        "v": 9
+      },
+      {
+        "leeftijd": 12,
+        "band": "Geel",
+        "totaal": 11,
+        "m": 3,
+        "v": 8
+      },
+      {
+        "leeftijd": 13,
+        "band": "Oranje",
+        "totaal": 15,
+        "m": 7,
+        "v": 8,
+        "transitie_b_naar_a": true
+      },
+      {
+        "leeftijd": 14,
+        "band": "Oranje",
+        "totaal": 22,
+        "m": 14,
+        "v": 8
+      },
+      {
+        "leeftijd": 15,
+        "band": "Oranje",
+        "totaal": 17,
+        "m": 6,
+        "v": 11
+      },
+      {
+        "leeftijd": 16,
+        "band": "Rood",
+        "totaal": 16,
+        "m": 4,
+        "v": 12
+      },
+      {
+        "leeftijd": 17,
+        "band": "Rood",
+        "totaal": 12,
+        "m": 7,
+        "v": 5
+      },
+      {
+        "leeftijd": 18,
+        "band": "Rood",
+        "totaal": 18,
+        "m": 5,
+        "v": 13
+      }
+    ],
+    "totaal": 179
+  },
+  "boog_2030": {
+    "beschrijving": "Projectie seizoen 2029-2030 (realistisch scenario, 24 nieuwe leden/jaar)",
+    "per_leeftijd": [
+      {
+        "leeftijd": 5,
+        "band": "Blauw",
+        "totaal": 0,
+        "m": 0,
+        "v": 0
+      },
+      {
+        "leeftijd": 6,
+        "band": "Blauw",
+        "totaal": 2,
+        "m": 1,
+        "v": 1
+      },
+      {
+        "leeftijd": 7,
+        "band": "Blauw",
+        "totaal": 5,
+        "m": 2,
+        "v": 3
+      },
+      {
+        "leeftijd": 8,
+        "band": "Groen",
+        "totaal": 8,
+        "m": 3,
+        "v": 5
+      },
+      {
+        "leeftijd": 9,
+        "band": "Groen",
+        "totaal": 11,
+        "m": 4,
+        "v": 7
+      },
+      {
+        "leeftijd": 10,
+        "band": "Geel",
+        "totaal": 16,
+        "m": 6,
+        "v": 10
+      },
+      {
+        "leeftijd": 11,
+        "band": "Geel",
+        "totaal": 19,
+        "m": 8,
+        "v": 11
+      },
+      {
+        "leeftijd": 12,
+        "band": "Geel",
+        "totaal": 18,
+        "m": 8,
+        "v": 10
+      },
+      {
+        "leeftijd": 13,
+        "band": "Oranje",
+        "totaal": 18,
+        "m": 9,
+        "v": 9,
+        "transitie_b_naar_a": true
+      },
+      {
+        "leeftijd": 14,
+        "band": "Oranje",
+        "totaal": 12,
+        "m": 4,
+        "v": 8
+      },
+      {
+        "leeftijd": 15,
+        "band": "Oranje",
+        "totaal": 16,
+        "m": 7,
+        "v": 9
+      },
+      {
+        "leeftijd": 16,
+        "band": "Rood",
+        "totaal": 18,
+        "m": 11,
+        "v": 7
+      },
+      {
+        "leeftijd": 17,
+        "band": "Rood",
+        "totaal": 13,
+        "m": 5,
+        "v": 8
+      },
+      {
+        "leeftijd": 18,
+        "band": "Rood",
+        "totaal": 12,
+        "m": 3,
+        "v": 9
+      }
+    ],
+    "totaal": 168
+  },
+  "groeipad": [
+    {
+      "geboortejaar": 2023,
+      "seizoenen": {
+        "2025-2026": null,
+        "2027-2028": {
+          "leeftijd": 5,
+          "band": "Blauw",
+          "streef_totaal": 0,
+          "streef_m": 0,
+          "streef_v": 0
+        },
+        "2029-2030": {
+          "leeftijd": 7,
+          "band": "Blauw",
+          "streef_totaal": 5,
+          "streef_m": 2,
+          "streef_v": 3
+        }
+      }
+    },
+    {
+      "geboortejaar": 2022,
+      "seizoenen": {
+        "2025-2026": null,
+        "2027-2028": {
+          "leeftijd": 6,
+          "band": "Blauw",
+          "streef_totaal": 2,
+          "streef_m": 1,
+          "streef_v": 1
+        },
+        "2029-2030": {
+          "leeftijd": 8,
+          "band": "Groen",
+          "streef_totaal": 8,
+          "streef_m": 3,
+          "streef_v": 5
+        }
+      }
+    },
+    {
+      "geboortejaar": 2021,
+      "seizoenen": {
+        "2025-2026": null,
+        "2027-2028": {
+          "leeftijd": 7,
+          "band": "Blauw",
+          "streef_totaal": 4,
+          "streef_m": 2,
+          "streef_v": 2
+        },
+        "2029-2030": {
+          "leeftijd": 9,
+          "band": "Groen",
+          "streef_totaal": 11,
+          "streef_m": 4,
+          "streef_v": 7
+        }
+      }
+    },
+    {
+      "geboortejaar": 2020,
+      "seizoenen": {
+        "2025-2026": {
+          "leeftijd": 6,
+          "band": "Blauw",
+          "huidig_totaal": 5,
+          "huidig_m": 1,
+          "huidig_v": 4
+        },
+        "2027-2028": {
+          "leeftijd": 8,
+          "band": "Groen",
+          "streef_totaal": 10,
+          "streef_m": 3,
+          "streef_v": 7
+        },
+        "2029-2030": {
+          "leeftijd": 10,
+          "band": "Geel",
+          "streef_totaal": 16,
+          "streef_m": 6,
+          "streef_v": 10
+        }
+      }
+    },
+    {
+      "geboortejaar": 2019,
+      "seizoenen": {
+        "2025-2026": {
+          "leeftijd": 7,
+          "band": "Blauw",
+          "huidig_totaal": 10,
+          "huidig_m": 4,
+          "huidig_v": 6
+        },
+        "2027-2028": {
+          "leeftijd": 9,
+          "band": "Groen",
+          "streef_totaal": 17,
+          "streef_m": 7,
+          "streef_v": 10
+        },
+        "2029-2030": {
+          "leeftijd": 11,
+          "band": "Geel",
+          "streef_totaal": 19,
+          "streef_m": 8,
+          "streef_v": 11
+        }
+      }
+    },
+    {
+      "geboortejaar": 2018,
+      "seizoenen": {
+        "2025-2026": {
+          "leeftijd": 8,
+          "band": "Groen",
+          "huidig_totaal": 12,
+          "huidig_m": 6,
+          "huidig_v": 6
+        },
+        "2027-2028": {
+          "leeftijd": 10,
+          "band": "Geel",
+          "streef_totaal": 17,
+          "streef_m": 8,
+          "streef_v": 9
+        },
+        "2029-2030": {
+          "leeftijd": 12,
+          "band": "Geel",
+          "streef_totaal": 18,
+          "streef_m": 8,
+          "streef_v": 10
+        }
+      }
+    },
+    {
+      "geboortejaar": 2017,
+      "seizoenen": {
+        "2025-2026": {
+          "leeftijd": 9,
+          "band": "Groen",
+          "huidig_totaal": 15,
+          "huidig_m": 8,
+          "huidig_v": 7
+        },
+        "2027-2028": {
+          "leeftijd": 11,
+          "band": "Geel",
+          "streef_totaal": 18,
+          "streef_m": 9,
+          "streef_v": 9
+        },
+        "2029-2030": {
+          "leeftijd": 13,
+          "band": "Oranje",
+          "streef_totaal": 18,
+          "streef_m": 9,
+          "streef_v": 9
+        }
+      }
+    },
+    {
+      "geboortejaar": 2016,
+      "seizoenen": {
+        "2025-2026": {
+          "leeftijd": 10,
+          "band": "Geel",
+          "huidig_totaal": 9,
+          "huidig_m": 2,
+          "huidig_v": 7
+        },
+        "2027-2028": {
+          "leeftijd": 12,
+          "band": "Geel",
+          "streef_totaal": 11,
+          "streef_m": 3,
+          "streef_v": 8
+        },
+        "2029-2030": {
+          "leeftijd": 14,
+          "band": "Oranje",
+          "streef_totaal": 12,
+          "streef_m": 4,
+          "streef_v": 8
+        }
+      }
+    },
+    {
+      "geboortejaar": 2015,
+      "seizoenen": {
+        "2025-2026": {
+          "leeftijd": 11,
+          "band": "Geel",
+          "huidig_totaal": 15,
+          "huidig_m": 7,
+          "huidig_v": 8
+        },
+        "2027-2028": {
+          "leeftijd": 13,
+          "band": "Oranje",
+          "streef_totaal": 15,
+          "streef_m": 7,
+          "streef_v": 8
+        },
+        "2029-2030": {
+          "leeftijd": 15,
+          "band": "Oranje",
+          "streef_totaal": 16,
+          "streef_m": 7,
+          "streef_v": 9
+        }
+      }
+    },
+    {
+      "geboortejaar": 2014,
+      "seizoenen": {
+        "2025-2026": {
+          "leeftijd": 12,
+          "band": "Geel",
+          "huidig_totaal": 22,
+          "huidig_m": 14,
+          "huidig_v": 8
+        },
+        "2027-2028": {
+          "leeftijd": 14,
+          "band": "Oranje",
+          "streef_totaal": 22,
+          "streef_m": 14,
+          "streef_v": 8
+        },
+        "2029-2030": {
+          "leeftijd": 16,
+          "band": "Rood",
+          "streef_totaal": 18,
+          "streef_m": 11,
+          "streef_v": 7
+        }
+      }
+    },
+    {
+      "geboortejaar": 2013,
+      "seizoenen": {
+        "2025-2026": {
+          "leeftijd": 13,
+          "band": "Oranje",
+          "huidig_totaal": 17,
+          "huidig_m": 6,
+          "huidig_v": 11
+        },
+        "2027-2028": {
+          "leeftijd": 15,
+          "band": "Oranje",
+          "streef_totaal": 17,
+          "streef_m": 6,
+          "streef_v": 11
+        },
+        "2029-2030": {
+          "leeftijd": 17,
+          "band": "Rood",
+          "streef_totaal": 13,
+          "streef_m": 5,
+          "streef_v": 8
+        }
+      }
+    },
+    {
+      "geboortejaar": 2012,
+      "seizoenen": {
+        "2025-2026": {
+          "leeftijd": 14,
+          "band": "Oranje",
+          "huidig_totaal": 18,
+          "huidig_m": 4,
+          "huidig_v": 14
+        },
+        "2027-2028": {
+          "leeftijd": 16,
+          "band": "Rood",
+          "streef_totaal": 16,
+          "streef_m": 4,
+          "streef_v": 12
+        },
+        "2029-2030": {
+          "leeftijd": 18,
+          "band": "Rood",
+          "streef_totaal": 12,
+          "streef_m": 3,
+          "streef_v": 9
+        }
+      }
+    },
+    {
+      "geboortejaar": 2011,
+      "seizoenen": {
+        "2025-2026": {
+          "leeftijd": 15,
+          "band": "Oranje",
+          "huidig_totaal": 15,
+          "huidig_m": 9,
+          "huidig_v": 6
+        },
+        "2027-2028": {
+          "leeftijd": 17,
+          "band": "Rood",
+          "streef_totaal": 12,
+          "streef_m": 7,
+          "streef_v": 5
+        },
+        "2029-2030": "senioren"
+      }
+    },
+    {
+      "geboortejaar": 2010,
+      "seizoenen": {
+        "2025-2026": {
+          "leeftijd": 16,
+          "band": "Rood",
+          "huidig_totaal": 24,
+          "huidig_m": 6,
+          "huidig_v": 18
+        },
+        "2027-2028": {
+          "leeftijd": 18,
+          "band": "Rood",
+          "streef_totaal": 18,
+          "streef_m": 5,
+          "streef_v": 13
+        },
+        "2029-2030": "senioren"
+      }
+    },
+    {
+      "geboortejaar": 2009,
+      "seizoenen": {
+        "2025-2026": {
+          "leeftijd": 17,
+          "band": "Rood",
+          "huidig_totaal": 12,
+          "huidig_m": 7,
+          "huidig_v": 5
+        },
+        "2027-2028": "senioren",
+        "2029-2030": "senioren"
+      }
+    },
+    {
+      "geboortejaar": 2008,
+      "seizoenen": {
+        "2025-2026": {
+          "leeftijd": 18,
+          "band": "Rood",
+          "huidig_totaal": 11,
+          "huidig_m": 5,
+          "huidig_v": 6
+        },
+        "2027-2028": "senioren",
+        "2029-2030": "senioren"
+      }
+    },
+    {
+      "geboortejaar": 2007,
+      "seizoenen": {
+        "2025-2026": null,
+        "2027-2028": "senioren",
+        "2029-2030": "senioren"
+      }
+    }
+  ],
+  "samenvatting": {
+    "2025-2026": {
+      "type": "huidig",
+      "totaal": 185,
+      "per_band": {
+        "Blauw": {
+          "totaal": 15,
+          "m": 5,
+          "v": 10,
+          "teams": 3
+        },
+        "Groen": {
+          "totaal": 27,
+          "m": 14,
+          "v": 13,
+          "teams": 4
+        },
+        "Geel": {
+          "totaal": 46,
+          "m": 23,
+          "v": 23,
+          "teams": 5
+        },
+        "Oranje": {
+          "totaal": 50,
+          "m": 19,
+          "v": 31,
+          "teams": 5
+        },
+        "Rood": {
+          "totaal": 47,
+          "m": 18,
+          "v": 29,
+          "teams": 5
+        }
+      },
+      "teams_totaal": 22
+    },
+    "2027-2028": {
+      "type": "projectie",
+      "totaal": 179,
+      "per_band": {
+        "Blauw": {
+          "totaal": 6,
+          "m": 3,
+          "v": 3,
+          "teams": 1
+        },
+        "Groen": {
+          "totaal": 27,
+          "m": 10,
+          "v": 17,
+          "teams": 4
+        },
+        "Geel": {
+          "totaal": 46,
+          "m": 20,
+          "v": 26,
+          "teams": 5
+        },
+        "Oranje": {
+          "totaal": 54,
+          "m": 27,
+          "v": 27,
+          "teams": 6
+        },
+        "Rood": {
+          "totaal": 46,
+          "m": 16,
+          "v": 30,
+          "teams": 5
+        }
+      },
+      "teams_totaal": 21
+    },
+    "2029-2030": {
+      "type": "projectie",
+      "totaal": 168,
+      "per_band": {
+        "Blauw": {
+          "totaal": 7,
+          "m": 3,
+          "v": 4,
+          "teams": 1
+        },
+        "Groen": {
+          "totaal": 19,
+          "m": 7,
+          "v": 12,
+          "teams": 3
+        },
+        "Geel": {
+          "totaal": 53,
+          "m": 22,
+          "v": 31,
+          "teams": 6
+        },
+        "Oranje": {
+          "totaal": 46,
+          "m": 20,
+          "v": 26,
+          "teams": 5
+        },
+        "Rood": {
+          "totaal": 43,
+          "m": 19,
+          "v": 24,
+          "teams": 5
+        }
+      },
+      "teams_totaal": 20
+    }
+  }
+}

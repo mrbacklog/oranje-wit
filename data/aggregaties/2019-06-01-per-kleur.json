@@ -1,0 +1,56 @@
+[
+  {
+    "kleur": "Blauw",
+    "categorie": null,
+    "teams": 3,
+    "spelers_M": 5,
+    "spelers_V": 6,
+    "totaal": 11,
+    "gem_leeftijd": 5.5
+  },
+  {
+    "kleur": "Geel",
+    "categorie": null,
+    "teams": 5,
+    "spelers_M": 16,
+    "spelers_V": 24,
+    "totaal": 40,
+    "gem_leeftijd": 9.4
+  },
+  {
+    "kleur": "Groen",
+    "categorie": null,
+    "teams": 5,
+    "spelers_M": 10,
+    "spelers_V": 13,
+    "totaal": 23,
+    "gem_leeftijd": 7.6
+  },
+  {
+    "kleur": "Oranje",
+    "categorie": null,
+    "teams": 5,
+    "spelers_M": 25,
+    "spelers_V": 21,
+    "totaal": 46,
+    "gem_leeftijd": 11.7
+  },
+  {
+    "kleur": "Rood",
+    "categorie": null,
+    "teams": 10,
+    "spelers_M": 28,
+    "spelers_V": 51,
+    "totaal": 79,
+    "gem_leeftijd": 15.1
+  },
+  {
+    "kleur": "Senioren",
+    "categorie": null,
+    "teams": 8,
+    "spelers_M": 60,
+    "spelers_V": 52,
+    "totaal": 112,
+    "gem_leeftijd": 27.2
+  }
+]

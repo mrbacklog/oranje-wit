@@ -1,0 +1,21 @@
+{
+  "name": "@oranje-wit/database",
+  "version": "1.0.0",
+  "private": true,
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "generate": "prisma generate",
+    "db:push": "prisma db push"
+  },
+  "dependencies": {
+    "@prisma/client": "^7.4.1",
+    "@prisma/adapter-pg": "^7.4.1",
+    "pg": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.16.0",
+    "prisma": "^7.4.1",
+    "dotenv": "^16.4.0"
+  }
+}

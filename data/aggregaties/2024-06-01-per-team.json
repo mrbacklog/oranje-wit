@@ -1,0 +1,262 @@
+[
+  {
+    "team": "A1A2",
+    "categorie": null,
+    "kleur": "Rood",
+    "niveau": null,
+    "spelers_M": 12,
+    "spelers_V": 9,
+    "totaal": 21,
+    "gem_leeftijd": 16.5
+  },
+  {
+    "team": "A3",
+    "categorie": null,
+    "kleur": "Rood",
+    "niveau": null,
+    "spelers_M": 5,
+    "spelers_V": 6,
+    "totaal": 11,
+    "gem_leeftijd": 16.7
+  },
+  {
+    "team": "B1B2",
+    "categorie": null,
+    "kleur": "Rood",
+    "niveau": null,
+    "spelers_M": 9,
+    "spelers_V": 9,
+    "totaal": 18,
+    "gem_leeftijd": 14.5
+  },
+  {
+    "team": "B3",
+    "categorie": null,
+    "kleur": "Rood",
+    "niveau": null,
+    "spelers_M": 3,
+    "spelers_V": 6,
+    "totaal": 9,
+    "gem_leeftijd": 14.3
+  },
+  {
+    "team": "B4",
+    "categorie": null,
+    "kleur": "Rood",
+    "niveau": null,
+    "spelers_M": 3,
+    "spelers_V": 6,
+    "totaal": 9,
+    "gem_leeftijd": 14.0
+  },
+  {
+    "team": "C1",
+    "categorie": null,
+    "kleur": "Oranje",
+    "niveau": null,
+    "spelers_M": 4,
+    "spelers_V": 5,
+    "totaal": 9,
+    "gem_leeftijd": 12.9
+  },
+  {
+    "team": "C2",
+    "categorie": null,
+    "kleur": "Oranje",
+    "niveau": null,
+    "spelers_M": 5,
+    "spelers_V": 6,
+    "totaal": 11,
+    "gem_leeftijd": 12.5
+  },
+  {
+    "team": "C3",
+    "categorie": null,
+    "kleur": "Oranje",
+    "niveau": null,
+    "spelers_M": 2,
+    "spelers_V": 6,
+    "totaal": 8,
+    "gem_leeftijd": 12.2
+  },
+  {
+    "team": "D1",
+    "categorie": null,
+    "kleur": "Geel",
+    "niveau": null,
+    "spelers_M": 4,
+    "spelers_V": 6,
+    "totaal": 10,
+    "gem_leeftijd": 10.9
+  },
+  {
+    "team": "D2",
+    "categorie": null,
+    "kleur": "Geel",
+    "niveau": null,
+    "spelers_M": 5,
+    "spelers_V": 6,
+    "totaal": 11,
+    "gem_leeftijd": 10.7
+  },
+  {
+    "team": "D3",
+    "categorie": null,
+    "kleur": "Geel",
+    "niveau": null,
+    "spelers_M": 5,
+    "spelers_V": 4,
+    "totaal": 9,
+    "gem_leeftijd": 10.0
+  },
+  {
+    "team": "D4",
+    "categorie": null,
+    "kleur": "Geel",
+    "niveau": null,
+    "spelers_M": 5,
+    "spelers_V": 4,
+    "totaal": 9,
+    "gem_leeftijd": 10.3
+  },
+  {
+    "team": "E1",
+    "categorie": null,
+    "kleur": "Groen",
+    "niveau": null,
+    "spelers_M": 2,
+    "spelers_V": 3,
+    "totaal": 5,
+    "gem_leeftijd": 9.0
+  },
+  {
+    "team": "E2",
+    "categorie": null,
+    "kleur": "Groen",
+    "niveau": null,
+    "spelers_M": 2,
+    "spelers_V": 3,
+    "totaal": 5,
+    "gem_leeftijd": 9.0
+  },
+  {
+    "team": "E3",
+    "categorie": null,
+    "kleur": "Groen",
+    "niveau": null,
+    "spelers_M": 1,
+    "spelers_V": 4,
+    "totaal": 5,
+    "gem_leeftijd": 8.6
+  },
+  {
+    "team": "E4",
+    "categorie": null,
+    "kleur": "Groen",
+    "niveau": null,
+    "spelers_M": 0,
+    "spelers_V": 4,
+    "totaal": 4,
+    "gem_leeftijd": 8.0
+  },
+  {
+    "team": "F1",
+    "categorie": null,
+    "kleur": "Blauw",
+    "niveau": null,
+    "spelers_M": 1,
+    "spelers_V": 2,
+    "totaal": 3,
+    "gem_leeftijd": 6.7
+  },
+  {
+    "team": "F2",
+    "categorie": null,
+    "kleur": "Blauw",
+    "niveau": null,
+    "spelers_M": 3,
+    "spelers_V": 4,
+    "totaal": 7,
+    "gem_leeftijd": 6.7
+  },
+  {
+    "team": "K",
+    "categorie": null,
+    "kleur": "Kangoeroe",
+    "niveau": null,
+    "spelers_M": 2,
+    "spelers_V": 1,
+    "totaal": 3,
+    "gem_leeftijd": 4.7
+  },
+  {
+    "team": "MW1",
+    "categorie": null,
+    "kleur": "Senioren",
+    "niveau": null,
+    "spelers_M": 4,
+    "spelers_V": 5,
+    "totaal": 9,
+    "gem_leeftijd": 38.9
+  },
+  {
+    "team": "NSL",
+    "categorie": null,
+    "kleur": "Senioren",
+    "niveau": null,
+    "spelers_M": 1,
+    "spelers_V": 0,
+    "totaal": 1,
+    "gem_leeftijd": 47.0
+  },
+  {
+    "team": "S1S2",
+    "categorie": null,
+    "kleur": "Senioren",
+    "niveau": null,
+    "spelers_M": 12,
+    "spelers_V": 12,
+    "totaal": 24,
+    "gem_leeftijd": 22.5
+  },
+  {
+    "team": "S3",
+    "categorie": null,
+    "kleur": "Senioren",
+    "niveau": null,
+    "spelers_M": 5,
+    "spelers_V": 6,
+    "totaal": 11,
+    "gem_leeftijd": 32.8
+  },
+  {
+    "team": "S4",
+    "categorie": null,
+    "kleur": "Senioren",
+    "niveau": null,
+    "spelers_M": 3,
+    "spelers_V": 4,
+    "totaal": 7,
+    "gem_leeftijd": 20.9
+  },
+  {
+    "team": "S5",
+    "categorie": null,
+    "kleur": "Senioren",
+    "niveau": null,
+    "spelers_M": 5,
+    "spelers_V": 7,
+    "totaal": 12,
+    "gem_leeftijd": 23.0
+  },
+  {
+    "team": "S6",
+    "categorie": null,
+    "kleur": "Senioren",
+    "niveau": null,
+    "spelers_M": 6,
+    "spelers_V": 6,
+    "totaal": 12,
+    "gem_leeftijd": 21.3
+  }
+]

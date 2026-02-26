@@ -1,0 +1,229 @@
+{
+  "_meta": {
+    "bron": "KNKV Kennisbank Ledencijfers — Ledencijfers.pdf",
+    "url": "https://www.knkv.nl/kennisbank/ledencijfers/",
+    "sharepoint_url": "https://knkv.sharepoint.com/:b:/g/downloads/EUfTNhq5tz5NjsmUfptBDi8B1BaIRso3v_8q1hSRCN5U3g?e=IiDoOu",
+    "peildatum": "2025-12-01",
+    "kwartaal": "2025-Q4",
+    "ingevoerd_op": "2026-02-24",
+    "opmerking": "Uitgelezen via browser-screenshot van KNKV SharePoint PDF-viewer (canvas-rendering, geen tekst-extractie mogelijk). Kolommen in bron: SP (spelende leden) en NSP (niet-spelende leden) per kwartaal — jun-23 t/m dec-25. Totaal = SP + NSP. De %-kolom in de bron = groei t.o.v. referentieperiode 2022-2023. Oranje Wit staat in de bron als 'Oranje Wit (D)' (D = district Zuid-Holland). Op pagina 8 staat ook 'Oranje Wit (L)' — dat is een andere club in een ander district. Let op: DeetosSnel staat in de bron als 'DeetosSnel/OLS' (fusie 2018, voetnoot *10).",
+    "kolommen_bron": {
+      "SP": "Spelende leden (wedstrijdspelers)",
+      "NSP": "Niet-Spelende leden (ondersteunend)",
+      "Totaal": "SP + NSP"
+    }
+  },
+  "landelijk": {
+    "totaal_leden": 83139,
+    "SP": 59534,
+    "NSP": 23605,
+    "groei_tov_referentie_2022_2023": -0.18,
+    "kwartaalreeks": {
+      "jun-23": { "SP": 60788, "NSP": 23263, "totaal": 84051 },
+      "jul-23": { "SP": 52622, "NSP": 21527, "totaal": 74149 },
+      "jun-24": { "SP": 61349, "NSP": 24041, "totaal": 85390 },
+      "jul-24": { "SP": 53337, "NSP": 21988, "totaal": 75325 },
+      "sep-24": { "SP": 57078, "NSP": 21983, "totaal": 79061 },
+      "dec-24": { "SP": 58960, "NSP": 22938, "totaal": 81898 },
+      "mrt-25": { "SP": 60460, "NSP": 23583, "totaal": 84043 },
+      "jun-25": { "SP": 64093, "NSP": 22255, "totaal": 86348 },
+      "jul-25": { "SP": 54163, "NSP": 22609, "totaal": 76772 },
+      "sep-25": { "SP": 58029, "NSP": 23373, "totaal": 81402 },
+      "dec-25": { "SP": 59534, "NSP": 23605, "totaal": 83139 }
+    }
+  },
+  "verenigingen": [
+    {
+      "naam": "Oranje Wit",
+      "naam_in_bron": "Oranje Wit (D)",
+      "regio": "Zuid-Holland",
+      "totaal_leden": 427,
+      "SP": 299,
+      "NSP": 128,
+      "jeugd": null,
+      "senioren": null,
+      "groei_tov_referentie_2022_2023": -0.97,
+      "kwartaalreeks": {
+        "jun-23": { "SP": 317, "NSP": 90,  "totaal": 407 },
+        "jul-23": { "SP": 276, "NSP": 92,  "totaal": 368 },
+        "jun-24": { "SP": 317, "NSP": 102, "totaal": 419 },
+        "jul-24": { "SP": 257, "NSP": 121, "totaal": 378 },
+        "sep-24": { "SP": 275, "NSP": 113, "totaal": 388 },
+        "dec-24": { "SP": 283, "NSP": 116, "totaal": 399 },
+        "mrt-25": { "SP": 290, "NSP": 116, "totaal": 406 },
+        "jun-25": { "SP": 292, "NSP": 131, "totaal": 423 },
+        "jul-25": { "SP": 265, "NSP": 129, "totaal": 394 },
+        "sep-25": { "SP": 296, "NSP": 121, "totaal": 417 },
+        "dec-25": { "SP": 299, "NSP": 128, "totaal": 427 }
+      }
+    },
+    {
+      "naam": "DeetosSnel",
+      "naam_in_bron": "DeetosSnel/OLS (*10 = opgegaan in DeetosSnel 2018)",
+      "regio": "Zuid-Holland",
+      "totaal_leden": 582,
+      "SP": 351,
+      "NSP": 231,
+      "jeugd": null,
+      "senioren": null,
+      "groei_tov_referentie_2022_2023": 0.00,
+      "kwartaalreeks": {
+        "jun-23": { "SP": 315, "NSP": 263, "totaal": 578 },
+        "jul-23": { "SP": 279, "NSP": 245, "totaal": 524 },
+        "jun-24": { "SP": 325, "NSP": 248, "totaal": 573 },
+        "jul-24": { "SP": 316, "NSP": 227, "totaal": 543 },
+        "sep-24": { "SP": 331, "NSP": 225, "totaal": 556 },
+        "dec-24": { "SP": 339, "NSP": 227, "totaal": 566 },
+        "mrt-25": { "SP": 349, "NSP": 229, "totaal": 578 },
+        "jun-25": { "SP": 360, "NSP": 231, "totaal": 591 },
+        "jul-25": { "SP": 330, "NSP": 230, "totaal": 560 },
+        "sep-25": { "SP": 349, "NSP": 225, "totaal": 574 },
+        "dec-25": { "SP": 351, "NSP": 231, "totaal": 582 }
+      }
+    },
+    {
+      "naam": "Sporting Delta",
+      "naam_in_bron": "Sporting Delta",
+      "regio": "Zuid-Holland",
+      "totaal_leden": 490,
+      "SP": 292,
+      "NSP": 198,
+      "jeugd": null,
+      "senioren": null,
+      "groei_tov_referentie_2022_2023": 2.50,
+      "kwartaalreeks": {
+        "jun-23": { "SP": 300, "NSP": 151, "totaal": 451 },
+        "jul-23": { "SP": 253, "NSP": 152, "totaal": 405 },
+        "jun-24": { "SP": 288, "NSP": 181, "totaal": 469 },
+        "jul-24": { "SP": 265, "NSP": 179, "totaal": 444 },
+        "sep-24": { "SP": 288, "NSP": 178, "totaal": 466 },
+        "dec-24": { "SP": 298, "NSP": 188, "totaal": 486 },
+        "mrt-25": { "SP": 302, "NSP": 190, "totaal": 492 },
+        "jun-25": { "SP": 310, "NSP": 198, "totaal": 508 },
+        "jul-25": { "SP": 278, "NSP": 184, "totaal": 462 },
+        "sep-25": { "SP": 286, "NSP": 194, "totaal": 480 },
+        "dec-25": { "SP": 292, "NSP": 198, "totaal": 490 }
+      }
+    },
+    {
+      "naam": "Movado",
+      "naam_in_bron": "Movado",
+      "regio": "Zuid-Holland",
+      "totaal_leden": 230,
+      "SP": 92,
+      "NSP": 138,
+      "jeugd": null,
+      "senioren": null,
+      "groei_tov_referentie_2022_2023": -1.03,
+      "kwartaalreeks": {
+        "jun-23": { "SP": 148, "NSP": 139, "totaal": 287 },
+        "jul-23": { "SP": 120, "NSP": 134, "totaal": 254 },
+        "jun-24": { "SP": 138, "NSP": 137, "totaal": 275 },
+        "jul-24": { "SP": 104, "NSP": 142, "totaal": 246 },
+        "sep-24": { "SP": 108, "NSP": 141, "totaal": 249 },
+        "dec-24": { "SP": 112, "NSP": 140, "totaal": 252 },
+        "mrt-25": { "SP": 113, "NSP": 141, "totaal": 254 },
+        "jun-25": { "SP": 117, "NSP": 140, "totaal": 257 },
+        "jul-25": { "SP": 83,  "NSP": 138, "totaal": 221 },
+        "sep-25": { "SP": 90,  "NSP": 139, "totaal": 229 },
+        "dec-25": { "SP": 92,  "NSP": 138, "totaal": 230 }
+      }
+    },
+    {
+      "naam": "PKC",
+      "naam_in_bron": "PKC/Vertom",
+      "regio": "Zuid-Holland",
+      "totaal_leden": 981,
+      "SP": 525,
+      "NSP": 456,
+      "jeugd": null,
+      "senioren": null,
+      "groei_tov_referentie_2022_2023": 4.46,
+      "kwartaalreeks": {
+        "jun-23": { "SP": 499, "NSP": 462, "totaal": 961 },
+        "jul-23": { "SP": 446, "NSP": 447, "totaal": 893 },
+        "jun-24": { "SP": 516, "NSP": 466, "totaal": 982 },
+        "jul-24": { "SP": 465, "NSP": 432, "totaal": 897 },
+        "sep-24": { "SP": 485, "NSP": 426, "totaal": 911 },
+        "dec-24": { "SP": 497, "NSP": 441, "totaal": 938 },
+        "mrt-25": { "SP": 514, "NSP": 449, "totaal": 963 },
+        "jun-25": { "SP": 548, "NSP": 430, "totaal": 978 },
+        "jul-25": { "SP": 484, "NSP": 438, "totaal": 922 },
+        "sep-25": { "SP": 516, "NSP": 453, "totaal": 969 },
+        "dec-25": { "SP": 525, "NSP": 456, "totaal": 981 }
+      }
+    },
+    {
+      "naam": "Albatros",
+      "naam_in_bron": "Albatros",
+      "regio": "Zuid-Holland",
+      "totaal_leden": 592,
+      "SP": 438,
+      "NSP": 154,
+      "jeugd": null,
+      "senioren": null,
+      "groei_tov_referentie_2022_2023": 6.09,
+      "kwartaalreeks": {
+        "jun-23": { "SP": 390, "NSP": 133, "totaal": 523 },
+        "jul-23": { "SP": 373, "NSP": 133, "totaal": 506 },
+        "jun-24": { "SP": 430, "NSP": 150, "totaal": 580 },
+        "jul-24": { "SP": 395, "NSP": 156, "totaal": 551 },
+        "sep-24": { "SP": 406, "NSP": 151, "totaal": 557 },
+        "dec-24": { "SP": 417, "NSP": 156, "totaal": 573 },
+        "mrt-25": { "SP": 431, "NSP": 159, "totaal": 590 },
+        "jun-25": { "SP": 442, "NSP": 160, "totaal": 602 },
+        "jul-25": { "SP": 415, "NSP": 149, "totaal": 564 },
+        "sep-25": { "SP": 428, "NSP": 153, "totaal": 581 },
+        "dec-25": { "SP": 438, "NSP": 154, "totaal": 592 }
+      }
+    },
+    {
+      "naam": "Merwede",
+      "naam_in_bron": "Merwede/Multiplaat",
+      "regio": "Zuid-Holland",
+      "totaal_leden": 463,
+      "SP": 290,
+      "NSP": 173,
+      "jeugd": null,
+      "senioren": null,
+      "groei_tov_referentie_2022_2023": 3.99,
+      "kwartaalreeks": {
+        "jun-23": { "SP": 288, "NSP": 155, "totaal": 443 },
+        "jul-23": { "SP": 258, "NSP": 155, "totaal": 413 },
+        "jun-24": { "SP": 293, "NSP": 159, "totaal": 452 },
+        "jul-24": { "SP": 262, "NSP": 162, "totaal": 424 },
+        "sep-24": { "SP": 271, "NSP": 160, "totaal": 431 },
+        "dec-24": { "SP": 271, "NSP": 160, "totaal": 431 },
+        "mrt-25": { "SP": 279, "NSP": 161, "totaal": 440 },
+        "jun-25": { "SP": 291, "NSP": 165, "totaal": 456 },
+        "jul-25": { "SP": 259, "NSP": 170, "totaal": 429 },
+        "sep-25": { "SP": 288, "NSP": 169, "totaal": 457 },
+        "dec-25": { "SP": 290, "NSP": 173, "totaal": 463 }
+      }
+    },
+    {
+      "naam": "Kinderdijk",
+      "naam_in_bron": "Kinderdijk",
+      "regio": "Zuid-Holland",
+      "totaal_leden": 545,
+      "SP": 272,
+      "NSP": 273,
+      "jeugd": null,
+      "senioren": null,
+      "groei_tov_referentie_2022_2023": 5.18,
+      "kwartaalreeks": {
+        "jun-23": { "SP": 281, "NSP": 227, "totaal": 508 },
+        "jul-23": { "SP": 244, "NSP": 226, "totaal": 470 },
+        "jun-24": { "SP": 293, "NSP": 240, "totaal": 533 },
+        "jul-24": { "SP": 255, "NSP": 226, "totaal": 481 },
+        "sep-24": { "SP": 274, "NSP": 224, "totaal": 498 },
+        "dec-24": { "SP": 276, "NSP": 244, "totaal": 520 },
+        "mrt-25": { "SP": 283, "NSP": 258, "totaal": 541 },
+        "jun-25": { "SP": 295, "NSP": 263, "totaal": 558 },
+        "jul-25": { "SP": 254, "NSP": 264, "totaal": 518 },
+        "sep-25": { "SP": 270, "NSP": 267, "totaal": 537 },
+        "dec-25": { "SP": 272, "NSP": 273, "totaal": 545 }
+      }
+    }
+  ]
+}

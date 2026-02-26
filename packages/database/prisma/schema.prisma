@@ -1,0 +1,625 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ╔═══════════════════════════════════════════════════════════╗
+// ║  VERENIGINGSMONITOR — gedeelde data (oranje-wit repo)    ║
+// ║  Tabelnamen: snake_case (@@map)                          ║
+// ╚═══════════════════════════════════════════════════════════╝
+
+// Permanente ledenrecords (1 rij per lid, ooit ingeschreven)
+model Lid {
+  relCode      String    @id @map("rel_code")
+  roepnaam     String
+  achternaam   String
+  tussenvoegsel String?
+  geslacht     String    // "M" | "V"
+  geboortejaar Int
+  lidSinds     DateTime? @map("lid_sinds") @db.Date
+  createdAt    DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  // Relaties
+  snapshots    LidSnapshot[]
+
+  @@map("leden")
+}
+
+// Seizoenen
+model Seizoen {
+  seizoen   String @id
+  startJaar Int    @map("start_jaar")
+  eindJaar  Int    @map("eind_jaar")
+
+  // Relaties
+  snapshots        Snapshot[]
+  owTeams          OWTeam[]
+  spelerspaden     SpelersPad[]
+  ledenverloop     Ledenverloop[]
+  cohortSeizoenen  CohortSeizoen[]
+  signaleringen    Signalering[]
+
+  @@map("seizoenen")
+}
+
+// Snapshot metadata
+model Snapshot {
+  id            Int       @id @default(autoincrement())
+  snapshotDatum DateTime  @unique @map("snapshot_datum") @db.Date
+  seizoen       String
+  totaalLeden   Int?      @map("totaal_leden")
+  totaalSpelers Int?      @map("totaal_spelers")
+  bronnen       String[]
+  createdAt     DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  // Relaties
+  seizoenRef    Seizoen        @relation(fields: [seizoen], references: [seizoen])
+  lidSnapshots  LidSnapshot[]
+
+  @@map("snapshots")
+}
+
+// Lid-status per snapshot (point-in-time)
+model LidSnapshot {
+  id                Int      @id @default(autoincrement())
+  snapshotId        Int      @map("snapshot_id")
+  relCode           String   @map("rel_code")
+  lidsoort          String?
+  spelactiviteit    String?
+  status            String?
+  team              String?
+  owCode            String?  @map("ow_code")
+  teamrol           String?
+  categorie         String?  // "a" | "b"
+  kleur             String?
+  aCategorie        String?  @map("a_categorie")
+  aJaars            String?  @map("a_jaars")
+  leeftijdPeildatum Int?     @map("leeftijd_peildatum")
+  poolVeld          String?  @map("pool_veld")
+  poolZaal          String?  @map("pool_zaal")
+
+  // Relaties
+  lid      Lid      @relation(fields: [relCode], references: [relCode])
+  snapshot Snapshot @relation(fields: [snapshotId], references: [id])
+
+  @@unique([snapshotId, relCode])
+  @@index([snapshotId], map: "idx_leden_snapshot_snapshot")
+  @@index([relCode], map: "idx_leden_snapshot_relcode")
+  @@index([owCode], map: "idx_leden_snapshot_owcode")
+  @@map("leden_snapshot")
+}
+
+// Teams per seizoen (stabiel via owCode)
+model OWTeam {
+  id             Int      @id @default(autoincrement())
+  seizoen        String
+  owCode         String   @map("ow_code")
+  categorie      String   // "a" | "b"
+  kleur          String?
+  leeftijdsgroep String?
+  spelvorm       String?
+
+  // Relaties
+  seizoenRef Seizoen       @relation(fields: [seizoen], references: [seizoen])
+  periodes   TeamPeriode[]
+
+  @@unique([seizoen, owCode])
+  @@index([seizoen], map: "idx_teams_seizoen")
+  @@map("teams")
+}
+
+// Team-periodedata (J-nummer, pool, sterkte per competitiefase)
+model TeamPeriode {
+  id            Int      @id @default(autoincrement())
+  teamId        Int      @map("team_id")
+  periode       String   // "veld_najaar" | "zaal_deel1" | "zaal_deel2" | "veld_voorjaar"
+  jNummer       String?  @map("j_nummer")
+  pool          String?
+  sterkte       Int?
+  gemLeeftijd   Decimal? @map("gem_leeftijd") @db.Decimal(5, 2)
+  aantalSpelers Int?     @map("aantal_spelers")
+
+  // Relaties
+  owTeam OWTeam @relation(fields: [teamId], references: [id])
+
+  @@unique([teamId, periode])
+  @@index([teamId], map: "idx_team_periodes_team")
+  @@map("team_periodes")
+}
+
+// Spelerspaden (longitudinaal: speler × seizoen)
+model SpelersPad {
+  id        Int     @id @default(autoincrement())
+  spelerId  String  @map("speler_id")
+  seizoen   String
+  team      String?
+  owCode    String? @map("ow_code")
+  categorie String?
+  rol       String? @default("speler")
+
+  // Relaties
+  seizoenRef Seizoen @relation(fields: [seizoen], references: [seizoen])
+
+  @@unique([spelerId, seizoen])
+  @@index([spelerId], map: "idx_spelerspaden_speler")
+  @@index([seizoen], map: "idx_spelerspaden_seizoen")
+  @@map("spelerspaden")
+}
+
+// Ledenverloop (individueel per seizoenspaar)
+model Ledenverloop {
+  id            Int     @id @default(autoincrement())
+  seizoen       String
+  relCode       String  @map("rel_code")
+  status        String  // "behouden" | "nieuw" | "herinschrijver" | "uitgestroomd" | "niet_spelend_geworden"
+  geboortejaar  Int?
+  geslacht      String?
+  leeftijdVorig Int?    @map("leeftijd_vorig")
+  leeftijdNieuw Int?    @map("leeftijd_nieuw")
+  teamVorig     String? @map("team_vorig")
+  teamNieuw     String? @map("team_nieuw")
+
+  // Relaties
+  seizoenRef Seizoen @relation(fields: [seizoen], references: [seizoen])
+
+  @@unique([seizoen, relCode])
+  @@index([seizoen], map: "idx_ledenverloop_seizoen")
+  @@map("ledenverloop")
+}
+
+// Cohorten (geboortejaar × geslacht × seizoen)
+model CohortSeizoen {
+  id             Int      @id @default(autoincrement())
+  geboortejaar   Int
+  geslacht       String   // "M" | "V"
+  seizoen        String
+  leeftijd       Int?
+  band           String?
+  actief         Int?     @default(0)
+  behouden       Int?     @default(0)
+  nieuw          Int?     @default(0)
+  herinschrijver Int?     @default(0)
+  uitgestroomd   Int?     @default(0)
+  retentiePct    Decimal? @map("retentie_pct") @db.Decimal(5, 2)
+
+  // Relaties
+  seizoenRef Seizoen @relation(fields: [seizoen], references: [seizoen])
+
+  @@unique([geboortejaar, geslacht, seizoen])
+  @@index([seizoen], map: "idx_cohort_seizoen")
+  @@map("cohort_seizoenen")
+}
+
+// Signalering (alerts per seizoen)
+model Signalering {
+  id             Int      @id @default(autoincrement())
+  seizoen        String
+  type           String
+  ernst          String   // "kritiek" | "aandacht" | "op_koers"
+  leeftijdsgroep String?
+  geslacht       String?
+  waarde         Decimal? @db.Decimal
+  drempel        Decimal? @db.Decimal
+  streef         Decimal? @db.Decimal
+  beschrijving   String?
+
+  // Relaties
+  seizoenRef Seizoen @relation(fields: [seizoen], references: [seizoen])
+
+  @@index([seizoen], map: "idx_signalering_seizoen")
+  @@map("signalering")
+}
+
+// Streefmodel (projecties per leeftijd × doelseizoen)
+model Streefmodel {
+  id           Int    @id @default(autoincrement())
+  versie       String
+  seizoenBasis String @map("seizoen_basis")
+  seizoenDoel  String @map("seizoen_doel")
+  leeftijd     Int
+  band         String
+  totaal       Int?
+  m            Int?
+  v            Int?
+
+  @@unique([versie, seizoenDoel, leeftijd])
+  @@map("streefmodel")
+}
+
+// ╔═══════════════════════════════════════════════════════════╗
+// ║  TEAM-INDELING — procesdata (dit project)                ║
+// ║  Tabelnamen: PascalCase (Prisma default)                 ║
+// ╚═══════════════════════════════════════════════════════════╝
+
+// ============================================================
+// GEBRUIKERS & AUTH
+// ============================================================
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  naam      String
+  rol       Rol      @default(VIEWER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relaties
+  pins     Pin[]
+  logItems LogEntry[]
+}
+
+enum Rol {
+  EDITOR   // TC-lid: volledige toegang
+  REVIEWER // Coach/coordinator: bekijken + opmerkingen
+  VIEWER   // Bestuur/inkijk: alleen lezen
+}
+
+// ============================================================
+// SPELERS & STAF (geïmporteerd + verrijkt)
+// ============================================================
+
+model Speler {
+  id            String  @id // Sportlink rel_code
+  roepnaam      String
+  achternaam    String
+  geboortejaar  Int
+  geslacht      Geslacht
+  lidSinds      String?  // "2018-09-02"
+  huidig         Json?   // { team, categorie, kleur, a_categorie, a_jaars, leeftijd }
+  spelerspad    Json?    // Array: [{ seizoen, team, kleur, niveau, spelvorm, categorie }]
+  volgendSeizoen Json?   // { leeftijd, a_categorie, a_jaars, band_b, opmerking }
+  retentie       Json?   // { risico, kans_behoud, factoren[] }
+  teamgenotenHistorie Json? // [{ speler_id, naam, seizoenen_samen }]
+  seizoenenActief Int?
+  instroomLeeftijd Int?
+  notitie       String? @db.Text
+
+  // Relaties
+  teamplaatsingen TeamSpeler[]
+  evaluaties      Evaluatie[]
+  pins            Pin[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([geboortejaar])
+  @@index([geslacht])
+}
+
+enum Geslacht {
+  M
+  V
+}
+
+model Staf {
+  id           String  @id // Sportlink ID
+  naam         String
+  geboortejaar Int?
+  email        String?
+  rollen       String[] // ["trainer", "assistent", "manager", "coordinator"]
+  notitie      String?  @db.Text
+
+  // Relaties
+  teamStaf TeamStaf[]
+  pins     Pin[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ============================================================
+// BLAUWDRUK (per seizoen)
+// ============================================================
+
+model Blauwdruk {
+  id          String   @id @default(cuid())
+  seizoen     String   @unique // "2026-2027"
+  toelichting String?  @db.Text
+
+  // Gestructureerde kaders
+  kaders      Json     // KNKV-regels + OW-regels die dit seizoen gelden
+  speerpunten String[] // Seizoensdoelen
+
+  // Relaties
+  concepten Concept[]
+  pins      Pin[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ============================================================
+// PIN-SYSTEEM
+// ============================================================
+
+model Pin {
+  id          String  @id @default(cuid())
+  blauwdruk   Blauwdruk @relation(fields: [blauwdrukId], references: [id], onDelete: Cascade)
+  blauwdrukId String
+
+  type    PinType
+  waarde  Json
+  notitie String? @db.Text
+
+  speler   Speler? @relation(fields: [spelerId], references: [id])
+  spelerId String?
+  staf     Staf?   @relation(fields: [stafId], references: [id])
+  stafId   String?
+
+  gepindDoor   User     @relation(fields: [gepindDoorId], references: [id])
+  gepindDoorId String
+  gepindOp     DateTime @default(now())
+
+  @@index([blauwdrukId])
+  @@index([type])
+}
+
+enum PinType {
+  SPELER_STATUS
+  SPELER_POSITIE
+  STAF_POSITIE
+}
+
+// ============================================================
+// CONCEPTEN
+// ============================================================
+
+model Concept {
+  id              String    @id @default(cuid())
+  blauwdruk       Blauwdruk @relation(fields: [blauwdrukId], references: [id], onDelete: Cascade)
+  blauwdrukId     String
+
+  naam            String
+  uitgangsprincipe String   @db.Text
+  keuzes          Json
+  aannames        Json?
+
+  status          ConceptStatus @default(ACTIEF)
+  volgorde        Int       @default(0)
+
+  // Relaties
+  scenarios Scenario[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([blauwdrukId])
+}
+
+enum ConceptStatus {
+  ACTIEF
+  GEARCHIVEERD
+  DEFINITIEF
+}
+
+// ============================================================
+// SCENARIO'S
+// ============================================================
+
+model Scenario {
+  id          String  @id @default(cuid())
+  concept     Concept @relation(fields: [conceptId], references: [id], onDelete: Cascade)
+  conceptId   String
+
+  naam        String
+  toelichting String?  @db.Text
+  aannames    Json?
+
+  status      ScenarioStatus @default(ACTIEF)
+
+  parentId String?
+  parent   Scenario?  @relation("ScenarioFork", fields: [parentId], references: [id])
+  children Scenario[] @relation("ScenarioFork")
+
+  // Relaties
+  versies Versie[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([conceptId])
+}
+
+enum ScenarioStatus {
+  ACTIEF
+  GEARCHIVEERD
+  DEFINITIEF
+}
+
+// ============================================================
+// VERSIES (snapshots binnen een scenario)
+// ============================================================
+
+model Versie {
+  id         String   @id @default(cuid())
+  scenario   Scenario @relation(fields: [scenarioId], references: [id], onDelete: Cascade)
+  scenarioId String
+
+  nummer   Int
+  naam     String?
+  auteur   String
+
+  // Relaties
+  teams    Team[]
+  logItems LogEntry[]
+
+  createdAt DateTime @default(now())
+
+  @@unique([scenarioId, nummer])
+  @@index([scenarioId])
+}
+
+// ============================================================
+// TEAMS (binnen een versie)
+// ============================================================
+
+model Team {
+  id       String @id @default(cuid())
+  versie   Versie @relation(fields: [versieId], references: [id], onDelete: Cascade)
+  versieId String
+
+  naam      String
+  categorie TeamCategorie
+  kleur     Kleur?
+  niveau    String?
+  volgorde  Int      @default(0)
+
+  validatieStatus    ValidatieStatus @default(ONBEKEND)
+  validatieMeldingen Json?
+
+  // Relaties
+  spelers TeamSpeler[]
+  staf    TeamStaf[]
+
+  @@index([versieId])
+}
+
+enum TeamCategorie {
+  SENIOREN
+  A_CATEGORIE
+  B_CATEGORIE
+}
+
+enum Kleur {
+  BLAUW
+  GROEN
+  GEEL
+  ORANJE
+  ROOD
+}
+
+enum ValidatieStatus {
+  GROEN
+  ORANJE
+  ROOD
+  ONBEKEND
+}
+
+// ============================================================
+// TEAM-SPELER KOPPELING
+// ============================================================
+
+model TeamSpeler {
+  id       String @id @default(cuid())
+  team     Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  teamId   String
+  speler   Speler @relation(fields: [spelerId], references: [id])
+  spelerId String
+
+  statusOverride SpelerStatus?
+  notitie        String? @db.Text
+
+  @@unique([teamId, spelerId])
+  @@index([teamId])
+  @@index([spelerId])
+}
+
+enum SpelerStatus {
+  BESCHIKBAAR
+  TWIJFELT
+  GAAT_STOPPEN
+  NIEUW
+}
+
+// ============================================================
+// TEAM-STAF KOPPELING
+// ============================================================
+
+model TeamStaf {
+  id     String @id @default(cuid())
+  team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  teamId String
+  staf   Staf   @relation(fields: [stafId], references: [id])
+  stafId String
+
+  rol    String
+
+  @@unique([teamId, stafId])
+  @@index([teamId])
+}
+
+// ============================================================
+// EVALUATIES (geïmporteerd uit Lovable evaluatie-app)
+// ============================================================
+
+model Evaluatie {
+  id       String @id @default(cuid())
+  speler   Speler @relation(fields: [spelerId], references: [id])
+  spelerId String
+  seizoen  String
+
+  scores    Json
+  opmerking String? @db.Text
+  coach     String?
+
+  createdAt DateTime @default(now())
+
+  @@unique([spelerId, seizoen])
+  @@index([seizoen])
+}
+
+// ============================================================
+// BESLUITENLOG
+// ============================================================
+
+model LogEntry {
+  id       String @id @default(cuid())
+  versie   Versie @relation(fields: [versieId], references: [id], onDelete: Cascade)
+  versieId String
+
+  actie  String
+  detail String? @db.Text
+  door   User    @relation(fields: [doorId], references: [id])
+  doorId String
+
+  createdAt DateTime @default(now())
+
+  @@index([versieId])
+}
+
+// ============================================================
+// IMPORT-TRACKING
+// ============================================================
+
+model Import {
+  id                String   @id @default(cuid())
+  seizoen           String
+  exportDatum       String
+  snapshotDatum     String
+  spelersNieuw      Int
+  spelersBijgewerkt Int
+  stafNieuw         Int
+  stafBijgewerkt    Int
+  teamsGeladen      Int
+  meta              Json
+  createdAt         DateTime @default(now())
+
+  @@index([seizoen])
+}
+
+// ============================================================
+// REFERENTIE-TEAMS (huidige teamstructuur als referentie)
+// ============================================================
+
+model ReferentieTeam {
+  id        String   @id @default(cuid())
+  seizoen   String
+  naam      String
+  categorie String
+  kleur     String?
+  niveau    String?
+  spelvorm  String?
+  poolVeld  String?
+  poolZaal  String?
+  spelerIds String[]
+  stafIds   String[]
+  stats     Json
+  createdAt DateTime @default(now())
+
+  @@index([seizoen])
+}

@@ -1,0 +1,3383 @@
+{
+  "ronde": {
+    "naam": "2025-2026 Evaluatieronde 1",
+    "deadline": "2026-01-11T00:00:00+00:00",
+    "status": "closed",
+    "aangemaakt": "2025-12-10T21:31:01.875632+00:00"
+  },
+  "teams": [
+    {
+      "team_naam": "J1",
+      "staf": [
+        {
+          "naam": "Luuk Baars",
+          "email": "luukbaars2001@gmail.com",
+          "type": "Technische staf"
+        },
+        {
+          "naam": "Maud van Wensen",
+          "email": "andrekarin@live.nl",
+          "type": "Technische staf"
+        }
+      ],
+      "spelers": [
+        {
+          "naam": "Jordan Dekker",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Madelief van Dongen",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Robin Zwanenburg",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Sanne Peters",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Zoë Kamerman",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Djess van Heeren",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Matthijs de Jongh",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Parham Afsharbegloe",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Raoul Kuijper",
+          "geslacht": "M"
+        }
+      ],
+      "evaluaties": [
+        {
+          "trainer_naam": "Trainerstaf",
+          "ingediend_op": "2026-01-10T12:15:42.88429+00:00",
+          "plezier": {
+            "score": 4,
+            "toelichting": "Er is plezier, maar soms ook onderlinge frustratie over niveauverschil. Buiten het veld is het sowieso echt heel erg gezellig.\n "
+          },
+          "ontwikkeling": {
+            "score": 3,
+            "toelichting": "Een deel van het team is enorm gegroeid, de spelers die al technisch wat sterker waren zijn minder hard gegroeid. De onderlinge verschillen zijn heel groot,"
+          },
+          "prestatie": {
+            "score": 4,
+            "toelichting": "Resultaten zijn er zeker, er worden wedstrijden gewonnen. Vaak wordt er in de rust pas na een stevige toespraak van de coaches een ommekeer gemaakt en goed gespeeld. Ook daarin zijn onderlinge verschillen."
+          },
+          "opmerkingen": null,
+          "coordinator_memo": null,
+          "speler_beoordelingen": [
+            {
+              "naam": "Djess van Heeren",
+              "niveau": 3,
+              "inzet": 3,
+              "groei": 4,
+              "opmerkingen": "Hij is snel, kan goed rebounden, maar laat het niet altijd zien. Hij is erg gegroeid qua niveau, maar laat het niet altijd zien. Hij wil graag, maar blijft samen met Parham een beetje hangen en zijn terughoudend. Djess is ook wat laks."
+            },
+            {
+              "naam": "Jordan Dekker",
+              "niveau": 4,
+              "inzet": 4,
+              "groei": 2,
+              "opmerkingen": "Zelf vrijlopen vindt ze nog lastig, ze heeft wel een heel zuiver schot. Zet zich goed in, wil graag, maar heeft nog niet zo’n groei doorgemaakt, omdat ze zelf al wat sterker was."
+            },
+            {
+              "naam": "Madelief van Dongen",
+              "niveau": 3,
+              "inzet": 2,
+              "groei": 2,
+              "opmerkingen": "Madelief vindt het lastig om feedback te accepteren, waardoor ze ook niet makkelijk een groei kan doormaken. Op trainingen kan ze de feestmuts opzetten, waar anderen gemakkelijk volgen, maar bij wedstrijden heeft ze het hoogste woord."
+            },
+            {
+              "naam": "Matthijs de Jongh",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 3,
+              "opmerkingen": "Hij heeft wel inzicht, maar rent liever niet. Als het makkelijk kan, lost hij het makkelijk op. Hij is aanwezig als het moet. Wanneer hij feedback krijgt, pakt hij dat op, maar heeft vaak een weerwoord."
+            },
+            {
+              "naam": "Parham Afsharbegloe",
+              "niveau": 2,
+              "inzet": 2,
+              "groei": 3,
+              "opmerkingen": "Parham is, ondanks de inzet en niveau, wel gegroeid. Verdedigend is hij zwak, maar hij pakt feedback wel op."
+            },
+            {
+              "naam": "Raoul Kuijper",
+              "niveau": 4,
+              "inzet": 4,
+              "groei": 2,
+              "opmerkingen": "Raoul is wat laks in verdedigen. Hij gaat niet snel mee in een lolletje, wil graag serieus spelen. Hij was al sterk, waardoor hij niet hard is gegroeid."
+            },
+            {
+              "naam": "Robin Zwanenburg",
+              "niveau": 1,
+              "inzet": 1,
+              "groei": 1,
+              "opmerkingen": "Gestopt voor de kerstvakantie ivm gezondheidsredenen. Korte lijntjes gehad met haar moeder. "
+            },
+            {
+              "naam": "Sanne Peters",
+              "niveau": 3,
+              "inzet": 5,
+              "groei": 4,
+              "opmerkingen": "Sanne vraagt regelmatig feedback en doet daar wat mee. Probeert dit in het spel te gebruiken. Ze kan meer gaan richten op haar eigen kansen, ze loopt heel veel, staat vaak vrij. "
+            },
+            {
+              "naam": "Zoë Kamerman",
+              "niveau": 3,
+              "inzet": 2,
+              "groei": 2,
+              "opmerkingen": "Zegt snel af voor wedstrijden, heel veel pijntjes en weinig reden nodig om af te zeggen voor trainingen. Daardoor is niveau e.d. ook lastig in te schatten. Als ze er is, is ze goed aanwezig. Ze heeft al vaak dezelfde feedback gekregen, maar doet daar weinig mee."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "team_naam": "J10",
+      "staf": [
+        {
+          "naam": "Ilonka Bouwknegt-Zwijnenburg",
+          "email": "ilonka.at.sea@12move.nl",
+          "type": "Technische staf"
+        },
+        {
+          "naam": "Joaz Post",
+          "email": "postpollema@gmail.com",
+          "type": "Technische staf"
+        },
+        {
+          "naam": "Nikki Baas",
+          "email": "babaas2@gmail.com",
+          "type": "Technische staf"
+        }
+      ],
+      "spelers": [
+        {
+          "naam": "Aniek van den Bergh",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Julia van Twist",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Nehir Torbali",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Gideon Verberkt",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Jasper van der Weijde",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Rens Boekee",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Timo van der Sijde",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Tom van der Stel",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Wolf Okkerman",
+          "geslacht": "M"
+        }
+      ],
+      "evaluaties": [
+        {
+          "trainer_naam": "Trainerstaf",
+          "ingediend_op": "2026-01-10T23:43:15.487258+00:00",
+          "plezier": {
+            "score": 4,
+            "toelichting": "Het is een drukke groep waarin iedereen wel zijn plekje heeft gevonden. Ze hebben lol met elkaar - soms tot frustratie van de trainers (;-) mbt luisteren naar de uitleg"
+          },
+          "ontwikkeling": {
+            "score": 3,
+            "toelichting": "Na de zomer waren ze veel van wat ze eerder al konden vergeten. De overgang naar 2 vakken en groter veld was lastig. In de zaal zitten we laag ingedeeld en lukt het beter om het spel te zien en te snappen en wat we trainen ook toe te passen in de wedstrijden."
+          },
+          "prestatie": {
+            "score": 3,
+            "toelichting": "Veld was ten op zichte van wat ze hadden gekund qua spel ondermaats - nu onderaan geeindigd wat middenmoot had kunnen zijn. In de zaal nog alles gewonnen, met beter spel. Wel voordeel van lagere indeling met ook teams die gemidddeld nog jonger zijn dan ons team."
+          },
+          "opmerkingen": "Positief om te melden is ook de ouderbetrokkenheid. Er wordt met elkaar meegereden, ze komen vaak kijken en de ouders hebben het onderling ook gezellig langs de lijn",
+          "coordinator_memo": null,
+          "speler_beoordelingen": [
+            {
+              "naam": "Aniek van den Bergh",
+              "niveau": 5,
+              "inzet": 5,
+              "groei": 4,
+              "opmerkingen": "Aniek is de sterkste dame qua spelinzicht, motoriek en korfbalvaardigheden. Ze schiet makkelijk, voert een doorloopbal prima uit en heeft snelheid. Ze is wel klein van stuk en kan nog groeien in felheid en omgaan met fysieker spel van tegenstanders."
+            },
+            {
+              "naam": "Gideon Verberkt",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 3,
+              "opmerkingen": "Gideon zit tov van vorig jaar veel beter in zijn vel. Is stabieler qua energie en concentratie. Hij heeft goed spelinzicht, het is nog even zoeken met de andere spelers om zijn slimme balletjes te laten aankomen. Hij mag nog wel iets fanatieker gaan spelen en minder slordig/gemakzuchtig in de wedstrijden."
+            },
+            {
+              "naam": "Jasper van der Weijde",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "Is wat kleiner voor zijn leeftijd en motorisch nog niet zo sterk. Zijn schot en doorloop kunnen nog veel verbeteren. Hij is wel snel en pikt de structuur/looplijnen goed op. Hij is leergierig. Dit is zijn 2e jaar korfbal pas."
+            },
+            {
+              "naam": "Julia van Twist",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 3,
+              "opmerkingen": "Julia is een flink, lange meisje die goed kan gooien en vangen. Ze loopt goede looplijnen en kan prima voorverdedigen. Schieten en doorloop krijgt ze steeds beter onder de knie. Ze zit zichzelf soms mentaal in de weg - ze is wat sneller onzeker of onder de indruk van fysieker/ruwer spel. "
+            },
+            {
+              "naam": "Nehir Torbali",
+              "niveau": 3,
+              "inzet": 3,
+              "groei": 3,
+              "opmerkingen": "Nehir is een pittig meisje en niet op haar mondje gevallen. Op de training vindt ze het soms lastig om met de oefeningen bezig te zijn - te gezellig en ze let vaak meer op de anderen dan op de uitleg. In de wedstsrijden kon ze altijd al goed gefocust verdedigen en gaat ze fanatiek de duels aan. Nu begint ze ook meer het aanvalsspel te zien en is ze veel in beweging waardoor ze makkelijk vrij staat. Doorloopbal en schot kunnen nog verbeteren."
+            },
+            {
+              "naam": "Rens Boekee",
+              "niveau": 5,
+              "inzet": 3,
+              "groei": 3,
+              "opmerkingen": "Is een lange, handige, snelle jongen met een goede doorbraak. Scoort vaak. Spelinzicht qua looplijnen is wat minder ontwikkelt nog en soms is hij onrustig qua bewegen. Iets meer controle ontwikkelen en niet alleen vertrouwen op zijn lengte en snelheid, maar het technisch goed doen zouden zijn samenspel ten goede komen"
+            },
+            {
+              "naam": "Timo van der Sijde",
+              "niveau": 2,
+              "inzet": 4,
+              "groei": 2,
+              "opmerkingen": "Timo heeft tov van vorig jaar een beetje een dipje - hij was vorig jaar in de E's een sterke heer - qua verdedigen en snelheid. Nu heeft hij het lastiger en zit zijn wat onhandige loopmotoriek hem in de weg. Spelinzicht is prima en schot en doorloop gaat ook steeds beter. Doet serieus mee op de training"
+            },
+            {
+              "naam": "Tom van der Stel",
+              "niveau": 2,
+              "inzet": 2,
+              "groei": 3,
+              "opmerkingen": "Is de minste heer qua spel inzicht en verdedigen in de wedstrijden. Hij ziet de looplijnen nog niet zo en \"stoort\" dan het samenspel in de aanval. Hij vindt het moeilijk om zijn koppie erbij te houden en doet dingen graag op zijn eigen manier. Vindt het lastig om tips of verbeterpunten te ontvangen - geeft dan vaak weerwoord of een \"excuus\" waarom het nog niet lukte buiten hem zelf. Maakt het niet gemakkelijk om hem te coachen. Motorisch is zijn schot en doorloop voldoende. "
+            },
+            {
+              "naam": "Wolf Okkerman",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "Is dit seizoen begonnen met korfballen en is nu al volwaardig spelend lid. Hij pikt het spel snel op, is fanatiek en profiteert ook van zijn fysiek. Hij is lang en flink en komt qua snelheid en motorisch goed mee. Heeft zijn eerste doelpunten in de wedstrijd gemaakt en snapt steeds beter waar hij moet lopen. "
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "team_naam": "J11",
+      "staf": [
+        {
+          "naam": "Matthijs de Jongh",
+          "email": "sportpolizhz@live.nl",
+          "type": "Technische staf"
+        },
+        {
+          "naam": "Lieke Bakker-Verwaal",
+          "email": "lieke__bakker@hotmail.com",
+          "type": "Technische staf"
+        }
+      ],
+      "spelers": [
+        {
+          "naam": "Eloise Naeije",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Fien van Gemert",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Imme Bouman",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Jalou Kampman",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Karlijn Bakker",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Suze Boog",
+          "geslacht": "V"
+        }
+      ],
+      "evaluaties": [
+        {
+          "trainer_naam": "Individueel",
+          "ingediend_op": "2025-12-12T07:53:26.299085+00:00",
+          "plezier": {
+            "score": 5,
+            "toelichting": "De meiden hebben het heel gezellig met z'n zessen. Er zijn geen vaste koppels. Iedereen heeft het leuk met elkaar. Je ziet dat ze plezier hebben bij de trainingen en wedstrijden."
+          },
+          "ontwikkeling": {
+            "score": 4,
+            "toelichting": "Er zit zeker groei in. Ze leren veel. Maar er moet nog meer geleerd worden zoals voorverdedigen en overnemen. Stap voor stap aanleren werkt het beste, afgewisseld met andere oefeningen (moeten echt doseren)."
+          },
+          "prestatie": {
+            "score": 4,
+            "toelichting": "1e helft veld verloren we 4 wedstrijden, maar wisten we ook 1x te winnen en 1x gelijk te spelen. Dat was echt knap. In de zaal zijn we kampioen, waarin we zelfs winnen van best goede tegenstanders."
+          },
+          "opmerkingen": null,
+          "coordinator_memo": null,
+          "speler_beoordelingen": [
+            {
+              "naam": "Eloise Naeije",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 3,
+              "opmerkingen": "Erg fanatiek en scorende, maar tactisch minder sterk. Heeft veel aanwijzingen nodig."
+            },
+            {
+              "naam": "Fien van Gemert",
+              "niveau": 2,
+              "inzet": 3,
+              "groei": 3,
+              "opmerkingen": "Fien korfbalt nog relatief kort. Heeft vooral verdediging aanwijzingen nodig en loopt aanvallend vaak in de weg. Doet op dit moment echt onder voor de rest."
+            },
+            {
+              "naam": "Imme Bouman",
+              "niveau": 3,
+              "inzet": 3,
+              "groei": 3,
+              "opmerkingen": "Lijkt soms minder zin te hebben, moet je echt aansporen. Wel sterk en degelijk, fijn om erbij te hebben. "
+            },
+            {
+              "naam": "Jalou Kampman",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 3,
+              "opmerkingen": "Jalou korfbalt nog maar kort. Leert snel. Soms nog wat paniekerig als ze iets niet begrijpt. Traint maar 1x per week (door toneel), denk dat ze tactisch meer leert als ze 2x traint. Erg enthousiast en eager. "
+            },
+            {
+              "naam": "Karlijn Bakker",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 3,
+              "opmerkingen": "Erg fanatiek en technisch sterk. Is soms verdedigend ineens de kluts kwijt. Kan je tegenover sterke jongens zetten, is niet bang. "
+            },
+            {
+              "naam": "Suze Boog",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 3,
+              "opmerkingen": "Soms wat afwezig/dromerig, maar als ze aan staat is ze de beste dame van het team, zowel verdedigend als aanvallend. Enthousiast en leert graag."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "team_naam": "J12",
+      "staf": [
+        {
+          "naam": "Kimberly Jacobs",
+          "email": "kimmy_ow@hotmail.com",
+          "type": "Technische staf"
+        },
+        {
+          "naam": "Jet van Trooijen",
+          "email": "jetvantrooijen@hotmail.com",
+          "type": "Technische staf"
+        }
+      ],
+      "spelers": [
+        {
+          "naam": "Jaylinn Gerritsen",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Vive Jacobs",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Wies van den Berg",
+          "geslacht": "V"
+        },
+        {
+          "naam": "David Nawar",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Lucien Hol",
+          "geslacht": "M"
+        }
+      ],
+      "evaluaties": [
+        {
+          "trainer_naam": "Individueel",
+          "ingediend_op": "2025-12-15T12:26:28.412337+00:00",
+          "plezier": {
+            "score": 5,
+            "toelichting": "De J12 is een heel sociaal team die voor en met elkaar de korfbalsport beoefenen. De nieuwe leden zijn goed opgenomen binnen het team. "
+          },
+          "ontwikkeling": {
+            "score": 4,
+            "toelichting": "De ontwikkeling is erg verschillend m.n. vanwege de frequentie van aanwezigheid en/of de duur dat de kinderen op korfbal.zitten. Technisch: dlp als doel,  Tactisch: 1 op 1 verdedigen en overnemen, vierkant i.c.m. steun. "
+          },
+          "prestatie": {
+            "score": 4,
+            "toelichting": "Veldseizoen was onder het niveau van het collectief. Zaalseizoen is op niveau, soms fysiek de mindere. Wisselende kwaliteit scheidsrechters m.n. uit. "
+          },
+          "opmerkingen": null,
+          "coordinator_memo": null,
+          "speler_beoordelingen": [
+            {
+              "naam": "David Nawar",
+              "niveau": 4,
+              "inzet": 3,
+              "groei": 4,
+              "opmerkingen": "David zit pas sinds dit seizoen op korfbal. Veel spelinzicht en inzet. Harde werker, teamplayer. Moet technisch nog de korfbaltechnieken leren. "
+            },
+            {
+              "naam": "Jaylinn Gerritsen",
+              "niveau": 2,
+              "inzet": 4,
+              "groei": 2,
+              "opmerkingen": "Jaylinn zit nog niet lang op korfbal en is regelmatig geblesseerd. Ze is soms nog bang voor de bal, heeft (verwerkings)tijd nodig. Kan heel goed van dichtbij schieten en is heel trouw in het uitvoeren van een taak. "
+            },
+            {
+              "naam": "Lucien Hol",
+              "niveau": 3,
+              "inzet": 2,
+              "groei": 3,
+              "opmerkingen": "Lucien traint weer sinds kort 1x in de week. Dit merken de trainers in zijn leertempo, conditie en binding met het team. Gebruikt zijn fysiek goed in duel. Leertempo ligt laag. "
+            },
+            {
+              "naam": "Vive Jacobs",
+              "niveau": 4,
+              "inzet": 3,
+              "groei": 4,
+              "opmerkingen": "Vive heeft een moeilijke periode nu haar ouders uit elkaar zijn gegaan. Dat beïnvloed soms haar inzet. Ze is fysiek heel sterk en kan technisch goed schieten. Ze groeit in aandachstspanne in verdediging i.c.m. juiste positionering, verschillende rollen aannemen in de aanval. "
+            },
+            {
+              "naam": "Wies van den Berg",
+              "niveau": 4,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "Wies is sterker geworden. Haar inzet is goed, winnaarsmentaliteit. Haar vertrouwen dat ze zelf kan scoren groeit! Kan goed 'open' verdedigen. Leerpunt is uitbreiding van aanvaltactieken. "
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "team_naam": "J13",
+      "staf": [
+        {
+          "naam": "Lianne vd Stomp-Burgt",
+          "email": "liantje007@hotmail.com",
+          "type": "Technische staf"
+        },
+        {
+          "naam": "Thijs Vos",
+          "email": "thijs_vos@outlook.com",
+          "type": "Technische staf"
+        }
+      ],
+      "spelers": [
+        {
+          "naam": "Alisa Stomp",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Lara Mans",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Livia van de Burgt",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Amos Alberts",
+          "geslacht": "M"
+        },
+        {
+          "naam": "James van der Burgh",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Joas",
+          "geslacht": "M"
+        }
+      ],
+      "evaluaties": [
+        {
+          "trainer_naam": "Individueel",
+          "ingediend_op": "2025-12-12T11:34:32.242685+00:00",
+          "plezier": {
+            "score": 5,
+            "toelichting": "Kinderen komen enthousiast naar de training. Hebben lol met elkaar maar zijn ook fanatiek. veel kinderen kennen elkaar van school maar je ziet dat iedereen wel goed met elkaar overweg kan. "
+          },
+          "ontwikkeling": {
+            "score": 4,
+            "toelichting": "Oke dit is een lastige. Er zijn 3 kinderen die er ver bovenuit steken maar toch weet het team met elkaar te groeien. Als je kijkt hoe we het doen ten opzichte van vorige jaar zelfde tegenstander maar jaartje verder en iets andere samenstelling groeien ze . we winnen of verliezen nu minder dik als vorige jaar. Dus ja dan ontwikkelen ze zich beter. \n\nVerschil is wel groot waardoor de drie goeie zich soms niet verder kunnen ontwikkelen. "
+          },
+          "prestatie": {
+            "score": 4,
+            "toelichting": "Prima zie ontwikkeling. We zijn buiten kampioen geworden. Poule in de zaal zitten we met de beste tegenstanders in de poule van deze regio en dan kunnen we zelfs nog een wedstrijdje winnen. Dus ben trots op de prestatie "
+          },
+          "opmerkingen": null,
+          "coordinator_memo": null,
+          "speler_beoordelingen": [
+            {
+              "naam": "Alisa Stomp",
+              "niveau": 5,
+              "inzet": 5,
+              "groei": 5,
+              "opmerkingen": "Alisa is een van de drie die er bovenuit steekt. Alles wat met korfballen te maken heeft voert ze goed uit en heeft het spelletje door. Daarbij werkt haar inzet hier ook aan mee"
+            },
+            {
+              "naam": "Amos Alberts",
+              "niveau": 5,
+              "inzet": 5,
+              "groei": 5,
+              "opmerkingen": "Zeflde als Alisa. Amos had het mentaal soms nog lastig maar daar is hij enorm in gegroeid. Een hele goeie korfballer die net als Alisa het goed door heeft en de basis vaardigheden goed ontwikkelt "
+            },
+            {
+              "naam": "James van der Burgh",
+              "niveau": 2,
+              "inzet": 2,
+              "groei": 2,
+              "opmerkingen": "Matige speler. Net als Livia is dit niveau te hoog. Al gaat hij ook kleine stapjes vooruit. Basisvaardigheden matig. gooien en vangen niet best. "
+            },
+            {
+              "naam": "Joas",
+              "niveau": 3,
+              "inzet": 5,
+              "groei": 4,
+              "opmerkingen": "Joas korfbalt nog maar net maar ontwikkelt zich snel. is super fanatiek, motorisch en technisch nog niet best maar hopelijk ontwikkelt zich dan snel. "
+            },
+            {
+              "naam": "Lara Mans",
+              "niveau": 4,
+              "inzet": 5,
+              "groei": 5,
+              "opmerkingen": "Lara is ook een van de drie die er bovenuitsteekt. Niveau 1 sterretje lager gedaan in verband met basis vaardigheden vangen en gooien . Kan beter "
+            },
+            {
+              "naam": "Livia van de Burgt",
+              "niveau": 2,
+              "inzet": 2,
+              "groei": 2,
+              "opmerkingen": "Matige ontwikkeling. heeft het moeilijk in dit team. ze gaat misschien hele kleine stapjes vooruit maar dit team is voor haar te hoog gegrepen. Schiet best goed en kan snel zijn maar laat dit niet altijd zien. Verder mag ze opp alle vlakken zichzelf nog beter ontwikkelen "
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "team_naam": "J14",
+      "staf": [
+        {
+          "naam": "Thijs Vos",
+          "email": "thijs_vos@outlook.com",
+          "type": "Technische staf"
+        },
+        {
+          "naam": "Celia Stok",
+          "email": "celia@rustinouderschap.nl",
+          "type": "Technische staf"
+        }
+      ],
+      "spelers": [
+        {
+          "naam": "Louisa de Jong",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Sanna de Lange",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Tess Rombouts",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Luuk Ploeg",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Sepp de Jong",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Veerle Brouwer",
+          "geslacht": "V"
+        }
+      ],
+      "evaluaties": [
+        {
+          "trainer_naam": "Individueel",
+          "ingediend_op": "2025-12-24T08:35:41.375059+00:00",
+          "plezier": {
+            "score": 5,
+            "toelichting": "Er wordt veel gelachen, er is plezier onderling en met de trainers. De kinderen zij positief naar elkaar binnen en buiten het veld. "
+          },
+          "ontwikkeling": {
+            "score": 4,
+            "toelichting": "iedere week zie ik groei nav de training of een opdracht. Zowel persoonlijk als in het team. Ze nemen deze ontwikkeling dan mee en kunnen er direct de week er op iets bij. Zoals wedstrijd 1 kregen we een aantal doorloopballen tegen en strafworpen ivm foutief verdedigen. Dan wedstrijd 2 na leren van hoe verdedig je doorloopballen pakken ze dit door. Wedstrijd 3, hoe voorkom je strafworpen etc. Prachtige opbouw."
+          },
+          "prestatie": {
+            "score": 4,
+            "toelichting": "ten opzichte van de groei groot is de prestatie groot, tov de ingedeelde competitie minimaal. Soms zijn de tegenstanders gelijkwaardig en dan gaat het top! Er wordt meer gescoord en beter verdedigd. "
+          },
+          "opmerkingen": "Ik heb de sterren per individu niet naar vergelijking ingevuld. Ik ben dit jaar voor het eerst coach zonder korfbalervaring. Maar ik kon het formulier anders niet verzenden. Mocht hierover gesproken moeten worden vind ik dat prima. Ik vind deze score op papier niet passend voor jeugd in ontwikkeling, dit scheelt per wedstrijd en ik heb geen vergelijkingsmateriaal door de jaren heen of ten op zichte van de sport.",
+          "coordinator_memo": null,
+          "speler_beoordelingen": [
+            {
+              "naam": "Louisa de Jong",
+              "niveau": 4,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "Louisa ligt goed in het team, heeft qua energie moeite gezien haar astma. Speelt nu halve blokjes. Gooit strakke ballen over en pikt ze met haar lengte geregeld uit de lucht. Pakt opdrachten goed op en wanneer ze goed in haar energie zit, brengt ze ze tot uitvoering."
+            },
+            {
+              "naam": "Luuk Ploeg",
+              "niveau": 4,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "Luuk groeit enorm in inzet. Van ik wil wissel naar ik wil niet meer gewisseld worden! Ook Luuk schakelt steeds sneller, wanneer de bal weg is om direct mee te rennen. Hij is enthousiast en, kan goed overspelen en krijgt de ballen er goed in! Ook een goede superspeler."
+            },
+            {
+              "naam": "Sanna de Lange",
+              "niveau": 4,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "Sanna is het liefst superspeler, vliegt het veld over en kan dan scoren. Wanneer ze vast tegenover iemand staat, houdt ze deze spanningsboog een deel van de wedstrijd vast. Gooit strakke ballen."
+            },
+            {
+              "naam": "Sepp de Jong",
+              "niveau": 4,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "Sepp heeft het goed naar zijn zin in de groep, dit komt veelal van ouders terug doordat hij het in de groep nog lastig vind zijn stem te laten horen. Laat hier een goede groei in zien en lacht geregeld. Sepp heeft het spelletje door, soms gaat het wat vlot en moet hij even schakelen, luistert dan altijd goed naar de opdracht en kan mooie doelpunten maken! Zijn glimlach is dan goud waard."
+            },
+            {
+              "naam": "Tess Rombouts",
+              "niveau": 4,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "Tess zet zich altijd in! Doet enorm haar best, het spel kan soms net wat te snel gaan en schakelen kost dan even tijd. Tess speelt daarom het beste vast tegen een tegenstander. Ze pakt opdrachten goed op en weet altijd wel te scoren wanneer ik vraag wie er gaat scoren. "
+            },
+            {
+              "naam": "Veerle Brouwer",
+              "niveau": 4,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "Veerle is dit blok gestart, ze is fanatiek en analytisch en pakt direct door wat ze leert. Ze laat een grote groei zien per wedstrijd, is goed in verdedigen en plakt dan helemaal vast aan het tegenstander.  "
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "team_naam": "J15",
+      "staf": [
+        {
+          "naam": "Henno Ploeg",
+          "email": "hennoploeg@hotmail.com",
+          "type": "Technische staf"
+        }
+      ],
+      "spelers": [
+        {
+          "naam": "Ariadne Eefting",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Luna van Schaardenburg",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Mayvin Nawar",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Elroy van Wingerden",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Finn Ploeg",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Hidde Koolstra",
+          "geslacht": "M"
+        }
+      ],
+      "evaluaties": [
+        {
+          "trainer_naam": "Individueel",
+          "ingediend_op": "2025-12-15T14:11:37.729329+00:00",
+          "plezier": {
+            "score": 5,
+            "toelichting": "Prima. Iedereen komt met plezier naar de wedstrijden. Trainingen kan ik minder goed inschatten omdat ik daar niet bij ben. Maar volgens mij zijn er weinig afzeggingen."
+          },
+          "ontwikkeling": {
+            "score": 2,
+            "toelichting": "Als ik eerlijk kijk naar de ontwikkeling van ons t.o.v. tegenstanders dan vind ik dat onze basistechniek gooien, vangen en vrijlopen wel echt achterblijft. Nu weet ik niet of tegenstanders ook sociaal indelen, of op kwaliteit en of ze 1 of 2x in de week trainen, want dan maakt natuurlijk wel een groot verschil. Ook is de vraag of je dat mag verwachten van spelers die voor het eerst wedstrijden spelen. Maar dat (gebrek aan) basistechniek valt wel echt op. "
+          },
+          "prestatie": {
+            "score": 3,
+            "toelichting": "Op het veld te laag ingedeeld en nu in de zaal te zware competitie. Met de nieuwe indeling is het ook erg lastig in te schatten wat het niveau van de andere teams is. "
+          },
+          "opmerkingen": null,
+          "coordinator_memo": null,
+          "speler_beoordelingen": [
+            {
+              "naam": "Ariadne Eefting",
+              "niveau": 3,
+              "inzet": 5,
+              "groei": 4,
+              "opmerkingen": "Speelt 1e seizoen en pakt het snel op. Is klein en heeft daarom moeite met gooien en vrijlopen. Is heel fanatiek en kan goed schieten op 2 benen. Kan hele wedstrijd geconcentreerd eigen dame verdedigen."
+            },
+            {
+              "naam": "Elroy van Wingerden",
+              "niveau": 2,
+              "inzet": 5,
+              "groei": 2,
+              "opmerkingen": "Is de oudste van het team en is sterk en kan ver gooien. Heeft heel veel moeite om concentratie op te brengen en te verdedigen. Snel afgeleid. Vangen gaat moeizaam en vrijlopen is ook moeilijk. Heeft netjes schot op 2 benen met tijd en ruimte."
+            },
+            {
+              "naam": "Finn Ploeg",
+              "niveau": 4,
+              "inzet": 5,
+              "groei": 5,
+              "opmerkingen": "Jongste speler en super fanatiek. Snapt het spelletje het beste van het team en kan ook echt al heel goed onderscheppen en leest goed waar de bal kan komen. Mist soms nog wat kracht. Korfgericht en kan goed vangen en gooien."
+            },
+            {
+              "naam": "Hidde Koolstra",
+              "niveau": 4,
+              "inzet": 5,
+              "groei": 3,
+              "opmerkingen": "Heel fanatiek, is sterk en gaat steeds meer duels aan. Kan goed schieten, doet nog veel op lengte. Heel korfgericht en fel in de duels. Kan ook goed verdedigen en blokkeert dan ook goed de bal."
+            },
+            {
+              "naam": "Luna van Schaardenburg",
+              "niveau": 3,
+              "inzet": 5,
+              "groei": 3,
+              "opmerkingen": "Speelt ook 1e seizoen en heeft nog wel moeite met vangen en huppelt geregeld nog door het veld. Veel plezier en heeft ook al doelpuntjes gemaakt en verdedigen gaat ook steeds beter."
+            },
+            {
+              "naam": "Mayvin Nawar",
+              "niveau": 2,
+              "inzet": 5,
+              "groei": 2,
+              "opmerkingen": "Speelt al langer, dus lat ook iets hoger. Kan eigenlijk niet met één hand gooien. Heeft weinig concentratie om te verdedigen. Straalt wel plezier uit en heeft het naar der zin. Doet altijd haar best. "
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "team_naam": "J16",
+      "staf": [
+        {
+          "naam": "Jordi Vaartmans",
+          "email": "fam.vaartmans@gmail.com",
+          "type": "Technische staf"
+        },
+        {
+          "naam": "Danique van der Klooster",
+          "email": "daniquevdk10@gmail.com",
+          "type": "Technische staf"
+        }
+      ],
+      "spelers": [
+        {
+          "naam": "Cato van Haren",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Fay Struijk",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Nova van Nienes",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Branley van Wingerden",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Lucas Roos",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Quinn Nekkers",
+          "geslacht": "M"
+        }
+      ],
+      "evaluaties": [
+        {
+          "trainer_naam": "Individueel",
+          "ingediend_op": "2026-01-04T21:31:51.172029+00:00",
+          "plezier": {
+            "score": 4,
+            "toelichting": "De sfeer binnen het team is goed, de kinderen hebben veel plezier in het spel en het gaat met de wedstrijd beter! Soms slaat het wel om naar iets te veel plezier en vergeten ze even dat ze een wedstrijd aan het spelen zijn... \n\nVerder is er wel een voorval geweest dat er een kind andere kinderen mondeling naar beneden werkt, door dingen te zeggen als: \"Pass de bal naar mij, ik scoor wel\" of \"Jij mag niet schieten, want je scoort toch niet.\" Gesprek met ouders hierin is al gevoerd en moeder geeft aan dat het kind de bal alleen gooit naar kinderen die de bal ook naar hem gooien. Ik gaf hierin aan dat het een teamsport is en dat hij wel de bal naar iedereen moet gooien. En heb hierbij de steun van ouders gevraagd om het kind ook die richting in te sturen."
+          },
+          "ontwikkeling": {
+            "score": 3,
+            "toelichting": "De ontwikkeling binnen het team verschilt heel erg, want we hebben een enorm verschil in ons team. Er zijn kinderen die al 'meer' balvaardig waren die laatste weken heel veel groei laten zien en kinderen die nog niet helemaal door hebben wat ze aan het doen en langzaam aan afhaken. Dit leidt in de wedstrijd er ook toe dat de balvaardigere kinderen alleen maar met zijn 3e overspelen. We geven tijdens de rust momenten aan dat iedereen de bal moet krijgen en dat sommige kinderen het wat lastig vinden om te vangen en dat we ze dan moeten helpen, maar dan gaat het 1 kwartje goed en daarna willen ze de bal niet meer gooien. De kinderen zelf geven ook aan dat ze willen winnen en daarom de bal niet gooien. Echter wordt er wel gepasst naar de \"minder\" balvaardige kinderen, maar dat gebeurt pas na vele coaching."
+          },
+          "prestatie": {
+            "score": 4,
+            "toelichting": "Ondanks de grote niveauverschillen zijn de prestaties degelijk. We winnen van de gelijkwaardige tegenstanders en maken betere teams groot gedeelte van de wedstrijd erg moeilijk. We merken wel nadat de wedstrijd vordert sommige spelers niet meer de concentratie/motivatie kunnen opbrengen om vooral te verdedigen en denken van als de tegenstander scoort hebben we toch de bal weer."
+          },
+          "opmerkingen": "Qua competitie zaten we redelijk hoog ingedeeld naar ons idee, bij het volgende zaal stukje is daar zo te zien rekening mee gehouden. Dus dat is top!\n\nVoor volgend seizoen is het misschien te overwegen om de teams te splitsen qua niveau, aangezien het niveauverschil wel flink teoneemt.",
+          "coordinator_memo": null,
+          "speler_beoordelingen": [
+            {
+              "naam": "Branley van Wingerden",
+              "niveau": 3,
+              "inzet": 2,
+              "groei": 3,
+              "opmerkingen": "Niveau verschilt heel erg, soms is hij mega geconcentreerd en op andere momenten is hij heel erg afgeleid. Dit is vooral op trainingen te merken. "
+            },
+            {
+              "naam": "Cato van Haren",
+              "niveau": 2,
+              "inzet": 3,
+              "groei": 2,
+              "opmerkingen": "Een sterk punt van Cato is dat ze verdedigend over het algemeen goed kan plakken, maar vaak zien we ook dat ze met haar ouders/zusje bezig is of ze staat voor zich uit te kijken in het veld. Qua coaching is ze ook lastig toereikend, omdat ze veel in haar eigen wereld zit. \nAanvallend gooit ze alleen de bal naar Fay. Maar ziet nu wel wanneer ze in de buurt is van de korf en kan schieten."
+            },
+            {
+              "naam": "Fay Struijk",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "Fay sloot later (begin seizoen) aan. In de laatste weken zien we echt een mooie groei, waarbij ze aanvallend meedoet en verdedigend eigenlijk altijd bij haar tegenstander meteen staat. Ze vergeet alleen dat ze ook mag schieten. Qua balbehandeling kan ze zich wel nog wat ontwikkelen."
+            },
+            {
+              "naam": "Lucas Roos",
+              "niveau": 4,
+              "inzet": 5,
+              "groei": 3,
+              "opmerkingen": "Lucas was vorig jaar al zeer goed, maar blijft qua groei een beetje op hetzelfde niveau. Onderschept mega veel ballen, maar aanvallend is de afronding slordig geworden. Verder heeft hij heel veel kracht en kan hij van erg ver schieten, waarbij hij ook vaak wel juist van verre afstand weet te scoren."
+            },
+            {
+              "naam": "Nova van Nienes",
+              "niveau": 4,
+              "inzet": 5,
+              "groei": 5,
+              "opmerkingen": "Waar Nova op het veldseizoen nog helemaal niet betrokken was bij het spel, draait het spel nu grotendeels om haar. Ze is mega gretig voor de bal en scoort vaak. Verdedigend onderschept te veel ballen en heeft ze ook nog eens overzicht."
+            },
+            {
+              "naam": "Quinn Nekkers",
+              "niveau": 3,
+              "inzet": 5,
+              "groei": 4,
+              "opmerkingen": "Quinn rent in de wedstrijd ongelofelijk veel. Hij weet wat die aanvallend en verdedigend moet doen en doet dit eigenlijk grotendeels prima. Balbehandeling qua gooien is zeer goed, maar vangen is nog een (groot) aandachtspunt."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "team_naam": "J17",
+      "staf": [
+        {
+          "naam": "Merle Nobel",
+          "email": "merlenobel@gmail.com",
+          "type": "Technische staf"
+        }
+      ],
+      "spelers": [
+        {
+          "naam": "Floor van de Merwe",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Karlijn van Tol",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Leah van de Burgt",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Finn de Groot",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Jeftha Houweling",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Ruben Verberkt",
+          "geslacht": "M"
+        }
+      ],
+      "evaluaties": [
+        {
+          "trainer_naam": "Individueel",
+          "ingediend_op": "2026-01-07T20:10:58.982734+00:00",
+          "plezier": {
+            "score": 4,
+            "toelichting": "Goede sfeer waarin het team het erg gezellig met elkaar heeft en ze elkaar goed helpen. Er worden veel grapjes gemaakt, dansjes gedaan en liedjes gezongen tijdens het inschieten en warmlopen. "
+          },
+          "ontwikkeling": {
+            "score": 4,
+            "toelichting": "Als team en individueel zijn ze heel erg gegroeid. Er is samenspel te zien en ze proberen echt als team te werken naar de winst. Met name het verdedigen en de concentratie behouden gedurende de wedstrijd gaat veel beter dan eerst. Daarnaast worden ballen beter gegooid en gevangen en lukt het veel spelers om beter vrij te lopen. Vaak hebben we heel veel pogingen op de korf, maar er gaan maar relatief weinig ballen ook echt door het mandje. Daar mag dus nog zeker aan gewerkt worden. \n\nIn het veldseizoen wilden de spelers met meer korfbalervaring of beter spel voornamelijk de bal naar elkaar gooien en niet naar de nieuwere spelers. Dat zorgde ervoor dat zij nauwelijks de bal kregen. In het zaalseizoen merkte ik hier een omslag in. Er werd veel beter als team met elkaar gespeeld. Ballen werden bijvoorbeeld soms bewust gegooid naar iemand die vrij stond onder de korf die nog nooit heeft gescoord zodat die voor het eerst kon schieten op de paal. Dit terwijl de persoon die de bal gooide, en zelf dus wel vaker scoort, zelf ook vrij stond en dus de mogelijkheid had om te schieten. Ze helpen elkaar nu veel beter en geven complimentjes en tips aan elkaar. Mooi om te zien! "
+          },
+          "prestatie": {
+            "score": 5,
+            "toelichting": "Met de veldcompetitie zijn ze kampioen geworden en in de zaalcompetitie zijn ook al heel veel wedstrijden gewonnen. Sommigen wedstrijden worden echt dik gewonnen, maar er zijn ook veel leuke en spannende duellen waarin het team echt moet knokken om de winst binnen te halen. "
+          },
+          "opmerkingen": null,
+          "coordinator_memo": null,
+          "speler_beoordelingen": [
+            {
+              "naam": "Finn de Groot",
+              "niveau": 3,
+              "inzet": 3,
+              "groei": 3,
+              "opmerkingen": "Komt beter tot zijn recht in dit team dan in zijn vorige team (toen coachte ik hem ook). Spel concentratie is erg verbeterd. Verdedigen is nog een aandachtspunt, maar schieten gaat veel beter. "
+            },
+            {
+              "naam": "Floor van de Merwe",
+              "niveau": 2,
+              "inzet": 3,
+              "groei": 2,
+              "opmerkingen": "Het spel is nog wat lastig voor haar, omdat ze nog redelijk nieuw is. Verdedigen gaat steeds beter doordat ze goed mee blijft lopen met haar tegenstander. Nog wat onzeker in de wedstrijd waardoor ze vaak wat terughoudend is, maar zie hier wel een positieve groei in.  "
+            },
+            {
+              "naam": "Jeftha Houweling",
+              "niveau": 5,
+              "inzet": 5,
+              "groei": 4,
+              "opmerkingen": "Zeer goede verdediger die soms wel 3 tegenstanders tegelijk kan/wil verdedigen. Daarnaast ook een heel goed schot en een echte teamplayer. Speelt sinds dit seizoen pas wedstrijden, maar dat is al sinds het begin absoluut niet te merken. Hij probeert zichzelf (en ik hem als coach) extra uit te dagen en dat gaat goed. "
+            },
+            {
+              "naam": "Karlijn van Tol",
+              "niveau": 3,
+              "inzet": 3,
+              "groei": 3,
+              "opmerkingen": "Erg gemiddeld en constant in haar spel. Ze heeft een goed schot, maar verdedigen is soms nog wel een aandachtspunt. Door eventuele kou/pijn/vermoeidheid snel afgeleid en dan weinig zin in de training of wedstrijd. Als die factoren niet aanwezig zijn is ze enthousiast en doet ze goed mee, maar dit kan dus best wisselen. "
+            },
+            {
+              "naam": "Leah van de Burgt",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "Speelt sinds dit seizoen pas wedstrijden. Steeds beter in schieten en durft ook meer. Het gooien is nog een aandachtspunt, maar het verdedigen gaat goed. Super fanatiek en komt zonodig voor haar zelf op binnen het team of bij de tegenstander. Doet ze altijd goed en netjes. "
+            },
+            {
+              "naam": "Ruben Verberkt",
+              "niveau": 4,
+              "inzet": 3,
+              "groei": 4,
+              "opmerkingen": "Goed schot en kan de bal goed vangen. Net als Finn komt hij in dit team beter tot uiting dan in het vorige team. Gaat voor de bal en is goed bezig met de bal onderscheppen. "
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "team_naam": "J18",
+      "staf": [
+        {
+          "naam": "Tess Volker",
+          "email": "jennyvolker73@gmail.com",
+          "type": "Technische staf"
+        },
+        {
+          "naam": "Esmée de Boer",
+          "email": "alexenannemarie@outlook.com",
+          "type": "Technische staf"
+        }
+      ],
+      "spelers": [
+        {
+          "naam": "Linne Jansen",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Tara van Hengel",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Veerle van tol",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Dani 't Jong",
+          "geslacht": "M"
+        }
+      ],
+      "evaluaties": []
+    },
+    {
+      "team_naam": "J2",
+      "staf": [
+        {
+          "naam": "Carlijn Lievaart",
+          "email": "wy.lievaart@kpnmail.nl",
+          "type": "Technische staf"
+        },
+        {
+          "naam": "Tijmen Fasbender",
+          "email": "tijmen.fasbender@gmail.com",
+          "type": "Technische staf"
+        }
+      ],
+      "spelers": [
+        {
+          "naam": "Danique van der Wiel",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Enora Bouwknegt",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Evie Groen",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Femke Bakker",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Marit van den Bergh",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Nikki Baas",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Noortje Vercouteren",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Pippa Jongkind",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Joaz Post",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Jurre van der Linden",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Stephan Quarre",
+          "geslacht": "M"
+        }
+      ],
+      "evaluaties": [
+        {
+          "trainer_naam": "Individueel",
+          "ingediend_op": "2026-01-08T12:29:40.481399+00:00",
+          "plezier": {
+            "score": 5,
+            "toelichting": "De spelers hebben veel plezier in het korfballen. Daarnaast zie ik dat de spelers buiten het korfballen om ook vrienden zijn en veel lol hebben met elkaar."
+          },
+          "ontwikkeling": {
+            "score": 4,
+            "toelichting": "In het team is een behoorlijk niveauverschil aanwezig. Er zijn spelers die technisch en tactisch veel verder zijn dan de rest. Over het algemeen is het een team dat tactisch en technisch nog veel kan leren, maar ik zie al wel vooruitgang. Tactisch zouden de spelers wat meer rust kunnen creëren en looplijnen herkennen, en daarop inspelen. Technisch is er ook nog veel te leren. Met name het afronden van kansen is een verbeterpunt"
+          },
+          "prestatie": {
+            "score": 4,
+            "toelichting": "Het team gaat in elke wedstrijd voor de winst en geeft nooit op. Dat heeft ervoor gezorgd dat we in de zaal twee keer gewonnen hebben. Twee andere wedstrijden hadden we net verloren, maar wel goede tegenstand geboden aan het team."
+          },
+          "opmerkingen": null,
+          "coordinator_memo": "We hebben deze evaluatie met alle trainers besproken en nog de volgende aanvullingen:\nDanique; brengt wel altijd snelheid in het spel, staat vaak vrij. Zou mooi zijn als ze fysiek sneller/slimmer wordt. Tegengas geven.\nEnora; ze creeert haar eigen kansen heel goed (door naar binnen te gaan). Verbeterpunt; kansen afmaken\nEvie; speelt vaak ‘verstoppertje’ achter haar tegenstander\nFemke; is het meest gegroeid, inzet 5 sterren. Ze staat er, speelt vaak als heer, kan het vak draaiend houden.\nJoaz; soms moet je het ‘aan’ knopje aanzetten; soms laat hij zich wegzetten door zijn tegenstander en gaat dan ‘zeuren’ \nJurre; aandachtspunt dat hij niet weet waar hij heen moet lopen (is wel iets verbeterd).  Hij onderschat zichzelf, overschat de tegenstander.\nNikki; is ook wel afgeleid tijdens wedstrijden als er geschoten wordt, volgt dan de bal en niet de tegenstander\nPippa; wellicht een stukje zelfvertrouwen, maar ook ‘gemak’.\nStephan; gaat er altijd voor.\n",
+          "speler_beoordelingen": [
+            {
+              "naam": "Danique van der Wiel",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "Danique kan goed tot kansen komen. Vebeterpunt weet ik nu even niet"
+            },
+            {
+              "naam": "Enora Bouwknegt",
+              "niveau": 3,
+              "inzet": 3,
+              "groei": 3,
+              "opmerkingen": "Enora vind ik lastig om wat van te vinden, aangezien ze veel geblesseerd is geweest en ik haar weinig heb zien spelen"
+            },
+            {
+              "naam": "Evie Groen",
+              "niveau": 3,
+              "inzet": 3,
+              "groei": 4,
+              "opmerkingen": "Evie is vaak afgeleid samen met Jurre. Ze komt wel altijd tot wat kansen"
+            },
+            {
+              "naam": "Femke Bakker",
+              "niveau": 4,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "Femke heeft een goed schot van afstand. Verbeterpunt eigenlijk geen idee"
+            },
+            {
+              "naam": "Joaz Post",
+              "niveau": 4,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "Joaz kan goed rebounden en heeft overzicht in het spel. Verbeterpunt is dat hij minder plat schiet."
+            },
+            {
+              "naam": "Jurre van der Linden",
+              "niveau": 4,
+              "inzet": 3,
+              "groei": 4,
+              "opmerkingen": "Voor hoe lang Jurre korfbalt, vind ik dat hij het goed doet. Hij is wel vaak afgeleid samen met Evie"
+            },
+            {
+              "naam": "Marit van den Bergh",
+              "niveau": 5,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "Marit creëert veel kansen en daar wordt ook veel op gespeeld. Verbeterpunt zou zijn dat ze meer loopt voor andermans kansen (mits de wedstrijd dat toelaat)"
+            },
+            {
+              "naam": "Nikki Baas",
+              "niveau": 5,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "Nikki brengt aanvallend het meeste gevaar. Ze is af en toe wel afgeleid tijdens de trainingen"
+            },
+            {
+              "naam": "Noortje Vercouteren",
+              "niveau": 1,
+              "inzet": 5,
+              "groei": 1,
+              "opmerkingen": "Noortje is eigenlijk altijd aanwezig en doet altijd haar best, maar ze vind het lastig om het spel te volgen en daarop in te spelen"
+            },
+            {
+              "naam": "Pippa Jongkind",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "Pippa heeft van dichtbij een goed schot. Verbeterpunt zou zijn dat ze haar acties feller maakt."
+            },
+            {
+              "naam": "Stephan Quarre",
+              "niveau": 5,
+              "inzet": 5,
+              "groei": 4,
+              "opmerkingen": "Stephan heeft overzicht in het spel. Daarnaast heeft hij een goed schot. Een verbeterpunt is wel dat hij sneller schiet"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "team_naam": "J3",
+      "staf": [
+        {
+          "naam": "Fieneke Lotgerink",
+          "email": "fieneke@cassa.nl",
+          "type": "Technische staf"
+        }
+      ],
+      "spelers": [
+        {
+          "naam": "Anne-Sophie Lotgerink",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Ester Wietses",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Feline Littooij",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Kayleigh Gerritsen",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Lieke Jansen",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Rolina Grandia",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Aidric Croes",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Daan van der Weijde",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Finn de Haseth",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Levi Molendijk",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Mika Kerschkamp",
+          "geslacht": "M"
+        }
+      ],
+      "evaluaties": [
+        {
+          "trainer_naam": "Trainerstaf",
+          "ingediend_op": "2025-12-16T19:02:50.043625+00:00",
+          "plezier": {
+            "score": 5,
+            "toelichting": "Onderlinge sfeer prima ( uitgezonderd situatie Lieke Janssen) en ontevredenheid over speeltijd vanuit Finn en zijn oudersis daar veel boosheid over."
+          },
+          "ontwikkeling": {
+            "score": 4,
+            "toelichting": "Overall gezien is het team gegroeid maar we hebben een aantal kinderen die qua ontwikkeling achterblijven en aantal die juist niet kunnen doorontwikkelen"
+          },
+          "prestatie": {
+            "score": 3,
+            "toelichting": "Resultaten zouden beter kunnen zijn maar worden beïnvloed door speeltijd moeten geven aan spelers die qua ontwikkeling te ver achter lopen."
+          },
+          "opmerkingen": "Wij hebben een groot gat tussen spelers met potentie en spelers die ver achterblijven. Het is voor alle bovengenoemde punten lastig om dit in dit team optimaal tot zijn recht te laten komen. Kinderen die achterblijven komen niet tot optimale speeltijd en in de training kunnen we de spelers met de wil en potentie niet helpen door ontwikkelen. En in de wedstrijden zijn zij aan het compenseren dat leidt tot frustratie.",
+          "coordinator_memo": null,
+          "speler_beoordelingen": [
+            {
+              "naam": "Aidric Croes",
+              "niveau": 1,
+              "inzet": 2,
+              "groei": 1,
+              "opmerkingen": "Aidric is een lieve jongen maar loopt motorisch te ver achter in in dit team mee te kunnen doen"
+            },
+            {
+              "naam": "Anne-Sophie Lotgerink",
+              "niveau": 4,
+              "inzet": 5,
+              "groei": 3,
+              "opmerkingen": "Altijd veel inzet maar het lichaam doet niet altijd wat ze wilt, heeft nog wel potentie om door te groeien"
+            },
+            {
+              "naam": "Daan van der Weijde",
+              "niveau": 3,
+              "inzet": 3,
+              "groei": 3,
+              "opmerkingen": "Daan doet wat we vragen maar lijkt vaak overweldigd of in zijn hoofd te zitten. Begrijpt niet altijd wat we willen zien en blokkeert dan of moet huilen."
+            },
+            {
+              "naam": "Ester Wietses",
+              "niveau": 2,
+              "inzet": 4,
+              "groei": 3,
+              "opmerkingen": "Net begonnen dit seizoen, gezondheidsproblemen waardoor regelmatig uitval. Vindt het wel leuk!"
+            },
+            {
+              "naam": "Feline Littooij",
+              "niveau": 3,
+              "inzet": 3,
+              "groei": 2,
+              "opmerkingen": "Heeft in de basis potentie maar laat het niet zien. Heeft niet de drive om echt te willen winnen."
+            },
+            {
+              "naam": "Finn de Haseth",
+              "niveau": 1,
+              "inzet": 3,
+              "groei": 1,
+              "opmerkingen": "Finn is een lieve jongen die altijd komt trainen. Maar motorisch en qua spelinzicht redt hij hetniet in dit team."
+            },
+            {
+              "naam": "Kayleigh Gerritsen",
+              "niveau": 4,
+              "inzet": 4,
+              "groei": 3,
+              "opmerkingen": "Kayleigh moet soms even haar motivatie en stukje zelfvertrouwen vinden en dan is ze een sterke verdediger. Kampt met blessures waardoor de doorontwikkeling even gestagneerd is. Heeft zeker potentie."
+            },
+            {
+              "naam": "Levi Molendijk",
+              "niveau": 3,
+              "inzet": 3,
+              "groei": 2,
+              "opmerkingen": "We zien nog dezelfde Levi als vorige jaar. Schiet veel maar raakt weinig vaak door een gebrek aan focus "
+            },
+            {
+              "naam": "Lieke Jansen",
+              "niveau": 2,
+              "inzet": 2,
+              "groei": 2,
+              "opmerkingen": "Te in beslag genomen door persoonlijke problemen om echt in korfbal tot ontwikkeling te komen. Buiten haar problematiek zou ze wel potentie hebben"
+            },
+            {
+              "naam": "Mika Kerschkamp",
+              "niveau": 3,
+              "inzet": 2,
+              "groei": 2,
+              "opmerkingen": "Mika lijkt zijn plafond qua ontwikkeling bereikt te hebben al. We zien vaak gebrek aan focus, geslof, weinig energie. Is wel daarentegen schotvast en scoort zijn doorloopballen."
+            },
+            {
+              "naam": "Rolina Grandia",
+              "niveau": 4,
+              "inzet": 5,
+              "groei": 3,
+              "opmerkingen": "Nieuwe speler met veel potentie en inzicht. Kampt met astma en ook haar ontwikkeling stagneert momenteel door problemen in het team."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "team_naam": "J4",
+      "staf": [
+        {
+          "naam": "Seth van de Burgt",
+          "email": "sethvandeburgt@gmail.com",
+          "type": "Technische staf"
+        },
+        {
+          "naam": "Sophie Kilsdonk",
+          "email": "kilsies08@gmail.com",
+          "type": "Technische staf"
+        }
+      ],
+      "spelers": [
+        {
+          "naam": "Anouk Bakker",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Britt Vaartmans",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Eva Bezemer",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Fenna van Rijswijk",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Jodie Dekker",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Laura Exalto",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Sanne van Driel",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Joep van Ameijden",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Juda Vos",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Thijs Vos",
+          "geslacht": "M"
+        }
+      ],
+      "evaluaties": [
+        {
+          "trainer_naam": "Trainerstaf",
+          "ingediend_op": "2025-12-27T16:18:25.916771+00:00",
+          "plezier": {
+            "score": 4,
+            "toelichting": "Het is gezellig en er wordt veel gelachen tijdens de training. Misschien soms te veel, iedereen heeft het heel veel naar hun zin "
+          },
+          "ontwikkeling": {
+            "score": 3,
+            "toelichting": "Als er tips worden gegeven worden die ook toe gepast in de wedstrijd of tijdens trainingen. Ze leren allemaal snel"
+          },
+          "prestatie": {
+            "score": 4,
+            "toelichting": "Op het veld bijna iedereen met overtuigende scoren gewonnen waardoor we aan het einde van het seizoen van kampioenschap mochten genieten, in de zaal iets meer moeten maar ze houden goed stand tegen B leeftijden"
+          },
+          "opmerkingen": null,
+          "coordinator_memo": null,
+          "speler_beoordelingen": [
+            {
+              "naam": "Anouk Bakker",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 2,
+              "opmerkingen": "Anouk werkt hard en heeft elke wedstrijd veel inzet, maar ligt qua spel wel onder niveau. Anouk mist net wat pit."
+            },
+            {
+              "naam": "Britt Vaartmans",
+              "niveau": 5,
+              "inzet": 4,
+              "groei": 3,
+              "opmerkingen": "Britt is boven ver boven niveau van breedtekorfbal, maar onder niveau van hoofdklasse, ze is fysiek en technisch sterk maar doet mentaal te kort"
+            },
+            {
+              "naam": "Eva Bezemer",
+              "niveau": 4,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "Eva speelt bij ons 9/10 als heer waardoor ze beide kanten van het korfbal leert kennen waardoor ze fysiek veel leert. "
+            },
+            {
+              "naam": "Fenna van Rijswijk",
+              "niveau": 4,
+              "inzet": 3,
+              "groei": 3,
+              "opmerkingen": "Fenna is constant, ze speelt niet vaak op haar hoogtepunt maar doet ook nooit te kort"
+            },
+            {
+              "naam": "Jodie Dekker",
+              "niveau": 4,
+              "inzet": 5,
+              "groei": 3,
+              "opmerkingen": "Jodie heeft veel pit, en werkt keihard voor haar resultaten. Als een wat kleinere meid heeft ze moeite met het schieten. "
+            },
+            {
+              "naam": "Joep van Ameijden",
+              "niveau": 3,
+              "inzet": 5,
+              "groei": 4,
+              "opmerkingen": "Joep is een wat kleinere jongen die veel moeite heeft met spelen grotere heren, ondanks dat veel Joep te onder niveau vinden blinkt joep in de zaal wel uit volgens ons"
+            },
+            {
+              "naam": "Juda Vos",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 3,
+              "opmerkingen": "Juda is heel druk in zijn spel en wil graag belangrijk zijn"
+            },
+            {
+              "naam": "Laura Exalto",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 3,
+              "opmerkingen": "Laura werkt hard, geeft goede druk. Aanvallend komt Laura te kort en maakt met moeite eigen acties"
+            },
+            {
+              "naam": "Sanne van Driel",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "Sanne heeft aan het begin van het seizoen aangegeven dat ze meer zo willen schieten en dat doet zo ook op een effectieve manier"
+            },
+            {
+              "naam": "Thijs Vos",
+              "niveau": 4,
+              "inzet": 5,
+              "groei": 4,
+              "opmerkingen": "Thijs heeft uitstekend inzicht op het spel, is verdedigend stabiel en maakt goed eigen acties, hij is alleen emotioneel en heeft een slordig schot"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "team_naam": "J5",
+      "staf": [
+        {
+          "naam": "Sara Boshoven",
+          "email": "saraboshoven@gmail.com",
+          "type": "Technische staf"
+        },
+        {
+          "naam": "Justin Vos",
+          "email": "justinvos321@gmail.com",
+          "type": "Technische staf"
+        }
+      ],
+      "spelers": [
+        {
+          "naam": "Jenna Ehmila",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Jolijn van den Bergh",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Lisa Exalto",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Lisanne Naeije",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Milou Markusse",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Noor Brouwer",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Nora van Rooij",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Tess Uljee",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Cas Uljee",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Fynn Kuling",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Martijn Veenendaal",
+          "geslacht": "M"
+        }
+      ],
+      "evaluaties": [
+        {
+          "trainer_naam": "Individueel",
+          "ingediend_op": "2025-12-11T16:19:17.026992+00:00",
+          "plezier": {
+            "score": 5,
+            "toelichting": "De sfeer binnen het team is heel goed. De kinderen hebben het heel gezellig onderling en vinden het (volgens ouders en de kinderen zelf) altijd heel leuk om te komen trainen of wedstrijden te spelen. Ook lijkt er weinig sprake van groepjes binnen de groep en valt er niemand buiten. Deze positieve sfeer is in de wedstrijden ook terug te zien; ze hebben veel voor elkaar over en supporten iedereen. Met mij/ons als trainers lijkt het ook goed te klikken en ik/wij hebben het ook heel erg naar ons zin met deze groep."
+          },
+          "ontwikkeling": {
+            "score": 4,
+            "toelichting": "De meeste spelers ontwikkelen individueel goed. De motivatie verschilt wel per individu, en dat is in de meeste gevallen terug te zien in de ontwikkeling. Als team is de J5 al heel goed ontwikkeld en de wedstrijden gaan steeds beter. Op de training snappen ze steeds meer van wat ik ze uitleg/probeer te leren en in wedstrijden worden deze dingen nu ook regelmatig toegepast, waardoor ze echt leuk en beter gaan spelen. Ook ouders die bij de wedstrijden kijken geven aan dat het team steeds beter wordt."
+          },
+          "prestatie": {
+            "score": 4,
+            "toelichting": "Wat betreft prestaties gaat het ook steeds beter bij de J5. Op het veld hadden ze soms nog moeite met tegenstanders en werden we derde. Nu in de zaal merk ik dat het, doordat de sfeer zo goed is en het echt een team is, in de wedstrijden ook een stuk beter gaat. Hierdoor hebben we al veel wedstrijden ruim kunnen winnen en staan we op een mooie tweede plek. We hebben tot nu toe, ondanks een super goede wedstrijd, één zaalwedstrijd verloren, maar ook daar leren ze van."
+          },
+          "opmerkingen": null,
+          "coordinator_memo": null,
+          "speler_beoordelingen": [
+            {
+              "naam": "Cas Uljee",
+              "niveau": 3,
+              "inzet": 5,
+              "groei": 3,
+              "opmerkingen": "Cas is qua niveau gemiddeld. Hij is heel erg klein en heeft, net als Noor en Martijn, nog moeite met de hoge korf en zware bal. Hierdoor heeft hij aanvallend moeite. Ook is hij snel geïntimideerd door grotere tegenstanders en heeft hij het verdedigend vaak lastig. Hij is wel snel en kan goed schieten en kan tegen een kleinere heer ook prima verdedigen.\nCas heeft een hele goede inzet en doet altijd keihard zijn best. Wel traint hij graag serieus, waardoor hij last heeft van kinderen die minder serieus zijn. Cas kan heel erg slecht tegen zijn verlies en wordt heel snel emotioneel als het even niet lukt. Hij wordt tijdens wedstrijden vaak boos en moet huilen als hij een goal tegenkrijgt of de scheidsrechter iets tegen hem fluit. Dit is wel eens lastig.\nCas ontwikkelt redelijk, maar blijft moeite houden van zijn lengte en kracht. Ik denk dat als hij iets groeit, hij een hartstikke goede korfballer kan worden.\nHet is leuk dat Cas zo leergierig is en hij heeft het met alle kinderen, vooral met Martijn, altijd heel erg naar zijn zin."
+            },
+            {
+              "naam": "Fynn Kuling",
+              "niveau": 3,
+              "inzet": 2,
+              "groei": 4,
+              "opmerkingen": "Fynn is qua niveau gemiddeld. Hij schiet heel erg makkelijk en heel zuiver, maar is een ontzettende dromer. Hierdoor is hij verdedigend zwak en hij heeft weinig spelinzicht.\nHet lijkt dus soms alsof Fynn weinig inzet heeft, maar ik geloof dat het niet altijd bewust is. Hij is heel snel afgeleid en luistert vaak niet omdat hij in een andere wereld zit. Hierdoor hebben kinderen op de training, maar ook in wedstrijden, wel vaak last van hem. \nHet gaat gelukkig wel al beter met Fynn dan vorig seizoen, dus hij ontwikkelt best prima. Hij is een stuk sterker geworden in het rebounden en neemt minder kansen die afgefloten worden voor verdedigd/snijden. Ook maakt hij nu bijna elke wedstrijd wel een goal.\n\nFynn is een lieverd en maakt iedereen altijd aan het lachen."
+            },
+            {
+              "naam": "Jenna Ehmila",
+              "niveau": 3,
+              "inzet": 3,
+              "groei": 4,
+              "opmerkingen": "Jenna is gemiddeld qua niveau. In wedstrijden is het een hele harde werker en ze is niet snel geïntimideerd. Vooral in kansen dichtbij de korf neemt ze heel makkelijk en zuiver en verdedigend is ze sterk.\nWat betreft inzet kan het beter; ze vergeet bijvoorbeeld wel eens haar schoenen of meldt zich af omdat ze geen zin heeft. Op trainingen doet ze wel altijd echt haar best, maar is wel lacherig/kletserig.\nJenna’s ontwikkeling verloopt best goed: ze leert veel en speelt al een stuk beter dan aan het begin van het seizoen. Ze benut haar kwaliteiten goed.\nDaarnaast is het een leuk meisje en een echte teamspeelster."
+            },
+            {
+              "naam": "Jolijn van den Bergh",
+              "niveau": 3,
+              "inzet": 5,
+              "groei": 4,
+              "opmerkingen": "Jolijn is qua niveau gemiddeld/net iets boven gemiddeld. Ze is lang, technisch \n sterk en heeft veel inzicht, maar er zit voor mijn gevoel nog meer in dan er nu nog uitkomt. Qua spel is ze soms nog een beetje jeugdig.\nJolijn is super gemotiveerd en altijd aanwezig bij trainingen, wedstrijden en extra trainingen. Ze ontwikkelt goed en leert makkelijk. \nJolijn is rustig en wat onzeker, maar ligt ook heel goed in de groep en je hebt nooit last van haar."
+            },
+            {
+              "naam": "Lisa Exalto",
+              "niveau": 4,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "Lisa zit qua niveau ook iets boven gemiddeld. Ze is fel, snel en technisch sterk. Lisa kan heel goed schieten, maar is vooral geneigd vanuit de paalzone te spelen, waar ze ook heel goed in is. Wel is ze de jongste en vrij klein, waardoor ze nog wel eens geïntimideerd is door een grote tegenstander en hier heeft ze dan ook wel moeite mee.\n Lisa’s inzet is heel goed: ze doet goed haar best op trainingen en is een hele harde werker in wedstrijden. Ook valt ze graag in bij andere teams.\nLisa is duidelijk jonger dan de rest, maar ontwikkelt hartstikke goed mee. Daarnaast is Lisa een hele leuke en energieke meid."
+            },
+            {
+              "naam": "Lisanne Naeije",
+              "niveau": 4,
+              "inzet": 5,
+              "groei": 4,
+              "opmerkingen": "Lisanne is qua niveau boven gemiddeld. Ze is vooral groot en sterk en is niet bang, waardoor het een hele nuttige dame is. Ook is ze heel allround: zowel aanvallend als verdedigend is ze sterk.\nLisanne heeft een super goede inzet; ze is altijd aanwezig, geeft altijd alles, stelt vragen en luistert goed naar tips. Door haar leergierigheid ontwikkelt ze ook goed. Ze is in dit team een beetje een leider en dat doet ze heel goed. Als trainer is het een hele fijne meid om erbij te hebben en het is een leuke teamspeelster."
+            },
+            {
+              "naam": "Martijn Veenendaal",
+              "niveau": 3,
+              "inzet": 3,
+              "groei": 3,
+              "opmerkingen": "Martijn is qua niveau gemiddeld. Ook Martijn is nog heel klein en heeft fysiek dus nog moeite. Zeker tegen grotere tegenstanders heeft Martijn het verdedigend lastig. Aanvallend wil Martijn graag zelf aanvallen, maar kan nog ontwikkelen in dienend spelen. Hij pakt wel vaak een goaltje mee.\nMartijn zijn inzet is goed. Hij vraagt om tips en geeft goede input. Wel is hij soms een beetje bijdehand en lijkt hij niet altijd even goed te luisteren. Ook melden de ouders van Martijn hem heel snel af.\nQua ontwikkeling gaat Martijn prima mee, maar ik verwacht dat hij ook beter uit de verf zal komen als hij gegroeid is. \nMartijn is een hele leergierige jongen, en heeft vooral met Cas een hele leuke band. Ook is het fijn dat hij vaak wil invallen bij andere teams.\n"
+            },
+            {
+              "naam": "Milou Markusse",
+              "niveau": 3,
+              "inzet": 3,
+              "groei": 4,
+              "opmerkingen": "Milou is qua niveau gemiddeld. Ze is een beetje wisselend in presteren: soms is ze de beste en soms de minste. Over het algemeen kan Milou goed verdedigen en ze heeft veel spelinzicht: ze passt makkelijk andere vrij en gooit diepe ballen bijv. \nHet ontbreekt een beetje aan felheid.\nHaar inzet is voldoende: aan het begin van het seizoen werd ze regelmatig afgemeld, maar dat bleek soms vanuit haar moeder te komen en wil Milou niet meer. Nu is ze bijna altijd aanwezig op trainingen en ze geeft aan veel plezier te hebben in wedstrijden spelen. Wel loopt ze soms de kantjes er vanaf en lijkt ze wat ongemotiveerd of niet zo te luisteren.\nMilou is al snel ontwikkeld; ze draait nu al een stuk beter mee dan aan het begin van het seizoen. \nDaarnaast is Milou een hele lieve en rustige meid die goed in de groep ligt."
+            },
+            {
+              "naam": "Noor Brouwer",
+              "niveau": 2,
+              "inzet": 3,
+              "groei": 3,
+              "opmerkingen": "Noor ligt qua niveau iets onder gemiddeld. Ze is erg klein en heeft heel weinig kracht, waardoor ze moeite heeft met de zware bal en hoge korf. Hierdoor scoort ze heel moeilijk en is goed passen ook lastig. Verdedigend is ze vaak wel sterk en op de doorloopbal pakt ze wel makkelijk kansjes mee.\nQua inzet is Noor soms wel wat ongemotiveerd: ze is lacherig/praterig en doet niet altijd even goed mee. Ze is wel vaak aanwezig en ligt heel erg goed in de groep.\nNoor ontwikkelt minimaal en heeft ook wel moeite met het niveau van andere meiden bijhouden.\nNoor is wel een hele leuke, gezellige meid en klikt goed met iedereen uit het team."
+            },
+            {
+              "naam": "Nora van Rooij",
+              "niveau": 2,
+              "inzet": 2,
+              "groei": 4,
+              "opmerkingen": "Nora ligt qua niveau nog net iets onder gemiddeld. Ze is pas een jaar geleden begonnen met korfballen en doet het daardoor nu al heel knap. Ze is lang en kan heel makkelijk en zuiver schieten, maar heeft soms nog moeite met goede lijnen lopen en gooien. Verdedigend heeft ze nog moeite en kan ze nog veel leren.\nNora’s inzet is matig: ze is ook praterig op trainingen en geeft regelmatig aan geen zin te hebben. Hierdoor voert ze oefeningen vaak niet serieus uit. Wel lijkt dit een beetje om haar onzekerheid te verbergen. \nNora ontwikkelt snel: de laatste wedstrijd die we hebben gespeeld, speelde ze super goed. Ook gaat ze het spelletje, de regels en tactieken steeds beter begrijpen, waardoor ze het echt heel leuk doet. Verder korfbalt ze gewoon nog niet lang, dus is het logisch dat ze nog iets onder de rest van het team ligt qua niveau. \nNora is een super lieve meid. Ze heeft bij mij aangegeven dat ze heel erg onzeker is en last heeft van faalangst, wat het korfballen voor haar heel lastig maakt. "
+            },
+            {
+              "naam": "Tess Uljee",
+              "niveau": 4,
+              "inzet": 5,
+              "groei": 4,
+              "opmerkingen": "Tess is qua niveau boven gemiddeld. Ze is sterk en presteert altijd goed. Ook is Tess heel allround: ze is aanvallend sterk, verdedigend sterk en ook een goede spelverdeler. \nTess haar inzet is heel goed: ze doet altijd goed haar best en is een harde werker in wedstrijden. Ze geeft nooit op en is nooit negatief of boos. Ook valt ze graag in bij andere teams.\nTess ontwikkelt nog steeds heel goed: ze pakt ook steeds meer een leidende rol wat ze goed doet.\nDaarnaast is Tess altijd vrolijk en positief en een hele leuke meid in de groep."
+            }
+          ]
+        },
+        {
+          "trainer_naam": "Individueel",
+          "ingediend_op": "2025-12-12T18:55:06.089538+00:00",
+          "plezier": {
+            "score": 5,
+            "toelichting": "Het is gezellig in het team iedereen kan goed met elkaar om gaan en iedereen heeft het volgens mij naar z’n plezier "
+          },
+          "ontwikkeling": {
+            "score": 4,
+            "toelichting": "Ik zie dat er veel meer spel in het team is gekomen sinds dat ik trainer ben van de J5"
+          },
+          "prestatie": {
+            "score": 4,
+            "toelichting": "We hebben tot nu toe 1 wedstrijd net verloren maar voor de rest nog niks verloren t gaat hartstikke goed "
+          },
+          "opmerkingen": "Ik heb niks verders ",
+          "coordinator_memo": null,
+          "speler_beoordelingen": [
+            {
+              "naam": "Cas Uljee",
+              "niveau": 4,
+              "inzet": 5,
+              "groei": 4,
+              "opmerkingen": "Een beetje dezelfde speler als z’n zus hij gaat er altijd voor (soms iets te hard) en hij gaat lekker in het team om "
+            },
+            {
+              "naam": "Fynn Kuling",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 3,
+              "opmerkingen": "Soms is hij een beetje chaotisch in het spel maar toch gaat hij wel lekker in het team mee "
+            },
+            {
+              "naam": "Jenna Ehmila",
+              "niveau": 3,
+              "inzet": 5,
+              "groei": 4,
+              "opmerkingen": "Ze doet heel erg haar best soms gaat het niveau iets te snel "
+            },
+            {
+              "naam": "Jolijn van den Bergh",
+              "niveau": 4,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "Ze is een grote ster in het team een beetje de aanvoerder "
+            },
+            {
+              "naam": "Lisa Exalto",
+              "niveau": 3,
+              "inzet": 5,
+              "groei": 4,
+              "opmerkingen": "Ze is de jongste van het team soms een beetje druk maar ze doet hee erg haar best "
+            },
+            {
+              "naam": "Lisanne Naeije",
+              "niveau": 5,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "Ze is onze schutter van het team soms gaat ze iets te snel maar doet ook heel erg haar best "
+            },
+            {
+              "naam": "Martijn Veenendaal",
+              "niveau": 4,
+              "inzet": 5,
+              "groei": 3,
+              "opmerkingen": "Martijn is een jongen die heel graag wil soms is hij een beetje stil maar toch gaat hij lekker mee met het niveau "
+            },
+            {
+              "naam": "Milou Markusse",
+              "niveau": 4,
+              "inzet": 5,
+              "groei": 4,
+              "opmerkingen": "Ze vind verdedigen heel leuk vaak wil ze dat ook doen en ze gaat lekker mee in het team  "
+            },
+            {
+              "naam": "Noor Brouwer",
+              "niveau": 4,
+              "inzet": 5,
+              "groei": 3,
+              "opmerkingen": "Noor is degene die graag wil maar het niveau is niet veel gestegen maar toch kan ze lekker meegaan met het niveau"
+            },
+            {
+              "naam": "Nora van Rooij",
+              "niveau": 3,
+              "inzet": 3,
+              "groei": 4,
+              "opmerkingen": "In het begin was het veel minder ze vond de trainingen niet leuk en ze vond dat ze niets kon nu gaat t veel beter ze scoort wel eens en ze gaat meer mee in het spel "
+            },
+            {
+              "naam": "Tess Uljee",
+              "niveau": 5,
+              "inzet": 5,
+              "groei": 3,
+              "opmerkingen": "Ze is een goeie dame ze scoort er wel eens wat en is voor niemand bang ze gaat er altijd voor "
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "team_naam": "J6",
+      "staf": [
+        {
+          "naam": "Senne Koster",
+          "email": "sennekoster189@gmail.com",
+          "type": "Technische staf"
+        },
+        {
+          "naam": "Kimberley Witman",
+          "email": "kimberleywitman@gmail.com",
+          "type": "Technische staf"
+        },
+        {
+          "naam": "Robert Koster",
+          "email": "kosterprive@gmail.com",
+          "type": "Technische staf"
+        }
+      ],
+      "spelers": [
+        {
+          "naam": "Davina Moniz",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Evi Kleingeld",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Fay Tims",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Layla de Boer",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Yara van der Wiel",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Abel van de Ven",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Falco Bemer",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Nathan Verberkt",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Tygo Bemer",
+          "geslacht": "M"
+        }
+      ],
+      "evaluaties": [
+        {
+          "trainer_naam": "Trainerstaf",
+          "ingediend_op": "2025-12-29T15:02:14.325508+00:00",
+          "plezier": {
+            "score": 4,
+            "toelichting": "Erg leuk team. Kunnen goed met elkaar overweg. Nog wel meiden en jongens apart. Naast korfbal komen ze ook als team kijken bij 1. Uitje was erg gezellig en leuk!"
+          },
+          "ontwikkeling": {
+            "score": 4,
+            "toelichting": "Technisch leggen we nadruk op schot en doorloopbal techniek. Tactisch bezig met vier rollen vervullen in een vak en hoe dit kan helpen in een wedstrijd. Sommige kunnen spel al lezen en sommige niet. Ze leren vooral nu onder druk uitkomen en welke mogelijkheden je hierin hebt en die kunnen toepassen in de wedstrijd "
+          },
+          "prestatie": {
+            "score": 3,
+            "toelichting": "Wisselende prestaties. Eerste veldhelft te sterke tegenstanders en verloren we met 10 punten verschil. Wel altijd blijven inzetten! In de zaal zit alleen nog PKC J9 als sterkte tegenstander. We pakken af en toe ook de punten en dit is goed voor het team. "
+          },
+          "opmerkingen": "Opkomst trainingen is goed! Inzet tijdens training is wisselend. Weliswaar de groep leergierig en meeste zijn goed coachbaar. Onderling verschil is wel zichtbaar, steken een paar spelers er boven uit en sommige spelers zitten aan de onderkant",
+          "coordinator_memo": null,
+          "speler_beoordelingen": [
+            {
+              "naam": "Abel van de Ven",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 3,
+              "opmerkingen": "Abel is een leuke speler met een goed schot op 4-5 meter. Staat in vak met Layla en Tygo waardoor hij leert om zijn tweede kansen te zoeken. Verdedigend stabiel. Uitdaging voor Abel zit in fel starten in de wedstrijd, meestal na korte wissel komt hij sterker en feller terug "
+            },
+            {
+              "naam": "Davina Moniz",
+              "niveau": 3,
+              "inzet": 5,
+              "groei": 4,
+              "opmerkingen": "Prima speelster. Kan goed vestigen en speelt altijd met inzet. We zijn met haar bezig op accenten van aanvallen (schot) en verdedigend (onder nemen onder de paal"
+            },
+            {
+              "naam": "Evi Kleingeld",
+              "niveau": 2,
+              "inzet": 4,
+              "groei": 3,
+              "opmerkingen": "Evi maakt kleine stapjes! Technisch nog stappen moeten zetten op het schot. Stippen maakt ze altijd in de wedstrijd!! Ze heeft als rebounder best veel ballen. Verdedigend prima. Is erg goed coachbaar en makkelijk benaderbaar! "
+            },
+            {
+              "naam": "Falco Bemer",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "Falco is leuke speler die regelmatig scoort (1,2 doelpunten per wedstrijd). Hij is goed coachbaar. Aandachtspunt is wel in beweging blijven na bal verplaatsing. Verdedigend en met name 1:1 mag hij nog stappen zetten. Inzet is goed"
+            },
+            {
+              "naam": "Fay Tims",
+              "niveau": 4,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "Fay ontwikkelt zicht goed. Kan aanvallend veel rollen vervullen. Is momenteel de meest scorende speler in J6 (1,5 doelpunt per wedstrijd ).Rebound heeft ze veel door haar lengte maar mag qua positioneren nog stapjes maken. Is goed coachbaar. Verdedigend ook sterk! Inzet goed. Vrije ballen nemen  gaat prima!"
+            },
+            {
+              "naam": "Layla de Boer",
+              "niveau": 4,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "Layla is net als Fay een speelsters die aan de bovenkant zit. Veel inzicht in het spel! Durf ook te coachen in het team. Ze is terecht aanvoerder in het team, ze is een echte leider. Verdedigend en met name 1:1 mag ze nog stapjes zetten. Layla is goed coachbaar en durf ook vragen te stellen wat haar ook weer helpt bij haar ontwikkeling. Layla neemt in ander vak de vrije ballen"
+            },
+            {
+              "naam": "Nathan Verberkt",
+              "niveau": 2,
+              "inzet": 4,
+              "groei": 2,
+              "opmerkingen": "Nathan is een harde werker. Is redelijk coachbaar. Heeft moeite met de lange lijn lopen en sws waar hij in het spel zich moet begeven. Komt wel goed in de steun voorlangs op timing! Verdedigend prima"
+            },
+            {
+              "naam": "Tygo Bemer",
+              "niveau": 4,
+              "inzet": 4,
+              "groei": 5,
+              "opmerkingen": "Tygo maakt goede groei dit seizoen, zowel in aanvallend opzichte als in verdedigend opzichte (1:1 is hij erg sterk geworden). Goed coachbaar en inzet goed. Wil altijd beter worden. Mentaal lerend om zijn negatieve emoties om te zetten naar acties "
+            },
+            {
+              "naam": "Yara van der Wiel",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 3,
+              "opmerkingen": "Yara is een speelster die gestaagde groei heeft. Ze heeft zeker haar kwaliteiten en vooral aanvallend kan ze de andere spelers vrij passen en scoort zelf regelmatig tweede kans. Verdedigend en met name met Davina een ijzersterk koppel. Goed coaxhbaar "
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "team_naam": "J7",
+      "staf": [
+        {
+          "naam": "Nadia de Wit",
+          "email": "nadiadew@kpnmail.nl",
+          "type": "Technische staf"
+        },
+        {
+          "naam": "Syrah de Wit",
+          "email": "syrahdew@kpnmail.nl",
+          "type": "Technische staf"
+        }
+      ],
+      "spelers": [
+        {
+          "naam": "Benthe van Dijl",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Elske Niehof",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Emma Schot",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Sterre Falter",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Collin Koppelaar",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Joep Jongkind",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Lukas van der Weijde",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Mayson Josefina",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Sepp Jongkind",
+          "geslacht": "M"
+        }
+      ],
+      "evaluaties": [
+        {
+          "trainer_naam": "Trainerstaf",
+          "ingediend_op": "2026-01-03T11:30:30.7019+00:00",
+          "plezier": {
+            "score": 5,
+            "toelichting": "De sfeer is heel gezellig, de kinderen kunnen het erg goed met elkaar vinden ook buiten korfbal om. Ouders zijn goed betrokken en hebben het ook gezellig met elkaar. "
+          },
+          "ontwikkeling": {
+            "score": 4,
+            "toelichting": "Technisch kunnen sommigen nog wel veel verbeteren. Qua tactisch spel zien we wel vooruitgang. Meerdere ouders hebben gezegd dat ze verbetering zien bij de kinderen ten opzichte van vorig seizoen qua spel (sneller rondspelen en makkelijker schieten)."
+          },
+          "prestatie": {
+            "score": 4,
+            "toelichting": "Op het veld zijn we kampioen geworden en hebben we alle wedstrijden dik gewonnen. Er werd veel gescoord en snel samengespeeld. In de zaal hebben we het tot nu toe wat lastiger, we zijn wat hoger ingedeeld en hebben wat betere tegenstanders en krijgen wat meer weerstand. Soms gaat het goed en soms verliezen we (2x winst, 2x verloren, 1x gelijk)."
+          },
+          "opmerkingen": "De opkomst is hoog, de kinderen komen graag naar de training.\nHet nieuwe meisje Sterre werd leuk opgevangen binnen het team en is een leuke/gezellige/goede aanwinst voor het team.",
+          "coordinator_memo": null,
+          "speler_beoordelingen": [
+            {
+              "naam": "Benthe van Dijl",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 3,
+              "opmerkingen": "Is altijd op de training, let goed op, is rustig en ze doet wat ze moet doen"
+            },
+            {
+              "naam": "Collin Koppelaar",
+              "niveau": 2,
+              "inzet": 4,
+              "groei": 3,
+              "opmerkingen": "Niveau is wisselend. Schot is wel aardig.\nTechnisch en motorisch kan hij nog verbeteren, maar we zien hierin wel ontwikkelingen."
+            },
+            {
+              "naam": "Elske Niehof",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 3,
+              "opmerkingen": "Elske is verdedigend goed, ze onderschept veel ballen. De techniek van de strafworp en doorloopbal is nog niet vlekkeloos en ze gooit niet altijd goed strak."
+            },
+            {
+              "naam": "Emma Schot",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 3,
+              "opmerkingen": "Verdedigend volgt ze goed haar tegenstander. \nIs een enthousiaste, gezellige meid.\nAanvallend laat ze niet zoveel zien. "
+            },
+            {
+              "naam": "Joep Jongkind",
+              "niveau": 3,
+              "inzet": 3,
+              "groei": 3,
+              "opmerkingen": "Is fel op de bal, duikt veel naar de bal en haalt er veel ballen tussenuit in de verdediging en scoort veel. In de training doen Joep en Sepp veel samen, zijn ze vaak speels en soms zijn ze samen aan het stoeien met elkaar waardoor de inzet wat lager is. Maar ze doen ook wel enthousiast mee op de training."
+            },
+            {
+              "naam": "Lukas van der Weijde",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 3,
+              "opmerkingen": "Is er enthousiast over korfbal, wil graag trainen. Is fel in wedstrijden en blijft doorgaan.\nTechnisch en motorisch kan hij nog verbeteren. "
+            },
+            {
+              "naam": "Mayson Josefina",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 3,
+              "opmerkingen": "Is rustig, doet wat hij moet doen.\nHij heeft in de aanval soms goede snelle acties. Verdedigend wordt hij snel voorbijgelopen bij het verdedigen van een doorloopbal. Ook conditioneel vinden wij hem wat minder."
+            },
+            {
+              "naam": "Sepp Jongkind",
+              "niveau": 3,
+              "inzet": 3,
+              "groei": 3,
+              "opmerkingen": "Is fel op de bal, duikt veel naar de bal en haalt er veel ballen tussenuit in de verdediging en scoort veel. In de training doen Joep en Sepp veel samen, zijn ze vaak speels en soms zijn ze samen aan het stoeien met elkaar, waardoor de inzet wat lager is. Maar ze doen ook wel enthousiast mee op de training."
+            },
+            {
+              "naam": "Sterre Falter",
+              "niveau": 4,
+              "inzet": 4,
+              "groei": 3,
+              "opmerkingen": "Scoort veel, heeft een goed schot, is actief en zet zich goed in. In haar eerste wedstrijd op het veld scoorde ze 8 keer. Soms is ze wat zenuwachtig voor een wedstrijd, maar ze is een leuke en gezellige meid en kan met iedereen leuk omgaan."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "team_naam": "J8",
+      "staf": [
+        {
+          "naam": "Marcel Sint Nicolaas",
+          "email": "marcel@gebr-st-nicolaas.nl",
+          "type": "Technische staf"
+        },
+        {
+          "naam": "Sjoerd van Ameijden",
+          "email": "sjoerdvanameijden@gmail.com",
+          "type": "Technische staf"
+        }
+      ],
+      "spelers": [
+        {
+          "naam": "Ize van der Linden",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Jaimey Dekker",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Jeslynn Vos",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Pien van Dongen",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Ayden van den Bosch",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Jorn den Dekker",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Levi Everaarts",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Lucas van de Rest",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Morris van Ameijden",
+          "geslacht": "M"
+        }
+      ],
+      "evaluaties": [
+        {
+          "trainer_naam": "Trainerstaf",
+          "ingediend_op": "2026-01-09T16:54:43.964805+00:00",
+          "plezier": {
+            "score": 5,
+            "toelichting": "Er hangt zowel bij de ouders als bij de kinderen een geweldige sfeer , Kinderen hebben het erg naar hun zin ."
+          },
+          "ontwikkeling": {
+            "score": 5,
+            "toelichting": "Het was bij de start van de competitie een leuk maar statisch team . Ze maken als team grote stappen . Het wordt steeds meer een dynamisch team en verdedigen steeds beter ."
+          },
+          "prestatie": {
+            "score": 5,
+            "toelichting": "De groei zie je zichtbaar in de wedstijden terug komen . De kinderen voelen het zelf ook en doen steeds meer hun best op de training ."
+          },
+          "opmerkingen": "Sjoerd en ikzelf Marcel hebben er veel plezier in , dat de groei zichtbaar is en zie het terug in de wedstrijden .",
+          "coordinator_memo": null,
+          "speler_beoordelingen": [
+            {
+              "naam": "Ayden van den Bosch",
+              "niveau": 4,
+              "inzet": 5,
+              "groei": 4,
+              "opmerkingen": "Ayden heeft een mooie techniek en scorend vermogen , ontwikkelt zich goed .\nPuntje van aandacht de drive is er niet altijd ."
+            },
+            {
+              "naam": "Ize van der Linden",
+              "niveau": 4,
+              "inzet": 5,
+              "groei": 4,
+              "opmerkingen": "Techniek en inzicht is goed , mist nog kracht bij het schieten . Haar echte talent is zonder dat ze het weet  is , dat door haar positieve instelling ( haar gedrag ) het team bindt en naar hogere niveau brengt ."
+            },
+            {
+              "naam": "Jaimey Dekker",
+              "niveau": 4,
+              "inzet": 5,
+              "groei": 5,
+              "opmerkingen": "Fysiek staat ze haar mannetje , geweldige drive. Techniek moet ze aan werken . Heeft bij Movado al in de C gespeelt en mist hierdoor het fijne gevoel bij het schieten een beetje "
+            },
+            {
+              "naam": "Jeslynn Vos",
+              "niveau": 5,
+              "inzet": 5,
+              "groei": 5,
+              "opmerkingen": "Dame met potentie , geweldige drive , geweldig op de vang , maar moet meer op haar techniek werken om zelf meer te scoren , dan wordt ze compleet .Echt een talent."
+            },
+            {
+              "naam": "Jorn den Dekker",
+              "niveau": 4,
+              "inzet": 5,
+              "groei": 4,
+              "opmerkingen": "Jorn is in potentie een complete korfballer . Geweldig schot en goede inzicht . Puntje van aandacht is , dat er wedstrijden zijn dat hij er totaal niet bij is . ( waarom wellicht te laat naar bed ?)"
+            },
+            {
+              "naam": "Levi Everaarts",
+              "niveau": 4,
+              "inzet": 5,
+              "groei": 4,
+              "opmerkingen": "Levi, geweldige drive en inzet in de wedstrijd . Techniek vh schot en doorloopbal moet nog aan geschaafd worden .Maar inzet een 10"
+            },
+            {
+              "naam": "Lucas van de Rest",
+              "niveau": 3,
+              "inzet": 5,
+              "groei": 4,
+              "opmerkingen": "Lucas, is een minder getalenteerde jonge man die soms toch enorm kan verrassen in een wedstrijd . Leuke jongeman met een positieve kijk op het leven . Kan je er goed bij hebben . Techniek en kracht moet nog aan gewerkt worden ."
+            },
+            {
+              "naam": "Morris van Ameijden",
+              "niveau": 4,
+              "inzet": 5,
+              "groei": 5,
+              "opmerkingen": "Morris , Is een talentvolle jonge man met goede techniek en inzicht . Puntje van aandacht de drive moet eerst gevonden worden in de wedstrijd . ( Sjoerd heeft zich hier van buiten gehouden vanwege zijn zoon )"
+            },
+            {
+              "naam": "Pien van Dongen",
+              "niveau": 5,
+              "inzet": 5,
+              "groei": 5,
+              "opmerkingen": "Dame die net als Jeslynn enorm potentie heeft als korfballer , geweldige techniek en scorend vermogen . Puntje van kritiek moet ook leren om te gaan met tegenslagen  in de wedstrijd ."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "team_naam": "J9",
+      "staf": [
+        {
+          "naam": "Monique te Witt",
+          "email": "monique_te_witt@hotmail.com",
+          "type": "Technische staf"
+        },
+        {
+          "naam": "Liesbeth Kleingeld-Wibbens",
+          "email": "liesbeth.kleingeld@gmail.com",
+          "type": "Technische staf"
+        }
+      ],
+      "spelers": [
+        {
+          "naam": "Maartje Laban",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Robin Mans",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Sanae el Arbiati",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Sofie Kleingeld",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Tess Rebollo",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Koen Ploeg",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Lars Winter",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Ralf Dijkstra",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Tobias Hoedelmans",
+          "geslacht": "M"
+        }
+      ],
+      "evaluaties": [
+        {
+          "trainer_naam": "Trainerstaf",
+          "ingediend_op": "2025-12-17T12:48:58.233135+00:00",
+          "plezier": {
+            "score": 3,
+            "toelichting": "De sfeer binnen het team is goed. De kinderen hebben leuk contact onderling. Lars lijkt zich wel te irriteren aan de trainers."
+          },
+          "ontwikkeling": {
+            "score": 4,
+            "toelichting": "Alle kinderen ontwikkelen zich, maar de 1 harder dan de ander. Er zijn kinderen die zich graag willen ontwikkelen, maar ook kinderen die echt alleen korfbal spelen voor het plezier"
+          },
+          "prestatie": {
+            "score": 4,
+            "toelichting": "We doen het goed in de competitie en staan nu 2e. We spelen tegen ploegen die we aan het begin van het seizoen ook tegen zijn gekomen en merken dat we beter zijn geworden."
+          },
+          "opmerkingen": null,
+          "coordinator_memo": "Trainsters hebben zorgen geuit over het niveau van de voornamelijk heren in de leeftijd van de 1ste jaar geel, en wilde hier wel het gesprek over aangaan met tc/co\n\nVoornamelijk de sterkste 4 (Maartje, Soof, Robin en Koen lijken baat te hebben bij de aansluiting met de J8. En groeien hier goed in mee. (Tobias kan hier ook goed in mee moet alleen motorisch nog wel groeien) Overige 5 hebben heb moeite om mee te komen in  onderlinge partijen.)",
+          "speler_beoordelingen": [
+            {
+              "naam": "Koen Ploeg",
+              "niveau": 4,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "Goede speler, vooral veel spelinzicht. Zet zich altijd in en ontwikkeld zich goed."
+            },
+            {
+              "naam": "Lars Winter",
+              "niveau": 3,
+              "inzet": 2,
+              "groei": 2,
+              "opmerkingen": "De situatie met Lars is soms lastig. Hij vindt de trainers te fanatiek en lijkt geen behoefte te hebben zich echt te ontwikkelen.  Voor volgend jaar lijkt het geschikter om hem in een minder fanatiek team te zetten. Ouders denken ook dat dit passender is."
+            },
+            {
+              "naam": "Maartje Laban",
+              "niveau": 4,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "Speelt ontzettend leuk, ontwikkeld zich goed en heeft plezier in het spel. Zit zichzelf soms wel in de weg."
+            },
+            {
+              "naam": "Ralf Dijkstra",
+              "niveau": 2,
+              "inzet": 4,
+              "groei": 3,
+              "opmerkingen": "Ralf kan het niveau moeilijk aan. Ligt wel goed in het team, zet zich altijd goed in en is leergierig. Vooral moeite met basisvaardigheden."
+            },
+            {
+              "naam": "Robin Mans",
+              "niveau": 4,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "Fanatieke speler, is leergierig en heeft plezier in het spel. Ontwikkeld zich goed."
+            },
+            {
+              "naam": "Sanae el Arbiati",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 3,
+              "opmerkingen": "Fanatieke speler, maar heeft nog een hoop te leren. Wil wel graag leren, zet zich altijd goed in. "
+            },
+            {
+              "naam": "Sofie Kleingeld",
+              "niveau": 4,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "Grote ontwikkeling laten zien in inzet sinds dit seizoen. Is een fanatieke speler en ontwikkeld zich goed. "
+            },
+            {
+              "naam": "Tess Rebollo",
+              "niveau": 2,
+              "inzet": 3,
+              "groei": 3,
+              "opmerkingen": "Heeft nog moeite met de basisvaardigheden gooien en vangen. Laat soms wel zien inzicht te hebben. Lijkt te korfballen voor de gezelligheid"
+            },
+            {
+              "naam": "Tobias Hoedelmans",
+              "niveau": 3,
+              "inzet": 3,
+              "groei": 3,
+              "opmerkingen": "Kan fanatiek en enthousiast zijn, maar laat zich soms meeslepen in het gedrag van Lars. "
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "team_naam": "U15-1",
+      "staf": [
+        {
+          "naam": "Milou Oppe",
+          "email": "milou.oppe@gmail.com",
+          "type": "Technische staf"
+        },
+        {
+          "naam": "Rob van Dongen",
+          "email": "rajvandongen@planet.nl",
+          "type": "Technische staf"
+        }
+      ],
+      "spelers": [
+        {
+          "naam": "Eva van Rooij",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Famke Nijman",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Olivia de Waard",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Saar Camphens",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Freek Laban",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Lenn Belder",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Matthijs de Reus",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Sander Heersping",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Tiemen den Dekker",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Britt Vaartmans",
+          "geslacht": "V"
+        }
+      ],
+      "evaluaties": [
+        {
+          "trainer_naam": "Individueel",
+          "ingediend_op": "2025-12-13T08:24:14.415988+00:00",
+          "plezier": {
+            "score": 4,
+            "toelichting": "Er is plezier, en er wordt veel gelachen. Iedereen is altijd aanwezig en komt graag trainen er valt nooit een onvertogen woord "
+          },
+          "ontwikkeling": {
+            "score": 4,
+            "toelichting": "Het hele team maakt stappen. Echter het verschil tussen de beste spelers en minst goede is te groot. Een aantal zijn toe aan een stap hoger en het zou fijn zijn als die alvast mee kunnen doen bij U17-1. "
+          },
+          "prestatie": {
+            "score": 4,
+            "toelichting": "Veld ondermaats, zaal naar tevredenheid wat ook de sfeer automatisch ten goede komt. Ben wel te afhankelijk van 2 heren bij het maken van doelpunten. Daar verlies ik mijn topwedstrijden op. "
+          },
+          "opmerkingen": null,
+          "coordinator_memo": null,
+          "speler_beoordelingen": [
+            {
+              "naam": "Britt Vaartmans",
+              "niveau": 3,
+              "inzet": 5,
+              "groei": 3,
+              "opmerkingen": "Britt is een dame in de middenmoot. Is in de zaal overgestapt vanuit de J4. Is aanvallend ingesteld en pakt het niveau goed op. Wel een dame die lastig is voor haar zelf en wat meer aandacht nodig heeft. "
+            },
+            {
+              "naam": "Eva van Rooij",
+              "niveau": 5,
+              "inzet": 5,
+              "groei": 3,
+              "opmerkingen": "Is mijn beste dame. Schakelt iedere week de beste dame bij de tegenstander uit. Nadeel is dat ze zelf ook teveel wordt lamgelegd. Ze moet ook veel corrigeren voor de andere dame in het veld verdedigend. Te onzeker nog over haar kunnen. Scorend blijft ze achter momenteel Techniek is goed"
+            },
+            {
+              "naam": "Famke Nijman",
+              "niveau": 3,
+              "inzet": 5,
+              "groei": 4,
+              "opmerkingen": "Sterk in de vang. Gaat haar lengte beter gebruiken waardoor ze steeds onmisbaarder gaat worden. Motorisch is ze nog zoekende en schottechniek is slecht. "
+            },
+            {
+              "naam": "Freek Laban",
+              "niveau": 4,
+              "inzet": 5,
+              "groei": 4,
+              "opmerkingen": "Doet het goed. Zorgt voor gevaar aanvallend en stabiel in verdedigen. Zijn geringe lengte is het enige nadeel waardoor hij onder de korf geen functie heeft. Verder altijd stabiel en tactisch slim. "
+            },
+            {
+              "naam": "Lenn Belder",
+              "niveau": 5,
+              "inzet": 5,
+              "groei": 5,
+              "opmerkingen": "Zit momenteel aan zijn top. Dragende speler. Neemt het hele vak op sleeptouw. Technische goede speler en verdedigend sterk. Toe aan minuten in de U17-1"
+            },
+            {
+              "naam": "Matthijs de Reus",
+              "niveau": 3,
+              "inzet": 5,
+              "groei": 4,
+              "opmerkingen": "Matthijs is een aanwinst onder de korf. Gaat steeds beter zijn fysiek gebruiken. Verdedigend kwetsbaar ook weer door zijn postuur. Maakt wel grote stappen in zijn ontwikkeling. Schot niet in balans. blijft belabberd "
+            },
+            {
+              "naam": "Olivia de Waard",
+              "niveau": 3,
+              "inzet": 5,
+              "groei": 3,
+              "opmerkingen": "Wisselvallig per wedstrijd al heeft dat ook erg met de tegenstander te maken. Verdedigend zwak, aanvallend dienend steeds beter. Niet korf gericht"
+            },
+            {
+              "naam": "Saar Camphens",
+              "niveau": 4,
+              "inzet": 5,
+              "groei": 3,
+              "opmerkingen": "Moet dit jaar meer van komen nu ze niet meer bij Eva in het vak staat. Loopt daar door tegen de beste dames. Verdedigend sterk, fel en duel kracht ondanks haar postuur. Tachtisch goed en leest het spel. \nAanvallend te weinig tot nu toe. Schot te traag en te weinig kracht om op 1 been te schieten buiten de 5 meter. \nPositief ingesteld en aanwinst voor het groepsproces en gezelligheid \n"
+            },
+            {
+              "naam": "Sander Heersping",
+              "niveau": 2,
+              "inzet": 2,
+              "groei": 1,
+              "opmerkingen": "Zit zichzelf in de weg door zijn gedrag. Wil aan de ene kant maar het lukt niet. Zorgt ook bij de trainingen voor onrust wat het groeiproces van het team verstoord. Heeft veel aandacht en correcties nodig. \nTachtisch kan je er weinig in stoppen en is moeilijk coachbaar. \nTechnisch/tactisch onvoldoende voor dit niveau \n"
+            },
+            {
+              "naam": "Tiemen den Dekker",
+              "niveau": 5,
+              "inzet": 5,
+              "groei": 5,
+              "opmerkingen": "Heer voor de toekomst. Koesteren en begeleiden de komende jaren naar de top. Technisch beste speler die ik tot nu toe heb getraind. "
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "team_naam": "U17-1",
+      "staf": [
+        {
+          "naam": "Magda Sempel",
+          "email": "magdasempel@icloud.com",
+          "type": "Overige staf"
+        },
+        {
+          "naam": "Jasper Kleingeld",
+          "email": "jasperkleingeld@hotmail.com",
+          "type": "Technische staf"
+        },
+        {
+          "naam": "Mees Oppe",
+          "email": "mees.oppe@gmail.com",
+          "type": "Technische staf"
+        }
+      ],
+      "spelers": [
+        {
+          "naam": "Demi Engelfriet",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Feline van de Burgt",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Julia Kleingeld",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Noa Stomp",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Diederik Hovestadt",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Jasper Sempel",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Niek Sas",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Timo Pichel",
+          "geslacht": "M"
+        }
+      ],
+      "evaluaties": [
+        {
+          "trainer_naam": "Individueel",
+          "ingediend_op": "2026-01-07T20:40:44.161259+00:00",
+          "plezier": {
+            "score": 4,
+            "toelichting": "Sfeer binnen de groep ervaar ik als goed. Ze doen buiten de korfbal ook veel met elkaar. Ze zitten in de u17-1 dus dat er in het veld af en toe meningsverschillen zijn hoort erbij. Naast het veld is het snel weer klaar."
+          },
+          "ontwikkeling": {
+            "score": 4,
+            "toelichting": "Gaat goed. Ik zie dat het team steeds beter aan het spelen is. Ze zijn steeds meer op elkaar ingespeeld en snappen steeds beter wat van hun verwacht wordt. Als ik het vergelijk met vorig jaar zijn ze al minder afhankelijk van het coachen. Ze spreken elkaar op dingen aan en merken al meer dingen zelf op. Kan natuurlijk nog beter maar daar blijven we aandacht aan geven."
+          },
+          "prestatie": {
+            "score": 4,
+            "toelichting": "Op het veld naar de winnaarspoule, en in de zaal nog in de race voor de play-off. Of we die gaan halen is een tweede, maar zolang mogelijk mee blijven doen was het doel. "
+          },
+          "opmerkingen": null,
+          "coordinator_memo": null,
+          "speler_beoordelingen": [
+            {
+              "naam": "Demi Engelfriet",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "Demi moet dit seizoen de spitsdame in het vak verdedigen en dat doet ze erg goed. Demi heeft het beste schot uit ons team alleen schiet nog veel te weinig Komt omdat ze zelf nog niet goed genoeg vrij komt en omdat ze te lief doet en zich laat wegcijferen. Al met al erg blij hoe ze het dit seizoen doet."
+            },
+            {
+              "naam": "Diederik Hovestadt",
+              "niveau": 3,
+              "inzet": 5,
+              "groei": 3,
+              "opmerkingen": "voor diederik is het zijn 1e jaar in een 1e team. Hij kan in de 1-1 goed vrijkomen maar zijn schot kan nog slordig zijn. In de passing en eigenlijk in zijn hele aanval spel nog net te onrustig. Verdedigend hetzelfde kan er goed bij zitten maar de concentratie valt af en toe weg."
+            },
+            {
+              "naam": "Feline van de Burgt",
+              "niveau": 2,
+              "inzet": 3,
+              "groei": 2,
+              "opmerkingen": "Feline haar grote kwaliteit is dat ze altijd kan schieten. Dit hebben we met de schotklokdruk ook nodig. Alleen is het schot niet stabiel genoeg. Verdedigend is het met fases goed maar kan ook de concentratie verliezen. "
+            },
+            {
+              "naam": "Jasper Sempel",
+              "niveau": 4,
+              "inzet": 5,
+              "groei": 4,
+              "opmerkingen": "Jasper is een speler die je graag in je team wilt hebben. Hij werk heel hard en gaat goed om met feedback. Reboundend erg sterk en kan zo zijn vak laten draaien. Zijn schot is nog wel te onrustig. Verdedigend stabiel voor het lopen tegen de reboundheer."
+            },
+            {
+              "naam": "Julia Kleingeld",
+              "niveau": 5,
+              "inzet": 4,
+              "groei": 5,
+              "opmerkingen": "Julia met afstand onze beste dame. Kan elke rol pakken. Schiet erg goed en kan zichzelf ook vrijspelen, heeft een goede pass in huis en kan rebounden als het nodig is. Ze is af en toe nog wel laks en dat zie je vooral in de verdediging. Verdedigend moet ze dus nog wel aan de slag. Als ze aan de grond blijft gaat het prima. "
+            },
+            {
+              "naam": "Niek Sas",
+              "niveau": 5,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "In essentie onze beste heer. Kan he makkelijkst zichzelf vrijspelen en goed schieten. Verdedigend ook stabiel tegen spitsheren. Alleen mentaal zo zwak als maar zijn kan, en neemt zijn vak daarin mee. Als er even iets mis gaat gaat het mis in zn hoofd en blijft er weinig van zn talent meer over."
+            },
+            {
+              "naam": "Noa Stomp",
+              "niveau": 3,
+              "inzet": 5,
+              "groei": 4,
+              "opmerkingen": "Verdedigend onze beste dame. Kan heel goed plakken en het een spitsdame erg lastig maken. Aanvallend een goede timing voor de steun en doorloopbal. Alleen nog te weinig body om aan schieten toe te komen. Ze kan nog niet schieten buiten de 5m en komt daarbinnen moeilijk vrij voor het schot."
+            },
+            {
+              "naam": "Timo Pichel",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "Ook timo zijn eerste jaar in een 1e team. Erg nuttige heer, hij is lang en pakt veel rebounds. Hij begon het seizoen ook nog met een goed schot maar die begint met de schotklokdruk onrustiger te worden. Verdedigend zijn we bezig dat hij aan de grond blijft, maar daar is nog wel een slag te maken."
+            }
+          ]
+        },
+        {
+          "trainer_naam": "Individueel",
+          "ingediend_op": "2026-01-09T16:01:07.511009+00:00",
+          "plezier": {
+            "score": 4,
+            "toelichting": "Leuke groep die er voor wilt gaan. De onderlinge verhoudingen zijn doorgaans prima. Het zijn pubers. Iedereen komt met plezier naar de training. "
+          },
+          "ontwikkeling": {
+            "score": 4,
+            "toelichting": "Sommige spelers ontwikkelen logischerwijs harder dan anderen. Ik denk dat ze allemaal door ontwikkelen maar je merkt nu wel verschil in tempo van ontwikkeling komen. Heeft ook met inzet en intrinsieke motivatie te maken. Ze zeggen allemaal dat ze in het eerste, PKC of Oranje willen komen. Maar hebben niet allemaal het gedrag ;-) "
+          },
+          "prestatie": {
+            "score": 4,
+            "toelichting": "We staan nu 3e in de hoofdklasse met 5 1e jaars spelers. Dat is voor OW de laatste jaren gewoon een goede prestatie. Zelf had ik gehoopt duidelijker de runner up achter PKC te zijn. We zijn nog in de race voor de kruisfinale dus al met al mogen we trots zijn op waar we staan. De absolute top van NL (PKC, Fortuna, Top (S) etc is gewoon een maatje te groot voor een te groot deel van de spelers."
+          },
+          "opmerkingen": null,
+          "coordinator_memo": null,
+          "speler_beoordelingen": [
+            {
+              "naam": "Demi Engelfriet",
+              "niveau": 4,
+              "inzet": 5,
+              "groei": 4,
+              "opmerkingen": "Heeft een uitstekend schot binnen de 5m en kan erg goed verdedigen. Is snel. Passing kan nog beter. Wordt wel geremd door mentale karakter. Erg onzeker. "
+            },
+            {
+              "naam": "Diederik Hovestadt",
+              "niveau": 2,
+              "inzet": 4,
+              "groei": 3,
+              "opmerkingen": "Heeft moeite mee te komen op het niveau. Vertraagd aanvallend enorm. Verdedigend veel inspringen en veel draaien. We zijn ermee aan de slag maar hij pikt het niet makkelijk op. Hij wil graag maar heeft wel moeite met feedback zo lijkt het. "
+            },
+            {
+              "naam": "Feline van de Burgt",
+              "niveau": 2,
+              "inzet": 2,
+              "groei": 3,
+              "opmerkingen": "Erg snel naar binnen en ook lekker fel. Heeft vorig jaar in b2 verdiend om het in de de u17-1 te laten zien. Qua inzet en groepsdynamiek is Feline binnen het team iemand waar je scherp op moet zijn omdat ze een negatieve stempel kan drukken. Qua techniek het minst van de dames. Heeft ook de te maken met trainigsinzet. Verdedigend zwak en veel plaatsfouten. Neemt veel schoten maar scoort weinig daaruit."
+            },
+            {
+              "naam": "Jasper Sempel",
+              "niveau": 4,
+              "inzet": 5,
+              "groei": 5,
+              "opmerkingen": "Een goede rebounder aan het worden. Haalt alles eruit wat er in zit. Ontwikkelt zich echt hard dit seizoen als je ziet waar hij vandaan komt. Als hij stabiel wordt in t afschieten van korte kansen kan hij nog een stap maken. Wel eigenwijs en moet niet te wijsneuzerig doen tegen teamgenoten. "
+            },
+            {
+              "naam": "Julia Kleingeld",
+              "niveau": 5,
+              "inzet": 5,
+              "groei": 4,
+              "opmerkingen": "Meest scorende dame. Maar kan ook rebounden en passen. Verdedigend steeds stabieler. Doorziet het spel. Wel lang, niet erg snel. Moet explosiever worden in 1e meters en acties."
+            },
+            {
+              "naam": "Niek Sas",
+              "niveau": 5,
+              "inzet": 4,
+              "groei": 5,
+              "opmerkingen": "Vorig jaar veel op aan te maken. Zeker mentaal wat hem in ontwikkeling belemmerde. Dit seizoen vind ik dat hij echt op meerdere vlakken stappen heeft gemaakt. Geen gepiep meer over pijntjes. Steeds stabieler in veel doelpunten maken. Steeds meer duels winnen. Af en toe komen zijn mentale tekortkomingen nog wel bomen. Als hij dat zou overwinnen kan hij echt goed worden."
+            },
+            {
+              "naam": "Noa Stomp",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 3,
+              "opmerkingen": "Kan goed verdedigen en is snel. Wel steeds meer moeite met passing. Schot kan beter. Maar korte kansjes drukt ze met regelmaat af. Dit seizoen komt de actie naar binnen er te weinig uit. "
+            },
+            {
+              "naam": "Timo Pichel",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "Begin seizoen ging Timo heel hard. Maar daarna wel gestagnatiseerd. Met zijn grote lichaam pakt hij aardig wat rebounds, maar brengt daaromheen eigenlijk te weinig. Verdedigen in 1-1 is erg lastig. Schot op trainingen is ok, maar is in wedstrijden technisch drama. Maar, voor iemand die nog nooit op nveau heeft gespeeld en 2 jaar geleden nog in B3 zat, houd hij zich heel goed staande in de hoofdklasse en zeker goede keuze dat hij erin staat. + reboundkracht. Belangrijk deze jongen gemotiveerd te houden en door te ontwikkelen."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "team_naam": "U17-2",
+      "staf": [
+        {
+          "naam": "Tom van de Ven",
+          "email": "tomvandeven.mail@gmail.com",
+          "type": "Technische staf"
+        },
+        {
+          "naam": "Alexander de Boer",
+          "email": "alexdeboer@hotmail.com",
+          "type": "Technische staf"
+        }
+      ],
+      "spelers": [
+        {
+          "naam": "Demi Lindhout",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Esmée de Boer",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Floor Lohuis",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Floortje Jongkind",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Githa Bemer",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Tess Volker",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Jarno Bemer",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Jonas van de Ven",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Kian Vliet",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Thomas Vos",
+          "geslacht": "M"
+        }
+      ],
+      "evaluaties": [
+        {
+          "trainer_naam": "Individueel",
+          "ingediend_op": "2026-01-08T11:54:24.378881+00:00",
+          "plezier": {
+            "score": 4,
+            "toelichting": "Binnen trainingen is de sfeer opperbest en na een wedstrijd thuis even wat drinken  zorgt ook altijd voor goed sfeer. Teamactiviteit was erg leuk met deze groep."
+          },
+          "ontwikkeling": {
+            "score": 4,
+            "toelichting": "Het hele team wordt mondiger en deelt inzichten in het spel met elkaar. Herkennen van situaties is nog wel aandachtspunt maar daar worden leuke stappen gemaakt."
+          },
+          "prestatie": {
+            "score": 3,
+            "toelichting": "Er zit nog wat wisselvalligheid in voorbereiding en wedstrijdbeleving. Voorbereiding voor de wedstrijd zit goede progressie in. Training is nog moment waar fun gemaakt wordt en iets minder wedstrijd beleving is. Gezien wissels die we moeten leveren is prestatie prima."
+          },
+          "opmerkingen": "Leuke groep om te trainen/coachen. Nu we wat verder in het zaalseizoen zitten is de connectie met ons als coaches vertrouwd en dat zorgt voor leuke wisselwerking.",
+          "coordinator_memo": null,
+          "speler_beoordelingen": [
+            {
+              "naam": "Demi Lindhout",
+              "niveau": 4,
+              "inzet": 2,
+              "groei": 2,
+              "opmerkingen": "Ze heeft wedstrijd nodig om motivatie en inzet te tonen. Ze kan het zeker maar heeft echt aansporing nodig om er voor te gaan."
+            },
+            {
+              "naam": "Esmée de Boer",
+              "niveau": 4,
+              "inzet": 5,
+              "groei": 4,
+              "opmerkingen": "Inzet en beleving is heel goed te zien. Kan ook een belemmering zijn soms. Ontwikkeling is ook snel maar kan nog meer voor zichzelf kiezen ipv teambelang volledig voorop te zetten."
+            },
+            {
+              "naam": "Floor Lohuis",
+              "niveau": 3,
+              "inzet": 5,
+              "groei": 3,
+              "opmerkingen": "Gemiddeld qua niveau en ontwikkeling. Gaat vol voor de training. Ze blokkeert zichzelf in haar denken vs. doen."
+            },
+            {
+              "naam": "Floortje Jongkind",
+              "niveau": 3,
+              "inzet": 3,
+              "groei": 4,
+              "opmerkingen": "Laat snel meer zien dan alleen een lange speelster die afvangt. Het geloof dat ze dat kan helpt haar dit ook echt te realiseren. Nog wisselvallig hier in."
+            },
+            {
+              "naam": "Githa Bemer",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 2,
+              "opmerkingen": "Inzet tijdens wedstrijd prima maar tijdens training zal ze niet er vol voor gaan. Sfeer is erg bepalend voor haar."
+            },
+            {
+              "naam": "Jarno Bemer",
+              "niveau": 4,
+              "inzet": 3,
+              "groei": 4,
+              "opmerkingen": "In training zie ik hem vaak een short cut nemen in een oefening. Haalt hier nog zeker niet alles uit. Communicatie is nog iets waar hij aan moet werken. Verdedigend en aanvallend in wedstrijd maakt hij mooie stappen."
+            },
+            {
+              "naam": "Jonas van de Ven",
+              "niveau": 4,
+              "inzet": 4,
+              "groei": 3,
+              "opmerkingen": "Laat echt mooie dingen zien in wedstrijden en zal tijdens training ook echt de uitdaging opzoeken in plaats van uit de weg gaan. Groei begint nu te komen dus nog net op 3 sterren maar is aan groeispurt bezig qua eigen inzicht. Was meer individu maar wordt steeds meer echte teamspeler."
+            },
+            {
+              "naam": "Kian Vliet",
+              "niveau": 4,
+              "inzet": 3,
+              "groei": 3,
+              "opmerkingen": "Scorend stappen gemaakt maar nog wel sterk individueel bezig. Inzet in de groep U17-2 is matig maar omdat we ook met U17-1 samen trainen zie ik hem daar wel de uitdaging opzoeken en serieus trainen. Mentaal wel sterk. Als aanvoerder zou ik meer van hem verwachten. Kan wel leider zijn in wedstrijd maar brengt niet per se het hele team bij elkaar. "
+            },
+            {
+              "naam": "Tess Volker",
+              "niveau": 1,
+              "inzet": 5,
+              "groei": 1,
+              "opmerkingen": "Lang geblesseerd. Nu weer aangehaakt en je kan haar inzet en trouw aan het team  als voorbeeld stellen. Bijna bij alle team meetings en wedstrijden aanwezig geweest tijdens haar blessure. \nNiveau en Groei nog niet te meten."
+            },
+            {
+              "naam": "Thomas Vos",
+              "niveau": 4,
+              "inzet": 2,
+              "groei": 3,
+              "opmerkingen": "Scorend en aanval levend houden steekt hij met kop en schouders er boven uit, Wisselvalligheid in aandacht er bij houden, zeker tijdens training, maar ook in de wedstrijd. Daar groeit hij dit seizoen wel echt in."
+            }
+          ]
+        },
+        {
+          "trainer_naam": "Individueel",
+          "ingediend_op": "2026-01-08T11:54:26.975903+00:00",
+          "plezier": {
+            "score": 4,
+            "toelichting": "Lekker groepje, veel lol samen, ook tussen jongens en meiden onderling en ook buiten het veld. Drankje na thuiswedstrijd en teamactiviteit helpen hier goed bij tov vorig seizoen."
+          },
+          "ontwikkeling": {
+            "score": 4,
+            "toelichting": "Ontwikkeling is zichtbaar en heeft zich doorgezet. \nMet name in samenspel. Afronden met weerstand tijdens trainingen is het aandachtspunt evenals herkennen van situaties. Maar progressie, ze leren steeds meer verder kijken dan eigen spel en verbeteren zich in onderlinge communicatie."
+          },
+          "prestatie": {
+            "score": 4,
+            "toelichting": "Wisselvallig, dat heeft te maken herkennen van situaties + tegenstander niet teveel een spel laten opdringen. \nMaar ook gezien blessures en reservebeurten U17-1 zijn prestaties naar behoren. Trainingsinzet kan nog wel een stuk worden verbeterd en zou helpen in focus wedstrijden."
+          },
+          "opmerkingen": "Lekker team, mooi te zien hoe ze ook groeien als mensen. en groep.",
+          "coordinator_memo": null,
+          "speler_beoordelingen": [
+            {
+              "naam": "Demi Lindhout",
+              "niveau": 4,
+              "inzet": 3,
+              "groei": 2,
+              "opmerkingen": "Aanvallend vooral heel sterk in scores, maar vindt het moeilijk nieuwe zaken te leren. Inzet in wedstrijd goed, trainingen matig"
+            },
+            {
+              "naam": "Esmée de Boer",
+              "niveau": 4,
+              "inzet": 5,
+              "groei": 4,
+              "opmerkingen": "Inzet en teambelang zit zelfs groei nog een beetje in de weg. Potentie in meer scorend vermogen"
+            },
+            {
+              "naam": "Floor Lohuis",
+              "niveau": 3,
+              "inzet": 5,
+              "groei": 3,
+              "opmerkingen": "De wil is er, acceptatie en bewustzijn van eigen kwaliteiten gaan haar nog sneller te groeien."
+            },
+            {
+              "naam": "Floortje Jongkind",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "Nog wisselvallig, qua niveau soms ook onder het gemiddelde.  \nPakt nieuwe zaken zeker, vanuit zelf minder en in uitvoering ook nog wisselvallig. "
+            },
+            {
+              "naam": "Githa Bemer",
+              "niveau": 3,
+              "inzet": 5,
+              "groei": 3,
+              "opmerkingen": "Inzet tijdens wedstrijd over haar grens, in trainingen nog timide.\nGitha is een slimme meid, maar vindt moeilijk / spannend om anders te spelen."
+            },
+            {
+              "naam": "Jarno Bemer",
+              "niveau": 4,
+              "inzet": 3,
+              "groei": 4,
+              "opmerkingen": "Hij wordt zich steeds bewuster van kwaliteiten en leerpunten, daardoor is ook groei versneld. In training haalt hij nog niet alles eruit en in communicatie nog veel verbetering mogelijk."
+            },
+            {
+              "naam": "Jonas van de Ven",
+              "niveau": 4,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "Fysiek supersterk, veel inzicht en goed 1 op 1. Scoren is verbeterpunt.\nStelt zich de afgelopen echt open om sneller te leren en dat is te zien in zijn groei, ook als teamspeler. "
+            },
+            {
+              "naam": "Kian Vliet",
+              "niveau": 4,
+              "inzet": 4,
+              "groei": 3,
+              "opmerkingen": "Mentaal sterk, goed teleurstelling opgepakt. Verder echt een atleet.\nAndere rol in U17-2 en is daardoor meer gaan scoren. Maar nog niet het vermogen en wisselvallig om zijn verbeterpunten echt op te pakken."
+            },
+            {
+              "naam": "Tess Volker",
+              "niveau": 1,
+              "inzet": 5,
+              "groei": 1,
+              "opmerkingen": "Lang geblesseerd geweest aan knie, sinds december weer aan het opbouwen. Daarom op niveau en groei niet te beoordelen.\nDoorzettingsvermogen dat ze niet heeft opgegeven, maar ook bij teammeetings en wedstrijden heel vaak present!"
+            },
+            {
+              "naam": "Thomas Vos",
+              "niveau": 4,
+              "inzet": 3,
+              "groei": 3,
+              "opmerkingen": "Scorend en qua onderscheppingen bepalend voor het team. \nMaar nog veel te impulsief en qua concentratie wisselvallig. Inzet in wedstrijd wel top, bij training matig. Wel groei, steeds bewuster bezig maar concentratie en echte wil om te verbeteren zit hem nog dwars. Vooral nog bezig met de bal, winnen en nog te vaak met zichzelf."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "team_naam": "U19-1",
+      "staf": [
+        {
+          "naam": "Alex van der Klooster",
+          "email": "alexvdk75@gmail.com",
+          "type": "Overige staf"
+        },
+        {
+          "naam": "Lianne vd Stomp-Burgt",
+          "email": "liantje007@hotmail.com",
+          "type": "Technische staf"
+        },
+        {
+          "naam": "Arthijn Muller",
+          "email": "arthyn1302@hotmail.com",
+          "type": "Technische staf"
+        }
+      ],
+      "spelers": [
+        {
+          "naam": "Amber de Haas",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Danique van der Klooster",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Lisa Reuvers",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Merel Manduapessy",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Sophie Kilsdonk",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Jack Zwanenburg",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Jarno Valk",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Maarten Sas",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Ruben Poots",
+          "geslacht": "M"
+        }
+      ],
+      "evaluaties": [
+        {
+          "trainer_naam": "Individueel",
+          "ingediend_op": "2025-12-16T20:39:26.396044+00:00",
+          "plezier": {
+            "score": 3,
+            "toelichting": "Door wisselende resultaten iis het soms lastig. Naar mijn weten is er onderling een prima/leuke verstandshoduing. Door duidelijke communicatie blijft de sfeer goed"
+          },
+          "ontwikkeling": {
+            "score": 3,
+            "toelichting": "Het spel van vorig seizoen is zowel voor de nieuwkomers als de spelers welke vorig seizoen al in dit team zaten anders. Dit kost tijd - er is vooruitgang en bijna toe aan de volgende stap. Hier wordt niet alleen door de trainers maar ook met de spelers naar gekeken"
+          },
+          "prestatie": {
+            "score": 3,
+            "toelichting": "Wisselende resultaat helaas. Degradatie op het veld doet zeer. De eerste 4 wedstrijden winnen in de zaal is goed. Er is dus ruimte voor verbetering. Op zoek naar continuïteit "
+          },
+          "opmerkingen": "Trainingstijd is voor het mooie te kort. Blij met de nieuwe bespreekruimte. Begeleiding vanuit de TC ervaar ik als zeer prettig ;-). ",
+          "coordinator_memo": "-",
+          "speler_beoordelingen": [
+            {
+              "naam": "Amber de Haas",
+              "niveau": 4,
+              "inzet": 5,
+              "groei": 3,
+              "opmerkingen": "Stabiel - gedreven- fanatiek- strijdvaardig- teamplayer- fysiek zwak- blessure gevoelig "
+            },
+            {
+              "naam": "Danique van der Klooster",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 3,
+              "opmerkingen": "Blessure gevoelig- onzeker- gedreven- zelf kritisch- potentie - blije meid- "
+            },
+            {
+              "naam": "Jack Zwanenburg",
+              "niveau": 3,
+              "inzet": 3,
+              "groei": 3,
+              "opmerkingen": "Nonchalant- oogt gelaten- strever- fysiek te kort- inzicht matig- heeft snelheid- maar gebruikt die niet altijd op de juiste momenten- "
+            },
+            {
+              "naam": "Jarno Valk",
+              "niveau": 4,
+              "inzet": 4,
+              "groei": 3,
+              "opmerkingen": "Gedreven- winnaar- emotioneel zwak- scorend vermogen- leider- pro actief - introvert "
+            },
+            {
+              "naam": "Lisa Reuvers",
+              "niveau": 4,
+              "inzet": 5,
+              "groei": 3,
+              "opmerkingen": "Gedreven- fanatiek- zelf kritisch- winnaar- potentie- verdedigend matig- motorisch matig - "
+            },
+            {
+              "naam": "Maarten Sas",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 3,
+              "opmerkingen": "Gedreven- punctueel - teamplayer- emotioneel zwak- leergierig- stuurbaar- onrustig- balvaardig "
+            },
+            {
+              "naam": "Merel Manduapessy",
+              "niveau": 2,
+              "inzet": 3,
+              "groei": 2,
+              "opmerkingen": "Onzeker- afwachtend- teamplayer- ondersteunend dame- verdedigend zwak- behoudend - lief"
+            },
+            {
+              "naam": "Ruben Poots",
+              "niveau": 4,
+              "inzet": 5,
+              "groei": 4,
+              "opmerkingen": "Harde werker- inzicht - teamplayer- leergierig- leider- temide- verdedigend sterk- voor zijn lengte goede rebounder "
+            },
+            {
+              "naam": "Sophie Kilsdonk",
+              "niveau": 3,
+              "inzet": 3,
+              "groei": 3,
+              "opmerkingen": "Denker- introvert - balvaardig- goede inzicht - fysieke inzet erg laag- goed schot- traag "
+            }
+          ]
+        },
+        {
+          "trainer_naam": "Individueel",
+          "ingediend_op": "2025-12-29T07:05:11.80611+00:00",
+          "plezier": {
+            "score": 3,
+            "toelichting": "We hebben wisselende resultaten gehaald waarbij voor een aantal het plezier wel afneemt. Over het algemeen heeft deze groep het leuk met elkaar en maken ze vooral buiten het korfbalveld plezier met elkaar. Plezier in het veld kan soms beter, communiceren in het veld is hierbij nog steeds een punt van aandacht. "
+          },
+          "ontwikkeling": {
+            "score": 3,
+            "toelichting": "Het heeft tijd gekost voordat er binnen het hele team ontwikkeling zichtbaar was. Individueel maakten enkele spelers wel stappen, maar op teamniveau met name in het korfbalspel en de onderlinge communicatie duurde dit langer. Al zien we nu in de zaal hierin wel vooruitgang. "
+          },
+          "prestatie": {
+            "score": 3,
+            "toelichting": "Helaas erg wisselend. Na degradatie buiten pakte we de zaalcompetitie goed op. Maar ook daarin we nog te wisselvallig. We zijn op zoek naar meer continuïteit bij de spelers, zodat zij ook tegen mindere tegenstanders hun eigen spel blijven spelen. Dit heeft alles te maken met de mentale weerbaarheid van de spelers: volwassen met elkaar communiceren en situaties goed blijven oplossen. Wanneer zij hierin groeien, zullen zij beter gaan presteren."
+          },
+          "opmerkingen": "Verder geen opmerkingen. De samenwerking binnen de staf en met de TC verloopt naar tevredenheid. Op dit moment doen zich geen vervelende situaties voor en wanneer deze zich, zoals eerder, wel hebben voorgedaan, zijn ze in goed overleg met de TC opgelost. Al met al zijn we hier zeer tevreden over.",
+          "coordinator_memo": null,
+          "speler_beoordelingen": [
+            {
+              "naam": "Amber de Haas",
+              "niveau": 4,
+              "inzet": 5,
+              "groei": 3,
+              "opmerkingen": "Als Amber kan spelen, is zij een gedreven en stabiele korfballer. Ze is erg fanatiek en werkt hard zodra zij in het veld staat. Amber begrijpt het spel goed en was één van de weinigen die het spel dat wij wilden spelen direct doorhad. Helaas is zij fysiek kwetsbaar en kampt zij regelmatig met blessures."
+            },
+            {
+              "naam": "Danique van der Klooster",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 3,
+              "opmerkingen": "Ook Danique heeft lange tijd last gehad van een blessure en is fysiek gevoelig voor pijntjes. Ze is erg onzeker en kritisch naar zichzelf. Tegelijkertijd is ze zeer gedreven op trainingen en staat ze er altijd met veel enthousiasme. Het spel en het inzicht vindt ze nog lastig, maar er zit zeker potentie in haar."
+            },
+            {
+              "naam": "Jack Zwanenburg",
+              "niveau": 3,
+              "inzet": 3,
+              "groei": 3,
+              "opmerkingen": "Jack valt ons enigszins tegen. Hij is wel een echte strever, maar vooral gericht op zichzelf. Hij komt nonchalant over, wat voortkomt uit onzekerheid. Zijn spel en spelinzicht mogen zich nog duidelijk verder ontwikkelen. Daarnaast is hij fysiek niet heel sterk en is rebounden een belangrijk aandachtspunt. Over het algemeen beschikt hij over het beste schot van het team, maar zowel zijn schot als zijn snelheid zet hij regelmatig op de verkeerde momenten in. Hij mag zich daarom nog duidelijk volwassener ontwikkelen."
+            },
+            {
+              "naam": "Jarno Valk",
+              "niveau": 4,
+              "inzet": 5,
+              "groei": 4,
+              "opmerkingen": "Jarno is enorm gedreven, zowel in het veld als op trainingen. Soms is hij zelfs zo gedreven dat hij zijn medespelers verbaal voorbijgaat. Emotioneel is hij echt nog kwetsbaar. Hij wil graag een echte leider zijn, maar op dit moment is dat voor dit team niet altijd passend. Naast deze mentale aandachtspunten beschikt Jarno over veel kwaliteiten, zoals goed korfbalinzicht en scorend vermogen, die zich tot nu toe positief ontwikkelen."
+            },
+            {
+              "naam": "Lisa Reuvers",
+              "niveau": 4,
+              "inzet": 5,
+              "groei": 3,
+              "opmerkingen": "Lisa is erg gedreven en fanatiek. Ze is kritisch, met name richting anderen. Haar ontwikkeling verloopt helaas wat geleidelijk, al is er verdedigend wel duidelijke verbetering zichtbaar. Op mentaal vlak en in haar korfbalinzicht is nog veel winst te behalen"
+            },
+            {
+              "naam": "Maarten Sas",
+              "niveau": 3,
+              "inzet": 5,
+              "groei": 3,
+              "opmerkingen": "Maarten is een gedreven speler die erg punctueel en goed stuurbaar is. Hij voert zijn taken correct uit en is leergierig, wat hem een fanatieke speler maakt. Toch is hij nog vaak onrustig, wat hem regelmatig in de weg zit. Maarten is zeer balvaardig en kan goed schieten; wanneer hij dit beter weet te doseren en te verbeteren, zal hij nog meer tot zijn recht komen. Hij is bovendien nog jong en heeft potentie."
+            },
+            {
+              "naam": "Merel Manduapessy",
+              "niveau": 2,
+              "inzet": 3,
+              "groei": 2,
+              "opmerkingen": "Ook Merel is erg onzeker en afwachtend. Ze is een lieve en leuke speelster om in het team te hebben. Haar rol als ondersteunende dame vervult zij op zich prima, maar tot nu toe vinden wij haar prestaties op meerdere vlakken tegenvallen. Haar groei en ontwikkeling staan momenteel stil; hier zijn wij individueel met haar mee bezig."
+            },
+            {
+              "naam": "Ruben Poots",
+              "niveau": 4,
+              "inzet": 5,
+              "groei": 4,
+              "opmerkingen": "Ruben is een harde werker met veel korfbalinzicht en begrijpt het spel goed. Wel is hij wat timide en onzeker. Wanneer hij zijn inzicht meer durft te delen en beter communiceert binnen de groep, kan hij nog beter worden. Zijn aandachtspunten liggen vooral bij communicatie en zijn schot. Als hij hieraan werkt, heeft deze jonge speler veel potentie. Ondanks zijn kleine postuur heeft hij veel reboundkracht en verdedigend presteert hij erg goed."
+            },
+            {
+              "naam": "Sophie Kilsdonk",
+              "niveau": 3,
+              "inzet": 3,
+              "groei": 3,
+              "opmerkingen": "Sophie is echt een denker met goed korfbalinzicht en is zeer balvaardig. Tegelijkertijd is zij traag, zowel mentaal als fysiek, en fysiek ook kwetsbaar. Met haar hebben we veel gesprekken gevoerd om hieraan te werken. We zien dat Sophie zich wel ontwikkelt, al verloopt deze ontwikkeling nog geleidelijk."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "team_naam": "U19-2",
+      "staf": [
+        {
+          "naam": "Joël Wietses",
+          "email": "joelwietses@gmail.com",
+          "type": "Technische staf"
+        },
+        {
+          "naam": "Alex van der Klooster",
+          "email": "alexvdk75@gmail.com",
+          "type": "Overige staf"
+        },
+        {
+          "naam": "Jens Lohuis",
+          "email": "jens.lohuis@outlook.com",
+          "type": "Technische staf"
+        }
+      ],
+      "spelers": [
+        {
+          "naam": "Benthe van der Linden",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Doeska Voorbij",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Elize van de Burgt",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Stella Verboom",
+          "geslacht": "V"
+        },
+        {
+          "naam": "Dani Heersping",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Freek van Dongen",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Onno den Dekker",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Tijn Bäcker",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Tijn Camphens",
+          "geslacht": "M"
+        },
+        {
+          "naam": "Tycho Vliet",
+          "geslacht": "M"
+        }
+      ],
+      "evaluaties": [
+        {
+          "trainer_naam": "Individueel",
+          "ingediend_op": "2026-01-05T18:12:09.991166+00:00",
+          "plezier": {
+            "score": 4,
+            "toelichting": "goede sfeer, zeker als we met elkaar hard hebben gewerkt. team is af en toe wel wat wankel bij een tegenslag."
+          },
+          "ontwikkeling": {
+            "score": 4,
+            "toelichting": "ik zie goede ontwikkeling. graag zou ik in het nieuwe jaar wel wat meer willen finetunen wat betreft de persoonlijke ontwikkeling van de spelers."
+          },
+          "prestatie": {
+            "score": 5,
+            "toelichting": "kampioen op het veld en een eerste plek in de zaal. de prestaties zijn erg goed en conform onze verwachtingen en hoop."
+          },
+          "opmerkingen": null,
+          "coordinator_memo": null,
+          "speler_beoordelingen": [
+            {
+              "naam": "Benthe van der Linden",
+              "niveau": 4,
+              "inzet": 3,
+              "groei": 4,
+              "opmerkingen": "heel erg waardevol voor het team. maakt grote stappen. helaas veel te kampen met blessures"
+            },
+            {
+              "naam": "Dani Heersping",
+              "niveau": 3,
+              "inzet": 3,
+              "groei": 4,
+              "opmerkingen": "Dani is snel afgeleid en begrijpt niet altijd alles. Dat is af en toe best lastig. wel is hij een hele bepalende speler en als je hem 1 opdracht geeft voert hij die goed uit. zijn schot wordt met de week beter en onder de paal maakt hij grote stappen. als we er iets meer korfbalintelligentie inkrijgen komt het helemaal goed."
+            },
+            {
+              "naam": "Doeska Voorbij",
+              "niveau": 4,
+              "inzet": 4,
+              "groei": 3,
+              "opmerkingen": "Doeska is best wel afhankelijk van spelers om haar heen. bij de U19-1 speelt ze altijd heel goed. Bij ons moet ze toch best wel aangespeeld worden. zou graag willen dat zich gaat ontwikkelen tot een speler een vak kan laten draaien. "
+            },
+            {
+              "naam": "Elize van de Burgt",
+              "niveau": 3,
+              "inzet": 3,
+              "groei": 4,
+              "opmerkingen": "Elize speelt eigenlijk altijd stabiel. Vooral verdedigend maakt ze grote stappen. Aanvallend mag ze meer laten zien. ik zou graag zien dat ze slimmer gaat zijn met haar tempo en zichzelf gaat kunnen vrijspelen."
+            },
+            {
+              "naam": "Freek van Dongen",
+              "niveau": 3,
+              "inzet": 2,
+              "groei": 2,
+              "opmerkingen": "Freek heeft er niet altijd zin meer in en dat is jammer. Dit houdt zijn groei absoluut tegen. hij kan zichzelf goed vrijspelen maar mist de afronding"
+            },
+            {
+              "naam": "Onno den Dekker",
+              "niveau": 5,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "Onno speelt erg goed en is belangrijk voor ons team. Hij is een absolute all rounder en dat is heel erg belangrijk. ik hoop dat we veel in hem kunnen investeren omdat hij in de toekomst erg belangrijk gaat kunnen zijn voor de club. Het zou wel goed zijn als hij wat meer aansluiting zou vinden bij de ploeg en hij meer zou communiceren"
+            },
+            {
+              "naam": "Stella Verboom",
+              "niveau": 2,
+              "inzet": 4,
+              "groei": 2,
+              "opmerkingen": "Stella presteert helaas ondergemiddeld. we zijn wel hard aan het werk om er zo veel mogelijk uit te krijgen. we zien heel duidelijk dat ze het inzicht heeft. Ze weet hoe het vak moet spelen en beschrijft goed wat er moet gebeuren. haar eigen looplijnen zijn alleen niet goed genoeg en ze kan een vak soms erg ophouden. Als ze slimmer gaat spelen met meer snelheid gaat ze een hele goede motor kunnen zijn voor haar vak. "
+            },
+            {
+              "naam": "Tijn Bäcker",
+              "niveau": 5,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "Tijn is heel erg belangrijk en hikt echt tegen het niveau aan van de U19-1. hier zou hij zichzelf ook beter kunnen ontwikkelen. Tijn zou nog beter kunnen worden in zijn rol in de groep. Ik zou hem nog meer zijn verantwoordelijkheid willen zien nemen en mensen zien helpen."
+            },
+            {
+              "naam": "Tijn Camphens",
+              "niveau": 4,
+              "inzet": 4,
+              "groei": 3,
+              "opmerkingen": "In tijn zit wel heel veel potentie. hij is erg aanvallend ingesteld, hij zou zich iets meer mogen focussen op de allround aspecten van het spel. "
+            },
+            {
+              "naam": "Tycho Vliet",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 4,
+              "opmerkingen": "Tycho werkt hard en doet zn best voor het team. hij durft zichzelf weg te cijferen en maakt grote stappen onder de paal"
+            }
+          ]
+        },
+        {
+          "trainer_naam": "Individueel",
+          "ingediend_op": "2026-01-08T15:17:33.443097+00:00",
+          "plezier": {
+            "score": 4,
+            "toelichting": "het is een erg gezonde sfeer, er word niemand buitengesloten er is natuurlijk wel wat conflict op het veld. Sommige vinden elkaar slecht etc."
+          },
+          "ontwikkeling": {
+            "score": 3,
+            "toelichting": "De ene gaat meer vooruit dan de ander, zo gaan Elise en Benthe heel erg vooruit, maar blijven Stella en Dani soms een beetje achter"
+          },
+          "prestatie": {
+            "score": 4,
+            "toelichting": "We zijn gepromoveerd en weer een kampioenscandidaat dus dat gaat wel goed volgens mij. Op individueel niveau verschilt het natuurlijk"
+          },
+          "opmerkingen": null,
+          "coordinator_memo": null,
+          "speler_beoordelingen": [
+            {
+              "naam": "Benthe van der Linden",
+              "niveau": 5,
+              "inzet": 3,
+              "groei": 5,
+              "opmerkingen": "Zij is naar mijn idee het meeste gegroeid van de dames. Ze is nu erg goed alleen ze heeft wel vaak pijntjes waar ze niet heel duidelijk over is, ze valt vaak uit, maar doet dan ook heel snel weer mee."
+            },
+            {
+              "naam": "Dani Heersping",
+              "niveau": 3,
+              "inzet": 4,
+              "groei": 2,
+              "opmerkingen": "Dani groeit niet echt door weinig concentratie, maar hij doet wel zijn best en is met vlagen erg goed onder de vang"
+            },
+            {
+              "naam": "Doeska Voorbij",
+              "niveau": 5,
+              "inzet": 2,
+              "groei": 2,
+              "opmerkingen": "Doeska is goed en doet wel haar best op het veld, maar ze groeit niet echt wat volgens mij komt omdat ze de B1 gewend is en dit een beetje onder haar niveau vind."
+            },
+            {
+              "naam": "Elize van de Burgt",
+              "niveau": 3,
+              "inzet": 5,
+              "groei": 5,
+              "opmerkingen": "Heel erg gegroeid, doet altijd haar best en is gewoon goed."
+            },
+            {
+              "naam": "Freek van Dongen",
+              "niveau": 4,
+              "inzet": 3,
+              "groei": 3,
+              "opmerkingen": "groeit een beetje, maar is vaak afwezig dus daarom een wat lage inzet, wel een betrouwbare kracht op het veld"
+            },
+            {
+              "naam": "Onno den Dekker",
+              "niveau": 5,
+              "inzet": 3,
+              "groei": 5,
+              "opmerkingen": "lijkt niet alsof hij bijzonder veel zijn best doet maar is fantastisch goed geworden."
+            },
+            {
+              "naam": "Stella Verboom",
+              "niveau": 1,
+              "inzet": 5,
+              "groei": 3,
+              "opmerkingen": "Stella doet haar best maar blijft op het gebied van groei en niveau wel achter"
+            },
+            {
+              "naam": "Tijn Bäcker",
+              "niveau": 5,
+              "inzet": 3,
+              "groei": 3,
+              "opmerkingen": "Is gewoon heel goed en betrouwbaar. Heel stabiel maar groeit niet bijzonder veel meer"
+            },
+            {
+              "naam": "Tijn Camphens",
+              "niveau": 4,
+              "inzet": 5,
+              "groei": 2,
+              "opmerkingen": "Blijft een beetje hangen maar is wel een goede verdediger en creeert veel kansen, wel heel vervelend op het veld"
+            },
+            {
+              "naam": "Tycho Vliet",
+              "niveau": 3,
+              "inzet": 5,
+              "groei": 4,
+              "opmerkingen": "doet zijn best en groeit erg, begon als zwakke schakel maar dat valt nu erg mee"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

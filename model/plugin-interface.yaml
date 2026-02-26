@@ -1,0 +1,175 @@
+# Plugin Interface — Statistisch Jeugdmodel c.k.v. Oranje Wit
+# Andere projecten lezen dit bestand om het model te gebruiken.
+
+plugin:
+  naam: "statistisch-jeugdmodel"
+  versie: "1.3"
+  bron: "model/jeugdmodel.yaml"
+  beleidsdocument: "docs/technisch-beleid-jeugdmodel.md"
+  visualisatie: "model/visualisatie-spec.yaml"
+  knkv_api: "docs/knkv-api.md"
+
+# --- Databronnen ---
+# De plugin combineert data uit twee bronnen:
+databronnen:
+  sportlink:
+    beschrijving: "CSV-exports uit Sportlink ledenadministratie"
+    bestanden:
+      - naam: "leden"
+        formaat: "CSV (;-gescheiden, dubbele aanhalingstekens)"
+        kolommen:
+          - "Naam"
+          - "Roepnaam"
+          - "Voorletter(s)"
+          - "Tussenvoegsel(s)"
+          - "Achternaam"
+          - "Lidsoort"
+          - "Rel. code"
+          - "Geslacht"
+          - "Geb.dat."
+          - "E-mailadres"
+          - "Leeftijdscategorie"
+          - "Lokale teams"
+          - "Spelactiviteiten (vereniging)"
+          - "Spelactiviteiten (bond)"
+          - "Registratie in Sportlink"
+          - "Lid sinds"
+          - "Afmelddatum"
+      - naam: "teams"
+        formaat: "CSV (;-gescheiden, dubbele aanhalingstekens)"
+        kolommen:
+          - "Team"
+          - "Teamsoort"
+          - "Teamrol"
+          - "Naam"
+          - "Lidsoort"
+          - "Rel. code"
+          - "Geb.dat."
+          - "E-mailadres"
+    join_sleutel: "Rel. code"
+
+  knkv_api:
+    beschrijving: "Publieke KNKV Mijn Korfbal API"
+    documentatie: "docs/knkv-api.md"
+    base_url: "https://api-mijn.korfbal.nl/api/v2/"
+    club_id: "NCX19J3"
+    endpoints:
+      - pad: "/clubs/{club_id}/teams"
+        beschrijving: "Alle teams met ref_id en leeftijdscategorie"
+      - pad: "/clubs/{club_id}/teams/{team_id}"
+        beschrijving: "Teamdetail met pool-naam en sport-type"
+    levert:
+      - "team-kleur mapping (uit pool-naam prefix)"
+      - "competitieniveau (uit pool-naam prefix)"
+      - "spelvorm: veld of zaal (uit sport.name)"
+
+# --- Input-contract ---
+# Externe projecten leveren data in dit formaat:
+input:
+  ledenlijst:
+    formaat: "JSON (verrijkt snapshot)"
+    locatie: "data/leden/snapshots/YYYY-MM-DD.json"
+    verplichte_velden:
+      - naam: "geboortejaar"
+        type: "integer"
+        voorbeeld: 2012
+      - naam: "geslacht"
+        type: "string"
+        waarden: ["M", "V"]
+      - naam: "seizoen"
+        type: "string"
+        voorbeeld: "2025-2026"
+    optionele_velden:
+      - naam: "rel_code"
+        type: "string"
+        beschrijving: "Uniek Sportlink-ID"
+      - naam: "roepnaam"
+        type: "string"
+      - naam: "achternaam"
+        type: "string"
+      - naam: "tussenvoegsel"
+        type: "string"
+      - naam: "lidsoort"
+        type: "string"
+        waarden: ["bondslid", "verenigingslid"]
+      - naam: "spelactiviteit"
+        type: "string"
+        waarden: ["korfbal", "niet-spelend", "biljart", "kangoeroe-klup", "algemeen-reserve"]
+      - naam: "lid_sinds"
+        type: "string"
+        formaat: "YYYY-MM-DD"
+      - naam: "team"
+        type: "string"
+        beschrijving: "Huidig team (bijv. J6, U15-1, 3)"
+      - naam: "categorie"
+        type: "string"
+        waarden: ["a", "b"]
+      - naam: "kleur"
+        type: "string"
+        waarden: ["Blauw", "Groen", "Geel", "Oranje", "Rood"]
+        beschrijving: "Alleen bij B-categorie, afgeleid uit KNKV API pool-naam"
+      - naam: "a_categorie"
+        type: "string"
+        waarden: ["U15", "U17", "U19"]
+        beschrijving: "Berekend uit geboortejaar + seizoen"
+      - naam: "a_jaars"
+        type: "string"
+        waarden: ["1e-jaars", "2e-jaars"]
+      - naam: "ow_code"
+        type: "string"
+        beschrijving: "Stabiele team-identiteit per seizoen (bijv. R1, O2, Gr3). Wijzigt niet binnen een seizoen, ook als J-nummers verschuiven door KNKV-hernummering."
+
+# --- Output-contract ---
+# Het model levert deze berekeningen:
+output:
+  cohorte_telling:
+    beschrijving: "Aantal leden per geboortejaar x geslacht"
+    formaat: "tabel (geboortejaar, geslacht, aantal)"
+
+  categorie_analyse:
+    beschrijving: "Per A-categorie: vulgraad, status, gap"
+    formaat: "tabel (categorie, gender, actual, target, vulgraad, status)"
+
+  signalering:
+    beschrijving: "Stoplichtmodel per categorie x gender"
+    statussen: ["kritiek", "aandacht", "op_koers"]
+
+  pipeline:
+    beschrijving: "Vooruitblik 2-6 jaar: verwachte vulgraad per toekomstige categorie"
+    formaat: "tabel (toekomstig_seizoen, categorie, gender, verwacht_aantal, vulgraad, status)"
+
+  trend:
+    beschrijving: "Vergelijking over seizoenen heen"
+    vereist: "meerdere seizoenen aan input-data"
+    formaat: "tabel (seizoen, categorie, gender, vulgraad)"
+
+  team_overzicht:
+    beschrijving: "Samenstelling per team met kleur en competitieniveau"
+    formaat: "tabel (team, categorie, kleur, niveau, spelers_M, spelers_V, gem_leeftijd)"
+
+  retentie_analyse:
+    beschrijving: "Retentie per leeftijdsjaar, totaal en M/V"
+    locatie: "data/aggregaties/analyse-per-leeftijd.json"
+    formaat: "JSON per leeftijd: aanwezig, terug, retentie (alle seizoenen + betrouwbaar)"
+
+  instroom_uitstroom:
+    beschrijving: "Instroom en uitstroom per seizoen en per leeftijd"
+    locatie: "data/aggregaties/instroom-uitstroom-analyse.json"
+    formaat: "JSON met per_seizoen en per_leeftijd arrays"
+
+  spelerspaden:
+    beschrijving: "Longitudinale spelerspaden over 16 seizoenen (2010-2026)"
+    locatie: "data/spelers/spelerspaden.json"
+    formaat: "JSON array met per speler: seizoenen, teams, geboortedatum, geslacht"
+
+# --- Configuratie ---
+# Externe projecten kunnen deze parameters overriden:
+configuratie:
+  talent_ratio:
+    default: 0.225
+    range: [0.20, 0.30]
+    beschrijving: "Kan worden aangepast per vereniging of per categorie"
+  signalering_drempels:
+    kritiek: 0.60
+    op_koers: 0.80
+    beschrijving: "Kan worden verscherpt of versoepeld"

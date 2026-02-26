@@ -1,0 +1,104 @@
+{
+  "_meta": {
+    "datum": "2026-02-23",
+    "seizoen": "2025-2026"
+  },
+  "data": [
+    {
+      "kleur": "Hoofdklasse",
+      "categorie": "a",
+      "teams": 3,
+      "spelers_M": 13,
+      "spelers_V": 12,
+      "totaal": 25
+    },
+    {
+      "kleur": "Reserve Overgangsklasse",
+      "categorie": "a",
+      "teams": 2,
+      "spelers_M": 9,
+      "spelers_V": 10,
+      "totaal": 19
+    },
+    {
+      "kleur": "Reserve 2e klasse",
+      "categorie": "a",
+      "teams": 1,
+      "spelers_M": 5,
+      "spelers_V": 6,
+      "totaal": 11
+    },
+    {
+      "kleur": "S-klasse",
+      "categorie": "a",
+      "teams": 2,
+      "spelers_M": 10,
+      "spelers_V": 7,
+      "totaal": 17
+    },
+    {
+      "kleur": "Rood",
+      "categorie": "b",
+      "teams": 3,
+      "spelers_M": 10,
+      "spelers_V": 18,
+      "totaal": 28
+    },
+    {
+      "kleur": "Oranje",
+      "categorie": "b",
+      "teams": 3,
+      "spelers_M": 12,
+      "spelers_V": 19,
+      "totaal": 31
+    },
+    {
+      "kleur": "Geel",
+      "categorie": "b",
+      "teams": 4,
+      "spelers_M": 20,
+      "spelers_V": 16,
+      "totaal": 36
+    },
+    {
+      "kleur": "Groen",
+      "categorie": "b",
+      "teams": 4,
+      "spelers_M": 6,
+      "spelers_V": 14,
+      "totaal": 20
+    },
+    {
+      "kleur": "Blauw",
+      "categorie": "b",
+      "teams": 4,
+      "spelers_M": 13,
+      "spelers_V": 12,
+      "totaal": 25
+    },
+    {
+      "kleur": "1e klasse",
+      "categorie": "a",
+      "teams": 1,
+      "spelers_M": 4,
+      "spelers_V": 6,
+      "totaal": 10
+    },
+    {
+      "kleur": "Overgangsklasse",
+      "categorie": "a",
+      "teams": 1,
+      "spelers_M": 4,
+      "spelers_V": 5,
+      "totaal": 9
+    },
+    {
+      "kleur": "2e klasse",
+      "categorie": "a",
+      "teams": 1,
+      "spelers_M": 6,
+      "spelers_V": 4,
+      "totaal": 10
+    }
+  ]
+}
