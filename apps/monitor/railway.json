@@ -1,0 +1,11 @@
+{
+  "$schema": "https://railway.com/railway.schema.json",
+  "build": {
+    "builder": "NIXPACKS",
+    "buildCommand": "cd ../.. && pnpm db:generate && pnpm --filter @oranje-wit/monitor build"
+  },
+  "deploy": {
+    "startCommand": "cd ../.. && pnpm --filter @oranje-wit/monitor start",
+    "healthcheckPath": "/"
+  }
+}
