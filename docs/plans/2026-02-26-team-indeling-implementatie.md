@@ -216,12 +216,12 @@ git commit -m "feat: spelerstatus-overzicht in blauwdruk"
 
 ---
 
-## Task 4: Blauwdruk — twijfelpunten
+## Task 4: Blauwdruk — keuzes
 
-Het cruciale concept: twijfelpunten vastleggen die in scenario's worden uitgespeeld.
+Het cruciale concept: keuzes vastleggen die in scenario's worden uitgespeeld.
 
 **Files:**
-- Create: `src/components/blauwdruk/TwijfelpuntenEditor.tsx`
+- Create: `src/components/blauwdruk/KeuzesEditor.tsx`
 - Modify: `src/app/blauwdruk/actions.ts`
 - Modify: `src/app/blauwdruk/page.tsx`
 - Modify: `packages/database/prisma/schema.prisma` (nieuw veld op Blauwdruk)
@@ -231,7 +231,7 @@ Het cruciale concept: twijfelpunten vastleggen die in scenario's worden uitgespe
 Voeg toe aan het `Blauwdruk` model in `packages/database/prisma/schema.prisma`:
 
 ```prisma
-twijfelpunten Json? // Array van { id, vraag, opties: string[] }
+keuzes Json? // Array van { id, vraag, opties: string[] }
 ```
 
 Run: `pnpm db:generate` en `pnpm db:push`.
@@ -240,60 +240,60 @@ Run: `pnpm db:generate` en `pnpm db:push`.
 
 Add to `actions.ts`:
 ```typescript
-interface Twijfelpunt {
+interface Keuze {
   id: string;
   vraag: string;       // "Hoeveel U15-teams?"
   opties: string[];    // ["1 team", "2 teams"]
 }
 
-export async function updateTwijfelpunten(blauwdrukId: string, twijfelpunten: Twijfelpunt[]) { ... }
+export async function updateKeuzes(blauwdrukId: string, keuzes: Keuze[]) { ... }
 ```
 
-**Step 3: TwijfelpuntenEditor component**
+**Step 3: KeuzesEditor component**
 
-Create `src/components/blauwdruk/TwijfelpuntenEditor.tsx`:
+Create `src/components/blauwdruk/KeuzesEditor.tsx`:
 - Client component
-- Lijst van twijfelpunten, elk met:
+- Lijst van keuzes, elk met:
   - Vraagtekst (editable)
   - Opties als chips (toevoegen/verwijderen)
-- "Nieuw twijfelpunt" knop
+- "Nieuw keuze" knop
 - Auto-save via Server Action
 
 **Step 4: Integreer in blauwdruk pagina**
 
-Voeg `<TwijfelpuntenEditor>` toe aan de blauwdruk-pagina.
+Voeg `<KeuzesEditor>` toe aan de blauwdruk-pagina.
 
 **Step 5: Verifieer**
 
 Run: `pnpm dev:ti`, navigeer naar `/blauwdruk`.
-Expected: twijfelpunten toevoegen/bewerken/verwijderen werkt, opties flexibel.
+Expected: keuzes toevoegen/bewerken/verwijderen werkt, opties flexibel.
 
 **Step 6: Commit**
 
 ```bash
 git add packages/database/ apps/team-indeling/src/
-git commit -m "feat: twijfelpunten in blauwdruk"
+git commit -m "feat: keuzes in blauwdruk"
 ```
 
 ---
 
 ## Task 5: Scenario — datamodel en basis
 
-Scenario-aanmaak: kies waarden voor twijfelpunten, tool berekent teamstructuur.
+Scenario-aanmaak: kies waarden voor keuzes, tool berekent teamstructuur.
 
 **Files:**
 - Create: `src/app/scenarios/page.tsx` (overzichtspagina)
 - Create: `src/app/scenarios/[id]/page.tsx` (scenario-editor)
 - Create: `src/app/scenarios/actions.ts`
 - Create: `src/lib/teamstructuur.ts` (berekening)
-- Modify: `packages/database/prisma/schema.prisma` (twijfelpuntKeuzes op Scenario)
+- Modify: `packages/database/prisma/schema.prisma` (keuzeKeuzes op Scenario)
 
 **Step 1: Schema uitbreiden**
 
 Voeg toe aan het `Scenario` model:
 
 ```prisma
-twijfelpuntKeuzes Json? // { [twijfelpuntId]: gekozenOptie }
+keuzeKeuzes Json? // { [keuzeId]: gekozenOptie }
 ```
 
 Run: `pnpm db:generate` en `pnpm db:push`.
@@ -314,14 +314,14 @@ interface TeamVoorstel {
 // Berekent optimale teamstructuur op basis van beschikbare leden
 export function berekenTeamstructuur(
   spelers: SpelerData[],
-  twijfelpuntKeuzes: Record<string, string>,
+  keuzeKeuzes: Record<string, string>,
   kaders: Record<string, unknown>
 ): TeamVoorstel[]
 ```
 
 Logica:
 - Groepeer spelers per geboortejaar + geslacht
-- Bereken op basis van kaders en twijfelpuntKeuzes hoeveel A-teams en B-teams
+- Bereken op basis van kaders en keuzeKeuzes hoeveel A-teams en B-teams
 - Wijs kleuren toe op basis van gemiddelde leeftijd
 - Senioren splitsen in A/B op basis van keuzes
 - Retourneer lijst met voorgestelde teams
@@ -333,12 +333,12 @@ Create `src/app/scenarios/actions.ts`:
 ```typescript
 "use server";
 
-// Maak nieuw scenario aan met twijfelpuntkeuzes
+// Maak nieuw scenario aan met keuzekeuzes
 export async function createScenario(
   blauwdrukId: string,
   naam: string,
   toelichting: string,
-  twijfelpuntKeuzes: Record<string, string>
+  keuzeKeuzes: Record<string, string>
 ) { ... }
 
 // Haal scenario op met teams en spelers
@@ -354,7 +354,7 @@ Create `src/app/scenarios/page.tsx`:
 - Lijst van bestaande scenario's met naam, status, aantal teams, validatiestatus
 - "Nieuw scenario" knop → dialoog:
   - Naam invoeren
-  - Per twijfelpunt een keuze maken (radio buttons)
+  - Per keuze een keuze maken (radio buttons)
   - Toelichting (optioneel)
   - "Aanmaken" → createScenario + redirect naar editor
 
@@ -362,7 +362,7 @@ Create `src/app/scenarios/page.tsx`:
 
 Create `src/app/scenarios/[id]/page.tsx`:
 - Laadt scenario uit DB
-- Toont voorlopig alleen de twijfelpuntkeuzes en een lijst van (lege) teams
+- Toont voorlopig alleen de keuzekeuzes en een lijst van (lege) teams
 - Het drieluik wordt in de volgende tasks gebouwd
 
 **Step 6: Verifieer**
@@ -374,7 +374,7 @@ Expected: scenario's overzicht toont lijst, nieuw scenario aanmaken werkt, redir
 
 ```bash
 git add packages/database/ apps/team-indeling/src/
-git commit -m "feat: scenario aanmaak met twijfelpuntkeuzes en teamstructuur-calculator"
+git commit -m "feat: scenario aanmaak met keuzekeuzes en teamstructuur-calculator"
 ```
 
 ---
@@ -787,7 +787,7 @@ Create `src/lib/ai/prompt.ts`:
 export function buildVoorstelPrompt(
   blauwdruk: Blauwdruk,
   spelers: Speler[],
-  twijfelpuntKeuzes: Record<string, string>,
+  keuzeKeuzes: Record<string, string>,
   seizoenJaar: number
 ): string
 ```
@@ -796,14 +796,14 @@ De prompt bevat:
 - KNKV-regels (samengevat)
 - OW-voorkeuren (samengevat)
 - Beschikbare spelers (naam, leeftijd, geslacht, vorig team, status)
-- Twijfelpuntkeuzes (welke teams gewenst)
+- Keuzekeuzes (welke teams gewenst)
 - Instructie: maak teams, wijs spelers toe, motiveer keuzes
 
 **Step 2: API route**
 
 Create `src/app/api/ai/voorstel/route.ts`:
 - POST: ontvang scenarioId
-- Laad blauwdruk + spelers + twijfelpuntKeuzes uit DB
+- Laad blauwdruk + spelers + keuzeKeuzes uit DB
 - Bouw prompt via `buildVoorstelPrompt`
 - Roep Claude API aan (streaming)
 - Parse response: JSON met teamindeling
@@ -1040,7 +1040,7 @@ git commit -m "feat: NextAuth authenticatie met EDITOR/VIEWER rollen"
 | 1 | Fundament | Opschonen, layout, navigatie |
 | 2 | Blauwdruk basis | Kaders, speerpunten, toelichting |
 | 3 | Blauwdruk status | Spelerstatus-overzicht |
-| 4 | Blauwdruk twijfel | Twijfelpunten |
+| 4 | Blauwdruk twijfel | Keuzes |
 | 5 | Scenario basis | Aanmaak, teamstructuur-calculator |
 | 6 | Navigator | Linkerpaneel |
 | 7 | Spelerspool | Rechterpaneel met filters |

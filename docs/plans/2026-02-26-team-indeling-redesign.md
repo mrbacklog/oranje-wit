@@ -50,26 +50,26 @@ State-of-the-art drag-and-drop teamindelingstool voor de Technische Commissie va
 ────────────────             ────────────────                 ────────────────
 Strategische kaders          Operationeel puzzelen            Besluit
 ────────────────             ────────────────                 ────────────────
-• Speerpunten seizoen        • Keuzes op twijfelpunten        • Gekozen scenario
+• Speerpunten seizoen        • Keuzes op keuzes        • Gekozen scenario
 • Spelerstatus bijwerken     • Tool berekent teamstructuur    • Besluitenlog
   (beschikbaar/twijfelt/     • Automatisch teams aangemaakt   • Export/communicatie
    stopt/nieuw)              • Claude genereert startvoorstel
 • KNKV-regels als basis      • Drag-drop puzzelen
-• Twijfelpunten vastleggen   • Realtime validatie
+• Keuzes vastleggen   • Realtime validatie
   ("1 of 2 U15-teams?")     • Meerdere scenario's
                              • What-if analyse
 ```
 
-### Twijfelpunten
+### Keuzes
 
-Het cruciale concept: in de blauwdruk legt de TC **twijfelpunten** vast — strategische keuzes waarvan de impact nog niet duidelijk is. Elke twijfel wordt een keuzeknop die per scenario verschilt.
+Het cruciale concept: in de blauwdruk legt de TC **keuzes** vast — strategische keuzes waarvan de impact nog niet duidelijk is. Elke twijfel wordt een keuzeknop die per scenario verschilt.
 
 **Voorbeelden:**
 - "1 of 2 U15-teams?" → Scenario A (1 team) vs Scenario B (2 teams)
 - "Senioren 3: wedstrijd of breedte?" → Impact op spelerverdeling
 - "Rood: 2 of 3 teams?" → Gevolgen voor teamgrootte
 
-Per scenario kies je een waarde voor elk twijfelpunt. De tool berekent dan automatisch de teamstructuur en vult de teams.
+Per scenario kies je een waarde voor elk keuze. De tool berekent dan automatisch de teamstructuur en vult de teams.
 
 ---
 
@@ -178,7 +178,7 @@ Bestaande `regels.ts` en `impact.ts` worden hergebruikt. Deze draaien client-sid
 ## AI Integratie (Claude)
 
 ### 1. Startvoorstel bij scenario
-Op basis van blauwdruk (kaders + twijfelpuntkeuzes) + beschikbare leden + KNKV-regels:
+Op basis van blauwdruk (kaders + keuzekeuzes) + beschikbare leden + KNKV-regels:
 - Berekent optimale teamstructuur (hoeveel teams, welke kleuren)
 - Vult alle teams met spelers
 - Respecteert spelerstatus, genderverdeling, leeftijdsspreiding
@@ -217,7 +217,7 @@ Bij het invullen van de blauwdruk:
 
 - **Database**: bestaande PostgreSQL op Railway via Prisma
 - **Scenario's**: direct opgeslagen in DB (auto-save bij wijziging)
-- **Blauwdruk**: per seizoen, inclusief twijfelpunten
+- **Blauwdruk**: per seizoen, inclusief keuzes
 - **Import**: Sportlink data via bestaande import-pipeline
 
 ---
@@ -228,7 +228,7 @@ Bij het invullen van de blauwdruk:
 
 ### Bouwvolgorde (voorgesteld)
 1. **Fundament**: layout, routing, auth, DB-koppeling
-2. **Blauwdruk**: kaders, spelerstatus, twijfelpunten
+2. **Blauwdruk**: kaders, spelerstatus, keuzes
 3. **Scenario-editor**: drieluik met drag-drop (de kern)
 4. **Validatie**: realtime + on-demand
 5. **AI**: startvoorstel, advies, what-if

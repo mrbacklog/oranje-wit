@@ -434,7 +434,7 @@ model Blauwdruk {
   // Gestructureerde kaders
   kaders         Json     // KNKV-regels + OW-regels die dit seizoen gelden
   speerpunten    String[] // Seizoensdoelen
-  twijfelpunten  Json?    // Array van { id, vraag, opties: string[] }
+  keuzes         Json?    // Array van { id, vraag, opties: string[] }  @map("twijfelpunten")
 
   // Relaties
   concepten Concept[]

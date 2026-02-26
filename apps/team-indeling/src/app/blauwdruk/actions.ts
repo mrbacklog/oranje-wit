@@ -60,21 +60,21 @@ export async function updateToelichting(
 }
 
 /**
- * Twijfelpunten: vragen die in scenario's worden uitgespeeld.
+ * Keuzes: strategische vragen die in scenario's worden uitgespeeld.
  */
-interface Twijfelpunt {
+export interface Keuze {
   id: string;
   vraag: string;       // "Hoeveel U15-teams?"
   opties: string[];    // ["1 team", "2 teams"]
 }
 
-export async function updateTwijfelpunten(
+export async function updateKeuzes(
   blauwdrukId: string,
-  twijfelpunten: Twijfelpunt[]
+  keuzes: Keuze[]
 ) {
   return prisma.blauwdruk.update({
     where: { id: blauwdrukId },
-    data: { twijfelpunten: twijfelpunten as unknown as Prisma.InputJsonValue },
+    data: { keuzes: keuzes as unknown as Prisma.InputJsonValue },
   });
 }
 

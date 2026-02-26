@@ -1,32 +1,26 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { updateTwijfelpunten } from "@/app/blauwdruk/actions";
+import { updateKeuzes } from "@/app/blauwdruk/actions";
+import type { Keuze } from "@/app/blauwdruk/actions";
 
-interface Twijfelpunt {
-  id: string;
-  vraag: string;
-  opties: string[];
-}
-
-interface TwijfelpuntenEditorProps {
+interface KeuzeEditorProps {
   blauwdrukId: string;
-  initieel: Twijfelpunt[];
+  initieel: Keuze[];
 }
 
-export default function TwijfelpuntenEditor({
+export default function KeuzeEditor({
   blauwdrukId,
   initieel,
-}: TwijfelpuntenEditorProps) {
-  const [twijfelpunten, setTwijfelpunten] =
-    useState<Twijfelpunt[]>(initieel);
+}: KeuzeEditorProps) {
+  const [keuzes, setKeuzes] = useState<Keuze[]>(initieel);
   const [opslaan, setOpslaan] = useState(false);
 
   const slaOp = useCallback(
-    async (nieuweLijst: Twijfelpunt[]) => {
+    async (nieuweLijst: Keuze[]) => {
       setOpslaan(true);
       try {
-        await updateTwijfelpunten(blauwdrukId, nieuweLijst);
+        await updateKeuzes(blauwdrukId, nieuweLijst);
       } finally {
         setOpslaan(false);
       }
@@ -34,77 +28,77 @@ export default function TwijfelpuntenEditor({
     [blauwdrukId]
   );
 
-  const voegTwijfelpuntToe = useCallback(() => {
-    const nieuw: Twijfelpunt = {
+  const voegKeuzeToe = useCallback(() => {
+    const nieuw: Keuze = {
       id: crypto.randomUUID(),
       vraag: "",
       opties: [],
     };
-    setTwijfelpunten((prev) => [...prev, nieuw]);
+    setKeuzes((prev) => [...prev, nieuw]);
   }, []);
 
   const updateVraag = useCallback(
     async (id: string, vraag: string) => {
-      const nieuw = twijfelpunten.map((tp) =>
-        tp.id === id ? { ...tp, vraag } : tp
+      const nieuw = keuzes.map((k) =>
+        k.id === id ? { ...k, vraag } : k
       );
-      setTwijfelpunten(nieuw);
+      setKeuzes(nieuw);
       await slaOp(nieuw);
     },
-    [twijfelpunten, slaOp]
+    [keuzes, slaOp]
   );
 
-  const verwijderTwijfelpunt = useCallback(
+  const verwijderKeuze = useCallback(
     async (id: string) => {
-      const nieuw = twijfelpunten.filter((tp) => tp.id !== id);
-      setTwijfelpunten(nieuw);
+      const nieuw = keuzes.filter((k) => k.id !== id);
+      setKeuzes(nieuw);
       await slaOp(nieuw);
     },
-    [twijfelpunten, slaOp]
+    [keuzes, slaOp]
   );
 
   const voegOptieToe = useCallback(
-    async (twijfelpuntId: string, optie: string) => {
+    async (keuzeId: string, optie: string) => {
       const trimmed = optie.trim();
       if (!trimmed) return;
-      const nieuw = twijfelpunten.map((tp) =>
-        tp.id === twijfelpuntId
-          ? { ...tp, opties: [...tp.opties, trimmed] }
-          : tp
+      const nieuw = keuzes.map((k) =>
+        k.id === keuzeId
+          ? { ...k, opties: [...k.opties, trimmed] }
+          : k
       );
-      setTwijfelpunten(nieuw);
+      setKeuzes(nieuw);
       await slaOp(nieuw);
     },
-    [twijfelpunten, slaOp]
+    [keuzes, slaOp]
   );
 
   const verwijderOptie = useCallback(
-    async (twijfelpuntId: string, optieIndex: number) => {
-      const nieuw = twijfelpunten.map((tp) =>
-        tp.id === twijfelpuntId
-          ? { ...tp, opties: tp.opties.filter((_, i) => i !== optieIndex) }
-          : tp
+    async (keuzeId: string, optieIndex: number) => {
+      const nieuw = keuzes.map((k) =>
+        k.id === keuzeId
+          ? { ...k, opties: k.opties.filter((_, i) => i !== optieIndex) }
+          : k
       );
-      setTwijfelpunten(nieuw);
+      setKeuzes(nieuw);
       await slaOp(nieuw);
     },
-    [twijfelpunten, slaOp]
+    [keuzes, slaOp]
   );
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-4">
-      {twijfelpunten.length === 0 ? (
+      {keuzes.length === 0 ? (
         <p className="text-sm text-gray-400 italic mb-3">
-          Nog geen twijfelpunten. Voeg er een toe om te beginnen.
+          Nog geen keuzes. Voeg er een toe om te beginnen.
         </p>
       ) : (
         <ul className="space-y-4 mb-3">
-          {twijfelpunten.map((tp) => (
-            <TwijfelpuntItem
-              key={tp.id}
-              twijfelpunt={tp}
+          {keuzes.map((k) => (
+            <KeuzeItem
+              key={k.id}
+              keuze={k}
               onUpdateVraag={updateVraag}
-              onVerwijder={verwijderTwijfelpunt}
+              onVerwijder={verwijderKeuze}
               onVoegOptieToe={voegOptieToe}
               onVerwijderOptie={verwijderOptie}
             />
@@ -114,10 +108,10 @@ export default function TwijfelpuntenEditor({
 
       <div className="flex items-center gap-2">
         <button
-          onClick={voegTwijfelpuntToe}
+          onClick={voegKeuzeToe}
           className="text-sm text-orange-600 hover:text-orange-700 font-medium"
         >
-          + Nieuw twijfelpunt
+          + Nieuwe keuze
         </button>
         {opslaan && (
           <span className="text-xs text-gray-400">Opslaan...</span>
@@ -127,46 +121,46 @@ export default function TwijfelpuntenEditor({
   );
 }
 
-// --- Sub-component per twijfelpunt ---
+// --- Sub-component per keuze ---
 
-interface TwijfelpuntItemProps {
-  twijfelpunt: Twijfelpunt;
+interface KeuzeItemProps {
+  keuze: Keuze;
   onUpdateVraag: (id: string, vraag: string) => Promise<void>;
   onVerwijder: (id: string) => Promise<void>;
   onVoegOptieToe: (id: string, optie: string) => Promise<void>;
   onVerwijderOptie: (id: string, optieIndex: number) => Promise<void>;
 }
 
-function TwijfelpuntItem({
-  twijfelpunt,
+function KeuzeItem({
+  keuze,
   onUpdateVraag,
   onVerwijder,
   onVoegOptieToe,
   onVerwijderOptie,
-}: TwijfelpuntItemProps) {
+}: KeuzeItemProps) {
   const [bewerkVraag, setBewerkVraag] = useState(false);
-  const [vraagTekst, setVraagTekst] = useState(twijfelpunt.vraag);
+  const [vraagTekst, setVraagTekst] = useState(keuze.vraag);
   const [nieuweOptie, setNieuweOptie] = useState("");
 
   const bevestigVraag = useCallback(async () => {
     setBewerkVraag(false);
-    if (vraagTekst.trim() !== twijfelpunt.vraag) {
-      await onUpdateVraag(twijfelpunt.id, vraagTekst.trim());
+    if (vraagTekst.trim() !== keuze.vraag) {
+      await onUpdateVraag(keuze.id, vraagTekst.trim());
     }
-  }, [vraagTekst, twijfelpunt, onUpdateVraag]);
+  }, [vraagTekst, keuze, onUpdateVraag]);
 
   const handleOptieToevoegen = useCallback(async () => {
     if (!nieuweOptie.trim()) return;
-    await onVoegOptieToe(twijfelpunt.id, nieuweOptie);
+    await onVoegOptieToe(keuze.id, nieuweOptie);
     setNieuweOptie("");
-  }, [nieuweOptie, twijfelpunt.id, onVoegOptieToe]);
+  }, [nieuweOptie, keuze.id, onVoegOptieToe]);
 
   return (
     <li className="border border-gray-100 rounded-lg p-3 bg-gray-50">
       {/* Vraag */}
       <div className="flex items-start justify-between gap-2 mb-2">
         <span className="text-orange-500 mt-0.5 shrink-0">&#10067;</span>
-        {bewerkVraag || !twijfelpunt.vraag ? (
+        {bewerkVraag || !keuze.vraag ? (
           <div className="flex-1 flex gap-2">
             <input
               type="text"
@@ -175,7 +169,7 @@ function TwijfelpuntItem({
               onKeyDown={(e) => {
                 if (e.key === "Enter") bevestigVraag();
                 if (e.key === "Escape") {
-                  setVraagTekst(twijfelpunt.vraag);
+                  setVraagTekst(keuze.vraag);
                   setBewerkVraag(false);
                 }
               }}
@@ -196,7 +190,7 @@ function TwijfelpuntItem({
               className="text-sm font-medium text-gray-800 cursor-pointer hover:text-orange-700"
               onClick={() => setBewerkVraag(true)}
             >
-              {twijfelpunt.vraag}
+              {keuze.vraag}
             </span>
             <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
               <button
@@ -207,7 +201,7 @@ function TwijfelpuntItem({
                 &#9998;
               </button>
               <button
-                onClick={() => onVerwijder(twijfelpunt.id)}
+                onClick={() => onVerwijder(keuze.id)}
                 className="text-xs text-gray-400 hover:text-red-500"
                 title="Verwijderen"
               >
@@ -220,14 +214,14 @@ function TwijfelpuntItem({
 
       {/* Opties als chips */}
       <div className="ml-6 flex flex-wrap gap-2 items-center">
-        {twijfelpunt.opties.map((optie, index) => (
+        {keuze.opties.map((optie, index) => (
           <span
             key={index}
             className="inline-flex items-center gap-1 bg-white border border-gray-200 rounded-full px-3 py-1 text-sm text-gray-700"
           >
             {optie}
             <button
-              onClick={() => onVerwijderOptie(twijfelpunt.id, index)}
+              onClick={() => onVerwijderOptie(keuze.id, index)}
               className="text-gray-400 hover:text-red-500 text-xs ml-0.5"
               title="Optie verwijderen"
             >
