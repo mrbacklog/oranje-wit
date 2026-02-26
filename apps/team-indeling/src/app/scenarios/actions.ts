@@ -121,6 +121,9 @@ export async function getScenario(id: string) {
               spelers: {
                 include: { speler: true },
               },
+              staf: {
+                include: { staf: true },
+              },
             },
             orderBy: { volgorde: "asc" },
           },
