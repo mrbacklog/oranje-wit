@@ -17,7 +17,10 @@
     "pipeline:verloop": "node scripts/js/bereken-verloop.js",
     "pipeline:cohorten": "node scripts/js/bereken-cohorten.js",
     "pipeline:signalering": "node scripts/js/genereer-signalering.js",
-    "pipeline:export": "node scripts/js/export-voor-teamindeling.js"
+    "pipeline:export": "node scripts/js/export-voor-teamindeling.js",
+    "test": "pnpm -r run test",
+    "test:monitor": "pnpm --filter @oranje-wit/monitor test",
+    "test:ui": "pnpm --filter @oranje-wit/ui test"
   },
   "packageManager": "pnpm@9.15.0",
   "engines": {
