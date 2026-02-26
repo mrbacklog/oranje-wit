@@ -24,6 +24,7 @@ interface WerkgebiedProps {
   onDeleteTeam: (teamId: string) => void;
   onKoppelSelectie: (teamIds: string[]) => void;
   onOntkoppelSelectie: (groepLeiderId: string) => void;
+  onWhatIfOpen?: () => void;
 }
 
 export default function Werkgebied({
@@ -36,6 +37,7 @@ export default function Werkgebied({
   onDeleteTeam,
   onKoppelSelectie,
   onOntkoppelSelectie,
+  onWhatIfOpen,
 }: WerkgebiedProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [rapportOpen, setRapportOpen] = useState(false);
@@ -131,6 +133,14 @@ export default function Werkgebied({
           >
             AI Voorstel
           </button>
+          {onWhatIfOpen && (
+            <button
+              onClick={onWhatIfOpen}
+              className="px-3 py-1.5 text-xs font-medium rounded-lg border border-blue-300 text-blue-600 hover:bg-blue-50 transition-colors"
+            >
+              What-if
+            </button>
+          )}
           <button
             onClick={() => setRapportOpen(true)}
             className="px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 transition-colors"

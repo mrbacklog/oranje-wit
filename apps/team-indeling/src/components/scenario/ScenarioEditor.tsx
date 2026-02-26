@@ -18,6 +18,8 @@ import DndProvider from "./DndContext";
 import Navigator from "./Navigator";
 import Werkgebied from "./Werkgebied";
 import SpelersPool from "./SpelersPool";
+import AdviesPanel from "./AdviesPanel";
+import WhatIfDialoog from "./WhatIfDialoog";
 
 interface ScenarioEditorProps {
   scenario: ScenarioData;
@@ -43,6 +45,11 @@ export default function ScenarioEditor({
 
   // Realtime validatie
   const { validatieMap, dubbeleMeldingen } = useValidatie(teams, SEIZOEN_JAAR);
+
+  // AI advies state
+  const [laatsteActie, setLaatsteActie] = useState<string | null>(null);
+  const [adviesEnabled, setAdviesEnabled] = useState(false);
+  const [whatIfOpen, setWhatIfOpen] = useState(false);
 
   // --- Navigator handlers ---
   const handleToggle = useCallback((teamId: string) => {
@@ -99,6 +106,10 @@ export default function ScenarioEditor({
         })
       );
 
+      // Track actie voor advies
+      const teamNaam = team?.naam ?? "team";
+      setLaatsteActie(`${speler.roepnaam} ${speler.achternaam} toegevoegd aan ${teamNaam}`);
+
       // Server action
       startTransition(() => {
         addSpelerToTeam(teamId, spelerId);
@@ -134,6 +145,13 @@ export default function ScenarioEditor({
         });
       });
 
+      // Track actie voor advies
+      const vanNaam = teams.find((t) => t.id === vanTeamId)?.naam ?? "team";
+      const naarNaam = naarTeam?.naam ?? "team";
+      const spelerData = teams.flatMap((t) => t.spelers).find((ts) => ts.spelerId === spelerId);
+      const spelerNaam = spelerData ? `${spelerData.speler.roepnaam} ${spelerData.speler.achternaam}` : "speler";
+      setLaatsteActie(`${spelerNaam} verplaatst van ${vanNaam} naar ${naarNaam}`);
+
       startTransition(() => {
         moveSpeler(spelerId, vanTeamId, naarTeamId);
       });
@@ -154,11 +172,17 @@ export default function ScenarioEditor({
         })
       );
 
+      // Track actie voor advies
+      const teamNaam = teams.find((t) => t.id === teamId)?.naam ?? "team";
+      const spelerData = teams.flatMap((t) => t.spelers).find((ts) => ts.spelerId === spelerId);
+      const spelerNaam = spelerData ? `${spelerData.speler.roepnaam} ${spelerData.speler.achternaam}` : "speler";
+      setLaatsteActie(`${spelerNaam} verwijderd uit ${teamNaam}`);
+
       startTransition(() => {
         removeSpelerFromTeam(teamId, spelerId);
       });
     },
-    []
+    [teams]
   );
 
   // --- Team CRUD ---
@@ -290,18 +314,34 @@ export default function ScenarioEditor({
           onToggleAlles={handleToggleAlles}
         />
 
-        {/* Midden: Werkgebied */}
-        <Werkgebied
-          scenarioId={scenario.id}
-          teams={teams}
-          zichtbareTeamIds={zichtbaar}
-          validatieMap={validatieMap}
-          dubbeleMeldingen={dubbeleMeldingen}
-          onCreateTeam={handleCreateTeam}
-          onDeleteTeam={handleDeleteTeam}
-          onKoppelSelectie={handleKoppelSelectie}
-          onOntkoppelSelectie={handleOntkoppelSelectie}
-        />
+        {/* Midden: Werkgebied + AdviesPanel */}
+        <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+          <Werkgebied
+            scenarioId={scenario.id}
+            teams={teams}
+            zichtbareTeamIds={zichtbaar}
+            validatieMap={validatieMap}
+            dubbeleMeldingen={dubbeleMeldingen}
+            onCreateTeam={handleCreateTeam}
+            onDeleteTeam={handleDeleteTeam}
+            onKoppelSelectie={handleKoppelSelectie}
+            onOntkoppelSelectie={handleOntkoppelSelectie}
+            onWhatIfOpen={() => setWhatIfOpen(true)}
+          />
+          <AdviesPanel
+            scenarioId={scenario.id}
+            laatsteActie={laatsteActie}
+            teams={teams.map((t) => ({
+              naam: t.naam,
+              spelers: t.spelers.map((ts) => ({
+                roepnaam: ts.speler.roepnaam,
+                achternaam: ts.speler.achternaam,
+              })),
+            }))}
+            enabled={adviesEnabled}
+            onToggle={() => setAdviesEnabled((prev) => !prev)}
+          />
+        </div>
 
         {/* Rechts: Spelerspool */}
         <SpelersPool
@@ -310,6 +350,13 @@ export default function ScenarioEditor({
           zichtbareTeamIds={zichtbaar}
         />
       </div>
+
+      <WhatIfDialoog
+        open={whatIfOpen}
+        onClose={() => setWhatIfOpen(false)}
+        teams={teams}
+        alleSpelers={alleSpelers}
+      />
     </DndProvider>
   );
 }
