@@ -2,10 +2,15 @@
   "_meta": {
     "seizoen": "2025-2026",
     "aangemaakt": "2026-02-25",
-    "laatst_bijgewerkt": "2026-02-25",
+    "laatst_bijgewerkt": "2026-02-26",
     "bron_knkv": "teams-knkv.json",
     "bron_sterkte": "KNKV Indelingen Oranje Wit (D) 2025-2026.xlsx",
-    "periodes": ["veld_najaar", "zaal_deel1", "zaal_deel2", "veld_voorjaar"],
+    "periodes": [
+      "veld_najaar",
+      "zaal_deel1",
+      "zaal_deel2",
+      "veld_voorjaar"
+    ],
     "toelichting": "ow_code is de stabiele team-identiteit per seizoen. J-nummers kunnen per periode verschuiven door KNKV-hernummering op basis van gemiddelde leeftijd. ow_code wijzigt niet."
   },
   "teams": [
@@ -16,11 +21,25 @@
       "niveau": "Hoofdklasse",
       "spelvorm": "8-tal",
       "periodes": {
-        "veld_najaar": { "j_nummer": null, "pool": "HK-08", "sterkte": null, "gem_leeftijd": null, "aantal_spelers": null },
-        "zaal_deel1": { "j_nummer": null, "pool": "1H", "sterkte": null, "gem_leeftijd": null, "aantal_spelers": null },
+        "veld_najaar": {
+          "j_nummer": null,
+          "pool": "HK-08",
+          "sterkte": null,
+          "gem_leeftijd": null,
+          "aantal_spelers": null
+        },
+        "zaal_deel1": {
+          "j_nummer": null,
+          "pool": "1H",
+          "sterkte": null,
+          "gem_leeftijd": null,
+          "aantal_spelers": null
+        },
         "zaal_deel2": null,
         "veld_voorjaar": null
-      }
+      },
+      "naam": "Senioren 1",
+      "codenaam": null
     },
     {
       "ow_code": "2",
@@ -29,11 +48,25 @@
       "niveau": "Reserve Overgangsklasse",
       "spelvorm": "8-tal",
       "periodes": {
-        "veld_najaar": { "j_nummer": null, "pool": "ROK-07", "sterkte": null, "gem_leeftijd": null, "aantal_spelers": null },
-        "zaal_deel1": { "j_nummer": null, "pool": "ROKD", "sterkte": null, "gem_leeftijd": null, "aantal_spelers": null },
+        "veld_najaar": {
+          "j_nummer": null,
+          "pool": "ROK-07",
+          "sterkte": null,
+          "gem_leeftijd": null,
+          "aantal_spelers": null
+        },
+        "zaal_deel1": {
+          "j_nummer": null,
+          "pool": "ROKD",
+          "sterkte": null,
+          "gem_leeftijd": null,
+          "aantal_spelers": null
+        },
         "zaal_deel2": null,
         "veld_voorjaar": null
-      }
+      },
+      "naam": "Senioren 2",
+      "codenaam": null
     },
     {
       "ow_code": "3",
@@ -42,11 +75,25 @@
       "niveau": "Reserve Overgangsklasse",
       "spelvorm": "8-tal",
       "periodes": {
-        "veld_najaar": { "j_nummer": null, "pool": "ROK-06", "sterkte": null, "gem_leeftijd": null, "aantal_spelers": null },
-        "zaal_deel1": { "j_nummer": null, "pool": "R1D", "sterkte": null, "gem_leeftijd": null, "aantal_spelers": null },
+        "veld_najaar": {
+          "j_nummer": null,
+          "pool": "ROK-06",
+          "sterkte": null,
+          "gem_leeftijd": null,
+          "aantal_spelers": null
+        },
+        "zaal_deel1": {
+          "j_nummer": null,
+          "pool": "R1D",
+          "sterkte": null,
+          "gem_leeftijd": null,
+          "aantal_spelers": null
+        },
         "zaal_deel2": null,
         "veld_voorjaar": null
-      }
+      },
+      "naam": "Senioren 3",
+      "codenaam": null
     },
     {
       "ow_code": "4",
@@ -55,11 +102,25 @@
       "niveau": "Reserve 2e klasse",
       "spelvorm": "8-tal",
       "periodes": {
-        "veld_najaar": { "j_nummer": null, "pool": "R2-28", "sterkte": null, "gem_leeftijd": null, "aantal_spelers": null },
-        "zaal_deel1": { "j_nummer": null, "pool": "R3W", "sterkte": null, "gem_leeftijd": null, "aantal_spelers": null },
+        "veld_najaar": {
+          "j_nummer": null,
+          "pool": "R2-28",
+          "sterkte": null,
+          "gem_leeftijd": null,
+          "aantal_spelers": null
+        },
+        "zaal_deel1": {
+          "j_nummer": null,
+          "pool": "R3W",
+          "sterkte": null,
+          "gem_leeftijd": null,
+          "aantal_spelers": null
+        },
         "zaal_deel2": null,
         "veld_voorjaar": null
-      }
+      },
+      "naam": "Senioren 4",
+      "codenaam": null
     },
     {
       "ow_code": "5",
@@ -67,11 +128,31 @@
       "leeftijdsgroep": "Senioren",
       "spelvorm": "8-tal",
       "periodes": {
-        "veld_najaar": { "j_nummer": null, "pool": "S-096", "sterkte": 135, "gem_leeftijd": 24.5, "aantal_spelers": null },
-        "zaal_deel1": { "j_nummer": null, "pool": "S-055", "sterkte": 144, "gem_leeftijd": 24.5, "aantal_spelers": null },
+        "veld_najaar": {
+          "j_nummer": null,
+          "pool": "S-096",
+          "sterkte": 135,
+          "gem_leeftijd": 24.5,
+          "aantal_spelers": null
+        },
+        "zaal_deel1": {
+          "j_nummer": null,
+          "pool": "S-055",
+          "sterkte": 144,
+          "gem_leeftijd": 24.5,
+          "aantal_spelers": null
+        },
         "zaal_deel2": null,
-        "veld_voorjaar": null
-      }
+        "veld_voorjaar": {
+          "j_nummer": null,
+          "pool": null,
+          "sterkte": 154,
+          "gem_leeftijd": 24.5,
+          "aantal_spelers": null
+        }
+      },
+      "naam": "Senioren 5",
+      "codenaam": null
     },
     {
       "ow_code": "6",
@@ -79,11 +160,31 @@
       "leeftijdsgroep": "Senioren",
       "spelvorm": "8-tal",
       "periodes": {
-        "veld_najaar": { "j_nummer": null, "pool": "S-100", "sterkte": 121, "gem_leeftijd": 21.8, "aantal_spelers": null },
-        "zaal_deel1": { "j_nummer": null, "pool": "S-056", "sterkte": 139, "gem_leeftijd": 21.8, "aantal_spelers": null },
+        "veld_najaar": {
+          "j_nummer": null,
+          "pool": "S-100",
+          "sterkte": 121,
+          "gem_leeftijd": 21.8,
+          "aantal_spelers": null
+        },
+        "zaal_deel1": {
+          "j_nummer": null,
+          "pool": "S-056",
+          "sterkte": 139,
+          "gem_leeftijd": 21.8,
+          "aantal_spelers": null
+        },
         "zaal_deel2": null,
-        "veld_voorjaar": null
-      }
+        "veld_voorjaar": {
+          "j_nummer": null,
+          "pool": null,
+          "sterkte": 146,
+          "gem_leeftijd": 21.8,
+          "aantal_spelers": null
+        }
+      },
+      "naam": "Senioren 6",
+      "codenaam": null
     },
     {
       "ow_code": "MW1",
@@ -91,11 +192,25 @@
       "leeftijdsgroep": "Senioren",
       "spelvorm": "8-tal",
       "periodes": {
-        "veld_najaar": { "j_nummer": null, "pool": "MW-40", "sterkte": 119, "gem_leeftijd": 40.74, "aantal_spelers": null },
+        "veld_najaar": {
+          "j_nummer": null,
+          "pool": "MW-40",
+          "sterkte": 119,
+          "gem_leeftijd": 40.74,
+          "aantal_spelers": null
+        },
         "zaal_deel1": null,
         "zaal_deel2": null,
-        "veld_voorjaar": null
-      }
+        "veld_voorjaar": {
+          "j_nummer": null,
+          "pool": null,
+          "sterkte": 136,
+          "gem_leeftijd": 40.45,
+          "aantal_spelers": null
+        }
+      },
+      "naam": "Midweek 1",
+      "codenaam": null
     },
     {
       "ow_code": "U15-1",
@@ -104,11 +219,25 @@
       "niveau": "Hoofdklasse",
       "spelvorm": "8-tal",
       "periodes": {
-        "veld_najaar": { "j_nummer": null, "pool": "U15-HK-08", "sterkte": null, "gem_leeftijd": null, "aantal_spelers": null },
-        "zaal_deel1": { "j_nummer": null, "pool": "U15-HKD", "sterkte": null, "gem_leeftijd": null, "aantal_spelers": null },
+        "veld_najaar": {
+          "j_nummer": null,
+          "pool": "U15-HK-08",
+          "sterkte": null,
+          "gem_leeftijd": null,
+          "aantal_spelers": null
+        },
+        "zaal_deel1": {
+          "j_nummer": null,
+          "pool": "U15-HKD",
+          "sterkte": null,
+          "gem_leeftijd": null,
+          "aantal_spelers": null
+        },
         "zaal_deel2": null,
         "veld_voorjaar": null
-      }
+      },
+      "naam": "U15-1",
+      "codenaam": null
     },
     {
       "ow_code": "U17-1",
@@ -117,11 +246,25 @@
       "niveau": "Hoofdklasse",
       "spelvorm": "8-tal",
       "periodes": {
-        "veld_najaar": { "j_nummer": null, "pool": "U17-HK-07", "sterkte": null, "gem_leeftijd": null, "aantal_spelers": null },
-        "zaal_deel1": { "j_nummer": null, "pool": "U17-HKD", "sterkte": null, "gem_leeftijd": null, "aantal_spelers": null },
+        "veld_najaar": {
+          "j_nummer": null,
+          "pool": "U17-HK-07",
+          "sterkte": null,
+          "gem_leeftijd": null,
+          "aantal_spelers": null
+        },
+        "zaal_deel1": {
+          "j_nummer": null,
+          "pool": "U17-HKD",
+          "sterkte": null,
+          "gem_leeftijd": null,
+          "aantal_spelers": null
+        },
         "zaal_deel2": null,
         "veld_voorjaar": null
-      }
+      },
+      "naam": "U17-1",
+      "codenaam": null
     },
     {
       "ow_code": "U17-2",
@@ -130,11 +273,25 @@
       "niveau": "1e klasse",
       "spelvorm": "8-tal",
       "periodes": {
-        "veld_najaar": { "j_nummer": null, "pool": "U17-1-11", "sterkte": null, "gem_leeftijd": null, "aantal_spelers": null },
-        "zaal_deel1": { "j_nummer": null, "pool": "U17-1G", "sterkte": null, "gem_leeftijd": null, "aantal_spelers": null },
+        "veld_najaar": {
+          "j_nummer": null,
+          "pool": "U17-1-11",
+          "sterkte": null,
+          "gem_leeftijd": null,
+          "aantal_spelers": null
+        },
+        "zaal_deel1": {
+          "j_nummer": null,
+          "pool": "U17-1G",
+          "sterkte": null,
+          "gem_leeftijd": null,
+          "aantal_spelers": null
+        },
         "zaal_deel2": null,
         "veld_voorjaar": null
-      }
+      },
+      "naam": "U17-2",
+      "codenaam": null
     },
     {
       "ow_code": "U19-1",
@@ -143,11 +300,25 @@
       "niveau": "Overgangsklasse",
       "spelvorm": "8-tal",
       "periodes": {
-        "veld_najaar": { "j_nummer": null, "pool": "U19-OK-07", "sterkte": null, "gem_leeftijd": null, "aantal_spelers": null },
-        "zaal_deel1": { "j_nummer": null, "pool": "U19-OKD", "sterkte": null, "gem_leeftijd": null, "aantal_spelers": null },
+        "veld_najaar": {
+          "j_nummer": null,
+          "pool": "U19-OK-07",
+          "sterkte": null,
+          "gem_leeftijd": null,
+          "aantal_spelers": null
+        },
+        "zaal_deel1": {
+          "j_nummer": null,
+          "pool": "U19-OKD",
+          "sterkte": null,
+          "gem_leeftijd": null,
+          "aantal_spelers": null
+        },
         "zaal_deel2": null,
         "veld_voorjaar": null
-      }
+      },
+      "naam": "U19-1",
+      "codenaam": null
     },
     {
       "ow_code": "U19-2",
@@ -156,11 +327,25 @@
       "niveau": "2e klasse",
       "spelvorm": "8-tal",
       "periodes": {
-        "veld_najaar": { "j_nummer": null, "pool": "U19-2-08", "sterkte": null, "gem_leeftijd": null, "aantal_spelers": null },
-        "zaal_deel1": { "j_nummer": null, "pool": "U19-2E", "sterkte": null, "gem_leeftijd": null, "aantal_spelers": null },
+        "veld_najaar": {
+          "j_nummer": null,
+          "pool": "U19-2-08",
+          "sterkte": null,
+          "gem_leeftijd": null,
+          "aantal_spelers": null
+        },
+        "zaal_deel1": {
+          "j_nummer": null,
+          "pool": "U19-2E",
+          "sterkte": null,
+          "gem_leeftijd": null,
+          "aantal_spelers": null
+        },
         "zaal_deel2": null,
         "veld_voorjaar": null
-      }
+      },
+      "naam": "U19-2",
+      "codenaam": null
     },
     {
       "ow_code": "R1",
@@ -168,11 +353,31 @@
       "categorie": "b",
       "spelvorm": "8-tal",
       "periodes": {
-        "veld_najaar": { "j_nummer": "J1", "pool": "Ro-135", "sterkte": 86, "gem_leeftijd": 16.41, "aantal_spelers": null },
-        "zaal_deel1": { "j_nummer": "J1", "pool": "Ro-074", "sterkte": 101, "gem_leeftijd": 16.41, "aantal_spelers": null },
+        "veld_najaar": {
+          "j_nummer": "J1",
+          "pool": "Ro-135",
+          "sterkte": 86,
+          "gem_leeftijd": 16.41,
+          "aantal_spelers": null
+        },
+        "zaal_deel1": {
+          "j_nummer": "J1",
+          "pool": "Ro-074",
+          "sterkte": 101,
+          "gem_leeftijd": 16.41,
+          "aantal_spelers": null
+        },
         "zaal_deel2": null,
-        "veld_voorjaar": null
-      }
+        "veld_voorjaar": {
+          "j_nummer": null,
+          "pool": null,
+          "sterkte": 118,
+          "gem_leeftijd": 16.45,
+          "aantal_spelers": null
+        }
+      },
+      "naam": "Rood 1",
+      "codenaam": null
     },
     {
       "ow_code": "R2",
@@ -180,11 +385,31 @@
       "categorie": "b",
       "spelvorm": "8-tal",
       "periodes": {
-        "veld_najaar": { "j_nummer": "J2", "pool": "Ro-134", "sterkte": 90, "gem_leeftijd": 15.42, "aantal_spelers": null },
-        "zaal_deel1": { "j_nummer": "J2", "pool": "Ro-071", "sterkte": 108, "gem_leeftijd": 15.42, "aantal_spelers": null },
+        "veld_najaar": {
+          "j_nummer": "J2",
+          "pool": "Ro-134",
+          "sterkte": 90,
+          "gem_leeftijd": 15.42,
+          "aantal_spelers": null
+        },
+        "zaal_deel1": {
+          "j_nummer": "J2",
+          "pool": "Ro-071",
+          "sterkte": 108,
+          "gem_leeftijd": 15.42,
+          "aantal_spelers": null
+        },
         "zaal_deel2": null,
-        "veld_voorjaar": null
-      }
+        "veld_voorjaar": {
+          "j_nummer": null,
+          "pool": null,
+          "sterkte": 120,
+          "gem_leeftijd": 15.42,
+          "aantal_spelers": null
+        }
+      },
+      "naam": "Rood 2",
+      "codenaam": null
     },
     {
       "ow_code": "R3",
@@ -192,11 +417,31 @@
       "categorie": "b",
       "spelvorm": "8-tal",
       "periodes": {
-        "veld_najaar": { "j_nummer": "J4", "pool": "Ro-138", "sterkte": 96, "gem_leeftijd": 13.87, "aantal_spelers": null },
-        "zaal_deel1": { "j_nummer": "J4", "pool": "Ro-073", "sterkte": 110, "gem_leeftijd": 13.87, "aantal_spelers": null },
+        "veld_najaar": {
+          "j_nummer": "J4",
+          "pool": "Ro-138",
+          "sterkte": 96,
+          "gem_leeftijd": 13.87,
+          "aantal_spelers": null
+        },
+        "zaal_deel1": {
+          "j_nummer": "J4",
+          "pool": "Ro-073",
+          "sterkte": 110,
+          "gem_leeftijd": 13.87,
+          "aantal_spelers": null
+        },
         "zaal_deel2": null,
-        "veld_voorjaar": null
-      }
+        "veld_voorjaar": {
+          "j_nummer": null,
+          "pool": null,
+          "sterkte": 111,
+          "gem_leeftijd": 13.75,
+          "aantal_spelers": null
+        }
+      },
+      "naam": "Rood 3",
+      "codenaam": null
     },
     {
       "ow_code": "O1",
@@ -204,11 +449,31 @@
       "categorie": "b",
       "spelvorm": "8-tal",
       "periodes": {
-        "veld_najaar": { "j_nummer": "J3", "pool": "Or-111", "sterkte": 59, "gem_leeftijd": 14.07, "aantal_spelers": null },
-        "zaal_deel1": { "j_nummer": "J3", "pool": "Or-060", "sterkte": 75, "gem_leeftijd": 14.14, "aantal_spelers": null },
+        "veld_najaar": {
+          "j_nummer": "J3",
+          "pool": "Or-111",
+          "sterkte": 59,
+          "gem_leeftijd": 14.07,
+          "aantal_spelers": null
+        },
+        "zaal_deel1": {
+          "j_nummer": "J3",
+          "pool": "Or-060",
+          "sterkte": 75,
+          "gem_leeftijd": 14.14,
+          "aantal_spelers": null
+        },
         "zaal_deel2": null,
-        "veld_voorjaar": null
-      }
+        "veld_voorjaar": {
+          "j_nummer": null,
+          "pool": null,
+          "sterkte": 90,
+          "gem_leeftijd": 14.14,
+          "aantal_spelers": null
+        }
+      },
+      "naam": "Oranje 1",
+      "codenaam": null
     },
     {
       "ow_code": "O2",
@@ -216,11 +481,31 @@
       "categorie": "b",
       "spelvorm": "8-tal",
       "periodes": {
-        "veld_najaar": { "j_nummer": "J5", "pool": "Or-098", "sterkte": 71, "gem_leeftijd": 12.63, "aantal_spelers": null },
-        "zaal_deel1": { "j_nummer": "J5", "pool": "Or-059", "sterkte": 85, "gem_leeftijd": 12.63, "aantal_spelers": null },
+        "veld_najaar": {
+          "j_nummer": "J5",
+          "pool": "Or-098",
+          "sterkte": 71,
+          "gem_leeftijd": 12.63,
+          "aantal_spelers": null
+        },
+        "zaal_deel1": {
+          "j_nummer": "J5",
+          "pool": "Or-059",
+          "sterkte": 85,
+          "gem_leeftijd": 12.63,
+          "aantal_spelers": null
+        },
         "zaal_deel2": null,
-        "veld_voorjaar": null
-      }
+        "veld_voorjaar": {
+          "j_nummer": null,
+          "pool": null,
+          "sterkte": 97,
+          "gem_leeftijd": 12.63,
+          "aantal_spelers": null
+        }
+      },
+      "naam": "Oranje 2",
+      "codenaam": null
     },
     {
       "ow_code": "O3",
@@ -228,11 +513,31 @@
       "categorie": "b",
       "spelvorm": "8-tal",
       "periodes": {
-        "veld_najaar": { "j_nummer": "J6", "pool": "Or-094", "sterkte": 97, "gem_leeftijd": 12.58, "aantal_spelers": null },
-        "zaal_deel1": { "j_nummer": "J6", "pool": "Or-056", "sterkte": 102, "gem_leeftijd": 12.58, "aantal_spelers": null },
+        "veld_najaar": {
+          "j_nummer": "J6",
+          "pool": "Or-094",
+          "sterkte": 97,
+          "gem_leeftijd": 12.58,
+          "aantal_spelers": null
+        },
+        "zaal_deel1": {
+          "j_nummer": "J6",
+          "pool": "Or-056",
+          "sterkte": 102,
+          "gem_leeftijd": 12.58,
+          "aantal_spelers": null
+        },
         "zaal_deel2": null,
-        "veld_voorjaar": null
-      }
+        "veld_voorjaar": {
+          "j_nummer": null,
+          "pool": null,
+          "sterkte": 112,
+          "gem_leeftijd": 12.58,
+          "aantal_spelers": null
+        }
+      },
+      "naam": "Oranje 3",
+      "codenaam": null
     },
     {
       "ow_code": "G1",
@@ -240,11 +545,31 @@
       "categorie": "b",
       "spelvorm": "8-tal",
       "periodes": {
-        "veld_najaar": { "j_nummer": "J7", "pool": "Ge-132", "sterkte": 43, "gem_leeftijd": 11.80, "aantal_spelers": null },
-        "zaal_deel1": { "j_nummer": "J7", "pool": "Ge-075", "sterkte": 67, "gem_leeftijd": 11.80, "aantal_spelers": null },
+        "veld_najaar": {
+          "j_nummer": "J7",
+          "pool": "Ge-132",
+          "sterkte": 43,
+          "gem_leeftijd": 11.8,
+          "aantal_spelers": null
+        },
+        "zaal_deel1": {
+          "j_nummer": "J7",
+          "pool": "Ge-075",
+          "sterkte": 67,
+          "gem_leeftijd": 11.8,
+          "aantal_spelers": null
+        },
         "zaal_deel2": null,
-        "veld_voorjaar": null
-      }
+        "veld_voorjaar": {
+          "j_nummer": null,
+          "pool": null,
+          "sterkte": 75,
+          "gem_leeftijd": 11.8,
+          "aantal_spelers": null
+        }
+      },
+      "naam": "Geel 1",
+      "codenaam": null
     },
     {
       "ow_code": "G2",
@@ -252,11 +577,31 @@
       "categorie": "b",
       "spelvorm": "8-tal",
       "periodes": {
-        "veld_najaar": { "j_nummer": "J8", "pool": "Ge-116", "sterkte": 86, "gem_leeftijd": 11.68, "aantal_spelers": null },
-        "zaal_deel1": { "j_nummer": "J8", "pool": "Ge-069", "sterkte": 95, "gem_leeftijd": 11.68, "aantal_spelers": null },
+        "veld_najaar": {
+          "j_nummer": "J8",
+          "pool": "Ge-116",
+          "sterkte": 86,
+          "gem_leeftijd": 11.68,
+          "aantal_spelers": null
+        },
+        "zaal_deel1": {
+          "j_nummer": "J8",
+          "pool": "Ge-069",
+          "sterkte": 95,
+          "gem_leeftijd": 11.68,
+          "aantal_spelers": null
+        },
         "zaal_deel2": null,
-        "veld_voorjaar": null
-      }
+        "veld_voorjaar": {
+          "j_nummer": null,
+          "pool": null,
+          "sterkte": 106,
+          "gem_leeftijd": 11.68,
+          "aantal_spelers": null
+        }
+      },
+      "naam": "Geel 2",
+      "codenaam": null
     },
     {
       "ow_code": "G3",
@@ -264,11 +609,31 @@
       "categorie": "b",
       "spelvorm": "8-tal",
       "periodes": {
-        "veld_najaar": { "j_nummer": "J9", "pool": "Ge-119", "sterkte": 72, "gem_leeftijd": 11.12, "aantal_spelers": null },
-        "zaal_deel1": { "j_nummer": "J9", "pool": "Ge-070", "sterkte": 84, "gem_leeftijd": 11.12, "aantal_spelers": null },
+        "veld_najaar": {
+          "j_nummer": "J9",
+          "pool": "Ge-119",
+          "sterkte": 72,
+          "gem_leeftijd": 11.12,
+          "aantal_spelers": null
+        },
+        "zaal_deel1": {
+          "j_nummer": "J9",
+          "pool": "Ge-070",
+          "sterkte": 84,
+          "gem_leeftijd": 11.12,
+          "aantal_spelers": null
+        },
         "zaal_deel2": null,
-        "veld_voorjaar": null
-      }
+        "veld_voorjaar": {
+          "j_nummer": null,
+          "pool": null,
+          "sterkte": 97,
+          "gem_leeftijd": 11.12,
+          "aantal_spelers": null
+        }
+      },
+      "naam": "Geel 3",
+      "codenaam": null
     },
     {
       "ow_code": "G4",
@@ -276,11 +641,31 @@
       "categorie": "b",
       "spelvorm": "8-tal",
       "periodes": {
-        "veld_najaar": { "j_nummer": "J10", "pool": "Ge-126", "sterkte": 51, "gem_leeftijd": 10.42, "aantal_spelers": null },
-        "zaal_deel1": { "j_nummer": "J10", "pool": "Ge-067", "sterkte": 60, "gem_leeftijd": 10.41, "aantal_spelers": null },
+        "veld_najaar": {
+          "j_nummer": "J10",
+          "pool": "Ge-126",
+          "sterkte": 51,
+          "gem_leeftijd": 10.42,
+          "aantal_spelers": null
+        },
+        "zaal_deel1": {
+          "j_nummer": "J10",
+          "pool": "Ge-067",
+          "sterkte": 60,
+          "gem_leeftijd": 10.41,
+          "aantal_spelers": null
+        },
         "zaal_deel2": null,
-        "veld_voorjaar": null
-      }
+        "veld_voorjaar": {
+          "j_nummer": null,
+          "pool": null,
+          "sterkte": 75,
+          "gem_leeftijd": 10.41,
+          "aantal_spelers": null
+        }
+      },
+      "naam": "Geel 4",
+      "codenaam": null
     },
     {
       "ow_code": "Gr1",
@@ -288,11 +673,37 @@
       "categorie": "b",
       "spelvorm": "4-tal",
       "periodes": {
-        "veld_najaar": { "j_nummer": "J11", "pool": "Gr4-173", "sterkte": 36, "gem_leeftijd": 9.79, "aantal_spelers": null },
-        "zaal_deel1": { "j_nummer": "J11", "pool": "Gr4-119", "sterkte": 50, "gem_leeftijd": 9.79, "aantal_spelers": null },
-        "zaal_deel2": { "j_nummer": "J11", "pool": null, "sterkte": 68, "gem_leeftijd": null, "aantal_spelers": null },
-        "veld_voorjaar": null
-      }
+        "veld_najaar": {
+          "j_nummer": "J11",
+          "pool": "Gr4-173",
+          "sterkte": 36,
+          "gem_leeftijd": 9.79,
+          "aantal_spelers": null
+        },
+        "zaal_deel1": {
+          "j_nummer": "J11",
+          "pool": "Gr4-119",
+          "sterkte": 50,
+          "gem_leeftijd": 9.79,
+          "aantal_spelers": null
+        },
+        "zaal_deel2": {
+          "j_nummer": "J11",
+          "pool": null,
+          "sterkte": 68,
+          "gem_leeftijd": null,
+          "aantal_spelers": null
+        },
+        "veld_voorjaar": {
+          "j_nummer": null,
+          "pool": null,
+          "sterkte": 75,
+          "gem_leeftijd": 9.79,
+          "aantal_spelers": null
+        }
+      },
+      "naam": "Groen 1",
+      "codenaam": null
     },
     {
       "ow_code": "Gr2",
@@ -300,11 +711,37 @@
       "categorie": "b",
       "spelvorm": "4-tal",
       "periodes": {
-        "veld_najaar": { "j_nummer": "J12", "pool": "Gr4-176", "sterkte": 33, "gem_leeftijd": 9.32, "aantal_spelers": null },
-        "zaal_deel1": { "j_nummer": "J12", "pool": "Gr4-115", "sterkte": 58, "gem_leeftijd": 9.32, "aantal_spelers": null },
-        "zaal_deel2": { "j_nummer": "J12", "pool": null, "sterkte": 69, "gem_leeftijd": null, "aantal_spelers": null },
-        "veld_voorjaar": null
-      }
+        "veld_najaar": {
+          "j_nummer": "J12",
+          "pool": "Gr4-176",
+          "sterkte": 33,
+          "gem_leeftijd": 9.32,
+          "aantal_spelers": null
+        },
+        "zaal_deel1": {
+          "j_nummer": "J12",
+          "pool": "Gr4-115",
+          "sterkte": 58,
+          "gem_leeftijd": 9.32,
+          "aantal_spelers": null
+        },
+        "zaal_deel2": {
+          "j_nummer": "J12",
+          "pool": null,
+          "sterkte": 69,
+          "gem_leeftijd": null,
+          "aantal_spelers": null
+        },
+        "veld_voorjaar": {
+          "j_nummer": null,
+          "pool": null,
+          "sterkte": 81,
+          "gem_leeftijd": 9.32,
+          "aantal_spelers": null
+        }
+      },
+      "naam": "Groen 2",
+      "codenaam": null
     },
     {
       "ow_code": "Gr3",
@@ -313,11 +750,37 @@
       "spelvorm": "4-tal",
       "_opmerking": "J13/J14 wissel tussen veld en zaal: leeftijden wisselen (8.31<->8.41). Mapping te verifieren via spelersoverlap.",
       "periodes": {
-        "veld_najaar": { "j_nummer": "J13", "pool": "Gr4-172", "sterkte": 39, "gem_leeftijd": 8.31, "aantal_spelers": null },
-        "zaal_deel1": { "j_nummer": "J13", "pool": "Gr4-111", "sterkte": 61, "gem_leeftijd": 8.41, "aantal_spelers": null },
-        "zaal_deel2": { "j_nummer": "J13", "pool": null, "sterkte": 75, "gem_leeftijd": null, "aantal_spelers": null },
-        "veld_voorjaar": null
-      }
+        "veld_najaar": {
+          "j_nummer": "J13",
+          "pool": "Gr4-172",
+          "sterkte": 39,
+          "gem_leeftijd": 8.31,
+          "aantal_spelers": null
+        },
+        "zaal_deel1": {
+          "j_nummer": "J13",
+          "pool": "Gr4-111",
+          "sterkte": 61,
+          "gem_leeftijd": 8.41,
+          "aantal_spelers": null
+        },
+        "zaal_deel2": {
+          "j_nummer": "J13",
+          "pool": null,
+          "sterkte": 75,
+          "gem_leeftijd": null,
+          "aantal_spelers": null
+        },
+        "veld_voorjaar": {
+          "j_nummer": null,
+          "pool": null,
+          "sterkte": 79,
+          "gem_leeftijd": 8.41,
+          "aantal_spelers": null
+        }
+      },
+      "naam": "Groen 3",
+      "codenaam": null
     },
     {
       "ow_code": "Gr4",
@@ -326,11 +789,37 @@
       "spelvorm": "4-tal",
       "_opmerking": "J13/J14 wissel tussen veld en zaal: leeftijden wisselen (8.41<->8.31). Mapping te verifieren via spelersoverlap.",
       "periodes": {
-        "veld_najaar": { "j_nummer": "J14", "pool": "Gr4-174", "sterkte": 41, "gem_leeftijd": 8.41, "aantal_spelers": null },
-        "zaal_deel1": { "j_nummer": "J14", "pool": "Gr4-117", "sterkte": 49, "gem_leeftijd": 8.31, "aantal_spelers": null },
-        "zaal_deel2": { "j_nummer": "J14", "pool": null, "sterkte": 56, "gem_leeftijd": null, "aantal_spelers": null },
-        "veld_voorjaar": null
-      }
+        "veld_najaar": {
+          "j_nummer": "J14",
+          "pool": "Gr4-174",
+          "sterkte": 41,
+          "gem_leeftijd": 8.41,
+          "aantal_spelers": null
+        },
+        "zaal_deel1": {
+          "j_nummer": "J14",
+          "pool": "Gr4-117",
+          "sterkte": 49,
+          "gem_leeftijd": 8.31,
+          "aantal_spelers": null
+        },
+        "zaal_deel2": {
+          "j_nummer": "J14",
+          "pool": null,
+          "sterkte": 56,
+          "gem_leeftijd": null,
+          "aantal_spelers": null
+        },
+        "veld_voorjaar": {
+          "j_nummer": null,
+          "pool": null,
+          "sterkte": 62,
+          "gem_leeftijd": 8.31,
+          "aantal_spelers": null
+        }
+      },
+      "naam": "Groen 4",
+      "codenaam": null
     },
     {
       "ow_code": "Bl1",
@@ -338,11 +827,37 @@
       "categorie": "b",
       "spelvorm": "4-tal",
       "periodes": {
-        "veld_najaar": { "j_nummer": "J15", "pool": "Bl4-084", "sterkte": 20, "gem_leeftijd": 7.75, "aantal_spelers": null },
-        "zaal_deel1": { "j_nummer": "J15", "pool": "Bl4-059", "sterkte": 48, "gem_leeftijd": 7.75, "aantal_spelers": null },
-        "zaal_deel2": { "j_nummer": "J15", "pool": null, "sterkte": 52, "gem_leeftijd": null, "aantal_spelers": null },
-        "veld_voorjaar": null
-      }
+        "veld_najaar": {
+          "j_nummer": "J15",
+          "pool": "Bl4-084",
+          "sterkte": 20,
+          "gem_leeftijd": 7.75,
+          "aantal_spelers": null
+        },
+        "zaal_deel1": {
+          "j_nummer": "J15",
+          "pool": "Bl4-059",
+          "sterkte": 48,
+          "gem_leeftijd": 7.75,
+          "aantal_spelers": null
+        },
+        "zaal_deel2": {
+          "j_nummer": "J15",
+          "pool": null,
+          "sterkte": 52,
+          "gem_leeftijd": null,
+          "aantal_spelers": null
+        },
+        "veld_voorjaar": {
+          "j_nummer": null,
+          "pool": null,
+          "sterkte": 57,
+          "gem_leeftijd": 7.75,
+          "aantal_spelers": null
+        }
+      },
+      "naam": "Blauw 1",
+      "codenaam": null
     },
     {
       "ow_code": "Bl2",
@@ -350,11 +865,37 @@
       "categorie": "b",
       "spelvorm": "4-tal",
       "periodes": {
-        "veld_najaar": { "j_nummer": "J16", "pool": "Bl4-087", "sterkte": 15, "gem_leeftijd": 7.24, "aantal_spelers": null },
-        "zaal_deel1": { "j_nummer": "J16", "pool": "Bl4-062", "sterkte": 28, "gem_leeftijd": 7.24, "aantal_spelers": null },
-        "zaal_deel2": { "j_nummer": "J16", "pool": null, "sterkte": 39, "gem_leeftijd": null, "aantal_spelers": null },
-        "veld_voorjaar": null
-      }
+        "veld_najaar": {
+          "j_nummer": "J16",
+          "pool": "Bl4-087",
+          "sterkte": 15,
+          "gem_leeftijd": 7.24,
+          "aantal_spelers": null
+        },
+        "zaal_deel1": {
+          "j_nummer": "J16",
+          "pool": "Bl4-062",
+          "sterkte": 28,
+          "gem_leeftijd": 7.24,
+          "aantal_spelers": null
+        },
+        "zaal_deel2": {
+          "j_nummer": "J16",
+          "pool": null,
+          "sterkte": 39,
+          "gem_leeftijd": null,
+          "aantal_spelers": null
+        },
+        "veld_voorjaar": {
+          "j_nummer": null,
+          "pool": null,
+          "sterkte": 45,
+          "gem_leeftijd": 7.24,
+          "aantal_spelers": null
+        }
+      },
+      "naam": "Blauw 2",
+      "codenaam": null
     },
     {
       "ow_code": "Bl3",
@@ -362,11 +903,37 @@
       "categorie": "b",
       "spelvorm": "4-tal",
       "periodes": {
-        "veld_najaar": { "j_nummer": "J17", "pool": "Bl4-088", "sterkte": 13, "gem_leeftijd": 7.19, "aantal_spelers": null },
-        "zaal_deel1": { "j_nummer": "J17", "pool": "Bl4-063", "sterkte": 31, "gem_leeftijd": 7.19, "aantal_spelers": null },
-        "zaal_deel2": { "j_nummer": "J17", "pool": null, "sterkte": 42, "gem_leeftijd": null, "aantal_spelers": null },
-        "veld_voorjaar": null
-      }
+        "veld_najaar": {
+          "j_nummer": "J17",
+          "pool": "Bl4-088",
+          "sterkte": 13,
+          "gem_leeftijd": 7.19,
+          "aantal_spelers": null
+        },
+        "zaal_deel1": {
+          "j_nummer": "J17",
+          "pool": "Bl4-063",
+          "sterkte": 31,
+          "gem_leeftijd": 7.19,
+          "aantal_spelers": null
+        },
+        "zaal_deel2": {
+          "j_nummer": "J17",
+          "pool": null,
+          "sterkte": 42,
+          "gem_leeftijd": null,
+          "aantal_spelers": null
+        },
+        "veld_voorjaar": {
+          "j_nummer": null,
+          "pool": null,
+          "sterkte": 47,
+          "gem_leeftijd": 7.19,
+          "aantal_spelers": null
+        }
+      },
+      "naam": "Blauw 3",
+      "codenaam": null
     },
     {
       "ow_code": "Bl4",
@@ -374,11 +941,37 @@
       "categorie": "b",
       "spelvorm": "4-tal",
       "periodes": {
-        "veld_najaar": { "j_nummer": "J18", "pool": null, "sterkte": null, "gem_leeftijd": null, "aantal_spelers": null },
-        "zaal_deel1": { "j_nummer": "J18", "pool": "Bl4-099", "sterkte": null, "gem_leeftijd": null, "aantal_spelers": null },
-        "zaal_deel2": { "j_nummer": "J18", "pool": null, "sterkte": 2, "gem_leeftijd": null, "aantal_spelers": null },
-        "veld_voorjaar": null
-      }
+        "veld_najaar": {
+          "j_nummer": "J18",
+          "pool": null,
+          "sterkte": null,
+          "gem_leeftijd": null,
+          "aantal_spelers": null
+        },
+        "zaal_deel1": {
+          "j_nummer": "J18",
+          "pool": "Bl4-099",
+          "sterkte": null,
+          "gem_leeftijd": null,
+          "aantal_spelers": null
+        },
+        "zaal_deel2": {
+          "j_nummer": "J18",
+          "pool": null,
+          "sterkte": 2,
+          "gem_leeftijd": null,
+          "aantal_spelers": null
+        },
+        "veld_voorjaar": {
+          "j_nummer": null,
+          "pool": null,
+          "sterkte": 12,
+          "gem_leeftijd": 6.49,
+          "aantal_spelers": null
+        }
+      },
+      "naam": "Blauw 4",
+      "codenaam": null
     }
   ]
 }

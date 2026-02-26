@@ -283,14 +283,15 @@ function sterkte(seizoen, periode) {
     console.error(`\nMaak dit bestand aan met ow_codes als sleutels:`);
     console.error(`{`);
     console.error(`  "R1": 86,`);
-    console.error(`  "O1": 59,`);
+    console.error(`  "O1": { "sterkte": 59, "gem_leeftijd": 14.07 },`);
     console.error(`  "G1": 43`);
     console.error(`}`);
     process.exit(1);
   }
 
   let bijgewerkt = 0;
-  for (const [owCode, punten] of Object.entries(sterkteData)) {
+  for (const [owCode, waarde] of Object.entries(sterkteData)) {
+    if (owCode.startsWith('_')) continue; // metadata overslaan
     const team = teamsData.teams.find(t => t.ow_code === owCode);
     if (!team) {
       console.warn(`  ⚠ Onbekende ow_code: ${owCode}`);
@@ -300,7 +301,14 @@ function sterkte(seizoen, periode) {
     if (!team.periodes[periode]) {
       team.periodes[periode] = leegPeriodeObject();
     }
-    team.periodes[periode].sterkte = punten;
+
+    // Ondersteun zowel simpel getal als object { sterkte, gem_leeftijd }
+    if (typeof waarde === 'object' && waarde !== null) {
+      if (waarde.sterkte != null) team.periodes[periode].sterkte = waarde.sterkte;
+      if (waarde.gem_leeftijd != null) team.periodes[periode].gem_leeftijd = waarde.gem_leeftijd;
+    } else {
+      team.periodes[periode].sterkte = waarde;
+    }
     bijgewerkt++;
   }
 

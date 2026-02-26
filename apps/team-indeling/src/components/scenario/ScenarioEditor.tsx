@@ -9,6 +9,8 @@ import {
   moveSpeler,
   createTeam,
   deleteTeam,
+  koppelSelectie,
+  ontkoppelSelectie,
 } from "@/app/scenarios/actions";
 import DndProvider from "./DndContext";
 import Navigator from "./Navigator";
@@ -168,6 +170,7 @@ export default function ScenarioEditor({
         kleur: data.kleur ?? null,
         niveau: null,
         volgorde: teams.length,
+        selectieGroepId: null,
         spelers: [],
         staf: [],
       };
@@ -216,6 +219,46 @@ export default function ScenarioEditor({
     []
   );
 
+  // --- Selectie handlers ---
+  const handleKoppelSelectie = useCallback(
+    (teamIds: string[]) => {
+      if (teamIds.length < 2) return;
+      const [leiderId, ...restIds] = teamIds;
+
+      // Optimistic update
+      setTeams((prev) =>
+        prev.map((t) =>
+          restIds.includes(t.id)
+            ? { ...t, selectieGroepId: leiderId }
+            : t
+        )
+      );
+
+      startTransition(() => {
+        koppelSelectie(teamIds);
+      });
+    },
+    []
+  );
+
+  const handleOntkoppelSelectie = useCallback(
+    (groepLeiderId: string) => {
+      // Optimistic update
+      setTeams((prev) =>
+        prev.map((t) =>
+          t.selectieGroepId === groepLeiderId
+            ? { ...t, selectieGroepId: null }
+            : t
+        )
+      );
+
+      startTransition(() => {
+        ontkoppelSelectie(groepLeiderId);
+      });
+    },
+    []
+  );
+
   if (!laatsteVersie) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -248,6 +291,8 @@ export default function ScenarioEditor({
           zichtbareTeamIds={zichtbaar}
           onCreateTeam={handleCreateTeam}
           onDeleteTeam={handleDeleteTeam}
+          onKoppelSelectie={handleKoppelSelectie}
+          onOntkoppelSelectie={handleOntkoppelSelectie}
         />
 
         {/* Rechts: Spelerspool */}

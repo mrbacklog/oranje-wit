@@ -584,6 +584,11 @@ model Team {
   validatieStatus    ValidatieStatus @default(ONBEKEND)
   validatieMeldingen Json?
 
+  // Selectie-koppeling (self-relation)
+  selectieGroepId String?
+  selectieGroep   Team?   @relation("SelectieGroep", fields: [selectieGroepId], references: [id])
+  selectieLeden   Team[]  @relation("SelectieGroep")
+
   // Relaties
   spelers TeamSpeler[]
   staf    TeamStaf[]

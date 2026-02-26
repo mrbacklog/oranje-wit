@@ -46,6 +46,7 @@ export interface TeamData {
   kleur: Kleur | null;
   niveau: string | null;
   volgorde: number;
+  selectieGroepId: string | null;
   spelers: TeamSpelerData[];
   staf: TeamStafData[];
 }

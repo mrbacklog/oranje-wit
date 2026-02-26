@@ -252,8 +252,37 @@ export async function createTeam(
  * Verwijder een team.
  */
 export async function deleteTeam(teamId: string) {
+  // Ontkoppel eerst eventuele selectie-leden die naar dit team verwijzen
+  await prisma.team.updateMany({
+    where: { selectieGroepId: teamId },
+    data: { selectieGroepId: null },
+  });
   await prisma.team.delete({
     where: { id: teamId },
+  });
+  revalidatePath("/scenarios");
+}
+
+/**
+ * Koppel teams als selectie. Eerste team wordt de "groep leider".
+ */
+export async function koppelSelectie(teamIds: string[]) {
+  if (teamIds.length < 2) return;
+  const [leiderId, ...restIds] = teamIds;
+  await prisma.team.updateMany({
+    where: { id: { in: restIds } },
+    data: { selectieGroepId: leiderId },
+  });
+  revalidatePath("/scenarios");
+}
+
+/**
+ * Ontkoppel een selectie.
+ */
+export async function ontkoppelSelectie(groepLeiderId: string) {
+  await prisma.team.updateMany({
+    where: { selectieGroepId: groepLeiderId },
+    data: { selectieGroepId: null },
   });
   revalidatePath("/scenarios");
 }
