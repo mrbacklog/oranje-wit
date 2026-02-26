@@ -3,7 +3,8 @@
 import { prisma } from "@/lib/db/prisma";
 import { berekenTeamstructuur } from "@/lib/teamstructuur";
 import type { SpelerBasis } from "@/lib/teamstructuur";
-import type { Prisma } from "@oranje-wit/database";
+import type { Prisma, TeamCategorie, Kleur } from "@oranje-wit/database";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 const SEIZOEN = "2026-2027";
@@ -156,4 +157,103 @@ export async function getScenarios(blauwdrukId: string) {
     },
     orderBy: { createdAt: "desc" },
   });
+}
+
+/**
+ * Haal alle spelers op voor de spelerspool.
+ */
+export async function getAlleSpelers() {
+  return prisma.speler.findMany({
+    select: {
+      id: true,
+      roepnaam: true,
+      achternaam: true,
+      geboortejaar: true,
+      geslacht: true,
+      status: true,
+      huidig: true,
+      spelerspad: true,
+      lidSinds: true,
+      seizoenenActief: true,
+      notitie: true,
+    },
+    orderBy: [{ achternaam: "asc" }, { roepnaam: "asc" }],
+  });
+}
+
+/**
+ * Voeg een speler toe aan een team.
+ */
+export async function addSpelerToTeam(teamId: string, spelerId: string) {
+  await prisma.teamSpeler.create({
+    data: { teamId, spelerId },
+  });
+  revalidatePath("/scenarios");
+}
+
+/**
+ * Verwijder een speler uit een team.
+ */
+export async function removeSpelerFromTeam(teamId: string, spelerId: string) {
+  await prisma.teamSpeler.deleteMany({
+    where: { teamId, spelerId },
+  });
+  revalidatePath("/scenarios");
+}
+
+/**
+ * Verplaats een speler van het ene team naar het andere.
+ */
+export async function moveSpeler(
+  spelerId: string,
+  vanTeamId: string,
+  naarTeamId: string
+) {
+  await prisma.$transaction([
+    prisma.teamSpeler.deleteMany({
+      where: { teamId: vanTeamId, spelerId },
+    }),
+    prisma.teamSpeler.create({
+      data: { teamId: naarTeamId, spelerId },
+    }),
+  ]);
+  revalidatePath("/scenarios");
+}
+
+/**
+ * Maak een nieuw team aan binnen een versie.
+ */
+export async function createTeam(
+  versieId: string,
+  data: { naam: string; categorie: TeamCategorie; kleur?: Kleur | null }
+) {
+  // Bepaal volgorde: hoogste + 1
+  const laatsteTeam = await prisma.team.findFirst({
+    where: { versieId },
+    orderBy: { volgorde: "desc" },
+    select: { volgorde: true },
+  });
+  const volgorde = (laatsteTeam?.volgorde ?? -1) + 1;
+
+  const team = await prisma.team.create({
+    data: {
+      versieId,
+      naam: data.naam,
+      categorie: data.categorie,
+      kleur: data.kleur ?? null,
+      volgorde,
+    },
+  });
+  revalidatePath("/scenarios");
+  return team;
+}
+
+/**
+ * Verwijder een team.
+ */
+export async function deleteTeam(teamId: string) {
+  await prisma.team.delete({
+    where: { id: teamId },
+  });
+  revalidatePath("/scenarios");
 }
