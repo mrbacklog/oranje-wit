@@ -13,12 +13,24 @@ function readJSON(relPath) {
 async function syncSeizoenen() {
   const seizoenen = [];
   for (let y = 2010; y <= 2026; y++) {
-    seizoenen.push({ seizoen: `${y}-${y + 1}`, start_jaar: y, eind_jaar: y + 1 });
+    seizoenen.push({
+      seizoen: `${y}-${y + 1}`,
+      start_jaar: y,
+      eind_jaar: y + 1,
+      start_datum: `${y}-08-01`,
+      eind_datum: `${y + 1}-06-30`,
+      peildatum: `${y}-12-31`,
+    });
   }
   for (const s of seizoenen) {
     await pool.query(
-      `INSERT INTO seizoenen (seizoen, start_jaar, eind_jaar) VALUES ($1, $2, $3) ON CONFLICT (seizoen) DO NOTHING`,
-      [s.seizoen, s.start_jaar, s.eind_jaar]
+      `INSERT INTO seizoenen (seizoen, start_jaar, eind_jaar, start_datum, eind_datum, peildatum)
+       VALUES ($1, $2, $3, $4, $5, $6)
+       ON CONFLICT (seizoen) DO UPDATE SET
+         start_datum = COALESCE(seizoenen.start_datum, EXCLUDED.start_datum),
+         eind_datum = COALESCE(seizoenen.eind_datum, EXCLUDED.eind_datum),
+         peildatum = COALESCE(seizoenen.peildatum, EXCLUDED.peildatum)`,
+      [s.seizoen, s.start_jaar, s.eind_jaar, s.start_datum, s.eind_datum, s.peildatum]
     );
   }
   return seizoenen.length;
