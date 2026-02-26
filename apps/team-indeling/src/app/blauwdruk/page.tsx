@@ -4,6 +4,7 @@ import KadersEditor from "@/components/blauwdruk/KadersEditor";
 import SpeerpuntenEditor from "@/components/blauwdruk/SpeerpuntenEditor";
 import ToelichtingEditor from "@/components/blauwdruk/ToelichtingEditor";
 import SpelerStatusOverzicht from "@/components/blauwdruk/SpelerStatusOverzicht";
+import TwijfelpuntenEditor from "@/components/blauwdruk/TwijfelpuntenEditor";
 
 const SEIZOEN = "2026-2027";
 
@@ -55,6 +56,22 @@ export default async function BlauwdrukPage() {
         <SpeerpuntenEditor
           blauwdrukId={blauwdruk.id}
           initieel={blauwdruk.speerpunten}
+        />
+      </section>
+
+      {/* Twijfelpunten */}
+      <section>
+        <h3 className="text-lg font-semibold text-gray-700 mb-3">
+          Twijfelpunten
+        </h3>
+        <p className="text-sm text-gray-500 mb-4">
+          Vragen die nog open staan en in scenario&apos;s worden uitgespeeld.
+        </p>
+        <TwijfelpuntenEditor
+          blauwdrukId={blauwdruk.id}
+          initieel={
+            (blauwdruk.twijfelpunten as { id: string; vraag: string; opties: string[] }[] | null) ?? []
+          }
         />
       </section>
 

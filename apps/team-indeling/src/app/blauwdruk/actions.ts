@@ -60,6 +60,25 @@ export async function updateToelichting(
 }
 
 /**
+ * Twijfelpunten: vragen die in scenario's worden uitgespeeld.
+ */
+interface Twijfelpunt {
+  id: string;
+  vraag: string;       // "Hoeveel U15-teams?"
+  opties: string[];    // ["1 team", "2 teams"]
+}
+
+export async function updateTwijfelpunten(
+  blauwdrukId: string,
+  twijfelpunten: Twijfelpunt[]
+) {
+  return prisma.blauwdruk.update({
+    where: { id: blauwdrukId },
+    data: { twijfelpunten: twijfelpunten as unknown as Prisma.InputJsonValue },
+  });
+}
+
+/**
  * Update de status van een speler (beschikbaar/twijfelt/stopt/nieuw).
  */
 export async function updateSpelerStatus(

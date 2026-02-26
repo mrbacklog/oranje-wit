@@ -171,7 +171,7 @@ model SpelerSeizoen {
 
   lid        Lid      @relation(fields: [relCode], references: [relCode])
   seizoenRef Seizoen  @relation(fields: [seizoen], references: [seizoen])
-  periodes   SpelerPeriode[]
+  competities CompetitieSpeler[]
 
   @@unique([relCode, seizoen])
   @@index([seizoen], map: "idx_speler_seizoenen_seizoen")
@@ -180,20 +180,20 @@ model SpelerSeizoen {
 }
 
 // Speler × team × competitieronde
-model SpelerPeriode {
+model CompetitieSpeler {
   id               Int      @id @default(autoincrement())
   spelerSeizoenId  Int      @map("speler_seizoen_id")
-  periode          String   // "veld_najaar" | "zaal" | "zaal_deel1" | "zaal_deel2" | "veld_voorjaar"
+  competitie       String   // "veld_najaar" | "zaal" | "zaal_deel1" | "zaal_deel2" | "veld_voorjaar"
   team             String
   bron             String   // "telling" | "preseason" | "a2" | "sportlink" | "snapshot"
 
   spelerSeizoen SpelerSeizoen @relation(fields: [spelerSeizoenId], references: [id], onDelete: Cascade)
 
-  @@unique([spelerSeizoenId, periode])
-  @@map("speler_periodes")
+  @@unique([spelerSeizoenId, competitie])
+  @@map("competitie_spelers")
 }
 
-// [DEPRECATED] Spelerspaden — wordt vervangen door SpelerSeizoen + SpelerPeriode
+// [DEPRECATED] Spelerspaden — wordt vervangen door SpelerSeizoen + CompetitieSpeler
 model SpelersPad {
   id        Int     @id @default(autoincrement())
   spelerId  String  @map("speler_id")
@@ -432,8 +432,9 @@ model Blauwdruk {
   toelichting String?  @db.Text
 
   // Gestructureerde kaders
-  kaders      Json     // KNKV-regels + OW-regels die dit seizoen gelden
-  speerpunten String[] // Seizoensdoelen
+  kaders         Json     // KNKV-regels + OW-regels die dit seizoen gelden
+  speerpunten    String[] // Seizoensdoelen
+  twijfelpunten  Json?    // Array van { id, vraag, opties: string[] }
 
   // Relaties
   concepten Concept[]
