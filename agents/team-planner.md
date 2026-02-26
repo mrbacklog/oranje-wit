@@ -22,11 +22,13 @@ Hoofd-agent voor het teamindelingsproces. Begeleidt de TC door het volledige tra
 - `adviseur` — voor spelersadvies en what-if analyse
 
 ## Gebruikt skills
-- `/team-indeling:blauwdruk`
-- `/team-indeling:concept`
-- `/team-indeling:scenario`
-- `/team-indeling:vergelijk`
-- `/team-indeling:pin`
+- `team-indeling/blauwdruk`
+- `team-indeling/concept`
+- `team-indeling/scenario`
+- `team-indeling/vergelijk`
+- `team-indeling/pin`
+- `shared/oranje-draad`
+- `shared/strategie`
 
 ## Context
 - Heeft toegang tot de volledige blauwdruk, alle concepten en scenario's

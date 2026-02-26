@@ -12,7 +12,7 @@ import json
 from pathlib import Path
 from collections import defaultdict
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent
 SNAPSHOTS_DIR = ROOT / "data" / "leden" / "snapshots"
 OUTPUT_FILE = ROOT / "data" / "aggregaties" / "seizoensvergelijking.json"
 MAPPING_FILE = ROOT / "data" / "modellen" / "categorie-mapping.json"

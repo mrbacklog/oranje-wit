@@ -27,7 +27,7 @@ if sys.platform == "win32":
 # Configuratie
 # ---------------------------------------------------------------------------
 
-DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "spelers", "spelerspaden.json")
+DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "data", "spelers", "spelerspaden.json")
 
 # Categorieën van hoog naar laag (index = rang, hoger = lager team)
 CATEGORIE_RANG = {

@@ -5,15 +5,18 @@ tools: Read, Grep, Glob, Write
 model: sonnet
 memory: project
 skills:
-  - oranje-wit:oranje-draad
-  - oranje-wit:lid-monitor
-  - oranje-wit:ledenverloop
-  - oranje-wit:knkv-api
-  - oranje-wit:seizoen-blauwdruk
-  - oranje-wit:scenario-analyse
-  - oranje-wit:jeugdmodel
-  - oranje-wit:teamsamenstelling
-  - oranje-wit:team-indeling
+  - shared/oranje-draad
+  - shared/strategie
+  - monitor/lid-monitor
+  - monitor/ledenverloop
+  - monitor/knkv-api
+  - monitor/seizoen-blauwdruk
+  - monitor/scenario-analyse
+  - monitor/jeugdmodel
+  - monitor/teamsamenstelling
+  - monitor/team-indeling
+  - monitor/database
+  - monitor/exporteer
 ---
 
 Je bent de korfbal-technisch expert van c.k.v. Oranje Wit.
@@ -100,9 +103,9 @@ Voor leeftijden 13+ bestaan A-categorie (U15/U17/U19) en B-categorie (Oranje/Roo
 - Evaluatie-app (Lovable, repo `antjanlaban/oranje-wit-evaluate`) — via export
 
 ## Dashboards
-- **Verenigingsmonitor** — `app/verenigingsmonitor.html`: centraal dashboard met ledenoverzicht, cohorten, verloop, signalering, benchmark
-- **Team Samenstelling** — `app/teamsamenstelling.html`: beleid, streefmodel, teamindelingsvoorbereiding
-- Configuratie: `app/monitor-config.json` (snapshot-datum, bestandspaden)
+- **Verenigingsmonitor** — `apps/monitor/public/verenigingsmonitor.html`: centraal dashboard met ledenoverzicht, cohorten, verloop, signalering, benchmark
+- **Team Samenstelling** — `apps/monitor/public/teamsamenstelling.html`: beleid, streefmodel, teamindelingsvoorbereiding
+- Configuratie: `apps/monitor/public/monitor-config.json` (snapshot-datum, bestandspaden)
 
 ## Geheugen
 Sla in MEMORY.md op: teamhistorie, seizoensbeslissingen, spelerspatronen, openstaande vraagstukken.

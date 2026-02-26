@@ -31,7 +31,8 @@ Specialist in KNKV-competitieregels en OW-voorkeuren. Valideert teamindelingen o
 - 🔴 **Rood**: harde KNKV-regel overtreden of kritiek probleem
 
 ## Gebruikt skills
-- `/team-indeling:valideer`
+- `team-indeling/validatie`
+- `shared/oranje-draad`
 
 ## Context
 - Kent alle KNKV-regels uit `rules/knkv-regels.md`

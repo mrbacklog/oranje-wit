@@ -5,9 +5,9 @@ tools: Read, Grep, Glob, Write
 model: sonnet
 memory: project
 skills:
-  - oranje-wit:oranje-draad
-  - oranje-wit:jeugdmodel
-  - oranje-wit:ledenverloop
+  - shared/oranje-draad
+  - monitor/ledenverloop
+  - monitor/jeugdmodel
 ---
 
 Je bent specialist in spelersanalyse en werving voor c.k.v. Oranje Wit.

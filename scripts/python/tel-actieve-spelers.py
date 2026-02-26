@@ -17,7 +17,7 @@ from datetime import date
 
 # --- Config ---
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 TEAMINDELINGEN_DIR = os.path.join(ROOT, "docs", "teamindelingen")
 OUTPUT_PATH = os.path.join(ROOT, "data", "aggregaties", "actieve-spelers-per-seizoen.json")
 TELLING_OUTPUT_PATH = os.path.join(ROOT, "data", "aggregaties", "teamindelingen-telling.json")

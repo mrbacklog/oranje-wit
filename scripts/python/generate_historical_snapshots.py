@@ -15,7 +15,7 @@ import os
 import re
 from datetime import date
 
-ROOT = r"C:\Oranje Wit"
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SPELERS_PATH = os.path.join(ROOT, "data", "spelers", "spelerspaden.json")
 MAPPING_PATH = os.path.join(ROOT, "data", "modellen", "categorie-mapping.json")
 SNAPSHOTS_DIR = os.path.join(ROOT, "data", "leden", "snapshots")

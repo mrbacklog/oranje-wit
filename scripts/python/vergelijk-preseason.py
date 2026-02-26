@@ -26,7 +26,7 @@ from datetime import datetime
 import openpyxl
 
 # ── Hergebruik functies uit parse_spelerspaden ──────────────────────────
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, os.path.join(ROOT, "data", "spelers"))
 
 from parse_spelerspaden import (

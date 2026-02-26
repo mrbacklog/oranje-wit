@@ -17,7 +17,7 @@ import json
 import os
 import sys
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 CSV_PATH = os.path.join(ROOT, "data", "leden", "snapshots", "raw", "alle-leden-sportlink.csv")
 OUTPUT_PATH = os.path.join(ROOT, "data", "leden", "alle-leden.json")
 

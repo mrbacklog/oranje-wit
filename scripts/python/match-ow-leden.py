@@ -26,7 +26,7 @@ import os
 import re
 from datetime import date
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SPELERSPADEN_PATH = os.path.join(ROOT, "data", "spelers", "spelerspaden.json")
 ALLE_LEDEN_PATH = os.path.join(ROOT, "data", "leden", "alle-leden.json")
 RAPPORT_PATH = os.path.join(ROOT, "data", "spelers", "ow-matching-rapport.json")

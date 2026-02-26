@@ -5,12 +5,12 @@ tools: Read, Grep, Glob, Write
 model: sonnet
 memory: project
 skills:
-  - oranje-wit:oranje-draad
-  - oranje-wit:jeugdmodel
-  - oranje-wit:lid-monitor
-  - oranje-wit:ledenverloop
-  - oranje-wit:teamsamenstelling
-  - oranje-wit:database
+  - shared/oranje-draad
+  - monitor/database
+  - monitor/lid-monitor
+  - monitor/ledenverloop
+  - monitor/jeugdmodel
+  - monitor/teamsamenstelling
 ---
 
 Je bent data-analist voor c.k.v. Oranje Wit, gespecialiseerd in korfbaldata en de Verenigingsmonitor.
@@ -114,25 +114,25 @@ Sportlink CSV + KNKV JSON → verrijkt snapshot → aggregaties
 ```
 
 ### Scripts (in volgorde)
-- `scripts/bereken-verloop.js` — individueel ledenverloop per seizoenspaar (taak 4)
-- `scripts/bereken-cohorten.js` — cohort-aggregatie over alle seizoenen (taak 5)
-- `scripts/genereer-signalering.js` — stoplicht-alerts op basis van cohorten + streefmodel (taak 6)
-- `scripts/bereken_streefboog.py` — streefmodel jeugd berekenen (projecties 2028/2030)
-- `scripts/generate_historical_snapshots.py` — historische snapshots uit spelerspaden
-- `scripts/seizoensvergelijking.py` — seizoen-op-seizoen vergelijking
-- `scripts/analyse_per_leeftijd.py` — retentie/instroom/uitstroom per leeftijdsjaar
+- `scripts/js/bereken-verloop.js` — individueel ledenverloop per seizoenspaar (taak 4)
+- `scripts/js/bereken-cohorten.js` — cohort-aggregatie over alle seizoenen (taak 5)
+- `scripts/js/genereer-signalering.js` — stoplicht-alerts op basis van cohorten + streefmodel (taak 6)
+- `scripts/python/bereken_streefboog.py` — streefmodel jeugd berekenen (projecties 2028/2030)
+- `scripts/python/generate_historical_snapshots.py` — historische snapshots uit spelerspaden
+- `scripts/python/seizoensvergelijking.py` — seizoen-op-seizoen vergelijking
+- `scripts/python/analyse_per_leeftijd.py` — retentie/instroom/uitstroom per leeftijdsjaar
 
 ## Dashboards
 
-Beide dashboards zijn standalone HTML + Chart.js (geen backend), geconfigureerd via `app/monitor-config.json`.
+Beide dashboards zijn standalone HTML + Chart.js (geen backend), geconfigureerd via `apps/monitor/public/monitor-config.json`.
 
-- **Verenigingsmonitor** (`app/verenigingsmonitor.html`) — centraal dashboard met:
+- **Verenigingsmonitor** (`apps/monitor/public/verenigingsmonitor.html`) — centraal dashboard met:
   - Ledenoverzicht, cohortanalyse, instroom/uitstroom, dropout
   - Streefmodel-vergelijking, signalering (stoplicht-alerts)
   - KNKV benchmark, beleidscontext
-- **Team Samenstelling** (`app/teamsamenstelling.html`) — beleid, ledendata, streefmodel, teamindelingsvoorbereiding
+- **Team Samenstelling** (`apps/monitor/public/teamsamenstelling.html`) — beleid, ledendata, streefmodel, teamindelingsvoorbereiding
 
-Bij het verwerken van een nieuwe snapshot moet `app/monitor-config.json` bijgewerkt worden met de nieuwe snapshot-datum en bestandspaden.
+Bij het verwerken van een nieuwe snapshot moet `apps/monitor/public/monitor-config.json` bijgewerkt worden met de nieuwe snapshot-datum en bestandspaden.
 
 ## PostgreSQL Database (Railway)
 

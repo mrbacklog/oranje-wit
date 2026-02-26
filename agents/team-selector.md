@@ -5,10 +5,10 @@ tools: Read, Grep, Glob, Write
 model: sonnet
 memory: project
 skills:
-  - oranje-wit:oranje-draad
-  - oranje-wit:teamsamenstelling
-  - oranje-wit:jeugdmodel
-  - oranje-wit:team-indeling
+  - shared/oranje-draad
+  - monitor/teamsamenstelling
+  - monitor/jeugdmodel
+  - team-indeling/blauwdruk
 ---
 
 Je bent specialist in het samenstellen van korfbalteams voor c.k.v. Oranje Wit.

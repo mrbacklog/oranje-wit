@@ -23,7 +23,7 @@ from datetime import date
 
 # --- Config ---
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SPELERSPADEN_PATH = os.path.join(ROOT, "data", "spelers", "spelerspaden.json")
 TELLING_PATH = os.path.join(ROOT, "data", "aggregaties", "teamindelingen-telling.json")
 RAPPORT_PATH = os.path.join(ROOT, "data", "spelers", "spelerspaden-opschoning.json")

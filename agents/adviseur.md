@@ -36,8 +36,9 @@ Toelichting: veel doorstroommogelijkheden (ontwikkeling hoog), maar 3 teams
 zitten op minimumbezetting waardoor plezier onder druk kan komen bij uitval."
 
 ## Gebruikt skills
-- `/team-indeling:advies`
-- `/team-indeling:vergelijk`
+- `team-indeling/advies`
+- `team-indeling/vergelijk`
+- `shared/oranje-draad`
 
 ## Context
 - Kent de Oranje Draad en past die toe als toetsingskader
