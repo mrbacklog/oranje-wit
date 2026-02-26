@@ -36,10 +36,20 @@ export default async function ScenariosPage() {
             Teamindelingsscenario&apos;s voor seizoen {SEIZOEN}
           </p>
         </div>
-        <NieuwScenarioDialog
-          blauwdrukId={blauwdruk.id}
-          keuzes={keuzes}
-        />
+        <div className="flex items-center gap-3">
+          {scenarios.length >= 2 && (
+            <Link
+              href="/vergelijk"
+              className="px-3 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+            >
+              Vergelijk
+            </Link>
+          )}
+          <NieuwScenarioDialog
+            blauwdrukId={blauwdruk.id}
+            keuzes={keuzes}
+          />
+        </div>
       </div>
 
       {scenarios.length === 0 ? (
