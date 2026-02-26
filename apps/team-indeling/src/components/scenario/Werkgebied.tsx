@@ -8,8 +8,10 @@ import TeamKaart from "./TeamKaart";
 import SelectieBlok from "./SelectieBlok";
 import NieuwTeamDialoog from "./NieuwTeamDialoog";
 import ValidatieRapport from "./ValidatieRapport";
+import VoorstelDialoog from "./VoorstelDialoog";
 
 interface WerkgebiedProps {
+  scenarioId: string;
   teams: TeamData[];
   zichtbareTeamIds: Set<string>;
   validatieMap?: Map<string, TeamValidatie>;
@@ -25,6 +27,7 @@ interface WerkgebiedProps {
 }
 
 export default function Werkgebied({
+  scenarioId,
   teams,
   zichtbareTeamIds,
   validatieMap,
@@ -36,6 +39,7 @@ export default function Werkgebied({
 }: WerkgebiedProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [rapportOpen, setRapportOpen] = useState(false);
+  const [voorstelOpen, setVoorstelOpen] = useState(false);
   const [geselecteerd, setGeselecteerd] = useState<Set<string>>(new Set());
 
   const zichtbareTeams = teams.filter((t) => zichtbareTeamIds.has(t.id));
@@ -122,6 +126,12 @@ export default function Werkgebied({
             </>
           )}
           <button
+            onClick={() => setVoorstelOpen(true)}
+            className="px-3 py-1.5 text-xs font-medium rounded-lg border border-purple-300 text-purple-600 hover:bg-purple-50 transition-colors"
+          >
+            AI Voorstel
+          </button>
+          <button
             onClick={() => setRapportOpen(true)}
             className="px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 transition-colors"
           >
@@ -182,6 +192,12 @@ export default function Werkgebied({
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
         onSubmit={onCreateTeam}
+      />
+
+      <VoorstelDialoog
+        open={voorstelOpen}
+        onClose={() => setVoorstelOpen(false)}
+        scenarioId={scenarioId}
       />
 
       {rapportOpen && validatieMap && (

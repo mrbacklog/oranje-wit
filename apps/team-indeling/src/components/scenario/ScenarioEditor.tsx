@@ -292,6 +292,7 @@ export default function ScenarioEditor({
 
         {/* Midden: Werkgebied */}
         <Werkgebied
+          scenarioId={scenario.id}
           teams={teams}
           zichtbareTeamIds={zichtbaar}
           validatieMap={validatieMap}
