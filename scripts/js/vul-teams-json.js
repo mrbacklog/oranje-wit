@@ -23,7 +23,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const ROOT = path.resolve(__dirname, '..');
+const ROOT = path.resolve(__dirname, '..', '..');
 const PERIODES = ['veld_najaar', 'zaal_deel1', 'zaal_deel2', 'veld_voorjaar'];
 
 // Kleur-afkorting mapping voor ow_code

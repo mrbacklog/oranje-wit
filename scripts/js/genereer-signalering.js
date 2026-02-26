@@ -15,7 +15,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const ROOT = path.resolve(__dirname, '..');
+const ROOT = path.resolve(__dirname, '..', '..');
 const COHORTEN_FILE = path.join(ROOT, 'data', 'ledenverloop', 'cohorten', 'totaal-cohorten.json');
 const STREEF_FILE = path.join(ROOT, 'data', 'modellen', 'streef-ledenboog.json');
 const OUTPUT_DIR = path.join(ROOT, 'data', 'ledenverloop', 'signalering');

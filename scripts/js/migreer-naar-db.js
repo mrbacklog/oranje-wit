@@ -3,11 +3,11 @@
  * Eenmalig migratiescript: alle JSON data → PostgreSQL op Railway.
  * Gebruik: node scripts/migreer-naar-db.js
  */
-require('dotenv').config({ path: require('path').resolve(__dirname, '..', '.env') });
-process.env.OW_ROOT = require('path').resolve(__dirname, '..');
+require('dotenv').config({ path: require('path').resolve(__dirname, '..', '..', '.env') });
+process.env.OW_ROOT = require('path').resolve(__dirname, '..', '..');
 
-const { pool } = require('../mcp/db.js');
-const sync = require('../mcp/tools/sync.js');
+const { pool } = require('../../apps/mcp/oranje-wit-db/db.js');
+const sync = require('../../apps/mcp/oranje-wit-db/tools/sync.js');
 
 async function main() {
   console.log('=== Oranje Wit JSON → PostgreSQL migratie ===\n');
@@ -19,7 +19,7 @@ async function main() {
   console.log('\n2. Snapshots importeren...');
   const fs = require('fs');
   const path = require('path');
-  const snapshotDir = path.resolve(__dirname, '..', 'data/leden/snapshots');
+  const snapshotDir = path.resolve(__dirname, '..', '..', 'data/leden/snapshots');
   const snapshotFiles = fs.readdirSync(snapshotDir)
     .filter(f => f.match(/^\d{4}-\d{2}-\d{2}\.json$/))
     .sort();

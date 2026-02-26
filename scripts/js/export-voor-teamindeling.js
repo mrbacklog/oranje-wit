@@ -15,7 +15,7 @@ const fs = require('fs');
 const path = require('path');
 
 // --- Configuratie ---
-const ROOT = path.resolve(__dirname, '..');
+const ROOT = path.resolve(__dirname, '..', '..');
 const seizoenArg = process.argv[2]; // optioneel: "2026-2027"
 
 // Bepaal seizoenen
