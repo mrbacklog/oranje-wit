@@ -1,23 +1,32 @@
 "use client";
 
+import { useState } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import type { TeamData } from "./types";
+import type { TeamValidatie } from "@/lib/validatie/regels";
 import { SEIZOEN_JAAR, KLEUR_BADGE_KLEUREN } from "./types";
 import TeamSpelerRij from "./TeamSpelerRij";
+import ValidatieBadge from "./ValidatieBadge";
+import ValidatieMeldingen from "./ValidatieMeldingen";
 
 interface SelectieBlokProps {
   teams: TeamData[];
+  validatieMap?: Map<string, TeamValidatie>;
   onOntkoppel: (groepLeiderId: string) => void;
   onDelete: (teamId: string) => void;
 }
 
 function SelectieTeamSectie({
   team,
+  validatie,
   onDelete,
 }: {
   team: TeamData;
+  validatie?: TeamValidatie;
   onDelete: (teamId: string) => void;
 }) {
+  const [meldingenOpen, setMeldingenOpen] = useState(false);
+
   const { setNodeRef, isOver } = useDroppable({
     id: `team-${team.id}`,
     data: { type: "team", teamId: team.id },
@@ -36,18 +45,28 @@ function SelectieTeamSectie({
         ).toFixed(1)
       : "-";
 
+  const borderKleur = isOver
+    ? "border-orange-400 ring-2 ring-orange-200"
+    : validatie && validatie.status === "ROOD"
+      ? "border-red-400"
+      : validatie && validatie.status === "ORANJE"
+        ? "border-orange-400"
+        : "border-gray-200";
+
   return (
     <div
       ref={setNodeRef}
-      className={`bg-white rounded-md border transition-colors ${
-        isOver
-          ? "border-orange-400 ring-2 ring-orange-200"
-          : "border-gray-200"
-      }`}
+      className={`bg-white rounded-md border transition-colors ${borderKleur}`}
     >
       {/* Sub-header */}
       <div className="px-3 py-1.5 border-b border-gray-100 flex items-center justify-between">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 relative">
+          {validatie && (
+            <ValidatieBadge
+              status={validatie.status}
+              onClick={() => setMeldingenOpen(!meldingenOpen)}
+            />
+          )}
           <h5 className="text-xs font-semibold text-gray-700">{team.naam}</h5>
           {team.kleur && (
             <span
@@ -57,6 +76,12 @@ function SelectieTeamSectie({
             >
               {team.kleur}
             </span>
+          )}
+          {meldingenOpen && validatie && (
+            <ValidatieMeldingen
+              meldingen={validatie.meldingen}
+              onClose={() => setMeldingenOpen(false)}
+            />
           )}
         </div>
         <button
@@ -109,6 +134,7 @@ function SelectieTeamSectie({
 
 export default function SelectieBlok({
   teams,
+  validatieMap,
   onOntkoppel,
   onDelete,
 }: SelectieBlokProps) {
@@ -163,6 +189,7 @@ export default function SelectieBlok({
           <SelectieTeamSectie
             key={team.id}
             team={team}
+            validatie={validatieMap?.get(team.id)}
             onDelete={onDelete}
           />
         ))}

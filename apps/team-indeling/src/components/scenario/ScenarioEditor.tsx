@@ -3,6 +3,8 @@
 import { useState, useCallback, useTransition } from "react";
 import type { TeamCategorie, Kleur } from "@oranje-wit/database";
 import type { ScenarioData, SpelerData, TeamData, TeamSpelerData } from "./types";
+import { SEIZOEN_JAAR } from "./types";
+import { useValidatie } from "@/hooks/useValidatie";
 import {
   addSpelerToTeam,
   removeSpelerFromTeam,
@@ -38,6 +40,9 @@ export default function ScenarioEditor({
   );
 
   const [, startTransition] = useTransition();
+
+  // Realtime validatie
+  const { validatieMap, dubbeleMeldingen } = useValidatie(teams, SEIZOEN_JAAR);
 
   // --- Navigator handlers ---
   const handleToggle = useCallback((teamId: string) => {
@@ -289,6 +294,8 @@ export default function ScenarioEditor({
         <Werkgebied
           teams={teams}
           zichtbareTeamIds={zichtbaar}
+          validatieMap={validatieMap}
+          dubbeleMeldingen={dubbeleMeldingen}
           onCreateTeam={handleCreateTeam}
           onDeleteTeam={handleDeleteTeam}
           onKoppelSelectie={handleKoppelSelectie}

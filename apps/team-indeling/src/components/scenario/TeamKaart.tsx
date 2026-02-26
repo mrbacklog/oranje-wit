@@ -1,16 +1,29 @@
 "use client";
 
+import { useState } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import type { TeamData } from "./types";
+import type { TeamValidatie } from "@/lib/validatie/regels";
 import { SEIZOEN_JAAR, KLEUR_BADGE_KLEUREN } from "./types";
 import TeamSpelerRij from "./TeamSpelerRij";
+import ValidatieBadge from "./ValidatieBadge";
+import ValidatieMeldingen from "./ValidatieMeldingen";
 
 interface TeamKaartProps {
   team: TeamData;
+  validatie?: TeamValidatie;
   onDelete?: (teamId: string) => void;
 }
 
-export default function TeamKaart({ team, onDelete }: TeamKaartProps) {
+const VALIDATIE_BORDER: Record<string, string> = {
+  ROOD: "border-red-400",
+  ORANJE: "border-orange-400",
+  GROEN: "border-gray-200",
+};
+
+export default function TeamKaart({ team, validatie, onDelete }: TeamKaartProps) {
+  const [meldingenOpen, setMeldingenOpen] = useState(false);
+
   const { setNodeRef, isOver } = useDroppable({
     id: `team-${team.id}`,
     data: { type: "team", teamId: team.id },
@@ -30,18 +43,37 @@ export default function TeamKaart({ team, onDelete }: TeamKaartProps) {
         ).toFixed(1)
       : "-";
 
+  // J-nummer indicatie
+  const jNummer =
+    aantalSpelers > 0
+      ? `~J${Math.round(
+          team.spelers.reduce(
+            (sum, ts) => sum + (SEIZOEN_JAAR - ts.speler.geboortejaar),
+            0
+          ) / aantalSpelers
+        )}`
+      : null;
+
+  const borderKleur = isOver
+    ? "border-orange-400 ring-2 ring-orange-200"
+    : validatie
+      ? VALIDATIE_BORDER[validatie.status] ?? "border-gray-200"
+      : "border-gray-200";
+
   return (
     <div
       ref={setNodeRef}
-      className={`bg-white border rounded-lg flex flex-col transition-colors ${
-        isOver
-          ? "border-orange-400 ring-2 ring-orange-200"
-          : "border-gray-200"
-      }`}
+      className={`bg-white border rounded-lg flex flex-col transition-colors ${borderKleur}`}
     >
       {/* Header */}
       <div className="px-3 py-2 border-b border-gray-100 flex items-center justify-between">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 relative">
+          {validatie && (
+            <ValidatieBadge
+              status={validatie.status}
+              onClick={() => setMeldingenOpen(!meldingenOpen)}
+            />
+          )}
           <h4 className="text-sm font-semibold text-gray-900">{team.naam}</h4>
           {team.kleur && (
             <span
@@ -51,6 +83,12 @@ export default function TeamKaart({ team, onDelete }: TeamKaartProps) {
             >
               {team.kleur}
             </span>
+          )}
+          {meldingenOpen && validatie && (
+            <ValidatieMeldingen
+              meldingen={validatie.meldingen}
+              onClose={() => setMeldingenOpen(false)}
+            />
           )}
         </div>
         {onDelete && (
@@ -98,6 +136,7 @@ export default function TeamKaart({ team, onDelete }: TeamKaartProps) {
         <span>{aantalSpelers} spelers</span>
         <span>{aantalM}{"\u2642"} {aantalV}{"\u2640"}</span>
         <span>gem. {gemLeeftijd} jr</span>
+        {jNummer && <span className="text-gray-500 font-medium">{jNummer}</span>}
       </div>
     </div>
   );

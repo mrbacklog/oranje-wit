@@ -3,13 +3,17 @@
 import { useState, useMemo, useCallback } from "react";
 import type { TeamData } from "./types";
 import type { TeamCategorie, Kleur } from "@oranje-wit/database";
+import type { TeamValidatie, ValidatieMelding } from "@/lib/validatie/regels";
 import TeamKaart from "./TeamKaart";
 import SelectieBlok from "./SelectieBlok";
 import NieuwTeamDialoog from "./NieuwTeamDialoog";
+import ValidatieRapport from "./ValidatieRapport";
 
 interface WerkgebiedProps {
   teams: TeamData[];
   zichtbareTeamIds: Set<string>;
+  validatieMap?: Map<string, TeamValidatie>;
+  dubbeleMeldingen?: ValidatieMelding[];
   onCreateTeam: (data: {
     naam: string;
     categorie: TeamCategorie;
@@ -23,12 +27,15 @@ interface WerkgebiedProps {
 export default function Werkgebied({
   teams,
   zichtbareTeamIds,
+  validatieMap,
+  dubbeleMeldingen,
   onCreateTeam,
   onDeleteTeam,
   onKoppelSelectie,
   onOntkoppelSelectie,
 }: WerkgebiedProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [rapportOpen, setRapportOpen] = useState(false);
   const [geselecteerd, setGeselecteerd] = useState<Set<string>>(new Set());
 
   const zichtbareTeams = teams.filter((t) => zichtbareTeamIds.has(t.id));
@@ -115,6 +122,12 @@ export default function Werkgebied({
             </>
           )}
           <button
+            onClick={() => setRapportOpen(true)}
+            className="px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 transition-colors"
+          >
+            Validatierapport
+          </button>
+          <button
             onClick={() => setDialogOpen(true)}
             className="px-3 py-1.5 bg-orange-500 text-white text-xs font-medium rounded-lg hover:bg-orange-600 transition-colors"
           >
@@ -138,6 +151,7 @@ export default function Werkgebied({
               <SelectieBlok
                 key={`selectie-${leiderId}`}
                 teams={groepTeams}
+                validatieMap={validatieMap}
                 onOntkoppel={onOntkoppelSelectie}
                 onDelete={onDeleteTeam}
               />
@@ -153,7 +167,11 @@ export default function Werkgebied({
                     : ""
                 }`}
               >
-                <TeamKaart team={team} onDelete={onDeleteTeam} />
+                <TeamKaart
+                  team={team}
+                  validatie={validatieMap?.get(team.id)}
+                  onDelete={onDeleteTeam}
+                />
               </div>
             ))}
           </div>
@@ -165,6 +183,15 @@ export default function Werkgebied({
         onClose={() => setDialogOpen(false)}
         onSubmit={onCreateTeam}
       />
+
+      {rapportOpen && validatieMap && (
+        <ValidatieRapport
+          teams={teams}
+          validatieMap={validatieMap}
+          dubbeleMeldingen={dubbeleMeldingen ?? []}
+          onClose={() => setRapportOpen(false)}
+        />
+      )}
     </div>
   );
 }
