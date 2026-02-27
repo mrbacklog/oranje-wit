@@ -98,6 +98,12 @@ export async function getOWTeamsMetUitslagen(
   // Groepeer poules per OW-teamcode
   const teamsMap = new Map<string, PouleStand[]>();
   for (const poule of poulesMap.values()) {
+    // Filter lege poules (OW-team heeft 0 wedstrijden gespeeld)
+    const owGespeeld = poule.regels
+      .filter((r) => r.isOW)
+      .reduce((sum, r) => sum + r.gespeeld, 0);
+    if (owGespeeld === 0) continue;
+
     for (const code of poule.owTeamCodes) {
       if (!teamsMap.has(code)) teamsMap.set(code, []);
       teamsMap.get(code)!.push({
@@ -107,6 +113,31 @@ export async function getOWTeamsMetUitslagen(
         regels: poule.regels,
       });
     }
+  }
+
+  // Deduplicate: poules met dezelfde pool+niveau behouden alleen de versie
+  // met de meeste gespeelde wedstrijden (voorkomt dubbele veld najaar/voorjaar)
+  for (const [code, poules] of teamsMap) {
+    const seen = new Map<string, number>(); // pool+niveau → index met meeste gs
+    const deduped: PouleStand[] = [];
+    for (const poule of poules) {
+      const key = `${poule.pool}|${poule.niveau}`;
+      const totalGs = poule.regels.reduce((s, r) => s + r.gespeeld, 0);
+      const existing = seen.get(key);
+      if (existing !== undefined) {
+        const existingGs = deduped[existing].regels.reduce(
+          (s, r) => s + r.gespeeld,
+          0
+        );
+        if (totalGs > existingGs) {
+          deduped[existing] = poule; // vervang door versie met meer data
+        }
+      } else {
+        seen.set(key, deduped.length);
+        deduped.push(poule);
+      }
+    }
+    teamsMap.set(code, deduped);
   }
 
   // Sorteer teams
