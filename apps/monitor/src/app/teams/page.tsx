@@ -1,5 +1,6 @@
 import { PageHeader, BandPill } from "@oranje-wit/ui";
 import { getTeamsRegister } from "@/lib/queries/teams";
+import { getStafPerTeam } from "@/lib/queries/staf";
 import { getSeizoen } from "@/lib/utils/seizoen";
 
 export default async function TeamsPage({
@@ -10,7 +11,10 @@ export default async function TeamsPage({
   const params = await searchParams;
   const seizoen = getSeizoen(params);
 
-  const register = await getTeamsRegister(seizoen);
+  const [register, stafPerTeam] = await Promise.all([
+    getTeamsRegister(seizoen),
+    getStafPerTeam(seizoen),
+  ]);
 
   // Groepeer register teams per categorie
   const perCategorie = new Map<string, typeof register.teams>();
@@ -152,6 +156,26 @@ export default async function TeamsPage({
                           })}
                         </tbody>
                       </table>
+                    </div>
+                  )}
+
+                  {/* Staf */}
+                  {stafPerTeam.has(team.ow_code) && (
+                    <div className="mt-3 border-t border-gray-100 pt-3">
+                      <p className="mb-1 text-xs font-medium text-gray-500">
+                        Staf
+                      </p>
+                      <div className="space-y-0.5">
+                        {stafPerTeam.get(team.ow_code)!.map((s) => (
+                          <div
+                            key={s.stafCode}
+                            className="flex items-center justify-between text-xs"
+                          >
+                            <span className="text-gray-700">{s.naam}</span>
+                            <span className="text-gray-400">{s.rol}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>
