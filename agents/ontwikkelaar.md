@@ -159,7 +159,7 @@ apps/team-indeling/src/
 - `app/scenarios/actions.ts` — scenario CRUD, moveSpeler, koppelSelectie, markeerDefinitief
 
 ### Modellen
-- **Monitor-tabellen** (snake_case via `@@map`): Lid, Seizoen, Snapshot, LidFoto, etc.
+- **Monitor-tabellen** (snake_case via `@@map`): Lid, Seizoen, CompetitieSpeler, LidFoto, OWTeam, etc.
 - **TI-tabellen** (PascalCase): Speler, Team, Scenario, Versie, etc.
 - Team heeft `selectieGroepId` self-relation voor selectie-koppeling
 
