@@ -210,29 +210,52 @@ export async function importData(data: ExportData): Promise<ImportResult> {
     }
   }
 
-  // 2. Staf upsert
+  // 2. Staf upsert — zoek op relCode (Sportlink ID), maak stafCode als PK
+  //    staf_ids in ReferentieTeams worden ook omgezet van Sportlink ID → stafCode
+  const sportlinkToStafCode = new Map<string, string>();
+
   for (const staf of data.staf) {
     try {
-      const r = await prisma.staf.upsert({
-        where: { id: staf.id },
-        create: {
-          id: staf.id,
-          naam: staf.naam,
-          geboortejaar: staf.geboortejaar,
-          rollen: mapRol(staf.rol),
-        },
-        update: {
-          naam: staf.naam,
-          geboortejaar: staf.geboortejaar,
-          rollen: mapRol(staf.rol),
-          // notitie wordt NIET aangeraakt (gebruikersinvoer)
-        },
+      // Zoek bestaand record op relCode (Sportlink ID)
+      const bestaand = await prisma.staf.findUnique({
+        where: { relCode: staf.id },
       });
 
-      if (r.createdAt.getTime() === r.updatedAt.getTime()) {
-        result.staf.nieuw++;
-      } else {
+      if (bestaand) {
+        // Update bestaand record
+        await prisma.staf.update({
+          where: { id: bestaand.id },
+          data: {
+            naam: staf.naam,
+            geboortejaar: staf.geboortejaar,
+            rollen: mapRol(staf.rol),
+            // notitie wordt NIET aangeraakt (gebruikersinvoer)
+          },
+        });
+        sportlinkToStafCode.set(staf.id, bestaand.id);
         result.staf.bijgewerkt++;
+      } else {
+        // Genereer nieuwe stafCode
+        const last = await prisma.staf.findFirst({
+          where: { id: { startsWith: "STAF-" } },
+          orderBy: { id: "desc" },
+        });
+        const num = last
+          ? parseInt(last.id.replace("STAF-", "")) + 1
+          : 1;
+        const stafCode = `STAF-${String(num).padStart(3, "0")}`;
+
+        await prisma.staf.create({
+          data: {
+            id: stafCode,
+            relCode: staf.id,
+            naam: staf.naam,
+            geboortejaar: staf.geboortejaar,
+            rollen: mapRol(staf.rol),
+          },
+        });
+        sportlinkToStafCode.set(staf.id, stafCode);
+        result.staf.nieuw++;
       }
     } catch (err) {
       console.error(`  Staf fout: ${staf.naam}: ${err}`);
@@ -257,7 +280,9 @@ export async function importData(data: ExportData): Promise<ImportResult> {
         poolVeld: team.pool_veld,
         poolZaal: team.pool_zaal,
         spelerIds: team.speler_ids,
-        stafIds: team.staf_ids,
+        stafIds: team.staf_ids.map(
+          (sid) => sportlinkToStafCode.get(sid) ?? sid
+        ),
         stats: team.stats as Prisma.InputJsonValue,
       })),
     });

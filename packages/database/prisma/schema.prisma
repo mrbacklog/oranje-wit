@@ -33,6 +33,7 @@ model Lid {
   // Relaties
   spelerSeizoenen SpelerSeizoen[]
   foto            LidFoto?
+  stafleden       Staf[]
 
   @@map("leden")
 }
@@ -356,7 +357,8 @@ enum Geslacht {
 }
 
 model Staf {
-  id           String  @id // Sportlink ID
+  id           String  @id               // stafCode: STAF-001
+  relCode      String? @unique @map("rel_code")  // optionele koppeling naar leden
   naam         String
   geboortejaar Int?
   email        String?
@@ -364,11 +366,31 @@ model Staf {
   notitie      String?  @db.Text
 
   // Relaties
-  teamStaf TeamStaf[]
-  pins     Pin[]
+  lid          Lid?     @relation(fields: [relCode], references: [relCode])
+  teamStaf     TeamStaf[]
+  pins         Pin[]
+  toewijzingen StafToewijzing[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// Historische staf-toewijzing: wie bij welk team per seizoen (Monitor-domein)
+model StafToewijzing {
+  id       Int    @id @default(autoincrement())
+  stafId   String @map("staf_id")
+  seizoen  String
+  team     String
+  rol      String                    // "Trainer/Coach", "Begeleider", "Verzorger"
+  functie  String?                   // originele functietekst uit CSV
+  bron     String @default("staf_overzicht")
+
+  staf     Staf   @relation(fields: [stafId], references: [id])
+
+  @@unique([stafId, seizoen, team])
+  @@index([seizoen])
+  @@index([stafId])
+  @@map("staf_toewijzingen")
 }
 
 // ============================================================
@@ -589,7 +611,8 @@ enum SpelerStatus {
   BESCHIKBAAR
   TWIJFELT
   GAAT_STOPPEN
-  NIEUW
+  NIEUW_POTENTIEEL
+  NIEUW_DEFINITIEF
 }
 
 // ============================================================
