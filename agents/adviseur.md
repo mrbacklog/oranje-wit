@@ -4,6 +4,7 @@ description: Intelligente adviseur voor spelersplaatsing, what-if scenario's en 
 tools: Read, Grep, Glob, Write
 model: sonnet
 memory: project
+startup-skill: shared/start
 skills:
   - team-indeling/advies
   - team-indeling/vergelijk

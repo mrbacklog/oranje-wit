@@ -4,6 +4,7 @@ description: Specialist in korfbaldata-analyse en Verenigingsmonitor voor c.k.v.
 tools: Read, Grep, Glob, Write
 model: sonnet
 memory: project
+startup-skill: shared/start
 skills:
   - shared/oranje-draad
   - monitor/database

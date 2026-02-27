@@ -4,6 +4,7 @@ description: Hoofd-agent voor het teamindelingsproces in de Next.js app. Begelei
 tools: Read, Grep, Glob, Write
 model: sonnet
 memory: project
+startup-skill: shared/start
 skills:
   - team-indeling/blauwdruk
   - team-indeling/concept

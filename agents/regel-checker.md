@@ -4,6 +4,7 @@ description: Specialist in KNKV-competitieregels en OW-voorkeuren. Valideert tea
 tools: Read, Grep, Glob, Write
 model: sonnet
 memory: project
+startup-skill: shared/start
 skills:
   - team-indeling/validatie
   - shared/oranje-draad

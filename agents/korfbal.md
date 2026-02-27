@@ -4,6 +4,7 @@ description: Korfbal-technisch expert voor c.k.v. Oranje Wit. Gebruik voor alles
 tools: Read, Grep, Glob, Write
 model: sonnet
 memory: project
+startup-skill: shared/start
 skills:
   - shared/oranje-draad
   - monitor/lid-monitor

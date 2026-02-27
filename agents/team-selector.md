@@ -4,6 +4,7 @@ description: Specialist in seizoenssamenstelling voor c.k.v. Oranje Wit. Spawn w
 tools: Read, Grep, Glob, Write
 model: sonnet
 memory: project
+startup-skill: shared/start
 skills:
   - shared/oranje-draad
   - monitor/teamsamenstelling

@@ -4,6 +4,7 @@ description: Technisch expert voor de Next.js team-indeling app. Spawn voor het 
 tools: Read, Grep, Glob, Write, Bash
 model: sonnet
 memory: project
+startup-skill: shared/start
 skills:
   - team-indeling/import
   - team-indeling/evaluatie

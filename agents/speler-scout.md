@@ -4,6 +4,7 @@ description: Specialist in spelersanalyse en werving voor c.k.v. Oranje Wit. Spa
 tools: Read, Grep, Glob, Write
 model: sonnet
 memory: project
+startup-skill: shared/start
 skills:
   - shared/oranje-draad
   - monitor/ledenverloop
