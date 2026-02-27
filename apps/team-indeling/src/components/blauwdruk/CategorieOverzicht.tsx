@@ -51,7 +51,7 @@ export default function CategorieOverzicht({
               {/* Gender + teams */}
               <div className="flex items-center justify-between text-sm text-gray-500">
                 <span>
-                  {cat.mannen}\u2642 {cat.vrouwen}\u2640
+                  {cat.mannen}♂ {cat.vrouwen}♀
                 </span>
                 <span>
                   {cat.minTeams === cat.maxTeams
@@ -91,7 +91,7 @@ export default function CategorieOverzicht({
             </div>
 
             <div className="text-sm text-gray-500">
-              {senioren.mannen}\u2642 {senioren.vrouwen}\u2640
+              {senioren.mannen}♂ {senioren.vrouwen}♀
             </div>
           </div>
         </div>

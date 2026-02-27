@@ -189,27 +189,6 @@ function update(seizoen, periode) {
     process.exit(1);
   }
 
-  // Probeer snapshot te laden voor spelersoverlap-matching
-  const snapshotDir = path.join(ROOT, 'data', 'leden', 'snapshots');
-  const snapshots = fs.readdirSync(snapshotDir)
-    .filter(f => f.endsWith('.json') && !f.startsWith('.'))
-    .sort()
-    .reverse();
-
-  let spelersPerTeam = null;
-  if (snapshots.length > 0) {
-    const snapshot = leesJSON(`data/leden/snapshots/${snapshots[0]}`);
-    if (snapshot && snapshot.leden) {
-      spelersPerTeam = {};
-      snapshot.leden.forEach(lid => {
-        if (lid.team && lid.spelactiviteit === 'korfbal') {
-          if (!spelersPerTeam[lid.team]) spelersPerTeam[lid.team] = [];
-          spelersPerTeam[lid.team].push(lid.rel_code);
-        }
-      });
-    }
-  }
-
   // Match KNKV-teams aan ow_codes
   let bijgewerkt = 0;
   for (const knkvTeam of knkvData.teams) {

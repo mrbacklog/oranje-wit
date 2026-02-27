@@ -61,11 +61,8 @@ SpelerSeizoen (speler_seizoenen) — 1 per speler per seizoen
 |---|---|---|
 | `leden` | ~1.000 | Permanente ledenrecords (1 per lid) |
 | `seizoenen` | 16 | Seizoenen 2010-2011 t/m 2025-2026 |
-| `snapshots` | 17+ | Snapshot metadata per peildatum |
-| `leden_snapshot` | ~5.000 | Lid-status per snapshot (point-in-time) |
 | `teams` | ~30 | Teams per seizoen met ow_code |
 | `team_periodes` | ~70 | J-nummer, pool, sterkte per competitiefase |
-| `spelerspaden` | 5.218 | **DEPRECATED** — vervangen door speler_seizoenen + competitie_spelers |
 | `ledenverloop` | ~5.700 | Individueel verloop per seizoenspaar |
 | `cohort_seizoenen` | ~1.150 | Cohortdata per geboortejaar × geslacht × seizoen |
 | `signalering` | ~10 | Stoplicht-alerts |
@@ -75,7 +72,7 @@ SpelerSeizoen (speler_seizoenen) — 1 per speler per seizoen
 | Script | Input | Output |
 |---|---|---|
 | `scripts/import/sync-telling.ts` | `docs/Telling spelers per seizoen.xlsx` | speler_seizoenen + competitie_spelers (veld_najaar) |
-| `scripts/import/import-veld-voorjaar.js` | `data/leden/snapshots/YYYY-06-01.json` | competitie_spelers (veld_voorjaar) |
+| `scripts/import/import-veld-voorjaar.js` | Sportlink juni-data | competitie_spelers (veld_voorjaar) |
 | `scripts/import/vul-veld-najaar-aan.js` | bestaande DB-data | competitie_spelers (veld_najaar, bron=afgeleid) |
 | `scripts/import/check-kwaliteit.js` | database | kwaliteitsrapport op stdout |
 

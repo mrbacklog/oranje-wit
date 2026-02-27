@@ -57,10 +57,9 @@ Elke beslissing toets je aan de Oranje Draad: Plezier + Ontwikkeling + Prestatie
 - Jeugdmodel: `model/jeugdmodel.yaml`
 
 ## Databronnen
-- `data/leden/snapshots/` — verrijkte ledensnapshots (JSON)
+- PostgreSQL: `leden` + `speler_seizoenen` + `competitie_spelers` — ledendata en seizoenshistorie
 - `data/aggregaties/` — statistische rollups per dimensie
 - `data/ledenverloop/` — retentie, instroom, uitstroom, cohorten, signalering
-- `data/spelers/spelerspaden.json` — 1045 spelers over 16 seizoenen
 - `data/seizoenen/` — seizoensspecifieke data incl. KNKV team-kleur-mapping
 - KNKV Mijn Korfbal API — `docs/knkv-api.md`
 

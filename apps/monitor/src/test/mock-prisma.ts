@@ -2,7 +2,6 @@ import { vi } from "vitest";
 
 export const mockPrisma = {
   lid: { count: vi.fn(), findMany: vi.fn() },
-  snapshot: { findFirst: vi.fn(), findMany: vi.fn() },
   seizoen: { findMany: vi.fn() },
   oWTeam: { count: vi.fn(), findMany: vi.fn() },
   signalering: { findMany: vi.fn() },

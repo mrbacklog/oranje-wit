@@ -1,22 +1,21 @@
 import { prisma } from "@/lib/db/prisma";
 
 // ---------------------------------------------------------------------------
-// Leden trend (uit speler_seizoenen — betrouwbaarder dan cohort_seizoenen)
+// Leden trend (uit speler_seizoenen — unieke rel_codes per seizoen)
 // ---------------------------------------------------------------------------
 
 export type LedenTrendPunt = { seizoen: string; totaal: number };
 
 export async function getLedenTrend(): Promise<LedenTrendPunt[]> {
   return prisma.$queryRaw<LedenTrendPunt[]>`
-    SELECT seizoen, COUNT(*)::int AS totaal
+    SELECT seizoen, COUNT(DISTINCT rel_code)::int AS totaal
     FROM speler_seizoenen
-    WHERE bron = 'telling'
     GROUP BY seizoen
     ORDER BY seizoen`;
 }
 
 // ---------------------------------------------------------------------------
-// Instroom/uitstroom (rel_codes vergelijken tussen opeenvolgende seizoenen)
+// Instroom/uitstroom (unieke rel_codes vergelijken tussen opeenvolgende seizoenen)
 // ---------------------------------------------------------------------------
 
 export type InstroomUitstroomPunt = {
@@ -28,9 +27,8 @@ export type InstroomUitstroomPunt = {
 export async function getInstroomUitstroom(): Promise<InstroomUitstroomPunt[]> {
   return prisma.$queryRaw<InstroomUitstroomPunt[]>`
     WITH per_seizoen AS (
-      SELECT seizoen, array_agg(rel_code) AS codes
+      SELECT seizoen, array_agg(DISTINCT rel_code) AS codes
       FROM speler_seizoenen
-      WHERE bron = 'telling'
       GROUP BY seizoen
     ),
     paren AS (
@@ -70,18 +68,18 @@ export async function getDashboardKPIs(
   const [spelerCount, signaleringen, teamCount, geslachtRows] =
     await Promise.all([
       prisma.$queryRaw<{ totaal: number }[]>`
-        SELECT COUNT(*)::int AS totaal
+        SELECT COUNT(DISTINCT rel_code)::int AS totaal
         FROM speler_seizoenen
-        WHERE seizoen = ${seizoen} AND bron = 'telling'`,
+        WHERE seizoen = ${seizoen}`,
       prisma.signalering.findMany({
         where: { seizoen },
         select: { ernst: true },
       }),
       prisma.oWTeam.count({ where: { seizoen } }),
       prisma.$queryRaw<{ geslacht: string; aantal: number }[]>`
-        SELECT geslacht, COUNT(*)::int AS aantal
+        SELECT geslacht, COUNT(DISTINCT rel_code)::int AS aantal
         FROM speler_seizoenen
-        WHERE seizoen = ${seizoen} AND bron = 'telling'
+        WHERE seizoen = ${seizoen}
         GROUP BY geslacht`,
     ]);
 

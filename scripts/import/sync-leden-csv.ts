@@ -159,9 +159,8 @@ async function main() {
         console.log(`  Verwijder: ${code} ${info?.roepnaam || ""} ${info?.achternaam || ""}`);
 
         // Verwijder gerelateerde rijen eerst (FK constraints)
-        await pool.query("DELETE FROM leden_snapshot WHERE rel_code = $1", [code]);
+        await pool.query("DELETE FROM speler_seizoenen WHERE rel_code = $1", [code]);
         await pool.query("DELETE FROM ledenverloop WHERE rel_code = $1", [code]);
-        // spelerspaden heeft speler_id, niet rel_code FK
         await pool.query("DELETE FROM leden WHERE rel_code = $1", [code]);
       }
 

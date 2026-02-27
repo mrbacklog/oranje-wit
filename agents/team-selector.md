@@ -34,7 +34,7 @@ Specialist in het samenstellen van korfbalteams voor c.k.v. Oranje Wit.
 1. Blauwdruk (database of `data/seizoenen/`)
 2. Scenario-analyse (risico-inventarisatie)
 3. Evaluaties (database: Evaluatie tabel)
-4. Ledendata (meest recente snapshot)
+4. Ledendata (PostgreSQL: `leden` + `speler_seizoenen`)
 5. Streefmodel (`data/modellen/streef-ledenboog.json`)
 6. KNKV teamdata (`data/seizoenen/YYYY-YYYY/teams-knkv.json`)
 7. Staflijst (beschikbare trainers en coaches)

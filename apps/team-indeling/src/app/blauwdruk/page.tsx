@@ -1,4 +1,5 @@
-import { getBlauwdruk, getSpelersUitgebreid, getLedenStatistieken, getTeamgrootteTargets } from "./actions";
+import { getBlauwdruk, getSpelersUitgebreid, getLedenStatistieken } from "./actions";
+import { getTeamgrootteTargets } from "./teamgrootte";
 import KadersOverzicht from "@/components/blauwdruk/KadersEditor";
 import SpeerpuntenEditor from "@/components/blauwdruk/SpeerpuntenEditor";
 import ToelichtingEditor from "@/components/blauwdruk/ToelichtingEditor";

@@ -3,9 +3,11 @@
  * Export-script: genereert één JSON-bestand met alle data die de
  * Team-Indeling tool nodig heeft voor een nieuw seizoen.
  *
+ * Bron: PostgreSQL database (speler_seizoenen, competitie_spelers, leden, etc.)
+ *
  * Gebruik:
- *   node scripts/export-voor-teamindeling.js [seizoen]
- *   node scripts/export-voor-teamindeling.js 2026-2027
+ *   DATABASE_URL=... node scripts/js/export-voor-teamindeling.js [seizoen]
+ *   DATABASE_URL=... node scripts/js/export-voor-teamindeling.js 2026-2027
  *
  * Output:
  *   data/export/export-YYYY-YYYY.json
@@ -13,9 +15,12 @@
 
 const fs = require('fs');
 const path = require('path');
+const { Pool } = require('pg');
 
 // --- Configuratie ---
 const ROOT = path.resolve(__dirname, '..', '..');
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+
 const seizoenArg = process.argv[2]; // optioneel: "2026-2027"
 
 // Bepaal seizoenen
@@ -23,7 +28,7 @@ const huidigSeizoen = '2025-2026';
 const nieuwSeizoen = seizoenArg || '2026-2027';
 const seizoenJaar = parseInt(nieuwSeizoen.split('-')[0]); // 2026
 
-// Laatste 5 seizoenen voor spelerspaden
+// Laatste 5 seizoenen voor spelerspad-historie
 const RELEVANTE_SEIZOENEN = [
   '2021-2022', '2022-2023', '2023-2024', '2024-2025', '2025-2026'
 ];
@@ -39,42 +44,10 @@ function leesJSON(relatief) {
   return JSON.parse(fs.readFileSync(volledig, 'utf-8'));
 }
 
-function vindMeestRecenteSnapshot() {
-  const dir = path.join(ROOT, 'data', 'leden', 'snapshots');
-  const bestanden = fs.readdirSync(dir)
-    .filter(f => f.endsWith('.json') && !f.includes('raw'))
-    .sort()
-    .reverse();
-  if (bestanden.length === 0) throw new Error('Geen snapshots gevonden');
-  return bestanden[0];
-}
-
-function vindRawTeamsCSV(snapshotDatum) {
-  const csvPad = path.join(ROOT, 'data', 'leden', 'snapshots', 'raw', `${snapshotDatum}-sportlink-teams.csv`);
-  if (!fs.existsSync(csvPad)) {
-    console.warn(`  ⚠ Sportlink teams CSV niet gevonden: ${csvPad}`);
-    return null;
-  }
-  return fs.readFileSync(csvPad, 'utf-8');
-}
-
-function parseCSV(csv) {
-  const regels = csv.trim().split('\n');
-  const headers = regels[0].split(';').map(h => h.replace(/"/g, '').trim());
-  return regels.slice(1).map(regel => {
-    const waarden = regel.split(';').map(v => v.replace(/"/g, '').trim());
-    const obj = {};
-    headers.forEach((h, i) => { obj[h] = waarden[i] || null; });
-    return obj;
-  });
-}
-
 function parseYAML(relatief) {
-  // Simpele YAML-parser voor het jeugdmodel (platte key-value structuur)
   const volledig = path.join(ROOT, relatief);
   if (!fs.existsSync(volledig)) return null;
-  const tekst = fs.readFileSync(volledig, 'utf-8');
-  return tekst;
+  return fs.readFileSync(volledig, 'utf-8');
 }
 
 function extractRetentieUitYAML(yamlTekst) {
@@ -121,7 +94,7 @@ function extractInstroomUitYAML(yamlTekst) {
 
 function laadAlleTeamsKNKV() {
   const seizoenenDir = path.join(ROOT, 'data', 'seizoenen');
-  const result = new Map(); // seizoen → teams[]
+  const result = new Map();
 
   if (!fs.existsSync(seizoenenDir)) return result;
 
@@ -144,7 +117,6 @@ function zoekTeamInfo(teamsPerSeizoen, seizoen, teamNaam) {
   const teams = teamsPerSeizoen.get(seizoen);
   if (!teams || !teamNaam) return { kleur: null, niveau: null, spelvorm: null };
 
-  // Exacte match op teamnaam
   const match = teams.find(t => t.team === teamNaam);
   if (match) {
     return {
@@ -160,7 +132,6 @@ function zoekTeamInfo(teamsPerSeizoen, seizoen, teamNaam) {
 // --- Volgend seizoen berekening ---
 
 function bepaalACategorieVolgendSeizoen(geboortejaar) {
-  // Peildatum: 31 dec van seizoenjaar
   const leeftijd = seizoenJaar - geboortejaar;
 
   if (leeftijd >= 13 && leeftijd <= 14) return { a_categorie: 'U15', a_jaars: leeftijd === 13 ? '1e-jaars' : '2e-jaars' };
@@ -185,7 +156,6 @@ function bepaalVolgendSeizoen(speler) {
   const bandB = bepaalKleurBand(leeftijd);
 
   let opmerking = null;
-  // Doorstroom-opmerkingen
   if (speler.huidig && speler.huidig.a_categorie && aCat.a_categorie !== speler.huidig.a_categorie) {
     opmerking = `Doorstroom ${speler.huidig.a_categorie} → ${aCat.a_categorie || 'Senioren'}`;
   }
@@ -211,24 +181,20 @@ function berekenRetentie(speler, retentieData, seizoenenActief) {
   const leeftijd = seizoenJaar - speler.geboortejaar;
   const geslacht = speler.geslacht;
 
-  // Pak de gender-specifieke retentiekans, fallback naar totaal
   const geslachtKey = geslacht === 'M' ? 'per_leeftijd_M' : 'per_leeftijd_V';
   let kansBehoud = retentieData[geslachtKey]?.[leeftijd]
     || retentieData.per_leeftijd?.[leeftijd]
-    || 0.90; // default
+    || 0.90;
 
   const factoren = [];
 
-  // Leeftijdsfactoren
   if (leeftijd === 17) factoren.push('leeftijd_17_cliff');
   if (leeftijd === 6 || leeftijd === 7) factoren.push('instap_fragiel');
   if (leeftijd === 12) factoren.push('transitiejaar_b_naar_a');
 
-  // Binding-factoren
   if (seizoenenActief >= 6) factoren.push(`${seizoenenActief}e_seizoen_hoge_binding`);
   if (seizoenenActief <= 1) factoren.push('nieuw_lid_laag_gebonden');
 
-  // Risico-label
   let risico;
   if (kansBehoud >= 0.90) risico = 'laag';
   else if (kansBehoud >= 0.85) risico = 'gemiddeld';
@@ -237,181 +203,36 @@ function berekenRetentie(speler, retentieData, seizoenenActief) {
   return { risico, kans_behoud: kansBehoud, factoren };
 }
 
-// --- Teamgenoten-historie berekening ---
+// --- Signalering ---
 
-function berekenTeamgenotenHistorie(spelerId, spelerspaden, spelerPadLookup) {
-  const eigenPad = spelerPadLookup.get(spelerId);
-  if (!eigenPad) return [];
-
-  // Bouw per seizoen een set van teamgenoten
-  const teller = new Map(); // speler_id → aantal seizoenen samen
-
-  for (const [seizoen, info] of Object.entries(eigenPad.seizoenen || {})) {
-    if (!RELEVANTE_SEIZOENEN.includes(seizoen)) continue;
-    const eigenTeam = info.team;
-
-    // Zoek wie er nog meer in dit team zat
-    for (const anderePad of spelerspaden) {
-      if (anderePad.speler_id === spelerId) continue;
-      const anderInfo = anderePad.seizoenen?.[seizoen];
-      if (anderInfo && anderInfo.team === eigenTeam) {
-        teller.set(anderePad.speler_id, (teller.get(anderePad.speler_id) || 0) + 1);
-      }
-    }
+function genereerImpactBeschrijving(alert) {
+  switch (alert.type) {
+    case 'genderdisbalans':
+      return `Moeilijk om evenwichtige teams te vormen: ${alert.beschrijving}`;
+    case 'instroom':
+      return `Lagere instroom dan verwacht kan teamaantallen onder druk zetten`;
+    case 'retentie':
+      return `Hogere uitstroom dan verwacht — extra aandacht bij teamindeling`;
+    case 'trendbreuk':
+      return `Onverwachte trend — controleer bij seizoensplanning`;
+    default:
+      return alert.beschrijving;
   }
-
-  // Top 3 langst samengespeeld
-  return Array.from(teller.entries())
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 3)
-    .map(([id, seizoenen]) => {
-      const pad = spelerPadLookup.get(id);
-      return {
-        speler_id: id,
-        naam: pad ? pad.roepnaam : id,
-        seizoenen_samen: seizoenen
-      };
-    });
 }
 
-// --- Staf extractie ---
-
-function extractStaf(csvData, teamsKNKV) {
-  if (!csvData) return [];
-
-  const rijen = parseCSV(csvData);
-  const stafRijen = rijen.filter(r =>
-    r['Teamrol'] === 'Technische staf' || r['Teamrol'] === 'Overige staf'
-  );
-
-  // Groepeer per persoon (kan bij meerdere teams staan)
-  const perPersoon = new Map();
-
-  for (const rij of stafRijen) {
-    const id = rij['Rel. code'];
-    if (!perPersoon.has(id)) {
-      // Parse naam: "Witt, M. (Monique) te" → "Monique te Witt"
-      const naam = parseStafNaam(rij['Naam']);
-      const gebdat = rij['Geb.dat.'];
-      const geboortejaar = gebdat ? parseInt(gebdat.split('-')[0]) : null;
-
-      perPersoon.set(id, {
-        id,
-        naam,
-        geboortejaar,
-        rol: rij['Teamrol'],
-        teams: []
-      });
-    }
-
-    // Voeg team toe
-    const teamNaam = rij['Team'];
-    const knkvTeam = teamsKNKV?.find(t => t.team === teamNaam);
-    perPersoon.get(id).teams.push({
-      team: teamNaam,
-      kleur: knkvTeam?.kleur || null
-    });
+function extractBandUitLeeftijdsgroep(lg) {
+  if (!lg) return null;
+  const bands = ['Blauw', 'Groen', 'Geel', 'Oranje', 'Rood'];
+  for (const b of bands) {
+    if (lg.includes(b)) return b;
   }
-
-  return Array.from(perPersoon.values());
+  return null;
 }
 
-function parseStafNaam(raw) {
-  if (!raw) return raw;
-  // "Witt, M. (Monique) te" → "Monique te Witt"
-  // "Naaktgeboren, D.J. (Dio)" → "Dio Naaktgeboren"
-  // "Lichteveld, F. (Fred)" → "Fred Lichteveld"
-
-  const roepnaamMatch = raw.match(/\(([^)]+)\)/);
-  const roepnaam = roepnaamMatch ? roepnaamMatch[1] : '';
-
-  // Achternaam staat voor de komma
-  const kommaIdx = raw.indexOf(',');
-  let achternaam = kommaIdx >= 0 ? raw.substring(0, kommaIdx).trim() : raw;
-
-  // Tussenvoegsel kan na de roepnaam staan: "Witt, M. (Monique) te"
-  const naRoepnaam = raw.substring(raw.indexOf(')') + 1).trim();
-  const tussenvoegsel = naRoepnaam && naRoepnaam !== '' ? naRoepnaam : '';
-
-  if (tussenvoegsel) {
-    return `${roepnaam} ${tussenvoegsel} ${achternaam}`.trim();
-  }
-  return `${roepnaam} ${achternaam}`.trim();
-}
-
-// --- Teams huidig ---
-
-function bouwTeamsHuidig(snapshot, perTeamAgg, teamsKNKV, stafLijst) {
-  if (!perTeamAgg?.data) return [];
-
-  // Bouw speler_ids per team uit snapshot
-  const spelerPerTeam = new Map();
-  for (const lid of snapshot.leden) {
-    if (lid.spelactiviteit !== 'korfbal' || lid.status !== 'actief') continue;
-    if (!lid.team) continue;
-    if (!spelerPerTeam.has(lid.team)) spelerPerTeam.set(lid.team, []);
-    spelerPerTeam.get(lid.team).push(lid.rel_code);
-  }
-
-  // Bouw staf_ids per team
-  const stafPerTeam = new Map();
-  for (const staf of stafLijst) {
-    for (const t of staf.teams) {
-      if (!stafPerTeam.has(t.team)) stafPerTeam.set(t.team, []);
-      stafPerTeam.get(t.team).push(staf.id);
-    }
-  }
-
-  return perTeamAgg.data.map(team => {
-    const knkvTeam = teamsKNKV?.find(t => t.team === team.team);
-    const owCode = owCodeLookup.get(team.team) || team.team;
-    return {
-      team: team.team,
-      ow_code: owCode,
-      categorie: team.categorie,
-      kleur: team.kleur,
-      niveau: team.niveau,
-      spelvorm: knkvTeam?.spelvorm || (team.kleur && ['Blauw', 'Groen'].includes(team.kleur) ? '4-tal' : '8-tal'),
-      pool_veld: knkvTeam?.pool_veld || null,
-      pool_zaal: knkvTeam?.pool_zaal || null,
-      speler_ids: spelerPerTeam.get(team.team) || [],
-      staf_ids: stafPerTeam.get(team.team) || [],
-      stats: {
-        totaal: team.totaal,
-        m: team.spelers_M,
-        v: team.spelers_V,
-        gem_leeftijd: team.gem_leeftijd
-      }
-    };
-  });
-}
-
-// --- Verloop ---
-
-function bouwVerloop(verloopData) {
-  if (!verloopData) return null;
-
-  const verloop = verloopData.verloop || [];
-
-  const groepeer = (status) => verloop
-    .filter(v => v.status === status)
-    .map(v => ({
-      id: v.rel_code,
-      geslacht: v.geslacht,
-      geboortejaar: v.geboortejaar,
-      leeftijd: v.leeftijd_nieuw || v.leeftijd_vorig,
-      team_vorig: v.team_vorig,
-      team_nieuw: v.team_nieuw
-    }));
-
-  return {
-    seizoen: verloopData._meta?.seizoen || huidigSeizoen,
-    samenvatting: verloopData._meta?.samenvatting || {},
-    nieuw: groepeer('nieuw'),
-    herinschrijvers: groepeer('herinschrijver'),
-    uitgestroomd: groepeer('uitgestroomd'),
-    niet_spelend_geworden: groepeer('niet_spelend_geworden')
-  };
+function extractGeboortejaarUitLeeftijdsgroep(lg) {
+  if (!lg) return null;
+  const match = lg.match(/geboortejaar\s+(\d{4})/);
+  return match ? parseInt(match[1]) : null;
 }
 
 // --- Streefmodel ---
@@ -444,7 +265,6 @@ function bouwStreefmodel(streefData) {
     });
   }
 
-  // A-categorie per band
   const perACategorie = [];
   for (const cat of ['U15', 'U17', 'U19']) {
     const geboortejaren = bepaalACategorieGeboortejaren(cat);
@@ -491,51 +311,6 @@ function berekenVulgraadStatus(huidig, streef) {
   return 'kritiek';
 }
 
-// --- Signalering ---
-
-function bouwSignalering(alertsData) {
-  if (!alertsData?.alerts) return [];
-
-  return alertsData.alerts.map(alert => ({
-    type: alert.type,
-    ernst: alert.ernst,
-    band: extractBandUitLeeftijdsgroep(alert.leeftijdsgroep),
-    geboortejaar: extractGeboortejaarUitLeeftijdsgroep(alert.leeftijdsgroep),
-    beschrijving: alert.beschrijving,
-    impact_teamindeling: genereerImpactBeschrijving(alert)
-  }));
-}
-
-function extractBandUitLeeftijdsgroep(lg) {
-  if (!lg) return null;
-  const bands = ['Blauw', 'Groen', 'Geel', 'Oranje', 'Rood'];
-  for (const b of bands) {
-    if (lg.includes(b)) return b;
-  }
-  return null;
-}
-
-function extractGeboortejaarUitLeeftijdsgroep(lg) {
-  if (!lg) return null;
-  const match = lg.match(/geboortejaar\s+(\d{4})/);
-  return match ? parseInt(match[1]) : null;
-}
-
-function genereerImpactBeschrijving(alert) {
-  switch (alert.type) {
-    case 'genderdisbalans':
-      return `Moeilijk om evenwichtige teams te vormen: ${alert.beschrijving}`;
-    case 'instroom':
-      return `Lagere instroom dan verwacht kan teamaantallen onder druk zetten`;
-    case 'retentie':
-      return `Hogere uitstroom dan verwacht — extra aandacht bij teamindeling`;
-    case 'trendbreuk':
-      return `Onverwachte trend — controleer bij seizoensplanning`;
-    default:
-      return alert.beschrijving;
-  }
-}
-
 // --- Instroom profiel ---
 
 function bouwInstroomProfiel(yamlTekst) {
@@ -557,137 +332,219 @@ function bouwInstroomProfiel(yamlTekst) {
 // HOOFDPROGRAMMA
 // ====================================================================
 
-function main() {
+async function main() {
   console.log('=== Export voor Team-Indeling ===');
   console.log(`Huidig seizoen: ${huidigSeizoen}`);
   console.log(`Nieuw seizoen:  ${nieuwSeizoen}\n`);
 
-  // 1. Snapshot laden
-  const snapshotBestand = vindMeestRecenteSnapshot();
-  const snapshotDatum = snapshotBestand.replace('.json', '');
-  console.log(`1. Snapshot: ${snapshotBestand}`);
-  const snapshot = leesJSON(`data/leden/snapshots/${snapshotBestand}`);
+  // 1. Actieve spelers laden uit database (speler_seizoenen + leden)
+  console.log('1. Actieve spelers laden uit database...');
+  const { rows: actieveSpelers } = await pool.query(`
+    SELECT l.rel_code, l.roepnaam, l.achternaam, l.tussenvoegsel, l.geslacht,
+           l.geboortejaar, l.lid_sinds,
+           ss.team, ss.bron
+    FROM speler_seizoenen ss
+    JOIN leden l ON ss.rel_code = l.rel_code
+    WHERE ss.seizoen = $1
+    ORDER BY l.achternaam, l.roepnaam
+  `, [huidigSeizoen]);
+  console.log(`   ${actieveSpelers.length} spelers gevonden`);
 
-  // 2. Staf uit CSV
-  console.log('2. Staf laden uit Sportlink teams CSV...');
-  const rawCSV = vindRawTeamsCSV(snapshotDatum);
+  // 2. Spelerspaden laden uit database (speler_seizoenen + competitie_spelers)
+  console.log('2. Spelerspaden laden uit database...');
+  const { rows: padData } = await pool.query(`
+    SELECT ss.rel_code, ss.seizoen, ss.team,
+           cs.competitie, cs.team as comp_team
+    FROM speler_seizoenen ss
+    LEFT JOIN competitie_spelers cs ON cs.speler_seizoen_id = ss.id
+    WHERE ss.seizoen = ANY($1)
+    ORDER BY ss.rel_code, ss.seizoen, cs.competitie
+  `, [RELEVANTE_SEIZOENEN]);
 
-  // 3. Spelerspaden
-  console.log('3. Spelerspaden laden...');
-  const spelerspaden = leesJSON('data/spelers/spelerspaden.json') || [];
+  // Groepeer per speler
   const spelerPadLookup = new Map();
-  for (const pad of spelerspaden) {
-    spelerPadLookup.set(pad.speler_id, pad);
+  for (const row of padData) {
+    if (!spelerPadLookup.has(row.rel_code)) {
+      spelerPadLookup.set(row.rel_code, {});
+    }
+    const pad = spelerPadLookup.get(row.rel_code);
+    if (!pad[row.seizoen]) {
+      pad[row.seizoen] = { team: row.team, competities: [] };
+    }
+    if (row.competitie) {
+      pad[row.seizoen].competities.push({
+        competitie: row.competitie,
+        team: row.comp_team
+      });
+    }
   }
 
-  // 4. Retentiemodel (YAML)
-  console.log('4. Retentiemodel laden (jeugdmodel.yaml)...');
+  // Tel seizoenen actief (alle seizoenen, niet alleen relevante)
+  const { rows: seizoenTellingen } = await pool.query(`
+    SELECT rel_code, COUNT(DISTINCT seizoen)::int as seizoenen
+    FROM speler_seizoenen
+    GROUP BY rel_code
+  `);
+  const seizoenenActiefLookup = new Map();
+  for (const row of seizoenTellingen) {
+    seizoenenActiefLookup.set(row.rel_code, row.seizoenen);
+  }
+
+  // 3. Retentiemodel (YAML)
+  console.log('3. Retentiemodel laden (jeugdmodel.yaml)...');
   const yamlTekst = parseYAML('model/jeugdmodel.yaml');
   const retentieData = yamlTekst ? extractRetentieUitYAML(yamlTekst) : {};
 
-  // 5. Streefmodel
-  console.log('5. Streefmodel laden...');
+  // 4. Streefmodel
+  console.log('4. Streefmodel laden...');
   const streefData = leesJSON('data/modellen/streef-ledenboog.json');
 
-  // 6. Signalering
-  console.log('6. Signalering laden...');
-  const alertsData = leesJSON(`data/ledenverloop/signalering/${huidigSeizoen}-alerts.json`);
+  // 5. Signalering uit database
+  console.log('5. Signalering laden uit database...');
+  const { rows: signaleringen } = await pool.query(`
+    SELECT type, ernst, leeftijdsgroep, geslacht, waarde, drempel, streef, beschrijving
+    FROM signalering
+    WHERE seizoen = $1
+    ORDER BY ernst, type
+  `, [huidigSeizoen]);
 
-  // 7. Verloop
-  console.log('7. Verloop huidig seizoen laden...');
-  const verloopData = leesJSON(`data/ledenverloop/individueel/${huidigSeizoen}-verloop.json`);
+  // 6. Verloop uit database
+  console.log('6. Verloop laden uit database...');
+  const { rows: verloopData } = await pool.query(`
+    SELECT rel_code, geslacht, geboortejaar, status,
+           leeftijd_vorig, leeftijd_nieuw, team_vorig, team_nieuw
+    FROM ledenverloop
+    WHERE seizoen = $1
+  `, [huidigSeizoen]);
 
-  // 8. Teams KNKV — laad alle beschikbare seizoenen voor spelerspad-verrijking
-  console.log('8. KNKV teams laden (alle beschikbare seizoenen)...');
+  // 7. Teams KNKV — laad alle beschikbare seizoenen
+  console.log('7. KNKV teams laden (alle beschikbare seizoenen)...');
   const teamsPerSeizoen = laadAlleTeamsKNKV();
   const teamsKNKV = teamsPerSeizoen.get(huidigSeizoen) || [];
   console.log(`   Teams-KNKV beschikbaar voor: ${[...teamsPerSeizoen.keys()].join(', ') || 'geen'}`);
 
-  // 8b. Teams register (teams.json) — stabiele ow_codes per seizoen
-  console.log('8b. Teamregister laden (teams.json)...');
+  // 7b. Teams register (teams.json) — stabiele ow_codes per seizoen
+  console.log('7b. Teamregister laden (teams.json)...');
   const teamsRegister = leesJSON(`data/seizoenen/${huidigSeizoen}/teams.json`);
-  const owCodeLookup = new Map(); // j_nummer → ow_code
+  const owCodeLookup = new Map(); // j_nummer/teamnaam → ow_code
   const owCodeTeamLookup = new Map(); // ow_code → team object
   if (teamsRegister?.teams) {
     for (const team of teamsRegister.teams) {
       owCodeTeamLookup.set(team.ow_code, team);
-      // Map j_nummers uit alle periodes naar ow_code
       for (const periode of Object.values(team.periodes || {})) {
         if (periode?.j_nummer) owCodeLookup.set(periode.j_nummer, team.ow_code);
       }
-      // A-categorie en senioren: directe match op ow_code
       if (team.categorie === 'a' || !team.kleur) {
         owCodeLookup.set(team.ow_code, team.ow_code);
       }
     }
     console.log(`   Teamregister: ${teamsRegister.teams.length} teams met ow_code`);
-  } else {
-    console.warn('   ⚠ Teamregister niet gevonden — ow_codes worden niet meegenomen');
   }
 
-  // 9. Aggregaties per team
-  console.log('9. Aggregaties per team laden...');
-  const perTeamAgg = leesJSON(`data/aggregaties/${snapshotDatum}-per-team.json`);
+  // 8. Teamgenoten-historie berekenen uit database
+  console.log('8. Teamgenoten-historie berekenen...');
+  const { rows: teamgenotenData } = await pool.query(`
+    SELECT a.rel_code as speler, b.rel_code as genoot,
+           COUNT(DISTINCT a.seizoen)::int as seizoenen_samen
+    FROM speler_seizoenen a
+    JOIN speler_seizoenen b ON a.seizoen = b.seizoen AND a.team = b.team AND a.rel_code != b.rel_code
+    WHERE a.seizoen = ANY($1)
+    GROUP BY a.rel_code, b.rel_code
+    HAVING COUNT(DISTINCT a.seizoen) >= 2
+    ORDER BY a.rel_code, COUNT(DISTINCT a.seizoen) DESC
+  `, [RELEVANTE_SEIZOENEN]);
 
-  // --- Staf extractie ---
-  const stafLijst = extractStaf(rawCSV, teamsKNKV);
-  console.log(`   Staf: ${stafLijst.length} personen gevonden`);
+  // Groepeer per speler, neem top 3
+  const teamgenotenLookup = new Map();
+  for (const row of teamgenotenData) {
+    if (!teamgenotenLookup.has(row.speler)) {
+      teamgenotenLookup.set(row.speler, []);
+    }
+    const lijst = teamgenotenLookup.get(row.speler);
+    if (lijst.length < 3) {
+      lijst.push({ speler_id: row.genoot, seizoenen_samen: row.seizoenen_samen });
+    }
+  }
+
+  // Naam-lookup voor teamgenoten
+  const alleGenootIds = new Set();
+  for (const lijst of teamgenotenLookup.values()) {
+    for (const g of lijst) alleGenootIds.add(g.speler_id);
+  }
+  const naamLookup = new Map();
+  if (alleGenootIds.size > 0) {
+    const { rows: naamRows } = await pool.query(
+      `SELECT rel_code, roepnaam FROM leden WHERE rel_code = ANY($1)`,
+      [Array.from(alleGenootIds)]
+    );
+    for (const r of naamRows) naamLookup.set(r.rel_code, r.roepnaam);
+  }
 
   // --- Spelers verwerken ---
-  console.log('\n10. Spelers verwerken...');
-  const actieveSpelers = snapshot.leden.filter(
-    l => l.spelactiviteit === 'korfbal' && l.status === 'actief'
-  );
+  console.log('\n9. Spelers verwerken...');
+  const huidigSeizoenJaar = parseInt(huidigSeizoen.split('-')[0]);
 
   const spelers = actieveSpelers.map(lid => {
-    const id = lid.rel_code || `TEMP_${lid.roepnaam}_${lid.achternaam}_${lid.geboortejaar}`;
-    const pad = spelerPadLookup.get(id);
+    const id = lid.rel_code;
+    const padPerSeizoen = spelerPadLookup.get(id) || {};
 
     // Spelerspad filteren op relevante seizoenen + verrijken met team-info
     const relevantPad = [];
-    if (pad?.seizoenen) {
-      for (const seizoen of RELEVANTE_SEIZOENEN) {
-        if (pad.seizoenen[seizoen]) {
-          const teamNaam = pad.seizoenen[seizoen].team;
-          const teamInfo = zoekTeamInfo(teamsPerSeizoen, seizoen, teamNaam);
-          relevantPad.push({
-            seizoen,
-            team: teamNaam,
-            kleur: teamInfo.kleur,
-            niveau: teamInfo.niveau,
-            spelvorm: teamInfo.spelvorm,
-            categorie: pad.seizoenen[seizoen].categorie
-          });
-        }
+    for (const seizoen of RELEVANTE_SEIZOENEN) {
+      if (padPerSeizoen[seizoen]) {
+        const teamNaam = padPerSeizoen[seizoen].team;
+        const teamInfo = zoekTeamInfo(teamsPerSeizoen, seizoen, teamNaam);
+        relevantPad.push({
+          seizoen,
+          team: teamNaam,
+          kleur: teamInfo.kleur,
+          niveau: teamInfo.niveau,
+          spelvorm: teamInfo.spelvorm
+        });
       }
     }
 
-    // Seizoenen actief tellen
-    const seizoenenActief = pad?.seizoenen ? Object.keys(pad.seizoenen).length : 1;
+    const seizoenenActief = seizoenenActiefLookup.get(id) || 1;
 
     // Instroom-leeftijd berekenen
-    const lidSindsJaar = lid.lid_sinds ? parseInt(lid.lid_sinds.split('-')[0]) : null;
+    const lidSindsJaar = lid.lid_sinds ? parseInt(String(lid.lid_sinds).split('-')[0]) : null;
     const instroomLeeftijd = lidSindsJaar ? lidSindsJaar - lid.geboortejaar : null;
 
-    // Volgend seizoen berekening
+    // Huidige leeftijd
+    const leeftijdHuidig = huidigSeizoenJaar - lid.geboortejaar;
+
+    // Huidige categorie bepalen
+    const knkvTeam = teamsKNKV?.find(t => t.team === lid.team);
+    const huidigeKleur = knkvTeam?.kleur || null;
+    const huidigeCategorie = knkvTeam?.categorie || null;
+    const huidigeACat = bepaalACategorieVolgendSeizoen(lid.geboortejaar);
+
+    const huidigInfo = {
+      team: lid.team,
+      ow_code: owCodeLookup.get(lid.team) || null,
+      categorie: huidigeCategorie,
+      kleur: huidigeKleur,
+      a_categorie: leeftijdHuidig >= 13 ? huidigeACat.a_categorie : null,
+      a_jaars: leeftijdHuidig >= 13 ? huidigeACat.a_jaars : null,
+      leeftijd: leeftijdHuidig
+    };
+
+    // Volgend seizoen
     const volgendSeizoen = bepaalVolgendSeizoen({
       geboortejaar: lid.geboortejaar,
       geslacht: lid.geslacht,
-      huidig: {
-        team: lid.team,
-        categorie: lid.categorie,
-        kleur: lid.kleur,
-        a_categorie: lid.a_categorie,
-        a_jaars: lid.a_jaars,
-        leeftijd: lid.leeftijd_peildatum
-      }
+      huidig: huidigInfo
     });
 
     // Retentie-risico
     const retentie = berekenRetentie(lid, retentieData, seizoenenActief);
 
     // Teamgenoten
-    const teamgenoten = berekenTeamgenotenHistorie(id, spelerspaden, spelerPadLookup);
+    const teamgenoten = (teamgenotenLookup.get(id) || []).map(g => ({
+      speler_id: g.speler_id,
+      naam: naamLookup.get(g.speler_id) || g.speler_id,
+      seizoenen_samen: g.seizoenen_samen
+    }));
 
     const achternaam = lid.tussenvoegsel
       ? `${lid.tussenvoegsel} ${lid.achternaam}`
@@ -700,15 +557,7 @@ function main() {
       geslacht: lid.geslacht,
       geboortejaar: lid.geboortejaar,
       lid_sinds: lid.lid_sinds,
-      huidig: {
-        team: lid.team,
-        ow_code: lid.ow_code || owCodeLookup.get(lid.team) || null,
-        categorie: lid.categorie,
-        kleur: lid.kleur,
-        a_categorie: lid.a_categorie,
-        a_jaars: lid.a_jaars,
-        leeftijd: lid.leeftijd_peildatum
-      },
+      huidig: huidigInfo,
       volgend_seizoen: volgendSeizoen,
       spelerspad: relevantPad,
       retentie,
@@ -719,6 +568,89 @@ function main() {
   });
 
   console.log(`   ${spelers.length} spelers verwerkt`);
+
+  // --- Teams huidig ---
+  console.log('10. Teams huidig opbouwen...');
+
+  // Bouw speler_ids per team uit actieveSpelers
+  const spelerPerTeam = new Map();
+  for (const s of actieveSpelers) {
+    if (!s.team) continue;
+    if (!spelerPerTeam.has(s.team)) spelerPerTeam.set(s.team, []);
+    spelerPerTeam.get(s.team).push(s.rel_code);
+  }
+
+  // Team-stats uit database
+  const { rows: teamStats } = await pool.query(`
+    SELECT ss.team,
+           COUNT(*)::int as totaal,
+           COUNT(*) FILTER (WHERE l.geslacht = 'M')::int as spelers_m,
+           COUNT(*) FILTER (WHERE l.geslacht = 'V')::int as spelers_v,
+           ROUND(AVG($2 - l.geboortejaar)::numeric, 1) as gem_leeftijd
+    FROM speler_seizoenen ss
+    JOIN leden l ON ss.rel_code = l.rel_code
+    WHERE ss.seizoen = $1
+    GROUP BY ss.team
+    ORDER BY ss.team
+  `, [huidigSeizoen, huidigSeizoenJaar]);
+
+  const teamsHuidig = teamStats.map(team => {
+    const knkvTeam = teamsKNKV?.find(t => t.team === team.team);
+    const owCode = owCodeLookup.get(team.team) || team.team;
+    return {
+      team: team.team,
+      ow_code: owCode,
+      categorie: knkvTeam?.categorie || null,
+      kleur: knkvTeam?.kleur || null,
+      niveau: knkvTeam?.niveau || null,
+      spelvorm: knkvTeam?.spelvorm || (knkvTeam?.kleur && ['Blauw', 'Groen'].includes(knkvTeam.kleur) ? '4-tal' : '8-tal'),
+      pool_veld: knkvTeam?.pool_veld || null,
+      pool_zaal: knkvTeam?.pool_zaal || null,
+      speler_ids: spelerPerTeam.get(team.team) || [],
+      staf_ids: [],
+      stats: {
+        totaal: team.totaal,
+        m: team.spelers_m,
+        v: team.spelers_v,
+        gem_leeftijd: parseFloat(team.gem_leeftijd) || null
+      }
+    };
+  });
+
+  // --- Verloop opbouwen ---
+  const groepeer = (status) => verloopData
+    .filter(v => v.status === status)
+    .map(v => ({
+      id: v.rel_code,
+      geslacht: v.geslacht,
+      geboortejaar: v.geboortejaar,
+      leeftijd: v.leeftijd_nieuw || v.leeftijd_vorig,
+      team_vorig: v.team_vorig,
+      team_nieuw: v.team_nieuw
+    }));
+
+  const verloopSamenvatting = {};
+  for (const status of ['behouden', 'uitgestroomd', 'nieuw', 'herinschrijver']) {
+    verloopSamenvatting[status] = verloopData.filter(v => v.status === status).length;
+  }
+
+  const verloop = {
+    seizoen: huidigSeizoen,
+    samenvatting: verloopSamenvatting,
+    nieuw: groepeer('nieuw'),
+    herinschrijvers: groepeer('herinschrijver'),
+    uitgestroomd: groepeer('uitgestroomd')
+  };
+
+  // --- Signalering opbouwen ---
+  const signaleringExport = signaleringen.map(alert => ({
+    type: alert.type,
+    ernst: alert.ernst,
+    band: extractBandUitLeeftijdsgroep(alert.leeftijdsgroep),
+    geboortejaar: extractGeboortejaarUitLeeftijdsgroep(alert.leeftijdsgroep),
+    beschrijving: alert.beschrijving,
+    impact_teamindeling: genereerImpactBeschrijving(alert)
+  }));
 
   // --- Retentiemodel voor export ---
   const retentieExport = {
@@ -736,26 +668,21 @@ function main() {
   const exportData = {
     meta: {
       export_datum: new Date().toISOString().split('T')[0],
-      export_versie: '1.0',
-      bron: 'verenigingsmonitor',
+      export_versie: '2.0',
+      bron: 'database (speler_seizoenen + competitie_spelers + leden)',
       seizoen_huidig: huidigSeizoen,
       seizoen_nieuw: nieuwSeizoen,
-      snapshot_datum: snapshotDatum,
-      snapshot_bron: `data/leden/snapshots/${snapshotBestand}`,
-      spelerspaden_bron: 'data/spelers/spelerspaden.json',
-      staf_bron: `data/leden/snapshots/raw/${snapshotDatum}-sportlink-teams.csv`,
       totaal_actieve_spelers: spelers.length,
       totaal_jeugd: spelers.filter(s => s.huidig.leeftijd && s.huidig.leeftijd < 19).length,
-      totaal_senioren: spelers.filter(s => !s.huidig.leeftijd || s.huidig.leeftijd >= 19).length,
-      totaal_staf: stafLijst.length
+      totaal_senioren: spelers.filter(s => !s.huidig.leeftijd || s.huidig.leeftijd >= 19).length
     },
     spelers,
-    staf: stafLijst,
-    teams_huidig: bouwTeamsHuidig(snapshot, perTeamAgg, teamsKNKV, stafLijst),
-    verloop: bouwVerloop(verloopData),
+    staf: [],
+    teams_huidig: teamsHuidig,
+    verloop,
     retentiemodel: retentieExport,
     streefmodel: bouwStreefmodel(streefData),
-    signalering: bouwSignalering(alertsData),
+    signalering: signaleringExport,
     instroom_profiel: yamlTekst ? bouwInstroomProfiel(yamlTekst) : null
   };
 
@@ -772,10 +699,15 @@ function main() {
   console.log(`  Spelers:      ${exportData.meta.totaal_actieve_spelers}`);
   console.log(`  Jeugd:        ${exportData.meta.totaal_jeugd}`);
   console.log(`  Senioren:     ${exportData.meta.totaal_senioren}`);
-  console.log(`  Staf:         ${exportData.meta.totaal_staf}`);
   console.log(`  Teams:        ${exportData.teams_huidig.length}`);
   console.log(`  Signalering:  ${exportData.signalering.length} alerts`);
-  console.log(`  Verloop:      ${exportData.verloop?.samenvatting ? 'OK' : 'ontbreekt'}`);
+  console.log(`  Verloop:      ${Object.keys(exportData.verloop.samenvatting).length ? 'OK' : 'ontbreekt'}`);
+
+  await pool.end();
 }
 
-main();
+main().catch(err => {
+  console.error(err);
+  pool.end();
+  process.exit(1);
+});

@@ -1,12 +1,12 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { updateTeamgrootte } from "@/app/blauwdruk/actions";
 import {
-  updateTeamgrootte,
   DEFAULT_TEAMGROOTTE,
   type TeamgrootteTargets,
   type TeamgrootteBereik,
-} from "@/app/blauwdruk/actions";
+} from "@/app/blauwdruk/teamgrootte";
 
 interface TeamgrootteInstellingenProps {
   blauwdrukId: string;
@@ -73,7 +73,8 @@ export default function TeamgrootteInstellingen({
           ...prev,
           [key]: { ...prev[key], [veld]: waarde },
         };
-        slaOp(nieuw);
+        // slaOp buiten de updater aanroepen om setState-during-render te voorkomen
+        queueMicrotask(() => slaOp(nieuw));
         return nieuw;
       });
     },

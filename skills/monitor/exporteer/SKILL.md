@@ -65,9 +65,8 @@ Het export-script (`scripts/export-voor-teamindeling.js`) leest alle relevante b
 
 | Bestand | Wat |
 |---|---|
-| `data/leden/snapshots/YYYY-MM-DD.json` | Meest recente ledensnapshot |
-| `data/leden/snapshots/raw/YYYY-MM-DD-sportlink-teams.csv` | Staf/trainers |
-| `data/spelers/spelerspaden.json` | Spelerspaden (16 seizoenen) |
+| PostgreSQL: `leden` + `speler_seizoenen` | Ledendata en seizoenshistorie |
+| PostgreSQL: `competitie_spelers` | Teamindeling per competitieperiode |
 | `model/jeugdmodel.yaml` | Retentiemodel per leeftijd/geslacht |
 | `data/modellen/streef-ledenboog.json` | Streefmodel per band |
 | `data/ledenverloop/signalering/YYYY-YYYY-alerts.json` | Signalering |

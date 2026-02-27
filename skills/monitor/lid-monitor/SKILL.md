@@ -1,14 +1,14 @@
 ---
 name: lid-monitor
-description: Verwerkt een nieuwe ledensnapshot uit Sportlink + KNKV API en signaleert trends in ledenaantallen per categorie. Gebruik doorlopend door het seizoen om vinger aan de pols te houden.
+description: Verwerkt nieuwe Sportlink CSV-data en updatet de leden-tabel in PostgreSQL. Signaleert trends in ledenaantallen per categorie. Gebruik doorlopend door het seizoen om vinger aan de pols te houden.
 user-invocable: true
 allowed-tools: Read, Write, Glob, WebFetch
 argument-hint: "[optioneel: pad naar nieuwe Sportlink CSV's]"
 ---
 
-# Ledensnapshot Monitor
+# Leden Monitor
 
-Verwerk de meest recente ledensnapshot en vergelijk met de vorige momentopname.
+Verwerk nieuwe Sportlink CSV-data en update de leden-tabel direct in PostgreSQL.
 
 ## Context
 
@@ -16,23 +16,22 @@ Oranje Wit had in seizoen 2025-2026: 264 spelers, 29 teams. De Kweekvijver-filos
 
 ## Databronnen
 
-Het drielagenmodel (zie `rules/data.md`):
-
-1. **Raw** — ongewijzigde bronbestanden in `data/leden/snapshots/raw/`
-2. **Verrijkt** — gecombineerd per-lid snapshot in `data/leden/snapshots/YYYY-MM-DD.json`
-3. **Aggregaties** — statistieken in `data/aggregaties/`
-
 ### Invoer (twee Sportlink CSV's + KNKV API)
 
-- Sportlink ledenexport: `data/leden/snapshots/raw/YYYY-MM-DD-sportlink-leden.csv`
-- Sportlink teamexport: `data/leden/snapshots/raw/YYYY-MM-DD-sportlink-teams.csv`
+- Sportlink ledenexport CSV
+- Sportlink teamexport CSV
 - KNKV teamdata: ophalen via `/oranje-wit:knkv-api` of uit `data/seizoenen/YYYY-YYYY/teams-knkv.json`
+
+### Database (PostgreSQL)
+
+- `leden` — permanente ledenrecords (1 per lid)
+- `speler_seizoenen` — speler per seizoen met primair team
+- `competitie_spelers` — speler per competitieperiode
 
 ## Stappen
 
-1. **Sla ruwe bronbestanden op**
-   Als $ARGUMENTS paden bevat, kopieer naar `data/leden/snapshots/raw/` met datum-prefix.
-   Formaat: `YYYY-MM-DD-sportlink-leden.csv` en `YYYY-MM-DD-sportlink-teams.csv`
+1. **Ontvang Sportlink CSV's**
+   Als $ARGUMENTS paden bevat, lees de CSV-bestanden in.
 
 2. **Combineer Sportlink leden + teams**
    - Match leden aan teams via `Rel. code` (join-sleutel)
@@ -55,13 +54,11 @@ Het drielagenmodel (zie `rules/data.md`):
    - `a_categorie` en `a_jaars` uit geboortejaar + seizoen (formules uit `model/jeugdmodel.yaml`)
    - `status`: "actief" / "niet-spelend" / "afgemeld"
 
-5. **Schrijf verrijkte snapshot**
-   Opslaan als `data/leden/snapshots/YYYY-MM-DD.json`
+5. **Update leden-tabel in PostgreSQL**
+   Upsert ledenrecords in de `leden` tabel op basis van `rel_code`. Update bestaande records, maak nieuwe aan voor nieuwe leden.
 
 6. **Genereer aggregaties**
-   - Per geboortejaar: `data/aggregaties/YYYY-MM-DD-per-geboortejaar.json`
-   - Per team: `data/aggregaties/YYYY-MM-DD-per-team.json`
-   - Per kleur: `data/aggregaties/YYYY-MM-DD-per-kleur.json`
+   Query de database voor aggregaties per geboortejaar, team en kleur.
 
 7. **Toets aan streefmodel (`data/modellen/streef-ledenboog.json`)**
    Per geboortejaar (M/V apart):
@@ -77,11 +74,11 @@ Het drielagenmodel (zie `rules/data.md`):
    - Vergelijk band-totaal met streefmodel
    - Signaleer of het aantal teams op koers ligt
 
-8. **Vergelijk met vorige snapshot (diff)**
+8. **Vergelijk met vorig seizoen (diff)**
    - Wie is erbij gekomen? (nieuw lid)
    - Wie is vertrokken? (afgemeld)
    - Wie is van team gewisseld?
-   - Schrijf naar `data/leden/snapshots/YYYY-MM-DD-diff.json`
+   - Vergelijk via speler_seizoenen-records van huidig en vorig seizoen
 
 9. **Signaleer trends**
    - Groei of krimp per categorie
@@ -93,11 +90,8 @@ Het drielagenmodel (zie `rules/data.md`):
    - Vergelijk seizoensretentie met verwachte retentie per leeftijdsjaar uit `model/jeugdmodel.yaml`
    - Raadpleeg `data/aggregaties/analyse-per-leeftijd.json` voor historische referentie per leeftijd
 
-10. **Werk dashboard-configuratie bij**
-    Update `app/monitor-config.json` met de nieuwe snapshot-datum en bestandspaden zodat de Verenigingsmonitor en Team Samenstelling dashboards de nieuwe data tonen.
-
-11. **Sla analyse op**
-    Schrijf rapport naar `data/leden/snapshots/YYYY-MM-DD-analyse.md`
+10. **Sla analyse op**
+    Schrijf rapport naar `data/leden/YYYY-MM-DD-analyse.md`
 
 ## Output
 Bondige samenvatting van trends met signalering per categorie en aanbevelingen voor opvolging.

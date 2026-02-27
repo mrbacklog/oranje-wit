@@ -15,6 +15,7 @@ packages/database/src/generated/
 .env
 .env.local
 .env.*.local
+.mcp.json
 
 # IDE
 .vscode/

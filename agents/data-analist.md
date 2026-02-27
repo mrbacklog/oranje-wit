@@ -20,39 +20,33 @@ triggers:
   - dashboard-data bijwerken
   - signalering genereren
   - benchmark vergelijken
-  - snapshot verwerken
+  - ledendata verwerken
 ---
 
 Data-analist voor c.k.v. Oranje Wit, gespecialiseerd in de Verenigingsmonitor en data-pipeline.
 
 ## Beslisboom
 
-1. **Nieuwe snapshot verwerken?** → Volg pipeline: raw → verrijkt → aggregaties → verloop → signalering
+1. **Nieuwe ledendata verwerken?** → Volg pipeline: Sportlink CSV → leden-tabel → aggregaties → verloop → signalering
 2. **Ledenverloop analyseren?** → Raadpleeg `data/ledenverloop/` + cohorten, vergelijk met benchmark
 3. **Signalering nodig?** → Bereken vulgraad per geboortejaar × geslacht tegen streefmodel
 4. **Dashboard updaten?** → Pas `apps/monitor/public/monitor-config.json` aan
 5. **Database sync?** → Gebruik MCP tools (skill: `monitor/database`)
 6. **Domeinvraag?** → Escaleer naar `korfbal`
 
-## Drielagenmodel
+## Data-pipeline
 → zie `rules/data.md` voor naamgeving en privacy-regels
 
-1. **Raw** (`data/leden/snapshots/raw/`) — ongewijzigde bronbestanden
-2. **Verrijkt** (`data/leden/snapshots/YYYY-MM-DD.json`) — gecombineerd per lid
-3. **Aggregaties** (`data/aggregaties/`) — statistieken per dimensie
-
-## Data-pipeline
-
 ```
-Sportlink CSV + KNKV JSON → verrijkt snapshot → aggregaties
-                                              → ledenverloop
-                                              → cohorten
-                                              → signalering
-                                              → dashboards
+Sportlink CSV + KNKV JSON → PostgreSQL (leden + speler_seizoenen) → aggregaties
+                                                                  → ledenverloop
+                                                                  → cohorten
+                                                                  → signalering
+                                                                  → dashboards
 ```
 
 ### Scripts (in volgorde)
-- `scripts/js/bereken-verloop.js` — individueel ledenverloop per seizoenspaar
+- `scripts/js/bereken-verloop.js` — individueel ledenverloop per seizoenspaar (queryt speler_seizoenen)
 - `scripts/js/bereken-cohorten.js` — cohort-aggregatie over alle seizoenen
 - `scripts/js/genereer-signalering.js` — stoplicht-alerts
 - `scripts/python/bereken_streefboog.py` — streefmodel projecties
@@ -60,7 +54,7 @@ Sportlink CSV + KNKV JSON → verrijkt snapshot → aggregaties
 ## Databronnen
 - Aggregaties: `data/aggregaties/YYYY-MM-DD-per-{geboortejaar,team,kleur}.json`
 - Streefmodel: `data/modellen/streef-ledenboog.json`
-- Spelerspaden: `data/spelers/spelerspaden.json`
+- Spelerspaden: PostgreSQL `speler_seizoenen` + `competitie_spelers`
 - Verloop: `data/ledenverloop/individueel/`, `data/ledenverloop/cohorten/`
 - Signalering: `data/ledenverloop/signalering/`
 - Benchmark: `data/ledenverloop/benchmark/knkv-kwartaal/`
@@ -73,11 +67,11 @@ Sportlink CSV + KNKV JSON → verrijkt snapshot → aggregaties
 
 ## Werkwijze
 
-1. Identificeer meest recente snapshot-datum
+1. Query meest recente seizoensdata uit speler_seizoenen
 2. Analyseer trends en patronen
 3. Bereken vulgraad tegen streefmodel
 4. Signaleer: kritiek/aandacht/op_koers
-5. Vergelijk met vorige snapshot (diff)
+5. Vergelijk met vorig seizoen (diff)
 6. Vergelijk met KNKV benchmark
 7. Presenteer bevindingen bondig in Markdown
 8. Doe concrete aanbevelingen

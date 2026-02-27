@@ -31,7 +31,7 @@ Specialist in spelersanalyse en werving voor c.k.v. Oranje Wit.
 
 ## Beschikbare spelersdata
 
-Het verrijkte snapshot (`data/leden/snapshots/YYYY-MM-DD.json`) bevat per speler:
+De `leden` tabel in PostgreSQL bevat per speler:
 - `rel_code` — uniek Sportlink-ID
 - `roepnaam`, `achternaam`, `geslacht`, `geboortejaar`
 - `team`, `categorie` (a/b), `kleur`, `a_categorie` (U15/U17/U19), `a_jaars` (1e/2e)
@@ -40,7 +40,7 @@ Het verrijkte snapshot (`data/leden/snapshots/YYYY-MM-DD.json`) bevat per speler
 Evaluatiedata uit de Evaluatie-app (Lovable).
 
 ## Databronnen
-- Spelerspaden: `data/spelers/spelerspaden.json` — 1045 spelers over 16 seizoenen
+- Spelerspaden: PostgreSQL `speler_seizoenen` + `competitie_spelers` — 957 spelers over 16 seizoenen
 - Verloop: `data/ledenverloop/individueel/` en `data/ledenverloop/cohorten/`
 - Streefmodel: `data/modellen/streef-ledenboog.json`
 - Jeugdmodel: `model/jeugdmodel.yaml`

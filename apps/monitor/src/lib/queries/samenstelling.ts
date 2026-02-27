@@ -42,7 +42,6 @@ export async function getPerGeboortejaar(
     FROM speler_seizoenen ss
     JOIN leden l ON ss.rel_code = l.rel_code
     WHERE ss.seizoen = ${seizoen}
-      AND ss.bron = 'telling'
     GROUP BY l.geboortejaar, l.geslacht,
              (${startJaar} - l.geboortejaar)
     ORDER BY l.geboortejaar, l.geslacht`;
@@ -131,7 +130,6 @@ export async function getPerKleur(seizoen: string): Promise<KleurResult> {
       JOIN leden l ON ss.rel_code = l.rel_code
       LEFT JOIN team_kleur tk ON tk.telling_naam = ss.team
       WHERE ss.seizoen = ${seizoen}
-        AND ss.bron = 'telling'
     )
     SELECT
       kleur,

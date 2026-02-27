@@ -8,25 +8,23 @@ async function main() {
   console.log("--- Verenigingsmonitor (OW) tabellen ---");
   const leden = await prisma.lid.count();
   const seizoenen = await prisma.seizoen.count();
-  const snapshots = await prisma.snapshot.count();
-  const lidSnapshots = await prisma.lidSnapshot.count();
   const owTeams = await prisma.oWTeam.count();
   const periodes = await prisma.teamPeriode.count();
-  const paden = await prisma.spelersPad.count();
+  const spelerSeizoenen = await prisma.spelerSeizoen.count();
+  const competitieSpelers = await prisma.competitieSpeler.count();
   const verloop = await prisma.ledenverloop.count();
   const cohorten = await prisma.cohortSeizoen.count();
   const signaleringen = await prisma.signalering.count();
 
-  console.log(`  leden:            ${leden}`);
-  console.log(`  seizoenen:        ${seizoenen}`);
-  console.log(`  snapshots:        ${snapshots}`);
-  console.log(`  leden_snapshot:   ${lidSnapshots}`);
-  console.log(`  teams:            ${owTeams}`);
-  console.log(`  team_periodes:    ${periodes}`);
-  console.log(`  spelerspaden:     ${paden}`);
-  console.log(`  ledenverloop:     ${verloop}`);
-  console.log(`  cohort_seizoenen: ${cohorten}`);
-  console.log(`  signalering:      ${signaleringen}`);
+  console.log(`  leden:              ${leden}`);
+  console.log(`  seizoenen:          ${seizoenen}`);
+  console.log(`  teams:              ${owTeams}`);
+  console.log(`  team_periodes:      ${periodes}`);
+  console.log(`  speler_seizoenen:   ${spelerSeizoenen}`);
+  console.log(`  competitie_spelers: ${competitieSpelers}`);
+  console.log(`  ledenverloop:       ${verloop}`);
+  console.log(`  cohort_seizoenen:   ${cohorten}`);
+  console.log(`  signalering:        ${signaleringen}`);
 
   // TI tabellen
   console.log("\n--- Team-Indeling (TI) tabellen ---");

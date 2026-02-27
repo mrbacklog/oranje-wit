@@ -18,14 +18,12 @@ server.tool('ow_status', 'Database status: tabellen, rijen, laatste sync', {}, a
     const countRes = await pool.query(`SELECT COUNT(*) as n FROM "${row.tablename}"`);
     counts.push({ tabel: row.tablename, rijen: parseInt(countRes.rows[0].n) });
   }
-  const snapshotRes = await pool.query(`SELECT MAX(snapshot_datum) as laatste FROM snapshots`);
   return {
     content: [{
       type: 'text',
       text: JSON.stringify({
         tabellen: counts,
         totaal_rijen: counts.reduce((s, c) => s + c.rijen, 0),
-        laatste_snapshot: snapshotRes.rows[0]?.laatste || null,
       }, null, 2),
     }],
   };
@@ -50,39 +48,35 @@ server.tool('ow_query', 'Voer een SQL SELECT query uit', {
 });
 
 // --- Tool: ow_leden_zoek ---
-server.tool('ow_leden_zoek', 'Zoek leden op naam, team, kleur, geboortejaar', {
+server.tool('ow_leden_zoek', 'Zoek leden op naam, team, geboortejaar, seizoen', {
   naam: z.string().optional().describe('Zoek op roepnaam of achternaam (ILIKE)'),
-  team: z.string().optional().describe('Filter op team of ow_code'),
-  kleur: z.string().optional().describe('Filter op kleur'),
+  team: z.string().optional().describe('Filter op team'),
   geboortejaar: z.number().optional().describe('Filter op geboortejaar'),
-  seizoen: z.string().optional().describe('Seizoen (default: meest recente snapshot)'),
-}, async ({ naam, team, kleur, geboortejaar, seizoen }) => {
+  seizoen: z.string().optional().describe('Seizoen (default: meest recente)'),
+}, async ({ naam, team, geboortejaar, seizoen }) => {
   const conditions = [];
   const params = [];
   let i = 1;
 
   if (naam) { conditions.push(`(l.roepnaam ILIKE $${i} OR l.achternaam ILIKE $${i})`); params.push(`%${naam}%`); i++; }
-  if (team) { conditions.push(`(ls.team = $${i} OR ls.ow_code = $${i})`); params.push(team); i++; }
-  if (kleur) { conditions.push(`ls.kleur = $${i}`); params.push(kleur); i++; }
+  if (team) { conditions.push(`ss.team = $${i}`); params.push(team); i++; }
   if (geboortejaar) { conditions.push(`l.geboortejaar = $${i}`); params.push(geboortejaar); i++; }
 
-  let snapshotFilter;
+  let seizoenFilter;
   if (seizoen) {
-    snapshotFilter = `s.seizoen = $${i}`;
+    seizoenFilter = `ss.seizoen = $${i}`;
     params.push(seizoen);
     i++;
   } else {
-    snapshotFilter = `s.snapshot_datum = (SELECT MAX(snapshot_datum) FROM snapshots)`;
+    seizoenFilter = `ss.seizoen = (SELECT MAX(seizoen) FROM speler_seizoenen)`;
   }
 
   const sql = `
     SELECT l.rel_code, l.roepnaam, l.tussenvoegsel, l.achternaam, l.geslacht, l.geboortejaar,
-           ls.team, ls.ow_code, ls.kleur, ls.categorie, ls.a_categorie, ls.a_jaars,
-           ls.lidsoort, ls.spelactiviteit, ls.leeftijd_peildatum
+           ss.team, ss.seizoen
     FROM leden l
-    JOIN leden_snapshot ls ON l.rel_code = ls.rel_code
-    JOIN snapshots s ON ls.snapshot_id = s.id
-    WHERE ${snapshotFilter}
+    JOIN speler_seizoenen ss ON l.rel_code = ss.rel_code
+    WHERE ${seizoenFilter}
     ${conditions.length ? 'AND ' + conditions.join(' AND ') : ''}
     ORDER BY l.achternaam, l.roepnaam
     LIMIT 100
@@ -93,7 +87,7 @@ server.tool('ow_leden_zoek', 'Zoek leden op naam, team, kleur, geboortejaar', {
 });
 
 // --- Tool: ow_team_info ---
-server.tool('ow_team_info', 'Team ophalen met periodedata', {
+server.tool('ow_team_info', 'Team ophalen met periodedata en spelers', {
   ow_code: z.string().describe('Stabiele team-ID (bijv. R1, O2, U15-1)'),
   seizoen: z.string().describe('Seizoen (bijv. 2025-2026)'),
 }, async ({ ow_code, seizoen }) => {
@@ -109,13 +103,15 @@ server.tool('ow_team_info', 'Team ophalen met periodedata', {
       WHEN 'veld_najaar' THEN 1 WHEN 'zaal_deel1' THEN 2
       WHEN 'zaal_deel2' THEN 3 WHEN 'veld_voorjaar' THEN 4 END`, [team.id]
   );
+  // Spelers uit speler_seizoenen (telling-naam = team)
   const spelersRes = await pool.query(
-    `SELECT l.rel_code, l.roepnaam, l.achternaam, l.geslacht, l.geboortejaar, ls.a_categorie, ls.a_jaars
-     FROM leden_snapshot ls
-     JOIN leden l ON ls.rel_code = l.rel_code
-     JOIN snapshots s ON ls.snapshot_id = s.id
-     WHERE ls.ow_code = $1 AND s.snapshot_datum = (SELECT MAX(snapshot_datum) FROM snapshots WHERE seizoen = $2)
-     ORDER BY l.geboortejaar, l.achternaam`, [ow_code, seizoen]
+    `SELECT l.rel_code, l.roepnaam, l.achternaam, l.geslacht, l.geboortejaar
+     FROM speler_seizoenen ss
+     JOIN leden l ON ss.rel_code = l.rel_code
+     WHERE ss.seizoen = $1 AND ss.team = (
+       SELECT tp.j_nummer FROM team_periodes tp WHERE tp.team_id = $2 AND tp.periode = 'veld_najaar' LIMIT 1
+     )
+     ORDER BY l.geboortejaar, l.achternaam`, [seizoen, team.id]
   );
   return {
     content: [{
@@ -144,7 +140,12 @@ server.tool('ow_spelerspad', 'Spelerspad van 1 speler over alle seizoenen', {
 
   const lidRes = await pool.query(`SELECT * FROM leden WHERE rel_code = $1`, [relCode]);
   const padRes = await pool.query(
-    `SELECT * FROM spelerspaden WHERE speler_id = $1 ORDER BY seizoen`, [relCode]
+    `SELECT ss.seizoen, ss.team, ss.geslacht, ss.bron,
+            cs.competitie, cs.team as competitie_team
+     FROM speler_seizoenen ss
+     LEFT JOIN competitie_spelers cs ON cs.speler_seizoen_id = ss.id
+     WHERE ss.rel_code = $1
+     ORDER BY ss.seizoen, cs.competitie`, [relCode]
   );
   return {
     content: [{
@@ -204,11 +205,11 @@ server.tool('ow_signalering', 'Actieve alerts ophalen', {
 // --- Sync tools ---
 const sync = require('./tools/sync.js');
 
-server.tool('ow_sync_snapshot', 'Importeer JSON snapshot naar DB', {
-  snapshot_pad: z.string().describe('Relatief pad naar snapshot JSON (bijv. data/leden/snapshots/2026-02-23.json)'),
-}, async ({ snapshot_pad }) => {
-  const result = await sync.syncSnapshot(snapshot_pad);
-  return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
+server.tool('ow_sync_leden', 'Importeer leden JSON naar DB', {
+  pad: z.string().describe('Relatief pad naar leden JSON (bijv. data/leden/alle-leden.json)'),
+}, async ({ pad }) => {
+  const result = await sync.syncLeden(pad);
+  return { content: [{ type: 'text', text: JSON.stringify({ leden_geimporteerd: result }, null, 2) }] };
 });
 
 server.tool('ow_sync_teams', 'Importeer teams.json naar DB', {
@@ -218,17 +219,7 @@ server.tool('ow_sync_teams', 'Importeer teams.json naar DB', {
   return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
 });
 
-server.tool('ow_sync_verloop', 'Importeer alle verloop JSON naar DB', {}, async () => {
-  const result = await sync.syncVerloop();
-  return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
-});
-
-server.tool('ow_sync_cohorten', 'Importeer cohorten JSON naar DB', {}, async () => {
-  const result = await sync.syncCohorten();
-  return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
-});
-
-server.tool('ow_sync_alles', 'Volledige sync: alle JSON → DB', {}, async () => {
+server.tool('ow_sync_alles', 'Volledige sync: leden + teams → DB', {}, async () => {
   const result = await sync.syncAlles();
   return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
 });

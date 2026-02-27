@@ -14,10 +14,10 @@ Analyseer het ledenverloop van c.k.v. Oranje Wit over meerdere seizoenen: wie bl
 
 Deze skill analyseert het ledenverloop **longitudinaal** — over meerdere seizoenen heen. Daarmee vult hij twee andere skills aan:
 
-- **lid-monitor** verwerkt een nieuwe ledensnapshot en vergelijkt met de vorige momentopname (korte termijn, snapshot-niveau)
+- **lid-monitor** verwerkt nieuwe Sportlink-data en updatet de leden-tabel (korte termijn)
 - **jeugdmodel** levert de streefcijfers en retentie-parameters waar ledenverloop tegen toetst
 
-Ledenverloop pakt het op **nadat** lid-monitor de snapshots heeft verwerkt: hij classificeert elk lid over opeenvolgende snapshots, berekent retentie-KPI's per geboortejaar-cohort, en vergelijkt met KNKV-ledencijfers van concurrerende verenigingen.
+Ledenverloop pakt het op **nadat** lid-monitor de ledendata heeft bijgewerkt: hij classificeert elk lid over opeenvolgende seizoenen via speler_seizoenen, berekent retentie-KPI's per geboortejaar-cohort, en vergelijkt met KNKV-ledencijfers van concurrerende verenigingen.
 
 ## Kernbegrippen
 
@@ -25,10 +25,10 @@ Ledenverloop pakt het op **nadat** lid-monitor de snapshots heeft verwerkt: hij 
 
 | Status | Definitie |
 |---|---|
-| **Behouden** | Aanwezig in beide snapshots met `spelactiviteit: korfbal` |
-| **Nieuw (instroom)** | Aanwezig in nieuw snapshot, niet in vorig. Eerste keer in data |
-| **Herinschrijver** | Aanwezig in nieuw snapshot, niet in vorig, wel in een eerder snapshot |
-| **Uitgestroomd (drop-out)** | Aanwezig in vorig snapshot, niet in nieuw |
+| **Behouden** | Aanwezig in beide seizoenen met `spelactiviteit: korfbal` |
+| **Nieuw (instroom)** | Aanwezig in huidig seizoen, niet in vorig. Eerste keer in data |
+| **Herinschrijver** | Aanwezig in huidig seizoen, niet in vorig, wel in een eerder seizoen |
+| **Uitgestroomd (drop-out)** | Aanwezig in vorig seizoen, niet in huidig |
 | **Niet-spelend geworden** | Nog lid maar spelactiviteit gewijzigd van korfbal naar anders |
 
 ### Primaire analyse-as: geboortejaar-cohort
@@ -59,9 +59,9 @@ Leeftijdsbanden worden wel als secundaire groepering gebruikt voor presentatie e
 
 | KPI | Formule |
 |---|---|
-| **Retentiepercentage** | behouden / totaal vorig snapshot x 100% |
-| **Instroompercentage** | (nieuw + herinschrijver) / totaal nieuw snapshot x 100% |
-| **Uitstroompercentage** | uitgestroomd / totaal vorig snapshot x 100% |
+| **Retentiepercentage** | behouden / totaal vorig seizoen x 100% |
+| **Instroompercentage** | (nieuw + herinschrijver) / totaal huidig seizoen x 100% |
+| **Uitstroompercentage** | uitgestroomd / totaal vorig seizoen x 100% |
 | **Netto groei** | instroom - uitstroom (absoluut en %) |
 | **Drop-out risico** | Cohorten met retentie < streefmodel drempel |
 | **Instroomleeftijd** | Gemiddelde en mediaan leeftijd van nieuwe leden |
@@ -74,23 +74,23 @@ Leeftijdsbanden worden wel als secundaire groepering gebruikt voor presentatie e
 
 ## Databronnen
 
-- `data/leden/snapshots/*.json` — verrijkte ledensnapshots (verwerkt door lid-monitor)
+- PostgreSQL: `speler_seizoenen` + `leden` tabellen — ledendata per seizoen
 - `data/modellen/streef-ledenboog.json` — retentie-parameters en streefcijfers
 - `data/ledenverloop/benchmark/knkv-kwartaal/*.json` — KNKV kwartaalcijfers (als beschikbaar)
 - `data/ledenverloop/benchmark/config.json` — concurrenten-configuratie
 
 ## Stappen
 
-1. **Laad alle beschikbare snapshots**
-   - Scan `data/leden/snapshots/*.json` (exclusief `-diff`, `-analyse` bestanden)
-   - Sorteer op datum, bepaal welke paren te vergelijken
+1. **Query speler_seizoenen per seizoenspaar**
+   - Haal alle speler_seizoenen records op, gegroepeerd per seizoen
+   - Sorteer op seizoen, bepaal welke paren te vergelijken
    - Als `$ARGUMENTS` een seizoen bevat: filter op dat seizoen
    - Als `$ARGUMENTS` "benchmark" is: spring naar stap 6
 
-2. **Classificeer elk lid per snapshot-paar**
-   - Vergelijk opeenvolgende snapshots op `rel_code`-niveau
+2. **Classificeer elk lid per seizoenspaar**
+   - Vergelijk opeenvolgende seizoenen op `rel_code`-niveau
    - Ken status toe: behouden, nieuw, herinschrijver, uitgestroomd, niet-spelend geworden
-   - Bij herinschrijver: noteer het laatste eerdere snapshot waarin het lid voorkwam
+   - Bij herinschrijver: noteer het laatste eerdere seizoen waarin het lid voorkwam
 
 3. **Aggregeer per geboortejaar-cohort + geslacht**
    - Tel per cohort: behouden, nieuw, herinschrijver, uitgestroomd, niet-spelend

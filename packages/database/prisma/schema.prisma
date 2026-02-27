@@ -31,7 +31,6 @@ model Lid {
   updatedAt        DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
 
   // Relaties
-  snapshots       LidSnapshot[]
   spelerSeizoenen SpelerSeizoen[]
   foto            LidFoto?
 
@@ -64,9 +63,7 @@ model Seizoen {
   peildatum  DateTime @map("peildatum") @db.Date    // 31 december van startJaar
 
   // Relaties
-  snapshots          Snapshot[]
   owTeams            OWTeam[]
-  spelerspaden       SpelersPad[]
   spelerSeizoenen    SpelerSeizoen[]
   competitieRondes   CompetitieRonde[]
   ledenverloop       Ledenverloop[]
@@ -75,53 +72,6 @@ model Seizoen {
   poolStanden        PoolStand[]
 
   @@map("seizoenen")
-}
-
-// Snapshot metadata
-model Snapshot {
-  id            Int       @id @default(autoincrement())
-  snapshotDatum DateTime  @unique @map("snapshot_datum") @db.Date
-  seizoen       String
-  totaalLeden   Int?      @map("totaal_leden")
-  totaalSpelers Int?      @map("totaal_spelers")
-  bronnen       String[]
-  createdAt     DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
-
-  // Relaties
-  seizoenRef    Seizoen        @relation(fields: [seizoen], references: [seizoen])
-  lidSnapshots  LidSnapshot[]
-
-  @@map("snapshots")
-}
-
-// Lid-status per snapshot (point-in-time)
-model LidSnapshot {
-  id                Int      @id @default(autoincrement())
-  snapshotId        Int      @map("snapshot_id")
-  relCode           String   @map("rel_code")
-  lidsoort          String?
-  spelactiviteit    String?
-  status            String?
-  team              String?
-  owCode            String?  @map("ow_code")
-  teamrol           String?
-  categorie         String?  // "a" | "b"
-  kleur             String?
-  aCategorie        String?  @map("a_categorie")
-  aJaars            String?  @map("a_jaars")
-  leeftijdPeildatum Int?     @map("leeftijd_peildatum")
-  poolVeld          String?  @map("pool_veld")
-  poolZaal          String?  @map("pool_zaal")
-
-  // Relaties
-  lid      Lid      @relation(fields: [relCode], references: [relCode])
-  snapshot Snapshot @relation(fields: [snapshotId], references: [id])
-
-  @@unique([snapshotId, relCode])
-  @@index([snapshotId], map: "idx_leden_snapshot_snapshot")
-  @@index([relCode], map: "idx_leden_snapshot_relcode")
-  @@index([owCode], map: "idx_leden_snapshot_owcode")
-  @@map("leden_snapshot")
 }
 
 // Teams per seizoen (stabiel via owCode)
@@ -183,7 +133,7 @@ model SpelerSeizoen {
   seizoen     String
   team        String   // primair team dit seizoen
   geslacht    String?  // "M" | "V" (gedenormaliseerd)
-  bron        String   // "telling" | "preseason" | "a2" | "sportlink" | "snapshot"
+  bron        String   // "telling"
   betrouwbaar Boolean  @default(true)
 
   lid        Lid      @relation(fields: [relCode], references: [relCode])
@@ -202,31 +152,12 @@ model CompetitieSpeler {
   spelerSeizoenId  Int      @map("speler_seizoen_id")
   competitie       String   // "veld_najaar" | "zaal" | "zaal_deel1" | "zaal_deel2" | "veld_voorjaar"
   team             String
-  bron             String   // "telling" | "preseason" | "a2" | "sportlink" | "snapshot"
+  bron             String   // "telling"
 
   spelerSeizoen SpelerSeizoen @relation(fields: [spelerSeizoenId], references: [id], onDelete: Cascade)
 
   @@unique([spelerSeizoenId, competitie])
   @@map("competitie_spelers")
-}
-
-// [DEPRECATED] Spelerspaden — wordt vervangen door SpelerSeizoen + CompetitieSpeler
-model SpelersPad {
-  id        Int     @id @default(autoincrement())
-  spelerId  String  @map("speler_id")
-  seizoen   String
-  team      String?
-  owCode    String? @map("ow_code")
-  categorie String?
-  rol       String? @default("speler")
-
-  // Relaties
-  seizoenRef Seizoen @relation(fields: [seizoen], references: [seizoen])
-
-  @@unique([spelerId, seizoen])
-  @@index([spelerId], map: "idx_spelerspaden_speler")
-  @@index([seizoen], map: "idx_spelerspaden_seizoen")
-  @@map("spelerspaden")
 }
 
 // Ledenverloop (individueel per seizoenspaar)

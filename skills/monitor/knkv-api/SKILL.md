@@ -61,7 +61,7 @@ Volledige documentatie: `docs/knkv-api.md`
 
 4. **Sla de resultaten op**
 
-   - Ruwe API response → `data/leden/snapshots/raw/YYYY-MM-DD-knkv-teams.json`
+   - Ruwe API response → `data/seizoenen/YYYY-YYYY/raw/YYYY-MM-DD-knkv-teams.json`
    - Seizoensoverzicht → `data/seizoenen/YYYY-YYYY/teams-knkv.json`
 
    Formaat seizoensoverzicht:

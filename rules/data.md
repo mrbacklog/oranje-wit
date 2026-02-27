@@ -11,28 +11,18 @@ paths:
 - Schrijf nooit BSN, geboortedatum of adresgegevens naar logs of output
 - Persoonsdata alleen opslaan in aangewezen data-mappen, nooit in code
 - Bij twijfel: behandel alle ledendata als privacygevoelig
-- Verrijkte snapshots bevatten **geen e-mailadressen** — alleen rel_code als identifier
-- Verrijkte snapshots bevatten **alleen geboortejaar**, niet de volledige geboortedatum
+- De `leden` tabel bevat **geen e-mailadressen** — alleen rel_code als identifier
+- De `leden` tabel bevat **alleen geboortejaar**, niet de volledige geboortedatum
 
-## Drielagenmodel
+## Dataopslag
 
-Alle ledendata volgt het drielagenmodel:
+Alle ledendata wordt opgeslagen in PostgreSQL (Railway):
 
-1. **Raw** (`data/leden/snapshots/raw/`) — ongewijzigde bronbestanden, nooit bewerken na opslaan
-2. **Verrijkt** (`data/leden/snapshots/YYYY-MM-DD.json`) — gecombineerd per lid, zonder privacy-gevoelige velden
-3. **Aggregaties** (`data/aggregaties/`) — statistieken per geboortejaar, team, kleur
+- **`leden`** — permanente ledenrecords (1 per lid), met rel_code als identifier
+- **`speler_seizoenen`** — speler per seizoen met primair team (5.399 records)
+- **`competitie_spelers`** — speler per competitieperiode (9.375 records)
 
 ## Bestandsnaamgeving
-
-### Ruwe bronbestanden
-- Sportlink ledenexport: `data/leden/snapshots/raw/YYYY-MM-DD-sportlink-leden.csv`
-- Sportlink teamexport: `data/leden/snapshots/raw/YYYY-MM-DD-sportlink-teams.csv`
-- KNKV API teamdata: `data/leden/snapshots/raw/YYYY-MM-DD-knkv-teams.json`
-
-### Verrijkte data
-- Ledensnapshot: `data/leden/snapshots/YYYY-MM-DD.json`
-- Snapshot diff: `data/leden/snapshots/YYYY-MM-DD-diff.json`
-- Snapshot analyse: `data/leden/snapshots/YYYY-MM-DD-analyse.md`
 
 ### Aggregaties
 - Per geboortejaar: `data/aggregaties/YYYY-MM-DD-per-geboortejaar.json`
@@ -40,9 +30,6 @@ Alle ledendata volgt het drielagenmodel:
 - Per kleur: `data/aggregaties/YYYY-MM-DD-per-kleur.json`
 - Per leeftijdsjaar: `data/aggregaties/analyse-per-leeftijd.json` — retentie, instroom, uitstroom (3-65 jaar)
 - Instroom/uitstroom: `data/aggregaties/instroom-uitstroom-analyse.json` — per seizoen en per leeftijd
-
-### Spelerspaden
-- Longitudinale paden: `data/spelers/spelerspaden.json` — alle spelers over 16 seizoenen (2010-2026)
 
 ### Modellen
 - Streef-ledenboog: `data/modellen/streef-ledenboog.json` — projecties huidig → 2028 → 2030
