@@ -42,8 +42,8 @@ oranje-wit/
 
 | Commando | Wat |
 |---|---|
-| `pnpm dev:ti` | Start Team-Indeling (Next.js) |
-| `pnpm dev:monitor` | Start Verenigingsmonitor (Express) |
+| `pnpm dev:ti` | Start Team-Indeling (Next.js) op poort **4100** |
+| `pnpm dev:monitor` | Start Verenigingsmonitor op poort **4102** |
 | `pnpm db:generate` | Genereer Prisma client |
 | `pnpm db:push` | Push schema naar database |
 | `pnpm import` | Importeer Verenigingsmonitor data |
@@ -56,13 +56,13 @@ oranje-wit/
 - **Database**: `oranjewit`
 - **Schema eigenaarschap**: `packages/database/prisma/schema.prisma`
 
-### Tabelverdeling (33 modellen)
+### Tabelverdeling (30 modellen)
 
-**Competitie-data** (nieuw, vervangt SpelersPad):
+**Competitie-data**:
 SpelerSeizoen (`speler_seizoenen`), CompetitieSpeler (`competitie_spelers`), CompetitieRonde (`competitie_rondes`)
 
 **Verenigingsmonitor** (snake_case via `@@map`):
-Lid, Seizoen, Snapshot, LidSnapshot, OWTeam, TeamPeriode, ~~SpelersPad~~ (deprecated), Ledenverloop, CohortSeizoen, Signalering, Streefmodel
+Lid, LidFoto, Seizoen, OWTeam, TeamPeriode, Ledenverloop, CohortSeizoen, Signalering, Streefmodel, PoolStand, PoolStandRegel
 
 **Team-Indeling** (PascalCase):
 User, Speler, Staf, Blauwdruk, Pin, Concept, Scenario, Versie, Team, TeamSpeler, TeamStaf, Evaluatie, LogEntry, Import, ReferentieTeam
@@ -81,7 +81,7 @@ SpelerSeizoen (1 per speler per seizoen)
 ### Lees/schrijf
 - **Team-Indeling schrijft**: blauwdruk, concepten, scenario's, teams, pins, log, evaluaties
 - **Team-Indeling leest**: leden, speler_seizoenen, competitie_spelers, retentie
-- **Monitor schrijft**: leden, snapshots, teams, verloop, cohorten, signalering, speler_seizoenen, competitie_spelers
+- **Monitor schrijft**: leden, teams, verloop, cohorten, signalering, speler_seizoenen, competitie_spelers
 - **Monitor leest**: alles (dashboards, signalering, MCP tools)
 
 ---
@@ -126,6 +126,10 @@ team-planner (hoofd TI) ← escalates-to: korfbal
 ontwikkelaar (dev) ← escalates-to: korfbal
 ```
 
+### Agent Startup
+
+Bij het spawnen van een agent via de Task tool MOET eerst de `shared/start` skill worden geladen. Dit is niet optioneel. De agent leest `skills/shared/start/SKILL.md` als eerste actie en doorloopt alle 4 stappen (basiscontext, domeincontext, dynamische context, eigen agent-bestand) voordat hij aan zijn eigenlijke taak begint.
+
 ## Skills
 
 ### Monitor (`skills/monitor/`)
@@ -135,7 +139,7 @@ database, exporteer, jeugdmodel, knkv-api, ledenverloop, lid-monitor, railway, s
 advies, blauwdruk, concept, evaluatie, import, pin, scenario, validatie, vergelijk
 
 ### Gedeeld (`skills/shared/`)
-oranje-draad
+oranje-draad, start
 
 ## Rules
 
@@ -153,7 +157,7 @@ Rules zijn de **Single Source of Truth** voor domeinkennis. Agents en skills ver
 
 | Bron | Wat | Hoe |
 |---|---|---|
-| Sportlink | Ledendata, stamgegevens | CSV/JSON export → snapshots |
+| Sportlink | Ledendata, stamgegevens | CSV/JSON export → leden tabel |
 | Sportlink | Teamindelingen (zaal) | CSV export → competitie_spelers |
 | KNKV API | Teamdata, indelingen | API calls (knkv-api skill) |
 | KNKV A2-formulieren | Teamindelingen per periode | .xlsm → competitie_spelers |
@@ -173,16 +177,19 @@ A2-formulieren (docs/teamindelingen/A2/*.xlsm, 2018-2024)
     ↓ (inline import)
 competitie_spelers (zaal)
 
-Sportlink snapshots (data/leden/snapshots/YYYY-06-01.json)
-    ↓ (scripts/import/import-veld-voorjaar.js)
-competitie_spelers (veld_voorjaar)
+=== Verloop-pipeline (database-based) ===
+
+speler_seizoenen + leden
+    ↓ (scripts/js/bereken-verloop.js)
+ledenverloop tabel
+    ↓ (scripts/js/bereken-cohorten.js)
+cohort_seizoenen tabel
+    ↓ (scripts/js/genereer-signalering.js)
+signalering tabel
 
 === Overige data ===
 
-Sportlink CSV/JSON → data/leden/snapshots/
-    ↓ (scripts/js/ pipeline)
-data/aggregaties/ + data/ledenverloop/ + signalering
-    ↓ (MCP sync tools)
+Sportlink CSV/JSON → leden tabel (via MCP sync)
 Railway PostgreSQL ← Prisma schema (packages/database/)
     ↓
 apps/monitor/ (dashboards) + apps/team-indeling/ (Next.js)
