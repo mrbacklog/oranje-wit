@@ -85,7 +85,7 @@ export async function POST(request: Request) {
     });
 
     // Bepaal seizoenjaar uit scenario-naam of gebruik default
-    const seizoenJaar = 2027; // SEIZOEN_JAAR uit types.ts
+    const peiljaar = 2026; // PEILJAAR: korfballeeftijd = 31-12-2026
 
     // Bouw de prompt
     const teamInput = teams.map((t) => ({
@@ -110,7 +110,7 @@ export async function POST(request: Request) {
     const prompt = buildVoorstelPrompt(
       teamInput,
       spelerInput,
-      seizoenJaar,
+      peiljaar,
       opties
     );
 

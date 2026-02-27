@@ -33,8 +33,25 @@ model Lid {
   // Relaties
   snapshots       LidSnapshot[]
   spelerSeizoenen SpelerSeizoen[]
+  foto            LidFoto?
 
   @@map("leden")
+}
+
+// Profielfoto per lid (opgeslagen als webp binary)
+model LidFoto {
+  relCode         String    @id @map("rel_code")
+  bronUrl         String?   @map("bron_url")
+  imageWebp       Bytes     @map("image_webp")
+  contentHash     String?   @map("content_hash")
+  sourceUpdatedAt DateTime? @map("source_updated_at") @db.Timestamptz(6)
+  createdAt       DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  // Relaties
+  lid Lid @relation(fields: [relCode], references: [relCode], onDelete: Cascade)
+
+  @@map("lid_fotos")
 }
 
 // Seizoenen
@@ -377,6 +394,7 @@ model Speler {
   roepnaam      String
   achternaam    String
   geboortejaar  Int
+  geboortedatum DateTime? @db.Date
   geslacht      Geslacht
   lidSinds      String?  // "2018-09-02"
   huidig         Json?   // { team, categorie, kleur, a_categorie, a_jaars, leeftijd }

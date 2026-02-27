@@ -1,7 +1,21 @@
+---
+name: vergelijk
+description: Twee scenario's of versies naast elkaar vergelijken. Side-by-side view met team-diffs, trade-offs en Oranje Draad-toets.
+user-invocable: false
+allowed-tools: Read, Write, Glob
+---
+
 # Skill: Vergelijk
 
 ## Doel
 Twee scenario's (of versies) naast elkaar vergelijken. Toont verschillen, trade-offs en helpt bij de keuze.
+
+## App-pagina
+`/vergelijk` — side-by-side vergelijking van 2 scenario's.
+
+### Componenten
+- `ScenarioVergelijk.tsx` — hoofd-component met twee kolommen
+- `TeamDiff.tsx` — per-team diff (welke spelers anders, grootte, gender)
 
 ## Vergelijkingsniveaus
 
@@ -14,6 +28,7 @@ Twee scenario's (of versies) naast elkaar vergelijken. Toont verschillen, trade-
 - Welke spelers zitten in scenario A maar niet in B?
 - Welke spelers zijn verplaatst?
 - Verschil in teamgrootte en genderbalans
+- Korfballeeftijd-verschil (gemiddeld per team)
 
 ### Kwalitatief (Claude)
 - Trade-off analyse: wat win je en wat verlies je?

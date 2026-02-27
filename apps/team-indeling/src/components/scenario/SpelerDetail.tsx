@@ -2,7 +2,8 @@
 
 import { useEffect, useCallback } from "react";
 import type { SpelerData, HuidigData, SpelerspadEntry } from "./types";
-import { SEIZOEN_JAAR, STATUS_KLEUREN } from "./types";
+import { STATUS_KLEUREN, kleurIndicatie, KLEUR_DOT, korfbalLeeftijd } from "./types";
+import SpelerAvatar from "@/components/ui/SpelerAvatar";
 
 interface SpelerDetailProps {
   speler: SpelerData;
@@ -10,7 +11,8 @@ interface SpelerDetailProps {
 }
 
 export default function SpelerDetail({ speler, onClose }: SpelerDetailProps) {
-  const leeftijd = SEIZOEN_JAAR - speler.geboortejaar;
+  const leeftijd = korfbalLeeftijd(speler.geboortedatum, speler.geboortejaar);
+  const kleur = kleurIndicatie(leeftijd);
   const huidig = speler.huidig as HuidigData | null;
   const spelerspad = (speler.spelerspad ?? []) as SpelerspadEntry[];
 
@@ -28,16 +30,18 @@ export default function SpelerDetail({ speler, onClose }: SpelerDetailProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+      className="dialog-overlay"
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-xl shadow-xl w-full max-w-md mx-4 max-h-[80vh] overflow-y-auto"
+        className="dialog-panel w-full max-w-md max-h-[80vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-          <div>
+        <div className="dialog-header flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <SpelerAvatar spelerId={speler.id} naam={speler.roepnaam} size="md" className="w-10 h-10 text-sm" />
+            <div>
             <h3 className="text-lg font-bold text-gray-900">
               {speler.roepnaam} {speler.achternaam}
             </h3>
@@ -48,6 +52,7 @@ export default function SpelerDetail({ speler, onClose }: SpelerDetailProps) {
               <span className="text-xs text-gray-500">{speler.status}</span>
             </div>
           </div>
+          </div>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 text-xl leading-none p-1"
@@ -57,17 +62,18 @@ export default function SpelerDetail({ speler, onClose }: SpelerDetailProps) {
         </div>
 
         {/* Info */}
-        <div className="px-6 py-4 space-y-4">
+        <div className="dialog-body">
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <span className="text-xs text-gray-500">Geboortejaar</span>
-              <p className="text-sm font-medium text-gray-800">
-                {speler.geboortejaar}
+              <span className="text-xs text-gray-500">Korfballeeftijd</span>
+              <p className="text-sm font-medium text-gray-800 flex items-center gap-1.5">
+                {kleur && <span className={`w-2 h-2 rounded-full ${KLEUR_DOT[kleur]}`} />}
+                {leeftijd.toFixed(2)} jaar
               </p>
             </div>
             <div>
-              <span className="text-xs text-gray-500">Leeftijd (peildatum)</span>
-              <p className="text-sm font-medium text-gray-800">{leeftijd} jaar</p>
+              <span className="text-xs text-gray-500">Geboortejaar</span>
+              <p className="text-sm text-gray-500">{speler.geboortejaar}</p>
             </div>
             <div>
               <span className="text-xs text-gray-500">Geslacht</span>

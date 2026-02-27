@@ -1,7 +1,50 @@
 import type { TeamCategorie, Kleur, Geslacht, SpelerStatus } from "@oranje-wit/database";
 
-/** Seizoenjaar voor leeftijdsberekening (peildatum 31 dec) */
-export const SEIZOEN_JAAR = 2027;
+/** Peiljaar voor korfballeeftijd: 31-12 van het eerste seizoensjaar */
+export const PEILJAAR = 2026;
+
+/** Peildatum voor precieze korfballeeftijd (31 december van peiljaar) */
+export const PEILDATUM = new Date(2026, 11, 31); // 31-12-2026
+
+/**
+ * Bereken precieze korfballeeftijd op peildatum 31-12-2026 (2 decimalen).
+ * Gebruikt geboortedatum als beschikbaar, anders fallback op geboortejaar.
+ */
+export function korfbalLeeftijd(
+  geboortedatum: Date | string | null | undefined,
+  geboortejaar: number
+): number {
+  if (geboortedatum) {
+    const gd =
+      typeof geboortedatum === "string" ? new Date(geboortedatum) : geboortedatum;
+    const ms = PEILDATUM.getTime() - gd.getTime();
+    return Math.round((ms / (365.25 * 86_400_000)) * 100) / 100;
+  }
+  return PEILJAAR - geboortejaar;
+}
+
+/**
+ * Kleurindicatie op basis van korfballeeftijd (PEILJAAR - geboortejaar).
+ * Dit is een indicatie, niet de definitieve teamkleur — die wordt bepaald
+ * door de gemiddelde leeftijd van het team.
+ */
+export function kleurIndicatie(korfballeeftijd: number): Kleur | null {
+  if (korfballeeftijd <= 8) return "BLAUW";
+  if (korfballeeftijd <= 10) return "GROEN";
+  if (korfballeeftijd <= 12) return "GEEL";
+  if (korfballeeftijd <= 14) return "ORANJE";
+  if (korfballeeftijd <= 18) return "ROOD";
+  return null; // Senioren
+}
+
+/** Tailwind kleuren voor kleurindicatie dot */
+export const KLEUR_DOT: Record<string, string> = {
+  BLAUW: "bg-blue-400",
+  GROEN: "bg-emerald-400",
+  GEEL: "bg-yellow-400",
+  ORANJE: "bg-orange-400",
+  ROOD: "bg-red-400",
+};
 
 /** Speler zoals opgehaald uit de database */
 export interface SpelerData {
@@ -9,6 +52,7 @@ export interface SpelerData {
   roepnaam: string;
   achternaam: string;
   geboortejaar: number;
+  geboortedatum: string | null;
   geslacht: Geslacht;
   status: SpelerStatus;
   huidig: unknown;

@@ -1,21 +1,4 @@
 import { prisma } from "@/lib/db/prisma";
-import { Prisma } from "@oranje-wit/database";
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-type SnapshotMeta = { id: number; snapshot_datum: Date } | null;
-
-async function latestSnapshot(seizoen: string): Promise<SnapshotMeta> {
-  const snap = await prisma.snapshot.findFirst({
-    where: { seizoen },
-    orderBy: { snapshotDatum: "desc" },
-    select: { id: true, snapshotDatum: true },
-  });
-  if (!snap) return null;
-  return { id: snap.id, snapshot_datum: snap.snapshotDatum };
-}
 
 // ---------------------------------------------------------------------------
 // Per geboortejaar
@@ -37,21 +20,35 @@ export type GeboortejaarResult = {
 export async function getPerGeboortejaar(
   seizoen: string
 ): Promise<GeboortejaarResult> {
-  const snap = await latestSnapshot(seizoen);
-  if (!snap) return { meta: { datum: null, seizoen }, data: [] };
+  const startJaar = parseInt(seizoen.split("-")[0]);
 
   const rows = await prisma.$queryRaw<GeboortejaarRow[]>`
-    SELECT l.geboortejaar, l.geslacht, COUNT(*)::int AS aantal,
-           ls.a_categorie, ls.a_jaars
-    FROM leden_snapshot ls
-    JOIN leden l ON ls.rel_code = l.rel_code
-    WHERE ls.snapshot_id = ${snap.id}
-      AND ls.spelactiviteit IS NOT NULL
-    GROUP BY l.geboortejaar, l.geslacht, ls.a_categorie, ls.a_jaars
+    SELECT
+      l.geboortejaar,
+      l.geslacht,
+      COUNT(*)::int AS aantal,
+      CASE
+        WHEN (${startJaar} - l.geboortejaar) BETWEEN 13 AND 14 THEN 'U15'
+        WHEN (${startJaar} - l.geboortejaar) BETWEEN 15 AND 16 THEN 'U17'
+        WHEN (${startJaar} - l.geboortejaar) BETWEEN 17 AND 18 THEN 'U19'
+        WHEN (${startJaar} - l.geboortejaar) >= 19 THEN 'Senioren'
+        ELSE NULL
+      END AS a_categorie,
+      CASE
+        WHEN (${startJaar} - l.geboortejaar) IN (13, 15, 17) THEN '1e-jaars'
+        WHEN (${startJaar} - l.geboortejaar) IN (14, 16, 18) THEN '2e-jaars'
+        ELSE NULL
+      END AS a_jaars
+    FROM speler_seizoenen ss
+    JOIN leden l ON ss.rel_code = l.rel_code
+    WHERE ss.seizoen = ${seizoen}
+      AND ss.bron = 'telling'
+    GROUP BY l.geboortejaar, l.geslacht,
+             (${startJaar} - l.geboortejaar)
     ORDER BY l.geboortejaar, l.geslacht`;
 
   return {
-    meta: { datum: snap.snapshot_datum, seizoen },
+    meta: { datum: null, seizoen },
     data: rows.map((r) => ({
       geboortejaar: r.geboortejaar,
       geslacht: r.geslacht,
@@ -81,27 +78,74 @@ export type KleurResult = {
 };
 
 export async function getPerKleur(seizoen: string): Promise<KleurResult> {
-  const snap = await latestSnapshot(seizoen);
-  if (!snap) return { meta: { datum: null, seizoen }, data: [] };
-
   const rows = await prisma.$queryRaw<KleurRow[]>`
+    WITH team_kleur AS (
+      -- OW J-teams: telling-naam via j_nummer → ow_code → kleur
+      SELECT DISTINCT ON ('OW J' || SUBSTRING(tp.j_nummer FROM 2))
+        'OW J' || SUBSTRING(tp.j_nummer FROM 2) AS telling_naam,
+        t.kleur, t.categorie, t.leeftijdsgroep
+      FROM team_periodes tp
+      JOIN teams t ON t.id = tp.team_id AND t.seizoen = ${seizoen}
+      WHERE tp.j_nummer IS NOT NULL
+
+      UNION ALL
+
+      -- Senioren: S{n} → ow_code {n}
+      SELECT 'S' || t.ow_code, t.kleur, t.categorie, t.leeftijdsgroep
+      FROM teams t
+      WHERE t.seizoen = ${seizoen} AND t.ow_code ~ '^\d+$'
+
+      UNION ALL
+
+      -- Direct matches (MW1, U15-1, U17-1, U19-1, etc.)
+      SELECT t.ow_code, t.kleur, t.categorie, t.leeftijdsgroep
+      FROM teams t
+      WHERE t.seizoen = ${seizoen} AND t.ow_code !~ '^\d+$'
+
+      UNION ALL
+
+      -- Selectieteams (gecombineerde telling-namen die later splitsen)
+      SELECT v.telling_naam, v.kleur, v.categorie, v.leeftijdsgroep
+      FROM (VALUES
+        ('S1/S2', NULL::text, 'a', 'Senioren'),
+        ('U17',   NULL::text, 'a', 'U17'),
+        ('U19',   NULL::text, 'a', 'U19')
+      ) v(telling_naam, kleur, categorie, leeftijdsgroep)
+      WHERE EXISTS (SELECT 1 FROM teams WHERE seizoen = ${seizoen})
+    ),
+    spelers AS (
+      SELECT
+        ss.team,
+        l.geslacht,
+        COALESCE(
+          tk.kleur,
+          CASE
+            WHEN tk.leeftijdsgroep IN ('U15','U17','U19') THEN 'A-categorie'
+            WHEN tk.leeftijdsgroep = 'Senioren' THEN 'Senioren'
+            WHEN tk.categorie = 'a' THEN 'A-categorie'
+            ELSE 'Onbekend'
+          END
+        ) AS kleur,
+        COALESCE(tk.categorie, 'onbekend') AS categorie
+      FROM speler_seizoenen ss
+      JOIN leden l ON ss.rel_code = l.rel_code
+      LEFT JOIN team_kleur tk ON tk.telling_naam = ss.team
+      WHERE ss.seizoen = ${seizoen}
+        AND ss.bron = 'telling'
+    )
     SELECT
-      COALESCE(ls.kleur, t.kleur, 'Onbekend') AS kleur,
-      ls.categorie,
-      COUNT(DISTINCT ls.ow_code)::int AS teams,
-      COUNT(*) FILTER (WHERE l.geslacht = 'M')::int AS spelers_m,
-      COUNT(*) FILTER (WHERE l.geslacht = 'V')::int AS spelers_v,
+      kleur,
+      categorie,
+      COUNT(DISTINCT team)::int AS teams,
+      COUNT(*) FILTER (WHERE geslacht = 'M')::int AS spelers_m,
+      COUNT(*) FILTER (WHERE geslacht = 'V')::int AS spelers_v,
       COUNT(*)::int AS totaal
-    FROM leden_snapshot ls
-    JOIN leden l ON ls.rel_code = l.rel_code
-    LEFT JOIN teams t ON ls.ow_code = t.ow_code AND t.seizoen = ${seizoen}
-    WHERE ls.snapshot_id = ${snap.id}
-      AND ls.spelactiviteit IS NOT NULL
-    GROUP BY COALESCE(ls.kleur, t.kleur, 'Onbekend'), ls.categorie
-    ORDER BY ls.categorie, kleur`;
+    FROM spelers
+    GROUP BY kleur, categorie
+    ORDER BY categorie, kleur`;
 
   return {
-    meta: { datum: snap.snapshot_datum, seizoen },
+    meta: { datum: null, seizoen },
     data: rows.map((r) => ({
       kleur: r.kleur,
       categorie: r.categorie || null,
@@ -109,64 +153,6 @@ export async function getPerKleur(seizoen: string): Promise<KleurResult> {
       spelers_m: Number(r.spelers_m),
       spelers_v: Number(r.spelers_v),
       totaal: Number(r.totaal),
-    })),
-  };
-}
-
-// ---------------------------------------------------------------------------
-// Per team
-// ---------------------------------------------------------------------------
-
-export type TeamRow = {
-  team: string;
-  categorie: string | null;
-  kleur: string | null;
-  niveau: string | null;
-  spelers_m: number;
-  spelers_v: number;
-  totaal: number;
-  gem_leeftijd: number | null;
-};
-
-export type TeamResult = {
-  meta: { datum: Date | null; seizoen: string };
-  data: TeamRow[];
-};
-
-export async function getPerTeam(seizoen: string): Promise<TeamResult> {
-  const snap = await latestSnapshot(seizoen);
-  if (!snap) return { meta: { datum: null, seizoen }, data: [] };
-
-  const rows = await prisma.$queryRaw<TeamRow[]>`
-    SELECT
-      ls.ow_code AS team,
-      ls.categorie,
-      COALESCE(ls.kleur, t.kleur) AS kleur,
-      t.leeftijdsgroep AS niveau,
-      COUNT(*) FILTER (WHERE l.geslacht = 'M')::int AS spelers_m,
-      COUNT(*) FILTER (WHERE l.geslacht = 'V')::int AS spelers_v,
-      COUNT(*)::int AS totaal,
-      ROUND(AVG(ls.leeftijd_peildatum)::numeric, 1) AS gem_leeftijd
-    FROM leden_snapshot ls
-    JOIN leden l ON ls.rel_code = l.rel_code
-    LEFT JOIN teams t ON ls.ow_code = t.ow_code AND t.seizoen = ${seizoen}
-    WHERE ls.snapshot_id = ${snap.id}
-      AND ls.spelactiviteit IS NOT NULL
-      AND ls.ow_code IS NOT NULL
-    GROUP BY ls.ow_code, ls.categorie, COALESCE(ls.kleur, t.kleur), t.leeftijdsgroep
-    ORDER BY ls.categorie, ls.ow_code`;
-
-  return {
-    meta: { datum: snap.snapshot_datum, seizoen },
-    data: rows.map((r) => ({
-      team: r.team,
-      categorie: r.categorie || null,
-      kleur: r.kleur || null,
-      niveau: r.niveau || null,
-      spelers_m: Number(r.spelers_m),
-      spelers_v: Number(r.spelers_v),
-      totaal: Number(r.totaal),
-      gem_leeftijd: r.gem_leeftijd ? Number(r.gem_leeftijd) : null,
     })),
   };
 }

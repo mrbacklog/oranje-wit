@@ -41,13 +41,63 @@ export interface SpelerData {
 }
 
 // ============================================================
-// Constanten
+// Constanten & Targets
 // ============================================================
 
-const TEAMGROOTTE = {
+/** Standaard teamgrootte-grenzen (gebruikt als fallback). */
+const DEFAULT_TEAMGROOTTE = {
   viertal: { min: 4, ideaalMin: 5, ideaalMax: 6, max: 8 },
   achttal: { min: 8, ideaalMin: 9, ideaalMax: 11, max: 13 },
 } as const;
+
+/**
+ * Optionele teamgrootte-targets vanuit de blauwdruk.
+ * Als meegegeven, worden ideaalMin/ideaalMax hieruit afgeleid.
+ */
+export interface TeamgrootteOverrides {
+  viertal?: { min: number; ideaal: number; max: number };
+  breedteAchttal?: { min: number; ideaal: number; max: number };
+  aCatTeam?: { min: number; ideaal: number; max: number };
+}
+
+function getTeamgrootte(
+  format: "viertal" | "achttal",
+  isACat: boolean,
+  overrides?: TeamgrootteOverrides
+) {
+  const defaults = DEFAULT_TEAMGROOTTE[format];
+
+  if (!overrides) return defaults;
+
+  if (format === "viertal" && overrides.viertal) {
+    return {
+      min: Math.max(defaults.min, overrides.viertal.min - 1),
+      ideaalMin: overrides.viertal.min,
+      ideaalMax: overrides.viertal.max,
+      max: overrides.viertal.max + 2,
+    };
+  }
+
+  if (format === "achttal" && isACat && overrides.aCatTeam) {
+    return {
+      min: Math.max(defaults.min, overrides.aCatTeam.min - 2),
+      ideaalMin: overrides.aCatTeam.min,
+      ideaalMax: overrides.aCatTeam.max,
+      max: overrides.aCatTeam.max + 2,
+    };
+  }
+
+  if (format === "achttal" && !isACat && overrides.breedteAchttal) {
+    return {
+      min: Math.max(defaults.min, overrides.breedteAchttal.min - 1),
+      ideaalMin: overrides.breedteAchttal.min,
+      ideaalMax: overrides.breedteAchttal.max,
+      max: overrides.breedteAchttal.max + 2,
+    };
+  }
+
+  return defaults;
+}
 
 const KLEUR_FORMAT: Record<string, "viertal" | "achttal"> = {
   BLAUW: "viertal",
@@ -55,6 +105,15 @@ const KLEUR_FORMAT: Record<string, "viertal" | "achttal"> = {
   GEEL: "achttal",
   ORANJE: "achttal",
   ROOD: "achttal",
+};
+
+/** Leeftijdsrange per kleur (min-max leeftijd in peiljaar). */
+const KLEUR_LEEFTIJD: Record<string, { min: number; max: number }> = {
+  BLAUW: { min: 5, max: 7 },
+  GROEN: { min: 8, max: 9 },
+  GEEL: { min: 10, max: 12 },
+  ORANJE: { min: 13, max: 15 },
+  ROOD: { min: 16, max: 18 },
 };
 
 const MIN_GEMIDDELDE_LEEFTIJD_8TAL = 9.0;
@@ -65,19 +124,27 @@ const MIN_GEMIDDELDE_LEEFTIJD_8TAL = 9.0;
 
 export function valideerTeam(
   team: TeamData,
-  seizoenJaar: number
+  seizoenJaar: number,
+  overrides?: TeamgrootteOverrides
 ): TeamValidatie {
   const meldingen: ValidatieMelding[] = [];
 
+  // Bepaal effectieve categorie (senioren splitsen in A/B)
+  const isACat = team.categorie === "A_CATEGORIE" || isSeniorenA(team);
+  const isBCat = team.categorie === "B_CATEGORIE" || isSeniorenB(team);
+
   // Bepaal teamtype
-  if (team.categorie === "B_CATEGORIE" && team.kleur) {
-    valideerBCategorie(team, seizoenJaar, meldingen);
-  } else if (team.categorie === "A_CATEGORIE") {
-    valideerACategorie(team, seizoenJaar, meldingen);
+  if (isBCat && team.kleur) {
+    valideerBCategorie(team, seizoenJaar, meldingen, overrides);
+  } else if (isACat) {
+    valideerACategorie(team, seizoenJaar, meldingen, overrides);
+  } else if (team.categorie === "SENIOREN") {
+    // Senioren zonder duidelijke A/B → valideer als achttal
+    valideerSenioren(team, meldingen, overrides);
   }
 
-  // Generieke checks (alle teams)
-  valideerGender(team, meldingen);
+  // Gender checks — categorie-afhankelijk
+  valideerGender(team, isACat, meldingen);
   valideerDuplicaten(team, meldingen);
 
   // Bepaal overall status
@@ -97,11 +164,12 @@ export function valideerTeam(
 function valideerBCategorie(
   team: TeamData,
   seizoenJaar: number,
-  meldingen: ValidatieMelding[]
+  meldingen: ValidatieMelding[],
+  overrides?: TeamgrootteOverrides
 ) {
   const kleur = team.kleur!;
   const format = KLEUR_FORMAT[kleur];
-  const grootte = TEAMGROOTTE[format];
+  const grootte = getTeamgrootte(format, false, overrides);
   const aantalSpelers = team.spelers.length;
 
   // Teamgrootte
@@ -143,6 +211,21 @@ function valideerBCategorie(
     }
   }
 
+  // Individuele leeftijdscheck: speler past bij deze kleur?
+  if (team.kleur && KLEUR_LEEFTIJD[team.kleur] && team.spelers.length > 0) {
+    const range = KLEUR_LEEFTIJD[team.kleur];
+    for (const speler of team.spelers) {
+      const leeftijd = seizoenJaar - speler.geboortejaar;
+      if (leeftijd < range.min || leeftijd > range.max) {
+        meldingen.push({
+          regel: "leeftijd_kleur",
+          bericht: `${speler.roepnaam} ${speler.achternaam} (${leeftijd} jr) valt buiten ${team.kleur.toLowerCase()} (${range.min}-${range.max} jr)`,
+          ernst: "aandacht",
+        });
+      }
+    }
+  }
+
   // Gemiddelde leeftijd (8-tallen)
   if (format === "achttal" && team.spelers.length > 0) {
     const gemiddeldGeboortejaar =
@@ -167,10 +250,11 @@ function valideerBCategorie(
 function valideerACategorie(
   team: TeamData,
   seizoenJaar: number,
-  meldingen: ValidatieMelding[]
+  meldingen: ValidatieMelding[],
+  overrides?: TeamgrootteOverrides
 ) {
   const aantalSpelers = team.spelers.length;
-  const grootte = TEAMGROOTTE.achttal;
+  const grootte = getTeamgrootte("achttal", true, overrides);
 
   // Teamgrootte
   if (aantalSpelers < grootte.min) {
@@ -222,13 +306,20 @@ function valideerACategorie(
 // Generieke checks
 // ============================================================
 
-function valideerGender(team: TeamData, meldingen: ValidatieMelding[]) {
+function valideerGender(
+  team: TeamData,
+  isACat: boolean,
+  meldingen: ValidatieMelding[]
+) {
   if (team.spelers.length === 0) return;
+
+  // Blauw: geen genderonderscheid volgens KNKV
+  if (team.kleur === "BLAUW") return;
 
   const aantalM = team.spelers.filter((s) => s.geslacht === "M").length;
   const aantalV = team.spelers.filter((s) => s.geslacht === "V").length;
 
-  // Nooit 1 kind alleen van één geslacht
+  // OW-regel: nooit 1 kind alleen van één geslacht
   if (aantalM === 1 || aantalV === 1) {
     const geslacht = aantalM === 1 ? "jongen" : "meisje";
     meldingen.push({
@@ -238,8 +329,20 @@ function valideerGender(team: TeamData, meldingen: ValidatieMelding[]) {
     });
   }
 
-  // Gender scheef maar niet 1 alleen
-  if (aantalM > 0 && aantalV > 0) {
+  // A-categorie: verplicht 4V + 4M (KNKV-regel)
+  if (isACat && aantalM > 0 && aantalV > 0) {
+    const ratio = Math.min(aantalM, aantalV) / Math.max(aantalM, aantalV);
+    if (ratio < 0.75) {
+      meldingen.push({
+        regel: "gender_balans",
+        bericht: `${team.naam}: ${aantalM}M + ${aantalV}V — KNKV vereist 4V+4M in A-categorie`,
+        ernst: "kritiek",
+      });
+    }
+  }
+
+  // B-categorie: gender scheef is aandacht, geen harde eis
+  if (!isACat && aantalM > 0 && aantalV > 0) {
     const ratio = Math.min(aantalM, aantalV) / Math.max(aantalM, aantalV);
     if (ratio < 0.5) {
       meldingen.push({
@@ -268,6 +371,60 @@ function valideerDuplicaten(team: TeamData, meldingen: ValidatieMelding[]) {
 // ============================================================
 // Helpers
 // ============================================================
+
+/**
+ * Senioren A (Sen 1-4): wedstrijdkorfbal, A-categorie regels.
+ */
+function isSeniorenA(team: TeamData): boolean {
+  if (team.categorie !== "SENIOREN") return false;
+  const nummer = extractTeamNummer(team.naam);
+  return nummer !== null && nummer <= 4;
+}
+
+/**
+ * Senioren B (Sen 5+): breedtesport, B-categorie regels.
+ */
+function isSeniorenB(team: TeamData): boolean {
+  if (team.categorie !== "SENIOREN") return false;
+  const nummer = extractTeamNummer(team.naam);
+  return nummer !== null && nummer >= 5;
+}
+
+function extractTeamNummer(naam: string): number | null {
+  const match = naam.match(/(\d+)\s*$/);
+  return match ? parseInt(match[1], 10) : null;
+}
+
+/**
+ * Senioren zonder duidelijke A/B indeling — valideer basisregels.
+ */
+function valideerSenioren(team: TeamData, meldingen: ValidatieMelding[], overrides?: TeamgrootteOverrides) {
+  const aantalSpelers = team.spelers.length;
+  const grootte = getTeamgrootte("achttal", false, overrides);
+
+  if (aantalSpelers < grootte.min) {
+    meldingen.push({
+      regel: "teamgrootte",
+      bericht: `${team.naam}: ${aantalSpelers} spelers, minimum is ${grootte.min}`,
+      ernst: "kritiek",
+    });
+  } else if (aantalSpelers > grootte.max) {
+    meldingen.push({
+      regel: "teamgrootte",
+      bericht: `${team.naam}: ${aantalSpelers} spelers, maximum is ${grootte.max}`,
+      ernst: "kritiek",
+    });
+  } else if (
+    aantalSpelers < grootte.ideaalMin ||
+    aantalSpelers > grootte.ideaalMax
+  ) {
+    meldingen.push({
+      regel: "teamgrootte",
+      bericht: `${team.naam}: ${aantalSpelers} spelers, ideaal is ${grootte.ideaalMin}-${grootte.ideaalMax}`,
+      ernst: "aandacht",
+    });
+  }
+}
 
 function detecteerACategorie(
   teamNaam: string

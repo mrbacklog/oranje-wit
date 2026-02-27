@@ -17,7 +17,7 @@ interface ExportPanelProps {
   seizoen: string;
 }
 
-const SEIZOEN_JAAR = 2027;
+const PEILJAAR = 2026;
 
 export default function ExportPanel({ teams, seizoen }: ExportPanelProps) {
   function exportCSV() {
@@ -27,7 +27,7 @@ export default function ExportPanel({ teams, seizoen }: ExportPanelProps) {
     for (const team of teams) {
       for (const ts of team.spelers) {
         const s = ts.speler;
-        const leeftijd = SEIZOEN_JAAR - s.geboortejaar;
+        const leeftijd = PEILJAAR - s.geboortejaar;
         const naam = `${s.roepnaam} ${s.achternaam}`;
         // Escape velden met komma's
         const escapedNaam = naam.includes(",") ? `"${naam}"` : naam;

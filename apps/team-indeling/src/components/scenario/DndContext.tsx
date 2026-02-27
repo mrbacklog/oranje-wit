@@ -12,7 +12,7 @@ import {
 } from "@dnd-kit/core";
 import { useState, type ReactNode } from "react";
 import type { SpelerData } from "./types";
-import { SEIZOEN_JAAR, STATUS_KLEUREN } from "./types";
+import { STATUS_KLEUREN, kleurIndicatie, KLEUR_DOT, korfbalLeeftijd } from "./types";
 
 interface DndProviderProps {
   children: ReactNode;
@@ -105,7 +105,8 @@ export default function DndProvider({
 }
 
 function DragOverlayKaart({ speler }: { speler: SpelerData }) {
-  const leeftijd = SEIZOEN_JAAR - speler.geboortejaar;
+  const leeftijd = korfbalLeeftijd(speler.geboortedatum, speler.geboortejaar);
+  const kleur = kleurIndicatie(leeftijd);
   return (
     <div className="flex items-center gap-2 px-3 py-2 rounded-md border border-orange-300 bg-white shadow-lg cursor-grabbing">
       <span
@@ -114,7 +115,10 @@ function DragOverlayKaart({ speler }: { speler: SpelerData }) {
       <span className="text-sm text-gray-800">
         {speler.roepnaam} {speler.achternaam}
       </span>
-      <span className="text-xs text-gray-400">{leeftijd}</span>
+      <span className="inline-flex items-center gap-0.5">
+        {kleur && <span className={`w-1.5 h-1.5 rounded-full ${KLEUR_DOT[kleur]}`} />}
+        <span className="text-xs text-gray-400">{leeftijd.toFixed(2)}</span>
+      </span>
       <span className="text-xs">
         {speler.geslacht === "M" ? "\u2642" : "\u2640"}
       </span>

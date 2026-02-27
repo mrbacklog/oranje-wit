@@ -1,7 +1,10 @@
 import { PageHeader, KpiCard, SignalBadge } from "@oranje-wit/ui";
-import { getDashboardKPIs } from "@/lib/queries/dashboard";
+import {
+  getDashboardKPIs,
+  getLedenTrend,
+  getInstroomUitstroom,
+} from "@/lib/queries/dashboard";
 import { getSignaleringen, type SignaleringRow } from "@/lib/queries/signalering";
-import { getCohorten } from "@/lib/queries/cohorten";
 import { getSeizoen } from "@/lib/utils/seizoen";
 import { LedenTrend } from "@/components/charts/leden-trend";
 import { InstroomUitstroom } from "@/components/charts/instroom-uitstroom";
@@ -14,23 +17,25 @@ export default async function DashboardPage({
   const params = await searchParams;
   const seizoen = getSeizoen(params);
 
-  const [kpis, signaleringen, cohorten] = await Promise.all([
-    getDashboardKPIs(seizoen),
-    getSignaleringen(seizoen),
-    getCohorten(),
-  ]);
+  const [kpis, signaleringen, ledenTrend, instroomUitstroom] =
+    await Promise.all([
+      getDashboardKPIs(seizoen),
+      getSignaleringen(seizoen),
+      getLedenTrend(),
+      getInstroomUitstroom(),
+    ]);
 
-  // Leden trend: totaal per seizoen
-  const ledenTrendData = cohorten.totalen.per_seizoen.map((s) => ({
+  // Leden trend: uit speler_seizoenen
+  const ledenTrendData = ledenTrend.map((s) => ({
     seizoen: s.seizoen.slice(2, 4) + "/" + s.seizoen.slice(7, 9),
-    totaal: s.totaal_nieuw,
+    totaal: s.totaal,
   }));
 
-  // Instroom/uitstroom per seizoen
-  const instroomUitstroomData = cohorten.totalen.per_seizoen.map((s) => ({
+  // Instroom/uitstroom: rel_codes vergelijken tussen seizoenen
+  const instroomUitstroomData = instroomUitstroom.map((s) => ({
     seizoen: s.seizoen.slice(2, 4) + "/" + s.seizoen.slice(7, 9),
-    instroom: s.nieuw + s.herinschrijver,
-    uitstroom: s.uitgestroomd,
+    instroom: s.instroom,
+    uitstroom: s.uitstroom,
   }));
 
   // Top 3 signaleringen (kritiek eerst)
@@ -45,7 +50,6 @@ export default async function DashboardPage({
 
       {/* KPI cards */}
       <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <KpiCard label="Actieve leden" value={kpis.totaal_leden} />
         <KpiCard label="Spelende leden" value={kpis.totaal_spelers} />
         <KpiCard label="Teams" value={kpis.totaal_teams} />
         <KpiCard
@@ -65,7 +69,7 @@ export default async function DashboardPage({
       <div className="mb-8 grid gap-6 lg:grid-cols-2">
         <div className="rounded-xl bg-white p-5 shadow-sm">
           <h3 className="mb-4 text-sm font-semibold text-gray-700 uppercase tracking-wide">
-            Ledenaantal per seizoen
+            Spelende leden per seizoen
           </h3>
           <LedenTrend data={ledenTrendData} />
         </div>

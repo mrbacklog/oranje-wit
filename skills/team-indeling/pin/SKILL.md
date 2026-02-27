@@ -1,3 +1,10 @@
+---
+name: pin
+description: Feiten pinnen of ont-pinnen in de blauwdruk. Gepinde feiten gelden voor alle concepten en scenario's.
+user-invocable: false
+allowed-tools: Read, Write, Glob
+---
+
 # Skill: Pin
 
 ## Doel

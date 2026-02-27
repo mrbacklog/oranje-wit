@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import type { TeamData, SpelerData } from "./types";
+import Spinner from "@/components/ui/Spinner";
 
 interface WhatIfDialoogProps {
   open: boolean;
@@ -115,14 +116,14 @@ export default function WhatIfDialoog({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+      className="dialog-overlay"
       onClick={handleClose}
     >
       <div
-        className="bg-white rounded-xl shadow-xl w-full max-w-lg mx-4 max-h-[80vh] flex flex-col"
+        className="dialog-panel w-full max-w-lg max-h-[80vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="px-6 py-4 border-b border-gray-200">
+        <div className="dialog-header">
           <h3 className="text-lg font-bold text-gray-900">
             What-if analyse
           </h3>
@@ -132,7 +133,7 @@ export default function WhatIfDialoog({
           </p>
         </div>
 
-        <div className="px-6 py-4 space-y-4 overflow-auto flex-1">
+        <div className="dialog-body overflow-auto flex-1">
           {/* Modus keuze */}
           <div className="flex gap-2">
             <button
@@ -173,7 +174,7 @@ export default function WhatIfDialoog({
                 value={geselecteerdeSpeler}
                 onChange={(e) => setGeselecteerdeSpeler(e.target.value)}
                 disabled={loading}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 disabled:opacity-50"
+                className="input disabled:opacity-50"
               >
                 <option value="">Selecteer een speler...</option>
                 {spelerOpties.map((s) => (
@@ -201,7 +202,7 @@ export default function WhatIfDialoog({
                 placeholder='Bijv. "Wat als er 3 nieuwe spelers van geboortejaar 2016 bijkomen?" of "Wat als Team Oranje-2 wordt opgeheven?"'
                 rows={3}
                 disabled={loading}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 disabled:opacity-50"
+                className="input disabled:opacity-50"
               />
             </div>
           )}
@@ -209,26 +210,7 @@ export default function WhatIfDialoog({
           {/* Loading */}
           {loading && (
             <div className="flex items-center gap-3 p-3 bg-orange-50 rounded-lg">
-              <svg
-                className="animate-spin h-5 w-5 text-orange-500"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                />
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                />
-              </svg>
+              <Spinner size="md" className="text-orange-500" />
               <span className="text-sm text-orange-700">
                 Claude analyseert de impact...
               </span>
@@ -263,7 +245,7 @@ export default function WhatIfDialoog({
                     {resultaat.getrofenTeams.map((team) => (
                       <span
                         key={team}
-                        className="px-2 py-0.5 bg-orange-100 text-orange-700 text-xs rounded-full"
+                        className="badge-orange"
                       >
                         {team}
                       </span>
@@ -295,11 +277,11 @@ export default function WhatIfDialoog({
           )}
         </div>
 
-        <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-end gap-3">
+        <div className="dialog-footer">
           <button
             onClick={handleClose}
             disabled={loading}
-            className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors disabled:opacity-50"
+            className="btn-ghost disabled:opacity-50"
           >
             Sluiten
           </button>
@@ -311,7 +293,7 @@ export default function WhatIfDialoog({
                 (modus === "speler" && !geselecteerdeSpeler) ||
                 (modus === "vrij" && !vrijVraag.trim())
               }
-              className="px-4 py-2 bg-orange-500 text-white text-sm font-medium rounded-lg hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="btn-primary"
             >
               {loading ? "Bezig..." : "Analyseer"}
             </button>
@@ -322,7 +304,7 @@ export default function WhatIfDialoog({
                 setResultaat(null);
                 setError(null);
               }}
-              className="px-4 py-2 bg-orange-500 text-white text-sm font-medium rounded-lg hover:bg-orange-600 transition-colors"
+              className="btn-primary"
             >
               Nieuwe analyse
             </button>

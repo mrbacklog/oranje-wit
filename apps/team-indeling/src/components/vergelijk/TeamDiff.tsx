@@ -1,6 +1,6 @@
 "use client";
 
-import { SEIZOEN_JAAR } from "@/components/scenario/types";
+import { PEILJAAR } from "@/components/scenario/types";
 
 interface SpelerInfo {
   id: string;
@@ -29,7 +29,7 @@ interface TeamDiffProps {
 }
 
 function berekenLeeftijd(geboortejaar: number): number {
-  return SEIZOEN_JAAR - geboortejaar;
+  return PEILJAAR - geboortejaar;
 }
 
 function berekenStats(spelers: SpelerInfo[]) {

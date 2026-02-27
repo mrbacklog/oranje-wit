@@ -8,7 +8,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 const SEIZOEN = "2026-2027";
-const SEIZOEN_JAAR = 2026;
+const PEILJAAR = 2026;
 
 /**
  * Maak een nieuw scenario aan met keuze-waardes.
@@ -53,7 +53,7 @@ export async function createScenario(
   }));
 
   // Bereken teamstructuur
-  const teamVoorstellen = berekenTeamstructuur(spelerBasis, keuzeWaardes, SEIZOEN_JAAR);
+  const teamVoorstellen = berekenTeamstructuur(spelerBasis, keuzeWaardes, PEILJAAR);
 
   // Maak scenario + versie + teams in één transactie
   const scenario = await prisma.scenario.create({
@@ -172,6 +172,7 @@ export async function getAlleSpelers() {
       roepnaam: true,
       achternaam: true,
       geboortejaar: true,
+      geboortedatum: true,
       geslacht: true,
       status: true,
       huidig: true,

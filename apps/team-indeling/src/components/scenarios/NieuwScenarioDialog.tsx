@@ -46,16 +46,16 @@ export default function NieuwScenarioDialog({
     <>
       <button
         onClick={() => setOpen(true)}
-        className="px-4 py-2 bg-orange-500 text-white text-sm font-medium rounded-lg hover:bg-orange-600 transition-colors"
+        className="btn-primary"
       >
         + Nieuw scenario
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
+        <div className="dialog-overlay">
+          <div className="dialog-panel w-full max-w-lg max-h-[90vh] overflow-y-auto">
             {/* Header */}
-            <div className="px-6 py-4 border-b border-gray-200">
+            <div className="dialog-header">
               <h3 className="text-lg font-bold text-gray-900">
                 Nieuw scenario
               </h3>
@@ -65,7 +65,7 @@ export default function NieuwScenarioDialog({
             </div>
 
             {/* Formulier */}
-            <div className="px-6 py-4 space-y-5">
+            <div className="dialog-body">
               {/* Naam */}
               <div>
                 <label
@@ -80,7 +80,7 @@ export default function NieuwScenarioDialog({
                   value={naam}
                   onChange={(e) => setNaam(e.target.value)}
                   placeholder="Bijv. Standaard indeling"
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400"
+                  className="input"
                 />
               </div>
 
@@ -138,24 +138,24 @@ export default function NieuwScenarioDialog({
                   onChange={(e) => setToelichting(e.target.value)}
                   placeholder="Eventuele toelichting of aannames..."
                   rows={3}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 resize-none"
+                  className="input resize-none"
                 />
               </div>
             </div>
 
             {/* Footer */}
-            <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-end gap-3">
+            <div className="dialog-footer">
               <button
                 onClick={handleReset}
                 disabled={bezig}
-                className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors"
+                className="btn-ghost"
               >
                 Annuleren
               </button>
               <button
                 onClick={handleSubmit}
                 disabled={bezig || !naam.trim()}
-                className="px-4 py-2 bg-orange-500 text-white text-sm font-medium rounded-lg hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="btn-primary"
               >
                 {bezig ? "Aanmaken..." : "Scenario aanmaken"}
               </button>

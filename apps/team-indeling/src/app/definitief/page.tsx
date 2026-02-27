@@ -6,7 +6,7 @@ import ExportPanel from "@/components/definitief/ExportPanel";
 export const dynamic = "force-dynamic";
 
 const SEIZOEN = "2026-2027";
-const SEIZOEN_JAAR = 2027;
+const PEILJAAR = 2026;
 
 const CATEGORIE_LABELS: Record<string, string> = {
   B_CATEGORIE: "B-categorie",
@@ -223,7 +223,7 @@ export default async function DefinitiefPage() {
                         </span>
                         <span className="text-xs text-gray-400">
                           {ts.speler.geboortejaar} (
-                          {SEIZOEN_JAAR - ts.speler.geboortejaar}j) &middot;{" "}
+                          {PEILJAAR - ts.speler.geboortejaar}j) &middot;{" "}
                           {ts.speler.geslacht}
                         </span>
                       </li>

@@ -1,3 +1,10 @@
+---
+name: concept
+description: Strategisch concept formuleren binnen een blauwdruk. Elk concept heeft een uitgangsprincipe dat de richting bepaalt.
+user-invocable: false
+allowed-tools: Read, Write, Glob
+---
+
 # Skill: Concept
 
 ## Doel

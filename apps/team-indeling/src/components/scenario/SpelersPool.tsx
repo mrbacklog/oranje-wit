@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import type { SpelerData, TeamData, SpelerFilter } from "./types";
-import { SEIZOEN_JAAR } from "./types";
+import { korfbalLeeftijd } from "./types";
 import SpelerFilters from "./SpelerFilters";
 import SpelerKaart from "./SpelerKaart";
 import SpelerDetail from "./SpelerDetail";
@@ -49,7 +49,7 @@ export default function SpelersPool({
     const leeftijden = new Set<number>();
     for (const team of zichtbareTeams) {
       for (const ts of team.spelers) {
-        leeftijden.add(SEIZOEN_JAAR - ts.speler.geboortejaar);
+        leeftijden.add(Math.floor(korfbalLeeftijd(ts.speler.geboortedatum, ts.speler.geboortejaar)));
       }
     }
 
@@ -63,7 +63,7 @@ export default function SpelersPool({
     const maxLeeftijd = Math.max(...leeftijden) + 1;
 
     for (const speler of spelers) {
-      const leeftijd = SEIZOEN_JAAR - speler.geboortejaar;
+      const leeftijd = Math.floor(korfbalLeeftijd(speler.geboortedatum, speler.geboortejaar));
       if (leeftijd >= minLeeftijd && leeftijd <= maxLeeftijd) {
         ids.add(speler.id);
       }

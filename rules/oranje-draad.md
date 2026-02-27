@@ -40,6 +40,13 @@ PLEZIER + ONTWIKKELING + PRESTATIE → DUURZAAMHEID
 4. Is deze indeling volhoudbaar met de beschikbare staf? (Duurzaamheid)
 5. Zijn er spelers met hoog retentierisico die extra aandacht nodig hebben?
 
+## Seizoenscyclus
+- Juni: pre-season indeling delen
+- Augustus: nieuw seizoen start
+- 2-4 competities per korfbaljaar (veld_najaar, zaal_deel1, zaal_deel2, veld_voorjaar)
+- Jeugd: niveau is middel voor ontwikkeling, nooit doel op zich
+- Senioren: balans wedstrijd (A) en breedte (B) bewust handhaven
+
 ## POP-ratio per leeftijdsgroep
 
 | Leeftijd | Plezier | Ontwikkeling | Prestatie |

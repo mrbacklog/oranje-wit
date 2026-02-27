@@ -2,7 +2,8 @@
 
 import { useDraggable } from "@dnd-kit/core";
 import type { SpelerData, HuidigData } from "./types";
-import { SEIZOEN_JAAR, STATUS_KLEUREN } from "./types";
+import { STATUS_KLEUREN, kleurIndicatie, KLEUR_DOT, korfbalLeeftijd } from "./types";
+import SpelerAvatar from "@/components/ui/SpelerAvatar";
 
 interface SpelerKaartProps {
   speler: SpelerData;
@@ -16,7 +17,8 @@ export default function SpelerKaart({ speler, onClick }: SpelerKaartProps) {
       data: { type: "pool-speler", spelerId: speler.id },
     });
 
-  const leeftijd = SEIZOEN_JAAR - speler.geboortejaar;
+  const leeftijd = korfbalLeeftijd(speler.geboortedatum, speler.geboortejaar);
+  const kleur = kleurIndicatie(leeftijd);
   const huidig = speler.huidig as HuidigData | null;
   const vorigTeam = huidig?.team ?? null;
 
@@ -43,9 +45,12 @@ export default function SpelerKaart({ speler, onClick }: SpelerKaartProps) {
         isDragging ? "opacity-50 shadow-lg" : ""
       }`}
     >
+      {/* Avatar */}
+      <SpelerAvatar spelerId={speler.id} naam={speler.roepnaam} size="sm" />
+
       {/* Status dot */}
       <span
-        className={`w-2 h-2 rounded-full flex-shrink-0 ${STATUS_KLEUREN[speler.status]}`}
+        className={`w-2 h-2 rounded-full shrink-0 ${STATUS_KLEUREN[speler.status]}`}
         title={speler.status}
       />
 
@@ -54,8 +59,14 @@ export default function SpelerKaart({ speler, onClick }: SpelerKaartProps) {
         {speler.roepnaam} {speler.achternaam}
       </span>
 
-      {/* Leeftijd */}
-      <span className="text-xs text-gray-400 flex-shrink-0">{leeftijd}</span>
+      {/* Korfballeeftijd + kleurindicatie */}
+      <span
+        className="inline-flex items-center gap-0.5 flex-shrink-0"
+        title={`Geboortejaar ${speler.geboortejaar}`}
+      >
+        {kleur && <span className={`w-1.5 h-1.5 rounded-full ${KLEUR_DOT[kleur]}`} />}
+        <span className="text-xs text-gray-400">{leeftijd.toFixed(2)}</span>
+      </span>
 
       {/* Geslacht */}
       <span className="text-xs flex-shrink-0" title={speler.geslacht === "M" ? "Man" : "Vrouw"}>

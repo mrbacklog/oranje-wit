@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import type { TeamData } from "./types";
 import type { TeamValidatie } from "@/lib/validatie/regels";
-import { SEIZOEN_JAAR, KLEUR_BADGE_KLEUREN } from "./types";
+import { KLEUR_BADGE_KLEUREN, korfbalLeeftijd } from "./types";
 import TeamSpelerRij from "./TeamSpelerRij";
 import ValidatieBadge from "./ValidatieBadge";
 import ValidatieMeldingen from "./ValidatieMeldingen";
@@ -37,10 +37,10 @@ export default function TeamKaart({ team, validatie, onDelete }: TeamKaartProps)
     aantalSpelers > 0
       ? (
           team.spelers.reduce(
-            (sum, ts) => sum + (SEIZOEN_JAAR - ts.speler.geboortejaar),
+            (sum, ts) => sum + korfbalLeeftijd(ts.speler.geboortedatum, ts.speler.geboortejaar),
             0
           ) / aantalSpelers
-        ).toFixed(1)
+        ).toFixed(2)
       : "-";
 
   // J-nummer indicatie
@@ -48,7 +48,7 @@ export default function TeamKaart({ team, validatie, onDelete }: TeamKaartProps)
     aantalSpelers > 0
       ? `~J${Math.round(
           team.spelers.reduce(
-            (sum, ts) => sum + (SEIZOEN_JAAR - ts.speler.geboortejaar),
+            (sum, ts) => sum + korfbalLeeftijd(ts.speler.geboortedatum, ts.speler.geboortejaar),
             0
           ) / aantalSpelers
         )}`

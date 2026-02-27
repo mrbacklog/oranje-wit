@@ -2,16 +2,26 @@
 
 ## Teamgrootte
 
+De standaard teamgrootte-targets zijn configureerbaar per seizoen in de blauwdruk (`TeamgrootteInstellingen`). Onderstaande waarden zijn de defaults.
+
 ### 4-tallen (Blauw, Groen)
-- **Ideaal**: 5-6 spelers
+- **Min**: 5 | **Ideaal**: 6 | **Max**: 6
 - **Acceptabel**: 4-7
 - **Nooit meer dan**: 8
 
-### 8-tallen (Geel, Oranje, Rood, A-categorie, Senioren)
-- **Ideaal**: 10 spelers (5M + 5V)
-- **Acceptabel**: 9-11
+### Breedte 8-tallen (Geel, Oranje, Rood)
+- **Min**: 9 | **Ideaal**: 10 | **Max**: 11
 - **Hoge uitzondering**: 8 of 12
 - **Nooit meer dan**: 13
+
+### A-categorie team (U15/U17/U19)
+- **Min**: 8 | **Ideaal**: 10 | **Max**: 11
+
+### A-categorie selectie (2 teams samen)
+- **Min**: 18 | **Ideaal**: 20 | **Max**: 22
+
+### Senioren selectie
+- **Min**: 20 | **Ideaal**: 24 | **Max**: 26
 
 ## Gender
 - **Nooit 1 kind alleen** van één geslacht in een team

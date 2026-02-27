@@ -31,3 +31,8 @@ data/ledenverloop/benchmark/knkv-kwartaal/raw/
 # Misc
 *.log
 next-env.d.ts
+output/
+*.tsbuildinfo
+__pycache__/
+capture-request-details.md
+network-requests.txt

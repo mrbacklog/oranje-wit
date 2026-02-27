@@ -2,8 +2,8 @@
   "_meta": {
     "seizoen": "2025-2026",
     "gegenereerd": "2026-02-24",
-    "totaal_alerts": 9,
-    "kritiek": 4,
+    "totaal_alerts": 10,
+    "kritiek": 5,
     "aandacht": 5
   },
   "alerts": [
@@ -22,60 +22,80 @@
       "ernst": "kritiek",
       "leeftijdsgroep": "geboortejaar 2012 (Oranje, leeftijd 14)",
       "geslacht": "V",
-      "waarde": 78,
+      "waarde": 76,
       "drempel": 60,
       "streef": 50,
-      "beschrijving": "Geboortejaar 2012 (Oranje): 78% V (4M/14V) — streef ~50/50"
+      "beschrijving": "Geboortejaar 2012 (Oranje): 76% V (4M/13V) — streef ~50/50"
     },
     {
       "type": "genderdisbalans",
       "ernst": "kritiek",
       "leeftijdsgroep": "geboortejaar 2016 (Geel, leeftijd 10)",
       "geslacht": "V",
-      "waarde": 78,
+      "waarde": 75,
       "drempel": 60,
       "streef": 50,
-      "beschrijving": "Geboortejaar 2016 (Geel): 78% V (2M/7V) — streef ~50/50"
+      "beschrijving": "Geboortejaar 2016 (Geel): 75% V (2M/6V) — streef ~50/50"
     },
     {
-      "type": "genderdisbalans",
+      "type": "instroom",
       "ernst": "kritiek",
-      "leeftijdsgroep": "geboortejaar 2020 (Blauw, leeftijd 6)",
-      "geslacht": "V",
-      "waarde": 80,
-      "drempel": 60,
-      "streef": 50,
-      "beschrijving": "Geboortejaar 2020 (Blauw): 80% V (1M/4V) — streef ~50/50"
+      "leeftijdsgroep": "5-9",
+      "geslacht": null,
+      "waarde": 0,
+      "drempel": 16,
+      "streef": 20,
+      "beschrijving": "Kern-instroom 5-9 jaar (0) is >20% lager dan gemiddelde voorgaande seizoenen (20)"
+    },
+    {
+      "type": "trendbreuk",
+      "ernst": "kritiek",
+      "leeftijdsgroep": "alle",
+      "geslacht": null,
+      "waarde": 99.6,
+      "drempel": null,
+      "streef": null,
+      "beschrijving": "Trendbreuk retentie: 86.6% → 99.6% (+13.0pp) na trend 87.3% → 86.6%"
     },
     {
       "type": "genderdisbalans",
       "ernst": "aandacht",
       "leeftijdsgroep": "geboortejaar 2013 (Oranje, leeftijd 13)",
       "geslacht": "V",
-      "waarde": 65,
+      "waarde": 70,
       "drempel": 60,
       "streef": 50,
-      "beschrijving": "Geboortejaar 2013 (Oranje): 65% V (6M/11V) — streef ~50/50"
+      "beschrijving": "Geboortejaar 2013 (Oranje): 70% V (6M/14V) — streef ~50/50"
     },
     {
       "type": "genderdisbalans",
       "ernst": "aandacht",
       "leeftijdsgroep": "geboortejaar 2014 (Geel, leeftijd 12)",
       "geslacht": "M",
-      "waarde": 64,
+      "waarde": 67,
       "drempel": 60,
       "streef": 50,
-      "beschrijving": "Geboortejaar 2014 (Geel): 64% M (14M/8V) — streef ~50/50"
+      "beschrijving": "Geboortejaar 2014 (Geel): 67% M (14M/7V) — streef ~50/50"
     },
     {
-      "type": "instroom",
+      "type": "genderdisbalans",
       "ernst": "aandacht",
-      "leeftijdsgroep": "5-9",
-      "geslacht": null,
-      "waarde": 16,
-      "drempel": 16,
-      "streef": 18,
-      "beschrijving": "Kern-instroom 5-9 jaar (16) is 10-20% lager dan gemiddelde voorgaande seizoenen (18)"
+      "leeftijdsgroep": "geboortejaar 2015 (Geel, leeftijd 11)",
+      "geslacht": "V",
+      "waarde": 63,
+      "drempel": 60,
+      "streef": 50,
+      "beschrijving": "Geboortejaar 2015 (Geel): 63% V (6M/10V) — streef ~50/50"
+    },
+    {
+      "type": "genderdisbalans",
+      "ernst": "aandacht",
+      "leeftijdsgroep": "geboortejaar 2019 (Blauw, leeftijd 7)",
+      "geslacht": "V",
+      "waarde": 67,
+      "drempel": 60,
+      "streef": 50,
+      "beschrijving": "Geboortejaar 2019 (Blauw): 67% V (2M/4V) — streef ~50/50"
     },
     {
       "type": "retentie",
@@ -86,16 +106,6 @@
       "drempel": 70,
       "streef": 80,
       "beschrijving": "Retentie 24+ jaar (58.5%) verdient aandacht (streef: 80%)"
-    },
-    {
-      "type": "trendbreuk",
-      "ernst": "aandacht",
-      "leeftijdsgroep": "alle",
-      "geslacht": null,
-      "waarde": 31,
-      "drempel": null,
-      "streef": null,
-      "beschrijving": "31 leden van spelactiviteit korfbal naar niet-spelend/biljart gewisseld (nieuw patroon, mogelijk door Sportlink-datamigratie)"
     }
   ]
 }

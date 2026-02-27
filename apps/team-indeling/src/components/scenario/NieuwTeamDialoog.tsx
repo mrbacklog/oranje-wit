@@ -53,18 +53,18 @@ export default function NieuwTeamDialoog({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+      className="dialog-overlay"
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-xl shadow-xl w-full max-w-sm mx-4"
+        className="dialog-panel w-full max-w-sm"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="px-6 py-4 border-b border-gray-200">
+        <div className="dialog-header">
           <h3 className="text-lg font-bold text-gray-900">Nieuw team</h3>
         </div>
 
-        <div className="px-6 py-4 space-y-4">
+        <div className="dialog-body">
           {/* Naam */}
           <div>
             <label
@@ -79,7 +79,7 @@ export default function NieuwTeamDialoog({
               value={naam}
               onChange={(e) => setNaam(e.target.value)}
               placeholder="Bijv. Oranje-3"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400"
+              className="input"
               autoFocus
             />
           </div>
@@ -122,7 +122,7 @@ export default function NieuwTeamDialoog({
               <select
                 value={kleur}
                 onChange={(e) => setKleur(e.target.value as Kleur | "")}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400"
+                className="input"
               >
                 <option value="">Geen kleur</option>
                 {KLEUREN.map(({ waarde, label }) => (
@@ -135,17 +135,17 @@ export default function NieuwTeamDialoog({
           )}
         </div>
 
-        <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-end gap-3">
+        <div className="dialog-footer">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors"
+            className="btn-ghost"
           >
             Annuleren
           </button>
           <button
             onClick={handleSubmit}
             disabled={!naam.trim()}
-            className="px-4 py-2 bg-orange-500 text-white text-sm font-medium rounded-lg hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="btn-primary"
           >
             Team aanmaken
           </button>

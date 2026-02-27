@@ -34,8 +34,9 @@ Analyseer de verrassingen en risico's voor het seizoen $ARGUMENTS.
 5. **Toets aan de Oranje Draad**
    Welke scenario's bedreigen de balans Plezier/Ontwikkeling/Prestatie?
 
-6. **Sla op**
-   Schrijf naar `data/seizoenen/YYYY-YYYY/scenarios.md`
+6. **Lever aan**
+   Risico-inventarisatie dient als input voor de Team-Indeling app (blauwdruk → concepten → scenario's).
+   Optioneel opslaan als `data/seizoenen/YYYY-YYYY/risico-analyse.md`.
 
 ## Output
-Scenario-matrix per team + aanbevelingen voor voorbereiding.
+Risico-matrix per team + aanbevelingen als input voor het teamindelingsproces in de app.

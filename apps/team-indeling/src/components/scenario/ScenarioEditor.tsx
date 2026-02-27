@@ -3,7 +3,7 @@
 import { useState, useCallback, useTransition } from "react";
 import type { TeamCategorie, Kleur } from "@oranje-wit/database";
 import type { ScenarioData, SpelerData, TeamData, TeamSpelerData } from "./types";
-import { SEIZOEN_JAAR } from "./types";
+import { PEILJAAR } from "./types";
 import { useValidatie } from "@/hooks/useValidatie";
 import {
   addSpelerToTeam,
@@ -44,7 +44,7 @@ export default function ScenarioEditor({
   const [, startTransition] = useTransition();
 
   // Realtime validatie
-  const { validatieMap, dubbeleMeldingen } = useValidatie(teams, SEIZOEN_JAAR);
+  const { validatieMap, dubbeleMeldingen } = useValidatie(teams, PEILJAAR);
 
   // AI advies state
   const [laatsteActie, setLaatsteActie] = useState<string | null>(null);

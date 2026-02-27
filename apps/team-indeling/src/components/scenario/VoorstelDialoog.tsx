@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import Spinner from "@/components/ui/Spinner";
 
 interface VoorstelDialoogProps {
   open: boolean;
@@ -77,14 +78,14 @@ export default function VoorstelDialoog({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+      className="dialog-overlay"
       onClick={handleClose}
     >
       <div
-        className="bg-white rounded-xl shadow-xl w-full max-w-md mx-4"
+        className="dialog-panel w-full max-w-md"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="px-6 py-4 border-b border-gray-200">
+        <div className="dialog-header">
           <h3 className="text-lg font-bold text-gray-900">
             AI Startvoorstel
           </h3>
@@ -94,7 +95,7 @@ export default function VoorstelDialoog({
           </p>
         </div>
 
-        <div className="px-6 py-4 space-y-4">
+        <div className="dialog-body">
           {/* Teamgrootte voorkeur */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -145,33 +146,14 @@ export default function VoorstelDialoog({
               placeholder="Bijv. &quot;Houd Lisa en Emma bij elkaar&quot; of &quot;Plaats nieuwe spelers bij ervaren teams&quot;"
               rows={3}
               disabled={loading}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 disabled:opacity-50"
+              className="input disabled:opacity-50"
             />
           </div>
 
           {/* Loading */}
           {loading && (
             <div className="flex items-center gap-3 p-3 bg-orange-50 rounded-lg">
-              <svg
-                className="animate-spin h-5 w-5 text-orange-500"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                />
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                />
-              </svg>
+              <Spinner size="md" className="text-orange-500" />
               <span className="text-sm text-orange-700">
                 Claude analyseert spelers en teams...
               </span>
@@ -193,11 +175,11 @@ export default function VoorstelDialoog({
           )}
         </div>
 
-        <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-end gap-3">
+        <div className="dialog-footer">
           <button
             onClick={handleClose}
             disabled={loading}
-            className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors disabled:opacity-50"
+            className="btn-ghost disabled:opacity-50"
           >
             {resultaat ? "Sluiten" : "Annuleren"}
           </button>
@@ -205,7 +187,7 @@ export default function VoorstelDialoog({
             <button
               onClick={handleGenereer}
               disabled={loading}
-              className="px-4 py-2 bg-orange-500 text-white text-sm font-medium rounded-lg hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="btn-primary"
             >
               {loading ? "Bezig..." : "Genereer voorstel"}
             </button>
