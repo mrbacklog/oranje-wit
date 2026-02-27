@@ -1,6 +1,5 @@
 import { PageHeader, BandPill } from "@oranje-wit/ui";
 import { getTeamsRegister } from "@/lib/queries/teams";
-import { getPerTeam } from "@/lib/queries/samenstelling";
 import { getSeizoen } from "@/lib/utils/seizoen";
 
 export default async function TeamsPage({
@@ -11,13 +10,7 @@ export default async function TeamsPage({
   const params = await searchParams;
   const seizoen = getSeizoen(params);
 
-  const [register, perTeam] = await Promise.all([
-    getTeamsRegister(seizoen),
-    getPerTeam(seizoen),
-  ]);
-
-  // Maak lookup van teamdata per ow_code
-  const teamDataMap = new Map(perTeam.data.map((t) => [t.team, t]));
+  const register = await getTeamsRegister(seizoen);
 
   // Groepeer register teams per categorie
   const perCategorie = new Map<string, typeof register.teams>();
@@ -85,7 +78,6 @@ export default async function TeamsPage({
           </h3>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             {teams.map((team) => {
-              const data = teamDataMap.get(team.ow_code);
               const heeftPeriodes = Object.values(team.periodes).some(
                 (p) => p !== null
               );
@@ -101,31 +93,6 @@ export default async function TeamsPage({
                     </h4>
                     {team.kleur && <BandPill band={team.kleur} />}
                   </div>
-
-                  <div className="mb-2 grid grid-cols-3 gap-2 text-center text-sm">
-                    <div>
-                      <p className="text-xs text-gray-500">M</p>
-                      <p className="font-semibold">
-                        {data?.spelers_m ?? "-"}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">V</p>
-                      <p className="font-semibold">
-                        {data?.spelers_v ?? "-"}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Totaal</p>
-                      <p className="font-bold">{data?.totaal ?? "-"}</p>
-                    </div>
-                  </div>
-
-                  {data?.gem_leeftijd && (
-                    <p className="text-xs text-gray-500">
-                      Gem. leeftijd: {data.gem_leeftijd}
-                    </p>
-                  )}
 
                   {team.spelvorm && (
                     <p className="mt-1 text-xs text-gray-400">

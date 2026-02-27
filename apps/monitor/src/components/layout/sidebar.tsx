@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { href: "/samenstelling", label: "Samenstelling", icon: "👥" },
   { href: "/cohorten", label: "Cohorten", icon: "📈" },
   { href: "/teams", label: "Teams", icon: "🏃" },
+  { href: "/uitslagen", label: "Uitslagen", icon: "🏆" },
   { href: "/verloop", label: "Verloop", icon: "🔄" },
   { href: "/projecties", label: "Projecties", icon: "🎯" },
   { href: "/signalering", label: "Signalering", icon: "⚠️" },
