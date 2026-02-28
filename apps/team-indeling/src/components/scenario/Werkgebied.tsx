@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback } from "react";
-import type { TeamData } from "./types";
+import type { TeamData, SpelerData } from "./types";
 import type { TeamCategorie, Kleur } from "@oranje-wit/database";
 import type { TeamValidatie, ValidatieMelding } from "@/lib/validatie/regels";
 import TeamKaart from "./TeamKaart";
@@ -21,6 +21,7 @@ interface WerkgebiedProps {
   onKoppelSelectie: (teamIds: string[]) => void;
   onOntkoppelSelectie: (groepLeiderId: string) => void;
   onWhatIfOpen?: () => void;
+  onSpelerClick?: (speler: SpelerData, teamId?: string) => void;
 }
 
 export default function Werkgebied({
@@ -34,6 +35,7 @@ export default function Werkgebied({
   onKoppelSelectie,
   onOntkoppelSelectie,
   onWhatIfOpen,
+  onSpelerClick,
 }: WerkgebiedProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [rapportOpen, setRapportOpen] = useState(false);
@@ -166,6 +168,7 @@ export default function Werkgebied({
                 validatieMap={validatieMap}
                 onOntkoppel={onOntkoppelSelectie}
                 onDelete={onDeleteTeam}
+                onSpelerClick={onSpelerClick}
               />
             ))}
             {/* Losse teams */}
@@ -181,6 +184,9 @@ export default function Werkgebied({
                   team={team}
                   validatie={validatieMap?.get(team.id)}
                   onDelete={onDeleteTeam}
+                  onSpelerClick={
+                    onSpelerClick ? (speler) => onSpelerClick(speler, team.id) : undefined
+                  }
                 />
               </div>
             ))}

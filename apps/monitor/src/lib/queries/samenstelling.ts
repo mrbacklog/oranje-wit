@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { prisma } from "@/lib/db/prisma";
 
 // ---------------------------------------------------------------------------
@@ -74,7 +75,7 @@ type GroeiFactoren = { M: Record<number, number>; V: Record<number, number> };
  * Factor > 1 = cohort groeit (instroom > uitstroom), < 1 = cohort krimpt.
  * COVID-seizoenen (2020-2022) worden uitgesloten.
  */
-async function getGroeiFactoren(): Promise<GroeiFactoren> {
+export async function getGroeiFactoren(): Promise<GroeiFactoren> {
   const rows = await prisma.$queryRaw<
     { leeftijd: number; geslacht: string; groei_factor: string }[]
   >`
@@ -107,12 +108,142 @@ async function getGroeiFactoren(): Promise<GroeiFactoren> {
 }
 
 // ---------------------------------------------------------------------------
-// Projectie: U17 + Senioren doorstroom
+// Backward-projectie: van U17-doel terugrekenen per leeftijd
 // ---------------------------------------------------------------------------
 
 const U17_DOEL_M = 25;
 const U17_DOEL_V = 25;
 const _U17_DOEL = 50;
+
+const BAND_PER_LEEFTIJD: Record<number, string> = {
+  6: "Blauw",
+  7: "Blauw",
+  8: "Groen",
+  9: "Groen",
+  10: "Geel",
+  11: "Geel",
+  12: "Geel",
+  13: "Oranje",
+  14: "Oranje",
+  15: "Oranje",
+  16: "Rood",
+  17: "Rood",
+};
+
+export type PijplijnRij = {
+  leeftijd: number;
+  band: string;
+  benodigd_m: number;
+  benodigd_v: number;
+  huidig_m: number;
+  huidig_v: number;
+  vulgraad_m: number;
+  vulgraad_v: number;
+  vulgraad: number;
+  gap_m: number;
+  gap_v: number;
+};
+
+export type PijplijnResult = {
+  doel: { m: number; v: number; totaal: number };
+  huidigU17: { m: number; v: number; totaal: number };
+  perLeeftijd: PijplijnRij[];
+  groeiFactoren: GroeiFactoren;
+};
+
+/**
+ * Bereken de jeugdpijplijn: vanuit het doel van 25M + 25V bij leeftijd 16
+ * (1e-jaars U17) terugrekenen hoeveel spelers er per leeftijd nodig zijn.
+ *
+ * Logica: benodigd[L-1] = benodigd[L] / groei_factor[L]
+ * De groei-factor bevat zowel retentie als instroom (netto).
+ */
+export async function getPijplijn(seizoen: string): Promise<PijplijnResult> {
+  const startJaar = parseInt(seizoen.split("-")[0]);
+
+  const [groei, geboortejaarData] = await Promise.all([
+    getGroeiFactoren(),
+    getPerGeboortejaar(seizoen),
+  ]);
+
+  // Bouw huidig per leeftijd
+  const huidigPerLeeftijd = new Map<number, { M: number; V: number }>();
+  for (const row of geboortejaarData.data) {
+    if (!row.geboortejaar) continue;
+    const leeftijd = startJaar - row.geboortejaar;
+    const existing = huidigPerLeeftijd.get(leeftijd) || { M: 0, V: 0 };
+    if (row.geslacht === "M") existing.M += row.aantal;
+    else existing.V += row.aantal;
+    huidigPerLeeftijd.set(leeftijd, existing);
+  }
+
+  // Backward: van leeftijd 16 terug naar 6, dan forward naar 17
+  const perLeeftijd: PijplijnRij[] = [];
+  let benodigdM = U17_DOEL_M;
+  let benodigdV = U17_DOEL_V;
+
+  // Eerst leeftijd 16 (het doel), dan terugrekenen naar 6
+  const benodigdPerLeeftijd = new Map<number, { m: number; v: number }>();
+  benodigdPerLeeftijd.set(16, { m: benodigdM, v: benodigdV });
+
+  for (let leeftijd = 15; leeftijd >= 6; leeftijd--) {
+    // benodigd[L] = benodigd[L+1] / factor[L+1]
+    const factorM = groei.M[leeftijd + 1] ?? 0.85;
+    const factorV = groei.V[leeftijd + 1] ?? 0.85;
+    benodigdM = benodigdM / factorM;
+    benodigdV = benodigdV / factorV;
+    benodigdPerLeeftijd.set(leeftijd, { m: benodigdM, v: benodigdV });
+  }
+
+  // Leeftijd 17 (2e-jaars): doel × factor[17] (retentie vanuit 16)
+  const factor17M = groei.M[17] ?? 0.85;
+  const factor17V = groei.V[17] ?? 0.85;
+  benodigdPerLeeftijd.set(17, {
+    m: U17_DOEL_M * factor17M,
+    v: U17_DOEL_V * factor17V,
+  });
+
+  // Bouw resultaat op
+  for (let leeftijd = 6; leeftijd <= 17; leeftijd++) {
+    const huidig = huidigPerLeeftijd.get(leeftijd) || { M: 0, V: 0 };
+    const benodigd = benodigdPerLeeftijd.get(leeftijd)!;
+    const benodigdTotaal = benodigd.m + benodigd.v;
+    const huidigTotaal = huidig.M + huidig.V;
+
+    perLeeftijd.push({
+      leeftijd,
+      band: BAND_PER_LEEFTIJD[leeftijd] || "",
+      benodigd_m: Math.round(benodigd.m * 10) / 10,
+      benodigd_v: Math.round(benodigd.v * 10) / 10,
+      huidig_m: huidig.M,
+      huidig_v: huidig.V,
+      vulgraad_m: benodigd.m > 0 ? Math.round((huidig.M / benodigd.m) * 100) : 0,
+      vulgraad_v: benodigd.v > 0 ? Math.round((huidig.V / benodigd.v) * 100) : 0,
+      vulgraad: benodigdTotaal > 0 ? Math.round((huidigTotaal / benodigdTotaal) * 100) : 0,
+      gap_m: Math.round((huidig.M - benodigd.m) * 10) / 10,
+      gap_v: Math.round((huidig.V - benodigd.v) * 10) / 10,
+    });
+  }
+
+  // Huidig U17 (leeftijd 16 + 17)
+  const huidig16 = huidigPerLeeftijd.get(16) || { M: 0, V: 0 };
+  const huidig17 = huidigPerLeeftijd.get(17) || { M: 0, V: 0 };
+
+  return {
+    doel: { m: U17_DOEL_M, v: U17_DOEL_V, totaal: _U17_DOEL },
+    huidigU17: {
+      m: huidig16.M + huidig17.M,
+      v: huidig16.V + huidig17.V,
+      totaal: huidig16.M + huidig17.M + huidig16.V + huidig17.V,
+    },
+    perLeeftijd,
+    groeiFactoren: groei,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Forward-projectie: U17 + Senioren doorstroom
+// ---------------------------------------------------------------------------
 
 export type ProjectieRij = {
   seizoen: string;

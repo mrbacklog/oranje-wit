@@ -1,4 +1,4 @@
-import { PageHeader } from "@oranje-wit/ui";
+import { InfoPageHeader } from "@/components/info/InfoPageHeader";
 import { getSpelersOverzicht } from "@/lib/queries/spelers";
 import { getSeizoen } from "@/lib/utils/seizoen";
 import { SpelersZoeken } from "@/components/spelers/SpelersZoeken";
@@ -19,10 +19,37 @@ export default async function SpelersPage({
 
   return (
     <>
-      <PageHeader title="Spelers" subtitle="Alle competitiespelers" />
+      <InfoPageHeader title="Spelers" subtitle="Alle competitiespelers" infoTitle="Over Spelers">
+        <div className="space-y-4">
+          <section>
+            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+              Wat zie je?
+            </h4>
+            <p>Alle spelers die ooit bij Oranje Wit in een competitieteam hebben gespeeld.</p>
+          </section>
+          <section>
+            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+              Zoeken &amp; filteren
+            </h4>
+            <p>
+              Typ een naam om direct te filteren. Gebruik de dropdowns voor geslacht en status
+              (actief/uitgeschreven).
+            </p>
+          </section>
+          <section>
+            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+              Doorklikken
+            </h4>
+            <p>
+              <strong>Klik op een speler</strong> voor het volledige profiel met seizoensoverzicht
+              en teamhistorie.
+            </p>
+          </section>
+        </div>
+      </InfoPageHeader>
 
       {/* KPI-kaarten */}
-      <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-3">
         <div className="rounded-xl bg-white p-5 shadow-sm">
           <p className="text-xs font-medium tracking-wide text-gray-500 uppercase">
             Actieve spelers

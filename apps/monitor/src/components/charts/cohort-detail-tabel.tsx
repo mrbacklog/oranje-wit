@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import type { CohortLid } from "@/lib/queries/cohorten";
+import { formatNaam } from "@/lib/utils/format";
 
 type Filter = "Alles" | "M" | "V";
 
@@ -45,6 +46,7 @@ export function CohortDetailTabel({ leden, seizoenen, samenvatting }: CohortDeta
           {(["Alles", "M", "V"] as Filter[]).map((f) => (
             <button
               key={f}
+              type="button"
               onClick={() => setFilter(f)}
               className={`rounded-md px-3 py-1 text-sm font-medium transition ${
                 filter === f
@@ -91,9 +93,7 @@ export function CohortDetailTabel({ leden, seizoenen, samenvatting }: CohortDeta
           <tbody>
             {gefilterd.map((lid) => {
               const seizoenMap = new Map(lid.seizoenen.map((s) => [s.seizoen, s]));
-              const naam = [lid.roepnaam, lid.tussenvoegsel, lid.achternaam]
-                .filter(Boolean)
-                .join(" ");
+              const naam = formatNaam(lid);
 
               return (
                 <tr key={lid.relCode} className="border-b border-gray-50">

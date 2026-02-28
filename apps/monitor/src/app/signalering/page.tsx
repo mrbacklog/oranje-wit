@@ -1,10 +1,8 @@
-import { PageHeader, KpiCard, SignalBadge } from "@oranje-wit/ui";
-import {
-  getSignaleringen,
-  getSignaleringSamenvatting,
-  type SignaleringRow,
-} from "@/lib/queries/signalering";
+import { KpiCard } from "@oranje-wit/ui";
+import { InfoPageHeader } from "@/components/info/InfoPageHeader";
+import { getSignaleringen, getSignaleringSamenvatting } from "@/lib/queries/signalering";
 import { getSeizoen } from "@/lib/utils/seizoen";
+import { SignaleringCard } from "@/components/signalering/SignaleringCard";
 
 export default async function SignaleringPage({
   searchParams,
@@ -33,13 +31,41 @@ export default async function SignaleringPage({
 
   return (
     <>
-      <PageHeader
+      <InfoPageHeader
         title="Signalering"
         subtitle="Waar moeten we op letten? Acties en aandachtspunten."
-      />
+        infoTitle="Over Signalering"
+      >
+        <div className="space-y-4">
+          <section>
+            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+              Wat zie je?
+            </h4>
+            <p>Alle automatische signaleringen voor het geselecteerde seizoen.</p>
+          </section>
+          <section>
+            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+              Ernst
+            </h4>
+            <p>
+              <strong>Kritiek</strong> (rood) vraagt directe actie. <strong>Aandacht</strong> (geel)
+              is een waarschuwing. <strong>Op koers</strong> (groen) bevestigt dat het goed gaat.
+            </p>
+          </section>
+          <section>
+            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+              Per signalering
+            </h4>
+            <p>
+              Je ziet de leeftijdsgroep, het geslacht, de huidige waarde en de drempel waarop
+              gesignaleerd wordt.
+            </p>
+          </section>
+        </div>
+      </InfoPageHeader>
 
       {/* KPI cards */}
-      <div className="mb-8 grid grid-cols-3 gap-4">
+      <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
         <KpiCard label="Kritiek" value={samenvatting.kritiek} signal="rood" />
         <KpiCard label="Aandacht" value={samenvatting.aandacht} signal="geel" />
         <KpiCard label="Op koers" value={opKoers} signal="groen" />
@@ -58,59 +84,5 @@ export default async function SignaleringPage({
         </div>
       )}
     </>
-  );
-}
-
-function SignaleringCard({ signalering }: { signalering: SignaleringRow }) {
-  const ernst = signalering.ernst as "kritiek" | "aandacht" | "opkoers";
-
-  const borderColor =
-    ernst === "kritiek"
-      ? "border-l-signal-rood"
-      : ernst === "aandacht"
-        ? "border-l-signal-geel"
-        : "border-l-signal-groen";
-
-  return (
-    <div className={`rounded-xl border-l-4 bg-white p-5 shadow-sm ${borderColor}`}>
-      <div className="flex items-start gap-3">
-        <SignalBadge ernst={ernst}>{ernst}</SignalBadge>
-        <div className="min-w-0 flex-1">
-          <p className="text-sm font-semibold text-gray-900">{signalering.type}</p>
-          {signalering.beschrijving && (
-            <p className="mt-1 text-sm text-gray-600">{signalering.beschrijving}</p>
-          )}
-          <div className="mt-2 flex flex-wrap gap-4 text-xs text-gray-400">
-            {signalering.leeftijdsgroep && (
-              <span>
-                <span className="font-medium text-gray-500">Groep:</span>{" "}
-                {signalering.leeftijdsgroep}
-              </span>
-            )}
-            {signalering.geslacht && (
-              <span>
-                <span className="font-medium text-gray-500">Geslacht:</span>{" "}
-                {signalering.geslacht === "M" ? "\u2642 Jongens" : "\u2640 Meisjes"}
-              </span>
-            )}
-            {signalering.waarde !== null && (
-              <span>
-                <span className="font-medium text-gray-500">Waarde:</span> {signalering.waarde}
-              </span>
-            )}
-            {signalering.drempel !== null && (
-              <span>
-                <span className="font-medium text-gray-500">Drempel:</span> {signalering.drempel}
-              </span>
-            )}
-            {signalering.streef !== null && (
-              <span>
-                <span className="font-medium text-gray-500">Streef:</span> {signalering.streef}
-              </span>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
   );
 }

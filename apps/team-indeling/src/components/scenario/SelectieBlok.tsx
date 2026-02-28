@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { useDroppable } from "@dnd-kit/core";
-import type { TeamData } from "./types";
+import type { TeamData, SpelerData } from "./types";
 import type { TeamValidatie } from "@/lib/validatie/regels";
 import { KLEUR_BADGE_KLEUREN, korfbalLeeftijd } from "./types";
 import TeamSpelerRij from "./TeamSpelerRij";
+import TeamDetail from "./TeamDetail";
 import ValidatieBadge from "./ValidatieBadge";
 import ValidatieMeldingen from "./ValidatieMeldingen";
 
@@ -14,18 +15,22 @@ interface SelectieBlokProps {
   validatieMap?: Map<string, TeamValidatie>;
   onOntkoppel: (groepLeiderId: string) => void;
   onDelete: (teamId: string) => void;
+  onSpelerClick?: (speler: SpelerData, teamId?: string) => void;
 }
 
 function SelectieTeamSectie({
   team,
   validatie,
   onDelete,
+  onSpelerClick,
 }: {
   team: TeamData;
   validatie?: TeamValidatie;
   onDelete: (teamId: string) => void;
+  onSpelerClick?: (speler: SpelerData, teamId?: string) => void;
 }) {
   const [meldingenOpen, setMeldingenOpen] = useState(false);
+  const [detailOpen, setDetailOpen] = useState(false);
 
   const { setNodeRef, isOver } = useDroppable({
     id: `team-${team.id}`,
@@ -81,13 +86,35 @@ function SelectieTeamSectie({
             />
           )}
         </div>
-        <button
-          onClick={() => onDelete(team.id)}
-          className="text-xs text-gray-300 hover:text-red-500"
-          title="Verwijder team"
-        >
-          &times;
-        </button>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => setDetailOpen(true)}
+            className="p-0.5 text-gray-300 transition-colors hover:text-gray-600"
+            title="Team details"
+          >
+            <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+              />
+            </svg>
+          </button>
+          <button
+            onClick={() => onDelete(team.id)}
+            className="text-xs text-gray-300 hover:text-red-500"
+            title="Verwijder team"
+          >
+            &times;
+          </button>
+        </div>
       </div>
 
       {/* Staf */}
@@ -106,7 +133,14 @@ function SelectieTeamSectie({
         {team.spelers.length === 0 ? (
           <p className="py-2 text-center text-[10px] text-gray-400">Sleep spelers hierheen</p>
         ) : (
-          team.spelers.map((ts) => <TeamSpelerRij key={ts.id} teamSpeler={ts} teamId={team.id} />)
+          team.spelers.map((ts) => (
+            <TeamSpelerRij
+              key={ts.id}
+              teamSpeler={ts}
+              teamId={team.id}
+              onSpelerClick={onSpelerClick ? (speler) => onSpelerClick(speler, team.id) : undefined}
+            />
+          ))
         )}
       </div>
 
@@ -120,6 +154,16 @@ function SelectieTeamSectie({
         </span>
         <span>gem. {gemLeeftijd} jr</span>
       </div>
+
+      {/* Team detail popup */}
+      {detailOpen && (
+        <TeamDetail
+          team={team}
+          validatie={validatie}
+          onClose={() => setDetailOpen(false)}
+          onSpelerClick={onSpelerClick ? (speler) => onSpelerClick(speler, team.id) : undefined}
+        />
+      )}
     </div>
   );
 }
@@ -129,6 +173,7 @@ export default function SelectieBlok({
   validatieMap,
   onOntkoppel,
   onDelete,
+  onSpelerClick,
 }: SelectieBlokProps) {
   // Eerste team is de leider (heeft geen selectieGroepId, de rest verwijst ernaar)
   const leider = teams.find((t) => t.selectieGroepId === null) ?? teams[0];
@@ -180,6 +225,7 @@ export default function SelectieBlok({
             team={team}
             validatie={validatieMap?.get(team.id)}
             onDelete={onDelete}
+            onSpelerClick={onSpelerClick}
           />
         ))}
       </div>

@@ -14,10 +14,14 @@ export function SamenstellingTabs({ piramideContent, detailContent }: Samenstell
 
   return (
     <>
-      <div className="mb-6 flex gap-1 rounded-lg bg-gray-100 p-1">
+      <div role="tablist" className="mb-6 flex gap-1 rounded-lg bg-gray-100 p-1">
         {TABS.map((tab) => (
           <button
             key={tab}
+            id={`tab-${tab.toLowerCase()}`}
+            role="tab"
+            type="button"
+            aria-selected={activeTab === tab}
             onClick={() => setActiveTab(tab)}
             className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition ${
               activeTab === tab
@@ -30,8 +34,16 @@ export function SamenstellingTabs({ piramideContent, detailContent }: Samenstell
         ))}
       </div>
 
-      {activeTab === "Piramide" && piramideContent}
-      {activeTab === "Detail" && detailContent}
+      {activeTab === "Piramide" && (
+        <div role="tabpanel" aria-labelledby="tab-piramide">
+          {piramideContent}
+        </div>
+      )}
+      {activeTab === "Detail" && (
+        <div role="tabpanel" aria-labelledby="tab-detail">
+          {detailContent}
+        </div>
+      )}
     </>
   );
 }

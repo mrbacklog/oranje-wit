@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { PageHeader } from "@oranje-wit/ui";
 import { getCohortOverzicht } from "@/lib/queries/samenstelling";
 import { getSeizoen } from "@/lib/utils/seizoen";
+import { formatNaam } from "@/lib/utils/format";
 
 export default async function CohortOverzichtPage({
   params,
@@ -89,7 +90,7 @@ export default async function CohortOverzichtPage({
                       href={`/spelers/${lid.relCode}`}
                       className="hover:text-ow-oranje text-sm font-medium text-gray-900 hover:underline"
                     >
-                      {[lid.roepnaam, lid.tussenvoegsel, lid.achternaam].filter(Boolean).join(" ")}
+                      {formatNaam(lid)}
                     </Link>
                     <span
                       className={`ml-1.5 ${lid.geslacht === "M" ? "text-blue-500" : "text-pink-500"}`}
@@ -121,7 +122,7 @@ export default async function CohortOverzichtPage({
                       href={`/spelers/${lid.relCode}`}
                       className="hover:text-ow-oranje text-sm font-medium text-gray-900 hover:underline"
                     >
-                      {[lid.roepnaam, lid.tussenvoegsel, lid.achternaam].filter(Boolean).join(" ")}
+                      {formatNaam(lid)}
                     </Link>
                     <span
                       className={`ml-1.5 ${lid.geslacht === "M" ? "text-blue-500" : "text-pink-500"}`}

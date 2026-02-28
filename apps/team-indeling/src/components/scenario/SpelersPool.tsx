@@ -6,18 +6,22 @@ import type { SpelerData, TeamData, SpelerFilter } from "./types";
 import { korfbalLeeftijd } from "./types";
 import SpelerFilters from "./SpelerFilters";
 import SpelerKaart from "./SpelerKaart";
-import SpelerDetail from "./SpelerDetail";
 
 interface SpelersPoolProps {
   spelers: SpelerData[];
   teams: TeamData[];
   zichtbareTeamIds: Set<string>;
+  onSpelerClick?: (speler: SpelerData) => void;
 }
 
-export default function SpelersPool({ spelers, teams, zichtbareTeamIds }: SpelersPoolProps) {
+export default function SpelersPool({
+  spelers,
+  teams,
+  zichtbareTeamIds,
+  onSpelerClick,
+}: SpelersPoolProps) {
   const [zoekterm, setZoekterm] = useState("");
   const [filter, setFilter] = useState<SpelerFilter>("zonder_team");
-  const [detailSpeler, setDetailSpeler] = useState<SpelerData | null>(null);
 
   const { setNodeRef, isOver } = useDroppable({
     id: "spelerspool",
@@ -130,13 +134,10 @@ export default function SpelersPool({ spelers, teams, zichtbareTeamIds }: Speler
           <p className="py-6 text-center text-xs text-gray-400">Geen spelers gevonden</p>
         ) : (
           gefilterdeSpelers.map((speler) => (
-            <SpelerKaart key={speler.id} speler={speler} onClick={() => setDetailSpeler(speler)} />
+            <SpelerKaart key={speler.id} speler={speler} onClick={() => onSpelerClick?.(speler)} />
           ))
         )}
       </div>
-
-      {/* Detail modal */}
-      {detailSpeler && <SpelerDetail speler={detailSpeler} onClose={() => setDetailSpeler(null)} />}
     </aside>
   );
 }

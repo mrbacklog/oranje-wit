@@ -24,6 +24,30 @@ Prisma model `Evaluatie` in `packages/database/prisma/schema.prisma`:
 - Gekoppeld aan `Speler` via relatie
 - Bevat scores, opmerkingen, datum, coach
 
+## Evaluatie-scores (datamodel)
+Scores JSON bevat:
+- **Individueel**: `niveau` (1-4), `inzet` (1-4), `groei` (1-4)
+- **Oranje Draad**: `team_plezier` (1-4 + toelichting), `team_ontwikkeling` (1-4 + toelichting), `team_prestatie` (1-4 + toelichting)
+- **Overig**: `team_naam`, `speler_opmerkingen`
+
+TypeScript types: `EvaluatieScore`, `EvaluatieData`, `TeamGemiddelde` in `components/scenario/types.ts`
+
+## UI-componenten
+
+### SpelerDetail popup
+- Lazy fetch: `GET /api/spelers/[id]/evaluaties?teamId=xxx`
+- Retourneert: `{ evaluaties: EvaluatieData[], teamVergelijking: TeamGemiddelde | null }`
+- Toont per seizoen: score-balkjes (1-4), coach-opmerking, speler-opmerkingen
+- Toggle "Vergelijk met team": toont team-gemiddelde als verticale marker op balkjes
+
+### EvaluatieScores component
+- Horizontale score-balkjes (oranje, schaal 1-4)
+- Team-gemiddelde als dunne verticale marker (blauw)
+- "Oranje Draad" blok met plezier/ontwikkeling/prestatie in oranje achtergrond
+
+### ChatPanel AI-tool
+- `bekijk_evaluaties` tool: Claude kan evaluaties opvragen in chat-context
+
 ## Gebruik bij teamindeling
 - Agent `adviseur` gebruikt evaluaties voor onderbouwd spelersadvies
 - Agent `speler-scout` gebruikt evaluaties voor profielopbouw
@@ -35,3 +59,5 @@ Prisma model `Evaluatie` in `packages/database/prisma/schema.prisma`:
 ## Referenties
 - Import-skill: → zie `team-indeling/import` voor het importproces
 - Evaluatie-app: Lovable repo `mrbacklog/oranje-wit-evaluate`
+- API route: `app/api/spelers/[id]/evaluaties/route.ts`
+- UI: `components/scenario/EvaluatieScores.tsx`, `components/scenario/SpelerDetail.tsx`

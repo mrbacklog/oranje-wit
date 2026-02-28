@@ -11,7 +11,7 @@ const NAV_ITEMS = [
   { href: "/samenstelling", label: "Samenstelling", icon: "👥" },
   { href: "/cohorten", label: "Cohorten", icon: "📈" },
   { href: "/verloop", label: "Verloop", icon: "🔄" },
-  { href: "/projecties", label: "Projecties", icon: "🎯" },
+  { href: "/projecties", label: "Jeugdpijplijn", icon: "🎯" },
   { href: "/signalering", label: "Signalering", icon: "⚠️" },
 ];
 
@@ -26,7 +26,10 @@ export function Sidebar({ onClose }: SidebarProps) {
   const qs = seizoen ? `?seizoen=${seizoen}` : "";
 
   return (
-    <aside className="flex h-screen w-64 flex-col border-r border-gray-200 bg-white">
+    <aside
+      aria-label="Hoofdnavigatie"
+      className="flex h-screen w-64 flex-col border-r border-gray-200 bg-white"
+    >
       {/* Branding */}
       <div className="border-b border-gray-200 px-6 py-5">
         <h1 className="text-ow-oranje text-lg font-bold">Oranje Wit</h1>
@@ -42,13 +45,14 @@ export function Sidebar({ onClose }: SidebarProps) {
               key={href}
               href={href + qs}
               onClick={onClose}
+              aria-current={active ? "page" : undefined}
               className={`mb-1 flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
                 active
                   ? "bg-ow-oranje-bg text-ow-oranje font-semibold"
                   : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
               }`}
             >
-              <span>{icon}</span>
+              <span aria-hidden="true">{icon}</span>
               {label}
             </Link>
           );

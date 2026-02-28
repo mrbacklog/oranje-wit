@@ -68,6 +68,7 @@ export function CohortHeatmap({ data, seizoenen }: CohortHeatmapProps) {
         {(["Alles", "M", "V"] as Filter[]).map((f) => (
           <button
             key={f}
+            type="button"
             onClick={() => setFilter(f)}
             className={`rounded-md px-3 py-1 text-sm font-medium transition ${
               filter === f
@@ -99,11 +100,14 @@ export function CohortHeatmap({ data, seizoenen }: CohortHeatmapProps) {
               const szMap = geaggregeerd.get(jaar)!;
               return (
                 <tr key={jaar}>
-                  <td
-                    className="hover:text-ow-oranje sticky left-0 z-10 cursor-pointer bg-white px-2 py-1 font-medium hover:underline"
-                    onClick={() => router.push(`/cohorten/${jaar}`)}
-                  >
-                    {jaar}
+                  <td className="sticky left-0 z-10 bg-white px-2 py-1 font-medium">
+                    <button
+                      type="button"
+                      className="hover:text-ow-oranje cursor-pointer appearance-none border-0 bg-transparent p-0 font-medium underline"
+                      onClick={() => router.push(`/cohorten/${jaar}`)}
+                    >
+                      {jaar}
+                    </button>
                   </td>
                   {activeSeizoenen.map((sz) => {
                     const val = szMap[sz] || 0;

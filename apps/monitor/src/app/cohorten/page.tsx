@@ -1,4 +1,4 @@
-import { PageHeader } from "@oranje-wit/ui";
+import { InfoPageHeader } from "@/components/info/InfoPageHeader";
 import { getCohorten } from "@/lib/queries/cohorten";
 import { CohortHeatmap } from "@/components/charts/cohort-heatmap";
 
@@ -16,7 +16,47 @@ export default async function CohortenPage({
 
   return (
     <>
-      <PageHeader title="Cohorten" subtitle="Hoe ontwikkelen jaargangen zich over de seizoenen?" />
+      <InfoPageHeader
+        title="Cohorten"
+        subtitle="Hoe ontwikkelen jaargangen zich over de seizoenen?"
+        infoTitle="Over Cohorten"
+      >
+        <div className="space-y-4">
+          <section>
+            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+              Wat zie je?
+            </h4>
+            <p>Hoe groepen leden (cohorten per geboortejaar) zich over de seizoenen ontwikkelen.</p>
+          </section>
+          <section>
+            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+              Heatmap
+            </h4>
+            <p>
+              Hoe donkerder het vakje, hoe meer leden uit dat geboortejaar actief waren in dat
+              seizoen.
+            </p>
+          </section>
+          <section>
+            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+              Retentietabel
+            </h4>
+            <p>
+              Percentage leden dat seizoen-op-seizoen behouden blijft, per leeftijdsgroep.{" "}
+              <strong>Groen</strong> is goed (&ge;80%), <strong>rood</strong> is zorgelijk
+              (&lt;60%).
+            </p>
+          </section>
+          <section>
+            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+              Doorklikken
+            </h4>
+            <p>
+              <strong>Klik op een geboortejaar</strong> voor de individuele leden in dat cohort.
+            </p>
+          </section>
+        </div>
+      </InfoPageHeader>
 
       {/* Cohort heatmap */}
       <div className="mb-8 rounded-xl bg-white p-6 shadow-sm">

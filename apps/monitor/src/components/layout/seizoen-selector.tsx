@@ -10,6 +10,7 @@ export function SeizoenSelector() {
 
   return (
     <select
+      aria-label="Seizoen"
       value={huidig}
       onChange={(e) => {
         const url = new URL(window.location.href);

@@ -1,4 +1,4 @@
-import { PageHeader } from "@oranje-wit/ui";
+import { InfoPageHeader } from "@/components/info/InfoPageHeader";
 import { getInstroomUitstroom } from "@/lib/queries/verloop";
 import { getCohorten } from "@/lib/queries/cohorten";
 import { RetentieCurve } from "@/components/charts/retentie-curve";
@@ -28,20 +28,8 @@ export default async function VerloopPage({
   // We berekenen dit uit de cohorten data
   const seizoenen = cohorten.seizoenen.slice(-8);
   const leeftijdRange = Array.from({ length: 20 }, (_, i) => i + 5); // 5-24
-  const _dropoutData = leeftijdRange.map((leeftijd) => {
-    const seizoenenMap: Record<string, { uitstroom_pct: number }> = {};
-    for (const cohort of cohorten.per_cohort) {
-      for (const sz of seizoenen) {
-        const d = cohort.seizoenen[sz];
-        if (!d || d.leeftijd !== leeftijd) continue;
-        if (!seizoenenMap[sz]) seizoenenMap[sz] = { uitstroom_pct: 0 };
-        // We accumuleren totaal actief en uitgestroomd
-      }
-    }
-    return { leeftijd, seizoenen: seizoenenMap };
-  });
 
-  // Beter: bereken dropout percentages per leeftijd per seizoen uit cohort_seizoenen
+  // Bereken dropout percentages per leeftijd per seizoen uit cohort_seizoenen
   const dropoutMap = new Map<number, Map<string, { actief: number; uitgestroomd: number }>>();
   for (const cohort of cohorten.per_cohort) {
     for (const [sz, d] of Object.entries(cohort.seizoenen)) {
@@ -103,7 +91,53 @@ export default async function VerloopPage({
 
   return (
     <>
-      <PageHeader title="Verloop" subtitle="Waar winnen/verliezen we leden?" />
+      <InfoPageHeader
+        title="Verloop"
+        subtitle="Waar winnen/verliezen we leden?"
+        infoTitle="Over Verloop"
+      >
+        <div className="space-y-4">
+          <section>
+            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+              Wat zie je?
+            </h4>
+            <p>
+              Analyse van wanneer leden instromen en uitstromen, uitgesplitst naar leeftijd en
+              geslacht.
+            </p>
+          </section>
+          <section>
+            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+              Grafieken
+            </h4>
+            <p>
+              <strong>Instroom en uitstroom per leeftijd</strong> laten zien op welke leeftijd de
+              meeste leden binnenkomen of vertrekken.
+            </p>
+            <p className="mt-1">
+              <strong>Retentiecurve:</strong> toont het percentage leden dat behouden blijft
+              naarmate ze ouder worden.
+            </p>
+          </section>
+          <section>
+            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+              Kritieke momenten
+            </h4>
+            <p>
+              De tabel onderaan toont de bekende overgangsmomenten (bijv. 12&rarr;13 jaar) met
+              retentiepercentages.
+            </p>
+          </section>
+          <section>
+            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+              Doorklikken
+            </h4>
+            <p>
+              Selecteer een seizoen in de sidebar voor de specifieke instroom- en uitstroomlijsten.
+            </p>
+          </section>
+        </div>
+      </InfoPageHeader>
 
       {/* Instroom & Uitstroom bar charts */}
       <div className="mb-8 grid gap-6 lg:grid-cols-2">

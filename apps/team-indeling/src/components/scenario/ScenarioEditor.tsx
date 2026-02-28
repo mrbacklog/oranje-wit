@@ -19,6 +19,7 @@ import DndProvider from "./DndContext";
 import Navigator from "./Navigator";
 import Werkgebied from "./Werkgebied";
 import SpelersPool from "./SpelersPool";
+import SpelerDetail from "./SpelerDetail";
 import ChatPanel from "./ChatPanel";
 import WhatIfDialoog from "./WhatIfDialoog";
 
@@ -51,6 +52,15 @@ export default function ScenarioEditor({ scenario, alleSpelers }: ScenarioEditor
 
   // AI chat + what-if state
   const [whatIfOpen, setWhatIfOpen] = useState(false);
+
+  // Speler detail popup (lifted state)
+  const [detailSpeler, setDetailSpeler] = useState<SpelerData | null>(null);
+  const [detailTeamId, setDetailTeamId] = useState<string | null>(null);
+
+  const handleSpelerClick = useCallback((speler: SpelerData, teamId?: string) => {
+    setDetailSpeler(speler);
+    setDetailTeamId(teamId ?? null);
+  }, []);
 
   // Herlaad teams na AI-mutatie
   const refreshTeams = useCallback(async () => {
@@ -296,12 +306,18 @@ export default function ScenarioEditor({ scenario, alleSpelers }: ScenarioEditor
             onKoppelSelectie={handleKoppelSelectie}
             onOntkoppelSelectie={handleOntkoppelSelectie}
             onWhatIfOpen={() => setWhatIfOpen(true)}
+            onSpelerClick={handleSpelerClick}
           />
           <ChatPanel scenarioId={scenario.id} versieId={versieId} onMutatie={refreshTeams} />
         </div>
 
         {/* Rechts: Spelerspool */}
-        <SpelersPool spelers={alleSpelers} teams={teams} zichtbareTeamIds={zichtbaar} />
+        <SpelersPool
+          spelers={alleSpelers}
+          teams={teams}
+          zichtbareTeamIds={zichtbaar}
+          onSpelerClick={(speler) => handleSpelerClick(speler)}
+        />
       </div>
 
       <WhatIfDialoog
@@ -310,6 +326,17 @@ export default function ScenarioEditor({ scenario, alleSpelers }: ScenarioEditor
         teams={teams}
         alleSpelers={alleSpelers}
       />
+
+      {detailSpeler && (
+        <SpelerDetail
+          speler={detailSpeler}
+          teamId={detailTeamId ?? undefined}
+          onClose={() => {
+            setDetailSpeler(null);
+            setDetailTeamId(null);
+          }}
+        />
+      )}
     </DndProvider>
   );
 }

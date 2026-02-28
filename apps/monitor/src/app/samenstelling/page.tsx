@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PageHeader } from "@oranje-wit/ui";
+import { InfoPageHeader } from "@/components/info/InfoPageHeader";
 import { getPerGeboortejaar } from "@/lib/queries/samenstelling";
 import { getSeizoen } from "@/lib/utils/seizoen";
 import { Ledenboog } from "@/components/charts/ledenboog";
@@ -80,10 +80,41 @@ export default async function SamenstellingPage({
 
   return (
     <>
-      <PageHeader
+      <InfoPageHeader
         title="Samenstelling"
         subtitle="Wie zijn er actief? Populatiestructuur en detail per geboortejaar."
-      />
+        infoTitle="Over Samenstelling"
+      >
+        <div className="space-y-4">
+          <section>
+            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+              Wat zie je?
+            </h4>
+            <p>De ledenboog: hoeveel leden per geboortejaar, verdeeld over jongens en meisjes.</p>
+          </section>
+          <section>
+            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+              Tabbladen
+            </h4>
+            <p>
+              <strong>Piramide:</strong> visuele weergave van de leeftijdsopbouw. Een gezonde
+              piramide is breed aan de onderkant.
+            </p>
+            <p className="mt-1">
+              <strong>Detail:</strong> tabel met exacte aantallen per geboortejaar en leeftijdsband.
+            </p>
+          </section>
+          <section>
+            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+              Doorklikken
+            </h4>
+            <p>
+              <strong>Klik op een geboortejaar</strong> voor een overzicht van actieve en gestopte
+              leden uit dat jaar.
+            </p>
+          </section>
+        </div>
+      </InfoPageHeader>
 
       <SamenstellingTabs
         piramideContent={

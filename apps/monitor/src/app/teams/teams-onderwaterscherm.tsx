@@ -1,13 +1,15 @@
+/* eslint-disable max-lines */
 "use client";
 
 import { useState, useRef, useEffect } from "react";
 import { logger } from "@oranje-wit/types";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { BandPill } from "@oranje-wit/ui";
+import { BandPill, InfoButton, InfoDrawer } from "@oranje-wit/ui";
 import type { TeamRegisterEntry, TeamSpeler, TeamSpelerTelling } from "@/lib/queries/teams";
 import type { StafLid } from "@/lib/queries/staf";
 import type { TeamUitslagen } from "@/lib/queries/uitslagen";
+import { formatNaam } from "@/lib/utils/format";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -92,6 +94,7 @@ export function TeamsOnderwaterscherm({
   const router = useRouter();
   const [selectedCode, setSelectedCode] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<Tab>("team");
+  const [infoOpen, setInfoOpen] = useState(false);
   const [editingNaam, setEditingNaam] = useState(false);
   const [teamNamen, setTeamNamen] = useState<Record<string, string>>(() => {
     const m: Record<string, string> = {};
@@ -154,6 +157,7 @@ export function TeamsOnderwaterscherm({
         {/* Header met seizoenskeuze */}
         <div className="mb-3 flex items-baseline justify-between">
           <h1 className="text-xl font-bold text-gray-900">Teams</h1>
+          <InfoButton onClick={() => setInfoOpen(true)} />
           <select
             value={seizoen}
             onChange={(e) => handleSeizoenChange(e.target.value)}
@@ -182,6 +186,8 @@ export function TeamsOnderwaterscherm({
                     return (
                       <button
                         key={code}
+                        type="button"
+                        aria-pressed={isSelected}
                         onClick={() => handleSelect(code)}
                         className={`mx-0 flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-1.5 text-left text-[13px] transition-colors ${
                           isSelected ? "bg-ow-oranje text-white" : "text-gray-700 hover:bg-gray-50"
@@ -227,6 +233,8 @@ export function TeamsOnderwaterscherm({
                 return (
                   <button
                     key={code}
+                    type="button"
+                    aria-pressed={isSelected}
                     onClick={() => handleSelect(code)}
                     className={`inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-2.5 py-1 text-sm font-medium transition-all ${
                       isSelected
@@ -306,7 +314,7 @@ export function TeamsOnderwaterscherm({
             </div>
 
             {/* Bladtabs */}
-            <div className="flex">
+            <div role="tablist" className="flex">
               {(
                 [
                   ["team", "Spelers & Staf"],
@@ -315,6 +323,10 @@ export function TeamsOnderwaterscherm({
               ).map(([tab, label]) => (
                 <button
                   key={tab}
+                  id={`tab-${tab}`}
+                  role="tab"
+                  type="button"
+                  aria-selected={activeTab === tab}
                   onClick={() => setActiveTab(tab)}
                   className={`-mb-px cursor-pointer rounded-t-lg px-4 py-2 text-sm font-medium transition-colors ${
                     activeTab === tab
@@ -330,21 +342,62 @@ export function TeamsOnderwaterscherm({
             {/* Tab content */}
             <div className="rounded-tr-lg rounded-b-lg border border-gray-200 bg-white p-6">
               {activeTab === "team" && (
-                <TeamTab
-                  spelers={spelersPerTeam[selected.ow_code]}
-                  telling={tellingPerTeam[selected.ow_code]}
-                  staf={stafPerTeam[selected.ow_code]}
-                  selectieLabel={selectieTeams[selected.ow_code]}
-                  qs={qs}
-                />
+                <div role="tabpanel" aria-labelledby="tab-team">
+                  <TeamTab
+                    spelers={spelersPerTeam[selected.ow_code]}
+                    telling={tellingPerTeam[selected.ow_code]}
+                    staf={stafPerTeam[selected.ow_code]}
+                    selectieLabel={selectieTeams[selected.ow_code]}
+                    qs={qs}
+                  />
+                </div>
               )}
               {activeTab === "resultaten" && (
-                <ResultatenTab uitslagen={uitslagenPerTeam[selected.ow_code]} />
+                <div role="tabpanel" aria-labelledby="tab-resultaten">
+                  <ResultatenTab uitslagen={uitslagenPerTeam[selected.ow_code]} />
+                </div>
               )}
             </div>
           </div>
         )}
       </div>
+
+      <InfoDrawer open={infoOpen} onClose={() => setInfoOpen(false)} title="Over Teams">
+        <div className="space-y-4">
+          <section>
+            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+              Wat zie je?
+            </h4>
+            <p>Alle teams van het geselecteerde seizoen, gegroepeerd op categorie.</p>
+          </section>
+          <section>
+            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+              Doorklikken
+            </h4>
+            <p>
+              <strong>Klik op een team</strong> om de spelers, staf en wedstrijdresultaten te
+              bekijken.
+            </p>
+          </section>
+          <section>
+            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+              Tabbladen
+            </h4>
+            <p>
+              <strong>Spelers &amp; Staf:</strong> toont de samenstelling met heren en dames apart.
+            </p>
+            <p className="mt-1">
+              <strong>Resultaten:</strong> de uitslagen van het seizoen.
+            </p>
+          </section>
+          <section>
+            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+              Tip
+            </h4>
+            <p>De teamnaam kun je bewerken via het potlood-icoon.</p>
+          </section>
+        </div>
+      </InfoDrawer>
     </div>
   );
 }
@@ -451,7 +504,7 @@ function TeamTab({
 }
 
 function SpelerRij({ speler, qs }: { speler: TeamSpeler; qs: string }) {
-  const naam = [speler.roepnaam, speler.tussenvoegsel, speler.achternaam].filter(Boolean).join(" ");
+  const naam = formatNaam(speler);
   return (
     <div className="flex items-center justify-between py-0.5 text-sm">
       <Link href={`/spelers/${speler.relCode}${qs}`} className="hover:text-ow-oranje text-gray-900">

@@ -1,5 +1,3 @@
-"use client";
-
 interface DropoutData {
   leeftijd: number;
   seizoenen: Record<string, { uitstroom_pct: number }>;

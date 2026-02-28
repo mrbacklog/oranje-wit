@@ -1,20 +1,73 @@
 "use client";
 
-import { useEffect, useCallback } from "react";
-import type { SpelerData, HuidigData, SpelerspadEntry } from "./types";
-import { STATUS_KLEUREN, kleurIndicatie, KLEUR_DOT, korfbalLeeftijd } from "./types";
+import { useState, useEffect, useCallback } from "react";
+import type {
+  SpelerData,
+  HuidigData,
+  SpelerspadEntry,
+  EvaluatieData,
+  TeamGemiddelde,
+} from "./types";
+import {
+  STATUS_KLEUREN,
+  kleurIndicatie,
+  KLEUR_DOT,
+  korfbalLeeftijd,
+  KLEUR_LABELS,
+  KLEUR_BADGE_KLEUREN,
+} from "./types";
 import SpelerAvatar from "@/components/ui/SpelerAvatar";
+import EvaluatieScores from "./EvaluatieScores";
+import Spinner from "@/components/ui/Spinner";
 
 interface SpelerDetailProps {
   speler: SpelerData;
+  teamId?: string;
   onClose: () => void;
 }
 
-export default function SpelerDetail({ speler, onClose }: SpelerDetailProps) {
+const STATUS_LABELS: Record<string, string> = {
+  BESCHIKBAAR: "Beschikbaar",
+  TWIJFELT: "Twijfelt",
+  GAAT_STOPPEN: "Gaat stoppen",
+  NIEUW_POTENTIEEL: "Nieuw (potentieel)",
+  NIEUW_DEFINITIEF: "Nieuw (definitief)",
+};
+
+export default function SpelerDetail({ speler, teamId, onClose }: SpelerDetailProps) {
   const leeftijd = korfbalLeeftijd(speler.geboortedatum, speler.geboortejaar);
   const kleur = kleurIndicatie(leeftijd);
   const huidig = speler.huidig as HuidigData | null;
   const spelerspad = (speler.spelerspad ?? []) as SpelerspadEntry[];
+
+  // Evaluatie data (lazy fetch)
+  const [evaluaties, setEvaluaties] = useState<EvaluatieData[] | null>(null);
+  const [teamGem, setTeamGem] = useState<TeamGemiddelde | null>(null);
+  const [evalLoading, setEvalLoading] = useState(true);
+  const [toonVergelijking, setToonVergelijking] = useState(!!teamId);
+
+  useEffect(() => {
+    let cancelled = false;
+    const url = teamId
+      ? `/api/spelers/${speler.id}/evaluaties?teamId=${teamId}`
+      : `/api/spelers/${speler.id}/evaluaties`;
+
+    fetch(url)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (cancelled || !data) return;
+        setEvaluaties(data.evaluaties ?? []);
+        setTeamGem(data.teamVergelijking ?? null);
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (!cancelled) setEvalLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [speler.id, teamId]);
 
   const handleEscape = useCallback(
     (e: KeyboardEvent) => {
@@ -31,7 +84,7 @@ export default function SpelerDetail({ speler, onClose }: SpelerDetailProps) {
   return (
     <div className="dialog-overlay" onClick={onClose}>
       <div
-        className="dialog-panel max-h-[80vh] w-full max-w-md overflow-y-auto"
+        className="dialog-panel max-h-[85vh] w-full max-w-lg overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -49,7 +102,9 @@ export default function SpelerDetail({ speler, onClose }: SpelerDetailProps) {
               </h3>
               <div className="mt-1 flex items-center gap-2">
                 <span className={`h-2 w-2 rounded-full ${STATUS_KLEUREN[speler.status]}`} />
-                <span className="text-xs text-gray-500">{speler.status}</span>
+                <span className="text-xs text-gray-500">
+                  {STATUS_LABELS[speler.status] ?? speler.status}
+                </span>
               </div>
             </div>
           </div>
@@ -61,8 +116,9 @@ export default function SpelerDetail({ speler, onClose }: SpelerDetailProps) {
           </button>
         </div>
 
-        {/* Info */}
+        {/* Body */}
         <div className="dialog-body">
+          {/* Info grid */}
           <div className="grid grid-cols-2 gap-3">
             <div>
               <span className="text-xs text-gray-500">Korfballeeftijd</span>
@@ -109,26 +165,105 @@ export default function SpelerDetail({ speler, onClose }: SpelerDetailProps) {
           {/* Spelerspad */}
           {spelerspad.length > 0 && (
             <div>
-              <span className="mb-2 block text-xs text-gray-500">Spelerspad</span>
-              <div className="space-y-1">
+              <span className="mb-2 block text-xs text-gray-500">
+                Spelerspad ({spelerspad.length} seizoenen)
+              </span>
+              <div className="rounded-lg border border-gray-100">
                 {spelerspad.map((entry, i) => (
                   <div
                     key={`${entry.seizoen}-${i}`}
-                    className="flex items-center justify-between py-0.5 text-sm"
+                    className={`flex items-center gap-2 px-3 py-1.5 text-sm ${
+                      i > 0 ? "border-t border-gray-50" : ""
+                    }`}
                   >
-                    <span className="w-20 flex-shrink-0 text-xs text-gray-500">
+                    <span className="w-20 shrink-0 text-xs text-gray-400 tabular-nums">
                       {entry.seizoen}
                     </span>
-                    <span className="flex-1 text-gray-800">{entry.team}</span>
-                    {entry.kleur && <span className="text-xs text-gray-400">{entry.kleur}</span>}
+                    <span className="flex-1 font-medium text-gray-800">{entry.team}</span>
+                    {entry.kleur && (
+                      <span
+                        className={`rounded-full px-1.5 py-0.5 text-[10px] ${
+                          KLEUR_BADGE_KLEUREN[entry.kleur] ?? "bg-gray-100 text-gray-500"
+                        }`}
+                      >
+                        {KLEUR_LABELS[entry.kleur] ?? entry.kleur}
+                      </span>
+                    )}
                     {entry.spelvorm && (
-                      <span className="ml-2 text-xs text-gray-400">{entry.spelvorm}</span>
+                      <span className="text-[10px] text-gray-400">{entry.spelvorm}</span>
+                    )}
+                    {entry.niveau && (
+                      <span className="text-[10px] text-gray-400">{entry.niveau}</span>
                     )}
                   </div>
                 ))}
               </div>
             </div>
           )}
+
+          {/* Evaluaties */}
+          <div>
+            <div className="mb-2 flex items-center justify-between">
+              <span className="text-xs text-gray-500">Evaluaties</span>
+              {teamGem && (
+                <label className="flex cursor-pointer items-center gap-1.5">
+                  <span className="text-[10px] text-gray-400">Vergelijk met team</span>
+                  <button
+                    onClick={() => setToonVergelijking(!toonVergelijking)}
+                    className={`relative inline-flex h-4 w-7 items-center rounded-full transition-colors ${
+                      toonVergelijking ? "bg-orange-500" : "bg-gray-300"
+                    }`}
+                  >
+                    <span
+                      className={`inline-block h-2.5 w-2.5 transform rounded-full bg-white transition-transform ${
+                        toonVergelijking ? "translate-x-3.5" : "translate-x-0.5"
+                      }`}
+                    />
+                  </button>
+                </label>
+              )}
+            </div>
+
+            {evalLoading ? (
+              <div className="flex items-center gap-2 py-2">
+                <Spinner size="sm" className="text-orange-500" />
+                <span className="text-xs text-gray-400">Evaluaties laden...</span>
+              </div>
+            ) : evaluaties && evaluaties.length > 0 ? (
+              <div className="space-y-3">
+                {evaluaties.map((ev) => (
+                  <div key={ev.seizoen} className="rounded-lg border border-gray-100 p-3">
+                    <div className="mb-2 flex items-center justify-between">
+                      <span className="text-xs font-medium text-gray-700">{ev.seizoen}</span>
+                      {ev.coach && (
+                        <span className="text-[10px] text-gray-400">Coach: {ev.coach}</span>
+                      )}
+                    </div>
+                    <EvaluatieScores
+                      scores={ev.scores}
+                      teamGem={teamGem}
+                      toonTeamVergelijking={toonVergelijking}
+                    />
+                    {ev.scores.speler_opmerkingen && (
+                      <p className="mt-2 rounded bg-gray-50 px-2 py-1 text-[11px] text-gray-600">
+                        {ev.scores.speler_opmerkingen}
+                      </p>
+                    )}
+                    {ev.opmerking && (
+                      <p className="mt-1 text-[11px] text-gray-500 italic">{ev.opmerking}</p>
+                    )}
+                  </div>
+                ))}
+                {toonVergelijking && teamGem && (
+                  <p className="text-[10px] text-gray-400">
+                    Team-gemiddelde op basis van {teamGem.aantalSpelers} spelers (grijze lijn)
+                  </p>
+                )}
+              </div>
+            ) : (
+              <p className="py-1 text-xs text-gray-400">Geen evaluaties beschikbaar.</p>
+            )}
+          </div>
 
           {/* Notitie */}
           {speler.notitie && (

@@ -25,7 +25,8 @@ Een scenario uitwerken binnen een concept: concrete teamindeling met spelers via
 ### Werkgebied (midden)
 - Drag & drop teams met `@dnd-kit`
 - **TeamKaart**: toont spelers met avatar (foto), korfballeeftijd (2 decimalen), kleurindicatie-dot, geslacht, validatie-badge
-- **TeamSpelerRij**: draggable spelerrij met avatar (xs), naam, leeftijd, status-dot
+- **TeamSpelerRij**: draggable spelerrij met avatar (xs), naam, leeftijd, status-dot, geslacht-icoon. Klik op naam → SpelerDetail popup
+- **TeamDetail**: popup via oog-icoon in TeamKaart header — toont spelers (gescheiden H/D), staf, validatie-constateringen, notities
 - **SelectieBlok**: gekoppelde selectie-teams (2 teams als één blok)
 - Nieuw team aanmaken via `NieuwTeamDialoog`
 
@@ -33,7 +34,7 @@ Een scenario uitwerken binnen een concept: concrete teamindeling met spelers via
 - Alle beschikbare spelers met avatar (foto), korfballeeftijd, kleurindicatie
 - Filters: zonder team, passend, ingedeeld, alle
 - Zoeken op naam
-- Klik voor speler detail modal (grote foto, spelerspad, retentie)
+- Klik op speler → SpelerDetail popup (evaluaties, spelerspad, team-vergelijking)
 
 ## Korfballeeftijd
 - **Peildatum**: 31 december 2026 (constant `PEILDATUM`)
@@ -67,7 +68,10 @@ Elk scenario heeft versies (snapshots):
 
 ## AI-ondersteuning
 - **Startvoorstel** (`VoorstelDialoog`): Claude genereert complete teamindeling
-- **Advies** (`AdviesPanel`): contextgevoelig advies bij acties
+- **AI Chat** (`ChatPanel`): streaming chat met Claude via `/api/ai/chat` (SSE). 16 tools beschikbaar:
+  - Read-only: `bekijk_huidige_indeling`, `bekijk_spelerspool`, `bekijk_speler_details`, `bekijk_voorgaande_indeling`, `bekijk_teamsterktes`, `bekijk_evaluaties`, `bekijk_blauwdruk_kaders`, `bekijk_pins`, `bekijk_retentie_overzicht`, `bekijk_teamgenoten`, `valideer_teams`
+  - Mutaties: `verplaats_speler`, `voeg_speler_toe`, `verwijder_speler_uit_team`, `wissel_spelers`, `maak_team_aan`
+  - Na mutatie → `onMutatie` callback herlaadt teams in ScenarioEditor
 - **What-if** (`WhatIfDialoog`): impact doorrekenen bij verplaatsingen
 
 ## Validatie (realtime)
@@ -76,6 +80,23 @@ Elk scenario heeft versies (snapshots):
 - `ValidatieMeldingen`: popover met details
 - `ValidatieRapport`: volledig overzicht in slide-over
 - `ImpactOverzicht`: best/verwacht/worst case analyse
+
+## Speler- en team-popups
+
+### SpelerDetail
+- Geopend via klik op speler (zowel in pool als in team)
+- State lifted naar `ScenarioEditor`: `detailSpeler` + `detailTeamId`
+- `onSpelerClick` prop threading: ScenarioEditor → Werkgebied → TeamKaart/SelectieBlok → TeamSpelerRij
+- Lazy fetch evaluaties: `GET /api/spelers/[id]/evaluaties?teamId=xxx`
+- Secties: bio, spelerspad (met kleur-badges en niveau), evaluatie-scores (balkjes 1-4), team-vergelijking toggle
+- `EvaluatieScores` component: horizontale balkjes met optionele team-gemiddelde marker
+
+### TeamDetail
+- Geopend via oog-icoon in TeamKaart/SelectieBlok header
+- Volledig lokale data (geen API call): `TeamData` + `TeamValidatie` props
+- Secties: stats → heren → dames → staf → constateringen → notities
+- Spelers per geslacht gesorteerd op achternaam, met avatar, status-dot, kleurindicatie, leeftijd
+- Klik op speler in TeamDetail → opent SpelerDetail popup
 
 ## Server Actions (`scenarios/actions.ts`)
 

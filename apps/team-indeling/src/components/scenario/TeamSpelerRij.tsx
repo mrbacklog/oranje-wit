@@ -1,16 +1,17 @@
 "use client";
 
 import { useDraggable } from "@dnd-kit/core";
-import type { TeamSpelerData } from "./types";
+import type { TeamSpelerData, SpelerData } from "./types";
 import { STATUS_KLEUREN, kleurIndicatie, KLEUR_DOT, korfbalLeeftijd } from "./types";
 import SpelerAvatar from "@/components/ui/SpelerAvatar";
 
 interface TeamSpelerRijProps {
   teamSpeler: TeamSpelerData;
   teamId: string;
+  onSpelerClick?: (speler: SpelerData) => void;
 }
 
-export default function TeamSpelerRij({ teamSpeler, teamId }: TeamSpelerRijProps) {
+export default function TeamSpelerRij({ teamSpeler, teamId, onSpelerClick }: TeamSpelerRijProps) {
   const { speler } = teamSpeler;
   const status = teamSpeler.statusOverride ?? speler.status;
   const leeftijd = korfbalLeeftijd(speler.geboortedatum, speler.geboortejaar);
@@ -56,7 +57,12 @@ export default function TeamSpelerRij({ teamSpeler, teamId }: TeamSpelerRijProps
       <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${STATUS_KLEUREN[status]}`} />
 
       {/* Naam */}
-      <span className="flex-1 truncate text-xs text-gray-800">
+      <span
+        className={`flex-1 truncate text-xs text-gray-800 ${
+          onSpelerClick ? "cursor-pointer hover:text-orange-600" : ""
+        }`}
+        onClick={onSpelerClick ? () => onSpelerClick(speler) : undefined}
+      >
         {speler.roepnaam} {speler.achternaam}
       </span>
 

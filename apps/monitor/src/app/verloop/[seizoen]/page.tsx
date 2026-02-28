@@ -117,8 +117,8 @@ export default async function SeizoenVerloopPage({
   return (
     <>
       <div className="mb-6">
-        <Link href="/" className="hover:text-ow-oranje text-sm text-gray-500">
-          &larr; Terug naar dashboard
+        <Link href="/verloop" className="hover:text-ow-oranje text-sm text-gray-500">
+          &larr; Terug naar verloop
         </Link>
       </div>
 

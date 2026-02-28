@@ -35,8 +35,8 @@ export function InstroomUitstroom({ data }: InstroomUitstroomProps) {
         <YAxis fontSize={12} />
         <Tooltip />
         <Legend />
-        <Bar dataKey="instroom" fill="#4CAF50" name="Instroom" />
-        <Bar dataKey="uitstroom" fill="#D62828" name="Uitstroom" />
+        <Bar dataKey="instroom" fill="#4caf50" name="Instroom" />
+        <Bar dataKey="uitstroom" fill="#f44336" name="Uitstroom" />
       </BarChart>
     </ResponsiveContainer>
   );

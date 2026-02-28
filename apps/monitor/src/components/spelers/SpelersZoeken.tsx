@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import type { SpelerOverzicht } from "@/lib/queries/spelers";
+import { formatNaam } from "@/lib/utils/format";
 
 interface Props {
   spelers: SpelerOverzicht[];
@@ -47,11 +48,13 @@ export function SpelersZoeken({ spelers }: Props) {
           placeholder="Zoek op naam..."
           value={zoek}
           onChange={(e) => setZoek(e.target.value)}
+          aria-label="Zoek speler"
           className="focus:border-ow-oranje focus:ring-ow-oranje rounded-lg border border-gray-200 px-4 py-2 text-sm focus:ring-1 focus:outline-none"
         />
         <select
           value={geslachtFilter}
           onChange={(e) => setGeslachtFilter(e.target.value as "alle" | "M" | "V")}
+          aria-label="Filter op geslacht"
           className="rounded-lg border border-gray-200 px-3 py-2 text-sm"
         >
           <option value="alle">&#9794;/&#9792; alle</option>
@@ -61,6 +64,7 @@ export function SpelersZoeken({ spelers }: Props) {
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value as "alle" | "actief" | "inactief")}
+          aria-label="Filter op status"
           className="rounded-lg border border-gray-200 px-3 py-2 text-sm"
         >
           <option value="actief">Actief</option>
@@ -87,7 +91,7 @@ export function SpelersZoeken({ spelers }: Props) {
           </thead>
           <tbody>
             {gefilterd.map((s) => {
-              const naam = [s.roepnaam, s.tussenvoegsel, s.achternaam].filter(Boolean).join(" ");
+              const naam = formatNaam(s);
               return (
                 <tr
                   key={s.relCode}

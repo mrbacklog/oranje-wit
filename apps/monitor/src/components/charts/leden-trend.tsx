@@ -36,9 +36,9 @@ export function LedenTrend({ data }: LedenTrendProps) {
         <Line
           type="monotone"
           dataKey="totaal"
-          stroke="#FF6B00"
+          stroke="#ff6b00"
           strokeWidth={2}
-          dot={{ fill: "#FF6B00" }}
+          dot={{ fill: "#ff6b00" }}
           activeDot={{ r: 6, cursor: "pointer" }}
         />
       </LineChart>

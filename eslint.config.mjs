@@ -32,7 +32,7 @@ export const sharedRules = {
  */
 export default defineConfig([
   {
-    files: ["packages/*/src/**/*.ts", "apps/*/src/**/*.{ts,tsx}"],
+    files: ["packages/*/src/**/*.{ts,tsx}", "apps/*/src/**/*.{ts,tsx}"],
     languageOptions: {
       parser: tsParser,
       parserOptions: {
