@@ -9,6 +9,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     maxAge: 30 * 24 * 60 * 60, // 30 dagen
   },
   callbacks: {
+    authorized({ auth }) {
+      return !!auth;
+    },
     signIn({ profile }) {
       if (!profile?.email) return false;
       return getAllowedRole(profile.email) !== null;
