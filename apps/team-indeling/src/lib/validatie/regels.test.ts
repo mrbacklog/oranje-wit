@@ -4,7 +4,6 @@ import {
   valideerDubbeleSpelersOverTeams,
   type TeamData,
   type SpelerData,
-  type TeamValidatie,
   type BlauwdrukKaders,
   type TeamgrootteOverrides,
 } from "./regels";

@@ -48,6 +48,59 @@ oranje-wit/
 | `pnpm db:push` | Push schema naar database |
 | `pnpm import` | Importeer Verenigingsmonitor data |
 | `pnpm import:evaluaties` | Importeer evaluaties uit Lovable |
+| `pnpm test` | Draai alle tests (Vitest) |
+| `pnpm test:ti` | Tests team-indeling |
+| `pnpm test:monitor` | Tests monitor |
+| `pnpm format` | Format alles met Prettier |
+| `pnpm format:check` | Check formatting (CI) |
+
+## Code Quality
+
+### Automatische gates
+- **Pre-commit hook**: lint-staged draait ESLint + Prettier op staged bestanden
+- **CI (GitHub Actions)**: typecheck + lint + format + tests op elke push/PR naar master
+- **ESLint**: gedeelde regels in `eslint.config.mjs` — `no-console` (error), `no-empty-catch`, `no-unused-vars`, `max-lines` (400)
+
+### Verplichte patronen
+
+**Logger** — gebruik altijd `logger` uit `@oranje-wit/types`, nooit `console.log`:
+```ts
+import { logger } from "@oranje-wit/types";
+logger.info("...");   // alleen in development
+logger.warn("...");   // altijd
+logger.error("...");  // altijd
+```
+
+**API routes** — gebruik `ok()`/`fail()` uit `@/lib/api` met Zod validatie:
+```ts
+import { ok, fail, parseBody } from "@/lib/api";
+import { z } from "zod";
+
+const Schema = z.object({ naam: z.string().min(1) });
+
+export async function POST(request: Request) {
+  try {
+    const parsed = await parseBody(request, Schema);
+    if (!parsed.ok) return parsed.response;
+    const result = await prisma.model.create({ data: parsed.data });
+    return ok(result);
+  } catch (error) {
+    return fail(error instanceof Error ? error.message : String(error));
+  }
+}
+```
+
+**Constanten** — importeer uit `@oranje-wit/types`, definieer niet lokaal:
+```ts
+import { PEILJAAR, HUIDIG_SEIZOEN, PEILDATUM } from "@oranje-wit/types";
+```
+
+**Error handling** — geen lege catch blocks, altijd loggen:
+```ts
+catch (error) {
+  logger.warn("Context:", error);
+}
+```
 
 ## Database
 

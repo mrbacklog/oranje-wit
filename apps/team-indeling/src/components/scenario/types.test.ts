@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { korfbalLeeftijd, kleurIndicatie, PEILJAAR, PEILDATUM } from "./types";
+import { korfbalLeeftijd, kleurIndicatie, PEILJAAR } from "./types";
 
 describe("korfbalLeeftijd", () => {
   it("berekent leeftijd op basis van geboortejaar als er geen geboortedatum is", () => {
