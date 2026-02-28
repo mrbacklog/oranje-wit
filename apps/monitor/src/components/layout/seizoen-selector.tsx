@@ -19,7 +19,9 @@ export function SeizoenSelector() {
       className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm"
     >
       {SEIZOENEN.map((s) => (
-        <option key={s} value={s}>{s}</option>
+        <option key={s} value={s}>
+          {s}
+        </option>
       ))}
     </select>
   );

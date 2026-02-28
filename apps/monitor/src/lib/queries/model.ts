@@ -17,10 +17,7 @@ export type Boog = {
   per_leeftijd: LeeftijdEntry[];
 };
 
-export type BandenMeta = Record<
-  string,
-  { leeftijd: number[]; spelvorm: string }
->;
+export type BandenMeta = Record<string, { leeftijd: number[]; spelvorm: string }>;
 
 export type StreefmodelResult = {
   versie: string | null;

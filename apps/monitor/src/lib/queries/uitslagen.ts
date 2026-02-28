@@ -33,9 +33,7 @@ export type TeamUitslagen = {
 // Alle OW-teams voor een seizoen met hun uitslagen
 // ---------------------------------------------------------------------------
 
-export async function getOWTeamsMetUitslagen(
-  seizoen: string
-): Promise<TeamUitslagen[]> {
+export async function getOWTeamsMetUitslagen(seizoen: string): Promise<TeamUitslagen[]> {
   const rows = await prisma.$queryRaw<
     {
       pool_stand_id: number;
@@ -99,9 +97,7 @@ export async function getOWTeamsMetUitslagen(
   const teamsMap = new Map<string, PouleStand[]>();
   for (const poule of poulesMap.values()) {
     // Filter lege poules (OW-team heeft 0 wedstrijden gespeeld)
-    const owGespeeld = poule.regels
-      .filter((r) => r.isOW)
-      .reduce((sum, r) => sum + r.gespeeld, 0);
+    const owGespeeld = poule.regels.filter((r) => r.isOW).reduce((sum, r) => sum + r.gespeeld, 0);
     if (owGespeeld === 0) continue;
 
     for (const code of poule.owTeamCodes) {
@@ -125,10 +121,7 @@ export async function getOWTeamsMetUitslagen(
       const totalGs = poule.regels.reduce((s, r) => s + r.gespeeld, 0);
       const existing = seen.get(key);
       if (existing !== undefined) {
-        const existingGs = deduped[existing].regels.reduce(
-          (s, r) => s + r.gespeeld,
-          0
-        );
+        const existingGs = deduped[existing].regels.reduce((s, r) => s + r.gespeeld, 0);
         if (totalGs > existingGs) {
           deduped[existing] = poule; // vervang door versie met meer data
         }

@@ -7,18 +7,18 @@
  * Output: cohort_seizoenen tabel in PostgreSQL
  */
 
-const { Pool } = require('pg');
+const { Pool } = require("pg");
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
 function getBand(leeftijd) {
-  if (leeftijd >= 6 && leeftijd <= 7) return 'Blauw';
-  if (leeftijd >= 8 && leeftijd <= 9) return 'Groen';
-  if (leeftijd >= 10 && leeftijd <= 12) return 'Geel';
-  if (leeftijd >= 13 && leeftijd <= 15) return 'Oranje';
-  if (leeftijd >= 16 && leeftijd <= 18) return 'Rood';
-  if (leeftijd >= 19) return 'Senioren';
-  return 'pre-Blauw';
+  if (leeftijd >= 6 && leeftijd <= 7) return "Blauw";
+  if (leeftijd >= 8 && leeftijd <= 9) return "Groen";
+  if (leeftijd >= 10 && leeftijd <= 12) return "Geel";
+  if (leeftijd >= 13 && leeftijd <= 15) return "Oranje";
+  if (leeftijd >= 16 && leeftijd <= 18) return "Rood";
+  if (leeftijd >= 19) return "Senioren";
+  return "pre-Blauw";
 }
 
 function round1(n) {
@@ -26,7 +26,7 @@ function round1(n) {
 }
 
 async function main() {
-  console.log('Cohorten berekenen uit database...\n');
+  console.log("Cohorten berekenen uit database...\n");
 
   // Haal alle seizoenen op
   const { rows: seizoenen } = await pool.query(
@@ -64,9 +64,15 @@ async function main() {
     if (!verloopPerSeason[r.seizoen]) verloopPerSeason[r.seizoen] = new Map();
     const key = `${r.geboortejaar}|${r.geslacht}`;
     if (!verloopPerSeason[r.seizoen].has(key)) {
-      verloopPerSeason[r.seizoen].set(key, { behouden: 0, nieuw: 0, herinschrijver: 0, uitgestroomd: 0 });
+      verloopPerSeason[r.seizoen].set(key, {
+        behouden: 0,
+        nieuw: 0,
+        herinschrijver: 0,
+        uitgestroomd: 0,
+      });
     }
-    verloopPerSeason[r.seizoen].get(key)[r.status] = (verloopPerSeason[r.seizoen].get(key)[r.status] || 0) + r.n;
+    verloopPerSeason[r.seizoen].get(key)[r.status] =
+      (verloopPerSeason[r.seizoen].get(key)[r.status] || 0) + r.n;
   }
 
   // Stap 3: Verzamel alle cohort-keys
@@ -84,12 +90,12 @@ async function main() {
 
   // Stap 4: Verwijder bestaande cohort-records en bereken opnieuw
   await pool.query(`DELETE FROM cohort_seizoenen`);
-  console.log('Bestaande cohort_seizoenen records verwijderd\n');
+  console.log("Bestaande cohort_seizoenen records verwijderd\n");
 
   let totalInserted = 0;
 
   for (const key of allCohortKeys) {
-    const [geboortejaarStr, geslacht] = key.split('|');
+    const [geboortejaarStr, geslacht] = key.split("|");
     const geboortejaar = parseInt(geboortejaarStr);
 
     for (const s of seizoenen) {
@@ -105,7 +111,14 @@ async function main() {
       const uitgestroomd = vCounts?.uitgestroomd || 0;
 
       // Skip als er helemaal geen data is
-      if (actief === 0 && behouden === 0 && uitgestroomd === 0 && nieuw === 0 && herinschrijver === 0) continue;
+      if (
+        actief === 0 &&
+        behouden === 0 &&
+        uitgestroomd === 0 &&
+        nieuw === 0 &&
+        herinschrijver === 0
+      )
+        continue;
 
       const prevTotal = behouden + uitgestroomd;
       const retentiePct = prevTotal > 0 ? round1((behouden / prevTotal) * 100) : null;
@@ -118,8 +131,19 @@ async function main() {
            leeftijd = EXCLUDED.leeftijd, band = EXCLUDED.band, actief = EXCLUDED.actief,
            behouden = EXCLUDED.behouden, nieuw = EXCLUDED.nieuw, herinschrijver = EXCLUDED.herinschrijver,
            uitgestroomd = EXCLUDED.uitgestroomd, retentie_pct = EXCLUDED.retentie_pct`,
-        [geboortejaar, geslacht, s.seizoen, leeftijd, band,
-         actief, behouden, nieuw, herinschrijver, uitgestroomd, retentiePct]
+        [
+          geboortejaar,
+          geslacht,
+          s.seizoen,
+          leeftijd,
+          band,
+          actief,
+          behouden,
+          nieuw,
+          herinschrijver,
+          uitgestroomd,
+          retentiePct,
+        ]
       );
       totalInserted++;
     }
@@ -141,7 +165,7 @@ async function main() {
   await pool.end();
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error(err);
   pool.end();
   process.exit(1);

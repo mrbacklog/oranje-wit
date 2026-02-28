@@ -41,21 +41,18 @@ export default async function ScenariosPage() {
           {scenarios.length >= 2 && (
             <Link
               href="/vergelijk"
-              className="px-3 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+              className="rounded-md bg-gray-100 px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
             >
               Vergelijk
             </Link>
           )}
-          <NieuwScenarioDialog
-            blauwdrukId={blauwdruk.id}
-            keuzes={keuzes}
-          />
+          <NieuwScenarioDialog blauwdrukId={blauwdruk.id} keuzes={keuzes} />
         </div>
       </div>
 
       {scenarios.length === 0 ? (
-        <div className="bg-white border border-gray-200 rounded-lg p-8 text-center">
-          <p className="text-gray-500 text-sm">
+        <div className="rounded-lg border border-gray-200 bg-white p-8 text-center">
+          <p className="text-sm text-gray-500">
             Nog geen scenario&apos;s. Maak een nieuw scenario aan om te beginnen.
           </p>
         </div>
@@ -69,34 +66,30 @@ export default async function ScenariosPage() {
               <Link
                 key={scenario.id}
                 href={`/scenarios/${scenario.id}`}
-                className="block bg-white border border-gray-200 rounded-lg p-4 hover:border-orange-300 hover:shadow-sm transition-all"
+                className="block rounded-lg border border-gray-200 bg-white p-4 transition-all hover:border-orange-300 hover:shadow-sm"
               >
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="font-semibold text-gray-900">
-                      {scenario.naam}
-                    </h3>
+                    <h3 className="font-semibold text-gray-900">{scenario.naam}</h3>
                     {scenario.toelichting && (
-                      <p className="text-sm text-gray-500 mt-1">
-                        {scenario.toelichting}
-                      </p>
+                      <p className="mt-1 text-sm text-gray-500">{scenario.toelichting}</p>
                     )}
                   </div>
                   <div className="flex items-center gap-2">
                     <span
-                      className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+                      className={`rounded-full px-2 py-0.5 text-xs font-medium ${
                         scenario.status === "DEFINITIEF"
                           ? "bg-green-100 text-green-700"
                           : scenario.status === "GEARCHIVEERD"
-                          ? "bg-gray-100 text-gray-500"
-                          : "bg-orange-100 text-orange-700"
+                            ? "bg-gray-100 text-gray-500"
+                            : "bg-orange-100 text-orange-700"
                       }`}
                     >
                       {scenario.status === "DEFINITIEF"
                         ? "Definitief"
                         : scenario.status === "GEARCHIVEERD"
-                        ? "Gearchiveerd"
-                        : "Actief"}
+                          ? "Gearchiveerd"
+                          : "Actief"}
                     </span>
                     {scenario.status !== "DEFINITIEF" && (
                       <VerwijderScenarioKnop
@@ -116,7 +109,7 @@ export default async function ScenariosPage() {
                       return (
                         <span
                           key={keuze.id}
-                          className="text-xs bg-gray-100 text-gray-600 rounded-full px-2 py-0.5"
+                          className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600"
                         >
                           {keuze.vraag}: <span className="font-medium">{waarde}</span>
                         </span>
@@ -134,8 +127,8 @@ export default async function ScenariosPage() {
                       {laatsteVersie.teams
                         .map((t) =>
                           t.kleur
-                            ? KLEUR_LABELS[t.kleur] ?? t.kleur
-                            : CATEGORIE_LABELS[t.categorie] ?? t.categorie
+                            ? (KLEUR_LABELS[t.kleur] ?? t.kleur)
+                            : (CATEGORIE_LABELS[t.categorie] ?? t.categorie)
                         )
                         .filter((v, i, a) => a.indexOf(v) === i)
                         .join(", ")}

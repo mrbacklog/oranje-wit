@@ -16,41 +16,29 @@ export default function BesluitenLog({ entries }: BesluitenLogProps) {
   if (entries.length === 0) {
     return (
       <div className="rounded-lg border border-gray-200 bg-white p-6">
-        <h3 className="text-sm font-semibold text-gray-900 mb-3">
-          Besluitenlog
-        </h3>
-        <p className="text-sm text-gray-400">
-          Nog geen besluiten vastgelegd.
-        </p>
+        <h3 className="mb-3 text-sm font-semibold text-gray-900">Besluitenlog</h3>
+        <p className="text-sm text-gray-400">Nog geen besluiten vastgelegd.</p>
       </div>
     );
   }
 
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-6">
-      <h3 className="text-sm font-semibold text-gray-900 mb-4">
-        Besluitenlog
-      </h3>
+      <h3 className="mb-4 text-sm font-semibold text-gray-900">Besluitenlog</h3>
       <div className="relative">
         {/* Tijdlijn-lijn */}
-        <div className="absolute left-3 top-2 bottom-2 w-px bg-gray-200" />
+        <div className="absolute top-2 bottom-2 left-3 w-px bg-gray-200" />
 
         <ul className="space-y-4">
           {entries.map((entry) => (
             <li key={entry.id} className="relative pl-8">
               {/* Bolletje */}
-              <div className="absolute left-1.5 top-1.5 w-3 h-3 rounded-full bg-orange-400 border-2 border-white" />
+              <div className="absolute top-1.5 left-1.5 h-3 w-3 rounded-full border-2 border-white bg-orange-400" />
 
               <div>
-                <p className="text-sm font-medium text-gray-900">
-                  {entry.actie}
-                </p>
-                {entry.detail && (
-                  <p className="text-sm text-gray-500 mt-0.5">
-                    {entry.detail}
-                  </p>
-                )}
-                <p className="text-xs text-gray-400 mt-1">
+                <p className="text-sm font-medium text-gray-900">{entry.actie}</p>
+                {entry.detail && <p className="mt-0.5 text-sm text-gray-500">{entry.detail}</p>}
+                <p className="mt-1 text-xs text-gray-400">
                   {entry.door.naam} &mdash;{" "}
                   {new Date(entry.createdAt).toLocaleDateString("nl-NL", {
                     day: "numeric",

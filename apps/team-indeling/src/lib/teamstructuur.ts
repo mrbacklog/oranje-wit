@@ -28,11 +28,46 @@ interface KleurConfig {
 }
 
 const KLEUREN: KleurConfig[] = [
-  { kleur: "BLAUW", label: "Blauw", minLeeftijd: 5, maxLeeftijd: 7, format: "viertal", streefPerTeam: 6 },
-  { kleur: "GROEN", label: "Groen", minLeeftijd: 8, maxLeeftijd: 9, format: "viertal", streefPerTeam: 6 },
-  { kleur: "GEEL", label: "Geel", minLeeftijd: 10, maxLeeftijd: 12, format: "achttal", streefPerTeam: 10 },
-  { kleur: "ORANJE", label: "Oranje", minLeeftijd: 13, maxLeeftijd: 15, format: "achttal", streefPerTeam: 10 },
-  { kleur: "ROOD", label: "Rood", minLeeftijd: 16, maxLeeftijd: 18, format: "achttal", streefPerTeam: 10 },
+  {
+    kleur: "BLAUW",
+    label: "Blauw",
+    minLeeftijd: 5,
+    maxLeeftijd: 7,
+    format: "viertal",
+    streefPerTeam: 6,
+  },
+  {
+    kleur: "GROEN",
+    label: "Groen",
+    minLeeftijd: 8,
+    maxLeeftijd: 9,
+    format: "viertal",
+    streefPerTeam: 6,
+  },
+  {
+    kleur: "GEEL",
+    label: "Geel",
+    minLeeftijd: 10,
+    maxLeeftijd: 12,
+    format: "achttal",
+    streefPerTeam: 10,
+  },
+  {
+    kleur: "ORANJE",
+    label: "Oranje",
+    minLeeftijd: 13,
+    maxLeeftijd: 15,
+    format: "achttal",
+    streefPerTeam: 10,
+  },
+  {
+    kleur: "ROOD",
+    label: "Rood",
+    minLeeftijd: 16,
+    maxLeeftijd: 18,
+    format: "achttal",
+    streefPerTeam: 10,
+  },
 ];
 
 /**
@@ -90,7 +125,10 @@ export function berekenTeamstructuur(
     if (aantal <= 0) continue;
 
     // Probeer A-categorie label af te leiden uit keuze-ID
-    const label = keuzeId.replace(/_teams?$/i, "").replace(/_/g, " ").toUpperCase();
+    const label = keuzeId
+      .replace(/_teams?$/i, "")
+      .replace(/_/g, " ")
+      .toUpperCase();
 
     for (let i = 1; i <= aantal; i++) {
       teams.push({
@@ -112,9 +150,8 @@ export function berekenTeamstructuur(
     if (match) {
       const aantalSenioren = parseInt(match[1], 10);
       const seniorenSpelers = metLeeftijd.filter((s) => s.leeftijd >= 19);
-      const perTeam = seniorenSpelers.length > 0
-        ? Math.ceil(seniorenSpelers.length / aantalSenioren)
-        : 10;
+      const perTeam =
+        seniorenSpelers.length > 0 ? Math.ceil(seniorenSpelers.length / aantalSenioren) : 10;
 
       for (let i = 1; i <= aantalSenioren; i++) {
         teams.push({

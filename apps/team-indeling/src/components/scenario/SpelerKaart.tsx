@@ -11,11 +11,10 @@ interface SpelerKaartProps {
 }
 
 export default function SpelerKaart({ speler, onClick }: SpelerKaartProps) {
-  const { attributes, listeners, setNodeRef, transform, isDragging } =
-    useDraggable({
-      id: `pool-${speler.id}`,
-      data: { type: "pool-speler", spelerId: speler.id },
-    });
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
+    id: `pool-${speler.id}`,
+    data: { type: "pool-speler", spelerId: speler.id },
+  });
 
   const leeftijd = korfbalLeeftijd(speler.geboortedatum, speler.geboortejaar);
   const kleur = kleurIndicatie(leeftijd);
@@ -41,7 +40,7 @@ export default function SpelerKaart({ speler, onClick }: SpelerKaartProps) {
           onClick();
         }
       }}
-      className={`flex items-center gap-2 px-2 py-1.5 rounded-md border border-gray-200 bg-white cursor-grab hover:border-orange-300 hover:shadow-sm transition-all ${
+      className={`flex cursor-grab items-center gap-2 rounded-md border border-gray-200 bg-white px-2 py-1.5 transition-all hover:border-orange-300 hover:shadow-sm ${
         isDragging ? "opacity-50 shadow-lg" : ""
       }`}
     >
@@ -50,32 +49,35 @@ export default function SpelerKaart({ speler, onClick }: SpelerKaartProps) {
 
       {/* Status dot */}
       <span
-        className={`w-2 h-2 rounded-full shrink-0 ${STATUS_KLEUREN[speler.status]}`}
+        className={`h-2 w-2 shrink-0 rounded-full ${STATUS_KLEUREN[speler.status]}`}
         title={speler.status}
       />
 
       {/* Naam */}
-      <span className="text-sm text-gray-800 truncate flex-1">
+      <span className="flex-1 truncate text-sm text-gray-800">
         {speler.roepnaam} {speler.achternaam}
       </span>
 
       {/* Korfballeeftijd + kleurindicatie */}
       <span
-        className="inline-flex items-center gap-0.5 flex-shrink-0"
+        className="inline-flex flex-shrink-0 items-center gap-0.5"
         title={`Geboortejaar ${speler.geboortejaar}`}
       >
-        {kleur && <span className={`w-1.5 h-1.5 rounded-full ${KLEUR_DOT[kleur]}`} />}
+        {kleur && <span className={`h-1.5 w-1.5 rounded-full ${KLEUR_DOT[kleur]}`} />}
         <span className="text-xs text-gray-400">{leeftijd.toFixed(2)}</span>
       </span>
 
       {/* Geslacht */}
-      <span className="text-xs flex-shrink-0" title={speler.geslacht === "M" ? "Man" : "Vrouw"}>
+      <span className="flex-shrink-0 text-xs" title={speler.geslacht === "M" ? "Man" : "Vrouw"}>
         {speler.geslacht === "M" ? "\u2642" : "\u2640"}
       </span>
 
       {/* Vorig team */}
       {vorigTeam && (
-        <span className="text-[10px] text-gray-400 flex-shrink-0 truncate max-w-[60px]" title={vorigTeam}>
+        <span
+          className="max-w-[60px] flex-shrink-0 truncate text-[10px] text-gray-400"
+          title={vorigTeam}
+        >
           {vorigTeam}
         </span>
       )}

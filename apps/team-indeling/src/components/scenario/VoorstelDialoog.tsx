@@ -10,11 +10,7 @@ interface VoorstelDialoogProps {
   scenarioId: string;
 }
 
-export default function VoorstelDialoog({
-  open,
-  onClose,
-  scenarioId,
-}: VoorstelDialoogProps) {
+export default function VoorstelDialoog({ open, onClose, scenarioId }: VoorstelDialoogProps) {
   const router = useRouter();
   const [teamgroottePrio, setTeamgroottePrio] = useState("standaard");
   const [prioriteiten, setPrioriteiten] = useState("");
@@ -34,8 +30,7 @@ export default function VoorstelDialoog({
         body: JSON.stringify({
           scenarioId,
           opties: {
-            teamgroottePrio:
-              teamgroottePrio === "standaard" ? undefined : teamgroottePrio,
+            teamgroottePrio: teamgroottePrio === "standaard" ? undefined : teamgroottePrio,
             prioriteiten: prioriteiten.trim() || undefined,
           },
         }),
@@ -59,9 +54,7 @@ export default function VoorstelDialoog({
       // Herlaad de pagina zodat de teams verschijnen met spelers
       router.refresh();
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Onbekende fout bij het genereren"
-      );
+      setError(err instanceof Error ? err.message : "Onbekende fout bij het genereren");
     } finally {
       setLoading(false);
     }
@@ -77,28 +70,20 @@ export default function VoorstelDialoog({
   if (!open) return null;
 
   return (
-    <div
-      className="dialog-overlay"
-      onClick={handleClose}
-    >
-      <div
-        className="dialog-panel w-full max-w-md"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <div className="dialog-overlay" onClick={handleClose}>
+      <div className="dialog-panel w-full max-w-md" onClick={(e) => e.stopPropagation()}>
         <div className="dialog-header">
-          <h3 className="text-lg font-bold text-gray-900">
-            AI Startvoorstel
-          </h3>
-          <p className="text-sm text-gray-500 mt-1">
-            Claude analyseert de beschikbare spelers en teams en genereert een
-            eerste teamindeling op basis van KNKV-regels en OW-voorkeuren.
+          <h3 className="text-lg font-bold text-gray-900">AI Startvoorstel</h3>
+          <p className="mt-1 text-sm text-gray-500">
+            Claude analyseert de beschikbare spelers en teams en genereert een eerste teamindeling
+            op basis van KNKV-regels en OW-voorkeuren.
           </p>
         </div>
 
         <div className="dialog-body">
           {/* Teamgrootte voorkeur */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="mb-2 block text-sm font-medium text-gray-700">
               Teamgrootte voorkeur
             </label>
             <div className="flex flex-wrap gap-2">
@@ -109,10 +94,10 @@ export default function VoorstelDialoog({
               ].map(({ waarde, label }) => (
                 <label
                   key={waarde}
-                  className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm cursor-pointer border transition-colors ${
+                  className={`inline-flex cursor-pointer items-center rounded-full border px-3 py-1.5 text-sm transition-colors ${
                     teamgroottePrio === waarde
-                      ? "bg-orange-50 border-orange-400 text-orange-700"
-                      : "bg-white border-gray-200 text-gray-600 hover:border-gray-300"
+                      ? "border-orange-400 bg-orange-50 text-orange-700"
+                      : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
                   }`}
                 >
                   <input
@@ -132,18 +117,14 @@ export default function VoorstelDialoog({
 
           {/* Extra prioriteiten */}
           <div>
-            <label
-              htmlFor="prioriteiten"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Extra prioriteiten{" "}
-              <span className="text-gray-400">(optioneel)</span>
+            <label htmlFor="prioriteiten" className="mb-1 block text-sm font-medium text-gray-700">
+              Extra prioriteiten <span className="text-gray-400">(optioneel)</span>
             </label>
             <textarea
               id="prioriteiten"
               value={prioriteiten}
               onChange={(e) => setPrioriteiten(e.target.value)}
-              placeholder="Bijv. &quot;Houd Lisa en Emma bij elkaar&quot; of &quot;Plaats nieuwe spelers bij ervaren teams&quot;"
+              placeholder='Bijv. "Houd Lisa en Emma bij elkaar" of "Plaats nieuwe spelers bij ervaren teams"'
               rows={3}
               disabled={loading}
               className="input disabled:opacity-50"
@@ -152,24 +133,22 @@ export default function VoorstelDialoog({
 
           {/* Loading */}
           {loading && (
-            <div className="flex items-center gap-3 p-3 bg-orange-50 rounded-lg">
+            <div className="flex items-center gap-3 rounded-lg bg-orange-50 p-3">
               <Spinner size="md" className="text-orange-500" />
-              <span className="text-sm text-orange-700">
-                Claude analyseert spelers en teams...
-              </span>
+              <span className="text-sm text-orange-700">Claude analyseert spelers en teams...</span>
             </div>
           )}
 
           {/* Error */}
           {error && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+            <div className="rounded-lg border border-red-200 bg-red-50 p-3">
               <p className="text-sm text-red-700">{error}</p>
             </div>
           )}
 
           {/* Resultaat */}
           {resultaat && (
-            <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+            <div className="rounded-lg border border-green-200 bg-green-50 p-3">
               <p className="text-sm text-green-700">{resultaat}</p>
             </div>
           )}
@@ -184,11 +163,7 @@ export default function VoorstelDialoog({
             {resultaat ? "Sluiten" : "Annuleren"}
           </button>
           {!resultaat && (
-            <button
-              onClick={handleGenereer}
-              disabled={loading}
-              className="btn-primary"
-            >
+            <button onClick={handleGenereer} disabled={loading} className="btn-primary">
               {loading ? "Bezig..." : "Genereer voorstel"}
             </button>
           )}

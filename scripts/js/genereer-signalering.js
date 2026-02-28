@@ -13,38 +13,38 @@
  * Output: signalering tabel in PostgreSQL
  */
 
-const { Pool } = require('pg');
+const { Pool } = require("pg");
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
-const SEIZOEN = process.argv[2] || '2025-2026';
+const SEIZOEN = process.argv[2] || "2025-2026";
 
 const THRESHOLDS = {
-  '6-12':  { streef: 95, aandacht: 85, kritiek: 70 },
-  '13-14': { streef: 90, aandacht: 80, kritiek: 65 },
-  '15-16': { streef: 88, aandacht: 78, kritiek: 63 },
-  '17-18': { streef: 90, aandacht: 80, kritiek: 65 },
-  '19-23': { streef: 75, aandacht: 65, kritiek: 50 },
-  '24+':   { streef: 80, aandacht: 70, kritiek: 55 },
+  "6-12": { streef: 95, aandacht: 85, kritiek: 70 },
+  "13-14": { streef: 90, aandacht: 80, kritiek: 65 },
+  "15-16": { streef: 88, aandacht: 78, kritiek: 63 },
+  "17-18": { streef: 90, aandacht: 80, kritiek: 65 },
+  "19-23": { streef: 75, aandacht: 65, kritiek: 50 },
+  "24+": { streef: 80, aandacht: 70, kritiek: 55 },
 };
 
 function getAgeGroup(leeftijd) {
-  if (leeftijd >= 6 && leeftijd <= 12) return '6-12';
-  if (leeftijd >= 13 && leeftijd <= 14) return '13-14';
-  if (leeftijd >= 15 && leeftijd <= 16) return '15-16';
-  if (leeftijd >= 17 && leeftijd <= 18) return '17-18';
-  if (leeftijd >= 19 && leeftijd <= 23) return '19-23';
-  if (leeftijd >= 24) return '24+';
+  if (leeftijd >= 6 && leeftijd <= 12) return "6-12";
+  if (leeftijd >= 13 && leeftijd <= 14) return "13-14";
+  if (leeftijd >= 15 && leeftijd <= 16) return "15-16";
+  if (leeftijd >= 17 && leeftijd <= 18) return "17-18";
+  if (leeftijd >= 19 && leeftijd <= 23) return "19-23";
+  if (leeftijd >= 24) return "24+";
   return null;
 }
 
 function getBandForAge(leeftijd) {
-  if (leeftijd >= 6 && leeftijd <= 7) return 'Blauw';
-  if (leeftijd >= 8 && leeftijd <= 9) return 'Groen';
-  if (leeftijd >= 10 && leeftijd <= 12) return 'Geel';
-  if (leeftijd >= 13 && leeftijd <= 15) return 'Oranje';
-  if (leeftijd >= 16 && leeftijd <= 18) return 'Rood';
-  return 'Senioren';
+  if (leeftijd >= 6 && leeftijd <= 7) return "Blauw";
+  if (leeftijd >= 8 && leeftijd <= 9) return "Groen";
+  if (leeftijd >= 10 && leeftijd <= 12) return "Geel";
+  if (leeftijd >= 13 && leeftijd <= 15) return "Oranje";
+  if (leeftijd >= 16 && leeftijd <= 18) return "Rood";
+  return "Senioren";
 }
 
 function round1(n) {
@@ -93,14 +93,24 @@ async function main() {
 
     if (retentie < threshold.kritiek) {
       alerts.push({
-        type: 'retentie', ernst: 'kritiek', leeftijdsgroep: r.groep, geslacht: null,
-        waarde: retentie, drempel: threshold.kritiek, streef: threshold.streef,
+        type: "retentie",
+        ernst: "kritiek",
+        leeftijdsgroep: r.groep,
+        geslacht: null,
+        waarde: retentie,
+        drempel: threshold.kritiek,
+        streef: threshold.streef,
         beschrijving: `Retentie ${r.groep} jaar (${retentie}%) is kritiek laag (streef: ${threshold.streef}%)`,
       });
     } else if (retentie < threshold.aandacht) {
       alerts.push({
-        type: 'retentie', ernst: 'aandacht', leeftijdsgroep: r.groep, geslacht: null,
-        waarde: retentie, drempel: threshold.aandacht, streef: threshold.streef,
+        type: "retentie",
+        ernst: "aandacht",
+        leeftijdsgroep: r.groep,
+        geslacht: null,
+        waarde: retentie,
+        drempel: threshold.aandacht,
+        streef: threshold.streef,
         beschrijving: `Retentie ${r.groep} jaar (${retentie}%) verdient aandacht (streef: ${threshold.streef}%)`,
       });
     }
@@ -124,14 +134,24 @@ async function main() {
 
     if (latest.core_instroom < avgPrevious * 0.8) {
       alerts.push({
-        type: 'instroom', ernst: 'kritiek', leeftijdsgroep: '5-9', geslacht: null,
-        waarde: latest.core_instroom, drempel: Math.round(avgPrevious * 0.8), streef: Math.round(avgPrevious),
+        type: "instroom",
+        ernst: "kritiek",
+        leeftijdsgroep: "5-9",
+        geslacht: null,
+        waarde: latest.core_instroom,
+        drempel: Math.round(avgPrevious * 0.8),
+        streef: Math.round(avgPrevious),
         beschrijving: `Kern-instroom 5-9 jaar (${latest.core_instroom}) is >20% lager dan gemiddelde voorgaande seizoenen (${Math.round(avgPrevious)})`,
       });
     } else if (latest.core_instroom < avgPrevious * 0.9) {
       alerts.push({
-        type: 'instroom', ernst: 'aandacht', leeftijdsgroep: '5-9', geslacht: null,
-        waarde: latest.core_instroom, drempel: Math.round(avgPrevious * 0.9), streef: Math.round(avgPrevious),
+        type: "instroom",
+        ernst: "aandacht",
+        leeftijdsgroep: "5-9",
+        geslacht: null,
+        waarde: latest.core_instroom,
+        drempel: Math.round(avgPrevious * 0.9),
+        streef: Math.round(avgPrevious),
         beschrijving: `Kern-instroom 5-9 jaar (${latest.core_instroom}) is 10-20% lager dan gemiddelde voorgaande seizoenen (${Math.round(avgPrevious)})`,
       });
     }
@@ -148,7 +168,8 @@ async function main() {
 
   const genderPerYear = {};
   for (const r of genderData) {
-    if (!genderPerYear[r.geboortejaar]) genderPerYear[r.geboortejaar] = { M: 0, V: 0, leeftijd: r.leeftijd };
+    if (!genderPerYear[r.geboortejaar])
+      genderPerYear[r.geboortejaar] = { M: 0, V: 0, leeftijd: r.leeftijd };
     genderPerYear[r.geboortejaar][r.geslacht] += r.actief;
   }
 
@@ -159,16 +180,18 @@ async function main() {
     const vRatio = counts.V / total;
 
     if (mRatio > 0.6 || vRatio > 0.6) {
-      const dominant = mRatio > vRatio ? 'M' : 'V';
+      const dominant = mRatio > vRatio ? "M" : "V";
       const ratio = Math.round(Math.max(mRatio, vRatio) * 100);
       const band = getBandForAge(counts.leeftijd);
 
       alerts.push({
-        type: 'genderdisbalans',
-        ernst: ratio >= 75 ? 'kritiek' : 'aandacht',
+        type: "genderdisbalans",
+        ernst: ratio >= 75 ? "kritiek" : "aandacht",
         leeftijdsgroep: `geboortejaar ${year} (${band}, leeftijd ${counts.leeftijd})`,
         geslacht: dominant,
-        waarde: ratio, drempel: 60, streef: 50,
+        waarde: ratio,
+        drempel: 60,
+        streef: 50,
         beschrijving: `Geboortejaar ${year} (${band}): ${ratio}% ${dominant} (${counts.M}M/${counts.V}V) — streef ~50/50`,
       });
     }
@@ -205,24 +228,36 @@ async function main() {
     const prev = seizoenTotalen[seizoenTotalen.length - 2];
     const prevPrev = seizoenTotalen[seizoenTotalen.length - 3];
 
-    const retPrev = prev.behouden + prev.uitgestroomd > 0
-      ? round1((prev.behouden / (prev.behouden + prev.uitgestroomd)) * 100) : null;
-    const retPrevPrev = prevPrev.behouden + prevPrev.uitgestroomd > 0
-      ? round1((prevPrev.behouden / (prevPrev.behouden + prevPrev.uitgestroomd)) * 100) : null;
-    const retLatest = latest.behouden + latest.uitgestroomd > 0
-      ? round1((latest.behouden / (latest.behouden + latest.uitgestroomd)) * 100) : null;
+    const retPrev =
+      prev.behouden + prev.uitgestroomd > 0
+        ? round1((prev.behouden / (prev.behouden + prev.uitgestroomd)) * 100)
+        : null;
+    const retPrevPrev =
+      prevPrev.behouden + prevPrev.uitgestroomd > 0
+        ? round1((prevPrev.behouden / (prevPrev.behouden + prevPrev.uitgestroomd)) * 100)
+        : null;
+    const retLatest =
+      latest.behouden + latest.uitgestroomd > 0
+        ? round1((latest.behouden / (latest.behouden + latest.uitgestroomd)) * 100)
+        : null;
 
     if (retLatest != null && retPrev != null && retPrevPrev != null) {
       const retentionTrend = retPrev - retPrevPrev;
       const retentionChange = retLatest - retPrev;
 
-      if (Math.abs(retentionChange) > 5 && Math.sign(retentionChange) !== Math.sign(retentionTrend)) {
+      if (
+        Math.abs(retentionChange) > 5 &&
+        Math.sign(retentionChange) !== Math.sign(retentionTrend)
+      ) {
         alerts.push({
-          type: 'trendbreuk',
-          ernst: Math.abs(retentionChange) > 10 ? 'kritiek' : 'aandacht',
-          leeftijdsgroep: 'alle', geslacht: null,
-          waarde: retLatest, drempel: null, streef: null,
-          beschrijving: `Trendbreuk retentie: ${retPrev}% → ${retLatest}% (${retentionChange > 0 ? '+' : ''}${retentionChange.toFixed(1)}pp) na trend ${retPrevPrev}% → ${retPrev}%`,
+          type: "trendbreuk",
+          ernst: Math.abs(retentionChange) > 10 ? "kritiek" : "aandacht",
+          leeftijdsgroep: "alle",
+          geslacht: null,
+          waarde: retLatest,
+          drempel: null,
+          streef: null,
+          beschrijving: `Trendbreuk retentie: ${retPrev}% → ${retLatest}% (${retentionChange > 0 ? "+" : ""}${retentionChange.toFixed(1)}pp) na trend ${retPrevPrev}% → ${retPrev}%`,
         });
       }
     }
@@ -230,7 +265,7 @@ async function main() {
 
   // Sorteer: kritiek eerst
   alerts.sort((a, b) => {
-    if (a.ernst !== b.ernst) return a.ernst === 'kritiek' ? -1 : 1;
+    if (a.ernst !== b.ernst) return a.ernst === "kritiek" ? -1 : 1;
     return a.type.localeCompare(b.type);
   });
 
@@ -241,21 +276,32 @@ async function main() {
     await pool.query(
       `INSERT INTO signalering (seizoen, type, ernst, leeftijdsgroep, geslacht, waarde, drempel, streef, beschrijving)
        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
-      [SEIZOEN, a.type, a.ernst, a.leeftijdsgroep || null,
-       a.geslacht || null, a.waarde || null, a.drempel || null, a.streef || null, a.beschrijving || null]
+      [
+        SEIZOEN,
+        a.type,
+        a.ernst,
+        a.leeftijdsgroep || null,
+        a.geslacht || null,
+        a.waarde || null,
+        a.drempel || null,
+        a.streef || null,
+        a.beschrijving || null,
+      ]
     );
   }
 
-  const kritiekCount = alerts.filter(a => a.ernst === 'kritiek').length;
-  const aandachtCount = alerts.filter(a => a.ernst === 'aandacht').length;
+  const kritiekCount = alerts.filter((a) => a.ernst === "kritiek").length;
+  const aandachtCount = alerts.filter((a) => a.ernst === "aandacht").length;
 
-  console.log(`${alerts.length} alerts geschreven (${kritiekCount} kritiek, ${aandachtCount} aandacht)\n`);
-  alerts.forEach(a => console.log(`  [${a.ernst}] ${a.type}: ${a.beschrijving}`));
+  console.log(
+    `${alerts.length} alerts geschreven (${kritiekCount} kritiek, ${aandachtCount} aandacht)\n`
+  );
+  alerts.forEach((a) => console.log(`  [${a.ernst}] ${a.type}: ${a.beschrijving}`));
 
   await pool.end();
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error(err);
   pool.end();
   process.exit(1);

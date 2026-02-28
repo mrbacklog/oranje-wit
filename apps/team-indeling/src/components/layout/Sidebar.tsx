@@ -18,28 +18,25 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-56 shrink-0 bg-white border-r border-gray-200 min-h-screen flex flex-col">
+    <aside className="flex min-h-screen w-56 shrink-0 flex-col border-r border-gray-200 bg-white">
       {/* Titel */}
-      <div className="px-4 py-5 border-b border-gray-100">
+      <div className="border-b border-gray-100 px-4 py-5">
         <h1 className="text-lg font-bold text-gray-900">Team-Indeling</h1>
-        <span className="inline-block mt-1 px-2 py-0.5 text-xs font-medium bg-orange-100 text-orange-700 rounded-full">
+        <span className="mt-1 inline-block rounded-full bg-orange-100 px-2 py-0.5 text-xs font-medium text-orange-700">
           {SEIZOEN}
         </span>
       </div>
 
       {/* Navigatie */}
-      <nav className="flex-1 px-2 py-4 space-y-1">
+      <nav className="flex-1 space-y-1 px-2 py-4">
         {navigatie.map((item) => {
-          const actief =
-            item.href === "/"
-              ? pathname === "/"
-              : pathname.startsWith(item.href);
+          const actief = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
 
           return (
             <Link
               key={item.href}
               href={item.href}
-              className={`block px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+              className={`block rounded-md px-3 py-2 text-sm font-medium transition-colors ${
                 actief
                   ? "bg-orange-50 text-orange-700"
                   : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
@@ -55,7 +52,7 @@ export default function Sidebar() {
       <UserMenu />
 
       {/* Footer */}
-      <div className="px-4 py-3 border-t border-gray-100 text-xs text-gray-400">
+      <div className="border-t border-gray-100 px-4 py-3 text-xs text-gray-400">
         c.k.v. Oranje Wit
       </div>
     </aside>

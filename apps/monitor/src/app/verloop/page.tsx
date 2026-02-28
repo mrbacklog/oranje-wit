@@ -12,10 +12,7 @@ export default async function VerloopPage({
 }) {
   const _params = await searchParams;
 
-  const [verloop, cohorten] = await Promise.all([
-    getInstroomUitstroom(),
-    getCohorten(),
-  ]);
+  const [verloop, cohorten] = await Promise.all([getInstroomUitstroom(), getCohorten()]);
 
   // Retentiecurve data
   const retentieData = verloop.retentie_alle_seizoenen
@@ -31,7 +28,7 @@ export default async function VerloopPage({
   // We berekenen dit uit de cohorten data
   const seizoenen = cohorten.seizoenen.slice(-8);
   const leeftijdRange = Array.from({ length: 20 }, (_, i) => i + 5); // 5-24
-  const dropoutData = leeftijdRange.map((leeftijd) => {
+  const _dropoutData = leeftijdRange.map((leeftijd) => {
     const seizoenenMap: Record<string, { uitstroom_pct: number }> = {};
     for (const cohort of cohorten.per_cohort) {
       for (const sz of seizoenen) {
@@ -102,27 +99,22 @@ export default async function VerloopPage({
     { overgang: "21 -> 23", leeftijd: 22, beschrijving: "Studie/werk/verhuizing" },
   ];
 
-  const retentieLookup = new Map(
-    verloop.retentie_alle_seizoenen.map((r) => [r.leeftijd, r])
-  );
+  const retentieLookup = new Map(verloop.retentie_alle_seizoenen.map((r) => [r.leeftijd, r]));
 
   return (
     <>
-      <PageHeader
-        title="Verloop"
-        subtitle="Waar winnen/verliezen we leden?"
-      />
+      <PageHeader title="Verloop" subtitle="Waar winnen/verliezen we leden?" />
 
       {/* Instroom & Uitstroom bar charts */}
       <div className="mb-8 grid gap-6 lg:grid-cols-2">
         <div className="rounded-xl bg-white p-6 shadow-sm">
-          <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-700">
+          <h3 className="mb-4 text-sm font-semibold tracking-wide text-gray-700 uppercase">
             Instroom per leeftijd (all-time)
           </h3>
           <VerloopBarCharts data={instroomData} type="instroom" />
         </div>
         <div className="rounded-xl bg-white p-6 shadow-sm">
-          <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-700">
+          <h3 className="mb-4 text-sm font-semibold tracking-wide text-gray-700 uppercase">
             Uitstroom per leeftijd (all-time)
           </h3>
           <VerloopBarCharts data={uitstroomData} type="uitstroom" />
@@ -131,7 +123,7 @@ export default async function VerloopPage({
 
       {/* Retentiecurve */}
       <div className="mb-8 rounded-xl bg-white p-6 shadow-sm">
-        <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-700">
+        <h3 className="mb-4 text-sm font-semibold tracking-wide text-gray-700 uppercase">
           Retentiecurve per leeftijd
         </h3>
         <RetentieCurve data={retentieData} toonMV={true} />
@@ -139,7 +131,7 @@ export default async function VerloopPage({
 
       {/* Drop-out heatmap */}
       <div className="mb-8 rounded-xl bg-white p-6 shadow-sm">
-        <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-700">
+        <h3 className="mb-4 text-sm font-semibold tracking-wide text-gray-700 uppercase">
           Dropout-heatmap (uitstroom% per leeftijd per seizoen)
         </h3>
         <DropoutHeatmap data={dropoutHeatmapData} seizoenen={seizoenen} />
@@ -147,7 +139,7 @@ export default async function VerloopPage({
 
       {/* Kritieke overgangsmomenten */}
       <div className="rounded-xl bg-white p-6 shadow-sm">
-        <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-700">
+        <h3 className="mb-4 text-sm font-semibold tracking-wide text-gray-700 uppercase">
           Kritieke overgangsmomenten
         </h3>
         <div className="overflow-x-auto">
@@ -165,18 +157,10 @@ export default async function VerloopPage({
             <tbody>
               {kritiekeMomenten.map((m) => {
                 const r = retentieLookup.get(m.leeftijd);
-                const retentie = r?.retentie_totaal
-                  ? (r.retentie_totaal * 100).toFixed(1)
-                  : null;
-                const retentieM = r?.retentie_M
-                  ? (r.retentie_M * 100).toFixed(1)
-                  : null;
-                const retentieV = r?.retentie_V
-                  ? (r.retentie_V * 100).toFixed(1)
-                  : null;
-                const retentieNum = r?.retentie_totaal
-                  ? r.retentie_totaal * 100
-                  : null;
+                const retentie = r?.retentie_totaal ? (r.retentie_totaal * 100).toFixed(1) : null;
+                const retentieM = r?.retentie_M ? (r.retentie_M * 100).toFixed(1) : null;
+                const retentieV = r?.retentie_V ? (r.retentie_V * 100).toFixed(1) : null;
+                const retentieNum = r?.retentie_totaal ? r.retentie_totaal * 100 : null;
                 const risico =
                   retentieNum === null
                     ? "-"
@@ -195,21 +179,11 @@ export default async function VerloopPage({
                 return (
                   <tr key={m.overgang} className="border-t border-gray-100">
                     <td className="px-3 py-2 font-medium">{m.overgang}</td>
-                    <td className="px-3 py-2 text-gray-600">
-                      {m.beschrijving}
-                    </td>
-                    <td className="px-3 py-2 text-right">
-                      {retentie ? `${retentie}%` : "-"}
-                    </td>
-                    <td className="px-3 py-2 text-right">
-                      {retentieM ? `${retentieM}%` : "-"}
-                    </td>
-                    <td className="px-3 py-2 text-right">
-                      {retentieV ? `${retentieV}%` : "-"}
-                    </td>
-                    <td className={`px-3 py-2 text-right ${risicoColor}`}>
-                      {risico}
-                    </td>
+                    <td className="px-3 py-2 text-gray-600">{m.beschrijving}</td>
+                    <td className="px-3 py-2 text-right">{retentie ? `${retentie}%` : "-"}</td>
+                    <td className="px-3 py-2 text-right">{retentieM ? `${retentieM}%` : "-"}</td>
+                    <td className="px-3 py-2 text-right">{retentieV ? `${retentieV}%` : "-"}</td>
+                    <td className={`px-3 py-2 text-right ${risicoColor}`}>{risico}</td>
                   </tr>
                 );
               })}

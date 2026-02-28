@@ -41,9 +41,10 @@ export async function getTeamsContext(versieId: string) {
     }));
     const aantalM = spelers.filter((s) => s.geslacht === "M").length;
     const aantalV = spelers.filter((s) => s.geslacht === "V").length;
-    const gemLeeftijd = spelers.length > 0
-      ? Math.round((spelers.reduce((sum, s) => sum + s.leeftijd, 0) / spelers.length) * 100) / 100
-      : null;
+    const gemLeeftijd =
+      spelers.length > 0
+        ? Math.round((spelers.reduce((sum, s) => sum + s.leeftijd, 0) / spelers.length) * 100) / 100
+        : null;
 
     return {
       id: t.id,
@@ -75,8 +76,13 @@ export async function getSpelersPoolContext(versieId: string) {
   const alleSpelers = await prisma.speler.findMany({
     where: { status: { not: "GAAT_STOPPEN" } },
     select: {
-      id: true, roepnaam: true, achternaam: true,
-      geboortejaar: true, geboortedatum: true, geslacht: true, status: true,
+      id: true,
+      roepnaam: true,
+      achternaam: true,
+      geboortejaar: true,
+      geboortedatum: true,
+      geslacht: true,
+      status: true,
       huidig: true,
     },
     orderBy: [{ geboortejaar: "asc" }, { achternaam: "asc" }],
@@ -112,9 +118,17 @@ export async function getSpelerDetails(spelerId: string) {
   });
   if (!speler) return null;
 
-  const retentie = speler.retentie as { risico?: string; kans_behoud?: number; factoren?: string[] } | null;
-  const teamgenoten = speler.teamgenotenHistorie as { speler_id: string; naam: string; seizoenen_samen: number }[] | null;
-  const spelerspad = speler.spelerspad as { seizoen: string; team: string; kleur?: string }[] | null;
+  const retentie = speler.retentie as {
+    risico?: string;
+    kans_behoud?: number;
+    factoren?: string[];
+  } | null;
+  const teamgenoten = speler.teamgenotenHistorie as
+    | { speler_id: string; naam: string; seizoenen_samen: number }[]
+    | null;
+  const spelerspad = speler.spelerspad as
+    | { seizoen: string; team: string; kleur?: string }[]
+    | null;
   const volgendSeizoen = speler.volgendSeizoen as { leeftijd?: number; opmerking?: string } | null;
 
   return {
@@ -127,11 +141,13 @@ export async function getSpelerDetails(spelerId: string) {
     lidSinds: speler.lidSinds,
     seizoenenActief: speler.seizoenenActief,
     notitie: speler.notitie,
-    retentie: retentie ? {
-      risico: retentie.risico ?? "onbekend",
-      kansBehoud: retentie.kans_behoud ?? null,
-      factoren: retentie.factoren ?? [],
-    } : null,
+    retentie: retentie
+      ? {
+          risico: retentie.risico ?? "onbekend",
+          kansBehoud: retentie.kans_behoud ?? null,
+          factoren: retentie.factoren ?? [],
+        }
+      : null,
     spelerspad: spelerspad?.slice(0, 5) ?? [],
     teamgenoten: teamgenoten?.slice(0, 10) ?? [],
     volgendSeizoen,
@@ -149,11 +165,13 @@ export async function getSpelerDetails(spelerId: string) {
 // ---------------------------------------------------------------------------
 
 export async function getVoorgaandeIndeling(seizoen: string) {
-  const rows = await prisma.$queryRaw<{
-    rel_code: string;
-    team: string;
-    geslacht: string;
-  }[]>`
+  const rows = await prisma.$queryRaw<
+    {
+      rel_code: string;
+      team: string;
+      geslacht: string;
+    }[]
+  >`
     SELECT ss.rel_code, ss.team, ss.geslacht
     FROM speler_seizoenen ss
     WHERE ss.seizoen = ${seizoen}
@@ -175,7 +193,10 @@ export async function getVoorgaandeIndeling(seizoen: string) {
   });
   const spelerMap = new Map(spelers.map((s) => [s.id, s]));
 
-  const result: { team: string; spelers: { naam: string; geboortejaar: number; geslacht: string }[] }[] = [];
+  const result: {
+    team: string;
+    spelers: { naam: string; geboortejaar: number; geslacht: string }[];
+  }[] = [];
   for (const [team, leden] of teamsMap) {
     result.push({
       team,
@@ -311,14 +332,23 @@ export async function getRetentieOverzicht() {
   const spelers = await prisma.speler.findMany({
     where: { status: { not: "GAAT_STOPPEN" } },
     select: {
-      id: true, roepnaam: true, achternaam: true,
-      geboortejaar: true, geslacht: true, retentie: true, status: true,
+      id: true,
+      roepnaam: true,
+      achternaam: true,
+      geboortejaar: true,
+      geslacht: true,
+      retentie: true,
+      status: true,
     },
   });
 
   return spelers
     .map((s) => {
-      const retentie = s.retentie as { risico?: string; kans_behoud?: number; factoren?: string[] } | null;
+      const retentie = s.retentie as {
+        risico?: string;
+        kans_behoud?: number;
+        factoren?: string[];
+      } | null;
       if (!retentie?.risico) return null;
       return {
         id: s.id,
@@ -345,6 +375,8 @@ export async function getTeamgenoten(spelerId: string) {
     select: { teamgenotenHistorie: true },
   });
 
-  const historie = speler?.teamgenotenHistorie as { speler_id: string; naam: string; seizoenen_samen: number }[] | null;
+  const historie = speler?.teamgenotenHistorie as
+    | { speler_id: string; naam: string; seizoenen_samen: number }[]
+    | null;
   return (historie ?? []).sort((a, b) => b.seizoenen_samen - a.seizoenen_samen);
 }

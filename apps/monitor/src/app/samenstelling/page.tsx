@@ -6,16 +6,16 @@ import { Ledenboog } from "@/components/charts/ledenboog";
 import { SamenstellingTabs } from "@/components/samenstelling-tabs";
 
 const BAND_STIJL: Record<string, { bg: string; text: string; label: string }> = {
-  "Kangoeroes": { bg: "bg-band-blauw/30", text: "text-blue-800", label: "" },
+  Kangoeroes: { bg: "bg-band-blauw/30", text: "text-blue-800", label: "" },
   "F-jeugd": { bg: "bg-band-blauw", text: "text-white", label: "" },
   "E-jeugd": { bg: "bg-band-groen", text: "text-white", label: "" },
   "D-jeugd": { bg: "bg-band-geel", text: "text-gray-800", label: "" },
   "C-jeugd": { bg: "bg-band-oranje", text: "text-white", label: "" },
   "U15-1": { bg: "bg-band-oranje", text: "text-white", label: "U15" },
-  "U15": { bg: "bg-band-rood", text: "text-white", label: "U15" },
-  "U17": { bg: "bg-band-rood/70", text: "text-white", label: "U17" },
-  "U19": { bg: "bg-band-rood/50", text: "text-white", label: "U19" },
-  "Senioren": { bg: "bg-gray-200", text: "text-gray-600", label: "Sen" },
+  U15: { bg: "bg-band-rood", text: "text-white", label: "U15" },
+  U17: { bg: "bg-band-rood/70", text: "text-white", label: "U17" },
+  U19: { bg: "bg-band-rood/50", text: "text-white", label: "U19" },
+  Senioren: { bg: "bg-gray-200", text: "text-gray-600", label: "Sen" },
 };
 
 export default async function SamenstellingPage({
@@ -88,7 +88,7 @@ export default async function SamenstellingPage({
       <SamenstellingTabs
         piramideContent={
           <div className="rounded-xl bg-white p-6 shadow-sm">
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-700">
+            <h3 className="mb-4 text-sm font-semibold tracking-wide text-gray-700 uppercase">
               Populatiepiramide per geboortejaar
             </h3>
             {boogData.length > 0 ? (
@@ -100,7 +100,7 @@ export default async function SamenstellingPage({
         }
         detailContent={
           <div className="rounded-xl bg-white p-6 shadow-sm">
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-700">
+            <h3 className="mb-4 text-sm font-semibold tracking-wide text-gray-700 uppercase">
               Detail per geboortejaar
             </h3>
             <div className="overflow-x-auto">
@@ -127,14 +127,11 @@ export default async function SamenstellingPage({
                       label: "",
                     };
                     return (
-                      <tr
-                        key={row.geboortejaar}
-                        className="border-t border-gray-100"
-                      >
+                      <tr key={row.geboortejaar} className="border-t border-gray-100">
                         <td className="px-3 py-1.5 font-medium">
                           <Link
                             href={`/samenstelling/${row.geboortejaar}?seizoen=${seizoen}`}
-                            className="text-gray-900 hover:text-ow-oranje hover:underline"
+                            className="hover:text-ow-oranje text-gray-900 hover:underline"
                           >
                             {row.geboortejaar}
                           </Link>
@@ -147,9 +144,7 @@ export default async function SamenstellingPage({
                         </td>
                         <td className="px-3 py-1.5 text-right">{row.M}</td>
                         <td className="px-3 py-1.5 text-right">{row.V}</td>
-                        <td className="px-3 py-1.5 text-right font-semibold">
-                          {row.totaal}
-                        </td>
+                        <td className="px-3 py-1.5 text-right font-semibold">{row.totaal}</td>
                       </tr>
                     );
                   })}

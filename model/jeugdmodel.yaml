@@ -21,48 +21,48 @@ meta:
 # Externe benchmarks: Sport Vlaanderen, KNHB, CBS ter validatie.
 retentie:
   per_leeftijd:
-    5: 0.85    # n=8 (alle), n=5 (betr) — lage steekproef, conservatieve schatting
-    6: 0.82    # n=36/9 — Blauw-instap: veel kinderen proberen en stoppen
-    7: 0.84    # n=77/16 — nog steeds fragiel, maar iets beter dan 6
-    8: 0.95    # n=142/34 — Groen: sterke binding, piek-instroom leeftijd
-    9: 0.93    # n=206/48 — stabiel, lichte daling t.o.v. 8
-    10: 0.93   # n=250/69 — Geel-start, nog stabiel
-    11: 0.92   # n=265/71 — lichte daling
-    12: 0.90   # n=269/79 — transitiejaar: overgang B→A of kleurwisseling
-    13: 0.94   # n=256/72 — verrassend hoog! committed spelers blijven
-    14: 0.95   # n=238/75 — hoogste retentie van alle leeftijden
-    15: 0.92   # n=239/82 — stabiel, begin van geleidelijke daling
-    16: 0.87   # n=206/63 — duidelijke daling, school/werk-druk
-    17: 0.82   # n=177/58 — steile cliff, zwaarste uitvalleeftijd
-    18: 0.84   # n=152/51 — iets herstel t.o.v. 17, maar nog laag
+    5: 0.85 # n=8 (alle), n=5 (betr) — lage steekproef, conservatieve schatting
+    6: 0.82 # n=36/9 — Blauw-instap: veel kinderen proberen en stoppen
+    7: 0.84 # n=77/16 — nog steeds fragiel, maar iets beter dan 6
+    8: 0.95 # n=142/34 — Groen: sterke binding, piek-instroom leeftijd
+    9: 0.93 # n=206/48 — stabiel, lichte daling t.o.v. 8
+    10: 0.93 # n=250/69 — Geel-start, nog stabiel
+    11: 0.92 # n=265/71 — lichte daling
+    12: 0.90 # n=269/79 — transitiejaar: overgang B→A of kleurwisseling
+    13: 0.94 # n=256/72 — verrassend hoog! committed spelers blijven
+    14: 0.95 # n=238/75 — hoogste retentie van alle leeftijden
+    15: 0.92 # n=239/82 — stabiel, begin van geleidelijke daling
+    16: 0.87 # n=206/63 — duidelijke daling, school/werk-druk
+    17: 0.82 # n=177/58 — steile cliff, zwaarste uitvalleeftijd
+    18: 0.84 # n=152/51 — iets herstel t.o.v. 17, maar nog laag
 
-  per_leeftijd_M:       # jongens/heren
-    6: 0.75             # M significant lager dan V bij instap
+  per_leeftijd_M: # jongens/heren
+    6: 0.75 # M significant lager dan V bij instap
     7: 0.78
     8: 0.95
     9: 0.93
-    10: 0.97            # M retentie HOGER dan V bij 10-12
+    10: 0.97 # M retentie HOGER dan V bij 10-12
     11: 0.92
     12: 0.92
     13: 0.94
     14: 0.97
     15: 0.90
-    16: 0.89            # M retentie HOGER dan V bij 16-18
+    16: 0.89 # M retentie HOGER dan V bij 16-18
     17: 0.79
     18: 0.90
 
-  per_leeftijd_V:       # meisjes/dames
-    6: 0.87             # V retentie hoger bij instap
+  per_leeftijd_V: # meisjes/dames
+    6: 0.87 # V retentie hoger bij instap
     7: 0.88
     8: 0.96
     9: 0.94
-    10: 0.91            # V retentie LAGER bij 10-12
+    10: 0.91 # V retentie LAGER bij 10-12
     11: 0.92
     12: 0.90
     13: 0.94
     14: 0.93
     15: 0.93
-    16: 0.85            # V retentie LAGER bij 16-18
+    16: 0.85 # V retentie LAGER bij 16-18
     17: 0.85
     18: 0.80
 
@@ -74,14 +74,14 @@ retentie:
 
   vergelijking_externe_bronnen:
     sport_vlaanderen_10_19:
-      dropout_meisjes_per_seizoen: 0.185    # 18.5%
-      dropout_jongens_per_seizoen: 0.137    # 13.7%
+      dropout_meisjes_per_seizoen: 0.185 # 18.5%
+      dropout_jongens_per_seizoen: 0.137 # 13.7%
       retentie_meisjes: 0.815
       retentie_jongens: 0.863
       toelichting: "OW doet het BETER (92-95% bij 10-15) dankzij sterke verenigingsbinding"
     sport_vlaanderen_19_plus:
-      dropout_meisjes: 0.305                # 30.5% per seizoen
-      dropout_jongens: 0.214                # 21.4%
+      dropout_meisjes: 0.305 # 30.5% per seizoen
+      dropout_jongens: 0.214 # 21.4%
       toelichting: "OW 17-18 (82-84%) komt overeen met dit patroon"
     knhb_2024:
       top_reden_12_18_stoppen: "vanwege mijn team (36%)"
@@ -91,26 +91,26 @@ retentie:
 # Gebaseerd op 629 spelers met geboortedatum, 16 seizoenen.
 # Gemiddeld ~24 nieuwe jeugdleden per seizoen (excl. COVID-boom 2021-2022).
 instroom:
-  verdeling_per_leeftijd:       # % van alle jeugd-instroom
-    5: 0.017                    # 1.7%
-    6: 0.065                    # 6.5%
-    7: 0.110                    # 11.0%
-    8: 0.167                    # 16.7% — PIEK
-    9: 0.169                    # 16.9% — PIEK
-    10: 0.127                   # 12.7%
-    11: 0.084                   # 8.4%
-    12: 0.076                   # 7.6%
-    13: 0.046                   # 4.6%
-    14: 0.034                   # 3.4%
-    15: 0.055                   # 5.5% — mini-bump (laterale transfers?)
-    16: 0.019                   # 1.9%
-    17: 0.019                   # 1.9%
-    18: 0.013                   # 1.3%
+  verdeling_per_leeftijd: # % van alle jeugd-instroom
+    5: 0.017 # 1.7%
+    6: 0.065 # 6.5%
+    7: 0.110 # 11.0%
+    8: 0.167 # 16.7% — PIEK
+    9: 0.169 # 16.9% — PIEK
+    10: 0.127 # 12.7%
+    11: 0.084 # 8.4%
+    12: 0.076 # 7.6%
+    13: 0.046 # 4.6%
+    14: 0.034 # 3.4%
+    15: 0.055 # 5.5% — mini-bump (laterale transfers?)
+    16: 0.019 # 1.9%
+    17: 0.019 # 1.9%
+    18: 0.013 # 1.3%
 
   gemiddeld_per_seizoen:
-    totaal_jeugd: 24            # excl. COVID-boom, seizoenen 2022-2026
-    piek_leeftijd: [8, 9]       # Groen-leeftijd, ~34% van alle instroom
-    mv_ratio_bij_instroom: "40/60"  # meer meisjes bij instap op alle leeftijden
+    totaal_jeugd: 24 # excl. COVID-boom, seizoenen 2022-2026
+    piek_leeftijd: [8, 9] # Groen-leeftijd, ~34% van alle instroom
+    mv_ratio_bij_instroom: "40/60" # meer meisjes bij instap op alle leeftijden
 
   samenvatting:
     piek: "8-9 jaar (Groen) — 34% van alle instroom, NIET 6 (Blauw)"
@@ -120,28 +120,28 @@ instroom:
 
 # --- Talent-ratio ---
 talent:
-  ratio_default: 0.225          # 1 op 4,4 (middenwaarde 1:4 – 1:5)
+  ratio_default: 0.225 # 1 op 4,4 (middenwaarde 1:4 – 1:5)
   ratio_range:
-    min: 0.20                   # 1 op 5 (conservatief)
-    max: 0.25                   # 1 op 4 (optimistisch)
-  ratio_met_goede_begeleiding: 0.30  # doelwaarde bij sterk kader
+    min: 0.20 # 1 op 5 (conservatief)
+    max: 0.25 # 1 op 4 (optimistisch)
+  ratio_met_goede_begeleiding: 0.30 # doelwaarde bij sterk kader
 
 # --- Teamsamenstelling ---
 team:
-  spelers_per_team: 10          # 5 dames + 5 heren
+  spelers_per_team: 10 # 5 dames + 5 heren
   dames_per_team: 5
   heren_per_team: 5
-  teams_per_selectie: 2         # prestatieteam + ontwikkelteam
-  selectie_grootte: 20          # 10 dames + 10 heren
+  teams_per_selectie: 2 # prestatieteam + ontwikkelteam
+  selectie_grootte: 20 # 10 dames + 10 heren
 
   prestatieteam:
     naam_suffix: "-1"
-    tweede_jaars_aandeel: 0.65  # ~65% 2e jaars
-    eerste_jaars_aandeel: 0.35  # ~35% 1e jaars (talenten)
+    tweede_jaars_aandeel: 0.65 # ~65% 2e jaars
+    eerste_jaars_aandeel: 0.35 # ~35% 1e jaars (talenten)
   ontwikkelteam:
     naam_suffix: "-2"
-    tweede_jaars_aandeel: 0.35  # ~35% 2e jaars
-    eerste_jaars_aandeel: 0.65  # ~65% 1e jaars
+    tweede_jaars_aandeel: 0.35 # ~35% 2e jaars
+    eerste_jaars_aandeel: 0.65 # ~65% 1e jaars
 
 # --- A-categorie (wedstrijdkorfbal) ---
 a_categorie:
@@ -166,8 +166,8 @@ a_categorie:
 b_categorie:
   peildatum: "31 december"
   bandbreedte:
-    viertal: 2                  # max 2 jaar leeftijdsverschil
-    achttal: 3                  # max 3 jaar leeftijdsverschil
+    viertal: 2 # max 2 jaar leeftijdsverschil
+    achttal: 3 # max 3 jaar leeftijdsverschil
   kleuren:
     - naam: Blauw
       spelvorm: "4-tal"
@@ -208,15 +208,15 @@ b_categorie:
 # --- Signalering (stoplichtmodel) ---
 signalering:
   kritiek:
-    drempel: 0.60               # < 60% van streefaantal
+    drempel: 0.60 # < 60% van streefaantal
     kleur: rood
     actie: "Actief werven / externe talenten benaderen"
   aandacht:
-    drempel: 0.80               # 60-80% van streefaantal
+    drempel: 0.80 # 60-80% van streefaantal
     kleur: geel
     actie: "Monitoring verhogen, gericht werven"
   op_koers:
-    drempel: 0.80               # > 80% van streefaantal
+    drempel: 0.80 # > 80% van streefaantal
     kleur: groen
     actie: "Geen urgente actie"
 

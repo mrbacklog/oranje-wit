@@ -36,9 +36,7 @@ export type InstroomUitstroomResult = {
 
 /** Instroom per leeftijd (all-time) */
 export async function getInstroomPerLeeftijd(): Promise<VerloopLeeftijdRow[]> {
-  const rows = await prisma.$queryRaw<
-    { leeftijd: number; m: number; v: number; totaal: number }[]
-  >`
+  const rows = await prisma.$queryRaw<{ leeftijd: number; m: number; v: number; totaal: number }[]>`
     SELECT leeftijd_nieuw AS leeftijd,
            COUNT(*) FILTER (WHERE geslacht = 'M')::int AS m,
            COUNT(*) FILTER (WHERE geslacht = 'V')::int AS v,
@@ -59,9 +57,7 @@ export async function getInstroomPerLeeftijd(): Promise<VerloopLeeftijdRow[]> {
 
 /** Uitstroom per leeftijd (all-time) */
 export async function getUitstroomPerLeeftijd(): Promise<VerloopLeeftijdRow[]> {
-  const rows = await prisma.$queryRaw<
-    { leeftijd: number; m: number; v: number; totaal: number }[]
-  >`
+  const rows = await prisma.$queryRaw<{ leeftijd: number; m: number; v: number; totaal: number }[]>`
     SELECT leeftijd_vorig AS leeftijd,
            COUNT(*) FILTER (WHERE geslacht = 'M')::int AS m,
            COUNT(*) FILTER (WHERE geslacht = 'V')::int AS v,
@@ -167,9 +163,7 @@ export type SeizoenVerloopResult = {
   totaalNieuw: number;
 };
 
-export async function getSeizoenVerloop(
-  seizoen: string
-): Promise<SeizoenVerloopResult> {
+export async function getSeizoenVerloop(seizoen: string): Promise<SeizoenVerloopResult> {
   const rows = await prisma.$queryRaw<
     {
       rel_code: string;
@@ -203,9 +197,7 @@ export async function getSeizoenVerloop(
     teamNieuw: r.team_nieuw,
   }));
 
-  const instroom = mapped.filter(
-    (r) => r.status === "nieuw" || r.status === "herinschrijver"
-  );
+  const instroom = mapped.filter((r) => r.status === "nieuw" || r.status === "herinschrijver");
   const uitstroom = mapped.filter((r) => r.status === "uitgestroomd");
   const behouden = mapped.filter((r) => r.status === "behouden").length;
 

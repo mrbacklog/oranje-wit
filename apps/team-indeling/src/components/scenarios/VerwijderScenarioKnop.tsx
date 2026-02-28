@@ -48,13 +48,13 @@ export default function VerwijderScenarioKnop({
         <button
           onClick={handleClick}
           disabled={isPending}
-          className="text-xs px-1.5 py-0.5 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50"
+          className="rounded bg-red-500 px-1.5 py-0.5 text-xs text-white hover:bg-red-600 disabled:opacity-50"
         >
           {isPending ? "..." : "Ja"}
         </button>
         <button
           onClick={handleAnnuleer}
-          className="text-xs px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded hover:bg-gray-200"
+          className="rounded bg-gray-100 px-1.5 py-0.5 text-xs text-gray-600 hover:bg-gray-200"
         >
           Nee
         </button>
@@ -66,7 +66,7 @@ export default function VerwijderScenarioKnop({
     <button
       onClick={handleClick}
       title={`Verwijder "${scenarioNaam}"`}
-      className="text-gray-300 hover:text-red-500 transition-colors p-1"
+      className="p-1 text-gray-300 transition-colors hover:text-red-500"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

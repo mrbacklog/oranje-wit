@@ -31,12 +31,8 @@ export default function ExportPanel({ teams, seizoen }: ExportPanelProps) {
         const naam = `${s.roepnaam} ${s.achternaam}`;
         // Escape velden met komma's
         const escapedNaam = naam.includes(",") ? `"${naam}"` : naam;
-        const escapedTeam = team.naam.includes(",")
-          ? `"${team.naam}"`
-          : team.naam;
-        rows.push(
-          `${escapedTeam},${escapedNaam},${s.geboortejaar},${s.geslacht},${leeftijd}`
-        );
+        const escapedTeam = team.naam.includes(",") ? `"${team.naam}"` : team.naam;
+        rows.push(`${escapedTeam},${escapedNaam},${s.geboortejaar},${s.geslacht},${leeftijd}`);
       }
     }
 
@@ -58,18 +54,13 @@ export default function ExportPanel({ teams, seizoen }: ExportPanelProps) {
 
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-6">
-      <h3 className="text-sm font-semibold text-gray-900 mb-4">Exporteren</h3>
+      <h3 className="mb-4 text-sm font-semibold text-gray-900">Exporteren</h3>
       <div className="flex gap-3">
         <button
           onClick={exportCSV}
-          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md bg-orange-600 text-white hover:bg-orange-700 transition-colors"
+          className="inline-flex items-center gap-2 rounded-md bg-orange-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-orange-700"
         >
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
+          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -81,14 +72,9 @@ export default function ExportPanel({ teams, seizoen }: ExportPanelProps) {
         </button>
         <button
           onClick={printOverzicht}
-          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
+          className="inline-flex items-center gap-2 rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
         >
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
+          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"

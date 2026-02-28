@@ -10,7 +10,9 @@ export function SignalBadge({ ernst, children }: SignalBadgeProps) {
     opkoers: "bg-green-50 text-green-800 border-green-200",
   };
   return (
-    <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${styles[ernst]}`}>
+    <span
+      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${styles[ernst]}`}
+    >
       {children}
     </span>
   );

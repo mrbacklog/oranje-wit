@@ -57,8 +57,7 @@ function parseCsv(csvContent: string): LidRij[] {
 
   return rows.map((r) => {
     const geslachtRaw = r[7]?.trim();
-    const geslacht =
-      geslachtRaw === "Man" ? "M" : geslachtRaw === "Vrouw" ? "V" : geslachtRaw;
+    const geslacht = geslachtRaw === "Man" ? "M" : geslachtRaw === "Vrouw" ? "V" : geslachtRaw;
     const gebdat = r[8]?.trim() || null;
     const geboortejaar = gebdat ? parseInt(gebdat.split("-")[0], 10) : null;
 

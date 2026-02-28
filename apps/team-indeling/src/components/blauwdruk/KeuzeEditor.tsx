@@ -9,10 +9,7 @@ interface KeuzeEditorProps {
   initieel: Keuze[];
 }
 
-export default function KeuzeEditor({
-  blauwdrukId,
-  initieel,
-}: KeuzeEditorProps) {
+export default function KeuzeEditor({ blauwdrukId, initieel }: KeuzeEditorProps) {
   const [keuzes, setKeuzes] = useState<Keuze[]>(initieel);
   const [opslaan, setOpslaan] = useState(false);
 
@@ -39,9 +36,7 @@ export default function KeuzeEditor({
 
   const updateVraag = useCallback(
     async (id: string, vraag: string) => {
-      const nieuw = keuzes.map((k) =>
-        k.id === id ? { ...k, vraag } : k
-      );
+      const nieuw = keuzes.map((k) => (k.id === id ? { ...k, vraag } : k));
       setKeuzes(nieuw);
       await slaOp(nieuw);
     },
@@ -62,9 +57,7 @@ export default function KeuzeEditor({
       const trimmed = optie.trim();
       if (!trimmed) return;
       const nieuw = keuzes.map((k) =>
-        k.id === keuzeId
-          ? { ...k, opties: [...k.opties, trimmed] }
-          : k
+        k.id === keuzeId ? { ...k, opties: [...k.opties, trimmed] } : k
       );
       setKeuzes(nieuw);
       await slaOp(nieuw);
@@ -75,9 +68,7 @@ export default function KeuzeEditor({
   const verwijderOptie = useCallback(
     async (keuzeId: string, optieIndex: number) => {
       const nieuw = keuzes.map((k) =>
-        k.id === keuzeId
-          ? { ...k, opties: k.opties.filter((_, i) => i !== optieIndex) }
-          : k
+        k.id === keuzeId ? { ...k, opties: k.opties.filter((_, i) => i !== optieIndex) } : k
       );
       setKeuzes(nieuw);
       await slaOp(nieuw);
@@ -86,13 +77,13 @@ export default function KeuzeEditor({
   );
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-4">
+    <div className="rounded-lg border border-gray-200 bg-white p-4">
       {keuzes.length === 0 ? (
-        <p className="text-sm text-gray-400 italic mb-3">
+        <p className="mb-3 text-sm text-gray-400 italic">
           Nog geen keuzes. Voeg er een toe om te beginnen.
         </p>
       ) : (
-        <ul className="space-y-4 mb-3">
+        <ul className="mb-3 space-y-4">
           {keuzes.map((k) => (
             <KeuzeItem
               key={k.id}
@@ -109,13 +100,11 @@ export default function KeuzeEditor({
       <div className="flex items-center gap-2">
         <button
           onClick={voegKeuzeToe}
-          className="text-sm text-orange-600 hover:text-orange-700 font-medium"
+          className="text-sm font-medium text-orange-600 hover:text-orange-700"
         >
           + Nieuwe keuze
         </button>
-        {opslaan && (
-          <span className="text-xs text-gray-400">Opslaan...</span>
-        )}
+        {opslaan && <span className="text-xs text-gray-400">Opslaan...</span>}
       </div>
     </div>
   );
@@ -156,12 +145,12 @@ function KeuzeItem({
   }, [nieuweOptie, keuze.id, onVoegOptieToe]);
 
   return (
-    <li className="border border-gray-100 rounded-lg p-3 bg-gray-50">
+    <li className="rounded-lg border border-gray-100 bg-gray-50 p-3">
       {/* Vraag */}
-      <div className="flex items-start justify-between gap-2 mb-2">
-        <span className="text-orange-500 mt-0.5 shrink-0">&#10067;</span>
+      <div className="mb-2 flex items-start justify-between gap-2">
+        <span className="mt-0.5 shrink-0 text-orange-500">&#10067;</span>
         {bewerkVraag || !keuze.vraag ? (
-          <div className="flex-1 flex gap-2">
+          <div className="flex flex-1 gap-2">
             <input
               type="text"
               value={vraagTekst}
@@ -173,26 +162,26 @@ function KeuzeItem({
                   setBewerkVraag(false);
                 }
               }}
-              className="flex-1 border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400"
+              className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-300 focus:outline-none"
               autoFocus
               placeholder="Typ een vraag, bijv. 'Hoeveel U15-teams?'"
             />
             <button
               onClick={bevestigVraag}
-              className="text-xs px-2 py-1 bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors"
+              className="rounded bg-orange-500 px-2 py-1 text-xs text-white transition-colors hover:bg-orange-600"
             >
               OK
             </button>
           </div>
         ) : (
-          <div className="flex-1 flex items-start justify-between group">
+          <div className="group flex flex-1 items-start justify-between">
             <span
-              className="text-sm font-medium text-gray-800 cursor-pointer hover:text-orange-700"
+              className="cursor-pointer text-sm font-medium text-gray-800 hover:text-orange-700"
               onClick={() => setBewerkVraag(true)}
             >
               {keuze.vraag}
             </span>
-            <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
               <button
                 onClick={() => setBewerkVraag(true)}
                 className="text-xs text-gray-400 hover:text-gray-600"
@@ -213,16 +202,16 @@ function KeuzeItem({
       </div>
 
       {/* Opties als chips */}
-      <div className="ml-6 flex flex-wrap gap-2 items-center">
+      <div className="ml-6 flex flex-wrap items-center gap-2">
         {keuze.opties.map((optie, index) => (
           <span
             key={index}
-            className="inline-flex items-center gap-1 bg-white border border-gray-200 rounded-full px-3 py-1 text-sm text-gray-700"
+            className="inline-flex items-center gap-1 rounded-full border border-gray-200 bg-white px-3 py-1 text-sm text-gray-700"
           >
             {optie}
             <button
               onClick={() => onVerwijderOptie(keuze.id, index)}
-              className="text-gray-400 hover:text-red-500 text-xs ml-0.5"
+              className="ml-0.5 text-xs text-gray-400 hover:text-red-500"
               title="Optie verwijderen"
             >
               &#10005;
@@ -239,13 +228,13 @@ function KeuzeItem({
             onKeyDown={(e) => {
               if (e.key === "Enter") handleOptieToevoegen();
             }}
-            className="border border-dashed border-gray-300 rounded-full px-3 py-1 text-sm w-32 focus:outline-none focus:ring-1 focus:ring-orange-300 focus:border-orange-400"
+            className="w-32 rounded-full border border-dashed border-gray-300 px-3 py-1 text-sm focus:border-orange-400 focus:ring-1 focus:ring-orange-300 focus:outline-none"
             placeholder="+ optie"
           />
           {nieuweOptie.trim() && (
             <button
               onClick={handleOptieToevoegen}
-              className="text-xs text-orange-600 hover:text-orange-700 font-medium"
+              className="text-xs font-medium text-orange-600 hover:text-orange-700"
             >
               Toevoegen
             </button>

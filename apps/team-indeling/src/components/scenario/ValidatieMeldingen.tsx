@@ -3,10 +3,7 @@
 import { useRef, useEffect } from "react";
 import type { ValidatieMelding, MeldingErnst } from "@/lib/validatie/regels";
 
-const ERNST_CONFIG: Record<
-  MeldingErnst,
-  { icon: string; kleur: string; label: string }
-> = {
+const ERNST_CONFIG: Record<MeldingErnst, { icon: string; kleur: string; label: string }> = {
   kritiek: { icon: "\u2715", kleur: "text-red-600 bg-red-50", label: "Kritiek" },
   aandacht: { icon: "\u26A0", kleur: "text-orange-600 bg-orange-50", label: "Aandacht" },
   info: { icon: "\u2139", kleur: "text-blue-600 bg-blue-50", label: "Info" },
@@ -19,10 +16,7 @@ interface ValidatieMeldingenProps {
   onClose: () => void;
 }
 
-export default function ValidatieMeldingen({
-  meldingen,
-  onClose,
-}: ValidatieMeldingenProps) {
+export default function ValidatieMeldingen({ meldingen, onClose }: ValidatieMeldingenProps) {
   const ref = useRef<HTMLDivElement>(null);
 
   // Sluit bij klik buiten de popover
@@ -43,40 +37,36 @@ export default function ValidatieMeldingen({
   return (
     <div
       ref={ref}
-      className="absolute z-50 top-full left-0 mt-1 w-72 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden"
+      className="absolute top-full left-0 z-50 mt-1 w-72 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg"
     >
-      <div className="px-3 py-2 border-b border-gray-100 bg-gray-50 flex items-center justify-between">
+      <div className="flex items-center justify-between border-b border-gray-100 bg-gray-50 px-3 py-2">
         <span className="text-xs font-semibold text-gray-700">
           Validatie ({meldingen.length} melding{meldingen.length !== 1 ? "en" : ""})
         </span>
         <button
           onClick={onClose}
-          className="text-gray-400 hover:text-gray-600 text-sm leading-none"
+          className="text-sm leading-none text-gray-400 hover:text-gray-600"
         >
           &times;
         </button>
       </div>
       <div className="max-h-60 overflow-y-auto">
         {gesorteerd.length === 0 ? (
-          <p className="px-3 py-3 text-xs text-gray-400 text-center">
-            Geen meldingen
-          </p>
+          <p className="px-3 py-3 text-center text-xs text-gray-400">Geen meldingen</p>
         ) : (
           gesorteerd.map((m, i) => {
             const config = ERNST_CONFIG[m.ernst];
             return (
               <div
                 key={`${m.regel}-${i}`}
-                className="px-3 py-2 border-b border-gray-50 last:border-b-0 flex items-start gap-2"
+                className="flex items-start gap-2 border-b border-gray-50 px-3 py-2 last:border-b-0"
               >
                 <span
-                  className={`text-[10px] w-4 h-4 rounded flex items-center justify-center shrink-0 mt-0.5 ${config.kleur}`}
+                  className={`mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded text-[10px] ${config.kleur}`}
                 >
                   {config.icon}
                 </span>
-                <span className="text-xs text-gray-700 leading-snug">
-                  {m.bericht}
-                </span>
+                <span className="text-xs leading-snug text-gray-700">{m.bericht}</span>
               </div>
             );
           })

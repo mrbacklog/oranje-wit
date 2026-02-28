@@ -27,7 +27,7 @@ export default function SpelerAvatar({
   if (failed) {
     return (
       <span
-        className={`${SIZES[size]} rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-medium flex-shrink-0 ${className}`}
+        className={`${SIZES[size]} flex flex-shrink-0 items-center justify-center rounded-full bg-gray-200 font-medium text-gray-500 ${className}`}
       >
         {initiaal}
       </span>
@@ -38,7 +38,7 @@ export default function SpelerAvatar({
     <img
       src={`/api/foto/${spelerId}`}
       alt={naam}
-      className={`${SIZES[size]} rounded-full object-cover flex-shrink-0 ${className}`}
+      className={`${SIZES[size]} flex-shrink-0 rounded-full object-cover ${className}`}
       onError={() => setFailed(true)}
     />
   );

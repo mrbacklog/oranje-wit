@@ -9,7 +9,9 @@ const BAND_COLORS: Record<string, string> = {
 
 export function BandPill({ band }: { band: string }) {
   return (
-    <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold ${BAND_COLORS[band] || "bg-gray-200 text-gray-600"}`}>
+    <span
+      className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold ${BAND_COLORS[band] || "bg-gray-200 text-gray-600"}`}
+    >
       {band}
     </span>
   );

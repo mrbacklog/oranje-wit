@@ -17,9 +17,7 @@ export type GeboortejaarResult = {
   data: GeboortejaarRow[];
 };
 
-export async function getPerGeboortejaar(
-  seizoen: string
-): Promise<GeboortejaarResult> {
+export async function getPerGeboortejaar(seizoen: string): Promise<GeboortejaarResult> {
   const startJaar = parseInt(seizoen.split("-")[0]);
 
   const rows = await prisma.$queryRaw<GeboortejaarRow[]>`
@@ -114,7 +112,7 @@ async function getGroeiFactoren(): Promise<GroeiFactoren> {
 
 const U17_DOEL_M = 25;
 const U17_DOEL_V = 25;
-const U17_DOEL = 50;
+const _U17_DOEL = 50;
 
 export type ProjectieRij = {
   seizoen: string;
@@ -159,9 +157,7 @@ export async function getProjectie(seizoen: string): Promise<ProjectieResult> {
   // Haal groei-factoren en huidige aantallen parallel op
   const [groei, rows] = await Promise.all([
     getGroeiFactoren(),
-    prisma.$queryRaw<
-      { geboortejaar: number; geslacht: string; aantal: number }[]
-    >`
+    prisma.$queryRaw<{ geboortejaar: number; geslacht: string; aantal: number }[]>`
       SELECT l.geboortejaar, l.geslacht, COUNT(DISTINCT cp.rel_code)::int AS aantal
       FROM competitie_spelers cp
       JOIN leden l ON cp.rel_code = l.rel_code
@@ -202,7 +198,10 @@ export async function getProjectie(seizoen: string): Promise<ProjectieResult> {
     const gj1 = projSeizoenStart - 16; // 1e-jaars U17
     const gj2 = projSeizoenStart - 17; // 2e-jaars U17
 
-    let projM1 = 0, projV1 = 0, projM2 = 0, projV2 = 0;
+    let projM1 = 0,
+      projV1 = 0,
+      projM2 = 0,
+      projV2 = 0;
 
     // 1e-jaars (leeftijd 16 in projectie-seizoen)
     const cohort1 = cohorten.get(gj1);
@@ -261,7 +260,8 @@ export async function getProjectie(seizoen: string): Promise<ProjectieResult> {
     const gj1 = projSeizoenStart - 19; // wordt 19 → laatste jeugdjaar
     const gj2 = projSeizoenStart - 20; // wordt 20 → eerste seniorenjaar
 
-    let projM = 0, projV = 0;
+    let projM = 0,
+      projV = 0;
 
     const cohortSen = cohorten.get(gj2);
     if (cohortSen) {
@@ -364,9 +364,7 @@ export async function getCohortOverzicht(
     ORDER BY cp.rel_code, cp.seizoen DESC`;
 
   // Actieve rel_codes dit seizoen
-  const actiefRows = await prisma.$queryRaw<
-    { rel_code: string; team: string }[]
-  >`
+  const actiefRows = await prisma.$queryRaw<{ rel_code: string; team: string }[]>`
     SELECT DISTINCT cp.rel_code, cp.team
     FROM competitie_spelers cp
     JOIN leden l ON cp.rel_code = l.rel_code

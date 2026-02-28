@@ -28,10 +28,7 @@ export async function POST(request: Request) {
     const { scenarioId, opties } = body;
 
     if (!scenarioId) {
-      return NextResponse.json(
-        { error: "scenarioId is verplicht" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "scenarioId is verplicht" }, { status: 400 });
     }
 
     // Haal scenario op met teams
@@ -54,18 +51,12 @@ export async function POST(request: Request) {
     });
 
     if (!scenario) {
-      return NextResponse.json(
-        { error: "Scenario niet gevonden" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Scenario niet gevonden" }, { status: 404 });
     }
 
     const laatsteVersie = scenario.versies[0];
     if (!laatsteVersie) {
-      return NextResponse.json(
-        { error: "Scenario heeft geen versie" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Scenario heeft geen versie" }, { status: 400 });
     }
 
     const teams = laatsteVersie.teams;
@@ -107,12 +98,7 @@ export async function POST(request: Request) {
       };
     });
 
-    const prompt = buildVoorstelPrompt(
-      teamInput,
-      spelerInput,
-      peiljaar,
-      opties
-    );
+    const prompt = buildVoorstelPrompt(teamInput, spelerInput, peiljaar, opties);
 
     // Roep Claude aan
     const message = await anthropic.messages.create({
@@ -129,10 +115,7 @@ export async function POST(request: Request) {
     // Parse het antwoord
     const antwoord = message.content[0];
     if (antwoord.type !== "text") {
-      return NextResponse.json(
-        { error: "Onverwacht antwoordtype van Claude" },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: "Onverwacht antwoordtype van Claude" }, { status: 500 });
     }
 
     let toewijzingen: TeamToewijzing[];
@@ -210,12 +193,8 @@ export async function POST(request: Request) {
       nietGevondenTeams,
     });
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : String(error);
+    const message = error instanceof Error ? error.message : String(error);
     console.error("AI voorstel fout:", message);
-    return NextResponse.json(
-      { error: `AI-voorstel mislukt: ${message}` },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: `AI-voorstel mislukt: ${message}` }, { status: 500 });
   }
 }

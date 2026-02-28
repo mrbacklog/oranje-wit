@@ -12,17 +12,11 @@ export async function POST(request: Request) {
     const exportPad = body.exportPad;
 
     if (!exportPad) {
-      return NextResponse.json(
-        { error: "exportPad is verplicht" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "exportPad is verplicht" }, { status: 400 });
     }
 
     if (!fs.existsSync(exportPad)) {
-      return NextResponse.json(
-        { error: `Bestand niet gevonden: ${exportPad}` },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: `Bestand niet gevonden: ${exportPad}` }, { status: 404 });
     }
 
     const data: ExportData = JSON.parse(fs.readFileSync(exportPad, "utf-8"));
@@ -31,10 +25,7 @@ export async function POST(request: Request) {
     return NextResponse.json(result);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    return NextResponse.json(
-      { error: `Import mislukt: ${message}` },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: `Import mislukt: ${message}` }, { status: 500 });
   }
 }
 
@@ -62,9 +53,6 @@ export async function GET() {
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    return NextResponse.json(
-      { error: `Status ophalen mislukt: ${message}` },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: `Status ophalen mislukt: ${message}` }, { status: 500 });
   }
 }

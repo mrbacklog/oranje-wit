@@ -49,10 +49,7 @@ export default function BevestigDialoog({
         aria-describedby="bevestig-bericht"
       >
         <div className="dialog-header">
-          <h3
-            id="bevestig-titel"
-            className="text-lg font-bold text-gray-900"
-          >
+          <h3 id="bevestig-titel" className="text-lg font-bold text-gray-900">
             {titel}
           </h3>
         </div>

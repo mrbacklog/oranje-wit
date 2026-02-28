@@ -24,11 +24,15 @@ async function main() {
   console.log("-------------- | ------- | ------- | ---- | -------");
   for (const r of dekking.rows) {
     console.log(
-      r.seizoen.padEnd(14) + " | " +
-      String(r.spelers).padStart(7) + " | " +
-      String(r.vn).padStart(7) + " | " +
-      String(r.zl).padStart(4) + " | " +
-      String(r.vv).padStart(7)
+      r.seizoen.padEnd(14) +
+        " | " +
+        String(r.spelers).padStart(7) +
+        " | " +
+        String(r.vn).padStart(7) +
+        " | " +
+        String(r.zl).padStart(4) +
+        " | " +
+        String(r.vv).padStart(7)
     );
   }
 
@@ -50,4 +54,7 @@ async function main() {
   await c.end();
 }
 
-main().catch(e => { console.error(e); process.exit(1); });
+main().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});

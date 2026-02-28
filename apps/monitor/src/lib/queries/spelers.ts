@@ -54,9 +54,7 @@ export type VerloopRegel = {
 // Overzicht: alle spelers voor een seizoen (of alle actieve)
 // ---------------------------------------------------------------------------
 
-export async function getSpelersOverzicht(
-  seizoen: string
-): Promise<SpelerOverzicht[]> {
+export async function getSpelersOverzicht(seizoen: string): Promise<SpelerOverzicht[]> {
   const rows = await prisma.$queryRaw<
     {
       rel_code: string;
@@ -114,9 +112,7 @@ export async function getSpelersOverzicht(
 // Detail: volledige info voor één speler
 // ---------------------------------------------------------------------------
 
-export async function getSpelerDetail(
-  relCode: string
-): Promise<SpelerDetailResult | null> {
+export async function getSpelerDetail(relCode: string): Promise<SpelerDetailResult | null> {
   // Basis-info
   const lid = await prisma.lid.findUnique({
     where: { relCode },
@@ -137,9 +133,7 @@ export async function getSpelerDetail(
   if (!lid) return null;
 
   // Seizoenen + competities via raw query (speler_seizoenen is nu een VIEW)
-  const cpRows = await prisma.$queryRaw<
-    { seizoen: string; competitie: string; team: string }[]
-  >`
+  const cpRows = await prisma.$queryRaw<{ seizoen: string; competitie: string; team: string }[]>`
     SELECT seizoen, competitie, team
     FROM competitie_spelers
     WHERE rel_code = ${relCode}

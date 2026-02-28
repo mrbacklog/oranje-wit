@@ -1,12 +1,12 @@
-const fs = require('fs');
-const path = require('path');
-const { pool } = require('../db.js');
+const fs = require("fs");
+const path = require("path");
+const { pool } = require("../db.js");
 
-const ROOT = process.env.OW_ROOT || path.resolve(__dirname, '..', '..');
+const ROOT = process.env.OW_ROOT || path.resolve(__dirname, "..", "..");
 
 function readJSON(relPath) {
   const full = path.resolve(ROOT, relPath);
-  return JSON.parse(fs.readFileSync(full, 'utf8'));
+  return JSON.parse(fs.readFileSync(full, "utf8"));
 }
 
 // --- Seizoenen vullen ---
@@ -62,10 +62,21 @@ async function syncLeden(ledenPath) {
          email = COALESCE(EXCLUDED.email, leden.email),
          registratie_datum = COALESCE(EXCLUDED.registratie_datum, leden.registratie_datum),
          updated_at = now()`,
-      [lid.rel_code, lid.roepnaam || '', lid.achternaam || '', lid.tussenvoegsel || null,
-       lid.voorletters || null, lid.geslacht || null, lid.geboortejaar || null,
-       lid.geboortedatum || null, lid.lid_sinds || null, lid.afmelddatum || null,
-       lid.lidsoort || null, lid.email || null, lid.registratie_datum || null]
+      [
+        lid.rel_code,
+        lid.roepnaam || "",
+        lid.achternaam || "",
+        lid.tussenvoegsel || null,
+        lid.voorletters || null,
+        lid.geslacht || null,
+        lid.geboortejaar || null,
+        lid.geboortedatum || null,
+        lid.lid_sinds || null,
+        lid.afmelddatum || null,
+        lid.lidsoort || null,
+        lid.email || null,
+        lid.registratie_datum || null,
+      ]
     );
     count++;
   }
@@ -76,7 +87,11 @@ async function syncLeden(ledenPath) {
 async function syncTeams(seizoen) {
   const teamsPath = `data/seizoenen/${seizoen}/teams.json`;
   let data;
-  try { data = readJSON(teamsPath); } catch { return { error: `Bestand niet gevonden: ${teamsPath}` }; }
+  try {
+    data = readJSON(teamsPath);
+  } catch {
+    return { error: `Bestand niet gevonden: ${teamsPath}` };
+  }
 
   const teams = data.teams || data;
   let count = 0;
@@ -88,7 +103,14 @@ async function syncTeams(seizoen) {
        ON CONFLICT (seizoen, ow_code) DO UPDATE SET
          kleur = EXCLUDED.kleur, leeftijdsgroep = EXCLUDED.leeftijdsgroep, spelvorm = EXCLUDED.spelvorm
        RETURNING id`,
-      [seizoen, t.ow_code, t.categorie, t.kleur || null, t.leeftijdsgroep || null, t.spelvorm || null]
+      [
+        seizoen,
+        t.ow_code,
+        t.categorie,
+        t.kleur || null,
+        t.leeftijdsgroep || null,
+        t.spelvorm || null,
+      ]
     );
     const teamId = teamRes.rows[0].id;
 
@@ -101,8 +123,15 @@ async function syncTeams(seizoen) {
            ON CONFLICT (team_id, periode) DO UPDATE SET
              j_nummer = EXCLUDED.j_nummer, pool = EXCLUDED.pool, sterkte = EXCLUDED.sterkte,
              gem_leeftijd = EXCLUDED.gem_leeftijd, aantal_spelers = EXCLUDED.aantal_spelers`,
-          [teamId, periode, pdata.j_nummer || null, pdata.pool || null,
-           pdata.sterkte || null, pdata.gem_leeftijd || null, pdata.aantal_spelers || null]
+          [
+            teamId,
+            periode,
+            pdata.j_nummer || null,
+            pdata.pool || null,
+            pdata.sterkte || null,
+            pdata.gem_leeftijd || null,
+            pdata.aantal_spelers || null,
+          ]
         );
       }
     }
@@ -118,19 +147,28 @@ async function syncAlles() {
   results.seizoenen = await syncSeizoenen();
 
   // Sync master ledenregister als dat bestaat
-  const allLedenPath = 'data/leden/alle-leden.json';
+  const allLedenPath = "data/leden/alle-leden.json";
   try {
     const allLedenFull = path.resolve(ROOT, allLedenPath);
     if (fs.existsSync(allLedenFull)) {
       results.leden_master = await syncLeden(allLedenPath);
     }
-  } catch (err) { results.leden_master = { error: err.message }; }
+  } catch (err) {
+    results.leden_master = { error: err.message };
+  }
 
-  try { results.teams = await syncTeams('2025-2026'); } catch (err) { results.teams = { error: err.message }; }
+  try {
+    results.teams = await syncTeams("2025-2026");
+  } catch (err) {
+    results.teams = { error: err.message };
+  }
 
   return results;
 }
 
 module.exports = {
-  syncSeizoenen, syncLeden, syncTeams, syncAlles,
+  syncSeizoenen,
+  syncLeden,
+  syncTeams,
+  syncAlles,
 };

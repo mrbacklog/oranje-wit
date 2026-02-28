@@ -20,9 +20,15 @@ describe("getSignaleringen", () => {
         ernst: "kritiek",
         leeftijdsgroep: "13-18",
         geslacht: "M",
-        waarde: { toNumber: () => 65.2 } as any,
-        drempel: { toNumber: () => 70.0 } as any,
-        streef: { toNumber: () => 80.0 } as any,
+        waarde: {
+          toNumber: () => 65.2,
+        } as unknown as import("@prisma/client/runtime/library").Decimal,
+        drempel: {
+          toNumber: () => 70.0,
+        } as unknown as import("@prisma/client/runtime/library").Decimal,
+        streef: {
+          toNumber: () => 80.0,
+        } as unknown as import("@prisma/client/runtime/library").Decimal,
         beschrijving: "Lage retentie jongens 13-18",
       },
       {

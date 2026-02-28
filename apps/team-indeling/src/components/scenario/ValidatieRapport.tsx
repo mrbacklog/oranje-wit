@@ -11,10 +11,7 @@ import type {
 import ValidatieBadge from "./ValidatieBadge";
 import ImpactOverzicht from "./ImpactOverzicht";
 
-const ERNST_CONFIG: Record<
-  MeldingErnst,
-  { icon: string; kleur: string }
-> = {
+const ERNST_CONFIG: Record<MeldingErnst, { icon: string; kleur: string }> = {
   kritiek: { icon: "\u2715", kleur: "text-red-600 bg-red-50" },
   aandacht: { icon: "\u26A0", kleur: "text-orange-600 bg-orange-50" },
   info: { icon: "\u2139", kleur: "text-blue-600 bg-blue-50" },
@@ -60,21 +57,16 @@ export default function ValidatieRapport({
   return (
     <>
       {/* Overlay */}
-      <div
-        className="fixed inset-0 bg-black/30 z-40"
-        onClick={onClose}
-      />
+      <div className="fixed inset-0 z-40 bg-black/30" onClick={onClose} />
 
       {/* Slide-over panel */}
-      <div className="fixed inset-y-0 right-0 w-full max-w-lg z-50 bg-white shadow-2xl flex flex-col animate-slide-in-right">
+      <div className="animate-slide-in-right fixed inset-y-0 right-0 z-50 flex w-full max-w-lg flex-col bg-white shadow-2xl">
         {/* Header */}
-        <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between bg-gray-50">
-          <h2 className="text-base font-bold text-gray-900">
-            Validatierapport
-          </h2>
+        <div className="flex items-center justify-between border-b border-gray-200 bg-gray-50 px-5 py-4">
+          <h2 className="text-base font-bold text-gray-900">Validatierapport</h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 text-lg leading-none"
+            className="text-lg leading-none text-gray-400 hover:text-gray-600"
           >
             &times;
           </button>
@@ -83,45 +75,37 @@ export default function ValidatieRapport({
         {/* Content */}
         <div className="flex-1 overflow-y-auto">
           {/* Samenvatting */}
-          <div className="px-5 py-4 border-b border-gray-100">
-            <h3 className="text-sm font-semibold text-gray-700 mb-2">
-              Samenvatting
-            </h3>
+          <div className="border-b border-gray-100 px-5 py-4">
+            <h3 className="mb-2 text-sm font-semibold text-gray-700">Samenvatting</h3>
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-full bg-green-500 inline-block" />
-                <span className="text-sm text-gray-600">
-                  {tellingen.GROEN} groen
-                </span>
+                <span className="inline-block h-3 w-3 rounded-full bg-green-500" />
+                <span className="text-sm text-gray-600">{tellingen.GROEN} groen</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-full bg-orange-400 inline-block" />
-                <span className="text-sm text-gray-600">
-                  {tellingen.ORANJE} oranje
-                </span>
+                <span className="inline-block h-3 w-3 rounded-full bg-orange-400" />
+                <span className="text-sm text-gray-600">{tellingen.ORANJE} oranje</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-full bg-red-500 inline-block" />
-                <span className="text-sm text-gray-600">
-                  {tellingen.ROOD} rood
-                </span>
+                <span className="inline-block h-3 w-3 rounded-full bg-red-500" />
+                <span className="text-sm text-gray-600">{tellingen.ROOD} rood</span>
               </div>
             </div>
           </div>
 
           {/* Dubbele spelers */}
           {dubbeleMeldingen.length > 0 && (
-            <div className="px-5 py-4 border-b border-gray-100">
-              <h3 className="text-sm font-semibold text-red-700 mb-2">
+            <div className="border-b border-gray-100 px-5 py-4">
+              <h3 className="mb-2 text-sm font-semibold text-red-700">
                 Dubbele plaatsingen ({dubbeleMeldingen.length})
               </h3>
               <div className="space-y-1.5">
                 {dubbeleMeldingen.map((m, i) => (
                   <div
                     key={i}
-                    className="flex items-start gap-2 text-xs text-red-700 bg-red-50 rounded px-2 py-1.5"
+                    className="flex items-start gap-2 rounded bg-red-50 px-2 py-1.5 text-xs text-red-700"
                   >
-                    <span className="shrink-0 mt-0.5">{"\u2715"}</span>
+                    <span className="mt-0.5 shrink-0">{"\u2715"}</span>
                     <span>{m.bericht}</span>
                   </div>
                 ))}
@@ -130,44 +114,34 @@ export default function ValidatieRapport({
           )}
 
           {/* Per team */}
-          <div className="px-5 py-4 border-b border-gray-100">
-            <h3 className="text-sm font-semibold text-gray-700 mb-3">
-              Per team
-            </h3>
+          <div className="border-b border-gray-100 px-5 py-4">
+            <h3 className="mb-3 text-sm font-semibold text-gray-700">Per team</h3>
             <div className="space-y-3">
               {gesorteerdeTeams.map((team) => {
                 const validatie = validatieMap.get(team.id);
                 if (!validatie) return null;
 
                 return (
-                  <div
-                    key={team.id}
-                    className="border border-gray-100 rounded-lg overflow-hidden"
-                  >
-                    <div className="px-3 py-2 bg-gray-50 flex items-center gap-2">
+                  <div key={team.id} className="overflow-hidden rounded-lg border border-gray-100">
+                    <div className="flex items-center gap-2 bg-gray-50 px-3 py-2">
                       <ValidatieBadge status={validatie.status} />
-                      <span className="text-sm font-medium text-gray-800">
-                        {team.naam}
-                      </span>
-                      <span className="text-xs text-gray-400 ml-auto">
+                      <span className="text-sm font-medium text-gray-800">{team.naam}</span>
+                      <span className="ml-auto text-xs text-gray-400">
                         {team.spelers.length} spelers
                       </span>
                     </div>
                     {validatie.meldingen.length > 0 ? (
-                      <div className="px-3 py-2 space-y-1">
+                      <div className="space-y-1 px-3 py-2">
                         {validatie.meldingen.map((m, i) => {
                           const config = ERNST_CONFIG[m.ernst];
                           return (
-                            <div
-                              key={`${m.regel}-${i}`}
-                              className="flex items-start gap-2"
-                            >
+                            <div key={`${m.regel}-${i}`} className="flex items-start gap-2">
                               <span
-                                className={`text-[10px] w-4 h-4 rounded flex items-center justify-center shrink-0 mt-0.5 ${config.kleur}`}
+                                className={`mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded text-[10px] ${config.kleur}`}
                               >
                                 {config.icon}
                               </span>
-                              <span className="text-xs text-gray-700 leading-snug">
+                              <span className="text-xs leading-snug text-gray-700">
                                 {m.bericht}
                               </span>
                             </div>
@@ -176,9 +150,7 @@ export default function ValidatieRapport({
                       </div>
                     ) : (
                       <div className="px-3 py-2">
-                        <span className="text-xs text-gray-400">
-                          Geen meldingen
-                        </span>
+                        <span className="text-xs text-gray-400">Geen meldingen</span>
                       </div>
                     )}
                   </div>
@@ -189,9 +161,7 @@ export default function ValidatieRapport({
 
           {/* Impact overzicht */}
           <div className="px-5 py-4">
-            <h3 className="text-sm font-semibold text-gray-700 mb-3">
-              Impact-analyse
-            </h3>
+            <h3 className="mb-3 text-sm font-semibold text-gray-700">Impact-analyse</h3>
             <ImpactOverzicht teams={teams} />
           </div>
         </div>

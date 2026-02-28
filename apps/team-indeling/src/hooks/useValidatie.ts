@@ -18,14 +18,16 @@ function mapNaarValidatieTeam(team: UITeamData): ValidatieTeamData {
     categorie: team.categorie,
     kleur: team.kleur,
     niveau: team.niveau,
-    spelers: team.spelers.map((ts): ValidatieSpelerData => ({
-      id: ts.spelerId,
-      roepnaam: ts.speler.roepnaam,
-      achternaam: ts.speler.achternaam,
-      geboortejaar: ts.speler.geboortejaar,
-      geslacht: ts.speler.geslacht,
-      status: ts.statusOverride ?? ts.speler.status,
-    })),
+    spelers: team.spelers.map(
+      (ts): ValidatieSpelerData => ({
+        id: ts.spelerId,
+        roepnaam: ts.speler.roepnaam,
+        achternaam: ts.speler.achternaam,
+        geboortejaar: ts.speler.geboortejaar,
+        geslacht: ts.speler.geslacht,
+        status: ts.statusOverride ?? ts.speler.status,
+      })
+    ),
   };
 }
 

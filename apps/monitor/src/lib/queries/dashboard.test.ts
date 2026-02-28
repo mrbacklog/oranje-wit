@@ -31,7 +31,8 @@ describe("getDashboardKPIs", () => {
   it("combineert spelers, signaleringen en teams correct", async () => {
     mockPrisma.$queryRaw
       .mockResolvedValueOnce([{ totaal: 120 }]) // spelerCount
-      .mockResolvedValueOnce([ // geslachtRows
+      .mockResolvedValueOnce([
+        // geslachtRows
         { geslacht: "M", aantal: 70 },
         { geslacht: "V", aantal: 50 },
       ]);
@@ -54,9 +55,7 @@ describe("getDashboardKPIs", () => {
   });
 
   it("handelt ontbrekende geslacht rows af", async () => {
-    mockPrisma.$queryRaw
-      .mockResolvedValueOnce([{ totaal: 10 }])
-      .mockResolvedValueOnce([]);
+    mockPrisma.$queryRaw.mockResolvedValueOnce([{ totaal: 10 }]).mockResolvedValueOnce([]);
     mockPrisma.signalering.findMany.mockResolvedValue([]);
     mockPrisma.oWTeam.count.mockResolvedValue(2);
 

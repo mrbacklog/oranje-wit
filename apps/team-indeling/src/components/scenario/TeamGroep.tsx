@@ -26,18 +26,14 @@ export default function TeamGroep({
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-1">
+      <div className="mb-1 flex items-center justify-between">
         <button
           onClick={() => setOpen(!open)}
-          className="flex items-center gap-1 text-xs font-semibold text-gray-500 uppercase tracking-wide hover:text-gray-700"
+          className="flex items-center gap-1 text-xs font-semibold tracking-wide text-gray-500 uppercase hover:text-gray-700"
         >
-          <span className={`transition-transform ${open ? "rotate-90" : ""}`}>
-            &#9654;
-          </span>
+          <span className={`transition-transform ${open ? "rotate-90" : ""}`}>&#9654;</span>
           {label}
-          <span className="text-gray-400 font-normal normal-case">
-            ({teams.length})
-          </span>
+          <span className="font-normal text-gray-400 normal-case">({teams.length})</span>
         </button>
         <button
           onClick={() => onToggleAlles(teamIds, geenAan || !alleAan)}
@@ -48,29 +44,22 @@ export default function TeamGroep({
       </div>
 
       {open && (
-        <div className="space-y-0.5 ml-1">
+        <div className="ml-1 space-y-0.5">
           {teams.map((team) => (
-            <label
-              key={team.id}
-              className="flex items-center gap-2 py-0.5 cursor-pointer group"
-            >
+            <label key={team.id} className="group flex cursor-pointer items-center gap-2 py-0.5">
               <input
                 type="checkbox"
                 checked={zichtbaar.has(team.id)}
                 onChange={() => onToggle(team.id)}
-                className="rounded border-gray-300 text-orange-500 focus:ring-orange-400 h-3.5 w-3.5"
+                className="h-3.5 w-3.5 rounded border-gray-300 text-orange-500 focus:ring-orange-400"
               />
-              <span className="text-sm text-gray-700 group-hover:text-gray-900 truncate">
+              <span className="truncate text-sm text-gray-700 group-hover:text-gray-900">
                 {team.naam}
               </span>
               {team.kleur && (
-                <span className="text-[10px] text-gray-400">
-                  {KLEUR_LABELS[team.kleur]}
-                </span>
+                <span className="text-[10px] text-gray-400">{KLEUR_LABELS[team.kleur]}</span>
               )}
-              <span className="text-[10px] text-gray-400 ml-auto">
-                {team.spelers.length}
-              </span>
+              <span className="ml-auto text-[10px] text-gray-400">{team.spelers.length}</span>
             </label>
           ))}
         </div>

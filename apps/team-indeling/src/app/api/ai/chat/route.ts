@@ -92,7 +92,9 @@ export async function POST(request: Request) {
               } else if (block.type === "tool_use") {
                 // Tool aanroep — stuur indicator naar client
                 controller.enqueue(
-                  encoder.encode(`data: ${JSON.stringify({ type: "tool_start", tool: block.name })}\n\n`)
+                  encoder.encode(
+                    `data: ${JSON.stringify({ type: "tool_start", tool: block.name })}\n\n`
+                  )
                 );
 
                 // Voer tool uit
@@ -105,7 +107,9 @@ export async function POST(request: Request) {
                 if (toolResult.mutatie) {
                   mutaties.push(toolResult.mutatie);
                   controller.enqueue(
-                    encoder.encode(`data: ${JSON.stringify({ type: "mutatie", mutatie: toolResult.mutatie })}\n\n`)
+                    encoder.encode(
+                      `data: ${JSON.stringify({ type: "mutatie", mutatie: toolResult.mutatie })}\n\n`
+                    )
                   );
                 }
 
@@ -135,7 +139,9 @@ export async function POST(request: Request) {
           // Stuur mutatie-samenvatting als er wijzigingen waren
           if (mutaties.length > 0) {
             controller.enqueue(
-              encoder.encode(`data: ${JSON.stringify({ type: "mutaties_klaar", aantal: mutaties.length })}\n\n`)
+              encoder.encode(
+                `data: ${JSON.stringify({ type: "mutaties_klaar", aantal: mutaties.length })}\n\n`
+              )
             );
           }
 
@@ -160,9 +166,9 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
-    return new Response(
-      JSON.stringify({ error: `Chat mislukt: ${msg}` }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
-    );
+    return new Response(JSON.stringify({ error: `Chat mislukt: ${msg}` }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 }

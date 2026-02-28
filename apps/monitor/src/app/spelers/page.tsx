@@ -24,17 +24,13 @@ export default async function SpelersPage({
       {/* KPI-kaarten */}
       <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
         <div className="rounded-xl bg-white p-5 shadow-sm">
-          <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+          <p className="text-xs font-medium tracking-wide text-gray-500 uppercase">
             Actieve spelers
           </p>
-          <p className="mt-1 text-3xl font-bold text-ow-oranje">
-            {actief.length}
-          </p>
+          <p className="text-ow-oranje mt-1 text-3xl font-bold">{actief.length}</p>
         </div>
         <div className="rounded-xl bg-white p-5 shadow-sm">
-          <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
-            Heren / Dames
-          </p>
+          <p className="text-xs font-medium tracking-wide text-gray-500 uppercase">Heren / Dames</p>
           <p className="mt-1 text-3xl font-bold">
             <span className="text-blue-500">&#9794; {mannen}</span>{" "}
             <span className="text-gray-300">/</span>{" "}
@@ -42,12 +38,10 @@ export default async function SpelersPage({
           </p>
         </div>
         <div className="rounded-xl bg-white p-5 shadow-sm">
-          <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+          <p className="text-xs font-medium tracking-wide text-gray-500 uppercase">
             Totaal ooit gespeeld
           </p>
-          <p className="mt-1 text-3xl font-bold text-ow-oranje">
-            {spelers.length}
-          </p>
+          <p className="text-ow-oranje mt-1 text-3xl font-bold">{spelers.length}</p>
         </div>
       </div>
 

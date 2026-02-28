@@ -70,15 +70,16 @@ async function main() {
   if (!lastImport) {
     console.log("→ Nog geen data geimporteerd. Draai: npm run import");
   } else if (nieuwsteExport.datum > lastImport.exportDatum) {
-    console.log(`→ Nieuwere export beschikbaar (${nieuwsteExport.datum} > ${lastImport.exportDatum})`);
+    console.log(
+      `→ Nieuwere export beschikbaar (${nieuwsteExport.datum} > ${lastImport.exportDatum})`
+    );
     console.log("  Draai: npm run import");
   } else {
     console.log("→ Data is actueel. Geen import nodig.");
   }
 }
 
-main()
-  .catch((err) => {
-    console.error("Check mislukt:", err);
-    process.exit(1);
-  });
+main().catch((err) => {
+  console.error("Check mislukt:", err);
+  process.exit(1);
+});

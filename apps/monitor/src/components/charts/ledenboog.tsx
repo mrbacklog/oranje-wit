@@ -29,10 +29,7 @@ export function Ledenboog({ data, seizoen }: LedenboogProps) {
     band: d.band,
   }));
 
-  const maxVal = Math.max(
-    ...data.map((d) => Math.max(d.M, d.V)),
-    1
-  );
+  const maxVal = Math.max(...data.map((d) => Math.max(d.M, d.V)), 1);
 
   return (
     <ResponsiveContainer width="100%" height={Math.max(400, data.length * 22)}>
@@ -54,12 +51,7 @@ export function Ledenboog({ data, seizoen }: LedenboogProps) {
           fontSize={12}
           tickFormatter={(v: number) => String(Math.abs(v))}
         />
-        <YAxis
-          dataKey="geboortejaar"
-          type="category"
-          fontSize={11}
-          width={50}
-        />
+        <YAxis dataKey="geboortejaar" type="category" fontSize={11} width={50} />
         <Tooltip
           formatter={(value: number, name: string) => [
             Math.abs(value),
@@ -67,9 +59,7 @@ export function Ledenboog({ data, seizoen }: LedenboogProps) {
           ]}
         />
         <Legend
-          formatter={(value: string) =>
-            value === "M" ? "\u2642 Jongens" : "\u2640 Meisjes"
-          }
+          formatter={(value: string) => (value === "M" ? "\u2642 Jongens" : "\u2640 Meisjes")}
         />
         <ReferenceLine x={0} stroke="#666" />
         <Bar dataKey="M" stackId="stack" name="M" fill="#60A5FA" />

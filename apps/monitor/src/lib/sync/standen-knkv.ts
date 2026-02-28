@@ -91,9 +91,7 @@ async function haalPoolsOp(sportCode: string): Promise<Map<number, string>> {
 }
 
 async function haalStandOp(poolRefId: number): Promise<KnkvStandEntry> {
-  const data = await fetchJSON<KnkvStandEntry[]>(
-    `${API_BASE}/matches/pools/${poolRefId}/standing`
-  );
+  const data = await fetchJSON<KnkvStandEntry[]>(`${API_BASE}/matches/pools/${poolRefId}/standing`);
   return data[0] || { pool: { name: "", ref_id: poolRefId }, standings: [] };
 }
 

@@ -22,10 +22,7 @@ export async function POST(request: Request) {
     const { actie, scenarioState } = body;
 
     if (!actie || !scenarioState) {
-      return NextResponse.json(
-        { error: "actie en scenarioState zijn verplicht" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "actie en scenarioState zijn verplicht" }, { status: 400 });
     }
 
     const teamOverzicht = scenarioState.teams
@@ -55,19 +52,13 @@ Wees beknopt en concreet. Antwoord in het Nederlands.`;
 
     const antwoord = message.content[0];
     if (antwoord.type !== "text") {
-      return NextResponse.json(
-        { error: "Onverwacht antwoordtype" },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: "Onverwacht antwoordtype" }, { status: 500 });
     }
 
     return NextResponse.json({ advies: antwoord.text });
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
     console.error("AI advies fout:", msg);
-    return NextResponse.json(
-      { error: `Advies mislukt: ${msg}` },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: `Advies mislukt: ${msg}` }, { status: 500 });
   }
 }

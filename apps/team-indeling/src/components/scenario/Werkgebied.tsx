@@ -16,11 +16,7 @@ interface WerkgebiedProps {
   zichtbareTeamIds: Set<string>;
   validatieMap?: Map<string, TeamValidatie>;
   dubbeleMeldingen?: ValidatieMelding[];
-  onCreateTeam: (data: {
-    naam: string;
-    categorie: TeamCategorie;
-    kleur?: Kleur;
-  }) => void;
+  onCreateTeam: (data: { naam: string; categorie: TeamCategorie; kleur?: Kleur }) => void;
   onDeleteTeam: (teamId: string) => void;
   onKoppelSelectie: (teamIds: string[]) => void;
   onOntkoppelSelectie: (groepLeiderId: string) => void;
@@ -59,9 +55,7 @@ export default function Werkgebied({
         groepen.set(team.selectieGroepId, groep);
       } else {
         // Check of dit team zelf een leider is (andere teams verwijzen ernaar)
-        const leden = zichtbareTeams.filter(
-          (t) => t.selectieGroepId === team.id
-        );
+        const leden = zichtbareTeams.filter((t) => t.selectieGroepId === team.id);
         if (leden.length > 0) {
           const groep = groepen.get(team.id) ?? [];
           groep.unshift(team); // leider eerst
@@ -96,31 +90,29 @@ export default function Werkgebied({
   const kanKoppelen = geselecteerd.size >= 2;
 
   return (
-    <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+    <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
       {/* Toolbar */}
-      <div className="px-4 py-2 border-b border-gray-100 bg-white flex items-center justify-between gap-2">
+      <div className="flex items-center justify-between gap-2 border-b border-gray-100 bg-white px-4 py-2">
         <span className="text-sm text-gray-500">
           {zichtbareTeams.length} van {teams.length} teams zichtbaar
         </span>
         <div className="flex items-center gap-2">
           {geselecteerd.size > 0 && (
             <>
-              <span className="text-xs text-gray-400">
-                {geselecteerd.size} geselecteerd
-              </span>
+              <span className="text-xs text-gray-400">{geselecteerd.size} geselecteerd</span>
               <button
                 onClick={() => setGeselecteerd(new Set())}
-                className="px-2 py-1 text-xs text-gray-500 hover:text-gray-700 transition-colors"
+                className="px-2 py-1 text-xs text-gray-500 transition-colors hover:text-gray-700"
               >
                 Deselecteer
               </button>
               <button
                 onClick={handleKoppel}
                 disabled={!kanKoppelen}
-                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+                className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
                   kanKoppelen
                     ? "bg-orange-500 text-white hover:bg-orange-600"
-                    : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                    : "cursor-not-allowed bg-gray-200 text-gray-400"
                 }`}
               >
                 Koppel als selectie
@@ -129,27 +121,27 @@ export default function Werkgebied({
           )}
           <button
             onClick={() => setVoorstelOpen(true)}
-            className="px-3 py-1.5 text-xs font-medium rounded-lg border border-purple-300 text-purple-600 hover:bg-purple-50 transition-colors"
+            className="rounded-lg border border-purple-300 px-3 py-1.5 text-xs font-medium text-purple-600 transition-colors hover:bg-purple-50"
           >
             AI Voorstel
           </button>
           {onWhatIfOpen && (
             <button
               onClick={onWhatIfOpen}
-              className="px-3 py-1.5 text-xs font-medium rounded-lg border border-blue-300 text-blue-600 hover:bg-blue-50 transition-colors"
+              className="rounded-lg border border-blue-300 px-3 py-1.5 text-xs font-medium text-blue-600 transition-colors hover:bg-blue-50"
             >
               What-if
             </button>
           )}
           <button
             onClick={() => setRapportOpen(true)}
-            className="px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 transition-colors"
+            className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:bg-gray-50"
           >
             Validatierapport
           </button>
           <button
             onClick={() => setDialogOpen(true)}
-            className="px-3 py-1.5 bg-orange-500 text-white text-xs font-medium rounded-lg hover:bg-orange-600 transition-colors"
+            className="rounded-lg bg-orange-500 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-orange-600"
           >
             + Nieuw team
           </button>
@@ -159,13 +151,13 @@ export default function Werkgebied({
       {/* Grid */}
       <div className="flex-1 overflow-auto p-4">
         {zichtbareTeams.length === 0 ? (
-          <div className="flex items-center justify-center h-full">
+          <div className="flex h-full items-center justify-center">
             <p className="text-sm text-gray-400">
               Selecteer teams in de navigator om ze hier te tonen.
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 auto-rows-min">
+          <div className="grid auto-rows-min grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
             {/* Selectie-groepen */}
             {Array.from(selectieGroepen.entries()).map(([leiderId, groepTeams]) => (
               <SelectieBlok
@@ -182,9 +174,7 @@ export default function Werkgebied({
                 key={team.id}
                 onClick={() => toggleSelectie(team.id)}
                 className={`cursor-pointer rounded-lg transition-all ${
-                  geselecteerd.has(team.id)
-                    ? "ring-2 ring-orange-400 ring-offset-1"
-                    : ""
+                  geselecteerd.has(team.id) ? "ring-2 ring-orange-400 ring-offset-1" : ""
                 }`}
               >
                 <TeamKaart

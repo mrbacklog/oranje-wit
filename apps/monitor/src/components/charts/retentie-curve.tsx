@@ -31,11 +31,7 @@ export function RetentieCurve({ data, toonMV = false }: RetentieCurveProps) {
           fontSize={12}
           label={{ value: "Leeftijd", position: "insideBottom", offset: -5 }}
         />
-        <YAxis
-          fontSize={12}
-          domain={[0, 100]}
-          tickFormatter={(v: number) => `${v}%`}
-        />
+        <YAxis fontSize={12} domain={[0, 100]} tickFormatter={(v: number) => `${v}%`} />
         <Tooltip formatter={(v: number) => [`${v.toFixed(1)}%`, ""]} />
         <Legend />
         <Line

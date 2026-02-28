@@ -19,8 +19,7 @@ export default async function SignaleringPage({
     getSignaleringSamenvatting(seizoen),
   ]);
 
-  const opKoers =
-    samenvatting.totaal - samenvatting.kritiek - samenvatting.aandacht;
+  const opKoers = samenvatting.totaal - samenvatting.kritiek - samenvatting.aandacht;
 
   // Sorteer: kritiek eerst, dan aandacht, dan rest
   const ernstVolgorde: Record<string, number> = {
@@ -29,8 +28,7 @@ export default async function SignaleringPage({
     opkoers: 2,
   };
   const gesorteerd = [...signaleringen].sort(
-    (a, b) =>
-      (ernstVolgorde[a.ernst] ?? 3) - (ernstVolgorde[b.ernst] ?? 3)
+    (a, b) => (ernstVolgorde[a.ernst] ?? 3) - (ernstVolgorde[b.ernst] ?? 3)
   );
 
   return (
@@ -42,29 +40,15 @@ export default async function SignaleringPage({
 
       {/* KPI cards */}
       <div className="mb-8 grid grid-cols-3 gap-4">
-        <KpiCard
-          label="Kritiek"
-          value={samenvatting.kritiek}
-          signal="rood"
-        />
-        <KpiCard
-          label="Aandacht"
-          value={samenvatting.aandacht}
-          signal="geel"
-        />
-        <KpiCard
-          label="Op koers"
-          value={opKoers}
-          signal="groen"
-        />
+        <KpiCard label="Kritiek" value={samenvatting.kritiek} signal="rood" />
+        <KpiCard label="Aandacht" value={samenvatting.aandacht} signal="geel" />
+        <KpiCard label="Op koers" value={opKoers} signal="groen" />
       </div>
 
       {/* Alert list */}
       {gesorteerd.length === 0 ? (
         <div className="rounded-xl bg-white p-6 shadow-sm">
-          <p className="text-gray-500">
-            Geen signaleringen voor seizoen {seizoen}.
-          </p>
+          <p className="text-gray-500">Geen signaleringen voor seizoen {seizoen}.</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -88,19 +72,13 @@ function SignaleringCard({ signalering }: { signalering: SignaleringRow }) {
         : "border-l-signal-groen";
 
   return (
-    <div
-      className={`rounded-xl border-l-4 bg-white p-5 shadow-sm ${borderColor}`}
-    >
+    <div className={`rounded-xl border-l-4 bg-white p-5 shadow-sm ${borderColor}`}>
       <div className="flex items-start gap-3">
         <SignalBadge ernst={ernst}>{ernst}</SignalBadge>
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-semibold text-gray-900">
-            {signalering.type}
-          </p>
+          <p className="text-sm font-semibold text-gray-900">{signalering.type}</p>
           {signalering.beschrijving && (
-            <p className="mt-1 text-sm text-gray-600">
-              {signalering.beschrijving}
-            </p>
+            <p className="mt-1 text-sm text-gray-600">{signalering.beschrijving}</p>
           )}
           <div className="mt-2 flex flex-wrap gap-4 text-xs text-gray-400">
             {signalering.leeftijdsgroep && (
@@ -117,20 +95,17 @@ function SignaleringCard({ signalering }: { signalering: SignaleringRow }) {
             )}
             {signalering.waarde !== null && (
               <span>
-                <span className="font-medium text-gray-500">Waarde:</span>{" "}
-                {signalering.waarde}
+                <span className="font-medium text-gray-500">Waarde:</span> {signalering.waarde}
               </span>
             )}
             {signalering.drempel !== null && (
               <span>
-                <span className="font-medium text-gray-500">Drempel:</span>{" "}
-                {signalering.drempel}
+                <span className="font-medium text-gray-500">Drempel:</span> {signalering.drempel}
               </span>
             )}
             {signalering.streef !== null && (
               <span>
-                <span className="font-medium text-gray-500">Streef:</span>{" "}
-                {signalering.streef}
+                <span className="font-medium text-gray-500">Streef:</span> {signalering.streef}
               </span>
             )}
           </div>

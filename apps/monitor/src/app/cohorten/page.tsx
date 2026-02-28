@@ -16,14 +16,11 @@ export default async function CohortenPage({
 
   return (
     <>
-      <PageHeader
-        title="Cohorten"
-        subtitle="Hoe ontwikkelen jaargangen zich over de seizoenen?"
-      />
+      <PageHeader title="Cohorten" subtitle="Hoe ontwikkelen jaargangen zich over de seizoenen?" />
 
       {/* Cohort heatmap */}
       <div className="mb-8 rounded-xl bg-white p-6 shadow-sm">
-        <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-700">
+        <h3 className="mb-4 text-sm font-semibold tracking-wide text-gray-700 uppercase">
           Cohort-heatmap (actieve leden per geboortejaar per seizoen)
         </h3>
         <CohortHeatmap data={per_cohort} seizoenen={seizoenenDesc} />
@@ -31,7 +28,7 @@ export default async function CohortenPage({
 
       {/* Retentie per leeftijdsgroep */}
       <div className="mb-8 rounded-xl bg-white p-6 shadow-sm">
-        <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-700">
+        <h3 className="mb-4 text-sm font-semibold tracking-wide text-gray-700 uppercase">
           Retentie per leeftijdsgroep
         </h3>
         <div className="overflow-x-auto">
@@ -63,9 +60,7 @@ export default async function CohortenPage({
                             : "text-signal-rood";
                     return (
                       <td key={sz} className={`px-3 py-2 text-center font-medium ${color}`}>
-                        {retentie !== null && retentie !== undefined
-                          ? `${retentie}%`
-                          : "-"}
+                        {retentie !== null && retentie !== undefined ? `${retentie}%` : "-"}
                       </td>
                     );
                   })}
@@ -78,7 +73,7 @@ export default async function CohortenPage({
 
       {/* Seizoens-samenvatting */}
       <div className="rounded-xl bg-white p-6 shadow-sm">
-        <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-700">
+        <h3 className="mb-4 text-sm font-semibold tracking-wide text-gray-700 uppercase">
           Seizoens-samenvatting
         </h3>
         <div className="overflow-x-auto">
@@ -97,19 +92,13 @@ export default async function CohortenPage({
             <tbody>
               {[...totalen.per_seizoen].reverse().map((sz) => (
                 <tr key={sz.seizoen} className="border-t border-gray-100">
-                  <td className="px-3 py-2 font-medium whitespace-nowrap">
-                    {sz.seizoen}
-                  </td>
-                  <td className="px-3 py-2 text-right font-semibold">
-                    {sz.totaal_nieuw}
-                  </td>
+                  <td className="px-3 py-2 font-medium whitespace-nowrap">{sz.seizoen}</td>
+                  <td className="px-3 py-2 text-right font-semibold">{sz.totaal_nieuw}</td>
                   <td className="px-3 py-2 text-right">{sz.behouden}</td>
-                  <td className="px-3 py-2 text-right text-signal-groen">
+                  <td className="text-signal-groen px-3 py-2 text-right">
                     +{sz.nieuw + sz.herinschrijver}
                   </td>
-                  <td className="px-3 py-2 text-right text-signal-rood">
-                    -{sz.uitgestroomd}
-                  </td>
+                  <td className="text-signal-rood px-3 py-2 text-right">-{sz.uitgestroomd}</td>
                   <td className="px-3 py-2 text-right">
                     {sz.retentie_pct !== null ? `${sz.retentie_pct}%` : "-"}
                   </td>

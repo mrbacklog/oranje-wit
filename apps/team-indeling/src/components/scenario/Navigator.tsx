@@ -62,24 +62,17 @@ function groepeerTeams(teams: TeamData[]): TeamGroepConfig[] {
   return groepen;
 }
 
-export default function Navigator({
-  teams,
-  zichtbaar,
-  onToggle,
-  onToggleAlles,
-}: NavigatorProps) {
+export default function Navigator({ teams, zichtbaar, onToggle, onToggleAlles }: NavigatorProps) {
   const groepen = groepeerTeams(teams);
 
   return (
-    <aside className="w-64 flex-shrink-0 bg-white border-r border-gray-200 flex flex-col">
-      <div className="px-4 py-3 border-b border-gray-100">
+    <aside className="flex w-64 flex-shrink-0 flex-col border-r border-gray-200 bg-white">
+      <div className="border-b border-gray-100 px-4 py-3">
         <h3 className="text-sm font-semibold text-gray-700">Teams</h3>
       </div>
-      <div className="flex-1 overflow-y-auto px-3 py-2 space-y-4 max-h-[calc(100vh-12rem)]">
+      <div className="max-h-[calc(100vh-12rem)] flex-1 space-y-4 overflow-y-auto px-3 py-2">
         {groepen.length === 0 ? (
-          <p className="text-xs text-gray-400 text-center py-4">
-            Geen teams beschikbaar
-          </p>
+          <p className="py-4 text-center text-xs text-gray-400">Geen teams beschikbaar</p>
         ) : (
           groepen.map((groep) => (
             <TeamGroep

@@ -17,16 +17,13 @@ function ScenarioSelector({
   selectedB?: string;
 }) {
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-6 space-y-4">
+    <div className="space-y-4 rounded-lg border border-gray-200 bg-white p-6">
       <h3 className="text-sm font-semibold text-gray-700">
         Kies twee scenario&apos;s om te vergelijken
       </h3>
-      <form className="flex flex-col sm:flex-row items-start sm:items-end gap-4">
-        <div className="flex-1 w-full">
-          <label
-            htmlFor="scenario-a"
-            className="block text-xs font-medium text-gray-500 mb-1"
-          >
+      <form className="flex flex-col items-start gap-4 sm:flex-row sm:items-end">
+        <div className="w-full flex-1">
+          <label htmlFor="scenario-a" className="mb-1 block text-xs font-medium text-gray-500">
             Scenario A
           </label>
           <select
@@ -46,11 +43,8 @@ function ScenarioSelector({
           </select>
         </div>
 
-        <div className="flex-1 w-full">
-          <label
-            htmlFor="scenario-b"
-            className="block text-xs font-medium text-gray-500 mb-1"
-          >
+        <div className="w-full flex-1">
+          <label htmlFor="scenario-b" className="mb-1 block text-xs font-medium text-gray-500">
             Scenario B
           </label>
           <select
@@ -72,7 +66,7 @@ function ScenarioSelector({
 
         <button
           type="submit"
-          className="px-4 py-2 bg-orange-500 text-white text-sm font-medium rounded-md hover:bg-orange-600 transition-colors shrink-0"
+          className="shrink-0 rounded-md bg-orange-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-orange-600"
         >
           Vergelijk
         </button>
@@ -103,10 +97,7 @@ export default async function VergelijkPage(props: {
     if (idA === idB) {
       fout = "Kies twee verschillende scenario's om te vergelijken.";
     } else {
-      [scenarioA, scenarioB] = await Promise.all([
-        getScenario(idA),
-        getScenario(idB),
-      ]);
+      [scenarioA, scenarioB] = await Promise.all([getScenario(idA), getScenario(idB)]);
       if (!scenarioA) fout = "Scenario A niet gevonden.";
       else if (!scenarioB) fout = "Scenario B niet gevonden.";
     }
@@ -116,36 +107,23 @@ export default async function VergelijkPage(props: {
     <div className="max-w-5xl space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-bold text-gray-900">
-            Scenario vergelijking
-          </h2>
-          <p className="mt-1 text-sm text-gray-500">
-            Vergelijk twee scenario&apos;s side-by-side
-          </p>
+          <h2 className="text-xl font-bold text-gray-900">Scenario vergelijking</h2>
+          <p className="mt-1 text-sm text-gray-500">Vergelijk twee scenario&apos;s side-by-side</p>
         </div>
-        <Link
-          href="/scenarios"
-          className="text-sm text-gray-500 hover:text-gray-700 underline"
-        >
+        <Link href="/scenarios" className="text-sm text-gray-500 underline hover:text-gray-700">
           Terug naar scenario&apos;s
         </Link>
       </div>
 
-      <ScenarioSelector
-        scenarios={scenarioLijst}
-        selectedA={idA}
-        selectedB={idB}
-      />
+      <ScenarioSelector scenarios={scenarioLijst} selectedA={idA} selectedB={idB} />
 
       {fout && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-sm text-red-700">
+        <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
           {fout}
         </div>
       )}
 
-      {scenarioA && scenarioB && (
-        <ScenarioVergelijk scenarioA={scenarioA} scenarioB={scenarioB} />
-      )}
+      {scenarioA && scenarioB && <ScenarioVergelijk scenarioA={scenarioA} scenarioB={scenarioB} />}
     </div>
   );
 }

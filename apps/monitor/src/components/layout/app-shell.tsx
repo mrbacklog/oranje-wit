@@ -20,11 +20,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {mobileOpen && (
         <div className="fixed inset-0 z-50 flex md:hidden">
           {/* Backdrop */}
-          <div
-            className="fixed inset-0 bg-black/40"
-            onClick={close}
-            aria-hidden="true"
-          />
+          <div className="fixed inset-0 bg-black/40" onClick={close} aria-hidden="true" />
           {/* Sidebar panel */}
           <div className="relative z-50">
             <Suspense>
@@ -59,9 +55,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               />
             </svg>
           </button>
-          <span className="ml-3 text-sm font-bold text-ow-oranje">
-            Oranje Wit
-          </span>
+          <span className="text-ow-oranje ml-3 text-sm font-bold">Oranje Wit</span>
         </div>
 
         <div className="p-4 md:p-8">{children}</div>

@@ -133,9 +133,7 @@ export function berekenSeizoenTotalen(rows: SeizoenTotaalRow[]): SeizoenTotaal[]
       herinschrijver,
       uitgestroomd,
       retentie_pct:
-        vorig !== null && vorig > 0
-          ? parseFloat(((behouden / vorig) * 100).toFixed(1))
-          : null,
+        vorig !== null && vorig > 0 ? parseFloat(((behouden / vorig) * 100).toFixed(1)) : null,
       netto_groei: vorig !== null ? totaal - vorig : null,
       netto_groei_pct:
         vorig !== null && vorig > 0
@@ -191,9 +189,7 @@ export function aggregeerLeeftijdsgroepen(rows: LeeftijdRow[]): Leeftijdsgroep[]
       const vorigSeizoen = d.behouden + d.uitstroom;
       perSeizoenObj[sz] = {
         retentie_pct:
-          vorigSeizoen > 0
-            ? parseFloat(((d.behouden / vorigSeizoen) * 100).toFixed(1))
-            : null,
+          vorigSeizoen > 0 ? parseFloat(((d.behouden / vorigSeizoen) * 100).toFixed(1)) : null,
         instroom: d.instroom,
         uitstroom: d.uitstroom,
       };
@@ -218,10 +214,8 @@ export function instroomBucket(seizoen: string, geboortejaar: number): string {
 
 /** Groepeer instroom-rows per seizoen met leeftijdsbuckets */
 export function groepeerInstroom(rows: InstroomRow[]): InstroomLeeftijd[] {
-  const instroomPerSeizoen: Record<
-    string,
-    { verdeling: Record<string, number>; totaal: number }
-  > = {};
+  const instroomPerSeizoen: Record<string, { verdeling: Record<string, number>; totaal: number }> =
+    {};
   for (const r of rows) {
     if (!instroomPerSeizoen[r.seizoen])
       instroomPerSeizoen[r.seizoen] = { verdeling: {}, totaal: 0 };
@@ -341,9 +335,7 @@ export async function getCohorten(): Promise<CohortResult> {
 // Query — Cohort detail (alle leden van een geboortejaar)
 // ---------------------------------------------------------------------------
 
-export async function getCohortDetail(
-  geboortejaar: number
-): Promise<CohortDetailResult> {
+export async function getCohortDetail(geboortejaar: number): Promise<CohortDetailResult> {
   // 1. Alle seizoenen
   const seizoenenRows = await prisma.seizoen.findMany({
     select: { seizoen: true },
@@ -425,9 +417,7 @@ export async function getCohortDetail(
   // 5. Samenvatting per seizoen
   const samenvatting: Record<string, { actief: number; M: number; V: number }> = {};
   for (const sz of seizoenen) {
-    const actiefInSz = leden.filter((l) =>
-      l.seizoenen.some((s) => s.seizoen === sz && s.team)
-    );
+    const actiefInSz = leden.filter((l) => l.seizoenen.some((s) => s.seizoen === sz && s.team));
     if (actiefInSz.length > 0) {
       samenvatting[sz] = {
         actief: actiefInSz.length,

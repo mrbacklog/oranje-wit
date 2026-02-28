@@ -60,15 +60,18 @@ async function main() {
   const result = await importData(data);
 
   console.log("\n=== Import voltooid ===\n");
-  console.log(`Spelers:      ${result.spelers.nieuw} nieuw, ${result.spelers.bijgewerkt} bijgewerkt, ${result.spelers.fouten} fouten`);
-  console.log(`Staf:         ${result.staf.nieuw} nieuw, ${result.staf.bijgewerkt} bijgewerkt, ${result.staf.fouten} fouten`);
+  console.log(
+    `Spelers:      ${result.spelers.nieuw} nieuw, ${result.spelers.bijgewerkt} bijgewerkt, ${result.spelers.fouten} fouten`
+  );
+  console.log(
+    `Staf:         ${result.staf.nieuw} nieuw, ${result.staf.bijgewerkt} bijgewerkt, ${result.staf.fouten} fouten`
+  );
   console.log(`Teams:        ${result.teams.geladen} referentieteams geladen`);
   console.log(`Blauwdruk:    ${result.blauwdruk.status}`);
   console.log(`Import ID:    ${result.importId}`);
 }
 
-main()
-  .catch((err) => {
-    console.error("Import mislukt:", err);
-    process.exit(1);
-  });
+main().catch((err) => {
+  console.error("Import mislukt:", err);
+  process.exit(1);
+});

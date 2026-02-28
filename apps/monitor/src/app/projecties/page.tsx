@@ -26,10 +26,7 @@ export default async function ProjectiesPage({
   ]);
 
   // Bouw huidig per leeftijd (M/V apart)
-  const huidigPerLeeftijd = new Map<
-    number,
-    { M: number; V: number }
-  >();
+  const huidigPerLeeftijd = new Map<number, { M: number; V: number }>();
   for (const row of geboortejaarData.data) {
     if (!row.geboortejaar) continue;
     const leeftijd = startJaar - row.geboortejaar;
@@ -41,9 +38,7 @@ export default async function ProjectiesPage({
 
   // Streefmodel per leeftijd (M/V)
   const eersteProjectieKey = Object.keys(model.projecties).sort()[0];
-  const eersteProjectie = eersteProjectieKey
-    ? model.projecties[eersteProjectieKey]
-    : null;
+  const eersteProjectie = eersteProjectieKey ? model.projecties[eersteProjectieKey] : null;
   const streefBron = eersteProjectie || model.boog_huidig;
 
   // Combineer tot piramide-data
@@ -58,9 +53,7 @@ export default async function ProjectiesPage({
     .sort((a, b) => a - b)
     .map((leeftijd) => {
       const huidig = huidigPerLeeftijd.get(leeftijd) || { M: 0, V: 0 };
-      const streefEntry = streefBron?.per_leeftijd.find(
-        (e) => e.leeftijd === leeftijd
-      );
+      const streefEntry = streefBron?.per_leeftijd.find((e) => e.leeftijd === leeftijd);
       return {
         leeftijd,
         band: streefEntry?.band || "",
@@ -98,7 +91,7 @@ export default async function ProjectiesPage({
 
       {/* Projectie-piramide: huidig vs streef */}
       <div className="mb-8 rounded-xl bg-white p-6 shadow-sm">
-        <h3 className="mb-1 text-sm font-semibold uppercase tracking-wide text-gray-700">
+        <h3 className="mb-1 text-sm font-semibold tracking-wide text-gray-700 uppercase">
           Populatie vs. Streefmodel
         </h3>
         <p className="mb-4 text-xs text-gray-500">
@@ -113,7 +106,7 @@ export default async function ProjectiesPage({
 
       {/* Vulgraad tabel met M/V */}
       <div className="mb-8 rounded-xl bg-white p-6 shadow-sm">
-        <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-700">
+        <h3 className="mb-4 text-sm font-semibold tracking-wide text-gray-700 uppercase">
           Vulgraad per leeftijd
         </h3>
         <div className="overflow-x-auto">
@@ -158,25 +151,17 @@ export default async function ProjectiesPage({
                     <td className="px-3 py-2 text-right">
                       {row.huidige_m}
                       {row.gapM < 0 && (
-                        <span className="ml-1 text-xs text-red-600">
-                          ({row.gapM})
-                        </span>
+                        <span className="ml-1 text-xs text-red-600">({row.gapM})</span>
                       )}
                     </td>
-                    <td className="px-3 py-2 text-right text-gray-400">
-                      {row.streef_m}
-                    </td>
+                    <td className="px-3 py-2 text-right text-gray-400">{row.streef_m}</td>
                     <td className="px-3 py-2 text-right">
                       {row.huidige_v}
                       {row.gapV < 0 && (
-                        <span className="ml-1 text-xs text-red-600">
-                          ({row.gapV})
-                        </span>
+                        <span className="ml-1 text-xs text-red-600">({row.gapV})</span>
                       )}
                     </td>
-                    <td className="px-3 py-2 text-right text-gray-400">
-                      {row.streef_v}
-                    </td>
+                    <td className="px-3 py-2 text-right text-gray-400">{row.streef_v}</td>
                     <td className="px-3 py-2 text-right font-medium">
                       {row.gap >= 0 ? `+${row.gap}` : row.gap}
                     </td>
@@ -193,7 +178,7 @@ export default async function ProjectiesPage({
 
       {/* U17-projectie */}
       <div className="mb-8 rounded-xl bg-white p-6 shadow-sm">
-        <h3 className="mb-1 text-sm font-semibold uppercase tracking-wide text-gray-700">
+        <h3 className="mb-1 text-sm font-semibold tracking-wide text-gray-700 uppercase">
           U17-projectie — Doel: 50 spelers (25♂ + 25♀) voor 5 teams
         </h3>
         <p className="mb-4 text-xs text-gray-500">
@@ -221,44 +206,27 @@ export default async function ProjectiesPage({
               {projectie.u17.map((row) => {
                 const pct = Math.round((row.totaal / 50) * 100);
                 return (
-                  <tr
-                    key={row.seizoen}
-                    className={`border-t border-gray-100 ${signaalKleur(pct)}`}
-                  >
+                  <tr key={row.seizoen} className={`border-t border-gray-100 ${signaalKleur(pct)}`}>
                     <td className="px-3 py-2 font-medium">{row.seizoen}</td>
-                    <td className="px-3 py-2 text-gray-500">
-                      gj {row.geboortejaar1eJaars}
-                    </td>
-                    <td className="px-3 py-2 text-gray-500">
-                      gj {row.geboortejaar2eJaars}
-                    </td>
+                    <td className="px-3 py-2 text-gray-500">gj {row.geboortejaar1eJaars}</td>
+                    <td className="px-3 py-2 text-gray-500">gj {row.geboortejaar2eJaars}</td>
                     <td className="px-3 py-2 text-right">
                       {row.totaalM}
                       {row.gapM < 0 && (
-                        <span className="ml-1 text-xs text-red-600">
-                          ({row.gapM})
-                        </span>
+                        <span className="ml-1 text-xs text-red-600">({row.gapM})</span>
                       )}
                     </td>
                     <td className="px-3 py-2 text-right">
                       {row.totaalV}
                       {row.gapV < 0 && (
-                        <span className="ml-1 text-xs text-red-600">
-                          ({row.gapV})
-                        </span>
+                        <span className="ml-1 text-xs text-red-600">({row.gapV})</span>
                       )}
                     </td>
-                    <td className="px-3 py-2 text-right font-semibold">
-                      {row.totaal}
-                    </td>
-                    <td className="px-3 py-2 text-right font-semibold">
-                      {row.teams}
-                    </td>
+                    <td className="px-3 py-2 text-right font-semibold">{row.totaal}</td>
+                    <td className="px-3 py-2 text-right font-semibold">{row.teams}</td>
                     <td className="px-3 py-2">
                       {row.totaal >= 50 ? (
-                        <span className="text-xs font-medium text-green-700">
-                          Op koers
-                        </span>
+                        <span className="text-xs font-medium text-green-700">Op koers</span>
                       ) : (
                         <span className="text-xs font-medium text-red-700">
                           {row.totaal - 50} spelers
@@ -275,7 +243,7 @@ export default async function ProjectiesPage({
 
       {/* Senioren-doorstroom */}
       <div className="rounded-xl bg-white p-6 shadow-sm">
-        <h3 className="mb-1 text-sm font-semibold uppercase tracking-wide text-gray-700">
+        <h3 className="mb-1 text-sm font-semibold tracking-wide text-gray-700 uppercase">
           Senioren-instroom — Projectie vanuit U19
         </h3>
         <p className="mb-4 text-xs text-gray-500">
@@ -298,19 +266,14 @@ export default async function ProjectiesPage({
             </thead>
             <tbody>
               {projectie.senioren.map((row) => (
-                <tr
-                  key={row.seizoen}
-                  className="border-t border-gray-100"
-                >
+                <tr key={row.seizoen} className="border-t border-gray-100">
                   <td className="px-3 py-2 font-medium">{row.seizoen}</td>
                   <td className="px-3 py-2 text-gray-500">
                     {row.geboortejaar2} + {row.geboortejaar1}
                   </td>
                   <td className="px-3 py-2 text-right">{row.projM}</td>
                   <td className="px-3 py-2 text-right">{row.projV}</td>
-                  <td className="px-3 py-2 text-right font-semibold">
-                    {row.totaal}
-                  </td>
+                  <td className="px-3 py-2 text-right font-semibold">{row.totaal}</td>
                 </tr>
               ))}
             </tbody>

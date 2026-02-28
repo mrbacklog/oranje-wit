@@ -15,8 +15,7 @@ export function korfbalLeeftijd(
   geboortejaar: number
 ): number {
   if (geboortedatum) {
-    const gd =
-      typeof geboortedatum === "string" ? new Date(geboortedatum) : geboortedatum;
+    const gd = typeof geboortedatum === "string" ? new Date(geboortedatum) : geboortedatum;
     const ms = PEILDATUM.getTime() - gd.getTime();
     return Math.round((ms / (365.25 * 86_400_000)) * 100) / 100;
   }

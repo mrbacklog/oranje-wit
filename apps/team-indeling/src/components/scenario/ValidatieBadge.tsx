@@ -18,11 +18,7 @@ interface ValidatieBadgeProps {
   onClick?: () => void;
 }
 
-export default function ValidatieBadge({
-  status,
-  size = "sm",
-  onClick,
-}: ValidatieBadgeProps) {
+export default function ValidatieBadge({ status, size = "sm", onClick }: ValidatieBadgeProps) {
   const px = size === "sm" ? "w-2.5 h-2.5" : "w-3.5 h-3.5";
 
   return (
@@ -30,7 +26,7 @@ export default function ValidatieBadge({
       type="button"
       onClick={onClick}
       title={STATUS_LABELS[status]}
-      className={`${px} rounded-full ${STATUS_KLEUREN[status]} shrink-0 inline-block cursor-pointer hover:ring-2 hover:ring-offset-1 hover:ring-gray-300 transition-shadow`}
+      className={`${px} rounded-full ${STATUS_KLEUREN[status]} inline-block shrink-0 cursor-pointer transition-shadow hover:ring-2 hover:ring-gray-300 hover:ring-offset-1`}
     />
   );
 }

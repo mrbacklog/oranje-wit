@@ -54,13 +54,10 @@ function SelectieTeamSectie({
         : "border-gray-200";
 
   return (
-    <div
-      ref={setNodeRef}
-      className={`bg-white rounded-md border transition-colors ${borderKleur}`}
-    >
+    <div ref={setNodeRef} className={`rounded-md border bg-white transition-colors ${borderKleur}`}>
       {/* Sub-header */}
-      <div className="px-3 py-1.5 border-b border-gray-100 flex items-center justify-between">
-        <div className="flex items-center gap-2 relative">
+      <div className="flex items-center justify-between border-b border-gray-100 px-3 py-1.5">
+        <div className="relative flex items-center gap-2">
           {validatie && (
             <ValidatieBadge
               status={validatie.status}
@@ -70,7 +67,7 @@ function SelectieTeamSectie({
           <h5 className="text-xs font-semibold text-gray-700">{team.naam}</h5>
           {team.kleur && (
             <span
-              className={`text-[10px] px-1.5 py-0.5 rounded-full ${
+              className={`rounded-full px-1.5 py-0.5 text-[10px] ${
                 KLEUR_BADGE_KLEUREN[team.kleur] ?? "bg-gray-100 text-gray-500"
               }`}
             >
@@ -86,7 +83,7 @@ function SelectieTeamSectie({
         </div>
         <button
           onClick={() => onDelete(team.id)}
-          className="text-gray-300 hover:text-red-500 text-xs"
+          className="text-xs text-gray-300 hover:text-red-500"
           title="Verwijder team"
         >
           &times;
@@ -95,37 +92,32 @@ function SelectieTeamSectie({
 
       {/* Staf */}
       {team.staf.length > 0 && (
-        <div className="px-3 py-1 border-b border-gray-50">
+        <div className="border-b border-gray-50 px-3 py-1">
           {team.staf.map((ts) => (
             <div key={ts.id} className="text-[10px] text-gray-500">
-              {ts.staf.naam}{" "}
-              <span className="text-gray-400">({ts.rol})</span>
+              {ts.staf.naam} <span className="text-gray-400">({ts.rol})</span>
             </div>
           ))}
         </div>
       )}
 
       {/* Spelers */}
-      <div className="px-1 py-1 min-h-[40px]">
+      <div className="min-h-[40px] px-1 py-1">
         {team.spelers.length === 0 ? (
-          <p className="text-[10px] text-gray-400 text-center py-2">
-            Sleep spelers hierheen
-          </p>
+          <p className="py-2 text-center text-[10px] text-gray-400">Sleep spelers hierheen</p>
         ) : (
-          team.spelers.map((ts) => (
-            <TeamSpelerRij
-              key={ts.id}
-              teamSpeler={ts}
-              teamId={team.id}
-            />
-          ))
+          team.spelers.map((ts) => <TeamSpelerRij key={ts.id} teamSpeler={ts} teamId={team.id} />)
         )}
       </div>
 
       {/* Footer stats */}
-      <div className="px-3 py-1 border-t border-gray-100 flex items-center gap-3 text-[10px] text-gray-400">
+      <div className="flex items-center gap-3 border-t border-gray-100 px-3 py-1 text-[10px] text-gray-400">
         <span>{aantalSpelers} spelers</span>
-        <span>{aantalM}{"\u2642"} {aantalV}{"\u2640"}</span>
+        <span>
+          {aantalM}
+          {"\u2642"} {aantalV}
+          {"\u2640"}
+        </span>
         <span>gem. {gemLeeftijd} jr</span>
       </div>
     </div>
@@ -149,20 +141,18 @@ export default function SelectieBlok({
   );
 
   return (
-    <div className="border-2 border-dashed border-orange-300 bg-orange-50/50 rounded-lg flex flex-col col-span-1 md:col-span-2">
+    <div className="col-span-1 flex flex-col rounded-lg border-2 border-dashed border-orange-300 bg-orange-50/50 md:col-span-2">
       {/* Selectie header */}
-      <div className="px-3 py-2 border-b border-orange-200 flex items-center justify-between bg-orange-50 rounded-t-lg">
+      <div className="flex items-center justify-between rounded-t-lg border-b border-orange-200 bg-orange-50 px-3 py-2">
         <div className="flex items-center gap-2">
-          <span className="text-[10px] font-medium text-orange-600 uppercase tracking-wide">
+          <span className="text-[10px] font-medium tracking-wide text-orange-600 uppercase">
             Selectie
           </span>
-          <h4 className="text-sm font-semibold text-gray-900">
-            {teamNamen}
-          </h4>
+          <h4 className="text-sm font-semibold text-gray-900">{teamNamen}</h4>
         </div>
         <button
           onClick={() => onOntkoppel(leider.id)}
-          className="px-2 py-1 text-[10px] font-medium text-orange-600 hover:text-orange-800 hover:bg-orange-100 rounded transition-colors"
+          className="rounded px-2 py-1 text-[10px] font-medium text-orange-600 transition-colors hover:bg-orange-100 hover:text-orange-800"
           title="Ontkoppel selectie"
         >
           Ontkoppel
@@ -171,20 +161,19 @@ export default function SelectieBlok({
 
       {/* Gedeelde staf */}
       {uniekeStaf.length > 0 && (
-        <div className="px-3 py-1 border-b border-orange-100">
-          <span className="text-[10px] text-gray-500 font-medium">Staf: </span>
+        <div className="border-b border-orange-100 px-3 py-1">
+          <span className="text-[10px] font-medium text-gray-500">Staf: </span>
           {uniekeStaf.map((ts, i) => (
             <span key={ts.id} className="text-[10px] text-gray-500">
               {i > 0 && ", "}
-              {ts.staf.naam}{" "}
-              <span className="text-gray-400">({ts.rol})</span>
+              {ts.staf.naam} <span className="text-gray-400">({ts.rol})</span>
             </span>
           ))}
         </div>
       )}
 
       {/* Team secties */}
-      <div className="flex-1 p-2 grid grid-cols-1 md:grid-cols-2 gap-2">
+      <div className="grid flex-1 grid-cols-1 gap-2 p-2 md:grid-cols-2">
         {teams.map((team) => (
           <SelectieTeamSectie
             key={team.id}

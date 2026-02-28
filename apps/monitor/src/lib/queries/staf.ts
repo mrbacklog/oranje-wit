@@ -20,9 +20,7 @@ export type TeamStaf = {
 // Staf per team voor een seizoen (uit StafToewijzing)
 // ---------------------------------------------------------------------------
 
-export async function getStafPerTeam(
-  seizoen: string
-): Promise<Map<string, StafLid[]>> {
+export async function getStafPerTeam(seizoen: string): Promise<Map<string, StafLid[]>> {
   const rows = await prisma.$queryRaw<
     {
       ow_code: string;

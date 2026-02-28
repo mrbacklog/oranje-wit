@@ -29,7 +29,7 @@ export function Sidebar({ onClose }: SidebarProps) {
     <aside className="flex h-screen w-64 flex-col border-r border-gray-200 bg-white">
       {/* Branding */}
       <div className="border-b border-gray-200 px-6 py-5">
-        <h1 className="text-lg font-bold text-ow-oranje">Oranje Wit</h1>
+        <h1 className="text-ow-oranje text-lg font-bold">Oranje Wit</h1>
         <p className="text-xs text-gray-500">Verenigingsmonitor</p>
       </div>
 

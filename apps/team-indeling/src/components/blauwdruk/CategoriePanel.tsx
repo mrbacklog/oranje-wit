@@ -46,10 +46,7 @@ const KLEUR_ACCENT: Record<string, string> = {
 // Mapping: categorie-sleutel → statistieken
 // ============================================================
 
-function getStats(
-  statistieken: LedenStatistieken,
-  sleutel: string
-): CategorieStats | null {
+function getStats(statistieken: LedenStatistieken, sleutel: string): CategorieStats | null {
   // B-kleuren zitten in perCategorie
   const kleurMatch = statistieken.perCategorie.find((c) => c.kleur === sleutel);
   if (kleurMatch) return kleurMatch;
@@ -121,7 +118,7 @@ export default function CategoriePanel({
   return (
     <div className="space-y-4">
       {/* Categorie-kaarten grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {CATEGORIEEN.map((cat) => {
           const stats = getStats(statistieken, cat.sleutel);
           const settings = getMergedSettings(cat.sleutel, kaders);
@@ -161,12 +158,7 @@ interface CategorieKaartProps {
   onOpenSettings: () => void;
 }
 
-function CategorieKaart({
-  definitie,
-  stats,
-  settings,
-  onOpenSettings,
-}: CategorieKaartProps) {
+function CategorieKaart({ definitie, stats, settings, onOpenSettings }: CategorieKaartProps) {
   const maxSpelers = Math.ceil(
     settings.optimaalSpelers * (1 + settings.maxAfwijkingPercentage / 100)
   );
@@ -174,9 +166,7 @@ function CategorieKaart({
   return (
     <div className="card overflow-hidden">
       {/* Gekleurde top-bar */}
-      <div
-        className={`h-1.5 ${KLEUR_ACCENT[definitie.sleutel] ?? "bg-gray-500"}`}
-      />
+      <div className={`h-1.5 ${KLEUR_ACCENT[definitie.sleutel] ?? "bg-gray-500"}`} />
       <div className="card-body space-y-3">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -187,18 +177,14 @@ function CategorieKaart({
             </p>
           </div>
           <div className="flex items-center gap-2">
-            {stats && (
-              <span className="text-lg font-bold text-gray-700">
-                {stats.totaal}
-              </span>
-            )}
+            {stats && <span className="text-lg font-bold text-gray-700">{stats.totaal}</span>}
             <button
               onClick={onOpenSettings}
-              className="p-1.5 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+              className="rounded-md p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
               title="Instellingen"
             >
               <svg
-                className="w-4 h-4"
+                className="h-4 w-4"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
@@ -222,24 +208,14 @@ function CategorieKaart({
         {/* Leden-blok */}
         {stats && (
           <div className="flex flex-wrap gap-1.5">
-            <span className="badge-green">
-              {stats.beschikbaar} beschikbaar
-            </span>
-            {stats.twijfelt > 0 && (
-              <span className="badge-orange">{stats.twijfelt} twijfelt</span>
-            )}
-            {stats.gaatStoppen > 0 && (
-              <span className="badge-red">{stats.gaatStoppen} stopt</span>
-            )}
+            <span className="badge-green">{stats.beschikbaar} beschikbaar</span>
+            {stats.twijfelt > 0 && <span className="badge-orange">{stats.twijfelt} twijfelt</span>}
+            {stats.gaatStoppen > 0 && <span className="badge-red">{stats.gaatStoppen} stopt</span>}
             {stats.nieuwPotentieel > 0 && (
-              <span className="badge-blue">
-                {stats.nieuwPotentieel} potentieel
-              </span>
+              <span className="badge-blue">{stats.nieuwPotentieel} potentieel</span>
             )}
             {stats.nieuwDefinitief > 0 && (
-              <span className="badge-blue">
-                {stats.nieuwDefinitief} definitief
-              </span>
+              <span className="badge-blue">{stats.nieuwDefinitief} definitief</span>
             )}
           </div>
         )}
@@ -264,39 +240,42 @@ function CategorieKaart({
         {/* Key-stats als chips */}
         <div className="flex flex-wrap gap-1.5 text-xs">
           {(settings.minSpelers > 0 || settings.optimaalSpelers > 0) && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-gray-100 text-gray-600">
+            <span className="inline-flex items-center gap-1 rounded bg-gray-100 px-2 py-0.5 text-gray-600">
               {settings.minSpelers}–{maxSpelers} spelers
             </span>
           )}
-          {settings.gemiddeldeLeeftijdKernMin != null && settings.gemiddeldeLeeftijdKernMax != null && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-blue-50 text-blue-700">
-              kern {settings.gemiddeldeLeeftijdKernMin}–{settings.gemiddeldeLeeftijdKernMax}
-            </span>
-          )}
-          {settings.gemiddeldeLeeftijdOverlapMin != null && settings.gemiddeldeLeeftijdOverlapMax != null &&
-           (settings.gemiddeldeLeeftijdOverlapMin !== settings.gemiddeldeLeeftijdKernMin ||
-            settings.gemiddeldeLeeftijdOverlapMax !== settings.gemiddeldeLeeftijdKernMax) && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-gray-100 text-gray-500">
-              overlap {settings.gemiddeldeLeeftijdOverlapMin}–{settings.gemiddeldeLeeftijdOverlapMax}
-            </span>
-          )}
+          {settings.gemiddeldeLeeftijdKernMin != null &&
+            settings.gemiddeldeLeeftijdKernMax != null && (
+              <span className="inline-flex items-center gap-1 rounded bg-blue-50 px-2 py-0.5 text-blue-700">
+                kern {settings.gemiddeldeLeeftijdKernMin}–{settings.gemiddeldeLeeftijdKernMax}
+              </span>
+            )}
+          {settings.gemiddeldeLeeftijdOverlapMin != null &&
+            settings.gemiddeldeLeeftijdOverlapMax != null &&
+            (settings.gemiddeldeLeeftijdOverlapMin !== settings.gemiddeldeLeeftijdKernMin ||
+              settings.gemiddeldeLeeftijdOverlapMax !== settings.gemiddeldeLeeftijdKernMax) && (
+              <span className="inline-flex items-center gap-1 rounded bg-gray-100 px-2 py-0.5 text-gray-500">
+                overlap {settings.gemiddeldeLeeftijdOverlapMin}–
+                {settings.gemiddeldeLeeftijdOverlapMax}
+              </span>
+            )}
           {settings.scoreDrempel != null && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-gray-100 text-gray-600">
+            <span className="inline-flex items-center gap-1 rounded bg-gray-100 px-2 py-0.5 text-gray-600">
               score &lt;{settings.scoreDrempel}
             </span>
           )}
           {settings.bandbreedteLeeftijd != null && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-gray-100 text-gray-600">
+            <span className="inline-flex items-center gap-1 rounded bg-gray-100 px-2 py-0.5 text-gray-600">
               max {settings.bandbreedteLeeftijd} jr spreiding
             </span>
           )}
           {settings.maxLeeftijd != null && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-gray-100 text-gray-600">
+            <span className="inline-flex items-center gap-1 rounded bg-gray-100 px-2 py-0.5 text-gray-600">
               max {settings.maxLeeftijd} jr
             </span>
           )}
           {settings.prioriteiten.length > 0 && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-orange-50 text-orange-700">
+            <span className="inline-flex items-center gap-1 rounded bg-orange-50 px-2 py-0.5 text-orange-700">
               {settings.prioriteiten.join(" · ")}
             </span>
           )}
@@ -304,32 +283,22 @@ function CategorieKaart({
 
         {/* Spelvorm footer (niet voor Kangoeroes) */}
         {definitie.type !== "kangoeroes" && (
-          <div className="pt-2 border-t border-gray-100 text-xs text-gray-400 flex flex-wrap gap-x-3 gap-y-1">
+          <div className="flex flex-wrap gap-x-3 gap-y-1 border-t border-gray-100 pt-2 text-xs text-gray-400">
             <span>Paal {settings.korfhoogte}m</span>
             <span>Bal {settings.balMaat}</span>
             <span>
-              Wissels{" "}
-              {settings.wisselsAantal == null
-                ? "onbeperkt"
-                : settings.wisselsAantal}
+              Wissels {settings.wisselsAantal == null ? "onbeperkt" : settings.wisselsAantal}
             </span>
             {settings.vakwisselType !== "nvt" && (
               <span>
-                Vakwissel{" "}
-                {settings.vakwisselType === "doelpunten"
-                  ? "na 2 goals"
-                  : "op tijd"}
+                Vakwissel {settings.vakwisselType === "doelpunten" ? "na 2 goals" : "op tijd"}
               </span>
             )}
-            <span>
-              {settings.speeltijdMinuten > 0
-                ? `2×${settings.speeltijdMinuten}m`
-                : "–"}
-            </span>
+            <span>{settings.speeltijdMinuten > 0 ? `2×${settings.speeltijdMinuten}m` : "–"}</span>
           </div>
         )}
         {definitie.type === "kangoeroes" && (
-          <div className="pt-2 border-t border-gray-100 text-xs text-gray-400 italic">
+          <div className="border-t border-gray-100 pt-2 text-xs text-gray-400 italic">
             Geen competitie — spelenderwijs kennismaken
           </div>
         )}
@@ -349,19 +318,11 @@ interface SettingsDialogProps {
   onClose: () => void;
 }
 
-function SettingsDialog({
-  sleutel,
-  settings,
-  onSave,
-  onClose,
-}: SettingsDialogProps) {
+function SettingsDialog({ sleutel, settings, onSave, onClose }: SettingsDialogProps) {
   const [form, setForm] = useState<CategorieSettings>({ ...settings });
   const definitie = CATEGORIEEN.find((c) => c.sleutel === sleutel)!;
 
-  function update<K extends keyof CategorieSettings>(
-    key: K,
-    value: CategorieSettings[K]
-  ) {
+  function update<K extends keyof CategorieSettings>(key: K, value: CategorieSettings[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
@@ -387,7 +348,7 @@ function SettingsDialog({
   return (
     <div className="dialog-overlay" onClick={onClose}>
       <div
-        className="dialog-panel w-full max-w-lg max-h-[85vh] flex flex-col"
+        className="dialog-panel flex max-h-[85vh] w-full max-w-lg flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -400,23 +361,18 @@ function SettingsDialog({
               {definitie.leeftijdRange} · {definitie.spelvorm}
             </p>
           </div>
-          <button
-            onClick={onClose}
-            className="p-1 text-gray-400 hover:text-gray-600"
-          >
-            <svg className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+          <button onClick={onClose} className="p-1 text-gray-400 hover:text-gray-600">
+            <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
               <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
             </svg>
           </button>
         </div>
 
         {/* Body */}
-        <div className="dialog-body overflow-y-auto space-y-5">
+        <div className="dialog-body space-y-5 overflow-y-auto">
           {/* Teamsamenstelling */}
           <fieldset>
-            <legend className="text-sm font-semibold text-gray-700 mb-2">
-              Teamsamenstelling
-            </legend>
+            <legend className="mb-2 text-sm font-semibold text-gray-700">Teamsamenstelling</legend>
             <div className="grid grid-cols-3 gap-3">
               <NumberField
                 label="Min. spelers *"
@@ -438,9 +394,7 @@ function SettingsDialog({
 
           {/* Gender */}
           <fieldset>
-            <legend className="text-sm font-semibold text-gray-700 mb-2">
-              Gender
-            </legend>
+            <legend className="mb-2 text-sm font-semibold text-gray-700">Gender</legend>
             <div className="grid grid-cols-2 gap-3">
               <NumberField
                 label="Verplicht min. V"
@@ -472,7 +426,7 @@ function SettingsDialog({
 
           {/* Leeftijdsgrenzen — Kern */}
           <fieldset>
-            <legend className="text-sm font-semibold text-gray-700 mb-2">
+            <legend className="mb-2 text-sm font-semibold text-gray-700">
               Leeftijdsgrenzen — Kern (ideaal)
             </legend>
             <div className="grid grid-cols-2 gap-3">
@@ -495,7 +449,7 @@ function SettingsDialog({
 
           {/* Leeftijdsgrenzen — Overlap */}
           <fieldset>
-            <legend className="text-sm font-semibold text-gray-700 mb-2">
+            <legend className="mb-2 text-sm font-semibold text-gray-700">
               Leeftijdsgrenzen — Overlap (KNKV acceptabel)
             </legend>
             <div className="grid grid-cols-2 gap-3">
@@ -532,9 +486,7 @@ function SettingsDialog({
 
           {/* KNKV Score-drempel */}
           <fieldset>
-            <legend className="text-sm font-semibold text-gray-700 mb-2">
-              KNKV Score-drempel
-            </legend>
+            <legend className="mb-2 text-sm font-semibold text-gray-700">KNKV Score-drempel</legend>
             <div className="grid grid-cols-2 gap-3">
               <NumberField
                 label="Score-drempel"
@@ -552,9 +504,7 @@ function SettingsDialog({
 
           {/* Speeltijd */}
           <fieldset>
-            <legend className="text-sm font-semibold text-gray-700 mb-2">
-              Speeltijd
-            </legend>
+            <legend className="mb-2 text-sm font-semibold text-gray-700">Speeltijd</legend>
             <div className="grid grid-cols-2 gap-3">
               <NumberField
                 label="Minuten *"
@@ -573,9 +523,7 @@ function SettingsDialog({
 
           {/* Spelvorm */}
           <fieldset>
-            <legend className="text-sm font-semibold text-gray-700 mb-2">
-              Spelvorm
-            </legend>
+            <legend className="mb-2 text-sm font-semibold text-gray-700">Spelvorm</legend>
             <div className="grid grid-cols-2 gap-3">
               <SelectField
                 label="Korfhoogte (m) *"
@@ -596,7 +544,7 @@ function SettingsDialog({
                 onChange={(v) => update("balMaat", parseInt(v))}
               />
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">
+                <label className="mb-1 block text-xs font-medium text-gray-600">
                   Spelerswissels
                 </label>
                 <div className="flex items-center gap-2">
@@ -613,9 +561,7 @@ function SettingsDialog({
                       )
                     }
                   />
-                  <span className="text-xs text-gray-500">
-                    leeg = onbeperkt
-                  </span>
+                  <span className="text-xs text-gray-500">leeg = onbeperkt</span>
                 </div>
               </div>
               <SelectField
@@ -625,19 +571,14 @@ function SettingsDialog({
                   value: v.value,
                   label: v.label,
                 }))}
-                onChange={(v) =>
-                  update(
-                    "vakwisselType",
-                    v as CategorieSettings["vakwisselType"]
-                  )
-                }
+                onChange={(v) => update("vakwisselType", v as CategorieSettings["vakwisselType"])}
               />
             </div>
           </fieldset>
 
           {/* Prioriteit */}
           <fieldset>
-            <legend className="text-sm font-semibold text-gray-700 mb-2">
+            <legend className="mb-2 text-sm font-semibold text-gray-700">
               Prioriteiten (max 3)
             </legend>
             <div className="flex flex-wrap gap-2">
@@ -657,11 +598,11 @@ function SettingsDialog({
                         update("prioriteiten", [...form.prioriteiten, optie]);
                       }
                     }}
-                    className={`px-3 py-1 text-sm rounded-full border transition-colors ${
+                    className={`rounded-full border px-3 py-1 text-sm transition-colors ${
                       selected
-                        ? "bg-orange-100 border-orange-300 text-orange-700"
-                        : "bg-white border-gray-200 text-gray-500 hover:border-gray-300"
-                    } ${!selected && form.prioriteiten.length >= 3 ? "opacity-40 cursor-not-allowed" : ""}`}
+                        ? "border-orange-300 bg-orange-100 text-orange-700"
+                        : "border-gray-200 bg-white text-gray-500 hover:border-gray-300"
+                    } ${!selected && form.prioriteiten.length >= 3 ? "cursor-not-allowed opacity-40" : ""}`}
                   >
                     {optie}
                   </button>
@@ -708,9 +649,7 @@ function NumberField({
 }) {
   return (
     <div>
-      <label className="block text-xs font-medium text-gray-600 mb-1">
-        {label}
-      </label>
+      <label className="mb-1 block text-xs font-medium text-gray-600">{label}</label>
       <input
         type="number"
         className="input"
@@ -741,7 +680,7 @@ function ToggleField({
   onChange: (v: boolean) => void;
 }) {
   return (
-    <label className="flex items-center gap-2 mt-2 cursor-pointer">
+    <label className="mt-2 flex cursor-pointer items-center gap-2">
       <button
         type="button"
         role="switch"
@@ -775,14 +714,8 @@ function SelectField({
 }) {
   return (
     <div>
-      <label className="block text-xs font-medium text-gray-600 mb-1">
-        {label}
-      </label>
-      <select
-        className="input"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-      >
+      <label className="mb-1 block text-xs font-medium text-gray-600">{label}</label>
+      <select className="input" value={value} onChange={(e) => onChange(e.target.value)}>
         {options.map((opt) => (
           <option key={opt.value} value={opt.value}>
             {opt.label}

@@ -30,7 +30,7 @@ export default function SpelerFilters({
         value={zoekterm}
         onChange={(e) => onZoektermChange(e.target.value)}
         placeholder="Zoek speler..."
-        className="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400"
+        className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-300 focus:outline-none"
       />
 
       {/* Filterradio's */}
@@ -38,10 +38,10 @@ export default function SpelerFilters({
         {FILTERS.map(({ waarde, label }) => (
           <label
             key={waarde}
-            className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs cursor-pointer border transition-colors ${
+            className={`inline-flex cursor-pointer items-center rounded-full border px-2.5 py-1 text-xs transition-colors ${
               filter === waarde
-                ? "bg-orange-50 border-orange-400 text-orange-700"
-                : "bg-white border-gray-200 text-gray-600 hover:border-gray-300"
+                ? "border-orange-400 bg-orange-50 text-orange-700"
+                : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
             }`}
           >
             <input

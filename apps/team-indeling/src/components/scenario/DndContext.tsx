@@ -95,11 +95,7 @@ export default function DndProvider({
     >
       {children}
 
-      <DragOverlay>
-        {activeSpeler ? (
-          <DragOverlayKaart speler={activeSpeler} />
-        ) : null}
-      </DragOverlay>
+      <DragOverlay>{activeSpeler ? <DragOverlayKaart speler={activeSpeler} /> : null}</DragOverlay>
     </DndKitContext>
   );
 }
@@ -108,20 +104,16 @@ function DragOverlayKaart({ speler }: { speler: SpelerData }) {
   const leeftijd = korfbalLeeftijd(speler.geboortedatum, speler.geboortejaar);
   const kleur = kleurIndicatie(leeftijd);
   return (
-    <div className="flex items-center gap-2 px-3 py-2 rounded-md border border-orange-300 bg-white shadow-lg cursor-grabbing">
-      <span
-        className={`w-2 h-2 rounded-full ${STATUS_KLEUREN[speler.status]}`}
-      />
+    <div className="flex cursor-grabbing items-center gap-2 rounded-md border border-orange-300 bg-white px-3 py-2 shadow-lg">
+      <span className={`h-2 w-2 rounded-full ${STATUS_KLEUREN[speler.status]}`} />
       <span className="text-sm text-gray-800">
         {speler.roepnaam} {speler.achternaam}
       </span>
       <span className="inline-flex items-center gap-0.5">
-        {kleur && <span className={`w-1.5 h-1.5 rounded-full ${KLEUR_DOT[kleur]}`} />}
+        {kleur && <span className={`h-1.5 w-1.5 rounded-full ${KLEUR_DOT[kleur]}`} />}
         <span className="text-xs text-gray-400">{leeftijd.toFixed(2)}</span>
       </span>
-      <span className="text-xs">
-        {speler.geslacht === "M" ? "\u2642" : "\u2640"}
-      </span>
+      <span className="text-xs">{speler.geslacht === "M" ? "\u2642" : "\u2640"}</span>
     </div>
   );
 }

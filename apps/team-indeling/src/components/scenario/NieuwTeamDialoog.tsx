@@ -6,11 +6,7 @@ import type { TeamCategorie, Kleur } from "@oranje-wit/database";
 interface NieuwTeamDialoogProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (data: {
-    naam: string;
-    categorie: TeamCategorie;
-    kleur?: Kleur;
-  }) => void;
+  onSubmit: (data: { naam: string; categorie: TeamCategorie; kleur?: Kleur }) => void;
 }
 
 const CATEGORIEEN: { waarde: TeamCategorie; label: string }[] = [
@@ -27,11 +23,7 @@ const KLEUREN: { waarde: Kleur; label: string }[] = [
   { waarde: "ROOD", label: "Rood" },
 ];
 
-export default function NieuwTeamDialoog({
-  open,
-  onClose,
-  onSubmit,
-}: NieuwTeamDialoogProps) {
+export default function NieuwTeamDialoog({ open, onClose, onSubmit }: NieuwTeamDialoogProps) {
   const [naam, setNaam] = useState("");
   const [categorie, setCategorie] = useState<TeamCategorie>("B_CATEGORIE");
   const [kleur, setKleur] = useState<Kleur | "">("");
@@ -52,14 +44,8 @@ export default function NieuwTeamDialoog({
   if (!open) return null;
 
   return (
-    <div
-      className="dialog-overlay"
-      onClick={onClose}
-    >
-      <div
-        className="dialog-panel w-full max-w-sm"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <div className="dialog-overlay" onClick={onClose}>
+      <div className="dialog-panel w-full max-w-sm" onClick={(e) => e.stopPropagation()}>
         <div className="dialog-header">
           <h3 className="text-lg font-bold text-gray-900">Nieuw team</h3>
         </div>
@@ -67,10 +53,7 @@ export default function NieuwTeamDialoog({
         <div className="dialog-body">
           {/* Naam */}
           <div>
-            <label
-              htmlFor="team-naam"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
+            <label htmlFor="team-naam" className="mb-1 block text-sm font-medium text-gray-700">
               Teamnaam *
             </label>
             <input
@@ -86,17 +69,15 @@ export default function NieuwTeamDialoog({
 
           {/* Categorie */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Categorie
-            </label>
+            <label className="mb-1 block text-sm font-medium text-gray-700">Categorie</label>
             <div className="flex flex-wrap gap-2">
               {CATEGORIEEN.map(({ waarde, label }) => (
                 <label
                   key={waarde}
-                  className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm cursor-pointer border transition-colors ${
+                  className={`inline-flex cursor-pointer items-center rounded-full border px-3 py-1.5 text-sm transition-colors ${
                     categorie === waarde
-                      ? "bg-orange-50 border-orange-400 text-orange-700"
-                      : "bg-white border-gray-200 text-gray-600 hover:border-gray-300"
+                      ? "border-orange-400 bg-orange-50 text-orange-700"
+                      : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
                   }`}
                 >
                   <input
@@ -116,9 +97,7 @@ export default function NieuwTeamDialoog({
           {/* Kleur (alleen bij B-categorie) */}
           {categorie === "B_CATEGORIE" && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Kleur
-              </label>
+              <label className="mb-1 block text-sm font-medium text-gray-700">Kleur</label>
               <select
                 value={kleur}
                 onChange={(e) => setKleur(e.target.value as Kleur | "")}
@@ -136,17 +115,10 @@ export default function NieuwTeamDialoog({
         </div>
 
         <div className="dialog-footer">
-          <button
-            onClick={onClose}
-            className="btn-ghost"
-          >
+          <button onClick={onClose} className="btn-ghost">
             Annuleren
           </button>
-          <button
-            onClick={handleSubmit}
-            disabled={!naam.trim()}
-            className="btn-primary"
-          >
+          <button onClick={handleSubmit} disabled={!naam.trim()} className="btn-primary">
             Team aanmaken
           </button>
         </div>

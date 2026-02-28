@@ -8,14 +8,9 @@ interface ToelichtingEditorProps {
   initieel: string;
 }
 
-export default function ToelichtingEditor({
-  blauwdrukId,
-  initieel,
-}: ToelichtingEditorProps) {
+export default function ToelichtingEditor({ blauwdrukId, initieel }: ToelichtingEditorProps) {
   const [tekst, setTekst] = useState(initieel);
-  const [status, setStatus] = useState<"idle" | "opslaan" | "opgeslagen">(
-    "idle"
-  );
+  const [status, setStatus] = useState<"idle" | "opslaan" | "opgeslagen">("idle");
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const slaOp = useCallback(
@@ -59,21 +54,17 @@ export default function ToelichtingEditor({
   }, []);
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-4">
+    <div className="rounded-lg border border-gray-200 bg-white p-4">
       <textarea
         value={tekst}
         onChange={handleChange}
         placeholder="Notities, speerpunten en toelichting bij de blauwdruk..."
         rows={6}
-        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 resize-y"
+        className="w-full resize-y rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-800 placeholder-gray-400 focus:border-orange-400 focus:ring-2 focus:ring-orange-300 focus:outline-none"
       />
       <div className="mt-2 flex justify-end">
-        {status === "opslaan" && (
-          <span className="text-xs text-gray-400">Opslaan...</span>
-        )}
-        {status === "opgeslagen" && (
-          <span className="text-xs text-green-600">Opgeslagen</span>
-        )}
+        {status === "opslaan" && <span className="text-xs text-gray-400">Opslaan...</span>}
+        {status === "opgeslagen" && <span className="text-xs text-green-600">Opgeslagen</span>}
       </div>
     </div>
   );

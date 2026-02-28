@@ -35,9 +35,7 @@ export function ProjectiePiramide({ data }: ProjectiePiramideProps) {
   }));
 
   const maxVal = Math.max(
-    ...data.map((d) =>
-      Math.max(d.huidige_m, d.huidige_v, d.streef_m, d.streef_v)
-    ),
+    ...data.map((d) => Math.max(d.huidige_m, d.huidige_v, d.streef_m, d.streef_v)),
     1
   );
 
@@ -51,13 +49,7 @@ export function ProjectiePiramide({ data }: ProjectiePiramideProps) {
           fontSize={12}
           tickFormatter={(v: number) => String(Math.abs(v))}
         />
-        <YAxis
-          dataKey="leeftijd"
-          type="category"
-          fontSize={11}
-          width={35}
-          reversed
-        />
+        <YAxis dataKey="leeftijd" type="category" fontSize={11} width={35} reversed />
         <Tooltip
           formatter={(value: number, name: string) => {
             const labels: Record<string, string> = {
@@ -97,18 +89,8 @@ export function ProjectiePiramide({ data }: ProjectiePiramideProps) {
           stackId="streef"
         />
         {/* Huidig als voorgrond (solid) */}
-        <Bar
-          dataKey="huidig_m"
-          name="huidig_m"
-          fill="#60A5FA"
-          stackId="huidig"
-        />
-        <Bar
-          dataKey="huidig_v"
-          name="huidig_v"
-          fill="#F472B6"
-          stackId="huidig"
-        />
+        <Bar dataKey="huidig_m" name="huidig_m" fill="#60A5FA" stackId="huidig" />
+        <Bar dataKey="huidig_v" name="huidig_v" fill="#F472B6" stackId="huidig" />
       </BarChart>
     </ResponsiveContainer>
   );

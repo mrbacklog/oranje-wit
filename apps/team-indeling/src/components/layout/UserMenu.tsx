@@ -13,19 +13,16 @@ export default function UserMenu() {
 
   if (status === "loading") {
     return (
-      <div className="px-4 py-3 border-t border-gray-100">
-        <div className="h-4 w-24 bg-gray-100 rounded animate-pulse" />
+      <div className="border-t border-gray-100 px-4 py-3">
+        <div className="h-4 w-24 animate-pulse rounded bg-gray-100" />
       </div>
     );
   }
 
   if (!session?.user) {
     return (
-      <div className="px-4 py-3 border-t border-gray-100">
-        <a
-          href="/login"
-          className="text-sm text-orange-600 hover:text-orange-700 font-medium"
-        >
+      <div className="border-t border-gray-100 px-4 py-3">
+        <a href="/login" className="text-sm font-medium text-orange-600 hover:text-orange-700">
           Inloggen
         </a>
       </div>
@@ -35,17 +32,15 @@ export default function UserMenu() {
   const { name, role } = session.user;
 
   return (
-    <div className="px-4 py-3 border-t border-gray-100">
+    <div className="border-t border-gray-100 px-4 py-3">
       <div className="flex items-center justify-between">
         <div className="min-w-0">
-          <p className="text-sm font-medium text-gray-900 truncate">{name}</p>
-          <p className="text-xs text-gray-500">
-            {role ? rolLabels[role] || role : "Viewer"}
-          </p>
+          <p className="truncate text-sm font-medium text-gray-900">{name}</p>
+          <p className="text-xs text-gray-500">{role ? rolLabels[role] || role : "Viewer"}</p>
         </div>
         <button
           onClick={() => signOut({ callbackUrl: "/login" })}
-          className="text-xs text-gray-400 hover:text-gray-600 transition-colors shrink-0 ml-2"
+          className="ml-2 shrink-0 text-xs text-gray-400 transition-colors hover:text-gray-600"
           title="Uitloggen"
         >
           Uit

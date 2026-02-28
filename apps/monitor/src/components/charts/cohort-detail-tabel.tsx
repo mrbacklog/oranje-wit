@@ -28,19 +28,14 @@ interface CohortDetailTabelProps {
   samenvatting: Record<string, { actief: number; M: number; V: number }>;
 }
 
-export function CohortDetailTabel({
-  leden,
-  seizoenen,
-  samenvatting,
-}: CohortDetailTabelProps) {
+export function CohortDetailTabel({ leden, seizoenen, samenvatting }: CohortDetailTabelProps) {
   const [filter, setFilter] = useState<Filter>("Alles");
 
   // Filter seizoenen met data
   const actieveSeizoenen = seizoenen.filter((sz) => samenvatting[sz]);
 
   // Filter leden op geslacht
-  const gefilterd =
-    filter === "Alles" ? leden : leden.filter((l) => l.geslacht === filter);
+  const gefilterd = filter === "Alles" ? leden : leden.filter((l) => l.geslacht === filter);
 
   return (
     <div>
@@ -60,9 +55,7 @@ export function CohortDetailTabel({
               {f === "Alles" ? "Alles" : f === "M" ? "\u2642 Jongens" : "\u2640 Meisjes"}
             </button>
           ))}
-          <span className="ml-2 self-center text-sm text-gray-500">
-            {gefilterd.length} leden
-          </span>
+          <span className="ml-2 self-center text-sm text-gray-500">{gefilterd.length} leden</span>
         </div>
         <div className="flex gap-3 text-xs text-gray-500">
           <span className="inline-flex items-center gap-1">
@@ -89,10 +82,7 @@ export function CohortDetailTabel({
                 Naam
               </th>
               {actieveSeizoenen.map((sz) => (
-                <th
-                  key={sz}
-                  className="px-2 py-2 text-center font-semibold whitespace-nowrap"
-                >
+                <th key={sz} className="px-2 py-2 text-center font-semibold whitespace-nowrap">
                   {sz.slice(2, 4)}/{sz.slice(7, 9)}
                 </th>
               ))}
@@ -100,9 +90,7 @@ export function CohortDetailTabel({
           </thead>
           <tbody>
             {gefilterd.map((lid) => {
-              const seizoenMap = new Map(
-                lid.seizoenen.map((s) => [s.seizoen, s])
-              );
+              const seizoenMap = new Map(lid.seizoenen.map((s) => [s.seizoen, s]));
               const naam = [lid.roepnaam, lid.tussenvoegsel, lid.achternaam]
                 .filter(Boolean)
                 .join(" ");
@@ -112,11 +100,13 @@ export function CohortDetailTabel({
                   <td className="sticky left-0 z-10 bg-white px-3 py-1.5 font-medium whitespace-nowrap">
                     <Link
                       href={`/spelers/${lid.relCode}`}
-                      className="text-gray-900 hover:text-ow-oranje hover:underline"
+                      className="hover:text-ow-oranje text-gray-900 hover:underline"
                     >
                       {naam}
                     </Link>
-                    <span className={`ml-1.5 ${lid.geslacht === "M" ? "text-blue-500" : "text-pink-500"}`}>
+                    <span
+                      className={`ml-1.5 ${lid.geslacht === "M" ? "text-blue-500" : "text-pink-500"}`}
+                    >
                       {lid.geslacht === "M" ? "♂" : "♀"}
                     </span>
                   </td>
@@ -124,16 +114,12 @@ export function CohortDetailTabel({
                     const data = seizoenMap.get(sz);
                     if (!data || !data.team) {
                       // Niet actief dit seizoen
-                      return (
-                        <td key={sz} className="px-2 py-1.5 text-center" />
-                      );
+                      return <td key={sz} className="px-2 py-1.5 text-center" />;
                     }
                     const statusClass = data.status
                       ? STATUS_KLEUREN[data.status] || "bg-gray-50 text-gray-700"
                       : "bg-gray-50 text-gray-700";
-                    const statusIcon = data.status
-                      ? STATUS_LABEL[data.status] || ""
-                      : "";
+                    const statusIcon = data.status ? STATUS_LABEL[data.status] || "" : "";
 
                     return (
                       <td key={sz} className="px-1 py-1 text-center">
@@ -154,14 +140,11 @@ export function CohortDetailTabel({
           {/* Samenvatting */}
           <tfoot>
             <tr className="border-t-2 border-gray-200 bg-gray-50 font-semibold">
-              <td className="sticky left-0 z-10 bg-gray-50 px-3 py-2">
-                Totaal
-              </td>
+              <td className="sticky left-0 z-10 bg-gray-50 px-3 py-2">Totaal</td>
               {actieveSeizoenen.map((sz) => {
                 const s = samenvatting[sz];
                 if (!s) return <td key={sz} className="px-2 py-2 text-center" />;
-                const filtered =
-                  filter === "Alles" ? s.actief : filter === "M" ? s.M : s.V;
+                const filtered = filter === "Alles" ? s.actief : filter === "M" ? s.M : s.V;
                 return (
                   <td key={sz} className="px-2 py-2 text-center text-gray-700">
                     {filtered}
@@ -173,9 +156,7 @@ export function CohortDetailTabel({
         </table>
 
         {gefilterd.length === 0 && (
-          <p className="px-4 py-8 text-center text-sm text-gray-400">
-            Geen leden gevonden
-          </p>
+          <p className="px-4 py-8 text-center text-sm text-gray-400">Geen leden gevonden</p>
         )}
       </div>
     </div>

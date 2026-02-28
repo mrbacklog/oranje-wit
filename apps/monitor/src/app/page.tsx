@@ -1,9 +1,5 @@
 import { PageHeader, KpiCard, SignalBadge } from "@oranje-wit/ui";
-import {
-  getDashboardKPIs,
-  getLedenTrend,
-  getInstroomUitstroom,
-} from "@/lib/queries/dashboard";
+import { getDashboardKPIs, getLedenTrend, getInstroomUitstroom } from "@/lib/queries/dashboard";
 import { getSignaleringen, type SignaleringRow } from "@/lib/queries/signalering";
 import { getSeizoen } from "@/lib/utils/seizoen";
 import { LedenTrend } from "@/components/charts/leden-trend";
@@ -17,13 +13,12 @@ export default async function DashboardPage({
   const params = await searchParams;
   const seizoen = getSeizoen(params);
 
-  const [kpis, signaleringen, ledenTrend, instroomUitstroom] =
-    await Promise.all([
-      getDashboardKPIs(seizoen),
-      getSignaleringen(seizoen),
-      getLedenTrend(),
-      getInstroomUitstroom(),
-    ]);
+  const [kpis, signaleringen, ledenTrend, instroomUitstroom] = await Promise.all([
+    getDashboardKPIs(seizoen),
+    getSignaleringen(seizoen),
+    getLedenTrend(),
+    getInstroomUitstroom(),
+  ]);
 
   // Leden trend: uit speler_seizoenen
   const ledenTrendData = ledenTrend.map((s) => ({
@@ -45,10 +40,7 @@ export default async function DashboardPage({
 
   return (
     <div>
-      <PageHeader
-        title="Dashboard"
-        subtitle={`Seizoen ${seizoen} — c.k.v. Oranje Wit`}
-      />
+      <PageHeader title="Dashboard" subtitle={`Seizoen ${seizoen} — c.k.v. Oranje Wit`} />
 
       {/* KPI cards */}
       <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
@@ -58,11 +50,7 @@ export default async function DashboardPage({
           label="Signaleringen"
           value={kpis.signalering_kritiek}
           signal={
-            kpis.signalering_kritiek > 0
-              ? "rood"
-              : kpis.signalering_aandacht > 0
-                ? "geel"
-                : "groen"
+            kpis.signalering_kritiek > 0 ? "rood" : kpis.signalering_aandacht > 0 ? "geel" : "groen"
           }
         />
       </div>
@@ -70,13 +58,13 @@ export default async function DashboardPage({
       {/* Charts */}
       <div className="mb-8 grid gap-6 lg:grid-cols-2">
         <div className="rounded-xl bg-white p-5 shadow-sm">
-          <h3 className="mb-4 text-sm font-semibold text-gray-700 uppercase tracking-wide">
+          <h3 className="mb-4 text-sm font-semibold tracking-wide text-gray-700 uppercase">
             Spelende leden per seizoen
           </h3>
           <LedenTrend data={ledenTrendData} />
         </div>
         <div className="rounded-xl bg-white p-5 shadow-sm">
-          <h3 className="mb-4 text-sm font-semibold text-gray-700 uppercase tracking-wide">
+          <h3 className="mb-4 text-sm font-semibold tracking-wide text-gray-700 uppercase">
             Instroom vs. Uitstroom
           </h3>
           <InstroomUitstroom data={instroomUitstroomData} />
@@ -86,7 +74,7 @@ export default async function DashboardPage({
       {/* Top signaleringen */}
       {topSignaleringen.length > 0 && (
         <div className="rounded-xl bg-white p-5 shadow-sm">
-          <h3 className="mb-4 text-sm font-semibold text-gray-700 uppercase tracking-wide">
+          <h3 className="mb-4 text-sm font-semibold tracking-wide text-gray-700 uppercase">
             Signaleringen
           </h3>
           <div className="space-y-3">
@@ -108,20 +96,14 @@ function SignaleringCard({ signalering }: { signalering: SignaleringRow }) {
       <div className="min-w-0 flex-1">
         <p className="text-sm font-medium text-gray-900">{signalering.type}</p>
         {signalering.beschrijving && (
-          <p className="mt-0.5 text-sm text-gray-500">
-            {signalering.beschrijving}
-          </p>
+          <p className="mt-0.5 text-sm text-gray-500">{signalering.beschrijving}</p>
         )}
         <div className="mt-1 flex gap-3 text-xs text-gray-400">
-          {signalering.leeftijdsgroep && (
-            <span>Groep: {signalering.leeftijdsgroep}</span>
-          )}
+          {signalering.leeftijdsgroep && <span>Groep: {signalering.leeftijdsgroep}</span>}
           {signalering.geslacht && (
             <span>{signalering.geslacht === "M" ? "\u2642 Jongens" : "\u2640 Meisjes"}</span>
           )}
-          {signalering.waarde !== null && (
-            <span>Waarde: {signalering.waarde}</span>
-          )}
+          {signalering.waarde !== null && <span>Waarde: {signalering.waarde}</span>}
         </div>
       </div>
     </div>

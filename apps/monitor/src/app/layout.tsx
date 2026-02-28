@@ -7,9 +7,7 @@ export const metadata: Metadata = {
   description: "TC-monitor voor gezonde groei",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="nl">
       <body className="bg-gray-50 text-gray-900 antialiased">

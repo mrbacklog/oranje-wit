@@ -16,15 +16,14 @@ export default function TeamSpelerRij({ teamSpeler, teamId }: TeamSpelerRijProps
   const leeftijd = korfbalLeeftijd(speler.geboortedatum, speler.geboortejaar);
   const kleur = kleurIndicatie(leeftijd);
 
-  const { attributes, listeners, setNodeRef, transform, isDragging } =
-    useDraggable({
-      id: `team-${teamId}-${speler.id}`,
-      data: {
-        type: "team-speler",
-        spelerId: speler.id,
-        teamId,
-      },
-    });
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
+    id: `team-${teamId}-${speler.id}`,
+    data: {
+      type: "team-speler",
+      spelerId: speler.id,
+      teamId,
+    },
+  });
 
   const style = transform
     ? {
@@ -36,15 +35,15 @@ export default function TeamSpelerRij({ teamSpeler, teamId }: TeamSpelerRijProps
     <div
       ref={setNodeRef}
       style={style}
-      className={`flex items-center gap-1.5 px-2 py-1 rounded text-sm group ${
-        isDragging ? "opacity-50 bg-gray-100" : "hover:bg-gray-50"
+      className={`group flex items-center gap-1.5 rounded px-2 py-1 text-sm ${
+        isDragging ? "bg-gray-100 opacity-50" : "hover:bg-gray-50"
       }`}
     >
       {/* Drag handle */}
       <span
         {...listeners}
         {...attributes}
-        className="text-gray-300 cursor-grab hover:text-gray-500 text-xs flex-shrink-0"
+        className="flex-shrink-0 cursor-grab text-xs text-gray-300 hover:text-gray-500"
         title="Versleep"
       >
         &#9776;
@@ -54,28 +53,24 @@ export default function TeamSpelerRij({ teamSpeler, teamId }: TeamSpelerRijProps
       <SpelerAvatar spelerId={speler.id} naam={speler.roepnaam} size="xs" />
 
       {/* Status dot */}
-      <span
-        className={`w-1.5 h-1.5 rounded-full shrink-0 ${STATUS_KLEUREN[status]}`}
-      />
+      <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${STATUS_KLEUREN[status]}`} />
 
       {/* Naam */}
-      <span className="text-gray-800 truncate flex-1 text-xs">
+      <span className="flex-1 truncate text-xs text-gray-800">
         {speler.roepnaam} {speler.achternaam}
       </span>
 
       {/* Korfballeeftijd + kleurindicatie */}
       <span
-        className="inline-flex items-center gap-0.5 shrink-0"
+        className="inline-flex shrink-0 items-center gap-0.5"
         title={`Geboortejaar ${speler.geboortejaar}`}
       >
-        {kleur && <span className={`w-1 h-1 rounded-full ${KLEUR_DOT[kleur]}`} />}
+        {kleur && <span className={`h-1 w-1 rounded-full ${KLEUR_DOT[kleur]}`} />}
         <span className="text-[10px] text-gray-400">{leeftijd.toFixed(2)}</span>
       </span>
 
       {/* Geslacht */}
-      <span className="text-[10px] shrink-0">
-        {speler.geslacht === "M" ? "\u2642" : "\u2640"}
-      </span>
+      <span className="shrink-0 text-[10px]">{speler.geslacht === "M" ? "\u2642" : "\u2640"}</span>
     </div>
   );
 }

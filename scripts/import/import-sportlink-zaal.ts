@@ -73,10 +73,9 @@ async function main() {
 
   // Verifieer dat rel_codes bestaan in leden tabel
   const relCodes = [...new Set(spelers.map((s) => s.relCode))];
-  const bestaand = await client.query(
-    "SELECT rel_code FROM leden WHERE rel_code = ANY($1)",
-    [relCodes]
-  );
+  const bestaand = await client.query("SELECT rel_code FROM leden WHERE rel_code = ANY($1)", [
+    relCodes,
+  ]);
   const bestaandeSet = new Set(bestaand.rows.map((r: any) => r.rel_code));
   const nietGevonden = relCodes.filter((rc) => !bestaandeSet.has(rc));
   if (nietGevonden.length > 0) {
@@ -117,7 +116,9 @@ async function main() {
     inserted++;
   }
 
-  console.log(`✓ ${inserted} spelers geïmporteerd in competitie_spelers (competitie='${COMPETITIE}')`);
+  console.log(
+    `✓ ${inserted} spelers geïmporteerd in competitie_spelers (competitie='${COMPETITIE}')`
+  );
   if (skipped > 0) console.log(`  ${skipped} overgeslagen (rel_code niet in leden)`);
 
   // Toon verdeling per team

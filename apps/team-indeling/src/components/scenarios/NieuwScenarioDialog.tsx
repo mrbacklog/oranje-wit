@@ -9,10 +9,7 @@ interface NieuwScenarioDialogProps {
   keuzes: Keuze[];
 }
 
-export default function NieuwScenarioDialog({
-  blauwdrukId,
-  keuzes,
-}: NieuwScenarioDialogProps) {
+export default function NieuwScenarioDialog({ blauwdrukId, keuzes }: NieuwScenarioDialogProps) {
   const [open, setOpen] = useState(false);
   const [naam, setNaam] = useState("");
   const [toelichting, setToelichting] = useState("");
@@ -44,22 +41,17 @@ export default function NieuwScenarioDialog({
 
   return (
     <>
-      <button
-        onClick={() => setOpen(true)}
-        className="btn-primary"
-      >
+      <button onClick={() => setOpen(true)} className="btn-primary">
         + Nieuw scenario
       </button>
 
       {open && (
         <div className="dialog-overlay">
-          <div className="dialog-panel w-full max-w-lg max-h-[90vh] overflow-y-auto">
+          <div className="dialog-panel max-h-[90vh] w-full max-w-lg overflow-y-auto">
             {/* Header */}
             <div className="dialog-header">
-              <h3 className="text-lg font-bold text-gray-900">
-                Nieuw scenario
-              </h3>
-              <p className="text-sm text-gray-500 mt-1">
+              <h3 className="text-lg font-bold text-gray-900">Nieuw scenario</h3>
+              <p className="mt-1 text-sm text-gray-500">
                 Kies waardes voor de keuzes en maak een teamstructuur aan.
               </p>
             </div>
@@ -70,7 +62,7 @@ export default function NieuwScenarioDialog({
               <div>
                 <label
                   htmlFor="scenario-naam"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="mb-1 block text-sm font-medium text-gray-700"
                 >
                   Naam *
                 </label>
@@ -87,22 +79,18 @@ export default function NieuwScenarioDialog({
               {/* Keuzes */}
               {keuzes.length > 0 && (
                 <div className="space-y-4">
-                  <h4 className="text-sm font-semibold text-gray-700">
-                    Keuzes
-                  </h4>
+                  <h4 className="text-sm font-semibold text-gray-700">Keuzes</h4>
                   {keuzes.map((keuze) => (
                     <div key={keuze.id}>
-                      <p className="text-sm text-gray-600 mb-2">
-                        {keuze.vraag}
-                      </p>
+                      <p className="mb-2 text-sm text-gray-600">{keuze.vraag}</p>
                       <div className="flex flex-wrap gap-2">
                         {keuze.opties.map((optie) => (
                           <label
                             key={optie}
-                            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm cursor-pointer border transition-colors ${
+                            className={`inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm transition-colors ${
                               keuzeWaardes[keuze.id] === optie
-                                ? "bg-orange-50 border-orange-400 text-orange-700"
-                                : "bg-white border-gray-200 text-gray-600 hover:border-gray-300"
+                                ? "border-orange-400 bg-orange-50 text-orange-700"
+                                : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
                             }`}
                           >
                             <input
@@ -110,9 +98,7 @@ export default function NieuwScenarioDialog({
                               name={`keuze-${keuze.id}`}
                               value={optie}
                               checked={keuzeWaardes[keuze.id] === optie}
-                              onChange={() =>
-                                handleKeuzeChange(keuze.id, optie)
-                              }
+                              onChange={() => handleKeuzeChange(keuze.id, optie)}
                               className="sr-only"
                             />
                             {optie}
@@ -128,7 +114,7 @@ export default function NieuwScenarioDialog({
               <div>
                 <label
                   htmlFor="scenario-toelichting"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="mb-1 block text-sm font-medium text-gray-700"
                 >
                   Toelichting (optioneel)
                 </label>
@@ -145,11 +131,7 @@ export default function NieuwScenarioDialog({
 
             {/* Footer */}
             <div className="dialog-footer">
-              <button
-                onClick={handleReset}
-                disabled={bezig}
-                className="btn-ghost"
-              >
+              <button onClick={handleReset} disabled={bezig} className="btn-ghost">
                 Annuleren
               </button>
               <button

@@ -27,10 +27,7 @@ export async function POST(request: Request) {
     const { vraag, teams } = body;
 
     if (!vraag || !teams) {
-      return NextResponse.json(
-        { error: "vraag en teams zijn verplicht" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "vraag en teams zijn verplicht" }, { status: 400 });
     }
 
     const teamOverzicht = teams
@@ -75,10 +72,7 @@ Geef ALLEEN de JSON terug, geen andere tekst.`;
 
     const antwoord = message.content[0];
     if (antwoord.type !== "text") {
-      return NextResponse.json(
-        { error: "Onverwacht antwoordtype" },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: "Onverwacht antwoordtype" }, { status: 500 });
     }
 
     let result: { analyse: string; getrofenTeams: string[]; suggesties: string[] };
@@ -99,9 +93,6 @@ Geef ALLEEN de JSON terug, geen andere tekst.`;
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
     console.error("AI what-if fout:", msg);
-    return NextResponse.json(
-      { error: `What-if analyse mislukt: ${msg}` },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: `What-if analyse mislukt: ${msg}` }, { status: 500 });
   }
 }

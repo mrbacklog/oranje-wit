@@ -1,4 +1,9 @@
-import { getTeamsRegister, getSpelersPerTeam, getSpelersVanTeam, getSelectieTeams } from "@/lib/queries/teams";
+import {
+  getTeamsRegister,
+  getSpelersPerTeam,
+  getSpelersVanTeam,
+  getSelectieTeams,
+} from "@/lib/queries/teams";
 import { getStafPerTeam } from "@/lib/queries/staf";
 import { getOWTeamsMetUitslagen } from "@/lib/queries/uitslagen";
 import { syncStandenIfStale } from "@/lib/sync/standen-knkv";
@@ -40,7 +45,11 @@ export default async function TeamsPage({
 
   // Jeugd: teams met kleur, niet al in senioren/mw/u-teams
   const KLEUR_VOLGORDE: Record<string, number> = {
-    Rood: 1, Oranje: 2, Geel: 3, Groen: 4, Blauw: 5,
+    Rood: 1,
+    Oranje: 2,
+    Geel: 3,
+    Groen: 4,
+    Blauw: 5,
   };
   const gebruikteCodes = new Set([
     ...senioren.map((t) => t.ow_code),
@@ -82,7 +91,6 @@ export default async function TeamsPage({
     ...t,
     displayNaam: t.naam || t.ow_code,
   }));
-
 
   return (
     <TeamsOnderwaterscherm

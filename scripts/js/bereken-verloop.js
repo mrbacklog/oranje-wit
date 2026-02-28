@@ -13,14 +13,12 @@
  * Output: ledenverloop tabel in PostgreSQL
  */
 
-const { Pool } = require('pg');
+const { Pool } = require("pg");
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
 async function getAllSeasons() {
-  const { rows } = await pool.query(
-    `SELECT seizoen, eind_jaar FROM seizoenen ORDER BY seizoen`
-  );
+  const { rows } = await pool.query(`SELECT seizoen, eind_jaar FROM seizoenen ORDER BY seizoen`);
   return rows;
 }
 
@@ -41,7 +39,7 @@ function getLeeftijd(geboortejaar, eindJaar) {
 }
 
 async function main() {
-  console.log('Ledenverloop berekenen uit database...\n');
+  console.log("Ledenverloop berekenen uit database...\n");
 
   const seizoenen = await getAllSeasons();
   // Filter seizoenen die daadwerkelijk spelers hebben
@@ -50,7 +48,8 @@ async function main() {
     const { rows } = await pool.query(
       `SELECT COUNT(DISTINCT rel_code) as n
        FROM competitie_spelers
-       WHERE seizoen = $1`, [s.seizoen]
+       WHERE seizoen = $1`,
+      [s.seizoen]
     );
     if (parseInt(rows[0].n) > 0) {
       seizoenenMetData.push(s);
@@ -72,14 +71,14 @@ async function main() {
       allPriorRelCodes.push(new Set());
     } else {
       const prev = new Set(allPriorRelCodes[i - 1]);
-      seizoenSpelers[i - 1].forEach(m => prev.add(m.rel_code));
+      seizoenSpelers[i - 1].forEach((m) => prev.add(m.rel_code));
       allPriorRelCodes.push(prev);
     }
   }
 
   // Verwijder bestaande verloop-records
   await pool.query(`DELETE FROM ledenverloop`);
-  console.log('Bestaande ledenverloop records verwijderd\n');
+  console.log("Bestaande ledenverloop records verwijderd\n");
 
   let totalInserted = 0;
 
@@ -92,10 +91,10 @@ async function main() {
     const nieuwSpelers = seizoenSpelers[i];
 
     const vorigMap = new Map();
-    vorigSpelers.forEach(m => vorigMap.set(m.rel_code, m));
+    vorigSpelers.forEach((m) => vorigMap.set(m.rel_code, m));
 
     const nieuwMap = new Map();
-    nieuwSpelers.forEach(m => nieuwMap.set(m.rel_code, m));
+    nieuwSpelers.forEach((m) => nieuwMap.set(m.rel_code, m));
 
     const priorCodes = allPriorRelCodes[i - 1];
     const samenvatting = { behouden: 0, nieuw: 0, herinschrijver: 0, uitgestroomd: 0 };
@@ -109,7 +108,7 @@ async function main() {
         records.push({
           seizoen: nieuw.seizoen,
           rel_code: relCode,
-          status: 'behouden',
+          status: "behouden",
           geboortejaar: vorigMember.geboortejaar,
           geslacht: vorigMember.geslacht,
           leeftijd_vorig: getLeeftijd(vorigMember.geboortejaar, vorig.eind_jaar),
@@ -122,7 +121,7 @@ async function main() {
         records.push({
           seizoen: nieuw.seizoen,
           rel_code: relCode,
-          status: 'uitgestroomd',
+          status: "uitgestroomd",
           geboortejaar: vorigMember.geboortejaar,
           geslacht: vorigMember.geslacht,
           leeftijd_vorig: getLeeftijd(vorigMember.geboortejaar, vorig.eind_jaar),
@@ -143,7 +142,7 @@ async function main() {
           records.push({
             seizoen: nieuw.seizoen,
             rel_code: relCode,
-            status: 'herinschrijver',
+            status: "herinschrijver",
             geboortejaar: nieuwMember.geboortejaar,
             geslacht: nieuwMember.geslacht,
             leeftijd_vorig: null,
@@ -156,7 +155,7 @@ async function main() {
           records.push({
             seizoen: nieuw.seizoen,
             rel_code: relCode,
-            status: 'nieuw',
+            status: "nieuw",
             geboortejaar: nieuwMember.geboortejaar,
             geslacht: nieuwMember.geslacht,
             leeftijd_vorig: null,
@@ -179,23 +178,34 @@ async function main() {
            geslacht = EXCLUDED.geslacht, leeftijd_vorig = EXCLUDED.leeftijd_vorig,
            leeftijd_nieuw = EXCLUDED.leeftijd_nieuw, team_vorig = EXCLUDED.team_vorig,
            team_nieuw = EXCLUDED.team_nieuw`,
-        [r.seizoen, r.rel_code, r.status, r.geboortejaar, r.geslacht,
-         r.leeftijd_vorig, r.leeftijd_nieuw, r.team_vorig, r.team_nieuw]
+        [
+          r.seizoen,
+          r.rel_code,
+          r.status,
+          r.geboortejaar,
+          r.geslacht,
+          r.leeftijd_vorig,
+          r.leeftijd_nieuw,
+          r.team_vorig,
+          r.team_nieuw,
+        ]
       );
     }
 
     totalInserted += records.length;
 
-    console.log(`${nieuw.seizoen}: vorig=${vorigMap.size}, nieuw=${nieuwMap.size}, ` +
-      `behouden=${samenvatting.behouden}, nieuw=${samenvatting.nieuw}, ` +
-      `herinschrijver=${samenvatting.herinschrijver}, uitgestroomd=${samenvatting.uitgestroomd}`);
+    console.log(
+      `${nieuw.seizoen}: vorig=${vorigMap.size}, nieuw=${nieuwMap.size}, ` +
+        `behouden=${samenvatting.behouden}, nieuw=${samenvatting.nieuw}, ` +
+        `herinschrijver=${samenvatting.herinschrijver}, uitgestroomd=${samenvatting.uitgestroomd}`
+    );
   }
 
   console.log(`\nTotaal ${totalInserted} verloop-records geschreven naar database`);
   await pool.end();
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error(err);
   pool.end();
   process.exit(1);

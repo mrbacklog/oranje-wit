@@ -78,9 +78,7 @@ export default function SpelerStatusOverzicht({
     if (zoekterm) {
       const term = zoekterm.toLowerCase();
       resultaat = resultaat.filter(
-        (s) =>
-          s.roepnaam.toLowerCase().includes(term) ||
-          s.achternaam.toLowerCase().includes(term)
+        (s) => s.roepnaam.toLowerCase().includes(term) || s.achternaam.toLowerCase().includes(term)
       );
     }
 
@@ -95,26 +93,19 @@ export default function SpelerStatusOverzicht({
     return resultaat;
   }, [spelers, zoekterm, statusFilter, kleurFilter]);
 
-  const wijzigStatus = useCallback(
-    (spelerId: string, nieuweStatus: SpelerStatus) => {
-      // Optimistic update
-      setSpelers((prev) =>
-        prev.map((s) =>
-          s.id === spelerId ? { ...s, status: nieuweStatus } : s
-        )
-      );
+  const wijzigStatus = useCallback((spelerId: string, nieuweStatus: SpelerStatus) => {
+    // Optimistic update
+    setSpelers((prev) => prev.map((s) => (s.id === spelerId ? { ...s, status: nieuweStatus } : s)));
 
-      startTransition(async () => {
-        await updateSpelerStatus(spelerId, nieuweStatus);
-      });
-    },
-    []
-  );
+    startTransition(async () => {
+      await updateSpelerStatus(spelerId, nieuweStatus);
+    });
+  }, []);
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-4">
+    <div className="rounded-lg border border-gray-200 bg-white p-4">
       {/* Samenvatting */}
-      <div className="flex flex-wrap gap-4 mb-4">
+      <div className="mb-4 flex flex-wrap gap-4">
         <SamenvattingBadge
           kleur="bg-green-100 text-green-800"
           label="Beschikbaar"
@@ -143,18 +134,18 @@ export default function SpelerStatusOverzicht({
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap gap-3 mb-4">
+      <div className="mb-4 flex flex-wrap gap-3">
         <input
           type="text"
           value={zoekterm}
           onChange={(e) => setZoekterm(e.target.value)}
           placeholder="Zoek op naam..."
-          className="border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400"
+          className="rounded border border-gray-300 px-3 py-1.5 text-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-300 focus:outline-none"
         />
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
-          className="border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400"
+          className="rounded border border-gray-300 px-3 py-1.5 text-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-300 focus:outline-none"
         >
           <option value="ALLE">Alle statussen</option>
           {STATUS_OPTIES.map((o) => (
@@ -166,7 +157,7 @@ export default function SpelerStatusOverzicht({
         <select
           value={kleurFilter}
           onChange={(e) => setKleurFilter(e.target.value as KleurFilter)}
-          className="border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400"
+          className="rounded border border-gray-300 px-3 py-1.5 text-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-300 focus:outline-none"
         >
           <option value="ALLE">Alle kleuren</option>
           {uniekeKleuren.map((k) => (
@@ -182,40 +173,31 @@ export default function SpelerStatusOverzicht({
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-gray-200 text-left text-gray-500">
-              <th className="pb-2 pr-3 font-medium">Naam</th>
-              <th className="pb-2 pr-3 font-medium">Geb.jaar</th>
-              <th className="pb-2 pr-3 font-medium">M/V</th>
-              <th className="pb-2 pr-3 font-medium">Huidig team</th>
-              <th className="pb-2 pr-3 font-medium">Status</th>
+              <th className="pr-3 pb-2 font-medium">Naam</th>
+              <th className="pr-3 pb-2 font-medium">Geb.jaar</th>
+              <th className="pr-3 pb-2 font-medium">M/V</th>
+              <th className="pr-3 pb-2 font-medium">Huidig team</th>
+              <th className="pr-3 pb-2 font-medium">Status</th>
               <th className="pb-2 font-medium">Wijzig</th>
             </tr>
           </thead>
           <tbody>
             {gefilterd.map((speler) => (
-              <tr
-                key={speler.id}
-                className="border-b border-gray-100 hover:bg-gray-50"
-              >
+              <tr key={speler.id} className="border-b border-gray-100 hover:bg-gray-50">
                 <td className="py-2 pr-3 text-gray-800">
                   {speler.roepnaam} {speler.achternaam}
                 </td>
-                <td className="py-2 pr-3 text-gray-600">
-                  {speler.geboortejaar}
-                </td>
+                <td className="py-2 pr-3 text-gray-600">{speler.geboortejaar}</td>
                 <td className="py-2 pr-3 text-gray-600">{speler.geslacht}</td>
-                <td className="py-2 pr-3 text-gray-600">
-                  {speler.huidig?.team ?? "—"}
-                </td>
+                <td className="py-2 pr-3 text-gray-600">{speler.huidig?.team ?? "—"}</td>
                 <td className="py-2 pr-3">
                   <SpelerStatusBadge status={speler.status} />
                 </td>
                 <td className="py-2">
                   <select
                     value={speler.status}
-                    onChange={(e) =>
-                      wijzigStatus(speler.id, e.target.value as SpelerStatus)
-                    }
-                    className="border border-gray-300 rounded px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400"
+                    onChange={(e) => wijzigStatus(speler.id, e.target.value as SpelerStatus)}
+                    className="rounded border border-gray-300 px-2 py-1 text-xs focus:border-orange-400 focus:ring-2 focus:ring-orange-300 focus:outline-none"
                   >
                     {STATUS_OPTIES.map((o) => (
                       <option key={o.waarde} value={o.waarde}>
@@ -228,10 +210,7 @@ export default function SpelerStatusOverzicht({
             ))}
             {gefilterd.length === 0 && (
               <tr>
-                <td
-                  colSpan={6}
-                  className="py-4 text-center text-gray-400 italic"
-                >
+                <td colSpan={6} className="py-4 text-center text-gray-400 italic">
                   Geen spelers gevonden.
                 </td>
               </tr>
@@ -240,9 +219,7 @@ export default function SpelerStatusOverzicht({
         </table>
       </div>
 
-      {isPending && (
-        <p className="mt-2 text-xs text-gray-400">Opslaan...</p>
-      )}
+      {isPending && <p className="mt-2 text-xs text-gray-400">Opslaan...</p>}
 
       <p className="mt-3 text-xs text-gray-400">
         {gefilterd.length} van {spelers.length} spelers getoond
@@ -262,7 +239,7 @@ function SamenvattingBadge({
 }) {
   return (
     <span
-      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium ${kleur}`}
+      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-medium ${kleur}`}
     >
       {label}: {aantal}
     </span>

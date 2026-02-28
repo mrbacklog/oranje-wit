@@ -240,9 +240,7 @@ export async function importData(data: ExportData): Promise<ImportResult> {
           where: { id: { startsWith: "STAF-" } },
           orderBy: { id: "desc" },
         });
-        const num = last
-          ? parseInt(last.id.replace("STAF-", "")) + 1
-          : 1;
+        const num = last ? parseInt(last.id.replace("STAF-", "")) + 1 : 1;
         const stafCode = `STAF-${String(num).padStart(3, "0")}`;
 
         await prisma.staf.create({
@@ -280,9 +278,7 @@ export async function importData(data: ExportData): Promise<ImportResult> {
         poolVeld: team.pool_veld,
         poolZaal: team.pool_zaal,
         spelerIds: team.speler_ids,
-        stafIds: team.staf_ids.map(
-          (sid) => sportlinkToStafCode.get(sid) ?? sid
-        ),
+        stafIds: team.staf_ids.map((sid) => sportlinkToStafCode.get(sid) ?? sid),
         stats: team.stats as Prisma.InputJsonValue,
       })),
     });

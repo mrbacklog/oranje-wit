@@ -9,10 +9,7 @@ interface SamenstellingTabsProps {
   detailContent: ReactNode;
 }
 
-export function SamenstellingTabs({
-  piramideContent,
-  detailContent,
-}: SamenstellingTabsProps) {
+export function SamenstellingTabs({ piramideContent, detailContent }: SamenstellingTabsProps) {
   const [activeTab, setActiveTab] = useState<(typeof TABS)[number]>("Piramide");
 
   return (

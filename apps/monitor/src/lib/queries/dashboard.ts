@@ -61,26 +61,23 @@ export type DashboardKPIs = {
 // Query
 // ---------------------------------------------------------------------------
 
-export async function getDashboardKPIs(
-  seizoen: string
-): Promise<DashboardKPIs> {
-  const [spelerCount, signaleringen, teamCount, geslachtRows] =
-    await Promise.all([
-      prisma.$queryRaw<{ totaal: number }[]>`
+export async function getDashboardKPIs(seizoen: string): Promise<DashboardKPIs> {
+  const [spelerCount, signaleringen, teamCount, geslachtRows] = await Promise.all([
+    prisma.$queryRaw<{ totaal: number }[]>`
         SELECT COUNT(DISTINCT rel_code)::int AS totaal
         FROM competitie_spelers
         WHERE seizoen = ${seizoen}`,
-      prisma.signalering.findMany({
-        where: { seizoen },
-        select: { ernst: true },
-      }),
-      prisma.oWTeam.count({ where: { seizoen } }),
-      prisma.$queryRaw<{ geslacht: string; aantal: number }[]>`
+    prisma.signalering.findMany({
+      where: { seizoen },
+      select: { ernst: true },
+    }),
+    prisma.oWTeam.count({ where: { seizoen } }),
+    prisma.$queryRaw<{ geslacht: string; aantal: number }[]>`
         SELECT geslacht, COUNT(DISTINCT rel_code)::int AS aantal
         FROM competitie_spelers
         WHERE seizoen = ${seizoen}
         GROUP BY geslacht`,
-    ]);
+  ]);
 
   const geslacht = { M: 0, V: 0 };
   for (const r of geslachtRows) {
@@ -92,10 +89,8 @@ export async function getDashboardKPIs(
     seizoen,
     totaal_spelers: spelerCount[0]?.totaal ?? 0,
     totaal_teams: teamCount,
-    signalering_kritiek: signaleringen.filter((s) => s.ernst === "kritiek")
-      .length,
-    signalering_aandacht: signaleringen.filter((s) => s.ernst === "aandacht")
-      .length,
+    signalering_kritiek: signaleringen.filter((s) => s.ernst === "kritiek").length,
+    signalering_aandacht: signaleringen.filter((s) => s.ernst === "aandacht").length,
     geslacht,
   };
 }

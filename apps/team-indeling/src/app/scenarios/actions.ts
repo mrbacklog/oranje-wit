@@ -7,7 +7,7 @@ import type { Prisma, TeamCategorie, Kleur } from "@oranje-wit/database";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-const SEIZOEN = "2026-2027";
+const _SEIZOEN = "2026-2027";
 const PEILJAAR = 2026;
 
 /**
@@ -208,11 +208,7 @@ export async function removeSpelerFromTeam(teamId: string, spelerId: string) {
 /**
  * Verplaats een speler van het ene team naar het andere.
  */
-export async function moveSpeler(
-  spelerId: string,
-  vanTeamId: string,
-  naarTeamId: string
-) {
+export async function moveSpeler(spelerId: string, vanTeamId: string, naarTeamId: string) {
   await prisma.$transaction([
     prisma.teamSpeler.deleteMany({
       where: { teamId: vanTeamId, spelerId },

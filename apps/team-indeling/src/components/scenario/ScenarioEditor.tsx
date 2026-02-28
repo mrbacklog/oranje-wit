@@ -26,10 +26,7 @@ interface ScenarioEditorProps {
   alleSpelers: SpelerData[];
 }
 
-export default function ScenarioEditor({
-  scenario,
-  alleSpelers,
-}: ScenarioEditorProps) {
+export default function ScenarioEditor({ scenario, alleSpelers }: ScenarioEditorProps) {
   const laatsteVersie = scenario.versies[0];
   const versieId = laatsteVersie?.id;
 
@@ -37,15 +34,14 @@ export default function ScenarioEditor({
   const [teams, setTeams] = useState<TeamData[]>(laatsteVersie?.teams ?? []);
 
   // Zichtbare teams in werkgebied
-  const [zichtbaar, setZichtbaar] = useState<Set<string>>(
-    () => new Set(teams.map((t) => t.id))
-  );
+  const [zichtbaar, setZichtbaar] = useState<Set<string>>(() => new Set(teams.map((t) => t.id)));
 
   const [, startTransition] = useTransition();
 
   // Blauwdruk-kaders voor validatie (stabiele referentie)
   const blauwdrukKaders = useMemo(
-    () => scenario.concept?.blauwdruk?.kaders as Record<string, Record<string, unknown>> | undefined,
+    () =>
+      scenario.concept?.blauwdruk?.kaders as Record<string, Record<string, unknown>> | undefined,
     [scenario.concept?.blauwdruk?.kaders]
   );
 
@@ -81,22 +77,19 @@ export default function ScenarioEditor({
     });
   }, []);
 
-  const handleToggleAlles = useCallback(
-    (teamIds: string[], aan: boolean) => {
-      setZichtbaar((prev) => {
-        const next = new Set(prev);
-        for (const id of teamIds) {
-          if (aan) {
-            next.add(id);
-          } else {
-            next.delete(id);
-          }
+  const handleToggleAlles = useCallback((teamIds: string[], aan: boolean) => {
+    setZichtbaar((prev) => {
+      const next = new Set(prev);
+      for (const id of teamIds) {
+        if (aan) {
+          next.add(id);
+        } else {
+          next.delete(id);
         }
-        return next;
-      });
-    },
-    []
-  );
+      }
+      return next;
+    });
+  }, []);
 
   // --- DnD handlers (optimistic) ---
   const handlePoolToTeam = useCallback(
@@ -213,13 +206,7 @@ export default function ScenarioEditor({
           kleur: data.kleur ?? null,
         });
         // Vervang temp ID met echt ID
-        setTeams((prev) =>
-          prev.map((t) =>
-            t.id === tempId
-              ? { ...t, id: team.id }
-              : t
-          )
-        );
+        setTeams((prev) => prev.map((t) => (t.id === tempId ? { ...t, id: team.id } : t)));
         setZichtbaar((prev) => {
           const next = new Set(prev);
           next.delete(tempId);
@@ -231,69 +218,50 @@ export default function ScenarioEditor({
     [versieId, teams.length]
   );
 
-  const handleDeleteTeam = useCallback(
-    (teamId: string) => {
-      // Optimistic update
-      setTeams((prev) => prev.filter((t) => t.id !== teamId));
-      setZichtbaar((prev) => {
-        const next = new Set(prev);
-        next.delete(teamId);
-        return next;
-      });
+  const handleDeleteTeam = useCallback((teamId: string) => {
+    // Optimistic update
+    setTeams((prev) => prev.filter((t) => t.id !== teamId));
+    setZichtbaar((prev) => {
+      const next = new Set(prev);
+      next.delete(teamId);
+      return next;
+    });
 
-      startTransition(() => {
-        deleteTeam(teamId);
-      });
-    },
-    []
-  );
+    startTransition(() => {
+      deleteTeam(teamId);
+    });
+  }, []);
 
   // --- Selectie handlers ---
-  const handleKoppelSelectie = useCallback(
-    (teamIds: string[]) => {
-      if (teamIds.length < 2) return;
-      const [leiderId, ...restIds] = teamIds;
+  const handleKoppelSelectie = useCallback((teamIds: string[]) => {
+    if (teamIds.length < 2) return;
+    const [leiderId, ...restIds] = teamIds;
 
-      // Optimistic update
-      setTeams((prev) =>
-        prev.map((t) =>
-          restIds.includes(t.id)
-            ? { ...t, selectieGroepId: leiderId }
-            : t
-        )
-      );
+    // Optimistic update
+    setTeams((prev) =>
+      prev.map((t) => (restIds.includes(t.id) ? { ...t, selectieGroepId: leiderId } : t))
+    );
 
-      startTransition(() => {
-        koppelSelectie(teamIds);
-      });
-    },
-    []
-  );
+    startTransition(() => {
+      koppelSelectie(teamIds);
+    });
+  }, []);
 
-  const handleOntkoppelSelectie = useCallback(
-    (groepLeiderId: string) => {
-      // Optimistic update
-      setTeams((prev) =>
-        prev.map((t) =>
-          t.selectieGroepId === groepLeiderId
-            ? { ...t, selectieGroepId: null }
-            : t
-        )
-      );
+  const handleOntkoppelSelectie = useCallback((groepLeiderId: string) => {
+    // Optimistic update
+    setTeams((prev) =>
+      prev.map((t) => (t.selectieGroepId === groepLeiderId ? { ...t, selectieGroepId: null } : t))
+    );
 
-      startTransition(() => {
-        ontkoppelSelectie(groepLeiderId);
-      });
-    },
-    []
-  );
+    startTransition(() => {
+      ontkoppelSelectie(groepLeiderId);
+    });
+  }, []);
 
   if (!laatsteVersie) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <p className="text-sm text-gray-400">
-          Dit scenario heeft nog geen versie.
-        </p>
+      <div className="flex h-64 items-center justify-center">
+        <p className="text-sm text-gray-400">Dit scenario heeft nog geen versie.</p>
       </div>
     );
   }
@@ -305,7 +273,7 @@ export default function ScenarioEditor({
       onTeamToTeam={handleTeamToTeam}
       onTeamToPool={handleTeamToPool}
     >
-      <div className="flex h-[calc(100vh-10rem)] border border-gray-200 rounded-lg overflow-hidden bg-gray-50">
+      <div className="flex h-[calc(100vh-10rem)] overflow-hidden rounded-lg border border-gray-200 bg-gray-50">
         {/* Links: Navigator */}
         <Navigator
           teams={teams}
@@ -315,7 +283,7 @@ export default function ScenarioEditor({
         />
 
         {/* Midden: Werkgebied + AdviesPanel */}
-        <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
           <Werkgebied
             scenarioId={scenario.id}
             teams={teams}
@@ -328,19 +296,11 @@ export default function ScenarioEditor({
             onOntkoppelSelectie={handleOntkoppelSelectie}
             onWhatIfOpen={() => setWhatIfOpen(true)}
           />
-          <ChatPanel
-            scenarioId={scenario.id}
-            versieId={versieId}
-            onMutatie={refreshTeams}
-          />
+          <ChatPanel scenarioId={scenario.id} versieId={versieId} onMutatie={refreshTeams} />
         </div>
 
         {/* Rechts: Spelerspool */}
-        <SpelersPool
-          spelers={alleSpelers}
-          teams={teams}
-          zichtbareTeamIds={zichtbaar}
-        />
+        <SpelersPool spelers={alleSpelers} teams={teams} zichtbareTeamIds={zichtbaar} />
       </div>
 
       <WhatIfDialoog

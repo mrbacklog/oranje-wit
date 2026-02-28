@@ -12,12 +12,7 @@ export type PeriodeData = {
   aantal_spelers: number | null;
 };
 
-const PERIODE_NAMEN = [
-  "veld_najaar",
-  "zaal_deel1",
-  "zaal_deel2",
-  "veld_voorjaar",
-] as const;
+const _PERIODE_NAMEN = ["veld_najaar", "zaal_deel1", "zaal_deel2", "veld_voorjaar"] as const;
 
 export type PeriodeNaam = (typeof PERIODE_NAMEN)[number];
 
@@ -41,9 +36,7 @@ export type TeamsRegisterResult = {
 // Query
 // ---------------------------------------------------------------------------
 
-export async function getTeamsRegister(
-  seizoen: string
-): Promise<TeamsRegisterResult> {
+export async function getTeamsRegister(seizoen: string): Promise<TeamsRegisterResult> {
   const rows = await prisma.$queryRaw<
     {
       id: number;
@@ -112,13 +105,9 @@ export async function getTeamsRegister(
 // Detecteer selectie-teams (gecombineerde S1/S2, U17, U19)
 // ---------------------------------------------------------------------------
 
-export async function getSelectieTeams(
-  seizoen: string
-): Promise<Record<string, string>> {
+export async function getSelectieTeams(seizoen: string): Promise<Record<string, string>> {
   // Check of er gecombineerde S1/S2 data is EN of er géén zaaldata is die het opsplitst
-  const rows = await prisma.$queryRaw<
-    { has_combined: boolean; has_zaal: boolean }[]
-  >`
+  const rows = await prisma.$queryRaw<{ has_combined: boolean; has_zaal: boolean }[]>`
     SELECT
       EXISTS(
         SELECT 1 FROM competitie_spelers
@@ -150,12 +139,8 @@ export type TeamSpelerTelling = {
   totaal: number;
 };
 
-export async function getSpelersPerTeam(
-  seizoen: string
-): Promise<Map<string, TeamSpelerTelling>> {
-  const rows = await prisma.$queryRaw<
-    { ow_code: string; geslacht: string; aantal: number }[]
-  >`
+export async function getSpelersPerTeam(seizoen: string): Promise<Map<string, TeamSpelerTelling>> {
+  const rows = await prisma.$queryRaw<{ ow_code: string; geslacht: string; aantal: number }[]>`
     WITH best_team AS (
       -- Kies per speler de meest specifieke competitie: zaal > veld_najaar > veld_voorjaar
       SELECT DISTINCT ON (cp.rel_code)
@@ -255,9 +240,7 @@ export type TeamSpeler = {
   geboortejaar: number | null;
 };
 
-export async function getSpelersVanTeam(
-  seizoen: string
-): Promise<Map<string, TeamSpeler[]>> {
+export async function getSpelersVanTeam(seizoen: string): Promise<Map<string, TeamSpeler[]>> {
   const rows = await prisma.$queryRaw<
     {
       ow_code: string;

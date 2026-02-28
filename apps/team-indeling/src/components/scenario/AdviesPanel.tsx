@@ -14,12 +14,7 @@ interface AdviesPanelProps {
   onToggle: () => void;
 }
 
-export default function AdviesPanel({
-  laatsteActie,
-  teams,
-  enabled,
-  onToggle,
-}: AdviesPanelProps) {
+export default function AdviesPanel({ laatsteActie, teams, enabled, onToggle }: AdviesPanelProps) {
   const [advies, setAdvies] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
@@ -33,9 +28,7 @@ export default function AdviesPanel({
         const scenarioState = {
           teams: teams.map((t) => ({
             naam: t.naam,
-            spelers: t.spelers.map(
-              (s) => `${s.roepnaam} ${s.achternaam}`
-            ),
+            spelers: t.spelers.map((s) => `${s.roepnaam} ${s.achternaam}`),
           })),
         };
 
@@ -83,30 +76,23 @@ export default function AdviesPanel({
   return (
     <div className="border-t border-gray-200 bg-white">
       {/* Header met toggle */}
-      <div className="px-4 py-2 flex items-center justify-between">
+      <div className="flex items-center justify-between px-4 py-2">
         <button
           onClick={() => setCollapsed(!collapsed)}
           className="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-gray-900"
         >
           <svg
-            className={`w-4 h-4 transition-transform ${collapsed ? "" : "rotate-180"}`}
+            className={`h-4 w-4 transition-transform ${collapsed ? "" : "rotate-180"}`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M5 15l7-7 7 7"
-            />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
           </svg>
           AI Advies
         </button>
-        <label className="flex items-center gap-2 cursor-pointer">
-          <span className="text-xs text-gray-500">
-            {enabled ? "Aan" : "Uit"}
-          </span>
+        <label className="flex cursor-pointer items-center gap-2">
+          <span className="text-xs text-gray-500">{enabled ? "Aan" : "Uit"}</span>
           <button
             onClick={onToggle}
             className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
@@ -132,16 +118,12 @@ export default function AdviesPanel({
           ) : loading ? (
             <div className="flex items-center gap-2">
               <Spinner size="sm" className="text-orange-500" />
-              <span className="text-xs text-gray-500">
-                Claude denkt na...
-              </span>
+              <span className="text-xs text-gray-500">Claude denkt na...</span>
             </div>
           ) : advies ? (
-            <p className="text-sm text-gray-700 leading-relaxed">{advies}</p>
+            <p className="text-sm leading-relaxed text-gray-700">{advies}</p>
           ) : (
-            <p className="text-xs text-gray-400">
-              Verplaats een speler om advies te ontvangen.
-            </p>
+            <p className="text-xs text-gray-400">Verplaats een speler om advies te ontvangen.</p>
           )}
         </div>
       )}

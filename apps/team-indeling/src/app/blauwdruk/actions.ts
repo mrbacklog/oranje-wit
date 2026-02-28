@@ -34,10 +34,7 @@ export async function getBlauwdruk(seizoen: string) {
 /**
  * Update kaders (JSON).
  */
-export async function updateKaders(
-  blauwdrukId: string,
-  kaders: Prisma.InputJsonValue
-) {
+export async function updateKaders(blauwdrukId: string, kaders: Prisma.InputJsonValue) {
   return prisma.blauwdruk.update({
     where: { id: blauwdrukId },
     data: { kaders },
@@ -47,10 +44,7 @@ export async function updateKaders(
 /**
  * Update speerpunten (string[]).
  */
-export async function updateSpeerpunten(
-  blauwdrukId: string,
-  speerpunten: string[]
-) {
+export async function updateSpeerpunten(blauwdrukId: string, speerpunten: string[]) {
   return prisma.blauwdruk.update({
     where: { id: blauwdrukId },
     data: { speerpunten },
@@ -60,10 +54,7 @@ export async function updateSpeerpunten(
 /**
  * Update toelichting (string).
  */
-export async function updateToelichting(
-  blauwdrukId: string,
-  toelichting: string
-) {
+export async function updateToelichting(blauwdrukId: string, toelichting: string) {
   return prisma.blauwdruk.update({
     where: { id: blauwdrukId },
     data: { toelichting },
@@ -75,14 +66,11 @@ export async function updateToelichting(
  */
 export interface Keuze {
   id: string;
-  vraag: string;       // "Hoeveel U15-teams?"
-  opties: string[];    // ["1 team", "2 teams"]
+  vraag: string; // "Hoeveel U15-teams?"
+  opties: string[]; // ["1 team", "2 teams"]
 }
 
-export async function updateKeuzes(
-  blauwdrukId: string,
-  keuzes: Keuze[]
-) {
+export async function updateKeuzes(blauwdrukId: string, keuzes: Keuze[]) {
   return prisma.blauwdruk.update({
     where: { id: blauwdrukId },
     data: { keuzes: keuzes as unknown as Prisma.InputJsonValue },
@@ -121,10 +109,7 @@ export async function updateCategorieKaders(
 /**
  * Update de status van een speler.
  */
-export async function updateSpelerStatus(
-  spelerId: string,
-  status: SpelerStatus
-) {
+export async function updateSpelerStatus(spelerId: string, status: SpelerStatus) {
   await prisma.speler.update({
     where: { id: spelerId },
     data: { status },
@@ -158,8 +143,19 @@ export async function getSpelersUitgebreid() {
   return spelers.map((s) => ({
     ...s,
     leeftijdVolgendSeizoen: PEILJAAR - s.geboortejaar,
-    huidig: s.huidig as { team?: string; categorie?: string; kleur?: string; a_categorie?: string } | null,
-    volgendSeizoen: s.volgendSeizoen as { leeftijd?: number; a_categorie?: string; a_jaars?: number; band_b?: string; opmerking?: string } | null,
+    huidig: s.huidig as {
+      team?: string;
+      categorie?: string;
+      kleur?: string;
+      a_categorie?: string;
+    } | null,
+    volgendSeizoen: s.volgendSeizoen as {
+      leeftijd?: number;
+      a_categorie?: string;
+      a_jaars?: number;
+      band_b?: string;
+      opmerking?: string;
+    } | null,
     retentie: s.retentie as { risico?: string; kans_behoud?: number; factoren?: string[] } | null,
   }));
 }
@@ -196,7 +192,16 @@ export interface LedenStatistieken {
   totaal: number;
   perStatus: Record<string, number>;
   perCategorie: CategorieStats[];
-  senioren: { beschikbaar: number; twijfelt: number; gaatStoppen: number; nieuwPotentieel: number; nieuwDefinitief: number; totaal: number; mannen: number; vrouwen: number };
+  senioren: {
+    beschikbaar: number;
+    twijfelt: number;
+    gaatStoppen: number;
+    nieuwPotentieel: number;
+    nieuwDefinitief: number;
+    totaal: number;
+    mannen: number;
+    vrouwen: number;
+  };
   retentie: RetentieOverzicht;
 }
 
@@ -238,8 +243,13 @@ export async function getLedenStatistieken(): Promise<LedenStatistieken> {
     });
 
     const stats = groepStats(groep);
-    const effectief = stats.beschikbaar + stats.nieuwPotentieel + stats.nieuwDefinitief + Math.round(stats.twijfelt * 0.5);
-    const minTeams = effectief > 0 ? Math.max(1, Math.floor(effectief / (cfg.streefPerTeam + 2))) : 0;
+    const effectief =
+      stats.beschikbaar +
+      stats.nieuwPotentieel +
+      stats.nieuwDefinitief +
+      Math.round(stats.twijfelt * 0.5);
+    const minTeams =
+      effectief > 0 ? Math.max(1, Math.floor(effectief / (cfg.streefPerTeam + 2))) : 0;
     const maxTeams = effectief > 0 ? Math.ceil(effectief / Math.max(cfg.streefPerTeam - 2, 4)) : 0;
 
     return {

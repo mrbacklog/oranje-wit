@@ -18,13 +18,23 @@ for (const sh of opWb.SheetNames) {
   let huidigTeam = null;
   for (const rij of data) {
     const cel0 = String(rij[0] || "").trim();
-    if (cel0.match(/^(Oranje Wit|Senioren|Junioren|[A-F]-aspiranten|Midweek|Jong Oranje|Algemeen|Reserves)/i)) {
-      if (cel0.match(/Algemeen|Reserves|Recreant/i)) { huidigTeam = null; continue; }
+    if (
+      cel0.match(
+        /^(Oranje Wit|Senioren|Junioren|[A-F]-aspiranten|Midweek|Jong Oranje|Algemeen|Reserves)/i
+      )
+    ) {
+      if (cel0.match(/Algemeen|Reserves|Recreant/i)) {
+        huidigTeam = null;
+        continue;
+      }
       const m = cel0.match(/\(([^)]+)\)/);
       if (m) huidigTeam = m[1];
       else if (cel0.match(/Midweek/i)) huidigTeam = "MW1";
       else if (cel0.match(/Jong Oranje/i)) huidigTeam = "S5/S6";
-      else { const m2 = cel0.match(/Oranje Wit\s+(.+)/i); if (m2) huidigTeam = m2[1].trim(); }
+      else {
+        const m2 = cel0.match(/Oranje Wit\s+(.+)/i);
+        if (m2) huidigTeam = m2[1].trim();
+      }
       continue;
     }
     if (!huidigTeam) continue;
@@ -38,7 +48,8 @@ for (const sh of opWb.SheetNames) {
 }
 
 // Vergelijk teams
-let match = 0, mismatch = 0;
+let match = 0,
+  mismatch = 0;
 const mismatches = [];
 for (const [naam, telTeam] of telMap) {
   const opTeam = opMap.get(naam);
@@ -46,7 +57,10 @@ for (const [naam, telTeam] of telMap) {
   const normTel = telTeam.replace(/\//g, "");
   const normOp = opTeam.replace(/\//g, "");
   if (normTel === normOp) match++;
-  else { mismatch++; mismatches.push({ naam, telTeam, opTeam }); }
+  else {
+    mismatch++;
+    mismatches.push({ naam, telTeam, opTeam });
+  }
 }
 
 console.log("Teams vergelijking Telling 2019-2020 vs Opstelling 20182019:");
@@ -55,6 +69,8 @@ console.log("Mismatch:", mismatch);
 if (mismatches.length > 0) {
   console.log("\nMismatches:");
   for (const m of mismatches) {
-    console.log("  " + m.naam.padEnd(30) + "Telling: " + m.telTeam.padEnd(10) + "Opstelling: " + m.opTeam);
+    console.log(
+      "  " + m.naam.padEnd(30) + "Telling: " + m.telTeam.padEnd(10) + "Opstelling: " + m.opTeam
+    );
   }
 }

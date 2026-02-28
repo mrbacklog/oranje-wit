@@ -14,11 +14,7 @@ interface SpelersPoolProps {
   zichtbareTeamIds: Set<string>;
 }
 
-export default function SpelersPool({
-  spelers,
-  teams,
-  zichtbareTeamIds,
-}: SpelersPoolProps) {
+export default function SpelersPool({ spelers, teams, zichtbareTeamIds }: SpelersPoolProps) {
   const [zoekterm, setZoekterm] = useState("");
   const [filter, setFilter] = useState<SpelerFilter>("zonder_team");
   const [detailSpeler, setDetailSpeler] = useState<SpelerData | null>(null);
@@ -49,7 +45,9 @@ export default function SpelersPool({
     const leeftijden = new Set<number>();
     for (const team of zichtbareTeams) {
       for (const ts of team.spelers) {
-        leeftijden.add(Math.floor(korfbalLeeftijd(ts.speler.geboortedatum, ts.speler.geboortejaar)));
+        leeftijden.add(
+          Math.floor(korfbalLeeftijd(ts.speler.geboortedatum, ts.speler.geboortejaar))
+        );
       }
     }
 
@@ -79,9 +77,7 @@ export default function SpelersPool({
     if (zoekterm.trim()) {
       const term = zoekterm.toLowerCase();
       result = result.filter(
-        (s) =>
-          s.roepnaam.toLowerCase().includes(term) ||
-          s.achternaam.toLowerCase().includes(term)
+        (s) => s.roepnaam.toLowerCase().includes(term) || s.achternaam.toLowerCase().includes(term)
       );
     }
 
@@ -109,18 +105,18 @@ export default function SpelersPool({
   return (
     <aside
       ref={setNodeRef}
-      className={`w-80 flex-shrink-0 bg-white border-l border-gray-200 flex flex-col transition-colors ${
-        isOver ? "bg-orange-50 border-orange-300" : ""
+      className={`flex w-80 flex-shrink-0 flex-col border-l border-gray-200 bg-white transition-colors ${
+        isOver ? "border-orange-300 bg-orange-50" : ""
       }`}
     >
-      <div className="px-4 py-3 border-b border-gray-100">
+      <div className="border-b border-gray-100 px-4 py-3">
         <h3 className="text-sm font-semibold text-gray-700">Spelerspool</h3>
-        <p className="text-xs text-gray-400 mt-0.5">
+        <p className="mt-0.5 text-xs text-gray-400">
           {gefilterdeSpelers.length} van {spelers.length} spelers
         </p>
       </div>
 
-      <div className="px-3 py-2 border-b border-gray-100">
+      <div className="border-b border-gray-100 px-3 py-2">
         <SpelerFilters
           zoekterm={zoekterm}
           onZoektermChange={setZoekterm}
@@ -129,29 +125,18 @@ export default function SpelersPool({
         />
       </div>
 
-      <div className="flex-1 overflow-y-auto px-2 py-2 space-y-1 max-h-[calc(100vh-16rem)]">
+      <div className="max-h-[calc(100vh-16rem)] flex-1 space-y-1 overflow-y-auto px-2 py-2">
         {gefilterdeSpelers.length === 0 ? (
-          <p className="text-xs text-gray-400 text-center py-6">
-            Geen spelers gevonden
-          </p>
+          <p className="py-6 text-center text-xs text-gray-400">Geen spelers gevonden</p>
         ) : (
           gefilterdeSpelers.map((speler) => (
-            <SpelerKaart
-              key={speler.id}
-              speler={speler}
-              onClick={() => setDetailSpeler(speler)}
-            />
+            <SpelerKaart key={speler.id} speler={speler} onClick={() => setDetailSpeler(speler)} />
           ))
         )}
       </div>
 
       {/* Detail modal */}
-      {detailSpeler && (
-        <SpelerDetail
-          speler={detailSpeler}
-          onClose={() => setDetailSpeler(null)}
-        />
-      )}
+      {detailSpeler && <SpelerDetail speler={detailSpeler} onClose={() => setDetailSpeler(null)} />}
     </aside>
   );
 }

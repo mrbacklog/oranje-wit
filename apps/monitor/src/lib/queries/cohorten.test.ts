@@ -63,17 +63,13 @@ describe("groepeerCohortRows", () => {
 
     expect(result).toHaveLength(2);
 
-    const m2010 = result.find(
-      (c) => c.geboortejaar === 2010 && c.geslacht === "M"
-    );
+    const m2010 = result.find((c) => c.geboortejaar === 2010 && c.geslacht === "M");
     expect(m2010).toBeDefined();
     expect(Object.keys(m2010!.seizoenen)).toEqual(["2023-2024", "2024-2025"]);
     expect(m2010!.seizoenen["2023-2024"].retentie_pct).toBe(80.0);
     expect(m2010!.seizoenen["2024-2025"].actief).toBe(6);
 
-    const v2010 = result.find(
-      (c) => c.geboortejaar === 2010 && c.geslacht === "V"
-    );
+    const v2010 = result.find((c) => c.geboortejaar === 2010 && c.geslacht === "V");
     expect(v2010).toBeDefined();
     expect(Object.keys(v2010!.seizoenen)).toEqual(["2023-2024"]);
   });

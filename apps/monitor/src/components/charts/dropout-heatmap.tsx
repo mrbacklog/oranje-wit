@@ -39,9 +39,7 @@ export function DropoutHeatmap({ data, seizoenen }: DropoutHeatmapProps) {
         <tbody>
           {data.map((row) => (
             <tr key={row.leeftijd}>
-              <td className="sticky left-0 z-10 bg-white px-2 py-1 font-medium">
-                {row.leeftijd}
-              </td>
+              <td className="sticky left-0 z-10 bg-white px-2 py-1 font-medium">{row.leeftijd}</td>
               {seizoenen.map((sz) => {
                 const val = row.seizoenen[sz]?.uitstroom_pct ?? 0;
                 return (

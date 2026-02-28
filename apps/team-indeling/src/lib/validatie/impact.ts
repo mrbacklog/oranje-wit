@@ -22,7 +22,11 @@ export interface TeamTelling {
 
 export function berekenImpact(team: TeamData): ImpactAnalyse {
   const beschikbaar = team.spelers.filter(
-    (s) => !s.status || s.status === "BESCHIKBAAR" || s.status === "NIEUW_POTENTIEEL" || s.status === "NIEUW_DEFINITIEF"
+    (s) =>
+      !s.status ||
+      s.status === "BESCHIKBAAR" ||
+      s.status === "NIEUW_POTENTIEEL" ||
+      s.status === "NIEUW_DEFINITIEF"
   );
   const twijfelaars = team.spelers.filter((s) => s.status === "TWIJFELT");
   const stoppers = team.spelers.filter((s) => s.status === "GAAT_STOPPEN");

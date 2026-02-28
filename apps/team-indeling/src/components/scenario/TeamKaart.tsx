@@ -65,17 +65,17 @@ export default function TeamKaart({ team, validatie, onDelete }: TeamKaartProps)
   const borderKleur = isOver
     ? "border-orange-400 ring-2 ring-orange-200"
     : validatie
-      ? VALIDATIE_BORDER[validatie.status] ?? "border-gray-200"
+      ? (VALIDATIE_BORDER[validatie.status] ?? "border-gray-200")
       : "border-gray-200";
 
   return (
     <div
       ref={setNodeRef}
-      className={`bg-white border rounded-lg flex flex-col transition-colors ${borderKleur}`}
+      className={`flex flex-col rounded-lg border bg-white transition-colors ${borderKleur}`}
     >
       {/* Header */}
-      <div className="px-3 py-2 border-b border-gray-100 flex items-center justify-between">
-        <div className="flex items-center gap-2 relative">
+      <div className="flex items-center justify-between border-b border-gray-100 px-3 py-2">
+        <div className="relative flex items-center gap-2">
           {validatie && (
             <ValidatieBadge
               status={validatie.status}
@@ -85,7 +85,7 @@ export default function TeamKaart({ team, validatie, onDelete }: TeamKaartProps)
           <h4 className="text-sm font-semibold text-gray-900">{team.naam}</h4>
           {team.kleur && (
             <span
-              className={`text-[10px] px-1.5 py-0.5 rounded-full ${
+              className={`rounded-full px-1.5 py-0.5 text-[10px] ${
                 KLEUR_BADGE_KLEUREN[team.kleur] ?? "bg-gray-100 text-gray-500"
               }`}
             >
@@ -99,8 +99,8 @@ export default function TeamKaart({ team, validatie, onDelete }: TeamKaartProps)
             />
           )}
         </div>
-        {onDelete && (
-          deleteBevestig ? (
+        {onDelete &&
+          (deleteBevestig ? (
             <button
               onClick={() => {
                 if (deleteTimerRef.current) clearTimeout(deleteTimerRef.current);
@@ -111,7 +111,7 @@ export default function TeamKaart({ team, validatie, onDelete }: TeamKaartProps)
                 if (deleteTimerRef.current) clearTimeout(deleteTimerRef.current);
                 setDeleteBevestig(false);
               }}
-              className="text-xs text-red-600 font-medium hover:text-red-700 animate-pulse"
+              className="animate-pulse text-xs font-medium text-red-600 hover:text-red-700"
             >
               Bevestig?
             </button>
@@ -121,50 +121,44 @@ export default function TeamKaart({ team, validatie, onDelete }: TeamKaartProps)
                 setDeleteBevestig(true);
                 deleteTimerRef.current = setTimeout(() => setDeleteBevestig(false), 3000);
               }}
-              className="text-gray-300 hover:text-red-500 text-xs"
+              className="text-xs text-gray-300 hover:text-red-500"
               title="Verwijder team"
             >
               &times;
             </button>
-          )
-        )}
+          ))}
       </div>
 
       {/* Staf */}
       {team.staf.length > 0 && (
-        <div className="px-3 py-1 border-b border-gray-50">
+        <div className="border-b border-gray-50 px-3 py-1">
           {team.staf.map((ts) => (
             <div key={ts.id} className="text-[10px] text-gray-500">
-              {ts.staf.naam}{" "}
-              <span className="text-gray-400">({ts.rol})</span>
+              {ts.staf.naam} <span className="text-gray-400">({ts.rol})</span>
             </div>
           ))}
         </div>
       )}
 
       {/* Spelers */}
-      <div className="flex-1 px-1 py-1 min-h-[60px]">
+      <div className="min-h-[60px] flex-1 px-1 py-1">
         {team.spelers.length === 0 ? (
-          <p className="text-[10px] text-gray-400 text-center py-3">
-            Sleep spelers hierheen
-          </p>
+          <p className="py-3 text-center text-[10px] text-gray-400">Sleep spelers hierheen</p>
         ) : (
-          team.spelers.map((ts) => (
-            <TeamSpelerRij
-              key={ts.id}
-              teamSpeler={ts}
-              teamId={team.id}
-            />
-          ))
+          team.spelers.map((ts) => <TeamSpelerRij key={ts.id} teamSpeler={ts} teamId={team.id} />)
         )}
       </div>
 
       {/* Footer stats */}
-      <div className="px-3 py-1.5 border-t border-gray-100 flex items-center gap-3 text-[10px] text-gray-400">
+      <div className="flex items-center gap-3 border-t border-gray-100 px-3 py-1.5 text-[10px] text-gray-400">
         <span>{aantalSpelers} spelers</span>
-        <span>{aantalM}{"\u2642"} {aantalV}{"\u2640"}</span>
+        <span>
+          {aantalM}
+          {"\u2642"} {aantalV}
+          {"\u2640"}
+        </span>
         <span>gem. {gemLeeftijd} jr</span>
-        {jNummer && <span className="text-gray-500 font-medium">{jNummer}</span>}
+        {jNummer && <span className="font-medium text-gray-500">{jNummer}</span>}
       </div>
     </div>
   );

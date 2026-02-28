@@ -126,9 +126,7 @@ export default function ChatPanel({ scenarioId, versieId, onMutatie }: ChatPanel
             if (event.type === "text") {
               setBerichten((prev) =>
                 prev.map((b) =>
-                  b.id === assistantBericht.id
-                    ? { ...b, content: b.content + event.text }
-                    : b
+                  b.id === assistantBericht.id ? { ...b, content: b.content + event.text } : b
                 )
               );
             } else if (event.type === "tool_start") {
@@ -218,15 +216,15 @@ export default function ChatPanel({ scenarioId, versieId, onMutatie }: ChatPanel
   };
 
   return (
-    <div className="border-t border-gray-200 bg-white flex flex-col">
+    <div className="flex flex-col border-t border-gray-200 bg-white">
       {/* Header */}
-      <div className="px-4 py-2 flex items-center justify-between">
+      <div className="flex items-center justify-between px-4 py-2">
         <button
           onClick={() => setCollapsed(!collapsed)}
           className="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-gray-900"
         >
           <svg
-            className={`w-4 h-4 transition-transform ${collapsed ? "" : "rotate-180"}`}
+            className={`h-4 w-4 transition-transform ${collapsed ? "" : "rotate-180"}`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -253,12 +251,12 @@ export default function ChatPanel({ scenarioId, versieId, onMutatie }: ChatPanel
         <div className="flex flex-col" style={{ height: berichten.length > 0 ? "320px" : "auto" }}>
           {/* Berichten */}
           {berichten.length > 0 ? (
-            <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 space-y-3 pb-2">
+            <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-4 pb-2">
               {berichten.map((b) => (
                 <div key={b.id}>
                   {b.role === "user" ? (
                     <div className="flex justify-end">
-                      <div className="bg-orange-50 text-gray-800 rounded-lg px-3 py-2 max-w-[85%] text-sm">
+                      <div className="max-w-[85%] rounded-lg bg-orange-50 px-3 py-2 text-sm text-gray-800">
                         {b.content}
                       </div>
                     </div>
@@ -267,15 +265,30 @@ export default function ChatPanel({ scenarioId, versieId, onMutatie }: ChatPanel
                       <div className="max-w-[90%]">
                         {/* Tool indicators */}
                         {b.toolCalls && b.toolCalls.length > 0 && (
-                          <div className="flex flex-wrap gap-1 mb-1">
+                          <div className="mb-1 flex flex-wrap gap-1">
                             {b.toolCalls.map((tool, i) => (
                               <span
                                 key={i}
-                                className="inline-flex items-center gap-1 text-[10px] bg-gray-100 text-gray-500 rounded px-1.5 py-0.5"
+                                className="inline-flex items-center gap-1 rounded bg-gray-100 px-1.5 py-0.5 text-[10px] text-gray-500"
                               >
-                                <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <svg
+                                  className="h-2.5 w-2.5"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                                  />
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                  />
                                 </svg>
                                 {toolLabel(tool)}
                               </span>
@@ -285,11 +298,11 @@ export default function ChatPanel({ scenarioId, versieId, onMutatie }: ChatPanel
 
                         {/* Mutatie indicators */}
                         {b.mutaties && b.mutaties.length > 0 && (
-                          <div className="space-y-0.5 mb-1">
+                          <div className="mb-1 space-y-0.5">
                             {b.mutaties.map((m, i) => (
                               <div
                                 key={i}
-                                className="text-[10px] text-green-600 bg-green-50 rounded px-2 py-0.5"
+                                className="rounded bg-green-50 px-2 py-0.5 text-[10px] text-green-600"
                               >
                                 ✓ {m}
                               </div>
@@ -299,27 +312,38 @@ export default function ChatPanel({ scenarioId, versieId, onMutatie }: ChatPanel
 
                         {/* Tekst */}
                         {b.content && (
-                          <div className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">
+                          <div className="text-sm leading-relaxed whitespace-pre-wrap text-gray-700">
                             {b.content}
                           </div>
                         )}
 
                         {/* Streaming indicator */}
-                        {isStreaming && b.id === berichten[berichten.length - 1]?.id && !b.content && (
-                          <div className="flex items-center gap-2 py-1">
-                            {activeTool ? (
-                              <span className="text-xs text-gray-500 animate-pulse">
-                                {toolLabel(activeTool)}...
-                              </span>
-                            ) : (
-                              <span className="flex gap-1">
-                                <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                                <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                                <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
-                              </span>
-                            )}
-                          </div>
-                        )}
+                        {isStreaming &&
+                          b.id === berichten[berichten.length - 1]?.id &&
+                          !b.content && (
+                            <div className="flex items-center gap-2 py-1">
+                              {activeTool ? (
+                                <span className="animate-pulse text-xs text-gray-500">
+                                  {toolLabel(activeTool)}...
+                                </span>
+                              ) : (
+                                <span className="flex gap-1">
+                                  <span
+                                    className="h-1.5 w-1.5 animate-bounce rounded-full bg-gray-400"
+                                    style={{ animationDelay: "0ms" }}
+                                  />
+                                  <span
+                                    className="h-1.5 w-1.5 animate-bounce rounded-full bg-gray-400"
+                                    style={{ animationDelay: "150ms" }}
+                                  />
+                                  <span
+                                    className="h-1.5 w-1.5 animate-bounce rounded-full bg-gray-400"
+                                    style={{ animationDelay: "300ms" }}
+                                  />
+                                </span>
+                              )}
+                            </div>
+                          )}
                       </div>
                     </div>
                   )}
@@ -344,7 +368,7 @@ export default function ChatPanel({ scenarioId, versieId, onMutatie }: ChatPanel
                       setInput(suggestie);
                       inputRef.current?.focus();
                     }}
-                    className="text-[10px] bg-gray-100 text-gray-500 rounded-full px-2 py-1 hover:bg-orange-50 hover:text-orange-600 transition-colors"
+                    className="rounded-full bg-gray-100 px-2 py-1 text-[10px] text-gray-500 transition-colors hover:bg-orange-50 hover:text-orange-600"
                   >
                     {suggestie}
                   </button>
@@ -354,7 +378,7 @@ export default function ChatPanel({ scenarioId, versieId, onMutatie }: ChatPanel
           )}
 
           {/* Input */}
-          <div className="px-4 py-2 border-t border-gray-100">
+          <div className="border-t border-gray-100 px-4 py-2">
             <div className="flex items-end gap-2">
               <textarea
                 ref={inputRef}
@@ -363,13 +387,13 @@ export default function ChatPanel({ scenarioId, versieId, onMutatie }: ChatPanel
                 onKeyDown={handleKeyDown}
                 placeholder="Stel een vraag of geef een opdracht..."
                 rows={1}
-                className="flex-1 resize-none rounded-md border border-gray-200 px-3 py-2 text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-orange-300 focus:border-orange-300"
+                className="flex-1 resize-none rounded-md border border-gray-200 px-3 py-2 text-sm text-gray-700 placeholder:text-gray-400 focus:border-orange-300 focus:ring-1 focus:ring-orange-300 focus:outline-none"
                 style={{ maxHeight: "80px" }}
               />
               {isStreaming ? (
                 <button
                   onClick={stopStreaming}
-                  className="shrink-0 rounded-md bg-gray-200 px-3 py-2 text-sm text-gray-600 hover:bg-gray-300 transition-colors"
+                  className="shrink-0 rounded-md bg-gray-200 px-3 py-2 text-sm text-gray-600 transition-colors hover:bg-gray-300"
                 >
                   Stop
                 </button>
@@ -377,7 +401,7 @@ export default function ChatPanel({ scenarioId, versieId, onMutatie }: ChatPanel
                 <button
                   onClick={verstuur}
                   disabled={!input.trim()}
-                  className="shrink-0 rounded-md bg-orange-500 px-3 py-2 text-sm text-white hover:bg-orange-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  className="shrink-0 rounded-md bg-orange-500 px-3 py-2 text-sm text-white transition-colors hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   Verstuur
                 </button>

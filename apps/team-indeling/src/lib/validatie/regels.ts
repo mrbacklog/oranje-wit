@@ -235,7 +235,8 @@ function valideerBCategorie(
 ) {
   const kleur = team.kleur!;
   const format = KLEUR_FORMAT[kleur];
-  const grootte = (kaders && getTeamgrootteUitKaders(team, kaders)) ?? getTeamgrootte(format, false, overrides);
+  const grootte =
+    (kaders && getTeamgrootteUitKaders(team, kaders)) ?? getTeamgrootte(format, false, overrides);
   const aantalSpelers = team.spelers.length;
 
   // Teamgrootte
@@ -251,10 +252,7 @@ function valideerBCategorie(
       bericht: `${team.naam}: ${aantalSpelers} spelers, maximum is ${grootte.max}`,
       ernst: "kritiek",
     });
-  } else if (
-    aantalSpelers < grootte.ideaalMin ||
-    aantalSpelers > grootte.ideaalMax
-  ) {
+  } else if (aantalSpelers < grootte.ideaalMin || aantalSpelers > grootte.ideaalMax) {
     meldingen.push({
       regel: "teamgrootte",
       bericht: `${team.naam}: ${aantalSpelers} spelers, ideaal is ${grootte.ideaalMin}-${grootte.ideaalMax}`,
@@ -295,8 +293,7 @@ function valideerBCategorie(
   // Gemiddelde leeftijd (8-tallen)
   if (format === "achttal" && team.spelers.length > 0) {
     const gemiddeldGeboortejaar =
-      team.spelers.reduce((sum, s) => sum + s.geboortejaar, 0) /
-      team.spelers.length;
+      team.spelers.reduce((sum, s) => sum + s.geboortejaar, 0) / team.spelers.length;
     const gemiddeldeLeeftijd = seizoenJaar - gemiddeldGeboortejaar;
 
     if (gemiddeldeLeeftijd < MIN_GEMIDDELDE_LEEFTIJD_8TAL) {
@@ -321,7 +318,8 @@ function valideerACategorie(
   kaders?: BlauwdrukKaders
 ) {
   const aantalSpelers = team.spelers.length;
-  const grootte = (kaders && getTeamgrootteUitKaders(team, kaders)) ?? getTeamgrootte("achttal", true, overrides);
+  const grootte =
+    (kaders && getTeamgrootteUitKaders(team, kaders)) ?? getTeamgrootte("achttal", true, overrides);
 
   // Teamgrootte
   if (aantalSpelers < grootte.min) {
@@ -336,10 +334,7 @@ function valideerACategorie(
       bericht: `${team.naam}: ${aantalSpelers} spelers, maximum is ${grootte.max}`,
       ernst: "kritiek",
     });
-  } else if (
-    aantalSpelers < grootte.ideaalMin ||
-    aantalSpelers > grootte.ideaalMax
-  ) {
+  } else if (aantalSpelers < grootte.ideaalMin || aantalSpelers > grootte.ideaalMax) {
     meldingen.push({
       regel: "teamgrootte",
       bericht: `${team.naam}: ${aantalSpelers} spelers, ideaal is ${grootte.ideaalMin}-${grootte.ideaalMax}`,
@@ -351,10 +346,7 @@ function valideerACategorie(
   if (team.spelers.length > 0) {
     const categorie = detecteerACategorie(team.naam);
     if (categorie) {
-      const [minJaar, maxJaar] = aCategorieGeboortejaren(
-        categorie,
-        seizoenJaar
-      );
+      const [minJaar, maxJaar] = aCategorieGeboortejaren(categorie, seizoenJaar);
 
       for (const speler of team.spelers) {
         if (speler.geboortejaar < minJaar || speler.geboortejaar > maxJaar) {
@@ -512,9 +504,16 @@ function extractTeamNummer(naam: string): number | null {
 /**
  * Senioren zonder duidelijke A/B indeling — valideer basisregels.
  */
-function valideerSenioren(team: TeamData, meldingen: ValidatieMelding[], overrides?: TeamgrootteOverrides, kaders?: BlauwdrukKaders) {
+function valideerSenioren(
+  team: TeamData,
+  meldingen: ValidatieMelding[],
+  overrides?: TeamgrootteOverrides,
+  kaders?: BlauwdrukKaders
+) {
   const aantalSpelers = team.spelers.length;
-  const grootte = (kaders && getTeamgrootteUitKaders(team, kaders)) ?? getTeamgrootte("achttal", false, overrides);
+  const grootte =
+    (kaders && getTeamgrootteUitKaders(team, kaders)) ??
+    getTeamgrootte("achttal", false, overrides);
 
   if (aantalSpelers < grootte.min) {
     meldingen.push({
@@ -528,10 +527,7 @@ function valideerSenioren(team: TeamData, meldingen: ValidatieMelding[], overrid
       bericht: `${team.naam}: ${aantalSpelers} spelers, maximum is ${grootte.max}`,
       ernst: "kritiek",
     });
-  } else if (
-    aantalSpelers < grootte.ideaalMin ||
-    aantalSpelers > grootte.ideaalMax
-  ) {
+  } else if (aantalSpelers < grootte.ideaalMin || aantalSpelers > grootte.ideaalMax) {
     meldingen.push({
       regel: "teamgrootte",
       bericht: `${team.naam}: ${aantalSpelers} spelers, ideaal is ${grootte.ideaalMin}-${grootte.ideaalMax}`,
@@ -540,9 +536,7 @@ function valideerSenioren(team: TeamData, meldingen: ValidatieMelding[], overrid
   }
 }
 
-function detecteerACategorie(
-  teamNaam: string
-): "U15" | "U17" | "U19" | null {
+function detecteerACategorie(teamNaam: string): "U15" | "U17" | "U19" | null {
   const upper = teamNaam.toUpperCase();
   if (upper.includes("U15")) return "U15";
   if (upper.includes("U17")) return "U17";
@@ -567,9 +561,7 @@ function aCategorieGeboortejaren(
 /**
  * Valideer alle teams in een scenario op dubbele plaatsingen.
  */
-export function valideerDubbeleSpelersOverTeams(
-  teams: TeamData[]
-): ValidatieMelding[] {
+export function valideerDubbeleSpelersOverTeams(teams: TeamData[]): ValidatieMelding[] {
   const meldingen: ValidatieMelding[] = [];
   const spelerTeams = new Map<string, string[]>();
 
@@ -584,9 +576,7 @@ export function valideerDubbeleSpelersOverTeams(
   for (const [spelerId, teamNamen] of spelerTeams) {
     if (teamNamen.length > 1) {
       // Zoek spelernaam
-      const speler = teams
-        .flatMap((t) => t.spelers)
-        .find((s) => s.id === spelerId)!;
+      const speler = teams.flatMap((t) => t.spelers).find((s) => s.id === spelerId)!;
       meldingen.push({
         regel: "dubbele_plaatsing",
         bericht: `${speler.roepnaam} ${speler.achternaam} staat in ${teamNamen.length} teams: ${teamNamen.join(", ")}`,

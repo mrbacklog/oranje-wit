@@ -1,10 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageHeader } from "@oranje-wit/ui";
-import {
-  getSeizoenVerloop,
-  type SeizoenVerloopLid,
-} from "@/lib/queries/verloop";
+import { getSeizoenVerloop, type SeizoenVerloopLid } from "@/lib/queries/verloop";
 
 const STATUS_ICON: Record<string, string> = {
   nieuw: "★",
@@ -43,9 +40,8 @@ function VerloopLijst({
 
   return (
     <div className="rounded-xl bg-white p-5 shadow-sm">
-      <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-700">
-        {titel}{" "}
-        <span className={`ml-1 ${kleur}`}>({leden.length})</span>
+      <h3 className="mb-4 text-sm font-semibold tracking-wide text-gray-700 uppercase">
+        {titel} <span className={`ml-1 ${kleur}`}>({leden.length})</span>
       </h3>
 
       {leden.length === 0 ? (
@@ -58,17 +54,11 @@ function VerloopLijst({
                 <span className="text-xs font-semibold text-gray-500">
                   {jaar === "onbekend" ? "Onbekend" : jaar}
                 </span>
-                <span className="text-xs text-gray-400">
-                  ({groep.length})
-                </span>
+                <span className="text-xs text-gray-400">({groep.length})</span>
               </div>
               <div className="space-y-0.5">
                 {groep.map((lid) => {
-                  const naam = [
-                    lid.roepnaam,
-                    lid.tussenvoegsel,
-                    lid.achternaam,
-                  ]
+                  const naam = [lid.roepnaam, lid.tussenvoegsel, lid.achternaam]
                     .filter(Boolean)
                     .join(" ");
                   const team = lid[teamVeld];
@@ -86,7 +76,7 @@ function VerloopLijst({
                       </span>
                       <Link
                         href={`/spelers/${lid.relCode}`}
-                        className="text-gray-900 hover:text-ow-oranje hover:underline"
+                        className="hover:text-ow-oranje text-gray-900 hover:underline"
                       >
                         {naam}
                       </Link>
@@ -95,11 +85,7 @@ function VerloopLijst({
                       >
                         {lid.geslacht === "M" ? "♂" : "♀"}
                       </span>
-                      {team && (
-                        <span className="ml-auto text-xs text-gray-400">
-                          {team}
-                        </span>
-                      )}
+                      {team && <span className="ml-auto text-xs text-gray-400">{team}</span>}
                     </div>
                   );
                 })}
@@ -126,14 +112,12 @@ export default async function SeizoenVerloopPage({
   if (data.instroom.length === 0 && data.uitstroom.length === 0) notFound();
 
   const retentie =
-    data.totaalVorig > 0
-      ? Math.round((data.behouden / data.totaalVorig) * 100)
-      : null;
+    data.totaalVorig > 0 ? Math.round((data.behouden / data.totaalVorig) * 100) : null;
 
   return (
     <>
       <div className="mb-6">
-        <Link href="/" className="text-sm text-gray-500 hover:text-ow-oranje">
+        <Link href="/" className="hover:text-ow-oranje text-sm text-gray-500">
           &larr; Terug naar dashboard
         </Link>
       </div>

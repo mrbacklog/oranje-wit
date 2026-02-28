@@ -7,9 +7,7 @@ interface MaakDefinitiefKnopProps {
   scenarioId: string;
 }
 
-export default function MaakDefinitiefKnop({
-  scenarioId,
-}: MaakDefinitiefKnopProps) {
+export default function MaakDefinitiefKnop({ scenarioId }: MaakDefinitiefKnopProps) {
   const [bevestig, setBevestig] = useState(false);
   const [isPending, startTransition] = useTransition();
 
@@ -38,10 +36,10 @@ export default function MaakDefinitiefKnop({
       <button
         onClick={handleClick}
         disabled={isPending}
-        className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
+        className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${
           bevestig
             ? "bg-green-600 text-white hover:bg-green-700"
-            : "bg-green-50 text-green-700 hover:bg-green-100 border border-green-200"
+            : "border border-green-200 bg-green-50 text-green-700 hover:bg-green-100"
         } disabled:opacity-50`}
       >
         {isPending ? (
@@ -50,12 +48,7 @@ export default function MaakDefinitiefKnop({
           "Bevestig definitief"
         ) : (
           <>
-            <svg
-              className="w-3.5 h-3.5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
+            <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"

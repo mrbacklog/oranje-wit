@@ -11,46 +11,46 @@ meta:
 kleurpalet:
   a_categorie:
     U15:
-      achtergrond: "#1E3A5F"     # donkerblauw
+      achtergrond: "#1E3A5F" # donkerblauw
       tekst: "#FFFFFF"
       label: "U15"
     U17:
-      achtergrond: "#2D6A4F"     # donkergroen
+      achtergrond: "#2D6A4F" # donkergroen
       tekst: "#FFFFFF"
       label: "U17"
     U19:
-      achtergrond: "#6B2D5B"     # donkerpaars
+      achtergrond: "#6B2D5B" # donkerpaars
       tekst: "#FFFFFF"
       label: "U19"
     Senioren_A:
-      achtergrond: "#4A4A4A"     # donkergrijs
+      achtergrond: "#4A4A4A" # donkergrijs
       tekst: "#FFFFFF"
       label: "Senioren"
 
   b_categorie:
     # Werkelijke KNKV-kleuren als achtergrond
     Blauw:
-      achtergrond: "#4A90D9"     # blauw
+      achtergrond: "#4A90D9" # blauw
       tekst: "#FFFFFF"
       label: "Blauw"
     Groen:
-      achtergrond: "#52B788"     # groen
+      achtergrond: "#52B788" # groen
       tekst: "#FFFFFF"
       label: "Groen"
     Geel:
-      achtergrond: "#F4D35E"     # geel
+      achtergrond: "#F4D35E" # geel
       tekst: "#333333"
       label: "Geel"
     Oranje:
-      achtergrond: "#F28C28"     # oranje
+      achtergrond: "#F28C28" # oranje
       tekst: "#FFFFFF"
       label: "Oranje"
     Rood:
-      achtergrond: "#D62828"     # rood
+      achtergrond: "#D62828" # rood
       tekst: "#FFFFFF"
       label: "Rood"
     Senioren_B:
-      achtergrond: "#7A3B69"     # donkerroze/paars
+      achtergrond: "#7A3B69" # donkerroze/paars
       tekst: "#FFFFFF"
       label: "Senioren (B)"
 
@@ -59,9 +59,9 @@ kleurpalet:
     tweede_jaars: "volle tint van categoriekleur (opacity 1.0)"
 
   stoplicht_rand:
-    kritiek: "#D62828"           # rode rand
-    aandacht: "#F4D35E"          # gele rand
-    op_koers: "#52B788"          # groene rand
+    kritiek: "#D62828" # rode rand
+    aandacht: "#F4D35E" # gele rand
+    op_koers: "#52B788" # groene rand
 
 # --- View 1: Cohort Flow Matrix ---
 cohort_flow_matrix:

@@ -21,7 +21,7 @@ export default function WhatIfDialoog({
   open,
   onClose,
   teams,
-  alleSpelers,
+  alleSpelers: _alleSpelers,
 }: WhatIfDialoogProps) {
   const [modus, setModus] = useState<"speler" | "vrij">("speler");
   const [geselecteerdeSpeler, setGeselecteerdeSpeler] = useState("");
@@ -87,9 +87,7 @@ export default function WhatIfDialoog({
 
       setResultaat(data);
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Onbekende fout bij analyse"
-      );
+      setError(err instanceof Error ? err.message : "Onbekende fout bij analyse");
     } finally {
       setLoading(false);
     }
@@ -115,33 +113,27 @@ export default function WhatIfDialoog({
     .sort((a, b) => a.label.localeCompare(b.label));
 
   return (
-    <div
-      className="dialog-overlay"
-      onClick={handleClose}
-    >
+    <div className="dialog-overlay" onClick={handleClose}>
       <div
-        className="dialog-panel w-full max-w-lg max-h-[80vh] flex flex-col"
+        className="dialog-panel flex max-h-[80vh] w-full max-w-lg flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="dialog-header">
-          <h3 className="text-lg font-bold text-gray-900">
-            What-if analyse
-          </h3>
-          <p className="text-sm text-gray-500 mt-1">
-            Analyseer de impact van hypothetische wijzigingen op de
-            teamindeling.
+          <h3 className="text-lg font-bold text-gray-900">What-if analyse</h3>
+          <p className="mt-1 text-sm text-gray-500">
+            Analyseer de impact van hypothetische wijzigingen op de teamindeling.
           </p>
         </div>
 
-        <div className="dialog-body overflow-auto flex-1">
+        <div className="dialog-body flex-1 overflow-auto">
           {/* Modus keuze */}
           <div className="flex gap-2">
             <button
               onClick={() => setModus("speler")}
               disabled={loading}
-              className={`px-3 py-1.5 text-sm rounded-lg border transition-colors ${
+              className={`rounded-lg border px-3 py-1.5 text-sm transition-colors ${
                 modus === "speler"
-                  ? "bg-orange-50 border-orange-400 text-orange-700"
+                  ? "border-orange-400 bg-orange-50 text-orange-700"
                   : "border-gray-200 text-gray-600 hover:border-gray-300"
               }`}
             >
@@ -150,9 +142,9 @@ export default function WhatIfDialoog({
             <button
               onClick={() => setModus("vrij")}
               disabled={loading}
-              className={`px-3 py-1.5 text-sm rounded-lg border transition-colors ${
+              className={`rounded-lg border px-3 py-1.5 text-sm transition-colors ${
                 modus === "vrij"
-                  ? "bg-orange-50 border-orange-400 text-orange-700"
+                  ? "border-orange-400 bg-orange-50 text-orange-700"
                   : "border-gray-200 text-gray-600 hover:border-gray-300"
               }`}
             >
@@ -165,7 +157,7 @@ export default function WhatIfDialoog({
             <div>
               <label
                 htmlFor="whatif-speler"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="mb-1 block text-sm font-medium text-gray-700"
               >
                 Kies een speler
               </label>
@@ -191,7 +183,7 @@ export default function WhatIfDialoog({
             <div>
               <label
                 htmlFor="whatif-vraag"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="mb-1 block text-sm font-medium text-gray-700"
               >
                 Stel een what-if vraag
               </label>
@@ -209,17 +201,15 @@ export default function WhatIfDialoog({
 
           {/* Loading */}
           {loading && (
-            <div className="flex items-center gap-3 p-3 bg-orange-50 rounded-lg">
+            <div className="flex items-center gap-3 rounded-lg bg-orange-50 p-3">
               <Spinner size="md" className="text-orange-500" />
-              <span className="text-sm text-orange-700">
-                Claude analyseert de impact...
-              </span>
+              <span className="text-sm text-orange-700">Claude analyseert de impact...</span>
             </div>
           )}
 
           {/* Error */}
           {error && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+            <div className="rounded-lg border border-red-200 bg-red-50 p-3">
               <p className="text-sm text-red-700">{error}</p>
             </div>
           )}
@@ -228,25 +218,18 @@ export default function WhatIfDialoog({
           {resultaat && (
             <div className="space-y-3">
               {/* Analyse */}
-              <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                <h4 className="text-sm font-medium text-blue-800 mb-1">
-                  Analyse
-                </h4>
+              <div className="rounded-lg border border-blue-200 bg-blue-50 p-3">
+                <h4 className="mb-1 text-sm font-medium text-blue-800">Analyse</h4>
                 <p className="text-sm text-blue-700">{resultaat.analyse}</p>
               </div>
 
               {/* Getroffen teams */}
               {resultaat.getrofenTeams.length > 0 && (
                 <div>
-                  <h4 className="text-sm font-medium text-gray-700 mb-1">
-                    Getroffen teams
-                  </h4>
+                  <h4 className="mb-1 text-sm font-medium text-gray-700">Getroffen teams</h4>
                   <div className="flex flex-wrap gap-1.5">
                     {resultaat.getrofenTeams.map((team) => (
-                      <span
-                        key={team}
-                        className="badge-orange"
-                      >
+                      <span key={team} className="badge-orange">
                         {team}
                       </span>
                     ))}
@@ -257,16 +240,11 @@ export default function WhatIfDialoog({
               {/* Suggesties */}
               {resultaat.suggesties.length > 0 && (
                 <div>
-                  <h4 className="text-sm font-medium text-gray-700 mb-1">
-                    Suggesties
-                  </h4>
+                  <h4 className="mb-1 text-sm font-medium text-gray-700">Suggesties</h4>
                   <ul className="space-y-1">
                     {resultaat.suggesties.map((suggestie, i) => (
-                      <li
-                        key={i}
-                        className="text-sm text-gray-600 flex items-start gap-2"
-                      >
-                        <span className="text-orange-400 mt-0.5">*</span>
+                      <li key={i} className="flex items-start gap-2 text-sm text-gray-600">
+                        <span className="mt-0.5 text-orange-400">*</span>
                         {suggestie}
                       </li>
                     ))}

@@ -31,10 +31,7 @@ export function CohortHeatmap({ data, seizoenen }: CohortHeatmapProps) {
   const router = useRouter();
 
   // Aggregeer per geboortejaar op basis van filter
-  const geaggregeerd = new Map<
-    number,
-    Record<string, number>
-  >();
+  const geaggregeerd = new Map<number, Record<string, number>>();
 
   for (const row of data) {
     if (filter !== "Alles" && row.geslacht !== filter) continue;
@@ -103,7 +100,7 @@ export function CohortHeatmap({ data, seizoenen }: CohortHeatmapProps) {
               return (
                 <tr key={jaar}>
                   <td
-                    className="sticky left-0 z-10 cursor-pointer bg-white px-2 py-1 font-medium hover:text-ow-oranje hover:underline"
+                    className="hover:text-ow-oranje sticky left-0 z-10 cursor-pointer bg-white px-2 py-1 font-medium hover:underline"
                     onClick={() => router.push(`/cohorten/${jaar}`)}
                   >
                     {jaar}

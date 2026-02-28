@@ -16,12 +16,16 @@ describe("KpiCard", () => {
   });
 
   it("toont trend als die meegegeven is", () => {
-    render(<KpiCard label="Leden" value={42} trend={{ value: 5, label: "t.o.v. vorig seizoen" }} />);
+    render(
+      <KpiCard label="Leden" value={42} trend={{ value: 5, label: "t.o.v. vorig seizoen" }} />
+    );
     expect(screen.getByText("+5 t.o.v. vorig seizoen")).toBeInTheDocument();
   });
 
   it("toont negatieve trend zonder plus-teken", () => {
-    render(<KpiCard label="Leden" value={42} trend={{ value: -3, label: "t.o.v. vorig seizoen" }} />);
+    render(
+      <KpiCard label="Leden" value={42} trend={{ value: -3, label: "t.o.v. vorig seizoen" }} />
+    );
     expect(screen.getByText("-3 t.o.v. vorig seizoen")).toBeInTheDocument();
   });
 

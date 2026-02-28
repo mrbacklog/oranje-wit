@@ -32,7 +32,8 @@ export const TOOLS: Anthropic.Tool[] = [
   // === READ-ONLY TOOLS ===
   {
     name: "bekijk_huidige_indeling",
-    description: "Toon alle teams met hun spelers, leeftijden, geslacht en stats. Gebruik dit als je wilt weten hoe de indeling er nu uitziet.",
+    description:
+      "Toon alle teams met hun spelers, leeftijden, geslacht en stats. Gebruik dit als je wilt weten hoe de indeling er nu uitziet.",
     input_schema: {
       type: "object" as const,
       properties: {},
@@ -41,7 +42,8 @@ export const TOOLS: Anthropic.Tool[] = [
   },
   {
     name: "bekijk_spelerspool",
-    description: "Toon alle spelers die nog NIET in een team zijn ingedeeld. Inclusief leeftijd, geslacht en huidig team van vorig seizoen.",
+    description:
+      "Toon alle spelers die nog NIET in een team zijn ingedeeld. Inclusief leeftijd, geslacht en huidig team van vorig seizoen.",
     input_schema: {
       type: "object" as const,
       properties: {},
@@ -50,7 +52,8 @@ export const TOOLS: Anthropic.Tool[] = [
   },
   {
     name: "bekijk_speler_details",
-    description: "Uitgebreide informatie over 1 speler: spelerspad (voorgaande teams), evaluaties, retentierisico, teamgenoten-historie, notities.",
+    description:
+      "Uitgebreide informatie over 1 speler: spelerspad (voorgaande teams), evaluaties, retentierisico, teamgenoten-historie, notities.",
     input_schema: {
       type: "object" as const,
       properties: {
@@ -61,7 +64,8 @@ export const TOOLS: Anthropic.Tool[] = [
   },
   {
     name: "bekijk_voorgaande_indeling",
-    description: "Toon de teamindeling van een vorig seizoen. Handig om te zien wie bij welk team speelde.",
+    description:
+      "Toon de teamindeling van een vorig seizoen. Handig om te zien wie bij welk team speelde.",
     input_schema: {
       type: "object" as const,
       properties: {
@@ -72,7 +76,8 @@ export const TOOLS: Anthropic.Tool[] = [
   },
   {
     name: "bekijk_teamsterktes",
-    description: "Toon de actuele competitiestanden van alle OW-teams. Laat zien hoe sterk teams presteren (punten, gewonnen, verloren, doelsaldo).",
+    description:
+      "Toon de actuele competitiestanden van alle OW-teams. Laat zien hoe sterk teams presteren (punten, gewonnen, verloren, doelsaldo).",
     input_schema: {
       type: "object" as const,
       properties: {
@@ -83,7 +88,8 @@ export const TOOLS: Anthropic.Tool[] = [
   },
   {
     name: "bekijk_evaluaties",
-    description: "Toon spelerevaluaties (scores en coach-opmerkingen). Kan voor specifieke spelers of voor alle spelers in een team.",
+    description:
+      "Toon spelerevaluaties (scores en coach-opmerkingen). Kan voor specifieke spelers of voor alle spelers in een team.",
     input_schema: {
       type: "object" as const,
       properties: {
@@ -98,7 +104,8 @@ export const TOOLS: Anthropic.Tool[] = [
   },
   {
     name: "bekijk_blauwdruk_kaders",
-    description: "Toon de blauwdruk-kaders: regels per categorie (min/max spelers, leeftijdsgrenzen, genderbalans), speerpunten en toelichting.",
+    description:
+      "Toon de blauwdruk-kaders: regels per categorie (min/max spelers, leeftijdsgrenzen, genderbalans), speerpunten en toelichting.",
     input_schema: {
       type: "object" as const,
       properties: {},
@@ -107,7 +114,8 @@ export const TOOLS: Anthropic.Tool[] = [
   },
   {
     name: "bekijk_pins",
-    description: "Toon vastgepinde spelers/staf: harde constraints die gerespecteerd moeten worden.",
+    description:
+      "Toon vastgepinde spelers/staf: harde constraints die gerespecteerd moeten worden.",
     input_schema: {
       type: "object" as const,
       properties: {},
@@ -116,7 +124,8 @@ export const TOOLS: Anthropic.Tool[] = [
   },
   {
     name: "bekijk_retentie_overzicht",
-    description: "Toon retentierisico per speler, gesorteerd van hoogste risico naar laagste. Laat zien wie mogelijk gaat stoppen.",
+    description:
+      "Toon retentierisico per speler, gesorteerd van hoogste risico naar laagste. Laat zien wie mogelijk gaat stoppen.",
     input_schema: {
       type: "object" as const,
       properties: {},
@@ -125,7 +134,8 @@ export const TOOLS: Anthropic.Tool[] = [
   },
   {
     name: "bekijk_teamgenoten",
-    description: "Toon met wie een speler eerder in een team heeft gespeeld en hoeveel seizoenen samen.",
+    description:
+      "Toon met wie een speler eerder in een team heeft gespeeld en hoeveel seizoenen samen.",
     input_schema: {
       type: "object" as const,
       properties: {
@@ -136,7 +146,8 @@ export const TOOLS: Anthropic.Tool[] = [
   },
   {
     name: "valideer_teams",
-    description: "Valideer alle teams tegen de blauwdruk-kaders en KNKV-regels. Toont per team een stoplicht (GROEN/ORANJE/ROOD) met meldingen over teamgrootte, leeftijd, genderbalans etc. Gebruik dit na mutaties of om de huidige staat te checken.",
+    description:
+      "Valideer alle teams tegen de blauwdruk-kaders en KNKV-regels. Toont per team een stoplicht (GROEN/ORANJE/ROOD) met meldingen over teamgrootte, leeftijd, genderbalans etc. Gebruik dit na mutaties of om de huidige staat te checken.",
     input_schema: {
       type: "object" as const,
       properties: {},
@@ -198,7 +209,8 @@ export const TOOLS: Anthropic.Tool[] = [
   },
   {
     name: "maak_team_aan",
-    description: "Maak een nieuw team aan. Vraag de gebruiker om de teamnaam, categorie en kleur als je die niet weet.",
+    description:
+      "Maak een nieuw team aan. Vraag de gebruiker om de teamnaam, categorie en kleur als je die niet weet.",
     input_schema: {
       type: "object" as const,
       properties: {
@@ -211,7 +223,8 @@ export const TOOLS: Anthropic.Tool[] = [
         kleur: {
           type: "string",
           enum: ["BLAUW", "GROEN", "GEEL", "ORANJE", "ROOD"],
-          description: "Kleur/niveau: BLAUW (jongste jeugd), GROEN (oudere jeugd), GEEL (A-categorie), ORANJE (A-cat/senioren), ROOD (senioren). Leidt af uit de teamnaam als mogelijk.",
+          description:
+            "Kleur/niveau: BLAUW (jongste jeugd), GROEN (oudere jeugd), GEEL (A-categorie), ORANJE (A-cat/senioren), ROOD (senioren). Leidt af uit de teamnaam als mogelijk.",
         },
       },
       required: ["naam", "categorie", "kleur"],
@@ -223,16 +236,16 @@ export const TOOLS: Anthropic.Tool[] = [
 // Helper: zoek speler op naam (fuzzy)
 // ---------------------------------------------------------------------------
 
-async function zoekSpeler(naam: string): Promise<{ id: string; roepnaam: string; achternaam: string } | null> {
+async function zoekSpeler(
+  naam: string
+): Promise<{ id: string; roepnaam: string; achternaam: string } | null> {
   const lower = naam.toLowerCase();
   const spelers = await prisma.speler.findMany({
     select: { id: true, roepnaam: true, achternaam: true },
   });
 
   // Exacte match op volledige naam
-  let match = spelers.find(
-    (s) => `${s.roepnaam} ${s.achternaam}`.toLowerCase() === lower
-  );
+  let match = spelers.find((s) => `${s.roepnaam} ${s.achternaam}`.toLowerCase() === lower);
   if (match) return match;
 
   // Bevat-match
@@ -245,7 +258,10 @@ async function zoekSpeler(naam: string): Promise<{ id: string; roepnaam: string;
   return match ?? null;
 }
 
-async function zoekTeam(versieId: string, naam: string): Promise<{ id: string; naam: string } | null> {
+async function zoekTeam(
+  versieId: string,
+  naam: string
+): Promise<{ id: string; naam: string } | null> {
   const lower = naam.toLowerCase();
   const teams = await prisma.team.findMany({
     where: { versieId },
@@ -255,7 +271,9 @@ async function zoekTeam(versieId: string, naam: string): Promise<{ id: string; n
   let match = teams.find((t) => t.naam.toLowerCase() === lower);
   if (match) return match;
 
-  match = teams.find((t) => t.naam.toLowerCase().includes(lower) || lower.includes(t.naam.toLowerCase()));
+  match = teams.find(
+    (t) => t.naam.toLowerCase().includes(lower) || lower.includes(t.naam.toLowerCase())
+  );
   return match ?? null;
 }
 
@@ -307,7 +325,8 @@ export async function handleTool(
     case "bekijk_teamsterktes": {
       const seizoen = (input.seizoen as string) || "2025-2026";
       const sterktes = await getTeamsterktes(seizoen);
-      if (sterktes.length === 0) return { result: `Geen standen gevonden voor seizoen ${seizoen}.` };
+      if (sterktes.length === 0)
+        return { result: `Geen standen gevonden voor seizoen ${seizoen}.` };
       return { result: JSON.stringify(sterktes, null, 2) };
     }
 
@@ -345,7 +364,8 @@ export async function handleTool(
       const speler = await zoekSpeler(input.speler_naam as string);
       if (!speler) return { result: `Speler "${input.speler_naam}" niet gevonden.` };
       const teamgenoten = await getTeamgenoten(speler.id);
-      if (teamgenoten.length === 0) return { result: `Geen teamgenoten-historie voor ${speler.roepnaam}.` };
+      if (teamgenoten.length === 0)
+        return { result: `Geen teamgenoten-historie voor ${speler.roepnaam}.` };
       return { result: JSON.stringify(teamgenoten, null, 2) };
     }
 
@@ -399,11 +419,15 @@ export async function handleTool(
       };
 
       return {
-        result: JSON.stringify({
-          samenvatting: `${totaal.groen} GROEN, ${totaal.oranje} ORANJE, ${totaal.rood} ROOD`,
-          teams: resultaten,
-          dubbeleSpelers: dubbeleMeldingen.map((m) => m.bericht),
-        }, null, 2),
+        result: JSON.stringify(
+          {
+            samenvatting: `${totaal.groen} GROEN, ${totaal.oranje} ORANJE, ${totaal.rood} ROOD`,
+            teams: resultaten,
+            dubbeleSpelers: dubbeleMeldingen.map((m) => m.bericht),
+          },
+          null,
+          2
+        ),
       };
     }
 

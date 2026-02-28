@@ -27,10 +27,7 @@ export default async function CohortDetailPage({
   return (
     <>
       <div className="mb-6">
-        <Link
-          href={`/cohorten${qs}`}
-          className="text-sm text-gray-500 hover:text-ow-oranje"
-        >
+        <Link href={`/cohorten${qs}`} className="hover:text-ow-oranje text-sm text-gray-500">
           &larr; Terug naar cohorten
         </Link>
       </div>
