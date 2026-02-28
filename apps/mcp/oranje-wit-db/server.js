@@ -140,12 +140,13 @@ server.tool('ow_spelerspad', 'Spelerspad van 1 speler over alle seizoenen', {
 
   const lidRes = await pool.query(`SELECT * FROM leden WHERE rel_code = $1`, [relCode]);
   const padRes = await pool.query(
-    `SELECT ss.seizoen, ss.team, ss.geslacht, ss.bron,
-            cs.competitie, cs.team as competitie_team
-     FROM speler_seizoenen ss
-     LEFT JOIN competitie_spelers cs ON cs.speler_seizoen_id = ss.id
-     WHERE ss.rel_code = $1
-     ORDER BY ss.seizoen, cs.competitie`, [relCode]
+    `SELECT seizoen, team, geslacht, bron, competitie
+     FROM competitie_spelers
+     WHERE rel_code = $1
+     ORDER BY seizoen,
+       CASE competitie
+         WHEN 'veld_najaar' THEN 1 WHEN 'zaal' THEN 2 WHEN 'veld_voorjaar' THEN 3
+       END`, [relCode]
   );
   return {
     content: [{

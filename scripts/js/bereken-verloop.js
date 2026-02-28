@@ -26,10 +26,10 @@ async function getAllSeasons() {
 
 async function getSpelersForSeason(seizoen) {
   const { rows } = await pool.query(
-    `SELECT ss.rel_code, ss.team, ss.geslacht, l.geboortejaar
-     FROM speler_seizoenen ss
-     JOIN leden l ON ss.rel_code = l.rel_code
-     WHERE ss.seizoen = $1`,
+    `SELECT DISTINCT cp.rel_code, cp.team, cp.geslacht, l.geboortejaar
+     FROM competitie_spelers cp
+     JOIN leden l ON cp.rel_code = l.rel_code
+     WHERE cp.seizoen = $1`,
     [seizoen]
   );
   return rows;
@@ -48,7 +48,9 @@ async function main() {
   const seizoenenMetData = [];
   for (const s of seizoenen) {
     const { rows } = await pool.query(
-      `SELECT COUNT(*) as n FROM speler_seizoenen WHERE seizoen = $1`, [s.seizoen]
+      `SELECT COUNT(DISTINCT rel_code) as n
+       FROM competitie_spelers
+       WHERE seizoen = $1`, [s.seizoen]
     );
     if (parseInt(rows[0].n) > 0) {
       seizoenenMetData.push(s);

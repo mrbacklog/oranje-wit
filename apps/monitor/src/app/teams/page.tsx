@@ -1,7 +1,9 @@
-import { PageHeader, BandPill } from "@oranje-wit/ui";
-import { getTeamsRegister } from "@/lib/queries/teams";
+import { getTeamsRegister, getSpelersPerTeam, getSpelersVanTeam, getSelectieTeams } from "@/lib/queries/teams";
 import { getStafPerTeam } from "@/lib/queries/staf";
-import { getSeizoen } from "@/lib/utils/seizoen";
+import { getOWTeamsMetUitslagen } from "@/lib/queries/uitslagen";
+import { syncStandenIfStale } from "@/lib/sync/standen-knkv";
+import { getSeizoen, SEIZOENEN } from "@/lib/utils/seizoen";
+import { TeamsOnderwaterscherm } from "./teams-onderwaterscherm";
 
 export default async function TeamsPage({
   searchParams,
@@ -11,179 +13,88 @@ export default async function TeamsPage({
   const params = await searchParams;
   const seizoen = getSeizoen(params);
 
-  const [register, stafPerTeam] = await Promise.all([
-    getTeamsRegister(seizoen),
-    getStafPerTeam(seizoen),
-  ]);
+  // Ververs standen als ze niet meer van vandaag zijn
+  await syncStandenIfStale(seizoen);
 
-  // Groepeer register teams per categorie
-  const perCategorie = new Map<string, typeof register.teams>();
-  for (const team of register.teams) {
-    const cat = team.categorie || "Overig";
-    if (!perCategorie.has(cat)) perCategorie.set(cat, []);
-    perCategorie.get(cat)!.push(team);
+  const [register, stafMap, uitslagen, spelersVanTeam, tellingMap, selectieCheck] =
+    await Promise.all([
+      getTeamsRegister(seizoen),
+      getStafPerTeam(seizoen),
+      getOWTeamsMetUitslagen(seizoen),
+      getSpelersVanTeam(seizoen),
+      getSpelersPerTeam(seizoen),
+      getSelectieTeams(seizoen),
+    ]);
+
+  // Bouw chipgroepen: Senioren+MW, U-teams, Jeugd (op kleur)
+  const allTeams = register.teams;
+  const senioren = allTeams
+    .filter((t) => /^\d+$/.test(t.ow_code))
+    .sort((a, b) => a.ow_code.localeCompare(b.ow_code, "nl", { numeric: true }));
+  const mw = allTeams
+    .filter((t) => t.ow_code.startsWith("MW"))
+    .sort((a, b) => a.ow_code.localeCompare(b.ow_code, "nl", { numeric: true }));
+  const uTeams = allTeams
+    .filter((t) => t.ow_code.startsWith("U"))
+    .sort((a, b) => b.ow_code.localeCompare(a.ow_code, "nl", { numeric: true }));
+
+  // Jeugd: teams met kleur, niet al in senioren/mw/u-teams
+  const KLEUR_VOLGORDE: Record<string, number> = {
+    Rood: 1, Oranje: 2, Geel: 3, Groen: 4, Blauw: 5,
+  };
+  const gebruikteCodes = new Set([
+    ...senioren.map((t) => t.ow_code),
+    ...mw.map((t) => t.ow_code),
+    ...uTeams.map((t) => t.ow_code),
+  ]);
+  const jeugd = allTeams
+    .filter((t) => !gebruikteCodes.has(t.ow_code))
+    .sort((a, b) => {
+      const ka = KLEUR_VOLGORDE[a.kleur || ""] ?? 99;
+      const kb = KLEUR_VOLGORDE[b.kleur || ""] ?? 99;
+      return ka - kb || a.ow_code.localeCompare(b.ow_code, "nl", { numeric: true });
+    });
+
+  const chipGroepen = [
+    { label: "Senioren", codes: [...senioren, ...mw].map((t) => t.ow_code) },
+    { label: "U-teams", codes: uTeams.map((t) => t.ow_code) },
+    { label: "Jeugd", codes: jeugd.map((t) => t.ow_code) },
+  ].filter((g) => g.codes.length > 0);
+
+  // Bouw uitslagen lookup: ow_code → TeamUitslagen
+  const uitslagenPerTeam: Record<string, (typeof uitslagen)[number]> = {};
+  for (const tu of uitslagen) {
+    uitslagenPerTeam[tu.teamCode] = tu;
   }
 
-  const categorieVolgorde = [
-    "Kangoeroe",
-    "F-jeugd",
-    "E-jeugd",
-    "D-jeugd",
-    "C-jeugd",
-    "B-jeugd",
-    "A-jeugd",
-    "Senioren",
-  ];
+  // Converteer Maps naar Records voor serialisatie
+  const stafRecord: Record<string, NonNullable<ReturnType<typeof stafMap.get>>> = {};
+  for (const [k, v] of stafMap) stafRecord[k] = v;
 
-  const gesorteerdeCategorieen = [...perCategorie.entries()].sort(
-    ([a], [b]) => {
-      const ia = categorieVolgorde.findIndex((c) =>
-        a.toLowerCase().includes(c.toLowerCase())
-      );
-      const ib = categorieVolgorde.findIndex((c) =>
-        b.toLowerCase().includes(c.toLowerCase())
-      );
-      return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
-    }
-  );
+  const spelersRecord: Record<string, NonNullable<ReturnType<typeof spelersVanTeam.get>>> = {};
+  for (const [k, v] of spelersVanTeam) spelersRecord[k] = v;
+
+  const tellingRecord: Record<string, NonNullable<ReturnType<typeof tellingMap.get>>> = {};
+  for (const [k, v] of tellingMap) tellingRecord[k] = v;
+
+  // Teams met displayNaam
+  const teamsMetNaam = register.teams.map((t) => ({
+    ...t,
+    displayNaam: t.naam || t.ow_code,
+  }));
+
 
   return (
-    <>
-      <PageHeader
-        title="Teams"
-        subtitle="Hoeveel teams, hoe samengesteld?"
-      />
-
-      {/* Overzicht */}
-      <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <div className="rounded-xl bg-white p-5 shadow-sm">
-          <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
-            Totaal teams
-          </p>
-          <p className="mt-1 text-3xl font-bold text-ow-oranje">
-            {register.teams.length}
-          </p>
-        </div>
-        <div className="rounded-xl bg-white p-5 shadow-sm">
-          <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
-            Categorieen
-          </p>
-          <p className="mt-1 text-3xl font-bold text-ow-oranje">
-            {perCategorie.size}
-          </p>
-        </div>
-      </div>
-
-      {/* Teams per categorie */}
-      {gesorteerdeCategorieen.map(([categorie, teams]) => (
-        <div key={categorie} className="mb-8">
-          <h3 className="mb-3 text-lg font-semibold text-gray-800">
-            {categorie}
-          </h3>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {teams.map((team) => {
-              const heeftPeriodes = Object.values(team.periodes).some(
-                (p) => p !== null
-              );
-
-              return (
-                <div
-                  key={team.ow_code}
-                  className="rounded-xl bg-white p-5 shadow-sm"
-                >
-                  <div className="mb-3 flex items-center justify-between">
-                    <h4 className="text-base font-bold text-gray-900">
-                      {team.ow_code}
-                    </h4>
-                    {team.kleur && <BandPill band={team.kleur} />}
-                  </div>
-
-                  {team.spelvorm && (
-                    <p className="mt-1 text-xs text-gray-400">
-                      {team.spelvorm}
-                      {team.leeftijdsgroep && ` | ${team.leeftijdsgroep}`}
-                    </p>
-                  )}
-
-                  {/* Periodes */}
-                  {heeftPeriodes && (
-                    <div className="mt-3 border-t border-gray-100 pt-3">
-                      <table className="w-full text-xs">
-                        <thead>
-                          <tr className="text-gray-500">
-                            <th className="py-1 text-left font-medium">
-                              Periode
-                            </th>
-                            <th className="py-1 text-center font-medium">
-                              J-nr
-                            </th>
-                            <th className="py-1 text-center font-medium">
-                              Pool
-                            </th>
-                            <th className="py-1 text-right font-medium">
-                              Sterkte
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {(
-                            [
-                              ["veld_najaar", "Veld najaar"],
-                              ["zaal_deel1", "Zaal 1"],
-                              ["zaal_deel2", "Zaal 2"],
-                              ["veld_voorjaar", "Veld voorjaar"],
-                            ] as const
-                          ).map(([key, label]) => {
-                            const p = team.periodes[key];
-                            if (!p) return null;
-                            return (
-                              <tr
-                                key={key}
-                                className="border-t border-gray-50"
-                              >
-                                <td className="py-1">{label}</td>
-                                <td className="py-1 text-center">
-                                  {p.j_nummer || "-"}
-                                </td>
-                                <td className="py-1 text-center">
-                                  {p.pool || "-"}
-                                </td>
-                                <td className="py-1 text-right">
-                                  {p.sterkte ?? "-"}
-                                </td>
-                              </tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
-
-                  {/* Staf */}
-                  {stafPerTeam.has(team.ow_code) && (
-                    <div className="mt-3 border-t border-gray-100 pt-3">
-                      <p className="mb-1 text-xs font-medium text-gray-500">
-                        Staf
-                      </p>
-                      <div className="space-y-0.5">
-                        {stafPerTeam.get(team.ow_code)!.map((s) => (
-                          <div
-                            key={s.stafCode}
-                            className="flex items-center justify-between text-xs"
-                          >
-                            <span className="text-gray-700">{s.naam}</span>
-                            <span className="text-gray-400">{s.rol}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      ))}
-    </>
+    <TeamsOnderwaterscherm
+      seizoen={seizoen}
+      seizoenen={SEIZOENEN}
+      teams={teamsMetNaam}
+      chipGroepen={chipGroepen}
+      stafPerTeam={stafRecord}
+      uitslagenPerTeam={uitslagenPerTeam}
+      spelersPerTeam={spelersRecord}
+      tellingPerTeam={tellingRecord}
+      selectieTeams={selectieCheck}
+    />
   );
 }

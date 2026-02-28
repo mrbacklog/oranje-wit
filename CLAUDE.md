@@ -9,7 +9,7 @@ Monorepo voor alle digitale tools van c.k.v. Oranje Wit: Verenigingsmonitor, Tea
 ```
 oranje-wit/
 ├── apps/
-│   ├── monitor/          # Verenigingsmonitor (Express + HTML dashboards)
+│   ├── monitor/          # Verenigingsmonitor (Next.js 16 dashboards)
 │   ├── team-indeling/    # Team-Indeling tool (Next.js 16, Tailwind CSS 4, NextAuth v5, dnd-kit)
 │   └── mcp/              # MCP servers (database, Railway)
 ├── packages/
@@ -56,10 +56,11 @@ oranje-wit/
 - **Database**: `oranjewit`
 - **Schema eigenaarschap**: `packages/database/prisma/schema.prisma`
 
-### Tabelverdeling (30 modellen)
+### Tabelverdeling (29 modellen)
 
 **Competitie-data**:
-SpelerSeizoen (`speler_seizoenen`), CompetitieSpeler (`competitie_spelers`), CompetitieRonde (`competitie_rondes`)
+CompetitieSpeler (`competitie_spelers`), CompetitieRonde (`competitie_rondes`)
+VIEW `speler_seizoenen` — afgeleid uit `competitie_spelers` (DISTINCT ON rel_code, seizoen)
 
 **Verenigingsmonitor** (snake_case via `@@map`):
 Lid, LidFoto, Seizoen, OWTeam, TeamPeriode, Ledenverloop, CohortSeizoen, Signalering, Streefmodel, PoolStand, PoolStandRegel
@@ -70,18 +71,19 @@ User, Speler, Staf, Blauwdruk, Pin, Concept, Scenario, Versie, Team, TeamSpeler,
 ### Competitie-datamodel
 
 ```
-SpelerSeizoen (1 per speler per seizoen)
-  └── CompetitieSpeler (1 per competitieperiode: veld_najaar, zaal, veld_voorjaar)
+CompetitieSpeler (primaire tabel: 1 per speler × seizoen × competitie)
+  └── VIEW speler_seizoenen (afgeleid: 1 per speler × seizoen)
 ```
 
-- **9375 records** uit 5 bronnen: telling, snapshot, a2, sportlink, afgeleid
-- **Dekking**: veld_najaar (16 seizoenen), zaal (7), veld_voorjaar (8)
-- Elke record heeft een `bron` veld voor traceerbaarheid
+- **~4933 records** in `competitie_spelers` — primaire bron, met `rel_code`, `seizoen`, `geslacht` direct
+- VIEW `speler_seizoenen` leidt hieruit af via `DISTINCT ON (rel_code, seizoen)`
+- Competitie-volgorde: veld_najaar → zaal → veld_voorjaar
+- Excel-import (`sync-telling.ts`) is verwijderd — data staat definitief in de database
 
 ### Lees/schrijf
 - **Team-Indeling schrijft**: blauwdruk, concepten, scenario's, teams, pins, log, evaluaties
 - **Team-Indeling leest**: leden, speler_seizoenen, competitie_spelers, retentie
-- **Monitor schrijft**: leden, teams, verloop, cohorten, signalering, speler_seizoenen, competitie_spelers
+- **Monitor schrijft**: leden, teams, verloop, cohorten, signalering, competitie_spelers
 - **Monitor leest**: alles (dashboards, signalering, MCP tools)
 
 ---
@@ -158,28 +160,21 @@ Rules zijn de **Single Source of Truth** voor domeinkennis. Agents en skills ver
 | Bron | Wat | Hoe |
 |---|---|---|
 | Sportlink | Ledendata, stamgegevens | CSV/JSON export → leden tabel |
-| Sportlink | Teamindelingen (zaal) | CSV export → competitie_spelers |
 | KNKV API | Teamdata, indelingen | API calls (knkv-api skill) |
-| KNKV A2-formulieren | Teamindelingen per periode | .xlsm → competitie_spelers |
-| Telling-bestand | 16 seizoenen spelersdata | Excel → sync-telling.ts |
+| Telling-bestand | 16 seizoenen spelersdata | Historische import, data staat definitief in PostgreSQL |
 | Evaluatie-app (Lovable) | Spelerevaluaties | JSON export → `pnpm import:evaluaties` |
 
 ## Data Flow
 
 ```
-=== Competitie-data (speler × seizoen × competitie) ===
+=== Competitie-data (primair in database) ===
 
-Telling Excel (16 seizoenen)
-    ↓ (scripts/import/sync-telling.ts)
-speler_seizoenen + competitie_spelers (veld_najaar)
-
-A2-formulieren (docs/teamindelingen/A2/*.xlsm, 2018-2024)
-    ↓ (inline import)
-competitie_spelers (zaal)
+competitie_spelers (primaire tabel, ~4933 records)
+    → VIEW speler_seizoenen (afgeleid, DISTINCT ON rel_code+seizoen)
 
 === Verloop-pipeline (database-based) ===
 
-speler_seizoenen + leden
+competitie_spelers + leden
     ↓ (scripts/js/bereken-verloop.js)
 ledenverloop tabel
     ↓ (scripts/js/bereken-cohorten.js)
@@ -198,6 +193,15 @@ Lovable evaluatie-app → data/evaluaties/ (JSON export)
     ↓ (scripts/import/import-evaluaties.ts)
 Railway PostgreSQL → Evaluatie tabel
 ```
+
+## Deployment (Railway)
+
+Alles draait in één Railway project (`oranje-wit-db`):
+- **GitHub repo**: `mrbacklog/oranje-wit` (publiek, auto-deploy op push naar master)
+- **Monitor**: https://monitor-production-b2b1.up.railway.app
+- **Team-Indeling**: https://team-indeling-production.up.railway.app
+- **Database**: `postgres.railway.internal:5432` (intern Railway netwerk)
+- **Build**: per-app Dockerfiles (`apps/*/Dockerfile`), Node 22, pnpm workspace
 
 ## Communicatie
 - **Taal**: altijd Nederlands

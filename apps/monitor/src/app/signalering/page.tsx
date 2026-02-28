@@ -112,7 +112,7 @@ function SignaleringCard({ signalering }: { signalering: SignaleringRow }) {
             {signalering.geslacht && (
               <span>
                 <span className="font-medium text-gray-500">Geslacht:</span>{" "}
-                {signalering.geslacht === "M" ? "Jongens" : "Meisjes"}
+                {signalering.geslacht === "M" ? "\u2642 Jongens" : "\u2640 Meisjes"}
               </span>
             )}
             {signalering.waarde !== null && (

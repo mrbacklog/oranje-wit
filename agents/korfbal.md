@@ -57,7 +57,7 @@ Elke beslissing toets je aan de Oranje Draad: Plezier + Ontwikkeling + Prestatie
 - Jeugdmodel: `model/jeugdmodel.yaml`
 
 ## Databronnen
-- PostgreSQL: `leden` + `speler_seizoenen` + `competitie_spelers` — ledendata en seizoenshistorie
+- PostgreSQL: `leden` + `competitie_spelers` (primair) + VIEW `speler_seizoenen` — ledendata en seizoenshistorie
 - `data/aggregaties/` — statistische rollups per dimensie
 - `data/ledenverloop/` — retentie, instroom, uitstroom, cohorten, signalering
 - `data/seizoenen/` — seizoensspecifieke data incl. KNKV team-kleur-mapping

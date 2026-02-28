@@ -11,7 +11,7 @@ allowed-tools: Read, Write, Glob
 Spelerevaluaties vanuit de Lovable evaluatie-app beschikbaar maken en inzetten bij spelersadvies en teamindeling.
 
 ## Wat zijn evaluaties?
-Coaches beoordelen spelers periodiek op diverse aspecten (techniek, inzet, spelvisie, etc.). Deze evaluaties worden in de Lovable app (`antjanlaban/oranje-wit-evaluate`) ingevoerd en als JSON geëxporteerd.
+Coaches beoordelen spelers periodiek op diverse aspecten (techniek, inzet, spelvisie, etc.). Deze evaluaties worden in de Lovable app (`mrbacklog/oranje-wit-evaluate`) ingevoerd en als JSON geëxporteerd.
 
 ## Importproces
 1. Coach voert evaluatie in via de Lovable evaluatie-app
@@ -34,4 +34,4 @@ Prisma model `Evaluatie` in `packages/database/prisma/schema.prisma`:
 
 ## Referenties
 - Import-skill: → zie `team-indeling/import` voor het importproces
-- Evaluatie-app: Lovable repo `antjanlaban/oranje-wit-evaluate`
+- Evaluatie-app: Lovable repo `mrbacklog/oranje-wit-evaluate`

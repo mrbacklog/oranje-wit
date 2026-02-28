@@ -73,7 +73,7 @@ PLEZIER + ONTWIKKELING + PRESTATIE → DUURZAAMHEID
 ```
 oranje-wit/
 ├── apps/
-│   ├── monitor/          # Verenigingsmonitor (Express, poort 4102)
+│   ├── monitor/          # Verenigingsmonitor (Next.js 16, poort 4102)
 │   ├── team-indeling/    # Team-Indeling (Next.js 16, poort 4100)
 │   └── mcp/              # MCP servers
 ├── packages/
@@ -101,19 +101,19 @@ Prisma is de source of truth: `packages/database/prisma/schema.prisma`.
 | Groep | Modellen |
 |---|---|
 | Competitie-data | SpelerSeizoen, CompetitieSpeler, CompetitieRonde |
-| Monitor | Lid, LidFoto, Seizoen, Snapshot, LidSnapshot, OWTeam, TeamPeriode, Ledenverloop, CohortSeizoen, Signalering, Streefmodel |
+| Monitor | Lid, LidFoto, Seizoen, OWTeam, TeamPeriode, Ledenverloop, CohortSeizoen, Signalering, Streefmodel |
 | Team-Indeling | User, Speler, Staf, Blauwdruk, Pin, Concept, Scenario, Versie, Team, TeamSpeler, TeamStaf, Evaluatie, LogEntry, Import, ReferentieTeam |
 
 **Competitie-datamodel:**
 ```
-SpelerSeizoen (1 per speler per seizoen)
-  └── CompetitieSpeler (1 per competitieperiode: veld_najaar, zaal, veld_voorjaar)
+SpelerSeizoen (speler_seizoenen: 1 per speler per seizoen)
+  └── CompetitieSpeler (competitie_spelers: 1 per competitieperiode)
 ```
-- 9375 records uit 5 bronnen (telling, snapshot, a2, sportlink, afgeleid)
-- Dekking: veld_najaar (16 seizoenen), zaal (7), veld_voorjaar (8)
+- ~5399 speler_seizoenen, ~9375 competitie_spelers, 957 unieke spelers, 16 seizoenen
+- Competitie-volgorde: veld_najaar → zaal → veld_voorjaar
 
 **Lees/schrijf-verdeling:**
-- Monitor schrijft: leden, snapshots, teams, verloop, cohorten, signalering, speler_seizoenen, competitie_spelers
+- Monitor schrijft: leden, teams, verloop, cohorten, signalering, competitie_spelers
 - Monitor leest: alles
 - Team-Indeling schrijft: blauwdruk, concepten, scenario's, teams, pins, log, evaluaties
 - Team-Indeling leest: leden, speler_seizoenen, competitie_spelers, retentie
@@ -152,20 +152,14 @@ Bepaal je domein op basis van je `skills:`-lijst in `agents/{jouw-naam}.md`.
 
 **Lees ook:** `rules/data.md`
 
-De Verenigingsmonitor is een Express-app (poort 4102) met HTML dashboards. Data komt uit meerdere bronnen:
+De Verenigingsmonitor is een Next.js 16 app (poort 4102) met dashboards. Data komt uit meerdere bronnen:
 
 **Data-pipeline:**
-- Sportlink CSV/JSON → `data/leden/snapshots/` → aggregaties → signalering → Railway DB
-- Telling Excel (16 seizoenen) → `sync-telling.ts` → speler_seizoenen + veld_najaar
-- A2-formulieren (.xlsm) → competitie_spelers (zaal)
-- Sportlink juni-snapshots → `import-veld-voorjaar.js` → competitie_spelers (veld_voorjaar)
+- `competitie_spelers` (primaire tabel, data staat definitief in DB)
+- VIEW `speler_seizoenen` leidt hieruit af
+- `bereken-verloop.js` → ledenverloop → `bereken-cohorten.js` → cohort_seizoenen → `genereer-signalering.js` → signalering
 
-**Import-scripts:** `scripts/import/` (TypeScript), `scripts/js/` (JavaScript), `scripts/python/` (analyses)
-
-**Drielagenmodel data:**
-1. Raw (`data/leden/snapshots/raw/`) — ongewijzigde bronbestanden
-2. Verrijkt (`data/leden/snapshots/YYYY-MM-DD.json`) — gecombineerd per lid
-3. Aggregaties (`data/aggregaties/`) — statistieken per geboortejaar, team, kleur
+**Pipeline-scripts:** `scripts/js/` (JavaScript verloop-pipeline), draaien met `node -r dotenv/config`
 
 ### Als je skills `team-indeling/*` bevatten → Team-Indeling-domein
 

@@ -35,11 +35,11 @@ async function main() {
 
   // Stap 1: Actief-tellingen per seizoen per (geboortejaar, geslacht)
   const { rows: actiefRaw } = await pool.query(
-    `SELECT ss.seizoen, l.geboortejaar, COALESCE(ss.geslacht, l.geslacht) as geslacht, COUNT(DISTINCT ss.rel_code)::int as actief
-     FROM speler_seizoenen ss
-     JOIN leden l ON ss.rel_code = l.rel_code
+    `SELECT cp.seizoen, l.geboortejaar, COALESCE(cp.geslacht, l.geslacht) as geslacht, COUNT(DISTINCT cp.rel_code)::int as actief
+     FROM competitie_spelers cp
+     JOIN leden l ON cp.rel_code = l.rel_code
      WHERE l.geboortejaar IS NOT NULL
-     GROUP BY ss.seizoen, l.geboortejaar, COALESCE(ss.geslacht, l.geslacht)`
+     GROUP BY cp.seizoen, l.geboortejaar, COALESCE(cp.geslacht, l.geslacht)`
   );
 
   // Bouw lookup: seizoen -> Map("geboortejaar|geslacht" -> actief)

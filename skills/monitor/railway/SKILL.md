@@ -13,28 +13,48 @@ Beheer de Railway-omgeving van Oranje Wit via de GraphQL API v2. De MCP server b
 ## Architectuur
 
 ```
-Claude Code ←→ mcp-railway/server.js ←→ Railway GraphQL API v2
-                                         https://backboard.railway.com/graphql/v2
-                                         Authorization: Bearer <RAILWAY_TOKEN>
+Claude Code ←→ apps/mcp/railway/server.js ←→ Railway GraphQL API v2
+                                               https://backboard.railway.com/graphql/v2
+                                               Authorization: Bearer <RAILWAY_TOKEN>
 ```
 
-- **MCP server**: `mcp-railway/server.js` — 11 tools
-- **Config**: `.mcp.json` — server registratie + token
+- **MCP server**: `apps/mcp/railway/server.js` — 11 tools
+- **Config**: `.mcp.json` — server registratie + token (gitignored)
 - **API**: Railway GraphQL API v2
 
-## Railway projecten
+## Railway project
+
+Alles draait in één project:
 
 | Project | ID | Functie |
 |---|---|---|
-| oranje-wit | `00b52783-04c1-4c38-a232-7efb92c98207` | Verenigingsmonitor (Express API + frontend) |
-| oranje-wit-db | `aa87602d-316d-4d3e-8860-f75d352fae27` | PostgreSQL database |
+| oranje-wit-db | `aa87602d-316d-4d3e-8860-f75d352fae27` | Alles: PostgreSQL + Monitor + Team-Indeling |
 
-### Environments
+### Environment
 
-| Project | Environment | ID |
+| Environment | ID |
+|---|---|
+| production | `1751fe16-20bf-4a6a-a5f6-b46ea0f4cfb1` |
+
+### Services
+
+| Service | ID | URL |
 |---|---|---|
-| oranje-wit | production | `956e6e51-89f7-4939-b3f6-04b43e723632` |
-| oranje-wit-db | production | `1751fe16-20bf-4a6a-a5f6-b46ea0f4cfb1` |
+| Postgres | `e7486b49-dba3-4e0a-8709-a501cea860ae` | `postgres.railway.internal:5432` (intern) |
+| team-indeling | `49ed7b30-a243-4f30-87fa-ae56935fbbbc` | https://team-indeling-production.up.railway.app |
+| monitor | `a7efb126-8ad1-460d-b787-2d03207c3f3c` | https://monitor-production-b2b1.up.railway.app |
+
+### GitHub repo
+
+- **Repo**: `mrbacklog/oranje-wit` (publiek)
+- **Branch**: `master`
+- **Auto-deploy**: ja, bij elke push naar master
+
+### Deployment
+
+Beide apps gebruiken **Dockerfiles** (niet Nixpacks):
+- `apps/team-indeling/Dockerfile` — Node 22, pnpm workspace, Prisma
+- `apps/monitor/Dockerfile` — Node 22, pnpm workspace, Prisma
 
 ## MCP Tools
 
@@ -65,50 +85,41 @@ Claude Code ←→ mcp-railway/server.js ←→ Railway GraphQL API v2
 
 ```
 → railway_status
+→ railway_services
+    projectId: "aa87602d-316d-4d3e-8860-f75d352fae27"
 ```
 
-### 2. Nieuwe service deployen vanuit GitHub
-
-```
-→ railway_service_create
-    projectId: "00b52783-04c1-4c38-a232-7efb92c98207"
-    repo: "antjanlaban/oranje-wit"
-    name: "verenigingsmonitor"
-
-→ railway_variable_set
-    projectId: "00b52783-..."
-    environmentId: "956e6e51-..."
-    serviceId: "<nieuw service ID>"
-    variables: {"NODE_ENV": "production", "DATABASE_URL": "postgresql://..."}
-
-→ railway_domain_create
-    environmentId: "956e6e51-..."
-    serviceId: "<service ID>"
-```
-
-### 3. Deployment status en logs
+### 2. Deployment status en logs
 
 ```
 → railway_deployments
-    projectId: "00b52783-..."
-    serviceId: "<service ID>"
+    projectId: "aa87602d-316d-4d3e-8860-f75d352fae27"
+    serviceId: "49ed7b30-a243-4f30-87fa-ae56935fbbbc"  # team-indeling
 
 → railway_logs
     deploymentId: "<deployment ID>"
     type: "build"
 ```
 
-### 4. Environment variables beheren
+### 3. Environment variables beheren
 
 ```
 → railway_variables_get
-    projectId: "00b52783-..."
-    environmentId: "956e6e51-..."
-    serviceId: "<service ID>"
+    projectId: "aa87602d-316d-4d3e-8860-f75d352fae27"
+    environmentId: "1751fe16-20bf-4a6a-a5f6-b46ea0f4cfb1"
+    serviceId: "49ed7b30-..."  # of "a7efb126-..."
 
 → railway_variable_set
     ...
     variables: {"KEY": "value"}
+```
+
+### 4. Handmatig deploy triggeren
+
+```
+→ railway_deploy
+    environmentId: "1751fe16-20bf-4a6a-a5f6-b46ea0f4cfb1"
+    serviceId: "49ed7b30-..."  # team-indeling
 ```
 
 ## Authenticatie
@@ -117,6 +128,7 @@ Claude Code ←→ mcp-railway/server.js ←→ Railway GraphQL API v2
 - **Aanmaken**: https://railway.com/account/tokens
 - **Configuratie**: `.mcp.json` → `railway.env.RAILWAY_TOKEN`
 - **Account**: info@mrbacklog.nl
+- **GitHub account**: mrbacklog (gekoppeld aan Railway)
 
 ### Token vernieuwen
 
@@ -135,6 +147,10 @@ Claude Code ←→ mcp-railway/server.js ←→ Railway GraphQL API v2
 
 | Bestand | Functie |
 |---|---|
-| `mcp-railway/server.js` | MCP server (11 tools) |
-| `mcp-railway/package.json` | Dependencies |
-| `.mcp.json` | Server registratie + token |
+| `apps/mcp/railway/server.js` | MCP server (11 tools) |
+| `apps/mcp/railway/package.json` | Dependencies |
+| `.mcp.json` | Server registratie + token (gitignored) |
+| `apps/team-indeling/Dockerfile` | Docker build voor TI |
+| `apps/monitor/Dockerfile` | Docker build voor monitor |
+| `apps/team-indeling/railway.json` | Railway config (legacy, Dockerfile wordt nu gebruikt) |
+| `apps/monitor/railway.json` | Railway config (legacy, Dockerfile wordt nu gebruikt) |

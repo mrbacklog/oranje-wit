@@ -5,6 +5,7 @@ import type {
   SpelerData as ValidatieSpelerData,
   TeamValidatie,
   ValidatieMelding,
+  BlauwdrukKaders,
 } from "@/lib/validatie/regels";
 import { valideerTeam, valideerDubbeleSpelersOverTeams } from "@/lib/validatie/regels";
 
@@ -41,7 +42,8 @@ export interface ValidatieResultaat {
  */
 export function useValidatie(
   teams: UITeamData[],
-  seizoenJaar: number
+  seizoenJaar: number,
+  kaders?: BlauwdrukKaders
 ): ValidatieResultaat {
   return useMemo(() => {
     const validatieMap = new Map<string, TeamValidatie>();
@@ -50,11 +52,11 @@ export function useValidatie(
     for (const team of teams) {
       const vTeam = mapNaarValidatieTeam(team);
       validatieTeams.push(vTeam);
-      validatieMap.set(team.id, valideerTeam(vTeam, seizoenJaar));
+      validatieMap.set(team.id, valideerTeam(vTeam, seizoenJaar, undefined, kaders));
     }
 
     const dubbeleMeldingen = valideerDubbeleSpelersOverTeams(validatieTeams);
 
     return { validatieMap, dubbeleMeldingen };
-  }, [teams, seizoenJaar]);
+  }, [teams, seizoenJaar, kaders]);
 }

@@ -111,6 +111,11 @@ export interface ScenarioData {
   status: string;
   keuzeWaardes: unknown;
   versies: VersieData[];
+  concept: {
+    blauwdruk: {
+      kaders: Record<string, Record<string, unknown>>;
+    };
+  };
 }
 
 /** Huidig veld (JSON) */
@@ -160,7 +165,8 @@ export const STATUS_KLEUREN: Record<SpelerStatus, string> = {
   BESCHIKBAAR: "bg-green-500",
   TWIJFELT: "bg-orange-500",
   GAAT_STOPPEN: "bg-red-500",
-  NIEUW: "bg-blue-500",
+  NIEUW_POTENTIEEL: "bg-blue-400",
+  NIEUW_DEFINITIEF: "bg-blue-600",
 };
 
 export const KLEUR_BADGE_KLEUREN: Record<string, string> = {

@@ -342,10 +342,10 @@ async function main() {
   const { rows: actieveSpelers } = await pool.query(`
     SELECT l.rel_code, l.roepnaam, l.achternaam, l.tussenvoegsel, l.geslacht,
            l.geboortejaar, l.lid_sinds,
-           ss.team, ss.bron
-    FROM speler_seizoenen ss
-    JOIN leden l ON ss.rel_code = l.rel_code
-    WHERE ss.seizoen = $1
+           cp.team, cp.bron
+    FROM competitie_spelers cp
+    JOIN leden l ON cp.rel_code = l.rel_code
+    WHERE cp.seizoen = $1
     ORDER BY l.achternaam, l.roepnaam
   `, [huidigSeizoen]);
   console.log(`   ${actieveSpelers.length} spelers gevonden`);
@@ -353,12 +353,13 @@ async function main() {
   // 2. Spelerspaden laden uit database (speler_seizoenen + competitie_spelers)
   console.log('2. Spelerspaden laden uit database...');
   const { rows: padData } = await pool.query(`
-    SELECT ss.rel_code, ss.seizoen, ss.team,
-           cs.competitie, cs.team as comp_team
-    FROM speler_seizoenen ss
-    LEFT JOIN competitie_spelers cs ON cs.speler_seizoen_id = ss.id
-    WHERE ss.seizoen = ANY($1)
-    ORDER BY ss.rel_code, ss.seizoen, cs.competitie
+    SELECT rel_code, seizoen, team, competitie, team as comp_team
+    FROM competitie_spelers
+    WHERE seizoen = ANY($1)
+    ORDER BY rel_code, seizoen,
+      CASE competitie
+        WHEN 'veld_najaar' THEN 1 WHEN 'zaal' THEN 2 WHEN 'veld_voorjaar' THEN 3
+      END
   `, [RELEVANTE_SEIZOENEN]);
 
   // Groepeer per speler
@@ -382,7 +383,7 @@ async function main() {
   // Tel seizoenen actief (alle seizoenen, niet alleen relevante)
   const { rows: seizoenTellingen } = await pool.query(`
     SELECT rel_code, COUNT(DISTINCT seizoen)::int as seizoenen
-    FROM speler_seizoenen
+    FROM competitie_spelers
     GROUP BY rel_code
   `);
   const seizoenenActiefLookup = new Map();

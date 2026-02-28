@@ -242,6 +242,31 @@ export function groepeerInstroom(rows: InstroomRow[]): InstroomLeeftijd[] {
 }
 
 // ---------------------------------------------------------------------------
+// Types — Cohort detail
+// ---------------------------------------------------------------------------
+
+export type CohortLid = {
+  relCode: string;
+  roepnaam: string;
+  achternaam: string;
+  tussenvoegsel: string | null;
+  geslacht: string;
+  heeftFoto: boolean;
+  seizoenen: {
+    seizoen: string;
+    team: string;
+    status: string | null;
+  }[];
+};
+
+export type CohortDetailResult = {
+  geboortejaar: number;
+  seizoenen: string[];
+  leden: CohortLid[];
+  samenvatting: Record<string, { actief: number; M: number; V: number }>;
+};
+
+// ---------------------------------------------------------------------------
 // Query
 // ---------------------------------------------------------------------------
 
@@ -310,4 +335,107 @@ export async function getCohorten(): Promise<CohortResult> {
       instroom_leeftijd: instroomLeeftijd,
     },
   };
+}
+
+// ---------------------------------------------------------------------------
+// Query — Cohort detail (alle leden van een geboortejaar)
+// ---------------------------------------------------------------------------
+
+export async function getCohortDetail(
+  geboortejaar: number
+): Promise<CohortDetailResult> {
+  // 1. Alle seizoenen
+  const seizoenenRows = await prisma.seizoen.findMany({
+    select: { seizoen: true },
+    orderBy: { seizoen: "asc" },
+  });
+  const seizoenen = seizoenenRows.map((r) => r.seizoen);
+
+  // 2. Alle leden met dit geboortejaar die minstens 1 competitie_spelers record hebben
+  const ledenRows = await prisma.$queryRaw<
+    {
+      rel_code: string;
+      roepnaam: string;
+      achternaam: string;
+      tussenvoegsel: string | null;
+      geslacht: string;
+      heeft_foto: boolean;
+    }[]
+  >`
+    SELECT DISTINCT l.rel_code, l.roepnaam, l.achternaam, l.tussenvoegsel,
+           l.geslacht,
+           EXISTS(SELECT 1 FROM lid_fotos lf WHERE lf.rel_code = l.rel_code) as heeft_foto
+    FROM competitie_spelers cp
+    JOIN leden l ON cp.rel_code = l.rel_code
+    WHERE l.geboortejaar = ${geboortejaar}
+    ORDER BY l.achternaam, l.roepnaam`;
+
+  // 3. Per lid: seizoenen met team + verloopstatus
+  const activiteitRows = await prisma.$queryRaw<
+    { rel_code: string; seizoen: string; team: string }[]
+  >`
+    SELECT DISTINCT cp.rel_code, cp.seizoen, cp.team
+    FROM competitie_spelers cp
+    JOIN leden l ON cp.rel_code = l.rel_code
+    WHERE l.geboortejaar = ${geboortejaar}
+    ORDER BY cp.seizoen`;
+
+  const verloopRows = await prisma.$queryRaw<
+    { rel_code: string; seizoen: string; status: string }[]
+  >`
+    SELECT rel_code, seizoen, status
+    FROM ledenverloop
+    WHERE geboortejaar = ${geboortejaar}`;
+
+  // Bouw lookups
+  const activiteitMap = new Map<string, Map<string, string>>();
+  for (const r of activiteitRows) {
+    if (!activiteitMap.has(r.rel_code)) activiteitMap.set(r.rel_code, new Map());
+    activiteitMap.get(r.rel_code)!.set(r.seizoen, r.team);
+  }
+
+  const verloopMap = new Map<string, Map<string, string>>();
+  for (const r of verloopRows) {
+    if (!verloopMap.has(r.rel_code)) verloopMap.set(r.rel_code, new Map());
+    verloopMap.get(r.rel_code)!.set(r.seizoen, r.status);
+  }
+
+  // 4. Bouw leden array
+  const leden: CohortLid[] = ledenRows.map((l) => {
+    const actSeizoenen = activiteitMap.get(l.rel_code) || new Map();
+    const verSeizoenen = verloopMap.get(l.rel_code) || new Map();
+
+    return {
+      relCode: l.rel_code,
+      roepnaam: l.roepnaam,
+      achternaam: l.achternaam,
+      tussenvoegsel: l.tussenvoegsel,
+      geslacht: l.geslacht,
+      heeftFoto: l.heeft_foto,
+      seizoenen: seizoenen
+        .filter((sz) => actSeizoenen.has(sz) || verSeizoenen.has(sz))
+        .map((sz) => ({
+          seizoen: sz,
+          team: actSeizoenen.get(sz) || "",
+          status: verSeizoenen.get(sz) || null,
+        })),
+    };
+  });
+
+  // 5. Samenvatting per seizoen
+  const samenvatting: Record<string, { actief: number; M: number; V: number }> = {};
+  for (const sz of seizoenen) {
+    const actiefInSz = leden.filter((l) =>
+      l.seizoenen.some((s) => s.seizoen === sz && s.team)
+    );
+    if (actiefInSz.length > 0) {
+      samenvatting[sz] = {
+        actief: actiefInSz.length,
+        M: actiefInSz.filter((l) => l.geslacht === "M").length,
+        V: actiefInSz.filter((l) => l.geslacht === "V").length,
+      };
+    }
+  }
+
+  return { geboortejaar, seizoenen, leden, samenvatting };
 }

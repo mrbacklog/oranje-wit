@@ -1,7 +1,22 @@
-import { PageHeader, KpiCard, BandPill } from "@oranje-wit/ui";
-import { getPerGeboortejaar, getPerKleur } from "@/lib/queries/samenstelling";
+import Link from "next/link";
+import { PageHeader } from "@oranje-wit/ui";
+import { getPerGeboortejaar } from "@/lib/queries/samenstelling";
 import { getSeizoen } from "@/lib/utils/seizoen";
 import { Ledenboog } from "@/components/charts/ledenboog";
+import { SamenstellingTabs } from "@/components/samenstelling-tabs";
+
+const BAND_STIJL: Record<string, { bg: string; text: string; label: string }> = {
+  "Kangoeroes": { bg: "bg-band-blauw/30", text: "text-blue-800", label: "" },
+  "F-jeugd": { bg: "bg-band-blauw", text: "text-white", label: "" },
+  "E-jeugd": { bg: "bg-band-groen", text: "text-white", label: "" },
+  "D-jeugd": { bg: "bg-band-geel", text: "text-gray-800", label: "" },
+  "C-jeugd": { bg: "bg-band-oranje", text: "text-white", label: "" },
+  "U15-1": { bg: "bg-band-oranje", text: "text-white", label: "U15" },
+  "U15": { bg: "bg-band-rood", text: "text-white", label: "U15" },
+  "U17": { bg: "bg-band-rood/70", text: "text-white", label: "U17" },
+  "U19": { bg: "bg-band-rood/50", text: "text-white", label: "U19" },
+  "Senioren": { bg: "bg-gray-200", text: "text-gray-600", label: "Sen" },
+};
 
 export default async function SamenstellingPage({
   searchParams,
@@ -11,20 +26,14 @@ export default async function SamenstellingPage({
   const params = await searchParams;
   const seizoen = getSeizoen(params);
 
-  const [geboortejaar, kleur] = await Promise.all([
-    getPerGeboortejaar(seizoen),
-    getPerKleur(seizoen),
-  ]);
+  const geboortejaar = await getPerGeboortejaar(seizoen);
 
-  // Bereid ledenboog data voor: aggregeer per geboortejaar M/V met band
-  const boogMap = new Map<
-    number,
-    { M: number; V: number; band: string }
-  >();
+  // Bereid ledenboog data voor
+  const boogMap = new Map<number, { M: number; V: number; band: string }>();
   for (const row of geboortejaar.data) {
     if (!row.geboortejaar) continue;
     const existing = boogMap.get(row.geboortejaar);
-    const band = row.a_jaars || row.a_categorie || "Onbekend";
+    const band = row.a_categorie || "Overig";
     if (existing) {
       if (row.geslacht === "M") existing.M += row.aantal;
       else existing.V += row.aantal;
@@ -40,15 +49,12 @@ export default async function SamenstellingPage({
     .sort(([a], [b]) => a - b)
     .map(([gj, d]) => ({ geboortejaar: gj, ...d }));
 
-  // Detail tabel: per geboortejaar geaggregeerd
-  const detailMap = new Map<
-    number,
-    { M: number; V: number; band: string }
-  >();
+  // Detail tabel
+  const detailMap = new Map<number, { M: number; V: number; band: string }>();
   for (const row of geboortejaar.data) {
     if (!row.geboortejaar) continue;
     const existing = detailMap.get(row.geboortejaar);
-    const band = row.a_jaars || row.a_categorie || "Onbekend";
+    const band = row.a_categorie || "Overig";
     if (existing) {
       if (row.geslacht === "M") existing.M += row.aantal;
       else existing.V += row.aantal;
@@ -76,70 +82,83 @@ export default async function SamenstellingPage({
     <>
       <PageHeader
         title="Samenstelling"
-        subtitle="Wie zijn er actief? Populatiestructuur, banden en teams."
+        subtitle="Wie zijn er actief? Populatiestructuur en detail per geboortejaar."
       />
 
-      {/* Genderbalans per band */}
-      <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-5">
-        {kleur.data.map((k) => (
-          <KpiCard
-            key={k.kleur}
-            label={k.kleur}
-            value={`${k.spelers_m}M / ${k.spelers_v}V`}
-            trend={{
-              value: k.totaal,
-              label: "totaal",
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Ledenboog */}
-      <div className="mb-8 rounded-xl bg-white p-6 shadow-sm">
-        <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-700">
-          Ledenboog per geboortejaar
-        </h3>
-        {boogData.length > 0 ? (
-          <Ledenboog data={boogData} />
-        ) : (
-          <p className="text-sm text-gray-500">Geen data beschikbaar.</p>
-        )}
-      </div>
-
-      {/* Detail tabel */}
-      <div className="rounded-xl bg-white p-6 shadow-sm">
-        <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-700">
-          Detail per geboortejaar
-        </h3>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-gray-50 text-left">
-                <th className="px-3 py-2 font-semibold">Geboortejaar</th>
-                <th className="px-3 py-2 font-semibold">Leeftijd</th>
-                <th className="px-3 py-2 font-semibold">Band</th>
-                <th className="px-3 py-2 text-right font-semibold">M</th>
-                <th className="px-3 py-2 text-right font-semibold">V</th>
-                <th className="px-3 py-2 text-right font-semibold">Totaal</th>
-              </tr>
-            </thead>
-            <tbody>
-              {detailRows.map((row) => (
-                <tr key={row.geboortejaar} className="border-t border-gray-100">
-                  <td className="px-3 py-2 font-medium">{row.geboortejaar}</td>
-                  <td className="px-3 py-2">{row.leeftijd}</td>
-                  <td className="px-3 py-2">
-                    <BandPill band={row.band} />
-                  </td>
-                  <td className="px-3 py-2 text-right">{row.M}</td>
-                  <td className="px-3 py-2 text-right">{row.V}</td>
-                  <td className="px-3 py-2 text-right font-semibold">{row.totaal}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <SamenstellingTabs
+        piramideContent={
+          <div className="rounded-xl bg-white p-6 shadow-sm">
+            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-700">
+              Populatiepiramide per geboortejaar
+            </h3>
+            {boogData.length > 0 ? (
+              <Ledenboog data={boogData} seizoen={seizoen} />
+            ) : (
+              <p className="text-sm text-gray-500">Geen data beschikbaar.</p>
+            )}
+          </div>
+        }
+        detailContent={
+          <div className="rounded-xl bg-white p-6 shadow-sm">
+            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-700">
+              Detail per geboortejaar
+            </h3>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="bg-gray-50 text-left">
+                    <th className="px-3 py-2 font-semibold">Geboortejaar</th>
+                    <th className="px-3 py-2 font-semibold">Leeftijd</th>
+                    <th className="w-16 px-3 py-2 font-semibold"></th>
+                    <th className="px-3 py-2 text-right font-semibold">
+                      <span className="text-blue-500">♂</span>
+                    </th>
+                    <th className="px-3 py-2 text-right font-semibold">
+                      <span className="text-pink-500">♀</span>
+                    </th>
+                    <th className="px-3 py-2 text-right font-semibold">Totaal</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {detailRows.map((row) => {
+                    const stijl = BAND_STIJL[row.band] || {
+                      bg: "bg-gray-100",
+                      text: "text-gray-600",
+                      label: "",
+                    };
+                    return (
+                      <tr
+                        key={row.geboortejaar}
+                        className="border-t border-gray-100"
+                      >
+                        <td className="px-3 py-1.5 font-medium">
+                          <Link
+                            href={`/samenstelling/${row.geboortejaar}?seizoen=${seizoen}`}
+                            className="text-gray-900 hover:text-ow-oranje hover:underline"
+                          >
+                            {row.geboortejaar}
+                          </Link>
+                        </td>
+                        <td className="px-3 py-1.5">{row.leeftijd}</td>
+                        <td
+                          className={`px-3 py-1.5 text-center text-xs font-medium ${stijl.bg} ${stijl.text}`}
+                        >
+                          {stijl.label}
+                        </td>
+                        <td className="px-3 py-1.5 text-right">{row.M}</td>
+                        <td className="px-3 py-1.5 text-right">{row.V}</td>
+                        <td className="px-3 py-1.5 text-right font-semibold">
+                          {row.totaal}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        }
+      />
     </>
   );
 }

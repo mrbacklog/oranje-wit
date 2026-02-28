@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useTransition } from "react";
+import { useState, useCallback, useTransition, useMemo } from "react";
 import type { TeamCategorie, Kleur } from "@oranje-wit/database";
 import type { ScenarioData, SpelerData, TeamData, TeamSpelerData } from "./types";
 import { PEILJAAR } from "./types";
@@ -18,7 +18,7 @@ import DndProvider from "./DndContext";
 import Navigator from "./Navigator";
 import Werkgebied from "./Werkgebied";
 import SpelersPool from "./SpelersPool";
-import AdviesPanel from "./AdviesPanel";
+import ChatPanel from "./ChatPanel";
 import WhatIfDialoog from "./WhatIfDialoog";
 
 interface ScenarioEditorProps {
@@ -43,13 +43,30 @@ export default function ScenarioEditor({
 
   const [, startTransition] = useTransition();
 
-  // Realtime validatie
-  const { validatieMap, dubbeleMeldingen } = useValidatie(teams, PEILJAAR);
+  // Blauwdruk-kaders voor validatie (stabiele referentie)
+  const blauwdrukKaders = useMemo(
+    () => scenario.concept?.blauwdruk?.kaders as Record<string, Record<string, unknown>> | undefined,
+    [scenario.concept?.blauwdruk?.kaders]
+  );
 
-  // AI advies state
-  const [laatsteActie, setLaatsteActie] = useState<string | null>(null);
-  const [adviesEnabled, setAdviesEnabled] = useState(false);
+  // Realtime validatie met blauwdruk-kaders
+  const { validatieMap, dubbeleMeldingen } = useValidatie(teams, PEILJAAR, blauwdrukKaders);
+
+  // AI chat + what-if state
   const [whatIfOpen, setWhatIfOpen] = useState(false);
+
+  // Herlaad teams na AI-mutatie
+  const refreshTeams = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/scenarios/${scenario.id}/teams`);
+      if (res.ok) {
+        const data = await res.json();
+        setTeams(data.teams);
+      }
+    } catch {
+      // Stille fout — bij volgende page load worden teams opnieuw geladen
+    }
+  }, [scenario.id]);
 
   // --- Navigator handlers ---
   const handleToggle = useCallback((teamId: string) => {
@@ -106,10 +123,6 @@ export default function ScenarioEditor({
         })
       );
 
-      // Track actie voor advies
-      const teamNaam = team?.naam ?? "team";
-      setLaatsteActie(`${speler.roepnaam} ${speler.achternaam} toegevoegd aan ${teamNaam}`);
-
       // Server action
       startTransition(() => {
         addSpelerToTeam(teamId, spelerId);
@@ -145,13 +158,6 @@ export default function ScenarioEditor({
         });
       });
 
-      // Track actie voor advies
-      const vanNaam = teams.find((t) => t.id === vanTeamId)?.naam ?? "team";
-      const naarNaam = naarTeam?.naam ?? "team";
-      const spelerData = teams.flatMap((t) => t.spelers).find((ts) => ts.spelerId === spelerId);
-      const spelerNaam = spelerData ? `${spelerData.speler.roepnaam} ${spelerData.speler.achternaam}` : "speler";
-      setLaatsteActie(`${spelerNaam} verplaatst van ${vanNaam} naar ${naarNaam}`);
-
       startTransition(() => {
         moveSpeler(spelerId, vanTeamId, naarTeamId);
       });
@@ -171,12 +177,6 @@ export default function ScenarioEditor({
           };
         })
       );
-
-      // Track actie voor advies
-      const teamNaam = teams.find((t) => t.id === teamId)?.naam ?? "team";
-      const spelerData = teams.flatMap((t) => t.spelers).find((ts) => ts.spelerId === spelerId);
-      const spelerNaam = spelerData ? `${spelerData.speler.roepnaam} ${spelerData.speler.achternaam}` : "speler";
-      setLaatsteActie(`${spelerNaam} verwijderd uit ${teamNaam}`);
 
       startTransition(() => {
         removeSpelerFromTeam(teamId, spelerId);
@@ -328,18 +328,10 @@ export default function ScenarioEditor({
             onOntkoppelSelectie={handleOntkoppelSelectie}
             onWhatIfOpen={() => setWhatIfOpen(true)}
           />
-          <AdviesPanel
+          <ChatPanel
             scenarioId={scenario.id}
-            laatsteActie={laatsteActie}
-            teams={teams.map((t) => ({
-              naam: t.naam,
-              spelers: t.spelers.map((ts) => ({
-                roepnaam: ts.speler.roepnaam,
-                achternaam: ts.speler.achternaam,
-              })),
-            }))}
-            enabled={adviesEnabled}
-            onToggle={() => setAdviesEnabled((prev) => !prev)}
+            versieId={versieId}
+            onMutatie={refreshTeams}
           />
         </div>
 

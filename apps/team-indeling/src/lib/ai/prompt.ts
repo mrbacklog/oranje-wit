@@ -86,7 +86,7 @@ Deel ALLE bovenstaande spelers in bij precies 1 team. Elke speler moet in exact 
 Let op:
 - Respecteer de KNKV-regels (leeftijdsspreiding, teamgrootte).
 - Spelers met status "GAAT_STOPPEN" mogen worden overgeslagen (niet indelen).
-- Spelers met status "NIEUW" of "BESCHIKBAAR" moeten worden ingedeeld.
+- Spelers met status "NIEUW_POTENTIEEL", "NIEUW_DEFINITIEF" of "BESCHIKBAAR" moeten worden ingedeeld.
 - Spelers met status "TWIJFELT" wel indelen, maar noteer dat ze onzeker zijn.
 - Gebruik de leeftijd (geboortejaar) om spelers bij het juiste team te plaatsen.
 - Zorg voor genderbalans per team.
@@ -123,8 +123,10 @@ function statusLabel(status: string): string {
       return "twijfelt";
     case "GAAT_STOPPEN":
       return "gaat stoppen";
-    case "NIEUW":
-      return "nieuw";
+    case "NIEUW_POTENTIEEL":
+      return "nieuw (potentieel)";
+    case "NIEUW_DEFINITIEF":
+      return "nieuw (definitief)";
     default:
       return status;
   }

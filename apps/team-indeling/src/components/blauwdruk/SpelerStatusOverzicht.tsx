@@ -30,7 +30,8 @@ const STATUS_OPTIES: { waarde: SpelerStatus; label: string }[] = [
   { waarde: "BESCHIKBAAR", label: "Beschikbaar" },
   { waarde: "TWIJFELT", label: "Twijfelt" },
   { waarde: "GAAT_STOPPEN", label: "Gaat stoppen" },
-  { waarde: "NIEUW", label: "Nieuw" },
+  { waarde: "NIEUW_POTENTIEEL", label: "Nieuw (potentieel)" },
+  { waarde: "NIEUW_DEFINITIEF", label: "Nieuw (definitief)" },
 ];
 
 type StatusFilter = SpelerStatus | "ALLE";
@@ -61,7 +62,8 @@ export default function SpelerStatusOverzicht({
       BESCHIKBAAR: 0,
       TWIJFELT: 0,
       GAAT_STOPPEN: 0,
-      NIEUW: 0,
+      NIEUW_POTENTIEEL: 0,
+      NIEUW_DEFINITIEF: 0,
     };
     for (const s of spelers) {
       telling[s.status]++;
@@ -130,8 +132,13 @@ export default function SpelerStatusOverzicht({
         />
         <SamenvattingBadge
           kleur="bg-blue-100 text-blue-800"
-          label="Nieuw"
-          aantal={samenvatting.NIEUW}
+          label="Potentieel"
+          aantal={samenvatting.NIEUW_POTENTIEEL}
+        />
+        <SamenvattingBadge
+          kleur="bg-blue-100 text-blue-800"
+          label="Definitief"
+          aantal={samenvatting.NIEUW_DEFINITIEF}
         />
       </div>
 

@@ -28,12 +28,14 @@ export default async function DashboardPage({
   // Leden trend: uit speler_seizoenen
   const ledenTrendData = ledenTrend.map((s) => ({
     seizoen: s.seizoen.slice(2, 4) + "/" + s.seizoen.slice(7, 9),
+    seizoenVol: s.seizoen,
     totaal: s.totaal,
   }));
 
   // Instroom/uitstroom: rel_codes vergelijken tussen seizoenen
   const instroomUitstroomData = instroomUitstroom.map((s) => ({
     seizoen: s.seizoen.slice(2, 4) + "/" + s.seizoen.slice(7, 9),
+    seizoenVol: s.seizoen,
     instroom: s.instroom,
     uitstroom: s.uitstroom,
   }));
@@ -115,7 +117,7 @@ function SignaleringCard({ signalering }: { signalering: SignaleringRow }) {
             <span>Groep: {signalering.leeftijdsgroep}</span>
           )}
           {signalering.geslacht && (
-            <span>{signalering.geslacht === "M" ? "Jongens" : "Meisjes"}</span>
+            <span>{signalering.geslacht === "M" ? "\u2642 Jongens" : "\u2640 Meisjes"}</span>
           )}
           {signalering.waarde !== null && (
             <span>Waarde: {signalering.waarde}</span>

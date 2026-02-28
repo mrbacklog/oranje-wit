@@ -2,6 +2,7 @@ import { getBlauwdruk } from "@/app/blauwdruk/actions";
 import { getScenarios } from "./actions";
 import type { Keuze } from "@/app/blauwdruk/actions";
 import NieuwScenarioDialog from "@/components/scenarios/NieuwScenarioDialog";
+import VerwijderScenarioKnop from "@/components/scenarios/VerwijderScenarioKnop";
 import Link from "next/link";
 
 const SEIZOEN = "2026-2027";
@@ -81,21 +82,29 @@ export default async function ScenariosPage() {
                       </p>
                     )}
                   </div>
-                  <span
-                    className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                      scenario.status === "DEFINITIEF"
-                        ? "bg-green-100 text-green-700"
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+                        scenario.status === "DEFINITIEF"
+                          ? "bg-green-100 text-green-700"
+                          : scenario.status === "GEARCHIVEERD"
+                          ? "bg-gray-100 text-gray-500"
+                          : "bg-orange-100 text-orange-700"
+                      }`}
+                    >
+                      {scenario.status === "DEFINITIEF"
+                        ? "Definitief"
                         : scenario.status === "GEARCHIVEERD"
-                        ? "bg-gray-100 text-gray-500"
-                        : "bg-orange-100 text-orange-700"
-                    }`}
-                  >
-                    {scenario.status === "DEFINITIEF"
-                      ? "Definitief"
-                      : scenario.status === "GEARCHIVEERD"
-                      ? "Gearchiveerd"
-                      : "Actief"}
-                  </span>
+                        ? "Gearchiveerd"
+                        : "Actief"}
+                    </span>
+                    {scenario.status !== "DEFINITIEF" && (
+                      <VerwijderScenarioKnop
+                        scenarioId={scenario.id}
+                        scenarioNaam={scenario.naam}
+                      />
+                    )}
+                  </div>
                 </div>
 
                 {/* Keuze-waardes */}

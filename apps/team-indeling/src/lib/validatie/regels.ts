@@ -37,7 +37,7 @@ export interface SpelerData {
   achternaam: string;
   geboortejaar: number;
   geslacht: "M" | "V";
-  status?: "BESCHIKBAAR" | "TWIJFELT" | "GAAT_STOPPEN" | "NIEUW";
+  status?: "BESCHIKBAAR" | "TWIJFELT" | "GAAT_STOPPEN" | "NIEUW_POTENTIEEL" | "NIEUW_DEFINITIEF";
 }
 
 // ============================================================
@@ -59,6 +59,27 @@ export interface TeamgrootteOverrides {
   breedteAchttal?: { min: number; ideaal: number; max: number };
   aCatTeam?: { min: number; ideaal: number; max: number };
 }
+
+/**
+ * Blauwdruk categorie-settings (subset relevant voor validatie).
+ * Komt uit Blauwdruk.kaders JSON, per categorie-sleutel.
+ */
+export interface BlauwdrukCategorieSettings {
+  minSpelers?: number;
+  optimaalSpelers?: number;
+  maxAfwijkingPercentage?: number;
+  verplichtMinV?: number;
+  verplichtMinM?: number;
+  gewenstMinV?: number;
+  gewenstMinM?: number;
+  gemiddeldeLeeftijdKernMin?: number | null;
+  gemiddeldeLeeftijdKernMax?: number | null;
+  gemiddeldeLeeftijdOverlapMin?: number | null;
+  gemiddeldeLeeftijdOverlapMax?: number | null;
+  bandbreedteLeeftijd?: number | null;
+}
+
+export type BlauwdrukKaders = Record<string, BlauwdrukCategorieSettings>;
 
 function getTeamgrootte(
   format: "viertal" | "achttal",
@@ -99,6 +120,49 @@ function getTeamgrootte(
   return defaults;
 }
 
+/**
+ * Map een team naar de juiste blauwdruk-categorie-sleutel.
+ */
+function teamNaarCategorieSleutel(team: TeamData): string {
+  if (team.categorie === "B_CATEGORIE" && team.kleur) {
+    return team.kleur; // "BLAUW", "GROEN", "GEEL", "ORANJE", "ROOD"
+  }
+  if (team.categorie === "A_CATEGORIE") {
+    return "JEUGD_A";
+  }
+  if (team.categorie === "SENIOREN") {
+    const nummer = extractTeamNummer(team.naam);
+    if (nummer !== null && nummer <= 4) return "SENIOREN_A";
+    if (nummer !== null && nummer >= 5) return "SENIOREN_B";
+    return "SENIOREN_A"; // default
+  }
+  return team.kleur ?? "SENIOREN_B";
+}
+
+/**
+ * Haal teamgrootte op basis van blauwdruk-kaders voor een specifiek team.
+ */
+function getTeamgrootteUitKaders(
+  team: TeamData,
+  kaders: BlauwdrukKaders
+): { min: number; ideaalMin: number; ideaalMax: number; max: number } | null {
+  const sleutel = teamNaarCategorieSleutel(team);
+  const settings = kaders[sleutel];
+  if (!settings?.optimaalSpelers) return null;
+
+  const pct = settings.maxAfwijkingPercentage ?? 20;
+  const optimaal = settings.optimaalSpelers;
+  const min = settings.minSpelers ?? Math.floor(optimaal * 0.6);
+  const maxBerekend = Math.ceil(optimaal * (1 + pct / 100));
+
+  return {
+    min,
+    ideaalMin: optimaal,
+    ideaalMax: maxBerekend,
+    max: maxBerekend + 1,
+  };
+}
+
 const KLEUR_FORMAT: Record<string, "viertal" | "achttal"> = {
   BLAUW: "viertal",
   GROEN: "viertal",
@@ -125,7 +189,8 @@ const MIN_GEMIDDELDE_LEEFTIJD_8TAL = 9.0;
 export function valideerTeam(
   team: TeamData,
   seizoenJaar: number,
-  overrides?: TeamgrootteOverrides
+  overrides?: TeamgrootteOverrides,
+  kaders?: BlauwdrukKaders
 ): TeamValidatie {
   const meldingen: ValidatieMelding[] = [];
 
@@ -135,16 +200,16 @@ export function valideerTeam(
 
   // Bepaal teamtype
   if (isBCat && team.kleur) {
-    valideerBCategorie(team, seizoenJaar, meldingen, overrides);
+    valideerBCategorie(team, seizoenJaar, meldingen, overrides, kaders);
   } else if (isACat) {
-    valideerACategorie(team, seizoenJaar, meldingen, overrides);
+    valideerACategorie(team, seizoenJaar, meldingen, overrides, kaders);
   } else if (team.categorie === "SENIOREN") {
     // Senioren zonder duidelijke A/B → valideer als achttal
-    valideerSenioren(team, meldingen, overrides);
+    valideerSenioren(team, meldingen, overrides, kaders);
   }
 
-  // Gender checks — categorie-afhankelijk
-  valideerGender(team, isACat, meldingen);
+  // Gender checks — categorie-afhankelijk, met blauwdruk-kaders
+  valideerGender(team, isACat, meldingen, kaders);
   valideerDuplicaten(team, meldingen);
 
   // Bepaal overall status
@@ -165,11 +230,12 @@ function valideerBCategorie(
   team: TeamData,
   seizoenJaar: number,
   meldingen: ValidatieMelding[],
-  overrides?: TeamgrootteOverrides
+  overrides?: TeamgrootteOverrides,
+  kaders?: BlauwdrukKaders
 ) {
   const kleur = team.kleur!;
   const format = KLEUR_FORMAT[kleur];
-  const grootte = getTeamgrootte(format, false, overrides);
+  const grootte = (kaders && getTeamgrootteUitKaders(team, kaders)) ?? getTeamgrootte(format, false, overrides);
   const aantalSpelers = team.spelers.length;
 
   // Teamgrootte
@@ -251,10 +317,11 @@ function valideerACategorie(
   team: TeamData,
   seizoenJaar: number,
   meldingen: ValidatieMelding[],
-  overrides?: TeamgrootteOverrides
+  overrides?: TeamgrootteOverrides,
+  kaders?: BlauwdrukKaders
 ) {
   const aantalSpelers = team.spelers.length;
-  const grootte = getTeamgrootte("achttal", true, overrides);
+  const grootte = (kaders && getTeamgrootteUitKaders(team, kaders)) ?? getTeamgrootte("achttal", true, overrides);
 
   // Teamgrootte
   if (aantalSpelers < grootte.min) {
@@ -309,47 +376,94 @@ function valideerACategorie(
 function valideerGender(
   team: TeamData,
   isACat: boolean,
-  meldingen: ValidatieMelding[]
+  meldingen: ValidatieMelding[],
+  kaders?: BlauwdrukKaders
 ) {
   if (team.spelers.length === 0) return;
-
-  // Blauw: geen genderonderscheid volgens KNKV
-  if (team.kleur === "BLAUW") return;
 
   const aantalM = team.spelers.filter((s) => s.geslacht === "M").length;
   const aantalV = team.spelers.filter((s) => s.geslacht === "V").length;
 
-  // OW-regel: nooit 1 kind alleen van één geslacht
-  if (aantalM === 1 || aantalV === 1) {
-    const geslacht = aantalM === 1 ? "jongen" : "meisje";
-    meldingen.push({
-      regel: "gender_alleen",
-      bericht: `${team.naam}: slechts 1 ${geslacht} — OW-regel: minimaal 2 van elk geslacht`,
-      ernst: "kritiek",
-    });
-  }
+  // Haal blauwdruk gender-kaders op als beschikbaar
+  const sleutel = teamNaarCategorieSleutel(team);
+  const catSettings = kaders?.[sleutel];
 
-  // A-categorie: verplicht 4V + 4M (KNKV-regel)
-  if (isACat && aantalM > 0 && aantalV > 0) {
-    const ratio = Math.min(aantalM, aantalV) / Math.max(aantalM, aantalV);
-    if (ratio < 0.75) {
+  if (catSettings?.verplichtMinV || catSettings?.verplichtMinM) {
+    // Verplichte minimale aantallen (harde eis uit blauwdruk)
+    const minV = catSettings.verplichtMinV ?? 0;
+    const minM = catSettings.verplichtMinM ?? 0;
+    if (minV > 0 && aantalV < minV) {
       meldingen.push({
-        regel: "gender_balans",
-        bericht: `${team.naam}: ${aantalM}M + ${aantalV}V — KNKV vereist 4V+4M in A-categorie`,
+        regel: "gender_verplicht",
+        bericht: `${team.naam}: ${aantalV} meisjes, verplicht minimum is ${minV}`,
+        ernst: "kritiek",
+      });
+    }
+    if (minM > 0 && aantalM < minM) {
+      meldingen.push({
+        regel: "gender_verplicht",
+        bericht: `${team.naam}: ${aantalM} jongens, verplicht minimum is ${minM}`,
         ernst: "kritiek",
       });
     }
   }
 
-  // B-categorie: gender scheef is aandacht, geen harde eis
-  if (!isACat && aantalM > 0 && aantalV > 0) {
-    const ratio = Math.min(aantalM, aantalV) / Math.max(aantalM, aantalV);
-    if (ratio < 0.5) {
+  if (catSettings?.gewenstMinV || catSettings?.gewenstMinM) {
+    // Gewenste minimale aantallen (zachte eis uit blauwdruk)
+    const gewV = catSettings.gewenstMinV ?? 0;
+    const gewM = catSettings.gewenstMinM ?? 0;
+    if (gewV > 0 && aantalV < gewV && aantalV >= (catSettings.verplichtMinV ?? 0)) {
       meldingen.push({
-        regel: "gender_balans",
-        bericht: `${team.naam}: ${aantalM}M + ${aantalV}V — genderbalans scheef`,
+        regel: "gender_gewenst",
+        bericht: `${team.naam}: ${aantalV} meisjes, gewenst is minimaal ${gewV}`,
         ernst: "aandacht",
       });
+    }
+    if (gewM > 0 && aantalM < gewM && aantalM >= (catSettings.verplichtMinM ?? 0)) {
+      meldingen.push({
+        regel: "gender_gewenst",
+        bericht: `${team.naam}: ${aantalM} jongens, gewenst is minimaal ${gewM}`,
+        ernst: "aandacht",
+      });
+    }
+  } else {
+    // Fallback: als geen blauwdruk-kaders, gebruik oude logica
+
+    // Blauw: geen genderonderscheid volgens KNKV
+    if (team.kleur === "BLAUW") return;
+
+    // OW-regel: nooit 1 kind alleen van één geslacht
+    if (aantalM === 1 || aantalV === 1) {
+      const geslacht = aantalM === 1 ? "jongen" : "meisje";
+      meldingen.push({
+        regel: "gender_alleen",
+        bericht: `${team.naam}: slechts 1 ${geslacht} — OW-regel: minimaal 2 van elk geslacht`,
+        ernst: "kritiek",
+      });
+    }
+
+    // A-categorie: verplicht 4V + 4M (KNKV-regel)
+    if (isACat && aantalM > 0 && aantalV > 0) {
+      const ratio = Math.min(aantalM, aantalV) / Math.max(aantalM, aantalV);
+      if (ratio < 0.75) {
+        meldingen.push({
+          regel: "gender_balans",
+          bericht: `${team.naam}: ${aantalM}M + ${aantalV}V — KNKV vereist 4V+4M in A-categorie`,
+          ernst: "kritiek",
+        });
+      }
+    }
+
+    // B-categorie: gender scheef is aandacht, geen harde eis
+    if (!isACat && aantalM > 0 && aantalV > 0) {
+      const ratio = Math.min(aantalM, aantalV) / Math.max(aantalM, aantalV);
+      if (ratio < 0.5) {
+        meldingen.push({
+          regel: "gender_balans",
+          bericht: `${team.naam}: ${aantalM}M + ${aantalV}V — genderbalans scheef`,
+          ernst: "aandacht",
+        });
+      }
     }
   }
 }
@@ -398,9 +512,9 @@ function extractTeamNummer(naam: string): number | null {
 /**
  * Senioren zonder duidelijke A/B indeling — valideer basisregels.
  */
-function valideerSenioren(team: TeamData, meldingen: ValidatieMelding[], overrides?: TeamgrootteOverrides) {
+function valideerSenioren(team: TeamData, meldingen: ValidatieMelding[], overrides?: TeamgrootteOverrides, kaders?: BlauwdrukKaders) {
   const aantalSpelers = team.spelers.length;
-  const grootte = getTeamgrootte("achttal", false, overrides);
+  const grootte = (kaders && getTeamgrootteUitKaders(team, kaders)) ?? getTeamgrootte("achttal", false, overrides);
 
   if (aantalSpelers < grootte.min) {
     meldingen.push({

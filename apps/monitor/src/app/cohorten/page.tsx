@@ -11,7 +11,8 @@ export default async function CohortenPage({
   const cohorten = await getCohorten();
 
   const { seizoenen, per_cohort, totalen } = cohorten;
-  const recenteSeizoenen = seizoenen.slice(-8);
+  const seizoenenDesc = [...seizoenen].reverse();
+  const recenteSeizoenen = seizoenen.slice(-8).reverse();
 
   return (
     <>
@@ -25,7 +26,7 @@ export default async function CohortenPage({
         <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-gray-700">
           Cohort-heatmap (actieve leden per geboortejaar per seizoen)
         </h3>
-        <CohortHeatmap data={per_cohort} seizoenen={seizoenen} />
+        <CohortHeatmap data={per_cohort} seizoenen={seizoenenDesc} />
       </div>
 
       {/* Retentie per leeftijdsgroep */}
@@ -94,7 +95,7 @@ export default async function CohortenPage({
               </tr>
             </thead>
             <tbody>
-              {totalen.per_seizoen.map((sz) => (
+              {[...totalen.per_seizoen].reverse().map((sz) => (
                 <tr key={sz.seizoen} className="border-t border-gray-100">
                   <td className="px-3 py-2 font-medium whitespace-nowrap">
                     {sz.seizoen}

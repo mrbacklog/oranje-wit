@@ -31,9 +31,9 @@ model Lid {
   updatedAt        DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
 
   // Relaties
-  spelerSeizoenen SpelerSeizoen[]
-  foto            LidFoto?
-  stafleden       Staf[]
+  competitieSpelers CompetitieSpeler[]
+  foto              LidFoto?
+  stafleden         Staf[]
 
   @@map("leden")
 }
@@ -65,7 +65,7 @@ model Seizoen {
 
   // Relaties
   owTeams            OWTeam[]
-  spelerSeizoenen    SpelerSeizoen[]
+  competitieSpelers  CompetitieSpeler[]
   competitieRondes   CompetitieRonde[]
   ledenverloop       Ledenverloop[]
   cohortSeizoenen    CohortSeizoen[]
@@ -80,6 +80,7 @@ model OWTeam {
   id             Int      @id @default(autoincrement())
   seizoen        String
   owCode         String   @map("ow_code")
+  naam           String?
   categorie      String   // "a" | "b"
   kleur          String?
   leeftijdsgroep String?
@@ -127,37 +128,24 @@ model CompetitieRonde {
   @@map("competitie_rondes")
 }
 
-// Speler × seizoen (vervangt SpelersPad)
-model SpelerSeizoen {
+// Speler × team × competitieronde (primaire tabel)
+// VIEW speler_seizoenen leidt hieruit af: DISTINCT ON (rel_code, seizoen)
+model CompetitieSpeler {
   id          Int      @id @default(autoincrement())
   relCode     String   @map("rel_code")
   seizoen     String
-  team        String   // primair team dit seizoen
-  geslacht    String?  // "M" | "V" (gedenormaliseerd)
+  competitie  String   // "veld_najaar" | "zaal" | "veld_voorjaar"
+  team        String
+  geslacht    String?  // "M" | "V"
   bron        String   // "telling"
   betrouwbaar Boolean  @default(true)
 
   lid        Lid      @relation(fields: [relCode], references: [relCode])
   seizoenRef Seizoen  @relation(fields: [seizoen], references: [seizoen])
-  competities CompetitieSpeler[]
 
-  @@unique([relCode, seizoen])
-  @@index([seizoen], map: "idx_speler_seizoenen_seizoen")
-  @@index([relCode], map: "idx_speler_seizoenen_relcode")
-  @@map("speler_seizoenen")
-}
-
-// Speler × team × competitieronde
-model CompetitieSpeler {
-  id               Int      @id @default(autoincrement())
-  spelerSeizoenId  Int      @map("speler_seizoen_id")
-  competitie       String   // "veld_najaar" | "zaal" | "zaal_deel1" | "zaal_deel2" | "veld_voorjaar"
-  team             String
-  bron             String   // "telling"
-
-  spelerSeizoen SpelerSeizoen @relation(fields: [spelerSeizoenId], references: [id], onDelete: Cascade)
-
-  @@unique([spelerSeizoenId, competitie])
+  @@unique([relCode, seizoen, competitie])
+  @@index([seizoen], map: "idx_cs_seizoen")
+  @@index([relCode], map: "idx_cs_relcode")
   @@map("competitie_spelers")
 }
 

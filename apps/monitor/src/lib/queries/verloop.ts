@@ -142,6 +142,84 @@ export async function getRetentiePerLeeftijd(): Promise<RetentieLeeftijdRow[]> {
   }));
 }
 
+// ---------------------------------------------------------------------------
+// Seizoen-detail: instroom + uitstroom per seizoen
+// ---------------------------------------------------------------------------
+
+export type SeizoenVerloopLid = {
+  relCode: string;
+  roepnaam: string;
+  achternaam: string;
+  tussenvoegsel: string | null;
+  geslacht: string;
+  geboortejaar: number | null;
+  status: string;
+  teamVorig: string | null;
+  teamNieuw: string | null;
+};
+
+export type SeizoenVerloopResult = {
+  seizoen: string;
+  instroom: SeizoenVerloopLid[];
+  uitstroom: SeizoenVerloopLid[];
+  behouden: number;
+  totaalVorig: number;
+  totaalNieuw: number;
+};
+
+export async function getSeizoenVerloop(
+  seizoen: string
+): Promise<SeizoenVerloopResult> {
+  const rows = await prisma.$queryRaw<
+    {
+      rel_code: string;
+      roepnaam: string;
+      achternaam: string;
+      tussenvoegsel: string | null;
+      geslacht: string;
+      geboortejaar: number | null;
+      status: string;
+      team_vorig: string | null;
+      team_nieuw: string | null;
+    }[]
+  >`
+    SELECT lv.rel_code, l.roepnaam, l.achternaam, l.tussenvoegsel,
+           lv.geslacht, lv.geboortejaar, lv.status,
+           lv.team_vorig, lv.team_nieuw
+    FROM ledenverloop lv
+    JOIN leden l ON lv.rel_code = l.rel_code
+    WHERE lv.seizoen = ${seizoen}
+    ORDER BY lv.geboortejaar ASC NULLS LAST, l.achternaam, l.roepnaam`;
+
+  const mapped = rows.map((r) => ({
+    relCode: r.rel_code,
+    roepnaam: r.roepnaam,
+    achternaam: r.achternaam,
+    tussenvoegsel: r.tussenvoegsel,
+    geslacht: r.geslacht,
+    geboortejaar: r.geboortejaar ? Number(r.geboortejaar) : null,
+    status: r.status,
+    teamVorig: r.team_vorig,
+    teamNieuw: r.team_nieuw,
+  }));
+
+  const instroom = mapped.filter(
+    (r) => r.status === "nieuw" || r.status === "herinschrijver"
+  );
+  const uitstroom = mapped.filter((r) => r.status === "uitgestroomd");
+  const behouden = mapped.filter((r) => r.status === "behouden").length;
+
+  // Totalen: vorig seizoen = behouden + uitstroom, nieuw seizoen = behouden + instroom
+  return {
+    seizoen,
+    instroom,
+    uitstroom,
+    behouden,
+    totaalVorig: behouden + uitstroom.length,
+    totaalNieuw: behouden + instroom.length,
+  };
+}
+
 /** Gecombineerd: instroom + uitstroom + retentie */
 export async function getInstroomUitstroom(): Promise<InstroomUitstroomResult> {
   const [instroom, uitstroom, retentie] = await Promise.all([

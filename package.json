@@ -18,6 +18,7 @@
     "pipeline:cohorten": "node scripts/js/bereken-cohorten.js",
     "pipeline:signalering": "node scripts/js/genereer-signalering.js",
     "pipeline:export": "node scripts/js/export-voor-teamindeling.js",
+    "sync:standen": "node -r dotenv/config scripts/js/sync-standen-knkv.js",
     "test": "pnpm -r run test",
     "test:monitor": "pnpm --filter @oranje-wit/monitor test",
     "test:ui": "pnpm --filter @oranje-wit/ui test"

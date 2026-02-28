@@ -7,7 +7,8 @@ const STATUS_CONFIG: Record<
   BESCHIKBAAR: { kleur: "bg-green-500", label: "Beschikbaar" },
   TWIJFELT: { kleur: "bg-orange-500", label: "Twijfelt" },
   GAAT_STOPPEN: { kleur: "bg-red-500", label: "Gaat stoppen" },
-  NIEUW: { kleur: "bg-blue-500", label: "Nieuw" },
+  NIEUW_POTENTIEEL: { kleur: "bg-blue-400", label: "Nieuw (pot.)" },
+  NIEUW_DEFINITIEF: { kleur: "bg-blue-600", label: "Nieuw (def.)" },
 };
 
 interface SpelerStatusBadgeProps {

@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/db/prisma";
 
 // ---------------------------------------------------------------------------
-// Leden trend (uit speler_seizoenen — unieke rel_codes per seizoen)
+// Leden trend (unieke rel_codes per seizoen uit competitie_spelers)
 // ---------------------------------------------------------------------------
 
 export type LedenTrendPunt = { seizoen: string; totaal: number };
@@ -9,7 +9,7 @@ export type LedenTrendPunt = { seizoen: string; totaal: number };
 export async function getLedenTrend(): Promise<LedenTrendPunt[]> {
   return prisma.$queryRaw<LedenTrendPunt[]>`
     SELECT seizoen, COUNT(DISTINCT rel_code)::int AS totaal
-    FROM speler_seizoenen
+    FROM competitie_spelers
     GROUP BY seizoen
     ORDER BY seizoen`;
 }
@@ -28,7 +28,7 @@ export async function getInstroomUitstroom(): Promise<InstroomUitstroomPunt[]> {
   return prisma.$queryRaw<InstroomUitstroomPunt[]>`
     WITH per_seizoen AS (
       SELECT seizoen, array_agg(DISTINCT rel_code) AS codes
-      FROM speler_seizoenen
+      FROM competitie_spelers
       GROUP BY seizoen
     ),
     paren AS (
@@ -64,12 +64,11 @@ export type DashboardKPIs = {
 export async function getDashboardKPIs(
   seizoen: string
 ): Promise<DashboardKPIs> {
-  // Actieve spelers uit speler_seizoenen (bron van waarheid)
   const [spelerCount, signaleringen, teamCount, geslachtRows] =
     await Promise.all([
       prisma.$queryRaw<{ totaal: number }[]>`
         SELECT COUNT(DISTINCT rel_code)::int AS totaal
-        FROM speler_seizoenen
+        FROM competitie_spelers
         WHERE seizoen = ${seizoen}`,
       prisma.signalering.findMany({
         where: { seizoen },
@@ -78,7 +77,7 @@ export async function getDashboardKPIs(
       prisma.oWTeam.count({ where: { seizoen } }),
       prisma.$queryRaw<{ geslacht: string; aantal: number }[]>`
         SELECT geslacht, COUNT(DISTINCT rel_code)::int AS aantal
-        FROM speler_seizoenen
+        FROM competitie_spelers
         WHERE seizoen = ${seizoen}
         GROUP BY geslacht`,
     ]);

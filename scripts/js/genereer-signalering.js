@@ -72,8 +72,15 @@ async function main() {
        SUM(CASE WHEN status = 'uitgestroomd' THEN 1 ELSE 0 END)::int as uitgestroomd
      FROM ledenverloop
      WHERE seizoen = $1 AND leeftijd_vorig IS NOT NULL
-     GROUP BY groep
-     HAVING groep IS NOT NULL`,
+     GROUP BY 1
+     HAVING CASE
+         WHEN leeftijd_vorig BETWEEN 6 AND 12 THEN '6-12'
+         WHEN leeftijd_vorig BETWEEN 13 AND 14 THEN '13-14'
+         WHEN leeftijd_vorig BETWEEN 15 AND 16 THEN '15-16'
+         WHEN leeftijd_vorig BETWEEN 17 AND 18 THEN '17-18'
+         WHEN leeftijd_vorig BETWEEN 19 AND 23 THEN '19-23'
+         WHEN leeftijd_vorig >= 24 THEN '24+'
+       END IS NOT NULL`,
     [SEIZOEN]
   );
 

@@ -292,6 +292,14 @@ export async function ontkoppelSelectie(groepLeiderId: string) {
 }
 
 /**
+ * Verwijder een scenario (inclusief versies, teams, spelers, staf via cascade).
+ */
+export async function deleteScenario(scenarioId: string) {
+  await prisma.scenario.delete({ where: { id: scenarioId } });
+  revalidatePath("/scenarios");
+}
+
+/**
  * Markeer een scenario als DEFINITIEF.
  * Alle andere scenario's in hetzelfde concept worden GEARCHIVEERD.
  */

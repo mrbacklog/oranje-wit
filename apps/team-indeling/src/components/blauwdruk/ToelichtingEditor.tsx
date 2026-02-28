@@ -63,7 +63,7 @@ export default function ToelichtingEditor({
       <textarea
         value={tekst}
         onChange={handleChange}
-        placeholder="Schrijf hier een toelichting op de blauwdruk voor dit seizoen..."
+        placeholder="Notities, speerpunten en toelichting bij de blauwdruk..."
         rows={6}
         className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 resize-y"
       />

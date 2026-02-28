@@ -99,6 +99,12 @@ export default async function DefinitiefPage() {
     categorieGroepen.get(cat)!.push(team);
   }
 
+  // Sorteer A-categorie teams op naam (U15-1 boven U15-2, etc.)
+  const aTeams = categorieGroepen.get("A_CATEGORIE");
+  if (aTeams) {
+    aTeams.sort((a, b) => a.naam.localeCompare(b.naam, "nl"));
+  }
+
   // Volgorde: B_CATEGORIE, A_CATEGORIE, SENIOREN
   const categorieVolgorde = ["B_CATEGORIE", "A_CATEGORIE", "SENIOREN"];
   const gesorteerdeCategorieen = [...categorieGroepen.entries()].sort(

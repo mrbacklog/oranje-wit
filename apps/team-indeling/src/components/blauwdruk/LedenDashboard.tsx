@@ -11,7 +11,8 @@ const STATUS_OPTIES: { waarde: SpelerStatus; label: string }[] = [
   { waarde: "BESCHIKBAAR", label: "Beschikbaar" },
   { waarde: "TWIJFELT", label: "Twijfelt" },
   { waarde: "GAAT_STOPPEN", label: "Gaat stoppen" },
-  { waarde: "NIEUW", label: "Nieuw" },
+  { waarde: "NIEUW_POTENTIEEL", label: "Nieuw (potentieel)" },
+  { waarde: "NIEUW_DEFINITIEF", label: "Nieuw (definitief)" },
 ];
 
 type StatusFilter = SpelerStatus | "ALLE";
@@ -50,7 +51,7 @@ export default function LedenDashboard({
 
   // Samenvatting
   const samenvatting = useMemo(() => {
-    const telling = { BESCHIKBAAR: 0, TWIJFELT: 0, GAAT_STOPPEN: 0, NIEUW: 0 };
+    const telling = { BESCHIKBAAR: 0, TWIJFELT: 0, GAAT_STOPPEN: 0, NIEUW_POTENTIEEL: 0, NIEUW_DEFINITIEF: 0 };
     for (const s of spelers) {
       if (s.status in telling) telling[s.status as keyof typeof telling]++;
     }
@@ -169,7 +170,7 @@ export default function LedenDashboard({
   return (
     <div className="space-y-4">
       {/* Summary cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-6 gap-3">
         <div className="stat-card">
           <span className="stat-value">{spelers.length}</span>
           <span className="stat-label">Totaal leden</span>
@@ -186,9 +187,13 @@ export default function LedenDashboard({
           <span className="stat-value">{samenvatting.GAAT_STOPPEN}</span>
           <span className="stat-label">Gaat stoppen</span>
         </div>
-        <div className="stat-card border-l-4 border-l-blue-500">
-          <span className="stat-value">{samenvatting.NIEUW}</span>
-          <span className="stat-label">Nieuw</span>
+        <div className="stat-card border-l-4 border-l-blue-400">
+          <span className="stat-value">{samenvatting.NIEUW_POTENTIEEL}</span>
+          <span className="stat-label">Potentieel</span>
+        </div>
+        <div className="stat-card border-l-4 border-l-blue-600">
+          <span className="stat-value">{samenvatting.NIEUW_DEFINITIEF}</span>
+          <span className="stat-label">Definitief</span>
         </div>
       </div>
 

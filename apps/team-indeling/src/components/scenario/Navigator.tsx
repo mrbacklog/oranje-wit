@@ -45,8 +45,10 @@ function groepeerTeams(teams: TeamData[]): TeamGroepConfig[] {
     groepen.push({ label: "B-categorie", teams: bZonderKleur });
   }
 
-  // A-categorie
-  const aTeams = teams.filter((t) => t.categorie === "A_CATEGORIE");
+  // A-categorie — sorteer op naam zodat -1 boven -2 staat (U15-1, U15-2, U17-1, ...)
+  const aTeams = teams
+    .filter((t) => t.categorie === "A_CATEGORIE")
+    .sort((a, b) => a.naam.localeCompare(b.naam, "nl"));
   if (aTeams.length > 0) {
     groepen.push({ label: "A-categorie", teams: aTeams });
   }

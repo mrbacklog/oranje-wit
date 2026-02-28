@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface CohortData {
   geboortejaar: number;
@@ -27,6 +28,7 @@ function cellColor(value: number, max: number): string {
 
 export function CohortHeatmap({ data, seizoenen }: CohortHeatmapProps) {
   const [filter, setFilter] = useState<Filter>("Alles");
+  const router = useRouter();
 
   // Aggregeer per geboortejaar op basis van filter
   const geaggregeerd = new Map<
@@ -46,6 +48,14 @@ export function CohortHeatmap({ data, seizoenen }: CohortHeatmapProps) {
   }
 
   const geboortejaren = [...geaggregeerd.keys()].sort((a, b) => b - a);
+
+  // Filter seizoenen: alleen seizoenen met minstens 1 actief lid
+  const activeSeizoenen = seizoenen.filter((sz) => {
+    for (const szMap of geaggregeerd.values()) {
+      if (szMap[sz] > 0) return true;
+    }
+    return false;
+  });
 
   // Max waarde voor kleurschaal
   let maxVal = 0;
@@ -68,7 +78,7 @@ export function CohortHeatmap({ data, seizoenen }: CohortHeatmapProps) {
                 : "bg-gray-100 text-gray-700 hover:bg-gray-200"
             }`}
           >
-            {f === "Alles" ? "Alles" : f === "M" ? "Jongens" : "Meisjes"}
+            {f === "Alles" ? "Alles" : f === "M" ? "\u2642 Jongens" : "\u2640 Meisjes"}
           </button>
         ))}
       </div>
@@ -80,7 +90,7 @@ export function CohortHeatmap({ data, seizoenen }: CohortHeatmapProps) {
               <th className="sticky left-0 z-10 bg-white px-2 py-1 text-left font-semibold">
                 Jaar
               </th>
-              {seizoenen.map((sz) => (
+              {activeSeizoenen.map((sz) => (
                 <th key={sz} className="px-2 py-1 text-center font-semibold whitespace-nowrap">
                   {sz.slice(2, 4)}/{sz.slice(7, 9)}
                 </th>
@@ -92,10 +102,13 @@ export function CohortHeatmap({ data, seizoenen }: CohortHeatmapProps) {
               const szMap = geaggregeerd.get(jaar)!;
               return (
                 <tr key={jaar}>
-                  <td className="sticky left-0 z-10 bg-white px-2 py-1 font-medium">
+                  <td
+                    className="sticky left-0 z-10 cursor-pointer bg-white px-2 py-1 font-medium hover:text-ow-oranje hover:underline"
+                    onClick={() => router.push(`/cohorten/${jaar}`)}
+                  >
                     {jaar}
                   </td>
-                  {seizoenen.map((sz) => {
+                  {activeSeizoenen.map((sz) => {
                     const val = szMap[sz] || 0;
                     return (
                       <td

@@ -40,8 +40,8 @@ De `leden` tabel in PostgreSQL bevat per speler:
 Evaluatiedata uit de Evaluatie-app (Lovable).
 
 ## Databronnen
-- Spelerspaden: PostgreSQL `speler_seizoenen` + `competitie_spelers` — 957 spelers over 16 seizoenen
-- Verloop: `data/ledenverloop/individueel/` en `data/ledenverloop/cohorten/`
+- Spelerspaden: PostgreSQL `competitie_spelers` (primair) + VIEW `speler_seizoenen` — 924 spelers over 16 seizoenen
+- Verloop: PostgreSQL `ledenverloop` en `cohort_seizoenen` tabellen
 - Streefmodel: `data/modellen/streef-ledenboog.json`
 - Jeugdmodel: `model/jeugdmodel.yaml`
 

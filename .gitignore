@@ -17,6 +17,11 @@ packages/database/src/generated/
 .env.*.local
 .mcp.json
 
+# Claude Code (local/sensitive)
+.claude/settings.local.json
+.claude/worktrees/
+.playwright-mcp/
+
 # IDE
 .vscode/
 .idea/

@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import {
   BarChart,
   Bar,
@@ -7,24 +8,19 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
+  Legend,
   ResponsiveContainer,
-  Cell,
   ReferenceLine,
 } from "recharts";
 
-const BAND_KLEUREN: Record<string, string> = {
-  Blauw: "#4A90D9",
-  Groen: "#52B788",
-  Geel: "#F4D35E",
-  Oranje: "#F28C28",
-  Rood: "#D62828",
-};
-
 interface LedenboogProps {
   data: { geboortejaar: number; M: number; V: number; band: string }[];
+  seizoen?: string;
 }
 
-export function Ledenboog({ data }: LedenboogProps) {
+export function Ledenboog({ data, seizoen }: LedenboogProps) {
+  const router = useRouter();
+
   // Transform: M gaat naar links (negatief), V naar rechts (positief)
   const chartData = data.map((d) => ({
     geboortejaar: d.geboortejaar,
@@ -40,7 +36,17 @@ export function Ledenboog({ data }: LedenboogProps) {
 
   return (
     <ResponsiveContainer width="100%" height={Math.max(400, data.length * 22)}>
-      <BarChart data={chartData} layout="vertical" stackOffset="sign">
+      <BarChart
+        data={chartData}
+        layout="vertical"
+        stackOffset="sign"
+        className={seizoen ? "cursor-pointer" : ""}
+        onClick={(state) => {
+          if (seizoen && state?.activeLabel) {
+            router.push(`/samenstelling/${state.activeLabel}?seizoen=${seizoen}`);
+          }
+        }}
+      >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis
           type="number"
@@ -57,27 +63,17 @@ export function Ledenboog({ data }: LedenboogProps) {
         <Tooltip
           formatter={(value: number, name: string) => [
             Math.abs(value),
-            name === "M" ? "Jongens" : "Meisjes",
+            name === "M" ? "\u2642 Jongens" : "\u2640 Meisjes",
           ]}
         />
+        <Legend
+          formatter={(value: string) =>
+            value === "M" ? "\u2642 Jongens" : "\u2640 Meisjes"
+          }
+        />
         <ReferenceLine x={0} stroke="#666" />
-        <Bar dataKey="M" stackId="stack" name="M">
-          {chartData.map((entry, index) => (
-            <Cell
-              key={`m-${index}`}
-              fill={BAND_KLEUREN[entry.band] || "#999"}
-              fillOpacity={0.8}
-            />
-          ))}
-        </Bar>
-        <Bar dataKey="V" stackId="stack" name="V">
-          {chartData.map((entry, index) => (
-            <Cell
-              key={`v-${index}`}
-              fill={BAND_KLEUREN[entry.band] || "#999"}
-            />
-          ))}
-        </Bar>
+        <Bar dataKey="M" stackId="stack" name="M" fill="#60A5FA" />
+        <Bar dataKey="V" stackId="stack" name="V" fill="#F472B6" />
       </BarChart>
     </ResponsiveContainer>
   );

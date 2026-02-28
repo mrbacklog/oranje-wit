@@ -38,15 +38,15 @@ Data-analist voor c.k.v. Oranje Wit, gespecialiseerd in de Verenigingsmonitor en
 → zie `rules/data.md` voor naamgeving en privacy-regels
 
 ```
-Sportlink CSV + KNKV JSON → PostgreSQL (leden + speler_seizoenen) → aggregaties
-                                                                  → ledenverloop
-                                                                  → cohorten
-                                                                  → signalering
-                                                                  → dashboards
+PostgreSQL: competitie_spelers (primair) → VIEW speler_seizoenen
+  → bereken-verloop.js → ledenverloop
+  → bereken-cohorten.js → cohort_seizoenen
+  → genereer-signalering.js → signalering
+  → dashboards
 ```
 
 ### Scripts (in volgorde)
-- `scripts/js/bereken-verloop.js` — individueel ledenverloop per seizoenspaar (queryt speler_seizoenen)
+- `scripts/js/bereken-verloop.js` — individueel ledenverloop per seizoenspaar (queryt competitie_spelers)
 - `scripts/js/bereken-cohorten.js` — cohort-aggregatie over alle seizoenen
 - `scripts/js/genereer-signalering.js` — stoplicht-alerts
 - `scripts/python/bereken_streefboog.py` — streefmodel projecties
@@ -54,8 +54,8 @@ Sportlink CSV + KNKV JSON → PostgreSQL (leden + speler_seizoenen) → aggregat
 ## Databronnen
 - Aggregaties: `data/aggregaties/YYYY-MM-DD-per-{geboortejaar,team,kleur}.json`
 - Streefmodel: `data/modellen/streef-ledenboog.json`
-- Spelerspaden: PostgreSQL `speler_seizoenen` + `competitie_spelers`
-- Verloop: `data/ledenverloop/individueel/`, `data/ledenverloop/cohorten/`
+- Spelerspaden: PostgreSQL `competitie_spelers` (primair) + VIEW `speler_seizoenen`
+- Verloop: PostgreSQL `ledenverloop`, `cohort_seizoenen` tabellen
 - Signalering: `data/ledenverloop/signalering/`
 - Benchmark: `data/ledenverloop/benchmark/knkv-kwartaal/`
 - Jeugdmodel: `model/jeugdmodel.yaml`
@@ -67,7 +67,7 @@ Sportlink CSV + KNKV JSON → PostgreSQL (leden + speler_seizoenen) → aggregat
 
 ## Werkwijze
 
-1. Query meest recente seizoensdata uit speler_seizoenen
+1. Query meest recente seizoensdata uit competitie_spelers (of VIEW speler_seizoenen)
 2. Analyseer trends en patronen
 3. Bereken vulgraad tegen streefmodel
 4. Signaleer: kritiek/aandacht/op_koers

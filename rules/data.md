@@ -19,8 +19,8 @@ paths:
 Alle ledendata wordt opgeslagen in PostgreSQL (Railway):
 
 - **`leden`** — permanente ledenrecords (1 per lid), met rel_code als identifier
-- **`speler_seizoenen`** — speler per seizoen met primair team (5.399 records)
-- **`competitie_spelers`** — speler per competitieperiode (9.375 records)
+- **`competitie_spelers`** — primaire tabel: speler × seizoen × competitie (~4.933 records, 924 unieke spelers)
+- **VIEW `speler_seizoenen`** — afgeleid uit competitie_spelers via DISTINCT ON (rel_code, seizoen)
 
 ## Bestandsnaamgeving
 

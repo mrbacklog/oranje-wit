@@ -89,34 +89,37 @@ export async function updateKeuzes(
   });
 }
 
-// Teamgrootte types/defaults/utility: zie ./teamgrootte.ts
-import type { TeamgrootteTargets } from "./teamgrootte";
+import type { CategorieSettings, CategorieKaders } from "./categorie-kaders";
 
 /**
- * Update teamgrootte-targets in blauwdruk.keuzes.
- * Bewaart bestaande keuzes-data en overschrijft alleen teamgrootte.
+ * Update de kaders voor één categorie.
+ * Merged met bestaande kaders zodat andere categorieën behouden blijven.
  */
-export async function updateTeamgrootte(
+export async function updateCategorieKaders(
   blauwdrukId: string,
-  teamgrootte: TeamgrootteTargets
+  categorie: string,
+  settings: Partial<CategorieSettings>
 ) {
   const blauwdruk = await prisma.blauwdruk.findUniqueOrThrow({
     where: { id: blauwdrukId },
-    select: { keuzes: true },
+    select: { kaders: true },
   });
 
-  const bestaand = (blauwdruk.keuzes ?? {}) as Record<string, unknown>;
+  const bestaand = (blauwdruk.kaders ?? {}) as CategorieKaders;
 
   return prisma.blauwdruk.update({
     where: { id: blauwdrukId },
     data: {
-      keuzes: { ...bestaand, teamgrootte } as unknown as Prisma.InputJsonValue,
+      kaders: {
+        ...bestaand,
+        [categorie]: { ...bestaand[categorie], ...settings },
+      } as unknown as Prisma.InputJsonValue,
     },
   });
 }
 
 /**
- * Update de status van een speler (beschikbaar/twijfelt/stopt/nieuw).
+ * Update de status van een speler.
  */
 export async function updateSpelerStatus(
   spelerId: string,
@@ -172,7 +175,8 @@ export interface CategorieStats {
   beschikbaar: number;
   twijfelt: number;
   gaatStoppen: number;
-  nieuw: number;
+  nieuwPotentieel: number;
+  nieuwDefinitief: number;
   totaal: number;
   mannen: number;
   vrouwen: number;
@@ -192,7 +196,7 @@ export interface LedenStatistieken {
   totaal: number;
   perStatus: Record<string, number>;
   perCategorie: CategorieStats[];
-  senioren: { beschikbaar: number; twijfelt: number; gaatStoppen: number; nieuw: number; totaal: number; mannen: number; vrouwen: number };
+  senioren: { beschikbaar: number; twijfelt: number; gaatStoppen: number; nieuwPotentieel: number; nieuwDefinitief: number; totaal: number; mannen: number; vrouwen: number };
   retentie: RetentieOverzicht;
 }
 
@@ -211,9 +215,20 @@ export async function getLedenStatistieken(): Promise<LedenStatistieken> {
     BESCHIKBAAR: 0,
     TWIJFELT: 0,
     GAAT_STOPPEN: 0,
-    NIEUW: 0,
+    NIEUW_POTENTIEEL: 0,
+    NIEUW_DEFINITIEF: 0,
   };
   for (const s of spelers) perStatus[s.status] = (perStatus[s.status] ?? 0) + 1;
+
+  // Helpers voor groep-statistieken
+  function groepStats(groep: typeof spelers) {
+    const beschikbaar = groep.filter((s) => s.status === "BESCHIKBAAR").length;
+    const twijfelt = groep.filter((s) => s.status === "TWIJFELT").length;
+    const gaatStoppen = groep.filter((s) => s.status === "GAAT_STOPPEN").length;
+    const nieuwPotentieel = groep.filter((s) => s.status === "NIEUW_POTENTIEEL").length;
+    const nieuwDefinitief = groep.filter((s) => s.status === "NIEUW_DEFINITIEF").length;
+    return { beschikbaar, twijfelt, gaatStoppen, nieuwPotentieel, nieuwDefinitief };
+  }
 
   // Per kleur-categorie
   const perCategorie: CategorieStats[] = KLEUREN_CONFIG.map((cfg) => {
@@ -222,21 +237,15 @@ export async function getLedenStatistieken(): Promise<LedenStatistieken> {
       return leeftijd >= cfg.minLeeftijd && leeftijd <= cfg.maxLeeftijd;
     });
 
-    const beschikbaar = groep.filter((s) => s.status === "BESCHIKBAAR").length;
-    const twijfelt = groep.filter((s) => s.status === "TWIJFELT").length;
-    const gaatStoppen = groep.filter((s) => s.status === "GAAT_STOPPEN").length;
-    const nieuw = groep.filter((s) => s.status === "NIEUW").length;
-    const effectief = beschikbaar + nieuw + Math.round(twijfelt * 0.5);
+    const stats = groepStats(groep);
+    const effectief = stats.beschikbaar + stats.nieuwPotentieel + stats.nieuwDefinitief + Math.round(stats.twijfelt * 0.5);
     const minTeams = effectief > 0 ? Math.max(1, Math.floor(effectief / (cfg.streefPerTeam + 2))) : 0;
     const maxTeams = effectief > 0 ? Math.ceil(effectief / Math.max(cfg.streefPerTeam - 2, 4)) : 0;
 
     return {
       kleur: cfg.kleur,
       label: cfg.label,
-      beschikbaar,
-      twijfelt,
-      gaatStoppen,
-      nieuw,
+      ...stats,
       totaal: groep.length,
       mannen: groep.filter((s) => s.geslacht === "M").length,
       vrouwen: groep.filter((s) => s.geslacht === "V").length,
@@ -249,10 +258,7 @@ export async function getLedenStatistieken(): Promise<LedenStatistieken> {
   // Senioren (19+)
   const seniorenGroep = spelers.filter((s) => PEILJAAR - s.geboortejaar >= 19);
   const senioren = {
-    beschikbaar: seniorenGroep.filter((s) => s.status === "BESCHIKBAAR").length,
-    twijfelt: seniorenGroep.filter((s) => s.status === "TWIJFELT").length,
-    gaatStoppen: seniorenGroep.filter((s) => s.status === "GAAT_STOPPEN").length,
-    nieuw: seniorenGroep.filter((s) => s.status === "NIEUW").length,
+    ...groepStats(seniorenGroep),
     totaal: seniorenGroep.length,
     mannen: seniorenGroep.filter((s) => s.geslacht === "M").length,
     vrouwen: seniorenGroep.filter((s) => s.geslacht === "V").length,

@@ -25,8 +25,8 @@ Oranje Wit had in seizoen 2025-2026: 264 spelers, 29 teams. De Kweekvijver-filos
 ### Database (PostgreSQL)
 
 - `leden` — permanente ledenrecords (1 per lid)
-- `speler_seizoenen` — speler per seizoen met primair team
-- `competitie_spelers` — speler per competitieperiode
+- `competitie_spelers` — primaire tabel: speler × seizoen × competitie
+- VIEW `speler_seizoenen` — afgeleid uit competitie_spelers
 
 ## Stappen
 
@@ -44,7 +44,7 @@ Oranje Wit had in seizoen 2025-2026: 264 spelers, 29 teams. De Kweekvijver-filos
    - Match Sportlink teamnamen (J1, U15-1, etc.) aan KNKV teams
    - Voeg toe: kleur, pool (veld + zaal), categorie (a/b), competitieniveau
    - Laad `data/seizoenen/YYYY-YYYY/teams.json` (teamregister met stabiele ow_codes)
-   - Bepaal actieve competitieperiode uit snapshot-datum (sep-nov → veld_najaar, dec-jan → zaal_deel1, feb-mrt → zaal_deel2, apr-jun → veld_voorjaar)
+   - Bepaal actieve competitieperiode (sep-nov → veld_najaar, dec-jan → zaal_deel1, feb-mrt → zaal_deel2, apr-jun → veld_voorjaar)
    - Match speler's J-nummer aan de ow_code via de actieve periode in teams.json
    - Voeg `ow_code` toe aan elk spelersrecord (stabiele team-identiteit die niet meebeweegt met KNKV J-nummerhernummering)
 

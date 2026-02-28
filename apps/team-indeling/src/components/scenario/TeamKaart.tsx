@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import type { TeamData } from "./types";
 import type { TeamValidatie } from "@/lib/validatie/regels";
@@ -23,6 +23,14 @@ const VALIDATIE_BORDER: Record<string, string> = {
 
 export default function TeamKaart({ team, validatie, onDelete }: TeamKaartProps) {
   const [meldingenOpen, setMeldingenOpen] = useState(false);
+  const [deleteBevestig, setDeleteBevestig] = useState(false);
+  const deleteTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (deleteTimerRef.current) clearTimeout(deleteTimerRef.current);
+    };
+  }, []);
 
   const { setNodeRef, isOver } = useDroppable({
     id: `team-${team.id}`,
@@ -92,13 +100,33 @@ export default function TeamKaart({ team, validatie, onDelete }: TeamKaartProps)
           )}
         </div>
         {onDelete && (
-          <button
-            onClick={() => onDelete(team.id)}
-            className="text-gray-300 hover:text-red-500 text-xs"
-            title="Verwijder team"
-          >
-            &times;
-          </button>
+          deleteBevestig ? (
+            <button
+              onClick={() => {
+                if (deleteTimerRef.current) clearTimeout(deleteTimerRef.current);
+                setDeleteBevestig(false);
+                onDelete(team.id);
+              }}
+              onBlur={() => {
+                if (deleteTimerRef.current) clearTimeout(deleteTimerRef.current);
+                setDeleteBevestig(false);
+              }}
+              className="text-xs text-red-600 font-medium hover:text-red-700 animate-pulse"
+            >
+              Bevestig?
+            </button>
+          ) : (
+            <button
+              onClick={() => {
+                setDeleteBevestig(true);
+                deleteTimerRef.current = setTimeout(() => setDeleteBevestig(false), 3000);
+              }}
+              className="text-gray-300 hover:text-red-500 text-xs"
+              title="Verwijder team"
+            >
+              &times;
+            </button>
+          )
         )}
       </div>
 
