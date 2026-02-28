@@ -7,43 +7,24 @@ interface InfoDrawerProps {
   onClose: () => void;
   title: string;
   children: React.ReactNode;
-  /** Ref naar het element dat de drawer opende, voor focus-herstel */
-  triggerRef?: React.RefObject<HTMLElement | null>;
 }
 
-export function InfoDrawer({ open, onClose, title, children, triggerRef }: InfoDrawerProps) {
+export function InfoDrawer({ open, onClose, title, children }: InfoDrawerProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
-  const drawerRef = useRef<HTMLElement>(null);
-  const previouslyOpen = useRef(false);
+  const drawerRef = useRef<HTMLDivElement>(null);
 
-  // Escape-toets en focus trap
+  // Focus naar sluitknop bij openen + Escape-toets
   useEffect(() => {
     if (!open) return;
 
-    // Focus naar sluitknop bij openen
-    closeButtonRef.current?.focus();
+    // Kleine vertraging zodat de animatie gestart is
+    requestAnimationFrame(() => {
+      closeButtonRef.current?.focus();
+    });
 
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") {
         onClose();
-        return;
-      }
-      if (e.key !== "Tab" || !drawerRef.current) return;
-
-      const focusable = drawerRef.current.querySelectorAll<HTMLElement>(
-        'a[href], button, [tabindex]:not([tabindex="-1"]), input, select, textarea'
-      );
-      if (focusable.length === 0) return;
-
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-
-      if (e.shiftKey && document.activeElement === first) {
-        e.preventDefault();
-        last.focus();
-      } else if (!e.shiftKey && document.activeElement === last) {
-        e.preventDefault();
-        first.focus();
       }
     }
 
@@ -51,31 +32,18 @@ export function InfoDrawer({ open, onClose, title, children, triggerRef }: InfoD
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [open, onClose]);
 
-  // Focus terug naar trigger bij sluiten
-  useEffect(() => {
-    if (previouslyOpen.current && !open) {
-      triggerRef?.current?.focus();
-    }
-    previouslyOpen.current = open;
-  }, [open, triggerRef]);
+  // Render niets als de drawer dicht is — voorkomt focus-/tabprobleem
+  if (!open) return null;
 
   return (
     <>
       {/* Backdrop */}
-      <div
-        className={`fixed inset-0 z-40 bg-black/20 transition-opacity duration-200 ${
-          open ? "opacity-100" : "pointer-events-none opacity-0"
-        }`}
-        onClick={onClose}
-        aria-hidden="true"
-      />
+      <div className="fixed inset-0 z-50 bg-black/20" onClick={onClose} aria-hidden="true" />
 
       {/* Drawer panel */}
-      <aside
+      <div
         ref={drawerRef}
-        className={`fixed top-0 right-0 z-40 flex h-full w-[85vw] flex-col border-t-2 border-t-[var(--color-ow-oranje,#ff6b00)] bg-white shadow-xl transition-transform duration-200 ease-out md:w-[20vw] md:max-w-[360px] md:min-w-[280px] ${
-          open ? "translate-x-0" : "translate-x-full"
-        }`}
+        className="border-t-ow-oranje fixed top-0 right-0 z-50 flex h-full w-[85vw] flex-col border-t-2 bg-white shadow-xl md:w-[20vw] md:max-w-[360px] md:min-w-[280px]"
         role="dialog"
         aria-modal="true"
         aria-label={title}
@@ -85,6 +53,7 @@ export function InfoDrawer({ open, onClose, title, children, triggerRef }: InfoD
           <h3 className="text-sm font-bold text-gray-900">{title}</h3>
           <button
             ref={closeButtonRef}
+            type="button"
             onClick={onClose}
             className="rounded p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
             aria-label="Sluiten"
@@ -104,7 +73,7 @@ export function InfoDrawer({ open, onClose, title, children, triggerRef }: InfoD
         <div className="flex-1 overflow-y-auto px-5 py-4 text-sm leading-relaxed text-gray-600">
           {children}
         </div>
-      </aside>
+      </div>
     </>
   );
 }
