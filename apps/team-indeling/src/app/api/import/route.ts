@@ -1,6 +1,11 @@
-import { NextResponse } from "next/server";
 import * as fs from "fs";
+import { z } from "zod";
 import { importData, getLastImport, type ExportData } from "@/lib/import";
+import { ok, fail, parseBody } from "@/lib/api";
+
+const ImportSchema = z.object({
+  exportPad: z.string().min(1, "exportPad is verplicht"),
+});
 
 /**
  * POST /api/import — Trigger data-import vanuit export-JSON.
@@ -8,24 +13,22 @@ import { importData, getLastImport, type ExportData } from "@/lib/import";
  */
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const exportPad = body.exportPad;
+    const parsed = await parseBody(request, ImportSchema);
+    if (!parsed.ok) return parsed.response;
 
-    if (!exportPad) {
-      return NextResponse.json({ error: "exportPad is verplicht" }, { status: 400 });
-    }
+    const { exportPad } = parsed.data;
 
     if (!fs.existsSync(exportPad)) {
-      return NextResponse.json({ error: `Bestand niet gevonden: ${exportPad}` }, { status: 404 });
+      return fail(`Bestand niet gevonden: ${exportPad}`, 404, "NOT_FOUND");
     }
 
     const data: ExportData = JSON.parse(fs.readFileSync(exportPad, "utf-8"));
     const result = await importData(data);
 
-    return NextResponse.json(result);
+    return ok(result);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    return NextResponse.json({ error: `Import mislukt: ${message}` }, { status: 500 });
+    return fail(`Import mislukt: ${message}`);
   }
 }
 
@@ -36,7 +39,7 @@ export async function GET() {
   try {
     const lastImport = await getLastImport();
 
-    return NextResponse.json({
+    return ok({
       hasData: !!lastImport,
       lastImport: lastImport
         ? {
@@ -53,6 +56,6 @@ export async function GET() {
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    return NextResponse.json({ error: `Status ophalen mislukt: ${message}` }, { status: 500 });
+    return fail(`Status ophalen mislukt: ${message}`);
   }
 }

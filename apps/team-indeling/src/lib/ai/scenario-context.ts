@@ -4,8 +4,7 @@
  */
 
 import { prisma } from "@/lib/db/prisma";
-
-const PEILJAAR = 2026;
+import { PEILJAAR } from "@oranje-wit/types";
 
 function korfbalLeeftijd(geboortejaar: number, geboortedatum?: Date | null): number {
   if (geboortedatum) {

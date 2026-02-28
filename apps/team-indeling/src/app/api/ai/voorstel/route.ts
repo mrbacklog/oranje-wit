@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { prisma } from "@/lib/db/prisma";
 import { buildVoorstelPrompt } from "@/lib/ai/prompt";
+import { PEILJAAR } from "@oranje-wit/types";
 import { revalidatePath } from "next/cache";
 
 const anthropic = new Anthropic(); // leest ANTHROPIC_API_KEY uit env
@@ -75,9 +76,6 @@ export async function POST(request: Request) {
       orderBy: [{ achternaam: "asc" }, { roepnaam: "asc" }],
     });
 
-    // Bepaal seizoenjaar uit scenario-naam of gebruik default
-    const peiljaar = 2026; // PEILJAAR: korfballeeftijd = 31-12-2026
-
     // Bouw de prompt
     const teamInput = teams.map((t) => ({
       naam: t.naam,
@@ -98,7 +96,7 @@ export async function POST(request: Request) {
       };
     });
 
-    const prompt = buildVoorstelPrompt(teamInput, spelerInput, peiljaar, opties);
+    const prompt = buildVoorstelPrompt(teamInput, spelerInput, PEILJAAR, opties);
 
     // Roep Claude aan
     const message = await anthropic.messages.create({

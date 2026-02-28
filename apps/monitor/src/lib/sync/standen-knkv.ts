@@ -7,6 +7,7 @@
  */
 
 import { prisma } from "@/lib/db/prisma";
+import { logger } from "@oranje-wit/types";
 
 const CLUB_ID = "NCX19J3";
 const API_BASE = "https://api-mijn.korfbal.nl/api/v2";
@@ -173,8 +174,9 @@ async function syncAlleStanden(seizoen: string): Promise<void> {
             doelpuntenTegen: entry.stats.goals.against,
           })),
         });
-      } catch {
+      } catch (error) {
         // Individuele pool mag falen zonder de rest te blokkeren
+        logger.warn("[standen-sync] Pool opslaan mislukt:", error);
       }
     }
   }
@@ -187,9 +189,9 @@ async function syncAlleStanden(seizoen: string): Promise<void> {
 export async function syncStandenIfStale(seizoen: string): Promise<void> {
   try {
     if (await isStale(seizoen)) {
-      console.log(`[standen-sync] Standen verouderd voor ${seizoen}, verversing gestart...`);
+      logger.info(`[standen-sync] Standen verouderd voor ${seizoen}, verversing gestart...`);
       await syncAlleStanden(seizoen);
-      console.log(`[standen-sync] Standen bijgewerkt.`);
+      logger.info(`[standen-sync] Standen bijgewerkt.`);
     }
   } catch (err) {
     // Bij API-fouten: ga door met bestaande data

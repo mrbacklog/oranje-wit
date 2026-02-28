@@ -4,11 +4,11 @@ import { prisma } from "@/lib/db/prisma";
 import { berekenTeamstructuur } from "@/lib/teamstructuur";
 import type { SpelerBasis } from "@/lib/teamstructuur";
 import type { Prisma, TeamCategorie, Kleur } from "@oranje-wit/database";
+import { PEILJAAR } from "@oranje-wit/types";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 const _SEIZOEN = "2026-2027";
-const PEILJAAR = 2026;
 
 /**
  * Maak een nieuw scenario aan met keuze-waardes.

@@ -3,8 +3,8 @@
  * Apps importeren `sharedRules` in hun eigen eslint.config.mjs.
  */
 export const sharedRules = {
-  // Console.log voorkomen — "warn" tot logger beschikbaar is, dan "error"
-  "no-console": ["warn", { allow: ["warn", "error"] }],
+  // Console.log blokkeren — gebruik logger uit @oranje-wit/types
+  "no-console": ["error", { allow: ["warn", "error"] }],
 
   // Ongebruikte variabelen (underscore-prefix mag)
   "@typescript-eslint/no-unused-vars": [

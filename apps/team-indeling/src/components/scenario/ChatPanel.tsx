@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
+import { logger } from "@oranje-wit/types";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -158,8 +159,8 @@ export default function ChatPanel({ scenarioId, versieId, onMutatie }: ChatPanel
                 )
               );
             }
-          } catch {
-            // Ongeldige JSON — negeer
+          } catch (error) {
+            logger.warn("SSE JSON parse mislukt:", error);
           }
         }
       }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { logger } from "@oranje-wit/types";
 import Spinner from "@/components/ui/Spinner";
 
 interface AdviesPanelProps {
@@ -42,8 +43,8 @@ export default function AdviesPanel({ laatsteActie, teams, enabled, onToggle }: 
           const data = await response.json();
           setAdvies(data.advies);
         }
-      } catch {
-        // Stille fout - advies is optioneel
+      } catch (error) {
+        logger.warn("Advies ophalen mislukt:", error);
       } finally {
         setLoading(false);
       }

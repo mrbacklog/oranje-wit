@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useTransition, useMemo } from "react";
+import { logger } from "@oranje-wit/types";
 import type { TeamCategorie, Kleur } from "@oranje-wit/database";
 import type { ScenarioData, SpelerData, TeamData, TeamSpelerData } from "./types";
 import { PEILJAAR } from "./types";
@@ -59,8 +60,8 @@ export default function ScenarioEditor({ scenario, alleSpelers }: ScenarioEditor
         const data = await res.json();
         setTeams(data.teams);
       }
-    } catch {
-      // Stille fout — bij volgende page load worden teams opnieuw geladen
+    } catch (error) {
+      logger.warn("Teams herladen mislukt:", error);
     }
   }, [scenario.id]);
 

@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db/prisma";
+import { PEILJAAR } from "@oranje-wit/types";
 import Link from "next/link";
 import BesluitenLog from "@/components/definitief/BesluitenLog";
 import ExportPanel from "@/components/definitief/ExportPanel";
@@ -6,7 +7,6 @@ import ExportPanel from "@/components/definitief/ExportPanel";
 export const dynamic = "force-dynamic";
 
 const SEIZOEN = "2026-2027";
-const PEILJAAR = 2026;
 
 const CATEGORIE_LABELS: Record<string, string> = {
   B_CATEGORIE: "B-categorie",

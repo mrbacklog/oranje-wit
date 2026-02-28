@@ -1,10 +1,6 @@
 import type { TeamCategorie, Kleur, Geslacht, SpelerStatus } from "@oranje-wit/database";
-
-/** Peiljaar voor korfballeeftijd: 31-12 van het eerste seizoensjaar */
-export const PEILJAAR = 2026;
-
-/** Peildatum voor precieze korfballeeftijd (31 december van peiljaar) */
-export const PEILDATUM = new Date(2026, 11, 31); // 31-12-2026
+import { PEILJAAR, PEILDATUM } from "@oranje-wit/types";
+export { PEILJAAR, PEILDATUM };
 
 /**
  * Bereken precieze korfballeeftijd op peildatum 31-12-2026 (2 decimalen).
@@ -135,6 +131,39 @@ export interface SpelerspadEntry {
   niveau?: string;
   spelvorm?: string;
   categorie?: string;
+}
+
+// ============================================================
+// Evaluatie types
+// ============================================================
+
+/** Evaluatie score-structuur (uit Evaluatie.scores JSON) */
+export interface EvaluatieScore {
+  niveau?: number;
+  inzet?: number;
+  groei?: number;
+  team_plezier?: number;
+  team_plezier_toelichting?: string;
+  team_ontwikkeling?: number;
+  team_ontwikkeling_toelichting?: string;
+  team_prestatie?: number;
+  team_prestatie_toelichting?: string;
+  team_naam?: string;
+  speler_opmerkingen?: string;
+}
+
+export interface EvaluatieData {
+  seizoen: string;
+  scores: EvaluatieScore;
+  opmerking: string | null;
+  coach: string | null;
+}
+
+export interface TeamGemiddelde {
+  niveau: number;
+  inzet: number;
+  groei: number;
+  aantalSpelers: number;
 }
 
 /** Filter type voor spelerspool */

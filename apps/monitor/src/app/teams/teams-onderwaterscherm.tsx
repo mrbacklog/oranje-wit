@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { logger } from "@oranje-wit/types";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { BandPill } from "@oranje-wit/ui";
@@ -139,7 +140,8 @@ export function TeamsOnderwaterscherm({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ naam: trimmed }),
       });
-    } catch {
+    } catch (error) {
+      logger.warn("Teamnaam opslaan mislukt:", error);
       const original = teamsMap.get(owCode)?.displayNaam || owCode;
       setTeamNamen((prev) => ({ ...prev, [owCode]: original }));
     }

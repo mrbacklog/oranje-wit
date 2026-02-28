@@ -12,3 +12,7 @@ export type Categorie = "a" | "b";
 export type SpelerStatusType = "beschikbaar" | "twijfelt" | "gaat_stoppen" | "nieuw";
 
 export type Ernst = "kritiek" | "aandacht" | "op_koers";
+
+export * from "./constanten";
+export * from "./api";
+export { logger } from "./logger";

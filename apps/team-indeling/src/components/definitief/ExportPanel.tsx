@@ -1,5 +1,7 @@
 "use client";
 
+import { PEILJAAR } from "@oranje-wit/types";
+
 interface TeamExportData {
   naam: string;
   spelers: {
@@ -16,8 +18,6 @@ interface ExportPanelProps {
   teams: TeamExportData[];
   seizoen: string;
 }
-
-const PEILJAAR = 2026;
 
 export default function ExportPanel({ teams, seizoen }: ExportPanelProps) {
   function exportCSV() {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import { logger } from "@oranje-wit/types";
 import { updateToelichting } from "@/app/blauwdruk/actions";
 
 interface ToelichtingEditorProps {
@@ -21,7 +22,8 @@ export default function ToelichtingEditor({ blauwdrukId, initieel }: Toelichting
         setStatus("opgeslagen");
         // Reset status na 2 seconden
         setTimeout(() => setStatus("idle"), 2000);
-      } catch {
+      } catch (error) {
+        logger.warn("Toelichting opslaan mislukt:", error);
         setStatus("idle");
       }
     },

@@ -23,6 +23,7 @@ import {
   type TeamData as ValidatieTeamData,
   type BlauwdrukKaders,
 } from "@/lib/validatie/regels";
+import { PEILJAAR } from "@oranje-wit/types";
 
 // ---------------------------------------------------------------------------
 // Tool definities (JSON Schema voor Claude)
@@ -370,7 +371,6 @@ export async function handleTool(
     }
 
     case "valideer_teams": {
-      const PEILJAAR = 2026;
       // Haal teams op
       const teams = await prisma.team.findMany({
         where: { versieId: ctx.versieId },

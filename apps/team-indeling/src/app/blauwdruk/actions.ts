@@ -1,10 +1,8 @@
 "use server";
 
 import { prisma } from "@/lib/db/prisma";
-import type { Prisma } from "@oranje-wit/database";
-import type { SpelerStatus } from "@oranje-wit/database";
-
-const PEILJAAR = 2026;
+import type { Prisma, SpelerStatus } from "@oranje-wit/database";
+import { PEILJAAR } from "@oranje-wit/types";
 
 // Kleur-configuratie (gespiegeld van teamstructuur.ts)
 const KLEUREN_CONFIG = [

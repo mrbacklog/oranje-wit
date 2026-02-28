@@ -12,9 +12,7 @@ export type PeriodeData = {
   aantal_spelers: number | null;
 };
 
-const _PERIODE_NAMEN = ["veld_najaar", "zaal_deel1", "zaal_deel2", "veld_voorjaar"] as const;
-
-export type PeriodeNaam = (typeof PERIODE_NAMEN)[number];
+export type PeriodeNaam = "veld_najaar" | "zaal_deel1" | "zaal_deel2" | "veld_voorjaar";
 
 export type TeamRegisterEntry = {
   id: number;

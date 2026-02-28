@@ -1,28 +1,37 @@
 import { prisma } from "@/lib/db/prisma";
+import { ok, fail } from "@/lib/api";
 
-export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
+export async function GET(
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
 
-  const scenario = await prisma.scenario.findUnique({
-    where: { id },
-    select: {
-      versies: {
-        select: {
-          teams: {
-            include: {
-              spelers: { include: { speler: true } },
-              staf: { include: { staf: true } },
+    const scenario = await prisma.scenario.findUnique({
+      where: { id },
+      select: {
+        versies: {
+          select: {
+            teams: {
+              include: {
+                spelers: { include: { speler: true } },
+                staf: { include: { staf: true } },
+              },
+              orderBy: { volgorde: "asc" },
             },
-            orderBy: { volgorde: "asc" },
           },
+          orderBy: { nummer: "desc" },
+          take: 1,
         },
-        orderBy: { nummer: "desc" },
-        take: 1,
       },
-    },
-  });
+    });
 
-  const teams = scenario?.versies[0]?.teams ?? [];
+    const teams = scenario?.versies[0]?.teams ?? [];
 
-  return Response.json({ teams });
+    return ok({ teams });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    return fail(`Teams ophalen mislukt: ${message}`);
+  }
 }
