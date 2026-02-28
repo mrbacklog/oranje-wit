@@ -21,6 +21,7 @@
     "sync:standen": "node -r dotenv/config scripts/js/sync-standen-knkv.js",
     "test": "pnpm -r run test",
     "test:monitor": "pnpm --filter @oranje-wit/monitor test",
+    "test:ti": "pnpm --filter @oranje-wit/team-indeling test",
     "test:ui": "pnpm --filter @oranje-wit/ui test",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
