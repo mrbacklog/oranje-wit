@@ -12,9 +12,6 @@
       "mcp__railway",
       "mcp__plugin_playwright_playwright"
     ],
-    "deny": [
-      "Bash(rm -rf /)",
-      "Bash(rm -rf /*)"
-    ]
+    "deny": ["Bash(rm -rf /)", "Bash(rm -rf /*)"]
   }
 }
