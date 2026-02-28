@@ -1,4 +1,4 @@
-import { handlers } from "@/lib/auth";
+import { handlers } from "@oranje-wit/auth";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const GET = handlers.GET as any;
