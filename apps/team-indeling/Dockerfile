@@ -6,6 +6,7 @@ WORKDIR /app
 
 # Copy workspace config
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY packages/auth/package.json packages/auth/
 COPY packages/database/package.json packages/database/
 COPY packages/types/package.json packages/types/
 COPY apps/team-indeling/package.json apps/team-indeling/
