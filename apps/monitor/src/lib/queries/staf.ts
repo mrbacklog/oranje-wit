@@ -100,13 +100,3 @@ export async function getStafPerTeam(seizoen: string): Promise<Map<string, StafL
 
   return perTeam;
 }
-
-// ---------------------------------------------------------------------------
-// Alle seizoenen waarvoor staf-toewijzingen bestaan
-// ---------------------------------------------------------------------------
-
-export async function getStafSeizoenen(): Promise<string[]> {
-  const rows = await prisma.$queryRaw<{ seizoen: string }[]>`
-    SELECT DISTINCT seizoen FROM staf_toewijzingen ORDER BY seizoen DESC`;
-  return rows.map((r) => r.seizoen);
-}

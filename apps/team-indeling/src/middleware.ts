@@ -6,5 +6,5 @@ import { NextResponse } from "next/server";
 export default process.env.NODE_ENV === "development" ? () => NextResponse.next() : auth;
 
 export const config = {
-  matcher: ["/((?!login|api/auth|_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!login|api/auth|api/foto|_next/static|_next/image|favicon.ico).*)"],
 };

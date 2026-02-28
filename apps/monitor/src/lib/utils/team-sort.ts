@@ -24,19 +24,3 @@ export function sorteerTeamCode(code: string): number {
   // Overig
   return 9000;
 }
-
-/**
- * Categoriseer een teamcode naar weergave-categorie
- */
-export function categoriseerTeam(code: string): string {
-  if (/^\d+$/.test(code)) return "Senioren";
-  if (/^MW/i.test(code)) return "Midweek";
-  if (/^S\d/.test(code)) return "Senioren";
-  if (code.startsWith("A")) return "A-jeugd";
-  if (code.startsWith("B")) return "B-jeugd";
-  if (code.startsWith("C")) return "C-jeugd";
-  if (code.startsWith("D")) return "D-jeugd";
-  if (code.startsWith("E")) return "E-jeugd";
-  if (code.startsWith("F")) return "F-jeugd";
-  return "Overig";
-}

@@ -59,22 +59,6 @@ export async function updateToelichting(blauwdrukId: string, toelichting: string
   });
 }
 
-/**
- * Keuzes: strategische vragen die in scenario's worden uitgespeeld.
- */
-export interface Keuze {
-  id: string;
-  vraag: string; // "Hoeveel U15-teams?"
-  opties: string[]; // ["1 team", "2 teams"]
-}
-
-export async function updateKeuzes(blauwdrukId: string, keuzes: Keuze[]) {
-  return prisma.blauwdruk.update({
-    where: { id: blauwdrukId },
-    data: { keuzes: keuzes as unknown as Prisma.InputJsonValue },
-  });
-}
-
 import type { CategorieSettings, CategorieKaders } from "./categorie-kaders";
 
 /**
