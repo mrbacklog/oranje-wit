@@ -51,32 +51,38 @@ Je bent de deployment-specialist van c.k.v. Oranje Wit — verantwoordelijk voor
 5. Controleer of de service actief draait (`railway_deployment_status`)
 6. Check `railway_custom_domain_status` voor certificaatstatus
 
-## IONOS DNS API
+## DNS: Cloudflare (primair)
 
-- **Endpoint**: `https://api.hosting.ionos.com/dns/v1`
-- **Auth**: `X-API-Key` header — credentials in `memory/ionos.md`
-- **Zone**: `ckvoranjewit.app` (ID: `db06574b-d460-11f0-bd5c-0a5864440e35`)
+- **API prefix**: `https://api.cloudflare.com/client/v4`
+- **Zone ID**: `274388d92ae20e1a2276eb8ead67669c`
+- **Auth**: `Authorization: Bearer <token>` — credentials in `memory/cloudflare.md`
+- **Registrar**: IONOS (alleen nameserver-instelling, IONOS API in `memory/ionos.md`)
 
 ### Veelgebruikte calls
 
 ```bash
-# Alle records ophalen
-curl -s -X GET "https://api.hosting.ionos.com/dns/v1/zones/<zoneId>" \
-  -H "X-API-Key: <key>"
+# Alle DNS records ophalen
+curl -s "https://api.cloudflare.com/client/v4/zones/274388d92ae20e1a2276eb8ead67669c/dns_records" \
+  -H "Authorization: Bearer <token>"
 
 # CNAME record bijwerken
-curl -s -X PUT "https://api.hosting.ionos.com/dns/v1/zones/<zoneId>/records/<recordId>" \
-  -H "X-API-Key: <key>" -H "Content-Type: application/json" \
-  -d '{"name":"monitor.ckvoranjewit.app","type":"CNAME","content":"<target>.up.railway.app","ttl":300,"disabled":false}'
+curl -s -X PATCH "https://api.cloudflare.com/client/v4/zones/274388d92ae20e1a2276eb8ead67669c/dns_records/<recordId>" \
+  -H "Authorization: Bearer <token>" -H "Content-Type: application/json" \
+  -d '{"content":"new-target.up.railway.app"}'
 ```
+
+### Belangrijk
+- Custom domeinen draaien via **Cloudflare Worker** `railway-proxy` (niet via Railway custom domains)
+- Worker custom domains beheren hun eigen DNS records
+- Cloudflare credentials + Worker details: `memory/cloudflare.md`
 
 ## Referenties
 - Railway skill: `skills/monitor/railway/SKILL.md`
 - Railway MCP server: `apps/mcp/railway/server.js` (13 tools)
 - Dockerfiles: `apps/monitor/Dockerfile`, `apps/team-indeling/Dockerfile`
-- IONOS credentials: `memory/ionos.md`
+- Cloudflare credentials + Worker: `memory/cloudflare.md`
+- IONOS credentials: `memory/ionos.md` (legacy, registrar only)
 - Railway docs: https://docs.railway.com/networking/domains/working-with-domains
-- Railway SSL troubleshooting: https://docs.railway.com/networking/troubleshooting/ssl
 
 ## Geheugen
-Sla op: custom domain IDs, CNAME targets, SSL-status, IONOS record IDs.
+Sla op: Worker custom domain IDs, SSL-status, Cloudflare record IDs.

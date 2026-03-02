@@ -153,7 +153,7 @@ CompetitieSpeler (primaire tabel: 1 per speler × seizoen × competitie)
 | `regel-checker` | TI (sub) | KNKV + OW regelvalidatie |
 | `adviseur` | TI (sub) | Spelersadvies, what-if, Oranje Draad |
 | `ontwikkelaar` | TI (dev) | Next.js app bouwen en uitbreiden |
-| `deployment` | Infra | Railway deployments, custom domains, IONOS DNS |
+| `deployment` | Infra | Railway deployments, Cloudflare Worker proxy, DNS |
 
 ### Agent Fencing
 
@@ -251,14 +251,15 @@ Lovable evaluatie-app → data/evaluaties/ (JSON export)
 Railway PostgreSQL → Evaluatie tabel
 ```
 
-## Deployment (Railway)
+## Deployment (Railway + Cloudflare)
 
 Alles draait in één Railway project (`oranje-wit-db`):
 - **GitHub repo**: `mrbacklog/oranje-wit` (publiek, auto-deploy op push naar master)
-- **Monitor**: https://monitor-production-b2b1.up.railway.app
-- **Team-Indeling**: https://team-indeling-production.up.railway.app
+- **Monitor**: https://monitor.ckvoranjewit.app (via Cloudflare Worker → Railway)
+- **Team-Indeling**: https://teamindeling.ckvoranjewit.app (via Cloudflare Worker → Railway)
 - **Database**: `postgres.railway.internal:5432` (intern Railway netwerk)
 - **Build**: per-app Dockerfiles (`apps/*/Dockerfile`), Node 22, pnpm workspace
+- **DNS**: Cloudflare (registrar: IONOS), Worker `railway-proxy` als reverse proxy
 
 ## Communicatie
 - **Taal**: altijd Nederlands

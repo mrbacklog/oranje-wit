@@ -3,6 +3,7 @@ import Google from "next-auth/providers/google";
 import { getAllowedRole } from "./allowlist";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  trustHost: true,
   providers: [Google],
   session: {
     strategy: "jwt",

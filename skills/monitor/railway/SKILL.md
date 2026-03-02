@@ -124,48 +124,56 @@ Als een domein vasthangt op `VALIDATING_OWNERSHIP`:
 6. **Check service**: moet actief draaien (deployment status = SUCCESS)
 7. **NOOIT** verwijderen en opnieuw aanmaken (rate limits!)
 
-## IONOS DNS
+## DNS: Cloudflare (primair) + IONOS (registrar)
 
-### API
+### Architectuur
 
-- **Endpoint**: `https://api.hosting.ionos.com/dns/v1`
-- **Auth**: `X-API-Key` header met `{prefix}.{secret}` formaat
-- **Credentials**: opgeslagen in Claude memory (`memory/ionos.md`)
-- **Docs**: https://developer.hosting.ionos.de/docs/dns
-
-### Zone
-
-| Domein | Zone ID |
-|---|---|
-| `ckvoranjewit.app` | `db06574b-d460-11f0-bd5c-0a5864440e35` |
-
-### CNAME Records
-
-| Subdomain | IONOS Record ID |
-|---|---|
-| `monitor` | `e3aae275-d73e-5ad7-6fa6-b81101349fc1` |
-| `teamindeling` | `43e88ed9-fbd1-80e2-0152-35418c3bf97e` |
-
-### Veelgebruikte IONOS API calls
-
-```bash
-# Alle records ophalen
-curl -s -X GET "https://api.hosting.ionos.com/dns/v1/zones/db06574b-d460-11f0-bd5c-0a5864440e35" \
-  -H "X-API-Key: <key>"
-
-# CNAME record bijwerken
-curl -s -X PUT "https://api.hosting.ionos.com/dns/v1/zones/db06574b-.../records/<recordId>" \
-  -H "X-API-Key: <key>" -H "Content-Type: application/json" \
-  -d '{"name":"monitor.ckvoranjewit.app","type":"CNAME","content":"<target>.up.railway.app","ttl":300,"disabled":false}'
-
-# DNS-propagatie verifiëren via Google DNS
-curl -s "https://dns.google/resolve?name=monitor.ckvoranjewit.app&type=CNAME"
+```
+Registrar: IONOS → Nameservers: Cloudflare → DNS records → Railway
 ```
 
-### Beperkingen IONOS
+- **Registrar**: IONOS (domeinregistratie, nameserver-instelling)
+- **DNS provider**: Cloudflare (gratis tier, account: info@mrbacklog.nl)
+- **Cloudflare nameservers**: `randy.ns.cloudflare.com`, `suzanne.ns.cloudflare.com`
+- **Reden**: IONOS DNS veroorzaakte VALIDATING_OWNERSHIP bij Railway custom domains
 
-- **Geen CNAME op apex-domein** (`ckvoranjewit.app`) — alleen op subdomains
-- Apex-domein kan alleen via HTTP-redirect naar een subdomain
+### Cloudflare API
+
+- **API prefix**: `https://api.cloudflare.com/client/v4`
+- **Zone ID**: `274388d92ae20e1a2276eb8ead67669c`
+- **Auth**: `Authorization: Bearer <token>` — credentials in `memory/cloudflare.md`
+- CNAME records voor Railway moeten `"proxied": false` zijn (DNS only, grijs wolkje)
+- Dit is nodig zodat Railway direct het verkeer ontvangt voor SSL-validatie
+- Beheer via: https://dash.cloudflare.com of API
+
+```bash
+# Alle DNS records ophalen
+curl -s "https://api.cloudflare.com/client/v4/zones/274388d92ae20e1a2276eb8ead67669c/dns_records" \
+  -H "Authorization: Bearer <token>"
+
+# CNAME record bijwerken
+curl -s -X PATCH "https://api.cloudflare.com/client/v4/zones/274388d92ae20e1a2276eb8ead67669c/dns_records/<recordId>" \
+  -H "Authorization: Bearer <token>" -H "Content-Type: application/json" \
+  -d '{"content":"new-target.up.railway.app"}'
+```
+
+### IONOS DNS API (backup/legacy)
+
+- **Endpoint**: `https://api.hosting.ionos.com/dns/v1`
+- **Auth**: `X-API-Key` header — credentials in `memory/ionos.md`
+- **Zone ID**: `db06574b-d460-11f0-bd5c-0a5864440e35`
+- **Let op**: IONOS DNS is niet meer actief (nameservers staan op Cloudflare)
+- IONOS API kan NIET nameservers wijzigen (alleen records in zone)
+
+### DNS-propagatie verifiëren
+
+```bash
+# Nameservers checken
+curl -s "https://dns.google/resolve?name=ckvoranjewit.app&type=NS"
+
+# CNAME checken
+curl -s "https://dns.google/resolve?name=monitor.ckvoranjewit.app&type=CNAME"
+```
 
 ## Veelgebruikte workflows
 
