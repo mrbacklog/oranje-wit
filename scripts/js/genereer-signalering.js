@@ -48,8 +48,7 @@ const ADVIES = {
     kritiek: {
       "6-12":
         "Evalueer plezier-aanbod in Blauw/Groen teams. Retentie bij instap-leeftijd is de basis van de pijplijn.",
-      "13-14":
-        "Transitiejaar B→A is kritiek. Zorg voor begeleiding en een herkenbaar U13-team.",
+      "13-14": "Transitiejaar B→A is kritiek. Zorg voor begeleiding en een herkenbaar U13-team.",
       "15-16":
         "U17-leeftijd met hoge uitval. Check of POP-balans klopt: 25% plezier, 35% ontwikkeling, 40% prestatie.",
       "17-18":
@@ -79,20 +78,17 @@ const ADVIES = {
   trendbreuk: {
     kritiek:
       "Plotselinge omslag in retentie (>10pp). Onderzoek of er een specifieke oorzaak is (trainer, team, extern).",
-    aandacht:
-      "Retentie wijkt af van de trend. Houd in de gaten of dit structureel wordt.",
+    aandacht: "Retentie wijkt af van de trend. Houd in de gaten of dit structureel wordt.",
   },
   pijplijn_vulgraad: {
     kritiek:
       "Vulgraad onder 60%. Actief werven bij externe talenten of buurtclubs is noodzakelijk.",
-    aandacht:
-      "Vulgraad tussen 60-80%. Verhoog monitoring en overweeg gericht te werven.",
+    aandacht: "Vulgraad tussen 60-80%. Verhoog monitoring en overweeg gericht te werven.",
   },
   forward_projectie: {
     kritiek:
       "Zonder ingrijpen komt U17 onder 60%. Nu investeren in retentie bij de jongere leeftijden.",
-    aandacht:
-      "U17 dreigt onder 80% te komen. Retentie in de jongere leeftijden bewaken.",
+    aandacht: "U17 dreigt onder 80% te komen. Retentie in de jongere leeftijden bewaken.",
   },
 };
 

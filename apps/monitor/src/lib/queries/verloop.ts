@@ -222,7 +222,7 @@ export async function getInstroomPerLeeftijdRecent(n = 5): Promise<VerloopLeefti
     FROM ledenverloop
     WHERE status IN ('nieuw', 'herinschrijver')
       AND leeftijd_nieuw IS NOT NULL
-      AND seizoen IN (SELECT seizoen FROM seizoenen ORDER BY seizoen DESC LIMIT ${n})
+      AND seizoen IN (SELECT DISTINCT seizoen FROM ledenverloop ORDER BY seizoen DESC LIMIT ${n})
     GROUP BY leeftijd_nieuw
     ORDER BY leeftijd_nieuw`;
 
@@ -244,7 +244,7 @@ export async function getUitstroomPerLeeftijdRecent(n = 5): Promise<VerloopLeeft
     FROM ledenverloop
     WHERE status IN ('uitgestroomd', 'niet_spelend_geworden')
       AND leeftijd_vorig IS NOT NULL
-      AND seizoen IN (SELECT seizoen FROM seizoenen ORDER BY seizoen DESC LIMIT ${n})
+      AND seizoen IN (SELECT DISTINCT seizoen FROM ledenverloop ORDER BY seizoen DESC LIMIT ${n})
     GROUP BY leeftijd_vorig
     ORDER BY leeftijd_vorig`;
 

@@ -230,7 +230,7 @@ export type WaterfallData = {
 /** Waterfall-getallen voor het meest recente seizoen */
 export async function getWaterfallData(): Promise<WaterfallData | null> {
   const seizoenRow = await prisma.$queryRaw<{ seizoen: string }[]>`
-    SELECT seizoen FROM seizoenen ORDER BY seizoen DESC LIMIT 1`;
+    SELECT DISTINCT seizoen FROM ledenverloop ORDER BY seizoen DESC LIMIT 1`;
   const seizoen = seizoenRow[0]?.seizoen;
   if (!seizoen) return null;
 

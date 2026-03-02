@@ -13,7 +13,7 @@ import {
   createTeam,
   deleteTeam,
   koppelSelectie,
-  ontkoppelSelectie,
+  ontkoppelSelectieMetVerdeling,
 } from "@/app/scenarios/actions";
 import DndProvider from "./DndContext";
 import Navigator from "./Navigator";
@@ -22,6 +22,7 @@ import SpelersPool from "./SpelersPool";
 import SpelerDetail from "./SpelerDetail";
 import ChatPanel from "./ChatPanel";
 import WhatIfDialoog from "./WhatIfDialoog";
+import VerdeelDialoog from "./VerdeelDialoog";
 
 interface ScenarioEditorProps {
   scenario: ScenarioData;
@@ -52,6 +53,13 @@ export default function ScenarioEditor({ scenario, alleSpelers }: ScenarioEditor
 
   // AI chat + what-if state
   const [whatIfOpen, setWhatIfOpen] = useState(false);
+
+  // Verdeel-dialoog state (ontkoppelen selectie)
+  const [verdeelData, setVerdeelData] = useState<{
+    groepLeiderId: string;
+    leiderTeam: TeamData;
+    lidTeams: TeamData[];
+  } | null>(null);
 
   // Speler detail popup (lifted state)
   const [detailSpeler, setDetailSpeler] = useState<SpelerData | null>(null);
@@ -248,26 +256,94 @@ export default function ScenarioEditor({ scenario, alleSpelers }: ScenarioEditor
     if (teamIds.length < 2) return;
     const [leiderId, ...restIds] = teamIds;
 
-    // Optimistic update
-    setTeams((prev) =>
-      prev.map((t) => (restIds.includes(t.id) ? { ...t, selectieGroepId: leiderId } : t))
-    );
+    // Optimistic update: koppel teams + voeg spelers/staf samen op leider
+    setTeams((prev) => {
+      const lidSpelers = prev.filter((t) => restIds.includes(t.id)).flatMap((t) => t.spelers);
+      const lidStaf = prev.filter((t) => restIds.includes(t.id)).flatMap((t) => t.staf);
+
+      return prev.map((t) => {
+        if (t.id === leiderId) {
+          const bestaandSpelerIds = new Set(t.spelers.map((ts) => ts.spelerId));
+          const nieuweSpelers = lidSpelers.filter((ts) => !bestaandSpelerIds.has(ts.spelerId));
+          const bestaandStafIds = new Set(t.staf.map((ts) => ts.stafId));
+          const nieuweStaf = lidStaf.filter((ts) => !bestaandStafIds.has(ts.stafId));
+          return {
+            ...t,
+            spelers: [...t.spelers, ...nieuweSpelers],
+            staf: [...t.staf, ...nieuweStaf],
+          };
+        }
+        if (restIds.includes(t.id)) {
+          return { ...t, selectieGroepId: leiderId, spelers: [], staf: [] };
+        }
+        return t;
+      });
+    });
 
     startTransition(() => {
       koppelSelectie(teamIds);
     });
   }, []);
 
-  const handleOntkoppelSelectie = useCallback((groepLeiderId: string) => {
-    // Optimistic update
-    setTeams((prev) =>
-      prev.map((t) => (t.selectieGroepId === groepLeiderId ? { ...t, selectieGroepId: null } : t))
-    );
+  const handleOntkoppelSelectie = useCallback(
+    (groepLeiderId: string) => {
+      const leider = teams.find((t) => t.id === groepLeiderId);
+      const leden = teams.filter((t) => t.selectieGroepId === groepLeiderId);
+      if (!leider) return;
 
-    startTransition(() => {
-      ontkoppelSelectie(groepLeiderId);
-    });
-  }, []);
+      // Open de VerdeelDialoog
+      setVerdeelData({
+        groepLeiderId,
+        leiderTeam: leider,
+        lidTeams: leden,
+      });
+    },
+    [teams]
+  );
+
+  const handleVerdeelBevestig = useCallback(
+    (spelerVerdeling: Record<string, string[]>, stafVerdeling: Record<string, string[]>) => {
+      if (!verdeelData) return;
+      const { groepLeiderId, lidTeams } = verdeelData;
+      const alleTeamIds = [groepLeiderId, ...lidTeams.map((t) => t.id)];
+
+      // Optimistic update: verdeel spelers + staf + ontkoppel
+      setTeams((prev) => {
+        const leider = prev.find((t) => t.id === groepLeiderId);
+        const spelerMap = new Map((leider?.spelers ?? []).map((ts) => [ts.spelerId, ts]));
+        const stafMap = new Map((leider?.staf ?? []).map((ts) => [ts.stafId, ts]));
+        const alleStafIds = new Set(stafVerdeling["alle"] ?? []);
+
+        return prev.map((t) => {
+          if (!alleTeamIds.includes(t.id)) return t;
+
+          const spelerIds = spelerVerdeling[t.id] ?? [];
+          const teamStafIds = stafVerdeling[t.id] ?? [];
+
+          const stafVoorTeam = [
+            ...teamStafIds.map((id) => stafMap.get(id)).filter(Boolean),
+            ...Array.from(alleStafIds)
+              .map((id) => stafMap.get(id))
+              .filter(Boolean),
+          ];
+
+          return {
+            ...t,
+            selectieGroepId: null,
+            spelers: spelerIds.map((id) => spelerMap.get(id)!).filter(Boolean),
+            staf: stafVoorTeam as typeof t.staf,
+          };
+        });
+      });
+
+      setVerdeelData(null);
+
+      startTransition(() => {
+        ontkoppelSelectieMetVerdeling(groepLeiderId, spelerVerdeling, stafVerdeling, alleTeamIds);
+      });
+    },
+    [verdeelData]
+  );
 
   if (!laatsteVersie) {
     return (
@@ -326,6 +402,16 @@ export default function ScenarioEditor({ scenario, alleSpelers }: ScenarioEditor
         teams={teams}
         alleSpelers={alleSpelers}
       />
+
+      {verdeelData && (
+        <VerdeelDialoog
+          open={true}
+          onClose={() => setVerdeelData(null)}
+          leiderTeam={verdeelData.leiderTeam}
+          lidTeams={verdeelData.lidTeams}
+          onBevestig={handleVerdeelBevestig}
+        />
+      )}
 
       {detailSpeler && (
         <SpelerDetail
