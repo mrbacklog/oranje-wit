@@ -23,10 +23,10 @@ interface WaterfallChartProps {
 }
 
 const COLORS: Record<WaterfallItem["type"], string> = {
-  start: "#6B7280",
-  instroom: "#22C55E",
-  uitstroom: "#EF4444",
-  eind: "#6B7280",
+  start: "var(--color-gray-500, #6B7280)",
+  instroom: "var(--color-green-500, #22C55E)",
+  uitstroom: "var(--color-red-500, #EF4444)",
+  eind: "var(--color-gray-500, #6B7280)",
 };
 
 interface TransformedItem {

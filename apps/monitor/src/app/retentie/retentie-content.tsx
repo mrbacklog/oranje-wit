@@ -1,3 +1,4 @@
+import { logger } from "@oranje-wit/types";
 import {
   getInstroomUitstroom,
   getInstroomPerSeizoenMV,
@@ -26,25 +27,42 @@ import {
 } from "@/lib/utils/retentie";
 
 export async function RetentieContent() {
-  const [
-    verloop,
-    instroomPerSeizoen,
-    uitstroomPerSeizoen,
-    instroomLeeftijd,
-    uitstroomLeeftijd,
-    cohortData,
-    eersteSeizoen,
-    waterfallRaw,
-  ] = await Promise.all([
-    getInstroomUitstroom(),
-    getInstroomPerSeizoenMV(),
-    getUitstroomPerSeizoenMV(),
-    getInstroomPerSeizoenMVLeeftijd(),
-    getUitstroomPerSeizoenMVLeeftijd(),
-    getCohortRetentieMatrix(),
-    getEersteSeizoenRetentie(),
-    getWaterfallData(),
-  ]);
+  let verloop, instroomPerSeizoen, uitstroomPerSeizoen;
+  let instroomLeeftijd, uitstroomLeeftijd;
+  let cohortData, eersteSeizoen, waterfallRaw;
+
+  try {
+    [
+      verloop,
+      instroomPerSeizoen,
+      uitstroomPerSeizoen,
+      instroomLeeftijd,
+      uitstroomLeeftijd,
+      cohortData,
+      eersteSeizoen,
+      waterfallRaw,
+    ] = await Promise.all([
+      getInstroomUitstroom(),
+      getInstroomPerSeizoenMV(),
+      getUitstroomPerSeizoenMV(),
+      getInstroomPerSeizoenMVLeeftijd(),
+      getUitstroomPerSeizoenMVLeeftijd(),
+      getCohortRetentieMatrix(),
+      getEersteSeizoenRetentie(),
+      getWaterfallData(),
+    ]);
+  } catch (error) {
+    logger.error("Fout bij ophalen ledendynamiek-data:", error);
+    return (
+      <div className="rounded-xl bg-red-50 p-6 shadow-sm">
+        <h3 className="mb-2 text-sm font-semibold text-red-700">Data kon niet geladen worden</h3>
+        <p className="text-sm text-red-600">
+          Er ging iets mis bij het ophalen van de ledendynamiek-gegevens. Probeer de pagina opnieuw
+          te laden.
+        </p>
+      </div>
+    );
+  }
 
   // --- Retentie tab ---
   const retentieData = verloop.retentie_alle_seizoenen

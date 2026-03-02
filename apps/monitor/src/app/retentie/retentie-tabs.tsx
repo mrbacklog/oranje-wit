@@ -1,20 +1,7 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
-
-const TABS = ["Behoud", "Instroom", "Uitstroom", "Cohorten"] as const;
-type Tab = (typeof TABS)[number];
-
-const TAB_BESCHRIJVING: Record<Tab, string> = {
-  Behoud:
-    "Welk percentage leden keert seizoen na seizoen terug? De retentiecurve toont per leeftijd hoeveel spelers het volgende seizoen weer meedoen.",
-  Instroom:
-    "Hoeveel nieuwe spelers komen erbij? Instroom omvat zowel volledig nieuwe leden als herinschrijvers die na een onderbreking terugkeren.",
-  Uitstroom:
-    "Hoeveel spelers stoppen er? Uitstroom laat per leeftijd zien wanneer leden de vereniging verlaten \u2014 en of dat bij jongens of meisjes vaker voorkomt.",
-  Cohorten:
-    "Hoe presteren instroom-jaargangen over de jaren? Volg elk cohort van binnenkomst tot nu \u2014 en zie welke jaargangen het best vasthouden.",
-};
+import { type ReactNode } from "react";
+import { TabShell } from "@/components/layout/tab-shell";
 
 interface RetentieTabsProps {
   behoudContent: ReactNode;
@@ -29,42 +16,34 @@ export function RetentieTabs({
   uitstroomContent,
   cohortenContent,
 }: RetentieTabsProps) {
-  const [activeTab, setActiveTab] = useState<Tab>("Behoud");
-
-  const content: Record<Tab, ReactNode> = {
-    Behoud: behoudContent,
-    Instroom: instroomContent,
-    Uitstroom: uitstroomContent,
-    Cohorten: cohortenContent,
-  };
-
   return (
-    <>
-      <div role="tablist" className="mb-6 flex gap-1 rounded-lg bg-gray-100 p-1">
-        {TABS.map((tab) => (
-          <button
-            key={tab}
-            id={`tab-${tab.toLowerCase()}`}
-            role="tab"
-            type="button"
-            aria-selected={activeTab === tab}
-            onClick={() => setActiveTab(tab)}
-            className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition ${
-              activeTab === tab
-                ? "bg-white text-gray-900 shadow-sm"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
-
-      <p className="mb-6 text-sm text-gray-500">{TAB_BESCHRIJVING[activeTab]}</p>
-
-      <div role="tabpanel" aria-labelledby={`tab-${activeTab.toLowerCase()}`}>
-        {content[activeTab]}
-      </div>
-    </>
+    <TabShell
+      tabs={[
+        {
+          label: "Behoud",
+          beschrijving:
+            "Welk percentage leden keert seizoen na seizoen terug? De retentiecurve toont per leeftijd hoeveel spelers het volgende seizoen weer meedoen.",
+          content: behoudContent,
+        },
+        {
+          label: "Instroom",
+          beschrijving:
+            "Hoeveel nieuwe spelers komen erbij? Instroom omvat zowel volledig nieuwe leden als herinschrijvers die na een onderbreking terugkeren.",
+          content: instroomContent,
+        },
+        {
+          label: "Uitstroom",
+          beschrijving:
+            "Hoeveel spelers stoppen er? Uitstroom laat per leeftijd zien wanneer leden de vereniging verlaten \u2014 en of dat bij jongens of meisjes vaker voorkomt.",
+          content: uitstroomContent,
+        },
+        {
+          label: "Cohorten",
+          beschrijving:
+            "Hoe presteren instroom-jaargangen over de jaren? Volg elk cohort van binnenkomst tot nu \u2014 en zie welke jaargangen het best vasthouden.",
+          content: cohortenContent,
+        },
+      ]}
+    />
   );
 }
