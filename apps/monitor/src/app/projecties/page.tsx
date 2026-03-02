@@ -164,7 +164,7 @@ export default async function JeugdpijplijnPage({
     <>
       <InfoPageHeader
         title="Jeugdpijplijn"
-        subtitle="Van instroom tot U17 — teruggerekend vanuit het doel van 50 spelers."
+        subtitle="Van instroom tot U17 — streef 12♂ + 13♀ per geboortejaar."
         infoTitle="Over Jeugdpijplijn"
       >
         <div className="space-y-4">
@@ -173,8 +173,9 @@ export default async function JeugdpijplijnPage({
               Wat zie je?
             </h4>
             <p>
-              De complete jeugdpijplijn: van instroom tot U17, teruggerekend vanuit het doel van 50
-              spelers (25♂ + 25♀).
+              De complete jeugdpijplijn: van instroom tot U17. Streef is 12 jongens + 13 meiden per
+              geboortejaar vanaf leeftijd 12. Jongere leeftijden worden teruggerekend met
+              groei-factoren.
             </p>
           </section>
           <section>
@@ -245,7 +246,7 @@ export default async function JeugdpijplijnPage({
               Stip op de horizon
             </h3>
             <p className="mt-1 text-2xl font-bold text-gray-900">50 U17-spelers</p>
-            <p className="text-sm text-gray-500">25 jongens + 25 meisjes — voor 5 teams</p>
+            <p className="text-sm text-gray-500">24 jongens + 26 meisjes — voor 5 teams</p>
           </div>
           <div className="flex-1 sm:max-w-xs">
             <div className="flex items-baseline justify-between text-sm">
@@ -281,7 +282,7 @@ export default async function JeugdpijplijnPage({
           Pijplijn per leeftijd
         </h3>
         <p className="mb-4 text-xs text-gray-500">
-          Benodigd aantal spelers per leeftijd, teruggerekend vanuit 25♂ + 25♀ bij leeftijd 16
+          Streef 12♂ + 13♀ per geboortejaar vanaf leeftijd 12, teruggerekend voor jongere leeftijden
         </p>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">

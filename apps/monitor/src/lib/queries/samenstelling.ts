@@ -108,12 +108,19 @@ export async function getGroeiFactoren(): Promise<GroeiFactoren> {
 }
 
 // ---------------------------------------------------------------------------
-// Backward-projectie: van U17-doel terugrekenen per leeftijd
+// Backward-projectie: per-geboortejaar doel terugrekenen per leeftijd
 // ---------------------------------------------------------------------------
 
-const U17_DOEL_M = 25;
-const U17_DOEL_V = 25;
-const _U17_DOEL = 50;
+// Streef per geboortejaar: 12 jongens + 13 meiden = 25 spelers.
+// Dit geldt vast vanaf leeftijd 12 (gele band, U13).
+// Voor leeftijd 6-11 wordt teruggerekend met groei-factoren.
+const DOEL_M_PER_JAAR = 12;
+const DOEL_V_PER_JAAR = 13;
+
+// U17 = 2 jaargangen, dus 24M + 26V = 50 totaal
+const U17_DOEL_M = DOEL_M_PER_JAAR * 2;
+const U17_DOEL_V = DOEL_V_PER_JAAR * 2;
+const _U17_DOEL = U17_DOEL_M + U17_DOEL_V;
 
 const BAND_PER_LEEFTIJD: Record<number, string> = {
   6: "Blauw",
@@ -152,11 +159,11 @@ export type PijplijnResult = {
 };
 
 /**
- * Bereken de jeugdpijplijn: vanuit het doel van 25M + 25V bij leeftijd 16
- * (1e-jaars U17) terugrekenen hoeveel spelers er per leeftijd nodig zijn.
+ * Bereken de jeugdpijplijn met per-geboortejaar doelen.
  *
- * Logica: benodigd[L-1] = benodigd[L] / groei_factor[L]
- * De groei-factor bevat zowel retentie als instroom (netto).
+ * - Leeftijd 12-17: vast doel van 12M + 13V per geboortejaar
+ * - Leeftijd 6-11: teruggerekend vanaf het doel bij leeftijd 12
+ *   met historische groei-factoren (retentie + instroom)
  */
 export async function getPijplijn(seizoen: string): Promise<PijplijnResult> {
   const startJaar = parseInt(seizoen.split("-")[0]);
@@ -177,31 +184,27 @@ export async function getPijplijn(seizoen: string): Promise<PijplijnResult> {
     huidigPerLeeftijd.set(leeftijd, existing);
   }
 
-  // Backward: van leeftijd 16 terug naar 6, dan forward naar 17
+  // Per-geboortejaar model:
+  // - Leeftijd 12-17: vast doel (12M + 13V per geboortejaar)
+  // - Leeftijd 6-11: terugrekenen vanaf het doel bij 12
   const perLeeftijd: PijplijnRij[] = [];
-  let benodigdM = U17_DOEL_M;
-  let benodigdV = U17_DOEL_V;
-
-  // Eerst leeftijd 16 (het doel), dan terugrekenen naar 6
   const benodigdPerLeeftijd = new Map<number, { m: number; v: number }>();
-  benodigdPerLeeftijd.set(16, { m: benodigdM, v: benodigdV });
 
-  for (let leeftijd = 15; leeftijd >= 6; leeftijd--) {
-    // benodigd[L] = benodigd[L+1] / factor[L+1]
+  // Vast doel voor leeftijd 12 t/m 17
+  for (let leeftijd = 12; leeftijd <= 17; leeftijd++) {
+    benodigdPerLeeftijd.set(leeftijd, { m: DOEL_M_PER_JAAR, v: DOEL_V_PER_JAAR });
+  }
+
+  // Terugrekenen van leeftijd 11 naar 6 (instroom-traject)
+  let benodigdM = DOEL_M_PER_JAAR;
+  let benodigdV = DOEL_V_PER_JAAR;
+  for (let leeftijd = 11; leeftijd >= 6; leeftijd--) {
     const factorM = groei.M[leeftijd + 1] ?? 0.85;
     const factorV = groei.V[leeftijd + 1] ?? 0.85;
     benodigdM = benodigdM / factorM;
     benodigdV = benodigdV / factorV;
     benodigdPerLeeftijd.set(leeftijd, { m: benodigdM, v: benodigdV });
   }
-
-  // Leeftijd 17 (2e-jaars): doel × factor[17] (retentie vanuit 16)
-  const factor17M = groei.M[17] ?? 0.85;
-  const factor17V = groei.V[17] ?? 0.85;
-  benodigdPerLeeftijd.set(17, {
-    m: U17_DOEL_M * factor17M,
-    v: U17_DOEL_V * factor17V,
-  });
 
   // Bouw resultaat op
   for (let leeftijd = 6; leeftijd <= 17; leeftijd++) {
