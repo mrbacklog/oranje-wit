@@ -13,12 +13,23 @@
  * - Blauwdruk.kaders: bijgewerkt (referentiedata)
  * - Blauwdruk.speerpunten/toelichting: behouden (gebruikersinvoer)
  * - Pins, Concepten, Scenario's: ongewijzigd
+ *
+ * Diff-detectie bij herimport:
+ * - Vergelijkt speler-IDs met vorige import voor hetzelfde seizoen
+ * - Verdwenen spelers → automatisch GAAT_STOPPEN
+ * - Nieuwe spelers → automatisch NIEUW_POTENTIEEL
  */
 
 import { prisma } from "./db/prisma";
 import type { Prisma } from "@oranje-wit/database";
+import { logger } from "@oranje-wit/types";
 
 // --- Types ---
+
+export interface ImportDiff {
+  nieuw: Array<{ id: string; naam: string }>;
+  weg: Array<{ id: string; naam: string }>;
+}
 
 export interface ImportResult {
   seizoen: string;
@@ -28,6 +39,7 @@ export interface ImportResult {
   staf: { nieuw: number; bijgewerkt: number; fouten: number };
   teams: { geladen: number };
   blauwdruk: { status: "aangemaakt" | "bijgewerkt" | "ongewijzigd" };
+  diff: ImportDiff | null;
   importId: string;
 }
 
@@ -159,8 +171,15 @@ export async function importData(data: ExportData): Promise<ImportResult> {
     staf: { nieuw: 0, bijgewerkt: 0, fouten: 0 },
     teams: { geladen: 0 },
     blauwdruk: { status: "ongewijzigd" },
+    diff: null,
     importId: "",
   };
+
+  // Bouw naam-lookup voor diff-rapportage
+  const spelerNamen = new Map<string, string>();
+  for (const s of data.spelers) {
+    spelerNamen.set(s.id, `${s.roepnaam} ${s.achternaam}`);
+  }
 
   // 1. Spelers upsert
   for (const speler of data.spelers) {
@@ -205,7 +224,7 @@ export async function importData(data: ExportData): Promise<ImportResult> {
         result.spelers.bijgewerkt++;
       }
     } catch (err) {
-      console.error(`  Speler fout: ${speler.roepnaam} ${speler.achternaam}: ${err}`);
+      logger.error(`Speler fout: ${speler.roepnaam} ${speler.achternaam}: ${err}`);
       result.spelers.fouten++;
     }
   }
@@ -256,7 +275,7 @@ export async function importData(data: ExportData): Promise<ImportResult> {
         result.staf.nieuw++;
       }
     } catch (err) {
-      console.error(`  Staf fout: ${staf.naam}: ${err}`);
+      logger.error(`Staf fout: ${staf.naam}: ${err}`);
       result.staf.fouten++;
     }
   }
@@ -309,7 +328,64 @@ export async function importData(data: ExportData): Promise<ImportResult> {
     result.blauwdruk.status = "aangemaakt";
   }
 
-  // 5. Import-record aanmaken
+  // 5. Diff-detectie: vergelijk met vorige import voor hetzelfde seizoen
+  const huidigeSpelerIds = data.spelers.map((s) => s.id);
+
+  const vorigeImport = await prisma.import.findFirst({
+    where: { seizoen: meta.seizoen_nieuw },
+    orderBy: { createdAt: "desc" },
+    select: { spelerIds: true },
+  });
+
+  if (vorigeImport && vorigeImport.spelerIds.length > 0) {
+    const vorigeSet = new Set(vorigeImport.spelerIds);
+    const huidigeSet = new Set(huidigeSpelerIds);
+
+    const nieuweIds = huidigeSpelerIds.filter((id) => !vorigeSet.has(id));
+    const wegIds = vorigeImport.spelerIds.filter((id) => !huidigeSet.has(id));
+
+    // Haal namen op van verdwenen spelers (staan niet in de huidige export)
+    const wegSpelers =
+      wegIds.length > 0
+        ? await prisma.speler.findMany({
+            where: { id: { in: wegIds } },
+            select: { id: true, roepnaam: true, achternaam: true },
+          })
+        : [];
+
+    const diff: ImportDiff = {
+      nieuw: nieuweIds.map((id) => ({ id, naam: spelerNamen.get(id) ?? id })),
+      weg: wegSpelers.map((s) => ({ id: s.id, naam: `${s.roepnaam} ${s.achternaam}` })),
+    };
+
+    // Auto-markeer verdwenen spelers als GAAT_STOPPEN
+    if (wegIds.length > 0) {
+      await prisma.speler.updateMany({
+        where: {
+          id: { in: wegIds },
+          status: { notIn: ["GAAT_STOPPEN"] },
+        },
+        data: { status: "GAAT_STOPPEN" },
+      });
+      logger.info(`${wegIds.length} speler(s) automatisch gemarkeerd als GAAT_STOPPEN`);
+    }
+
+    // Auto-markeer nieuwe spelers als NIEUW_POTENTIEEL (alleen als nog BESCHIKBAAR)
+    if (nieuweIds.length > 0) {
+      await prisma.speler.updateMany({
+        where: {
+          id: { in: nieuweIds },
+          status: "BESCHIKBAAR",
+        },
+        data: { status: "NIEUW_POTENTIEEL" },
+      });
+      logger.info(`${nieuweIds.length} speler(s) automatisch gemarkeerd als NIEUW_POTENTIEEL`);
+    }
+
+    result.diff = diff;
+  }
+
+  // 6. Import-record aanmaken (met spelerIds voor toekomstige diffs)
   const importRecord = await prisma.import.create({
     data: {
       seizoen: meta.seizoen_nieuw,
@@ -321,6 +397,8 @@ export async function importData(data: ExportData): Promise<ImportResult> {
       stafBijgewerkt: result.staf.bijgewerkt,
       teamsGeladen: result.teams.geladen,
       meta: meta as unknown as Prisma.InputJsonValue,
+      spelerIds: huidigeSpelerIds,
+      diff: result.diff as unknown as Prisma.InputJsonValue,
     },
   });
 

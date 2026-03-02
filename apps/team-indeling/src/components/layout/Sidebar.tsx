@@ -3,7 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSeizoen } from "@/components/providers/SeizoenProvider";
+import NieuwSeizoenDialog from "./NieuwSeizoenDialog";
 import UserMenu from "./UserMenu";
+
+function berekenVolgendSeizoen(seizoen: string): string {
+  const [start] = seizoen.split("-").map(Number);
+  return `${start + 1}-${start + 2}`;
+}
 
 const navigatie = [
   { label: "Overzicht", href: "/" },
@@ -15,7 +21,7 @@ const navigatie = [
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const { seizoen, alleSeizoenen, setSeizoen } = useSeizoen();
+  const { seizoen, alleSeizoenen, isHuidig, setSeizoen } = useSeizoen();
 
   return (
     <aside className="flex min-h-screen w-56 shrink-0 flex-col border-r border-gray-200 bg-white">
@@ -39,6 +45,7 @@ export default function Sidebar() {
             {seizoen}
           </span>
         )}
+        {isHuidig && <NieuwSeizoenDialog volgendSeizoen={berekenVolgendSeizoen(seizoen)} />}
       </div>
 
       {/* Navigatie */}

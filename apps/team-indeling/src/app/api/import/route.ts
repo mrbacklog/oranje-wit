@@ -48,8 +48,11 @@ export async function GET() {
             exportDatum: lastImport.exportDatum,
             snapshotDatum: lastImport.snapshotDatum,
             spelers: lastImport.spelersNieuw + lastImport.spelersBijgewerkt,
+            spelersNieuw: lastImport.spelersNieuw,
+            spelersBijgewerkt: lastImport.spelersBijgewerkt,
             staf: lastImport.stafNieuw + lastImport.stafBijgewerkt,
             teams: lastImport.teamsGeladen,
+            diff: lastImport.diff,
             importedAt: lastImport.createdAt,
           }
         : null,
