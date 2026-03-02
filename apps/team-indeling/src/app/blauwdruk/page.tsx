@@ -1,14 +1,15 @@
 import { getBlauwdruk, getSpelersUitgebreid, getLedenStatistieken } from "./actions";
 import type { CategorieKaders } from "./categorie-kaders";
 import BlauwdrukTabs from "@/components/blauwdruk/BlauwdrukTabs";
-
-const SEIZOEN = "2026-2027";
+import { getActiefSeizoen } from "@/lib/seizoen";
 
 export const dynamic = "force-dynamic";
 
 export default async function BlauwdrukPage() {
+  const seizoen = await getActiefSeizoen();
+
   const [blauwdruk, spelers, statistieken] = await Promise.all([
-    getBlauwdruk(SEIZOEN),
+    getBlauwdruk(seizoen),
     getSpelersUitgebreid(),
     getLedenStatistieken(),
   ]);
@@ -20,7 +21,7 @@ export default async function BlauwdrukPage() {
       <div>
         <h2 className="text-xl font-bold text-gray-900">Blauwdruk</h2>
         <p className="mt-1 text-sm text-gray-500">
-          Strategische kaders en speerpunten voor seizoen {SEIZOEN}
+          Strategische kaders en speerpunten voor seizoen {seizoen}
         </p>
       </div>
 

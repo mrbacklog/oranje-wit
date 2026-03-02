@@ -1,6 +1,8 @@
 /* eslint-disable max-lines */
+import { Suspense } from "react";
 import { InfoPageHeader } from "@/components/info/InfoPageHeader";
-import { getPijplijn, getProjectie } from "@/lib/queries/samenstelling";
+import { SeizoenKiezer } from "@/components/layout/seizoen-kiezer";
+import { getPijplijn, getProjectie, getVerwachteInstroom } from "@/lib/queries/samenstelling";
 import { getSeizoen } from "@/lib/utils/seizoen";
 import { ProjectiePiramide } from "./projectie-piramide";
 import { RetentieCurve } from "./retentie-curve";
@@ -10,13 +12,6 @@ function signaalKleur(pct: number): string {
   if (pct >= 70) return "bg-yellow-50 text-yellow-800";
   return "bg-red-50 text-red-800";
 }
-
-const signaalKleuren: Record<string, string> = {
-  groen: "bg-green-50 text-signal-groen",
-  geel: "bg-yellow-50 text-signal-geel",
-  rood: "bg-red-50 text-signal-rood",
-  neutraal: "",
-};
 
 // Benchmarks uit jeugdmodel.yaml — statisch, wijzigt zelden
 const BENCHMARK_M: Record<number, number> = {
@@ -141,12 +136,20 @@ export default async function JeugdpijplijnPage({
   const params = await searchParams;
   const seizoen = getSeizoen(params);
 
-  const [pijplijn, projectie] = await Promise.all([getPijplijn(seizoen), getProjectie(seizoen)]);
+  const startJaar = parseInt(seizoen.split("-")[0]);
+  const [pijplijn, projectie, verwachteInstroom] = await Promise.all([
+    getPijplijn(seizoen),
+    getProjectie(seizoen),
+    getVerwachteInstroom(seizoen),
+  ]);
 
-  const vulgraadU17 =
-    pijplijn.doel.totaal > 0
-      ? Math.round((pijplijn.huidigU17.totaal / pijplijn.doel.totaal) * 100)
-      : 0;
+  const doel = pijplijn.doelPerCategorie;
+  const categorieen = [
+    { label: "U15", leeftijden: "14-15", ...pijplijn.huidig.U15 },
+    { label: "U17", leeftijden: "16-17", ...pijplijn.huidig.U17 },
+    { label: "U19", leeftijden: "18-19", ...pijplijn.huidig.U19 },
+  ] as const;
+  const vulgraadPct = (totaal: number) => (doel > 0 ? Math.round((totaal / doel) * 100) : 0);
 
   // Piramide-data: huidig vs benodigd per leeftijd
   const piramideData = pijplijn.perLeeftijd.map((row) => ({
@@ -164,8 +167,13 @@ export default async function JeugdpijplijnPage({
     <>
       <InfoPageHeader
         title="Jeugdpijplijn"
-        subtitle="Van instroom tot U17 — streef 12♂ + 13♀ per geboortejaar."
+        subtitle="Van instroom tot senioren — streef 12♂ + 13♀ per geboortejaar."
         infoTitle="Over Jeugdpijplijn"
+        actions={
+          <Suspense>
+            <SeizoenKiezer />
+          </Suspense>
+        }
       >
         <div className="space-y-4">
           <section>
@@ -173,57 +181,9 @@ export default async function JeugdpijplijnPage({
               Wat zie je?
             </h4>
             <p>
-              De complete jeugdpijplijn: van instroom tot U17. Streef is 12 jongens + 13 meiden per
-              geboortejaar vanaf leeftijd 12. Jongere leeftijden worden teruggerekend met
-              groei-factoren.
-            </p>
-          </section>
-          <section>
-            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
-              Doelkaart &amp; pijplijn
-            </h4>
-            <p>
-              <strong>Doelkaart:</strong> voortgang richting het doel. De vulbalk laat zien hoe ver
-              we zijn.
-            </p>
-            <p className="mt-1">
-              <strong>Pijplijn:</strong> per leeftijd hoeveel spelers we nu hebben vs. hoeveel we
-              nodig hebben, teruggerekend vanaf leeftijd 16.
-            </p>
-          </section>
-          <section>
-            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
-              Retentiecurve &amp; knelpunten
-            </h4>
-            <p>
-              <strong>Waar lekken we?</strong> Netto groei per leeftijdsovergang — boven 100% groeit
-              het cohort, eronder krimpt het.
-            </p>
-            <p className="mt-1">
-              <strong>Waar investeren?</strong> De grootste knelpunten en kansen, vergeleken met de
-              benchmarks uit het jeugdmodel.
-            </p>
-          </section>
-          <section>
-            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
-              Doorstroomkans
-            </h4>
-            <p>
-              Kans dat een individuele speler die instroomt bij een bepaalde leeftijd uiteindelijk
-              U17 bereikt. Gebaseerd op retentiefactoren uit het jeugdmodel.
-            </p>
-          </section>
-          <section>
-            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
-              Projectie &amp; senioren
-            </h4>
-            <p>
-              <strong>U17-projectie:</strong> verwachte aantallen voor de komende 5 seizoenen op
-              basis van huidige cohorten en historische groei.
-            </p>
-            <p className="mt-1">
-              <strong>Senioren-instroom:</strong> hoeveel spelers vanuit U19 de seniorenleeftijd
-              bereiken.
+              De complete jeugdpijplijn van instroom (6 jaar) tot senioren (22 jaar). Streef is 12
+              jongens + 13 meiden per geboortejaar. Jongere leeftijden (&lt;12) worden teruggerekend
+              met groei-factoren op basis van de laatste 5 seizoenen.
             </p>
           </section>
           <section>
@@ -231,8 +191,9 @@ export default async function JeugdpijplijnPage({
               Kleuren
             </h4>
             <p>
-              <strong>Rood</strong> = tekort, <strong>geel</strong> = aandacht,{" "}
-              <strong>groen</strong> = op koers.
+              <span className="text-green-600">●</span> ≥90% op koers,{" "}
+              <span className="text-yellow-500">●</span> 70-89% aandacht,{" "}
+              <span className="text-red-500">●</span> &lt;70% tekort.
             </p>
           </section>
         </div>
@@ -240,39 +201,47 @@ export default async function JeugdpijplijnPage({
 
       {/* Sectie 1: Doelkaart */}
       <div className="mb-8 rounded-xl bg-white p-6 shadow-sm">
-        <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h3 className="text-sm font-semibold tracking-wide text-gray-700 uppercase">
-              Stip op de horizon
-            </h3>
-            <p className="mt-1 text-2xl font-bold text-gray-900">50 U17-spelers</p>
-            <p className="text-sm text-gray-500">24 jongens + 26 meisjes — voor 5 teams</p>
-          </div>
-          <div className="flex-1 sm:max-w-xs">
-            <div className="flex items-baseline justify-between text-sm">
-              <span className="font-medium text-gray-700">
-                Huidig: {pijplijn.huidigU17.totaal}
-                <span className="ml-1 text-gray-400">
-                  ({pijplijn.huidigU17.m}
-                  <span className="text-blue-500">&#9794;</span> + {pijplijn.huidigU17.v}
-                  <span className="text-pink-500">&#9792;</span>)
-                </span>
-              </span>
-              <span className="font-semibold">{vulgraadU17}%</span>
-            </div>
-            <div className="mt-2 h-3 w-full overflow-hidden rounded-full bg-gray-100">
-              <div
-                className={`h-full rounded-full transition-all ${
-                  vulgraadU17 >= 90
-                    ? "bg-green-500"
-                    : vulgraadU17 >= 70
-                      ? "bg-yellow-500"
-                      : "bg-red-500"
-                }`}
-                style={{ width: `${Math.min(vulgraadU17, 100)}%` }}
-              />
-            </div>
-          </div>
+        <h3 className="text-sm font-semibold tracking-wide text-gray-700 uppercase">
+          Stip op de horizon
+        </h3>
+        <p className="mt-2 text-sm text-gray-600">
+          Met 50 spelers per selectiecategorie in een evenwichtige verhouding jongens en meiden
+          verzekeren we ons van selectieteams op hoofdklasseniveau.
+        </p>
+        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          {categorieen.map((cat) => {
+            const pct = vulgraadPct(cat.totaal);
+            return (
+              <div key={cat.label} className="rounded-lg border border-gray-100 p-3">
+                <div className="flex items-baseline justify-between">
+                  <span className="text-sm font-semibold text-gray-800">
+                    {cat.label}{" "}
+                    <span className="font-normal text-gray-400">({cat.leeftijden})</span>
+                  </span>
+                  <span className="text-sm font-semibold">{pct}%</span>
+                </div>
+                <div className="mt-1.5 flex items-center gap-2 text-xs text-gray-500">
+                  <span>
+                    {cat.totaal}/{doel}
+                  </span>
+                  <span className="text-gray-300">|</span>
+                  <span>
+                    {cat.m}
+                    <span className="text-blue-500">♂</span> {cat.v}
+                    <span className="text-pink-500">♀</span>
+                  </span>
+                </div>
+                <div className="mt-1.5 h-2 w-full overflow-hidden rounded-full bg-gray-100">
+                  <div
+                    className={`h-full rounded-full transition-all ${
+                      pct >= 90 ? "bg-green-500" : pct >= 70 ? "bg-yellow-500" : "bg-red-500"
+                    }`}
+                    style={{ width: `${Math.min(pct, 100)}%` }}
+                  />
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -282,14 +251,14 @@ export default async function JeugdpijplijnPage({
           Pijplijn per leeftijd
         </h3>
         <p className="mb-4 text-xs text-gray-500">
-          Streef 12♂ + 13♀ per geboortejaar vanaf leeftijd 12, teruggerekend voor jongere leeftijden
+          Streef 12♂ + 13♀ per geboortejaar — groei-factoren op basis van laatste 5 seizoenen
         </p>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-gray-50 text-left">
                 <th className="px-3 py-2 font-semibold">Leeftijd</th>
-                <th className="px-3 py-2 font-semibold">Band</th>
+                <th className="px-3 py-2 font-semibold">Geb.jaar</th>
                 <th className="px-3 py-2 text-right font-semibold">
                   <span className="text-blue-500">♂</span> huidig
                 </th>
@@ -302,42 +271,46 @@ export default async function JeugdpijplijnPage({
                 <th className="px-3 py-2 text-right font-semibold">
                   <span className="text-pink-500">♀</span> nodig
                 </th>
-                <th className="px-3 py-2 text-right font-semibold">Vulgraad</th>
+                <th className="px-3 py-2 text-right font-semibold">
+                  <span className="text-blue-500">♂</span> %
+                </th>
+                <th className="px-3 py-2 text-right font-semibold">
+                  <span className="text-pink-500">♀</span> %
+                </th>
               </tr>
             </thead>
             <tbody>
               {pijplijn.perLeeftijd.map((row) => {
-                const signaal = row.vulgraad >= 90 ? "groen" : row.vulgraad >= 70 ? "geel" : "rood";
-                const isU17 = row.leeftijd >= 16;
+                const stipKleur = (v: number) =>
+                  v >= 90 ? "text-green-500" : v >= 70 ? "text-yellow-500" : "text-red-500";
+                const extra = verwachteInstroom[row.leeftijd] || 0;
                 return (
-                  <tr
-                    key={row.leeftijd}
-                    className={`border-t border-gray-100 ${signaalKleuren[signaal]} ${
-                      isU17 ? "font-semibold" : ""
-                    }`}
-                  >
-                    <td className="px-3 py-2">
-                      {row.leeftijd}
-                      {row.leeftijd === 16 && (
-                        <span className="ml-1 text-xs text-gray-400">U17 doel</span>
-                      )}
-                    </td>
-                    <td className="px-3 py-2">{row.band}</td>
+                  <tr key={row.leeftijd} className="border-t border-gray-100">
+                    <td className="px-3 py-2">{row.leeftijd}</td>
+                    <td className="px-3 py-2 text-gray-500">{startJaar - row.leeftijd}</td>
                     <td className="px-3 py-2 text-right">
                       {row.huidig_m}
-                      {row.gap_m < 0 && (
+                      {extra > 0 && <span className="ml-1 text-xs text-gray-400">(+{extra})</span>}
+                      {row.gap_m < 0 && !extra && (
                         <span className="ml-1 text-xs text-red-600">({row.gap_m})</span>
                       )}
                     </td>
                     <td className="px-3 py-2 text-right text-gray-400">{row.benodigd_m}</td>
                     <td className="px-3 py-2 text-right">
                       {row.huidig_v}
-                      {row.gap_v < 0 && (
+                      {row.gap_v < 0 && !extra && (
                         <span className="ml-1 text-xs text-red-600">({row.gap_v})</span>
                       )}
                     </td>
                     <td className="px-3 py-2 text-right text-gray-400">{row.benodigd_v}</td>
-                    <td className="px-3 py-2 text-right font-semibold">{row.vulgraad}%</td>
+                    <td className="px-3 py-2 text-right text-sm">
+                      <span className={stipKleur(row.vulgraad_m)}>●</span>{" "}
+                      <span className="font-semibold">{row.vulgraad_m}%</span>
+                    </td>
+                    <td className="px-3 py-2 text-right text-sm">
+                      <span className={stipKleur(row.vulgraad_v)}>●</span>{" "}
+                      <span className="font-semibold">{row.vulgraad_v}%</span>
+                    </td>
                   </tr>
                 );
               })}

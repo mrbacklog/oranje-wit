@@ -1,16 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
-import { SeizoenSelector } from "./seizoen-selector";
+import { usePathname } from "next/navigation";
 
 const NAV_ITEMS = [
   { href: "/", label: "Dashboard", icon: "📊" },
   { href: "/teams", label: "Teams", icon: "🏃" },
   { href: "/spelers", label: "Spelers", icon: "👤" },
   { href: "/samenstelling", label: "Samenstelling", icon: "👥" },
-  { href: "/cohorten", label: "Cohorten", icon: "📈" },
-  { href: "/verloop", label: "Verloop", icon: "🔄" },
+  { href: "/retentie", label: "Retentie", icon: "🔄" },
   { href: "/projecties", label: "Jeugdpijplijn", icon: "🎯" },
   { href: "/signalering", label: "Signalering", icon: "⚠️" },
 ];
@@ -21,9 +19,6 @@ interface SidebarProps {
 
 export function Sidebar({ onClose }: SidebarProps) {
   const pathname = usePathname();
-  const params = useSearchParams();
-  const seizoen = params.get("seizoen") || "";
-  const qs = seizoen ? `?seizoen=${seizoen}` : "";
 
   return (
     <aside
@@ -43,7 +38,7 @@ export function Sidebar({ onClose }: SidebarProps) {
           return (
             <Link
               key={href}
-              href={href + qs}
+              href={href}
               onClick={onClose}
               aria-current={active ? "page" : undefined}
               className={`mb-1 flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
@@ -58,12 +53,6 @@ export function Sidebar({ onClose }: SidebarProps) {
           );
         })}
       </nav>
-
-      {/* Seizoen-selector */}
-      <div className="border-t border-gray-200 px-4 py-4">
-        <p className="mb-2 text-xs font-medium text-gray-500">Seizoen</p>
-        <SeizoenSelector />
-      </div>
     </aside>
   );
 }

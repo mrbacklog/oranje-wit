@@ -3,10 +3,9 @@ import { PEILJAAR } from "@oranje-wit/types";
 import Link from "next/link";
 import BesluitenLog from "@/components/definitief/BesluitenLog";
 import ExportPanel from "@/components/definitief/ExportPanel";
+import { getActiefSeizoen } from "@/lib/seizoen";
 
 export const dynamic = "force-dynamic";
-
-const SEIZOEN = "2026-2027";
 
 const CATEGORIE_LABELS: Record<string, string> = {
   B_CATEGORIE: "B-categorie",
@@ -30,8 +29,10 @@ const VALIDATIE_KLEUREN: Record<string, string> = {
 };
 
 export default async function DefinitiefPage() {
+  const seizoen = await getActiefSeizoen();
+
   const definitief = await prisma.scenario.findFirst({
-    where: { status: "DEFINITIEF" },
+    where: { status: "DEFINITIEF", concept: { blauwdruk: { seizoen } } },
     include: {
       concept: {
         include: {
@@ -116,7 +117,7 @@ export default async function DefinitiefPage() {
         <div>
           <h2 className="text-xl font-bold text-gray-900">Definitieve indeling</h2>
           <p className="mt-1 text-sm text-gray-500">
-            Scenario: <span className="font-medium">{definitief.naam}</span> &mdash; {SEIZOEN}
+            Scenario: <span className="font-medium">{definitief.naam}</span> &mdash; {seizoen}
           </p>
         </div>
         <span className="inline-flex items-center gap-1.5 rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
@@ -228,7 +229,7 @@ export default async function DefinitiefPage() {
       <BesluitenLog entries={logEntries} />
 
       {/* Export */}
-      <ExportPanel teams={teams} seizoen={SEIZOEN} />
+      <ExportPanel teams={teams} seizoen={seizoen} />
     </div>
   );
 }

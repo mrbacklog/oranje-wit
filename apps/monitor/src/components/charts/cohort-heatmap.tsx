@@ -104,7 +104,7 @@ export function CohortHeatmap({ data, seizoenen }: CohortHeatmapProps) {
                     <button
                       type="button"
                       className="hover:text-ow-oranje cursor-pointer appearance-none border-0 bg-transparent p-0 font-medium underline"
-                      onClick={() => router.push(`/cohorten/${jaar}`)}
+                      onClick={() => router.push(`/samenstelling/${jaar}?tab=tijdlijn`)}
                     >
                       {jaar}
                     </button>

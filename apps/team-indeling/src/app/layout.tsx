@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import AppShell from "@/components/layout/AppShell";
 import SessionProvider from "@/components/providers/SessionProvider";
+import SeizoenProvider from "@/components/providers/SeizoenProvider";
+import { getActiefSeizoen, getAlleSeizoenen, isHuidigSeizoen } from "@/lib/seizoen";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -20,18 +22,24 @@ export const metadata: Metadata = {
     "Intelligente teamindeling voor c.k.v. Oranje Wit — van blauwdruk via concepten naar definitieve indeling.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const seizoen = await getActiefSeizoen();
+  const alleSeizoenen = await getAlleSeizoenen();
+  const isHuidig = await isHuidigSeizoen(seizoen);
+
   return (
     <html lang="nl">
       <body
         className={`${geistSans.variable} ${geistMono.variable} bg-gray-50 text-gray-900 antialiased`}
       >
         <SessionProvider>
-          <AppShell>{children}</AppShell>
+          <SeizoenProvider seizoen={seizoen} alleSeizoenen={alleSeizoenen} isHuidig={isHuidig}>
+            <AppShell>{children}</AppShell>
+          </SeizoenProvider>
         </SessionProvider>
       </body>
     </html>

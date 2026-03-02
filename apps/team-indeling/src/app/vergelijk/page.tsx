@@ -2,10 +2,9 @@ import { getBlauwdruk } from "@/app/blauwdruk/actions";
 import { getScenario, getScenarios } from "@/app/scenarios/actions";
 import ScenarioVergelijk from "@/components/vergelijk/ScenarioVergelijk";
 import Link from "next/link";
+import { getActiefSeizoen } from "@/lib/seizoen";
 
 export const dynamic = "force-dynamic";
-
-const SEIZOEN = "2026-2027";
 
 function ScenarioSelector({
   scenarios,
@@ -83,7 +82,8 @@ export default async function VergelijkPage(props: {
   const idB = searchParams.b;
 
   // Haal blauwdruk en scenarios op voor de selector
-  const blauwdruk = await getBlauwdruk(SEIZOEN);
+  const seizoen = await getActiefSeizoen();
+  const blauwdruk = await getBlauwdruk(seizoen);
   const scenarios = await getScenarios(blauwdruk.id);
 
   const scenarioLijst = scenarios.map((s) => ({ id: s.id, naam: s.naam }));

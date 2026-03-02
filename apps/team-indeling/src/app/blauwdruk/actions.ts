@@ -3,6 +3,19 @@
 import { prisma } from "@/lib/db/prisma";
 import type { Prisma, SpelerStatus } from "@oranje-wit/database";
 import { PEILJAAR } from "@oranje-wit/types";
+import { assertBewerkbaar, getActiefSeizoen, volgendSeizoen } from "@/lib/seizoen";
+import { cookies } from "next/headers";
+
+/**
+ * Guard: controleer of de blauwdruk bij het huidige (bewerkbare) seizoen hoort.
+ */
+async function assertBlauwdrukBewerkbaar(blauwdrukId: string) {
+  const blauwdruk = await prisma.blauwdruk.findUniqueOrThrow({
+    where: { id: blauwdrukId },
+    select: { seizoen: true },
+  });
+  await assertBewerkbaar(blauwdruk.seizoen);
+}
 
 // Kleur-configuratie (gespiegeld van teamstructuur.ts)
 const KLEUREN_CONFIG = [
@@ -33,6 +46,7 @@ export async function getBlauwdruk(seizoen: string) {
  * Update kaders (JSON).
  */
 export async function updateKaders(blauwdrukId: string, kaders: Prisma.InputJsonValue) {
+  await assertBlauwdrukBewerkbaar(blauwdrukId);
   return prisma.blauwdruk.update({
     where: { id: blauwdrukId },
     data: { kaders },
@@ -43,6 +57,7 @@ export async function updateKaders(blauwdrukId: string, kaders: Prisma.InputJson
  * Update speerpunten (string[]).
  */
 export async function updateSpeerpunten(blauwdrukId: string, speerpunten: string[]) {
+  await assertBlauwdrukBewerkbaar(blauwdrukId);
   return prisma.blauwdruk.update({
     where: { id: blauwdrukId },
     data: { speerpunten },
@@ -53,6 +68,7 @@ export async function updateSpeerpunten(blauwdrukId: string, speerpunten: string
  * Update toelichting (string).
  */
 export async function updateToelichting(blauwdrukId: string, toelichting: string) {
+  await assertBlauwdrukBewerkbaar(blauwdrukId);
   return prisma.blauwdruk.update({
     where: { id: blauwdrukId },
     data: { toelichting },
@@ -70,6 +86,7 @@ export async function updateCategorieKaders(
   categorie: string,
   settings: Partial<CategorieSettings>
 ) {
+  await assertBlauwdrukBewerkbaar(blauwdrukId);
   const blauwdruk = await prisma.blauwdruk.findUniqueOrThrow({
     where: { id: blauwdrukId },
     select: { kaders: true },
@@ -92,6 +109,8 @@ export async function updateCategorieKaders(
  * Update de status van een speler.
  */
 export async function updateSpelerStatus(spelerId: string, status: SpelerStatus) {
+  const seizoen = await getActiefSeizoen();
+  await assertBewerkbaar(seizoen);
   await prisma.speler.update({
     where: { id: spelerId },
     data: { status },
@@ -148,6 +167,45 @@ export interface Keuze {
   id: string;
   vraag: string;
   opties: string[];
+}
+
+/**
+ * Maak een nieuw seizoen aan (lege blauwdruk) en switch ernaar.
+ */
+export async function maakNieuwSeizoen(seizoen: string) {
+  if (!/^\d{4}-\d{4}$/.test(seizoen)) {
+    throw new Error("Ongeldig seizoensformaat (verwacht: JJJJ-JJJJ)");
+  }
+
+  const bestaand = await prisma.blauwdruk.findUnique({ where: { seizoen } });
+  if (bestaand) {
+    throw new Error(`Seizoen ${seizoen} bestaat al`);
+  }
+
+  await prisma.blauwdruk.create({
+    data: {
+      seizoen,
+      kaders: {},
+      speerpunten: [],
+      toelichting: "",
+    },
+  });
+
+  // Switch naar het nieuwe seizoen
+  const cookieStore = await cookies();
+  cookieStore.set("actief-seizoen", seizoen, {
+    path: "/",
+    maxAge: 60 * 60 * 24 * 365,
+    sameSite: "lax",
+  });
+}
+
+/**
+ * Bereken het eerstvolgende seizoen dat nog niet bestaat.
+ */
+export async function getVolgendSeizoen(): Promise<string> {
+  const huidig = await getActiefSeizoen();
+  return volgendSeizoen(huidig);
 }
 
 /**

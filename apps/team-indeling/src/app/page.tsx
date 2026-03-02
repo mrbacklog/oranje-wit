@@ -1,18 +1,21 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db/prisma";
+import { getActiefSeizoen } from "@/lib/seizoen";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
+  const seizoen = await getActiefSeizoen();
+
   const [laatsteImport, blauwdruk, aantalScenarios] = await Promise.all([
-    prisma.import.findFirst({ orderBy: { createdAt: "desc" } }),
-    prisma.blauwdruk.findFirst({ where: { seizoen: "2026-2027" } }),
-    prisma.scenario.count(),
+    prisma.import.findFirst({ where: { seizoen }, orderBy: { createdAt: "desc" } }),
+    prisma.blauwdruk.findFirst({ where: { seizoen } }),
+    prisma.scenario.count({ where: { concept: { blauwdruk: { seizoen } } } }),
   ]);
 
   return (
     <div className="max-w-4xl">
-      <h2 className="mb-6 text-xl font-bold text-gray-900">Overzicht seizoen 2026-2027</h2>
+      <h2 className="mb-6 text-xl font-bold text-gray-900">Overzicht seizoen {seizoen}</h2>
 
       {/* Status kaarten */}
       <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-3">

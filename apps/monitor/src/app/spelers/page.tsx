@@ -1,4 +1,6 @@
+import { Suspense } from "react";
 import { InfoPageHeader } from "@/components/info/InfoPageHeader";
+import { SeizoenKiezer } from "@/components/layout/seizoen-kiezer";
 import { getSpelersOverzicht } from "@/lib/queries/spelers";
 import { getSeizoen } from "@/lib/utils/seizoen";
 import { SpelersZoeken } from "@/components/spelers/SpelersZoeken";
@@ -19,7 +21,16 @@ export default async function SpelersPage({
 
   return (
     <>
-      <InfoPageHeader title="Spelers" subtitle="Alle competitiespelers" infoTitle="Over Spelers">
+      <InfoPageHeader
+        title="Spelers"
+        subtitle="Alle competitiespelers"
+        infoTitle="Over Spelers"
+        actions={
+          <Suspense>
+            <SeizoenKiezer />
+          </Suspense>
+        }
+      >
         <div className="space-y-4">
           <section>
             <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">

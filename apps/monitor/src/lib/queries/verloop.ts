@@ -226,3 +226,54 @@ export async function getInstroomUitstroom(): Promise<InstroomUitstroomResult> {
     retentie_alle_seizoenen: retentie,
   };
 }
+
+// ---------------------------------------------------------------------------
+// Per-seizoen instroom/uitstroom (M/V gesplitst)
+// ---------------------------------------------------------------------------
+
+export type SeizoenMVRow = {
+  seizoen: string;
+  M: number;
+  V: number;
+  totaal: number;
+};
+
+/** Instroom per seizoen, gesplitst naar geslacht */
+export async function getInstroomPerSeizoenMV(): Promise<SeizoenMVRow[]> {
+  const rows = await prisma.$queryRaw<{ seizoen: string; m: number; v: number; totaal: number }[]>`
+    SELECT seizoen,
+           COUNT(*) FILTER (WHERE geslacht = 'M')::int AS m,
+           COUNT(*) FILTER (WHERE geslacht = 'V')::int AS v,
+           COUNT(*)::int AS totaal
+    FROM ledenverloop
+    WHERE status IN ('nieuw', 'herinschrijver')
+    GROUP BY seizoen
+    ORDER BY seizoen`;
+
+  return rows.map((r) => ({
+    seizoen: r.seizoen,
+    M: Number(r.m),
+    V: Number(r.v),
+    totaal: Number(r.totaal),
+  }));
+}
+
+/** Uitstroom per seizoen, gesplitst naar geslacht */
+export async function getUitstroomPerSeizoenMV(): Promise<SeizoenMVRow[]> {
+  const rows = await prisma.$queryRaw<{ seizoen: string; m: number; v: number; totaal: number }[]>`
+    SELECT seizoen,
+           COUNT(*) FILTER (WHERE geslacht = 'M')::int AS m,
+           COUNT(*) FILTER (WHERE geslacht = 'V')::int AS v,
+           COUNT(*)::int AS totaal
+    FROM ledenverloop
+    WHERE status IN ('uitgestroomd', 'niet_spelend_geworden')
+    GROUP BY seizoen
+    ORDER BY seizoen`;
+
+  return rows.map((r) => ({
+    seizoen: r.seizoen,
+    M: Number(r.m),
+    V: Number(r.v),
+    totaal: Number(r.totaal),
+  }));
+}

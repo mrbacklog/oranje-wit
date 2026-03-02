@@ -26,7 +26,7 @@ export function InstroomUitstroom({ data }: InstroomUitstroomProps) {
         className="cursor-pointer"
         onClick={(state) => {
           if (state?.activePayload?.[0]?.payload?.seizoenVol) {
-            router.push(`/verloop/${state.activePayload[0].payload.seizoenVol}`);
+            router.push(`/retentie/${state.activePayload[0].payload.seizoenVol}`);
           }
         }}
       >

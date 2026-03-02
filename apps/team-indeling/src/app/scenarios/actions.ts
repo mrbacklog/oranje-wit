@@ -7,8 +7,50 @@ import type { Prisma, TeamCategorie, Kleur } from "@oranje-wit/database";
 import { PEILJAAR } from "@oranje-wit/types";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { assertBewerkbaar } from "@/lib/seizoen";
 
-const _SEIZOEN = "2026-2027";
+/**
+ * Guard: controleer of het team bij een bewerkbaar seizoen hoort.
+ */
+async function assertTeamBewerkbaar(teamId: string) {
+  const team = await prisma.team.findUniqueOrThrow({
+    where: { id: teamId },
+    select: {
+      versie: {
+        select: {
+          scenario: {
+            select: { concept: { select: { blauwdruk: { select: { seizoen: true } } } } },
+          },
+        },
+      },
+    },
+  });
+  await assertBewerkbaar(team.versie.scenario.concept.blauwdruk.seizoen);
+}
+
+/**
+ * Guard: controleer of de versie bij een bewerkbaar seizoen hoort.
+ */
+async function assertVersieBewerkbaar(versieId: string) {
+  const versie = await prisma.versie.findUniqueOrThrow({
+    where: { id: versieId },
+    select: {
+      scenario: { select: { concept: { select: { blauwdruk: { select: { seizoen: true } } } } } },
+    },
+  });
+  await assertBewerkbaar(versie.scenario.concept.blauwdruk.seizoen);
+}
+
+/**
+ * Guard: controleer of het scenario bij een bewerkbaar seizoen hoort.
+ */
+async function assertScenarioBewerkbaar(scenarioId: string) {
+  const scenario = await prisma.scenario.findUniqueOrThrow({
+    where: { id: scenarioId },
+    select: { concept: { select: { blauwdruk: { select: { seizoen: true } } } } },
+  });
+  await assertBewerkbaar(scenario.concept.blauwdruk.seizoen);
+}
 
 /**
  * Maak een nieuw scenario aan met keuze-waardes.
@@ -189,6 +231,7 @@ export async function getAlleSpelers() {
  * Voeg een speler toe aan een team.
  */
 export async function addSpelerToTeam(teamId: string, spelerId: string) {
+  await assertTeamBewerkbaar(teamId);
   await prisma.teamSpeler.create({
     data: { teamId, spelerId },
   });
@@ -199,6 +242,7 @@ export async function addSpelerToTeam(teamId: string, spelerId: string) {
  * Verwijder een speler uit een team.
  */
 export async function removeSpelerFromTeam(teamId: string, spelerId: string) {
+  await assertTeamBewerkbaar(teamId);
   await prisma.teamSpeler.deleteMany({
     where: { teamId, spelerId },
   });
@@ -209,6 +253,7 @@ export async function removeSpelerFromTeam(teamId: string, spelerId: string) {
  * Verplaats een speler van het ene team naar het andere.
  */
 export async function moveSpeler(spelerId: string, vanTeamId: string, naarTeamId: string) {
+  await assertTeamBewerkbaar(vanTeamId);
   await prisma.$transaction([
     prisma.teamSpeler.deleteMany({
       where: { teamId: vanTeamId, spelerId },
@@ -227,6 +272,7 @@ export async function createTeam(
   versieId: string,
   data: { naam: string; categorie: TeamCategorie; kleur?: Kleur | null }
 ) {
+  await assertVersieBewerkbaar(versieId);
   // Bepaal volgorde: hoogste + 1
   const laatsteTeam = await prisma.team.findFirst({
     where: { versieId },
@@ -252,6 +298,7 @@ export async function createTeam(
  * Verwijder een team.
  */
 export async function deleteTeam(teamId: string) {
+  await assertTeamBewerkbaar(teamId);
   // Ontkoppel eerst eventuele selectie-leden die naar dit team verwijzen
   await prisma.team.updateMany({
     where: { selectieGroepId: teamId },
@@ -291,6 +338,7 @@ export async function ontkoppelSelectie(groepLeiderId: string) {
  * Verwijder een scenario (inclusief versies, teams, spelers, staf via cascade).
  */
 export async function deleteScenario(scenarioId: string) {
+  await assertScenarioBewerkbaar(scenarioId);
   await prisma.scenario.delete({ where: { id: scenarioId } });
   revalidatePath("/scenarios");
 }
@@ -300,6 +348,7 @@ export async function deleteScenario(scenarioId: string) {
  * Alle andere scenario's in hetzelfde concept worden GEARCHIVEERD.
  */
 export async function markeerDefinitief(scenarioId: string) {
+  await assertScenarioBewerkbaar(scenarioId);
   // Haal het scenario op om de conceptId te kennen
   const scenario = await prisma.scenario.findUniqueOrThrow({
     where: { id: scenarioId },

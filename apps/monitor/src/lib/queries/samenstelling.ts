@@ -89,11 +89,12 @@ export async function getGroeiFactoren(): Promise<GroeiFactoren> {
         AND c1.leeftijd = c0.leeftijd + 1
       WHERE c1.actief > 0 AND c0.actief > 0
         AND c1.seizoen NOT IN ('2020-2021', '2021-2022')
+        AND c1.seizoen >= '2019-2020'
     )
     SELECT leeftijd, geslacht,
            ROUND(AVG(actief_nu::numeric / actief_vorig), 3) AS groei_factor
     FROM opeenvolgend
-    WHERE leeftijd BETWEEN 6 AND 19
+    WHERE leeftijd BETWEEN 6 AND 22
     GROUP BY leeftijd, geslacht
     ORDER BY leeftijd, geslacht`;
 
@@ -108,19 +109,18 @@ export async function getGroeiFactoren(): Promise<GroeiFactoren> {
 }
 
 // ---------------------------------------------------------------------------
-// Backward-projectie: per-geboortejaar doel terugrekenen per leeftijd
+// Pijplijn: per-geboortejaar doel, leeftijd 6-22
 // ---------------------------------------------------------------------------
 
 // Streef per geboortejaar: 12 jongens + 13 meiden = 25 spelers.
-// Dit geldt vast vanaf leeftijd 12 (gele band, U13).
-// Voor leeftijd 6-11 wordt teruggerekend met groei-factoren.
+// Vast vanaf leeftijd 12. Voor 6-11 teruggerekend met groei-factoren.
 const DOEL_M_PER_JAAR = 12;
 const DOEL_V_PER_JAAR = 13;
 
-// U17 = 2 jaargangen, dus 24M + 26V = 50 totaal
-const U17_DOEL_M = DOEL_M_PER_JAAR * 2;
-const U17_DOEL_V = DOEL_V_PER_JAAR * 2;
-const _U17_DOEL = U17_DOEL_M + U17_DOEL_V;
+// Categorie-doel: 2 jaargangen × per-jaar = 50 per categorie
+const CATEGORIE_DOEL_M = DOEL_M_PER_JAAR * 2;
+const CATEGORIE_DOEL_V = DOEL_V_PER_JAAR * 2;
+const CATEGORIE_DOEL_TOTAAL = CATEGORIE_DOEL_M + CATEGORIE_DOEL_V;
 
 const BAND_PER_LEEFTIJD: Record<number, string> = {
   6: "Blauw",
@@ -135,6 +135,11 @@ const BAND_PER_LEEFTIJD: Record<number, string> = {
   15: "Oranje",
   16: "Rood",
   17: "Rood",
+  18: "Paars",
+  19: "Paars",
+  20: "Grijs",
+  21: "Grijs",
+  22: "Grijs",
 };
 
 export type PijplijnRij = {
@@ -151,9 +156,11 @@ export type PijplijnRij = {
   gap_v: number;
 };
 
+type CategorieStatus = { m: number; v: number; totaal: number };
+
 export type PijplijnResult = {
-  doel: { m: number; v: number; totaal: number };
-  huidigU17: { m: number; v: number; totaal: number };
+  doelPerCategorie: number;
+  huidig: { U15: CategorieStatus; U17: CategorieStatus; U19: CategorieStatus };
   perLeeftijd: PijplijnRij[];
   groeiFactoren: GroeiFactoren;
 };
@@ -161,7 +168,7 @@ export type PijplijnResult = {
 /**
  * Bereken de jeugdpijplijn met per-geboortejaar doelen.
  *
- * - Leeftijd 12-17: vast doel van 12M + 13V per geboortejaar
+ * - Leeftijd 12-22: vast doel van 12M + 13V per geboortejaar
  * - Leeftijd 6-11: teruggerekend vanaf het doel bij leeftijd 12
  *   met historische groei-factoren (retentie + instroom)
  */
@@ -185,13 +192,13 @@ export async function getPijplijn(seizoen: string): Promise<PijplijnResult> {
   }
 
   // Per-geboortejaar model:
-  // - Leeftijd 12-17: vast doel (12M + 13V per geboortejaar)
+  // - Leeftijd 12-22: vast doel (12M + 13V per geboortejaar)
   // - Leeftijd 6-11: terugrekenen vanaf het doel bij 12
   const perLeeftijd: PijplijnRij[] = [];
   const benodigdPerLeeftijd = new Map<number, { m: number; v: number }>();
 
-  // Vast doel voor leeftijd 12 t/m 17
-  for (let leeftijd = 12; leeftijd <= 17; leeftijd++) {
+  // Vast doel voor leeftijd 12 t/m 22
+  for (let leeftijd = 12; leeftijd <= 22; leeftijd++) {
     benodigdPerLeeftijd.set(leeftijd, { m: DOEL_M_PER_JAAR, v: DOEL_V_PER_JAAR });
   }
 
@@ -206,8 +213,8 @@ export async function getPijplijn(seizoen: string): Promise<PijplijnResult> {
     benodigdPerLeeftijd.set(leeftijd, { m: benodigdM, v: benodigdV });
   }
 
-  // Bouw resultaat op
-  for (let leeftijd = 6; leeftijd <= 17; leeftijd++) {
+  // Bouw resultaat op (leeftijd 6-22)
+  for (let leeftijd = 6; leeftijd <= 22; leeftijd++) {
     const huidig = huidigPerLeeftijd.get(leeftijd) || { M: 0, V: 0 };
     const benodigd = benodigdPerLeeftijd.get(leeftijd)!;
     const benodigdTotaal = benodigd.m + benodigd.v;
@@ -228,20 +235,94 @@ export async function getPijplijn(seizoen: string): Promise<PijplijnResult> {
     });
   }
 
-  // Huidig U17 (leeftijd 16 + 17)
-  const huidig16 = huidigPerLeeftijd.get(16) || { M: 0, V: 0 };
-  const huidig17 = huidigPerLeeftijd.get(17) || { M: 0, V: 0 };
+  // Huidig per selectiecategorie (2 jaargangen elk)
+  function categorieStatus(l1: number, l2: number): CategorieStatus {
+    const h1 = huidigPerLeeftijd.get(l1) || { M: 0, V: 0 };
+    const h2 = huidigPerLeeftijd.get(l2) || { M: 0, V: 0 };
+    const m = h1.M + h2.M;
+    const v = h1.V + h2.V;
+    return { m, v, totaal: m + v };
+  }
 
   return {
-    doel: { m: U17_DOEL_M, v: U17_DOEL_V, totaal: _U17_DOEL },
-    huidigU17: {
-      m: huidig16.M + huidig17.M,
-      v: huidig16.V + huidig17.V,
-      totaal: huidig16.M + huidig17.M + huidig16.V + huidig17.V,
+    doelPerCategorie: CATEGORIE_DOEL_TOTAAL,
+    huidig: {
+      U15: categorieStatus(14, 15),
+      U17: categorieStatus(16, 17),
+      U19: categorieStatus(18, 19),
     },
     perLeeftijd,
     groeiFactoren: groei,
   };
+}
+
+// ---------------------------------------------------------------------------
+// Verwachte tussentijdse instroom
+// ---------------------------------------------------------------------------
+
+export type VerwachteInstroom = Record<number, number>; // leeftijd → verwacht extra
+
+/**
+ * Bereken verwachte tussentijdse instroom per leeftijd.
+ *
+ * Kijkt naar de afgelopen 5 seizoenen: welk percentage van de nieuwe leden
+ * was ingeschreven vóór de huidige maand? Projecteert de rest van het seizoen.
+ */
+export async function getVerwachteInstroom(seizoen: string): Promise<VerwachteInstroom> {
+  const startJaar = parseInt(seizoen.split("-")[0]);
+  const nu = new Date();
+  const huidigeMaand = nu.getMonth() + 1; // 1-12
+
+  // Historisch patroon: per leeftijd, hoeveel % van instroom was vóór huidige maand
+  const rows = await prisma.$queryRaw<{ leeftijd: number; voor_maand: number; totaal: number }[]>`
+    WITH seizoen_instroom AS (
+      SELECT
+        (CAST(LEFT(cp.seizoen, 4) AS int) - EXTRACT(YEAR FROM l.geboortedatum)::int) AS leeftijd,
+        EXTRACT(MONTH FROM l.lid_sinds)::int AS maand
+      FROM leden l
+      JOIN competitie_spelers cp ON l.rel_code = cp.rel_code
+      JOIN ledenverloop lv ON lv.rel_code = l.rel_code AND lv.seizoen = cp.seizoen
+      WHERE lv.status = 'nieuw'
+        AND l.lid_sinds IS NOT NULL
+        AND cp.seizoen NOT IN ('2020-2021', '2021-2022')
+        AND cp.seizoen >= '2019-2020'
+        AND cp.seizoen != ${seizoen}
+    )
+    SELECT
+      leeftijd,
+      COUNT(*) FILTER (WHERE maand < ${huidigeMaand} OR (maand >= 8 AND ${huidigeMaand} >= 8)) AS voor_maand,
+      COUNT(*) AS totaal
+    FROM seizoen_instroom
+    WHERE leeftijd BETWEEN 6 AND 22
+    GROUP BY leeftijd
+    HAVING COUNT(*) >= 3`;
+
+  // Huidige seizoens-instroom per leeftijd
+  const huidigRows = await prisma.$queryRaw<{ leeftijd: number; aantal: number }[]>`
+    SELECT
+      (${startJaar} - EXTRACT(YEAR FROM l.geboortedatum)::int) AS leeftijd,
+      COUNT(*)::int AS aantal
+    FROM leden l
+    JOIN competitie_spelers cp ON l.rel_code = cp.rel_code
+    JOIN ledenverloop lv ON lv.rel_code = l.rel_code AND lv.seizoen = cp.seizoen
+    WHERE lv.status = 'nieuw'
+      AND cp.seizoen = ${seizoen}
+      AND l.lid_sinds IS NOT NULL
+    GROUP BY leeftijd`;
+
+  const huidigPerLeeftijd = new Map(huidigRows.map((r) => [r.leeftijd, Number(r.aantal)]));
+
+  const result: VerwachteInstroom = {};
+  for (const r of rows) {
+    const pctVoor = Number(r.totaal) > 0 ? Number(r.voor_maand) / Number(r.totaal) : 1;
+    if (pctVoor >= 0.95) continue; // Bijna alles al binnen, geen projectie nodig
+    const huidig = huidigPerLeeftijd.get(r.leeftijd) || 0;
+    if (huidig === 0) continue;
+    const verwacht = Math.round(huidig / pctVoor) - huidig;
+    if (verwacht > 0) result[r.leeftijd] = verwacht;
+  }
+
+  return result;
 }
 
 // ---------------------------------------------------------------------------
@@ -378,10 +459,10 @@ export async function getProjectie(seizoen: string): Promise<ProjectieResult> {
       totaalM,
       totaalV,
       totaal,
-      doelM: U17_DOEL_M,
-      doelV: U17_DOEL_V,
-      gapM: totaalM - U17_DOEL_M,
-      gapV: totaalV - U17_DOEL_V,
+      doelM: CATEGORIE_DOEL_M,
+      doelV: CATEGORIE_DOEL_V,
+      gapM: totaalM - CATEGORIE_DOEL_M,
+      gapV: totaalV - CATEGORIE_DOEL_V,
       teams: Math.floor(totaal / 10),
     });
   }

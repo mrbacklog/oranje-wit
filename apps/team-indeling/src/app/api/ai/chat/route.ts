@@ -1,9 +1,12 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { TOOLS, handleTool, type ToolContext, type MutatieEvent } from "@/lib/ai/tools";
+import { getActiefSeizoen } from "@/lib/seizoen";
 
 const anthropic = new Anthropic();
 
-const SYSTEM_PROMPT = `Je bent de AI-indelingsassistent van c.k.v. Oranje Wit, een korfbalvereniging uit Dordrecht. Je helpt bij de jaarlijkse teamindeling voor seizoen 2026-2027.
+// Seizoen wordt dynamisch ingevuld in de system prompt
+function buildSystemPrompt(seizoen: string) {
+  return `Je bent de AI-indelingsassistent van c.k.v. Oranje Wit, een korfbalvereniging uit Dordrecht. Je helpt bij de jaarlijkse teamindeling voor seizoen ${seizoen}.
 
 ## De Oranje Draad
 PLEZIER + ONTWIKKELING + PRESTATIE → DUURZAAMHEID
@@ -32,6 +35,7 @@ Plezier staat voorop. Elke indeling wordt getoetst aan deze drie pijlers.
 
 ## Korfballeeftijd
 Peildatum: 31 december 2026. Leeftijd = peildatum - geboortedatum.`;
+}
 
 interface ChatMessage {
   role: "user" | "assistant";
@@ -56,6 +60,7 @@ export async function POST(request: Request) {
       );
     }
 
+    const seizoen = await getActiefSeizoen();
     const ctx: ToolContext = { scenarioId, versieId };
     const mutaties: MutatieEvent[] = [];
 
@@ -76,7 +81,7 @@ export async function POST(request: Request) {
             const response = await anthropic.messages.create({
               model: "claude-sonnet-4-20250514",
               max_tokens: 4096,
-              system: SYSTEM_PROMPT,
+              system: buildSystemPrompt(seizoen),
               tools: TOOLS,
               messages,
             });

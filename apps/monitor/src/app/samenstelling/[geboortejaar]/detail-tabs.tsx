@@ -4,37 +4,27 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { type ReactNode } from "react";
 
 const TABS = [
-  { id: "piramide", label: "Piramide" },
-  { id: "detail", label: "Detail" },
-  { id: "heatmap", label: "Heatmap" },
-  { id: "retentie", label: "Retentie" },
+  { id: "overzicht", label: "Actief / Gestopt" },
+  { id: "tijdlijn", label: "Tijdlijn" },
 ] as const;
 
 type TabId = (typeof TABS)[number]["id"];
 
-interface SamenstellingTabsProps {
-  piramideContent: ReactNode;
-  detailContent: ReactNode;
-  heatmapContent: ReactNode;
-  retentieContent: ReactNode;
+interface DetailTabsProps {
+  actiefGestoptContent: ReactNode;
+  tijdlijnContent: ReactNode;
   defaultTab?: string;
 }
 
-export function SamenstellingTabs({
-  piramideContent,
-  detailContent,
-  heatmapContent,
-  retentieContent,
-  defaultTab,
-}: SamenstellingTabsProps) {
+export function DetailTabs({ actiefGestoptContent, tijdlijnContent, defaultTab }: DetailTabsProps) {
   const router = useRouter();
   const params = useSearchParams();
-  const tabParam = params.get("tab") || defaultTab || "piramide";
-  const activeTab: TabId = TABS.some((t) => t.id === tabParam) ? (tabParam as TabId) : "piramide";
+  const tabParam = params.get("tab") || defaultTab || "overzicht";
+  const activeTab: TabId = TABS.some((t) => t.id === tabParam) ? (tabParam as TabId) : "overzicht";
 
   function setTab(id: TabId) {
     const url = new URL(window.location.href);
-    if (id === "piramide") {
+    if (id === "overzicht") {
       url.searchParams.delete("tab");
     } else {
       url.searchParams.set("tab", id);
@@ -42,20 +32,12 @@ export function SamenstellingTabs({
     router.push(url.pathname + url.search, { scroll: false });
   }
 
-  const content: Record<TabId, ReactNode> = {
-    piramide: piramideContent,
-    detail: detailContent,
-    heatmap: heatmapContent,
-    retentie: retentieContent,
-  };
-
   return (
     <>
       <div role="tablist" className="mb-6 flex gap-1 rounded-lg bg-gray-100 p-1">
         {TABS.map((tab) => (
           <button
             key={tab.id}
-            id={`tab-${tab.id}`}
             role="tab"
             type="button"
             aria-selected={activeTab === tab.id}
@@ -71,8 +53,8 @@ export function SamenstellingTabs({
         ))}
       </div>
 
-      <div role="tabpanel" aria-labelledby={`tab-${activeTab}`}>
-        {content[activeTab]}
+      <div role="tabpanel">
+        {activeTab === "overzicht" ? actiefGestoptContent : tijdlijnContent}
       </div>
     </>
   );

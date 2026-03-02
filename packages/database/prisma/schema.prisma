@@ -674,6 +674,8 @@ model Import {
   stafBijgewerkt    Int
   teamsGeladen      Int
   meta              Json
+  spelerIds         String[]
+  diff              Json?
   createdAt         DateTime @default(now())
 
   @@index([seizoen])

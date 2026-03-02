@@ -21,7 +21,7 @@ interface RetentieCurveProps {
   toonMV?: boolean;
 }
 
-export function RetentieCurve({ data, toonMV = false }: RetentieCurveProps) {
+export function RetentieCurve({ data, toonMV = true }: RetentieCurveProps) {
   return (
     <ResponsiveContainer width="100%" height={300}>
       <LineChart data={data}>

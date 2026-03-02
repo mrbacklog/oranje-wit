@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { SEIZOENEN } from "@/lib/utils/seizoen";
 
-export function SeizoenSelector() {
+export function SeizoenKiezer() {
   const router = useRouter();
   const params = useSearchParams();
   const huidig = params.get("seizoen") || SEIZOENEN[0];
@@ -17,7 +17,7 @@ export function SeizoenSelector() {
         url.searchParams.set("seizoen", e.target.value);
         router.push(url.pathname + url.search);
       }}
-      className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm"
+      className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700"
     >
       {SEIZOENEN.map((s) => (
         <option key={s} value={s}>

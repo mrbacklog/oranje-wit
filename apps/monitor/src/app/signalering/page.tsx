@@ -1,6 +1,8 @@
+import { Suspense } from "react";
 import { KpiCard } from "@oranje-wit/ui";
 import { InfoPageHeader } from "@/components/info/InfoPageHeader";
-import { getSignaleringen, getSignaleringSamenvatting } from "@/lib/queries/signalering";
+import { SeizoenKiezer } from "@/components/layout/seizoen-kiezer";
+import { getSignaleringen } from "@/lib/queries/signalering";
 import { getSeizoen } from "@/lib/utils/seizoen";
 import { SignaleringCard } from "@/components/signalering/SignaleringCard";
 
@@ -12,12 +14,11 @@ export default async function SignaleringPage({
   const params = await searchParams;
   const seizoen = getSeizoen(params);
 
-  const [signaleringen, samenvatting] = await Promise.all([
-    getSignaleringen(seizoen),
-    getSignaleringSamenvatting(seizoen),
-  ]);
+  const signaleringen = await getSignaleringen(seizoen);
 
-  const opKoers = samenvatting.totaal - samenvatting.kritiek - samenvatting.aandacht;
+  const kritiek = signaleringen.filter((s) => s.ernst === "kritiek").length;
+  const aandacht = signaleringen.filter((s) => s.ernst === "aandacht").length;
+  const opKoers = signaleringen.length - kritiek - aandacht;
 
   // Sorteer: kritiek eerst, dan aandacht, dan rest
   const ernstVolgorde: Record<string, number> = {
@@ -35,6 +36,11 @@ export default async function SignaleringPage({
         title="Signalering"
         subtitle="Waar moeten we op letten? Acties en aandachtspunten."
         infoTitle="Over Signalering"
+        actions={
+          <Suspense>
+            <SeizoenKiezer />
+          </Suspense>
+        }
       >
         <div className="space-y-4">
           <section>
@@ -66,8 +72,8 @@ export default async function SignaleringPage({
 
       {/* KPI cards */}
       <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <KpiCard label="Kritiek" value={samenvatting.kritiek} signal="rood" />
-        <KpiCard label="Aandacht" value={samenvatting.aandacht} signal="geel" />
+        <KpiCard label="Kritiek" value={kritiek} signal="rood" />
+        <KpiCard label="Aandacht" value={aandacht} signal="geel" />
         <KpiCard label="Op koers" value={opKoers} signal="groen" />
       </div>
 

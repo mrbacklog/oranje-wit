@@ -4,8 +4,7 @@ import type { Keuze } from "@/app/blauwdruk/actions";
 import NieuwScenarioDialog from "@/components/scenarios/NieuwScenarioDialog";
 import VerwijderScenarioKnop from "@/components/scenarios/VerwijderScenarioKnop";
 import Link from "next/link";
-
-const SEIZOEN = "2026-2027";
+import { getActiefSeizoen } from "@/lib/seizoen";
 
 export const dynamic = "force-dynamic";
 
@@ -24,7 +23,8 @@ const CATEGORIE_LABELS: Record<string, string> = {
 };
 
 export default async function ScenariosPage() {
-  const blauwdruk = await getBlauwdruk(SEIZOEN);
+  const seizoen = await getActiefSeizoen();
+  const blauwdruk = await getBlauwdruk(seizoen);
   const keuzes = (blauwdruk.keuzes as Keuze[] | null) ?? [];
   const scenarios = await getScenarios(blauwdruk.id);
 
@@ -34,7 +34,7 @@ export default async function ScenariosPage() {
         <div>
           <h2 className="text-xl font-bold text-gray-900">Scenario&apos;s</h2>
           <p className="mt-1 text-sm text-gray-500">
-            Teamindelingsscenario&apos;s voor seizoen {SEIZOEN}
+            Teamindelingsscenario&apos;s voor seizoen {seizoen}
           </p>
         </div>
         <div className="flex items-center gap-3">
