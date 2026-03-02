@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import type { TeamData, SpelerData } from "./types";
 import type { TeamValidatie } from "@/lib/validatie/regels";
-import { korfbalLeeftijd } from "./types";
+import { korfbalLeeftijd, sorteerSpelers } from "./types";
 import TeamSpelerRij from "./TeamSpelerRij";
 import TeamDetail from "./TeamDetail";
 
@@ -31,9 +31,12 @@ export default function SelectieBlok({
 
   // Alle spelers zitten op het leider-team (pool)
   const alleSpelers = leider.spelers;
+  const gesorteerd = sorteerSpelers(alleSpelers);
+  const heren = gesorteerd.filter((ts) => ts.speler.geslacht === "M");
+  const dames = gesorteerd.filter((ts) => ts.speler.geslacht === "V");
   const aantalSpelers = alleSpelers.length;
-  const aantalM = alleSpelers.filter((ts) => ts.speler.geslacht === "M").length;
-  const aantalV = alleSpelers.filter((ts) => ts.speler.geslacht === "V").length;
+  const aantalM = heren.length;
+  const aantalV = dames.length;
   const gemLeeftijd =
     aantalSpelers > 0
       ? (
@@ -115,21 +118,47 @@ export default function SelectieBlok({
         </div>
       )}
 
-      {/* Pool: één spelerslijst */}
+      {/* Pool: één spelerslijst, gegroepeerd op geslacht */}
       <div ref={setNodeRef} className="min-h-[60px] flex-1 px-1 py-1">
         {alleSpelers.length === 0 ? (
           <p className="py-4 text-center text-[10px] text-gray-400">Sleep spelers hierheen</p>
         ) : (
-          alleSpelers.map((ts) => (
-            <TeamSpelerRij
-              key={ts.id}
-              teamSpeler={ts}
-              teamId={leider.id}
-              onSpelerClick={
-                onSpelerClick ? (speler) => onSpelerClick(speler, leider.id) : undefined
-              }
-            />
-          ))
+          <>
+            {heren.length > 0 && (
+              <>
+                <div className="px-2 pt-1 text-[9px] font-medium tracking-wide text-blue-500 uppercase">
+                  Heren ({heren.length})
+                </div>
+                {heren.map((ts) => (
+                  <TeamSpelerRij
+                    key={ts.id}
+                    teamSpeler={ts}
+                    teamId={leider.id}
+                    onSpelerClick={
+                      onSpelerClick ? (speler) => onSpelerClick(speler, leider.id) : undefined
+                    }
+                  />
+                ))}
+              </>
+            )}
+            {dames.length > 0 && (
+              <>
+                <div className="px-2 pt-1 text-[9px] font-medium tracking-wide text-pink-500 uppercase">
+                  Dames ({dames.length})
+                </div>
+                {dames.map((ts) => (
+                  <TeamSpelerRij
+                    key={ts.id}
+                    teamSpeler={ts}
+                    teamId={leider.id}
+                    onSpelerClick={
+                      onSpelerClick ? (speler) => onSpelerClick(speler, leider.id) : undefined
+                    }
+                  />
+                ))}
+              </>
+            )}
+          </>
         )}
       </div>
 

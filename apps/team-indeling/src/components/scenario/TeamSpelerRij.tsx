@@ -1,7 +1,7 @@
 "use client";
 
 import { useDraggable } from "@dnd-kit/core";
-import type { TeamSpelerData, SpelerData } from "./types";
+import type { TeamSpelerData, SpelerData, HuidigData } from "./types";
 import { STATUS_KLEUREN, kleurIndicatie, KLEUR_DOT, korfbalLeeftijd } from "./types";
 import SpelerAvatar from "@/components/ui/SpelerAvatar";
 
@@ -16,6 +16,8 @@ export default function TeamSpelerRij({ teamSpeler, teamId, onSpelerClick }: Tea
   const status = teamSpeler.statusOverride ?? speler.status;
   const leeftijd = korfbalLeeftijd(speler.geboortedatum, speler.geboortejaar);
   const kleur = kleurIndicatie(leeftijd);
+  const huidig = speler.huidig as HuidigData | null;
+  const vorigTeam = huidig?.team ?? null;
 
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: `team-${teamId}-${speler.id}`,
@@ -77,6 +79,13 @@ export default function TeamSpelerRij({ teamSpeler, teamId, onSpelerClick }: Tea
 
       {/* Geslacht */}
       <span className="shrink-0 text-[10px]">{speler.geslacht === "M" ? "\u2642" : "\u2640"}</span>
+
+      {/* Huidig team */}
+      {vorigTeam && (
+        <span className="max-w-[50px] shrink-0 truncate text-[9px] text-gray-400" title={vorigTeam}>
+          {vorigTeam}
+        </span>
+      )}
     </div>
   );
 }

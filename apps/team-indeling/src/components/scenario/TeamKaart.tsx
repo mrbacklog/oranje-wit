@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import type { TeamData, SpelerData } from "./types";
 import type { TeamValidatie } from "@/lib/validatie/regels";
-import { KLEUR_BADGE_KLEUREN, korfbalLeeftijd } from "./types";
+import { KLEUR_BADGE_KLEUREN, korfbalLeeftijd, sorteerSpelers } from "./types";
 import TeamSpelerRij from "./TeamSpelerRij";
 import TeamDetail from "./TeamDetail";
 import ValidatieBadge from "./ValidatieBadge";
@@ -53,6 +53,11 @@ export default function TeamKaart({ team, validatie, onDelete, onSpelerClick }: 
           ) / aantalSpelers
         ).toFixed(2)
       : "-";
+
+  // Gesorteerde spelers: heren eerst, dan dames, oudste eerst
+  const gesorteerd = sorteerSpelers(team.spelers);
+  const heren = gesorteerd.filter((ts) => ts.speler.geslacht === "M");
+  const dames = gesorteerd.filter((ts) => ts.speler.geslacht === "V");
 
   // J-nummer indicatie
   const jNummer =
@@ -174,14 +179,38 @@ export default function TeamKaart({ team, validatie, onDelete, onSpelerClick }: 
         {team.spelers.length === 0 ? (
           <p className="py-3 text-center text-[10px] text-gray-400">Sleep spelers hierheen</p>
         ) : (
-          team.spelers.map((ts) => (
-            <TeamSpelerRij
-              key={ts.id}
-              teamSpeler={ts}
-              teamId={team.id}
-              onSpelerClick={onSpelerClick}
-            />
-          ))
+          <>
+            {heren.length > 0 && (
+              <>
+                <div className="px-2 pt-1 text-[9px] font-medium tracking-wide text-blue-500 uppercase">
+                  Heren ({heren.length})
+                </div>
+                {heren.map((ts) => (
+                  <TeamSpelerRij
+                    key={ts.id}
+                    teamSpeler={ts}
+                    teamId={team.id}
+                    onSpelerClick={onSpelerClick}
+                  />
+                ))}
+              </>
+            )}
+            {dames.length > 0 && (
+              <>
+                <div className="px-2 pt-1 text-[9px] font-medium tracking-wide text-pink-500 uppercase">
+                  Dames ({dames.length})
+                </div>
+                {dames.map((ts) => (
+                  <TeamSpelerRij
+                    key={ts.id}
+                    teamSpeler={ts}
+                    teamId={team.id}
+                    onSpelerClick={onSpelerClick}
+                  />
+                ))}
+              </>
+            )}
+          </>
         )}
       </div>
 

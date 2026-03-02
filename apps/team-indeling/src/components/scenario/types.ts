@@ -204,3 +204,18 @@ export const KLEUR_BADGE_KLEUREN: Record<string, string> = {
   ORANJE: "bg-orange-100 text-orange-700",
   ROOD: "bg-red-100 text-red-700",
 };
+
+/**
+ * Sorteer spelers: eerst Heren (M), dan Dames (V).
+ * Binnen elke groep op korfballeeftijd aflopend (oudste eerst).
+ */
+export function sorteerSpelers(spelers: TeamSpelerData[]): TeamSpelerData[] {
+  return [...spelers].sort((a, b) => {
+    if (a.speler.geslacht !== b.speler.geslacht) {
+      return a.speler.geslacht === "M" ? -1 : 1;
+    }
+    const leeftijdA = korfbalLeeftijd(a.speler.geboortedatum, a.speler.geboortejaar);
+    const leeftijdB = korfbalLeeftijd(b.speler.geboortedatum, b.speler.geboortejaar);
+    return leeftijdB - leeftijdA;
+  });
+}
