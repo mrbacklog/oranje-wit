@@ -1,14 +1,14 @@
 ---
 name: railway
-description: Beheer Railway deployments via de GraphQL API. Services aanmaken, GitHub repo's koppelen, environment variables instellen, deployments triggeren en logs bekijken.
+description: Beheer Railway deployments, custom domains en IONOS DNS. Services, env vars, deployments, custom domains, SSL-certificaten en DNS-records.
 user-invocable: true
 allowed-tools: Read, Write, Glob, Bash
-argument-hint: "[actie: status, deploy, logs, variables]"
+argument-hint: "[actie: status, deploy, logs, variables, domains, dns]"
 ---
 
 # Railway — Platform Management via MCP
 
-Beheer de Railway-omgeving van Oranje Wit via de GraphQL API v2. De MCP server biedt 11 tools voor het volledige deployment-lifecycle.
+Beheer de Railway-omgeving van Oranje Wit via de GraphQL API v2. De MCP server biedt 13 tools voor deployment-lifecycle, custom domains en DNS.
 
 ## Architectuur
 
@@ -18,7 +18,7 @@ Claude Code ←→ apps/mcp/railway/server.js ←→ Railway GraphQL API v2
                                                Authorization: Bearer <RAILWAY_TOKEN>
 ```
 
-- **MCP server**: `apps/mcp/railway/server.js` — 11 tools
+- **MCP server**: `apps/mcp/railway/server.js` — 13 tools
 - **Config**: `.mcp.json` — server registratie + token (gitignored)
 - **API**: Railway GraphQL API v2
 
@@ -78,6 +78,94 @@ Beide apps gebruiken **Dockerfiles** (niet Nixpacks):
 | `railway_variable_set` | Variables instellen (upsert) | `projectId`, `environmentId`, `serviceId`, `variables` |
 | `railway_deploy` | Deployment triggeren | `projectId`, `environmentId`, `serviceId` |
 | `railway_domain_create` | Railway-domein genereren | `environmentId`, `serviceId` |
+
+### Custom Domains
+
+| Tool | Beschrijving | Parameters |
+|---|---|---|
+| `railway_custom_domain_create` | Custom domein koppelen aan service | `projectId`, `environmentId`, `serviceId`, `domain` |
+| `railway_custom_domain_status` | Status alle custom domeinen + SSL | `projectId` |
+
+## Custom Domains
+
+### WAARSCHUWING: verwijder custom domains NOOIT
+
+Railway genereert bij elke `customDomainCreate` een **unieke CNAME target** (bijv. `abc123.up.railway.app`).
+Verwijderen + opnieuw aanmaken = nieuwe target = IONOS DNS bijwerken.
+
+**Let's Encrypt rate limit**: max 5 certificaten per domein per week. Overschrijd je dit, dan ben je 7 dagen geblokkerd.
+
+### Huidige custom domains
+
+| Domein | Service | IONOS Record ID |
+|---|---|---|
+| `monitor.ckvoranjewit.app` | monitor | `e3aae275-d73e-5ad7-6fa6-b81101349fc1` |
+| `teamindeling.ckvoranjewit.app` | team-indeling | `43e88ed9-fbd1-80e2-0152-35418c3bf97e` |
+
+> **Tip:** Gebruik `railway_custom_domain_status` om de actuele CNAME targets en certificaatstatus op te vragen.
+
+### Workflow: nieuw custom domain
+
+1. Maak custom domain aan via `railway_custom_domain_create`
+2. Noteer de `cnameTarget` uit de response
+3. Werk het IONOS CNAME record bij (zie IONOS DNS sectie)
+4. Wacht minimaal 1 uur op SSL-certificaat
+5. Controleer met `railway_custom_domain_status`
+
+### SSL Troubleshooting
+
+Als een domein vasthangt op `VALIDATING_OWNERSHIP`:
+
+1. **Check DNS propagatie**: `curl -s "https://dns.google/resolve?name=<domain>&type=CNAME"`
+2. **Vergelijk CNAME**: moet exact matchen met `requiredValue` uit `railway_custom_domain_status`
+3. **Check CAA records**: `curl -s "https://dns.google/resolve?name=<domain>&type=CAA"` — mag Let's Encrypt niet blokkeren
+4. **Check HTTP bereikbaarheid**: `curl -sk http://<domain>` — moet Railway bereiken
+5. **Wacht**: minimaal 1 uur na DNS-wijziging, Railway docs zeggen tot 72 uur
+6. **Check service**: moet actief draaien (deployment status = SUCCESS)
+7. **NOOIT** verwijderen en opnieuw aanmaken (rate limits!)
+
+## IONOS DNS
+
+### API
+
+- **Endpoint**: `https://api.hosting.ionos.com/dns/v1`
+- **Auth**: `X-API-Key` header met `{prefix}.{secret}` formaat
+- **Credentials**: opgeslagen in Claude memory (`memory/ionos.md`)
+- **Docs**: https://developer.hosting.ionos.de/docs/dns
+
+### Zone
+
+| Domein | Zone ID |
+|---|---|
+| `ckvoranjewit.app` | `db06574b-d460-11f0-bd5c-0a5864440e35` |
+
+### CNAME Records
+
+| Subdomain | IONOS Record ID |
+|---|---|
+| `monitor` | `e3aae275-d73e-5ad7-6fa6-b81101349fc1` |
+| `teamindeling` | `43e88ed9-fbd1-80e2-0152-35418c3bf97e` |
+
+### Veelgebruikte IONOS API calls
+
+```bash
+# Alle records ophalen
+curl -s -X GET "https://api.hosting.ionos.com/dns/v1/zones/db06574b-d460-11f0-bd5c-0a5864440e35" \
+  -H "X-API-Key: <key>"
+
+# CNAME record bijwerken
+curl -s -X PUT "https://api.hosting.ionos.com/dns/v1/zones/db06574b-.../records/<recordId>" \
+  -H "X-API-Key: <key>" -H "Content-Type: application/json" \
+  -d '{"name":"monitor.ckvoranjewit.app","type":"CNAME","content":"<target>.up.railway.app","ttl":300,"disabled":false}'
+
+# DNS-propagatie verifiëren via Google DNS
+curl -s "https://dns.google/resolve?name=monitor.ckvoranjewit.app&type=CNAME"
+```
+
+### Beperkingen IONOS
+
+- **Geen CNAME op apex-domein** (`ckvoranjewit.app`) — alleen op subdomains
+- Apex-domein kan alleen via HTTP-redirect naar een subdomain
 
 ## Veelgebruikte workflows
 
@@ -147,7 +235,7 @@ Beide apps gebruiken **Dockerfiles** (niet Nixpacks):
 
 | Bestand | Functie |
 |---|---|
-| `apps/mcp/railway/server.js` | MCP server (11 tools) |
+| `apps/mcp/railway/server.js` | MCP server (13 tools) |
 | `apps/mcp/railway/package.json` | Dependencies |
 | `.mcp.json` | Server registratie + token (gitignored) |
 | `apps/team-indeling/Dockerfile` | Docker build voor TI |

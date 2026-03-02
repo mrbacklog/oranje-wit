@@ -406,6 +406,115 @@ server.tool(
   }
 );
 
+// ─── Tool 12: railway_custom_domain_create ──────────────────────────────────
+
+server.tool(
+  "railway_custom_domain_create",
+  "Custom domein koppelen aan een Railway service (bijv. monitor.ckvoranjewit.app)",
+  {
+    projectId: z.string().describe("Railway project ID"),
+    environmentId: z.string().describe("Environment ID"),
+    serviceId: z.string().describe("Service ID"),
+    domain: z.string().describe("Custom domein (bijv. monitor.ckvoranjewit.app)"),
+  },
+  async ({ projectId, environmentId, serviceId, domain }) => {
+    try {
+      const data = await railwayQuery(
+        `
+        mutation ($input: CustomDomainCreateInput!) {
+          customDomainCreate(input: $input) {
+            id domain
+            status {
+              verified certificateStatus
+              dnsRecords { fqdn requiredValue currentValue status }
+            }
+          }
+        }
+      `,
+        { input: { projectId, environmentId, serviceId, domain } }
+      );
+      const cd = data.customDomainCreate;
+      const cnameTarget = cd.status.dnsRecords?.[0]?.requiredValue;
+      return ok({
+        bericht: `Custom domein "${cd.domain}" aangemaakt`,
+        domainId: cd.id,
+        domain: cd.domain,
+        cnameTarget,
+        verified: cd.status.verified,
+        certificateStatus: cd.status.certificateStatus,
+        dnsRecords: cd.status.dnsRecords,
+      });
+    } catch (e) {
+      return err(e.message);
+    }
+  }
+);
+
+// ─── Tool 13: railway_custom_domain_status ──────────────────────────────────
+
+server.tool(
+  "railway_custom_domain_status",
+  "Status van alle custom domeinen: certificaat, DNS en CNAME targets",
+  {
+    projectId: z.string().describe("Railway project ID"),
+  },
+  async ({ projectId }) => {
+    try {
+      const data = await railwayQuery(
+        `
+        query ($projectId: String!) {
+          project(id: $projectId) {
+            services {
+              edges {
+                node {
+                  name
+                  serviceInstances {
+                    edges {
+                      node {
+                        domains {
+                          customDomains {
+                            id domain
+                            status {
+                              verified certificateStatus certificateErrorMessage
+                              dnsRecords { fqdn requiredValue currentValue status }
+                            }
+                          }
+                          serviceDomains { domain }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      `,
+        { projectId }
+      );
+      const services = data.project.services.edges.map((e) => {
+        const svc = e.node;
+        const inst = svc.serviceInstances.edges[0]?.node;
+        return {
+          service: svc.name,
+          customDomains: (inst?.domains?.customDomains || []).map((cd) => ({
+            domain: cd.domain,
+            domainId: cd.id,
+            verified: cd.status.verified,
+            certificateStatus: cd.status.certificateStatus,
+            certificateError: cd.status.certificateErrorMessage,
+            dnsRecords: cd.status.dnsRecords,
+          })),
+          railwayDomains: (inst?.domains?.serviceDomains || []).map((d) => d.domain),
+        };
+      });
+      return ok({ services });
+    } catch (e) {
+      return err(e.message);
+    }
+  }
+);
+
 // ─── Start server ───────────────────────────────────────────────────────────
 
 async function main() {

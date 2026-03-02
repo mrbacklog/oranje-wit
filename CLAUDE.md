@@ -153,6 +153,7 @@ CompetitieSpeler (primaire tabel: 1 per speler × seizoen × competitie)
 | `regel-checker` | TI (sub) | KNKV + OW regelvalidatie |
 | `adviseur` | TI (sub) | Spelersadvies, what-if, Oranje Draad |
 | `ontwikkelaar` | TI (dev) | Next.js app bouwen en uitbreiden |
+| `deployment` | Infra | Railway deployments, custom domains, IONOS DNS |
 
 ### Agent Fencing
 
@@ -168,6 +169,7 @@ Elke agent heeft een `skills:` lijst in zijn frontmatter die bepaalt wat hij mag
 | `regel-checker` | `team-indeling/validatie`, `shared/oranje-draad` |
 | `adviseur` | `team-indeling/advies`, `team-indeling/vergelijk`, `shared/oranje-draad` |
 | `ontwikkelaar` | `team-indeling/import`, `team-indeling/evaluatie` |
+| `deployment` | `monitor/railway` |
 
 ### Agent Hiërarchie
 
@@ -179,6 +181,8 @@ team-planner (hoofd TI) ← escalates-to: korfbal
 ├── spawns: regel-checker, adviseur
 │
 ontwikkelaar (dev) ← escalates-to: korfbal
+│
+deployment (infra) ← escalates-to: korfbal
 ```
 
 ### Agent Startup
