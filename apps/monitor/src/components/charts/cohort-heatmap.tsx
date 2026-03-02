@@ -128,6 +128,22 @@ export function CohortHeatmap({ data, seizoenen }: CohortHeatmapProps) {
               );
             })}
           </tbody>
+          <tfoot>
+            <tr className="border-t-2 border-gray-300">
+              <td className="sticky left-0 z-10 bg-gray-50 px-2 py-1 font-semibold">Totaal</td>
+              {activeSeizoenen.map((sz) => {
+                let totaal = 0;
+                for (const szMap of geaggregeerd.values()) {
+                  totaal += szMap[sz] || 0;
+                }
+                return (
+                  <td key={sz} className="bg-gray-50 px-2 py-1 text-center font-semibold">
+                    {totaal || ""}
+                  </td>
+                );
+              })}
+            </tr>
+          </tfoot>
         </table>
       </div>
     </div>

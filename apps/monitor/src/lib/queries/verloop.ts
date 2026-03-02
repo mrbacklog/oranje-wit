@@ -212,11 +212,55 @@ export async function getSeizoenVerloop(seizoen: string): Promise<SeizoenVerloop
   };
 }
 
+/** Instroom per leeftijd — gemiddeld over de laatste n seizoenen */
+export async function getInstroomPerLeeftijdRecent(n = 5): Promise<VerloopLeeftijdRow[]> {
+  const rows = await prisma.$queryRaw<{ leeftijd: number; m: string; v: string; totaal: string }[]>`
+    SELECT leeftijd_nieuw AS leeftijd,
+           ROUND(COUNT(*) FILTER (WHERE geslacht = 'M')::numeric / ${n}, 1) AS m,
+           ROUND(COUNT(*) FILTER (WHERE geslacht = 'V')::numeric / ${n}, 1) AS v,
+           ROUND(COUNT(*)::numeric / ${n}, 1) AS totaal
+    FROM ledenverloop
+    WHERE status IN ('nieuw', 'herinschrijver')
+      AND leeftijd_nieuw IS NOT NULL
+      AND seizoen IN (SELECT seizoen FROM seizoenen ORDER BY seizoen DESC LIMIT ${n})
+    GROUP BY leeftijd_nieuw
+    ORDER BY leeftijd_nieuw`;
+
+  return rows.map((r) => ({
+    leeftijd: r.leeftijd,
+    M: Number(r.m),
+    V: Number(r.v),
+    totaal: Number(r.totaal),
+  }));
+}
+
+/** Uitstroom per leeftijd — gemiddeld over de laatste n seizoenen */
+export async function getUitstroomPerLeeftijdRecent(n = 5): Promise<VerloopLeeftijdRow[]> {
+  const rows = await prisma.$queryRaw<{ leeftijd: number; m: string; v: string; totaal: string }[]>`
+    SELECT leeftijd_vorig AS leeftijd,
+           ROUND(COUNT(*) FILTER (WHERE geslacht = 'M')::numeric / ${n}, 1) AS m,
+           ROUND(COUNT(*) FILTER (WHERE geslacht = 'V')::numeric / ${n}, 1) AS v,
+           ROUND(COUNT(*)::numeric / ${n}, 1) AS totaal
+    FROM ledenverloop
+    WHERE status IN ('uitgestroomd', 'niet_spelend_geworden')
+      AND leeftijd_vorig IS NOT NULL
+      AND seizoen IN (SELECT seizoen FROM seizoenen ORDER BY seizoen DESC LIMIT ${n})
+    GROUP BY leeftijd_vorig
+    ORDER BY leeftijd_vorig`;
+
+  return rows.map((r) => ({
+    leeftijd: r.leeftijd,
+    M: Number(r.m),
+    V: Number(r.v),
+    totaal: Number(r.totaal),
+  }));
+}
+
 /** Gecombineerd: instroom + uitstroom + retentie */
 export async function getInstroomUitstroom(): Promise<InstroomUitstroomResult> {
   const [instroom, uitstroom, retentie] = await Promise.all([
-    getInstroomPerLeeftijd(),
-    getUitstroomPerLeeftijd(),
+    getInstroomPerLeeftijdRecent(),
+    getUitstroomPerLeeftijdRecent(),
     getRetentiePerLeeftijd(),
   ]);
 

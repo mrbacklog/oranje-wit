@@ -31,12 +31,11 @@ export async function getPerGeboortejaar(seizoen: string): Promise<GeboortejaarR
         WHEN (${startJaar} - l.geboortejaar) BETWEEN 6 AND 7 THEN 'F-jeugd'
         WHEN (${startJaar} - l.geboortejaar) BETWEEN 8 AND 9 THEN 'E-jeugd'
         WHEN (${startJaar} - l.geboortejaar) BETWEEN 10 AND 11 THEN 'D-jeugd'
-        WHEN (${startJaar} - l.geboortejaar) BETWEEN 12 AND 13 THEN 'C-jeugd'
-        WHEN (${startJaar} - l.geboortejaar) = 14 THEN 'U15-1'
-        WHEN (${startJaar} - l.geboortejaar) = 15 THEN 'U15'
-        WHEN (${startJaar} - l.geboortejaar) BETWEEN 16 AND 17 THEN 'U17'
-        WHEN (${startJaar} - l.geboortejaar) BETWEEN 18 AND 19 THEN 'U19'
-        WHEN (${startJaar} - l.geboortejaar) >= 20 THEN 'Senioren'
+        WHEN (${startJaar} - l.geboortejaar) = 12 THEN 'C-jeugd'
+        WHEN (${startJaar} - l.geboortejaar) BETWEEN 13 AND 14 THEN 'U15'
+        WHEN (${startJaar} - l.geboortejaar) BETWEEN 15 AND 16 THEN 'U17'
+        WHEN (${startJaar} - l.geboortejaar) BETWEEN 17 AND 18 THEN 'U19'
+        WHEN (${startJaar} - l.geboortejaar) >= 19 THEN 'Senioren'
         ELSE 'Overig'
       END AS a_categorie,
       CASE
@@ -132,11 +131,11 @@ const BAND_PER_LEEFTIJD: Record<number, string> = {
   12: "Geel",
   13: "Oranje",
   14: "Oranje",
-  15: "Oranje",
+  15: "Rood",
   16: "Rood",
-  17: "Rood",
+  17: "Paars",
   18: "Paars",
-  19: "Paars",
+  19: "Grijs",
   20: "Grijs",
   21: "Grijs",
   22: "Grijs",
@@ -247,9 +246,9 @@ export async function getPijplijn(seizoen: string): Promise<PijplijnResult> {
   return {
     doelPerCategorie: CATEGORIE_DOEL_TOTAAL,
     huidig: {
-      U15: categorieStatus(14, 15),
-      U17: categorieStatus(16, 17),
-      U19: categorieStatus(18, 19),
+      U15: categorieStatus(13, 14),
+      U17: categorieStatus(15, 16),
+      U19: categorieStatus(17, 18),
     },
     perLeeftijd,
     groeiFactoren: groei,
@@ -405,20 +404,20 @@ export async function getProjectie(seizoen: string): Promise<ProjectieResult> {
   }
 
   // U17-projectie: 5 seizoenen vooruit
-  // U17 = leeftijd 16-17 (1e-jaars = 16, 2e-jaars = 17)
+  // U17 = leeftijd 15-16 (1e-jaars = 15, 2e-jaars = 16)
   const u17: ProjectieRij[] = [];
   for (let offset = 0; offset < 5; offset++) {
     const projSeizoenStart = startJaar + offset;
     const projSeizoen = `${projSeizoenStart}-${projSeizoenStart + 1}`;
-    const gj1 = projSeizoenStart - 16; // 1e-jaars U17
-    const gj2 = projSeizoenStart - 17; // 2e-jaars U17
+    const gj1 = projSeizoenStart - 15; // 1e-jaars U17
+    const gj2 = projSeizoenStart - 16; // 2e-jaars U17
 
     let projM1 = 0,
       projV1 = 0,
       projM2 = 0,
       projV2 = 0;
 
-    // 1e-jaars (leeftijd 16 in projectie-seizoen)
+    // 1e-jaars (leeftijd 15 in projectie-seizoen)
     const cohort1 = cohorten.get(gj1);
     if (cohort1) {
       const huidigeLeeftijd = startJaar - gj1;
@@ -426,12 +425,12 @@ export async function getProjectie(seizoen: string): Promise<ProjectieResult> {
         projM1 = cohort1.M;
         projV1 = cohort1.V;
       } else {
-        projM1 = projecteer(cohort1.M, huidigeLeeftijd, 16, groei.M);
-        projV1 = projecteer(cohort1.V, huidigeLeeftijd, 16, groei.V);
+        projM1 = projecteer(cohort1.M, huidigeLeeftijd, 15, groei.M);
+        projV1 = projecteer(cohort1.V, huidigeLeeftijd, 15, groei.V);
       }
     }
 
-    // 2e-jaars (leeftijd 17 in projectie-seizoen)
+    // 2e-jaars (leeftijd 16 in projectie-seizoen)
     const cohort2 = cohorten.get(gj2);
     if (cohort2) {
       const huidigeLeeftijd = startJaar - gj2;
@@ -439,8 +438,8 @@ export async function getProjectie(seizoen: string): Promise<ProjectieResult> {
         projM2 = cohort2.M;
         projV2 = cohort2.V;
       } else {
-        projM2 = projecteer(cohort2.M, huidigeLeeftijd, 17, groei.M);
-        projV2 = projecteer(cohort2.V, huidigeLeeftijd, 17, groei.V);
+        projM2 = projecteer(cohort2.M, huidigeLeeftijd, 16, groei.M);
+        projV2 = projecteer(cohort2.V, huidigeLeeftijd, 16, groei.V);
       }
     }
 
@@ -467,13 +466,13 @@ export async function getProjectie(seizoen: string): Promise<ProjectieResult> {
     });
   }
 
-  // Senioren-doorstroom: leeftijd 20 (= vanuit U19 2e-jaars → senioren)
+  // Senioren-doorstroom: leeftijd 19 (= vanuit U19 2e-jaars → senioren)
   const senioren: SeniorenRij[] = [];
   for (let offset = 0; offset < 5; offset++) {
     const projSeizoenStart = startJaar + offset;
     const projSeizoen = `${projSeizoenStart}-${projSeizoenStart + 1}`;
-    const gj1 = projSeizoenStart - 19; // wordt 19 → laatste jeugdjaar
-    const gj2 = projSeizoenStart - 20; // wordt 20 → eerste seniorenjaar
+    const gj1 = projSeizoenStart - 18; // wordt 18 → laatste jeugdjaar (U19 2e-jaars)
+    const gj2 = projSeizoenStart - 19; // wordt 19 → eerste seniorenjaar
 
     let projM = 0,
       projV = 0;
@@ -481,24 +480,24 @@ export async function getProjectie(seizoen: string): Promise<ProjectieResult> {
     const cohortSen = cohorten.get(gj2);
     if (cohortSen) {
       const huidigeLeeftijd = startJaar - gj2;
-      if (huidigeLeeftijd < 20) {
-        projM = projecteer(cohortSen.M, huidigeLeeftijd, 19, groei.M);
-        projV = projecteer(cohortSen.V, huidigeLeeftijd, 19, groei.V);
+      if (huidigeLeeftijd < 19) {
+        projM = projecteer(cohortSen.M, huidigeLeeftijd, 18, groei.M);
+        projV = projecteer(cohortSen.V, huidigeLeeftijd, 18, groei.V);
       } else {
         projM = cohortSen.M;
         projV = cohortSen.V;
       }
     }
 
-    const cohort19 = cohorten.get(gj1);
-    if (cohort19) {
+    const cohort18 = cohorten.get(gj1);
+    if (cohort18) {
       const huidigeLeeftijd = startJaar - gj1;
-      if (huidigeLeeftijd < 19) {
-        projM += projecteer(cohort19.M, huidigeLeeftijd, 19, groei.M);
-        projV += projecteer(cohort19.V, huidigeLeeftijd, 19, groei.V);
+      if (huidigeLeeftijd < 18) {
+        projM += projecteer(cohort18.M, huidigeLeeftijd, 18, groei.M);
+        projV += projecteer(cohort18.V, huidigeLeeftijd, 18, groei.V);
       } else {
-        projM += cohort19.M;
-        projV += cohort19.V;
+        projM += cohort18.M;
+        projV += cohort18.V;
       }
     }
 

@@ -15,7 +15,6 @@ const BAND_STIJL: Record<string, { bg: string; text: string; label: string }> = 
   "E-jeugd": { bg: "bg-band-groen", text: "text-white", label: "" },
   "D-jeugd": { bg: "bg-band-geel", text: "text-gray-800", label: "" },
   "C-jeugd": { bg: "bg-band-oranje", text: "text-white", label: "" },
-  "U15-1": { bg: "bg-band-oranje", text: "text-white", label: "U15" },
   U15: { bg: "bg-band-rood", text: "text-white", label: "U15" },
   U17: { bg: "bg-band-rood/70", text: "text-white", label: "U17" },
   U19: { bg: "bg-band-rood/50", text: "text-white", label: "U19" },
@@ -67,15 +66,14 @@ export default async function SamenstellingPage({
     }));
 
   // Cohorten data
-  const { seizoenen, per_cohort, totalen } = cohorten;
+  const { seizoenen, per_cohort } = cohorten;
   const seizoenenDesc = [...seizoenen].reverse();
-  const recenteSeizoenen = seizoenen.slice(-8).reverse();
 
   return (
     <>
       <InfoPageHeader
         title="Samenstelling"
-        subtitle="Ledenstructuur, cohortanalyse en retentie per geboortejaar."
+        subtitle="Ledenstructuur en cohortanalyse per geboortejaar."
         infoTitle="Over Samenstelling"
         actions={
           <Suspense>
@@ -101,11 +99,7 @@ export default async function SamenstellingPage({
               <strong>Piramide/Detail:</strong> huidige seizoen — hoeveel leden per geboortejaar.
             </p>
             <p className="mt-1">
-              <strong>Heatmap:</strong> historisch — hoe cohorten zich over seizoenen ontwikkelen.
-            </p>
-            <p className="mt-1">
-              <strong>Retentie:</strong> retentiepercentages per leeftijdsgroep en
-              seizoensoverzicht.
+              <strong>Historie:</strong> historisch — hoe cohorten zich over seizoenen ontwikkelen.
             </p>
           </section>
           <section>
@@ -194,108 +188,6 @@ export default async function SamenstellingPage({
                 Cohort-heatmap (actieve leden per geboortejaar per seizoen)
               </h3>
               <CohortHeatmap data={per_cohort} seizoenen={seizoenenDesc} />
-            </div>
-          }
-          retentieContent={
-            <div className="space-y-8">
-              {/* Retentie per leeftijdsgroep */}
-              <div className="rounded-xl bg-white p-6 shadow-sm">
-                <h3 className="mb-4 text-sm font-semibold tracking-wide text-gray-700 uppercase">
-                  Retentie per leeftijdsgroep
-                </h3>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="bg-gray-50 text-left">
-                        <th className="px-3 py-2 font-semibold">Groep</th>
-                        {recenteSeizoenen.map((sz) => (
-                          <th
-                            key={sz}
-                            className="px-3 py-2 text-center font-semibold whitespace-nowrap"
-                          >
-                            {sz.slice(2, 4)}/{sz.slice(7, 9)}
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {totalen.per_leeftijdsgroep.map((groep) => (
-                        <tr key={groep.groep} className="border-t border-gray-100">
-                          <td className="px-3 py-2 font-medium">{groep.groep}</td>
-                          {recenteSeizoenen.map((sz) => {
-                            const d = groep.per_seizoen[sz];
-                            const retentie = d?.retentie_pct;
-                            const color =
-                              retentie === null || retentie === undefined
-                                ? ""
-                                : retentie >= 80
-                                  ? "text-signal-groen"
-                                  : retentie >= 60
-                                    ? "text-signal-geel"
-                                    : "text-signal-rood";
-                            return (
-                              <td key={sz} className={`px-3 py-2 text-center font-medium ${color}`}>
-                                {retentie !== null && retentie !== undefined ? `${retentie}%` : "-"}
-                              </td>
-                            );
-                          })}
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              {/* Seizoens-samenvatting */}
-              <div className="rounded-xl bg-white p-6 shadow-sm">
-                <h3 className="mb-4 text-sm font-semibold tracking-wide text-gray-700 uppercase">
-                  Seizoens-samenvatting
-                </h3>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="bg-gray-50 text-left">
-                        <th className="px-3 py-2 font-semibold">Seizoen</th>
-                        <th className="px-3 py-2 text-right font-semibold">Totaal</th>
-                        <th className="px-3 py-2 text-right font-semibold">Behouden</th>
-                        <th className="px-3 py-2 text-right font-semibold">Nieuw</th>
-                        <th className="px-3 py-2 text-right font-semibold">Uitgestroomd</th>
-                        <th className="px-3 py-2 text-right font-semibold">Retentie</th>
-                        <th className="px-3 py-2 text-right font-semibold">Groei</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {[...totalen.per_seizoen].reverse().map((sz) => (
-                        <tr key={sz.seizoen} className="border-t border-gray-100">
-                          <td className="px-3 py-2 font-medium whitespace-nowrap">{sz.seizoen}</td>
-                          <td className="px-3 py-2 text-right font-semibold">{sz.totaal_nieuw}</td>
-                          <td className="px-3 py-2 text-right">{sz.behouden}</td>
-                          <td className="text-signal-groen px-3 py-2 text-right">
-                            +{sz.nieuw + sz.herinschrijver}
-                          </td>
-                          <td className="text-signal-rood px-3 py-2 text-right">
-                            -{sz.uitgestroomd}
-                          </td>
-                          <td className="px-3 py-2 text-right">
-                            {sz.retentie_pct !== null ? `${sz.retentie_pct}%` : "-"}
-                          </td>
-                          <td
-                            className={`px-3 py-2 text-right font-medium ${
-                              sz.netto_groei !== null && sz.netto_groei >= 0
-                                ? "text-signal-groen"
-                                : "text-signal-rood"
-                            }`}
-                          >
-                            {sz.netto_groei !== null
-                              ? `${sz.netto_groei >= 0 ? "+" : ""}${sz.netto_groei}`
-                              : "-"}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
             </div>
           }
         />

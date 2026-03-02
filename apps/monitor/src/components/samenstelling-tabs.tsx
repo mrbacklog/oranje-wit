@@ -6,8 +6,7 @@ import { type ReactNode } from "react";
 const TABS = [
   { id: "piramide", label: "Piramide" },
   { id: "detail", label: "Detail" },
-  { id: "heatmap", label: "Heatmap" },
-  { id: "retentie", label: "Retentie" },
+  { id: "heatmap", label: "Historie" },
 ] as const;
 
 type TabId = (typeof TABS)[number]["id"];
@@ -16,7 +15,6 @@ interface SamenstellingTabsProps {
   piramideContent: ReactNode;
   detailContent: ReactNode;
   heatmapContent: ReactNode;
-  retentieContent: ReactNode;
   defaultTab?: string;
 }
 
@@ -24,7 +22,6 @@ export function SamenstellingTabs({
   piramideContent,
   detailContent,
   heatmapContent,
-  retentieContent,
   defaultTab,
 }: SamenstellingTabsProps) {
   const router = useRouter();
@@ -46,7 +43,6 @@ export function SamenstellingTabs({
     piramide: piramideContent,
     detail: detailContent,
     heatmap: heatmapContent,
-    retentie: retentieContent,
   };
 
   return (

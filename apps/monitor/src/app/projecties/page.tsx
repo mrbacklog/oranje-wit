@@ -145,9 +145,9 @@ export default async function JeugdpijplijnPage({
 
   const doel = pijplijn.doelPerCategorie;
   const categorieen = [
-    { label: "U15", leeftijden: "14-15", ...pijplijn.huidig.U15 },
-    { label: "U17", leeftijden: "16-17", ...pijplijn.huidig.U17 },
-    { label: "U19", leeftijden: "18-19", ...pijplijn.huidig.U19 },
+    { label: "U15", leeftijden: "13-14", ...pijplijn.huidig.U15 },
+    { label: "U17", leeftijden: "15-16", ...pijplijn.huidig.U17 },
+    { label: "U19", leeftijden: "17-18", ...pijplijn.huidig.U19 },
   ] as const;
   const vulgraadPct = (totaal: number) => (doel > 0 ? Math.round((totaal / doel) * 100) : 0);
 
@@ -362,7 +362,7 @@ export default async function JeugdpijplijnPage({
         </h3>
         <p className="mb-4 text-xs text-gray-500">
           Kans dat een individuele speler die instroomt bij deze leeftijd uiteindelijk U17 (leeftijd
-          16) bereikt, op basis van retentiefactoren uit het jeugdmodel.
+          15) bereikt, op basis van retentiefactoren uit het jeugdmodel.
         </p>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -381,10 +381,10 @@ export default async function JeugdpijplijnPage({
             </thead>
             <tbody>
               {[6, 7, 8, 9, 10, 11, 12].map((startLeeftijd) => {
-                // Product van retentiefactoren van startLeeftijd+1 t/m 16
+                // Product van retentiefactoren van startLeeftijd+1 t/m 15
                 let kansM = 1;
                 let kansV = 1;
-                for (let l = startLeeftijd + 1; l <= 16; l++) {
+                for (let l = startLeeftijd + 1; l <= 15; l++) {
                   kansM *= BENCHMARK_M[l] ?? 0.9;
                   kansV *= BENCHMARK_V[l] ?? 0.9;
                 }
