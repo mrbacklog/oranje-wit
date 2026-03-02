@@ -21,6 +21,22 @@ Alle ledendata wordt opgeslagen in PostgreSQL (Railway):
 - **`leden`** — permanente ledenrecords (1 per lid), met rel_code als identifier
 - **`competitie_spelers`** — primaire tabel: speler × seizoen × competitie (~4.933 records, 924 unieke spelers)
 - **VIEW `speler_seizoenen`** — afgeleid uit competitie_spelers via DISTINCT ON (rel_code, seizoen)
+- **`Speler`** — teamindeling-tabel, `Speler.id` = `rel_code` uit Sportlink
+
+## rel_code — de enige speler-identifier
+
+De `rel_code` (Sportlink relatienummer, bijv. `NJH39X4`) is de **enige stabiele sleutel** voor leden en spelers in het hele systeem. De koppeling is:
+
+```
+leden.rel_code → competitie_spelers.rel_code → Speler.id
+```
+
+**Verplicht bij elke speler-operatie:**
+1. Zoek spelers **altijd** op via `rel_code`, nooit via naam-matching
+2. Een nieuw `Speler`-record krijgt `id = rel_code` uit de `leden`-tabel
+3. De volledige achternaam komt uit `leden`: `tussenvoegsel + " " + achternaam` (de `leden`-tabel slaat tussenvoegsels apart op)
+4. Als een speler niet gevonden wordt via `rel_code`: **meld dit als fout** — los het niet op met fuzzy naam-matching
+5. Alle actieve leden (huidig seizoen in `competitie_spelers`) horen een `Speler`-record te hebben
 
 ## Bestandsnaamgeving
 

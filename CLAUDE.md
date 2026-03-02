@@ -133,6 +133,21 @@ CompetitieSpeler (primaire tabel: 1 per speler × seizoen × competitie)
 - Competitie-volgorde: veld_najaar → zaal → veld_voorjaar
 - Excel-import (`sync-telling.ts`) is verwijderd — data staat definitief in de database
 
+### rel_code is de enige sleutel voor spelers/leden
+
+**KRITIEK**: De `rel_code` (Sportlink relatienummer, bijv. `NJH39X4`) is de **enige stabiele identifier** voor leden en spelers. Alle koppelingen tussen tabellen verlopen via `rel_code`:
+
+- `leden.rel_code` — stamgegevens (naam, geboortedatum, tussenvoegsel)
+- `competitie_spelers.rel_code` — competitiedata per seizoen
+- `Speler.id` = `rel_code` — teamindeling (Speler.id IS de rel_code)
+
+**Regels**:
+1. Bij het opzoeken of aanmaken van een Speler: gebruik **altijd** `rel_code` als lookup-sleutel, **nooit** naam-matching
+2. Een nieuw Speler-record krijgt `id = rel_code` uit de `leden`-tabel
+3. De volledige achternaam (incl. tussenvoegsel) komt uit `leden`: `tussenvoegsel + " " + achternaam`
+4. Als een speler niet gevonden kan worden via `rel_code`, is dat een **fout** die gemeld moet worden — niet stilzwijgend oplossen met fuzzy naam-matching
+5. Alle actieve leden (seizoen 2025-2026 in `competitie_spelers`) horen een `Speler`-record te hebben
+
 ### Lees/schrijf
 - **Team-Indeling schrijft**: blauwdruk, concepten, scenario's, teams, pins, log, evaluaties
 - **Team-Indeling leest**: leden, speler_seizoenen, competitie_spelers, retentie
