@@ -196,9 +196,18 @@ export async function getPijplijn(seizoen: string): Promise<PijplijnResult> {
   const perLeeftijd: PijplijnRij[] = [];
   const benodigdPerLeeftijd = new Map<number, { m: number; v: number }>();
 
-  // Vast doel voor leeftijd 12 t/m 22
-  for (let leeftijd = 12; leeftijd <= 22; leeftijd++) {
+  // Vast doel voor leeftijd 12 t/m 18 (jeugd + U19)
+  for (let leeftijd = 12; leeftijd <= 18; leeftijd++) {
     benodigdPerLeeftijd.set(leeftijd, { m: DOEL_M_PER_JAAR, v: DOEL_V_PER_JAAR });
+  }
+
+  // Afbouw voor leeftijd 19-22: pas groei-factoren toe (retentie-gebaseerd)
+  let seniorM = DOEL_M_PER_JAAR;
+  let seniorV = DOEL_V_PER_JAAR;
+  for (let leeftijd = 19; leeftijd <= 22; leeftijd++) {
+    seniorM = seniorM * (groei.M[leeftijd] ?? 0.75);
+    seniorV = seniorV * (groei.V[leeftijd] ?? 0.75);
+    benodigdPerLeeftijd.set(leeftijd, { m: seniorM, v: seniorV });
   }
 
   // Terugrekenen van leeftijd 11 naar 6 (instroom-traject)

@@ -70,10 +70,22 @@ export default async function TeamsPage({
     { label: "Jeugd", codes: jeugd.map((t) => t.ow_code) },
   ].filter((g) => g.codes.length > 0);
 
+  // Bouw mapping: J-nummer → ow_code (bijv. "J1" → "Rood")
+  const jNrNaarOwCode = new Map<string, string>();
+  for (const t of allTeams) {
+    for (const p of Object.values(t.periodes)) {
+      if (p?.j_nummer) {
+        jNrNaarOwCode.set(p.j_nummer, t.ow_code);
+      }
+    }
+  }
+
   // Bouw uitslagen lookup: ow_code → TeamUitslagen
   const uitslagenPerTeam: Record<string, (typeof uitslagen)[number]> = {};
   for (const tu of uitslagen) {
-    uitslagenPerTeam[tu.teamCode] = tu;
+    // Probeer J-nummer mapping (bijv. "J1" → "Rood"), anders direct teamCode
+    const owCode = jNrNaarOwCode.get(tu.teamCode) ?? tu.teamCode;
+    uitslagenPerTeam[owCode] = tu;
   }
 
   // Converteer Maps naar Records voor serialisatie

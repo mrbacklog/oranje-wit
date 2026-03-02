@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import Link from "next/link";
 import { InfoPageHeader } from "@/components/info/InfoPageHeader";
 import { SeizoenKiezer } from "@/components/layout/seizoen-kiezer";
 import { getSeizoen } from "@/lib/utils/seizoen";
@@ -49,11 +50,14 @@ export default async function DashboardPage({
           </section>
           <section>
             <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
-              Tip
+              Navigatie
             </h4>
             <p>
-              Klik op &quot;Signalering&quot; in het menu voor het volledige overzicht van alle
-              signaleringen.
+              Klik op de KPI-kaarten om naar de detailpagina te gaan, of bekijk de{" "}
+              <Link href="/signalering" className="text-ow-oranje hover:underline">
+                signaleringen
+              </Link>{" "}
+              voor het volledige overzicht.
             </p>
           </section>
         </div>

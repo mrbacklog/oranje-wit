@@ -205,6 +205,7 @@ model Signalering {
   drempel        Decimal? @db.Decimal
   streef         Decimal? @db.Decimal
   beschrijving   String?
+  advies         String?
 
   // Relaties
   seizoenRef Seizoen @relation(fields: [seizoen], references: [seizoen])

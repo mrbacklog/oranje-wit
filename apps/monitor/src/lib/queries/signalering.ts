@@ -11,6 +11,7 @@ export type SignaleringRow = {
   drempel: number | null;
   streef: number | null;
   beschrijving: string | null;
+  advies: string | null;
 };
 
 export async function getSignaleringen(seizoen: string): Promise<SignaleringRow[]> {
@@ -30,6 +31,7 @@ export async function getSignaleringen(seizoen: string): Promise<SignaleringRow[
     drempel: r.drempel ? Number(r.drempel) : null,
     streef: r.streef ? Number(r.streef) : null,
     beschrijving: r.beschrijving,
+    advies: r.advies,
   }));
 }
 

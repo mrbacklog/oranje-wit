@@ -59,7 +59,14 @@ export default async function SpelerDetailPage({
           <div className="mt-2 flex flex-wrap gap-4 text-sm text-gray-600">
             {leeftijd && (
               <span>
-                {leeftijd} jaar ({speler.geboortejaar})
+                {leeftijd} jaar (
+                <Link
+                  href={`/samenstelling/${speler.geboortejaar}?seizoen=${seizoen}`}
+                  className="text-ow-oranje hover:underline"
+                >
+                  {speler.geboortejaar}
+                </Link>
+                )
               </span>
             )}
             <span className={speler.geslacht === "M" ? "text-blue-500" : "text-pink-500"}>

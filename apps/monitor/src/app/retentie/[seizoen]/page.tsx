@@ -51,9 +51,16 @@ function VerloopLijst({
           {[...groepen.entries()].map(([jaar, groep]) => (
             <div key={String(jaar)}>
               <div className="mb-1.5 flex items-center gap-2 border-b border-gray-100 pb-1">
-                <span className="text-xs font-semibold text-gray-500">
-                  {jaar === "onbekend" ? "Onbekend" : jaar}
-                </span>
+                {jaar === "onbekend" ? (
+                  <span className="text-xs font-semibold text-gray-500">Onbekend</span>
+                ) : (
+                  <Link
+                    href={`/samenstelling/${jaar}`}
+                    className="text-ow-oranje text-xs font-semibold hover:underline"
+                  >
+                    {jaar}
+                  </Link>
+                )}
                 <span className="text-xs text-gray-400">({groep.length})</span>
               </div>
               <div className="space-y-0.5">
