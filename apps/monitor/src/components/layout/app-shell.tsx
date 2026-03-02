@@ -1,9 +1,11 @@
 "use client";
 
 import { Suspense, useState, useCallback, useRef, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { Sidebar } from "./sidebar";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const close = useCallback(() => setMobileOpen(false), []);
   const hamburgerRef = useRef<HTMLButtonElement>(null);
@@ -56,6 +58,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       hamburgerRef.current?.focus();
     }
   }, [mobileOpen]);
+
+  if (pathname === "/login") {
+    return <>{children}</>;
+  }
 
   return (
     <div className="flex h-screen">
