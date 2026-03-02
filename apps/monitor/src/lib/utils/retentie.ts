@@ -79,6 +79,36 @@ export function detecteerKritiekeMomenten(data: RetentieDataPoint[]): KritiekMom
   return momenten.slice(0, 7);
 }
 
+// ---------------------------------------------------------------------------
+// Waterfall berekening
+// ---------------------------------------------------------------------------
+
+export type WaterfallItem = {
+  label: string;
+  waarde: number;
+  type: "start" | "instroom" | "uitstroom" | "eind";
+};
+
+export function berekenWaterfall(
+  behouden: number,
+  instroomNieuw: number,
+  instroomTerug: number,
+  uitstroom: number
+): WaterfallItem[] {
+  const begin = behouden + uitstroom;
+  return [
+    { label: "Begin", waarde: begin, type: "start" },
+    { label: "Nieuw", waarde: instroomNieuw, type: "instroom" },
+    { label: "Terug", waarde: instroomTerug, type: "instroom" },
+    { label: "Uitstroom", waarde: -uitstroom, type: "uitstroom" },
+    { label: "Eind", waarde: begin + instroomNieuw + instroomTerug - uitstroom, type: "eind" },
+  ];
+}
+
+// ---------------------------------------------------------------------------
+// Patroon detectie
+// ---------------------------------------------------------------------------
+
 type LeeftijdRow = { leeftijd: number; M: number; V: number };
 
 export function detecteerPatronen(data: LeeftijdRow[], type: "instroom" | "uitstroom"): string[] {
