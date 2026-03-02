@@ -2,10 +2,7 @@ import { describe, it, expect } from "vitest";
 import { berekenTeamstructuur, type SpelerBasis } from "./teamstructuur";
 
 /** Helper: maak een array van spelers met opgegeven geboortejaren */
-function maakSpelers(
-  geboortejaren: number[],
-  geslacht: "M" | "V" = "M"
-): SpelerBasis[] {
+function maakSpelers(geboortejaren: number[], geslacht: "M" | "V" = "M"): SpelerBasis[] {
   return geboortejaren.map((jaar, i) => ({
     id: `speler-${i}`,
     geboortejaar: jaar,

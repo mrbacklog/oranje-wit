@@ -1,10 +1,7 @@
 import { prisma } from "@/lib/db/prisma";
 import { ok, fail } from "@/lib/api";
 
-export async function GET(
-  _request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
 
