@@ -144,6 +144,12 @@ export async function getSpelersUitgebreid() {
 
 export type SpelerUitgebreid = Awaited<ReturnType<typeof getSpelersUitgebreid>>[number];
 
+export interface Keuze {
+  id: string;
+  vraag: string;
+  opties: string[];
+}
+
 /**
  * Bereken geaggregeerde ledenstatistieken server-side.
  */
