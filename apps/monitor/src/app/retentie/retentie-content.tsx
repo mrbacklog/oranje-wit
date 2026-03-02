@@ -110,7 +110,7 @@ export async function RetentieContent() {
 
   return (
     <RetentieTabs
-      retentieContent={
+      behoudContent={
         <RetentieTabContent
           waterfallData={waterfallData}
           waterfallSeizoen={waterfallRaw?.seizoen}

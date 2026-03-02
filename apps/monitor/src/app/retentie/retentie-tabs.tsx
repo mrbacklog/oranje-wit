@@ -2,11 +2,11 @@
 
 import { useState, type ReactNode } from "react";
 
-const TABS = ["Retentie", "Instroom", "Uitstroom", "Cohorten"] as const;
+const TABS = ["Behoud", "Instroom", "Uitstroom", "Cohorten"] as const;
 type Tab = (typeof TABS)[number];
 
 const TAB_BESCHRIJVING: Record<Tab, string> = {
-  Retentie:
+  Behoud:
     "Welk percentage leden keert seizoen na seizoen terug? De retentiecurve toont per leeftijd hoeveel spelers het volgende seizoen weer meedoen.",
   Instroom:
     "Hoeveel nieuwe spelers komen erbij? Instroom omvat zowel volledig nieuwe leden als herinschrijvers die na een onderbreking terugkeren.",
@@ -17,22 +17,22 @@ const TAB_BESCHRIJVING: Record<Tab, string> = {
 };
 
 interface RetentieTabsProps {
-  retentieContent: ReactNode;
+  behoudContent: ReactNode;
   instroomContent: ReactNode;
   uitstroomContent: ReactNode;
   cohortenContent: ReactNode;
 }
 
 export function RetentieTabs({
-  retentieContent,
+  behoudContent,
   instroomContent,
   uitstroomContent,
   cohortenContent,
 }: RetentieTabsProps) {
-  const [activeTab, setActiveTab] = useState<Tab>("Retentie");
+  const [activeTab, setActiveTab] = useState<Tab>("Behoud");
 
   const content: Record<Tab, ReactNode> = {
-    Retentie: retentieContent,
+    Behoud: behoudContent,
     Instroom: instroomContent,
     Uitstroom: uitstroomContent,
     Cohorten: cohortenContent,

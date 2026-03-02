@@ -13,9 +13,9 @@ export default async function RetentiePage({
   return (
     <>
       <InfoPageHeader
-        title="Retentie"
-        subtitle="Hoe goed houden we onze leden vast?"
-        infoTitle="Over Retentie"
+        title="Ledendynamiek"
+        subtitle="Instroom, uitstroom en behoud van leden — alle bewegingen in beeld."
+        infoTitle="Over Ledendynamiek"
       >
         <div className="space-y-4">
           <section>
@@ -23,8 +23,9 @@ export default async function RetentiePage({
               Wat zie je?
             </h4>
             <p>
-              Drie perspectieven op ledenbehoud: retentie (wie blijft), instroom (wie komt erbij) en
-              uitstroom (wie stopt). Alle data is uitgesplitst naar jongens en meisjes.
+              Vier perspectieven op ledenbewegingen: behoud (wie blijft), instroom (wie komt erbij),
+              uitstroom (wie stopt) en cohorten (hoe presteren jaargangen). Alle data is
+              uitgesplitst naar jongens en meisjes.
             </p>
           </section>
           <section>
@@ -32,12 +33,16 @@ export default async function RetentiePage({
               Tabs
             </h4>
             <p>
-              <strong>Retentie</strong> toont het percentage dat terugkeert per leeftijd, de
-              dropout-heatmap en kritieke overgangsmomenten.
+              <strong>Behoud</strong> toont het retentiepercentage per leeftijd, een waterfall van
+              het ledenverloop en kritieke overgangsmomenten.
             </p>
             <p className="mt-1">
               <strong>Instroom</strong> en <strong>Uitstroom</strong> tonen aantallen per leeftijd
-              en per seizoen, steeds apart voor jongens en meisjes.
+              en per seizoen, gesplitst in jeugd en senioren.
+            </p>
+            <p className="mt-1">
+              <strong>Cohorten</strong> volgt instroom-jaargangen over de jaren met een
+              retentiematrix en -curves.
             </p>
           </section>
           <section>

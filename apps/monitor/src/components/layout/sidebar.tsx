@@ -8,7 +8,7 @@ const NAV_ITEMS = [
   { href: "/teams", label: "Teams", icon: "🏃" },
   { href: "/spelers", label: "Spelers", icon: "👤" },
   { href: "/samenstelling", label: "Samenstelling", icon: "👥" },
-  { href: "/retentie", label: "Retentie", icon: "🔄" },
+  { href: "/retentie", label: "Ledendynamiek", icon: "🔄" },
   { href: "/projecties", label: "Jeugdpijplijn", icon: "🎯" },
   { href: "/signalering", label: "Signalering", icon: "⚠️" },
 ];
