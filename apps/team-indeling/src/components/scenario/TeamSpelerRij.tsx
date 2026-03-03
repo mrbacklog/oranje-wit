@@ -1,17 +1,24 @@
 "use client";
 
 import { useDraggable } from "@dnd-kit/core";
-import type { TeamSpelerData, SpelerData, HuidigData } from "./types";
+import type { TeamSpelerData, SpelerData, HuidigData, DetailLevel } from "./types";
 import { STATUS_KLEUREN, kleurIndicatie, KLEUR_DOT, korfbalLeeftijd } from "./types";
 import SpelerAvatar from "@/components/ui/SpelerAvatar";
 
 interface TeamSpelerRijProps {
   teamSpeler: TeamSpelerData;
   teamId: string;
+  detailLevel?: DetailLevel;
   onSpelerClick?: (speler: SpelerData) => void;
 }
 
-export default function TeamSpelerRij({ teamSpeler, teamId, onSpelerClick }: TeamSpelerRijProps) {
+export default function TeamSpelerRij({
+  teamSpeler,
+  teamId,
+  detailLevel,
+  onSpelerClick,
+}: TeamSpelerRijProps) {
+  const dl = detailLevel ?? "detail";
   const { speler } = teamSpeler;
   const status = teamSpeler.statusOverride ?? speler.status;
   const leeftijd = korfbalLeeftijd(speler.geboortedatum, speler.geboortejaar);
@@ -43,17 +50,21 @@ export default function TeamSpelerRij({ teamSpeler, teamId, onSpelerClick }: Tea
       }`}
     >
       {/* Drag handle */}
-      <span
-        {...listeners}
-        {...attributes}
-        className="flex-shrink-0 cursor-grab text-xs text-gray-300 hover:text-gray-500"
-        title="Versleep"
-      >
-        &#9776;
-      </span>
+      {(dl === "detail" || dl === "focus") && (
+        <span
+          {...listeners}
+          {...attributes}
+          className="shrink-0 cursor-grab text-xs text-gray-300 hover:text-gray-500"
+          title="Versleep"
+        >
+          &#9776;
+        </span>
+      )}
 
       {/* Avatar */}
-      <SpelerAvatar spelerId={speler.id} naam={speler.roepnaam} size="xs" />
+      {(dl === "detail" || dl === "focus") && (
+        <SpelerAvatar spelerId={speler.id} naam={speler.roepnaam} size="xs" />
+      )}
 
       {/* Status dot */}
       <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${STATUS_KLEUREN[status]}`} />
@@ -69,19 +80,25 @@ export default function TeamSpelerRij({ teamSpeler, teamId, onSpelerClick }: Tea
       </span>
 
       {/* Korfballeeftijd + kleurindicatie */}
-      <span
-        className="inline-flex shrink-0 items-center gap-0.5"
-        title={`Geboortejaar ${speler.geboortejaar}`}
-      >
-        {kleur && <span className={`h-1 w-1 rounded-full ${KLEUR_DOT[kleur]}`} />}
-        <span className="text-[10px] text-gray-400">{leeftijd.toFixed(2)}</span>
-      </span>
+      {(dl === "detail" || dl === "focus") && (
+        <span
+          className="inline-flex shrink-0 items-center gap-0.5"
+          title={`Geboortejaar ${speler.geboortejaar}`}
+        >
+          {kleur && <span className={`h-1 w-1 rounded-full ${KLEUR_DOT[kleur]}`} />}
+          <span className="text-[10px] text-gray-400">{leeftijd.toFixed(2)}</span>
+        </span>
+      )}
 
       {/* Geslacht */}
-      <span className="shrink-0 text-[10px]">{speler.geslacht === "M" ? "\u2642" : "\u2640"}</span>
+      {(dl === "detail" || dl === "focus") && (
+        <span className="shrink-0 text-[10px]">
+          {speler.geslacht === "M" ? "\u2642" : "\u2640"}
+        </span>
+      )}
 
       {/* Huidig team */}
-      {vorigTeam && (
+      {(dl === "detail" || dl === "focus") && vorigTeam && (
         <span className="max-w-[50px] shrink-0 truncate text-[9px] text-gray-400" title={vorigTeam}>
           {vorigTeam}
         </span>
