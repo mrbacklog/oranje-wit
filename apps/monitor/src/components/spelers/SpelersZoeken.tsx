@@ -2,21 +2,74 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import type { SpelerOverzicht } from "@/lib/queries/spelers";
+import type { SpelerOverzicht, SpelerStatus } from "@/lib/queries/spelers";
 import { formatNaam } from "@/lib/utils/format";
 
 interface Props {
   spelers: SpelerOverzicht[];
 }
 
+const STATUS_LABELS: Record<SpelerStatus | "alle", string> = {
+  in_team: "In team",
+  reserve: "Algemeen Reserves",
+  historisch: "Ooit actief",
+  alle: "Alle",
+};
+
+function formatMaandJaar(d: Date | string) {
+  const date = new Date(d);
+  return `${String(date.getMonth() + 1).padStart(2, "0")}-${date.getFullYear()}`;
+}
+
+function AfmeldBadge({ afmelddatum }: { afmelddatum: Date | string }) {
+  const datum = new Date(afmelddatum);
+  const isVerleden = datum < new Date();
+
+  return (
+    <span
+      className={`ml-1.5 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] leading-tight font-medium ${
+        isVerleden ? "text-signal-rood bg-red-50" : "text-ow-oranje bg-orange-50"
+      }`}
+      title={isVerleden ? "Niet meer lid" : "Afmelding gepland"}
+    >
+      <svg
+        width="12"
+        height="12"
+        viewBox="0 0 12 12"
+        fill="none"
+        aria-hidden="true"
+        className="shrink-0"
+      >
+        {isVerleden ? (
+          // Kruis-icoon
+          <path
+            d="M3 3l6 6M9 3l-6 6"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
+        ) : (
+          // Klok-icoon
+          <>
+            <circle cx="6" cy="6" r="4.5" stroke="currentColor" strokeWidth="1.2" />
+            <path
+              d="M6 3.5V6l2 1.5"
+              stroke="currentColor"
+              strokeWidth="1.2"
+              strokeLinecap="round"
+            />
+          </>
+        )}
+      </svg>
+      {formatMaandJaar(datum)}
+    </span>
+  );
+}
+
 export function SpelersZoeken({ spelers }: Props) {
   const [zoek, setZoek] = useState("");
   const [geslachtFilter, setGeslachtFilter] = useState<"alle" | "M" | "V">("alle");
-  const [statusFilter, setStatusFilter] = useState<"alle" | "actief" | "inactief">("actief");
-
-  const params = useSearchParams();
-  const qs = params.get("seizoen") ? `?seizoen=${params.get("seizoen")}` : "";
+  const [statusFilter, setStatusFilter] = useState<SpelerStatus | "alle">("in_team");
 
   const gefilterd = useMemo(() => {
     return spelers.filter((s) => {
@@ -30,8 +83,7 @@ export function SpelersZoeken({ spelers }: Props) {
       // Geslacht
       if (geslachtFilter !== "alle" && s.geslacht !== geslachtFilter) return false;
       // Status
-      if (statusFilter === "actief" && s.afmelddatum) return false;
-      if (statusFilter === "inactief" && !s.afmelddatum) return false;
+      if (statusFilter !== "alle" && s.status !== statusFilter) return false;
       return true;
     });
   }, [spelers, zoek, geslachtFilter, statusFilter]);
@@ -63,13 +115,14 @@ export function SpelersZoeken({ spelers }: Props) {
         </select>
         <select
           value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value as "alle" | "actief" | "inactief")}
+          onChange={(e) => setStatusFilter(e.target.value as SpelerStatus | "alle")}
           aria-label="Filter op status"
           className="rounded-lg border border-gray-200 px-3 py-2 text-sm"
         >
-          <option value="actief">Actief</option>
-          <option value="inactief">Uitgeschreven</option>
-          <option value="alle">Alle</option>
+          <option value="in_team">{STATUS_LABELS.in_team}</option>
+          <option value="reserve">{STATUS_LABELS.reserve}</option>
+          <option value="historisch">{STATUS_LABELS.historisch}</option>
+          <option value="alle">{STATUS_LABELS.alle}</option>
         </select>
         <span className="ml-auto text-sm text-gray-500">
           {gefilterd.length} spelers (<span className="text-blue-500">&#9794; {mannen}</span> /{" "}
@@ -86,7 +139,7 @@ export function SpelersZoeken({ spelers }: Props) {
               <th className="px-4 py-3">Geb.jaar</th>
               <th className="px-4 py-3">&#9794;/&#9792;</th>
               <th className="px-4 py-3">Team</th>
-              <th className="px-4 py-3 text-right">Seizoenen</th>
+              <th className="px-4 py-3 text-right">Lid sinds</th>
             </tr>
           </thead>
           <tbody>
@@ -99,7 +152,7 @@ export function SpelersZoeken({ spelers }: Props) {
                 >
                   <td className="px-4 py-2.5">
                     <Link
-                      href={`/spelers/${s.relCode}${qs}`}
+                      href={`/spelers/${s.relCode}`}
                       className="hover:text-ow-oranje flex items-center gap-3 font-medium text-gray-900"
                     >
                       {s.heeftFoto ? (
@@ -124,9 +177,21 @@ export function SpelersZoeken({ spelers }: Props) {
                     {s.geslacht === "M" ? "\u2642" : "\u2640"}
                   </td>
                   <td className="px-4 py-2.5 text-gray-600">
-                    {s.hudigTeam || <span className="text-gray-400">-</span>}
+                    <span className="flex flex-col">
+                      {s.huidigTeam || <span className="text-gray-400">-</span>}
+                      {s.selectie && s.huidigTeam !== s.selectie && (
+                        <span className="mt-0.5 inline-flex w-fit items-center rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-medium text-amber-700">
+                          {s.selectie}
+                        </span>
+                      )}
+                    </span>
                   </td>
-                  <td className="px-4 py-2.5 text-right text-gray-600">{s.seizoenenActief}</td>
+                  <td className="px-4 py-2.5 text-right text-gray-600">
+                    <span className="inline-flex items-center justify-end gap-1">
+                      {s.lidSinds ? formatMaandJaar(s.lidSinds) : "-"}
+                      {s.afmelddatum && <AfmeldBadge afmelddatum={s.afmelddatum} />}
+                    </span>
+                  </td>
                 </tr>
               );
             })}

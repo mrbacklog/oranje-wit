@@ -653,9 +653,11 @@ async function main() {
   const teamsHuidig = teamStats.map((team) => {
     const knkvTeam = teamsKNKV?.find((t) => t.team === team.team);
     const owCode = owCodeLookup.get(team.team) || team.team;
+    const owTeam = owCodeTeamLookup.get(owCode);
     return {
       team: team.team,
       ow_code: owCode,
+      werknaam: owTeam?.naam || null,
       categorie: knkvTeam?.categorie || null,
       kleur: knkvTeam?.kleur || null,
       niveau: knkvTeam?.niveau || null,

@@ -22,6 +22,9 @@ export type TeamRegisterEntry = {
   kleur: string | null;
   leeftijdsgroep: string | null;
   spelvorm: string | null;
+  isSelectie: boolean;
+  selectieOwCode: string | null;
+  sortOrder: number | null;
   periodes: Record<PeriodeNaam, PeriodeData | null>;
 };
 
@@ -44,6 +47,9 @@ export async function getTeamsRegister(seizoen: string): Promise<TeamsRegisterRe
       kleur: string | null;
       leeftijdsgroep: string | null;
       spelvorm: string | null;
+      is_selectie: boolean;
+      selectie_ow_code: string | null;
+      sort_order: number | null;
       periode: string | null;
       j_nummer: string | null;
       pool: string | null;
@@ -52,7 +58,7 @@ export async function getTeamsRegister(seizoen: string): Promise<TeamsRegisterRe
       aantal_spelers: number | null;
     }[]
   >`
-    SELECT t.id, t.ow_code, t.naam, t.categorie, t.kleur, t.leeftijdsgroep, t.spelvorm,
+    SELECT t.id, t.ow_code, t.naam, t.categorie, t.kleur, t.leeftijdsgroep, t.spelvorm, t.is_selectie, t.selectie_ow_code, t.sort_order,
            tp.periode, tp.j_nummer, tp.pool, tp.sterkte, tp.gem_leeftijd, tp.aantal_spelers
     FROM teams t
     LEFT JOIN team_periodes tp ON t.id = tp.team_id
@@ -73,6 +79,9 @@ export async function getTeamsRegister(seizoen: string): Promise<TeamsRegisterRe
         kleur: r.kleur,
         leeftijdsgroep: r.leeftijdsgroep,
         spelvorm: r.spelvorm,
+        isSelectie: r.is_selectie,
+        selectieOwCode: r.selectie_ow_code,
+        sortOrder: r.sort_order,
         periodes: {
           veld_najaar: null,
           zaal_deel1: null,
@@ -100,33 +109,6 @@ export async function getTeamsRegister(seizoen: string): Promise<TeamsRegisterRe
 }
 
 // ---------------------------------------------------------------------------
-// Detecteer selectie-teams (gecombineerde S1/S2, U17, U19)
-// ---------------------------------------------------------------------------
-
-export async function getSelectieTeams(seizoen: string): Promise<Record<string, string>> {
-  // Check of er gecombineerde S1/S2 data is EN of er géén zaaldata is die het opsplitst
-  const rows = await prisma.$queryRaw<{ has_combined: boolean; has_zaal: boolean }[]>`
-    SELECT
-      EXISTS(
-        SELECT 1 FROM competitie_spelers
-        WHERE seizoen = ${seizoen} AND competitie = 'veld_najaar' AND team IN ('S1/S2', 'S1S2')
-      ) as has_combined,
-      EXISTS(
-        SELECT 1 FROM competitie_spelers
-        WHERE seizoen = ${seizoen} AND competitie = 'zaal' AND team IN ('1', '2')
-      ) as has_zaal
-  `;
-
-  const result: Record<string, string> = {};
-  if (rows[0]?.has_combined && !rows[0]?.has_zaal) {
-    // Alleen gecombineerde data, geen zaal die het opsplitst
-    result["1"] = "S1/S2 selectie";
-    result["2"] = "S1/S2 selectie";
-  }
-  return result;
-}
-
-// ---------------------------------------------------------------------------
 // Spelers per team (geslacht-telling)
 // ---------------------------------------------------------------------------
 
@@ -151,65 +133,15 @@ export async function getSpelersPerTeam(seizoen: string): Promise<Map<string, Te
         WHEN 'veld_voorjaar' THEN 3
         ELSE 4
       END
-    ),
-    team_mapping AS (
-      -- OW J{n} (veld) → ow_code via j_nummer in team_periodes
-      SELECT DISTINCT ON ('OW J' || SUBSTRING(tp.j_nummer FROM 2))
-        'OW J' || SUBSTRING(tp.j_nummer FROM 2) AS telling_naam,
-        t.ow_code
-      FROM team_periodes tp
-      JOIN teams t ON t.id = tp.team_id AND t.seizoen = ${seizoen}
-      WHERE tp.j_nummer IS NOT NULL
-
-      UNION ALL
-      -- J{n} (zaal) → ow_code via j_nummer in team_periodes
-      SELECT DISTINCT ON (tp.j_nummer)
-        tp.j_nummer AS telling_naam,
-        t.ow_code
-      FROM team_periodes tp
-      JOIN teams t ON t.id = tp.team_id AND t.seizoen = ${seizoen}
-      WHERE tp.j_nummer IS NOT NULL
-
-      UNION ALL
-      -- S{n} (veld) → senioren ow_code
-      SELECT 'S' || t.ow_code, t.ow_code
-      FROM teams t WHERE t.seizoen = ${seizoen} AND t.ow_code ~ '^\\d+$'
-
-      UNION ALL
-      -- S1/S2 selectie → senioren 1 en 2
-      SELECT v.naam, t.ow_code
-      FROM (VALUES ('S1/S2'), ('S1S2')) v(naam)
-      CROSS JOIN teams t
-      WHERE t.seizoen = ${seizoen} AND t.ow_code IN ('1', '2')
-
-      UNION ALL
-      -- Selectie U17 → alle U17-teams
-      SELECT 'U17', t.ow_code
-      FROM teams t WHERE t.seizoen = ${seizoen} AND t.ow_code LIKE 'U17-%'
-
-      UNION ALL
-      -- Selectie U19 → alle U19-teams
-      SELECT 'U19', t.ow_code
-      FROM teams t WHERE t.seizoen = ${seizoen} AND t.ow_code LIKE 'U19-%'
-
-      UNION ALL
-      -- Kangoeroes
-      SELECT v.telling_naam, v.telling_naam
-      FROM (VALUES ('Kangoeroes'), ('K')) v(telling_naam)
-
-      UNION ALL
-      -- Direct match (MW1, U15-1, U17-1, senioren ow_code '1','2', etc.)
-      SELECT t.ow_code, t.ow_code
-      FROM teams t WHERE t.seizoen = ${seizoen}
     )
-    SELECT tm.ow_code,
+    SELECT ta.ow_code,
            COALESCE(bt.geslacht, l.geslacht, 'O') as geslacht,
            COUNT(DISTINCT bt.rel_code)::int as aantal
     FROM best_team bt
     JOIN leden l ON bt.rel_code = l.rel_code
-    JOIN team_mapping tm ON tm.telling_naam = bt.team
+    JOIN team_aliases ta ON ta.alias = bt.team AND ta.seizoen = ${seizoen}
     WHERE bt.team IS NOT NULL
-    GROUP BY tm.ow_code, COALESCE(bt.geslacht, l.geslacht, 'O')
+    GROUP BY ta.ow_code, COALESCE(bt.geslacht, l.geslacht, 'O')
   `;
 
   const map = new Map<string, TeamSpelerTelling>();
@@ -262,59 +194,9 @@ export async function getSpelersVanTeam(seizoen: string): Promise<Map<string, Te
         WHEN 'veld_voorjaar' THEN 3
         ELSE 4
       END
-    ),
-    team_mapping AS (
-      -- OW J{n} (veld) → ow_code via j_nummer in team_periodes
-      SELECT DISTINCT ON ('OW J' || SUBSTRING(tp.j_nummer FROM 2))
-        'OW J' || SUBSTRING(tp.j_nummer FROM 2) AS telling_naam,
-        t.ow_code
-      FROM team_periodes tp
-      JOIN teams t ON t.id = tp.team_id AND t.seizoen = ${seizoen}
-      WHERE tp.j_nummer IS NOT NULL
-
-      UNION ALL
-      -- J{n} (zaal) → ow_code via j_nummer in team_periodes
-      SELECT DISTINCT ON (tp.j_nummer)
-        tp.j_nummer AS telling_naam,
-        t.ow_code
-      FROM team_periodes tp
-      JOIN teams t ON t.id = tp.team_id AND t.seizoen = ${seizoen}
-      WHERE tp.j_nummer IS NOT NULL
-
-      UNION ALL
-      -- S{n} (veld) → senioren ow_code
-      SELECT 'S' || t.ow_code, t.ow_code
-      FROM teams t WHERE t.seizoen = ${seizoen} AND t.ow_code ~ '^\\d+$'
-
-      UNION ALL
-      -- S1/S2 selectie → senioren 1 en 2
-      SELECT v.naam, t.ow_code
-      FROM (VALUES ('S1/S2'), ('S1S2')) v(naam)
-      CROSS JOIN teams t
-      WHERE t.seizoen = ${seizoen} AND t.ow_code IN ('1', '2')
-
-      UNION ALL
-      -- Selectie U17 → alle U17-teams
-      SELECT 'U17', t.ow_code
-      FROM teams t WHERE t.seizoen = ${seizoen} AND t.ow_code LIKE 'U17-%'
-
-      UNION ALL
-      -- Selectie U19 → alle U19-teams
-      SELECT 'U19', t.ow_code
-      FROM teams t WHERE t.seizoen = ${seizoen} AND t.ow_code LIKE 'U19-%'
-
-      UNION ALL
-      -- Kangoeroes
-      SELECT v.telling_naam, v.telling_naam
-      FROM (VALUES ('Kangoeroes'), ('K')) v(telling_naam)
-
-      UNION ALL
-      -- Direct match (MW1, U15-1, U17-1, senioren ow_code '1','2', etc.)
-      SELECT t.ow_code, t.ow_code
-      FROM teams t WHERE t.seizoen = ${seizoen}
     )
-    SELECT DISTINCT ON (tm.ow_code, bt.rel_code)
-           tm.ow_code,
+    SELECT DISTINCT ON (ta.ow_code, bt.rel_code)
+           ta.ow_code,
            l.rel_code,
            l.roepnaam,
            l.achternaam,
@@ -323,9 +205,9 @@ export async function getSpelersVanTeam(seizoen: string): Promise<Map<string, Te
            l.geboortejaar
     FROM best_team bt
     JOIN leden l ON bt.rel_code = l.rel_code
-    JOIN team_mapping tm ON tm.telling_naam = bt.team
+    JOIN team_aliases ta ON ta.alias = bt.team AND ta.seizoen = ${seizoen}
     WHERE bt.team IS NOT NULL
-    ORDER BY tm.ow_code, bt.rel_code`;
+    ORDER BY ta.ow_code, bt.rel_code`;
 
   const map = new Map<string, TeamSpeler[]>();
   for (const r of rows) {

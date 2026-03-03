@@ -1,20 +1,14 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { InfoPageHeader } from "@/components/info/InfoPageHeader";
-import { SeizoenKiezer } from "@/components/layout/seizoen-kiezer";
-import { getSeizoen } from "@/lib/utils/seizoen";
+import { HUIDIG_SEIZOEN } from "@/lib/utils/seizoen";
 import { KpiCardsSkeleton, ChartsSkeleton, AlertCardsSkeleton } from "@/components/ui/skeleton";
 import { DashboardKpis } from "./dashboard-kpis";
 import { DashboardCharts } from "./dashboard-charts";
 import { DashboardSignaleringen } from "./dashboard-signaleringen";
 
-export default async function DashboardPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ seizoen?: string }>;
-}) {
-  const params = await searchParams;
-  const seizoen = getSeizoen(params);
+export default async function DashboardPage() {
+  const seizoen = HUIDIG_SEIZOEN;
 
   return (
     <div>
@@ -22,11 +16,6 @@ export default async function DashboardPage({
         title="Dashboard"
         subtitle={`Seizoen ${seizoen} — c.k.v. Oranje Wit`}
         infoTitle="Over het Dashboard"
-        actions={
-          <Suspense>
-            <SeizoenKiezer />
-          </Suspense>
-        }
       >
         <div className="space-y-4">
           <section>

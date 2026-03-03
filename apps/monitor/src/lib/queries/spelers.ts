@@ -4,6 +4,8 @@ import { prisma } from "@/lib/db/prisma";
 // Types
 // ---------------------------------------------------------------------------
 
+export type SpelerStatus = "in_team" | "reserve" | "historisch";
+
 export type SpelerOverzicht = {
   relCode: string;
   roepnaam: string;
@@ -14,9 +16,12 @@ export type SpelerOverzicht = {
   geboortedatum: Date | null;
   lidSinds: Date | null;
   afmelddatum: Date | null;
-  hudigTeam: string | null;
+  lidsoort: string | null;
+  huidigTeam: string | null;
+  selectie: string | null;
   seizoenenActief: number;
   heeftFoto: boolean;
+  status: SpelerStatus;
 };
 
 export type SpelerDetailResult = {
@@ -66,14 +71,18 @@ export async function getSpelersOverzicht(seizoen: string): Promise<SpelerOverzi
       geboortedatum: Date | null;
       lid_sinds: Date | null;
       afmelddatum: Date | null;
+      lidsoort: string | null;
       huidig_team: string | null;
+      selectie: string | null;
       seizoenen_actief: bigint;
       heeft_foto: boolean;
     }[]
   >`
     SELECT l.rel_code, l.roepnaam, l.achternaam, l.tussenvoegsel,
            l.geslacht, l.geboortejaar, l.geboortedatum, l.lid_sinds, l.afmelddatum,
+           l.lidsoort,
            cur.team as huidig_team,
+           sel.selectie,
            cp_count.seizoenen_actief,
            EXISTS(SELECT 1 FROM lid_fotos lf WHERE lf.rel_code = l.rel_code) as heeft_foto
     FROM leden l
@@ -83,29 +92,59 @@ export async function getSpelersOverzicht(seizoen: string): Promise<SpelerOverzi
       GROUP BY rel_code
     ) cp_count ON cp_count.rel_code = l.rel_code
     LEFT JOIN LATERAL (
-      SELECT team FROM competitie_spelers
-      WHERE rel_code = l.rel_code AND seizoen = ${seizoen}
-      ORDER BY CASE competitie
-        WHEN 'veld_najaar' THEN 1 WHEN 'zaal' THEN 2 WHEN 'veld_voorjaar' THEN 3
+      SELECT CASE
+        WHEN j_al.alias IS NOT NULL
+          THEN COALESCE(t.naam, ta.ow_code) || ' (' || j_al.alias || ')'
+        ELSE COALESCE(t.naam, ta.ow_code, cp.team)
+      END as team
+      FROM competitie_spelers cp
+      LEFT JOIN team_aliases ta ON ta.seizoen = cp.seizoen AND ta.alias = cp.team
+      LEFT JOIN teams t ON t.seizoen = cp.seizoen AND t.ow_code = ta.ow_code
+      LEFT JOIN team_aliases j_al ON j_al.seizoen = cp.seizoen AND j_al.ow_code = ta.ow_code AND j_al.alias ~ '^J[0-9]+$'
+      WHERE cp.rel_code = l.rel_code AND cp.seizoen = ${seizoen}
+      ORDER BY CASE cp.competitie
+        WHEN 'zaal' THEN 1 WHEN 'veld_najaar' THEN 2 WHEN 'veld_voorjaar' THEN 3
       END
       LIMIT 1
     ) cur ON true
+    LEFT JOIN LATERAL (
+      SELECT COALESCE(t_sel.naam, ta_sel.ow_code) as selectie
+      FROM competitie_spelers cp_sel
+      JOIN team_aliases ta_sel ON ta_sel.seizoen = cp_sel.seizoen AND ta_sel.alias = cp_sel.team
+      JOIN teams t_sel ON t_sel.seizoen = cp_sel.seizoen AND t_sel.ow_code = ta_sel.ow_code AND t_sel.is_selectie = true
+      WHERE cp_sel.rel_code = l.rel_code AND cp_sel.seizoen = ${seizoen} AND cp_sel.competitie = 'veld_najaar'
+      LIMIT 1
+    ) sel ON true
     ORDER BY l.achternaam, l.roepnaam`;
 
-  return rows.map((r) => ({
-    relCode: r.rel_code,
-    roepnaam: r.roepnaam,
-    achternaam: r.achternaam,
-    tussenvoegsel: r.tussenvoegsel,
-    geslacht: r.geslacht,
-    geboortejaar: r.geboortejaar,
-    geboortedatum: r.geboortedatum,
-    lidSinds: r.lid_sinds,
-    afmelddatum: r.afmelddatum,
-    hudigTeam: r.huidig_team,
-    seizoenenActief: Number(r.seizoenen_actief),
-    heeftFoto: r.heeft_foto,
-  }));
+  return rows.map((r) => {
+    const heeftTeam = !!r.huidig_team;
+    const isAfgemeld = !!r.afmelddatum;
+    const isBondslid = r.lidsoort === "Bondslid";
+
+    let status: SpelerStatus;
+    if (heeftTeam) status = "in_team";
+    else if (!isAfgemeld && isBondslid) status = "reserve";
+    else status = "historisch";
+
+    return {
+      relCode: r.rel_code,
+      roepnaam: r.roepnaam,
+      achternaam: r.achternaam,
+      tussenvoegsel: r.tussenvoegsel,
+      geslacht: r.geslacht,
+      geboortejaar: r.geboortejaar,
+      geboortedatum: r.geboortedatum,
+      lidSinds: r.lid_sinds,
+      afmelddatum: r.afmelddatum,
+      lidsoort: r.lidsoort,
+      huidigTeam: r.huidig_team,
+      selectie: r.selectie ?? null,
+      seizoenenActief: Number(r.seizoenen_actief),
+      heeftFoto: r.heeft_foto,
+      status,
+    };
+  });
 }
 
 // ---------------------------------------------------------------------------

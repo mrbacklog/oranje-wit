@@ -7,7 +7,6 @@ import { getSeizoen } from "@/lib/utils/seizoen";
 import { Ledenboog } from "@/components/charts/ledenboog";
 import { CohortHeatmap } from "@/components/charts/cohort-heatmap";
 import { SamenstellingTabs } from "@/components/samenstelling-tabs";
-import { SeizoenKiezer } from "@/components/layout/seizoen-kiezer";
 
 const BAND_STIJL: Record<string, { bg: string; text: string; label: string }> = {
   Kangoeroes: { bg: "bg-band-blauw/30", text: "text-blue-800", label: "" },
@@ -15,9 +14,9 @@ const BAND_STIJL: Record<string, { bg: string; text: string; label: string }> = 
   "E-jeugd": { bg: "bg-band-groen", text: "text-white", label: "" },
   "D-jeugd": { bg: "bg-band-geel", text: "text-gray-800", label: "" },
   "C-jeugd": { bg: "bg-band-oranje", text: "text-white", label: "" },
-  U15: { bg: "bg-band-rood", text: "text-white", label: "U15" },
-  U17: { bg: "bg-band-rood/70", text: "text-white", label: "U17" },
-  U19: { bg: "bg-band-rood/50", text: "text-white", label: "U19" },
+  U15: { bg: "bg-band-oranje", text: "text-white", label: "U15" },
+  U17: { bg: "bg-band-rood", text: "text-white", label: "U17" },
+  U19: { bg: "bg-band-rood", text: "text-white", label: "U19" },
   Senioren: { bg: "bg-gray-200", text: "text-gray-600", label: "Sen" },
 };
 
@@ -75,11 +74,7 @@ export default async function SamenstellingPage({
         title="Samenstelling"
         subtitle="Ledenstructuur en cohortanalyse per geboortejaar."
         infoTitle="Over Samenstelling"
-        actions={
-          <Suspense>
-            <SeizoenKiezer />
-          </Suspense>
-        }
+        actions={null}
       >
         <div className="space-y-4">
           <section>
@@ -150,11 +145,25 @@ export default async function SamenstellingPage({
                   </thead>
                   <tbody>
                     {detailRows.map((row) => {
-                      const stijl = BAND_STIJL[row.band] || {
-                        bg: "bg-gray-100",
-                        text: "text-gray-600",
-                        label: "",
-                      };
+                      const isU15Sterkte = row.band === "U15" && row.leeftijd >= 14;
+                      const isCjeugdNaarU15 = row.band === "C-jeugd" && row.leeftijd >= 12;
+                      const stijl = isU15Sterkte
+                        ? {
+                            bg: "bg-linear-to-b from-band-oranje to-band-rood",
+                            text: "text-white",
+                            label: "U15",
+                          }
+                        : isCjeugdNaarU15
+                          ? {
+                              bg: "bg-linear-to-b from-band-geel to-band-oranje",
+                              text: "text-gray-800",
+                              label: "",
+                            }
+                          : BAND_STIJL[row.band] || {
+                              bg: "bg-gray-100",
+                              text: "text-gray-600",
+                              label: "",
+                            };
                       return (
                         <tr key={row.geboortejaar} className="border-t border-gray-100">
                           <td className="px-3 py-1.5 font-medium">

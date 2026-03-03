@@ -12,13 +12,17 @@ export async function DashboardKpis({ seizoen }: { seizoen: string }) {
         <KpiCard label="Spelende leden" value={kpis.totaal_spelers} />
       </Link>
       <Link href="/teams">
-        <KpiCard label="Teams" value={kpis.totaal_teams} />
+        <KpiCard
+          label="Teams"
+          value={kpis.totaal_teams}
+          subtitle={`${kpis.teams_8tal} × 8-tal · ${kpis.teams_4tal} × 4-tal`}
+        />
       </Link>
       <Link href="/retentie">
         <KpiCard
           label="Netto groei"
           value={groei.netto >= 0 ? `+${groei.netto}` : String(groei.netto)}
-          trend={{ value: groei.netto, label: `${groei.instroom} in / ${groei.uitstroom} uit` }}
+          detail={{ instroom: groei.instroom, uitstroom: groei.uitstroom }}
         />
       </Link>
       <Link href="/signalering">

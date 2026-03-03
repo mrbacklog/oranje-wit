@@ -84,6 +84,73 @@ async function syncLeden(ledenPath) {
 }
 
 // --- Teams importeren ---
+// --- Team-aliases herbouwen (KNKV-namen → ow_code) ---
+async function buildTeamAliases(seizoen) {
+  const { rows: teams } = await pool.query(
+    "SELECT id, ow_code, categorie, kleur, leeftijdsgroep FROM teams WHERE seizoen = $1",
+    [seizoen]
+  );
+  const { rows: periodes } = await pool.query(
+    `SELECT tp.team_id, tp.j_nummer FROM team_periodes tp
+     JOIN teams t ON t.id = tp.team_id
+     WHERE t.seizoen = $1 AND tp.j_nummer IS NOT NULL`,
+    [seizoen]
+  );
+
+  const jPerTeam = new Map();
+  for (const p of periodes) {
+    if (!jPerTeam.has(p.team_id)) jPerTeam.set(p.team_id, new Set());
+    jPerTeam.get(p.team_id).add(p.j_nummer);
+  }
+
+  const aliases = new Map();
+  const add = (alias, id, code) => {
+    if (alias && !aliases.has(alias)) aliases.set(alias, { id, code });
+  };
+
+  for (const t of teams) {
+    add(t.ow_code, t.id, t.ow_code);
+    for (const jNr of jPerTeam.get(t.id) || []) {
+      add(jNr, t.id, t.ow_code);
+      add(`OW J${jNr.substring(1)}`, t.id, t.ow_code);
+    }
+    if (/^\d+$/.test(t.ow_code)) add(`S${t.ow_code}`, t.id, t.ow_code);
+  }
+
+  // Selectie-aliases → selectie-teams
+  const senSel = teams.find((t) => t.ow_code === "S-selectie");
+  if (senSel) {
+    add("S1/S2", senSel.id, senSel.ow_code);
+    add("S1S2", senSel.id, senSel.ow_code);
+  }
+  for (const pfx of ["U15", "U17", "U19"]) {
+    const sel = teams.find((t) => t.ow_code === `${pfx}-selectie`);
+    if (sel) add(pfx, sel.id, sel.ow_code);
+  }
+  const kang = teams.find((t) => t.ow_code === "Kangoeroes" || t.ow_code === "K");
+  if (kang) {
+    add("Kangoeroes", kang.id, kang.ow_code);
+    add("K", kang.id, kang.ow_code);
+  }
+
+  await pool.query("DELETE FROM team_aliases WHERE seizoen = $1", [seizoen]);
+  if (aliases.size > 0) {
+    const vals = [];
+    const params = [];
+    let i = 1;
+    for (const [alias, { id, code }] of aliases) {
+      vals.push(`($${i}, $${i + 1}, $${i + 2}, $${i + 3})`);
+      params.push(seizoen, alias, id, code);
+      i += 4;
+    }
+    await pool.query(
+      `INSERT INTO team_aliases (seizoen, alias, ow_team_id, ow_code) VALUES ${vals.join(", ")}`,
+      params
+    );
+  }
+  return aliases.size;
+}
+
 async function syncTeams(seizoen) {
   const teamsPath = `data/seizoenen/${seizoen}/teams.json`;
   let data;
@@ -98,14 +165,16 @@ async function syncTeams(seizoen) {
 
   for (const t of teams) {
     const teamRes = await pool.query(
-      `INSERT INTO teams (seizoen, ow_code, categorie, kleur, leeftijdsgroep, spelvorm)
-       VALUES ($1, $2, $3, $4, $5, $6)
+      `INSERT INTO teams (seizoen, ow_code, naam, categorie, kleur, leeftijdsgroep, spelvorm)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
        ON CONFLICT (seizoen, ow_code) DO UPDATE SET
+         naam = COALESCE(EXCLUDED.naam, teams.naam),
          kleur = EXCLUDED.kleur, leeftijdsgroep = EXCLUDED.leeftijdsgroep, spelvorm = EXCLUDED.spelvorm
        RETURNING id`,
       [
         seizoen,
         t.ow_code,
+        t.naam || null,
         t.categorie,
         t.kleur || null,
         t.leeftijdsgroep || null,
@@ -137,6 +206,10 @@ async function syncTeams(seizoen) {
     }
     count++;
   }
+
+  // Herbouw team_aliases na sync
+  await buildTeamAliases(seizoen);
+
   return { seizoen, teams: count };
 }
 
@@ -170,5 +243,6 @@ module.exports = {
   syncSeizoenen,
   syncLeden,
   syncTeams,
+  buildTeamAliases,
   syncAlles,
 };

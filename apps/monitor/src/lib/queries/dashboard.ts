@@ -52,6 +52,8 @@ export type DashboardKPIs = {
   seizoen: string;
   totaal_spelers: number;
   totaal_teams: number;
+  teams_8tal: number;
+  teams_4tal: number;
   signalering_kritiek: number;
   signalering_aandacht: number;
   geslacht: { M: number; V: number };
@@ -62,7 +64,7 @@ export type DashboardKPIs = {
 // ---------------------------------------------------------------------------
 
 export async function getDashboardKPIs(seizoen: string): Promise<DashboardKPIs> {
-  const [spelerCount, signaleringen, teamCount, geslachtRows] = await Promise.all([
+  const [spelerCount, signaleringen, teamRows, geslachtRows] = await Promise.all([
     prisma.$queryRaw<{ totaal: number }[]>`
         SELECT COUNT(DISTINCT rel_code)::int AS totaal
         FROM competitie_spelers
@@ -71,13 +73,26 @@ export async function getDashboardKPIs(seizoen: string): Promise<DashboardKPIs> 
       where: { seizoen },
       select: { ernst: true },
     }),
-    prisma.oWTeam.count({ where: { seizoen } }),
+    prisma.$queryRaw<{ spelvorm: string | null; aantal: number }[]>`
+        SELECT spelvorm, COUNT(*)::int AS aantal
+        FROM teams
+        WHERE seizoen = ${seizoen} AND is_selectie = false
+        GROUP BY spelvorm`,
     prisma.$queryRaw<{ geslacht: string; aantal: number }[]>`
         SELECT geslacht, COUNT(DISTINCT rel_code)::int AS aantal
         FROM competitie_spelers
         WHERE seizoen = ${seizoen}
         GROUP BY geslacht`,
   ]);
+
+  let totaalTeams = 0;
+  let teams8tal = 0;
+  let teams4tal = 0;
+  for (const r of teamRows) {
+    totaalTeams += Number(r.aantal);
+    if (r.spelvorm === "8-tal") teams8tal = Number(r.aantal);
+    if (r.spelvorm === "4-tal") teams4tal = Number(r.aantal);
+  }
 
   const geslacht = { M: 0, V: 0 };
   for (const r of geslachtRows) {
@@ -88,7 +103,9 @@ export async function getDashboardKPIs(seizoen: string): Promise<DashboardKPIs> 
   return {
     seizoen,
     totaal_spelers: spelerCount[0]?.totaal ?? 0,
-    totaal_teams: teamCount,
+    totaal_teams: totaalTeams,
+    teams_8tal: teams8tal,
+    teams_4tal: teams4tal,
     signalering_kritiek: signaleringen.filter((s) => s.ernst === "kritiek").length,
     signalering_aandacht: signaleringen.filter((s) => s.ernst === "aandacht").length,
     geslacht,
