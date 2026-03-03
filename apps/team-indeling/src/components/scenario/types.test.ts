@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { korfbalLeeftijd, kleurIndicatie, PEILJAAR } from "./types";
+import { korfbalLeeftijd, kleurIndicatie, PEILJAAR, getDetailLevel } from "./types";
 
 describe("korfbalLeeftijd", () => {
   it("berekent leeftijd op basis van geboortejaar als er geen geboortedatum is", () => {
@@ -107,5 +107,24 @@ describe("kleurIndicatie", () => {
     // Grens ROOD → null (senioren)
     expect(kleurIndicatie(18)).toBe("ROOD");
     expect(kleurIndicatie(19)).toBeNull();
+  });
+});
+
+describe("getDetailLevel", () => {
+  it("returns overzicht below 0.4", () => {
+    expect(getDetailLevel(0.25)).toBe("overzicht");
+    expect(getDetailLevel(0.39)).toBe("overzicht");
+  });
+  it("returns compact between 0.4 and 0.7", () => {
+    expect(getDetailLevel(0.4)).toBe("compact");
+    expect(getDetailLevel(0.69)).toBe("compact");
+  });
+  it("returns detail between 0.7 and 1.0", () => {
+    expect(getDetailLevel(0.7)).toBe("detail");
+    expect(getDetailLevel(0.99)).toBe("detail");
+  });
+  it("returns focus at 1.0 and above", () => {
+    expect(getDetailLevel(1.0)).toBe("focus");
+    expect(getDetailLevel(1.5)).toBe("focus");
   });
 });

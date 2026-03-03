@@ -81,6 +81,7 @@ export interface TeamStafData {
 export interface TeamData {
   id: string;
   naam: string;
+  alias: string | null;
   categorie: TeamCategorie;
   kleur: Kleur | null;
   niveau: string | null;
@@ -154,9 +155,12 @@ export interface EvaluatieScore {
 
 export interface EvaluatieData {
   seizoen: string;
+  ronde: number;
+  type: string;
   scores: EvaluatieScore;
   opmerking: string | null;
   coach: string | null;
+  teamNaam: string | null;
 }
 
 export interface TeamGemiddelde {
@@ -205,6 +209,18 @@ export const KLEUR_BADGE_KLEUREN: Record<string, string> = {
   ROOD: "bg-red-100 text-red-700",
 };
 
+/** Categorie-badge styling (A-categorie en Senioren) */
+export const CATEGORIE_BADGE: Record<string, string> = {
+  A_CATEGORIE: "bg-orange-100 text-orange-700 border border-orange-200",
+  SENIOREN: "bg-gray-100 text-gray-500 border border-gray-200",
+};
+
+/** Categorie-badge labels */
+export const CATEGORIE_BADGE_LABEL: Record<string, string> = {
+  A_CATEGORIE: "A",
+  SENIOREN: "Sen",
+};
+
 /**
  * Sorteer spelers: eerst Heren (M), dan Dames (V).
  * Binnen elke groep op korfballeeftijd aflopend (oudste eerst).
@@ -218,4 +234,14 @@ export function sorteerSpelers(spelers: TeamSpelerData[]): TeamSpelerData[] {
     const leeftijdB = korfbalLeeftijd(b.speler.geboortedatum, b.speler.geboortejaar);
     return leeftijdB - leeftijdA;
   });
+}
+
+// Zoom detail-niveaus (semantic zoom)
+export type DetailLevel = "overzicht" | "compact" | "detail" | "focus";
+
+export function getDetailLevel(zoomScale: number): DetailLevel {
+  if (zoomScale < 0.4) return "overzicht";
+  if (zoomScale < 0.7) return "compact";
+  if (zoomScale < 1.0) return "detail";
+  return "focus";
 }
