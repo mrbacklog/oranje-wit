@@ -1,24 +1,43 @@
 import { getScenario, getAlleSpelers } from "../actions";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import ScenarioEditor from "@/components/scenario/ScenarioEditor";
-import MaakDefinitiefKnop from "@/components/scenario/MaakDefinitiefKnop";
 import type { ScenarioData, SpelerData } from "@/components/scenario/types";
+import MaakDefinitiefKnop from "@/components/scenario/MaakDefinitiefKnop";
+import ScenarioView from "@/components/scenario/view/ScenarioView";
+import ScenarioEditorFullscreen from "@/components/scenario/editor/ScenarioEditorFullscreen";
 
 export const dynamic = "force-dynamic";
 
 interface ScenarioEditorPageProps {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ mode?: string }>;
 }
 
-export default async function ScenarioEditorPage({ params }: ScenarioEditorPageProps) {
+export default async function ScenarioEditorPage({
+  params,
+  searchParams,
+}: ScenarioEditorPageProps) {
   const { id } = await params;
-  const [scenario, alleSpelers] = await Promise.all([getScenario(id), getAlleSpelers()]);
+  const { mode } = await searchParams;
+  const isEditMode = mode === "edit";
 
-  if (!scenario) {
-    notFound();
+  const scenario = await getScenario(id);
+  if (!scenario) notFound();
+
+  // Laad alleSpelers alleen bij edit mode (performance)
+  const alleSpelers = isEditMode ? await getAlleSpelers() : [];
+
+  // --- Fullscreen Editor ---
+  if (isEditMode) {
+    return (
+      <ScenarioEditorFullscreen
+        scenario={scenario as unknown as ScenarioData}
+        alleSpelers={alleSpelers as unknown as SpelerData[]}
+      />
+    );
   }
 
+  // --- View Mode ---
   return (
     <div className="space-y-4">
       {/* Header */}
@@ -38,7 +57,20 @@ export default async function ScenarioEditorPage({ params }: ScenarioEditorPageP
           </div>
           <div className="flex items-center gap-3">
             {scenario.status !== "DEFINITIEF" && scenario.status !== "GEARCHIVEERD" && (
-              <MaakDefinitiefKnop scenarioId={scenario.id} />
+              <>
+                <Link href={`/scenarios/${scenario.id}?mode=edit`} className="btn-primary gap-1.5">
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                    />
+                  </svg>
+                  Bewerken
+                </Link>
+                <MaakDefinitiefKnop scenarioId={scenario.id} />
+              </>
             )}
             <span
               className={`rounded-full px-2 py-0.5 text-xs font-medium ${
@@ -59,11 +91,8 @@ export default async function ScenarioEditorPage({ params }: ScenarioEditorPageP
         </div>
       </div>
 
-      {/* Drieluik */}
-      <ScenarioEditor
-        scenario={scenario as unknown as ScenarioData}
-        alleSpelers={alleSpelers as unknown as SpelerData[]}
-      />
+      {/* Read-only scenario view */}
+      <ScenarioView scenario={scenario as unknown as ScenarioData} />
     </div>
   );
 }

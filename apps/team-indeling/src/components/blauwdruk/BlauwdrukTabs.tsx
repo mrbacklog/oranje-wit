@@ -6,6 +6,15 @@ import type { CategorieKaders } from "@/app/blauwdruk/categorie-kaders";
 import CategoriePanel from "./CategoriePanel";
 import LedenDashboard from "./LedenDashboard";
 import ToelichtingEditor from "./ToelichtingEditor";
+import BlockerChecklist from "@/components/notities/BlockerChecklist";
+
+type BlockerNotitie = {
+  id: string;
+  titel: string;
+  categorie: string;
+  auteur: { naam: string };
+  createdAt: Date;
+};
 
 interface BlauwdrukTabsProps {
   statistieken: LedenStatistieken;
@@ -13,6 +22,7 @@ interface BlauwdrukTabsProps {
   blauwdrukId: string;
   spelers: SpelerUitgebreid[];
   toelichting: string;
+  blockers?: BlockerNotitie[];
 }
 
 const TABS = [
@@ -29,11 +39,19 @@ export default function BlauwdrukTabs({
   blauwdrukId,
   spelers,
   toelichting,
+  blockers,
 }: BlauwdrukTabsProps) {
   const [activeTab, setActiveTab] = useState<TabId>("categorieen");
 
   return (
     <div>
+      {/* Blocker-banner */}
+      {blockers && blockers.length > 0 && (
+        <div className="mb-4">
+          <BlockerChecklist blockers={blockers} />
+        </div>
+      )}
+
       {/* Tab-balk */}
       <div className="mb-6 flex gap-1 border-b border-gray-200">
         {TABS.map((tab) => (

@@ -28,6 +28,27 @@ const VALIDATIE_KLEUREN: Record<string, string> = {
   ONBEKEND: "bg-gray-100 text-gray-500",
 };
 
+/** Categorie-specifieke kaart styling */
+const CATEGORIE_KAART_BORDER: Record<string, string> = {
+  A_CATEGORIE: "border-2 border-dashed border-orange-300 bg-orange-50/20",
+  SENIOREN: "border border-gray-300 bg-gray-50/30",
+};
+
+const KLEUR_KAART_BORDER: Record<string, string> = {
+  BLAUW: "border-2 border-blue-400 bg-blue-50/30",
+  GROEN: "border-2 border-emerald-400 bg-emerald-50/30",
+  GEEL: "border-2 border-yellow-400 bg-yellow-50/30",
+  ORANJE: "border-2 border-orange-400 bg-orange-50/30",
+  ROOD: "border-2 border-red-400 bg-red-50/30",
+};
+
+function teamKaartKlassen(categorie: string, kleur: string | null): string {
+  if (categorie === "B_CATEGORIE" && kleur) {
+    return KLEUR_KAART_BORDER[kleur] ?? "border border-gray-200 bg-white";
+  }
+  return CATEGORIE_KAART_BORDER[categorie] ?? "border border-gray-200 bg-white";
+}
+
 export default async function DefinitiefPage() {
   const seizoen = await getActiefSeizoen();
 
@@ -152,15 +173,27 @@ export default async function DefinitiefPage() {
             {catTeams.map((team) => (
               <div
                 key={team.id}
-                className="overflow-hidden rounded-lg border border-gray-200 bg-white print:break-inside-avoid"
+                className={`overflow-hidden rounded-lg print:break-inside-avoid ${teamKaartKlassen(categorie, team.kleur)}`}
               >
                 {/* Team header */}
                 <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3">
                   <div className="flex items-center gap-2">
-                    <h4 className="text-sm font-semibold text-gray-900">{team.naam}</h4>
+                    <h4 className="text-sm font-semibold text-gray-900">
+                      {team.alias ?? team.naam}
+                    </h4>
                     {team.kleur && (
                       <span className="rounded bg-gray-100 px-1.5 py-0.5 text-xs text-gray-600">
                         {KLEUR_LABELS[team.kleur] ?? team.kleur}
+                      </span>
+                    )}
+                    {categorie === "A_CATEGORIE" && (
+                      <span className="rounded-full border border-orange-200 bg-orange-100 px-1.5 py-0.5 text-[10px] font-medium text-orange-700">
+                        A
+                      </span>
+                    )}
+                    {categorie === "SENIOREN" && (
+                      <span className="rounded-full border border-gray-200 bg-gray-100 px-1.5 py-0.5 text-[10px] text-gray-500">
+                        Sen
                       </span>
                     )}
                   </div>

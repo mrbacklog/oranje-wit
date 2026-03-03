@@ -6,24 +6,29 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   const { searchParams } = new URL(request.url);
   const teamId = searchParams.get("teamId");
 
-  // Haal evaluaties op voor deze speler (laatste 3, nieuwste eerst)
+  // Haal alle trainer-evaluaties op (nieuwste seizoen + hoogste ronde eerst)
   const evaluaties = await prisma.evaluatie.findMany({
-    where: { spelerId: id },
-    orderBy: { seizoen: "desc" },
-    take: 3,
+    where: { spelerId: id, type: "trainer" },
+    orderBy: [{ seizoen: "desc" }, { ronde: "desc" }],
     select: {
       seizoen: true,
+      ronde: true,
+      type: true,
       scores: true,
       opmerking: true,
       coach: true,
+      teamNaam: true,
     },
   });
 
   const result = evaluaties.map((e) => ({
     seizoen: e.seizoen,
+    ronde: e.ronde,
+    type: e.type,
     scores: (e.scores ?? {}) as EvaluatieScore,
     opmerking: e.opmerking,
     coach: e.coach,
+    teamNaam: e.teamNaam,
   }));
 
   // Team-vergelijking: bereken gemiddelden van teamgenoten
@@ -38,10 +43,10 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     const spelerIds = teamSpelers.map((ts) => ts.spelerId);
 
     if (spelerIds.length > 0) {
-      // Haal meest recente evaluatie per teamgenoot
+      // Haal meest recente trainer-evaluatie per teamgenoot
       const teamEvaluaties = await prisma.evaluatie.findMany({
-        where: { spelerId: { in: spelerIds } },
-        orderBy: { seizoen: "desc" },
+        where: { spelerId: { in: spelerIds }, type: "trainer" },
+        orderBy: [{ seizoen: "desc" }, { ronde: "desc" }],
         distinct: ["spelerId"],
         select: { scores: true },
       });

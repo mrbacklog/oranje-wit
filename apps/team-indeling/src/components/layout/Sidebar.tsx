@@ -15,6 +15,7 @@ const navigatie = [
   { label: "Overzicht", href: "/" },
   { label: "Blauwdruk", href: "/blauwdruk" },
   { label: "Scenario's", href: "/scenarios" },
+  { label: "Notities", href: "/notities" },
   { label: "Definitief", href: "/definitief" },
   { label: "Import", href: "/import" },
 ];

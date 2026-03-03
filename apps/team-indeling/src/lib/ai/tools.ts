@@ -144,13 +144,15 @@ export async function handleTool(
 
     case "bekijk_evaluaties": {
       const ids = input.speler_ids as string[];
+      const seizoen = input.seizoen as string | undefined;
+      const ronde = input.ronde as number | undefined;
       const spelerIds: string[] = [];
       for (const id of ids) {
         const s = await zoekSpeler(id);
         if (s) spelerIds.push(s.id);
       }
       if (spelerIds.length === 0) return { result: "Geen van de genoemde spelers gevonden." };
-      const evals = await getEvaluaties(spelerIds);
+      const evals = await getEvaluaties(spelerIds, seizoen, ronde);
       if (evals.length === 0) return { result: "Geen evaluaties beschikbaar voor deze spelers." };
       return { result: JSON.stringify(evals, null, 2) };
     }

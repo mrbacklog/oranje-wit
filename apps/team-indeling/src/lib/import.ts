@@ -110,6 +110,8 @@ interface ExportStaf {
 
 interface ExportTeamHuidig {
   team: string;
+  werknaam?: string;
+  ow_code?: string;
   categorie: string;
   kleur: string | null;
   niveau: string | null;
@@ -289,7 +291,7 @@ export async function importData(data: ExportData): Promise<ImportResult> {
     await prisma.referentieTeam.createMany({
       data: data.teams_huidig.map((team) => ({
         seizoen: meta.seizoen_huidig,
-        naam: team.team,
+        naam: team.werknaam || team.ow_code || team.team,
         categorie: team.categorie,
         kleur: team.kleur,
         niveau: team.niveau,

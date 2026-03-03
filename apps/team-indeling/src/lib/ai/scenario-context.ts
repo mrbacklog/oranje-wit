@@ -112,7 +112,7 @@ export async function getSpelerDetails(spelerId: string) {
   const speler = await prisma.speler.findUnique({
     where: { id: spelerId },
     include: {
-      evaluaties: { orderBy: { seizoen: "desc" }, take: 3 },
+      evaluaties: { where: { type: "trainer" }, orderBy: [{ seizoen: "desc" }, { ronde: "desc" }] },
     },
   });
   if (!speler) return null;
@@ -152,6 +152,9 @@ export async function getSpelerDetails(spelerId: string) {
     volgendSeizoen,
     evaluaties: speler.evaluaties.map((e) => ({
       seizoen: e.seizoen,
+      ronde: e.ronde,
+      type: e.type,
+      teamNaam: e.teamNaam,
       scores: e.scores,
       opmerking: e.opmerking,
       coach: e.coach,
@@ -253,17 +256,27 @@ export async function getTeamsterktes(seizoen: string) {
 // Evaluaties
 // ---------------------------------------------------------------------------
 
-export async function getEvaluaties(spelerIds: string[]) {
+export async function getEvaluaties(spelerIds: string[], seizoen?: string, ronde?: number) {
+  const where: Record<string, unknown> = {
+    spelerId: { in: spelerIds },
+    type: "trainer",
+  };
+  if (seizoen) where.seizoen = seizoen;
+  if (ronde) where.ronde = ronde;
+
   const evaluaties = await prisma.evaluatie.findMany({
-    where: { spelerId: { in: spelerIds } },
+    where,
     include: { speler: { select: { roepnaam: true, achternaam: true } } },
-    orderBy: [{ seizoen: "desc" }],
+    orderBy: [{ seizoen: "desc" }, { ronde: "desc" }],
   });
 
   return evaluaties.map((e) => ({
     spelerId: e.spelerId,
     spelerNaam: `${e.speler.roepnaam} ${e.speler.achternaam}`,
     seizoen: e.seizoen,
+    ronde: e.ronde,
+    type: e.type,
+    teamNaam: e.teamNaam,
     scores: e.scores,
     opmerking: e.opmerking,
     coach: e.coach,

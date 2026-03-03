@@ -80,7 +80,7 @@ const bekijkTeamsterktes: Anthropic.Tool = {
 const bekijkEvaluaties: Anthropic.Tool = {
   name: "bekijk_evaluaties",
   description:
-    "Toon spelerevaluaties (scores en coach-opmerkingen). Kan voor specifieke spelers of voor alle spelers in een team.",
+    "Toon trainer-evaluaties (scores en coach-opmerkingen). Kan voor specifieke spelers, met optioneel filter op seizoen en/of ronde.",
   input_schema: {
     type: "object" as const,
     properties: {
@@ -88,6 +88,14 @@ const bekijkEvaluaties: Anthropic.Tool = {
         type: "array",
         items: { type: "string" },
         description: "Speler IDs (rel_codes) om evaluaties voor op te halen",
+      },
+      seizoen: {
+        type: "string",
+        description: "Filter op seizoen, bijv. '2025-2026'. Leeg = alle seizoenen.",
+      },
+      ronde: {
+        type: "integer",
+        description: "Filter op ronde (1, 2, 3, ...). Leeg = alle rondes.",
       },
     },
     required: ["speler_ids"],

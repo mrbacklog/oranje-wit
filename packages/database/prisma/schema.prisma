@@ -85,10 +85,14 @@ model OWTeam {
   kleur          String?
   leeftijdsgroep String?
   spelvorm       String?
+  isSelectie     Boolean  @default(false) @map("is_selectie")
+  selectieOwCode String?  @map("selectie_ow_code")
+  sortOrder      Int?     @map("sort_order")
 
   // Relaties
   seizoenRef Seizoen       @relation(fields: [seizoen], references: [seizoen])
   periodes   TeamPeriode[]
+  aliases    TeamAlias[]
 
   @@unique([seizoen, owCode])
   @@index([seizoen], map: "idx_teams_seizoen")
@@ -112,6 +116,22 @@ model TeamPeriode {
   @@unique([teamId, periode])
   @@index([teamId], map: "idx_team_periodes_team")
   @@map("team_periodes")
+}
+
+// KNKV-naam aliases die naar een OWTeam verwijzen
+// Gevuld bij team-sync; vervangt de runtime team_mapping CTE
+model TeamAlias {
+  id       Int    @id @default(autoincrement())
+  seizoen  String
+  alias    String // "J1", "OW J1", "S1", "S1/S2", "Kangoeroes", etc.
+  owTeamId Int    @map("ow_team_id")
+  owCode   String @map("ow_code") // gedenormaliseerd: stabiel per seizoen
+
+  owTeam OWTeam @relation(fields: [owTeamId], references: [id], onDelete: Cascade)
+
+  @@unique([seizoen, alias])
+  @@index([seizoen, alias])
+  @@map("team_aliases")
 }
 
 // Competitierondes per seizoen (welke periodes zijn gespeeld)
@@ -298,6 +318,9 @@ model User {
   // Relaties
   pins     Pin[]
   logItems LogEntry[]
+  notities              Notitie[]   @relation("NotitieAuteur")
+  actiepuntenGemaakt    Actiepunt[] @relation("ActiepuntAuteur")
+  actiepuntenToegewezen Actiepunt[] @relation("ActiepuntToewijzing")
 }
 
 enum Rol {
@@ -332,6 +355,7 @@ model Speler {
   teamplaatsingen TeamSpeler[]
   evaluaties      Evaluatie[]
   pins            Pin[]
+  notities        Notitie[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -359,6 +383,7 @@ model Staf {
   teamStaf     TeamStaf[]
   pins         Pin[]
   toewijzingen StafToewijzing[]
+  notities     Notitie[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -397,8 +422,10 @@ model Blauwdruk {
   keuzes         Json?    // Array van { id, vraag, opties: string[] }  @map("twijfelpunten")
 
   // Relaties
-  concepten Concept[]
-  pins      Pin[]
+  concepten   Concept[]
+  pins        Pin[]
+  notities    Notitie[]
+  actiepunten Actiepunt[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -489,7 +516,8 @@ model Scenario {
   children Scenario[] @relation("ScenarioFork")
 
   // Relaties
-  versies Versie[]
+  versies  Versie[]
+  notities Notitie[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -536,6 +564,7 @@ model Team {
   versieId String
 
   naam      String
+  alias     String?
   categorie TeamCategorie
   kleur     Kleur?
   niveau    String?
@@ -630,15 +659,21 @@ model Evaluatie {
   speler   Speler @relation(fields: [spelerId], references: [id])
   spelerId String
   seizoen  String
+  ronde    Int    @default(1)
+  type     String @default("trainer")
 
   scores    Json
   opmerking String? @db.Text
   coach     String?
+  teamNaam  String? @map("team_naam")
 
   createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
-  @@unique([spelerId, seizoen])
+  @@unique([spelerId, seizoen, ronde, type])
   @@index([seizoen])
+  @@index([seizoen, ronde])
+  @@index([type])
 }
 
 // ============================================================
@@ -702,4 +737,106 @@ model ReferentieTeam {
   createdAt DateTime @default(now())
 
   @@index([seizoen])
+}
+
+// ============================================================
+// NOTITIES & ACTIEPUNTEN
+// ============================================================
+
+enum NotitieCategorie {
+  STRATEGISCH
+  DATA
+  REGEL
+  TRAINER
+  SPELER
+}
+
+enum NotitiePrioriteit {
+  BLOCKER
+  HOOG
+  MIDDEL
+  LAAG
+  INFO
+}
+
+enum NotitieStatus {
+  OPEN
+  IN_BESPREKING
+  OPGELOST
+  GEACCEPTEERD_RISICO
+  GEARCHIVEERD
+}
+
+enum ActiepuntStatus {
+  OPEN
+  BEZIG
+  AFGEROND
+}
+
+model Notitie {
+  id           String   @id @default(cuid())
+  blauwdruk    Blauwdruk @relation(fields: [blauwdrukId], references: [id], onDelete: Cascade)
+  blauwdrukId  String
+
+  titel        String
+  beschrijving String   @db.Text
+  categorie    NotitieCategorie
+  prioriteit   NotitiePrioriteit @default(MIDDEL)
+  status       NotitieStatus     @default(OPEN)
+
+  // Optioneel scenario-niveau (null = blauwdruk-breed)
+  scenario     Scenario? @relation(fields: [scenarioId], references: [id], onDelete: Cascade)
+  scenarioId   String?
+
+  // Optionele koppelingen
+  speler       Speler?  @relation(fields: [spelerId], references: [id])
+  spelerId     String?
+  staf         Staf?    @relation(fields: [stafId], references: [id])
+  stafId       String?
+  teamOwCode   String?  // Stabiele team-referentie (niet versie-specifiek)
+
+  // Oplossing
+  resolutie    String?  @db.Text
+  opgelostOp   DateTime?
+
+  // Audit
+  auteur       User     @relation("NotitieAuteur", fields: [auteurId], references: [id])
+  auteurId     String
+
+  actiepunten  Actiepunt[]
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([blauwdrukId])
+  @@index([status])
+  @@index([prioriteit])
+}
+
+model Actiepunt {
+  id              String   @id @default(cuid())
+  beschrijving    String   @db.Text
+  status          ActiepuntStatus @default(OPEN)
+  deadline        DateTime? @db.Date
+
+  notitie         Notitie? @relation(fields: [notitieId], references: [id], onDelete: Cascade)
+  notitieId       String?
+
+  blauwdruk       Blauwdruk @relation(fields: [blauwdrukId], references: [id], onDelete: Cascade)
+  blauwdrukId     String
+
+  toegewezenAan   User     @relation("ActiepuntToewijzing", fields: [toegewezenAanId], references: [id])
+  toegewezenAanId String
+
+  auteur          User     @relation("ActiepuntAuteur", fields: [auteurId], references: [id])
+  auteurId        String
+
+  afgerondOp      DateTime?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([blauwdrukId])
+  @@index([toegewezenAanId])
+  @@index([status])
 }

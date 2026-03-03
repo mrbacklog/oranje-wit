@@ -12,11 +12,13 @@ import {
   removeSpelerFromTeam,
   moveSpeler,
   createTeam,
+} from "@/app/scenarios/actions";
+import {
   deleteTeam,
   updateTeam,
   koppelSelectie,
   ontkoppelSelectieMetVerdeling,
-} from "@/app/scenarios/actions";
+} from "@/app/scenarios/team-actions";
 import { updateTeamVolgorde } from "@/app/scenarios/team-volgorde-actions";
 
 interface VerdeelData {

@@ -2,6 +2,7 @@ import { getBlauwdruk, getSpelersUitgebreid, getLedenStatistieken } from "./acti
 import type { CategorieKaders } from "./categorie-kaders";
 import BlauwdrukTabs from "@/components/blauwdruk/BlauwdrukTabs";
 import { getActiefSeizoen } from "@/lib/seizoen";
+import { getNotities } from "@/app/notities/actions";
 
 export const dynamic = "force-dynamic";
 
@@ -13,6 +14,11 @@ export default async function BlauwdrukPage() {
     getSpelersUitgebreid(),
     getLedenStatistieken(),
   ]);
+
+  const blockers = await getNotities(blauwdruk.id, {
+    prioriteit: ["BLOCKER"],
+    status: ["OPEN", "IN_BESPREKING"],
+  });
 
   const kaders = (blauwdruk.kaders ?? {}) as CategorieKaders;
 
@@ -31,6 +37,7 @@ export default async function BlauwdrukPage() {
         blauwdrukId={blauwdruk.id}
         spelers={spelers}
         toelichting={blauwdruk.toelichting ?? ""}
+        blockers={blockers}
       />
     </div>
   );

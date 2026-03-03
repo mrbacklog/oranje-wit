@@ -20,10 +20,35 @@ import SpelerAvatar from "@/components/ui/SpelerAvatar";
 import EvaluatieScores from "./EvaluatieScores";
 import Spinner from "@/components/ui/Spinner";
 
+type SpelerNotitie = {
+  id: string;
+  titel: string;
+  prioriteit: string;
+  status: string;
+};
+
 interface SpelerDetailProps {
   speler: SpelerData;
   teamId?: string;
+  notities?: SpelerNotitie[];
   onClose: () => void;
+  onNieuweNotitie?: (spelerId: string) => void;
+}
+
+/** Groepeer evaluaties per seizoen, rondes in oplopende volgorde */
+function groepeerPerSeizoen(evaluaties: EvaluatieData[]): [string, EvaluatieData[]][] {
+  const map = new Map<string, EvaluatieData[]>();
+  for (const ev of evaluaties) {
+    const list = map.get(ev.seizoen) ?? [];
+    list.push(ev);
+    map.set(ev.seizoen, list);
+  }
+  // Sorteer rondes oplopend binnen elk seizoen
+  for (const [, rondes] of map) {
+    rondes.sort((a, b) => a.ronde - b.ronde);
+  }
+  // Seizoenen aflopend (nieuwste eerst — input is al zo gesorteerd)
+  return Array.from(map.entries());
 }
 
 const STATUS_LABELS: Record<string, string> = {
@@ -34,7 +59,13 @@ const STATUS_LABELS: Record<string, string> = {
   NIEUW_DEFINITIEF: "Nieuw (definitief)",
 };
 
-export default function SpelerDetail({ speler, teamId, onClose }: SpelerDetailProps) {
+export default function SpelerDetail({
+  speler,
+  teamId,
+  notities,
+  onClose,
+  onNieuweNotitie,
+}: SpelerDetailProps) {
   const leeftijd = korfbalLeeftijd(speler.geboortedatum, speler.geboortejaar);
   const kleur = kleurIndicatie(leeftijd);
   const huidig = speler.huidig as HuidigData | null;
@@ -201,10 +232,10 @@ export default function SpelerDetail({ speler, teamId, onClose }: SpelerDetailPr
             </div>
           )}
 
-          {/* Evaluaties */}
+          {/* Trainer-evaluaties */}
           <div>
             <div className="mb-2 flex items-center justify-between">
-              <span className="text-xs text-gray-500">Evaluaties</span>
+              <span className="text-xs text-gray-500">Trainer-evaluaties</span>
               {teamGem && (
                 <label className="flex cursor-pointer items-center gap-1.5">
                   <span className="text-[10px] text-gray-400">Vergelijk met team</span>
@@ -230,28 +261,49 @@ export default function SpelerDetail({ speler, teamId, onClose }: SpelerDetailPr
                 <span className="text-xs text-gray-400">Evaluaties laden...</span>
               </div>
             ) : evaluaties && evaluaties.length > 0 ? (
-              <div className="space-y-3">
-                {evaluaties.map((ev) => (
-                  <div key={ev.seizoen} className="rounded-lg border border-gray-100 p-3">
-                    <div className="mb-2 flex items-center justify-between">
-                      <span className="text-xs font-medium text-gray-700">{ev.seizoen}</span>
-                      {ev.coach && (
-                        <span className="text-[10px] text-gray-400">Coach: {ev.coach}</span>
-                      )}
+              <div className="space-y-4">
+                {groepeerPerSeizoen(evaluaties).map(([seizoen, rondes]) => (
+                  <div key={seizoen}>
+                    <span className="mb-1.5 block text-xs font-medium text-gray-700">
+                      {seizoen}
+                    </span>
+                    <div className="space-y-2">
+                      {rondes.map((ev) => (
+                        <div
+                          key={`${ev.seizoen}-${ev.ronde}`}
+                          className="rounded-lg border border-gray-100 p-3"
+                        >
+                          <div className="mb-2 flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <span className="text-[10px] font-medium text-gray-500">
+                                Ronde {ev.ronde}
+                              </span>
+                              {ev.teamNaam && (
+                                <span className="rounded bg-orange-50 px-1.5 py-0.5 text-[10px] text-orange-600">
+                                  {ev.teamNaam}
+                                </span>
+                              )}
+                            </div>
+                            {ev.coach && (
+                              <span className="text-[10px] text-gray-400">{ev.coach}</span>
+                            )}
+                          </div>
+                          <EvaluatieScores
+                            scores={ev.scores}
+                            teamGem={teamGem}
+                            toonTeamVergelijking={toonVergelijking}
+                          />
+                          {ev.scores.speler_opmerkingen && (
+                            <p className="mt-2 rounded bg-gray-50 px-2 py-1 text-[11px] text-gray-600">
+                              {ev.scores.speler_opmerkingen}
+                            </p>
+                          )}
+                          {ev.opmerking && (
+                            <p className="mt-1 text-[11px] text-gray-500 italic">{ev.opmerking}</p>
+                          )}
+                        </div>
+                      ))}
                     </div>
-                    <EvaluatieScores
-                      scores={ev.scores}
-                      teamGem={teamGem}
-                      toonTeamVergelijking={toonVergelijking}
-                    />
-                    {ev.scores.speler_opmerkingen && (
-                      <p className="mt-2 rounded bg-gray-50 px-2 py-1 text-[11px] text-gray-600">
-                        {ev.scores.speler_opmerkingen}
-                      </p>
-                    )}
-                    {ev.opmerking && (
-                      <p className="mt-1 text-[11px] text-gray-500 italic">{ev.opmerking}</p>
-                    )}
                   </div>
                 ))}
                 {toonVergelijking && teamGem && (
@@ -264,6 +316,47 @@ export default function SpelerDetail({ speler, teamId, onClose }: SpelerDetailPr
               <p className="py-1 text-xs text-gray-400">Geen evaluaties beschikbaar.</p>
             )}
           </div>
+
+          {/* Gestructureerde notities */}
+          {notities && notities.length > 0 && (
+            <div>
+              <span className="mb-1 block text-xs text-gray-500">Notities ({notities.length})</span>
+              <div className="space-y-1">
+                {notities.map((n) => (
+                  <div
+                    key={n.id}
+                    className="flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-1.5 text-sm"
+                  >
+                    <span
+                      className={`h-2 w-2 shrink-0 rounded-full ${
+                        n.prioriteit === "BLOCKER"
+                          ? "bg-red-400"
+                          : n.prioriteit === "HOOG"
+                            ? "bg-orange-400"
+                            : "bg-gray-300"
+                      }`}
+                    />
+                    <span className="flex-1 text-gray-700">{n.titel}</span>
+                    <span className="text-[10px] text-gray-400">
+                      {n.status === "OPEN"
+                        ? "Open"
+                        : n.status === "IN_BESPREKING"
+                          ? "In bespreking"
+                          : "Afgerond"}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          {onNieuweNotitie && (
+            <button
+              className="btn-ghost btn-sm text-orange-600"
+              onClick={() => onNieuweNotitie(speler.id)}
+            >
+              + Notitie toevoegen
+            </button>
+          )}
 
           {/* Notitie */}
           {speler.notitie && (

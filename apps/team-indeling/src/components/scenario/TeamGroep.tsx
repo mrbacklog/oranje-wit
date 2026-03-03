@@ -54,7 +54,7 @@ export default function TeamGroep({
                 className="h-3.5 w-3.5 rounded border-gray-300 text-orange-500 focus:ring-orange-400"
               />
               <span className="truncate text-sm text-gray-700 group-hover:text-gray-900">
-                {team.naam}
+                {team.alias ?? team.naam}
               </span>
               {team.kleur && (
                 <span className="text-[10px] text-gray-400">{KLEUR_LABELS[team.kleur]}</span>
