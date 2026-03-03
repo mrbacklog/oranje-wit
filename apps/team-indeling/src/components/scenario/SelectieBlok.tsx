@@ -6,7 +6,7 @@ import type { TeamValidatie } from "@/lib/validatie/regels";
 import { korfbalLeeftijd, sorteerSpelers } from "./types";
 import TeamSpelerRij from "./TeamSpelerRij";
 
-interface SelectieBlokProps {
+export interface SelectieBlokProps {
   teams: TeamData[];
   validatieMap?: Map<string, TeamValidatie>;
   detailLevel?: DetailLevel;

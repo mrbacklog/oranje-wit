@@ -4,8 +4,10 @@ import { useState, useMemo, useCallback } from "react";
 import type { TeamData, SpelerData } from "./types";
 import type { TeamCategorie, Kleur } from "@oranje-wit/database";
 import type { TeamValidatie, ValidatieMelding } from "@/lib/validatie/regels";
-import TeamKaart from "./TeamKaart";
-import SelectieBlok from "./SelectieBlok";
+import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
+import ZoomCanvas from "./editor/ZoomCanvas";
+import SortableTeamKaart from "./editor/SortableTeamKaart";
+import SortableSelectieBlok from "./editor/SortableSelectieBlok";
 import NieuwTeamDialoog from "./NieuwTeamDialoog";
 import ValidatieRapport from "./ValidatieRapport";
 import VoorstelDialoog from "./VoorstelDialoog";
@@ -22,6 +24,8 @@ interface WerkgebiedProps {
   onOntkoppelSelectie: (groepLeiderId: string) => void;
   onWhatIfOpen?: () => void;
   onSpelerClick?: (speler: SpelerData, teamId?: string) => void;
+  onEditTeam?: (teamId: string) => void;
+  onReorderTeams?: (vanIndex: number, naarIndex: number) => void;
 }
 
 export default function Werkgebied({
@@ -36,6 +40,8 @@ export default function Werkgebied({
   onOntkoppelSelectie,
   onWhatIfOpen,
   onSpelerClick,
+  onEditTeam,
+  onReorderTeams,
 }: WerkgebiedProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [rapportOpen, setRapportOpen] = useState(false);
@@ -70,6 +76,14 @@ export default function Werkgebied({
 
     return { selectieGroepen: groepen, losseTeams: los };
   }, [zichtbareTeams]);
+
+  // IDs voor SortableContext — selectie-groepen + losse teams
+  const sortableIds = useMemo(() => {
+    const ids: string[] = [];
+    for (const [leiderId] of selectieGroepen) ids.push(`selectie-${leiderId}`);
+    for (const t of losseTeams) ids.push(t.id);
+    return ids;
+  }, [selectieGroepen, losseTeams]);
 
   const toggleSelectie = useCallback((teamId: string) => {
     setGeselecteerd((prev) => {
@@ -150,49 +164,59 @@ export default function Werkgebied({
         </div>
       </div>
 
-      {/* Grid */}
-      <div className="flex-1 overflow-auto p-4">
-        {zichtbareTeams.length === 0 ? (
-          <div className="flex h-full items-center justify-center">
-            <p className="text-sm text-gray-400">
-              Selecteer teams in de navigator om ze hier te tonen.
-            </p>
-          </div>
-        ) : (
-          <div className="grid auto-rows-min grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-            {/* Selectie-groepen */}
-            {Array.from(selectieGroepen.entries()).map(([leiderId, groepTeams]) => (
-              <SelectieBlok
-                key={`selectie-${leiderId}`}
-                teams={groepTeams}
-                validatieMap={validatieMap}
-                onOntkoppel={onOntkoppelSelectie}
-                onDelete={onDeleteTeam}
-                onSpelerClick={onSpelerClick}
-              />
-            ))}
-            {/* Losse teams */}
-            {losseTeams.map((team) => (
-              <div
-                key={team.id}
-                onClick={() => toggleSelectie(team.id)}
-                className={`cursor-pointer rounded-lg transition-all ${
-                  geselecteerd.has(team.id) ? "ring-2 ring-orange-400 ring-offset-1" : ""
-                }`}
-              >
-                <TeamKaart
-                  team={team}
-                  validatie={validatieMap?.get(team.id)}
-                  onDelete={onDeleteTeam}
-                  onSpelerClick={
-                    onSpelerClick ? (speler) => onSpelerClick(speler, team.id) : undefined
-                  }
-                />
+      {/* Zoomable grid */}
+      <ZoomCanvas>
+        {(detailLevel) =>
+          zichtbareTeams.length === 0 ? (
+            <div className="flex h-[400px] items-center justify-center">
+              <p className="text-sm text-gray-400">
+                Selecteer teams in de navigator om ze hier te tonen.
+              </p>
+            </div>
+          ) : (
+            <SortableContext items={sortableIds} strategy={rectSortingStrategy}>
+              <div className="grid auto-rows-min grid-cols-1 gap-4 p-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+                {/* Selectie-groepen */}
+                {Array.from(selectieGroepen.entries()).map(([leiderId, groepTeams]) => (
+                  <SortableSelectieBlok
+                    key={`selectie-${leiderId}`}
+                    sortId={`selectie-${leiderId}`}
+                    teams={groepTeams}
+                    validatieMap={validatieMap}
+                    detailLevel={detailLevel}
+                    onOntkoppel={onOntkoppelSelectie}
+                    onDelete={onDeleteTeam}
+                    onSpelerClick={onSpelerClick}
+                    onEditTeam={onEditTeam}
+                  />
+                ))}
+                {/* Losse teams */}
+                {losseTeams.map((team) => (
+                  <div
+                    key={team.id}
+                    onClick={() => toggleSelectie(team.id)}
+                    className={`cursor-pointer rounded-lg transition-all ${
+                      geselecteerd.has(team.id) ? "ring-2 ring-orange-400 ring-offset-1" : ""
+                    }`}
+                  >
+                    <SortableTeamKaart
+                      sortId={team.id}
+                      team={team}
+                      validatie={validatieMap?.get(team.id)}
+                      detailLevel={detailLevel}
+                      onDelete={onDeleteTeam}
+                      onSpelerClick={
+                        onSpelerClick ? (speler) => onSpelerClick(speler, team.id) : undefined
+                      }
+                      onEditTeam={onEditTeam}
+                    />
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        )}
-      </div>
+            </SortableContext>
+          )
+        }
+      </ZoomCanvas>
 
       <NieuwTeamDialoog
         open={dialogOpen}

@@ -6,20 +6,24 @@ import {
   closestCenter,
   type DragStartEvent,
   type DragEndEvent,
+  type Modifier,
   PointerSensor,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import { useState, type ReactNode } from "react";
+import { useState, useMemo, type ReactNode } from "react";
 import type { SpelerData } from "./types";
 import { STATUS_KLEUREN, kleurIndicatie, KLEUR_DOT, korfbalLeeftijd } from "./types";
+import { useZoomScale } from "./editor/ZoomScaleContext";
 
 interface DndProviderProps {
   children: ReactNode;
   spelers: SpelerData[];
+  sortableIds?: string[];
   onPoolToTeam: (spelerId: string, teamId: string) => void;
   onTeamToTeam: (spelerId: string, vanTeamId: string, naarTeamId: string) => void;
   onTeamToPool: (spelerId: string, teamId: string) => void;
+  onReorderTeams?: (vanIndex: number, naarIndex: number) => void;
 }
 
 interface DragData {
@@ -31,11 +35,14 @@ interface DragData {
 export default function DndProvider({
   children,
   spelers,
+  sortableIds,
   onPoolToTeam,
   onTeamToTeam,
   onTeamToPool,
+  onReorderTeams,
 }: DndProviderProps) {
   const [activeSpeler, setActiveSpeler] = useState<SpelerData | null>(null);
+  const zoomScale = useZoomScale();
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -43,6 +50,17 @@ export default function DndProvider({
         distance: 5,
       },
     })
+  );
+
+  // Compenseer voor CSS scale transform zodat drag-overlay de cursor volgt
+  const adjustScaleModifier: Modifier = useMemo(
+    () =>
+      ({ transform: t }) => ({
+        ...t,
+        x: t.x / zoomScale,
+        y: t.y / zoomScale,
+      }),
+    [zoomScale]
   );
 
   function handleDragStart(event: DragStartEvent) {
@@ -56,32 +74,53 @@ export default function DndProvider({
     setActiveSpeler(null);
 
     const { active, over } = event;
-    if (!over) return;
+    if (!over || active.id === over.id) return;
 
-    const activeData = active.data.current as DragData | undefined;
+    const activeData = active.data.current as
+      | DragData
+      | { type: "team-kaart" | "selectie-blok" }
+      | undefined;
+    if (!activeData) return;
+
+    // Team-kaart herordening (sortable)
+    if (
+      (activeData.type === "team-kaart" || activeData.type === "selectie-blok") &&
+      sortableIds &&
+      onReorderTeams
+    ) {
+      const oldIndex = sortableIds.indexOf(String(active.id));
+      const newIndex = sortableIds.indexOf(String(over.id));
+      if (oldIndex !== -1 && newIndex !== -1) {
+        onReorderTeams(oldIndex, newIndex);
+      }
+      return;
+    }
+
     const overData = over.data.current as
       | { type: "team"; teamId: string }
       | { type: "pool" }
       | undefined;
 
-    if (!activeData || !overData) return;
+    if (!overData) return;
 
     // Pool -> Team
     if (activeData.type === "pool-speler" && overData.type === "team") {
-      onPoolToTeam(activeData.spelerId, overData.teamId);
+      onPoolToTeam((activeData as DragData).spelerId, overData.teamId);
     }
 
     // Team -> Team
     if (activeData.type === "team-speler" && overData.type === "team") {
-      if (activeData.teamId && activeData.teamId !== overData.teamId) {
-        onTeamToTeam(activeData.spelerId, activeData.teamId, overData.teamId);
+      const ad = activeData as DragData;
+      if (ad.teamId && ad.teamId !== overData.teamId) {
+        onTeamToTeam(ad.spelerId, ad.teamId, overData.teamId);
       }
     }
 
     // Team -> Pool
     if (activeData.type === "team-speler" && overData.type === "pool") {
-      if (activeData.teamId) {
-        onTeamToPool(activeData.spelerId, activeData.teamId);
+      const ad = activeData as DragData;
+      if (ad.teamId) {
+        onTeamToPool(ad.spelerId, ad.teamId);
       }
     }
   }
@@ -90,6 +129,7 @@ export default function DndProvider({
     <DndKitContext
       sensors={sensors}
       collisionDetection={closestCenter}
+      modifiers={[adjustScaleModifier]}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >

@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { useCanvasZoom } from "../hooks/useCanvasZoom";
 import { getDetailLevel } from "../types";
 import type { DetailLevel } from "../types";
+import { ZoomScaleProvider } from "./ZoomScaleContext";
 
 interface ZoomCanvasProps {
   children: (detailLevel: DetailLevel) => React.ReactNode;
@@ -27,7 +28,7 @@ export default function ZoomCanvas({ children }: ZoomCanvasProps) {
             willChange: "transform",
           }}
         >
-          {children(detailLevel)}
+          <ZoomScaleProvider value={transform.k}>{children(detailLevel)}</ZoomScaleProvider>
         </div>
       </div>
 
