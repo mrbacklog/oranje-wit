@@ -359,7 +359,7 @@ export async function handleTool(
       // Bepaal volgorde (achteraan)
       const aantalTeams = await prisma.team.count({ where: { versieId: ctx.versieId } });
 
-      await prisma.team.create({
+      await (prisma.team.create as any)({
         data: {
           versieId: ctx.versieId,
           naam,
@@ -367,7 +367,6 @@ export async function handleTool(
           kleur: kleur as "BLAUW" | "GROEN" | "GEEL" | "ORANJE" | "ROOD",
           volgorde: aantalTeams,
         },
-        select: { id: true },
       });
       revalidatePath("/scenarios");
 

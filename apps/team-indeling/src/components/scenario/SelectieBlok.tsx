@@ -21,7 +21,7 @@ export default function SelectieBlok({
   validatieMap,
   detailLevel,
   onOntkoppel,
-  onDelete,
+  onDelete: _onDelete,
   onSpelerClick,
   onEditTeam,
 }: SelectieBlokProps) {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 
 interface SpelerAvatarProps {
   spelerId: string;
@@ -35,11 +36,14 @@ export default function SpelerAvatar({
   }
 
   return (
-    <img
+    <Image
       src={`/api/foto/${spelerId}`}
       alt={naam}
+      width={40}
+      height={40}
       className={`${SIZES[size]} flex-shrink-0 rounded-full object-cover ${className}`}
       onError={() => setFailed(true)}
+      unoptimized
     />
   );
 }

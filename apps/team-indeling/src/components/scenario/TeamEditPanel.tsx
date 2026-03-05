@@ -5,7 +5,6 @@ import type { TeamCategorie, Kleur, SpelerStatus } from "@oranje-wit/database";
 import type { TeamData, SpelerData } from "./types";
 import type { TeamValidatie, MeldingErnst } from "@/lib/validatie/regels";
 import {
-  KLEUR_BADGE_KLEUREN,
   KLEUR_DOT,
   KLEUR_LABELS,
   CATEGORIE_LABELS,
@@ -65,7 +64,7 @@ export default function TeamEditPanel({
   const [kleur, setKleur] = useState<Kleur | null>(team.kleur);
   const [niveau, setNiveau] = useState(team.niveau ?? "");
 
-  // Reset bij ander team
+  // Reset bij ander team — correcte sync van formulier-state bij prop-wijziging
   useEffect(() => {
     setAlias(team.alias ?? "");
     setCategorie(team.categorie);

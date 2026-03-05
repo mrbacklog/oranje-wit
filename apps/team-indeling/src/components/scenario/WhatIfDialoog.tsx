@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import type { TeamData, SpelerData } from "./types";
 import Spinner from "@/components/ui/Spinner";
 
@@ -31,14 +31,17 @@ export default function WhatIfDialoog({
   const [resultaat, setResultaat] = useState<WhatIfResultaat | null>(null);
 
   // Alle spelers die in minstens 1 team zitten
-  const ingedeeldeSpelers = new Map<string, SpelerData>();
-  for (const team of teams) {
-    for (const ts of team.spelers) {
-      if (!ingedeeldeSpelers.has(ts.spelerId)) {
-        ingedeeldeSpelers.set(ts.spelerId, ts.speler);
+  const ingedeeldeSpelers = useMemo(() => {
+    const map = new Map<string, SpelerData>();
+    for (const team of teams) {
+      for (const ts of team.spelers) {
+        if (!map.has(ts.spelerId)) {
+          map.set(ts.spelerId, ts.speler);
+        }
       }
     }
-  }
+    return map;
+  }, [teams]);
 
   const handleAnalyseer = useCallback(async () => {
     let vraag: string;

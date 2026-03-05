@@ -192,24 +192,21 @@ export function useScenarioEditor(scenario: ScenarioData, alleSpelers: SpelerDat
     [teams]
   );
 
-  const handleTeamToPool = useCallback(
-    (spelerId: string, teamId: string) => {
-      setTeams((prev) =>
-        prev.map((t) => {
-          if (t.id !== teamId) return t;
-          return {
-            ...t,
-            spelers: t.spelers.filter((ts) => ts.spelerId !== spelerId),
-          };
-        })
-      );
+  const handleTeamToPool = useCallback((spelerId: string, teamId: string) => {
+    setTeams((prev) =>
+      prev.map((t) => {
+        if (t.id !== teamId) return t;
+        return {
+          ...t,
+          spelers: t.spelers.filter((ts) => ts.spelerId !== spelerId),
+        };
+      })
+    );
 
-      startTransition(() => {
-        removeSpelerFromTeam(teamId, spelerId);
-      });
-    },
-    [teams]
-  );
+    startTransition(() => {
+      removeSpelerFromTeam(teamId, spelerId);
+    });
+  }, []);
 
   // --- Team CRUD ---
 

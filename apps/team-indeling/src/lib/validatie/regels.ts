@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 /**
  * Regelvalidatie-engine voor teamindelingen.
  *

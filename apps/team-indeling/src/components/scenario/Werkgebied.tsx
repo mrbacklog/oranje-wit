@@ -41,7 +41,7 @@ export default function Werkgebied({
   onWhatIfOpen,
   onSpelerClick,
   onEditTeam,
-  onReorderTeams,
+  onReorderTeams: _onReorderTeams,
 }: WerkgebiedProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [rapportOpen, setRapportOpen] = useState(false);
