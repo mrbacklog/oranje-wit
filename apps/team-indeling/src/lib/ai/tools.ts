@@ -15,7 +15,7 @@ import {
   getRetentieOverzicht,
   getTeamgenoten,
 } from "./scenario-context";
-import { prisma } from "@/lib/db/prisma";
+import { prisma, anyTeam } from "@/lib/db/prisma";
 import { revalidatePath } from "next/cache";
 import {
   valideerTeam,
@@ -71,7 +71,7 @@ async function zoekTeam(
   naam: string
 ): Promise<{ id: string; naam: string } | null> {
   const lower = naam.toLowerCase();
-  const teams = await prisma.team.findMany({
+  const teams = await anyTeam.findMany({
     where: { versieId },
     select: { id: true, naam: true },
   });
@@ -189,7 +189,7 @@ export async function handleTool(
 
     case "valideer_teams": {
       // Haal teams op
-      const teams = await prisma.team.findMany({
+      const teams = await anyTeam.findMany({
         where: { versieId: ctx.versieId },
         include: { spelers: { include: { speler: true } } },
         orderBy: { volgorde: "asc" },
@@ -205,7 +205,7 @@ export async function handleTool(
         categorie: t.categorie,
         kleur: t.kleur,
         niveau: t.niveau,
-        spelers: t.spelers.map((ts) => ({
+        spelers: t.spelers.map((ts: any) => ({
           id: ts.speler.id,
           roepnaam: ts.speler.roepnaam,
           achternaam: ts.speler.achternaam,
@@ -357,9 +357,9 @@ export async function handleTool(
       }
 
       // Bepaal volgorde (achteraan)
-      const aantalTeams = await prisma.team.count({ where: { versieId: ctx.versieId } });
+      const aantalTeams = await anyTeam.count({ where: { versieId: ctx.versieId } });
 
-      await (prisma.team.create as any)({
+      await anyTeam.create({
         data: {
           versieId: ctx.versieId,
           naam,

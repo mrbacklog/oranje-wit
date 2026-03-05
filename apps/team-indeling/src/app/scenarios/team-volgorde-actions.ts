@@ -1,6 +1,6 @@
 "use server";
 
-import { prisma } from "@/lib/db/prisma";
+import { prisma, anyTeam } from "@/lib/db/prisma";
 import { revalidatePath } from "next/cache";
 import { assertBewerkbaar } from "@/lib/seizoen";
 
@@ -25,13 +25,10 @@ export async function updateTeamVolgorde(
   volgordes: { teamId: string; volgorde: number }[]
 ) {
   await assertVersieBewerkbaar(versieId);
-  await prisma.$transaction(
-    volgordes.map(({ teamId, volgorde }) =>
-      prisma.team.update({
-        where: { id: teamId },
-        data: { volgorde },
-      })
-    )
-  );
+  await prisma.$transaction(async (tx) => {
+    for (const { teamId, volgorde } of volgordes) {
+      await tx.team.update({ where: { id: teamId }, data: { volgorde } });
+    }
+  });
   revalidatePath("/scenarios");
 }

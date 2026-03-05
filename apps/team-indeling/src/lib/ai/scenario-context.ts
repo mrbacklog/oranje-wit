@@ -3,7 +3,7 @@
  * Haalt data op en formatteert deze voor Claude tool-responses.
  */
 
-import { prisma } from "@/lib/db/prisma";
+import { prisma, anyTeam } from "@/lib/db/prisma";
 import { PEILJAAR } from "@oranje-wit/types";
 
 function korfbalLeeftijd(geboortejaar: number, geboortedatum?: Date | null): number {
@@ -20,7 +20,7 @@ function korfbalLeeftijd(geboortejaar: number, geboortedatum?: Date | null): num
 // ---------------------------------------------------------------------------
 
 export async function getTeamsContext(versieId: string) {
-  const teams = await prisma.team.findMany({
+  const teams = await anyTeam.findMany({
     where: { versieId },
     include: {
       spelers: { include: { speler: true } },
@@ -30,7 +30,7 @@ export async function getTeamsContext(versieId: string) {
   });
 
   return teams.map((t) => {
-    const spelers = t.spelers.map((ts) => ({
+    const spelers = t.spelers.map((ts: any) => ({
       id: ts.speler.id,
       naam: `${ts.speler.roepnaam} ${ts.speler.achternaam}`,
       geboortejaar: ts.speler.geboortejaar,
@@ -38,11 +38,13 @@ export async function getTeamsContext(versieId: string) {
       geslacht: ts.speler.geslacht,
       status: ts.speler.status,
     }));
-    const aantalM = spelers.filter((s) => s.geslacht === "M").length;
-    const aantalV = spelers.filter((s) => s.geslacht === "V").length;
+    const aantalM = spelers.filter((s: any) => s.geslacht === "M").length;
+    const aantalV = spelers.filter((s: any) => s.geslacht === "V").length;
     const gemLeeftijd =
       spelers.length > 0
-        ? Math.round((spelers.reduce((sum, s) => sum + s.leeftijd, 0) / spelers.length) * 100) / 100
+        ? Math.round(
+            (spelers.reduce((sum: number, s: any) => sum + s.leeftijd, 0) / spelers.length) * 100
+          ) / 100
         : null;
 
     return {
@@ -55,7 +57,7 @@ export async function getTeamsContext(versieId: string) {
       aantalV,
       gemLeeftijd,
       spelers,
-      staf: t.staf.map((ts) => ({ naam: ts.staf.naam, rol: ts.rol })),
+      staf: t.staf.map((ts: any) => ({ naam: ts.staf.naam, rol: ts.rol })),
     };
   });
 }

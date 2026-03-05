@@ -1,6 +1,6 @@
 "use server";
 
-import { prisma } from "@/lib/db/prisma";
+import { prisma, anyTeam } from "@/lib/db/prisma";
 import { berekenTeamstructuur } from "@/lib/teamstructuur";
 import type { SpelerBasis } from "@/lib/teamstructuur";
 import type { Prisma, TeamCategorie, Kleur } from "@oranje-wit/database";
@@ -13,7 +13,7 @@ import { assertBewerkbaar } from "@/lib/seizoen";
  * Guard: controleer of het team bij een bewerkbaar seizoen hoort.
  */
 async function assertTeamBewerkbaar(teamId: string) {
-  const team = (await (prisma.team.findUniqueOrThrow as any)({
+  const team = (await anyTeam.findUniqueOrThrow({
     where: { id: teamId },
     select: {
       versie: {
@@ -274,14 +274,14 @@ export async function createTeam(
 ) {
   await assertVersieBewerkbaar(versieId);
   // Bepaal volgorde: hoogste + 1
-  const laatsteTeam = await prisma.team.findFirst({
+  const laatsteTeam = await anyTeam.findFirst({
     where: { versieId },
     orderBy: { volgorde: "desc" },
     select: { volgorde: true },
   });
   const volgorde = (laatsteTeam?.volgorde ?? -1) + 1;
 
-  const team = (await (prisma.team.create as any)({
+  const team = (await anyTeam.create({
     data: {
       versieId,
       naam: data.naam,

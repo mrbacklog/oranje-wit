@@ -1,6 +1,6 @@
 "use server";
 
-import { prisma } from "@/lib/db/prisma";
+import { prisma, anyTeam } from "@/lib/db/prisma";
 import type { TeamCategorie, Kleur } from "@oranje-wit/database";
 import { revalidatePath } from "next/cache";
 import { assertBewerkbaar } from "@/lib/seizoen";
@@ -9,7 +9,7 @@ import { assertBewerkbaar } from "@/lib/seizoen";
  * Guard: controleer of het team bij een bewerkbaar seizoen hoort.
  */
 async function assertTeamBewerkbaar(teamId: string) {
-  const team = (await (prisma.team.findUniqueOrThrow as any)({
+  const team = (await anyTeam.findUniqueOrThrow({
     where: { id: teamId },
     select: {
       versie: {
@@ -32,7 +32,7 @@ export async function updateTeam(
   data: { alias?: string | null; categorie?: TeamCategorie; kleur?: Kleur | null; naam?: string }
 ) {
   await assertTeamBewerkbaar(teamId);
-  await prisma.team.update({
+  await anyTeam.update({
     where: { id: teamId },
     data: {
       ...(data.alias !== undefined && { alias: data.alias }),
@@ -50,11 +50,11 @@ export async function updateTeam(
 export async function deleteTeam(teamId: string) {
   await assertTeamBewerkbaar(teamId);
   // Ontkoppel eerst eventuele selectie-leden die naar dit team verwijzen
-  await prisma.team.updateMany({
+  await anyTeam.updateMany({
     where: { selectieGroepId: teamId },
     data: { selectieGroepId: null },
   });
-  await prisma.team.delete({
+  await anyTeam.delete({
     where: { id: teamId },
   });
   revalidatePath("/scenarios");
@@ -127,7 +127,7 @@ export async function koppelSelectie(teamIds: string[]) {
  * Ontkoppel een selectie (simpel — alle spelers/staf blijven bij leider).
  */
 export async function ontkoppelSelectie(groepLeiderId: string) {
-  await prisma.team.updateMany({
+  await anyTeam.updateMany({
     where: { selectieGroepId: groepLeiderId },
     data: { selectieGroepId: null },
   });
