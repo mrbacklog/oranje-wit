@@ -10,10 +10,11 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  Cell,
 } from "recharts";
 
 interface SeizoenBarChartProps {
-  data: { seizoen: string; seizoenKort: string; M: number; V: number }[];
+  data: { seizoen: string; seizoenKort: string; isLopend?: boolean; M: number; V: number }[];
   kleurM?: string;
   kleurV?: string;
 }
@@ -38,17 +39,45 @@ export function SeizoenBarChart({
         }}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="seizoenKort" fontSize={12} />
+        <XAxis
+          dataKey="seizoenKort"
+          fontSize={12}
+          tickFormatter={(val, idx) => {
+            const item = data[idx];
+            return item?.isLopend ? `${val}*` : val;
+          }}
+        />
         <YAxis fontSize={12} />
         <Tooltip
           labelFormatter={(_label, payload) => {
             const item = payload?.[0]?.payload;
-            return item?.seizoen ?? _label;
+            const seizoen = item?.seizoen ?? _label;
+            return item?.isLopend ? `${seizoen} (lopend — voorlopig)` : seizoen;
           }}
         />
         <Legend />
-        <Bar dataKey="M" fill={kleurM} name="Jongens" barSize={12} />
-        <Bar dataKey="V" fill={kleurV} name="Meisjes" barSize={12} />
+        <Bar dataKey="M" name="Jongens" barSize={12}>
+          {data.map((entry, index) => (
+            <Cell
+              key={`M-${index}`}
+              fill={entry.isLopend ? `${kleurM}88` : kleurM}
+              stroke={entry.isLopend ? kleurM : undefined}
+              strokeWidth={entry.isLopend ? 1 : 0}
+              strokeDasharray={entry.isLopend ? "4 2" : undefined}
+            />
+          ))}
+        </Bar>
+        <Bar dataKey="V" name="Meisjes" barSize={12}>
+          {data.map((entry, index) => (
+            <Cell
+              key={`V-${index}`}
+              fill={entry.isLopend ? `${kleurV}88` : kleurV}
+              stroke={entry.isLopend ? kleurV : undefined}
+              strokeWidth={entry.isLopend ? 1 : 0}
+              strokeDasharray={entry.isLopend ? "4 2" : undefined}
+            />
+          ))}
+        </Bar>
       </BarChart>
     </ResponsiveContainer>
   );

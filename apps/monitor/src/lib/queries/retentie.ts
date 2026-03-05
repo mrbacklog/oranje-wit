@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db/prisma";
+import { HUIDIG_SEIZOEN, isLopendSeizoen } from "@/lib/huidig-seizoen";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -21,6 +22,7 @@ export type EersteSeizoenRetentieRij = {
 
 export type SeizoenMVLeeftijdRow = {
   seizoen: string;
+  isLopend: boolean;
   M: number;
   V: number;
   totaal: number;
@@ -112,7 +114,7 @@ export async function getEersteSeizoenRetentie(): Promise<EersteSeizoenRetentieR
       SELECT n.rel_code, n.seizoen, n.geslacht
       FROM nieuw n
       JOIN ledenverloop lv ON lv.rel_code = n.rel_code
-        AND lv.seizoen = (SPLIT_PART(n.seizoen,'-',1)::int+1)||'-'||(SPLIT_PART(n.seizoen,'-',2)::int+1)
+        AND lv.seizoen = (SPLIT_PART(n.seizoen,'-',1)::int+1)::text||'-'||(SPLIT_PART(n.seizoen,'-',2)::int+1)::text
         AND lv.status = 'behouden'
     )
     SELECT n.seizoen,
@@ -165,6 +167,7 @@ type RawMVLeeftijd = {
 function mapMVLeeftijd(rows: RawMVLeeftijd[]): SeizoenMVLeeftijdRow[] {
   return rows.map((r) => ({
     seizoen: r.seizoen,
+    isLopend: isLopendSeizoen(r.seizoen),
     M: Number(r.m),
     V: Number(r.v),
     totaal: Number(r.totaal),
@@ -227,10 +230,12 @@ export type WaterfallData = {
   uitstroom: number;
 };
 
-/** Waterfall-getallen voor het meest recente seizoen */
+/** Waterfall-getallen voor het meest recente AFGERONDE seizoen (excl. lopend) */
 export async function getWaterfallData(): Promise<WaterfallData | null> {
   const seizoenRow = await prisma.$queryRaw<{ seizoen: string }[]>`
-    SELECT DISTINCT seizoen FROM ledenverloop ORDER BY seizoen DESC LIMIT 1`;
+    SELECT DISTINCT seizoen FROM ledenverloop
+    WHERE seizoen != ${HUIDIG_SEIZOEN}
+    ORDER BY seizoen DESC LIMIT 1`;
   const seizoen = seizoenRow[0]?.seizoen;
   if (!seizoen) return null;
 
@@ -254,12 +259,43 @@ export async function getWaterfallData(): Promise<WaterfallData | null> {
   return { seizoen, behouden, instroomNieuw: nieuw, instroomTerug: terug, uitstroom: uit };
 }
 
+/** Waterfall-getallen voor het LOPENDE seizoen (voorlopig) */
+export async function getWaterfallDataLopend(): Promise<WaterfallData | null> {
+  const rows = await prisma.$queryRaw<{ status: string; aantal: number }[]>`
+    SELECT status, COUNT(*)::int AS aantal
+    FROM ledenverloop WHERE seizoen = ${HUIDIG_SEIZOEN}
+    GROUP BY status`;
+
+  if (rows.length === 0) return null;
+
+  let behouden = 0,
+    nieuw = 0,
+    terug = 0,
+    uit = 0;
+  for (const r of rows) {
+    const n = Number(r.aantal);
+    if (r.status === "behouden") behouden = n;
+    else if (r.status === "nieuw") nieuw = n;
+    else if (r.status === "herinschrijver") terug = n;
+    else if (r.status === "uitgestroomd" || r.status === "niet_spelend_geworden") uit += n;
+  }
+
+  return {
+    seizoen: HUIDIG_SEIZOEN,
+    behouden,
+    instroomNieuw: nieuw,
+    instroomTerug: terug,
+    uitstroom: uit,
+  };
+}
+
 // ---------------------------------------------------------------------------
 // Netto groei (voor dashboard KPI)
 // ---------------------------------------------------------------------------
 
 export type NettoGroei = {
   seizoen: string;
+  isLopend: boolean;
   instroom: number;
   uitstroom: number;
   netto: number;
@@ -276,5 +312,11 @@ export async function getNettoGroei(seizoen: string): Promise<NettoGroei> {
   const r = rows[0] ?? { instroom: 0, uitstroom: 0 };
   const instroom = Number(r.instroom);
   const uitstroom = Number(r.uitstroom);
-  return { seizoen, instroom, uitstroom, netto: instroom - uitstroom };
+  return {
+    seizoen,
+    isLopend: isLopendSeizoen(seizoen),
+    instroom,
+    uitstroom,
+    netto: instroom - uitstroom,
+  };
 }

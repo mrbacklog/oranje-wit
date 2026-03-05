@@ -58,15 +58,15 @@ Elke beslissing toets je aan de Oranje Draad: Plezier + Ontwikkeling + Prestatie
 
 ## Databronnen
 - PostgreSQL: `leden` + `competitie_spelers` (primair) + VIEW `speler_seizoenen` — ledendata en seizoenshistorie
-- `data/aggregaties/` — statistische rollups per dimensie
-- `data/ledenverloop/` — retentie, instroom, uitstroom, cohorten, signalering
+- `ledenverloop`, `cohort_seizoenen`, `signalering` tabellen in PostgreSQL — retentie, instroom, uitstroom
 - `data/seizoenen/` — seizoensspecifieke data incl. KNKV team-kleur-mapping
 - KNKV Mijn Korfbal API — `docs/knkv-api.md`
 
-## Dashboards
-- **Verenigingsmonitor** — `apps/monitor/public/verenigingsmonitor.html`
-- **Team Samenstelling** — `apps/monitor/public/teamsamenstelling.html`
-- Config: `apps/monitor/public/monitor-config.json`
+## Verenigingsmonitor (Next.js app)
+- **Live**: https://monitor.ckvoranjewit.app
+- **Dev**: `pnpm dev:monitor` op poort 4102
+- **Routes**: `/` dashboard, `/retentie`, `/spelers`, `/teams`, `/signalering`, `/samenstelling`, `/projecties`
+- **Queries**: `apps/monitor/src/lib/queries/` — dashboard, retentie, verloop, cohorten, signalering, teams, spelers, samenstelling
 
 ## Geheugen
 Sla in MEMORY.md op: teamhistorie, seizoensbeslissingen, spelerspatronen, openstaande vraagstukken.

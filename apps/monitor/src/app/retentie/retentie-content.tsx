@@ -3,15 +3,26 @@ import {
   getInstroomUitstroom,
   getInstroomPerSeizoenMV,
   getUitstroomPerSeizoenMV,
+  getAankomstigeUitstroom,
+  getIntraSeizoenFlow,
+  type AankomstigeUitstroomer,
+  type IntraSeizoenFlow,
 } from "@/lib/queries/verloop";
 import {
   getCohortRetentieMatrix,
   getEersteSeizoenRetentie,
   getWaterfallData,
+  getWaterfallDataLopend,
   getInstroomPerSeizoenMVLeeftijd,
   getUitstroomPerSeizoenMVLeeftijd,
 } from "@/lib/queries/retentie";
 import type { SeizoenMVLeeftijdRow } from "@/lib/queries/retentie";
+import { HUIDIG_SEIZOEN } from "@/lib/huidig-seizoen";
+import {
+  AankomstigeUitstroomTabel,
+  IntraSeizoenFlowCard,
+  KritiekeMomentenTabel,
+} from "./verloop-widgets";
 import type { WaterfallItem, KritiekMoment, RetentieDataPoint } from "@/lib/utils/retentie";
 import { RetentieCurve } from "@/components/charts/retentie-curve";
 import { RetentieTabs } from "./retentie-tabs";
@@ -29,7 +40,9 @@ import {
 export async function RetentieContent() {
   let verloop, instroomPerSeizoen, uitstroomPerSeizoen;
   let instroomLeeftijd, uitstroomLeeftijd;
-  let cohortData, eersteSeizoen, waterfallRaw;
+  let cohortData, eersteSeizoen, waterfallRaw, waterfallLopendRaw;
+  let aankomstigeUitstroom: AankomstigeUitstroomer[];
+  let intraSeizoenFlow: IntraSeizoenFlow;
 
   try {
     [
@@ -41,6 +54,9 @@ export async function RetentieContent() {
       cohortData,
       eersteSeizoen,
       waterfallRaw,
+      waterfallLopendRaw,
+      aankomstigeUitstroom,
+      intraSeizoenFlow,
     ] = await Promise.all([
       getInstroomUitstroom(),
       getInstroomPerSeizoenMV(),
@@ -50,6 +66,9 @@ export async function RetentieContent() {
       getCohortRetentieMatrix(),
       getEersteSeizoenRetentie(),
       getWaterfallData(),
+      getWaterfallDataLopend(),
+      getAankomstigeUitstroom(),
+      getIntraSeizoenFlow(HUIDIG_SEIZOEN),
     ]);
   } catch (error) {
     logger.error("Fout bij ophalen ledendynamiek-data:", error);
@@ -88,6 +107,15 @@ export async function RetentieContent() {
       )
     : null;
 
+  const waterfallLopendData = waterfallLopendRaw
+    ? berekenWaterfall(
+        waterfallLopendRaw.behouden,
+        waterfallLopendRaw.instroomNieuw,
+        waterfallLopendRaw.instroomTerug,
+        waterfallLopendRaw.uitstroom
+      )
+    : null;
+
   // --- Instroom tab ---
   const instroomData = verloop.instroom_per_leeftijd
     .filter((r) => r.leeftijd >= 4 && r.leeftijd <= 30)
@@ -96,6 +124,7 @@ export async function RetentieContent() {
   const instroomSeizoenData = instroomPerSeizoen.map((r) => ({
     seizoen: r.seizoen,
     seizoenKort: `${r.seizoen.slice(2, 4)}/${r.seizoen.slice(7, 9)}`,
+    isLopend: r.seizoen === HUIDIG_SEIZOEN,
     M: r.M,
     V: r.V,
   }));
@@ -110,6 +139,7 @@ export async function RetentieContent() {
   const uitstroomSeizoenData = uitstroomPerSeizoen.map((r) => ({
     seizoen: r.seizoen,
     seizoenKort: `${r.seizoen.slice(2, 4)}/${r.seizoen.slice(7, 9)}`,
+    isLopend: r.seizoen === HUIDIG_SEIZOEN,
     M: r.M,
     V: r.V,
   }));
@@ -132,6 +162,7 @@ export async function RetentieContent() {
         <RetentieTabContent
           waterfallData={waterfallData}
           waterfallSeizoen={waterfallRaw?.seizoen}
+          waterfallLopendData={waterfallLopendData}
           leeftijdsGroepen={leeftijdsGroepen}
           kritiekeMomenten={kritiekeMomenten}
         />
@@ -144,6 +175,7 @@ export async function RetentieContent() {
           leeftijdData={instroomData}
           seizoenData={instroomSeizoenData}
           patronen={instroomPatronen}
+          intraSeizoenFlow={intraSeizoenFlow}
         />
       }
       uitstroomContent={
@@ -154,6 +186,7 @@ export async function RetentieContent() {
           leeftijdData={uitstroomData}
           seizoenData={uitstroomSeizoenData}
           patronen={uitstroomPatronen}
+          aankomstigeUitstroom={aankomstigeUitstroom}
         />
       }
       cohortenContent={<CohortenContent cohortData={cohortData} eersteSeizoen={eersteSeizoen} />}
@@ -168,16 +201,36 @@ export async function RetentieContent() {
 function RetentieTabContent({
   waterfallData,
   waterfallSeizoen,
+  waterfallLopendData,
   leeftijdsGroepen,
   kritiekeMomenten,
 }: {
   waterfallData: WaterfallItem[] | null;
   waterfallSeizoen?: string;
+  waterfallLopendData: WaterfallItem[] | null;
   leeftijdsGroepen: { titel: string; subtitel: string; data: RetentieDataPoint[] }[];
   kritiekeMomenten: KritiekMoment[];
 }) {
   return (
     <>
+      {waterfallLopendData && (
+        <div className="mb-8 rounded-xl border border-amber-200 bg-amber-50 p-6 shadow-sm">
+          <div className="mb-1 flex items-center gap-2">
+            <h3 className="text-sm font-semibold tracking-wide text-amber-800 uppercase">
+              Ledenverloop {HUIDIG_SEIZOEN}
+            </h3>
+            <span className="rounded-full bg-amber-200 px-2 py-0.5 text-xs font-medium text-amber-800">
+              Voorlopig — seizoen loopt nog
+            </span>
+          </div>
+          <p className="mb-4 text-xs text-amber-700">
+            Begin seizoen &rarr; instroom (nieuw + terug) &rarr; uitstroom &rarr; eind seizoen.
+            Cijfers zijn onvolledig zolang het seizoen loopt.
+          </p>
+          <WaterfallChart data={waterfallLopendData} />
+        </div>
+      )}
+
       {waterfallData && (
         <div className="mb-8 rounded-xl bg-white p-6 shadow-sm">
           <h3 className="mb-1 text-sm font-semibold tracking-wide text-gray-700 uppercase">
@@ -207,59 +260,6 @@ function RetentieTabContent({
   );
 }
 
-function KritiekeMomentenTabel({ momenten }: { momenten: KritiekMoment[] }) {
-  return (
-    <div className="rounded-xl bg-white p-6 shadow-sm">
-      <h3 className="mb-4 text-sm font-semibold tracking-wide text-gray-700 uppercase">
-        Kritieke overgangsmomenten
-      </h3>
-      <p className="mb-4 text-xs text-gray-400">
-        Automatisch gedetecteerd: leeftijden waar de retentie het sterkst daalt.
-      </p>
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="bg-gray-50 text-left">
-              <th className="px-3 py-2 font-semibold">Leeftijd</th>
-              <th className="px-3 py-2 font-semibold">Groep</th>
-              <th className="px-3 py-2 text-right font-semibold">Retentie</th>
-              <th className="px-3 py-2 text-right font-semibold">Daling</th>
-              <th className="px-3 py-2 text-right font-semibold">Jongens</th>
-              <th className="px-3 py-2 text-right font-semibold">Meisjes</th>
-              <th className="px-3 py-2 font-semibold">Signaal</th>
-            </tr>
-          </thead>
-          <tbody>
-            {momenten.map((m) => {
-              const kleur =
-                m.daling < -10
-                  ? "text-signal-rood font-semibold"
-                  : m.daling < -5
-                    ? "text-signal-geel font-semibold"
-                    : "text-gray-600";
-              return (
-                <tr key={m.leeftijd} className="border-t border-gray-100">
-                  <td className="px-3 py-2 font-medium">{m.leeftijd} jaar</td>
-                  <td className="px-3 py-2 text-gray-600">{m.groep}</td>
-                  <td className="px-3 py-2 text-right">{m.retentie.toFixed(1)}%</td>
-                  <td className={`px-3 py-2 text-right ${kleur}`}>{m.daling.toFixed(1)}pp</td>
-                  <td className="px-3 py-2 text-right">
-                    {m.retentieM !== null ? `${m.retentieM.toFixed(1)}%` : "\u2013"}
-                  </td>
-                  <td className="px-3 py-2 text-right">
-                    {m.retentieV !== null ? `${m.retentieV.toFixed(1)}%` : "\u2013"}
-                  </td>
-                  <td className="px-3 py-2 text-xs text-gray-500">{m.signaal ?? "\u2013"}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
-
 // ---------------------------------------------------------------------------
 // Instroom/Uitstroom tab (gedeeld component)
 // ---------------------------------------------------------------------------
@@ -271,15 +271,20 @@ function VerloopTabContent({
   leeftijdData,
   seizoenData,
   patronen,
+  aankomstigeUitstroom,
+  intraSeizoenFlow,
 }: {
   type: "instroom" | "uitstroom";
   li?: SeizoenMVLeeftijdRow;
   vi?: SeizoenMVLeeftijdRow;
   leeftijdData: { leeftijd: number; M: number; V: number }[];
-  seizoenData: { seizoen: string; seizoenKort: string; M: number; V: number }[];
+  seizoenData: { seizoen: string; seizoenKort: string; isLopend: boolean; M: number; V: number }[];
   patronen: string[];
+  aankomstigeUitstroom?: AankomstigeUitstroomer[];
+  intraSeizoenFlow?: IntraSeizoenFlow;
 }) {
   const label = type === "instroom" ? "Instroom" : "Uitstroom";
+  const liIsLopend = li?.isLopend ?? false;
   const trendTotaal = li && vi ? li.totaal - vi.totaal : 0;
   const trendJeugd = li && vi ? li.jeugdTotaal - vi.jeugdTotaal : 0;
   const trendSenioren = li && vi ? li.seniorenTotaal - vi.seniorenTotaal : 0;
@@ -289,24 +294,35 @@ function VerloopTabContent({
 
   return (
     <>
+      {liIsLopend && (
+        <div className="mb-6 flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+          <span className="mt-0.5 text-amber-500">&#9888;</span>
+          <p className="text-sm text-amber-800">
+            <strong>Lopend seizoen</strong> — de cijfers hieronder zijn voorlopig. Het seizoen loopt
+            nog en niet alle spelers zijn al ingeschreven. De gemiddelden zijn berekend over de
+            laatste 5 afgeronde seizoenen.
+          </p>
+        </div>
+      )}
+
       <KpiCards
         items={[
           {
-            label: `${label} totaal`,
+            label: `${label} totaal${liIsLopend ? " (voorlopig)" : ""}`,
             waarde: li ? String(li.totaal) : "-",
             detail: li ? `${li.M} \u2642 / ${li.V} \u2640` : undefined,
             trend: trendTotaal,
             trendLabel: `${trendTotaal >= 0 ? "+" : ""}${trendTotaal} vs vorig`,
           },
           {
-            label: "Jeugd (6\u201318)",
+            label: `Jeugd (6\u201318)${liIsLopend ? " (voorlopig)" : ""}`,
             waarde: li ? String(li.jeugdTotaal) : "-",
             detail: li ? `${li.jeugdM} \u2642 / ${li.jeugdV} \u2640` : undefined,
             trend: trendJeugd,
             trendLabel: `${trendJeugd >= 0 ? "+" : ""}${trendJeugd} vs vorig`,
           },
           {
-            label: "Senioren (19+)",
+            label: `Senioren (19+)${liIsLopend ? " (voorlopig)" : ""}`,
             waarde: li ? String(li.seniorenTotaal) : "-",
             detail: li ? `${li.seniorenM} \u2642 / ${li.seniorenV} \u2640` : undefined,
             trend: trendSenioren,
@@ -315,9 +331,15 @@ function VerloopTabContent({
         ]}
       />
 
+      {type === "uitstroom" && aankomstigeUitstroom && aankomstigeUitstroom.length > 0 && (
+        <AankomstigeUitstroomTabel leden={aankomstigeUitstroom} />
+      )}
+
+      {type === "instroom" && intraSeizoenFlow && <IntraSeizoenFlowCard flow={intraSeizoenFlow} />}
+
       <div className="mb-8 rounded-xl bg-white p-6 shadow-sm">
         <h3 className="mb-4 text-sm font-semibold tracking-wide text-gray-700 uppercase">
-          Gemiddelde {type} per leeftijd (laatste 5 seizoenen)
+          Gemiddelde {type} per leeftijd (laatste 5 afgeronde seizoenen)
         </h3>
         <GroupedBarChart data={leeftijdData} kleurM="#3B82F6" kleurV="#EC4899" />
         {patronen.length > 0 && (
@@ -341,7 +363,16 @@ function VerloopTabContent({
         <h3 className="mb-2 text-sm font-semibold tracking-wide text-gray-700 uppercase">
           {label} per seizoen
         </h3>
-        <p className="mb-4 text-xs text-gray-400">Klik op een seizoen voor de namenlijst</p>
+        <p className="mb-4 text-xs text-gray-400">
+          Klik op een seizoen voor de namenlijst.
+          {type === "uitstroom" && (
+            <>
+              {" "}
+              Uitstroom van het lopende seizoen is niet-definitief: spelers die nog niet zijn
+              ingeschreven tellen mee.
+            </>
+          )}
+        </p>
         <SeizoenBarChart data={seizoenData} kleurM="#3B82F6" kleurV="#EC4899" />
       </div>
     </>

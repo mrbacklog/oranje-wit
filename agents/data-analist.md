@@ -27,10 +27,10 @@ Data-analist voor c.k.v. Oranje Wit, gespecialiseerd in de Verenigingsmonitor en
 
 ## Beslisboom
 
-1. **Nieuwe ledendata verwerken?** → Volg pipeline: Sportlink CSV → leden-tabel → aggregaties → verloop → signalering
-2. **Ledenverloop analyseren?** → Raadpleeg `data/ledenverloop/` + cohorten, vergelijk met benchmark
+1. **Nieuwe ledendata verwerken?** → Volg pipeline: Sportlink CSV → leden-tabel → verloop → signalering
+2. **Ledenverloop analyseren?** → Raadpleeg `ledenverloop` + `cohort_seizoenen` tabellen in PostgreSQL
 3. **Signalering nodig?** → Bereken vulgraad per geboortejaar × geslacht tegen streefmodel
-4. **Dashboard updaten?** → Pas `apps/monitor/public/monitor-config.json` aan
+4. **Monitor app bouwen/debuggen?** → Next.js app in `apps/monitor/`, queries in `src/lib/queries/`
 5. **Database sync?** → Gebruik MCP tools (skill: `monitor/database`)
 6. **Domeinvraag?** → Escaleer naar `korfbal`
 
@@ -52,11 +52,10 @@ PostgreSQL: competitie_spelers (primair) → VIEW speler_seizoenen
 - `scripts/python/bereken_streefboog.py` — streefmodel projecties
 
 ## Databronnen
-- Aggregaties: `data/aggregaties/YYYY-MM-DD-per-{geboortejaar,team,kleur}.json`
 - Streefmodel: `data/modellen/streef-ledenboog.json`
 - Spelerspaden: PostgreSQL `competitie_spelers` (primair) + VIEW `speler_seizoenen`
 - Verloop: PostgreSQL `ledenverloop`, `cohort_seizoenen` tabellen
-- Signalering: `data/ledenverloop/signalering/`
+- Signalering: PostgreSQL `signalering` tabel
 - Benchmark: `data/ledenverloop/benchmark/knkv-kwartaal/`
 - Jeugdmodel: `model/jeugdmodel.yaml`
 

@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db/prisma";
+import { HUIDIG_SEIZOEN } from "@/lib/huidig-seizoen";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -212,7 +213,7 @@ export async function getSeizoenVerloop(seizoen: string): Promise<SeizoenVerloop
   };
 }
 
-/** Instroom per leeftijd — gemiddeld over de laatste n seizoenen */
+/** Instroom per leeftijd — gemiddeld over de laatste n AFGERONDE seizoenen (excl. lopend) */
 export async function getInstroomPerLeeftijdRecent(n = 5): Promise<VerloopLeeftijdRow[]> {
   const rows = await prisma.$queryRaw<{ leeftijd: number; m: string; v: string; totaal: string }[]>`
     SELECT leeftijd_nieuw AS leeftijd,
@@ -222,7 +223,11 @@ export async function getInstroomPerLeeftijdRecent(n = 5): Promise<VerloopLeefti
     FROM ledenverloop
     WHERE status IN ('nieuw', 'herinschrijver')
       AND leeftijd_nieuw IS NOT NULL
-      AND seizoen IN (SELECT DISTINCT seizoen FROM ledenverloop ORDER BY seizoen DESC LIMIT ${n})
+      AND seizoen IN (
+        SELECT DISTINCT seizoen FROM ledenverloop
+        WHERE seizoen != ${HUIDIG_SEIZOEN}
+        ORDER BY seizoen DESC LIMIT ${n}
+      )
     GROUP BY leeftijd_nieuw
     ORDER BY leeftijd_nieuw`;
 
@@ -234,7 +239,7 @@ export async function getInstroomPerLeeftijdRecent(n = 5): Promise<VerloopLeefti
   }));
 }
 
-/** Uitstroom per leeftijd — gemiddeld over de laatste n seizoenen */
+/** Uitstroom per leeftijd — gemiddeld over de laatste n AFGERONDE seizoenen (excl. lopend) */
 export async function getUitstroomPerLeeftijdRecent(n = 5): Promise<VerloopLeeftijdRow[]> {
   const rows = await prisma.$queryRaw<{ leeftijd: number; m: string; v: string; totaal: string }[]>`
     SELECT leeftijd_vorig AS leeftijd,
@@ -244,7 +249,11 @@ export async function getUitstroomPerLeeftijdRecent(n = 5): Promise<VerloopLeeft
     FROM ledenverloop
     WHERE status IN ('uitgestroomd', 'niet_spelend_geworden')
       AND leeftijd_vorig IS NOT NULL
-      AND seizoen IN (SELECT DISTINCT seizoen FROM ledenverloop ORDER BY seizoen DESC LIMIT ${n})
+      AND seizoen IN (
+        SELECT DISTINCT seizoen FROM ledenverloop
+        WHERE seizoen != ${HUIDIG_SEIZOEN}
+        ORDER BY seizoen DESC LIMIT ${n}
+      )
     GROUP BY leeftijd_vorig
     ORDER BY leeftijd_vorig`;
 
@@ -320,4 +329,136 @@ export async function getUitstroomPerSeizoenMV(): Promise<SeizoenMVRow[]> {
     V: Number(r.v),
     totaal: Number(r.totaal),
   }));
+}
+
+// ---------------------------------------------------------------------------
+// Aankomende uitstroom via afmelddatum (lopend seizoen)
+// ---------------------------------------------------------------------------
+
+export type AankomstigeUitstroomer = {
+  relCode: string;
+  roepnaam: string;
+  achternaam: string;
+  tussenvoegsel: string | null;
+  geslacht: string;
+  geboortejaar: number | null;
+  afmelddatum: Date;
+  team: string | null;
+};
+
+/** Actieve spelers in het lopende seizoen die al een toekomstige afmelddatum hebben */
+export async function getAankomstigeUitstroom(): Promise<AankomstigeUitstroomer[]> {
+  const rows = await prisma.$queryRaw<
+    {
+      rel_code: string;
+      roepnaam: string;
+      achternaam: string;
+      tussenvoegsel: string | null;
+      geslacht: string;
+      geboortejaar: number | null;
+      afmelddatum: Date;
+      team: string | null;
+    }[]
+  >`
+    SELECT DISTINCT ON (l.rel_code)
+      l.rel_code, l.roepnaam, l.achternaam, l.tussenvoegsel,
+      l.geslacht, l.geboortejaar, l.afmelddatum,
+      cs.team
+    FROM leden l
+    JOIN competitie_spelers cs ON cs.rel_code = l.rel_code
+      AND cs.seizoen = ${HUIDIG_SEIZOEN}
+    WHERE l.afmelddatum IS NOT NULL
+      AND l.afmelddatum >= CURRENT_DATE
+    ORDER BY l.rel_code, l.afmelddatum`;
+
+  return rows.map((r) => ({
+    relCode: r.rel_code,
+    roepnaam: r.roepnaam,
+    achternaam: r.achternaam,
+    tussenvoegsel: r.tussenvoegsel,
+    geslacht: r.geslacht,
+    geboortejaar: r.geboortejaar ? Number(r.geboortejaar) : null,
+    afmelddatum: r.afmelddatum,
+    team: r.team,
+  }));
+}
+
+// ---------------------------------------------------------------------------
+// Intra-seizoen flow (per competitie binnen seizoen)
+// ---------------------------------------------------------------------------
+
+export type IntraSeizoenFlow = {
+  seizoen: string;
+  najaarTotaal: number;
+  zaalTotaal: number | null;
+  voorjaarTotaal: number | null;
+  stopteVoorZaal: number | null;
+  stopteVoorVoorjaar: number | null;
+};
+
+/** Per-competitie tellingen en uitstroom binnen een seizoen.
+ *  Veld-only filter: spelers die de afgelopen 3 seizoenen nooit zaal speelden,
+ *  tellen niet mee als "gestopt voor zaal". */
+export async function getIntraSeizoenFlow(seizoen: string): Promise<IntraSeizoenFlow> {
+  const startJaar = parseInt(seizoen.split("-")[0], 10);
+  const drieJaarGeleden = `${startJaar - 3}-${startJaar - 2}`;
+
+  const rows = await prisma.$queryRaw<
+    {
+      najaar: number;
+      zaal: number | null;
+      voorjaar: number | null;
+      stopte_voor_zaal: number | null;
+      stopte_voor_voorjaar: number | null;
+    }[]
+  >`
+    WITH
+    najaar AS (
+      SELECT DISTINCT rel_code FROM competitie_spelers
+      WHERE seizoen = ${seizoen} AND competitie = 'veld_najaar'
+    ),
+    zaal AS (
+      SELECT DISTINCT rel_code FROM competitie_spelers
+      WHERE seizoen = ${seizoen} AND competitie = 'zaal'
+    ),
+    voorjaar AS (
+      SELECT DISTINCT rel_code FROM competitie_spelers
+      WHERE seizoen = ${seizoen} AND competitie = 'veld_voorjaar'
+    ),
+    veld_only AS (
+      SELECT n.rel_code FROM najaar n
+      WHERE NOT EXISTS (
+        SELECT 1 FROM competitie_spelers cs
+        WHERE cs.rel_code = n.rel_code
+          AND cs.competitie = 'zaal'
+          AND cs.seizoen >= ${drieJaarGeleden}
+          AND cs.seizoen != ${seizoen}
+      )
+    )
+    SELECT
+      (SELECT COUNT(*)::int FROM najaar) AS najaar,
+      CASE WHEN EXISTS (SELECT 1 FROM zaal) THEN
+        (SELECT COUNT(*)::int FROM zaal) END AS zaal,
+      CASE WHEN EXISTS (SELECT 1 FROM voorjaar) THEN
+        (SELECT COUNT(*)::int FROM voorjaar) END AS voorjaar,
+      CASE WHEN EXISTS (SELECT 1 FROM zaal) THEN
+        (SELECT COUNT(DISTINCT n.rel_code)::int FROM najaar n
+         WHERE n.rel_code NOT IN (SELECT rel_code FROM zaal)
+           AND n.rel_code NOT IN (SELECT rel_code FROM veld_only)) END AS stopte_voor_zaal,
+      CASE WHEN EXISTS (SELECT 1 FROM voorjaar) THEN
+        (SELECT COUNT(DISTINCT rel_code)::int FROM (
+          SELECT rel_code FROM najaar
+          UNION SELECT rel_code FROM zaal
+        ) alle
+        WHERE rel_code NOT IN (SELECT rel_code FROM voorjaar)) END AS stopte_voor_voorjaar`;
+
+  const r = rows[0];
+  return {
+    seizoen,
+    najaarTotaal: Number(r?.najaar ?? 0),
+    zaalTotaal: r?.zaal != null ? Number(r.zaal) : null,
+    voorjaarTotaal: r?.voorjaar != null ? Number(r.voorjaar) : null,
+    stopteVoorZaal: r?.stopte_voor_zaal != null ? Number(r.stopte_voor_zaal) : null,
+    stopteVoorVoorjaar: r?.stopte_voor_voorjaar != null ? Number(r.stopte_voor_voorjaar) : null,
+  };
 }

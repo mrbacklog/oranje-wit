@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db/prisma";
+import { isLopendSeizoen } from "@/lib/huidig-seizoen";
 
 // ---------------------------------------------------------------------------
 // Leden trend (unieke rel_codes per seizoen uit competitie_spelers)
@@ -20,12 +21,13 @@ export async function getLedenTrend(): Promise<LedenTrendPunt[]> {
 
 export type InstroomUitstroomPunt = {
   seizoen: string;
+  isLopend: boolean;
   instroom: number;
   uitstroom: number;
 };
 
 export async function getInstroomUitstroom(): Promise<InstroomUitstroomPunt[]> {
-  return prisma.$queryRaw<InstroomUitstroomPunt[]>`
+  const rows = await prisma.$queryRaw<{ seizoen: string; instroom: number; uitstroom: number }[]>`
     WITH per_seizoen AS (
       SELECT seizoen, array_agg(DISTINCT rel_code) AS codes
       FROM competitie_spelers
@@ -38,10 +40,17 @@ export async function getInstroomUitstroom(): Promise<InstroomUitstroomPunt[]> {
         (SELECT COUNT(*) FROM unnest(prev.codes) p WHERE NOT p = ANY(cur.codes))::int AS uitstroom
       FROM per_seizoen cur
       JOIN per_seizoen prev ON prev.seizoen = (
-        (SPLIT_PART(cur.seizoen, '-', 1)::int - 1) || '-' || SPLIT_PART(cur.seizoen, '-', 1)
+        (SPLIT_PART(cur.seizoen, '-', 1)::int - 1)::text || '-' || SPLIT_PART(cur.seizoen, '-', 1)
       )
     )
     SELECT * FROM paren ORDER BY seizoen`;
+
+  return rows.map((r) => ({
+    seizoen: r.seizoen,
+    isLopend: isLopendSeizoen(r.seizoen),
+    instroom: Number(r.instroom),
+    uitstroom: Number(r.uitstroom),
+  }));
 }
 
 // ---------------------------------------------------------------------------

@@ -17,6 +17,7 @@ export async function DashboardCharts() {
   const instroomUitstroomData = instroomUitstroom.map((s) => ({
     seizoen: s.seizoen.slice(2, 4) + "/" + s.seizoen.slice(7, 9),
     seizoenVol: s.seizoen,
+    isLopend: s.isLopend,
     instroom: s.instroom,
     uitstroom: s.uitstroom,
   }));

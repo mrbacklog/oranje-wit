@@ -5,16 +5,15 @@ import { getDashboardKPIs } from "./dashboard";
 describe("getDashboardKPIs", () => {
   beforeEach(() => {
     mockPrisma.signalering.findMany.mockReset();
-    mockPrisma.oWTeam.count.mockReset();
     mockPrisma.$queryRaw.mockReset();
   });
 
   it("retourneert lege KPIs als er geen spelers zijn", async () => {
     mockPrisma.$queryRaw
       .mockResolvedValueOnce([{ totaal: 0 }]) // spelerCount
+      .mockResolvedValueOnce([]) // teamRows
       .mockResolvedValueOnce([]); // geslachtRows
     mockPrisma.signalering.findMany.mockResolvedValue([]);
-    mockPrisma.oWTeam.count.mockResolvedValue(0);
 
     const result = await getDashboardKPIs("2024-2025");
 
@@ -22,6 +21,8 @@ describe("getDashboardKPIs", () => {
       seizoen: "2024-2025",
       totaal_spelers: 0,
       totaal_teams: 0,
+      teams_8tal: 0,
+      teams_4tal: 0,
       signalering_kritiek: 0,
       signalering_aandacht: 0,
       geslacht: { M: 0, V: 0 },
@@ -31,6 +32,11 @@ describe("getDashboardKPIs", () => {
   it("combineert spelers, signaleringen en teams correct", async () => {
     mockPrisma.$queryRaw
       .mockResolvedValueOnce([{ totaal: 120 }]) // spelerCount
+      .mockResolvedValueOnce([
+        // teamRows
+        { spelvorm: "8-tal", aantal: 8 },
+        { spelvorm: "4-tal", aantal: 4 },
+      ])
       .mockResolvedValueOnce([
         // geslachtRows
         { geslacht: "M", aantal: 70 },
@@ -42,25 +48,29 @@ describe("getDashboardKPIs", () => {
       { ernst: "aandacht" },
       { ernst: "info" },
     ]);
-    mockPrisma.oWTeam.count.mockResolvedValue(12);
 
     const result = await getDashboardKPIs("2024-2025");
 
     expect(result.seizoen).toBe("2024-2025");
     expect(result.totaal_spelers).toBe(120);
     expect(result.totaal_teams).toBe(12);
+    expect(result.teams_8tal).toBe(8);
+    expect(result.teams_4tal).toBe(4);
     expect(result.signalering_kritiek).toBe(2);
     expect(result.signalering_aandacht).toBe(1);
     expect(result.geslacht).toEqual({ M: 70, V: 50 });
   });
 
   it("handelt ontbrekende geslacht rows af", async () => {
-    mockPrisma.$queryRaw.mockResolvedValueOnce([{ totaal: 10 }]).mockResolvedValueOnce([]);
+    mockPrisma.$queryRaw
+      .mockResolvedValueOnce([{ totaal: 10 }]) // spelerCount
+      .mockResolvedValueOnce([{ spelvorm: "8-tal", aantal: 2 }]) // teamRows
+      .mockResolvedValueOnce([]); // geslachtRows (leeg)
     mockPrisma.signalering.findMany.mockResolvedValue([]);
-    mockPrisma.oWTeam.count.mockResolvedValue(2);
 
     const result = await getDashboardKPIs("2024-2025");
 
     expect(result.geslacht).toEqual({ M: 0, V: 0 });
+    expect(result.totaal_teams).toBe(2);
   });
 });

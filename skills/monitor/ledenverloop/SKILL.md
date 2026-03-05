@@ -74,57 +74,51 @@ Leeftijdsbanden worden wel als secundaire groepering gebruikt voor presentatie e
 
 ## Databronnen
 
-- PostgreSQL: `speler_seizoenen` + `leden` tabellen — ledendata per seizoen
+- PostgreSQL `ledenverloop` — al berekend door `scripts/js/bereken-verloop.js`
+- PostgreSQL `cohort_seizoenen` — al berekend door `scripts/js/bereken-cohorten.js`
+- PostgreSQL `signalering` — al berekend door `scripts/js/genereer-signalering.js`
 - `data/modellen/streef-ledenboog.json` — retentie-parameters en streefcijfers
 - `data/ledenverloop/benchmark/knkv-kwartaal/*.json` — KNKV kwartaalcijfers (als beschikbaar)
 - `data/ledenverloop/benchmark/config.json` — concurrenten-configuratie
 
+## Pipeline (eenmalig per dataimport)
+
+De verloopdata zit al in PostgreSQL. Na een nieuwe data-import (Sportlink CSV) opnieuw berekenen:
+
+```bash
+node -r dotenv/config scripts/js/bereken-verloop.js
+node -r dotenv/config scripts/js/bereken-cohorten.js
+node -r dotenv/config scripts/js/genereer-signalering.js
+```
+
+De Verenigingsmonitor (`pnpm dev:monitor`) toont vervolgens altijd live data uit PostgreSQL.
+
 ## Stappen
 
-1. **Query speler_seizoenen per seizoenspaar**
-   - Haal alle speler_seizoenen records op, gegroepeerd per seizoen
-   - Sorteer op seizoen, bepaal welke paren te vergelijken
+1. **Query verloopdata uit PostgreSQL**
+   - Haal `ledenverloop` op (status per lid per seizoen)
+   - Haal `cohort_seizoenen` op (KPI's per geboortejaar-cohort)
    - Als `$ARGUMENTS` een seizoen bevat: filter op dat seizoen
-   - Als `$ARGUMENTS` "benchmark" is: spring naar stap 6
+   - Als `$ARGUMENTS` "benchmark" is: spring naar stap 5
 
-2. **Classificeer elk lid per seizoenspaar**
-   - Vergelijk opeenvolgende seizoenen op `rel_code`-niveau
-   - Ken status toe: behouden, nieuw, herinschrijver, uitgestroomd, niet-spelend geworden
-   - Bij herinschrijver: noteer het laatste eerdere seizoen waarin het lid voorkwam
-
-3. **Aggregeer per geboortejaar-cohort + geslacht**
-   - Tel per cohort: behouden, nieuw, herinschrijver, uitgestroomd, niet-spelend
-   - Splits M/V apart
-   - Bereken ook per instroomfase en per overgangsmoment
-
-4. **Bereken KPI's per cohort en totaal**
+2. **Analyseer KPI's per cohort en totaal**
    - Retentiepercentage, instroompercentage, uitstroompercentage
    - Netto groei (absoluut en percentage)
    - Instroomleeftijd (gemiddeld en mediaan)
-   - Als meerdere seizoenen beschikbaar: instroomleeftijd-trend
+   - Trend over meerdere seizoenen
 
-5. **Toets aan drempelwaarden en genereer alerts**
+3. **Toets aan drempelwaarden**
    - Vergelijk retentie per leeftijdsgroep met signaleringsgrenzen (zie Signalering)
    - Vergelijk met streefmodel uit `data/modellen/streef-ledenboog.json`
-   - Genereer signalen: retentie, instroom, genderdisbalans, trendbreuk
+   - Controleer `signalering` tabel voor actieve alerts
 
-6. **KNKV-benchmark (als data beschikbaar)**
+4. **KNKV-benchmark (als data beschikbaar)**
    - Laad kwartaalcijfers uit `data/ledenverloop/benchmark/knkv-kwartaal/*.json`
    - Laad concurrenten-configuratie uit `data/ledenverloop/benchmark/config.json`
    - Vergelijk eigen retentie/instroom/uitstroom met concurrenten en landelijk gemiddelde
    - Bereken relatieve positie per categorie
 
-7. **Schrijf JSON-output**
-   - `data/ledenverloop/individueel/YYYY-YYYY-verloop.json` — status per lid per seizoen
-   - `data/ledenverloop/cohorten/totaal-cohorten.json` — KPI's per cohort over alle seizoenen
-   - `data/ledenverloop/signalering/YYYY-YYYY-alerts.json` — overschrijdingen en signalen
-
-8. **Genereer/update HTML dashboard**
-   - Schrijf of update `app/ledenverloop.html`
-   - Standalone pagina (geen server nodig), zelfde stijl als `app/teamsamenstelling.html`
-   - Visualisaties: retentiecurve per cohort, instroom/uitstroom-balans, benchmark-vergelijking
-
-9. **Presenteer samenvatting**
+5. **Presenteer samenvatting**
    - Toon bondige samenvatting met belangrijkste KPI's
    - Highlight signaleringen (kritiek/aandacht)
    - Benchmark-positie als data beschikbaar
@@ -170,20 +164,19 @@ Leeftijdsbanden worden wel als secundaire groepering gebruikt voor presentatie e
 
 ## Output
 
+Data staat in PostgreSQL — de Verenigingsmonitor toont dit live:
+- **Retentie-tab**: cohort-curves, waterfall, intra-seizoen flow
+- **Instroom/uitstroom-tab**: per seizoen, per leeftijd, M/V
+- **Cohorten-tab**: matrix + eerste-seizoen retentie
+
+Benchmark-data (optioneel):
 ```
-data/ledenverloop/
-├── individueel/
-│   └── YYYY-YYYY-classificatie.json    # Status per lid per seizoen
-├── cohorten/
-│   └── YYYY-YYYY-cohorten.json         # KPI's per geboortejaar-cohort
-├── signalering/
-│   └── YYYY-YYYY-alerts.json           # Overschrijdingen en signalen
-└── benchmark/
-    ├── config.json                      # Concurrenten-configuratie
-    └── knkv-kwartaal/
-        ├── raw/                         # Ruwe KNKV PDF's
-        ├── YYYY-QN.json                 # Geparsed per kwartaal
-        └── SCHEMA.md                    # JSON-schema documentatie
+data/ledenverloop/benchmark/
+├── config.json                   # Concurrenten-configuratie
+└── knkv-kwartaal/
+    ├── raw/                      # Ruwe KNKV PDF's
+    ├── YYYY-QN.json              # Geparsed per kwartaal
+    └── SCHEMA.md                 # JSON-schema documentatie
 ```
 
 Bondige samenvatting met signaleringen, benchmark-positie en aanbevelingen voor technisch beleid.
