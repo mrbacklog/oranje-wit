@@ -84,6 +84,7 @@ export interface TeamData {
   alias: string | null;
   categorie: TeamCategorie;
   kleur: Kleur | null;
+  teamType: string | null;
   niveau: string | null;
   volgorde: number;
   selectieGroepId: string | null;

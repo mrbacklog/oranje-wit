@@ -3,7 +3,6 @@
 import { useDraggable } from "@dnd-kit/core";
 import type { TeamSpelerData, SpelerData, HuidigData, DetailLevel } from "./types";
 import { STATUS_KLEUREN, kleurIndicatie, KLEUR_DOT, korfbalLeeftijd } from "./types";
-import SpelerAvatar from "@/components/ui/SpelerAvatar";
 
 interface TeamSpelerRijProps {
   teamSpeler: TeamSpelerData;
@@ -45,63 +44,45 @@ export default function TeamSpelerRij({
     <div
       ref={setNodeRef}
       style={style}
-      className={`group flex items-center gap-1.5 rounded px-2 py-1 text-sm ${
+      className={`flex flex-col rounded px-2 py-0.5 ${
         isDragging ? "bg-gray-100 opacity-50" : "hover:bg-gray-50"
       }`}
     >
-      {/* Drag handle */}
-      {(dl === "detail" || dl === "focus") && (
-        <span
-          {...listeners}
-          {...attributes}
-          className="shrink-0 cursor-grab text-xs text-gray-300 hover:text-gray-500"
-          title="Versleep"
-        >
-          &#9776;
-        </span>
-      )}
-
-      {/* Avatar */}
-      {(dl === "detail" || dl === "focus") && (
-        <SpelerAvatar spelerId={speler.id} naam={speler.roepnaam} size="xs" />
-      )}
-
-      {/* Status dot */}
-      <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${STATUS_KLEUREN[status]}`} />
-
-      {/* Naam */}
-      <span
-        className={`flex-1 truncate text-xs text-gray-800 ${
-          onSpelerClick ? "cursor-pointer hover:text-orange-600" : ""
-        }`}
-        onClick={onSpelerClick ? () => onSpelerClick(speler) : undefined}
-      >
-        {speler.roepnaam} {speler.achternaam}
-      </span>
-
-      {/* Korfballeeftijd + kleurindicatie */}
-      {(dl === "detail" || dl === "focus") && (
-        <span
-          className="inline-flex shrink-0 items-center gap-0.5"
-          title={`Geboortejaar ${speler.geboortejaar}`}
-        >
-          {kleur && <span className={`h-1 w-1 rounded-full ${KLEUR_DOT[kleur]}`} />}
-          <span className="text-[10px] text-gray-400">{leeftijd.toFixed(2)}</span>
-        </span>
-      )}
-
-      {/* Geslacht */}
-      {(dl === "detail" || dl === "focus") && (
-        <span className="shrink-0 text-[10px]">
+      {/* Regel 1: drag handle + geslacht + status + naam + kleur-dot */}
+      <div className="flex items-center gap-1">
+        {(dl === "detail" || dl === "focus") && (
+          <span
+            {...listeners}
+            {...attributes}
+            className="shrink-0 cursor-grab text-[10px] text-gray-300 hover:text-gray-500"
+            title="Versleep"
+          >
+            &#9776;
+          </span>
+        )}
+        <span className="shrink-0 text-[10px] text-gray-400">
           {speler.geslacht === "M" ? "\u2642" : "\u2640"}
         </span>
-      )}
-
-      {/* Huidig team */}
-      {(dl === "detail" || dl === "focus") && vorigTeam && (
-        <span className="max-w-[50px] shrink-0 truncate text-[9px] text-gray-400" title={vorigTeam}>
-          {vorigTeam}
+        <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${STATUS_KLEUREN[status]}`} />
+        <span
+          className={`flex-1 truncate text-xs text-gray-800 ${
+            onSpelerClick ? "cursor-pointer hover:text-orange-600" : ""
+          }`}
+          onClick={onSpelerClick ? () => onSpelerClick(speler) : undefined}
+        >
+          {speler.roepnaam} {speler.achternaam}
         </span>
+        {(dl === "detail" || dl === "focus") && kleur && (
+          <span className={`h-2 w-2 shrink-0 rounded-full ${KLEUR_DOT[kleur]}`} />
+        )}
+      </div>
+
+      {/* Regel 2: eerder team + leeftijd */}
+      {(dl === "detail" || dl === "focus") && (
+        <div className="flex items-center gap-1 pl-5 text-[9px] text-gray-400">
+          <span className="flex-1 truncate">{vorigTeam ?? "\u2014"}</span>
+          <span>{leeftijd.toFixed(1)}</span>
+        </div>
       )}
     </div>
   );

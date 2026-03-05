@@ -118,7 +118,6 @@ export default function TeamKaart({
               {...dragHandleListeners}
               className="cursor-grab p-0.5 text-gray-300 hover:text-gray-500 active:cursor-grabbing"
               title="Sleep om team te verplaatsen"
-              onPointerDown={(e) => e.stopPropagation()}
             >
               <svg className="h-3.5 w-3.5" viewBox="0 0 10 16" fill="currentColor">
                 <circle cx="3" cy="2" r="1.2" />
@@ -247,27 +246,12 @@ export default function TeamKaart({
           {"♀"}
         </div>
       ) : (
-        <div className="min-h-[60px] flex-1 px-1 py-1">
+        <div className="min-h-15 flex-1 px-1 py-1">
           {team.spelers.length === 0 ? (
             <p className="py-3 text-center text-[10px] text-gray-400">Sleep spelers hierheen</p>
-          ) : (
+          ) : team.teamType === "VIERTAL" || dl === "compact" ? (
+            /* 4-tal of compact: gestapeld — dames boven, heren onder */
             <>
-              {heren.length > 0 && (
-                <>
-                  <div className="px-2 pt-1 text-[9px] font-medium tracking-wide text-blue-500 uppercase">
-                    Heren ({heren.length})
-                  </div>
-                  {heren.map((ts) => (
-                    <TeamSpelerRij
-                      key={ts.id}
-                      teamSpeler={ts}
-                      teamId={team.id}
-                      detailLevel={dl}
-                      onSpelerClick={onSpelerClick}
-                    />
-                  ))}
-                </>
-              )}
               {dames.length > 0 && (
                 <>
                   <div className="px-2 pt-1 text-[9px] font-medium tracking-wide text-pink-500 uppercase">
@@ -284,7 +268,59 @@ export default function TeamKaart({
                   ))}
                 </>
               )}
+              {heren.length > 0 && (
+                <>
+                  <div className="px-2 pt-1 text-[9px] font-medium tracking-wide text-blue-500 uppercase">
+                    Heren ({heren.length})
+                  </div>
+                  {heren.map((ts) => (
+                    <TeamSpelerRij
+                      key={ts.id}
+                      teamSpeler={ts}
+                      teamId={team.id}
+                      detailLevel={dl}
+                      onSpelerClick={onSpelerClick}
+                    />
+                  ))}
+                </>
+              )}
             </>
+          ) : (
+            /* 8-tal: side-by-side — dames links, heren rechts */
+            <div className="grid grid-cols-2 gap-x-0.5">
+              <div>
+                {dames.length > 0 && (
+                  <div className="px-2 pt-1 text-[9px] font-medium tracking-wide text-pink-500 uppercase">
+                    Dames ({dames.length})
+                  </div>
+                )}
+                {dames.map((ts) => (
+                  <TeamSpelerRij
+                    key={ts.id}
+                    teamSpeler={ts}
+                    teamId={team.id}
+                    detailLevel={dl}
+                    onSpelerClick={onSpelerClick}
+                  />
+                ))}
+              </div>
+              <div>
+                {heren.length > 0 && (
+                  <div className="px-2 pt-1 text-[9px] font-medium tracking-wide text-blue-500 uppercase">
+                    Heren ({heren.length})
+                  </div>
+                )}
+                {heren.map((ts) => (
+                  <TeamSpelerRij
+                    key={ts.id}
+                    teamSpeler={ts}
+                    teamId={team.id}
+                    detailLevel={dl}
+                    onSpelerClick={onSpelerClick}
+                  />
+                ))}
+              </div>
+            </div>
           )}
         </div>
       )}

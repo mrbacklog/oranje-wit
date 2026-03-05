@@ -570,6 +570,7 @@ model Team {
   alias     String?
   categorie TeamCategorie
   kleur     Kleur?
+  teamType  TeamType?
   niveau    String?
   volgorde  Int      @default(0)
 
@@ -607,6 +608,11 @@ enum ValidatieStatus {
   ORANJE
   ROOD
   ONBEKEND
+}
+
+enum TeamType {
+  VIERTAL
+  ACHTTAL
 }
 
 // ============================================================

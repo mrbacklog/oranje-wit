@@ -16,6 +16,7 @@ import {
 import {
   deleteTeam,
   updateTeam,
+  updateTeamType,
   koppelSelectie,
   ontkoppelSelectieMetVerdeling,
 } from "@/app/scenarios/team-actions";
@@ -92,6 +93,13 @@ export function useScenarioEditor(scenario: ScenarioData, alleSpelers: SpelerDat
     );
     startTransition(() => {
       updateTeam(teamId, data);
+    });
+  }, []);
+
+  const handleUpdateTeamType = useCallback((teamId: string, teamType: "VIERTAL" | null) => {
+    setTeams((prev) => prev.map((t) => (t.id !== teamId ? t : { ...t, teamType })));
+    startTransition(() => {
+      updateTeamType(teamId, teamType);
     });
   }, []);
 
@@ -221,6 +229,7 @@ export function useScenarioEditor(scenario: ScenarioData, alleSpelers: SpelerDat
         alias: null,
         categorie: data.categorie,
         kleur: data.kleur ?? null,
+        teamType: null,
         niveau: null,
         volgorde: teams.length,
         selectieGroepId: null,
@@ -400,6 +409,7 @@ export function useScenarioEditor(scenario: ScenarioData, alleSpelers: SpelerDat
     handleSpelerClick,
     handleEditTeam,
     handleUpdateTeam,
+    handleUpdateTeamType,
     refreshTeams,
     handleToggle,
     handleToggleAlles,

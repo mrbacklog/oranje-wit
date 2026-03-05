@@ -29,6 +29,7 @@ interface TeamEditPanelProps {
   onClose: () => void;
   onSpelerClick?: (speler: SpelerData) => void;
   onUpdateTeam: (teamId: string, data: TeamUpdateData) => void;
+  onUpdateTeamType: (teamId: string, teamType: "VIERTAL" | null) => void;
   onKoppelSelectie: (teamIds: string[]) => void;
   onOntkoppelSelectie: (leiderId: string) => void;
 }
@@ -56,6 +57,7 @@ export default function TeamEditPanel({
   onClose,
   onSpelerClick,
   onUpdateTeam,
+  onUpdateTeamType,
   onKoppelSelectie,
   onOntkoppelSelectie,
 }: TeamEditPanelProps) {
@@ -254,6 +256,34 @@ export default function TeamEditPanel({
             </div>
           </div>
         )}
+
+        {/* 4-tal / 8-tal toggle — alleen voor B-categorie met kleur blauw/groen/geel */}
+        {categorie === "B_CATEGORIE" &&
+          (kleur === "BLAUW" || kleur === "GROEN" || kleur === "GEEL") && (
+            <div>
+              <label className="mb-2 block text-xs font-medium text-gray-600">Team type</label>
+              <div className="flex gap-1.5">
+                {(
+                  [
+                    { value: null, label: "8-tal" },
+                    { value: "VIERTAL", label: "4-tal" },
+                  ] as const
+                ).map(({ value, label }) => (
+                  <button
+                    key={label}
+                    onClick={() => onUpdateTeamType(team.id, value)}
+                    className={`rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors ${
+                      team.teamType === value
+                        ? "bg-orange-100 text-orange-700 ring-1 ring-orange-300"
+                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
         {categorie === "A_CATEGORIE" && (
           <div>

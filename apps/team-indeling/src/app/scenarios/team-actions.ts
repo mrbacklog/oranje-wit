@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma, anyTeam } from "@/lib/db/prisma";
-import type { TeamCategorie, Kleur } from "@oranje-wit/database";
+import type { TeamCategorie, Kleur, TeamType } from "@oranje-wit/database";
 import { revalidatePath } from "next/cache";
 import { assertBewerkbaar } from "@/lib/seizoen";
 
@@ -40,6 +40,18 @@ export async function updateTeam(
       ...(data.kleur !== undefined && { kleur: data.kleur }),
       ...(data.naam !== undefined && { naam: data.naam }),
     },
+  });
+  revalidatePath("/scenarios");
+}
+
+/**
+ * Stel het teamtype in (VIERTAL, ACHTTAL of null = standaard 8-tal).
+ */
+export async function updateTeamType(teamId: string, teamType: TeamType | null) {
+  await assertTeamBewerkbaar(teamId);
+  await anyTeam.update({
+    where: { id: teamId },
+    data: { teamType },
   });
   revalidatePath("/scenarios");
 }

@@ -81,7 +81,6 @@ export default function SelectieBlok({
               {...dragHandleListeners}
               className="cursor-grab p-0.5 text-orange-300 hover:text-orange-500 active:cursor-grabbing"
               title="Sleep om selectie te verplaatsen"
-              onPointerDown={(e) => e.stopPropagation()}
             >
               <svg className="h-3.5 w-3.5" viewBox="0 0 10 16" fill="currentColor">
                 <circle cx="3" cy="2" r="1.2" />

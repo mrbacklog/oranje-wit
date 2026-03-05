@@ -175,29 +175,30 @@ export default function Werkgebied({
             </div>
           ) : (
             <SortableContext items={sortableIds} strategy={rectSortingStrategy}>
-              <div className="grid auto-rows-min grid-cols-1 gap-4 p-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-                {/* Selectie-groepen */}
+              <div className="grid auto-rows-min grid-cols-2 gap-4 p-4 md:grid-cols-4">
+                {/* Selectie-groepen — altijd 2 kolommen breed */}
                 {Array.from(selectieGroepen.entries()).map(([leiderId, groepTeams]) => (
-                  <SortableSelectieBlok
-                    key={`selectie-${leiderId}`}
-                    sortId={`selectie-${leiderId}`}
-                    teams={groepTeams}
-                    validatieMap={validatieMap}
-                    detailLevel={detailLevel}
-                    onOntkoppel={onOntkoppelSelectie}
-                    onDelete={onDeleteTeam}
-                    onSpelerClick={onSpelerClick}
-                    onEditTeam={onEditTeam}
-                  />
+                  <div key={`selectie-${leiderId}`} className="col-span-2">
+                    <SortableSelectieBlok
+                      sortId={`selectie-${leiderId}`}
+                      teams={groepTeams}
+                      validatieMap={validatieMap}
+                      detailLevel={detailLevel}
+                      onOntkoppel={onOntkoppelSelectie}
+                      onDelete={onDeleteTeam}
+                      onSpelerClick={onSpelerClick}
+                      onEditTeam={onEditTeam}
+                    />
+                  </div>
                 ))}
-                {/* Losse teams */}
+                {/* Losse teams — 4-tal = 1 kolom, 8-tal = 2 kolommen */}
                 {losseTeams.map((team) => (
                   <div
                     key={team.id}
                     onClick={() => toggleSelectie(team.id)}
                     className={`cursor-pointer rounded-lg transition-all ${
-                      geselecteerd.has(team.id) ? "ring-2 ring-orange-400 ring-offset-1" : ""
-                    }`}
+                      team.teamType === "VIERTAL" ? "col-span-1" : "col-span-2"
+                    } ${geselecteerd.has(team.id) ? "ring-2 ring-orange-400 ring-offset-1" : ""}`}
                   >
                     <SortableTeamKaart
                       sortId={team.id}
