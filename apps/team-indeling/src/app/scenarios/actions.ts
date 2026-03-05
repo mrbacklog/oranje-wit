@@ -13,7 +13,7 @@ import { assertBewerkbaar } from "@/lib/seizoen";
  * Guard: controleer of het team bij een bewerkbaar seizoen hoort.
  */
 async function assertTeamBewerkbaar(teamId: string) {
-  const team = await prisma.team.findUniqueOrThrow({
+  const team = (await (prisma.team.findUniqueOrThrow as any)({
     where: { id: teamId },
     select: {
       versie: {
@@ -24,7 +24,7 @@ async function assertTeamBewerkbaar(teamId: string) {
         },
       },
     },
-  });
+  })) as { versie: { scenario: { concept: { blauwdruk: { seizoen: string } } } } };
   await assertBewerkbaar(team.versie.scenario.concept.blauwdruk.seizoen);
 }
 
@@ -281,7 +281,7 @@ export async function createTeam(
   });
   const volgorde = (laatsteTeam?.volgorde ?? -1) + 1;
 
-  const team = await prisma.team.create({
+  const team = (await (prisma.team.create as any)({
     data: {
       versieId,
       naam: data.naam,
@@ -289,7 +289,7 @@ export async function createTeam(
       kleur: data.kleur ?? null,
       volgorde,
     },
-  });
+  })) as { id: string };
   revalidatePath("/scenarios");
   return team;
 }
