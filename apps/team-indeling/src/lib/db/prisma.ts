@@ -5,7 +5,7 @@ export { prisma } from "@oranje-wit/database";
 // te vermijden bij CI (Linux Prisma binary genereert diepere type-structuur dan Windows).
 import { prisma as _prisma } from "@oranje-wit/database";
 
-export const anyTeam = _prisma.team as {
+export const anyTeam = _prisma.team as unknown as {
   findMany: (...args: any[]) => Promise<any[]>;
   findFirst: (...args: any[]) => Promise<any | null>;
   findUniqueOrThrow: (...args: any[]) => Promise<any>;
