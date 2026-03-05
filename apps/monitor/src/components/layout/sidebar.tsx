@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 const NAV_ITEMS = [
@@ -27,8 +28,8 @@ export function Sidebar({ onClose }: SidebarProps) {
     >
       {/* Branding */}
       <div className="border-b border-gray-200 px-6 py-5">
-        <h1 className="text-ow-oranje text-lg font-bold">Oranje Wit</h1>
-        <p className="text-xs text-gray-500">Verenigingsmonitor</p>
+        <h1 className="text-ow-oranje text-lg font-bold">c.k.v. Oranje Wit</h1>
+        <p className="text-xs text-gray-500">TC-monitor</p>
       </div>
 
       {/* Navigatie */}
@@ -53,6 +54,17 @@ export function Sidebar({ onClose }: SidebarProps) {
           );
         })}
       </nav>
+
+      {/* Logo onderin */}
+      <div className="border-t border-gray-100 px-6 py-4">
+        <Image
+          src="/logo-ow.png"
+          alt="c.k.v. Oranje Wit"
+          width={80}
+          height={80}
+          className="opacity-80"
+        />
+      </div>
     </aside>
   );
 }

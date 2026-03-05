@@ -118,7 +118,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               />
             </svg>
           </button>
-          <span className="text-ow-oranje ml-3 text-sm font-bold">Oranje Wit</span>
+          <span className="text-ow-oranje ml-3 text-sm font-bold">c.k.v. Oranje Wit</span>
         </div>
 
         <div className="p-4 md:p-8">{children}</div>

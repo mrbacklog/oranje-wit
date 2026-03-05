@@ -4,7 +4,7 @@ import { AppShell } from "@/components/layout/app-shell";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Verenigingsmonitor | c.k.v. Oranje Wit",
+  title: "TC-monitor | c.k.v. Oranje Wit",
   description: "TC-monitor voor gezonde groei",
 };
 
