@@ -77,7 +77,7 @@ export async function POST(request: Request) {
     });
 
     // Bouw de prompt
-    const teamInput = teams.map((t) => ({
+    const teamInput = teams.map((t: any) => ({
       naam: t.naam,
       categorie: t.categorie,
       kleur: t.kleur,

@@ -344,7 +344,7 @@ export async function importData(data: ExportData): Promise<ImportResult> {
     const huidigeSet = new Set(huidigeSpelerIds);
 
     const nieuweIds = huidigeSpelerIds.filter((id) => !vorigeSet.has(id));
-    const wegIds = vorigeImport.spelerIds.filter((id) => !huidigeSet.has(id));
+    const wegIds = (vorigeImport.spelerIds as string[]).filter((id) => !huidigeSet.has(id));
 
     // Haal namen op van verdwenen spelers (staan niet in de huidige export)
     const wegSpelers =

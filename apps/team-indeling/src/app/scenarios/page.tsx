@@ -125,12 +125,12 @@ export default async function ScenariosPage() {
                     <span>&middot;</span>
                     <span>
                       {laatsteVersie.teams
-                        .map((t) =>
+                        .map((t: any) =>
                           t.kleur
                             ? (KLEUR_LABELS[t.kleur] ?? t.kleur)
                             : (CATEGORIE_LABELS[t.categorie] ?? t.categorie)
                         )
-                        .filter((v, i, a) => a.indexOf(v) === i)
+                        .filter((v: any, i: any, a: any) => a.indexOf(v) === i)
                         .join(", ")}
                     </span>
                   </div>

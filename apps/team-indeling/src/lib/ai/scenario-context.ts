@@ -152,7 +152,7 @@ export async function getSpelerDetails(spelerId: string) {
     spelerspad: spelerspad?.slice(0, 5) ?? [],
     teamgenoten: teamgenoten?.slice(0, 10) ?? [],
     volgendSeizoen,
-    evaluaties: speler.evaluaties.map((e) => ({
+    evaluaties: speler.evaluaties.map((e: any) => ({
       seizoen: e.seizoen,
       ronde: e.ronde,
       type: e.type,
@@ -190,12 +190,15 @@ export async function getVoorgaandeIndeling(seizoen: string) {
   }
 
   // Enriche met namen
-  const relCodes = rows.map((r) => r.rel_code);
+  const relCodes = (rows as any[]).map((r) => r.rel_code);
   const spelers = await prisma.speler.findMany({
     where: { id: { in: relCodes } },
     select: { id: true, roepnaam: true, achternaam: true, geboortejaar: true },
   });
-  const spelerMap = new Map(spelers.map((s) => [s.id, s]));
+  const spelerMap = new Map<
+    string,
+    { id: string; roepnaam: string; achternaam: string; geboortejaar: number }
+  >(spelers.map((s) => [s.id, s]));
 
   const result: {
     team: string;
@@ -233,13 +236,13 @@ export async function getTeamsterktes(seizoen: string) {
 
   // Filter alleen pools waar OW in speelt
   return standen
-    .filter((s) => s.regels.some((r) => r.isOW))
+    .filter((s) => s.regels.some((r: any) => r.isOW))
     .map((s) => ({
       pool: s.pool,
       niveau: s.niveau,
       periode: s.periode,
       standDatum: s.standDatum?.toISOString().slice(0, 10) ?? null,
-      regels: s.regels.map((r) => ({
+      regels: s.regels.map((r: any) => ({
         positie: r.positie,
         team: r.teamNaam,
         isOW: r.isOW,

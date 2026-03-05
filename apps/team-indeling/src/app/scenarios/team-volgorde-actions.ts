@@ -1,6 +1,6 @@
 "use server";
 
-import { prisma, anyTeam } from "@/lib/db/prisma";
+import { prisma } from "@/lib/db/prisma";
 import { revalidatePath } from "next/cache";
 import { assertBewerkbaar } from "@/lib/seizoen";
 

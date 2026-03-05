@@ -120,16 +120,16 @@ export default async function DefinitiefPage() {
   // Sorteer A-categorie teams op naam (U15-1 boven U15-2, etc.)
   const aTeams = categorieGroepen.get("A_CATEGORIE");
   if (aTeams) {
-    aTeams.sort((a, b) => a.naam.localeCompare(b.naam, "nl"));
+    aTeams.sort((a: any, b: any) => a.naam.localeCompare(b.naam, "nl"));
   }
 
   // Volgorde: B_CATEGORIE, A_CATEGORIE, SENIOREN
   const categorieVolgorde = ["B_CATEGORIE", "A_CATEGORIE", "SENIOREN"];
   const gesorteerdeCategorieen = [...categorieGroepen.entries()].sort(
-    (a, b) => categorieVolgorde.indexOf(a[0]) - categorieVolgorde.indexOf(b[0])
+    (a: any, b: any) => categorieVolgorde.indexOf(a[0]) - categorieVolgorde.indexOf(b[0])
   );
 
-  const totaalSpelers = teams.reduce((sum, t) => sum + t.spelers.length, 0);
+  const totaalSpelers = teams.reduce((sum: any, t: any) => sum + t.spelers.length, 0);
 
   return (
     <div className="space-y-6">
@@ -170,7 +170,7 @@ export default async function DefinitiefPage() {
             {CATEGORIE_LABELS[categorie] ?? categorie}
           </h3>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {catTeams.map((team) => (
+            {catTeams.map((team: any) => (
               <div
                 key={team.id}
                 className={`overflow-hidden rounded-lg print:break-inside-avoid ${teamKaartKlassen(categorie, team.kleur)}`}
@@ -216,7 +216,7 @@ export default async function DefinitiefPage() {
                 {/* Spelers */}
                 <ul className="divide-y divide-gray-50">
                   {team.spelers
-                    .sort((a, b) => {
+                    .sort((a: any, b: any) => {
                       // Sorteer op achternaam
                       const nameCompare = a.speler.achternaam.localeCompare(
                         b.speler.achternaam,
@@ -225,7 +225,7 @@ export default async function DefinitiefPage() {
                       if (nameCompare !== 0) return nameCompare;
                       return a.speler.roepnaam.localeCompare(b.speler.roepnaam, "nl");
                     })
-                    .map((ts) => (
+                    .map((ts: any) => (
                       <li
                         key={ts.id}
                         className="flex items-center justify-between px-4 py-1.5 text-sm"
@@ -248,7 +248,7 @@ export default async function DefinitiefPage() {
                 {team.staf.length > 0 && (
                   <div className="border-t border-gray-100 bg-gray-50 px-4 py-2">
                     <p className="text-xs text-gray-500">
-                      Staf: {team.staf.map((s) => `${s.staf.naam} (${s.rol})`).join(", ")}
+                      Staf: {team.staf.map((s: any) => `${s.staf.naam} (${s.rol})`).join(", ")}
                     </p>
                   </div>
                 )}
