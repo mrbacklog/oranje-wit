@@ -47,11 +47,13 @@ export default function ValidatieRapport({
     tellingen[v.status]++;
   }
 
-  // Sorteer teams op ernst
+  // Sorteer teams: eerst op ernst (ROOD → ORANJE → GROEN), dan op volgorde
   const gesorteerdeTeams = [...teams].sort((a, b) => {
     const sa = validatieMap.get(a.id)?.status ?? "GROEN";
     const sb = validatieMap.get(b.id)?.status ?? "GROEN";
-    return STATUS_VOLGORDE.indexOf(sa) - STATUS_VOLGORDE.indexOf(sb);
+    const statusDiff = STATUS_VOLGORDE.indexOf(sa) - STATUS_VOLGORDE.indexOf(sb);
+    if (statusDiff !== 0) return statusDiff;
+    return a.volgorde - b.volgorde;
   });
 
   return (

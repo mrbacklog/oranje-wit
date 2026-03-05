@@ -11,6 +11,7 @@ oranje-wit/
 ├── apps/
 │   ├── monitor/          # Verenigingsmonitor (Next.js 16 dashboards)
 │   ├── team-indeling/    # Team-Indeling tool (Next.js 16, Tailwind CSS 4, NextAuth v5, dnd-kit)
+│   ├── evaluatie/        # Evaluatie-app (Next.js 16, spelerevaluaties, zelfevaluaties)
 │   └── mcp/              # MCP servers (database, Railway)
 ├── packages/
 │   ├── database/         # @oranje-wit/database — Prisma schema + client
@@ -44,6 +45,8 @@ oranje-wit/
 |---|---|
 | `pnpm dev:ti` | Start Team-Indeling (Next.js) op poort **4100** |
 | `pnpm dev:monitor` | Start Verenigingsmonitor op poort **4102** |
+| `pnpm dev:evaluatie` | Start Evaluatie-app op poort **4104** |
+| `pnpm build:evaluatie` | Build Evaluatie-app |
 | `pnpm db:generate` | Genereer Prisma client |
 | `pnpm db:push` | Push schema naar database |
 | `pnpm import` | Importeer Verenigingsmonitor data |
@@ -51,6 +54,7 @@ oranje-wit/
 | `pnpm test` | Draai alle tests (Vitest) |
 | `pnpm test:ti` | Tests team-indeling |
 | `pnpm test:monitor` | Tests monitor |
+| `pnpm test:evaluatie` | Tests evaluatie |
 | `pnpm format` | Format alles met Prettier |
 | `pnpm format:check` | Check formatting (CI) |
 
@@ -121,6 +125,9 @@ Lid, LidFoto, Seizoen, OWTeam, TeamPeriode, Ledenverloop, CohortSeizoen, Signale
 **Team-Indeling** (PascalCase):
 User, Speler, Staf, Blauwdruk, Pin, Concept, Scenario, Versie, Team, TeamSpeler, TeamStaf, Evaluatie, LogEntry, Import, ReferentieTeam
 
+**Evaluatie**:
+EvaluatieRonde, Coordinator, CoordinatorTeam, EvaluatieUitnodiging, SpelerZelfEvaluatie, EmailTemplate
+
 ### Competitie-datamodel
 
 ```
@@ -153,6 +160,8 @@ CompetitieSpeler (primaire tabel: 1 per speler × seizoen × competitie)
 - **Team-Indeling leest**: leden, speler_seizoenen, competitie_spelers, retentie
 - **Monitor schrijft**: leden, teams, verloop, cohorten, signalering, competitie_spelers
 - **Monitor leest**: alles (dashboards, signalering, MCP tools)
+- **Evaluatie schrijft**: evaluatierondes, coördinatoren, uitnodigingen, evaluaties, zelfevaluaties, email templates
+- **Evaluatie leest**: leden, competitie_spelers, teams, spelers, staf
 
 ---
 
@@ -272,6 +281,7 @@ Alles draait in één Railway project (`oranje-wit-db`):
 - **GitHub repo**: `mrbacklog/oranje-wit` (publiek, auto-deploy op push naar master)
 - **Monitor**: https://monitor.ckvoranjewit.app (via Cloudflare Worker → Railway)
 - **Team-Indeling**: https://teamindeling.ckvoranjewit.app (via Cloudflare Worker → Railway)
+- **Evaluatie**: https://evaluatie.ckvoranjewit.app (via Cloudflare Worker → Railway)
 - **Database**: `postgres.railway.internal:5432` (intern Railway netwerk)
 - **Build**: per-app Dockerfiles (`apps/*/Dockerfile`), Node 22, pnpm workspace
 - **DNS**: Cloudflare (registrar: IONOS), Worker `railway-proxy` als reverse proxy

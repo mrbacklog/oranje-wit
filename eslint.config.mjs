@@ -32,6 +32,15 @@ export const sharedRules = {
  */
 export default defineConfig([
   {
+    ignores: [
+      "scripts/**",
+      "apps/*/vitest.config.ts",
+      "apps/*/next.config.ts",
+      "apps/*/postcss.config.mjs",
+      "apps/*/eslint.config.mjs",
+    ],
+  },
+  {
     files: ["packages/*/src/**/*.{ts,tsx}", "apps/*/src/**/*.{ts,tsx}"],
     languageOptions: {
       parser: tsParser,

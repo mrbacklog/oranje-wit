@@ -15,4 +15,5 @@ export type Ernst = "kritiek" | "aandacht" | "op_koers";
 
 export * from "./constanten";
 export * from "./api";
+export * from "./evaluatie";
 export { logger } from "./logger";

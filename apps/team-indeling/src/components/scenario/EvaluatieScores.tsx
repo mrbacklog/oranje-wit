@@ -1,6 +1,6 @@
 "use client";
 
-import type { EvaluatieScore, TeamGemiddelde } from "./types";
+import type { EvaluatieScore, TeamGemiddelde } from "@oranje-wit/types";
 
 interface EvaluatieScoresProps {
   scores: EvaluatieScore;
@@ -8,22 +8,31 @@ interface EvaluatieScoresProps {
   toonTeamVergelijking?: boolean;
 }
 
-const MAX_SCORE = 4;
+const SCORE_CONFIG = {
+  niveau: { max: 5, label: "Niveau" },
+  inzet: { max: 3, label: "Inzet" },
+  groei: { max: 4, label: "Groei" },
+  team_plezier: { max: 5, label: "Plezier" },
+  team_ontwikkeling: { max: 5, label: "Ontwikkeling" },
+  team_prestatie: { max: 5, label: "Prestatie" },
+} as const;
 
 function ScoreBalk({
   label,
   waarde,
+  maxScore,
   teamGem,
   toonGem,
 }: {
   label: string;
   waarde: number | undefined;
+  maxScore: number;
   teamGem?: number;
   toonGem?: boolean;
 }) {
   if (waarde == null) return null;
-  const pct = (waarde / MAX_SCORE) * 100;
-  const gemPct = teamGem != null ? (teamGem / MAX_SCORE) * 100 : null;
+  const pct = (waarde / maxScore) * 100;
+  const gemPct = teamGem != null ? (teamGem / maxScore) * 100 : null;
 
   return (
     <div className="flex items-center gap-2">
@@ -42,7 +51,7 @@ function ScoreBalk({
         )}
       </div>
       <span className="w-8 shrink-0 text-[11px] text-gray-500 tabular-nums">
-        {waarde}/{MAX_SCORE}
+        {waarde}/{maxScore}
       </span>
     </div>
   );
@@ -68,20 +77,23 @@ export default function EvaluatieScores({
       {heeftSpelerScores && (
         <div className="space-y-1">
           <ScoreBalk
-            label="Niveau"
+            label={SCORE_CONFIG.niveau.label}
             waarde={scores.niveau}
+            maxScore={SCORE_CONFIG.niveau.max}
             teamGem={teamGem?.niveau}
             toonGem={toonTeamVergelijking}
           />
           <ScoreBalk
-            label="Inzet"
+            label={SCORE_CONFIG.inzet.label}
             waarde={scores.inzet}
+            maxScore={SCORE_CONFIG.inzet.max}
             teamGem={teamGem?.inzet}
             toonGem={toonTeamVergelijking}
           />
           <ScoreBalk
-            label="Groei"
+            label={SCORE_CONFIG.groei.label}
             waarde={scores.groei}
+            maxScore={SCORE_CONFIG.groei.max}
             teamGem={teamGem?.groei}
             toonGem={toonTeamVergelijking}
           />
@@ -97,25 +109,29 @@ export default function EvaluatieScores({
           <div className="space-y-1">
             {scores.team_plezier != null && (
               <div className="flex items-baseline justify-between">
-                <span className="text-[11px] text-gray-600">Plezier</span>
+                <span className="text-[11px] text-gray-600">{SCORE_CONFIG.team_plezier.label}</span>
                 <span className="text-[11px] font-medium text-orange-700 tabular-nums">
-                  {scores.team_plezier}/{MAX_SCORE}
+                  {scores.team_plezier}/{SCORE_CONFIG.team_plezier.max}
                 </span>
               </div>
             )}
             {scores.team_ontwikkeling != null && (
               <div className="flex items-baseline justify-between">
-                <span className="text-[11px] text-gray-600">Ontwikkeling</span>
+                <span className="text-[11px] text-gray-600">
+                  {SCORE_CONFIG.team_ontwikkeling.label}
+                </span>
                 <span className="text-[11px] font-medium text-orange-700 tabular-nums">
-                  {scores.team_ontwikkeling}/{MAX_SCORE}
+                  {scores.team_ontwikkeling}/{SCORE_CONFIG.team_ontwikkeling.max}
                 </span>
               </div>
             )}
             {scores.team_prestatie != null && (
               <div className="flex items-baseline justify-between">
-                <span className="text-[11px] text-gray-600">Prestatie</span>
+                <span className="text-[11px] text-gray-600">
+                  {SCORE_CONFIG.team_prestatie.label}
+                </span>
                 <span className="text-[11px] font-medium text-orange-700 tabular-nums">
-                  {scores.team_prestatie}/{MAX_SCORE}
+                  {scores.team_prestatie}/{SCORE_CONFIG.team_prestatie.max}
                 </span>
               </div>
             )}

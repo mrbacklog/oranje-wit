@@ -67,6 +67,12 @@ function extractSeizoen(rondeNaam: string): string {
   return match[1];
 }
 
+function extractRonde(rondeNaam: string): number {
+  // "2025-2026 Evaluatieronde 1" → 1
+  const match = rondeNaam.match(/Evaluatieronde\s+(\d+)/i);
+  return match ? parseInt(match[1], 10) : 1;
+}
+
 function normalizeName(naam: string): string {
   return naam.trim().toLowerCase().replace(/\s+/g, " ");
 }
@@ -110,8 +116,10 @@ async function importEvaluaties(jsonPath: string) {
   const data: EvaluatieExport = JSON.parse(raw);
 
   const seizoen = extractSeizoen(data.ronde.naam);
+  const ronde = extractRonde(data.ronde.naam);
   console.log(`Seizoen: ${seizoen}`);
-  console.log(`Ronde: ${data.ronde.naam}`);
+  console.log(`Ronde: ${ronde} (${data.ronde.naam})`);
+  console.log(`Type: trainer`);
   console.log(`Teams: ${data.teams.length}\n`);
 
   // Laad alle spelers voor naam-matching
@@ -148,22 +156,25 @@ async function importEvaluaties(jsonPath: string) {
           team_ontwikkeling_toelichting: evaluatie.ontwikkeling.toelichting,
           team_prestatie: evaluatie.prestatie.score,
           team_prestatie_toelichting: evaluatie.prestatie.toelichting,
-          team_naam: team.team_naam,
         };
 
         await prisma.evaluatie.upsert({
           where: {
-            spelerId_seizoen: { spelerId, seizoen },
+            spelerId_seizoen_ronde_type: { spelerId, seizoen, ronde, type: "trainer" },
           },
           create: {
             spelerId,
             seizoen,
+            ronde,
+            type: "trainer",
             scores,
+            teamNaam: team.team_naam,
             opmerking: beoordeling.opmerkingen,
             coach: evaluatie.trainer_naam,
           },
           update: {
             scores,
+            teamNaam: team.team_naam,
             opmerking: beoordeling.opmerkingen,
             coach: evaluatie.trainer_naam,
           },

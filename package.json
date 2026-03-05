@@ -22,6 +22,9 @@
     "test": "pnpm -r run test",
     "test:monitor": "pnpm --filter @oranje-wit/monitor test",
     "test:ti": "pnpm --filter @oranje-wit/team-indeling test",
+    "dev:evaluatie": "pnpm --filter @oranje-wit/evaluatie dev",
+    "build:evaluatie": "pnpm --filter @oranje-wit/evaluatie build",
+    "test:evaluatie": "pnpm --filter @oranje-wit/evaluatie test",
     "test:ui": "pnpm --filter @oranje-wit/ui test",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -29,7 +32,7 @@
   },
   "lint-staged": {
     "*.{ts,tsx,mjs}": [
-      "eslint --fix --max-warnings 0",
+      "eslint --fix --max-warnings 0 --no-warn-ignored",
       "prettier --write"
     ],
     "*.{json,css}": [

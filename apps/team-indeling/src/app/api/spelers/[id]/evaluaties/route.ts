@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db/prisma";
-import type { EvaluatieScore, TeamGemiddelde } from "@/components/scenario/types";
+import type { EvaluatieScore, TeamGemiddelde } from "@oranje-wit/types";
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

@@ -93,6 +93,8 @@ model OWTeam {
   seizoenRef Seizoen       @relation(fields: [seizoen], references: [seizoen])
   periodes   TeamPeriode[]
   aliases    TeamAlias[]
+  coordinatoren  CoordinatorTeam[]
+  uitnodigingen  EvaluatieUitnodiging[]
 
   @@unique([seizoen, owCode])
   @@index([seizoen], map: "idx_teams_seizoen")
@@ -354,6 +356,7 @@ model Speler {
   // Relaties
   teamplaatsingen TeamSpeler[]
   evaluaties      Evaluatie[]
+  zelfEvaluaties  SpelerZelfEvaluatie[]
   pins            Pin[]
   notities        Notitie[]
 
@@ -667,6 +670,12 @@ model Evaluatie {
   coach     String?
   teamNaam  String? @map("team_naam")
 
+  rondeId         String?        @map("ronde_id")
+  evaluatieRonde  EvaluatieRonde? @relation(fields: [rondeId], references: [id])
+  coordinatorMemo String?        @map("coordinator_memo") @db.Text
+  status          String         @default("concept")
+  ingediendOp     DateTime?      @map("ingediend_op") @db.Timestamptz(6)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
@@ -674,6 +683,7 @@ model Evaluatie {
   @@index([seizoen])
   @@index([seizoen, ronde])
   @@index([type])
+  @@index([rondeId])
 }
 
 // ============================================================
@@ -839,4 +849,124 @@ model Actiepunt {
   @@index([blauwdrukId])
   @@index([toegewezenAanId])
   @@index([status])
+}
+
+// ============================================================
+// EVALUATIE-APP (rondes, uitnodigingen, zelfevaluaties)
+// ============================================================
+
+model EvaluatieRonde {
+  id       String @id @default(cuid())
+  seizoen  String
+  ronde    Int
+  naam     String
+  type     String @default("trainer")
+  deadline DateTime @db.Timestamptz(6)
+  status   String @default("concept")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  uitnodigingen EvaluatieUitnodiging[]
+  evaluaties    Evaluatie[]
+
+  @@unique([seizoen, ronde, type])
+  @@map("evaluatie_rondes")
+}
+
+model Coordinator {
+  id    String @id @default(cuid())
+  naam  String
+  email String @unique
+
+  teams CoordinatorTeam[]
+
+  createdAt DateTime @default(now())
+
+  @@map("coordinatoren")
+}
+
+model CoordinatorTeam {
+  id            String      @id @default(cuid())
+  coordinatorId String
+  coordinator   Coordinator @relation(fields: [coordinatorId], references: [id], onDelete: Cascade)
+  owTeamId      Int         @map("ow_team_id")
+  owTeam        OWTeam      @relation(fields: [owTeamId], references: [id])
+  seizoen       String
+
+  @@unique([coordinatorId, owTeamId, seizoen])
+  @@map("coordinator_teams")
+}
+
+model EvaluatieUitnodiging {
+  id      String         @id @default(cuid())
+  rondeId String
+  ronde   EvaluatieRonde @relation(fields: [rondeId], references: [id], onDelete: Cascade)
+
+  type    String
+  email   String
+  naam    String
+
+  owTeamId Int?          @map("ow_team_id")
+  owTeam   OWTeam?       @relation(fields: [owTeamId], references: [id])
+
+  spelerId String?
+
+  token    String @unique @default(cuid())
+
+  emailVerstuurd    DateTime? @map("email_verstuurd") @db.Timestamptz(6)
+  reminderVerstuurd DateTime? @map("reminder_verstuurd") @db.Timestamptz(6)
+  reminderAantal    Int       @default(0) @map("reminder_aantal")
+
+  createdAt DateTime @default(now())
+
+  @@unique([rondeId, email, owTeamId])
+  @@map("evaluatie_uitnodigingen")
+}
+
+model SpelerZelfEvaluatie {
+  id       String @id @default(cuid())
+  spelerId String
+  speler   Speler @relation(fields: [spelerId], references: [id])
+  seizoen  String
+  ronde    Int    @default(1)
+  rondeId  String?
+
+  plezierKorfbal     Int? @map("plezier_korfbal")
+  plezierTeam        Int? @map("plezier_team")
+  plezierUitdaging   Int? @map("plezier_uitdaging")
+  plezierToelichting String? @map("plezier_toelichting") @db.Text
+
+  trainingZin         Int? @map("training_zin")
+  trainingKwaliteit   Int? @map("training_kwaliteit")
+  wedstrijdBeleving   Int? @map("wedstrijd_beleving")
+  trainingVerbetering Int? @map("training_verbetering")
+  trainingToelichting String? @map("training_toelichting") @db.Text
+
+  toekomstIntentie    String? @map("toekomst_intentie")
+  toekomstAmbitie     String? @map("toekomst_ambitie")
+  toekomstToelichting String? @map("toekomst_toelichting") @db.Text
+
+  algemeenOpmerking   String? @map("algemeen_opmerking") @db.Text
+
+  coordinatorMemo         String?   @map("coordinator_memo") @db.Text
+  status                  String    @default("concept")
+  ingediendOp             DateTime? @map("ingediend_op") @db.Timestamptz(6)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@unique([spelerId, seizoen, ronde])
+  @@map("speler_zelf_evaluaties")
+}
+
+model EmailTemplate {
+  id          String @id @default(cuid())
+  sleutel     String @unique
+  onderwerp   String
+  inhoudHtml  String @map("inhoud_html") @db.Text
+
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@map("email_templates")
 }
