@@ -1,13 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import type {
-  SpelerData,
-  HuidigData,
-  SpelerspadEntry,
-  EvaluatieData,
-  TeamGemiddelde,
-} from "./types";
+import type { EvaluatieData, TeamGemiddelde } from "@oranje-wit/types";
+import type { SpelerData, HuidigData, SpelerspadEntry } from "./types";
 import {
   STATUS_KLEUREN,
   kleurIndicatie,

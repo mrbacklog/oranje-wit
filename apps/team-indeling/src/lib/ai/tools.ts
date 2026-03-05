@@ -367,6 +367,7 @@ export async function handleTool(
           kleur: kleur as "BLAUW" | "GROEN" | "GEEL" | "ORANJE" | "ROOD",
           volgorde: aantalTeams,
         },
+        select: { id: true },
       });
       revalidatePath("/scenarios");
 
