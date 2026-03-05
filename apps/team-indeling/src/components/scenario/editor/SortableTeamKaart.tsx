@@ -10,7 +10,15 @@ interface SortableTeamKaartProps extends TeamKaartProps {
 }
 
 export default function SortableTeamKaart({ sortId, ...kaartProps }: SortableTeamKaartProps) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    setActivatorNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
     id: sortId,
     data: { type: "team-kaart", teamId: kaartProps.team.id },
   });
@@ -22,17 +30,12 @@ export default function SortableTeamKaart({ sortId, ...kaartProps }: SortableTea
   };
 
   return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      {...attributes}
-      {...listeners}
-      onPointerDown={(e) => {
-        e.stopPropagation();
-        listeners?.onPointerDown?.(e);
-      }}
-    >
-      <TeamKaart {...kaartProps} />
+    <div ref={setNodeRef} style={style} {...attributes} onPointerDown={(e) => e.stopPropagation()}>
+      <TeamKaart
+        {...kaartProps}
+        dragHandleRef={setActivatorNodeRef}
+        dragHandleListeners={listeners}
+      />
     </div>
   );
 }

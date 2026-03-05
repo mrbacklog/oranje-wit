@@ -1,6 +1,7 @@
 "use client";
 
 import { useDroppable } from "@dnd-kit/core";
+import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import type { TeamData, SpelerData, DetailLevel } from "./types";
 import type { TeamValidatie } from "@/lib/validatie/regels";
 import { korfbalLeeftijd, sorteerSpelers } from "./types";
@@ -10,6 +11,8 @@ export interface SelectieBlokProps {
   teams: TeamData[];
   validatieMap?: Map<string, TeamValidatie>;
   detailLevel?: DetailLevel;
+  dragHandleRef?: (el: HTMLElement | null) => void;
+  dragHandleListeners?: SyntheticListenerMap;
   onOntkoppel: (groepLeiderId: string) => void;
   onDelete: (teamId: string) => void;
   onSpelerClick?: (speler: SpelerData, teamId?: string) => void;
@@ -20,6 +23,8 @@ export default function SelectieBlok({
   teams,
   validatieMap,
   detailLevel,
+  dragHandleRef,
+  dragHandleListeners,
   onOntkoppel,
   onDelete: _onDelete,
   onSpelerClick,
@@ -70,6 +75,24 @@ export default function SelectieBlok({
       {/* Selectie header */}
       <div className="flex items-center justify-between rounded-t-lg border-b border-orange-200 bg-orange-50 px-3 py-2">
         <div className="flex items-center gap-2">
+          {dragHandleRef && (
+            <button
+              ref={dragHandleRef}
+              {...dragHandleListeners}
+              className="cursor-grab p-0.5 text-orange-300 hover:text-orange-500 active:cursor-grabbing"
+              title="Sleep om selectie te verplaatsen"
+              onPointerDown={(e) => e.stopPropagation()}
+            >
+              <svg className="h-3.5 w-3.5" viewBox="0 0 10 16" fill="currentColor">
+                <circle cx="3" cy="2" r="1.2" />
+                <circle cx="7" cy="2" r="1.2" />
+                <circle cx="3" cy="8" r="1.2" />
+                <circle cx="7" cy="8" r="1.2" />
+                <circle cx="3" cy="14" r="1.2" />
+                <circle cx="7" cy="14" r="1.2" />
+              </svg>
+            </button>
+          )}
           <span className="text-[10px] font-medium tracking-wide text-orange-600 uppercase">
             Selectie
           </span>

@@ -10,7 +10,15 @@ interface SortableSelectieBlokProps extends SelectieBlokProps {
 }
 
 export default function SortableSelectieBlok({ sortId, ...blokProps }: SortableSelectieBlokProps) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    setActivatorNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
     id: sortId,
     data: { type: "selectie-blok", teamId: blokProps.teams[0]?.id },
   });
@@ -22,17 +30,12 @@ export default function SortableSelectieBlok({ sortId, ...blokProps }: SortableS
   };
 
   return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      {...attributes}
-      {...listeners}
-      onPointerDown={(e) => {
-        e.stopPropagation();
-        listeners?.onPointerDown?.(e);
-      }}
-    >
-      <SelectieBlok {...blokProps} />
+    <div ref={setNodeRef} style={style} {...attributes} onPointerDown={(e) => e.stopPropagation()}>
+      <SelectieBlok
+        {...blokProps}
+        dragHandleRef={setActivatorNodeRef}
+        dragHandleListeners={listeners}
+      />
     </div>
   );
 }

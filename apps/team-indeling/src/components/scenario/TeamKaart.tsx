@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useDroppable } from "@dnd-kit/core";
+import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import type { TeamData, SpelerData, DetailLevel } from "./types";
 import type { TeamValidatie } from "@/lib/validatie/regels";
 import {
@@ -27,6 +28,8 @@ export interface TeamKaartProps {
   validatie?: TeamValidatie;
   notitieCount?: number;
   detailLevel?: DetailLevel;
+  dragHandleRef?: (el: HTMLElement | null) => void;
+  dragHandleListeners?: SyntheticListenerMap;
   onDelete?: (teamId: string) => void;
   onSpelerClick?: (speler: SpelerData) => void;
   onEditTeam?: (teamId: string) => void;
@@ -38,6 +41,8 @@ export default function TeamKaart({
   validatie,
   notitieCount,
   detailLevel,
+  dragHandleRef,
+  dragHandleListeners,
   onDelete,
   onSpelerClick,
   onEditTeam,
@@ -102,11 +107,29 @@ export default function TeamKaart({
   return (
     <div
       ref={setNodeRef}
-      className={`flex flex-col rounded-lg transition-colors ${randKlassen} ${achtergrond} ${ringKlassen}`}
+      className={`flex min-w-40 flex-col rounded-lg transition-colors ${randKlassen} ${achtergrond} ${ringKlassen}`}
     >
       {/* Header */}
       <div className={`flex items-center justify-between px-3 py-2 ${headerBorder}`}>
         <div className="relative flex items-center gap-2">
+          {dragHandleRef && (
+            <button
+              ref={dragHandleRef}
+              {...dragHandleListeners}
+              className="cursor-grab p-0.5 text-gray-300 hover:text-gray-500 active:cursor-grabbing"
+              title="Sleep om team te verplaatsen"
+              onPointerDown={(e) => e.stopPropagation()}
+            >
+              <svg className="h-3.5 w-3.5" viewBox="0 0 10 16" fill="currentColor">
+                <circle cx="3" cy="2" r="1.2" />
+                <circle cx="7" cy="2" r="1.2" />
+                <circle cx="3" cy="8" r="1.2" />
+                <circle cx="7" cy="8" r="1.2" />
+                <circle cx="3" cy="14" r="1.2" />
+                <circle cx="7" cy="14" r="1.2" />
+              </svg>
+            </button>
+          )}
           {validatie && (
             <ValidatieBadge
               status={validatie.status}
