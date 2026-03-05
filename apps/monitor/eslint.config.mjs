@@ -7,7 +7,13 @@ const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
   globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts"]),
-  { rules: sharedRules },
+  {
+    rules: {
+      ...sharedRules,
+      // Prisma gegenereerde types veroorzaken TS2321 stack depth — as any is hier bewust
+      "@typescript-eslint/no-explicit-any": "off",
+    },
+  },
 ]);
 
 export default eslintConfig;
