@@ -27,9 +27,18 @@ export function Sidebar({ onClose }: SidebarProps) {
       className="flex h-screen w-64 flex-col border-r border-gray-200 bg-white"
     >
       {/* Branding */}
-      <div className="border-b border-gray-200 px-6 py-5">
-        <h1 className="text-ow-oranje text-lg font-bold">c.k.v. Oranje Wit</h1>
-        <p className="text-xs text-gray-500">TC-monitor</p>
+      <div className="flex items-center gap-3 border-b border-gray-200 px-4 py-4">
+        <Image
+          src="/logo-ow.png"
+          alt="c.k.v. Oranje Wit logo"
+          width={44}
+          height={44}
+          className="shrink-0"
+        />
+        <div>
+          <h1 className="text-ow-oranje text-base leading-tight font-bold">Oranje Wit</h1>
+          <p className="text-xs text-gray-500">Verenigingsmonitor</p>
+        </div>
       </div>
 
       {/* Navigatie */}
@@ -54,17 +63,6 @@ export function Sidebar({ onClose }: SidebarProps) {
           );
         })}
       </nav>
-
-      {/* Logo onderin */}
-      <div className="border-t border-gray-100 px-6 py-4">
-        <Image
-          src="/logo-ow.png"
-          alt="c.k.v. Oranje Wit"
-          width={80}
-          height={80}
-          className="opacity-80"
-        />
-      </div>
     </aside>
   );
 }
