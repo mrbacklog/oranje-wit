@@ -80,7 +80,7 @@ Alle drie apps gebruiken **Dockerfiles** (niet Nixpacks):
 | `railway_service_connect` | Bestaande service aan GitHub koppelen | `serviceId`, `repo`, `branch` |
 | `railway_variables_get` | Environment variables ophalen | `projectId`, `environmentId`, `serviceId` |
 | `railway_variable_set` | Variables instellen (upsert) | `projectId`, `environmentId`, `serviceId`, `variables` |
-| `railway_deploy` | Deployment triggeren (fire-and-forget) | `projectId`, `environmentId`, `serviceId` |
+| `railway_deploy` | Deployment triggeren (fire-and-forget) | `environmentId`, `serviceId` |
 | `railway_deploy_pipeline` | Deploy + poll tot SUCCESS/FAILED (max 5 min) | `projectId`, `environmentId`, `serviceId` |
 | `railway_domain_create` | Railway-domein genereren | `environmentId`, `serviceId` |
 
@@ -219,7 +219,6 @@ curl -s "https://dns.google/resolve?name=monitor.ckvoranjewit.app&type=CNAME"
 
 ```
 → railway_deploy
-    projectId: "aa87602d-316d-4d3e-8860-f75d352fae27"
     environmentId: "1751fe16-20bf-4a6a-a5f6-b46ea0f4cfb1"
     serviceId: "49ed7b30-..."  # team-indeling
 ```

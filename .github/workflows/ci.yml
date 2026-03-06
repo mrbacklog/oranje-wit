@@ -139,37 +139,34 @@ jobs:
         if: needs.changes.outputs.monitor == 'true'
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-          PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
           ENV_ID: ${{ secrets.RAILWAY_ENVIRONMENT_ID }}
           SVC_ID: ${{ secrets.RAILWAY_SERVICE_MONITOR }}
         run: |
           curl -sf -X POST https://backboard.railway.com/graphql/v2 \
             -H "Authorization: Bearer $RAILWAY_TOKEN" \
             -H "Content-Type: application/json" \
-            -d "{\"query\":\"mutation { serviceInstanceDeploy(projectId: \\\"$PROJECT_ID\\\", environmentId: \\\"$ENV_ID\\\", serviceId: \\\"$SVC_ID\\\") }\"}"
+            -d "{\"query\":\"mutation { serviceInstanceDeploy(environmentId: \\\"$ENV_ID\\\", serviceId: \\\"$SVC_ID\\\", latestCommit: true) }\"}"
 
       - name: Deploy team-indeling
         if: needs.changes.outputs.ti == 'true'
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-          PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
           ENV_ID: ${{ secrets.RAILWAY_ENVIRONMENT_ID }}
           SVC_ID: ${{ secrets.RAILWAY_SERVICE_TI }}
         run: |
           curl -sf -X POST https://backboard.railway.com/graphql/v2 \
             -H "Authorization: Bearer $RAILWAY_TOKEN" \
             -H "Content-Type: application/json" \
-            -d "{\"query\":\"mutation { serviceInstanceDeploy(projectId: \\\"$PROJECT_ID\\\", environmentId: \\\"$ENV_ID\\\", serviceId: \\\"$SVC_ID\\\") }\"}"
+            -d "{\"query\":\"mutation { serviceInstanceDeploy(environmentId: \\\"$ENV_ID\\\", serviceId: \\\"$SVC_ID\\\", latestCommit: true) }\"}"
 
       - name: Deploy evaluatie
         if: needs.changes.outputs.evaluatie == 'true'
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-          PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
           ENV_ID: ${{ secrets.RAILWAY_ENVIRONMENT_ID }}
           SVC_ID: ${{ secrets.RAILWAY_SERVICE_EVAL }}
         run: |
           curl -sf -X POST https://backboard.railway.com/graphql/v2 \
             -H "Authorization: Bearer $RAILWAY_TOKEN" \
             -H "Content-Type: application/json" \
-            -d "{\"query\":\"mutation { serviceInstanceDeploy(projectId: \\\"$PROJECT_ID\\\", environmentId: \\\"$ENV_ID\\\", serviceId: \\\"$SVC_ID\\\") }\"}"
+            -d "{\"query\":\"mutation { serviceInstanceDeploy(environmentId: \\\"$ENV_ID\\\", serviceId: \\\"$SVC_ID\\\", latestCommit: true) }\"}"

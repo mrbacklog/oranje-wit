@@ -322,21 +322,20 @@ server.tool(
 
 server.tool(
   "railway_deploy",
-  "Deployment triggeren voor een service in een environment",
+  "Deployment triggeren voor een service in een environment (fire-and-forget)",
   {
-    projectId: z.string().describe("Railway project ID"),
     environmentId: z.string().describe("Environment ID"),
     serviceId: z.string().describe("Service ID"),
   },
-  async ({ projectId, environmentId, serviceId }) => {
+  async ({ environmentId, serviceId }) => {
     try {
       await railwayQuery(
         `
-        mutation ($projectId: String!, $environmentId: String!, $serviceId: String!) {
-          serviceInstanceDeploy(projectId: $projectId, environmentId: $environmentId, serviceId: $serviceId)
+        mutation ($environmentId: String!, $serviceId: String!) {
+          serviceInstanceDeploy(environmentId: $environmentId, serviceId: $serviceId, latestCommit: true)
         }
       `,
-        { projectId, environmentId, serviceId }
+        { environmentId, serviceId }
       );
       return ok({ bericht: "Deployment getriggerd" });
     } catch (e) {
@@ -521,7 +520,7 @@ server.tool(
   "railway_deploy_pipeline",
   "Deploy een service en poll de status — rapporteert SUCCESS of FAILED na maximaal 5 minuten",
   {
-    projectId: z.string().describe("Railway project ID"),
+    projectId: z.string().describe("Railway project ID (voor deployments query)"),
     environmentId: z.string().describe("Environment ID"),
     serviceId: z.string().describe("Service ID"),
   },
@@ -530,11 +529,11 @@ server.tool(
       // Stap 1: trigger deploy
       await railwayQuery(
         `
-        mutation ($projectId: String!, $environmentId: String!, $serviceId: String!) {
-          serviceInstanceDeploy(projectId: $projectId, environmentId: $environmentId, serviceId: $serviceId)
+        mutation ($environmentId: String!, $serviceId: String!) {
+          serviceInstanceDeploy(environmentId: $environmentId, serviceId: $serviceId, latestCommit: true)
         }
       `,
-        { projectId, environmentId, serviceId }
+        { environmentId, serviceId }
       );
 
       // Stap 2: pak het nieuwste deployment ID (kort wachten zodat Railway het registreert)
