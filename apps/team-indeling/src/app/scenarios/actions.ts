@@ -295,6 +295,15 @@ export async function createTeam(
 }
 
 /**
+ * Hernoem een scenario.
+ */
+export async function updateScenarioNaam(scenarioId: string, naam: string) {
+  await assertScenarioBewerkbaar(scenarioId);
+  await prisma.scenario.update({ where: { id: scenarioId }, data: { naam: naam.trim() } });
+  revalidatePath("/scenarios");
+}
+
+/**
  * Verwijder een scenario (inclusief versies, teams, spelers, staf via cascade).
  */
 export async function deleteScenario(scenarioId: string) {

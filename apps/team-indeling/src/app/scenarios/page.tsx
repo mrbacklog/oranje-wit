@@ -3,6 +3,7 @@ import { getScenarios } from "./actions";
 import type { Keuze } from "@/app/blauwdruk/actions";
 import NieuwScenarioDialog from "@/components/scenarios/NieuwScenarioDialog";
 import VerwijderScenarioKnop from "@/components/scenarios/VerwijderScenarioKnop";
+import HernoemScenarioKnop from "@/components/scenarios/HernoemScenarioKnop";
 import Link from "next/link";
 import { getActiefSeizoen } from "@/lib/seizoen";
 
@@ -70,7 +71,12 @@ export default async function ScenariosPage() {
               >
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="font-semibold text-gray-900">{scenario.naam}</h3>
+                    <div className="flex items-center gap-1">
+                      <h3 className="font-semibold text-gray-900">{scenario.naam}</h3>
+                      {scenario.status !== "DEFINITIEF" && (
+                        <HernoemScenarioKnop scenarioId={scenario.id} huidigNaam={scenario.naam} />
+                      )}
+                    </div>
                     {scenario.toelichting && (
                       <p className="mt-1 text-sm text-gray-500">{scenario.toelichting}</p>
                     )}

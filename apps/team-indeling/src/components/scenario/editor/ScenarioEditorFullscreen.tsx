@@ -123,6 +123,7 @@ export default function ScenarioEditorFullscreen({
               onClose={() => editor.setEditTeamId(null)}
               onSpelerClick={(speler) => editor.handleSpelerClick(speler, editor.editTeam!.id)}
               onUpdateTeam={editor.handleUpdateTeam}
+              onUpdateTeamType={editor.handleUpdateTeamType}
               onKoppelSelectie={editor.handleKoppelSelectie}
               onOntkoppelSelectie={editor.handleOntkoppelSelectie}
             />
