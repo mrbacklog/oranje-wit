@@ -3,8 +3,44 @@
 import { prisma } from "@/lib/db/prisma";
 import type { Prisma, SpelerStatus } from "@oranje-wit/database";
 import { PEILJAAR } from "@oranje-wit/types";
-import { assertBewerkbaar, getActiefSeizoen, volgendSeizoen } from "@/lib/seizoen";
+import { assertBewerkbaar, getActiefSeizoen } from "@/lib/seizoen";
 import { cookies } from "next/headers";
+
+/**
+ * Stel een seizoen in als werkseizoen (★).
+ * Alle andere seizoenen worden op isWerkseizoen=false gezet.
+ */
+export async function setWerkseizoen(seizoen: string) {
+  if (!/^\d{4}-\d{4}$/.test(seizoen)) {
+    throw new Error("Ongeldig seizoensformaat");
+  }
+  await prisma.blauwdruk.updateMany({ data: { isWerkseizoen: false } });
+  await prisma.blauwdruk.update({ where: { seizoen }, data: { isWerkseizoen: true } });
+
+  const cookieStore = await cookies();
+  cookieStore.set("actief-seizoen", seizoen, {
+    path: "/",
+    maxAge: 60 * 60 * 24 * 365,
+    sameSite: "lax",
+  });
+}
+
+/**
+ * Haal alle pins voor een blauwdruk op, inclusief gekoppelde speler/staf.
+ */
+export async function getPinsVoorBlauwdruk(blauwdrukId: string) {
+  return prisma.pin.findMany({
+    where: { blauwdrukId },
+    include: {
+      speler: { select: { id: true, roepnaam: true, achternaam: true } },
+      staf: { select: { id: true, naam: true } },
+      gepindDoor: { select: { id: true, naam: true } },
+    },
+    orderBy: { gepindOp: "desc" },
+  });
+}
+
+export type PinMetNamen = Awaited<ReturnType<typeof getPinsVoorBlauwdruk>>[number];
 
 /**
  * Guard: controleer of de blauwdruk bij het huidige (bewerkbare) seizoen hoort.
@@ -167,45 +203,6 @@ export interface Keuze {
   id: string;
   vraag: string;
   opties: string[];
-}
-
-/**
- * Maak een nieuw seizoen aan (lege blauwdruk) en switch ernaar.
- */
-export async function maakNieuwSeizoen(seizoen: string) {
-  if (!/^\d{4}-\d{4}$/.test(seizoen)) {
-    throw new Error("Ongeldig seizoensformaat (verwacht: JJJJ-JJJJ)");
-  }
-
-  const bestaand = await prisma.blauwdruk.findUnique({ where: { seizoen } });
-  if (bestaand) {
-    throw new Error(`Seizoen ${seizoen} bestaat al`);
-  }
-
-  await prisma.blauwdruk.create({
-    data: {
-      seizoen,
-      kaders: {},
-      speerpunten: [],
-      toelichting: "",
-    },
-  });
-
-  // Switch naar het nieuwe seizoen
-  const cookieStore = await cookies();
-  cookieStore.set("actief-seizoen", seizoen, {
-    path: "/",
-    maxAge: 60 * 60 * 24 * 365,
-    sameSite: "lax",
-  });
-}
-
-/**
- * Bereken het eerstvolgende seizoen dat nog niet bestaat.
- */
-export async function getVolgendSeizoen(): Promise<string> {
-  const huidig = await getActiefSeizoen();
-  return volgendSeizoen(huidig);
 }
 
 /**

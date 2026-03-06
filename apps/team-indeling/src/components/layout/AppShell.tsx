@@ -6,7 +6,7 @@ import Sidebar from "./Sidebar";
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const { seizoen, isHuidig } = useSeizoen();
+  const { seizoen, isWerkseizoen } = useSeizoen();
 
   if (pathname === "/login") {
     return <>{children}</>;
@@ -19,7 +19,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         <header className="flex h-14 items-center border-b border-gray-200 bg-white px-6">
           <span className="text-sm font-medium text-gray-500">Seizoen {seizoen}</span>
         </header>
-        {!isHuidig && (
+        {!isWerkseizoen && (
           <div className="border-b border-amber-200 bg-amber-50 px-6 py-2 text-sm text-amber-700">
             Je bekijkt seizoen {seizoen}. Dit seizoen is alleen-lezen.
           </div>

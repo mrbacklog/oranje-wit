@@ -1,26 +1,42 @@
-import { getBlauwdruk, getSpelersUitgebreid, getLedenStatistieken } from "./actions";
+import {
+  getBlauwdruk,
+  getSpelersUitgebreid,
+  getLedenStatistieken,
+  getPinsVoorBlauwdruk,
+} from "./actions";
 import type { CategorieKaders } from "./categorie-kaders";
 import BlauwdrukTabs from "@/components/blauwdruk/BlauwdrukTabs";
 import { getActiefSeizoen } from "@/lib/seizoen";
-import { getNotities } from "@/app/notities/actions";
+import { getNotities, getNotitieStats } from "@/app/notities/actions";
 
 export const dynamic = "force-dynamic";
 
 export default async function BlauwdrukPage() {
   const seizoen = await getActiefSeizoen();
+  const blauwdruk = await getBlauwdruk(seizoen);
 
-  const [blauwdruk, spelers, statistieken] = await Promise.all([
-    getBlauwdruk(seizoen),
+  const [spelers, statistieken, notities, notitieStats, pins] = await Promise.all([
     getSpelersUitgebreid(),
     getLedenStatistieken(),
+    getNotities(blauwdruk.id),
+    getNotitieStats(blauwdruk.id),
+    getPinsVoorBlauwdruk(blauwdruk.id),
   ]);
 
-  const blockers = await getNotities(blauwdruk.id, {
-    prioriteit: ["BLOCKER"],
-    status: ["OPEN", "IN_BESPREKING"],
-  });
+  const blockers = notities.filter(
+    (n) => n.prioriteit === "BLOCKER" && n.status !== "OPGELOST" && n.status !== "GEARCHIVEERD"
+  );
 
   const kaders = (blauwdruk.kaders ?? {}) as CategorieKaders;
+
+  async function refreshNotities() {
+    "use server";
+    const [nieuweNotities, nieuweStats] = await Promise.all([
+      getNotities(blauwdruk.id),
+      getNotitieStats(blauwdruk.id),
+    ]);
+    return { notities: nieuweNotities, stats: nieuweStats };
+  }
 
   return (
     <div className="max-w-5xl space-y-4">
@@ -38,6 +54,10 @@ export default async function BlauwdrukPage() {
         spelers={spelers}
         toelichting={blauwdruk.toelichting ?? ""}
         blockers={blockers}
+        notities={notities}
+        notitieStats={notitieStats}
+        refreshNotities={refreshNotities}
+        pins={pins}
       />
     </div>
   );

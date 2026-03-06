@@ -10,6 +10,10 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --color-ow-oranje: #ff6b00;
+  --color-ow-oranje-light: #ff8c33;
+  --color-ow-oranje-bg: #fff3e8;
 }
 
 /* Dark mode uitgeschakeld — app is light-only */

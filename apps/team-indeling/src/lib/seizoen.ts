@@ -4,15 +4,19 @@ import { prisma } from "./db/prisma";
 const COOKIE_NAME = "actief-seizoen";
 const SEIZOEN_REGEX = /^\d{4}-\d{4}$/;
 
+export interface SeizoenInfo {
+  seizoen: string;
+  isWerkseizoen: boolean;
+}
+
 /**
- * Haal het actieve seizoen op uit de cookie, of val terug op het nieuwste seizoen.
+ * Haal het actieve seizoen op uit de cookie, of val terug op het werkseizoen.
  */
 export async function getActiefSeizoen(): Promise<string> {
   const cookieStore = await cookies();
   const cookie = cookieStore.get(COOKIE_NAME)?.value;
 
   if (cookie && SEIZOEN_REGEX.test(cookie)) {
-    // Controleer of dit seizoen ook echt bestaat
     const bestaat = await prisma.blauwdruk.findUnique({
       where: { seizoen: cookie },
       select: { seizoen: true },
@@ -20,43 +24,50 @@ export async function getActiefSeizoen(): Promise<string> {
     if (bestaat) return cookie;
   }
 
-  // Fallback: nieuwste seizoen
+  // Fallback: het werkseizoen
+  const werkseizoen = await prisma.blauwdruk.findFirst({
+    where: { isWerkseizoen: true },
+    select: { seizoen: true },
+  });
+  if (werkseizoen) return werkseizoen.seizoen;
+
+  // Laatste fallback: nieuwste blauwdruk
   const laatste = await prisma.blauwdruk.findFirst({
     orderBy: { seizoen: "desc" },
     select: { seizoen: true },
   });
 
-  return laatste?.seizoen ?? "2026-2027";
+  return laatste?.seizoen ?? "2025-2026";
 }
 
 /**
- * Alle beschikbare seizoenen (nieuwste eerst).
+ * Alle beschikbare seizoenen met werkseizoen-vlag (nieuwste eerst).
  */
-export async function getAlleSeizoenen(): Promise<string[]> {
+export async function getAlleSeizoenen(): Promise<SeizoenInfo[]> {
   const blauwdrukken = await prisma.blauwdruk.findMany({
-    select: { seizoen: true },
+    select: { seizoen: true, isWerkseizoen: true },
     orderBy: { seizoen: "desc" },
   });
-  return blauwdrukken.map((b) => b.seizoen);
+  return blauwdrukken.map((b) => ({ seizoen: b.seizoen, isWerkseizoen: b.isWerkseizoen }));
 }
 
 /**
- * Is dit het nieuwste (en dus bewerkbare) seizoen?
+ * Is dit het werkseizoen (het enige bewerkbare seizoen)?
  */
-export async function isHuidigSeizoen(seizoen: string): Promise<boolean> {
-  const laatste = await prisma.blauwdruk.findFirst({
-    orderBy: { seizoen: "desc" },
-    select: { seizoen: true },
+export async function isWerkseizoenCheck(seizoen: string): Promise<boolean> {
+  const blauwdruk = await prisma.blauwdruk.findUnique({
+    where: { seizoen },
+    select: { isWerkseizoen: true },
   });
-  return laatste?.seizoen === seizoen;
+  return blauwdruk?.isWerkseizoen === true;
 }
 
 /**
- * Guard: gooi een fout als het seizoen niet bewerkbaar is.
+ * Guard: gooi een fout als het seizoen niet het werkseizoen is.
  */
 export async function assertBewerkbaar(seizoen: string): Promise<void> {
-  const huidig = await isHuidigSeizoen(seizoen);
-  if (!huidig) {
+  const bewerkbaar = await isWerkseizoenCheck(seizoen);
+  if (!bewerkbaar) {
     throw new Error(`Seizoen ${seizoen} is alleen-lezen`);
   }
 }

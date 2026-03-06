@@ -1,70 +1,94 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSeizoen } from "@/components/providers/SeizoenProvider";
-import NieuwSeizoenDialog from "./NieuwSeizoenDialog";
 import UserMenu from "./UserMenu";
 
-function berekenVolgendSeizoen(seizoen: string): string {
-  const [start] = seizoen.split("-").map(Number);
-  return `${start + 1}-${start + 2}`;
-}
-
-const navigatie = [
-  { label: "Overzicht", href: "/" },
-  { label: "Blauwdruk", href: "/blauwdruk" },
-  { label: "Scenario's", href: "/scenarios" },
-  { label: "Notities", href: "/notities" },
-  { label: "Definitief", href: "/definitief" },
-  { label: "Import", href: "/import" },
+const NAV_ITEMS = [
+  { href: "/", label: "Overzicht", icon: "📋" },
+  { href: "/blauwdruk", label: "Blauwdruk", icon: "🗂️" },
+  { href: "/scenarios", label: "Scenario's", icon: "🏗️" },
+  { href: "/definitief", label: "Definitief", icon: "✅" },
+  { href: "/import", label: "Import", icon: "📥" },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const { seizoen, alleSeizoenen, isHuidig, setSeizoen } = useSeizoen();
+  const { seizoen, alleSeizoenen, isWerkseizoen, setSeizoen, setWerkseizoen, isPending } =
+    useSeizoen();
 
   return (
-    <aside className="flex min-h-screen w-56 shrink-0 flex-col border-r border-gray-200 bg-white">
-      {/* Titel */}
-      <div className="border-b border-gray-100 px-4 py-5">
-        <h1 className="text-lg font-bold text-gray-900">Team-Indeling</h1>
-        {alleSeizoenen.length > 1 ? (
+    <aside
+      aria-label="Hoofdnavigatie"
+      className="flex h-screen w-64 shrink-0 flex-col border-r border-gray-200 bg-white"
+    >
+      {/* Branding */}
+      <div className="flex items-center gap-3 border-b border-gray-200 px-4 py-4">
+        <Image
+          src="/logo-ow.png"
+          alt="c.k.v. Oranje Wit logo"
+          width={44}
+          height={44}
+          className="shrink-0"
+        />
+        <div>
+          <h1 className="text-ow-oranje text-base leading-tight font-bold">Oranje Wit</h1>
+          <p className="text-xs text-gray-500">Team-Indeling</p>
+        </div>
+      </div>
+
+      {/* Seizoen-selector */}
+      <div className="border-b border-gray-100 px-4 py-3">
+        <div className="flex items-center gap-2">
           <select
             value={seizoen}
             onChange={(e) => setSeizoen(e.target.value)}
-            className="mt-1 rounded-full border-none bg-orange-100 px-2 py-0.5 text-xs font-medium text-orange-700 focus:ring-2 focus:ring-orange-300"
+            className="focus:border-ow-oranje focus:ring-ow-oranje flex-1 rounded-md border border-gray-200 bg-gray-50 px-2 py-1 text-xs font-medium text-gray-700 focus:ring-1 focus:outline-none"
           >
             {alleSeizoenen.map((s) => (
-              <option key={s} value={s}>
-                {s}
+              <option key={s.seizoen} value={s.seizoen}>
+                {s.isWerkseizoen ? "★ " : ""}
+                {s.seizoen}
               </option>
             ))}
           </select>
-        ) : (
-          <span className="mt-1 inline-block rounded-full bg-orange-100 px-2 py-0.5 text-xs font-medium text-orange-700">
-            {seizoen}
-          </span>
-        )}
-        {isHuidig && <NieuwSeizoenDialog volgendSeizoen={berekenVolgendSeizoen(seizoen)} />}
+          {!isWerkseizoen && (
+            <button
+              onClick={() => setWerkseizoen(seizoen)}
+              disabled={isPending}
+              title={`${seizoen} instellen als werkseizoen`}
+              className="rounded p-1 text-gray-400 transition-colors hover:text-yellow-500 disabled:opacity-50"
+            >
+              ☆
+            </button>
+          )}
+          {isWerkseizoen && (
+            <span title="Dit is het werkseizoen" className="p-1 text-yellow-500">
+              ★
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Navigatie */}
-      <nav className="flex-1 space-y-1 px-2 py-4">
-        {navigatie.map((item) => {
-          const actief = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
-
+      <nav className="flex-1 overflow-y-auto px-3 py-4">
+        {NAV_ITEMS.map(({ href, label, icon }) => {
+          const active = href === "/" ? pathname === "/" : pathname.startsWith(href);
           return (
             <Link
-              key={item.href}
-              href={item.href}
-              className={`block rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-                actief
-                  ? "bg-orange-50 text-orange-700"
+              key={href}
+              href={href}
+              aria-current={active ? "page" : undefined}
+              className={`mb-1 flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
+                active
+                  ? "bg-ow-oranje-bg text-ow-oranje font-semibold"
                   : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
               }`}
             >
-              {item.label}
+              <span aria-hidden="true">{icon}</span>
+              {label}
             </Link>
           );
         })}
@@ -72,11 +96,6 @@ export default function Sidebar() {
 
       {/* Gebruiker */}
       <UserMenu />
-
-      {/* Footer */}
-      <div className="border-t border-gray-100 px-4 py-3 text-xs text-gray-400">
-        c.k.v. Oranje Wit
-      </div>
     </aside>
   );
 }

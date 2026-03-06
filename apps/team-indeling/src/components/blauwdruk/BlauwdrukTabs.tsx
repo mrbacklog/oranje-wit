@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import type { LedenStatistieken, SpelerUitgebreid } from "@/app/blauwdruk/actions";
+import type { LedenStatistieken, SpelerUitgebreid, PinMetNamen } from "@/app/blauwdruk/actions";
 import type { CategorieKaders } from "@/app/blauwdruk/categorie-kaders";
 import CategoriePanel from "./CategoriePanel";
 import LedenDashboard from "./LedenDashboard";
 import ToelichtingEditor from "./ToelichtingEditor";
+import PinsOverzicht from "./PinsOverzicht";
+import NotitieOverzicht from "@/components/notities/NotitieOverzicht";
 import BlockerChecklist from "@/components/notities/BlockerChecklist";
 
 type BlockerNotitie = {
@@ -16,6 +18,8 @@ type BlockerNotitie = {
   createdAt: Date;
 };
 
+type NotitieData = Parameters<typeof NotitieOverzicht>[0]["initialNotities"][number];
+
 interface BlauwdrukTabsProps {
   statistieken: LedenStatistieken;
   kaders: CategorieKaders;
@@ -23,12 +27,21 @@ interface BlauwdrukTabsProps {
   spelers: SpelerUitgebreid[];
   toelichting: string;
   blockers?: BlockerNotitie[];
+  notities: NotitieData[];
+  notitieStats: { open: number; blockers: number; afgerond: number };
+  refreshNotities: () => Promise<{
+    notities: NotitieData[];
+    stats: { open: number; blockers: number; afgerond: number };
+  }>;
+  pins: PinMetNamen[];
 }
 
 const TABS = [
   { id: "categorieen", label: "Categorieën" },
   { id: "leden", label: "Leden" },
-  { id: "notities", label: "Notities" },
+  { id: "toelichting", label: "Toelichting" },
+  { id: "actiepunten", label: "Actiepunten" },
+  { id: "pins", label: "Pins" },
 ] as const;
 
 type TabId = (typeof TABS)[number]["id"];
@@ -40,6 +53,10 @@ export default function BlauwdrukTabs({
   spelers,
   toelichting,
   blockers,
+  notities,
+  notitieStats,
+  refreshNotities,
+  pins,
 }: BlauwdrukTabsProps) {
   const [activeTab, setActiveTab] = useState<TabId>("categorieen");
 
@@ -60,11 +77,21 @@ export default function BlauwdrukTabs({
             onClick={() => setActiveTab(tab.id)}
             className={`px-4 py-2 text-sm font-medium transition-colors ${
               activeTab === tab.id
-                ? "-mb-px border-b-2 border-orange-500 text-orange-700"
+                ? "border-ow-oranje text-ow-oranje -mb-px border-b-2"
                 : "text-gray-500 hover:text-gray-700"
             }`}
           >
             {tab.label}
+            {tab.id === "actiepunten" && notitieStats.open > 0 && (
+              <span className="ml-1.5 rounded-full bg-orange-100 px-1.5 py-0.5 text-xs font-medium text-orange-700">
+                {notitieStats.open}
+              </span>
+            )}
+            {tab.id === "pins" && pins.length > 0 && (
+              <span className="ml-1.5 rounded-full bg-blue-100 px-1.5 py-0.5 text-xs font-medium text-blue-700">
+                {pins.length}
+              </span>
+            )}
           </button>
         ))}
       </div>
@@ -76,9 +103,20 @@ export default function BlauwdrukTabs({
 
       {activeTab === "leden" && <LedenDashboard spelers={spelers} />}
 
-      {activeTab === "notities" && (
+      {activeTab === "toelichting" && (
         <ToelichtingEditor blauwdrukId={blauwdrukId} initieel={toelichting} />
       )}
+
+      {activeTab === "actiepunten" && (
+        <NotitieOverzicht
+          blauwdrukId={blauwdrukId}
+          initialNotities={notities}
+          initialStats={notitieStats}
+          refreshAction={refreshNotities}
+        />
+      )}
+
+      {activeTab === "pins" && <PinsOverzicht pins={pins} />}
     </div>
   );
 }

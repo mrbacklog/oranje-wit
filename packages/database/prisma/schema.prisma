@@ -415,9 +415,10 @@ model StafToewijzing {
 // ============================================================
 
 model Blauwdruk {
-  id          String   @id @default(cuid())
-  seizoen     String   @unique // "2026-2027"
-  toelichting String?  @db.Text
+  id            String   @id @default(cuid())
+  seizoen       String   @unique // "2026-2027"
+  isWerkseizoen Boolean  @default(false) // ★ het actieve planningseizoen
+  toelichting   String?  @db.Text
 
   // Gestructureerde kaders
   kaders         Json     // KNKV-regels + OW-regels die dit seizoen gelden

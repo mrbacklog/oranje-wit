@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import AppShell from "@/components/layout/AppShell";
 import SessionProvider from "@/components/providers/SessionProvider";
 import SeizoenProvider from "@/components/providers/SeizoenProvider";
-import { getActiefSeizoen, getAlleSeizoenen, isHuidigSeizoen } from "@/lib/seizoen";
+import { getActiefSeizoen, getAlleSeizoenen, isWerkseizoenCheck } from "@/lib/seizoen";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -29,7 +29,7 @@ export default async function RootLayout({
 }>) {
   const seizoen = await getActiefSeizoen();
   const alleSeizoenen = await getAlleSeizoenen();
-  const isHuidig = await isHuidigSeizoen(seizoen);
+  const isWerkseizoen = await isWerkseizoenCheck(seizoen);
 
   return (
     <html lang="nl">
@@ -37,7 +37,11 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} bg-gray-50 text-gray-900 antialiased`}
       >
         <SessionProvider>
-          <SeizoenProvider seizoen={seizoen} alleSeizoenen={alleSeizoenen} isHuidig={isHuidig}>
+          <SeizoenProvider
+            seizoen={seizoen}
+            alleSeizoenen={alleSeizoenen}
+            isWerkseizoen={isWerkseizoen}
+          >
             <AppShell>{children}</AppShell>
           </SeizoenProvider>
         </SessionProvider>

@@ -1,13 +1,17 @@
 "use client";
 
-import { createContext, useContext, useCallback } from "react";
+import { createContext, useContext, useCallback, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { setWerkseizoen as setWerkseizoenAction } from "@/app/blauwdruk/actions";
+import type { SeizoenInfo } from "@/lib/seizoen";
 
 interface SeizoenContextValue {
   seizoen: string;
-  alleSeizoenen: string[];
-  isHuidig: boolean;
+  alleSeizoenen: SeizoenInfo[];
+  isWerkseizoen: boolean;
   setSeizoen: (seizoen: string) => void;
+  setWerkseizoen: (seizoen: string) => void;
+  isPending: boolean;
 }
 
 const SeizoenContext = createContext<SeizoenContextValue | null>(null);
@@ -21,15 +25,16 @@ export function useSeizoen() {
 export default function SeizoenProvider({
   seizoen,
   alleSeizoenen,
-  isHuidig,
+  isWerkseizoen,
   children,
 }: {
   seizoen: string;
-  alleSeizoenen: string[];
-  isHuidig: boolean;
+  alleSeizoenen: SeizoenInfo[];
+  isWerkseizoen: boolean;
   children: React.ReactNode;
 }) {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const setSeizoen = useCallback(
     async (nieuwSeizoen: string) => {
@@ -43,8 +48,20 @@ export default function SeizoenProvider({
     [router]
   );
 
+  const setWerkseizoen = useCallback(
+    (nieuwSeizoen: string) => {
+      startTransition(async () => {
+        await setWerkseizoenAction(nieuwSeizoen);
+        router.refresh();
+      });
+    },
+    [router]
+  );
+
   return (
-    <SeizoenContext.Provider value={{ seizoen, alleSeizoenen, isHuidig, setSeizoen }}>
+    <SeizoenContext.Provider
+      value={{ seizoen, alleSeizoenen, isWerkseizoen, setSeizoen, setWerkseizoen, isPending }}
+    >
       {children}
     </SeizoenContext.Provider>
   );
