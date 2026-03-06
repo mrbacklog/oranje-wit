@@ -27,18 +27,17 @@ export function Sidebar({ onClose }: SidebarProps) {
       className="flex h-screen w-64 flex-col border-r border-gray-200 bg-white"
     >
       {/* Branding */}
-      <div className="flex items-center gap-3 border-b border-gray-200 px-4 py-4">
+      <div className="relative overflow-hidden border-b border-gray-200 px-6 py-5">
         <Image
           src="/logo-ow.png"
-          alt="c.k.v. Oranje Wit logo"
-          width={44}
-          height={44}
-          className="shrink-0"
+          alt=""
+          aria-hidden="true"
+          width={64}
+          height={64}
+          className="absolute top-1/2 right-3 -translate-y-1/2 opacity-50"
         />
-        <div>
-          <h1 className="text-ow-oranje text-base leading-tight font-bold">Oranje Wit</h1>
-          <p className="text-xs text-gray-500">Verenigingsmonitor</p>
-        </div>
+        <h1 className="text-ow-oranje relative text-lg leading-tight font-bold">Oranje Wit</h1>
+        <p className="relative text-xs text-gray-500">Verenigingsmonitor</p>
       </div>
 
       {/* Navigatie */}
