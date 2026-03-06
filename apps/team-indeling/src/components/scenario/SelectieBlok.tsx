@@ -92,10 +92,18 @@ export default function SelectieBlok({
               </svg>
             </button>
           )}
-          <span className="text-[10px] font-medium tracking-wide text-orange-600 uppercase">
+          <span
+            className="font-medium tracking-wide text-orange-600 uppercase"
+            style={{ fontSize: "calc(11px / var(--zoom-scale, 1))" }}
+          >
             Selectie
           </span>
-          <h4 className="text-sm font-semibold text-gray-900">{teamNamen}</h4>
+          <h4
+            className="font-semibold text-gray-900"
+            style={{ fontSize: "calc(14px / var(--zoom-scale, 1))" }}
+          >
+            {teamNamen}
+          </h4>
         </div>
         <div className="flex items-center gap-1">
           {/* Potlood-icoon voor selectie bewerken */}
@@ -142,7 +150,11 @@ export default function SelectieBlok({
 
       {/* Pool: een spelerslijst, gegroepeerd op geslacht */}
       {dl === "overzicht" ? (
-        <div ref={setNodeRef} className="px-3 py-2 text-center text-sm text-gray-500">
+        <div
+          ref={setNodeRef}
+          className="px-3 py-2 text-center text-gray-500"
+          style={{ fontSize: "calc(13px / var(--zoom-scale, 1))" }}
+        >
           {aantalSpelers} spelers · {aantalM}
           {"♂"} {aantalV}
           {"♀"}
@@ -263,7 +275,10 @@ export default function SelectieBlok({
 
       {/* Footer stats */}
       {dl !== "overzicht" && (
-        <div className="flex items-center gap-3 border-t border-orange-100 px-3 py-1 text-[10px] text-gray-400">
+        <div
+          className="flex items-center gap-3 border-t border-orange-100 px-3 py-1 text-gray-400"
+          style={{ fontSize: "calc(11px / var(--zoom-scale, 1))" }}
+        >
           <span>{aantalSpelers} spelers</span>
           <span>
             {aantalM}
