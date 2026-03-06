@@ -43,7 +43,7 @@ Alles draait in één project:
 | Postgres | `e7486b49-dba3-4e0a-8709-a501cea860ae` | `postgres.railway.internal:5432` (intern) |
 | team-indeling | `49ed7b30-a243-4f30-87fa-ae56935fbbbc` | https://team-indeling-production.up.railway.app |
 | monitor | `a7efb126-8ad1-460d-b787-2d03207c3f3c` | https://monitor-production-b2b1.up.railway.app |
-| evaluatie | (nog aan te maken) | — |
+| evaluatie | `c7a578c6-559e-4d11-8bc5-b6265dc7ada7` | — |
 
 ### GitHub repo
 
@@ -261,7 +261,7 @@ curl -s "https://dns.google/resolve?name=monitor.ckvoranjewit.app&type=CNAME"
 
 | Bestand | Functie |
 |---|---|
-| `apps/mcp/railway/server.js` | MCP server (13 tools) |
+| `apps/mcp/railway/server.js` | MCP server (14 tools) |
 | `apps/mcp/railway/package.json` | Dependencies |
 | `.mcp.json` | Server registratie + token (gitignored) |
 | `apps/team-indeling/Dockerfile` | Docker build voor TI |
