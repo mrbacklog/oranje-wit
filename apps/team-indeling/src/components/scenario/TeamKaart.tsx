@@ -240,7 +240,7 @@ export default function TeamKaart({
 
       {/* Spelers */}
       {dl === "overzicht" ? (
-        <div className="px-3 py-2 text-center text-[10px] text-gray-500">
+        <div className="px-3 py-2 text-center text-sm text-gray-500">
           {aantalSpelers} spelers · {aantalM}
           {"♂"} {aantalV}
           {"♀"}
@@ -248,13 +248,13 @@ export default function TeamKaart({
       ) : (
         <div className="min-h-15 flex-1 px-1 py-1">
           {team.spelers.length === 0 ? (
-            <p className="py-3 text-center text-[10px] text-gray-400">Sleep spelers hierheen</p>
+            <p className="py-3 text-center text-xs text-gray-400">Sleep spelers hierheen</p>
           ) : team.teamType === "VIERTAL" || dl === "compact" ? (
             /* 4-tal of compact: gestapeld — dames boven, heren onder */
             <>
               {dames.length > 0 && (
                 <>
-                  <div className="px-2 pt-1 text-[9px] font-medium tracking-wide text-pink-500 uppercase">
+                  <div className="px-2 pt-1 text-xs font-medium tracking-wide text-pink-500 uppercase">
                     Dames ({dames.length})
                   </div>
                   {dames.map((ts) => (
@@ -270,7 +270,7 @@ export default function TeamKaart({
               )}
               {heren.length > 0 && (
                 <>
-                  <div className="px-2 pt-1 text-[9px] font-medium tracking-wide text-blue-500 uppercase">
+                  <div className="px-2 pt-1 text-xs font-medium tracking-wide text-blue-500 uppercase">
                     Heren ({heren.length})
                   </div>
                   {heren.map((ts) => (
@@ -290,7 +290,7 @@ export default function TeamKaart({
             <div className="grid grid-cols-2 gap-x-0.5">
               <div>
                 {dames.length > 0 && (
-                  <div className="px-2 pt-1 text-[9px] font-medium tracking-wide text-pink-500 uppercase">
+                  <div className="px-2 pt-1 text-xs font-medium tracking-wide text-pink-500 uppercase">
                     Dames ({dames.length})
                   </div>
                 )}
@@ -306,7 +306,7 @@ export default function TeamKaart({
               </div>
               <div>
                 {heren.length > 0 && (
-                  <div className="px-2 pt-1 text-[9px] font-medium tracking-wide text-blue-500 uppercase">
+                  <div className="px-2 pt-1 text-xs font-medium tracking-wide text-blue-500 uppercase">
                     Heren ({heren.length})
                   </div>
                 )}
