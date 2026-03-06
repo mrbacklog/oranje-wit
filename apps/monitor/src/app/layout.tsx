@@ -5,7 +5,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Verenigingsmonitor | c.k.v. Oranje Wit",
-  description: "Verenigingsmonitor voor gezonde groei",
+  description: "Verenigingsmonitor | c.k.v. Oranje Wit",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
