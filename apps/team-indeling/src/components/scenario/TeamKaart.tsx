@@ -135,7 +135,12 @@ export default function TeamKaart({
               onClick={() => setMeldingenOpen(!meldingenOpen)}
             />
           )}
-          <h4 className="text-sm font-semibold text-gray-900">{weergaveNaam}</h4>
+          <h4
+            className="font-semibold text-gray-900"
+            style={{ fontSize: "calc(14px / var(--zoom-scale, 1))" }}
+          >
+            {weergaveNaam}
+          </h4>
           {/* Notitie-badge */}
           {(dl === "detail" || dl === "focus") && notitieCount != null && notitieCount > 0 && (
             <button
@@ -240,7 +245,10 @@ export default function TeamKaart({
 
       {/* Spelers */}
       {dl === "overzicht" ? (
-        <div className="px-3 py-2 text-center text-sm text-gray-500">
+        <div
+          className="px-3 py-2 text-center text-gray-500"
+          style={{ fontSize: "calc(13px / var(--zoom-scale, 1))" }}
+        >
           {aantalSpelers} spelers · {aantalM}
           {"♂"} {aantalV}
           {"♀"}
@@ -354,7 +362,8 @@ export default function TeamKaart({
       {/* Footer stats */}
       {dl !== "overzicht" && (
         <div
-          className={`flex items-center gap-3 px-3 py-1.5 text-[10px] text-gray-400 ${footerBorder}`}
+          className={`flex items-center gap-3 px-3 py-1.5 text-gray-400 ${footerBorder}`}
+          style={{ fontSize: "calc(11px / var(--zoom-scale, 1))" }}
         >
           <span>{aantalSpelers} spelers</span>
           <span>
