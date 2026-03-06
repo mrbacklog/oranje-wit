@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { Suspense } from "react";
 import { InfoPageHeader } from "@/components/info/InfoPageHeader";
 import { ChartsSkeleton, HeatmapSkeleton, TableSkeleton } from "@/components/ui/skeleton";

@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { KpiCard } from "@oranje-wit/ui";
 import { InfoPageHeader } from "@/components/info/InfoPageHeader";
 import { getSpelersOverzicht } from "@/lib/queries/spelers";

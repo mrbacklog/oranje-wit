@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { getTeamsRegister, getSpelersPerTeam, getSpelersVanTeam } from "@/lib/queries/teams";
 import { getStafPerTeam } from "@/lib/queries/staf";
 import { getOWTeamsMetUitslagen } from "@/lib/queries/uitslagen";
