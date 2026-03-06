@@ -515,6 +515,85 @@ server.tool(
   }
 );
 
+// ─── Tool 14: railway_deploy_pipeline ───────────────────────────────────────
+
+server.tool(
+  "railway_deploy_pipeline",
+  "Deploy een service en poll de status — rapporteert SUCCESS of FAILED na maximaal 5 minuten",
+  {
+    projectId: z.string().describe("Railway project ID"),
+    environmentId: z.string().describe("Environment ID"),
+    serviceId: z.string().describe("Service ID"),
+  },
+  async ({ projectId, environmentId, serviceId }) => {
+    try {
+      // Stap 1: trigger deploy
+      await railwayQuery(
+        `
+        mutation ($projectId: String!, $environmentId: String!, $serviceId: String!) {
+          serviceInstanceDeploy(projectId: $projectId, environmentId: $environmentId, serviceId: $serviceId)
+        }
+      `,
+        { projectId, environmentId, serviceId }
+      );
+
+      // Stap 2: pak het nieuwste deployment ID (kort wachten zodat Railway het registreert)
+      await new Promise((r) => setTimeout(r, 3000));
+      const listData = await railwayQuery(
+        `
+        query ($projectId: String!, $serviceId: String!) {
+          deployments(projectId: $projectId, serviceId: $serviceId, first: 1) {
+            edges { node { id status staticUrl createdAt } }
+          }
+        }
+      `,
+        { projectId, serviceId }
+      );
+
+      const deployment = listData.deployments.edges[0]?.node;
+      if (!deployment) throw new Error("Geen deployment gevonden na trigger");
+
+      const deploymentId = deployment.id;
+
+      // Stap 3: poll status elke 10 seconden, max 5 minuten (30 pogingen)
+      const TERMINAL = ["SUCCESS", "FAILED", "CRASHED", "REMOVED"];
+      for (let i = 0; i < 30; i++) {
+        await new Promise((r) => setTimeout(r, 10000));
+        const statusData = await railwayQuery(
+          `
+          query ($deploymentId: String!) {
+            deployment(id: $deploymentId) { id status staticUrl }
+          }
+        `,
+          { deploymentId }
+        );
+        const { status, staticUrl } = statusData.deployment;
+        if (TERMINAL.includes(status)) {
+          if (status === "SUCCESS") {
+            return ok({ ok: true, status, deploymentId, staticUrl, elapsed: `${(i + 1) * 10}s` });
+          } else {
+            return ok({
+              ok: false,
+              status,
+              deploymentId,
+              bericht: `Deploy mislukt (${status}). Bekijk logs via railway_logs met deploymentId "${deploymentId}".`,
+            });
+          }
+        }
+      }
+
+      return ok({
+        ok: false,
+        status: "TIMEOUT",
+        deploymentId,
+        bericht: "Deploy duurde langer dan 5 minuten. Controleer Railway dashboard.",
+      });
+    } catch (e) {
+      return err(e.message);
+    }
+  }
+);
+
 // ─── Start server ───────────────────────────────────────────────────────────
 
 async function main() {

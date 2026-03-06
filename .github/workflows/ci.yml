@@ -8,7 +8,32 @@ on:
   workflow_dispatch:
 
 jobs:
+  # ── Job 0: Detecteer welke apps zijn gewijzigd ─────────────────────────────
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      monitor: ${{ steps.filter.outputs.monitor }}
+      ti: ${{ steps.filter.outputs.ti }}
+      evaluatie: ${{ steps.filter.outputs.evaluatie }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            monitor:
+              - 'apps/monitor/**'
+              - 'packages/**'
+            ti:
+              - 'apps/team-indeling/**'
+              - 'packages/**'
+            evaluatie:
+              - 'apps/evaluatie/**'
+              - 'packages/**'
+
+  # ── Job 1: Quality checks ──────────────────────────────────────────────────
   quality:
+    needs: changes
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -27,20 +52,124 @@ jobs:
       - name: Generate Prisma client
         run: pnpm db:generate
 
-      - name: Typecheck team-indeling
-        run: pnpm --filter @oranje-wit/team-indeling exec tsc --noEmit
-
       - name: Typecheck monitor
+        if: needs.changes.outputs.monitor == 'true'
         run: pnpm --filter @oranje-wit/monitor exec tsc --noEmit
 
-      - name: Lint team-indeling
-        run: pnpm --filter @oranje-wit/team-indeling lint
+      - name: Typecheck team-indeling
+        if: needs.changes.outputs.ti == 'true'
+        run: pnpm --filter @oranje-wit/team-indeling exec tsc --noEmit
+
+      - name: Typecheck evaluatie
+        if: needs.changes.outputs.evaluatie == 'true'
+        run: pnpm --filter @oranje-wit/evaluatie exec tsc --noEmit
 
       - name: Lint monitor
+        if: needs.changes.outputs.monitor == 'true'
         run: pnpm --filter @oranje-wit/monitor lint
+
+      - name: Lint team-indeling
+        if: needs.changes.outputs.ti == 'true'
+        run: pnpm --filter @oranje-wit/team-indeling lint
+
+      - name: Lint evaluatie
+        if: needs.changes.outputs.evaluatie == 'true'
+        run: pnpm --filter @oranje-wit/evaluatie lint
 
       - name: Format check
         run: pnpm format:check
 
       - name: Tests
         run: pnpm test
+
+  # ── Job 2: Build check (parallel aan quality) ──────────────────────────────
+  build:
+    needs: changes
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy
+      NEXTAUTH_SECRET: ci-build-secret
+      NEXTAUTH_URL: http://localhost:3000
+      ANTHROPIC_API_KEY: sk-dummy-key
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm db:generate
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            apps/monitor/.next/cache
+            apps/team-indeling/.next/cache
+            apps/evaluatie/.next/cache
+          key: nextjs-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: nextjs-${{ runner.os }}-
+
+      - name: Build monitor
+        if: needs.changes.outputs.monitor == 'true'
+        run: pnpm build:monitor
+
+      - name: Build team-indeling
+        if: needs.changes.outputs.ti == 'true'
+        run: pnpm build:ti
+
+      - name: Build evaluatie
+        if: needs.changes.outputs.evaluatie == 'true'
+        run: pnpm build:evaluatie
+
+  # ── Job 3: Deploy (alleen na groen CI, alleen op master push) ─────────────
+  deploy:
+    needs: [quality, build, changes]
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy monitor
+        if: needs.changes.outputs.monitor == 'true'
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
+          ENV_ID: ${{ secrets.RAILWAY_ENVIRONMENT_ID }}
+          SVC_ID: ${{ secrets.RAILWAY_SERVICE_MONITOR }}
+        run: |
+          curl -sf -X POST https://backboard.railway.com/graphql/v2 \
+            -H "Authorization: Bearer $RAILWAY_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{\"query\":\"mutation { serviceInstanceDeploy(projectId: \\\"$PROJECT_ID\\\", environmentId: \\\"$ENV_ID\\\", serviceId: \\\"$SVC_ID\\\") }\"}"
+
+      - name: Deploy team-indeling
+        if: needs.changes.outputs.ti == 'true'
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
+          ENV_ID: ${{ secrets.RAILWAY_ENVIRONMENT_ID }}
+          SVC_ID: ${{ secrets.RAILWAY_SERVICE_TI }}
+        run: |
+          curl -sf -X POST https://backboard.railway.com/graphql/v2 \
+            -H "Authorization: Bearer $RAILWAY_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{\"query\":\"mutation { serviceInstanceDeploy(projectId: \\\"$PROJECT_ID\\\", environmentId: \\\"$ENV_ID\\\", serviceId: \\\"$SVC_ID\\\") }\"}"
+
+      - name: Deploy evaluatie
+        if: needs.changes.outputs.evaluatie == 'true'
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
+          ENV_ID: ${{ secrets.RAILWAY_ENVIRONMENT_ID }}
+          SVC_ID: ${{ secrets.RAILWAY_SERVICE_EVAL }}
+        run: |
+          curl -sf -X POST https://backboard.railway.com/graphql/v2 \
+            -H "Authorization: Bearer $RAILWAY_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{\"query\":\"mutation { serviceInstanceDeploy(projectId: \\\"$PROJECT_ID\\\", environmentId: \\\"$ENV_ID\\\", serviceId: \\\"$SVC_ID\\\") }\"}"

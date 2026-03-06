@@ -8,7 +8,7 @@ argument-hint: "[actie: status, deploy, logs, variables, domains, dns]"
 
 # Railway — Platform Management via MCP
 
-Beheer de Railway-omgeving van Oranje Wit via de GraphQL API v2. De MCP server biedt 13 tools voor deployment-lifecycle, custom domains en DNS.
+Beheer de Railway-omgeving van Oranje Wit via de GraphQL API v2. De MCP server biedt 14 tools voor deployment-lifecycle, custom domains en DNS.
 
 ## Architectuur
 
@@ -18,7 +18,7 @@ Claude Code ←→ apps/mcp/railway/server.js ←→ Railway GraphQL API v2
                                                Authorization: Bearer <RAILWAY_TOKEN>
 ```
 
-- **MCP server**: `apps/mcp/railway/server.js` — 13 tools
+- **MCP server**: `apps/mcp/railway/server.js` — 14 tools
 - **Config**: `.mcp.json` — server registratie + token (gitignored)
 - **API**: Railway GraphQL API v2
 
@@ -43,18 +43,22 @@ Alles draait in één project:
 | Postgres | `e7486b49-dba3-4e0a-8709-a501cea860ae` | `postgres.railway.internal:5432` (intern) |
 | team-indeling | `49ed7b30-a243-4f30-87fa-ae56935fbbbc` | https://team-indeling-production.up.railway.app |
 | monitor | `a7efb126-8ad1-460d-b787-2d03207c3f3c` | https://monitor-production-b2b1.up.railway.app |
+| evaluatie | (nog aan te maken) | — |
 
 ### GitHub repo
 
 - **Repo**: `mrbacklog/oranje-wit` (publiek)
 - **Branch**: `master`
-- **Auto-deploy**: ja, bij elke push naar master
+- **Auto-deploy**: **UITGESCHAKELD** — GitHub Actions is de enige deployer
 
 ### Deployment
 
-Beide apps gebruiken **Dockerfiles** (niet Nixpacks):
+Alle drie apps gebruiken **Dockerfiles** (niet Nixpacks):
 - `apps/team-indeling/Dockerfile` — Node 22, pnpm workspace, Prisma
 - `apps/monitor/Dockerfile` — Node 22, pnpm workspace, Prisma
+- `apps/evaluatie/Dockerfile` — Node 22, pnpm workspace, Prisma
+
+**Deploy-flow**: GitHub push → CI (quality + build) → Railway API (`serviceInstanceDeploy`) → alleen gewijzigde apps
 
 ## MCP Tools
 
@@ -76,7 +80,8 @@ Beide apps gebruiken **Dockerfiles** (niet Nixpacks):
 | `railway_service_connect` | Bestaande service aan GitHub koppelen | `serviceId`, `repo`, `branch` |
 | `railway_variables_get` | Environment variables ophalen | `projectId`, `environmentId`, `serviceId` |
 | `railway_variable_set` | Variables instellen (upsert) | `projectId`, `environmentId`, `serviceId`, `variables` |
-| `railway_deploy` | Deployment triggeren | `projectId`, `environmentId`, `serviceId` |
+| `railway_deploy` | Deployment triggeren (fire-and-forget) | `projectId`, `environmentId`, `serviceId` |
+| `railway_deploy_pipeline` | Deploy + poll tot SUCCESS/FAILED (max 5 min) | `projectId`, `environmentId`, `serviceId` |
 | `railway_domain_create` | Railway-domein genereren | `environmentId`, `serviceId` |
 
 ### Custom Domains
@@ -210,12 +215,25 @@ curl -s "https://dns.google/resolve?name=monitor.ckvoranjewit.app&type=CNAME"
     variables: {"KEY": "value"}
 ```
 
-### 4. Handmatig deploy triggeren
+### 4. Handmatig deploy triggeren (fire-and-forget)
 
 ```
 → railway_deploy
+    projectId: "aa87602d-316d-4d3e-8860-f75d352fae27"
     environmentId: "1751fe16-20bf-4a6a-a5f6-b46ea0f4cfb1"
     serviceId: "49ed7b30-..."  # team-indeling
+```
+
+### 5. Deploy + wacht op resultaat (aanbevolen)
+
+```
+→ railway_deploy_pipeline
+    projectId: "aa87602d-316d-4d3e-8860-f75d352fae27"
+    environmentId: "1751fe16-20bf-4a6a-a5f6-b46ea0f4cfb1"
+    serviceId: "49ed7b30-..."  # team-indeling (of "a7efb126-..." voor monitor)
+
+# Returnt: { ok: true/false, status, deploymentId, staticUrl, elapsed }
+# Bij FAILED: bekijk logs via railway_logs met het deploymentId
 ```
 
 ## Authenticatie
