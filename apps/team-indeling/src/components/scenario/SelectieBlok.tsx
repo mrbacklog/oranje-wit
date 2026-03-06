@@ -156,7 +156,10 @@ export default function SelectieBlok({
             <>
               {dames.length > 0 && (
                 <>
-                  <div className="px-2 pt-1 text-xs font-medium tracking-wide text-pink-500 uppercase">
+                  <div
+                    className="px-2 pt-1 font-medium tracking-wide text-pink-500 uppercase"
+                    style={{ fontSize: "calc(11px / var(--zoom-scale, 1))" }}
+                  >
                     Dames ({dames.length})
                   </div>
                   {dames.map((ts) => (
@@ -174,7 +177,10 @@ export default function SelectieBlok({
               )}
               {heren.length > 0 && (
                 <>
-                  <div className="px-2 pt-1 text-xs font-medium tracking-wide text-blue-500 uppercase">
+                  <div
+                    className="px-2 pt-1 font-medium tracking-wide text-blue-500 uppercase"
+                    style={{ fontSize: "calc(11px / var(--zoom-scale, 1))" }}
+                  >
                     Heren ({heren.length})
                   </div>
                   {heren.map((ts) => (
@@ -196,7 +202,10 @@ export default function SelectieBlok({
             <div className="grid grid-cols-2 gap-x-0.5">
               <div>
                 {dames.length > 0 && (
-                  <div className="px-2 pt-1 text-xs font-medium tracking-wide text-pink-500 uppercase">
+                  <div
+                    className="px-2 pt-1 font-medium tracking-wide text-pink-500 uppercase"
+                    style={{ fontSize: "calc(11px / var(--zoom-scale, 1))" }}
+                  >
                     Dames ({dames.length})
                   </div>
                 )}
@@ -214,7 +223,10 @@ export default function SelectieBlok({
               </div>
               <div>
                 {heren.length > 0 && (
-                  <div className="px-2 pt-1 text-xs font-medium tracking-wide text-blue-500 uppercase">
+                  <div
+                    className="px-2 pt-1 font-medium tracking-wide text-blue-500 uppercase"
+                    style={{ fontSize: "calc(11px / var(--zoom-scale, 1))" }}
+                  >
                     Heren ({heren.length})
                   </div>
                 )}

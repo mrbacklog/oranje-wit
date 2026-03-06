@@ -22,11 +22,14 @@ export default function ZoomCanvas({ children }: ZoomCanvasProps) {
       <div ref={containerRef} className="h-full w-full overflow-hidden">
         {/* Getransformeerde inner div */}
         <div
-          style={{
-            transformOrigin: "0 0",
-            transform: `translate(${transform.x}px, ${transform.y}px) scale(${transform.k})`,
-            willChange: "transform",
-          }}
+          style={
+            {
+              transformOrigin: "0 0",
+              transform: `translate(${transform.x}px, ${transform.y}px) scale(${transform.k})`,
+              willChange: "transform",
+              "--zoom-scale": transform.k,
+            } as React.CSSProperties
+          }
         >
           <ZoomScaleProvider value={transform.k}>{children(detailLevel)}</ZoomScaleProvider>
         </div>
