@@ -4,8 +4,8 @@ import { AppShell } from "@/components/layout/app-shell";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "TC-monitor | c.k.v. Oranje Wit",
-  description: "TC-monitor voor gezonde groei",
+  title: "Verenigingsmonitor | c.k.v. Oranje Wit",
+  description: "Verenigingsmonitor voor gezonde groei",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
