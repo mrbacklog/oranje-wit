@@ -1,6 +1,6 @@
 "use client";
 
-import type { TeamData, SpelerData, HuidigData } from "../types";
+import type { TeamData, SpelerData, HuidigData, SelectieGroepData, TeamSpelerData } from "../types";
 import type { SpelerStatus } from "@oranje-wit/database";
 import type { TeamValidatie } from "@/lib/validatie/regels";
 import {
@@ -14,15 +14,21 @@ import SpelerAvatar from "@/components/ui/SpelerAvatar";
 
 interface ViewSelectieBlokProps {
   teams: TeamData[];
+  selectieGroep?: SelectieGroepData;
   validatieMap?: Map<string, TeamValidatie>;
   onSpelerClick?: (speler: SpelerData) => void;
 }
 
-export default function ViewSelectieBlok({ teams, onSpelerClick }: ViewSelectieBlokProps) {
-  const leider = teams.find((t) => t.selectieGroepId === null) ?? teams[0];
+export default function ViewSelectieBlok({
+  teams,
+  selectieGroep,
+  onSpelerClick,
+}: ViewSelectieBlokProps) {
   const teamNamen = teams.map((t) => t.alias ?? t.naam).join(" + ");
 
-  const alleSpelers = leider.spelers;
+  const alleSpelers: TeamSpelerData[] = selectieGroep
+    ? (selectieGroep.spelers as TeamSpelerData[])
+    : (teams[0]?.spelers ?? []);
   const gesorteerd = sorteerSpelers(alleSpelers);
   const heren = gesorteerd.filter((ts) => ts.speler.geslacht === "M");
   const dames = gesorteerd.filter((ts) => ts.speler.geslacht === "V");
@@ -52,10 +58,10 @@ export default function ViewSelectieBlok({ teams, onSpelerClick }: ViewSelectieB
       </div>
 
       {/* Staf */}
-      {leider.staf.length > 0 && (
+      {(selectieGroep ? selectieGroep.staf : (teams[0]?.staf ?? [])).length > 0 && (
         <div className="border-b border-orange-100 px-3 py-1">
           <span className="text-[10px] font-medium text-gray-500">Staf: </span>
-          {leider.staf.map((ts, i) => (
+          {(selectieGroep ? selectieGroep.staf : (teams[0]?.staf ?? [])).map((ts, i) => (
             <span key={ts.id} className="text-[10px] text-gray-500">
               {i > 0 && ", "}
               {ts.staf.naam} <span className="text-gray-400">({ts.rol})</span>

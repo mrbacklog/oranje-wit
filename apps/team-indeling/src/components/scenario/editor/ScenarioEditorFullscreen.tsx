@@ -115,6 +115,7 @@ export default function ScenarioEditorFullscreen({
               zichtbareTeamIds={editor.zichtbaar}
               validatieMap={editor.validatieMap}
               dubbeleMeldingen={editor.dubbeleMeldingen}
+              selectieGroepMap={editor.selectieGroepMap}
               onCreateTeam={editor.handleCreateTeam}
               onDeleteTeam={editor.handleDeleteTeam}
               onKoppelSelectie={editor.handleKoppelSelectie}
@@ -183,8 +184,8 @@ export default function ScenarioEditorFullscreen({
         <VerdeelDialoog
           open={true}
           onClose={() => editor.setVerdeelData(null)}
-          leiderTeam={editor.verdeelData.leiderTeam}
-          lidTeams={editor.verdeelData.lidTeams}
+          selectieGroep={editor.verdeelData.selectieGroep}
+          teams={editor.verdeelData.lidTeams}
           onBevestig={editor.handleVerdeelBevestig}
         />
       )}

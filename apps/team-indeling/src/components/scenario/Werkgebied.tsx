@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback } from "react";
-import type { TeamData, SpelerData } from "./types";
+import type { TeamData, SpelerData, SelectieGroepData } from "./types";
 import type { TeamCategorie, Kleur } from "@oranje-wit/database";
 import type { TeamValidatie, ValidatieMelding } from "@/lib/validatie/regels";
 import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
@@ -20,7 +20,8 @@ interface WerkgebiedProps {
   onCreateTeam: (data: { naam: string; categorie: TeamCategorie; kleur?: Kleur }) => void;
   onDeleteTeam: (teamId: string) => void;
   onKoppelSelectie: (teamIds: string[]) => void;
-  onOntkoppelSelectie: (groepLeiderId: string) => void;
+  onOntkoppelSelectie: (groepId: string) => void;
+  selectieGroepMap?: Map<string, SelectieGroepData>;
   onSpelerClick?: (speler: SpelerData, teamId?: string) => void;
   onEditTeam?: (teamId: string) => void;
   onReorderTeams?: (vanIndex: number, naarIndex: number) => void;
@@ -36,6 +37,7 @@ export default function Werkgebied({
   onDeleteTeam,
   onKoppelSelectie,
   onOntkoppelSelectie,
+  selectieGroepMap,
   onSpelerClick,
   onEditTeam,
   onReorderTeams: _onReorderTeams,
@@ -53,20 +55,11 @@ export default function Werkgebied({
 
     for (const team of zichtbareTeams) {
       if (team.selectieGroepId) {
-        // Dit team hoort bij een selectie-groep
         const groep = groepen.get(team.selectieGroepId) ?? [];
         groep.push(team);
         groepen.set(team.selectieGroepId, groep);
       } else {
-        // Check of dit team zelf een leider is (andere teams verwijzen ernaar)
-        const leden = zichtbareTeams.filter((t) => t.selectieGroepId === team.id);
-        if (leden.length > 0) {
-          const groep = groepen.get(team.id) ?? [];
-          groep.unshift(team); // leider eerst
-          groepen.set(team.id, groep);
-        } else {
-          los.push(team);
-        }
+        los.push(team);
       }
     }
 
@@ -158,11 +151,12 @@ export default function Werkgebied({
             <SortableContext items={sortableIds} strategy={rectSortingStrategy}>
               <div className="grid auto-rows-min grid-cols-2 gap-4 p-4 md:grid-cols-4">
                 {/* Selectie-groepen — altijd 2 kolommen breed */}
-                {Array.from(selectieGroepen.entries()).map(([leiderId, groepTeams]) => (
-                  <div key={`selectie-${leiderId}`} className="col-span-2">
+                {Array.from(selectieGroepen.entries()).map(([groepId, groepTeams]) => (
+                  <div key={`selectie-${groepId}`} className="col-span-2">
                     <SortableSelectieBlok
-                      sortId={`selectie-${leiderId}`}
+                      sortId={`selectie-${groepId}`}
                       teams={groepTeams}
+                      selectieGroep={selectieGroepMap?.get(groepId)}
                       validatieMap={validatieMap}
                       detailLevel={detailLevel}
                       onOntkoppel={onOntkoppelSelectie}

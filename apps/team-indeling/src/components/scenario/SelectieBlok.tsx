@@ -2,18 +2,19 @@
 
 import { useDroppable } from "@dnd-kit/core";
 import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
-import type { TeamData, SpelerData, DetailLevel } from "./types";
+import type { TeamData, SpelerData, DetailLevel, SelectieGroepData, TeamSpelerData } from "./types";
 import type { TeamValidatie } from "@/lib/validatie/regels";
 import { korfbalLeeftijd, sorteerSpelers } from "./types";
 import TeamSpelerRij from "./TeamSpelerRij";
 
 export interface SelectieBlokProps {
   teams: TeamData[];
+  selectieGroep?: SelectieGroepData;
   validatieMap?: Map<string, TeamValidatie>;
   detailLevel?: DetailLevel;
   dragHandleRef?: (el: HTMLElement | null) => void;
   dragHandleListeners?: SyntheticListenerMap;
-  onOntkoppel: (groepLeiderId: string) => void;
+  onOntkoppel: (groepId: string) => void;
   onDelete: (teamId: string) => void;
   onSpelerClick?: (speler: SpelerData, teamId?: string) => void;
   onEditTeam?: (teamId: string) => void;
@@ -21,6 +22,7 @@ export interface SelectieBlokProps {
 
 export default function SelectieBlok({
   teams,
+  selectieGroep,
   validatieMap,
   detailLevel,
   dragHandleRef,
@@ -32,15 +34,17 @@ export default function SelectieBlok({
 }: SelectieBlokProps) {
   const dl = detailLevel ?? "detail";
 
-  // Eerste team is de leider (heeft geen selectieGroepId, de rest verwijst ernaar)
-  const leider = teams.find((t) => t.selectieGroepId === null) ?? teams[0];
-  const teamNamen = leider.alias ? leider.alias : teams.map((t) => t.alias ?? t.naam).join(" + ");
+  // Eerste team als referentie (voor droppable)
+  const eersteTeam = teams[0];
+  const teamNamen = teams.map((t) => t.alias ?? t.naam).join(" + ");
 
-  // Alle spelers zitten op het leider-team (pool)
-  const alleSpelers = leider.spelers;
-  const gesorteerd = sorteerSpelers(alleSpelers);
-  const heren = gesorteerd.filter((ts) => ts.speler.geslacht === "M");
-  const dames = gesorteerd.filter((ts) => ts.speler.geslacht === "V");
+  // Spelers/staf komen van de selectieGroep
+  const alleSpelers = selectieGroep
+    ? sorteerSpelers(selectieGroep.spelers as TeamSpelerData[])
+    : sorteerSpelers(eersteTeam?.spelers ?? []);
+  const gesorteerd = alleSpelers;
+  const heren = alleSpelers.filter((ts) => ts.speler.geslacht === "M");
+  const dames = alleSpelers.filter((ts) => ts.speler.geslacht === "V");
   const aantalSpelers = alleSpelers.length;
   const aantalM = heren.length;
   const aantalV = dames.length;
@@ -54,13 +58,16 @@ export default function SelectieBlok({
         ).toFixed(2)
       : "-";
 
-  // Validatie voor de leider
-  const validatie = validatieMap?.get(leider.id);
+  // Staf uit selectieGroep of eersteTeam
+  const alleStaf = selectieGroep ? selectieGroep.staf : (eersteTeam?.staf ?? []);
 
-  // Droppable zone voor de hele selectie-pool
+  // Validatie voor het eerste team
+  const validatie = validatieMap?.get(eersteTeam?.id ?? "");
+
+  // Droppable zone — elk team in de groep werkt als drop target
   const { setNodeRef, isOver } = useDroppable({
-    id: `team-${leider.id}`,
-    data: { type: "team", teamId: leider.id },
+    id: `team-${eersteTeam?.id}`,
+    data: { type: "team", teamId: eersteTeam?.id },
   });
 
   // Dubbele oranje stippelrand: border + ring voor dubbel effect
@@ -107,9 +114,9 @@ export default function SelectieBlok({
         </div>
         <div className="flex items-center gap-1">
           {/* Potlood-icoon voor selectie bewerken */}
-          {(dl === "detail" || dl === "focus") && (
+          {(dl === "detail" || dl === "focus") && eersteTeam && (
             <button
-              onClick={() => onEditTeam?.(leider.id)}
+              onClick={() => onEditTeam?.(eersteTeam.id)}
               className="p-0.5 text-orange-400 transition-colors hover:text-orange-700"
               title="Bewerk selectie"
             >
@@ -123,9 +130,9 @@ export default function SelectieBlok({
               </svg>
             </button>
           )}
-          {(dl === "detail" || dl === "focus") && (
+          {(dl === "detail" || dl === "focus") && selectieGroep && (
             <button
-              onClick={() => onOntkoppel(leider.id)}
+              onClick={() => onOntkoppel(selectieGroep.id)}
               className="rounded px-2 py-1 text-[10px] font-medium text-orange-600 transition-colors hover:bg-orange-100 hover:text-orange-800"
               title="Ontkoppel selectie"
             >
@@ -135,11 +142,11 @@ export default function SelectieBlok({
         </div>
       </div>
 
-      {/* Staf (allemaal op leider) */}
-      {(dl === "detail" || dl === "focus") && leider.staf.length > 0 && (
+      {/* Staf (uit selectieGroep) */}
+      {(dl === "detail" || dl === "focus") && alleStaf.length > 0 && (
         <div className="border-b border-orange-100 px-3 py-1">
           <span className="text-[10px] font-medium text-gray-500">Staf: </span>
-          {leider.staf.map((ts, i) => (
+          {alleStaf.map((ts, i) => (
             <span key={ts.id} className="text-[10px] text-gray-500">
               {i > 0 && ", "}
               {ts.staf.naam} <span className="text-gray-400">({ts.rol})</span>
@@ -179,10 +186,10 @@ export default function SelectieBlok({
                   <TeamSpelerRij
                     key={ts.id}
                     teamSpeler={ts}
-                    teamId={leider.id}
+                    teamId={eersteTeam?.id ?? ""}
                     detailLevel={dl}
                     onSpelerClick={
-                      onSpelerClick ? (speler) => onSpelerClick(speler, leider.id) : undefined
+                      onSpelerClick ? (speler) => onSpelerClick(speler, eersteTeam?.id) : undefined
                     }
                   />
                 ))}
@@ -200,10 +207,10 @@ export default function SelectieBlok({
                   <TeamSpelerRij
                     key={ts.id}
                     teamSpeler={ts}
-                    teamId={leider.id}
+                    teamId={eersteTeam?.id ?? ""}
                     detailLevel={dl}
                     onSpelerClick={
-                      onSpelerClick ? (speler) => onSpelerClick(speler, leider.id) : undefined
+                      onSpelerClick ? (speler) => onSpelerClick(speler, eersteTeam?.id) : undefined
                     }
                   />
                 ))}

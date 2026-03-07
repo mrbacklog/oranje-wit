@@ -24,7 +24,7 @@ interface TeamEditPanelProps {
   onUpdateTeam: (teamId: string, data: TeamUpdateData) => void;
   onUpdateTeamType: (teamId: string, teamType: "VIERTAL" | null) => void;
   onKoppelSelectie: (teamIds: string[]) => void;
-  onOntkoppelSelectie: (leiderId: string) => void;
+  onOntkoppelSelectie: (groepId: string) => void;
   onDeleteTeam: (teamId: string) => void;
 }
 
@@ -53,9 +53,10 @@ export default function TeamEditPanel({
   const [kleur, setKleur] = useState<Kleur | null>(team.kleur);
   const [niveau, setNiveau] = useState(team.niveau ?? "");
 
-  const lidTeams = alleTeams.filter((t) => t.selectieGroepId === team.id);
-  const isSelectieLeider = lidTeams.length > 0;
-  const isSelectieLid = team.selectieGroepId !== null;
+  const isInSelectie = team.selectieGroepId !== null;
+  const lidTeams = isInSelectie
+    ? alleTeams.filter((t) => t.selectieGroepId === team.selectieGroepId && t.id !== team.id)
+    : [];
 
   const [lidAliassen, setLidAliassen] = useState<Record<string, string>>(
     Object.fromEntries(lidTeams.map((t) => [t.id, t.alias ?? ""]))
@@ -152,7 +153,7 @@ export default function TeamEditPanel({
         {/* Alias / Selectienaam */}
         <div>
           <label className="mb-1 block text-xs font-medium text-gray-600">
-            {isSelectieLeider ? "Selectienaam" : "Werknaam (alias)"}
+            {isInSelectie ? "Selectienaam" : "Werknaam (alias)"}
           </label>
           <input
             type="text"
@@ -262,7 +263,7 @@ export default function TeamEditPanel({
         {/* Selectie koppeling */}
         <div className="rounded-md border border-gray-200 bg-gray-50 p-3">
           <p className="mb-2 text-xs font-medium text-gray-700">Selectie</p>
-          {isSelectieLeider ? (
+          {isInSelectie ? (
             <div className="space-y-2">
               {lidTeams.map((lid) => (
                 <div key={lid.id}>
@@ -291,16 +292,12 @@ export default function TeamEditPanel({
                 </div>
               ))}
               <button
-                onClick={() => onOntkoppelSelectie(team.id)}
+                onClick={() => onOntkoppelSelectie(team.selectieGroepId!)}
                 className="mt-1 rounded px-2 py-1 text-[10px] font-medium text-red-600 hover:bg-red-50"
               >
                 Ontkoppel selectie
               </button>
             </div>
-          ) : isSelectieLid ? (
-            <p className="text-[10px] text-gray-500">
-              Gekoppeld aan selectie. Bewerk de leider om te ontkoppelen.
-            </p>
           ) : (
             <SelectieKoppelaar teamId={team.id} alleTeams={alleTeams} onKoppel={onKoppelSelectie} />
           )}
@@ -404,7 +401,7 @@ export default function TeamEditPanel({
           onClick={() => onDeleteTeam(team.id)}
           className="w-full rounded-md border border-red-200 bg-white px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-100"
         >
-          {isSelectieLeider ? "Verwijder selectie" : "Verwijder team"}
+          {isInSelectie ? "Verwijder selectie" : "Verwijder team"}
         </button>
       </div>
     </div>

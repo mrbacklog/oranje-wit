@@ -1,19 +1,21 @@
 "use client";
 
 import { useMemo } from "react";
-import type { TeamData, SpelerData } from "../types";
+import type { TeamData, SpelerData, SelectieGroepData } from "../types";
 import type { TeamValidatie } from "@/lib/validatie/regels";
 import ViewTeamKaart from "./ViewTeamKaart";
 import ViewSelectieBlok from "./ViewSelectieBlok";
 
 interface ViewWerkgebiedProps {
   teams: TeamData[];
+  selectieGroepMap?: Map<string, SelectieGroepData>;
   validatieMap?: Map<string, TeamValidatie>;
   onSpelerClick?: (speler: SpelerData) => void;
 }
 
 export default function ViewWerkgebied({
   teams,
+  selectieGroepMap,
   validatieMap,
   onSpelerClick,
 }: ViewWerkgebiedProps) {
@@ -27,14 +29,7 @@ export default function ViewWerkgebied({
         groep.push(team);
         groepen.set(team.selectieGroepId, groep);
       } else {
-        const leden = teams.filter((t) => t.selectieGroepId === team.id);
-        if (leden.length > 0) {
-          const groep = groepen.get(team.id) ?? [];
-          groep.unshift(team);
-          groepen.set(team.id, groep);
-        } else {
-          los.push(team);
-        }
+        los.push(team);
       }
     }
 
@@ -49,10 +44,11 @@ export default function ViewWerkgebied({
         </div>
       ) : (
         <div className="grid auto-rows-min grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {Array.from(selectieGroepen.entries()).map(([leiderId, groepTeams]) => (
+          {Array.from(selectieGroepen.entries()).map(([groepId, groepTeams]) => (
             <ViewSelectieBlok
-              key={`selectie-${leiderId}`}
+              key={`selectie-${groepId}`}
               teams={groepTeams}
+              selectieGroep={selectieGroepMap?.get(groepId)}
               validatieMap={validatieMap}
               onSpelerClick={onSpelerClick}
             />

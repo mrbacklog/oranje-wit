@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import type { TeamData } from "./types";
+import type { TeamData, SelectieGroepData } from "./types";
 import { korfbalLeeftijd, STATUS_KLEUREN } from "./types";
 
 interface VerdeelDialoogProps {
   open: boolean;
   onClose: () => void;
-  leiderTeam: TeamData;
-  lidTeams: TeamData[];
+  selectieGroep: SelectieGroepData;
+  teams: TeamData[];
   onBevestig: (
     spelerVerdeling: Record<string, string[]>,
     stafVerdeling: Record<string, string[]>
@@ -18,18 +18,18 @@ interface VerdeelDialoogProps {
 export default function VerdeelDialoog({
   open,
   onClose,
-  leiderTeam,
-  lidTeams,
+  selectieGroep,
+  teams,
   onBevestig,
 }: VerdeelDialoogProps) {
-  const alleTeams = [leiderTeam, ...lidTeams];
+  const alleTeams = teams;
   const alleTeamIds = alleTeams.map((t) => t.id);
 
   // Speler-verdeling: spelerId → teamId
   const [spelerTeam, setSpelerTeam] = useState<Map<string, string>>(() => {
     const m = new Map<string, string>();
-    for (const ts of leiderTeam.spelers) {
-      m.set(ts.spelerId, leiderTeam.id);
+    for (const ss of selectieGroep.spelers) {
+      m.set(ss.spelerId, teams[0]?.id ?? "");
     }
     return m;
   });
@@ -37,8 +37,8 @@ export default function VerdeelDialoog({
   // Staf-toewijzing: stafId → teamId of "alle"
   const [stafTeam, setStafTeam] = useState<Map<string, string>>(() => {
     const m = new Map<string, string>();
-    for (const ts of leiderTeam.staf) {
-      m.set(ts.stafId, "alle");
+    for (const ss of selectieGroep.staf) {
+      m.set(ss.stafId, "alle");
     }
     return m;
   });
@@ -113,13 +113,13 @@ export default function VerdeelDialoog({
   if (!open) return null;
 
   // Spelers per team groeperen voor weergave
-  const spelersPerTeam = new Map<string, typeof leiderTeam.spelers>();
+  const spelersPerTeam = new Map<string, typeof selectieGroep.spelers>();
   for (const teamId of alleTeamIds) {
     spelersPerTeam.set(teamId, []);
   }
-  for (const ts of leiderTeam.spelers) {
-    const teamId = spelerTeam.get(ts.spelerId) ?? leiderTeam.id;
-    spelersPerTeam.get(teamId)?.push(ts);
+  for (const ss of selectieGroep.spelers) {
+    const teamId = spelerTeam.get(ss.spelerId) ?? teams[0]?.id ?? "";
+    spelersPerTeam.get(teamId)?.push(ss);
   }
 
   const teamNamen = alleTeams.map((t) => t.naam).join(" + ");
@@ -139,11 +139,11 @@ export default function VerdeelDialoog({
 
         <div className="dialog-body space-y-4">
           {/* Staf-sectie */}
-          {leiderTeam.staf.length > 0 && (
+          {selectieGroep.staf.length > 0 && (
             <div>
               <h4 className="mb-2 text-xs font-semibold text-gray-600 uppercase">Staf</h4>
               <div className="space-y-1.5">
-                {leiderTeam.staf.map((ts) => (
+                {selectieGroep.staf.map((ts) => (
                   <div
                     key={ts.id}
                     className="flex items-center justify-between rounded bg-gray-50 px-3 py-1.5"
@@ -238,7 +238,7 @@ export default function VerdeelDialoog({
                                 </span>
                                 {!is2Teams && (
                                   <select
-                                    value={spelerTeam.get(ts.spelerId) ?? leiderTeam.id}
+                                    value={spelerTeam.get(ts.spelerId) ?? teams[0]?.id ?? ""}
                                     onChange={(e) =>
                                       handleSpelerSelect(ts.spelerId, e.target.value)
                                     }

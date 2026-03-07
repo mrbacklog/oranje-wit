@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import type { ScenarioData, SpelerData, TeamData } from "../types";
+import type { ScenarioData, SpelerData, TeamData, SelectieGroepData } from "../types";
 import { PEILJAAR } from "../types";
 import { useValidatie } from "@/hooks/useValidatie";
 import ViewWerkgebied from "./ViewWerkgebied";
@@ -14,6 +14,12 @@ interface ScenarioViewProps {
 export default function ScenarioView({ scenario }: ScenarioViewProps) {
   const laatsteVersie = scenario.versies[0];
   const teams: TeamData[] = laatsteVersie?.teams ?? [];
+
+  const selectieGroepMap = useMemo(() => {
+    const m = new Map<string, SelectieGroepData>();
+    for (const sg of laatsteVersie?.selectieGroepen ?? []) m.set(sg.id, sg);
+    return m;
+  }, [laatsteVersie?.selectieGroepen]);
 
   const blauwdrukKaders = useMemo(
     () =>
@@ -51,6 +57,7 @@ export default function ScenarioView({ scenario }: ScenarioViewProps) {
         {/* Read-only grid */}
         <ViewWerkgebied
           teams={teams}
+          selectieGroepMap={selectieGroepMap}
           validatieMap={validatieMap}
           onSpelerClick={handleSpelerClick}
         />
