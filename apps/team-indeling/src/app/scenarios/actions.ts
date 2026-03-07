@@ -4,7 +4,7 @@ import { prisma, anyTeam } from "@/lib/db/prisma";
 import { berekenTeamstructuur } from "@/lib/teamstructuur";
 import type { SpelerBasis } from "@/lib/teamstructuur";
 import type { Prisma, TeamCategorie, Kleur } from "@oranje-wit/database";
-import { PEILJAAR } from "@oranje-wit/types";
+import { PEILJAAR, logger } from "@oranje-wit/types";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { assertBewerkbaar } from "@/lib/seizoen";
@@ -148,7 +148,7 @@ async function findConceptIdForBlauwdruk(blauwdrukId: string): Promise<string> {
  * Haal een scenario op met versies en teams.
  */
 export async function getScenario(id: string) {
-  return prisma.scenario.findUnique({
+  const scenario = await prisma.scenario.findUnique({
     where: { id },
     include: {
       concept: {
@@ -180,6 +180,15 @@ export async function getScenario(id: string) {
       },
     },
   });
+
+  if (scenario) {
+    const v = scenario.versies?.[0];
+    logger.warn(
+      `[getScenario] ${scenario.naam}: ${v?.teams?.length ?? 0} teams, ${v?.selectieGroepen?.length ?? 0} selectieGroepen`
+    );
+  }
+
+  return scenario;
 }
 
 /**
