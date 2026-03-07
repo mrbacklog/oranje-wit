@@ -61,87 +61,153 @@ export async function updateTeamType(teamId: string, teamType: TeamType | null) 
  */
 export async function deleteTeam(teamId: string) {
   await assertTeamBewerkbaar(teamId);
-  // Ontkoppel eerst eventuele selectie-leden die naar dit team verwijzen
-  await anyTeam.updateMany({
-    where: { selectieGroepId: teamId },
-    data: { selectieGroepId: null },
-  });
-  await anyTeam.delete({
+  // Als team in een selectie zit: haal het eruit
+  const team = (await anyTeam.findUniqueOrThrow({
     where: { id: teamId },
-  });
+    select: { selectieGroepId: true },
+  })) as { selectieGroepId: string | null };
+
+  if (team.selectieGroepId) {
+    await anyTeam.update({
+      where: { id: teamId },
+      data: { selectieGroepId: null },
+    });
+    // Check of er nog andere teams in de selectie zitten
+    const remaining = await anyTeam.count({
+      where: { selectieGroepId: team.selectieGroepId },
+    });
+    if (remaining < 2) {
+      // Nog maar 1 team → selectie opheffen (verdeel spelers naar dat team)
+      const lastTeam = (await anyTeam.findFirst({
+        where: { selectieGroepId: team.selectieGroepId },
+        select: { id: true },
+      })) as { id: string } | null;
+      if (lastTeam) {
+        // Verplaats selectie-spelers naar het overgebleven team
+        const selSpelers = await prisma.selectieSpeler.findMany({
+          where: { selectieGroepId: team.selectieGroepId },
+        });
+        for (const sp of selSpelers) {
+          await prisma.teamSpeler.create({
+            data: {
+              teamId: lastTeam.id,
+              spelerId: sp.spelerId,
+              statusOverride: sp.statusOverride,
+              notitie: sp.notitie,
+            },
+          });
+        }
+        const selStaf = await prisma.selectieStaf.findMany({
+          where: { selectieGroepId: team.selectieGroepId },
+        });
+        for (const st of selStaf) {
+          await prisma.teamStaf.create({
+            data: { teamId: lastTeam.id, stafId: st.stafId, rol: st.rol },
+          });
+        }
+        await anyTeam.update({
+          where: { id: lastTeam.id },
+          data: { selectieGroepId: null },
+        });
+      }
+      await prisma.selectieGroep.delete({ where: { id: team.selectieGroepId } });
+    }
+  }
+  await anyTeam.delete({ where: { id: teamId } });
   revalidatePath("/scenarios");
 }
 
 /**
- * Koppel teams als selectie. Eerste team wordt de "groep leider".
- * Alle spelers en staf van lid-teams worden samengevoegd naar de leider (pool).
+ * Koppel teams als selectie. Maak een SelectieGroep aan en verplaats
+ * alle spelers en staf van de teams naar de selectie.
  */
 export async function koppelSelectie(teamIds: string[]) {
   if (teamIds.length < 2) return;
-  const [leiderId, ...restIds] = teamIds;
+
+  // Haal versieId op van eerste team
+  const team = (await anyTeam.findUniqueOrThrow({
+    where: { id: teamIds[0] },
+    select: { versieId: true },
+  })) as { versieId: string };
 
   await prisma.$transaction(async (tx) => {
-    // 1. Koppel teams
+    // 1. Maak SelectieGroep aan
+    const groep = await tx.selectieGroep.create({
+      data: { versieId: team.versieId },
+    });
+
+    // 2. Koppel alle teams aan de groep
     await tx.team.updateMany({
-      where: { id: { in: restIds } },
-      data: { selectieGroepId: leiderId },
+      where: { id: { in: teamIds } },
+      data: { selectieGroepId: groep.id },
     });
 
-    // 2. Verplaats spelers van lid-teams naar leider
-    const bestaandeSpelers = await tx.teamSpeler.findMany({
-      where: { teamId: leiderId },
-      select: { spelerId: true },
-    });
-    const bestaandSpelerSet = new Set(bestaandeSpelers.map((s) => s.spelerId));
-
-    // Verwijder duplicaten (speler die al in leider zit)
-    if (bestaandSpelerSet.size > 0) {
-      await tx.teamSpeler.deleteMany({
-        where: {
-          teamId: { in: restIds },
-          spelerId: { in: Array.from(bestaandSpelerSet) },
-        },
+    // 3. Verplaats alle spelers van teams naar SelectieSpeler
+    for (const teamId of teamIds) {
+      const spelers = await tx.teamSpeler.findMany({
+        where: { teamId },
+        select: { spelerId: true, statusOverride: true, notitie: true },
       });
+      for (const sp of spelers) {
+        await tx.selectieSpeler.upsert({
+          where: {
+            selectieGroepId_spelerId: {
+              selectieGroepId: groep.id,
+              spelerId: sp.spelerId,
+            },
+          },
+          create: {
+            selectieGroepId: groep.id,
+            spelerId: sp.spelerId,
+            statusOverride: sp.statusOverride,
+            notitie: sp.notitie,
+          },
+          update: {},
+        });
+      }
+      await tx.teamSpeler.deleteMany({ where: { teamId } });
     }
 
-    // Verplaats rest naar leider
-    await tx.teamSpeler.updateMany({
-      where: { teamId: { in: restIds } },
-      data: { teamId: leiderId },
-    });
-
-    // 3. Zelfde voor staf
-    const bestaandeStaf = await tx.teamStaf.findMany({
-      where: { teamId: leiderId },
-      select: { stafId: true },
-    });
-    const bestaandStafSet = new Set(bestaandeStaf.map((s) => s.stafId));
-
-    if (bestaandStafSet.size > 0) {
-      await tx.teamStaf.deleteMany({
-        where: {
-          teamId: { in: restIds },
-          stafId: { in: Array.from(bestaandStafSet) },
-        },
+    // 4. Zelfde voor staf
+    for (const teamId of teamIds) {
+      const staf = await tx.teamStaf.findMany({
+        where: { teamId },
+        select: { stafId: true, rol: true },
       });
+      for (const st of staf) {
+        await tx.selectieStaf.upsert({
+          where: {
+            selectieGroepId_stafId: {
+              selectieGroepId: groep.id,
+              stafId: st.stafId,
+            },
+          },
+          create: {
+            selectieGroepId: groep.id,
+            stafId: st.stafId,
+            rol: st.rol,
+          },
+          update: {},
+        });
+      }
+      await tx.teamStaf.deleteMany({ where: { teamId } });
     }
-
-    await tx.teamStaf.updateMany({
-      where: { teamId: { in: restIds } },
-      data: { teamId: leiderId },
-    });
   });
 
   revalidatePath("/scenarios");
 }
 
 /**
- * Ontkoppel een selectie (simpel — alle spelers/staf blijven bij leider).
+ * Ontkoppel een selectie (simpel — spelers gaan verloren).
  */
-export async function ontkoppelSelectie(groepLeiderId: string) {
-  await anyTeam.updateMany({
-    where: { selectieGroepId: groepLeiderId },
-    data: { selectieGroepId: null },
+export async function ontkoppelSelectie(groepId: string) {
+  await prisma.$transaction(async (tx) => {
+    await tx.team.updateMany({
+      where: { selectieGroepId: groepId },
+      data: { selectieGroepId: null },
+    });
+    await tx.selectieGroep.delete({ where: { id: groepId } });
+    // CASCADE verwijdert SelectieSpeler/SelectieStaf automatisch
   });
   revalidatePath("/scenarios");
 }
@@ -152,60 +218,69 @@ export async function ontkoppelSelectie(groepLeiderId: string) {
  * Staf met key "alle" wordt gedupliceerd naar elk team.
  */
 export async function ontkoppelSelectieMetVerdeling(
-  groepLeiderId: string,
+  groepId: string,
   spelerVerdeling: Record<string, string[]>,
   stafVerdeling: Record<string, string[]>,
   alleTeamIds: string[]
 ) {
-  await assertTeamBewerkbaar(groepLeiderId);
-
   await prisma.$transaction(async (tx) => {
-    // 1. Verplaats spelers volgens verdeling
+    // 1. Haal selectie-spelers op (met statusOverride/notitie)
+    const selSpelers = await tx.selectieSpeler.findMany({
+      where: { selectieGroepId: groepId },
+    });
+    const spelerMap = new Map(selSpelers.map((s) => [s.spelerId, s]));
+
+    // 2. Verdeel spelers over teams
     for (const [teamId, spelerIds] of Object.entries(spelerVerdeling)) {
-      if (teamId === groepLeiderId) continue;
       for (const spelerId of spelerIds) {
-        await tx.teamSpeler.updateMany({
-          where: { teamId: groepLeiderId, spelerId },
-          data: { teamId },
+        const sel = spelerMap.get(spelerId);
+        await tx.teamSpeler.create({
+          data: {
+            teamId,
+            spelerId,
+            statusOverride: sel?.statusOverride ?? null,
+            notitie: sel?.notitie ?? null,
+          },
         });
       }
     }
 
-    // 2. Verplaats/dupliceer staf volgens verdeling
+    // 3. Verdeel staf over teams
+    const selStaf = await tx.selectieStaf.findMany({
+      where: { selectieGroepId: groepId },
+    });
+    const stafMap = new Map(selStaf.map((s) => [s.stafId, s]));
+
     for (const [teamIdOrAlle, stafIds] of Object.entries(stafVerdeling)) {
       if (teamIdOrAlle === "alle") {
-        // Staf bij alle teams → dupliceer naar elk team (behalve leider)
         for (const stafId of stafIds) {
-          const bestaand = await tx.teamStaf.findFirst({
-            where: { teamId: groepLeiderId, stafId },
-            select: { rol: true },
-          });
-          if (!bestaand) continue;
+          const sel = stafMap.get(stafId);
+          if (!sel) continue;
           for (const tid of alleTeamIds) {
-            if (tid === groepLeiderId) continue;
             await tx.teamStaf.upsert({
               where: { teamId_stafId: { teamId: tid, stafId } },
-              create: { teamId: tid, stafId, rol: bestaand.rol },
+              create: { teamId: tid, stafId, rol: sel.rol },
               update: {},
             });
           }
         }
-      } else if (teamIdOrAlle !== groepLeiderId) {
-        // Staf naar specifiek team → verplaats
+      } else {
         for (const stafId of stafIds) {
-          await tx.teamStaf.updateMany({
-            where: { teamId: groepLeiderId, stafId },
-            data: { teamId: teamIdOrAlle },
+          const sel = stafMap.get(stafId);
+          if (!sel) continue;
+          await tx.teamStaf.create({
+            data: { teamId: teamIdOrAlle, stafId, rol: sel.rol },
           });
         }
       }
     }
 
-    // 3. Ontkoppel de teams
+    // 4. Ontkoppel teams + verwijder SelectieGroep (cascade verwijdert SelectieSpeler/Staf)
     await tx.team.updateMany({
-      where: { selectieGroepId: groepLeiderId },
+      where: { selectieGroepId: groepId },
       data: { selectieGroepId: null },
     });
+    await tx.selectieGroep.delete({ where: { id: groepId } });
   });
 
   revalidatePath("/scenarios");

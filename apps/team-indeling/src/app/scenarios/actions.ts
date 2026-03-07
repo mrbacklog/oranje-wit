@@ -158,6 +158,12 @@ export async function getScenario(id: string) {
       },
       versies: {
         include: {
+          selectieGroepen: {
+            include: {
+              spelers: { include: { speler: true } },
+              staf: { include: { staf: true } },
+            },
+          },
           teams: {
             include: {
               spelers: {
@@ -228,40 +234,91 @@ export async function getAlleSpelers() {
 }
 
 /**
- * Voeg een speler toe aan een team.
+ * Voeg een speler toe aan een team (of aan de selectie als het team in een selectie zit).
  */
 export async function addSpelerToTeam(teamId: string, spelerId: string) {
   await assertTeamBewerkbaar(teamId);
-  await prisma.teamSpeler.create({
-    data: { teamId, spelerId },
-  });
+  const team = (await anyTeam.findUniqueOrThrow({
+    where: { id: teamId },
+    select: { selectieGroepId: true },
+  })) as { selectieGroepId: string | null };
+
+  if (team.selectieGroepId) {
+    // Team in selectie → voeg toe aan SelectieSpeler
+    await prisma.selectieSpeler.create({
+      data: { selectieGroepId: team.selectieGroepId, spelerId },
+    });
+  } else {
+    await prisma.teamSpeler.create({
+      data: { teamId, spelerId },
+    });
+  }
   revalidatePath("/scenarios");
 }
 
 /**
- * Verwijder een speler uit een team.
+ * Verwijder een speler uit een team (of uit de selectie als het team in een selectie zit).
  */
 export async function removeSpelerFromTeam(teamId: string, spelerId: string) {
   await assertTeamBewerkbaar(teamId);
-  await prisma.teamSpeler.deleteMany({
-    where: { teamId, spelerId },
-  });
+  const team = (await anyTeam.findUniqueOrThrow({
+    where: { id: teamId },
+    select: { selectieGroepId: true },
+  })) as { selectieGroepId: string | null };
+
+  if (team.selectieGroepId) {
+    await prisma.selectieSpeler.deleteMany({
+      where: { selectieGroepId: team.selectieGroepId, spelerId },
+    });
+  } else {
+    await prisma.teamSpeler.deleteMany({
+      where: { teamId, spelerId },
+    });
+  }
   revalidatePath("/scenarios");
 }
 
 /**
  * Verplaats een speler van het ene team naar het andere.
+ * Handelt selectie-to-selectie, selectie-to-team en team-to-selectie af.
  */
 export async function moveSpeler(spelerId: string, vanTeamId: string, naarTeamId: string) {
   await assertTeamBewerkbaar(vanTeamId);
-  await prisma.$transaction([
-    prisma.teamSpeler.deleteMany({
-      where: { teamId: vanTeamId, spelerId },
+
+  const [vanTeam, naarTeam] = (await Promise.all([
+    anyTeam.findUniqueOrThrow({
+      where: { id: vanTeamId },
+      select: { selectieGroepId: true },
     }),
-    prisma.teamSpeler.create({
-      data: { teamId: naarTeamId, spelerId },
+    anyTeam.findUniqueOrThrow({
+      where: { id: naarTeamId },
+      select: { selectieGroepId: true },
     }),
-  ]);
+  ])) as [{ selectieGroepId: string | null }, { selectieGroepId: string | null }];
+
+  await prisma.$transaction(async (tx) => {
+    // Verwijder uit bron
+    if (vanTeam.selectieGroepId) {
+      await tx.selectieSpeler.deleteMany({
+        where: { selectieGroepId: vanTeam.selectieGroepId, spelerId },
+      });
+    } else {
+      await tx.teamSpeler.deleteMany({
+        where: { teamId: vanTeamId, spelerId },
+      });
+    }
+
+    // Voeg toe aan doel
+    if (naarTeam.selectieGroepId) {
+      await tx.selectieSpeler.create({
+        data: { selectieGroepId: naarTeam.selectieGroepId, spelerId },
+      });
+    } else {
+      await tx.teamSpeler.create({
+        data: { teamId: naarTeamId, spelerId },
+      });
+    }
+  });
   revalidatePath("/scenarios");
 }
 

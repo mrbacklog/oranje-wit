@@ -59,6 +59,9 @@ type AnyPrismaModels = {
   logEntry: AnyModel;
   import: AnyModel;
   referentieTeam: AnyModel;
+  selectieGroep: AnyModel;
+  selectieSpeler: AnyModel;
+  selectieStaf: AnyModel;
   // Evaluatie-app
   evaluatieRonde: AnyModel;
   coordinator: AnyModel;
