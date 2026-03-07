@@ -257,8 +257,8 @@ export default function TeamKaart({
         <div className="min-h-15 flex-1 px-1 py-1">
           {team.spelers.length === 0 ? (
             <p className="py-3 text-center text-xs text-gray-400">Sleep spelers hierheen</p>
-          ) : team.teamType === "VIERTAL" || dl === "compact" ? (
-            /* 4-tal of compact: gestapeld — dames boven, heren onder */
+          ) : team.teamType === "VIERTAL" ? (
+            /* 4-tal: gestapeld — dames boven, heren onder */
             <>
               {dames.length > 0 && (
                 <>

@@ -111,16 +111,12 @@ describe("kleurIndicatie", () => {
 });
 
 describe("getDetailLevel", () => {
-  it("returns overzicht below 0.55", () => {
+  it("returns overzicht below 0.7", () => {
     expect(getDetailLevel(0.25)).toBe("overzicht");
-    expect(getDetailLevel(0.54)).toBe("overzicht");
+    expect(getDetailLevel(0.69)).toBe("overzicht");
   });
-  it("returns compact between 0.55 and 0.8", () => {
-    expect(getDetailLevel(0.55)).toBe("compact");
-    expect(getDetailLevel(0.79)).toBe("compact");
-  });
-  it("returns detail between 0.8 and 1.0", () => {
-    expect(getDetailLevel(0.8)).toBe("detail");
+  it("returns detail between 0.7 and 1.0", () => {
+    expect(getDetailLevel(0.7)).toBe("detail");
     expect(getDetailLevel(0.99)).toBe("detail");
   });
   it("returns focus at 1.0 and above", () => {

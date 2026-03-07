@@ -163,52 +163,6 @@ export default function SelectieBlok({
         <div ref={setNodeRef} className="min-h-15 flex-1 px-1 py-1">
           {alleSpelers.length === 0 ? (
             <p className="py-4 text-center text-[10px] text-gray-400">Sleep spelers hierheen</p>
-          ) : dl === "compact" ? (
-            /* compact: gestapeld — dames boven, heren onder */
-            <>
-              {dames.length > 0 && (
-                <>
-                  <div
-                    className="px-2 pt-1 font-medium tracking-wide text-pink-500 uppercase"
-                    style={{ fontSize: "calc(11px / var(--zoom-scale, 1))" }}
-                  >
-                    Dames ({dames.length})
-                  </div>
-                  {dames.map((ts) => (
-                    <TeamSpelerRij
-                      key={ts.id}
-                      teamSpeler={ts}
-                      teamId={leider.id}
-                      detailLevel={dl}
-                      onSpelerClick={
-                        onSpelerClick ? (speler) => onSpelerClick(speler, leider.id) : undefined
-                      }
-                    />
-                  ))}
-                </>
-              )}
-              {heren.length > 0 && (
-                <>
-                  <div
-                    className="px-2 pt-1 font-medium tracking-wide text-blue-500 uppercase"
-                    style={{ fontSize: "calc(11px / var(--zoom-scale, 1))" }}
-                  >
-                    Heren ({heren.length})
-                  </div>
-                  {heren.map((ts) => (
-                    <TeamSpelerRij
-                      key={ts.id}
-                      teamSpeler={ts}
-                      teamId={leider.id}
-                      detailLevel={dl}
-                      onSpelerClick={
-                        onSpelerClick ? (speler) => onSpelerClick(speler, leider.id) : undefined
-                      }
-                    />
-                  ))}
-                </>
-              )}
-            </>
           ) : (
             /* detail/focus: side-by-side — dames links, heren rechts */
             <div className="grid grid-cols-2 gap-x-0.5">

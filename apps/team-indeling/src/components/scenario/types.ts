@@ -202,11 +202,10 @@ export function sorteerSpelers(spelers: TeamSpelerData[]): TeamSpelerData[] {
 }
 
 // Zoom detail-niveaus (semantic zoom)
-export type DetailLevel = "overzicht" | "compact" | "detail" | "focus";
+export type DetailLevel = "overzicht" | "detail" | "focus";
 
 export function getDetailLevel(zoomScale: number): DetailLevel {
-  if (zoomScale < 0.55) return "overzicht";
-  if (zoomScale < 0.8) return "compact";
+  if (zoomScale < 0.7) return "overzicht";
   if (zoomScale < 1.0) return "detail";
   return "focus";
 }
