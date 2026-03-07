@@ -34,7 +34,7 @@ export default function Sidebar() {
           className="shrink-0"
         />
         <div>
-          <h1 className="text-ow-oranje text-base leading-tight font-bold">Oranje Wit</h1>
+          <h1 className="text-ow-oranje text-base leading-tight font-bold">c.k.v. Oranje Wit</h1>
           <p className="text-xs text-gray-500">Team-Indeling</p>
         </div>
       </div>
