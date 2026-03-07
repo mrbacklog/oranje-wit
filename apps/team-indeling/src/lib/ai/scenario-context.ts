@@ -29,15 +29,41 @@ export async function getTeamsContext(versieId: string) {
     orderBy: { volgorde: "asc" },
   });
 
+  // Haal selectieGroepen op voor selectie-info
+  const selectieGroepen = await prisma.selectieGroep.findMany({
+    where: { versieId },
+    include: {
+      spelers: { include: { speler: true } },
+      staf: { include: { staf: true } },
+    },
+  });
+
+  const selectieMap = new Map<string, (typeof selectieGroepen)[number]>();
+  for (const sg of selectieGroepen) {
+    selectieMap.set(sg.id, sg);
+  }
+
   return teams.map((t) => {
-    const spelers = t.spelers.map((ts: any) => ({
-      id: ts.speler.id,
-      naam: `${ts.speler.roepnaam} ${ts.speler.achternaam}`,
-      geboortejaar: ts.speler.geboortejaar,
-      leeftijd: korfbalLeeftijd(ts.speler.geboortejaar, ts.speler.geboortedatum),
-      geslacht: ts.speler.geslacht,
-      status: ts.speler.status,
-    }));
+    const selectie = t.selectieGroepId ? selectieMap.get(t.selectieGroepId) : null;
+
+    // Als team in selectie zit, gebruik selectie-spelers; anders team-spelers
+    const spelers = selectie
+      ? selectie.spelers.map((ss: any) => ({
+          id: ss.speler.id,
+          naam: `${ss.speler.roepnaam} ${ss.speler.achternaam}`,
+          geboortejaar: ss.speler.geboortejaar,
+          leeftijd: korfbalLeeftijd(ss.speler.geboortejaar, ss.speler.geboortedatum),
+          geslacht: ss.speler.geslacht,
+          status: ss.speler.status,
+        }))
+      : t.spelers.map((ts: any) => ({
+          id: ts.speler.id,
+          naam: `${ts.speler.roepnaam} ${ts.speler.achternaam}`,
+          geboortejaar: ts.speler.geboortejaar,
+          leeftijd: korfbalLeeftijd(ts.speler.geboortejaar, ts.speler.geboortedatum),
+          geslacht: ts.speler.geslacht,
+          status: ts.speler.status,
+        }));
     const aantalM = spelers.filter((s: any) => s.geslacht === "M").length;
     const aantalV = spelers.filter((s: any) => s.geslacht === "V").length;
     const gemLeeftijd =
@@ -57,7 +83,15 @@ export async function getTeamsContext(versieId: string) {
       aantalV,
       gemLeeftijd,
       spelers,
-      staf: t.staf.map((ts: any) => ({ naam: ts.staf.naam, rol: ts.rol })),
+      staf: selectie
+        ? selectie.staf.map((ss: any) => ({ naam: ss.staf.naam, rol: ss.rol }))
+        : t.staf.map((ts: any) => ({ naam: ts.staf.naam, rol: ts.rol })),
+      ...(selectie && {
+        selectie: {
+          groepId: selectie.id,
+          naam: selectie.naam,
+        },
+      }),
     };
   });
 }
@@ -67,12 +101,20 @@ export async function getTeamsContext(versieId: string) {
 // ---------------------------------------------------------------------------
 
 export async function getSpelersPoolContext(versieId: string) {
-  // Alle speler-IDs die al in een team zitten
+  // Alle speler-IDs die al in een team zitten (TeamSpeler + SelectieSpeler)
   const ingedeeld = await prisma.teamSpeler.findMany({
     where: { team: { versieId } },
     select: { spelerId: true },
   });
   const ingedeeldIds = new Set(ingedeeld.map((ts) => ts.spelerId));
+
+  const selectieIngedeeld = await prisma.selectieSpeler.findMany({
+    where: { selectieGroep: { versieId } },
+    select: { spelerId: true },
+  });
+  for (const ss of selectieIngedeeld) {
+    ingedeeldIds.add(ss.spelerId);
+  }
 
   const alleSpelers = await prisma.speler.findMany({
     where: { status: { not: "GAAT_STOPPEN" } },
