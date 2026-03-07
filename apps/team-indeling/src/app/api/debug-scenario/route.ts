@@ -3,49 +3,35 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const scenario = await prisma.scenario.findUnique({
-      where: { id: "cmmf0vr4600010fpeqbsma61g" },
+    const groepen = await prisma.selectieGroep.findMany({
+      where: { versie: { scenarioId: "cmmf0vr4600010fpeqbsma61g" } },
       include: {
-        versies: {
-          include: {
-            selectieGroepen: true,
-            teams: {
-              select: { id: true, naam: true, selectieGroepId: true },
-              orderBy: { volgorde: "asc" },
-            },
-          },
-          orderBy: { nummer: "desc" },
-        },
+        _count: { select: { spelers: true, staf: true, teams: true } },
       },
     });
 
-    if (!scenario) return NextResponse.json({ error: "not found" }, { status: 404 });
-
-    const v = scenario.versies[0];
-    if (!v) return NextResponse.json({ error: "no versie" }, { status: 404 });
-
-    // Haal speler counts apart op
-    const sgIds = v.selectieGroepen.map((sg) => sg.id);
-    const spelerCounts = await prisma.selectieSpeler.groupBy({
-      by: ["selectieGroepId"],
-      where: { selectieGroepId: { in: sgIds } },
-      _count: true,
+    const teams = await prisma.team.findMany({
+      where: { versie: { scenarioId: "cmmf0vr4600010fpeqbsma61g" } },
+      select: {
+        naam: true,
+        selectieGroepId: true,
+        _count: { select: { spelers: true } },
+      },
+      orderBy: { volgorde: "asc" },
     });
-    const countMap = new Map(spelerCounts.map((c) => [c.selectieGroepId, c._count]));
 
     return NextResponse.json({
-      scenario: scenario.naam,
-      versie: v.id,
-      teamsCount: v.teams.length,
-      selectieGroepenCount: v.selectieGroepen.length,
-      selectieGroepen: v.selectieGroepen.map((sg) => ({
+      selectieGroepen: groepen.map((sg) => ({
         id: sg.id,
         naam: sg.naam,
-        spelersCount: countMap.get(sg.id) ?? 0,
+        spelers: sg._count.spelers,
+        staf: sg._count.staf,
+        teams: sg._count.teams,
       })),
-      teams: v.teams.map((t) => ({
+      teams: teams.map((t) => ({
         naam: t.naam,
         selectieGroepId: t.selectieGroepId,
+        spelers: t._count.spelers,
       })),
     });
   } catch (error) {
