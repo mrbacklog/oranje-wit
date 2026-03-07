@@ -8,19 +8,9 @@ export async function GET() {
       include: {
         versies: {
           include: {
-            selectieGroepen: {
-              include: {
-                spelers: { select: { id: true, spelerId: true } },
-                staf: { select: { id: true, stafId: true } },
-              },
-            },
+            selectieGroepen: true,
             teams: {
-              select: {
-                id: true,
-                naam: true,
-                selectieGroepId: true,
-                _count: { select: { spelers: true, staf: true } },
-              },
+              select: { id: true, naam: true, selectieGroepId: true },
               orderBy: { volgorde: "asc" },
             },
           },
@@ -34,6 +24,15 @@ export async function GET() {
     const v = scenario.versies[0];
     if (!v) return NextResponse.json({ error: "no versie" }, { status: 404 });
 
+    // Haal speler counts apart op
+    const sgIds = v.selectieGroepen.map((sg) => sg.id);
+    const spelerCounts = await prisma.selectieSpeler.groupBy({
+      by: ["selectieGroepId"],
+      where: { selectieGroepId: { in: sgIds } },
+      _count: true,
+    });
+    const countMap = new Map(spelerCounts.map((c) => [c.selectieGroepId, c._count]));
+
     return NextResponse.json({
       scenario: scenario.naam,
       versie: v.id,
@@ -42,14 +41,11 @@ export async function GET() {
       selectieGroepen: v.selectieGroepen.map((sg) => ({
         id: sg.id,
         naam: sg.naam,
-        spelersCount: sg.spelers.length,
-        stafCount: sg.staf.length,
+        spelersCount: countMap.get(sg.id) ?? 0,
       })),
       teams: v.teams.map((t) => ({
         naam: t.naam,
         selectieGroepId: t.selectieGroepId,
-        spelers: t._count.spelers,
-        staf: t._count.staf,
       })),
     });
   } catch (error) {
