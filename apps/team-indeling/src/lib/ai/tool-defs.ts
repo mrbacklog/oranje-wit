@@ -221,6 +221,50 @@ const wisselSpelers: Anthropic.Tool = {
   },
 };
 
+const batchPlaatsSpelers: Anthropic.Tool = {
+  name: "batch_plaats_spelers",
+  description:
+    "Plaats meerdere spelers tegelijk in een team op basis van filters. Handig om snel een heel team te vullen, bijv. 'alle Groen-spelers geboren in 2016 naar Groen-1'. Filters zijn combineerbaar. Spelers die al ingedeeld zijn worden automatisch overgeslagen.",
+  input_schema: {
+    type: "object" as const,
+    properties: {
+      team_naam: {
+        type: "string",
+        description: "Naam van het doelteam in het scenario, bijv. 'Groen-1' of 'U17-1'",
+      },
+      huidig_team: {
+        type: "string",
+        description:
+          "Filter op huidig team van vorig seizoen (bevat-match), bijv. 'Groen E3' of 'Blauw'",
+      },
+      huidig_kleur: {
+        type: "string",
+        enum: ["BLAUW", "GROEN", "GEEL", "ORANJE", "ROOD"],
+        description: "Filter op huidige kleurgroep",
+      },
+      geslacht: {
+        type: "string",
+        enum: ["M", "V"],
+        description: "Filter op geslacht",
+      },
+      geboortejaar_van: {
+        type: "integer",
+        description: "Filter: geboortejaar vanaf (inclusief)",
+      },
+      geboortejaar_tot: {
+        type: "integer",
+        description: "Filter: geboortejaar tot en met (inclusief)",
+      },
+      speler_ids: {
+        type: "array",
+        items: { type: "string" },
+        description: "Specifieke speler-IDs (rel_codes) om te plaatsen",
+      },
+    },
+    required: ["team_naam"],
+  },
+};
+
 const maakTeamAan: Anthropic.Tool = {
   name: "maak_team_aan",
   description:
@@ -261,5 +305,6 @@ export const TOOLS: Anthropic.Tool[] = [
   voegSpelerToe,
   verwijderSpelerUitTeam,
   wisselSpelers,
+  batchPlaatsSpelers,
   maakTeamAan,
 ];

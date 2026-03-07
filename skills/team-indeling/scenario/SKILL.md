@@ -63,6 +63,7 @@ Elk scenario heeft versies (snapshots):
 
 ## Operaties
 - **Nieuw scenario**: start met lege teams of Claude-startvoorstel
+- **Batch-plaatsing**: snel vullen via CLI of API → zie skill `team-indeling/batch-plaats`
 - **Archiveer**: scenario niet meer actueel
 - **Definitief**: markeer als gekozen indeling (via `MaakDefinitiefKnop`)
 
