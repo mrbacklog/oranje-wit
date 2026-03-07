@@ -10,7 +10,6 @@ import SpelersPool from "../SpelersPool";
 import SpelerDetail from "../SpelerDetail";
 import ChatPanel from "../ChatPanel";
 import TeamEditPanel from "../TeamEditPanel";
-import WhatIfDialoog from "../WhatIfDialoog";
 import VerdeelDialoog from "../VerdeelDialoog";
 import Drawer from "./Drawer";
 import EditorToolbar from "./EditorToolbar";
@@ -31,6 +30,8 @@ export default function ScenarioEditorFullscreen({
   const toggleNav = useCallback(() => setNavOpen((v) => !v), []);
   const togglePool = useCallback(() => setPoolOpen((v) => !v), []);
 
+  const zichtbareCount = editor.teams.filter((t) => editor.zichtbaar.has(t.id)).length;
+
   // TeamEditPanel vervangt pool-drawer wanneer open
   const showPoolDrawer = poolOpen && !editor.editTeamId;
   const showEditDrawer = !!editor.editTeamId;
@@ -46,13 +47,7 @@ export default function ScenarioEditorFullscreen({
   return (
     <div className="fixed inset-0 z-40 flex flex-col bg-gray-50">
       {/* Top toolbar */}
-      <EditorToolbar
-        scenario={scenario}
-        navOpen={navOpen}
-        poolOpen={poolOpen || showEditDrawer}
-        onToggleNav={toggleNav}
-        onTogglePool={togglePool}
-      />
+      <EditorToolbar scenario={scenario} zichtbaar={zichtbareCount} totaal={editor.teams.length} />
 
       {/* Hoofdgebied */}
       <DndProvider
@@ -63,6 +58,55 @@ export default function ScenarioEditorFullscreen({
         onReorderTeams={editor.handleReorderTeams}
       >
         <div className="relative flex-1 overflow-hidden">
+          {/* Side-tab: Teamlijst (links) */}
+          <button
+            onClick={toggleNav}
+            className={`absolute top-1/2 left-0 z-20 flex -translate-y-1/2 flex-col items-center gap-1 rounded-r-lg border border-l-0 border-gray-200 px-1.5 py-3 shadow-md transition-colors ${
+              navOpen
+                ? "border-orange-200 bg-orange-50 text-orange-600"
+                : "bg-white text-gray-500 hover:bg-gray-50"
+            }`}
+            title={navOpen ? "Verberg teamlijst" : "Toon teamlijst"}
+          >
+            <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
+            <span
+              className="text-[9px] font-medium"
+              style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
+            >
+              Teamlijst
+            </span>
+          </button>
+
+          {/* Side-tab: Spelerspool (rechts) */}
+          <button
+            onClick={togglePool}
+            className={`absolute top-1/2 right-0 z-20 flex -translate-y-1/2 flex-col items-center gap-1 rounded-l-lg border border-r-0 border-gray-200 px-1.5 py-3 shadow-md transition-colors ${
+              poolOpen || showEditDrawer
+                ? "border-orange-200 bg-orange-50 text-orange-600"
+                : "bg-white text-gray-500 hover:bg-gray-50"
+            }`}
+            title={poolOpen ? "Verberg spelerspool" : "Toon spelerspool"}
+          >
+            <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+            </svg>
+            <span className="text-[9px] font-medium" style={{ writingMode: "vertical-rl" }}>
+              Spelerspool
+            </span>
+          </button>
+
           {/* Center: Werkgebied + ChatPanel — neemt ALLE ruimte */}
           <div className="flex h-full flex-col">
             <Werkgebied
@@ -75,7 +119,6 @@ export default function ScenarioEditorFullscreen({
               onDeleteTeam={editor.handleDeleteTeam}
               onKoppelSelectie={editor.handleKoppelSelectie}
               onOntkoppelSelectie={editor.handleOntkoppelSelectie}
-              onWhatIfOpen={() => editor.setWhatIfOpen(true)}
               onSpelerClick={editor.handleSpelerClick}
               onEditTeam={editor.handleEditTeam}
               onReorderTeams={editor.handleReorderTeams}
@@ -136,13 +179,6 @@ export default function ScenarioEditorFullscreen({
       </DndProvider>
 
       {/* Dialogen (z-50, boven drawers) */}
-      <WhatIfDialoog
-        open={editor.whatIfOpen}
-        onClose={() => editor.setWhatIfOpen(false)}
-        teams={editor.teams}
-        alleSpelers={alleSpelers}
-      />
-
       {editor.verdeelData && (
         <VerdeelDialoog
           open={true}
