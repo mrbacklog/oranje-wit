@@ -77,6 +77,31 @@ export interface TeamStafData {
   };
 }
 
+/** SelectieGroep: groep van gekoppelde teams die spelers/staf delen */
+export interface SelectieGroepData {
+  id: string;
+  naam: string | null;
+  spelers: SelectieSpelerData[];
+  staf: SelectieStafData[];
+}
+
+/** Speler in een selectiegroep */
+export interface SelectieSpelerData {
+  id: string;
+  spelerId: string;
+  statusOverride: SpelerStatus | null;
+  notitie: string | null;
+  speler: SpelerData;
+}
+
+/** Staf in een selectiegroep */
+export interface SelectieStafData {
+  id: string;
+  stafId: string;
+  rol: string;
+  staf: { id: string; naam: string };
+}
+
 /** Team met spelers en staf */
 export interface TeamData {
   id: string;
@@ -98,6 +123,7 @@ export interface VersieData {
   nummer: number;
   naam: string | null;
   teams: TeamData[];
+  selectieGroepen: SelectieGroepData[];
 }
 
 /** Scenario data voor de editor */
