@@ -27,7 +27,7 @@ interface WerkgebiedProps {
 }
 
 export default function Werkgebied({
-  scenarioId,
+  scenarioId: _scenarioId,
   teams,
   zichtbareTeamIds,
   validatieMap,
