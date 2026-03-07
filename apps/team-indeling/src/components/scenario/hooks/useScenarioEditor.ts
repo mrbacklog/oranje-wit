@@ -110,6 +110,9 @@ export function useScenarioEditor(scenario: ScenarioData, alleSpelers: SpelerDat
       if (res.ok) {
         const data = await res.json();
         setTeams(data.teams);
+        if (data.selectieGroepen) {
+          setSelectieGroepen(data.selectieGroepen);
+        }
       }
     } catch (error) {
       logger.warn("Teams herladen mislukt:", error);

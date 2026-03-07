@@ -10,6 +10,12 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
       select: {
         versies: {
           select: {
+            selectieGroepen: {
+              include: {
+                spelers: { include: { speler: true } },
+                staf: { include: { staf: true } },
+              },
+            },
             teams: {
               include: {
                 spelers: { include: { speler: true } },
@@ -24,9 +30,11 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
       },
     });
 
-    const teams = scenario?.versies[0]?.teams ?? [];
+    const versie = scenario?.versies[0];
+    const teams = versie?.teams ?? [];
+    const selectieGroepen = versie?.selectieGroepen ?? [];
 
-    return ok({ teams });
+    return ok({ teams, selectieGroepen });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     return fail(`Teams ophalen mislukt: ${message}`);
