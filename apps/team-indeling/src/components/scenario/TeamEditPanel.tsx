@@ -1,19 +1,12 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import type { TeamCategorie, Kleur, SpelerStatus } from "@oranje-wit/database";
+import type { TeamCategorie, Kleur } from "@oranje-wit/database";
 import type { TeamData, SpelerData } from "./types";
 import type { TeamValidatie, MeldingErnst } from "@/lib/validatie/regels";
-import {
-  KLEUR_DOT,
-  KLEUR_LABELS,
-  CATEGORIE_LABELS,
-  STATUS_KLEUREN,
-  korfbalLeeftijd,
-  kleurIndicatie,
-} from "./types";
-import SpelerAvatar from "@/components/ui/SpelerAvatar";
+import { KLEUR_DOT, KLEUR_LABELS, CATEGORIE_LABELS, korfbalLeeftijd } from "./types";
 import SelectieKoppelaar from "./SelectieKoppelaar";
+import PanelSpelerRij from "./PanelSpelerRij";
 
 export interface TeamUpdateData {
   alias?: string | null;
@@ -32,6 +25,7 @@ interface TeamEditPanelProps {
   onUpdateTeamType: (teamId: string, teamType: "VIERTAL" | null) => void;
   onKoppelSelectie: (teamIds: string[]) => void;
   onOntkoppelSelectie: (leiderId: string) => void;
+  onDeleteTeam: (teamId: string) => void;
 }
 
 const ERNST_CONFIG: Record<MeldingErnst, { icon: string; kleur: string }> = {
@@ -41,14 +35,6 @@ const ERNST_CONFIG: Record<MeldingErnst, { icon: string; kleur: string }> = {
 };
 
 const ERNST_VOLGORDE: MeldingErnst[] = ["kritiek", "aandacht", "info"];
-
-const STATUS_LABELS: Record<string, string> = {
-  BESCHIKBAAR: "Beschikbaar",
-  TWIJFELT: "Twijfelt",
-  GAAT_STOPPEN: "Stopt",
-  NIEUW_POTENTIEEL: "Nieuw",
-  NIEUW_DEFINITIEF: "Nieuw",
-};
 
 export default function TeamEditPanel({
   team,
@@ -60,21 +46,30 @@ export default function TeamEditPanel({
   onUpdateTeamType,
   onKoppelSelectie,
   onOntkoppelSelectie,
+  onDeleteTeam,
 }: TeamEditPanelProps) {
   const [alias, setAlias] = useState(team.alias ?? "");
   const [categorie, setCategorie] = useState(team.categorie);
   const [kleur, setKleur] = useState<Kleur | null>(team.kleur);
   const [niveau, setNiveau] = useState(team.niveau ?? "");
 
-  // Reset bij ander team — correcte sync van formulier-state bij prop-wijziging
+  const lidTeams = alleTeams.filter((t) => t.selectieGroepId === team.id);
+  const isSelectieLeider = lidTeams.length > 0;
+  const isSelectieLid = team.selectieGroepId !== null;
+
+  const [lidAliassen, setLidAliassen] = useState<Record<string, string>>(
+    Object.fromEntries(lidTeams.map((t) => [t.id, t.alias ?? ""]))
+  );
+
   useEffect(() => {
     setAlias(team.alias ?? "");
     setCategorie(team.categorie);
     setKleur(team.kleur);
     setNiveau(team.niveau ?? "");
-  }, [team.id, team.alias, team.categorie, team.kleur, team.niveau]);
+    const leden = alleTeams.filter((t) => t.selectieGroepId === team.id);
+    setLidAliassen(Object.fromEntries(leden.map((t) => [t.id, t.alias ?? ""])));
+  }, [team.id, team.alias, team.categorie, team.kleur, team.niveau, alleTeams]);
 
-  // Escape sluiten
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -85,9 +80,7 @@ export default function TeamEditPanel({
 
   const handleSaveAlias = useCallback(() => {
     const nieuwAlias = alias.trim() || null;
-    if (nieuwAlias !== (team.alias ?? null)) {
-      onUpdateTeam(team.id, { alias: nieuwAlias });
-    }
+    if (nieuwAlias !== (team.alias ?? null)) onUpdateTeam(team.id, { alias: nieuwAlias });
   }, [alias, team.id, team.alias, onUpdateTeam]);
 
   const handleCategorieWijzig = useCallback(
@@ -119,7 +112,6 @@ export default function TeamEditPanel({
     [team.id, team.naam, onUpdateTeam]
   );
 
-  // Spelers
   const heren = team.spelers
     .filter((ts) => ts.speler.geslacht === "M")
     .sort((a, b) => a.speler.achternaam.localeCompare(b.speler.achternaam));
@@ -136,53 +128,11 @@ export default function TeamEditPanel({
         ).toFixed(2)
       : "-";
 
-  // Selectie-logica
-  const isSelectieLeider = alleTeams.some((t) => t.selectieGroepId === team.id);
-  const isSelectieLid = team.selectieGroepId !== null;
-
-  // Validatie
   const meldingen = validatie
     ? [...validatie.meldingen].sort(
         (a, b) => ERNST_VOLGORDE.indexOf(a.ernst) - ERNST_VOLGORDE.indexOf(b.ernst)
       )
     : [];
-
-  function SpelerRij({
-    speler,
-    statusOverride,
-  }: {
-    speler: SpelerData;
-    statusOverride: SpelerStatus | null;
-  }) {
-    const leeftijd = korfbalLeeftijd(speler.geboortedatum, speler.geboortejaar);
-    const kleurInd = kleurIndicatie(leeftijd);
-    const status = statusOverride ?? speler.status;
-
-    return (
-      <div
-        className={`flex items-center gap-2 rounded px-2 py-1 ${
-          onSpelerClick ? "cursor-pointer hover:bg-gray-50" : ""
-        }`}
-        onClick={onSpelerClick ? () => onSpelerClick(speler) : undefined}
-      >
-        <SpelerAvatar spelerId={speler.id} naam={speler.roepnaam} size="xs" />
-        <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${STATUS_KLEUREN[status]}`} />
-        <span
-          className={`flex-1 text-sm text-gray-800 ${onSpelerClick ? "hover:text-orange-600" : ""}`}
-        >
-          {speler.roepnaam} {speler.achternaam}
-        </span>
-        <span className="inline-flex shrink-0 items-center gap-0.5">
-          {kleurInd && <span className={`h-1.5 w-1.5 rounded-full ${KLEUR_DOT[kleurInd]}`} />}
-          <span className="text-xs text-gray-400 tabular-nums">{leeftijd.toFixed(2)}</span>
-        </span>
-        <span className="shrink-0 text-xs">{speler.geslacht === "M" ? "\u2642" : "\u2640"}</span>
-        {status !== "BESCHIKBAAR" && (
-          <span className="text-[10px] text-gray-400">{STATUS_LABELS[status] ?? status}</span>
-        )}
-      </div>
-    );
-  }
 
   return (
     <div className="flex h-full w-80 flex-col border-l border-gray-200 bg-white">
@@ -199,9 +149,11 @@ export default function TeamEditPanel({
 
       {/* Scrollbaar content */}
       <div className="flex-1 space-y-4 overflow-y-auto px-4 py-3">
-        {/* Alias */}
+        {/* Alias / Selectienaam */}
         <div>
-          <label className="mb-1 block text-xs font-medium text-gray-600">Werknaam (alias)</label>
+          <label className="mb-1 block text-xs font-medium text-gray-600">
+            {isSelectieLeider ? "Selectienaam" : "Werknaam (alias)"}
+          </label>
           <input
             type="text"
             value={alias}
@@ -236,7 +188,7 @@ export default function TeamEditPanel({
           </div>
         </div>
 
-        {/* Sub-opties per categorie */}
+        {/* Kleur (B-categorie) */}
         {categorie === "B_CATEGORIE" && (
           <div>
             <label className="mb-2 block text-xs font-medium text-gray-600">Kleur</label>
@@ -257,7 +209,7 @@ export default function TeamEditPanel({
           </div>
         )}
 
-        {/* 4-tal / 8-tal toggle — alleen voor B-categorie met kleur blauw/groen/geel */}
+        {/* 4-tal / 8-tal toggle */}
         {categorie === "B_CATEGORIE" &&
           (kleur === "BLAUW" || kleur === "GROEN" || kleur === "GEEL") && (
             <div>
@@ -285,6 +237,7 @@ export default function TeamEditPanel({
             </div>
           )}
 
+        {/* Niveau (A-categorie) */}
         {categorie === "A_CATEGORIE" && (
           <div>
             <label className="mb-2 block text-xs font-medium text-gray-600">Niveau</label>
@@ -308,15 +261,40 @@ export default function TeamEditPanel({
 
         {/* Selectie koppeling */}
         <div className="rounded-md border border-gray-200 bg-gray-50 p-3">
-          <p className="mb-1 text-xs font-medium text-gray-700">Selectie</p>
+          <p className="mb-2 text-xs font-medium text-gray-700">Selectie</p>
           {isSelectieLeider ? (
-            <div className="flex items-center justify-between">
-              <p className="text-[10px] text-gray-500">Dit team is leider van een selectie</p>
+            <div className="space-y-2">
+              {lidTeams.map((lid) => (
+                <div key={lid.id}>
+                  <label className="mb-1 block text-[10px] font-medium text-gray-500">
+                    Alias {lid.naam}
+                  </label>
+                  <input
+                    type="text"
+                    value={lidAliassen[lid.id] ?? ""}
+                    onChange={(e) =>
+                      setLidAliassen((prev) => ({ ...prev, [lid.id]: e.target.value }))
+                    }
+                    onBlur={() => {
+                      const v = (lidAliassen[lid.id] ?? "").trim() || null;
+                      if (v !== (lid.alias ?? null)) onUpdateTeam(lid.id, { alias: v });
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        const v = (lidAliassen[lid.id] ?? "").trim() || null;
+                        if (v !== (lid.alias ?? null)) onUpdateTeam(lid.id, { alias: v });
+                      }
+                    }}
+                    className="w-full rounded border border-gray-300 px-2 py-1 text-xs focus:border-orange-400 focus:ring-1 focus:ring-orange-200 focus:outline-none"
+                    placeholder={lid.naam}
+                  />
+                </div>
+              ))}
               <button
                 onClick={() => onOntkoppelSelectie(team.id)}
-                className="rounded px-2 py-1 text-[10px] font-medium text-red-600 hover:bg-red-50"
+                className="mt-1 rounded px-2 py-1 text-[10px] font-medium text-red-600 hover:bg-red-50"
               >
-                Ontkoppel
+                Ontkoppel selectie
               </button>
             </div>
           ) : isSelectieLid ? (
@@ -340,12 +318,17 @@ export default function TeamEditPanel({
         {/* Heren */}
         {heren.length > 0 && (
           <div>
-            <div className="mb-1 border-b border-gray-100 pb-1">
-              <span className="text-xs font-medium text-gray-500">Heren ({heren.length})</span>
-            </div>
+            <p className="mb-1 border-b border-gray-100 pb-1 text-xs font-medium text-gray-500">
+              Heren ({heren.length})
+            </p>
             <div className="space-y-0.5">
               {heren.map((ts) => (
-                <SpelerRij key={ts.id} speler={ts.speler} statusOverride={ts.statusOverride} />
+                <PanelSpelerRij
+                  key={ts.id}
+                  speler={ts.speler}
+                  statusOverride={ts.statusOverride}
+                  onSpelerClick={onSpelerClick}
+                />
               ))}
             </div>
           </div>
@@ -354,12 +337,17 @@ export default function TeamEditPanel({
         {/* Dames */}
         {dames.length > 0 && (
           <div>
-            <div className="mb-1 border-b border-gray-100 pb-1">
-              <span className="text-xs font-medium text-gray-500">Dames ({dames.length})</span>
-            </div>
+            <p className="mb-1 border-b border-gray-100 pb-1 text-xs font-medium text-gray-500">
+              Dames ({dames.length})
+            </p>
             <div className="space-y-0.5">
               {dames.map((ts) => (
-                <SpelerRij key={ts.id} speler={ts.speler} statusOverride={ts.statusOverride} />
+                <PanelSpelerRij
+                  key={ts.id}
+                  speler={ts.speler}
+                  statusOverride={ts.statusOverride}
+                  onSpelerClick={onSpelerClick}
+                />
               ))}
             </div>
           </div>
@@ -368,13 +356,13 @@ export default function TeamEditPanel({
         {/* Staf */}
         {team.staf.length > 0 && (
           <div>
-            <div className="mb-1 border-b border-gray-100 pb-1">
-              <span className="text-xs font-medium text-gray-500">Staf</span>
-            </div>
+            <p className="mb-1 border-b border-gray-100 pb-1 text-xs font-medium text-gray-500">
+              Staf
+            </p>
             <div className="space-y-1">
               {team.staf.map((ts) => (
                 <div key={ts.id} className="flex items-center gap-2 px-2 text-sm text-gray-700">
-                  <span>{ts.staf.naam}</span>
+                  <span>{ts.staf.naam}</span>{" "}
                   <span className="text-xs text-gray-400">({ts.rol})</span>
                 </div>
               ))}
@@ -385,11 +373,9 @@ export default function TeamEditPanel({
         {/* Constateringen */}
         {meldingen.length > 0 && (
           <div>
-            <div className="mb-1 border-b border-gray-100 pb-1">
-              <span className="text-xs font-medium text-gray-500">
-                Constateringen ({meldingen.length})
-              </span>
-            </div>
+            <p className="mb-1 border-b border-gray-100 pb-1 text-xs font-medium text-gray-500">
+              Constateringen ({meldingen.length})
+            </p>
             <div className="space-y-1">
               {meldingen.map((m, i) => {
                 const config = ERNST_CONFIG[m.ernst];
@@ -407,6 +393,19 @@ export default function TeamEditPanel({
             </div>
           </div>
         )}
+      </div>
+
+      {/* Verwijder zone */}
+      <div className="border-t-2 border-red-100 bg-red-50 px-4 py-3">
+        <p className="mb-1.5 text-[10px] font-semibold tracking-wide text-red-400 uppercase">
+          Gevaarlijke zone
+        </p>
+        <button
+          onClick={() => onDeleteTeam(team.id)}
+          className="w-full rounded-md border border-red-200 bg-white px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-100"
+        >
+          {isSelectieLeider ? "Verwijder selectie" : "Verwijder team"}
+        </button>
       </div>
     </div>
   );

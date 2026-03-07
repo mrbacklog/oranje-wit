@@ -34,7 +34,7 @@ export default function SelectieBlok({
 
   // Eerste team is de leider (heeft geen selectieGroepId, de rest verwijst ernaar)
   const leider = teams.find((t) => t.selectieGroepId === null) ?? teams[0];
-  const teamNamen = teams.map((t) => t.alias ?? t.naam).join(" + ");
+  const teamNamen = leider.alias ? leider.alias : teams.map((t) => t.alias ?? t.naam).join(" + ");
 
   // Alle spelers zitten op het leider-team (pool)
   const alleSpelers = leider.spelers;

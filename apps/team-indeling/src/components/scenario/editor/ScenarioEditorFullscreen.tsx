@@ -126,6 +126,10 @@ export default function ScenarioEditorFullscreen({
               onUpdateTeamType={editor.handleUpdateTeamType}
               onKoppelSelectie={editor.handleKoppelSelectie}
               onOntkoppelSelectie={editor.handleOntkoppelSelectie}
+              onDeleteTeam={(teamId) => {
+                editor.handleDeleteTeam(teamId);
+                editor.setEditTeamId(null);
+              }}
             />
           )}
         </Drawer>
