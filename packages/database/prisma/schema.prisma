@@ -354,11 +354,12 @@ model Speler {
   notitie       String? @db.Text
 
   // Relaties
-  teamplaatsingen TeamSpeler[]
-  evaluaties      Evaluatie[]
-  zelfEvaluaties  SpelerZelfEvaluatie[]
-  pins            Pin[]
-  notities        Notitie[]
+  teamplaatsingen    TeamSpeler[]
+  selectiePlaatsingen SelectieSpeler[]
+  evaluaties         Evaluatie[]
+  zelfEvaluaties     SpelerZelfEvaluatie[]
+  pins               Pin[]
+  notities           Notitie[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -382,11 +383,12 @@ model Staf {
   notitie      String?  @db.Text
 
   // Relaties
-  lid          Lid?     @relation(fields: [relCode], references: [relCode])
-  teamStaf     TeamStaf[]
-  pins         Pin[]
-  toewijzingen StafToewijzing[]
-  notities     Notitie[]
+  lid                 Lid?     @relation(fields: [relCode], references: [relCode])
+  teamStaf            TeamStaf[]
+  selectiePlaatsingen SelectieStaf[]
+  pins                Pin[]
+  toewijzingen        StafToewijzing[]
+  notities            Notitie[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -549,8 +551,9 @@ model Versie {
   auteur   String
 
   // Relaties
-  teams    Team[]
-  logItems LogEntry[]
+  teams           Team[]
+  selectieGroepen SelectieGroep[]
+  logItems        LogEntry[]
 
   createdAt DateTime @default(now())
 
@@ -578,16 +581,61 @@ model Team {
   validatieStatus    ValidatieStatus @default(ONBEKEND)
   validatieMeldingen Json?
 
-  // Selectie-koppeling (self-relation)
+  // Selectie-koppeling
   selectieGroepId String?
-  selectieGroep   Team?   @relation("SelectieGroep", fields: [selectieGroepId], references: [id])
-  selectieLeden   Team[]  @relation("SelectieGroep")
+  selectieGroep   SelectieGroep? @relation(fields: [selectieGroepId], references: [id], onDelete: SetNull)
 
   // Relaties
   spelers TeamSpeler[]
   staf    TeamStaf[]
 
   @@index([versieId])
+}
+
+// ============================================================
+// SELECTIEGROEPEN (koppeling van teams in een selectie)
+// ============================================================
+
+model SelectieGroep {
+  id       String @id @default(cuid())
+  versie   Versie @relation(fields: [versieId], references: [id], onDelete: Cascade)
+  versieId String
+
+  naam     String?
+
+  teams    Team[]
+  spelers  SelectieSpeler[]
+  staf     SelectieStaf[]
+
+  @@index([versieId])
+}
+
+model SelectieSpeler {
+  id              String        @id @default(cuid())
+  selectieGroep   SelectieGroep @relation(fields: [selectieGroepId], references: [id], onDelete: Cascade)
+  selectieGroepId String
+  speler          Speler        @relation(fields: [spelerId], references: [id])
+  spelerId        String
+
+  statusOverride  SpelerStatus?
+  notitie         String?       @db.Text
+
+  @@unique([selectieGroepId, spelerId])
+  @@index([selectieGroepId])
+  @@index([spelerId])
+}
+
+model SelectieStaf {
+  id              String        @id @default(cuid())
+  selectieGroep   SelectieGroep @relation(fields: [selectieGroepId], references: [id], onDelete: Cascade)
+  selectieGroepId String
+  staf            Staf          @relation(fields: [stafId], references: [id])
+  stafId          String
+
+  rol             String
+
+  @@unique([selectieGroepId, stafId])
+  @@index([selectieGroepId])
 }
 
 enum TeamCategorie {
