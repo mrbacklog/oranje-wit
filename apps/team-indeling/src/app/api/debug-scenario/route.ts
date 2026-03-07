@@ -32,18 +32,20 @@ export async function GET() {
     if (!scenario) return NextResponse.json({ error: "not found" }, { status: 404 });
 
     const v = scenario.versies[0];
+    if (!v) return NextResponse.json({ error: "no versie" }, { status: 404 });
+
     return NextResponse.json({
       scenario: scenario.naam,
-      versie: v?.id,
-      teamsCount: v?.teams.length,
-      selectieGroepenCount: v?.selectieGroepen.length,
-      selectieGroepen: v?.selectieGroepen.map((sg) => ({
+      versie: v.id,
+      teamsCount: v.teams.length,
+      selectieGroepenCount: v.selectieGroepen.length,
+      selectieGroepen: v.selectieGroepen.map((sg) => ({
         id: sg.id,
         naam: sg.naam,
         spelersCount: sg.spelers.length,
         stafCount: sg.staf.length,
       })),
-      teams: v?.teams.map((t) => ({
+      teams: v.teams.map((t) => ({
         naam: t.naam,
         selectieGroepId: t.selectieGroepId,
         spelers: t._count.spelers,
