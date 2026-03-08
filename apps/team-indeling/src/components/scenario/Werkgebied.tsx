@@ -5,9 +5,10 @@ import type { TeamData, SpelerData, SelectieGroepData } from "./types";
 import type { TeamCategorie, Kleur } from "@oranje-wit/database";
 import type { TeamValidatie, ValidatieMelding } from "@/lib/validatie/regels";
 import type { PositionMap } from "./hooks/useCardPositions";
-import ZoomCanvas from "./editor/ZoomCanvas";
-import DraggableTeamKaart from "./editor/DraggableTeamKaart";
-import DraggableSelectieBlok from "./editor/DraggableSelectieBlok";
+import GestureCanvas from "./editor/GestureCanvas";
+import GestureCard from "./editor/GestureCard";
+import TeamKaart from "./TeamKaart";
+import SelectieBlok from "./SelectieBlok";
 import { CANVAS_WIDTH, CANVAS_HEIGHT } from "./editor/cardSizes";
 import NieuwTeamDialoog from "./NieuwTeamDialoog";
 import ValidatieRapport from "./ValidatieRapport";
@@ -26,6 +27,7 @@ interface WerkgebiedProps {
   onSpelerClick?: (speler: SpelerData, teamId?: string) => void;
   onEditTeam?: (teamId: string) => void;
   positions: PositionMap;
+  onRepositionCard: (cardId: string, deltaX: number, deltaY: number) => void;
 }
 
 export default function Werkgebied({
@@ -42,6 +44,7 @@ export default function Werkgebied({
   onSpelerClick,
   onEditTeam,
   positions,
+  onRepositionCard,
 }: WerkgebiedProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [rapportOpen, setRapportOpen] = useState(false);
@@ -120,7 +123,7 @@ export default function Werkgebied({
       </div>
 
       {/* Zoomable grid */}
-      <ZoomCanvas>
+      <GestureCanvas>
         {(detailLevel) =>
           zichtbareTeams.length === 0 ? (
             <div className="flex h-[400px] items-center justify-center">
@@ -135,44 +138,52 @@ export default function Werkgebied({
                 const dragId = `selectie-${groepId}`;
                 const pos = positions[dragId] ?? { x: 0, y: 0 };
                 return (
-                  <DraggableSelectieBlok
+                  <GestureCard
                     key={dragId}
-                    dragId={dragId}
+                    cardId={dragId}
                     position={pos}
-                    teams={groepTeams}
-                    selectieGroep={selectieGroepMap?.get(groepId)}
-                    validatieMap={validatieMap}
-                    detailLevel={detailLevel}
-                    onOntkoppel={onOntkoppelSelectie}
-                    onDelete={onDeleteTeam}
-                    onSpelerClick={onSpelerClick}
-                    onEditTeam={onEditTeam}
-                  />
+                    onDragEnd={onRepositionCard}
+                  >
+                    <SelectieBlok
+                      teams={groepTeams}
+                      selectieGroep={selectieGroepMap?.get(groepId)}
+                      validatieMap={validatieMap}
+                      detailLevel={detailLevel}
+                      onOntkoppel={onOntkoppelSelectie}
+                      onDelete={onDeleteTeam}
+                      onSpelerClick={onSpelerClick}
+                      onEditTeam={onEditTeam}
+                    />
+                  </GestureCard>
                 );
               })}
               {/* Losse teams */}
               {losseTeams.map((team) => {
                 const pos = positions[team.id] ?? { x: 0, y: 0 };
                 return (
-                  <DraggableTeamKaart
+                  <GestureCard
                     key={team.id}
-                    dragId={team.id}
+                    cardId={team.id}
                     position={pos}
-                    team={team}
-                    validatie={validatieMap?.get(team.id)}
-                    detailLevel={detailLevel}
-                    onDelete={onDeleteTeam}
-                    onSpelerClick={
-                      onSpelerClick ? (speler) => onSpelerClick(speler, team.id) : undefined
-                    }
-                    onEditTeam={onEditTeam}
-                  />
+                    onDragEnd={onRepositionCard}
+                  >
+                    <TeamKaart
+                      team={team}
+                      validatie={validatieMap?.get(team.id)}
+                      detailLevel={detailLevel}
+                      onDelete={onDeleteTeam}
+                      onSpelerClick={
+                        onSpelerClick ? (speler) => onSpelerClick(speler, team.id) : undefined
+                      }
+                      onEditTeam={onEditTeam}
+                    />
+                  </GestureCard>
                 );
               })}
             </div>
           )
         }
-      </ZoomCanvas>
+      </GestureCanvas>
 
       <NieuwTeamDialoog
         open={dialogOpen}
