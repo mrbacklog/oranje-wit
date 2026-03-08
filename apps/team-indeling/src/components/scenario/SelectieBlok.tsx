@@ -4,6 +4,7 @@ import { useDroppable } from "@dnd-kit/core";
 import type { TeamData, SpelerData, DetailLevel, SelectieGroepData, TeamSpelerData } from "./types";
 import type { TeamValidatie } from "@/lib/validatie/regels";
 import { korfbalLeeftijd, sorteerSpelers } from "./types";
+import { CARD_WIDTH_DOUBLE, CARD_HEIGHT_DOUBLE } from "./editor/cardSizes";
 import TeamSpelerRij from "./TeamSpelerRij";
 
 export interface SelectieBlokProps {
@@ -72,7 +73,8 @@ export default function SelectieBlok({
 
   return (
     <div
-      className={`col-span-1 flex flex-col rounded-lg border-2 border-dashed bg-orange-50/50 md:col-span-2 ${borderKleur}`}
+      style={{ width: CARD_WIDTH_DOUBLE, height: CARD_HEIGHT_DOUBLE }}
+      className={`flex flex-col overflow-hidden rounded-lg border-2 border-dashed bg-orange-50/50 ${borderKleur}`}
     >
       {/* Selectie header */}
       <div className="flex items-center justify-between rounded-t-lg border-b border-orange-200 bg-orange-50 px-3 py-2">
@@ -88,14 +90,12 @@ export default function SelectieBlok({
             </svg>
           </span>
           <span
-            className="font-medium tracking-wide text-orange-600 uppercase"
-            style={{ fontSize: "calc(11px / var(--zoom-scale, 1))" }}
+            className="text-[11px] font-medium tracking-wide text-orange-600 uppercase"
           >
             Selectie
           </span>
           <h4
-            className="font-semibold text-gray-900"
-            style={{ fontSize: "calc(14px / var(--zoom-scale, 1))" }}
+            className="text-sm font-semibold text-gray-900"
           >
             {teamNamen}
           </h4>
@@ -147,8 +147,7 @@ export default function SelectieBlok({
       {dl === "overzicht" ? (
         <div
           ref={setNodeRef}
-          className="px-3 py-2 text-center text-gray-500"
-          style={{ fontSize: "calc(13px / var(--zoom-scale, 1))" }}
+          className="px-3 py-2 text-center text-sm text-gray-500"
         >
           {aantalSpelers} spelers · {aantalM}
           {"♂"} {aantalV}
@@ -164,8 +163,7 @@ export default function SelectieBlok({
               <div>
                 {dames.length > 0 && (
                   <div
-                    className="px-2 pt-1 font-medium tracking-wide text-pink-500 uppercase"
-                    style={{ fontSize: "calc(11px / var(--zoom-scale, 1))" }}
+                    className="px-2 pt-1 text-[11px] font-medium tracking-wide text-pink-500 uppercase"
                   >
                     Dames ({dames.length})
                   </div>
@@ -185,8 +183,7 @@ export default function SelectieBlok({
               <div>
                 {heren.length > 0 && (
                   <div
-                    className="px-2 pt-1 font-medium tracking-wide text-blue-500 uppercase"
-                    style={{ fontSize: "calc(11px / var(--zoom-scale, 1))" }}
+                    className="px-2 pt-1 text-[11px] font-medium tracking-wide text-blue-500 uppercase"
                   >
                     Heren ({heren.length})
                   </div>
@@ -225,8 +222,7 @@ export default function SelectieBlok({
       {/* Footer stats */}
       {dl !== "overzicht" && (
         <div
-          className="flex items-center gap-3 border-t border-orange-100 px-3 py-1 text-gray-400"
-          style={{ fontSize: "calc(11px / var(--zoom-scale, 1))" }}
+          className="flex items-center gap-3 border-t border-orange-100 px-3 py-1 text-[11px] text-gray-400"
         >
           <span>{aantalSpelers} spelers</span>
           <span>

@@ -21,6 +21,12 @@ import {
 import TeamSpelerRij from "./TeamSpelerRij";
 import ValidatieBadge from "./ValidatieBadge";
 import ValidatieMeldingen from "./ValidatieMeldingen";
+import {
+  CARD_WIDTH_SINGLE,
+  CARD_WIDTH_DOUBLE,
+  CARD_HEIGHT_SINGLE,
+  CARD_HEIGHT_DOUBLE,
+} from "./editor/cardSizes";
 
 export interface TeamKaartProps {
   team: TeamData;
@@ -99,10 +105,15 @@ export default function TeamKaart({
   // Weergavenaam: alias valt terug op naam
   const weergaveNaam = team.alias ?? team.naam;
 
+  const isDouble = team.teamType !== "VIERTAL";
+  const cardWidth = isDouble ? CARD_WIDTH_DOUBLE : CARD_WIDTH_SINGLE;
+  const cardHeight = isDouble ? CARD_HEIGHT_DOUBLE : CARD_HEIGHT_SINGLE;
+
   return (
     <div
       ref={setNodeRef}
-      className={`flex min-w-40 flex-col rounded-lg transition-colors ${randKlassen} ${achtergrond} ${ringKlassen}`}
+      style={{ width: cardWidth, height: cardHeight }}
+      className={`flex flex-col overflow-hidden rounded-lg transition-colors ${randKlassen} ${achtergrond} ${ringKlassen}`}
     >
       {/* Header */}
       <div className={`flex items-center justify-between px-3 py-2 ${headerBorder}`}>
@@ -123,12 +134,7 @@ export default function TeamKaart({
               onClick={() => setMeldingenOpen(!meldingenOpen)}
             />
           )}
-          <h4
-            className="font-semibold text-gray-900"
-            style={{ fontSize: "calc(14px / var(--zoom-scale, 1))" }}
-          >
-            {weergaveNaam}
-          </h4>
+          <h4 className="text-sm font-semibold text-gray-900">{weergaveNaam}</h4>
           {/* Notitie-badge */}
           {(dl === "detail" || dl === "focus") && notitieCount != null && notitieCount > 0 && (
             <button
@@ -233,10 +239,7 @@ export default function TeamKaart({
 
       {/* Spelers */}
       {dl === "overzicht" ? (
-        <div
-          className="px-3 py-2 text-center text-gray-500"
-          style={{ fontSize: "calc(13px / var(--zoom-scale, 1))" }}
-        >
+        <div className="px-3 py-2 text-center text-sm text-gray-500">
           {aantalSpelers} spelers · {aantalM}
           {"♂"} {aantalV}
           {"♀"}
@@ -250,10 +253,7 @@ export default function TeamKaart({
             <>
               {dames.length > 0 && (
                 <>
-                  <div
-                    className="px-2 pt-1 font-medium tracking-wide text-pink-500 uppercase"
-                    style={{ fontSize: "calc(11px / var(--zoom-scale, 1))" }}
-                  >
+                  <div className="px-2 pt-1 text-[11px] font-medium tracking-wide text-pink-500 uppercase">
                     Dames ({dames.length})
                   </div>
                   {dames.map((ts) => (
@@ -269,10 +269,7 @@ export default function TeamKaart({
               )}
               {heren.length > 0 && (
                 <>
-                  <div
-                    className="px-2 pt-1 font-medium tracking-wide text-blue-500 uppercase"
-                    style={{ fontSize: "calc(11px / var(--zoom-scale, 1))" }}
-                  >
+                  <div className="px-2 pt-1 text-[11px] font-medium tracking-wide text-blue-500 uppercase">
                     Heren ({heren.length})
                   </div>
                   {heren.map((ts) => (
@@ -292,10 +289,7 @@ export default function TeamKaart({
             <div className="grid grid-cols-2 gap-x-0.5">
               <div>
                 {dames.length > 0 && (
-                  <div
-                    className="px-2 pt-1 font-medium tracking-wide text-pink-500 uppercase"
-                    style={{ fontSize: "calc(11px / var(--zoom-scale, 1))" }}
-                  >
+                  <div className="px-2 pt-1 text-[11px] font-medium tracking-wide text-pink-500 uppercase">
                     Dames ({dames.length})
                   </div>
                 )}
@@ -311,10 +305,7 @@ export default function TeamKaart({
               </div>
               <div>
                 {heren.length > 0 && (
-                  <div
-                    className="px-2 pt-1 font-medium tracking-wide text-blue-500 uppercase"
-                    style={{ fontSize: "calc(11px / var(--zoom-scale, 1))" }}
-                  >
+                  <div className="px-2 pt-1 text-[11px] font-medium tracking-wide text-blue-500 uppercase">
                     Heren ({heren.length})
                   </div>
                 )}
@@ -350,8 +341,7 @@ export default function TeamKaart({
       {/* Footer stats */}
       {dl !== "overzicht" && (
         <div
-          className={`flex items-center gap-3 px-3 py-1.5 text-gray-400 ${footerBorder}`}
-          style={{ fontSize: "calc(11px / var(--zoom-scale, 1))" }}
+          className={`flex items-center gap-3 px-3 py-1.5 text-[11px] text-gray-400 ${footerBorder}`}
         >
           <span>{aantalSpelers} spelers</span>
           <span>
