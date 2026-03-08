@@ -33,6 +33,7 @@ export default function SpelerKaart({ speler, onClick }: SpelerKaartProps) {
       style={style}
       {...listeners}
       {...attributes}
+      data-dnd-draggable
       onClick={(e) => {
         // Alleen openen bij klik, niet bij drag
         if (!isDragging) {

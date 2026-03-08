@@ -54,6 +54,7 @@ export default function TeamSpelerRij({
           <span
             {...listeners}
             {...attributes}
+            data-dnd-draggable
             className="shrink-0 cursor-grab text-gray-300 hover:text-gray-500"
             style={{ fontSize: "calc(12px / var(--zoom-scale, 1))" }}
             title="Versleep"

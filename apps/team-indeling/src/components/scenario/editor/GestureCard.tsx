@@ -24,6 +24,10 @@ export default function GestureCard({ cardId, position, onDragEnd, children }: G
 
   const bind = useDrag(
     ({ delta: [dx, dy], first, last, event }) => {
+      // Don't start card-drag if the user is dragging a dnd-kit speler element
+      const target = event?.target as HTMLElement | null;
+      if (target?.closest("[data-dnd-draggable]")) return;
+
       event?.stopPropagation();
 
       if (first) {
