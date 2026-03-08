@@ -89,16 +89,10 @@ export default function SelectieBlok({
               <circle cx="7" cy="14" r="1.2" />
             </svg>
           </span>
-          <span
-            className="text-[11px] font-medium tracking-wide text-orange-600 uppercase"
-          >
+          <span className="text-[11px] font-medium tracking-wide text-orange-600 uppercase">
             Selectie
           </span>
-          <h4
-            className="text-sm font-semibold text-gray-900"
-          >
-            {teamNamen}
-          </h4>
+          <h4 className="text-sm font-semibold text-gray-900">{teamNamen}</h4>
         </div>
         <div className="flex items-center gap-1">
           {/* Potlood-icoon voor selectie bewerken */}
@@ -145,10 +139,7 @@ export default function SelectieBlok({
 
       {/* Pool: een spelerslijst, gegroepeerd op geslacht */}
       {dl === "overzicht" ? (
-        <div
-          ref={setNodeRef}
-          className="px-3 py-2 text-center text-sm text-gray-500"
-        >
+        <div ref={setNodeRef} className="px-3 py-2 text-center text-sm text-gray-500">
           {aantalSpelers} spelers · {aantalM}
           {"♂"} {aantalV}
           {"♀"}
@@ -162,9 +153,7 @@ export default function SelectieBlok({
             <div className="grid grid-cols-2 gap-x-0.5">
               <div>
                 {dames.length > 0 && (
-                  <div
-                    className="px-2 pt-1 text-[11px] font-medium tracking-wide text-pink-500 uppercase"
-                  >
+                  <div className="px-2 pt-1 text-[11px] font-medium tracking-wide text-pink-500 uppercase">
                     Dames ({dames.length})
                   </div>
                 )}
@@ -182,9 +171,7 @@ export default function SelectieBlok({
               </div>
               <div>
                 {heren.length > 0 && (
-                  <div
-                    className="px-2 pt-1 text-[11px] font-medium tracking-wide text-blue-500 uppercase"
-                  >
+                  <div className="px-2 pt-1 text-[11px] font-medium tracking-wide text-blue-500 uppercase">
                     Heren ({heren.length})
                   </div>
                 )}
@@ -221,9 +208,7 @@ export default function SelectieBlok({
 
       {/* Footer stats */}
       {dl !== "overzicht" && (
-        <div
-          className="flex items-center gap-3 border-t border-orange-100 px-3 py-1 text-[11px] text-gray-400"
-        >
+        <div className="flex items-center gap-3 border-t border-orange-100 px-3 py-1 text-[11px] text-gray-400">
           <span>{aantalSpelers} spelers</span>
           <span>
             {aantalM}
