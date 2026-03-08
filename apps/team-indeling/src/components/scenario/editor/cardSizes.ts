@@ -1,25 +1,18 @@
-// Card size constanten voor AABB collision detection en auto-grid layout
+// Vaste kaartafmetingen — collision detection EN rendering gebruiken dezelfde waardes
 
 export const CARD_WIDTH_SINGLE = 220; // viertal
 export const CARD_GAP = 16;
 export const CARD_WIDTH_DOUBLE = 2 * CARD_WIDTH_SINGLE + CARD_GAP; // achtal/selectie
-export const CARD_HEIGHT = 80; // overzicht compacte hoogte
+export const CARD_HEIGHT_SINGLE = 280; // viertal — vaste hoogte
+export const CARD_HEIGHT_DOUBLE = 320; // achtal/selectie — vaste hoogte
 export const COLLISION_PADDING = 8;
 export const CANVAS_WIDTH = 4000;
 export const CANVAS_HEIGHT = 3000;
 
-/** Schat de kaarthoogte op basis van content */
-export function getCardHeight(spelersCount: number, hasStaf: boolean): number {
-  const headerHeight = 36;
-  const footerHeight = 28;
-  const stafHeight = hasStaf ? 24 : 0;
-  const spelerRowHeight = 28;
-  const padding = 16;
-  const contentHeight = spelersCount * spelerRowHeight;
-  return headerHeight + stafHeight + contentHeight + footerHeight + padding;
-}
-
 export function getCardSize(teamType: string, isSelectie: boolean): { w: number; h: number } {
-  const w = isSelectie || teamType !== "VIERTAL" ? CARD_WIDTH_DOUBLE : CARD_WIDTH_SINGLE;
-  return { w, h: CARD_HEIGHT };
+  const isDouble = isSelectie || teamType !== "VIERTAL";
+  return {
+    w: isDouble ? CARD_WIDTH_DOUBLE : CARD_WIDTH_SINGLE,
+    h: isDouble ? CARD_HEIGHT_DOUBLE : CARD_HEIGHT_SINGLE,
+  };
 }
