@@ -2,7 +2,22 @@
 
 import { useDraggable } from "@dnd-kit/core";
 import type { TeamSpelerData, SpelerData, HuidigData, DetailLevel } from "./types";
-import { STATUS_KLEUREN, kleurIndicatie, KLEUR_DOT, korfbalLeeftijd } from "./types";
+import { kleurIndicatie, KLEUR_DOT, korfbalLeeftijd } from "./types";
+
+/** Status → linkerrand kleur */
+const STATUS_BORDER: Record<string, string> = {
+  BESCHIKBAAR: "border-l-emerald-400",
+  TWIJFELT: "border-l-amber-400",
+  GAAT_STOPPEN: "border-l-red-400",
+  NIEUW_POTENTIEEL: "border-l-sky-400",
+  NIEUW_DEFINITIEF: "border-l-blue-500",
+};
+
+/** Status → achtergrondtint voor waarschuwingen */
+const STATUS_BG: Record<string, string> = {
+  TWIJFELT: "bg-amber-50/60",
+  GAAT_STOPPEN: "bg-red-50/60",
+};
 
 interface TeamSpelerRijProps {
   teamSpeler: TeamSpelerData;
@@ -24,6 +39,7 @@ export default function TeamSpelerRij({
   const kleur = kleurIndicatie(leeftijd);
   const huidig = speler.huidig as HuidigData | null;
   const vorigTeam = huidig?.team ?? null;
+  const heeftNotitie = !!(teamSpeler.notitie || speler.notitie);
 
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: `team-${teamId}-${speler.id}`,
@@ -35,64 +51,132 @@ export default function TeamSpelerRij({
   });
 
   const style = transform
-    ? {
-        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-      }
+    ? { transform: `translate3d(${transform.x}px, ${transform.y}px, 0)` }
     : undefined;
+
+  const borderLeft = STATUS_BORDER[status] ?? "border-l-gray-200";
+  const bgWarning = STATUS_BG[status] ?? "";
+  const isWarning = status === "TWIJFELT" || status === "GAAT_STOPPEN";
 
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className={`flex flex-col rounded border border-gray-100 px-1.5 py-px ${
-        isDragging ? "bg-gray-100 opacity-50" : "hover:bg-gray-50"
-      }`}
+      className={`flex items-center gap-1.5 rounded-r border-l-[3px] px-1.5 ${borderLeft} ${
+        isDragging ? "bg-gray-100 opacity-40" : bgWarning || "hover:bg-gray-50/80"
+      } ${dl === "overzicht" ? "py-px" : "py-[3px]"}`}
     >
-      {/* Regel 1: drag handle + geslacht + status + naam + kleur-dot */}
-      <div className="flex items-center gap-1">
-        {(dl === "detail" || dl === "focus") && (
-          <span
-            {...listeners}
-            {...attributes}
-            data-dnd-draggable
-            className="shrink-0 cursor-grab text-gray-300 hover:text-gray-500"
-            style={{ fontSize: "calc(12px / var(--zoom-scale, 1))" }}
-            title="Versleep"
-          >
-            &#9776;
-          </span>
-        )}
+      {/* Drag handle — SVG grip dots */}
+      {(dl === "detail" || dl === "focus") && (
         <span
-          className="shrink-0 text-gray-400"
-          style={{ fontSize: "calc(11px / var(--zoom-scale, 1))" }}
+          {...listeners}
+          {...attributes}
+          data-dnd-draggable
+          className="shrink-0 cursor-grab touch-none text-gray-300 hover:text-gray-500"
+          title="Versleep"
         >
-          {speler.geslacht === "M" ? "\u2642" : "\u2640"}
+          <svg className="h-3 w-3" viewBox="0 0 10 16" fill="currentColor">
+            <circle cx="3" cy="2" r="1" />
+            <circle cx="7" cy="2" r="1" />
+            <circle cx="3" cy="6" r="1" />
+            <circle cx="7" cy="6" r="1" />
+            <circle cx="3" cy="10" r="1" />
+            <circle cx="7" cy="10" r="1" />
+          </svg>
         </span>
-        <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${STATUS_KLEUREN[status]}`} />
+      )}
+
+      {/* Geslacht icoon — SVG */}
+      <span className={`shrink-0 ${speler.geslacht === "M" ? "text-blue-400" : "text-pink-400"}`}>
+        {speler.geslacht === "M" ? (
+          <svg
+            className="h-3 w-3"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+          >
+            <circle cx="10" cy="14" r="6" />
+            <path d="M21 3l-6.5 6.5M21 3h-5M21 3v5" />
+          </svg>
+        ) : (
+          <svg
+            className="h-3 w-3"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+          >
+            <circle cx="12" cy="10" r="6" />
+            <path d="M12 16v6M9 20h6" />
+          </svg>
+        )}
+      </span>
+
+      {/* Naam + metadata */}
+      <div className="flex min-w-0 flex-1 flex-col">
+        {/* Regel 1: naam */}
         <span
-          className={`flex-1 truncate text-gray-800 ${
+          className={`truncate text-[12px] leading-tight font-medium text-gray-800 ${
             onSpelerClick ? "cursor-pointer hover:text-orange-600" : ""
-          }`}
-          style={{ fontSize: "calc(13px / var(--zoom-scale, 1))" }}
+          } ${isWarning ? "italic" : ""}`}
           onClick={onSpelerClick ? () => onSpelerClick(speler) : undefined}
         >
           {speler.roepnaam} {speler.achternaam}
         </span>
-        {(dl === "detail" || dl === "focus") && kleur && (
-          <span className={`h-2 w-2 shrink-0 rounded-full ${KLEUR_DOT[kleur]}`} />
+
+        {/* Regel 2: vorig team + leeftijd (alleen detail/focus) */}
+        {(dl === "detail" || dl === "focus") && (
+          <div className="flex items-center gap-1 text-[10px] leading-tight text-gray-400">
+            <span className="truncate">{vorigTeam ?? "\u2014"}</span>
+            <span className="shrink-0 tabular-nums">{leeftijd.toFixed(1)}</span>
+          </div>
         )}
       </div>
 
-      {/* Regel 2: eerder team + leeftijd */}
-      {(dl === "detail" || dl === "focus") && (
-        <div
-          className="flex items-center gap-1 pl-4 text-gray-400"
-          style={{ fontSize: "calc(11px / var(--zoom-scale, 1))" }}
-        >
-          <span className="flex-1 truncate">{vorigTeam ?? "\u2014"}</span>
-          <span>{leeftijd.toFixed(1)}</span>
-        </div>
-      )}
+      {/* Rechter indicatoren */}
+      <div className="flex shrink-0 items-center gap-1">
+        {/* Notitie indicator */}
+        {heeftNotitie && (
+          <svg
+            className="h-2.5 w-2.5 text-amber-400"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            aria-label="Heeft notitie"
+          >
+            <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" />
+          </svg>
+        )}
+
+        {/* Waarschuwing icoon bij TWIJFELT/GAAT_STOPPEN */}
+        {status === "GAAT_STOPPEN" && (
+          <svg
+            className="h-3 w-3 text-red-400"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            aria-label="Gaat stoppen"
+          >
+            <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" />
+          </svg>
+        )}
+        {status === "TWIJFELT" && (
+          <svg
+            className="h-3 w-3 text-amber-500"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            aria-label="Twijfelt"
+          >
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+          </svg>
+        )}
+
+        {/* Kleurindicatie dot */}
+        {(dl === "detail" || dl === "focus") && kleur && (
+          <span className={`h-2 w-2 shrink-0 rounded-full ring-1 ring-white ${KLEUR_DOT[kleur]}`} />
+        )}
+      </div>
     </div>
   );
 }
