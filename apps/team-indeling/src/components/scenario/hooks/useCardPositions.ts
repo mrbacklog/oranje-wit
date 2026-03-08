@@ -11,6 +11,7 @@ import {
   CANVAS_HEIGHT,
   CANVAS_WIDTH,
   COLLISION_PADDING,
+  getCardHeight,
   getCardSize,
 } from "../editor/cardSizes";
 
@@ -29,6 +30,8 @@ export interface CardInfo {
   id: string;
   teamType: string;
   isSelectie: boolean;
+  spelersCount: number;
+  hasStaf: boolean;
 }
 
 type SizeMap = Record<string, { w: number; h: number }>;
@@ -83,7 +86,9 @@ export function calculateAutoGrid(cards: CardInfo[]): PositionMap {
 function buildSizeMap(cards: CardInfo[]): SizeMap {
   const sizes: SizeMap = {};
   for (const card of cards) {
-    sizes[card.id] = getCardSize(card.teamType, card.isSelectie);
+    const baseSize = getCardSize(card.teamType, card.isSelectie);
+    const h = Math.max(CARD_HEIGHT, getCardHeight(card.spelersCount, card.hasStaf));
+    sizes[card.id] = { w: baseSize.w, h };
   }
   return sizes;
 }

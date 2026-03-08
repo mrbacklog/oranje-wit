@@ -38,10 +38,15 @@ export default function ScenarioEditorFullscreen({
       if (team.selectieGroepId) {
         if (!seen.has(team.selectieGroepId)) {
           seen.add(team.selectieGroepId);
+          const groepTeams = zichtbareTeams.filter(
+            (t) => t.selectieGroepId === team.selectieGroepId
+          );
           infos.push({
             id: `selectie-${team.selectieGroepId}`,
             teamType: "ACHTAL",
             isSelectie: true,
+            spelersCount: groepTeams.reduce((sum, t) => sum + (t.spelers?.length ?? 0), 0),
+            hasStaf: groepTeams.some((t) => (t.staf?.length ?? 0) > 0),
           });
         }
       } else {
@@ -49,6 +54,8 @@ export default function ScenarioEditorFullscreen({
           id: team.id,
           teamType: team.teamType ?? "VIERTAL",
           isSelectie: false,
+          spelersCount: team.spelers?.length ?? 0,
+          hasStaf: (team.staf?.length ?? 0) > 0,
         });
       }
     }
