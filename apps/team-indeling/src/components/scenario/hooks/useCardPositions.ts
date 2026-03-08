@@ -5,13 +5,11 @@ import { logger } from "@oranje-wit/types";
 
 import {
   CARD_GAP,
-  CARD_HEIGHT,
   CARD_WIDTH_DOUBLE,
   CARD_WIDTH_SINGLE,
   CANVAS_HEIGHT,
   CANVAS_WIDTH,
   COLLISION_PADDING,
-  getCardHeight,
   getCardSize,
 } from "../editor/cardSizes";
 
@@ -30,8 +28,6 @@ export interface CardInfo {
   id: string;
   teamType: string;
   isSelectie: boolean;
-  spelersCount: number;
-  hasStaf: boolean;
 }
 
 type SizeMap = Record<string, { w: number; h: number }>;
@@ -52,28 +48,27 @@ export function calculateAutoGrid(cards: CardInfo[]): PositionMap {
   const colUnit = CARD_WIDTH_SINGLE + CARD_GAP;
 
   let col = 0;
-  let row = 0;
+  let rowY = 0;
+  let rowMaxHeight = 0;
 
   for (const card of cards) {
     const size = getCardSize(card.teamType, card.isSelectie);
     const span = size.w === CARD_WIDTH_DOUBLE ? 2 : 1;
 
-    // If this card doesn't fit on the current row, move to next row
     if (col + span > GRID_COLS) {
-      row++;
+      rowY += rowMaxHeight + CARD_GAP;
       col = 0;
+      rowMaxHeight = 0;
     }
 
-    const x = col * colUnit;
-    const y = row * (CARD_HEIGHT + CARD_GAP);
-    positions[card.id] = { x, y };
-
+    positions[card.id] = { x: col * colUnit, y: rowY };
+    rowMaxHeight = Math.max(rowMaxHeight, size.h);
     col += span;
 
-    // If we've filled the row, advance
     if (col >= GRID_COLS) {
+      rowY += rowMaxHeight + CARD_GAP;
       col = 0;
-      row++;
+      rowMaxHeight = 0;
     }
   }
 
@@ -86,9 +81,7 @@ export function calculateAutoGrid(cards: CardInfo[]): PositionMap {
 function buildSizeMap(cards: CardInfo[]): SizeMap {
   const sizes: SizeMap = {};
   for (const card of cards) {
-    const baseSize = getCardSize(card.teamType, card.isSelectie);
-    const h = Math.max(CARD_HEIGHT, getCardHeight(card.spelersCount, card.hasStaf));
-    sizes[card.id] = { w: baseSize.w, h };
+    sizes[card.id] = getCardSize(card.teamType, card.isSelectie);
   }
   return sizes;
 }
