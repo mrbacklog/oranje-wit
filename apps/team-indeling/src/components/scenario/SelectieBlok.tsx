@@ -5,6 +5,7 @@ import type { TeamData, SpelerData, DetailLevel, SelectieGroepData, TeamSpelerDa
 import type { TeamValidatie } from "@/lib/validatie/regels";
 import { korfbalLeeftijd, sorteerSpelers } from "./types";
 import { CARD_WIDTH_DOUBLE, CARD_HEIGHT_DOUBLE } from "./editor/cardSizes";
+import { useZoomScale } from "./editor/ZoomScaleContext";
 import TeamSpelerRij from "./TeamSpelerRij";
 
 export interface SelectieBlokProps {
@@ -71,153 +72,175 @@ export default function SelectieBlok({
     ? "border-orange-400 ring-2 ring-orange-200"
     : "border-orange-300 ring-2 ring-orange-100 ring-offset-1";
 
+  // Compenseer tekst voor zoom: bij uitzoomen wordt tekst groter zodat het leesbaar blijft
+  const zoomScale = useZoomScale();
+  const textScale = zoomScale < 1 ? 1 / Math.max(zoomScale, 0.5) : 1;
+
   return (
     <div
       style={{ width: CARD_WIDTH_DOUBLE, height: CARD_HEIGHT_DOUBLE }}
       className={`flex flex-col overflow-hidden rounded-lg border-2 border-dashed bg-orange-50/50 ${borderKleur}`}
     >
-      {/* Selectie header */}
-      <div className="flex items-center justify-between rounded-t-lg border-b border-orange-200 bg-orange-50 px-3 py-2">
-        <div className="flex items-center gap-2">
-          <span className="p-0.5 text-orange-300">
-            <svg className="h-3.5 w-3.5" viewBox="0 0 10 16" fill="currentColor">
-              <circle cx="3" cy="2" r="1.2" />
-              <circle cx="7" cy="2" r="1.2" />
-              <circle cx="3" cy="8" r="1.2" />
-              <circle cx="7" cy="8" r="1.2" />
-              <circle cx="3" cy="14" r="1.2" />
-              <circle cx="7" cy="14" r="1.2" />
-            </svg>
-          </span>
-          <span className="text-[11px] font-medium tracking-wide text-orange-600 uppercase">
-            Selectie
-          </span>
-          <h4 className="text-sm font-semibold text-gray-900">{teamNamen}</h4>
-        </div>
-        <div className="flex items-center gap-1">
-          {/* Potlood-icoon voor selectie bewerken */}
-          {(dl === "detail" || dl === "focus") && eersteTeam && (
-            <button
-              onClick={() => onEditTeam?.(eersteTeam.id)}
-              className="p-0.5 text-orange-400 transition-colors hover:text-orange-700"
-              title="Bewerk selectie"
-            >
-              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                />
+      <div
+        style={
+          textScale > 1
+            ? {
+                transform: `scale(${textScale})`,
+                transformOrigin: "top left",
+                width: `${100 / textScale}%`,
+                height: `${100 / textScale}%`,
+              }
+            : undefined
+        }
+        className="flex h-full flex-col"
+      >
+        {/* Selectie header */}
+        <div className="flex items-center justify-between rounded-t-lg border-b border-orange-200 bg-orange-50 px-3 py-2">
+          <div className="flex items-center gap-2">
+            <span className="p-0.5 text-orange-300">
+              <svg className="h-3.5 w-3.5" viewBox="0 0 10 16" fill="currentColor">
+                <circle cx="3" cy="2" r="1.2" />
+                <circle cx="7" cy="2" r="1.2" />
+                <circle cx="3" cy="8" r="1.2" />
+                <circle cx="7" cy="8" r="1.2" />
+                <circle cx="3" cy="14" r="1.2" />
+                <circle cx="7" cy="14" r="1.2" />
               </svg>
-            </button>
-          )}
-          {(dl === "detail" || dl === "focus") && selectieGroep && (
-            <button
-              onClick={() => onOntkoppel(selectieGroep.id)}
-              className="rounded px-2 py-1 text-[10px] font-medium text-orange-600 transition-colors hover:bg-orange-100 hover:text-orange-800"
-              title="Ontkoppel selectie"
-            >
-              Ontkoppel
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* Staf (uit selectieGroep) */}
-      {(dl === "detail" || dl === "focus") && alleStaf.length > 0 && (
-        <div className="border-b border-orange-100 px-3 py-1">
-          <span className="text-[10px] font-medium text-gray-500">Staf: </span>
-          {alleStaf.map((ts, i) => (
-            <span key={ts.id} className="text-[10px] text-gray-500">
-              {i > 0 && ", "}
-              {ts.staf.naam} <span className="text-gray-400">({ts.rol})</span>
             </span>
-          ))}
-        </div>
-      )}
-
-      {/* Pool: een spelerslijst, gegroepeerd op geslacht */}
-      {dl === "overzicht" ? (
-        <div ref={setNodeRef} className="px-3 py-2 text-center text-sm text-gray-500">
-          {aantalSpelers} spelers · {aantalM}
-          {"♂"} {aantalV}
-          {"♀"}
-        </div>
-      ) : (
-        <div ref={setNodeRef} className="min-h-15 flex-1 px-1 py-1">
-          {alleSpelers.length === 0 ? (
-            <p className="py-4 text-center text-[10px] text-gray-400">Sleep spelers hierheen</p>
-          ) : (
-            /* detail/focus: side-by-side — dames links, heren rechts */
-            <div className="grid grid-cols-2 gap-x-0.5">
-              <div>
-                {dames.length > 0 && (
-                  <div className="px-2 pt-1 text-[11px] font-medium tracking-wide text-pink-500 uppercase">
-                    Dames ({dames.length})
-                  </div>
-                )}
-                {dames.map((ts) => (
-                  <TeamSpelerRij
-                    key={ts.id}
-                    teamSpeler={ts}
-                    teamId={eersteTeam?.id ?? ""}
-                    detailLevel={dl}
-                    onSpelerClick={
-                      onSpelerClick ? (speler) => onSpelerClick(speler, eersteTeam?.id) : undefined
-                    }
+            <span className="text-[11px] font-medium tracking-wide text-orange-600 uppercase">
+              Selectie
+            </span>
+            <h4 className="text-sm font-semibold text-gray-900">{teamNamen}</h4>
+          </div>
+          <div className="flex items-center gap-1">
+            {/* Potlood-icoon voor selectie bewerken */}
+            {(dl === "detail" || dl === "focus") && eersteTeam && (
+              <button
+                onClick={() => onEditTeam?.(eersteTeam.id)}
+                className="p-0.5 text-orange-400 transition-colors hover:text-orange-700"
+                title="Bewerk selectie"
+              >
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
                   />
-                ))}
-              </div>
-              <div>
-                {heren.length > 0 && (
-                  <div className="px-2 pt-1 text-[11px] font-medium tracking-wide text-blue-500 uppercase">
-                    Heren ({heren.length})
-                  </div>
-                )}
-                {heren.map((ts) => (
-                  <TeamSpelerRij
-                    key={ts.id}
-                    teamSpeler={ts}
-                    teamId={eersteTeam?.id ?? ""}
-                    detailLevel={dl}
-                    onSpelerClick={
-                      onSpelerClick ? (speler) => onSpelerClick(speler, eersteTeam?.id) : undefined
-                    }
-                  />
-                ))}
-              </div>
-            </div>
-          )}
+                </svg>
+              </button>
+            )}
+            {(dl === "detail" || dl === "focus") && selectieGroep && (
+              <button
+                onClick={() => onOntkoppel(selectieGroep.id)}
+                className="rounded px-2 py-1 text-[10px] font-medium text-orange-600 transition-colors hover:bg-orange-100 hover:text-orange-800"
+                title="Ontkoppel selectie"
+              >
+                Ontkoppel
+              </button>
+            )}
+          </div>
         </div>
-      )}
 
-      {/* Focus: inline validatie meldingen */}
-      {dl === "focus" && validatie && validatie.meldingen.length > 0 && (
-        <div className="border-t border-orange-100 px-3 py-1.5">
-          {validatie.meldingen.map((m, i) => (
-            <div
-              key={i}
-              className={`text-[10px] ${m.ernst === "kritiek" ? "text-red-600" : m.ernst === "aandacht" ? "text-orange-500" : "text-blue-500"}`}
-            >
-              {m.bericht}
-            </div>
-          ))}
-        </div>
-      )}
+        {/* Staf (uit selectieGroep) */}
+        {(dl === "detail" || dl === "focus") && alleStaf.length > 0 && (
+          <div className="border-b border-orange-100 px-3 py-1">
+            <span className="text-[10px] font-medium text-gray-500">Staf: </span>
+            {alleStaf.map((ts, i) => (
+              <span key={ts.id} className="text-[10px] text-gray-500">
+                {i > 0 && ", "}
+                {ts.staf.naam} <span className="text-gray-400">({ts.rol})</span>
+              </span>
+            ))}
+          </div>
+        )}
 
-      {/* Footer stats */}
-      {dl !== "overzicht" && (
-        <div className="flex items-center gap-3 border-t border-orange-100 px-3 py-1 text-[11px] text-gray-400">
-          <span>{aantalSpelers} spelers</span>
-          <span>
-            {aantalM}
-            {"\u2642"} {aantalV}
-            {"\u2640"}
-          </span>
-          <span>gem. {gemLeeftijd} jr</span>
-        </div>
-      )}
+        {/* Pool: een spelerslijst, gegroepeerd op geslacht */}
+        {dl === "overzicht" ? (
+          <div ref={setNodeRef} className="px-3 py-2 text-center text-sm text-gray-500">
+            {aantalSpelers} spelers · {aantalM}
+            {"♂"} {aantalV}
+            {"♀"}
+          </div>
+        ) : (
+          <div ref={setNodeRef} className="min-h-15 flex-1 px-1 py-1">
+            {alleSpelers.length === 0 ? (
+              <p className="py-4 text-center text-[10px] text-gray-400">Sleep spelers hierheen</p>
+            ) : (
+              /* detail/focus: side-by-side — dames links, heren rechts */
+              <div className="grid grid-cols-2 gap-x-0.5">
+                <div>
+                  {dames.length > 0 && (
+                    <div className="px-2 pt-1 text-[11px] font-medium tracking-wide text-pink-500 uppercase">
+                      Dames ({dames.length})
+                    </div>
+                  )}
+                  {dames.map((ts) => (
+                    <TeamSpelerRij
+                      key={ts.id}
+                      teamSpeler={ts}
+                      teamId={eersteTeam?.id ?? ""}
+                      detailLevel={dl}
+                      onSpelerClick={
+                        onSpelerClick
+                          ? (speler) => onSpelerClick(speler, eersteTeam?.id)
+                          : undefined
+                      }
+                    />
+                  ))}
+                </div>
+                <div>
+                  {heren.length > 0 && (
+                    <div className="px-2 pt-1 text-[11px] font-medium tracking-wide text-blue-500 uppercase">
+                      Heren ({heren.length})
+                    </div>
+                  )}
+                  {heren.map((ts) => (
+                    <TeamSpelerRij
+                      key={ts.id}
+                      teamSpeler={ts}
+                      teamId={eersteTeam?.id ?? ""}
+                      detailLevel={dl}
+                      onSpelerClick={
+                        onSpelerClick
+                          ? (speler) => onSpelerClick(speler, eersteTeam?.id)
+                          : undefined
+                      }
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Focus: inline validatie meldingen */}
+        {dl === "focus" && validatie && validatie.meldingen.length > 0 && (
+          <div className="border-t border-orange-100 px-3 py-1.5">
+            {validatie.meldingen.map((m, i) => (
+              <div
+                key={i}
+                className={`text-[10px] ${m.ernst === "kritiek" ? "text-red-600" : m.ernst === "aandacht" ? "text-orange-500" : "text-blue-500"}`}
+              >
+                {m.bericht}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Footer stats */}
+        {dl !== "overzicht" && (
+          <div className="flex items-center gap-3 border-t border-orange-100 px-3 py-1 text-[11px] text-gray-400">
+            <span>{aantalSpelers} spelers</span>
+            <span>
+              {aantalM}
+              {"\u2642"} {aantalV}
+              {"\u2640"}
+            </span>
+            <span>gem. {gemLeeftijd} jr</span>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
