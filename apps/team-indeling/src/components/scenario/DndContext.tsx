@@ -19,11 +19,10 @@ import { useZoomScale } from "./editor/ZoomScaleContext";
 interface DndProviderProps {
   children: ReactNode;
   spelers: SpelerData[];
-  sortableIds?: string[];
   onPoolToTeam: (spelerId: string, teamId: string) => void;
   onTeamToTeam: (spelerId: string, vanTeamId: string, naarTeamId: string) => void;
   onTeamToPool: (spelerId: string, teamId: string) => void;
-  onReorderTeams?: (vanIndex: number, naarIndex: number) => void;
+  onRepositionCard?: (cardId: string, deltaX: number, deltaY: number) => void;
 }
 
 interface DragData {
@@ -35,11 +34,10 @@ interface DragData {
 export default function DndProvider({
   children,
   spelers,
-  sortableIds,
   onPoolToTeam,
   onTeamToTeam,
   onTeamToPool,
-  onReorderTeams,
+  onRepositionCard,
 }: DndProviderProps) {
   const [activeSpeler, setActiveSpeler] = useState<SpelerData | null>(null);
   const zoomScale = useZoomScale();
@@ -73,8 +71,7 @@ export default function DndProvider({
   function handleDragEnd(event: DragEndEvent) {
     setActiveSpeler(null);
 
-    const { active, over } = event;
-    if (!over || active.id === over.id) return;
+    const { active, over, delta } = event;
 
     const activeData = active.data.current as
       | DragData
@@ -82,19 +79,17 @@ export default function DndProvider({
       | undefined;
     if (!activeData) return;
 
-    // Team-kaart herordening (sortable)
-    if (
-      (activeData.type === "team-kaart" || activeData.type === "selectie-blok") &&
-      sortableIds &&
-      onReorderTeams
-    ) {
-      const oldIndex = sortableIds.indexOf(String(active.id));
-      const newIndex = sortableIds.indexOf(String(over.id));
-      if (oldIndex !== -1 && newIndex !== -1) {
-        onReorderTeams(oldIndex, newIndex);
-      }
+    // Vrije herpositionering van kaarten
+    const isCardDrag = activeData.type === "team-kaart" || activeData.type === "selectie-blok";
+
+    if (isCardDrag && onRepositionCard) {
+      const scaledDeltaX = delta.x / zoomScale;
+      const scaledDeltaY = delta.y / zoomScale;
+      onRepositionCard(String(active.id), scaledDeltaX, scaledDeltaY);
       return;
     }
+
+    if (!over || active.id === over.id) return;
 
     const overData = over.data.current as
       | { type: "team"; teamId: string }

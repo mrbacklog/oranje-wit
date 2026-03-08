@@ -8,9 +8,10 @@ import { ZoomScaleProvider } from "./ZoomScaleContext";
 
 interface ZoomCanvasProps {
   children: (detailLevel: DetailLevel) => React.ReactNode;
+  contentSize?: { width: number; height: number };
 }
 
-export default function ZoomCanvas({ children }: ZoomCanvasProps) {
+export default function ZoomCanvas({ children, contentSize }: ZoomCanvasProps) {
   const { transform, containerRef, zoomIn, zoomOut, zoomToFit, resetZoom } = useCanvasZoom();
 
   const detailLevel = useMemo(() => getDetailLevel(transform.k), [transform.k]);
@@ -58,7 +59,7 @@ export default function ZoomCanvas({ children }: ZoomCanvasProps) {
         </button>
         <div className="mx-1 h-4 w-px bg-gray-200" />
         <button
-          onClick={() => zoomToFit(2400, 1600)}
+          onClick={() => zoomToFit(contentSize?.width ?? 2400, contentSize?.height ?? 1600)}
           className="rounded p-1 text-xs text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700"
           title="Pas alles in"
         >

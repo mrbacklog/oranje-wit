@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import type { ScenarioData, SpelerData } from "../types";
 import { useScenarioEditor } from "../hooks/useScenarioEditor";
+import { useCardPositions, type CardInfo } from "../hooks/useCardPositions";
 import DndProvider from "../DndContext";
 import Navigator from "../Navigator";
 import Werkgebied from "../Werkgebied";
@@ -26,6 +27,35 @@ export default function ScenarioEditorFullscreen({
   const editor = useScenarioEditor(scenario, alleSpelers);
   const [navOpen, setNavOpen] = useState(false);
   const [poolOpen, setPoolOpen] = useState(false);
+
+  // Build card info for free-form positioning
+  const cardInfos: CardInfo[] = useMemo(() => {
+    const zichtbareTeams = editor.teams.filter((t) => editor.zichtbaar.has(t.id));
+    const seen = new Set<string>();
+    const infos: CardInfo[] = [];
+
+    for (const team of zichtbareTeams) {
+      if (team.selectieGroepId) {
+        if (!seen.has(team.selectieGroepId)) {
+          seen.add(team.selectieGroepId);
+          infos.push({
+            id: `selectie-${team.selectieGroepId}`,
+            teamType: "ACHTAL",
+            isSelectie: true,
+          });
+        }
+      } else {
+        infos.push({
+          id: team.id,
+          teamType: team.teamType ?? "VIERTAL",
+          isSelectie: false,
+        });
+      }
+    }
+    return infos;
+  }, [editor.teams, editor.zichtbaar]);
+
+  const { positions, updatePosition } = useCardPositions(scenario.id, cardInfos);
 
   const toggleNav = useCallback(() => setNavOpen((v) => !v), []);
   const togglePool = useCallback(() => setPoolOpen((v) => !v), []);
@@ -55,7 +85,7 @@ export default function ScenarioEditorFullscreen({
         onPoolToTeam={editor.handlePoolToTeam}
         onTeamToTeam={editor.handleTeamToTeam}
         onTeamToPool={editor.handleTeamToPool}
-        onReorderTeams={editor.handleReorderTeams}
+        onRepositionCard={updatePosition}
       >
         <div className="relative flex-1 overflow-hidden">
           {/* Side-tab: Teamlijst (links) */}
@@ -122,7 +152,7 @@ export default function ScenarioEditorFullscreen({
               onOntkoppelSelectie={editor.handleOntkoppelSelectie}
               onSpelerClick={editor.handleSpelerClick}
               onEditTeam={editor.handleEditTeam}
-              onReorderTeams={editor.handleReorderTeams}
+              positions={positions}
             />
             <ChatPanel
               scenarioId={scenario.id}
