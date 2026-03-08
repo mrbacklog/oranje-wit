@@ -142,7 +142,7 @@ Testbestanden:
 
 ## Deployment
 
-Automatisch via GitHub Actions + Railway bij push naar `master`.
+Automatisch via GitHub Actions + Railway bij push naar `main`.
 
 - **Service ID**: `a7efb126-8ad1-460d-b787-2d03207c3f3c`
 - **Live URL**: https://monitor.ckvoranjewit.app

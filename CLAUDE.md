@@ -62,7 +62,7 @@ oranje-wit/
 
 ### Automatische gates
 - **Pre-commit hook**: lint-staged draait ESLint + Prettier op staged bestanden
-- **CI (GitHub Actions)**: typecheck + lint + format + tests op elke push/PR naar master
+- **CI (GitHub Actions)**: typecheck + lint + format + tests op elke push/PR naar main
 - **ESLint**: gedeelde regels in `eslint.config.mjs` — `no-console` (error), `no-empty-catch`, `no-unused-vars`, `max-lines` (400)
 
 ### Verplichte patronen
@@ -278,7 +278,7 @@ Railway PostgreSQL → Evaluatie tabel
 ## Deployment (Railway + Cloudflare)
 
 Alles draait in één Railway project (`oranje-wit-db`):
-- **GitHub repo**: `mrbacklog/oranje-wit` (publiek, auto-deploy op push naar master)
+- **GitHub repo**: `mrbacklog/oranje-wit` (publiek, auto-deploy op push naar main)
 - **Monitor**: https://monitor.ckvoranjewit.app (via Cloudflare Worker → Railway)
 - **Team-Indeling**: https://teamindeling.ckvoranjewit.app (via Cloudflare Worker → Railway)
 - **Evaluatie**: https://evaluatie.ckvoranjewit.app (via Cloudflare Worker → Railway)

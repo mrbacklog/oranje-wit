@@ -183,7 +183,7 @@ server.tool(
     projectId: z.string().describe("Railway project ID"),
     repo: z.string().optional().describe("GitHub repo (owner/repo) om direct te koppelen"),
     name: z.string().optional().describe("Service naam"),
-    branch: z.string().optional().describe("Git branch (default: master)"),
+    branch: z.string().optional().describe("Git branch (default: main)"),
   },
   async ({ projectId, repo, name, branch }) => {
     try {

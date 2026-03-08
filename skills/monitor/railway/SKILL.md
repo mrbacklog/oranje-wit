@@ -48,7 +48,7 @@ Alles draait in één project:
 ### GitHub repo
 
 - **Repo**: `mrbacklog/oranje-wit` (publiek)
-- **Branch**: `master`
+- **Branch**: `main`
 - **Auto-deploy**: **UITGESCHAKELD** — GitHub Actions is de enige deployer
 
 ### Deployment
