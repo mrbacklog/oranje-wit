@@ -85,7 +85,6 @@ export default function ScenarioEditorFullscreen({
         onPoolToTeam={editor.handlePoolToTeam}
         onTeamToTeam={editor.handleTeamToTeam}
         onTeamToPool={editor.handleTeamToPool}
-        onRepositionCard={updatePosition}
       >
         <div className="relative flex-1 overflow-hidden">
           {/* Side-tab: Teamlijst (links) */}
@@ -153,6 +152,7 @@ export default function ScenarioEditorFullscreen({
               onSpelerClick={editor.handleSpelerClick}
               onEditTeam={editor.handleEditTeam}
               positions={positions}
+              onRepositionCard={updatePosition}
             />
             <ChatPanel
               scenarioId={scenario.id}
