@@ -1,11 +1,7 @@
 {
   "$schema": "https://railway.com/railway.schema.json",
   "build": {
-    "builder": "NIXPACKS",
-    "buildCommand": "cd ../.. && pnpm db:generate && pnpm --filter @oranje-wit/team-indeling build"
+    "dockerfilePath": "apps/team-indeling/Dockerfile"
   },
-  "deploy": {
-    "startCommand": "cd ../.. && pnpm --filter @oranje-wit/team-indeling start",
-    "healthcheckPath": "/"
-  }
+  "deploy": {}
 }
