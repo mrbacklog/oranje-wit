@@ -39,7 +39,6 @@ export default function SelectieBlok({
   const alleSpelers = selectieGroep
     ? sorteerSpelers(selectieGroep.spelers as TeamSpelerData[])
     : sorteerSpelers(eersteTeam?.spelers ?? []);
-  const gesorteerd = alleSpelers;
   const heren = alleSpelers.filter((ts) => ts.speler.geslacht === "M");
   const dames = alleSpelers.filter((ts) => ts.speler.geslacht === "V");
   const aantalSpelers = alleSpelers.length;
