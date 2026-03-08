@@ -219,7 +219,7 @@ export function useSelectieHandlers({
         removeSpelerFromTeam(teamId, spelerId);
       });
     },
-    [teams, selectieGroepen, setTeams, setSelectieGroepen, startTransition]
+    [teams, setTeams, setSelectieGroepen, startTransition]
   );
 
   // --- Selectie koppel/ontkoppel handlers ---
