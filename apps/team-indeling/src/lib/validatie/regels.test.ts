@@ -319,3 +319,61 @@ describe("valideerDubbeleSpelersOverTeams", () => {
     expect(meldingen[0].bericht).toContain("3 teams");
   });
 });
+
+// ============================================================
+// valideerTeam — Kleur-grens (herindelingsrisico)
+// ============================================================
+
+describe("valideerTeam — kleur-grens herindelingsrisico", () => {
+  it("geeft aandacht-melding als GEEL team boven bovengrens zit (gem. > 11.8 jr)", () => {
+    // gem. leeftijd = 2026 - 2014 = 12.0 → boven geel max 11.8
+    const team = maakTeam({
+      naam: "Geel 1",
+      kleur: "GEEL",
+      spelers: maakSpelers(10, { geboortejaar: 2014 }),
+    });
+    const resultaat = valideerTeam(team, SEIZOEN);
+    const grens = resultaat.meldingen.filter((m) => m.regel === "kleur_grens");
+    expect(grens).toHaveLength(1);
+    expect(grens[0].ernst).toBe("aandacht");
+    expect(grens[0].bericht).toContain("oranje");
+  });
+
+  it("geeft aandacht-melding als GROEN team onder ondergrens zit (gem. < 7.6 jr)", () => {
+    // gem. leeftijd = 2026 - 2019 = 7.0 → onder groen min 7.6
+    const team = maakTeam({
+      naam: "Groen 1",
+      kleur: "GROEN",
+      spelers: maakSpelers(5, { geboortejaar: 2019 }),
+    });
+    const resultaat = valideerTeam(team, SEIZOEN);
+    const grens = resultaat.meldingen.filter((m) => m.regel === "kleur_grens");
+    expect(grens).toHaveLength(1);
+    expect(grens[0].ernst).toBe("aandacht");
+    expect(grens[0].bericht).toContain("blauw");
+  });
+
+  it("geeft geen kleur_grens melding als team veilig binnen range zit", () => {
+    // gem. leeftijd = 2026 - 2015 = 11.0 → veilig binnen geel (9.2–11.8)
+    const team = maakTeam({
+      naam: "Geel 2",
+      kleur: "GEEL",
+      spelers: maakSpelers(10, { geboortejaar: 2015 }),
+    });
+    const resultaat = valideerTeam(team, SEIZOEN);
+    const grens = resultaat.meldingen.filter((m) => m.regel === "kleur_grens");
+    expect(grens).toHaveLength(0);
+  });
+
+  it("geeft geen melding voor ROOD team boven bovengrens (geen hogere kleur)", () => {
+    // gem. leeftijd = 2026 - 2007 = 19.0 → boven rood max 18.0, maar geen hogere kleur
+    const team = maakTeam({
+      naam: "Rood 1",
+      kleur: "ROOD",
+      spelers: maakSpelers(10, { geboortejaar: 2007 }),
+    });
+    const resultaat = valideerTeam(team, SEIZOEN);
+    const grens = resultaat.meldingen.filter((m) => m.regel === "kleur_grens");
+    expect(grens).toHaveLength(0);
+  });
+});

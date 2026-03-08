@@ -10,6 +10,7 @@ import type {
 } from "@/lib/validatie/regels";
 import ValidatieBadge from "./ValidatieBadge";
 import ImpactOverzicht from "./ImpactOverzicht";
+import KleurRangesInfo from "./KleurRangesInfo";
 
 const ERNST_CONFIG: Record<MeldingErnst, { icon: string; kleur: string }> = {
   kritiek: { icon: "\u2715", kleur: "text-red-600 bg-red-50" },
@@ -94,6 +95,9 @@ export default function ValidatieRapport({
               </div>
             </div>
           </div>
+
+          {/* Kleurranges referentie */}
+          <KleurRangesInfo />
 
           {/* Dubbele spelers */}
           {dubbeleMeldingen.length > 0 && (

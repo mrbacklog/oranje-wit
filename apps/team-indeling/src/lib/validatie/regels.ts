@@ -183,6 +183,19 @@ const KLEUR_LEEFTIJD: Record<string, { min: number; max: number }> = {
 
 const MIN_GEMIDDELDE_LEEFTIJD_8TAL = 9.0;
 
+/** Volgorde van kleuren van jong naar oud. */
+export const KLEUR_VOLGORDE = ["BLAUW", "GROEN", "GEEL", "ORANJE", "ROOD"] as const;
+
+/** Veilige range gem. leeftijd per kleur (p5–p95 landelijke conceptindelingen 2025-2026).
+ *  Teams buiten deze range lopen risico op herindeling naar een andere kleur. */
+export const KLEUR_VEILIGE_RANGE: Record<string, { min: number; max: number }> = {
+  BLAUW: { min: 6.3, max: 7.8 },
+  GROEN: { min: 7.6, max: 9.5 },
+  GEEL: { min: 9.2, max: 11.8 },
+  ORANJE: { min: 11.6, max: 13.8 },
+  ROOD: { min: 13.8, max: 18.0 },
+};
+
 // ============================================================
 // Hoofdfunctie
 // ============================================================
@@ -304,6 +317,49 @@ function valideerBCategorie(
         ernst: "kritiek",
       });
     }
+  }
+
+  // Kleur-grens: risico op herindeling door de bond
+  valideerKleurGrens(team, seizoenJaar, meldingen);
+}
+
+// ============================================================
+// Kleur-grens validatie (herindelingsrisico)
+// ============================================================
+
+function valideerKleurGrens(team: TeamData, seizoenJaar: number, meldingen: ValidatieMelding[]) {
+  if (!team.kleur || team.spelers.length === 0) return;
+
+  const kleur = team.kleur;
+  const range = KLEUR_VEILIGE_RANGE[kleur];
+  if (!range) return;
+
+  const gemGeboortejaar =
+    team.spelers.reduce((sum, s) => sum + s.geboortejaar, 0) / team.spelers.length;
+  const gemLeeftijd = seizoenJaar - gemGeboortejaar;
+
+  const idx = KLEUR_VOLGORDE.indexOf(kleur as (typeof KLEUR_VOLGORDE)[number]);
+
+  // Te oud voor huidige kleur?
+  if (gemLeeftijd > range.max && idx < KLEUR_VOLGORDE.length - 1) {
+    const volgende = KLEUR_VOLGORDE[idx + 1].toLowerCase();
+    const over = (gemLeeftijd - range.max).toFixed(1);
+    meldingen.push({
+      regel: "kleur_grens",
+      bericht: `${team.naam}: gem. ${gemLeeftijd.toFixed(1)} jr — ${over} jr boven ${kleur.toLowerCase()}-grens (max ${range.max}), risico herindeling naar ${volgende}`,
+      ernst: "aandacht",
+    });
+  }
+
+  // Te jong voor huidige kleur?
+  if (gemLeeftijd < range.min && idx > 0) {
+    const vorige = KLEUR_VOLGORDE[idx - 1].toLowerCase();
+    const onder = (range.min - gemLeeftijd).toFixed(1);
+    meldingen.push({
+      regel: "kleur_grens",
+      bericht: `${team.naam}: gem. ${gemLeeftijd.toFixed(1)} jr — ${onder} jr onder ${kleur.toLowerCase()}-grens (min ${range.min}), risico herindeling naar ${vorige}`,
+      ernst: "aandacht",
+    });
   }
 }
 
