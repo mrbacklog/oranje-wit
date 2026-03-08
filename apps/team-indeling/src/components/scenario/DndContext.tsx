@@ -6,15 +6,13 @@ import {
   closestCenter,
   type DragStartEvent,
   type DragEndEvent,
-  type Modifier,
   PointerSensor,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import { useState, useMemo, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import type { SpelerData } from "./types";
 import { STATUS_KLEUREN, kleurIndicatie, KLEUR_DOT, korfbalLeeftijd } from "./types";
-import { useZoomScale } from "./editor/ZoomScaleContext";
 
 interface DndProviderProps {
   children: ReactNode;
@@ -22,7 +20,6 @@ interface DndProviderProps {
   onPoolToTeam: (spelerId: string, teamId: string) => void;
   onTeamToTeam: (spelerId: string, vanTeamId: string, naarTeamId: string) => void;
   onTeamToPool: (spelerId: string, teamId: string) => void;
-  onRepositionCard?: (cardId: string, deltaX: number, deltaY: number) => void;
 }
 
 interface DragData {
@@ -37,10 +34,8 @@ export default function DndProvider({
   onPoolToTeam,
   onTeamToTeam,
   onTeamToPool,
-  onRepositionCard,
 }: DndProviderProps) {
   const [activeSpeler, setActiveSpeler] = useState<SpelerData | null>(null);
-  const zoomScale = useZoomScale();
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -48,17 +43,6 @@ export default function DndProvider({
         distance: 5,
       },
     })
-  );
-
-  // Compenseer voor CSS scale transform zodat drag-overlay de cursor volgt
-  const adjustScaleModifier: Modifier = useMemo(
-    () =>
-      ({ transform: t }) => ({
-        ...t,
-        x: t.x / zoomScale,
-        y: t.y / zoomScale,
-      }),
-    [zoomScale]
   );
 
   function handleDragStart(event: DragStartEvent) {
@@ -71,23 +55,10 @@ export default function DndProvider({
   function handleDragEnd(event: DragEndEvent) {
     setActiveSpeler(null);
 
-    const { active, over, delta } = event;
+    const { active, over } = event;
 
-    const activeData = active.data.current as
-      | DragData
-      | { type: "team-kaart" | "selectie-blok" }
-      | undefined;
+    const activeData = active.data.current as DragData | undefined;
     if (!activeData) return;
-
-    // Vrije herpositionering van kaarten
-    const isCardDrag = activeData.type === "team-kaart" || activeData.type === "selectie-blok";
-
-    if (isCardDrag && onRepositionCard) {
-      const scaledDeltaX = delta.x / zoomScale;
-      const scaledDeltaY = delta.y / zoomScale;
-      onRepositionCard(String(active.id), scaledDeltaX, scaledDeltaY);
-      return;
-    }
 
     if (!over || active.id === over.id) return;
 
@@ -124,7 +95,6 @@ export default function DndProvider({
     <DndKitContext
       sensors={sensors}
       collisionDetection={closestCenter}
-      modifiers={[adjustScaleModifier]}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
