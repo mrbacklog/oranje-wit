@@ -77,11 +77,14 @@ export function useCanvasGesture(): CanvasGestureResult {
       },
 
       onDrag: ({ delta: [dx, dy], buttons, event, first, cancel }) => {
-        // Allow pan only with middle mouse (button bitmask 4) or space+left-click
         const isMiddleMouse = (buttons & 4) !== 0;
         const isSpaceLeftClick = (buttons & 1) !== 0 && spaceHeld.current;
+        // Left-click op de achtergrond (niet op een kaart) = ook pannen
+        const target = event.target as HTMLElement | null;
+        const isBackgroundLeftClick =
+          (buttons & 1) !== 0 && !target?.closest("[data-gesture-card]");
 
-        if (!isMiddleMouse && !isSpaceLeftClick) {
+        if (!isMiddleMouse && !isSpaceLeftClick && !isBackgroundLeftClick) {
           if (first) cancel();
           return;
         }

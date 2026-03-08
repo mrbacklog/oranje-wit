@@ -60,6 +60,7 @@ export default function GestureCard({ cardId, position, onDragEnd, children }: G
   return (
     <animated.div
       {...bind()}
+      data-gesture-card
       style={{
         position: "absolute",
         left: position.x,
