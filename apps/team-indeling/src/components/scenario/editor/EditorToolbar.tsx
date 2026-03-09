@@ -12,6 +12,7 @@ interface EditorToolbarProps {
   totaal: number;
   mode: EditorMode;
   onToggleMode: () => void;
+  onCreateTeam?: () => void;
 }
 
 export default function EditorToolbar({
@@ -20,6 +21,7 @@ export default function EditorToolbar({
   totaal,
   mode,
   onToggleMode,
+  onCreateTeam,
 }: EditorToolbarProps) {
   const isLocked = scenario.status === "DEFINITIEF" || scenario.status === "GEARCHIVEERD";
 
@@ -66,8 +68,24 @@ export default function EditorToolbar({
         {zichtbaar} van {totaal} teams zichtbaar
       </span>
 
-      {/* Rechts: toggle + definitief */}
+      {/* Rechts: nieuw team + toggle + definitief */}
       <div className="flex items-center gap-2">
+        {!isLocked && onCreateTeam && mode === "edit" && (
+          <button
+            onClick={onCreateTeam}
+            className="flex items-center gap-1 rounded-lg bg-orange-500 px-2.5 py-1.5 text-xs font-medium text-white transition-colors hover:bg-orange-600"
+          >
+            <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+            Nieuw team
+          </button>
+        )}
         {!isLocked && mode === "preview" && <MaakDefinitiefKnop scenarioId={scenario.id} />}
 
         {!isLocked && (

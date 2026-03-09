@@ -2,24 +2,18 @@
 
 import { useState, useMemo, useCallback } from "react";
 import type { TeamData, SpelerData, SelectieGroepData } from "./types";
-import type { TeamCategorie, Kleur } from "@oranje-wit/database";
-import type { TeamValidatie, ValidatieMelding } from "@/lib/validatie/regels";
+import type { TeamValidatie } from "@/lib/validatie/regels";
 import type { PositionMap } from "./hooks/useCardPositions";
 import GestureCanvas from "./editor/GestureCanvas";
 import GestureCard from "./editor/GestureCard";
 import TeamKaart from "./TeamKaart";
 import SelectieBlok from "./SelectieBlok";
 import { CANVAS_WIDTH, CANVAS_HEIGHT } from "./editor/cardSizes";
-import NieuwTeamDialoog from "./NieuwTeamDialoog";
-import ValidatieRapport from "./ValidatieRapport";
 
 interface WerkgebiedProps {
-  scenarioId: string;
   teams: TeamData[];
   zichtbareTeamIds: Set<string>;
   validatieMap?: Map<string, TeamValidatie>;
-  dubbeleMeldingen?: ValidatieMelding[];
-  onCreateTeam: (data: { naam: string; categorie: TeamCategorie; kleur?: Kleur }) => void;
   onDeleteTeam: (teamId: string) => void;
   onKoppelSelectie: (teamIds: string[]) => void;
   onOntkoppelSelectie: (groepId: string) => void;
@@ -31,12 +25,9 @@ interface WerkgebiedProps {
 }
 
 export default function Werkgebied({
-  scenarioId: _scenarioId,
   teams,
   zichtbareTeamIds,
   validatieMap,
-  dubbeleMeldingen,
-  onCreateTeam,
   onDeleteTeam,
   onKoppelSelectie,
   onOntkoppelSelectie,
@@ -46,8 +37,6 @@ export default function Werkgebied({
   positions,
   onRepositionCard,
 }: WerkgebiedProps) {
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [rapportOpen, setRapportOpen] = useState(false);
   const [geselecteerd, setGeselecteerd] = useState<Set<string>>(new Set());
 
   const zichtbareTeams = teams.filter((t) => zichtbareTeamIds.has(t.id));
@@ -105,22 +94,6 @@ export default function Werkgebied({
           </div>
         </div>
       )}
-
-      {/* Zwevende actieknoppen rechtsonder */}
-      <div className="absolute right-6 bottom-6 z-10 flex flex-col items-end gap-2">
-        <button
-          onClick={() => setRapportOpen(true)}
-          className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-medium text-gray-600 shadow-md transition-colors hover:bg-gray-50"
-        >
-          Validatierapport
-        </button>
-        <button
-          onClick={() => setDialogOpen(true)}
-          className="rounded-lg bg-orange-500 px-3 py-2 text-xs font-medium text-white shadow-md transition-colors hover:bg-orange-600"
-        >
-          + Nieuw team
-        </button>
-      </div>
 
       {/* Zoomable grid */}
       <GestureCanvas>
@@ -184,21 +157,6 @@ export default function Werkgebied({
           )
         }
       </GestureCanvas>
-
-      <NieuwTeamDialoog
-        open={dialogOpen}
-        onClose={() => setDialogOpen(false)}
-        onSubmit={onCreateTeam}
-      />
-
-      {rapportOpen && validatieMap && (
-        <ValidatieRapport
-          teams={teams}
-          validatieMap={validatieMap}
-          dubbeleMeldingen={dubbeleMeldingen ?? []}
-          onClose={() => setRapportOpen(false)}
-        />
-      )}
     </div>
   );
 }
