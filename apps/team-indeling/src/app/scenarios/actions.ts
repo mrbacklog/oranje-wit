@@ -8,7 +8,7 @@ import { PEILJAAR, logger } from "@oranje-wit/types";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { assertBewerkbaar } from "@/lib/seizoen";
-import { assertSpelerVrij, getVersieIdVoorTeam } from "@/lib/db/speler-guard";
+import { assertSpelerVrij } from "@/lib/db/speler-guard";
 
 /**
  * Guard: controleer of het team bij een bewerkbaar seizoen hoort.

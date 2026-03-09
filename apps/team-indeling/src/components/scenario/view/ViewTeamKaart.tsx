@@ -2,13 +2,11 @@
 
 import { useState } from "react";
 import type { TeamData, SpelerData, HuidigData, DetailLevel } from "../types";
-import type { SpelerStatus } from "@oranje-wit/database";
 import type { TeamValidatie } from "@/lib/validatie/regels";
 import {
   KLEUR_BADGE_KLEUREN,
   CATEGORIE_BADGE,
   CATEGORIE_BADGE_LABEL,
-  STATUS_KLEUREN,
   KLEUR_DOT,
   korfbalLeeftijd,
   kleurIndicatie,
