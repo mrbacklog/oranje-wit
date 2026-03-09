@@ -549,6 +549,7 @@ model Versie {
   nummer   Int
   naam     String?
   auteur   String
+  posities Json?
 
   // Relaties
   teams           Team[]

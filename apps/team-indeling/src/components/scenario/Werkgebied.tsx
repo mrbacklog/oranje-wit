@@ -105,7 +105,10 @@ export default function Werkgebied({
               </p>
             </div>
           ) : (
-            <div style={{ position: "relative", width: CANVAS_WIDTH, height: CANVAS_HEIGHT }}>
+            <div
+              className="border border-dashed border-gray-200"
+              style={{ position: "relative", width: CANVAS_WIDTH, height: CANVAS_HEIGHT }}
+            >
               {/* Selectie-groepen */}
               {Array.from(selectieGroepen.entries()).map(([groepId, groepTeams]) => {
                 const dragId = `selectie-${groepId}`;

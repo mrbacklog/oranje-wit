@@ -10,8 +10,10 @@ import {
   CANVAS_HEIGHT,
   CANVAS_WIDTH,
   COLLISION_PADDING,
+  GRID_SNAP,
   getCardSize,
 } from "../editor/cardSizes";
+import { savePosities } from "@/app/scenarios/actions";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -192,44 +194,19 @@ export function resolveCollisions(
 }
 
 // ---------------------------------------------------------------------------
-// localStorage helpers
+// Debounced server save
 // ---------------------------------------------------------------------------
 
-// Versie-prefix: verhoog bij kaartgrootte-wijzigingen zodat oude cache vervalt
-const POSITION_VERSION = 5;
-
-function storageKey(scenarioId: string): string {
-  return `ow-card-positions-v${POSITION_VERSION}-${scenarioId}`;
-}
-
-function loadPositions(scenarioId: string): PositionMap | null {
-  if (typeof window === "undefined") return null;
-  try {
-    const raw = localStorage.getItem(storageKey(scenarioId));
-    if (!raw) return null;
-    return JSON.parse(raw) as PositionMap;
-  } catch (error) {
-    logger.warn("Kon posities niet laden uit localStorage:", error);
-    return null;
-  }
-}
-
-function savePositions(scenarioId: string, positions: PositionMap): void {
-  if (typeof window === "undefined") return;
-  try {
-    localStorage.setItem(storageKey(scenarioId), JSON.stringify(positions));
-  } catch (error) {
-    logger.warn("Kon posities niet opslaan in localStorage:", error);
-  }
-}
+const SAVE_DEBOUNCE_MS = 500;
 
 // ---------------------------------------------------------------------------
 // Hook
 // ---------------------------------------------------------------------------
 
 export function useCardPositions(
-  scenarioId: string,
-  cards: CardInfo[]
+  versieId: string | null,
+  cards: CardInfo[],
+  initialPosities: PositionMap | null
 ): {
   positions: PositionMap;
   updatePosition: (id: string, deltaX: number, deltaY: number) => void;
@@ -238,34 +215,54 @@ export function useCardPositions(
   const [positions, setPositions] = useState<PositionMap>({});
   const cardsRef = useRef<CardInfo[]>(cards);
   cardsRef.current = cards;
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const versieIdRef = useRef(versieId);
+  versieIdRef.current = versieId;
 
-  // Build initial positions on mount or when scenarioId/cards change
+  // Debounced save to server
+  const debouncedSave = useCallback((posities: PositionMap) => {
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = setTimeout(() => {
+      const vid = versieIdRef.current;
+      if (!vid) return;
+      savePosities(vid, posities).catch((err) => {
+        logger.warn("Kon posities niet opslaan:", err);
+      });
+    }, SAVE_DEBOUNCE_MS);
+  }, []);
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    };
+  }, []);
+
+  // Build initial positions on mount or when cards change
   useEffect(() => {
     const sizes = buildSizeMap(cards);
-    const stored = loadPositions(scenarioId);
     const cardIds = new Set(cards.map((c) => c.id));
 
-    if (stored) {
+    if (initialPosities) {
       // Start with stored positions for cards that still exist
       const merged: PositionMap = {};
       for (const id of cardIds) {
-        if (stored[id]) {
-          merged[id] = stored[id];
+        if (initialPosities[id]) {
+          merged[id] = initialPosities[id];
         }
       }
 
       // Calculate positions for any new cards not in storage
-      const missingCards = cards.filter((c) => !stored[c.id]);
+      const missingCards = cards.filter((c) => !initialPosities[c.id]);
       if (missingCards.length > 0) {
         const autoPositions = calculateAutoGrid(missingCards);
-        // Offset new cards so they don't overlap with existing ones
         for (const [id, pos] of Object.entries(autoPositions)) {
           merged[id] = pos;
         }
         // Resolve any collisions from merging
         const allResolved = resolveCollisions(merged, sizes, missingCards[0].id);
         setPositions(allResolved);
-        savePositions(scenarioId, allResolved);
+        debouncedSave(allResolved);
       } else {
         setPositions(merged);
       }
@@ -273,9 +270,9 @@ export function useCardPositions(
       // No stored positions — calculate from scratch
       const auto = calculateAutoGrid(cards);
       setPositions(auto);
-      savePositions(scenarioId, auto);
+      debouncedSave(auto);
     }
-  }, [scenarioId, cards]);
+  }, [cards, initialPosities, debouncedSave]);
 
   const updatePosition = useCallback(
     (id: string, deltaX: number, deltaY: number) => {
@@ -283,25 +280,29 @@ export function useCardPositions(
         const current = prev[id];
         if (!current) return prev;
 
+        // Snap to grid
+        const snappedX = Math.round((current.x + deltaX) / GRID_SNAP) * GRID_SNAP;
+        const snappedY = Math.round((current.y + deltaY) / GRID_SNAP) * GRID_SNAP;
+
         const updated: PositionMap = {
           ...prev,
-          [id]: { x: current.x + deltaX, y: current.y + deltaY },
+          [id]: { x: snappedX, y: snappedY },
         };
 
         const sizes = buildSizeMap(cardsRef.current);
         const resolved = resolveCollisions(updated, sizes, id);
-        savePositions(scenarioId, resolved);
+        debouncedSave(resolved);
         return resolved;
       });
     },
-    [scenarioId]
+    [debouncedSave]
   );
 
   const resetPositions = useCallback(() => {
     const auto = calculateAutoGrid(cardsRef.current);
     setPositions(auto);
-    savePositions(scenarioId, auto);
-  }, [scenarioId]);
+    debouncedSave(auto);
+  }, [debouncedSave]);
 
   return { positions, updatePosition, resetPositions };
 }

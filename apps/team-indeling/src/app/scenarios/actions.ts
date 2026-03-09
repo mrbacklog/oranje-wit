@@ -425,3 +425,27 @@ export async function markeerDefinitief(scenarioId: string) {
   revalidatePath("/definitief");
   redirect("/definitief");
 }
+
+// ---------------------------------------------------------------------------
+// Posities (kaartpositie-opslag voor canvas-editor)
+// ---------------------------------------------------------------------------
+
+export async function getPosities(
+  versieId: string
+): Promise<Record<string, { x: number; y: number }> | null> {
+  const versie = await prisma.versie.findUnique({
+    where: { id: versieId },
+    select: { posities: true },
+  });
+  return (versie?.posities as Record<string, { x: number; y: number }>) ?? null;
+}
+
+export async function savePosities(
+  versieId: string,
+  posities: Record<string, { x: number; y: number }>
+): Promise<void> {
+  await prisma.versie.update({
+    where: { id: versieId },
+    data: { posities: posities as unknown as Prisma.JsonObject },
+  });
+}

@@ -5,7 +5,7 @@ import type { ScenarioData, SpelerData, SelectieGroepData } from "../types";
 import { PEILJAAR } from "../types";
 import { useScenarioEditor } from "../hooks/useScenarioEditor";
 import { useValidatie } from "@/hooks/useValidatie";
-import { useCardPositions, type CardInfo } from "../hooks/useCardPositions";
+import { useCardPositions, type CardInfo, type PositionMap } from "../hooks/useCardPositions";
 import DndProvider from "../DndContext";
 import Navigator from "../Navigator";
 import Werkgebied from "../Werkgebied";
@@ -24,12 +24,14 @@ interface ScenarioEditorFullscreenProps {
   scenario: ScenarioData;
   alleSpelers: SpelerData[];
   initialMode?: EditorMode;
+  initialPosities?: PositionMap | null;
 }
 
 export default function ScenarioEditorFullscreen({
   scenario,
   alleSpelers,
   initialMode = "edit",
+  initialPosities = null,
 }: ScenarioEditorFullscreenProps) {
   const editor = useScenarioEditor(scenario, alleSpelers);
   const [mode, setMode] = useState<EditorMode>(initialMode);
@@ -67,7 +69,11 @@ export default function ScenarioEditorFullscreen({
     return infos;
   }, [editor.teams, editor.zichtbaar]);
 
-  const { positions, updatePosition } = useCardPositions(scenario.id, cardInfos);
+  const { positions, updatePosition } = useCardPositions(
+    editor.versieId ?? null,
+    cardInfos,
+    initialPosities ?? null
+  );
 
   const toggleNav = useCallback(() => setNavOpen((v) => !v), []);
   const togglePool = useCallback(() => setPoolOpen((v) => !v), []);

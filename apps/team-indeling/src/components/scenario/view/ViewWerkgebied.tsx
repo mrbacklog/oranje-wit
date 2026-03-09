@@ -52,7 +52,10 @@ export default function ViewWerkgebied({
             <p className="text-sm text-gray-400">Dit scenario heeft nog geen teams.</p>
           </div>
         ) : (
-          <div style={{ position: "relative", width: CANVAS_WIDTH, height: CANVAS_HEIGHT }}>
+          <div
+            className="border border-dashed border-gray-200"
+            style={{ position: "relative", width: CANVAS_WIDTH, height: CANVAS_HEIGHT }}
+          >
             {/* Selectie-groepen */}
             {Array.from(selectieGroepen.entries()).map(([groepId, groepTeams]) => {
               const dragId = `selectie-${groepId}`;

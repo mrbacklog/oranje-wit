@@ -8,6 +8,7 @@ export const CARD_WIDTH_DOUBLE = 2 * CARD_WIDTH_SINGLE + CARD_GAP; // achtal/sel
 export const COLLISION_PADDING = 8;
 export const CANVAS_WIDTH = 4000;
 export const CANVAS_HEIGHT = 3000;
+export const GRID_SNAP = 20;
 
 // Hoogte-componenten
 const HEADER_H = 24;
