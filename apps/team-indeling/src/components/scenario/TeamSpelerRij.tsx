@@ -67,7 +67,7 @@ export default function TeamSpelerRij({
       } py-px`}
     >
       {/* Drag handle — SVG grip dots */}
-      {(dl === "detail" || dl === "focus") && (
+      {dl === "detail" && (
         <span
           {...listeners}
           {...attributes}
@@ -75,7 +75,7 @@ export default function TeamSpelerRij({
           className="shrink-0 cursor-grab touch-none text-gray-300 hover:text-gray-500"
           title="Versleep"
         >
-          <svg className="h-2.5 w-2.5" viewBox="0 0 10 16" fill="currentColor">
+          <svg className="h-2 w-2" viewBox="0 0 10 16" fill="currentColor">
             <circle cx="3" cy="2" r="1" />
             <circle cx="7" cy="2" r="1" />
             <circle cx="3" cy="6" r="1" />
@@ -90,7 +90,7 @@ export default function TeamSpelerRij({
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Regel 1: naam — volledige regelhoogte */}
         <span
-          className={`truncate text-[11px] leading-none font-medium text-gray-800 ${
+          className={`truncate text-[10px] leading-none font-medium text-gray-800 ${
             onSpelerClick ? "cursor-pointer hover:text-orange-600" : ""
           } ${isWarning ? "italic" : ""}`}
           onClick={onSpelerClick ? () => onSpelerClick(speler) : undefined}
@@ -99,7 +99,7 @@ export default function TeamSpelerRij({
         </span>
 
         {/* Regel 2: vorig team + leeftijd — halve regelhoogte */}
-        {(dl === "detail" || dl === "focus") && (
+        {dl === "detail" && (
           <div className="flex items-center gap-0.5 text-[8px] leading-none text-gray-400">
             <span className="truncate">{vorigTeam ?? "\u2014"}</span>
             <span className="shrink-0 tabular-nums">{leeftijd.toFixed(1)}</span>
@@ -146,7 +146,7 @@ export default function TeamSpelerRij({
         )}
 
         {/* Kleurindicatie dot */}
-        {(dl === "detail" || dl === "focus") && kleur && (
+        {dl === "detail" && kleur && (
           <span
             className={`h-1.5 w-1.5 shrink-0 rounded-full ring-1 ring-white ${KLEUR_DOT[kleur]}`}
           />

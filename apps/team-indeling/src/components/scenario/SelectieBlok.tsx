@@ -4,7 +4,7 @@ import { useDroppable } from "@dnd-kit/core";
 import type { TeamData, SpelerData, DetailLevel, SelectieGroepData, TeamSpelerData } from "./types";
 import type { TeamValidatie } from "@/lib/validatie/regels";
 import { korfbalLeeftijd, sorteerSpelers } from "./types";
-import { CARD_WIDTH_DOUBLE, CARD_HEIGHT_SELECTIE } from "./editor/cardSizes";
+import { getCardSize } from "./editor/cardSizes";
 import { useZoomScale } from "./editor/ZoomScaleContext";
 import TeamSpelerRij from "./TeamSpelerRij";
 
@@ -52,6 +52,12 @@ export default function SelectieBlok({
         ).toFixed(1)
       : "-";
 
+  // Splits dames en heren elk in 2 kolommen
+  const dames1 = dames.slice(0, Math.ceil(dames.length / 2));
+  const dames2 = dames.slice(Math.ceil(dames.length / 2));
+  const heren1 = heren.slice(0, Math.ceil(heren.length / 2));
+  const heren2 = heren.slice(Math.ceil(heren.length / 2));
+
   const alleStaf = selectieGroep ? selectieGroep.staf : (eersteTeam?.staf ?? []);
   const validatie = validatieMap?.get(eersteTeam?.id ?? "");
   const meldingen = validatie?.meldingen ?? [];
@@ -65,13 +71,15 @@ export default function SelectieBlok({
     ? "border-orange-400 ring-2 ring-orange-200"
     : "border-orange-300 ring-2 ring-orange-100 ring-offset-1";
 
+  const { w: cardWidth, h: cardMinHeight } = getCardSize("ACHTAL", true, aantalV, aantalM);
+
   const zoomScale = useZoomScale();
   const textScale = zoomScale < 1 ? 1 / Math.max(zoomScale, 0.5) : 1;
 
   return (
     <div
-      style={{ width: CARD_WIDTH_DOUBLE, height: CARD_HEIGHT_SELECTIE }}
-      className={`flex flex-col overflow-hidden rounded-lg border-2 border-dashed bg-orange-50/50 ${borderKleur}`}
+      style={{ width: cardWidth, minHeight: cardMinHeight }}
+      className={`flex flex-col rounded-lg border-2 border-dashed bg-orange-50/50 ${borderKleur}`}
     >
       <div
         style={
@@ -105,7 +113,7 @@ export default function SelectieBlok({
             <h4 className="truncate text-[11px] font-semibold text-gray-900">{teamNamen}</h4>
           </div>
           <div className="flex shrink-0 items-center gap-0.5">
-            {(dl === "detail" || dl === "focus") && eersteTeam && (
+            {dl === "detail" && eersteTeam && (
               <button
                 onClick={() => onEditTeam?.(eersteTeam.id)}
                 className="text-orange-400 transition-colors hover:text-orange-700"
@@ -125,7 +133,7 @@ export default function SelectieBlok({
         </div>
 
         {/* Staf (compact) */}
-        {(dl === "detail" || dl === "focus") && alleStaf.length > 0 && (
+        {dl === "detail" && alleStaf.length > 0 && (
           <div className="border-b border-orange-100 px-1.5 py-px">
             <span className="text-[7px] text-gray-500">
               Staf:{" "}
@@ -153,7 +161,8 @@ export default function SelectieBlok({
             {alleSpelers.length === 0 ? (
               <p className="py-2 text-center text-[9px] text-gray-400">Sleep spelers hierheen</p>
             ) : (
-              <div className="grid grid-cols-2 gap-x-0.5">
+              <div className="grid grid-cols-4 gap-x-0.5">
+                {/* Dames kolom 1 */}
                 <div>
                   <div className="flex items-center gap-0.5 px-1 pt-0.5">
                     <svg
@@ -168,7 +177,7 @@ export default function SelectieBlok({
                     </svg>
                     <span className="text-[8px] font-medium text-pink-500">{dames.length}</span>
                   </div>
-                  {dames.map((ts) => (
+                  {dames1.map((ts) => (
                     <TeamSpelerRij
                       key={ts.id}
                       teamSpeler={ts}
@@ -182,6 +191,24 @@ export default function SelectieBlok({
                     />
                   ))}
                 </div>
+                {/* Dames kolom 2 */}
+                <div>
+                  <div className="h-4" />
+                  {dames2.map((ts) => (
+                    <TeamSpelerRij
+                      key={ts.id}
+                      teamSpeler={ts}
+                      teamId={eersteTeam?.id ?? ""}
+                      detailLevel={dl}
+                      onSpelerClick={
+                        onSpelerClick
+                          ? (speler) => onSpelerClick(speler, eersteTeam?.id)
+                          : undefined
+                      }
+                    />
+                  ))}
+                </div>
+                {/* Heren kolom 1 */}
                 <div>
                   <div className="flex items-center gap-0.5 px-1 pt-0.5">
                     <svg
@@ -196,7 +223,24 @@ export default function SelectieBlok({
                     </svg>
                     <span className="text-[8px] font-medium text-blue-500">{heren.length}</span>
                   </div>
-                  {heren.map((ts) => (
+                  {heren1.map((ts) => (
+                    <TeamSpelerRij
+                      key={ts.id}
+                      teamSpeler={ts}
+                      teamId={eersteTeam?.id ?? ""}
+                      detailLevel={dl}
+                      onSpelerClick={
+                        onSpelerClick
+                          ? (speler) => onSpelerClick(speler, eersteTeam?.id)
+                          : undefined
+                      }
+                    />
+                  ))}
+                </div>
+                {/* Heren kolom 2 */}
+                <div>
+                  <div className="h-4" />
+                  {heren2.map((ts) => (
                     <TeamSpelerRij
                       key={ts.id}
                       teamSpeler={ts}

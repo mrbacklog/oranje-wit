@@ -21,7 +21,7 @@ import {
 import TeamSpelerRij from "./TeamSpelerRij";
 import ValidatieBadge from "./ValidatieBadge";
 import ValidatieMeldingen from "./ValidatieMeldingen";
-import { CARD_WIDTH_SINGLE, CARD_WIDTH_DOUBLE, CARD_HEIGHT_SINGLE } from "./editor/cardSizes";
+import { getCardSize } from "./editor/cardSizes";
 import { useZoomScale } from "./editor/ZoomScaleContext";
 
 export interface TeamKaartProps {
@@ -87,9 +87,12 @@ export default function TeamKaart({
   const ringKlassen = validatieRingKlassen(validatie?.status, isOver);
   const weergaveNaam = team.alias ?? team.naam;
 
-  const isDouble = team.teamType !== "VIERTAL";
-  const cardWidth = isDouble ? CARD_WIDTH_DOUBLE : CARD_WIDTH_SINGLE;
-  const cardHeight = CARD_HEIGHT_SINGLE;
+  const { w: cardWidth, h: cardMinHeight } = getCardSize(
+    team.teamType ?? "VIERTAL",
+    false,
+    aantalV,
+    aantalM
+  );
 
   // Compenseer tekst voor zoom
   const zoomScale = useZoomScale();
@@ -101,8 +104,8 @@ export default function TeamKaart({
   return (
     <div
       ref={setNodeRef}
-      style={{ width: cardWidth, height: cardHeight }}
-      className={`flex flex-col overflow-hidden rounded-lg transition-colors ${randKlassen} ${achtergrond} ${ringKlassen}`}
+      style={{ width: cardWidth, minHeight: cardMinHeight }}
+      className={`flex flex-col rounded-lg transition-colors ${randKlassen} ${achtergrond} ${ringKlassen}`}
     >
       <div
         style={
@@ -154,7 +157,7 @@ export default function TeamKaart({
                 {CATEGORIE_BADGE_LABEL[team.categorie]}
               </span>
             )}
-            {dl !== "focus" && meldingenOpen && validatie && (
+            {meldingenOpen && validatie && (
               <ValidatieMeldingen
                 meldingen={validatie.meldingen}
                 onClose={() => setMeldingenOpen(false)}
@@ -162,7 +165,7 @@ export default function TeamKaart({
             )}
           </div>
           <div className="flex shrink-0 items-center gap-0.5">
-            {(dl === "detail" || dl === "focus") && notitieCount != null && notitieCount > 0 && (
+            {dl === "detail" && notitieCount != null && notitieCount > 0 && (
               <button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -174,7 +177,7 @@ export default function TeamKaart({
                 {notitieCount}
               </button>
             )}
-            {(dl === "detail" || dl === "focus") && (
+            {dl === "detail" && (
               <button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -193,7 +196,7 @@ export default function TeamKaart({
                 </svg>
               </button>
             )}
-            {(dl === "detail" || dl === "focus") &&
+            {dl === "detail" &&
               onDelete &&
               (deleteBevestig ? (
                 <button

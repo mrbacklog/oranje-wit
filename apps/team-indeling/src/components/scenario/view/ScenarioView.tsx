@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import type { ScenarioData, SpelerData, TeamData, SelectieGroepData } from "../types";
 import { PEILJAAR } from "../types";
 import { useValidatie } from "@/hooks/useValidatie";
+import { useCardPositions, type CardInfo } from "../hooks/useCardPositions";
 import ViewWerkgebied from "./ViewWerkgebied";
 import SpelerDetail from "../SpelerDetail";
 
@@ -29,6 +30,48 @@ export default function ScenarioView({ scenario }: ScenarioViewProps) {
 
   const { validatieMap } = useValidatie(teams, PEILJAAR, blauwdrukKaders);
 
+  // Card positioning (zelfde systeem als editor)
+  const cardInfos: CardInfo[] = useMemo(() => {
+    const seen = new Set<string>();
+    const infos: CardInfo[] = [];
+
+    const groepSpelers = new Map<string, (typeof teams)[0]["spelers"]>();
+    for (const team of teams) {
+      if (team.selectieGroepId) {
+        const bestaand = groepSpelers.get(team.selectieGroepId) ?? [];
+        bestaand.push(...team.spelers);
+        groepSpelers.set(team.selectieGroepId, bestaand);
+      }
+    }
+
+    for (const team of teams) {
+      if (team.selectieGroepId) {
+        if (!seen.has(team.selectieGroepId)) {
+          seen.add(team.selectieGroepId);
+          const spelers = groepSpelers.get(team.selectieGroepId) ?? [];
+          infos.push({
+            id: `selectie-${team.selectieGroepId}`,
+            teamType: "ACHTAL",
+            isSelectie: true,
+            damesCount: spelers.filter((s) => s.speler.geslacht === "V").length,
+            herenCount: spelers.filter((s) => s.speler.geslacht === "M").length,
+          });
+        }
+      } else {
+        infos.push({
+          id: team.id,
+          teamType: team.teamType ?? "VIERTAL",
+          isSelectie: false,
+          damesCount: team.spelers.filter((s) => s.speler.geslacht === "V").length,
+          herenCount: team.spelers.filter((s) => s.speler.geslacht === "M").length,
+        });
+      }
+    }
+    return infos;
+  }, [teams]);
+
+  const { positions, updatePosition } = useCardPositions(scenario.id, cardInfos);
+
   // Speler detail popup
   const [detailSpeler, setDetailSpeler] = useState<SpelerData | null>(null);
   const [detailTeamId, setDetailTeamId] = useState<string | null>(null);
@@ -48,17 +91,13 @@ export default function ScenarioView({ scenario }: ScenarioViewProps) {
 
   return (
     <>
-      <div className="overflow-hidden rounded-lg border border-gray-200 bg-gray-50">
-        {/* Info bar */}
-        <div className="flex items-center justify-between border-b border-gray-100 bg-white px-4 py-2">
-          <span className="text-sm text-gray-500">{teams.length} teams</span>
-        </div>
-
-        {/* Read-only grid */}
+      <div className="flex h-[600px] flex-col overflow-hidden rounded-lg border border-gray-200 bg-gray-50">
         <ViewWerkgebied
           teams={teams}
           selectieGroepMap={selectieGroepMap}
           validatieMap={validatieMap}
+          positions={positions}
+          onRepositionCard={updatePosition}
           onSpelerClick={handleSpelerClick}
         />
       </div>

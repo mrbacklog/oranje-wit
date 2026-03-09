@@ -115,12 +115,10 @@ describe("getDetailLevel", () => {
     expect(getDetailLevel(0.25)).toBe("overzicht");
     expect(getDetailLevel(0.69)).toBe("overzicht");
   });
-  it("returns detail between 0.7 and 1.0", () => {
+  it("returns detail at 0.7 and above", () => {
     expect(getDetailLevel(0.7)).toBe("detail");
     expect(getDetailLevel(0.99)).toBe("detail");
-  });
-  it("returns focus at 1.0 and above", () => {
-    expect(getDetailLevel(1.0)).toBe("focus");
-    expect(getDetailLevel(1.5)).toBe("focus");
+    expect(getDetailLevel(1.0)).toBe("detail");
+    expect(getDetailLevel(1.5)).toBe("detail");
   });
 });

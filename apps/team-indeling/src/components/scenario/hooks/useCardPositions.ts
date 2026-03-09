@@ -28,6 +28,8 @@ export interface CardInfo {
   id: string;
   teamType: string;
   isSelectie: boolean;
+  damesCount: number;
+  herenCount: number;
 }
 
 type SizeMap = Record<string, { w: number; h: number }>;
@@ -52,7 +54,7 @@ export function calculateAutoGrid(cards: CardInfo[]): PositionMap {
   let rowMaxHeight = 0;
 
   for (const card of cards) {
-    const size = getCardSize(card.teamType, card.isSelectie);
+    const size = getCardSize(card.teamType, card.isSelectie, card.damesCount, card.herenCount);
     const span = size.w === CARD_WIDTH_DOUBLE ? 2 : 1;
 
     if (col + span > GRID_COLS) {
@@ -81,7 +83,7 @@ export function calculateAutoGrid(cards: CardInfo[]): PositionMap {
 function buildSizeMap(cards: CardInfo[]): SizeMap {
   const sizes: SizeMap = {};
   for (const card of cards) {
-    sizes[card.id] = getCardSize(card.teamType, card.isSelectie);
+    sizes[card.id] = getCardSize(card.teamType, card.isSelectie, card.damesCount, card.herenCount);
   }
   return sizes;
 }
@@ -196,7 +198,7 @@ export function resolveCollisions(
 // ---------------------------------------------------------------------------
 
 // Versie-prefix: verhoog bij kaartgrootte-wijzigingen zodat oude cache vervalt
-const POSITION_VERSION = 2;
+const POSITION_VERSION = 3;
 
 function storageKey(scenarioId: string): string {
   return `ow-card-positions-v${POSITION_VERSION}-${scenarioId}`;
