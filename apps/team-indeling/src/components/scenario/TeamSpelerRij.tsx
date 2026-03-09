@@ -62,9 +62,9 @@ export default function TeamSpelerRij({
     <div
       ref={setNodeRef}
       style={style}
-      className={`flex items-center gap-1.5 rounded-r border-l-[3px] px-1.5 ${borderLeft} ${
+      className={`flex items-center gap-1 rounded-r border-l-2 px-1 ${borderLeft} ${
         isDragging ? "bg-gray-100 opacity-40" : bgWarning || "hover:bg-gray-50/80"
-      } ${dl === "overzicht" ? "py-px" : "py-[3px]"}`}
+      } py-px`}
     >
       {/* Drag handle — SVG grip dots */}
       {(dl === "detail" || dl === "focus") && (
@@ -75,7 +75,7 @@ export default function TeamSpelerRij({
           className="shrink-0 cursor-grab touch-none text-gray-300 hover:text-gray-500"
           title="Versleep"
         >
-          <svg className="h-3 w-3" viewBox="0 0 10 16" fill="currentColor">
+          <svg className="h-2.5 w-2.5" viewBox="0 0 10 16" fill="currentColor">
             <circle cx="3" cy="2" r="1" />
             <circle cx="7" cy="2" r="1" />
             <circle cx="3" cy="6" r="1" />
@@ -86,38 +86,11 @@ export default function TeamSpelerRij({
         </span>
       )}
 
-      {/* Geslacht icoon — SVG */}
-      <span className={`shrink-0 ${speler.geslacht === "M" ? "text-blue-400" : "text-pink-400"}`}>
-        {speler.geslacht === "M" ? (
-          <svg
-            className="h-3 w-3"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.5"
-          >
-            <circle cx="10" cy="14" r="6" />
-            <path d="M21 3l-6.5 6.5M21 3h-5M21 3v5" />
-          </svg>
-        ) : (
-          <svg
-            className="h-3 w-3"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.5"
-          >
-            <circle cx="12" cy="10" r="6" />
-            <path d="M12 16v6M9 20h6" />
-          </svg>
-        )}
-      </span>
-
       {/* Naam + metadata */}
       <div className="flex min-w-0 flex-1 flex-col">
-        {/* Regel 1: naam */}
+        {/* Regel 1: naam — volledige regelhoogte */}
         <span
-          className={`truncate text-[12px] leading-tight font-medium text-gray-800 ${
+          className={`truncate text-[11px] leading-none font-medium text-gray-800 ${
             onSpelerClick ? "cursor-pointer hover:text-orange-600" : ""
           } ${isWarning ? "italic" : ""}`}
           onClick={onSpelerClick ? () => onSpelerClick(speler) : undefined}
@@ -125,9 +98,9 @@ export default function TeamSpelerRij({
           {speler.roepnaam} {speler.achternaam}
         </span>
 
-        {/* Regel 2: vorig team + leeftijd (alleen detail/focus) */}
+        {/* Regel 2: vorig team + leeftijd — halve regelhoogte */}
         {(dl === "detail" || dl === "focus") && (
-          <div className="flex items-center gap-1 text-[10px] leading-tight text-gray-400">
+          <div className="flex items-center gap-0.5 text-[8px] leading-none text-gray-400">
             <span className="truncate">{vorigTeam ?? "\u2014"}</span>
             <span className="shrink-0 tabular-nums">{leeftijd.toFixed(1)}</span>
           </div>
@@ -135,11 +108,11 @@ export default function TeamSpelerRij({
       </div>
 
       {/* Rechter indicatoren */}
-      <div className="flex shrink-0 items-center gap-1">
+      <div className="flex shrink-0 items-center gap-0.5">
         {/* Notitie indicator */}
         {heeftNotitie && (
           <svg
-            className="h-2.5 w-2.5 text-amber-400"
+            className="h-2 w-2 text-amber-400"
             viewBox="0 0 24 24"
             fill="currentColor"
             aria-label="Heeft notitie"
@@ -151,11 +124,11 @@ export default function TeamSpelerRij({
         {/* Waarschuwing icoon bij TWIJFELT/GAAT_STOPPEN */}
         {status === "GAAT_STOPPEN" && (
           <svg
-            className="h-3 w-3 text-red-400"
+            className="h-2.5 w-2.5 text-red-400"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            strokeWidth="2"
+            strokeWidth="2.5"
             aria-label="Gaat stoppen"
           >
             <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" />
@@ -163,7 +136,7 @@ export default function TeamSpelerRij({
         )}
         {status === "TWIJFELT" && (
           <svg
-            className="h-3 w-3 text-amber-500"
+            className="h-2.5 w-2.5 text-amber-500"
             viewBox="0 0 24 24"
             fill="currentColor"
             aria-label="Twijfelt"
@@ -174,7 +147,9 @@ export default function TeamSpelerRij({
 
         {/* Kleurindicatie dot */}
         {(dl === "detail" || dl === "focus") && kleur && (
-          <span className={`h-2 w-2 shrink-0 rounded-full ring-1 ring-white ${KLEUR_DOT[kleur]}`} />
+          <span
+            className={`h-1.5 w-1.5 shrink-0 rounded-full ring-1 ring-white ${KLEUR_DOT[kleur]}`}
+          />
         )}
       </div>
     </div>

@@ -21,12 +21,7 @@ import {
 import TeamSpelerRij from "./TeamSpelerRij";
 import ValidatieBadge from "./ValidatieBadge";
 import ValidatieMeldingen from "./ValidatieMeldingen";
-import {
-  CARD_WIDTH_SINGLE,
-  CARD_WIDTH_DOUBLE,
-  CARD_HEIGHT_SINGLE,
-  CARD_HEIGHT_DOUBLE,
-} from "./editor/cardSizes";
+import { CARD_WIDTH_SINGLE, CARD_WIDTH_DOUBLE, CARD_HEIGHT_SINGLE } from "./editor/cardSizes";
 import { useZoomScale } from "./editor/ZoomScaleContext";
 
 export interface TeamKaartProps {
@@ -108,7 +103,7 @@ export default function TeamKaart({
 
   const isDouble = team.teamType !== "VIERTAL";
   const cardWidth = isDouble ? CARD_WIDTH_DOUBLE : CARD_WIDTH_SINGLE;
-  const cardHeight = isDouble ? CARD_HEIGHT_DOUBLE : CARD_HEIGHT_SINGLE;
+  const cardHeight = CARD_HEIGHT_SINGLE;
 
   // Compenseer tekst voor zoom: bij uitzoomen wordt tekst groter zodat het leesbaar blijft
   const zoomScale = useZoomScale();
@@ -134,10 +129,10 @@ export default function TeamKaart({
         className="flex h-full flex-col"
       >
         {/* Header */}
-        <div className={`flex items-center justify-between px-3 py-2 ${headerBorder}`}>
-          <div className="relative flex items-center gap-2">
-            <span className="p-0.5 text-gray-300">
-              <svg className="h-3.5 w-3.5" viewBox="0 0 10 16" fill="currentColor">
+        <div className={`flex items-center justify-between px-2 py-1 ${headerBorder}`}>
+          <div className="relative flex items-center gap-1.5">
+            <span className="text-gray-300">
+              <svg className="h-3 w-3" viewBox="0 0 10 16" fill="currentColor">
                 <circle cx="3" cy="2" r="1.2" />
                 <circle cx="7" cy="2" r="1.2" />
                 <circle cx="3" cy="8" r="1.2" />
@@ -152,7 +147,7 @@ export default function TeamKaart({
                 onClick={() => setMeldingenOpen(!meldingenOpen)}
               />
             )}
-            <h4 className="text-sm font-semibold text-gray-900">{weergaveNaam}</h4>
+            <h4 className="text-[11px] font-semibold text-gray-900">{weergaveNaam}</h4>
             {/* Notitie-badge */}
             {(dl === "detail" || dl === "focus") && notitieCount != null && notitieCount > 0 && (
               <button
@@ -160,7 +155,7 @@ export default function TeamKaart({
                   e.stopPropagation();
                   onNotitiesClick?.(team.alias ?? team.naam);
                 }}
-                className="inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-orange-500 px-1 text-[10px] font-bold text-white hover:bg-orange-600"
+                className="inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-orange-500 px-0.5 text-[8px] font-bold text-white hover:bg-orange-600"
                 title={`${notitieCount} notitie(s)`}
               >
                 {notitieCount}
@@ -169,7 +164,7 @@ export default function TeamKaart({
             {/* Kleur-badge (B-categorie) */}
             {team.kleur && (
               <span
-                className={`rounded-full px-1.5 py-0.5 text-[10px] ${
+                className={`rounded-full px-1 py-px text-[8px] ${
                   KLEUR_BADGE_KLEUREN[team.kleur] ?? "bg-gray-100 text-gray-500"
                 }`}
               >
@@ -179,7 +174,7 @@ export default function TeamKaart({
             {/* Categorie-badge (A-categorie en Senioren) */}
             {CATEGORIE_BADGE[team.categorie] && (
               <span
-                className={`rounded-full px-1.5 py-0.5 text-[10px] font-medium ${CATEGORIE_BADGE[team.categorie]}`}
+                className={`rounded-full px-1 py-px text-[8px] font-medium ${CATEGORIE_BADGE[team.categorie]}`}
               >
                 {CATEGORIE_BADGE_LABEL[team.categorie]}
               </span>
@@ -199,10 +194,10 @@ export default function TeamKaart({
                   e.stopPropagation();
                   onEditTeam?.(team.id);
                 }}
-                className="p-0.5 text-gray-300 transition-colors hover:text-gray-600"
+                className="text-gray-300 transition-colors hover:text-gray-600"
                 title="Bewerk team"
               >
-                <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -246,9 +241,9 @@ export default function TeamKaart({
 
         {/* Staf */}
         {(dl === "detail" || dl === "focus") && team.staf.length > 0 && (
-          <div className="border-b border-gray-50 px-3 py-1">
+          <div className="border-b border-gray-50 px-2 py-0.5">
             {team.staf.map((ts) => (
-              <div key={ts.id} className="text-[10px] text-gray-500">
+              <div key={ts.id} className="text-[8px] text-gray-500">
                 {ts.staf.naam} <span className="text-gray-400">({ts.rol})</span>
               </div>
             ))}
@@ -257,13 +252,13 @@ export default function TeamKaart({
 
         {/* Spelers */}
         {dl === "overzicht" ? (
-          <div className="px-3 py-2 text-center text-sm text-gray-500">
+          <div className="px-2 py-1 text-center text-[10px] text-gray-500">
             {aantalSpelers} spelers · {aantalM}
             {"♂"} {aantalV}
             {"♀"}
           </div>
         ) : (
-          <div className="min-h-15 flex-1 px-1 py-1">
+          <div className="min-h-8 flex-1 px-0.5 py-0.5">
             {team.spelers.length === 0 ? (
               <p className="py-3 text-center text-xs text-gray-400">Sleep spelers hierheen</p>
             ) : team.teamType === "VIERTAL" ? (
@@ -271,7 +266,7 @@ export default function TeamKaart({
               <>
                 {dames.length > 0 && (
                   <>
-                    <div className="px-2 pt-1 text-[11px] font-medium tracking-wide text-pink-500 uppercase">
+                    <div className="px-1 text-[8px] font-medium tracking-wide text-pink-500 uppercase">
                       Dames ({dames.length})
                     </div>
                     {dames.map((ts) => (
@@ -287,7 +282,7 @@ export default function TeamKaart({
                 )}
                 {heren.length > 0 && (
                   <>
-                    <div className="px-2 pt-1 text-[11px] font-medium tracking-wide text-blue-500 uppercase">
+                    <div className="px-1 text-[8px] font-medium tracking-wide text-blue-500 uppercase">
                       Heren ({heren.length})
                     </div>
                     {heren.map((ts) => (
@@ -307,7 +302,7 @@ export default function TeamKaart({
               <div className="grid grid-cols-2 gap-x-0.5">
                 <div>
                   {dames.length > 0 && (
-                    <div className="px-2 pt-1 text-[11px] font-medium tracking-wide text-pink-500 uppercase">
+                    <div className="px-1 text-[8px] font-medium tracking-wide text-pink-500 uppercase">
                       Dames ({dames.length})
                     </div>
                   )}
@@ -323,7 +318,7 @@ export default function TeamKaart({
                 </div>
                 <div>
                   {heren.length > 0 && (
-                    <div className="px-2 pt-1 text-[11px] font-medium tracking-wide text-blue-500 uppercase">
+                    <div className="px-1 text-[8px] font-medium tracking-wide text-blue-500 uppercase">
                       Heren ({heren.length})
                     </div>
                   )}
@@ -359,7 +354,7 @@ export default function TeamKaart({
         {/* Footer stats */}
         {dl !== "overzicht" && (
           <div
-            className={`flex items-center gap-3 px-3 py-1.5 text-[11px] text-gray-400 ${footerBorder}`}
+            className={`flex items-center gap-2 px-2 py-0.5 text-[8px] text-gray-400 ${footerBorder}`}
           >
             <span>{aantalSpelers} spelers</span>
             <span>
@@ -370,7 +365,7 @@ export default function TeamKaart({
             <span>gem. {gemLeeftijd} jr</span>
             {jNummer && (
               <span
-                className={`ml-auto rounded px-1.5 py-0.5 font-medium ${
+                className={`ml-auto rounded px-1 py-px font-medium ${
                   team.kleur
                     ? (KLEUR_BADGE_KLEUREN[team.kleur] ?? "bg-gray-100 text-gray-500")
                     : "bg-gray-100 text-gray-500"
