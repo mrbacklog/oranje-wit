@@ -121,15 +121,6 @@ export default function SelectieBlok({
                 </svg>
               </button>
             )}
-            {(dl === "detail" || dl === "focus") && selectieGroep && (
-              <button
-                onClick={() => onOntkoppel(selectieGroep.id)}
-                className="rounded px-1 py-px text-[7px] font-medium text-orange-600 transition-colors hover:bg-orange-100 hover:text-orange-800"
-                title="Ontkoppel selectie"
-              >
-                Ontkoppel
-              </button>
-            )}
           </div>
         </div>
 
