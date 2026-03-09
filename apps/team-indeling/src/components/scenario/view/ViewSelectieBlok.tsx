@@ -60,7 +60,7 @@ export default function ViewSelectieBlok({
   const validatie = validatieMap?.get(eersteTeam?.id ?? "");
   const meldingen = validatie?.meldingen ?? [];
 
-  const { w: cardWidth, h: cardMinHeight } = getCardSize("ACHTAL", true, aantalV, aantalM);
+  const { w: cardWidth, h: cardMinHeight } = getCardSize("ACHTAL", true);
 
   const zoomScale = useZoomScale();
   const textScale = zoomScale < 1 ? 1 / Math.max(zoomScale, 0.5) : 1;
@@ -89,18 +89,27 @@ export default function ViewSelectieBlok({
             <span className="shrink-0 text-[7px] font-medium tracking-wide text-orange-600 uppercase">
               Selectie
             </span>
-            <h4 className="truncate text-[11px] font-semibold text-gray-900">{teamNamen}</h4>
+            <h4
+              className={`truncate font-semibold text-gray-900 ${
+                dl === "overzicht" ? "text-xs" : "text-[11px]"
+              }`}
+            >
+              {teamNamen}
+            </h4>
           </div>
         </div>
 
         {/* Body */}
         {dl === "overzicht" ? (
-          <div className="flex flex-1 items-center justify-center gap-3 text-[10px] text-gray-500">
-            <span className="text-pink-400">♀ {aantalV}</span>
-            <span className="text-blue-400">♂ {aantalM}</span>
+          <div className="flex flex-1 flex-col items-center justify-center gap-2 px-2">
+            <div className="flex items-center gap-3 text-base">
+              <span className="font-semibold text-pink-500">♀ {aantalV}</span>
+              <span className="font-semibold text-blue-500">♂ {aantalM}</span>
+            </div>
+            <span className="text-sm text-gray-400">gem. {gemLeeftijd}</span>
           </div>
         ) : (
-          <div className="min-h-6 flex-1 px-0.5">
+          <div className="min-h-6 flex-1 overflow-hidden px-0.5">
             {aantalSpelers === 0 ? (
               <p className="py-2 text-center text-[9px] text-gray-400">Geen spelers</p>
             ) : (

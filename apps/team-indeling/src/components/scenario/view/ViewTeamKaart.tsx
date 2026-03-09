@@ -64,12 +64,7 @@ export default function ViewTeamKaart({
   const footerBorder = categorieFooterBorder(team.categorie, team.kleur);
   const weergaveNaam = team.alias ?? team.naam;
 
-  const { w: cardWidth, h: cardMinHeight } = getCardSize(
-    team.teamType ?? "VIERTAL",
-    false,
-    aantalV,
-    aantalM
-  );
+  const { w: cardWidth, h: cardMinHeight } = getCardSize(team.teamType ?? "VIERTAL", false);
   const isDouble = (team.teamType ?? "VIERTAL") !== "VIERTAL";
 
   const zoomScale = useZoomScale();
@@ -98,14 +93,20 @@ export default function ViewTeamKaart({
         {/* Header */}
         <div className={`flex items-center justify-between px-1.5 py-1 ${headerBorder}`}>
           <div className="relative flex min-w-0 items-center gap-1">
-            {validatie && (
+            {dl === "detail" && validatie && (
               <ValidatieBadge
                 status={validatie.status}
                 onClick={() => setMeldingenOpen(!meldingenOpen)}
               />
             )}
-            <h4 className="truncate text-[11px] font-semibold text-gray-900">{weergaveNaam}</h4>
-            {team.kleur && (
+            <h4
+              className={`truncate font-semibold text-gray-900 ${
+                dl === "overzicht" ? "text-xs" : "text-[11px]"
+              }`}
+            >
+              {weergaveNaam}
+            </h4>
+            {dl === "detail" && team.kleur && (
               <span
                 className={`shrink-0 rounded-full px-1 py-px text-[7px] ${
                   KLEUR_BADGE_KLEUREN[team.kleur] ?? "bg-gray-100 text-gray-500"
@@ -114,7 +115,7 @@ export default function ViewTeamKaart({
                 {team.kleur}
               </span>
             )}
-            {CATEGORIE_BADGE[team.categorie] && (
+            {dl === "detail" && CATEGORIE_BADGE[team.categorie] && (
               <span
                 className={`shrink-0 rounded-full px-1 py-px text-[7px] font-medium ${CATEGORIE_BADGE[team.categorie]}`}
               >
@@ -132,12 +133,15 @@ export default function ViewTeamKaart({
 
         {/* Body */}
         {dl === "overzicht" ? (
-          <div className="flex flex-1 items-center justify-center gap-3 text-[10px] text-gray-500">
-            <span className="text-pink-400">♀ {aantalV}</span>
-            <span className="text-blue-400">♂ {aantalM}</span>
+          <div className="flex flex-1 flex-col items-center justify-center gap-2 px-2">
+            <div className="flex items-center gap-3 text-base">
+              <span className="font-semibold text-pink-500">♀ {aantalV}</span>
+              <span className="font-semibold text-blue-500">♂ {aantalM}</span>
+            </div>
+            <span className="text-sm text-gray-400">gem. {gemLeeftijd}</span>
           </div>
         ) : (
-          <div className="min-h-6 flex-1 px-0.5">
+          <div className="min-h-6 flex-1 overflow-hidden px-0.5">
             {aantalSpelers === 0 ? (
               <p className="py-2 text-center text-[9px] text-gray-400">Geen spelers</p>
             ) : isDouble ? (

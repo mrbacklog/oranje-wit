@@ -42,26 +42,14 @@ export default function ScenarioEditorFullscreen({
     const seen = new Set<string>();
     const infos: CardInfo[] = [];
 
-    const groepSpelers = new Map<string, (typeof zichtbareTeams)[0]["spelers"]>();
-    for (const team of zichtbareTeams) {
-      if (team.selectieGroepId) {
-        const bestaand = groepSpelers.get(team.selectieGroepId) ?? [];
-        bestaand.push(...team.spelers);
-        groepSpelers.set(team.selectieGroepId, bestaand);
-      }
-    }
-
     for (const team of zichtbareTeams) {
       if (team.selectieGroepId) {
         if (!seen.has(team.selectieGroepId)) {
           seen.add(team.selectieGroepId);
-          const spelers = groepSpelers.get(team.selectieGroepId) ?? [];
           infos.push({
             id: `selectie-${team.selectieGroepId}`,
             teamType: "ACHTAL",
             isSelectie: true,
-            damesCount: spelers.filter((s) => s.speler.geslacht === "V").length,
-            herenCount: spelers.filter((s) => s.speler.geslacht === "M").length,
           });
         }
       } else {
@@ -69,8 +57,6 @@ export default function ScenarioEditorFullscreen({
           id: team.id,
           teamType: team.teamType ?? "VIERTAL",
           isSelectie: false,
-          damesCount: team.spelers.filter((s) => s.speler.geslacht === "V").length,
-          herenCount: team.spelers.filter((s) => s.speler.geslacht === "M").length,
         });
       }
     }

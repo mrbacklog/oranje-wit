@@ -87,12 +87,7 @@ export default function TeamKaart({
   const ringKlassen = validatieRingKlassen(validatie?.status, isOver);
   const weergaveNaam = team.alias ?? team.naam;
 
-  const { w: cardWidth, h: cardMinHeight } = getCardSize(
-    team.teamType ?? "VIERTAL",
-    false,
-    aantalV,
-    aantalM
-  );
+  const { w: cardWidth, h: cardMinHeight } = getCardSize(team.teamType ?? "VIERTAL", false);
 
   // Compenseer tekst voor zoom
   const zoomScale = useZoomScale();
@@ -123,25 +118,33 @@ export default function TeamKaart({
         {/* ── Header: [drag] TEAMNAAM [badges] [acties] ── */}
         <div className={`flex items-center justify-between px-1.5 py-1 ${headerBorder}`}>
           <div className="relative flex min-w-0 items-center gap-1">
-            <span className="shrink-0 text-gray-300">
-              <svg className="h-2.5 w-2.5" viewBox="0 0 10 16" fill="currentColor">
-                <circle cx="3" cy="2" r="1.2" />
-                <circle cx="7" cy="2" r="1.2" />
-                <circle cx="3" cy="8" r="1.2" />
-                <circle cx="7" cy="8" r="1.2" />
-                <circle cx="3" cy="14" r="1.2" />
-                <circle cx="7" cy="14" r="1.2" />
-              </svg>
-            </span>
-            {validatie && (
+            {dl === "detail" && (
+              <span className="shrink-0 text-gray-300">
+                <svg className="h-2.5 w-2.5" viewBox="0 0 10 16" fill="currentColor">
+                  <circle cx="3" cy="2" r="1.2" />
+                  <circle cx="7" cy="2" r="1.2" />
+                  <circle cx="3" cy="8" r="1.2" />
+                  <circle cx="7" cy="8" r="1.2" />
+                  <circle cx="3" cy="14" r="1.2" />
+                  <circle cx="7" cy="14" r="1.2" />
+                </svg>
+              </span>
+            )}
+            {dl === "detail" && validatie && (
               <ValidatieBadge
                 status={validatie.status}
                 onClick={() => setMeldingenOpen(!meldingenOpen)}
               />
             )}
-            <h4 className="truncate text-[11px] font-semibold text-gray-900">{weergaveNaam}</h4>
-            {/* Kleur/categorie badges inline */}
-            {team.kleur && (
+            <h4
+              className={`truncate font-semibold text-gray-900 ${
+                dl === "overzicht" ? "text-xs" : "text-[11px]"
+              }`}
+            >
+              {weergaveNaam}
+            </h4>
+            {/* Kleur/categorie badges inline — alleen bij detail */}
+            {dl === "detail" && team.kleur && (
               <span
                 className={`shrink-0 rounded-full px-1 py-px text-[7px] ${
                   KLEUR_BADGE_KLEUREN[team.kleur] ?? "bg-gray-100 text-gray-500"
@@ -150,7 +153,7 @@ export default function TeamKaart({
                 {team.kleur}
               </span>
             )}
-            {CATEGORIE_BADGE[team.categorie] && (
+            {dl === "detail" && CATEGORIE_BADGE[team.categorie] && (
               <span
                 className={`shrink-0 rounded-full px-1 py-px text-[7px] font-medium ${CATEGORIE_BADGE[team.categorie]}`}
               >
@@ -164,20 +167,20 @@ export default function TeamKaart({
               />
             )}
           </div>
-          <div className="flex shrink-0 items-center gap-0.5">
-            {dl === "detail" && notitieCount != null && notitieCount > 0 && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onNotitiesClick?.(team.alias ?? team.naam);
-                }}
-                className="inline-flex h-3 min-w-3 items-center justify-center rounded-full bg-orange-500 px-0.5 text-[7px] font-bold text-white hover:bg-orange-600"
-                title={`${notitieCount} notitie(s)`}
-              >
-                {notitieCount}
-              </button>
-            )}
-            {dl === "detail" && (
+          {dl === "detail" && (
+            <div className="flex shrink-0 items-center gap-0.5">
+              {notitieCount != null && notitieCount > 0 && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onNotitiesClick?.(team.alias ?? team.naam);
+                  }}
+                  className="inline-flex h-3 min-w-3 items-center justify-center rounded-full bg-orange-500 px-0.5 text-[7px] font-bold text-white hover:bg-orange-600"
+                  title={`${notitieCount} notitie(s)`}
+                >
+                  {notitieCount}
+                </button>
+              )}
               <button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -195,47 +198,49 @@ export default function TeamKaart({
                   />
                 </svg>
               </button>
-            )}
-            {dl === "detail" &&
-              onDelete &&
-              (deleteBevestig ? (
-                <button
-                  onClick={() => {
-                    if (deleteTimerRef.current) clearTimeout(deleteTimerRef.current);
-                    setDeleteBevestig(false);
-                    onDelete(team.id);
-                  }}
-                  onBlur={() => {
-                    if (deleteTimerRef.current) clearTimeout(deleteTimerRef.current);
-                    setDeleteBevestig(false);
-                  }}
-                  className="animate-pulse text-[8px] font-medium text-red-600 hover:text-red-700"
-                >
-                  Bevestig?
-                </button>
-              ) : (
-                <button
-                  onClick={() => {
-                    setDeleteBevestig(true);
-                    deleteTimerRef.current = setTimeout(() => setDeleteBevestig(false), 3000);
-                  }}
-                  className="text-[10px] text-gray-300 hover:text-red-500"
-                  title="Verwijder team"
-                >
-                  &times;
-                </button>
-              ))}
-          </div>
+              {onDelete &&
+                (deleteBevestig ? (
+                  <button
+                    onClick={() => {
+                      if (deleteTimerRef.current) clearTimeout(deleteTimerRef.current);
+                      setDeleteBevestig(false);
+                      onDelete(team.id);
+                    }}
+                    onBlur={() => {
+                      if (deleteTimerRef.current) clearTimeout(deleteTimerRef.current);
+                      setDeleteBevestig(false);
+                    }}
+                    className="animate-pulse text-[8px] font-medium text-red-600 hover:text-red-700"
+                  >
+                    Bevestig?
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => {
+                      setDeleteBevestig(true);
+                      deleteTimerRef.current = setTimeout(() => setDeleteBevestig(false), 3000);
+                    }}
+                    className="text-[10px] text-gray-300 hover:text-red-500"
+                    title="Verwijder team"
+                  >
+                    &times;
+                  </button>
+                ))}
+            </div>
+          )}
         </div>
 
-        {/* ── Body: [♀ #count | ♂ #count] + spelers ── */}
+        {/* ── Body: overzicht = grote stats, detail = spelerrijen ── */}
         {dl === "overzicht" ? (
-          <div className="flex flex-1 items-center justify-center gap-3 text-[10px] text-gray-500">
-            <span className="text-pink-400">♀ {aantalV}</span>
-            <span className="text-blue-400">♂ {aantalM}</span>
+          <div className="flex flex-1 flex-col items-center justify-center gap-2 px-2">
+            <div className="flex items-center gap-3 text-base">
+              <span className="font-semibold text-pink-500">♀ {aantalV}</span>
+              <span className="font-semibold text-blue-500">♂ {aantalM}</span>
+            </div>
+            <span className="text-sm text-gray-400">gem. {gemLeeftijd}</span>
           </div>
         ) : (
-          <div className="min-h-6 flex-1 px-0.5">
+          <div className="min-h-6 flex-1 overflow-hidden px-0.5">
             {team.spelers.length === 0 ? (
               <p className="py-2 text-center text-[9px] text-gray-400">Sleep spelers hierheen</p>
             ) : team.teamType === "VIERTAL" ? (
