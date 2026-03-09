@@ -57,7 +57,9 @@ export function useValidatie(
       validatieMap.set(team.id, valideerTeam(vTeam, seizoenJaar, undefined, kaders));
     }
 
-    const dubbeleMeldingen = valideerDubbeleSpelersOverTeams(validatieTeams);
+    // Sluit selectie-teams uit: hun spelers zitten in de selectiegroep
+    const losseTeams = teams.filter((t) => !t.selectieGroepId).map(mapNaarValidatieTeam);
+    const dubbeleMeldingen = valideerDubbeleSpelersOverTeams(losseTeams);
 
     return { validatieMap, dubbeleMeldingen };
   }, [teams, seizoenJaar, kaders]);
