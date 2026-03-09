@@ -16,8 +16,8 @@ export interface CanvasGestureResult {
 }
 
 // Twee vaste zoomstanden
-const ZOOM_DETAIL = 1.0;
-const ZOOM_OVERZICHT = 0.4;
+const ZOOM_DETAIL = 1.2;
+const ZOOM_OVERZICHT = 0.55;
 
 export function useCanvasGesture(): CanvasGestureResult {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -90,7 +90,7 @@ export function useCanvasGesture(): CanvasGestureResult {
     const cy = rect.height / 2;
 
     setTransform((prev) => {
-      const isDetail = prev.scale >= 0.7;
+      const isDetail = prev.scale >= 0.85;
       const newScale = isDetail ? ZOOM_OVERZICHT : ZOOM_DETAIL;
       const ratio = newScale / prev.scale;
       return {

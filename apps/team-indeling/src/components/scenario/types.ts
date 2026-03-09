@@ -227,9 +227,9 @@ export function sorteerSpelers(spelers: TeamSpelerData[]): TeamSpelerData[] {
   });
 }
 
-// Zoom detail-niveaus: 2 standen (40% overzicht, 100% detail)
+// Zoom detail-niveaus: 2 standen (55% overzicht, 120% detail)
 export type DetailLevel = "overzicht" | "detail";
 
 export function getDetailLevel(zoomScale: number): DetailLevel {
-  return zoomScale >= 0.7 ? "detail" : "overzicht";
+  return zoomScale >= 0.85 ? "detail" : "overzicht";
 }
