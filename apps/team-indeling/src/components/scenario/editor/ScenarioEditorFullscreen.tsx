@@ -1,32 +1,40 @@
 "use client";
 
 import { useState, useCallback, useMemo } from "react";
-import type { ScenarioData, SpelerData } from "../types";
+import type { ScenarioData, SpelerData, SelectieGroepData } from "../types";
+import { PEILJAAR } from "../types";
 import { useScenarioEditor } from "../hooks/useScenarioEditor";
+import { useValidatie } from "@/hooks/useValidatie";
 import { useCardPositions, type CardInfo } from "../hooks/useCardPositions";
 import DndProvider from "../DndContext";
 import Navigator from "../Navigator";
 import Werkgebied from "../Werkgebied";
+import ViewWerkgebied from "../view/ViewWerkgebied";
 import SpelersPool from "../SpelersPool";
 import SpelerDetail from "../SpelerDetail";
 import ChatPanel from "../ChatPanel";
 import TeamEditPanel from "../TeamEditPanel";
 import VerdeelDialoog from "../VerdeelDialoog";
 import Drawer from "./Drawer";
-import EditorToolbar from "./EditorToolbar";
+import EditorToolbar, { type EditorMode } from "./EditorToolbar";
 
 interface ScenarioEditorFullscreenProps {
   scenario: ScenarioData;
   alleSpelers: SpelerData[];
+  initialMode?: EditorMode;
 }
 
 export default function ScenarioEditorFullscreen({
   scenario,
   alleSpelers,
+  initialMode = "edit",
 }: ScenarioEditorFullscreenProps) {
   const editor = useScenarioEditor(scenario, alleSpelers);
+  const [mode, setMode] = useState<EditorMode>(initialMode);
   const [navOpen, setNavOpen] = useState(false);
   const [poolOpen, setPoolOpen] = useState(false);
+
+  const isPreview = mode === "preview";
 
   // Build card info for free-form positioning
   const cardInfos: CardInfo[] = useMemo(() => {
@@ -34,7 +42,6 @@ export default function ScenarioEditorFullscreen({
     const seen = new Set<string>();
     const infos: CardInfo[] = [];
 
-    // Verzamel selectie-groep spelers
     const groepSpelers = new Map<string, (typeof zichtbareTeams)[0]["spelers"]>();
     for (const team of zichtbareTeams) {
       if (team.selectieGroepId) {
@@ -74,12 +81,40 @@ export default function ScenarioEditorFullscreen({
 
   const toggleNav = useCallback(() => setNavOpen((v) => !v), []);
   const togglePool = useCallback(() => setPoolOpen((v) => !v), []);
+  const toggleMode = useCallback(() => {
+    setMode((m) => (m === "preview" ? "edit" : "preview"));
+    setNavOpen(false);
+    setPoolOpen(false);
+  }, []);
 
-  const zichtbareCount = editor.teams.filter((t) => editor.zichtbaar.has(t.id)).length;
+  const zichtbareTeams = useMemo(
+    () => editor.teams.filter((t) => editor.zichtbaar.has(t.id)),
+    [editor.teams, editor.zichtbaar]
+  );
+  const zichtbareCount = zichtbareTeams.length;
 
-  // TeamEditPanel vervangt pool-drawer wanneer open
   const showPoolDrawer = poolOpen && !editor.editTeamId;
   const showEditDrawer = !!editor.editTeamId;
+
+  // Preview: selectieGroepMap voor ViewWerkgebied
+  const selectieGroepMap = useMemo(() => {
+    const laatsteVersie = scenario.versies[0];
+    const m = new Map<string, SelectieGroepData>();
+    for (const sg of laatsteVersie?.selectieGroepen ?? []) m.set(sg.id, sg);
+    return m;
+  }, [scenario.versies]);
+
+  // Preview: validatie
+  const blauwdrukKaders = useMemo(
+    () =>
+      scenario.concept?.blauwdruk?.kaders as Record<string, Record<string, unknown>> | undefined,
+    [scenario.concept?.blauwdruk?.kaders]
+  );
+  const { validatieMap: previewValidatieMap } = useValidatie(
+    zichtbareTeams,
+    PEILJAAR,
+    blauwdrukKaders
+  );
 
   if (!editor.laatsteVersie) {
     return (
@@ -89,12 +124,56 @@ export default function ScenarioEditorFullscreen({
     );
   }
 
+  // --- Preview mode ---
+  if (isPreview) {
+    return (
+      <div className="fixed inset-0 z-40 flex flex-col bg-gray-50">
+        <EditorToolbar
+          scenario={scenario}
+          zichtbaar={zichtbareCount}
+          totaal={editor.teams.length}
+          mode={mode}
+          onToggleMode={toggleMode}
+        />
+        <div className="relative flex-1 overflow-hidden">
+          <ViewWerkgebied
+            teams={zichtbareTeams}
+            selectieGroepMap={selectieGroepMap}
+            validatieMap={previewValidatieMap}
+            positions={positions}
+            onRepositionCard={updatePosition}
+            onSpelerClick={(speler) => {
+              editor.setDetailSpeler(speler);
+              editor.setDetailTeamId(null);
+            }}
+          />
+        </div>
+
+        {editor.detailSpeler && (
+          <SpelerDetail
+            speler={editor.detailSpeler}
+            teamId={editor.detailTeamId ?? undefined}
+            onClose={() => {
+              editor.setDetailSpeler(null);
+              editor.setDetailTeamId(null);
+            }}
+          />
+        )}
+      </div>
+    );
+  }
+
+  // --- Edit mode ---
   return (
     <div className="fixed inset-0 z-40 flex flex-col bg-gray-50">
-      {/* Top toolbar */}
-      <EditorToolbar scenario={scenario} zichtbaar={zichtbareCount} totaal={editor.teams.length} />
+      <EditorToolbar
+        scenario={scenario}
+        zichtbaar={zichtbareCount}
+        totaal={editor.teams.length}
+        mode={mode}
+        onToggleMode={toggleMode}
+      />
 
-      {/* Hoofdgebied */}
       <DndProvider
         spelers={alleSpelers}
         onPoolToTeam={editor.handlePoolToTeam}
@@ -151,7 +230,7 @@ export default function ScenarioEditorFullscreen({
             </span>
           </button>
 
-          {/* Center: Werkgebied + ChatPanel — neemt ALLE ruimte */}
+          {/* Center: Werkgebied + ChatPanel */}
           <div className="flex h-full flex-col">
             <Werkgebied
               scenarioId={scenario.id}
@@ -177,7 +256,7 @@ export default function ScenarioEditorFullscreen({
           </div>
         </div>
 
-        {/* Navigator drawer (links, geen title — Navigator heeft eigen header) */}
+        {/* Navigator drawer (links) */}
         <Drawer open={navOpen} onClose={() => setNavOpen(false)} side="left" width="w-64">
           <Navigator
             teams={editor.teams}
@@ -187,7 +266,7 @@ export default function ScenarioEditorFullscreen({
           />
         </Drawer>
 
-        {/* SpelersPool drawer (rechts, geen title — Pool heeft eigen header) */}
+        {/* SpelersPool drawer (rechts) */}
         <Drawer open={showPoolDrawer} onClose={() => setPoolOpen(false)} side="right" width="w-80">
           <SpelersPool
             spelers={alleSpelers}
@@ -224,7 +303,7 @@ export default function ScenarioEditorFullscreen({
         </Drawer>
       </DndProvider>
 
-      {/* Dialogen (z-50, boven drawers) */}
+      {/* Dialogen */}
       {editor.verdeelData && (
         <VerdeelDialoog
           open={true}
