@@ -192,8 +192,8 @@ Elke agent heeft een `skills:` lijst in zijn frontmatter die bepaalt wat hij mag
 | `team-planner` | `team-indeling/*`, `shared/*` |
 | `regel-checker` | `team-indeling/validatie`, `shared/oranje-draad` |
 | `adviseur` | `team-indeling/advies`, `team-indeling/vergelijk`, `shared/oranje-draad` |
-| `ontwikkelaar` | `team-indeling/import`, `team-indeling/evaluatie` |
-| `deployment` | `monitor/railway` |
+| `ontwikkelaar` | `team-indeling/import`, `team-indeling/evaluatie`, `shared/deployment` |
+| `deployment` | `shared/deployment`, `monitor/railway` |
 
 ### Agent Hiërarchie
 

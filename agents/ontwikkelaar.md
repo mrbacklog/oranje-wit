@@ -8,6 +8,7 @@ startup-skill: shared/start
 skills:
   - team-indeling/import
   - team-indeling/evaluatie
+  - shared/deployment
 spawns: []
 escalates-to: korfbal
 triggers:
