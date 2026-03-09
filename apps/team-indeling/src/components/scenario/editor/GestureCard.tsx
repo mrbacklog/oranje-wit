@@ -41,7 +41,11 @@ export default function GestureCard({ cardId, position, onDragEnd, children }: G
       accumulatedDelta.current.y += compensatedDy;
 
       if (last) {
-        onDragEnd(cardId, accumulatedDelta.current.x, accumulatedDelta.current.y);
+        const { x: adx, y: ady } = accumulatedDelta.current;
+        // Ignore micro-drags (< 3px) to prevent card jumping on click
+        if (Math.abs(adx) > 3 || Math.abs(ady) > 3) {
+          onDragEnd(cardId, adx, ady);
+        }
         api.start({ x: 0, y: 0, immediate: true });
       } else {
         api.start({
@@ -53,7 +57,7 @@ export default function GestureCard({ cardId, position, onDragEnd, children }: G
     },
     {
       filterTaps: true,
-      threshold: 5,
+      threshold: 8,
     }
   );
 
