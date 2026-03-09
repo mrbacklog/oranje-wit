@@ -4,7 +4,7 @@ import { useDroppable } from "@dnd-kit/core";
 import type { TeamData, SpelerData, DetailLevel, SelectieGroepData, TeamSpelerData } from "./types";
 import type { TeamValidatie } from "@/lib/validatie/regels";
 import { korfbalLeeftijd, sorteerSpelers } from "./types";
-import { CARD_WIDTH_DOUBLE, CARD_HEIGHT_DOUBLE } from "./editor/cardSizes";
+import { CARD_WIDTH_DOUBLE, CARD_HEIGHT_SELECTIE } from "./editor/cardSizes";
 import { useZoomScale } from "./editor/ZoomScaleContext";
 import TeamSpelerRij from "./TeamSpelerRij";
 
@@ -77,7 +77,7 @@ export default function SelectieBlok({
 
   return (
     <div
-      style={{ width: CARD_WIDTH_DOUBLE, height: CARD_HEIGHT_DOUBLE }}
+      style={{ width: CARD_WIDTH_DOUBLE, height: CARD_HEIGHT_SELECTIE }}
       className={`flex flex-col overflow-hidden rounded-lg border-2 border-dashed bg-orange-50/50 ${borderKleur}`}
     >
       <div
