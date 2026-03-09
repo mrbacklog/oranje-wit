@@ -2,7 +2,7 @@
 // Breedte: viertal 1×, achtal/selectie 2×
 // Hoogte: dynamisch op basis van spelersaantal, minimum 4 rijen
 
-export const CARD_WIDTH_SINGLE = 140; // basisbreedte (viertal)
+export const CARD_WIDTH_SINGLE = 168; // basisbreedte (viertal) — was 140, +20%
 export const CARD_GAP = 12;
 export const CARD_WIDTH_DOUBLE = 2 * CARD_WIDTH_SINGLE + CARD_GAP; // achtal/selectie = 292
 export const COLLISION_PADDING = 8;

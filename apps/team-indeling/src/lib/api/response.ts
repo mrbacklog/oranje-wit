@@ -3,7 +3,7 @@ import type { ApiResponse } from "@oranje-wit/types";
 import { logger } from "@oranje-wit/types";
 
 export function ok<T>(data: T): NextResponse<ApiResponse<T>> {
-  return NextResponse.json({ ok: true, data });
+  return NextResponse.json({ ok: true, data }, { headers: { "Cache-Control": "no-store" } });
 }
 
 export function fail(
