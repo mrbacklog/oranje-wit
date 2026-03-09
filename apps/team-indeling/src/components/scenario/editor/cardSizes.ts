@@ -4,7 +4,7 @@
 export const CARD_WIDTH_SINGLE = 170; // basisbreedte (viertal)
 export const CARD_GAP = 12;
 export const CARD_WIDTH_DOUBLE = 2 * CARD_WIDTH_SINGLE + CARD_GAP; // achtal/selectie
-export const CARD_HEIGHT_SINGLE = 200; // basishoogte (viertal/achtal)
+export const CARD_HEIGHT_SINGLE = 240; // basishoogte (viertal/achtal)
 export const CARD_HEIGHT_SELECTIE = 2 * CARD_HEIGHT_SINGLE; // selectie = 2× hoogte
 export const COLLISION_PADDING = 8;
 export const CANVAS_WIDTH = 4000;

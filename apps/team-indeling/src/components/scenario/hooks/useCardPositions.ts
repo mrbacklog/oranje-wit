@@ -195,8 +195,11 @@ export function resolveCollisions(
 // localStorage helpers
 // ---------------------------------------------------------------------------
 
+// Versie-prefix: verhoog bij kaartgrootte-wijzigingen zodat oude cache vervalt
+const POSITION_VERSION = 2;
+
 function storageKey(scenarioId: string): string {
-  return `ow-card-positions-${scenarioId}`;
+  return `ow-card-positions-v${POSITION_VERSION}-${scenarioId}`;
 }
 
 function loadPositions(scenarioId: string): PositionMap | null {
