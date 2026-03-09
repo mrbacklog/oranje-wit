@@ -58,6 +58,7 @@ export default function GestureCard({ cardId, position, onDragEnd, children }: G
     {
       filterTaps: true,
       threshold: 8,
+      delay: 200,
     }
   );
 
