@@ -218,6 +218,7 @@ export function useCardPositions(
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const versieIdRef = useRef(versieId);
   versieIdRef.current = versieId;
+  const initializedRef = useRef(false);
 
   // Debounced save to server
   const debouncedSave = useCallback((posities: PositionMap) => {
@@ -238,41 +239,58 @@ export function useCardPositions(
     };
   }, []);
 
-  // Build initial positions on mount or when cards change
+  // Eenmalige initialisatie vanuit server-posities of auto-grid
   useEffect(() => {
-    const sizes = buildSizeMap(cards);
-    const cardIds = new Set(cards.map((c) => c.id));
+    if (initializedRef.current) return;
+    initializedRef.current = true;
 
-    if (initialPosities) {
-      // Start with stored positions for cards that still exist
-      const merged: PositionMap = {};
-      for (const id of cardIds) {
-        if (initialPosities[id]) {
-          merged[id] = initialPosities[id];
-        }
-      }
-
-      // Calculate positions for any new cards not in storage
-      const missingCards = cards.filter((c) => !initialPosities[c.id]);
-      if (missingCards.length > 0) {
-        const autoPositions = calculateAutoGrid(missingCards);
-        for (const [id, pos] of Object.entries(autoPositions)) {
-          merged[id] = pos;
-        }
-        // Resolve any collisions from merging
-        const allResolved = resolveCollisions(merged, sizes, missingCards[0].id);
-        setPositions(allResolved);
-        debouncedSave(allResolved);
-      } else {
-        setPositions(merged);
-      }
+    if (initialPosities && Object.keys(initialPosities).length > 0) {
+      setPositions(initialPosities);
     } else {
-      // No stored positions — calculate from scratch
       const auto = calculateAutoGrid(cards);
       setPositions(auto);
       debouncedSave(auto);
     }
-  }, [cards, initialPosities, debouncedSave]);
+  }, [initialPosities, cards, debouncedSave]);
+
+  // Bij card-wijzigingen: voeg alleen nieuwe kaarten toe, verwijder oude
+  useEffect(() => {
+    if (!initializedRef.current) return;
+
+    setPositions((prev) => {
+      const currentIds = new Set(cards.map((c) => c.id));
+      const prevIds = new Set(Object.keys(prev));
+
+      // Zoek nieuwe kaarten die nog geen positie hebben
+      const newCards = cards.filter((c) => !prevIds.has(c.id));
+      // Verwijder kaarten die niet meer bestaan
+      const removedIds = [...prevIds].filter((id) => !currentIds.has(id));
+
+      if (newCards.length === 0 && removedIds.length === 0) return prev;
+
+      const updated = { ...prev };
+
+      // Verwijder oude kaarten
+      for (const id of removedIds) {
+        delete updated[id];
+      }
+
+      // Voeg nieuwe kaarten toe met auto-grid posities
+      if (newCards.length > 0) {
+        const autoPositions = calculateAutoGrid(newCards);
+        for (const [id, pos] of Object.entries(autoPositions)) {
+          updated[id] = pos;
+        }
+        const sizes = buildSizeMap(cards);
+        const resolved = resolveCollisions(updated, sizes, newCards[0].id);
+        debouncedSave(resolved);
+        return resolved;
+      }
+
+      debouncedSave(updated);
+      return updated;
+    });
+  }, [cards, debouncedSave]);
 
   const updatePosition = useCallback(
     (id: string, deltaX: number, deltaY: number) => {
