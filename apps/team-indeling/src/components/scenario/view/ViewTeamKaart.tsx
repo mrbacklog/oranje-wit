@@ -51,7 +51,7 @@ export default function ViewTeamKaart({
             (sum, ts) => sum + korfbalLeeftijd(ts.speler.geboortedatum, ts.speler.geboortejaar),
             0
           ) / aantalSpelers
-        ).toFixed(1)
+        ).toFixed(2)
       : "-";
 
   const gesorteerd = sorteerSpelers(team.spelers);
@@ -324,7 +324,7 @@ function ViewSpelerRij({
         {kleur && (
           <span className={`h-1.5 w-1.5 rounded-full ring-1 ring-white ${KLEUR_DOT[kleur]}`} />
         )}
-        <span className="text-[8px] text-gray-400 tabular-nums">{leeftijd.toFixed(1)}</span>
+        <span className="text-[8px] text-gray-400 tabular-nums">{leeftijd.toFixed(2)}</span>
       </div>
       {vorigTeam && (
         <span className="max-w-[40px] shrink-0 truncate text-[7px] text-gray-400" title={vorigTeam}>

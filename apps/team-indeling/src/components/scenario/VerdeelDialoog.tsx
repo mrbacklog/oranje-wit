@@ -231,7 +231,7 @@ export default function VerdeelDialoog({
                                   {ts.speler.roepnaam} {ts.speler.achternaam}
                                 </span>
                                 <span className="text-[10px] text-gray-400">
-                                  {leeftijd.toFixed(1)}
+                                  {leeftijd.toFixed(2)}
                                 </span>
                                 <span className="text-[10px]">
                                   {ts.speler.geslacht === "M" ? "\u2642" : "\u2640"}

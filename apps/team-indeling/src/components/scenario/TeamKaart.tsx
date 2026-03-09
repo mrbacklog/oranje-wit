@@ -72,7 +72,7 @@ export default function TeamKaart({
             (sum, ts) => sum + korfbalLeeftijd(ts.speler.geboortedatum, ts.speler.geboortejaar),
             0
           ) / aantalSpelers
-        ).toFixed(1)
+        ).toFixed(2)
       : "-";
 
   const gesorteerd = sorteerSpelers(team.spelers);

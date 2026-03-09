@@ -102,7 +102,7 @@ export default function TeamSpelerRij({
         {dl === "detail" && (
           <div className="flex items-center gap-0.5 text-[8px] leading-none text-gray-400">
             <span className="truncate">{vorigTeam ?? "\u2014"}</span>
-            <span className="shrink-0 tabular-nums">{leeftijd.toFixed(1)}</span>
+            <span className="shrink-0 tabular-nums">{leeftijd.toFixed(2)}</span>
           </div>
         )}
       </div>

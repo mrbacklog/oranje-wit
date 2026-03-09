@@ -49,7 +49,7 @@ export default function SelectieBlok({
             (sum, ts) => sum + korfbalLeeftijd(ts.speler.geboortedatum, ts.speler.geboortejaar),
             0
           ) / aantalSpelers
-        ).toFixed(1)
+        ).toFixed(2)
       : "-";
 
   // Splits dames en heren elk in 2 kolommen
