@@ -31,11 +31,9 @@ export default function SelectieBlok({
 }: SelectieBlokProps) {
   const dl = detailLevel ?? "detail";
 
-  // Eerste team als referentie (voor droppable)
   const eersteTeam = teams[0];
   const teamNamen = teams.map((t) => t.alias ?? t.naam).join(" + ");
 
-  // Spelers/staf komen van de selectieGroep
   const alleSpelers = selectieGroep
     ? sorteerSpelers(selectieGroep.spelers as TeamSpelerData[])
     : sorteerSpelers(eersteTeam?.spelers ?? []);
@@ -51,27 +49,22 @@ export default function SelectieBlok({
             (sum, ts) => sum + korfbalLeeftijd(ts.speler.geboortedatum, ts.speler.geboortejaar),
             0
           ) / aantalSpelers
-        ).toFixed(2)
+        ).toFixed(1)
       : "-";
 
-  // Staf uit selectieGroep of eersteTeam
   const alleStaf = selectieGroep ? selectieGroep.staf : (eersteTeam?.staf ?? []);
-
-  // Validatie voor het eerste team
   const validatie = validatieMap?.get(eersteTeam?.id ?? "");
+  const meldingen = validatie?.meldingen ?? [];
 
-  // Droppable zone — elk team in de groep werkt als drop target
   const { setNodeRef, isOver } = useDroppable({
     id: `team-${eersteTeam?.id}`,
     data: { type: "team", teamId: eersteTeam?.id },
   });
 
-  // Dubbele oranje stippelrand: border + ring voor dubbel effect
   const borderKleur = isOver
     ? "border-orange-400 ring-2 ring-orange-200"
     : "border-orange-300 ring-2 ring-orange-100 ring-offset-1";
 
-  // Compenseer tekst voor zoom: bij uitzoomen wordt tekst groter zodat het leesbaar blijft
   const zoomScale = useZoomScale();
   const textScale = zoomScale < 1 ? 1 / Math.max(zoomScale, 0.5) : 1;
 
@@ -93,11 +86,11 @@ export default function SelectieBlok({
         }
         className="flex h-full flex-col"
       >
-        {/* Selectie header */}
-        <div className="flex items-center justify-between rounded-t-lg border-b border-orange-200 bg-orange-50 px-2 py-1">
-          <div className="flex items-center gap-1.5">
-            <span className="text-orange-300">
-              <svg className="h-3 w-3" viewBox="0 0 10 16" fill="currentColor">
+        {/* ── Header: [drag] Selectie TEAMNAMEN [acties] ── */}
+        <div className="flex items-center justify-between rounded-t-lg border-b border-orange-200 bg-orange-50 px-1.5 py-1">
+          <div className="flex min-w-0 items-center gap-1">
+            <span className="shrink-0 text-orange-300">
+              <svg className="h-2.5 w-2.5" viewBox="0 0 10 16" fill="currentColor">
                 <circle cx="3" cy="2" r="1.2" />
                 <circle cx="7" cy="2" r="1.2" />
                 <circle cx="3" cy="8" r="1.2" />
@@ -106,20 +99,19 @@ export default function SelectieBlok({
                 <circle cx="7" cy="14" r="1.2" />
               </svg>
             </span>
-            <span className="text-[8px] font-medium tracking-wide text-orange-600 uppercase">
+            <span className="shrink-0 text-[7px] font-medium tracking-wide text-orange-600 uppercase">
               Selectie
             </span>
-            <h4 className="text-[11px] font-semibold text-gray-900">{teamNamen}</h4>
+            <h4 className="truncate text-[11px] font-semibold text-gray-900">{teamNamen}</h4>
           </div>
-          <div className="flex items-center gap-1">
-            {/* Potlood-icoon voor selectie bewerken */}
+          <div className="flex shrink-0 items-center gap-0.5">
             {(dl === "detail" || dl === "focus") && eersteTeam && (
               <button
                 onClick={() => onEditTeam?.(eersteTeam.id)}
                 className="text-orange-400 transition-colors hover:text-orange-700"
                 title="Bewerk selectie"
               >
-                <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="h-2.5 w-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -132,7 +124,7 @@ export default function SelectieBlok({
             {(dl === "detail" || dl === "focus") && selectieGroep && (
               <button
                 onClick={() => onOntkoppel(selectieGroep.id)}
-                className="rounded px-1 py-px text-[8px] font-medium text-orange-600 transition-colors hover:bg-orange-100 hover:text-orange-800"
+                className="rounded px-1 py-px text-[7px] font-medium text-orange-600 transition-colors hover:bg-orange-100 hover:text-orange-800"
                 title="Ontkoppel selectie"
               >
                 Ontkoppel
@@ -141,39 +133,50 @@ export default function SelectieBlok({
           </div>
         </div>
 
-        {/* Staf (uit selectieGroep) */}
+        {/* Staf (compact) */}
         {(dl === "detail" || dl === "focus") && alleStaf.length > 0 && (
-          <div className="border-b border-orange-100 px-2 py-0.5">
-            <span className="text-[8px] font-medium text-gray-500">Staf: </span>
-            {alleStaf.map((ts, i) => (
-              <span key={ts.id} className="text-[8px] text-gray-500">
-                {i > 0 && ", "}
-                {ts.staf.naam} <span className="text-gray-400">({ts.rol})</span>
-              </span>
-            ))}
+          <div className="border-b border-orange-100 px-1.5 py-px">
+            <span className="text-[7px] text-gray-500">
+              Staf:{" "}
+              {alleStaf.map((ts, i) => (
+                <span key={ts.id}>
+                  {i > 0 && ", "}
+                  {ts.staf.naam}
+                </span>
+              ))}
+            </span>
           </div>
         )}
 
-        {/* Pool: een spelerslijst, gegroepeerd op geslacht */}
+        {/* ── Body: [♀ #count | ♂ #count] + spelers ── */}
         {dl === "overzicht" ? (
-          <div ref={setNodeRef} className="px-2 py-1 text-center text-[10px] text-gray-500">
-            {aantalSpelers} spelers · {aantalM}
-            {"♂"} {aantalV}
-            {"♀"}
+          <div
+            ref={setNodeRef}
+            className="flex flex-1 items-center justify-center gap-3 text-[10px] text-gray-500"
+          >
+            <span className="text-pink-400">♀ {aantalV}</span>
+            <span className="text-blue-400">♂ {aantalM}</span>
           </div>
         ) : (
-          <div ref={setNodeRef} className="min-h-8 flex-1 px-0.5 py-0.5">
+          <div ref={setNodeRef} className="min-h-6 flex-1 px-0.5">
             {alleSpelers.length === 0 ? (
               <p className="py-2 text-center text-[9px] text-gray-400">Sleep spelers hierheen</p>
             ) : (
-              /* detail/focus: side-by-side — dames links, heren rechts */
               <div className="grid grid-cols-2 gap-x-0.5">
                 <div>
-                  {dames.length > 0 && (
-                    <div className="px-1 text-[8px] font-medium tracking-wide text-pink-500 uppercase">
-                      Dames ({dames.length})
-                    </div>
-                  )}
+                  <div className="flex items-center gap-0.5 px-1 pt-0.5">
+                    <svg
+                      className="h-2 w-2 text-pink-400"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                    >
+                      <circle cx="12" cy="10" r="6" />
+                      <path d="M12 16v6M9 20h6" />
+                    </svg>
+                    <span className="text-[8px] font-medium text-pink-500">{dames.length}</span>
+                  </div>
                   {dames.map((ts) => (
                     <TeamSpelerRij
                       key={ts.id}
@@ -189,11 +192,19 @@ export default function SelectieBlok({
                   ))}
                 </div>
                 <div>
-                  {heren.length > 0 && (
-                    <div className="px-1 text-[8px] font-medium tracking-wide text-blue-500 uppercase">
-                      Heren ({heren.length})
-                    </div>
-                  )}
+                  <div className="flex items-center gap-0.5 px-1 pt-0.5">
+                    <svg
+                      className="h-2 w-2 text-blue-400"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                    >
+                      <circle cx="10" cy="14" r="6" />
+                      <path d="M21 3l-6.5 6.5M21 3h-5M21 3v5" />
+                    </svg>
+                    <span className="text-[8px] font-medium text-blue-500">{heren.length}</span>
+                  </div>
                   {heren.map((ts) => (
                     <TeamSpelerRij
                       key={ts.id}
@@ -213,30 +224,24 @@ export default function SelectieBlok({
           </div>
         )}
 
-        {/* Focus: inline validatie meldingen */}
-        {dl === "focus" && validatie && validatie.meldingen.length > 0 && (
-          <div className="border-t border-orange-100 px-2 py-0.5">
-            {validatie.meldingen.map((m, i) => (
-              <div
-                key={i}
-                className={`text-[8px] ${m.ernst === "kritiek" ? "text-red-600" : m.ernst === "aandacht" ? "text-orange-500" : "text-blue-500"}`}
-              >
-                {m.bericht}
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Footer stats */}
+        {/* ── Footer: alerts + gem. leeftijd ── */}
         {dl !== "overzicht" && (
-          <div className="flex items-center gap-2 border-t border-orange-100 px-2 py-0.5 text-[8px] text-gray-400">
-            <span>{aantalSpelers} spelers</span>
-            <span>
-              {aantalM}
-              {"\u2642"} {aantalV}
-              {"\u2640"}
+          <div className="flex items-center justify-between border-t border-orange-100 px-1.5 py-0.5">
+            <div className="flex min-w-0 flex-1 items-center gap-1">
+              {meldingen.length > 0 ? (
+                <span
+                  className={`truncate text-[7px] ${meldingen[0].ernst === "kritiek" ? "text-red-600" : meldingen[0].ernst === "aandacht" ? "text-orange-500" : "text-blue-500"}`}
+                >
+                  {meldingen[0].bericht}
+                  {meldingen.length > 1 && ` (+${meldingen.length - 1})`}
+                </span>
+              ) : (
+                <span className="text-[7px] text-gray-300">{aantalSpelers} spelers</span>
+              )}
+            </div>
+            <span className="shrink-0 text-[8px] text-gray-400 tabular-nums">
+              gem. {gemLeeftijd}
             </span>
-            <span>gem. {gemLeeftijd} jr</span>
           </div>
         )}
       </div>
