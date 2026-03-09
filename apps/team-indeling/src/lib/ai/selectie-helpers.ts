@@ -4,6 +4,7 @@
  */
 
 import { prisma, anyTeam } from "@/lib/db/prisma";
+import { assertSpelerVrij, getVersieIdVoorTeam, filterVrijeSpelers } from "@/lib/db/speler-guard";
 
 type SelectieGroepId = { selectieGroepId: string | null };
 
@@ -40,6 +41,10 @@ export async function plaatsSpeler(
   spelerId: string,
   selectieGroepId: string | null
 ) {
+  // Guard: speler mag maar 1x in een versie voorkomen
+  const versieId = await getVersieIdVoorTeam(teamId);
+  await assertSpelerVrij(versieId, spelerId);
+
   if (selectieGroepId) {
     await prisma.selectieSpeler.create({
       data: { selectieGroepId, spelerId },
@@ -94,20 +99,26 @@ export async function verplaatsSpeler(
   });
 }
 
-/** Batch-plaats spelers in team of selectie */
+/** Batch-plaats spelers in team of selectie (filtert dubbelen automatisch) */
 export async function batchPlaatsSpelers(
   teamId: string,
   spelerIds: string[],
   selectieGroepId: string | null
 ) {
+  // Guard: filter spelers die al ergens in de versie zitten
+  const versieId = await getVersieIdVoorTeam(teamId);
+  const vrij = await filterVrijeSpelers(versieId, spelerIds);
+
+  if (vrij.length === 0) return;
+
   if (selectieGroepId) {
     await prisma.selectieSpeler.createMany({
-      data: spelerIds.map((id) => ({ selectieGroepId: selectieGroepId!, spelerId: id })),
+      data: vrij.map((id) => ({ selectieGroepId: selectieGroepId!, spelerId: id })),
       skipDuplicates: true,
     });
   } else {
     await prisma.teamSpeler.createMany({
-      data: spelerIds.map((id) => ({ teamId, spelerId: id })),
+      data: vrij.map((id) => ({ teamId, spelerId: id })),
       skipDuplicates: true,
     });
   }
