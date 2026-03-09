@@ -196,7 +196,7 @@ export function resolveCollisions(
 // ---------------------------------------------------------------------------
 
 // Versie-prefix: verhoog bij kaartgrootte-wijzigingen zodat oude cache vervalt
-const POSITION_VERSION = 4;
+const POSITION_VERSION = 5;
 
 function storageKey(scenarioId: string): string {
   return `ow-card-positions-v${POSITION_VERSION}-${scenarioId}`;

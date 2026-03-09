@@ -87,7 +87,7 @@ export default function TeamKaart({
   const ringKlassen = validatieRingKlassen(validatie?.status, isOver);
   const weergaveNaam = team.alias ?? team.naam;
 
-  const { w: cardWidth, h: cardMinHeight } = getCardSize(team.teamType ?? "VIERTAL", false);
+  const { w: cardWidth, h: cardHeight } = getCardSize(team.teamType ?? "VIERTAL", false);
 
   // Compenseer tekst voor zoom
   const zoomScale = useZoomScale();
@@ -99,7 +99,7 @@ export default function TeamKaart({
   return (
     <div
       ref={setNodeRef}
-      style={{ width: cardWidth, minHeight: cardMinHeight }}
+      style={{ width: cardWidth, height: cardHeight }}
       className={`flex flex-col rounded-lg transition-colors ${randKlassen} ${achtergrond} ${ringKlassen}`}
     >
       <div

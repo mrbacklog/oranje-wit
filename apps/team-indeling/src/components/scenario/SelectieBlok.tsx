@@ -71,14 +71,14 @@ export default function SelectieBlok({
     ? "border-orange-400 ring-2 ring-orange-200"
     : "border-orange-300 ring-2 ring-orange-100 ring-offset-1";
 
-  const { w: cardWidth, h: cardMinHeight } = getCardSize("ACHTAL", true);
+  const { w: cardWidth, h: cardHeight } = getCardSize("ACHTAL", true);
 
   const zoomScale = useZoomScale();
   const textScale = zoomScale < 1 ? 1 / Math.max(zoomScale, 0.5) : 1;
 
   return (
     <div
-      style={{ width: cardWidth, minHeight: cardMinHeight }}
+      style={{ width: cardWidth, height: cardHeight }}
       className={`flex flex-col rounded-lg border-2 border-dashed bg-orange-50/50 ${borderKleur}`}
     >
       <div

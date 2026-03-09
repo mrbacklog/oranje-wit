@@ -64,7 +64,7 @@ export default function ViewTeamKaart({
   const footerBorder = categorieFooterBorder(team.categorie, team.kleur);
   const weergaveNaam = team.alias ?? team.naam;
 
-  const { w: cardWidth, h: cardMinHeight } = getCardSize(team.teamType ?? "VIERTAL", false);
+  const { w: cardWidth, h: cardHeight } = getCardSize(team.teamType ?? "VIERTAL", false);
   const isDouble = (team.teamType ?? "VIERTAL") !== "VIERTAL";
 
   const zoomScale = useZoomScale();
@@ -74,7 +74,7 @@ export default function ViewTeamKaart({
 
   return (
     <div
-      style={{ width: cardWidth, minHeight: cardMinHeight }}
+      style={{ width: cardWidth, height: cardHeight }}
       className={`flex flex-col rounded-lg ${randKlassen} ${achtergrond}`}
     >
       <div

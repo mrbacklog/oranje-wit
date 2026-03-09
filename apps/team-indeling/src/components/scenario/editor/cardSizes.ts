@@ -14,9 +14,9 @@ const HEADER_H = 24;
 const FOOTER_H = 20;
 const COL_HEADER_H = 16;
 const ROW_H = 20;
-const MAX_ROWS = 8;
+const MAX_ROWS = 9;
 
-export const CARD_HEIGHT = HEADER_H + COL_HEADER_H + MAX_ROWS * ROW_H + FOOTER_H; // 220px
+export const CARD_HEIGHT = HEADER_H + COL_HEADER_H + MAX_ROWS * ROW_H + FOOTER_H; // 240px
 
 export function getCardSize(teamType: string, isSelectie: boolean): { w: number; h: number } {
   const isDouble = teamType !== "VIERTAL";
