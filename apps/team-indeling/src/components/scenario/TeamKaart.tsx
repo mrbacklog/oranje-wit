@@ -350,18 +350,24 @@ export default function TeamKaart({
         {/* ── Footer: alerts + gem. leeftijd ── */}
         {dl !== "overzicht" && (
           <div className={`flex items-center justify-between px-1.5 py-0.5 ${footerBorder}`}>
-            <div className="flex min-w-0 flex-1 items-center gap-1">
-              {/* Inline validatie meldingen */}
-              {meldingen.length > 0 ? (
-                <span
-                  className={`truncate text-[7px] ${meldingen[0].ernst === "kritiek" ? "text-red-600" : meldingen[0].ernst === "aandacht" ? "text-orange-500" : "text-blue-500"}`}
-                >
-                  {meldingen[0].bericht}
-                  {meldingen.length > 1 && ` (+${meldingen.length - 1})`}
+            <div className="flex items-center gap-1">
+              {meldingen.length > 0 && (
+                <span className="group relative" title={meldingen.map((m) => m.bericht).join("\n")}>
+                  <svg
+                    className={`h-3 w-3 ${meldingen.some((m) => m.ernst === "kritiek") ? "text-red-500" : meldingen.some((m) => m.ernst === "aandacht") ? "text-orange-400" : "text-blue-400"}`}
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
+                  </svg>
+                  {meldingen.length > 1 && (
+                    <span className="absolute -top-1 -right-1 flex h-2.5 min-w-2.5 items-center justify-center rounded-full bg-red-500 px-0.5 text-[6px] font-bold text-white">
+                      {meldingen.length}
+                    </span>
+                  )}
                 </span>
-              ) : (
-                <span className="text-[7px] text-gray-300">{aantalSpelers} spelers</span>
               )}
+              <span className="text-[7px] text-gray-400">{aantalSpelers} sp</span>
             </div>
             <span className="shrink-0 text-[8px] text-gray-400 tabular-nums">
               gem. {gemLeeftijd}
