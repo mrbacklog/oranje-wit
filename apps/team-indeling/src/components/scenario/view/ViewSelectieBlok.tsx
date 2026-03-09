@@ -189,7 +189,7 @@ export default function ViewSelectieBlok({
 
         {/* Footer */}
         {dl !== "overzicht" && (
-          <div className="flex items-center justify-between border-t border-orange-100 px-1.5 py-0.5">
+          <div className="mt-auto flex items-center justify-between border-t border-orange-100 px-1.5 py-0.5">
             <div className="flex items-center gap-1">
               {meldingen.length > 0 && (
                 <span className="group relative" title={meldingen.map((m) => m.bericht).join("\n")}>

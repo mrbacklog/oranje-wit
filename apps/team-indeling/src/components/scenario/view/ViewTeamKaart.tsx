@@ -252,7 +252,9 @@ export default function ViewTeamKaart({
 
         {/* Footer */}
         {dl !== "overzicht" && (
-          <div className={`flex items-center justify-between px-1.5 py-0.5 ${footerBorder}`}>
+          <div
+            className={`mt-auto flex items-center justify-between px-1.5 py-0.5 ${footerBorder}`}
+          >
             <div className="flex items-center gap-1">
               {meldingen.length > 0 && (
                 <span className="group relative" title={meldingen.map((m) => m.bericht).join("\n")}>
