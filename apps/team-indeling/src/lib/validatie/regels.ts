@@ -135,7 +135,7 @@ function teamNaarCategorieSleutel(team: TeamData): string {
     return team.kleur; // "BLAUW", "GROEN", "GEEL", "ORANJE", "ROOD"
   }
   if (team.categorie === "A_CATEGORIE") {
-    return "JEUGD_A";
+    return detecteerACategorie(team.naam) ?? "U17";
   }
   if (team.categorie === "SENIOREN") {
     const nummer = extractTeamNummer(team.naam);

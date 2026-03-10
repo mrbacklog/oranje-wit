@@ -34,7 +34,9 @@ interface CategoriePanelProps {
 const KLEUR_ACCENT: Record<string, string> = {
   SENIOREN_A: "bg-gray-600",
   SENIOREN_B: "bg-gray-400",
-  JEUGD_A: "bg-rose-600",
+  U19: "bg-gray-500",
+  U17: "bg-gray-400",
+  U15: "bg-gray-300",
   ROOD: "bg-red-500",
   ORANJE: "bg-orange-500",
   GEEL: "bg-yellow-500",
@@ -42,6 +44,8 @@ const KLEUR_ACCENT: Record<string, string> = {
   BLAUW: "bg-blue-500",
   KANGOEROES: "bg-purple-400",
 };
+
+const A_CATEGORIE_SLEUTELS = new Set(["U15", "U17", "U19"]);
 
 // ============================================================
 // Mapping: categorie-sleutel → statistieken
@@ -62,29 +66,6 @@ function getStats(statistieken: LedenStatistieken, sleutel: string): CategorieSt
       minTeams: 0,
       maxTeams: 0,
     };
-  }
-
-  // Jeugd A deelt spelerspool met Rood + Oranje (13-18 jaar)
-  if (sleutel === "JEUGD_A") {
-    const rood = statistieken.perCategorie.find((c) => c.kleur === "ROOD");
-    const oranje = statistieken.perCategorie.find((c) => c.kleur === "ORANJE");
-    if (rood || oranje) {
-      return {
-        kleur: "JEUGD_A",
-        label: "Jeugd A (U-teams)",
-        totaal: (rood?.totaal ?? 0) + (oranje?.totaal ?? 0),
-        beschikbaar: (rood?.beschikbaar ?? 0) + (oranje?.beschikbaar ?? 0),
-        twijfelt: (rood?.twijfelt ?? 0) + (oranje?.twijfelt ?? 0),
-        gaatStoppen: (rood?.gaatStoppen ?? 0) + (oranje?.gaatStoppen ?? 0),
-        nieuwPotentieel: (rood?.nieuwPotentieel ?? 0) + (oranje?.nieuwPotentieel ?? 0),
-        nieuwDefinitief: (rood?.nieuwDefinitief ?? 0) + (oranje?.nieuwDefinitief ?? 0),
-        mannen: (rood?.mannen ?? 0) + (oranje?.mannen ?? 0),
-        vrouwen: (rood?.vrouwen ?? 0) + (oranje?.vrouwen ?? 0),
-        streefPerTeam: 10,
-        minTeams: 0,
-        maxTeams: 0,
-      };
-    }
   }
 
   return null;
@@ -165,7 +146,9 @@ function CategorieKaart({ definitie, stats, settings, onOpenSettings }: Categori
   );
 
   return (
-    <div className="card overflow-hidden">
+    <div
+      className={`card overflow-hidden ${A_CATEGORIE_SLEUTELS.has(definitie.sleutel) ? "border-2 border-dashed border-orange-400" : ""}`}
+    >
       {/* Gekleurde top-bar */}
       <div className={`h-1.5 ${KLEUR_ACCENT[definitie.sleutel] ?? "bg-gray-500"}`} />
       <div className="card-body space-y-3">

@@ -62,6 +62,13 @@ const KLEUREN_CONFIG = [
   { kleur: "ROOD", label: "Rood", minLeeftijd: 16, maxLeeftijd: 18, streefPerTeam: 10 },
 ] as const;
 
+// A-categorie U-niveaus (harde bovengrens, 2 geboortejaren per niveau)
+const U_CONFIG = [
+  { sleutel: "U15", label: "U15", geboortejaarMin: -14, geboortejaarMax: -13, streefPerTeam: 10 },
+  { sleutel: "U17", label: "U17", geboortejaarMin: -16, geboortejaarMax: -15, streefPerTeam: 10 },
+  { sleutel: "U19", label: "U19", geboortejaarMin: -18, geboortejaarMax: -17, streefPerTeam: 10 },
+] as const;
+
 /**
  * Haal de blauwdruk voor een seizoen op, of maak een nieuwe aan.
  */
@@ -316,6 +323,36 @@ export async function getLedenStatistieken(): Promise<LedenStatistieken> {
       maxTeams,
     };
   });
+
+  // Per U-niveau (A-categorie)
+  const seizoenJaar = PEILJAAR;
+  for (const cfg of U_CONFIG) {
+    const minJaar = seizoenJaar + cfg.geboortejaarMin;
+    const maxJaar = seizoenJaar + cfg.geboortejaarMax;
+    const groep = spelers.filter((s) => s.geboortejaar >= minJaar && s.geboortejaar <= maxJaar);
+
+    const stats = groepStats(groep);
+    const effectief =
+      stats.beschikbaar +
+      stats.nieuwPotentieel +
+      stats.nieuwDefinitief +
+      Math.round(stats.twijfelt * 0.5);
+    const minTeams =
+      effectief > 0 ? Math.max(1, Math.floor(effectief / (cfg.streefPerTeam + 2))) : 0;
+    const maxTeams = effectief > 0 ? Math.ceil(effectief / Math.max(cfg.streefPerTeam - 2, 4)) : 0;
+
+    perCategorie.push({
+      kleur: cfg.sleutel,
+      label: cfg.label,
+      ...stats,
+      totaal: groep.length,
+      mannen: groep.filter((s) => s.geslacht === "M").length,
+      vrouwen: groep.filter((s) => s.geslacht === "V").length,
+      streefPerTeam: cfg.streefPerTeam,
+      minTeams,
+      maxTeams,
+    });
+  }
 
   // Senioren (19+)
   const seniorenGroep = spelers.filter((s) => PEILJAAR - s.geboortejaar >= 19);

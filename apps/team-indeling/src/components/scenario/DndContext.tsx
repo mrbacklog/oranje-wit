@@ -60,6 +60,12 @@ export default function DndProvider({
     const activeData = active.data.current as DragData | undefined;
     if (!activeData) return;
 
+    // Drop op leeg gebied (buiten teamkaart/pool) → terug naar pool
+    if (!over && activeData.type === "team-speler" && activeData.teamId) {
+      onTeamToPool(activeData.spelerId, activeData.teamId);
+      return;
+    }
+
     if (!over || active.id === over.id) return;
 
     const overData = over.data.current as
