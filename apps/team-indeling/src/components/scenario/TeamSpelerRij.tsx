@@ -4,6 +4,7 @@ import { useDraggable } from "@dnd-kit/core";
 import type { TeamSpelerData, SpelerData, HuidigData, DetailLevel } from "./types";
 import { kleurIndicatie, KLEUR_DOT, korfbalLeeftijd } from "./types";
 import AfmeldBadge from "./AfmeldBadge";
+import RankingBadge from "./RankingBadge";
 
 /** Status → linkerrand kleur */
 const STATUS_BORDER: Record<string, string> = {
@@ -26,6 +27,7 @@ interface TeamSpelerRijProps {
   teamId: string;
   detailLevel?: DetailLevel;
   isPinned?: boolean;
+  showRanking?: boolean;
   onSpelerClick?: (speler: SpelerData) => void;
 }
 
@@ -34,6 +36,7 @@ export default function TeamSpelerRij({
   teamId,
   detailLevel,
   isPinned,
+  showRanking,
   onSpelerClick,
 }: TeamSpelerRijProps) {
   const dl = detailLevel ?? "detail";
@@ -116,6 +119,9 @@ export default function TeamSpelerRij({
 
       {/* Rechter indicatoren */}
       <div className="flex shrink-0 items-center gap-0.5">
+        {/* Ranking badge */}
+        {showRanking && <RankingBadge rating={speler.rating} size="compact" />}
+
         {/* Leeftijd */}
         {dl === "detail" && (
           <span className="shrink-0 text-[8px] text-gray-500 tabular-nums">

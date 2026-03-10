@@ -11,6 +11,10 @@ interface EditorToolbarProps {
   zichtbaar: number;
   totaal: number;
   mode: EditorMode;
+  showRanking?: boolean;
+  onToggleRanking?: () => void;
+  onSyncScores?: () => void;
+  syncingScores?: boolean;
   onToggleMode: () => void;
   onCreateTeam?: () => void;
 }
@@ -20,6 +24,10 @@ export default function EditorToolbar({
   zichtbaar,
   totaal,
   mode,
+  showRanking,
+  onToggleRanking,
+  onSyncScores,
+  syncingScores,
   onToggleMode,
   onCreateTeam,
 }: EditorToolbarProps) {
@@ -68,8 +76,29 @@ export default function EditorToolbar({
         {zichtbaar} van {totaal} teams zichtbaar
       </span>
 
-      {/* Rechts: nieuw team + toggle + definitief */}
+      {/* Rechts: score toggle + nieuw team + toggle + definitief */}
       <div className="flex items-center gap-2">
+        {onToggleRanking && (
+          <button
+            onClick={onToggleRanking}
+            className={`rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors ${
+              showRanking ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+            }`}
+            title={showRanking ? "Verberg scores" : "Toon scores"}
+          >
+            Score
+          </button>
+        )}
+        {onSyncScores && (
+          <button
+            onClick={onSyncScores}
+            disabled={syncingScores}
+            className="rounded-lg bg-gray-100 px-2.5 py-1.5 text-xs font-medium text-gray-500 transition-colors hover:bg-gray-200 disabled:opacity-50"
+            title="Synchroniseer teamscores vanuit dit scenario naar competitieteams"
+          >
+            {syncingScores ? "Syncing..." : "Sync scores"}
+          </button>
+        )}
         {!isLocked && onCreateTeam && mode === "edit" && (
           <button
             onClick={onCreateTeam}

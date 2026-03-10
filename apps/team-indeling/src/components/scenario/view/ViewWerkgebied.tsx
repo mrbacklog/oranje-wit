@@ -16,6 +16,7 @@ interface ViewWerkgebiedProps {
   selectieGroepMap?: Map<string, SelectieGroepData>;
   validatieMap?: Map<string, TeamValidatie>;
   pinnedSpelerIds?: Set<string>;
+  showRanking?: boolean;
   positions: PositionMap;
   onRepositionCard: (cardId: string, deltaX: number, deltaY: number) => void;
   onSpelerClick?: (speler: SpelerData) => void;
@@ -26,6 +27,7 @@ export default function ViewWerkgebied({
   selectieGroepMap,
   validatieMap,
   pinnedSpelerIds,
+  showRanking,
   positions,
   onRepositionCard,
   onSpelerClick,
@@ -99,6 +101,7 @@ export default function ViewWerkgebied({
                     validatie={validatieMap?.get(team.id)}
                     detailLevel={detailLevel}
                     pinnedSpelerIds={pinnedSpelerIds}
+                    showRanking={showRanking}
                     jIndicatie={jIndicatieMap.get(team.id)}
                     teamSterkte={teamSterkteMap.get(team.id)}
                     onSpelerClick={onSpelerClick}

@@ -54,6 +54,9 @@ export async function bepaalTeamscore(
   });
   if (!refTeam) return null;
 
+  // Gebruik opgeslagen teamscore als die gezet is (vanuit conceptindeling of handmatig)
+  if (refTeam.teamscore != null) return refTeam.teamscore;
+
   // A-categorie: vaste mapping op basis van poolVeld prefix
   if (huidig.a_categorie && refTeam.poolVeld) {
     const key = parseACatKey(refTeam.poolVeld);
@@ -86,7 +89,8 @@ export async function bepaalTeamscore(
       include: { regels: { where: { isOW: true } } },
     });
     if (poolStand?.regels?.length > 0) {
-      return poolStand.regels[0].punten;
+      // Competitiepunten schalen naar teamscore-range (0-25 → ~10-200)
+      return Math.round(poolStand.regels[0].punten * 8);
     }
   }
 
@@ -116,7 +120,7 @@ export async function berekenAlleRatings(
 ): Promise<{ bijgewerkt: number; overgeslagen: number; fouten: number }> {
   const spelers = await prisma.speler.findMany({
     where: { huidig: { not: null } },
-    select: { id: true, huidig: true, rating: true },
+    select: { id: true, huidig: true, rating: true, ratingBerekend: true },
   });
 
   let bijgewerkt = 0;
@@ -135,8 +139,9 @@ export async function berekenAlleRatings(
       const berekend = berekenRating(teamscore, niveau);
 
       const updateData: any = { ratingBerekend: berekend };
-      // Alleen rating overschrijven als die nog niet handmatig is gezet
-      if (speler.rating == null) {
+      // Alleen rating overschrijven als die niet handmatig afwijkt van de berekende waarde
+      const isHandmatig = speler.rating != null && speler.rating !== speler.ratingBerekend;
+      if (!isHandmatig) {
         updateData.rating = berekend;
       }
 

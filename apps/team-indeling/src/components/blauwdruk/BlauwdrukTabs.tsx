@@ -8,6 +8,8 @@ import CategoriePanel from "./CategoriePanel";
 import LedenDashboard from "./LedenDashboard";
 import ToelichtingEditor from "./ToelichtingEditor";
 import PinsOverzicht from "./PinsOverzicht";
+import CompetitieTeamsPanel from "./CompetitieTeamsPanel";
+import type { ReferentieTeamData } from "./CompetitieTeamsPanel";
 import NotitieOverzicht from "@/components/notities/NotitieOverzicht";
 import BlockerChecklist from "@/components/notities/BlockerChecklist";
 
@@ -35,10 +37,12 @@ interface BlauwdrukTabsProps {
     stats: { open: number; blockers: number; afgerond: number };
   }>;
   pins: PinMetNamen[];
+  referentieTeams: ReferentieTeamData[];
 }
 
 const TABS = [
   { id: "categorieen", label: "Categorieën" },
+  { id: "competitieteams", label: "Competitieteams" },
   { id: "leden", label: "Leden" },
   { id: "toelichting", label: "Toelichting" },
   { id: "actiepunten", label: "Actiepunten" },
@@ -58,6 +62,7 @@ export default function BlauwdrukTabs({
   notitieStats,
   refreshNotities,
   pins,
+  referentieTeams,
 }: BlauwdrukTabsProps) {
   const [activeTab, setActiveTab] = useState<TabId>("categorieen");
   const [localPins, setLocalPins] = useState(pins);
@@ -110,6 +115,8 @@ export default function BlauwdrukTabs({
       {activeTab === "categorieen" && (
         <CategoriePanel statistieken={statistieken} kaders={kaders} blauwdrukId={blauwdrukId} />
       )}
+
+      {activeTab === "competitieteams" && <CompetitieTeamsPanel initialTeams={referentieTeams} />}
 
       {activeTab === "leden" && <LedenDashboard spelers={spelers} />}
 

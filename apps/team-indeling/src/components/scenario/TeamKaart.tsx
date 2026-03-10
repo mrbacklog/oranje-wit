@@ -30,6 +30,7 @@ export interface TeamKaartProps {
   notitieCount?: number;
   detailLevel?: DetailLevel;
   pinnedSpelerIds?: Set<string>;
+  showRanking?: boolean;
   jIndicatie?: string;
   teamSterkte?: number;
   onDelete?: (teamId: string) => void;
@@ -44,6 +45,7 @@ export default function TeamKaart({
   notitieCount,
   detailLevel,
   pinnedSpelerIds,
+  showRanking,
   jIndicatie,
   teamSterkte,
   onDelete,
@@ -275,6 +277,7 @@ export default function TeamKaart({
                         teamId={team.id}
                         detailLevel={dl}
                         isPinned={pinnedSpelerIds?.has(ts.speler.id)}
+                        showRanking={showRanking}
                         onSpelerClick={onSpelerClick}
                       />
                     ))}
@@ -302,6 +305,7 @@ export default function TeamKaart({
                         teamId={team.id}
                         detailLevel={dl}
                         isPinned={pinnedSpelerIds?.has(ts.speler.id)}
+                        showRanking={showRanking}
                         onSpelerClick={onSpelerClick}
                       />
                     ))}

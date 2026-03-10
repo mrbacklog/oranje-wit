@@ -22,6 +22,7 @@ interface WerkgebiedProps {
   onSpelerClick?: (speler: SpelerData, teamId?: string) => void;
   onEditTeam?: (teamId: string) => void;
   pinnedSpelerIds?: Set<string>;
+  showRanking?: boolean;
   positions: PositionMap;
   onRepositionCard: (cardId: string, deltaX: number, deltaY: number) => void;
 }
@@ -37,6 +38,7 @@ export default function Werkgebied({
   onSpelerClick,
   onEditTeam,
   pinnedSpelerIds,
+  showRanking,
   positions,
   onRepositionCard,
 }: WerkgebiedProps) {
@@ -155,6 +157,7 @@ export default function Werkgebied({
                       validatie={validatieMap?.get(team.id)}
                       detailLevel={detailLevel}
                       pinnedSpelerIds={pinnedSpelerIds}
+                      showRanking={showRanking}
                       jIndicatie={jIndicatieMap.get(team.id)}
                       teamSterkte={teamSterkteMap.get(team.id)}
                       onDelete={onDeleteTeam}

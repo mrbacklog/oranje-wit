@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useRef } from "react";
+import { logger } from "@oranje-wit/types";
 import type { ScenarioData, SpelerData, SelectieGroepData } from "../types";
 import { PEILJAAR } from "../types";
 import { useScenarioEditor } from "../hooks/useScenarioEditor";
@@ -38,8 +39,31 @@ export default function ScenarioEditorFullscreen({
   const [poolOpen, setPoolOpen] = useState(false);
   const [nieuwTeamOpen, setNieuwTeamOpen] = useState(false);
   const [rapportOpen, setRapportOpen] = useState(false);
+  const [showRanking, setShowRanking] = useState(false);
+  const [syncingScores, setSyncingScores] = useState(false);
+  const syncLockRef = useRef(false);
 
   const isPreview = mode === "preview";
+  const toggleRanking = useCallback(() => setShowRanking((v) => !v), []);
+
+  const handleSyncScores = useCallback(async () => {
+    if (syncLockRef.current) return;
+    syncLockRef.current = true;
+    setSyncingScores(true);
+    try {
+      const res = await fetch(`/api/scenarios/${scenario.id}/teamscore-sync`, { method: "POST" });
+      if (res.ok) {
+        const data = await res.json();
+        logger.info("Teamscores gesynchroniseerd:", data);
+        editor.refreshTeams();
+      }
+    } catch (error) {
+      logger.warn("Sync teamscores mislukt:", error);
+    } finally {
+      setSyncingScores(false);
+      syncLockRef.current = false;
+    }
+  }, [scenario.id, editor]);
 
   // Build card info for free-form positioning
   const cardInfos: CardInfo[] = useMemo(() => {
@@ -126,6 +150,10 @@ export default function ScenarioEditorFullscreen({
           zichtbaar={zichtbareCount}
           totaal={editor.teams.length}
           mode={mode}
+          showRanking={showRanking}
+          onToggleRanking={toggleRanking}
+          onSyncScores={handleSyncScores}
+          syncingScores={syncingScores}
           onToggleMode={toggleMode}
         />
         <div className="relative flex-1 overflow-hidden">
@@ -134,6 +162,7 @@ export default function ScenarioEditorFullscreen({
             selectieGroepMap={selectieGroepMap}
             validatieMap={previewValidatieMap}
             pinnedSpelerIds={editor.pinnedSpelerIds}
+            showRanking={showRanking}
             positions={positions}
             onRepositionCard={updatePosition}
             onSpelerClick={(speler) => {
@@ -153,6 +182,7 @@ export default function ScenarioEditorFullscreen({
                 : undefined
             }
             pin={editor.pinMap.get(editor.detailSpeler.id) ?? null}
+            showRanking={showRanking}
             onTogglePin={editor.handleTogglePin}
             onClose={() => {
               editor.setDetailSpeler(null);
@@ -172,6 +202,8 @@ export default function ScenarioEditorFullscreen({
         zichtbaar={zichtbareCount}
         totaal={editor.teams.length}
         mode={mode}
+        showRanking={showRanking}
+        onToggleRanking={toggleRanking}
         onToggleMode={toggleMode}
         onCreateTeam={() => setNieuwTeamOpen(true)}
       />
@@ -239,6 +271,7 @@ export default function ScenarioEditorFullscreen({
               validatieMap={editor.validatieMap}
               selectieGroepMap={editor.selectieGroepMap}
               pinnedSpelerIds={editor.pinnedSpelerIds}
+              showRanking={showRanking}
               onDeleteTeam={editor.handleDeleteTeam}
               onKoppelSelectie={editor.handleKoppelSelectie}
               onOntkoppelSelectie={editor.handleOntkoppelSelectie}

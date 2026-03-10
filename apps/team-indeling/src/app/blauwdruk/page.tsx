@@ -7,6 +7,7 @@ import {
 import type { CategorieKaders } from "./categorie-kaders";
 import BlauwdrukTabs from "@/components/blauwdruk/BlauwdrukTabs";
 import { getActiefSeizoen } from "@/lib/seizoen";
+import { prisma } from "@/lib/db/prisma";
 import { getNotities, getNotitieStats } from "@/app/notities/actions";
 
 export const dynamic = "force-dynamic";
@@ -15,12 +16,25 @@ export default async function BlauwdrukPage() {
   const seizoen = await getActiefSeizoen();
   const blauwdruk = await getBlauwdruk(seizoen);
 
-  const [spelers, statistieken, notities, notitieStats, pins] = await Promise.all([
+  const [spelers, statistieken, notities, notitieStats, pins, referentieTeams] = await Promise.all([
     getSpelersUitgebreid(),
     getLedenStatistieken(),
     getNotities(blauwdruk.id),
     getNotitieStats(blauwdruk.id),
     getPinsVoorBlauwdruk(blauwdruk.id),
+    prisma.referentieTeam.findMany({
+      where: { seizoen },
+      select: {
+        id: true,
+        naam: true,
+        seizoen: true,
+        teamType: true,
+        niveau: true,
+        poolVeld: true,
+        teamscore: true,
+      },
+      orderBy: { naam: "asc" },
+    }),
   ]);
 
   const blockers = notities.filter(
@@ -58,6 +72,7 @@ export default async function BlauwdrukPage() {
         notitieStats={notitieStats}
         refreshNotities={refreshNotities}
         pins={pins}
+        referentieTeams={referentieTeams}
       />
     </div>
   );

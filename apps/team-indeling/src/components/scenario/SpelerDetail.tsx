@@ -15,6 +15,7 @@ import SpelerAvatar from "@/components/ui/SpelerAvatar";
 import AfmeldBadge from "./AfmeldBadge";
 import EvaluatieScores from "./EvaluatieScores";
 import RatingEditor from "./RatingEditor";
+import RankingBadge from "./RankingBadge";
 import Spinner from "@/components/ui/Spinner";
 
 type SpelerNotitie = {
@@ -30,6 +31,7 @@ interface SpelerDetailProps {
   teamNaam?: string;
   pin?: PinData | null;
   notities?: SpelerNotitie[];
+  showRanking?: boolean;
   onClose: () => void;
   onNieuweNotitie?: (spelerId: string) => void;
   onTogglePin?: (spelerId: string, teamNaam: string, teamId: string) => void;
@@ -66,6 +68,7 @@ export default function SpelerDetail({
   teamNaam,
   pin,
   notities,
+  showRanking,
   onClose,
   onNieuweNotitie,
   onTogglePin,
@@ -132,9 +135,12 @@ export default function SpelerDetail({
               className="h-10 w-10 text-sm"
             />
             <div>
-              <h3 className="text-lg font-bold text-gray-900">
-                {speler.roepnaam} {speler.achternaam}
-              </h3>
+              <div className="flex items-center gap-2">
+                <h3 className="text-lg font-bold text-gray-900">
+                  {speler.roepnaam} {speler.achternaam}
+                </h3>
+                {showRanking && <RankingBadge rating={speler.rating} size="detail" />}
+              </div>
               <div className="mt-1 flex items-center gap-2">
                 <span className={`h-2 w-2 rounded-full ${STATUS_KLEUREN[speler.status]}`} />
                 <span className="text-xs text-gray-500">

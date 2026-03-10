@@ -804,6 +804,7 @@ model ReferentieTeam {
   spelerIds String[]
   stafIds   String[]
   stats     Json
+  teamscore Int?
   createdAt DateTime @default(now())
 
   @@index([seizoen])

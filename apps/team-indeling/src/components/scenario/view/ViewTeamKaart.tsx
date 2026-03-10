@@ -21,6 +21,7 @@ import {
 import ValidatieBadge from "../ValidatieBadge";
 import ValidatieMeldingen from "../ValidatieMeldingen";
 import AfmeldBadge from "../AfmeldBadge";
+import RankingBadge from "../RankingBadge";
 import { getCardSize } from "../editor/cardSizes";
 import { useZoomScale } from "../editor/ZoomScaleContext";
 
@@ -29,6 +30,7 @@ interface ViewTeamKaartProps {
   validatie?: TeamValidatie;
   detailLevel?: DetailLevel;
   pinnedSpelerIds?: Set<string>;
+  showRanking?: boolean;
   jIndicatie?: string;
   teamSterkte?: number;
   onSpelerClick?: (speler: SpelerData) => void;
@@ -39,6 +41,7 @@ export default function ViewTeamKaart({
   validatie,
   detailLevel,
   pinnedSpelerIds,
+  showRanking,
   jIndicatie,
   teamSterkte,
   onSpelerClick,
@@ -171,6 +174,7 @@ export default function ViewTeamKaart({
                       speler={ts.speler}
                       statusOverride={ts.statusOverride}
                       isPinned={pinnedSpelerIds?.has(ts.speler.id)}
+                      showRanking={showRanking}
                       onSpelerClick={onSpelerClick}
                     />
                   ))}
@@ -195,6 +199,7 @@ export default function ViewTeamKaart({
                       speler={ts.speler}
                       statusOverride={ts.statusOverride}
                       isPinned={pinnedSpelerIds?.has(ts.speler.id)}
+                      showRanking={showRanking}
                       onSpelerClick={onSpelerClick}
                     />
                   ))}
@@ -222,6 +227,7 @@ export default function ViewTeamKaart({
                         key={ts.id}
                         speler={ts.speler}
                         statusOverride={ts.statusOverride}
+                        showRanking={showRanking}
                         onSpelerClick={onSpelerClick}
                       />
                     ))}
@@ -247,6 +253,7 @@ export default function ViewTeamKaart({
                         key={ts.id}
                         speler={ts.speler}
                         statusOverride={ts.statusOverride}
+                        showRanking={showRanking}
                         onSpelerClick={onSpelerClick}
                       />
                     ))}
@@ -304,11 +311,13 @@ function ViewSpelerRij({
   speler,
   statusOverride,
   isPinned,
+  showRanking,
   onSpelerClick,
 }: {
   speler: SpelerData;
   statusOverride: import("@oranje-wit/database").SpelerStatus | null;
   isPinned?: boolean;
+  showRanking?: boolean;
   onSpelerClick?: (speler: SpelerData) => void;
 }) {
   const status = statusOverride ?? speler.status;
@@ -355,6 +364,7 @@ function ViewSpelerRij({
         )}
       </span>
       <div className="flex shrink-0 items-center gap-0.5">
+        {showRanking && <RankingBadge rating={speler.rating} size="compact" />}
         {isPinned && (
           <svg
             className="h-2 w-2 text-purple-500"
