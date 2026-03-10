@@ -20,6 +20,7 @@ interface WerkgebiedProps {
   selectieGroepMap?: Map<string, SelectieGroepData>;
   onSpelerClick?: (speler: SpelerData, teamId?: string) => void;
   onEditTeam?: (teamId: string) => void;
+  pinnedSpelerIds?: Set<string>;
   positions: PositionMap;
   onRepositionCard: (cardId: string, deltaX: number, deltaY: number) => void;
 }
@@ -34,6 +35,7 @@ export default function Werkgebied({
   selectieGroepMap,
   onSpelerClick,
   onEditTeam,
+  pinnedSpelerIds,
   positions,
   onRepositionCard,
 }: WerkgebiedProps) {
@@ -125,6 +127,7 @@ export default function Werkgebied({
                       selectieGroep={selectieGroepMap?.get(groepId)}
                       validatieMap={validatieMap}
                       detailLevel={detailLevel}
+                      pinnedSpelerIds={pinnedSpelerIds}
                       onOntkoppel={onOntkoppelSelectie}
                       onDelete={onDeleteTeam}
                       onSpelerClick={onSpelerClick}
@@ -147,6 +150,7 @@ export default function Werkgebied({
                       team={team}
                       validatie={validatieMap?.get(team.id)}
                       detailLevel={detailLevel}
+                      pinnedSpelerIds={pinnedSpelerIds}
                       onDelete={onDeleteTeam}
                       onSpelerClick={
                         onSpelerClick ? (speler) => onSpelerClick(speler, team.id) : undefined

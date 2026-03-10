@@ -139,9 +139,19 @@ export interface ScenarioData {
   versies: VersieData[];
   concept: {
     blauwdruk: {
+      id: string;
       kaders: Record<string, Record<string, unknown>>;
     };
   };
+}
+
+/** Pin data voor de scenario-editor */
+export interface PinData {
+  id: string;
+  spelerId: string;
+  type: string;
+  waarde: { teamNaam: string; teamId: string } | Record<string, unknown>;
+  notitie: string | null;
 }
 
 /** Huidig veld (JSON) */

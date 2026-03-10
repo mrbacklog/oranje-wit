@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import type { EvaluatieData, TeamGemiddelde } from "@oranje-wit/types";
-import type { SpelerData, HuidigData, SpelerspadEntry } from "./types";
+import type { SpelerData, HuidigData, SpelerspadEntry, PinData } from "./types";
 import {
   STATUS_KLEUREN,
   kleurIndicatie,
@@ -26,9 +26,12 @@ type SpelerNotitie = {
 interface SpelerDetailProps {
   speler: SpelerData;
   teamId?: string;
+  teamNaam?: string;
+  pin?: PinData | null;
   notities?: SpelerNotitie[];
   onClose: () => void;
   onNieuweNotitie?: (spelerId: string) => void;
+  onTogglePin?: (spelerId: string, teamNaam: string, teamId: string) => void;
 }
 
 /** Groepeer evaluaties per seizoen, rondes in oplopende volgorde */
@@ -59,9 +62,12 @@ const STATUS_LABELS: Record<string, string> = {
 export default function SpelerDetail({
   speler,
   teamId,
+  teamNaam,
+  pin,
   notities,
   onClose,
   onNieuweNotitie,
+  onTogglePin,
 }: SpelerDetailProps) {
   const leeftijd = korfbalLeeftijd(speler.geboortedatum, speler.geboortejaar);
   const kleur = kleurIndicatie(leeftijd);
@@ -191,6 +197,29 @@ export default function SpelerDetail({
                 {huidig.kleur && <span className="text-xs text-orange-500">({huidig.kleur})</span>}
               </span>
             </div>
+          )}
+
+          {/* Pin-toggle */}
+          {onTogglePin && teamNaam && teamId && (
+            <button
+              onClick={() => onTogglePin(speler.id, teamNaam, teamId)}
+              className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-colors ${
+                pin
+                  ? "border-purple-200 bg-purple-50 text-purple-700 hover:bg-purple-100"
+                  : "border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
+              }`}
+            >
+              <svg
+                className={`h-4 w-4 ${pin ? "text-purple-500" : "text-gray-400"}`}
+                viewBox="0 0 24 24"
+                fill={pin ? "currentColor" : "none"}
+                stroke="currentColor"
+                strokeWidth={pin ? "0" : "2"}
+              >
+                <path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z" />
+              </svg>
+              {pin ? "Ontpin" : `Pin naar ${teamNaam}`}
+            </button>
           )}
 
           {/* Spelerspad */}

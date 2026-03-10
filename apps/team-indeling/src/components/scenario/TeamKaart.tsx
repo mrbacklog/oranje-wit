@@ -29,6 +29,7 @@ export interface TeamKaartProps {
   validatie?: TeamValidatie;
   notitieCount?: number;
   detailLevel?: DetailLevel;
+  pinnedSpelerIds?: Set<string>;
   onDelete?: (teamId: string) => void;
   onSpelerClick?: (speler: SpelerData) => void;
   onEditTeam?: (teamId: string) => void;
@@ -40,6 +41,7 @@ export default function TeamKaart({
   validatie,
   notitieCount,
   detailLevel,
+  pinnedSpelerIds,
   onDelete,
   onSpelerClick,
   onEditTeam,
@@ -268,6 +270,7 @@ export default function TeamKaart({
                         teamSpeler={ts}
                         teamId={team.id}
                         detailLevel={dl}
+                        isPinned={pinnedSpelerIds?.has(ts.speler.id)}
                         onSpelerClick={onSpelerClick}
                       />
                     ))}
@@ -294,6 +297,7 @@ export default function TeamKaart({
                         teamSpeler={ts}
                         teamId={team.id}
                         detailLevel={dl}
+                        isPinned={pinnedSpelerIds?.has(ts.speler.id)}
                         onSpelerClick={onSpelerClick}
                       />
                     ))}
@@ -323,6 +327,7 @@ export default function TeamKaart({
                       teamSpeler={ts}
                       teamId={team.id}
                       detailLevel={dl}
+                      isPinned={pinnedSpelerIds?.has(ts.speler.id)}
                       onSpelerClick={onSpelerClick}
                     />
                   ))}
@@ -347,6 +352,7 @@ export default function TeamKaart({
                       teamSpeler={ts}
                       teamId={team.id}
                       detailLevel={dl}
+                      isPinned={pinnedSpelerIds?.has(ts.speler.id)}
                       onSpelerClick={onSpelerClick}
                     />
                   ))}

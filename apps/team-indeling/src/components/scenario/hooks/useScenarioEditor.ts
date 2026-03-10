@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useCallback, useTransition, useMemo } from "react";
+import { useState, useCallback, useTransition, useMemo, useEffect } from "react";
 import { logger } from "@oranje-wit/types";
 import type { TeamCategorie, Kleur } from "@oranje-wit/database";
-import type { ScenarioData, SpelerData, TeamData, SelectieGroepData } from "../types";
+import type { ScenarioData, SpelerData, TeamData, SelectieGroepData, PinData } from "../types";
 import { PEILJAAR } from "../types";
 import { useValidatie } from "@/hooks/useValidatie";
 import type { TeamUpdateData } from "../TeamEditPanel";
@@ -11,6 +11,7 @@ import { createTeam } from "@/app/scenarios/actions";
 import { deleteTeam, updateTeam, updateTeamType } from "@/app/scenarios/team-actions";
 import { updateTeamVolgorde } from "@/app/scenarios/team-volgorde-actions";
 import { useSelectieHandlers, type VerdeelData } from "./useSelectieHandlers";
+import { getPinsVoorScenario, createPin, deletePin } from "@/app/pins/actions";
 
 export function useScenarioEditor(scenario: ScenarioData, alleSpelers: SpelerData[]) {
   const laatsteVersie = scenario.versies[0];
@@ -38,6 +39,86 @@ export function useScenarioEditor(scenario: ScenarioData, alleSpelers: SpelerDat
 
   // Realtime validatie
   const { validatieMap, dubbeleMeldingen } = useValidatie(teams, PEILJAAR, blauwdrukKaders);
+
+  // Pins (blauwdruk-level)
+  const blauwdrukId = scenario.concept?.blauwdruk?.id;
+  const [pins, setPins] = useState<PinData[]>([]);
+  const pinMap = useMemo(() => {
+    const map = new Map<string, PinData>();
+    for (const pin of pins) {
+      if (pin.spelerId) map.set(pin.spelerId, pin);
+    }
+    return map;
+  }, [pins]);
+  const pinnedSpelerIds = useMemo(() => new Set(pinMap.keys()), [pinMap]);
+
+  useEffect(() => {
+    if (!scenario.id) return;
+    getPinsVoorScenario(scenario.id).then((result) => {
+      setPins(
+        result.map((p) => ({
+          id: p.id,
+          spelerId: p.spelerId ?? "",
+          type: p.type,
+          waarde: p.waarde as PinData["waarde"],
+          notitie: p.notitie,
+        }))
+      );
+    });
+  }, [scenario.id]);
+
+  const handleTogglePin = useCallback(
+    (spelerId: string, teamNaam: string, teamId: string) => {
+      if (!blauwdrukId) return;
+      const bestaandePin = pinMap.get(spelerId);
+      if (bestaandePin) {
+        // Ontpin — optimistic update
+        setPins((prev) => prev.filter((p) => p.id !== bestaandePin.id));
+        startTransition(() => {
+          deletePin(bestaandePin.id).catch(() => {
+            // Rollback bij fout
+            setPins((prev) => [...prev, bestaandePin]);
+          });
+        });
+      } else {
+        // Pin — optimistic update
+        const tempPin: PinData = {
+          id: `temp-${Date.now()}`,
+          spelerId,
+          type: "SPELER_POSITIE",
+          waarde: { teamNaam, teamId },
+          notitie: null,
+        };
+        setPins((prev) => [...prev, tempPin]);
+        startTransition(async () => {
+          try {
+            const pin = await createPin({
+              blauwdrukId,
+              spelerId,
+              type: "SPELER_POSITIE",
+              waarde: { teamNaam, teamId },
+            });
+            setPins((prev) =>
+              prev.map((p) =>
+                p.id === tempPin.id
+                  ? {
+                      id: pin.id,
+                      spelerId: pin.spelerId ?? "",
+                      type: pin.type,
+                      waarde: pin.waarde as PinData["waarde"],
+                      notitie: pin.notitie,
+                    }
+                  : p
+              )
+            );
+          } catch {
+            setPins((prev) => prev.filter((p) => p.id !== tempPin.id));
+          }
+        });
+      }
+    },
+    [blauwdrukId, pinMap]
+  );
 
   // What-if state
   const [whatIfOpen, setWhatIfOpen] = useState(false);
@@ -236,6 +317,8 @@ export function useScenarioEditor(scenario: ScenarioData, alleSpelers: SpelerDat
     editTeam,
     detailSpeler,
     detailTeamId,
+    pinMap,
+    pinnedSpelerIds,
     whatIfOpen,
     verdeelData,
 
@@ -247,6 +330,7 @@ export function useScenarioEditor(scenario: ScenarioData, alleSpelers: SpelerDat
     setVerdeelData,
 
     // Handlers
+    handleTogglePin,
     handleSpelerClick,
     handleEditTeam,
     handleUpdateTeam,

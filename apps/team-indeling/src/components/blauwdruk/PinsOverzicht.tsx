@@ -28,9 +28,10 @@ function waarde(pin: PinMetNamen): string {
 
 interface PinsOverzichtProps {
   pins: PinMetNamen[];
+  onDeletePin?: (pinId: string) => void;
 }
 
-export default function PinsOverzicht({ pins }: PinsOverzichtProps) {
+export default function PinsOverzicht({ pins, onDeletePin }: PinsOverzichtProps) {
   if (pins.length === 0) {
     return (
       <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50 p-8 text-center text-sm text-gray-500">
@@ -70,6 +71,7 @@ export default function PinsOverzicht({ pins }: PinsOverzichtProps) {
                     <th className="px-4 py-2 text-left font-medium">Notitie</th>
                     <th className="px-4 py-2 text-left font-medium">Gepind door</th>
                     <th className="px-4 py-2 text-left font-medium">Datum</th>
+                    {onDeletePin && <th className="px-4 py-2 text-left font-medium" />}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
@@ -86,6 +88,25 @@ export default function PinsOverzicht({ pins }: PinsOverzichtProps) {
                           year: "numeric",
                         })}
                       </td>
+                      {onDeletePin && (
+                        <td className="px-4 py-2.5">
+                          <button
+                            onClick={() => onDeletePin(pin.id)}
+                            className="rounded p-1 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500"
+                            title="Ontpin"
+                          >
+                            <svg
+                              className="h-3.5 w-3.5"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                            >
+                              <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" />
+                            </svg>
+                          </button>
+                        </td>
+                      )}
                     </tr>
                   ))}
                 </tbody>

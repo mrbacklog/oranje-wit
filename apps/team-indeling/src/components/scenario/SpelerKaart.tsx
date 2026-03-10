@@ -8,10 +8,11 @@ import AfmeldBadge from "./AfmeldBadge";
 
 interface SpelerKaartProps {
   speler: SpelerData;
+  isPinned?: boolean;
   onClick: () => void;
 }
 
-export default function SpelerKaart({ speler, onClick }: SpelerKaartProps) {
+export default function SpelerKaart({ speler, isPinned, onClick }: SpelerKaartProps) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: `pool-${speler.id}`,
     data: { type: "pool-speler", spelerId: speler.id },
@@ -61,6 +62,16 @@ export default function SpelerKaart({ speler, onClick }: SpelerKaartProps) {
             {speler.roepnaam} {speler.achternaam}
           </span>
           {speler.afmelddatum && <AfmeldBadge afmelddatum={speler.afmelddatum} />}
+          {isPinned && (
+            <svg
+              className="h-2.5 w-2.5 shrink-0 text-purple-500"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-label="Gepind"
+            >
+              <path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z" />
+            </svg>
+          )}
         </div>
 
         {/* Regel 2: leeftijd, geslacht, vorig team */}

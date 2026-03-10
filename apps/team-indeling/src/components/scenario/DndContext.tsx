@@ -3,7 +3,7 @@
 import {
   DndContext as DndKitContext,
   DragOverlay,
-  closestCenter,
+  pointerWithin,
   type DragStartEvent,
   type DragEndEvent,
   PointerSensor,
@@ -100,7 +100,7 @@ export default function DndProvider({
   return (
     <DndKitContext
       sensors={sensors}
-      collisionDetection={closestCenter}
+      collisionDetection={pointerWithin}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >

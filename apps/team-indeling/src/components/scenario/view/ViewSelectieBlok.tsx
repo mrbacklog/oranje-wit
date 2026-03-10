@@ -18,6 +18,7 @@ interface ViewSelectieBlokProps {
   selectieGroep?: SelectieGroepData;
   validatieMap?: Map<string, TeamValidatie>;
   detailLevel?: DetailLevel;
+  pinnedSpelerIds?: Set<string>;
   onSpelerClick?: (speler: SpelerData) => void;
 }
 
@@ -26,6 +27,7 @@ export default function ViewSelectieBlok({
   selectieGroep,
   validatieMap,
   detailLevel,
+  pinnedSpelerIds,
   onSpelerClick,
 }: ViewSelectieBlokProps) {
   const dl = detailLevel ?? "detail";
@@ -133,6 +135,7 @@ export default function ViewSelectieBlok({
                       key={ts.id}
                       speler={ts.speler}
                       status={ts.statusOverride ?? ts.speler.status}
+                      isPinned={pinnedSpelerIds?.has(ts.speler.id)}
                       onSpelerClick={onSpelerClick}
                     />
                   ))}
@@ -144,6 +147,7 @@ export default function ViewSelectieBlok({
                       key={ts.id}
                       speler={ts.speler}
                       status={ts.statusOverride ?? ts.speler.status}
+                      isPinned={pinnedSpelerIds?.has(ts.speler.id)}
                       onSpelerClick={onSpelerClick}
                     />
                   ))}
@@ -167,6 +171,7 @@ export default function ViewSelectieBlok({
                       key={ts.id}
                       speler={ts.speler}
                       status={ts.statusOverride ?? ts.speler.status}
+                      isPinned={pinnedSpelerIds?.has(ts.speler.id)}
                       onSpelerClick={onSpelerClick}
                     />
                   ))}
@@ -178,6 +183,7 @@ export default function ViewSelectieBlok({
                       key={ts.id}
                       speler={ts.speler}
                       status={ts.statusOverride ?? ts.speler.status}
+                      isPinned={pinnedSpelerIds?.has(ts.speler.id)}
                       onSpelerClick={onSpelerClick}
                     />
                   ))}
@@ -222,10 +228,12 @@ export default function ViewSelectieBlok({
 function ViewSpelerRij({
   speler,
   status,
+  isPinned,
   onSpelerClick,
 }: {
   speler: SpelerData;
   status: import("@oranje-wit/database").SpelerStatus;
+  isPinned?: boolean;
   onSpelerClick?: (speler: SpelerData) => void;
 }) {
   const leeftijd = korfbalLeeftijd(speler.geboortedatum, speler.geboortejaar);
@@ -259,6 +267,16 @@ function ViewSpelerRij({
         {speler.roepnaam} {speler.achternaam}
       </span>
       <div className="flex shrink-0 items-center gap-0.5">
+        {isPinned && (
+          <svg
+            className="h-2 w-2 text-purple-500"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            aria-label="Gepind"
+          >
+            <path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z" />
+          </svg>
+        )}
         <span className="text-[8px] text-gray-500 tabular-nums">{leeftijd.toFixed(2)}</span>
         {kleur && (
           <span className={`h-1.5 w-1.5 rounded-full ring-1 ring-white ${KLEUR_DOT[kleur]}`} />

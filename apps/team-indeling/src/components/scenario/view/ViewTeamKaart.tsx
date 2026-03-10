@@ -28,6 +28,7 @@ interface ViewTeamKaartProps {
   team: TeamData;
   validatie?: TeamValidatie;
   detailLevel?: DetailLevel;
+  pinnedSpelerIds?: Set<string>;
   onSpelerClick?: (speler: SpelerData) => void;
 }
 
@@ -35,6 +36,7 @@ export default function ViewTeamKaart({
   team,
   validatie,
   detailLevel,
+  pinnedSpelerIds,
   onSpelerClick,
 }: ViewTeamKaartProps) {
   const dl = detailLevel ?? "detail";
@@ -164,6 +166,7 @@ export default function ViewTeamKaart({
                       key={ts.id}
                       speler={ts.speler}
                       statusOverride={ts.statusOverride}
+                      isPinned={pinnedSpelerIds?.has(ts.speler.id)}
                       onSpelerClick={onSpelerClick}
                     />
                   ))}
@@ -187,6 +190,7 @@ export default function ViewTeamKaart({
                       key={ts.id}
                       speler={ts.speler}
                       statusOverride={ts.statusOverride}
+                      isPinned={pinnedSpelerIds?.has(ts.speler.id)}
                       onSpelerClick={onSpelerClick}
                     />
                   ))}
@@ -287,10 +291,12 @@ export default function ViewTeamKaart({
 function ViewSpelerRij({
   speler,
   statusOverride,
+  isPinned,
   onSpelerClick,
 }: {
   speler: SpelerData;
   statusOverride: import("@oranje-wit/database").SpelerStatus | null;
+  isPinned?: boolean;
   onSpelerClick?: (speler: SpelerData) => void;
 }) {
   const status = statusOverride ?? speler.status;
@@ -337,6 +343,16 @@ function ViewSpelerRij({
         )}
       </span>
       <div className="flex shrink-0 items-center gap-0.5">
+        {isPinned && (
+          <svg
+            className="h-2 w-2 text-purple-500"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            aria-label="Gepind"
+          >
+            <path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z" />
+          </svg>
+        )}
         <span className="text-[8px] text-gray-500 tabular-nums">{leeftijd.toFixed(2)}</span>
         {kleur && (
           <span className={`h-1.5 w-1.5 rounded-full ring-1 ring-white ${KLEUR_DOT[kleur]}`} />

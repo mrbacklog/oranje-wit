@@ -136,6 +136,7 @@ export default function ScenarioEditorFullscreen({
             teams={zichtbareTeams}
             selectieGroepMap={selectieGroepMap}
             validatieMap={previewValidatieMap}
+            pinnedSpelerIds={editor.pinnedSpelerIds}
             positions={positions}
             onRepositionCard={updatePosition}
             onSpelerClick={(speler) => {
@@ -149,6 +150,13 @@ export default function ScenarioEditorFullscreen({
           <SpelerDetail
             speler={editor.detailSpeler}
             teamId={editor.detailTeamId ?? undefined}
+            teamNaam={
+              editor.detailTeamId
+                ? editor.teams.find((t) => t.id === editor.detailTeamId)?.naam
+                : undefined
+            }
+            pin={editor.pinMap.get(editor.detailSpeler.id) ?? null}
+            onTogglePin={editor.handleTogglePin}
             onClose={() => {
               editor.setDetailSpeler(null);
               editor.setDetailTeamId(null);
@@ -259,6 +267,7 @@ export default function ScenarioEditorFullscreen({
               zichtbareTeamIds={editor.zichtbaar}
               validatieMap={editor.validatieMap}
               selectieGroepMap={editor.selectieGroepMap}
+              pinnedSpelerIds={editor.pinnedSpelerIds}
               onDeleteTeam={editor.handleDeleteTeam}
               onKoppelSelectie={editor.handleKoppelSelectie}
               onOntkoppelSelectie={editor.handleOntkoppelSelectie}
@@ -292,6 +301,7 @@ export default function ScenarioEditorFullscreen({
             teams={editor.teams}
             selectieGroepen={editor.selectieGroepen}
             zichtbareTeamIds={editor.zichtbaar}
+            pinnedSpelerIds={editor.pinnedSpelerIds}
             onSpelerClick={(speler) => editor.handleSpelerClick(speler)}
           />
         </Drawer>
@@ -353,6 +363,13 @@ export default function ScenarioEditorFullscreen({
         <SpelerDetail
           speler={editor.detailSpeler}
           teamId={editor.detailTeamId ?? undefined}
+          teamNaam={
+            editor.detailTeamId
+              ? editor.teams.find((t) => t.id === editor.detailTeamId)?.naam
+              : undefined
+          }
+          pin={editor.pinMap.get(editor.detailSpeler.id) ?? null}
+          onTogglePin={editor.handleTogglePin}
           onClose={() => {
             editor.setDetailSpeler(null);
             editor.setDetailTeamId(null);

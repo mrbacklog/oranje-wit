@@ -13,6 +13,7 @@ export interface SelectieBlokProps {
   selectieGroep?: SelectieGroepData;
   validatieMap?: Map<string, TeamValidatie>;
   detailLevel?: DetailLevel;
+  pinnedSpelerIds?: Set<string>;
   onOntkoppel: (groepId: string) => void;
   onDelete: (teamId: string) => void;
   onSpelerClick?: (speler: SpelerData, teamId?: string) => void;
@@ -24,6 +25,7 @@ export default function SelectieBlok({
   selectieGroep,
   validatieMap,
   detailLevel,
+  pinnedSpelerIds,
   onOntkoppel: _onOntkoppel,
   onDelete: _onDelete,
   onSpelerClick,
@@ -201,6 +203,7 @@ export default function SelectieBlok({
                       teamSpeler={ts}
                       teamId={eersteTeam?.id ?? ""}
                       detailLevel={dl}
+                      isPinned={pinnedSpelerIds?.has(ts.speler.id)}
                       onSpelerClick={
                         onSpelerClick
                           ? (speler) => onSpelerClick(speler, eersteTeam?.id)
@@ -218,6 +221,7 @@ export default function SelectieBlok({
                       teamSpeler={ts}
                       teamId={eersteTeam?.id ?? ""}
                       detailLevel={dl}
+                      isPinned={pinnedSpelerIds?.has(ts.speler.id)}
                       onSpelerClick={
                         onSpelerClick
                           ? (speler) => onSpelerClick(speler, eersteTeam?.id)
@@ -247,6 +251,7 @@ export default function SelectieBlok({
                       teamSpeler={ts}
                       teamId={eersteTeam?.id ?? ""}
                       detailLevel={dl}
+                      isPinned={pinnedSpelerIds?.has(ts.speler.id)}
                       onSpelerClick={
                         onSpelerClick
                           ? (speler) => onSpelerClick(speler, eersteTeam?.id)
@@ -264,6 +269,7 @@ export default function SelectieBlok({
                       teamSpeler={ts}
                       teamId={eersteTeam?.id ?? ""}
                       detailLevel={dl}
+                      isPinned={pinnedSpelerIds?.has(ts.speler.id)}
                       onSpelerClick={
                         onSpelerClick
                           ? (speler) => onSpelerClick(speler, eersteTeam?.id)

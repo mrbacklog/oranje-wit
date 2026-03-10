@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback, useTransition } from "react";
 import type { LedenStatistieken, SpelerUitgebreid, PinMetNamen } from "@/app/blauwdruk/actions";
+import { deletePin } from "@/app/pins/actions";
 import type { CategorieKaders } from "@/app/blauwdruk/categorie-kaders";
 import CategoriePanel from "./CategoriePanel";
 import LedenDashboard from "./LedenDashboard";
@@ -59,6 +60,15 @@ export default function BlauwdrukTabs({
   pins,
 }: BlauwdrukTabsProps) {
   const [activeTab, setActiveTab] = useState<TabId>("categorieen");
+  const [localPins, setLocalPins] = useState(pins);
+  const [, startTransition] = useTransition();
+
+  const handleDeletePin = useCallback((pinId: string) => {
+    setLocalPins((prev) => prev.filter((p) => p.id !== pinId));
+    startTransition(() => {
+      deletePin(pinId);
+    });
+  }, []);
 
   return (
     <div>
@@ -87,9 +97,9 @@ export default function BlauwdrukTabs({
                 {notitieStats.open}
               </span>
             )}
-            {tab.id === "pins" && pins.length > 0 && (
+            {tab.id === "pins" && localPins.length > 0 && (
               <span className="ml-1.5 rounded-full bg-blue-100 px-1.5 py-0.5 text-xs font-medium text-blue-700">
-                {pins.length}
+                {localPins.length}
               </span>
             )}
           </button>
@@ -116,7 +126,7 @@ export default function BlauwdrukTabs({
         />
       )}
 
-      {activeTab === "pins" && <PinsOverzicht pins={pins} />}
+      {activeTab === "pins" && <PinsOverzicht pins={localPins} onDeletePin={handleDeletePin} />}
     </div>
   );
 }

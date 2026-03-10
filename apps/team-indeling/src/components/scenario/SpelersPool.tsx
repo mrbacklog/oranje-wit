@@ -12,6 +12,7 @@ interface SpelersPoolProps {
   teams: TeamData[];
   selectieGroepen: SelectieGroepData[];
   zichtbareTeamIds: Set<string>;
+  pinnedSpelerIds?: Set<string>;
   onSpelerClick?: (speler: SpelerData) => void;
 }
 
@@ -20,6 +21,7 @@ export default function SpelersPool({
   teams,
   selectieGroepen,
   zichtbareTeamIds,
+  pinnedSpelerIds,
   onSpelerClick,
 }: SpelersPoolProps) {
   const [zoekterm, setZoekterm] = useState("");
@@ -160,7 +162,12 @@ export default function SpelersPool({
           <p className="py-6 text-center text-xs text-gray-400">Geen spelers gevonden</p>
         ) : (
           gefilterdeSpelers.map((speler) => (
-            <SpelerKaart key={speler.id} speler={speler} onClick={() => onSpelerClick?.(speler)} />
+            <SpelerKaart
+              key={speler.id}
+              speler={speler}
+              isPinned={pinnedSpelerIds?.has(speler.id)}
+              onClick={() => onSpelerClick?.(speler)}
+            />
           ))
         )}
       </div>
