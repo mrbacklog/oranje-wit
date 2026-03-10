@@ -4,6 +4,7 @@ import { useDraggable } from "@dnd-kit/core";
 import type { SpelerData, HuidigData } from "./types";
 import { STATUS_KLEUREN, kleurIndicatie, KLEUR_DOT, korfbalLeeftijd } from "./types";
 import SpelerAvatar from "@/components/ui/SpelerAvatar";
+import AfmeldBadge from "./AfmeldBadge";
 
 interface SpelerKaartProps {
   speler: SpelerData;
@@ -54,9 +55,12 @@ export default function SpelerKaart({ speler, onClick }: SpelerKaartProps) {
         title={speler.status}
       />
 
-      {/* Naam */}
-      <span className="flex-1 truncate text-sm text-gray-800">
-        {speler.roepnaam} {speler.achternaam}
+      {/* Naam + afmeldbadge */}
+      <span className="flex min-w-0 flex-1 items-center gap-1">
+        <span className="truncate text-sm text-gray-800">
+          {speler.roepnaam} {speler.achternaam}
+        </span>
+        {speler.afmelddatum && <AfmeldBadge afmelddatum={speler.afmelddatum} />}
       </span>
 
       {/* Korfballeeftijd + kleurindicatie */}

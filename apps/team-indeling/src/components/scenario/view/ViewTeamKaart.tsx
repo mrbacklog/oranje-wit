@@ -20,6 +20,7 @@ import {
 } from "@/lib/teamKaartStijl";
 import ValidatieBadge from "../ValidatieBadge";
 import ValidatieMeldingen from "../ValidatieMeldingen";
+import AfmeldBadge from "../AfmeldBadge";
 import { getCardSize } from "../editor/cardSizes";
 import { useZoomScale } from "../editor/ZoomScaleContext";
 
@@ -306,9 +307,14 @@ function ViewSpelerRij({
     NIEUW_DEFINITIEF: "border-l-blue-500",
   };
 
+  const heeftAfmelding = !!speler.afmelddatum;
+  const border = heeftAfmelding
+    ? "border-l-red-400"
+    : (STATUS_BORDER[status] ?? "border-l-gray-200");
+
   return (
     <div
-      className={`flex items-center gap-0.5 rounded-r border-l-2 px-1 py-px ${STATUS_BORDER[status] ?? "border-l-gray-200"}`}
+      className={`flex items-center gap-0.5 rounded-r border-l-2 px-1 py-px ${border} ${heeftAfmelding ? "bg-red-50/60" : ""}`}
     >
       {vorigTeam && (
         <span className="max-w-[40px] shrink-0 truncate text-[7px] text-gray-400" title={vorigTeam}>
@@ -318,10 +324,16 @@ function ViewSpelerRij({
       <span
         className={`min-w-0 flex-1 truncate text-[10px] leading-none text-gray-800 ${
           onSpelerClick ? "cursor-pointer hover:text-orange-600" : ""
-        }`}
+        } ${heeftAfmelding ? "italic" : ""}`}
         onClick={onSpelerClick ? () => onSpelerClick(speler) : undefined}
       >
         {speler.roepnaam} {speler.achternaam}
+        {heeftAfmelding && (
+          <>
+            {" "}
+            <AfmeldBadge afmelddatum={speler.afmelddatum!} />
+          </>
+        )}
       </span>
       <div className="flex shrink-0 items-center gap-0.5">
         <span className="text-[8px] text-gray-500 tabular-nums">{leeftijd.toFixed(2)}</span>

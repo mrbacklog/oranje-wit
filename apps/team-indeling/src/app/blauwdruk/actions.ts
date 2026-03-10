@@ -157,28 +157,37 @@ export async function updateSpelerStatus(spelerId: string, status: SpelerStatus)
  * Haal alle spelers op met uitgebreide velden voor het LedenDashboard.
  */
 export async function getSpelersUitgebreid() {
-  const spelers = await prisma.speler.findMany({
-    select: {
-      id: true,
-      roepnaam: true,
-      achternaam: true,
-      geboortejaar: true,
-      geslacht: true,
-      status: true,
-      huidig: true,
-      volgendSeizoen: true,
-      retentie: true,
-      seizoenenActief: true,
-      instroomLeeftijd: true,
-      lidSinds: true,
-      spelerspad: true,
-      notitie: true,
-    },
-    orderBy: [{ achternaam: "asc" }, { roepnaam: "asc" }],
-  });
+  const [spelers, afmeldingen] = await Promise.all([
+    prisma.speler.findMany({
+      select: {
+        id: true,
+        roepnaam: true,
+        achternaam: true,
+        geboortejaar: true,
+        geslacht: true,
+        status: true,
+        huidig: true,
+        volgendSeizoen: true,
+        retentie: true,
+        seizoenenActief: true,
+        instroomLeeftijd: true,
+        lidSinds: true,
+        spelerspad: true,
+        notitie: true,
+      },
+      orderBy: [{ achternaam: "asc" }, { roepnaam: "asc" }],
+    }),
+    prisma.lid.findMany({
+      where: { afmelddatum: { not: null } },
+      select: { relCode: true, afmelddatum: true },
+    }),
+  ]);
+
+  const afmeldMap = new Map(afmeldingen.map((l) => [l.relCode, l.afmelddatum]));
 
   return spelers.map((s) => ({
     ...s,
+    afmelddatum: afmeldMap.get(s.id)?.toISOString() ?? null,
     leeftijdVolgendSeizoen: PEILJAAR - s.geboortejaar,
     huidig: s.huidig as {
       team?: string;

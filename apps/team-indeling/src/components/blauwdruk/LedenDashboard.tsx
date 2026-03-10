@@ -6,6 +6,7 @@ import type { SpelerUitgebreid } from "@/app/blauwdruk/actions";
 import { updateSpelerStatus } from "@/app/blauwdruk/actions";
 import SpelerAvatar from "@/components/ui/SpelerAvatar";
 import SpelerStatusBadge from "./SpelerStatusBadge";
+import AfmeldBadge from "@/components/scenario/AfmeldBadge";
 
 const STATUS_OPTIES: { waarde: SpelerStatus; label: string }[] = [
   { waarde: "BESCHIKBAAR", label: "Beschikbaar" },
@@ -290,7 +291,12 @@ export default function LedenDashboard({ spelers: initieleSpelers }: LedenDashbo
                     <SpelerAvatar spelerId={speler.id} naam={speler.roepnaam} size="sm" />
                   </td>
                   <td className="px-3 py-2 text-gray-800">
-                    {speler.roepnaam} {speler.achternaam}
+                    <span className="inline-flex items-center gap-1.5">
+                      {speler.roepnaam} {speler.achternaam}
+                      {speler.afmelddatum && (
+                        <AfmeldBadge afmelddatum={speler.afmelddatum} variant="full" />
+                      )}
+                    </span>
                   </td>
                   <td className="px-3 py-2 text-gray-600">{speler.leeftijdVolgendSeizoen}</td>
                   <td className="px-3 py-2 text-gray-600">{speler.geslacht}</td>

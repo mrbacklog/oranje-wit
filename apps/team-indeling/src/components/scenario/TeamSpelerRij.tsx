@@ -3,6 +3,7 @@
 import { useDraggable } from "@dnd-kit/core";
 import type { TeamSpelerData, SpelerData, HuidigData, DetailLevel } from "./types";
 import { kleurIndicatie, KLEUR_DOT, korfbalLeeftijd } from "./types";
+import AfmeldBadge from "./AfmeldBadge";
 
 /** Status → linkerrand kleur */
 const STATUS_BORDER: Record<string, string> = {
@@ -54,9 +55,12 @@ export default function TeamSpelerRij({
     ? { transform: `translate3d(${transform.x}px, ${transform.y}px, 0)` }
     : undefined;
 
-  const borderLeft = STATUS_BORDER[status] ?? "border-l-gray-200";
-  const bgWarning = STATUS_BG[status] ?? "";
-  const isWarning = status === "TWIJFELT" || status === "GAAT_STOPPEN";
+  const heeftAfmelding = !!speler.afmelddatum;
+  const borderLeft = heeftAfmelding
+    ? "border-l-red-400"
+    : (STATUS_BORDER[status] ?? "border-l-gray-200");
+  const bgWarning = heeftAfmelding ? "bg-red-50/60" : (STATUS_BG[status] ?? "");
+  const isWarning = heeftAfmelding || status === "TWIJFELT" || status === "GAAT_STOPPEN";
 
   return (
     <div
@@ -96,6 +100,7 @@ export default function TeamSpelerRij({
           onClick={onSpelerClick ? () => onSpelerClick(speler) : undefined}
         >
           {speler.roepnaam} {speler.achternaam}
+          {heeftAfmelding && <AfmeldBadge afmelddatum={speler.afmelddatum!} />}
         </span>
 
         {/* Regel 2: vorig team — halve regelhoogte */}

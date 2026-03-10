@@ -12,6 +12,7 @@ import {
   KLEUR_BADGE_KLEUREN,
 } from "./types";
 import SpelerAvatar from "@/components/ui/SpelerAvatar";
+import AfmeldBadge from "./AfmeldBadge";
 import EvaluatieScores from "./EvaluatieScores";
 import Spinner from "@/components/ui/Spinner";
 
@@ -131,6 +132,9 @@ export default function SpelerDetail({
                 <span className="text-xs text-gray-500">
                   {STATUS_LABELS[speler.status] ?? speler.status}
                 </span>
+                {speler.afmelddatum && (
+                  <AfmeldBadge afmelddatum={speler.afmelddatum} variant="full" />
+                )}
               </div>
             </div>
           </div>

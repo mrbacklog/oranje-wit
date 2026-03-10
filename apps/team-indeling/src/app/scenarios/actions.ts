@@ -224,23 +224,36 @@ export async function getScenarios(blauwdrukId: string) {
  * Haal alle spelers op voor de spelerspool.
  */
 export async function getAlleSpelers() {
-  return prisma.speler.findMany({
-    select: {
-      id: true,
-      roepnaam: true,
-      achternaam: true,
-      geboortejaar: true,
-      geboortedatum: true,
-      geslacht: true,
-      status: true,
-      huidig: true,
-      spelerspad: true,
-      lidSinds: true,
-      seizoenenActief: true,
-      notitie: true,
-    },
-    orderBy: [{ achternaam: "asc" }, { roepnaam: "asc" }],
-  });
+  const [spelers, afmeldingen] = await Promise.all([
+    prisma.speler.findMany({
+      select: {
+        id: true,
+        roepnaam: true,
+        achternaam: true,
+        geboortejaar: true,
+        geboortedatum: true,
+        geslacht: true,
+        status: true,
+        huidig: true,
+        spelerspad: true,
+        lidSinds: true,
+        seizoenenActief: true,
+        notitie: true,
+      },
+      orderBy: [{ achternaam: "asc" }, { roepnaam: "asc" }],
+    }),
+    prisma.lid.findMany({
+      where: { afmelddatum: { not: null } },
+      select: { relCode: true, afmelddatum: true },
+    }),
+  ]);
+
+  const afmeldMap = new Map(afmeldingen.map((l) => [l.relCode, l.afmelddatum]));
+
+  return spelers.map((s) => ({
+    ...s,
+    afmelddatum: afmeldMap.get(s.id)?.toISOString() ?? null,
+  }));
 }
 
 /**

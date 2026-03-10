@@ -55,6 +55,7 @@ export interface SpelerData {
   lidSinds: string | null;
   seizoenenActief: number | null;
   notitie: string | null;
+  afmelddatum: string | null;
 }
 
 /** TeamSpeler koppeling met spelerdata */

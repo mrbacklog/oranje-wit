@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect } from "react";
 import type { TeamData, SelectieGroepData } from "./types";
 import { korfbalLeeftijd, STATUS_KLEUREN } from "./types";
+import AfmeldBadge from "./AfmeldBadge";
 
 interface VerdeelDialoogProps {
   open: boolean;
@@ -227,8 +228,13 @@ export default function VerdeelDialoog({
                                     STATUS_KLEUREN[ts.speler.status]
                                   }`}
                                 />
-                                <span className="flex-1 text-gray-700">
-                                  {ts.speler.roepnaam} {ts.speler.achternaam}
+                                <span className="flex flex-1 items-center gap-1 text-gray-700">
+                                  <span className="truncate">
+                                    {ts.speler.roepnaam} {ts.speler.achternaam}
+                                  </span>
+                                  {ts.speler.afmelddatum && (
+                                    <AfmeldBadge afmelddatum={ts.speler.afmelddatum} />
+                                  )}
                                 </span>
                                 <span className="text-[10px] text-gray-400">
                                   {leeftijd.toFixed(2)}
