@@ -13,6 +13,7 @@ const KLEUR_STIJL: Record<string, string> = {
 };
 
 const FORMAT: Record<string, string> = {
+  PAARS: "4-tal",
   BLAUW: "4-tal",
   GROEN: "4-tal",
   GEEL: "8-tal",
@@ -21,6 +22,7 @@ const FORMAT: Record<string, string> = {
 };
 
 const MAX_SPREIDING: Record<string, number> = {
+  PAARS: 2,
   BLAUW: 2,
   GROEN: 2,
   GEEL: 3,

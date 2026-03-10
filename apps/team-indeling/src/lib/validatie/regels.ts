@@ -171,6 +171,7 @@ function getTeamgrootteUitKaders(
 }
 
 const KLEUR_FORMAT: Record<string, "viertal" | "achttal"> = {
+  PAARS: "viertal",
   BLAUW: "viertal",
   GROEN: "viertal",
   GEEL: "achttal",
@@ -180,6 +181,7 @@ const KLEUR_FORMAT: Record<string, "viertal" | "achttal"> = {
 
 /** Leeftijdsrange per kleur (min-max leeftijd in peiljaar). */
 const KLEUR_LEEFTIJD: Record<string, { min: number; max: number }> = {
+  PAARS: { min: 4, max: 5 },
   BLAUW: { min: 5, max: 7 },
   GROEN: { min: 8, max: 9 },
   GEEL: { min: 10, max: 12 },
@@ -190,11 +192,12 @@ const KLEUR_LEEFTIJD: Record<string, { min: number; max: number }> = {
 const MIN_GEMIDDELDE_LEEFTIJD_8TAL = 9.0;
 
 /** Volgorde van kleuren van jong naar oud. */
-export const KLEUR_VOLGORDE = ["BLAUW", "GROEN", "GEEL", "ORANJE", "ROOD"] as const;
+export const KLEUR_VOLGORDE = ["PAARS", "BLAUW", "GROEN", "GEEL", "ORANJE", "ROOD"] as const;
 
 /** Veilige range gem. leeftijd per kleur (p5–p95 landelijke conceptindelingen 2025-2026).
  *  Teams buiten deze range lopen risico op herindeling naar een andere kleur. */
 export const KLEUR_VEILIGE_RANGE: Record<string, { min: number; max: number }> = {
+  PAARS: { min: 4.0, max: 5.5 },
   BLAUW: { min: 6.3, max: 7.8 },
   GROEN: { min: 7.6, max: 9.5 },
   GEEL: { min: 9.2, max: 11.8 },
