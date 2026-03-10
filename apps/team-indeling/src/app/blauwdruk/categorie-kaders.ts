@@ -104,11 +104,27 @@ export const CATEGORIEEN: CategorieDefinitie[] = [
     spelvorm: "8-tal",
   },
   {
-    sleutel: "JEUGD_A",
-    label: "Jeugd A (U-teams)",
-    kleur: "bg-rose-600",
+    sleutel: "U19",
+    label: "U19",
+    kleur: "bg-gray-500",
     type: "a-categorie",
-    leeftijdRange: "13–18 jaar",
+    leeftijdRange: "< 19 jaar",
+    spelvorm: "8-tal",
+  },
+  {
+    sleutel: "U17",
+    label: "U17",
+    kleur: "bg-gray-400",
+    type: "a-categorie",
+    leeftijdRange: "< 17 jaar",
+    spelvorm: "8-tal",
+  },
+  {
+    sleutel: "U15",
+    label: "U15",
+    kleur: "bg-gray-300",
+    type: "a-categorie",
+    leeftijdRange: "< 15 jaar",
     spelvorm: "8-tal",
   },
   {
@@ -164,6 +180,32 @@ export const CATEGORIEEN: CategorieDefinitie[] = [
 // ============================================================
 // Defaults per categorie
 // ============================================================
+
+/** Gedeelde basis voor A-categorie (U15/U17/U19) — alleen maxLeeftijd verschilt */
+const A_CAT_BASIS: CategorieSettings = {
+  minSpelers: 8,
+  optimaalSpelers: 10,
+  maxAfwijkingPercentage: 20,
+  verplichtMinV: 4,
+  verplichtMinM: 4,
+  gewenstMinV: 5,
+  gewenstMinM: 5,
+  monogenderToestaan: false,
+  gemiddeldeLeeftijdKernMin: null,
+  gemiddeldeLeeftijdKernMax: null,
+  gemiddeldeLeeftijdOverlapMin: null,
+  gemiddeldeLeeftijdOverlapMax: null,
+  maxLeeftijd: null,
+  bandbreedteLeeftijd: 2.0,
+  scoreDrempel: null,
+  speeltijdMinuten: 30,
+  speeltijdZuiver: false,
+  korfhoogte: 3.5,
+  balMaat: 5,
+  wisselsAantal: null,
+  vakwisselType: "doelpunten",
+  prioriteiten: ["Teamsterkte", "Ontwikkeling"],
+};
 
 const D: Record<string, CategorieSettings> = {
   KANGOEROES: {
@@ -310,75 +352,22 @@ const D: Record<string, CategorieSettings> = {
     vakwisselType: "doelpunten",
     prioriteiten: ["Sociaal", "Ontwikkeling"],
   },
-  JEUGD_A: {
-    minSpelers: 8,
-    optimaalSpelers: 10,
-    maxAfwijkingPercentage: 20,
-    verplichtMinV: 4,
-    verplichtMinM: 4,
-    gewenstMinV: 5,
-    gewenstMinM: 5,
-    monogenderToestaan: false,
-    gemiddeldeLeeftijdKernMin: 13.0,
-    gemiddeldeLeeftijdKernMax: 18.0,
-    gemiddeldeLeeftijdOverlapMin: 13.0,
-    gemiddeldeLeeftijdOverlapMax: 19.0,
-    maxLeeftijd: 18.99,
-    bandbreedteLeeftijd: 2.0,
-    scoreDrempel: null,
-    speeltijdMinuten: 30,
-    speeltijdZuiver: false,
-    korfhoogte: 3.5,
-    balMaat: 5,
-    wisselsAantal: null,
-    vakwisselType: "doelpunten",
-    prioriteiten: ["Teamsterkte", "Ontwikkeling"],
-  },
+  U19: { ...A_CAT_BASIS, maxLeeftijd: 18.99 },
+  U17: { ...A_CAT_BASIS, maxLeeftijd: 16.99 },
+  U15: { ...A_CAT_BASIS, maxLeeftijd: 14.99 },
   SENIOREN_A: {
-    minSpelers: 8,
-    optimaalSpelers: 10,
-    maxAfwijkingPercentage: 20,
-    verplichtMinV: 4,
-    verplichtMinM: 4,
-    gewenstMinV: 5,
-    gewenstMinM: 5,
-    monogenderToestaan: false,
-    gemiddeldeLeeftijdKernMin: null,
-    gemiddeldeLeeftijdKernMax: null,
-    gemiddeldeLeeftijdOverlapMin: null,
-    gemiddeldeLeeftijdOverlapMax: null,
-    maxLeeftijd: null,
+    ...A_CAT_BASIS,
     bandbreedteLeeftijd: null,
-    scoreDrempel: null,
-    speeltijdMinuten: 30,
-    speeltijdZuiver: false,
-    korfhoogte: 3.5,
-    balMaat: 5,
-    wisselsAantal: null,
-    vakwisselType: "doelpunten",
     prioriteiten: ["Teamsterkte"],
   },
   SENIOREN_B: {
-    minSpelers: 8,
-    optimaalSpelers: 10,
+    ...A_CAT_BASIS,
     maxAfwijkingPercentage: 40,
     verplichtMinV: 0,
     verplichtMinM: 0,
     gewenstMinV: 2,
     gewenstMinM: 2,
-    monogenderToestaan: false,
-    gemiddeldeLeeftijdKernMin: null,
-    gemiddeldeLeeftijdKernMax: null,
-    gemiddeldeLeeftijdOverlapMin: null,
-    gemiddeldeLeeftijdOverlapMax: null,
-    maxLeeftijd: null,
     bandbreedteLeeftijd: null,
-    scoreDrempel: null,
-    speeltijdMinuten: 30,
-    speeltijdZuiver: false,
-    korfhoogte: 3.5,
-    balMaat: 5,
-    wisselsAantal: null,
     vakwisselType: "tijd",
     prioriteiten: ["Sociaal"],
   },
@@ -393,7 +382,10 @@ export const CATEGORIE_DEFAULTS = D;
 export function getMergedSettings(sleutel: string, opgeslagen: CategorieKaders): CategorieSettings {
   const defaults = CATEGORIE_DEFAULTS[sleutel];
   if (!defaults) throw new Error(`Onbekende categorie: ${sleutel}`);
-  const override = opgeslagen[sleutel];
+  // Fallback: als U-specifieke kaders niet bestaan, probeer oude JEUGD_A kaders
+  const override =
+    opgeslagen[sleutel] ??
+    (["U15", "U17", "U19"].includes(sleutel) ? opgeslagen["JEUGD_A"] : undefined);
   if (!override) return { ...defaults };
   return { ...defaults, ...override };
 }

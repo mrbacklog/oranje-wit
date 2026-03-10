@@ -1,3 +1,7 @@
+"use client";
+
+import { useState, useEffect } from "react";
+
 interface AfmeldBadgeProps {
   afmelddatum: string;
   variant?: "compact" | "full";
@@ -9,7 +13,11 @@ function formatDatum(datum: Date): string {
 
 export default function AfmeldBadge({ afmelddatum, variant = "compact" }: AfmeldBadgeProps) {
   const datum = new Date(afmelddatum);
-  const isVerleden = datum < new Date();
+  const [isVerleden, setIsVerleden] = useState(false);
+
+  useEffect(() => {
+    setIsVerleden(new Date(afmelddatum) < new Date());
+  }, [afmelddatum]);
 
   const title = isVerleden
     ? `Afgemeld per ${formatDatum(datum)}`
