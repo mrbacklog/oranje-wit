@@ -49,43 +49,42 @@ export default function SpelerKaart({ speler, onClick }: SpelerKaartProps) {
       {/* Avatar */}
       <SpelerAvatar spelerId={speler.id} naam={speler.roepnaam} size="sm" />
 
-      {/* Status dot */}
-      <span
-        className={`h-2 w-2 shrink-0 rounded-full ${STATUS_KLEUREN[speler.status]}`}
-        title={speler.status}
-      />
+      {/* Twee regels: naam bovenaan, metadata onderaan */}
+      <div className="flex min-w-0 flex-1 flex-col">
+        {/* Regel 1: status dot + naam + afmeldbadge */}
+        <div className="flex items-center gap-1">
+          <span
+            className={`h-2 w-2 shrink-0 rounded-full ${STATUS_KLEUREN[speler.status]}`}
+            title={speler.status}
+          />
+          <span className="truncate text-sm text-gray-800">
+            {speler.roepnaam} {speler.achternaam}
+          </span>
+          {speler.afmelddatum && <AfmeldBadge afmelddatum={speler.afmelddatum} />}
+        </div>
 
-      {/* Naam + afmeldbadge */}
-      <span className="flex min-w-0 flex-1 items-center gap-1">
-        <span className="truncate text-sm text-gray-800">
-          {speler.roepnaam} {speler.achternaam}
-        </span>
-        {speler.afmelddatum && <AfmeldBadge afmelddatum={speler.afmelddatum} />}
-      </span>
-
-      {/* Korfballeeftijd + kleurindicatie */}
-      <span
-        className="inline-flex flex-shrink-0 items-center gap-0.5"
-        title={`Geboortejaar ${speler.geboortejaar}`}
-      >
-        {kleur && <span className={`h-1.5 w-1.5 rounded-full ${KLEUR_DOT[kleur]}`} />}
-        <span className="text-xs text-gray-400">{leeftijd.toFixed(2)}</span>
-      </span>
-
-      {/* Geslacht */}
-      <span className="flex-shrink-0 text-xs" title={speler.geslacht === "M" ? "Man" : "Vrouw"}>
-        {speler.geslacht === "M" ? "\u2642" : "\u2640"}
-      </span>
-
-      {/* Vorig team */}
-      {vorigTeam && (
-        <span
-          className="max-w-[60px] flex-shrink-0 truncate text-[10px] text-gray-400"
-          title={vorigTeam}
-        >
-          {vorigTeam}
-        </span>
-      )}
+        {/* Regel 2: leeftijd, geslacht, vorig team */}
+        <div className="flex items-center gap-1.5 pl-3">
+          <span
+            className="inline-flex items-center gap-0.5"
+            title={`Geboortejaar ${speler.geboortejaar}`}
+          >
+            {kleur && <span className={`h-1.5 w-1.5 rounded-full ${KLEUR_DOT[kleur]}`} />}
+            <span className="text-[11px] text-gray-400">{leeftijd.toFixed(2)}</span>
+          </span>
+          <span
+            className="text-[11px] text-gray-400"
+            title={speler.geslacht === "M" ? "Man" : "Vrouw"}
+          >
+            {speler.geslacht === "M" ? "\u2642" : "\u2640"}
+          </span>
+          {vorigTeam && (
+            <span className="max-w-[60px] truncate text-[10px] text-gray-400" title={vorigTeam}>
+              {vorigTeam}
+            </span>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
