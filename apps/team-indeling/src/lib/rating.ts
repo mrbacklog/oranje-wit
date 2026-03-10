@@ -138,12 +138,8 @@ export async function berekenAlleRatings(
       const niveau = await haalLaatsteNiveau(speler.id, seizoen, prisma);
       const berekend = berekenRating(teamscore, niveau);
 
-      const updateData: any = { ratingBerekend: berekend };
-      // Alleen rating overschrijven als die niet handmatig afwijkt van de berekende waarde
-      const isHandmatig = speler.rating != null && speler.rating !== speler.ratingBerekend;
-      if (!isHandmatig) {
-        updateData.rating = berekend;
-      }
+      // Update altijd beide velden — handmatige override gebeurt via RatingEditor
+      const updateData: any = { ratingBerekend: berekend, rating: berekend };
 
       await prisma.speler.update({
         where: { id: speler.id },
