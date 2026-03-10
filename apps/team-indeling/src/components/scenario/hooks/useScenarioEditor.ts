@@ -27,7 +27,7 @@ export function useScenarioEditor(scenario: ScenarioData, alleSpelers: SpelerDat
   // Zichtbare teams in werkgebied
   const [zichtbaar, setZichtbaar] = useState<Set<string>>(() => new Set(teams.map((t) => t.id)));
 
-  const [, startTransition] = useTransition();
+  const [isPending, startTransition] = useTransition();
 
   // Blauwdruk-kaders voor validatie
   const blauwdrukKaders = useMemo(
@@ -105,6 +105,8 @@ export function useScenarioEditor(scenario: ScenarioData, alleSpelers: SpelerDat
   }, []);
 
   const refreshTeams = useCallback(async () => {
+    // Skip refresh als er een optimistic update (DnD) loopt — voorkom overschrijven
+    if (isPending) return;
     try {
       const res = await fetch(`/api/scenarios/${scenario.id}/teams`);
       if (res.ok) {
@@ -117,7 +119,7 @@ export function useScenarioEditor(scenario: ScenarioData, alleSpelers: SpelerDat
     } catch (error) {
       logger.warn("Teams herladen mislukt:", error);
     }
-  }, [scenario.id]);
+  }, [scenario.id, isPending]);
 
   // --- Navigator handlers ---
 

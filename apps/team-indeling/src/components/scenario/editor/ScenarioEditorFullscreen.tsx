@@ -290,6 +290,7 @@ export default function ScenarioEditorFullscreen({
           <SpelersPool
             spelers={alleSpelers}
             teams={editor.teams}
+            selectieGroepen={editor.selectieGroepen}
             zichtbareTeamIds={editor.zichtbaar}
             onSpelerClick={(speler) => editor.handleSpelerClick(speler)}
           />

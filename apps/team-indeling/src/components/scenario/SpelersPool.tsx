@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useDroppable } from "@dnd-kit/core";
-import type { SpelerData, TeamData, SpelerFilter } from "./types";
+import type { SpelerData, TeamData, SelectieGroepData, SpelerFilter } from "./types";
 import { korfbalLeeftijd } from "./types";
 import SpelerFilters from "./SpelerFilters";
 import SpelerKaart from "./SpelerKaart";
@@ -10,6 +10,7 @@ import SpelerKaart from "./SpelerKaart";
 interface SpelersPoolProps {
   spelers: SpelerData[];
   teams: TeamData[];
+  selectieGroepen: SelectieGroepData[];
   zichtbareTeamIds: Set<string>;
   onSpelerClick?: (speler: SpelerData) => void;
 }
@@ -17,6 +18,7 @@ interface SpelersPoolProps {
 export default function SpelersPool({
   spelers,
   teams,
+  selectieGroepen,
   zichtbareTeamIds,
   onSpelerClick,
 }: SpelersPoolProps) {
@@ -28,7 +30,7 @@ export default function SpelersPool({
     data: { type: "pool" },
   });
 
-  // Bepaal welke spelers al in een team zitten
+  // Bepaal welke spelers al in een team of selectiegroep zitten
   const ingedeeldeSpelerIds = useMemo(() => {
     const ids = new Set<string>();
     for (const team of teams) {
@@ -36,8 +38,13 @@ export default function SpelersPool({
         ids.add(ts.spelerId);
       }
     }
+    for (const sg of selectieGroepen) {
+      for (const ss of sg.spelers) {
+        ids.add(ss.spelerId);
+      }
+    }
     return ids;
-  }, [teams]);
+  }, [teams, selectieGroepen]);
 
   // Bepaal leeftijds-/geslachtbereik van zichtbare teams voor "passend" filter
   const passendeSpelerIds = useMemo(() => {
@@ -45,13 +52,27 @@ export default function SpelersPool({
     const zichtbareTeams = teams.filter((t) => zichtbareTeamIds.has(t.id));
     if (zichtbareTeams.length === 0) return ids;
 
-    // Verzamel leeftijden van bestaande spelers in zichtbare teams
+    // Verzamel leeftijden van bestaande spelers in zichtbare teams (incl. selectiegroepen)
     const leeftijden = new Set<number>();
+    const gezienSelecties = new Set<string>();
     for (const team of zichtbareTeams) {
-      for (const ts of team.spelers) {
-        leeftijden.add(
-          Math.floor(korfbalLeeftijd(ts.speler.geboortedatum, ts.speler.geboortejaar))
-        );
+      if (team.selectieGroepId) {
+        if (gezienSelecties.has(team.selectieGroepId)) continue;
+        gezienSelecties.add(team.selectieGroepId);
+        const sg = selectieGroepen.find((g) => g.id === team.selectieGroepId);
+        if (sg) {
+          for (const ss of sg.spelers) {
+            leeftijden.add(
+              Math.floor(korfbalLeeftijd(ss.speler.geboortedatum, ss.speler.geboortejaar))
+            );
+          }
+        }
+      } else {
+        for (const ts of team.spelers) {
+          leeftijden.add(
+            Math.floor(korfbalLeeftijd(ts.speler.geboortedatum, ts.speler.geboortejaar))
+          );
+        }
       }
     }
 
@@ -71,7 +92,7 @@ export default function SpelersPool({
       }
     }
     return ids;
-  }, [spelers, teams, zichtbareTeamIds]);
+  }, [spelers, teams, selectieGroepen, zichtbareTeamIds]);
 
   // Filter spelers
   const gefilterdeSpelers = useMemo(() => {
