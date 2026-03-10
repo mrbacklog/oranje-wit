@@ -7,7 +7,7 @@ import { useScenarioEditor } from "../hooks/useScenarioEditor";
 import { useValidatie } from "@/hooks/useValidatie";
 import { useCardPositions, type CardInfo, type PositionMap } from "../hooks/useCardPositions";
 import DndProvider from "../DndContext";
-import Navigator from "../Navigator";
+
 import Werkgebied from "../Werkgebied";
 import ViewWerkgebied from "../view/ViewWerkgebied";
 import SpelersPool from "../SpelersPool";
@@ -35,7 +35,6 @@ export default function ScenarioEditorFullscreen({
 }: ScenarioEditorFullscreenProps) {
   const editor = useScenarioEditor(scenario, alleSpelers);
   const [mode, setMode] = useState<EditorMode>(initialMode);
-  const [navOpen, setNavOpen] = useState(false);
   const [poolOpen, setPoolOpen] = useState(false);
   const [nieuwTeamOpen, setNieuwTeamOpen] = useState(false);
   const [rapportOpen, setRapportOpen] = useState(false);
@@ -75,11 +74,9 @@ export default function ScenarioEditorFullscreen({
     initialPosities ?? null
   );
 
-  const toggleNav = useCallback(() => setNavOpen((v) => !v), []);
   const togglePool = useCallback(() => setPoolOpen((v) => !v), []);
   const toggleMode = useCallback(() => {
     setMode((m) => (m === "preview" ? "edit" : "preview"));
-    setNavOpen(false);
     setPoolOpen(false);
   }, []);
 
@@ -186,79 +183,53 @@ export default function ScenarioEditorFullscreen({
         onTeamToPool={editor.handleTeamToPool}
       >
         <div className="relative flex-1 overflow-hidden">
-          {/* Side-tab: Teamlijst (links) */}
+          {/* Side-tab: Spelerspool (links) */}
           <button
-            onClick={toggleNav}
+            onClick={togglePool}
             className={`absolute top-4 left-0 z-20 flex flex-col items-center gap-1.5 rounded-r-lg border border-l-0 px-2 py-4 shadow-md transition-colors ${
-              navOpen
+              poolOpen || showEditDrawer
                 ? "border-orange-300 bg-orange-500 text-white"
                 : "border-orange-200 bg-orange-50 text-orange-600 hover:bg-orange-100"
             }`}
-            title={navOpen ? "Verberg teamlijst" : "Toon teamlijst"}
+            title={poolOpen ? "Verberg spelerspool" : "Toon spelerspool"}
           >
             <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"
               />
             </svg>
             <span
               className="text-[10px] font-semibold tracking-wide uppercase"
               style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
             >
-              Teamlijst
+              Spelerspool
             </span>
           </button>
 
-          {/* Side-tabs rechts: Validatie + Spelerspool */}
-          <div className="absolute top-4 right-0 z-20 flex flex-col gap-1">
-            <button
-              onClick={() => setRapportOpen(true)}
-              className="flex flex-col items-center gap-1.5 rounded-l-lg border border-r-0 border-orange-200 bg-orange-50 px-2 py-4 text-orange-600 shadow-md transition-colors hover:bg-orange-100"
-              title="Validatierapport"
+          {/* Side-tab: Validatie (rechts) */}
+          <button
+            onClick={() => setRapportOpen(true)}
+            className="absolute top-4 right-0 z-20 flex flex-col items-center gap-1.5 rounded-l-lg border border-r-0 border-orange-200 bg-orange-50 px-2 py-4 text-orange-600 shadow-md transition-colors hover:bg-orange-100"
+            title="Validatierapport"
+          >
+            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <span
+              className="text-[10px] font-semibold tracking-wide uppercase"
+              style={{ writingMode: "vertical-rl" }}
             >
-              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              <span
-                className="text-[10px] font-semibold tracking-wide uppercase"
-                style={{ writingMode: "vertical-rl" }}
-              >
-                Validatie
-              </span>
-            </button>
-            <button
-              onClick={togglePool}
-              className={`flex flex-col items-center gap-1.5 rounded-l-lg border border-r-0 px-2 py-4 shadow-md transition-colors ${
-                poolOpen || showEditDrawer
-                  ? "border-orange-300 bg-orange-500 text-white"
-                  : "border-orange-200 bg-orange-50 text-orange-600 hover:bg-orange-100"
-              }`}
-              title={poolOpen ? "Verberg spelerspool" : "Toon spelerspool"}
-            >
-              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-              </svg>
-              <span
-                className="text-[10px] font-semibold tracking-wide uppercase"
-                style={{ writingMode: "vertical-rl" }}
-              >
-                Spelerspool
-              </span>
-            </button>
-          </div>
+              Validatie
+            </span>
+          </button>
 
           {/* Center: Werkgebied + ChatPanel */}
           <div className="flex h-full flex-col">
@@ -284,18 +255,8 @@ export default function ScenarioEditorFullscreen({
           </div>
         </div>
 
-        {/* Navigator drawer (links) */}
-        <Drawer open={navOpen} onClose={() => setNavOpen(false)} side="left" width="w-64">
-          <Navigator
-            teams={editor.teams}
-            zichtbaar={editor.zichtbaar}
-            onToggle={editor.handleToggle}
-            onToggleAlles={editor.handleToggleAlles}
-          />
-        </Drawer>
-
-        {/* SpelersPool drawer (rechts) */}
-        <Drawer open={showPoolDrawer} onClose={() => setPoolOpen(false)} side="right" width="w-80">
+        {/* SpelersPool drawer (links) */}
+        <Drawer open={showPoolDrawer} onClose={() => setPoolOpen(false)} side="left" width="w-80">
           <SpelersPool
             spelers={alleSpelers}
             teams={editor.teams}
@@ -306,11 +267,11 @@ export default function ScenarioEditorFullscreen({
           />
         </Drawer>
 
-        {/* TeamEditPanel drawer (rechts, vervangt pool) */}
+        {/* TeamEditPanel drawer (links, vervangt pool) */}
         <Drawer
           open={showEditDrawer}
           onClose={() => editor.setEditTeamId(null)}
-          side="right"
+          side="left"
           width="w-80"
         >
           {editor.editTeam && (
