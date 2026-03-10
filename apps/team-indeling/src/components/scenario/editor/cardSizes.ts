@@ -4,7 +4,8 @@
 
 export const CARD_WIDTH_SINGLE = 168; // basisbreedte (viertal) — was 140, +20%
 export const CARD_GAP = 12;
-export const CARD_WIDTH_DOUBLE = 2 * CARD_WIDTH_SINGLE + CARD_GAP; // achtal/selectie = 348
+export const CARD_WIDTH_DOUBLE = 2 * CARD_WIDTH_SINGLE + CARD_GAP; // achtal = 348
+export const CARD_WIDTH_QUAD = 4 * CARD_WIDTH_SINGLE + 3 * CARD_GAP; // selectie = 708
 export const COLLISION_PADDING = 8;
 export const CANVAS_WIDTH = 4000;
 export const CANVAS_HEIGHT = 3000;
@@ -20,9 +21,10 @@ const MAX_ROWS = 9;
 export const CARD_HEIGHT = HEADER_H + COL_HEADER_H + MAX_ROWS * ROW_H + FOOTER_H; // 240px
 
 export function getCardSize(teamType: string, isSelectie: boolean): { w: number; h: number } {
+  if (isSelectie) return { w: CARD_WIDTH_QUAD, h: CARD_HEIGHT };
   const isDouble = teamType !== "VIERTAL";
   return {
-    w: isDouble || isSelectie ? CARD_WIDTH_DOUBLE : CARD_WIDTH_SINGLE,
+    w: isDouble ? CARD_WIDTH_DOUBLE : CARD_WIDTH_SINGLE,
     h: CARD_HEIGHT,
   };
 }

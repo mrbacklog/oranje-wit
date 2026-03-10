@@ -6,6 +6,7 @@ import { logger } from "@oranje-wit/types";
 import {
   CARD_GAP,
   CARD_WIDTH_DOUBLE,
+  CARD_WIDTH_QUAD,
   CARD_WIDTH_SINGLE,
   CANVAS_HEIGHT,
   CANVAS_WIDTH,
@@ -55,7 +56,7 @@ export function calculateAutoGrid(cards: CardInfo[]): PositionMap {
 
   for (const card of cards) {
     const size = getCardSize(card.teamType, card.isSelectie);
-    const span = size.w === CARD_WIDTH_DOUBLE ? 2 : 1;
+    const span = size.w >= CARD_WIDTH_QUAD ? 4 : size.w >= CARD_WIDTH_DOUBLE ? 2 : 1;
 
     if (col + span > GRID_COLS) {
       rowY += rowMaxHeight + CARD_GAP;
