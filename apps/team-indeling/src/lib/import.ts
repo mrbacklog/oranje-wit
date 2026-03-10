@@ -22,7 +22,8 @@
 
 import { prisma } from "./db/prisma";
 import type { Prisma } from "@oranje-wit/database";
-import { logger } from "@oranje-wit/types";
+import { logger, HUIDIG_SEIZOEN } from "@oranje-wit/types";
+import { berekenAlleRatings } from "./rating";
 
 // --- Types ---
 
@@ -405,6 +406,15 @@ export async function importData(data: ExportData): Promise<ImportResult> {
   });
 
   result.importId = importRecord.id;
+
+  // Herbereken ratings na import
+  try {
+    const ratingResult = await berekenAlleRatings(HUIDIG_SEIZOEN, prisma);
+    logger.info(`Ratings na import: ${ratingResult.bijgewerkt} bijgewerkt`);
+  } catch (error) {
+    logger.warn("Rating herberekening na import mislukt:", error);
+  }
+
   return result;
 }
 

@@ -21,7 +21,16 @@ Start een agent team voor het bouwen en deployen van features voor c.k.v. Oranje
   - Maakt een git commit wanneer alles groen is
   - Geeft deployment-opdracht aan teammate wanneer code klaar is
 
-### Teammate: deployment
+### Teammate 1: e2e-tester
+- **Rol**: Verifieert de feature via de browser met Playwright E2E tests
+- **Verantwoordelijkheden**:
+  - Draait bestaande E2E tests na development (`pnpm test:e2e:<app>`)
+  - Gebruikt Playwright MCP voor exploratory testing van de nieuwe feature
+  - Rapporteert falende tests terug aan de ontwikkelaar
+  - Geeft go/no-go voor deployment
+  - Na deployment: optionele read-only smoke test tegen productie
+
+### Teammate 2: deployment
 - **Rol**: Deployt naar Railway, controleert of alles live werkt
 - **Verantwoordelijkheden**:
   - Monitort of de push naar main een Railway deployment triggert
@@ -40,18 +49,24 @@ Start een agent team voor het bouwen en deployen van features voor c.k.v. Oranje
 4. **ontwikkelaar** fixt eventuele fouten
 5. **ontwikkelaar** maakt een commit
 
-### Fase 2: Deployment (parallel)
-6. **ontwikkelaar** pusht naar main (na bevestiging gebruiker)
-7. **deployment** monitort de Railway build
-8. **deployment** verifieert dat de service live is:
-   - Check deployment status via Railway MCP
-   - Check bereikbaarheid via `curl -s https://<app>.ckvoranjewit.app`
-   - Rapporteer resultaat
-9. Bij fouten: **deployment** analyseert → **ontwikkelaar** fixt → herhaal
+### Fase 2: E2E Verificatie
+6. **e2e-tester** draait bestaande E2E tests (`pnpm test:e2e:<app>`)
+7. **e2e-tester** doet exploratory testing van de nieuwe feature via Playwright MCP
+8. Bij falende tests: **e2e-tester** rapporteert → **ontwikkelaar** fixt → hertest
+9. **e2e-tester** geeft go-ahead voor deployment
 
-### Fase 3: Verificatie
-10. **ontwikkelaar** bevestigt dat de feature werkt zoals verwacht
-11. **deployment** doet een laatste check op alle services
+### Fase 3: Deployment (parallel)
+10. **ontwikkelaar** pusht naar main (na bevestiging gebruiker)
+11. **deployment** monitort de Railway build
+12. **deployment** verifieert dat de service live is:
+    - Check deployment status via Railway MCP
+    - Check bereikbaarheid via `curl -s https://<app>.ckvoranjewit.app`
+    - Rapporteer resultaat
+13. Bij fouten: **deployment** analyseert → **ontwikkelaar** fixt → herhaal
+
+### Fase 4: Post-deploy Verificatie
+14. **e2e-tester** doet read-only smoke test tegen productie URL (alleen navigatie)
+15. **deployment** doet een laatste check op alle services
 
 ## Communicatiepatronen
 
@@ -59,7 +74,9 @@ Start een agent team voor het bouwen en deployen van features voor c.k.v. Oranje
 TC (gebruiker)
     ↕ feature-opdracht en goedkeuring
 ontwikkelaar (lead)
-    ↕ code + deploy-opdracht
+    ↕ code + test-opdracht + deploy-opdracht
+    ├── e2e-tester (test, verify, rapporteer)
+    │   ↕ bugrapporten bij falende tests
     └── deployment (build, verify, rapporteer)
         ↕ directe feedback bij fouten
 ```

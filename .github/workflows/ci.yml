@@ -129,9 +129,81 @@ jobs:
         if: needs.changes.outputs.evaluatie == 'true'
         run: pnpm build:evaluatie
 
-  # ── Job 3: Deploy (alleen na groen CI, alleen op main push) ─────────────
+  # ── Job 3: E2E Tests (na build, met PostgreSQL service container) ──────
+  e2e:
+    needs: [changes, build]
+    if: |
+      needs.changes.outputs.ti == 'true' ||
+      needs.changes.outputs.monitor == 'true' ||
+      needs.changes.outputs.evaluatie == 'true'
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/oranjewit_test
+      NEXTAUTH_SECRET: e2e-test-secret
+      NEXTAUTH_URL: http://localhost:4100
+      E2E_TEST: "true"
+      AUTH_GOOGLE_ID: dummy
+      AUTH_GOOGLE_SECRET: dummy
+      ANTHROPIC_API_KEY: sk-dummy-key
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: oranjewit_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm db:generate
+
+      - name: Push schema naar test database
+        run: npx prisma db push --skip-generate
+        working-directory: packages/database
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: E2E tests team-indeling
+        if: needs.changes.outputs.ti == 'true'
+        run: pnpm test:e2e:ti
+
+      - name: E2E tests monitor
+        if: needs.changes.outputs.monitor == 'true'
+        run: pnpm test:e2e:monitor
+
+      - name: E2E tests evaluatie
+        if: needs.changes.outputs.evaluatie == 'true'
+        run: pnpm test:e2e:evaluatie
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+  # ── Job 4: Deploy (alleen na groen CI, alleen op main push) ─────────────
   deploy:
-    needs: [quality, build, changes]
+    needs: [quality, build, e2e, changes]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:

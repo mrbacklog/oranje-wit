@@ -14,6 +14,7 @@ import {
 import SpelerAvatar from "@/components/ui/SpelerAvatar";
 import AfmeldBadge from "./AfmeldBadge";
 import EvaluatieScores from "./EvaluatieScores";
+import RatingEditor from "./RatingEditor";
 import Spinner from "@/components/ui/Spinner";
 
 type SpelerNotitie = {
@@ -186,6 +187,11 @@ export default function SpelerDetail({
                 <p className="text-sm font-medium text-gray-800">{speler.seizoenenActief}</p>
               </div>
             )}
+            <RatingEditor
+              spelerId={speler.id}
+              rating={speler.rating}
+              ratingBerekend={speler.ratingBerekend}
+            />
           </div>
 
           {/* Huidig team */}

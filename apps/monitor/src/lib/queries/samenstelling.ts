@@ -327,7 +327,7 @@ export async function getVerwachteInstroom(seizoen: string): Promise<VerwachteIn
     const huidig = huidigPerLeeftijd.get(r.leeftijd) || 0;
     if (huidig === 0) continue;
     const verwacht = Math.round(huidig / pctVoor) - huidig;
-    if (verwacht > 0) result[r.leeftijd] = verwacht;
+    if (isFinite(verwacht) && verwacht > 0) result[r.leeftijd] = verwacht;
   }
 
   return result;

@@ -18,12 +18,13 @@ oranje-wit/
 │   ├── database/         # @oranje-wit/database — Prisma schema + client
 │   ├── types/            # @oranje-wit/types — Gedeelde TypeScript types
 │   └── ui/               # @oranje-wit/ui — Gedeelde React componenten (KpiCard, SignalBadge, etc.)
-├── .claude/agents/       # AI agent-definities (9 agents, officiële Claude Code locatie)
+├── e2e/                  # Playwright E2E tests (per app)
+├── .claude/agents/       # AI agent-definities (10 agents, officiële Claude Code locatie)
 ├── agents/               # AI agent-definities (legacy kopie)
 ├── skills/               # AI skills per domein
 │   ├── monitor/          #   Verenigingsmonitor skills (9)
 │   ├── team-indeling/    #   Team-Indeling skills (10)
-│   └── shared/           #   Gedeelde skills (3)
+│   └── shared/           #   Gedeelde skills (4, incl. e2e-testing)
 ├── rules/                # Contextregels (5 bestanden) — Single Source of Truth
 ├── scripts/              # Data-pipeline en import scripts
 │   ├── js/               #   JavaScript (verloop, cohorten, signalering)
@@ -54,10 +55,15 @@ oranje-wit/
 | `pnpm db:push` | Push schema naar database |
 | `pnpm import` | Importeer Verenigingsmonitor data |
 | `pnpm import:evaluaties` | Importeer evaluaties (legacy Lovable import) |
-| `pnpm test` | Draai alle tests (Vitest) |
-| `pnpm test:ti` | Tests team-indeling |
-| `pnpm test:monitor` | Tests monitor |
-| `pnpm test:evaluatie` | Tests evaluatie |
+| `pnpm test` | Draai alle unit tests (Vitest) |
+| `pnpm test:ti` | Unit tests team-indeling |
+| `pnpm test:monitor` | Unit tests monitor |
+| `pnpm test:evaluatie` | Unit tests evaluatie |
+| `pnpm test:e2e` | Alle E2E tests (Playwright) |
+| `pnpm test:e2e:ti` | E2E tests team-indeling |
+| `pnpm test:e2e:monitor` | E2E tests monitor |
+| `pnpm test:e2e:evaluatie` | E2E tests evaluatie |
+| `pnpm test:e2e:ui` | Playwright UI (interactief) |
 | `pnpm format` | Format alles met Prettier |
 | `pnpm format:check` | Check formatting (CI) |
 
@@ -65,7 +71,7 @@ oranje-wit/
 
 ### Automatische gates
 - **Pre-commit hook**: lint-staged draait ESLint + Prettier op staged bestanden
-- **CI (GitHub Actions)**: typecheck + lint + format + tests op elke push/PR naar main
+- **CI (GitHub Actions)**: typecheck + lint + format + unit tests + E2E tests op elke push/PR naar main
 - **ESLint**: gedeelde regels in `eslint.config.mjs` — `no-console` (error), `no-empty` (error), `prefer-const` (error), `no-unused-vars` (warn), `max-lines` (400, warn)
 
 ### Verplichte patronen
@@ -180,6 +186,7 @@ CompetitieSpeler (primaire tabel: 1 per speler × seizoen × competitie)
 | `regel-checker` | TI (sub) | KNKV + OW regelvalidatie |
 | `adviseur` | TI (sub) | Spelersadvies, what-if, Oranje Draad |
 | `ontwikkelaar` | TI (dev) | Next.js app bouwen en uitbreiden |
+| `e2e-tester` | Test | Playwright E2E tests schrijven, draaien en repareren |
 | `deployment` | Infra | Railway deployments, Cloudflare Worker proxy, DNS |
 
 ### Agent Fencing
@@ -196,6 +203,7 @@ Elke agent heeft een `skills:` lijst in zijn frontmatter die bepaalt wat hij mag
 | `regel-checker` | `team-indeling/validatie`, `shared/oranje-draad` |
 | `adviseur` | `team-indeling/advies`, `team-indeling/vergelijk`, `shared/oranje-draad` |
 | `ontwikkelaar` | `team-indeling/import`, `team-indeling/evaluatie`, `shared/deployment` |
+| `e2e-tester` | `shared/e2e-testing`, `shared/deployment` |
 | `deployment` | `shared/deployment`, `monitor/railway` |
 
 ### Agent Hiërarchie
@@ -208,6 +216,9 @@ team-planner (hoofd TI) ← escalates-to: korfbal
 ├── spawns: regel-checker, adviseur
 │
 ontwikkelaar (dev) ← escalates-to: korfbal
+├── spawns: e2e-tester
+│
+e2e-tester (test) ← escalates-to: ontwikkelaar
 │
 deployment (infra) ← escalates-to: korfbal
 ```
@@ -218,13 +229,14 @@ Bij het spawnen van een agent MOET eerst de `shared/start` skill worden geladen.
 
 ### Agent Teams (experimenteel)
 
-Drie voorgedefinieerde agent teams voor parallelle samenwerking. Activeer met `/team-<naam>`.
+Vier voorgedefinieerde agent teams voor parallelle samenwerking. Activeer met `/team-<naam>`.
 
 | Team | Skill | Lead | Teammates | Use case |
 |---|---|---|---|---|
 | **Seizoensindeling** | `/team-seizoensindeling` | team-planner | adviseur, regel-checker, data-analist | Volledig indelingstraject (blauwdruk → definitief) |
 | **Seizoensanalyse** | `/team-seizoensanalyse` | korfbal | data-analist, speler-scout, team-selector | Seizoensstart: totaalbeeld leden, retentie, prognoses |
-| **Release** | `/team-release` | ontwikkelaar | deployment | Feature bouwen + deployen naar Railway |
+| **Release** | `/team-release` | ontwikkelaar | e2e-tester, deployment | Feature bouwen + testen + deployen naar Railway |
+| **E2E Testing** | `/team-e2e` | e2e-tester | ontwikkelaar, deployment | E2E testing, regressie, exploratory testing |
 
 Team-skills staan in `.claude/skills/team-*/SKILL.md`.
 
@@ -237,10 +249,10 @@ database, exporteer, jeugdmodel, knkv-api, ledenverloop, lid-monitor, railway, s
 advies, batch-plaats, blauwdruk, concept, evaluatie, import, pin, scenario, validatie, vergelijk
 
 ### Gedeeld (`skills/shared/`)
-deployment, oranje-draad, start
+deployment, e2e-testing, oranje-draad, start
 
 ### Agent Teams (`.claude/skills/team-*/`)
-team-seizoensindeling, team-seizoensanalyse, team-release
+team-seizoensindeling, team-seizoensanalyse, team-release, team-e2e
 
 ## Rules
 

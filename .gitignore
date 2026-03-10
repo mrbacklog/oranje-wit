@@ -36,6 +36,12 @@ Thumbs.db
 data/leden/snapshots/raw/
 data/ledenverloop/benchmark/knkv-kwartaal/raw/
 
+# Playwright
+e2e/.auth/
+playwright-report/
+test-results/
+blob-report/
+
 # Misc
 *.log
 next-env.d.ts

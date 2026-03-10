@@ -352,6 +352,8 @@ model Speler {
   instroomLeeftijd Int?
   status        SpelerStatus @default(BESCHIKBAAR)
   notitie       String? @db.Text
+  rating          Int?
+  ratingBerekend  Int?  @map("rating_berekend")
 
   // Relaties
   teamplaatsingen    TeamSpeler[]

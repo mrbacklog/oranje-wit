@@ -1,7 +1,7 @@
 import { getBlauwdruk } from "@/app/blauwdruk/actions";
 import { getScenarios } from "./actions";
-import type { Keuze } from "@/app/blauwdruk/actions";
-import NieuwScenarioDialog from "@/components/scenarios/NieuwScenarioDialog";
+import { getSpelerBasisData } from "./wizard-actions";
+import NieuwScenarioWizard from "@/components/scenarios/NieuwScenarioWizard";
 import VerwijderScenarioKnop from "@/components/scenarios/VerwijderScenarioKnop";
 import HernoemScenarioKnop from "@/components/scenarios/HernoemScenarioKnop";
 import Link from "next/link";
@@ -26,9 +26,15 @@ const CATEGORIE_LABELS: Record<string, string> = {
 
 export default async function ScenariosPage() {
   const seizoen = await getActiefSeizoen();
-  const blauwdruk = await getBlauwdruk(seizoen);
-  const keuzes = (blauwdruk.keuzes as Keuze[] | null) ?? [];
+  const [blauwdruk, spelers] = await Promise.all([getBlauwdruk(seizoen), getSpelerBasisData()]);
   const scenarios = await getScenarios(blauwdruk.id);
+
+  const scenarioSamenvatting = scenarios.map((s) => ({
+    id: s.id,
+    naam: s.naam,
+    status: s.status,
+    aantalTeams: s.versies[0]?.teams.length ?? 0,
+  }));
 
   return (
     <div className="max-w-4xl space-y-8">
@@ -48,7 +54,11 @@ export default async function ScenariosPage() {
               Vergelijk
             </Link>
           )}
-          <NieuwScenarioDialog blauwdrukId={blauwdruk.id} keuzes={keuzes} />
+          <NieuwScenarioWizard
+            blauwdrukId={blauwdruk.id}
+            spelers={spelers}
+            bestaandeScenarios={scenarioSamenvatting}
+          />
         </div>
       </div>
 
@@ -62,8 +72,6 @@ export default async function ScenariosPage() {
         <div className="space-y-3">
           {scenarios.map((scenario) => {
             const laatsteVersie = scenario.versies[0];
-            const keuzeWaardes = (scenario.keuzeWaardes ?? {}) as Record<string, string>;
-
             return (
               <Link
                 key={scenario.id}
@@ -106,24 +114,6 @@ export default async function ScenariosPage() {
                     )}
                   </div>
                 </div>
-
-                {/* Keuze-waardes */}
-                {Object.keys(keuzeWaardes).length > 0 && (
-                  <div className="mt-2 flex flex-wrap gap-1.5">
-                    {keuzes.map((keuze) => {
-                      const waarde = keuzeWaardes[keuze.id];
-                      if (!waarde) return null;
-                      return (
-                        <span
-                          key={keuze.id}
-                          className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600"
-                        >
-                          {keuze.vraag}: <span className="font-medium">{waarde}</span>
-                        </span>
-                      );
-                    })}
-                  </div>
-                )}
 
                 {/* Teams samenvatting */}
                 {laatsteVersie && (

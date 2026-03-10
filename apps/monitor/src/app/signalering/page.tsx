@@ -141,8 +141,8 @@ export default async function SignaleringPage({
                                 : "bg-amber-100 text-amber-700"
                             }`}
                           >
-                            {thema.signalen.length} signaal
-                            {thema.signalen.length !== 1 ? "en" : ""}
+                            {thema.signalen.length}{" "}
+                            {thema.signalen.length === 1 ? "signaal" : "signalen"}
                           </span>
                         </div>
                         {topAdvies && <p className="mb-2 text-xs text-gray-600">{topAdvies}</p>}

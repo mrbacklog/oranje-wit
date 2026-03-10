@@ -58,6 +58,8 @@ export interface SpelerData {
   seizoenenActief: number | null;
   notitie: string | null;
   afmelddatum: string | null;
+  rating: number | null;
+  ratingBerekend: number | null;
 }
 
 /** TeamSpeler koppeling met spelerdata */
