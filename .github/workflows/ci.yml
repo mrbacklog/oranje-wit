@@ -176,7 +176,7 @@ jobs:
         run: pnpm db:generate
 
       - name: Push schema naar test database
-        run: npx prisma db push --skip-generate
+        run: npx prisma db push
         working-directory: packages/database
 
       - name: Install Playwright Chromium
