@@ -82,9 +82,9 @@ describe("kleurIndicatie", () => {
     expect(kleurIndicatie(40)).toBeNull();
   });
 
-  it("retourneert BLAUW voor zeer jonge spelers (leeftijd <= 8)", () => {
-    expect(kleurIndicatie(4)).toBe("BLAUW");
-    expect(kleurIndicatie(1)).toBe("BLAUW");
+  it("retourneert PAARS voor kangoeroes (leeftijd < 5)", () => {
+    expect(kleurIndicatie(4)).toBe("PAARS");
+    expect(kleurIndicatie(1)).toBe("PAARS");
   });
 
   it("test grenswaarden tussen kleuren", () => {
