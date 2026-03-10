@@ -8,7 +8,7 @@ Intelligente tool voor het samenstellen van teamindelingen per seizoen.
 - **Database**: @oranje-wit/database (Prisma, gedeeld package)
 - **AI**: Claude API (Anthropic SDK)
 - **Drag-and-drop**: @dnd-kit
-- **Auth**: NextAuth.js (nog niet actief)
+- **Auth**: NextAuth v5 via `@oranje-wit/auth` (Google OAuth, actief)
 
 ## Procesmodel
 
@@ -41,10 +41,9 @@ Data komt uit de Verenigingsmonitor via export-JSON:
 - Logica: `src/lib/import.ts`
 - Commando: `pnpm import`
 
-Evaluaties komen uit de Lovable evaluatie-app:
-- Bron: `data/evaluaties/*.json`
-- Script: `scripts/import/import-evaluaties.ts`
-- Commando: `pnpm import:evaluaties`
+Evaluaties komen uit de native evaluatie-app (`apps/evaluatie/`):
+- Direct opgeslagen in PostgreSQL via de evaluatie-app
+- Legacy import: `scripts/import/import-evaluaties.ts` (Lovable JSON, verouderd)
 
 ## Business Logic
 

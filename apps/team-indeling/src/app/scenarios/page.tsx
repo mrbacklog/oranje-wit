@@ -10,6 +10,7 @@ import { getActiefSeizoen } from "@/lib/seizoen";
 export const dynamic = "force-dynamic";
 
 const KLEUR_LABELS: Record<string, string> = {
+  PAARS: "Paars",
   BLAUW: "Blauw",
   GROEN: "Groen",
   GEEL: "Geel",

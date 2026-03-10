@@ -12,6 +12,57 @@
       "mcp__railway",
       "mcp__plugin_playwright_playwright"
     ],
-    "deny": ["Bash(rm -rf /)", "Bash(rm -rf /*)"]
+    "deny": [
+      "Bash(rm -rf /)",
+      "Bash(rm -rf /*)",
+      "Bash(pnpm db:push*)",
+      "Bash(npx prisma db push*)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // empty' | xargs -I {} npx prettier --write \"{}\" 2>/dev/null || true"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'INPUT=$(cat); FILE=$(echo \"$INPUT\" | jq -r \".tool_input.file_path // empty\"); for p in .env package-lock.json pnpm-lock.yaml .git/; do if [[ \"$FILE\" == *\"$p\"* ]]; then echo \"Geblokkeerd: $FILE matcht beschermd patroon $p\" >&2; exit 2; fi; done; exit 0'"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'HERINNERING na compaction:\\n- Gebruik logger uit @oranje-wit/types, NOOIT console.log\\n- API routes: ok()/fail() uit @/lib/api met Zod validatie\\n- Constanten importeren uit @oranje-wit/types (PEILJAAR, HUIDIG_SEIZOEN, PEILDATUM)\\n- rel_code is de ENIGE speler-sleutel, NOOIT naam-matching\\n- pnpm db:push NIET draaien (dropt VIEW speler_seizoenen)\\n- Taal: altijd Nederlands\\n- Agents staan in .claude/agents/'"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell.exe -Command \"[System.Reflection.Assembly]::LoadWithPartialName('System.Windows.Forms') | Out-Null; [System.Windows.Forms.MessageBox]::Show('Claude Code heeft je aandacht nodig', 'Claude Code')\""
+          }
+        ]
+      }
+    ]
   }
 }

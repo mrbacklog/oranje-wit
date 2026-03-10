@@ -20,6 +20,8 @@ packages/database/src/generated/
 # Claude Code (local/sensitive)
 .claude/settings.local.json
 .claude/worktrees/
+.claude/agent-memory/
+.claude/agent-memory-local/
 .playwright-mcp/
 
 # IDE

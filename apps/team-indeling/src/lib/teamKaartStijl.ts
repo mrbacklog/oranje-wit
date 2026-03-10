@@ -7,6 +7,7 @@ import type { TeamCategorie, Kleur } from "@oranje-wit/database";
 
 /** Solid border-kleur per B-categorie kleur */
 const KLEUR_RAND: Record<string, string> = {
+  PAARS: "border-purple-400",
   BLAUW: "border-blue-400",
   GROEN: "border-emerald-400",
   GEEL: "border-yellow-400",
@@ -16,6 +17,7 @@ const KLEUR_RAND: Record<string, string> = {
 
 /** Subtiele achtergrondtint per B-categorie kleur */
 const KLEUR_BG: Record<string, string> = {
+  PAARS: "bg-purple-50/30",
   BLAUW: "bg-blue-50/30",
   GROEN: "bg-emerald-50/30",
   GEEL: "bg-yellow-50/30",
@@ -25,6 +27,7 @@ const KLEUR_BG: Record<string, string> = {
 
 /** Header-border accent per kleur */
 const KLEUR_HEADER: Record<string, string> = {
+  PAARS: "border-purple-200",
   BLAUW: "border-blue-200",
   GROEN: "border-emerald-200",
   GEEL: "border-yellow-200",
@@ -34,6 +37,7 @@ const KLEUR_HEADER: Record<string, string> = {
 
 /** Footer-border accent per kleur */
 const KLEUR_FOOTER: Record<string, string> = {
+  PAARS: "border-purple-100",
   BLAUW: "border-blue-100",
   GROEN: "border-emerald-100",
   GEEL: "border-yellow-100",

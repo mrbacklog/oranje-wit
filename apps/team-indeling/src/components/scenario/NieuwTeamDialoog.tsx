@@ -16,6 +16,7 @@ const CATEGORIEEN: { waarde: TeamCategorie; label: string }[] = [
 ];
 
 const KLEUREN: { waarde: Kleur; label: string }[] = [
+  { waarde: "PAARS", label: "Paars" },
   { waarde: "BLAUW", label: "Blauw" },
   { waarde: "GROEN", label: "Groen" },
   { waarde: "GEEL", label: "Geel" },

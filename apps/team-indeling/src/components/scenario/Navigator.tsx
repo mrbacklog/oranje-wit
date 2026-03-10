@@ -21,12 +21,13 @@ function groepeerTeams(teams: TeamData[]): TeamGroepConfig[] {
   const groepen: TeamGroepConfig[] = [];
 
   // B-categorie per kleur
-  const bKleurVolgorde = ["BLAUW", "GROEN", "GEEL", "ORANJE", "ROOD"];
+  const bKleurVolgorde = ["PAARS", "BLAUW", "GROEN", "GEEL", "ORANJE", "ROOD"];
   const bTeams = teams.filter((t) => t.categorie === "B_CATEGORIE");
   for (const kleur of bKleurVolgorde) {
     const kleurTeams = bTeams.filter((t) => t.kleur === kleur);
     if (kleurTeams.length > 0) {
       const kleurLabels: Record<string, string> = {
+        PAARS: "Paars",
         BLAUW: "Blauw",
         GROEN: "Groen",
         GEEL: "Geel",

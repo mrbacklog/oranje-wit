@@ -8,16 +8,25 @@ allowed-tools: Read, Write, Glob
 # Skill: Evaluatie
 
 ## Doel
-Spelerevaluaties vanuit de Lovable evaluatie-app beschikbaar maken en inzetten bij spelersadvies en teamindeling.
+Spelerevaluaties beschikbaar maken en inzetten bij spelersadvies en teamindeling.
 
 ## Wat zijn evaluaties?
-Coaches beoordelen spelers periodiek op diverse aspecten (techniek, inzet, spelvisie, etc.). Deze evaluaties worden in de Lovable app (`mrbacklog/oranje-wit-evaluate`) ingevoerd en als JSON geëxporteerd.
+Coaches beoordelen spelers periodiek op diverse aspecten (techniek, inzet, spelvisie, etc.). Evaluaties worden ingevoerd via de native evaluatie-app (`apps/evaluatie/`) en direct opgeslagen in PostgreSQL.
 
-## Importproces
-1. Coach voert evaluatie in via de Lovable evaluatie-app
-2. Export als JSON naar `data/evaluaties/`
-3. Import via `pnpm import:evaluaties` (script: `scripts/import/import-evaluaties.ts`)
-4. Data wordt opgeslagen in de `Evaluatie` tabel (Prisma)
+## Evaluatie-app
+De evaluatie-app (`apps/evaluatie/`) is een Next.js 16 app in het monorepo:
+- **URL**: https://evaluaties.ckvoranjewit.app
+- **Lokaal**: `pnpm dev:evaluatie` (poort 4104)
+- **Auth**: NextAuth v5 via `@oranje-wit/auth` (Google OAuth)
+- Coördinatoren maken evaluatierondes aan en nodigen coaches uit per e-mail
+- Coaches vullen evaluaties in via een formulier
+- Spelers kunnen zelfevaluaties invullen via een uitnodigingslink
+
+## Legacy importproces (verouderd)
+Het oude importproces via Lovable (`mrbacklog/oranje-wit-evaluate`) wordt niet meer gebruikt:
+1. ~~Export als JSON naar `data/evaluaties/`~~
+2. ~~Import via `pnpm import:evaluaties`~~
+3. Data staat nu direct in PostgreSQL via de native evaluatie-app
 
 ## Database
 Prisma model `Evaluatie` in `packages/database/prisma/schema.prisma`:
@@ -57,7 +66,7 @@ TypeScript types: `EvaluatieScore`, `EvaluatieData`, `TeamGemiddelde` in `compon
   - What-if analyses (impact van verplaatsing)
 
 ## Referenties
-- Import-skill: → zie `team-indeling/import` voor het importproces
-- Evaluatie-app: Lovable repo `mrbacklog/oranje-wit-evaluate`
-- API route: `app/api/spelers/[id]/evaluaties/route.ts`
-- UI: `components/scenario/EvaluatieScores.tsx`, `components/scenario/SpelerDetail.tsx`
+- Evaluatie-app: `apps/evaluatie/` (native Next.js app in monorepo)
+- TI API route: `app/api/spelers/[id]/evaluaties/route.ts`
+- TI UI: `components/scenario/EvaluatieScores.tsx`, `components/scenario/SpelerDetail.tsx`
+- Legacy: Lovable repo `mrbacklog/oranje-wit-evaluate` (niet meer in gebruik)

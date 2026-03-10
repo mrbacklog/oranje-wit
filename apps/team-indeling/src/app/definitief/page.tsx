@@ -14,6 +14,7 @@ const CATEGORIE_LABELS: Record<string, string> = {
 };
 
 const KLEUR_LABELS: Record<string, string> = {
+  PAARS: "Paars",
   BLAUW: "Blauw",
   GROEN: "Groen",
   GEEL: "Geel",

@@ -239,7 +239,7 @@ const batchPlaatsSpelers: Anthropic.Tool = {
       },
       huidig_kleur: {
         type: "string",
-        enum: ["BLAUW", "GROEN", "GEEL", "ORANJE", "ROOD"],
+        enum: ["PAARS", "BLAUW", "GROEN", "GEEL", "ORANJE", "ROOD"],
         description: "Filter op huidige kleurgroep",
       },
       geslacht: {
@@ -280,9 +280,9 @@ const maakTeamAan: Anthropic.Tool = {
       },
       kleur: {
         type: "string",
-        enum: ["BLAUW", "GROEN", "GEEL", "ORANJE", "ROOD"],
+        enum: ["PAARS", "BLAUW", "GROEN", "GEEL", "ORANJE", "ROOD"],
         description:
-          "Kleur/niveau: BLAUW (jongste jeugd), GROEN (oudere jeugd), GEEL (A-categorie), ORANJE (A-cat/senioren), ROOD (senioren). Leidt af uit de teamnaam als mogelijk.",
+          "Kleur/niveau: PAARS (kangoeroes, jongste), BLAUW (jongste jeugd), GROEN (oudere jeugd), GEEL (A-categorie), ORANJE (A-cat/senioren), ROOD (senioren). Leidt af uit de teamnaam als mogelijk.",
       },
     },
     required: ["naam", "categorie", "kleur"],

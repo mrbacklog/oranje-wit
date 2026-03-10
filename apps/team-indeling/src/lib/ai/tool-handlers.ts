@@ -209,7 +209,7 @@ export async function handleMaakTeamAan(
   const kleur = input.kleur as string;
 
   const CATEGORIEN = ["SENIOREN", "A_CATEGORIE", "B_CATEGORIE"];
-  const KLEUREN = ["BLAUW", "GROEN", "GEEL", "ORANJE", "ROOD"];
+  const KLEUREN = ["PAARS", "BLAUW", "GROEN", "GEEL", "ORANJE", "ROOD"];
   if (!CATEGORIEN.includes(categorie))
     return { result: `Ongeldige categorie "${categorie}". Kies uit: ${CATEGORIEN.join(", ")}` };
   if (!KLEUREN.includes(kleur))
@@ -224,7 +224,7 @@ export async function handleMaakTeamAan(
       versieId: ctx.versieId,
       naam,
       categorie: categorie as "SENIOREN" | "A_CATEGORIE" | "B_CATEGORIE",
-      kleur: kleur as "BLAUW" | "GROEN" | "GEEL" | "ORANJE" | "ROOD",
+      kleur: kleur as "PAARS" | "BLAUW" | "GROEN" | "GEEL" | "ORANJE" | "ROOD",
       volgorde: aantalTeams,
     },
   });

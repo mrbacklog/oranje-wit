@@ -11,8 +11,8 @@ paths:
 - Schrijf nooit BSN, geboortedatum of adresgegevens naar logs of output
 - Persoonsdata alleen opslaan in aangewezen data-mappen, nooit in code
 - Bij twijfel: behandel alle ledendata als privacygevoelig
-- De `leden` tabel bevat **geen e-mailadressen** — alleen rel_code als identifier
-- De `leden` tabel bevat **alleen geboortejaar**, niet de volledige geboortedatum
+- De `leden` tabel bevat optioneel e-mailadressen (`email String?`) — deze worden niet publiekelijk getoond in APIs
+- De `leden` tabel bevat zowel `geboortejaar` (Int) als `geboortedatum` (Date) — geboortedatum wordt gebruikt voor precieze korfballeeftijd-berekening
 
 ## Dataopslag
 

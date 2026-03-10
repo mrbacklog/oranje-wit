@@ -14,23 +14,26 @@ oranje-wit/
 │   ├── evaluatie/        # Evaluatie-app (Next.js 16, spelerevaluaties, zelfevaluaties)
 │   └── mcp/              # MCP servers (database, Railway)
 ├── packages/
+│   ├── auth/             # @oranje-wit/auth — NextAuth v5 + Google OAuth
 │   ├── database/         # @oranje-wit/database — Prisma schema + client
-│   └── types/            # @oranje-wit/types — Gedeelde TypeScript types
-├── agents/               # AI agent-definities (8 agents)
+│   ├── types/            # @oranje-wit/types — Gedeelde TypeScript types
+│   └── ui/               # @oranje-wit/ui — Gedeelde React componenten (KpiCard, SignalBadge, etc.)
+├── .claude/agents/       # AI agent-definities (9 agents, officiële Claude Code locatie)
+├── agents/               # AI agent-definities (legacy kopie)
 ├── skills/               # AI skills per domein
 │   ├── monitor/          #   Verenigingsmonitor skills (9)
-│   ├── team-indeling/    #   Team-Indeling skills (9)
-│   └── shared/           #   Gedeelde skills (1)
+│   ├── team-indeling/    #   Team-Indeling skills (10)
+│   └── shared/           #   Gedeelde skills (3)
 ├── rules/                # Contextregels (5 bestanden) — Single Source of Truth
 ├── scripts/              # Data-pipeline en import scripts
 │   ├── js/               #   JavaScript (verloop, cohorten, signalering)
 │   ├── python/           #   Python (analyses, streefboog)
 │   └── import/           #   TypeScript (data import, evaluatie import)
-├── data/                 # Alle data (16 seizoenen, evaluaties, exports)
-├── model/                # Statistisch jeugdmodel (YAML)
-└── docs/                 # Documentatie + databronnen
-    ├── teamindelingen/A2/ # A2-formulieren (.xlsm, 2018-2024)
-    └── Telling spelers per seizoen.xlsx
+├── data/                 # Ledendata, seizoensdata, exports (database is primaire bron)
+├── model/                # Statistisch jeugdmodel (YAML: jeugdmodel, plugin-interface, visualisatie-spec)
+└── docs/                 # Documentatie, plannen, stafgegevens
+    ├── plans/            #   Implementatieplannen
+    └── staf/             #   Stafdata (CSV)
 ```
 
 ## Workspace
@@ -50,7 +53,7 @@ oranje-wit/
 | `pnpm db:generate` | Genereer Prisma client |
 | `pnpm db:push` | Push schema naar database |
 | `pnpm import` | Importeer Verenigingsmonitor data |
-| `pnpm import:evaluaties` | Importeer evaluaties uit Lovable |
+| `pnpm import:evaluaties` | Importeer evaluaties (legacy Lovable import) |
 | `pnpm test` | Draai alle tests (Vitest) |
 | `pnpm test:ti` | Tests team-indeling |
 | `pnpm test:monitor` | Tests monitor |
@@ -63,7 +66,7 @@ oranje-wit/
 ### Automatische gates
 - **Pre-commit hook**: lint-staged draait ESLint + Prettier op staged bestanden
 - **CI (GitHub Actions)**: typecheck + lint + format + tests op elke push/PR naar main
-- **ESLint**: gedeelde regels in `eslint.config.mjs` — `no-console` (error), `no-empty-catch`, `no-unused-vars`, `max-lines` (400)
+- **ESLint**: gedeelde regels in `eslint.config.mjs` — `no-console` (error), `no-empty` (error), `prefer-const` (error), `no-unused-vars` (warn), `max-lines` (400, warn)
 
 ### Verplichte patronen
 
@@ -113,19 +116,19 @@ catch (error) {
 - **Database**: `oranjewit`
 - **Schema eigenaarschap**: `packages/database/prisma/schema.prisma`
 
-### Tabelverdeling (29 modellen)
+### Tabelverdeling (41 modellen)
 
-**Competitie-data**:
+**Competitie-data (2)**:
 CompetitieSpeler (`competitie_spelers`), CompetitieRonde (`competitie_rondes`)
 VIEW `speler_seizoenen` — afgeleid uit `competitie_spelers` (DISTINCT ON rel_code, seizoen)
 
-**Verenigingsmonitor** (snake_case via `@@map`):
-Lid, LidFoto, Seizoen, OWTeam, TeamPeriode, Ledenverloop, CohortSeizoen, Signalering, Streefmodel, PoolStand, PoolStandRegel
+**Verenigingsmonitor (12)** (snake_case via `@@map`):
+Lid, LidFoto, Seizoen, OWTeam, TeamAlias, TeamPeriode, Ledenverloop, CohortSeizoen, Signalering, Streefmodel, PoolStand, PoolStandRegel
 
-**Team-Indeling** (PascalCase):
-User, Speler, Staf, Blauwdruk, Pin, Concept, Scenario, Versie, Team, TeamSpeler, TeamStaf, Evaluatie, LogEntry, Import, ReferentieTeam
+**Team-Indeling (21)** (PascalCase):
+User, Speler, Staf, StafToewijzing, Blauwdruk, Pin, Concept, Scenario, Versie, Team, SelectieGroep, SelectieSpeler, SelectieStaf, TeamSpeler, TeamStaf, Evaluatie, LogEntry, Import, ReferentieTeam, Notitie, Actiepunt
 
-**Evaluatie**:
+**Evaluatie (6)**:
 EvaluatieRonde, Coordinator, CoordinatorTeam, EvaluatieUitnodiging, SpelerZelfEvaluatie, EmailTemplate
 
 ### Competitie-datamodel
@@ -156,8 +159,8 @@ CompetitieSpeler (primaire tabel: 1 per speler × seizoen × competitie)
 5. Alle actieve leden (seizoen 2025-2026 in `competitie_spelers`) horen een `Speler`-record te hebben
 
 ### Lees/schrijf
-- **Team-Indeling schrijft**: blauwdruk, concepten, scenario's, teams, pins, log, evaluaties
-- **Team-Indeling leest**: leden, speler_seizoenen, competitie_spelers, retentie
+- **Team-Indeling schrijft**: blauwdruk, concepten, scenario's, teams, selectiegroepen, pins, log, evaluaties, notities, actiepunten
+- **Team-Indeling leest**: leden, speler_seizoenen, competitie_spelers, cohort_seizoenen (retentiePct)
 - **Monitor schrijft**: leden, teams, verloop, cohorten, signalering, competitie_spelers
 - **Monitor leest**: alles (dashboards, signalering, MCP tools)
 - **Evaluatie schrijft**: evaluatierondes, coördinatoren, uitnodigingen, evaluaties, zelfevaluaties, email templates
@@ -211,7 +214,19 @@ deployment (infra) ← escalates-to: korfbal
 
 ### Agent Startup
 
-Bij het spawnen van een agent via de Task tool MOET eerst de `shared/start` skill worden geladen. Dit is niet optioneel. De agent leest `skills/shared/start/SKILL.md` als eerste actie en doorloopt alle 4 stappen (basiscontext, domeincontext, dynamische context, eigen agent-bestand) voordat hij aan zijn eigenlijke taak begint.
+Bij het spawnen van een agent MOET eerst de `shared/start` skill worden geladen. Dit is niet optioneel. De agent doorloopt alle 4 stappen (basiscontext, domeincontext, dynamische context, eigen agent-bestand) voordat hij aan zijn eigenlijke taak begint.
+
+### Agent Teams (experimenteel)
+
+Drie voorgedefinieerde agent teams voor parallelle samenwerking. Activeer met `/team-<naam>`.
+
+| Team | Skill | Lead | Teammates | Use case |
+|---|---|---|---|---|
+| **Seizoensindeling** | `/team-seizoensindeling` | team-planner | adviseur, regel-checker, data-analist | Volledig indelingstraject (blauwdruk → definitief) |
+| **Seizoensanalyse** | `/team-seizoensanalyse` | korfbal | data-analist, speler-scout, team-selector | Seizoensstart: totaalbeeld leden, retentie, prognoses |
+| **Release** | `/team-release` | ontwikkelaar | deployment | Feature bouwen + deployen naar Railway |
+
+Team-skills staan in `.claude/skills/team-*/SKILL.md`.
 
 ## Skills
 
@@ -219,10 +234,13 @@ Bij het spawnen van een agent via de Task tool MOET eerst de `shared/start` skil
 database, exporteer, jeugdmodel, knkv-api, ledenverloop, lid-monitor, railway, scenario-analyse, teamsamenstelling
 
 ### Team-Indeling (`skills/team-indeling/`)
-advies, blauwdruk, concept, evaluatie, import, pin, scenario, validatie, vergelijk
+advies, batch-plaats, blauwdruk, concept, evaluatie, import, pin, scenario, validatie, vergelijk
 
 ### Gedeeld (`skills/shared/`)
-oranje-draad, start
+deployment, oranje-draad, start
+
+### Agent Teams (`.claude/skills/team-*/`)
+team-seizoensindeling, team-seizoensanalyse, team-release
 
 ## Rules
 
@@ -243,7 +261,7 @@ Rules zijn de **Single Source of Truth** voor domeinkennis. Agents en skills ver
 | Sportlink | Ledendata, stamgegevens | CSV/JSON export → leden tabel |
 | KNKV API | Teamdata, indelingen | API calls (knkv-api skill) |
 | Telling-bestand | 16 seizoenen spelersdata | Historische import, data staat definitief in PostgreSQL |
-| Evaluatie-app (Lovable) | Spelerevaluaties | JSON export → `pnpm import:evaluaties` |
+| Evaluatie-app | Spelerevaluaties | Native app (`apps/evaluatie/`), direct in database |
 
 ## Data Flow
 
@@ -270,9 +288,7 @@ Railway PostgreSQL ← Prisma schema (packages/database/)
     ↓
 apps/monitor/ (dashboards) + apps/team-indeling/ (Next.js)
 
-Lovable evaluatie-app → data/evaluaties/ (JSON export)
-    ↓ (scripts/import/import-evaluaties.ts)
-Railway PostgreSQL → Evaluatie tabel
+apps/evaluatie/ (native Next.js) → direct in PostgreSQL (evaluaties, rondes, uitnodigingen)
 ```
 
 ## Deployment (Railway + Cloudflare)
@@ -284,7 +300,7 @@ Alles draait in één Railway project (`oranje-wit-db`):
 - **Evaluatie**: https://evaluatie.ckvoranjewit.app (via Cloudflare Worker → Railway)
 - **Database**: `postgres.railway.internal:5432` (intern Railway netwerk)
 - **Build**: per-app Dockerfiles (`apps/*/Dockerfile`), Node 22, pnpm workspace
-- **DNS**: Cloudflare (registrar: IONOS), Worker `railway-proxy` als reverse proxy
+- **DNS**: Cloudflare (registrar + DNS + proxy), Worker `railway-proxy` als reverse proxy
 
 ## Communicatie
 - **Taal**: altijd Nederlands

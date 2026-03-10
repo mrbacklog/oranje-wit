@@ -4,6 +4,7 @@ import { useState } from "react";
 import { KLEUR_VOLGORDE, KLEUR_VEILIGE_RANGE } from "@/lib/validatie/regels";
 
 const KLEUR_STIJL: Record<string, string> = {
+  PAARS: "bg-purple-100 text-purple-700",
   BLAUW: "bg-blue-100 text-blue-700",
   GROEN: "bg-emerald-100 text-emerald-700",
   GEEL: "bg-yellow-100 text-yellow-700",
