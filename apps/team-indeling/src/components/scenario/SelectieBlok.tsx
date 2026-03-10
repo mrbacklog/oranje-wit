@@ -14,6 +14,7 @@ export interface SelectieBlokProps {
   validatieMap?: Map<string, TeamValidatie>;
   detailLevel?: DetailLevel;
   pinnedSpelerIds?: Set<string>;
+  showRanking?: boolean;
   onOntkoppel: (groepId: string) => void;
   onDelete: (teamId: string) => void;
   onSpelerClick?: (speler: SpelerData, teamId?: string) => void;
@@ -26,6 +27,7 @@ export default function SelectieBlok({
   validatieMap,
   detailLevel,
   pinnedSpelerIds,
+  showRanking,
   onOntkoppel: _onOntkoppel,
   onDelete: _onDelete,
   onSpelerClick,
@@ -204,6 +206,7 @@ export default function SelectieBlok({
                       teamId={eersteTeam?.id ?? ""}
                       detailLevel={dl}
                       isPinned={pinnedSpelerIds?.has(ts.speler.id)}
+                      showRanking={showRanking}
                       onSpelerClick={
                         onSpelerClick
                           ? (speler) => onSpelerClick(speler, eersteTeam?.id)
@@ -222,6 +225,7 @@ export default function SelectieBlok({
                       teamId={eersteTeam?.id ?? ""}
                       detailLevel={dl}
                       isPinned={pinnedSpelerIds?.has(ts.speler.id)}
+                      showRanking={showRanking}
                       onSpelerClick={
                         onSpelerClick
                           ? (speler) => onSpelerClick(speler, eersteTeam?.id)
@@ -252,6 +256,7 @@ export default function SelectieBlok({
                       teamId={eersteTeam?.id ?? ""}
                       detailLevel={dl}
                       isPinned={pinnedSpelerIds?.has(ts.speler.id)}
+                      showRanking={showRanking}
                       onSpelerClick={
                         onSpelerClick
                           ? (speler) => onSpelerClick(speler, eersteTeam?.id)
@@ -270,6 +275,7 @@ export default function SelectieBlok({
                       teamId={eersteTeam?.id ?? ""}
                       detailLevel={dl}
                       isPinned={pinnedSpelerIds?.has(ts.speler.id)}
+                      showRanking={showRanking}
                       onSpelerClick={
                         onSpelerClick
                           ? (speler) => onSpelerClick(speler, eersteTeam?.id)

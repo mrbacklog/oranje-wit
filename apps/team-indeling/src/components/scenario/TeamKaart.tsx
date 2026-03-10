@@ -336,6 +336,7 @@ export default function TeamKaart({
                       teamId={team.id}
                       detailLevel={dl}
                       isPinned={pinnedSpelerIds?.has(ts.speler.id)}
+                      showRanking={showRanking}
                       onSpelerClick={onSpelerClick}
                     />
                   ))}
@@ -361,6 +362,7 @@ export default function TeamKaart({
                       teamId={team.id}
                       detailLevel={dl}
                       isPinned={pinnedSpelerIds?.has(ts.speler.id)}
+                      showRanking={showRanking}
                       onSpelerClick={onSpelerClick}
                     />
                   ))}

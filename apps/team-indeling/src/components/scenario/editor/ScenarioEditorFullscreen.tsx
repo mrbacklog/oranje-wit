@@ -363,6 +363,7 @@ export default function ScenarioEditorFullscreen({
               : undefined
           }
           pin={editor.pinMap.get(editor.detailSpeler.id) ?? null}
+          showRanking={showRanking}
           onTogglePin={editor.handleTogglePin}
           onClose={() => {
             editor.setDetailSpeler(null);

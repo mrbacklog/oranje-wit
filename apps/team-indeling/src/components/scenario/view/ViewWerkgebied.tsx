@@ -81,6 +81,7 @@ export default function ViewWerkgebied({
                     validatieMap={validatieMap}
                     detailLevel={detailLevel}
                     pinnedSpelerIds={pinnedSpelerIds}
+                    showRanking={showRanking}
                     onSpelerClick={onSpelerClick}
                   />
                 </GestureCard>

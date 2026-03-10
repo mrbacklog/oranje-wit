@@ -134,6 +134,7 @@ export default function Werkgebied({
                       validatieMap={validatieMap}
                       detailLevel={detailLevel}
                       pinnedSpelerIds={pinnedSpelerIds}
+                      showRanking={showRanking}
                       onOntkoppel={onOntkoppelSelectie}
                       onDelete={onDeleteTeam}
                       onSpelerClick={onSpelerClick}

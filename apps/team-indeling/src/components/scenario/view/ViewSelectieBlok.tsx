@@ -10,6 +10,7 @@ import type {
 } from "../types";
 import type { TeamValidatie } from "@/lib/validatie/regels";
 import { KLEUR_DOT, korfbalLeeftijd, kleurIndicatie, sorteerSpelers } from "../types";
+import RankingBadge from "../RankingBadge";
 import { getCardSize } from "../editor/cardSizes";
 import { useZoomScale } from "../editor/ZoomScaleContext";
 
@@ -19,6 +20,7 @@ interface ViewSelectieBlokProps {
   validatieMap?: Map<string, TeamValidatie>;
   detailLevel?: DetailLevel;
   pinnedSpelerIds?: Set<string>;
+  showRanking?: boolean;
   onSpelerClick?: (speler: SpelerData) => void;
 }
 
@@ -28,6 +30,7 @@ export default function ViewSelectieBlok({
   validatieMap,
   detailLevel,
   pinnedSpelerIds,
+  showRanking,
   onSpelerClick,
 }: ViewSelectieBlokProps) {
   const dl = detailLevel ?? "detail";
@@ -136,6 +139,7 @@ export default function ViewSelectieBlok({
                       speler={ts.speler}
                       status={ts.statusOverride ?? ts.speler.status}
                       isPinned={pinnedSpelerIds?.has(ts.speler.id)}
+                      showRanking={showRanking}
                       onSpelerClick={onSpelerClick}
                     />
                   ))}
@@ -148,6 +152,7 @@ export default function ViewSelectieBlok({
                       speler={ts.speler}
                       status={ts.statusOverride ?? ts.speler.status}
                       isPinned={pinnedSpelerIds?.has(ts.speler.id)}
+                      showRanking={showRanking}
                       onSpelerClick={onSpelerClick}
                     />
                   ))}
@@ -172,6 +177,7 @@ export default function ViewSelectieBlok({
                       speler={ts.speler}
                       status={ts.statusOverride ?? ts.speler.status}
                       isPinned={pinnedSpelerIds?.has(ts.speler.id)}
+                      showRanking={showRanking}
                       onSpelerClick={onSpelerClick}
                     />
                   ))}
@@ -184,6 +190,7 @@ export default function ViewSelectieBlok({
                       speler={ts.speler}
                       status={ts.statusOverride ?? ts.speler.status}
                       isPinned={pinnedSpelerIds?.has(ts.speler.id)}
+                      showRanking={showRanking}
                       onSpelerClick={onSpelerClick}
                     />
                   ))}
@@ -229,11 +236,13 @@ function ViewSpelerRij({
   speler,
   status,
   isPinned,
+  showRanking,
   onSpelerClick,
 }: {
   speler: SpelerData;
   status: import("@oranje-wit/database").SpelerStatus;
   isPinned?: boolean;
+  showRanking?: boolean;
   onSpelerClick?: (speler: SpelerData) => void;
 }) {
   const leeftijd = korfbalLeeftijd(speler.geboortedatum, speler.geboortejaar);
@@ -267,6 +276,7 @@ function ViewSpelerRij({
         {speler.roepnaam} {speler.achternaam}
       </span>
       <div className="flex shrink-0 items-center gap-0.5">
+        {showRanking && <RankingBadge rating={speler.rating} size="compact" />}
         {isPinned && (
           <svg
             className="h-2 w-2 text-purple-500"
