@@ -245,6 +245,11 @@ function ViewSpelerRij({
     <div
       className={`flex items-center gap-0.5 rounded-r border-l-2 px-1 py-px ${STATUS_BORDER[status] ?? "border-l-gray-200"}`}
     >
+      {vorigTeam && (
+        <span className="max-w-[40px] shrink-0 truncate text-[7px] text-gray-400" title={vorigTeam}>
+          {vorigTeam}
+        </span>
+      )}
       <span
         className={`min-w-0 flex-1 truncate text-[10px] leading-none text-gray-800 ${
           onSpelerClick ? "cursor-pointer hover:text-orange-600" : ""
@@ -254,16 +259,11 @@ function ViewSpelerRij({
         {speler.roepnaam} {speler.achternaam}
       </span>
       <div className="flex shrink-0 items-center gap-0.5">
+        <span className="text-[8px] text-gray-500 tabular-nums">{leeftijd.toFixed(2)}</span>
         {kleur && (
           <span className={`h-1.5 w-1.5 rounded-full ring-1 ring-white ${KLEUR_DOT[kleur]}`} />
         )}
-        <span className="text-[8px] text-gray-400 tabular-nums">{leeftijd.toFixed(2)}</span>
       </div>
-      {vorigTeam && (
-        <span className="max-w-[40px] shrink-0 truncate text-[7px] text-gray-400" title={vorigTeam}>
-          {vorigTeam}
-        </span>
-      )}
     </div>
   );
 }

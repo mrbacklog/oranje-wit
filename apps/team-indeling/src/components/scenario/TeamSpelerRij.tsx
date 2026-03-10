@@ -98,17 +98,23 @@ export default function TeamSpelerRij({
           {speler.roepnaam} {speler.achternaam}
         </span>
 
-        {/* Regel 2: vorig team + leeftijd — halve regelhoogte */}
+        {/* Regel 2: vorig team — halve regelhoogte */}
         {dl === "detail" && (
-          <div className="flex items-center gap-0.5 text-[8px] leading-none text-gray-400">
+          <div className="text-[8px] leading-none text-gray-400">
             <span className="truncate">{vorigTeam ?? "\u2014"}</span>
-            <span className="shrink-0 tabular-nums">{leeftijd.toFixed(2)}</span>
           </div>
         )}
       </div>
 
       {/* Rechter indicatoren */}
       <div className="flex shrink-0 items-center gap-0.5">
+        {/* Leeftijd */}
+        {dl === "detail" && (
+          <span className="shrink-0 text-[8px] text-gray-500 tabular-nums">
+            {leeftijd.toFixed(2)}
+          </span>
+        )}
+
         {/* Notitie indicator */}
         {heeftNotitie && (
           <svg
