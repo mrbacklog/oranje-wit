@@ -61,7 +61,7 @@ export default function ScenarioEditorFullscreen({
       } else {
         infos.push({
           id: team.id,
-          teamType: team.teamType ?? "VIERTAL",
+          teamType: team.teamType ?? "ACHTAL",
           isSelectie: false,
         });
       }

@@ -65,8 +65,8 @@ export default function ViewTeamKaart({
   const footerBorder = categorieFooterBorder(team.categorie, team.kleur);
   const weergaveNaam = team.alias ?? team.naam;
 
-  const { w: cardWidth, h: cardHeight } = getCardSize(team.teamType ?? "VIERTAL", false);
-  const isDouble = (team.teamType ?? "VIERTAL") !== "VIERTAL";
+  const { w: cardWidth, h: cardHeight } = getCardSize(team.teamType ?? "ACHTAL", false);
+  const isDouble = (team.teamType ?? "ACHTAL") !== "VIERTAL";
 
   const zoomScale = useZoomScale();
   const textScale = zoomScale < 1 ? 1 / Math.max(zoomScale, 0.5) : 1;

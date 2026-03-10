@@ -89,8 +89,8 @@ export default function TeamKaart({
   const ringKlassen = validatieRingKlassen(validatie?.status, isOver);
   const weergaveNaam = team.alias ?? team.naam;
 
-  const { w: cardWidth, h: cardHeight } = getCardSize(team.teamType ?? "VIERTAL", false);
-  const isDouble = (team.teamType ?? "VIERTAL") !== "VIERTAL";
+  const { w: cardWidth, h: cardHeight } = getCardSize(team.teamType ?? "ACHTAL", false);
+  const isDouble = (team.teamType ?? "ACHTAL") !== "VIERTAL";
 
   // Compenseer tekst voor zoom
   const zoomScale = useZoomScale();
