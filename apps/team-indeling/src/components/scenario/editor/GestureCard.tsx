@@ -23,7 +23,10 @@ export default function GestureCard({ cardId, position, onDragEnd, children }: G
   }));
 
   const bind = useDrag(
-    ({ delta: [dx, dy], first, last, event }) => {
+    ({ delta: [dx, dy], first, last, tap, event }) => {
+      // Tap = klik, geen drag — negeer volledig
+      if (tap) return;
+
       // Don't start card-drag if the user is dragging a dnd-kit speler element
       const target = event?.target as HTMLElement | null;
       if (target?.closest("[data-dnd-draggable]")) return;
@@ -42,8 +45,8 @@ export default function GestureCard({ cardId, position, onDragEnd, children }: G
 
       if (last) {
         const { x: adx, y: ady } = accumulatedDelta.current;
-        // Ignore micro-drags (< 3px) to prevent card jumping on click
-        if (Math.abs(adx) > 3 || Math.abs(ady) > 3) {
+        // Ignore micro-drags (< 10px) to prevent card jumping on click
+        if (Math.abs(adx) > 10 || Math.abs(ady) > 10) {
           onDragEnd(cardId, adx, ady);
         }
         api.start({ x: 0, y: 0, immediate: true });
