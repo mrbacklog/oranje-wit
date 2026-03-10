@@ -6,6 +6,7 @@ const STATUS_CONFIG: Record<SpelerStatus, { kleur: string; label: string }> = {
   GAAT_STOPPEN: { kleur: "bg-red-500", label: "Gaat stoppen" },
   NIEUW_POTENTIEEL: { kleur: "bg-blue-400", label: "Nieuw (pot.)" },
   NIEUW_DEFINITIEF: { kleur: "bg-blue-600", label: "Nieuw (def.)" },
+  ALGEMEEN_RESERVE: { kleur: "bg-gray-400", label: "Alg. reserve" },
 };
 
 interface SpelerStatusBadgeProps {

@@ -305,6 +305,7 @@ function ViewSpelerRij({
     GAAT_STOPPEN: "border-l-red-400",
     NIEUW_POTENTIEEL: "border-l-sky-400",
     NIEUW_DEFINITIEF: "border-l-blue-500",
+    ALGEMEEN_RESERVE: "border-l-gray-400",
   };
 
   const heeftAfmelding = !!speler.afmelddatum;

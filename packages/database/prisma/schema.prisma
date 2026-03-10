@@ -646,6 +646,7 @@ enum TeamCategorie {
 }
 
 enum Kleur {
+  PAARS
   BLAUW
   GROEN
   GEEL
@@ -690,6 +691,7 @@ enum SpelerStatus {
   GAAT_STOPPEN
   NIEUW_POTENTIEEL
   NIEUW_DEFINITIEF
+  ALGEMEEN_RESERVE
 }
 
 // ============================================================

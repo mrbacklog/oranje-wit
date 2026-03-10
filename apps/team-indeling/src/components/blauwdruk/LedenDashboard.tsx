@@ -14,6 +14,7 @@ const STATUS_OPTIES: { waarde: SpelerStatus; label: string }[] = [
   { waarde: "GAAT_STOPPEN", label: "Gaat stoppen" },
   { waarde: "NIEUW_POTENTIEEL", label: "Nieuw (potentieel)" },
   { waarde: "NIEUW_DEFINITIEF", label: "Nieuw (definitief)" },
+  { waarde: "ALGEMEEN_RESERVE", label: "Alg. reserve" },
 ];
 
 type StatusFilter = SpelerStatus | "ALLE";
@@ -56,6 +57,7 @@ export default function LedenDashboard({ spelers: initieleSpelers }: LedenDashbo
       GAAT_STOPPEN: 0,
       NIEUW_POTENTIEEL: 0,
       NIEUW_DEFINITIEF: 0,
+      ALGEMEEN_RESERVE: 0,
     };
     for (const s of spelers) {
       if (s.status in telling) telling[s.status as keyof typeof telling]++;
@@ -164,7 +166,7 @@ export default function LedenDashboard({ spelers: initieleSpelers }: LedenDashbo
   return (
     <div className="space-y-4">
       {/* Summary cards */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-6">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-7">
         <div className="stat-card">
           <span className="stat-value">{spelers.length}</span>
           <span className="stat-label">Totaal leden</span>
@@ -188,6 +190,10 @@ export default function LedenDashboard({ spelers: initieleSpelers }: LedenDashbo
         <div className="stat-card border-l-4 border-l-blue-600">
           <span className="stat-value">{samenvatting.NIEUW_DEFINITIEF}</span>
           <span className="stat-label">Definitief</span>
+        </div>
+        <div className="stat-card border-l-4 border-l-gray-400">
+          <span className="stat-value">{samenvatting.ALGEMEEN_RESERVE}</span>
+          <span className="stat-label">Alg. reserve</span>
         </div>
       </div>
 

@@ -109,14 +109,19 @@ export default function SpelersPool({
     // Type filter
     switch (filter) {
       case "zonder_team":
-        result = result.filter((s) => !ingedeeldeSpelerIds.has(s.id));
+        result = result.filter(
+          (s) => !ingedeeldeSpelerIds.has(s.id) && s.status !== "ALGEMEEN_RESERVE"
+        );
         break;
       case "ingedeeld":
         result = result.filter((s) => ingedeeldeSpelerIds.has(s.id));
         break;
       case "passend":
         result = result.filter(
-          (s) => passendeSpelerIds.has(s.id) && !ingedeeldeSpelerIds.has(s.id)
+          (s) =>
+            passendeSpelerIds.has(s.id) &&
+            !ingedeeldeSpelerIds.has(s.id) &&
+            s.status !== "ALGEMEEN_RESERVE"
         );
         break;
       case "alle":

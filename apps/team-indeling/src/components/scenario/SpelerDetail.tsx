@@ -53,6 +53,7 @@ const STATUS_LABELS: Record<string, string> = {
   GAAT_STOPPEN: "Gaat stoppen",
   NIEUW_POTENTIEEL: "Nieuw (potentieel)",
   NIEUW_DEFINITIEF: "Nieuw (definitief)",
+  ALGEMEEN_RESERVE: "Algemeen reserve",
 };
 
 export default function SpelerDetail({

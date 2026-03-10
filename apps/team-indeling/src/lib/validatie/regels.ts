@@ -27,7 +27,7 @@ export interface TeamValidatie {
 export interface TeamData {
   naam: string;
   categorie: "SENIOREN" | "A_CATEGORIE" | "B_CATEGORIE";
-  kleur?: "BLAUW" | "GROEN" | "GEEL" | "ORANJE" | "ROOD" | null;
+  kleur?: "PAARS" | "BLAUW" | "GROEN" | "GEEL" | "ORANJE" | "ROOD" | null;
   niveau?: string | null;
   spelers: SpelerData[];
 }
@@ -38,7 +38,13 @@ export interface SpelerData {
   achternaam: string;
   geboortejaar: number;
   geslacht: "M" | "V";
-  status?: "BESCHIKBAAR" | "TWIJFELT" | "GAAT_STOPPEN" | "NIEUW_POTENTIEEL" | "NIEUW_DEFINITIEF";
+  status?:
+    | "BESCHIKBAAR"
+    | "TWIJFELT"
+    | "GAAT_STOPPEN"
+    | "NIEUW_POTENTIEEL"
+    | "NIEUW_DEFINITIEF"
+    | "ALGEMEEN_RESERVE";
 }
 
 // ============================================================

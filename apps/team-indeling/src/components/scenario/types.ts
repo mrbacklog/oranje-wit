@@ -24,6 +24,7 @@ export function korfbalLeeftijd(
  * door de gemiddelde leeftijd van het team.
  */
 export function kleurIndicatie(korfballeeftijd: number): Kleur | null {
+  if (korfballeeftijd < 5) return "PAARS";
   if (korfballeeftijd <= 8) return "BLAUW";
   if (korfballeeftijd <= 10) return "GROEN";
   if (korfballeeftijd <= 12) return "GEEL";
@@ -34,6 +35,7 @@ export function kleurIndicatie(korfballeeftijd: number): Kleur | null {
 
 /** Tailwind kleuren voor kleurindicatie dot */
 export const KLEUR_DOT: Record<string, string> = {
+  PAARS: "bg-purple-400",
   BLAUW: "bg-blue-400",
   GROEN: "bg-emerald-400",
   GEEL: "bg-yellow-400",
@@ -172,6 +174,7 @@ export interface TeamGroepConfig {
 }
 
 export const KLEUR_LABELS: Record<string, string> = {
+  PAARS: "Paars",
   BLAUW: "Blauw",
   GROEN: "Groen",
   GEEL: "Geel",
@@ -191,9 +194,11 @@ export const STATUS_KLEUREN: Record<SpelerStatus, string> = {
   GAAT_STOPPEN: "bg-red-500",
   NIEUW_POTENTIEEL: "bg-blue-400",
   NIEUW_DEFINITIEF: "bg-blue-600",
+  ALGEMEEN_RESERVE: "bg-gray-400",
 };
 
 export const KLEUR_BADGE_KLEUREN: Record<string, string> = {
+  PAARS: "bg-purple-100 text-purple-700",
   BLAUW: "bg-blue-100 text-blue-700",
   GROEN: "bg-green-100 text-green-700",
   GEEL: "bg-yellow-100 text-yellow-700",

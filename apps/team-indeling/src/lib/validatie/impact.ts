@@ -21,17 +21,19 @@ export interface TeamTelling {
 }
 
 export function berekenImpact(team: TeamData): ImpactAnalyse {
-  const beschikbaar = team.spelers.filter(
+  // AR-spelers uitsluiten uit alle berekeningen
+  const actieveSpelers = team.spelers.filter((s) => s.status !== "ALGEMEEN_RESERVE");
+  const beschikbaar = actieveSpelers.filter(
     (s) =>
       !s.status ||
       s.status === "BESCHIKBAAR" ||
       s.status === "NIEUW_POTENTIEEL" ||
       s.status === "NIEUW_DEFINITIEF"
   );
-  const twijfelaars = team.spelers.filter((s) => s.status === "TWIJFELT");
-  const stoppers = team.spelers.filter((s) => s.status === "GAAT_STOPPEN");
+  const twijfelaars = actieveSpelers.filter((s) => s.status === "TWIJFELT");
+  const stoppers = actieveSpelers.filter((s) => s.status === "GAAT_STOPPEN");
 
-  const huidig = telSpelers(team.spelers);
+  const huidig = telSpelers(actieveSpelers);
   const bestCase = telSpelers([...beschikbaar, ...twijfelaars]);
   const verwacht = telSpelers([
     ...beschikbaar,

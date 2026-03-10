@@ -12,6 +12,7 @@ const STATUS_LABELS: Record<string, string> = {
   GAAT_STOPPEN: "Stopt",
   NIEUW_POTENTIEEL: "Nieuw",
   NIEUW_DEFINITIEF: "Nieuw",
+  ALGEMEEN_RESERVE: "AR",
 };
 
 export default function PanelSpelerRij({
