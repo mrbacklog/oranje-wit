@@ -88,6 +88,7 @@ export default function TeamKaart({
   const weergaveNaam = team.alias ?? team.naam;
 
   const { w: cardWidth, h: cardHeight } = getCardSize(team.teamType ?? "VIERTAL", false);
+  const isDouble = (team.teamType ?? "VIERTAL") !== "VIERTAL";
 
   // Compenseer tekst voor zoom
   const zoomScale = useZoomScale();
@@ -243,7 +244,7 @@ export default function TeamKaart({
           <div className="min-h-6 flex-1 overflow-hidden px-0.5">
             {team.spelers.length === 0 ? (
               <p className="py-2 text-center text-[9px] text-gray-400">Sleep spelers hierheen</p>
-            ) : team.teamType === "VIERTAL" ? (
+            ) : !isDouble ? (
               /* Viertal: gestapeld */
               <>
                 {dames.length > 0 && (
