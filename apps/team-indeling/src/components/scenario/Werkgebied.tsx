@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useCallback } from "react";
 import type { TeamData, SpelerData, SelectieGroepData } from "./types";
+import { berekenJIndicaties, berekenTeamSterktes } from "./types";
 import type { TeamValidatie } from "@/lib/validatie/regels";
 import type { PositionMap } from "./hooks/useCardPositions";
 import GestureCanvas from "./editor/GestureCanvas";
@@ -60,6 +61,9 @@ export default function Werkgebied({
 
     return { selectieGroepen: groepen, losseTeams: los };
   }, [zichtbareTeams]);
+
+  const jIndicatieMap = useMemo(() => berekenJIndicaties(teams), [teams]);
+  const teamSterkteMap = useMemo(() => berekenTeamSterktes(teams), [teams]);
 
   const handleKoppel = useCallback(() => {
     if (geselecteerd.size < 2) return;
@@ -151,6 +155,8 @@ export default function Werkgebied({
                       validatie={validatieMap?.get(team.id)}
                       detailLevel={detailLevel}
                       pinnedSpelerIds={pinnedSpelerIds}
+                      jIndicatie={jIndicatieMap.get(team.id)}
+                      teamSterkte={teamSterkteMap.get(team.id)}
                       onDelete={onDeleteTeam}
                       onSpelerClick={
                         onSpelerClick ? (speler) => onSpelerClick(speler, team.id) : undefined

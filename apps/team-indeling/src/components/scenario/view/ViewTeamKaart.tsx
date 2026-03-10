@@ -29,6 +29,8 @@ interface ViewTeamKaartProps {
   validatie?: TeamValidatie;
   detailLevel?: DetailLevel;
   pinnedSpelerIds?: Set<string>;
+  jIndicatie?: string;
+  teamSterkte?: number;
   onSpelerClick?: (speler: SpelerData) => void;
 }
 
@@ -37,6 +39,8 @@ export default function ViewTeamKaart({
   validatie,
   detailLevel,
   pinnedSpelerIds,
+  jIndicatie,
+  teamSterkte,
   onSpelerClick,
 }: ViewTeamKaartProps) {
   const dl = detailLevel ?? "detail";
@@ -277,9 +281,17 @@ export default function ViewTeamKaart({
               )}
               <span className="text-[7px] text-gray-400">{aantalSpelers} sp</span>
             </div>
-            <span className="shrink-0 text-[8px] text-gray-400 tabular-nums">
-              gem. {gemLeeftijd}
-            </span>
+            <div className="flex shrink-0 items-center gap-1">
+              {jIndicatie && (
+                <span className="rounded bg-indigo-100 px-1 text-[8px] font-bold text-indigo-700">
+                  {jIndicatie}
+                  {teamSterkte != null && (
+                    <span className="font-normal text-indigo-500"> ({teamSterkte})</span>
+                  )}
+                </span>
+              )}
+              <span className="text-[8px] text-gray-400 tabular-nums">gem. {gemLeeftijd}</span>
+            </div>
           </div>
         )}
       </div>

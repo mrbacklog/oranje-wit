@@ -30,6 +30,8 @@ export interface TeamKaartProps {
   notitieCount?: number;
   detailLevel?: DetailLevel;
   pinnedSpelerIds?: Set<string>;
+  jIndicatie?: string;
+  teamSterkte?: number;
   onDelete?: (teamId: string) => void;
   onSpelerClick?: (speler: SpelerData) => void;
   onEditTeam?: (teamId: string) => void;
@@ -42,6 +44,8 @@ export default function TeamKaart({
   notitieCount,
   detailLevel,
   pinnedSpelerIds,
+  jIndicatie,
+  teamSterkte,
   onDelete,
   onSpelerClick,
   onEditTeam,
@@ -386,9 +390,17 @@ export default function TeamKaart({
               )}
               <span className="text-[7px] text-gray-400">{aantalSpelers} sp</span>
             </div>
-            <span className="shrink-0 text-[8px] text-gray-400 tabular-nums">
-              gem. {gemLeeftijd}
-            </span>
+            <div className="flex shrink-0 items-center gap-1">
+              {jIndicatie && (
+                <span className="rounded bg-indigo-100 px-1 text-[8px] font-bold text-indigo-700">
+                  {jIndicatie}
+                  {teamSterkte != null && (
+                    <span className="font-normal text-indigo-500"> ({teamSterkte})</span>
+                  )}
+                </span>
+              )}
+              <span className="text-[8px] text-gray-400 tabular-nums">gem. {gemLeeftijd}</span>
+            </div>
           </div>
         )}
       </div>

@@ -245,6 +245,41 @@ export function sorteerSpelers(spelers: TeamSpelerData[]): TeamSpelerData[] {
   });
 }
 
+/**
+ * Bereken gemiddelde teamsterkte (rating) per team.
+ * Alleen spelers met een rating worden meegenomen.
+ */
+export function berekenTeamSterktes(teams: TeamData[]): Map<string, number> {
+  const map = new Map<string, number>();
+  for (const team of teams) {
+    const metRating = team.spelers.filter((ts) => ts.speler.rating != null);
+    if (metRating.length === 0) continue;
+    const gem = metRating.reduce((sum, ts) => sum + ts.speler.rating!, 0) / metRating.length;
+    map.set(team.id, Math.round(gem));
+  }
+  return map;
+}
+
+/**
+ * Bereken J-indicaties voor B-categorie teams.
+ * Hoogste gemiddelde leeftijd = J1, volgende = J2, etc.
+ */
+export function berekenJIndicaties(teams: TeamData[]): Map<string, string> {
+  const bTeams = teams.filter((t) => t.categorie === "B_CATEGORIE" && t.spelers.length > 0);
+  const metGem = bTeams.map((t) => ({
+    id: t.id,
+    gem:
+      t.spelers.reduce(
+        (sum, ts) => sum + korfbalLeeftijd(ts.speler.geboortedatum, ts.speler.geboortejaar),
+        0
+      ) / t.spelers.length,
+  }));
+  metGem.sort((a, b) => b.gem - a.gem);
+  const map = new Map<string, string>();
+  metGem.forEach((t, i) => map.set(t.id, `J${i + 1}`));
+  return map;
+}
+
 // Zoom detail-niveaus: 2 standen (55% overzicht, 120% detail)
 export type DetailLevel = "overzicht" | "detail";
 
