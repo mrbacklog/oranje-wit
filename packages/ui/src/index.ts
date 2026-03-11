@@ -5,7 +5,10 @@ export { BandPill } from "./data-display/band-pill";
 export { StatCard } from "./data-display/stat-card";
 
 // Layout
+export { AppShell } from "./layout/app-shell";
 export { PageHeader } from "./layout/page-header";
+export { Sidebar } from "./layout/sidebar";
+export type { NavItem, SidebarConfig } from "./layout/types";
 
 // Primitives
 export { Button } from "./primitives/button";
