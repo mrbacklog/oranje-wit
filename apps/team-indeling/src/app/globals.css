@@ -1,3 +1,4 @@
+@import "tailwindcss";
 @import "@oranje-wit/ui/tokens/globals.css";
 
 /* Dark mode uitgeschakeld — app is light-only */
