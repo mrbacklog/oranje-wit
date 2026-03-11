@@ -71,6 +71,7 @@ model Seizoen {
   cohortSeizoenen    CohortSeizoen[]
   signaleringen      Signalering[]
   poolStanden        PoolStand[]
+  mijlpalen          Mijlpaal[]
 
   @@map("seizoenen")
 }
@@ -1079,4 +1080,25 @@ model EmailTemplate {
   updatedAt DateTime @default(now()) @updatedAt
 
   @@map("email_templates")
+}
+
+// ============================================================
+// MIJLPALEN (dashboard agenda per seizoen)
+// ============================================================
+
+model Mijlpaal {
+  id          String   @id @default(cuid())
+  seizoen     String
+  label       String
+  datum       DateTime
+  volgorde    Int      @default(0)
+  afgerond    Boolean  @default(false)
+  afgerondOp  DateTime?
+
+  seizoenRef  Seizoen  @relation(fields: [seizoen], references: [seizoen])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([seizoen])
 }
