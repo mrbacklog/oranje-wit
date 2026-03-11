@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Mijlpaal } from "@oranje-wit/database";
 
 interface Props {
@@ -9,9 +10,9 @@ export function MijlpalenTimeline({ mijlpalen }: Props) {
     return (
       <div className="rounded-xl border border-dashed border-gray-300 bg-gray-50 p-6 text-center text-sm text-gray-500">
         Nog geen mijlpalen ingesteld.{" "}
-        <a href="/instellingen" className="text-ow-oranje hover:underline">
+        <Link href="/instellingen" className="text-ow-oranje hover:underline">
           Configureer mijlpalen &rarr;
-        </a>
+        </Link>
       </div>
     );
   }
