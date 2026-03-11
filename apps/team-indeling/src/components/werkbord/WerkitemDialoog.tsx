@@ -2,13 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { createWerkitem } from "@/app/werkbord/actions";
-import type {
-  WerkitemType,
-  WerkitemPrioriteit,
-  Besluitniveau,
-  Doelgroep,
-  Entiteit,
-} from "@oranje-wit/database";
+import type { WerkitemType, WerkitemPrioriteit, Besluitniveau, Doelgroep, Entiteit } from "./types";
 
 interface WerkitemDialoogProps {
   blauwdrukId: string;

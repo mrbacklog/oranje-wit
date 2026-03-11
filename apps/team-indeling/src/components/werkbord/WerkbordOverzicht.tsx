@@ -17,7 +17,7 @@ import { updateWerkitemStatus } from "@/app/werkbord/actions";
 import WerkitemKaart, { type WerkitemData } from "./WerkitemKaart";
 import WerkbordFilters, { type WerkbordFilterState } from "./WerkbordFilters";
 import WerkitemDialoog from "./WerkitemDialoog";
-import type { WerkitemStatus } from "@oranje-wit/database";
+import type { WerkitemStatus } from "./types";
 import { logger } from "@oranje-wit/types";
 
 interface WerkbordOverzichtProps {

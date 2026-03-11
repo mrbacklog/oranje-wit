@@ -1,12 +1,6 @@
 "use client";
 
-import type {
-  WerkitemPrioriteit,
-  WerkitemType,
-  Besluitniveau,
-  Doelgroep,
-  Entiteit,
-} from "@oranje-wit/database";
+import type { WerkitemPrioriteit, WerkitemType, Besluitniveau, Doelgroep, Entiteit } from "./types";
 
 export interface WerkbordFilterState {
   prioriteit: WerkitemPrioriteit | "";

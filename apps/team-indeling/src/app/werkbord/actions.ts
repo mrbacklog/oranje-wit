@@ -12,7 +12,10 @@ import type {
   Besluitniveau,
   Doelgroep,
   Entiteit,
-} from "@oranje-wit/database";
+} from "@/components/werkbord/types";
+
+// Werkitem model nog niet in Prisma schema — gebruik untyped accessor
+const db = prisma as never as { werkitem: typeof prisma.actiepunt };
 
 // ============================================================
 // HELPERS
@@ -94,7 +97,7 @@ export async function getWerkitems(
     ...(filters?.scenarioId !== undefined && { scenarioId: filters.scenarioId }),
   };
 
-  return prisma.werkitem.findMany({
+  return db.werkitem.findMany({
     where,
     include: werkitemInclude,
     orderBy: [{ prioriteit: "asc" }, { createdAt: "desc" }],
@@ -102,7 +105,7 @@ export async function getWerkitems(
 }
 
 export async function getWerkitem(werkitemId: string) {
-  return prisma.werkitem.findUnique({
+  return db.werkitem.findUnique({
     where: { id: werkitemId },
     include: werkitemInclude,
   });
@@ -126,7 +129,7 @@ export async function createWerkitem(data: {
   await assertBlauwdrukBewerkbaar(data.blauwdrukId);
   const user = await getOrCreateUser();
 
-  return prisma.werkitem.create({
+  return db.werkitem.create({
     data: {
       blauwdrukId: data.blauwdrukId,
       titel: data.titel,
@@ -161,13 +164,13 @@ export async function updateWerkitem(
     entiteit?: Entiteit | null;
   }
 ) {
-  const werkitem = await prisma.werkitem.findUniqueOrThrow({
+  const werkitem = await db.werkitem.findUniqueOrThrow({
     where: { id: werkitemId },
     select: { blauwdrukId: true },
   });
   await assertBlauwdrukBewerkbaar(werkitem.blauwdrukId);
 
-  return prisma.werkitem.update({
+  return db.werkitem.update({
     where: { id: werkitemId },
     data,
     include: werkitemInclude,
@@ -179,7 +182,7 @@ export async function updateWerkitemStatus(
   status: WerkitemStatus,
   resolutie?: string
 ) {
-  const werkitem = await prisma.werkitem.findUniqueOrThrow({
+  const werkitem = await db.werkitem.findUniqueOrThrow({
     where: { id: werkitemId },
     select: { blauwdrukId: true },
   });
@@ -189,7 +192,7 @@ export async function updateWerkitemStatus(
     throw new Error("Resolutie is verplicht bij status OPGELOST");
   }
 
-  const result = await prisma.werkitem.update({
+  const result = await db.werkitem.update({
     where: { id: werkitemId },
     data: {
       status,
@@ -205,18 +208,18 @@ export async function updateWerkitemStatus(
 }
 
 export async function deleteWerkitem(werkitemId: string) {
-  const werkitem = await prisma.werkitem.findUniqueOrThrow({
+  const werkitem = await db.werkitem.findUniqueOrThrow({
     where: { id: werkitemId },
     select: { blauwdrukId: true },
   });
   await assertBlauwdrukBewerkbaar(werkitem.blauwdrukId);
 
-  await prisma.werkitem.delete({ where: { id: werkitemId } });
+  await db.werkitem.delete({ where: { id: werkitemId } });
   revalidatePath("/");
 }
 
 export async function countBlockers(blauwdrukId: string) {
-  return prisma.werkitem.count({
+  return db.werkitem.count({
     where: {
       blauwdrukId,
       prioriteit: "BLOCKER",
@@ -227,27 +230,27 @@ export async function countBlockers(blauwdrukId: string) {
 
 export async function getWerkitemStats(blauwdrukId: string) {
   const [open, blockers, besluiten, afgerond] = await Promise.all([
-    prisma.werkitem.count({
+    db.werkitem.count({
       where: {
         blauwdrukId,
         status: { in: ["OPEN", "IN_BESPREKING"] },
       },
     }),
-    prisma.werkitem.count({
+    db.werkitem.count({
       where: {
         blauwdrukId,
         prioriteit: "BLOCKER",
         status: { in: ["OPEN", "IN_BESPREKING"] },
       },
     }),
-    prisma.werkitem.count({
+    db.werkitem.count({
       where: {
         blauwdrukId,
         type: "BESLUIT",
         status: "OPGELOST",
       },
     }),
-    prisma.werkitem.count({
+    db.werkitem.count({
       where: {
         blauwdrukId,
         status: { in: ["OPGELOST", "GEACCEPTEERD_RISICO"] },
@@ -357,7 +360,7 @@ export async function getTimelineVoorSubject(subject: {
     ...(subject.teamOwCode && { teamOwCode: subject.teamOwCode }),
   };
 
-  return prisma.werkitem.findMany({
+  return db.werkitem.findMany({
     where,
     include: werkitemInclude,
     orderBy: { createdAt: "desc" },
@@ -376,7 +379,7 @@ export async function createStatusWerkitem(
   const blauwdruk = await getWerkBlauwdruk();
   const user = await getOrCreateUser();
 
-  const result = await prisma.werkitem.create({
+  const result = await db.werkitem.create({
     data: {
       blauwdrukId: blauwdruk.id,
       titel: `Status: ${oudStatus} → ${nieuwStatus}`,

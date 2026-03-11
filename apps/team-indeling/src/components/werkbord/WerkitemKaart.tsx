@@ -6,7 +6,7 @@ import {
   updateActiepuntStatus,
   deleteWerkitem,
 } from "@/app/werkbord/actions";
-import type { WerkitemPrioriteit, WerkitemStatus } from "@oranje-wit/database";
+import type { WerkitemPrioriteit, WerkitemStatus } from "./types";
 
 export type WerkitemData = {
   id: string;
