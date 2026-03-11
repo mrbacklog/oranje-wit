@@ -33,7 +33,7 @@ export default async function RootLayout({
   return (
     <html lang="nl">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} bg-gray-50 text-gray-900 antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} bg-white text-gray-900 antialiased`}
       >
         <SessionProvider>
           <SeizoenProvider seizoen={seizoen} isWerkseizoen={isWerkseizoen}>
