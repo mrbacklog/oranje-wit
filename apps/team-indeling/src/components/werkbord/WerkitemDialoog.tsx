@@ -77,7 +77,7 @@ export default function WerkitemDialoog({
             <input
               className="input"
               value={titel}
-              onChange={(e) => setTitel(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitel(e.target.value)}
               placeholder="Korte omschrijving..."
               autoFocus
             />
@@ -89,7 +89,9 @@ export default function WerkitemDialoog({
               className="input"
               rows={2}
               value={beschrijving}
-              onChange={(e) => setBeschrijving(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                setBeschrijving(e.target.value)
+              }
               placeholder="Toelichting, context..."
             />
           </div>
@@ -100,7 +102,9 @@ export default function WerkitemDialoog({
               <select
                 className="input"
                 value={type}
-                onChange={(e) => setType(e.target.value as WerkitemType)}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                  setType(e.target.value as WerkitemType)
+                }
               >
                 <option value="BESLUIT">Besluit</option>
                 <option value="STRATEGISCH">Strategisch</option>
@@ -115,7 +119,9 @@ export default function WerkitemDialoog({
               <select
                 className="input"
                 value={prioriteit}
-                onChange={(e) => setPrioriteit(e.target.value as WerkitemPrioriteit)}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                  setPrioriteit(e.target.value as WerkitemPrioriteit)
+                }
               >
                 <option value="BLOCKER">Blocker</option>
                 <option value="HOOG">Hoog</option>
@@ -133,7 +139,7 @@ export default function WerkitemDialoog({
               <select
                 className="input"
                 value={besluitniveau}
-                onChange={(e) => {
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                   setBesluitniveau(e.target.value as Besluitniveau | "");
                   if (e.target.value !== "DOELGROEP" && e.target.value !== "TC") {
                     setDoelgroep("");
@@ -153,7 +159,9 @@ export default function WerkitemDialoog({
                 <select
                   className="input"
                   value={doelgroep}
-                  onChange={(e) => setDoelgroep(e.target.value as Doelgroep | "")}
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                    setDoelgroep(e.target.value as Doelgroep | "")
+                  }
                 >
                   <option value="">—</option>
                   <option value="TOP">Top</option>
@@ -170,7 +178,9 @@ export default function WerkitemDialoog({
               <select
                 className="input"
                 value={entiteit}
-                onChange={(e) => setEntiteit(e.target.value as Entiteit | "")}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                  setEntiteit(e.target.value as Entiteit | "")
+                }
               >
                 <option value="">—</option>
                 <option value="BELEID">Beleid</option>
@@ -192,7 +202,9 @@ export default function WerkitemDialoog({
                 className="input"
                 rows={2}
                 value={resolutie}
-                onChange={(e) => setResolutie(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                  setResolutie(e.target.value)
+                }
                 placeholder="Wat is er besloten?"
               />
             </div>

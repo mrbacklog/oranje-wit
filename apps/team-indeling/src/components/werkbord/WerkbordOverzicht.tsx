@@ -180,7 +180,9 @@ export default function WerkbordOverzicht({
             <input
               type="checkbox"
               checked={toonArchief}
-              onChange={(e) => setToonArchief(e.target.checked)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setToonArchief(e.target.checked)
+              }
               className="rounded border-gray-300"
             />
             Toon archief
@@ -288,7 +290,9 @@ function KanbanKolom({
           <textarea
             ref={resolutieRef}
             value={resolutieTekst}
-            onChange={(e) => onResolutieTekst(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+              onResolutieTekst(e.target.value)
+            }
             placeholder="Beschrijf de resolutie..."
             className="input mb-2 text-xs"
             rows={2}

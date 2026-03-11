@@ -214,13 +214,15 @@ export default function LedenDashboard({
         <input
           type="text"
           value={zoekterm}
-          onChange={(e) => setZoekterm(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setZoekterm(e.target.value)}
           placeholder="Zoek op naam..."
           className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-300 focus:outline-none"
         />
         <select
           value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
+          onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+            setStatusFilter(e.target.value as StatusFilter)
+          }
           className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-300 focus:outline-none"
         >
           <option value="ALLE">Alle statussen</option>
@@ -232,7 +234,9 @@ export default function LedenDashboard({
         </select>
         <select
           value={kleurFilter}
-          onChange={(e) => setKleurFilter(e.target.value as KleurFilter)}
+          onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+            setKleurFilter(e.target.value as KleurFilter)
+          }
           className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-300 focus:outline-none"
         >
           <option value="ALLE">Alle kleuren</option>
@@ -339,7 +343,9 @@ export default function LedenDashboard({
                   <td className="px-3 py-2">
                     <select
                       value={speler.status}
-                      onChange={(e) => wijzigStatus(speler.id, e.target.value as SpelerStatus)}
+                      onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                        wijzigStatus(speler.id, e.target.value as SpelerStatus)
+                      }
                       className="rounded border border-gray-300 px-2 py-1 text-xs focus:border-orange-400 focus:ring-2 focus:ring-orange-300 focus:outline-none"
                     >
                       {STATUS_OPTIES.map((o) => (

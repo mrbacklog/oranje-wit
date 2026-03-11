@@ -158,7 +158,7 @@ export default function TeamEditPanel({
           <input
             type="text"
             value={alias}
-            onChange={(e) => setAlias(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAlias(e.target.value)}
             onBlur={handleSaveAlias}
             onKeyDown={(e) => {
               if (e.key === "Enter") handleSaveAlias();
@@ -273,7 +273,7 @@ export default function TeamEditPanel({
                   <input
                     type="text"
                     value={lidAliassen[lid.id] ?? ""}
-                    onChange={(e) =>
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                       setLidAliassen((prev) => ({ ...prev, [lid.id]: e.target.value }))
                     }
                     onBlur={() => {

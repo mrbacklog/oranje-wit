@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { logger } from "@oranje-wit/types";
 import type { SpelerStatus } from "@oranje-wit/database";
 import Spinner from "@/components/ui/Spinner";
 import ActivityTimeline from "@/components/timeline/ActivityTimeline";
@@ -51,7 +52,9 @@ export default function SpelerStatusTab({
         setWerkitems(items as WerkitemData[]);
         setUsers(usrs);
       })
-      .catch(() => {})
+      .catch((err) => {
+        logger.warn("Timeline/users ophalen mislukt:", err);
+      })
       .finally(() => {
         if (!cancelled) setLoading(false);
       });

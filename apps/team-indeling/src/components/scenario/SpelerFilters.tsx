@@ -28,7 +28,7 @@ export default function SpelerFilters({
       <input
         type="text"
         value={zoekterm}
-        onChange={(e) => onZoektermChange(e.target.value)}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => onZoektermChange(e.target.value)}
         placeholder="Zoek speler..."
         className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-300 focus:outline-none"
       />

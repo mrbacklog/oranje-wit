@@ -61,7 +61,7 @@ export default function NieuwTeamDialoog({ open, onClose, onSubmit }: NieuwTeamD
               id="team-naam"
               type="text"
               value={naam}
-              onChange={(e) => setNaam(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNaam(e.target.value)}
               placeholder="Bijv. Oranje-3"
               className="input"
               autoFocus
@@ -101,7 +101,9 @@ export default function NieuwTeamDialoog({ open, onClose, onSubmit }: NieuwTeamD
               <label className="mb-1 block text-sm font-medium text-gray-700">Kleur</label>
               <select
                 value={kleur}
-                onChange={(e) => setKleur(e.target.value as Kleur | "")}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                  setKleur(e.target.value as Kleur | "")
+                }
                 className="input"
               >
                 <option value="">Geen kleur</option>

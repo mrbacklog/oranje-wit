@@ -66,7 +66,7 @@ export default function HernoemScenarioKnop({ scenarioId, huidigNaam }: HernoemS
         <input
           ref={inputRef}
           value={naam}
-          onChange={(e) => setNaam(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNaam(e.target.value)}
           onKeyDown={handleKeyDown}
           disabled={isPending}
           className="rounded border border-orange-300 px-1.5 py-0.5 text-sm font-semibold text-gray-900 focus:ring-1 focus:ring-orange-400 focus:outline-none disabled:opacity-50"

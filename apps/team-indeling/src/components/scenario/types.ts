@@ -20,8 +20,12 @@ export function korfbalLeeftijd(
 
 /**
  * Kleurindicatie op basis van korfballeeftijd (PEILJAAR - geboortejaar).
- * Dit is een indicatie, niet de definitieve teamkleur — die wordt bepaald
- * door de gemiddelde leeftijd van het team.
+ * Dit is een visuele hint (bolletje), niet de definitieve teamkleur — die wordt
+ * bepaald door de gemiddelde leeftijd van het team.
+ *
+ * Elke leeftijd mapt naar precies één kleur (niet-overlappend), terwijl
+ * KLEUR_LEEFTIJD in constanten.ts overlappende ranges heeft. De grenzen hier
+ * zijn de typische/primaire kleur per individuele leeftijd.
  */
 export function kleurIndicatie(korfballeeftijd: number): Kleur | null {
   if (korfballeeftijd < 5) return "PAARS";

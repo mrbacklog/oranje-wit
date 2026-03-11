@@ -85,7 +85,7 @@ export default function RatingEditor({
               min={0}
               max={300}
               value={value}
-              onChange={(e) => setValue(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter") handleSave();
                 if (e.key === "Escape") setEditing(false);

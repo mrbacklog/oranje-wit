@@ -155,7 +155,9 @@ export default function VerdeelDialoog({
                     </div>
                     <select
                       value={stafTeam.get(ts.stafId) ?? "alle"}
-                      onChange={(e) => handleStafSelect(ts.stafId, e.target.value)}
+                      onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                        handleStafSelect(ts.stafId, e.target.value)
+                      }
                       className="rounded border border-gray-200 px-2 py-0.5 text-xs text-gray-600"
                     >
                       <option value="alle">Selectie (alle teams)</option>
@@ -245,7 +247,7 @@ export default function VerdeelDialoog({
                                 {!is2Teams && (
                                   <select
                                     value={spelerTeam.get(ts.spelerId) ?? teams[0]?.id ?? ""}
-                                    onChange={(e) =>
+                                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                                       handleSpelerSelect(ts.spelerId, e.target.value)
                                     }
                                     onClick={(e) => e.stopPropagation()}

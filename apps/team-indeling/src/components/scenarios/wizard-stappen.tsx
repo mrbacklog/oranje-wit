@@ -113,7 +113,9 @@ export function StapSenioren({
               min={0}
               max={15}
               value={aantalSenioren}
-              onChange={(e) => onOverrideChange(Math.max(0, parseInt(e.target.value) || 0))}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                onOverrideChange(Math.max(0, parseInt(e.target.value) || 0))
+              }
               className="input w-24"
             />
             {seniorenOverride !== null && seniorenOverride !== seniorenVoorstel && (
@@ -186,7 +188,7 @@ export function StapACat({
                   min={0}
                   max={3}
                   value={aCat[niveau] ?? 0}
-                  onChange={(e) =>
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     onACatChange(niveau, Math.max(0, Math.min(3, parseInt(e.target.value) || 0)))
                   }
                   className="input w-20 text-center"
@@ -252,7 +254,9 @@ export function StapBTeams({
                   min={0}
                   max={10}
                   value={bTeamAantallen[v.kleur] ?? 0}
-                  onChange={(e) => onBOverride(v.kleur, Math.max(0, parseInt(e.target.value) || 0))}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    onBOverride(v.kleur, Math.max(0, parseInt(e.target.value) || 0))
+                  }
                   className="input w-16 text-center"
                 />
               </div>

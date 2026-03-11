@@ -243,9 +243,9 @@ function CategorieKaart({ definitie, stats, settings, onOpenSettings }: Categori
                 {settings.gemiddeldeLeeftijdOverlapMax}
               </span>
             )}
-          {settings.scoreDrempel != null && (
+          {settings.scorePromotieGrens != null && (
             <span className="inline-flex items-center gap-1 rounded bg-gray-100 px-2 py-0.5 text-gray-600">
-              score &lt;{settings.scoreDrempel}
+              promotie &gt;{settings.scorePromotieGrens}
             </span>
           )}
           {settings.bandbreedteLeeftijd != null && (
@@ -468,19 +468,21 @@ function SettingsDialog({ sleutel, settings, onSave, onClose }: SettingsDialogPr
             </div>
           </fieldset>
 
-          {/* KNKV Score-drempel */}
+          {/* KNKV Promotie-grens */}
           <fieldset>
-            <legend className="mb-2 text-sm font-semibold text-gray-700">KNKV Score-drempel</legend>
+            <legend className="mb-2 text-sm font-semibold text-gray-700">
+              KNKV Promotie-grens
+            </legend>
             <div className="grid grid-cols-2 gap-3">
               <NumberField
-                label="Score-drempel"
-                value={form.scoreDrempel}
-                onChange={(v) => update("scoreDrempel", v)}
+                label="Promotie-grens"
+                value={form.scorePromotieGrens}
+                onChange={(v) => update("scorePromotieGrens", v)}
                 nullable
               />
               <div className="flex items-end pb-1">
                 <span className="text-xs text-gray-400">
-                  Punten die bepalen of team in deze kleur valt
+                  Score waarboven team doorstroomt naar hogere kleur
                 </span>
               </div>
             </div>
@@ -538,7 +540,7 @@ function SettingsDialog({ sleutel, settings, onSave, onClose }: SettingsDialogPr
                     value={form.wisselsAantal ?? ""}
                     placeholder="∞"
                     min={0}
-                    onChange={(e) =>
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                       update(
                         "wisselsAantal",
                         e.target.value === "" ? null : parseInt(e.target.value)
@@ -641,7 +643,7 @@ function NumberField({
         placeholder={nullable ? "–" : "0"}
         step={step}
         min={0}
-        onChange={(e) => {
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           if (e.target.value === "" && nullable) {
             onChange(null);
           } else {
@@ -699,7 +701,11 @@ function SelectField({
   return (
     <div>
       <label className="mb-1 block text-xs font-medium text-gray-600">{label}</label>
-      <select className="input" value={value} onChange={(e) => onChange(e.target.value)}>
+      <select
+        className="input"
+        value={value}
+        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => onChange(e.target.value)}
+      >
         {options.map((opt) => (
           <option key={opt.value} value={opt.value}>
             {opt.label}

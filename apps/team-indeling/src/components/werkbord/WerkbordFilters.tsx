@@ -62,7 +62,7 @@ export default function WerkbordFilters({ filters, onChange }: WerkbordFiltersPr
       <select
         className="input max-w-[140px]"
         value={filters.besluitniveau}
-        onChange={(e) =>
+        onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
           onChange({
             ...filters,
             besluitniveau: e.target.value as WerkbordFilterState["besluitniveau"],
@@ -81,7 +81,7 @@ export default function WerkbordFilters({ filters, onChange }: WerkbordFiltersPr
         <select
           className="input max-w-[140px]"
           value={filters.doelgroep}
-          onChange={(e) =>
+          onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
             onChange({ ...filters, doelgroep: e.target.value as WerkbordFilterState["doelgroep"] })
           }
         >
@@ -97,7 +97,7 @@ export default function WerkbordFilters({ filters, onChange }: WerkbordFiltersPr
       <select
         className="input max-w-[130px]"
         value={filters.prioriteit}
-        onChange={(e) =>
+        onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
           onChange({ ...filters, prioriteit: e.target.value as WerkbordFilterState["prioriteit"] })
         }
       >
@@ -112,7 +112,7 @@ export default function WerkbordFilters({ filters, onChange }: WerkbordFiltersPr
       <select
         className="input max-w-[130px]"
         value={filters.entiteit}
-        onChange={(e) =>
+        onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
           onChange({ ...filters, entiteit: e.target.value as WerkbordFilterState["entiteit"] })
         }
       >
@@ -127,7 +127,7 @@ export default function WerkbordFilters({ filters, onChange }: WerkbordFiltersPr
       <select
         className="input max-w-[130px]"
         value={filters.type}
-        onChange={(e) =>
+        onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
           onChange({ ...filters, type: e.target.value as WerkbordFilterState["type"] })
         }
       >

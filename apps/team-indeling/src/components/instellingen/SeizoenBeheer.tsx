@@ -35,7 +35,7 @@ export function SeizoenBeheer({ seizoenen }: Props) {
             <Select
               label="Actief werkseizoen"
               value={selected}
-              onChange={(e) => setSelected(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelected(e.target.value)}
             >
               {seizoenen.map((s) => (
                 <option key={s.seizoen} value={s.seizoen}>

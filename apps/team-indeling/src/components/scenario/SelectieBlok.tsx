@@ -135,7 +135,7 @@ export default function SelectieBlok({
                 autoFocus
                 className="min-w-0 flex-1 rounded border border-orange-300 bg-white px-1 text-[11px] font-semibold text-gray-900 outline-none focus:ring-1 focus:ring-orange-400"
                 value={naamWaarde}
-                onChange={(e) => setNaamWaarde(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNaamWaarde(e.target.value)}
                 onBlur={() => {
                   setNaamEdit(false);
                   const trimmed = naamWaarde.trim();

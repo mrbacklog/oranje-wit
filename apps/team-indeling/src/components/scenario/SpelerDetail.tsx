@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { logger } from "@oranje-wit/types";
 import type { EvaluatieData } from "@oranje-wit/types";
 import type { SpelerData, HuidigData, SpelerspadEntry, PinData } from "./types";
 import {
@@ -93,7 +94,9 @@ export default function SpelerDetail({
         if (cancelled || !data) return;
         setEvaluaties(data.evaluaties ?? []);
       })
-      .catch(() => {})
+      .catch((err) => {
+        logger.warn("Evaluaties ophalen mislukt:", err);
+      })
       .finally(() => {
         if (!cancelled) setEvalLoading(false);
       });

@@ -106,7 +106,7 @@ export default function ActiviteitForm({
         <form onSubmit={handleSubmit} className="mt-2 space-y-2">
           <textarea
             value={inhoud}
-            onChange={(e) => setInhoud(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setInhoud(e.target.value)}
             placeholder="Opmerking toevoegen..."
             rows={2}
             className="input resize-none"
@@ -131,14 +131,16 @@ export default function ActiviteitForm({
           <input
             type="text"
             value={inhoud}
-            onChange={(e) => setInhoud(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInhoud(e.target.value)}
             placeholder="Beschrijving actiepunt..."
             className="input"
           />
           <div className="flex gap-2">
             <select
               value={toegewezenAanId}
-              onChange={(e) => setToegewezenAanId(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                setToegewezenAanId(e.target.value)
+              }
               className="input flex-1"
             >
               <option value="">Toewijzen aan...</option>
@@ -151,7 +153,7 @@ export default function ActiviteitForm({
             <input
               type="date"
               value={deadline}
-              onChange={(e) => setDeadline(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDeadline(e.target.value)}
               className="input w-40"
               placeholder="Deadline"
             />

@@ -122,7 +122,7 @@ export default function HerberekenDialoog({
             {evaluatieRondes.length > 0 && (
               <select
                 value={geselecteerdeRonde ?? ""}
-                onChange={(e) =>
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                   setGeselecteerdeRonde(e.target.value ? Number(e.target.value) : null)
                 }
                 className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs text-gray-700 focus:border-orange-300 focus:ring-1 focus:ring-orange-300 focus:outline-none"
@@ -192,7 +192,9 @@ export default function HerberekenDialoog({
                           min={0}
                           max={300}
                           value={aanpassingen[speler.spelerId] ?? ""}
-                          onChange={(e) => handleRatingChange(speler.spelerId, e.target.value)}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            handleRatingChange(speler.spelerId, e.target.value)
+                          }
                           className={`w-20 rounded border px-2 py-1 text-right text-sm tabular-nums focus:border-orange-300 focus:ring-1 focus:ring-orange-300 focus:outline-none ${
                             isAangepast
                               ? "border-orange-300 bg-orange-50 text-orange-900"

@@ -228,7 +228,9 @@ export default function WerkitemKaart({ werkitem, onMutatie, compact }: Werkitem
               rows={2}
               placeholder="Oplossing / besluit..."
               value={resolutieTekst}
-              onChange={(e) => setResolutieTekst(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                setResolutieTekst(e.target.value)
+              }
             />
             <div className="flex gap-1">
               <button

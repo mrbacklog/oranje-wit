@@ -120,7 +120,7 @@ export default function ScenarioWerkbordPanel({
       <div className="space-y-2 rounded-lg border border-gray-200 bg-gray-50 p-2">
         <input
           value={titel}
-          onChange={(e) => setTitel(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitel(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleAdd()}
           placeholder="Nieuw werkitem..."
           className="w-full rounded border border-gray-200 bg-white px-2 py-1.5 text-sm focus:border-orange-300 focus:outline-none"
@@ -128,7 +128,9 @@ export default function ScenarioWerkbordPanel({
         <div className="flex items-center gap-1.5">
           <select
             value={type}
-            onChange={(e) => setType(e.target.value as WerkitemType)}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+              setType(e.target.value as WerkitemType)
+            }
             className="rounded border border-gray-200 px-1.5 py-1 text-xs"
           >
             <option value="STRATEGISCH">Strategisch</option>
@@ -140,7 +142,9 @@ export default function ScenarioWerkbordPanel({
           </select>
           <select
             value={prioriteit}
-            onChange={(e) => setPrioriteit(e.target.value as WerkitemPrioriteit)}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+              setPrioriteit(e.target.value as WerkitemPrioriteit)
+            }
             className="rounded border border-gray-200 px-1.5 py-1 text-xs"
           >
             <option value="BLOCKER">Blocker</option>
@@ -151,7 +155,9 @@ export default function ScenarioWerkbordPanel({
           </select>
           <select
             value={scope}
-            onChange={(e) => setScope(e.target.value as "scenario" | "blauwdruk")}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+              setScope(e.target.value as "scenario" | "blauwdruk")
+            }
             className="rounded border border-gray-200 px-1.5 py-1 text-xs"
           >
             <option value="scenario">Dit scenario</option>

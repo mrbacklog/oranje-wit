@@ -372,7 +372,7 @@ function TeamRij({
               min={0}
               max={300}
               value={team.teamscore ?? ""}
-              onChange={(e) => onScoreChange(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => onScoreChange(e.target.value)}
               placeholder="—"
               className="w-20 rounded border border-gray-200 px-2 py-1 text-right text-sm text-gray-900 tabular-nums placeholder:text-gray-300 focus:border-orange-300 focus:ring-1 focus:ring-orange-300 focus:outline-none"
             />
