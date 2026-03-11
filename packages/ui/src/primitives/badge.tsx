@@ -1,9 +1,10 @@
-import type { HTMLAttributes } from "react";
+import type { HTMLAttributes, ReactNode } from "react";
 
 type BadgeColor = "gray" | "green" | "orange" | "red" | "blue" | "yellow";
 
 interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   color?: BadgeColor;
+  children?: ReactNode;
 }
 
 const colorStyles: Record<BadgeColor, string> = {
