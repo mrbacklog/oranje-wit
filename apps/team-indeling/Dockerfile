@@ -9,6 +9,7 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/auth/package.json packages/auth/
 COPY packages/database/package.json packages/database/
 COPY packages/types/package.json packages/types/
+COPY packages/ui/package.json packages/ui/
 COPY apps/team-indeling/package.json apps/team-indeling/
 
 RUN pnpm install --frozen-lockfile
@@ -19,6 +20,7 @@ FROM deps AS builder
 COPY packages/auth/ packages/auth/
 COPY packages/database/ packages/database/
 COPY packages/types/ packages/types/
+COPY packages/ui/ packages/ui/
 COPY apps/team-indeling/ apps/team-indeling/
 
 RUN pnpm db:generate
