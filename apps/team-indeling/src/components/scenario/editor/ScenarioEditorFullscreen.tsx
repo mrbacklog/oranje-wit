@@ -40,12 +40,14 @@ export default function ScenarioEditorFullscreen({
   const [rapportOpen, setRapportOpen] = useState(false);
   const [rapportPinned, setRapportPinned] = useState(false);
   const [showRanking, setShowRanking] = useState(false);
+  const [compactMode, setCompactMode] = useState(false);
   const [syncingScores, setSyncingScores] = useState(false);
   const [werkbordOpen, setWerkbordOpen] = useState(false);
   const syncLockRef = useRef(false);
 
   const isPreview = mode === "preview";
   const toggleRanking = useCallback(() => setShowRanking((v) => !v), []);
+  const toggleCompact = useCallback(() => setCompactMode((v) => !v), []);
 
   const handleSyncScores = useCallback(async () => {
     if (syncLockRef.current) return;
@@ -175,6 +177,7 @@ export default function ScenarioEditorFullscreen({
         zichtbareTeams={zichtbareTeams}
         mode={mode}
         showRanking={showRanking}
+        compactMode={compactMode}
         syncingScores={syncingScores}
         selectieGroepMap={selectieGroepMap}
         previewValidatieMap={previewValidatieMap}
@@ -185,6 +188,7 @@ export default function ScenarioEditorFullscreen({
         pinMap={editor.pinMap}
         blauwdrukId={editor.blauwdrukId}
         onToggleRanking={toggleRanking}
+        onToggleCompact={toggleCompact}
         onSyncScores={handleSyncScores}
         onToggleMode={toggleMode}
         onRepositionCard={updatePosition}
@@ -241,7 +245,9 @@ export default function ScenarioEditorFullscreen({
         totaal={editor.teams.length}
         mode={mode}
         showRanking={showRanking}
+        compactMode={compactMode}
         onToggleRanking={toggleRanking}
+        onToggleCompact={toggleCompact}
         onToggleMode={toggleMode}
         onCreateTeam={() => setNieuwTeamOpen(true)}
       />
@@ -313,6 +319,7 @@ export default function ScenarioEditorFullscreen({
               selectieGroepMap={editor.selectieGroepMap}
               pinnedSpelerIds={editor.pinnedSpelerIds}
               showRanking={showRanking}
+              compactMode={compactMode}
               onDeleteTeam={editor.handleDeleteTeam}
               onKoppelSelectie={editor.handleKoppelSelectie}
               onOntkoppelSelectie={editor.handleOntkoppelSelectie}

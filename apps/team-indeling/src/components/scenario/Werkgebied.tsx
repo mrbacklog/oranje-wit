@@ -26,6 +26,7 @@ interface WerkgebiedProps {
   onEditTeam?: (teamId: string) => void;
   pinnedSpelerIds?: Set<string>;
   showRanking?: boolean;
+  compactMode?: boolean;
   positions: PositionMap;
   onRepositionCard: (cardId: string, deltaX: number, deltaY: number) => void;
 }
@@ -44,6 +45,7 @@ export default function Werkgebied({
   onEditTeam,
   pinnedSpelerIds,
   showRanking,
+  compactMode,
   positions,
   onRepositionCard,
 }: WerkgebiedProps) {
@@ -126,8 +128,9 @@ export default function Werkgebied({
 
       {/* Zoomable grid */}
       <GestureCanvas>
-        {(detailLevel) =>
-          zichtbareTeams.length === 0 ? (
+        {(zoomDetailLevel) => {
+          const detailLevel = compactMode ? ("overzicht" as const) : zoomDetailLevel;
+          return zichtbareTeams.length === 0 ? (
             <div className="flex h-[400px] items-center justify-center">
               <p className="text-sm text-gray-400">
                 Selecteer teams in de navigator om ze hier te tonen.
@@ -196,8 +199,8 @@ export default function Werkgebied({
                 );
               })}
             </div>
-          )
-        }
+          );
+        }}
       </GestureCanvas>
     </div>
   );

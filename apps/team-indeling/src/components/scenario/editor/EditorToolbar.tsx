@@ -12,7 +12,9 @@ interface EditorToolbarProps {
   totaal: number;
   mode: EditorMode;
   showRanking?: boolean;
+  compactMode?: boolean;
   onToggleRanking?: () => void;
+  onToggleCompact?: () => void;
   onSyncScores?: () => void;
   syncingScores?: boolean;
   onToggleMode: () => void;
@@ -25,7 +27,9 @@ export default function EditorToolbar({
   totaal,
   mode,
   showRanking,
+  compactMode,
   onToggleRanking,
+  onToggleCompact,
   onSyncScores,
   syncingScores,
   onToggleMode,
@@ -78,6 +82,17 @@ export default function EditorToolbar({
 
       {/* Rechts: score toggle + nieuw team + toggle + definitief */}
       <div className="flex items-center gap-2">
+        {onToggleCompact && (
+          <button
+            onClick={onToggleCompact}
+            className={`rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors ${
+              compactMode ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+            }`}
+            title={compactMode ? "Schakel naar detailweergave" : "Schakel naar compacte weergave"}
+          >
+            {compactMode ? "Detail" : "Compact"}
+          </button>
+        )}
         {onToggleRanking && (
           <button
             onClick={onToggleRanking}

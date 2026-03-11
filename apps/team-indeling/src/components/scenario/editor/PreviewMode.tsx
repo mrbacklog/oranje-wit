@@ -24,7 +24,9 @@ interface PreviewModeProps {
   detailTeamId: string | null;
   pinMap: Map<string, PinData>;
   blauwdrukId: string | null;
+  compactMode?: boolean;
   onToggleRanking: () => void;
+  onToggleCompact?: () => void;
   onSyncScores: () => void;
   onToggleMode: () => void;
   onRepositionCard: (cardId: string, x: number, y: number) => void;
@@ -48,7 +50,9 @@ export default function PreviewMode({
   detailTeamId,
   pinMap,
   blauwdrukId,
+  compactMode,
   onToggleRanking,
+  onToggleCompact,
   onSyncScores,
   onToggleMode,
   onRepositionCard,
@@ -64,7 +68,9 @@ export default function PreviewMode({
         totaal={teams.length}
         mode={mode}
         showRanking={showRanking}
+        compactMode={compactMode}
         onToggleRanking={onToggleRanking}
+        onToggleCompact={onToggleCompact}
         onSyncScores={onSyncScores}
         syncingScores={syncingScores}
         onToggleMode={onToggleMode}
@@ -76,6 +82,7 @@ export default function PreviewMode({
           validatieMap={previewValidatieMap}
           pinnedSpelerIds={pinnedSpelerIds}
           showRanking={showRanking}
+          compactMode={compactMode}
           positions={positions}
           onRepositionCard={onRepositionCard}
           onSpelerClick={(speler) => onSpelerClick(speler)}

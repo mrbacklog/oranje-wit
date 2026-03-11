@@ -17,6 +17,7 @@ interface ViewWerkgebiedProps {
   validatieMap?: Map<string, TeamValidatie>;
   pinnedSpelerIds?: Set<string>;
   showRanking?: boolean;
+  compactMode?: boolean;
   positions: PositionMap;
   onRepositionCard: (cardId: string, deltaX: number, deltaY: number) => void;
   onSpelerClick?: (speler: SpelerData) => void;
@@ -28,6 +29,7 @@ export default function ViewWerkgebied({
   validatieMap,
   pinnedSpelerIds,
   showRanking,
+  compactMode,
   positions,
   onRepositionCard,
   onSpelerClick,
@@ -54,8 +56,9 @@ export default function ViewWerkgebied({
 
   return (
     <GestureCanvas>
-      {(detailLevel) =>
-        teams.length === 0 ? (
+      {(zoomDetailLevel) => {
+        const detailLevel = compactMode ? ("overzicht" as const) : zoomDetailLevel;
+        return teams.length === 0 ? (
           <div className="flex h-[400px] items-center justify-center">
             <p className="text-sm text-gray-400">Dit scenario heeft nog geen teams.</p>
           </div>
@@ -111,8 +114,8 @@ export default function ViewWerkgebied({
               );
             })}
           </div>
-        )
-      }
+        );
+      }}
     </GestureCanvas>
   );
 }
