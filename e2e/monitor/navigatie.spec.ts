@@ -17,17 +17,21 @@ test.describe("Navigatie", () => {
   });
 
   test("navigatie naar elke pagina werkt", async ({ page }) => {
+    // Sommige pagina's laden veel data; verhoog test timeout
+    test.setTimeout(120000);
+
     const paginas = [
-      { url: "/spelers", heading: /Spelers/ },
       { url: "/teams", heading: /Teams/ },
       { url: "/samenstelling", heading: /Samenstelling/ },
       { url: "/retentie", heading: /Ledendynamiek/ },
       { url: "/projecties", heading: /Jeugdpijplijn/ },
       { url: "/signalering", heading: /Signalering/ },
+      // Spelers als laatste: zwaarste pagina (alle leden + seizoenen)
+      { url: "/spelers", heading: /Spelers/ },
     ];
 
     for (const pagina of paginas) {
-      await page.goto(pagina.url);
+      await page.goto(pagina.url, { timeout: 45000 });
       await expect(page.getByRole("heading", { name: pagina.heading })).toBeVisible({
         timeout: 15000,
       });

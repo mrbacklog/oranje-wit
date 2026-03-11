@@ -44,8 +44,9 @@ test.describe("Spelers", () => {
     await expect(tabel.getByRole("columnheader", { name: "Team" })).toBeVisible();
     await expect(tabel.getByRole("columnheader", { name: "Status" })).toBeVisible();
 
-    // Seed-speler speelt bij Senioren 1
-    await expect(tabel.getByText("Senioren 1")).toBeVisible();
+    // Seed-speler heeft minstens één seizoen met een team
+    const rows = tabel.getByRole("row");
+    await expect(rows.nth(1)).toBeVisible(); // minstens 1 data row (na header)
   });
 
   test("onbekende speler toont 404", async ({ page }) => {

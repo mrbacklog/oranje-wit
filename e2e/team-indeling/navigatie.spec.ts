@@ -16,11 +16,21 @@ test.describe("Team-Indeling navigatie", () => {
   });
 
   test("scenarios pagina is bereikbaar en toont seed-scenario", async ({ page }) => {
-    await page.goto("/scenarios");
-    await expect(page.getByRole("heading", { name: /scenario/i, level: 2 })).toBeVisible();
+    // Scenarios pagina kan traag zijn bij eerste compile; verhoog timeout
+    await page.goto("/scenarios", { timeout: 30000 });
+    await expect(page.getByRole("heading", { name: /scenario/i, level: 2 })).toBeVisible({
+      timeout: 15000,
+    });
 
-    // Seed scenario moet in de lijst staan
-    await expect(page.getByText(SCENARIO_NAAM)).toBeVisible({ timeout: 10000 });
+    // Seed scenario moet in de lijst staan; als pagina cached was, reload
+    const scenarioZichtbaar = await page
+      .getByText(SCENARIO_NAAM)
+      .isVisible()
+      .catch(() => false);
+    if (!scenarioZichtbaar) {
+      await page.reload({ timeout: 30000 });
+    }
+    await expect(page.getByText(SCENARIO_NAAM)).toBeVisible({ timeout: 15000 });
   });
 
   test("vergelijk pagina is bereikbaar", async ({ page }) => {

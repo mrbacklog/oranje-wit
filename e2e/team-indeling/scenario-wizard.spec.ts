@@ -147,7 +147,7 @@ test.describe("Nieuw Scenario Wizard", () => {
     await page.getByText("Helemaal leeg").click();
 
     // Leeg-flow
-    await expect(page.getByRole("heading", { name: "Leeg scenario" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Leeg scenario", exact: true })).toBeVisible();
 
     // Disabled zonder naam
     await expect(page.getByRole("button", { name: /leeg scenario aanmaken/i })).toBeDisabled();

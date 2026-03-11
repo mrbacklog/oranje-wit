@@ -23,8 +23,8 @@ test.describe("Signalering", () => {
       timeout: 15000,
     });
 
-    // Tellers zijn zichtbaar
-    await expect(page.getByText("Op koers")).toBeVisible();
+    // Tellers zijn zichtbaar (exact match om strict mode te vermijden)
+    await expect(page.getByText("Op koers", { exact: true })).toBeVisible();
   });
 
   test("signaleringen bevatten links naar detail pagina's", async ({ page }) => {
@@ -47,8 +47,8 @@ test.describe("Signalering", () => {
       timeout: 15000,
     });
 
-    // Seed bevat retentie-signaleringen voor U15 en U17
-    await expect(page.getByText("U15")).toBeVisible();
-    await expect(page.getByText("U17")).toBeVisible();
+    // Seed bevat signaleringen voor U15 en U17 leeftijdsgroepen
+    await expect(page.getByText("U15").first()).toBeVisible();
+    await expect(page.getByText("U17").first()).toBeVisible();
   });
 });

@@ -289,7 +289,11 @@ export async function runSeed(prisma: PrismaClient) {
 export async function cleanupSeed(prisma: PrismaClient) {
   console.warn("Cleanup seed data...");
 
-  // TI-data (FK constraints)
+  // Blauwdruk cascadeert Concept > Scenario > Versie > Team > TeamSpeler/TeamStaf
+  // Moet VOOR Speler/Staf verwijderd worden (FK constraints)
+  await prisma.blauwdruk.deleteMany({ where: { seizoen: SEIZOEN_HUIDIG } });
+
+  // TI-data (nu veilig: TeamSpeler is al verwijderd via cascade)
   await prisma.staf.deleteMany({ where: { id: { startsWith: "STAF-TST" } } });
   await prisma.speler.deleteMany({ where: { id: { startsWith: "TSTN" } } });
   await prisma.user.deleteMany({ where: { email: E2E_USER_EMAIL } });
@@ -305,8 +309,6 @@ export async function cleanupSeed(prisma: PrismaClient) {
     where: { owTeam: { seizoen: { in: [SEIZOEN_HUIDIG, SEIZOEN_VORIG] } } },
   });
   await prisma.oWTeam.deleteMany({ where: { seizoen: { in: [SEIZOEN_HUIDIG, SEIZOEN_VORIG] } } });
-  // Blauwdruk cascadeert Concept > Scenario > Versie > Team > TeamSpeler
-  await prisma.blauwdruk.deleteMany({ where: { seizoen: SEIZOEN_HUIDIG } });
   await prisma.lid.deleteMany({ where: { relCode: { startsWith: "TSTN" } } });
 
   console.warn("Cleanup compleet");
