@@ -10,11 +10,11 @@ describe("Badge", () => {
 
   it("renders colored variants", () => {
     const { container } = render(<Badge color="green">OK</Badge>);
-    expect(container.firstChild?.className).toContain("green");
+    expect((container.firstChild as HTMLElement)?.className).toContain("green");
   });
 
   it("renders orange variant", () => {
     const { container } = render(<Badge color="orange">Let op</Badge>);
-    expect(container.firstChild?.className).toContain("orange");
+    expect((container.firstChild as HTMLElement)?.className).toContain("orange");
   });
 });
