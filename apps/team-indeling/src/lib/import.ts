@@ -297,6 +297,8 @@ export async function importData(data: ExportData): Promise<ImportResult> {
         kleur: team.kleur,
         niveau: team.niveau,
         spelvorm: team.spelvorm,
+        teamType:
+          team.spelvorm === "4-tal" ? "VIERTAL" : team.spelvorm === "8-tal" ? "ACHTTAL" : null,
         poolVeld: team.pool_veld,
         poolZaal: team.pool_zaal,
         spelerIds: team.speler_ids,

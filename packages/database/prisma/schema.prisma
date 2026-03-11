@@ -792,20 +792,21 @@ model Import {
 // ============================================================
 
 model ReferentieTeam {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   seizoen   String
   naam      String
   categorie String
   kleur     String?
   niveau    String?
   spelvorm  String?
+  teamType  TeamType?
   poolVeld  String?
   poolZaal  String?
   spelerIds String[]
   stafIds   String[]
   stats     Json
   teamscore Int?
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
 
   @@index([seizoen])
 }
