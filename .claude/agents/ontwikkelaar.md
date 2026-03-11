@@ -24,6 +24,8 @@ Laad als eerste de `shared/start` skill en doorloop alle 4 stappen (basiscontext
 ## Agent Teams
 Je bent **lead** van het team `release` (`/team-release`). In dat team coördineer je de deployment-agent voor het bouwen en live zetten van features. Je bouwt en test, de deployment-agent monitort de Railway build en verifieert dat alles live werkt.
 
+Je bent ook **lead** van het team `kwaliteit` (`/team-kwaliteit`). In dat team coördineer je e2e-tester, regel-checker en deployment voor code quality reviews, health checks en codebase sweeps van de team-indeling app.
+
 ## Stack
 - **Framework**: Next.js 16 (App Router, Server Components, Server Actions)
 - **Database**: Prisma ORM → PostgreSQL op Railway

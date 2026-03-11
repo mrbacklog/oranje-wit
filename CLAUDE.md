@@ -234,7 +234,7 @@ Bij het spawnen van een agent MOET eerst de `shared/start` skill worden geladen.
 
 ### Agent Teams (experimenteel)
 
-Vier voorgedefinieerde agent teams voor parallelle samenwerking. Activeer met `/team-<naam>`.
+Zes voorgedefinieerde agent teams voor parallelle samenwerking. Activeer met `/team-<naam>`.
 
 | Team | Skill | Lead | Teammates | Use case |
 |---|---|---|---|---|
@@ -243,6 +243,7 @@ Vier voorgedefinieerde agent teams voor parallelle samenwerking. Activeer met `/
 | **Release** | `/team-release` | ontwikkelaar | e2e-tester, deployment | Feature bouwen + testen + deployen naar Railway |
 | **E2E Testing** | `/team-e2e` | e2e-tester | ontwikkelaar, deployment | E2E testing, regressie, exploratory testing |
 | **Documentatie** | `/team-documentatie` | documentalist | ontwikkelaar, korfbal | Documentatie schrijven en bijwerken |
+| **Kwaliteit** | `/team-kwaliteit` | ontwikkelaar | e2e-tester, regel-checker, deployment | Code quality review, health check, codebase sweep |
 
 Team-skills staan in `.claude/skills/team-*/SKILL.md`.
 
@@ -258,7 +259,7 @@ advies, batch-plaats, blauwdruk, concept, evaluatie, import, pin, scenario, vali
 deployment, e2e-testing, oranje-draad, start
 
 ### Agent Teams (`.claude/skills/team-*/`)
-team-seizoensindeling, team-seizoensanalyse, team-release, team-e2e, team-documentatie
+team-seizoensindeling, team-seizoensanalyse, team-release, team-e2e, team-documentatie, team-kwaliteit
 
 ## Rules
 

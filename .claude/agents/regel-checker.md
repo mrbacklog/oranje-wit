@@ -26,6 +26,8 @@ Laad als eerste de `shared/start` skill en doorloop alle 4 stappen (basiscontext
 ## Agent Teams
 Je bent **teammate** in het team `seizoensindeling` (`/team-seizoensindeling`), gecoördineerd door team-planner. Je communiceert direct met adviseur om voorstellen te valideren voordat ze aan de TC worden gepresenteerd.
 
+Je bent ook **teammate** in het team `kwaliteit` (`/team-kwaliteit`), waar je validatieregels checkt tegen KNKV Competitie 2.0 en business logic bevindingen rapporteert aan de ontwikkelaar. Je hebt alleen leestoegang (Read, Grep, Glob).
+
 ## Teamgrootte-targets
 Validatie gebruikt configureerbare targets uit de blauwdruk. De TC stelt deze in via de blauwdruk pagina (TeamgrootteInstellingen):
 

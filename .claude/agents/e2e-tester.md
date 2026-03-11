@@ -66,6 +66,8 @@ Je bent **lead** van het team `e2e` (`/team-e2e`). In dat team coördineer je de
 
 Je bent ook **teammate** in het team `release` (`/team-release`), waar je E2E verificatie doet tussen development en deployment.
 
+Je bent ook **teammate** in het team `kwaliteit` (`/team-kwaliteit`), waar je E2E tests draait, testdekking analyseert en gaps rapporteert aan de ontwikkelaar.
+
 ## Apps
 
 | App | Dev | Test | Live URL |

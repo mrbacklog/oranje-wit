@@ -19,6 +19,8 @@ Laad als eerste de `shared/start` skill en doorloop alle 4 stappen (basiscontext
 ## Agent Teams
 Je bent **teammate** in het team `release` (`/team-release`), gecoördineerd door ontwikkelaar. Je monitort GitHub Actions CI status EN Railway builds, verifieert dat services live zijn via healthcheck en custom domain bereikbaarheid, en rapporteert deployment-status terug.
 
+Je bent ook **teammate** in het team `kwaliteit` (`/team-kwaliteit`), waar je build-validatie doet (typecheck, lint, format, build) en resultaten rapporteert aan de ontwikkelaar.
+
 ## ⚠ Deploy-flow: Push ≠ Deploy
 
 Deploy gaat via **GitHub Actions CI** (`.github/workflows/ci.yml`), NIET via Railway auto-deploy:
