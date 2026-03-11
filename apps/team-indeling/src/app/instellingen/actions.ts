@@ -1,6 +1,6 @@
 "use server";
 
-import { prisma } from "@oranje-wit/database";
+import { prisma } from "@/lib/db/prisma";
 import { auth } from "@oranje-wit/auth";
 import { getActiefSeizoen } from "@/lib/seizoen";
 
