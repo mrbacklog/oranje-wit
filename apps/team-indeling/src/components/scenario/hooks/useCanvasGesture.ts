@@ -13,11 +13,20 @@ export interface CanvasGestureResult {
   transform: CanvasTransform;
   containerRef: React.RefObject<HTMLDivElement | null>;
   toggleZoom: () => void;
+  zoomIn: () => void;
+  zoomOut: () => void;
+  resetZoom: () => void;
 }
 
-// Twee vaste zoomstanden
+// Twee preset zoomstanden
 const ZOOM_DETAIL = 1.2;
 const ZOOM_OVERZICHT = 0.55;
+
+// Continue zoom limieten
+const ZOOM_MIN = 0.2;
+const ZOOM_MAX = 2.0;
+const ZOOM_STEP = 0.15; // stap voor +/- knoppen
+const SCROLL_ZOOM_FACTOR = 0.002; // gevoeligheid scroll-zoom
 
 export function useCanvasGesture(): CanvasGestureResult {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -46,11 +55,33 @@ export function useCanvasGesture(): CanvasGestureResult {
     };
   }, []);
 
+  // Zoom naar een punt (muiscursor of schermcentrum)
+  const zoomToPoint = useCallback((newScale: number, clientX?: number, clientY?: number) => {
+    const el = containerRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const cx = clientX !== undefined ? clientX - rect.left : rect.width / 2;
+    const cy = clientY !== undefined ? clientY - rect.top : rect.height / 2;
+    const clamped = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, newScale));
+
+    setTransform((prev) => {
+      const ratio = clamped / prev.scale;
+      return {
+        x: cx - ratio * (cx - prev.x),
+        y: cy - ratio * (cy - prev.y),
+        scale: clamped,
+      };
+    });
+  }, []);
+
   useGesture(
     {
       onWheel: ({ event }) => {
-        // Voorkom standaard scrollgedrag maar zoom niet continu
         event.preventDefault();
+        const delta = -event.deltaY * SCROLL_ZOOM_FACTOR;
+        const prev = transformRef.current;
+        const newScale = prev.scale * (1 + delta);
+        zoomToPoint(newScale, event.clientX, event.clientY);
       },
 
       onDrag: ({ delta: [dx, dy], buttons, event, first, cancel }) => {
@@ -83,23 +114,24 @@ export function useCanvasGesture(): CanvasGestureResult {
   );
 
   const toggleZoom = useCallback(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const cx = rect.width / 2;
-    const cy = rect.height / 2;
+    const prev = transformRef.current;
+    const isDetail = prev.scale >= 0.85;
+    zoomToPoint(isDetail ? ZOOM_OVERZICHT : ZOOM_DETAIL);
+  }, [zoomToPoint]);
 
-    setTransform((prev) => {
-      const isDetail = prev.scale >= 0.85;
-      const newScale = isDetail ? ZOOM_OVERZICHT : ZOOM_DETAIL;
-      const ratio = newScale / prev.scale;
-      return {
-        x: cx - ratio * (cx - prev.x),
-        y: cy - ratio * (cy - prev.y),
-        scale: newScale,
-      };
-    });
-  }, []);
+  const zoomIn = useCallback(() => {
+    const prev = transformRef.current;
+    zoomToPoint(prev.scale + ZOOM_STEP);
+  }, [zoomToPoint]);
 
-  return { transform, containerRef, toggleZoom };
+  const zoomOut = useCallback(() => {
+    const prev = transformRef.current;
+    zoomToPoint(prev.scale - ZOOM_STEP);
+  }, [zoomToPoint]);
+
+  const resetZoom = useCallback(() => {
+    zoomToPoint(1.0);
+  }, [zoomToPoint]);
+
+  return { transform, containerRef, toggleZoom, zoomIn, zoomOut, resetZoom };
 }
