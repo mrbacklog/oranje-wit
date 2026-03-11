@@ -1,4 +1,4 @@
-import { InfoButton } from "./info-button";
+import { InfoButton } from "../feedback/info-button";
 
 export function PageHeader({
   title,

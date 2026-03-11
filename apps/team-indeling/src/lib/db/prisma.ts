@@ -73,6 +73,8 @@ type AnyPrismaModels = {
   notitie: AnyModel;
   actiepunt: AnyModel;
   activiteit: AnyModel;
+  // Mijlpalen
+  mijlpaal: AnyModel;
 };
 
 type AnyPrismaClient = AnyPrismaModels & {

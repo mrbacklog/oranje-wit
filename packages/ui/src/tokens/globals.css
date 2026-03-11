@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, monospace;
+
+  /* Brand */
+  --color-ow-oranje: #ff6b00;
+  --color-ow-oranje-light: #ff8c33;
+  --color-ow-oranje-bg: #fff3e8;
+
+  /* Signalen */
+  --color-signal-groen: #4caf50;
+  --color-signal-geel: #ffc107;
+  --color-signal-rood: #f44336;
+
+  /* Band-kleuren (jeugdcategorieën) */
+  --color-band-blauw: #4a90d9;
+  --color-band-groen: #52b788;
+  --color-band-geel: #f4d35e;
+  --color-band-oranje: #f28c28;
+  --color-band-rood: #d62828;
+}
+
+body {
+  background-color: #f3f4f6;
+  color: #111827;
+}

@@ -343,8 +343,7 @@ export async function markeerDefinitief(scenarioId: string) {
   });
 
   revalidatePath("/scenarios");
-  revalidatePath("/definitief");
-  redirect("/definitief");
+  redirect("/scenarios");
 }
 
 // ---------------------------------------------------------------------------
