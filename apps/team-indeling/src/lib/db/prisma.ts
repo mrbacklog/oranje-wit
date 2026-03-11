@@ -69,9 +69,10 @@ type AnyPrismaModels = {
   evaluatieUitnodiging: AnyModel;
   spelerZelfEvaluatie: AnyModel;
   emailTemplate: AnyModel;
-  // Notities
+  // Notities & Activiteiten
   notitie: AnyModel;
   actiepunt: AnyModel;
+  activiteit: AnyModel;
 };
 
 type AnyPrismaClient = AnyPrismaModels & {

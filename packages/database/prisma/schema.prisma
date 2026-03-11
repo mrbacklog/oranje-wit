@@ -323,6 +323,8 @@ model User {
   notities              Notitie[]   @relation("NotitieAuteur")
   actiepuntenGemaakt    Actiepunt[] @relation("ActiepuntAuteur")
   actiepuntenToegewezen Actiepunt[] @relation("ActiepuntToewijzing")
+  activiteitenAuteur    Activiteit[] @relation("ActiviteitAuteur")
+  activiteitenToewijzing Activiteit[] @relation("ActiviteitToewijzing")
 }
 
 enum Rol {
@@ -362,6 +364,7 @@ model Speler {
   zelfEvaluaties     SpelerZelfEvaluatie[]
   pins               Pin[]
   notities           Notitie[]
+  activiteiten       Activiteit[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -391,6 +394,7 @@ model Staf {
   pins                Pin[]
   toewijzingen        StafToewijzing[]
   notities            Notitie[]
+  activiteiten        Activiteit[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -432,8 +436,9 @@ model Blauwdruk {
   // Relaties
   concepten   Concept[]
   pins        Pin[]
-  notities    Notitie[]
-  actiepunten Actiepunt[]
+  notities      Notitie[]
+  actiepunten   Actiepunt[]
+  activiteiten  Activiteit[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -911,6 +916,49 @@ model Actiepunt {
   @@index([blauwdrukId])
   @@index([toegewezenAanId])
   @@index([status])
+}
+
+// ============================================================
+// ACTIVITY TIMELINE
+// ============================================================
+
+model Activiteit {
+  id        String         @id @default(cuid())
+  type      ActiviteitType
+  inhoud    String         @db.Text
+
+  // Polymorf: precies één van deze is gevuld
+  speler     Speler?  @relation(fields: [spelerId], references: [id])
+  spelerId   String?
+  staf       Staf?    @relation(fields: [stafId], references: [id])
+  stafId     String?
+  teamOwCode String?
+
+  // Actiepunt-specifieke velden (null voor andere types)
+  actiepuntStatus   ActiepuntStatus?
+  deadline          DateTime?  @db.Date
+  toegewezenAan     User?      @relation("ActiviteitToewijzing", fields: [toegewezenAanId], references: [id])
+  toegewezenAanId   String?
+  afgerondOp        DateTime?
+
+  // Audit
+  blauwdruk   Blauwdruk @relation(fields: [blauwdrukId], references: [id], onDelete: Cascade)
+  blauwdrukId String
+  auteur      User      @relation("ActiviteitAuteur", fields: [auteurId], references: [id])
+  auteurId    String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([spelerId, createdAt])
+  @@index([stafId, createdAt])
+  @@index([blauwdrukId])
+}
+
+enum ActiviteitType {
+  OPMERKING
+  ACTIEPUNT
+  STATUS_WIJZIGING
 }
 
 // ============================================================
