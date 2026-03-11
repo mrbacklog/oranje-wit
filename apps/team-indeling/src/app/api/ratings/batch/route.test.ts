@@ -13,8 +13,8 @@ describe("POST /api/ratings/batch", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // $transaction: voer array van promises uit
-    mockPrisma.$transaction.mockImplementation((promises: Promise<unknown>[]) =>
-      Promise.all(promises)
+    mockPrisma.$transaction.mockImplementation((arg: any) =>
+      Array.isArray(arg) ? Promise.all(arg) : arg(mockPrisma)
     );
     mockPrisma.speler.update.mockResolvedValue({});
   });

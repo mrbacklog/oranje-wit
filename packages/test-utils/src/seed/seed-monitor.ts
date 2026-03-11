@@ -121,7 +121,7 @@ export async function seedCohorten(prisma: PrismaClient, spelers: SpelerRecord[]
 export async function seedSignaleringen(prisma: PrismaClient) {
   const signaleringen = [
     {
-      type: "retentie_laag",
+      type: "retentie",
       ernst: "kritiek",
       leeftijdsgroep: "U15",
       geslacht: "V",
@@ -132,7 +132,7 @@ export async function seedSignaleringen(prisma: PrismaClient) {
       advies: "Extra aandacht voor plezier en teamgevoel",
     },
     {
-      type: "retentie_dalend",
+      type: "trendbreuk",
       ernst: "aandacht",
       leeftijdsgroep: "U17",
       geslacht: null,
@@ -143,7 +143,7 @@ export async function seedSignaleringen(prisma: PrismaClient) {
       advies: "Monitor ontwikkeling en evalueer teamsamenstelling",
     },
     {
-      type: "instroom_laag",
+      type: "instroom",
       ernst: "aandacht",
       leeftijdsgroep: "U15",
       geslacht: "M",
@@ -154,7 +154,7 @@ export async function seedSignaleringen(prisma: PrismaClient) {
       advies: "Wervingsactie plannen",
     },
     {
-      type: "bezetting_goed",
+      type: "forward_projectie",
       ernst: "op_koers",
       leeftijdsgroep: "senioren",
       geslacht: null,

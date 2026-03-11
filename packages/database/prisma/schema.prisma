@@ -533,10 +533,28 @@ model Scenario {
   versies  Versie[]
   werkitems Werkitem[]
 
+  verwijderdOp DateTime? // soft-delete: null = actief, set = verwijderd
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([conceptId])
+}
+
+// Snapshot van scenario-data voor herstel na verwijdering
+model ScenarioSnapshot {
+  id            String @id @default(cuid())
+  scenarioId    String // geen FK — snapshot overleeft hard-delete
+  naam          String
+  reden         String // VERWIJDERD | HANDMATIG | PRE_DEFINITIEF
+  data          Json   // volledige scenario-data (versies, teams, spelers, staf)
+  aantalTeams   Int    @default(0)
+  aantalSpelers Int    @default(0)
+  auteur        String?
+
+  createdAt DateTime @default(now())
+
+  @@index([scenarioId])
 }
 
 enum ScenarioStatus {

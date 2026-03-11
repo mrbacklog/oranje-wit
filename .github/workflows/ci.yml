@@ -6,19 +6,37 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      deploy_monitor:
+        description: "Deploy Monitor"
+        type: boolean
+        default: false
+      deploy_ti:
+        description: "Deploy Team-Indeling"
+        type: boolean
+        default: false
+      deploy_evaluatie:
+        description: "Deploy Evaluatie"
+        type: boolean
+        default: false
+      skip_e2e:
+        description: "Skip E2E tests"
+        type: boolean
+        default: false
 
 jobs:
   # ── Job 0: Detecteer welke apps zijn gewijzigd ─────────────────────────────
   changes:
     runs-on: ubuntu-latest
     outputs:
-      monitor: ${{ steps.filter.outputs.monitor }}
-      ti: ${{ steps.filter.outputs.ti }}
-      evaluatie: ${{ steps.filter.outputs.evaluatie }}
+      monitor: ${{ steps.result.outputs.monitor }}
+      ti: ${{ steps.result.outputs.ti }}
+      evaluatie: ${{ steps.result.outputs.evaluatie }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
         id: filter
+        if: github.event_name != 'workflow_dispatch'
         with:
           filters: |
             monitor:
@@ -31,9 +49,23 @@ jobs:
               - 'apps/evaluatie/**'
               - 'packages/**'
 
+      - name: Determine changed apps
+        id: result
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "monitor=${{ inputs.deploy_monitor }}" >> $GITHUB_OUTPUT
+            echo "ti=${{ inputs.deploy_ti }}" >> $GITHUB_OUTPUT
+            echo "evaluatie=${{ inputs.deploy_evaluatie }}" >> $GITHUB_OUTPUT
+          else
+            echo "monitor=${{ steps.filter.outputs.monitor }}" >> $GITHUB_OUTPUT
+            echo "ti=${{ steps.filter.outputs.ti }}" >> $GITHUB_OUTPUT
+            echo "evaluatie=${{ steps.filter.outputs.evaluatie }}" >> $GITHUB_OUTPUT
+          fi
+
   # ── Job 1: Quality checks ──────────────────────────────────────────────────
   quality:
     needs: changes
+    if: needs.changes.outputs.monitor == 'true' || needs.changes.outputs.ti == 'true' || needs.changes.outputs.evaluatie == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -82,9 +114,10 @@ jobs:
       - name: Tests
         run: pnpm test
 
-  # ── Job 2: Build check (parallel aan quality) ──────────────────────────────
+  # ── Job 2: Build (parallel aan quality) ────────────────────────────────────
   build:
     needs: changes
+    if: needs.changes.outputs.monitor == 'true' || needs.changes.outputs.ti == 'true' || needs.changes.outputs.evaluatie == 'true'
     runs-on: ubuntu-latest
     env:
       DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy
@@ -114,8 +147,10 @@ jobs:
             apps/monitor/.next/cache
             apps/team-indeling/.next/cache
             apps/evaluatie/.next/cache
-          key: nextjs-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
-          restore-keys: nextjs-${{ runner.os }}-
+          key: nextjs-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('apps/*/src/**', 'packages/*/src/**') }}
+          restore-keys: |
+            nextjs-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-
+            nextjs-${{ runner.os }}-
 
       - name: Build monitor
         if: needs.changes.outputs.monitor == 'true'
@@ -129,13 +164,14 @@ jobs:
         if: needs.changes.outputs.evaluatie == 'true'
         run: pnpm build:evaluatie
 
-  # ── Job 3: E2E Tests (na build, met PostgreSQL service container) ──────
+  # ── Job 3: E2E Tests (na build, met PostgreSQL service container) ──────────
   e2e:
     needs: [changes, build]
     if: |
-      needs.changes.outputs.ti == 'true' ||
-      needs.changes.outputs.monitor == 'true' ||
-      needs.changes.outputs.evaluatie == 'true'
+      (github.event_name != 'workflow_dispatch' || inputs.skip_e2e != true) &&
+      (needs.changes.outputs.ti == 'true' ||
+       needs.changes.outputs.monitor == 'true' ||
+       needs.changes.outputs.evaluatie == 'true')
     runs-on: ubuntu-latest
     env:
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/oranjewit_test
@@ -182,8 +218,20 @@ jobs:
       - name: Seed test database
         run: npx tsx e2e/fixtures/seed.ts
 
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+
       - name: Install Playwright Chromium
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps chromium
+
+      - name: Install Playwright deps (cached)
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
 
       - name: E2E tests team-indeling
         if: needs.changes.outputs.ti == 'true'
@@ -204,10 +252,16 @@ jobs:
           path: playwright-report/
           retention-days: 7
 
-  # ── Job 4: Deploy (alleen na groen CI, alleen op main push) ─────────────
+  # ── Job 4: Deploy (na groen CI, op main push OF workflow_dispatch) ─────────
   deploy:
     needs: [quality, build, e2e, changes]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: |
+      always() &&
+      (needs.quality.result == 'success' || needs.quality.result == 'skipped') &&
+      (needs.build.result == 'success' || needs.build.result == 'skipped') &&
+      (needs.e2e.result == 'success' || needs.e2e.result == 'skipped') &&
+      (github.ref == 'refs/heads/main') &&
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     steps:
       - name: Deploy monitor

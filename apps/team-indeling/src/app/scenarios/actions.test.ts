@@ -25,6 +25,10 @@ vi.mock("@/lib/db/speler-guard", () => ({
   assertSpelerVrij: vi.fn().mockResolvedValue(undefined),
 }));
 
+vi.mock("@/lib/db/scenario-snapshot", () => ({
+  maakScenarioSnapshot: vi.fn().mockResolvedValue("snap-1"),
+}));
+
 vi.mock("next/cache", () => ({
   revalidatePath: vi.fn(),
 }));
@@ -51,6 +55,8 @@ const {
   createTeam,
   updateScenarioNaam,
   deleteScenario,
+  herstelScenario,
+  getVerwijderdeScenarios,
   markeerDefinitief,
   getPosities,
   savePosities,
@@ -130,7 +136,7 @@ describe("scenarios/actions", () => {
       expect(result).toEqual(mockData);
       expect(mockPrisma.scenario.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: { concept: { blauwdrukId: "bp-1" } },
+          where: { verwijderdOp: null, concept: { blauwdrukId: "bp-1" } },
         })
       );
     });
@@ -295,7 +301,7 @@ describe("scenarios/actions", () => {
       });
 
       // Mock $transaction die callback uitvoert
-      mockPrisma.$transaction.mockImplementationOnce(async (fn: (tx: unknown) => Promise<void>) => {
+      mockPrisma.$transaction.mockImplementationOnce(async (fn: any) => {
         const tx = {
           teamSpeler: {
             deleteMany: vi.fn().mockResolvedValue({ count: 1 }),
@@ -326,7 +332,7 @@ describe("scenarios/actions", () => {
 
       const result = await createTeam("v-1", {
         naam: "Geel 3",
-        categorie: "JEUGD",
+        categorie: "A_CATEGORIE",
       });
 
       expect(result).toEqual({ id: "t-new" });
@@ -347,7 +353,7 @@ describe("scenarios/actions", () => {
 
       await createTeam("v-1", {
         naam: "Blauw 1",
-        categorie: "JEUGD",
+        categorie: "A_CATEGORIE",
       });
 
       expect(mockAnyTeam.create).toHaveBeenCalledWith(
@@ -380,14 +386,46 @@ describe("scenarios/actions", () => {
   // ----------------------------------------------------------
 
   describe("deleteScenario", () => {
-    it("verwijdert een scenario", async () => {
-      mockPrisma.scenario.delete.mockResolvedValueOnce({});
+    it("soft-delete: zet verwijderdOp in plaats van hard delete", async () => {
+      mockPrisma.scenario.update.mockResolvedValueOnce({});
 
       await deleteScenario("s-1");
 
-      expect(mockPrisma.scenario.delete).toHaveBeenCalledWith({
+      expect(mockPrisma.scenario.update).toHaveBeenCalledWith({
         where: { id: "s-1" },
+        data: { verwijderdOp: expect.any(Date) },
       });
+      // Mag NIET hard deleten
+      expect(mockPrisma.scenario.delete).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("herstelScenario", () => {
+    it("zet verwijderdOp terug naar null", async () => {
+      mockPrisma.scenario.update.mockResolvedValueOnce({});
+
+      await herstelScenario("s-1");
+
+      expect(mockPrisma.scenario.update).toHaveBeenCalledWith({
+        where: { id: "s-1" },
+        data: { verwijderdOp: null },
+      });
+    });
+  });
+
+  describe("getVerwijderdeScenarios", () => {
+    it("haalt alleen soft-deleted scenario's op", async () => {
+      mockPrisma.scenario.findMany.mockResolvedValueOnce([]);
+
+      await getVerwijderdeScenarios("bp-1");
+
+      expect(mockPrisma.scenario.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.objectContaining({
+            verwijderdOp: { not: null },
+          }),
+        })
+      );
     });
   });
 
@@ -423,12 +461,14 @@ describe("scenarios/actions", () => {
           concept: { blauwdrukId: "bp-1" },
         });
       mockPrisma.werkitem.count.mockResolvedValueOnce(0);
+      // findMany voor siblings (snapshot)
+      mockPrisma.scenario.findMany.mockResolvedValueOnce([]);
       mockPrisma.scenario.updateMany.mockResolvedValueOnce({ count: 2 });
       mockPrisma.scenario.update.mockResolvedValueOnce({});
 
       // redirect gooit, maar we negeren dat
       const { redirect } = await import("next/navigation");
-      (redirect as ReturnType<typeof vi.fn>).mockImplementation(() => {
+      (redirect as any).mockImplementation(() => {
         throw new Error("NEXT_REDIRECT");
       });
 
@@ -438,6 +478,7 @@ describe("scenarios/actions", () => {
         where: {
           conceptId: "c-1",
           id: { not: "s-1" },
+          verwijderdOp: null,
         },
         data: { status: "GEARCHIVEERD" },
       });

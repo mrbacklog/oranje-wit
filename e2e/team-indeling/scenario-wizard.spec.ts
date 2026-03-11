@@ -111,7 +111,6 @@ test.describe("Nieuw Scenario Wizard", () => {
 
     // Stap 5: overzicht
     await expect(page.getByText("Stap 5 van 5")).toBeVisible();
-    await expect(page.getByText(/E2E Wizard Test/)).toBeVisible();
     await expect(page.getByRole("heading", { name: /E2E Wizard Test.*\d+ teams/ })).toBeVisible();
 
     // Aanmaken

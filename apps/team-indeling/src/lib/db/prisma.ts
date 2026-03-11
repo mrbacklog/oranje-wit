@@ -75,6 +75,8 @@ type AnyPrismaModels = {
   activiteit: AnyModel;
   // Mijlpalen
   mijlpaal: AnyModel;
+  // Snapshots
+  scenarioSnapshot: AnyModel;
 };
 
 type AnyPrismaClient = AnyPrismaModels & {

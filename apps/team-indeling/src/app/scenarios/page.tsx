@@ -1,9 +1,10 @@
 import { getBlauwdruk } from "@/app/blauwdruk/actions";
-import { getScenarios } from "./actions";
+import { getScenarios, getVerwijderdeScenarios } from "./actions";
 import { getSpelerBasisData } from "./wizard-actions";
 import NieuwScenarioWizard from "@/components/scenarios/NieuwScenarioWizard";
 import VerwijderScenarioKnop from "@/components/scenarios/VerwijderScenarioKnop";
 import HernoemScenarioKnop from "@/components/scenarios/HernoemScenarioKnop";
+import Prullenbak from "@/components/scenarios/Prullenbak";
 import Link from "next/link";
 import { getActiefSeizoen } from "@/lib/seizoen";
 
@@ -27,7 +28,10 @@ const CATEGORIE_LABELS: Record<string, string> = {
 export default async function ScenariosPage() {
   const seizoen = await getActiefSeizoen();
   const [blauwdruk, spelers] = await Promise.all([getBlauwdruk(seizoen), getSpelerBasisData()]);
-  const scenarios = await getScenarios(blauwdruk.id);
+  const [scenarios, verwijderdeScenarios] = await Promise.all([
+    getScenarios(blauwdruk.id),
+    getVerwijderdeScenarios(blauwdruk.id),
+  ]);
 
   const scenarioSamenvatting = scenarios.map((s) => ({
     id: s.id,
@@ -110,6 +114,7 @@ export default async function ScenariosPage() {
                       <VerwijderScenarioKnop
                         scenarioId={scenario.id}
                         scenarioNaam={scenario.naam}
+                        aantalTeams={laatsteVersie?.teams.length}
                       />
                     )}
                   </div>
@@ -146,6 +151,8 @@ export default async function ScenariosPage() {
           })}
         </div>
       )}
+
+      <Prullenbak scenarios={verwijderdeScenarios} />
     </div>
   );
 }

@@ -91,7 +91,7 @@ describe("dashboard/actions", () => {
 
       expect(result).toEqual(mockScenarios);
       expect(mockPrisma.scenario.findMany).toHaveBeenCalledWith({
-        where: { concept: { blauwdrukId: "bp-1" } },
+        where: { concept: { blauwdrukId: "bp-1" }, verwijderdOp: null },
         select: {
           id: true,
           naam: true,

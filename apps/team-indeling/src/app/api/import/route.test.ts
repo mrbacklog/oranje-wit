@@ -48,7 +48,7 @@ describe("GET /api/import", () => {
     expect(result.status).toBe(200);
     const data = result.data as {
       ok: boolean;
-      data: { hasData: boolean; lastImport: { spelers: number } };
+      data: { hasData: boolean; lastImport: { spelers: number; teams: number } };
     };
     expect(data.ok).toBe(true);
     expect(data.data.hasData).toBe(true);

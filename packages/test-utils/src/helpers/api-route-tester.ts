@@ -19,8 +19,10 @@ interface CallRouteResult {
   headers: Headers;
 }
 
+type RouteHandler = (req: Request, ctx?: any) => Promise<Response>;
+
 export async function callRoute(
-  handler: (req: Request, ctx?: { params: Promise<Record<string, string>> }) => Promise<Response>,
+  handler: RouteHandler,
   options: CallRouteOptions = {}
 ): Promise<CallRouteResult> {
   const { method = "GET", body, params, headers = {}, searchParams } = options;

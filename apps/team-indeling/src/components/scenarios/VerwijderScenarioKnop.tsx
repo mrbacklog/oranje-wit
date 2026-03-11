@@ -6,11 +6,13 @@ import { deleteScenario } from "@/app/scenarios/actions";
 interface VerwijderScenarioKnopProps {
   scenarioId: string;
   scenarioNaam: string;
+  aantalTeams?: number;
 }
 
 export default function VerwijderScenarioKnop({
   scenarioId,
   scenarioNaam,
+  aantalTeams,
 }: VerwijderScenarioKnopProps) {
   const [bevestig, setBevestig] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -44,7 +46,9 @@ export default function VerwijderScenarioKnop({
           e.stopPropagation();
         }}
       >
-        <span className="text-xs text-red-600">Verwijderen?</span>
+        <span className="text-xs text-red-600">
+          {aantalTeams ? `${aantalTeams} teams — ` : ""}naar prullenbak?
+        </span>
         <button
           onClick={handleClick}
           disabled={isPending}

@@ -95,7 +95,7 @@ describe("blauwdruk/actions", () => {
 
   describe("updateKaders", () => {
     it("update de kaders van een blauwdruk", async () => {
-      const kaders = { BLAUW: { aantalTeams: 2 } };
+      const kaders = { BLAUW: { minSpelers: 2 } };
       mockPrisma.blauwdruk.update.mockResolvedValueOnce({
         id: "bp-1",
         kaders,
@@ -160,17 +160,17 @@ describe("blauwdruk/actions", () => {
       // Eerste call: assertBlauwdrukBewerkbaar, tweede call: ophalen kaders
       mockPrisma.blauwdruk.findUniqueOrThrow
         .mockResolvedValueOnce({ seizoen: "2025-2026" })
-        .mockResolvedValueOnce({ kaders: { BLAUW: { aantalTeams: 2 } } });
+        .mockResolvedValueOnce({ kaders: { BLAUW: { minSpelers: 2 } } });
       mockPrisma.blauwdruk.update.mockResolvedValueOnce({ id: "bp-1" });
 
-      await updateCategorieKaders("bp-1", "GROEN", { aantalTeams: 3 });
+      await updateCategorieKaders("bp-1", "GROEN", { minSpelers: 3 });
 
       expect(mockPrisma.blauwdruk.update).toHaveBeenCalledWith({
         where: { id: "bp-1" },
         data: {
           kaders: {
-            BLAUW: { aantalTeams: 2 },
-            GROEN: { aantalTeams: 3 },
+            BLAUW: { minSpelers: 2 },
+            GROEN: { minSpelers: 3 },
           },
         },
       });
@@ -179,16 +179,16 @@ describe("blauwdruk/actions", () => {
     it("werkt bestaande categorie bij zonder andere te overschrijven", async () => {
       mockPrisma.blauwdruk.findUniqueOrThrow
         .mockResolvedValueOnce({ seizoen: "2025-2026" })
-        .mockResolvedValueOnce({ kaders: { BLAUW: { aantalTeams: 2, notitie: "Test" } } });
+        .mockResolvedValueOnce({ kaders: { BLAUW: { minSpelers: 2, notitie: "Test" } } });
       mockPrisma.blauwdruk.update.mockResolvedValueOnce({ id: "bp-1" });
 
-      await updateCategorieKaders("bp-1", "BLAUW", { aantalTeams: 3 });
+      await updateCategorieKaders("bp-1", "BLAUW", { minSpelers: 3 });
 
       expect(mockPrisma.blauwdruk.update).toHaveBeenCalledWith({
         where: { id: "bp-1" },
         data: {
           kaders: {
-            BLAUW: { aantalTeams: 3, notitie: "Test" },
+            BLAUW: { minSpelers: 3, notitie: "Test" },
           },
         },
       });

@@ -7,6 +7,10 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { assertBewerkbaar } from "@/lib/seizoen";
 import { assertSpelerVrij } from "@/lib/db/speler-guard";
+import { maakScenarioSnapshot } from "@/lib/db/scenario-snapshot";
+
+/** Filter voor actieve (niet soft-deleted) scenario's */
+const NIET_VERWIJDERD = { verwijderdOp: null } as const;
 
 /**
  * Guard: controleer of het team bij een bewerkbaar seizoen hoort.
@@ -104,6 +108,7 @@ export async function getScenario(id: string) {
 export async function getScenarios(blauwdrukId: string) {
   return prisma.scenario.findMany({
     where: {
+      ...NIET_VERWIJDERD,
       concept: {
         blauwdrukId,
       },
@@ -295,12 +300,66 @@ export async function updateScenarioNaam(scenarioId: string, naam: string) {
 }
 
 /**
- * Verwijder een scenario (inclusief versies, teams, spelers, staf via cascade).
+ * Soft-delete een scenario: maakt eerst een snapshot, dan markeer als verwijderd.
+ * Data blijft 30 dagen herstelbaar via de prullenbak.
  */
 export async function deleteScenario(scenarioId: string) {
   await assertScenarioBewerkbaar(scenarioId);
+
+  // Snapshot + soft delete
+  await maakScenarioSnapshot(scenarioId, "VERWIJDERD");
+  await prisma.scenario.update({
+    where: { id: scenarioId },
+    data: { verwijderdOp: new Date() },
+  });
+
+  revalidatePath("/scenarios");
+}
+
+/**
+ * Herstel een soft-deleted scenario vanuit de prullenbak.
+ */
+export async function herstelScenario(scenarioId: string) {
+  await prisma.scenario.update({
+    where: { id: scenarioId },
+    data: { verwijderdOp: null },
+  });
+  revalidatePath("/scenarios");
+}
+
+/**
+ * Verwijder een scenario permanent (alleen vanuit prullenbak).
+ * Dit is NIET herstelbaar — cascade naar versies, teams, spelers, staf.
+ */
+export async function definitiefVerwijderScenario(scenarioId: string) {
   await prisma.scenario.delete({ where: { id: scenarioId } });
   revalidatePath("/scenarios");
+}
+
+/**
+ * Haal soft-deleted scenario's op voor de prullenbak.
+ */
+export async function getVerwijderdeScenarios(blauwdrukId: string) {
+  return prisma.scenario.findMany({
+    where: {
+      concept: { blauwdrukId },
+      verwijderdOp: { not: null },
+    },
+    select: {
+      id: true,
+      naam: true,
+      status: true,
+      verwijderdOp: true,
+      versies: {
+        select: {
+          _count: { select: { teams: true } },
+        },
+        orderBy: { nummer: "desc" },
+        take: 1,
+      },
+    },
+    orderBy: { verwijderdOp: "desc" },
+  });
 }
 
 /**
@@ -327,11 +386,26 @@ export async function markeerDefinitief(scenarioId: string) {
     throw new Error(`Kan niet definitief maken: ${blockers} blocker(s) nog niet opgelost`);
   }
 
+  // Snapshot alle actieve sibling-scenario's voor herstel
+  const siblings = await prisma.scenario.findMany({
+    where: {
+      conceptId: scenario.conceptId,
+      id: { not: scenarioId },
+      ...NIET_VERWIJDERD,
+      status: "ACTIEF",
+    },
+    select: { id: true },
+  });
+  for (const s of siblings) {
+    await maakScenarioSnapshot(s.id, "PRE_DEFINITIEF");
+  }
+
   // Archiveer alle andere scenario's in hetzelfde concept
   await prisma.scenario.updateMany({
     where: {
       conceptId: scenario.conceptId,
       id: { not: scenarioId },
+      ...NIET_VERWIJDERD,
     },
     data: { status: "GEARCHIVEERD" },
   });

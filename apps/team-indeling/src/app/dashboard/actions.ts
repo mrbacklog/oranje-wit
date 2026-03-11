@@ -20,7 +20,7 @@ export async function getScenarioOverzicht() {
   if (!blauwdruk) return [];
 
   return prisma.scenario.findMany({
-    where: { concept: { blauwdrukId: blauwdruk.id } },
+    where: { concept: { blauwdrukId: blauwdruk.id }, verwijderdOp: null },
     select: {
       id: true,
       naam: true,
