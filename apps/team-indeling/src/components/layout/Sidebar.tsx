@@ -94,6 +94,21 @@ export default function Sidebar() {
         })}
       </nav>
 
+      {/* Info */}
+      <div className="border-t border-gray-200 px-3 py-2">
+        <Link
+          href="/over"
+          className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${
+            pathname === "/over"
+              ? "bg-ow-oranje-bg text-ow-oranje font-semibold"
+              : "text-gray-400 hover:bg-gray-50 hover:text-gray-600"
+          }`}
+        >
+          <span aria-hidden="true">ℹ️</span>
+          Over
+        </Link>
+      </div>
+
       {/* Gebruiker */}
       <UserMenu />
     </aside>

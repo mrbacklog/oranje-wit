@@ -188,6 +188,7 @@ CompetitieSpeler (primaire tabel: 1 per speler × seizoen × competitie)
 | `ontwikkelaar` | TI (dev) | Next.js app bouwen en uitbreiden |
 | `e2e-tester` | Test | Playwright E2E tests schrijven, draaien en repareren |
 | `deployment` | Infra | Railway deployments, Cloudflare Worker proxy, DNS |
+| `documentalist` | TI (docs) | Documentatie schrijven en onderhouden |
 
 ### Agent Fencing
 
@@ -205,6 +206,7 @@ Elke agent heeft een `skills:` lijst in zijn frontmatter die bepaalt wat hij mag
 | `ontwikkelaar` | `team-indeling/import`, `team-indeling/evaluatie`, `shared/deployment` |
 | `e2e-tester` | `shared/e2e-testing`, `shared/deployment` |
 | `deployment` | `shared/deployment`, `monitor/railway` |
+| `documentalist` | `team-indeling/blauwdruk`, `team-indeling/scenario`, `team-indeling/validatie`, `shared/oranje-draad` |
 
 ### Agent Hiërarchie
 
@@ -221,6 +223,9 @@ ontwikkelaar (dev) ← escalates-to: korfbal
 e2e-tester (test) ← escalates-to: ontwikkelaar
 │
 deployment (infra) ← escalates-to: korfbal
+│
+documentalist (docs) ← escalates-to: ontwikkelaar
+├── spawns: ontwikkelaar (technische verificatie), korfbal (domeinverificatie)
 ```
 
 ### Agent Startup
@@ -237,6 +242,7 @@ Vier voorgedefinieerde agent teams voor parallelle samenwerking. Activeer met `/
 | **Seizoensanalyse** | `/team-seizoensanalyse` | korfbal | data-analist, speler-scout, team-selector | Seizoensstart: totaalbeeld leden, retentie, prognoses |
 | **Release** | `/team-release` | ontwikkelaar | e2e-tester, deployment | Feature bouwen + testen + deployen naar Railway |
 | **E2E Testing** | `/team-e2e` | e2e-tester | ontwikkelaar, deployment | E2E testing, regressie, exploratory testing |
+| **Documentatie** | `/team-documentatie` | documentalist | ontwikkelaar, korfbal | Documentatie schrijven en bijwerken |
 
 Team-skills staan in `.claude/skills/team-*/SKILL.md`.
 
@@ -252,7 +258,7 @@ advies, batch-plaats, blauwdruk, concept, evaluatie, import, pin, scenario, vali
 deployment, e2e-testing, oranje-draad, start
 
 ### Agent Teams (`.claude/skills/team-*/`)
-team-seizoensindeling, team-seizoensanalyse, team-release, team-e2e
+team-seizoensindeling, team-seizoensanalyse, team-release, team-e2e, team-documentatie
 
 ## Rules
 
