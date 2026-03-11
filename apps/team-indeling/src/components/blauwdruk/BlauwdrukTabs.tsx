@@ -8,8 +8,8 @@ import CategoriePanel from "./CategoriePanel";
 import LedenDashboard from "./LedenDashboard";
 import ToelichtingEditor from "./ToelichtingEditor";
 import PinsOverzicht from "./PinsOverzicht";
-import CompetitieTeamsPanel from "./CompetitieTeamsPanel";
-import type { ReferentieTeamData } from "./CompetitieTeamsPanel";
+import CompetitieTeamsPanel from "./UitgangspositiePanel";
+import type { ReferentieTeamData } from "./UitgangspositiePanel";
 import NotitieOverzicht from "@/components/notities/NotitieOverzicht";
 import BlockerChecklist from "@/components/notities/BlockerChecklist";
 
