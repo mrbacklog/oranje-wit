@@ -1,6 +1,11 @@
-export { KpiCard } from "./kpi-card";
-export { SignalBadge } from "./signal-badge";
-export { BandPill } from "./band-pill";
-export { PageHeader } from "./page-header";
-export { InfoDrawer } from "./info-drawer";
-export { InfoButton } from "./info-button";
+// Data display
+export { KpiCard } from "./data-display/kpi-card";
+export { SignalBadge } from "./data-display/signal-badge";
+export { BandPill } from "./data-display/band-pill";
+
+// Layout
+export { PageHeader } from "./layout/page-header";
+
+// Feedback
+export { InfoDrawer } from "./feedback/info-drawer";
+export { InfoButton } from "./feedback/info-button";
