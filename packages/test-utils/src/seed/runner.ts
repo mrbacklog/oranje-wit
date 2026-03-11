@@ -231,6 +231,12 @@ async function seedCompetitieSpelers(prisma: PrismaClient, spelers: SpelerRecord
 }
 
 async function seedBlauwdruk(prisma: PrismaClient) {
+  // Zorg dat seed blauwdruk het enige werkseizoen is
+  await prisma.blauwdruk.updateMany({
+    where: { isWerkseizoen: true, seizoen: { not: SEIZOEN_HUIDIG } },
+    data: { isWerkseizoen: false },
+  });
+
   return prisma.blauwdruk.create({
     data: {
       seizoen: SEIZOEN_HUIDIG,
@@ -257,7 +263,18 @@ export async function runSeed(prisma: PrismaClient) {
   await prisma.signalering.deleteMany({
     where: {
       seizoen: SEIZOEN_HUIDIG,
-      type: { in: ["retentie_laag", "retentie_dalend", "instroom_laag", "bezetting_goed"] },
+      type: {
+        in: [
+          "retentie",
+          "trendbreuk",
+          "instroom",
+          "forward_projectie",
+          "retentie_laag",
+          "retentie_dalend",
+          "instroom_laag",
+          "bezetting_goed",
+        ],
+      },
     },
   });
   await prisma.blauwdruk.deleteMany({ where: { seizoen: SEIZOEN_HUIDIG } });
@@ -292,6 +309,18 @@ export async function cleanupSeed(prisma: PrismaClient) {
   // Blauwdruk cascadeert Concept > Scenario > Versie > Team > TeamSpeler/TeamStaf
   // Moet VOOR Speler/Staf verwijderd worden (FK constraints)
   await prisma.blauwdruk.deleteMany({ where: { seizoen: SEIZOEN_HUIDIG } });
+
+  // Herstel werkseizoen: zet de nieuwste niet-seed blauwdruk als werkseizoen
+  const nieuwste = await prisma.blauwdruk.findFirst({
+    where: { seizoen: { not: SEIZOEN_HUIDIG } },
+    orderBy: { seizoen: "desc" },
+  });
+  if (nieuwste) {
+    await prisma.blauwdruk.update({
+      where: { id: nieuwste.id },
+      data: { isWerkseizoen: true },
+    });
+  }
 
   // TI-data (nu veilig: TeamSpeler is al verwijderd via cascade)
   await prisma.staf.deleteMany({ where: { id: { startsWith: "STAF-TST" } } });
