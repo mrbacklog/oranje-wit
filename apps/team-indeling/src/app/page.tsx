@@ -59,13 +59,6 @@ export default async function HomePage() {
           href="/scenarios"
           kleur="bg-amber-500"
         />
-        <ProcesLink
-          nummer="3"
-          titel="Definitief"
-          beschrijving="Gekozen indeling en communicatie"
-          href="/definitief"
-          kleur="bg-green-500"
-        />
       </div>
     </div>
   );
