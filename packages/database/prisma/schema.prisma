@@ -908,6 +908,7 @@ model Werkitem {
   auteurId     String
 
   actiepunten  Actiepunt[]
+  volgorde     Int      @default(0)
 
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -937,6 +938,7 @@ model Actiepunt {
   auteurId        String
 
   afgerondOp      DateTime?
+  volgorde        Int      @default(0)
 
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
