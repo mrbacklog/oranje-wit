@@ -30,7 +30,7 @@ export interface SelectieBlokProps {
 export default function SelectieBlok({
   teams,
   selectieGroep,
-  validatieMap,
+  validatieMap: _validatieMap,
   selectieValidatie,
   detailLevel,
   pinnedSpelerIds,
