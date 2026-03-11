@@ -101,6 +101,16 @@ async function haalStandOp(poolRefId: number): Promise<KnkvStandEntry> {
 // ---------------------------------------------------------------------------
 
 async function isStale(seizoen: string): Promise<boolean> {
+  // In E2E test-omgeving geen externe API-calls doen
+  if (process.env.E2E_TEST === "true") return false;
+
+  // Controleer of seizoen überhaupt bestaat in de database (voorkomt FK-fouten)
+  const seizoenExists = await prisma.seizoen.findUnique({
+    where: { seizoen },
+    select: { seizoen: true },
+  });
+  if (!seizoenExists) return false;
+
   const result = await prisma.poolStand.aggregate({
     where: { seizoen },
     _max: { standDatum: true },
