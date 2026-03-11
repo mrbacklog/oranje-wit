@@ -13,10 +13,10 @@ Deze skill beschrijft hoe code naar productie gaat en hoe je deployments beheert
 ## Gouden regels
 
 1. **Alleen `main` branch** — er is geen `master`, geen staging, geen develop
-2. **Push = deploy** — Railway auto-deployt bij push naar `main`
+2. **Push ≠ deploy** — deploy gaat via GitHub Actions CI: quality + build + E2E moeten ALLE slagen
 3. **Typecheck + tests vóór push** — altijd lokaal verifiëren
 4. **Eén commit per feature** — geen WIP-commits naar `main`
-5. **Controleer deployment na push** — gebruik MCP tools om status te checken
+5. **Controleer CI + deployment na push** — check EERST GitHub Actions, DAN Railway
 
 ## Deployment-flow
 
@@ -25,24 +25,55 @@ Lokaal ontwikkelen
     ↓
 Typecheck: pnpm --filter <app> exec tsc --noEmit
 Tests:     pnpm test:<app-afkorting>
+E2E:       pnpm test:e2e:<app-afkorting>
 Lint:      pre-commit hook (automatisch)
     ↓
 git add <bestanden>
 git commit -m "type(scope): beschrijving"
 git push origin main
     ↓
-Railway auto-deploy (per service, via repoTriggers op main)
+GitHub Actions CI (.github/workflows/ci.yml):
+  Job 0: changes    — detecteert welke apps gewijzigd zijn (dorny/paths-filter)
+  Job 1: quality    — typecheck, lint, format, unit tests
+  Job 2: build      — Next.js build per gewijzigde app
+  Job 3: e2e        — Playwright E2E tests per gewijzigde app (met PostgreSQL)
+  Job 4: deploy     — Railway GraphQL API (alleen als jobs 1-3 ALLE slagen)
     ↓
-Controleer: railway_services → railway_deployment_status
+Controleer:
+  1. gh run list --limit 3       → CI status (success/failure)
+  2. railway_services             → nieuwe deployment zichtbaar?
+  3. railway_deployment_status    → SUCCESS?
 ```
+
+### Selectieve deploy (werkt correct)
+
+Niet elke push deployt alle apps. De `changes` job detecteert welke paden gewijzigd zijn:
+
+| Trigger | Deployt |
+|---|---|
+| `apps/team-indeling/**` gewijzigd | Alleen team-indeling |
+| `apps/monitor/**` gewijzigd | Alleen monitor |
+| `apps/evaluatie/**` gewijzigd | Alleen evaluatie |
+| `packages/**` gewijzigd | Alle apps (gedeelde dependency) |
+| Alleen CI/docs/scripts gewijzigd | Niets (geen app-wijziging) |
+
+### ⚠ KRITIEK: Falende tests blokkeren ALLE deploys
+
+Als de E2E tests falen — ook door een ongerelateerde test — worden ALLE deploys geblokkeerd. Dit is stilzwijgend: er is geen notificatie. **Controleer altijd CI status na push!**
+
+Bij een geblokkeerde deploy:
+1. `gh run list --limit 3` → check of CI faalt
+2. `gh run view <run-id> --log-failed` → bekijk de fout
+3. Fix de test of code, push opnieuw
+4. Of: trigger handmatig via `railway_deploy` (omzeilt CI, alleen als noodzakelijk)
 
 ## Apps en hun commando's
 
-| App | Filter | Test | Typecheck | Service ID |
+| App | Filter | Test | E2E | Service ID |
 |---|---|---|---|---|
-| team-indeling | `@oranje-wit/team-indeling` | `pnpm test:ti` | `pnpm --filter team-indeling exec tsc --noEmit` | `49ed7b30-a243-4f30-87fa-ae56935fbbbc` |
-| monitor | `@oranje-wit/monitor` | `pnpm test:monitor` | `pnpm --filter monitor exec tsc --noEmit` | `a7efb126-8ad1-460d-b787-2d03207c3f3c` |
-| evaluatie | `@oranje-wit/evaluatie` | `pnpm test:evaluatie` | `pnpm --filter evaluatie exec tsc --noEmit` | `c7a578c6-559e-4d11-8bc5-b6265dc7ada7` |
+| team-indeling | `@oranje-wit/team-indeling` | `pnpm test:ti` | `pnpm test:e2e:ti` | `49ed7b30-a243-4f30-87fa-ae56935fbbbc` |
+| monitor | `@oranje-wit/monitor` | `pnpm test:monitor` | `pnpm test:e2e:monitor` | `a7efb126-8ad1-460d-b787-2d03207c3f3c` |
+| evaluatie | `@oranje-wit/evaluatie` | `pnpm test:evaluatie` | `pnpm test:e2e:evaluatie` | `c7a578c6-559e-4d11-8bc5-b6265dc7ada7` |
 
 ## Stap-voor-stap: deployen
 
@@ -52,12 +83,14 @@ Controleer: railway_services → railway_deployment_status
 # Voor team-indeling (voorbeeld):
 pnpm --filter team-indeling exec tsc --noEmit
 pnpm test:ti
+pnpm test:e2e:ti    # ← VERPLICHT: dit is wat CI ook draait
 
 # Voor alle apps tegelijk:
 pnpm test
+pnpm test:e2e
 ```
 
-Als typecheck of tests falen: **NIET pushen**. Fix eerst.
+Als typecheck, tests, of E2E falen: **NIET pushen**. Fix eerst.
 
 ### 2. Commit en push
 
@@ -73,7 +106,21 @@ git push origin main
 - Stage specifieke bestanden, **niet** `git add .` of `git add -A`
 - Push alleen naar `main` — geen andere branches naar remote
 
-### 3. Controleer deployment
+### 3. Controleer CI status (VERPLICHT na push)
+
+```bash
+# Wacht ~2-5 minuten, check dan:
+gh run list --limit 3
+
+# Bij failure:
+gh run view <run-id> --log-failed
+```
+
+**Dit is de stap die voorkomt dat je naar een oude versie zit te kijken.** Als CI faalt, wordt er NIET gedeployd — ook niet voor andere apps.
+
+### 4. Controleer Railway deployment
+
+Pas na groen CI:
 
 ```
 # Stap 1: Bekijk services en laatste deployment
@@ -90,12 +137,18 @@ git push origin main
     type: "build"
 ```
 
-### 4. Bij problemen
+### 5. Bij problemen
 
-**Build faalt:**
+**CI faalt (tests/E2E):**
+1. `gh run view <id> --log-failed` — bekijk de fout
+2. Fix lokaal, push opnieuw
+3. Als het een ongerelateerde E2E-fout is en je MOET nu deployen:
+   - Fix de test EN deploy handmatig: `railway_deploy`
+   - **Nooit** een falende test negeren — altijd ook de test fixen
+
+**Build faalt op Railway:**
 1. Bekijk logs: `railway_logs` met `type: "build"`
 2. Fix lokaal, commit, push opnieuw
-3. Of trigger handmatig: `railway_deploy`
 
 **Service start niet:**
 1. Bekijk runtime logs: `railway_logs` met `type: "deploy"`
@@ -134,7 +187,7 @@ Basis: Node 22-slim, pnpm workspace, Prisma generate.
 
 ## Handmatig deploy triggeren
 
-Als auto-deploy niet triggert (bijv. evaluatie heeft geen repoTrigger):
+Gebruik alleen bij urgente hotfixes wanneer CI geblokkeerd is door een ongerelateerde fout:
 
 ```
 → railway_deploy
@@ -158,11 +211,13 @@ Of met wachten op resultaat:
 - **NOOIT** deployen zonder typecheck + tests
 - **NOOIT** direct op `main` committen zonder verificatie
 - **NOOIT** `master` branch gebruiken — die bestaat niet meer
+- **NOOIT** aannemen dat push = deploy — altijd CI status checken
 
 ## Gerelateerde skills en bestanden
 
 | Bron | Pad | Inhoud |
 |---|---|---|
+| CI workflow | `.github/workflows/ci.yml` | GitHub Actions: quality, build, E2E, deploy |
 | Railway MCP tools | `skills/monitor/railway/SKILL.md` | Alle 14 MCP tools, custom domains, DNS, SSL troubleshooting |
 | Railway MCP server | `apps/mcp/railway/server.js` | Server implementatie |
 | Deployment agent | `agents/deployment.md` | Agent voor complexe deployment-issues |

@@ -49,24 +49,27 @@ Start een agent team voor het bouwen en deployen van features voor c.k.v. Oranje
 4. **ontwikkelaar** fixt eventuele fouten
 5. **ontwikkelaar** maakt een commit
 
-### Fase 2: E2E Verificatie
+### Fase 2: E2E Verificatie (VERPLICHT — blokkeert deploy)
 6. **e2e-tester** draait bestaande E2E tests (`pnpm test:e2e:<app>`)
 7. **e2e-tester** doet exploratory testing van de nieuwe feature via Playwright MCP
 8. Bij falende tests: **e2e-tester** rapporteert → **ontwikkelaar** fixt → hertest
 9. **e2e-tester** geeft go-ahead voor deployment
+10. **⚠ BELANGRIJK**: E2E tests MOETEN lokaal slagen vóór push — GitHub Actions CI blokkeert deploy als E2E faalt
 
-### Fase 3: Deployment (parallel)
-10. **ontwikkelaar** pusht naar main (na bevestiging gebruiker)
-11. **deployment** monitort de Railway build
-12. **deployment** verifieert dat de service live is:
+### Fase 3: Deployment
+11. **ontwikkelaar** pusht naar main (na bevestiging gebruiker)
+12. **deployment** controleert GitHub Actions CI status: `gh run list --limit 3`
+13. **deployment** wacht tot CI groen is (CI triggert Railway deploy automatisch)
+14. **deployment** verifieert dat de service live is:
     - Check deployment status via Railway MCP
     - Check bereikbaarheid via `curl -s https://<app>.ckvoranjewit.app`
     - Rapporteer resultaat
-13. Bij fouten: **deployment** analyseert → **ontwikkelaar** fixt → herhaal
+15. Bij CI-failure: **deployment** rapporteert falende stap → **ontwikkelaar** fixt → herhaal
+16. Bij Railway build-fout: **deployment** analyseert logs → **ontwikkelaar** fixt
 
 ### Fase 4: Post-deploy Verificatie
-14. **e2e-tester** doet read-only smoke test tegen productie URL (alleen navigatie)
-15. **deployment** doet een laatste check op alle services
+17. **e2e-tester** doet read-only smoke test tegen productie URL (alleen navigatie)
+18. **deployment** doet een laatste check op alle services
 
 ## Communicatiepatronen
 
@@ -100,7 +103,7 @@ ontwikkelaar (lead)
 
 - **Taal**: Nederlands
 - **Stack**: Next.js 16, Tailwind CSS 4, Prisma, pnpm workspaces
-- **Deployment**: Railway (auto-deploy op push naar main)
+- **Deployment**: GitHub Actions CI → Railway (deploy alleen als CI groen is)
 - **DNS**: Cloudflare Worker proxy
 - **Database**: PostgreSQL op Railway (NOOIT `pnpm db:push` draaien)
 
