@@ -179,6 +179,9 @@ importers:
         specifier: ^2.15.0
         version: 2.15.4(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
     devDependencies:
+      '@oranje-wit/test-utils':
+        specifier: workspace:*
+        version: link:../../packages/test-utils
       '@tailwindcss/postcss':
         specifier: ^4
         version: 4.2.1
@@ -261,6 +264,9 @@ importers:
         specifier: ^3.24.0
         version: 3.25.76
     devDependencies:
+      '@oranje-wit/test-utils':
+        specifier: workspace:*
+        version: link:../../packages/test-utils
       '@tailwindcss/postcss':
         specifier: ^4
         version: 4.2.1
@@ -334,6 +340,16 @@ importers:
       prisma:
         specifier: ^7.4.1
         version: 7.4.1(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@5.9.3)
+
+  packages/test-utils:
+    dependencies:
+      '@oranje-wit/database':
+        specifier: workspace:*
+        version: link:../database
+    devDependencies:
+      vitest:
+        specifier: ^4.0.0
+        version: 4.0.18(@types/node@20.19.34)(jiti@2.6.1)(jsdom@28.1.0)(lightningcss@1.31.1)(yaml@2.8.2)
 
   packages/types:
     dependencies:

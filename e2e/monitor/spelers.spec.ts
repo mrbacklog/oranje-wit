@@ -1,5 +1,9 @@
 import { test, expect } from "../fixtures/base";
 
+// Eerste seed-speler: TSTN001 = "Daan de Jong" (M, Senioren 1)
+const SEED_SPELER_RELCODE = "TSTN001";
+const SEED_SPELER_NAAM = "Daan de Jong";
+
 test.describe("Spelers", () => {
   // Spelers pagina laadt veel data, verhoog timeout
   test.setTimeout(60000);
@@ -12,18 +16,24 @@ test.describe("Spelers", () => {
     });
   });
 
-  test("speler detail pagina toont seizoensoverzicht", async ({ page }) => {
-    // Gebruik een bekende speler
-    await page.goto("/spelers/NLS54M7");
+  test("spelersoverzicht bevat seed-spelers", async ({ page }) => {
+    await page.goto("/spelers", { timeout: 45000 });
 
-    // In CI is de database leeg — skip als de speler niet bestaat
-    const heading = page.getByRole("heading", { name: "Nikki Baas", level: 1 });
-    const notFound = page.getByText("404");
-    const first = await Promise.race([
-      heading.waitFor({ timeout: 5000 }).then(() => "found" as const),
-      notFound.waitFor({ timeout: 5000 }).then(() => "404" as const),
-    ]).catch(() => "timeout" as const);
-    test.skip(first !== "found", "Speler NLS54M7 niet beschikbaar in CI database");
+    await expect(page.getByRole("heading", { name: /Spelers/ })).toBeVisible({
+      timeout: 15000,
+    });
+
+    // Zoek naar een seed-speler in de lijst (TSTN-prefix)
+    await expect(page.getByText(SEED_SPELER_NAAM).first()).toBeVisible({ timeout: 10000 });
+  });
+
+  test("speler detail pagina toont seizoensoverzicht", async ({ page }) => {
+    // Gebruik seed-speler TSTN001
+    await page.goto(`/spelers/${SEED_SPELER_RELCODE}`);
+
+    await expect(page.getByRole("heading", { name: SEED_SPELER_NAAM, level: 1 })).toBeVisible({
+      timeout: 10000,
+    });
 
     await expect(page.getByRole("heading", { name: "Seizoensoverzicht" })).toBeVisible();
 
@@ -33,6 +43,9 @@ test.describe("Spelers", () => {
     await expect(tabel.getByRole("columnheader", { name: "Seizoen" })).toBeVisible();
     await expect(tabel.getByRole("columnheader", { name: "Team" })).toBeVisible();
     await expect(tabel.getByRole("columnheader", { name: "Status" })).toBeVisible();
+
+    // Seed-speler speelt bij Senioren 1
+    await expect(tabel.getByText("Senioren 1")).toBeVisible();
   });
 
   test("onbekende speler toont 404", async ({ page }) => {
@@ -44,15 +57,10 @@ test.describe("Spelers", () => {
   });
 
   test("terug-link op speler detail navigeert naar overzicht", async ({ page }) => {
-    await page.goto("/spelers/NLS54M7");
+    await page.goto(`/spelers/${SEED_SPELER_RELCODE}`);
 
     const link = page.getByRole("link", { name: /Terug naar overzicht/ });
-    const notFound = page.getByText("404");
-    const first = await Promise.race([
-      link.waitFor({ timeout: 5000 }).then(() => "found" as const),
-      notFound.waitFor({ timeout: 5000 }).then(() => "404" as const),
-    ]).catch(() => "timeout" as const);
-    test.skip(first !== "found", "Speler NLS54M7 niet beschikbaar in CI database");
+    await expect(link).toBeVisible({ timeout: 10000 });
 
     await link.click();
     await expect(page).toHaveURL(/\/spelers$/);

@@ -179,6 +179,9 @@ jobs:
         run: npx prisma db push
         working-directory: packages/database
 
+      - name: Seed test database
+        run: npx tsx e2e/fixtures/seed.ts
+
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
 

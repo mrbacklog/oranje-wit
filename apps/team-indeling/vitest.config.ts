@@ -13,5 +13,16 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["./src/test/setup.ts"],
     include: ["src/**/*.test.{ts,tsx}"],
+    coverage: {
+      provider: "v8",
+      include: ["src/lib/**/*.ts", "src/app/api/**/*.ts", "src/app/**/actions.ts"],
+      exclude: [
+        "**/*.test.ts",
+        "**/*.test.tsx",
+        "**/*.spec.ts",
+        "src/lib/db/prisma.ts",
+        "src/test/**",
+      ],
+    },
   },
 });

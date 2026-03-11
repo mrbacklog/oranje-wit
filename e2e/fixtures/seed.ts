@@ -1,43 +1,20 @@
 /**
- * Database seeding voor E2E tests in CI.
+ * Database seeding voor E2E tests.
  *
- * Maakt minimale testdata aan zodat de apps
- * kunnen laden zonder lege-state fouten.
+ * Maakt een representatieve dataset aan:
+ * - 14 teams (senioren + U19/U17/U15)
+ * - ~129 spelers met TST-prefix rel_codes
+ * - 2 seizoenen (huidig + vorig, voor verloop)
+ * - Ledenverloop, cohorten, signaleringen
+ * - 1 blauwdruk voor team-indeling
  *
- * Draai met: npx tsx e2e/fixtures/seed.ts
+ * Draai met: pnpm seed  (of npx tsx e2e/fixtures/seed.ts)
  */
-import { PrismaClient } from "@oranje-wit/database";
+import { prisma } from "../../packages/database/src/index";
+import { runSeed } from "../../packages/test-utils/src/seed/index";
 
-const prisma = new PrismaClient();
-
-async function seed() {
-  // Maak een test-seizoen aan
-  await prisma.seizoen.upsert({
-    where: { seizoen: "2025-2026" },
-    update: {},
-    create: {
-      seizoen: "2025-2026",
-      jaar_start: 2025,
-      jaar_eind: 2026,
-    },
-  });
-
-  // Maak een test-blauwdruk aan voor team-indeling
-  await prisma.blauwdruk.upsert({
-    where: { seizoen: "2025-2026" },
-    update: {},
-    create: {
-      seizoen: "2025-2026",
-      naam: "Veld Voorjaar 2026",
-      status: "CONCEPT",
-    },
-  });
-
-  console.info("E2E seed data aangemaakt");
-}
-
-seed()
-  .catch((e) => {
+runSeed(prisma as Parameters<typeof runSeed>[0])
+  .catch((e: unknown) => {
     console.error("Seed fout:", e);
     process.exit(1);
   })

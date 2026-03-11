@@ -25,6 +25,7 @@ function mapNaarValidatieTeam(team: UITeamData): ValidatieTeamData {
         roepnaam: ts.speler.roepnaam,
         achternaam: ts.speler.achternaam,
         geboortejaar: ts.speler.geboortejaar,
+        geboortedatum: ts.speler.geboortedatum,
         geslacht: ts.speler.geslacht,
         status: ts.statusOverride ?? ts.speler.status,
       })

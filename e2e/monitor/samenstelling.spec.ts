@@ -13,16 +13,12 @@ test.describe("Samenstelling", () => {
   });
 
   test("geboortejaar detail toont actieve en gestopte spelers", async ({ page }) => {
+    // Seed bevat spelers met geboortejaar 2010 (U17 teams)
     await page.goto("/samenstelling/2010");
 
-    // In CI is de database leeg — skip als het geboortejaar niet bestaat
-    const heading = page.getByRole("heading", { name: /Geboortejaar 2010/ });
-    const notFound = page.getByText("404");
-    const first = await Promise.race([
-      heading.waitFor({ timeout: 5000 }).then(() => "found" as const),
-      notFound.waitFor({ timeout: 5000 }).then(() => "404" as const),
-    ]).catch(() => "timeout" as const);
-    test.skip(first !== "found", "Geboortejaar 2010 niet beschikbaar in CI database");
+    await expect(page.getByRole("heading", { name: /Geboortejaar 2010/ })).toBeVisible({
+      timeout: 10000,
+    });
 
     await expect(page.getByText(/retentie/)).toBeVisible();
     await expect(page.getByRole("heading", { name: /Actief/ })).toBeVisible();
@@ -40,13 +36,9 @@ test.describe("Samenstelling", () => {
   test("terug-link navigeert naar samenstelling overzicht", async ({ page }) => {
     await page.goto("/samenstelling/2010");
 
+    // Seed garandeert dat geboortejaar 2010 data heeft
     const link = page.getByRole("link", { name: /Terug naar samenstelling/ });
-    const notFound = page.getByText("404");
-    const first = await Promise.race([
-      link.waitFor({ timeout: 5000 }).then(() => "found" as const),
-      notFound.waitFor({ timeout: 5000 }).then(() => "404" as const),
-    ]).catch(() => "timeout" as const);
-    test.skip(first !== "found", "Geboortejaar 2010 niet beschikbaar in CI database");
+    await expect(link).toBeVisible({ timeout: 10000 });
 
     await link.click();
     await expect(page).toHaveURL(/\/samenstelling/);

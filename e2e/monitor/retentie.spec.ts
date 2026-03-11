@@ -16,16 +16,12 @@ test.describe("Retentie / Ledendynamiek", () => {
   });
 
   test("seizoen detail pagina toont instroom en uitstroom", async ({ page }) => {
+    // Seed maakt seizoen 2024-2025 aan met verloop-data
     await page.goto("/retentie/2024-2025");
 
-    // In CI is de database leeg — skip als het seizoen niet bestaat
-    const heading = page.getByRole("heading", { name: /Seizoen 2024-2025/ });
-    const notFound = page.getByText("404");
-    const first = await Promise.race([
-      heading.waitFor({ timeout: 5000 }).then(() => "found" as const),
-      notFound.waitFor({ timeout: 5000 }).then(() => "404" as const),
-    ]).catch(() => "timeout" as const);
-    test.skip(first !== "found", "Seizoen 2024-2025 niet beschikbaar in CI database");
+    await expect(page.getByRole("heading", { name: /Seizoen 2024-2025/ })).toBeVisible({
+      timeout: 10000,
+    });
 
     await expect(page.getByText(/retentie \d+%/)).toBeVisible();
     await expect(page.getByRole("heading", { name: /Instroom/ })).toBeVisible();
@@ -35,13 +31,9 @@ test.describe("Retentie / Ledendynamiek", () => {
   test("terug-link navigeert naar retentie overzicht", async ({ page }) => {
     await page.goto("/retentie/2024-2025");
 
+    // Seed-data garandeert dat seizoen 2024-2025 bestaat
     const link = page.getByRole("link", { name: /Terug naar retentie/ });
-    const notFound = page.getByText("404");
-    const first = await Promise.race([
-      link.waitFor({ timeout: 5000 }).then(() => "found" as const),
-      notFound.waitFor({ timeout: 5000 }).then(() => "404" as const),
-    ]).catch(() => "timeout" as const);
-    test.skip(first !== "found", "Seizoen 2024-2025 niet beschikbaar in CI database");
+    await expect(link).toBeVisible({ timeout: 10000 });
 
     await link.click();
     await expect(page).toHaveURL(/\/retentie$/);

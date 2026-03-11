@@ -1,15 +1,7 @@
 import { vi } from "vitest";
+import { createMockPrisma } from "@oranje-wit/test-utils";
 
-export const mockPrisma = {
-  lid: { count: vi.fn(), findMany: vi.fn() },
-  seizoen: { findMany: vi.fn() },
-  oWTeam: { count: vi.fn(), findMany: vi.fn() },
-  signalering: { findMany: vi.fn() },
-  ledenverloop: { findMany: vi.fn() },
-  cohortSeizoen: { findMany: vi.fn() },
-  streefmodel: { findMany: vi.fn() },
-  $queryRaw: vi.fn(),
-};
+export const mockPrisma = createMockPrisma();
 
 vi.mock("@oranje-wit/database", () => ({
   prisma: mockPrisma,

@@ -6,6 +6,9 @@ const ALLOWED_USERS: Record<string, Rol> = {
   "thomasisarin@gmail.com": "EDITOR",
 };
 
+/** Primaire admin (TC-voorzitter) */
+export const ADMIN_EMAIL = "antjanlaban@gmail.com";
+
 export function getAllowedRole(email: string): Rol | null {
   return ALLOWED_USERS[email.toLowerCase()] ?? null;
 }

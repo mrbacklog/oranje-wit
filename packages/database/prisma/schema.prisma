@@ -913,7 +913,6 @@ model Werkitem {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  @@map("Notitie")
   @@index([blauwdrukId])
   @@index([status])
   @@index([prioriteit])
@@ -925,8 +924,8 @@ model Actiepunt {
   status          ActiepuntStatus @default(OPEN)
   deadline        DateTime? @db.Date
 
-  werkitem        Werkitem? @relation(fields: [notitieId], references: [id], onDelete: Cascade)
-  notitieId       String?
+  werkitem        Werkitem? @relation(fields: [werkitemId], references: [id], onDelete: Cascade)
+  werkitemId      String?
 
   blauwdruk       Blauwdruk @relation(fields: [blauwdrukId], references: [id], onDelete: Cascade)
   blauwdrukId     String

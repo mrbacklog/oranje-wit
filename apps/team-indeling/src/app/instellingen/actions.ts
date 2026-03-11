@@ -2,9 +2,8 @@
 
 import { prisma } from "@/lib/db/prisma";
 import { auth } from "@oranje-wit/auth";
+import { ADMIN_EMAIL } from "@oranje-wit/auth/allowlist";
 import { getActiefSeizoen } from "@/lib/seizoen";
-
-const ADMIN_EMAIL = "antjanlaban@gmail.com";
 
 export async function isAdmin() {
   const session = await auth();

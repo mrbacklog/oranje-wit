@@ -36,7 +36,7 @@ Blauwdruk (1 per seizoen)
 | **Pin** | Vastgezette beslissing op blauwdruk-niveau (speler-status, positie) | `blauwdrukId` |
 | **Evaluatie** | Trainerevaluatie-scores per speler per seizoen/ronde | `spelerId` + `seizoen` + `ronde` |
 | **ReferentieTeam** | Snapshot huidige teamstructuur als vergelijkingsbasis | `seizoen` |
-| **Werkitem** | Strategische notitie/vraagstuk (opgeslagen als `Notitie` in DB) | `blauwdrukId` |
+| **Werkitem** | Strategische notitie/vraagstuk | `blauwdrukId` |
 | **Actiepunt** | Concrete todo gekoppeld aan een werkitem | `werkitemId` |
 | **Activiteit** | Timeline-entry (opmerking, actiepunt, statuswijziging) per speler/staf | `spelerId` of `stafId` |
 
