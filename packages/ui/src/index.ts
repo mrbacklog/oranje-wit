@@ -8,6 +8,7 @@ export { PageHeader } from "./layout/page-header";
 
 // Primitives
 export { Button } from "./primitives/button";
+export { Badge } from "./primitives/badge";
 
 // Feedback
 export { InfoDrawer } from "./feedback/info-drawer";
