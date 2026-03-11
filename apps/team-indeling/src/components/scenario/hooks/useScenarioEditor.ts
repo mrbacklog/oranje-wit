@@ -37,8 +37,13 @@ export function useScenarioEditor(scenario: ScenarioData, alleSpelers: SpelerDat
     [scenario.concept?.blauwdruk?.kaders]
   );
 
-  // Realtime validatie
-  const { validatieMap, dubbeleMeldingen } = useValidatie(teams, PEILJAAR, blauwdrukKaders);
+  // Realtime validatie (incl. selectie-validatie)
+  const { validatieMap, dubbeleMeldingen, selectieValidatieMap } = useValidatie(
+    teams,
+    PEILJAAR,
+    blauwdrukKaders,
+    selectieGroepen
+  );
 
   // Pins (blauwdruk-level)
   const blauwdrukId = scenario.concept?.blauwdruk?.id;
@@ -119,9 +124,6 @@ export function useScenarioEditor(scenario: ScenarioData, alleSpelers: SpelerDat
     },
     [blauwdrukId, pinMap]
   );
-
-  // What-if state
-  const [whatIfOpen, setWhatIfOpen] = useState(false);
 
   // Verdeel-dialoog state
   const [verdeelData, setVerdeelData] = useState<VerdeelData | null>(null);
@@ -305,6 +307,7 @@ export function useScenarioEditor(scenario: ScenarioData, alleSpelers: SpelerDat
 
   return {
     // Data
+    blauwdrukId,
     teams,
     selectieGroepen,
     selectieGroepMap: selectie.selectieGroepMap,
@@ -312,6 +315,7 @@ export function useScenarioEditor(scenario: ScenarioData, alleSpelers: SpelerDat
     versieId,
     laatsteVersie,
     validatieMap,
+    selectieValidatieMap,
     dubbeleMeldingen,
     editTeamId,
     editTeam,
@@ -319,14 +323,12 @@ export function useScenarioEditor(scenario: ScenarioData, alleSpelers: SpelerDat
     detailTeamId,
     pinMap,
     pinnedSpelerIds,
-    whatIfOpen,
     verdeelData,
 
     // Setters (voor directe UI-besturing)
     setEditTeamId,
     setDetailSpeler,
     setDetailTeamId,
-    setWhatIfOpen,
     setVerdeelData,
 
     // Handlers
@@ -346,6 +348,7 @@ export function useScenarioEditor(scenario: ScenarioData, alleSpelers: SpelerDat
     handleKoppelSelectie: selectie.handleKoppelSelectie,
     handleOntkoppelSelectie: selectie.handleOntkoppelSelectie,
     handleVerdeelBevestig: selectie.handleVerdeelBevestig,
+    handleUpdateSelectieNaam: selectie.handleUpdateSelectieNaam,
     handleReorderTeams,
   };
 }

@@ -8,20 +8,20 @@ import CategoriePanel from "./CategoriePanel";
 import LedenDashboard from "./LedenDashboard";
 import ToelichtingEditor from "./ToelichtingEditor";
 import PinsOverzicht from "./PinsOverzicht";
-import CompetitieTeamsPanel from "./UitgangspositiePanel";
-import type { ReferentieTeamData } from "./UitgangspositiePanel";
-import NotitieOverzicht from "@/components/notities/NotitieOverzicht";
-import BlockerChecklist from "@/components/notities/BlockerChecklist";
+import UitgangspositiePanel from "./UitgangspositiePanel";
+import type { ReferentieTeamData, EvaluatieRondeData } from "./UitgangspositiePanel";
+import WerkbordOverzicht from "@/components/werkbord/WerkbordOverzicht";
+import BlockerChecklist from "@/components/werkbord/BlockerChecklist";
 
-type BlockerNotitie = {
+type BlockerWerkitem = {
   id: string;
   titel: string;
-  categorie: string;
+  type: string;
   auteur: { naam: string };
   createdAt: Date;
 };
 
-type NotitieData = Parameters<typeof NotitieOverzicht>[0]["initialNotities"][number];
+type WerkitemData = Parameters<typeof WerkbordOverzicht>[0]["initialWerkitems"][number];
 
 interface BlauwdrukTabsProps {
   statistieken: LedenStatistieken;
@@ -29,23 +29,25 @@ interface BlauwdrukTabsProps {
   blauwdrukId: string;
   spelers: SpelerUitgebreid[];
   toelichting: string;
-  blockers?: BlockerNotitie[];
-  notities: NotitieData[];
-  notitieStats: { open: number; blockers: number; afgerond: number };
-  refreshNotities: () => Promise<{
-    notities: NotitieData[];
-    stats: { open: number; blockers: number; afgerond: number };
+  blockers?: BlockerWerkitem[];
+  werkitems: WerkitemData[];
+  werkitemStats: { open: number; blockers: number; besluiten: number; afgerond: number };
+  refreshWerkitems: () => Promise<{
+    werkitems: WerkitemData[];
+    stats: { open: number; blockers: number; besluiten: number; afgerond: number };
   }>;
   pins: PinMetNamen[];
   referentieTeams: ReferentieTeamData[];
+  seizoen: string;
+  evaluatieRondes: EvaluatieRondeData[];
 }
 
 const TABS = [
   { id: "categorieen", label: "Categorieën" },
-  { id: "competitieteams", label: "Competitieteams" },
+  { id: "uitgangspositie", label: "Uitgangspositie" },
   { id: "leden", label: "Leden" },
   { id: "toelichting", label: "Toelichting" },
-  { id: "actiepunten", label: "Actiepunten" },
+  { id: "werkbord", label: "Werkbord" },
   { id: "pins", label: "Pins" },
 ] as const;
 
@@ -58,11 +60,13 @@ export default function BlauwdrukTabs({
   spelers,
   toelichting,
   blockers,
-  notities,
-  notitieStats,
-  refreshNotities,
+  werkitems,
+  werkitemStats,
+  refreshWerkitems,
   pins,
   referentieTeams,
+  seizoen,
+  evaluatieRondes,
 }: BlauwdrukTabsProps) {
   const [activeTab, setActiveTab] = useState<TabId>("categorieen");
   const [localPins, setLocalPins] = useState(pins);
@@ -97,9 +101,9 @@ export default function BlauwdrukTabs({
             }`}
           >
             {tab.label}
-            {tab.id === "actiepunten" && notitieStats.open > 0 && (
+            {tab.id === "werkbord" && werkitemStats.open > 0 && (
               <span className="ml-1.5 rounded-full bg-orange-100 px-1.5 py-0.5 text-xs font-medium text-orange-700">
-                {notitieStats.open}
+                {werkitemStats.open}
               </span>
             )}
             {tab.id === "pins" && localPins.length > 0 && (
@@ -116,20 +120,26 @@ export default function BlauwdrukTabs({
         <CategoriePanel statistieken={statistieken} kaders={kaders} blauwdrukId={blauwdrukId} />
       )}
 
-      {activeTab === "competitieteams" && <CompetitieTeamsPanel initialTeams={referentieTeams} />}
+      {activeTab === "uitgangspositie" && (
+        <UitgangspositiePanel
+          initialTeams={referentieTeams}
+          seizoen={seizoen}
+          evaluatieRondes={evaluatieRondes}
+        />
+      )}
 
-      {activeTab === "leden" && <LedenDashboard spelers={spelers} />}
+      {activeTab === "leden" && <LedenDashboard spelers={spelers} blauwdrukId={blauwdrukId} />}
 
       {activeTab === "toelichting" && (
         <ToelichtingEditor blauwdrukId={blauwdrukId} initieel={toelichting} />
       )}
 
-      {activeTab === "actiepunten" && (
-        <NotitieOverzicht
+      {activeTab === "werkbord" && (
+        <WerkbordOverzicht
           blauwdrukId={blauwdrukId}
-          initialNotities={notities}
-          initialStats={notitieStats}
-          refreshAction={refreshNotities}
+          initialWerkitems={werkitems}
+          initialStats={werkitemStats}
+          refreshAction={refreshWerkitems}
         />
       )}
 

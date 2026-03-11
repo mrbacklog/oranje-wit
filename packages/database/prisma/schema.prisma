@@ -321,7 +321,7 @@ model User {
   // Relaties
   pins     Pin[]
   logItems LogEntry[]
-  notities              Notitie[]   @relation("NotitieAuteur")
+  werkitems             Werkitem[]  @relation("WerkitemAuteur")
   actiepuntenGemaakt    Actiepunt[] @relation("ActiepuntAuteur")
   actiepuntenToegewezen Actiepunt[] @relation("ActiepuntToewijzing")
   activiteitenAuteur    Activiteit[] @relation("ActiviteitAuteur")
@@ -364,7 +364,7 @@ model Speler {
   evaluaties         Evaluatie[]
   zelfEvaluaties     SpelerZelfEvaluatie[]
   pins               Pin[]
-  notities           Notitie[]
+  werkitems          Werkitem[]
   activiteiten       Activiteit[]
 
   createdAt DateTime @default(now())
@@ -394,7 +394,7 @@ model Staf {
   selectiePlaatsingen SelectieStaf[]
   pins                Pin[]
   toewijzingen        StafToewijzing[]
-  notities            Notitie[]
+  werkitems           Werkitem[]
   activiteiten        Activiteit[]
 
   createdAt DateTime @default(now())
@@ -437,7 +437,7 @@ model Blauwdruk {
   // Relaties
   concepten   Concept[]
   pins        Pin[]
-  notities      Notitie[]
+  werkitems     Werkitem[]
   actiepunten   Actiepunt[]
   activiteiten  Activiteit[]
 
@@ -531,7 +531,7 @@ model Scenario {
 
   // Relaties
   versies  Versie[]
-  notities Notitie[]
+  werkitems Werkitem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -818,18 +818,19 @@ model ReferentieTeam {
 }
 
 // ============================================================
-// NOTITIES & ACTIEPUNTEN
+// WERKBORD & ACTIEPUNTEN
 // ============================================================
 
-enum NotitieCategorie {
+enum WerkitemType {
   STRATEGISCH
   DATA
   REGEL
   TRAINER
   SPELER
+  BESLUIT
 }
 
-enum NotitiePrioriteit {
+enum WerkitemPrioriteit {
   BLOCKER
   HOOG
   MIDDEL
@@ -837,12 +838,34 @@ enum NotitiePrioriteit {
   INFO
 }
 
-enum NotitieStatus {
+enum WerkitemStatus {
   OPEN
   IN_BESPREKING
   OPGELOST
   GEACCEPTEERD_RISICO
   GEARCHIVEERD
+}
+
+enum Besluitniveau {
+  TC
+  BESTUUR
+  TRAINER
+}
+
+enum Doelgroep {
+  SENIOREN
+  JUNIOREN
+  ASPIRANTEN
+  PUPILLEN
+  WELPEN
+  ALLE
+}
+
+enum Entiteit {
+  SPELER
+  STAF
+  TEAM
+  BLAUWDRUK
 }
 
 enum ActiepuntStatus {
@@ -851,16 +874,19 @@ enum ActiepuntStatus {
   AFGEROND
 }
 
-model Notitie {
+model Werkitem {
   id           String   @id @default(cuid())
   blauwdruk    Blauwdruk @relation(fields: [blauwdrukId], references: [id], onDelete: Cascade)
   blauwdrukId  String
 
   titel        String
   beschrijving String   @db.Text
-  categorie    NotitieCategorie
-  prioriteit   NotitiePrioriteit @default(MIDDEL)
-  status       NotitieStatus     @default(OPEN)
+  type         WerkitemType
+  prioriteit   WerkitemPrioriteit @default(MIDDEL)
+  status       WerkitemStatus     @default(OPEN)
+  besluitniveau Besluitniveau?
+  doelgroep    Doelgroep?
+  entiteit     Entiteit?
 
   // Optioneel scenario-niveau (null = blauwdruk-breed)
   scenario     Scenario? @relation(fields: [scenarioId], references: [id], onDelete: Cascade)
@@ -871,14 +897,14 @@ model Notitie {
   spelerId     String?
   staf         Staf?    @relation(fields: [stafId], references: [id])
   stafId       String?
-  teamOwCode   String?  // Stabiele team-referentie (niet versie-specifiek)
+  teamOwCode   String?
 
   // Oplossing
   resolutie    String?  @db.Text
   opgelostOp   DateTime?
 
   // Audit
-  auteur       User     @relation("NotitieAuteur", fields: [auteurId], references: [id])
+  auteur       User     @relation("WerkitemAuteur", fields: [auteurId], references: [id])
   auteurId     String
 
   actiepunten  Actiepunt[]
@@ -886,6 +912,7 @@ model Notitie {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
+  @@map("Notitie")
   @@index([blauwdrukId])
   @@index([status])
   @@index([prioriteit])
@@ -897,7 +924,7 @@ model Actiepunt {
   status          ActiepuntStatus @default(OPEN)
   deadline        DateTime? @db.Date
 
-  notitie         Notitie? @relation(fields: [notitieId], references: [id], onDelete: Cascade)
+  werkitem        Werkitem? @relation(fields: [notitieId], references: [id], onDelete: Cascade)
   notitieId       String?
 
   blauwdruk       Blauwdruk @relation(fields: [blauwdrukId], references: [id], onDelete: Cascade)

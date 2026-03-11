@@ -6,12 +6,12 @@ import Spinner from "@/components/ui/Spinner";
 import ActivityTimeline from "@/components/timeline/ActivityTimeline";
 import ActiviteitForm from "@/components/timeline/ActiviteitForm";
 import {
-  getSpelerActiviteiten,
+  getTimelineVoorSubject,
+  createStatusWerkitem,
+  updateActiepuntStatus,
   getUsers,
-  toggleActiepuntStatus,
-  createStatusWijziging,
-} from "@/app/activiteiten/actions";
-import type { ActiviteitMetRelaties } from "@/app/activiteiten/actions";
+} from "@/app/werkbord/actions";
+import type { WerkitemData } from "@/components/werkbord/WerkitemKaart";
 import { updateSpelerStatus } from "@/app/blauwdruk/actions";
 
 const STATUS_LABELS: Record<string, string> = {
@@ -25,16 +25,18 @@ const STATUS_LABELS: Record<string, string> = {
 
 interface SpelerStatusTabProps {
   spelerId: string;
+  blauwdrukId: string;
   initialStatus: string;
   notitie?: string | null;
 }
 
 export default function SpelerStatusTab({
   spelerId,
+  blauwdrukId,
   initialStatus,
   notitie,
 }: SpelerStatusTabProps) {
-  const [activiteiten, setActiviteiten] = useState<ActiviteitMetRelaties[]>([]);
+  const [werkitems, setWerkitems] = useState<WerkitemData[]>([]);
   const [users, setUsers] = useState<{ id: string; naam: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [spelerStatus, setSpelerStatus] = useState(initialStatus);
@@ -43,10 +45,10 @@ export default function SpelerStatusTab({
     let cancelled = false;
     setLoading(true);
 
-    Promise.all([getSpelerActiviteiten(spelerId), getUsers()])
-      .then(([acts, usrs]) => {
+    Promise.all([getTimelineVoorSubject({ spelerId }), getUsers()])
+      .then(([items, usrs]) => {
         if (cancelled) return;
-        setActiviteiten(acts);
+        setWerkitems(items as WerkitemData[]);
         setUsers(usrs);
       })
       .catch(() => {})
@@ -60,8 +62,8 @@ export default function SpelerStatusTab({
   }, [spelerId]);
 
   const refreshTimeline = async () => {
-    const acts = await getSpelerActiviteiten(spelerId);
-    setActiviteiten(acts);
+    const items = await getTimelineVoorSubject({ spelerId });
+    setWerkitems(items as WerkitemData[]);
   };
 
   if (loading) {
@@ -85,7 +87,7 @@ export default function SpelerStatusTab({
             const nieuw = e.target.value;
             setSpelerStatus(nieuw as SpelerStatus);
             await updateSpelerStatus(spelerId, nieuw as SpelerStatus);
-            await createStatusWijziging(spelerId, oud, nieuw);
+            await createStatusWerkitem(spelerId, oud, nieuw);
             await refreshTimeline();
           }}
           className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm text-gray-700"
@@ -98,17 +100,22 @@ export default function SpelerStatusTab({
         </select>
       </div>
 
-      {/* Activiteit form + timeline */}
-      <ActiviteitForm spelerId={spelerId} users={users} onCreated={refreshTimeline} />
+      {/* Werkitem form + timeline */}
+      <ActiviteitForm
+        spelerId={spelerId}
+        blauwdrukId={blauwdrukId}
+        users={users}
+        onCreated={refreshTimeline}
+      />
       <ActivityTimeline
-        activiteiten={activiteiten}
+        werkitems={werkitems}
         onToggleActiepunt={async (id) => {
-          await toggleActiepuntStatus(id);
+          await updateActiepuntStatus(id, "AFGEROND");
           await refreshTimeline();
         }}
       />
 
-      {/* Vrije notitie (als die bestaat) */}
+      {/* Vrije notitie */}
       {notitie && (
         <div className="mt-4">
           <span className="mb-1 block text-xs text-gray-500">Notitie</span>

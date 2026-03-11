@@ -52,6 +52,7 @@ interface SpelerDetailProps {
   teamNaam?: string;
   pin?: PinData | null;
   showRanking?: boolean;
+  blauwdrukId?: string;
   onClose: () => void;
   onTogglePin?: (spelerId: string, teamNaam: string, teamId: string) => void;
 }
@@ -62,6 +63,7 @@ export default function SpelerDetail({
   teamNaam,
   pin,
   showRanking,
+  blauwdrukId,
   onClose,
   onTogglePin,
 }: SpelerDetailProps) {
@@ -114,7 +116,7 @@ export default function SpelerDetail({
   }, [handleEscape]);
 
   return (
-    <div className="dialog-overlay" onClick={onClose}>
+    <div className="dialog-overlay">
       <div
         className="dialog-panel flex max-h-[85vh] w-full max-w-xl flex-col"
         onClick={(e) => e.stopPropagation()}
@@ -147,7 +149,9 @@ export default function SpelerDetail({
                 <h3 className="text-lg font-bold text-gray-900">
                   {speler.roepnaam} {speler.achternaam}
                 </h3>
-                {showRanking && <RankingBadge rating={speler.rating} size="detail" />}
+                {showRanking && leeftijd < 20 && (
+                  <RankingBadge rating={speler.rating} size="detail" />
+                )}
               </div>
 
               {/* Status + afmeldbadge */}
@@ -192,11 +196,13 @@ export default function SpelerDetail({
                     <p className="text-sm font-medium text-gray-800">{speler.seizoenenActief}</p>
                   </div>
                 )}
-                <RatingEditor
-                  spelerId={speler.id}
-                  rating={speler.rating}
-                  ratingBerekend={speler.ratingBerekend}
-                />
+                {leeftijd < 20 && (
+                  <RatingEditor
+                    spelerId={speler.id}
+                    rating={speler.rating}
+                    ratingBerekend={speler.ratingBerekend}
+                  />
+                )}
               </div>
 
               {/* Team badge + Pin inline */}
@@ -357,6 +363,7 @@ export default function SpelerDetail({
           {activeTab === "status" && (
             <SpelerStatusTab
               spelerId={speler.id}
+              blauwdrukId={blauwdrukId ?? ""}
               initialStatus={speler.status}
               notitie={speler.notitie}
             />

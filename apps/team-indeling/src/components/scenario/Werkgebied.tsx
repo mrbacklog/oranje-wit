@@ -4,6 +4,7 @@ import { useState, useMemo, useCallback } from "react";
 import type { TeamData, SpelerData, SelectieGroepData } from "./types";
 import { berekenJIndicaties, berekenTeamSterktes } from "./types";
 import type { TeamValidatie } from "@/lib/validatie/regels";
+import type { SelectieValidatie } from "@/lib/validatie/selectie-regels";
 import type { PositionMap } from "./hooks/useCardPositions";
 import GestureCanvas from "./editor/GestureCanvas";
 import GestureCard from "./editor/GestureCard";
@@ -15,9 +16,11 @@ interface WerkgebiedProps {
   teams: TeamData[];
   zichtbareTeamIds: Set<string>;
   validatieMap?: Map<string, TeamValidatie>;
+  selectieValidatieMap?: Map<string, SelectieValidatie>;
   onDeleteTeam: (teamId: string) => void;
   onKoppelSelectie: (teamIds: string[]) => void;
   onOntkoppelSelectie: (groepId: string) => void;
+  onUpdateSelectieNaam?: (groepId: string, naam: string | null) => void;
   selectieGroepMap?: Map<string, SelectieGroepData>;
   onSpelerClick?: (speler: SpelerData, teamId?: string) => void;
   onEditTeam?: (teamId: string) => void;
@@ -31,9 +34,11 @@ export default function Werkgebied({
   teams,
   zichtbareTeamIds,
   validatieMap,
+  selectieValidatieMap,
   onDeleteTeam,
   onKoppelSelectie,
   onOntkoppelSelectie,
+  onUpdateSelectieNaam,
   selectieGroepMap,
   onSpelerClick,
   onEditTeam,
@@ -64,8 +69,18 @@ export default function Werkgebied({
     return { selectieGroepen: groepen, losseTeams: los };
   }, [zichtbareTeams]);
 
-  const jIndicatieMap = useMemo(() => berekenJIndicaties(teams), [teams]);
-  const teamSterkteMap = useMemo(() => berekenTeamSterktes(teams), [teams]);
+  const selectieGroepenArray = useMemo(
+    () => (selectieGroepMap ? Array.from(selectieGroepMap.values()) : []),
+    [selectieGroepMap]
+  );
+  const jIndicatieMap = useMemo(
+    () => berekenJIndicaties(teams, selectieGroepenArray),
+    [teams, selectieGroepenArray]
+  );
+  const teamSterkteMap = useMemo(
+    () => berekenTeamSterktes(teams, selectieGroepenArray),
+    [teams, selectieGroepenArray]
+  );
 
   const handleKoppel = useCallback(() => {
     if (geselecteerd.size < 2) return;
@@ -73,7 +88,13 @@ export default function Werkgebied({
     setGeselecteerd(new Set());
   }, [geselecteerd, onKoppelSelectie]);
 
-  const kanKoppelen = geselecteerd.size >= 2;
+  // Selectie = altijd precies 2 achtallen
+  const geselecteerdeTeams = useMemo(
+    () => zichtbareTeams.filter((t) => geselecteerd.has(t.id)),
+    [zichtbareTeams, geselecteerd]
+  );
+  const alleAchtallen = geselecteerdeTeams.every((t) => !t.teamType || t.teamType === "ACHTAL");
+  const kanKoppelen = geselecteerd.size === 2 && alleAchtallen;
 
   return (
     <div className="relative flex min-w-0 flex-1 flex-col overflow-hidden">
@@ -97,7 +118,7 @@ export default function Werkgebied({
                   : "cursor-not-allowed bg-gray-200 text-gray-400"
               }`}
             >
-              Koppel als selectie
+              Koppel selectie
             </button>
           </div>
         </div>
@@ -132,10 +153,14 @@ export default function Werkgebied({
                       teams={groepTeams}
                       selectieGroep={selectieGroepMap?.get(groepId)}
                       validatieMap={validatieMap}
+                      selectieValidatie={selectieValidatieMap?.get(groepId)}
                       detailLevel={detailLevel}
                       pinnedSpelerIds={pinnedSpelerIds}
                       showRanking={showRanking}
+                      jIndicatie={jIndicatieMap.get(dragId)}
+                      teamSterkte={teamSterkteMap.get(dragId)}
                       onOntkoppel={onOntkoppelSelectie}
+                      onUpdateNaam={onUpdateSelectieNaam}
                       onDelete={onDeleteTeam}
                       onSpelerClick={onSpelerClick}
                       onEditTeam={onEditTeam}

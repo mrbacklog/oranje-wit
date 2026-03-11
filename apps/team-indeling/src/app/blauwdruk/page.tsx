@@ -6,9 +6,10 @@ import {
 } from "./actions";
 import type { CategorieKaders } from "./categorie-kaders";
 import BlauwdrukTabs from "@/components/blauwdruk/BlauwdrukTabs";
-import { getActiefSeizoen } from "@/lib/seizoen";
+import { getActiefSeizoen, vorigSeizoen } from "@/lib/seizoen";
 import { prisma } from "@/lib/db/prisma";
-import { getNotities, getNotitieStats } from "@/app/notities/actions";
+import { getWerkitems, getWerkitemStats } from "@/app/werkbord/actions";
+import type { WerkitemData } from "@/components/werkbord/WerkitemKaart";
 
 export const dynamic = "force-dynamic";
 
@@ -16,40 +17,49 @@ export default async function BlauwdrukPage() {
   const seizoen = await getActiefSeizoen();
   const blauwdruk = await getBlauwdruk(seizoen);
 
-  const [spelers, statistieken, notities, notitieStats, pins, referentieTeams] = await Promise.all([
-    getSpelersUitgebreid(),
-    getLedenStatistieken(),
-    getNotities(blauwdruk.id),
-    getNotitieStats(blauwdruk.id),
-    getPinsVoorBlauwdruk(blauwdruk.id),
-    prisma.referentieTeam.findMany({
-      where: { seizoen },
-      select: {
-        id: true,
-        naam: true,
-        seizoen: true,
-        teamType: true,
-        niveau: true,
-        poolVeld: true,
-        teamscore: true,
-      },
-      orderBy: { naam: "asc" },
-    }),
-  ]);
+  const vorigSzn = vorigSeizoen(seizoen);
 
-  const blockers = notities.filter(
-    (n) => n.prioriteit === "BLOCKER" && n.status !== "OPGELOST" && n.status !== "GEARCHIVEERD"
+  const [spelers, statistieken, werkitems, werkitemStats, pins, referentieTeams, evaluatieRondes] =
+    await Promise.all([
+      getSpelersUitgebreid(),
+      getLedenStatistieken(),
+      getWerkitems(blauwdruk.id),
+      getWerkitemStats(blauwdruk.id),
+      getPinsVoorBlauwdruk(blauwdruk.id),
+      prisma.referentieTeam.findMany({
+        where: { seizoen: vorigSzn },
+        select: {
+          id: true,
+          naam: true,
+          seizoen: true,
+          teamType: true,
+          niveau: true,
+          poolVeld: true,
+          teamscore: true,
+          spelerIds: true,
+        },
+        orderBy: { naam: "asc" },
+      }),
+      prisma.evaluatieRonde.findMany({
+        where: { seizoen: vorigSzn, type: "trainer" },
+        orderBy: { ronde: "asc" },
+        select: { id: true, seizoen: true, ronde: true, naam: true, status: true },
+      }),
+    ]);
+
+  const blockers = (werkitems as WerkitemData[]).filter(
+    (w) => w.prioriteit === "BLOCKER" && w.status !== "OPGELOST" && w.status !== "GEARCHIVEERD"
   );
 
   const kaders = (blauwdruk.kaders ?? {}) as CategorieKaders;
 
-  async function refreshNotities() {
+  async function refreshWerkitems() {
     "use server";
-    const [nieuweNotities, nieuweStats] = await Promise.all([
-      getNotities(blauwdruk.id),
-      getNotitieStats(blauwdruk.id),
+    const [nieuweWerkitems, nieuweStats] = await Promise.all([
+      getWerkitems(blauwdruk.id),
+      getWerkitemStats(blauwdruk.id),
     ]);
-    return { notities: nieuweNotities, stats: nieuweStats };
+    return { werkitems: nieuweWerkitems, stats: nieuweStats };
   }
 
   return (
@@ -68,11 +78,13 @@ export default async function BlauwdrukPage() {
         spelers={spelers}
         toelichting={blauwdruk.toelichting ?? ""}
         blockers={blockers}
-        notities={notities}
-        notitieStats={notitieStats}
-        refreshNotities={refreshNotities}
+        werkitems={werkitems}
+        werkitemStats={werkitemStats}
+        refreshWerkitems={refreshWerkitems}
         pins={pins}
         referentieTeams={referentieTeams}
+        seizoen={seizoen}
+        evaluatieRondes={evaluatieRondes}
       />
     </div>
   );

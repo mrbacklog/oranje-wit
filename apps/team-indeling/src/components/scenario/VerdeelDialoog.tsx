@@ -127,7 +127,7 @@ export default function VerdeelDialoog({
   const is2Teams = alleTeamIds.length === 2;
 
   return (
-    <div className="dialog-overlay" onClick={onClose}>
+    <div className="dialog-overlay">
       <div
         className="dialog-panel max-h-[85vh] w-full max-w-2xl overflow-y-auto"
         onClick={(e) => e.stopPropagation()}

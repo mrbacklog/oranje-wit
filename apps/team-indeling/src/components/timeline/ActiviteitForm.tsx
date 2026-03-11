@@ -1,18 +1,24 @@
 "use client";
 
 import { useState } from "react";
-import { createActiviteit } from "@/app/activiteiten/actions";
+import { createWerkitem, createActiepunt } from "@/app/werkbord/actions";
 import { logger } from "@oranje-wit/types";
 
 interface ActiviteitFormProps {
   spelerId: string;
+  blauwdrukId: string;
   users: { id: string; naam: string }[];
   onCreated: () => void;
 }
 
 type FormType = "opmerking" | "actiepunt" | null;
 
-export default function ActiviteitForm({ spelerId, users, onCreated }: ActiviteitFormProps) {
+export default function ActiviteitForm({
+  spelerId,
+  blauwdrukId,
+  users,
+  onCreated,
+}: ActiviteitFormProps) {
   const [formType, setFormType] = useState<FormType>(null);
   const [inhoud, setInhoud] = useState("");
   const [toegewezenAanId, setToegewezenAanId] = useState("");
@@ -33,16 +39,29 @@ export default function ActiviteitForm({ spelerId, users, onCreated }: Activitei
     setSubmitting(true);
     try {
       if (formType === "opmerking") {
-        await createActiviteit({
-          type: "OPMERKING",
-          inhoud: inhoud.trim(),
+        await createWerkitem({
+          blauwdrukId,
+          titel: inhoud.trim(),
+          beschrijving: "",
+          type: "SPELER",
+          prioriteit: "INFO",
+          entiteit: "SPELER",
           spelerId,
         });
       } else if (formType === "actiepunt") {
-        await createActiviteit({
-          type: "ACTIEPUNT",
-          inhoud: inhoud.trim(),
+        const werkitem = await createWerkitem({
+          blauwdrukId,
+          titel: inhoud.trim(),
+          beschrijving: "",
+          type: "SPELER",
+          prioriteit: "MIDDEL",
+          entiteit: "SPELER",
           spelerId,
+        });
+        await createActiepunt({
+          blauwdrukId,
+          beschrijving: inhoud.trim(),
+          werkitemId: werkitem.id,
           toegewezenAanId: toegewezenAanId || undefined,
           deadline: deadline || undefined,
         });
@@ -50,7 +69,7 @@ export default function ActiviteitForm({ spelerId, users, onCreated }: Activitei
       reset();
       onCreated();
     } catch (error) {
-      logger.warn("Fout bij aanmaken activiteit:", error);
+      logger.warn("Fout bij aanmaken werkitem:", error);
     } finally {
       setSubmitting(false);
     }
@@ -58,7 +77,6 @@ export default function ActiviteitForm({ spelerId, users, onCreated }: Activitei
 
   return (
     <div className="mb-4">
-      {/* Type-knoppen */}
       <div className="flex gap-2">
         <button
           type="button"
@@ -84,7 +102,6 @@ export default function ActiviteitForm({ spelerId, users, onCreated }: Activitei
         </button>
       </div>
 
-      {/* Opmerking formulier */}
       {formType === "opmerking" && (
         <form onSubmit={handleSubmit} className="mt-2 space-y-2">
           <textarea
@@ -109,7 +126,6 @@ export default function ActiviteitForm({ spelerId, users, onCreated }: Activitei
         </form>
       )}
 
-      {/* Actiepunt formulier */}
       {formType === "actiepunt" && (
         <form onSubmit={handleSubmit} className="mt-2 space-y-2">
           <input

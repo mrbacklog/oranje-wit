@@ -16,7 +16,11 @@ import type {
   SelectieStafData,
 } from "../types";
 import { addSpelerToTeam, removeSpelerFromTeam, moveSpeler } from "@/app/scenarios/actions";
-import { koppelSelectie, ontkoppelSelectieMetVerdeling } from "@/app/scenarios/team-actions";
+import {
+  koppelSelectie,
+  ontkoppelSelectieMetVerdeling,
+  updateSelectieNaam,
+} from "@/app/scenarios/team-actions";
 
 export interface VerdeelData {
   groepId: string;
@@ -226,7 +230,7 @@ export function useSelectieHandlers({
 
   const handleKoppelSelectie = useCallback(
     (teamIds: string[]) => {
-      if (teamIds.length < 2) return;
+      if (teamIds.length !== 2) return;
       const tempGroepId = `temp-${Date.now()}`;
 
       const verzameldeSpelers: SelectieSpelerData[] = [];
@@ -356,6 +360,16 @@ export function useSelectieHandlers({
     [verdeelData, setTeams, setSelectieGroepen, setVerdeelData, startTransition]
   );
 
+  const handleUpdateSelectieNaam = useCallback(
+    (groepId: string, naam: string | null) => {
+      setSelectieGroepen((prev) => prev.map((sg) => (sg.id !== groepId ? sg : { ...sg, naam })));
+      startTransition(() => {
+        updateSelectieNaam(groepId, naam);
+      });
+    },
+    [setSelectieGroepen, startTransition]
+  );
+
   const selectieGroepMap = useMemo(() => {
     const m = new Map<string, SelectieGroepData>();
     for (const sg of selectieGroepen) m.set(sg.id, sg);
@@ -370,5 +384,6 @@ export function useSelectieHandlers({
     handleKoppelSelectie,
     handleOntkoppelSelectie,
     handleVerdeelBevestig,
+    handleUpdateSelectieNaam,
   };
 }

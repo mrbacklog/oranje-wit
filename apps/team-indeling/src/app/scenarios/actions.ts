@@ -316,7 +316,7 @@ export async function markeerDefinitief(scenarioId: string) {
   });
 
   // Blocker-gate: harde blokkade bij open blockers
-  const blockers = await prisma.notitie.count({
+  const blockers = await prisma.werkitem.count({
     where: {
       blauwdrukId: scenario.concept.blauwdrukId,
       prioriteit: "BLOCKER",

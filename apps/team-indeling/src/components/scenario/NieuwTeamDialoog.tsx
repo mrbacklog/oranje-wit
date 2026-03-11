@@ -45,7 +45,7 @@ export default function NieuwTeamDialoog({ open, onClose, onSubmit }: NieuwTeamD
   if (!open) return null;
 
   return (
-    <div className="dialog-overlay" onClick={onClose}>
+    <div className="dialog-overlay">
       <div className="dialog-panel w-full max-w-sm" onClick={(e) => e.stopPropagation()}>
         <div className="dialog-header">
           <h3 className="text-lg font-bold text-gray-900">Nieuw team</h3>

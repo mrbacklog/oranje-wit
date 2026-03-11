@@ -79,3 +79,11 @@ export function volgendSeizoen(seizoen: string): string {
   const [start] = seizoen.split("-").map(Number);
   return `${start + 1}-${start + 2}`;
 }
+
+/**
+ * Bereken het vorige seizoen: "2026-2027" → "2025-2026"
+ */
+export function vorigSeizoen(seizoen: string): string {
+  const [start] = seizoen.split("-").map(Number);
+  return `${start - 1}-${start}`;
+}

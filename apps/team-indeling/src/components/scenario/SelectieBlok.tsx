@@ -1,42 +1,63 @@
 "use client";
 
+import { useState, useEffect, useRef } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import type { TeamData, SpelerData, DetailLevel, SelectieGroepData, TeamSpelerData } from "./types";
 import type { TeamValidatie } from "@/lib/validatie/regels";
+import type { SelectieValidatie } from "@/lib/validatie/selectie-regels";
 import { korfbalLeeftijd, sorteerSpelers } from "./types";
 import { getCardSize } from "./editor/cardSizes";
 import { useZoomScale } from "./editor/ZoomScaleContext";
-import TeamSpelerRij from "./TeamSpelerRij";
+import SelectieSpelerGrid from "./SelectieSpelerGrid";
 
 export interface SelectieBlokProps {
   teams: TeamData[];
   selectieGroep?: SelectieGroepData;
   validatieMap?: Map<string, TeamValidatie>;
+  selectieValidatie?: SelectieValidatie;
   detailLevel?: DetailLevel;
   pinnedSpelerIds?: Set<string>;
   showRanking?: boolean;
   onOntkoppel: (groepId: string) => void;
+  onUpdateNaam?: (groepId: string, naam: string | null) => void;
   onDelete: (teamId: string) => void;
   onSpelerClick?: (speler: SpelerData, teamId?: string) => void;
   onEditTeam?: (teamId: string) => void;
+  jIndicatie?: string;
+  teamSterkte?: number;
 }
 
 export default function SelectieBlok({
   teams,
   selectieGroep,
   validatieMap,
+  selectieValidatie,
   detailLevel,
   pinnedSpelerIds,
   showRanking,
-  onOntkoppel: _onOntkoppel,
-  onDelete: _onDelete,
+  onOntkoppel,
+  onUpdateNaam,
+  onDelete,
   onSpelerClick,
   onEditTeam,
+  jIndicatie,
+  teamSterkte,
 }: SelectieBlokProps) {
   const dl = detailLevel ?? "detail";
+  const [deleteBevestig, setDeleteBevestig] = useState(false);
+  const deleteTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [naamEdit, setNaamEdit] = useState(false);
+  const [naamWaarde, setNaamWaarde] = useState("");
+
+  useEffect(() => {
+    return () => {
+      if (deleteTimerRef.current) clearTimeout(deleteTimerRef.current);
+    };
+  }, []);
 
   const eersteTeam = teams[0];
   const teamNamen = teams.map((t) => t.alias ?? t.naam).join(" + ");
+  const weergaveNaam = selectieGroep?.naam ?? teamNamen;
 
   const alleSpelers = selectieGroep
     ? sorteerSpelers(selectieGroep.spelers as TeamSpelerData[])
@@ -56,15 +77,8 @@ export default function SelectieBlok({
         ).toFixed(2)
       : "-";
 
-  // Splits dames en heren elk in 2 kolommen
-  const dames1 = dames.slice(0, Math.ceil(dames.length / 2));
-  const dames2 = dames.slice(Math.ceil(dames.length / 2));
-  const heren1 = heren.slice(0, Math.ceil(heren.length / 2));
-  const heren2 = heren.slice(Math.ceil(heren.length / 2));
-
   const alleStaf = selectieGroep ? selectieGroep.staf : (eersteTeam?.staf ?? []);
-  const validatie = validatieMap?.get(eersteTeam?.id ?? "");
-  const meldingen = validatie?.meldingen ?? [];
+  const meldingen = selectieValidatie?.meldingen ?? [];
 
   const { setNodeRef, isOver } = useDroppable({
     id: `team-${eersteTeam?.id}`,
@@ -98,7 +112,7 @@ export default function SelectieBlok({
         }
         className="flex h-full flex-col"
       >
-        {/* ── Header: [drag] Selectie TEAMNAMEN [acties] ── */}
+        {/* ── Header: [drag] Selectie NAAM [acties] ── */}
         <div className="flex items-center justify-between rounded-t-lg border-b border-orange-200 bg-orange-50 px-1.5 py-1">
           <div className="flex min-w-0 items-center gap-1">
             {dl === "detail" && (
@@ -116,16 +130,69 @@ export default function SelectieBlok({
             <span className="shrink-0 text-[7px] font-medium tracking-wide text-orange-600 uppercase">
               Selectie
             </span>
-            <h4
-              className={`truncate font-semibold text-gray-900 ${
-                dl === "overzicht" ? "text-xs" : "text-[11px]"
-              }`}
-            >
-              {teamNamen}
-            </h4>
+            {naamEdit && onUpdateNaam && selectieGroep ? (
+              <input
+                autoFocus
+                className="min-w-0 flex-1 rounded border border-orange-300 bg-white px-1 text-[11px] font-semibold text-gray-900 outline-none focus:ring-1 focus:ring-orange-400"
+                value={naamWaarde}
+                onChange={(e) => setNaamWaarde(e.target.value)}
+                onBlur={() => {
+                  setNaamEdit(false);
+                  const trimmed = naamWaarde.trim();
+                  onUpdateNaam(selectieGroep.id, trimmed || null);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") (e.target as HTMLInputElement).blur();
+                  if (e.key === "Escape") {
+                    setNaamWaarde(selectieGroep.naam ?? "");
+                    setNaamEdit(false);
+                  }
+                }}
+              />
+            ) : (
+              <h4
+                className={`truncate font-semibold text-gray-900 ${
+                  dl === "overzicht" ? "text-xs" : "text-[11px]"
+                } ${dl === "detail" && onUpdateNaam ? "cursor-pointer hover:text-orange-600" : ""}`}
+                title={teamNamen}
+                onClick={
+                  dl === "detail" && onUpdateNaam && selectieGroep
+                    ? () => {
+                        setNaamWaarde(selectieGroep.naam ?? "");
+                        setNaamEdit(true);
+                      }
+                    : undefined
+                }
+              >
+                {weergaveNaam}
+              </h4>
+            )}
           </div>
           {dl === "detail" && (
             <div className="flex shrink-0 items-center gap-0.5">
+              {/* Ontkoppel selectie */}
+              {selectieGroep && (
+                <button
+                  onClick={() => onOntkoppel(selectieGroep.id)}
+                  className="text-orange-400 transition-colors hover:text-orange-700"
+                  title="Ontkoppel selectie"
+                >
+                  <svg
+                    className="h-2.5 w-2.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                    />
+                  </svg>
+                </button>
+              )}
+              {/* Bewerk selectie */}
               {eersteTeam && (
                 <button
                   onClick={() => onEditTeam?.(eersteTeam.id)}
@@ -147,6 +214,36 @@ export default function SelectieBlok({
                   </svg>
                 </button>
               )}
+              {/* Verwijder selectie */}
+              {eersteTeam &&
+                onDelete &&
+                (deleteBevestig ? (
+                  <button
+                    onClick={() => {
+                      if (deleteTimerRef.current) clearTimeout(deleteTimerRef.current);
+                      setDeleteBevestig(false);
+                      onDelete(eersteTeam.id);
+                    }}
+                    onBlur={() => {
+                      if (deleteTimerRef.current) clearTimeout(deleteTimerRef.current);
+                      setDeleteBevestig(false);
+                    }}
+                    className="animate-pulse text-[8px] font-medium text-red-600 hover:text-red-700"
+                  >
+                    Bevestig?
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => {
+                      setDeleteBevestig(true);
+                      deleteTimerRef.current = setTimeout(() => setDeleteBevestig(false), 3000);
+                    }}
+                    className="text-[10px] text-orange-300 hover:text-red-500"
+                    title="Verwijder team"
+                  >
+                    &times;
+                  </button>
+                ))}
             </div>
           )}
         </div>
@@ -183,108 +280,15 @@ export default function SelectieBlok({
             {alleSpelers.length === 0 ? (
               <p className="py-2 text-center text-[9px] text-gray-400">Sleep spelers hierheen</p>
             ) : (
-              <div className="grid grid-cols-4 gap-x-0.5">
-                {/* Dames kolom 1 */}
-                <div>
-                  <div className="flex items-center gap-0.5 px-1 pt-0.5">
-                    <svg
-                      className="h-2 w-2 text-pink-400"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                    >
-                      <circle cx="12" cy="10" r="6" />
-                      <path d="M12 16v6M9 20h6" />
-                    </svg>
-                    <span className="text-[8px] font-medium text-pink-500">{dames.length}</span>
-                  </div>
-                  {dames1.map((ts) => (
-                    <TeamSpelerRij
-                      key={ts.id}
-                      teamSpeler={ts}
-                      teamId={eersteTeam?.id ?? ""}
-                      detailLevel={dl}
-                      isPinned={pinnedSpelerIds?.has(ts.speler.id)}
-                      showRanking={showRanking}
-                      onSpelerClick={
-                        onSpelerClick
-                          ? (speler) => onSpelerClick(speler, eersteTeam?.id)
-                          : undefined
-                      }
-                    />
-                  ))}
-                </div>
-                {/* Dames kolom 2 */}
-                <div>
-                  <div className="h-4" />
-                  {dames2.map((ts) => (
-                    <TeamSpelerRij
-                      key={ts.id}
-                      teamSpeler={ts}
-                      teamId={eersteTeam?.id ?? ""}
-                      detailLevel={dl}
-                      isPinned={pinnedSpelerIds?.has(ts.speler.id)}
-                      showRanking={showRanking}
-                      onSpelerClick={
-                        onSpelerClick
-                          ? (speler) => onSpelerClick(speler, eersteTeam?.id)
-                          : undefined
-                      }
-                    />
-                  ))}
-                </div>
-                {/* Heren kolom 1 */}
-                <div>
-                  <div className="flex items-center gap-0.5 px-1 pt-0.5">
-                    <svg
-                      className="h-2 w-2 text-blue-400"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                    >
-                      <circle cx="10" cy="14" r="6" />
-                      <path d="M21 3l-6.5 6.5M21 3h-5M21 3v5" />
-                    </svg>
-                    <span className="text-[8px] font-medium text-blue-500">{heren.length}</span>
-                  </div>
-                  {heren1.map((ts) => (
-                    <TeamSpelerRij
-                      key={ts.id}
-                      teamSpeler={ts}
-                      teamId={eersteTeam?.id ?? ""}
-                      detailLevel={dl}
-                      isPinned={pinnedSpelerIds?.has(ts.speler.id)}
-                      showRanking={showRanking}
-                      onSpelerClick={
-                        onSpelerClick
-                          ? (speler) => onSpelerClick(speler, eersteTeam?.id)
-                          : undefined
-                      }
-                    />
-                  ))}
-                </div>
-                {/* Heren kolom 2 */}
-                <div>
-                  <div className="h-4" />
-                  {heren2.map((ts) => (
-                    <TeamSpelerRij
-                      key={ts.id}
-                      teamSpeler={ts}
-                      teamId={eersteTeam?.id ?? ""}
-                      detailLevel={dl}
-                      isPinned={pinnedSpelerIds?.has(ts.speler.id)}
-                      showRanking={showRanking}
-                      onSpelerClick={
-                        onSpelerClick
-                          ? (speler) => onSpelerClick(speler, eersteTeam?.id)
-                          : undefined
-                      }
-                    />
-                  ))}
-                </div>
-              </div>
+              <SelectieSpelerGrid
+                dames={dames}
+                heren={heren}
+                teamId={eersteTeam?.id ?? ""}
+                detailLevel={dl}
+                pinnedSpelerIds={pinnedSpelerIds}
+                showRanking={showRanking}
+                onSpelerClick={onSpelerClick}
+              />
             )}
           </div>
         )}
@@ -311,9 +315,17 @@ export default function SelectieBlok({
               )}
               <span className="text-[7px] text-gray-400">{aantalSpelers} sp</span>
             </div>
-            <span className="shrink-0 text-[8px] text-gray-400 tabular-nums">
-              gem. {gemLeeftijd}
-            </span>
+            <div className="flex shrink-0 items-center gap-1">
+              {jIndicatie && (
+                <span className="rounded bg-indigo-100 px-1 text-[8px] font-bold text-indigo-700">
+                  {jIndicatie}
+                  {teamSterkte != null && (
+                    <span className="font-normal text-indigo-500"> ({teamSterkte})</span>
+                  )}
+                </span>
+              )}
+              <span className="text-[8px] text-gray-400 tabular-nums">gem. {gemLeeftijd}</span>
+            </div>
           </div>
         )}
       </div>

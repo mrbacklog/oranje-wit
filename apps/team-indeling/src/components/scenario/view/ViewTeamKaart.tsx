@@ -364,7 +364,7 @@ function ViewSpelerRij({
         )}
       </span>
       <div className="flex shrink-0 items-center gap-0.5">
-        {showRanking && <RankingBadge rating={speler.rating} size="compact" />}
+        {showRanking && leeftijd < 20 && <RankingBadge rating={speler.rating} size="compact" />}
         {isPinned && (
           <svg
             className="h-2 w-2 text-purple-500"

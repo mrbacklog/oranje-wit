@@ -10,16 +10,14 @@ import { useCardPositions, type CardInfo, type PositionMap } from "../hooks/useC
 import DndProvider from "../DndContext";
 
 import Werkgebied from "../Werkgebied";
-import ViewWerkgebied from "../view/ViewWerkgebied";
 import SpelersPool from "../SpelersPool";
-import SpelerDetail from "../SpelerDetail";
-import ChatPanel from "../ChatPanel";
 import TeamEditPanel from "../TeamEditPanel";
-import VerdeelDialoog from "../VerdeelDialoog";
+import ValidatieRapport from "../ValidatieRapport";
 import Drawer from "./Drawer";
 import EditorToolbar, { type EditorMode } from "./EditorToolbar";
-import NieuwTeamDialoog from "../NieuwTeamDialoog";
-import ValidatieRapport from "../ValidatieRapport";
+import PreviewMode from "./PreviewMode";
+import EditorDialogs from "./EditorDialogs";
+import { SideTabPool, SideTabsRight } from "./SideTabs";
 
 interface ScenarioEditorFullscreenProps {
   scenario: ScenarioData;
@@ -37,10 +35,13 @@ export default function ScenarioEditorFullscreen({
   const editor = useScenarioEditor(scenario, alleSpelers);
   const [mode, setMode] = useState<EditorMode>(initialMode);
   const [poolOpen, setPoolOpen] = useState(false);
+  const [poolPinned, setPoolPinned] = useState(false);
   const [nieuwTeamOpen, setNieuwTeamOpen] = useState(false);
   const [rapportOpen, setRapportOpen] = useState(false);
+  const [rapportPinned, setRapportPinned] = useState(false);
   const [showRanking, setShowRanking] = useState(false);
   const [syncingScores, setSyncingScores] = useState(false);
+  const [werkbordOpen, setWerkbordOpen] = useState(false);
   const syncLockRef = useRef(false);
 
   const isPreview = mode === "preview";
@@ -104,6 +105,30 @@ export default function ScenarioEditorFullscreen({
     setPoolOpen(false);
   }, []);
 
+  const handleTogglePoolPin = useCallback(() => {
+    setPoolPinned((v) => {
+      if (!v) setPoolOpen(true);
+      return !v;
+    });
+  }, []);
+
+  const handleClosePool = useCallback(() => {
+    setPoolOpen(false);
+    setPoolPinned(false);
+  }, []);
+
+  const handleToggleRapportPin = useCallback(() => {
+    setRapportPinned((v) => {
+      if (!v) setRapportOpen(true);
+      return !v;
+    });
+  }, []);
+
+  const handleCloseRapport = useCallback(() => {
+    setRapportOpen(false);
+    setRapportPinned(false);
+  }, []);
+
   const zichtbareTeams = useMemo(
     () => editor.teams.filter((t) => editor.zichtbaar.has(t.id)),
     [editor.teams, editor.zichtbaar]
@@ -144,55 +169,68 @@ export default function ScenarioEditorFullscreen({
   // --- Preview mode ---
   if (isPreview) {
     return (
-      <div className="fixed inset-0 z-40 flex flex-col bg-gray-50">
-        <EditorToolbar
-          scenario={scenario}
-          zichtbaar={zichtbareCount}
-          totaal={editor.teams.length}
-          mode={mode}
-          showRanking={showRanking}
-          onToggleRanking={toggleRanking}
-          onSyncScores={handleSyncScores}
-          syncingScores={syncingScores}
-          onToggleMode={toggleMode}
-        />
-        <div className="relative flex-1 overflow-hidden">
-          <ViewWerkgebied
-            teams={zichtbareTeams}
-            selectieGroepMap={selectieGroepMap}
-            validatieMap={previewValidatieMap}
-            pinnedSpelerIds={editor.pinnedSpelerIds}
-            showRanking={showRanking}
-            positions={positions}
-            onRepositionCard={updatePosition}
-            onSpelerClick={(speler) => {
-              editor.setDetailSpeler(speler);
-              editor.setDetailTeamId(null);
-            }}
-          />
-        </div>
-
-        {editor.detailSpeler && (
-          <SpelerDetail
-            speler={editor.detailSpeler}
-            teamId={editor.detailTeamId ?? undefined}
-            teamNaam={
-              editor.detailTeamId
-                ? editor.teams.find((t) => t.id === editor.detailTeamId)?.naam
-                : undefined
-            }
-            pin={editor.pinMap.get(editor.detailSpeler.id) ?? null}
-            showRanking={showRanking}
-            onTogglePin={editor.handleTogglePin}
-            onClose={() => {
-              editor.setDetailSpeler(null);
-              editor.setDetailTeamId(null);
-            }}
-          />
-        )}
-      </div>
+      <PreviewMode
+        scenario={scenario}
+        teams={editor.teams}
+        zichtbareTeams={zichtbareTeams}
+        mode={mode}
+        showRanking={showRanking}
+        syncingScores={syncingScores}
+        selectieGroepMap={selectieGroepMap}
+        previewValidatieMap={previewValidatieMap}
+        pinnedSpelerIds={editor.pinnedSpelerIds}
+        positions={positions}
+        detailSpeler={editor.detailSpeler}
+        detailTeamId={editor.detailTeamId}
+        pinMap={editor.pinMap}
+        blauwdrukId={editor.blauwdrukId}
+        onToggleRanking={toggleRanking}
+        onSyncScores={handleSyncScores}
+        onToggleMode={toggleMode}
+        onRepositionCard={updatePosition}
+        onSpelerClick={(speler) => {
+          editor.setDetailSpeler(speler);
+          editor.setDetailTeamId(null);
+        }}
+        onTogglePin={editor.handleTogglePin}
+        onCloseDetail={() => {
+          editor.setDetailSpeler(null);
+          editor.setDetailTeamId(null);
+        }}
+      />
     );
   }
+
+  // SpelersPool content (hergebruikt in gepinde sidebar en drawer)
+  const spelersPoolContent = (
+    <SpelersPool
+      spelers={alleSpelers}
+      teams={editor.teams}
+      selectieGroepen={editor.selectieGroepen}
+      zichtbareTeamIds={editor.zichtbaar}
+      pinnedSpelerIds={editor.pinnedSpelerIds}
+      onSpelerClick={(speler) => editor.handleSpelerClick(speler)}
+    />
+  );
+
+  // TeamEditPanel content
+  const teamEditContent = editor.editTeam && (
+    <TeamEditPanel
+      team={editor.editTeam}
+      alleTeams={editor.teams}
+      validatie={editor.validatieMap?.get(editor.editTeam.id)}
+      onClose={() => editor.setEditTeamId(null)}
+      onSpelerClick={(speler) => editor.handleSpelerClick(speler, editor.editTeam!.id)}
+      onUpdateTeam={editor.handleUpdateTeam}
+      onUpdateTeamType={editor.handleUpdateTeamType}
+      onKoppelSelectie={editor.handleKoppelSelectie}
+      onOntkoppelSelectie={editor.handleOntkoppelSelectie}
+      onDeleteTeam={(teamId) => {
+        editor.handleDeleteTeam(teamId);
+        editor.setEditTeamId(null);
+      }}
+    />
+  );
 
   // --- Edit mode ---
   return (
@@ -214,163 +252,149 @@ export default function ScenarioEditorFullscreen({
         onTeamToTeam={editor.handleTeamToTeam}
         onTeamToPool={editor.handleTeamToPool}
       >
-        <div className="relative flex-1 overflow-hidden">
-          {/* Side-tab: Spelerspool (links) */}
-          <button
-            onClick={togglePool}
-            className={`absolute top-4 left-0 z-20 flex flex-col items-center gap-1.5 rounded-r-lg border border-l-0 px-2 py-4 shadow-md transition-colors ${
-              poolOpen || showEditDrawer
-                ? "border-orange-300 bg-orange-500 text-white"
-                : "border-orange-200 bg-orange-50 text-orange-600 hover:bg-orange-100"
-            }`}
-            title={poolOpen ? "Verberg spelerspool" : "Toon spelerspool"}
-          >
-            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"
-              />
-            </svg>
-            <span
-              className="text-[10px] font-semibold tracking-wide uppercase"
-              style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
+        {/* Flex-row: gepinde pool (links) | werkgebied | gepind rapport (rechts) */}
+        <div className="flex flex-1 overflow-hidden">
+          {/* Gepinde SpelersPool sidebar */}
+          {poolPinned && showPoolDrawer && (
+            <Drawer
+              open={true}
+              onClose={handleClosePool}
+              side="left"
+              width="w-80"
+              title="Spelerspool"
+              pinnable
+              pinned
+              onTogglePin={handleTogglePoolPin}
             >
-              Spelerspool
-            </span>
-          </button>
+              {spelersPoolContent}
+            </Drawer>
+          )}
 
-          {/* Side-tab: Validatie (rechts) */}
-          <button
-            onClick={() => setRapportOpen(true)}
-            className="absolute top-4 right-0 z-20 flex flex-col items-center gap-1.5 rounded-l-lg border border-r-0 border-orange-200 bg-orange-50 px-2 py-4 text-orange-600 shadow-md transition-colors hover:bg-orange-100"
-            title="Validatierapport"
-          >
-            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <span
-              className="text-[10px] font-semibold tracking-wide uppercase"
-              style={{ writingMode: "vertical-rl" }}
+          {/* Gepinde TeamEditPanel sidebar */}
+          {poolPinned && showEditDrawer && (
+            <Drawer
+              open={true}
+              onClose={() => editor.setEditTeamId(null)}
+              side="left"
+              width="w-80"
+              title="Team bewerken"
+              pinnable
+              pinned
+              onTogglePin={handleTogglePoolPin}
             >
-              Validatie
-            </span>
-          </button>
+              {teamEditContent}
+            </Drawer>
+          )}
 
-          {/* Center: Werkgebied + ChatPanel */}
-          <div className="flex h-full flex-col">
+          {/* Hoofdgebied */}
+          <div className="relative flex-1 overflow-hidden">
+            {/* Side-tab: Spelerspool (links) — verberg als gepind */}
+            {!poolPinned && (
+              <SideTabPool
+                poolOpen={poolOpen}
+                showEditDrawer={showEditDrawer}
+                onToggle={togglePool}
+              />
+            )}
+
+            {/* Side-tabs rechts: Validatie + Werkbord */}
+            <SideTabsRight
+              rapportPinned={rapportPinned}
+              werkbordOpen={werkbordOpen}
+              onOpenRapport={() => setRapportOpen(true)}
+              onOpenWerkbord={() => setWerkbordOpen(true)}
+            />
+
             <Werkgebied
               teams={editor.teams}
               zichtbareTeamIds={editor.zichtbaar}
               validatieMap={editor.validatieMap}
+              selectieValidatieMap={editor.selectieValidatieMap}
               selectieGroepMap={editor.selectieGroepMap}
               pinnedSpelerIds={editor.pinnedSpelerIds}
               showRanking={showRanking}
               onDeleteTeam={editor.handleDeleteTeam}
               onKoppelSelectie={editor.handleKoppelSelectie}
               onOntkoppelSelectie={editor.handleOntkoppelSelectie}
+              onUpdateSelectieNaam={editor.handleUpdateSelectieNaam}
               onSpelerClick={editor.handleSpelerClick}
               onEditTeam={editor.handleEditTeam}
               positions={positions}
               onRepositionCard={updatePosition}
             />
-            <ChatPanel
-              scenarioId={scenario.id}
-              versieId={editor.versieId!}
-              onMutatie={editor.refreshTeams}
-            />
           </div>
-        </div>
 
-        {/* SpelersPool drawer (links) */}
-        <Drawer open={showPoolDrawer} onClose={() => setPoolOpen(false)} side="left" width="w-80">
-          <SpelersPool
-            spelers={alleSpelers}
-            teams={editor.teams}
-            selectieGroepen={editor.selectieGroepen}
-            zichtbareTeamIds={editor.zichtbaar}
-            pinnedSpelerIds={editor.pinnedSpelerIds}
-            onSpelerClick={(speler) => editor.handleSpelerClick(speler)}
-          />
-        </Drawer>
-
-        {/* TeamEditPanel drawer (links, vervangt pool) */}
-        <Drawer
-          open={showEditDrawer}
-          onClose={() => editor.setEditTeamId(null)}
-          side="left"
-          width="w-80"
-        >
-          {editor.editTeam && (
-            <TeamEditPanel
-              team={editor.editTeam}
-              alleTeams={editor.teams}
-              validatie={editor.validatieMap?.get(editor.editTeam.id)}
-              onClose={() => editor.setEditTeamId(null)}
-              onSpelerClick={(speler) => editor.handleSpelerClick(speler, editor.editTeam!.id)}
-              onUpdateTeam={editor.handleUpdateTeam}
-              onUpdateTeamType={editor.handleUpdateTeamType}
-              onKoppelSelectie={editor.handleKoppelSelectie}
-              onOntkoppelSelectie={editor.handleOntkoppelSelectie}
-              onDeleteTeam={(teamId) => {
-                editor.handleDeleteTeam(teamId);
-                editor.setEditTeamId(null);
-              }}
+          {/* Gepind ValidatieRapport sidebar */}
+          {rapportPinned && rapportOpen && editor.validatieMap && (
+            <ValidatieRapport
+              teams={editor.teams}
+              validatieMap={editor.validatieMap}
+              dubbeleMeldingen={editor.dubbeleMeldingen ?? []}
+              onClose={handleCloseRapport}
+              pinned
+              onTogglePin={handleToggleRapportPin}
             />
           )}
-        </Drawer>
+        </div>
+
+        {/* Niet-gepinde SpelersPool drawer (links, overlay) */}
+        {!poolPinned && (
+          <Drawer
+            open={showPoolDrawer}
+            onClose={() => setPoolOpen(false)}
+            side="left"
+            width="w-80"
+            title="Spelerspool"
+            pinnable
+            pinned={false}
+            onTogglePin={handleTogglePoolPin}
+          >
+            {spelersPoolContent}
+          </Drawer>
+        )}
+
+        {/* Niet-gepinde TeamEditPanel drawer (links, overlay, vervangt pool) */}
+        {!poolPinned && (
+          <Drawer
+            open={showEditDrawer}
+            onClose={() => editor.setEditTeamId(null)}
+            side="left"
+            width="w-80"
+          >
+            {teamEditContent}
+          </Drawer>
+        )}
       </DndProvider>
 
-      {/* Dialogen */}
-      <NieuwTeamDialoog
-        open={nieuwTeamOpen}
-        onClose={() => setNieuwTeamOpen(false)}
-        onSubmit={editor.handleCreateTeam}
+      {/* Dialogen en overlays */}
+      <EditorDialogs
+        scenarioId={scenario.id}
+        teams={editor.teams}
+        showRanking={showRanking}
+        nieuwTeamOpen={nieuwTeamOpen}
+        onCloseNieuwTeam={() => setNieuwTeamOpen(false)}
+        onCreateTeam={editor.handleCreateTeam}
+        rapportPinned={rapportPinned}
+        rapportOpen={rapportOpen}
+        validatieMap={editor.validatieMap}
+        dubbeleMeldingen={editor.dubbeleMeldingen ?? []}
+        onCloseRapport={handleCloseRapport}
+        onToggleRapportPin={handleToggleRapportPin}
+        werkbordOpen={werkbordOpen}
+        onCloseWerkbord={() => setWerkbordOpen(false)}
+        blauwdrukId={editor.blauwdrukId}
+        verdeelData={editor.verdeelData}
+        onCloseVerdeel={() => editor.setVerdeelData(null)}
+        onVerdeelBevestig={editor.handleVerdeelBevestig}
+        detailSpeler={editor.detailSpeler}
+        detailTeamId={editor.detailTeamId}
+        pinMap={editor.pinMap}
+        onTogglePin={editor.handleTogglePin}
+        onCloseDetail={() => {
+          editor.setDetailSpeler(null);
+          editor.setDetailTeamId(null);
+        }}
       />
-
-      {rapportOpen && editor.validatieMap && (
-        <ValidatieRapport
-          teams={editor.teams}
-          validatieMap={editor.validatieMap}
-          dubbeleMeldingen={editor.dubbeleMeldingen ?? []}
-          onClose={() => setRapportOpen(false)}
-        />
-      )}
-
-      {editor.verdeelData && (
-        <VerdeelDialoog
-          open={true}
-          onClose={() => editor.setVerdeelData(null)}
-          selectieGroep={editor.verdeelData.selectieGroep}
-          teams={editor.verdeelData.lidTeams}
-          onBevestig={editor.handleVerdeelBevestig}
-        />
-      )}
-
-      {editor.detailSpeler && (
-        <SpelerDetail
-          speler={editor.detailSpeler}
-          teamId={editor.detailTeamId ?? undefined}
-          teamNaam={
-            editor.detailTeamId
-              ? editor.teams.find((t) => t.id === editor.detailTeamId)?.naam
-              : undefined
-          }
-          pin={editor.pinMap.get(editor.detailSpeler.id) ?? null}
-          showRanking={showRanking}
-          onTogglePin={editor.handleTogglePin}
-          onClose={() => {
-            editor.setDetailSpeler(null);
-            editor.setDetailTeamId(null);
-          }}
-        />
-      )}
     </div>
   );
 }

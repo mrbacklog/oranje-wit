@@ -249,34 +249,91 @@ export function sorteerSpelers(spelers: TeamSpelerData[]): TeamSpelerData[] {
  * Bereken gemiddelde teamsterkte (rating) per team.
  * Alleen spelers met een rating worden meegenomen.
  */
-export function berekenTeamSterktes(teams: TeamData[]): Map<string, number> {
+export function berekenTeamSterktes(
+  teams: TeamData[],
+  selectieGroepen?: SelectieGroepData[]
+): Map<string, number> {
   const map = new Map<string, number>();
   for (const team of teams) {
+    if (team.selectieGroepId) continue; // spelers zitten in selectiegroep
     const metRating = team.spelers.filter((ts) => ts.speler.rating != null);
     if (metRating.length === 0) continue;
     const gem = metRating.reduce((sum, ts) => sum + ts.speler.rating!, 0) / metRating.length;
     map.set(team.id, Math.round(gem));
   }
+  // Selectiegroepen: gemiddelde rating van de pool
+  if (selectieGroepen) {
+    for (const sg of selectieGroepen) {
+      const metRating = sg.spelers.filter((ss) => ss.speler.rating != null);
+      if (metRating.length === 0) continue;
+      const gem = metRating.reduce((sum, ss) => sum + ss.speler.rating!, 0) / metRating.length;
+      map.set(`selectie-${sg.id}`, Math.round(gem));
+    }
+  }
   return map;
 }
 
 /**
- * Bereken J-indicaties voor B-categorie teams.
+ * Bereken J-indicaties voor B-categorie teams en selecties.
  * Hoogste gemiddelde leeftijd = J1, volgende = J2, etc.
+ * Selecties doen mee met hun pool-gemiddelde en krijgen een range (bijv. "J2-J3").
  */
-export function berekenJIndicaties(teams: TeamData[]): Map<string, string> {
-  const bTeams = teams.filter((t) => t.categorie === "B_CATEGORIE" && t.spelers.length > 0);
-  const metGem = bTeams.map((t) => ({
-    id: t.id,
-    gem:
-      t.spelers.reduce(
-        (sum, ts) => sum + korfbalLeeftijd(ts.speler.geboortedatum, ts.speler.geboortejaar),
-        0
-      ) / t.spelers.length,
-  }));
-  metGem.sort((a, b) => b.gem - a.gem);
+export function berekenJIndicaties(
+  teams: TeamData[],
+  selectieGroepen?: SelectieGroepData[]
+): Map<string, string> {
+  // Losse B-categorie teams (niet in selectie)
+  const losseTeams = teams.filter(
+    (t) => t.categorie === "B_CATEGORIE" && t.spelers.length > 0 && !t.selectieGroepId
+  );
+  // Selectiegroepen (als de lidteams B-categorie zijn)
+  const selectieEntries: { id: string; gem: number; teamCount: number }[] = [];
+  if (selectieGroepen) {
+    for (const sg of selectieGroepen) {
+      if (sg.spelers.length === 0) continue;
+      const lidTeams = teams.filter((t) => t.selectieGroepId === sg.id);
+      if (!lidTeams.some((t) => t.categorie === "B_CATEGORIE")) continue;
+      const gem =
+        sg.spelers.reduce(
+          (sum, ss) => sum + korfbalLeeftijd(ss.speler.geboortedatum, ss.speler.geboortejaar),
+          0
+        ) / sg.spelers.length;
+      selectieEntries.push({ id: sg.id, gem, teamCount: lidTeams.length });
+    }
+  }
+
+  // Combineer alles en sorteer op gemiddelde leeftijd
+  const entries: { key: string; gem: number; span: number }[] = [
+    ...losseTeams.map((t) => ({
+      key: t.id,
+      gem:
+        t.spelers.reduce(
+          (sum, ts) => sum + korfbalLeeftijd(ts.speler.geboortedatum, ts.speler.geboortejaar),
+          0
+        ) / t.spelers.length,
+      span: 1,
+    })),
+    ...selectieEntries.map((se) => ({
+      key: `selectie-${se.id}`,
+      gem: se.gem,
+      span: se.teamCount,
+    })),
+  ];
+  entries.sort((a, b) => b.gem - a.gem);
+
   const map = new Map<string, string>();
-  metGem.forEach((t, i) => map.set(t.id, `J${i + 1}`));
+  let pos = 1;
+  for (const entry of entries) {
+    if (entry.span === 1) {
+      map.set(entry.key, `J${pos}`);
+      pos += 1;
+    } else {
+      // Selectie: range over meerdere posities
+      const endPos = pos + entry.span - 1;
+      map.set(entry.key, `J${pos}-J${endPos}`);
+      pos += entry.span;
+    }
+  }
   return map;
 }
 

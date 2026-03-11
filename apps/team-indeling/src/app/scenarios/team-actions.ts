@@ -122,7 +122,7 @@ export async function deleteTeam(teamId: string) {
  * alle spelers en staf van de teams naar de selectie.
  */
 export async function koppelSelectie(teamIds: string[]) {
-  if (teamIds.length < 2) return;
+  if (teamIds.length !== 2) return;
 
   // Haal versieId op van eerste team
   const team = (await anyTeam.findUniqueOrThrow({
@@ -194,6 +194,17 @@ export async function koppelSelectie(teamIds: string[]) {
     }
   });
 
+  revalidatePath("/scenarios");
+}
+
+/**
+ * Werk de naam van een selectiegroep bij.
+ */
+export async function updateSelectieNaam(groepId: string, naam: string | null) {
+  await prisma.selectieGroep.update({
+    where: { id: groepId },
+    data: { naam: naam || null },
+  });
   revalidatePath("/scenarios");
 }
 

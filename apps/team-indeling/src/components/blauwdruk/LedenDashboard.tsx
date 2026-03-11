@@ -7,6 +7,7 @@ import { updateSpelerStatus } from "@/app/blauwdruk/actions";
 import SpelerAvatar from "@/components/ui/SpelerAvatar";
 import SpelerStatusBadge from "./SpelerStatusBadge";
 import AfmeldBadge from "@/components/scenario/AfmeldBadge";
+import LedenSyncDialoog from "./LedenSyncDialoog";
 
 const STATUS_OPTIES: { waarde: SpelerStatus; label: string }[] = [
   { waarde: "BESCHIKBAAR", label: "Beschikbaar" },
@@ -38,9 +39,13 @@ const RETENTIE_VOLGORDE: Record<string, number> = {
 
 interface LedenDashboardProps {
   spelers: SpelerUitgebreid[];
+  blauwdrukId: string;
 }
 
-export default function LedenDashboard({ spelers: initieleSpelers }: LedenDashboardProps) {
+export default function LedenDashboard({
+  spelers: initieleSpelers,
+  blauwdrukId,
+}: LedenDashboardProps) {
   const [spelers, setSpelers] = useState(initieleSpelers);
   const [zoekterm, setZoekterm] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("ALLE");
@@ -48,6 +53,7 @@ export default function LedenDashboard({ spelers: initieleSpelers }: LedenDashbo
   const [sortKey, setSortKey] = useState<SortKey>("naam");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
   const [isPending, startTransition] = useTransition();
+  const [syncOpen, setSyncOpen] = useState(false);
 
   // Samenvatting
   const samenvatting = useMemo(() => {
@@ -197,8 +203,14 @@ export default function LedenDashboard({ spelers: initieleSpelers }: LedenDashbo
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-wrap gap-3">
+      {/* Filters + Sync-knop */}
+      <div className="flex flex-wrap items-center gap-3">
+        <button
+          onClick={() => setSyncOpen(true)}
+          className="rounded-lg border border-orange-200 bg-orange-50 px-3 py-1.5 text-sm font-medium text-orange-700 hover:bg-orange-100"
+        >
+          Leden synchroniseren
+        </button>
         <input
           type="text"
           value={zoekterm}
@@ -357,6 +369,12 @@ export default function LedenDashboard({ spelers: initieleSpelers }: LedenDashbo
         </p>
         {isPending && <p className="text-xs text-gray-400">Opslaan...</p>}
       </div>
+
+      <LedenSyncDialoog
+        open={syncOpen}
+        onClose={() => setSyncOpen(false)}
+        blauwdrukId={blauwdrukId}
+      />
     </div>
   );
 }

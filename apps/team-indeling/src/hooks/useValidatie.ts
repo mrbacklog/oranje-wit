@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import type { TeamData as UITeamData } from "@/components/scenario/types";
+import type { TeamData as UITeamData, SelectieGroepData } from "@/components/scenario/types";
 import type {
   TeamData as ValidatieTeamData,
   SpelerData as ValidatieSpelerData,
@@ -8,6 +8,7 @@ import type {
   BlauwdrukKaders,
 } from "@/lib/validatie/regels";
 import { valideerTeam, valideerDubbeleSpelersOverTeams } from "@/lib/validatie/regels";
+import { valideerSelectie, type SelectieValidatie } from "@/lib/validatie/selectie-regels";
 
 /**
  * Map UI TeamData naar validatie-engine TeamData.
@@ -36,24 +37,25 @@ export interface ValidatieResultaat {
   validatieMap: Map<string, TeamValidatie>;
   /** Meldingen voor dubbele spelers over teams heen */
   dubbeleMeldingen: ValidatieMelding[];
+  /** Per selectieGroep-ID de validatie */
+  selectieValidatieMap: Map<string, SelectieValidatie>;
 }
 
 /**
- * Hook die realtime validatie uitvoert op alle teams.
- * Herberekent alleen als `teams` wijzigt (via useMemo).
+ * Hook die realtime validatie uitvoert op alle teams en selecties.
+ * Herberekent alleen als inputs wijzigen (via useMemo).
  */
 export function useValidatie(
   teams: UITeamData[],
   seizoenJaar: number,
-  kaders?: BlauwdrukKaders
+  kaders?: BlauwdrukKaders,
+  selectieGroepen?: SelectieGroepData[]
 ): ValidatieResultaat {
   return useMemo(() => {
     const validatieMap = new Map<string, TeamValidatie>();
-    const validatieTeams: ValidatieTeamData[] = [];
 
     for (const team of teams) {
       const vTeam = mapNaarValidatieTeam(team);
-      validatieTeams.push(vTeam);
       validatieMap.set(team.id, valideerTeam(vTeam, seizoenJaar, undefined, kaders));
     }
 
@@ -61,6 +63,24 @@ export function useValidatie(
     const losseTeams = teams.filter((t) => !t.selectieGroepId).map(mapNaarValidatieTeam);
     const dubbeleMeldingen = valideerDubbeleSpelersOverTeams(losseTeams);
 
-    return { validatieMap, dubbeleMeldingen };
-  }, [teams, seizoenJaar, kaders]);
+    // Valideer selecties als geheel
+    const selectieValidatieMap = new Map<string, SelectieValidatie>();
+    if (selectieGroepen) {
+      for (const sg of selectieGroepen) {
+        const lidTeams = teams.filter((t) => t.selectieGroepId === sg.id);
+        const spelers = sg.spelers.map((ss) => ({
+          id: ss.spelerId,
+          geboortejaar: ss.speler.geboortejaar,
+          geslacht: ss.speler.geslacht as "M" | "V",
+        }));
+        const teamInfos = lidTeams.map((t) => ({
+          kleur: t.kleur,
+          categorie: t.categorie,
+        }));
+        selectieValidatieMap.set(sg.id, valideerSelectie(spelers, teamInfos, seizoenJaar, kaders));
+      }
+    }
+
+    return { validatieMap, dubbeleMeldingen, selectieValidatieMap };
+  }, [teams, seizoenJaar, kaders, selectieGroepen]);
 }

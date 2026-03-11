@@ -120,7 +120,7 @@ export default function TeamSpelerRij({
       {/* Rechter indicatoren */}
       <div className="flex shrink-0 items-center gap-0.5">
         {/* Ranking badge */}
-        {showRanking && <RankingBadge rating={speler.rating} size="compact" />}
+        {showRanking && leeftijd < 20 && <RankingBadge rating={speler.rating} size="compact" />}
 
         {/* Leeftijd */}
         {dl === "detail" && (

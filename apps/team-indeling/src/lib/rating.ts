@@ -1,4 +1,4 @@
-import { logger, HUIDIG_SEIZOEN } from "@oranje-wit/types";
+import { logger, HUIDIG_SEIZOEN, PEILJAAR } from "@oranje-wit/types";
 import type { EvaluatieScore } from "@oranje-wit/types";
 
 // Vaste teamscores voor A-categorie (key = prefix van poolVeld)
@@ -97,17 +97,25 @@ export async function bepaalTeamscore(
   return null;
 }
 
-/** Haal het niveau uit de meest recente trainer-evaluatie van het seizoen */
+/** Haal het niveau uit een trainer-evaluatie van het seizoen.
+ *  Als `ronde` is meegegeven: exacte ronde. Anders: meest recente ronde. */
 export async function haalLaatsteNiveau(
   spelerId: string,
   seizoen: string,
-  prisma: any
+  prisma: any,
+  ronde?: number
 ): Promise<number | undefined> {
-  const evaluatie = await prisma.evaluatie.findFirst({
-    where: { spelerId, seizoen, type: "trainer" },
-    orderBy: { ronde: "desc" },
-    select: { scores: true },
-  });
+  const evaluatie =
+    ronde != null
+      ? await prisma.evaluatie.findFirst({
+          where: { spelerId, seizoen, type: "trainer", ronde },
+          select: { scores: true },
+        })
+      : await prisma.evaluatie.findFirst({
+          where: { spelerId, seizoen, type: "trainer" },
+          orderBy: { ronde: "desc" },
+          select: { scores: true },
+        });
   if (!evaluatie?.scores) return undefined;
   const scores = evaluatie.scores as EvaluatieScore;
   return scores.niveau ?? undefined;
@@ -116,11 +124,12 @@ export async function haalLaatsteNiveau(
 /** Herbereken ratings voor alle spelers met een huidig team */
 export async function berekenAlleRatings(
   seizoen: string,
-  prisma: any
+  prisma: any,
+  ronde?: number
 ): Promise<{ bijgewerkt: number; overgeslagen: number; fouten: number }> {
   const spelers = await prisma.speler.findMany({
     where: { huidig: { not: null } },
-    select: { id: true, huidig: true, rating: true, ratingBerekend: true },
+    select: { id: true, huidig: true, rating: true, ratingBerekend: true, geboortejaar: true },
   });
 
   let bijgewerkt = 0;
@@ -129,13 +138,19 @@ export async function berekenAlleRatings(
 
   for (const speler of spelers) {
     try {
+      // Rankings alleen voor spelers met korfballeeftijd < 20
+      if (PEILJAAR - speler.geboortejaar >= 20) {
+        overgeslagen++;
+        continue;
+      }
+
       const teamscore = await bepaalTeamscore(speler, seizoen, prisma);
       if (teamscore == null) {
         overgeslagen++;
         continue;
       }
 
-      const niveau = await haalLaatsteNiveau(speler.id, seizoen, prisma);
+      const niveau = await haalLaatsteNiveau(speler.id, seizoen, prisma, ronde);
       const berekend = berekenRating(teamscore, niveau);
 
       // Update altijd beide velden — handmatige override gebeurt via RatingEditor

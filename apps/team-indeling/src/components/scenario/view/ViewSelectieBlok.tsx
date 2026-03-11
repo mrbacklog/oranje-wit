@@ -35,6 +35,7 @@ export default function ViewSelectieBlok({
 }: ViewSelectieBlokProps) {
   const dl = detailLevel ?? "detail";
   const teamNamen = teams.map((t) => t.alias ?? t.naam).join(" + ");
+  const weergaveNaam = selectieGroep?.naam ?? teamNamen;
 
   const alleSpelers: TeamSpelerData[] = selectieGroep
     ? (selectieGroep.spelers as TeamSpelerData[])
@@ -98,8 +99,9 @@ export default function ViewSelectieBlok({
               className={`truncate font-semibold text-gray-900 ${
                 dl === "overzicht" ? "text-xs" : "text-[11px]"
               }`}
+              title={teamNamen}
             >
-              {teamNamen}
+              {weergaveNaam}
             </h4>
           </div>
         </div>
@@ -276,7 +278,7 @@ function ViewSpelerRij({
         {speler.roepnaam} {speler.achternaam}
       </span>
       <div className="flex shrink-0 items-center gap-0.5">
-        {showRanking && <RankingBadge rating={speler.rating} size="compact" />}
+        {showRanking && leeftijd < 20 && <RankingBadge rating={speler.rating} size="compact" />}
         {isPinned && (
           <svg
             className="h-2 w-2 text-purple-500"
