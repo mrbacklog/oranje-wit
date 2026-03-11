@@ -23,6 +23,8 @@ packages/database/src/generated/
 .claude/agent-memory/
 .claude/agent-memory-local/
 .playwright-mcp/
+.worktrees/
+.superpowers/
 
 # IDE
 .vscode/
