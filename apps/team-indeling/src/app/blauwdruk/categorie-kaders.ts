@@ -30,8 +30,8 @@ export interface CategorieSettings {
   maxLeeftijd: number | null; // null = geen limiet
   bandbreedteLeeftijd: number | null; // null = geen limiet
 
-  // KNKV score-drempel (punten waaronder/waarboven team in deze kleur valt)
-  scoreDrempel: number | null; // null = n.v.t.
+  // KNKV promotie-grens: score waarboven een team doorstroomt naar de volgende (hogere) kleur
+  scorePromotieGrens: number | null; // null = n.v.t.
 
   // Speeltijd
   speeltijdMinuten: number;
@@ -132,7 +132,7 @@ export const CATEGORIEEN: CategorieDefinitie[] = [
     label: "Rood",
     kleur: "bg-red-500",
     type: "b-achttal",
-    leeftijdRange: "13–18 jaar",
+    leeftijdRange: "13–19 jaar",
     spelvorm: "8-tal",
   },
   {
@@ -140,7 +140,7 @@ export const CATEGORIEEN: CategorieDefinitie[] = [
     label: "Oranje",
     kleur: "bg-orange-500",
     type: "b-achttal",
-    leeftijdRange: "11–14 jaar",
+    leeftijdRange: "11–15 jaar",
     spelvorm: "8-tal",
   },
   {
@@ -148,7 +148,7 @@ export const CATEGORIEEN: CategorieDefinitie[] = [
     label: "Geel",
     kleur: "bg-yellow-500",
     type: "b-achttal",
-    leeftijdRange: "9–12 jaar",
+    leeftijdRange: "9–13 jaar",
     spelvorm: "8-tal",
   },
   {
@@ -197,7 +197,7 @@ const A_CAT_BASIS: CategorieSettings = {
   gemiddeldeLeeftijdOverlapMax: null,
   maxLeeftijd: null,
   bandbreedteLeeftijd: 2.0,
-  scoreDrempel: null,
+  scorePromotieGrens: null,
   speeltijdMinuten: 30,
   speeltijdZuiver: false,
   korfhoogte: 3.5,
@@ -223,7 +223,7 @@ const D: Record<string, CategorieSettings> = {
     gemiddeldeLeeftijdOverlapMax: 6.0,
     maxLeeftijd: null,
     bandbreedteLeeftijd: null,
-    scoreDrempel: null,
+    scorePromotieGrens: null,
     speeltijdMinuten: 0,
     speeltijdZuiver: false,
     korfhoogte: 2.5,
@@ -247,7 +247,7 @@ const D: Record<string, CategorieSettings> = {
     gemiddeldeLeeftijdOverlapMax: 8.0,
     maxLeeftijd: null,
     bandbreedteLeeftijd: 2.0,
-    scoreDrempel: 55,
+    scorePromotieGrens: 55,
     speeltijdMinuten: 20,
     speeltijdZuiver: false,
     korfhoogte: 2.5,
@@ -271,7 +271,7 @@ const D: Record<string, CategorieSettings> = {
     gemiddeldeLeeftijdOverlapMax: 10.0,
     maxLeeftijd: null,
     bandbreedteLeeftijd: 2.0,
-    scoreDrempel: 75,
+    scorePromotieGrens: 75,
     speeltijdMinuten: 20,
     speeltijdZuiver: false,
     korfhoogte: 3.0,
@@ -295,7 +295,7 @@ const D: Record<string, CategorieSettings> = {
     gemiddeldeLeeftijdOverlapMax: 12.5,
     maxLeeftijd: null,
     bandbreedteLeeftijd: 3.0,
-    scoreDrempel: 90,
+    scorePromotieGrens: 90,
     speeltijdMinuten: 25,
     speeltijdZuiver: false,
     korfhoogte: 3.0,
@@ -319,7 +319,7 @@ const D: Record<string, CategorieSettings> = {
     gemiddeldeLeeftijdOverlapMax: 14.0,
     maxLeeftijd: null,
     bandbreedteLeeftijd: 3.0,
-    scoreDrempel: 100,
+    scorePromotieGrens: 100,
     speeltijdMinuten: 25,
     speeltijdZuiver: false,
     korfhoogte: 3.5,
@@ -343,7 +343,7 @@ const D: Record<string, CategorieSettings> = {
     gemiddeldeLeeftijdOverlapMax: 18.5,
     maxLeeftijd: null,
     bandbreedteLeeftijd: 3.0,
-    scoreDrempel: null,
+    scorePromotieGrens: null,
     speeltijdMinuten: 30,
     speeltijdZuiver: false,
     korfhoogte: 3.5,
