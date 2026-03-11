@@ -50,9 +50,7 @@ test.describe("Retentie / Ledendynamiek", () => {
   test("onbekend seizoen toont foutpagina", async ({ page }) => {
     await page.goto("/retentie/2099-2100");
 
-    // Accepteer 404 of een error boundary
-    const notFound = page.getByText("404");
-    const error = page.getByText(/niet gevonden|not found/i);
-    await expect(notFound.or(error)).toBeVisible({ timeout: 5000 });
+    // Wacht op 404 tekst of "niet gevonden" heading
+    await expect(page.getByText("Pagina niet gevonden")).toBeVisible({ timeout: 5000 });
   });
 });
