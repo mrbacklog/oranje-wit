@@ -6,6 +6,9 @@ export { BandPill } from "./data-display/band-pill";
 // Layout
 export { PageHeader } from "./layout/page-header";
 
+// Primitives
+export { Button } from "./primitives/button";
+
 // Feedback
 export { InfoDrawer } from "./feedback/info-drawer";
 export { InfoButton } from "./feedback/info-button";
