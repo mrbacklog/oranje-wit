@@ -83,7 +83,7 @@ export function MijlpaalBeheer({ mijlpalen }: Props) {
             <Input
               label="Label"
               value={label}
-              onChange={(e) => setLabel(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setLabel(e.target.value)}
               placeholder="Bijv. TC-vergadering #2"
             />
           </div>
@@ -92,7 +92,7 @@ export function MijlpaalBeheer({ mijlpalen }: Props) {
               label="Datum"
               type="date"
               value={datum}
-              onChange={(e) => setDatum(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDatum(e.target.value)}
             />
           </div>
           <Button onClick={handleAdd} disabled={isPending || !label || !datum}>
