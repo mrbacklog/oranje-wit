@@ -17,7 +17,10 @@ RUN pnpm install --frozen-lockfile
 # ── Stage 2: Build ───────────────────────────────────────────────────────────
 FROM deps AS builder
 
-COPY packages/ packages/
+COPY packages/auth/ packages/auth/
+COPY packages/database/ packages/database/
+COPY packages/types/ packages/types/
+COPY packages/ui/ packages/ui/
 COPY apps/monitor/ apps/monitor/
 
 RUN pnpm db:generate
