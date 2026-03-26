@@ -65,7 +65,9 @@ export async function POST(request: Request) {
         team_prestatie_toelichting: teamScore.prestatieToelichting,
       };
 
-      const evaluatie = await prisma.evaluatie.upsert({
+      // Prisma 7 type recursie workaround (TS2321)
+
+      const evaluatie = await (prisma.evaluatie.upsert as Function)({
         where: {
           spelerId_seizoen_ronde_type: {
             spelerId: score.relCode,
