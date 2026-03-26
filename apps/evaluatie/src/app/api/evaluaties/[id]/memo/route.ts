@@ -26,7 +26,8 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       return fail("Ronde is niet actief", 400, "RONDE_NIET_ACTIEF");
     }
 
-    const evaluatie = await prisma.evaluatie.update({
+    // Prisma 7 type recursie workaround (TS2321)
+    const evaluatie = await (prisma.evaluatie.update as Function)({
       where: { id },
       data: { coordinatorMemo: parsed.data.memo },
     });
