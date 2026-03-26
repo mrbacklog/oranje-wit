@@ -16,6 +16,9 @@ const RapportSchema = z.object({
   contextDetail: z.string().optional(),
   scores: z.record(z.string(), z.number()),
   opmerking: z.string().optional(),
+  verzoekId: z.string().optional(),
+  relatie: z.enum(["GEEN", "OUDER", "FAMILIE", "BEKENDE", "TRAINER"]).optional().default("GEEN"),
+  nietBeoordeeld: z.boolean().optional().default(false),
 });
 
 export async function POST(request: Request) {
@@ -30,7 +33,16 @@ export async function POST(request: Request) {
     const parsed = await parseBody(request, RapportSchema);
     if (!parsed.ok) return parsed.response;
 
-    const { spelerId, context, contextDetail, scores, opmerking } = parsed.data;
+    const {
+      spelerId,
+      context,
+      contextDetail,
+      scores,
+      opmerking,
+      verzoekId,
+      relatie,
+      nietBeoordeeld,
+    } = parsed.data;
 
     // 3. Zoek de speler op (via rel_code = Speler.id)
     const speler = await db.speler.findUnique({
@@ -56,9 +68,46 @@ export async function POST(request: Request) {
       logger.info(`Nieuw scout-profiel aangemaakt: ${scout.id}`);
     }
 
+    // 4b. Vrij-scouten check: zonder verzoekId mag je alleen scouten
+    //     als je vrijScouten === true of rol === TC hebt
+    if (!verzoekId) {
+      if (!scout.vrijScouten && scout.rol !== "TC") {
+        return fail(
+          "Je hebt geen vrij-scouten recht. Wacht op een scoutingverzoek van de TC.",
+          403,
+          "VRIJ_SCOUTEN_NIET_TOEGESTAAN"
+        );
+      }
+    }
+
+    // 4c. Verzoek-toewijzing check: als verzoekId is meegegeven,
+    //     controleer dat de scout een geaccepteerde toewijzing heeft
+    if (verzoekId) {
+      const toewijzing = await db.scoutToewijzing.findUnique({
+        where: {
+          verzoekId_scoutId: {
+            verzoekId,
+            scoutId: scout.id,
+          },
+        },
+      });
+
+      if (!toewijzing || toewijzing.status !== "GEACCEPTEERD") {
+        return fail(
+          "Je hebt geen geaccepteerde toewijzing voor dit scoutingverzoek",
+          403,
+          "TOEWIJZING_NIET_GEVONDEN"
+        );
+      }
+    }
+
     // 5. Bepaal leeftijdsgroep en bereken scores
     const groep = bepaalLeeftijdsgroep(speler);
-    const { overall, pijlerScores } = berekenOverall(scores, groep);
+
+    // Bij nietBeoordeeld: lege scores, geen overall
+    const { overall, pijlerScores } = nietBeoordeeld
+      ? { overall: null as number | null, pijlerScores: {} as Record<string, number> }
+      : berekenOverall(scores, groep);
 
     // 6. Sla het rapport op
     const rapport = await db.scoutingRapport.create({
@@ -68,15 +117,35 @@ export async function POST(request: Request) {
         seizoen: HUIDIG_SEIZOEN,
         context,
         contextDetail: contextDetail ?? null,
-        scores,
+        scores: nietBeoordeeld ? {} : scores,
         opmerking: opmerking ?? null,
-        overallScore: overall,
+        overallScore: overall ?? null,
+        verzoekId: verzoekId ?? null,
+        relatie: relatie ?? "GEEN",
+        nietBeoordeeld: nietBeoordeeld ?? false,
       },
     });
 
-    logger.info(`Rapport ${rapport.id} opgeslagen: speler=${spelerId}, overall=${overall}`);
+    logger.info(
+      `Rapport ${rapport.id} opgeslagen: speler=${spelerId}, overall=${overall}${nietBeoordeeld ? " (niet beoordeeld)" : ""}`
+    );
 
-    // 7. Update SpelersKaart (EWMA)
+    // 7. Bij nietBeoordeeld: sla SpelersKaart update, XP en badges over
+    if (nietBeoordeeld) {
+      return ok({
+        rapport: {
+          id: rapport.id,
+          overall: null,
+          pijlerScores: {},
+          nietBeoordeeld: true,
+        },
+        xpGained: 0,
+        totalXp: scout.xp,
+        levelInfo: bepaalLevel(scout.xp),
+      });
+    }
+
+    // 8. Update SpelersKaart (EWMA) — alleen bij daadwerkelijke beoordeling
     const bestaandeKaart = await db.spelersKaart.findUnique({
       where: {
         spelerId_seizoen: {
@@ -86,7 +155,7 @@ export async function POST(request: Request) {
       },
     });
 
-    const nieuwOverall = berekenEWMA(overall, bestaandeKaart?.overall ?? null);
+    const nieuwOverall = berekenEWMA(overall as number, bestaandeKaart?.overall ?? null);
     const nieuwSchot = berekenEWMA(pijlerScores.SCH ?? 0, bestaandeKaart?.schot ?? null);
     const nieuwAanval = berekenEWMA(pijlerScores.AAN ?? 0, bestaandeKaart?.aanval ?? null);
     const nieuwPassing = berekenEWMA(pijlerScores.PAS ?? 0, bestaandeKaart?.passing ?? null);
@@ -137,7 +206,7 @@ export async function POST(request: Request) {
       },
     });
 
-    // 8. XP toekenning
+    // 9. XP toekenning
     const isEersteVoorSpeler = !bestaandeKaart;
     const xpGained = berekenXP(isEersteVoorSpeler);
 
@@ -157,7 +226,7 @@ export async function POST(request: Request) {
       });
     }
 
-    // 9. Check badges
+    // 10. Check badges
     const totaalRapporten = await db.scoutingRapport.count({
       where: { scoutId: scout.id },
     });

@@ -119,18 +119,34 @@
       }
 
       @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(8px); }
-        to { opacity: 1; transform: translateY(0); }
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
       }
 
       @keyframes scaleIn {
-        from { transform: scale(0); }
-        to { transform: scale(1); }
+        from {
+          transform: scale(0);
+        }
+        to {
+          transform: scale(1);
+        }
       }
 
       @keyframes slideUp {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
       }
 
       /* ===== SHARED COMPONENTS ===== */
@@ -223,10 +239,22 @@
         font-weight: 600;
       }
 
-      .team-badge.blauw { background: var(--blauw-light); color: var(--blauw); }
-      .team-badge.groen { background: var(--groen-light); color: #15803d; }
-      .team-badge.geel { background: var(--geel-light); color: #a16207; }
-      .team-badge.oranje { background: var(--oranje-light); color: #c2410c; }
+      .team-badge.blauw {
+        background: var(--blauw-light);
+        color: var(--blauw);
+      }
+      .team-badge.groen {
+        background: var(--groen-light);
+        color: #15803d;
+      }
+      .team-badge.geel {
+        background: var(--geel-light);
+        color: #a16207;
+      }
+      .team-badge.oranje {
+        background: var(--oranje-light);
+        color: #c2410c;
+      }
 
       /* Countdown badge */
       .countdown-badge {
@@ -252,7 +280,9 @@
         border-radius: var(--radius);
         border: 1px solid var(--border);
         overflow: hidden;
-        transition: box-shadow 0.2s, border-color 0.2s;
+        transition:
+          box-shadow 0.2s,
+          border-color 0.2s;
       }
 
       .card:active {
@@ -470,7 +500,7 @@
         border-radius: 50%;
         background: white;
         transition: transform 0.2s;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
       }
 
       .toggle.active::after {
@@ -703,9 +733,15 @@
         flex-shrink: 0;
       }
 
-      .type-card .type-icon.generiek { background: #dbeafe; }
-      .type-card .type-icon.specifiek { background: #fce7f3; }
-      .type-card .type-icon.vergelijking { background: #e0e7ff; }
+      .type-card .type-icon.generiek {
+        background: #dbeafe;
+      }
+      .type-card .type-icon.specifiek {
+        background: #fce7f3;
+      }
+      .type-card .type-icon.vergelijking {
+        background: #e0e7ff;
+      }
 
       .type-card .type-title {
         font-size: 15px;
@@ -1263,16 +1299,34 @@
       }
 
       /* Stacked card animation delays */
-      .verzoek-list .card:nth-child(1) { animation: slideUp 0.3s ease 0.05s both; }
-      .verzoek-list .card:nth-child(2) { animation: slideUp 0.3s ease 0.1s both; }
-      .verzoek-list .card:nth-child(3) { animation: slideUp 0.3s ease 0.15s both; }
-      .verzoek-list .card:nth-child(4) { animation: slideUp 0.3s ease 0.2s both; }
+      .verzoek-list .card:nth-child(1) {
+        animation: slideUp 0.3s ease 0.05s both;
+      }
+      .verzoek-list .card:nth-child(2) {
+        animation: slideUp 0.3s ease 0.1s both;
+      }
+      .verzoek-list .card:nth-child(3) {
+        animation: slideUp 0.3s ease 0.15s both;
+      }
+      .verzoek-list .card:nth-child(4) {
+        animation: slideUp 0.3s ease 0.2s both;
+      }
 
-      .tc-list .card:nth-child(1) { animation: slideUp 0.3s ease 0.05s both; }
-      .tc-list .card:nth-child(2) { animation: slideUp 0.3s ease 0.1s both; }
-      .tc-list .card:nth-child(3) { animation: slideUp 0.3s ease 0.15s both; }
-      .tc-list .card:nth-child(4) { animation: slideUp 0.3s ease 0.15s both; }
-      .tc-list .card:nth-child(5) { animation: slideUp 0.3s ease 0.2s both; }
+      .tc-list .card:nth-child(1) {
+        animation: slideUp 0.3s ease 0.05s both;
+      }
+      .tc-list .card:nth-child(2) {
+        animation: slideUp 0.3s ease 0.1s both;
+      }
+      .tc-list .card:nth-child(3) {
+        animation: slideUp 0.3s ease 0.15s both;
+      }
+      .tc-list .card:nth-child(4) {
+        animation: slideUp 0.3s ease 0.15s both;
+      }
+      .tc-list .card:nth-child(5) {
+        animation: slideUp 0.3s ease 0.2s both;
+      }
     </style>
   </head>
   <body>
@@ -1295,7 +1349,10 @@
 
       <div class="verzoek-list">
         <!-- Verzoek 1: Generiek / Open -->
-        <div class="card card-clickable verzoek-card status-open" onclick="showTab('verzoek-detail')">
+        <div
+          class="card card-clickable verzoek-card status-open"
+          onclick="showTab('verzoek-detail')"
+        >
           <div class="accent-left"></div>
           <div class="verzoek-card-top">
             <div class="verzoek-card-badges">
@@ -1317,7 +1374,10 @@
         </div>
 
         <!-- Verzoek 2: Specifiek / Open -->
-        <div class="card card-clickable verzoek-card status-open" onclick="showTab('verzoek-detail')">
+        <div
+          class="card card-clickable verzoek-card status-open"
+          onclick="showTab('verzoek-detail')"
+        >
           <div class="accent-left"></div>
           <div class="verzoek-card-top">
             <div class="verzoek-card-badges">
@@ -1339,7 +1399,10 @@
         </div>
 
         <!-- Verzoek 3: Vergelijking / Actief -->
-        <div class="card card-clickable verzoek-card status-actief" onclick="showTab('verzoek-detail')">
+        <div
+          class="card card-clickable verzoek-card status-actief"
+          onclick="showTab('verzoek-detail')"
+        >
           <div class="accent-left"></div>
           <div class="verzoek-card-top">
             <div class="verzoek-card-badges">
@@ -1361,7 +1424,7 @@
         </div>
 
         <!-- Verzoek 4: Afgerond -->
-        <div class="card verzoek-card status-afgerond" style="opacity: 0.7;">
+        <div class="card verzoek-card status-afgerond" style="opacity: 0.7">
           <div class="accent-left"></div>
           <div class="verzoek-card-top">
             <div class="verzoek-card-badges">
@@ -1383,11 +1446,14 @@
       </div>
 
       <!-- Empty state (hidden, toggle met knop) -->
-      <div id="empty-state-scout" style="display:none;">
+      <div id="empty-state-scout" style="display: none">
         <div class="empty-state">
           <div class="icon">&#128203;</div>
           <h3>Geen verzoeken</h3>
-          <p>Je hebt op dit moment geen openstaande scouting-verzoeken. Als een TC-lid je toewijst, verschijnt het hier.</p>
+          <p>
+            Je hebt op dit moment geen openstaande scouting-verzoeken. Als een TC-lid je toewijst,
+            verschijnt het hier.
+          </p>
         </div>
       </div>
     </div>
@@ -1414,7 +1480,9 @@
           <!-- TC toelichting -->
           <div class="info-box geel">
             <strong>Toelichting van TC:</strong><br />
-            Beoordeel alle spelers van Team J8 tijdens de wedstrijd tegen DeetosSnel op zaterdag 29 maart. Let extra op samenwerking en positiespel. We overwegen om het team te herindelen voor de voorjaarscompetitie.
+            Beoordeel alle spelers van Team J8 tijdens de wedstrijd tegen DeetosSnel op zaterdag 29
+            maart. Let extra op samenwerking en positiespel. We overwegen om het team te herindelen
+            voor de voorjaarscompetitie.
           </div>
 
           <!-- Deadline info -->
@@ -1430,7 +1498,7 @@
               <!-- Speler 1 -->
               <div class="speler-row">
                 <div class="speler-row-main" onclick="toggleSpelerExpand(this)">
-                  <div class="avatar" style="background: var(--blauw);">L</div>
+                  <div class="avatar" style="background: var(--blauw)">L</div>
                   <div class="speler-row-info">
                     <div class="name">Lotte Bakker</div>
                     <div class="detail">
@@ -1438,10 +1506,10 @@
                       <span class="team-badge blauw">J8</span>
                     </div>
                   </div>
-                  <span style="color: var(--text-light); font-size: 18px;">&#8964;</span>
+                  <span style="color: var(--text-light); font-size: 18px">&#8964;</span>
                 </div>
-                <div class="speler-row-expand" style="display:none;">
-                  <div class="label" style="margin-top: 0;">Ken je deze speler?</div>
+                <div class="speler-row-expand" style="display: none">
+                  <div class="label" style="margin-top: 0">Ken je deze speler?</div>
                   <div class="relation-options">
                     <span class="relation-chip selected" onclick="selectRelation(this)">Geen</span>
                     <span class="relation-chip" onclick="selectRelation(this)">Ouder</span>
@@ -1458,7 +1526,7 @@
               <!-- Speler 2 -->
               <div class="speler-row">
                 <div class="speler-row-main" onclick="toggleSpelerExpand(this)">
-                  <div class="avatar" style="background: var(--blauw);">T</div>
+                  <div class="avatar" style="background: var(--blauw)">T</div>
                   <div class="speler-row-info">
                     <div class="name">Thomas de Groot</div>
                     <div class="detail">
@@ -1466,10 +1534,10 @@
                       <span class="team-badge blauw">J8</span>
                     </div>
                   </div>
-                  <span style="color: var(--text-light); font-size: 18px;">&#8964;</span>
+                  <span style="color: var(--text-light); font-size: 18px">&#8964;</span>
                 </div>
-                <div class="speler-row-expand" style="display:none;">
-                  <div class="label" style="margin-top: 0;">Ken je deze speler?</div>
+                <div class="speler-row-expand" style="display: none">
+                  <div class="label" style="margin-top: 0">Ken je deze speler?</div>
                   <div class="relation-options">
                     <span class="relation-chip selected" onclick="selectRelation(this)">Geen</span>
                     <span class="relation-chip" onclick="selectRelation(this)">Ouder</span>
@@ -1486,7 +1554,7 @@
               <!-- Speler 3 -->
               <div class="speler-row">
                 <div class="speler-row-main" onclick="toggleSpelerExpand(this)">
-                  <div class="avatar" style="background: var(--blauw);">S</div>
+                  <div class="avatar" style="background: var(--blauw)">S</div>
                   <div class="speler-row-info">
                     <div class="name">Sanne Visser</div>
                     <div class="detail">
@@ -1494,10 +1562,10 @@
                       <span class="team-badge blauw">J8</span>
                     </div>
                   </div>
-                  <span style="color: var(--text-light); font-size: 18px;">&#8964;</span>
+                  <span style="color: var(--text-light); font-size: 18px">&#8964;</span>
                 </div>
-                <div class="speler-row-expand" style="display:none;">
-                  <div class="label" style="margin-top: 0;">Ken je deze speler?</div>
+                <div class="speler-row-expand" style="display: none">
+                  <div class="label" style="margin-top: 0">Ken je deze speler?</div>
                   <div class="relation-options">
                     <span class="relation-chip selected" onclick="selectRelation(this)">Geen</span>
                     <span class="relation-chip" onclick="selectRelation(this)">Ouder</span>
@@ -1514,7 +1582,7 @@
               <!-- Speler 4 -->
               <div class="speler-row">
                 <div class="speler-row-main" onclick="toggleSpelerExpand(this)">
-                  <div class="avatar" style="background: var(--blauw);">J</div>
+                  <div class="avatar" style="background: var(--blauw)">J</div>
                   <div class="speler-row-info">
                     <div class="name">Jelle Mulder</div>
                     <div class="detail">
@@ -1522,10 +1590,10 @@
                       <span class="team-badge blauw">J8</span>
                     </div>
                   </div>
-                  <span style="color: var(--text-light); font-size: 18px;">&#8964;</span>
+                  <span style="color: var(--text-light); font-size: 18px">&#8964;</span>
                 </div>
-                <div class="speler-row-expand" style="display:none;">
-                  <div class="label" style="margin-top: 0;">Ken je deze speler?</div>
+                <div class="speler-row-expand" style="display: none">
+                  <div class="label" style="margin-top: 0">Ken je deze speler?</div>
                   <div class="relation-options">
                     <span class="relation-chip selected" onclick="selectRelation(this)">Geen</span>
                     <span class="relation-chip" onclick="selectRelation(this)">Ouder</span>
@@ -1542,7 +1610,7 @@
               <!-- Speler 5 -->
               <div class="speler-row">
                 <div class="speler-row-main" onclick="toggleSpelerExpand(this)">
-                  <div class="avatar" style="background: var(--blauw);">E</div>
+                  <div class="avatar" style="background: var(--blauw)">E</div>
                   <div class="speler-row-info">
                     <div class="name">Eva Jansen</div>
                     <div class="detail">
@@ -1550,10 +1618,10 @@
                       <span class="team-badge blauw">J8</span>
                     </div>
                   </div>
-                  <span style="color: var(--text-light); font-size: 18px;">&#8964;</span>
+                  <span style="color: var(--text-light); font-size: 18px">&#8964;</span>
                 </div>
-                <div class="speler-row-expand" style="display:none;">
-                  <div class="label" style="margin-top: 0;">Ken je deze speler?</div>
+                <div class="speler-row-expand" style="display: none">
+                  <div class="label" style="margin-top: 0">Ken je deze speler?</div>
                   <div class="relation-options">
                     <span class="relation-chip selected" onclick="selectRelation(this)">Geen</span>
                     <span class="relation-chip" onclick="selectRelation(this)">Ouder</span>
@@ -1570,7 +1638,7 @@
               <!-- Speler 6 -->
               <div class="speler-row">
                 <div class="speler-row-main" onclick="toggleSpelerExpand(this)">
-                  <div class="avatar" style="background: var(--blauw);">D</div>
+                  <div class="avatar" style="background: var(--blauw)">D</div>
                   <div class="speler-row-info">
                     <div class="name">Daan Peters</div>
                     <div class="detail">
@@ -1578,10 +1646,10 @@
                       <span class="team-badge blauw">J8</span>
                     </div>
                   </div>
-                  <span style="color: var(--text-light); font-size: 18px;">&#8964;</span>
+                  <span style="color: var(--text-light); font-size: 18px">&#8964;</span>
                 </div>
-                <div class="speler-row-expand" style="display:none;">
-                  <div class="label" style="margin-top: 0;">Ken je deze speler?</div>
+                <div class="speler-row-expand" style="display: none">
+                  <div class="label" style="margin-top: 0">Ken je deze speler?</div>
                   <div class="relation-options">
                     <span class="relation-chip selected" onclick="selectRelation(this)">Geen</span>
                     <span class="relation-chip" onclick="selectRelation(this)">Ouder</span>
@@ -1610,10 +1678,18 @@
       </div>
 
       <div class="filter-row">
-        <button class="filter-chip active" onclick="filterTC(this, 'alle')">Alle <span class="count" style="background:var(--ow-orange);color:white;">5</span></button>
-        <button class="filter-chip" onclick="filterTC(this, 'open')">Open <span class="count">2</span></button>
-        <button class="filter-chip" onclick="filterTC(this, 'actief')">Actief <span class="count">1</span></button>
-        <button class="filter-chip" onclick="filterTC(this, 'afgerond')">Afgerond <span class="count">2</span></button>
+        <button class="filter-chip active" onclick="filterTC(this, 'alle')">
+          Alle <span class="count" style="background: var(--ow-orange); color: white">5</span>
+        </button>
+        <button class="filter-chip" onclick="filterTC(this, 'open')">
+          Open <span class="count">2</span>
+        </button>
+        <button class="filter-chip" onclick="filterTC(this, 'actief')">
+          Actief <span class="count">1</span>
+        </button>
+        <button class="filter-chip" onclick="filterTC(this, 'afgerond')">
+          Afgerond <span class="count">2</span>
+        </button>
       </div>
 
       <div class="tc-list">
@@ -1629,16 +1705,18 @@
             </div>
             <span class="countdown-badge">&#9202; 10d</span>
           </div>
-          <p style="font-size:13px; color:var(--text-muted); margin-bottom:10px;">6 spelers, hele team beoordelen</p>
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px">
+            6 spelers, hele team beoordelen
+          </p>
           <div class="tc-card-progress">
             <span class="label-text">Scouts: 0/3 klaar</span>
-            <div class="progress-track" style="flex:1;">
-              <div class="progress-fill" style="width:0%; background:var(--ow-orange);"></div>
+            <div class="progress-track" style="flex: 1">
+              <div class="progress-fill" style="width: 0%; background: var(--ow-orange)"></div>
             </div>
             <div class="scout-avatars">
-              <div class="scout-avatar" style="background:var(--blauw);">MV</div>
-              <div class="scout-avatar" style="background:var(--groen);">PB</div>
-              <div class="scout-avatar" style="background:var(--oranje);">KH</div>
+              <div class="scout-avatar" style="background: var(--blauw)">MV</div>
+              <div class="scout-avatar" style="background: var(--groen)">PB</div>
+              <div class="scout-avatar" style="background: var(--oranje)">KH</div>
             </div>
           </div>
         </div>
@@ -1655,15 +1733,17 @@
             </div>
             <span class="countdown-badge urgent">&#9202; 7d</span>
           </div>
-          <p style="font-size:13px; color:var(--text-muted); margin-bottom:10px;">1 speler, focus op aanvalsvaardigheden</p>
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px">
+            1 speler, focus op aanvalsvaardigheden
+          </p>
           <div class="tc-card-progress">
             <span class="label-text">Scouts: 1/2 klaar</span>
-            <div class="progress-track" style="flex:1;">
-              <div class="progress-fill" style="width:50%; background:var(--ow-orange);"></div>
+            <div class="progress-track" style="flex: 1">
+              <div class="progress-fill" style="width: 50%; background: var(--ow-orange)"></div>
             </div>
             <div class="scout-avatars">
-              <div class="scout-avatar" style="background:var(--groen);">PB</div>
-              <div class="scout-avatar" style="background:var(--geel);">RD</div>
+              <div class="scout-avatar" style="background: var(--groen)">PB</div>
+              <div class="scout-avatar" style="background: var(--geel)">RD</div>
             </div>
           </div>
         </div>
@@ -1680,22 +1760,24 @@
             </div>
             <span class="countdown-badge">&#9202; 17d</span>
           </div>
-          <p style="font-size:13px; color:var(--text-muted); margin-bottom:10px;">2 spelers vergelijken voor doorstroom</p>
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px">
+            2 spelers vergelijken voor doorstroom
+          </p>
           <div class="tc-card-progress">
             <span class="label-text">Scouts: 2/3 klaar</span>
-            <div class="progress-track" style="flex:1;">
-              <div class="progress-fill" style="width:66%; background:var(--ow-orange);"></div>
+            <div class="progress-track" style="flex: 1">
+              <div class="progress-fill" style="width: 66%; background: var(--ow-orange)"></div>
             </div>
             <div class="scout-avatars">
-              <div class="scout-avatar" style="background:var(--blauw);">MV</div>
-              <div class="scout-avatar" style="background:var(--oranje);">KH</div>
-              <div class="scout-avatar" style="background:var(--geel);">RD</div>
+              <div class="scout-avatar" style="background: var(--blauw)">MV</div>
+              <div class="scout-avatar" style="background: var(--oranje)">KH</div>
+              <div class="scout-avatar" style="background: var(--geel)">RD</div>
             </div>
           </div>
         </div>
 
         <!-- TC Verzoek 4: Afgerond -->
-        <div class="card tc-card" data-status="afgerond" style="opacity:0.7;">
+        <div class="card tc-card" data-status="afgerond" style="opacity: 0.7">
           <div class="tc-card-header">
             <div>
               <div class="tc-card-meta">
@@ -1705,17 +1787,19 @@
               <h3>Team J10-1 beoordelen</h3>
             </div>
           </div>
-          <p style="font-size:13px; color:var(--text-muted); margin-bottom:10px;">8 spelers, 3 scouts ingeleverd</p>
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px">
+            8 spelers, 3 scouts ingeleverd
+          </p>
           <div class="tc-card-progress">
             <span class="label-text">Scouts: 3/3 klaar</span>
-            <div class="progress-track" style="flex:1;">
-              <div class="progress-fill" style="width:100%; background:var(--groen);"></div>
+            <div class="progress-track" style="flex: 1">
+              <div class="progress-fill" style="width: 100%; background: var(--groen)"></div>
             </div>
           </div>
         </div>
 
         <!-- TC Verzoek 5: Afgerond -->
-        <div class="card tc-card" data-status="afgerond" style="opacity:0.7;">
+        <div class="card tc-card" data-status="afgerond" style="opacity: 0.7">
           <div class="tc-card-header">
             <div>
               <div class="tc-card-meta">
@@ -1725,11 +1809,13 @@
               <h3>Mila Boer beoordelen</h3>
             </div>
           </div>
-          <p style="font-size:13px; color:var(--text-muted); margin-bottom:10px;">1 speler, herplaatsing-advies gevraagd</p>
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px">
+            1 speler, herplaatsing-advies gevraagd
+          </p>
           <div class="tc-card-progress">
             <span class="label-text">Scouts: 2/2 klaar</span>
-            <div class="progress-track" style="flex:1;">
-              <div class="progress-fill" style="width:100%; background:var(--groen);"></div>
+            <div class="progress-track" style="flex: 1">
+              <div class="progress-fill" style="width: 100%; background: var(--groen)"></div>
             </div>
           </div>
         </div>
@@ -1749,7 +1835,9 @@
       </div>
 
       <div class="resultaten-toolbar">
-        <span style="font-size:13px; font-weight:600; color:var(--text-muted);">Anonimisering</span>
+        <span style="font-size: 13px; font-weight: 600; color: var(--text-muted)"
+          >Anonimisering</span
+        >
         <div class="toggle-container">
           <span class="toggle-label" id="anon-label">Verborgen</span>
           <button class="toggle" id="anon-toggle" onclick="toggleAnonymize()"></button>
@@ -1768,7 +1856,7 @@
           <!-- Speler 1: Mees -->
           <div class="resultaat-speler">
             <div class="resultaat-speler-header">
-              <div class="avatar sm" style="background:var(--groen);">M</div>
+              <div class="avatar sm" style="background: var(--groen)">M</div>
               <span class="name">Mees van Leeuwen</span>
               <span class="team-badge groen">J10-1</span>
             </div>
@@ -1783,18 +1871,18 @@
                 <div class="stat-label">Rapporten</div>
               </div>
               <div class="resultaat-stat">
-                <div class="stat-value" style="font-size:16px;">3.2-4.1</div>
+                <div class="stat-value" style="font-size: 16px">3.2-4.1</div>
                 <div class="stat-label">Spreiding</div>
               </div>
             </div>
 
             <!-- Spreiding visualisatie -->
-            <div style="padding: 4px 0 8px;">
+            <div style="padding: 4px 0 8px">
               <div class="spreiding-bar">
                 <span class="bar-label">1</span>
                 <div class="bar-track">
-                  <div class="bar-range" style="left: 44%; width: 18%;"></div>
-                  <div class="bar-avg" style="left: 56%;"></div>
+                  <div class="bar-range" style="left: 44%; width: 18%"></div>
+                  <div class="bar-avg" style="left: 56%"></div>
                 </div>
                 <span class="bar-label">5</span>
               </div>
@@ -1802,28 +1890,30 @@
 
             <div class="rapport-list">
               <div class="rapport-row">
-                <div class="avatar sm" style="background:var(--blauw);">MV</div>
+                <div class="avatar sm" style="background: var(--blauw)">MV</div>
                 <div class="scout-info">
                   <div class="scout-name anon-name scout-hidden">Scout 1</div>
-                  <div class="scout-name scout-visible" style="display:none;">Marieke Vermeer</div>
+                  <div class="scout-name scout-visible" style="display: none">Marieke Vermeer</div>
                   <div class="scout-date">22 mrt 2026</div>
                 </div>
                 <div class="rapport-score">4.1</div>
               </div>
               <div class="rapport-row">
-                <div class="avatar sm" style="background:var(--groen);">PB</div>
+                <div class="avatar sm" style="background: var(--groen)">PB</div>
                 <div class="scout-info">
                   <div class="scout-name anon-name scout-hidden">Scout 2</div>
-                  <div class="scout-name scout-visible" style="display:none;">Peter Bakker</div>
+                  <div class="scout-name scout-visible" style="display: none">Peter Bakker</div>
                   <div class="scout-date">23 mrt 2026</div>
                 </div>
                 <div class="rapport-score">3.2</div>
               </div>
               <div class="rapport-row">
-                <div class="avatar sm" style="background:var(--oranje);">KH</div>
+                <div class="avatar sm" style="background: var(--oranje)">KH</div>
                 <div class="scout-info">
                   <div class="scout-name anon-name scout-hidden">Scout 3</div>
-                  <div class="scout-name scout-visible" style="display:none;">Karin Hendriks <span class="relation-tag">&#128279; Ouder</span></div>
+                  <div class="scout-name scout-visible" style="display: none">
+                    Karin Hendriks <span class="relation-tag">&#128279; Ouder</span>
+                  </div>
                   <div class="scout-date">24 mrt 2026</div>
                 </div>
                 <div class="rapport-score">3.9</div>
@@ -1831,12 +1921,12 @@
             </div>
           </div>
 
-          <div class="divider" style="margin: 8px 0 16px;"></div>
+          <div class="divider" style="margin: 8px 0 16px"></div>
 
           <!-- Speler 2: Fleur -->
           <div class="resultaat-speler">
             <div class="resultaat-speler-header">
-              <div class="avatar sm" style="background:var(--groen);">F</div>
+              <div class="avatar sm" style="background: var(--groen)">F</div>
               <span class="name">Fleur de Jong</span>
               <span class="team-badge groen">J10-1</span>
             </div>
@@ -1851,17 +1941,17 @@
                 <div class="stat-label">Rapporten</div>
               </div>
               <div class="resultaat-stat">
-                <div class="stat-value" style="font-size:16px;">3.8-4.5</div>
+                <div class="stat-value" style="font-size: 16px">3.8-4.5</div>
                 <div class="stat-label">Spreiding</div>
               </div>
             </div>
 
-            <div style="padding: 4px 0 8px;">
+            <div style="padding: 4px 0 8px">
               <div class="spreiding-bar">
                 <span class="bar-label">1</span>
                 <div class="bar-track">
-                  <div class="bar-range" style="left: 56%; width: 14%;"></div>
-                  <div class="bar-avg" style="left: 64%;"></div>
+                  <div class="bar-range" style="left: 56%; width: 14%"></div>
+                  <div class="bar-avg" style="left: 64%"></div>
                 </div>
                 <span class="bar-label">5</span>
               </div>
@@ -1869,28 +1959,28 @@
 
             <div class="rapport-list">
               <div class="rapport-row">
-                <div class="avatar sm" style="background:var(--blauw);">MV</div>
+                <div class="avatar sm" style="background: var(--blauw)">MV</div>
                 <div class="scout-info">
                   <div class="scout-name anon-name scout-hidden">Scout 1</div>
-                  <div class="scout-name scout-visible" style="display:none;">Marieke Vermeer</div>
+                  <div class="scout-name scout-visible" style="display: none">Marieke Vermeer</div>
                   <div class="scout-date">22 mrt 2026</div>
                 </div>
                 <div class="rapport-score">4.5</div>
               </div>
               <div class="rapport-row">
-                <div class="avatar sm" style="background:var(--groen);">PB</div>
+                <div class="avatar sm" style="background: var(--groen)">PB</div>
                 <div class="scout-info">
                   <div class="scout-name anon-name scout-hidden">Scout 2</div>
-                  <div class="scout-name scout-visible" style="display:none;">Peter Bakker</div>
+                  <div class="scout-name scout-visible" style="display: none">Peter Bakker</div>
                   <div class="scout-date">23 mrt 2026</div>
                 </div>
                 <div class="rapport-score">3.8</div>
               </div>
               <div class="rapport-row">
-                <div class="avatar sm" style="background:var(--oranje);">KH</div>
+                <div class="avatar sm" style="background: var(--oranje)">KH</div>
                 <div class="scout-info">
                   <div class="scout-name anon-name scout-hidden">Scout 3</div>
-                  <div class="scout-name scout-visible" style="display:none;">Karin Hendriks</div>
+                  <div class="scout-name scout-visible" style="display: none">Karin Hendriks</div>
                   <div class="scout-date">24 mrt 2026</div>
                 </div>
                 <div class="rapport-score">4.3</div>
@@ -1898,12 +1988,12 @@
             </div>
           </div>
 
-          <div class="divider" style="margin: 8px 0 16px;"></div>
+          <div class="divider" style="margin: 8px 0 16px"></div>
 
           <!-- Speler 3: Bram -->
           <div class="resultaat-speler">
             <div class="resultaat-speler-header">
-              <div class="avatar sm" style="background:var(--groen);">B</div>
+              <div class="avatar sm" style="background: var(--groen)">B</div>
               <span class="name">Bram Smit</span>
               <span class="team-badge groen">J10-1</span>
             </div>
@@ -1918,17 +2008,17 @@
                 <div class="stat-label">Rapporten</div>
               </div>
               <div class="resultaat-stat">
-                <div class="stat-value" style="font-size:16px;">2.1-3.5</div>
+                <div class="stat-value" style="font-size: 16px">2.1-3.5</div>
                 <div class="stat-label">Spreiding</div>
               </div>
             </div>
 
-            <div style="padding: 4px 0 8px;">
+            <div style="padding: 4px 0 8px">
               <div class="spreiding-bar">
                 <span class="bar-label">1</span>
                 <div class="bar-track">
-                  <div class="bar-range" style="left: 22%; width: 28%;"></div>
-                  <div class="bar-avg" style="left: 38%;"></div>
+                  <div class="bar-range" style="left: 22%; width: 28%"></div>
+                  <div class="bar-avg" style="left: 38%"></div>
                 </div>
                 <span class="bar-label">5</span>
               </div>
@@ -1936,28 +2026,30 @@
 
             <div class="rapport-list">
               <div class="rapport-row">
-                <div class="avatar sm" style="background:var(--blauw);">MV</div>
+                <div class="avatar sm" style="background: var(--blauw)">MV</div>
                 <div class="scout-info">
                   <div class="scout-name anon-name scout-hidden">Scout 1</div>
-                  <div class="scout-name scout-visible" style="display:none;">Marieke Vermeer</div>
+                  <div class="scout-name scout-visible" style="display: none">Marieke Vermeer</div>
                   <div class="scout-date">22 mrt 2026</div>
                 </div>
                 <div class="rapport-score">3.5</div>
               </div>
               <div class="rapport-row">
-                <div class="avatar sm" style="background:var(--groen);">PB</div>
+                <div class="avatar sm" style="background: var(--groen)">PB</div>
                 <div class="scout-info">
                   <div class="scout-name anon-name scout-hidden">Scout 2</div>
-                  <div class="scout-name scout-visible" style="display:none;">Peter Bakker <span class="relation-tag">&#128279; Bekende</span></div>
+                  <div class="scout-name scout-visible" style="display: none">
+                    Peter Bakker <span class="relation-tag">&#128279; Bekende</span>
+                  </div>
                   <div class="scout-date">23 mrt 2026</div>
                 </div>
                 <div class="rapport-score">3.1</div>
               </div>
               <div class="rapport-row">
-                <div class="avatar sm" style="background:var(--oranje);">KH</div>
+                <div class="avatar sm" style="background: var(--oranje)">KH</div>
                 <div class="scout-info">
                   <div class="scout-name anon-name scout-hidden">Scout 3</div>
-                  <div class="scout-name scout-visible" style="display:none;">Karin Hendriks</div>
+                  <div class="scout-name scout-visible" style="display: none">Karin Hendriks</div>
                   <div class="scout-date">24 mrt 2026</div>
                 </div>
                 <div class="rapport-score">2.1</div>
@@ -2062,7 +2154,7 @@
               </div>
             </div>
 
-            <div id="wiz-speler-select" style="display:none;">
+            <div id="wiz-speler-select" style="display: none">
               <div class="select-item" onclick="toggleSelect(this)">
                 <span class="check">&#10003;</span>
                 <div class="item-info">
@@ -2104,9 +2196,12 @@
           <!-- Step 3: Toelichting + Deadline -->
           <div class="wizard-step" id="wiz-step-3">
             <h3>Toelichting en deadline</h3>
-            <div style="margin-bottom: 16px;">
+            <div style="margin-bottom: 16px">
               <label class="label">Toelichting voor scouts</label>
-              <textarea class="textarea" placeholder="Waar moeten scouts op letten? Bijv. 'Let op aanvalsvaardigheden en samenwerking'"></textarea>
+              <textarea
+                class="textarea"
+                placeholder="Waar moeten scouts op letten? Bijv. 'Let op aanvalsvaardigheden en samenwerking'"
+              ></textarea>
             </div>
             <div>
               <label class="label">Deadline</label>
@@ -2117,10 +2212,12 @@
           <!-- Step 4: Scouts toewijzen -->
           <div class="wizard-step" id="wiz-step-4">
             <h3>Wijs scouts toe</h3>
-            <p style="font-size:13px; color:var(--text-muted); margin-bottom:12px;">Selecteer minimaal 2 scouts voor betrouwbare resultaten.</p>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px">
+              Selecteer minimaal 2 scouts voor betrouwbare resultaten.
+            </p>
             <div class="select-item selected" onclick="toggleSelect(this)">
               <span class="check">&#10003;</span>
-              <div class="avatar sm" style="background:var(--blauw);">MV</div>
+              <div class="avatar sm" style="background: var(--blauw)">MV</div>
               <div class="item-info">
                 <div class="item-name">Marieke Vermeer</div>
                 <div class="item-detail">4 beoordelingen gedaan</div>
@@ -2128,7 +2225,7 @@
             </div>
             <div class="select-item selected" onclick="toggleSelect(this)">
               <span class="check">&#10003;</span>
-              <div class="avatar sm" style="background:var(--groen);">PB</div>
+              <div class="avatar sm" style="background: var(--groen)">PB</div>
               <div class="item-info">
                 <div class="item-name">Peter Bakker</div>
                 <div class="item-detail">6 beoordelingen gedaan</div>
@@ -2136,7 +2233,7 @@
             </div>
             <div class="select-item" onclick="toggleSelect(this)">
               <span class="check">&#10003;</span>
-              <div class="avatar sm" style="background:var(--oranje);">KH</div>
+              <div class="avatar sm" style="background: var(--oranje)">KH</div>
               <div class="item-info">
                 <div class="item-name">Karin Hendriks</div>
                 <div class="item-detail">2 beoordelingen gedaan</div>
@@ -2144,7 +2241,7 @@
             </div>
             <div class="select-item" onclick="toggleSelect(this)">
               <span class="check">&#10003;</span>
-              <div class="avatar sm" style="background:var(--geel);">RD</div>
+              <div class="avatar sm" style="background: var(--geel)">RD</div>
               <div class="item-info">
                 <div class="item-name">Rob Dijkstra</div>
                 <div class="item-detail">3 beoordelingen gedaan</div>
@@ -2154,7 +2251,14 @@
         </div>
 
         <div class="wizard-footer">
-          <button class="btn btn-secondary" id="wiz-back" onclick="wizardBack()" style="display:none;">Vorige</button>
+          <button
+            class="btn btn-secondary"
+            id="wiz-back"
+            onclick="wizardBack()"
+            style="display: none"
+          >
+            Vorige
+          </button>
           <button class="btn btn-primary" id="wiz-next" onclick="wizardNext()">Volgende</button>
         </div>
       </div>
@@ -2163,7 +2267,25 @@
     <!-- =========================================================== -->
     <!-- SUCCESS TOAST                                               -->
     <!-- =========================================================== -->
-    <div id="success-toast" style="display:none; position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:#22c55e; color:white; padding:12px 24px; border-radius:12px; font-size:14px; font-weight:700; box-shadow:0 4px 16px rgba(34,197,94,0.4); z-index:300; animation: slideUp 0.3s ease;">
+    <div
+      id="success-toast"
+      style="
+        display: none;
+        position: fixed;
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #22c55e;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 700;
+        box-shadow: 0 4px 16px rgba(34, 197, 94, 0.4);
+        z-index: 300;
+        animation: slideUp 0.3s ease;
+      "
+    >
       Verzoek aangemaakt!
     </div>
 
@@ -2174,59 +2296,59 @@
       /* ===== TAB NAVIGATION ===== */
       function showTab(tabId) {
         // Hide all sections
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll(".section").forEach((s) => s.classList.remove("active"));
 
         // Show target section
         const target = document.getElementById(tabId);
-        if (target) target.classList.add('active');
+        if (target) target.classList.add("active");
 
         // Update nav buttons
         const tabMap = {
-          'scout-verzoeken': 0,
-          'verzoek-detail': 1,
-          'tc-verzoeken': 2,
-          'tc-resultaten': 3
+          "scout-verzoeken": 0,
+          "verzoek-detail": 1,
+          "tc-verzoeken": 2,
+          "tc-resultaten": 3,
         };
-        document.querySelectorAll('.top-nav button').forEach((btn, i) => {
-          btn.classList.toggle('active', i === tabMap[tabId]);
+        document.querySelectorAll(".top-nav button").forEach((btn, i) => {
+          btn.classList.toggle("active", i === tabMap[tabId]);
         });
       }
 
       /* ===== SPELER EXPAND (Tab 2) ===== */
       function toggleSpelerExpand(mainEl) {
         const expandEl = mainEl.nextElementSibling;
-        const isOpen = expandEl.style.display !== 'none';
+        const isOpen = expandEl.style.display !== "none";
 
         // Close all others first
-        document.querySelectorAll('.speler-row-expand').forEach(el => {
-          el.style.display = 'none';
+        document.querySelectorAll(".speler-row-expand").forEach((el) => {
+          el.style.display = "none";
         });
 
         if (!isOpen) {
-          expandEl.style.display = 'block';
-          expandEl.style.animation = 'fadeIn 0.2s ease';
+          expandEl.style.display = "block";
+          expandEl.style.animation = "fadeIn 0.2s ease";
         }
       }
 
       /* ===== RELATION SELECT ===== */
       function selectRelation(chip) {
         const container = chip.parentElement;
-        container.querySelectorAll('.relation-chip').forEach(c => c.classList.remove('selected'));
-        chip.classList.add('selected');
+        container.querySelectorAll(".relation-chip").forEach((c) => c.classList.remove("selected"));
+        chip.classList.add("selected");
       }
 
       /* ===== TC FILTER (Tab 3) ===== */
       function filterTC(chipEl, status) {
         // Update active filter
-        document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-        chipEl.classList.add('active');
+        document.querySelectorAll(".filter-chip").forEach((c) => c.classList.remove("active"));
+        chipEl.classList.add("active");
 
         // Filter cards
-        document.querySelectorAll('.tc-card').forEach(card => {
-          if (status === 'alle') {
-            card.parentElement.style.display = '';
+        document.querySelectorAll(".tc-card").forEach((card) => {
+          if (status === "alle") {
+            card.parentElement.style.display = "";
           } else {
-            card.parentElement.style.display = card.dataset.status === status ? '' : 'none';
+            card.parentElement.style.display = card.dataset.status === status ? "" : "none";
           }
         });
       }
@@ -2236,17 +2358,17 @@
 
       function toggleAnonymize() {
         anonymized = !anonymized;
-        const toggle = document.getElementById('anon-toggle');
-        const label = document.getElementById('anon-label');
+        const toggle = document.getElementById("anon-toggle");
+        const label = document.getElementById("anon-label");
 
-        toggle.classList.toggle('active', !anonymized);
-        label.textContent = anonymized ? 'Verborgen' : 'Zichtbaar';
+        toggle.classList.toggle("active", !anonymized);
+        label.textContent = anonymized ? "Verborgen" : "Zichtbaar";
 
-        document.querySelectorAll('.scout-hidden').forEach(el => {
-          el.style.display = anonymized ? '' : 'none';
+        document.querySelectorAll(".scout-hidden").forEach((el) => {
+          el.style.display = anonymized ? "" : "none";
         });
-        document.querySelectorAll('.scout-visible').forEach(el => {
-          el.style.display = anonymized ? 'none' : '';
+        document.querySelectorAll(".scout-visible").forEach((el) => {
+          el.style.display = anonymized ? "none" : "";
         });
       }
 
@@ -2258,70 +2380,76 @@
         wizardStep = 1;
         wizardType = null;
         updateWizardUI();
-        document.getElementById('wizard-overlay').classList.add('visible');
+        document.getElementById("wizard-overlay").classList.add("visible");
 
         // Reset selections
-        document.querySelectorAll('.wizard-panel .type-card').forEach(c => c.classList.remove('selected'));
-        document.querySelectorAll('#wiz-step-2 .select-item').forEach(c => c.classList.remove('selected'));
-        document.querySelectorAll('#wiz-step-2 .select-item .check').forEach(c => c.style.color = 'transparent');
+        document
+          .querySelectorAll(".wizard-panel .type-card")
+          .forEach((c) => c.classList.remove("selected"));
+        document
+          .querySelectorAll("#wiz-step-2 .select-item")
+          .forEach((c) => c.classList.remove("selected"));
+        document
+          .querySelectorAll("#wiz-step-2 .select-item .check")
+          .forEach((c) => (c.style.color = "transparent"));
       }
 
       function closeWizard() {
-        document.getElementById('wizard-overlay').classList.remove('visible');
+        document.getElementById("wizard-overlay").classList.remove("visible");
       }
 
       function closeWizardIfBg(e) {
-        if (e.target === document.getElementById('wizard-overlay')) {
+        if (e.target === document.getElementById("wizard-overlay")) {
           closeWizard();
         }
       }
 
       function selectWizType(card, type) {
-        document.querySelectorAll('.type-card').forEach(c => c.classList.remove('selected'));
-        card.classList.add('selected');
+        document.querySelectorAll(".type-card").forEach((c) => c.classList.remove("selected"));
+        card.classList.add("selected");
         wizardType = type;
       }
 
       function toggleSelect(item) {
-        item.classList.toggle('selected');
+        item.classList.toggle("selected");
       }
 
       function updateWizardUI() {
         // Show correct step
         for (let i = 1; i <= 4; i++) {
-          const step = document.getElementById('wiz-step-' + i);
-          step.classList.toggle('active', i === wizardStep);
+          const step = document.getElementById("wiz-step-" + i);
+          step.classList.toggle("active", i === wizardStep);
         }
 
         // Progress
         for (let i = 1; i <= 4; i++) {
-          const bar = document.getElementById('wp-' + i);
-          bar.className = 'wizard-progress-step';
-          if (i < wizardStep) bar.classList.add('done');
-          else if (i === wizardStep) bar.classList.add('current');
+          const bar = document.getElementById("wp-" + i);
+          bar.className = "wizard-progress-step";
+          if (i < wizardStep) bar.classList.add("done");
+          else if (i === wizardStep) bar.classList.add("current");
         }
 
         // Subtitle
         const subtitles = [
-          'Stap 1 van 4 \u2014 Kies het type',
-          'Stap 2 van 4 \u2014 Selecteer team of spelers',
-          'Stap 3 van 4 \u2014 Toelichting en deadline',
-          'Stap 4 van 4 \u2014 Wijs scouts toe'
+          "Stap 1 van 4 \u2014 Kies het type",
+          "Stap 2 van 4 \u2014 Selecteer team of spelers",
+          "Stap 3 van 4 \u2014 Toelichting en deadline",
+          "Stap 4 van 4 \u2014 Wijs scouts toe",
         ];
-        document.getElementById('wizard-subtitle').textContent = subtitles[wizardStep - 1];
+        document.getElementById("wizard-subtitle").textContent = subtitles[wizardStep - 1];
 
         // Back button
-        document.getElementById('wiz-back').style.display = wizardStep > 1 ? '' : 'none';
+        document.getElementById("wiz-back").style.display = wizardStep > 1 ? "" : "none";
 
         // Next button
-        const nextBtn = document.getElementById('wiz-next');
-        nextBtn.textContent = wizardStep === 4 ? 'Verzoek aanmaken' : 'Volgende';
+        const nextBtn = document.getElementById("wiz-next");
+        nextBtn.textContent = wizardStep === 4 ? "Verzoek aanmaken" : "Volgende";
 
         // Step 2: show team or speler selection based on type
         if (wizardStep === 2) {
-          const isTeam = wizardType === 'generiek';
-          document.getElementById('wiz-team-select').style.display = isTeam ? '' : 'none';
-          document.getElementById('wiz-speler-select').style.display = isTeam ? 'none' : '';
+          const isTeam = wizardType === "generiek";
+          document.getElementById("wiz-team-select").style.display = isTeam ? "" : "none";
+          document.getElementById("wiz-speler-select").style.display = isTeam ? "none" : "";
         }
       }
 
@@ -2344,10 +2472,10 @@
       }
 
       function showToast() {
-        const toast = document.getElementById('success-toast');
-        toast.style.display = 'block';
+        const toast = document.getElementById("success-toast");
+        toast.style.display = "block";
         setTimeout(() => {
-          toast.style.display = 'none';
+          toast.style.display = "none";
         }, 2500);
       }
     </script>

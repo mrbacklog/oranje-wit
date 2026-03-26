@@ -3,7 +3,7 @@ import { test as setup, expect } from "@playwright/test";
 const AUTH_FILE = "e2e/.auth/user.json";
 
 // Probeer meerdere poorten — niet alle apps draaien altijd tegelijk
-const PORTS = [4100, 4102, 4104];
+const PORTS = [4100, 4102, 4104, 4106];
 
 async function findAvailablePort(page: import("@playwright/test").Page): Promise<number> {
   for (const port of PORTS) {
