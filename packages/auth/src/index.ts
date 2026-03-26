@@ -4,6 +4,9 @@ import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
 import { getAllowedRole } from "./allowlist";
 
+export { bepaalClearance } from "./clearance";
+export type { Clearance } from "@oranje-wit/types";
+
 const providers: Provider[] = [Google];
 
 // E2E test-only: voeg Credentials provider toe zodat Playwright
@@ -53,8 +56,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     session({ session, token }) {
       if (session.user) {
-        // @ts-expect-error role is custom property
-        session.user.role = token.role as string;
+        (session.user as Record<string, unknown>).role = token.role as string;
       }
       return session;
     },
