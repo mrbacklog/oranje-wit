@@ -2,7 +2,7 @@ const DOMAIN_MAP = {
   "monitor.ckvoranjewit.app": "monitor-production-b2b1.up.railway.app",
   "teamindeling.ckvoranjewit.app": "team-indeling-production.up.railway.app",
   "evaluaties.ckvoranjewit.app": "evaluatie-production.up.railway.app",
-  "scout.ckvoranjewit.app": "dhgcjiga.up.railway.app",
+  "scout.ckvoranjewit.app": "scouting-production-6128.up.railway.app",
 };
 
 export default {
