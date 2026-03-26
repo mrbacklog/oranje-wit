@@ -17,4 +17,5 @@ export * from "./constanten";
 export * from "./api";
 export * from "./evaluatie";
 export * from "./score-model";
+export * from "./clearance";
 export { logger } from "./logger";
