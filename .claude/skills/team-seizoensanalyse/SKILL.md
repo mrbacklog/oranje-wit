@@ -49,11 +49,27 @@ Start een agent team voor een brede analyse van het ledenbestand en de seizoensv
   - Respecteert blauwdruk-kaders en pins
 - **Communiceert met**: korfbal (concepten), speler-scout (spelersadvies), data-analist (aantallen)
 
+## Memory
+
+Bij het starten van dit team MOET de lead relevante memories raadplegen:
+
+1. **Lees** `MEMORY.md` (index) in de memory-directory
+2. **Lees** alle memories met type `project` die gerelateerd zijn aan seizoensanalyse, retentie, trends of ledenaantallen
+3. **Vergelijk** eerdere bevindingen met nieuwe data — signaleer veranderingen
+4. **Sla op** na afloop: verrassende trends, nieuwe risico's, of significante verschuivingen als `project`-memory
+
+Typische memories voor dit team:
+- Conclusies uit vorige seizoensanalyses (trends, risico-cohorten)
+- Bekende retentierisico's per leeftijdsgroep
+- Wervingsacties en hun effecten
+- Vergelijking met vorig jaar (beter/slechter/gelijk)
+
 ## Werkwijze
 
 1. **korfbal** formuleert de kernvragen voor het seizoen
-2. **data-analist** start parallel met de verloop-pipeline en signalering
-3. **speler-scout** begint met profielen van risicospelers uit vorig seizoen
+2. **korfbal** raadpleegt memories van eerdere analyses — wat was vorig keer het beeld?
+3. **data-analist** start parallel met de verloop-pipeline en signalering
+4. **speler-scout** begint met profielen van risicospelers uit vorig seizoen
 4. Na data: **korfbal** stuurt gerichte vragen:
    - Aan **data-analist**: "welke cohorten zijn kritiek?"
    - Aan **speler-scout**: "welke spelers hebben extra aandacht nodig?"

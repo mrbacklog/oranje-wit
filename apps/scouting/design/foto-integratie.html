@@ -1,0 +1,2397 @@
+<!doctype html>
+<html lang="nl" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OW Scout — Foto-integratie Spelerskaarten</title>
+    <style>
+      /* ================================================================
+   OW SCOUT — FOTO-INTEGRATIE PROTOTYPE
+   c.k.v. Oranje Wit — Dordrecht
+   Standalone HTML/CSS — geen externe dependencies
+   ================================================================ */
+
+      /* -- CSS Custom Properties -- */
+      :root {
+        --ow-orange: #ff6b00;
+        --ow-orange-light: #ff8f3f;
+        --ow-orange-dark: #cc5500;
+
+        /* Leeftijdsgradients */
+        --grad-7: linear-gradient(135deg, #3b82f6, #6dd5a3);
+        --grad-11: linear-gradient(135deg, #eab308, #facc15);
+        --grad-14: linear-gradient(135deg, #f97316, #fb923c);
+        --grad-17: linear-gradient(135deg, #ef4444, #f87171);
+
+        /* Leeftijdskleuren (solid) */
+        --age-7-solid: #3b82f6;
+        --age-11-solid: #eab308;
+        --age-14-solid: #f97316;
+        --age-17-solid: #ef4444;
+
+        /* Tiers */
+        --tier-brons: #cd7f32;
+        --tier-brons-light: #d4954a;
+        --tier-brons-dark: #8b5e23;
+        --tier-zilver: #c0c0c0;
+        --tier-zilver-light: #e8e8e8;
+        --tier-zilver-dark: #808080;
+        --tier-goud: #ffd700;
+        --tier-goud-light: #ffe44d;
+        --tier-goud-dark: #b8960f;
+
+        /* Layout */
+        --card-width: 200px;
+        --card-height: 300px;
+        --card-radius: 12px;
+
+        /* Thema: Light */
+        --bg-primary: #f8f9fa;
+        --bg-secondary: #ffffff;
+        --bg-tertiary: #f0f1f3;
+        --text-primary: #1a1a2e;
+        --text-secondary: #4a4a6a;
+        --text-muted: #8a8aaa;
+        --border-color: #e2e4e8;
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+        --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.12);
+        --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);
+      }
+
+      [data-theme="dark"] {
+        --bg-primary: #0d1117;
+        --bg-secondary: #161b22;
+        --bg-tertiary: #21262d;
+        --text-primary: #e6edf3;
+        --text-secondary: #8b949e;
+        --text-muted: #484f58;
+        --border-color: #30363d;
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+        --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+        --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+      }
+
+      /* -- Reset -- */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html {
+        font-size: 16px;
+        -webkit-font-smoothing: antialiased;
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family:
+          "Segoe UI",
+          system-ui,
+          -apple-system,
+          sans-serif;
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        min-height: 100vh;
+        transition:
+          background 0.3s ease,
+          color 0.3s ease;
+      }
+
+      /* -- Header -- */
+      .header {
+        background: var(--bg-secondary);
+        border-bottom: 1px solid var(--border-color);
+        padding: 20px 24px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        backdrop-filter: blur(12px);
+        background: color-mix(in srgb, var(--bg-secondary) 85%, transparent);
+      }
+
+      .header-inner {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+
+      .header-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .header-logo {
+        width: 40px;
+        height: 40px;
+        background: var(--ow-orange);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 800;
+        font-size: 16px;
+        letter-spacing: -1px;
+      }
+
+      .header-title {
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+      }
+      .header-title span {
+        color: var(--ow-orange);
+      }
+      .header-subtitle {
+        font-size: 13px;
+        color: var(--text-secondary);
+        margin-top: 1px;
+      }
+
+      .header-controls {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .theme-toggle {
+        width: 52px;
+        height: 28px;
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border-color);
+        border-radius: 14px;
+        cursor: pointer;
+        position: relative;
+        transition: all 0.3s ease;
+      }
+
+      .theme-toggle::after {
+        content: "";
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 20px;
+        height: 20px;
+        background: var(--ow-orange);
+        border-radius: 50%;
+        transition: transform 0.3s ease;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+      }
+
+      [data-theme="dark"] .theme-toggle::after {
+        transform: translateX(24px);
+      }
+      .theme-toggle-label {
+        font-size: 12px;
+        color: var(--text-secondary);
+      }
+
+      /* -- Content -- */
+      .content {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 32px 24px 60px;
+      }
+
+      /* -- Section -- */
+      .section {
+        margin-bottom: 56px;
+      }
+
+      .section-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 8px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid var(--border-color);
+      }
+
+      .section-number {
+        width: 36px;
+        height: 36px;
+        background: var(--ow-orange);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 800;
+        font-size: 16px;
+        flex-shrink: 0;
+      }
+
+      .section h2 {
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: -0.3px;
+      }
+
+      .section-desc {
+        font-size: 14px;
+        color: var(--text-secondary);
+        margin-bottom: 24px;
+        line-height: 1.6;
+      }
+
+      .subsection-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text-secondary);
+        margin: 24px 0 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .subsection-title::before {
+        content: "";
+        width: 4px;
+        height: 18px;
+        background: var(--ow-orange);
+        border-radius: 2px;
+      }
+
+      /* -- Photo demo containers -- */
+      .mask-row {
+        display: flex;
+        gap: 32px;
+        flex-wrap: wrap;
+        align-items: flex-start;
+      }
+
+      .mask-demo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .mask-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-secondary);
+        text-align: center;
+      }
+
+      .mask-sublabel {
+        font-size: 11px;
+        color: var(--text-muted);
+        text-align: center;
+      }
+
+      /* -- Photo containers -- */
+      .photo-container {
+        width: 100px;
+        height: 100px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .photo-container img,
+      .photo-container .photo-placeholder {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 20%;
+      }
+
+      .photo-placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        font-weight: 700;
+        color: white;
+      }
+
+      /* -- Masker varianten -- */
+      .mask-circle {
+        border-radius: 50%;
+      }
+
+      .mask-rounded {
+        border-radius: 22%;
+      }
+
+      .mask-shield {
+        clip-path: polygon(50% 0%, 100% 12%, 100% 65%, 75% 85%, 50% 100%, 25% 85%, 0% 65%, 0% 12%);
+      }
+
+      .mask-hexagon {
+        clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      }
+
+      /* -- Foto behandelingen -- */
+      .treatment-original {
+        /* Geen filter */
+      }
+
+      .treatment-duotone {
+        filter: saturate(0) contrast(1.1);
+      }
+
+      .treatment-duotone-overlay {
+        position: absolute;
+        inset: 0;
+        mix-blend-mode: color;
+        pointer-events: none;
+      }
+
+      .treatment-vignette::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          ellipse at center,
+          transparent 40%,
+          rgba(0, 0, 0, 0.15) 60%,
+          rgba(0, 0, 0, 0.5) 100%
+        );
+        pointer-events: none;
+      }
+
+      /* Duotone kleuren per leeftijdsgroep */
+      .duotone-blauw {
+        background: var(--age-7-solid);
+      }
+      .duotone-geel {
+        background: var(--age-11-solid);
+      }
+      .duotone-oranje {
+        background: var(--age-14-solid);
+      }
+      .duotone-rood {
+        background: var(--age-17-solid);
+      }
+
+      /* -- Treatment grid -- */
+      .treatment-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+      }
+
+      .treatment-column {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .treatment-column-title {
+        font-size: 14px;
+        font-weight: 700;
+        text-align: center;
+        padding: 6px 12px;
+        border-radius: 8px;
+        color: white;
+      }
+
+      .treatment-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+      }
+
+      /* -- Fallback voorbeelden -- */
+      .fallback-row {
+        display: flex;
+        gap: 32px;
+        flex-wrap: wrap;
+        align-items: flex-start;
+      }
+
+      .fallback-demo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+
+      /* Initialen fallback */
+      .fallback-initialen {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .fallback-initialen.size-lg {
+        width: 100px;
+        height: 100px;
+        font-size: 32px;
+      }
+
+      /* Silhouet fallback */
+      .fallback-silhouet {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .silhouet-svg {
+        width: 60%;
+        height: 60%;
+        opacity: 0.4;
+      }
+
+      /* Gradient fallback */
+      .fallback-gradient {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .fallback-gradient-inner {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        padding-bottom: 12px;
+      }
+
+      .fallback-gradient-text {
+        font-size: 10px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.6);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      /* -- Volledige kaarten met foto -- */
+      .cards-row {
+        display: flex;
+        gap: 24px;
+        flex-wrap: wrap;
+      }
+
+      .card {
+        width: var(--card-width);
+        height: var(--card-height);
+        border-radius: var(--card-radius);
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        transform-style: preserve-3d;
+        perspective: 800px;
+        transition:
+          transform 0.4s cubic-bezier(0.23, 1, 0.32, 1),
+          box-shadow 0.4s ease;
+        flex-shrink: 0;
+      }
+
+      .card:hover {
+        transform: translateY(-8px) rotateX(4deg) rotateY(-2deg);
+        box-shadow: var(--shadow-lg);
+        z-index: 10;
+      }
+
+      .card-border {
+        position: absolute;
+        inset: 0;
+        border-radius: var(--card-radius);
+        padding: 2px;
+        z-index: 1;
+      }
+
+      .card-border.tier-brons {
+        background: linear-gradient(
+          160deg,
+          var(--tier-brons-light),
+          var(--tier-brons),
+          var(--tier-brons-dark)
+        );
+      }
+      .card-border.tier-zilver {
+        background: linear-gradient(
+          160deg,
+          var(--tier-zilver-light),
+          var(--tier-zilver),
+          var(--tier-zilver-dark),
+          var(--tier-zilver-light)
+        );
+      }
+      .card-border.tier-goud {
+        background: linear-gradient(
+          160deg,
+          var(--tier-goud-light),
+          var(--tier-goud),
+          var(--tier-goud-dark),
+          var(--tier-goud-light)
+        );
+      }
+
+      .card-inner {
+        position: absolute;
+        inset: 2px;
+        border-radius: calc(var(--card-radius) - 2px);
+        overflow: hidden;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .card-bg {
+        position: absolute;
+        inset: 0;
+        opacity: 0.92;
+        z-index: 0;
+      }
+
+      .card-inner::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+        z-index: 1;
+        pointer-events: none;
+      }
+
+      .card.tier-zilver .card-inner::after {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+          45deg,
+          transparent 30%,
+          rgba(255, 255, 255, 0.08) 45%,
+          rgba(255, 255, 255, 0.15) 50%,
+          rgba(255, 255, 255, 0.08) 55%,
+          transparent 70%
+        );
+        z-index: 3;
+        pointer-events: none;
+        animation: sheen 4s ease-in-out infinite;
+      }
+
+      .card.tier-goud .card-inner::after {
+        content: "";
+        position: absolute;
+        top: -100%;
+        left: -100%;
+        width: 300%;
+        height: 300%;
+        background: linear-gradient(
+          45deg,
+          transparent 25%,
+          rgba(255, 215, 0, 0.06) 35%,
+          rgba(255, 215, 0, 0.15) 40%,
+          rgba(255, 255, 255, 0.2) 45%,
+          rgba(255, 215, 0, 0.15) 50%,
+          rgba(255, 215, 0, 0.06) 55%,
+          transparent 65%
+        );
+        z-index: 3;
+        pointer-events: none;
+        animation: shimmer 3s ease-in-out infinite;
+      }
+
+      .card-content {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        padding: 12px 12px 10px;
+      }
+
+      .card-top {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+      }
+
+      .card-photo {
+        width: 70px;
+        height: 70px;
+        flex-shrink: 0;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .card-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 20%;
+      }
+
+      .card-photo-circle {
+        border-radius: 50%;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+      }
+      .card-photo-rounded {
+        border-radius: 18%;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .card-photo-shield {
+        clip-path: polygon(50% 0%, 100% 12%, 100% 65%, 75% 85%, 50% 100%, 25% 85%, 0% 65%, 0% 12%);
+      }
+
+      .card-photo-hexagon {
+        clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      }
+
+      .card-rating {
+        flex: 1;
+        text-align: right;
+      }
+
+      .card-brand {
+        font-size: 8px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.5);
+        margin-bottom: 2px;
+      }
+
+      .card-overall {
+        font-size: 44px;
+        font-weight: 900;
+        line-height: 1;
+        color: white;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        letter-spacing: -2px;
+      }
+
+      .card-stars {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.7);
+        margin-top: 2px;
+        letter-spacing: 1px;
+      }
+      .card-stars .star-filled {
+        color: var(--tier-goud);
+        text-shadow: 0 0 4px rgba(255, 215, 0, 0.5);
+      }
+
+      .card-age-badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 9px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        margin-top: 3px;
+        backdrop-filter: blur(4px);
+      }
+
+      .card-name {
+        margin-top: 10px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      }
+
+      .card-player-name {
+        font-size: 14px;
+        font-weight: 700;
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .card-player-detail {
+        font-size: 10px;
+        color: rgba(255, 255, 255, 0.6);
+        margin-top: 1px;
+      }
+
+      .card-stats {
+        margin-top: auto;
+        padding-top: 6px;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 3px 0;
+      }
+
+      .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        font-size: 10px;
+      }
+      .stat-label-text {
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 9px;
+        min-width: 22px;
+      }
+      .stat-value-text {
+        font-weight: 700;
+        color: white;
+      }
+
+      .stat-bar-bg {
+        flex: 1;
+        height: 2px;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 1px;
+        overflow: hidden;
+      }
+
+      .stat-bar-fill {
+        height: 100%;
+        border-radius: 1px;
+        background: rgba(255, 255, 255, 0.6);
+      }
+
+      .card-watermark {
+        position: absolute;
+        bottom: 3px;
+        right: 8px;
+        font-size: 6px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        color: rgba(255, 255, 255, 0.15);
+        z-index: 5;
+        text-transform: uppercase;
+      }
+
+      .card-tier-label {
+        position: absolute;
+        top: 6px;
+        left: 6px;
+        padding: 1px 6px;
+        border-radius: 4px;
+        font-size: 8px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        z-index: 5;
+      }
+
+      .tier-label-brons {
+        background: var(--tier-brons);
+        color: #3d2200;
+      }
+      .tier-label-zilver {
+        background: var(--tier-zilver);
+        color: #333;
+      }
+      .tier-label-goud {
+        background: var(--tier-goud);
+        color: #5c4a00;
+      }
+
+      /* -- Foto-kwaliteit demo -- */
+      .quality-row {
+        display: flex;
+        gap: 32px;
+        flex-wrap: wrap;
+        align-items: flex-start;
+      }
+
+      .quality-demo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        max-width: 200px;
+      }
+
+      .quality-container {
+        width: 120px;
+        height: 120px;
+        border-radius: 18%;
+        overflow: hidden;
+        position: relative;
+        border: 2px solid var(--border-color);
+      }
+
+      .quality-container img,
+      .quality-container .quality-placeholder {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      /* Object-fit demo */
+      .fit-cover {
+        object-fit: cover;
+        object-position: center 20%;
+      }
+      .fit-landscape {
+        object-fit: cover;
+        object-position: center center;
+      }
+      .fit-portrait {
+        object-fit: cover;
+        object-position: center 15%;
+      }
+
+      /* Low-res blur-up */
+      .quality-lowres {
+        position: relative;
+      }
+
+      .quality-lowres .blur-layer {
+        position: absolute;
+        inset: 0;
+        filter: blur(12px);
+        transform: scale(1.1);
+        z-index: 0;
+      }
+
+      .quality-lowres .sharp-layer {
+        position: relative;
+        z-index: 1;
+        animation: blurUp 2s ease-out forwards;
+      }
+
+      @keyframes blurUp {
+        0% {
+          opacity: 0;
+          filter: blur(8px);
+        }
+        100% {
+          opacity: 1;
+          filter: blur(0);
+        }
+      }
+
+      /* -- Placeholder image (SVG-based face contour) -- */
+      .placeholder-face {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(180deg, #9ca3af 0%, #6b7280 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* -- Annotations -- */
+      .annotation {
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        padding: 16px 20px;
+        margin-top: 16px;
+        font-size: 13px;
+        line-height: 1.6;
+        color: var(--text-secondary);
+      }
+
+      .annotation code {
+        background: color-mix(in srgb, var(--ow-orange) 12%, transparent);
+        color: var(--ow-orange);
+        padding: 1px 6px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-family: "JetBrains Mono", "SF Mono", monospace;
+      }
+
+      .annotation strong {
+        color: var(--text-primary);
+      }
+
+      /* -- Animations -- */
+      @keyframes sheen {
+        0%,
+        100% {
+          transform: translateX(-30%) translateY(-30%) rotate(45deg);
+        }
+        50% {
+          transform: translateX(30%) translateY(30%) rotate(45deg);
+        }
+      }
+
+      @keyframes shimmer {
+        0%,
+        100% {
+          transform: translateX(-40%) translateY(-40%) rotate(45deg);
+        }
+        50% {
+          transform: translateX(20%) translateY(20%) rotate(45deg);
+        }
+      }
+
+      /* -- Footer -- */
+      .footer {
+        text-align: center;
+        padding: 40px 24px;
+        color: var(--text-muted);
+        font-size: 13px;
+        border-top: 1px solid var(--border-color);
+      }
+
+      .footer strong {
+        color: var(--ow-orange);
+      }
+
+      /* -- Responsive -- */
+      @media (max-width: 768px) {
+        .treatment-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .mask-row,
+        .fallback-row,
+        .quality-row {
+          gap: 20px;
+        }
+      }
+
+      @media (max-width: 500px) {
+        .treatment-grid {
+          grid-template-columns: 1fr;
+        }
+        .header-inner {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- HEADER -->
+    <header class="header">
+      <div class="header-inner">
+        <div class="header-brand">
+          <div class="header-logo">OW</div>
+          <div>
+            <div class="header-title"><span>OW Scout</span> — Foto-integratie</div>
+            <div class="header-subtitle">
+              Design Prototype &middot; c.k.v. Oranje Wit &middot; Spelerskaarten foto-behandeling
+            </div>
+          </div>
+        </div>
+        <div class="header-controls">
+          <div style="display: flex; align-items: center; gap: 6px">
+            <span class="theme-toggle-label">Licht</span>
+            <div
+              class="theme-toggle"
+              onclick="toggleTheme()"
+              role="button"
+              tabindex="0"
+              aria-label="Wissel thema"
+            ></div>
+            <span class="theme-toggle-label">Donker</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="content">
+      <!-- SECTIE 1: Foto-maskers -->
+      <section class="section">
+        <div class="section-header">
+          <div class="section-number">1</div>
+          <h2>Foto-maskers — 4 varianten</h2>
+        </div>
+        <p class="section-desc">
+          Elke variant toont een andere vorm om de spelerfoto in te kaderen. De maskers werken met
+          CSS <code>clip-path</code> en <code>border-radius</code>, waardoor ze direct op
+          WebP-afbeeldingen uit de database toepasbaar zijn.
+        </p>
+
+        <div class="mask-row">
+          <!-- Cirkel -->
+          <div class="mask-demo">
+            <div
+              class="photo-container mask-circle"
+              style="background: linear-gradient(135deg, #3b82f6, #6dd5a3)"
+            >
+              <svg
+                class="photo-placeholder"
+                viewBox="0 0 100 100"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle cx="50" cy="35" r="18" fill="rgba(255,255,255,0.35)" />
+                <ellipse cx="50" cy="82" rx="28" ry="22" fill="rgba(255,255,255,0.25)" />
+              </svg>
+            </div>
+            <div class="mask-label">Cirkel</div>
+            <div class="mask-sublabel">
+              Klassiek, universeel<br /><code>border-radius: 50%</code>
+            </div>
+          </div>
+
+          <!-- Afgerond vierkant -->
+          <div class="mask-demo">
+            <div
+              class="photo-container mask-rounded"
+              style="background: linear-gradient(135deg, #eab308, #facc15)"
+            >
+              <svg
+                class="photo-placeholder"
+                viewBox="0 0 100 100"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle cx="50" cy="35" r="18" fill="rgba(255,255,255,0.35)" />
+                <ellipse cx="50" cy="82" rx="28" ry="22" fill="rgba(255,255,255,0.25)" />
+              </svg>
+            </div>
+            <div class="mask-label">Afgerond vierkant</div>
+            <div class="mask-sublabel">iOS-stijl, modern<br /><code>border-radius: 22%</code></div>
+          </div>
+
+          <!-- Shield -->
+          <div class="mask-demo">
+            <div
+              class="photo-container mask-shield"
+              style="background: linear-gradient(135deg, #f97316, #fb923c)"
+            >
+              <svg
+                class="photo-placeholder"
+                viewBox="0 0 100 100"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle cx="50" cy="33" r="18" fill="rgba(255,255,255,0.35)" />
+                <ellipse cx="50" cy="72" rx="26" ry="20" fill="rgba(255,255,255,0.25)" />
+              </svg>
+            </div>
+            <div class="mask-label">Shield / Schild</div>
+            <div class="mask-sublabel">
+              Premium, FIFA-achtig<br /><code>clip-path: polygon(...)</code>
+            </div>
+          </div>
+
+          <!-- Hexagon -->
+          <div class="mask-demo">
+            <div
+              class="photo-container mask-hexagon"
+              style="background: linear-gradient(135deg, #ef4444, #f87171)"
+            >
+              <svg
+                class="photo-placeholder"
+                viewBox="0 0 100 100"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle cx="50" cy="36" r="17" fill="rgba(255,255,255,0.35)" />
+                <ellipse cx="50" cy="74" rx="24" ry="18" fill="rgba(255,255,255,0.25)" />
+              </svg>
+            </div>
+            <div class="mask-label">Hexagon</div>
+            <div class="mask-sublabel">Uniek, modern<br /><code>clip-path: polygon(...)</code></div>
+          </div>
+        </div>
+
+        <div class="annotation">
+          <strong>Aanbeveling:</strong> Het <strong>shield-masker</strong> sluit het best aan bij de
+          kaartstijl (FIFA-referentie) en geeft de kaarten een premium uitstraling. Het
+          <strong>afgerond vierkant</strong> is het veiligste alternatief voor brede
+          platformcompatibiliteit.
+        </div>
+      </section>
+
+      <!-- SECTIE 2: Foto-behandeling -->
+      <section class="section">
+        <div class="section-header">
+          <div class="section-number">2</div>
+          <h2>Foto-behandeling — per masker, 3 filters</h2>
+        </div>
+        <p class="section-desc">
+          Elke kolom is een leeftijdsgroep-kleur. Per masker tonen we drie behandelingen: origineel,
+          duotone (desaturated + kleur-overlay), en vignet (donkere randen, focus op gezicht).
+        </p>
+
+        <div class="treatment-grid">
+          <!-- Blauw (7 jaar) -->
+          <div class="treatment-column">
+            <div class="treatment-column-title" style="background: var(--age-7-solid)">
+              Blauw (7 jaar)
+            </div>
+
+            <div class="treatment-group">
+              <div class="mask-sublabel">Origineel</div>
+              <div class="photo-container mask-shield" style="background: var(--grad-7)">
+                <svg
+                  class="photo-placeholder"
+                  viewBox="0 0 100 100"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="50" cy="33" r="18" fill="rgba(255,255,255,0.4)" />
+                  <ellipse cx="50" cy="72" rx="26" ry="20" fill="rgba(255,255,255,0.3)" />
+                  <rect x="38" y="25" width="6" height="4" rx="2" fill="rgba(255,255,255,0.5)" />
+                  <rect x="56" y="25" width="6" height="4" rx="2" fill="rgba(255,255,255,0.5)" />
+                  <path
+                    d="M44 38 Q50 44 56 38"
+                    stroke="rgba(255,255,255,0.4)"
+                    fill="none"
+                    stroke-width="1.5"
+                  />
+                </svg>
+              </div>
+            </div>
+
+            <div class="treatment-group">
+              <div class="mask-sublabel">Duotone</div>
+              <div
+                class="photo-container mask-shield"
+                style="background: var(--grad-7); position: relative"
+              >
+                <svg
+                  class="photo-placeholder treatment-duotone"
+                  viewBox="0 0 100 100"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="50" cy="33" r="18" fill="rgba(200,200,200,0.5)" />
+                  <ellipse cx="50" cy="72" rx="26" ry="20" fill="rgba(200,200,200,0.4)" />
+                  <rect x="38" y="25" width="6" height="4" rx="2" fill="rgba(200,200,200,0.6)" />
+                  <rect x="56" y="25" width="6" height="4" rx="2" fill="rgba(200,200,200,0.6)" />
+                  <path
+                    d="M44 38 Q50 44 56 38"
+                    stroke="rgba(200,200,200,0.5)"
+                    fill="none"
+                    stroke-width="1.5"
+                  />
+                </svg>
+                <div class="treatment-duotone-overlay duotone-blauw" style="border-radius: 0"></div>
+              </div>
+            </div>
+
+            <div class="treatment-group">
+              <div class="mask-sublabel">Vignet</div>
+              <div
+                class="photo-container mask-shield treatment-vignette"
+                style="background: var(--grad-7)"
+              >
+                <svg
+                  class="photo-placeholder"
+                  viewBox="0 0 100 100"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="50" cy="33" r="18" fill="rgba(255,255,255,0.4)" />
+                  <ellipse cx="50" cy="72" rx="26" ry="20" fill="rgba(255,255,255,0.3)" />
+                  <rect x="38" y="25" width="6" height="4" rx="2" fill="rgba(255,255,255,0.5)" />
+                  <rect x="56" y="25" width="6" height="4" rx="2" fill="rgba(255,255,255,0.5)" />
+                  <path
+                    d="M44 38 Q50 44 56 38"
+                    stroke="rgba(255,255,255,0.4)"
+                    fill="none"
+                    stroke-width="1.5"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Geel (11 jaar) -->
+          <div class="treatment-column">
+            <div
+              class="treatment-column-title"
+              style="background: var(--age-11-solid); color: #422006"
+            >
+              Geel (11 jaar)
+            </div>
+
+            <div class="treatment-group">
+              <div class="mask-sublabel">Origineel</div>
+              <div class="photo-container mask-circle" style="background: var(--grad-11)">
+                <svg
+                  class="photo-placeholder"
+                  viewBox="0 0 100 100"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="50" cy="35" r="18" fill="rgba(255,255,255,0.4)" />
+                  <ellipse cx="50" cy="82" rx="28" ry="22" fill="rgba(255,255,255,0.3)" />
+                  <rect x="38" y="27" width="6" height="4" rx="2" fill="rgba(255,255,255,0.5)" />
+                  <rect x="56" y="27" width="6" height="4" rx="2" fill="rgba(255,255,255,0.5)" />
+                  <path
+                    d="M44 40 Q50 46 56 40"
+                    stroke="rgba(255,255,255,0.4)"
+                    fill="none"
+                    stroke-width="1.5"
+                  />
+                </svg>
+              </div>
+            </div>
+
+            <div class="treatment-group">
+              <div class="mask-sublabel">Duotone</div>
+              <div
+                class="photo-container mask-circle"
+                style="background: var(--grad-11); position: relative"
+              >
+                <svg
+                  class="photo-placeholder treatment-duotone"
+                  viewBox="0 0 100 100"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="50" cy="35" r="18" fill="rgba(200,200,200,0.5)" />
+                  <ellipse cx="50" cy="82" rx="28" ry="22" fill="rgba(200,200,200,0.4)" />
+                  <rect x="38" y="27" width="6" height="4" rx="2" fill="rgba(200,200,200,0.6)" />
+                  <rect x="56" y="27" width="6" height="4" rx="2" fill="rgba(200,200,200,0.6)" />
+                  <path
+                    d="M44 40 Q50 46 56 40"
+                    stroke="rgba(200,200,200,0.5)"
+                    fill="none"
+                    stroke-width="1.5"
+                  />
+                </svg>
+                <div
+                  class="treatment-duotone-overlay duotone-geel"
+                  style="border-radius: 50%"
+                ></div>
+              </div>
+            </div>
+
+            <div class="treatment-group">
+              <div class="mask-sublabel">Vignet</div>
+              <div
+                class="photo-container treatment-vignette mask-circle"
+                style="background: var(--grad-11)"
+              >
+                <svg
+                  class="photo-placeholder"
+                  viewBox="0 0 100 100"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="50" cy="35" r="18" fill="rgba(255,255,255,0.4)" />
+                  <ellipse cx="50" cy="82" rx="28" ry="22" fill="rgba(255,255,255,0.3)" />
+                  <rect x="38" y="27" width="6" height="4" rx="2" fill="rgba(255,255,255,0.5)" />
+                  <rect x="56" y="27" width="6" height="4" rx="2" fill="rgba(255,255,255,0.5)" />
+                  <path
+                    d="M44 40 Q50 46 56 40"
+                    stroke="rgba(255,255,255,0.4)"
+                    fill="none"
+                    stroke-width="1.5"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Oranje (14 jaar) -->
+          <div class="treatment-column">
+            <div class="treatment-column-title" style="background: var(--age-14-solid)">
+              Oranje (14 jaar)
+            </div>
+
+            <div class="treatment-group">
+              <div class="mask-sublabel">Origineel</div>
+              <div class="photo-container mask-rounded" style="background: var(--grad-14)">
+                <svg
+                  class="photo-placeholder"
+                  viewBox="0 0 100 100"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="50" cy="35" r="18" fill="rgba(255,255,255,0.4)" />
+                  <ellipse cx="50" cy="82" rx="28" ry="22" fill="rgba(255,255,255,0.3)" />
+                  <rect x="38" y="27" width="6" height="4" rx="2" fill="rgba(255,255,255,0.5)" />
+                  <rect x="56" y="27" width="6" height="4" rx="2" fill="rgba(255,255,255,0.5)" />
+                  <path
+                    d="M44 40 Q50 46 56 40"
+                    stroke="rgba(255,255,255,0.4)"
+                    fill="none"
+                    stroke-width="1.5"
+                  />
+                </svg>
+              </div>
+            </div>
+
+            <div class="treatment-group">
+              <div class="mask-sublabel">Duotone</div>
+              <div
+                class="photo-container mask-rounded"
+                style="background: var(--grad-14); position: relative"
+              >
+                <svg
+                  class="photo-placeholder treatment-duotone"
+                  viewBox="0 0 100 100"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="50" cy="35" r="18" fill="rgba(200,200,200,0.5)" />
+                  <ellipse cx="50" cy="82" rx="28" ry="22" fill="rgba(200,200,200,0.4)" />
+                  <rect x="38" y="27" width="6" height="4" rx="2" fill="rgba(200,200,200,0.6)" />
+                  <rect x="56" y="27" width="6" height="4" rx="2" fill="rgba(200,200,200,0.6)" />
+                  <path
+                    d="M44 40 Q50 46 56 40"
+                    stroke="rgba(200,200,200,0.5)"
+                    fill="none"
+                    stroke-width="1.5"
+                  />
+                </svg>
+                <div
+                  class="treatment-duotone-overlay duotone-oranje"
+                  style="border-radius: 22%"
+                ></div>
+              </div>
+            </div>
+
+            <div class="treatment-group">
+              <div class="mask-sublabel">Vignet</div>
+              <div
+                class="photo-container mask-rounded treatment-vignette"
+                style="background: var(--grad-14)"
+              >
+                <svg
+                  class="photo-placeholder"
+                  viewBox="0 0 100 100"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="50" cy="35" r="18" fill="rgba(255,255,255,0.4)" />
+                  <ellipse cx="50" cy="82" rx="28" ry="22" fill="rgba(255,255,255,0.3)" />
+                  <rect x="38" y="27" width="6" height="4" rx="2" fill="rgba(255,255,255,0.5)" />
+                  <rect x="56" y="27" width="6" height="4" rx="2" fill="rgba(255,255,255,0.5)" />
+                  <path
+                    d="M44 40 Q50 46 56 40"
+                    stroke="rgba(255,255,255,0.4)"
+                    fill="none"
+                    stroke-width="1.5"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rood (17 jaar) -->
+          <div class="treatment-column">
+            <div class="treatment-column-title" style="background: var(--age-17-solid)">
+              Rood (17 jaar)
+            </div>
+
+            <div class="treatment-group">
+              <div class="mask-sublabel">Origineel</div>
+              <div class="photo-container mask-hexagon" style="background: var(--grad-17)">
+                <svg
+                  class="photo-placeholder"
+                  viewBox="0 0 100 100"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="50" cy="36" r="17" fill="rgba(255,255,255,0.4)" />
+                  <ellipse cx="50" cy="74" rx="24" ry="18" fill="rgba(255,255,255,0.3)" />
+                  <rect x="39" y="28" width="5" height="4" rx="2" fill="rgba(255,255,255,0.5)" />
+                  <rect x="56" y="28" width="5" height="4" rx="2" fill="rgba(255,255,255,0.5)" />
+                  <path
+                    d="M44 40 Q50 45 56 40"
+                    stroke="rgba(255,255,255,0.4)"
+                    fill="none"
+                    stroke-width="1.5"
+                  />
+                </svg>
+              </div>
+            </div>
+
+            <div class="treatment-group">
+              <div class="mask-sublabel">Duotone</div>
+              <div
+                class="photo-container mask-hexagon"
+                style="background: var(--grad-17); position: relative"
+              >
+                <svg
+                  class="photo-placeholder treatment-duotone"
+                  viewBox="0 0 100 100"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="50" cy="36" r="17" fill="rgba(200,200,200,0.5)" />
+                  <ellipse cx="50" cy="74" rx="24" ry="18" fill="rgba(200,200,200,0.4)" />
+                  <rect x="39" y="28" width="5" height="4" rx="2" fill="rgba(200,200,200,0.6)" />
+                  <rect x="56" y="28" width="5" height="4" rx="2" fill="rgba(200,200,200,0.6)" />
+                  <path
+                    d="M44 40 Q50 45 56 40"
+                    stroke="rgba(200,200,200,0.5)"
+                    fill="none"
+                    stroke-width="1.5"
+                  />
+                </svg>
+                <div class="treatment-duotone-overlay duotone-rood"></div>
+              </div>
+            </div>
+
+            <div class="treatment-group">
+              <div class="mask-sublabel">Vignet</div>
+              <div
+                class="photo-container mask-hexagon treatment-vignette"
+                style="background: var(--grad-17)"
+              >
+                <svg
+                  class="photo-placeholder"
+                  viewBox="0 0 100 100"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="50" cy="36" r="17" fill="rgba(255,255,255,0.4)" />
+                  <ellipse cx="50" cy="74" rx="24" ry="18" fill="rgba(255,255,255,0.3)" />
+                  <rect x="39" y="28" width="5" height="4" rx="2" fill="rgba(255,255,255,0.5)" />
+                  <rect x="56" y="28" width="5" height="4" rx="2" fill="rgba(255,255,255,0.5)" />
+                  <path
+                    d="M44 40 Q50 45 56 40"
+                    stroke="rgba(255,255,255,0.4)"
+                    fill="none"
+                    stroke-width="1.5"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="annotation">
+          <strong>Duotone</strong> werkt met <code>filter: saturate(0)</code> + een
+          <code>mix-blend-mode: color</code> overlay in de leeftijdsgroep-kleur. Geeft een uniforme,
+          professionele look. <br />
+          <strong>Vignet</strong> gebruikt een <code>radial-gradient</code> overlay die van
+          transparant naar donker verloopt, waarmee de aandacht naar het midden (gezicht) wordt
+          getrokken.<br />
+          <strong>Aanbeveling:</strong> Origineel als default, vignet als hover-effect of in
+          compacte weergave.
+        </div>
+      </section>
+
+      <!-- SECTIE 3: Fallback zonder foto -->
+      <section class="section">
+        <div class="section-header">
+          <div class="section-number">3</div>
+          <h2>Fallback zonder foto</h2>
+        </div>
+        <p class="section-desc">
+          Niet elke speler heeft een foto in <code>LidFoto.imageWebp</code>. Drie elegante
+          fallback-strategieen:
+        </p>
+
+        <div class="subsection-title">A. Initialen in cirkel</div>
+        <div class="fallback-row">
+          <div class="fallback-demo">
+            <div
+              class="photo-container mask-shield fallback-initialen size-lg"
+              style="background: var(--grad-7); color: white"
+            >
+              JV
+            </div>
+            <div class="mask-label">Blauw (7)</div>
+            <div class="mask-sublabel">Jan Visser</div>
+          </div>
+          <div class="fallback-demo">
+            <div
+              class="photo-container mask-shield fallback-initialen size-lg"
+              style="background: var(--grad-11); color: #422006"
+            >
+              LB
+            </div>
+            <div class="mask-label">Geel (11)</div>
+            <div class="mask-sublabel">Lisa Bakker</div>
+          </div>
+          <div class="fallback-demo">
+            <div
+              class="photo-container mask-shield fallback-initialen size-lg"
+              style="background: var(--grad-14); color: white"
+            >
+              TK
+            </div>
+            <div class="mask-label">Oranje (14)</div>
+            <div class="mask-sublabel">Thomas de Klerk</div>
+          </div>
+          <div class="fallback-demo">
+            <div
+              class="photo-container mask-shield fallback-initialen size-lg"
+              style="background: var(--grad-17); color: white"
+            >
+              MR
+            </div>
+            <div class="mask-label">Rood (17)</div>
+            <div class="mask-sublabel">Mila Roos</div>
+          </div>
+        </div>
+
+        <div class="subsection-title">B. Silhouet-placeholder</div>
+        <div class="fallback-row">
+          <div class="fallback-demo">
+            <div
+              class="photo-container mask-shield fallback-silhouet"
+              style="background: var(--grad-7)"
+            >
+              <svg class="silhouet-svg" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="38" r="22" fill="rgba(255,255,255,0.4)" />
+                <path d="M15 110 Q15 75 50 70 Q85 75 85 110 Z" fill="rgba(255,255,255,0.3)" />
+              </svg>
+            </div>
+            <div class="mask-label">Generiek silhouet</div>
+          </div>
+          <div class="fallback-demo">
+            <div
+              class="photo-container fallback-silhouet mask-circle"
+              style="background: var(--grad-11)"
+            >
+              <svg class="silhouet-svg" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="38" r="22" fill="rgba(255,255,255,0.4)" />
+                <path d="M15 110 Q15 75 50 70 Q85 75 85 110 Z" fill="rgba(255,255,255,0.3)" />
+              </svg>
+            </div>
+            <div class="mask-label">Cirkel variant</div>
+          </div>
+          <div class="fallback-demo">
+            <div
+              class="photo-container mask-rounded fallback-silhouet"
+              style="background: var(--grad-14)"
+            >
+              <svg class="silhouet-svg" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="38" r="22" fill="rgba(255,255,255,0.4)" />
+                <path d="M15 110 Q15 75 50 70 Q85 75 85 110 Z" fill="rgba(255,255,255,0.3)" />
+              </svg>
+            </div>
+            <div class="mask-label">Afgerond variant</div>
+          </div>
+          <div class="fallback-demo">
+            <div
+              class="photo-container mask-hexagon fallback-silhouet"
+              style="background: var(--grad-17)"
+            >
+              <svg class="silhouet-svg" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="38" r="22" fill="rgba(255,255,255,0.4)" />
+                <path d="M15 110 Q15 75 50 70 Q85 75 85 110 Z" fill="rgba(255,255,255,0.3)" />
+              </svg>
+            </div>
+            <div class="mask-label">Hexagon variant</div>
+          </div>
+        </div>
+
+        <div class="subsection-title">C. Leeftijdsgroep-kleur gradient achtergrond</div>
+        <div class="fallback-row">
+          <div class="fallback-demo">
+            <div
+              class="photo-container mask-shield fallback-gradient"
+              style="background: var(--grad-7)"
+            >
+              <div class="fallback-gradient-inner">
+                <div class="fallback-gradient-text">Blauw</div>
+              </div>
+            </div>
+            <div class="mask-label">Gradient only</div>
+            <div class="mask-sublabel">Puur kleur, geen content</div>
+          </div>
+          <div class="fallback-demo">
+            <div
+              class="photo-container mask-shield"
+              style="
+                background: linear-gradient(180deg, rgba(234, 179, 8, 0.3), rgba(234, 179, 8, 0.8));
+                position: relative;
+                overflow: hidden;
+              "
+            >
+              <div
+                style="
+                  position: absolute;
+                  inset: 0;
+                  background: radial-gradient(
+                    circle at 50% 40%,
+                    rgba(255, 255, 255, 0.2),
+                    transparent 70%
+                  );
+                "
+              ></div>
+              <div
+                style="
+                  position: absolute;
+                  bottom: 8px;
+                  left: 0;
+                  right: 0;
+                  text-align: center;
+                  font-size: 22px;
+                  font-weight: 800;
+                  color: rgba(255, 255, 255, 0.6);
+                "
+              >
+                ?
+              </div>
+            </div>
+            <div class="mask-label">Gradient + vraagteken</div>
+            <div class="mask-sublabel">Uitnodiging: voeg foto toe</div>
+          </div>
+          <div class="fallback-demo">
+            <div
+              class="photo-container mask-shield"
+              style="background: var(--grad-14); position: relative"
+            >
+              <svg
+                viewBox="0 0 100 100"
+                style="width: 100%; height: 100%; position: absolute; inset: 0"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <defs>
+                  <pattern
+                    id="stripes"
+                    patternUnits="userSpaceOnUse"
+                    width="8"
+                    height="8"
+                    patternTransform="rotate(45)"
+                  >
+                    <rect width="4" height="8" fill="rgba(255,255,255,0.06)" />
+                  </pattern>
+                </defs>
+                <rect width="100" height="100" fill="url(#stripes)" />
+              </svg>
+              <div
+                style="
+                  position: absolute;
+                  inset: 0;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                <svg
+                  width="40"
+                  height="40"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="rgba(255,255,255,0.3)"
+                  stroke-width="1.5"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"
+                  />
+                  <circle cx="12" cy="13" r="4" />
+                </svg>
+              </div>
+            </div>
+            <div class="mask-label">Gradient + camera</div>
+            <div class="mask-sublabel">Call-to-action stijl</div>
+          </div>
+        </div>
+
+        <div class="annotation">
+          <strong>Aanbeveling:</strong> Gebruik <strong>initialen</strong> als primaire fallback
+          (altijd beschikbaar, persoonlijk gevoel). Het <strong>silhouet</strong> als secundaire
+          optie wanneer initialen niet gewenst zijn. De <strong>gradient</strong> met camera-icoon
+          als visuele hint om een foto te uploaden.
+        </div>
+      </section>
+
+      <!-- SECTIE 4: Foto in context (volledige kaarten) -->
+      <section class="section">
+        <div class="section-header">
+          <div class="section-number">4</div>
+          <h2>Foto in context — volledige kaarten</h2>
+        </div>
+        <p class="section-desc">
+          Drie complete kaarten (brons, zilver, goud) met het shield-masker en
+          placeholder-afbeelding. Dit toont hoe de foto zich verhoudt tot de overall rating, naam en
+          stats.
+        </p>
+
+        <div class="cards-row">
+          <!-- Brons kaart -->
+          <div class="card tier-brons">
+            <div class="card-border tier-brons"></div>
+            <div class="card-inner">
+              <div class="card-bg" style="background: var(--grad-7)"></div>
+              <div class="card-content">
+                <span class="card-tier-label tier-label-brons">Brons</span>
+                <div class="card-top" style="margin-top: 14px">
+                  <div
+                    class="card-photo card-photo-shield"
+                    style="background: rgba(255, 255, 255, 0.12)"
+                  >
+                    <svg
+                      viewBox="0 0 70 70"
+                      xmlns="http://www.w3.org/2000/svg"
+                      style="width: 100%; height: 100%"
+                    >
+                      <circle cx="35" cy="24" r="13" fill="rgba(255,255,255,0.35)" />
+                      <ellipse cx="35" cy="55" rx="20" ry="14" fill="rgba(255,255,255,0.25)" />
+                      <rect
+                        x="27"
+                        y="19"
+                        width="4"
+                        height="3"
+                        rx="1.5"
+                        fill="rgba(255,255,255,0.5)"
+                      />
+                      <rect
+                        x="39"
+                        y="19"
+                        width="4"
+                        height="3"
+                        rx="1.5"
+                        fill="rgba(255,255,255,0.5)"
+                      />
+                      <path
+                        d="M31 28 Q35 33 39 28"
+                        stroke="rgba(255,255,255,0.4)"
+                        fill="none"
+                        stroke-width="1.2"
+                      />
+                    </svg>
+                  </div>
+                  <div class="card-rating">
+                    <div class="card-brand">OW Scout</div>
+                    <div class="card-overall">62</div>
+                    <div class="card-stars">
+                      <span class="star-filled">&#9733;</span>
+                      <span class="star-filled">&#9733;</span>
+                      <span>&#9733;</span>
+                      <span>&#9733;</span>
+                      <span>&#9733;</span>
+                    </div>
+                    <div class="card-age-badge">7 Jaar</div>
+                  </div>
+                </div>
+                <div class="card-name">
+                  <div class="card-player-name">Jan Visser</div>
+                  <div class="card-player-detail">Aanval &middot; E3</div>
+                </div>
+                <div class="card-stats">
+                  <div class="stats-grid">
+                    <div class="stat-item">
+                      <span class="stat-label-text">SCH</span
+                      ><span class="stat-value-text">58</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-label-text">PAS</span
+                      ><span class="stat-value-text">65</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-label-text">BEW</span
+                      ><span class="stat-value-text">70</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-label-text">VRD</span
+                      ><span class="stat-value-text">55</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-label-text">SNL</span
+                      ><span class="stat-value-text">68</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-label-text">INZ</span
+                      ><span class="stat-value-text">72</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-watermark">c.k.v. Oranje Wit</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Zilver kaart -->
+          <div class="card tier-zilver">
+            <div class="card-border tier-zilver"></div>
+            <div class="card-inner">
+              <div class="card-bg" style="background: var(--grad-14)"></div>
+              <div class="card-content">
+                <span class="card-tier-label tier-label-zilver">Zilver</span>
+                <div class="card-top" style="margin-top: 14px">
+                  <div
+                    class="card-photo card-photo-shield"
+                    style="background: rgba(255, 255, 255, 0.12)"
+                  >
+                    <svg
+                      viewBox="0 0 70 70"
+                      xmlns="http://www.w3.org/2000/svg"
+                      style="width: 100%; height: 100%"
+                    >
+                      <circle cx="35" cy="24" r="13" fill="rgba(255,255,255,0.35)" />
+                      <ellipse cx="35" cy="55" rx="20" ry="14" fill="rgba(255,255,255,0.25)" />
+                      <rect
+                        x="27"
+                        y="19"
+                        width="4"
+                        height="3"
+                        rx="1.5"
+                        fill="rgba(255,255,255,0.5)"
+                      />
+                      <rect
+                        x="39"
+                        y="19"
+                        width="4"
+                        height="3"
+                        rx="1.5"
+                        fill="rgba(255,255,255,0.5)"
+                      />
+                      <path
+                        d="M31 28 Q35 33 39 28"
+                        stroke="rgba(255,255,255,0.4)"
+                        fill="none"
+                        stroke-width="1.2"
+                      />
+                    </svg>
+                  </div>
+                  <div class="card-rating">
+                    <div class="card-brand">OW Scout</div>
+                    <div class="card-overall">74</div>
+                    <div class="card-stars">
+                      <span class="star-filled">&#9733;</span>
+                      <span class="star-filled">&#9733;</span>
+                      <span class="star-filled">&#9733;</span>
+                      <span>&#9733;</span>
+                      <span>&#9733;</span>
+                    </div>
+                    <div class="card-age-badge">14 Jaar</div>
+                  </div>
+                </div>
+                <div class="card-name">
+                  <div class="card-player-name">Sophie de Groot</div>
+                  <div class="card-player-detail">Verdediging &middot; B1</div>
+                </div>
+                <div class="card-stats">
+                  <div class="stats-grid">
+                    <div class="stat-item">
+                      <span class="stat-label-text">SCH</span
+                      ><span class="stat-value-text">70</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-label-text">PAS</span
+                      ><span class="stat-value-text">78</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-label-text">BEW</span
+                      ><span class="stat-value-text">75</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-label-text">VRD</span
+                      ><span class="stat-value-text">80</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-label-text">SNL</span
+                      ><span class="stat-value-text">72</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-label-text">INZ</span
+                      ><span class="stat-value-text">76</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-watermark">c.k.v. Oranje Wit</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Goud kaart -->
+          <div class="card tier-goud">
+            <div class="card-border tier-goud"></div>
+            <div class="card-inner">
+              <div class="card-bg" style="background: var(--grad-17)"></div>
+              <div class="card-content">
+                <span class="card-tier-label tier-label-goud">Goud</span>
+                <div class="card-top" style="margin-top: 14px">
+                  <div
+                    class="card-photo card-photo-shield"
+                    style="background: rgba(255, 255, 255, 0.12)"
+                  >
+                    <svg
+                      viewBox="0 0 70 70"
+                      xmlns="http://www.w3.org/2000/svg"
+                      style="width: 100%; height: 100%"
+                    >
+                      <circle cx="35" cy="24" r="13" fill="rgba(255,255,255,0.35)" />
+                      <ellipse cx="35" cy="55" rx="20" ry="14" fill="rgba(255,255,255,0.25)" />
+                      <rect
+                        x="27"
+                        y="19"
+                        width="4"
+                        height="3"
+                        rx="1.5"
+                        fill="rgba(255,255,255,0.5)"
+                      />
+                      <rect
+                        x="39"
+                        y="19"
+                        width="4"
+                        height="3"
+                        rx="1.5"
+                        fill="rgba(255,255,255,0.5)"
+                      />
+                      <path
+                        d="M31 28 Q35 33 39 28"
+                        stroke="rgba(255,255,255,0.4)"
+                        fill="none"
+                        stroke-width="1.2"
+                      />
+                    </svg>
+                  </div>
+                  <div class="card-rating">
+                    <div class="card-brand">OW Scout</div>
+                    <div class="card-overall">88</div>
+                    <div class="card-stars">
+                      <span class="star-filled">&#9733;</span>
+                      <span class="star-filled">&#9733;</span>
+                      <span class="star-filled">&#9733;</span>
+                      <span class="star-filled">&#9733;</span>
+                      <span class="star-filled">&#9733;</span>
+                    </div>
+                    <div class="card-age-badge">17 Jaar</div>
+                  </div>
+                </div>
+                <div class="card-name">
+                  <div class="card-player-name">Daan van der Berg</div>
+                  <div class="card-player-detail">Aanval &middot; A1</div>
+                </div>
+                <div class="card-stats">
+                  <div class="stats-grid">
+                    <div class="stat-item">
+                      <span class="stat-label-text">SCH</span
+                      ><span class="stat-value-text">92</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-label-text">PAS</span
+                      ><span class="stat-value-text">85</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-label-text">BEW</span
+                      ><span class="stat-value-text">88</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-label-text">VRD</span
+                      ><span class="stat-value-text">78</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-label-text">SNL</span
+                      ><span class="stat-value-text">90</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-label-text">INZ</span
+                      ><span class="stat-value-text">95</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-watermark">c.k.v. Oranje Wit</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kaart met initialen fallback -->
+        <div class="subsection-title">Met initialen-fallback (geen foto beschikbaar)</div>
+        <div class="cards-row">
+          <div class="card tier-brons">
+            <div class="card-border tier-brons"></div>
+            <div class="card-inner">
+              <div class="card-bg" style="background: var(--grad-11)"></div>
+              <div class="card-content">
+                <span class="card-tier-label tier-label-brons">Brons</span>
+                <div class="card-top" style="margin-top: 14px">
+                  <div
+                    class="card-photo card-photo-shield"
+                    style="
+                      background: rgba(255, 255, 255, 0.12);
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                    "
+                  >
+                    <span
+                      style="
+                        font-size: 22px;
+                        font-weight: 800;
+                        color: rgba(255, 255, 255, 0.6);
+                        text-transform: uppercase;
+                      "
+                      >EM</span
+                    >
+                  </div>
+                  <div class="card-rating">
+                    <div class="card-brand">OW Scout</div>
+                    <div class="card-overall">55</div>
+                    <div class="card-stars">
+                      <span class="star-filled">&#9733;</span>
+                      <span class="star-filled">&#9733;</span>
+                      <span>&#9733;</span>
+                      <span>&#9733;</span>
+                      <span>&#9733;</span>
+                    </div>
+                    <div class="card-age-badge">11 Jaar</div>
+                  </div>
+                </div>
+                <div class="card-name">
+                  <div class="card-player-name">Eva Mulder</div>
+                  <div class="card-player-detail">Verdediging &middot; D2</div>
+                </div>
+                <div class="card-stats">
+                  <div class="stats-grid">
+                    <div class="stat-item">
+                      <span class="stat-label-text">SCH</span
+                      ><span class="stat-value-text">48</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-label-text">PAS</span
+                      ><span class="stat-value-text">60</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-label-text">BEW</span
+                      ><span class="stat-value-text">55</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-label-text">VRD</span
+                      ><span class="stat-value-text">62</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-label-text">SNL</span
+                      ><span class="stat-value-text">50</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-label-text">INZ</span
+                      ><span class="stat-value-text">65</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-watermark">c.k.v. Oranje Wit</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card tier-zilver">
+            <div class="card-border tier-zilver"></div>
+            <div class="card-inner">
+              <div class="card-bg" style="background: var(--grad-14)"></div>
+              <div class="card-content">
+                <span class="card-tier-label tier-label-zilver">Zilver</span>
+                <div class="card-top" style="margin-top: 14px">
+                  <div
+                    class="card-photo card-photo-shield"
+                    style="
+                      background: rgba(255, 255, 255, 0.12);
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                    "
+                  >
+                    <svg
+                      viewBox="0 0 70 70"
+                      xmlns="http://www.w3.org/2000/svg"
+                      style="width: 70%; height: 70%; opacity: 0.35"
+                    >
+                      <circle cx="35" cy="24" r="13" fill="white" />
+                      <path d="M10 64 Q10 42 35 38 Q60 42 60 64 Z" fill="white" />
+                    </svg>
+                  </div>
+                  <div class="card-rating">
+                    <div class="card-brand">OW Scout</div>
+                    <div class="card-overall">71</div>
+                    <div class="card-stars">
+                      <span class="star-filled">&#9733;</span>
+                      <span class="star-filled">&#9733;</span>
+                      <span class="star-filled">&#9733;</span>
+                      <span>&#9733;</span>
+                      <span>&#9733;</span>
+                    </div>
+                    <div class="card-age-badge">14 Jaar</div>
+                  </div>
+                </div>
+                <div class="card-name">
+                  <div class="card-player-name">Bram Jansen</div>
+                  <div class="card-player-detail">Aanval &middot; B2</div>
+                </div>
+                <div class="card-stats">
+                  <div class="stats-grid">
+                    <div class="stat-item">
+                      <span class="stat-label-text">SCH</span
+                      ><span class="stat-value-text">75</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-label-text">PAS</span
+                      ><span class="stat-value-text">68</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-label-text">BEW</span
+                      ><span class="stat-value-text">72</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-label-text">VRD</span
+                      ><span class="stat-value-text">65</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-label-text">SNL</span
+                      ><span class="stat-value-text">74</span>
+                    </div>
+                    <div class="stat-item">
+                      <span class="stat-label-text">INZ</span
+                      ><span class="stat-value-text">70</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-watermark">c.k.v. Oranje Wit</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTIE 5: Foto-kwaliteit -->
+      <section class="section">
+        <div class="section-header">
+          <div class="section-number">5</div>
+          <h2>Foto-kwaliteit — aspect ratio's en lage resolutie</h2>
+        </div>
+        <p class="section-desc">
+          Spelerfoto's komen in verschillende formaten uit de database (Sportlink export). Met
+          <code>object-fit: cover</code> en <code>object-position</code> passen we alle formaten
+          uniform in.
+        </p>
+
+        <div class="subsection-title">Aspect ratio handling</div>
+        <div class="quality-row">
+          <div class="quality-demo">
+            <div class="quality-container">
+              <!-- Vierkant: 1:1 -->
+              <div
+                style="
+                  width: 100%;
+                  height: 100%;
+                  background: linear-gradient(135deg, #3b82f6, #6dd5a3);
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  position: relative;
+                "
+              >
+                <div
+                  style="position: absolute; inset: 0; border: 2px dashed rgba(255, 255, 255, 0.3)"
+                ></div>
+                <svg
+                  viewBox="0 0 80 80"
+                  style="width: 70%; height: 70%"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="40" cy="28" r="14" fill="rgba(255,255,255,0.4)" />
+                  <ellipse cx="40" cy="62" rx="22" ry="16" fill="rgba(255,255,255,0.3)" />
+                </svg>
+              </div>
+            </div>
+            <div class="mask-label">Vierkant (1:1)</div>
+            <div class="mask-sublabel">
+              <code>object-fit: cover</code><br />Perfecte fit, geen crop nodig
+            </div>
+          </div>
+
+          <div class="quality-demo">
+            <div class="quality-container">
+              <!-- Portrait: 3:4 -->
+              <div
+                style="
+                  width: 100%;
+                  height: 100%;
+                  background: linear-gradient(135deg, #eab308, #facc15);
+                  display: flex;
+                  align-items: center;
+                  justify-content: flex-start;
+                  position: relative;
+                "
+              >
+                <div
+                  style="
+                    position: absolute;
+                    inset: -15% 10%;
+                    border: 2px dashed rgba(255, 255, 255, 0.3);
+                    background: rgba(255, 255, 255, 0.05);
+                  "
+                ></div>
+                <svg
+                  viewBox="0 0 80 106"
+                  style="width: 60%; height: 80%; margin: auto"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="40" cy="30" r="14" fill="rgba(255,255,255,0.4)" />
+                  <ellipse cx="40" cy="70" rx="22" ry="18" fill="rgba(255,255,255,0.3)" />
+                </svg>
+              </div>
+            </div>
+            <div class="mask-label">Portrait (3:4)</div>
+            <div class="mask-sublabel">
+              <code>object-position: center 20%</code><br />Crop onderaan, gezicht behouden
+            </div>
+          </div>
+
+          <div class="quality-demo">
+            <div class="quality-container">
+              <!-- Landscape: 16:9 -->
+              <div
+                style="
+                  width: 100%;
+                  height: 100%;
+                  background: linear-gradient(135deg, #f97316, #fb923c);
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  position: relative;
+                "
+              >
+                <div
+                  style="
+                    position: absolute;
+                    top: 25%;
+                    bottom: 25%;
+                    left: -20%;
+                    right: -20%;
+                    border: 2px dashed rgba(255, 255, 255, 0.3);
+                    background: rgba(255, 255, 255, 0.05);
+                  "
+                ></div>
+                <svg
+                  viewBox="0 0 120 67"
+                  style="width: 80%; height: 45%"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="60" cy="22" r="12" fill="rgba(255,255,255,0.4)" />
+                  <ellipse cx="60" cy="50" rx="20" ry="14" fill="rgba(255,255,255,0.3)" />
+                </svg>
+              </div>
+            </div>
+            <div class="mask-label">Landscape (16:9)</div>
+            <div class="mask-sublabel">
+              <code>object-position: center center</code><br />Crop links/rechts, alles zichtbaar
+            </div>
+          </div>
+        </div>
+
+        <div class="subsection-title">Blur-up effect (lage resolutie)</div>
+        <div class="quality-row">
+          <div class="quality-demo">
+            <div class="quality-container" style="overflow: hidden">
+              <!-- Stap 1: Blurry versie -->
+              <div
+                style="
+                  width: 100%;
+                  height: 100%;
+                  background: var(--grad-17);
+                  filter: blur(8px);
+                  transform: scale(1.1);
+                  position: absolute;
+                  inset: 0;
+                "
+              >
+                <svg
+                  viewBox="0 0 80 80"
+                  style="width: 100%; height: 100%"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="40" cy="28" r="14" fill="rgba(255,255,255,0.4)" />
+                  <ellipse cx="40" cy="62" rx="22" ry="16" fill="rgba(255,255,255,0.3)" />
+                </svg>
+              </div>
+            </div>
+            <div class="mask-label">Stap 1: Blur</div>
+            <div class="mask-sublabel">
+              Thumbnail (20x20px) opgeblazen<br />en geblurd als placeholder
+            </div>
+          </div>
+
+          <div class="quality-demo">
+            <div class="quality-container" style="overflow: hidden">
+              <!-- Stap 2: Scherp erover -->
+              <div
+                style="
+                  width: 100%;
+                  height: 100%;
+                  background: var(--grad-17);
+                  filter: blur(4px);
+                  transform: scale(1.05);
+                  position: absolute;
+                  inset: 0;
+                "
+              >
+                <svg
+                  viewBox="0 0 80 80"
+                  style="width: 100%; height: 100%"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="40" cy="28" r="14" fill="rgba(255,255,255,0.4)" />
+                  <ellipse cx="40" cy="62" rx="22" ry="16" fill="rgba(255,255,255,0.3)" />
+                </svg>
+              </div>
+              <div
+                style="
+                  width: 100%;
+                  height: 100%;
+                  background: var(--grad-17);
+                  position: absolute;
+                  inset: 0;
+                  opacity: 0.6;
+                "
+              >
+                <svg
+                  viewBox="0 0 80 80"
+                  style="width: 100%; height: 100%"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="40" cy="28" r="14" fill="rgba(255,255,255,0.4)" />
+                  <ellipse cx="40" cy="62" rx="22" ry="16" fill="rgba(255,255,255,0.3)" />
+                </svg>
+              </div>
+            </div>
+            <div class="mask-label">Stap 2: Transitie</div>
+            <div class="mask-sublabel">Scherpe versie faded in<br />over de blur-placeholder</div>
+          </div>
+
+          <div class="quality-demo">
+            <div class="quality-container" style="overflow: hidden">
+              <!-- Stap 3: Volledig scherp -->
+              <div
+                style="
+                  width: 100%;
+                  height: 100%;
+                  background: var(--grad-17);
+                  position: absolute;
+                  inset: 0;
+                "
+              >
+                <svg
+                  viewBox="0 0 80 80"
+                  style="width: 100%; height: 100%"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="40" cy="28" r="14" fill="rgba(255,255,255,0.4)" />
+                  <ellipse cx="40" cy="62" rx="22" ry="16" fill="rgba(255,255,255,0.3)" />
+                </svg>
+              </div>
+            </div>
+            <div class="mask-label">Stap 3: Scherp</div>
+            <div class="mask-sublabel">
+              Volledige resolutie geladen<br />Smooth transitie compleet
+            </div>
+          </div>
+        </div>
+
+        <div class="annotation">
+          <strong>Implementatie blur-up:</strong><br />
+          1. Sla een 20x20px thumbnail op als base64 inline in de HTML (of als
+          <code>LidFoto.thumbBase64</code>)<br />
+          2. Toon thumbnail direct met <code>filter: blur(12px); transform: scale(1.1)</code><br />
+          3. Laad volledige WebP async, fade in met <code>opacity</code> transitie over 300ms<br />
+          4. CSS properties: <code>object-fit: cover; object-position: center 20%</code> (gezicht
+          bovenin)<br />
+          <br />
+          <strong>CSS fallback-keten:</strong>
+          <code
+            >&lt;img src="foto.webp" onerror="this.style.display='none';
+            this.nextElementSibling.style.display='flex'"&gt;</code
+          >
+          gevolgd door een initialen-div.
+        </div>
+      </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <strong>OW Scout</strong> &middot; Foto-integratie Design Prototype &middot; c.k.v. Oranje Wit
+      &middot; Dordrecht
+    </footer>
+
+    <script>
+      function toggleTheme() {
+        const html = document.documentElement;
+        const current = html.getAttribute("data-theme");
+        html.setAttribute("data-theme", current === "dark" ? "light" : "dark");
+      }
+    </script>
+  </body>
+</html>

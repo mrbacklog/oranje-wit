@@ -1,0 +1,1204 @@
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OW Scout — Spelerskaarten SVG Template</title>
+    <style>
+      /* ===== CSS Reset & Base ===== */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #f0f2f5;
+        --bg-surface: #ffffff;
+        --text: #1a1a2e;
+        --text-muted: #6b7280;
+        --text-heading: #111827;
+        --accent: #ff6b00;
+        --accent-dim: #ff6b0033;
+        --border: #e5e7eb;
+        --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+        --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      [data-theme="dark"] {
+        --bg: #0f0f1a;
+        --bg-surface: #1a1a2e;
+        --text: #e5e7eb;
+        --text-muted: #9ca3af;
+        --text-heading: #f9fafb;
+        --accent: #ff8c33;
+        --accent-dim: #ff6b0044;
+        --border: #374151;
+        --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+      }
+
+      body {
+        font-family:
+          "Segoe UI",
+          system-ui,
+          -apple-system,
+          sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        transition:
+          background var(--transition),
+          color var(--transition);
+        min-height: 100vh;
+      }
+
+      /* ===== Header ===== */
+      .header {
+        background: var(--bg-surface);
+        border-bottom: 1px solid var(--border);
+        padding: 1rem 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06);
+        transition:
+          background var(--transition),
+          border-color var(--transition);
+      }
+
+      .header h1 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-heading);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .header h1 .ow {
+        color: var(--accent);
+      }
+
+      .header-controls {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .dark-toggle {
+        width: 52px;
+        height: 28px;
+        background: var(--border);
+        border-radius: 14px;
+        position: relative;
+        cursor: pointer;
+        border: none;
+        transition: background var(--transition);
+      }
+      .dark-toggle::after {
+        content: "";
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 22px;
+        height: 22px;
+        background: white;
+        border-radius: 50%;
+        transition: transform var(--transition);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+      }
+      [data-theme="dark"] .dark-toggle {
+        background: var(--accent);
+      }
+      [data-theme="dark"] .dark-toggle::after {
+        transform: translateX(24px);
+      }
+
+      .dark-toggle-label {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        user-select: none;
+      }
+
+      /* ===== Layout ===== */
+      .container {
+        max-width: 1440px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+
+      .section {
+        margin-bottom: 3rem;
+      }
+
+      .section-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text-heading);
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--accent);
+        display: inline-block;
+      }
+
+      .section-subtitle {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        margin-bottom: 1.5rem;
+        margin-top: -1rem;
+      }
+
+      .card-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        justify-content: center;
+      }
+
+      .card-grid-small {
+        gap: 1.25rem;
+      }
+
+      /* ===== SVG Card Wrapper ===== */
+      .svg-card-wrap {
+        cursor: pointer;
+        transition:
+          transform var(--transition),
+          filter var(--transition);
+        filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
+        position: relative;
+      }
+      .svg-card-wrap:hover {
+        transform: translateY(-8px) scale(1.02);
+        filter: drop-shadow(0 12px 32px rgba(0, 0, 0, 0.25));
+      }
+      .svg-card-wrap:active {
+        transform: translateY(-2px) scale(0.99);
+      }
+
+      .svg-card-wrap svg {
+        display: block;
+        width: 300px;
+        height: 450px;
+      }
+
+      .svg-card-wrap.small svg {
+        width: 200px;
+        height: 300px;
+      }
+
+      .card-label {
+        text-align: center;
+        margin-top: 0.5rem;
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      /* ===== Tier Legend ===== */
+      .tier-legend {
+        display: flex;
+        gap: 1.5rem;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+      }
+      .tier-legend-item {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+      }
+      .tier-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+      }
+      .tier-dot.brons {
+        background: linear-gradient(135deg, #cd7f32, #8b4513);
+      }
+      .tier-dot.zilver {
+        background: linear-gradient(135deg, #c0c0c0, #e8e8e8);
+      }
+      .tier-dot.goud {
+        background: linear-gradient(135deg, #ffd700, #ffa500);
+      }
+
+      /* ===== SVG Animations ===== */
+      @keyframes shimmer {
+        0% {
+          transform: translateX(-100%);
+        }
+        100% {
+          transform: translateX(200%);
+        }
+      }
+      @keyframes sparkle {
+        0%,
+        100% {
+          opacity: 0;
+          transform: scale(0);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      @keyframes glow-pulse {
+        0%,
+        100% {
+          opacity: 0.6;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+      @keyframes holo-shift {
+        0% {
+          stop-color: #ff0000;
+        }
+        16% {
+          stop-color: #ff8800;
+        }
+        33% {
+          stop-color: #ffff00;
+        }
+        50% {
+          stop-color: #00ff00;
+        }
+        66% {
+          stop-color: #0088ff;
+        }
+        83% {
+          stop-color: #8800ff;
+        }
+        100% {
+          stop-color: #ff0000;
+        }
+      }
+      @keyframes float-star {
+        0%,
+        100% {
+          transform: translateY(0) rotate(0deg);
+        }
+        50% {
+          transform: translateY(-4px) rotate(15deg);
+        }
+      }
+      @keyframes crown-bob {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-3px);
+        }
+      }
+      @keyframes silver-sheen {
+        0% {
+          opacity: 0;
+          transform: translateX(-60px) skewX(-20deg);
+        }
+        40% {
+          opacity: 0.4;
+        }
+        100% {
+          opacity: 0;
+          transform: translateX(360px) skewX(-20deg);
+        }
+      }
+      @keyframes gold-sparkle-1 {
+        0%,
+        100% {
+          opacity: 0;
+          transform: scale(0);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      @keyframes gold-sparkle-2 {
+        0%,
+        100% {
+          opacity: 0;
+          transform: scale(0);
+        }
+        60% {
+          opacity: 1;
+          transform: scale(1.2);
+        }
+      }
+      @keyframes gold-sparkle-3 {
+        0%,
+        100% {
+          opacity: 0;
+          transform: scale(0);
+        }
+        40% {
+          opacity: 0.8;
+          transform: scale(0.8);
+        }
+      }
+
+      .shimmer-rect {
+        animation: shimmer 3s ease-in-out infinite;
+      }
+      .sparkle-1 {
+        animation: gold-sparkle-1 2.5s ease-in-out infinite;
+      }
+      .sparkle-2 {
+        animation: gold-sparkle-2 3.2s ease-in-out infinite 0.5s;
+      }
+      .sparkle-3 {
+        animation: gold-sparkle-3 2.8s ease-in-out infinite 1.1s;
+      }
+      .sparkle-4 {
+        animation: gold-sparkle-1 3.5s ease-in-out infinite 1.8s;
+      }
+      .sparkle-5 {
+        animation: gold-sparkle-2 2.2s ease-in-out infinite 0.3s;
+      }
+      .sparkle-6 {
+        animation: gold-sparkle-3 2.9s ease-in-out infinite 2.1s;
+      }
+      .silver-sheen-anim {
+        animation: silver-sheen 4s ease-in-out infinite;
+      }
+      .glow-pulse-anim {
+        animation: glow-pulse 2s ease-in-out infinite;
+      }
+      .holo-stop-1 {
+        animation: holo-shift 4s linear infinite;
+      }
+      .holo-stop-2 {
+        animation: holo-shift 4s linear infinite 1.3s;
+      }
+      .holo-stop-3 {
+        animation: holo-shift 4s linear infinite 2.6s;
+      }
+      .float-star-anim {
+        animation: float-star 3s ease-in-out infinite;
+      }
+      .crown-bob-anim {
+        animation: crown-bob 2s ease-in-out infinite;
+      }
+
+      /* ===== Responsive ===== */
+      @media (max-width: 768px) {
+        .container {
+          padding: 1rem;
+        }
+        .svg-card-wrap svg {
+          width: 240px;
+          height: 360px;
+        }
+        .svg-card-wrap.small svg {
+          width: 160px;
+          height: 240px;
+        }
+        .card-grid {
+          gap: 1rem;
+        }
+        .header {
+          padding: 0.75rem 1rem;
+        }
+        .header h1 {
+          font-size: 1.2rem;
+        }
+      }
+      @media (max-width: 480px) {
+        .svg-card-wrap svg {
+          width: 180px;
+          height: 270px;
+        }
+        .svg-card-wrap.small svg {
+          width: 140px;
+          height: 210px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ===== HEADER ===== -->
+    <div class="header">
+      <h1>
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <circle
+            cx="14"
+            cy="14"
+            r="13"
+            stroke="currentColor"
+            stroke-width="1.5"
+            fill="var(--accent-dim)"
+          />
+          <text
+            x="14"
+            y="18"
+            text-anchor="middle"
+            font-size="13"
+            font-weight="700"
+            fill="var(--accent)"
+          >
+            OW
+          </text>
+        </svg>
+        <span><span class="ow">OW Scout</span> — Spelerskaarten</span>
+      </h1>
+      <div class="header-controls">
+        <span class="dark-toggle-label">Dark mode</span>
+        <button class="dark-toggle" id="darkToggle" aria-label="Toggle dark mode"></button>
+      </div>
+    </div>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="container">
+      <!-- SECTION: Tier Vergelijking -->
+      <div class="section">
+        <div class="section-title">Tier Vergelijking — Leeftijd 14 (Oranje)</div>
+        <p class="section-subtitle">
+          Klik op een kaart om de tier te wisselen: Brons → Zilver → Goud → Brons
+        </p>
+        <div class="tier-legend">
+          <div class="tier-legend-item">
+            <div class="tier-dot brons"></div>
+            Brons
+          </div>
+          <div class="tier-legend-item">
+            <div class="tier-dot zilver"></div>
+            Zilver
+          </div>
+          <div class="tier-legend-item">
+            <div class="tier-dot goud"></div>
+            Goud
+          </div>
+        </div>
+        <div class="card-grid" id="tierCards">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+
+      <!-- SECTION: Speciale Kaarten -->
+      <div class="section">
+        <div class="section-title">Speciale Kaarten</div>
+        <p class="section-subtitle">
+          Rising Star (holografisch) en Player of the Month (gouden gloed)
+        </p>
+        <div class="card-grid" id="specialCards">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+
+      <!-- SECTION: Alle Leeftijden -->
+      <div class="section">
+        <div class="section-title">Alle Leeftijden — Brons Tier</div>
+        <p class="section-subtitle">
+          14 leeftijdscategorieen (5 t/m 18). Klik om tier te wisselen.
+        </p>
+        <div class="card-grid card-grid-small" id="ageCards">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ===== DATA =====
+      const GRADIENTS = {
+        5: { from: "#7B2D8E", to: "#2E86C1", label: "Paars-Blauw" },
+        6: { from: "#2E86C1", to: "#2E86C1", label: "Blauw" },
+        7: { from: "#2E86C1", to: "#3BA06B", label: "Blauw-Groen" },
+        8: { from: "#27AE60", to: "#27AE60", label: "Groen" },
+        9: { from: "#27AE60", to: "#D4C030", label: "Groen-Geel" },
+        10: { from: "#F1C40F", to: "#3BA06B", label: "Geel-Groen" },
+        11: { from: "#F1C40F", to: "#F1C40F", label: "Geel" },
+        12: { from: "#F1C40F", to: "#F5A623", label: "Geel-Oranje" },
+        13: { from: "#FF6B00", to: "#D4C030", label: "Oranje-Geel" },
+        14: { from: "#FF6B00", to: "#FF6B00", label: "Oranje" },
+        15: { from: "#FF6B00", to: "#D04A2B", label: "Oranje-Rood" },
+        16: { from: "#C0392B", to: "#F5A623", label: "Rood-Oranje" },
+        17: { from: "#C0392B", to: "#C0392B", label: "Rood" },
+        18: { from: "#8B0000", to: "#5C0000", label: "Premium Donker" },
+      };
+
+      const TIER_BORDERS = {
+        brons: [
+          { offset: "0%", color: "#CD7F32" },
+          { offset: "35%", color: "#8B4513" },
+          { offset: "65%", color: "#A0682D" },
+          { offset: "100%", color: "#CD7F32" },
+        ],
+        zilver: [
+          { offset: "0%", color: "#C0C0C0" },
+          { offset: "25%", color: "#E8E8E8" },
+          { offset: "50%", color: "#A0A0A0" },
+          { offset: "75%", color: "#D0D0D0" },
+          { offset: "100%", color: "#C0C0C0" },
+        ],
+        goud: [
+          { offset: "0%", color: "#FFD700" },
+          { offset: "25%", color: "#FFA500" },
+          { offset: "55%", color: "#FFD700" },
+          { offset: "80%", color: "#FFEC8B" },
+          { offset: "100%", color: "#FFD700" },
+        ],
+      };
+
+      const EXAMPLE_PLAYERS = {
+        14: {
+          naam: "Daan de Vries",
+          team: "OW JA1",
+          rating: 82,
+          sterren: 4,
+          stats: { SCH: 78, PAS: 85, VER: 71, SPE: 80, CON: 88, POS: 79 },
+          chemistry: 2,
+        },
+        5: {
+          naam: "Sem Jansen",
+          team: "OW F-mix",
+          rating: 45,
+          sterren: 2,
+          stats: { SCH: 40, PAS: 50, VER: 35, SPE: 55, CON: 42, POS: 48 },
+          chemistry: 1,
+        },
+        6: {
+          naam: "Lotte Bakker",
+          team: "OW F3",
+          rating: 51,
+          sterren: 3,
+          stats: { SCH: 48, PAS: 55, VER: 42, SPE: 58, CON: 50, POS: 53 },
+          chemistry: 2,
+        },
+        7: {
+          naam: "Thijs Mulder",
+          team: "OW F1",
+          rating: 55,
+          sterren: 3,
+          stats: { SCH: 52, PAS: 58, VER: 48, SPE: 60, CON: 54, POS: 58 },
+          chemistry: 1,
+        },
+        8: {
+          naam: "Eva Visser",
+          team: "OW E4",
+          rating: 60,
+          sterren: 3,
+          stats: { SCH: 58, PAS: 62, VER: 55, SPE: 65, CON: 60, POS: 60 },
+          chemistry: 2,
+        },
+        9: {
+          naam: "Finn de Boer",
+          team: "OW E2",
+          rating: 64,
+          sterren: 3,
+          stats: { SCH: 62, PAS: 66, VER: 58, SPE: 68, CON: 65, POS: 65 },
+          chemistry: 2,
+        },
+        10: {
+          naam: "Sophie Smit",
+          team: "OW D3",
+          rating: 68,
+          sterren: 4,
+          stats: { SCH: 66, PAS: 70, VER: 60, SPE: 72, CON: 68, POS: 68 },
+          chemistry: 2,
+        },
+        11: {
+          naam: "Max van Dijk",
+          team: "OW D1",
+          rating: 72,
+          sterren: 4,
+          stats: { SCH: 70, PAS: 74, VER: 65, SPE: 75, CON: 72, POS: 72 },
+          chemistry: 3,
+        },
+        12: {
+          naam: "Anna Hendriks",
+          team: "OW C2",
+          rating: 74,
+          sterren: 4,
+          stats: { SCH: 72, PAS: 76, VER: 68, SPE: 78, CON: 75, POS: 73 },
+          chemistry: 2,
+        },
+        13: {
+          naam: "Luuk Peters",
+          team: "OW B1",
+          rating: 78,
+          sterren: 4,
+          stats: { SCH: 75, PAS: 80, VER: 70, SPE: 82, CON: 78, POS: 75 },
+          chemistry: 2,
+        },
+        15: {
+          naam: "Mila de Graaf",
+          team: "OW A2",
+          rating: 80,
+          sterren: 4,
+          stats: { SCH: 78, PAS: 82, VER: 72, SPE: 84, CON: 80, POS: 78 },
+          chemistry: 3,
+        },
+        16: {
+          naam: "Jesse Brouwer",
+          team: "OW U17-1",
+          rating: 84,
+          sterren: 4,
+          stats: { SCH: 82, PAS: 86, VER: 78, SPE: 85, CON: 84, POS: 82 },
+          chemistry: 2,
+        },
+        17: {
+          naam: "Noa van Leeuwen",
+          team: "OW U19-1",
+          rating: 86,
+          sterren: 5,
+          stats: { SCH: 84, PAS: 88, VER: 80, SPE: 87, CON: 86, POS: 85 },
+          chemistry: 3,
+        },
+        18: {
+          naam: "Bram Vermeer",
+          team: "OW 1",
+          rating: 91,
+          sterren: 5,
+          stats: { SCH: 89, PAS: 92, VER: 85, SPE: 90, CON: 92, POS: 88 },
+          chemistry: 3,
+        },
+      };
+
+      // ===== SVG GENERATION =====
+      function uid() {
+        return "u" + Math.random().toString(36).slice(2, 9);
+      }
+
+      function darken(hex, pct) {
+        const num = parseInt(hex.replace("#", ""), 16);
+        const r = Math.max(0, Math.floor((num >> 16) * (1 - pct)));
+        const g = Math.max(0, Math.floor(((num >> 8) & 0xff) * (1 - pct)));
+        const b = Math.max(0, Math.floor((num & 0xff) * (1 - pct)));
+        return `rgb(${r},${g},${b})`;
+      }
+
+      function lighten(hex, pct) {
+        const num = parseInt(hex.replace("#", ""), 16);
+        const r = Math.min(255, Math.floor((num >> 16) + (255 - (num >> 16)) * pct));
+        const g = Math.min(
+          255,
+          Math.floor(((num >> 8) & 0xff) + (255 - ((num >> 8) & 0xff)) * pct)
+        );
+        const b = Math.min(255, Math.floor((num & 0xff) + (255 - (num & 0xff)) * pct));
+        return `rgb(${r},${g},${b})`;
+      }
+
+      function buildSVGCard(age, tier, special) {
+        const grad = GRADIENTS[age] || GRADIENTS[14];
+        const player = EXAMPLE_PLAYERS[age] || EXAMPLE_PLAYERS[14];
+        const borders = TIER_BORDERS[tier] || TIER_BORDERS.brons;
+        const id = uid();
+
+        const W = 300,
+          H = 450,
+          R = 16,
+          BORDER = 4;
+
+        // Build stat color helper
+        function statColor(val) {
+          if (val >= 85) return "#22c55e";
+          if (val >= 70) return "#a3e635";
+          if (val >= 55) return "#facc15";
+          if (val >= 40) return "#fb923c";
+          return "#ef4444";
+        }
+
+        // Star SVG path
+        function starPath(cx, cy, outerR, innerR) {
+          let d = "";
+          for (let i = 0; i < 5; i++) {
+            const outerAngle = ((i * 72 - 90) * Math.PI) / 180;
+            const innerAngle = ((i * 72 + 36 - 90) * Math.PI) / 180;
+            const ox = cx + outerR * Math.cos(outerAngle);
+            const oy = cy + outerR * Math.sin(outerAngle);
+            const ix = cx + innerR * Math.cos(innerAngle);
+            const iy = cy + innerR * Math.sin(innerAngle);
+            d += (i === 0 ? "M" : "L") + ox + "," + oy + "L" + ix + "," + iy;
+          }
+          return d + "Z";
+        }
+
+        // Diamond path for chemistry
+        function diamondPath(cx, cy, s) {
+          return `M${cx},${cy - s}L${cx + s * 0.6},${cy}L${cx},${cy + s}L${cx - s * 0.6},${cy}Z`;
+        }
+
+        // Hexagon pattern path (single hex)
+        function hexPath(cx, cy, r) {
+          let d = "";
+          for (let i = 0; i < 6; i++) {
+            const angle = ((60 * i - 30) * Math.PI) / 180;
+            const x = cx + r * Math.cos(angle);
+            const y = cy + r * Math.sin(angle);
+            d += (i === 0 ? "M" : "L") + x.toFixed(1) + "," + y.toFixed(1);
+          }
+          return d + "Z";
+        }
+
+        // Shield clip path for photo
+        const shieldClip = `M60,20 C60,20 100,15 100,15 C100,15 140,20 140,20 C145,22 148,28 148,35 L148,90 C148,110 120,130 100,140 C80,130 52,110 52,90 L52,35 C52,28 55,22 60,20 Z`;
+
+        // Build hexagon pattern
+        let hexPattern = "";
+        const hexR = 20;
+        const hexH = hexR * Math.sqrt(3);
+        for (let row = -1; row < 16; row++) {
+          for (let col = -1; col < 12; col++) {
+            const cx = col * hexR * 1.5;
+            const cy = row * hexH + (col % 2 ? hexH / 2 : 0);
+            hexPattern += `<path d="${hexPath(cx, cy, hexR - 1)}" fill="none" stroke="white" stroke-width="0.4" opacity="0.06"/>`;
+          }
+        }
+
+        // korfbal net pattern (subtle)
+        let netPattern = "";
+        for (let i = 0; i < 8; i++) {
+          const y = 300 + i * 18;
+          netPattern += `<line x1="${80 + i * 6}" y1="${y}" x2="${220 - i * 6}" y2="${y + 80}" stroke="white" stroke-width="0.3" opacity="0.04"/>`;
+          netPattern += `<line x1="${220 - i * 6}" y1="${y}" x2="${80 + i * 6}" y2="${y + 80}" stroke="white" stroke-width="0.3" opacity="0.04"/>`;
+        }
+
+        // ===== Assemble SVG =====
+        let svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">`;
+
+        // -- DEFS --
+        svg += `<defs>`;
+
+        // Card clip
+        svg += `<clipPath id="cardClip-${id}"><rect x="0" y="0" width="${W}" height="${H}" rx="${R}"/></clipPath>`;
+
+        // Background gradient (radial + linear combined)
+        svg += `<radialGradient id="bgRadial-${id}" cx="30%" cy="25%" r="80%">
+    <stop offset="0%" stop-color="${lighten(grad.from, 0.15)}"/>
+    <stop offset="100%" stop-color="${darken(grad.to, 0.35)}"/>
+  </radialGradient>`;
+
+        svg += `<linearGradient id="bgLinear-${id}" x1="0" y1="0" x2="0.3" y2="1">
+    <stop offset="0%" stop-color="${grad.from}" stop-opacity="0.7"/>
+    <stop offset="100%" stop-color="${darken(grad.to, 0.5)}" stop-opacity="0.9"/>
+  </linearGradient>`;
+
+        // Border gradient
+        svg += `<linearGradient id="border-${id}" x1="0" y1="0" x2="1" y2="1">`;
+        borders.forEach((s) => {
+          svg += `<stop offset="${s.offset}" stop-color="${s.color}"/>`;
+        });
+        svg += `</linearGradient>`;
+
+        // Glow filter for rating
+        svg += `<filter id="glow-${id}" x="-50%" y="-50%" width="200%" height="200%">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="6" result="blur"/>
+    <feFlood flood-color="${tier === "goud" ? "#FFD700" : tier === "zilver" ? "#C0C0C0" : grad.from}" flood-opacity="0.6" result="color"/>
+    <feComposite in="color" in2="blur" operator="in" result="glow"/>
+    <feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>`;
+
+        // Text shadow filter
+        svg += `<filter id="textShadow-${id}" x="-10%" y="-10%" width="120%" height="120%">
+    <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="rgba(0,0,0,0.5)"/>
+  </filter>`;
+
+        // Shield clip for photo
+        svg += `<clipPath id="shield-${id}"><path d="${shieldClip}"/></clipPath>`;
+
+        // Shimmer gradient (for gold)
+        if (tier === "goud" || special === "potm") {
+          svg += `<linearGradient id="shimmer-${id}" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="white" stop-opacity="0"/>
+      <stop offset="40%" stop-color="white" stop-opacity="0"/>
+      <stop offset="50%" stop-color="white" stop-opacity="0.25"/>
+      <stop offset="60%" stop-color="white" stop-opacity="0"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    </linearGradient>`;
+        }
+
+        // Holographic gradient (for rising star)
+        if (special === "rising") {
+          svg += `<linearGradient id="holo-${id}" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" class="holo-stop-1" stop-color="#ff0000"/>
+      <stop offset="33%" class="holo-stop-2" stop-color="#00ff00"/>
+      <stop offset="66%" class="holo-stop-3" stop-color="#0088ff"/>
+      <stop offset="100%" class="holo-stop-1" stop-color="#ff0000"/>
+    </linearGradient>`;
+        }
+
+        // Silver sheen gradient
+        if (tier === "zilver") {
+          svg += `<linearGradient id="sheen-${id}" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="white" stop-opacity="0"/>
+      <stop offset="45%" stop-color="white" stop-opacity="0"/>
+      <stop offset="50%" stop-color="white" stop-opacity="0.3"/>
+      <stop offset="55%" stop-color="white" stop-opacity="0"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    </linearGradient>`;
+        }
+
+        // Curved text path for club name
+        svg += `<path id="curvedText-${id}" d="M40,${H - 20} Q${W / 2},${H - 5} ${W - 40},${H - 20}" fill="none"/>`;
+
+        svg += `</defs>`;
+
+        // -- CARD BODY (clipped) --
+        svg += `<g clip-path="url(#cardClip-${id})">`;
+
+        // Border rect (bottom layer)
+        svg += `<rect x="0" y="0" width="${W}" height="${H}" rx="${R}" fill="url(#border-${id})"/>`;
+
+        // Special: holographic border for Rising Star
+        if (special === "rising") {
+          svg += `<rect x="0" y="0" width="${W}" height="${H}" rx="${R}" fill="url(#holo-${id})" opacity="0.7"/>`;
+        }
+
+        // Inner card (inset by border width)
+        svg += `<rect x="${BORDER}" y="${BORDER}" width="${W - BORDER * 2}" height="${H - BORDER * 2}" rx="${R - 2}" fill="url(#bgRadial-${id})"/>`;
+        svg += `<rect x="${BORDER}" y="${BORDER}" width="${W - BORDER * 2}" height="${H - BORDER * 2}" rx="${R - 2}" fill="url(#bgLinear-${id})"/>`;
+
+        // Hexagon pattern overlay
+        svg += hexPattern;
+
+        // Net pattern in lower half
+        svg += netPattern;
+
+        // Special: POTM golden overlay
+        if (special === "potm") {
+          svg += `<rect x="${BORDER}" y="${BORDER}" width="${W - BORDER * 2}" height="${H - BORDER * 2}" rx="${R - 2}" fill="#FFD700" opacity="0.12"/>`;
+        }
+
+        // Decorative diagonal line accents
+        svg += `<line x1="0" y1="175" x2="${W}" y2="160" stroke="white" stroke-width="0.5" opacity="0.1"/>`;
+        svg += `<line x1="0" y1="180" x2="${W}" y2="165" stroke="white" stroke-width="0.3" opacity="0.06"/>`;
+
+        // ===== PHOTO AREA (shield shape, top-left) =====
+        // Shield background
+        svg += `<g transform="translate(-2, 20)">`;
+        svg += `<path d="${shieldClip}" fill="rgba(0,0,0,0.25)" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>`;
+        // Silhouette placeholder
+        svg += `<g clip-path="url(#shield-${id})">`;
+        svg += `<rect x="52" y="15" width="96" height="130" fill="rgba(0,0,0,0.15)"/>`;
+        // Person silhouette
+        svg += `<circle cx="100" cy="55" r="22" fill="rgba(255,255,255,0.15)"/>`;
+        svg += `<ellipse cx="100" cy="110" rx="30" ry="28" fill="rgba(255,255,255,0.12)"/>`;
+        // Silver photo gloss
+        if (tier === "zilver") {
+          svg += `<rect x="52" y="15" width="96" height="130" fill="white" opacity="0.08"/>`;
+        }
+        svg += `</g></g>`;
+
+        // ===== OVERALL RATING (right of photo, big number with glow) =====
+        const ratingX = 220,
+          ratingY = 95;
+        svg += `<text x="${ratingX}" y="${ratingY}" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="64" font-weight="900" fill="white" filter="url(#glow-${id})" letter-spacing="-2">${player.rating}</text>`;
+
+        // ===== STARS (under rating) =====
+        const starsY = 115;
+        for (let i = 0; i < 5; i++) {
+          const sx = 192 + i * 15;
+          const filled = i < player.sterren;
+          svg += `<path d="${starPath(sx, starsY, 6, 2.5)}" fill="${filled ? "#FFD700" : "rgba(255,255,255,0.2)"}" stroke="${filled ? "#DAA520" : "none"}" stroke-width="0.5"/>`;
+        }
+
+        // ===== AGE BADGE (pill) =====
+        const badgeX = 180,
+          badgeY = 36;
+        const badgeW = 72,
+          badgeH = 24;
+        svg += `<rect x="${badgeX}" y="${badgeY}" width="${badgeW}" height="${badgeH}" rx="12" fill="${grad.from}" opacity="0.9"/>`;
+        svg += `<rect x="${badgeX}" y="${badgeY}" width="${badgeW}" height="${badgeH}" rx="12" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>`;
+        svg += `<text x="${badgeX + badgeW / 2}" y="${badgeY + 16}" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="12" font-weight="700" fill="white">${age} JAAR</text>`;
+
+        // ===== CHEMISTRY DIAMONDS =====
+        const chemX = 262,
+          chemY = 136;
+        for (let i = 0; i < 3; i++) {
+          const dx = chemX + i * 14;
+          const filled = i < player.chemistry;
+          svg += `<path d="${diamondPath(dx, chemY, 5)}" fill="${filled ? "#22c55e" : "rgba(255,255,255,0.15)"}" stroke="${filled ? "#16a34a" : "rgba(255,255,255,0.1)"}" stroke-width="0.8"/>`;
+        }
+        svg += `<text x="${chemX - 8}" y="${chemY + 4}" font-family="'Segoe UI',system-ui,sans-serif" font-size="8" fill="rgba(255,255,255,0.5)" text-anchor="end">CHEM</text>`;
+
+        // ===== NAME & TEAM =====
+        const nameY = 185;
+        svg += `<text x="${W / 2}" y="${nameY}" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="20" font-weight="800" fill="white" filter="url(#textShadow-${id})" letter-spacing="0.5">${player.naam.toUpperCase()}</text>`;
+        svg += `<text x="${W / 2}" y="${nameY + 20}" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="12" font-weight="500" fill="rgba(255,255,255,0.7)">${player.team}</text>`;
+
+        // ===== DIVIDER LINE =====
+        svg += `<line x1="24" y1="218" x2="${W - 24}" y2="218" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>`;
+
+        // ===== STATS GRID (2x3) =====
+        const statsEntries = Object.entries(player.stats);
+        const gridStartY = 240;
+        const colW = (W - 48) / 3;
+
+        statsEntries.forEach(([key, val], i) => {
+          const col = i % 3;
+          const row = Math.floor(i / 3);
+          const cx = 24 + col * colW + colW / 2;
+          const cy = gridStartY + row * 80;
+
+          // Stat background card
+          svg += `<rect x="${cx - colW / 2 + 4}" y="${cy - 8}" width="${colW - 8}" height="68" rx="8" fill="rgba(0,0,0,0.2)" stroke="rgba(255,255,255,0.08)" stroke-width="0.5"/>`;
+
+          // Stat value
+          svg += `<text x="${cx}" y="${cy + 28}" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="28" font-weight="800" fill="${statColor(val)}">${val}</text>`;
+
+          // Stat label
+          svg += `<text x="${cx}" y="${cy + 48}" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="10" font-weight="600" fill="rgba(255,255,255,0.5)" letter-spacing="1">${key}</text>`;
+
+          // Mini bar under value
+          const barW = colW - 24;
+          const barH = 3;
+          const barX = cx - barW / 2;
+          const barY = cy + 53;
+          svg += `<rect x="${barX}" y="${barY}" width="${barW}" height="${barH}" rx="1.5" fill="rgba(255,255,255,0.1)"/>`;
+          svg += `<rect x="${barX}" y="${barY}" width="${(barW * val) / 100}" height="${barH}" rx="1.5" fill="${statColor(val)}" opacity="0.7"/>`;
+        });
+
+        // ===== TIER BADGE (bottom-left corner) =====
+        const tierLabel = tier.charAt(0).toUpperCase() + tier.slice(1);
+        const tierBadgeY = H - 38;
+        svg += `<rect x="20" y="${tierBadgeY}" width="60" height="20" rx="10" fill="url(#border-${id})" opacity="0.8"/>`;
+        svg += `<text x="50" y="${tierBadgeY + 14}" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="9" font-weight="700" fill="${tier === "goud" ? "#1a1a2e" : "#fff"}" letter-spacing="0.5">${tierLabel.toUpperCase()}</text>`;
+
+        // ===== CURVED CLUB NAME (bottom) =====
+        svg += `<text font-family="'Segoe UI',system-ui,sans-serif" font-size="9" fill="rgba(255,255,255,0.2)" font-weight="600" letter-spacing="2">`;
+        svg += `<textPath href="#curvedText-${id}" startOffset="50%" text-anchor="middle">c.k.v. Oranje Wit</textPath>`;
+        svg += `</text>`;
+
+        // ===== OW WATERMARK (subtle, center-right) =====
+        svg += `<text x="${W - 30}" y="${H - 18}" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="28" font-weight="900" fill="rgba(255,255,255,0.04)" letter-spacing="2">OW</text>`;
+
+        // ===== TIER-SPECIFIC EFFECTS =====
+
+        // Silver: animated sheen
+        if (tier === "zilver") {
+          svg += `<rect x="${BORDER}" y="${BORDER}" width="60" height="${H - BORDER * 2}" rx="${R - 2}" fill="url(#sheen-${id})" class="silver-sheen-anim" opacity="0.5"/>`;
+        }
+
+        // Gold: shimmer overlay + sparkles
+        if (tier === "goud") {
+          svg += `<rect x="${BORDER}" y="${BORDER}" width="100" height="${H - BORDER * 2}" rx="${R - 2}" fill="url(#shimmer-${id})" class="shimmer-rect"/>`;
+
+          // Sparkle particles
+          const sparklePositions = [
+            [45, 60],
+            [250, 40],
+            [30, 350],
+            [270, 300],
+            [180, 420],
+            [260, 180],
+          ];
+          sparklePositions.forEach(([sx, sy], i) => {
+            svg += `<circle cx="${sx}" cy="${sy}" r="2" fill="#FFD700" class="sparkle-${i + 1}" opacity="0"/>`;
+            svg += `<circle cx="${sx}" cy="${sy}" r="1" fill="white" class="sparkle-${i + 1}" opacity="0"/>`;
+          });
+        }
+
+        // ===== SPECIAL CARD EFFECTS =====
+
+        // Rising Star: holographic overlay + star icon
+        if (special === "rising") {
+          svg += `<rect x="${BORDER}" y="${BORDER}" width="${W - BORDER * 2}" height="${H - BORDER * 2}" rx="${R - 2}" fill="url(#holo-${id})" opacity="0.08"/>`;
+          // Animated star icon (top-right)
+          svg += `<g transform="translate(260, 70)" class="float-star-anim">`;
+          svg += `<path d="${starPath(0, 0, 14, 6)}" fill="#FFD700" stroke="#DAA520" stroke-width="1" opacity="0.9"/>`;
+          svg += `</g>`;
+          // "RISING STAR" label
+          svg += `<rect x="${W / 2 - 50}" y="155" width="100" height="18" rx="9" fill="rgba(255,215,0,0.2)" stroke="rgba(255,215,0,0.4)" stroke-width="0.5"/>`;
+          svg += `<text x="${W / 2}" y="167" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="9" font-weight="700" fill="#FFD700" letter-spacing="1.5">RISING STAR</text>`;
+        }
+
+        // Player of the Month: golden glow + crown
+        if (special === "potm") {
+          svg += `<rect x="${BORDER}" y="${BORDER}" width="100" height="${H - BORDER * 2}" rx="${R - 2}" fill="url(#shimmer-${id})" class="shimmer-rect"/>`;
+          // Crown icon (top-center)
+          svg += `<g transform="translate(${W / 2}, 12)" class="crown-bob-anim">`;
+          svg += `<path d="M-14,8 L-10,-2 L-5,5 L0,-5 L5,5 L10,-2 L14,8 Z" fill="#FFD700" stroke="#DAA520" stroke-width="0.8"/>`;
+          svg += `<rect x="-14" y="8" width="28" height="4" rx="1" fill="#FFD700"/>`;
+          svg += `</g>`;
+          // "PLAYER OF THE MONTH" label
+          svg += `<rect x="${W / 2 - 72}" y="155" width="144" height="18" rx="9" fill="rgba(255,215,0,0.25)" stroke="rgba(255,215,0,0.5)" stroke-width="0.5"/>`;
+          svg += `<text x="${W / 2}" y="167" text-anchor="middle" font-family="'Segoe UI',system-ui,sans-serif" font-size="8" font-weight="700" fill="#FFD700" letter-spacing="1.5">PLAYER OF THE MONTH</text>`;
+          // Gold sparkles everywhere
+          const potmSparkles = [
+            [30, 80],
+            [270, 50],
+            [25, 380],
+            [275, 350],
+            [150, 430],
+            [260, 200],
+            [40, 240],
+            [270, 120],
+          ];
+          potmSparkles.forEach(([sx, sy], i) => {
+            const cls = `sparkle-${(i % 6) + 1}`;
+            svg += `<circle cx="${sx}" cy="${sy}" r="2.5" fill="#FFD700" class="${cls}" opacity="0"/>`;
+            svg += `<circle cx="${sx}" cy="${sy}" r="1.2" fill="white" class="${cls}" opacity="0"/>`;
+          });
+        }
+
+        // ===== DECORATIVE: small korfbal icon (bottom-right area) =====
+        // Simplified korfbal post + basket
+        svg += `<g transform="translate(${W - 45}, ${H - 80})" opacity="0.08">`;
+        svg += `<line x1="0" y1="60" x2="0" y2="0" stroke="white" stroke-width="2"/>`;
+        svg += `<circle cx="0" cy="5" r="8" fill="none" stroke="white" stroke-width="1.5"/>`;
+        svg += `<line x1="-6" y1="10" x2="6" y2="10" stroke="white" stroke-width="1"/>`;
+        svg += `</g>`;
+
+        svg += `</g>`; // end clip group
+
+        // Outer rounded border (on top of everything)
+        svg += `<rect x="1" y="1" width="${W - 2}" height="${H - 2}" rx="${R}" fill="none" stroke="url(#border-${id})" stroke-width="${BORDER}"/>`;
+
+        // Rising Star: holographic border on top
+        if (special === "rising") {
+          svg += `<rect x="1" y="1" width="${W - 2}" height="${H - 2}" rx="${R}" fill="none" stroke="url(#holo-${id})" stroke-width="${BORDER}" opacity="0.5"/>`;
+        }
+
+        svg += `</svg>`;
+        return svg;
+      }
+
+      // ===== RENDER CARDS =====
+      function renderTierCards() {
+        const container = document.getElementById("tierCards");
+        container.innerHTML = "";
+        const tiers = ["brons", "zilver", "goud"];
+        const tierLabels = { brons: "Brons", zilver: "Zilver", goud: "Goud" };
+
+        tiers.forEach((tier) => {
+          const wrap = document.createElement("div");
+          wrap.className = "svg-card-wrap";
+          wrap.dataset.age = "14";
+          wrap.dataset.tier = tier;
+          wrap.innerHTML = buildSVGCard(14, tier, null);
+          wrap.addEventListener("click", () => cycleTier(wrap));
+
+          const label = document.createElement("div");
+          label.className = "card-label";
+          label.textContent = tierLabels[tier];
+
+          const outer = document.createElement("div");
+          outer.appendChild(wrap);
+          outer.appendChild(label);
+          container.appendChild(outer);
+        });
+      }
+
+      function renderSpecialCards() {
+        const container = document.getElementById("specialCards");
+        container.innerHTML = "";
+
+        // Rising Star (age 11, goud tier)
+        const rising = document.createElement("div");
+        rising.className = "svg-card-wrap";
+        rising.dataset.age = "11";
+        rising.dataset.tier = "goud";
+        rising.dataset.special = "rising";
+        rising.innerHTML = buildSVGCard(11, "goud", "rising");
+
+        const risingLabel = document.createElement("div");
+        risingLabel.className = "card-label";
+        risingLabel.textContent = "Rising Star";
+
+        const risingOuter = document.createElement("div");
+        risingOuter.appendChild(rising);
+        risingOuter.appendChild(risingLabel);
+        container.appendChild(risingOuter);
+
+        // Player of the Month (age 17, goud tier)
+        const potm = document.createElement("div");
+        potm.className = "svg-card-wrap";
+        potm.dataset.age = "17";
+        potm.dataset.tier = "goud";
+        potm.dataset.special = "potm";
+        potm.innerHTML = buildSVGCard(17, "goud", "potm");
+
+        const potmLabel = document.createElement("div");
+        potmLabel.className = "card-label";
+        potmLabel.textContent = "Player of the Month";
+
+        const potmOuter = document.createElement("div");
+        potmOuter.appendChild(potm);
+        potmOuter.appendChild(potmLabel);
+        container.appendChild(potmOuter);
+      }
+
+      function renderAgeCards() {
+        const container = document.getElementById("ageCards");
+        container.innerHTML = "";
+
+        for (let age = 5; age <= 18; age++) {
+          const wrap = document.createElement("div");
+          wrap.className = "svg-card-wrap small";
+          wrap.dataset.age = String(age);
+          wrap.dataset.tier = "brons";
+          wrap.innerHTML = buildSVGCard(age, "brons", null);
+          wrap.addEventListener("click", () => cycleTier(wrap));
+
+          const label = document.createElement("div");
+          label.className = "card-label";
+          label.textContent = `${age} jaar — ${GRADIENTS[age].label}`;
+
+          const outer = document.createElement("div");
+          outer.appendChild(wrap);
+          outer.appendChild(label);
+          container.appendChild(outer);
+        }
+      }
+
+      function cycleTier(wrap) {
+        const tiers = ["brons", "zilver", "goud"];
+        const current = wrap.dataset.tier;
+        const idx = tiers.indexOf(current);
+        const next = tiers[(idx + 1) % tiers.length];
+        wrap.dataset.tier = next;
+        const age = parseInt(wrap.dataset.age);
+        const special = wrap.dataset.special || null;
+        wrap.innerHTML = buildSVGCard(age, next, special);
+
+        // Update label if in tier section
+        const label = wrap.parentElement.querySelector(".card-label");
+        if (label) {
+          const tierLabels = { brons: "Brons", zilver: "Zilver", goud: "Goud" };
+          if (wrap.closest("#tierCards")) {
+            label.textContent = tierLabels[next];
+          } else if (wrap.closest("#ageCards")) {
+            label.textContent = `${age} jaar — ${GRADIENTS[age].label} (${tierLabels[next]})`;
+          } else if (special) {
+            const specialNames = { rising: "Rising Star", potm: "Player of the Month" };
+            label.textContent = `${specialNames[special]} (${tierLabels[next]})`;
+          }
+        }
+      }
+
+      // ===== DARK MODE =====
+      const toggle = document.getElementById("darkToggle");
+      toggle.addEventListener("click", () => {
+        const html = document.documentElement;
+        const isDark = html.getAttribute("data-theme") === "dark";
+        html.setAttribute("data-theme", isDark ? "light" : "dark");
+        localStorage.setItem("ow-scout-theme", isDark ? "light" : "dark");
+      });
+
+      // Restore theme
+      const savedTheme = localStorage.getItem("ow-scout-theme");
+      if (
+        savedTheme === "dark" ||
+        (!savedTheme && window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+
+      // ===== INIT =====
+      renderTierCards();
+      renderSpecialCards();
+      renderAgeCards();
+    </script>
+  </body>
+</html>

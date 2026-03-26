@@ -24,7 +24,7 @@ export default function RatingEditor({
 
   async function handleSave() {
     const num = parseInt(value, 10);
-    if (isNaN(num) || num < 0 || num > 300) return;
+    if (isNaN(num) || num < 0 || num > 200) return;
 
     setSaving(true);
     try {
@@ -83,7 +83,7 @@ export default function RatingEditor({
             <input
               type="number"
               min={0}
-              max={300}
+              max={200}
               value={value}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.value)}
               onKeyDown={(e) => {

@@ -40,6 +40,20 @@ Start een agent team voor het bouwen en deployen van features voor c.k.v. Oranje
   - Rapporteert deployment-status terug aan de ontwikkelaar
   - Bij build-fouten: analyseert logs en meldt de oorzaak
 
+## Memory
+
+Bij het starten van dit team MOET de lead relevante memories raadplegen:
+
+1. **Lees** `MEMORY.md` (index) in de memory-directory
+2. **Lees** memories met type `project` of `feedback` gerelateerd aan deployment, builds of bekende issues
+3. **Pas op** voor eerder gesignaleerde valkuilen (bijv. bekende build-issues, env var problemen)
+4. **Sla op** na afloop: nieuwe deploy-issues, workarounds, of feedback als `project`- of `feedback`-memory
+
+Typische memories voor dit team:
+- Bekende build-issues of workarounds
+- Deploy-valkuilen per app (env vars, Dockerfile quirks)
+- Feedback op eerdere releases (wat ging goed/fout)
+
 ## Werkwijze
 
 ### Fase 1: Development (ontwikkelaar lead)

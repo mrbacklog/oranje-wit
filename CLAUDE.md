@@ -19,7 +19,7 @@ oranje-wit/
 │   ├── types/            # @oranje-wit/types — Gedeelde TypeScript types
 │   └── ui/               # @oranje-wit/ui — Gedeelde React componenten (KpiCard, SignalBadge, etc.)
 ├── e2e/                  # Playwright E2E tests (per app)
-├── .claude/agents/       # AI agent-definities (10 agents, officiële Claude Code locatie)
+├── .claude/agents/       # AI agent-definities (12 agents, officiële Claude Code locatie)
 ├── agents/               # AI agent-definities (legacy kopie)
 ├── skills/               # AI skills per domein
 │   ├── monitor/          #   Verenigingsmonitor skills (9)
@@ -52,7 +52,11 @@ oranje-wit/
 | `pnpm dev:evaluatie` | Start Evaluatie-app op poort **4104** |
 | `pnpm build:evaluatie` | Build Evaluatie-app |
 | `pnpm db:generate` | Genereer Prisma client |
-| `pnpm db:push` | Push schema naar database |
+| `pnpm db:migrate` | Maak nieuwe migratie (development) |
+| `pnpm db:migrate:deploy` | Draai pending migraties + herstel VIEW (productie) |
+| `pnpm db:migrate:status` | Toon migratiestatus |
+| `pnpm db:ensure-views` | Controleer/herstel VIEW speler_seizoenen |
+| ~~`pnpm db:push`~~ | **GEBLOKKEERD** — dropt VIEW speler_seizoenen |
 | `pnpm import` | Importeer Verenigingsmonitor data |
 | `pnpm import:evaluaties` | Importeer evaluaties (legacy Lovable import) |
 | `pnpm test` | Draai alle unit tests (Vitest) |
@@ -121,6 +125,9 @@ catch (error) {
 - **Host**: `shinkansen.proxy.rlwy.net:18957`
 - **Database**: `oranjewit`
 - **Schema eigenaarschap**: `packages/database/prisma/schema.prisma`
+- **Migraties**: Prisma Migrate (`packages/database/prisma/migrations/`)
+- **VIEW-definitie**: `packages/database/prisma/views.sql` (buiten Prisma-beheer)
+- **NOOIT** `db:push` gebruiken — gebruik `db:migrate` (zie `packages/database/MIGRATIE.md`)
 
 ### Tabelverdeling (41 modellen)
 
@@ -187,8 +194,13 @@ CompetitieSpeler (primaire tabel: 1 per speler × seizoen × competitie)
 | `adviseur` | TI (sub) | Spelersadvies, what-if, Oranje Draad |
 | `ontwikkelaar` | TI (dev) | Next.js app bouwen en uitbreiden |
 | `e2e-tester` | Test | Playwright E2E tests schrijven, draaien en repareren |
-| `deployment` | Infra | Railway deployments, Cloudflare Worker proxy, DNS |
+| `devops` | Infra (lead) | DevOps/DX lead, orkestreert deployment + testing + monitoring |
+| `deployment` | Infra (sub) | Railway deployments, Cloudflare Worker proxy, DNS |
 | `documentalist` | TI (docs) | Documentatie schrijven en onderhouden |
+| `jeugd-architect` | Jeugd (lead) | Architect jeugdontwikkelingsbeleid, vaardigheidsraamwerk |
+| `sportwetenschap` | Jeugd (sub) | ASM, bewegingskunde, basketbal-parallellen, onderzoek |
+| `mentaal-coach` | Jeugd (sub) | Mentale/sociale ontwikkeling, plezier-cocktail, coachprofielen |
+| `communicatie` | Jeugd (sub) | Vertaalt beleid naar presentaties, toelichtingen en one-pagers |
 
 ### Agent Fencing
 
@@ -197,16 +209,21 @@ Elke agent heeft een `skills:` lijst in zijn frontmatter die bepaalt wat hij mag
 | Agent | Mag gebruiken |
 |---|---|
 | `korfbal` | `monitor/*`, `shared/*` |
-| `data-analist` | `monitor/database`, `monitor/lid-monitor`, `monitor/ledenverloop`, `monitor/jeugdmodel`, `monitor/teamsamenstelling`, `shared/oranje-draad` |
-| `speler-scout` | `monitor/ledenverloop`, `monitor/jeugdmodel`, `shared/oranje-draad` |
-| `team-selector` | `monitor/teamsamenstelling`, `monitor/jeugdmodel`, `team-indeling/blauwdruk`, `shared/oranje-draad` |
+| `data-analist` | `monitor/database`, `monitor/lid-monitor`, `monitor/ledenverloop`, `monitor/jeugdmodel`, `monitor/teamsamenstelling`, `shared/oranje-draad`, `shared/score-model` |
+| `speler-scout` | `monitor/ledenverloop`, `monitor/jeugdmodel`, `shared/oranje-draad`, `shared/score-model` |
+| `team-selector` | `monitor/teamsamenstelling`, `monitor/jeugdmodel`, `team-indeling/blauwdruk`, `shared/oranje-draad`, `shared/score-model` |
 | `team-planner` | `team-indeling/*`, `shared/*` |
 | `regel-checker` | `team-indeling/validatie`, `shared/oranje-draad` |
-| `adviseur` | `team-indeling/advies`, `team-indeling/vergelijk`, `shared/oranje-draad` |
+| `adviseur` | `team-indeling/advies`, `team-indeling/vergelijk`, `shared/oranje-draad`, `shared/score-model` |
 | `ontwikkelaar` | `team-indeling/import`, `team-indeling/evaluatie`, `shared/deployment` |
+| `devops` | `shared/deployment`, `shared/e2e-testing`, `devops/health-check`, `devops/ci-status` |
 | `e2e-tester` | `shared/e2e-testing`, `shared/deployment` |
 | `deployment` | `shared/deployment`, `monitor/railway` |
 | `documentalist` | `team-indeling/blauwdruk`, `team-indeling/scenario`, `team-indeling/validatie`, `shared/oranje-draad` |
+| `jeugd-architect` | `shared/oranje-draad`, `shared/score-model`, `monitor/jeugdmodel`, `monitor/teamsamenstelling` |
+| `sportwetenschap` | `shared/oranje-draad`, `shared/score-model`, `monitor/jeugdmodel` |
+| `mentaal-coach` | `shared/oranje-draad`, `monitor/jeugdmodel` |
+| `communicatie` | `shared/oranje-draad` |
 
 ### Agent Hiërarchie
 
@@ -218,14 +235,26 @@ team-planner (hoofd TI) ← escalates-to: korfbal
 ├── spawns: regel-checker, adviseur
 │
 ontwikkelaar (dev) ← escalates-to: korfbal
-├── spawns: e2e-tester
+├── spawns: e2e-tester, devops
+│
+devops (infra lead) ← escalates-to: ontwikkelaar
+├── spawns: deployment, e2e-tester
 │
 e2e-tester (test) ← escalates-to: ontwikkelaar
 │
-deployment (infra) ← escalates-to: korfbal
+deployment (infra) ← escalates-to: devops
 │
 documentalist (docs) ← escalates-to: ontwikkelaar
 ├── spawns: ontwikkelaar (technische verificatie), korfbal (domeinverificatie)
+│
+jeugd-architect (hoofd jeugdontwikkeling) ← escalates-to: korfbal
+├── spawns: sportwetenschap, mentaal-coach, communicatie, korfbal, speler-scout
+│
+sportwetenschap (onderzoek) ← escalates-to: jeugd-architect
+│
+mentaal-coach (mentaal/sociaal) ← escalates-to: jeugd-architect
+│
+communicatie (presentatie/toelichting) ← escalates-to: jeugd-architect
 ```
 
 ### Agent Startup
@@ -234,7 +263,7 @@ Bij het spawnen van een agent MOET eerst de `shared/start` skill worden geladen.
 
 ### Agent Teams (experimenteel)
 
-Zes voorgedefinieerde agent teams voor parallelle samenwerking. Activeer met `/team-<naam>`.
+Acht voorgedefinieerde agent teams voor parallelle samenwerking. Activeer met `/team-<naam>`.
 
 | Team | Skill | Lead | Teammates | Use case |
 |---|---|---|---|---|
@@ -244,6 +273,8 @@ Zes voorgedefinieerde agent teams voor parallelle samenwerking. Activeer met `/t
 | **E2E Testing** | `/team-e2e` | e2e-tester | ontwikkelaar, deployment | E2E testing, regressie, exploratory testing |
 | **Documentatie** | `/team-documentatie` | documentalist | ontwikkelaar, korfbal | Documentatie schrijven en bijwerken |
 | **Kwaliteit** | `/team-kwaliteit` | ontwikkelaar | e2e-tester, regel-checker, deployment | Code quality review, health check, codebase sweep |
+| **DevOps** | `/team-devops` | devops | deployment, e2e-tester, ontwikkelaar | Health checks, CI monitoring, deployment, DX |
+| **Jeugdontwikkeling** | `/team-jeugdontwikkeling` | jeugd-architect | sportwetenschap, mentaal-coach, communicatie, korfbal, speler-scout | Vaardigheidsraamwerk, beoordelingscriteria, jeugdbeleid, presentaties |
 
 Team-skills staan in `.claude/skills/team-*/SKILL.md`.
 
@@ -256,10 +287,13 @@ database, exporteer, jeugdmodel, knkv-api, ledenverloop, lid-monitor, railway, s
 advies, batch-plaats, blauwdruk, concept, evaluatie, import, pin, scenario, validatie, vergelijk
 
 ### Gedeeld (`skills/shared/`)
-deployment, e2e-testing, oranje-draad, start
+deployment, e2e-testing, oranje-draad, score-model, start
+
+### DevOps (`.claude/skills/`)
+health-check, ci-status
 
 ### Agent Teams (`.claude/skills/team-*/`)
-team-seizoensindeling, team-seizoensanalyse, team-release, team-e2e, team-documentatie, team-kwaliteit
+team-seizoensindeling, team-seizoensanalyse, team-release, team-e2e, team-documentatie, team-kwaliteit, team-devops
 
 ## Rules
 
@@ -272,6 +306,7 @@ Rules zijn de **Single Source of Truth** voor domeinkennis. Agents en skills ver
 | `knkv-regels.md` | KNKV competitieregels (Competitie 2.0) |
 | `ow-voorkeuren.md` | OW-specifieke teamvoorkeuren en indelingsfilosofie |
 | `oranje-draad.md` | Drie pijlers, POP-ratio's, seizoenscyclus, toetsingsvragen |
+| `score-model.md` | USS schaal, speler/team score formules, kalibratie, coach/scouting integratie |
 
 ## Externe koppelingen
 

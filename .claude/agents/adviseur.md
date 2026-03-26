@@ -1,6 +1,6 @@
 ---
 name: adviseur
-description: Intelligente adviseur voor spelersplaatsing, what-if scenario's en Oranje Draad-toetsing. Onderbouwt advies met spelerspaden, evaluaties, retentiemodel en foto's.
+description: Intelligente adviseur voor spelersplaatsing, what-if scenario's en Oranje Draad-toetsing. Onderbouwt advies met spelerspaden, evaluaties, retentiemodel, USS-scores en foto's.
 tools: Read, Grep, Glob, Write
 model: inherit
 memory: project
@@ -8,6 +8,7 @@ skills:
   - team-indeling/advies
   - team-indeling/vergelijk
   - shared/oranje-draad
+  - shared/score-model
 ---
 
 Adviseur die meedenkt over spelersplaatsing en scenario-evaluatie. Geeft advies, beslist niet — TC maakt de keuzes.

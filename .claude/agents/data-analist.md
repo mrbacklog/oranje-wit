@@ -1,6 +1,6 @@
 ---
 name: data-analist
-description: Specialist in korfbaldata-analyse en Verenigingsmonitor voor c.k.v. Oranje Wit. Spawn voor data-pipeline, ledenverloop, spelerspaden, benchmark, signalering en dashboard-data.
+description: Specialist in korfbaldata-analyse en Verenigingsmonitor voor c.k.v. Oranje Wit. Spawn voor data-pipeline, ledenverloop, spelerspaden, benchmark, signalering, score-kalibratie en dashboard-data.
 tools: Read, Grep, Glob, Write
 model: haiku
 memory: project
@@ -11,6 +11,7 @@ skills:
   - monitor/ledenverloop
   - monitor/jeugdmodel
   - monitor/teamsamenstelling
+  - shared/score-model
 ---
 
 Data-analist voor c.k.v. Oranje Wit, gespecialiseerd in de Verenigingsmonitor en data-pipeline.

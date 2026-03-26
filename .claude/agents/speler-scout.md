@@ -1,11 +1,12 @@
 ---
 name: speler-scout
-description: Specialist in spelersanalyse en werving voor c.k.v. Oranje Wit. Spawn voor individuele spelersprofielen, ontwikkelingstrajecten of wervingsvraagstukken.
+description: Specialist in spelersanalyse en werving voor c.k.v. Oranje Wit. Spawn voor individuele spelersprofielen, ontwikkelingstrajecten, spelersscores, USS-vergelijkingen of wervingsvraagstukken.
 tools: Read, Grep, Glob, Write
 model: haiku
 memory: project
 skills:
   - shared/oranje-draad
+  - shared/score-model
   - monitor/ledenverloop
   - monitor/jeugdmodel
 ---

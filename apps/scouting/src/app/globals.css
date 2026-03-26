@@ -1,0 +1,206 @@
+@import "tailwindcss";
+@import "../../design/tokens.css";
+
+@theme inline {
+  /* Club kleuren beschikbaar als Tailwind utilities */
+  --color-ow-oranje: var(--ow-oranje-500);
+  --color-ow-oranje-light: var(--ow-oranje-300);
+  --color-ow-oranje-dark: var(--ow-oranje-700);
+
+  /* Surface kleuren voor dark-first design */
+  --color-surface-dark: var(--ow-zwart-900);
+  --color-surface-card: var(--ow-zwart-800);
+  --color-surface-elevated: var(--ow-zwart-700);
+
+  /* Tekst */
+  --color-text-primary: var(--ow-wit-50);
+  --color-text-secondary: var(--ow-zwart-400);
+  --color-text-muted: var(--ow-zwart-500);
+
+  /* KNKV leeftijdskleuren */
+  --color-knkv-paars: var(--knkv-paars-500);
+  --color-knkv-blauw: var(--knkv-blauw-500);
+  --color-knkv-groen: var(--knkv-groen-500);
+  --color-knkv-geel: var(--knkv-geel-500);
+  --color-knkv-oranje: var(--knkv-oranje-500);
+  --color-knkv-rood: var(--knkv-rood-500);
+
+  /* Tiers */
+  --color-tier-brons: var(--tier-brons-500);
+  --color-tier-zilver: var(--tier-zilver-500);
+  --color-tier-goud: var(--tier-goud-500);
+}
+
+/* Base styles — dark-first design */
+body {
+  background-color: var(--ow-zwart-900);
+  color: var(--ow-wit-50);
+}
+
+/* Touch-friendly tap targets */
+.touch-target {
+  min-height: var(--touch-min, 44px);
+  min-width: var(--touch-min, 44px);
+}
+
+/* ===== Score-input animaties ===== */
+
+/* Smiley bounce bij selectie */
+@keyframes smiley-bounce {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.2);
+  }
+  70% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1.1);
+  }
+}
+
+/* Ster fill-animatie */
+@keyframes star-fill {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Fade-in voor stappen */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Scale-in voor celebration */
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ===== SpelersKaart animaties ===== */
+
+/* Zilver tier: subtiele sheen */
+@keyframes sheen {
+  0%,
+  100% {
+    transform: translateX(-60px) skewX(-20deg);
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateX(360px) skewX(-20deg);
+    opacity: 0;
+  }
+}
+
+/* Goud tier: shimmer effect */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+/* Kaart flip animatie */
+@keyframes card-flip {
+  0% {
+    transform: perspective(800px) rotateY(180deg);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: perspective(800px) rotateY(0);
+  }
+}
+
+/* Kaart reveal (nieuwe kaart) */
+@keyframes card-reveal {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+    filter: brightness(2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+    filter: brightness(1);
+  }
+}
+
+/* Kaart update pulse */
+@keyframes card-update {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.03);
+  }
+}
+
+/* Reduceer animaties voor gebruikers die dat prefereren */
+@media (prefers-reduced-motion: reduce) {
+  @keyframes sheen {
+    0%,
+    100% {
+      opacity: 0;
+    }
+  }
+  @keyframes shimmer {
+    0%,
+    100% {
+      opacity: 0;
+    }
+  }
+  @keyframes card-flip {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  @keyframes card-reveal {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  @keyframes card-update {
+    0%,
+    100% {
+      transform: none;
+    }
+  }
+}

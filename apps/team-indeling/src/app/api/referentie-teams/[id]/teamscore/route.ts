@@ -4,7 +4,7 @@ import { ok, fail } from "@/lib/api/response";
 import { parseBody } from "@/lib/api/validate";
 
 const TeamscoreSchema = z.object({
-  teamscore: z.number().int().min(0).max(300),
+  teamscore: z.number().int().min(0).max(200),
 });
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {

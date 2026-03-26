@@ -1,0 +1,814 @@
+/* ================================================================
+   OW Scout — Design Tokens
+   c.k.v. Oranje Wit, Dordrecht
+   ================================================================
+
+   Volledig kleurenpalet en design token systeem voor de OW Scout
+   scouting app. Gebouwd op CSS custom properties, direct bruikbaar
+   in Tailwind CSS 4 via @theme inline { ... }.
+
+   Structuur:
+   1. Club-identiteit (oranje, wit, zwart)
+   2. KNKV Competitie 2.0 leeftijdskleuren (6 groepen)
+   3. Gradient-systeem per korfballeeftijd (14 leeftijden, 5-18)
+   4. Tiers (brons, zilver, goud)
+   5. Semantische kleuren (success, warning, error, info)
+   6. Typografie
+   7. Spacing (8px grid)
+   8. Border-radius
+   9. Schaduwen
+   10. Touch targets & sizing
+   11. Animaties & transitions
+   12. Dark mode
+
+   ================================================================ */
+
+/* ================================================================
+   1. CLUB-IDENTITEIT
+   ================================================================ */
+
+:root {
+  /* --- Primair: Oranje ---------------------------------------- */
+  --ow-oranje-50: #fff7ed;
+  --ow-oranje-100: #ffedd5;
+  --ow-oranje-200: #fed7aa;
+  --ow-oranje-300: #fdba74;
+  --ow-oranje-400: #fb923c;
+  --ow-oranje-500: #ff6b00; /* Club oranje — primaire merkkleur */
+  --ow-oranje-600: #e05e00;
+  --ow-oranje-700: #c24e00;
+  --ow-oranje-800: #9a3e00;
+  --ow-oranje-900: #7c3200;
+  --ow-oranje-950: #431a00;
+
+  /* --- Primair: Wit ------------------------------------------- */
+  --ow-wit-50: #ffffff;
+  --ow-wit-100: #fefefe;
+  --ow-wit-200: #fafafa;
+  --ow-wit-300: #f5f5f5;
+  --ow-wit-400: #e5e5e5;
+  --ow-wit-500: #d4d4d4;
+
+  /* --- Accent: Zwart ------------------------------------------ */
+  --ow-zwart-50: #f9fafb;
+  --ow-zwart-100: #f3f4f6;
+  --ow-zwart-200: #e5e7eb;
+  --ow-zwart-300: #d1d5db;
+  --ow-zwart-400: #9ca3af;
+  --ow-zwart-500: #6b7280;
+  --ow-zwart-600: #4b5563;
+  --ow-zwart-700: #374151;
+  --ow-zwart-800: #1f2937;
+  --ow-zwart-900: #111827;
+  --ow-zwart-950: #030712;
+
+  /* ================================================================
+     2. KNKV COMPETITIE 2.0 — LEEFTIJDSKLEUREN
+     ================================================================
+
+     Zes kleuren, elk met een volledige schaal (50-950).
+     De 500-waarde is de "kernkleur" per leeftijdsgroep.
+
+     Paars  = leeftijd 5
+     Blauw  = leeftijd 6-7
+     Groen  = leeftijd 8-9
+     Geel   = leeftijd 10-12
+     Oranje = leeftijd 13-15
+     Rood   = leeftijd 16-18
+  */
+
+  /* --- Paars (leeftijd 5) ------------------------------------- */
+  --knkv-paars-50: #faf5ff;
+  --knkv-paars-100: #f3e8ff;
+  --knkv-paars-200: #e9d5ff;
+  --knkv-paars-300: #d8b4fe;
+  --knkv-paars-400: #c084fc;
+  --knkv-paars-500: #a855f7; /* Kernkleur paars */
+  --knkv-paars-600: #9333ea;
+  --knkv-paars-700: #7e22ce;
+  --knkv-paars-800: #6b21a8;
+  --knkv-paars-900: #581c87;
+  --knkv-paars-950: #3b0764;
+
+  /* --- Blauw (leeftijd 6-7) ----------------------------------- */
+  --knkv-blauw-50: #eff6ff;
+  --knkv-blauw-100: #dbeafe;
+  --knkv-blauw-200: #bfdbfe;
+  --knkv-blauw-300: #93c5fd;
+  --knkv-blauw-400: #60a5fa;
+  --knkv-blauw-500: #3b82f6; /* Kernkleur blauw */
+  --knkv-blauw-600: #2563eb;
+  --knkv-blauw-700: #1d4ed8;
+  --knkv-blauw-800: #1e40af;
+  --knkv-blauw-900: #1e3a8a;
+  --knkv-blauw-950: #172554;
+
+  /* --- Groen (leeftijd 8-9) ----------------------------------- */
+  --knkv-groen-50: #f0fdf4;
+  --knkv-groen-100: #dcfce7;
+  --knkv-groen-200: #bbf7d0;
+  --knkv-groen-300: #86efac;
+  --knkv-groen-400: #4ade80;
+  --knkv-groen-500: #22c55e; /* Kernkleur groen */
+  --knkv-groen-600: #16a34a;
+  --knkv-groen-700: #15803d;
+  --knkv-groen-800: #166534;
+  --knkv-groen-900: #14532d;
+  --knkv-groen-950: #052e16;
+
+  /* --- Geel (leeftijd 10-12) ---------------------------------- */
+  --knkv-geel-50: #fefce8;
+  --knkv-geel-100: #fef9c3;
+  --knkv-geel-200: #fef08a;
+  --knkv-geel-300: #fde047;
+  --knkv-geel-400: #facc15;
+  --knkv-geel-500: #eab308; /* Kernkleur geel */
+  --knkv-geel-600: #ca8a04;
+  --knkv-geel-700: #a16207;
+  --knkv-geel-800: #854d0e;
+  --knkv-geel-900: #713f12;
+  --knkv-geel-950: #422006;
+
+  /* --- Oranje (leeftijd 13-15) -------------------------------- */
+  --knkv-oranje-50: #fff7ed;
+  --knkv-oranje-100: #ffedd5;
+  --knkv-oranje-200: #fed7aa;
+  --knkv-oranje-300: #fdba74;
+  --knkv-oranje-400: #fb923c;
+  --knkv-oranje-500: #f97316; /* Kernkleur oranje */
+  --knkv-oranje-600: #ea580c;
+  --knkv-oranje-700: #c2410c;
+  --knkv-oranje-800: #9a3412;
+  --knkv-oranje-900: #7c2d12;
+  --knkv-oranje-950: #431407;
+
+  /* --- Rood (leeftijd 16-18) ---------------------------------- */
+  --knkv-rood-50: #fef2f2;
+  --knkv-rood-100: #fee2e2;
+  --knkv-rood-200: #fecaca;
+  --knkv-rood-300: #fca5a5;
+  --knkv-rood-400: #f87171;
+  --knkv-rood-500: #ef4444; /* Kernkleur rood */
+  --knkv-rood-600: #dc2626;
+  --knkv-rood-700: #b91c1c;
+  --knkv-rood-800: #991b1b;
+  --knkv-rood-900: #7f1d1d;
+  --knkv-rood-950: #450a0a;
+
+  /* ================================================================
+     3. GRADIENT-SYSTEEM PER KORFBALLEEFTIJD
+     ================================================================
+
+     Elke korfballeeftijd (5-18) heeft een uniek kleurverloop.
+
+     Per leeftijd definiëren we:
+     - gradient-from: startkleur
+     - gradient-to:   eindkleur
+     - gradient:      het volledige CSS gradient
+     - solid:         de "vaste" kleur voor gebruik zonder gradient
+     - text:          leesbare tekstkleur op de gradient
+
+     "Subtiel" = de tweede kleur op ~15-20% intensiteit.
+     Dit wordt bereikt door een lichtere tint (200-300) als eindkleur
+     te mixen, zodat het accent voelbaar maar niet dominant is.
+  */
+
+  /* --- Leeftijd 5: Paars → Blauw ----------------------------- */
+  /* Enige paars-jaar, overgang naar blauw */
+  --age-5-from: #a855f7;
+  --age-5-to: #818cf8; /* Indigo/blauw accent */
+  --age-5-solid: #a855f7;
+  --age-5-text: #ffffff;
+  --age-5-bg: #faf5ff;
+  --age-5-gradient: linear-gradient(135deg, var(--age-5-from), var(--age-5-to));
+
+  /* --- Leeftijd 6: Blauw (puur) ------------------------------ */
+  /* Kernjaar blauw */
+  --age-6-from: #3b82f6;
+  --age-6-to: #60a5fa;
+  --age-6-solid: #3b82f6;
+  --age-6-text: #ffffff;
+  --age-6-bg: #eff6ff;
+  --age-6-gradient: linear-gradient(135deg, var(--age-6-from), var(--age-6-to));
+
+  /* --- Leeftijd 7: Blauw → subtiel Groen --------------------- */
+  /* Laatste blauw-jaar, richting groen */
+  --age-7-from: #3b82f6;
+  --age-7-to: #6dd5a3; /* Blauw met groen accent ~18% */
+  --age-7-solid: #3b82f6;
+  --age-7-text: #ffffff;
+  --age-7-bg: #eff6ff;
+  --age-7-gradient: linear-gradient(135deg, var(--age-7-from), var(--age-7-to));
+
+  /* --- Leeftijd 8: Groen (puur) ------------------------------ */
+  /* Kernjaar groen */
+  --age-8-from: #22c55e;
+  --age-8-to: #4ade80;
+  --age-8-solid: #22c55e;
+  --age-8-text: #ffffff;
+  --age-8-bg: #f0fdf4;
+  --age-8-gradient: linear-gradient(135deg, var(--age-8-from), var(--age-8-to));
+
+  /* --- Leeftijd 9: Groen → subtiel Geel ---------------------- */
+  /* Laatste groen-jaar, richting geel */
+  --age-9-from: #22c55e;
+  --age-9-to: #bef264; /* Groen met geel accent ~18% */
+  --age-9-solid: #22c55e;
+  --age-9-text: #ffffff;
+  --age-9-bg: #f0fdf4;
+  --age-9-gradient: linear-gradient(135deg, var(--age-9-from), var(--age-9-to));
+
+  /* --- Leeftijd 10: Geel → subtiel Groen --------------------- */
+  /* Eerste geel-jaar, nog verbonden met groen */
+  --age-10-from: #eab308;
+  --age-10-to: #bef264; /* Geel met groen accent ~18% */
+  --age-10-solid: #eab308;
+  --age-10-text: #422006;
+  --age-10-bg: #fefce8;
+  --age-10-gradient: linear-gradient(135deg, var(--age-10-from), var(--age-10-to));
+
+  /* --- Leeftijd 11: Geel (puur) ------------------------------ */
+  /* Kernjaar geel */
+  --age-11-from: #eab308;
+  --age-11-to: #facc15;
+  --age-11-solid: #eab308;
+  --age-11-text: #422006;
+  --age-11-bg: #fefce8;
+  --age-11-gradient: linear-gradient(135deg, var(--age-11-from), var(--age-11-to));
+
+  /* --- Leeftijd 12: Geel → subtiel Oranje -------------------- */
+  /* Laatste geel-jaar, richting oranje */
+  --age-12-from: #eab308;
+  --age-12-to: #fdba74; /* Geel met oranje accent ~18% */
+  --age-12-solid: #eab308;
+  --age-12-text: #422006;
+  --age-12-bg: #fefce8;
+  --age-12-gradient: linear-gradient(135deg, var(--age-12-from), var(--age-12-to));
+
+  /* --- Leeftijd 13: Oranje → subtiel Geel -------------------- */
+  /* Eerste oranje-jaar, nog verbonden met geel */
+  --age-13-from: #f97316;
+  --age-13-to: #fde047; /* Oranje met geel accent ~18% */
+  --age-13-solid: #f97316;
+  --age-13-text: #ffffff;
+  --age-13-bg: #fff7ed;
+  --age-13-gradient: linear-gradient(135deg, var(--age-13-from), var(--age-13-to));
+
+  /* --- Leeftijd 14: Oranje (puur) ---------------------------- */
+  /* Kernjaar oranje */
+  --age-14-from: #f97316;
+  --age-14-to: #fb923c;
+  --age-14-solid: #f97316;
+  --age-14-text: #ffffff;
+  --age-14-bg: #fff7ed;
+  --age-14-gradient: linear-gradient(135deg, var(--age-14-from), var(--age-14-to));
+
+  /* --- Leeftijd 15: Oranje → subtiel Rood -------------------- */
+  /* Laatste oranje-jaar, richting rood */
+  --age-15-from: #f97316;
+  --age-15-to: #fca5a5; /* Oranje met rood accent ~18% */
+  --age-15-solid: #f97316;
+  --age-15-text: #ffffff;
+  --age-15-bg: #fff7ed;
+  --age-15-gradient: linear-gradient(135deg, var(--age-15-from), var(--age-15-to));
+
+  /* --- Leeftijd 16: Rood → subtiel Oranje -------------------- */
+  /* Eerste rood-jaar, nog verbonden met oranje */
+  --age-16-from: #ef4444;
+  --age-16-to: #fdba74; /* Rood met oranje accent ~18% */
+  --age-16-solid: #ef4444;
+  --age-16-text: #ffffff;
+  --age-16-bg: #fef2f2;
+  --age-16-gradient: linear-gradient(135deg, var(--age-16-from), var(--age-16-to));
+
+  /* --- Leeftijd 17: Rood (puur) ------------------------------ */
+  /* Kernjaar rood */
+  --age-17-from: #ef4444;
+  --age-17-to: #f87171;
+  --age-17-solid: #ef4444;
+  --age-17-text: #ffffff;
+  --age-17-bg: #fef2f2;
+  --age-17-gradient: linear-gradient(135deg, var(--age-17-from), var(--age-17-to));
+
+  /* --- Leeftijd 18: Donkerrood (premium) --------------------- */
+  /* Laatste jaar, premium donkere variant */
+  --age-18-from: #b91c1c;
+  --age-18-to: #991b1b;
+  --age-18-solid: #b91c1c;
+  --age-18-text: #ffffff;
+  --age-18-bg: #fef2f2;
+  --age-18-gradient: linear-gradient(135deg, var(--age-18-from), var(--age-18-to));
+
+  /* ================================================================
+     4. TIERS — BRONS / ZILVER / GOUD
+     ================================================================
+
+     Drie prestatieniveaus met visueel onderscheidende stijlen.
+     Elk tier heeft: rand, achtergrond-overlay, tekst, en glans.
+  */
+
+  /* --- Brons: warm koper, matte finish ----------------------- */
+  --tier-brons-border: #cd7f32;
+  --tier-brons-bg: #fdf4e7;
+  --tier-brons-bg-overlay: rgba(205, 127, 50, 0.08);
+  --tier-brons-text: #8b5e34;
+  --tier-brons-icon: #cd7f32;
+  --tier-brons-shine: linear-gradient(
+    135deg,
+    rgba(205, 127, 50, 0) 0%,
+    rgba(205, 127, 50, 0.12) 40%,
+    rgba(205, 127, 50, 0) 60%,
+    rgba(205, 127, 50, 0.06) 100%
+  );
+
+  /* --- Zilver: koel grijs-wit, subtiele sheen ---------------- */
+  --tier-zilver-border: #a8a9ad;
+  --tier-zilver-bg: #f8f9fa;
+  --tier-zilver-bg-overlay: rgba(168, 169, 173, 0.08);
+  --tier-zilver-text: #5a5b5e;
+  --tier-zilver-icon: #a8a9ad;
+  --tier-zilver-shine: linear-gradient(
+    135deg,
+    rgba(168, 169, 173, 0) 0%,
+    rgba(255, 255, 255, 0.4) 35%,
+    rgba(168, 169, 173, 0.15) 50%,
+    rgba(255, 255, 255, 0.25) 65%,
+    rgba(168, 169, 173, 0) 100%
+  );
+
+  /* --- Goud: warm goud, shimmer effect ----------------------- */
+  --tier-goud-border: #d4a017;
+  --tier-goud-bg: #fffbeb;
+  --tier-goud-bg-overlay: rgba(212, 160, 23, 0.08);
+  --tier-goud-text: #92650a;
+  --tier-goud-icon: #d4a017;
+  --tier-goud-shine: linear-gradient(
+    135deg,
+    rgba(212, 160, 23, 0) 0%,
+    rgba(255, 223, 100, 0.35) 25%,
+    rgba(212, 160, 23, 0.15) 40%,
+    rgba(255, 239, 170, 0.3) 55%,
+    rgba(212, 160, 23, 0.1) 75%,
+    rgba(255, 223, 100, 0.2) 100%
+  );
+
+  /* ================================================================
+     5. SEMANTISCHE KLEUREN
+     ================================================================ */
+
+  /* --- Success ------------------------------------------------ */
+  --color-success-50: #f0fdf4;
+  --color-success-100: #dcfce7;
+  --color-success-500: #22c55e;
+  --color-success-600: #16a34a;
+  --color-success-700: #15803d;
+
+  /* --- Warning ------------------------------------------------ */
+  --color-warning-50: #fffbeb;
+  --color-warning-100: #fef3c7;
+  --color-warning-500: #f59e0b;
+  --color-warning-600: #d97706;
+  --color-warning-700: #b45309;
+
+  /* --- Error -------------------------------------------------- */
+  --color-error-50: #fef2f2;
+  --color-error-100: #fee2e2;
+  --color-error-500: #ef4444;
+  --color-error-600: #dc2626;
+  --color-error-700: #b91c1c;
+
+  /* --- Info --------------------------------------------------- */
+  --color-info-50: #eff6ff;
+  --color-info-100: #dbeafe;
+  --color-info-500: #3b82f6;
+  --color-info-600: #2563eb;
+  --color-info-700: #1d4ed8;
+
+  /* ================================================================
+     6. TYPOGRAFIE
+     ================================================================ */
+
+  /* --- Font families ------------------------------------------ */
+  --font-heading: "Inter", system-ui, -apple-system, sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, sans-serif;
+  --font-stat: "JetBrains Mono", "SF Mono", "Fira Code", ui-monospace, monospace;
+
+  /* --- Font sizes --------------------------------------------- */
+  --text-2xs: 0.625rem; /* 10px */
+  --text-xs: 0.75rem; /* 12px */
+  --text-sm: 0.875rem; /* 14px */
+  --text-base: 1rem; /* 16px — minimum voor mobiel leesbaar */
+  --text-lg: 1.125rem; /* 18px */
+  --text-xl: 1.25rem; /* 20px */
+  --text-2xl: 1.5rem; /* 24px */
+  --text-3xl: 1.875rem; /* 30px */
+  --text-4xl: 2.25rem; /* 36px */
+
+  /* --- Font weights ------------------------------------------- */
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  --weight-black: 900;
+
+  /* --- Line heights ------------------------------------------- */
+  --leading-tight: 1.15;
+  --leading-snug: 1.3;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.65;
+
+  /* --- Letter spacing ----------------------------------------- */
+  --tracking-tight: -0.025em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.025em;
+  --tracking-stat: -0.05em; /* Voor grote stat-cijfers */
+
+  /* ================================================================
+     7. SPACING (8px grid)
+     ================================================================ */
+
+  --space-0: 0;
+  --space-0-5: 0.125rem; /*  2px */
+  --space-1: 0.25rem; /*  4px */
+  --space-1-5: 0.375rem; /*  6px */
+  --space-2: 0.5rem; /*  8px — basisunit */
+  --space-3: 0.75rem; /* 12px */
+  --space-4: 1rem; /* 16px */
+  --space-5: 1.25rem; /* 20px */
+  --space-6: 1.5rem; /* 24px */
+  --space-8: 2rem; /* 32px */
+  --space-10: 2.5rem; /* 40px */
+  --space-12: 3rem; /* 48px */
+  --space-16: 4rem; /* 64px */
+  --space-20: 5rem; /* 80px */
+  --space-24: 6rem; /* 96px */
+
+  /* --- Semantic spacing --------------------------------------- */
+  --spacing-page-x: var(--space-4); /* Horizontale pagina-padding mobiel */
+  --spacing-page-y: var(--space-6); /* Verticale pagina-padding */
+  --spacing-card-x: var(--space-4); /* Padding binnen kaarten */
+  --spacing-card-y: var(--space-4);
+  --spacing-section-gap: var(--space-8); /* Tussen secties */
+  --spacing-item-gap: var(--space-3); /* Tussen items in een lijst */
+  --spacing-inline-gap: var(--space-2); /* Tussen inline elementen */
+
+  /* ================================================================
+     8. BORDER-RADIUS
+     ================================================================ */
+
+  --radius-none: 0;
+  --radius-sm: 0.25rem; /*  4px */
+  --radius-md: 0.5rem; /*  8px */
+  --radius-lg: 0.75rem; /* 12px */
+  --radius-xl: 1rem; /* 16px */
+  --radius-2xl: 1.5rem; /* 24px */
+  --radius-full: 9999px; /* Pill shape */
+
+  /* --- Semantic radius ---------------------------------------- */
+  --radius-card: var(--radius-xl);
+  --radius-button: var(--radius-lg);
+  --radius-input: var(--radius-md);
+  --radius-badge: var(--radius-full);
+  --radius-avatar: var(--radius-full);
+  --radius-chip: var(--radius-full);
+
+  /* ================================================================
+     9. SCHADUWEN
+     ================================================================ */
+
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.06), 0 1px 2px -1px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.07);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.08);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+
+  /* --- Semantic schaduwen ------------------------------------- */
+  --shadow-card: var(--shadow-sm);
+  --shadow-card-hover: var(--shadow-md);
+  --shadow-elevated: var(--shadow-lg);
+  --shadow-modal: var(--shadow-2xl);
+  --shadow-dropdown: var(--shadow-lg);
+  --shadow-button: var(--shadow-xs);
+
+  /* --- Gekleurde schaduwen (voor leeftijdskaarten) ------------ */
+  --shadow-paars: 0 4px 14px -2px rgba(168, 85, 247, 0.25);
+  --shadow-blauw: 0 4px 14px -2px rgba(59, 130, 246, 0.25);
+  --shadow-groen: 0 4px 14px -2px rgba(34, 197, 94, 0.25);
+  --shadow-geel: 0 4px 14px -2px rgba(234, 179, 8, 0.25);
+  --shadow-oranje: 0 4px 14px -2px rgba(249, 115, 22, 0.25);
+  --shadow-rood: 0 4px 14px -2px rgba(239, 68, 68, 0.25);
+
+  /* ================================================================
+     10. TOUCH TARGETS & SIZING
+     ================================================================ */
+
+  --touch-target-min: 2.75rem; /* 44px — WCAG minimum */
+  --touch-target-lg: 3rem; /* 48px — comfortabel */
+  --touch-target-xl: 3.5rem; /* 56px — primaire acties */
+
+  /* --- Avatar sizes ------------------------------------------- */
+  --avatar-xs: 1.5rem; /* 24px */
+  --avatar-sm: 2rem; /* 32px */
+  --avatar-md: 2.5rem; /* 40px */
+  --avatar-lg: 3rem; /* 48px */
+  --avatar-xl: 4rem; /* 64px */
+  --avatar-2xl: 5rem; /* 80px — speler profielkaart */
+
+  /* --- Icon sizes --------------------------------------------- */
+  --icon-xs: 0.875rem; /* 14px */
+  --icon-sm: 1rem; /* 16px */
+  --icon-md: 1.25rem; /* 20px */
+  --icon-lg: 1.5rem; /* 24px */
+  --icon-xl: 2rem; /* 32px */
+
+  /* ================================================================
+     11. ANIMATIES & TRANSITIONS
+     ================================================================ */
+
+  /* --- Durations ---------------------------------------------- */
+  --duration-fast: 100ms;
+  --duration-normal: 200ms;
+  --duration-slow: 300ms;
+  --duration-slower: 500ms;
+
+  /* --- Easings ------------------------------------------------ */
+  --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* --- Common transitions ------------------------------------- */
+  --transition-color: color var(--duration-fast) var(--ease-default);
+  --transition-bg: background-color var(--duration-fast) var(--ease-default);
+  --transition-shadow: box-shadow var(--duration-normal) var(--ease-default);
+  --transition-transform: transform var(--duration-normal) var(--ease-out);
+  --transition-all: all var(--duration-normal) var(--ease-default);
+
+  /* ================================================================
+     12. SURFACE & LAYOUT
+     ================================================================
+     Oppervlakte-kleuren voor achtergronden, randen, en overlays.
+  */
+
+  --surface-page: #ffffff;
+  --surface-card: #ffffff;
+  --surface-raised: #ffffff;
+  --surface-sunken: #f9fafb;
+  --surface-overlay: rgba(0, 0, 0, 0.4);
+  --surface-scrim: rgba(0, 0, 0, 0.6);
+
+  --border-default: #e5e7eb;
+  --border-light: #f3f4f6;
+  --border-strong: #d1d5db;
+  --border-focus: var(--ow-oranje-500);
+
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+  --text-tertiary: #9ca3af;
+  --text-disabled: #d1d5db;
+  --text-inverse: #ffffff;
+  --text-link: var(--ow-oranje-600);
+  --text-link-hover: var(--ow-oranje-700);
+
+  /* --- Interactieve staten ------------------------------------ */
+  --state-hover: rgba(0, 0, 0, 0.04);
+  --state-pressed: rgba(0, 0, 0, 0.08);
+  --state-focus: rgba(255, 107, 0, 0.15);
+  --state-disabled: rgba(0, 0, 0, 0.04);
+  --state-selected: rgba(255, 107, 0, 0.08);
+
+  /* ================================================================
+     13. Z-INDEX SCHAAL
+     ================================================================ */
+
+  --z-base: 0;
+  --z-raised: 1;
+  --z-dropdown: 10;
+  --z-sticky: 20;
+  --z-overlay: 30;
+  --z-modal: 40;
+  --z-toast: 50;
+  --z-tooltip: 60;
+}
+
+/* ==================================================================
+   DARK MODE
+   ==================================================================
+
+   Alle tokens krijgen een donkere variant via prefers-color-scheme.
+   De kernkleuren (KNKV, tiers) blijven intact maar worden lichter
+   gezet tegen donkere achtergronden. Oppervlaktes en tekst worden
+   omgekeerd.
+   ================================================================== */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* --- Club-identiteit (aangepast voor dark) ---------------- */
+    --ow-oranje-500: #ff8533; /* Iets lichter voor leesbaarheid */
+    --ow-oranje-600: #ff6b00;
+
+    /* --- Oppervlaktes ----------------------------------------- */
+    --surface-page: #0f1115;
+    --surface-card: #1a1d23;
+    --surface-raised: #22262e;
+    --surface-sunken: #0a0c0f;
+    --surface-overlay: rgba(0, 0, 0, 0.6);
+    --surface-scrim: rgba(0, 0, 0, 0.8);
+
+    /* --- Randen ----------------------------------------------- */
+    --border-default: #2a2e36;
+    --border-light: #1e2228;
+    --border-strong: #3a3f4a;
+    --border-focus: #ff8533;
+
+    /* --- Tekst ------------------------------------------------ */
+    --text-primary: #f3f4f6;
+    --text-secondary: #9ca3af;
+    --text-tertiary: #6b7280;
+    --text-disabled: #4b5563;
+    --text-inverse: #111827;
+    --text-link: #ff8533;
+    --text-link-hover: #ffa566;
+
+    /* --- Interactieve staten ---------------------------------- */
+    --state-hover: rgba(255, 255, 255, 0.06);
+    --state-pressed: rgba(255, 255, 255, 0.1);
+    --state-focus: rgba(255, 133, 51, 0.2);
+    --state-disabled: rgba(255, 255, 255, 0.04);
+    --state-selected: rgba(255, 133, 51, 0.12);
+
+    /* --- Schaduwen (sterker in dark mode) --------------------- */
+    --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 2px -1px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.25), 0 2px 4px -2px rgba(0, 0, 0, 0.25);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+    --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+
+    /* --- Gekleurde schaduwen (subtiel in dark mode) ----------- */
+    --shadow-paars: 0 4px 14px -2px rgba(168, 85, 247, 0.15);
+    --shadow-blauw: 0 4px 14px -2px rgba(59, 130, 246, 0.15);
+    --shadow-groen: 0 4px 14px -2px rgba(34, 197, 94, 0.15);
+    --shadow-geel: 0 4px 14px -2px rgba(234, 179, 8, 0.15);
+    --shadow-oranje: 0 4px 14px -2px rgba(249, 115, 22, 0.15);
+    --shadow-rood: 0 4px 14px -2px rgba(239, 68, 68, 0.15);
+
+    /* --- Leeftijd achtergrondkleuren (dark variant) ----------- */
+    --age-5-bg: rgba(168, 85, 247, 0.1);
+    --age-6-bg: rgba(59, 130, 246, 0.1);
+    --age-7-bg: rgba(59, 130, 246, 0.1);
+    --age-8-bg: rgba(34, 197, 94, 0.1);
+    --age-9-bg: rgba(34, 197, 94, 0.1);
+    --age-10-bg: rgba(234, 179, 8, 0.1);
+    --age-11-bg: rgba(234, 179, 8, 0.1);
+    --age-12-bg: rgba(234, 179, 8, 0.1);
+    --age-13-bg: rgba(249, 115, 22, 0.1);
+    --age-14-bg: rgba(249, 115, 22, 0.1);
+    --age-15-bg: rgba(249, 115, 22, 0.1);
+    --age-16-bg: rgba(239, 68, 68, 0.1);
+    --age-17-bg: rgba(239, 68, 68, 0.1);
+    --age-18-bg: rgba(185, 28, 28, 0.1);
+
+    /* --- Tier achtergronden (dark variant) -------------------- */
+    --tier-brons-bg: #1e1a14;
+    --tier-brons-bg-overlay: rgba(205, 127, 50, 0.12);
+    --tier-brons-text: #e8c499;
+
+    --tier-zilver-bg: #1a1b1e;
+    --tier-zilver-bg-overlay: rgba(168, 169, 173, 0.12);
+    --tier-zilver-text: #c8c9cd;
+
+    --tier-goud-bg: #1e1b10;
+    --tier-goud-bg-overlay: rgba(212, 160, 23, 0.12);
+    --tier-goud-text: #e8d58b;
+
+    /* --- Semantische kleuren (dark variant) ------------------- */
+    --color-success-50: rgba(34, 197, 94, 0.1);
+    --color-success-100: rgba(34, 197, 94, 0.15);
+    --color-warning-50: rgba(245, 158, 11, 0.1);
+    --color-warning-100: rgba(245, 158, 11, 0.15);
+    --color-error-50: rgba(239, 68, 68, 0.1);
+    --color-error-100: rgba(239, 68, 68, 0.15);
+    --color-info-50: rgba(59, 130, 246, 0.1);
+    --color-info-100: rgba(59, 130, 246, 0.15);
+  }
+}
+
+/* ==================================================================
+   CONVENIENCE CLASSES
+   ==================================================================
+   Herbruikbare utility-classes op basis van de tokens.
+   Niet verplicht, maar handig als je tokens wilt gebruiken
+   zonder Tailwind @theme integratie.
+   ================================================================== */
+
+/* --- Leeftijd gradient-achtergronden --------------------------- */
+.age-gradient-5 {
+  background: var(--age-5-gradient);
+  color: var(--age-5-text);
+}
+.age-gradient-6 {
+  background: var(--age-6-gradient);
+  color: var(--age-6-text);
+}
+.age-gradient-7 {
+  background: var(--age-7-gradient);
+  color: var(--age-7-text);
+}
+.age-gradient-8 {
+  background: var(--age-8-gradient);
+  color: var(--age-8-text);
+}
+.age-gradient-9 {
+  background: var(--age-9-gradient);
+  color: var(--age-9-text);
+}
+.age-gradient-10 {
+  background: var(--age-10-gradient);
+  color: var(--age-10-text);
+}
+.age-gradient-11 {
+  background: var(--age-11-gradient);
+  color: var(--age-11-text);
+}
+.age-gradient-12 {
+  background: var(--age-12-gradient);
+  color: var(--age-12-text);
+}
+.age-gradient-13 {
+  background: var(--age-13-gradient);
+  color: var(--age-13-text);
+}
+.age-gradient-14 {
+  background: var(--age-14-gradient);
+  color: var(--age-14-text);
+}
+.age-gradient-15 {
+  background: var(--age-15-gradient);
+  color: var(--age-15-text);
+}
+.age-gradient-16 {
+  background: var(--age-16-gradient);
+  color: var(--age-16-text);
+}
+.age-gradient-17 {
+  background: var(--age-17-gradient);
+  color: var(--age-17-text);
+}
+.age-gradient-18 {
+  background: var(--age-18-gradient);
+  color: var(--age-18-text);
+}
+
+/* --- Tier kaart-styling ---------------------------------------- */
+.tier-brons {
+  border: 2px solid var(--tier-brons-border);
+  background-color: var(--tier-brons-bg);
+  background-image: var(--tier-brons-shine);
+  color: var(--tier-brons-text);
+}
+
+.tier-zilver {
+  border: 2px solid var(--tier-zilver-border);
+  background-color: var(--tier-zilver-bg);
+  background-image: var(--tier-zilver-shine);
+  color: var(--tier-zilver-text);
+}
+
+.tier-goud {
+  border: 2px solid var(--tier-goud-border);
+  background-color: var(--tier-goud-bg);
+  background-image: var(--tier-goud-shine);
+  color: var(--tier-goud-text);
+}
+
+/* --- Tier glans-animatie (optioneel) -------------------------- */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.tier-goud-shimmer {
+  background-size: 200% 100%;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+.tier-zilver-shimmer {
+  background-size: 200% 100%;
+  animation: shimmer 4s ease-in-out infinite;
+}
+
+/* --- Respect reduced-motion ----------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .tier-goud-shimmer,
+  .tier-zilver-shimmer {
+    animation: none;
+  }
+}

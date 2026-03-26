@@ -53,6 +53,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     session({ session, token }) {
       if (session.user) {
+        // @ts-expect-error role is custom property
         session.user.role = token.role as string;
       }
       return session;

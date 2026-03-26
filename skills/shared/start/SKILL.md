@@ -1,13 +1,13 @@
 ---
 name: start
-description: Projectcontext laden voor elke agent. Geeft basiskennis (structuur, DB, Oranje Draad) plus domein-specifieke context.
-user-invocable: false
+description: Projectcontext laden voor agents en gebruikers. Geeft basiskennis (structuur, DB, Oranje Draad) plus domein-specifieke context.
+user-invocable: true
 allowed-tools: Read, Bash, Glob
 ---
 
-# Start — Projectcontext voor agents
+# Start — Projectcontext voor agents en gebruikers
 
-Deze skill wordt automatisch geladen bij het opstarten van elke agent. Je MOET alle stappen hieronder doorlopen voordat je aan je eigenlijke taak begint.
+Deze skill laadt de volledige projectcontext. Agents MOETEN alle stappen doorlopen voordat ze aan hun eigenlijke taak beginnen. Gebruikers kunnen `/start` aanroepen voor een volledig overzicht.
 
 ---
 
@@ -75,48 +75,63 @@ oranje-wit/
 ├── apps/
 │   ├── monitor/          # Verenigingsmonitor (Next.js 16, poort 4102)
 │   ├── team-indeling/    # Team-Indeling (Next.js 16, poort 4100)
-│   └── mcp/              # MCP servers
+│   ├── evaluatie/        # Evaluatie-app (Next.js 16, poort 4104)
+│   └── mcp/              # MCP servers (database, Railway)
 ├── packages/
-│   ├── database/         # Prisma schema + client (source of truth)
-│   └── types/            # Gedeelde TypeScript types
-├── agents/               # 8 agent-definities (dit bestand!)
+│   ├── auth/             # @oranje-wit/auth — NextAuth v5 + Google OAuth
+│   ├── database/         # @oranje-wit/database — Prisma schema + client (source of truth)
+│   ├── types/            # @oranje-wit/types — Gedeelde TypeScript types
+│   └── ui/               # @oranje-wit/ui — Gedeelde React componenten
+├── .claude/agents/       # Agent-definities (11 agents, officiële locatie)
+├── agents/               # Agent-definities (legacy kopie)
 ├── skills/               # Skills per domein
 ├── rules/                # Domeinregels (Single Source of Truth)
 ├── scripts/              # Data-pipeline en import
-├── data/                 # Alle data (16 seizoenen)
-└── docs/                 # Documentatie
+├── data/                 # Ledendata, seizoensdata, exports
+└── docs/                 # Documentatie, plannen, stafgegevens
 ```
 
 - **Workspace**: pnpm workspaces
-- **Dev commando's**: `pnpm dev:ti` (TI), `pnpm dev:monitor` (Monitor)
+- **Dev commando's**: `pnpm dev:ti` (TI), `pnpm dev:monitor` (Monitor), `pnpm dev:evaluatie` (Evaluatie)
+- **Build**: `pnpm build:evaluatie`
 - **Database**: `pnpm db:generate`, `pnpm db:push`
+- **Import**: `pnpm import` (monitor data), `pnpm import:evaluaties` (evaluaties)
+- **Tests**: `pnpm test` (unit), `pnpm test:e2e` (E2E)
 
 ### Database
 
 PostgreSQL op Railway (`shinkansen.proxy.rlwy.net:18957`, DB: `oranjewit`).
 Prisma is de source of truth: `packages/database/prisma/schema.prisma`.
 
-**33 modellen in 3 groepen:**
+**41 modellen in 4 groepen:**
 
 | Groep | Modellen |
 |---|---|
-| Competitie-data | SpelerSeizoen, CompetitieSpeler, CompetitieRonde |
-| Monitor | Lid, LidFoto, Seizoen, OWTeam, TeamPeriode, Ledenverloop, CohortSeizoen, Signalering, Streefmodel |
-| Team-Indeling | User, Speler, Staf, Blauwdruk, Pin, Concept, Scenario, Versie, Team, TeamSpeler, TeamStaf, Evaluatie, LogEntry, Import, ReferentieTeam |
+| Competitie-data (2) | CompetitieSpeler, CompetitieRonde |
+| Monitor (12) | Lid, LidFoto, Seizoen, OWTeam, TeamAlias, TeamPeriode, Ledenverloop, CohortSeizoen, Signalering, Streefmodel, PoolStand, PoolStandRegel |
+| Team-Indeling (21) | User, Speler, Staf, StafToewijzing, Blauwdruk, Pin, Concept, Scenario, Versie, Team, SelectieGroep, SelectieSpeler, SelectieStaf, TeamSpeler, TeamStaf, Evaluatie, LogEntry, Import, ReferentieTeam, Werkitem, Actiepunt |
+| Evaluatie (6) | EvaluatieRonde, Coordinator, CoordinatorTeam, EvaluatieUitnodiging, SpelerZelfEvaluatie, EmailTemplate |
 
 **Competitie-datamodel:**
 ```
-SpelerSeizoen (speler_seizoenen: 1 per speler per seizoen)
-  └── CompetitieSpeler (competitie_spelers: 1 per competitieperiode)
+CompetitieSpeler (primaire tabel: ~4933 records, 1 per speler × seizoen × competitie)
+  └── VIEW speler_seizoenen (afgeleid via DISTINCT ON rel_code+seizoen)
 ```
-- ~5399 speler_seizoenen, ~9375 competitie_spelers, 957 unieke spelers, 16 seizoenen
 - Competitie-volgorde: veld_najaar → zaal → veld_voorjaar
+
+**rel_code is de enige sleutel voor spelers/leden (KRITIEK):**
+- `rel_code` (Sportlink relatienummer, bijv. `NJH39X4`) is de **enige stabiele identifier**
+- `Speler.id` = `rel_code` — TI-spelerrecord IS de rel_code
+- Gebruik **altijd** rel_code als lookup-sleutel, **nooit** naam-matching
+- Als een speler niet via rel_code gevonden wordt: meld dit als fout, los het niet stilzwijgend op
 
 **Lees/schrijf-verdeling:**
 - Monitor schrijft: leden, teams, verloop, cohorten, signalering, competitie_spelers
 - Monitor leest: alles
-- Team-Indeling schrijft: blauwdruk, concepten, scenario's, teams, pins, log, evaluaties
-- Team-Indeling leest: leden, speler_seizoenen, competitie_spelers, retentie
+- Team-Indeling schrijft: blauwdruk, concepten, scenario's, teams, selectiegroepen, pins, log, evaluaties, notities, actiepunten
+- Team-Indeling leest: leden, speler_seizoenen, competitie_spelers, cohort_seizoenen (retentie)
+- Evaluatie schrijft: evaluatierondes, coördinatoren, uitnodigingen, evaluaties, zelfevaluaties, email templates
+- Evaluatie leest: leden, competitie_spelers, teams, spelers, staf
 
 ### Agent-hiërarchie
 
@@ -128,6 +143,11 @@ team-planner (hoofd TI) ← escalates-to: korfbal
 ├── spawns: regel-checker, adviseur
 
 ontwikkelaar (dev) ← escalates-to: korfbal
+├── spawns: e2e-tester
+
+e2e-tester ← escalates-to: ontwikkelaar
+deployment (infra) ← escalates-to: korfbal
+documentalist (docs) ← escalates-to: ontwikkelaar
 ```
 
 ### Rules
@@ -146,7 +166,7 @@ Lees altijd: `rules/algemeen.md`. Lees extra rules op basis van je domein (zie S
 
 ## Stap 2: Domeincontext (lees wat bij je past)
 
-Bepaal je domein op basis van je `skills:`-lijst in `agents/{jouw-naam}.md`.
+Bepaal je domein op basis van je `skills:`-lijst in `.claude/agents/{jouw-naam}.md`.
 
 ### Als je skills `monitor/*` bevatten → Monitor-domein
 
@@ -173,7 +193,14 @@ De Team-Indeling is een Next.js 16 app (poort 4100) met:
 - **Scenario**: vergelijking van meerdere concepten
 - **Definitief**: besluitenlog, export
 
-### Als je skills van beide domeinen bevatten → Lees beide secties
+### Als je skills `evaluatie/*` bevatten → Evaluatie-domein
+
+De Evaluatie-app is een Next.js 16 app (poort 4104) met:
+- Spelerevaluaties en zelfevaluaties per seizoen
+- Uitnodigingen en email templates
+- Direct gekoppeld aan leden en teams via rel_code
+
+### Als je skills van meerdere domeinen bevatten → Lees alle relevante secties
 
 ---
 
@@ -190,7 +217,7 @@ Noteer de huidige datum.
 
 ## Stap 4: Lees je eigen agent-bestand
 
-Lees `agents/{jouw-naam}.md` voor je specifieke:
+Lees `.claude/agents/{jouw-naam}.md` voor je specifieke:
 - **triggers** — wanneer word je geactiveerd
 - **skills** — wat mag je gebruiken
 - **spawns** — wie kun je inzetten

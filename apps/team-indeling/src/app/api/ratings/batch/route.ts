@@ -7,7 +7,7 @@ const Schema = z.object({
   ratings: z.array(
     z.object({
       spelerId: z.string().min(1),
-      rating: z.number().int().min(0).max(300),
+      rating: z.number().int().min(0).max(200),
     })
   ),
 });

@@ -54,6 +54,7 @@ Niet elke push deployt alle apps. De `changes` job detecteert welke paden gewijz
 | `apps/team-indeling/**` gewijzigd | Alleen team-indeling |
 | `apps/monitor/**` gewijzigd | Alleen monitor |
 | `apps/evaluatie/**` gewijzigd | Alleen evaluatie |
+| `apps/scouting/**` gewijzigd | Alleen scouting |
 | `packages/**` gewijzigd | Alle apps (gedeelde dependency) |
 | Alleen CI/docs/scripts gewijzigd | Niets (geen app-wijziging) |
 
@@ -74,6 +75,7 @@ Bij een geblokkeerde deploy:
 | team-indeling | `@oranje-wit/team-indeling` | `pnpm test:ti` | `pnpm test:e2e:ti` | `49ed7b30-a243-4f30-87fa-ae56935fbbbc` |
 | monitor | `@oranje-wit/monitor` | `pnpm test:monitor` | `pnpm test:e2e:monitor` | `a7efb126-8ad1-460d-b787-2d03207c3f3c` |
 | evaluatie | `@oranje-wit/evaluatie` | `pnpm test:evaluatie` | `pnpm test:e2e:evaluatie` | `c7a578c6-559e-4d11-8bc5-b6265dc7ada7` |
+| scouting | `@oranje-wit/scouting` | `pnpm test:scouting` | `pnpm test:e2e:scouting` | *(RAILWAY_SERVICE_SCOUTING — nog aan te maken)* |
 
 ## Stap-voor-stap: deployen
 
@@ -173,6 +175,7 @@ Pas na groen CI:
 | team-indeling | https://teamindeling.ckvoranjewit.app | team-indeling-production.up.railway.app |
 | monitor | https://monitor.ckvoranjewit.app | monitor-production-b2b1.up.railway.app |
 | evaluatie | https://evaluaties.ckvoranjewit.app | evaluatie-production.up.railway.app |
+| scouting | https://scout.ckvoranjewit.app | *(nog aan te maken)* |
 
 Custom domeinen draaien via **Cloudflare Worker** `railway-proxy` (niet via Railway custom domains).
 
@@ -182,6 +185,7 @@ Alle apps gebruiken **Dockerfiles** (niet Nixpacks):
 - `apps/team-indeling/Dockerfile`
 - `apps/monitor/Dockerfile`
 - `apps/evaluatie/Dockerfile`
+- `apps/scouting/Dockerfile`
 
 Basis: Node 22-slim, pnpm workspace, Prisma generate.
 

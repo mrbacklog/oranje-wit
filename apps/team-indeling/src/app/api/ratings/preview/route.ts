@@ -7,7 +7,7 @@ import { berekenRating, haalLaatsteNiveau } from "@/lib/rating";
 
 const Schema = z.object({
   teamId: z.string().min(1),
-  teamscore: z.number().int().min(0).max(300),
+  teamscore: z.number().int().min(0).max(200),
   seizoen: z.string().regex(/^\d{4}-\d{4}$/),
   ronde: z.number().int().min(1).optional(),
 });

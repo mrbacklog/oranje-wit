@@ -51,10 +51,26 @@ Stel het volgende agent team samen:
   - Signaleert gaps en risico's
 - **Communiceert met**: team-planner (data-verzoeken), adviseur (spelerscontext)
 
+## Memory
+
+Bij het starten van dit team MOET de lead relevante memories raadplegen:
+
+1. **Lees** `MEMORY.md` (index) in de memory-directory
+2. **Lees** alle memories met type `project` of `feedback` die gerelateerd zijn aan teamindeling, TC-besluiten, of spelersafspraken
+3. **Gebruik** deze context bij het formuleren van opdrachten aan teammates
+4. **Sla op** na afloop: nieuwe TC-besluiten, spelersafspraken, of verrassende bevindingen als `project`-memory
+
+Typische memories voor dit team:
+- TC-besluiten over specifieke spelers of teams
+- Afspraken over spelersplaatsing (bijv. "speler X blijft bij team Y")
+- Retentierisico's die eerder besproken zijn
+- Feedback op eerdere indelingsvoorstellen
+
 ## Werkwijze
 
 1. **team-planner** start met het laden van de huidige blauwdruk en actieve concepten
-2. **data-analist** haalt parallel de actuele spelersdata en retentiecijfers op
+2. **team-planner** raadpleegt relevante memories (TC-besluiten, spelersafspraken)
+3. **data-analist** haalt parallel de actuele spelersdata en retentiecijfers op
 3. **team-planner** formuleert de eerste opdrachten:
    - Aan **adviseur**: genereer startvoorstel op basis van concept
    - Aan **regel-checker**: bereid validatiecriteria voor (teamgrootte-targets)

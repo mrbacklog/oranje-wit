@@ -1,0 +1,25 @@
+{
+  "name": "OW Scout",
+  "short_name": "Scout",
+  "description": "Scouting app voor c.k.v. Oranje Wit",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#FF6B00",
+  "background_color": "#1A1A2E",
+  "categories": ["sports"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

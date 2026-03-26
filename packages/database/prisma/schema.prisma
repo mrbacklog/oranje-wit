@@ -96,6 +96,7 @@ model OWTeam {
   aliases    TeamAlias[]
   coordinatoren  CoordinatorTeam[]
   uitnodigingen  EvaluatieUitnodiging[]
+  scoutingSessies TeamScoutingSessie[]
 
   @@unique([seizoen, owCode])
   @@index([seizoen], map: "idx_teams_seizoen")
@@ -326,6 +327,8 @@ model User {
   actiepuntenToegewezen Actiepunt[] @relation("ActiepuntToewijzing")
   activiteitenAuteur    Activiteit[] @relation("ActiviteitAuteur")
   activiteitenToewijzing Activiteit[] @relation("ActiviteitToewijzing")
+  scoutProfiel          Scout?
+  scoutingVerzoeken     ScoutingVerzoek[]
 }
 
 enum Rol {
@@ -366,6 +369,8 @@ model Speler {
   pins               Pin[]
   werkitems          Werkitem[]
   activiteiten       Activiteit[]
+  scoutingRapporten  ScoutingRapport[]
+  spelersKaarten     SpelersKaart[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -396,6 +401,7 @@ model Staf {
   toewijzingen        StafToewijzing[]
   werkitems           Werkitem[]
   activiteiten        Activiteit[]
+  scoutProfiel        Scout?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1147,4 +1153,214 @@ model Mijlpaal {
   updatedAt   DateTime @updatedAt
 
   @@index([seizoen])
+}
+
+// ╔═══════════════════════════════════════════════════════════╗
+// ║  SCOUTING — OW Scout app (spelerskaarten, rapporten)     ║
+// ║  Tabelnamen: snake_case (@@map)                          ║
+// ╚═══════════════════════════════════════════════════════════╝
+
+model Scout {
+  id           String   @id @default(cuid())
+  naam         String
+  email        String   @unique
+  userId       String?  @unique
+  user         User?    @relation(fields: [userId], references: [id])
+  stafId       String?  @unique
+  staf         Staf?    @relation(fields: [stafId], references: [id])
+  xp           Int      @default(0)
+  level        Int      @default(1)
+  rol          ScoutRol @default(SCOUT)
+  vrijScouten  Boolean  @default(false) @map("vrij_scouten")
+
+  rapporten    ScoutingRapport[]
+  badges       ScoutBadge[]
+  teamSessies  TeamScoutingSessie[]
+  toewijzingen ScoutToewijzing[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("scouts")
+}
+
+model ScoutingRapport {
+  id            String              @id @default(cuid())
+  scoutId       String
+  scout         Scout               @relation(fields: [scoutId], references: [id])
+  spelerId      String
+  speler        Speler              @relation(fields: [spelerId], references: [id])
+  seizoen       String
+  datum         DateTime            @default(now())
+  context       ScoutingContext
+  contextDetail String?
+  scores        Json
+  opmerking     String?             @db.Text
+  overallScore  Int?
+  teamSessieId  String?
+  teamSessie    TeamScoutingSessie? @relation(fields: [teamSessieId], references: [id])
+  verzoekId     String?             @map("verzoek_id")
+  verzoek       ScoutingVerzoek?    @relation(fields: [verzoekId], references: [id])
+  relatie       ScoutSpelerRelatie  @default(GEEN)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([spelerId, seizoen])
+  @@index([scoutId, datum])
+  @@index([teamSessieId])
+  @@index([verzoekId])
+  @@map("scouting_rapporten")
+}
+
+model TeamScoutingSessie {
+  id            String          @id @default(cuid())
+  scoutId       String
+  scout         Scout           @relation(fields: [scoutId], references: [id])
+  owTeamId      Int
+  owTeam        OWTeam          @relation(fields: [owTeamId], references: [id])
+  seizoen       String
+  datum         DateTime        @default(now())
+  context       ScoutingContext
+  contextDetail String?
+  rankings      Json?
+
+  rapporten ScoutingRapport[]
+
+  createdAt DateTime @default(now())
+
+  @@index([owTeamId, seizoen])
+  @@map("team_scouting_sessies")
+}
+
+enum ScoutingContext {
+  WEDSTRIJD
+  TRAINING
+  OVERIG
+}
+
+enum ScoutRol {
+  SCOUT // Reguliere scout: werkt op verzoek, optioneel vrij scouten
+  TC    // TC-lid: maakt verzoeken, ziet alles, kan altijd scouten
+}
+
+enum VerzoekType {
+  GENERIEK    // Beoordeel alle spelers van een team
+  SPECIFIEK   // Beoordeel 1 speler met gerichte vraag
+  VERGELIJKING // Vergelijk 2+ spelers
+}
+
+enum VerzoekStatus {
+  OPEN        // Aangemaakt, nog niet alle scouts begonnen
+  ACTIEF      // Minstens 1 scout is begonnen
+  AFGEROND    // Alle toewijzingen afgerond
+  GEANNULEERD // Door TC geannuleerd
+}
+
+enum ToewijzingStatus {
+  UITGENODIGD  // Scout is uitgenodigd
+  GEACCEPTEERD // Scout heeft geaccepteerd
+  AFGEWEZEN    // Scout heeft afgewezen
+  AFGEROND     // Scout heeft rapport(en) ingediend
+}
+
+enum ScoutSpelerRelatie {
+  GEEN     // Geen persoonlijke relatie
+  OUDER    // Scout is ouder van speler
+  FAMILIE  // Overige familieband
+  BEKENDE  // Persoonlijke bekende
+  TRAINER  // Scout is (ook) trainer van speler
+}
+
+// ── Scouting Verzoeken ────────────────────────────────────────
+
+model ScoutingVerzoek {
+  id              String        @id @default(cuid())
+  type            VerzoekType
+  status          VerzoekStatus @default(OPEN)
+  toelichting     String?       @db.Text
+  deadline        DateTime?
+  anoniem         Boolean       @default(false) // Rapporten anoniem tonen aan niet-TC
+
+  // Scope
+  teamId          String?       @map("team_id")
+  spelerIds       String[]      @map("speler_ids")
+  seizoen         String
+
+  // Maker (TC-lid)
+  aangemaakt_door String        @map("aangemaakt_door")
+  maker           User          @relation(fields: [aangemaakt_door], references: [id])
+
+  // Relaties
+  toewijzingen    ScoutToewijzing[]
+  rapporten       ScoutingRapport[]
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([seizoen])
+  @@index([status])
+  @@map("scouting_verzoeken")
+}
+
+model ScoutToewijzing {
+  id        String           @id @default(cuid())
+  verzoekId String           @map("verzoek_id")
+  verzoek   ScoutingVerzoek  @relation(fields: [verzoekId], references: [id], onDelete: Cascade)
+  scoutId   String           @map("scout_id")
+  scout     Scout            @relation(fields: [scoutId], references: [id])
+  status    ToewijzingStatus @default(UITGENODIGD)
+
+  createdAt DateTime @default(now())
+
+  @@unique([verzoekId, scoutId])
+  @@index([scoutId])
+  @@map("scout_toewijzingen")
+}
+
+model SpelersKaart {
+  id              String   @id @default(cuid())
+  spelerId        String
+  speler          Speler   @relation(fields: [spelerId], references: [id])
+  seizoen         String
+  overall         Int
+  schot           Int
+  aanval          Int
+  passing         Int
+  verdediging     Int
+  fysiek          Int
+  mentaal         Int
+  aantalRapporten Int      @default(0)
+  betrouwbaarheid String   @default("concept")
+  laatsteUpdate   DateTime @default(now())
+  trendOverall    Int?     @default(0)
+
+  @@unique([spelerId, seizoen])
+  @@map("spelers_kaarten")
+}
+
+model ScoutBadge {
+  id         String   @id @default(cuid())
+  scoutId    String
+  scout      Scout    @relation(fields: [scoutId], references: [id])
+  badge      String
+  unlockedAt DateTime @default(now())
+
+  @@unique([scoutId, badge])
+  @@map("scout_badges")
+}
+
+model ScoutChallenge {
+  id           String   @id @default(cuid())
+  naam         String
+  beschrijving String
+  xpBeloning   Int
+  startDatum   DateTime
+  eindDatum    DateTime
+  seizoen      String
+  voorwaarde   Json
+
+  createdAt DateTime @default(now())
+
+  @@map("scout_challenges")
 }

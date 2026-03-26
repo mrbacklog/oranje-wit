@@ -19,6 +19,10 @@ on:
         description: "Deploy Evaluatie"
         type: boolean
         default: false
+      deploy_scouting:
+        description: "Deploy Scouting"
+        type: boolean
+        default: false
       skip_e2e:
         description: "Skip E2E tests"
         type: boolean
@@ -32,6 +36,7 @@ jobs:
       monitor: ${{ steps.result.outputs.monitor }}
       ti: ${{ steps.result.outputs.ti }}
       evaluatie: ${{ steps.result.outputs.evaluatie }}
+      scouting: ${{ steps.result.outputs.scouting }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
@@ -48,6 +53,9 @@ jobs:
             evaluatie:
               - 'apps/evaluatie/**'
               - 'packages/**'
+            scouting:
+              - 'apps/scouting/**'
+              - 'packages/**'
 
       - name: Determine changed apps
         id: result
@@ -56,16 +64,18 @@ jobs:
             echo "monitor=${{ inputs.deploy_monitor }}" >> $GITHUB_OUTPUT
             echo "ti=${{ inputs.deploy_ti }}" >> $GITHUB_OUTPUT
             echo "evaluatie=${{ inputs.deploy_evaluatie }}" >> $GITHUB_OUTPUT
+            echo "scouting=${{ inputs.deploy_scouting }}" >> $GITHUB_OUTPUT
           else
             echo "monitor=${{ steps.filter.outputs.monitor }}" >> $GITHUB_OUTPUT
             echo "ti=${{ steps.filter.outputs.ti }}" >> $GITHUB_OUTPUT
             echo "evaluatie=${{ steps.filter.outputs.evaluatie }}" >> $GITHUB_OUTPUT
+            echo "scouting=${{ steps.filter.outputs.scouting }}" >> $GITHUB_OUTPUT
           fi
 
   # ── Job 1: Quality checks ──────────────────────────────────────────────────
   quality:
     needs: changes
-    if: needs.changes.outputs.monitor == 'true' || needs.changes.outputs.ti == 'true' || needs.changes.outputs.evaluatie == 'true'
+    if: needs.changes.outputs.monitor == 'true' || needs.changes.outputs.ti == 'true' || needs.changes.outputs.evaluatie == 'true' || needs.changes.outputs.scouting == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -96,6 +106,10 @@ jobs:
         if: needs.changes.outputs.evaluatie == 'true'
         run: pnpm --filter @oranje-wit/evaluatie exec tsc --noEmit
 
+      - name: Typecheck scouting
+        if: needs.changes.outputs.scouting == 'true'
+        run: pnpm --filter @oranje-wit/scouting exec tsc --noEmit
+
       - name: Lint monitor
         if: needs.changes.outputs.monitor == 'true'
         run: pnpm --filter @oranje-wit/monitor lint
@@ -108,6 +122,10 @@ jobs:
         if: needs.changes.outputs.evaluatie == 'true'
         run: pnpm --filter @oranje-wit/evaluatie lint
 
+      - name: Lint scouting
+        if: needs.changes.outputs.scouting == 'true'
+        run: pnpm --filter @oranje-wit/scouting lint
+
       - name: Format check
         run: pnpm format:check
 
@@ -117,7 +135,7 @@ jobs:
   # ── Job 2: Build (parallel aan quality) ────────────────────────────────────
   build:
     needs: changes
-    if: needs.changes.outputs.monitor == 'true' || needs.changes.outputs.ti == 'true' || needs.changes.outputs.evaluatie == 'true'
+    if: needs.changes.outputs.monitor == 'true' || needs.changes.outputs.ti == 'true' || needs.changes.outputs.evaluatie == 'true' || needs.changes.outputs.scouting == 'true'
     runs-on: ubuntu-latest
     env:
       DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy
@@ -147,6 +165,7 @@ jobs:
             apps/monitor/.next/cache
             apps/team-indeling/.next/cache
             apps/evaluatie/.next/cache
+            apps/scouting/.next/cache
           key: nextjs-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('apps/*/src/**', 'packages/*/src/**') }}
           restore-keys: |
             nextjs-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-
@@ -164,6 +183,10 @@ jobs:
         if: needs.changes.outputs.evaluatie == 'true'
         run: pnpm build:evaluatie
 
+      - name: Build scouting
+        if: needs.changes.outputs.scouting == 'true'
+        run: pnpm build:scouting
+
   # ── Job 3: E2E Tests (na build, met PostgreSQL service container) ──────────
   e2e:
     needs: [changes, build]
@@ -171,7 +194,8 @@ jobs:
       (github.event_name != 'workflow_dispatch' || inputs.skip_e2e != true) &&
       (needs.changes.outputs.ti == 'true' ||
        needs.changes.outputs.monitor == 'true' ||
-       needs.changes.outputs.evaluatie == 'true')
+       needs.changes.outputs.evaluatie == 'true' ||
+       needs.changes.outputs.scouting == 'true')
     runs-on: ubuntu-latest
     env:
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/oranjewit_test
@@ -245,6 +269,10 @@ jobs:
         if: needs.changes.outputs.evaluatie == 'true'
         run: pnpm test:e2e:evaluatie
 
+      - name: E2E tests scouting
+        if: needs.changes.outputs.scouting == 'true'
+        run: pnpm test:e2e:scouting
+
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
@@ -294,6 +322,18 @@ jobs:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
           ENV_ID: ${{ secrets.RAILWAY_ENVIRONMENT_ID }}
           SVC_ID: ${{ secrets.RAILWAY_SERVICE_EVAL }}
+        run: |
+          curl -sf -X POST https://backboard.railway.com/graphql/v2 \
+            -H "Authorization: Bearer $RAILWAY_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{\"query\":\"mutation { serviceInstanceDeploy(environmentId: \\\"$ENV_ID\\\", serviceId: \\\"$SVC_ID\\\", latestCommit: true) }\"}"
+
+      - name: Deploy scouting
+        if: needs.changes.outputs.scouting == 'true'
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          ENV_ID: ${{ secrets.RAILWAY_ENVIRONMENT_ID }}
+          SVC_ID: ${{ secrets.RAILWAY_SERVICE_SCOUTING }}
         run: |
           curl -sf -X POST https://backboard.railway.com/graphql/v2 \
             -H "Authorization: Bearer $RAILWAY_TOKEN" \
