@@ -32,7 +32,8 @@ export async function POST(request: Request) {
     const parsed = await parseBody(request, CreateCoordinatorSchema);
     if (!parsed.ok) return parsed.response;
 
-    const coordinator = await prisma.coordinator.create({
+    // Prisma 7 type recursie workaround (TS2321)
+    const coordinator = await (prisma.coordinator.create as Function)({
       data: parsed.data,
     });
     return ok(coordinator);

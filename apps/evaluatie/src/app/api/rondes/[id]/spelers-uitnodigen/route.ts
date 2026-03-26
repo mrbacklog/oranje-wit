@@ -77,7 +77,8 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
       const owTeamId = teamIdMap.get(s.team) ?? null;
 
       // Upsert uitnodiging
-      const uitnodiging = await prisma.evaluatieUitnodiging.upsert({
+      // Prisma 7 type recursie workaround (TS2321)
+      const uitnodiging = await (prisma.evaluatieUitnodiging.upsert as Function)({
         where: {
           rondeId_email_owTeamId: {
             rondeId: id,
@@ -110,7 +111,8 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
 
       try {
         await verstuurEmail({ aan: email, onderwerp, html });
-        await prisma.evaluatieUitnodiging.update({
+        // Prisma 7 type recursie workaround (TS2321)
+        await (prisma.evaluatieUitnodiging.update as Function)({
           where: { id: uitnodiging.id },
           data: { emailVerstuurd: new Date() },
         });

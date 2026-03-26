@@ -15,7 +15,8 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     const parsed = await parseBody(request, UpdateCoordinatorSchema);
     if (!parsed.ok) return parsed.response;
 
-    const coordinator = await prisma.coordinator.update({
+    // Prisma 7 type recursie workaround (TS2321)
+    const coordinator = await (prisma.coordinator.update as Function)({
       where: { id },
       data: parsed.data,
     });
@@ -29,7 +30,8 @@ export async function DELETE(_req: Request, { params }: { params: Promise<{ id: 
   try {
     await requireEditor();
     const { id } = await params;
-    await prisma.coordinator.delete({ where: { id } });
+    // Prisma 7 type recursie workaround (TS2321)
+    await (prisma.coordinator.delete as Function)({ where: { id } });
     return ok({ deleted: true });
   } catch (error) {
     return fail(error instanceof Error ? error.message : String(error));

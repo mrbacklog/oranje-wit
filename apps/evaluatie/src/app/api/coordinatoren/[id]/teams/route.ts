@@ -20,7 +20,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     const parsed = await parseBody(request, LinkTeamSchema);
     if (!parsed.ok) return parsed.response;
 
-    const link = await prisma.coordinatorTeam.create({
+    // Prisma 7 type recursie workaround (TS2321)
+    const link = await (prisma.coordinatorTeam.create as Function)({
       data: {
         coordinatorId: id,
         owTeamId: parsed.data.owTeamId,
@@ -40,7 +41,8 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     const parsed = await parseBody(request, UnlinkTeamSchema);
     if (!parsed.ok) return parsed.response;
 
-    await prisma.coordinatorTeam.deleteMany({
+    // Prisma 7 type recursie workaround (TS2321)
+    await (prisma.coordinatorTeam.deleteMany as Function)({
       where: {
         coordinatorId: id,
         owTeamId: parsed.data.owTeamId,

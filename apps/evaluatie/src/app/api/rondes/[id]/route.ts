@@ -46,7 +46,8 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     const parsed = await parseBody(request, UpdateRondeSchema);
     if (!parsed.ok) return parsed.response;
 
-    const ronde = await prisma.evaluatieRonde.update({
+    // Prisma 7 type recursie workaround (TS2321)
+    const ronde = await (prisma.evaluatieRonde.update as Function)({
       where: { id },
       data: {
         ...parsed.data,

@@ -15,7 +15,8 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     const parsed = await parseBody(request, UpdateTemplateSchema);
     if (!parsed.ok) return parsed.response;
 
-    const template = await prisma.emailTemplate.update({
+    // Prisma 7 type recursie workaround (TS2321)
+    const template = await (prisma.emailTemplate.update as Function)({
       where: { id },
       data: parsed.data,
     });

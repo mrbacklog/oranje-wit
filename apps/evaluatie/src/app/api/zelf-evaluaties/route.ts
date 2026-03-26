@@ -42,7 +42,8 @@ export async function POST(request: Request) {
       return fail("Geen speler gekoppeld aan uitnodiging", 400, "NO_PLAYER");
     }
 
-    const evaluatie = await prisma.spelerZelfEvaluatie.upsert({
+    // Prisma 7 type recursie workaround (TS2321)
+    const evaluatie = await (prisma.spelerZelfEvaluatie.upsert as Function)({
       where: {
         spelerId_seizoen_ronde: {
           spelerId: uitnodiging.spelerId,

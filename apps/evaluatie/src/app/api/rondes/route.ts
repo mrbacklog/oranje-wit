@@ -32,7 +32,8 @@ export async function POST(request: Request) {
     const parsed = await parseBody(request, CreateRondeSchema);
     if (!parsed.ok) return parsed.response;
 
-    const ronde = await prisma.evaluatieRonde.create({
+    // Prisma 7 type recursie workaround (TS2321)
+    const ronde = await (prisma.evaluatieRonde.create as Function)({
       data: {
         ...parsed.data,
         deadline: new Date(parsed.data.deadline),
