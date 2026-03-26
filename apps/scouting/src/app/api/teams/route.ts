@@ -3,6 +3,17 @@ import { HUIDIG_SEIZOEN, logger } from "@oranje-wit/types";
 import { ok, fail } from "@/lib/api";
 import { prisma } from "@/lib/db/prisma";
 
+interface TeamSelect {
+  id: number;
+  owCode: string;
+  naam: string;
+  categorie: string;
+  kleur: string | null;
+  leeftijdsgroep: string | null;
+  spelvorm: string | null;
+  isSelectie: boolean | null;
+}
+
 /**
  * GET /api/teams?seizoen=2025-2026
  *
@@ -19,7 +30,9 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const seizoen = searchParams.get("seizoen") ?? HUIDIG_SEIZOEN;
 
-    const teams = await prisma.oWTeam.findMany({
+    // Prisma 7 type-recursie workaround
+
+    const teams = (await (prisma.oWTeam as any).findMany({
       where: {
         seizoen,
         // Filter op jeugd: categorie is niet "senioren"
@@ -39,12 +52,12 @@ export async function GET(request: Request) {
         spelvorm: true,
         isSelectie: true,
       },
-    });
+    })) as TeamSelect[];
 
     // Tel het aantal spelers per team via CompetitieSpeler
     // We zoeken op de teamnaam in de meest recente competitie van het seizoen
     const teamsMetAantal = await Promise.all(
-      teams.map(async (team) => {
+      teams.map(async (team: TeamSelect) => {
         // Zoek via TeamAlias of directe teamnaam
         const aliases = await prisma.teamAlias.findMany({
           where: { owTeamId: team.id },

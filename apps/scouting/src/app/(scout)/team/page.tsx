@@ -9,7 +9,7 @@ import { TeamGrid } from "./team-grid";
  * Klik op een team navigeert naar de team-scouting wizard.
  */
 export default async function TeamKiezenPage() {
-  const teams = await prisma.oWTeam.findMany({
+  const teams = await (prisma.oWTeam as any).findMany({
     where: {
       seizoen: HUIDIG_SEIZOEN,
       NOT: { leeftijdsgroep: null },

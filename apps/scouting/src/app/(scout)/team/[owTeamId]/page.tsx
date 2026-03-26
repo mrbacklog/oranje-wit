@@ -17,7 +17,7 @@ export default async function TeamScoutPage({ params }: PageProps) {
   }
 
   // Haal het team op
-  const team = await prisma.oWTeam.findUnique({
+  const team = await (prisma.oWTeam as any).findUnique({
     where: { id: teamId },
     select: {
       id: true,

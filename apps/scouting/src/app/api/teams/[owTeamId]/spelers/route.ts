@@ -28,7 +28,7 @@ export async function GET(request: Request, { params }: RouteParams) {
     }
 
     // Haal het team op
-    const team = await prisma.oWTeam.findUnique({
+    const team = await (prisma.oWTeam as any).findUnique({
       where: { id: teamId },
       select: {
         id: true,
