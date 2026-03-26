@@ -4,7 +4,8 @@ import TrainerEvaluatieForm from "@/components/TrainerEvaluatieForm";
 
 async function haalSpelersOp(seizoen: string, teamNaam: string | null | undefined) {
   if (!teamNaam) return [];
-  const spelers = await prisma.competitieSpeler.findMany({
+  // Prisma 7 type recursie workaround (TS2321)
+  const spelers = await (prisma.competitieSpeler.findMany as Function)({
     where: { seizoen, team: teamNaam },
     select: {
       relCode: true,
@@ -19,13 +20,19 @@ async function haalSpelersOp(seizoen: string, teamNaam: string | null | undefine
     },
     orderBy: { lid: { achternaam: "asc" } },
   });
-  return spelers.map((s) => ({
-    relCode: s.relCode,
-    naam: s.lid
-      ? `${s.lid.roepnaam} ${s.lid.tussenvoegsel ? s.lid.tussenvoegsel + " " : ""}${s.lid.achternaam}`
-      : s.relCode,
-    geslacht: s.geslacht ?? "O",
-  }));
+  return spelers.map(
+    (s: {
+      relCode: string;
+      geslacht: string | null;
+      lid: { roepnaam: string; tussenvoegsel: string | null; achternaam: string } | null;
+    }) => ({
+      relCode: s.relCode,
+      naam: s.lid
+        ? `${s.lid.roepnaam} ${s.lid.tussenvoegsel ? s.lid.tussenvoegsel + " " : ""}${s.lid.achternaam}`
+        : s.relCode,
+      geslacht: s.geslacht ?? "O",
+    })
+  );
 }
 
 export default async function InvullenPage({

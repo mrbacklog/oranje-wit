@@ -11,7 +11,8 @@ const CreateCoordinatorSchema = z.object({
 export async function GET() {
   try {
     await requireEditor();
-    const coordinatoren = await prisma.coordinator.findMany({
+    // Prisma 7 type recursie workaround (TS2321)
+    const coordinatoren = await (prisma.coordinator.findMany as Function)({
       include: {
         teams: {
           include: { owTeam: { select: { id: true, naam: true } } },

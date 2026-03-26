@@ -20,7 +20,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     await requireEditor();
     const { id } = await params;
 
-    const ronde = await prisma.evaluatieRonde.findUnique({
+    // Prisma 7 type recursie workaround (TS2321)
+    const ronde = await (prisma.evaluatieRonde.findUnique as Function)({
       where: { id },
     });
     if (!ronde) return fail("Ronde niet gevonden", 404, "NOT_FOUND");
@@ -30,7 +31,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     if (!parsed.ok) return parsed.response;
 
     // Haal email template op
-    const template = await prisma.emailTemplate.findUnique({
+    // Prisma 7 type recursie workaround (TS2321)
+    const template = await (prisma.emailTemplate.findUnique as Function)({
       where: { sleutel: "trainer_uitnodiging" },
     });
     if (!template)
@@ -40,7 +42,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     let verstuurd = 0;
 
     for (const u of parsed.data.uitnodigingen) {
-      const team = await prisma.oWTeam.findUnique({
+      // Prisma 7 type recursie workaround (TS2321)
+      const team = await (prisma.oWTeam.findUnique as Function)({
         where: { id: u.owTeamId },
         select: { naam: true },
       });

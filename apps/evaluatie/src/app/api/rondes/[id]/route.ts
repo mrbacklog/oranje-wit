@@ -13,7 +13,8 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   try {
     await requireEditor();
     const { id } = await params;
-    const ronde = await prisma.evaluatieRonde.findUnique({
+    // Prisma 7 type recursie workaround (TS2321)
+    const ronde = await (prisma.evaluatieRonde.findUnique as Function)({
       where: { id },
       include: {
         uitnodigingen: {

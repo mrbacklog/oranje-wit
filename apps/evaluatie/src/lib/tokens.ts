@@ -6,7 +6,8 @@ import { prisma } from "@/lib/db/prisma";
  * Retourneert null als het token onbekend is of de ronde niet actief is.
  */
 export async function valideerToken(token: string) {
-  const uitnodiging = await prisma.evaluatieUitnodiging.findUnique({
+  // Prisma 7 type recursie workaround (TS2321)
+  const uitnodiging = await (prisma.evaluatieUitnodiging.findUnique as Function)({
     where: { token },
     include: {
       ronde: {

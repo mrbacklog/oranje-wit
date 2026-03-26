@@ -27,7 +27,8 @@ export async function POST(request: Request) {
     const { token, ...data } = parsed.data;
 
     // Valideer token
-    const uitnodiging = await prisma.evaluatieUitnodiging.findUnique({
+    // Prisma 7 type recursie workaround (TS2321)
+    const uitnodiging = await (prisma.evaluatieUitnodiging.findUnique as Function)({
       where: { token },
       include: { ronde: true },
     });

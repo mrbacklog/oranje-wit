@@ -9,14 +9,16 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
     await requireEditor();
     const { id } = await params;
 
-    const ronde = await prisma.evaluatieRonde.findUnique({
+    // Prisma 7 type recursie workaround (TS2321)
+    const ronde = await (prisma.evaluatieRonde.findUnique as Function)({
       where: { id },
     });
     if (!ronde) return fail("Ronde niet gevonden", 404, "NOT_FOUND");
     if (ronde.status !== "actief") return fail("Ronde is niet actief", 400, "RONDE_NIET_ACTIEF");
 
     // Haal uitnodigingen op die nog geen evaluatie hebben
-    const uitnodigingen = await prisma.evaluatieUitnodiging.findMany({
+    // Prisma 7 type recursie workaround (TS2321)
+    const uitnodigingen = await (prisma.evaluatieUitnodiging.findMany as Function)({
       where: {
         rondeId: id,
         type: "trainer",
@@ -27,17 +29,24 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
     });
 
     // Filter: alleen uitnodigingen waarvoor geen ingediende evaluatie bestaat
-    const ingediend = await prisma.evaluatie.findMany({
+    // Prisma 7 type recursie workaround (TS2321)
+    const ingediend = await (prisma.evaluatie.findMany as Function)({
       where: { rondeId: id, status: "ingediend" },
       select: { coach: true, teamNaam: true },
     });
-    const ingediendSet = new Set(ingediend.map((e) => `${e.coach}|${e.teamNaam}`));
-
-    const teHerinneren = uitnodigingen.filter(
-      (u) => !ingediendSet.has(`${u.naam}|${u.owTeam?.naam}`)
+    const ingediendSet = new Set(
+      ingediend.map(
+        (e: { coach: string | null; teamNaam: string | null }) => `${e.coach}|${e.teamNaam}`
+      )
     );
 
-    const template = await prisma.emailTemplate.findUnique({
+    const teHerinneren = uitnodigingen.filter(
+      (u: { naam: string; owTeam?: { naam: string | null } | null }) =>
+        !ingediendSet.has(`${u.naam}|${u.owTeam?.naam}`)
+    );
+
+    // Prisma 7 type recursie workaround (TS2321)
+    const template = await (prisma.emailTemplate.findUnique as Function)({
       where: { sleutel: "trainer_herinnering" },
     });
     if (!template)

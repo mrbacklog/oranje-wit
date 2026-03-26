@@ -14,7 +14,8 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     if (!parsed.ok) return parsed.response;
 
     // Valideer token — coordinator moet toegang hebben
-    const uitnodiging = await prisma.evaluatieUitnodiging.findUnique({
+    // Prisma 7 type recursie workaround (TS2321)
+    const uitnodiging = await (prisma.evaluatieUitnodiging.findUnique as Function)({
       where: { token: parsed.data.token },
       include: { ronde: { select: { status: true } } },
     });

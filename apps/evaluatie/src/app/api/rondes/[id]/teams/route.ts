@@ -7,14 +7,16 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     await requireEditor();
     const { id } = await params;
 
-    const ronde = await prisma.evaluatieRonde.findUnique({
+    // Prisma 7 type recursie workaround (TS2321)
+    const ronde = await (prisma.evaluatieRonde.findUnique as Function)({
       where: { id },
       select: { seizoen: true },
     });
     if (!ronde) return fail("Ronde niet gevonden", 404, "NOT_FOUND");
 
     // Teams voor dit seizoen
-    const teams = await prisma.oWTeam.findMany({
+    // Prisma 7 type recursie workaround (TS2321)
+    const teams = await (prisma.oWTeam.findMany as Function)({
       where: { seizoen: ronde.seizoen },
       orderBy: { sortOrder: "asc" },
       select: {
@@ -27,7 +29,8 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     });
 
     // Spelers per team (uit competitie_spelers, actueel seizoen)
-    const spelers = await prisma.competitieSpeler.findMany({
+    // Prisma 7 type recursie workaround (TS2321)
+    const spelers = await (prisma.competitieSpeler.findMany as Function)({
       where: { seizoen: ronde.seizoen },
       select: {
         relCode: true,
@@ -52,17 +55,37 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
       spelersPerTeam.set(s.team, lijst);
     }
 
-    const result = teams.map((team) => ({
-      ...team,
-      spelers: (spelersPerTeam.get(team.naam ?? "") ?? []).map((s) => ({
-        relCode: s.relCode,
-        naam: s.lid
-          ? `${s.lid.roepnaam} ${s.lid.tussenvoegsel ? s.lid.tussenvoegsel + " " : ""}${s.lid.achternaam}`
-          : s.relCode,
-        geslacht: s.geslacht,
-        email: s.lid?.email,
-      })),
-    }));
+    const result = teams.map(
+      (team: {
+        id: number;
+        naam: string | null;
+        categorie: string | null;
+        kleur: string | null;
+        spelvorm: string | null;
+      }) => ({
+        ...team,
+        spelers: (spelersPerTeam.get(team.naam ?? "") ?? []).map(
+          (s: {
+            relCode: string;
+            team: string;
+            geslacht: string | null;
+            lid: {
+              roepnaam: string;
+              tussenvoegsel: string | null;
+              achternaam: string;
+              email: string | null;
+            } | null;
+          }) => ({
+            relCode: s.relCode,
+            naam: s.lid
+              ? `${s.lid.roepnaam} ${s.lid.tussenvoegsel ? s.lid.tussenvoegsel + " " : ""}${s.lid.achternaam}`
+              : s.relCode,
+            geslacht: s.geslacht,
+            email: s.lid?.email,
+          })
+        ),
+      })
+    );
 
     return ok({ teams: result });
   } catch (error) {

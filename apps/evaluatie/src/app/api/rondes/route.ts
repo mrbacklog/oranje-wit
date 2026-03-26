@@ -14,7 +14,8 @@ const CreateRondeSchema = z.object({
 export async function GET() {
   try {
     await requireEditor();
-    const rondes = await prisma.evaluatieRonde.findMany({
+    // Prisma 7 type recursie workaround (TS2321)
+    const rondes = await (prisma.evaluatieRonde.findMany as Function)({
       orderBy: [{ seizoen: "desc" }, { ronde: "desc" }],
       include: {
         _count: { select: { uitnodigingen: true, evaluaties: true } },

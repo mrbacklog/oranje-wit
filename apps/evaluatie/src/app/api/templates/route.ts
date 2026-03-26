@@ -5,7 +5,8 @@ import { requireEditor } from "@oranje-wit/auth/checks";
 export async function GET() {
   try {
     await requireEditor();
-    const templates = await prisma.emailTemplate.findMany({
+    // Prisma 7 type recursie workaround (TS2321)
+    const templates = await (prisma.emailTemplate.findMany as Function)({
       orderBy: { sleutel: "asc" },
     });
     return ok(templates);

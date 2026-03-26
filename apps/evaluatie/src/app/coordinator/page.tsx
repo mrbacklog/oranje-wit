@@ -36,7 +36,8 @@ export default async function CoordinatorPage({
   const { ronde } = uitnodiging;
 
   // Haal alle teams op waarvoor deze coordinator verantwoordelijk is
-  const coordTeams = await prisma.coordinatorTeam.findMany({
+  // Prisma 7 type recursie workaround (TS2321)
+  const coordTeams = await (prisma.coordinatorTeam.findMany as Function)({
     where: {
       coordinator: { email: uitnodiging.email },
       seizoen: ronde.seizoen,
@@ -48,25 +49,28 @@ export default async function CoordinatorPage({
 
   // Tel evaluaties per team
   const teamStats = await Promise.all(
-    coordTeams.map(async (ct) => {
-      const [ingediend, uitnodigingen] = await Promise.all([
-        prisma.evaluatie.count({
-          where: {
-            rondeId: ronde.id,
-            teamNaam: ct.owTeam.naam,
-            status: "ingediend",
-          },
-        }),
-        prisma.evaluatieUitnodiging.count({
-          where: {
-            rondeId: ronde.id,
-            owTeamId: ct.owTeam.id,
-            type: "trainer",
-          },
-        }),
-      ]);
-      return { team: ct.owTeam, ingediend, uitnodigingen };
-    })
+    coordTeams.map(
+      async (ct: { owTeam: { id: number; naam: string | null; categorie: string | null } }) => {
+        // Prisma 7 type recursie workaround (TS2321)
+        const [ingediend, uitnodigingen] = await Promise.all([
+          (prisma.evaluatie.count as Function)({
+            where: {
+              rondeId: ronde.id,
+              teamNaam: ct.owTeam.naam,
+              status: "ingediend",
+            },
+          }),
+          (prisma.evaluatieUitnodiging.count as Function)({
+            where: {
+              rondeId: ronde.id,
+              owTeamId: ct.owTeam.id,
+              type: "trainer",
+            },
+          }),
+        ]);
+        return { team: ct.owTeam, ingediend, uitnodigingen };
+      }
+    )
   );
 
   const deadlineStr = ronde.deadline.toLocaleDateString("nl-NL", {

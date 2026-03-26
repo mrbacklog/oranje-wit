@@ -34,7 +34,8 @@ export default async function ZelfEvaluatiePage({
   }
 
   // Check of al ingediend
-  const bestaand = await prisma.spelerZelfEvaluatie.findFirst({
+  // Prisma 7 type recursie workaround (TS2321)
+  const bestaand = await (prisma.spelerZelfEvaluatie.findFirst as Function)({
     where: {
       spelerId: uitnodiging.spelerId!,
       seizoen: uitnodiging.ronde.seizoen,

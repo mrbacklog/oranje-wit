@@ -12,13 +12,15 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
     await requireEditor();
     const { id } = await params;
 
-    const ronde = await prisma.evaluatieRonde.findUnique({ where: { id } });
+    // Prisma 7 type recursie workaround (TS2321)
+    const ronde = await (prisma.evaluatieRonde.findUnique as Function)({ where: { id } });
     if (!ronde) return fail("Ronde niet gevonden", 404, "NOT_FOUND");
     if (ronde.type !== "speler") return fail("Ronde is niet van type 'speler'", 400, "WRONG_TYPE");
     if (ronde.status !== "actief") return fail("Ronde is niet actief", 400, "RONDE_NIET_ACTIEF");
 
     // Haal eligible teams op
-    const teams = await prisma.oWTeam.findMany({
+    // Prisma 7 type recursie workaround (TS2321)
+    const teams = await (prisma.oWTeam.findMany as Function)({
       where: {
         seizoen: ronde.seizoen,
         categorie: { in: ELIGIBLE_CATEGORIES },
@@ -26,13 +28,16 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
       select: { id: true, naam: true, categorie: true },
     });
 
-    const teamNamen = teams.map((t) => t.naam);
+    const teamNamen = teams.map(
+      (t: { id: number; naam: string | null; categorie: string | null }) => t.naam
+    );
 
     // Haal spelers op met e-mailadres
-    const spelers = await prisma.competitieSpeler.findMany({
+    // Prisma 7 type recursie workaround (TS2321)
+    const spelers = await (prisma.competitieSpeler.findMany as Function)({
       where: {
         seizoen: ronde.seizoen,
-        team: { in: teamNamen.filter((n): n is string => n !== null) },
+        team: { in: teamNamen.filter((n: string | null): n is string => n !== null) },
       },
       select: {
         relCode: true,
@@ -49,9 +54,21 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
     });
 
     // Filter spelers met e-mailadres
-    const metEmail = spelers.filter((s) => s.lid?.email);
+    const metEmail = spelers.filter(
+      (s: {
+        relCode: string;
+        team: string;
+        lid: {
+          roepnaam: string;
+          tussenvoegsel: string | null;
+          achternaam: string;
+          email: string | null;
+        } | null;
+      }) => s.lid?.email
+    );
 
-    const template = await prisma.emailTemplate.findUnique({
+    // Prisma 7 type recursie workaround (TS2321)
+    const template = await (prisma.emailTemplate.findUnique as Function)({
       where: { sleutel: "speler_uitnodiging" },
     });
     if (!template)
@@ -67,7 +84,9 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
     let verstuurd = 0;
 
     // Find team id mapping
-    const teamIdMap = new Map(teams.map((t) => [t.naam, t.id]));
+    const teamIdMap = new Map(
+      teams.map((t: { id: number; naam: string | null }) => [t.naam, t.id])
+    );
 
     for (const s of metEmail) {
       const naam = s.lid

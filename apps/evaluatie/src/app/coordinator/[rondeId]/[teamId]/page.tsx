@@ -29,7 +29,8 @@ export default async function CoordinatorTeamPage({
   }
 
   // Verify coordinator has access to this team
-  const coordTeam = await prisma.coordinatorTeam.findFirst({
+  // Prisma 7 type recursie workaround (TS2321)
+  const coordTeam = await (prisma.coordinatorTeam.findFirst as Function)({
     where: {
       coordinator: { email: uitnodiging.email },
       owTeamId: parseInt(teamId),
@@ -45,13 +46,15 @@ export default async function CoordinatorTeamPage({
     );
   }
 
-  const team = await prisma.oWTeam.findUnique({
+  // Prisma 7 type recursie workaround (TS2321)
+  const team = await (prisma.oWTeam.findUnique as Function)({
     where: { id: parseInt(teamId) },
     select: { id: true, naam: true, categorie: true },
   });
 
   // Get all evaluaties for this team and ronde
-  const evaluaties = await prisma.evaluatie.findMany({
+  // Prisma 7 type recursie workaround (TS2321)
+  const evaluaties = await (prisma.evaluatie.findMany as Function)({
     where: { rondeId, teamNaam: team?.naam, status: "ingediend" },
     include: {
       speler: { select: { id: true, roepnaam: true, achternaam: true } },
@@ -79,16 +82,27 @@ export default async function CoordinatorTeamPage({
       <p className="mt-1 text-gray-500">{uitnodiging.ronde.naam}</p>
 
       <CoordinatorTeamView
-        evaluaties={evaluaties.map((e) => ({
-          id: e.id,
-          spelerId: e.spelerId,
-          spelerNaam: e.speler ? `${e.speler.roepnaam} ${e.speler.achternaam}` : e.spelerId,
-          coach: e.coach ?? "Onbekend",
-          scores: e.scores as Record<string, number | string | null>,
-          opmerkingen: e.opmerking,
-          coordinatorMemo: e.coordinatorMemo,
-          ingediendOp: e.ingediendOp?.toISOString() ?? null,
-        }))}
+        evaluaties={evaluaties.map(
+          (e: {
+            id: string;
+            spelerId: string;
+            speler: { id: string; roepnaam: string; achternaam: string } | null;
+            coach: string | null;
+            scores: Record<string, unknown>;
+            opmerking: string | null;
+            coordinatorMemo: string | null;
+            ingediendOp: Date | null;
+          }) => ({
+            id: e.id,
+            spelerId: e.spelerId,
+            spelerNaam: e.speler ? `${e.speler.roepnaam} ${e.speler.achternaam}` : e.spelerId,
+            coach: e.coach ?? "Onbekend",
+            scores: e.scores as Record<string, number | string | null>,
+            opmerkingen: e.opmerking,
+            coordinatorMemo: e.coordinatorMemo,
+            ingediendOp: e.ingediendOp?.toISOString() ?? null,
+          })
+        )}
         token={token}
       />
     </main>

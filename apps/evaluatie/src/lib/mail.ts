@@ -24,7 +24,8 @@ export async function haalTemplateOp(
   sleutel: string,
   variabelen: Record<string, string>
 ): Promise<{ onderwerp: string; html: string } | null> {
-  const template = await prisma.emailTemplate.findUnique({
+  // Prisma 7 type recursie workaround (TS2321)
+  const template = await (prisma.emailTemplate.findUnique as Function)({
     where: { sleutel },
   });
 
