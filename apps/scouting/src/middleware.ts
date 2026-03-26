@@ -1,14 +1,10 @@
 import { auth } from "@oranje-wit/auth";
 import { NextResponse } from "next/server";
 
-export default async function middleware() {
-  const session = await auth();
-  if (!session?.user) {
-    return NextResponse.redirect(new URL("/", process.env.NEXTAUTH_URL));
-  }
-  return NextResponse.next();
-}
+export default process.env.NODE_ENV === "development" ? () => NextResponse.next() : auth;
 
 export const config = {
-  matcher: ["/scout/:path*"],
+  matcher: [
+    "/((?!login|api/auth|api/health|_next/static|_next/image|icons|manifest\\.json|favicon\\.ico).*)",
+  ],
 };
