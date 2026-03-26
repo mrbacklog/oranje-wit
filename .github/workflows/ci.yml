@@ -240,7 +240,7 @@ jobs:
         working-directory: packages/database
 
       - name: Seed test database
-        run: npx tsx e2e/fixtures/seed.ts
+        run: pnpm dlx tsx e2e/fixtures/seed.ts
 
       - name: Cache Playwright browsers
         uses: actions/cache@v4
