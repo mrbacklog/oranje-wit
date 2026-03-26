@@ -1,5 +1,5 @@
 import { valideerToken } from "@/lib/tokens";
-import { prisma } from "@/lib/db/prisma";
+import { prisma, PrismaFn } from "@/lib/db/prisma";
 import CoordinatorTeamView from "@/components/CoordinatorTeamView";
 
 export default async function CoordinatorTeamPage({
@@ -30,7 +30,7 @@ export default async function CoordinatorTeamPage({
 
   // Verify coordinator has access to this team
   // Prisma 7 type recursie workaround (TS2321)
-  const coordTeam = await (prisma.coordinatorTeam.findFirst as Function)({
+  const coordTeam = await (prisma.coordinatorTeam.findFirst as PrismaFn)({
     where: {
       coordinator: { email: uitnodiging.email },
       owTeamId: parseInt(teamId),
@@ -47,14 +47,14 @@ export default async function CoordinatorTeamPage({
   }
 
   // Prisma 7 type recursie workaround (TS2321)
-  const team = await (prisma.oWTeam.findUnique as Function)({
+  const team = await (prisma.oWTeam.findUnique as PrismaFn)({
     where: { id: parseInt(teamId) },
     select: { id: true, naam: true, categorie: true },
   });
 
   // Get all evaluaties for this team and ronde
   // Prisma 7 type recursie workaround (TS2321)
-  const evaluaties = await (prisma.evaluatie.findMany as Function)({
+  const evaluaties = await (prisma.evaluatie.findMany as PrismaFn)({
     where: { rondeId, teamNaam: team?.naam, status: "ingediend" },
     include: {
       speler: { select: { id: true, roepnaam: true, achternaam: true } },

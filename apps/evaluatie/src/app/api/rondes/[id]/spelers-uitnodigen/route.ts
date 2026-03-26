@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/db/prisma";
+import { prisma, PrismaFn } from "@/lib/db/prisma";
 import { ok, fail } from "@/lib/api";
 import { requireEditor } from "@oranje-wit/auth/checks";
 import { renderTemplate, verstuurEmail } from "@/lib/mail";
@@ -13,14 +13,16 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
     const { id } = await params;
 
     // Prisma 7 type recursie workaround (TS2321)
-    const ronde = await (prisma.evaluatieRonde.findUnique as Function)({ where: { id } });
+    const ronde = await (prisma.evaluatieRonde.findUnique as PrismaFn)({
+      where: { id },
+    });
     if (!ronde) return fail("Ronde niet gevonden", 404, "NOT_FOUND");
     if (ronde.type !== "speler") return fail("Ronde is niet van type 'speler'", 400, "WRONG_TYPE");
     if (ronde.status !== "actief") return fail("Ronde is niet actief", 400, "RONDE_NIET_ACTIEF");
 
     // Haal eligible teams op
     // Prisma 7 type recursie workaround (TS2321)
-    const teams = await (prisma.oWTeam.findMany as Function)({
+    const teams = await (prisma.oWTeam.findMany as PrismaFn)({
       where: {
         seizoen: ronde.seizoen,
         categorie: { in: ELIGIBLE_CATEGORIES },
@@ -34,7 +36,7 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
 
     // Haal spelers op met e-mailadres
     // Prisma 7 type recursie workaround (TS2321)
-    const spelers = await (prisma.competitieSpeler.findMany as Function)({
+    const spelers = await (prisma.competitieSpeler.findMany as PrismaFn)({
       where: {
         seizoen: ronde.seizoen,
         team: { in: teamNamen.filter((n: string | null): n is string => n !== null) },
@@ -68,7 +70,7 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
     );
 
     // Prisma 7 type recursie workaround (TS2321)
-    const template = await (prisma.emailTemplate.findUnique as Function)({
+    const template = await (prisma.emailTemplate.findUnique as PrismaFn)({
       where: { sleutel: "speler_uitnodiging" },
     });
     if (!template)
@@ -97,7 +99,7 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
 
       // Upsert uitnodiging
       // Prisma 7 type recursie workaround (TS2321)
-      const uitnodiging = await (prisma.evaluatieUitnodiging.upsert as Function)({
+      const uitnodiging = await (prisma.evaluatieUitnodiging.upsert as PrismaFn)({
         where: {
           rondeId_email_owTeamId: {
             rondeId: id,
@@ -131,7 +133,7 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
       try {
         await verstuurEmail({ aan: email, onderwerp, html });
         // Prisma 7 type recursie workaround (TS2321)
-        await (prisma.evaluatieUitnodiging.update as Function)({
+        await (prisma.evaluatieUitnodiging.update as PrismaFn)({
           where: { id: uitnodiging.id },
           data: { emailVerstuurd: new Date() },
         });

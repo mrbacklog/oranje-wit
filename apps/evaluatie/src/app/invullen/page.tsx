@@ -1,11 +1,11 @@
 import { valideerToken } from "@/lib/tokens";
-import { prisma } from "@/lib/db/prisma";
+import { prisma, PrismaFn } from "@/lib/db/prisma";
 import TrainerEvaluatieForm from "@/components/TrainerEvaluatieForm";
 
 async function haalSpelersOp(seizoen: string, teamNaam: string | null | undefined) {
   if (!teamNaam) return [];
   // Prisma 7 type recursie workaround (TS2321)
-  const spelers = await (prisma.competitieSpeler.findMany as Function)({
+  const spelers = await (prisma.competitieSpeler.findMany as PrismaFn)({
     where: { seizoen, team: teamNaam },
     select: {
       relCode: true,

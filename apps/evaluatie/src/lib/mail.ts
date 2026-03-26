@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 import { logger } from "@oranje-wit/types";
-import { prisma } from "@/lib/db/prisma";
+import { prisma, PrismaFn } from "@/lib/db/prisma";
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -25,7 +25,7 @@ export async function haalTemplateOp(
   variabelen: Record<string, string>
 ): Promise<{ onderwerp: string; html: string } | null> {
   // Prisma 7 type recursie workaround (TS2321)
-  const template = await (prisma.emailTemplate.findUnique as Function)({
+  const template = await (prisma.emailTemplate.findUnique as PrismaFn)({
     where: { sleutel },
   });
 

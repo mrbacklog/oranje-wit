@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/db/prisma";
+import { prisma, PrismaFn } from "@/lib/db/prisma";
 import { ok, fail, parseBody } from "@/lib/api";
 import { z } from "zod";
 
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
 
     // Valideer token
     // Prisma 7 type recursie workaround (TS2321)
-    const uitnodiging = await (prisma.evaluatieUitnodiging.findUnique as Function)({
+    const uitnodiging = await (prisma.evaluatieUitnodiging.findUnique as PrismaFn)({
       where: { token },
       include: { ronde: true },
     });
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
     }
 
     // Prisma 7 type recursie workaround (TS2321)
-    const evaluatie = await (prisma.spelerZelfEvaluatie.upsert as Function)({
+    const evaluatie = await (prisma.spelerZelfEvaluatie.upsert as PrismaFn)({
       where: {
         spelerId_seizoen_ronde: {
           spelerId: uitnodiging.spelerId,

@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/db/prisma";
+import { prisma, PrismaFn } from "@/lib/db/prisma";
 import { ok, fail, parseBody } from "@/lib/api";
 import { requireEditor } from "@oranje-wit/auth/checks";
 import { z } from "zod";
@@ -15,7 +15,7 @@ export async function GET() {
   try {
     await requireEditor();
     // Prisma 7 type recursie workaround (TS2321)
-    const rondes = await (prisma.evaluatieRonde.findMany as Function)({
+    const rondes = await (prisma.evaluatieRonde.findMany as PrismaFn)({
       orderBy: [{ seizoen: "desc" }, { ronde: "desc" }],
       include: {
         _count: { select: { uitnodigingen: true, evaluaties: true } },
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
     if (!parsed.ok) return parsed.response;
 
     // Prisma 7 type recursie workaround (TS2321)
-    const ronde = await (prisma.evaluatieRonde.create as Function)({
+    const ronde = await (prisma.evaluatieRonde.create as PrismaFn)({
       data: {
         ...parsed.data,
         deadline: new Date(parsed.data.deadline),

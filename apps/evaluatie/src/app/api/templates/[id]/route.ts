@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/db/prisma";
+import { prisma, PrismaFn } from "@/lib/db/prisma";
 import { ok, fail, parseBody } from "@/lib/api";
 import { requireEditor } from "@oranje-wit/auth/checks";
 import { z } from "zod";
@@ -16,7 +16,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     if (!parsed.ok) return parsed.response;
 
     // Prisma 7 type recursie workaround (TS2321)
-    const template = await (prisma.emailTemplate.update as Function)({
+    const template = await (prisma.emailTemplate.update as PrismaFn)({
       where: { id },
       data: parsed.data,
     });

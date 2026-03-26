@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/db/prisma";
+import { prisma, PrismaFn } from "@/lib/db/prisma";
 import { ok, fail, parseBody } from "@/lib/api";
 import { verstuurTemplateEmail } from "@/lib/mail";
 import { logger } from "@oranje-wit/types";
@@ -37,7 +37,7 @@ export async function POST(request: Request) {
 
     // Valideer token
     // Prisma 7 type recursie workaround (TS2321)
-    const uitnodiging = await (prisma.evaluatieUitnodiging.findUnique as Function)({
+    const uitnodiging = await (prisma.evaluatieUitnodiging.findUnique as PrismaFn)({
       where: { token },
       include: {
         ronde: true,
@@ -68,7 +68,7 @@ export async function POST(request: Request) {
 
       // Prisma 7 type recursie workaround (TS2321)
 
-      const evaluatie = await (prisma.evaluatie.upsert as Function)({
+      const evaluatie = await (prisma.evaluatie.upsert as PrismaFn)({
         where: {
           spelerId_seizoen_ronde_type: {
             spelerId: score.relCode,
@@ -138,7 +138,7 @@ async function notificeerCoordinatoren(
   uitnodiging: { naam: string }
 ) {
   // Prisma 7 type recursie workaround (TS2321)
-  const coordTeams = await (prisma.coordinatorTeam.findMany as Function)({
+  const coordTeams = await (prisma.coordinatorTeam.findMany as PrismaFn)({
     where: { owTeamId: owTeam.id, seizoen: ronde.seizoen },
     include: { coordinator: true },
   });
@@ -147,7 +147,7 @@ async function notificeerCoordinatoren(
 
   for (const ct of coordTeams) {
     // Prisma 7 type recursie workaround (TS2321)
-    const coordUitnodiging = await (prisma.evaluatieUitnodiging.findFirst as Function)({
+    const coordUitnodiging = await (prisma.evaluatieUitnodiging.findFirst as PrismaFn)({
       where: {
         rondeId: ronde.id,
         email: ct.coordinator.email,

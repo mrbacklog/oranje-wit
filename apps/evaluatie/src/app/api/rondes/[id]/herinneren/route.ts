@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/db/prisma";
+import { prisma, PrismaFn } from "@/lib/db/prisma";
 import { ok, fail } from "@/lib/api";
 import { requireEditor } from "@oranje-wit/auth/checks";
 import { renderTemplate, verstuurEmail } from "@/lib/mail";
@@ -10,7 +10,7 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
     const { id } = await params;
 
     // Prisma 7 type recursie workaround (TS2321)
-    const ronde = await (prisma.evaluatieRonde.findUnique as Function)({
+    const ronde = await (prisma.evaluatieRonde.findUnique as PrismaFn)({
       where: { id },
     });
     if (!ronde) return fail("Ronde niet gevonden", 404, "NOT_FOUND");
@@ -18,7 +18,7 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
 
     // Haal uitnodigingen op die nog geen evaluatie hebben
     // Prisma 7 type recursie workaround (TS2321)
-    const uitnodigingen = await (prisma.evaluatieUitnodiging.findMany as Function)({
+    const uitnodigingen = await (prisma.evaluatieUitnodiging.findMany as PrismaFn)({
       where: {
         rondeId: id,
         type: "trainer",
@@ -30,7 +30,7 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
 
     // Filter: alleen uitnodigingen waarvoor geen ingediende evaluatie bestaat
     // Prisma 7 type recursie workaround (TS2321)
-    const ingediend = await (prisma.evaluatie.findMany as Function)({
+    const ingediend = await (prisma.evaluatie.findMany as PrismaFn)({
       where: { rondeId: id, status: "ingediend" },
       select: { coach: true, teamNaam: true },
     });
@@ -46,7 +46,7 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
     );
 
     // Prisma 7 type recursie workaround (TS2321)
-    const template = await (prisma.emailTemplate.findUnique as Function)({
+    const template = await (prisma.emailTemplate.findUnique as PrismaFn)({
       where: { sleutel: "trainer_herinnering" },
     });
     if (!template)
@@ -77,7 +77,7 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
       try {
         await verstuurEmail({ aan: u.email, onderwerp, html });
         // Prisma 7 type recursie workaround (TS2321)
-        await (prisma.evaluatieUitnodiging.update as Function)({
+        await (prisma.evaluatieUitnodiging.update as PrismaFn)({
           where: { id: u.id },
           data: {
             reminderVerstuurd: new Date(),

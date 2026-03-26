@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/db/prisma";
+import { prisma, PrismaFn } from "@/lib/db/prisma";
 import { ok, fail } from "@/lib/api";
 import { requireEditor } from "@oranje-wit/auth/checks";
 
@@ -8,7 +8,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     const { id } = await params;
 
     // Prisma 7 type recursie workaround (TS2321)
-    const ronde = await (prisma.evaluatieRonde.findUnique as Function)({
+    const ronde = await (prisma.evaluatieRonde.findUnique as PrismaFn)({
       where: { id },
       select: { seizoen: true },
     });
@@ -16,7 +16,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
 
     // Teams voor dit seizoen
     // Prisma 7 type recursie workaround (TS2321)
-    const teams = await (prisma.oWTeam.findMany as Function)({
+    const teams = await (prisma.oWTeam.findMany as PrismaFn)({
       where: { seizoen: ronde.seizoen },
       orderBy: { sortOrder: "asc" },
       select: {
@@ -30,7 +30,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
 
     // Spelers per team (uit competitie_spelers, actueel seizoen)
     // Prisma 7 type recursie workaround (TS2321)
-    const spelers = await (prisma.competitieSpeler.findMany as Function)({
+    const spelers = await (prisma.competitieSpeler.findMany as PrismaFn)({
       where: { seizoen: ronde.seizoen },
       select: {
         relCode: true,

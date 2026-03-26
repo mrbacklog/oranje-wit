@@ -1,5 +1,5 @@
 import { valideerToken } from "@/lib/tokens";
-import { prisma } from "@/lib/db/prisma";
+import { prisma, PrismaFn } from "@/lib/db/prisma";
 import SpelerZelfEvaluatieForm from "@/components/SpelerZelfEvaluatieForm";
 
 export default async function ZelfEvaluatiePage({
@@ -35,7 +35,7 @@ export default async function ZelfEvaluatiePage({
 
   // Check of al ingediend
   // Prisma 7 type recursie workaround (TS2321)
-  const bestaand = await (prisma.spelerZelfEvaluatie.findFirst as Function)({
+  const bestaand = await (prisma.spelerZelfEvaluatie.findFirst as PrismaFn)({
     where: {
       spelerId: uitnodiging.spelerId!,
       seizoen: uitnodiging.ronde.seizoen,

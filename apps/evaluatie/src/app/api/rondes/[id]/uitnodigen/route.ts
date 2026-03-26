@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/db/prisma";
+import { prisma, PrismaFn } from "@/lib/db/prisma";
 import { ok, fail, parseBody } from "@/lib/api";
 import { requireEditor } from "@oranje-wit/auth/checks";
 import { renderTemplate, verstuurEmail } from "@/lib/mail";
@@ -21,7 +21,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     const { id } = await params;
 
     // Prisma 7 type recursie workaround (TS2321)
-    const ronde = await (prisma.evaluatieRonde.findUnique as Function)({
+    const ronde = await (prisma.evaluatieRonde.findUnique as PrismaFn)({
       where: { id },
     });
     if (!ronde) return fail("Ronde niet gevonden", 404, "NOT_FOUND");
@@ -32,7 +32,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
     // Haal email template op
     // Prisma 7 type recursie workaround (TS2321)
-    const template = await (prisma.emailTemplate.findUnique as Function)({
+    const template = await (prisma.emailTemplate.findUnique as PrismaFn)({
       where: { sleutel: "trainer_uitnodiging" },
     });
     if (!template)
@@ -43,14 +43,14 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
     for (const u of parsed.data.uitnodigingen) {
       // Prisma 7 type recursie workaround (TS2321)
-      const team = await (prisma.oWTeam.findUnique as Function)({
+      const team = await (prisma.oWTeam.findUnique as PrismaFn)({
         where: { id: u.owTeamId },
         select: { naam: true },
       });
 
       // Upsert uitnodiging (unique op rondeId + email + owTeamId)
       // Prisma 7 type recursie workaround (TS2321)
-      const uitnodiging = await (prisma.evaluatieUitnodiging.upsert as Function)({
+      const uitnodiging = await (prisma.evaluatieUitnodiging.upsert as PrismaFn)({
         where: {
           rondeId_email_owTeamId: {
             rondeId: id,
@@ -91,7 +91,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       try {
         await verstuurEmail({ aan: u.email, onderwerp, html });
         // Prisma 7 type recursie workaround (TS2321)
-        await (prisma.evaluatieUitnodiging.update as Function)({
+        await (prisma.evaluatieUitnodiging.update as PrismaFn)({
           where: { id: uitnodiging.id },
           data: { emailVerstuurd: new Date() },
         });

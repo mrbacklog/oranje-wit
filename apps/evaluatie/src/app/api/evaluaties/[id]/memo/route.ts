@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/db/prisma";
+import { prisma, PrismaFn } from "@/lib/db/prisma";
 import { ok, fail, parseBody } from "@/lib/api";
 import { z } from "zod";
 
@@ -15,7 +15,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 
     // Valideer token — coordinator moet toegang hebben
     // Prisma 7 type recursie workaround (TS2321)
-    const uitnodiging = await (prisma.evaluatieUitnodiging.findUnique as Function)({
+    const uitnodiging = await (prisma.evaluatieUitnodiging.findUnique as PrismaFn)({
       where: { token: parsed.data.token },
       include: { ronde: { select: { status: true } } },
     });
@@ -28,7 +28,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     }
 
     // Prisma 7 type recursie workaround (TS2321)
-    const evaluatie = await (prisma.evaluatie.update as Function)({
+    const evaluatie = await (prisma.evaluatie.update as PrismaFn)({
       where: { id },
       data: { coordinatorMemo: parsed.data.memo },
     });
