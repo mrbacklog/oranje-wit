@@ -9,6 +9,9 @@
     "./checks": "./src/checks.ts",
     "./allowlist": "./src/allowlist.ts"
   },
+  "dependencies": {
+    "@oranje-wit/types": "workspace:*"
+  },
   "peerDependencies": {
     "next": ">=16",
     "next-auth": "5.0.0-beta.28"
