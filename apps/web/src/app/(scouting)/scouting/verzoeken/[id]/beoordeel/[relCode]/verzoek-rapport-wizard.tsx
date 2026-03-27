@@ -249,7 +249,7 @@ export function VerzoekRapportWizard({
                 ? "w-8 bg-orange-500"
                 : i < stapIndex
                   ? "w-2 bg-orange-300"
-                  : "w-2 bg-gray-200"
+                  : "bg-surface-raised w-2"
             }`}
           />
         ))}

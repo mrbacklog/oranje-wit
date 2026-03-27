@@ -280,7 +280,7 @@ export function CelebrationOverlay({
                   kaartData.tier === "goud"
                     ? "border-yellow-400 bg-gradient-to-b from-yellow-400/20 to-yellow-600/10 shadow-yellow-400/20"
                     : kaartData.tier === "zilver"
-                      ? "border-gray-300 bg-gradient-to-b from-gray-300/20 to-gray-500/10 shadow-gray-300/20"
+                      ? "border-tier-zilver from-tier-zilver/20 to-tier-zilver/10 shadow-tier-zilver/20 bg-gradient-to-b"
                       : "border-amber-600 bg-gradient-to-b from-amber-600/20 to-amber-800/10 shadow-amber-600/20"
                 } `}
               >

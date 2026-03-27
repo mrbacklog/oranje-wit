@@ -97,7 +97,7 @@ export function StapRanking({
                   index === 0
                     ? "bg-yellow-500/20 text-yellow-400"
                     : index === 1
-                      ? "text-text-muted bg-gray-300/20"
+                      ? "text-text-muted bg-surface-raised/50"
                       : index === 2
                         ? "bg-amber-600/20 text-amber-500"
                         : "text-text-muted bg-surface-card/5"

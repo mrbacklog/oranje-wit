@@ -197,7 +197,7 @@ export default function NieuwVerzoekPage() {
             <div
               key={s}
               className={`h-1.5 flex-1 rounded-full transition-all ${
-                i <= stapIndex ? "bg-orange-500" : "bg-gray-200"
+                i <= stapIndex ? "bg-orange-500" : "bg-surface-raised"
               }`}
             />
           ))}

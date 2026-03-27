@@ -129,7 +129,7 @@ export default function VerzoekDetailPage() {
   if (loading) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-300 border-t-orange-500" />
+        <div className="border-border-default h-8 w-8 animate-spin rounded-full border-2 border-t-orange-500" />
       </div>
     );
   }
@@ -173,7 +173,7 @@ export default function VerzoekDetailPage() {
               {TYPE_LABELS[verzoek.type] ?? verzoek.type}
             </h1>
             <div className="mt-1 flex items-center gap-2">
-              <span className="text-text-secondary inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-medium">
+              <span className="text-text-secondary bg-surface-raised inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium">
                 {DOEL_LABELS[verzoek.doel] ?? verzoek.doel}
               </span>
               <span className="text-text-muted text-xs">{verzoek.seizoen}</span>
@@ -234,10 +234,10 @@ export default function VerzoekDetailPage() {
                         />
                       ) : (
                         <div className="flex items-center gap-3">
-                          <div className="h-10 w-10 animate-pulse rounded-full bg-gray-200" />
+                          <div className="bg-surface-raised h-10 w-10 animate-pulse rounded-full" />
                           <div className="space-y-1">
-                            <div className="h-4 w-24 animate-pulse rounded bg-gray-200" />
-                            <div className="h-3 w-16 animate-pulse rounded bg-gray-100" />
+                            <div className="bg-surface-raised h-4 w-24 animate-pulse rounded" />
+                            <div className="bg-surface-card h-3 w-16 animate-pulse rounded" />
                           </div>
                         </div>
                       )}
@@ -249,7 +249,7 @@ export default function VerzoekDetailPage() {
                         </span>
                       )}
                       {isNietBeoordeeld && (
-                        <span className="text-text-muted inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-medium">
+                        <span className="text-text-muted bg-surface-raised inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium">
                           Niet beoordeeld
                         </span>
                       )}
@@ -328,7 +328,7 @@ export default function VerzoekDetailPage() {
                           ? "bg-blue-100 text-blue-700"
                           : t.status === "UITGENODIGD"
                             ? "bg-orange-100 text-orange-700"
-                            : "text-text-muted bg-gray-100"
+                            : "text-text-muted bg-surface-raised"
                     }`}
                   >
                     {t.status.toLowerCase()}

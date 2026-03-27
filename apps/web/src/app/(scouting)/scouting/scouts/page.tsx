@@ -242,7 +242,7 @@ function ScoutKaart({
   const levelNaam = LEVEL_NAMEN[scout.level] ?? `Level ${scout.level}`;
 
   return (
-    <div className="bg-surface-card rounded-2xl border border-gray-700 p-4">
+    <div className="bg-surface-card border-border-default rounded-2xl border p-4">
       {/* Bovenste rij: avatar + naam + rol badge */}
       <div className="flex items-start gap-3">
         {/* Avatar */}
@@ -309,7 +309,7 @@ function ScoutKaart({
       </div>
 
       {/* Vrij scouten toggle */}
-      <div className="mt-3 flex items-center justify-between border-t border-gray-700/50 pt-3">
+      <div className="border-border-default/50 mt-3 flex items-center justify-between border-t pt-3">
         <div>
           <p className="text-text-secondary text-xs font-medium">Vrij scouten</p>
           <p className="text-text-muted text-[10px]">
@@ -324,7 +324,7 @@ function ScoutKaart({
           onClick={() => onToggleVrijScouten(scout.id, !scout.vrijScouten)}
           className={`relative inline-flex h-7 w-12 shrink-0 items-center rounded-full transition-colors duration-200 ${
             isToggling ? "cursor-wait opacity-60" : "cursor-pointer"
-          } ${scout.vrijScouten ? "bg-ow-oranje" : "bg-gray-600"}`}
+          } ${scout.vrijScouten ? "bg-ow-oranje" : "bg-surface-raised"}`}
         >
           <span
             className={`bg-surface-card inline-block h-5 w-5 rounded-full shadow-none transition-transform duration-200 ${
@@ -348,7 +348,7 @@ function ScoutsSkeleton() {
       </div>
       <div className="space-y-3 px-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="bg-surface-card rounded-2xl border border-gray-700 p-4">
+          <div key={i} className="bg-surface-card border-border-default rounded-2xl border p-4">
             <div className="flex items-start gap-3">
               <div className="bg-surface-elevated h-11 w-11 animate-pulse rounded-full" />
               <div className="flex-1 space-y-2">

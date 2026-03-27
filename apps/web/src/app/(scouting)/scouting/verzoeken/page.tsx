@@ -71,7 +71,7 @@ export default function VerzoekenPage() {
   if (loading) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-300 border-t-orange-500" />
+        <div className="border-border-default h-8 w-8 animate-spin rounded-full border-2 border-t-orange-500" />
       </div>
     );
   }
@@ -168,7 +168,7 @@ export default function VerzoekenPage() {
         {/* Lege staat */}
         {verzoeken.length === 0 && (
           <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
+            <div className="bg-surface-raised mb-4 flex h-16 w-16 items-center justify-center rounded-full">
               <svg
                 width="32"
                 height="32"

@@ -25,7 +25,7 @@ export function DeadlineBadge({ deadline, compact = false }: DeadlineBadgeProps)
   if (!deadline) {
     if (compact) return null;
     return (
-      <span className="inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-medium text-gray-500">
+      <span className="bg-surface-raised text-text-secondary inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium">
         Geen deadline
       </span>
     );

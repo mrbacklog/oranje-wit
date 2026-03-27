@@ -112,7 +112,7 @@ export function SmileyScore({
                     ? "border-border-subtle bg-surface-dark cursor-not-allowed opacity-50"
                     : isSelected
                       ? `${optie.selectedBg} ${optie.selectedRing} scale-110 animate-[smiley-bounce_400ms_cubic-bezier(0.34,1.56,0.64,1)] ring-2`
-                      : "border-border-subtle bg-surface-dark text-text-muted hover:scale-105 hover:border-gray-300 hover:bg-gray-100 active:scale-95"
+                      : "border-border-subtle bg-surface-dark text-text-muted hover:border-border-strong hover:bg-surface-raised hover:scale-105 active:scale-95"
                 } `}
               >
                 <SmileyIcon

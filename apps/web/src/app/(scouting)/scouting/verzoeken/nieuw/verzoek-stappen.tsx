@@ -79,7 +79,7 @@ export function StapType({
               className={`w-full rounded-xl border-2 p-4 text-left transition-all ${
                 type === key
                   ? "border-orange-500 bg-orange-50 shadow-md"
-                  : "border-border-subtle bg-surface-card hover:border-gray-300"
+                  : "border-border-subtle bg-surface-card hover:border-border-strong"
               }`}
             >
               <div className="flex items-center gap-3">
@@ -317,7 +317,7 @@ export function StapScouts({
 
       <div className="mt-4 space-y-2">
         {scouts.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-gray-300 p-6 text-center">
+          <div className="border-border-default rounded-lg border border-dashed p-6 text-center">
             <p className="text-text-muted text-sm">Nog geen scouts beschikbaar</p>
             <p className="text-text-muted mt-1 text-xs">
               Scouts worden aangemaakt zodra ze voor het eerst inloggen
@@ -335,7 +335,7 @@ export function StapScouts({
                   : "border-border-subtle bg-surface-card"
               }`}
             >
-              <div className="text-text-secondary flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-xs font-bold">
+              <div className="text-text-secondary bg-surface-raised flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold">
                 {s.naam.charAt(0)}
               </div>
               <div>

@@ -72,7 +72,7 @@ export function VerzoekKaart({
         >
           {typeStijl.label}
         </span>
-        <span className="text-text-secondary inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-medium">
+        <span className="text-text-secondary bg-surface-raised inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium">
           {DOEL_LABELS[doel] ?? doel}
         </span>
         <div className="flex-1" />
@@ -104,7 +104,7 @@ export function VerzoekKaart({
         <DeadlineBadge deadline={deadline ?? null} compact />
         {voortgang && voortgang.totaal > 0 && (
           <div className="flex items-center gap-2">
-            <div className="h-1.5 w-16 overflow-hidden rounded-full bg-gray-100">
+            <div className="bg-surface-raised h-1.5 w-16 overflow-hidden rounded-full">
               <div
                 className="h-full rounded-full bg-green-400 transition-all"
                 style={{

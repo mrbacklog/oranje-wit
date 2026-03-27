@@ -83,7 +83,7 @@ export function SliderScore({
         </div>
 
         {/* Slider track achtergrond */}
-        <div className="relative h-2 w-full rounded-full bg-gray-200">
+        <div className="bg-surface-raised relative h-2 w-full rounded-full">
           {/* Gevulde track met gradient */}
           <div
             className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-red-400 via-yellow-400 to-green-500"
