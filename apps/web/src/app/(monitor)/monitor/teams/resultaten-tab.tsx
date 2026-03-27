@@ -17,33 +17,33 @@ export function ResultatenTab({ uitslagen }: { uitslagen?: TeamUitslagen }) {
   }
 
   if (!uitslagen || uitslagen.poules.length === 0) {
-    return <p className="text-sm text-gray-400">Geen competitieresultaten beschikbaar.</p>;
+    return <p className="text-text-muted text-sm">Geen competitieresultaten beschikbaar.</p>;
   }
 
   return (
     <div className="space-y-4">
       {PERIODE_VOLGORDE.filter((p) => perPeriode.has(p)).map((periode) => (
         <div key={periode}>
-          <h5 className="mb-2 text-xs font-medium tracking-wide text-gray-400 uppercase">
+          <h5 className="text-text-muted mb-2 text-xs font-medium tracking-wide uppercase">
             {PERIODE_LABELS[periode] || periode}
           </h5>
           {perPeriode.get(periode)!.map((poule) => (
             <div
               key={`${poule.pool}-${poule.niveau}`}
-              className="mb-3 overflow-hidden rounded-lg border border-gray-100"
+              className="border-border-default mb-3 overflow-hidden rounded-lg border"
             >
-              <div className="border-b border-gray-100 bg-gray-50 px-4 py-2">
-                <span className="text-sm font-medium text-gray-700">
+              <div className="border-border-default bg-surface-raised border-b px-4 py-2">
+                <span className="text-text-primary text-sm font-medium">
                   {poule.niveau || poule.pool}
                 </span>
                 {poule.niveau && (
-                  <span className="ml-2 text-xs text-gray-400">Poule {poule.pool}</span>
+                  <span className="text-text-muted ml-2 text-xs">Poule {poule.pool}</span>
                 )}
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-gray-100 text-xs text-gray-500">
+                    <tr className="border-border-default text-text-secondary border-b text-xs">
                       <th className="w-8 px-2 py-1.5 text-center font-medium">#</th>
                       <th className="px-2 py-1.5 text-left font-medium">Team</th>
                       <th className="w-8 px-1.5 py-1.5 text-center font-medium">GS</th>
@@ -59,8 +59,10 @@ export function ResultatenTab({ uitslagen }: { uitslagen?: TeamUitslagen }) {
                     {poule.regels.map((r) => (
                       <tr
                         key={r.positie}
-                        className={`border-t border-gray-50 ${
-                          r.isOW ? "bg-ow-oranje-bg text-ow-oranje font-semibold" : "text-gray-700"
+                        className={`border-border-default border-t ${
+                          r.isOW
+                            ? "bg-ow-oranje-bg text-ow-oranje font-semibold"
+                            : "text-text-primary"
                         }`}
                       >
                         <td className="px-2 py-1.5 text-center">{r.positie}</td>

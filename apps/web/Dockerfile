@@ -24,7 +24,9 @@ COPY packages/ui/ packages/ui/
 COPY apps/web/ apps/web/
 
 RUN pnpm db:generate
-RUN pnpm --filter @oranje-wit/web build
+# --webpack is nodig zodat @ducanh2912/next-pwa de service worker genereert
+# (de plugin gebruikt workbox-webpack-plugin, werkt niet met Turbopack)
+RUN pnpm --filter @oranje-wit/web exec next build --webpack
 
 # ── Stage 3: Production runtime ──────────────────────────────────────────────
 FROM node:22-slim AS runner

@@ -63,7 +63,7 @@ export function SelectieTab({
   return (
     <div className="space-y-6">
       <div>
-        <p className="text-sm text-gray-500">
+        <p className="text-text-secondary text-sm">
           {totaal} spelers (
           <span className="text-blue-500">
             {"\u2642"} {totaalHeren}
@@ -74,13 +74,13 @@ export function SelectieTab({
           </span>
           ) in {selectieGroep.teamCodes.length} teams
         </p>
-        <p className="mt-0.5 text-xs text-gray-400">
+        <p className="text-text-muted mt-0.5 text-xs">
           {selectieGroep.teamCodes.map((c) => teamNamen[c] || c).join(" + ")}
         </p>
       </div>
 
       {alleSpelers.length === 0 ? (
-        <p className="text-sm text-gray-400">Geen spelers gevonden.</p>
+        <p className="text-text-muted text-sm">Geen spelers gevonden.</p>
       ) : (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div>
@@ -92,14 +92,14 @@ export function SelectieTab({
                 <div key={s.relCode} className="flex items-center justify-between py-0.5 text-sm">
                   <Link
                     href={`/spelers/${s.relCode}${qs}`}
-                    className="hover:text-ow-oranje text-gray-900"
+                    className="hover:text-ow-oranje text-text-primary"
                   >
                     {formatNaam(s)}
                   </Link>
-                  <span className="text-[11px] text-gray-400">{s.teamLabel}</span>
+                  <span className="text-text-muted text-[11px]">{s.teamLabel}</span>
                 </div>
               ))}
-              {dames.length === 0 && <p className="text-xs text-gray-400">-</p>}
+              {dames.length === 0 && <p className="text-text-muted text-xs">-</p>}
             </div>
           </div>
           <div>
@@ -111,32 +111,32 @@ export function SelectieTab({
                 <div key={s.relCode} className="flex items-center justify-between py-0.5 text-sm">
                   <Link
                     href={`/spelers/${s.relCode}${qs}`}
-                    className="hover:text-ow-oranje text-gray-900"
+                    className="hover:text-ow-oranje text-text-primary"
                   >
                     {formatNaam(s)}
                   </Link>
-                  <span className="text-[11px] text-gray-400">{s.teamLabel}</span>
+                  <span className="text-text-muted text-[11px]">{s.teamLabel}</span>
                 </div>
               ))}
-              {heren.length === 0 && <p className="text-xs text-gray-400">-</p>}
+              {heren.length === 0 && <p className="text-text-muted text-xs">-</p>}
             </div>
           </div>
         </div>
       )}
 
-      <div className="border-t border-gray-100 pt-4">
-        <h4 className="mb-2 text-xs font-semibold tracking-wide text-gray-400 uppercase">Staf</h4>
+      <div className="border-border-default border-t pt-4">
+        <h4 className="text-text-muted mb-2 text-xs font-semibold tracking-wide uppercase">Staf</h4>
         {gesorteerdeStaf.length > 0 ? (
           <div className="space-y-1">
             {gesorteerdeStaf.map((s) => (
               <div key={s.stafCode} className="flex items-center justify-between text-sm">
-                <span className="text-gray-700">{s.naam}</span>
-                <span className="text-gray-400">{s.rol}</span>
+                <span className="text-text-primary">{s.naam}</span>
+                <span className="text-text-muted">{s.rol}</span>
               </div>
             ))}
           </div>
         ) : (
-          <p className="text-sm text-gray-400">Geen staf toegewezen.</p>
+          <p className="text-text-muted text-sm">Geen staf toegewezen.</p>
         )}
       </div>
     </div>

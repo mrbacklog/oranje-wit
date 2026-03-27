@@ -32,20 +32,20 @@ export function TeamButton({
       aria-pressed={isSelected}
       onClick={() => onSelect(code)}
       className={`mx-0 flex w-full cursor-pointer items-center gap-2 rounded-md py-1.5 text-left text-[13px] transition-colors ${indent ? "pr-3 pl-5" : "px-3"} ${
-        isSelected ? "bg-ow-oranje text-white" : "text-gray-700 hover:bg-gray-50"
+        isSelected ? "bg-ow-oranje text-white" : "text-text-primary hover:bg-surface-raised"
       } `}
     >
       {team.kleur && (
         <span
           className={`inline-block h-2 w-2 shrink-0 rounded-full ${
-            isSelected ? "bg-white/50" : BAND_DOT[team.kleur] || "bg-gray-300"
+            isSelected ? "bg-white/50" : BAND_DOT[team.kleur] || "bg-border-strong"
           }`}
         />
       )}
       <span className="flex-1 truncate font-medium">{naam}</span>
       {jCode && (
         <span
-          className={`shrink-0 text-[11px] tabular-nums ${isSelected ? "text-white/60" : "text-gray-400"}`}
+          className={`shrink-0 text-[11px] tabular-nums ${isSelected ? "text-white/60" : "text-text-muted"}`}
         >
           {jCode}
         </span>
@@ -69,10 +69,10 @@ function DragHandle({ isSelected }: { isSelected: boolean }) {
       {[0, 1, 2].map((i) => (
         <span key={i} className={`flex gap-[2px]`}>
           <span
-            className={`block h-[3px] w-[3px] rounded-full ${isSelected ? "bg-white/40" : "bg-gray-300"}`}
+            className={`block h-[3px] w-[3px] rounded-full ${isSelected ? "bg-white/40" : "bg-border-strong"}`}
           />
           <span
-            className={`block h-[3px] w-[3px] rounded-full ${isSelected ? "bg-white/40" : "bg-gray-300"}`}
+            className={`block h-[3px] w-[3px] rounded-full ${isSelected ? "bg-white/40" : "bg-border-strong"}`}
           />
         </span>
       ))}
@@ -117,7 +117,7 @@ export function SortableTeamButton({
         aria-pressed={isSelected}
         onClick={() => onSelect(code)}
         className={`mx-0 flex w-full cursor-pointer items-center gap-1.5 rounded-md px-1.5 py-1.5 text-left text-[13px] transition-colors ${
-          isSelected ? "bg-ow-oranje text-white" : "text-gray-700 hover:bg-gray-50"
+          isSelected ? "bg-ow-oranje text-white" : "text-text-primary hover:bg-surface-raised"
         }`}
       >
         <span {...attributes} {...listeners}>
@@ -126,14 +126,14 @@ export function SortableTeamButton({
         {team.kleur && (
           <span
             className={`inline-block h-2 w-2 shrink-0 rounded-full ${
-              isSelected ? "bg-white/50" : BAND_DOT[team.kleur] || "bg-gray-300"
+              isSelected ? "bg-white/50" : BAND_DOT[team.kleur] || "bg-border-strong"
             }`}
           />
         )}
         <span className="flex-1 truncate font-medium">{naam}</span>
         {jCode && (
           <span
-            className={`shrink-0 text-[11px] tabular-nums ${isSelected ? "text-white/60" : "text-gray-400"}`}
+            className={`shrink-0 text-[11px] tabular-nums ${isSelected ? "text-white/60" : "text-text-muted"}`}
           >
             {jCode}
           </span>

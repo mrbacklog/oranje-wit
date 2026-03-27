@@ -142,12 +142,12 @@ export function TeamsOnderwaterscherm({
       <div className="flex shrink-0 flex-col md:w-56">
         {/* Header met seizoenskeuze */}
         <div className="mb-3 flex items-baseline justify-between">
-          <h1 className="text-xl font-bold text-gray-900">Teams</h1>
+          <h1 className="text-text-primary text-xl font-bold">Teams</h1>
           <InfoButton onClick={() => setInfoOpen(true)} />
           <select
             value={seizoen}
             onChange={(e) => handleSeizoenChange(e.target.value)}
-            className="hover:text-ow-oranje cursor-pointer border-none bg-transparent text-xs text-gray-500 focus:outline-none"
+            className="hover:text-ow-oranje text-text-secondary cursor-pointer border-none bg-transparent text-xs focus:outline-none"
           >
             {seizoenen.map((s) => (
               <option key={s} value={s}>
@@ -158,7 +158,7 @@ export function TeamsOnderwaterscherm({
         </div>
 
         {/* Desktop: verticale lijst */}
-        <div className="hidden min-h-0 flex-1 flex-col overflow-hidden rounded-lg border border-gray-200 bg-white md:flex">
+        <div className="border-border-default bg-surface-card hidden min-h-0 flex-1 flex-col overflow-hidden rounded-lg border md:flex">
           <div className="flex-1 overflow-y-auto">
             {chipGroepen.map((groep, gi) => {
               const isBCategorie = groep.label === "B-categorie Jeugd";
@@ -166,8 +166,8 @@ export function TeamsOnderwaterscherm({
 
               return (
                 <div key={groep.label}>
-                  {gi > 0 && <div className="mx-3 border-t border-gray-100" />}
-                  <div className="px-3 pt-2 pb-0.5 text-[10px] font-semibold tracking-wide text-gray-400 uppercase">
+                  {gi > 0 && <div className="border-border-default mx-3 border-t" />}
+                  <div className="text-text-muted px-3 pt-2 pb-0.5 text-[10px] font-semibold tracking-wide uppercase">
                     {groep.label}
                   </div>
                   {isBCategorie ? (
@@ -220,8 +220,8 @@ export function TeamsOnderwaterscherm({
               );
             })}
           </div>
-          <div className="border-t border-gray-100 px-3 py-2 text-center">
-            <span className="text-[11px] text-gray-400">
+          <div className="border-border-default border-t px-3 py-2 text-center">
+            <span className="text-text-muted text-[11px]">
               {teams.filter((t) => !t.isSelectie).length} teams
             </span>
           </div>
@@ -231,7 +231,7 @@ export function TeamsOnderwaterscherm({
         <div className="space-y-2 md:hidden">
           {chipGroepen.map((groep) => (
             <div key={groep.label}>
-              <div className="mb-1 text-[10px] font-semibold tracking-wide text-gray-400 uppercase">
+              <div className="text-text-muted mb-1 text-[10px] font-semibold tracking-wide uppercase">
                 {groep.label}
               </div>
               <div className="flex flex-wrap items-center gap-1.5">
@@ -248,13 +248,13 @@ export function TeamsOnderwaterscherm({
                       className={`inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-2.5 py-1 text-sm font-medium transition-all ${
                         isSelected
                           ? "bg-ow-oranje text-white shadow-sm"
-                          : "hover:border-ow-oranje hover:text-ow-oranje border border-gray-200 bg-white text-gray-700"
+                          : "hover:border-ow-oranje hover:text-ow-oranje border-border-default bg-surface-card text-text-primary border"
                       } `}
                     >
                       {team.kleur && (
                         <span
                           className={`inline-block h-2 w-2 rounded-full ${
-                            isSelected ? "bg-white/60" : BAND_DOT[team.kleur] || "bg-gray-300"
+                            isSelected ? "bg-white/60" : BAND_DOT[team.kleur] || "bg-border-strong"
                           }`}
                         />
                       )}
@@ -271,13 +271,13 @@ export function TeamsOnderwaterscherm({
       {/* ── Rechts: Detailpaneel ── */}
       <div className="min-w-0 flex-1 md:overflow-y-auto">
         {!selected ? (
-          <div className="hidden h-full items-center justify-center rounded-lg border border-dashed border-gray-200 md:flex">
-            <p className="text-sm text-gray-400">Selecteer een team</p>
+          <div className="border-border-default hidden h-full items-center justify-center rounded-lg border border-dashed md:flex">
+            <p className="text-text-muted text-sm">Selecteer een team</p>
           </div>
         ) : (
           <div>
             {/* Header */}
-            <div className="rounded-t-lg border border-b-0 border-gray-200 bg-white px-6 py-4">
+            <div className="border-border-default bg-surface-card rounded-t-lg border border-b-0 px-6 py-4">
               <div className="flex items-center gap-3">
                 {editingNaam ? (
                   <input
@@ -293,17 +293,17 @@ export function TeamsOnderwaterscherm({
                         );
                       if (e.key === "Escape") setEditingNaam(false);
                     }}
-                    className="border-ow-oranje focus:ring-ow-oranje rounded border bg-white px-2 py-0.5 text-lg font-bold text-gray-900 focus:ring-1 focus:outline-none"
+                    className="border-ow-oranje focus:ring-ow-oranje bg-surface-card text-text-primary rounded border px-2 py-0.5 text-lg font-bold focus:ring-1 focus:outline-none"
                   />
                 ) : (
-                  <h2 className="text-lg font-bold text-gray-900">
+                  <h2 className="text-text-primary text-lg font-bold">
                     {teamNamen[selected.ow_code] || selected.ow_code}
                   </h2>
                 )}
                 {!editingNaam && (
                   <button
                     onClick={() => setEditingNaam(true)}
-                    className="hover:text-ow-oranje cursor-pointer text-gray-400 transition-colors"
+                    className="hover:text-ow-oranje text-text-muted cursor-pointer transition-colors"
                     title="Naam bewerken"
                   >
                     <svg
@@ -317,7 +317,7 @@ export function TeamsOnderwaterscherm({
                   </button>
                 )}
                 {selected.kleur && <BandPill band={selected.kleur} />}
-                <span className="text-sm text-gray-400">
+                <span className="text-text-muted text-sm">
                   {[selected.spelvorm, selected.leeftijdsgroep].filter(Boolean).join(" · ")}
                 </span>
               </div>
@@ -340,8 +340,8 @@ export function TeamsOnderwaterscherm({
                   onClick={() => setActiveTab(tab)}
                   className={`-mb-px cursor-pointer rounded-t-lg px-4 py-2 text-sm font-medium transition-colors ${
                     activeTab === tab
-                      ? "z-10 border border-gray-200 border-b-white bg-white text-gray-900"
-                      : "border border-transparent bg-gray-50 text-gray-400 hover:text-gray-600"
+                      ? "border-border-default border-b-surface-card bg-surface-card text-text-primary z-10 border"
+                      : "bg-surface-raised text-text-muted hover:text-text-secondary border border-transparent"
                   } `}
                 >
                   {label}
@@ -350,7 +350,7 @@ export function TeamsOnderwaterscherm({
             </div>
 
             {/* Tab content */}
-            <div className="rounded-tr-lg rounded-b-lg border border-gray-200 bg-white p-6">
+            <div className="border-border-default bg-surface-card rounded-tr-lg rounded-b-lg border p-6">
               {activeTab === "team" && (
                 <div role="tabpanel" aria-labelledby="tab-team">
                   {selected.isSelectie ? (
@@ -385,13 +385,13 @@ export function TeamsOnderwaterscherm({
       <InfoDrawer open={infoOpen} onClose={() => setInfoOpen(false)} title="Over Teams">
         <div className="space-y-4">
           <section>
-            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+            <h4 className="text-text-muted mb-1 text-xs font-semibold tracking-wide uppercase">
               Wat zie je?
             </h4>
             <p>Alle teams van het geselecteerde seizoen, gegroepeerd op categorie.</p>
           </section>
           <section>
-            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+            <h4 className="text-text-muted mb-1 text-xs font-semibold tracking-wide uppercase">
               Doorklikken
             </h4>
             <p>
@@ -400,7 +400,7 @@ export function TeamsOnderwaterscherm({
             </p>
           </section>
           <section>
-            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+            <h4 className="text-text-muted mb-1 text-xs font-semibold tracking-wide uppercase">
               Tabbladen
             </h4>
             <p>
@@ -411,7 +411,7 @@ export function TeamsOnderwaterscherm({
             </p>
           </section>
           <section>
-            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+            <h4 className="text-text-muted mb-1 text-xs font-semibold tracking-wide uppercase">
               Tip
             </h4>
             <p>De teamnaam kun je bewerken via het potlood-icoon.</p>

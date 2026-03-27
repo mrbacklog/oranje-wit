@@ -52,3 +52,10 @@ output/
 __pycache__/
 capture-request-details.md
 network-requests.txt
+
+# PWA (gegenereerde service worker bestanden)
+**/public/sw.js
+**/public/workbox-*.js
+**/public/sw.js.map
+**/public/workbox-*.js.map
+**/public/swe-worker-*.js

@@ -14,10 +14,13 @@ function SpelerRij({ speler, qs }: { speler: TeamSpeler; qs: string }) {
   const naam = formatNaam(speler);
   return (
     <div className="flex items-center justify-between py-0.5 text-sm">
-      <Link href={`/spelers/${speler.relCode}${qs}`} className="hover:text-ow-oranje text-gray-900">
+      <Link
+        href={`/spelers/${speler.relCode}${qs}`}
+        className="hover:text-ow-oranje text-text-primary"
+      >
         {naam}
       </Link>
-      <span className="text-xs text-gray-400">{speler.geboortejaar || "-"}</span>
+      <span className="text-text-muted text-xs">{speler.geboortejaar || "-"}</span>
     </div>
   );
 }
@@ -51,7 +54,7 @@ export function TeamTab({
   return (
     <div className="space-y-6">
       {telling && (
-        <p className="text-sm text-gray-500">
+        <p className="text-text-secondary text-sm">
           {telling.totaal} spelers (
           <span className="text-blue-500">
             {"\u2642"} {telling.heren}
@@ -65,7 +68,7 @@ export function TeamTab({
       )}
 
       {!spelers || spelers.length === 0 ? (
-        <p className="text-sm text-gray-400">Geen spelers gevonden voor dit team.</p>
+        <p className="text-text-muted text-sm">Geen spelers gevonden voor dit team.</p>
       ) : (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div>
@@ -76,7 +79,7 @@ export function TeamTab({
               {dames.map((s) => (
                 <SpelerRij key={s.relCode} speler={s} qs={qs} />
               ))}
-              {dames.length === 0 && <p className="text-xs text-gray-400">-</p>}
+              {dames.length === 0 && <p className="text-text-muted text-xs">-</p>}
             </div>
           </div>
           <div>
@@ -87,25 +90,25 @@ export function TeamTab({
               {heren.map((s) => (
                 <SpelerRij key={s.relCode} speler={s} qs={qs} />
               ))}
-              {heren.length === 0 && <p className="text-xs text-gray-400">-</p>}
+              {heren.length === 0 && <p className="text-text-muted text-xs">-</p>}
             </div>
           </div>
         </div>
       )}
 
-      <div className="border-t border-gray-100 pt-4">
-        <h4 className="mb-2 text-xs font-semibold tracking-wide text-gray-400 uppercase">Staf</h4>
+      <div className="border-border-default border-t pt-4">
+        <h4 className="text-text-muted mb-2 text-xs font-semibold tracking-wide uppercase">Staf</h4>
         {gesorteerdeStaf.length > 0 ? (
           <div className="space-y-1">
             {gesorteerdeStaf.map((s) => (
               <div key={s.stafCode} className="flex items-center justify-between text-sm">
-                <span className="text-gray-700">{s.naam}</span>
-                <span className="text-gray-400">{s.rol}</span>
+                <span className="text-text-primary">{s.naam}</span>
+                <span className="text-text-muted">{s.rol}</span>
               </div>
             ))}
           </div>
         ) : (
-          <p className="text-sm text-gray-400">Geen staf toegewezen.</p>
+          <p className="text-text-muted text-sm">Geen staf toegewezen.</p>
         )}
       </div>
     </div>
