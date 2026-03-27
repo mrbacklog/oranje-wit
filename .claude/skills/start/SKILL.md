@@ -76,25 +76,27 @@ oranje-wit/
 │   ├── monitor/          # Verenigingsmonitor (Next.js 16, poort 4102)
 │   ├── team-indeling/    # Team-Indeling (Next.js 16, poort 4100)
 │   ├── evaluatie/        # Evaluatie-app (Next.js 16, poort 4104)
+│   ├── scouting/         # Scouting-app (Next.js 16, mobile-first PWA, poort 4106)
+│   ├── beheer/           # TC Beheer-paneel (Next.js 16, 9 domeinen, poort 4108)
 │   └── mcp/              # MCP servers (database, Railway)
 ├── packages/
 │   ├── auth/             # @oranje-wit/auth — NextAuth v5 + Google OAuth
 │   ├── database/         # @oranje-wit/database — Prisma schema + client (source of truth)
 │   ├── types/            # @oranje-wit/types — Gedeelde TypeScript types
-│   └── ui/               # @oranje-wit/ui — Gedeelde React componenten
-├── .claude/agents/       # Agent-definities (11 agents, officiële locatie)
-├── agents/               # Agent-definities (legacy kopie)
-├── skills/               # Skills per domein
-├── rules/                # Domeinregels (Single Source of Truth)
+│   └── ui/               # @oranje-wit/ui — Gedeelde React componenten (51 componenten)
+├── .claude/
+│   ├── agents/           # Agent-definities (20 agents)
+│   └── skills/           # Skills (37 skills, flat structuur)
+├── rules/                # Domeinregels (8 bestanden, Single Source of Truth)
 ├── scripts/              # Data-pipeline en import
 ├── data/                 # Ledendata, seizoensdata, exports
 └── docs/                 # Documentatie, plannen, stafgegevens
 ```
 
 - **Workspace**: pnpm workspaces
-- **Dev commando's**: `pnpm dev:ti` (TI), `pnpm dev:monitor` (Monitor), `pnpm dev:evaluatie` (Evaluatie)
-- **Build**: `pnpm build:evaluatie`
-- **Database**: `pnpm db:generate`, `pnpm db:push`
+- **Dev commando's**: `pnpm dev:ti` (TI), `pnpm dev:monitor` (Monitor), `pnpm dev:evaluatie` (Evaluatie), `pnpm dev:beheer` (Beheer)
+- **Build**: `pnpm build:evaluatie`, `pnpm build:beheer`
+- **Database**: `pnpm db:generate`, `pnpm db:migrate` (NOOIT `db:push`)
 - **Import**: `pnpm import` (monitor data), `pnpm import:evaluaties` (evaluaties)
 - **Tests**: `pnpm test` (unit), `pnpm test:e2e` (E2E)
 
@@ -103,7 +105,7 @@ oranje-wit/
 PostgreSQL op Railway (`shinkansen.proxy.rlwy.net:18957`, DB: `oranjewit`).
 Prisma is de source of truth: `packages/database/prisma/schema.prisma`.
 
-**41 modellen in 4 groepen:**
+**53+ modellen in 7 groepen:**
 
 | Groep | Modellen |
 |---|---|
@@ -111,6 +113,9 @@ Prisma is de source of truth: `packages/database/prisma/schema.prisma`.
 | Monitor (12) | Lid, LidFoto, Seizoen, OWTeam, TeamAlias, TeamPeriode, Ledenverloop, CohortSeizoen, Signalering, Streefmodel, PoolStand, PoolStandRegel |
 | Team-Indeling (21) | User, Speler, Staf, StafToewijzing, Blauwdruk, Pin, Concept, Scenario, Versie, Team, SelectieGroep, SelectieSpeler, SelectieStaf, TeamSpeler, TeamStaf, Evaluatie, LogEntry, Import, ReferentieTeam, Werkitem, Actiepunt |
 | Evaluatie (6) | EvaluatieRonde, Coordinator, CoordinatorTeam, EvaluatieUitnodiging, SpelerZelfEvaluatie, EmailTemplate |
+| Scouting (4) | ScoutingVerzoek, ScoutingToewijzing, ScoutingRapport, ScoutingBeoordeling |
+| Jeugdontwikkeling (4) | RaamwerkVersie, Leeftijdsgroep, Pijler, OntwikkelItem |
+| Systeem (4) | Gebruiker, GebruikerRol, AuthToken, EmailTemplate |
 
 **Competitie-datamodel:**
 ```
@@ -143,11 +148,20 @@ team-planner (hoofd TI) ← escalates-to: korfbal
 ├── spawns: regel-checker, adviseur
 
 ontwikkelaar (dev) ← escalates-to: korfbal
-├── spawns: e2e-tester
+├── spawns: e2e-tester, devops
+
+devops (infra lead) ← escalates-to: ontwikkelaar
+├── spawns: deployment, e2e-tester
 
 e2e-tester ← escalates-to: ontwikkelaar
-deployment (infra) ← escalates-to: korfbal
+deployment (infra) ← escalates-to: devops
 documentalist (docs) ← escalates-to: ontwikkelaar
+
+jeugd-architect (hoofd jeugdontwikkeling) ← escalates-to: korfbal
+├── spawns: sportwetenschap, mentaal-coach, communicatie
+
+ux-designer (hoofd UX) ← escalates-to: ontwikkelaar
+├── spawns: frontend, ontwikkelaar
 ```
 
 ### Rules
@@ -161,6 +175,9 @@ Lees altijd: `rules/algemeen.md`. Lees extra rules op basis van je domein (zie S
 | `rules/knkv-regels.md` | KNKV Competitie 2.0 regels |
 | `rules/ow-voorkeuren.md` | OW teamgrootte-targets en genderregels |
 | `rules/oranje-draad.md` | Drie pijlers, POP-ratio's, seizoenscyclus |
+| `rules/score-model.md` | USS schaal, speler/team score formules |
+| `rules/beheer.md` | Ubiquitous language, 9 TC-domeinen |
+| `rules/design-system.md` | Dark-first tokens, design gate |
 
 ---
 

@@ -61,6 +61,14 @@ Je schrijft, draait en repareert Playwright E2E tests. Je gebruikt twee modi:
 | `pnpm test:e2e:evaluatie` | Alleen evaluatie |
 | `pnpm test:e2e:ui` | Interactieve Playwright UI |
 
+## Visual Regression Tests
+
+Het design system heeft visual regression tests in `e2e/tests/design-system.spec.ts`.
+Draai met `pnpm test:e2e:design-system`.
+
+Bij de eerste run worden baseline screenshots gegenereerd. Daarna vergelijkt elke run automatisch.
+Update baselines na bewuste design wijzigingen: `pnpm test:e2e:design-system -- --update-snapshots`
+
 ## Agent Teams
 Je bent **lead** van het team `e2e` (`/team-e2e`). In dat team coördineer je de testing. Bij bugs rapporteer je aan de `ontwikkelaar` die code fixt. Bij post-deploy verificatie werk je samen met de `deployment` agent.
 

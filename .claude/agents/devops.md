@@ -50,6 +50,7 @@ Je bent ook **teammate** in het team `release` (`/team-release`), waar je de dev
 | Monitor | 4102 | monitor.ckvoranjewit.app | `a7efb126-8ad1-460d-b787-2d03207c3f3c` |
 | Evaluatie | 4104 | evaluaties.ckvoranjewit.app | `c7a578c6-559e-4d11-8bc5-b6265dc7ada7` |
 | Scouting | 4106 | scout.ckvoranjewit.app | *(nog aan te maken)* |
+| Beheer | 4108 | beheer.ckvoranjewit.app | *(nog aan te maken)* |
 | Database | — | postgres.railway.internal:5432 | `e7486b49-dba3-4e0a-8709-a501cea860ae` |
 
 ## Kritieke waarschuwingen
