@@ -64,50 +64,65 @@ export type RaamwerkVersieSamenvatting = Awaited<ReturnType<typeof getRaamwerkVe
 // ── Standaard bandconfiguratie ────────────────────────────────
 
 const STANDAARD_BANDEN = [
-  { band: "blauw", schaalType: "duim", maxScore: 2, doelAantal: 12 },
-  { band: "groen", schaalType: "smiley", maxScore: 3, doelAantal: 18 },
+  { band: "paars", schaalType: "observatie", maxScore: 1, doelAantal: 3 },
+  { band: "blauw", schaalType: "ja_nogniet", maxScore: 2, doelAantal: 10 },
+  { band: "groen", schaalType: "goed_oke_nogniet", maxScore: 3, doelAantal: 14 },
   { band: "geel", schaalType: "sterren", maxScore: 5, doelAantal: 25 },
-  { band: "oranje", schaalType: "sterren", maxScore: 5, doelAantal: 30 },
-  { band: "rood", schaalType: "slider", maxScore: 99, doelAantal: 35 },
+  { band: "oranje", schaalType: "slider", maxScore: 10, doelAantal: 40 },
+  { band: "rood", schaalType: "slider", maxScore: 10, doelAantal: 60 },
 ] as const;
 
-// Inside Out: jongere banden hebben minder pijlers
-// icoon = pijlercode; de UI resolved via PIJLER_ICON_MAP naar SVG-componenten
-const PIJLERS_PER_BAND: Record<string, { code: string; naam: string; icoon: string }[]> = {
+// v3.0 Pijlerevolutie: 5 kindpijlers groeien naar 9 korfbalpijlers
+// Blauw/Groen: Bal, Bewegen, Spel, Samen, Ik
+// Geel: Aanvallen, Verdedigen, Techniek, Tactiek, Mentaal, Fysiek
+// Oranje: + Sociaal
+// Rood: + Scoren, Spelintelligentie
+const PIJLERS_PER_BAND: Record<
+  string,
+  { code: string; naam: string; blok: string; gewicht: number }[]
+> = {
+  paars: [], // geen pijlers, observaties
   blauw: [
-    { code: "SCH", naam: "Schieten", icoon: "SCH" },
-    { code: "AAN", naam: "Aanvallen", icoon: "AAN" },
-    { code: "PAS", naam: "Passen", icoon: "PAS" },
+    { code: "BAL", naam: "Bal", blok: "korfbalacties", gewicht: 0.25 },
+    { code: "BEWEGEN", naam: "Bewegen", blok: "korfbalacties", gewicht: 0.25 },
+    { code: "SPEL", naam: "Spel", blok: "korfbalacties", gewicht: 0.2 },
+    { code: "SAMEN", naam: "Samen", blok: "spelerskwaliteiten", gewicht: 0.15 },
+    { code: "IK", naam: "Ik", blok: "spelerskwaliteiten", gewicht: 0.15 },
   ],
   groen: [
-    { code: "SCH", naam: "Schieten", icoon: "SCH" },
-    { code: "AAN", naam: "Aanvallen", icoon: "AAN" },
-    { code: "PAS", naam: "Passen", icoon: "PAS" },
-    { code: "VER", naam: "Verdedigen", icoon: "VER" },
+    { code: "BAL", naam: "Bal", blok: "korfbalacties", gewicht: 0.25 },
+    { code: "BEWEGEN", naam: "Bewegen", blok: "korfbalacties", gewicht: 0.25 },
+    { code: "SPEL", naam: "Spel", blok: "korfbalacties", gewicht: 0.2 },
+    { code: "SAMEN", naam: "Samen", blok: "spelerskwaliteiten", gewicht: 0.15 },
+    { code: "IK", naam: "Ik", blok: "spelerskwaliteiten", gewicht: 0.15 },
   ],
   geel: [
-    { code: "SCH", naam: "Schieten", icoon: "SCH" },
-    { code: "AAN", naam: "Aanvallen", icoon: "AAN" },
-    { code: "PAS", naam: "Passen", icoon: "PAS" },
-    { code: "VER", naam: "Verdedigen", icoon: "VER" },
-    { code: "FYS", naam: "Fysiek", icoon: "FYS" },
+    { code: "AANVALLEN", naam: "Aanvallen", blok: "korfbalacties", gewicht: 0.18 },
+    { code: "VERDEDIGEN", naam: "Verdedigen", blok: "korfbalacties", gewicht: 0.18 },
+    { code: "TECHNIEK", naam: "Techniek", blok: "korfbalacties", gewicht: 0.16 },
+    { code: "TACTIEK", naam: "Tactiek", blok: "korfbalacties", gewicht: 0.16 },
+    { code: "MENTAAL", naam: "Mentaal", blok: "spelerskwaliteiten", gewicht: 0.16 },
+    { code: "FYSIEK", naam: "Fysiek", blok: "spelerskwaliteiten", gewicht: 0.16 },
   ],
   oranje: [
-    { code: "SCH", naam: "Schieten", icoon: "SCH" },
-    { code: "AAN", naam: "Aanvallen", icoon: "AAN" },
-    { code: "PAS", naam: "Passen", icoon: "PAS" },
-    { code: "VER", naam: "Verdedigen", icoon: "VER" },
-    { code: "FYS", naam: "Fysiek", icoon: "FYS" },
-    { code: "MEN", naam: "Mentaal", icoon: "MEN" },
+    { code: "AANVALLEN", naam: "Aanvallen", blok: "korfbalacties", gewicht: 0.16 },
+    { code: "VERDEDIGEN", naam: "Verdedigen", blok: "korfbalacties", gewicht: 0.16 },
+    { code: "TECHNIEK", naam: "Techniek", blok: "korfbalacties", gewicht: 0.14 },
+    { code: "TACTIEK", naam: "Tactiek", blok: "korfbalacties", gewicht: 0.14 },
+    { code: "MENTAAL", naam: "Mentaal", blok: "spelerskwaliteiten", gewicht: 0.14 },
+    { code: "SOCIAAL", naam: "Sociaal", blok: "spelerskwaliteiten", gewicht: 0.12 },
+    { code: "FYSIEK", naam: "Fysiek", blok: "spelerskwaliteiten", gewicht: 0.14 },
   ],
   rood: [
-    { code: "SCH", naam: "Schieten", icoon: "SCH" },
-    { code: "AAN", naam: "Aanvallen", icoon: "AAN" },
-    { code: "PAS", naam: "Passen", icoon: "PAS" },
-    { code: "VER", naam: "Verdedigen", icoon: "VER" },
-    { code: "FYS", naam: "Fysiek", icoon: "FYS" },
-    { code: "MEN", naam: "Mentaal", icoon: "MEN" },
-    { code: "SOC", naam: "Sociaal", icoon: "SOC" },
+    { code: "AANVALLEN", naam: "Aanvallen", blok: "korfbalacties", gewicht: 0.12 },
+    { code: "VERDEDIGEN", naam: "Verdedigen", blok: "korfbalacties", gewicht: 0.12 },
+    { code: "SCOREN", naam: "Scoren", blok: "korfbalacties", gewicht: 0.12 },
+    { code: "TECHNIEK", naam: "Techniek", blok: "korfbalacties", gewicht: 0.11 },
+    { code: "TACTIEK", naam: "Tactiek", blok: "korfbalacties", gewicht: 0.11 },
+    { code: "SPELINTELLIGENTIE", naam: "Spelintelligentie", blok: "korfbalacties", gewicht: 0.1 },
+    { code: "MENTAAL", naam: "Mentaal", blok: "spelerskwaliteiten", gewicht: 0.1 },
+    { code: "SOCIAAL", naam: "Sociaal", blok: "spelerskwaliteiten", gewicht: 0.1 },
+    { code: "FYSIEK", naam: "Fysiek", blok: "spelerskwaliteiten", gewicht: 0.12 },
   ],
 };
 
@@ -162,6 +177,8 @@ export async function createRaamwerk(seizoen: string, naam: string, kopieerVan?:
                 code: p.code,
                 naam: p.naam,
                 icoon: p.icoon,
+                blok: p.blok,
+                gewicht: p.gewicht,
                 volgorde: p.volgorde,
                 items: {
                   create: p.items.map((i) => ({
@@ -169,6 +186,9 @@ export async function createRaamwerk(seizoen: string, naam: string, kopieerVan?:
                     label: i.label,
                     vraagTekst: i.vraagTekst,
                     laag: i.laag,
+                    isKern: i.isKern,
+                    categorie: i.categorie,
+                    observatie: i.observatie,
                     volgorde: i.volgorde,
                     actief: i.actief,
                     // voorloperId wordt niet gekopieerd (verwijst naar oude versie)
@@ -198,7 +218,8 @@ export async function createRaamwerk(seizoen: string, naam: string, kopieerVan?:
               create: (PIJLERS_PER_BAND[b.band] ?? []).map((p, i) => ({
                 code: p.code,
                 naam: p.naam,
-                icoon: p.icoon,
+                blok: p.blok || null,
+                gewicht: p.gewicht,
                 volgorde: i,
               })),
             },

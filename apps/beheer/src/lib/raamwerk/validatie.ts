@@ -17,7 +17,13 @@ export interface ValidatieResultaat {
 interface PijlerData {
   code: string;
   naam: string;
-  items: Array<{ itemCode: string; label: string; laag: string | null; actief: boolean }>;
+  items: Array<{
+    itemCode: string;
+    label: string;
+    laag: string | null;
+    actief: boolean;
+    isKern: boolean;
+  }>;
 }
 
 interface GroepData {
@@ -33,8 +39,9 @@ interface VersieData {
   groepen: GroepData[];
 }
 
-// Welke lagen verplicht zijn per band
+// Welke lagen verplicht zijn per band (DEPRECATED: laag is vervangen door isKern in v3.0)
 const LAAG_VEREIST_VANAF: Record<string, boolean> = {
+  paars: false,
   blauw: false,
   groen: false,
   geel: true,
@@ -42,7 +49,23 @@ const LAAG_VEREIST_VANAF: Record<string, boolean> = {
   rood: true,
 };
 
-export function valideerCatalogus(versie: VersieData): ValidatieResultaat[] {
+// v3.0 korfbalactie-pijlercodes (voor laag-validatie)
+const KORFBALACTIE_PIJLERS = new Set([
+  "BAL",
+  "BEWEGEN",
+  "SPEL", // Blauw/Groen
+  "AANVALLEN",
+  "VERDEDIGEN",
+  "TECHNIEK",
+  "TACTIEK", // Geel+
+  "SCOREN",
+  "SPELINTELLIGENTIE", // Rood
+]);
+
+/** @deprecated Gebruik valideerRaamwerk */
+export const valideerCatalogus = valideerRaamwerk;
+
+export function valideerRaamwerk(versie: VersieData): ValidatieResultaat[] {
   const resultaten: ValidatieResultaat[] = [];
 
   // STATUS_LOCK: ACTIEF/GEARCHIVEERD niet bewerkbaar
@@ -50,7 +73,7 @@ export function valideerCatalogus(versie: VersieData): ValidatieResultaat[] {
     resultaten.push({
       regel: "STATUS_LOCK",
       level: "ERROR",
-      bericht: `Catalogus heeft status ${versie.status} en kan niet worden gepubliceerd`,
+      bericht: `Raamwerk heeft status ${versie.status} en kan niet worden gepubliceerd`,
     });
     return resultaten; // Geen verdere validatie nodig
   }
@@ -73,6 +96,19 @@ export function valideerCatalogus(versie: VersieData): ValidatieResultaat[] {
       }
     }
 
+    // KERN_ITEMS_RANGE: kern-items per band: 8-12 (of 0 voor paars)
+    if (groep.band !== "paars") {
+      const kernItems = actieveItems.filter((i) => i.isKern);
+      if (kernItems.length < 8 || kernItems.length > 12) {
+        resultaten.push({
+          regel: "KERN_ITEMS_RANGE",
+          level: "WARNING",
+          band: groep.band,
+          bericht: `${groep.band}: ${kernItems.length} kern-items (doel: 8-12)`,
+        });
+      }
+    }
+
     for (const pijler of groep.pijlers) {
       const actievePijlerItems = pijler.items.filter((i) => i.actief);
 
@@ -87,6 +123,18 @@ export function valideerCatalogus(versie: VersieData): ValidatieResultaat[] {
         });
       }
 
+      // PIJLER_KERN_MIN: elke pijler minstens 1 kern-item
+      const kernPijlerItems = actievePijlerItems.filter((i) => i.isKern);
+      if (kernPijlerItems.length === 0 && actievePijlerItems.length > 0) {
+        resultaten.push({
+          regel: "PIJLER_KERN_MIN",
+          level: "ERROR",
+          band: groep.band,
+          pijler: pijler.code,
+          bericht: `${groep.band}/${pijler.naam}: geen kern-items`,
+        });
+      }
+
       // PIJLER_BALANS: Geen pijler >50% van alle items
       if (totaalItems > 0 && actievePijlerItems.length / totaalItems > 0.5) {
         resultaten.push({
@@ -98,15 +146,13 @@ export function valideerCatalogus(versie: VersieData): ValidatieResultaat[] {
         });
       }
 
-      // LAAG_VERPLICHT: Geel+: items moeten laag hebben
+      // LAAG_VERPLICHT: Geel+: korfbalactie-items moeten laag hebben (legacy check)
       if (LAAG_VEREIST_VANAF[groep.band]) {
         for (const item of actievePijlerItems) {
-          // Alleen voor korfbalactie-pijlers (SCH, AAN, PAS, VER), niet voor FYS/MEN/SOC
-          const isKorfbalactie = ["SCH", "AAN", "PAS", "VER"].includes(pijler.code);
-          if (isKorfbalactie && !item.laag) {
+          if (KORFBALACTIE_PIJLERS.has(pijler.code) && !item.laag) {
             resultaten.push({
               regel: "LAAG_VERPLICHT",
-              level: "ERROR",
+              level: "WARNING",
               band: groep.band,
               pijler: pijler.code,
               item: item.itemCode,

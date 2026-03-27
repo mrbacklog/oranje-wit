@@ -24,13 +24,23 @@ export interface RaamwerkItemContract {
   label: string;
   vraagTekst: string;
   laag?: string | null;
+  isKern: boolean;
+  categorie?: string | null;
+  observatie?: string | null;
 }
 
 /** Het volledige contract dat de scouting-app verwacht van een raamwerkgroep */
 export interface RaamwerkContract {
   seizoen: string;
   band: string;
-  schaalType: "duim" | "smiley" | "sterren" | "slider";
+  schaalType:
+    | "duim"
+    | "smiley"
+    | "sterren"
+    | "slider"
+    | "ja_nogniet"
+    | "goed_oke_nogniet"
+    | "observatie";
   maxScore: number;
   items: RaamwerkItemContract[];
 }

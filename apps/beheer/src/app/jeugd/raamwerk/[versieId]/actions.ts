@@ -89,6 +89,9 @@ const CreateItemSchema = z.object({
   label: z.string().min(1, "Label is verplicht"),
   vraagTekst: z.string().min(1, "Vraagtekst is verplicht"),
   laag: z.enum(["technisch", "tactisch", "mentaal"]).nullable().optional(),
+  isKern: z.boolean().optional(),
+  categorie: z.string().nullable().optional(),
+  observatie: z.string().nullable().optional(),
 });
 
 /**
@@ -96,7 +99,15 @@ const CreateItemSchema = z.object({
  */
 export async function createItem(
   pijlerId: string,
-  data: { itemCode: string; label: string; vraagTekst: string; laag?: string | null }
+  data: {
+    itemCode: string;
+    label: string;
+    vraagTekst: string;
+    laag?: string | null;
+    isKern?: boolean;
+    categorie?: string | null;
+    observatie?: string | null;
+  }
 ) {
   const versieId = await getVersieIdViaPijler(pijlerId);
   await assertBewerkbaar(versieId);
@@ -118,6 +129,9 @@ export async function createItem(
       label: parsed.label,
       vraagTekst: parsed.vraagTekst,
       laag: parsed.laag ?? null,
+      isKern: parsed.isKern ?? true,
+      categorie: parsed.categorie ?? null,
+      observatie: parsed.observatie ?? null,
       volgorde,
     },
   });
@@ -132,14 +146,25 @@ const UpdateItemSchema = z.object({
   vraagTekst: z.string().min(1).optional(),
   laag: z.enum(["technisch", "tactisch", "mentaal"]).nullable().optional(),
   actief: z.boolean().optional(),
+  isKern: z.boolean().optional(),
+  categorie: z.string().nullable().optional(),
+  observatie: z.string().nullable().optional(),
 });
 
 /**
- * Update een bestaand item (label, vraagTekst, laag, actief).
+ * Update een bestaand item (label, vraagTekst, laag, actief, isKern, categorie, observatie).
  */
 export async function updateItem(
   itemId: string,
-  data: Partial<{ label: string; vraagTekst: string; laag: string | null; actief: boolean }>
+  data: Partial<{
+    label: string;
+    vraagTekst: string;
+    laag: string | null;
+    actief: boolean;
+    isKern: boolean;
+    categorie: string | null;
+    observatie: string | null;
+  }>
 ) {
   const versieId = await getVersieIdViaItem(itemId);
   await assertBewerkbaar(versieId);
@@ -204,10 +229,63 @@ export async function reorderItems(pijlerId: string, itemIds: string[]) {
   revalidatePath(`/jeugd/raamwerk/${versieId}`);
 }
 
+// ── Targeted item mutations ───────────────────────────────
+
+/**
+ * Toggle het isKern-veld van een item.
+ */
+export async function toggleKern(itemId: string) {
+  const versieId = await getVersieIdViaItem(itemId);
+  await assertBewerkbaar(versieId);
+
+  const item = await prisma.ontwikkelItem.findUniqueOrThrow({ where: { id: itemId } });
+  await prisma.ontwikkelItem.update({
+    where: { id: itemId },
+    data: { isKern: !item.isKern },
+  });
+
+  logger.info(`Item ${itemId} isKern toggled naar ${!item.isKern}`);
+  revalidatePath(`/jeugd/raamwerk/${versieId}`);
+}
+
+/**
+ * Update de categorie van een item (bijv. "KERN" | "ONDERSCHEIDEND" | null).
+ */
+export async function updateCategorie(itemId: string, categorie: string | null) {
+  const versieId = await getVersieIdViaItem(itemId);
+  await assertBewerkbaar(versieId);
+
+  await prisma.ontwikkelItem.update({
+    where: { id: itemId },
+    data: { categorie },
+  });
+
+  logger.info(`Item ${itemId} categorie bijgewerkt naar ${categorie ?? "null"}`);
+  revalidatePath(`/jeugd/raamwerk/${versieId}`);
+}
+
+/**
+ * Update de observatietekst van een item (hoe herken je dit in de wedstrijd).
+ */
+export async function updateObservatie(itemId: string, observatie: string | null) {
+  const versieId = await getVersieIdViaItem(itemId);
+  await assertBewerkbaar(versieId);
+
+  await prisma.ontwikkelItem.update({
+    where: { id: itemId },
+    data: { observatie },
+  });
+
+  logger.info(`Item ${itemId} observatie bijgewerkt`);
+  revalidatePath(`/jeugd/raamwerk/${versieId}`);
+}
+
 // ── Groep mutations ───────────────────────────────────────────
 
 const UpdateGroepSchema = z.object({
-  schaalType: z.enum(["duim", "smiley", "sterren", "slider"]).optional(),
+  schaalType: z
+    .enum(["observatie", "ja_nogniet", "goed_oke_nogniet", "sterren", "slider"])
+    .optional(),
   maxScore: z.number().int().min(1).max(99).optional(),
   doelAantal: z.number().int().min(0).optional(),
 });

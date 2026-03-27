@@ -337,6 +337,7 @@ model User {
   activiteitenToewijzing Activiteit[] @relation("ActiviteitToewijzing")
   scoutProfiel          Scout?
   scoutingVerzoeken     ScoutingVerzoek[]
+  gezienMarkeringen     BlauwdrukSpeler[] @relation("GezienDoor")
 }
 
 enum Rol {
@@ -429,6 +430,7 @@ model Speler {
   fysiekProfielen      FysiekProfiel[]
   spelerUSS            SpelerUSS[]
   vergelijkingPosities ScoutingVergelijkingPositie[]
+  blauwdrukStatussen   BlauwdrukSpeler[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -505,8 +507,51 @@ model Blauwdruk {
   actiepunten   Actiepunt[]
   activiteiten  Activiteit[]
 
+  blauwdrukSpelers BlauwdrukSpeler[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// ============================================================
+// BLAUWDRUK-SPELER (gezien-status per seizoen)
+// ============================================================
+
+model BlauwdrukSpeler {
+  id           String   @id @default(cuid())
+  blauwdruk    Blauwdruk @relation(fields: [blauwdrukId], references: [id], onDelete: Cascade)
+  blauwdrukId  String
+  speler       Speler   @relation(fields: [spelerId], references: [id])
+  spelerId     String
+
+  gezienStatus GezienStatus @default(ONGEZIEN)
+  notitie      String?  @db.Text
+  signalering  String?  // "DOORSTROOM_U15", "NAAR_SENIOREN", "VERLAAT_KLEUR", etc.
+
+  // Optionele koppeling naar actiepunt (bij GEEL/ORANJE)
+  actiepunt    Actiepunt? @relation(fields: [actiepuntId], references: [id])
+  actiepuntId  String? @unique
+
+  // Audit
+  gezienDoor   User?    @relation("GezienDoor", fields: [gezienDoorId], references: [id])
+  gezienDoorId String?
+  gezienOp     DateTime?
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([blauwdrukId, spelerId])
+  @@index([blauwdrukId])
+  @@index([spelerId])
+  @@index([gezienStatus])
+}
+
+enum GezienStatus {
+  ONGEZIEN
+  GROEN   // Beschikbaar, geen twijfel
+  GEEL    // Onzeker, moet uitgezocht
+  ORANJE  // Stop-signalen
+  ROOD    // Stopt definitief
 }
 
 // ============================================================
@@ -1018,6 +1063,8 @@ model Actiepunt {
   auteur          User     @relation("ActiepuntAuteur", fields: [auteurId], references: [id])
   auteurId        String
 
+  blauwdrukSpeler BlauwdrukSpeler? // terugrelatie: actiepunt gekoppeld aan gezien-status
+
   afgerondOp      DateTime?
   volgorde        Int      @default(0)
 
@@ -1478,10 +1525,10 @@ model Leeftijdsgroep {
   doelAantal Int              @default(0) @map("doel_aantal") // Target items uit raamwerk
 
   // USS v2 schaalparameters
-  schaalMin        Decimal?  @map("schaal_min") @db.Decimal(4, 2)     // 0 | 1.0
-  schaalMax        Decimal?  @map("schaal_max") @db.Decimal(4, 2)     // 100 | 5.0 | 10.0
-  schaalMediaan    Decimal?  @map("schaal_mediaan") @db.Decimal(4, 2) // 50 | 3.0 | 5.5
-  halveBereik      Decimal?  @map("halve_bereik") @db.Decimal(4, 2)   // 50 | 2.0 | 4.5
+  schaalMin        Decimal?  @map("schaal_min") @db.Decimal(6, 2)     // 0 | 1.0
+  schaalMax        Decimal?  @map("schaal_max") @db.Decimal(6, 2)     // 100 | 5.0 | 10.0
+  schaalMediaan    Decimal?  @map("schaal_mediaan") @db.Decimal(6, 2) // 50 | 3.0 | 5.5
+  halveBereik      Decimal?  @map("halve_bereik") @db.Decimal(6, 2)   // 50 | 2.0 | 4.5
   bandbreedteCoach Int?      @map("bandbreedte_coach")                // B_coach (USS-punten)
   bandbreedteScout Int?      @map("bandbreedte_scout")                // B_scout (USS-punten)
   kernItemsTarget  Int?      @map("kern_items_target")                // ~10
@@ -1523,6 +1570,7 @@ model OntwikkelItem {
   laag        String?          // DEPRECATED: vervangen door isKern
   isKern      Boolean          @default(true) @map("is_kern")       // kern-item voor TEAM-methode
   categorie   String?          // "KERN" | "ONDERSCHEIDEND" (alleen Rood)
+  observatie  String?          @db.Text // Observatie-instructie (hoe herken je dit item)
   volgorde    Int              @default(0)
   actief      Boolean          @default(true)
 
