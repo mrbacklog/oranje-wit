@@ -45,9 +45,9 @@ export default async function InvullenPage({
   if (!token) {
     return (
       <main className="flex min-h-screen items-center justify-center">
-        <div className="rounded-lg border bg-white p-8 text-center">
+        <div className="bg-surface-card rounded-lg border p-8 text-center">
           <h1 className="text-lg font-bold text-red-600">Ongeldige link</h1>
-          <p className="mt-2 text-gray-500">Gebruik de link uit je uitnodigingsmail.</p>
+          <p className="text-text-muted mt-2">Gebruik de link uit je uitnodigingsmail.</p>
         </div>
       </main>
     );
@@ -58,9 +58,9 @@ export default async function InvullenPage({
   if (!uitnodiging) {
     return (
       <main className="flex min-h-screen items-center justify-center">
-        <div className="rounded-lg border bg-white p-8 text-center">
+        <div className="bg-surface-card rounded-lg border p-8 text-center">
           <h1 className="text-lg font-bold text-red-600">Verlopen of ongeldige link</h1>
-          <p className="mt-2 text-gray-500">Deze evaluatieronde is niet meer actief.</p>
+          <p className="text-text-muted mt-2">Deze evaluatieronde is niet meer actief.</p>
         </div>
       </main>
     );

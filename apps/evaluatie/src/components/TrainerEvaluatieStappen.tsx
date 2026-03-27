@@ -37,7 +37,7 @@ export function StapTeam({
   return (
     <div className="space-y-6">
       <h2 className="text-lg font-semibold">Team-evaluatie (Oranje Draad)</h2>
-      <p className="text-sm text-gray-500">
+      <p className="text-text-muted text-sm">
         Beoordeel het team op de drie pijlers van de Oranje Draad.
       </p>
       <ScoreVeld
@@ -81,7 +81,7 @@ export function StapTeam({
       />
       <button
         onClick={onVolgende}
-        className="rounded-md bg-orange-600 px-4 py-2 text-sm text-white hover:bg-orange-700"
+        className="bg-ow-oranje hover:bg-ow-oranje-dark rounded-md px-4 py-2 text-sm text-white"
       >
         Volgende: Spelersbeoordelingen
       </button>
@@ -109,9 +109,9 @@ export function StapSpelers({
   return (
     <div className="space-y-6">
       <h2 className="text-lg font-semibold">Spelersbeoordelingen</h2>
-      <p className="text-sm text-gray-500">Beoordeel elke speler individueel.</p>
+      <p className="text-text-muted text-sm">Beoordeel elke speler individueel.</p>
       {spelers.map((speler, i) => (
-        <div key={speler.relCode} className="rounded-lg border bg-white p-4">
+        <div key={speler.relCode} className="bg-surface-card rounded-lg border p-4">
           <h3 className="font-medium">{speler.naam}</h3>
           <div className="mt-3 space-y-3">
             <ScoreVeld
@@ -121,7 +121,7 @@ export function StapSpelers({
               onChange={(v) => updateSpelerScore(i, "niveau", v)}
             />
             <div>
-              <label className="block text-xs font-medium text-gray-600">Inzet</label>
+              <label className="text-text-secondary block text-xs font-medium">Inzet</label>
               <div className="mt-1 flex gap-2">
                 {[
                   { v: 1, l: "Minder" },
@@ -132,7 +132,7 @@ export function StapSpelers({
                     key={v}
                     type="button"
                     onClick={() => updateSpelerScore(i, "inzet", v)}
-                    className={`rounded-md border px-3 py-1 text-xs ${spelerScores[i].inzet === v ? "border-orange-500 bg-orange-50 text-orange-700" : "hover:bg-gray-50"}`}
+                    className={`rounded-md border px-3 py-1 text-xs ${spelerScores[i].inzet === v ? "border-ow-oranje bg-ow-oranje/20 text-ow-oranje" : "hover:bg-surface-raised"}`}
                   >
                     {l}
                   </button>
@@ -140,7 +140,7 @@ export function StapSpelers({
               </div>
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-600">Groei</label>
+              <label className="text-text-secondary block text-xs font-medium">Groei</label>
               <div className="mt-1 flex gap-2">
                 {[
                   { v: 1, l: "Geen" },
@@ -152,7 +152,7 @@ export function StapSpelers({
                     key={v}
                     type="button"
                     onClick={() => updateSpelerScore(i, "groei", v)}
-                    className={`rounded-md border px-3 py-1 text-xs ${spelerScores[i].groei === v ? "border-orange-500 bg-orange-50 text-orange-700" : "hover:bg-gray-50"}`}
+                    className={`rounded-md border px-3 py-1 text-xs ${spelerScores[i].groei === v ? "border-ow-oranje bg-ow-oranje/20 text-ow-oranje" : "hover:bg-surface-raised"}`}
                   >
                     {l}
                   </button>
@@ -172,13 +172,13 @@ export function StapSpelers({
       <div className="flex gap-2">
         <button
           onClick={onTerug}
-          className="rounded-md bg-gray-100 px-4 py-2 text-sm hover:bg-gray-200"
+          className="bg-surface-sunken hover:bg-surface-raised rounded-md px-4 py-2 text-sm"
         >
           Terug
         </button>
         <button
           onClick={onVolgende}
-          className="rounded-md bg-orange-600 px-4 py-2 text-sm text-white hover:bg-orange-700"
+          className="bg-ow-oranje hover:bg-ow-oranje-dark rounded-md px-4 py-2 text-sm text-white"
         >
           Volgende: Samenvatting
         </button>
@@ -205,7 +205,7 @@ export function StapSamenvatting({
   return (
     <div className="space-y-6">
       <h2 className="text-lg font-semibold">Samenvatting</h2>
-      <div className="rounded-lg border bg-white p-4">
+      <div className="bg-surface-card rounded-lg border p-4">
         <h3 className="font-medium">Team-evaluatie</h3>
         <div className="mt-2 grid grid-cols-3 gap-4 text-sm">
           <div>
@@ -219,10 +219,10 @@ export function StapSamenvatting({
           </div>
         </div>
       </div>
-      <div className="rounded-lg border bg-white p-4">
+      <div className="bg-surface-card rounded-lg border p-4">
         <h3 className="font-medium">Spelersbeoordelingen ({spelerScores.length})</h3>
         <table className="mt-2 w-full text-left text-sm">
-          <thead className="border-b text-xs text-gray-500">
+          <thead className="text-text-muted border-b text-xs">
             <tr>
               <th className="pb-1">Speler</th>
               <th className="pb-1">Niveau</th>
@@ -245,7 +245,7 @@ export function StapSamenvatting({
       <div className="flex gap-2">
         <button
           onClick={onTerug}
-          className="rounded-md bg-gray-100 px-4 py-2 text-sm hover:bg-gray-200"
+          className="bg-surface-sunken hover:bg-surface-raised rounded-md px-4 py-2 text-sm"
         >
           Terug
         </button>

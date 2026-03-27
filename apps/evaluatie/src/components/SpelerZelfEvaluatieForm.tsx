@@ -83,7 +83,9 @@ export default function SpelerZelfEvaluatieForm({ token }: Props) {
         onChange={setPlezierUitdaging}
       />
       <div>
-        <label className="block text-sm font-medium text-gray-700">Toelichting (optioneel)</label>
+        <label className="text-text-secondary block text-sm font-medium">
+          Toelichting (optioneel)
+        </label>
         <textarea
           value={plezierToelichting}
           onChange={(e) => setPlezierToelichting(e.target.value)}
@@ -112,7 +114,9 @@ export default function SpelerZelfEvaluatieForm({ token }: Props) {
         onChange={setTrainingVerbetering}
       />
       <div>
-        <label className="block text-sm font-medium text-gray-700">Toelichting (optioneel)</label>
+        <label className="text-text-secondary block text-sm font-medium">
+          Toelichting (optioneel)
+        </label>
         <textarea
           value={trainingToelichting}
           onChange={(e) => setTrainingToelichting(e.target.value)}
@@ -125,7 +129,7 @@ export default function SpelerZelfEvaluatieForm({ token }: Props) {
     <div key="toekomst" className="space-y-6">
       <h2 className="text-lg font-semibold">Toekomst</h2>
       <div>
-        <p className="mb-2 text-sm font-medium text-gray-700">Wat wil je komend seizoen?</p>
+        <p className="text-text-secondary mb-2 text-sm font-medium">Wat wil je komend seizoen?</p>
         {[
           { value: "doorgaan", label: "Ik wil doorgaan" },
           { value: "twijfel", label: "Ik twijfel" },
@@ -144,7 +148,9 @@ export default function SpelerZelfEvaluatieForm({ token }: Props) {
         ))}
       </div>
       <div>
-        <p className="mb-2 text-sm font-medium text-gray-700">Op welk niveau wil je spelen?</p>
+        <p className="text-text-secondary mb-2 text-sm font-medium">
+          Op welk niveau wil je spelen?
+        </p>
         {[
           { value: "hoger", label: "Hoger spelen" },
           { value: "zelfde", label: "Zelfde niveau" },
@@ -163,7 +169,9 @@ export default function SpelerZelfEvaluatieForm({ token }: Props) {
         ))}
       </div>
       <div>
-        <label className="block text-sm font-medium text-gray-700">Toelichting (optioneel)</label>
+        <label className="text-text-secondary block text-sm font-medium">
+          Toelichting (optioneel)
+        </label>
         <textarea
           value={toekomstToelichting}
           onChange={(e) => setToekomstToelichting(e.target.value)}
@@ -176,7 +184,7 @@ export default function SpelerZelfEvaluatieForm({ token }: Props) {
     <div key="algemeen" className="space-y-6">
       <h2 className="text-lg font-semibold">Algemeen</h2>
       <div>
-        <label className="block text-sm font-medium text-gray-700">
+        <label className="text-text-secondary block text-sm font-medium">
           Heb je nog iets te melden? (max 500 tekens)
         </label>
         <textarea
@@ -185,13 +193,16 @@ export default function SpelerZelfEvaluatieForm({ token }: Props) {
           rows={4}
           className="mt-1 w-full rounded-md border px-3 py-2 text-sm"
         />
-        <p className="mt-1 text-xs text-gray-400">{algemeenOpmerking.length}/500</p>
+        <p className="text-text-muted mt-1 text-xs">{algemeenOpmerking.length}/500</p>
       </div>
     </div>,
   ];
 
   return (
-    <div className="rounded-lg border bg-white p-6">
+    <div
+      className="rounded-lg border p-6"
+      style={{ backgroundColor: "var(--surface-card)", borderColor: "var(--border-default)" }}
+    >
       {/* Progress */}
       <div className="mb-6 flex gap-2">
         {["Plezier", "Training", "Toekomst", "Algemeen"].map((label, i) => (
@@ -199,10 +210,10 @@ export default function SpelerZelfEvaluatieForm({ token }: Props) {
             key={label}
             className={`flex-1 rounded-full py-1 text-center text-xs font-medium ${
               i === stap
-                ? "bg-orange-600 text-white"
+                ? "bg-ow-oranje text-white"
                 : i < stap
-                  ? "bg-orange-100 text-orange-600"
-                  : "bg-gray-100 text-gray-400"
+                  ? "bg-ow-oranje/20 text-ow-oranje"
+                  : "bg-surface-sunken text-text-muted"
             }`}
           >
             {label}
@@ -216,7 +227,8 @@ export default function SpelerZelfEvaluatieForm({ token }: Props) {
         {stap > 0 ? (
           <button
             onClick={() => setStap(stap - 1)}
-            className="rounded-md bg-gray-100 px-4 py-2 text-sm hover:bg-gray-200"
+            className="hover:bg-surface-raised rounded-md px-4 py-2 text-sm"
+            style={{ backgroundColor: "var(--surface-sunken)" }}
           >
             Vorige
           </button>
@@ -226,7 +238,7 @@ export default function SpelerZelfEvaluatieForm({ token }: Props) {
         {stap < stappen.length - 1 ? (
           <button
             onClick={() => setStap(stap + 1)}
-            className="rounded-md bg-orange-600 px-4 py-2 text-sm text-white hover:bg-orange-700"
+            className="bg-ow-oranje hover:bg-ow-oranje-dark rounded-md px-4 py-2 text-sm text-white"
           >
             Volgende
           </button>
@@ -255,7 +267,7 @@ function ScoreRij({
 }) {
   return (
     <div>
-      <p className="mb-1 text-sm font-medium text-gray-700">{label}</p>
+      <p className="text-text-secondary mb-1 text-sm font-medium">{label}</p>
       <div className="flex gap-2">
         {[1, 2, 3, 4, 5].map((n) => (
           <button
@@ -264,8 +276,8 @@ function ScoreRij({
             onClick={() => onChange(n)}
             className={`flex h-9 w-9 items-center justify-center rounded-full text-sm font-medium transition ${
               value === n
-                ? "bg-orange-600 text-white"
-                : "bg-gray-100 text-gray-600 hover:bg-orange-100"
+                ? "bg-ow-oranje text-white"
+                : "bg-surface-sunken text-text-secondary hover:bg-ow-oranje/20"
             }`}
           >
             {n}

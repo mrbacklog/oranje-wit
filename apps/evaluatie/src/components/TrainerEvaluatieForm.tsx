@@ -92,8 +92,8 @@ export default function TrainerEvaluatieForm({
   return (
     <main className="mx-auto max-w-2xl px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-xl font-bold text-orange-600">Evaluatie {teamNaam}</h1>
-        <p className="text-sm text-gray-500">
+        <h1 className="text-ow-oranje text-xl font-bold">Evaluatie {teamNaam}</h1>
+        <p className="text-text-muted text-sm">
           {rondeNaam} &middot; Trainer: {trainerNaam} &middot; Deadline:{" "}
           {new Date(deadline).toLocaleDateString("nl-NL")}
         </p>
@@ -102,7 +102,7 @@ export default function TrainerEvaluatieForm({
         {[1, 2, 3].map((s) => (
           <div
             key={s}
-            className={`h-1.5 flex-1 rounded-full ${s <= stap ? "bg-orange-500" : "bg-gray-200"}`}
+            className={`h-1.5 flex-1 rounded-full ${s <= stap ? "bg-ow-oranje" : "bg-surface-sunken"}`}
           />
         ))}
       </div>

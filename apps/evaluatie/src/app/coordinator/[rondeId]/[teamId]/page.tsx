@@ -74,12 +74,12 @@ export default async function CoordinatorTeamPage({
   return (
     <main className="mx-auto max-w-4xl px-6 py-12">
       <div className="mb-6">
-        <a href={`/coordinator?token=${token}`} className="text-sm text-orange-600 hover:underline">
+        <a href={`/coordinator?token=${token}`} className="text-ow-oranje text-sm hover:underline">
           ← Terug naar overzicht
         </a>
       </div>
       <h1 className="text-2xl font-bold">{team?.naam ?? "Team"}</h1>
-      <p className="mt-1 text-gray-500">{uitnodiging.ronde.naam}</p>
+      <p className="text-text-muted mt-1">{uitnodiging.ronde.naam}</p>
 
       <CoordinatorTeamView
         evaluaties={evaluaties.map(

@@ -90,12 +90,12 @@ export default function RondeDetailPage({ params }: { params: Promise<{ id: stri
     setActie(null);
   }
 
-  if (loading || !ronde) return <p className="text-gray-500">Laden...</p>;
+  if (loading || !ronde) return <p className="text-text-muted">Laden...</p>;
 
   const statusKleuren: Record<string, string> = {
-    concept: "bg-gray-100 text-gray-700",
-    actief: "bg-green-100 text-green-700",
-    gesloten: "bg-red-100 text-red-700",
+    concept: "bg-surface-sunken text-text-secondary",
+    actief: "bg-green-900/30 text-green-400",
+    gesloten: "bg-red-900/30 text-red-400",
   };
 
   return (
@@ -110,7 +110,7 @@ export default function RondeDetailPage({ params }: { params: Promise<{ id: stri
             {ronde.status}
           </span>
         </div>
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="text-text-muted mt-1 text-sm">
           {ronde.seizoen} &middot; Ronde {ronde.ronde} &middot; {ronde.type} &middot; Deadline:{" "}
           {new Date(ronde.deadline).toLocaleDateString("nl-NL")}
         </p>
@@ -151,10 +151,13 @@ export default function RondeDetailPage({ params }: { params: Promise<{ id: stri
       <div>
         <h2 className="text-lg font-semibold">Uitnodigingen ({ronde.uitnodigingen.length})</h2>
         {ronde.uitnodigingen.length === 0 ? (
-          <p className="mt-2 text-sm text-gray-500">Nog geen uitnodigingen verstuurd.</p>
+          <p className="text-text-muted mt-2 text-sm">Nog geen uitnodigingen verstuurd.</p>
         ) : (
           <table className="mt-2 w-full text-left text-sm">
-            <thead className="border-b text-gray-500">
+            <thead
+              className="text-text-muted border-b"
+              style={{ borderColor: "var(--border-default)" }}
+            >
               <tr>
                 <th className="pb-2">Naam</th>
                 <th className="pb-2">E-mail</th>
@@ -164,7 +167,7 @@ export default function RondeDetailPage({ params }: { params: Promise<{ id: stri
                 <th className="pb-2">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y">
+            <tbody className="divide-y" style={{ borderColor: "var(--border-light)" }}>
               {ronde.uitnodigingen.map((u) => {
                 const heeftEvaluatie = ronde.evaluaties.some(
                   (e) => e.coach === u.naam && e.teamNaam === u.owTeam?.naam
@@ -172,23 +175,23 @@ export default function RondeDetailPage({ params }: { params: Promise<{ id: stri
                 return (
                   <tr key={u.id}>
                     <td className="py-2">{u.naam}</td>
-                    <td className="py-2 text-gray-500">{u.email}</td>
+                    <td className="text-text-muted py-2">{u.email}</td>
                     <td className="py-2">{u.owTeam?.naam ?? "-"}</td>
-                    <td className="py-2 text-gray-500">
+                    <td className="text-text-muted py-2">
                       {u.emailVerstuurd
                         ? new Date(u.emailVerstuurd).toLocaleDateString("nl-NL")
                         : "-"}
                     </td>
-                    <td className="py-2 text-gray-500">
+                    <td className="text-text-muted py-2">
                       {u.reminderVerstuurd
                         ? new Date(u.reminderVerstuurd).toLocaleDateString("nl-NL")
                         : "-"}
                     </td>
                     <td className="py-2">
                       {heeftEvaluatie ? (
-                        <span className="font-medium text-green-600">Ingediend</span>
+                        <span className="font-medium text-green-400">Ingediend</span>
                       ) : (
-                        <span className="text-yellow-600">Openstaand</span>
+                        <span className="text-yellow-400">Openstaand</span>
                       )}
                     </td>
                   </tr>
@@ -204,9 +207,16 @@ export default function RondeDetailPage({ params }: { params: Promise<{ id: stri
         <h2 className="text-lg font-semibold">Teams ({teams.length})</h2>
         <div className="mt-2 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {teams.map((team) => (
-            <div key={team.id} className="rounded-lg border bg-white p-4">
+            <div
+              key={team.id}
+              className="rounded-lg border p-4"
+              style={{
+                backgroundColor: "var(--surface-card)",
+                borderColor: "var(--border-default)",
+              }}
+            >
               <h3 className="font-semibold">{team.naam}</h3>
-              <p className="text-xs text-gray-500">
+              <p className="text-text-muted text-xs">
                 {team.categorie} &middot; {team.spelers.length} spelers
               </p>
             </div>

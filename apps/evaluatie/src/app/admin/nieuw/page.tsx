@@ -40,26 +40,36 @@ export default function NieuweRondePage() {
       <h1 className="text-xl font-bold">Nieuwe evaluatieronde</h1>
       <form onSubmit={handleSubmit} className="mt-6 max-w-md space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700">Naam</label>
+          <label className="text-text-secondary block text-sm font-medium">Naam</label>
           <input
             name="naam"
             required
             className="mt-1 w-full rounded-md border px-3 py-2 text-sm"
+            style={{
+              backgroundColor: "var(--surface-card)",
+              borderColor: "var(--border-default)",
+              color: "var(--text-primary)",
+            }}
             placeholder="Evaluatieronde 1"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">Seizoen</label>
+          <label className="text-text-secondary block text-sm font-medium">Seizoen</label>
           <input
             name="seizoen"
             required
             defaultValue="2025-2026"
             className="mt-1 w-full rounded-md border px-3 py-2 text-sm"
+            style={{
+              backgroundColor: "var(--surface-card)",
+              borderColor: "var(--border-default)",
+              color: "var(--text-primary)",
+            }}
             placeholder="2025-2026"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">Ronde nummer</label>
+          <label className="text-text-secondary block text-sm font-medium">Ronde nummer</label>
           <input
             name="ronde"
             type="number"
@@ -67,28 +77,47 @@ export default function NieuweRondePage() {
             defaultValue={1}
             min={1}
             className="mt-1 w-full rounded-md border px-3 py-2 text-sm"
+            style={{
+              backgroundColor: "var(--surface-card)",
+              borderColor: "var(--border-default)",
+              color: "var(--text-primary)",
+            }}
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">Type</label>
-          <select name="type" required className="mt-1 w-full rounded-md border px-3 py-2 text-sm">
+          <label className="text-text-secondary block text-sm font-medium">Type</label>
+          <select
+            name="type"
+            required
+            className="mt-1 w-full rounded-md border px-3 py-2 text-sm"
+            style={{
+              backgroundColor: "var(--surface-card)",
+              borderColor: "var(--border-default)",
+              color: "var(--text-primary)",
+            }}
+          >
             <option value="trainer">Trainer-evaluatie</option>
             <option value="speler">Speler-zelfevaluatie</option>
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">Deadline</label>
+          <label className="text-text-secondary block text-sm font-medium">Deadline</label>
           <input
             name="deadline"
             type="date"
             required
             className="mt-1 w-full rounded-md border px-3 py-2 text-sm"
+            style={{
+              backgroundColor: "var(--surface-card)",
+              borderColor: "var(--border-default)",
+              color: "var(--text-primary)",
+            }}
           />
         </div>
         <button
           type="submit"
           disabled={saving}
-          className="rounded-md bg-orange-600 px-4 py-2 text-sm text-white hover:bg-orange-700 disabled:opacity-50"
+          className="bg-ow-oranje hover:bg-ow-oranje-dark rounded-md px-4 py-2 text-sm text-white disabled:opacity-50"
         >
           {saving ? "Opslaan..." : "Ronde aanmaken"}
         </button>

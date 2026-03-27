@@ -81,7 +81,7 @@ export default function CoordinatorenPage() {
     fetchData();
   }
 
-  if (loading) return <p className="text-gray-500">Laden...</p>;
+  if (loading) return <p className="text-text-muted">Laden...</p>;
 
   return (
     <div className="space-y-8">
@@ -90,30 +90,40 @@ export default function CoordinatorenPage() {
       {/* Toevoegen */}
       <form onSubmit={addCoordinator} className="flex items-end gap-3">
         <div>
-          <label className="block text-sm font-medium text-gray-700">Naam</label>
+          <label className="text-text-secondary block text-sm font-medium">Naam</label>
           <input
             value={naam}
             onChange={(e) => setNaam(e.target.value)}
             required
             className="mt-1 rounded-md border px-3 py-2 text-sm"
+            style={{
+              backgroundColor: "var(--surface-card)",
+              borderColor: "var(--border-default)",
+              color: "var(--text-primary)",
+            }}
             placeholder="Naam"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">E-mail</label>
+          <label className="text-text-secondary block text-sm font-medium">E-mail</label>
           <input
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             type="email"
             required
             className="mt-1 rounded-md border px-3 py-2 text-sm"
+            style={{
+              backgroundColor: "var(--surface-card)",
+              borderColor: "var(--border-default)",
+              color: "var(--text-primary)",
+            }}
             placeholder="email@voorbeeld.nl"
           />
         </div>
         <button
           type="submit"
           disabled={saving}
-          className="rounded-md bg-orange-600 px-4 py-2 text-sm text-white hover:bg-orange-700 disabled:opacity-50"
+          className="bg-ow-oranje hover:bg-ow-oranje-dark rounded-md px-4 py-2 text-sm text-white disabled:opacity-50"
         >
           Toevoegen
         </button>
@@ -121,7 +131,7 @@ export default function CoordinatorenPage() {
 
       {/* Lijst */}
       {coordinatoren.length === 0 ? (
-        <p className="text-gray-500">Nog geen coordinatoren.</p>
+        <p className="text-text-muted">Nog geen coordinatoren.</p>
       ) : (
         <div className="space-y-4">
           {coordinatoren.map((c) => (
@@ -154,33 +164,36 @@ function CoordinatorCard({
   const seizoenTeams = coordinator.teams.filter((t) => t.seizoen === SEIZOEN);
 
   return (
-    <div className="rounded-lg border bg-white p-4">
+    <div
+      className="rounded-lg border p-4"
+      style={{ backgroundColor: "var(--surface-card)", borderColor: "var(--border-default)" }}
+    >
       <div className="flex items-center justify-between">
         <div>
           <h3 className="font-semibold">{coordinator.naam}</h3>
-          <p className="text-sm text-gray-500">{coordinator.email}</p>
+          <p className="text-text-muted text-sm">{coordinator.email}</p>
         </div>
-        <button onClick={onDelete} className="text-sm text-red-600 hover:text-red-800">
+        <button onClick={onDelete} className="text-sm text-red-400 hover:text-red-300">
           Verwijderen
         </button>
       </div>
 
       {/* Gekoppelde teams */}
       <div className="mt-3">
-        <p className="text-xs font-medium text-gray-500 uppercase">Teams ({SEIZOEN})</p>
+        <p className="text-text-muted text-xs font-medium uppercase">Teams ({SEIZOEN})</p>
         {seizoenTeams.length === 0 ? (
-          <p className="mt-1 text-sm text-gray-400">Geen teams gekoppeld</p>
+          <p className="text-text-muted mt-1 text-sm">Geen teams gekoppeld</p>
         ) : (
           <div className="mt-1 flex flex-wrap gap-2">
             {seizoenTeams.map((t) => (
               <span
                 key={t.id}
-                className="flex items-center gap-1 rounded-full bg-orange-50 px-3 py-1 text-xs"
+                className="bg-ow-oranje/10 text-ow-oranje flex items-center gap-1 rounded-full px-3 py-1 text-xs"
               >
                 {t.owTeam.naam}
                 <button
                   onClick={() => onUnlinkTeam(t.owTeamId)}
-                  className="ml-1 text-red-400 hover:text-red-600"
+                  className="ml-1 text-red-400 hover:text-red-300"
                 >
                   &times;
                 </button>
@@ -196,6 +209,11 @@ function CoordinatorCard({
             onChange={(e) => setTeamIdInput(e.target.value)}
             placeholder="Team ID"
             className="w-24 rounded-md border px-2 py-1 text-xs"
+            style={{
+              backgroundColor: "var(--surface-card)",
+              borderColor: "var(--border-default)",
+              color: "var(--text-primary)",
+            }}
           />
           <button
             onClick={() => {
@@ -205,7 +223,8 @@ function CoordinatorCard({
                 setTeamIdInput("");
               }
             }}
-            className="rounded-md bg-gray-100 px-2 py-1 text-xs hover:bg-gray-200"
+            className="hover:bg-surface-raised rounded-md px-2 py-1 text-xs"
+            style={{ backgroundColor: "var(--surface-sunken)" }}
           >
             Koppelen
           </button>

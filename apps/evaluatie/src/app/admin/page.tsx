@@ -27,7 +27,7 @@ export default function AdminRondesPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <p className="text-gray-500">Laden...</p>;
+  if (loading) return <p className="text-text-muted">Laden...</p>;
 
   return (
     <div>
@@ -35,17 +35,20 @@ export default function AdminRondesPage() {
         <h1 className="text-xl font-bold">Evaluatierondes</h1>
         <Link
           href="/admin/nieuw"
-          className="rounded-md bg-orange-600 px-4 py-2 text-sm text-white hover:bg-orange-700"
+          className="bg-ow-oranje hover:bg-ow-oranje-dark rounded-md px-4 py-2 text-sm text-white"
         >
           Nieuwe ronde
         </Link>
       </div>
 
       {rondes.length === 0 ? (
-        <p className="mt-4 text-gray-500">Nog geen evaluatierondes aangemaakt.</p>
+        <p className="text-text-muted mt-4">Nog geen evaluatierondes aangemaakt.</p>
       ) : (
         <table className="mt-4 w-full text-left text-sm">
-          <thead className="border-b text-gray-500">
+          <thead
+            className="text-text-muted border-b"
+            style={{ borderColor: "var(--border-default)" }}
+          >
             <tr>
               <th className="pb-2">Naam</th>
               <th className="pb-2">Seizoen</th>
@@ -56,11 +59,11 @@ export default function AdminRondesPage() {
               <th className="pb-2">Ingediend</th>
             </tr>
           </thead>
-          <tbody className="divide-y">
+          <tbody className="divide-y" style={{ borderColor: "var(--border-light)" }}>
             {rondes.map((r) => (
-              <tr key={r.id} className="hover:bg-gray-50">
+              <tr key={r.id} className="hover:bg-surface-raised">
                 <td className="py-2">
-                  <Link href={`/admin/${r.id}`} className="text-orange-600 hover:underline">
+                  <Link href={`/admin/${r.id}`} className="text-ow-oranje hover:underline">
                     {r.naam}
                   </Link>
                 </td>
@@ -83,13 +86,13 @@ export default function AdminRondesPage() {
 
 function StatusBadge({ status }: { status: string }) {
   const kleuren: Record<string, string> = {
-    concept: "bg-gray-100 text-gray-700",
-    actief: "bg-green-100 text-green-700",
-    gesloten: "bg-red-100 text-red-700",
+    concept: "bg-surface-sunken text-text-secondary",
+    actief: "bg-green-900/30 text-green-400",
+    gesloten: "bg-red-900/30 text-red-400",
   };
   return (
     <span
-      className={`rounded-full px-2 py-0.5 text-xs font-medium ${kleuren[status] ?? "bg-gray-100"}`}
+      className={`rounded-full px-2 py-0.5 text-xs font-medium ${kleuren[status] ?? "bg-surface-sunken"}`}
     >
       {status}
     </span>

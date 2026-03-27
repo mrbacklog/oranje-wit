@@ -57,24 +57,28 @@ export default function TemplatesPage() {
     setSaving(false);
   }
 
-  if (loading) return <p className="text-gray-500">Laden...</p>;
+  if (loading) return <p className="text-text-muted">Laden...</p>;
 
   return (
     <div className="space-y-6">
       <h1 className="text-xl font-bold">E-mail templates</h1>
-      <p className="text-sm text-gray-500">
+      <p className="text-text-muted text-sm">
         Gebruik {"{{variabele}}"} voor dynamische waarden. Beschikbare variabelen staan per template
         vermeld.
       </p>
 
       <div className="space-y-4">
         {templates.map((t) => (
-          <div key={t.id} className="rounded-lg border bg-white p-4">
+          <div
+            key={t.id}
+            className="rounded-lg border p-4"
+            style={{ backgroundColor: "var(--surface-card)", borderColor: "var(--border-default)" }}
+          >
             <div className="flex items-start justify-between">
               <div>
                 <h3 className="font-semibold">{t.sleutel}</h3>
                 {VARIABELEN[t.sleutel] && (
-                  <p className="mt-1 text-xs text-gray-400">
+                  <p className="text-text-muted mt-1 text-xs">
                     Variabelen: {VARIABELEN[t.sleutel].map((v) => `{{${v}}}`).join(", ")}
                   </p>
                 )}
@@ -82,7 +86,7 @@ export default function TemplatesPage() {
               {editing !== t.id && (
                 <button
                   onClick={() => startEdit(t)}
-                  className="text-sm text-orange-600 hover:text-orange-800"
+                  className="text-ow-oranje hover:text-ow-oranje-light text-sm"
                 >
                   Bewerken
                 </button>
@@ -92,33 +96,46 @@ export default function TemplatesPage() {
             {editing === t.id ? (
               <div className="mt-3 space-y-3">
                 <div>
-                  <label className="block text-xs font-medium text-gray-700">Onderwerp</label>
+                  <label className="text-text-secondary block text-xs font-medium">Onderwerp</label>
                   <input
                     value={editOnderwerp}
                     onChange={(e) => setEditOnderwerp(e.target.value)}
                     className="mt-1 w-full rounded-md border px-3 py-2 text-sm"
+                    style={{
+                      backgroundColor: "var(--surface-card)",
+                      borderColor: "var(--border-default)",
+                      color: "var(--text-primary)",
+                    }}
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-gray-700">HTML-inhoud</label>
+                  <label className="text-text-secondary block text-xs font-medium">
+                    HTML-inhoud
+                  </label>
                   <textarea
                     value={editHtml}
                     onChange={(e) => setEditHtml(e.target.value)}
                     rows={8}
                     className="mt-1 w-full rounded-md border px-3 py-2 font-mono text-sm"
+                    style={{
+                      backgroundColor: "var(--surface-card)",
+                      borderColor: "var(--border-default)",
+                      color: "var(--text-primary)",
+                    }}
                   />
                 </div>
                 <div className="flex gap-2">
                   <button
                     onClick={() => saveEdit(t.id)}
                     disabled={saving}
-                    className="rounded-md bg-orange-600 px-3 py-1.5 text-sm text-white hover:bg-orange-700 disabled:opacity-50"
+                    className="bg-ow-oranje hover:bg-ow-oranje-dark rounded-md px-3 py-1.5 text-sm text-white disabled:opacity-50"
                   >
                     {saving ? "Opslaan..." : "Opslaan"}
                   </button>
                   <button
                     onClick={() => setEditing(null)}
-                    className="rounded-md bg-gray-100 px-3 py-1.5 text-sm hover:bg-gray-200"
+                    className="hover:bg-surface-raised rounded-md px-3 py-1.5 text-sm"
+                    style={{ backgroundColor: "var(--surface-sunken)" }}
                   >
                     Annuleren
                   </button>
@@ -127,9 +144,12 @@ export default function TemplatesPage() {
             ) : (
               <div className="mt-2">
                 <p className="text-sm">
-                  <span className="text-gray-500">Onderwerp:</span> {t.onderwerp}
+                  <span className="text-text-muted">Onderwerp:</span> {t.onderwerp}
                 </p>
-                <div className="mt-1 max-h-24 overflow-hidden rounded bg-gray-50 p-2 text-xs text-gray-600">
+                <div
+                  className="text-text-secondary mt-1 max-h-24 overflow-hidden rounded p-2 text-xs"
+                  style={{ backgroundColor: "var(--surface-sunken)" }}
+                >
                   <div dangerouslySetInnerHTML={{ __html: t.inhoudHtml }} />
                 </div>
               </div>

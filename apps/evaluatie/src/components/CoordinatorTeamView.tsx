@@ -30,16 +30,16 @@ export default function CoordinatorTeamView({ evaluaties, token }: Props) {
   return (
     <div className="mt-6 space-y-8">
       {evaluaties.length === 0 && (
-        <p className="text-gray-500">Nog geen evaluaties ingediend voor dit team.</p>
+        <p className="text-text-muted">Nog geen evaluaties ingediend voor dit team.</p>
       )}
 
       {Array.from(perSpeler.entries()).map(([spelerId, evals]) => (
-        <div key={spelerId} className="rounded-lg border bg-white p-4">
+        <div key={spelerId} className="bg-surface-card rounded-lg border p-4">
           <h3 className="font-semibold">{evals[0].spelerNaam}</h3>
 
           {evals.map((e) => (
             <div key={e.id} className="mt-3 border-t pt-3">
-              <div className="flex items-center justify-between text-sm text-gray-500">
+              <div className="text-text-muted flex items-center justify-between text-sm">
                 <span>Trainer: {e.coach}</span>
                 {e.ingediendOp && (
                   <span>{new Date(e.ingediendOp).toLocaleDateString("nl-NL")}</span>
@@ -73,7 +73,7 @@ export default function CoordinatorTeamView({ evaluaties, token }: Props) {
               )}
 
               {e.opmerkingen && (
-                <p className="mt-2 text-sm text-gray-600">
+                <p className="text-text-secondary mt-2 text-sm">
                   <span className="font-medium">Opmerking:</span> {e.opmerkingen}
                 </p>
               )}
@@ -91,7 +91,7 @@ function ScoreLabel({ label, value, max }: { label: string; value: number | null
   if (value === null || value === undefined) return null;
   return (
     <div>
-      <span className="text-gray-500">{label}:</span>{" "}
+      <span className="text-text-muted">{label}:</span>{" "}
       <span className="font-medium">
         {value}/{max}
       </span>
@@ -126,7 +126,7 @@ function MemoVeld({
 
   return (
     <div className="mt-3">
-      <label className="block text-xs font-medium text-gray-500">Coordinator memo</label>
+      <label className="text-text-muted block text-xs font-medium">Coordinator memo</label>
       <div className="mt-1 flex gap-2">
         <textarea
           value={memo}
@@ -141,7 +141,7 @@ function MemoVeld({
         <button
           onClick={opslaan}
           disabled={saving}
-          className="self-end rounded-md bg-orange-600 px-3 py-1.5 text-sm text-white hover:bg-orange-700 disabled:opacity-50"
+          className="bg-ow-oranje hover:bg-ow-oranje-dark self-end rounded-md px-3 py-1.5 text-sm text-white disabled:opacity-50"
         >
           {saving ? "..." : saved ? "V" : "Opslaan"}
         </button>
