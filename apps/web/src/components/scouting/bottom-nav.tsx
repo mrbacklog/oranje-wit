@@ -3,12 +3,12 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { AppSwitcher } from "@oranje-wit/ui";
+import { AppSwitcher, HomeIcon, SearchIcon, ListIcon, ProfileIcon, GridIcon } from "@oranje-wit/ui";
 
 const navItems = [
   { href: "/scouting", label: "Home", icon: HomeIcon },
-  { href: "/scouting/verzoeken", label: "Verzoeken", icon: VerzoekIcon },
-  { href: "/scouting/zoek", label: "Zoeken", icon: ScoutIcon },
+  { href: "/scouting/verzoeken", label: "Verzoeken", icon: ListIcon },
+  { href: "/scouting/zoek", label: "Zoeken", icon: SearchIcon },
   { href: "/scouting/profiel", label: "Profiel", icon: ProfileIcon },
 ] as const;
 
@@ -53,7 +53,7 @@ export function BottomNav() {
             style={{ color: appSwitcherOpen ? "var(--ow-oranje-500)" : "var(--text-tertiary)" }}
             aria-label="Apps"
           >
-            <AppsGridIcon active={appSwitcherOpen} />
+            <GridIcon active={appSwitcherOpen} />
             <span className="font-medium">Apps</span>
           </button>
         </div>
@@ -61,67 +61,5 @@ export function BottomNav() {
 
       <AppSwitcher open={appSwitcherOpen} onClose={() => setAppSwitcherOpen(false)} />
     </>
-  );
-}
-
-function HomeIcon({ active }: { active: boolean }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6" strokeWidth={active ? 2.5 : 1.5}>
-      <path d="M3 12l9-8 9 8" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-      <path
-        d="M5 10v9a1 1 0 001 1h3v-5h6v5h3a1 1 0 001-1v-9"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-function ScoutIcon({ active }: { active: boolean }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6" strokeWidth={active ? 2.5 : 1.5}>
-      <circle cx="11" cy="11" r="7" stroke="currentColor" />
-      <path d="M21 21l-4.35-4.35" stroke="currentColor" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function VerzoekIcon({ active }: { active: boolean }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6" strokeWidth={active ? 2.5 : 1.5}>
-      <path
-        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"
-        stroke="currentColor"
-        strokeLinecap="round"
-      />
-      <rect x="9" y="3" width="6" height="4" rx="1" stroke="currentColor" />
-      <path d="M9 12h6M9 16h4" stroke="currentColor" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function ProfileIcon({ active }: { active: boolean }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6" strokeWidth={active ? 2.5 : 1.5}>
-      <circle cx="12" cy="8" r="4" stroke="currentColor" />
-      <path
-        d="M6 21v-1a6 6 0 0112 0v1"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-function AppsGridIcon({ active }: { active: boolean }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6" strokeWidth={active ? 2.5 : 1.5}>
-      <rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" />
-      <rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" />
-      <rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" />
-      <rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" />
-    </svg>
   );
 }

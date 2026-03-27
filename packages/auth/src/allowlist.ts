@@ -79,21 +79,3 @@ export async function getCapabilities(email: string): Promise<GebruikerCapabilit
   return TC_FALLBACK[email.toLowerCase()] ?? null;
 }
 
-// === Backward compatibility (deprecated, verwijder na migratie) ===
-
-export type Rol = "EDITOR" | "COORDINATOR" | "REVIEWER" | "VIEWER";
-
-/** @deprecated Gebruik `DbCapabilityLookup` */
-export type DbRolLookup = (email: string) => Promise<{
-  rol: string;
-  actief: boolean;
-} | null>;
-
-/** @deprecated Gebruik `getCapabilities()` */
-export async function getAllowedRole(email: string): Promise<Rol | null> {
-  const cap = await getCapabilities(email);
-  if (!cap) return null;
-  if (cap.isTC) return "EDITOR";
-  if (cap.doelgroepen.length > 0) return "COORDINATOR";
-  return "VIEWER";
-}

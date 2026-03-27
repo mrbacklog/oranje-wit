@@ -1,6 +1,7 @@
 "use client";
 
 import { type ReactNode } from "react";
+import { usePathname } from "next/navigation";
 import { APP_IDS, APP_META, APP_ICONS } from "./app-icons";
 
 export interface AppInfo {
@@ -69,15 +70,16 @@ export function AppSwitcher({
   variant = "sheet",
   profile,
 }: AppSwitcherProps) {
+  const pathname = usePathname();
   if (!open) return null;
 
-  const currentHost = currentUrl || (typeof window !== "undefined" ? window.location.origin : "");
+  const currentPath = currentUrl || pathname || "";
 
   if (variant === "dropdown") {
     return (
       <AppSwitcherDropdown
         apps={apps}
-        currentHost={currentHost}
+        currentPath={currentPath}
         onClose={onClose}
         profile={profile}
       />
@@ -85,7 +87,7 @@ export function AppSwitcher({
   }
 
   return (
-    <AppSwitcherSheet apps={apps} currentHost={currentHost} onClose={onClose} profile={profile} />
+    <AppSwitcherSheet apps={apps} currentPath={currentPath} onClose={onClose} profile={profile} />
   );
 }
 
@@ -93,12 +95,12 @@ export function AppSwitcher({
 
 function AppSwitcherSheet({
   apps,
-  currentHost,
+  currentPath,
   onClose,
   profile,
 }: {
   apps: AppInfo[];
-  currentHost: string;
+  currentPath: string;
   onClose: () => void;
   profile?: AppSwitcherProfile;
 }) {
@@ -131,7 +133,7 @@ function AppSwitcherSheet({
         {/* App Grid */}
         <div className="grid grid-cols-3 gap-4">
           {apps.map((app) => (
-            <AppSwitcherItem key={app.url} app={app} currentHost={currentHost} onClose={onClose} />
+            <AppSwitcherItem key={app.url} app={app} currentPath={currentPath} onClose={onClose} />
           ))}
         </div>
 
@@ -145,12 +147,12 @@ function AppSwitcherSheet({
 
 function AppSwitcherDropdown({
   apps,
-  currentHost,
+  currentPath,
   onClose,
   profile,
 }: {
   apps: AppInfo[];
-  currentHost: string;
+  currentPath: string;
   onClose: () => void;
   profile?: AppSwitcherProfile;
 }) {
@@ -177,7 +179,7 @@ function AppSwitcherDropdown({
         </div>
         <div className="grid grid-cols-1 gap-0.5">
           {apps.map((app) => {
-            const isActive = matchHost(currentHost, app.url);
+            const isActive = matchPath(currentPath, app.url);
             return (
               <a
                 key={app.url}
@@ -253,14 +255,14 @@ function AppSwitcherDropdown({
 
 function AppSwitcherItem({
   app,
-  currentHost,
+  currentPath,
   onClose,
 }: {
   app: AppInfo;
-  currentHost: string;
+  currentPath: string;
   onClose: () => void;
 }) {
-  const isActive = matchHost(currentHost, app.url);
+  const isActive = matchPath(currentPath, app.url);
   const c = app.color || "#ff6b00";
   return (
     <a
@@ -407,22 +409,6 @@ function ProfileRow({ profile, compact }: { profile: AppSwitcherProfile; compact
 
 // ─── Helpers ─────────────────────────────────────────────────
 
-const PORT_MAP: Record<string, string> = {
-  "4100": "teamindeling.ckvoranjewit.app",
-  "4102": "monitor.ckvoranjewit.app",
-  "4104": "evaluatie.ckvoranjewit.app",
-  "4106": "scout.ckvoranjewit.app",
-  "4108": "beheer.ckvoranjewit.app",
-};
-
-function matchHost(currentHost: string, appUrl: string): boolean {
-  try {
-    if (currentHost.includes("localhost") || currentHost.includes("127.0.0.1")) {
-      const mapped = PORT_MAP[new URL(currentHost).port];
-      return mapped ? appUrl.includes(mapped) : false;
-    }
-    return currentHost.includes(new URL(appUrl).hostname);
-  } catch {
-    return false;
-  }
+function matchPath(currentPath: string, appPath: string): boolean {
+  return currentPath === appPath || currentPath.startsWith(appPath + "/");
 }

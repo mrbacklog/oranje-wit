@@ -161,8 +161,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         user.clearance = token.clearance ?? 0;
         user.doelgroepen = token.doelgroepen ?? [];
         user.authMethode = token.authMethode ?? "google";
-        // Backward compat (verwijder na migratie)
-        user.role = token.role as string;
         if (token.provider) {
           user.provider = token.provider as string;
         }

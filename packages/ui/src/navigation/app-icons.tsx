@@ -49,31 +49,31 @@ export const APP_META: Record<
   monitor: {
     name: "Monitor",
     description: "Verenigingsmonitor",
-    url: "https://monitor.ckvoranjewit.app",
+    url: "/monitor",
     accent: APP_ACCENTS.monitor,
   },
   "team-indeling": {
     name: "Teams",
     description: "Teamindeling",
-    url: "https://teamindeling.ckvoranjewit.app",
+    url: "/teamindeling",
     accent: APP_ACCENTS["team-indeling"],
   },
   evaluatie: {
     name: "Evaluatie",
     description: "Spelerevaluaties",
-    url: "https://evaluatie.ckvoranjewit.app",
+    url: "/evaluatie",
     accent: APP_ACCENTS.evaluatie,
   },
   scouting: {
     name: "Scout",
     description: "Jeugdscouting",
-    url: "https://scout.ckvoranjewit.app",
+    url: "/scouting",
     accent: APP_ACCENTS.scouting,
   },
   beheer: {
     name: "Beheer",
     description: "TC Beheer",
-    url: "https://beheer.ckvoranjewit.app",
+    url: "/beheer",
     accent: APP_ACCENTS.beheer,
   },
 };
