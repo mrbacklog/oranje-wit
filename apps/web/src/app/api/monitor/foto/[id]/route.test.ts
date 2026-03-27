@@ -56,6 +56,7 @@ vi.mock("@oranje-wit/auth/checks", () => ({
   }),
 }));
 
+import { NextRequest } from "next/server";
 import { GET } from "./route";
 
 describe("GET /api/foto/:id", () => {
@@ -66,7 +67,7 @@ describe("GET /api/foto/:id", () => {
   it("retourneert 404 als foto niet bestaat", async () => {
     mockGetFoto.mockResolvedValueOnce(null);
 
-    const req = new Request("http://localhost/test");
+    const req = new NextRequest("http://localhost/test");
     const ctx = { params: Promise.resolve({ id: "ONBEKEND" }) };
     const result = await GET(req, ctx);
 
@@ -77,7 +78,7 @@ describe("GET /api/foto/:id", () => {
     const fakeImage = Buffer.from([0x52, 0x49, 0x46, 0x46]); // RIFF header (WebP start)
     mockGetFoto.mockResolvedValueOnce(fakeImage);
 
-    const req = new Request("http://localhost/test");
+    const req = new NextRequest("http://localhost/test");
     const ctx = { params: Promise.resolve({ id: "TSTN001" }) };
     const res = await GET(req, ctx);
 
