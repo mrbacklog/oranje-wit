@@ -62,6 +62,10 @@ type AnyPrismaModels = {
   selectieGroep: AnyModel;
   selectieSpeler: AnyModel;
   selectieStaf: AnyModel;
+  blauwdrukSpeler: AnyModel;
+  blauwdrukBesluit: AnyModel;
+  standaardVraag: AnyModel;
+  stafToewijzing: AnyModel;
   // Evaluatie-app
   evaluatieRonde: AnyModel;
   coordinator: AnyModel;

@@ -4,6 +4,8 @@ import {
   getLedenStatistieken,
   getPinsVoorBlauwdruk,
 } from "./actions";
+import { getBlauwdrukSpelers, getGezienVoortgang } from "./gezien-actions";
+import { getBesluiten, getBesluitStats } from "./besluit-actions";
 import type { CategorieKaders } from "./categorie-kaders";
 import BlauwdrukTabs from "@/components/blauwdruk/BlauwdrukTabs";
 import { getActiefSeizoen, vorigSeizoen } from "@/lib/seizoen";
@@ -19,13 +21,18 @@ export default async function BlauwdrukPage() {
 
   const vorigSzn = vorigSeizoen(seizoen);
 
-  const [spelers, statistieken, werkitems, werkitemStats, pins, referentieTeams, evaluatieRondes] =
+  const [spelers, statistieken, werkitems, werkitemStats, pins, gezienRecords, gezienVoortgang, gezienUsers, besluitRecords, besluitStats, referentieTeams, evaluatieRondes] =
     await Promise.all([
       getSpelersUitgebreid(),
       getLedenStatistieken(),
       getWerkitems(blauwdruk.id),
       getWerkitemStats(blauwdruk.id),
       getPinsVoorBlauwdruk(blauwdruk.id),
+      getBlauwdrukSpelers(blauwdruk.id),
+      getGezienVoortgang(blauwdruk.id),
+      prisma.user.findMany({ select: { id: true, naam: true }, orderBy: { naam: "asc" } }),
+      getBesluiten(blauwdruk.id),
+      getBesluitStats(blauwdruk.id),
       prisma.referentieTeam.findMany({
         where: { seizoen: vorigSzn },
         select: {
@@ -82,6 +89,11 @@ export default async function BlauwdrukPage() {
         werkitemStats={werkitemStats}
         refreshWerkitems={refreshWerkitems}
         pins={pins}
+        gezienRecords={gezienRecords}
+        gezienVoortgang={gezienVoortgang}
+        gezienUsers={gezienUsers}
+        besluitRecords={besluitRecords}
+        besluitStats={besluitStats}
         referentieTeams={referentieTeams}
         seizoen={seizoen}
         evaluatieRondes={evaluatieRondes}

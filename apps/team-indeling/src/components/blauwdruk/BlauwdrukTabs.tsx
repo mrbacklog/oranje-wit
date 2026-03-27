@@ -12,6 +12,8 @@ import UitgangspositiePanel from "./UitgangspositiePanel";
 import type { ReferentieTeamData, EvaluatieRondeData } from "./UitgangspositiePanel";
 import WerkbordOverzicht from "@/components/werkbord/WerkbordOverzicht";
 import BlockerChecklist from "@/components/werkbord/BlockerChecklist";
+import GezienOverzicht from "./GezienOverzicht";
+import BesluitenOverzicht from "./BesluitenOverzicht";
 
 type BlockerWerkitem = {
   id: string;
@@ -37,6 +39,11 @@ interface BlauwdrukTabsProps {
     stats: { open: number; blockers: number; besluiten: number; afgerond: number };
   }>;
   pins: PinMetNamen[];
+  gezienRecords: Parameters<typeof GezienOverzicht>[0]["initialRecords"];
+  gezienVoortgang: Parameters<typeof GezienOverzicht>[0]["initialVoortgang"];
+  gezienUsers: Array<{ id: string; naam: string }>;
+  besluitRecords: Parameters<typeof BesluitenOverzicht>[0]["initialBesluiten"];
+  besluitStats: Parameters<typeof BesluitenOverzicht>[0]["initialStats"];
   referentieTeams: ReferentieTeamData[];
   seizoen: string;
   evaluatieRondes: EvaluatieRondeData[];
@@ -44,6 +51,8 @@ interface BlauwdrukTabsProps {
 
 const TABS = [
   { id: "categorieen", label: "Categorieën" },
+  { id: "gezien", label: "Gezien" },
+  { id: "besluiten", label: "Besluiten" },
   { id: "uitgangspositie", label: "Uitgangspositie" },
   { id: "leden", label: "Leden" },
   { id: "toelichting", label: "Toelichting" },
@@ -64,6 +73,11 @@ export default function BlauwdrukTabs({
   werkitemStats,
   refreshWerkitems,
   pins,
+  gezienRecords,
+  gezienVoortgang,
+  gezienUsers,
+  besluitRecords,
+  besluitStats,
   referentieTeams,
   seizoen,
   evaluatieRondes,
@@ -101,6 +115,16 @@ export default function BlauwdrukTabs({
             }`}
           >
             {tab.label}
+            {tab.id === "besluiten" && besluitStats.onduidelijk > 0 && (
+              <span className="ml-1.5 rounded-full bg-red-100 px-1.5 py-0.5 text-xs font-medium text-red-700">
+                {besluitStats.onduidelijk}
+              </span>
+            )}
+            {tab.id === "gezien" && gezienVoortgang.totaal > 0 && gezienVoortgang.gezien < gezienVoortgang.totaal && (
+              <span className="ml-1.5 rounded-full bg-amber-100 px-1.5 py-0.5 text-xs font-medium text-amber-700">
+                {gezienVoortgang.totaal - gezienVoortgang.gezien}
+              </span>
+            )}
             {tab.id === "werkbord" && werkitemStats.open > 0 && (
               <span className="ml-1.5 rounded-full bg-orange-100 px-1.5 py-0.5 text-xs font-medium text-orange-700">
                 {werkitemStats.open}
@@ -118,6 +142,23 @@ export default function BlauwdrukTabs({
       {/* Tab-inhoud */}
       {activeTab === "categorieen" && (
         <CategoriePanel statistieken={statistieken} kaders={kaders} blauwdrukId={blauwdrukId} />
+      )}
+
+      {activeTab === "gezien" && (
+        <GezienOverzicht
+          blauwdrukId={blauwdrukId}
+          initialRecords={gezienRecords}
+          initialVoortgang={gezienVoortgang}
+          users={gezienUsers}
+        />
+      )}
+
+      {activeTab === "besluiten" && (
+        <BesluitenOverzicht
+          blauwdrukId={blauwdrukId}
+          initialBesluiten={besluitRecords}
+          initialStats={besluitStats}
+        />
       )}
 
       {activeTab === "uitgangspositie" && (

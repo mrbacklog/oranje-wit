@@ -1,13 +1,16 @@
 "use client";
 
-import { useState, useCallback, useMemo, useRef } from "react";
+import { useState, useCallback, useMemo, useRef, lazy, Suspense } from "react";
 import { logger } from "@oranje-wit/types";
 import type { ScenarioData, SpelerData, SelectieGroepData } from "../types";
 import { PEILJAAR } from "../types";
 import { useScenarioEditor } from "../hooks/useScenarioEditor";
 import { useValidatie } from "@/hooks/useValidatie";
 import { useCardPositions, type CardInfo, type PositionMap } from "../hooks/useCardPositions";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import DndProvider from "../DndContext";
+
+const MobileScenarioEditor = lazy(() => import("../mobile/MobileScenarioEditor"));
 
 import Werkgebied from "../Werkgebied";
 import SpelersPool from "../SpelersPool";
@@ -32,6 +35,7 @@ export default function ScenarioEditorFullscreen({
   initialMode = "edit",
   initialPosities = null,
 }: ScenarioEditorFullscreenProps) {
+  const isMobile = useIsMobile();
   const editor = useScenarioEditor(scenario, alleSpelers);
   const [mode, setMode] = useState<EditorMode>(initialMode);
   const [poolOpen, setPoolOpen] = useState(false);
@@ -165,6 +169,28 @@ export default function ScenarioEditorFullscreen({
       <div className="fixed inset-0 z-40 flex items-center justify-center bg-gray-50">
         <p className="text-sm text-gray-400">Dit scenario heeft nog geen versie.</p>
       </div>
+    );
+  }
+
+  // --- Mobile mode ---
+  if (isMobile && !isPreview) {
+    return (
+      <Suspense
+        fallback={
+          <div
+            className="fixed inset-0 z-40 flex items-center justify-center"
+            style={{ backgroundColor: "var(--surface-page, #0f1115)" }}
+          >
+            <div style={{ color: "var(--text-tertiary, #6b7280)" }}>Laden...</div>
+          </div>
+        }
+      >
+        <MobileScenarioEditor
+          scenario={scenario}
+          alleSpelers={alleSpelers}
+          initialMode={initialMode}
+        />
+      </Suspense>
     );
   }
 

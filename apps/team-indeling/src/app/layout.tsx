@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { TISidebar } from "@/components/layout/TISidebar";
 import SessionProvider from "@/components/providers/SessionProvider";
@@ -20,6 +20,20 @@ export const metadata: Metadata = {
   title: "Team-Indeling | c.k.v. Oranje Wit",
   description:
     "Intelligente teamindeling voor c.k.v. Oranje Wit — van blauwdruk via concepten naar definitieve indeling.",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "OW Teams",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0f1115",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default async function RootLayout({
