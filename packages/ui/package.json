@@ -7,9 +7,20 @@
   "exports": {
     ".": "./src/index.ts",
     "./tokens/globals.css": "./src/tokens/globals.css",
-    "./tokens/colors": "./src/tokens/colors.ts"
+    "./tokens/tokens.css": "./src/tokens/tokens.css",
+    "./tokens/colors": "./src/tokens/colors.ts",
+    "./navigation": "./src/navigation/index.ts",
+    "./motion": "./src/motion/index.ts",
+    "./data-input": "./src/data-input/index.ts",
+    "./feedback/bottom-sheet": "./src/feedback/bottom-sheet.tsx",
+    "./feedback/action-sheet": "./src/feedback/action-sheet.tsx",
+    "./overlay": "./src/overlay/index.ts"
+  },
+  "dependencies": {
+    "@oranje-wit/types": "workspace:*"
   },
   "peerDependencies": {
+    "framer-motion": "^12.0.0",
     "next": "^15.0.0 || ^16.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
@@ -27,6 +38,7 @@
     "next": "16",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^4.0.18"
   }

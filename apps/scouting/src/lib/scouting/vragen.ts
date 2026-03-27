@@ -6,6 +6,7 @@ import {
   VRAGEN_ORANJE,
   VRAGEN_ROOD,
 } from "./vragen-data";
+import { laadRaamwerkVanDB } from "./raamwerk-db";
 
 export type Pijler = "SCH" | "AAN" | "PAS" | "VER" | "FYS" | "MEN";
 
@@ -94,4 +95,20 @@ export function vragenPerPijler(groep: LeeftijdsgroepNaam): Record<Pijler, Scout
 export function actievePijlers(groep: LeeftijdsgroepNaam): Pijler[] {
   const perPijler = vragenPerPijler(groep);
   return (Object.keys(perPijler) as Pijler[]).filter((p) => perPijler[p].length > 0);
+}
+
+/**
+ * Haal scouting-config op met database-lookup en fallback naar hardcoded.
+ *
+ * Async variant van SCOUTING_CONFIG[groep] die eerst probeert
+ * de actieve catalogus uit de database te laden. Als er geen
+ * actieve catalogus is, valt het terug op de hardcoded config.
+ */
+export async function getScoutingConfig(groep: LeeftijdsgroepNaam): Promise<ScoutingGroepConfig> {
+  // Probeer eerst uit database
+  const dbConfig = await laadRaamwerkVanDB(groep);
+  if (dbConfig) return dbConfig;
+
+  // Fallback naar hardcoded
+  return SCOUTING_CONFIG[groep];
 }

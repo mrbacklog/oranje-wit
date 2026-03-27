@@ -54,14 +54,22 @@ model LidFoto {
   @@map("lid_fotos")
 }
 
+// Seizoenstatus: planning → actief → afgerond
+enum SeizoenStatus {
+  VOORBEREIDING
+  ACTIEF
+  AFGEROND
+}
+
 // Seizoenen
 model Seizoen {
-  seizoen    String   @id
-  startJaar  Int      @map("start_jaar")
-  eindJaar   Int      @map("eind_jaar")
-  startDatum DateTime @map("start_datum") @db.Date  // 1 augustus
-  eindDatum  DateTime @map("eind_datum") @db.Date   // 30 juni
-  peildatum  DateTime @map("peildatum") @db.Date    // 31 december van startJaar
+  seizoen    String        @id
+  startJaar  Int           @map("start_jaar")
+  eindJaar   Int           @map("eind_jaar")
+  startDatum DateTime      @map("start_datum") @db.Date  // 1 augustus
+  eindDatum  DateTime      @map("eind_datum") @db.Date   // 30 juni
+  peildatum  DateTime      @map("peildatum") @db.Date    // 31 december van startJaar
+  status     SeizoenStatus @default(VOORBEREIDING) @map("status")
 
   // Relaties
   owTeams            OWTeam[]
@@ -337,6 +345,53 @@ enum Rol {
   VIEWER   // Bestuur/inkijk: alleen lezen
 }
 
+// Centraal gebruikersbeheer (vervangt hardcoded allowlist)
+model Gebruiker {
+  id          String    @id @default(cuid())
+  email       String    @unique
+  naam        String
+  rol         Rol       @default(VIEWER)
+  scoutRol    ScoutRol? @map("scout_rol")
+  isAdmin     Boolean   @default(false) @map("is_admin")
+  actief      Boolean   @default(true)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  @@map("gebruikers")
+}
+
+// Verificatie-tokens voor magic links (NextAuth EmailProvider)
+model VerificatieToken {
+  identifier String   // email adres
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verificatie_tokens")
+}
+
+// Tijdelijke toegangstokens voor evaluatie-uitnodigingen, scouting, etc.
+model ToegangsToken {
+  id          String    @id @default(cuid())
+  token       String    @unique @default(cuid())
+  email       String
+  naam        String?   // naam van de respondent
+  type        String    // "evaluatie" | "scouting" | etc.
+
+  // Scope: waartoe geeft dit token toegang?
+  scope       Json      // bijv. { rondeId: "xxx", teamId: 123 }
+
+  // Lifecycle
+  verlooptOp  DateTime  @map("verloopt_op")
+  gebruiktOp  DateTime? @map("gebruikt_op")
+  actief      Boolean   @default(true)
+
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  @@index([token])
+  @@map("toegangs_tokens")
+}
+
 // ============================================================
 // SPELERS & STAF (geïmporteerd + verrijkt)
 // ============================================================
@@ -369,8 +424,11 @@ model Speler {
   pins               Pin[]
   werkitems          Werkitem[]
   activiteiten       Activiteit[]
-  scoutingRapporten  ScoutingRapport[]
-  spelersKaarten     SpelersKaart[]
+  scoutingRapporten    ScoutingRapport[]
+  spelersKaarten       SpelersKaart[]
+  fysiekProfielen      FysiekProfiel[]
+  spelerUSS            SpelerUSS[]
+  vergelijkingPosities ScoutingVergelijkingPositie[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1173,10 +1231,12 @@ model Scout {
   rol          ScoutRol @default(SCOUT)
   vrijScouten  Boolean  @default(false) @map("vrij_scouten")
 
-  rapporten    ScoutingRapport[]
-  badges       ScoutBadge[]
-  teamSessies  TeamScoutingSessie[]
-  toewijzingen ScoutToewijzing[]
+  rapporten      ScoutingRapport[]
+  badges         ScoutBadge[]
+  teamSessies    TeamScoutingSessie[]
+  toewijzingen   ScoutToewijzing[]
+  vergelijkingen ScoutingVergelijking[]
+  fysiekProfielen FysiekProfiel[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1199,9 +1259,10 @@ model ScoutingRapport {
   overallScore  Int?
   teamSessieId  String?
   teamSessie    TeamScoutingSessie? @relation(fields: [teamSessieId], references: [id])
-  verzoekId     String?             @map("verzoek_id")
-  verzoek       ScoutingVerzoek?    @relation(fields: [verzoekId], references: [id])
-  relatie       ScoutSpelerRelatie  @default(GEEN)
+  verzoekId      String?             @map("verzoek_id")
+  verzoek        ScoutingVerzoek?    @relation(fields: [verzoekId], references: [id])
+  relatie        ScoutSpelerRelatie  @default(GEEN)
+  nietBeoordeeld Boolean             @default(false) @map("niet_beoordeeld")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1262,6 +1323,14 @@ enum ToewijzingStatus {
   GEACCEPTEERD // Scout heeft geaccepteerd
   AFGEWEZEN    // Scout heeft afgewezen
   AFGEROND     // Scout heeft rapport(en) ingediend
+  GESTOPT      // Scout is halverwege gestopt
+}
+
+enum VerzoekDoel {
+  DOORSTROOM      // Speler beoordelen voor promotie/degradatie
+  SELECTIE        // Speler beoordelen voor A-categorie selectie
+  NIVEAUBEPALING  // Algemene niveaubepaling
+  OVERIG          // Anders
 }
 
 enum ScoutSpelerRelatie {
@@ -1277,6 +1346,7 @@ enum ScoutSpelerRelatie {
 model ScoutingVerzoek {
   id              String        @id @default(cuid())
   type            VerzoekType
+  doel            VerzoekDoel   @default(NIVEAUBEPALING)
   status          VerzoekStatus @default(OPEN)
   toelichting     String?       @db.Text
   deadline        DateTime?
@@ -1324,16 +1394,20 @@ model SpelersKaart {
   speler          Speler   @relation(fields: [spelerId], references: [id])
   seizoen         String
   overall         Int
-  schot           Int
-  aanval          Int
-  passing         Int
-  verdediging     Int
-  fysiek          Int
-  mentaal         Int
+  pijlerScores    Json?    // v3.0: { "AANVALLEN": 78, "VERDEDIGEN": 65, ... }
   aantalRapporten Int      @default(0)
   betrouwbaarheid String   @default("concept")
   laatsteUpdate   DateTime @default(now())
   trendOverall    Int?     @default(0)
+  leeftijdsgroep  String?  // "blauw" | "groen" | ... (snapshot)
+
+  // DEPRECATED kolommen (behouden voor backward compatibility, niet meer geschreven)
+  schot           Int?     // @deprecated — gebruik pijlerScores
+  aanval          Int?     // @deprecated
+  passing         Int?     // @deprecated
+  verdediging     Int?     // @deprecated
+  fysiek          Int?     // @deprecated
+  mentaal         Int?     // @deprecated
 
   @@unique([spelerId, seizoen])
   @@map("spelers_kaarten")
@@ -1363,4 +1437,263 @@ model ScoutChallenge {
   createdAt DateTime @default(now())
 
   @@map("scout_challenges")
+}
+
+// ╔═══════════════════════════════════════════════════════════╗
+// ║  RAAMWERK — Beheer van scouting-items per seizoen        ║
+// ╚═══════════════════════════════════════════════════════════╝
+
+enum RaamwerkStatus {
+  CONCEPT      // Bewerkbaar door TC
+  ACTIEF       // In gebruik door scouts (immutable)
+  GEARCHIVEERD // Seizoen voorbij (frozen)
+}
+
+// Eén raamwerkversie per seizoen
+model RaamwerkVersie {
+  id             String          @id @default(cuid())
+  seizoen        String          @unique
+  naam           String          // bijv. "Vaardigheidsraamwerk v1.1"
+  status         RaamwerkStatus  @default(CONCEPT)
+  opmerking      String?         @db.Text
+  bronVersieId   String?         @map("bron_versie_id") // gekopieerd van
+
+  groepen        Leeftijdsgroep[]
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  gepubliceerdOp DateTime? @map("gepubliceerd_op")
+
+  @@map("raamwerk_versies")
+}
+
+// Eén groep per band (paars, blauw, groen, geel, oranje, rood) per versie
+model Leeftijdsgroep {
+  id         String           @id @default(cuid())
+  versieId   String           @map("versie_id")
+  versie     RaamwerkVersie   @relation(fields: [versieId], references: [id], onDelete: Cascade)
+  band       String           // "paars" | "blauw" | "groen" | "geel" | "oranje" | "rood"
+  schaalType String           @map("schaal_type") // "observatie" | "ja_nogniet" | "goed_oke_nogniet" | "sterren" | "slider"
+  maxScore   Int              @map("max_score")   // 1 | 2 | 3 | 5 | 10
+  doelAantal Int              @default(0) @map("doel_aantal") // Target items uit raamwerk
+
+  // USS v2 schaalparameters
+  schaalMin        Decimal?  @map("schaal_min") @db.Decimal(4, 2)     // 0 | 1.0
+  schaalMax        Decimal?  @map("schaal_max") @db.Decimal(4, 2)     // 100 | 5.0 | 10.0
+  schaalMediaan    Decimal?  @map("schaal_mediaan") @db.Decimal(4, 2) // 50 | 3.0 | 5.5
+  halveBereik      Decimal?  @map("halve_bereik") @db.Decimal(4, 2)   // 50 | 2.0 | 4.5
+  bandbreedteCoach Int?      @map("bandbreedte_coach")                // B_coach (USS-punten)
+  bandbreedteScout Int?      @map("bandbreedte_scout")                // B_scout (USS-punten)
+  kernItemsTarget  Int?      @map("kern_items_target")                // ~10
+
+  pijlers    Pijler[]
+
+  @@unique([versieId, band])
+  @@map("leeftijdsgroepen")
+}
+
+// Pijlers per groep (Inside Out: blauw heeft 5, groen 5, geel 6, oranje 7, rood 9)
+model Pijler {
+  id       String           @id @default(cuid())
+  groepId  String           @map("groep_id")
+  groep    Leeftijdsgroep   @relation(fields: [groepId], references: [id], onDelete: Cascade)
+  code     String           // v3.0: "BAL" | "BEWEGEN" | "SPEL" | "SAMEN" | "IK" |
+                            //        "AANVALLEN" | "VERDEDIGEN" | "TECHNIEK" | "TACTIEK" |
+                            //        "MENTAAL" | "FYSIEK" | "SOCIAAL" | "SCOREN" | "SPELINTELLIGENTIE"
+  naam     String
+  icoon    String?          // Emoji
+  volgorde Int              @default(0)
+  blok     String?          // "korfbalacties" | "spelerskwaliteiten" | "persoonlijk" | null
+  gewicht  Decimal?         @db.Decimal(4, 2)  // USS-gewicht (bijv. 0.18)
+
+  items    OntwikkelItem[]
+
+  @@unique([groepId, code])
+  @@map("pijlers")
+}
+
+// Individuele beoordelingsitems (vragen)
+model OntwikkelItem {
+  id          String           @id @default(cuid())
+  pijlerId    String           @map("pijler_id")
+  pijler      Pijler           @relation(fields: [pijlerId], references: [id], onDelete: Cascade)
+  itemCode    String           @map("item_code")   // bijv. "aan_vrijlopen"
+  label       String           // Korte naam
+  vraagTekst  String           @map("vraag_tekst") // Volledige formulering
+  laag        String?          // DEPRECATED: vervangen door isKern
+  isKern      Boolean          @default(true) @map("is_kern")       // kern-item voor TEAM-methode
+  categorie   String?          // "KERN" | "ONDERSCHEIDEND" (alleen Rood)
+  volgorde    Int              @default(0)
+  actief      Boolean          @default(true)
+
+  // Meegroei: link naar voorloper in jongere band
+  voorloperId String?          @map("voorloper_id")
+  voorloper   OntwikkelItem?   @relation("ItemVoorloper", fields: [voorloperId], references: [id])
+  opvolgers   OntwikkelItem[]  @relation("ItemVoorloper")
+
+  @@unique([pijlerId, itemCode])
+  @@index([pijlerId, volgorde])
+  @@map("ontwikkel_items")
+}
+
+// ╔═══════════════════════════════════════════════════════════╗
+// ║  USS v2 — Fysiek profiel, gecachte USS, vergelijkingen   ║
+// ╚═══════════════════════════════════════════════════════════╝
+
+// Fysiek profiel: contextdata per speler per seizoen (geen USS-impact)
+model FysiekProfiel {
+  id           String            @id @default(cuid())
+  spelerId     String
+  speler       Speler            @relation(fields: [spelerId], references: [id])
+  seizoen      String
+  scoutId      String?
+  scout        Scout?            @relation(fields: [scoutId], references: [id])
+
+  lengte       LengteRelatief?
+  lichaamsbouw Lichaamsbouw?
+  atletischType AtetischType?    @map("atletisch_type")
+  opmerking    String?           @db.Text
+
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  @@unique([spelerId, seizoen])
+  @@index([spelerId])
+  @@map("fysiek_profielen")
+}
+
+enum LengteRelatief {
+  ONDER_GEMIDDELD
+  GEMIDDELD
+  BOVENGEMIDDELD
+  UITZONDERLIJK
+}
+
+enum Lichaamsbouw {
+  LICHT
+  GEMIDDELD_LB  // Enum-variant nodig want GEMIDDELD is al bezet
+  STEVIG
+}
+
+enum AtetischType {
+  ONDER_GEMIDDELD_AT
+  GEMIDDELD_AT
+  BOVENGEMIDDELD_AT
+  UITZONDERLIJK_AT
+}
+
+// Gecachte USS-berekening per speler per seizoen
+model SpelerUSS {
+  id             String   @id @default(cuid())
+  spelerId       String
+  speler         Speler   @relation(fields: [spelerId], references: [id])
+  seizoen        String
+  leeftijdsgroep String   @map("leeftijdsgroep") // snapshot: "blauw" | "groen" | ...
+
+  // Overall USS
+  ussOverall     Int?     @map("uss_overall")
+
+  // Per-pijler USS (JSON voor variabele pijlers)
+  ussPijlers     Json?    @map("uss_pijlers")  // { "AANVALLEN": 121, "VERDEDIGEN": 106, ... }
+
+  // Bron-USS waarden
+  ussCoach       Int?     @map("uss_coach")
+  ussScout       Int?     @map("uss_scout")
+  ussVergelijking Int?    @map("uss_vergelijking")
+  ussTeam        Int?     @map("uss_team")         // anker
+  ussBasislijn   Int?     @map("uss_basislijn")     // S(leeftijd)
+
+  // Per-bron per-pijler (JSON)
+  ussCoachPijlers       Json?  @map("uss_coach_pijlers")
+  ussScoutPijlers       Json?  @map("uss_scout_pijlers")
+  ussVergelijkingPijlers Json? @map("uss_vergelijking_pijlers")
+
+  // Meta
+  aantalCoachSessies     Int @default(0) @map("aantal_coach_sessies")
+  aantalScoutSessies     Int @default(0) @map("aantal_scout_sessies")
+  aantalVergelijkingen   Int @default(0) @map("aantal_vergelijkingen")
+  betrouwbaarheid        String @default("concept")
+
+  // Cross-validatie signalen
+  crossValidatieSignalen Json?  @map("cross_validatie_signalen") // [{ pijler, verschil, type }]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([spelerId, seizoen])
+  @@index([spelerId])
+  @@index([seizoen])
+  @@map("speler_uss")
+}
+
+// Vergelijkende scouting: 2-6 spelers op een horizontale balk per pijler
+model ScoutingVergelijking {
+  id          String   @id @default(cuid())
+  scoutId     String
+  scout       Scout    @relation(fields: [scoutId], references: [id])
+  seizoen     String
+  datum       DateTime @default(now())
+  context     ScoutingContext
+  opmerking   String?  @db.Text
+
+  // Scope
+  teamId      Int?     @map("team_id")  // optioneel: vergelijking binnen team
+  verzoekId   String?  @map("verzoek_id")
+
+  posities    ScoutingVergelijkingPositie[]
+
+  createdAt   DateTime @default(now())
+
+  @@index([seizoen])
+  @@index([scoutId])
+  @@map("scouting_vergelijkingen")
+}
+
+model ScoutingVergelijkingPositie {
+  id              String   @id @default(cuid())
+  vergelijkingId  String   @map("vergelijking_id")
+  vergelijking    ScoutingVergelijking @relation(fields: [vergelijkingId], references: [id], onDelete: Cascade)
+  spelerId        String
+  speler          Speler   @relation(fields: [spelerId], references: [id])
+  pijlerCode      String   @map("pijler_code")  // "AANVALLEN", "VERDEDIGEN", etc.
+  balkPositie     Decimal  @map("balk_positie") @db.Decimal(5, 2) // 0.00 - 100.00
+  isAnker         Boolean  @default(false) @map("is_anker") // speler met bekende USS
+
+  @@unique([vergelijkingId, spelerId, pijlerCode])
+  @@index([vergelijkingId])
+  @@index([spelerId])
+  @@map("scouting_vergelijking_posities")
+}
+
+// ╔═══════════════════════════════════════════════════════════╗
+// ║  WERVING — Aanmeldingsfunnel (beheer-app)                ║
+// ╚═══════════════════════════════════════════════════════════╝
+
+enum AanmeldingStatus {
+  AANMELDING    // Eerste contact
+  PROEFLES      // Proefles ingepland
+  INTAKE        // Intake gesprek
+  LID           // Volwaardig lid geworden
+  AFGEHAAKT     // Niet doorgegaan
+}
+
+model Aanmelding {
+  id            String           @id @default(cuid())
+  naam          String
+  email         String?
+  telefoon      String?
+  geboortejaar  Int?
+  opmerking     String?          @db.Text
+  status        AanmeldingStatus @default(AANMELDING)
+  bron          String?          // "website" | "bekende" | "open dag" | etc.
+
+  // Verantwoordelijken
+  ledenadmin    String?          @map("ledenadmin")
+  trainer       String?
+  tcLid         String?          @map("tc_lid")
+
+  createdAt     DateTime         @default(now()) @map("created_at")
+  updatedAt     DateTime         @updatedAt @map("updated_at")
+
+  @@map("aanmeldingen")
 }
