@@ -7,7 +7,10 @@
   "exports": {
     ".": "./src/index.ts",
     "./checks": "./src/checks.ts",
-    "./allowlist": "./src/allowlist.ts"
+    "./allowlist": "./src/allowlist.ts",
+    "./adapter": "./src/adapter.ts",
+    "./tokens": "./src/tokens.ts",
+    "./email-template": "./src/email-template.ts"
   },
   "dependencies": {
     "@oranje-wit/types": "workspace:*"
@@ -15,5 +18,8 @@
   "peerDependencies": {
     "next": ">=16",
     "next-auth": "5.0.0-beta.28"
+  },
+  "devDependencies": {
+    "@types/nodemailer": "^6.4.0"
   }
 }
