@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
+import { getFoto } from "@oranje-wit/database";
 import { logger } from "@oranje-wit/types";
 
 /**
@@ -10,16 +11,13 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
   const { id } = await params;
 
   try {
-    const foto = await prisma.lidFoto.findUnique({
-      where: { relCode: id },
-      select: { imageWebp: true },
-    });
+    const imageData = await getFoto(prisma, id);
 
-    if (!foto) {
+    if (!imageData) {
       return new NextResponse(null, { status: 404 });
     }
 
-    return new NextResponse(foto.imageWebp, {
+    return new NextResponse(new Uint8Array(imageData), {
       headers: {
         "Content-Type": "image/webp",
         "Cache-Control": "public, max-age=3600, stale-while-revalidate=86400",

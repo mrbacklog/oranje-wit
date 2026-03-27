@@ -41,6 +41,9 @@ export type SchaalTypeV3 =
 
 export type LeeftijdsgroepNaamV3 = "paars" | "blauw" | "groen" | "geel" | "oranje" | "rood";
 
+/** Alias — LeeftijdsgroepNaam en LeeftijdsgroepNaamV3 zijn identiek */
+export type LeeftijdsgroepNaam = LeeftijdsgroepNaamV3;
+
 /** Configuratie van een enkele pijler */
 export interface PijlerConfig {
   code: PijlerCode;

@@ -21,3 +21,9 @@ globalForPrisma.prisma = prisma;
 
 // Re-export everything from Prisma client for convenience
 export * from "./generated/prisma/client";
+
+// Prisma 7 type-recursie workaround (TS2321) — gedeeld voor alle apps
+export type PrismaFn = (...a: never[]) => unknown;
+
+// Gedeelde queries — gebruikt door meerdere apps
+export * from "./queries";

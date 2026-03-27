@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { HUIDIG_SEIZOEN } from "@oranje-wit/types";
 
 export default function NieuweRondePage() {
   const router = useRouter();
@@ -58,7 +59,7 @@ export default function NieuweRondePage() {
           <input
             name="seizoen"
             required
-            defaultValue="2025-2026"
+            defaultValue={HUIDIG_SEIZOEN}
             className="mt-1 w-full rounded-md border px-3 py-2 text-sm"
             style={{
               backgroundColor: "var(--surface-card)",

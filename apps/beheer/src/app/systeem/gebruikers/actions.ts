@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/db/prisma";
-import { logger } from "@oranje-wit/types";
+import { logger, type ActionResult } from "@oranje-wit/types";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
@@ -33,7 +33,7 @@ const UpdateGebruikerSchema = z.object({
 
 export type GebruikerRow = Awaited<ReturnType<typeof getGebruikers>>[number];
 
-export type ActionResult<T = void> = { ok: true; data: T } | { ok: false; error: string };
+export type { ActionResult } from "@oranje-wit/types";
 
 // ── Queries ───────────────────────────────────────────────────
 

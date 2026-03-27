@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { HUIDIG_SEIZOEN } from "@oranje-wit/types";
 
 interface CoordinatorTeam {
   id: string;
@@ -16,7 +17,7 @@ interface Coordinator {
   teams: CoordinatorTeam[];
 }
 
-const SEIZOEN = "2025-2026";
+const SEIZOEN = HUIDIG_SEIZOEN;
 
 export default function CoordinatorenPage() {
   const [coordinatoren, setCoordinatoren] = useState<Coordinator[]>([]);

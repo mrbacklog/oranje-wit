@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db/prisma";
-import { isLopendSeizoen } from "@/lib/huidig-seizoen";
+import { isLopendSeizoen } from "@/lib/utils/seizoen";
 
 // ---------------------------------------------------------------------------
 // Leden trend (unieke rel_codes per seizoen uit competitie_spelers)

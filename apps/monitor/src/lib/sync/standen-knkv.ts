@@ -135,7 +135,7 @@ async function syncAlleStanden(seizoen: string): Promise<void> {
     try {
       poolMap = await haalPoolsOp(sport);
     } catch {
-      console.warn(`[standen-sync] Geen pools voor ${sport}`);
+      logger.warn(`[standen-sync] Geen pools voor ${sport}`);
       continue;
     }
 
@@ -205,6 +205,6 @@ export async function syncStandenIfStale(seizoen: string): Promise<void> {
     }
   } catch (err) {
     // Bij API-fouten: ga door met bestaande data
-    console.warn(`[standen-sync] Fout bij synchronisatie:`, err);
+    logger.warn(`[standen-sync] Fout bij synchronisatie:`, err);
   }
 }

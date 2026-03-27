@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import { HUIDIG_SEIZOEN } from "@oranje-wit/types";
 import { prisma } from "./db/prisma";
 
 const COOKIE_NAME = "actief-seizoen";
@@ -37,7 +38,7 @@ export async function getActiefSeizoen(): Promise<string> {
     select: { seizoen: true },
   });
 
-  return laatste?.seizoen ?? "2025-2026";
+  return laatste?.seizoen ?? HUIDIG_SEIZOEN;
 }
 
 /**

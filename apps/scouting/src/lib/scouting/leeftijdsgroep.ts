@@ -14,8 +14,9 @@
  */
 
 import { PEILJAAR } from "@oranje-wit/types";
+import type { LeeftijdsgroepNaam } from "@oranje-wit/types";
 
-export type LeeftijdsgroepNaam = "paars" | "blauw" | "groen" | "geel" | "oranje" | "rood";
+export type { LeeftijdsgroepNaam };
 
 export type SchaalType = "smiley" | "sterren" | "slider";
 

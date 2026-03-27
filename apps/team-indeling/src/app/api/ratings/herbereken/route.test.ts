@@ -11,14 +11,18 @@ vi.mock("@/lib/rating", () => ({
   berekenAlleRatings: (...args: unknown[]) => mockBerekenAlleRatings(...args),
 }));
 
-vi.mock("@oranje-wit/types", () => ({
-  HUIDIG_SEIZOEN: "2025-2026",
-  logger: {
-    info: vi.fn(),
-    warn: vi.fn(),
-    error: vi.fn(),
-  },
-}));
+vi.mock("@oranje-wit/types", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@oranje-wit/types")>();
+  return {
+    ...actual,
+    HUIDIG_SEIZOEN: "2025-2026",
+    logger: {
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn(),
+    },
+  };
+});
 
 const { POST } = await import("./route");
 

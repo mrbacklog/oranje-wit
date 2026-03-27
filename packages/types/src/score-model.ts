@@ -11,12 +11,13 @@
  */
 
 import { PEILDATUM } from "./constanten";
+import type { LeeftijdsgroepNaam } from "./leeftijdsgroep-config";
 
 // ============================================================
-// Types
+// Types (LeeftijdsgroepNaam wordt geimporteerd uit leeftijdsgroep-config)
 // ============================================================
 
-export type LeeftijdsgroepNaam = "paars" | "blauw" | "groen" | "geel" | "oranje" | "rood";
+export type { LeeftijdsgroepNaam };
 
 export type SeizoensPeriode = "veld_najaar" | "zaal" | "veld_voorjaar" | "seizoenseinde";
 

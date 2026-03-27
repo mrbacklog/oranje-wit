@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { PageContainer } from "@oranje-wit/ui";
 import { InfoPageHeader } from "@/components/info/InfoPageHeader";
-import { HUIDIG_SEIZOEN } from "@/lib/utils/seizoen";
+import { HUIDIG_SEIZOEN } from "@oranje-wit/types";
 import { KpiCardsSkeleton, ChartsSkeleton, AlertCardsSkeleton } from "@/components/ui/skeleton";
 import { DashboardKpis } from "./dashboard-kpis";
 import { DashboardCharts } from "./dashboard-charts";

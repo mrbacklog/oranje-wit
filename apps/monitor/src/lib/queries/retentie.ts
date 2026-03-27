@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db/prisma";
-import { HUIDIG_SEIZOEN, isLopendSeizoen } from "@/lib/huidig-seizoen";
+import { HUIDIG_SEIZOEN } from "@oranje-wit/types";
+import { isLopendSeizoen } from "@/lib/utils/seizoen";
 
 // ---------------------------------------------------------------------------
 // Types

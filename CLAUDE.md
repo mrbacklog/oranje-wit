@@ -22,7 +22,7 @@ oranje-wit/
 │   └── ui/               # @oranje-wit/ui — Gedeelde React componenten (KpiCard, SignalBadge, etc.)
 ├── e2e/                  # Playwright E2E tests (per app)
 ├── .claude/
-│   ├── agents/           # AI agent-definities (20 agents)
+│   ├── agents/           # AI agent-definities (21 agents)
 │   └── skills/           # AI skills (37 skills, flat structuur)
 ├── rules/                # Contextregels (8 bestanden) — Single Source of Truth
 ├── scripts/              # Data-pipeline en import scripts
@@ -89,9 +89,9 @@ logger.warn("...");   // altijd
 logger.error("...");  // altijd
 ```
 
-**API routes** — gebruik `ok()`/`fail()` uit `@/lib/api` met Zod validatie:
+**API routes** — gebruik `ok()`/`fail()`/`parseBody()` uit `@oranje-wit/types` (centraal in `packages/types/src/api-response.ts`):
 ```ts
-import { ok, fail, parseBody } from "@/lib/api";
+import { ok, fail, parseBody } from "@/lib/api"; // re-exporteert uit @oranje-wit/types
 import { z } from "zod";
 
 const Schema = z.object({ naam: z.string().min(1) });
@@ -105,6 +105,16 @@ export async function POST(request: Request) {
   } catch (error) {
     return fail(error instanceof Error ? error.message : String(error));
   }
+}
+```
+
+**Server Action results** — gebruik `ActionResult<T>` uit `@oranje-wit/types`:
+```ts
+import { type ActionResult } from "@oranje-wit/types";
+
+export async function mijnAction(data: FormData): Promise<ActionResult<{ id: string }>> {
+  // ...
+  return { ok: true, data: { id: "abc" } };
 }
 ```
 
@@ -195,6 +205,7 @@ CompetitieSpeler (primaire tabel: 1 per speler × seizoen × competitie)
 
 | Agent | Domein | Rol |
 |---|---|---|
+| `product-owner` | Platform (hoofd) | Cross-app samenhang, gebruikersreizen, prioritering |
 | `korfbal` | Monitor (hoofd) | Technisch expert, seizoensplanning |
 | `data-analist` | Monitor (sub) | Data-pipeline, dashboards |
 | `speler-scout` | Monitor (sub) | Individuele spelersanalyse |
@@ -220,6 +231,7 @@ Elke agent heeft een `skills:` lijst in zijn frontmatter die bepaalt wat hij mag
 
 | Agent | Mag gebruiken |
 |---|---|
+| `product-owner` | `shared/oranje-draad`, `shared/score-model`, `shared/audit` |
 | `korfbal` | `monitor/*`, `shared/*` |
 | `data-analist` | `monitor/database`, `monitor/lid-monitor`, `monitor/ledenverloop`, `monitor/jeugdmodel`, `monitor/teamsamenstelling`, `shared/oranje-draad`, `shared/score-model` |
 | `speler-scout` | `monitor/ledenverloop`, `monitor/jeugdmodel`, `shared/oranje-draad`, `shared/score-model` |
@@ -242,7 +254,10 @@ Elke agent heeft een `skills:` lijst in zijn frontmatter die bepaalt wat hij mag
 ### Agent Hiërarchie
 
 ```
-korfbal (hoofd monitor)
+product-owner (hoofd platform)
+├── spawns: korfbal, ontwikkelaar, ux-designer, data-analist, communicatie, regel-checker
+│
+korfbal (hoofd monitor) ← escalates-to: product-owner
 ├── spawns: data-analist, speler-scout, team-selector
 │
 team-planner (hoofd TI) ← escalates-to: korfbal
@@ -282,7 +297,7 @@ Bij het spawnen van een agent MOET eerst de `start` skill worden geladen. Dit is
 
 ### Agent Teams
 
-Tien voorgedefinieerde agent teams voor parallelle samenwerking. Activeer met `/team-<naam>`.
+Elf voorgedefinieerde agent teams voor parallelle samenwerking. Activeer met `/team-<naam>`.
 
 | Team | Skill | Lead | Teammates | Use case |
 |---|---|---|---|---|
@@ -296,6 +311,7 @@ Tien voorgedefinieerde agent teams voor parallelle samenwerking. Activeer met `/
 | **Jeugdontwikkeling** | `/team-jeugdontwikkeling` | jeugd-architect | sportwetenschap, mentaal-coach, communicatie, korfbal, speler-scout | Vaardigheidsraamwerk, beoordelingscriteria, jeugdbeleid, presentaties |
 | **UX** | `/team-ux` | ux-designer | frontend, ontwikkelaar | Design system, prototypes, dark theme, PWA, cross-app navigatie |
 | **Beheer** | `/team-beheer` | ontwikkelaar | regel-checker, e2e-tester, korfbal | Backend voor 9 TC-domeinen, server actions, data-modellen, handshake voor team-ux |
+| **Product** | `/team-product` | product-owner | korfbal, ontwikkelaar, ux-designer | Cross-app samenhang, feature-prioritering, gebruikersreizen, data-contracten |
 
 Team-skills staan in `.claude/skills/team-*/SKILL.md`.
 
@@ -309,8 +325,8 @@ advies, batch-plaats, blauwdruk, concept, database, deployment, e2e-testing, eva
 ### Infra-skills (4)
 audit, ci-status, health-check, deploy
 
-### Agent Teams (10)
-team-seizoensindeling, team-seizoensanalyse, team-release, team-e2e, team-documentatie, team-kwaliteit, team-devops, team-jeugdontwikkeling, team-ux, team-beheer
+### Agent Teams (11)
+team-seizoensindeling, team-seizoensanalyse, team-release, team-e2e, team-documentatie, team-kwaliteit, team-devops, team-jeugdontwikkeling, team-ux, team-beheer, team-product
 
 ## Rules
 

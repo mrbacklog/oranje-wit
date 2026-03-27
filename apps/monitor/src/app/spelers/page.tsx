@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 import { KpiCard, PageContainer } from "@oranje-wit/ui";
 import { InfoPageHeader } from "@/components/info/InfoPageHeader";
 import { getSpelersOverzicht } from "@/lib/queries/spelers";
-import { HUIDIG_SEIZOEN } from "@/lib/utils/seizoen";
+import { HUIDIG_SEIZOEN } from "@oranje-wit/types";
 import { SpelersZoeken } from "@/components/spelers/SpelersZoeken";
 
 export default async function SpelersPage() {

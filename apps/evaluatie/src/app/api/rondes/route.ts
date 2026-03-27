@@ -1,6 +1,7 @@
-import { prisma, PrismaFn } from "@/lib/db/prisma";
+import { prisma } from "@/lib/db/prisma";
 import { ok, fail, parseBody } from "@/lib/api";
 import { requireEditor } from "@oranje-wit/auth/checks";
+import { getRondes, createRonde } from "@oranje-wit/database";
 import { z } from "zod";
 
 const CreateRondeSchema = z.object({
@@ -14,13 +15,7 @@ const CreateRondeSchema = z.object({
 export async function GET() {
   try {
     await requireEditor();
-    // Prisma 7 type recursie workaround (TS2321)
-    const rondes = await (prisma.evaluatieRonde.findMany as PrismaFn)({
-      orderBy: [{ seizoen: "desc" }, { ronde: "desc" }],
-      include: {
-        _count: { select: { uitnodigingen: true, evaluaties: true } },
-      },
-    });
+    const rondes = await getRondes(prisma);
     return ok(rondes);
   } catch (error) {
     return fail(error instanceof Error ? error.message : String(error));
@@ -33,14 +28,19 @@ export async function POST(request: Request) {
     const parsed = await parseBody(request, CreateRondeSchema);
     if (!parsed.ok) return parsed.response;
 
-    // Prisma 7 type recursie workaround (TS2321)
-    const ronde = await (prisma.evaluatieRonde.create as PrismaFn)({
-      data: {
-        ...parsed.data,
-        deadline: new Date(parsed.data.deadline),
-      },
+    const result = await createRonde(prisma, {
+      seizoen: parsed.data.seizoen,
+      ronde: parsed.data.ronde,
+      naam: parsed.data.naam,
+      type: parsed.data.type,
+      deadline: new Date(parsed.data.deadline),
     });
-    return ok(ronde);
+
+    if (!result.ok) {
+      return fail(result.error, 409, "DUPLICATE");
+    }
+
+    return ok(result.data);
   } catch (error) {
     return fail(error instanceof Error ? error.message : String(error));
   }

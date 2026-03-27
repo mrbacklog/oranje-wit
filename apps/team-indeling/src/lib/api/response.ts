@@ -1,16 +1,13 @@
-import { NextResponse } from "next/server";
+import { ok as baseOk, type OkOptions } from "@oranje-wit/types";
+import type { NextResponse } from "next/server";
 import type { ApiResponse } from "@oranje-wit/types";
-import { logger } from "@oranje-wit/types";
 
-export function ok<T>(data: T): NextResponse<ApiResponse<T>> {
-  return NextResponse.json({ ok: true, data }, { headers: { "Cache-Control": "no-store" } });
-}
+export { fail } from "@oranje-wit/types";
 
-export function fail(
-  message: string,
-  status = 500,
-  code = "INTERNAL_ERROR"
-): NextResponse<ApiResponse<never>> {
-  if (status >= 500) logger.error(`[API] ${code}: ${message}`);
-  return NextResponse.json({ ok: false, error: { code, message } }, { status });
+/**
+ * Team-Indeling variant van ok() met Cache-Control: no-store standaard.
+ * Voorkomt dat Next.js gecachte data teruggeeft bij scenario-mutaties.
+ */
+export function ok<T>(data: T, options?: OkOptions): NextResponse<ApiResponse<T>> {
+  return baseOk(data, { cacheControl: "no-store", ...options });
 }

@@ -1,6 +1,7 @@
-import { prisma, PrismaFn } from "@/lib/db/prisma";
+import { prisma } from "@/lib/db/prisma";
 import { ok, fail, parseBody } from "@/lib/api";
 import { requireEditor } from "@oranje-wit/auth/checks";
+import { updateTemplate } from "@oranje-wit/database";
 import { z } from "zod";
 
 const UpdateTemplateSchema = z.object({
@@ -15,12 +16,13 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     const parsed = await parseBody(request, UpdateTemplateSchema);
     if (!parsed.ok) return parsed.response;
 
-    // Prisma 7 type recursie workaround (TS2321)
-    const template = await (prisma.emailTemplate.update as PrismaFn)({
-      where: { id },
-      data: parsed.data,
-    });
-    return ok(template);
+    const result = await updateTemplate(prisma, id, parsed.data);
+
+    if (!result.ok) {
+      return fail(result.error, 400);
+    }
+
+    return ok({ updated: true });
   } catch (error) {
     return fail(error instanceof Error ? error.message : String(error));
   }

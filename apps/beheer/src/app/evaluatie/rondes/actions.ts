@@ -1,15 +1,21 @@
 "use server";
 
 import { prisma } from "@/lib/db/prisma";
-import { logger } from "@oranje-wit/types";
+import {
+  getRondes as _getRondes,
+  createRonde as _createRonde,
+  updateRondeStatus as _updateRondeStatus,
+  type EvaluatieRondeMetCounts,
+} from "@oranje-wit/database";
+import { logger, type ActionResult } from "@oranje-wit/types";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 // ── Types ─────────────────────────────────────────────────────
 
-export type ActionResult<T = void> = { ok: true; data: T } | { ok: false; error: string };
+export type { ActionResult } from "@oranje-wit/types";
 
-export type RondeRow = Awaited<ReturnType<typeof getRondes>>[number];
+export type RondeRow = EvaluatieRondeMetCounts;
 
 // ── Queries ───────────────────────────────────────────────────
 
@@ -17,18 +23,7 @@ export type RondeRow = Awaited<ReturnType<typeof getRondes>>[number];
  * Alle evaluatierondes met counts.
  */
 export async function getRondes() {
-  const rondes = await prisma.evaluatieRonde.findMany({
-    orderBy: [{ seizoen: "desc" }, { ronde: "desc" }],
-    include: {
-      _count: {
-        select: {
-          uitnodigingen: true,
-          evaluaties: true,
-        },
-      },
-    },
-  });
-  return rondes;
+  return _getRondes(prisma);
 }
 
 // ── Validatie ─────────────────────────────────────────────────
@@ -63,31 +58,21 @@ export async function createRonde(formData: FormData): Promise<ActionResult<{ id
   }
 
   try {
-    const bestaand = await prisma.evaluatieRonde.findFirst({
-      where: {
-        seizoen: parsed.data.seizoen,
-        ronde: parsed.data.ronde,
-        type: parsed.data.type,
-      },
+    const result = await _createRonde(prisma, {
+      seizoen: parsed.data.seizoen,
+      ronde: parsed.data.ronde,
+      naam: parsed.data.naam,
+      type: parsed.data.type,
+      deadline: new Date(parsed.data.deadline),
     });
-    if (bestaand) {
-      return { ok: false, error: "Deze ronde bestaat al voor dit seizoen/type" };
+
+    if (!result.ok) {
+      return result;
     }
 
-    const ronde = await prisma.evaluatieRonde.create({
-      data: {
-        seizoen: parsed.data.seizoen,
-        ronde: parsed.data.ronde,
-        naam: parsed.data.naam,
-        type: parsed.data.type,
-        deadline: new Date(parsed.data.deadline),
-        status: "concept",
-      },
-    });
-
-    logger.info(`Evaluatieronde aangemaakt: ${ronde.naam}`);
+    logger.info(`Evaluatieronde aangemaakt: ${parsed.data.naam}`);
     revalidatePath("/evaluatie/rondes");
-    return { ok: true, data: { id: ronde.id } };
+    return result;
   } catch (error) {
     logger.warn("createRonde mislukt:", error);
     return { ok: false, error: "Kon ronde niet aanmaken" };
@@ -104,14 +89,11 @@ export async function updateRondeStatus(id: string, status: string): Promise<Act
   }
 
   try {
-    await prisma.evaluatieRonde.update({
-      where: { id },
-      data: { status: parsed.data },
-    });
+    const result = await _updateRondeStatus(prisma, id, parsed.data);
 
     logger.info(`Evaluatieronde ${id} status gewijzigd naar ${parsed.data}`);
     revalidatePath("/evaluatie/rondes");
-    return { ok: true, data: undefined };
+    return result;
   } catch (error) {
     logger.warn("updateRondeStatus mislukt:", error);
     return { ok: false, error: "Kon status niet wijzigen" };

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { logger } from "@oranje-wit/types";
 import { prisma } from "@/lib/db/prisma";
+import { getFoto } from "@oranje-wit/database";
+import { logger } from "@oranje-wit/types";
 
 /**
  * GET /api/spelers/[relCode]/foto
@@ -15,25 +16,13 @@ export async function GET(
   try {
     const { relCode } = await params;
 
-    const foto = await (
-      prisma.lidFoto as unknown as {
-        findFirst: (args: {
-          where: { relCode: string };
-          select: { imageWebp: true };
-        }) => Promise<{ imageWebp: Buffer } | null>;
-      }
-    ).findFirst({
-      where: { relCode },
-      select: { imageWebp: true },
-    });
+    const imageData = await getFoto(prisma, relCode);
 
-    if (!foto) {
+    if (!imageData) {
       return new NextResponse(null, { status: 404 });
     }
 
-    const imageData = new Uint8Array(foto.imageWebp);
-
-    return new NextResponse(imageData, {
+    return new NextResponse(new Uint8Array(imageData), {
       status: 200,
       headers: {
         "Content-Type": "image/webp",

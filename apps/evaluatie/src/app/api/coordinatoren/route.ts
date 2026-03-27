@@ -1,6 +1,7 @@
-import { prisma, PrismaFn } from "@/lib/db/prisma";
+import { prisma } from "@/lib/db/prisma";
 import { ok, fail, parseBody } from "@/lib/api";
 import { requireEditor } from "@oranje-wit/auth/checks";
+import { getCoordinatoren, createCoordinator } from "@oranje-wit/database";
 import { z } from "zod";
 
 const CreateCoordinatorSchema = z.object({
@@ -11,16 +12,7 @@ const CreateCoordinatorSchema = z.object({
 export async function GET() {
   try {
     await requireEditor();
-    // Prisma 7 type recursie workaround (TS2321)
-    const coordinatoren = await (prisma.coordinator.findMany as PrismaFn)({
-      include: {
-        teams: {
-          include: { owTeam: { select: { id: true, naam: true } } },
-          orderBy: { seizoen: "desc" },
-        },
-      },
-      orderBy: { naam: "asc" },
-    });
+    const coordinatoren = await getCoordinatoren(prisma);
     return ok(coordinatoren);
   } catch (error) {
     return fail(error instanceof Error ? error.message : String(error));
@@ -33,11 +25,16 @@ export async function POST(request: Request) {
     const parsed = await parseBody(request, CreateCoordinatorSchema);
     if (!parsed.ok) return parsed.response;
 
-    // Prisma 7 type recursie workaround (TS2321)
-    const coordinator = await (prisma.coordinator.create as PrismaFn)({
-      data: parsed.data,
+    const result = await createCoordinator(prisma, {
+      naam: parsed.data.naam,
+      email: parsed.data.email,
     });
-    return ok(coordinator);
+
+    if (!result.ok) {
+      return fail(result.error, 409, "DUPLICATE");
+    }
+
+    return ok(result.data);
   } catch (error) {
     return fail(error instanceof Error ? error.message : String(error));
   }

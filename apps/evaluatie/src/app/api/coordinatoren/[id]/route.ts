@@ -1,6 +1,7 @@
-import { prisma, PrismaFn } from "@/lib/db/prisma";
+import { prisma } from "@/lib/db/prisma";
 import { ok, fail, parseBody } from "@/lib/api";
 import { requireEditor } from "@oranje-wit/auth/checks";
+import { updateCoordinator, deleteCoordinator } from "@oranje-wit/database";
 import { z } from "zod";
 
 const UpdateCoordinatorSchema = z.object({
@@ -15,12 +16,13 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     const parsed = await parseBody(request, UpdateCoordinatorSchema);
     if (!parsed.ok) return parsed.response;
 
-    // Prisma 7 type recursie workaround (TS2321)
-    const coordinator = await (prisma.coordinator.update as PrismaFn)({
-      where: { id },
-      data: parsed.data,
-    });
-    return ok(coordinator);
+    const result = await updateCoordinator(prisma, id, parsed.data);
+
+    if (!result.ok) {
+      return fail(result.error, 400);
+    }
+
+    return ok(result.data);
   } catch (error) {
     return fail(error instanceof Error ? error.message : String(error));
   }
@@ -30,8 +32,13 @@ export async function DELETE(_req: Request, { params }: { params: Promise<{ id: 
   try {
     await requireEditor();
     const { id } = await params;
-    // Prisma 7 type recursie workaround (TS2321)
-    await (prisma.coordinator.delete as PrismaFn)({ where: { id } });
+
+    const result = await deleteCoordinator(prisma, id);
+
+    if (!result.ok) {
+      return fail(result.error, 400);
+    }
+
     return ok({ deleted: true });
   } catch (error) {
     return fail(error instanceof Error ? error.message : String(error));

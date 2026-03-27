@@ -1,15 +1,21 @@
 "use server";
 
 import { prisma } from "@/lib/db/prisma";
-import { logger } from "@oranje-wit/types";
+import {
+  getCoordinatoren as _getCoordinatoren,
+  createCoordinator as _createCoordinator,
+  deleteCoordinator as _deleteCoordinator,
+  type CoordinatorMetTeams,
+} from "@oranje-wit/database";
+import { logger, type ActionResult } from "@oranje-wit/types";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 // ── Types ─────────────────────────────────────────────────────
 
-export type ActionResult<T = void> = { ok: true; data: T } | { ok: false; error: string };
+export type { ActionResult } from "@oranje-wit/types";
 
-export type CoordinatorRow = Awaited<ReturnType<typeof getCoordinatoren>>[number];
+export type CoordinatorRow = CoordinatorMetTeams;
 
 // ── Queries ───────────────────────────────────────────────────
 
@@ -17,20 +23,7 @@ export type CoordinatorRow = Awaited<ReturnType<typeof getCoordinatoren>>[number
  * Alle coordinatoren met hun teamkoppelingen.
  */
 export async function getCoordinatoren() {
-  const coordinatoren = await prisma.coordinator.findMany({
-    orderBy: { naam: "asc" },
-    include: {
-      teams: {
-        include: {
-          owTeam: {
-            select: { id: true, naam: true, seizoen: true, owCode: true },
-          },
-        },
-        orderBy: { seizoen: "desc" },
-      },
-    },
-  });
-  return coordinatoren;
+  return _getCoordinatoren(prisma);
 }
 
 // ── Validatie ─────────────────────────────────────────────────
@@ -60,23 +53,18 @@ export async function createCoordinator(formData: FormData): Promise<ActionResul
   }
 
   try {
-    const bestaand = await prisma.coordinator.findUnique({
-      where: { email: parsed.data.email },
+    const result = await _createCoordinator(prisma, {
+      naam: parsed.data.naam,
+      email: parsed.data.email,
     });
-    if (bestaand) {
-      return { ok: false, error: "Dit e-mailadres is al in gebruik" };
+
+    if (!result.ok) {
+      return result;
     }
 
-    const coordinator = await prisma.coordinator.create({
-      data: {
-        naam: parsed.data.naam,
-        email: parsed.data.email,
-      },
-    });
-
-    logger.info(`Coordinator aangemaakt: ${coordinator.naam}`);
+    logger.info(`Coordinator aangemaakt: ${parsed.data.naam}`);
     revalidatePath("/evaluatie/coordinatoren");
-    return { ok: true, data: { id: coordinator.id } };
+    return result;
   } catch (error) {
     logger.warn("createCoordinator mislukt:", error);
     return { ok: false, error: "Kon coordinator niet aanmaken" };
@@ -88,11 +76,11 @@ export async function createCoordinator(formData: FormData): Promise<ActionResul
  */
 export async function deleteCoordinator(id: string): Promise<ActionResult> {
   try {
-    await prisma.coordinator.delete({ where: { id } });
+    const result = await _deleteCoordinator(prisma, id);
 
     logger.info(`Coordinator verwijderd: ${id}`);
     revalidatePath("/evaluatie/coordinatoren");
-    return { ok: true, data: undefined };
+    return result;
   } catch (error) {
     logger.warn("deleteCoordinator mislukt:", error);
     return { ok: false, error: "Kon coordinator niet verwijderen" };

@@ -17,7 +17,7 @@ import {
   getUitstroomPerSeizoenMVLeeftijd,
 } from "@/lib/queries/retentie";
 import type { SeizoenMVLeeftijdRow } from "@/lib/queries/retentie";
-import { HUIDIG_SEIZOEN } from "@/lib/huidig-seizoen";
+import { HUIDIG_SEIZOEN } from "@oranje-wit/types";
 import {
   AankomstigeUitstroomTabel,
   IntraSeizoenFlowCard,

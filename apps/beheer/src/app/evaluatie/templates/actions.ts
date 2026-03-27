@@ -1,15 +1,20 @@
 "use server";
 
 import { prisma } from "@/lib/db/prisma";
-import { logger } from "@oranje-wit/types";
+import {
+  getTemplates as _getTemplates,
+  updateTemplate as _updateTemplate,
+  type EmailTemplateRow as _EmailTemplateRow,
+} from "@oranje-wit/database";
+import { logger, type ActionResult } from "@oranje-wit/types";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 // ── Types ─────────────────────────────────────────────────────
 
-export type ActionResult<T = void> = { ok: true; data: T } | { ok: false; error: string };
+export type { ActionResult } from "@oranje-wit/types";
 
-export type TemplateRow = Awaited<ReturnType<typeof getTemplates>>[number];
+export type TemplateRow = _EmailTemplateRow;
 
 // ── Queries ───────────────────────────────────────────────────
 
@@ -17,10 +22,7 @@ export type TemplateRow = Awaited<ReturnType<typeof getTemplates>>[number];
  * Alle e-mail templates.
  */
 export async function getTemplates() {
-  const templates = await prisma.emailTemplate.findMany({
-    orderBy: { sleutel: "asc" },
-  });
-  return templates;
+  return _getTemplates(prisma);
 }
 
 // ── Validatie ─────────────────────────────────────────────────
@@ -47,17 +49,14 @@ export async function updateTemplate(id: string, formData: FormData): Promise<Ac
   }
 
   try {
-    await prisma.emailTemplate.update({
-      where: { id },
-      data: {
-        onderwerp: parsed.data.onderwerp,
-        inhoudHtml: parsed.data.inhoudHtml,
-      },
+    const result = await _updateTemplate(prisma, id, {
+      onderwerp: parsed.data.onderwerp,
+      inhoudHtml: parsed.data.inhoudHtml,
     });
 
     logger.info(`Template bijgewerkt: ${id}`);
     revalidatePath("/evaluatie/templates");
-    return { ok: true, data: undefined };
+    return result;
   } catch (error) {
     logger.warn("updateTemplate mislukt:", error);
     return { ok: false, error: "Kon template niet bijwerken" };
