@@ -30,10 +30,10 @@ Beheer en toepassing van de Geunificeerde Score Schaal (USS) — het wiskundige 
 | Wat | Bestand |
 |-----|---------|
 | USS-functies (gedeeld) | `packages/types/src/score-model.ts` |
-| Scouting score-ranges | `apps/scouting/src/lib/scouting/rating.ts` |
-| Team-indeling ratings | `apps/team-indeling/src/lib/rating.ts` |
+| Scouting score-ranges | `apps/web/src/app/(scouting)/scouting/src/lib/scouting/rating.ts` |
+| Team-indeling ratings | `apps/web/src/app/(teamindeling)/teamindeling/src/lib/rating.ts` |
 | Coach-evaluatie types | `packages/types/src/evaluatie.ts` |
-| KNKV pool-standen | `apps/monitor/src/lib/sync/standen-knkv.ts` |
+| KNKV pool-standen | `apps/web/src/app/(monitor)/monitor/src/lib/sync/standen-knkv.ts` |
 
 ## Kernformules (samenvatting)
 

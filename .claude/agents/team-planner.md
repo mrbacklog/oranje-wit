@@ -65,8 +65,8 @@ Blauwdruk → Concepten (2-4) → Scenario's → Evaluatie → Definitief
 ## Referenties
 - Regels: `rules/knkv-regels.md`, `rules/ow-voorkeuren.md`
 - Beleid: `rules/oranje-draad.md`
-- Validatie-code: `apps/team-indeling/src/lib/validatie/regels.ts`
-- Teamgrootte-targets: `apps/team-indeling/src/app/blauwdruk/actions.ts`
+- Validatie-code: `apps/web/src/app/(teamindeling)/teamindeling/src/lib/validatie/regels.ts`
+- Teamgrootte-targets: `apps/web/src/app/(teamindeling)/teamindeling/src/app/blauwdruk/actions.ts`
 
 ## Output
 Gestructureerde begeleiding van het TC-proces. Beslissingen vastleggen in de besluitenlog.

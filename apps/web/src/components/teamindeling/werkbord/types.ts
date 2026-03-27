@@ -21,10 +21,11 @@ export type ActiepuntStatus = "OPEN" | "AFGEROND";
 export type Besluitniveau = "BESTUUR" | "TC" | "DOELGROEP";
 
 export type Doelgroep =
+  | "KWEEKVIJVER"
+  | "ONTWIKKELHART"
   | "TOP"
-  | "KWEEK"
-  | "OPLEIDINGSHART"
-  | "KORFBALPLEZIER_JEUGD"
-  | "KORFBALPLEZIER_SENIOREN";
+  | "WEDSTRIJDSPORT"
+  | "KORFBALPLEZIER"
+  | "ALLE";
 
 export type Entiteit = "BELEID" | "SELECTIE" | "TEAM" | "STAF" | "SPELER";

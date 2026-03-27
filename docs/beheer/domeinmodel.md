@@ -1,6 +1,6 @@
 # Beheer-app — Domeinmodel
 
-> **App**: `apps/beheer/` (poort 4108, beheer.ckvoranjewit.app)
+> **Route**: `/beheer/*` in `apps/web/` (ckvoranjewit.app/beheer)
 > **Eigenaar**: Technische Commissie (TC)
 > **Status**: Sprint 1 af (Jeugdontwikkeling/Raamwerk actief), overige domeinen placeholder
 
@@ -10,7 +10,7 @@
 
 Het beheer-paneel is het **TC-domein** — het bureau van de technische commissie. De 9 domeinen zijn de verantwoordelijkheden van de TC. Andere apps (monitor, evaluatie, scouting, team-indeling) zijn voor iedereen; beheer is exclusief TC.
 
-De beheer-app is georganiseerd per **verenigingsdomein**, niet per app. Elk domein is een sidebar-sectie. Nieuw domein toevoegen = nieuwe sectie, geen herstructurering.
+Het beheer-paneel is georganiseerd per **verenigingsdomein**, niet per app. Elk domein is een sidebar-sectie. Nieuw domein toevoegen = nieuwe sectie, geen herstructurering.
 
 ---
 
@@ -23,7 +23,7 @@ De volgorde is de sidebar-volgorde: eerst het seizoen plannen, dan de operatie, 
 | | |
 |---|---|
 | **Wat** | Het korfbaljaar vastleggen, mijlpalen, checklists |
-| **Routes** | `/jaarplanning/kalender`, `/jaarplanning/mijlpalen` |
+| **Routes** | `/beheer/jaarplanning/kalender`, `/beheer/jaarplanning/mijlpalen` |
 | **Status** | Placeholder |
 | **Gebruikt door** | Alle domeinen (ruggengraat van het seizoen) |
 
@@ -41,7 +41,7 @@ Mijlpalen en checklists worden per fase gedefinieerd. Wordt gemigreerd vanuit de
 | | |
 |---|---|
 | **Wat** | Operationele training- en wedstrijdplanning |
-| **Routes** | `/roostering/trainingen`, `/roostering/wedstrijden` |
+| **Routes** | `/beheer/roostering/trainingen`, `/beheer/roostering/wedstrijden` |
 | **Status** | Placeholder |
 | **Gebruikt door** | (toekomstige roostering-app of module) |
 
@@ -54,7 +54,7 @@ Welk team traint wanneer, op welk veld of in welke zaal. Wedstrijdschema's voor 
 | | |
 |---|---|
 | **Wat** | Centraal: Sportlink-sync, altijd actuele waarheid |
-| **Routes** | `/teams`, `/teams/sync` |
+| **Routes** | `/beheer/teams`, `/beheer/teams/sync` |
 | **Status** | Placeholder |
 | **Gebruikt door** | Alle apps (monitor, team-indeling, evaluatie, scouting) |
 
@@ -67,7 +67,7 @@ Teams & Leden is **altijd op basis van het NU** — het is de actuele waarheid d
 | | |
 |---|---|
 | **Wat** | Vaardigheidsraamwerk, progressie, Inside Out, USS-parameters |
-| **Routes** | `/jeugd/raamwerk`, `/jeugd/progressie`, `/jeugd/uss` |
+| **Routes** | `/beheer/jeugd/raamwerk`, `/beheer/jeugd/progressie`, `/beheer/jeugd/uss` |
 | **Status** | **Actief** (raamwerk met 94 items geseeded) |
 | **Gebruikt door** | Scouting-app, evaluatie-app, spelerskaart |
 
@@ -86,7 +86,7 @@ Scouting en evaluatie zijn **instrumenten** die het raamwerk toepassen. Het raam
 | | |
 |---|---|
 | **Wat** | Scout-accounts beheren |
-| **Routes** | `/scouting/scouts` |
+| **Routes** | `/beheer/scouting/scouts` |
 | **Status** | Placeholder |
 | **Gebruikt door** | Scouting-app |
 
@@ -97,18 +97,18 @@ Beheer van scout-accounts, rollen (SCOUT/TC), XP en voortgang. De scouting-items
 | | |
 |---|---|
 | **Wat** | Rondes, coordinatoren, e-mail templates |
-| **Routes** | `/evaluatie/rondes`, `/evaluatie/coordinatoren`, `/evaluatie/templates` |
+| **Routes** | `/beheer/evaluatie/rondes`, `/beheer/evaluatie/coordinatoren`, `/beheer/evaluatie/templates` |
 | **Status** | Placeholder (Sprint 3: migratie vanuit evaluatie-app `/admin/`) |
 | **Gebruikt door** | Evaluatie-app |
 
-Wordt gemigreerd vanuit `apps/evaluatie/src/app/admin/`. De evaluatie-items komen uit het raamwerk (Jeugdontwikkeling).
+Wordt gemigreerd vanuit de evaluatie admin-pagina's. De evaluatie-items komen uit het raamwerk (Jeugdontwikkeling).
 
 ### 7. Werving
 
 | | |
 |---|---|
 | **Wat** | Sales-funnel: Aanmelding → Proefles → Intake → Lid |
-| **Routes** | `/werving/aanmeldingen`, `/werving/funnel` |
+| **Routes** | `/beheer/werving/aanmeldingen`, `/beheer/werving/funnel` |
 | **Status** | Placeholder |
 | **Gebruikt door** | (nieuw) |
 
@@ -119,7 +119,7 @@ Aanmeldingen moeten in de gaten worden gehouden. Dit is een sales-funnel met che
 | | |
 |---|---|
 | **Wat** | Gebruikers, rollen, technische import |
-| **Routes** | `/systeem/gebruikers`, `/systeem/import` |
+| **Routes** | `/beheer/systeem/gebruikers`, `/beheer/systeem/import` |
 | **Status** | **Actief** (gebruikersbeheer + import-historie) |
 | **Gebruikt door** | Alle apps |
 
@@ -130,7 +130,7 @@ Vervangt de hardcoded allowlist in `packages/auth/src/allowlist.ts`. Gebruikersb
 | | |
 |---|---|
 | **Wat** | Teamhistorie, resultaten per seizoen (frozen/read-only) |
-| **Routes** | `/archief/teams`, `/archief/resultaten` |
+| **Routes** | `/beheer/archief/teams`, `/beheer/archief/resultaten` |
 | **Status** | Placeholder |
 | **Gebruikt door** | Monitor (historische dashboards) |
 
@@ -138,22 +138,22 @@ Afgeronde seizoenen worden bevroren. Teams, resultaten en evaluaties uit het ver
 
 ---
 
-## Relatie met apps
+## Relatie met domeinen
 
-Elk domein heeft een admin-sectie in beheer en kan een of meer dagelijkse apps bedienen:
+Elk domein heeft een admin-sectie in `/beheer/*` en bedient een of meer dagelijkse routes:
 
 ```
-Domein                    Admin (beheer)           Dagelijks gebruik (apps)
+Domein                    Admin (/beheer/*)        Dagelijks gebruik (routes)
 ───────────────────────   ──────────────────────   ─────────────────────────
-Jaarplanning              Kalender, mijlpalen      Alle apps lezen planning
-Roostering                Schema's, velden         (toekomstige app)
-Teams & Leden             Sportlink sync           Monitor, Team-Indeling
-Jeugdontwikkeling         Raamwerk, USS            Scouting, Evaluatie
-Scouting                  Scout-accounts           Scouting-app
-Evaluatie                 Rondes, templates        Evaluatie-app
+Jaarplanning              Kalender, mijlpalen      Alle domeinen lezen planning
+Roostering                Schema's, velden         (toekomstig)
+Teams & Leden             Sportlink sync           /monitor, /teamindeling
+Jeugdontwikkeling         Raamwerk, USS            /scouting, /evaluatie
+Scouting                  Scout-accounts           /scouting
+Evaluatie                 Rondes, templates        /evaluatie
 Werving                   Funnel, aanmeldingen     (nieuw)
-Systeem                   Gebruikers, import       Alle apps
-Archivering               Teamhistorie             Monitor
+Systeem                   Gebruikers, import       Alle domeinen
+Archivering               Teamhistorie             /monitor
 ```
 
 ---

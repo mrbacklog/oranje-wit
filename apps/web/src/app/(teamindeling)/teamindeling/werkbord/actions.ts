@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/teamindeling/db/prisma";
-import { requireEditor } from "@/lib/teamindeling/auth-check";
+import { requireTC } from "@/lib/teamindeling/auth-check";
 import { assertBewerkbaar } from "@/lib/teamindeling/seizoen";
 import { revalidatePath } from "next/cache";
 import type {
@@ -22,7 +22,7 @@ const db = prisma as never as { werkitem: typeof prisma.actiepunt };
 // ============================================================
 
 async function getOrCreateUser() {
-  const session = await requireEditor();
+  const session = await requireTC();
   const email = session.user!.email!;
   const naam = session.user!.name ?? email;
 
@@ -330,7 +330,7 @@ export async function deleteActiepunt(actiepuntId: string) {
 }
 
 export async function reorderActiepunten(ids: string[]) {
-  await requireEditor();
+  await requireTC();
   await Promise.all(
     ids.map((id, index) =>
       prisma.actiepunt.update({

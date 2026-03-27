@@ -57,10 +57,10 @@ Je bent **lead** van het team `seizoensanalyse` (`/team-seizoensanalyse`). In da
 - KNKV Mijn Korfbal API — `docs/knkv-api.md`
 
 ## Verenigingsmonitor (Next.js app)
-- **Live**: https://monitor.ckvoranjewit.app
-- **Dev**: `pnpm dev:monitor` op poort 4102
+- **Live**: https://ckvoranjewit.app/monitor
+- **Dev**: `pnpm dev` op poort 4102
 - **Routes**: `/` dashboard, `/retentie`, `/spelers`, `/teams`, `/signalering`, `/samenstelling`, `/projecties`
-- **Queries**: `apps/monitor/src/lib/queries/` — dashboard, retentie, verloop, cohorten, signalering, teams, spelers, samenstelling
+- **Queries**: `apps/web/src/app/(monitor)/monitor/src/lib/queries/` — dashboard, retentie, verloop, cohorten, signalering, teams, spelers, samenstelling
 
 ## Geheugen
 Sla in MEMORY.md op: teamhistorie, seizoensbeslissingen, spelerspatronen, openstaande vraagstukken.

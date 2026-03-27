@@ -2,8 +2,8 @@ import { test, expect } from "../fixtures/base";
 
 test.describe("Dashboard", () => {
   test("dashboard laadt na redirect van root", async ({ page }) => {
-    // Root page redirect ingelogde users naar /zoek of toont dashboard
-    await page.goto("/");
+    // Root page redirect ingelogde users naar /scouting/zoek of toont dashboard
+    await page.goto("/scouting");
 
     // Moet een heading hebben (begroeting of zoekpagina titel)
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible({
@@ -12,7 +12,7 @@ test.describe("Dashboard", () => {
   });
 
   test("zoekpagina toont titel en zoekbalk", async ({ page }) => {
-    await page.goto("/zoek");
+    await page.goto("/scouting/zoek");
 
     await expect(page.getByRole("heading", { name: "Speler zoeken" })).toBeVisible();
 
@@ -23,14 +23,14 @@ test.describe("Dashboard", () => {
   });
 
   test("kaartenpagina laadt correct", async ({ page }) => {
-    await page.goto("/kaarten");
+    await page.goto("/scouting/kaarten");
 
     // Wacht tot de heading verschijnt (altijd gerenderd na loading)
     await expect(page.getByRole("heading", { name: "Kaarten" })).toBeVisible({ timeout: 10000 });
   });
 
   test("kaartenpagina toont filter chips", async ({ page }) => {
-    await page.goto("/kaarten");
+    await page.goto("/scouting/kaarten");
 
     // Wacht tot loading klaar is (heading is altijd aanwezig)
     await expect(page.getByRole("heading", { name: "Kaarten" })).toBeVisible({ timeout: 10000 });
@@ -45,7 +45,7 @@ test.describe("Dashboard", () => {
   });
 
   test("kaartenpagina toont sorteeropties", async ({ page }) => {
-    await page.goto("/kaarten");
+    await page.goto("/scouting/kaarten");
 
     await expect(page.getByRole("heading", { name: "Kaarten" })).toBeVisible({ timeout: 10000 });
 
@@ -56,7 +56,7 @@ test.describe("Dashboard", () => {
   });
 
   test("profielpagina laadt scout-profiel", async ({ page }) => {
-    await page.goto("/profiel");
+    await page.goto("/scouting/profiel");
 
     // Toont profiel of foutmelding (afhankelijk van scout-record)
     await expect(
@@ -68,7 +68,7 @@ test.describe("Dashboard", () => {
   });
 
   test("profielpagina toont uitlog-knop", async ({ page }) => {
-    await page.goto("/profiel");
+    await page.goto("/scouting/profiel");
 
     // Wacht tot pagina geladen is
     await expect(

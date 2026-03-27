@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/teamindeling/db/prisma";
-import { requireEditor } from "@/lib/teamindeling/auth-check";
+import { requireTC } from "@/lib/teamindeling/auth-check";
 import { assertBewerkbaar } from "@/lib/teamindeling/seizoen";
 import type { PinType } from "@oranje-wit/database";
 
@@ -10,7 +10,7 @@ import type { PinType } from "@oranje-wit/database";
 // ============================================================
 
 async function getOrCreateUser() {
-  const session = await requireEditor();
+  const session = await requireTC();
   const email = session.user!.email!;
   const naam = session.user!.name ?? email;
 

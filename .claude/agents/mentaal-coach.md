@@ -108,5 +108,5 @@ Bij elk advies lever je:
 ## Referenties
 - Oranje Draad & POP-ratio's: `rules/oranje-draad.md`
 - Retentiedata per leeftijd/geslacht: `model/jeugdmodel.yaml`
-- Huidige MEN-vragen: `apps/scouting/src/lib/scouting/vragen.ts`
+- Huidige MEN-vragen: `apps/web/src/app/(scouting)/scouting/src/lib/scouting/vragen.ts`
 - OW-voorkeuren teamindeling: `rules/ow-voorkeuren.md`

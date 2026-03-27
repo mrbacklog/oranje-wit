@@ -2,7 +2,7 @@
 
 > **Datum:** 2026-03-26
 > **Auteur:** ontwikkelaar-agent
-> **Bron:** codebase-analyse apps/beheer/, packages/database/, docs/jeugdontwikkeling/
+> **Bron:** codebase-analyse apps/web/(beheer)/, packages/database/, docs/jeugdontwikkeling/
 
 ---
 
@@ -62,7 +62,7 @@
 | **Prisma-modellen** | `EvaluatieRonde`, `Coordinator`, `CoordinatorTeam`, `EvaluatieUitnodiging`, `EmailTemplate` (bestaan al) |
 | **Pagina's** | `/evaluatie/rondes/page.tsx` (placeholder), `/evaluatie/coordinatoren/page.tsx` (placeholder), `/evaluatie/templates/page.tsx` (placeholder) |
 | **Werkend** | Nee |
-| **Notities** | Modellen bestaan, admin-logica zit in `apps/evaluatie/src/app/admin/`. Migratie naar beheer-app. |
+| **Notities** | Modellen bestaan, admin-logica zit in de evaluatie admin-pagina's. Migratie naar `/beheer/evaluatie/`. |
 
 ### 1.7 Werving (`/werving/`)
 
@@ -84,7 +84,7 @@
 | **Server actions** | `gebruikers/actions.ts` (getGebruikers, createGebruiker, updateGebruiker, toggleActief, deleteGebruiker), `import/actions.ts` (getImportHistorie) |
 | **Validatie** | Zod schema's (email, naam, rol, scoutRol), laatste-admin bescherming |
 | **Auth-integratie** | `getAllowedRole()` in `@oranje-wit/auth` checkt Gebruiker-tabel met fallback naar hardcoded allowlist. DB-lookup via `setDbLookup()` injection (Edge-safe). |
-| **Notities** | Seed-script: `scripts/import/seed-gebruikers.ts` (3 TC-leden, idempotent). HANDSHAKE: `apps/beheer/src/app/systeem/HANDSHAKE.md`. |
+| **Notities** | Seed-script: `scripts/import/seed-gebruikers.ts` (3 TC-leden, idempotent). |
 
 ### 1.9 Archivering (`/archief/`)
 
@@ -310,7 +310,7 @@ Stappen:
 
 ## 5. Referentie: actions.ts pijlers-per-band
 
-De huidige code in `apps/beheer/src/app/jeugd/raamwerk/actions.ts` definieert pijlers per band die niet overeenkomen met v1.1:
+De huidige code in de beheer raamwerk-actions definieert pijlers per band die niet overeenkomen met v1.1:
 
 | Band | actions.ts | v1.1 |
 |---|---|---|

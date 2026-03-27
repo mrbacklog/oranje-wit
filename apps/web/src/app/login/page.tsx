@@ -1,6 +1,12 @@
 import { signIn } from "@oranje-wit/auth";
+import { LoginForm } from "./LoginForm";
 
 export default function LoginPage() {
+  async function googleSignIn() {
+    "use server";
+    await signIn("google", { redirectTo: "/" });
+  }
+
   return (
     <main
       className="flex min-h-screen items-center justify-center px-4"
@@ -27,33 +33,8 @@ export default function LoginPage() {
           Welkom
         </p>
 
-        {/* Login card */}
-        <div
-          className="mt-8 rounded-xl border p-6"
-          style={{
-            backgroundColor: "var(--surface-card)",
-            borderColor: "var(--border-default)",
-            boxShadow: "var(--shadow-lg)",
-          }}
-        >
-          <form
-            action={async () => {
-              "use server";
-              await signIn("google", { redirectTo: "/" });
-            }}
-          >
-            <button
-              type="submit"
-              className="w-full cursor-pointer rounded-lg px-4 py-3 text-sm font-semibold text-white transition-all"
-              style={{
-                background: "linear-gradient(135deg, var(--ow-oranje-600), var(--ow-oranje-500))",
-                boxShadow: "0 4px 14px rgba(255, 107, 0, 0.3)",
-              }}
-            >
-              Inloggen met Google
-            </button>
-          </form>
-        </div>
+        {/* Interactief login formulier */}
+        <LoginForm googleSignInAction={googleSignIn} />
 
         <p className="mt-6 text-xs" style={{ color: "var(--text-tertiary)" }}>
           Digitaal platform voor trainers, scouts en TC

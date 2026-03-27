@@ -3,7 +3,7 @@ import { prisma } from "@/lib/db/prisma";
 // Prisma 7 type recursie workaround (TS2321)
 type PrismaFn = (...args: any[]) => any;
 import { ok, fail } from "@/lib/api/response";
-import { requireEditor } from "@oranje-wit/auth/checks";
+import { requireTC } from "@oranje-wit/auth/checks";
 import { renderTemplate, verstuurEmail } from "@/lib/evaluatie/mail";
 import { logger } from "@oranje-wit/types";
 
@@ -12,7 +12,7 @@ const ELIGIBLE_CATEGORIES = ["Senioren", "A-jeugd", "B-jeugd"];
 
 export async function POST(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    await requireEditor();
+    await requireTC();
     const { id } = await params;
 
     // Prisma 7 type recursie workaround (TS2321)

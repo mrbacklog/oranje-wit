@@ -104,8 +104,8 @@ Alle apps delen één navigatiestructuur:
 ```
 
 - **Home**: Dashboard (context-afhankelijk per app)
-- **Scout**: Scouting (scout.ckvoranjewit.app)
-- **Teams**: Team-Indeling (teamindeling.ckvoranjewit.app)
+- **Scout**: Scouting (ckvoranjewit.app/scouting)
+- **Teams**: Team-Indeling (ckvoranjewit.app/teamindeling)
 - **Meer**: Menu met alle apps (Monitor, Evaluatie, Beheer)
 
 ### Cross-app navigatie
@@ -141,8 +141,8 @@ Schrijf naar `docs/design/` als markdown:
 - Animatie-specificaties
 
 ## Bestaande prototypes
-- `apps/scouting/design/score-prototype.html` — Score-invoer prototype
-- `apps/scouting/design/verzoeken-flow-prototype.html` — Verzoeken-flow prototype
+- `apps/web/src/app/(scouting)/scouting/design/score-prototype.html` — Score-invoer prototype
+- `apps/web/src/app/(scouting)/scouting/design/verzoeken-flow-prototype.html` — Verzoeken-flow prototype
 
 ## Referenties
 - Oranje Draad: `rules/oranje-draad.md`

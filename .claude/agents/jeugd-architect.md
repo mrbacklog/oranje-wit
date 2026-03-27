@@ -91,8 +91,8 @@ Per leeftijdsgroep een matrix:
 ## Referenties
 - Oranje Draad & POP-ratio's: `rules/oranje-draad.md`
 - Score-model (USS): `rules/score-model.md`
-- Scouting-vragen per groep: `apps/scouting/src/lib/scouting/vragen.ts`
-- Scouting-ratings: `apps/scouting/src/lib/scouting/rating.ts`
+- Scouting-vragen per groep: `apps/web/src/app/(scouting)/scouting/src/lib/scouting/vragen.ts`
+- Scouting-ratings: `apps/web/src/app/(scouting)/scouting/src/lib/scouting/rating.ts`
 - Jeugdmodel (retentie): `model/jeugdmodel.yaml`
 - KNKV-regels: `rules/knkv-regels.md`
 - OW-voorkeuren: `rules/ow-voorkeuren.md`

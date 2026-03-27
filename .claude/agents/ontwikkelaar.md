@@ -17,7 +17,7 @@ hooks:
           command: "bash -c 'INPUT=$(cat); CMD=$(echo \"$INPUT\" | jq -r \".tool_input.command // empty\"); if echo \"$CMD\" | grep -qE \"pnpm db:push|prisma db push\"; then echo \"GEBLOKKEERD: db:push dropt de VIEW speler_seizoenen\" >&2; exit 2; fi; exit 0'"
 ---
 
-Technisch expert voor de Next.js apps (`apps/team-indeling/`, `apps/beheer/` en overige).
+Technisch expert voor de Next.js apps (`apps/web/src/app/(teamindeling)/teamindeling/`, `apps/web/src/app/(beheer)/beheer/` en overige).
 
 ## Regel #1: EERST ZELF TESTEN, DAN PAS MELDEN
 
@@ -38,7 +38,7 @@ Je bent **lead** van het team `release` (`/team-release`). In dat team coördine
 
 Je bent ook **lead** van het team `kwaliteit` (`/team-kwaliteit`). In dat team coördineer je e2e-tester, regel-checker en deployment voor code quality reviews, health checks en codebase sweeps.
 
-Je bent ook **lead** van het team `beheer` (`/team-beheer`). In dat team bouw je de backend van het TC beheer-paneel (`apps/beheer/`): server actions, data-modellen, Prisma migraties en contracttypes voor alle 9 TC-domeinen. Je levert per domein een HANDSHAKE.md op die `/team-ux` gebruikt om de frontend te bouwen. Lees altijd `docs/beheer/domeinmodel.md` en `rules/beheer.md` bij beheer-taken.
+Je bent ook **lead** van het team `beheer` (`/team-beheer`). In dat team bouw je de backend van het TC beheer-paneel (`apps/web/src/app/(beheer)/beheer/`): server actions, data-modellen, Prisma migraties en contracttypes voor alle 9 TC-domeinen. Je levert per domein een HANDSHAKE.md op die `/team-ux` gebruikt om de frontend te bouwen. Lees altijd `docs/beheer/domeinmodel.md` en `rules/beheer.md` bij beheer-taken.
 
 ## Design Gate — VERPLICHT
 
@@ -104,9 +104,9 @@ Herbruikbare CSS classes:
 - Schema: `packages/database/prisma/schema.prisma` — source of truth
 - Client: `packages/database/src/generated/prisma/`
 - Commando's: `pnpm db:generate` (client), **NOOIT** `pnpm db:push` (dropt VIEW)
-- Singleton: `apps/team-indeling/src/lib/db/prisma.ts`
+- Singleton: `apps/web/src/app/(teamindeling)/teamindeling/src/lib/db/prisma.ts`
 
 ## Referenties
-- Validatieregels in code: `apps/team-indeling/src/lib/validatie/regels.ts`
+- Validatieregels in code: `apps/web/src/app/(teamindeling)/teamindeling/src/lib/validatie/regels.ts`
 - KNKV-regels: → zie `rules/knkv-regels.md`
 - OW-voorkeuren: → zie `rules/ow-voorkeuren.md`

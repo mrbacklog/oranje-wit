@@ -1,14 +1,22 @@
 "use server";
 
 import { prisma } from "@/lib/db/prisma";
+import { verstuurSmartlinkEmail } from "@oranje-wit/auth/smartlink-email";
+import { maakToegangsToken } from "@oranje-wit/auth/tokens";
 import { logger, type ActionResult } from "@oranje-wit/types";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 // ── Validatie-schema's ────────────────────────────────────────
 
-const RolSchema = z.enum(["EDITOR", "REVIEWER", "VIEWER"]);
-const ScoutRolSchema = z.enum(["SCOUT", "TC"]).nullable().optional();
+const DoelgroepSchema = z.enum([
+  "KWEEKVIJVER",
+  "ONTWIKKELHART",
+  "TOP",
+  "WEDSTRIJDSPORT",
+  "KORFBALPLEZIER",
+  "ALLE",
+]);
 
 const CreateGebruikerSchema = z.object({
   email: z
@@ -16,16 +24,20 @@ const CreateGebruikerSchema = z.object({
     .email("Ongeldig e-mailadres")
     .transform((e) => e.toLowerCase()),
   naam: z.string().min(1, "Naam is verplicht").max(100),
-  rol: RolSchema,
-  scoutRol: ScoutRolSchema,
-  isAdmin: z.boolean().optional().default(false),
+  isTC: z.boolean().optional().default(false),
+  isTCKern: z.boolean().optional().default(false),
+  isScout: z.boolean().optional().default(false),
+  clearance: z.number().int().min(0).max(3).default(0),
+  doelgroepen: z.array(DoelgroepSchema).optional().default([]),
 });
 
 const UpdateGebruikerSchema = z.object({
   naam: z.string().min(1).max(100).optional(),
-  rol: RolSchema.optional(),
-  scoutRol: ScoutRolSchema,
-  isAdmin: z.boolean().optional(),
+  isTC: z.boolean().optional(),
+  isTCKern: z.boolean().optional(),
+  isScout: z.boolean().optional(),
+  clearance: z.number().int().min(0).max(3).optional(),
+  doelgroepen: z.array(DoelgroepSchema).optional(),
   actief: z.boolean().optional(),
 });
 
@@ -56,9 +68,10 @@ export async function createGebruiker(formData: FormData): Promise<ActionResult<
   const raw = {
     email: formData.get("email"),
     naam: formData.get("naam"),
-    rol: formData.get("rol"),
-    scoutRol: formData.get("scoutRol") || null,
-    isAdmin: formData.get("isAdmin") === "true",
+    isTC: formData.get("isTC") === "true",
+    isScout: formData.get("isScout") === "true",
+    clearance: Number(formData.get("clearance") ?? 0),
+    doelgroepen: formData.getAll("doelgroepen").map(String),
   };
 
   const parsed = CreateGebruikerSchema.safeParse(raw);
@@ -67,7 +80,6 @@ export async function createGebruiker(formData: FormData): Promise<ActionResult<
   }
 
   try {
-    // Check of e-mail al bestaat
     const bestaand = await prisma.gebruiker.findUnique({
       where: { email: parsed.data.email },
     });
@@ -79,13 +91,20 @@ export async function createGebruiker(formData: FormData): Promise<ActionResult<
       data: {
         email: parsed.data.email,
         naam: parsed.data.naam,
-        rol: parsed.data.rol,
-        scoutRol: parsed.data.scoutRol ?? null,
-        isAdmin: parsed.data.isAdmin,
+        isTC: parsed.data.isTC,
+        isScout: parsed.data.isScout,
+        clearance: parsed.data.clearance,
+        doelgroepen: parsed.data.doelgroepen,
       },
     });
 
-    logger.info(`Gebruiker aangemaakt: ${gebruiker.email} (${gebruiker.rol})`);
+    const labels: string[] = [];
+    if (gebruiker.isTC) labels.push("TC");
+    if (gebruiker.isScout) labels.push("Scout");
+    if (gebruiker.doelgroepen.length > 0) labels.push("Coordinator");
+    logger.info(
+      `Gebruiker aangemaakt: ${gebruiker.email} [${labels.join(", ") || "geen capabilities"}] clearance=${gebruiker.clearance}`
+    );
     revalidatePath("/beheer/systeem/gebruikers");
     return { ok: true, data: { id: gebruiker.id } };
   } catch (error) {
@@ -100,15 +119,17 @@ export async function createGebruiker(formData: FormData): Promise<ActionResult<
 export async function updateGebruiker(id: string, formData: FormData): Promise<ActionResult> {
   const raw: Record<string, unknown> = {};
   const naam = formData.get("naam");
-  const rol = formData.get("rol");
-  const scoutRol = formData.get("scoutRol");
-  const isAdmin = formData.get("isAdmin");
+  const isTC = formData.get("isTC");
+  const isScout = formData.get("isScout");
+  const clearance = formData.get("clearance");
+  const doelgroepen = formData.getAll("doelgroepen");
   const actief = formData.get("actief");
 
   if (naam !== null) raw.naam = naam;
-  if (rol !== null) raw.rol = rol;
-  if (scoutRol !== null) raw.scoutRol = scoutRol || null;
-  if (isAdmin !== null) raw.isAdmin = isAdmin === "true";
+  if (isTC !== null) raw.isTC = isTC === "true";
+  if (isScout !== null) raw.isScout = isScout === "true";
+  if (clearance !== null) raw.clearance = Number(clearance);
+  if (doelgroepen.length > 0) raw.doelgroepen = doelgroepen.map(String);
   if (actief !== null) raw.actief = actief === "true";
 
   const parsed = UpdateGebruikerSchema.safeParse(raw);
@@ -133,7 +154,7 @@ export async function updateGebruiker(id: string, formData: FormData): Promise<A
 
 /**
  * Deactiveer een gebruiker (soft delete).
- * Admin-gebruikers kunnen niet gedeactiveerd worden.
+ * Het laatste TC-lid kan niet gedeactiveerd worden.
  */
 export async function toggleActief(id: string): Promise<ActionResult> {
   try {
@@ -142,13 +163,16 @@ export async function toggleActief(id: string): Promise<ActionResult> {
       return { ok: false, error: "Gebruiker niet gevonden" };
     }
 
-    // Voorkom deactiveren van de laatste admin
-    if (gebruiker.isAdmin && gebruiker.actief) {
-      const aantalAdmins = await prisma.gebruiker.count({
-        where: { isAdmin: true, actief: true },
+    // Voorkom deactiveren van het laatste TC-lid
+    if (gebruiker.isTC && gebruiker.actief) {
+      const aantalTC = await prisma.gebruiker.count({
+        where: { isTC: true, actief: true },
       });
-      if (aantalAdmins <= 1) {
-        return { ok: false, error: "Kan de laatste admin niet deactiveren" };
+      if (aantalTC <= 1) {
+        return {
+          ok: false,
+          error: "Kan het laatste TC-lid niet deactiveren",
+        };
       }
     }
 
@@ -169,8 +193,64 @@ export async function toggleActief(id: string): Promise<ActionResult> {
 }
 
 /**
+ * Genereer een smartlink voor een niet-TC gebruiker.
+ * De smartlink is 14 dagen geldig en bevat de capabilities als scope.
+ */
+export async function stuurSmartlink(
+  gebruikerId: string
+): Promise<ActionResult<{ token: string; url: string }>> {
+  try {
+    const gebruiker = await prisma.gebruiker.findUnique({
+      where: { id: gebruikerId },
+    });
+
+    if (!gebruiker) {
+      return { ok: false, error: "Gebruiker niet gevonden" };
+    }
+
+    if (!gebruiker.actief) {
+      return { ok: false, error: "Kan geen smartlink genereren voor een inactieve gebruiker" };
+    }
+
+    if (gebruiker.isTC) {
+      return { ok: false, error: "TC-leden loggen in via Google, geen smartlink nodig" };
+    }
+
+    const token = await maakToegangsToken({
+      email: gebruiker.email,
+      naam: gebruiker.naam,
+      type: "sessie",
+      scope: {
+        isTC: gebruiker.isTC,
+        isScout: gebruiker.isScout,
+        clearance: gebruiker.clearance,
+        doelgroepen: gebruiker.doelgroepen,
+      },
+      verlooptOverDagen: 14,
+    });
+
+    const baseUrl = process.env.NEXTAUTH_URL || "https://ckvoranjewit.app";
+    const url = `${baseUrl}/login/smartlink/${token}`;
+
+    // Verstuur e-mail (in dev: gelogd naar console)
+    await verstuurSmartlinkEmail({
+      email: gebruiker.email,
+      naam: gebruiker.naam,
+      url,
+    });
+
+    logger.info(`Smartlink gegenereerd en verstuurd naar ${gebruiker.email} (geldig 14 dagen)`);
+
+    return { ok: true, data: { token, url } };
+  } catch (error) {
+    logger.warn("stuurSmartlink mislukt:", error);
+    return { ok: false, error: "Kon smartlink niet genereren" };
+  }
+}
+
+/**
  * Verwijder een gebruiker permanent.
- * Admin-gebruikers kunnen niet verwijderd worden.
+ * TC-leden kunnen niet verwijderd worden (eerst isTC uitzetten).
  */
 export async function deleteGebruiker(id: string): Promise<ActionResult> {
   try {
@@ -178,8 +258,11 @@ export async function deleteGebruiker(id: string): Promise<ActionResult> {
     if (!gebruiker) {
       return { ok: false, error: "Gebruiker niet gevonden" };
     }
-    if (gebruiker.isAdmin) {
-      return { ok: false, error: "Admin-gebruikers kunnen niet verwijderd worden" };
+    if (gebruiker.isTC) {
+      return {
+        ok: false,
+        error: "TC-leden kunnen niet verwijderd worden (zet eerst TC-lid uit)",
+      };
     }
 
     await prisma.gebruiker.delete({ where: { id } });

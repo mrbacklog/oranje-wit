@@ -1,1 +1,1 @@
-export { requireAuth, requireEditor } from "@oranje-wit/auth/checks";
+export { requireAuth, requireTC } from "@oranje-wit/auth/checks";

@@ -1,6 +1,6 @@
 # c.k.v. Oranje Wit — Monorepo
 
-Monorepo voor alle digitale tools van c.k.v. Oranje Wit: Verenigingsmonitor, Team-Indeling, Evaluatie, Scouting en Beheer.
+Monorepo voor alle digitale tools van c.k.v. Oranje Wit. Alle domeinen (Monitor, Team-Indeling, Evaluatie, Scouting, Beheer) draaien in een geconsolideerde Next.js app (`apps/web/`).
 
 ---
 
@@ -9,11 +9,7 @@ Monorepo voor alle digitale tools van c.k.v. Oranje Wit: Verenigingsmonitor, Tea
 ```
 oranje-wit/
 ├── apps/
-│   ├── monitor/          # Verenigingsmonitor (Next.js 16 dashboards)
-│   ├── team-indeling/    # Team-Indeling tool (Next.js 16, Tailwind CSS 4, NextAuth v5, dnd-kit)
-│   ├── evaluatie/        # Evaluatie-app (Next.js 16, spelerevaluaties, zelfevaluaties)
-│   ├── scouting/         # Scouting-app (Next.js 16, mobile-first PWA)
-│   ├── beheer/           # TC Beheer-paneel (Next.js 16, 9 domeinen)
+│   ├── web/              # Geconsolideerde app (Next.js 16, alle domeinen)
 │   └── mcp/              # MCP servers (database, Railway)
 ├── packages/
 │   ├── auth/             # @oranje-wit/auth — NextAuth v5 + Google OAuth
@@ -22,7 +18,7 @@ oranje-wit/
 │   └── ui/               # @oranje-wit/ui — Gedeelde React componenten (KpiCard, SignalBadge, etc.)
 ├── e2e/                  # Playwright E2E tests (per app)
 ├── .claude/
-│   ├── agents/           # AI agent-definities (21 agents)
+│   ├── agents/           # AI agent-definities
 │   └── skills/           # AI skills (37 skills, flat structuur)
 ├── rules/                # Contextregels (8 bestanden) — Single Source of Truth
 ├── scripts/              # Data-pipeline en import scripts
@@ -46,12 +42,9 @@ oranje-wit/
 
 | Commando | Wat |
 |---|---|
-| `pnpm dev:ti` | Start Team-Indeling (Next.js) op poort **4100** |
-| `pnpm dev:monitor` | Start Verenigingsmonitor op poort **4102** |
-| `pnpm dev:evaluatie` | Start Evaluatie-app op poort **4104** |
-| `pnpm dev:beheer` | Start Beheer-app op poort **4108** |
-| `pnpm build:evaluatie` | Build Evaluatie-app |
-| `pnpm build:beheer` | Build Beheer-app |
+| `pnpm dev` | Start de app op poort **3000** |
+| `pnpm build` | Build de app |
+| `pnpm test` | Draai alle unit tests (Vitest) |
 | `pnpm db:generate` | Genereer Prisma client |
 | `pnpm db:migrate` | Maak nieuwe migratie (development) |
 | `pnpm db:migrate:deploy` | Draai pending migraties + herstel VIEW (productie) |
@@ -60,17 +53,21 @@ oranje-wit/
 | ~~`pnpm db:push`~~ | **GEBLOKKEERD** — dropt VIEW speler_seizoenen |
 | `pnpm import` | Importeer Verenigingsmonitor data |
 | `pnpm import:evaluaties` | Importeer evaluaties (legacy Lovable import) |
-| `pnpm test` | Draai alle unit tests (Vitest) |
-| `pnpm test:ti` | Unit tests team-indeling |
-| `pnpm test:monitor` | Unit tests monitor |
-| `pnpm test:evaluatie` | Unit tests evaluatie |
 | `pnpm test:e2e` | Alle E2E tests (Playwright) |
-| `pnpm test:e2e:ti` | E2E tests team-indeling |
-| `pnpm test:e2e:monitor` | E2E tests monitor |
-| `pnpm test:e2e:evaluatie` | E2E tests evaluatie |
 | `pnpm test:e2e:ui` | Playwright UI (interactief) |
 | `pnpm format` | Format alles met Prettier |
 | `pnpm format:check` | Check formatting (CI) |
+
+## Routes
+
+| Route | Domein | Was |
+|---|---|---|
+| `/` | Portaal (app-launcher) | portaal.ckvoranjewit.app |
+| `/monitor/*` | Verenigingsmonitor | monitor.ckvoranjewit.app |
+| `/teamindeling/*` | Team-Indeling | teamindeling.ckvoranjewit.app |
+| `/evaluatie/*` | Evaluatie | evaluatie.ckvoranjewit.app |
+| `/scouting/*` | Scouting | scout.ckvoranjewit.app |
+| `/beheer/*` | TC Beheer (9 domeinen) | beheer.ckvoranjewit.app |
 
 ## Code Quality
 
@@ -352,7 +349,7 @@ Rules zijn de **Single Source of Truth** voor domeinkennis. Agents en skills ver
 - **51 componenten** in `packages/ui/src/` (primitives, data-display, data-input, navigation, feedback, layout, overlay)
 - **15+ motion variants** in `packages/ui/src/motion/` (Framer Motion)
 - **Visual tests**: `e2e/tests/design-system.spec.ts` (24 Playwright tests)
-- **Catalog**: `/design-system` route in team-indeling app
+- **Catalog**: `/design-system` route in `apps/web/`
 
 ### Design Gate (VERPLICHT)
 Frontend-wijzigingen MOETEN via het design system:
@@ -365,7 +362,7 @@ Frontend-wijzigingen MOETEN via het design system:
 - `:root` in tokens.css = dark mode (default)
 - `[data-theme="light"]` = light override
 - Alle apps hebben `data-theme="dark"` op `<html>`
-- Team-indeling desktop: NIET gemigreerd (bewust), mobile variant is dark-first
+- Team-indeling desktop: legacy licht thema (bewust), mobile variant is dark-first
 
 ### Commando's
 | Commando | Wat |
@@ -380,7 +377,7 @@ Frontend-wijzigingen MOETEN via het design system:
 | Sportlink | Ledendata, stamgegevens | CSV/JSON export → leden tabel |
 | KNKV API | Teamdata, indelingen | API calls (knkv-api skill) |
 | Telling-bestand | 16 seizoenen spelersdata | Historische import, data staat definitief in PostgreSQL |
-| Evaluatie-app | Spelerevaluaties | Native app (`apps/evaluatie/`), direct in database |
+| Evaluatie | Spelerevaluaties | `/evaluatie/*` route in `apps/web/`, direct in database |
 
 ## Data Flow
 
@@ -405,22 +402,17 @@ signalering tabel
 Sportlink CSV/JSON → leden tabel (via MCP sync)
 Railway PostgreSQL ← Prisma schema (packages/database/)
     ↓
-apps/monitor/ (dashboards) + apps/team-indeling/ (Next.js)
-
-apps/evaluatie/ (native Next.js) → direct in PostgreSQL (evaluaties, rondes, uitnodigingen)
+apps/web/ (geconsolideerde app: alle domeinen)
 ```
 
 ## Deployment (Railway + Cloudflare)
 
-Alles draait in één Railway project (`oranje-wit-db`):
+Eén geconsolideerde app in één Railway project (`oranje-wit-db`):
 - **GitHub repo**: `mrbacklog/oranje-wit` (publiek, auto-deploy op push naar main)
-- **Monitor**: https://monitor.ckvoranjewit.app (via Cloudflare Worker → Railway)
-- **Team-Indeling**: https://teamindeling.ckvoranjewit.app (via Cloudflare Worker → Railway)
-- **Evaluatie**: https://evaluatie.ckvoranjewit.app (via Cloudflare Worker → Railway)
-- **Scouting**: https://scout.ckvoranjewit.app (via Cloudflare Worker → Railway)
+- **App**: https://ckvoranjewit.app (1 domein, geen subdomeinen)
 - **Database**: `postgres.railway.internal:5432` (intern Railway netwerk)
-- **Build**: per-app Dockerfiles (`apps/*/Dockerfile`), Node 22, pnpm workspace
-- **DNS**: Cloudflare (registrar + DNS + proxy), Worker `railway-proxy` als reverse proxy
+- **Build**: `apps/web/Dockerfile`, Node 22, pnpm workspace
+- **DNS**: Cloudflare (registrar + DNS + proxy)
 
 ## Communicatie
 - **Taal**: altijd Nederlands

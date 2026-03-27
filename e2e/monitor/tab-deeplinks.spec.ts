@@ -2,7 +2,7 @@ import { test, expect } from "../fixtures/base";
 
 test.describe("Tab deeplinks", () => {
   test("retentie tab via URL param opent juiste tab", async ({ page }) => {
-    await page.goto("/retentie?tab=instroom");
+    await page.goto("/monitor/retentie?tab=instroom");
 
     await expect(page.getByRole("heading", { name: "Ledendynamiek" })).toBeVisible({
       timeout: 15000,
@@ -18,7 +18,7 @@ test.describe("Tab deeplinks", () => {
   });
 
   test("tab klik update URL params", async ({ page }) => {
-    await page.goto("/retentie");
+    await page.goto("/monitor/retentie");
 
     await expect(page.getByRole("tab", { name: "Behoud" })).toBeVisible({ timeout: 15000 });
 
@@ -31,7 +31,7 @@ test.describe("Tab deeplinks", () => {
 
   test("tab state behouden na page refresh", async ({ page }) => {
     // Navigeer naar specifieke tab
-    await page.goto("/signalering?tab=werving");
+    await page.goto("/monitor/signalering?tab=werving");
 
     await expect(page.getByRole("heading", { name: "Signalering" })).toBeVisible({
       timeout: 15000,
@@ -54,7 +54,7 @@ test.describe("Tab deeplinks", () => {
   });
 
   test("projecties tab deeplink werkt", async ({ page }) => {
-    await page.goto("/projecties?tab=projectie");
+    await page.goto("/monitor/projecties?tab=projectie");
 
     await expect(page.getByRole("heading", { name: "Jeugdpijplijn" })).toBeVisible({
       timeout: 15000,
@@ -68,7 +68,7 @@ test.describe("Tab deeplinks", () => {
   });
 
   test("signalering tabs werken met URL params", async ({ page }) => {
-    await page.goto("/signalering");
+    await page.goto("/monitor/signalering");
 
     await expect(page.getByRole("heading", { name: "Signalering" })).toBeVisible({
       timeout: 15000,

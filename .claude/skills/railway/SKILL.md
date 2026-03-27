@@ -54,9 +54,9 @@ Alles draait in één project:
 ### Deployment
 
 Alle drie apps gebruiken **Dockerfiles** (niet Nixpacks):
-- `apps/team-indeling/Dockerfile` — Node 22, pnpm workspace, Prisma
-- `apps/monitor/Dockerfile` — Node 22, pnpm workspace, Prisma
-- `apps/evaluatie/Dockerfile` — Node 22, pnpm workspace, Prisma
+- `apps/web/src/app/(teamindeling)/teamindeling/Dockerfile` — Node 22, pnpm workspace, Prisma
+- `apps/web/src/app/(monitor)/monitor/Dockerfile` — Node 22, pnpm workspace, Prisma
+- `apps/web/src/app/(evaluatie)/evaluatie/Dockerfile` — Node 22, pnpm workspace, Prisma
 
 **Deploy-flow**: GitHub push → CI (quality + build) → Railway API (`serviceInstanceDeploy`) → alleen gewijzigde apps
 
@@ -104,8 +104,8 @@ Verwijderen + opnieuw aanmaken = nieuwe target = IONOS DNS bijwerken.
 
 | Domein | Service | IONOS Record ID |
 |---|---|---|
-| `monitor.ckvoranjewit.app` | monitor | `e3aae275-d73e-5ad7-6fa6-b81101349fc1` |
-| `teamindeling.ckvoranjewit.app` | team-indeling | `43e88ed9-fbd1-80e2-0152-35418c3bf97e` |
+| `ckvoranjewit.app/monitor` | monitor | `e3aae275-d73e-5ad7-6fa6-b81101349fc1` |
+| `ckvoranjewit.app/teamindeling` | team-indeling | `43e88ed9-fbd1-80e2-0152-35418c3bf97e` |
 
 > **Tip:** Gebruik `railway_custom_domain_status` om de actuele CNAME targets en certificaatstatus op te vragen.
 
@@ -177,7 +177,7 @@ curl -s -X PATCH "https://api.cloudflare.com/client/v4/zones/274388d92ae20e1a227
 curl -s "https://dns.google/resolve?name=ckvoranjewit.app&type=NS"
 
 # CNAME checken
-curl -s "https://dns.google/resolve?name=monitor.ckvoranjewit.app&type=CNAME"
+curl -s "https://dns.google/resolve?name=ckvoranjewit.app/monitor&type=CNAME"
 ```
 
 ## Veelgebruikte workflows
@@ -263,7 +263,7 @@ curl -s "https://dns.google/resolve?name=monitor.ckvoranjewit.app&type=CNAME"
 | `apps/mcp/railway/server.js` | MCP server (14 tools) |
 | `apps/mcp/railway/package.json` | Dependencies |
 | `.mcp.json` | Server registratie + token (gitignored) |
-| `apps/team-indeling/Dockerfile` | Docker build voor TI |
-| `apps/monitor/Dockerfile` | Docker build voor monitor |
-| `apps/team-indeling/railway.json` | Railway config (legacy, Dockerfile wordt nu gebruikt) |
-| `apps/monitor/railway.json` | Railway config (legacy, Dockerfile wordt nu gebruikt) |
+| `apps/web/src/app/(teamindeling)/teamindeling/Dockerfile` | Docker build voor TI |
+| `apps/web/src/app/(monitor)/monitor/Dockerfile` | Docker build voor monitor |
+| `apps/web/src/app/(teamindeling)/teamindeling/railway.json` | Railway config (legacy, Dockerfile wordt nu gebruikt) |
+| `apps/web/src/app/(monitor)/monitor/railway.json` | Railway config (legacy, Dockerfile wordt nu gebruikt) |

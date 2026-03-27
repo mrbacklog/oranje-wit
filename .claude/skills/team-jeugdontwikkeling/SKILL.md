@@ -157,7 +157,7 @@ jeugd-architect (lead)
 - **Huidige 6 pijlers**: Schieten (SCH), Aanval (AAN), Passen (PAS), Verdediging (VER), Fysiek (FYS), Mentaal (MEN)
 - **USS schaal**: 0-200, gedeeld door scouting, coach-evaluatie en KNKV-teamrating
 - **POP-ratio's**: Plezier/Ontwikkeling/Prestatie verschuift per leeftijd
-- **Scouting-app**: `apps/scouting/` — mobile-first PWA met FIFA-kaarten en gamification
+- **Scouting-app**: `apps/web/src/app/(scouting)/scouting/` — mobile-first PWA met FIFA-kaarten en gamification
 - **Regels**: `rules/oranje-draad.md`, `rules/score-model.md`, `rules/knkv-regels.md`
 - **Jeugdmodel**: `model/jeugdmodel.yaml` (retentie, dropout-kansen)
 

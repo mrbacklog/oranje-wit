@@ -59,7 +59,7 @@ Validatie gebruikt configureerbare targets uit de blauwdruk. De TC stelt deze in
 - Harde regels: → zie `rules/knkv-regels.md`
 - Zachte regels: → zie `rules/ow-voorkeuren.md`
 - Oranje Draad: → zie `rules/oranje-draad.md`
-- Validatie-code: `apps/team-indeling/src/lib/validatie/regels.ts`
+- Validatie-code: `apps/web/src/app/(teamindeling)/teamindeling/src/lib/validatie/regels.ts`
 
 ## Output
 Per team: status (groen/oranje/rood), spelersverdeling M/V, meldingen.

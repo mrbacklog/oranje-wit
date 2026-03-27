@@ -1127,10 +1127,7 @@ async function cleanup() {
   const deletedVergelijkingen = await prisma.scoutingVergelijking.deleteMany({
     where: {
       scout: {
-        OR: [
-          { email: { startsWith: "demo-" } },
-          { email: E2E_TEST_EMAIL },
-        ],
+        OR: [{ email: { startsWith: "demo-" } }, { email: E2E_TEST_EMAIL }],
       },
     },
   });
@@ -1140,10 +1137,7 @@ async function cleanup() {
   const deletedToewijzingen = await prisma.scoutToewijzing.deleteMany({
     where: {
       scout: {
-        OR: [
-          { email: { startsWith: "demo-" } },
-          { email: E2E_TEST_EMAIL },
-        ],
+        OR: [{ email: { startsWith: "demo-" } }, { email: E2E_TEST_EMAIL }],
       },
     },
   });
@@ -1155,10 +1149,7 @@ async function cleanup() {
   const deletedSessies = await prisma.teamScoutingSessie.deleteMany({
     where: {
       scout: {
-        OR: [
-          { email: { startsWith: "demo-" } },
-          { email: E2E_TEST_EMAIL },
-        ],
+        OR: [{ email: { startsWith: "demo-" } }, { email: E2E_TEST_EMAIL }],
       },
     },
   });
@@ -1167,10 +1158,7 @@ async function cleanup() {
   const deletedBadges = await prisma.scoutBadge.deleteMany({
     where: {
       scout: {
-        OR: [
-          { email: { startsWith: "demo-" } },
-          { email: E2E_TEST_EMAIL },
-        ],
+        OR: [{ email: { startsWith: "demo-" } }, { email: E2E_TEST_EMAIL }],
       },
     },
   });

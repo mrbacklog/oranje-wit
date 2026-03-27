@@ -4,12 +4,12 @@ test.describe("Werkbord", () => {
   // Seed maakt een blauwdruk aan voor 2025-2026, dus werkbord laadt altijd
 
   test("werkbord pagina is bereikbaar via URL", async ({ page }) => {
-    await page.goto("/werkbord", { timeout: 15000 });
+    await page.goto("/teamindeling/werkbord", { timeout: 15000 });
     await expect(page).toHaveURL(/\/werkbord/);
   });
 
   test("werkbord heading is zichtbaar", async ({ page }) => {
-    await page.goto("/werkbord", { timeout: 15000 });
+    await page.goto("/teamindeling/werkbord", { timeout: 15000 });
     await expect(page.getByRole("heading", { name: "Werkbord" })).toBeVisible({
       timeout: 10000,
     });
@@ -17,7 +17,7 @@ test.describe("Werkbord", () => {
 
   test("navigatie via sidebar naar werkbord", async ({ page }) => {
     // Start op de scenarios pagina (die geen werkitems laadt)
-    await page.goto("/scenarios", { timeout: 15000 });
+    await page.goto("/teamindeling/scenarios", { timeout: 15000 });
     await expect(page).not.toHaveURL(/\/login/);
 
     // Wacht tot de pagina volledig geladen is
@@ -44,7 +44,7 @@ test.describe("Werkbord", () => {
   });
 
   test("toont kanban bord met kolommen", async ({ page }) => {
-    await page.goto("/werkbord", { timeout: 15000 });
+    await page.goto("/teamindeling/werkbord", { timeout: 15000 });
     await expect(page.getByRole("heading", { name: "Werkbord" })).toBeVisible({
       timeout: 10000,
     });
@@ -57,7 +57,7 @@ test.describe("Werkbord", () => {
   });
 
   test("toont statistieken", async ({ page }) => {
-    await page.goto("/werkbord", { timeout: 15000 });
+    await page.goto("/teamindeling/werkbord", { timeout: 15000 });
     await expect(page.getByRole("heading", { name: "Werkbord" })).toBeVisible({
       timeout: 10000,
     });
@@ -68,7 +68,7 @@ test.describe("Werkbord", () => {
   });
 
   test("nieuw werkitem knop is zichtbaar", async ({ page }) => {
-    await page.goto("/werkbord", { timeout: 15000 });
+    await page.goto("/teamindeling/werkbord", { timeout: 15000 });
     await expect(page.getByRole("heading", { name: "Werkbord" })).toBeVisible({
       timeout: 10000,
     });
@@ -77,7 +77,7 @@ test.describe("Werkbord", () => {
   });
 
   test("toon archief checkbox toont vijfde kolom", async ({ page }) => {
-    await page.goto("/werkbord", { timeout: 15000 });
+    await page.goto("/teamindeling/werkbord", { timeout: 15000 });
     await expect(page.getByRole("heading", { name: "Werkbord" })).toBeVisible({
       timeout: 10000,
     });

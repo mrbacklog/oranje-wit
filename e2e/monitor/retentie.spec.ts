@@ -2,7 +2,7 @@ import { test, expect } from "../fixtures/base";
 
 test.describe("Retentie / Ledendynamiek", () => {
   test("toont ledendynamiek overzicht met tabs", async ({ page }) => {
-    await page.goto("/retentie");
+    await page.goto("/monitor/retentie");
 
     await expect(page.getByRole("heading", { name: "Ledendynamiek" })).toBeVisible({
       timeout: 10000,
@@ -17,7 +17,7 @@ test.describe("Retentie / Ledendynamiek", () => {
 
   // Skip: seizoen-detail vereist verloop-data die niet altijd in CI seed zit
   test.skip("seizoen detail pagina toont instroom en uitstroom", async ({ page }) => {
-    await page.goto("/retentie/2024-2025");
+    await page.goto("/monitor/retentie/2024-2025");
 
     await expect(page.getByRole("heading", { name: /Seizoen 2024-2025/ })).toBeVisible({
       timeout: 10000,
@@ -29,7 +29,7 @@ test.describe("Retentie / Ledendynamiek", () => {
   });
 
   test.skip("terug-link navigeert naar retentie overzicht", async ({ page }) => {
-    await page.goto("/retentie/2024-2025");
+    await page.goto("/monitor/retentie/2024-2025");
 
     const link = page.getByRole("link", { name: /Terug naar retentie/ });
     await expect(link).toBeVisible({ timeout: 10000 });
@@ -39,7 +39,7 @@ test.describe("Retentie / Ledendynamiek", () => {
   });
 
   test("onbekend seizoen toont foutpagina", async ({ page }) => {
-    await page.goto("/retentie/2099-2100");
+    await page.goto("/monitor/retentie/2099-2100");
 
     // Wacht op 404 tekst of "niet gevonden" heading
     await expect(page.getByText("Pagina niet gevonden")).toBeVisible({ timeout: 5000 });

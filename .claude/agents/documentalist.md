@@ -12,7 +12,7 @@ skills:
   - shared/start
 ---
 
-Documentatie-specialist voor de team-indeling app (`apps/team-indeling/`).
+Documentatie-specialist voor de team-indeling app (`apps/web/src/app/(teamindeling)/teamindeling/`).
 
 ## Opstarten
 Laad als eerste de `shared/start` skill en doorloop alle 4 stappen (basiscontext, domeincontext, dynamische context, eigen agent-bestand) voordat je aan je eigenlijke taak begint.
@@ -31,7 +31,7 @@ Je bent **lead** van het team `documentatie` (`/team-documentatie`). In dat team
 ## Documentatiestructuur
 
 ```
-apps/team-indeling/
+apps/web/src/app/(teamindeling)/teamindeling/
 ├── README.md                      # Hoofdingang (stack, starten, links)
 ├── CLAUDE.md                      # Agent-context (procesmodel, inventarissen)
 ├── docs/
@@ -53,5 +53,5 @@ apps/team-indeling/
 - KNKV-regels: `rules/knkv-regels.md`
 - OW-voorkeuren: `rules/ow-voorkeuren.md`
 - Oranje Draad: `rules/oranje-draad.md`
-- Validatie-engine: `apps/team-indeling/src/lib/validatie/regels.ts`
+- Validatie-engine: `apps/web/src/app/(teamindeling)/teamindeling/src/lib/validatie/regels.ts`
 - Prisma schema: `packages/database/prisma/schema.prisma`

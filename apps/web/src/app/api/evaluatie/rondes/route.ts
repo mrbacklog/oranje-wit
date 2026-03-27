@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/db/prisma";
 import { ok, fail, parseBody } from "@/lib/api/response";
-import { requireEditor } from "@oranje-wit/auth/checks";
+import { requireTC } from "@oranje-wit/auth/checks";
 import { getRondes, createRonde } from "@oranje-wit/database";
 import { z } from "zod";
 
@@ -14,7 +14,7 @@ const CreateRondeSchema = z.object({
 
 export async function GET() {
   try {
-    await requireEditor();
+    await requireTC();
     const rondes = await getRondes(prisma);
     return ok(rondes);
   } catch (error) {
@@ -24,7 +24,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    await requireEditor();
+    await requireTC();
     const parsed = await parseBody(request, CreateRondeSchema);
     if (!parsed.ok) return parsed.response;
 

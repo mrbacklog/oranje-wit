@@ -3,7 +3,7 @@ import type { Adapter } from "next-auth/adapters";
 import type { Provider } from "next-auth/providers";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
-import { getAllowedRole } from "./allowlist";
+import { getCapabilities } from "./allowlist";
 
 // NOTE: Nodemailer provider is verwijderd uit de top-level imports.
 // Nodemailer gebruikt Node.js 'stream' module die incompatibel is met
@@ -68,13 +68,36 @@ if (isDev) {
         if (!isDev) return null;
         const email = credentials?.email as string;
         if (!email) return null;
-        const role = await getAllowedRole(email);
-        if (!role) return null;
+        const cap = await getCapabilities(email);
+        if (!cap) return null;
         return { id: `dev-${email}`, email, name: email.split("@")[0] };
       },
     })
   );
 }
+
+// Smartlink login: valideer token, maak sessie.
+// Altijd beschikbaar (ook in productie) — trainers, scouts, coördinatoren
+// loggen in via een tijdelijke link die de TC verstuurt.
+providers.push(
+  Credentials({
+    id: "smartlink",
+    name: "Smartlink",
+    credentials: {
+      email: { type: "text" },
+      naam: { type: "text" },
+    },
+    async authorize(credentials) {
+      const email = credentials?.email as string;
+      const naam = credentials?.naam as string;
+      if (!email) return null;
+      // Alleen toelaten als de gebruiker in de Gebruiker-tabel staat
+      const cap = await getCapabilities(email);
+      if (!cap) return null;
+      return { id: `smartlink-${email}`, email, name: naam || email.split("@")[0] };
+    },
+  })
+);
 
 // === NextAuth configuratie ===
 
@@ -94,8 +117,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return !!auth;
     },
     async signIn({ user, profile, account }) {
-      // Credentials provider (E2E) — altijd doorlaten (al gecheckt in authorize)
-      if (account?.provider === "e2e-test") return true;
+      // Credentials providers (E2E, dev, smartlink) — altijd doorlaten (al gecheckt in authorize)
+      if (
+        account?.provider === "e2e-test" ||
+        account?.provider === "dev-login" ||
+        account?.provider === "smartlink"
+      )
+        return true;
 
       // Email van de gebruiker bepalen
       // Google: profile.email, Email/Nodemailer: user.email
@@ -103,16 +131,23 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (!email) return false;
 
       // Check of email in Gebruiker tabel staat (actief=true)
-      return (await getAllowedRole(email)) !== null;
+      return (await getCapabilities(email)) !== null;
     },
     async jwt({ token, user, profile, account }) {
-      // Bij eerste login: email en rol opslaan in JWT
+      // Bij eerste login: capabilities opslaan in JWT
       const email = profile?.email ?? user?.email;
       if (email) {
-        token.role = await getAllowedRole(email);
+        const cap = await getCapabilities(email);
+        if (cap) {
+          token.isTC = cap.isTC;
+          token.isScout = cap.isScout;
+          token.clearance = cap.clearance;
+          token.doelgroepen = cap.doelgroepen;
+        }
         // Onthoud welke provider is gebruikt
         if (account?.provider) {
           token.provider = account.provider;
+          token.authMethode = account.provider === "google" ? "google" : "smartlink";
         }
       }
       return token;
@@ -120,6 +155,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     session({ session, token }) {
       if (session.user) {
         const user = session.user as unknown as Record<string, unknown>;
+        // Capabilities
+        user.isTC = token.isTC ?? false;
+        user.isScout = token.isScout ?? false;
+        user.clearance = token.clearance ?? 0;
+        user.doelgroepen = token.doelgroepen ?? [];
+        user.authMethode = token.authMethode ?? "google";
+        // Backward compat (verwijder na migratie)
         user.role = token.role as string;
         if (token.provider) {
           user.provider = token.provider as string;

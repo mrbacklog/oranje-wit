@@ -1,9 +1,7 @@
 import { test, expect } from "@playwright/test";
 
-// Design System pagina heeft geen auth nodig — importeer rechtstreeks uit Playwright.
-// De pagina draait in de team-indeling app op poort 4100.
-
-const BASE_URL = "http://localhost:4100/design-system";
+// Design System pagina draait in de geconsolideerde web app op poort 3000.
+const BASE_URL = "http://localhost:3000/teamindeling/design-system";
 
 test.describe("OW Design System — Visual Regression", () => {
   test.beforeEach(async ({ page }) => {
@@ -13,7 +11,7 @@ test.describe("OW Design System — Visual Regression", () => {
     await page.waitForTimeout(1500);
   });
 
-  // ─── Full page screenshot ───────────────────────────────────────────
+  // --- Full page screenshot ---
 
   test("volledige pagina", async ({ page }) => {
     await expect(page).toHaveScreenshot("design-system-full.png", {
@@ -22,7 +20,7 @@ test.describe("OW Design System — Visual Regression", () => {
     });
   });
 
-  // ─── Per sectie screenshots ─────────────────────────────────────────
+  // --- Per sectie screenshots ---
 
   const sections = [
     "buttons",
@@ -57,7 +55,7 @@ test.describe("OW Design System — Visual Regression", () => {
     });
   }
 
-  // ─── Interactie tests ───────────────────────────────────────────────
+  // --- Interactie tests ---
 
   test("button hover state", async ({ page }) => {
     const buttonsSection = page.getByTestId("section-buttons");
@@ -99,7 +97,7 @@ test.describe("OW Design System — Visual Regression", () => {
     });
   });
 
-  // ─── Responsive: mobile viewport ───────────────────────────────────
+  // --- Responsive: mobile viewport ---
 
   test("mobile viewport", async ({ page }) => {
     await page.setViewportSize({ width: 430, height: 932 });
@@ -112,7 +110,7 @@ test.describe("OW Design System — Visual Regression", () => {
     });
   });
 
-  // ─── Light mode variant ────────────────────────────────────────────
+  // --- Light mode variant ---
 
   test("light mode variant", async ({ page }) => {
     await page.goto(`${BASE_URL}?theme=light`);

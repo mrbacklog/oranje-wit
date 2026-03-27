@@ -22,16 +22,10 @@ const STANDAARD_GELDIGHEID_DAGEN = 14;
  */
 interface PrismaTokenClient {
   toegangsToken: {
-    create: (args: {
-      data: {
-        email: string;
-        naam?: string;
-        type: string;
-        scope: unknown;
-        verlooptOp: Date;
-      };
-    }) => Promise<{ token: string }>;
-    findUnique: (args: { where: { token: string } }) => Promise<{
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    create: (args: any) => Promise<{ token: string }>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    findUnique: (args: any) => Promise<{
       id: string;
       token: string;
       email: string;
@@ -42,7 +36,8 @@ interface PrismaTokenClient {
       gebruiktOp: Date | null;
       actief: boolean;
     } | null>;
-    update: (args: { where: { token: string }; data: Record<string, unknown> }) => Promise<unknown>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    update: (args: any) => Promise<unknown>;
   };
 }
 

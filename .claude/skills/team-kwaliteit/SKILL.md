@@ -45,7 +45,7 @@ Start een agent team voor het bewaken en verbeteren van de codekwaliteit van de 
   - Draait typecheck: `pnpm --filter @oranje-wit/team-indeling exec tsc --noEmit`
   - Draait linter: `pnpm --filter @oranje-wit/team-indeling lint`
   - Checkt formatting: `pnpm format:check`
-  - Bouwt de app: `pnpm build:ti`
+  - Bouwt de app: `pnpm build`
   - Signaleert verouderde of onveilige dependencies
   - Rapporteert resultaten aan lead
 
@@ -128,12 +128,12 @@ Elk rapport bevat:
 ## Context
 
 - **Taal**: Nederlands
-- **App**: Team-Indeling (`apps/team-indeling/`)
-- **Tests**: E2E (`e2e/team-indeling/`), Unit (`apps/team-indeling/src/**/*.test.*`)
+- **App**: Team-Indeling (`apps/web/src/app/(teamindeling)/teamindeling/`)
+- **Tests**: E2E (`e2e/team-indeling/`), Unit (`apps/web/src/app/(teamindeling)/teamindeling/src/**/*.test.*`)
 - **Database schema**: `packages/database/prisma/schema.prisma`
 - **Regels**: `rules/knkv-regels.md`, `rules/ow-voorkeuren.md`
 - **CI**: `.github/workflows/ci.yml`
-- **ESLint**: `apps/team-indeling/eslint.config.mjs` + root `eslint.config.mjs`
+- **ESLint**: `apps/web/src/app/(teamindeling)/teamindeling/eslint.config.mjs` + root `eslint.config.mjs`
 
 ## Opdracht
 

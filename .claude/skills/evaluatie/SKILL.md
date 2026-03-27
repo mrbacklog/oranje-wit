@@ -11,12 +11,12 @@ allowed-tools: Read, Write, Glob
 Spelerevaluaties beschikbaar maken en inzetten bij spelersadvies en teamindeling.
 
 ## Wat zijn evaluaties?
-Coaches beoordelen spelers periodiek op diverse aspecten (techniek, inzet, spelvisie, etc.). Evaluaties worden ingevoerd via de native evaluatie-app (`apps/evaluatie/`) en direct opgeslagen in PostgreSQL.
+Coaches beoordelen spelers periodiek op diverse aspecten (techniek, inzet, spelvisie, etc.). Evaluaties worden ingevoerd via de native evaluatie-app (`apps/web/src/app/(evaluatie)/evaluatie/`) en direct opgeslagen in PostgreSQL.
 
 ## Evaluatie-app
-De evaluatie-app (`apps/evaluatie/`) is een Next.js 16 app in het monorepo:
+De evaluatie-app (`apps/web/src/app/(evaluatie)/evaluatie/`) is een Next.js 16 app in het monorepo:
 - **URL**: https://evaluaties.ckvoranjewit.app
-- **Lokaal**: `pnpm dev:evaluatie` (poort 4104)
+- **Lokaal**: `pnpm dev` (poort 4104)
 - **Auth**: NextAuth v5 via `@oranje-wit/auth` (Google OAuth)
 - Coördinatoren maken evaluatierondes aan en nodigen coaches uit per e-mail
 - Coaches vullen evaluaties in via een formulier
@@ -66,7 +66,7 @@ TypeScript types: `EvaluatieScore`, `EvaluatieData`, `TeamGemiddelde` in `compon
   - What-if analyses (impact van verplaatsing)
 
 ## Referenties
-- Evaluatie-app: `apps/evaluatie/` (native Next.js app in monorepo)
+- Evaluatie-app: `apps/web/src/app/(evaluatie)/evaluatie/` (native Next.js app in monorepo)
 - TI API route: `app/api/spelers/[id]/evaluaties/route.ts`
 - TI UI: `components/scenario/EvaluatieScores.tsx`, `components/scenario/SpelerDetail.tsx`
 - Legacy: Lovable repo `mrbacklog/oranje-wit-evaluate` (niet meer in gebruik)

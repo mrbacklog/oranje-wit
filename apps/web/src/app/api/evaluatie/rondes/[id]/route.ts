@@ -3,7 +3,7 @@ import { prisma } from "@/lib/db/prisma";
 // Prisma 7 type recursie workaround (TS2321)
 type PrismaFn = (...args: any[]) => any;
 import { ok, fail, parseBody } from "@/lib/api/response";
-import { requireEditor } from "@oranje-wit/auth/checks";
+import { requireTC } from "@oranje-wit/auth/checks";
 import { z } from "zod";
 
 const UpdateRondeSchema = z.object({
@@ -14,7 +14,7 @@ const UpdateRondeSchema = z.object({
 
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    await requireEditor();
+    await requireTC();
     const { id } = await params;
     // Prisma 7 type recursie workaround (TS2321)
     const ronde = await (prisma.evaluatieRonde.findUnique as PrismaFn)({
@@ -45,7 +45,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    await requireEditor();
+    await requireTC();
     const { id } = await params;
     const parsed = await parseBody(request, UpdateRondeSchema);
     if (!parsed.ok) return parsed.response;

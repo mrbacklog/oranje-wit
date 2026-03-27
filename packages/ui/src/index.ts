@@ -68,6 +68,10 @@ export { Tooltip } from "./primitives/tooltip";
 // Data Input
 export { SearchInput } from "./data-input/search-input";
 export { Chip } from "./data-input/chip";
+export { GetalInput } from "./data-input/getal-input";
+export { JaNeeToggle } from "./data-input/ja-nee-toggle";
+export { KeuzeRadio } from "./data-input/keuze-radio";
+export { BezettingsRange, type BezettingsRangeValue } from "./data-input/bezettings-range";
 
 // Feedback
 export { InfoDrawer } from "./feedback/info-drawer";

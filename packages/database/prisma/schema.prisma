@@ -348,18 +348,23 @@ enum Rol {
   VIEWER      // Bestuur/inkijk: alleen lezen
 }
 
-// Centraal gebruikersbeheer (vervangt hardcoded allowlist)
+// Centraal gebruikersbeheer — capabilities-based auth model
 model Gebruiker {
-  id          String    @id @default(cuid())
-  email       String    @unique
+  id          String      @id @default(cuid())
+  email       String      @unique
   naam        String
-  rol         Rol       @default(VIEWER)
-  scoutRol    ScoutRol? @map("scout_rol")
-  isAdmin     Boolean   @default(false) @map("is_admin")
-  actief      Boolean   @default(true)
-  doelgroepen Doelgroep[] // voor COORDINATOR/REVIEWER: welke doelgroepen ze zien
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  // Capabilities
+  isTC        Boolean     @default(false) @map("is_tc")
+  isTCKern    Boolean     @default(false) @map("is_tc_kern") // mag scenario's/pins bewerken
+  isScout     Boolean     @default(false) @map("is_scout")
+  clearance   Int         @default(0)     // 0-3, ingesteld door TC in Beheer
+  doelgroepen Doelgroep[]                  // TC-lid: verantwoordelijk voor deze doelgroepen
+
+  // Lifecycle
+  actief      Boolean     @default(true)
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
 
   @@map("gebruikers")
 }
@@ -563,15 +568,28 @@ enum GezienStatus {
 // ============================================================
 
 model StandaardVraag {
-  id        String  @id @default(cuid())
-  code      String  @unique // "TEAMGROOTTE_SENIOREN", "GENDER_BELEID"
-  vraag     String  @db.Text
-  categorie String  // "BELEID" | "ORGANISATIE" | "TECHNISCH"
-  volgorde  Int     @default(0)
-  actief    Boolean @default(true)
+  id           String       @id @default(cuid())
+  code         String       @unique // "TEAMS_SENIOREN_A", "SELECTIE_U15_ACTIEF"
+  vraag        String       @db.Text
+  groep        String       // "TEAMAANTALLEN" | "SELECTIESTRUCTUUR" | "BEZETTINGSGRAAD" | "DOORSTROOM"
+  volgorde     Int          @default(0)
+  actief       Boolean      @default(true)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  // Gestructureerde invoer
+  antwoordType AntwoordType @default(TEKST)
+  opties       String[]     // voor KEUZE: voorgedefinieerde opties
+  toonAls      Json?        // conditie: { code: "TEAMS_U15", operator: ">=", waarde: 2 }
+
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+}
+
+enum AntwoordType {
+  TEKST        // Vrije tekst
+  GETAL        // Numerieke invoer
+  JA_NEE       // Boolean toggle
+  KEUZE        // Selecteer uit opties[]
+  GETAL_RANGE  // Drie getallen: ideaal M / ideaal V / afwijking
 }
 
 model BlauwdrukBesluit {
@@ -586,7 +604,12 @@ model BlauwdrukBesluit {
   volgorde      Int      @default(0)
 
   // Het antwoord
-  antwoord      String?  @db.Text
+  antwoordType  AntwoordType @default(TEKST)
+  antwoord      String?  @db.Text     // vrije toelichting
+  antwoordWaarde Json?                // gestructureerd: getal, boolean, keuze-index, range
+  opties        String[]              // voor KEUZE: voorgedefinieerde opties
+  toonAls       Json?                 // conditie: { code, operator, waarde }
+  groep         String?               // "TEAMAANTALLEN", "SELECTIESTRUCTUUR", etc.
   toelichting   String?  @db.Text
 
   // Metadata
@@ -1045,11 +1068,11 @@ enum Besluitniveau {
 }
 
 enum Doelgroep {
-  SENIOREN
-  JUNIOREN
-  ASPIRANTEN
-  PUPILLEN
-  WELPEN
+  KWEEKVIJVER      // Kangoeroes, Blauw, Groen
+  ONTWIKKELHART    // Geel, Oranje
+  TOP              // U15, U17, U19, Senioren selectie
+  WEDSTRIJDSPORT   // Senioren A (niet-selectie)
+  KORFBALPLEZIER   // Rood (B), Senioren B
   ALLE
 }
 

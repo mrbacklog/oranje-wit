@@ -5,11 +5,14 @@ import { signOut, useSession } from "next-auth/react";
 import type { ReactNode } from "react";
 import { useSeizoen } from "@/components/teamindeling/providers/SeizoenProvider";
 
-const ROLE_LABELS: Record<string, string> = {
-  EDITOR: "TC-lid",
-  REVIEWER: "Reviewer",
-  VIEWER: "Viewer",
-};
+function getUserLabel(user: Record<string, unknown>): string {
+  const labels: string[] = [];
+  if (user.isTC) labels.push("TC-lid");
+  if (user.isScout) labels.push("Scout");
+  const dg = (user.doelgroepen as string[]) ?? [];
+  if (dg.length > 0) labels.push("Coordinator");
+  return labels.length > 0 ? labels.join(" \u00b7 ") : "Gebruiker";
+}
 
 interface TISidebarProps {
   children: ReactNode;
@@ -36,7 +39,7 @@ export function TISidebar({ children }: TISidebarProps) {
       userMenu: session?.user
         ? {
             name: session.user.name || "Gebruiker",
-            role: ROLE_LABELS[session.user.role ?? "VIEWER"] || "Viewer",
+            role: getUserLabel(session.user as unknown as Record<string, unknown>),
             onSignOut: () => signOut(),
           }
         : undefined,

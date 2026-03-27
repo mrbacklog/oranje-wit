@@ -5,7 +5,7 @@ test.describe("Speler profiel", () => {
     test("zoekresultaat navigeert naar spelerprofiel met correcte inhoud", async ({ page }) => {
       test.setTimeout(30000);
 
-      await page.goto("/zoek");
+      await page.goto("/scouting/zoek");
       const zoekInput = page.getByRole("searchbox");
       await expect(zoekInput).toBeVisible();
 
@@ -33,7 +33,7 @@ test.describe("Speler profiel", () => {
   test.describe("Profiel structuur", () => {
     test.beforeEach(async ({ page }) => {
       // Navigeer direct naar een seed-data speler
-      const response = await page.goto("/speler/TSTN001");
+      const response = await page.goto("/scouting/speler/TSTN001");
 
       // Als de API een fout geeft, laden we de pagina maar zien we een foutmelding
       // of het profiel. We skippen alleen als er een hard 404 is van de route zelf.
@@ -82,14 +82,8 @@ test.describe("Speler profiel", () => {
       // Klik op Rapporten tab
       await page.getByRole("button", { name: "Rapporten" }).click();
 
-      // Rapporten tab moet nu actief zijn (de Rapporten-knop heeft een border class)
-      // We verifiereen door te controleren dat rapporten content verschijnt
-      // (of een lege-state bericht)
-
       // Klik op Kaart tab
       await page.getByRole("button", { name: "Kaart" }).click();
-
-      // Kaart tab content (of lege state)
 
       // Klik terug naar Profiel tab
       await page.getByRole("button", { name: "Profiel" }).click();
@@ -158,9 +152,7 @@ test.describe("Speler profiel", () => {
         return;
       }
 
-      // Terug-knop (SVG chevron-left in een ronde knop)
-      // De knop is een button zonder expliciete aria-label, maar we kunnen
-      // controleren of er een knop is in de hero-sectie
+      // Terug-knop
       const knoppen = page.getByRole("button");
       const aantalKnoppen = await knoppen.count();
       expect(aantalKnoppen).toBeGreaterThan(0);

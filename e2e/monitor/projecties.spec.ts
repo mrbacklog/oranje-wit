@@ -2,7 +2,7 @@ import { test, expect } from "../fixtures/base";
 
 test.describe("Projecties / Jeugdpijplijn", () => {
   test("toont jeugdpijplijn met tabs", async ({ page }) => {
-    await page.goto("/projecties");
+    await page.goto("/monitor/projecties");
 
     await expect(page.getByRole("heading", { name: "Jeugdpijplijn" })).toBeVisible();
 
@@ -12,7 +12,7 @@ test.describe("Projecties / Jeugdpijplijn", () => {
   });
 
   test("pijplijn tab toont stip-op-de-horizon en tabel", async ({ page }) => {
-    await page.goto("/projecties");
+    await page.goto("/monitor/projecties");
 
     // Stip op de horizon sectie
     await expect(page.getByRole("heading", { name: "Stip op de horizon" })).toBeVisible();
@@ -28,7 +28,7 @@ test.describe("Projecties / Jeugdpijplijn", () => {
   });
 
   test("kan wisselen naar projectie tab", async ({ page }) => {
-    await page.goto("/projecties");
+    await page.goto("/monitor/projecties");
 
     await page.getByRole("tab", { name: "Projectie" }).click();
 

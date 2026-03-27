@@ -2,7 +2,7 @@ import { test, expect } from "../fixtures/base";
 
 test.describe("Signalering", () => {
   test("toont signaleringen met tabs", async ({ page }) => {
-    await page.goto("/signalering");
+    await page.goto("/monitor/signalering");
 
     await expect(page.getByRole("heading", { name: "Signalering" })).toBeVisible({
       timeout: 15000,
@@ -16,7 +16,7 @@ test.describe("Signalering", () => {
   });
 
   test("overzicht toont tellers en strategisch advies", async ({ page }) => {
-    await page.goto("/signalering");
+    await page.goto("/monitor/signalering");
 
     // Seed maakt 4 signaleringen aan: 2x aandacht, 1x kritiek, 1x op_koers
     await expect(page.getByRole("heading", { name: "Strategisch advies" })).toBeVisible({
@@ -28,20 +28,20 @@ test.describe("Signalering", () => {
   });
 
   test("signaleringen bevatten links naar detail pagina's", async ({ page }) => {
-    await page.goto("/signalering");
+    await page.goto("/monitor/signalering");
 
     // Seed garandeert signaleringen met adviezen
     await expect(page.getByRole("heading", { name: "Strategisch advies" })).toBeVisible({
       timeout: 15000,
     });
 
-    // Links naar /retentie, /projecties of /samenstelling moeten bestaan
+    // Links naar /monitor/retentie, /monitor/projecties of /monitor/samenstelling moeten bestaan
     const detailLinks = page.getByRole("link", { name: /Bekijk/ });
     await expect(detailLinks.first()).toBeVisible();
   });
 
   test("toont seed-signaleringen: retentie U15 en U17", async ({ page }) => {
-    await page.goto("/signalering");
+    await page.goto("/monitor/signalering");
 
     await expect(page.getByRole("heading", { name: "Signalering" })).toBeVisible({
       timeout: 15000,

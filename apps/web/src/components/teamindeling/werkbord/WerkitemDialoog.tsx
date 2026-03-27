@@ -164,11 +164,12 @@ export default function WerkitemDialoog({
                   }
                 >
                   <option value="">—</option>
+                  <option value="KWEEKVIJVER">Kweekvijver</option>
+                  <option value="ONTWIKKELHART">Ontwikkelhart</option>
                   <option value="TOP">Top</option>
-                  <option value="KWEEK">Kweek</option>
-                  <option value="OPLEIDINGSHART">Opleidingshart</option>
-                  <option value="KORFBALPLEZIER_JEUGD">KP Jeugd</option>
-                  <option value="KORFBALPLEZIER_SENIOREN">KP Senioren</option>
+                  <option value="WEDSTRIJDSPORT">Wedstrijdsport</option>
+                  <option value="KORFBALPLEZIER">Korfbalplezier</option>
+                  <option value="ALLE">Alle</option>
                 </select>
               </div>
             )}

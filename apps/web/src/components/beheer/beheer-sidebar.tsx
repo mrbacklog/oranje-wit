@@ -80,11 +80,14 @@ const DOMEINEN: NavSection[] = [
   },
 ];
 
-const ROLE_LABELS: Record<string, string> = {
-  EDITOR: "TC-lid",
-  REVIEWER: "Reviewer",
-  VIEWER: "Viewer",
-};
+function getUserLabel(user: Record<string, unknown>): string {
+  const labels: string[] = [];
+  if (user.isTC) labels.push("TC-lid");
+  if (user.isScout) labels.push("Scout");
+  const dg = (user.doelgroepen as string[]) ?? [];
+  if (dg.length > 0) labels.push("Coordinator");
+  return labels.length > 0 ? labels.join(" \u00b7 ") : "Gebruiker";
+}
 
 // ── Sidebar Nav ──────────────────────────────────────────────
 
@@ -245,7 +248,7 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
                   {session.user.name ?? "Gebruiker"}
                 </div>
                 <div className="text-[10px]" style={{ color: "var(--text-tertiary)" }}>
-                  {ROLE_LABELS[session.user.role ?? "VIEWER"] ?? "Viewer"}
+                  {getUserLabel(session.user as unknown as Record<string, unknown>)}
                 </div>
               </div>
             </div>

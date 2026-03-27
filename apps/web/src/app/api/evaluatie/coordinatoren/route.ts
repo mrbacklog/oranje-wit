@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/db/prisma";
 import { ok, fail, parseBody } from "@/lib/api/response";
-import { requireEditor } from "@oranje-wit/auth/checks";
+import { requireTC } from "@oranje-wit/auth/checks";
 import { getCoordinatoren, createCoordinator } from "@oranje-wit/database";
 import { z } from "zod";
 
@@ -11,7 +11,7 @@ const CreateCoordinatorSchema = z.object({
 
 export async function GET() {
   try {
-    await requireEditor();
+    await requireTC();
     const coordinatoren = await getCoordinatoren(prisma);
     return ok(coordinatoren);
   } catch (error) {
@@ -21,7 +21,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    await requireEditor();
+    await requireTC();
     const parsed = await parseBody(request, CreateCoordinatorSchema);
     if (!parsed.ok) return parsed.response;
 

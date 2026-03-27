@@ -37,7 +37,7 @@ async function isTC(page: import("@playwright/test").Page): Promise<boolean> {
 
 test.describe("Verzoeken-pagina", () => {
   test("verzoeken-pagina laadt met heading", async ({ page }) => {
-    await page.goto("/verzoeken");
+    await page.goto("/scouting/verzoeken");
 
     // De pagina moet een heading "Verzoeken" tonen, of een redirect naar login
     await expect(
@@ -49,7 +49,7 @@ test.describe("Verzoeken-pagina", () => {
   });
 
   test("verzoeken-pagina toont lege state of lijst", async ({ page }) => {
-    await page.goto("/verzoeken");
+    await page.goto("/scouting/verzoeken");
 
     // Wacht tot de pagina geladen is (spinner verdwijnt)
     await page.waitForTimeout(2000);
@@ -66,7 +66,7 @@ test.describe("Verzoeken-pagina", () => {
   });
 
   test("bottom navigatie bevat Verzoeken link", async ({ page }) => {
-    await page.goto("/verzoeken");
+    await page.goto("/scouting/verzoeken");
 
     const nav = page.getByRole("navigation");
     await expect(nav).toBeVisible({ timeout: 10000 });
@@ -79,7 +79,7 @@ test.describe("Verzoeken-pagina", () => {
 test.describe("Verzoeken aanmaken (TC-flow)", () => {
   test.beforeEach(async ({ page }) => {
     // Navigeer naar de verzoeken-pagina en check TC-rol
-    await page.goto("/verzoeken");
+    await page.goto("/scouting/verzoeken");
     await page.waitForTimeout(2000);
 
     const heeftTCRol = await isTC(page);
@@ -104,7 +104,7 @@ test.describe("Verzoeken aanmaken (TC-flow)", () => {
   });
 
   test("wizard stap 1: toont 3 verzoektypen", async ({ page }) => {
-    await page.goto("/verzoeken/nieuw");
+    await page.goto("/scouting/verzoeken/nieuw");
 
     await expect(page.getByText("Wat wil je scouten?")).toBeVisible({ timeout: 10000 });
 
@@ -115,7 +115,7 @@ test.describe("Verzoeken aanmaken (TC-flow)", () => {
   });
 
   test("wizard stap 1: volgende is disabled zonder type-selectie", async ({ page }) => {
-    await page.goto("/verzoeken/nieuw");
+    await page.goto("/scouting/verzoeken/nieuw");
 
     await expect(page.getByText("Wat wil je scouten?")).toBeVisible({ timeout: 10000 });
 
@@ -124,7 +124,7 @@ test.describe("Verzoeken aanmaken (TC-flow)", () => {
   });
 
   test("wizard stap 1: selecteer type -> volgende enabled", async ({ page }) => {
-    await page.goto("/verzoeken/nieuw");
+    await page.goto("/scouting/verzoeken/nieuw");
 
     await expect(page.getByText("Wat wil je scouten?")).toBeVisible({ timeout: 10000 });
 
@@ -136,7 +136,7 @@ test.describe("Verzoeken aanmaken (TC-flow)", () => {
   });
 
   test("wizard heeft 4 stap-indicatoren", async ({ page }) => {
-    await page.goto("/verzoeken/nieuw");
+    await page.goto("/scouting/verzoeken/nieuw");
 
     await expect(page.getByText("Wat wil je scouten?")).toBeVisible({ timeout: 10000 });
 
@@ -145,7 +145,7 @@ test.describe("Verzoeken aanmaken (TC-flow)", () => {
   });
 
   test("GENERIEK verzoek: stap 2 toont teamkeuze", async ({ page }) => {
-    await page.goto("/verzoeken/nieuw");
+    await page.goto("/scouting/verzoeken/nieuw");
 
     await expect(page.getByText("Wat wil je scouten?")).toBeVisible({ timeout: 10000 });
 
@@ -155,13 +155,11 @@ test.describe("Verzoeken aanmaken (TC-flow)", () => {
 
     // Stap 2: Welk team?
     await expect(page.getByText("Welk team?")).toBeVisible({ timeout: 5000 });
-    await expect(
-      page.getByText("Alle spelers van dit team worden beoordeeld")
-    ).toBeVisible();
+    await expect(page.getByText("Alle spelers van dit team worden beoordeeld")).toBeVisible();
   });
 
   test("SPECIFIEK verzoek: stap 2 toont speler-zoekbalk", async ({ page }) => {
-    await page.goto("/verzoeken/nieuw");
+    await page.goto("/scouting/verzoeken/nieuw");
 
     await expect(page.getByText("Wat wil je scouten?")).toBeVisible({ timeout: 10000 });
 
@@ -174,10 +172,8 @@ test.describe("Verzoeken aanmaken (TC-flow)", () => {
     await expect(page.getByPlaceholder("Zoek op naam...")).toBeVisible();
   });
 
-  test("VERGELIJKING verzoek: stap 2 toont meervoudige speler-selectie", async ({
-    page,
-  }) => {
-    await page.goto("/verzoeken/nieuw");
+  test("VERGELIJKING verzoek: stap 2 toont meervoudige speler-selectie", async ({ page }) => {
+    await page.goto("/scouting/verzoeken/nieuw");
 
     await expect(page.getByText("Wat wil je scouten?")).toBeVisible({ timeout: 10000 });
 
@@ -193,7 +189,7 @@ test.describe("Verzoeken aanmaken (TC-flow)", () => {
   });
 
   test("wizard stap 3 (details) toont doel-opties en toelichting", async ({ page }) => {
-    await page.goto("/verzoeken/nieuw");
+    await page.goto("/scouting/verzoeken/nieuw");
 
     await expect(page.getByText("Wat wil je scouten?")).toBeVisible({ timeout: 10000 });
 
@@ -205,9 +201,7 @@ test.describe("Verzoeken aanmaken (TC-flow)", () => {
     await expect(page.getByText("Welk team?")).toBeVisible({ timeout: 5000 });
 
     // Probeer een team te selecteren
-    const teamButtons = page.locator(
-      "button:has-text('OW'), button:has-text('Oranje Wit')"
-    );
+    const teamButtons = page.locator("button:has-text('OW'), button:has-text('Oranje Wit')");
     const aantalTeams = await teamButtons.count().catch(() => 0);
 
     if (aantalTeams === 0) {
@@ -233,7 +227,7 @@ test.describe("Verzoeken aanmaken (TC-flow)", () => {
   });
 
   test("wizard stap 4 (scouts) toont scout-toewijzing", async ({ page }) => {
-    await page.goto("/verzoeken/nieuw");
+    await page.goto("/scouting/verzoeken/nieuw");
 
     await expect(page.getByText("Wat wil je scouten?")).toBeVisible({ timeout: 10000 });
 
@@ -243,9 +237,7 @@ test.describe("Verzoeken aanmaken (TC-flow)", () => {
 
     await expect(page.getByText("Welk team?")).toBeVisible({ timeout: 5000 });
 
-    const teamButtons = page.locator(
-      "button:has-text('OW'), button:has-text('Oranje Wit')"
-    );
+    const teamButtons = page.locator("button:has-text('OW'), button:has-text('Oranje Wit')");
     const aantalTeams = await teamButtons.count().catch(() => 0);
 
     if (aantalTeams === 0) {
@@ -268,7 +260,7 @@ test.describe("Verzoeken aanmaken (TC-flow)", () => {
   });
 
   test("wizard vorige-knop navigeert terug", async ({ page }) => {
-    await page.goto("/verzoeken/nieuw");
+    await page.goto("/scouting/verzoeken/nieuw");
 
     await expect(page.getByText("Wat wil je scouten?")).toBeVisible({ timeout: 10000 });
 
@@ -286,7 +278,7 @@ test.describe("Verzoeken aanmaken (TC-flow)", () => {
   });
 
   test("wizard annuleren-link bestaat", async ({ page }) => {
-    await page.goto("/verzoeken/nieuw");
+    await page.goto("/scouting/verzoeken/nieuw");
 
     await expect(page.getByText("Nieuw verzoek")).toBeVisible({ timeout: 10000 });
     await expect(page.getByText("Annuleren")).toBeVisible();
@@ -297,21 +289,19 @@ test.describe("Verzoeken aanmaken (TC-flow)", () => {
 
 test.describe("Verzoek detail pagina", () => {
   test("niet-bestaand verzoek toont foutmelding", async ({ page }) => {
-    await page.goto("/verzoeken/niet-bestaand-id-12345");
+    await page.goto("/scouting/verzoeken/niet-bestaand-id-12345");
 
     // Wacht tot geladen
     await page.waitForTimeout(3000);
 
     // Ofwel "Verzoek niet gevonden" of redirect
     // Gebruik .first() om strict mode violation te voorkomen
-    await expect(
-      page.getByText("Verzoek niet gevonden")
-    ).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText("Verzoek niet gevonden")).toBeVisible({ timeout: 10000 });
   });
 
   test("verzoek detail toont type-label en doel", async ({ page }) => {
     // Navigeer naar verzoeken-pagina
-    await page.goto("/verzoeken");
+    await page.goto("/scouting/verzoeken");
     await page.waitForTimeout(2000);
 
     // Check of er verzoeken zijn door te zoeken naar kaarten
@@ -360,7 +350,7 @@ test.describe("Verzoek detail pagina", () => {
 
 test.describe("Individueel rapport (volledige flow)", () => {
   test("rapport wizard laadt voor bekende speler", async ({ page }) => {
-    const response = await page.goto("/rapport/nieuw/TSTN001");
+    const response = await page.goto("/scouting/rapport/nieuw/TSTN001");
     if (!response || response.status() === 404) {
       test.skip();
       return;
@@ -372,7 +362,7 @@ test.describe("Individueel rapport (volledige flow)", () => {
   });
 
   test("rapport wizard: selecteer context -> beoordeling-stap", async ({ page }) => {
-    const response = await page.goto("/rapport/nieuw/TSTN001");
+    const response = await page.goto("/scouting/rapport/nieuw/TSTN001");
     if (!response || response.status() === 404) {
       test.skip();
       return;
@@ -389,13 +379,13 @@ test.describe("Individueel rapport (volledige flow)", () => {
     await page.getByRole("button", { name: "Volgende" }).click();
 
     // Beoordeling stap met voortgang (x/y)
-    await expect(page.getByRole("button", { name: /Volgende \(\d+\/\d+\)/ })).toBeVisible(
-      { timeout: 5000 }
-    );
+    await expect(page.getByRole("button", { name: /Volgende \(\d+\/\d+\)/ })).toBeVisible({
+      timeout: 5000,
+    });
   });
 
   test("rapport wizard: pijlers worden getoond in beoordeling", async ({ page }) => {
-    const response = await page.goto("/rapport/nieuw/TSTN001");
+    const response = await page.goto("/scouting/rapport/nieuw/TSTN001");
     if (!response || response.status() === 404) {
       test.skip();
       return;
@@ -410,9 +400,9 @@ test.describe("Individueel rapport (volledige flow)", () => {
 
     // Beoordeling toont pijler-gerelateerde content
     // (pijlernamen als AANVALLEN, VERDEDIGEN, etc. of v3 pijlernamen)
-    await expect(page.getByRole("button", { name: /Volgende \(\d+\/\d+\)/ })).toBeVisible(
-      { timeout: 5000 }
-    );
+    await expect(page.getByRole("button", { name: /Volgende \(\d+\/\d+\)/ })).toBeVisible({
+      timeout: 5000,
+    });
 
     // Er moeten slider/score-inputs zichtbaar zijn
     const sliders = page.locator("input[type='range']");
@@ -424,7 +414,7 @@ test.describe("Individueel rapport (volledige flow)", () => {
   });
 
   test("rapport wizard: scores invullen maakt voortgang", async ({ page }) => {
-    const response = await page.goto("/rapport/nieuw/TSTN001");
+    const response = await page.goto("/scouting/rapport/nieuw/TSTN001");
     if (!response || response.status() === 404) {
       test.skip();
       return;
@@ -460,7 +450,7 @@ test.describe("Individueel rapport (volledige flow)", () => {
   });
 
   test("rapport wizard: leeftijdsgroep is zichtbaar", async ({ page }) => {
-    const response = await page.goto("/rapport/nieuw/TSTN001");
+    const response = await page.goto("/scouting/rapport/nieuw/TSTN001");
     if (!response || response.status() === 404) {
       test.skip();
       return;
@@ -474,7 +464,7 @@ test.describe("Individueel rapport (volledige flow)", () => {
   });
 
   test("rapport wizard: context keuzes zijn 3 opties", async ({ page }) => {
-    const response = await page.goto("/rapport/nieuw/TSTN001");
+    const response = await page.goto("/scouting/rapport/nieuw/TSTN001");
     if (!response || response.status() === 404) {
       test.skip();
       return;
@@ -490,7 +480,7 @@ test.describe("Individueel rapport (volledige flow)", () => {
   });
 
   test("rapport wizard: terug van beoordeling bewaart context", async ({ page }) => {
-    const response = await page.goto("/rapport/nieuw/TSTN001");
+    const response = await page.goto("/scouting/rapport/nieuw/TSTN001");
     if (!response || response.status() === 404) {
       test.skip();
       return;
@@ -511,9 +501,9 @@ test.describe("Individueel rapport (volledige flow)", () => {
 
     // Ga naar beoordeling
     await page.getByRole("button", { name: "Volgende" }).click();
-    await expect(page.getByRole("button", { name: /Volgende \(\d+\/\d+\)/ })).toBeVisible(
-      { timeout: 5000 }
-    );
+    await expect(page.getByRole("button", { name: /Volgende \(\d+\/\d+\)/ })).toBeVisible({
+      timeout: 5000,
+    });
 
     // Ga terug
     await page.getByRole("button", { name: "Vorige" }).click();
@@ -523,7 +513,7 @@ test.describe("Individueel rapport (volledige flow)", () => {
   });
 
   test("rapport wizard: 5 stap-indicatoren", async ({ page }) => {
-    const response = await page.goto("/rapport/nieuw/TSTN001");
+    const response = await page.goto("/scouting/rapport/nieuw/TSTN001");
     if (!response || response.status() === 404) {
       test.skip();
       return;
@@ -540,7 +530,7 @@ test.describe("Individueel rapport (volledige flow)", () => {
 
   test("rapport wizard voor U15 speler laadt juiste pijlers", async ({ page }) => {
     // TSTN099 is U15 (oranje, 7 pijlers)
-    const response = await page.goto("/rapport/nieuw/TSTN099");
+    const response = await page.goto("/scouting/rapport/nieuw/TSTN099");
     if (!response || response.status() === 404) {
       test.skip();
       return;
@@ -559,7 +549,7 @@ test.describe("Individueel rapport (volledige flow)", () => {
 
 test.describe("Team-scouting (TEAM methode)", () => {
   test("team-overzicht pagina laadt", async ({ page }) => {
-    await page.goto("/team");
+    await page.goto("/scouting/team");
 
     await expect(page.getByRole("heading", { name: "Scout een team" })).toBeVisible({
       timeout: 15000,
@@ -567,7 +557,7 @@ test.describe("Team-scouting (TEAM methode)", () => {
   });
 
   test("team-overzicht toont teams of lege state", async ({ page }) => {
-    await page.goto("/team");
+    await page.goto("/scouting/team");
 
     await expect(page.getByRole("heading", { name: "Scout een team" })).toBeVisible({
       timeout: 15000,
@@ -575,15 +565,12 @@ test.describe("Team-scouting (TEAM methode)", () => {
 
     // Teams gegroepeerd of lege-state
     await expect(
-      page
-        .getByRole("link")
-        .first()
-        .or(page.getByText("Geen jeugdteams gevonden"))
+      page.getByRole("link").first().or(page.getByText("Geen jeugdteams gevonden"))
     ).toBeVisible({ timeout: 10000 });
   });
 
   test("team wizard laadt na klik op team", async ({ page }) => {
-    await page.goto("/team");
+    await page.goto("/scouting/team");
 
     await expect(page.getByRole("heading", { name: "Scout een team" })).toBeVisible({
       timeout: 15000,
@@ -615,14 +602,12 @@ test.describe("Team-scouting (TEAM methode)", () => {
 
     // Context-stap is zichtbaar
     await expect(
-      page
-        .getByText("In welke context heb je gescout?")
-        .or(page.getByText(/\d+ spelers/))
+      page.getByText("In welke context heb je gescout?").or(page.getByText(/\d+ spelers/))
     ).toBeVisible({ timeout: 10000 });
   });
 
   test("team wizard toont kernset info", async ({ page }) => {
-    await page.goto("/team");
+    await page.goto("/scouting/team");
 
     await expect(page.getByRole("heading", { name: "Scout een team" })).toBeVisible({
       timeout: 15000,
@@ -657,7 +642,7 @@ test.describe("Team-scouting (TEAM methode)", () => {
   });
 
   test("team wizard heeft 5 stappen", async ({ page }) => {
-    await page.goto("/team");
+    await page.goto("/scouting/team");
 
     await expect(page.getByRole("heading", { name: "Scout een team" })).toBeVisible({
       timeout: 15000,
@@ -691,10 +676,8 @@ test.describe("Team-scouting (TEAM methode)", () => {
     await expect(dots).toHaveCount(5);
   });
 
-  test("team wizard: context selecteren -> beoordeling met voortgang", async ({
-    page,
-  }) => {
-    await page.goto("/team");
+  test("team wizard: context selecteren -> beoordeling met voortgang", async ({ page }) => {
+    await page.goto("/scouting/team");
 
     await expect(page.getByRole("heading", { name: "Scout een team" })).toBeVisible({
       timeout: 15000,
@@ -738,13 +721,13 @@ test.describe("Team-scouting (TEAM methode)", () => {
     await page.getByRole("button", { name: "Volgende" }).click();
 
     // Beoordeling-stap toont voortgang (kern-items x spelers)
-    await expect(page.getByRole("button", { name: /Volgende \(\d+\/\d+\)/ })).toBeVisible(
-      { timeout: 5000 }
-    );
+    await expect(page.getByRole("button", { name: /Volgende \(\d+\/\d+\)/ })).toBeVisible({
+      timeout: 5000,
+    });
   });
 
   test("team wizard: volgende-knop disabled zonder context", async ({ page }) => {
-    await page.goto("/team");
+    await page.goto("/scouting/team");
 
     await expect(page.getByRole("heading", { name: "Scout een team" })).toBeVisible({
       timeout: 15000,
@@ -790,7 +773,7 @@ test.describe("Team-scouting (TEAM methode)", () => {
 
 test.describe("Vergelijking (VERGELIJKING methode)", () => {
   test("vergelijkingspagina laadt met wizard structuur", async ({ page }) => {
-    await page.goto("/vergelijking/nieuw");
+    await page.goto("/scouting/vergelijking/nieuw");
 
     await expect(page.getByRole("heading", { name: "Vergelijking" })).toBeVisible({
       timeout: 10000,
@@ -802,7 +785,7 @@ test.describe("Vergelijking (VERGELIJKING methode)", () => {
   });
 
   test("vergelijking wizard heeft 3 stappen", async ({ page }) => {
-    await page.goto("/vergelijking/nieuw");
+    await page.goto("/scouting/vergelijking/nieuw");
 
     await expect(page.getByRole("heading", { name: "Vergelijking" })).toBeVisible({
       timeout: 10000,
@@ -814,21 +797,21 @@ test.describe("Vergelijking (VERGELIJKING methode)", () => {
   });
 
   test("selectie-stap toont speler-selectie header", async ({ page }) => {
-    await page.goto("/vergelijking/nieuw");
+    await page.goto("/scouting/vergelijking/nieuw");
 
-    await expect(
-      page.getByRole("heading", { name: "Selecteer spelers" })
-    ).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole("heading", { name: "Selecteer spelers" })).toBeVisible({
+      timeout: 10000,
+    });
 
     await expect(page.getByText("Kies 2-6 spelers om te vergelijken")).toBeVisible();
   });
 
   test("selectie-stap toont context keuze", async ({ page }) => {
-    await page.goto("/vergelijking/nieuw");
+    await page.goto("/scouting/vergelijking/nieuw");
 
-    await expect(
-      page.getByRole("heading", { name: "Selecteer spelers" })
-    ).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole("heading", { name: "Selecteer spelers" })).toBeVisible({
+      timeout: 10000,
+    });
 
     await expect(page.getByText("Wedstrijd")).toBeVisible();
     await expect(page.getByText("Training")).toBeVisible();
@@ -836,26 +819,24 @@ test.describe("Vergelijking (VERGELIJKING methode)", () => {
   });
 
   test("volgende disabled zonder 2 spelers", async ({ page }) => {
-    await page.goto("/vergelijking/nieuw");
+    await page.goto("/scouting/vergelijking/nieuw");
 
-    await expect(
-      page.getByRole("heading", { name: "Selecteer spelers" })
-    ).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole("heading", { name: "Selecteer spelers" })).toBeVisible({
+      timeout: 10000,
+    });
 
     const volgendeKnop = page.getByRole("button", { name: "Volgende" });
     await expect(volgendeKnop).toBeDisabled();
 
-    await expect(
-      page.getByText("Selecteer minimaal 2 spelers om door te gaan")
-    ).toBeVisible();
+    await expect(page.getByText("Selecteer minimaal 2 spelers om door te gaan")).toBeVisible();
   });
 
   test("speler zoeken in vergelijking wizard werkt", async ({ page }) => {
-    await page.goto("/vergelijking/nieuw");
+    await page.goto("/scouting/vergelijking/nieuw");
 
-    await expect(
-      page.getByRole("heading", { name: "Selecteer spelers" })
-    ).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole("heading", { name: "Selecteer spelers" })).toBeVisible({
+      timeout: 10000,
+    });
 
     // Zoek op TSTN prefix
     const zoekInput = page.getByRole("searchbox").or(page.getByPlaceholder(/zoek/i));
@@ -879,7 +860,7 @@ test.describe("Scouting: navigatie vanuit verzoeken", () => {
   test("navigatie van zoeken naar rapport wizard", async ({ page }) => {
     test.setTimeout(30000);
 
-    const response = await page.goto("/speler/TSTN001");
+    const response = await page.goto("/scouting/speler/TSTN001");
     if (!response || response.status() === 404) {
       test.skip();
       return;
@@ -911,11 +892,11 @@ test.describe("Scouting: navigatie vanuit verzoeken", () => {
     test.setTimeout(60000);
 
     const paginas = [
-      { url: "/verzoeken", check: /Verzoeken|Inloggen/ },
-      { url: "/vergelijking/nieuw", check: /Vergelijking/ },
-      { url: "/team", check: /Scout een team/ },
-      { url: "/zoek", check: /Speler zoeken/ },
-      { url: "/kaarten", check: /Kaarten/ },
+      { url: "/scouting/verzoeken", check: /Verzoeken|Inloggen/ },
+      { url: "/scouting/vergelijking/nieuw", check: /Vergelijking/ },
+      { url: "/scouting/team", check: /Scout een team/ },
+      { url: "/scouting/zoek", check: /Speler zoeken/ },
+      { url: "/scouting/kaarten", check: /Kaarten/ },
     ];
 
     for (const pagina of paginas) {
@@ -936,9 +917,7 @@ test.describe("Verzoeken API (endpoint-level)", () => {
     expect([200, 401, 403]).toContain(response.status());
   });
 
-  test("POST /api/verzoeken zonder body retourneert validatie-fout", async ({
-    page,
-  }) => {
+  test("POST /api/verzoeken zonder body retourneert validatie-fout", async ({ page }) => {
     const response = await page.request.post("/api/verzoeken", {
       data: {},
     });
@@ -955,9 +934,7 @@ test.describe("Verzoeken API (endpoint-level)", () => {
   });
 
   test("GET /api/verzoeken/[id] retourneert 404 voor onbekend id", async ({ page }) => {
-    const response = await page.request.get(
-      "/api/verzoeken/non-existent-verzoek-id-xyz"
-    );
+    const response = await page.request.get("/api/verzoeken/non-existent-verzoek-id-xyz");
 
     // 404 (niet gevonden) of 401/403 (auth)
     expect([404, 401, 403]).toContain(response.status());

@@ -3,7 +3,7 @@ import { test, expect } from "../fixtures/base";
 test.describe("Admin rondes beheer", () => {
   test.describe("Rondes overzicht", () => {
     test("toont lege staat of bestaande rondes", async ({ page }) => {
-      await page.goto("/admin");
+      await page.goto("/evaluatie/admin");
       await page.waitForLoadState("networkidle");
 
       await expect(page.getByRole("heading", { name: "Evaluatierondes" })).toBeVisible();
@@ -20,7 +20,7 @@ test.describe("Admin rondes beheer", () => {
     });
 
     test("rondes tabel toont verwachte kolommen", async ({ page }) => {
-      await page.goto("/admin");
+      await page.goto("/evaluatie/admin");
       await page.waitForLoadState("networkidle");
 
       const tabel = page.locator("table");
@@ -44,7 +44,7 @@ test.describe("Admin rondes beheer", () => {
 
   test.describe("Nieuwe ronde aanmaken", () => {
     test("formulier heeft alle benodigde velden", async ({ page }) => {
-      await page.goto("/admin/nieuw");
+      await page.goto("/evaluatie/admin/nieuw");
 
       // Naam veld
       const naamInput = page.locator('input[name="naam"]');
@@ -78,17 +78,17 @@ test.describe("Admin rondes beheer", () => {
     });
 
     test("navigatie via 'Nieuwe ronde' link vanuit overzicht", async ({ page }) => {
-      await page.goto("/admin");
+      await page.goto("/evaluatie/admin");
       await page.waitForLoadState("networkidle");
 
       await page.getByRole("link", { name: /Nieuwe ronde/i }).click();
 
       await expect(page.getByRole("heading", { name: /Nieuwe evaluatieronde/i })).toBeVisible();
-      expect(page.url()).toContain("/admin/nieuw");
+      expect(page.url()).toContain("/evaluatie/admin/nieuw");
     });
 
     test("submit knop is aanwezig en enabled", async ({ page }) => {
-      await page.goto("/admin/nieuw");
+      await page.goto("/evaluatie/admin/nieuw");
 
       const submitKnop = page.getByRole("button", {
         name: /Ronde aanmaken/i,
@@ -100,7 +100,7 @@ test.describe("Admin rondes beheer", () => {
 
   test.describe("Coordinatoren beheer", () => {
     test("toevoegen formulier heeft naam en email velden", async ({ page }) => {
-      await page.goto("/admin/coordinatoren");
+      await page.goto("/evaluatie/admin/coordinatoren");
       await page.waitForLoadState("networkidle");
 
       // Naam input
@@ -116,7 +116,7 @@ test.describe("Admin rondes beheer", () => {
     });
 
     test("toont lege staat of bestaande coordinatoren", async ({ page }) => {
-      await page.goto("/admin/coordinatoren");
+      await page.goto("/evaluatie/admin/coordinatoren");
       await page.waitForLoadState("networkidle");
 
       // Of lege tekst of coordinator kaarten
@@ -132,7 +132,7 @@ test.describe("Admin rondes beheer", () => {
 
   test.describe("E-mail templates beheer", () => {
     test("toont templatelijst met instructie", async ({ page }) => {
-      await page.goto("/admin/templates");
+      await page.goto("/evaluatie/admin/templates");
       await page.waitForLoadState("networkidle");
 
       await expect(page.getByRole("heading", { name: /E-mail templates/i })).toBeVisible();
@@ -142,7 +142,7 @@ test.describe("Admin rondes beheer", () => {
     });
 
     test("templates hebben bewerken-knoppen indien aanwezig", async ({ page }) => {
-      await page.goto("/admin/templates");
+      await page.goto("/evaluatie/admin/templates");
       await page.waitForLoadState("networkidle");
 
       const templateKaarten = page.locator(".rounded-lg.border.bg-white.p-4");

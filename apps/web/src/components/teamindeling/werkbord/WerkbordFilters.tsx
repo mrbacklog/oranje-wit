@@ -39,11 +39,11 @@ const BESLUITNIVEAU_OPTIES: { value: Besluitniveau; label: string }[] = [
 ];
 
 const DOELGROEP_OPTIES: { value: Doelgroep; label: string }[] = [
+  { value: "KWEEKVIJVER", label: "Kweekvijver" },
+  { value: "ONTWIKKELHART", label: "Ontwikkelhart" },
   { value: "TOP", label: "Top" },
-  { value: "KWEEK", label: "Kweek" },
-  { value: "OPLEIDINGSHART", label: "Opleidingshart" },
-  { value: "KORFBALPLEZIER_JEUGD", label: "KP Jeugd" },
-  { value: "KORFBALPLEZIER_SENIOREN", label: "KP Senioren" },
+  { value: "WEDSTRIJDSPORT", label: "Wedstrijdsport" },
+  { value: "KORFBALPLEZIER", label: "Korfbalplezier" },
 ];
 
 const ENTITEIT_OPTIES: { value: Entiteit; label: string }[] = [

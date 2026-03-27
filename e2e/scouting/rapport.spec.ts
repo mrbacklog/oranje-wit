@@ -14,7 +14,7 @@ test.describe("Rapport wizard", () => {
     test("zoek een speler en navigeer naar rapport wizard", async ({ page }) => {
       test.setTimeout(30000);
 
-      await page.goto("/zoek");
+      await page.goto("/scouting/zoek");
       const zoekInput = page.getByRole("searchbox");
       await expect(zoekInput).toBeVisible();
 
@@ -54,7 +54,7 @@ test.describe("Rapport wizard", () => {
   test.describe("Context-stap", () => {
     test.beforeEach(async ({ page }) => {
       // Probeer direct naar een seed-speler rapport wizard te navigeren
-      const response = await page.goto("/rapport/nieuw/TSTN001");
+      const response = await page.goto("/scouting/rapport/nieuw/TSTN001");
 
       if (!response || response.status() === 404) {
         test.skip();
@@ -139,7 +139,7 @@ test.describe("Rapport wizard", () => {
 
   test.describe("Beoordeling-stap", () => {
     test.beforeEach(async ({ page }) => {
-      const response = await page.goto("/rapport/nieuw/TSTN001");
+      const response = await page.goto("/scouting/rapport/nieuw/TSTN001");
 
       if (!response || response.status() === 404) {
         test.skip();
@@ -172,7 +172,7 @@ test.describe("Rapport wizard", () => {
 
   test.describe("Terug-navigatie", () => {
     test("terug naar context-stap bewaart selectie en detail", async ({ page }) => {
-      const response = await page.goto("/rapport/nieuw/TSTN001");
+      const response = await page.goto("/scouting/rapport/nieuw/TSTN001");
 
       if (!response || response.status() === 404) {
         test.skip();
@@ -208,7 +208,7 @@ test.describe("Rapport wizard", () => {
       // te automatiseren zonder de exacte leeftijdsgroep te kennen).
       // In plaats daarvan testen we de chips indirect.
 
-      const response = await page.goto("/rapport/nieuw/TSTN001");
+      const response = await page.goto("/scouting/rapport/nieuw/TSTN001");
 
       if (!response || response.status() === 404) {
         test.skip();
@@ -235,7 +235,7 @@ test.describe("Rapport wizard", () => {
       // We testen hier de structuur: als de stap bereikt wordt, moet de indienknop er zijn.
       // In een volledig geseede E2E omgeving zou deze flow end-to-end werken.
 
-      const response = await page.goto("/rapport/nieuw/TSTN001");
+      const response = await page.goto("/scouting/rapport/nieuw/TSTN001");
 
       if (!response || response.status() === 404) {
         test.skip();

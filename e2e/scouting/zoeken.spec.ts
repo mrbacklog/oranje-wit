@@ -2,7 +2,7 @@ import { test, expect } from "../fixtures/base";
 
 test.describe("Speler zoeken", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/zoek");
+    await page.goto("/scouting/zoek");
     await expect(page.getByRole("heading", { name: "Speler zoeken" })).toBeVisible();
   });
 
@@ -62,7 +62,7 @@ test.describe("Speler zoeken", () => {
     // Klik op het eerste resultaat
     await eersteResultaat.click();
 
-    // Moet navigeren naar /speler/[relCode]
+    // Moet navigeren naar /scouting/speler/[relCode]
     await page.waitForURL(/\/speler\//, { timeout: 10000 });
   });
 

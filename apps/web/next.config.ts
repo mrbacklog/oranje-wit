@@ -12,7 +12,6 @@ const nextConfig: NextConfig = {
     "@oranje-wit/ui",
   ],
   serverExternalPackages: ["pg", "pg-connection-string", "pgpass"],
-  turbopack: {},
   experimental: {
     serverActions: {
       allowedOrigins: ["ckvoranjewit.app"],

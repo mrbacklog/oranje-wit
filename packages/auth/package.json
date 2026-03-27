@@ -10,10 +10,13 @@
     "./allowlist": "./src/allowlist.ts",
     "./adapter": "./src/adapter.ts",
     "./tokens": "./src/tokens.ts",
-    "./email-template": "./src/email-template.ts"
+    "./email-template": "./src/email-template.ts",
+    "./email": "./src/email.ts",
+    "./smartlink-email": "./src/smartlink-email.ts"
   },
   "dependencies": {
-    "@oranje-wit/types": "workspace:*"
+    "@oranje-wit/types": "workspace:*",
+    "nodemailer": "^6.9.0"
   },
   "peerDependencies": {
     "next": ">=16",

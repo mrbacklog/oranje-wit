@@ -24,7 +24,7 @@ Laad als eerste de `shared/start` skill en doorloop alle 4 stappen (basiscontext
 1. **Nieuwe ledendata verwerken?** → Volg pipeline: Sportlink CSV → leden-tabel → verloop → signalering
 2. **Ledenverloop analyseren?** → Raadpleeg `ledenverloop` + `cohort_seizoenen` tabellen in PostgreSQL
 3. **Signalering nodig?** → Bereken vulgraad per geboortejaar × geslacht tegen streefmodel
-4. **Monitor app bouwen/debuggen?** → Next.js app in `apps/monitor/`, queries in `src/lib/queries/`
+4. **Monitor app bouwen/debuggen?** → Next.js app in `apps/web/src/app/(monitor)/monitor/`, queries in `src/lib/queries/`
 5. **Database sync?** → Gebruik MCP tools (skill: `monitor/database`)
 6. **Domeinvraag?** → Meld dat dit buiten je domein valt
 

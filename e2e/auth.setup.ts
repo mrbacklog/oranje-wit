@@ -1,28 +1,11 @@
 import { test as setup, expect } from "@playwright/test";
 
 const AUTH_FILE = "e2e/.auth/user.json";
-
-// Probeer meerdere poorten — niet alle apps draaien altijd tegelijk
-const PORTS = [4100, 4102, 4104, 4106];
-
-async function findAvailablePort(page: import("@playwright/test").Page): Promise<number> {
-  for (const port of PORTS) {
-    try {
-      const response = await page.request.get(`http://localhost:${port}/api/auth/csrf`);
-      if (response.ok()) return port;
-    } catch {
-      // poort niet beschikbaar, volgende proberen
-    }
-  }
-  throw new Error(`Geen beschikbare app gevonden op poorten ${PORTS.join(", ")}`);
-}
+const BASE_URL = "http://localhost:3000";
 
 setup("authenticatie via e2e-test provider", async ({ page }) => {
-  const port = await findAvailablePort(page);
-  const baseUrl = `http://localhost:${port}`;
-
   // Ga naar de sign-in pagina om CSRF token op te halen
-  await page.goto(`${baseUrl}/api/auth/csrf`);
+  await page.goto(`${BASE_URL}/api/auth/csrf`);
   const csrfResponse = await page.evaluate(() => document.body.innerText.trim());
   const { csrfToken } = JSON.parse(csrfResponse);
 
@@ -44,7 +27,7 @@ setup("authenticatie via e2e-test provider", async ({ page }) => {
   expect(result.ok).toBeTruthy();
 
   // Verifieer dat we ingelogd zijn
-  await page.goto(`${baseUrl}/`);
+  await page.goto(`${BASE_URL}/`);
   await expect(page).not.toHaveURL(/\/login/);
 
   // Sla de sessie op voor alle andere tests

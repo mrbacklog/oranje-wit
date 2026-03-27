@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/db/prisma";
 import { ok, fail, parseBody } from "@/lib/api/response";
-import { requireEditor } from "@oranje-wit/auth/checks";
+import { requireTC } from "@oranje-wit/auth/checks";
 import { updateCoordinator, deleteCoordinator } from "@oranje-wit/database";
 import { z } from "zod";
 
@@ -11,7 +11,7 @@ const UpdateCoordinatorSchema = z.object({
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    await requireEditor();
+    await requireTC();
     const { id } = await params;
     const parsed = await parseBody(request, UpdateCoordinatorSchema);
     if (!parsed.ok) return parsed.response;
@@ -30,7 +30,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 
 export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    await requireEditor();
+    await requireTC();
     const { id } = await params;
 
     const result = await deleteCoordinator(prisma, id);

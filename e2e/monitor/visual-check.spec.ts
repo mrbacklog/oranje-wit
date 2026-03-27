@@ -4,13 +4,13 @@ test.describe("Visuele controle", () => {
   test.setTimeout(120000);
 
   const PAGES = [
-    { url: "/", name: "dashboard" },
-    { url: "/teams", name: "teams" },
-    { url: "/spelers", name: "spelers" },
-    { url: "/samenstelling", name: "samenstelling" },
-    { url: "/retentie", name: "retentie" },
-    { url: "/projecties", name: "projecties" },
-    { url: "/signalering", name: "signalering" },
+    { url: "/monitor", name: "dashboard" },
+    { url: "/monitor/teams", name: "teams" },
+    { url: "/monitor/spelers", name: "spelers" },
+    { url: "/monitor/samenstelling", name: "samenstelling" },
+    { url: "/monitor/retentie", name: "retentie" },
+    { url: "/monitor/projecties", name: "projecties" },
+    { url: "/monitor/signalering", name: "signalering" },
   ];
 
   // Desktop: alle pagina's in 1 test (deelt browser context, sneller)

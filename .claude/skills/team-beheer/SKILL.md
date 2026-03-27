@@ -7,7 +7,7 @@ argument-hint: "<domein of taak, bijv. 'jaarplanning fundament' of 'systeem gebr
 
 # Agent Team: Beheer (Backend)
 
-Start een agent team voor het bouwen van de **backend** van het TC beheer-paneel (`apps/beheer/`, poort 4108). Dit team bouwt server actions, data-modellen, Prisma migraties, validatieregels en contracttypes. Het team levert een heldere **handshake** af voor `/team-ux` dat de frontend/PWA bouwt.
+Start een agent team voor het bouwen van de **backend** van het TC beheer-paneel (`apps/web/src/app/(beheer)/beheer/`, poort 4108). Dit team bouwt server actions, data-modellen, Prisma migraties, validatieregels en contracttypes. Het team levert een heldere **handshake** af voor `/team-ux` dat de frontend/PWA bouwt.
 
 ## Scope: Backend + Data + Integratie
 
@@ -31,7 +31,7 @@ Dit team doet **NIET**:
 Per domein levert team-beheer op:
 
 ```
-Handshake-bestand: apps/beheer/src/app/<domein>/HANDSHAKE.md
+Handshake-bestand: apps/web/src/app/(beheer)/beheer/src/app/<domein>/HANDSHAKE.md
 
 Inhoud:
   1. Server actions: functienaam, parameters, return type
@@ -118,7 +118,7 @@ Volgorde = sidebar-volgorde = bouwvolgorde.
 
 ### 6. Evaluatie (`/evaluatie/`)
 - **Data**: Bestaande evaluatie-modellen (EvaluatieRonde, Coordinator, etc.)
-- **Actions**: Migreer vanuit `apps/evaluatie/src/app/admin/`
+- **Actions**: Migreer vanuit `apps/web/src/app/(evaluatie)/evaluatie/src/app/admin/`
 - **Synergie**: Items uit Jeugdontwikkeling (toekomst)
 
 ### 7. Werving (`/werving/`)
@@ -174,7 +174,7 @@ Bij het starten MOET de lead:
 $ARGUMENTS
 
 Als er geen specifieke opdracht is meegegeven, start dan met een **inventarisatie**:
-1. Lees alle 9 domein-placeholder pagina's in `apps/beheer/src/app/`
+1. Lees alle 9 domein-placeholder pagina's in `apps/web/src/app/(beheer)/beheer/src/app/`
 2. Inventariseer welke bestaande Prisma modellen per domein beschikbaar zijn
 3. Bepaal per domein: wat is het minimale fundament (data + actions)?
 4. Stel een bouwvolgorde voor op basis van synergie (welk domein moet eerst?)

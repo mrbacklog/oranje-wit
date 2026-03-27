@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/teamindeling/db/prisma";
-import { requireEditor } from "@/lib/teamindeling/auth-check";
+import { requireTC } from "@/lib/teamindeling/auth-check";
 import { assertBewerkbaar } from "@/lib/teamindeling/seizoen";
 import { revalidatePath } from "next/cache";
 import type { BesluitStatus, BesluitNiveau, Doelgroep } from "@oranje-wit/database";
@@ -11,7 +11,7 @@ import type { BesluitStatus, BesluitNiveau, Doelgroep } from "@oranje-wit/databa
 // ============================================================
 
 async function getOrCreateUser() {
-  const session = await requireEditor();
+  const session = await requireTC();
   const email = session.user!.email!;
   const naam = session.user!.name ?? email;
 
@@ -48,7 +48,7 @@ export async function upsertStandaardVraag(data: {
   categorie: string;
   volgorde?: number;
 }) {
-  await requireEditor();
+  await requireTC();
   return prisma.standaardVraag.upsert({
     where: { code: data.code },
     create: {

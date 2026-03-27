@@ -2,7 +2,7 @@ import { test, expect } from "../fixtures/base";
 
 test.describe("Navigatie", () => {
   test("zijbalk of menu bevat alle pagina-links", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/monitor");
 
     // Op desktop is er een zijbalk, op mobiel een hamburger menu
     // Controleer dat navigatie-links bestaan (in sidebar of dialog)
@@ -21,13 +21,13 @@ test.describe("Navigatie", () => {
     test.setTimeout(120000);
 
     const paginas = [
-      { url: "/teams", heading: /Teams/ },
-      { url: "/samenstelling", heading: /Samenstelling/ },
-      { url: "/retentie", heading: /Ledendynamiek/ },
-      { url: "/projecties", heading: /Jeugdpijplijn/ },
-      { url: "/signalering", heading: /Signalering/ },
+      { url: "/monitor/teams", heading: /Teams/ },
+      { url: "/monitor/samenstelling", heading: /Samenstelling/ },
+      { url: "/monitor/retentie", heading: /Ledendynamiek/ },
+      { url: "/monitor/projecties", heading: /Jeugdpijplijn/ },
+      { url: "/monitor/signalering", heading: /Signalering/ },
       // Spelers als laatste: zwaarste pagina (alle leden + seizoenen)
-      { url: "/spelers", heading: /Spelers/ },
+      { url: "/monitor/spelers", heading: /Spelers/ },
     ];
 
     for (const pagina of paginas) {
@@ -39,7 +39,7 @@ test.describe("Navigatie", () => {
   });
 
   test("404 pagina bij onbekende URL", async ({ page }) => {
-    await page.goto("/deze-pagina-bestaat-niet");
+    await page.goto("/monitor/deze-pagina-bestaat-niet");
 
     await expect(page.getByText("404")).toBeVisible();
   });

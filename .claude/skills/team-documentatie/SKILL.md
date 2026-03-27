@@ -76,7 +76,7 @@ documentalist (lead)
 ## Documentatiestructuur
 
 ```
-apps/team-indeling/
+apps/web/src/app/(teamindeling)/teamindeling/
 ├── README.md                      # Hoofdingang (stack, starten, links)
 ├── CLAUDE.md                      # Agent-context (procesmodel, inventarissen)
 ├── docs/
@@ -89,7 +89,7 @@ apps/team-indeling/
 ## Context
 
 - **Taal**: Nederlands
-- **App**: `apps/team-indeling/` (Next.js 16, Tailwind CSS 4)
+- **App**: `apps/web/src/app/(teamindeling)/teamindeling/` (Next.js 16, Tailwind CSS 4)
 - **Database**: PostgreSQL op Railway, schema in `packages/database/prisma/schema.prisma`
 - **Regels**: `rules/knkv-regels.md`, `rules/ow-voorkeuren.md`, `rules/oranje-draad.md`
 

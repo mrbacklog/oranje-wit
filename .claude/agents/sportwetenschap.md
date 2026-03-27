@@ -83,5 +83,5 @@ Bij elk onderzoeksresultaat lever je:
 ## Referenties
 - Oranje Draad: `rules/oranje-draad.md`
 - Score-model: `rules/score-model.md`
-- Huidige scouting-vragen: `apps/scouting/src/lib/scouting/vragen.ts`
+- Huidige scouting-vragen: `apps/web/src/app/(scouting)/scouting/src/lib/scouting/vragen.ts`
 - Jeugdmodel (retentie): `model/jeugdmodel.yaml`

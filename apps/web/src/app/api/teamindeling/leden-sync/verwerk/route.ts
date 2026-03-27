@@ -1,4 +1,4 @@
-import { requireEditor } from "@/lib/teamindeling/auth-check";
+import { requireTC } from "@/lib/teamindeling/auth-check";
 import { ok, fail } from "@/lib/teamindeling/api";
 import { parseCsvContent } from "@/lib/teamindeling/leden-csv";
 import { prisma } from "@/lib/teamindeling/db/prisma";
@@ -15,7 +15,7 @@ const SelectieSchema = z.object({
 
 export async function POST(request: Request) {
   try {
-    await requireEditor();
+    await requireTC();
 
     const formData = await request.formData();
     const file = formData.get("csv");

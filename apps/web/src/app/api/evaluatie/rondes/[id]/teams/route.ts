@@ -3,11 +3,11 @@ import { prisma } from "@/lib/db/prisma";
 // Prisma 7 type recursie workaround (TS2321)
 type PrismaFn = (...args: any[]) => any;
 import { ok, fail } from "@/lib/api/response";
-import { requireEditor } from "@oranje-wit/auth/checks";
+import { requireTC } from "@oranje-wit/auth/checks";
 
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    await requireEditor();
+    await requireTC();
     const { id } = await params;
 
     // Prisma 7 type recursie workaround (TS2321)

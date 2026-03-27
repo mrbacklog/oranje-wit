@@ -1,4 +1,4 @@
-import { requireEditor } from "@/lib/teamindeling/auth-check";
+import { requireTC } from "@/lib/teamindeling/auth-check";
 import { ok, fail } from "@/lib/teamindeling/api";
 import { parseCsvContent } from "@/lib/teamindeling/leden-csv";
 import { berekenLedenDiff } from "@/lib/teamindeling/leden-diff";
@@ -6,7 +6,7 @@ import { logger } from "@oranje-wit/types";
 
 export async function POST(request: Request) {
   try {
-    await requireEditor();
+    await requireTC();
 
     const formData = await request.formData();
     const file = formData.get("csv");

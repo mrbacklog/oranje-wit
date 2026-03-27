@@ -12,7 +12,7 @@ De naamgeving in code en database moet aansluiten bij wat de TC zegt in vergader
 | "de items voor Geel" | `Leeftijdsgroep`, `leeftijdsgroepen` | ~~catalogusgroep~~ |
 | "pijler Schieten" | `Pijler`, `pijlers` | ~~cataloguspijler~~ |
 | "het item afstandsschot" | `OntwikkelItem`, `ontwikkel_items` | ~~catalogusitem~~ |
-| "jeugdontwikkeling" | `/jeugd/` | ~~scouting/catalogus~~ |
+| "jeugdontwikkeling" | `/beheer/jeugd/` | ~~scouting/catalogus~~ |
 | "jaarplanning" | `/jaarplanning/` | ~~seizoensbeheer~~ |
 | "roostering" | `/roostering/` | ~~competitie & planning~~ |
 
@@ -27,24 +27,24 @@ De naamgeving in code en database moet aansluiten bij wat de TC zegt in vergader
 
 De beheer-app heeft 9 domeinen in vaste volgorde:
 
-1. **Jaarplanning** — `/jaarplanning/`
-2. **Roostering** — `/roostering/`
-3. **Teams & Leden** — `/teams/`
-4. **Jeugdontwikkeling** — `/jeugd/`
-5. **Scouting** — `/scouting/`
-6. **Evaluatie** — `/evaluatie/`
-7. **Werving** — `/werving/`
-8. **Systeem** — `/systeem/`
-9. **Archivering** — `/archief/`
+1. **Jaarplanning** — `/beheer/jaarplanning/`
+2. **Roostering** — `/beheer/roostering/`
+3. **Teams & Leden** — `/beheer/teams/`
+4. **Jeugdontwikkeling** — `/beheer/jeugd/`
+5. **Scouting** — `/beheer/scouting/`
+6. **Evaluatie** — `/beheer/evaluatie/`
+7. **Werving** — `/beheer/werving/`
+8. **Systeem** — `/beheer/systeem/`
+9. **Archivering** — `/beheer/archief/`
 
 Nieuw domein toevoegen = nieuwe sidebar-sectie + route-directory. Geen herstructurering van bestaande domeinen.
 
 ## Autorisatie
 
-- De gehele beheer-app is alleen toegankelijk voor EDITOR-rol
+- Het volledige `/beheer/*` domein is alleen toegankelijk voor EDITOR-rol
 - Alle routes worden beschermd via middleware
 - Autorisatie wordt centraal beheerd in Beheer → Systeem → Gebruikers
-- Het portaal (ckvoranjewit.app) bepaalt welke apps zichtbaar zijn per rol
+- Het portaal (root `/`) bepaalt welke domeinen zichtbaar zijn per rol
 
 ## Temporeel model
 

@@ -53,155 +53,6 @@ importers:
         specifier: ^8.56.1
         version: 8.56.1(eslint@9.39.3(jiti@2.6.1))(typescript@5.9.3)
 
-  apps/beheer:
-    dependencies:
-      '@dnd-kit/core':
-        specifier: ^6.3.1
-        version: 6.3.1(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      '@dnd-kit/sortable':
-        specifier: ^10.0.0
-        version: 10.0.0(@dnd-kit/core@6.3.1(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)
-      '@dnd-kit/utilities':
-        specifier: ^3.2.2
-        version: 3.2.2(react@19.2.3)
-      '@ducanh2912/next-pwa':
-        specifier: ^10.2.9
-        version: 10.2.9(@types/babel__core@7.20.5)(next@16.1.6(@babel/core@7.29.0)(@playwright/test@1.58.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(webpack@5.105.4)
-      '@oranje-wit/auth':
-        specifier: workspace:*
-        version: link:../../packages/auth
-      '@oranje-wit/database':
-        specifier: workspace:*
-        version: link:../../packages/database
-      '@oranje-wit/types':
-        specifier: workspace:*
-        version: link:../../packages/types
-      '@oranje-wit/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
-      next:
-        specifier: 16.1.6
-        version: 16.1.6(@babel/core@7.29.0)(@playwright/test@1.58.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      next-auth:
-        specifier: 5.0.0-beta.28
-        version: 5.0.0-beta.28(next@16.1.6(@babel/core@7.29.0)(@playwright/test@1.58.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(nodemailer@6.10.1)(react@19.2.3)
-      react:
-        specifier: 19.2.3
-        version: 19.2.3
-      react-dom:
-        specifier: 19.2.3
-        version: 19.2.3(react@19.2.3)
-      zod:
-        specifier: ^3.24.0
-        version: 3.25.76
-    devDependencies:
-      '@tailwindcss/postcss':
-        specifier: ^4
-        version: 4.2.1
-      '@types/node':
-        specifier: ^20
-        version: 20.19.34
-      '@types/react':
-        specifier: ^19
-        version: 19.2.14
-      '@types/react-dom':
-        specifier: ^19
-        version: 19.2.3(@types/react@19.2.14)
-      eslint:
-        specifier: ^9
-        version: 9.39.3(jiti@2.6.1)
-      eslint-config-next:
-        specifier: 16.1.6
-        version: 16.1.6(@typescript-eslint/parser@8.56.1(eslint@9.39.3(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.3(jiti@2.6.1))(typescript@5.9.3)
-      tailwindcss:
-        specifier: ^4
-        version: 4.2.1
-      typescript:
-        specifier: ^5
-        version: 5.9.3
-      vitest:
-        specifier: ^4.0.18
-        version: 4.1.1(@types/node@20.19.34)(jsdom@28.1.0)(vite@7.3.1(@types/node@20.19.34)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.2))
-
-  apps/evaluatie:
-    dependencies:
-      '@ducanh2912/next-pwa':
-        specifier: ^10.2.9
-        version: 10.2.9(@types/babel__core@7.20.5)(next@16.1.6(@babel/core@7.29.0)(@playwright/test@1.58.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(webpack@5.105.4)
-      '@oranje-wit/auth':
-        specifier: workspace:*
-        version: link:../../packages/auth
-      '@oranje-wit/database':
-        specifier: workspace:*
-        version: link:../../packages/database
-      '@oranje-wit/types':
-        specifier: workspace:*
-        version: link:../../packages/types
-      '@oranje-wit/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
-      next:
-        specifier: 16.1.6
-        version: 16.1.6(@babel/core@7.29.0)(@playwright/test@1.58.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      next-auth:
-        specifier: 5.0.0-beta.28
-        version: 5.0.0-beta.28(next@16.1.6(@babel/core@7.29.0)(@playwright/test@1.58.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(nodemailer@6.10.1)(react@19.2.3)
-      nodemailer:
-        specifier: ^6.9.0
-        version: 6.10.1
-      react:
-        specifier: 19.2.3
-        version: 19.2.3
-      react-dom:
-        specifier: 19.2.3
-        version: 19.2.3(react@19.2.3)
-      zod:
-        specifier: ^3.24.0
-        version: 3.25.76
-    devDependencies:
-      '@tailwindcss/postcss':
-        specifier: ^4
-        version: 4.2.1
-      '@testing-library/jest-dom':
-        specifier: ^6.9.1
-        version: 6.9.1
-      '@testing-library/react':
-        specifier: ^16.3.2
-        version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      '@types/node':
-        specifier: ^20
-        version: 20.19.34
-      '@types/nodemailer':
-        specifier: ^6.4.0
-        version: 6.4.23
-      '@types/react':
-        specifier: ^19
-        version: 19.2.14
-      '@types/react-dom':
-        specifier: ^19
-        version: 19.2.3(@types/react@19.2.14)
-      '@vitejs/plugin-react':
-        specifier: ^5.1.4
-        version: 5.1.4(vite@7.3.1(@types/node@20.19.34)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.2))
-      eslint:
-        specifier: ^9
-        version: 9.39.3(jiti@2.6.1)
-      eslint-config-next:
-        specifier: 16.1.6
-        version: 16.1.6(@typescript-eslint/parser@8.56.1(eslint@9.39.3(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.3(jiti@2.6.1))(typescript@5.9.3)
-      jsdom:
-        specifier: ^28.1.0
-        version: 28.1.0
-      tailwindcss:
-        specifier: ^4
-        version: 4.2.1
-      typescript:
-        specifier: ^5
-        version: 5.9.3
-      vitest:
-        specifier: ^4.0.18
-        version: 4.0.18(@types/node@20.19.34)(jiti@2.6.1)(jsdom@28.1.0)(lightningcss@1.31.1)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.2)
-
   apps/mcp/oranje-wit-db:
     dependencies:
       '@modelcontextprotocol/sdk':
@@ -223,319 +74,6 @@ importers:
         specifier: ^3.24.0
         version: 3.25.76
 
-  apps/monitor:
-    dependencies:
-      '@dnd-kit/core':
-        specifier: ^6.3.1
-        version: 6.3.1(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      '@dnd-kit/sortable':
-        specifier: ^10.0.0
-        version: 10.0.0(@dnd-kit/core@6.3.1(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)
-      '@dnd-kit/utilities':
-        specifier: ^3.2.2
-        version: 3.2.2(react@19.2.3)
-      '@ducanh2912/next-pwa':
-        specifier: ^10.2.9
-        version: 10.2.9(@types/babel__core@7.20.5)(next@16.1.6(@playwright/test@1.58.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(webpack@5.105.4)
-      '@oranje-wit/auth':
-        specifier: workspace:*
-        version: link:../../packages/auth
-      '@oranje-wit/database':
-        specifier: workspace:*
-        version: link:../../packages/database
-      '@oranje-wit/types':
-        specifier: workspace:*
-        version: link:../../packages/types
-      '@oranje-wit/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
-      next:
-        specifier: 16.1.6
-        version: 16.1.6(@babel/core@7.29.0)(@playwright/test@1.58.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      next-auth:
-        specifier: 5.0.0-beta.28
-        version: 5.0.0-beta.28(next@16.1.6(@playwright/test@1.58.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(nodemailer@6.10.1)(react@19.2.3)
-      react:
-        specifier: 19.2.3
-        version: 19.2.3
-      react-dom:
-        specifier: 19.2.3
-        version: 19.2.3(react@19.2.3)
-      recharts:
-        specifier: ^2.15.0
-        version: 2.15.4(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-    devDependencies:
-      '@oranje-wit/test-utils':
-        specifier: workspace:*
-        version: link:../../packages/test-utils
-      '@tailwindcss/postcss':
-        specifier: ^4
-        version: 4.2.1
-      '@testing-library/jest-dom':
-        specifier: ^6.9.1
-        version: 6.9.1
-      '@testing-library/react':
-        specifier: ^16.3.2
-        version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      '@types/node':
-        specifier: ^20
-        version: 20.19.34
-      '@types/react':
-        specifier: ^19
-        version: 19.2.14
-      '@types/react-dom':
-        specifier: ^19
-        version: 19.2.3(@types/react@19.2.14)
-      '@vitejs/plugin-react':
-        specifier: ^5.1.4
-        version: 5.1.4(vite@7.3.1(@types/node@20.19.34)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.2))
-      eslint:
-        specifier: ^9
-        version: 9.39.3(jiti@2.6.1)
-      eslint-config-next:
-        specifier: 16.1.6
-        version: 16.1.6(@typescript-eslint/parser@8.56.1(eslint@9.39.3(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.3(jiti@2.6.1))(typescript@5.9.3)
-      jsdom:
-        specifier: ^28.1.0
-        version: 28.1.0
-      tailwindcss:
-        specifier: ^4
-        version: 4.2.1
-      typescript:
-        specifier: ^5
-        version: 5.9.3
-      vitest:
-        specifier: ^4.0.18
-        version: 4.0.18(@types/node@20.19.34)(jiti@2.6.1)(jsdom@28.1.0)(lightningcss@1.31.1)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.2)
-
-  apps/portaal:
-    dependencies:
-      '@oranje-wit/auth':
-        specifier: workspace:*
-        version: link:../../packages/auth
-      '@oranje-wit/database':
-        specifier: workspace:*
-        version: link:../../packages/database
-      '@oranje-wit/types':
-        specifier: workspace:*
-        version: link:../../packages/types
-      '@oranje-wit/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
-      next:
-        specifier: 16.1.6
-        version: 16.1.6(@babel/core@7.29.0)(@playwright/test@1.58.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      next-auth:
-        specifier: 5.0.0-beta.28
-        version: 5.0.0-beta.28(next@16.1.6(@playwright/test@1.58.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(nodemailer@6.10.1)(react@19.2.3)
-      react:
-        specifier: 19.2.3
-        version: 19.2.3
-      react-dom:
-        specifier: 19.2.3
-        version: 19.2.3(react@19.2.3)
-    devDependencies:
-      '@tailwindcss/postcss':
-        specifier: ^4
-        version: 4.2.1
-      '@types/node':
-        specifier: ^20
-        version: 20.19.34
-      '@types/react':
-        specifier: ^19
-        version: 19.2.14
-      '@types/react-dom':
-        specifier: ^19
-        version: 19.2.3(@types/react@19.2.14)
-      eslint:
-        specifier: ^9
-        version: 9.39.3(jiti@2.6.1)
-      eslint-config-next:
-        specifier: 16.1.6
-        version: 16.1.6(@typescript-eslint/parser@8.56.1(eslint@9.39.3(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.3(jiti@2.6.1))(typescript@5.9.3)
-      tailwindcss:
-        specifier: ^4
-        version: 4.2.1
-      typescript:
-        specifier: ^5
-        version: 5.9.3
-      vitest:
-        specifier: ^4.0.18
-        version: 4.1.1(@types/node@20.19.34)(jsdom@28.1.0)(vite@7.3.1(@types/node@20.19.34)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.2))
-
-  apps/scouting:
-    dependencies:
-      '@ducanh2912/next-pwa':
-        specifier: ^10.2.9
-        version: 10.2.9(@types/babel__core@7.20.5)(next@16.1.6(@playwright/test@1.58.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(webpack@5.105.4)
-      '@oranje-wit/auth':
-        specifier: workspace:*
-        version: link:../../packages/auth
-      '@oranje-wit/database':
-        specifier: workspace:*
-        version: link:../../packages/database
-      '@oranje-wit/types':
-        specifier: workspace:*
-        version: link:../../packages/types
-      '@oranje-wit/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
-      framer-motion:
-        specifier: ^12.7.3
-        version: 12.38.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      next:
-        specifier: 16.1.6
-        version: 16.1.6(@babel/core@7.29.0)(@playwright/test@1.58.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      next-auth:
-        specifier: 5.0.0-beta.28
-        version: 5.0.0-beta.28(next@16.1.6(@playwright/test@1.58.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(nodemailer@6.10.1)(react@19.2.3)
-      react:
-        specifier: 19.2.3
-        version: 19.2.3
-      react-dom:
-        specifier: 19.2.3
-        version: 19.2.3(react@19.2.3)
-      recharts:
-        specifier: ^2.15.3
-        version: 2.15.4(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      zod:
-        specifier: ^3.24.0
-        version: 3.25.76
-    devDependencies:
-      '@tailwindcss/postcss':
-        specifier: ^4
-        version: 4.2.1
-      '@testing-library/jest-dom':
-        specifier: ^6.9.1
-        version: 6.9.1
-      '@testing-library/react':
-        specifier: ^16.3.2
-        version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      '@types/node':
-        specifier: ^20
-        version: 20.19.34
-      '@types/react':
-        specifier: ^19
-        version: 19.2.14
-      '@types/react-dom':
-        specifier: ^19
-        version: 19.2.3(@types/react@19.2.14)
-      '@vitejs/plugin-react':
-        specifier: ^5.1.4
-        version: 5.1.4(vite@7.3.1(@types/node@20.19.34)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.2))
-      eslint:
-        specifier: ^9
-        version: 9.39.3(jiti@2.6.1)
-      eslint-config-next:
-        specifier: 16.1.6
-        version: 16.1.6(@typescript-eslint/parser@8.56.1(eslint@9.39.3(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.3(jiti@2.6.1))(typescript@5.9.3)
-      jsdom:
-        specifier: ^28.1.0
-        version: 28.1.0
-      tailwindcss:
-        specifier: ^4
-        version: 4.2.1
-      typescript:
-        specifier: ^5
-        version: 5.9.3
-      vitest:
-        specifier: ^4.0.18
-        version: 4.0.18(@types/node@20.19.34)(jiti@2.6.1)(jsdom@28.1.0)(lightningcss@1.31.1)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.2)
-
-  apps/team-indeling:
-    dependencies:
-      '@anthropic-ai/sdk':
-        specifier: ^0.78.0
-        version: 0.78.0(zod@3.25.76)
-      '@dnd-kit/core':
-        specifier: ^6.3.1
-        version: 6.3.1(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      '@ducanh2912/next-pwa':
-        specifier: ^10.2.9
-        version: 10.2.9(@types/babel__core@7.20.5)(next@16.1.6(@playwright/test@1.58.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(webpack@5.105.4)
-      '@oranje-wit/auth':
-        specifier: workspace:*
-        version: link:../../packages/auth
-      '@oranje-wit/database':
-        specifier: workspace:*
-        version: link:../../packages/database
-      '@oranje-wit/types':
-        specifier: workspace:*
-        version: link:../../packages/types
-      '@oranje-wit/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
-      '@react-spring/web':
-        specifier: ^10.0.3
-        version: 10.0.3(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      '@use-gesture/react':
-        specifier: ^10.3.1
-        version: 10.3.1(react@19.2.3)
-      framer-motion:
-        specifier: ^12.0.0
-        version: 12.38.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      next:
-        specifier: 16.1.6
-        version: 16.1.6(@babel/core@7.29.0)(@playwright/test@1.58.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      next-auth:
-        specifier: 5.0.0-beta.28
-        version: 5.0.0-beta.28(next@16.1.6(@playwright/test@1.58.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(nodemailer@6.10.1)(react@19.2.3)
-      react:
-        specifier: 19.2.3
-        version: 19.2.3
-      react-dom:
-        specifier: 19.2.3
-        version: 19.2.3(react@19.2.3)
-      zod:
-        specifier: ^3.24.0
-        version: 3.25.76
-    devDependencies:
-      '@oranje-wit/test-utils':
-        specifier: workspace:*
-        version: link:../../packages/test-utils
-      '@tailwindcss/postcss':
-        specifier: ^4
-        version: 4.2.1
-      '@testing-library/jest-dom':
-        specifier: ^6.9.1
-        version: 6.9.1
-      '@testing-library/react':
-        specifier: ^16.3.2
-        version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      '@types/node':
-        specifier: ^20
-        version: 20.19.34
-      '@types/pg':
-        specifier: ^8.16.0
-        version: 8.16.0
-      '@types/react':
-        specifier: ^19
-        version: 19.2.14
-      '@types/react-dom':
-        specifier: ^19
-        version: 19.2.3(@types/react@19.2.14)
-      '@vitejs/plugin-react':
-        specifier: ^5.1.4
-        version: 5.1.4(vite@7.3.1(@types/node@20.19.34)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.2))
-      eslint:
-        specifier: ^9
-        version: 9.39.3(jiti@2.6.1)
-      eslint-config-next:
-        specifier: 16.1.6
-        version: 16.1.6(@typescript-eslint/parser@8.56.1(eslint@9.39.3(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.3(jiti@2.6.1))(typescript@5.9.3)
-      jsdom:
-        specifier: ^28.1.0
-        version: 28.1.0
-      tailwindcss:
-        specifier: ^4
-        version: 4.2.1
-      typescript:
-        specifier: ^5
-        version: 5.9.3
-      vitest:
-        specifier: ^4.0.18
-        version: 4.0.18(@types/node@20.19.34)(jiti@2.6.1)(jsdom@28.1.0)(lightningcss@1.31.1)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.2)
-
   apps/web:
     dependencies:
       '@anthropic-ai/sdk':
@@ -552,7 +90,7 @@ importers:
         version: 3.2.2(react@19.2.3)
       '@ducanh2912/next-pwa':
         specifier: ^10.2.9
-        version: 10.2.9(@types/babel__core@7.20.5)(next@16.1.6(@playwright/test@1.58.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(webpack@5.105.4)
+        version: 10.2.9(@types/babel__core@7.20.5)(next@16.1.6(@babel/core@7.29.0)(@playwright/test@1.58.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(webpack@5.105.4)
       '@oranje-wit/auth':
         specifier: workspace:*
         version: link:../../packages/auth
@@ -579,7 +117,7 @@ importers:
         version: 16.1.6(@babel/core@7.29.0)(@playwright/test@1.58.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       next-auth:
         specifier: 5.0.0-beta.28
-        version: 5.0.0-beta.28(next@16.1.6(@playwright/test@1.58.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(nodemailer@6.10.1)(react@19.2.3)
+        version: 5.0.0-beta.28(next@16.1.6(@babel/core@7.29.0)(@playwright/test@1.58.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(nodemailer@6.10.1)(react@19.2.3)
       nodemailer:
         specifier: ^6.9.0
         version: 6.10.1
@@ -656,6 +194,9 @@ importers:
       next-auth:
         specifier: 5.0.0-beta.28
         version: 5.0.0-beta.28(next@16.1.6(@playwright/test@1.58.2)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(nodemailer@6.10.1)(react@19.2.4)
+      nodemailer:
+        specifier: ^6.9.0
+        version: 6.10.1
     devDependencies:
       '@types/nodemailer':
         specifier: ^6.4.0
@@ -6351,20 +5892,6 @@ snapshots:
       - '@types/babel__core'
       - supports-color
 
-  '@ducanh2912/next-pwa@10.2.9(@types/babel__core@7.20.5)(next@16.1.6(@playwright/test@1.58.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(webpack@5.105.4)':
-    dependencies:
-      fast-glob: 3.3.2
-      next: 16.1.6(@playwright/test@1.58.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      semver: 7.6.3
-      webpack: 5.105.4
-      workbox-build: 7.1.1(@types/babel__core@7.20.5)
-      workbox-core: 7.1.0
-      workbox-webpack-plugin: 7.1.0(@types/babel__core@7.20.5)(webpack@5.105.4)
-      workbox-window: 7.1.0
-    transitivePeerDependencies:
-      - '@types/babel__core'
-      - supports-color
-
   '@electric-sql/pglite-socket@0.0.20(@electric-sql/pglite@0.3.15)':
     dependencies:
       '@electric-sql/pglite': 0.3.15
@@ -9269,14 +8796,6 @@ snapshots:
     optionalDependencies:
       nodemailer: 6.10.1
 
-  next-auth@5.0.0-beta.28(next@16.1.6(@playwright/test@1.58.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(nodemailer@6.10.1)(react@19.2.3):
-    dependencies:
-      '@auth/core': 0.39.1(nodemailer@6.10.1)
-      next: 16.1.6(@playwright/test@1.58.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      react: 19.2.3
-    optionalDependencies:
-      nodemailer: 6.10.1
-
   next-auth@5.0.0-beta.28(next@16.1.6(@playwright/test@1.58.2)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(nodemailer@6.10.1)(react@19.2.4):
     dependencies:
       '@auth/core': 0.39.1(nodemailer@6.10.1)
@@ -9286,31 +8805,6 @@ snapshots:
       nodemailer: 6.10.1
 
   next@16.1.6(@babel/core@7.29.0)(@playwright/test@1.58.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
-    dependencies:
-      '@next/env': 16.1.6
-      '@swc/helpers': 0.5.15
-      baseline-browser-mapping: 2.10.0
-      caniuse-lite: 1.0.30001774
-      postcss: 8.4.31
-      react: 19.2.3
-      react-dom: 19.2.3(react@19.2.3)
-      styled-jsx: 5.1.6(@babel/core@7.29.0)(react@19.2.3)
-    optionalDependencies:
-      '@next/swc-darwin-arm64': 16.1.6
-      '@next/swc-darwin-x64': 16.1.6
-      '@next/swc-linux-arm64-gnu': 16.1.6
-      '@next/swc-linux-arm64-musl': 16.1.6
-      '@next/swc-linux-x64-gnu': 16.1.6
-      '@next/swc-linux-x64-musl': 16.1.6
-      '@next/swc-win32-arm64-msvc': 16.1.6
-      '@next/swc-win32-x64-msvc': 16.1.6
-      '@playwright/test': 1.58.2
-      sharp: 0.34.5
-    transitivePeerDependencies:
-      - '@babel/core'
-      - babel-plugin-macros
-
-  next@16.1.6(@playwright/test@1.58.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
     dependencies:
       '@next/env': 16.1.6
       '@swc/helpers': 0.5.15

@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/teamindeling/db/prisma";
-import { requireEditor } from "@/lib/teamindeling/auth-check";
+import { requireTC } from "@/lib/teamindeling/auth-check";
 import { assertBewerkbaar } from "@/lib/teamindeling/seizoen";
 import { revalidatePath } from "next/cache";
 import type { GezienStatus } from "@oranje-wit/database";
@@ -13,7 +13,7 @@ import { logger } from "@oranje-wit/types";
 // ============================================================
 
 async function getOrCreateUser() {
-  const session = await requireEditor();
+  const session = await requireTC();
   const email = session.user!.email!;
   const naam = session.user!.name ?? email;
 

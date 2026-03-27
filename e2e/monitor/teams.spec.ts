@@ -2,7 +2,7 @@ import { test, expect } from "../fixtures/base";
 
 test.describe("Teams", () => {
   test("toont teams overzicht met heading", async ({ page }) => {
-    await page.goto("/teams");
+    await page.goto("/monitor/teams");
 
     // Teams heading in main content (level 1)
     await expect(page.getByRole("heading", { name: "Teams", level: 1 })).toBeVisible({
@@ -15,7 +15,7 @@ test.describe("Teams", () => {
   });
 
   test("kan een team selecteren en details bekijken", async ({ page }) => {
-    await page.goto("/teams");
+    await page.goto("/monitor/teams");
 
     // Wacht tot team-buttons geladen zijn
     const buttons = page.locator("button[aria-pressed]");
@@ -30,7 +30,7 @@ test.describe("Teams", () => {
   });
 
   test("team detail toont spelers en staf", async ({ page }) => {
-    await page.goto("/teams");
+    await page.goto("/monitor/teams");
 
     const buttons = page.locator("button[aria-pressed]");
     await expect(buttons.first()).toBeVisible({ timeout: 15000 });

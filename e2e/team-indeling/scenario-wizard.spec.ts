@@ -2,7 +2,7 @@ import { test, expect } from "../fixtures/base";
 
 test.describe("Nieuw Scenario Wizard", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/scenarios");
+    await page.goto("/teamindeling/scenarios");
     await expect(page.getByRole("heading", { name: "Scenario's", exact: true })).toBeVisible();
   });
 

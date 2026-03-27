@@ -3,12 +3,12 @@ import { SCENARIO_NAAM } from "../../packages/test-utils/src/seed/dataset";
 
 test.describe("Team-Indeling navigatie", () => {
   test("homepage laadt en redirect niet naar login", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/teamindeling");
     await expect(page).not.toHaveURL(/\/login/);
   });
 
   test("blauwdruk pagina is bereikbaar en toont tabs", async ({ page }) => {
-    await page.goto("/blauwdruk");
+    await page.goto("/teamindeling/blauwdruk");
     await expect(page.getByRole("heading", { name: /blauwdruk/i })).toBeVisible();
 
     // Blauwdruk tabs moeten zichtbaar zijn
@@ -17,7 +17,7 @@ test.describe("Team-Indeling navigatie", () => {
 
   test("scenarios pagina is bereikbaar en toont seed-scenario", async ({ page }) => {
     // Scenarios pagina kan traag zijn bij eerste compile; verhoog timeout
-    await page.goto("/scenarios", { timeout: 30000 });
+    await page.goto("/teamindeling/scenarios", { timeout: 30000 });
     await expect(page.getByRole("heading", { name: /scenario/i, level: 2 })).toBeVisible({
       timeout: 15000,
     });
@@ -34,12 +34,12 @@ test.describe("Team-Indeling navigatie", () => {
   });
 
   test("vergelijk pagina is bereikbaar", async ({ page }) => {
-    await page.goto("/vergelijk");
+    await page.goto("/teamindeling/vergelijk");
     await expect(page).toHaveURL(/\/vergelijk/);
   });
 
-  test("import pagina is bereikbaar", async ({ page }) => {
-    await page.goto("/import");
-    await expect(page).toHaveURL(/\/import/);
+  test("instellingen pagina is bereikbaar", async ({ page }) => {
+    await page.goto("/teamindeling/instellingen");
+    await expect(page).toHaveURL(/\/instellingen/);
   });
 });

@@ -2,9 +2,8 @@ import { test, expect } from "../fixtures/base";
 
 test.describe("Navigatie", () => {
   test("homepagina toont evaluatie titel", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/evaluatie");
 
-    await expect(page).toHaveTitle(/Evaluatie/);
     await expect(page.getByRole("heading", { name: "Evaluatie" })).toBeVisible();
     await expect(page.getByText("c.k.v. Oranje Wit")).toBeVisible();
   });
@@ -18,7 +17,7 @@ test.describe("Navigatie", () => {
 
   test.describe("Admin pagina's", () => {
     test("admin rondes overzicht laadt", async ({ page }) => {
-      await page.goto("/admin");
+      await page.goto("/evaluatie/admin");
       await page.waitForLoadState("networkidle");
 
       await expect(page.getByRole("heading", { name: "Evaluatierondes" })).toBeVisible();
@@ -28,7 +27,7 @@ test.describe("Navigatie", () => {
     });
 
     test("admin layout bevat navigatielinks", async ({ page }) => {
-      await page.goto("/admin");
+      await page.goto("/evaluatie/admin");
 
       const nav = page.locator("header nav");
       await expect(nav.getByText("Evaluatie")).toBeVisible();
@@ -38,7 +37,7 @@ test.describe("Navigatie", () => {
     });
 
     test("admin nieuwe ronde pagina laadt", async ({ page }) => {
-      await page.goto("/admin/nieuw");
+      await page.goto("/evaluatie/admin/nieuw");
 
       await expect(page.getByRole("heading", { name: /Nieuwe evaluatieronde/i })).toBeVisible();
 
@@ -54,7 +53,7 @@ test.describe("Navigatie", () => {
     });
 
     test("admin coordinatoren pagina laadt", async ({ page }) => {
-      await page.goto("/admin/coordinatoren");
+      await page.goto("/evaluatie/admin/coordinatoren");
       await page.waitForLoadState("networkidle");
 
       await expect(page.getByRole("heading", { name: "Coordinatoren" })).toBeVisible();
@@ -64,7 +63,7 @@ test.describe("Navigatie", () => {
     });
 
     test("admin templates pagina laadt", async ({ page }) => {
-      await page.goto("/admin/templates");
+      await page.goto("/evaluatie/admin/templates");
       await page.waitForLoadState("networkidle");
 
       await expect(page.getByRole("heading", { name: /E-mail templates/i })).toBeVisible();
@@ -74,7 +73,7 @@ test.describe("Navigatie", () => {
     });
 
     test("navigatie tussen admin pagina's werkt", async ({ page }) => {
-      await page.goto("/admin");
+      await page.goto("/evaluatie/admin");
       await page.waitForLoadState("networkidle");
 
       // Naar coordinatoren
@@ -93,40 +92,40 @@ test.describe("Navigatie", () => {
 
   test.describe("Token-beveiligde pagina's", () => {
     test("invullen pagina zonder token toont foutmelding", async ({ page }) => {
-      await page.goto("/invullen");
+      await page.goto("/evaluatie/invullen");
 
       await expect(page.getByText(/Ongeldige link/i)).toBeVisible();
       await expect(page.getByText(/uitnodigingsmail/i)).toBeVisible();
     });
 
     test("invullen pagina met ongeldig token toont foutmelding", async ({ page }) => {
-      await page.goto("/invullen?token=ongeldig-token-12345");
+      await page.goto("/evaluatie/invullen?token=ongeldig-token-12345");
 
       await expect(page.getByText(/Verlopen of ongeldige link/i)).toBeVisible();
     });
 
     test("zelfevaluatie pagina zonder token toont foutmelding", async ({ page }) => {
-      await page.goto("/zelf");
+      await page.goto("/evaluatie/zelf");
 
       await expect(page.getByText(/Geen geldige link/i)).toBeVisible();
       await expect(page.getByText(/uitnodigingsmail/i)).toBeVisible();
     });
 
     test("zelfevaluatie pagina met ongeldig token toont foutmelding", async ({ page }) => {
-      await page.goto("/zelf?token=ongeldig-token-12345");
+      await page.goto("/evaluatie/zelf?token=ongeldig-token-12345");
 
       await expect(page.getByText(/Ongeldige link/i)).toBeVisible();
     });
 
     test("coordinator pagina zonder token toont foutmelding", async ({ page }) => {
-      await page.goto("/coordinator");
+      await page.goto("/evaluatie/coordinator");
 
       await expect(page.getByText(/Geen geldige link/i)).toBeVisible();
       await expect(page.getByText(/uitnodigingsmail/i)).toBeVisible();
     });
 
     test("coordinator pagina met ongeldig token toont foutmelding", async ({ page }) => {
-      await page.goto("/coordinator?token=ongeldig-token-12345");
+      await page.goto("/evaluatie/coordinator?token=ongeldig-token-12345");
 
       await expect(page.getByText(/Ongeldige link/i)).toBeVisible();
     });
@@ -134,7 +133,7 @@ test.describe("Navigatie", () => {
 
   test.describe("Bedankt pagina's", () => {
     test("trainer bedankt pagina laadt", async ({ page }) => {
-      await page.goto("/invullen/bedankt");
+      await page.goto("/evaluatie/invullen/bedankt");
 
       await expect(page.getByRole("heading", { name: /Bedankt/i })).toBeVisible();
       await expect(page.getByText(/evaluatie.*is ontvangen/i)).toBeVisible();
@@ -142,14 +141,14 @@ test.describe("Navigatie", () => {
     });
 
     test("trainer bedankt pagina toont teamnaam", async ({ page }) => {
-      await page.goto("/invullen/bedankt?team=Oranje+Wit+A1");
+      await page.goto("/evaluatie/invullen/bedankt?team=Oranje+Wit+A1");
 
       await expect(page.getByRole("heading", { name: /Bedankt/i })).toBeVisible();
       await expect(page.getByText(/Oranje Wit A1/i)).toBeVisible();
     });
 
     test("zelfevaluatie bedankt pagina laadt", async ({ page }) => {
-      await page.goto("/zelf/bedankt");
+      await page.goto("/evaluatie/zelf/bedankt");
 
       await expect(page.getByRole("heading", { name: /Bedankt/i })).toBeVisible();
       await expect(page.getByText(/zelfevaluatie.*is ontvangen/i)).toBeVisible();

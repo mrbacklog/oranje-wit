@@ -3,7 +3,7 @@ import { test, expect } from "../fixtures/base";
 test.describe("Team scouting", () => {
   test.describe("Team-overzicht pagina", () => {
     test("laadt met heading en beschrijving", async ({ page }) => {
-      await page.goto("/team");
+      await page.goto("/scouting/team");
 
       await expect(page.getByRole("heading", { name: "Scout een team" })).toBeVisible({
         timeout: 15000,
@@ -15,7 +15,7 @@ test.describe("Team scouting", () => {
     });
 
     test("toont teams gegroepeerd per leeftijdsgroep of lege state", async ({ page }) => {
-      await page.goto("/team");
+      await page.goto("/scouting/team");
 
       await expect(page.getByRole("heading", { name: "Scout een team" })).toBeVisible({
         timeout: 15000,
@@ -28,7 +28,7 @@ test.describe("Team scouting", () => {
     });
 
     test("toont leeftijdsgroep-headers als er teams zijn", async ({ page }) => {
-      await page.goto("/team");
+      await page.goto("/scouting/team");
 
       await expect(page.getByRole("heading", { name: "Scout een team" })).toBeVisible({
         timeout: 15000,
@@ -54,7 +54,7 @@ test.describe("Team scouting", () => {
     });
 
     test("team-kaarten tonen teamnaam", async ({ page }) => {
-      await page.goto("/team");
+      await page.goto("/scouting/team");
 
       await expect(page.getByRole("heading", { name: "Scout een team" })).toBeVisible({
         timeout: 15000,
@@ -89,7 +89,7 @@ test.describe("Team scouting", () => {
     });
 
     test("klik op team navigeert naar team-scouting wizard", async ({ page }) => {
-      await page.goto("/team");
+      await page.goto("/scouting/team");
 
       await expect(page.getByRole("heading", { name: "Scout een team" })).toBeVisible({
         timeout: 15000,
@@ -118,7 +118,7 @@ test.describe("Team scouting", () => {
   test.describe("Team-scouting wizard", () => {
     test("wizard toont team-header met naam en spelersaantal", async ({ page }) => {
       // Navigeer via team-overzicht
-      await page.goto("/team");
+      await page.goto("/scouting/team");
 
       await expect(page.getByRole("heading", { name: "Scout een team" })).toBeVisible({
         timeout: 15000,
@@ -157,7 +157,7 @@ test.describe("Team scouting", () => {
     });
 
     test("wizard start met context-stap", async ({ page }) => {
-      await page.goto("/team");
+      await page.goto("/scouting/team");
 
       await expect(page.getByRole("heading", { name: "Scout een team" })).toBeVisible({
         timeout: 15000,
@@ -199,7 +199,7 @@ test.describe("Team scouting", () => {
     });
 
     test("wizard context selecteren enabled volgende-knop", async ({ page }) => {
-      await page.goto("/team");
+      await page.goto("/scouting/team");
 
       await expect(page.getByRole("heading", { name: "Scout een team" })).toBeVisible({
         timeout: 15000,
@@ -246,7 +246,7 @@ test.describe("Team scouting", () => {
     });
 
     test("wizard heeft 5 stappen (stappen-indicator)", async ({ page }) => {
-      await page.goto("/team");
+      await page.goto("/scouting/team");
 
       await expect(page.getByRole("heading", { name: "Scout een team" })).toBeVisible({
         timeout: 15000,

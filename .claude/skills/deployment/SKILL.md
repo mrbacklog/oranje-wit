@@ -51,9 +51,9 @@ Niet elke push deployt alle apps. De `changes` job detecteert welke paden gewijz
 
 | Trigger | Deployt |
 |---|---|
-| `apps/team-indeling/**` gewijzigd | Alleen team-indeling |
-| `apps/monitor/**` gewijzigd | Alleen monitor |
-| `apps/evaluatie/**` gewijzigd | Alleen evaluatie |
+| `apps/web/src/app/(teamindeling)/teamindeling/**` gewijzigd | Alleen team-indeling |
+| `apps/web/src/app/(monitor)/monitor/**` gewijzigd | Alleen monitor |
+| `apps/web/src/app/(evaluatie)/evaluatie/**` gewijzigd | Alleen evaluatie |
 | `packages/**` gewijzigd | Alle apps (gedeelde dependency) |
 | Alleen CI/docs/scripts gewijzigd | Niets (geen app-wijziging) |
 
@@ -71,9 +71,9 @@ Bij een geblokkeerde deploy:
 
 | App | Filter | Test | E2E | Service ID |
 |---|---|---|---|---|
-| team-indeling | `@oranje-wit/team-indeling` | `pnpm test:ti` | `pnpm test:e2e:ti` | `49ed7b30-a243-4f30-87fa-ae56935fbbbc` |
-| monitor | `@oranje-wit/monitor` | `pnpm test:monitor` | `pnpm test:e2e:monitor` | `a7efb126-8ad1-460d-b787-2d03207c3f3c` |
-| evaluatie | `@oranje-wit/evaluatie` | `pnpm test:evaluatie` | `pnpm test:e2e:evaluatie` | `c7a578c6-559e-4d11-8bc5-b6265dc7ada7` |
+| team-indeling | `@oranje-wit/team-indeling` | `pnpm test` | `pnpm test:e2e:ti` | `49ed7b30-a243-4f30-87fa-ae56935fbbbc` |
+| monitor | `@oranje-wit/monitor` | `pnpm test` | `pnpm test:e2e:monitor` | `a7efb126-8ad1-460d-b787-2d03207c3f3c` |
+| evaluatie | `@oranje-wit/evaluatie` | `pnpm test` | `pnpm test:e2e:evaluatie` | `c7a578c6-559e-4d11-8bc5-b6265dc7ada7` |
 
 ## Stap-voor-stap: deployen
 
@@ -82,7 +82,7 @@ Bij een geblokkeerde deploy:
 ```bash
 # Voor team-indeling (voorbeeld):
 pnpm --filter team-indeling exec tsc --noEmit
-pnpm test:ti
+pnpm test
 pnpm test:e2e:ti    # ← VERPLICHT: dit is wat CI ook draait
 
 # Voor alle apps tegelijk:
@@ -170,8 +170,8 @@ Pas na groen CI:
 
 | App | Custom domein | Railway URL |
 |---|---|---|
-| team-indeling | https://teamindeling.ckvoranjewit.app | team-indeling-production.up.railway.app |
-| monitor | https://monitor.ckvoranjewit.app | monitor-production-b2b1.up.railway.app |
+| team-indeling | https://ckvoranjewit.app/teamindeling | team-indeling-production.up.railway.app |
+| monitor | https://ckvoranjewit.app/monitor | monitor-production-b2b1.up.railway.app |
 | evaluatie | https://evaluaties.ckvoranjewit.app | evaluatie-production.up.railway.app |
 
 Custom domeinen draaien via **Cloudflare Worker** `railway-proxy` (niet via Railway custom domains).
@@ -179,9 +179,9 @@ Custom domeinen draaien via **Cloudflare Worker** `railway-proxy` (niet via Rail
 ### Build-configuratie
 
 Alle apps gebruiken **Dockerfiles** (niet Nixpacks):
-- `apps/team-indeling/Dockerfile`
-- `apps/monitor/Dockerfile`
-- `apps/evaluatie/Dockerfile`
+- `apps/web/src/app/(teamindeling)/teamindeling/Dockerfile`
+- `apps/web/src/app/(monitor)/monitor/Dockerfile`
+- `apps/web/src/app/(evaluatie)/evaluatie/Dockerfile`
 
 Basis: Node 22-slim, pnpm workspace, Prisma generate.
 
