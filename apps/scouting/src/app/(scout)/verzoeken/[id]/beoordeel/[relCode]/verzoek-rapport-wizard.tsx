@@ -106,8 +106,7 @@ export function VerzoekRapportWizard({
     setSavedToast(true);
     const timer = setTimeout(() => setSavedToast(false), 1500);
     return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scores, relatie, context, contextDetail, opmerking, stapIndex]);
+  }, [scores, relatie, context, contextDetail, opmerking, stapIndex, saveDraft]);
 
   const handleScore = useCallback((vraagId: string, waarde: number) => {
     setScores((prev) => ({ ...prev, [vraagId]: waarde }));
@@ -208,9 +207,9 @@ export function VerzoekRapportWizard({
   }
 
   return (
-    <div className="flex min-h-[calc(100dvh-4rem)] flex-col bg-surface-dark">
+    <div className="bg-surface-dark flex min-h-[calc(100dvh-4rem)] flex-col">
       {/* Header met speler-context */}
-      <header className="border-b border-border-subtle bg-surface-card px-4 py-3">
+      <header className="border-border-subtle bg-surface-card border-b px-4 py-3">
         <div className="mb-2 flex items-center justify-between">
           <button
             type="button"
@@ -219,7 +218,7 @@ export function VerzoekRapportWizard({
                 router.push(`/verzoeken/${verzoekId}`);
               }
             }}
-            className="text-sm text-text-muted"
+            className="text-text-muted text-sm"
           >
             ← Terug
           </button>
@@ -241,7 +240,7 @@ export function VerzoekRapportWizard({
       </header>
 
       {/* Progress bar */}
-      <div className="flex items-center justify-center gap-2 bg-surface-card py-3 shadow-none">
+      <div className="bg-surface-card flex items-center justify-center gap-2 py-3 shadow-none">
         {STAPPEN.map((s, i) => (
           <div
             key={s}
@@ -254,7 +253,7 @@ export function VerzoekRapportWizard({
             }`}
           />
         ))}
-        <span className="ml-2 text-[10px] text-text-muted">
+        <span className="text-text-muted ml-2 text-[10px]">
           {stapIndex + 1}/{STAPPEN.length}
         </span>
       </div>
@@ -270,8 +269,8 @@ export function VerzoekRapportWizard({
       <div className="flex-1 px-4 py-4">
         {stap === "relatie" && (
           <div>
-            <h2 className="text-lg font-bold text-text-primary">Ken je deze speler?</h2>
-            <p className="mt-1 text-sm text-text-muted">
+            <h2 className="text-text-primary text-lg font-bold">Ken je deze speler?</h2>
+            <p className="text-text-muted mt-1 text-sm">
               Dit helpt ons bij het wegen van beoordelingen. Eerlijkheid wordt gewaardeerd.
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
@@ -283,7 +282,7 @@ export function VerzoekRapportWizard({
                   className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
                     relatie === opt.value
                       ? "bg-orange-500 text-white shadow-md"
-                      : "border border-border-subtle bg-surface-card text-text-secondary hover:border-orange-300"
+                      : "border-border-subtle bg-surface-card text-text-secondary border hover:border-orange-300"
                   }`}
                 >
                   {opt.label}
@@ -345,7 +344,7 @@ export function VerzoekRapportWizard({
       )}
 
       {/* Navigatie-balk */}
-      <div className="border-t border-border-subtle bg-surface-card p-4">
+      <div className="border-border-subtle bg-surface-card border-t p-4">
         <div className="flex items-center gap-3">
           {/* Niet beoordeeld link */}
           {stap !== "samenvatting" && (
@@ -353,7 +352,7 @@ export function VerzoekRapportWizard({
               type="button"
               onClick={handleNietBeoordeeld}
               disabled={isPending}
-              className="text-xs text-text-muted underline"
+              className="text-text-muted text-xs underline"
             >
               Niet beoordeeld
             </button>
@@ -364,7 +363,7 @@ export function VerzoekRapportWizard({
               <button
                 type="button"
                 onClick={vorigeStap}
-                className="flex-1 rounded-xl border border-border-subtle px-4 py-3 text-sm font-semibold text-text-secondary transition-colors active:bg-surface-dark"
+                className="border-border-subtle text-text-secondary active:bg-surface-dark flex-1 rounded-xl border px-4 py-3 text-sm font-semibold transition-colors"
               >
                 Vorige
               </button>

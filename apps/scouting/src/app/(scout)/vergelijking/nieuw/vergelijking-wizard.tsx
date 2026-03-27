@@ -3,18 +3,13 @@
 import { useCallback, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { logger } from "@oranje-wit/types";
-import type { PijlerConfig, LeeftijdsgroepNaamV3 } from "@oranje-wit/types";
+import type { LeeftijdsgroepNaamV3 } from "@oranje-wit/types";
 import { LEEFTIJDSGROEP_CONFIG } from "@oranje-wit/types";
 import { SpelerZoek } from "@/components/speler-zoek";
 import { leeftijdNaarGroep } from "@/components/kaart-constanten";
 import { PEILJAAR } from "@oranje-wit/types";
-
-interface TeamInfo {
-  id: number;
-  naam: string;
-  kleur: string | null;
-  leeftijdsgroep: string | null;
-}
+import { StapVergelijking } from "./stap-vergelijking";
+import { StapVergelijkingSamenvatting } from "./stap-samenvatting";
 
 interface SpelerSelectie {
   id: string;
@@ -26,7 +21,11 @@ interface SpelerSelectie {
 type WizardStap = "selectie" | "vergelijking" | "samenvatting";
 const STAPPEN: WizardStap[] = ["selectie", "vergelijking", "samenvatting"];
 
-export function VergelijkingWizard({ teams }: { teams: TeamInfo[] }) {
+export function VergelijkingWizard({
+  teams,
+}: {
+  teams: { id: number; naam: string; kleur: string | null; leeftijdsgroep: string | null }[];
+}) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -58,7 +57,6 @@ export function VergelijkingWizard({ teams }: { teams: TeamInfo[] }) {
       if (gekozenSpelers.some((s) => s.id === speler.id)) return;
       setGekozenSpelers((prev) => [...prev, speler]);
 
-      // Initialiseer posities voor deze speler (midden)
       setPosities((prev) => {
         const nieuw = { ...prev };
         for (const p of config.pijlers) {
@@ -187,7 +185,7 @@ export function VergelijkingWizard({ teams }: { teams: TeamInfo[] }) {
                 ? "bg-ow-oranje w-8"
                 : i < stapIndex
                   ? "bg-ow-oranje/50 w-2"
-                  : "w-2 bg-surface-card/20"
+                  : "bg-surface-card/20 w-2"
             }`}
           />
         ))}
@@ -358,204 +356,6 @@ function StapSpelerSelectie({
           Selecteer minimaal 2 spelers om door te gaan
         </p>
       )}
-    </div>
-  );
-}
-
-// ─── Stap: Vergelijkingsbalken ───
-
-const SPELER_KLEUREN = [
-  "#F97316", // oranje
-  "#3B82F6", // blauw
-  "#22C55E", // groen
-  "#EAB308", // geel
-  "#A855F7", // paars
-  "#EF4444", // rood
-];
-
-function StapVergelijking({
-  spelers,
-  pijlers,
-  posities,
-  onPositieChange,
-}: {
-  spelers: SpelerSelectie[];
-  pijlers: PijlerConfig[];
-  posities: Record<string, Record<string, number>>;
-  onPositieChange: (pijlerCode: string, spelerId: string, waarde: number) => void;
-}) {
-  return (
-    <div className="animate-[fadeIn_300ms_ease]">
-      <h2 className="mb-2 text-xl font-bold">Vergelijk per pijler</h2>
-      <p className="text-text-secondary mb-4 text-sm">
-        Positioneer elke speler op de balk. Links = zwak, rechts = sterk.
-      </p>
-
-      {/* Legenda */}
-      <div className="mb-4 flex flex-wrap gap-2">
-        {spelers.map((s, i) => (
-          <div key={s.id} className="flex items-center gap-1.5">
-            <div
-              className="h-3 w-3 rounded-full"
-              style={{ backgroundColor: SPELER_KLEUREN[i % SPELER_KLEUREN.length] }}
-            />
-            <span className="text-xs font-medium">{s.roepnaam}</span>
-          </div>
-        ))}
-      </div>
-
-      {/* Per pijler een vergelijkingsbalk */}
-      <div className="flex flex-col gap-5">
-        {pijlers.map((pijler) => (
-          <div key={pijler.code} className="bg-surface-card rounded-2xl border border-white/10 p-4">
-            <div className="mb-3 flex items-center gap-2">
-              <span className="text-lg">{pijler.icoon}</span>
-              <span className="text-sm font-bold">{pijler.naam}</span>
-            </div>
-
-            {/* Per speler een slider */}
-            <div className="flex flex-col gap-3">
-              {spelers.map((speler, idx) => {
-                const waarde = posities[pijler.code]?.[speler.id] ?? 50;
-                const kleur = SPELER_KLEUREN[idx % SPELER_KLEUREN.length];
-
-                return (
-                  <div key={speler.id} className="flex items-center gap-3">
-                    <div
-                      className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10px] font-bold text-white"
-                      style={{ backgroundColor: kleur }}
-                    >
-                      {speler.roepnaam.charAt(0)}
-                    </div>
-                    <div className="relative flex-1">
-                      <div className="h-2 w-full rounded-full bg-surface-card/10">
-                        <div
-                          className="h-full rounded-full transition-all duration-150"
-                          style={{
-                            width: `${waarde}%`,
-                            backgroundColor: kleur,
-                            opacity: 0.6,
-                          }}
-                        />
-                      </div>
-                      <input
-                        type="range"
-                        min={0}
-                        max={100}
-                        value={waarde}
-                        onChange={(e) =>
-                          onPositieChange(pijler.code, speler.id, Number(e.target.value))
-                        }
-                        className="absolute inset-0 h-2 w-full cursor-pointer appearance-none bg-transparent [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-md"
-                        style={
-                          {
-                            "--thumb-bg": kleur,
-                          } as React.CSSProperties
-                        }
-                      />
-                    </div>
-                    <span className="w-8 text-right text-xs font-bold" style={{ color: kleur }}>
-                      {waarde}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// ─── Stap: Samenvatting ───
-
-function StapVergelijkingSamenvatting({
-  spelers,
-  pijlers,
-  posities,
-  opmerking,
-  onOpmerkingChange,
-}: {
-  spelers: SpelerSelectie[];
-  pijlers: PijlerConfig[];
-  posities: Record<string, Record<string, number>>;
-  opmerking: string;
-  onOpmerkingChange: (v: string) => void;
-}) {
-  return (
-    <div className="animate-[fadeIn_300ms_ease]">
-      <h2 className="mb-4 text-xl font-bold">Samenvatting</h2>
-
-      <div className="bg-surface-card mb-4 rounded-2xl p-4">
-        <h3 className="text-text-secondary mb-2 text-sm font-bold">Spelers</h3>
-        <div className="flex flex-wrap gap-2">
-          {spelers.map((s, i) => (
-            <span
-              key={s.id}
-              className="rounded-full px-3 py-1 text-xs font-semibold text-white"
-              style={{
-                backgroundColor: SPELER_KLEUREN[i % SPELER_KLEUREN.length] + "33",
-                color: SPELER_KLEUREN[i % SPELER_KLEUREN.length],
-              }}
-            >
-              {s.roepnaam} {s.achternaam}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* Per pijler de rangorde */}
-      <div className="bg-surface-card mb-4 rounded-2xl p-4">
-        <h3 className="text-text-secondary mb-3 text-sm font-bold">Rangorde per pijler</h3>
-        <div className="flex flex-col gap-2">
-          {pijlers.map((pijler) => {
-            const pijlerPosities = posities[pijler.code] ?? {};
-            const gesorteerd = spelers
-              .map((s) => ({ ...s, positie: pijlerPosities[s.id] ?? 50 }))
-              .sort((a, b) => b.positie - a.positie);
-
-            return (
-              <div key={pijler.code} className="flex items-center gap-2">
-                <span className="w-6 text-center text-sm">{pijler.icoon}</span>
-                <span className="text-text-secondary w-24 truncate text-xs">{pijler.naam}</span>
-                <div className="flex flex-1 gap-1">
-                  {gesorteerd.map((s, i) => (
-                    <span
-                      key={s.id}
-                      className="rounded px-1.5 py-0.5 text-[10px] font-bold"
-                      style={{
-                        backgroundColor:
-                          SPELER_KLEUREN[
-                            spelers.findIndex((sp) => sp.id === s.id) % SPELER_KLEUREN.length
-                          ] + "22",
-                        color:
-                          SPELER_KLEUREN[
-                            spelers.findIndex((sp) => sp.id === s.id) % SPELER_KLEUREN.length
-                          ],
-                      }}
-                    >
-                      {i + 1}. {s.roepnaam}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Opmerking */}
-      <div className="bg-surface-card rounded-2xl p-4">
-        <h3 className="text-text-secondary mb-2 text-sm font-bold">Opmerking (optioneel)</h3>
-        <textarea
-          value={opmerking}
-          onChange={(e) => onOpmerkingChange(e.target.value)}
-          rows={3}
-          placeholder="Eventuele toelichting bij de vergelijking..."
-          className="bg-surface-elevated text-text-primary placeholder:text-text-muted focus:border-ow-oranje focus:ring-ow-oranje w-full resize-none rounded-lg border border-white/10 px-3 py-2 text-sm focus:ring-1 focus:outline-none"
-        />
-      </div>
     </div>
   );
 }
