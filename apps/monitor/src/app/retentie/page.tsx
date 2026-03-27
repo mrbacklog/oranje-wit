@@ -1,18 +1,13 @@
 export const dynamic = "force-dynamic";
 import { Suspense } from "react";
+import { PageContainer } from "@oranje-wit/ui";
 import { InfoPageHeader } from "@/components/info/InfoPageHeader";
 import { ChartsSkeleton, HeatmapSkeleton, TableSkeleton } from "@/components/ui/skeleton";
 import { RetentieContent } from "./retentie-content";
 
-export default async function RetentiePage({
-  searchParams,
-}: {
-  searchParams: Promise<{ seizoen?: string }>;
-}) {
-  const _params = await searchParams;
-
+export default async function RetentiePage() {
   return (
-    <>
+    <PageContainer animated>
       <InfoPageHeader
         title="Ledendynamiek"
         subtitle="Instroom, uitstroom en behoud van leden — alle bewegingen in beeld."
@@ -20,7 +15,7 @@ export default async function RetentiePage({
       >
         <div className="space-y-4">
           <section>
-            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+            <h4 className="text-text-muted mb-1 text-xs font-semibold tracking-wide uppercase">
               Wat zie je?
             </h4>
             <p>
@@ -30,7 +25,7 @@ export default async function RetentiePage({
             </p>
           </section>
           <section>
-            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+            <h4 className="text-text-muted mb-1 text-xs font-semibold tracking-wide uppercase">
               Tabs
             </h4>
             <p>
@@ -47,7 +42,7 @@ export default async function RetentiePage({
             </p>
           </section>
           <section>
-            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+            <h4 className="text-text-muted mb-1 text-xs font-semibold tracking-wide uppercase">
               Doorklikken
             </h4>
             <p>Klik op een seizoen in de instroom- of uitstroomgrafiek voor een lijst met namen.</p>
@@ -66,6 +61,6 @@ export default async function RetentiePage({
       >
         <RetentieContent />
       </Suspense>
-    </>
+    </PageContainer>
   );
 }

@@ -1,11 +1,10 @@
 export const dynamic = "force-dynamic";
 import { Suspense } from "react";
 import Link from "next/link";
-import { KpiCard } from "@oranje-wit/ui";
+import { KpiCard, PageContainer } from "@oranje-wit/ui";
 import { InfoPageHeader } from "@/components/info/InfoPageHeader";
-import { SeizoenKiezer } from "@/components/layout/seizoen-kiezer";
 import { getSignaleringen } from "@/lib/queries/signalering";
-import { getSeizoen } from "@/lib/utils/seizoen";
+import { HUIDIG_SEIZOEN } from "@/lib/utils/seizoen";
 import { SignaleringCard } from "@/components/signalering/SignaleringCard";
 import { SignaleringTabs } from "./signalering-tabs";
 import type { SignaleringRow } from "@/lib/queries/signalering";
@@ -31,8 +30,8 @@ function SignaleringLijst({ items, seizoen }: { items: SignaleringRow[]; seizoen
   const gesorteerd = sorteerOpErnst(items);
   if (gesorteerd.length === 0) {
     return (
-      <div className="rounded-xl bg-white p-6 shadow-sm">
-        <p className="text-gray-500">
+      <div className="bg-surface-card rounded-xl p-6 shadow-sm">
+        <p className="text-text-muted">
           Geen signaleringen in deze categorie voor seizoen {seizoen}.
         </p>
       </div>
@@ -47,13 +46,8 @@ function SignaleringLijst({ items, seizoen }: { items: SignaleringRow[]; seizoen
   );
 }
 
-export default async function SignaleringPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ seizoen?: string }>;
-}) {
-  const params = await searchParams;
-  const seizoen = getSeizoen(params);
+export default async function SignaleringPage() {
+  const seizoen = HUIDIG_SEIZOEN;
 
   const signaleringen = await getSignaleringen(seizoen);
 
@@ -76,26 +70,21 @@ export default async function SignaleringPage({
   const pijplijn = signaleringen.filter((s) => THEMA_TYPES.Pijplijn.includes(s.type));
 
   return (
-    <>
+    <PageContainer animated>
       <InfoPageHeader
         title="Signalering"
         subtitle="Waar moeten we op letten? Acties en aandachtspunten."
         infoTitle="Over Signalering"
-        actions={
-          <Suspense>
-            <SeizoenKiezer />
-          </Suspense>
-        }
       >
         <div className="space-y-4">
           <section>
-            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+            <h4 className="text-text-muted mb-1 text-xs font-semibold tracking-wide uppercase">
               Wat zie je?
             </h4>
             <p>Automatische signaleringen en gerichte adviezen voor het geselecteerde seizoen.</p>
           </section>
           <section>
-            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+            <h4 className="text-text-muted mb-1 text-xs font-semibold tracking-wide uppercase">
               Tabs
             </h4>
             <p>
@@ -117,8 +106,8 @@ export default async function SignaleringPage({
             </div>
 
             {themaGroepen.length > 0 && (
-              <div className="mb-8 rounded-xl bg-white p-6 shadow-sm">
-                <h3 className="mb-4 text-sm font-semibold tracking-wide text-gray-700 uppercase">
+              <div className="bg-surface-card mb-8 rounded-xl p-6 shadow-sm">
+                <h3 className="text-text-secondary mb-4 text-sm font-semibold tracking-wide uppercase">
                   Strategisch advies
                 </h3>
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -128,24 +117,38 @@ export default async function SignaleringPage({
                     return (
                       <div
                         key={thema.titel}
-                        className={`rounded-lg border p-4 ${
-                          heeftKritiek ? "border-red-200 bg-red-50" : "border-amber-200 bg-amber-50"
-                        }`}
+                        className="rounded-lg border p-4"
+                        style={
+                          heeftKritiek
+                            ? {
+                                borderColor: "var(--color-error-100)",
+                                backgroundColor: "var(--color-error-50)",
+                              }
+                            : {
+                                borderColor: "var(--color-warning-100)",
+                                backgroundColor: "var(--color-warning-50)",
+                              }
+                        }
                       >
                         <div className="mb-2 flex items-center justify-between">
-                          <h4 className="text-sm font-semibold text-gray-900">{thema.titel}</h4>
+                          <h4 className="text-text-primary text-sm font-semibold">{thema.titel}</h4>
                           <span
                             className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-                              heeftKritiek
-                                ? "bg-red-100 text-red-700"
-                                : "bg-amber-100 text-amber-700"
+                              heeftKritiek ? "text-signal-rood" : "text-signal-geel"
                             }`}
+                            style={
+                              heeftKritiek
+                                ? { backgroundColor: "var(--color-error-100)" }
+                                : { backgroundColor: "var(--color-warning-100)" }
+                            }
                           >
                             {thema.signalen.length}{" "}
                             {thema.signalen.length === 1 ? "signaal" : "signalen"}
                           </span>
                         </div>
-                        {topAdvies && <p className="mb-2 text-xs text-gray-600">{topAdvies}</p>}
+                        {topAdvies && (
+                          <p className="text-text-secondary mb-2 text-xs">{topAdvies}</p>
+                        )}
                         <Link
                           href={thema.link}
                           className="text-ow-oranje hover:text-ow-oranje/80 text-xs font-medium"
@@ -166,6 +169,6 @@ export default async function SignaleringPage({
         retentieContent={<SignaleringLijst items={retentie} seizoen={seizoen} />}
         pijplijnContent={<SignaleringLijst items={pijplijn} seizoen={seizoen} />}
       />
-    </>
+    </PageContainer>
   );
 }

@@ -73,9 +73,14 @@ export async function RetentieContent() {
   } catch (error) {
     logger.error("Fout bij ophalen ledendynamiek-data:", error);
     return (
-      <div className="rounded-xl bg-red-50 p-6 shadow-sm">
-        <h3 className="mb-2 text-sm font-semibold text-red-700">Data kon niet geladen worden</h3>
-        <p className="text-sm text-red-600">
+      <div
+        className="rounded-xl p-6 shadow-sm"
+        style={{ backgroundColor: "var(--color-error-50)" }}
+      >
+        <h3 className="text-signal-rood mb-2 text-sm font-semibold">
+          Data kon niet geladen worden
+        </h3>
+        <p className="text-signal-rood text-sm">
           Er ging iets mis bij het ophalen van de ledendynamiek-gegevens. Probeer de pagina opnieuw
           te laden.
         </p>
@@ -214,16 +219,25 @@ function RetentieTabContent({
   return (
     <>
       {waterfallLopendData && (
-        <div className="mb-8 rounded-xl border border-amber-200 bg-amber-50 p-6 shadow-sm">
+        <div
+          className="mb-8 rounded-xl border p-6 shadow-sm"
+          style={{
+            borderColor: "var(--color-warning-100)",
+            backgroundColor: "var(--color-warning-50)",
+          }}
+        >
           <div className="mb-1 flex items-center gap-2">
-            <h3 className="text-sm font-semibold tracking-wide text-amber-800 uppercase">
+            <h3 className="text-signal-geel text-sm font-semibold tracking-wide uppercase">
               Ledenverloop {HUIDIG_SEIZOEN}
             </h3>
-            <span className="rounded-full bg-amber-200 px-2 py-0.5 text-xs font-medium text-amber-800">
+            <span
+              className="text-signal-geel rounded-full px-2 py-0.5 text-xs font-medium"
+              style={{ backgroundColor: "var(--color-warning-100)" }}
+            >
               Voorlopig — seizoen loopt nog
             </span>
           </div>
-          <p className="mb-4 text-xs text-amber-700">
+          <p className="text-signal-geel mb-4 text-xs">
             Begin seizoen &rarr; instroom (nieuw + terug) &rarr; uitstroom &rarr; eind seizoen.
             Cijfers zijn onvolledig zolang het seizoen loopt.
           </p>
@@ -232,11 +246,11 @@ function RetentieTabContent({
       )}
 
       {waterfallData && (
-        <div className="mb-8 rounded-xl bg-white p-6 shadow-sm">
-          <h3 className="mb-1 text-sm font-semibold tracking-wide text-gray-700 uppercase">
+        <div className="bg-surface-card mb-8 rounded-xl p-6 shadow-sm">
+          <h3 className="text-text-secondary mb-1 text-sm font-semibold tracking-wide uppercase">
             Ledenverloop {waterfallSeizoen}
           </h3>
-          <p className="mb-4 text-xs text-gray-400">
+          <p className="text-text-muted mb-4 text-xs">
             Begin seizoen &rarr; instroom (nieuw + terug) &rarr; uitstroom &rarr; eind seizoen
           </p>
           <WaterfallChart data={waterfallData} />
@@ -245,11 +259,11 @@ function RetentieTabContent({
 
       <div className="mb-8 grid gap-6 lg:grid-cols-3">
         {leeftijdsGroepen.map((groep) => (
-          <div key={groep.titel} className="rounded-xl bg-white p-5 shadow-sm">
-            <h3 className="mb-1 text-sm font-semibold tracking-wide text-gray-700 uppercase">
+          <div key={groep.titel} className="bg-surface-card rounded-xl p-5 shadow-sm">
+            <h3 className="text-text-secondary mb-1 text-sm font-semibold tracking-wide uppercase">
               {groep.titel}
             </h3>
-            <p className="mb-3 text-xs text-gray-400">{groep.subtitel}</p>
+            <p className="text-text-muted mb-3 text-xs">{groep.subtitel}</p>
             <RetentieCurve data={groep.data} toonMV={true} />
           </div>
         ))}
@@ -288,16 +302,27 @@ function VerloopTabContent({
   const trendTotaal = li && vi ? li.totaal - vi.totaal : 0;
   const trendJeugd = li && vi ? li.jeugdTotaal - vi.jeugdTotaal : 0;
   const trendSenioren = li && vi ? li.seniorenTotaal - vi.seniorenTotaal : 0;
-  const bgKleur = type === "instroom" ? "bg-blue-50" : "bg-red-50";
-  const titleKleur = type === "instroom" ? "text-blue-700" : "text-red-700";
-  const textKleur = type === "instroom" ? "text-blue-900" : "text-red-900";
+  const bgKleurStyle =
+    type === "instroom"
+      ? { backgroundColor: "var(--color-info-50)" }
+      : { backgroundColor: "var(--color-error-50)" };
+  const titleKleurStyle = type === "instroom" ? { color: "var(--color-info-700)" } : {};
+  const titleKleur = type === "instroom" ? "" : "text-signal-rood";
+  const textKleurStyle = type === "instroom" ? { color: "var(--color-info-500)" } : {};
+  const textKleur = type === "instroom" ? "" : "text-signal-rood";
 
   return (
     <>
       {liIsLopend && (
-        <div className="mb-6 flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
-          <span className="mt-0.5 text-amber-500">&#9888;</span>
-          <p className="text-sm text-amber-800">
+        <div
+          className="mb-6 flex items-start gap-3 rounded-xl border px-4 py-3"
+          style={{
+            borderColor: "var(--color-warning-100)",
+            backgroundColor: "var(--color-warning-50)",
+          }}
+        >
+          <span className="text-signal-geel mt-0.5">&#9888;</span>
+          <p className="text-signal-geel text-sm">
             <strong>Lopend seizoen</strong> — de cijfers hieronder zijn voorlopig. Het seizoen loopt
             nog en niet alle spelers zijn al ingeschreven. De gemiddelden zijn berekend over de
             laatste 5 afgeronde seizoenen.
@@ -337,17 +362,24 @@ function VerloopTabContent({
 
       {type === "instroom" && intraSeizoenFlow && <IntraSeizoenFlowCard flow={intraSeizoenFlow} />}
 
-      <div className="mb-8 rounded-xl bg-white p-6 shadow-sm">
-        <h3 className="mb-4 text-sm font-semibold tracking-wide text-gray-700 uppercase">
+      <div className="bg-surface-card mb-8 rounded-xl p-6 shadow-sm">
+        <h3 className="text-text-secondary mb-4 text-sm font-semibold tracking-wide uppercase">
           Gemiddelde {type} per leeftijd (laatste 5 afgeronde seizoenen)
         </h3>
-        <GroupedBarChart data={leeftijdData} kleurM="#3B82F6" kleurV="#EC4899" />
+        <GroupedBarChart
+          data={leeftijdData}
+          kleurM="var(--color-info-500)"
+          kleurV="var(--knkv-rood-400)"
+        />
         {patronen.length > 0 && (
-          <div className={`mt-4 rounded-lg ${bgKleur} px-4 py-3`}>
-            <h4 className={`mb-2 text-xs font-semibold tracking-wide ${titleKleur} uppercase`}>
+          <div className="mt-4 rounded-lg px-4 py-3" style={bgKleurStyle}>
+            <h4
+              className={`mb-2 text-xs font-semibold tracking-wide uppercase ${titleKleur}`}
+              style={titleKleurStyle}
+            >
               Patronen
             </h4>
-            <ul className={`space-y-1 text-sm ${textKleur}`}>
+            <ul className={`space-y-1 text-sm ${textKleur}`} style={textKleurStyle}>
               {patronen.map((p, i) => (
                 <li key={i} className="flex items-start gap-2">
                   <span className="mt-0.5 shrink-0 text-xs">&#128161;</span>
@@ -359,11 +391,11 @@ function VerloopTabContent({
         )}
       </div>
 
-      <div className="rounded-xl bg-white p-6 shadow-sm">
-        <h3 className="mb-2 text-sm font-semibold tracking-wide text-gray-700 uppercase">
+      <div className="bg-surface-card rounded-xl p-6 shadow-sm">
+        <h3 className="text-text-secondary mb-2 text-sm font-semibold tracking-wide uppercase">
           {label} per seizoen
         </h3>
-        <p className="mb-4 text-xs text-gray-400">
+        <p className="text-text-muted mb-4 text-xs">
           Klik op een seizoen voor de namenlijst.
           {type === "uitstroom" && (
             <>
@@ -373,7 +405,11 @@ function VerloopTabContent({
             </>
           )}
         </p>
-        <SeizoenBarChart data={seizoenData} kleurM="#3B82F6" kleurV="#EC4899" />
+        <SeizoenBarChart
+          data={seizoenData}
+          kleurM="var(--color-info-500)"
+          kleurV="var(--knkv-rood-400)"
+        />
       </div>
     </>
   );

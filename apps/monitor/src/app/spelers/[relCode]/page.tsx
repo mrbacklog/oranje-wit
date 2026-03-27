@@ -1,15 +1,16 @@
 export const dynamic = "force-dynamic";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { PageContainer } from "@oranje-wit/ui";
 import { getSpelerDetail } from "@/lib/queries/spelers";
 import { getSeizoen } from "@/lib/utils/seizoen";
 
 const STATUS_KLEUREN: Record<string, string> = {
-  behouden: "bg-green-100 text-green-800",
-  nieuw: "bg-blue-100 text-blue-800",
-  herinschrijver: "bg-purple-100 text-purple-800",
-  uitgestroomd: "bg-red-100 text-red-800",
-  niet_spelend_geworden: "bg-yellow-100 text-yellow-800",
+  behouden: "text-signal-groen",
+  nieuw: "text-ow-oranje",
+  herinschrijver: "text-ow-oranje",
+  uitgestroomd: "text-signal-rood",
+  niet_spelend_geworden: "text-signal-geel",
 };
 
 export default async function SpelerDetailPage({
@@ -34,9 +35,9 @@ export default async function SpelerDetailPage({
   const leeftijd = speler.geboortejaar ? new Date().getFullYear() - speler.geboortejaar : null;
 
   return (
-    <>
+    <PageContainer animated>
       <div className="mb-6">
-        <Link href={`/spelers${qs}`} className="hover:text-ow-oranje text-sm text-gray-500">
+        <Link href={`/spelers${qs}`} className="hover:text-ow-oranje text-text-muted text-sm">
           &larr; Terug naar overzicht
         </Link>
       </div>
@@ -50,14 +51,14 @@ export default async function SpelerDetailPage({
             className="h-24 w-24 rounded-full object-cover shadow-sm"
           />
         ) : (
-          <span className="flex h-24 w-24 items-center justify-center rounded-full bg-gray-100 text-2xl font-bold text-gray-400">
+          <span className="bg-surface-sunken text-text-muted flex h-24 w-24 items-center justify-center rounded-full text-2xl font-bold">
             {speler.roepnaam[0]}
             {speler.achternaam[0]}
           </span>
         )}
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">{volledigeNaam}</h1>
-          <div className="mt-2 flex flex-wrap gap-4 text-sm text-gray-600">
+          <h1 className="text-text-primary text-2xl font-bold">{volledigeNaam}</h1>
+          <div className="text-text-secondary mt-2 flex flex-wrap gap-4 text-sm">
             {leeftijd && (
               <span>
                 {leeftijd} jaar (
@@ -70,7 +71,11 @@ export default async function SpelerDetailPage({
                 )
               </span>
             )}
-            <span className={speler.geslacht === "M" ? "text-blue-500" : "text-pink-500"}>
+            <span
+              style={{
+                color: speler.geslacht === "M" ? "var(--color-info-500)" : "var(--knkv-rood-400)",
+              }}
+            >
               {speler.geslacht === "M" ? "\u2642 Man" : "\u2640 Vrouw"}
             </span>
             {speler.lidSinds && (
@@ -83,7 +88,7 @@ export default async function SpelerDetailPage({
               </span>
             )}
             {speler.afmelddatum && (
-              <span className="text-red-600">
+              <span className="text-signal-rood">
                 Afgemeld{" "}
                 {new Date(speler.afmelddatum).toLocaleDateString("nl-NL", {
                   year: "numeric",
@@ -98,11 +103,11 @@ export default async function SpelerDetailPage({
 
       {/* Seizoensoverzicht (team + verloop gebundeld) */}
       <div className="mb-8">
-        <h2 className="mb-4 text-lg font-semibold text-gray-800">Seizoensoverzicht</h2>
-        <div className="overflow-x-auto rounded-xl bg-white shadow-sm">
+        <h2 className="text-text-primary mb-4 text-lg font-semibold">Seizoensoverzicht</h2>
+        <div className="bg-surface-card overflow-x-auto rounded-xl shadow-sm">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-100 text-left text-xs font-medium tracking-wide text-gray-500 uppercase">
+              <tr className="border-border-light text-text-muted border-b text-left text-xs font-medium tracking-wide uppercase">
                 <th className="px-4 py-3">Seizoen</th>
                 <th className="px-4 py-3">Team</th>
                 <th className="px-4 py-3">Status</th>
@@ -120,19 +125,19 @@ export default async function SpelerDetailPage({
                 return (
                   <tr
                     key={s.seizoen}
-                    className={`border-b border-gray-50 ${isHuidig ? "bg-ow-oranje-bg" : ""}`}
+                    className={`border-border-light border-b ${isHuidig ? "bg-ow-oranje-bg" : ""}`}
                   >
-                    <td className="px-4 py-2.5 font-medium text-gray-900">{s.seizoen}</td>
+                    <td className="text-text-primary px-4 py-2.5 font-medium">{s.seizoen}</td>
                     <td className="text-ow-oranje px-4 py-2.5 font-semibold">{team}</td>
                     <td className="px-4 py-2.5">
                       {verloop ? (
                         <span
-                          className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_KLEUREN[verloop.status] || "bg-gray-100 text-gray-800"}`}
+                          className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_KLEUREN[verloop.status] || "bg-surface-sunken text-text-secondary"}`}
                         >
                           {verloop.status.replace(/_/g, " ")}
                         </span>
                       ) : (
-                        <span className="text-gray-400">-</span>
+                        <span className="text-text-muted">-</span>
                       )}
                     </td>
                   </tr>
@@ -141,10 +146,12 @@ export default async function SpelerDetailPage({
             </tbody>
           </table>
           {speler.seizoenen.length === 0 && (
-            <p className="px-4 py-8 text-center text-sm text-gray-400">Geen historie beschikbaar</p>
+            <p className="text-text-muted px-4 py-8 text-center text-sm">
+              Geen historie beschikbaar
+            </p>
           )}
         </div>
       </div>
-    </>
+    </PageContainer>
   );
 }

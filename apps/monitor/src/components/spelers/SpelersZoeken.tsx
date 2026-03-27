@@ -28,7 +28,7 @@ function AfmeldBadge({ afmelddatum }: { afmelddatum: Date | string }) {
   return (
     <span
       className={`ml-1.5 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] leading-tight font-medium ${
-        isVerleden ? "text-signal-rood bg-red-50" : "text-ow-oranje bg-orange-50"
+        isVerleden ? "text-signal-rood" : "text-ow-oranje"
       }`}
       title={isVerleden ? "Niet meer lid" : "Afmelding gepland"}
     >
@@ -101,13 +101,13 @@ export function SpelersZoeken({ spelers }: Props) {
           value={zoek}
           onChange={(e) => setZoek(e.target.value)}
           aria-label="Zoek speler"
-          className="focus:border-ow-oranje focus:ring-ow-oranje rounded-lg border border-gray-200 px-4 py-2 text-sm focus:ring-1 focus:outline-none"
+          className="focus:border-ow-oranje focus:ring-ow-oranje border-border-default bg-surface-card text-text-primary rounded-lg border px-4 py-2 text-sm focus:ring-1 focus:outline-none"
         />
         <select
           value={geslachtFilter}
           onChange={(e) => setGeslachtFilter(e.target.value as "alle" | "M" | "V")}
           aria-label="Filter op geslacht"
-          className="rounded-lg border border-gray-200 px-3 py-2 text-sm"
+          className="border-border-default bg-surface-card text-text-primary rounded-lg border px-3 py-2 text-sm"
         >
           <option value="alle">&#9794;/&#9792; alle</option>
           <option value="M">&#9794; Heren</option>
@@ -117,24 +117,25 @@ export function SpelersZoeken({ spelers }: Props) {
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value as SpelerStatus | "alle")}
           aria-label="Filter op status"
-          className="rounded-lg border border-gray-200 px-3 py-2 text-sm"
+          className="border-border-default bg-surface-card text-text-primary rounded-lg border px-3 py-2 text-sm"
         >
           <option value="in_team">{STATUS_LABELS.in_team}</option>
           <option value="reserve">{STATUS_LABELS.reserve}</option>
           <option value="historisch">{STATUS_LABELS.historisch}</option>
           <option value="alle">{STATUS_LABELS.alle}</option>
         </select>
-        <span className="ml-auto text-sm text-gray-500">
-          {gefilterd.length} spelers (<span className="text-blue-500">&#9794; {mannen}</span> /{" "}
-          <span className="text-pink-500">&#9792; {vrouwen}</span>)
+        <span className="text-text-muted ml-auto text-sm">
+          {gefilterd.length} spelers (
+          <span style={{ color: "var(--color-info-500)" }}>&#9794; {mannen}</span> /{" "}
+          <span style={{ color: "var(--knkv-rood-400)" }}>&#9792; {vrouwen}</span>)
         </span>
       </div>
 
       {/* Tabel */}
-      <div className="overflow-x-auto rounded-xl bg-white shadow-sm">
+      <div className="bg-surface-card overflow-x-auto rounded-xl shadow-sm">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-gray-100 text-left text-xs font-medium tracking-wide text-gray-500 uppercase">
+            <tr className="border-border-light text-text-muted border-b text-left text-xs font-medium tracking-wide uppercase">
               <th className="px-4 py-3">Naam</th>
               <th className="px-4 py-3">Geb.jaar</th>
               <th className="px-4 py-3">&#9794;/&#9792;</th>
@@ -148,12 +149,12 @@ export function SpelersZoeken({ spelers }: Props) {
               return (
                 <tr
                   key={s.relCode}
-                  className="border-b border-gray-50 transition-colors hover:bg-gray-50"
+                  className="border-border-light hover:bg-surface-sunken border-b transition-colors"
                 >
                   <td className="px-4 py-2.5">
                     <Link
                       href={`/spelers/${s.relCode}`}
-                      className="hover:text-ow-oranje flex items-center gap-3 font-medium text-gray-900"
+                      className="hover:text-ow-oranje text-text-primary flex items-center gap-3 font-medium"
                     >
                       {s.heeftFoto ? (
                         <img
@@ -162,7 +163,7 @@ export function SpelersZoeken({ spelers }: Props) {
                           className="h-8 w-8 rounded-full object-cover"
                         />
                       ) : (
-                        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-xs text-gray-400">
+                        <span className="bg-surface-sunken text-text-muted flex h-8 w-8 items-center justify-center rounded-full text-xs">
                           {s.roepnaam[0]}
                           {s.achternaam[0]}
                         </span>
@@ -170,23 +171,29 @@ export function SpelersZoeken({ spelers }: Props) {
                       {naam}
                     </Link>
                   </td>
-                  <td className="px-4 py-2.5 text-gray-600">{s.geboortejaar || "-"}</td>
+                  <td className="text-text-secondary px-4 py-2.5">{s.geboortejaar || "-"}</td>
                   <td
-                    className={`px-4 py-2.5 ${s.geslacht === "M" ? "text-blue-500" : "text-pink-500"}`}
+                    className="px-4 py-2.5"
+                    style={{
+                      color: s.geslacht === "M" ? "var(--color-info-500)" : "var(--knkv-rood-400)",
+                    }}
                   >
                     {s.geslacht === "M" ? "\u2642" : "\u2640"}
                   </td>
-                  <td className="px-4 py-2.5 text-gray-600">
+                  <td className="text-text-secondary px-4 py-2.5">
                     <span className="flex flex-col">
-                      {s.huidigTeam || <span className="text-gray-400">-</span>}
+                      {s.huidigTeam || <span className="text-text-muted">-</span>}
                       {s.selectie && s.huidigTeam !== s.selectie && (
-                        <span className="mt-0.5 inline-flex w-fit items-center rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-medium text-amber-700">
+                        <span
+                          className="text-signal-geel mt-0.5 inline-flex w-fit items-center rounded-full px-2 py-0.5 text-[11px] font-medium"
+                          style={{ backgroundColor: "var(--color-warning-50)" }}
+                        >
                           {s.selectie}
                         </span>
                       )}
                     </span>
                   </td>
-                  <td className="px-4 py-2.5 text-right text-gray-600">
+                  <td className="text-text-secondary px-4 py-2.5 text-right">
                     <span className="inline-flex items-center justify-end gap-1">
                       {s.lidSinds ? formatMaandJaar(s.lidSinds) : "-"}
                       {s.afmelddatum && <AfmeldBadge afmelddatum={s.afmelddatum} />}
@@ -198,7 +205,7 @@ export function SpelersZoeken({ spelers }: Props) {
           </tbody>
         </table>
         {gefilterd.length === 0 && (
-          <p className="px-4 py-8 text-center text-sm text-gray-400">Geen spelers gevonden</p>
+          <p className="text-text-muted px-4 py-8 text-center text-sm">Geen spelers gevonden</p>
         )}
       </div>
     </>

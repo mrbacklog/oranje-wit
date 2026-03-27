@@ -43,22 +43,22 @@ export function CohortenContent({ cohortData, eersteSeizoen }: CohortenContentPr
         ]}
       />
 
-      <div className="mb-8 rounded-xl bg-white p-6 shadow-sm">
-        <h3 className="mb-2 text-sm font-semibold tracking-wide text-gray-700 uppercase">
+      <div className="bg-surface-card mb-8 rounded-xl p-6 shadow-sm">
+        <h3 className="text-text-secondary mb-2 text-sm font-semibold tracking-wide uppercase">
           Cohort-retentiematrix
         </h3>
-        <p className="mb-4 text-xs text-gray-400">
+        <p className="text-text-muted mb-4 text-xs">
           Per instroom-seizoen: welk % is na 1, 2, 3... jaar nog actief. Diagonaal lezen = zelfde
           cohort volgen.
         </p>
         <CohortRetentieMatrix data={cohortData} />
       </div>
 
-      <div className="rounded-xl bg-white p-6 shadow-sm">
-        <h3 className="mb-2 text-sm font-semibold tracking-wide text-gray-700 uppercase">
+      <div className="bg-surface-card rounded-xl p-6 shadow-sm">
+        <h3 className="text-text-secondary mb-2 text-sm font-semibold tracking-wide uppercase">
           Retentiecurven per cohort
         </h3>
-        <p className="mb-4 text-xs text-gray-400">
+        <p className="text-text-muted mb-4 text-xs">
           Elke lijn volgt één instroom-jaargang. X-as = jaren na instroom, Y-as = % nog actief.
         </p>
         <CohortRetentieCurven data={cohortData} />

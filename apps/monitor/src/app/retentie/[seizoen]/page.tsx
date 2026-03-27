@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { PageHeader } from "@oranje-wit/ui";
+import { PageContainer, PageHeader } from "@oranje-wit/ui";
 import { getSeizoenVerloop, type SeizoenVerloopLid } from "@/lib/queries/verloop";
 
 const STATUS_ICON: Record<string, string> = {
@@ -11,9 +11,9 @@ const STATUS_ICON: Record<string, string> = {
 };
 
 const STATUS_KLEUR: Record<string, string> = {
-  nieuw: "text-blue-600",
-  herinschrijver: "text-purple-600",
-  uitgestroomd: "text-red-600",
+  nieuw: "text-ow-oranje",
+  herinschrijver: "text-knkv-paars",
+  uitgestroomd: "text-signal-rood",
 };
 
 function groepeerOpGeboortejaar(leden: SeizoenVerloopLid[]) {
@@ -40,20 +40,20 @@ function VerloopLijst({
   const groepen = groepeerOpGeboortejaar(leden);
 
   return (
-    <div className="rounded-xl bg-white p-5 shadow-sm">
-      <h3 className="mb-4 text-sm font-semibold tracking-wide text-gray-700 uppercase">
+    <div className="bg-surface-card rounded-xl p-5 shadow-sm">
+      <h3 className="text-text-secondary mb-4 text-sm font-semibold tracking-wide uppercase">
         {titel} <span className={`ml-1 ${kleur}`}>({leden.length})</span>
       </h3>
 
       {leden.length === 0 ? (
-        <p className="text-sm text-gray-400">Geen data voor dit seizoen</p>
+        <p className="text-text-muted text-sm">Geen data voor dit seizoen</p>
       ) : (
         <div className="space-y-4">
           {[...groepen.entries()].map(([jaar, groep]) => (
             <div key={String(jaar)}>
-              <div className="mb-1.5 flex items-center gap-2 border-b border-gray-100 pb-1">
+              <div className="border-border-light mb-1.5 flex items-center gap-2 border-b pb-1">
                 {jaar === "onbekend" ? (
-                  <span className="text-xs font-semibold text-gray-500">Onbekend</span>
+                  <span className="text-text-muted text-xs font-semibold">Onbekend</span>
                 ) : (
                   <Link
                     href={`/samenstelling/${jaar}`}
@@ -62,7 +62,7 @@ function VerloopLijst({
                     {jaar}
                   </Link>
                 )}
-                <span className="text-xs text-gray-400">({groep.length})</span>
+                <span className="text-text-muted text-xs">({groep.length})</span>
               </div>
               <div className="space-y-0.5">
                 {groep.map((lid) => {
@@ -74,26 +74,29 @@ function VerloopLijst({
                   return (
                     <div
                       key={lid.relCode}
-                      className="flex items-center gap-2 rounded px-2 py-0.5 text-sm hover:bg-gray-50"
+                      className="hover:bg-surface-sunken flex items-center gap-2 rounded px-2 py-0.5 text-sm"
                     >
                       <span
-                        className={`w-4 text-center ${STATUS_KLEUR[lid.status] || "text-gray-400"}`}
+                        className={`w-4 text-center ${STATUS_KLEUR[lid.status] || "text-text-muted"}`}
                         title={lid.status}
                       >
                         {STATUS_ICON[lid.status] || "·"}
                       </span>
                       <Link
                         href={`/spelers/${lid.relCode}`}
-                        className="hover:text-ow-oranje text-gray-900 hover:underline"
+                        className="hover:text-ow-oranje text-text-primary hover:underline"
                       >
                         {naam}
                       </Link>
                       <span
-                        className={`${lid.geslacht === "M" ? "text-blue-500" : "text-pink-500"}`}
+                        style={{
+                          color:
+                            lid.geslacht === "M" ? "var(--color-info-500)" : "var(--knkv-rood-400)",
+                        }}
                       >
                         {lid.geslacht === "M" ? "♂" : "♀"}
                       </span>
-                      {team && <span className="ml-auto text-xs text-gray-400">{team}</span>}
+                      {team && <span className="text-text-muted ml-auto text-xs">{team}</span>}
                     </div>
                   );
                 })}
@@ -123,9 +126,9 @@ export default async function SeizoenVerloopPage({
     data.totaalVorig > 0 ? Math.round((data.behouden / data.totaalVorig) * 100) : null;
 
   return (
-    <>
+    <PageContainer animated>
       <div className="mb-6">
-        <Link href="/retentie" className="hover:text-ow-oranje text-sm text-gray-500">
+        <Link href="/retentie" className="hover:text-ow-oranje text-text-muted text-sm">
           &larr; Terug naar retentie
         </Link>
       </div>
@@ -140,15 +143,15 @@ export default async function SeizoenVerloopPage({
           titel="Instroom"
           leden={data.instroom}
           teamVeld="teamNieuw"
-          kleur="text-green-600"
+          kleur="text-signal-groen"
         />
         <VerloopLijst
           titel="Uitstroom"
           leden={data.uitstroom}
           teamVeld="teamVorig"
-          kleur="text-red-600"
+          kleur="text-signal-rood"
         />
       </div>
-    </>
+    </PageContainer>
   );
 }

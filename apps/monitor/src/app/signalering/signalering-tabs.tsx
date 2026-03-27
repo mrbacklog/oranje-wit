@@ -1,7 +1,7 @@
 "use client";
 
 import { type ReactNode } from "react";
-import { TabShell } from "@/components/layout/tab-shell";
+import { URLTabs } from "@/components/layout/url-tabs";
 
 interface SignaleringTabsProps {
   overzichtContent: ReactNode;
@@ -17,24 +17,28 @@ export function SignaleringTabs({
   pijplijnContent,
 }: SignaleringTabsProps) {
   return (
-    <TabShell
+    <URLTabs
       tabs={[
         {
+          id: "overzicht",
           label: "Overzicht",
           beschrijving: "Samenvatting van alle signaleringen en strategisch advies per thema.",
           content: overzichtContent,
         },
         {
+          id: "werving",
           label: "Werving",
           beschrijving: "Signaleringen over instroom en de vulgraad van de jeugdpijplijn.",
           content: wervingContent,
         },
         {
+          id: "retentie",
           label: "Retentie",
           beschrijving: "Signaleringen over ledenbehoud en trendbreuken.",
           content: retentieContent,
         },
         {
+          id: "pijplijn",
           label: "Pijplijn",
           beschrijving: "Signaleringen over doorstroom naar senioren en genderbalans.",
           content: pijplijnContent,

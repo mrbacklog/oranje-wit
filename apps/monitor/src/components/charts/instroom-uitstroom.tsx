@@ -38,24 +38,31 @@ export function InstroomUitstroom({ data }: InstroomUitstroomProps) {
             }
           }}
         >
-          <CartesianGrid strokeDasharray="3 3" />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--border-light)" />
           <XAxis
             dataKey="seizoen"
             fontSize={12}
+            tick={{ fill: "var(--text-tertiary)" }}
             tickFormatter={(val, idx) => {
               const item = data[idx];
               return item?.isLopend ? `${val}*` : val;
             }}
           />
-          <YAxis fontSize={12} />
+          <YAxis fontSize={12} tick={{ fill: "var(--text-tertiary)" }} />
           <Tooltip
+            contentStyle={{
+              backgroundColor: "var(--surface-raised)",
+              border: "1px solid var(--border-default)",
+              borderRadius: "8px",
+              color: "var(--text-primary)",
+            }}
             labelFormatter={(_label, payload) => {
               const item = payload?.[0]?.payload;
               const seizoen = item?.seizoenVol ?? _label;
               return item?.isLopend ? `${seizoen} (lopend \u2014 voorlopig)` : seizoen;
             }}
           />
-          <Legend />
+          <Legend wrapperStyle={{ color: "var(--text-secondary)" }} />
           <Bar dataKey="instroom" name="Instroom">
             {data.map((entry, index) => (
               <Cell
@@ -79,7 +86,9 @@ export function InstroomUitstroom({ data }: InstroomUitstroomProps) {
         </BarChart>
       </ResponsiveContainer>
       {data.some((d) => d.isLopend) && (
-        <p className="mt-1 text-xs text-gray-400">* Lopend seizoen \u2014 cijfers zijn voorlopig</p>
+        <p className="text-text-muted mt-1 text-xs">
+          * Lopend seizoen \u2014 cijfers zijn voorlopig
+        </p>
       )}
     </>
   );

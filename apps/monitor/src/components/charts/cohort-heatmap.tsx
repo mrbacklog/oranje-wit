@@ -73,7 +73,7 @@ export function CohortHeatmap({ data, seizoenen }: CohortHeatmapProps) {
             className={`rounded-md px-3 py-1 text-sm font-medium transition ${
               filter === f
                 ? "bg-ow-oranje text-white"
-                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                : "bg-surface-sunken text-text-secondary hover:bg-surface-raised"
             }`}
           >
             {f === "Alles" ? "Alles" : f === "M" ? "\u2642 Jongens" : "\u2640 Meisjes"}
@@ -85,7 +85,7 @@ export function CohortHeatmap({ data, seizoenen }: CohortHeatmapProps) {
         <table className="min-w-full border-collapse text-xs">
           <thead>
             <tr>
-              <th className="sticky left-0 z-10 bg-white px-2 py-1 text-left font-semibold">
+              <th className="bg-surface-card sticky left-0 z-10 px-2 py-1 text-left font-semibold">
                 Jaar
               </th>
               {activeSeizoenen.map((sz) => (
@@ -100,7 +100,7 @@ export function CohortHeatmap({ data, seizoenen }: CohortHeatmapProps) {
               const szMap = geaggregeerd.get(jaar)!;
               return (
                 <tr key={jaar}>
-                  <td className="sticky left-0 z-10 bg-white px-2 py-1 font-medium">
+                  <td className="bg-surface-card sticky left-0 z-10 px-2 py-1 font-medium">
                     <button
                       type="button"
                       className="hover:text-ow-oranje cursor-pointer appearance-none border-0 bg-transparent p-0 font-medium underline"
@@ -129,15 +129,17 @@ export function CohortHeatmap({ data, seizoenen }: CohortHeatmapProps) {
             })}
           </tbody>
           <tfoot>
-            <tr className="border-t-2 border-gray-300">
-              <td className="sticky left-0 z-10 bg-gray-50 px-2 py-1 font-semibold">Totaal</td>
+            <tr className="border-border-default border-t-2">
+              <td className="bg-surface-sunken sticky left-0 z-10 px-2 py-1 font-semibold">
+                Totaal
+              </td>
               {activeSeizoenen.map((sz) => {
                 let totaal = 0;
                 for (const szMap of geaggregeerd.values()) {
                   totaal += szMap[sz] || 0;
                 }
                 return (
-                  <td key={sz} className="bg-gray-50 px-2 py-1 text-center font-semibold">
+                  <td key={sz} className="bg-surface-sunken px-2 py-1 text-center font-semibold">
                     {totaal || ""}
                   </td>
                 );

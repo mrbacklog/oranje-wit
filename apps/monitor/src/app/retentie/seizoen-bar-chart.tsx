@@ -38,24 +38,31 @@ export function SeizoenBarChart({
           }
         }}
       >
-        <CartesianGrid strokeDasharray="3 3" />
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border-light)" />
         <XAxis
           dataKey="seizoenKort"
           fontSize={12}
+          tick={{ fill: "var(--text-tertiary)" }}
           tickFormatter={(val, idx) => {
             const item = data[idx];
             return item?.isLopend ? `${val}*` : val;
           }}
         />
-        <YAxis fontSize={12} />
+        <YAxis fontSize={12} tick={{ fill: "var(--text-tertiary)" }} />
         <Tooltip
+          contentStyle={{
+            backgroundColor: "var(--surface-raised)",
+            border: "1px solid var(--border-default)",
+            borderRadius: "8px",
+            color: "var(--text-primary)",
+          }}
           labelFormatter={(_label, payload) => {
             const item = payload?.[0]?.payload;
             const seizoen = item?.seizoen ?? _label;
             return item?.isLopend ? `${seizoen} (lopend — voorlopig)` : seizoen;
           }}
         />
-        <Legend />
+        <Legend wrapperStyle={{ color: "var(--text-secondary)" }} />
         <Bar dataKey="M" name="Jongens" barSize={12}>
           {data.map((entry, index) => (
             <Cell

@@ -1,9 +1,9 @@
 export const dynamic = "force-dynamic";
 import { Suspense } from "react";
+import { PageContainer } from "@oranje-wit/ui";
 import { InfoPageHeader } from "@/components/info/InfoPageHeader";
-import { SeizoenKiezer } from "@/components/layout/seizoen-kiezer";
 import { getPijplijn, getProjectie, getVerwachteInstroom } from "@/lib/queries/samenstelling";
-import { getSeizoen } from "@/lib/utils/seizoen";
+import { HUIDIG_SEIZOEN } from "@/lib/utils/seizoen";
 import { berekenKnelpunten } from "@/lib/utils/pijplijn";
 import { ProjectiePiramide } from "./projectie-piramide";
 import { RetentieCurve } from "./retentie-curve";
@@ -15,13 +15,8 @@ import { U17ProjectionTable } from "./u17-projection-table";
 import { SeniorenTable } from "./senioren-table";
 import { PijplijnTabs } from "./pijplijn-tabs";
 
-export default async function JeugdpijplijnPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ seizoen?: string }>;
-}) {
-  const params = await searchParams;
-  const seizoen = getSeizoen(params);
+export default async function JeugdpijplijnPage() {
+  const seizoen = HUIDIG_SEIZOEN;
 
   const startJaar = parseInt(seizoen.split("-")[0]);
   const [pijplijn, projectie, verwachteInstroom] = await Promise.all([
@@ -49,20 +44,15 @@ export default async function JeugdpijplijnPage({
   const knelpunten = berekenKnelpunten(pijplijn.groeiFactoren);
 
   return (
-    <>
+    <PageContainer animated>
       <InfoPageHeader
         title="Jeugdpijplijn"
         subtitle="Van instroom tot senioren \u2014 streef 12\u2642 + 13\u2640 per geboortejaar."
         infoTitle="Over Jeugdpijplijn"
-        actions={
-          <Suspense>
-            <SeizoenKiezer />
-          </Suspense>
-        }
       >
         <div className="space-y-4">
           <section>
-            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+            <h4 className="text-text-muted mb-1 text-xs font-semibold tracking-wide uppercase">
               Wat zie je?
             </h4>
             <p>
@@ -71,7 +61,7 @@ export default async function JeugdpijplijnPage({
             </p>
           </section>
           <section>
-            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+            <h4 className="text-text-muted mb-1 text-xs font-semibold tracking-wide uppercase">
               Tabs
             </h4>
             <p>
@@ -97,11 +87,11 @@ export default async function JeugdpijplijnPage({
               verwachteInstroom={verwachteInstroom}
             />
 
-            <div className="mb-8 rounded-xl bg-white p-6 shadow-sm">
-              <h3 className="mb-1 text-sm font-semibold tracking-wide text-gray-700 uppercase">
+            <div className="bg-surface-card mb-8 rounded-xl p-6 shadow-sm">
+              <h3 className="text-text-secondary mb-1 text-sm font-semibold tracking-wide uppercase">
                 Waar lekken we?
               </h3>
-              <p className="mb-4 text-xs text-gray-500">
+              <p className="text-text-muted mb-4 text-xs">
                 Netto groei per leeftijdsovergang. Boven 100% = instroom &gt; uitstroom. Onder 100%
                 = nettoverlies.
               </p>
@@ -115,17 +105,17 @@ export default async function JeugdpijplijnPage({
           <>
             <DoorstroomTable />
 
-            <div className="mb-8 rounded-xl bg-white p-6 shadow-sm">
-              <h3 className="mb-1 text-sm font-semibold tracking-wide text-gray-700 uppercase">
+            <div className="bg-surface-card mb-8 rounded-xl p-6 shadow-sm">
+              <h3 className="text-text-secondary mb-1 text-sm font-semibold tracking-wide uppercase">
                 Huidig vs. benodigd
               </h3>
-              <p className="mb-4 text-xs text-gray-500">
+              <p className="text-text-muted mb-4 text-xs">
                 Huidig (solid) vs. benodigd (transparant) — per leeftijd en geslacht
               </p>
               {piramideData.length > 0 ? (
                 <ProjectiePiramide data={piramideData} />
               ) : (
-                <p className="text-sm text-gray-500">Geen data beschikbaar.</p>
+                <p className="text-text-muted text-sm">Geen data beschikbaar.</p>
               )}
             </div>
 
@@ -135,6 +125,6 @@ export default async function JeugdpijplijnPage({
           </>
         }
       />
-    </>
+    </PageContainer>
   );
 }

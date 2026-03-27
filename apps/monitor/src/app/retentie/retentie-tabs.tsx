@@ -1,7 +1,7 @@
 "use client";
 
 import { type ReactNode } from "react";
-import { TabShell } from "@/components/layout/tab-shell";
+import { URLTabs } from "@/components/layout/url-tabs";
 
 interface RetentieTabsProps {
   behoudContent: ReactNode;
@@ -17,27 +17,31 @@ export function RetentieTabs({
   cohortenContent,
 }: RetentieTabsProps) {
   return (
-    <TabShell
+    <URLTabs
       tabs={[
         {
+          id: "behoud",
           label: "Behoud",
           beschrijving:
             "Welk percentage leden keert seizoen na seizoen terug? De retentiecurve toont per leeftijd hoeveel spelers het volgende seizoen weer meedoen.",
           content: behoudContent,
         },
         {
+          id: "instroom",
           label: "Instroom",
           beschrijving:
             "Hoeveel nieuwe spelers komen erbij? Instroom omvat zowel volledig nieuwe leden als herinschrijvers die na een onderbreking terugkeren.",
           content: instroomContent,
         },
         {
+          id: "uitstroom",
           label: "Uitstroom",
           beschrijving:
             "Hoeveel spelers stoppen er? Uitstroom laat per leeftijd zien wanneer leden de vereniging verlaten \u2014 en of dat bij jongens of meisjes vaker voorkomt.",
           content: uitstroomContent,
         },
         {
+          id: "cohorten",
           label: "Cohorten",
           beschrijving:
             "Hoe presteren instroom-jaargangen over de jaren? Volg elk cohort van binnenkomst tot nu \u2014 en zie welke jaargangen het best vasthouden.",

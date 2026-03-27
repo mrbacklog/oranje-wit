@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 import Link from "next/link";
 import { Suspense } from "react";
+import { PageContainer } from "@oranje-wit/ui";
 import { InfoPageHeader } from "@/components/info/InfoPageHeader";
 import { getPerGeboortejaar } from "@/lib/queries/samenstelling";
 import { getCohorten } from "@/lib/queries/cohorten";
@@ -10,15 +11,15 @@ import { CohortHeatmap } from "@/components/charts/cohort-heatmap";
 import { SamenstellingTabs } from "@/components/samenstelling-tabs";
 
 const BAND_STIJL: Record<string, { bg: string; text: string; label: string }> = {
-  Kangoeroes: { bg: "bg-band-blauw/30", text: "text-blue-800", label: "" },
+  Kangoeroes: { bg: "bg-band-blauw/30", text: "text-knkv-blauw", label: "" },
   "F-jeugd": { bg: "bg-band-blauw", text: "text-white", label: "" },
   "E-jeugd": { bg: "bg-band-groen", text: "text-white", label: "" },
-  "D-jeugd": { bg: "bg-band-geel", text: "text-gray-800", label: "" },
+  "D-jeugd": { bg: "bg-band-geel", text: "text-text-primary", label: "" },
   "C-jeugd": { bg: "bg-band-oranje", text: "text-white", label: "" },
   U15: { bg: "bg-band-oranje", text: "text-white", label: "U15" },
   U17: { bg: "bg-band-rood", text: "text-white", label: "U17" },
   U19: { bg: "bg-band-rood", text: "text-white", label: "U19" },
-  Senioren: { bg: "bg-gray-200", text: "text-gray-600", label: "Sen" },
+  Senioren: { bg: "bg-surface-raised", text: "text-text-secondary", label: "Sen" },
 };
 
 export default async function SamenstellingPage({
@@ -70,7 +71,7 @@ export default async function SamenstellingPage({
   const seizoenenDesc = [...seizoenen].reverse();
 
   return (
-    <>
+    <PageContainer animated>
       <InfoPageHeader
         title="Samenstelling"
         subtitle="Ledenstructuur en cohortanalyse per geboortejaar."
@@ -79,7 +80,7 @@ export default async function SamenstellingPage({
       >
         <div className="space-y-4">
           <section>
-            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+            <h4 className="text-text-muted mb-1 text-xs font-semibold tracking-wide uppercase">
               Wat zie je?
             </h4>
             <p>
@@ -88,7 +89,7 @@ export default async function SamenstellingPage({
             </p>
           </section>
           <section>
-            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+            <h4 className="text-text-muted mb-1 text-xs font-semibold tracking-wide uppercase">
               Tabbladen
             </h4>
             <p>
@@ -99,7 +100,7 @@ export default async function SamenstellingPage({
             </p>
           </section>
           <section>
-            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+            <h4 className="text-text-muted mb-1 text-xs font-semibold tracking-wide uppercase">
               Doorklikken
             </h4>
             <p>
@@ -112,34 +113,34 @@ export default async function SamenstellingPage({
       <Suspense>
         <SamenstellingTabs
           piramideContent={
-            <div className="rounded-xl bg-white p-6 shadow-sm">
-              <h3 className="mb-4 text-sm font-semibold tracking-wide text-gray-700 uppercase">
+            <div className="bg-surface-card rounded-xl p-6 shadow-sm">
+              <h3 className="text-text-secondary mb-4 text-sm font-semibold tracking-wide uppercase">
                 Populatiepiramide per geboortejaar
               </h3>
               {boogData.length > 0 ? (
                 <Ledenboog data={boogData} seizoen={seizoen} />
               ) : (
-                <p className="text-sm text-gray-500">Geen data beschikbaar.</p>
+                <p className="text-text-muted text-sm">Geen data beschikbaar.</p>
               )}
             </div>
           }
           detailContent={
-            <div className="rounded-xl bg-white p-6 shadow-sm">
-              <h3 className="mb-4 text-sm font-semibold tracking-wide text-gray-700 uppercase">
+            <div className="bg-surface-card rounded-xl p-6 shadow-sm">
+              <h3 className="text-text-secondary mb-4 text-sm font-semibold tracking-wide uppercase">
                 Detail per geboortejaar
               </h3>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="bg-gray-50 text-left">
+                    <tr className="bg-surface-sunken text-left">
                       <th className="px-3 py-2 font-semibold">Geboortejaar</th>
                       <th className="px-3 py-2 font-semibold">Leeftijd</th>
                       <th className="w-16 px-3 py-2 font-semibold"></th>
                       <th className="px-3 py-2 text-right font-semibold">
-                        <span className="text-blue-500">♂</span>
+                        <span style={{ color: "var(--color-info-500)" }}>♂</span>
                       </th>
                       <th className="px-3 py-2 text-right font-semibold">
-                        <span className="text-pink-500">♀</span>
+                        <span style={{ color: "var(--knkv-rood-400)" }}>♀</span>
                       </th>
                       <th className="px-3 py-2 text-right font-semibold">Totaal</th>
                     </tr>
@@ -157,20 +158,20 @@ export default async function SamenstellingPage({
                         : isCjeugdNaarU15
                           ? {
                               bg: "bg-linear-to-b from-band-geel to-band-oranje",
-                              text: "text-gray-800",
+                              text: "text-text-primary",
                               label: "",
                             }
                           : BAND_STIJL[row.band] || {
-                              bg: "bg-gray-100",
-                              text: "text-gray-600",
+                              bg: "bg-surface-sunken",
+                              text: "text-text-secondary",
                               label: "",
                             };
                       return (
-                        <tr key={row.geboortejaar} className="border-t border-gray-100">
+                        <tr key={row.geboortejaar} className="border-border-light border-t">
                           <td className="px-3 py-1.5 font-medium">
                             <Link
                               href={`/samenstelling/${row.geboortejaar}?seizoen=${seizoen}`}
-                              className="hover:text-ow-oranje text-gray-900 hover:underline"
+                              className="hover:text-ow-oranje text-text-primary hover:underline"
                             >
                               {row.geboortejaar}
                             </Link>
@@ -193,8 +194,8 @@ export default async function SamenstellingPage({
             </div>
           }
           heatmapContent={
-            <div className="rounded-xl bg-white p-6 shadow-sm">
-              <h3 className="mb-4 text-sm font-semibold tracking-wide text-gray-700 uppercase">
+            <div className="bg-surface-card rounded-xl p-6 shadow-sm">
+              <h3 className="text-text-secondary mb-4 text-sm font-semibold tracking-wide uppercase">
                 Cohort-heatmap (actieve leden per geboortejaar per seizoen)
               </h3>
               <CohortHeatmap data={per_cohort} seizoenen={seizoenenDesc} />
@@ -202,6 +203,6 @@ export default async function SamenstellingPage({
           }
         />
       </Suspense>
-    </>
+    </PageContainer>
   );
 }

@@ -2,25 +2,25 @@ import { BENCHMARK_M, BENCHMARK_V } from "@/lib/utils/pijplijn";
 
 export function DoorstroomTable() {
   return (
-    <div className="mb-8 rounded-xl bg-white p-6 shadow-sm">
-      <h3 className="mb-1 text-sm font-semibold tracking-wide text-gray-700 uppercase">
+    <div className="bg-surface-card mb-8 rounded-xl p-6 shadow-sm">
+      <h3 className="text-text-secondary mb-1 text-sm font-semibold tracking-wide uppercase">
         Doorstroomkans naar U17
       </h3>
-      <p className="mb-4 text-xs text-gray-500">
+      <p className="text-text-muted mb-4 text-xs">
         Kans dat een individuele speler die instroomt bij deze leeftijd uiteindelijk U17 (leeftijd
         15) bereikt, op basis van retentiefactoren uit het jeugdmodel.
       </p>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-gray-50 text-left">
+            <tr className="bg-surface-sunken text-left">
               <th className="px-3 py-2 font-semibold">Instap-leeftijd</th>
               <th className="px-3 py-2 font-semibold">Band</th>
               <th className="px-3 py-2 text-right font-semibold">
-                <span className="text-blue-500">♂</span> kans
+                <span style={{ color: "var(--color-info-500)" }}>♂</span> kans
               </th>
               <th className="px-3 py-2 text-right font-semibold">
-                <span className="text-pink-500">♀</span> kans
+                <span style={{ color: "var(--knkv-rood-400)" }}>♀</span> kans
               </th>
               <th className="px-3 py-2 font-semibold">Interpretatie</th>
             </tr>
@@ -38,12 +38,12 @@ export function DoorstroomTable() {
               const band = startLeeftijd <= 7 ? "Blauw" : startLeeftijd <= 9 ? "Groen" : "Geel";
               const gemKans = (pctM + pctV) / 2;
               return (
-                <tr key={startLeeftijd} className="border-t border-gray-100">
+                <tr key={startLeeftijd} className="border-border-light border-t">
                   <td className="px-3 py-2 font-medium">{startLeeftijd} jaar</td>
                   <td className="px-3 py-2">{band}</td>
                   <td className="px-3 py-2 text-right">{pctM}%</td>
                   <td className="px-3 py-2 text-right">{pctV}%</td>
-                  <td className="px-3 py-2 text-xs text-gray-500">
+                  <td className="text-text-muted px-3 py-2 text-xs">
                     {gemKans >= 60
                       ? "Hoge doorstroom — efficiënte instroom"
                       : gemKans >= 40

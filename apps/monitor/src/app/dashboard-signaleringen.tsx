@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Card, CardHeader, CardBody } from "@oranje-wit/ui";
 import { getSignaleringen } from "@/lib/queries/signalering";
 import { SignaleringCard } from "@/components/signalering/SignaleringCard";
 
@@ -9,9 +10,12 @@ export async function DashboardSignaleringen({ seizoen }: { seizoen: string }) {
   if (topSignaleringen.length === 0) return null;
 
   return (
-    <div className="rounded-xl bg-white p-5 shadow-sm">
-      <div className="mb-4 flex items-center justify-between">
-        <h3 className="text-sm font-semibold tracking-wide text-gray-700 uppercase">
+    <Card>
+      <CardHeader className="flex items-center justify-between">
+        <h3
+          className="text-sm font-semibold tracking-wide uppercase"
+          style={{ color: "var(--text-secondary)" }}
+        >
           Signaleringen
         </h3>
         <Link
@@ -20,12 +24,14 @@ export async function DashboardSignaleringen({ seizoen }: { seizoen: string }) {
         >
           Toon alle ({signaleringen.length}) →
         </Link>
-      </div>
-      <div className="space-y-3">
-        {topSignaleringen.map((s) => (
-          <SignaleringCard key={s.id} signalering={s} />
-        ))}
-      </div>
-    </div>
+      </CardHeader>
+      <CardBody>
+        <div className="space-y-3">
+          {topSignaleringen.map((s) => (
+            <SignaleringCard key={s.id} signalering={s} />
+          ))}
+        </div>
+      </CardBody>
+    </Card>
   );
 }

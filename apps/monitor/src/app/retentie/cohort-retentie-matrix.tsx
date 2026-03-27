@@ -54,7 +54,7 @@ export function CohortRetentieMatrix({ data, maxJaren = 8 }: CohortRetentieMatri
       <table className="min-w-full border-collapse text-xs">
         <thead>
           <tr>
-            <th className="sticky left-0 z-10 bg-white px-2 py-1 text-left font-semibold">
+            <th className="bg-surface-card sticky left-0 z-10 px-2 py-1 text-left font-semibold">
               Instroom
             </th>
             <th className="px-2 py-1 text-center font-semibold">Grootte</th>
@@ -70,7 +70,7 @@ export function CohortRetentieMatrix({ data, maxJaren = 8 }: CohortRetentieMatri
             const retentieMap = new Map(rij.retentie.map((r) => [r.jarenNaInstroom, r]));
             return (
               <tr key={rij.instroomSeizoen}>
-                <td className="sticky left-0 z-10 bg-white px-2 py-1 font-medium">
+                <td className="bg-surface-card sticky left-0 z-10 px-2 py-1 font-medium">
                   {formatSeizoen(rij.instroomSeizoen)}
                 </td>
                 <td className="px-2 py-1 text-center font-medium">{rij.cohortGrootte}</td>
@@ -78,7 +78,7 @@ export function CohortRetentieMatrix({ data, maxJaren = 8 }: CohortRetentieMatri
                   const cel = retentieMap.get(j);
                   if (!cel) {
                     return (
-                      <td key={j} className="px-2 py-1 text-center text-gray-300">
+                      <td key={j} className="text-border-default px-2 py-1 text-center">
                         —
                       </td>
                     );

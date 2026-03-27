@@ -3,7 +3,7 @@ import { KpiCardsSkeleton, ChartsSkeleton, AlertCardsSkeleton } from "@/componen
 export default function DashboardLoading() {
   return (
     <div>
-      <div className="mb-6 h-8 w-48 animate-pulse rounded-lg bg-gray-200" />
+      <div className="bg-surface-raised mb-6 h-8 w-48 animate-pulse rounded-lg" />
       <KpiCardsSkeleton />
       <ChartsSkeleton />
       <AlertCardsSkeleton />

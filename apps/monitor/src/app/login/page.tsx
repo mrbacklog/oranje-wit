@@ -9,16 +9,19 @@ function LoginForm() {
   const error = searchParams.get("error");
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50">
+    <div className="bg-surface-page flex min-h-screen items-center justify-center">
       <div className="w-full max-w-sm">
-        <div className="rounded-lg border border-gray-200 bg-white p-8 shadow-sm">
+        <div className="border-border-default bg-surface-card rounded-lg border p-8 shadow-sm">
           <div className="mb-6 text-center">
-            <h1 className="text-xl font-bold text-gray-900">TC-monitor</h1>
-            <p className="mt-1 text-sm text-gray-500">c.k.v. Oranje Wit</p>
+            <h1 className="text-text-primary text-xl font-bold">TC-monitor</h1>
+            <p className="text-text-muted mt-1 text-sm">c.k.v. Oranje Wit</p>
           </div>
 
           {error && (
-            <p className="mb-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-600">
+            <p
+              className="text-signal-rood mb-4 rounded-md px-3 py-2 text-sm"
+              style={{ backgroundColor: "var(--color-error-50)" }}
+            >
               {error === "AccessDenied"
                 ? "Je account heeft geen toegang. Neem contact op met de TC."
                 : "Er ging iets mis bij het inloggen."}
@@ -27,7 +30,7 @@ function LoginForm() {
 
           <button
             onClick={() => signIn("google", { callbackUrl: "/" })}
-            className="flex w-full items-center justify-center gap-3 rounded-md border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:outline-none"
+            className="border-border-default bg-surface-raised text-text-primary hover:bg-surface-sunken focus:ring-ow-oranje flex w-full items-center justify-center gap-3 rounded-md border px-4 py-2.5 text-sm font-medium transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-none"
           >
             <svg className="h-5 w-5" viewBox="0 0 24 24">
               <path

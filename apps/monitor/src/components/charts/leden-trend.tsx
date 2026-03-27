@@ -29,16 +29,23 @@ export function LedenTrend({ data }: LedenTrendProps) {
           }
         }}
       >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="seizoen" fontSize={12} />
-        <YAxis fontSize={12} />
-        <Tooltip />
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border-light)" />
+        <XAxis dataKey="seizoen" fontSize={12} tick={{ fill: "var(--text-tertiary)" }} />
+        <YAxis fontSize={12} tick={{ fill: "var(--text-tertiary)" }} />
+        <Tooltip
+          contentStyle={{
+            backgroundColor: "var(--surface-raised)",
+            border: "1px solid var(--border-default)",
+            borderRadius: "8px",
+            color: "var(--text-primary)",
+          }}
+        />
         <Line
           type="monotone"
           dataKey="totaal"
-          stroke="#ff6b00"
+          stroke="var(--ow-oranje-600)"
           strokeWidth={2}
-          dot={{ fill: "#ff6b00" }}
+          dot={{ fill: "var(--ow-oranje-600)" }}
           activeDot={{ r: 6, cursor: "pointer" }}
         />
       </LineChart>

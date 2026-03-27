@@ -1,5 +1,5 @@
 export const dynamic = "force-dynamic";
-import { KpiCard } from "@oranje-wit/ui";
+import { KpiCard, PageContainer } from "@oranje-wit/ui";
 import { InfoPageHeader } from "@/components/info/InfoPageHeader";
 import { getSpelersOverzicht } from "@/lib/queries/spelers";
 import { HUIDIG_SEIZOEN } from "@/lib/utils/seizoen";
@@ -16,11 +16,11 @@ export default async function SpelersPage() {
   const vrouwenTeam = inTeam.filter((s) => s.geslacht === "V").length;
 
   return (
-    <>
+    <PageContainer animated>
       <InfoPageHeader title="Spelers" subtitle={`Seizoen ${seizoen}`} infoTitle="Over Spelers">
         <div className="space-y-4">
           <section>
-            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+            <h4 className="text-text-muted mb-1 text-xs font-semibold tracking-wide uppercase">
               Wat zie je?
             </h4>
             <p>
@@ -30,13 +30,13 @@ export default async function SpelersPage() {
             </p>
           </section>
           <section>
-            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+            <h4 className="text-text-muted mb-1 text-xs font-semibold tracking-wide uppercase">
               Zoeken &amp; filteren
             </h4>
             <p>Typ een naam om direct te filteren. Gebruik de dropdowns voor geslacht en status.</p>
           </section>
           <section>
-            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+            <h4 className="text-text-muted mb-1 text-xs font-semibold tracking-wide uppercase">
               Doorklikken
             </h4>
             <p>
@@ -63,6 +63,6 @@ export default async function SpelersPage() {
       </div>
 
       <SpelersZoeken spelers={spelers} />
-    </>
+    </PageContainer>
   );
 }

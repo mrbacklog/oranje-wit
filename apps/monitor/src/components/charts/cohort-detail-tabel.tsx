@@ -8,11 +8,11 @@ import { formatNaam } from "@/lib/utils/format";
 type Filter = "Alles" | "M" | "V";
 
 const STATUS_KLEUREN: Record<string, string> = {
-  behouden: "bg-green-100 text-green-800",
-  nieuw: "bg-blue-100 text-blue-800",
-  herinschrijver: "bg-purple-100 text-purple-800",
-  uitgestroomd: "bg-red-100 text-red-800",
-  niet_spelend_geworden: "bg-yellow-100 text-yellow-800",
+  behouden: "text-signal-groen",
+  nieuw: "text-ow-oranje",
+  herinschrijver: "text-ow-oranje",
+  uitgestroomd: "text-signal-rood",
+  niet_spelend_geworden: "text-signal-geel",
 };
 
 const STATUS_LABEL: Record<string, string> = {
@@ -51,36 +51,44 @@ export function CohortDetailTabel({ leden, seizoenen, samenvatting }: CohortDeta
               className={`rounded-md px-3 py-1 text-sm font-medium transition ${
                 filter === f
                   ? "bg-ow-oranje text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  : "bg-surface-sunken text-text-secondary hover:bg-surface-raised"
               }`}
             >
               {f === "Alles" ? "Alles" : f === "M" ? "\u2642 Jongens" : "\u2640 Meisjes"}
             </button>
           ))}
-          <span className="ml-2 self-center text-sm text-gray-500">{gefilterd.length} leden</span>
+          <span className="text-text-muted ml-2 self-center text-sm">{gefilterd.length} leden</span>
         </div>
-        <div className="flex gap-3 text-xs text-gray-500">
+        <div className="text-text-muted flex gap-3 text-xs">
           <span className="inline-flex items-center gap-1">
-            <span className="inline-block h-3 w-3 rounded-sm bg-green-100" /> behouden
+            <span className="bg-signal-groen inline-block h-3 w-3 rounded-sm" /> behouden
           </span>
           <span className="inline-flex items-center gap-1">
-            <span className="inline-block h-3 w-3 rounded-sm bg-blue-100" /> nieuw
+            <span
+              className="inline-block h-3 w-3 rounded-sm"
+              style={{ backgroundColor: "var(--color-info-400)" }}
+            />{" "}
+            nieuw
           </span>
           <span className="inline-flex items-center gap-1">
-            <span className="inline-block h-3 w-3 rounded-sm bg-purple-100" /> herinschrijver
+            <span
+              className="inline-block h-3 w-3 rounded-sm"
+              style={{ backgroundColor: "var(--knkv-paars-400)" }}
+            />{" "}
+            herinschrijver
           </span>
           <span className="inline-flex items-center gap-1">
-            <span className="inline-block h-3 w-3 rounded-sm bg-red-100" /> uitgestroomd
+            <span className="bg-signal-rood inline-block h-3 w-3 rounded-sm" /> uitgestroomd
           </span>
         </div>
       </div>
 
       {/* Tabel */}
-      <div className="overflow-x-auto rounded-xl bg-white shadow-sm">
+      <div className="bg-surface-card overflow-x-auto rounded-xl shadow-sm">
         <table className="min-w-full border-collapse text-xs">
           <thead>
-            <tr className="border-b border-gray-100">
-              <th className="sticky left-0 z-10 bg-white px-3 py-2 text-left font-semibold">
+            <tr className="border-border-light border-b">
+              <th className="bg-surface-card sticky left-0 z-10 px-3 py-2 text-left font-semibold">
                 Naam
               </th>
               {actieveSeizoenen.map((sz) => (
@@ -96,16 +104,20 @@ export function CohortDetailTabel({ leden, seizoenen, samenvatting }: CohortDeta
               const naam = formatNaam(lid);
 
               return (
-                <tr key={lid.relCode} className="border-b border-gray-50">
-                  <td className="sticky left-0 z-10 bg-white px-3 py-1.5 font-medium whitespace-nowrap">
+                <tr key={lid.relCode} className="border-border-light border-b">
+                  <td className="bg-surface-card sticky left-0 z-10 px-3 py-1.5 font-medium whitespace-nowrap">
                     <Link
                       href={`/spelers/${lid.relCode}`}
-                      className="hover:text-ow-oranje text-gray-900 hover:underline"
+                      className="hover:text-ow-oranje text-text-primary hover:underline"
                     >
                       {naam}
                     </Link>
                     <span
-                      className={`ml-1.5 ${lid.geslacht === "M" ? "text-blue-500" : "text-pink-500"}`}
+                      className="ml-1.5"
+                      style={{
+                        color:
+                          lid.geslacht === "M" ? "var(--color-info-500)" : "var(--knkv-rood-400)",
+                      }}
                     >
                       {lid.geslacht === "M" ? "♂" : "♀"}
                     </span>
@@ -117,8 +129,8 @@ export function CohortDetailTabel({ leden, seizoenen, samenvatting }: CohortDeta
                       return <td key={sz} className="px-2 py-1.5 text-center" />;
                     }
                     const statusClass = data.status
-                      ? STATUS_KLEUREN[data.status] || "bg-gray-50 text-gray-700"
-                      : "bg-gray-50 text-gray-700";
+                      ? STATUS_KLEUREN[data.status] || "bg-surface-sunken text-text-secondary"
+                      : "bg-surface-sunken text-text-secondary";
                     const statusIcon = data.status ? STATUS_LABEL[data.status] || "" : "";
 
                     return (
@@ -139,14 +151,14 @@ export function CohortDetailTabel({ leden, seizoenen, samenvatting }: CohortDeta
 
           {/* Samenvatting */}
           <tfoot>
-            <tr className="border-t-2 border-gray-200 bg-gray-50 font-semibold">
-              <td className="sticky left-0 z-10 bg-gray-50 px-3 py-2">Totaal</td>
+            <tr className="border-border-default bg-surface-sunken border-t-2 font-semibold">
+              <td className="bg-surface-sunken sticky left-0 z-10 px-3 py-2">Totaal</td>
               {actieveSeizoenen.map((sz) => {
                 const s = samenvatting[sz];
                 if (!s) return <td key={sz} className="px-2 py-2 text-center" />;
                 const filtered = filter === "Alles" ? s.actief : filter === "M" ? s.M : s.V;
                 return (
-                  <td key={sz} className="px-2 py-2 text-center text-gray-700">
+                  <td key={sz} className="text-text-secondary px-2 py-2 text-center">
                     {filtered}
                   </td>
                 );
@@ -156,7 +168,7 @@ export function CohortDetailTabel({ leden, seizoenen, samenvatting }: CohortDeta
         </table>
 
         {gefilterd.length === 0 && (
-          <p className="px-4 py-8 text-center text-sm text-gray-400">Geen leden gevonden</p>
+          <p className="text-text-muted px-4 py-8 text-center text-sm">Geen leden gevonden</p>
         )}
       </div>
     </div>

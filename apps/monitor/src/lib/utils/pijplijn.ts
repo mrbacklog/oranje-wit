@@ -30,15 +30,15 @@ export const BENCHMARK_V: Record<number, number> = {
 };
 
 export function signaalKleur(pct: number): string {
-  if (pct >= 90) return "bg-green-50 text-green-800";
-  if (pct >= 70) return "bg-yellow-50 text-yellow-800";
-  return "bg-red-50 text-red-800";
+  if (pct >= 90) return "bg-signal-groen/10 text-signal-groen";
+  if (pct >= 70) return "bg-signal-geel/10 text-signal-geel";
+  return "bg-signal-rood/10 text-signal-rood";
 }
 
 export const knelpuntKleuren: Record<string, string> = {
-  rood: "border-l-4 border-red-400 bg-red-50",
-  geel: "border-l-4 border-yellow-400 bg-yellow-50",
-  groen: "border-l-4 border-green-400 bg-green-50",
+  rood: "border-l-4 border-signal-rood bg-signal-rood/10",
+  geel: "border-l-4 border-signal-geel bg-signal-geel/10",
+  groen: "border-l-4 border-signal-groen bg-signal-groen/10",
 };
 
 export type Knelpunt = {

@@ -13,7 +13,7 @@ interface KpiCardsProps {
 function TrendIndicator({ trend, label }: { trend: number; label?: string }) {
   const isPositief = trend > 0;
   const isNul = trend === 0;
-  const kleur = isNul ? "text-gray-400" : isPositief ? "text-green-600" : "text-red-600";
+  const kleur = isNul ? "text-text-muted" : isPositief ? "text-signal-groen" : "text-signal-rood";
   const pijl = isNul ? "→" : isPositief ? "▲" : "▼";
   const tekst = label ?? `${isPositief ? "+" : ""}${trend} vs vorig`;
 
@@ -28,10 +28,12 @@ export function KpiCards({ items }: KpiCardsProps) {
   return (
     <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-3">
       {items.map((item) => (
-        <div key={item.label} className="rounded-xl bg-white p-4 shadow-sm">
-          <p className="text-xs font-medium tracking-wide text-gray-500 uppercase">{item.label}</p>
-          <p className="mt-1 text-2xl font-bold text-gray-900">{item.waarde}</p>
-          {item.detail && <p className="mt-0.5 text-xs text-gray-400">{item.detail}</p>}
+        <div key={item.label} className="bg-surface-card rounded-xl p-4 shadow-sm">
+          <p className="text-text-muted text-xs font-medium tracking-wide uppercase">
+            {item.label}
+          </p>
+          <p className="text-text-primary mt-1 text-2xl font-bold">{item.waarde}</p>
+          {item.detail && <p className="text-text-muted mt-0.5 text-xs">{item.detail}</p>}
           {item.trend !== undefined && (
             <TrendIndicator trend={item.trend} label={item.trendLabel} />
           )}

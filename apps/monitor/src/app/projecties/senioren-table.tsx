@@ -11,31 +11,31 @@ type SeniorenRow = {
 
 export function SeniorenTable({ senioren }: { senioren: SeniorenRow[] }) {
   return (
-    <div className="rounded-xl bg-white p-6 shadow-sm">
-      <h3 className="mb-1 text-sm font-semibold tracking-wide text-gray-700 uppercase">
+    <div className="bg-surface-card rounded-xl p-6 shadow-sm">
+      <h3 className="text-text-secondary mb-1 text-sm font-semibold tracking-wide uppercase">
         Senioren-instroom — Projectie vanuit U19
       </h3>
-      <p className="mb-4 text-xs text-gray-500">
+      <p className="text-text-muted mb-4 text-xs">
         Verwacht aantal spelers dat per seizoen de seniorenleeftijd bereikt
       </p>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-gray-50 text-left">
+            <tr className="bg-surface-sunken text-left">
               <th className="px-3 py-2 font-semibold">Seizoen</th>
               <th className="px-3 py-2 font-semibold">Geboortejaren</th>
               <th className="px-3 py-2 text-right font-semibold">
-                <span className="text-blue-500">♂</span>
+                <span style={{ color: "var(--color-info-500)" }}>♂</span>
               </th>
               <th className="px-3 py-2 text-right font-semibold">
-                <span className="text-pink-500">♀</span>
+                <span style={{ color: "var(--knkv-rood-400)" }}>♀</span>
               </th>
               <th className="px-3 py-2 text-right font-semibold">Totaal</th>
             </tr>
           </thead>
           <tbody>
             {senioren.map((row) => (
-              <tr key={row.seizoen} className="border-t border-gray-100">
+              <tr key={row.seizoen} className="border-border-light border-t">
                 <td className="px-3 py-2 font-medium">{row.seizoen}</td>
                 <td className="px-3 py-2">
                   <Link

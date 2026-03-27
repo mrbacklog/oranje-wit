@@ -42,37 +42,52 @@ export function ProjectiePiramide({ data }: ProjectiePiramideProps) {
   return (
     <ResponsiveContainer width="100%" height={Math.max(400, data.length * 28)}>
       <BarChart data={chartData} layout="vertical" stackOffset="sign">
-        <CartesianGrid strokeDasharray="3 3" />
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border-light)" />
         <XAxis
           type="number"
           domain={[-maxVal - 2, maxVal + 2]}
           fontSize={12}
+          tick={{ fill: "var(--text-tertiary)" }}
           tickFormatter={(v: number) => String(Math.abs(v))}
         />
-        <YAxis dataKey="leeftijd" type="category" fontSize={11} width={35} reversed />
+        <YAxis
+          dataKey="leeftijd"
+          type="category"
+          fontSize={11}
+          width={35}
+          reversed
+          tick={{ fill: "var(--text-tertiary)" }}
+        />
         <Tooltip
+          contentStyle={{
+            backgroundColor: "var(--surface-raised)",
+            border: "1px solid var(--border-default)",
+            borderRadius: "8px",
+            color: "var(--text-primary)",
+          }}
           formatter={(value: number, name: string) => {
             const labels: Record<string, string> = {
-              streef_m: "Streef ♂",
-              streef_v: "Streef ♀",
-              huidig_m: "Huidig ♂",
-              huidig_v: "Huidig ♀",
+              streef_m: "Streef \u2642",
+              streef_v: "Streef \u2640",
+              huidig_m: "Huidig \u2642",
+              huidig_v: "Huidig \u2640",
             };
             return [Math.abs(value), labels[name] || name];
           }}
         />
         <Legend
+          wrapperStyle={{ color: "var(--text-secondary)" }}
           formatter={(value: string) => {
             const labels: Record<string, string> = {
-              streef_m: "Streef ♂",
-              streef_v: "Streef ♀",
-              huidig_m: "Huidig ♂",
-              huidig_v: "Huidig ♀",
+              streef_m: "Streef \u2642",
+              streef_v: "Streef \u2640",
+              huidig_m: "Huidig \u2642",
+              huidig_v: "Huidig \u2640",
             };
             return labels[value] || value;
           }}
         />
-        <ReferenceLine x={0} stroke="#666" />
+        <ReferenceLine x={0} stroke="var(--text-tertiary)" />
         {/* Streef als achtergrond (semi-transparant) */}
         <Bar
           dataKey="streef_m"

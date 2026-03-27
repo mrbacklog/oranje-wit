@@ -23,10 +23,10 @@ interface WaterfallChartProps {
 }
 
 const COLORS: Record<WaterfallItem["type"], string> = {
-  start: "var(--color-gray-500, #6B7280)",
-  instroom: "var(--color-green-500, #22C55E)",
-  uitstroom: "var(--color-red-500, #EF4444)",
-  eind: "var(--color-gray-500, #6B7280)",
+  start: "#6B7280",
+  instroom: "#22C55E",
+  uitstroom: "#EF4444",
+  eind: "#6B7280",
 };
 
 interface TransformedItem {
@@ -88,10 +88,22 @@ export function WaterfallChart({ data }: WaterfallChartProps) {
   return (
     <ResponsiveContainer width="100%" height={250}>
       <BarChart data={transformed} layout="vertical" barSize={28}>
-        <CartesianGrid strokeDasharray="3 3" horizontal={false} />
-        <XAxis type="number" fontSize={12} />
-        <YAxis type="category" dataKey="label" fontSize={12} width={80} />
+        <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="var(--border-light)" />
+        <XAxis type="number" fontSize={12} tick={{ fill: "var(--text-tertiary)" }} />
+        <YAxis
+          type="category"
+          dataKey="label"
+          fontSize={12}
+          width={80}
+          tick={{ fill: "var(--text-tertiary)" }}
+        />
         <Tooltip
+          contentStyle={{
+            backgroundColor: "var(--surface-raised)",
+            border: "1px solid var(--border-default)",
+            borderRadius: "8px",
+            color: "var(--text-primary)",
+          }}
           formatter={(_val: unknown, name: unknown, props: { payload?: TransformedItem }) => {
             if (name === "base") return [null, null];
             return [props.payload?.displayValue, props.payload?.label];
@@ -110,7 +122,7 @@ export function WaterfallChart({ data }: WaterfallChartProps) {
             position="right"
             fontSize={12}
             fontWeight={600}
-            fill="#374151"
+            fill="var(--text-primary)"
           />
         </Bar>
       </BarChart>

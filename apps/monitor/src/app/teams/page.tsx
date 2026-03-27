@@ -1,4 +1,5 @@
 export const dynamic = "force-dynamic";
+import { PageContainer } from "@oranje-wit/ui";
 import { getTeamsRegister, getSpelersPerTeam, getSpelersVanTeam } from "@/lib/queries/teams";
 import { getStafPerTeam } from "@/lib/queries/staf";
 import { getOWTeamsMetUitslagen } from "@/lib/queries/uitslagen";
@@ -143,16 +144,18 @@ export default async function TeamsPage({
   }));
 
   return (
-    <TeamsOnderwaterscherm
-      seizoen={seizoen}
-      seizoenen={SEIZOENEN}
-      teams={teamsMetNaam}
-      chipGroepen={chipGroepen}
-      stafPerTeam={stafRecord}
-      uitslagenPerTeam={uitslagenPerTeam}
-      spelersPerTeam={spelersRecord}
-      tellingPerTeam={tellingRecord}
-      selectieGroepen={selectieGroepen}
-    />
+    <PageContainer animated>
+      <TeamsOnderwaterscherm
+        seizoen={seizoen}
+        seizoenen={SEIZOENEN}
+        teams={teamsMetNaam}
+        chipGroepen={chipGroepen}
+        stafPerTeam={stafRecord}
+        uitslagenPerTeam={uitslagenPerTeam}
+        spelersPerTeam={spelersRecord}
+        tellingPerTeam={tellingRecord}
+        selectieGroepen={selectieGroepen}
+      />
+    </PageContainer>
   );
 }

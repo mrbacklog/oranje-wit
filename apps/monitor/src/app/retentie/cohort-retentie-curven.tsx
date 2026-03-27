@@ -72,16 +72,35 @@ export function CohortRetentieCurven({ data, maxCohorten = 6 }: CohortRetentieCu
   return (
     <ResponsiveContainer width="100%" height={300}>
       <LineChart data={chartData}>
-        <CartesianGrid strokeDasharray="3 3" />
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border-light)" />
         <XAxis
           dataKey="jarenNaInstroom"
           fontSize={12}
-          label={{ value: "Jaren na instroom", position: "insideBottom", offset: -5 }}
+          tick={{ fill: "var(--text-tertiary)" }}
+          label={{
+            value: "Jaren na instroom",
+            position: "insideBottom",
+            offset: -5,
+            fill: "var(--text-tertiary)",
+          }}
           tickFormatter={(v: number) => `Jaar ${v}`}
         />
-        <YAxis fontSize={12} domain={[0, 100]} tickFormatter={(v: number) => `${v}%`} />
-        <Tooltip formatter={(v: number) => [`${v.toFixed(1)}%`, ""]} />
-        <Legend />
+        <YAxis
+          fontSize={12}
+          domain={[0, 100]}
+          tick={{ fill: "var(--text-tertiary)" }}
+          tickFormatter={(v: number) => `${v}%`}
+        />
+        <Tooltip
+          contentStyle={{
+            backgroundColor: "var(--surface-raised)",
+            border: "1px solid var(--border-default)",
+            borderRadius: "8px",
+            color: "var(--text-primary)",
+          }}
+          formatter={(v: number) => [`${v.toFixed(1)}%`, ""]}
+        />
+        <Legend wrapperStyle={{ color: "var(--text-secondary)" }} />
         {cohorten.map((cohort, i) => (
           <Line
             key={cohort.instroomSeizoen}

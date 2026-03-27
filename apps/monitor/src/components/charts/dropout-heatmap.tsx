@@ -24,7 +24,7 @@ export function DropoutHeatmap({ data, seizoenen }: DropoutHeatmapProps) {
       <table className="min-w-full border-collapse text-xs">
         <thead>
           <tr>
-            <th className="sticky left-0 z-10 bg-white px-2 py-1 text-left font-semibold">
+            <th className="bg-surface-card sticky left-0 z-10 px-2 py-1 text-left font-semibold">
               Leeftijd
             </th>
             {seizoenen.map((sz) => (
@@ -37,7 +37,9 @@ export function DropoutHeatmap({ data, seizoenen }: DropoutHeatmapProps) {
         <tbody>
           {data.map((row) => (
             <tr key={row.leeftijd}>
-              <td className="sticky left-0 z-10 bg-white px-2 py-1 font-medium">{row.leeftijd}</td>
+              <td className="bg-surface-card sticky left-0 z-10 px-2 py-1 font-medium">
+                {row.leeftijd}
+              </td>
               {seizoenen.map((sz) => {
                 const val = row.seizoenen[sz]?.uitstroom_pct ?? 0;
                 return (

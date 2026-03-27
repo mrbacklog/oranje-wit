@@ -44,24 +44,38 @@ export function Ledenboog({ data, seizoen }: LedenboogProps) {
           }
         }}
       >
-        <CartesianGrid strokeDasharray="3 3" />
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border-light)" />
         <XAxis
           type="number"
           domain={[-maxVal, maxVal]}
           fontSize={12}
+          tick={{ fill: "var(--text-tertiary)" }}
           tickFormatter={(v: number) => String(Math.abs(v))}
         />
-        <YAxis dataKey="geboortejaar" type="category" fontSize={11} width={50} />
+        <YAxis
+          dataKey="geboortejaar"
+          type="category"
+          fontSize={11}
+          width={50}
+          tick={{ fill: "var(--text-tertiary)" }}
+        />
         <Tooltip
+          contentStyle={{
+            backgroundColor: "var(--surface-raised)",
+            border: "1px solid var(--border-default)",
+            borderRadius: "8px",
+            color: "var(--text-primary)",
+          }}
           formatter={(value: number, name: string) => [
             Math.abs(value),
             name === "M" ? "\u2642 Jongens" : "\u2640 Meisjes",
           ]}
         />
         <Legend
+          wrapperStyle={{ color: "var(--text-secondary)" }}
           formatter={(value: string) => (value === "M" ? "\u2642 Jongens" : "\u2640 Meisjes")}
         />
-        <ReferenceLine x={0} stroke="#666" />
+        <ReferenceLine x={0} stroke="var(--text-tertiary)" />
         <Bar dataKey="M" stackId="stack" name="M" fill="#60A5FA" />
         <Bar dataKey="V" stackId="stack" name="V" fill="#F472B6" />
       </BarChart>

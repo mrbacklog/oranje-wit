@@ -1,7 +1,7 @@
 "use client";
 
 import { type ReactNode } from "react";
-import { TabShell } from "@/components/layout/tab-shell";
+import { URLTabs } from "@/components/layout/url-tabs";
 
 interface PijplijnTabsProps {
   pijplijnContent: ReactNode;
@@ -10,15 +10,17 @@ interface PijplijnTabsProps {
 
 export function PijplijnTabs({ pijplijnContent, projectieContent }: PijplijnTabsProps) {
   return (
-    <TabShell
+    <URLTabs
       tabs={[
         {
+          id: "pijplijn",
           label: "Pijplijn",
           beschrijving:
             "Hoeveel spelers hebben we per leeftijd? Waar zitten de gaten en knelpunten ten opzichte van het streefmodel?",
           content: pijplijnContent,
         },
         {
+          id: "projectie",
           label: "Projectie",
           beschrijving:
             "Hoe stromen spelers door naar senioren? Projectie op basis van historische doorstroompercentages.",

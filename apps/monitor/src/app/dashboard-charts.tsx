@@ -1,3 +1,4 @@
+import { Card, CardHeader, CardBody } from "@oranje-wit/ui";
 import { getLedenTrend, getInstroomUitstroom } from "@/lib/queries/dashboard";
 import { LedenTrend } from "@/components/charts/leden-trend";
 import { InstroomUitstroom } from "@/components/charts/instroom-uitstroom";
@@ -23,19 +24,34 @@ export async function DashboardCharts() {
   }));
 
   return (
-    <div className="mb-8 grid gap-6 lg:grid-cols-2">
-      <div className="rounded-xl bg-white p-5 shadow-sm">
-        <h3 className="mb-4 text-sm font-semibold tracking-wide text-gray-700 uppercase">
-          Spelende leden per seizoen
-        </h3>
-        <LedenTrend data={ledenTrendData} />
-      </div>
-      <div className="rounded-xl bg-white p-5 shadow-sm">
-        <h3 className="mb-4 text-sm font-semibold tracking-wide text-gray-700 uppercase">
-          Instroom vs. Uitstroom
-        </h3>
-        <InstroomUitstroom data={instroomUitstroomData} />
-      </div>
+    <div className="mb-8 grid gap-4 lg:grid-cols-2">
+      <Card>
+        <CardHeader>
+          <h3
+            className="text-sm font-semibold tracking-wide uppercase"
+            style={{ color: "var(--text-secondary)" }}
+          >
+            Spelende leden per seizoen
+          </h3>
+        </CardHeader>
+        <CardBody>
+          <LedenTrend data={ledenTrendData} />
+        </CardBody>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <h3
+            className="text-sm font-semibold tracking-wide uppercase"
+            style={{ color: "var(--text-secondary)" }}
+          >
+            Instroom vs. Uitstroom
+          </h3>
+        </CardHeader>
+        <CardBody>
+          <InstroomUitstroom data={instroomUitstroomData} />
+        </CardBody>
+      </Card>
     </div>
   );
 }

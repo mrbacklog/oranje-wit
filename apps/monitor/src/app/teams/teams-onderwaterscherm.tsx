@@ -120,20 +120,20 @@ function TeamButton({
       aria-pressed={isSelected}
       onClick={() => onSelect(code)}
       className={`mx-0 flex w-full cursor-pointer items-center gap-2 rounded-md py-1.5 text-left text-[13px] transition-colors ${indent ? "pr-3 pl-5" : "px-3"} ${
-        isSelected ? "bg-ow-oranje text-white" : "text-gray-700 hover:bg-gray-50"
+        isSelected ? "bg-ow-oranje text-white" : "text-text-secondary hover:bg-surface-sunken"
       } `}
     >
       {team.kleur && (
         <span
           className={`inline-block h-2 w-2 shrink-0 rounded-full ${
-            isSelected ? "bg-white/50" : BAND_DOT[team.kleur] || "bg-gray-300"
+            isSelected ? "bg-white/50" : BAND_DOT[team.kleur] || "bg-surface-raised"
           }`}
         />
       )}
       <span className="flex-1 truncate font-medium">{naam}</span>
       {jCode && (
         <span
-          className={`shrink-0 text-[11px] tabular-nums ${isSelected ? "text-white/60" : "text-gray-400"}`}
+          className={`shrink-0 text-[11px] tabular-nums ${isSelected ? "text-white/60" : "text-text-muted"}`}
         >
           {jCode}
         </span>
@@ -157,10 +157,10 @@ function DragHandle({ isSelected }: { isSelected: boolean }) {
       {[0, 1, 2].map((i) => (
         <span key={i} className={`flex gap-[2px]`}>
           <span
-            className={`block h-[3px] w-[3px] rounded-full ${isSelected ? "bg-white/40" : "bg-gray-300"}`}
+            className={`block h-[3px] w-[3px] rounded-full ${isSelected ? "bg-white/40" : "bg-surface-raised"}`}
           />
           <span
-            className={`block h-[3px] w-[3px] rounded-full ${isSelected ? "bg-white/40" : "bg-gray-300"}`}
+            className={`block h-[3px] w-[3px] rounded-full ${isSelected ? "bg-white/40" : "bg-surface-raised"}`}
           />
         </span>
       ))}
@@ -201,7 +201,7 @@ function SortableTeamButton({
         aria-pressed={isSelected}
         onClick={() => onSelect(code)}
         className={`mx-0 flex w-full cursor-pointer items-center gap-1.5 rounded-md px-1.5 py-1.5 text-left text-[13px] transition-colors ${
-          isSelected ? "bg-ow-oranje text-white" : "text-gray-700 hover:bg-gray-50"
+          isSelected ? "bg-ow-oranje text-white" : "text-text-secondary hover:bg-surface-sunken"
         }`}
       >
         <span {...attributes} {...listeners}>
@@ -210,14 +210,14 @@ function SortableTeamButton({
         {team.kleur && (
           <span
             className={`inline-block h-2 w-2 shrink-0 rounded-full ${
-              isSelected ? "bg-white/50" : BAND_DOT[team.kleur] || "bg-gray-300"
+              isSelected ? "bg-white/50" : BAND_DOT[team.kleur] || "bg-surface-raised"
             }`}
           />
         )}
         <span className="flex-1 truncate font-medium">{naam}</span>
         {jCode && (
           <span
-            className={`shrink-0 text-[11px] tabular-nums ${isSelected ? "text-white/60" : "text-gray-400"}`}
+            className={`shrink-0 text-[11px] tabular-nums ${isSelected ? "text-white/60" : "text-text-muted"}`}
           >
             {jCode}
           </span>
@@ -342,12 +342,12 @@ export function TeamsOnderwaterscherm({
       <div className="flex shrink-0 flex-col md:w-56">
         {/* Header met seizoenskeuze */}
         <div className="mb-3 flex items-baseline justify-between">
-          <h1 className="text-xl font-bold text-gray-900">Teams</h1>
+          <h1 className="text-text-primary text-xl font-bold">Teams</h1>
           <InfoButton onClick={() => setInfoOpen(true)} />
           <select
             value={seizoen}
             onChange={(e) => handleSeizoenChange(e.target.value)}
-            className="hover:text-ow-oranje cursor-pointer border-none bg-transparent text-xs text-gray-500 focus:outline-none"
+            className="hover:text-ow-oranje text-text-muted cursor-pointer border-none bg-transparent text-xs focus:outline-none"
           >
             {seizoenen.map((s) => (
               <option key={s} value={s}>
@@ -358,7 +358,7 @@ export function TeamsOnderwaterscherm({
         </div>
 
         {/* Desktop: verticale lijst */}
-        <div className="hidden min-h-0 flex-1 flex-col overflow-hidden rounded-lg border border-gray-200 bg-white md:flex">
+        <div className="border-border-default bg-surface-card hidden min-h-0 flex-1 flex-col overflow-hidden rounded-lg border md:flex">
           <div className="flex-1 overflow-y-auto">
             {chipGroepen.map((groep, gi) => {
               const isBCategorie = groep.label === "B-categorie Jeugd";
@@ -366,8 +366,8 @@ export function TeamsOnderwaterscherm({
 
               return (
                 <div key={groep.label}>
-                  {gi > 0 && <div className="mx-3 border-t border-gray-100" />}
-                  <div className="px-3 pt-2 pb-0.5 text-[10px] font-semibold tracking-wide text-gray-400 uppercase">
+                  {gi > 0 && <div className="border-border-light mx-3 border-t" />}
+                  <div className="text-text-muted px-3 pt-2 pb-0.5 text-[10px] font-semibold tracking-wide uppercase">
                     {groep.label}
                   </div>
                   {isBCategorie ? (
@@ -420,8 +420,8 @@ export function TeamsOnderwaterscherm({
               );
             })}
           </div>
-          <div className="border-t border-gray-100 px-3 py-2 text-center">
-            <span className="text-[11px] text-gray-400">
+          <div className="border-border-light border-t px-3 py-2 text-center">
+            <span className="text-text-muted text-[11px]">
               {teams.filter((t) => !t.isSelectie).length} teams
             </span>
           </div>
@@ -431,7 +431,7 @@ export function TeamsOnderwaterscherm({
         <div className="space-y-2 md:hidden">
           {chipGroepen.map((groep) => (
             <div key={groep.label}>
-              <div className="mb-1 text-[10px] font-semibold tracking-wide text-gray-400 uppercase">
+              <div className="text-text-muted mb-1 text-[10px] font-semibold tracking-wide uppercase">
                 {groep.label}
               </div>
               <div className="flex flex-wrap items-center gap-1.5">
@@ -448,13 +448,13 @@ export function TeamsOnderwaterscherm({
                       className={`inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-2.5 py-1 text-sm font-medium transition-all ${
                         isSelected
                           ? "bg-ow-oranje text-white shadow-sm"
-                          : "hover:border-ow-oranje hover:text-ow-oranje border border-gray-200 bg-white text-gray-700"
+                          : "hover:border-ow-oranje hover:text-ow-oranje border-border-default bg-surface-card text-text-secondary border"
                       } `}
                     >
                       {team.kleur && (
                         <span
                           className={`inline-block h-2 w-2 rounded-full ${
-                            isSelected ? "bg-white/60" : BAND_DOT[team.kleur] || "bg-gray-300"
+                            isSelected ? "bg-white/60" : BAND_DOT[team.kleur] || "bg-surface-raised"
                           }`}
                         />
                       )}
@@ -471,13 +471,13 @@ export function TeamsOnderwaterscherm({
       {/* ── Rechts: Detailpaneel ── */}
       <div className="min-w-0 flex-1 md:overflow-y-auto">
         {!selected ? (
-          <div className="hidden h-full items-center justify-center rounded-lg border border-dashed border-gray-200 md:flex">
-            <p className="text-sm text-gray-400">Selecteer een team</p>
+          <div className="border-border-default hidden h-full items-center justify-center rounded-lg border border-dashed md:flex">
+            <p className="text-text-muted text-sm">Selecteer een team</p>
           </div>
         ) : (
           <div>
             {/* Header */}
-            <div className="rounded-t-lg border border-b-0 border-gray-200 bg-white px-6 py-4">
+            <div className="border-border-default bg-surface-card rounded-t-lg border border-b-0 px-6 py-4">
               <div className="flex items-center gap-3">
                 {editingNaam ? (
                   <input
@@ -493,17 +493,17 @@ export function TeamsOnderwaterscherm({
                         );
                       if (e.key === "Escape") setEditingNaam(false);
                     }}
-                    className="border-ow-oranje focus:ring-ow-oranje rounded border bg-white px-2 py-0.5 text-lg font-bold text-gray-900 focus:ring-1 focus:outline-none"
+                    className="border-ow-oranje focus:ring-ow-oranje bg-surface-card text-text-primary rounded border px-2 py-0.5 text-lg font-bold focus:ring-1 focus:outline-none"
                   />
                 ) : (
-                  <h2 className="text-lg font-bold text-gray-900">
+                  <h2 className="text-text-primary text-lg font-bold">
                     {teamNamen[selected.ow_code] || selected.ow_code}
                   </h2>
                 )}
                 {!editingNaam && (
                   <button
                     onClick={() => setEditingNaam(true)}
-                    className="hover:text-ow-oranje cursor-pointer text-gray-400 transition-colors"
+                    className="hover:text-ow-oranje text-text-muted cursor-pointer transition-colors"
                     title="Naam bewerken"
                   >
                     <svg
@@ -517,7 +517,7 @@ export function TeamsOnderwaterscherm({
                   </button>
                 )}
                 {selected.kleur && <BandPill band={selected.kleur} />}
-                <span className="text-sm text-gray-400">
+                <span className="text-text-muted text-sm">
                   {[selected.spelvorm, selected.leeftijdsgroep].filter(Boolean).join(" · ")}
                 </span>
               </div>
@@ -540,8 +540,8 @@ export function TeamsOnderwaterscherm({
                   onClick={() => setActiveTab(tab)}
                   className={`-mb-px cursor-pointer rounded-t-lg px-4 py-2 text-sm font-medium transition-colors ${
                     activeTab === tab
-                      ? "z-10 border border-gray-200 border-b-white bg-white text-gray-900"
-                      : "border border-transparent bg-gray-50 text-gray-400 hover:text-gray-600"
+                      ? "border-border-default border-b-surface-card bg-surface-card text-text-primary z-10 border"
+                      : "bg-surface-sunken text-text-muted hover:text-text-secondary border border-transparent"
                   } `}
                 >
                   {label}
@@ -550,7 +550,7 @@ export function TeamsOnderwaterscherm({
             </div>
 
             {/* Tab content */}
-            <div className="rounded-tr-lg rounded-b-lg border border-gray-200 bg-white p-6">
+            <div className="border-border-default bg-surface-card rounded-tr-lg rounded-b-lg border p-6">
               {activeTab === "team" && (
                 <div role="tabpanel" aria-labelledby="tab-team">
                   {selected.isSelectie ? (
@@ -585,13 +585,13 @@ export function TeamsOnderwaterscherm({
       <InfoDrawer open={infoOpen} onClose={() => setInfoOpen(false)} title="Over Teams">
         <div className="space-y-4">
           <section>
-            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+            <h4 className="text-text-muted mb-1 text-xs font-semibold tracking-wide uppercase">
               Wat zie je?
             </h4>
             <p>Alle teams van het geselecteerde seizoen, gegroepeerd op categorie.</p>
           </section>
           <section>
-            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+            <h4 className="text-text-muted mb-1 text-xs font-semibold tracking-wide uppercase">
               Doorklikken
             </h4>
             <p>
@@ -600,7 +600,7 @@ export function TeamsOnderwaterscherm({
             </p>
           </section>
           <section>
-            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+            <h4 className="text-text-muted mb-1 text-xs font-semibold tracking-wide uppercase">
               Tabbladen
             </h4>
             <p>
@@ -611,7 +611,7 @@ export function TeamsOnderwaterscherm({
             </p>
           </section>
           <section>
-            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+            <h4 className="text-text-muted mb-1 text-xs font-semibold tracking-wide uppercase">
               Tip
             </h4>
             <p>De teamnaam kun je bewerken via het potlood-icoon.</p>
@@ -651,13 +651,13 @@ function TeamTab({
   return (
     <div className="space-y-6">
       {telling && (
-        <p className="text-sm text-gray-500">
+        <p className="text-text-muted text-sm">
           {telling.totaal} spelers (
-          <span className="text-blue-500">
+          <span style={{ color: "var(--color-info-500)" }}>
             {"\u2642"} {telling.heren}
           </span>
           {" / "}
-          <span className="text-pink-500">
+          <span style={{ color: "var(--knkv-rood-400)" }}>
             {"\u2640"} {telling.dames}
           </span>
           )
@@ -665,47 +665,53 @@ function TeamTab({
       )}
 
       {!spelers || spelers.length === 0 ? (
-        <p className="text-sm text-gray-400">Geen spelers gevonden voor dit team.</p>
+        <p className="text-text-muted text-sm">Geen spelers gevonden voor dit team.</p>
       ) : (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div>
-            <h4 className="mb-2 text-xs font-semibold tracking-wide text-pink-400 uppercase">
+            <h4
+              className="mb-2 text-xs font-semibold tracking-wide uppercase"
+              style={{ color: "var(--knkv-rood-400)" }}
+            >
               {"\u2640"} Dames ({dames.length})
             </h4>
             <div className="space-y-0.5">
               {dames.map((s) => (
                 <SpelerRij key={s.relCode} speler={s} qs={qs} />
               ))}
-              {dames.length === 0 && <p className="text-xs text-gray-400">-</p>}
+              {dames.length === 0 && <p className="text-text-muted text-xs">-</p>}
             </div>
           </div>
           <div>
-            <h4 className="mb-2 text-xs font-semibold tracking-wide text-blue-400 uppercase">
+            <h4
+              className="mb-2 text-xs font-semibold tracking-wide uppercase"
+              style={{ color: "var(--color-info-400)" }}
+            >
               {"\u2642"} Heren ({heren.length})
             </h4>
             <div className="space-y-0.5">
               {heren.map((s) => (
                 <SpelerRij key={s.relCode} speler={s} qs={qs} />
               ))}
-              {heren.length === 0 && <p className="text-xs text-gray-400">-</p>}
+              {heren.length === 0 && <p className="text-text-muted text-xs">-</p>}
             </div>
           </div>
         </div>
       )}
 
-      <div className="border-t border-gray-100 pt-4">
-        <h4 className="mb-2 text-xs font-semibold tracking-wide text-gray-400 uppercase">Staf</h4>
+      <div className="border-border-light border-t pt-4">
+        <h4 className="text-text-muted mb-2 text-xs font-semibold tracking-wide uppercase">Staf</h4>
         {gesorteerdeStaf.length > 0 ? (
           <div className="space-y-1">
             {gesorteerdeStaf.map((s) => (
               <div key={s.stafCode} className="flex items-center justify-between text-sm">
-                <span className="text-gray-700">{s.naam}</span>
-                <span className="text-gray-400">{s.rol}</span>
+                <span className="text-text-primary">{s.naam}</span>
+                <span className="text-text-muted">{s.rol}</span>
               </div>
             ))}
           </div>
         ) : (
-          <p className="text-sm text-gray-400">Geen staf toegewezen.</p>
+          <p className="text-text-muted text-sm">Geen staf toegewezen.</p>
         )}
       </div>
     </div>
@@ -716,10 +722,13 @@ function SpelerRij({ speler, qs }: { speler: TeamSpeler; qs: string }) {
   const naam = formatNaam(speler);
   return (
     <div className="flex items-center justify-between py-0.5 text-sm">
-      <Link href={`/spelers/${speler.relCode}${qs}`} className="hover:text-ow-oranje text-gray-900">
+      <Link
+        href={`/spelers/${speler.relCode}${qs}`}
+        className="hover:text-ow-oranje text-text-primary"
+      >
         {naam}
       </Link>
-      <span className="text-xs text-gray-400">{speler.geboortejaar || "-"}</span>
+      <span className="text-text-muted text-xs">{speler.geboortejaar || "-"}</span>
     </div>
   );
 }
@@ -781,28 +790,31 @@ function SelectieTab({
   return (
     <div className="space-y-6">
       <div>
-        <p className="text-sm text-gray-500">
+        <p className="text-text-muted text-sm">
           {totaal} spelers (
-          <span className="text-blue-500">
+          <span style={{ color: "var(--color-info-500)" }}>
             {"\u2642"} {totaalHeren}
           </span>
           {" / "}
-          <span className="text-pink-500">
+          <span style={{ color: "var(--knkv-rood-400)" }}>
             {"\u2640"} {totaalDames}
           </span>
           ) in {selectieGroep.teamCodes.length} teams
         </p>
-        <p className="mt-0.5 text-xs text-gray-400">
+        <p className="text-text-muted mt-0.5 text-xs">
           {selectieGroep.teamCodes.map((c) => teamNamen[c] || c).join(" + ")}
         </p>
       </div>
 
       {alleSpelers.length === 0 ? (
-        <p className="text-sm text-gray-400">Geen spelers gevonden.</p>
+        <p className="text-text-muted text-sm">Geen spelers gevonden.</p>
       ) : (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div>
-            <h4 className="mb-2 text-xs font-semibold tracking-wide text-pink-400 uppercase">
+            <h4
+              className="mb-2 text-xs font-semibold tracking-wide uppercase"
+              style={{ color: "var(--knkv-rood-400)" }}
+            >
               {"\u2640"} Dames ({dames.length})
             </h4>
             <div className="space-y-0.5">
@@ -810,18 +822,21 @@ function SelectieTab({
                 <div key={s.relCode} className="flex items-center justify-between py-0.5 text-sm">
                   <Link
                     href={`/spelers/${s.relCode}${qs}`}
-                    className="hover:text-ow-oranje text-gray-900"
+                    className="hover:text-ow-oranje text-text-primary"
                   >
                     {formatNaam(s)}
                   </Link>
-                  <span className="text-[11px] text-gray-400">{s.teamLabel}</span>
+                  <span className="text-text-muted text-[11px]">{s.teamLabel}</span>
                 </div>
               ))}
-              {dames.length === 0 && <p className="text-xs text-gray-400">-</p>}
+              {dames.length === 0 && <p className="text-text-muted text-xs">-</p>}
             </div>
           </div>
           <div>
-            <h4 className="mb-2 text-xs font-semibold tracking-wide text-blue-400 uppercase">
+            <h4
+              className="mb-2 text-xs font-semibold tracking-wide uppercase"
+              style={{ color: "var(--color-info-400)" }}
+            >
               {"\u2642"} Heren ({heren.length})
             </h4>
             <div className="space-y-0.5">
@@ -829,32 +844,32 @@ function SelectieTab({
                 <div key={s.relCode} className="flex items-center justify-between py-0.5 text-sm">
                   <Link
                     href={`/spelers/${s.relCode}${qs}`}
-                    className="hover:text-ow-oranje text-gray-900"
+                    className="hover:text-ow-oranje text-text-primary"
                   >
                     {formatNaam(s)}
                   </Link>
-                  <span className="text-[11px] text-gray-400">{s.teamLabel}</span>
+                  <span className="text-text-muted text-[11px]">{s.teamLabel}</span>
                 </div>
               ))}
-              {heren.length === 0 && <p className="text-xs text-gray-400">-</p>}
+              {heren.length === 0 && <p className="text-text-muted text-xs">-</p>}
             </div>
           </div>
         </div>
       )}
 
-      <div className="border-t border-gray-100 pt-4">
-        <h4 className="mb-2 text-xs font-semibold tracking-wide text-gray-400 uppercase">Staf</h4>
+      <div className="border-border-light border-t pt-4">
+        <h4 className="text-text-muted mb-2 text-xs font-semibold tracking-wide uppercase">Staf</h4>
         {gesorteerdeStaf.length > 0 ? (
           <div className="space-y-1">
             {gesorteerdeStaf.map((s) => (
               <div key={s.stafCode} className="flex items-center justify-between text-sm">
-                <span className="text-gray-700">{s.naam}</span>
-                <span className="text-gray-400">{s.rol}</span>
+                <span className="text-text-primary">{s.naam}</span>
+                <span className="text-text-muted">{s.rol}</span>
               </div>
             ))}
           </div>
         ) : (
-          <p className="text-sm text-gray-400">Geen staf toegewezen.</p>
+          <p className="text-text-muted text-sm">Geen staf toegewezen.</p>
         )}
       </div>
     </div>
@@ -875,33 +890,33 @@ function ResultatenTab({ uitslagen }: { uitslagen?: TeamUitslagen }) {
   }
 
   if (!uitslagen || uitslagen.poules.length === 0) {
-    return <p className="text-sm text-gray-400">Geen competitieresultaten beschikbaar.</p>;
+    return <p className="text-text-muted text-sm">Geen competitieresultaten beschikbaar.</p>;
   }
 
   return (
     <div className="space-y-4">
       {PERIODE_VOLGORDE.filter((p) => perPeriode.has(p)).map((periode) => (
         <div key={periode}>
-          <h5 className="mb-2 text-xs font-medium tracking-wide text-gray-400 uppercase">
+          <h5 className="text-text-muted mb-2 text-xs font-medium tracking-wide uppercase">
             {PERIODE_LABELS[periode] || periode}
           </h5>
           {perPeriode.get(periode)!.map((poule) => (
             <div
               key={`${poule.pool}-${poule.niveau}`}
-              className="mb-3 overflow-hidden rounded-lg border border-gray-100"
+              className="border-border-light mb-3 overflow-hidden rounded-lg border"
             >
-              <div className="border-b border-gray-100 bg-gray-50 px-4 py-2">
-                <span className="text-sm font-medium text-gray-700">
+              <div className="border-border-light bg-surface-sunken border-b px-4 py-2">
+                <span className="text-text-primary text-sm font-medium">
                   {poule.niveau || poule.pool}
                 </span>
                 {poule.niveau && (
-                  <span className="ml-2 text-xs text-gray-400">Poule {poule.pool}</span>
+                  <span className="text-text-muted ml-2 text-xs">Poule {poule.pool}</span>
                 )}
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-gray-100 text-xs text-gray-500">
+                    <tr className="border-border-light text-text-muted border-b text-xs">
                       <th className="w-8 px-2 py-1.5 text-center font-medium">#</th>
                       <th className="px-2 py-1.5 text-left font-medium">Team</th>
                       <th className="w-8 px-1.5 py-1.5 text-center font-medium">GS</th>
@@ -917,8 +932,10 @@ function ResultatenTab({ uitslagen }: { uitslagen?: TeamUitslagen }) {
                     {poule.regels.map((r) => (
                       <tr
                         key={r.positie}
-                        className={`border-t border-gray-50 ${
-                          r.isOW ? "bg-ow-oranje-bg text-ow-oranje font-semibold" : "text-gray-700"
+                        className={`border-border-light border-t ${
+                          r.isOW
+                            ? "bg-ow-oranje-bg text-ow-oranje font-semibold"
+                            : "text-text-secondary"
                         }`}
                       >
                         <td className="px-2 py-1.5 text-center">{r.positie}</td>

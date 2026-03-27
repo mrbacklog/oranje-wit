@@ -13,9 +13,9 @@ export default function ErrorPage({
 
   return (
     <div className="flex min-h-[50vh] flex-col items-center justify-center text-center">
-      <div className="rounded-xl bg-white p-8 shadow-sm">
-        <h2 className="mb-2 text-xl font-bold text-gray-900">Er ging iets mis</h2>
-        <p className="mb-6 text-sm text-gray-500">
+      <div className="bg-surface-card rounded-xl p-8 shadow-sm">
+        <h2 className="text-text-primary mb-2 text-xl font-bold">Er ging iets mis</h2>
+        <p className="text-text-muted mb-6 text-sm">
           Er is een fout opgetreden bij het laden van deze pagina.
         </p>
         <button

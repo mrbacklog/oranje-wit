@@ -23,39 +23,39 @@ export function PijplijnTable({
   verwachteInstroom: Record<number, number>;
 }) {
   const stipKleur = (v: number) =>
-    v >= 90 ? "text-green-500" : v >= 70 ? "text-yellow-500" : "text-red-500";
+    v >= 90 ? "text-signal-groen" : v >= 70 ? "text-signal-geel" : "text-signal-rood";
 
   return (
-    <div className="mb-8 rounded-xl bg-white p-6 shadow-sm">
-      <h3 className="mb-1 text-sm font-semibold tracking-wide text-gray-700 uppercase">
+    <div className="bg-surface-card mb-8 rounded-xl p-6 shadow-sm">
+      <h3 className="text-text-secondary mb-1 text-sm font-semibold tracking-wide uppercase">
         Pijplijn per leeftijd
       </h3>
-      <p className="mb-4 text-xs text-gray-500">
+      <p className="text-text-muted mb-4 text-xs">
         Streef 12♂ + 13♀ per geboortejaar — groei-factoren op basis van laatste 5 seizoenen
       </p>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-gray-50 text-left">
+            <tr className="bg-surface-sunken text-left">
               <th className="px-3 py-2 font-semibold">Leeftijd</th>
               <th className="px-3 py-2 font-semibold">Geb.jaar</th>
               <th className="px-3 py-2 text-right font-semibold">
-                <span className="text-blue-500">♂</span> huidig
+                <span style={{ color: "var(--color-info-500)" }}>♂</span> huidig
               </th>
               <th className="px-3 py-2 text-right font-semibold">
-                <span className="text-blue-500">♂</span> nodig
+                <span style={{ color: "var(--color-info-500)" }}>♂</span> nodig
               </th>
               <th className="px-3 py-2 text-right font-semibold">
-                <span className="text-pink-500">♀</span> huidig
+                <span style={{ color: "var(--knkv-rood-400)" }}>♀</span> huidig
               </th>
               <th className="px-3 py-2 text-right font-semibold">
-                <span className="text-pink-500">♀</span> nodig
+                <span style={{ color: "var(--knkv-rood-400)" }}>♀</span> nodig
               </th>
               <th className="px-3 py-2 text-right font-semibold">
-                <span className="text-blue-500">♂</span> %
+                <span style={{ color: "var(--color-info-500)" }}>♂</span> %
               </th>
               <th className="px-3 py-2 text-right font-semibold">
-                <span className="text-pink-500">♀</span> %
+                <span style={{ color: "var(--knkv-rood-400)" }}>♀</span> %
               </th>
             </tr>
           </thead>
@@ -63,7 +63,7 @@ export function PijplijnTable({
             {perLeeftijd.map((row) => {
               const extra = verwachteInstroom[row.leeftijd] || 0;
               return (
-                <tr key={row.leeftijd} className="border-t border-gray-100">
+                <tr key={row.leeftijd} className="border-border-light border-t">
                   <td className="px-3 py-2">{row.leeftijd}</td>
                   <td className="px-3 py-2">
                     <Link
@@ -75,19 +75,19 @@ export function PijplijnTable({
                   </td>
                   <td className="px-3 py-2 text-right">
                     {row.huidig_m}
-                    {extra > 0 && <span className="ml-1 text-xs text-gray-400">(+{extra})</span>}
+                    {extra > 0 && <span className="text-text-muted ml-1 text-xs">(+{extra})</span>}
                     {row.gap_m < 0 && !extra && (
-                      <span className="ml-1 text-xs text-red-600">({row.gap_m})</span>
+                      <span className="text-signal-rood ml-1 text-xs">({row.gap_m})</span>
                     )}
                   </td>
-                  <td className="px-3 py-2 text-right text-gray-400">{row.benodigd_m}</td>
+                  <td className="text-text-muted px-3 py-2 text-right">{row.benodigd_m}</td>
                   <td className="px-3 py-2 text-right">
                     {row.huidig_v}
                     {row.gap_v < 0 && !extra && (
-                      <span className="ml-1 text-xs text-red-600">({row.gap_v})</span>
+                      <span className="text-signal-rood ml-1 text-xs">({row.gap_v})</span>
                     )}
                   </td>
-                  <td className="px-3 py-2 text-right text-gray-400">{row.benodigd_v}</td>
+                  <td className="text-text-muted px-3 py-2 text-right">{row.benodigd_v}</td>
                   <td className="px-3 py-2 text-right text-sm">
                     <span className={stipKleur(row.vulgraad_m)}>●</span>{" "}
                     <span className="font-semibold">{row.vulgraad_m}%</span>

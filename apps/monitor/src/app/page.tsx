@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 import { Suspense } from "react";
 import Link from "next/link";
+import { PageContainer } from "@oranje-wit/ui";
 import { InfoPageHeader } from "@/components/info/InfoPageHeader";
 import { HUIDIG_SEIZOEN } from "@/lib/utils/seizoen";
 import { KpiCardsSkeleton, ChartsSkeleton, AlertCardsSkeleton } from "@/components/ui/skeleton";
@@ -12,7 +13,7 @@ export default async function DashboardPage() {
   const seizoen = HUIDIG_SEIZOEN;
 
   return (
-    <div>
+    <PageContainer animated>
       <InfoPageHeader
         title="Dashboard"
         subtitle={`Seizoen ${seizoen} — c.k.v. Oranje Wit`}
@@ -20,7 +21,7 @@ export default async function DashboardPage() {
       >
         <div className="space-y-4">
           <section>
-            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+            <h4 className="text-text-muted mb-1 text-xs font-semibold tracking-wide uppercase">
               Wat zie je?
             </h4>
             <p>
@@ -29,7 +30,7 @@ export default async function DashboardPage() {
             </p>
           </section>
           <section>
-            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+            <h4 className="text-text-muted mb-1 text-xs font-semibold tracking-wide uppercase">
               Grafieken
             </h4>
             <p>
@@ -39,7 +40,7 @@ export default async function DashboardPage() {
             </p>
           </section>
           <section>
-            <h4 className="mb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase">
+            <h4 className="text-text-muted mb-1 text-xs font-semibold tracking-wide uppercase">
               Navigatie
             </h4>
             <p>
@@ -64,6 +65,6 @@ export default async function DashboardPage() {
       <Suspense fallback={<AlertCardsSkeleton />}>
         <DashboardSignaleringen seizoen={seizoen} />
       </Suspense>
-    </div>
+    </PageContainer>
   );
 }
