@@ -91,7 +91,7 @@ export function filterSpelersData<T extends Record<string, unknown>>(
       if (!zichtbaarheid.rapporten) {
         delete achterkant.rapporten;
       }
-      result.achterkant = achterkant;
+      (result as Record<string, unknown>).achterkant = achterkant;
     }
   }
 
