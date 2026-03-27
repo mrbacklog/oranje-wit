@@ -24,14 +24,26 @@ export function Dialog({ open, onClose, title, children, footer }: DialogProps) 
     <dialog
       ref={dialogRef}
       onClose={onClose}
-      className="w-full max-w-lg rounded-xl border-0 bg-white p-0 shadow-xl backdrop:bg-black/50"
+      className="w-full max-w-lg rounded-xl border-0 p-0 backdrop:bg-black/50"
+      style={{
+        backgroundColor: "var(--surface-card)",
+        color: "var(--text-primary)",
+        boxShadow: "var(--shadow-modal)",
+      }}
     >
-      <div className="border-b border-gray-100 px-6 py-4">
-        <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
+      <div className="px-6 py-4" style={{ borderBottom: "1px solid var(--border-default)" }}>
+        <h2 className="text-lg font-semibold" style={{ color: "var(--text-primary)" }}>
+          {title}
+        </h2>
       </div>
       <div className="px-6 py-4">{children}</div>
       {footer && (
-        <div className="flex justify-end gap-3 border-t border-gray-100 px-6 py-4">{footer}</div>
+        <div
+          className="flex justify-end gap-3 px-6 py-4"
+          style={{ borderTop: "1px solid var(--border-default)" }}
+        >
+          {footer}
+        </div>
       )}
     </dialog>
   );

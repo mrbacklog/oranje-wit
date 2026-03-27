@@ -11,9 +11,9 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 const variantStyles: Record<ButtonVariant, string> = {
   primary: "bg-ow-oranje text-white hover:bg-ow-oranje-light focus:ring-ow-oranje/30",
   secondary:
-    "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-gray-300/30",
+    "border border-border-strong bg-surface-card text-text-secondary hover:bg-surface-raised focus:ring-border-strong/30",
   danger: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-600/30",
-  ghost: "text-gray-600 hover:bg-gray-100 hover:text-gray-900 focus:ring-gray-300/30",
+  ghost: "text-text-secondary hover:text-text-primary focus:ring-border-strong/30",
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
@@ -29,6 +29,21 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={disabled}
         className={`inline-flex items-center justify-center rounded-lg font-medium transition-colors focus:ring-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
+        style={variant === "ghost" ? { backgroundColor: "transparent" } : undefined}
+        onMouseEnter={
+          variant === "ghost"
+            ? (e) => {
+                (e.currentTarget as HTMLElement).style.backgroundColor = "var(--state-hover)";
+              }
+            : undefined
+        }
+        onMouseLeave={
+          variant === "ghost"
+            ? (e) => {
+                (e.currentTarget as HTMLElement).style.backgroundColor = "transparent";
+              }
+            : undefined
+        }
         {...props}
       />
     );

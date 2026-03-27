@@ -27,7 +27,7 @@ describe("Button", () => {
     render(<Button variant="ghost">Meer</Button>);
     const btn = screen.getByRole("button", { name: "Meer" });
     expect(btn.className).not.toContain("bg-ow-oranje");
-    expect(btn.className).not.toContain("border");
+    expect(btn.className).toContain("text-text-secondary");
   });
 
   it("ondersteunt size sm", () => {

@@ -1,26 +1,122 @@
+@import "tailwindcss";
+@import "./tokens.css";
+
 @theme inline {
-  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Geist Mono", ui-monospace, monospace;
+  /* Fonts */
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", ui-monospace, monospace;
 
   /* Brand */
-  --color-ow-oranje: #ff6b00;
-  --color-ow-oranje-light: #ff8c33;
-  --color-ow-oranje-bg: #fff3e8;
+  --color-ow-oranje: var(--ow-oranje-500);
+  --color-ow-oranje-light: var(--ow-oranje-300);
+  --color-ow-oranje-dark: var(--ow-oranje-700);
 
-  /* Signalen */
-  --color-signal-groen: #4caf50;
-  --color-signal-geel: #ffc107;
-  --color-signal-rood: #f44336;
+  /* Surfaces (semantic — automatisch dark/light via tokens) */
+  --color-surface-page: var(--surface-page);
+  --color-surface-card: var(--surface-card);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-sunken: var(--surface-sunken);
 
-  /* Band-kleuren (jeugdcategorieën) */
-  --color-band-blauw: #4a90d9;
-  --color-band-groen: #52b788;
-  --color-band-geel: #f4d35e;
-  --color-band-oranje: #f28c28;
-  --color-band-rood: #d62828;
+  /* Text (semantic) */
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-tertiary);
+
+  /* Borders (semantic) */
+  --color-border-default: var(--border-default);
+  --color-border-light: var(--border-light);
+  --color-border-strong: var(--border-strong);
+
+  /* KNKV leeftijdskleuren */
+  --color-knkv-paars: var(--knkv-paars-500);
+  --color-knkv-blauw: var(--knkv-blauw-500);
+  --color-knkv-groen: var(--knkv-groen-500);
+  --color-knkv-geel: var(--knkv-geel-500);
+  --color-knkv-oranje: var(--knkv-oranje-500);
+  --color-knkv-rood: var(--knkv-rood-500);
+
+  /* Tiers */
+  --color-tier-brons: var(--tier-brons-border);
+  --color-tier-zilver: var(--tier-zilver-border);
+  --color-tier-goud: var(--tier-goud-border);
+
+  /* Semantic */
+  --color-success: var(--color-success-500);
+  --color-warning: var(--color-warning-500);
+  --color-error: var(--color-error-500);
+  --color-info: var(--color-info-500);
+
+  /* Signals (legacy compat) */
+  --color-signal-groen: var(--color-success-500);
+  --color-signal-geel: var(--color-warning-500);
+  --color-signal-rood: var(--color-error-500);
+
+  /* Band-kleuren (legacy compat voor bestaande componenten) */
+  --color-band-blauw: var(--knkv-blauw-500);
+  --color-band-groen: var(--knkv-groen-500);
+  --color-band-geel: var(--knkv-geel-500);
+  --color-band-oranje: var(--knkv-oranje-500);
+  --color-band-rood: var(--knkv-rood-500);
 }
 
+/* Dark-first body defaults */
 body {
-  background-color: #f3f4f6;
-  color: #111827;
+  background-color: var(--surface-page);
+  color: var(--text-primary);
+}
+
+/* Touch-friendly tap targets */
+.touch-target {
+  min-height: 2.75rem; /* 44px */
+  min-width: 2.75rem;
+}
+
+/* ================================================================
+   SKELETON SHIMMER
+   Premium loading animation — smooth gradient sweep
+   ================================================================ */
+
+@keyframes skeleton-sweep {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+    90deg,
+    var(--surface-card) 0%,
+    var(--surface-raised) 25%,
+    rgba(255, 255, 255, 0.06) 50%,
+    var(--surface-raised) 75%,
+    var(--surface-card) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-sweep 1.8s ease-in-out infinite;
+}
+
+[data-theme="light"] .skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--surface-sunken) 0%,
+    var(--surface-card) 25%,
+    rgba(255, 255, 255, 0.8) 50%,
+    var(--surface-card) 75%,
+    var(--surface-sunken) 100%
+  );
+  background-size: 200% 100%;
+}
+
+/* ================================================================
+   PLACEHOLDER STYLING
+   ================================================================ */
+
+::placeholder {
+  color: var(--text-tertiary);
+  opacity: 1;
 }

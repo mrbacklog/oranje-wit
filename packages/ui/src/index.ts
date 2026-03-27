@@ -7,7 +7,6 @@ export { SpelersKaart } from "./data-display/spelers-kaart";
 export { Metric } from "./data-display/metric";
 export { ProgressBar } from "./data-display/progress-bar";
 export { RadarChart } from "./data-display/radar-chart";
-export { DataTable } from "./data-display/data-table";
 export { EmptyState } from "./data-display/empty-state";
 
 // Layout
@@ -18,8 +17,6 @@ export type { StickyHeaderProps } from "./layout/sticky-header";
 export { PageContainer } from "./layout/page-container";
 export type { PageContainerProps } from "./layout/page-container";
 export { Sidebar } from "./layout/sidebar";
-export { MobileShell } from "./layout/mobile-shell";
-export type { MobileShellProps } from "./layout/mobile-shell";
 export type { NavItem as SidebarNavItem, SidebarConfig } from "./layout/types";
 
 // Navigation
@@ -66,8 +63,6 @@ export { InfoButton } from "./feedback/info-button";
 export { BottomSheet } from "./feedback/bottom-sheet";
 export type { BottomSheetProps } from "./feedback/bottom-sheet";
 export { ToastProvider, useToast } from "./feedback/toast";
-export { ActionSheet } from "./feedback/action-sheet";
-export type { ActionSheetProps, ActionSheetAction } from "./feedback/action-sheet";
 export { ConfirmDialog } from "./feedback/confirm-dialog";
 export type { ConfirmDialogProps } from "./feedback/confirm-dialog";
 

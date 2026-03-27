@@ -10,14 +10,23 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
     return (
       <div>
         {label && (
-          <label htmlFor={selectId} className="mb-1 block text-sm font-medium text-gray-700">
+          <label
+            htmlFor={selectId}
+            className="mb-1 block text-sm font-medium"
+            style={{ color: "var(--text-secondary)" }}
+          >
             {label}
           </label>
         )}
         <select
           ref={ref}
           id={selectId}
-          className={`focus:border-ow-oranje focus:ring-ow-oranje/30 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:ring-2 focus:outline-none ${className}`}
+          className={`w-full rounded-lg border px-3 py-2 text-sm focus:ring-2 focus:outline-none ${className}`}
+          style={{
+            backgroundColor: "var(--surface-card)",
+            color: "var(--text-primary)",
+            borderColor: "var(--border-strong)",
+          }}
           {...props}
         >
           {children}

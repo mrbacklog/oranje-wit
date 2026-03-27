@@ -9,28 +9,22 @@ describe("SignalBadge", () => {
     expect(screen.getByText("Alles goed")).toBeInTheDocument();
   });
 
-  it("past kritiek styling toe", () => {
+  it("past kritiek styling toe via inline styles", () => {
     render(<SignalBadge ernst="kritiek">Urgent</SignalBadge>);
     const badge = screen.getByText("Urgent");
-    expect(badge.className).toContain("bg-red-100");
-    expect(badge.className).toContain("text-red-800");
-    expect(badge.className).toContain("border-red-200");
+    expect(badge.style.backgroundColor).toContain("239, 68, 68");
   });
 
-  it("past aandacht styling toe", () => {
+  it("past aandacht styling toe via inline styles", () => {
     render(<SignalBadge ernst="aandacht">Let op</SignalBadge>);
     const badge = screen.getByText("Let op");
-    expect(badge.className).toContain("bg-yellow-50");
-    expect(badge.className).toContain("text-yellow-800");
-    expect(badge.className).toContain("border-yellow-200");
+    expect(badge.style.backgroundColor).toContain("234, 179, 8");
   });
 
-  it("past opkoers styling toe", () => {
+  it("past opkoers styling toe via inline styles", () => {
     render(<SignalBadge ernst="opkoers">Op schema</SignalBadge>);
     const badge = screen.getByText("Op schema");
-    expect(badge.className).toContain("bg-green-50");
-    expect(badge.className).toContain("text-green-800");
-    expect(badge.className).toContain("border-green-200");
+    expect(badge.style.backgroundColor).toContain("34, 197, 94");
   });
 
   it("rendert als een span element", () => {

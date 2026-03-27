@@ -18,14 +18,27 @@ export function Sidebar({ branding, navigation, footer, onClose }: SidebarProps)
 
   return (
     <nav
-      className="flex h-full w-64 flex-col border-r border-gray-200 bg-white"
+      className="flex h-full w-64 flex-col"
+      style={{
+        backgroundColor: "var(--surface-card)",
+        borderRight: "1px solid var(--border-default)",
+      }}
       aria-label="Hoofdnavigatie"
     >
       {/* Branding */}
-      <div className="border-b border-gray-100 px-4 py-4 text-center">
+      <div
+        className="px-4 py-4 text-center"
+        style={{ borderBottom: "1px solid var(--border-light)" }}
+      >
         <div className="text-ow-oranje text-xs font-bold tracking-widest">c.k.v. ORANJE WIT</div>
-        <div className="mt-0.5 text-sm font-semibold text-gray-900">{branding.title}</div>
-        {branding.subtitle && <div className="mt-1 text-xs text-gray-500">{branding.subtitle}</div>}
+        <div className="mt-0.5 text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
+          {branding.title}
+        </div>
+        {branding.subtitle && (
+          <div className="mt-1 text-xs" style={{ color: "var(--text-tertiary)" }}>
+            {branding.subtitle}
+          </div>
+        )}
       </div>
 
       {/* Navigation */}
@@ -39,10 +52,25 @@ export function Sidebar({ branding, navigation, footer, onClose }: SidebarProps)
               onClick={onClose}
               aria-current={active ? "page" : undefined}
               className={`mb-1 flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
-                active
-                  ? "bg-ow-oranje-bg text-ow-oranje font-semibold"
-                  : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                active ? "bg-ow-oranje-bg text-ow-oranje font-semibold" : ""
               }`}
+              style={!active ? { color: "var(--text-secondary)" } : undefined}
+              onMouseEnter={
+                !active
+                  ? (e) => {
+                      (e.currentTarget as HTMLElement).style.backgroundColor = "var(--state-hover)";
+                      (e.currentTarget as HTMLElement).style.color = "var(--text-primary)";
+                    }
+                  : undefined
+              }
+              onMouseLeave={
+                !active
+                  ? (e) => {
+                      (e.currentTarget as HTMLElement).style.backgroundColor = "transparent";
+                      (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)";
+                    }
+                  : undefined
+              }
             >
               <span className="text-base">{item.icon}</span>
               <span className="flex-1">{item.label}</span>
@@ -52,7 +80,9 @@ export function Sidebar({ branding, navigation, footer, onClose }: SidebarProps)
                 </span>
               )}
               {item.description && !item.badge && (
-                <span className="text-[10px] text-gray-400">{item.description}</span>
+                <span className="text-[10px]" style={{ color: "var(--text-tertiary)" }}>
+                  {item.description}
+                </span>
               )}
             </Link>
           );
@@ -60,17 +90,32 @@ export function Sidebar({ branding, navigation, footer, onClose }: SidebarProps)
       </div>
 
       {/* Footer */}
-      <div className="border-t border-gray-100 px-3 py-2">
+      <div className="px-3 py-2" style={{ borderTop: "1px solid var(--border-light)" }}>
         {footer?.settingsHref && (
           <Link
             href={footer.settingsHref}
             onClick={onClose}
             aria-current={isActive(footer.settingsHref) ? "page" : undefined}
             className={`mb-1 flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${
-              isActive(footer.settingsHref)
-                ? "bg-ow-oranje-bg text-ow-oranje font-semibold"
-                : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+              isActive(footer.settingsHref) ? "bg-ow-oranje-bg text-ow-oranje font-semibold" : ""
             }`}
+            style={!isActive(footer.settingsHref) ? { color: "var(--text-tertiary)" } : undefined}
+            onMouseEnter={
+              !isActive(footer.settingsHref)
+                ? (e) => {
+                    (e.currentTarget as HTMLElement).style.backgroundColor = "var(--state-hover)";
+                    (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)";
+                  }
+                : undefined
+            }
+            onMouseLeave={
+              !isActive(footer.settingsHref)
+                ? (e) => {
+                    (e.currentTarget as HTMLElement).style.backgroundColor = "transparent";
+                    (e.currentTarget as HTMLElement).style.color = "var(--text-tertiary)";
+                  }
+                : undefined
+            }
           >
             <span className="text-base">&#9881;</span>
             <span>Instellingen</span>
@@ -79,12 +124,21 @@ export function Sidebar({ branding, navigation, footer, onClose }: SidebarProps)
         {footer?.userMenu && (
           <div className="flex items-center justify-between px-3 py-2 text-xs">
             <div>
-              <div className="font-medium text-gray-900">{footer.userMenu.name}</div>
-              <div className="text-gray-500">{footer.userMenu.role}</div>
+              <div className="font-medium" style={{ color: "var(--text-primary)" }}>
+                {footer.userMenu.name}
+              </div>
+              <div style={{ color: "var(--text-tertiary)" }}>{footer.userMenu.role}</div>
             </div>
             <button
               onClick={footer.userMenu.onSignOut}
-              className="text-gray-400 hover:text-gray-600"
+              className="transition-colors"
+              style={{ color: "var(--text-tertiary)" }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLElement).style.color = "var(--text-tertiary)";
+              }}
             >
               Uit
             </button>

@@ -13,7 +13,6 @@
     "./motion": "./src/motion/index.ts",
     "./data-input": "./src/data-input/index.ts",
     "./feedback/bottom-sheet": "./src/feedback/bottom-sheet.tsx",
-    "./feedback/action-sheet": "./src/feedback/action-sheet.tsx",
     "./overlay": "./src/overlay/index.ts"
   },
   "dependencies": {
@@ -32,6 +31,7 @@
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
     "@types/react": "^19",
     "@vitejs/plugin-react": "^5.1.4",
     "jsdom": "^28.1.0",

@@ -36,7 +36,7 @@ export function AppShell({ children, sidebar, skipRoutes = ["/login"], banner }:
   }
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen" style={{ backgroundColor: "var(--surface-page)" }}>
       <div className="hidden md:block">
         <Sidebar {...sidebar} />
       </div>
@@ -51,10 +51,20 @@ export function AppShell({ children, sidebar, skipRoutes = ["/login"], banner }:
       )}
 
       <div className="flex flex-1 flex-col overflow-hidden">
-        <div className="flex items-center border-b border-gray-200 px-4 py-3 md:hidden">
+        <div
+          className="flex items-center px-4 py-3 md:hidden"
+          style={{ borderBottom: "1px solid var(--border-default)" }}
+        >
           <button
             onClick={() => setMobileOpen(true)}
-            className="rounded-lg p-1 text-gray-500 hover:bg-gray-100"
+            className="rounded-lg p-1 transition-colors"
+            style={{ color: "var(--text-tertiary)" }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLElement).style.backgroundColor = "var(--state-hover)";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLElement).style.backgroundColor = "transparent";
+            }}
             aria-label="Open menu"
           >
             <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -66,7 +76,9 @@ export function AppShell({ children, sidebar, skipRoutes = ["/login"], banner }:
               />
             </svg>
           </button>
-          <span className="ml-3 text-sm font-medium text-gray-900">{sidebar.branding.title}</span>
+          <span className="ml-3 text-sm font-medium" style={{ color: "var(--text-primary)" }}>
+            {sidebar.branding.title}
+          </span>
         </div>
 
         {banner}

@@ -18,10 +18,25 @@ export function KpiCard({ label, value, subtitle, trend, detail, signal }: KpiCa
           : "text-ow-oranje";
 
   return (
-    <div className="flex h-full flex-col rounded-xl bg-white p-5 shadow-sm">
-      <p className="text-xs font-medium tracking-wide text-gray-500 uppercase">{label}</p>
+    <div
+      className="flex h-full flex-col rounded-xl p-5"
+      style={{
+        backgroundColor: "var(--surface-card)",
+        boxShadow: "var(--shadow-card)",
+      }}
+    >
+      <p
+        className="text-xs font-medium tracking-wide uppercase"
+        style={{ color: "var(--text-tertiary)" }}
+      >
+        {label}
+      </p>
       <p className={`mt-1 text-3xl font-bold ${signalColor}`}>{value}</p>
-      {subtitle && <p className="mt-0.5 text-sm text-gray-500">{subtitle}</p>}
+      {subtitle && (
+        <p className="mt-0.5 text-sm" style={{ color: "var(--text-tertiary)" }}>
+          {subtitle}
+        </p>
+      )}
       {detail && (
         <div className="mt-1 flex gap-3 text-sm">
           <span className="text-signal-groen inline-flex items-center gap-0.5">

@@ -8,18 +8,32 @@ interface StatCardProps {
 }
 
 const colorStyles = {
-  default: "text-gray-900",
-  orange: "text-ow-oranje",
-  red: "text-red-600",
-  green: "text-green-600",
-  blue: "text-blue-600",
+  default: "var(--text-primary)",
+  orange: undefined as string | undefined,
+  red: "#ef4444",
+  green: "#22c55e",
+  blue: "#3b82f6",
 };
 
 export function StatCard({ label, value, color = "default", className = "" }: StatCardProps) {
   return (
-    <div className={`rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-sm ${className}`}>
-      <div className={`text-2xl font-bold ${colorStyles[color]}`}>{value}</div>
-      <div className="mt-1 text-xs text-gray-500">{label}</div>
+    <div
+      className={`rounded-xl border px-4 py-3 ${className}`}
+      style={{
+        backgroundColor: "var(--surface-card)",
+        borderColor: "var(--border-default)",
+        boxShadow: "var(--shadow-card)",
+      }}
+    >
+      <div
+        className={`text-2xl font-bold ${color === "orange" ? "text-ow-oranje" : ""}`}
+        style={color !== "orange" ? { color: colorStyles[color] } : undefined}
+      >
+        {value}
+      </div>
+      <div className="mt-1 text-xs" style={{ color: "var(--text-tertiary)" }}>
+        {label}
+      </div>
     </div>
   );
 }

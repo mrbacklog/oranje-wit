@@ -16,18 +16,23 @@ describe("BandPill", () => {
     ["Geel", "bg-band-geel"],
     ["Oranje", "bg-band-oranje"],
     ["Rood", "bg-band-rood"],
-    ["Senioren", "bg-gray-600"],
   ])("past juiste kleur toe voor band %s", (band, expectedClass) => {
     render(<BandPill band={band} />);
     const pill = screen.getByText(band);
     expect(pill.className).toContain(expectedClass);
   });
 
+  it("gebruikt semantic token styling voor Senioren", () => {
+    render(<BandPill band="Senioren" />);
+    const pill = screen.getByText("Senioren");
+    expect(pill.style.backgroundColor).toBe("var(--text-tertiary)");
+  });
+
   it("gebruikt fallback styling voor onbekende band", () => {
     render(<BandPill band="Onbekend" />);
     const pill = screen.getByText("Onbekend");
-    expect(pill.className).toContain("bg-gray-200");
-    expect(pill.className).toContain("text-gray-600");
+    expect(pill.style.backgroundColor).toBe("var(--surface-sunken)");
+    expect(pill.style.color).toBe("var(--text-secondary)");
   });
 
   it("rendert als een span element", () => {

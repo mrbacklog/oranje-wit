@@ -8,13 +8,15 @@ describe("Badge", () => {
     expect(screen.getByText("Status")).toBeDefined();
   });
 
-  it("renders colored variants", () => {
+  it("renders colored variants via inline styles", () => {
     const { container } = render(<Badge color="green">OK</Badge>);
-    expect((container.firstChild as HTMLElement)?.className).toContain("green");
+    const el = container.firstChild as HTMLElement;
+    expect(el.style.backgroundColor).toContain("34, 197, 94");
   });
 
-  it("renders orange variant", () => {
+  it("renders orange variant via inline styles", () => {
     const { container } = render(<Badge color="orange">Let op</Badge>);
-    expect((container.firstChild as HTMLElement)?.className).toContain("orange");
+    const el = container.firstChild as HTMLElement;
+    expect(el.style.backgroundColor).toContain("249, 115, 22");
   });
 });

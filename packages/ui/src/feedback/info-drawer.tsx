@@ -43,19 +43,37 @@ export function InfoDrawer({ open, onClose, title, children }: InfoDrawerProps) 
       {/* Drawer panel */}
       <div
         ref={drawerRef}
-        className="border-t-ow-oranje fixed top-0 right-0 z-50 flex h-full w-[85vw] flex-col border-t-2 bg-white shadow-xl md:w-[20vw] md:max-w-[360px] md:min-w-[280px]"
+        className="border-t-ow-oranje fixed top-0 right-0 z-50 flex h-full w-[85vw] flex-col border-t-2 md:w-[20vw] md:max-w-[360px] md:min-w-[280px]"
+        style={{
+          backgroundColor: "var(--surface-card)",
+          boxShadow: "var(--shadow-xl)",
+        }}
         role="dialog"
         aria-modal="true"
         aria-label={title}
       >
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4">
-          <h3 className="text-sm font-bold text-gray-900">{title}</h3>
+        <div
+          className="flex items-center justify-between px-5 py-4"
+          style={{ borderBottom: "1px solid var(--border-default)" }}
+        >
+          <h3 className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>
+            {title}
+          </h3>
           <button
             ref={closeButtonRef}
             type="button"
             onClick={onClose}
-            className="rounded p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
+            className="rounded p-1 transition-colors"
+            style={{ color: "var(--text-tertiary)" }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLElement).style.backgroundColor = "var(--state-hover)";
+              (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLElement).style.backgroundColor = "transparent";
+              (e.currentTarget as HTMLElement).style.color = "var(--text-tertiary)";
+            }}
             aria-label="Sluiten"
           >
             <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -70,7 +88,10 @@ export function InfoDrawer({ open, onClose, title, children }: InfoDrawerProps) 
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto px-5 py-4 text-sm leading-relaxed text-gray-600">
+        <div
+          className="flex-1 overflow-y-auto px-5 py-4 text-sm leading-relaxed"
+          style={{ color: "var(--text-secondary)" }}
+        >
           {children}
         </div>
       </div>
