@@ -10,12 +10,12 @@ interface SpelerSelectie {
 }
 
 const SPELER_KLEUREN = [
-  "#F97316", // oranje
-  "#3B82F6", // blauw
-  "#22C55E", // groen
-  "#EAB308", // geel
-  "#A855F7", // paars
-  "#EF4444", // rood
+  "var(--knkv-oranje-500)",
+  "var(--knkv-blauw-500)",
+  "var(--knkv-groen-500)",
+  "var(--knkv-geel-500)",
+  "var(--knkv-paars-500)",
+  "var(--knkv-rood-500)",
 ];
 
 export function StapVergelijkingSamenvatting({
@@ -43,7 +43,7 @@ export function StapVergelijkingSamenvatting({
               key={s.id}
               className="rounded-full px-3 py-1 text-xs font-semibold text-white"
               style={{
-                backgroundColor: SPELER_KLEUREN[i % SPELER_KLEUREN.length] + "33",
+                backgroundColor: `color-mix(in srgb, ${SPELER_KLEUREN[i % SPELER_KLEUREN.length]} 20%, transparent)`,
                 color: SPELER_KLEUREN[i % SPELER_KLEUREN.length],
               }}
             >
@@ -73,10 +73,11 @@ export function StapVergelijkingSamenvatting({
                       key={s.id}
                       className="rounded px-1.5 py-0.5 text-[10px] font-bold"
                       style={{
-                        backgroundColor:
+                        backgroundColor: `color-mix(in srgb, ${
                           SPELER_KLEUREN[
                             spelers.findIndex((sp) => sp.id === s.id) % SPELER_KLEUREN.length
-                          ] + "22",
+                          ]
+                        } 13%, transparent)`,
                         color:
                           SPELER_KLEUREN[
                             spelers.findIndex((sp) => sp.id === s.id) % SPELER_KLEUREN.length

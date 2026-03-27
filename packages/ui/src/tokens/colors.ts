@@ -56,6 +56,10 @@ export const colors = {
       muted: "#9ca3af",
     },
   },
+  gender: {
+    m: "#60A5FA", // knkv-blauw-400 (blauw)
+    v: "#F472B6", // roze
+  },
   /** Legacy compat — gebruik liever knkv.* */
   band: {
     blauw: "#3b82f6",

@@ -12,26 +12,26 @@ export const SIZE_CONFIG: Record<KaartSize, { cls: string }> = {
 };
 
 export const AGE_GRADIENTS: Record<number, { from: string; to: string }> = {
-  5: { from: "#A855F7", to: "#818CF8" },
-  6: { from: "#3B82F6", to: "#60A5FA" },
-  7: { from: "#3B82F6", to: "#6DD5A3" },
-  8: { from: "#22C55E", to: "#4ADE80" },
-  9: { from: "#22C55E", to: "#BEF264" },
-  10: { from: "#EAB308", to: "#BEF264" },
-  11: { from: "#EAB308", to: "#FACC15" },
-  12: { from: "#EAB308", to: "#FDBA74" },
-  13: { from: "#F97316", to: "#FDE047" },
-  14: { from: "#F97316", to: "#FB923C" },
-  15: { from: "#F97316", to: "#FCA5A5" },
-  16: { from: "#EF4444", to: "#FDBA74" },
-  17: { from: "#EF4444", to: "#F87171" },
-  18: { from: "#B91C1C", to: "#991B1B" },
+  5: { from: "var(--age-5-from)", to: "var(--age-5-to)" },
+  6: { from: "var(--age-6-from)", to: "var(--age-6-to)" },
+  7: { from: "var(--age-7-from)", to: "var(--age-7-to)" },
+  8: { from: "var(--age-8-from)", to: "var(--age-8-to)" },
+  9: { from: "var(--age-9-from)", to: "var(--age-9-to)" },
+  10: { from: "var(--age-10-from)", to: "var(--age-10-to)" },
+  11: { from: "var(--age-11-from)", to: "var(--age-11-to)" },
+  12: { from: "var(--age-12-from)", to: "var(--age-12-to)" },
+  13: { from: "var(--age-13-from)", to: "var(--age-13-to)" },
+  14: { from: "var(--age-14-from)", to: "var(--age-14-to)" },
+  15: { from: "var(--age-15-from)", to: "var(--age-15-to)" },
+  16: { from: "var(--age-16-from)", to: "var(--age-16-to)" },
+  17: { from: "var(--age-17-from)", to: "var(--age-17-to)" },
+  18: { from: "var(--age-18-from)", to: "var(--age-18-to)" },
 };
 
 export const TIER_STYLES: Record<string, { border: string; overlay: string }> = {
-  brons: { border: "#CD7F32", overlay: "rgba(205, 127, 50, 0.08)" },
-  zilver: { border: "#A8A9AD", overlay: "rgba(168, 169, 173, 0.08)" },
-  goud: { border: "#D4A017", overlay: "rgba(212, 160, 23, 0.08)" },
+  brons: { border: "var(--tier-brons-border)", overlay: "var(--tier-brons-bg-overlay)" },
+  zilver: { border: "var(--tier-zilver-border)", overlay: "var(--tier-zilver-bg-overlay)" },
+  goud: { border: "var(--tier-goud-border)", overlay: "var(--tier-goud-bg-overlay)" },
 };
 
 // Legacy stat labels (backward compatible for old kaarten)

@@ -234,7 +234,7 @@ export function TeamScoutWizard({
         <div className="flex items-center gap-3">
           <div
             className="flex h-10 w-10 items-center justify-center rounded-full"
-            style={{ backgroundColor: team.kleur ?? "#888" }}
+            style={{ backgroundColor: team.kleur ?? "var(--ow-zwart-400)" }}
           >
             <span className="text-sm font-bold text-white">{(team.naam ?? "?").charAt(0)}</span>
           </div>

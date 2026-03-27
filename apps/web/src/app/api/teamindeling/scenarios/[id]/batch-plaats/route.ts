@@ -2,6 +2,7 @@ import { prisma, anyTeam } from "@/lib/teamindeling/db/prisma";
 import { ok, fail } from "@/lib/teamindeling/api/response";
 import { z } from "zod";
 import { logger } from "@oranje-wit/types";
+import { guardTC } from "@oranje-wit/auth/checks";
 
 const FilterSchema = z.object({
   teamNaam: z.string().min(1),
@@ -20,6 +21,9 @@ const FilterSchema = z.object({
 });
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const auth = await guardTC();
+  if (!auth.ok) return auth.response;
+
   try {
     const { id: scenarioId } = await params;
     const body = await request.json();

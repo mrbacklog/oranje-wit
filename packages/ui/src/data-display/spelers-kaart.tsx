@@ -7,30 +7,35 @@ interface SpelersKaartProps {
 }
 
 const KLEUR_KLEUREN: Record<string, { bg: string; text: string; border: string }> = {
+  paars: {
+    bg: "color-mix(in srgb, var(--knkv-paars-500) 12%, transparent)",
+    text: "var(--knkv-paars-400)",
+    border: "color-mix(in srgb, var(--knkv-paars-500) 30%, transparent)",
+  },
   blauw: {
-    bg: "rgba(59, 130, 246, 0.12)",
-    text: "#60a5fa",
-    border: "rgba(59, 130, 246, 0.3)",
+    bg: "color-mix(in srgb, var(--knkv-blauw-500) 12%, transparent)",
+    text: "var(--knkv-blauw-400)",
+    border: "color-mix(in srgb, var(--knkv-blauw-500) 30%, transparent)",
   },
   groen: {
-    bg: "rgba(34, 197, 94, 0.12)",
-    text: "#4ade80",
-    border: "rgba(34, 197, 94, 0.3)",
+    bg: "color-mix(in srgb, var(--knkv-groen-500) 12%, transparent)",
+    text: "var(--knkv-groen-400)",
+    border: "color-mix(in srgb, var(--knkv-groen-500) 30%, transparent)",
   },
   geel: {
-    bg: "rgba(234, 179, 8, 0.12)",
-    text: "#facc15",
-    border: "rgba(234, 179, 8, 0.3)",
+    bg: "color-mix(in srgb, var(--knkv-geel-500) 12%, transparent)",
+    text: "var(--knkv-geel-400)",
+    border: "color-mix(in srgb, var(--knkv-geel-500) 30%, transparent)",
   },
   oranje: {
-    bg: "rgba(249, 115, 22, 0.12)",
-    text: "#fb923c",
-    border: "rgba(249, 115, 22, 0.3)",
+    bg: "color-mix(in srgb, var(--knkv-oranje-500) 12%, transparent)",
+    text: "var(--knkv-oranje-400)",
+    border: "color-mix(in srgb, var(--knkv-oranje-500) 30%, transparent)",
   },
   rood: {
-    bg: "rgba(239, 68, 68, 0.12)",
-    text: "#f87171",
-    border: "rgba(239, 68, 68, 0.3)",
+    bg: "color-mix(in srgb, var(--knkv-rood-500) 12%, transparent)",
+    text: "var(--knkv-rood-400)",
+    border: "color-mix(in srgb, var(--knkv-rood-500) 30%, transparent)",
   },
 };
 
@@ -101,7 +106,8 @@ export function SpelersKaart({ speler, clearance, compact = false }: SpelersKaar
               <span
                 className="text-xs font-medium"
                 style={{
-                  color: speler.ussTrend > 0 ? "#22c55e" : "#ef4444",
+                  color:
+                    speler.ussTrend > 0 ? "var(--color-success-500)" : "var(--color-error-500)",
                 }}
               >
                 {speler.ussTrend > 0 ? "+" : ""}
@@ -130,8 +136,12 @@ export function SpelersKaart({ speler, clearance, compact = false }: SpelersKaar
             style={{ backgroundColor: "var(--surface-sunken)" }}
           >
             <div
-              className="h-2 rounded-full bg-gradient-to-r from-red-300 via-yellow-300 to-green-400"
-              style={{ width: `${speler.relatievePositie}%` }}
+              className="h-2 rounded-full"
+              style={{
+                width: `${speler.relatievePositie}%`,
+                background:
+                  "linear-gradient(to right, var(--color-error-400, #f87171), var(--color-warning-400, #fbbf24), var(--color-success-400, #4ade80))",
+              }}
             />
           </div>
         </div>
@@ -179,13 +189,13 @@ export function SpelersKaart({ speler, clearance, compact = false }: SpelersKaar
               style={
                 speler.betrouwbaarheid === "bevestigd"
                   ? {
-                      backgroundColor: "rgba(34, 197, 94, 0.12)",
-                      color: "#4ade80",
+                      backgroundColor: "var(--color-success-50)",
+                      color: "var(--color-success-500)",
                     }
                   : speler.betrouwbaarheid === "betrouwbaar"
                     ? {
-                        backgroundColor: "rgba(59, 130, 246, 0.12)",
-                        color: "#60a5fa",
+                        backgroundColor: "var(--color-info-50)",
+                        color: "var(--color-info-500)",
                       }
                     : {
                         backgroundColor: "var(--surface-sunken)",

@@ -55,7 +55,7 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
     if (!template)
       return fail("E-mail template 'trainer_herinnering' niet gevonden", 500, "TEMPLATE_MISSING");
 
-    const baseUrl = process.env.NEXTAUTH_URL ?? "http://localhost:4104";
+    const baseUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
     let verstuurd = 0;
 
     for (const u of teHerinneren) {

@@ -10,12 +10,12 @@ interface SpelerSelectie {
 }
 
 const SPELER_KLEUREN = [
-  "#F97316", // oranje
-  "#3B82F6", // blauw
-  "#22C55E", // groen
-  "#EAB308", // geel
-  "#A855F7", // paars
-  "#EF4444", // rood
+  "var(--knkv-oranje-500)",
+  "var(--knkv-blauw-500)",
+  "var(--knkv-groen-500)",
+  "var(--knkv-geel-500)",
+  "var(--knkv-paars-500)",
+  "var(--knkv-rood-500)",
 ];
 
 export function StapVergelijking({

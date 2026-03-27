@@ -39,20 +39,20 @@ interface KaartAchterkantProps {
 
 /** Donkere gradient-kleuren per leeftijd */
 const DARK_GRADIENTS: Record<number, string> = {
-  5: "linear-gradient(135deg, #581C87, #3730A3)",
-  6: "linear-gradient(135deg, #1E40AF, #1E3A8A)",
-  7: "linear-gradient(135deg, #1E40AF, #166534)",
-  8: "linear-gradient(135deg, #166534, #14532D)",
-  9: "linear-gradient(135deg, #166534, #3F6212)",
-  10: "linear-gradient(135deg, #713F12, #3F6212)",
-  11: "linear-gradient(135deg, #713F12, #854D0E)",
-  12: "linear-gradient(135deg, #713F12, #7C2D12)",
-  13: "linear-gradient(135deg, #7C2D12, #713F12)",
-  14: "linear-gradient(135deg, #7C2D12, #9A3412)",
-  15: "linear-gradient(135deg, #7C2D12, #7F1D1D)",
-  16: "linear-gradient(135deg, #7F1D1D, #7C2D12)",
-  17: "linear-gradient(135deg, #7F1D1D, #991B1B)",
-  18: "linear-gradient(135deg, #450A0A, #3B0000)",
+  5: "linear-gradient(135deg, var(--knkv-paars-900), var(--knkv-blauw-900))",
+  6: "linear-gradient(135deg, var(--knkv-blauw-800), var(--knkv-blauw-900))",
+  7: "linear-gradient(135deg, var(--knkv-blauw-800), var(--knkv-groen-800))",
+  8: "linear-gradient(135deg, var(--knkv-groen-800), var(--knkv-groen-900))",
+  9: "linear-gradient(135deg, var(--knkv-groen-800), var(--knkv-groen-950))",
+  10: "linear-gradient(135deg, var(--knkv-geel-900), var(--knkv-groen-950))",
+  11: "linear-gradient(135deg, var(--knkv-geel-900), var(--knkv-geel-800))",
+  12: "linear-gradient(135deg, var(--knkv-geel-900), var(--knkv-oranje-900))",
+  13: "linear-gradient(135deg, var(--knkv-oranje-900), var(--knkv-geel-900))",
+  14: "linear-gradient(135deg, var(--knkv-oranje-900), var(--knkv-oranje-800))",
+  15: "linear-gradient(135deg, var(--knkv-oranje-900), var(--knkv-rood-900))",
+  16: "linear-gradient(135deg, var(--knkv-rood-900), var(--knkv-oranje-900))",
+  17: "linear-gradient(135deg, var(--knkv-rood-900), var(--knkv-rood-800))",
+  18: "linear-gradient(135deg, var(--knkv-rood-950), var(--knkv-rood-950))",
 };
 
 export function getDarkGradient(leeftijd: number): string {
@@ -63,7 +63,7 @@ export function getDarkGradient(leeftijd: number): string {
 function TrendIndicator({ trend }: { trend: number }) {
   if (trend > 0) {
     return (
-      <span className="flex items-center gap-1 font-extrabold text-green-400">
+      <span className="flex items-center gap-1 font-extrabold text-[var(--knkv-groen-400)]">
         <svg viewBox="0 0 12 12" className="h-3 w-3" fill="currentColor">
           <path d="M6 2L10 7H2L6 2Z" />
         </svg>
@@ -73,7 +73,7 @@ function TrendIndicator({ trend }: { trend: number }) {
   }
   if (trend < 0) {
     return (
-      <span className="flex items-center gap-1 font-extrabold text-red-400">
+      <span className="flex items-center gap-1 font-extrabold text-[var(--knkv-rood-400)]">
         <svg viewBox="0 0 12 12" className="h-3 w-3" fill="currentColor">
           <path d="M6 10L2 5H10L6 10Z" />
         </svg>
@@ -201,10 +201,10 @@ function BioRij({ label, waarde }: { label: string; waarde: string }) {
 }
 
 function scoreKleur(score: number): string {
-  if (score >= 80) return "#4ADE80";
-  if (score >= 60) return "#FACC15";
-  if (score >= 40) return "#FB923C";
-  return "#F87171";
+  if (score >= 80) return "var(--knkv-groen-400)";
+  if (score >= 60) return "var(--knkv-geel-400)";
+  if (score >= 40) return "var(--knkv-oranje-400)";
+  return "var(--knkv-rood-400)";
 }
 
 function formatDatum(datum: string): string {

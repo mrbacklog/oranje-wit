@@ -213,23 +213,28 @@ export function SpelerAvatar({
   roepnaam: string;
   leeftijdsgroep: LeeftijdsgroepNaam;
 }) {
-  const gradientClass = GROEP_GRADIENT[leeftijdsgroep] ?? "from-gray-400 to-gray-500";
+  const gradient = GROEP_GRADIENT[leeftijdsgroep] ?? FALLBACK_GRADIENT;
   const initiaal = roepnaam.charAt(0).toUpperCase();
 
   return (
     <div
-      className={`flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br ${gradientClass} text-lg font-bold text-white shadow-md`}
+      className="flex h-12 w-12 items-center justify-center rounded-full text-lg font-bold text-white shadow-md"
+      style={{
+        background: `linear-gradient(to bottom right, ${gradient.from}, ${gradient.to})`,
+      }}
     >
       {initiaal}
     </div>
   );
 }
 
-const GROEP_GRADIENT: Record<LeeftijdsgroepNaam, string> = {
-  paars: "from-purple-500 to-purple-400",
-  blauw: "from-blue-500 to-blue-400",
-  groen: "from-green-500 to-green-400",
-  geel: "from-yellow-500 to-yellow-400",
-  oranje: "from-orange-500 to-orange-400",
-  rood: "from-red-500 to-red-400",
+const GROEP_GRADIENT: Record<LeeftijdsgroepNaam, { from: string; to: string }> = {
+  paars: { from: "var(--knkv-paars-500)", to: "var(--knkv-paars-400)" },
+  blauw: { from: "var(--knkv-blauw-500)", to: "var(--knkv-blauw-400)" },
+  groen: { from: "var(--knkv-groen-500)", to: "var(--knkv-groen-400)" },
+  geel: { from: "var(--knkv-geel-500)", to: "var(--knkv-geel-400)" },
+  oranje: { from: "var(--knkv-oranje-500)", to: "var(--knkv-oranje-400)" },
+  rood: { from: "var(--knkv-rood-500)", to: "var(--knkv-rood-400)" },
 };
+
+const FALLBACK_GRADIENT = { from: "var(--ow-zwart-400)", to: "var(--ow-zwart-500)" };

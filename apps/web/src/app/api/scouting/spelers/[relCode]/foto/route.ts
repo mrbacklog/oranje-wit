@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/scouting/db/prisma";
 import { getFoto } from "@oranje-wit/database";
 import { logger } from "@oranje-wit/types";
+import { guardAuth } from "@oranje-wit/auth/checks";
 
 /**
  * GET /api/spelers/[relCode]/foto
@@ -13,6 +14,9 @@ export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ relCode: string }> }
 ) {
+  const auth = await guardAuth();
+  if (!auth.ok) return auth.response;
+
   try {
     const { relCode } = await params;
 

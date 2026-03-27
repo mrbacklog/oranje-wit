@@ -71,12 +71,12 @@ export function XPBar({
   if (compact) {
     return (
       <div className="flex items-center gap-2">
-        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#6366f1] text-[10px] font-bold text-white">
+        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--knkv-paars-500)] text-[10px] font-bold text-white">
           {level}
         </div>
         <div className="bg-surface-elevated relative h-2 flex-1 overflow-hidden rounded-full">
           <motion.div
-            className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-[#6366f1] to-[#818cf8]"
+            className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-[var(--knkv-paars-500)] to-[var(--knkv-paars-400)]"
             initial={{ width: 0 }}
             animate={{ width: `${pct}%` }}
             transition={{ duration: 0.7, ease: "easeOut" }}
@@ -92,7 +92,7 @@ export function XPBar({
       {/* Header */}
       <div className="mb-1.5 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#6366f1] text-xs font-bold text-white shadow-sm shadow-[#6366f1]/30">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--knkv-paars-500)] text-xs font-bold text-white shadow-[var(--knkv-paars-500)]/30 shadow-sm">
             {level}
           </div>
           <span className="text-text-primary text-sm font-semibold">{levelNaam}</span>
@@ -107,7 +107,7 @@ export function XPBar({
               initial={{ y: 0, opacity: 1 }}
               animate={{ y: -20, opacity: 0 }}
               transition={{ duration: 1.2, ease: "easeOut" }}
-              className="absolute -top-4 -right-1 text-xs font-bold text-[#818cf8]"
+              className="absolute -top-4 -right-1 text-xs font-bold text-[var(--knkv-paars-400)]"
             >
               +{animateGain}
             </motion.span>
@@ -118,12 +118,14 @@ export function XPBar({
       {/* Bar */}
       <div className="bg-surface-elevated relative h-3 overflow-hidden rounded-full">
         <motion.div
-          className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-[#6366f1] to-[#818cf8]"
+          className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-[var(--knkv-paars-500)] to-[var(--knkv-paars-400)]"
           initial={{ width: 0 }}
           animate={{ width: `${pct}%` }}
           transition={{ duration: 0.7, ease: "easeOut" }}
           style={{
-            boxShadow: showGain ? "0 0 12px 4px rgba(99, 102, 241, 0.3)" : "none",
+            boxShadow: showGain
+              ? "0 0 12px 4px color-mix(in srgb, var(--knkv-paars-500) 30%, transparent)"
+              : "none",
           }}
         />
       </div>

@@ -12,6 +12,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { colors } from "@oranje-wit/ui/tokens/colors";
 
 interface InstroomUitstroomProps {
   data: {
@@ -67,8 +68,8 @@ export function InstroomUitstroom({ data }: InstroomUitstroomProps) {
             {data.map((entry, index) => (
               <Cell
                 key={`in-${index}`}
-                fill={entry.isLopend ? "#4caf5088" : "#4caf50"}
-                stroke={entry.isLopend ? "#4caf50" : undefined}
+                fill={entry.isLopend ? `${colors.semantic.success}88` : colors.semantic.success}
+                stroke={entry.isLopend ? colors.semantic.success : undefined}
                 strokeWidth={entry.isLopend ? 1 : 0}
               />
             ))}
@@ -77,8 +78,8 @@ export function InstroomUitstroom({ data }: InstroomUitstroomProps) {
             {data.map((entry, index) => (
               <Cell
                 key={`uit-${index}`}
-                fill={entry.isLopend ? "#f4433688" : "#f44336"}
-                stroke={entry.isLopend ? "#f44336" : undefined}
+                fill={entry.isLopend ? `${colors.semantic.error}88` : colors.semantic.error}
+                stroke={entry.isLopend ? colors.semantic.error : undefined}
                 strokeWidth={entry.isLopend ? 1 : 0}
               />
             ))}

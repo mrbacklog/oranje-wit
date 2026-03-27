@@ -1,7 +1,7 @@
-import { auth } from "@oranje-wit/auth";
 import { HUIDIG_SEIZOEN, logger } from "@oranje-wit/types";
 import { ok, fail } from "@/lib/scouting/api";
 import { prisma } from "@/lib/scouting/db/prisma";
+import { guardAuth } from "@oranje-wit/auth/checks";
 
 interface TeamSelect {
   id: number;
@@ -21,12 +21,10 @@ interface TeamSelect {
  * Alleen jeugdteams — senioren worden uitgefilterd.
  */
 export async function GET(request: Request) {
-  try {
-    const session = await auth();
-    if (!session?.user?.email) {
-      return fail("Niet ingelogd", 401, "UNAUTHORIZED");
-    }
+  const auth = await guardAuth();
+  if (!auth.ok) return auth.response;
 
+  try {
     const { searchParams } = new URL(request.url);
     const seizoen = searchParams.get("seizoen") ?? HUIDIG_SEIZOEN;
 

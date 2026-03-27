@@ -2,6 +2,7 @@ import * as fs from "fs";
 import { z } from "zod";
 import { importData, getLastImport, type ExportData } from "@/lib/teamindeling/import";
 import { ok, fail, parseBody } from "@/lib/teamindeling/api";
+import { guardTC } from "@oranje-wit/auth/checks";
 
 const ImportSchema = z.object({
   exportPad: z.string().min(1, "exportPad is verplicht"),
@@ -12,6 +13,9 @@ const ImportSchema = z.object({
  * Body: { exportPad: string }
  */
 export async function POST(request: Request) {
+  const auth = await guardTC();
+  if (!auth.ok) return auth.response;
+
   try {
     const parsed = await parseBody(request, ImportSchema);
     if (!parsed.ok) return parsed.response;
@@ -36,6 +40,9 @@ export async function POST(request: Request) {
  * GET /api/import — Laatste import-status opvragen.
  */
 export async function GET() {
+  const auth = await guardTC();
+  if (!auth.ok) return auth.response;
+
   try {
     const lastImport = await getLastImport();
 

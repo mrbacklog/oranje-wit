@@ -16,13 +16,41 @@ const GROEP_LABELS: Record<string, string> = {
 };
 
 const GROEP_KLEUREN: Record<string, { border: string; bg: string; text: string }> = {
-  rood: { border: "border-red-500", bg: "bg-red-500/10", text: "text-red-400" },
-  oranje: { border: "border-orange-500", bg: "bg-orange-500/10", text: "text-orange-400" },
-  geel: { border: "border-yellow-500", bg: "bg-yellow-500/10", text: "text-yellow-400" },
-  groen: { border: "border-green-500", bg: "bg-green-500/10", text: "text-green-400" },
-  blauw: { border: "border-blue-500", bg: "bg-blue-500/10", text: "text-blue-400" },
-  paars: { border: "border-purple-500", bg: "bg-purple-500/10", text: "text-purple-400" },
-  overig: { border: "border-gray-500", bg: "bg-surface-dark0/10", text: "text-text-muted" },
+  rood: {
+    border: "border-[var(--knkv-rood-500)]",
+    bg: "bg-[var(--knkv-rood-500)]/10",
+    text: "text-[var(--knkv-rood-400)]",
+  },
+  oranje: {
+    border: "border-[var(--knkv-oranje-500)]",
+    bg: "bg-[var(--knkv-oranje-500)]/10",
+    text: "text-[var(--knkv-oranje-400)]",
+  },
+  geel: {
+    border: "border-[var(--knkv-geel-500)]",
+    bg: "bg-[var(--knkv-geel-500)]/10",
+    text: "text-[var(--knkv-geel-400)]",
+  },
+  groen: {
+    border: "border-[var(--knkv-groen-500)]",
+    bg: "bg-[var(--knkv-groen-500)]/10",
+    text: "text-[var(--knkv-groen-400)]",
+  },
+  blauw: {
+    border: "border-[var(--knkv-blauw-500)]",
+    bg: "bg-[var(--knkv-blauw-500)]/10",
+    text: "text-[var(--knkv-blauw-400)]",
+  },
+  paars: {
+    border: "border-[var(--knkv-paars-500)]",
+    bg: "bg-[var(--knkv-paars-500)]/10",
+    text: "text-[var(--knkv-paars-400)]",
+  },
+  overig: {
+    border: "border-[var(--ow-zwart-500)]",
+    bg: "bg-[var(--ow-zwart-500)]/10",
+    text: "text-text-muted",
+  },
 };
 
 interface Team {
@@ -76,7 +104,7 @@ export function TeamGrid({ groepen }: TeamGridProps) {
                   {/* Team-kleur dot */}
                   <div
                     className="h-3 w-3 rounded-full"
-                    style={{ backgroundColor: team.kleur ?? "#888" }}
+                    style={{ backgroundColor: team.kleur ?? "var(--ow-zwart-400)" }}
                   />
 
                   {/* Teamnaam */}

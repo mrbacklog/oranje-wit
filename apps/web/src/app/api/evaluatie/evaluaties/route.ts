@@ -146,7 +146,7 @@ async function notificeerCoordinatoren(
     include: { coordinator: true },
   });
 
-  const baseUrl = process.env.NEXTAUTH_URL ?? "http://localhost:4104";
+  const baseUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
 
   for (const ct of coordTeams) {
     // Prisma 7 type recursie workaround (TS2321)

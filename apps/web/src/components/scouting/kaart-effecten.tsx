@@ -12,14 +12,14 @@
 
 export function TierLabel({ tier }: { tier: string }) {
   const bgColors: Record<string, string> = {
-    brons: "#CD7F32",
-    zilver: "#C0C0C0",
-    goud: "#FFD700",
+    brons: "var(--tier-brons-icon)",
+    zilver: "var(--tier-zilver-icon)",
+    goud: "var(--tier-goud-icon)",
   };
   const textColors: Record<string, string> = {
-    brons: "#3D2200",
-    zilver: "#333333",
-    goud: "#5C4A00",
+    brons: "var(--tier-brons-bg)",
+    zilver: "var(--tier-zilver-text)",
+    goud: "var(--tier-goud-text)",
   };
 
   return (
@@ -139,8 +139,12 @@ export function Sterren({
           viewBox="0 0 20 20"
           width={size}
           height={size}
-          fill={i < count ? "#FFD700" : "none"}
-          stroke={i < count ? "#FFD700" : "rgba(255,255,255,0.3)"}
+          fill={i < count ? "var(--knkv-geel-500)" : "none"}
+          stroke={
+            i < count
+              ? "var(--knkv-geel-500)"
+              : "color-mix(in srgb, var(--text-primary) 30%, transparent)"
+          }
           strokeWidth={1.5}
           className={i < count ? "drop-shadow-[0_0_4px_rgba(255,215,0,0.5)]" : ""}
         >
@@ -167,7 +171,13 @@ export function StatBar({ label, value }: { label: string; value: number }) {
           style={{
             width: `${pct}%`,
             background:
-              pct >= 80 ? "#4ADE80" : pct >= 60 ? "#FACC15" : pct >= 40 ? "#FB923C" : "#F87171",
+              pct >= 80
+                ? "var(--knkv-groen-400)"
+                : pct >= 60
+                  ? "var(--knkv-geel-400)"
+                  : pct >= 40
+                    ? "var(--knkv-oranje-400)"
+                    : "var(--knkv-rood-400)",
           }}
         />
       </div>

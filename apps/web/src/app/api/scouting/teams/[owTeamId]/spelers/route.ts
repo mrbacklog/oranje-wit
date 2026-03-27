@@ -1,7 +1,7 @@
-import { auth } from "@oranje-wit/auth";
 import { logger } from "@oranje-wit/types";
 import { ok, fail } from "@/lib/scouting/api";
 import { prisma } from "@/lib/scouting/db/prisma";
+import { guardAuth } from "@oranje-wit/auth/checks";
 
 interface RouteParams {
   params: Promise<{ owTeamId: string }>;
@@ -14,12 +14,10 @@ interface RouteParams {
  * Inclusief geboortejaar, roepnaam, achternaam en of er een foto beschikbaar is.
  */
 export async function GET(request: Request, { params }: RouteParams) {
-  try {
-    const session = await auth();
-    if (!session?.user?.email) {
-      return fail("Niet ingelogd", 401, "UNAUTHORIZED");
-    }
+  const auth = await guardAuth();
+  if (!auth.ok) return auth.response;
 
+  try {
     const { owTeamId } = await params;
     const teamId = parseInt(owTeamId, 10);
 

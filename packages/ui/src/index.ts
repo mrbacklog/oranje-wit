@@ -11,6 +11,13 @@ export { EmptyState } from "./data-display/empty-state";
 
 // Layout
 export { AppShell } from "./layout/app-shell";
+export { DomainShell } from "./layout/domain-shell";
+export type {
+  DomainShellProps,
+  DomainNavItem,
+  DomainNavSection,
+  DomainSidebarConfig,
+} from "./layout/domain-shell";
 export { PageHeader } from "./layout/page-header";
 export { StickyHeader } from "./layout/sticky-header";
 export type { StickyHeaderProps } from "./layout/sticky-header";
@@ -36,6 +43,8 @@ export {
 } from "./navigation/bottom-nav";
 export { TopBar } from "./navigation/top-bar";
 export type { TopBarProps } from "./navigation/top-bar";
+export { BottomNavShell, FloatingAppSwitcherFab } from "./navigation/bottom-nav-shell";
+export type { BottomNavShellProps } from "./navigation/bottom-nav-shell";
 export { AppSwitcher } from "./navigation/app-switcher";
 export type { AppSwitcherProps, AppSwitcherProfile, AppInfo } from "./navigation/app-switcher";
 export {
@@ -49,7 +58,7 @@ export {
   APP_IDS,
   APP_META,
 } from "./navigation/app-icons";
-export type { AppIconProps } from "./navigation/app-icons";
+export type { AppIconProps, AppId } from "./navigation/app-icons";
 
 // Primitives
 export { Button } from "./primitives/button";

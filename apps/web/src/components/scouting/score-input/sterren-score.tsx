@@ -103,7 +103,7 @@ export function SterrenScore({
               onKeyDown={handleKeyDown}
               className={`focus-visible:ring-ow-oranje h-10 w-10 transition-all duration-150 outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
                 disabled
-                  ? "cursor-not-allowed text-gray-300 opacity-40"
+                  ? "cursor-not-allowed text-[var(--ow-zwart-300)] opacity-40"
                   : readOnly
                     ? "cursor-default"
                     : "cursor-pointer"
@@ -140,10 +140,10 @@ function SterIcon({ gevuld, actief }: { gevuld: boolean; actief: boolean }) {
         strokeLinejoin="round"
         className={
           actief
-            ? "text-yellow-400 drop-shadow-[0_0_6px_rgba(250,204,21,0.5)]"
+            ? "text-[var(--knkv-geel-400)] drop-shadow-[0_0_6px_rgba(250,204,21,0.5)]"
             : gevuld
-              ? "text-yellow-300"
-              : "text-gray-300"
+              ? "text-[var(--knkv-geel-300)]"
+              : "text-[var(--ow-zwart-300)]"
         }
       />
     </svg>

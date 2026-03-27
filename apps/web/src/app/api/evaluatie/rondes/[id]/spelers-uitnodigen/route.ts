@@ -79,7 +79,7 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
     if (!template)
       return fail("Template 'speler_uitnodiging' niet gevonden", 500, "TEMPLATE_MISSING");
 
-    const baseUrl = process.env.NEXTAUTH_URL ?? "http://localhost:4104";
+    const baseUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
     const deadlineStr = ronde.deadline.toLocaleDateString("nl-NL", {
       day: "numeric",
       month: "long",

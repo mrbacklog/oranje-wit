@@ -3,6 +3,7 @@ import { z } from "zod";
 import { logger, PEILJAAR } from "@oranje-wit/types";
 import { prisma } from "@/lib/scouting/db/prisma";
 import { ok, fail } from "@/lib/scouting/api";
+import { guardAuth } from "@oranje-wit/auth/checks";
 
 const ZoekSchema = z.object({
   q: z.string().min(1, "Zoekterm is verplicht").max(100),
@@ -14,6 +15,9 @@ const ZoekSchema = z.object({
  * Retourneert max 20 resultaten
  */
 export async function GET(request: NextRequest) {
+  const auth = await guardAuth();
+  if (!auth.ok) return auth.response;
+
   try {
     const searchParams = request.nextUrl.searchParams;
     const parsed = ZoekSchema.safeParse({ q: searchParams.get("q") });

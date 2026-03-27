@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/teamindeling/db/prisma";
 import { ok, fail } from "@/lib/teamindeling/api/response";
 import { logger } from "@oranje-wit/types";
+import { guardTC } from "@oranje-wit/auth/checks";
 
 const CLEANUP_KEY = process.env.CLEANUP_API_KEY;
 const SOFT_DELETE_DAGEN = 30;
@@ -12,11 +13,14 @@ const SNAPSHOT_DAGEN = 90;
  * Beschermd met API-key header.
  */
 export async function POST(request: Request) {
+  const auth = await guardTC();
+  if (!auth.ok) return auth.response;
+
   try {
-    // Auth check
+    // Aanvullende API-key check (voor cron jobs)
     const key = request.headers.get("x-api-key");
     if (!CLEANUP_KEY || key !== CLEANUP_KEY) {
-      return fail("Niet geautoriseerd", 401, "UNAUTHORIZED");
+      return fail("Ongeldige API-key", 403, "FORBIDDEN");
     }
 
     const nu = new Date();

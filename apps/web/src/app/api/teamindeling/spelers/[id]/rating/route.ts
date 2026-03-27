@@ -2,12 +2,16 @@ import { z } from "zod";
 import { prisma } from "@/lib/teamindeling/db/prisma";
 import { ok, fail } from "@/lib/teamindeling/api/response";
 import { parseBody } from "@/lib/teamindeling/api/validate";
+import { guardTC } from "@oranje-wit/auth/checks";
 
 const RatingSchema = z.object({
   rating: z.number().int().min(0).max(200),
 });
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const auth = await guardTC();
+  if (!auth.ok) return auth.response;
+
   const { id } = await params;
 
   const parsed = await parseBody(request, RatingSchema);

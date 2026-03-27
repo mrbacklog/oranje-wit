@@ -1,4 +1,4 @@
-import { requireTC } from "@/lib/teamindeling/auth-check";
+import { guardTC } from "@oranje-wit/auth/checks";
 import { ok, fail } from "@/lib/teamindeling/api";
 import { parseCsvContent } from "@/lib/teamindeling/leden-csv";
 import { prisma } from "@/lib/teamindeling/db/prisma";
@@ -14,9 +14,10 @@ const SelectieSchema = z.object({
 });
 
 export async function POST(request: Request) {
-  try {
-    await requireTC();
+  const auth = await guardTC();
+  if (!auth.ok) return auth.response;
 
+  try {
     const formData = await request.formData();
     const file = formData.get("csv");
     if (!file || !(file instanceof File)) {

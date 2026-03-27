@@ -1,13 +1,14 @@
-import { requireTC } from "@/lib/teamindeling/auth-check";
+import { guardTC } from "@oranje-wit/auth/checks";
 import { ok, fail } from "@/lib/teamindeling/api";
 import { parseCsvContent } from "@/lib/teamindeling/leden-csv";
 import { berekenLedenDiff } from "@/lib/teamindeling/leden-diff";
 import { logger } from "@oranje-wit/types";
 
 export async function POST(request: Request) {
-  try {
-    await requireTC();
+  const auth = await guardTC();
+  if (!auth.ok) return auth.response;
 
+  try {
     const formData = await request.formData();
     const file = formData.get("csv");
     if (!file || !(file instanceof File)) {

@@ -9,8 +9,8 @@ interface DropoutHeatmapProps {
 }
 
 function dropoutColor(pct: number): string {
-  if (pct === 0) return "#ffffff";
-  // Wit (0%) → donkerrood (hoge uitstroom)
+  if (pct === 0) return "var(--surface-page)";
+  // Transparant (0%) → donkerrood (hoge uitstroom)
   const intensity = Math.min(pct / 50, 1); // 50% = maximaal rood
   const r = 255;
   const g = Math.round(255 - intensity * 200);
@@ -48,7 +48,7 @@ export function DropoutHeatmap({ data, seizoenen }: DropoutHeatmapProps) {
                     className="px-2 py-1 text-center"
                     style={{
                       backgroundColor: dropoutColor(val),
-                      color: val > 30 ? "#fff" : "#333",
+                      color: val > 30 ? "var(--text-primary)" : "var(--text-secondary)",
                     }}
                   >
                     {val > 0 ? `${val.toFixed(0)}%` : ""}

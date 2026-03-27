@@ -9,7 +9,7 @@ export interface AppInfo {
   name: string;
   /** Korte beschrijving (bijv. "Jeugdscouting") */
   description: string;
-  /** URL van de app (bijv. "https://scout.ckvoranjewit.app") */
+  /** Pad van de app (bijv. "/scouting") */
   url: string;
   /** Icon component */
   icon: ReactNode;

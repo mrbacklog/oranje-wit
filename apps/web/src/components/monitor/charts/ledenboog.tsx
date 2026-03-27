@@ -12,6 +12,7 @@ import {
   ResponsiveContainer,
   ReferenceLine,
 } from "recharts";
+import { colors } from "@oranje-wit/ui/tokens/colors";
 
 interface LedenboogProps {
   data: { geboortejaar: number; M: number; V: number; band: string }[];
@@ -76,8 +77,8 @@ export function Ledenboog({ data, seizoen }: LedenboogProps) {
           formatter={(value: string) => (value === "M" ? "\u2642 Jongens" : "\u2640 Meisjes")}
         />
         <ReferenceLine x={0} stroke="var(--text-tertiary)" />
-        <Bar dataKey="M" stackId="stack" name="M" fill="#60A5FA" />
-        <Bar dataKey="V" stackId="stack" name="V" fill="#F472B6" />
+        <Bar dataKey="M" stackId="stack" name="M" fill={colors.gender.m} />
+        <Bar dataKey="V" stackId="stack" name="V" fill={colors.gender.v} />
       </BarChart>
     </ResponsiveContainer>
   );

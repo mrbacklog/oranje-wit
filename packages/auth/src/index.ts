@@ -11,7 +11,7 @@ import { getCapabilities } from "./allowlist";
 // via een server-only registratie wanneer de infra daarvoor klaar is.
 // Tot die tijd: alleen Google OAuth en E2E credentials.
 
-export { bepaalClearance } from "./clearance";
+export { bepaalClearance, filterSpelersData } from "./clearance";
 export type { Clearance } from "@oranje-wit/types";
 
 /**
@@ -172,7 +172,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     signIn: "/login",
     verifyRequest: "/login/check-email", // Pagina na magic link versturen
   },
-  // Cross-subdomein sessie: alle apps op *.ckvoranjewit.app delen dezelfde cookie.
+  // Productie cookie: host-only op ckvoranjewit.app.
   // In development: standaard cookies (per-app, per-poort).
   ...(process.env.NODE_ENV === "production"
     ? {
@@ -184,7 +184,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               secure: true,
               sameSite: "lax" as const,
               path: "/",
-              domain: ".ckvoranjewit.app",
             },
           },
         },

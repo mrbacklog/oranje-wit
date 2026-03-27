@@ -6,6 +6,45 @@ const mockPrisma = createMockPrisma();
 vi.mock("@/lib/teamindeling/db/prisma", () => ({ prisma: mockPrisma }));
 vi.mock("@oranje-wit/database", () => ({ prisma: mockPrisma }));
 
+vi.mock("@oranje-wit/auth/checks", () => ({
+  guardAuth: vi.fn().mockResolvedValue({
+    ok: true,
+    session: {
+      user: { email: "test@test.nl", isTC: true, isScout: false, clearance: 3, doelgroepen: [] },
+    },
+  }),
+  guardTC: vi.fn().mockResolvedValue({
+    ok: true,
+    session: {
+      user: { email: "test@test.nl", isTC: true, isScout: false, clearance: 3, doelgroepen: [] },
+    },
+  }),
+  guardScout: vi.fn().mockResolvedValue({
+    ok: true,
+    session: {
+      user: { email: "test@test.nl", isTC: true, isScout: true, clearance: 3, doelgroepen: [] },
+    },
+  }),
+  guardCoordinator: vi.fn().mockResolvedValue({
+    ok: true,
+    session: {
+      user: {
+        email: "test@test.nl",
+        isTC: true,
+        isScout: false,
+        clearance: 3,
+        doelgroepen: ["ALLE"],
+      },
+    },
+  }),
+  guardClearance: vi.fn().mockResolvedValue({
+    ok: true,
+    session: {
+      user: { email: "test@test.nl", isTC: true, isScout: false, clearance: 3, doelgroepen: [] },
+    },
+  }),
+}));
+
 const { POST } = await import("./route");
 
 describe("POST /api/referentie-teams/ververs", () => {

@@ -1,8 +1,12 @@
 import { prisma } from "@/lib/teamindeling/db/prisma";
 import { ok, fail } from "@/lib/teamindeling/api/response";
 import type { EvaluatieScore, TeamGemiddelde } from "@oranje-wit/types";
+import { guardTC } from "@oranje-wit/auth/checks";
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const auth = await guardTC();
+  if (!auth.ok) return auth.response;
+
   try {
     const { id } = await params;
     const { searchParams } = new URL(request.url);

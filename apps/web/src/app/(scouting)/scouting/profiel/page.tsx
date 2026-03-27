@@ -97,7 +97,7 @@ export default function ProfielPage() {
       {/* Hero-sectie */}
       <section className="bg-surface-card rounded-2xl p-5">
         <div className="mb-4 flex items-center gap-3">
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-[#6366f1] to-[#818cf8] shadow-lg shadow-[#6366f1]/30">
+          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-[var(--knkv-paars-500)] to-[var(--knkv-paars-400)] shadow-[var(--knkv-paars-500)]/30 shadow-lg">
             <span className="text-xl font-black text-white">{levelInfo.level}</span>
           </div>
           <div>

@@ -1,9 +1,9 @@
 const KLEUR_MAP: Record<string, string> = {
-  blauw: "#3B82F6",
-  groen: "#22C55E",
-  geel: "#EAB308",
-  oranje: "#F97316",
-  rood: "#EF4444",
+  blauw: "var(--knkv-blauw-500)",
+  groen: "var(--knkv-groen-500)",
+  geel: "var(--knkv-geel-500)",
+  oranje: "var(--knkv-oranje-500)",
+  rood: "var(--knkv-rood-500)",
 };
 
 const SIZE_MAP = {
@@ -22,7 +22,7 @@ interface SpelerAvatarProps {
 
 export function SpelerAvatar({ naam, achternaam, kleur, fotoUrl, size = "md" }: SpelerAvatarProps) {
   const { container, text } = SIZE_MAP[size];
-  const bgColor = kleur ? (KLEUR_MAP[kleur] ?? "#6B7280") : "#6B7280";
+  const bgColor = kleur ? (KLEUR_MAP[kleur] ?? "var(--ow-zwart-500)") : "var(--ow-zwart-500)";
   const initialen = `${naam[0] ?? ""}${achternaam[0] ?? ""}`.toUpperCase();
 
   if (fotoUrl) {

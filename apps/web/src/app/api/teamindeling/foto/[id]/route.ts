@@ -2,12 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/teamindeling/db/prisma";
 import { getFoto } from "@oranje-wit/database";
 import { logger } from "@oranje-wit/types";
+import { guardAuth } from "@oranje-wit/auth/checks";
 
 /**
  * Serveert een spelerfoto (webp) op basis van speler-ID (= Lid.relCode).
  * Cached voor 1 uur in de browser.
  */
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const auth = await guardAuth();
+  if (!auth.ok) return auth.response;
+
   const { id } = await params;
 
   try {

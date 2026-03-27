@@ -53,13 +53,13 @@ const GROEP_CHIPS: Array<{
   color: string;
   leeftijden: number[];
 }> = [
-  { id: "alle", label: "Alle", color: "#6B7280", leeftijden: [] },
-  { id: "paars", label: "Paars", color: "#A855F7", leeftijden: [5] },
-  { id: "blauw", label: "Blauw", color: "#3B82F6", leeftijden: [6, 7] },
-  { id: "groen", label: "Groen", color: "#22C55E", leeftijden: [8, 9] },
-  { id: "geel", label: "Geel", color: "#EAB308", leeftijden: [10, 11, 12] },
-  { id: "oranje", label: "Oranje", color: "#F97316", leeftijden: [13, 14, 15] },
-  { id: "rood", label: "Rood", color: "#EF4444", leeftijden: [16, 17, 18] },
+  { id: "alle", label: "Alle", color: "var(--ow-zwart-500)", leeftijden: [] },
+  { id: "paars", label: "Paars", color: "var(--knkv-paars-500)", leeftijden: [5] },
+  { id: "blauw", label: "Blauw", color: "var(--knkv-blauw-500)", leeftijden: [6, 7] },
+  { id: "groen", label: "Groen", color: "var(--knkv-groen-500)", leeftijden: [8, 9] },
+  { id: "geel", label: "Geel", color: "var(--knkv-geel-500)", leeftijden: [10, 11, 12] },
+  { id: "oranje", label: "Oranje", color: "var(--knkv-oranje-500)", leeftijden: [13, 14, 15] },
+  { id: "rood", label: "Rood", color: "var(--knkv-rood-500)", leeftijden: [16, 17, 18] },
 ];
 
 const SORTEER_OPTIES: Array<{ id: SorteerOptie; label: string }> = [

@@ -7,75 +7,14 @@ on:
     branches: [main]
   workflow_dispatch:
     inputs:
-      deploy_monitor:
-        description: "Deploy Monitor"
-        type: boolean
-        default: false
-      deploy_ti:
-        description: "Deploy Team-Indeling"
-        type: boolean
-        default: false
-      deploy_evaluatie:
-        description: "Deploy Evaluatie"
-        type: boolean
-        default: false
-      deploy_scouting:
-        description: "Deploy Scouting"
-        type: boolean
-        default: false
       skip_e2e:
         description: "Skip E2E tests"
         type: boolean
         default: false
 
 jobs:
-  # ── Job 0: Detecteer welke apps zijn gewijzigd ─────────────────────────────
-  changes:
-    runs-on: ubuntu-latest
-    outputs:
-      monitor: ${{ steps.result.outputs.monitor }}
-      ti: ${{ steps.result.outputs.ti }}
-      evaluatie: ${{ steps.result.outputs.evaluatie }}
-      scouting: ${{ steps.result.outputs.scouting }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: dorny/paths-filter@v3
-        id: filter
-        if: github.event_name != 'workflow_dispatch'
-        with:
-          filters: |
-            monitor:
-              - 'apps/monitor/**'
-              - 'packages/**'
-            ti:
-              - 'apps/team-indeling/**'
-              - 'packages/**'
-            evaluatie:
-              - 'apps/evaluatie/**'
-              - 'packages/**'
-            scouting:
-              - 'apps/scouting/**'
-              - 'packages/**'
-
-      - name: Determine changed apps
-        id: result
-        run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "monitor=${{ inputs.deploy_monitor }}" >> $GITHUB_OUTPUT
-            echo "ti=${{ inputs.deploy_ti }}" >> $GITHUB_OUTPUT
-            echo "evaluatie=${{ inputs.deploy_evaluatie }}" >> $GITHUB_OUTPUT
-            echo "scouting=${{ inputs.deploy_scouting }}" >> $GITHUB_OUTPUT
-          else
-            echo "monitor=${{ steps.filter.outputs.monitor }}" >> $GITHUB_OUTPUT
-            echo "ti=${{ steps.filter.outputs.ti }}" >> $GITHUB_OUTPUT
-            echo "evaluatie=${{ steps.filter.outputs.evaluatie }}" >> $GITHUB_OUTPUT
-            echo "scouting=${{ steps.filter.outputs.scouting }}" >> $GITHUB_OUTPUT
-          fi
-
   # ── Job 1: Quality checks ──────────────────────────────────────────────────
   quality:
-    needs: changes
-    if: needs.changes.outputs.monitor == 'true' || needs.changes.outputs.ti == 'true' || needs.changes.outputs.evaluatie == 'true' || needs.changes.outputs.scouting == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -94,37 +33,11 @@ jobs:
       - name: Generate Prisma client
         run: pnpm db:generate
 
-      - name: Typecheck monitor
-        if: needs.changes.outputs.monitor == 'true'
-        run: pnpm --filter @oranje-wit/monitor exec tsc --noEmit
+      - name: Typecheck
+        run: pnpm --filter @oranje-wit/web exec tsc --noEmit
 
-      - name: Typecheck team-indeling
-        if: needs.changes.outputs.ti == 'true'
-        run: pnpm --filter @oranje-wit/team-indeling exec tsc --noEmit
-
-      - name: Typecheck evaluatie
-        if: needs.changes.outputs.evaluatie == 'true'
-        run: pnpm --filter @oranje-wit/evaluatie exec tsc --noEmit
-
-      - name: Typecheck scouting
-        if: needs.changes.outputs.scouting == 'true'
-        run: pnpm --filter @oranje-wit/scouting exec tsc --noEmit
-
-      - name: Lint monitor
-        if: needs.changes.outputs.monitor == 'true'
-        run: pnpm --filter @oranje-wit/monitor lint
-
-      - name: Lint team-indeling
-        if: needs.changes.outputs.ti == 'true'
-        run: pnpm --filter @oranje-wit/team-indeling lint
-
-      - name: Lint evaluatie
-        if: needs.changes.outputs.evaluatie == 'true'
-        run: pnpm --filter @oranje-wit/evaluatie lint
-
-      - name: Lint scouting
-        if: needs.changes.outputs.scouting == 'true'
-        run: pnpm --filter @oranje-wit/scouting lint
+      - name: Lint
+        run: pnpm --filter @oranje-wit/web lint
 
       - name: Format check
         run: pnpm format:check
@@ -134,8 +47,6 @@ jobs:
 
   # ── Job 2: Build (parallel aan quality) ────────────────────────────────────
   build:
-    needs: changes
-    if: needs.changes.outputs.monitor == 'true' || needs.changes.outputs.ti == 'true' || needs.changes.outputs.evaluatie == 'true' || needs.changes.outputs.scouting == 'true'
     runs-on: ubuntu-latest
     env:
       DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy
@@ -161,46 +72,24 @@ jobs:
 
       - uses: actions/cache@v4
         with:
-          path: |
-            apps/monitor/.next/cache
-            apps/team-indeling/.next/cache
-            apps/evaluatie/.next/cache
-            apps/scouting/.next/cache
-          key: nextjs-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('apps/*/src/**', 'packages/*/src/**') }}
+          path: apps/web/.next/cache
+          key: nextjs-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('apps/web/src/**', 'packages/*/src/**') }}
           restore-keys: |
             nextjs-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-
             nextjs-${{ runner.os }}-
 
-      - name: Build monitor
-        if: needs.changes.outputs.monitor == 'true'
-        run: pnpm build:monitor
-
-      - name: Build team-indeling
-        if: needs.changes.outputs.ti == 'true'
-        run: pnpm build:ti
-
-      - name: Build evaluatie
-        if: needs.changes.outputs.evaluatie == 'true'
-        run: pnpm build:evaluatie
-
-      - name: Build scouting
-        if: needs.changes.outputs.scouting == 'true'
-        run: pnpm build:scouting
+      - name: Build
+        run: pnpm build
 
   # ── Job 3: E2E Tests (na build, met PostgreSQL service container) ──────────
   e2e:
-    needs: [changes, build]
-    if: |
-      (github.event_name != 'workflow_dispatch' || inputs.skip_e2e != true) &&
-      (needs.changes.outputs.ti == 'true' ||
-       needs.changes.outputs.monitor == 'true' ||
-       needs.changes.outputs.evaluatie == 'true' ||
-       needs.changes.outputs.scouting == 'true')
+    needs: [build]
+    if: github.event_name != 'workflow_dispatch' || inputs.skip_e2e != true
     runs-on: ubuntu-latest
     env:
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/oranjewit_test
       NEXTAUTH_SECRET: e2e-test-secret
-      NEXTAUTH_URL: http://localhost:4100
+      NEXTAUTH_URL: http://localhost:3000
       E2E_TEST: "true"
       AUTH_GOOGLE_ID: dummy
       AUTH_GOOGLE_SECRET: dummy
@@ -257,21 +146,8 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps chromium
 
-      - name: E2E tests team-indeling
-        if: needs.changes.outputs.ti == 'true'
-        run: pnpm test:e2e:ti
-
-      - name: E2E tests monitor
-        if: needs.changes.outputs.monitor == 'true'
-        run: pnpm test:e2e:monitor
-
-      - name: E2E tests evaluatie
-        if: needs.changes.outputs.evaluatie == 'true'
-        run: pnpm test:e2e:evaluatie
-
-      - name: E2E tests scouting
-        if: needs.changes.outputs.scouting == 'true'
-        run: pnpm test:e2e:scouting
+      - name: E2E tests
+        run: pnpm test:e2e
 
       - uses: actions/upload-artifact@v4
         if: failure()
@@ -282,58 +158,21 @@ jobs:
 
   # ── Job 4: Deploy (na groen CI, op main push OF workflow_dispatch) ─────────
   deploy:
-    needs: [quality, build, e2e, changes]
+    needs: [quality, build, e2e]
     if: |
       always() &&
-      (needs.quality.result == 'success' || needs.quality.result == 'skipped') &&
-      (needs.build.result == 'success' || needs.build.result == 'skipped') &&
+      needs.quality.result == 'success' &&
+      needs.build.result == 'success' &&
       (needs.e2e.result == 'success' || needs.e2e.result == 'skipped') &&
       (github.ref == 'refs/heads/main') &&
       (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy monitor
-        if: needs.changes.outputs.monitor == 'true'
+      - name: Deploy web
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
           ENV_ID: ${{ secrets.RAILWAY_ENVIRONMENT_ID }}
-          SVC_ID: ${{ secrets.RAILWAY_SERVICE_MONITOR }}
-        run: |
-          curl -sf -X POST https://backboard.railway.com/graphql/v2 \
-            -H "Authorization: Bearer $RAILWAY_TOKEN" \
-            -H "Content-Type: application/json" \
-            -d "{\"query\":\"mutation { serviceInstanceDeploy(environmentId: \\\"$ENV_ID\\\", serviceId: \\\"$SVC_ID\\\", latestCommit: true) }\"}"
-
-      - name: Deploy team-indeling
-        if: needs.changes.outputs.ti == 'true'
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-          ENV_ID: ${{ secrets.RAILWAY_ENVIRONMENT_ID }}
-          SVC_ID: ${{ secrets.RAILWAY_SERVICE_TI }}
-        run: |
-          curl -sf -X POST https://backboard.railway.com/graphql/v2 \
-            -H "Authorization: Bearer $RAILWAY_TOKEN" \
-            -H "Content-Type: application/json" \
-            -d "{\"query\":\"mutation { serviceInstanceDeploy(environmentId: \\\"$ENV_ID\\\", serviceId: \\\"$SVC_ID\\\", latestCommit: true) }\"}"
-
-      - name: Deploy evaluatie
-        if: needs.changes.outputs.evaluatie == 'true'
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-          ENV_ID: ${{ secrets.RAILWAY_ENVIRONMENT_ID }}
-          SVC_ID: ${{ secrets.RAILWAY_SERVICE_EVAL }}
-        run: |
-          curl -sf -X POST https://backboard.railway.com/graphql/v2 \
-            -H "Authorization: Bearer $RAILWAY_TOKEN" \
-            -H "Content-Type: application/json" \
-            -d "{\"query\":\"mutation { serviceInstanceDeploy(environmentId: \\\"$ENV_ID\\\", serviceId: \\\"$SVC_ID\\\", latestCommit: true) }\"}"
-
-      - name: Deploy scouting
-        if: needs.changes.outputs.scouting == 'true'
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-          ENV_ID: ${{ secrets.RAILWAY_ENVIRONMENT_ID }}
-          SVC_ID: ${{ secrets.RAILWAY_SERVICE_SCOUTING }}
+          SVC_ID: ${{ secrets.RAILWAY_SERVICE_WEB }}
         run: |
           curl -sf -X POST https://backboard.railway.com/graphql/v2 \
             -H "Authorization: Bearer $RAILWAY_TOKEN" \

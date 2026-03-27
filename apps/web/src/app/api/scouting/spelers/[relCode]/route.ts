@@ -2,6 +2,8 @@ import { NextRequest } from "next/server";
 import { logger, PEILJAAR, HUIDIG_SEIZOEN } from "@oranje-wit/types";
 import { prisma } from "@/lib/scouting/db/prisma";
 import { ok, fail } from "@/lib/scouting/api";
+import { guardAuth } from "@oranje-wit/auth/checks";
+import { filterSpelersData } from "@oranje-wit/auth/clearance";
 
 /**
  * GET /api/spelers/[relCode]
@@ -11,6 +13,9 @@ export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ relCode: string }> }
 ) {
+  const auth = await guardAuth();
+  if (!auth.ok) return auth.response;
+
   try {
     const { relCode } = await params;
 
@@ -181,8 +186,14 @@ export async function GET(
       evaluaties,
     };
 
-    logger.info(`[profiel] ${relCode} -> ${speler.roepnaam} ${speler.achternaam}`);
-    return ok(profiel);
+    // Clearance-filtering: verwijder velden waarvoor de gebruiker geen recht heeft
+    const clearance = auth.session.user.clearance;
+    const gefilterd = filterSpelersData(profiel as Record<string, unknown>, clearance);
+
+    logger.info(
+      `[profiel] ${relCode} -> ${speler.roepnaam} ${speler.achternaam} (clearance ${clearance})`
+    );
+    return ok(gefilterd);
   } catch (error) {
     logger.error("[profiel] Fout bij ophalen:", error);
     return fail(error instanceof Error ? error.message : String(error));

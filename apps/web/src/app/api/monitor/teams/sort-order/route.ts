@@ -1,7 +1,11 @@
 import { prisma } from "@/lib/db/prisma";
 import { ok, fail } from "@/lib/api/response";
+import { guardTC } from "@oranje-wit/auth/checks";
 
 export async function PATCH(request: Request) {
+  const auth = await guardTC();
+  if (!auth.ok) return auth.response;
+
   try {
     const body = await request.json();
     const { seizoen, codes } = body as { seizoen?: string; codes?: string[] };

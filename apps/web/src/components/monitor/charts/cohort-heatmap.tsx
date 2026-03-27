@@ -17,7 +17,7 @@ interface CohortHeatmapProps {
 type Filter = "Alles" | "M" | "V";
 
 function cellColor(value: number, max: number): string {
-  if (value === 0) return "#f9fafb";
+  if (value === 0) return "var(--surface-sunken)";
   const intensity = Math.min(value / Math.max(max * 0.6, 1), 1);
   // Groen schaal
   const r = Math.round(255 - intensity * 203);
@@ -117,7 +117,8 @@ export function CohortHeatmap({ data, seizoenen }: CohortHeatmapProps) {
                         className="px-2 py-1 text-center"
                         style={{
                           backgroundColor: cellColor(val, maxVal),
-                          color: val > maxVal * 0.4 ? "#fff" : "#333",
+                          color:
+                            val > maxVal * 0.4 ? "var(--text-primary)" : "var(--text-secondary)",
                         }}
                       >
                         {val || ""}

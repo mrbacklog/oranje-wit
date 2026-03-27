@@ -2,8 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
 import { getFoto } from "@oranje-wit/database";
 import { logger } from "@oranje-wit/types";
+import { guardAuth } from "@oranje-wit/auth/checks";
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const auth = await guardAuth();
+  if (!auth.ok) return auth.response;
+
   const { id } = await params;
 
   try {

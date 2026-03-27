@@ -1,7 +1,11 @@
 import { prisma } from "@/lib/db/prisma";
 import { ok, fail } from "@/lib/api/response";
+import { guardTC } from "@oranje-wit/auth/checks";
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const auth = await guardTC();
+  if (!auth.ok) return auth.response;
+
   const { id } = await params;
   const teamId = parseInt(id, 10);
   if (isNaN(teamId)) {

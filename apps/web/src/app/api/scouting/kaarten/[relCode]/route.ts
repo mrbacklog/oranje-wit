@@ -4,6 +4,8 @@ import { prisma } from "@/lib/scouting/db/prisma";
 import { ok, fail } from "@/lib/scouting/api";
 import { leeftijdsgroepVanLeeftijd } from "@/lib/scouting/leeftijdsgroep";
 import { bepaalTier, SCORE_RANGES } from "@/lib/scouting/rating";
+import { guardAuth } from "@oranje-wit/auth/checks";
+import { filterSpelersData } from "@oranje-wit/auth/clearance";
 
 /**
  * GET /api/kaarten/[relCode]
@@ -15,6 +17,9 @@ export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ relCode: string }> }
 ) {
+  const auth = await guardAuth();
+  if (!auth.ok) return auth.response;
+
   try {
     const { relCode } = await params;
 
@@ -170,8 +175,12 @@ export async function GET(
       },
     };
 
-    logger.info(`[kaarten] ${relCode} -> overall ${kaart.overall}, tier ${tier}`);
-    return ok(result);
+    // Clearance-filtering: verwijder velden waarvoor de gebruiker geen recht heeft
+    const clearance = auth.session.user.clearance;
+    const gefilterd = filterSpelersData(result as Record<string, unknown>, clearance);
+
+    logger.info(`[kaarten] ${relCode} -> clearance ${clearance}`);
+    return ok(gefilterd);
   } catch (error) {
     logger.error("[kaarten] Fout:", error);
     return fail(error instanceof Error ? error.message : String(error));

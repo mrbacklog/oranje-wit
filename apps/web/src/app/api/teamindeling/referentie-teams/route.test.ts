@@ -9,6 +9,45 @@ vi.mock("@/lib/teamindeling/seizoen", () => ({
   getActiefSeizoen: vi.fn().mockResolvedValue("2025-2026"),
 }));
 
+vi.mock("@oranje-wit/auth/checks", () => ({
+  guardAuth: vi.fn().mockResolvedValue({
+    ok: true,
+    session: {
+      user: { email: "test@test.nl", isTC: true, isScout: false, clearance: 3, doelgroepen: [] },
+    },
+  }),
+  guardTC: vi.fn().mockResolvedValue({
+    ok: true,
+    session: {
+      user: { email: "test@test.nl", isTC: true, isScout: false, clearance: 3, doelgroepen: [] },
+    },
+  }),
+  guardScout: vi.fn().mockResolvedValue({
+    ok: true,
+    session: {
+      user: { email: "test@test.nl", isTC: true, isScout: true, clearance: 3, doelgroepen: [] },
+    },
+  }),
+  guardCoordinator: vi.fn().mockResolvedValue({
+    ok: true,
+    session: {
+      user: {
+        email: "test@test.nl",
+        isTC: true,
+        isScout: false,
+        clearance: 3,
+        doelgroepen: ["ALLE"],
+      },
+    },
+  }),
+  guardClearance: vi.fn().mockResolvedValue({
+    ok: true,
+    session: {
+      user: { email: "test@test.nl", isTC: true, isScout: false, clearance: 3, doelgroepen: [] },
+    },
+  }),
+}));
+
 const { GET } = await import("./route");
 
 describe("GET /api/referentie-teams", () => {

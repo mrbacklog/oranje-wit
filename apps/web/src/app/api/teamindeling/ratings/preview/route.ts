@@ -4,6 +4,7 @@ import { ok, fail } from "@/lib/teamindeling/api/response";
 import { parseBody } from "@/lib/teamindeling/api/validate";
 import { PEILJAAR } from "@oranje-wit/types";
 import { berekenRating, haalLaatsteNiveau } from "@/lib/teamindeling/rating";
+import { guardTC } from "@oranje-wit/auth/checks";
 
 const Schema = z.object({
   teamId: z.string().min(1),
@@ -13,6 +14,9 @@ const Schema = z.object({
 });
 
 export async function POST(request: Request) {
+  const auth = await guardTC();
+  if (!auth.ok) return auth.response;
+
   try {
     const parsed = await parseBody(request, Schema);
     if (!parsed.ok) return parsed.response;

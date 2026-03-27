@@ -15,13 +15,13 @@ const springs = {
 // ─── Confetti kleuren (leeftijdsgroep-kleuren) ───
 
 const CONFETTI_KLEUREN = [
-  "#4a90d9", // blauw
-  "#52b788", // groen
-  "#f4d35e", // geel
-  "#f28c28", // oranje
-  "#d62828", // rood
-  "#ff6b00", // ow-oranje
-  "#ffd700", // goud
+  "var(--knkv-blauw-500)",
+  "var(--knkv-groen-500)",
+  "var(--knkv-geel-400)",
+  "var(--knkv-oranje-500)",
+  "var(--knkv-rood-500)",
+  "var(--ow-oranje-600)",
+  "var(--tier-goud-icon)",
 ];
 
 // ─── Types ───
@@ -331,7 +331,7 @@ export function CelebrationOverlay({
               className="mb-4 flex items-center gap-4"
             >
               <div className="bg-surface-card/10 rounded-2xl px-6 py-3 backdrop-blur-sm">
-                <motion.p className="text-2xl font-black" style={{ color: "#ff8c33" }}>
+                <motion.p className="text-2xl font-black" style={{ color: "var(--ow-oranje-500)" }}>
                   +<AnimatedCounter target={xpGained} duration={800} /> XP
                 </motion.p>
               </div>

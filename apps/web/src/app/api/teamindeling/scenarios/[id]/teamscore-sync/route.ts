@@ -2,8 +2,12 @@ import { HUIDIG_SEIZOEN } from "@oranje-wit/types";
 import { prisma } from "@/lib/teamindeling/db/prisma";
 import { ok, fail } from "@/lib/teamindeling/api/response";
 import { berekenAlleRatings } from "@/lib/teamindeling/rating";
+import { guardTC } from "@oranje-wit/auth/checks";
 
 export async function POST(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const auth = await guardTC();
+  if (!auth.ok) return auth.response;
+
   const { id } = await params;
 
   try {

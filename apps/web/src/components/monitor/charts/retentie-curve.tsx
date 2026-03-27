@@ -10,6 +10,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { colors } from "@oranje-wit/ui/tokens/colors";
 
 interface RetentieCurveProps {
   data: {
@@ -66,7 +67,7 @@ export function RetentieCurve({ data, toonMV = true }: RetentieCurveProps) {
             <Line
               type="monotone"
               dataKey="retentie_m"
-              stroke="#60A5FA"
+              stroke={colors.gender.m}
               strokeWidth={1.5}
               strokeDasharray="5 5"
               name="Jongens"
@@ -75,7 +76,7 @@ export function RetentieCurve({ data, toonMV = true }: RetentieCurveProps) {
             <Line
               type="monotone"
               dataKey="retentie_v"
-              stroke="#F472B6"
+              stroke={colors.gender.v}
               strokeWidth={1.5}
               strokeDasharray="5 5"
               name="Meisjes"

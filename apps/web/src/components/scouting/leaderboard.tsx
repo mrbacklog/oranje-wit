@@ -41,12 +41,20 @@ interface LeaderboardProps {
 
 const MEDAILLE_KLEUREN = {
   1: {
-    bg: "from-yellow-400 to-yellow-600",
-    text: "text-yellow-900",
-    shadow: "shadow-yellow-500/30",
+    bg: "from-[var(--knkv-geel-400)] to-[var(--knkv-geel-600)]",
+    text: "text-[var(--knkv-geel-900)]",
+    shadow: "shadow-[var(--knkv-geel-500)]/30",
   },
-  2: { bg: "from-gray-300 to-gray-500", text: "text-gray-900", shadow: "shadow-gray-400/30" },
-  3: { bg: "from-amber-600 to-amber-800", text: "text-amber-100", shadow: "shadow-amber-600/30" },
+  2: {
+    bg: "from-[var(--tier-zilver-icon)] to-[var(--ow-zwart-500)]",
+    text: "text-[var(--ow-zwart-900)]",
+    shadow: "shadow-[var(--tier-zilver-icon)]/30",
+  },
+  3: {
+    bg: "from-[var(--tier-brons-icon)] to-[var(--tier-brons-border)]",
+    text: "text-[var(--tier-brons-text)]",
+    shadow: "shadow-[var(--tier-brons-icon)]/30",
+  },
 } as const;
 
 // ─── Component ───
@@ -113,9 +121,9 @@ export function Leaderboard({ compact = false }: LeaderboardProps) {
 
       {/* Eigen positie (als niet in top 10) */}
       {!compact && !eigenInLijst && data.eigenScout && (
-        <div className="border-t border-white/10 bg-[#6366f1]/10 px-4 py-3">
+        <div className="border-t border-white/10 bg-[var(--knkv-paars-500)]/10 px-4 py-3">
           <div className="flex items-center gap-3">
-            <span className="w-8 text-center text-sm font-bold text-[#818cf8]">
+            <span className="w-8 text-center text-sm font-bold text-[var(--knkv-paars-400)]">
               #{data.eigenPositie}
             </span>
             <div className="flex-1">
@@ -124,7 +132,7 @@ export function Leaderboard({ compact = false }: LeaderboardProps) {
               </p>
               <p className="text-text-muted text-xs">{data.eigenScout.levelInfo.naam}</p>
             </div>
-            <span className="text-sm font-bold text-[#818cf8] tabular-nums">
+            <span className="text-sm font-bold text-[var(--knkv-paars-400)] tabular-nums">
               {data.eigenScout.xp} XP
             </span>
           </div>
@@ -160,7 +168,7 @@ function PodiumSpot({ entry, isFirst = false }: { entry: LeaderboardEntry; isFir
         className={`text-text-primary text-center font-semibold ${isFirst ? "text-sm" : "text-xs"}`}
       >
         {entry.displayNaam}
-        {entry.isEigen && <span className="ml-1 text-[#818cf8]">(jij)</span>}
+        {entry.isEigen && <span className="ml-1 text-[var(--knkv-paars-400)]">(jij)</span>}
       </p>
       <p className="text-text-muted text-[10px]">{entry.levelInfo.naam}</p>
       <p className="text-text-secondary mt-0.5 text-xs font-bold tabular-nums">{entry.xp} XP</p>
@@ -172,7 +180,9 @@ function CompactEntry({ entry }: { entry: LeaderboardEntry }) {
   const medaille = MEDAILLE_KLEUREN[entry.positie as keyof typeof MEDAILLE_KLEUREN];
 
   return (
-    <div className={`flex items-center gap-3 px-4 py-3 ${entry.isEigen ? "bg-[#6366f1]/10" : ""}`}>
+    <div
+      className={`flex items-center gap-3 px-4 py-3 ${entry.isEigen ? "bg-[var(--knkv-paars-500)]/10" : ""}`}
+    >
       <div
         className={`flex h-7 w-7 items-center justify-center rounded-full ${
           medaille ? `bg-gradient-to-br ${medaille.bg}` : "bg-surface-elevated"
@@ -185,7 +195,9 @@ function CompactEntry({ entry }: { entry: LeaderboardEntry }) {
       <div className="flex-1">
         <p className="text-text-primary text-sm font-medium">
           {entry.displayNaam}
-          {entry.isEigen && <span className="ml-1 text-xs text-[#818cf8]">(jij)</span>}
+          {entry.isEigen && (
+            <span className="ml-1 text-xs text-[var(--knkv-paars-400)]">(jij)</span>
+          )}
         </p>
       </div>
       <span className="text-text-secondary text-xs font-bold tabular-nums">{entry.xp} XP</span>
@@ -195,12 +207,16 @@ function CompactEntry({ entry }: { entry: LeaderboardEntry }) {
 
 function ListEntry({ entry }: { entry: LeaderboardEntry }) {
   return (
-    <div className={`flex items-center gap-3 px-4 py-3 ${entry.isEigen ? "bg-[#6366f1]/10" : ""}`}>
+    <div
+      className={`flex items-center gap-3 px-4 py-3 ${entry.isEigen ? "bg-[var(--knkv-paars-500)]/10" : ""}`}
+    >
       <span className="text-text-muted w-8 text-center text-sm font-bold">#{entry.positie}</span>
       <div className="flex-1">
         <p className="text-text-primary text-sm font-semibold">
           {entry.displayNaam}
-          {entry.isEigen && <span className="ml-1 text-xs text-[#818cf8]">(jij)</span>}
+          {entry.isEigen && (
+            <span className="ml-1 text-xs text-[var(--knkv-paars-400)]">(jij)</span>
+          )}
         </p>
         <p className="text-text-muted text-xs">{entry.levelInfo.naam}</p>
       </div>

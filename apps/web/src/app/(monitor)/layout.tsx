@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { MonitorShell } from "@/components/monitor/layout/monitor-shell";
+import { MonitorDomainShell } from "@/components/monitor/layout/monitor-domain-shell";
 
 export const metadata: Metadata = {
   title: "Verenigingsmonitor | c.k.v. Oranje Wit",
@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function MonitorLayout({ children }: { children: React.ReactNode }) {
-  return <MonitorShell>{children}</MonitorShell>;
+  return <MonitorDomainShell>{children}</MonitorDomainShell>;
 }

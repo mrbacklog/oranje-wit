@@ -86,14 +86,35 @@ logger.warn("...");   // altijd
 logger.error("...");  // altijd
 ```
 
-**API routes** — gebruik `ok()`/`fail()`/`parseBody()` uit `@oranje-wit/types` (centraal in `packages/types/src/api-response.ts`):
+**Auth guards** — gebruik `guard*()` in API routes, `require*()` in server actions:
 ```ts
-import { ok, fail, parseBody } from "@/lib/api"; // re-exporteert uit @oranje-wit/types
+// API route (returns Result, geen throw)
+import { guardTC } from "@oranje-wit/auth/checks";
+export async function POST(request: Request) {
+  const auth = await guardTC();
+  if (!auth.ok) return auth.response;
+  const { session } = auth;
+  // session.user.email, session.user.isTC, session.user.clearance
+}
+
+// Server action (throws, Next.js vangt)
+import { requireTC } from "@oranje-wit/auth/checks";
+export async function mijnAction() {
+  const session = await requireTC(); // throws als niet-TC
+}
+```
+
+**API routes** — gebruik `ok()`/`fail()`/`parseBody()` uit `@oranje-wit/types`:
+```ts
+import { ok, fail, parseBody } from "@/lib/api";
+import { guardTC } from "@oranje-wit/auth/checks";
 import { z } from "zod";
 
 const Schema = z.object({ naam: z.string().min(1) });
 
 export async function POST(request: Request) {
+  const auth = await guardTC();
+  if (!auth.ok) return auth.response;
   try {
     const parsed = await parseBody(request, Schema);
     if (!parsed.ok) return parsed.response;
@@ -114,6 +135,10 @@ export async function mijnAction(data: FormData): Promise<ActionResult<{ id: str
   return { ok: true, data: { id: "abc" } };
 }
 ```
+
+**Wanneer server action vs API route:**
+- Server action: interne UI-interactie, formulier-submit, revalidation
+- API route: externe clients, smartlink-gebruikers, file uploads, CORS
 
 **Constanten** — importeer uit `@oranje-wit/types`, definieer niet lokaal:
 ```ts
