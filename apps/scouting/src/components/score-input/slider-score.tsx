@@ -59,7 +59,7 @@ export function SliderScore({
 
   /** Bepaal de kleur van het waarde-label op basis van de score */
   const kleurClass = disabled
-    ? "text-gray-400"
+    ? "text-text-muted"
     : displayValue < 30
       ? "text-red-500"
       : displayValue < 55
@@ -75,7 +75,7 @@ export function SliderScore({
       <div className="relative mt-4 w-full px-1">
         {/* Waarde-bubble boven de slider */}
         <div
-          className={`absolute -top-7 -translate-x-1/2 rounded-md border bg-white px-2 py-0.5 shadow-sm transition-all duration-150 ${isDragging ? "border-ow-oranje scale-110 font-extrabold shadow-md" : "border-gray-200"} `}
+          className={`absolute -top-7 -translate-x-1/2 rounded-md border bg-surface-card px-2 py-0.5 shadow-none transition-all duration-150 ${isDragging ? "border-ow-oranje scale-110 font-extrabold shadow-md" : "border-border-subtle"} `}
           style={{ left: `${percentage}%` }}
           aria-live="polite"
         >
@@ -109,7 +109,7 @@ export function SliderScore({
           aria-valuenow={displayValue}
           aria-valuetext={`${displayValue} van 99`}
           aria-disabled={disabled || undefined}
-          className={`focus-visible:ring-ow-oranje [&::-webkit-slider-thumb]:border-ow-oranje [&::-moz-range-thumb]:border-ow-oranje absolute inset-0 h-2 w-full cursor-pointer appearance-none bg-transparent outline-none focus-visible:ring-2 [&::-moz-range-thumb]:h-6 [&::-moz-range-thumb]:w-6 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:shadow-md [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:duration-100 ${isDragging ? "[&::-webkit-slider-thumb]:ring-ow-oranje/20 [&::-webkit-slider-thumb]:scale-125 [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:ring-4" : ""} ${disabled ? "cursor-not-allowed opacity-50" : ""} `}
+          className={`focus-visible:ring-ow-oranje [&::-webkit-slider-thumb]:border-ow-oranje [&::-moz-range-thumb]:border-ow-oranje absolute inset-0 h-2 w-full cursor-pointer appearance-none bg-transparent outline-none focus-visible:ring-2 [&::-moz-range-thumb]:h-6 [&::-moz-range-thumb]:w-6 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:bg-surface-card [&::-moz-range-thumb]:shadow-md [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:bg-surface-card [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:duration-100 ${isDragging ? "[&::-webkit-slider-thumb]:ring-ow-oranje/20 [&::-webkit-slider-thumb]:scale-125 [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:ring-4" : ""} ${disabled ? "cursor-not-allowed opacity-50" : ""} `}
         />
 
         {/* Min/max labels */}
@@ -134,10 +134,10 @@ export function SliderScore({
               disabled={disabled}
               className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-all duration-150 active:scale-95 ${
                 disabled
-                  ? "cursor-not-allowed border-gray-200 bg-white text-gray-400 opacity-50"
+                  ? "cursor-not-allowed border-border-subtle bg-surface-card text-text-muted opacity-50"
                   : isActief
                     ? "border-ow-oranje bg-ow-oranje-light/30 text-ow-oranje font-semibold"
-                    : "hover:border-ow-oranje hover:text-ow-oranje border-gray-200 bg-white text-gray-700"
+                    : "hover:border-ow-oranje hover:text-ow-oranje border-border-subtle bg-surface-card text-text-secondary"
               } `}
             >
               {optie.label}

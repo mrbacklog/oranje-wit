@@ -338,12 +338,14 @@ model User {
   scoutProfiel          Scout?
   scoutingVerzoeken     ScoutingVerzoek[]
   gezienMarkeringen     BlauwdrukSpeler[] @relation("GezienDoor")
+  besluitenGemaakt      BlauwdrukBesluit[] @relation("BesluitAuteur")
 }
 
 enum Rol {
-  EDITOR   // TC-lid: volledige toegang
-  REVIEWER // Coach/coordinator: bekijken + opmerkingen
-  VIEWER   // Bestuur/inkijk: alleen lezen
+  EDITOR      // TC-lid: volledige toegang
+  COORDINATOR // Coördinator: ziet eigen doelgroep-besluiten + actiepunten
+  REVIEWER    // Coach/trainer: bekijken + opmerkingen
+  VIEWER      // Bestuur/inkijk: alleen lezen
 }
 
 // Centraal gebruikersbeheer (vervangt hardcoded allowlist)
@@ -355,6 +357,7 @@ model Gebruiker {
   scoutRol    ScoutRol? @map("scout_rol")
   isAdmin     Boolean   @default(false) @map("is_admin")
   actief      Boolean   @default(true)
+  doelgroepen Doelgroep[] // voor COORDINATOR/REVIEWER: welke doelgroepen ze zien
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
 
@@ -508,6 +511,7 @@ model Blauwdruk {
   activiteiten  Activiteit[]
 
   blauwdrukSpelers BlauwdrukSpeler[]
+  besluiten        BlauwdrukBesluit[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -552,6 +556,67 @@ enum GezienStatus {
   GEEL    // Onzeker, moet uitgezocht
   ORANJE  // Stop-signalen
   ROOD    // Stopt definitief
+}
+
+// ============================================================
+// BESLUITENLIJST (per seizoen)
+// ============================================================
+
+model StandaardVraag {
+  id        String  @id @default(cuid())
+  code      String  @unique // "TEAMGROOTTE_SENIOREN", "GENDER_BELEID"
+  vraag     String  @db.Text
+  categorie String  // "BELEID" | "ORGANISATIE" | "TECHNISCH"
+  volgorde  Int     @default(0)
+  actief    Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model BlauwdrukBesluit {
+  id            String   @id @default(cuid())
+  blauwdruk     Blauwdruk @relation(fields: [blauwdrukId], references: [id], onDelete: Cascade)
+  blauwdrukId   String
+
+  // De vraag
+  vraag         String   @db.Text
+  isStandaard   Boolean  @default(false) // true = uit StandaardVraag, false = TC-toegevoegd
+  standaardCode String?  // link naar StandaardVraag.code
+  volgorde      Int      @default(0)
+
+  // Het antwoord
+  antwoord      String?  @db.Text
+  toelichting   String?  @db.Text
+
+  // Metadata
+  status        BesluitStatus @default(ONDUIDELIJK)
+  niveau        BesluitNiveau @default(TECHNISCH)
+  doelgroep     Doelgroep?
+
+  // Audit
+  auteur        User     @relation("BesluitAuteur", fields: [auteurId], references: [id])
+  auteurId      String
+
+  // Actiepunten die voortvloeien uit dit besluit
+  actiepunten   Actiepunt[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([blauwdrukId])
+  @@index([status])
+}
+
+enum BesluitStatus {
+  ONDUIDELIJK // Moet nog besproken
+  VOORLOPIG   // Richting bepaald, niet definitief
+  DEFINITIEF  // Afgehamerd
+}
+
+enum BesluitNiveau {
+  BESTUURLIJK // Bestuursbesluit
+  TECHNISCH   // TC-besluit
 }
 
 // ============================================================
@@ -1064,6 +1129,9 @@ model Actiepunt {
   auteurId        String
 
   blauwdrukSpeler BlauwdrukSpeler? // terugrelatie: actiepunt gekoppeld aan gezien-status
+
+  besluit         BlauwdrukBesluit? @relation(fields: [besluitId], references: [id])
+  besluitId       String?
 
   afgerondOp      DateTime?
   volgorde        Int      @default(0)

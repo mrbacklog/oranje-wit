@@ -330,7 +330,7 @@ export function CelebrationOverlay({
               transition={springs.bouncy}
               className="mb-4 flex items-center gap-4"
             >
-              <div className="rounded-2xl bg-white/10 px-6 py-3 backdrop-blur-sm">
+              <div className="rounded-2xl bg-surface-card/10 px-6 py-3 backdrop-blur-sm">
                 <motion.p className="text-2xl font-black" style={{ color: "#ff8c33" }}>
                   +<AnimatedCounter target={xpGained} duration={800} /> XP
                 </motion.p>
@@ -373,7 +373,7 @@ export function CelebrationOverlay({
               <button
                 type="button"
                 onClick={onDismiss}
-                className="w-full rounded-xl border border-white/20 px-6 py-3 text-sm font-semibold text-white/70 transition-all active:bg-white/5"
+                className="w-full rounded-xl border border-white/20 px-6 py-3 text-sm font-semibold text-white/70 transition-all active:bg-surface-card/5"
               >
                 Terug naar home
               </button>

@@ -15,3 +15,12 @@ export async function requireEditor() {
   }
   return session;
 }
+
+export async function requireCoordinatorOrHigher() {
+  const session = await auth();
+  const role = session?.user?.role;
+  if (!role || (role !== "EDITOR" && role !== "COORDINATOR")) {
+    throw new Error("Niet geautoriseerd");
+  }
+  return session;
+}

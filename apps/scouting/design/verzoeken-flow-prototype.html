@@ -1,0 +1,3610 @@
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>OW Scout - Verzoeken Master-Detail Prototype</title>
+    <style>
+      /* ===== RESET & BASE ===== */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --ow-orange: #ff6b00;
+        --ow-orange-light: #ff8a33;
+        --ow-orange-bg: #fff7ed;
+        --ow-orange-soft: #fed7aa;
+        --bg: #f8f9fa;
+        --bg-card: #ffffff;
+        --text: #1a1a2e;
+        --text-muted: #6b7280;
+        --text-light: #9ca3af;
+        --border: #e5e7eb;
+        --radius: 12px;
+        --radius-sm: 8px;
+        --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+
+        /* Leeftijdsgroep kleuren */
+        --blauw: #3b82f6;
+        --blauw-light: #dbeafe;
+        --blauw-bg: #eff6ff;
+        --groen: #22c55e;
+        --groen-light: #dcfce7;
+        --groen-bg: #f0fdf4;
+        --geel: #eab308;
+        --geel-light: #fef9c3;
+        --geel-bg: #fefce8;
+        --oranje: #f97316;
+        --oranje-light: #ffedd5;
+        --oranje-bg: #fff7ed;
+        --rood: #ef4444;
+        --rood-light: #fee2e2;
+        --rood-bg: #fef2f2;
+        --paars: #7c3aed;
+        --paars-light: #e0e7ff;
+        --paars-bg: #eef2ff;
+
+        /* Status kleuren */
+        --status-open: #ff6b00;
+        --status-open-bg: #fff7ed;
+        --status-actief: #3b82f6;
+        --status-actief-bg: #eff6ff;
+        --status-afgerond: #22c55e;
+        --status-afgerond-bg: #f0fdf4;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        max-width: 430px;
+        margin: 0 auto;
+        min-height: 100vh;
+        overflow-x: hidden;
+        -webkit-tap-highlight-color: transparent;
+        padding-bottom: 72px;
+      }
+
+      /* ===== ANIMATIONS ===== */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes slideInRight {
+        from {
+          opacity: 0;
+          transform: translateX(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes slideInLeft {
+        from {
+          opacity: 0;
+          transform: translateX(-30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.4;
+        }
+      }
+
+      @keyframes toastIn {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes toastOut {
+        from {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        to {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+      }
+
+      /* ===== SCREEN SYSTEM ===== */
+      .screen {
+        display: none;
+        min-height: calc(100vh - 72px);
+      }
+
+      .screen.active {
+        display: block;
+        animation: fadeIn 0.25s ease;
+      }
+
+      .screen.slide-right {
+        animation: slideInRight 0.25s ease;
+      }
+
+      .screen.slide-left {
+        animation: slideInLeft 0.25s ease;
+      }
+
+      /* ===== BOTTOM NAV ===== */
+      .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 430px;
+        background: var(--bg-card);
+        border-top: 1px solid var(--border);
+        display: flex;
+        z-index: 100;
+        padding-bottom: env(safe-area-inset-bottom, 0);
+      }
+
+      .bottom-nav-item {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        padding: 8px 4px 10px;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        color: var(--text-light);
+        transition: color 0.2s;
+        font-family: inherit;
+      }
+
+      .bottom-nav-item.active {
+        color: var(--ow-orange);
+      }
+
+      .bottom-nav-item svg {
+        width: 24px;
+        height: 24px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .bottom-nav-item.active svg {
+        stroke-width: 2.5;
+      }
+
+      .bottom-nav-item span {
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+      }
+
+      .bottom-nav-badge {
+        position: relative;
+      }
+
+      .bottom-nav-badge::after {
+        content: attr(data-count);
+        position: absolute;
+        top: -4px;
+        right: -8px;
+        min-width: 16px;
+        height: 16px;
+        border-radius: 8px;
+        background: var(--ow-orange);
+        color: white;
+        font-size: 9px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 4px;
+      }
+
+      /* ===== PAGE HEADER ===== */
+      .page-header {
+        padding: 20px 16px 12px;
+        background: linear-gradient(180deg, var(--ow-orange-bg) 0%, var(--bg) 100%);
+      }
+
+      .page-header h1 {
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--text);
+        margin-bottom: 4px;
+      }
+
+      .page-header p {
+        font-size: 14px;
+        color: var(--text-muted);
+      }
+
+      /* ===== ROLE SWITCHER (prototype only) ===== */
+      .role-switcher {
+        display: flex;
+        gap: 0;
+        margin: 12px 16px 0;
+        background: var(--bg);
+        border-radius: var(--radius-sm);
+        padding: 3px;
+        border: 1px solid var(--border);
+      }
+
+      .role-switcher button {
+        flex: 1;
+        padding: 8px 12px;
+        border: none;
+        background: transparent;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: all 0.2s;
+        font-family: inherit;
+      }
+
+      .role-switcher button.active {
+        background: var(--bg-card);
+        color: var(--ow-orange);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      }
+
+      /* ===== FILTER ROW ===== */
+      .filter-row {
+        display: flex;
+        gap: 8px;
+        padding: 12px 16px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .filter-chip {
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+        border: 1.5px solid var(--border);
+        background: var(--bg-card);
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: all 0.2s;
+        white-space: nowrap;
+        flex-shrink: 0;
+        font-family: inherit;
+      }
+
+      .filter-chip.active {
+        border-color: var(--ow-orange);
+        background: var(--ow-orange-bg);
+        color: var(--ow-orange);
+      }
+
+      .filter-chip .count {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 18px;
+        height: 18px;
+        border-radius: 9px;
+        background: var(--text-light);
+        color: white;
+        font-size: 10px;
+        font-weight: 700;
+        margin-left: 4px;
+        padding: 0 4px;
+      }
+
+      .filter-chip.active .count {
+        background: var(--ow-orange);
+      }
+
+      /* ===== BADGES ===== */
+      .type-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .type-badge.generiek {
+        background: #dbeafe;
+        color: #1d4ed8;
+      }
+      .type-badge.specifiek {
+        background: var(--ow-orange-bg);
+        color: var(--ow-orange);
+      }
+      .type-badge.vergelijking {
+        background: var(--paars-light);
+        color: var(--paars);
+      }
+
+      .doel-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        padding: 2px 8px;
+        border-radius: 20px;
+        font-size: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        background: var(--bg);
+        color: var(--text-muted);
+        border: 1px solid var(--border);
+      }
+
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+      }
+
+      .status-badge.open {
+        background: var(--status-open-bg);
+        color: var(--status-open);
+      }
+      .status-badge.actief {
+        background: var(--status-actief-bg);
+        color: var(--status-actief);
+      }
+      .status-badge.afgerond {
+        background: var(--status-afgerond-bg);
+        color: var(--status-afgerond);
+      }
+
+      .status-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: currentColor;
+      }
+
+      .countdown-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        background: var(--geel-light);
+        color: #a16207;
+      }
+
+      .countdown-badge.urgent {
+        background: var(--rood-light);
+        color: var(--rood);
+        font-weight: 700;
+      }
+
+      .countdown-badge.large {
+        padding: 8px 16px;
+        font-size: 15px;
+        font-weight: 700;
+        border-radius: var(--radius-sm);
+      }
+
+      .countdown-badge svg {
+        width: 14px;
+        height: 14px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .countdown-badge.large svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      .team-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 2px 8px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .team-badge.geel {
+        background: var(--geel-light);
+        color: #a16207;
+      }
+      .team-badge.oranje {
+        background: var(--oranje-light);
+        color: #c2410c;
+      }
+      .team-badge.rood {
+        background: var(--rood-light);
+        color: #b91c1c;
+      }
+
+      /* ===== CARDS ===== */
+      .card {
+        background: var(--bg-card);
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        overflow: hidden;
+        transition:
+          box-shadow 0.2s,
+          border-color 0.2s;
+      }
+
+      .card-clickable {
+        cursor: pointer;
+      }
+
+      .card-clickable:active {
+        box-shadow: var(--shadow);
+        transform: scale(0.99);
+      }
+
+      /* ===== VERZOEK KAART ===== */
+      .verzoek-list {
+        padding: 0 16px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .verzoek-card {
+        padding: 14px;
+        position: relative;
+        padding-left: 18px;
+      }
+
+      .verzoek-card .accent-left {
+        position: absolute;
+        left: 0;
+        top: 12px;
+        bottom: 12px;
+        width: 4px;
+        border-radius: 0 4px 4px 0;
+      }
+
+      .verzoek-card.status-open .accent-left {
+        background: var(--ow-orange);
+      }
+      .verzoek-card.status-actief .accent-left {
+        background: var(--blauw);
+      }
+      .verzoek-card.status-afgerond .accent-left {
+        background: var(--groen);
+      }
+
+      .verzoek-card-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 8px;
+      }
+
+      .verzoek-card-badges {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .verzoek-card-body h3 {
+        font-size: 15px;
+        font-weight: 700;
+        margin-bottom: 3px;
+      }
+
+      .verzoek-card-body p {
+        font-size: 13px;
+        color: var(--text-muted);
+        line-height: 1.4;
+      }
+
+      .verzoek-card-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 12px;
+        padding-top: 10px;
+        border-top: 1px solid var(--border);
+      }
+
+      .verzoek-card-meta {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--text-muted);
+      }
+
+      /* Progress bar */
+      .progress-track {
+        height: 6px;
+        background: var(--border);
+        border-radius: 3px;
+        overflow: hidden;
+        flex: 1;
+      }
+
+      .progress-fill {
+        height: 100%;
+        border-radius: 3px;
+        transition: width 0.4s ease;
+      }
+
+      .progress-fill.orange {
+        background: var(--ow-orange);
+      }
+      .progress-fill.green {
+        background: var(--groen);
+      }
+      .progress-fill.blue {
+        background: var(--blauw);
+      }
+
+      .progress-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .progress-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-muted);
+        white-space: nowrap;
+      }
+
+      /* Scout avatars */
+      .scout-avatars {
+        display: flex;
+        margin-left: 2px;
+      }
+
+      .scout-avatars .avatar {
+        margin-left: -6px;
+        border: 2px solid var(--bg-card);
+      }
+
+      .scout-avatars .avatar:first-child {
+        margin-left: 0;
+      }
+
+      /* ===== AVATAR ===== */
+      .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        font-weight: 700;
+        color: white;
+        flex-shrink: 0;
+      }
+
+      .avatar.sm {
+        width: 28px;
+        height: 28px;
+        font-size: 11px;
+      }
+
+      .avatar.lg {
+        width: 56px;
+        height: 56px;
+        font-size: 22px;
+      }
+
+      /* ===== DETAIL SCREEN ===== */
+      .detail-header {
+        padding: 20px 16px 16px;
+        background: linear-gradient(180deg, var(--ow-orange-bg) 0%, var(--bg) 100%);
+      }
+
+      .detail-header-top {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+
+      .detail-back {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 1px solid var(--border);
+        background: var(--bg-card);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        color: var(--text);
+        flex-shrink: 0;
+        transition: all 0.2s;
+        font-family: inherit;
+      }
+
+      .detail-back:active {
+        transform: scale(0.92);
+      }
+
+      .detail-header h1 {
+        font-size: 20px;
+        font-weight: 800;
+      }
+
+      .detail-header-badges {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+
+      .detail-body {
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .section-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .section-title .icon {
+        font-size: 16px;
+      }
+
+      /* Info box */
+      .info-box {
+        padding: 12px 14px;
+        border-radius: var(--radius-sm);
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      .info-box.geel {
+        background: var(--geel-bg);
+        border: 1px solid var(--geel-light);
+        color: #92400e;
+      }
+
+      .info-box.blauw {
+        background: var(--blauw-bg);
+        border: 1px solid var(--blauw-light);
+        color: #1e40af;
+      }
+
+      .info-box-label {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
+        opacity: 0.7;
+      }
+
+      /* ===== SPELER ROW ===== */
+      .speler-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .speler-row {
+        background: var(--bg-card);
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        overflow: hidden;
+      }
+
+      .speler-row-main {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px;
+      }
+
+      .speler-row-info {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .speler-row-info .name {
+        font-size: 15px;
+        font-weight: 700;
+      }
+
+      .speler-row-info .detail {
+        font-size: 12px;
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 2px;
+      }
+
+      .speler-status {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 11px;
+        font-weight: 600;
+        padding: 3px 8px;
+        border-radius: 20px;
+        white-space: nowrap;
+      }
+
+      .speler-status.pending {
+        background: var(--bg);
+        color: var(--text-light);
+      }
+
+      .speler-status.draft {
+        background: var(--ow-orange-bg);
+        color: var(--ow-orange);
+      }
+
+      .speler-status.done {
+        background: var(--groen-bg);
+        color: var(--groen);
+      }
+
+      .draft-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--ow-orange);
+        animation: pulse 1.5s ease-in-out infinite;
+      }
+
+      .speler-row-action {
+        padding: 0 14px 14px;
+      }
+
+      /* ===== BUTTONS ===== */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 20px;
+        border-radius: var(--radius-sm);
+        font-size: 15px;
+        font-weight: 700;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-family: inherit;
+      }
+
+      .btn:active {
+        transform: scale(0.97);
+      }
+
+      .btn-primary {
+        background: var(--ow-orange);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: var(--ow-orange-light);
+      }
+
+      .btn-secondary {
+        background: var(--bg);
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+
+      .btn-ghost {
+        background: transparent;
+        color: var(--ow-orange);
+        padding: 8px 12px;
+      }
+
+      .btn-full {
+        width: 100%;
+      }
+
+      .btn-sm {
+        padding: 8px 14px;
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .btn-lg {
+        padding: 14px 24px;
+        font-size: 16px;
+        font-weight: 800;
+        border-radius: var(--radius);
+      }
+
+      .btn-start {
+        background: var(--ow-orange);
+        color: white;
+        width: 100%;
+        padding: 14px 20px;
+        font-size: 15px;
+        font-weight: 700;
+        border-radius: var(--radius-sm);
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.2s;
+        font-family: inherit;
+      }
+
+      .btn-start:active {
+        transform: scale(0.97);
+      }
+      .btn-start:hover {
+        background: var(--ow-orange-light);
+      }
+
+      .btn-start.draft {
+        background: var(--bg-card);
+        color: var(--ow-orange);
+        border: 2px solid var(--ow-orange);
+      }
+
+      .btn-start.completed {
+        background: var(--groen-bg);
+        color: var(--groen);
+        border: 1px solid var(--groen-light);
+        cursor: default;
+      }
+
+      /* ===== FAB ===== */
+      .fab {
+        position: fixed;
+        bottom: 88px;
+        right: calc(50% - 215px + 20px);
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: var(--ow-orange);
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-size: 28px;
+        font-weight: 400;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 16px rgba(255, 107, 0, 0.4);
+        transition: all 0.2s;
+        z-index: 50;
+        font-family: inherit;
+      }
+
+      .fab.visible {
+        display: flex;
+      }
+      .fab:active {
+        transform: scale(0.92);
+      }
+
+      /* ===== TC SECTION ===== */
+      .tc-section {
+        background: var(--bg-card);
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        overflow: hidden;
+      }
+
+      .tc-section-header {
+        padding: 12px 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+      }
+
+      .tc-section-header h3 {
+        font-size: 14px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .tc-section-header .chevron {
+        font-size: 16px;
+        color: var(--text-muted);
+        transition: transform 0.2s;
+      }
+
+      .tc-section-header .chevron.open {
+        transform: rotate(180deg);
+      }
+
+      .tc-section-body {
+        padding: 0 14px 14px;
+      }
+
+      /* Scout status row */
+      .scout-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .scout-row:last-child {
+        border-bottom: none;
+      }
+
+      .scout-row-info {
+        flex: 1;
+      }
+
+      .scout-row-info .name {
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .scout-row-info .subtitle {
+        font-size: 12px;
+        color: var(--text-muted);
+      }
+
+      /* Toggle */
+      .toggle-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .toggle {
+        width: 44px;
+        height: 24px;
+        border-radius: 12px;
+        background: var(--border);
+        border: none;
+        cursor: pointer;
+        position: relative;
+        transition: background 0.2s;
+        flex-shrink: 0;
+      }
+
+      .toggle.active {
+        background: var(--ow-orange);
+      }
+
+      .toggle::after {
+        content: "";
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: white;
+        transition: transform 0.2s;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+      }
+
+      .toggle.active::after {
+        transform: translateX(20px);
+      }
+
+      .toggle-label {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text-muted);
+      }
+
+      /* ===== WIZARD SCREEN (Beoordeling) ===== */
+      .wizard-nav {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        background: var(--bg-card);
+        border-bottom: 1px solid var(--border);
+        padding: 12px 16px;
+      }
+
+      .wizard-nav-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+      }
+
+      .wizard-nav-title {
+        font-size: 15px;
+        font-weight: 700;
+        flex: 1;
+        text-align: center;
+      }
+
+      .wizard-skip {
+        font-size: 12px;
+        color: var(--text-muted);
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px 8px;
+        font-family: inherit;
+      }
+
+      .wizard-skip:hover {
+        color: var(--rood);
+      }
+
+      .wizard-progress {
+        display: flex;
+        gap: 4px;
+      }
+
+      .wizard-progress-step {
+        flex: 1;
+        height: 4px;
+        border-radius: 2px;
+        background: var(--border);
+        transition: background 0.3s;
+      }
+
+      .wizard-progress-step.done {
+        background: var(--ow-orange);
+      }
+      .wizard-progress-step.current {
+        background: var(--ow-orange-light);
+      }
+
+      /* Wizard body */
+      .wizard-body {
+        padding: 20px 16px;
+      }
+
+      .wizard-step {
+        display: none;
+        animation: fadeIn 0.3s ease;
+      }
+
+      .wizard-step.active {
+        display: block;
+      }
+
+      .wizard-step h2 {
+        font-size: 20px;
+        font-weight: 800;
+        margin-bottom: 4px;
+      }
+
+      .wizard-step .subtitle {
+        font-size: 14px;
+        color: var(--text-muted);
+        margin-bottom: 20px;
+        line-height: 1.4;
+      }
+
+      /* Relation chips */
+      .relation-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .relation-chip {
+        padding: 10px 18px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 500;
+        border: 1.5px solid var(--border);
+        background: var(--bg-card);
+        cursor: pointer;
+        transition: all 0.2s;
+        color: var(--text-muted);
+        font-family: inherit;
+      }
+
+      .relation-chip:active {
+        transform: scale(0.95);
+      }
+
+      .relation-chip.selected {
+        border-color: var(--ow-orange);
+        background: var(--ow-orange-bg);
+        color: var(--ow-orange);
+        font-weight: 600;
+      }
+
+      /* Smiley rating */
+      .rating-group {
+        margin-bottom: 20px;
+      }
+
+      .rating-group .label {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 8px;
+        display: block;
+      }
+
+      .rating-smileys {
+        display: flex;
+        gap: 6px;
+      }
+
+      .smiley-btn {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        border: 2px solid var(--border);
+        background: var(--bg-card);
+        cursor: pointer;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+      }
+
+      .smiley-btn:active {
+        transform: scale(0.92);
+      }
+
+      .smiley-btn.selected {
+        border-color: var(--ow-orange);
+        background: var(--ow-orange-bg);
+        box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.15);
+      }
+
+      /* Textarea */
+      .textarea {
+        width: 100%;
+        min-height: 120px;
+        padding: 12px 14px;
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        font-family: inherit;
+        font-size: 14px;
+        resize: vertical;
+        transition: border-color 0.2s;
+        color: var(--text);
+        background: var(--bg-card);
+      }
+
+      .textarea:focus {
+        outline: none;
+        border-color: var(--ow-orange);
+      }
+      .textarea::placeholder {
+        color: var(--text-light);
+      }
+
+      /* Input */
+      .input {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        font-family: inherit;
+        font-size: 14px;
+        transition: border-color 0.2s;
+        color: var(--text);
+        background: var(--bg-card);
+      }
+
+      .input:focus {
+        outline: none;
+        border-color: var(--ow-orange);
+      }
+
+      .label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-muted);
+        margin-bottom: 6px;
+      }
+
+      /* Wizard footer */
+      .wizard-footer {
+        position: sticky;
+        bottom: 0;
+        background: var(--bg-card);
+        padding: 12px 16px 24px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        gap: 10px;
+      }
+
+      .wizard-footer .btn {
+        flex: 1;
+      }
+
+      /* Auto-save toast */
+      .autosave-toast {
+        position: fixed;
+        bottom: 88px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--text);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+        display: none;
+        align-items: center;
+        gap: 6px;
+        z-index: 200;
+        box-shadow: var(--shadow-lg);
+      }
+
+      .autosave-toast.visible {
+        display: flex;
+        animation: toastIn 0.3s ease;
+      }
+
+      .autosave-toast.hiding {
+        animation: toastOut 0.3s ease forwards;
+      }
+
+      /* ===== SUMMARY CARD ===== */
+      .summary-card {
+        background: var(--bg);
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        padding: 16px;
+      }
+
+      .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .summary-row:last-child {
+        border-bottom: none;
+      }
+
+      .summary-row .summary-label {
+        font-size: 13px;
+        color: var(--text-muted);
+      }
+
+      .summary-row .summary-value {
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      /* ===== TC WIZARD (Nieuw verzoek) ===== */
+      .type-cards {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .type-card {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 16px;
+        border-radius: var(--radius);
+        border: 2px solid var(--border);
+        cursor: pointer;
+        transition: all 0.2s;
+        background: var(--bg-card);
+      }
+
+      .type-card:active {
+        transform: scale(0.98);
+      }
+
+      .type-card.selected {
+        border-color: var(--ow-orange);
+        background: var(--ow-orange-bg);
+      }
+
+      .type-card .type-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        flex-shrink: 0;
+      }
+
+      .type-card .type-icon.generiek {
+        background: #dbeafe;
+      }
+      .type-card .type-icon.specifiek {
+        background: var(--ow-orange-bg);
+      }
+      .type-card .type-icon.vergelijking {
+        background: var(--paars-light);
+      }
+
+      .type-card .type-title {
+        font-size: 16px;
+        font-weight: 700;
+      }
+
+      .type-card .type-desc {
+        font-size: 12px;
+        color: var(--text-muted);
+        margin-top: 2px;
+        line-height: 1.4;
+      }
+
+      /* Select items */
+      .select-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        border-radius: var(--radius-sm);
+        border: 1.5px solid var(--border);
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-bottom: 8px;
+        background: var(--bg-card);
+      }
+
+      .select-item:active {
+        transform: scale(0.98);
+      }
+
+      .select-item.selected {
+        border-color: var(--ow-orange);
+        background: var(--ow-orange-bg);
+      }
+
+      .select-item .check {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        border: 2px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: all 0.2s;
+        font-size: 12px;
+        color: transparent;
+      }
+
+      .select-item.selected .check {
+        border-color: var(--ow-orange);
+        background: var(--ow-orange);
+        color: white;
+      }
+
+      .select-item .item-info {
+        flex: 1;
+      }
+
+      .select-item .item-name {
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .select-item .item-detail {
+        font-size: 12px;
+        color: var(--text-muted);
+      }
+
+      /* Select / dropdown */
+      .select {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        font-family: inherit;
+        font-size: 14px;
+        color: var(--text);
+        background: var(--bg-card);
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        padding-right: 36px;
+      }
+
+      .select:focus {
+        outline: none;
+        border-color: var(--ow-orange);
+      }
+
+      /* ===== PROTOTYPE HELPER ===== */
+      .proto-label {
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--text);
+        color: white;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 3px 12px;
+        border-radius: 0 0 8px 8px;
+        z-index: 999;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+      }
+
+      /* Divider */
+      .divider {
+        height: 1px;
+        background: var(--border);
+      }
+
+      /* Report card (TC) */
+      .report-card {
+        background: var(--bg);
+        border-radius: var(--radius-sm);
+        padding: 12px;
+        margin-bottom: 8px;
+      }
+
+      .report-card:last-child {
+        margin-bottom: 0;
+      }
+
+      .report-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+
+      .report-header .name {
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .report-scores {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .report-score {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 12px;
+        color: var(--text-muted);
+      }
+
+      .report-score .value {
+        font-weight: 700;
+        color: var(--text);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Prototype indicator -->
+    <div class="proto-label">PROTOTYPE - Verzoeken Flow</div>
+
+    <!-- ============================== -->
+    <!-- SCHERM 1: VERZOEKEN LIJST      -->
+    <!-- ============================== -->
+    <div id="screen-list" class="screen active">
+      <div class="page-header">
+        <h1>Verzoeken</h1>
+        <p>Scoutingopdrachten van de TC</p>
+      </div>
+
+      <!-- Role switcher (prototype only) -->
+      <div class="role-switcher" id="roleSwitcher">
+        <button class="active" onclick="switchRole('scout')">Scout-weergave</button>
+        <button onclick="switchRole('tc')">TC-weergave</button>
+      </div>
+
+      <!-- Filters -->
+      <div class="filter-row">
+        <button class="filter-chip active" onclick="filterVerzoeken('alle', this)">
+          Alle <span class="count">4</span>
+        </button>
+        <button class="filter-chip" onclick="filterVerzoeken('open', this)">
+          Open <span class="count">1</span>
+        </button>
+        <button class="filter-chip" onclick="filterVerzoeken('actief', this)">
+          Actief <span class="count">2</span>
+        </button>
+        <button class="filter-chip" onclick="filterVerzoeken('afgerond', this)">
+          Afgerond <span class="count">1</span>
+        </button>
+      </div>
+
+      <!-- SCOUT VIEW -->
+      <div id="scout-list" class="verzoek-list">
+        <!-- Verzoek 1: Actief, draft -->
+        <div
+          class="card card-clickable verzoek-card status-actief"
+          onclick="navigateTo('screen-detail-1')"
+        >
+          <div class="accent-left"></div>
+          <div class="verzoek-card-top">
+            <div class="verzoek-card-badges">
+              <span class="type-badge generiek">Generiek</span>
+              <span class="doel-badge">Doorstroom</span>
+            </div>
+            <span class="countdown-badge">
+              <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+              5 dagen
+            </span>
+          </div>
+          <div class="verzoek-card-body">
+            <h3>Beoordeling J8 Geel</h3>
+            <p>Beoordeel alle spelers van J8 (Geel) voor doorstroom-advies naar J4</p>
+          </div>
+          <div class="verzoek-card-footer">
+            <div class="verzoek-card-meta">
+              <span class="status-badge actief"><span class="status-dot"></span> Actief</span>
+            </div>
+            <div class="progress-row">
+              <span class="progress-label">2/5 spelers</span>
+              <div class="progress-track" style="width: 80px">
+                <div class="progress-fill blue" style="width: 40%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Verzoek 2: Open, nog niet gestart -->
+        <div
+          class="card card-clickable verzoek-card status-open"
+          onclick="navigateTo('screen-detail-2')"
+        >
+          <div class="accent-left"></div>
+          <div class="verzoek-card-top">
+            <div class="verzoek-card-badges">
+              <span class="type-badge specifiek">Specifiek</span>
+              <span class="doel-badge">Selectie</span>
+            </div>
+            <span class="countdown-badge urgent">
+              <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+              2 dagen
+            </span>
+          </div>
+          <div class="verzoek-card-body">
+            <h3>Scouting Lotte & Daan</h3>
+            <p>Specifieke beoordeling gevraagd voor mogelijke plaatsing in selectieteam</p>
+          </div>
+          <div class="verzoek-card-footer">
+            <div class="verzoek-card-meta">
+              <span class="status-badge open"><span class="status-dot"></span> Open</span>
+            </div>
+            <div class="progress-row">
+              <span class="progress-label">0/2 spelers</span>
+              <div class="progress-track" style="width: 80px">
+                <div class="progress-fill orange" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Verzoek 3: Actief, vergelijking -->
+        <div
+          class="card card-clickable verzoek-card status-actief"
+          onclick="navigateTo('screen-detail-3')"
+        >
+          <div class="accent-left"></div>
+          <div class="verzoek-card-top">
+            <div class="verzoek-card-badges">
+              <span class="type-badge vergelijking">Vergelijking</span>
+              <span class="doel-badge">Niveau</span>
+            </div>
+            <span class="countdown-badge">
+              <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+              8 dagen
+            </span>
+          </div>
+          <div class="verzoek-card-body">
+            <h3>Vergelijk Thomas vs. Jelle</h3>
+            <p>Wie past beter bij J2 op basis van niveau en potentieel?</p>
+          </div>
+          <div class="verzoek-card-footer">
+            <div class="verzoek-card-meta">
+              <span class="status-badge actief"><span class="status-dot"></span> Actief</span>
+            </div>
+            <div class="progress-row">
+              <span class="progress-label">1/2 spelers</span>
+              <div class="progress-track" style="width: 80px">
+                <div class="progress-fill blue" style="width: 50%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Verzoek 4: Afgerond -->
+        <div
+          class="card card-clickable verzoek-card status-afgerond"
+          onclick="navigateTo('screen-detail-4')"
+        >
+          <div class="accent-left"></div>
+          <div class="verzoek-card-top">
+            <div class="verzoek-card-badges">
+              <span class="type-badge generiek">Generiek</span>
+              <span class="doel-badge">Doorstroom</span>
+            </div>
+            <span class="status-badge afgerond" style="font-size: 12px">
+              <span class="status-dot"></span> Afgerond
+            </span>
+          </div>
+          <div class="verzoek-card-body">
+            <h3>Beoordeling J4 Oranje</h3>
+            <p>Seizoensbeoordeling J4 spelers afgerond</p>
+          </div>
+          <div class="verzoek-card-footer">
+            <div class="verzoek-card-meta">
+              <span class="status-badge afgerond"><span class="status-dot"></span> Afgerond</span>
+            </div>
+            <div class="progress-row">
+              <span class="progress-label">4/4 spelers</span>
+              <div class="progress-track" style="width: 80px">
+                <div class="progress-fill green" style="width: 100%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TC VIEW (hidden by default) -->
+      <div id="tc-list" class="verzoek-list" style="display: none">
+        <!-- Same cards but with extra TC info -->
+        <div
+          class="card card-clickable verzoek-card status-actief"
+          onclick="navigateTo('screen-detail-1')"
+        >
+          <div class="accent-left"></div>
+          <div class="verzoek-card-top">
+            <div class="verzoek-card-badges">
+              <span class="type-badge generiek">Generiek</span>
+              <span class="doel-badge">Doorstroom</span>
+            </div>
+            <span class="countdown-badge">
+              <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+              5 dagen
+            </span>
+          </div>
+          <div class="verzoek-card-body">
+            <h3>Beoordeling J8 Geel</h3>
+            <p>5 spelers, 3 scouts toegewezen</p>
+          </div>
+          <div class="verzoek-card-footer">
+            <div class="verzoek-card-meta">
+              <div class="scout-avatars">
+                <div class="avatar sm" style="background: #7c3aed">M</div>
+                <div class="avatar sm" style="background: #3b82f6">P</div>
+                <div class="avatar sm" style="background: #22c55e">H</div>
+              </div>
+            </div>
+            <div class="progress-row">
+              <span class="progress-label">2/3 scouts klaar</span>
+              <div class="progress-track" style="width: 80px">
+                <div class="progress-fill blue" style="width: 67%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="card card-clickable verzoek-card status-open"
+          onclick="navigateTo('screen-detail-2')"
+        >
+          <div class="accent-left"></div>
+          <div class="verzoek-card-top">
+            <div class="verzoek-card-badges">
+              <span class="type-badge specifiek">Specifiek</span>
+              <span class="doel-badge">Selectie</span>
+            </div>
+            <span class="countdown-badge urgent">
+              <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+              2 dagen
+            </span>
+          </div>
+          <div class="verzoek-card-body">
+            <h3>Scouting Lotte & Daan</h3>
+            <p>2 spelers, 2 scouts toegewezen</p>
+          </div>
+          <div class="verzoek-card-footer">
+            <div class="verzoek-card-meta">
+              <div class="scout-avatars">
+                <div class="avatar sm" style="background: #3b82f6">P</div>
+                <div class="avatar sm" style="background: #22c55e">H</div>
+              </div>
+            </div>
+            <div class="progress-row">
+              <span class="progress-label">0/2 scouts klaar</span>
+              <div class="progress-track" style="width: 80px">
+                <div class="progress-fill orange" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="card card-clickable verzoek-card status-actief"
+          onclick="navigateTo('screen-detail-3')"
+        >
+          <div class="accent-left"></div>
+          <div class="verzoek-card-top">
+            <div class="verzoek-card-badges">
+              <span class="type-badge vergelijking">Vergelijking</span>
+              <span class="doel-badge">Niveau</span>
+            </div>
+            <span class="countdown-badge">
+              <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+              8 dagen
+            </span>
+          </div>
+          <div class="verzoek-card-body">
+            <h3>Vergelijk Thomas vs. Jelle</h3>
+            <p>2 spelers, 3 scouts toegewezen</p>
+          </div>
+          <div class="verzoek-card-footer">
+            <div class="verzoek-card-meta">
+              <div class="scout-avatars">
+                <div class="avatar sm" style="background: #7c3aed">M</div>
+                <div class="avatar sm" style="background: #3b82f6">P</div>
+                <div class="avatar sm" style="background: #22c55e">H</div>
+              </div>
+            </div>
+            <div class="progress-row">
+              <span class="progress-label">1/3 scouts klaar</span>
+              <div class="progress-track" style="width: 80px">
+                <div class="progress-fill blue" style="width: 33%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="card card-clickable verzoek-card status-afgerond"
+          onclick="navigateTo('screen-detail-4')"
+        >
+          <div class="accent-left"></div>
+          <div class="verzoek-card-top">
+            <div class="verzoek-card-badges">
+              <span class="type-badge generiek">Generiek</span>
+              <span class="doel-badge">Doorstroom</span>
+            </div>
+            <span class="status-badge afgerond" style="font-size: 12px">
+              <span class="status-dot"></span> Afgerond
+            </span>
+          </div>
+          <div class="verzoek-card-body">
+            <h3>Beoordeling J4 Oranje</h3>
+            <p>4 spelers, 3 scouts, 12 rapporten</p>
+          </div>
+          <div class="verzoek-card-footer">
+            <div class="verzoek-card-meta">
+              <div class="scout-avatars">
+                <div class="avatar sm" style="background: #7c3aed">M</div>
+                <div class="avatar sm" style="background: #3b82f6">P</div>
+                <div class="avatar sm" style="background: #22c55e">H</div>
+              </div>
+            </div>
+            <div class="progress-row">
+              <span class="progress-label">3/3 scouts klaar</span>
+              <div class="progress-track" style="width: 80px">
+                <div class="progress-fill green" style="width: 100%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAB for TC -->
+      <button class="fab" id="tc-fab" onclick="navigateTo('screen-tc-wizard')">+</button>
+    </div>
+
+    <!-- ============================== -->
+    <!-- SCHERM 2a: DETAIL - J8 GEEL    -->
+    <!-- ============================== -->
+    <div id="screen-detail-1" class="screen">
+      <div class="detail-header">
+        <div class="detail-header-top">
+          <button class="detail-back" onclick="navigateBack('screen-list')">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+          <div style="flex: 1">
+            <div class="detail-header-badges">
+              <span class="type-badge generiek">Generiek</span>
+              <span class="status-badge actief"><span class="status-dot"></span> Actief</span>
+              <span class="doel-badge">Doorstroom</span>
+            </div>
+            <h1>Beoordeling J8 Geel</h1>
+          </div>
+        </div>
+        <!-- Large deadline badge -->
+        <div class="countdown-badge large" style="width: 100%; justify-content: center">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+          Deadline: nog 5 dagen (31 maart)
+        </div>
+      </div>
+
+      <div class="detail-body">
+        <!-- TC Toelichting -->
+        <div class="info-box geel">
+          <div class="info-box-label">Toelichting van TC</div>
+          Beoordeel alle J8-spelers voor het doorstroomadvies richting J4. Let extra op technische
+          vaardigheden en spelinzicht. Spelers die opvallen mogen doorstromen.
+        </div>
+
+        <!-- Voortgang -->
+        <div>
+          <div class="section-title">Jouw voortgang</div>
+          <div class="progress-row" style="gap: 12px">
+            <div class="progress-track" style="flex: 1">
+              <div class="progress-fill blue" style="width: 40%"></div>
+            </div>
+            <span class="progress-label">2 van 5 spelers beoordeeld</span>
+          </div>
+        </div>
+
+        <!-- Spelers -->
+        <div>
+          <div class="section-title">Spelers</div>
+          <div class="speler-list">
+            <!-- Speler 1: Afgerond -->
+            <div class="speler-row">
+              <div class="speler-row-main">
+                <div class="avatar" style="background: linear-gradient(135deg, #eab308, #ca8a04)">
+                  S
+                </div>
+                <div class="speler-row-info">
+                  <div class="name">Sanne de Vries</div>
+                  <div class="detail">
+                    <span class="team-badge geel">J8</span>
+                    <span>10 jaar</span>
+                  </div>
+                </div>
+                <span class="speler-status done">Afgerond</span>
+              </div>
+              <div class="speler-row-action">
+                <button class="btn-start completed">
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  Rapport ingediend
+                </button>
+              </div>
+            </div>
+
+            <!-- Speler 2: Draft -->
+            <div class="speler-row">
+              <div class="speler-row-main">
+                <div class="avatar" style="background: linear-gradient(135deg, #eab308, #ca8a04)">
+                  E
+                </div>
+                <div class="speler-row-info">
+                  <div class="name">Eva Jansen</div>
+                  <div class="detail">
+                    <span class="team-badge geel">J8</span>
+                    <span>9 jaar</span>
+                  </div>
+                </div>
+                <span class="speler-status draft">
+                  <span class="draft-dot"></span>
+                  Draft
+                </span>
+              </div>
+              <div class="speler-row-action">
+                <button
+                  class="btn-start draft"
+                  onclick="
+                    event.stopPropagation();
+                    navigateTo('screen-beoordeling');
+                  "
+                >
+                  <span class="draft-dot"></span>
+                  Doorgaan met beoordeling
+                </button>
+              </div>
+            </div>
+
+            <!-- Speler 3: Nog niet beoordeeld -->
+            <div class="speler-row">
+              <div class="speler-row-main">
+                <div class="avatar" style="background: linear-gradient(135deg, #eab308, #ca8a04)">
+                  J
+                </div>
+                <div class="speler-row-info">
+                  <div class="name">Jelle Bakker</div>
+                  <div class="detail">
+                    <span class="team-badge geel">J8</span>
+                    <span>10 jaar</span>
+                  </div>
+                </div>
+                <span class="speler-status pending">Nog niet</span>
+              </div>
+              <div class="speler-row-action">
+                <button
+                  class="btn-start"
+                  onclick="
+                    event.stopPropagation();
+                    navigateTo('screen-beoordeling');
+                  "
+                >
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M5 12h14" />
+                    <path d="m12 5 7 7-7 7" />
+                  </svg>
+                  Start beoordeling
+                </button>
+              </div>
+            </div>
+
+            <!-- Speler 4: Nog niet beoordeeld -->
+            <div class="speler-row">
+              <div class="speler-row-main">
+                <div class="avatar" style="background: linear-gradient(135deg, #eab308, #ca8a04)">
+                  T
+                </div>
+                <div class="speler-row-info">
+                  <div class="name">Thomas Vermeer</div>
+                  <div class="detail">
+                    <span class="team-badge geel">J8</span>
+                    <span>10 jaar</span>
+                  </div>
+                </div>
+                <span class="speler-status pending">Nog niet</span>
+              </div>
+              <div class="speler-row-action">
+                <button
+                  class="btn-start"
+                  onclick="
+                    event.stopPropagation();
+                    navigateTo('screen-beoordeling');
+                  "
+                >
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M5 12h14" />
+                    <path d="m12 5 7 7-7 7" />
+                  </svg>
+                  Start beoordeling
+                </button>
+              </div>
+            </div>
+
+            <!-- Speler 5: Nog niet beoordeeld -->
+            <div class="speler-row">
+              <div class="speler-row-main">
+                <div class="avatar" style="background: linear-gradient(135deg, #eab308, #ca8a04)">
+                  D
+                </div>
+                <div class="speler-row-info">
+                  <div class="name">Daan Pieterse</div>
+                  <div class="detail">
+                    <span class="team-badge geel">J8</span>
+                    <span>9 jaar</span>
+                  </div>
+                </div>
+                <span class="speler-status pending">Nog niet</span>
+              </div>
+              <div class="speler-row-action">
+                <button
+                  class="btn-start"
+                  onclick="
+                    event.stopPropagation();
+                    navigateTo('screen-beoordeling');
+                  "
+                >
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M5 12h14" />
+                    <path d="m12 5 7 7-7 7" />
+                  </svg>
+                  Start beoordeling
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TC Extra: Scouts sectie (conditioneel zichtbaar) -->
+        <div class="tc-only" style="display: none">
+          <div class="tc-section">
+            <div class="tc-section-header" onclick="toggleSection(this)">
+              <h3>
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+                Toegewezen scouts (3)
+              </h3>
+              <span class="chevron">&#9660;</span>
+            </div>
+            <div class="tc-section-body" style="display: none">
+              <div class="scout-row">
+                <div class="avatar sm" style="background: #7c3aed">M</div>
+                <div class="scout-row-info">
+                  <div class="name">Coach Marcel</div>
+                  <div class="subtitle">5/5 spelers beoordeeld</div>
+                </div>
+                <span class="speler-status done">Klaar</span>
+              </div>
+              <div class="scout-row">
+                <div class="avatar sm" style="background: #3b82f6">P</div>
+                <div class="scout-row-info">
+                  <div class="name">Scout Petra</div>
+                  <div class="subtitle">3/5 spelers beoordeeld</div>
+                </div>
+                <span class="speler-status draft"><span class="draft-dot"></span> Bezig</span>
+              </div>
+              <div class="scout-row">
+                <div class="avatar sm" style="background: #22c55e">H</div>
+                <div class="scout-row-info">
+                  <div class="name">Scout Henk</div>
+                  <div class="subtitle">0/5 spelers beoordeeld</div>
+                </div>
+                <span class="speler-status pending">Niet gestart</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- TC: Resultaten sectie -->
+          <div class="tc-section" style="margin-top: 12px">
+            <div class="tc-section-header" onclick="toggleSection(this)">
+              <h3>
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                  <line x1="16" y1="13" x2="8" y2="13" />
+                  <line x1="16" y1="17" x2="8" y2="17" />
+                </svg>
+                Resultaten per speler
+              </h3>
+              <span class="chevron">&#9660;</span>
+            </div>
+            <div class="tc-section-body" style="display: none">
+              <!-- Anonimisering toggle -->
+              <div class="toggle-container" style="margin-bottom: 14px">
+                <button class="toggle" onclick="this.classList.toggle('active')"></button>
+                <span class="toggle-label">Anonimiseer scouts</span>
+              </div>
+
+              <div style="font-size: 14px; font-weight: 700; margin-bottom: 8px">
+                Sanne de Vries
+              </div>
+              <div class="report-card">
+                <div class="report-header">
+                  <div class="avatar sm" style="background: #7c3aed">M</div>
+                  <span class="name">Coach Marcel</span>
+                </div>
+                <div class="report-scores">
+                  <span class="report-score">Techniek: <span class="value">4/5</span></span>
+                  <span class="report-score">Inzicht: <span class="value">4/5</span></span>
+                  <span class="report-score">Inzet: <span class="value">5/5</span></span>
+                </div>
+              </div>
+              <div class="report-card">
+                <div class="report-header">
+                  <div class="avatar sm" style="background: #3b82f6">P</div>
+                  <span class="name">Scout Petra</span>
+                </div>
+                <div class="report-scores">
+                  <span class="report-score">Techniek: <span class="value">3/5</span></span>
+                  <span class="report-score">Inzicht: <span class="value">4/5</span></span>
+                  <span class="report-score">Inzet: <span class="value">4/5</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================== -->
+    <!-- SCHERM 2b: DETAIL - Specifiek  -->
+    <!-- ============================== -->
+    <div id="screen-detail-2" class="screen">
+      <div class="detail-header">
+        <div class="detail-header-top">
+          <button class="detail-back" onclick="navigateBack('screen-list')">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+          <div style="flex: 1">
+            <div class="detail-header-badges">
+              <span class="type-badge specifiek">Specifiek</span>
+              <span class="status-badge open"><span class="status-dot"></span> Open</span>
+              <span class="doel-badge">Selectie</span>
+            </div>
+            <h1>Scouting Lotte & Daan</h1>
+          </div>
+        </div>
+        <div class="countdown-badge large urgent" style="width: 100%; justify-content: center">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+          Deadline: nog 2 dagen (28 maart)
+        </div>
+      </div>
+
+      <div class="detail-body">
+        <div class="info-box geel">
+          <div class="info-box-label">Toelichting van TC</div>
+          Lotte (J4) en Daan (J8) zijn in beeld voor het selectieteam J2. Beoordeel ze allebei op
+          hun potentieel voor het hoogste niveau. Let specifiek op snelheid, verdedigend vermogen en
+          wedstrijdmentaliteit.
+        </div>
+
+        <div>
+          <div class="section-title">Spelers</div>
+          <div class="speler-list">
+            <div class="speler-row">
+              <div class="speler-row-main">
+                <div class="avatar" style="background: linear-gradient(135deg, #f97316, #c2410c)">
+                  L
+                </div>
+                <div class="speler-row-info">
+                  <div class="name">Lotte van Dijk</div>
+                  <div class="detail">
+                    <span class="team-badge oranje">J4</span>
+                    <span>13 jaar</span>
+                  </div>
+                </div>
+                <span class="speler-status pending">Nog niet</span>
+              </div>
+              <div class="speler-row-action">
+                <button
+                  class="btn-start"
+                  onclick="
+                    event.stopPropagation();
+                    navigateTo('screen-beoordeling');
+                  "
+                >
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M5 12h14" />
+                    <path d="m12 5 7 7-7 7" />
+                  </svg>
+                  Start beoordeling
+                </button>
+              </div>
+            </div>
+
+            <div class="speler-row">
+              <div class="speler-row-main">
+                <div class="avatar" style="background: linear-gradient(135deg, #eab308, #ca8a04)">
+                  D
+                </div>
+                <div class="speler-row-info">
+                  <div class="name">Daan Pieterse</div>
+                  <div class="detail">
+                    <span class="team-badge geel">J8</span>
+                    <span>11 jaar</span>
+                  </div>
+                </div>
+                <span class="speler-status pending">Nog niet</span>
+              </div>
+              <div class="speler-row-action">
+                <button
+                  class="btn-start"
+                  onclick="
+                    event.stopPropagation();
+                    navigateTo('screen-beoordeling');
+                  "
+                >
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M5 12h14" />
+                    <path d="m12 5 7 7-7 7" />
+                  </svg>
+                  Start beoordeling
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================== -->
+    <!-- SCHERM 2c: DETAIL - Vergelijk  -->
+    <!-- ============================== -->
+    <div id="screen-detail-3" class="screen">
+      <div class="detail-header">
+        <div class="detail-header-top">
+          <button class="detail-back" onclick="navigateBack('screen-list')">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+          <div style="flex: 1">
+            <div class="detail-header-badges">
+              <span class="type-badge vergelijking">Vergelijking</span>
+              <span class="status-badge actief"><span class="status-dot"></span> Actief</span>
+              <span class="doel-badge">Niveau</span>
+            </div>
+            <h1>Vergelijk Thomas vs. Jelle</h1>
+          </div>
+        </div>
+        <div class="countdown-badge large" style="width: 100%; justify-content: center">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+          Deadline: nog 8 dagen (3 april)
+        </div>
+      </div>
+
+      <div class="detail-body">
+        <div class="info-box geel">
+          <div class="info-box-label">Toelichting van TC</div>
+          Vergelijk Thomas en Jelle qua geschiktheid voor J2 (Rood). We twijfelen wie van de twee de
+          betere aanvulling is. Beoordeel ze allebei en geef aan wie je het meest geschikt vindt.
+        </div>
+
+        <div>
+          <div class="section-title">Spelers te vergelijken</div>
+          <div class="speler-list">
+            <div class="speler-row">
+              <div class="speler-row-main">
+                <div class="avatar" style="background: linear-gradient(135deg, #ef4444, #b91c1c)">
+                  T
+                </div>
+                <div class="speler-row-info">
+                  <div class="name">Thomas Vermeer</div>
+                  <div class="detail">
+                    <span class="team-badge rood">J2</span>
+                    <span>15 jaar</span>
+                  </div>
+                </div>
+                <span class="speler-status done">Afgerond</span>
+              </div>
+              <div class="speler-row-action">
+                <button class="btn-start completed">
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  Rapport ingediend
+                </button>
+              </div>
+            </div>
+
+            <div class="speler-row">
+              <div class="speler-row-main">
+                <div class="avatar" style="background: linear-gradient(135deg, #ef4444, #b91c1c)">
+                  J
+                </div>
+                <div class="speler-row-info">
+                  <div class="name">Jelle Bakker</div>
+                  <div class="detail">
+                    <span class="team-badge rood">J2</span>
+                    <span>14 jaar</span>
+                  </div>
+                </div>
+                <span class="speler-status draft">
+                  <span class="draft-dot"></span>
+                  Draft
+                </span>
+              </div>
+              <div class="speler-row-action">
+                <button
+                  class="btn-start draft"
+                  onclick="
+                    event.stopPropagation();
+                    navigateTo('screen-beoordeling');
+                  "
+                >
+                  <span class="draft-dot"></span>
+                  Doorgaan met beoordeling
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TC Extra -->
+        <div class="tc-only" style="display: none">
+          <div class="info-box blauw">
+            <div class="info-box-label">Vergelijkingsresultaat</div>
+            Na afloop kun je hier de scouts-consensus zien: wie past het best bij J2?
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================== -->
+    <!-- SCHERM 2d: DETAIL - Afgerond   -->
+    <!-- ============================== -->
+    <div id="screen-detail-4" class="screen">
+      <div class="detail-header">
+        <div class="detail-header-top">
+          <button class="detail-back" onclick="navigateBack('screen-list')">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+          <div style="flex: 1">
+            <div class="detail-header-badges">
+              <span class="type-badge generiek">Generiek</span>
+              <span class="status-badge afgerond"><span class="status-dot"></span> Afgerond</span>
+              <span class="doel-badge">Doorstroom</span>
+            </div>
+            <h1>Beoordeling J4 Oranje</h1>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-body">
+        <div class="info-box blauw">
+          <div class="info-box-label">Voltooid</div>
+          Je hebt alle spelers beoordeeld. De TC kan de resultaten inzien.
+        </div>
+
+        <div>
+          <div class="section-title">Spelers (4/4 afgerond)</div>
+          <div class="speler-list">
+            <div class="speler-row">
+              <div class="speler-row-main">
+                <div class="avatar" style="background: linear-gradient(135deg, #f97316, #c2410c)">
+                  L
+                </div>
+                <div class="speler-row-info">
+                  <div class="name">Lotte van Dijk</div>
+                  <div class="detail">
+                    <span class="team-badge oranje">J4</span> <span>13 jaar</span>
+                  </div>
+                </div>
+                <span class="speler-status done">Afgerond</span>
+              </div>
+            </div>
+            <div class="speler-row">
+              <div class="speler-row-main">
+                <div class="avatar" style="background: linear-gradient(135deg, #f97316, #c2410c)">
+                  E
+                </div>
+                <div class="speler-row-info">
+                  <div class="name">Eva Jansen</div>
+                  <div class="detail">
+                    <span class="team-badge oranje">J4</span> <span>12 jaar</span>
+                  </div>
+                </div>
+                <span class="speler-status done">Afgerond</span>
+              </div>
+            </div>
+            <div class="speler-row">
+              <div class="speler-row-main">
+                <div class="avatar" style="background: linear-gradient(135deg, #f97316, #c2410c)">
+                  T
+                </div>
+                <div class="speler-row-info">
+                  <div class="name">Thomas Vermeer</div>
+                  <div class="detail">
+                    <span class="team-badge oranje">J4</span> <span>13 jaar</span>
+                  </div>
+                </div>
+                <span class="speler-status done">Afgerond</span>
+              </div>
+            </div>
+            <div class="speler-row">
+              <div class="speler-row-main">
+                <div class="avatar" style="background: linear-gradient(135deg, #f97316, #c2410c)">
+                  D
+                </div>
+                <div class="speler-row-info">
+                  <div class="name">Daan Pieterse</div>
+                  <div class="detail">
+                    <span class="team-badge oranje">J4</span> <span>12 jaar</span>
+                  </div>
+                </div>
+                <span class="speler-status done">Afgerond</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================== -->
+    <!-- SCHERM 3: BEOORDELING WIZARD   -->
+    <!-- ============================== -->
+    <div id="screen-beoordeling" class="screen">
+      <div class="wizard-nav">
+        <div class="wizard-nav-top">
+          <button class="detail-back" onclick="confirmBack()">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+          <span class="wizard-nav-title" id="wizard-title">Eva Jansen beoordelen</span>
+          <button class="wizard-skip" onclick="skipBeoordeling()">Niet beoordeeld</button>
+        </div>
+        <div class="wizard-progress" id="wizard-progress">
+          <div class="wizard-progress-step current"></div>
+          <div class="wizard-progress-step"></div>
+          <div class="wizard-progress-step"></div>
+          <div class="wizard-progress-step"></div>
+        </div>
+      </div>
+
+      <!-- Speler info bar -->
+      <div
+        style="
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 12px 16px;
+          background: var(--bg-card);
+          border-bottom: 1px solid var(--border);
+        "
+      >
+        <div class="avatar" style="background: linear-gradient(135deg, #eab308, #ca8a04)">E</div>
+        <div>
+          <div style="font-size: 15px; font-weight: 700">Eva Jansen</div>
+          <div
+            style="
+              font-size: 12px;
+              color: var(--text-muted);
+              display: flex;
+              align-items: center;
+              gap: 6px;
+            "
+          >
+            <span class="team-badge geel" style="font-size: 11px">J8</span>
+            <span>9 jaar</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="wizard-body">
+        <!-- Stap 1: Relatie -->
+        <div class="wizard-step active" id="wiz-step-1">
+          <h2>Relatie</h2>
+          <p class="subtitle">
+            Ken je deze speler persoonlijk? Dit helpt de TC bij het wegen van je beoordeling.
+          </p>
+
+          <div class="relation-options">
+            <button class="relation-chip" onclick="selectRelation(this)">Geen relatie</button>
+            <button class="relation-chip" onclick="selectRelation(this)">Ouder / verzorger</button>
+            <button class="relation-chip" onclick="selectRelation(this)">Familie</button>
+            <button class="relation-chip" onclick="selectRelation(this)">Bekende</button>
+            <button class="relation-chip" onclick="selectRelation(this)">Trainer / coach</button>
+          </div>
+        </div>
+
+        <!-- Stap 2: Beoordeling -->
+        <div class="wizard-step" id="wiz-step-2">
+          <h2>Beoordeling</h2>
+          <p class="subtitle">
+            Beoordeel de speler op de drie Oranje Draad pijlers. Kies per onderdeel een score.
+          </p>
+
+          <div class="rating-group">
+            <label class="label">Techniek & Vaardigheid</label>
+            <div class="rating-smileys">
+              <button class="smiley-btn" onclick="selectSmiley(this)">1</button>
+              <button class="smiley-btn" onclick="selectSmiley(this)">2</button>
+              <button class="smiley-btn" onclick="selectSmiley(this)">3</button>
+              <button class="smiley-btn" onclick="selectSmiley(this)">4</button>
+              <button class="smiley-btn" onclick="selectSmiley(this)">5</button>
+            </div>
+          </div>
+
+          <div class="rating-group">
+            <label class="label">Spelinzicht & Positiespel</label>
+            <div class="rating-smileys">
+              <button class="smiley-btn" onclick="selectSmiley(this)">1</button>
+              <button class="smiley-btn" onclick="selectSmiley(this)">2</button>
+              <button class="smiley-btn" onclick="selectSmiley(this)">3</button>
+              <button class="smiley-btn" onclick="selectSmiley(this)">4</button>
+              <button class="smiley-btn" onclick="selectSmiley(this)">5</button>
+            </div>
+          </div>
+
+          <div class="rating-group">
+            <label class="label">Inzet & Teamhouding</label>
+            <div class="rating-smileys">
+              <button class="smiley-btn" onclick="selectSmiley(this)">1</button>
+              <button class="smiley-btn" onclick="selectSmiley(this)">2</button>
+              <button class="smiley-btn" onclick="selectSmiley(this)">3</button>
+              <button class="smiley-btn" onclick="selectSmiley(this)">4</button>
+              <button class="smiley-btn" onclick="selectSmiley(this)">5</button>
+            </div>
+          </div>
+
+          <div class="rating-group">
+            <label class="label">Potentieel & Groeimogelijkheid</label>
+            <div class="rating-smileys">
+              <button class="smiley-btn" onclick="selectSmiley(this)">1</button>
+              <button class="smiley-btn" onclick="selectSmiley(this)">2</button>
+              <button class="smiley-btn" onclick="selectSmiley(this)">3</button>
+              <button class="smiley-btn" onclick="selectSmiley(this)">4</button>
+              <button class="smiley-btn" onclick="selectSmiley(this)">5</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stap 3: Opmerking -->
+        <div class="wizard-step" id="wiz-step-3">
+          <h2>Opmerking</h2>
+          <p class="subtitle">
+            Eventuele toelichting of opvallende zaken die je wilt meegeven aan de TC.
+          </p>
+
+          <label class="label">Toelichting (optioneel)</label>
+          <textarea
+            class="textarea"
+            placeholder="Bijv. 'Valt op door snelheid en verdedigend vermogen. Zou goed passen in een hoger team.'"
+            oninput="showAutosave()"
+          ></textarea>
+        </div>
+
+        <!-- Stap 4: Samenvatting -->
+        <div class="wizard-step" id="wiz-step-4">
+          <h2>Samenvatting</h2>
+          <p class="subtitle">Controleer je beoordeling voordat je het verstuurt.</p>
+
+          <div class="summary-card">
+            <div class="summary-row">
+              <span class="summary-label">Speler</span>
+              <span class="summary-value">Eva Jansen</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Relatie</span>
+              <span class="summary-value">Geen relatie</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Techniek</span>
+              <span class="summary-value">4 / 5</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Spelinzicht</span>
+              <span class="summary-value">3 / 5</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Inzet</span>
+              <span class="summary-value">5 / 5</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Potentieel</span>
+              <span class="summary-value">4 / 5</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">Opmerking</span>
+              <span
+                class="summary-value"
+                style="font-size: 12px; max-width: 200px; text-align: right"
+                >Goede motoriek, valt op door snelheid</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Wizard footer -->
+      <div class="wizard-footer" id="wizard-footer">
+        <button
+          class="btn btn-secondary"
+          id="wiz-prev"
+          onclick="wizardPrev()"
+          style="display: none"
+        >
+          Vorige
+        </button>
+        <button class="btn btn-primary" id="wiz-next" onclick="wizardNext()">Volgende</button>
+      </div>
+    </div>
+
+    <!-- ============================== -->
+    <!-- SCHERM 4: TC NIEUW VERZOEK     -->
+    <!-- ============================== -->
+    <div id="screen-tc-wizard" class="screen">
+      <div class="wizard-nav">
+        <div class="wizard-nav-top">
+          <button class="detail-back" onclick="navigateBack('screen-list')">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+          <span class="wizard-nav-title">Nieuw verzoek</span>
+          <div style="width: 36px"></div>
+        </div>
+        <div class="wizard-progress" id="tc-wizard-progress">
+          <div class="wizard-progress-step current"></div>
+          <div class="wizard-progress-step"></div>
+          <div class="wizard-progress-step"></div>
+          <div class="wizard-progress-step"></div>
+        </div>
+      </div>
+
+      <div class="wizard-body">
+        <!-- Stap 1: Type kiezen -->
+        <div class="wizard-step active" id="tc-step-1">
+          <h2>Type verzoek</h2>
+          <p class="subtitle">Wat voor scouting-opdracht wil je uitzetten?</p>
+
+          <div class="type-cards">
+            <div class="type-card" onclick="selectTypeCard(this)">
+              <div class="type-icon generiek">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#1d4ed8"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+              </div>
+              <div>
+                <div class="type-title">Generiek</div>
+                <div class="type-desc">
+                  Beoordeel alle spelers van een team. Ideaal voor seizoensevaluatie.
+                </div>
+              </div>
+            </div>
+
+            <div class="type-card" onclick="selectTypeCard(this)">
+              <div class="type-icon specifiek">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#c2410c"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+              </div>
+              <div>
+                <div class="type-title">Specifiek</div>
+                <div class="type-desc">
+                  Beoordeel specifieke spelers. Voor gerichte scouting van individuen.
+                </div>
+              </div>
+            </div>
+
+            <div class="type-card" onclick="selectTypeCard(this)">
+              <div class="type-icon vergelijking">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#4338ca"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <line x1="18" y1="20" x2="18" y2="10" />
+                  <line x1="12" y1="20" x2="12" y2="4" />
+                  <line x1="6" y1="20" x2="6" y2="14" />
+                </svg>
+              </div>
+              <div>
+                <div class="type-title">Vergelijking</div>
+                <div class="type-desc">
+                  Vergelijk twee of meer spelers. Handig bij twijfelgevallen voor teamplaatsing.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stap 2: Scope -->
+        <div class="wizard-step" id="tc-step-2">
+          <h2>Scope</h2>
+          <p class="subtitle">Selecteer het team of de spelers voor dit verzoek.</p>
+
+          <label class="label">Team selecteren</label>
+          <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px">
+            <div class="select-item" onclick="toggleSelect(this)">
+              <div class="check">&#10003;</div>
+              <div class="avatar sm" style="background: linear-gradient(135deg, #eab308, #ca8a04)">
+                J8
+              </div>
+              <div class="item-info">
+                <div class="item-name">J8 (Geel)</div>
+                <div class="item-detail">5 spelers, leeftijd 9-10</div>
+              </div>
+            </div>
+            <div class="select-item" onclick="toggleSelect(this)">
+              <div class="check">&#10003;</div>
+              <div class="avatar sm" style="background: linear-gradient(135deg, #f97316, #c2410c)">
+                J4
+              </div>
+              <div class="item-info">
+                <div class="item-name">J4 (Oranje)</div>
+                <div class="item-detail">6 spelers, leeftijd 12-13</div>
+              </div>
+            </div>
+            <div class="select-item" onclick="toggleSelect(this)">
+              <div class="check">&#10003;</div>
+              <div class="avatar sm" style="background: linear-gradient(135deg, #ef4444, #b91c1c)">
+                J2
+              </div>
+              <div class="item-info">
+                <div class="item-name">J2 (Rood)</div>
+                <div class="item-detail">8 spelers, leeftijd 14-16</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider" style="margin: 16px 0"></div>
+
+          <label class="label">Of zoek spelers</label>
+          <input
+            type="text"
+            class="input"
+            placeholder="Zoek op naam..."
+            style="margin-bottom: 8px"
+          />
+          <div style="font-size: 12px; color: var(--text-muted)">
+            Selecteer een team hierboven of zoek individuele spelers
+          </div>
+        </div>
+
+        <!-- Stap 3: Details -->
+        <div class="wizard-step" id="tc-step-3">
+          <h2>Details</h2>
+          <p class="subtitle">Geef toelichting en stel de deadline in.</p>
+
+          <div style="margin-bottom: 16px">
+            <label class="label">Doel van het verzoek</label>
+            <select class="select">
+              <option>Selecteer een doel...</option>
+              <option>Doorstroom-advies</option>
+              <option>Selectiebeoordeling</option>
+              <option>Niveaubepaling</option>
+              <option>Seizoensbeoordeling</option>
+            </select>
+          </div>
+
+          <div style="margin-bottom: 16px">
+            <label class="label">Toelichting voor scouts</label>
+            <textarea
+              class="textarea"
+              placeholder="Waar moeten de scouts op letten? Wat is de context van dit verzoek?"
+            ></textarea>
+          </div>
+
+          <div>
+            <label class="label">Deadline</label>
+            <input type="date" class="input" value="2026-04-05" />
+          </div>
+        </div>
+
+        <!-- Stap 4: Scouts toewijzen -->
+        <div class="wizard-step" id="tc-step-4">
+          <h2>Scouts toewijzen</h2>
+          <p class="subtitle">Selecteer de scouts die dit verzoek moeten uitvoeren.</p>
+
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <div class="select-item" onclick="toggleSelect(this)">
+              <div class="check">&#10003;</div>
+              <div class="avatar sm" style="background: #7c3aed">M</div>
+              <div class="item-info">
+                <div class="item-name">Coach Marcel</div>
+                <div class="item-detail">Trainer J8, 12 beoordelingen</div>
+              </div>
+            </div>
+            <div class="select-item" onclick="toggleSelect(this)">
+              <div class="check">&#10003;</div>
+              <div class="avatar sm" style="background: #3b82f6">P</div>
+              <div class="item-info">
+                <div class="item-name">Scout Petra</div>
+                <div class="item-detail">Scout jeugd, 8 beoordelingen</div>
+              </div>
+            </div>
+            <div class="select-item" onclick="toggleSelect(this)">
+              <div class="check">&#10003;</div>
+              <div class="avatar sm" style="background: #22c55e">H</div>
+              <div class="item-info">
+                <div class="item-name">Scout Henk</div>
+                <div class="item-detail">Scout senioren, 5 beoordelingen</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TC Wizard footer -->
+      <div class="wizard-footer" id="tc-wizard-footer">
+        <button
+          class="btn btn-secondary"
+          id="tc-prev"
+          onclick="tcWizardPrev()"
+          style="display: none"
+        >
+          Vorige
+        </button>
+        <button class="btn btn-primary" id="tc-next" onclick="tcWizardNext()">Volgende</button>
+      </div>
+    </div>
+
+    <!-- ============================== -->
+    <!-- AUTOSAVE TOAST                 -->
+    <!-- ============================== -->
+    <div class="autosave-toast" id="autosave-toast">
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <polyline points="20 6 9 17 4 12" />
+      </svg>
+      Concept opgeslagen
+    </div>
+
+    <!-- ============================== -->
+    <!-- CONFIRM DIALOG                 -->
+    <!-- ============================== -->
+    <div
+      id="confirm-dialog"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 300;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <div
+        style="
+          background: var(--bg-card);
+          border-radius: 16px;
+          margin: 20px;
+          padding: 24px;
+          max-width: 340px;
+          width: 100%;
+          animation: slideUp 0.2s ease;
+        "
+      >
+        <h3 style="font-size: 17px; font-weight: 800; margin-bottom: 8px">Beoordeling verlaten?</h3>
+        <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5">
+          Je voortgang wordt opgeslagen als concept. Je kunt later doorgaan.
+        </p>
+        <div style="display: flex; gap: 10px">
+          <button class="btn btn-secondary" style="flex: 1" onclick="closeConfirmDialog()">
+            Annuleer
+          </button>
+          <button
+            class="btn btn-primary"
+            style="flex: 1"
+            onclick="
+              closeConfirmDialog();
+              navigateBack('screen-detail-1');
+            "
+          >
+            Opslaan & terug
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================== -->
+    <!-- SKIP DIALOG                    -->
+    <!-- ============================== -->
+    <div
+      id="skip-dialog"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 300;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <div
+        style="
+          background: var(--bg-card);
+          border-radius: 16px;
+          margin: 20px;
+          padding: 24px;
+          max-width: 340px;
+          width: 100%;
+          animation: slideUp 0.2s ease;
+        "
+      >
+        <h3 style="font-size: 17px; font-weight: 800; margin-bottom: 8px">Niet beoordeeld?</h3>
+        <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5">
+          Je markeert deze speler als "niet beoordeeld". De TC weet dan dat je deze speler hebt
+          overgeslagen.
+        </p>
+        <div style="display: flex; gap: 10px">
+          <button class="btn btn-secondary" style="flex: 1" onclick="closeSkipDialog()">
+            Annuleer
+          </button>
+          <button
+            class="btn"
+            style="flex: 1; background: var(--rood); color: white"
+            onclick="
+              closeSkipDialog();
+              navigateBack('screen-detail-1');
+            "
+          >
+            Markeer als overgeslagen
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================== -->
+    <!-- SUCCESS DIALOG                 -->
+    <!-- ============================== -->
+    <div
+      id="success-dialog"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 300;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <div
+        style="
+          background: var(--bg-card);
+          border-radius: 16px;
+          margin: 20px;
+          padding: 32px 24px;
+          max-width: 340px;
+          width: 100%;
+          text-align: center;
+          animation: slideUp 0.2s ease;
+        "
+      >
+        <div style="font-size: 48px; margin-bottom: 12px">&#10004;&#65039;</div>
+        <h3 style="font-size: 20px; font-weight: 800; margin-bottom: 8px">Rapport verstuurd!</h3>
+        <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.5">
+          Je beoordeling van Eva Jansen is succesvol ingediend.
+        </p>
+        <button
+          class="btn btn-primary btn-full"
+          onclick="
+            closeSuccessDialog();
+            navigateBack('screen-detail-1');
+          "
+        >
+          Terug naar verzoek
+        </button>
+      </div>
+    </div>
+
+    <!-- ============================== -->
+    <!-- TC SUCCESS DIALOG              -->
+    <!-- ============================== -->
+    <div
+      id="tc-success-dialog"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 300;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <div
+        style="
+          background: var(--bg-card);
+          border-radius: 16px;
+          margin: 20px;
+          padding: 32px 24px;
+          max-width: 340px;
+          width: 100%;
+          text-align: center;
+          animation: slideUp 0.2s ease;
+        "
+      >
+        <div style="font-size: 48px; margin-bottom: 12px">&#128640;</div>
+        <h3 style="font-size: 20px; font-weight: 800; margin-bottom: 8px">Verzoek aangemaakt!</h3>
+        <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.5">
+          Het scouting-verzoek is uitgezet naar de geselecteerde scouts. Ze ontvangen een melding.
+        </p>
+        <button
+          class="btn btn-primary btn-full"
+          onclick="
+            closeTcSuccessDialog();
+            navigateBack('screen-list');
+          "
+        >
+          Terug naar overzicht
+        </button>
+      </div>
+    </div>
+
+    <!-- ============================== -->
+    <!-- BOTTOM NAVIGATION              -->
+    <!-- ============================== -->
+    <nav class="bottom-nav" id="bottom-nav">
+      <button class="bottom-nav-item" onclick="switchTab('home')">
+        <svg viewBox="0 0 24 24">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+          <polyline points="9 22 9 12 15 12 15 22" />
+        </svg>
+        <span>Home</span>
+      </button>
+      <button class="bottom-nav-item active" onclick="switchTab('verzoeken')">
+        <span class="bottom-nav-badge" data-count="3">
+          <svg viewBox="0 0 24 24">
+            <rect x="3" y="3" width="7" height="7" />
+            <rect x="14" y="3" width="7" height="7" />
+            <rect x="14" y="14" width="7" height="7" />
+            <rect x="3" y="14" width="7" height="7" />
+          </svg>
+        </span>
+        <span>Verzoeken</span>
+      </button>
+      <button class="bottom-nav-item" onclick="switchTab('zoeken')">
+        <svg viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+        <span>Zoeken</span>
+      </button>
+      <button class="bottom-nav-item" onclick="switchTab('profiel')">
+        <svg viewBox="0 0 24 24">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+          <circle cx="12" cy="7" r="4" />
+        </svg>
+        <span>Profiel</span>
+      </button>
+    </nav>
+
+    <!-- ============================== -->
+    <!-- JAVASCRIPT                     -->
+    <!-- ============================== -->
+    <script>
+      // ===== STATE =====
+      let currentScreen = "screen-list";
+      let screenHistory = [];
+      let currentRole = "scout";
+      let wizardStep = 1;
+      let tcWizardStep = 1;
+      let autosaveTimeout;
+
+      // ===== NAVIGATION =====
+      function navigateTo(screenId) {
+        screenHistory.push(currentScreen);
+        showScreen(screenId, "slide-right");
+      }
+
+      function navigateBack(screenId) {
+        const target = screenId || screenHistory.pop() || "screen-list";
+        showScreen(target, "slide-left");
+        // Remove from history if we specified a target
+        if (screenId) {
+          screenHistory = screenHistory.filter((s) => s !== screenId);
+        }
+      }
+
+      function showScreen(screenId, animClass) {
+        // Hide all screens
+        document.querySelectorAll(".screen").forEach((s) => {
+          s.classList.remove("active", "slide-right", "slide-left");
+        });
+
+        // Show target
+        const target = document.getElementById(screenId);
+        if (target) {
+          target.classList.add("active");
+          if (animClass) target.classList.add(animClass);
+          currentScreen = screenId;
+        }
+
+        // Bottom nav visibility
+        const nav = document.getElementById("bottom-nav");
+        const isListOrHome = screenId === "screen-list";
+        nav.style.display = isListOrHome ? "flex" : "none";
+        document.body.style.paddingBottom = isListOrHome ? "72px" : "0";
+
+        // FAB visibility
+        const fab = document.getElementById("tc-fab");
+        fab.classList.toggle("visible", isListOrHome && currentRole === "tc");
+
+        // TC sections visibility
+        updateTcSections();
+
+        // Reset wizard when entering
+        if (screenId === "screen-beoordeling") {
+          resetWizard();
+        }
+        if (screenId === "screen-tc-wizard") {
+          resetTcWizard();
+        }
+
+        // Scroll to top
+        window.scrollTo(0, 0);
+      }
+
+      // ===== ROLE SWITCHING =====
+      function switchRole(role) {
+        currentRole = role;
+        document
+          .querySelectorAll(".role-switcher button")
+          .forEach((b) => b.classList.remove("active"));
+        event.target.classList.add("active");
+
+        document.getElementById("scout-list").style.display = role === "scout" ? "flex" : "none";
+        document.getElementById("tc-list").style.display = role === "tc" ? "flex" : "none";
+
+        const fab = document.getElementById("tc-fab");
+        fab.classList.toggle("visible", role === "tc");
+
+        updateTcSections();
+      }
+
+      function updateTcSections() {
+        document.querySelectorAll(".tc-only").forEach((el) => {
+          el.style.display = currentRole === "tc" ? "block" : "none";
+        });
+      }
+
+      // ===== BOTTOM NAV =====
+      function switchTab(tab) {
+        document.querySelectorAll(".bottom-nav-item").forEach((b) => b.classList.remove("active"));
+        event.currentTarget.classList.add("active");
+
+        if (tab === "verzoeken") {
+          showScreen("screen-list", "fade");
+        }
+        // Other tabs are placeholder
+      }
+
+      // ===== FILTERS =====
+      function filterVerzoeken(filter, btn) {
+        document.querySelectorAll(".filter-chip").forEach((f) => f.classList.remove("active"));
+        btn.classList.add("active");
+
+        const listId = currentRole === "scout" ? "scout-list" : "tc-list";
+        const cards = document.querySelectorAll("#" + listId + " .verzoek-card");
+
+        cards.forEach((card) => {
+          if (filter === "alle") {
+            card.parentElement.style.display = "";
+          } else {
+            const matches = card.classList.contains("status-" + filter);
+            card.parentElement.style.display = matches ? "" : "none";
+          }
+        });
+      }
+
+      // ===== COLLAPSIBLE SECTIONS =====
+      function toggleSection(header) {
+        const body = header.nextElementSibling;
+        const chevron = header.querySelector(".chevron");
+        const isOpen = body.style.display !== "none";
+        body.style.display = isOpen ? "none" : "block";
+        chevron.classList.toggle("open", !isOpen);
+      }
+
+      // ===== TOGGLE SELECT =====
+      function toggleSelect(el) {
+        el.classList.toggle("selected");
+      }
+
+      // ===== RELATION CHIPS =====
+      function selectRelation(chip) {
+        chip.parentElement
+          .querySelectorAll(".relation-chip")
+          .forEach((c) => c.classList.remove("selected"));
+        chip.classList.add("selected");
+        showAutosave();
+      }
+
+      // ===== SMILEY RATING =====
+      function selectSmiley(btn) {
+        btn.parentElement
+          .querySelectorAll(".smiley-btn")
+          .forEach((s) => s.classList.remove("selected"));
+        btn.classList.add("selected");
+        showAutosave();
+      }
+
+      // ===== TYPE CARD SELECT =====
+      function selectTypeCard(card) {
+        card.parentElement
+          .querySelectorAll(".type-card")
+          .forEach((c) => c.classList.remove("selected"));
+        card.classList.add("selected");
+      }
+
+      // ===== AUTOSAVE TOAST =====
+      function showAutosave() {
+        const toast = document.getElementById("autosave-toast");
+        clearTimeout(autosaveTimeout);
+        toast.classList.remove("hiding");
+        toast.classList.add("visible");
+
+        autosaveTimeout = setTimeout(() => {
+          toast.classList.add("hiding");
+          setTimeout(() => {
+            toast.classList.remove("visible", "hiding");
+          }, 300);
+        }, 2000);
+      }
+
+      // ===== BEOORDELING WIZARD =====
+      function resetWizard() {
+        wizardStep = 1;
+        updateWizardUI();
+      }
+
+      function wizardNext() {
+        if (wizardStep === 4) {
+          // Submit
+          document.getElementById("success-dialog").style.display = "flex";
+          return;
+        }
+        wizardStep = Math.min(4, wizardStep + 1);
+        updateWizardUI();
+        showAutosave();
+      }
+
+      function wizardPrev() {
+        wizardStep = Math.max(1, wizardStep - 1);
+        updateWizardUI();
+      }
+
+      function updateWizardUI() {
+        // Steps
+        for (let i = 1; i <= 4; i++) {
+          const step = document.getElementById("wiz-step-" + i);
+          step.classList.toggle("active", i === wizardStep);
+        }
+
+        // Progress
+        const bars = document.querySelectorAll("#wizard-progress .wizard-progress-step");
+        bars.forEach((bar, idx) => {
+          bar.classList.remove("done", "current");
+          if (idx + 1 < wizardStep) bar.classList.add("done");
+          if (idx + 1 === wizardStep) bar.classList.add("current");
+        });
+
+        // Buttons
+        document.getElementById("wiz-prev").style.display = wizardStep === 1 ? "none" : "";
+        const nextBtn = document.getElementById("wiz-next");
+        if (wizardStep === 4) {
+          nextBtn.textContent = "Verstuur rapport";
+          nextBtn.style.background = "#22c55e";
+        } else {
+          nextBtn.textContent = "Volgende";
+          nextBtn.style.background = "";
+        }
+
+        window.scrollTo(0, 0);
+      }
+
+      // ===== TC WIZARD =====
+      function resetTcWizard() {
+        tcWizardStep = 1;
+        updateTcWizardUI();
+      }
+
+      function tcWizardNext() {
+        if (tcWizardStep === 4) {
+          // Submit
+          document.getElementById("tc-success-dialog").style.display = "flex";
+          return;
+        }
+        tcWizardStep = Math.min(4, tcWizardStep + 1);
+        updateTcWizardUI();
+      }
+
+      function tcWizardPrev() {
+        tcWizardStep = Math.max(1, tcWizardStep - 1);
+        updateTcWizardUI();
+      }
+
+      function updateTcWizardUI() {
+        for (let i = 1; i <= 4; i++) {
+          const step = document.getElementById("tc-step-" + i);
+          step.classList.toggle("active", i === tcWizardStep);
+        }
+
+        const bars = document.querySelectorAll("#tc-wizard-progress .wizard-progress-step");
+        bars.forEach((bar, idx) => {
+          bar.classList.remove("done", "current");
+          if (idx + 1 < tcWizardStep) bar.classList.add("done");
+          if (idx + 1 === tcWizardStep) bar.classList.add("current");
+        });
+
+        document.getElementById("tc-prev").style.display = tcWizardStep === 1 ? "none" : "";
+        const nextBtn = document.getElementById("tc-next");
+        if (tcWizardStep === 4) {
+          nextBtn.textContent = "Verzoek uitzetten";
+          nextBtn.style.background = "#22c55e";
+        } else {
+          nextBtn.textContent = "Volgende";
+          nextBtn.style.background = "";
+        }
+
+        window.scrollTo(0, 0);
+      }
+
+      // ===== DIALOGS =====
+      function confirmBack() {
+        document.getElementById("confirm-dialog").style.display = "flex";
+      }
+
+      function closeConfirmDialog() {
+        document.getElementById("confirm-dialog").style.display = "none";
+      }
+
+      function skipBeoordeling() {
+        document.getElementById("skip-dialog").style.display = "flex";
+      }
+
+      function closeSkipDialog() {
+        document.getElementById("skip-dialog").style.display = "none";
+      }
+
+      function closeSuccessDialog() {
+        document.getElementById("success-dialog").style.display = "none";
+      }
+
+      function closeTcSuccessDialog() {
+        document.getElementById("tc-success-dialog").style.display = "none";
+      }
+    </script>
+  </body>
+</html>

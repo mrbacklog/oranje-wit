@@ -22,7 +22,7 @@ const GROEP_KLEUREN: Record<string, { border: string; bg: string; text: string }
   groen: { border: "border-green-500", bg: "bg-green-500/10", text: "text-green-400" },
   blauw: { border: "border-blue-500", bg: "bg-blue-500/10", text: "text-blue-400" },
   paars: { border: "border-purple-500", bg: "bg-purple-500/10", text: "text-purple-400" },
-  overig: { border: "border-gray-500", bg: "bg-gray-500/10", text: "text-gray-400" },
+  overig: { border: "border-gray-500", bg: "bg-surface-dark0/10", text: "text-text-muted" },
 };
 
 interface Team {
@@ -87,12 +87,12 @@ export function TeamGrid({ groepen }: TeamGridProps) {
                   {/* Labels */}
                   <div className="flex flex-wrap justify-center gap-1">
                     {team.isSelectie && (
-                      <span className="text-text-secondary rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-medium">
+                      <span className="text-text-secondary rounded-full bg-surface-card/10 px-2 py-0.5 text-[10px] font-medium">
                         Selectie
                       </span>
                     )}
                     {team.spelvorm && (
-                      <span className="text-text-secondary rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-medium">
+                      <span className="text-text-secondary rounded-full bg-surface-card/10 px-2 py-0.5 text-[10px] font-medium">
                         {team.spelvorm}
                       </span>
                     )}

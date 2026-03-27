@@ -30,7 +30,7 @@ setup("authenticatie via e2e-test provider", async ({ page }) => {
   // Gebruik page.evaluate zodat cookies (CSRF) automatisch meegaan
   const result = await page.evaluate(
     async ({ csrfToken, email }) => {
-      const res = await fetch("/api/auth/callback/e2e-test", {
+      const res = await fetch("/api/auth/callback/dev-login", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({ csrfToken, email }),

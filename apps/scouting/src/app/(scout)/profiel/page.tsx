@@ -174,7 +174,7 @@ export default function ProfielPage() {
           onClick={() => {
             window.location.href = "/api/auth/signout";
           }}
-          className="w-full rounded-xl border border-neutral-200 bg-white px-4 py-3 text-sm font-medium text-neutral-500 transition-colors hover:bg-neutral-50 active:scale-[0.98]"
+          className="w-full rounded-xl border border-neutral-200 bg-surface-card px-4 py-3 text-sm font-medium text-neutral-500 transition-colors hover:bg-surface-dark active:scale-[0.98]"
         >
           Uitloggen
         </button>

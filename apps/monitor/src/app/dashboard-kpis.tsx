@@ -28,7 +28,7 @@ export async function DashboardKpis({ seizoen }: { seizoen: string }) {
       </Link>
 
       {/* KPI grid */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         <Link href="/teams">
           <KpiCard
             label="Teams"

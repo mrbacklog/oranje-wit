@@ -8,6 +8,7 @@ skills:
   - team-indeling/import
   - team-indeling/evaluatie
   - shared/deployment
+  - shared/audit
 hooks:
   PreToolUse:
     - matcher: "Bash"
@@ -17,6 +18,17 @@ hooks:
 ---
 
 Technisch expert voor de Next.js apps (`apps/team-indeling/`, `apps/beheer/` en overige).
+
+## Regel #1: EERST ZELF TESTEN, DAN PAS MELDEN
+
+**NOOIT** aan de gebruiker melden dat iets "werkt", "draait" of "klaar is" zonder het ZELF te verifiëren:
+- App "draait"? → `curl` de health endpoint en controleer HTTP 200
+- Build "slaagt"? → Draai `pnpm build` en controleer exit code 0
+- Tests "groen"? → Draai de tests en toon de output
+- Seed "gelukt"? → Query de database en tel de records
+- Migratie "gedraaid"? → Check dat de tabellen/kolommen bestaan
+
+Als verificatie faalt: **fix het probleem EERST**, meld dan pas aan de gebruiker. Een melding "het werkt" die niet klopt is erger dan geen melding.
 
 ## Opstarten
 Laad als eerste de `shared/start` skill en doorloop alle 4 stappen (basiscontext, domeincontext, dynamische context, eigen agent-bestand) voordat je aan je eigenlijke taak begint.

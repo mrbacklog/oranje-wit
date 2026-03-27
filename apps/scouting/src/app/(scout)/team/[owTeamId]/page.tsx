@@ -2,7 +2,7 @@ import { prisma } from "@/lib/db/prisma";
 import { notFound } from "next/navigation";
 import { TeamScoutWizard } from "./team-scout-wizard";
 import { bepaalLeeftijdsgroep } from "@/lib/scouting/leeftijdsgroep";
-import { SCOUTING_CONFIG } from "@/lib/scouting/vragen";
+import { getScoutingConfigV3, getKernItems } from "@/lib/scouting/vragen";
 
 interface PageProps {
   params: Promise<{ owTeamId: string }>;
@@ -16,7 +16,6 @@ export default async function TeamScoutPage({ params }: PageProps) {
     notFound();
   }
 
-  // Haal het team op
   const team = await (prisma.oWTeam as any).findUnique({
     where: { id: teamId },
     select: {
@@ -32,7 +31,6 @@ export default async function TeamScoutPage({ params }: PageProps) {
     notFound();
   }
 
-  // Haal team-aliases op
   const aliases = await prisma.teamAlias.findMany({
     where: { owTeamId: team.id },
     select: { alias: true },
@@ -40,7 +38,6 @@ export default async function TeamScoutPage({ params }: PageProps) {
 
   const teamNamen = [team.naam, ...aliases.map((a) => a.alias)].filter(Boolean) as string[];
 
-  // Vind unieke rel_codes van spelers in dit team
   const competitieSpelers = await prisma.competitieSpeler.findMany({
     where: {
       seizoen: team.seizoen,
@@ -52,7 +49,6 @@ export default async function TeamScoutPage({ params }: PageProps) {
 
   const relCodes = competitieSpelers.map((cs) => cs.relCode);
 
-  // Haal Speler-records op
   const spelers = (await (prisma.speler as any).findMany({
     where: { id: { in: relCodes } },
     select: {
@@ -84,11 +80,10 @@ export default async function TeamScoutPage({ params }: PageProps) {
     );
   }
 
-  // Bepaal leeftijdsgroep op basis van eerste speler (teams zijn leeftijdshomogeen)
   const leeftijdsgroep = bepaalLeeftijdsgroep(spelers[0]);
-  const config = SCOUTING_CONFIG[leeftijdsgroep];
+  const config = getScoutingConfigV3(leeftijdsgroep);
+  const kernItems = getKernItems(leeftijdsgroep);
 
-  // Check foto-beschikbaarheid
   const fotos = await prisma.lidFoto.findMany({
     where: { relCode: { in: relCodes } },
     select: { relCode: true },
@@ -113,9 +108,8 @@ export default async function TeamScoutPage({ params }: PageProps) {
       }}
       spelers={spelersVoorWizard}
       leeftijdsgroep={leeftijdsgroep}
-      schaalType={config.schaalType}
-      maxScore={config.maxScore}
-      vragen={config.vragen}
+      config={config}
+      kernItems={kernItems}
     />
   );
 }

@@ -3,8 +3,15 @@ import { auth } from "@oranje-wit/auth";
 import { HUIDIG_SEIZOEN, logger } from "@oranje-wit/types";
 import { ok, fail, parseBody } from "@/lib/api";
 import { prisma } from "@/lib/db/prisma";
-import { berekenOverall, berekenEWMA, bepaalBetrouwbaarheid } from "@/lib/scouting/rating";
+import {
+  berekenOverall,
+  berekenOverallV3,
+  berekenEWMA,
+  berekenEWMAPijlers,
+  bepaalBetrouwbaarheid,
+} from "@/lib/scouting/rating";
 import { bepaalLeeftijdsgroep } from "@/lib/scouting/leeftijdsgroep";
+import type { LeeftijdsgroepNaamV3 } from "@oranje-wit/types";
 import { berekenXP, checkBadges, bepaalLevel, getBadgeInfo } from "@/lib/scouting/gamification";
 
 const TeamRapportSchema = z.object({
@@ -17,25 +24,16 @@ const TeamRapportSchema = z.object({
         spelerId: z.string().min(1),
         scores: z.record(z.string(), z.number()),
         opmerking: z.string().optional(),
+        groeiIndicator: z.enum(["geen", "weinig", "normaal", "veel"]).optional(),
+        socialeVeiligheid: z.union([z.boolean(), z.number()]).nullable().optional(),
       })
     )
     .min(1, "Minimaal 1 spelerrapport vereist"),
   rankings: z.record(z.string(), z.array(z.string())).optional(),
+  versie: z.string().optional(),
 });
 
-/**
- * POST /api/scouting/team
- *
- * Sla een team-scouting sessie op met rapporten voor meerdere spelers tegelijk.
- *
- * 1. Maak TeamScoutingSessie aan
- * 2. Voor elke speler: maak ScoutingRapport aan
- * 3. Update SpelersKaart per speler
- * 4. Ken XP toe: 15 per speler + 50 bonus voor team-complete
- * 5. Check badges
- * 6. Return resultaat
- */
-// Prisma 7 type recursion workarounds — alle scouting-modellen
+// Prisma 7 type recursion workarounds
 const db = prisma as any;
 
 export async function POST(request: Request) {
@@ -50,10 +48,10 @@ export async function POST(request: Request) {
     const parsed = await parseBody(request, TeamRapportSchema);
     if (!parsed.ok) return parsed.response;
 
-    const { owTeamId, context, contextDetail, rapporten, rankings } = parsed.data;
+    const { owTeamId, context, contextDetail, rapporten, rankings, versie } = parsed.data;
+    const isV3 = versie === "v3";
 
     // 3. Controleer of het team bestaat
-
     const team = (await db.oWTeam.findUnique({
       where: { id: owTeamId },
       select: { id: true, naam: true, seizoen: true },
@@ -91,7 +89,7 @@ export async function POST(request: Request) {
     });
 
     logger.info(
-      `TeamScoutingSessie ${sessie.id} aangemaakt voor team ${team.naam}, ${rapporten.length} spelers`
+      `TeamScoutingSessie ${sessie.id} aangemaakt voor team ${team.naam}, ${rapporten.length} spelers${isV3 ? " [v3]" : ""}`
     );
 
     // 6. Verwerk elk spelerrapport
@@ -100,8 +98,6 @@ export async function POST(request: Request) {
     const rapportResultaten: Array<{ spelerId: string; overall: number }> = [];
 
     for (const rapport of rapporten) {
-      // Zoek de speler
-
       const speler = (await db.speler.findUnique({
         where: { id: rapport.spelerId },
       })) as { id: string; geboortejaar: number; huidig: unknown } | null;
@@ -111,9 +107,20 @@ export async function POST(request: Request) {
         continue;
       }
 
-      // Bereken scores
       const groep = bepaalLeeftijdsgroep(speler);
-      const { overall, pijlerScores } = berekenOverall(rapport.scores, groep);
+
+      let overall: number;
+      let pijlerScoresResult: Record<string, number>;
+
+      if (isV3) {
+        const result = berekenOverallV3(rapport.scores, groep as LeeftijdsgroepNaamV3, true);
+        overall = result.overall;
+        pijlerScoresResult = result.pijlerScores;
+      } else {
+        const result = berekenOverall(rapport.scores, groep);
+        overall = result.overall;
+        pijlerScoresResult = result.pijlerScores as Record<string, number>;
+      }
 
       // Sla rapport op met teamSessieId
       const savedRapport = await db.scoutingRapport.create({
@@ -141,55 +148,125 @@ export async function POST(request: Request) {
       });
 
       const nieuwOverall = berekenEWMA(overall, bestaandeKaart?.overall ?? null);
-      const nieuwSchot = berekenEWMA(pijlerScores.SCH ?? 0, bestaandeKaart?.schot ?? null);
-      const nieuwAanval = berekenEWMA(pijlerScores.AAN ?? 0, bestaandeKaart?.aanval ?? null);
-      const nieuwPassing = berekenEWMA(pijlerScores.PAS ?? 0, bestaandeKaart?.passing ?? null);
-      const nieuwVerdediging = berekenEWMA(
-        pijlerScores.VER ?? 0,
-        bestaandeKaart?.verdediging ?? null
-      );
-      const nieuwFysiek = berekenEWMA(pijlerScores.FYS ?? 0, bestaandeKaart?.fysiek ?? null);
-      const nieuwMentaal = berekenEWMA(pijlerScores.MEN ?? 0, bestaandeKaart?.mentaal ?? null);
       const nieuwAantalRapporten = (bestaandeKaart?.aantalRapporten ?? 0) + 1;
       const trend = bestaandeKaart ? nieuwOverall - bestaandeKaart.overall : 0;
 
-      await db.spelersKaart.upsert({
-        where: {
-          spelerId_seizoen: {
+      if (isV3) {
+        const bestaandePijlerScores =
+          bestaandeKaart?.pijlerScores && typeof bestaandeKaart.pijlerScores === "object"
+            ? (bestaandeKaart.pijlerScores as Record<string, number>)
+            : null;
+
+        const nieuwePijlerScores = berekenEWMAPijlers(pijlerScoresResult, bestaandePijlerScores);
+
+        await db.spelersKaart.upsert({
+          where: {
+            spelerId_seizoen: {
+              spelerId: rapport.spelerId,
+              seizoen: HUIDIG_SEIZOEN,
+            },
+          },
+          update: {
+            overall: nieuwOverall,
+            pijlerScores: nieuwePijlerScores,
+            leeftijdsgroep: groep,
+            aantalRapporten: nieuwAantalRapporten,
+            betrouwbaarheid: bepaalBetrouwbaarheid(nieuwAantalRapporten),
+            trendOverall: trend,
+            laatsteUpdate: new Date(),
+            schot:
+              nieuwePijlerScores["SCOREN"] ??
+              nieuwePijlerScores["BAL"] ??
+              bestaandeKaart?.schot ??
+              0,
+            aanval: nieuwePijlerScores["AANVALLEN"] ?? bestaandeKaart?.aanval ?? 0,
+            passing: nieuwePijlerScores["TECHNIEK"] ?? bestaandeKaart?.passing ?? 0,
+            verdediging: nieuwePijlerScores["VERDEDIGEN"] ?? bestaandeKaart?.verdediging ?? 0,
+            fysiek: nieuwePijlerScores["FYSIEK"] ?? bestaandeKaart?.fysiek ?? 0,
+            mentaal: nieuwePijlerScores["MENTAAL"] ?? bestaandeKaart?.mentaal ?? 0,
+          },
+          create: {
             spelerId: rapport.spelerId,
             seizoen: HUIDIG_SEIZOEN,
+            overall: nieuwOverall,
+            pijlerScores: pijlerScoresResult,
+            leeftijdsgroep: groep,
+            schot: pijlerScoresResult["SCOREN"] ?? pijlerScoresResult["BAL"] ?? 0,
+            aanval: pijlerScoresResult["AANVALLEN"] ?? 0,
+            passing: pijlerScoresResult["TECHNIEK"] ?? 0,
+            verdediging: pijlerScoresResult["VERDEDIGEN"] ?? 0,
+            fysiek: pijlerScoresResult["FYSIEK"] ?? 0,
+            mentaal: pijlerScoresResult["MENTAAL"] ?? 0,
+            aantalRapporten: 1,
+            betrouwbaarheid: bepaalBetrouwbaarheid(1),
+            trendOverall: 0,
           },
-        },
-        update: {
-          overall: nieuwOverall,
-          schot: nieuwSchot,
-          aanval: nieuwAanval,
-          passing: nieuwPassing,
-          verdediging: nieuwVerdediging,
-          fysiek: nieuwFysiek,
-          mentaal: nieuwMentaal,
-          aantalRapporten: nieuwAantalRapporten,
-          betrouwbaarheid: bepaalBetrouwbaarheid(nieuwAantalRapporten),
-          trendOverall: trend,
-          laatsteUpdate: new Date(),
-        },
-        create: {
-          spelerId: rapport.spelerId,
-          seizoen: HUIDIG_SEIZOEN,
-          overall: nieuwOverall,
-          schot: nieuwSchot,
-          aanval: nieuwAanval,
-          passing: nieuwPassing,
-          verdediging: nieuwVerdediging,
-          fysiek: nieuwFysiek,
-          mentaal: nieuwMentaal,
-          aantalRapporten: 1,
-          betrouwbaarheid: bepaalBetrouwbaarheid(1),
-          trendOverall: 0,
-        },
-      });
+        });
+      } else {
+        // Legacy
+        const nieuwSchot = berekenEWMA(
+          pijlerScoresResult["SCH"] ?? 0,
+          bestaandeKaart?.schot ?? null
+        );
+        const nieuwAanval = berekenEWMA(
+          pijlerScoresResult["AAN"] ?? 0,
+          bestaandeKaart?.aanval ?? null
+        );
+        const nieuwPassing = berekenEWMA(
+          pijlerScoresResult["PAS"] ?? 0,
+          bestaandeKaart?.passing ?? null
+        );
+        const nieuwVerdediging = berekenEWMA(
+          pijlerScoresResult["VER"] ?? 0,
+          bestaandeKaart?.verdediging ?? null
+        );
+        const nieuwFysiek = berekenEWMA(
+          pijlerScoresResult["FYS"] ?? 0,
+          bestaandeKaart?.fysiek ?? null
+        );
+        const nieuwMentaal = berekenEWMA(
+          pijlerScoresResult["MEN"] ?? 0,
+          bestaandeKaart?.mentaal ?? null
+        );
 
-      // XP: 15 per speler
+        await db.spelersKaart.upsert({
+          where: {
+            spelerId_seizoen: {
+              spelerId: rapport.spelerId,
+              seizoen: HUIDIG_SEIZOEN,
+            },
+          },
+          update: {
+            overall: nieuwOverall,
+            schot: nieuwSchot,
+            aanval: nieuwAanval,
+            passing: nieuwPassing,
+            verdediging: nieuwVerdediging,
+            fysiek: nieuwFysiek,
+            mentaal: nieuwMentaal,
+            aantalRapporten: nieuwAantalRapporten,
+            betrouwbaarheid: bepaalBetrouwbaarheid(nieuwAantalRapporten),
+            trendOverall: trend,
+            laatsteUpdate: new Date(),
+          },
+          create: {
+            spelerId: rapport.spelerId,
+            seizoen: HUIDIG_SEIZOEN,
+            overall: nieuwOverall,
+            schot: nieuwSchot,
+            aanval: nieuwAanval,
+            passing: nieuwPassing,
+            verdediging: nieuwVerdediging,
+            fysiek: nieuwFysiek,
+            mentaal: nieuwMentaal,
+            aantalRapporten: 1,
+            betrouwbaarheid: bepaalBetrouwbaarheid(1),
+            trendOverall: 0,
+          },
+        });
+      }
+
+      // XP per speler
       const isEersteVoorSpeler = !bestaandeKaart;
       const xp = berekenXP(isEersteVoorSpeler);
       totaalXpGained += xp;
@@ -205,7 +282,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // 7. Bonus XP voor team-complete (50 extra)
+    // 7. Bonus XP voor team-complete
     const TEAM_COMPLETE_BONUS = 50;
     totaalXpGained += TEAM_COMPLETE_BONUS;
 
@@ -217,7 +294,6 @@ export async function POST(request: Request) {
       },
     });
 
-    // Update level
     const levelInfo = bepaalLevel(updatedScout.xp);
     if (levelInfo.level !== updatedScout.level) {
       await db.scout.update({
@@ -254,7 +330,6 @@ export async function POST(request: Request) {
       bestaandeBadges: bestaandeBadges.map((b: { badge: string }) => b.badge),
     });
 
-    // Sla nieuwe badges op
     if (nieuweBadges.length > 0) {
       await db.scoutBadge.createMany({
         data: nieuweBadges.map((badge: string) => ({
@@ -265,7 +340,6 @@ export async function POST(request: Request) {
       logger.info(`Nieuwe badges voor scout ${scout.id}: ${nieuweBadges.join(", ")}`);
     }
 
-    // Badge-info ophalen voor de eerste nieuwe badge (voor celebration)
     const eersteBadge = nieuweBadges.length > 0 ? getBadgeInfo(nieuweBadges[0]) : null;
 
     return ok({

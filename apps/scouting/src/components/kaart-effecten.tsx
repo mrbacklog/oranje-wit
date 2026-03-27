@@ -161,7 +161,7 @@ export function StatBar({ label, value }: { label: string; value: number }) {
     <div className="flex items-center gap-1">
       <span className="min-w-[22px] text-[9px] font-bold text-white/50">{label}</span>
       <span className="min-w-[18px] text-right text-[11px] font-bold text-white">{value}</span>
-      <div className="h-[3px] flex-1 overflow-hidden rounded-full bg-white/10">
+      <div className="h-[3px] flex-1 overflow-hidden rounded-full bg-surface-card/10">
         <div
           className="h-full rounded-full transition-all duration-500"
           style={{

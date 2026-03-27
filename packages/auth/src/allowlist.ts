@@ -1,4 +1,4 @@
-export type Rol = "EDITOR" | "REVIEWER" | "VIEWER";
+export type Rol = "EDITOR" | "COORDINATOR" | "REVIEWER" | "VIEWER";
 
 /**
  * Hardcoded fallback — wordt gebruikt als de Gebruiker-tabel

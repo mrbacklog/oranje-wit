@@ -1,4 +1,6 @@
 import type { SpelersKaartProps } from "./spelers-kaart";
+import type { PijlerConfig, LeeftijdsgroepNaamV3 } from "@oranje-wit/types";
+import { LEEFTIJDSGROEP_CONFIG } from "@oranje-wit/types";
 
 export type KaartSize = "mini" | "small" | "medium" | "large";
 
@@ -32,6 +34,7 @@ export const TIER_STYLES: Record<string, { border: string; overlay: string }> = 
   goud: { border: "#D4A017", overlay: "rgba(212, 160, 23, 0.08)" },
 };
 
+// Legacy stat labels (backward compatible for old kaarten)
 export const STAT_LABELS: Array<{ key: keyof SpelersKaartProps["stats"]; label: string }> = [
   { key: "schot", label: "SCH" },
   { key: "aanval", label: "AAN" },
@@ -42,7 +45,7 @@ export const STAT_LABELS: Array<{ key: keyof SpelersKaartProps["stats"]; label: 
 ];
 
 export const GROEP_LABELS: Record<string, string> = {
-  paars: "Paurs",
+  paars: "Paars",
   blauw: "Blauw",
   groen: "Groen",
   geel: "Geel",
@@ -62,4 +65,40 @@ export function leeftijdNaarGroep(leeftijd: number): string {
 export function getAgeGradient(leeftijd: number) {
   const clamped = Math.max(5, Math.min(18, leeftijd));
   return AGE_GRADIENTS[clamped] ?? AGE_GRADIENTS[14];
+}
+
+// ─── V3: dynamische pijler config voor kaart ───
+
+/**
+ * Haal de pijlers op voor een leeftijdsgroep, gegroepeerd per blok.
+ * Gebruikt voor de dynamische spelerskaart.
+ */
+export function getPijlersVoorKaart(groep: string): {
+  blokken: { naam: string; pijlers: PijlerConfig[] }[];
+  allePijlers: PijlerConfig[];
+} {
+  const band = groep as LeeftijdsgroepNaamV3;
+  const config = LEEFTIJDSGROEP_CONFIG[band];
+  if (!config) return { blokken: [], allePijlers: [] };
+
+  const blokMap = new Map<string, PijlerConfig[]>();
+  for (const p of config.pijlers) {
+    const blok = p.blok ?? "basis";
+    if (!blokMap.has(blok)) blokMap.set(blok, []);
+    blokMap.get(blok)!.push(p);
+  }
+
+  const BLOK_NAMEN: Record<string, string> = {
+    korfbalacties: "Korfbalacties",
+    spelerskwaliteiten: "Spelerskwaliteiten",
+    persoonlijk: "Persoonlijk",
+    basis: "Vaardigheden",
+  };
+
+  const blokken = Array.from(blokMap.entries()).map(([key, pijlers]) => ({
+    naam: BLOK_NAMEN[key] ?? key,
+    pijlers,
+  }));
+
+  return { blokken, allePijlers: config.pijlers };
 }

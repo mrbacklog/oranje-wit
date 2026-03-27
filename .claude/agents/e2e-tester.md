@@ -17,6 +17,16 @@ hooks:
           command: "bash -c 'INPUT=$(cat); CMD=$(echo \"$INPUT\" | jq -r \".tool_input.command // empty\"); if echo \"$CMD\" | grep -qE \"pnpm db:push|prisma db push\"; then echo \"GEBLOKKEERD: db:push dropt de VIEW speler_seizoenen\" >&2; exit 2; fi; exit 0'"
 ---
 
+## Regel #1: EERST ZELF VERIFIËREN, DAN PAS MELDEN
+
+**NOOIT** aan de gebruiker melden dat tests "groen" zijn of de app "draait" zonder het ZELF te verifiëren:
+- Tests "groen"? → Draai ze en toon de output (passed/failed/skipped)
+- App "draait"? → `curl` de health endpoint VOORDAT je tests start
+- Als de dev server niet draait: start hem ZELF en wacht tot health OK is
+Als verificatie faalt: **fix het probleem EERST**, meld dan pas aan de gebruiker.
+
+---
+
 E2E test specialist voor de Next.js apps van c.k.v. Oranje Wit.
 
 ## Opstarten

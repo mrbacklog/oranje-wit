@@ -101,7 +101,7 @@ export function StapTeamSamenvatting({
                   return (
                     <div
                       key={pijler}
-                      className="flex items-center gap-1 rounded-lg bg-white/5 px-2 py-1 text-[11px]"
+                      className="flex items-center gap-1 rounded-lg bg-surface-card/5 px-2 py-1 text-[11px]"
                     >
                       <span>{PIJLER_ICONEN[pijler]}</span>
                       <span className="font-bold">{gem}</span>

@@ -109,16 +109,16 @@ export function SmileyScore({
                 onKeyDown={(e) => handleKeyDown(e, index)}
                 className={`focus-visible:ring-ow-oranje flex h-14 min-h-[56px] w-14 min-w-[56px] items-center justify-center rounded-2xl border-2 transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-offset-2 sm:h-16 sm:w-16 ${
                   disabled
-                    ? "cursor-not-allowed border-gray-200 bg-gray-50 opacity-50"
+                    ? "cursor-not-allowed border-border-subtle bg-surface-dark opacity-50"
                     : isSelected
                       ? `${optie.selectedBg} ${optie.selectedRing} scale-110 animate-[smiley-bounce_400ms_cubic-bezier(0.34,1.56,0.64,1)] ring-2`
-                      : "border-gray-200 bg-gray-50 text-gray-400 hover:scale-105 hover:border-gray-300 hover:bg-gray-100 active:scale-95"
+                      : "border-border-subtle bg-surface-dark text-text-muted hover:scale-105 hover:border-gray-300 hover:bg-gray-100 active:scale-95"
                 } `}
               >
                 <SmileyIcon
                   type={optie.value}
                   selected={isSelected}
-                  color={isSelected ? optie.selectedIconColor : "text-gray-400"}
+                  color={isSelected ? optie.selectedIconColor : "text-text-muted"}
                 />
               </button>
               <span className="text-text-muted mt-1 hidden text-[10px] sm:block">

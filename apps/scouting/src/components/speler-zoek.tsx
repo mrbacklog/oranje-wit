@@ -37,7 +37,7 @@ function useDebounce<T>(value: T, delay: number): T {
 
 export function SpelerZoek({
   onSelect,
-  placeholder = "Zoek op naam of rel_code...",
+  placeholder = "Zoek op naam...",
   autoFocus = false,
 }: SpelerZoekProps) {
   const [query, setQuery] = useState("");

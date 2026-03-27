@@ -10,6 +10,7 @@ const withPWA = withPWAInit({
 const nextConfig: NextConfig = {
   output: "standalone",
   turbopack: {},
+  serverExternalPackages: ["pg", "pg-connection-string", "pgpass"],
   transpilePackages: [
     "@oranje-wit/database",
     "@oranje-wit/types",

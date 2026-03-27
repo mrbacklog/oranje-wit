@@ -68,7 +68,7 @@ export default function ZoekPage() {
 
       <SpelerZoek
         onSelect={handleSelect}
-        placeholder="Zoek een speler op naam of rel_code..."
+        placeholder="Zoek een speler op naam..."
         autoFocus
       />
 

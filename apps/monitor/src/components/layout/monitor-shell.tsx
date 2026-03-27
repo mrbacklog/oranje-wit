@@ -71,21 +71,24 @@ export function MonitorShell({ children }: MonitorShellProps) {
   }
 
   return (
-    <div className="flex h-dvh" style={{ backgroundColor: "var(--surface-page)" }}>
-      {/* Desktop sidebar — verborgen op mobile */}
-      <div className="hidden md:block">
-        <Sidebar {...sidebarConfig} />
+    <>
+      {/* Desktop: sidebar + content in flex row */}
+      <div className="flex h-dvh" style={{ backgroundColor: "var(--surface-page)" }}>
+        {/* Desktop sidebar — verborgen op mobile */}
+        <div className="hidden md:block">
+          <Sidebar {...sidebarConfig} />
+        </div>
+
+        {/* Main content area — extra bottom padding op mobile voor BottomNav */}
+        <main className="flex-1 overflow-y-auto p-4 pb-20 md:p-6 md:pb-6">{children}</main>
       </div>
 
-      {/* Main content area */}
-      <main className="flex-1 overflow-y-auto p-4 pb-20 md:p-6 md:pb-6">{children}</main>
-
-      {/* Mobile BottomNav — verborgen op desktop */}
+      {/* Mobile BottomNav — position:fixed, buiten de flex container */}
       <div className="md:hidden">
         <BottomNav items={bottomNavItems}>
           <button
             onClick={() => setAppSwitcherOpen(true)}
-            className="flex min-h-[2.75rem] min-w-[2.75rem] flex-col items-center gap-0.5 px-3 py-2 text-xs transition-colors duration-200"
+            className="flex min-h-11 min-w-11 flex-col items-center gap-0.5 px-3 py-2 text-xs transition-colors duration-200"
             style={{ color: appSwitcherOpen ? "var(--ow-oranje-500)" : "var(--text-tertiary)" }}
             aria-label="Apps"
           >
@@ -96,6 +99,6 @@ export function MonitorShell({ children }: MonitorShellProps) {
 
         <AppSwitcher open={appSwitcherOpen} onClose={() => setAppSwitcherOpen(false)} />
       </div>
-    </div>
+    </>
   );
 }

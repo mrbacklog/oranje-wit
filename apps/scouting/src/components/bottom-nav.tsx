@@ -5,8 +5,8 @@ import { usePathname } from "next/navigation";
 
 const navItems = [
   { href: "/", label: "Home", icon: HomeIcon },
+  { href: "/verzoeken", label: "Verzoeken", icon: VerzoekIcon },
   { href: "/zoek", label: "Zoeken", icon: ScoutIcon },
-  { href: "/kaarten", label: "Kaarten", icon: CardIcon },
   { href: "/profiel", label: "Profiel", icon: ProfileIcon },
 ] as const;
 
@@ -17,7 +17,7 @@ export function BottomNav() {
     <nav className="bg-surface-dark/95 fixed inset-x-0 bottom-0 z-50 border-t border-white/10 backdrop-blur-md">
       <div className="mx-auto flex max-w-lg items-center justify-around">
         {navItems.map((item) => {
-          const isActive = pathname === item.href;
+          const isActive = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
           const Icon = item.icon;
           return (
             <Link
@@ -60,11 +60,16 @@ function ScoutIcon({ active }: { active: boolean }) {
   );
 }
 
-function CardIcon({ active }: { active: boolean }) {
+function VerzoekIcon({ active }: { active: boolean }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6" strokeWidth={active ? 2.5 : 1.5}>
-      <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" />
-      <path d="M3 10h18" stroke="currentColor" />
+      <path
+        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"
+        stroke="currentColor"
+        strokeLinecap="round"
+      />
+      <rect x="9" y="3" width="6" height="4" rx="1" stroke="currentColor" />
+      <path d="M9 12h6M9 16h4" stroke="currentColor" strokeLinecap="round" />
     </svg>
   );
 }

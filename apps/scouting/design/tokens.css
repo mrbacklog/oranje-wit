@@ -1,7 +1,13 @@
 /* ================================================================
-   OW Scout — Design Tokens
+   OW Scout — Design Tokens (lokale kopie)
    c.k.v. Oranje Wit, Dordrecht
    ================================================================
+
+   LET OP: Dit is de originele scouting-versie van de tokens.
+   De gedeelde dark-first versie staat in:
+     packages/ui/src/tokens/tokens.css (source of truth)
+   De twee bestanden wijken bewust af: deze versie gebruikt light
+   defaults, de gedeelde versie gebruikt dark-first defaults.
 
    Volledig kleurenpalet en design token systeem voor de OW Scout
    scouting app. Gebouwd op CSS custom properties, direct bruikbaar

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { auth } from "@oranje-wit/auth";
 import { DashboardGamification } from "./dashboard-gamification";
+import { DashboardVerzoeken } from "./dashboard-verzoeken";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -78,6 +79,9 @@ export default async function DashboardPage() {
             </Link>
           </div>
         </section>
+
+        {/* Verzoeken + onafgeronde drafts */}
+        <DashboardVerzoeken />
 
         {/* Recente activiteit placeholder */}
         <section className="bg-surface-card rounded-2xl p-5">

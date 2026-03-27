@@ -54,22 +54,23 @@ const providers: Provider[] = [Google];
 // via de `registerEmailProvider()` functie, aangeroepen vanuit
 // de app's instrumentation.ts (server-only context).
 
-// E2E test-only: voeg Credentials provider toe zodat Playwright
-// kan inloggen zonder Google OAuth. Alleen actief met E2E_TEST=true.
-// Deze env var wordt NOOIT gezet op Railway productie.
-if (process.env.E2E_TEST === "true") {
+// Dev/E2E login: voeg Credentials provider toe zodat je lokaal kunt
+// inloggen zonder Google OAuth. Actief in development of met E2E_TEST=true.
+// Op Railway productie is NODE_ENV=production en E2E_TEST niet gezet.
+const isDev = process.env.NODE_ENV === "development" || process.env.E2E_TEST === "true";
+if (isDev) {
   providers.push(
     Credentials({
-      id: "e2e-test",
-      name: "E2E Test",
+      id: "dev-login",
+      name: "Dev Login",
       credentials: { email: { type: "text" } },
       async authorize(credentials) {
-        if (process.env.E2E_TEST !== "true") return null;
+        if (!isDev) return null;
         const email = credentials?.email as string;
         if (!email) return null;
         const role = await getAllowedRole(email);
         if (!role) return null;
-        return { id: "e2e-test-user", email, name: "E2E Tester" };
+        return { id: `dev-${email}`, email, name: email.split("@")[0] };
       },
     })
   );

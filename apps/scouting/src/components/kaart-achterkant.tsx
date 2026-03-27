@@ -162,7 +162,7 @@ export function KaartAchterkant({
                 <span className="flex-1 truncate text-[10px] text-white/50">
                   {rapport.scout ?? formatDatum(rapport.datum)}
                 </span>
-                <div className="h-[3px] w-10 overflow-hidden rounded-full bg-white/10">
+                <div className="h-[3px] w-10 overflow-hidden rounded-full bg-surface-card/10">
                   <div
                     className="h-full rounded-full"
                     style={{

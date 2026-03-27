@@ -15,7 +15,7 @@ type AppContext = "scouting" | "teamindeling" | "evaluatie" | "monitor";
 type ScoutRol = "SCOUT" | "TC";
 
 /** Rol uit het User model */
-type UserRol = "EDITOR" | "REVIEWER" | "VIEWER";
+type UserRol = "EDITOR" | "COORDINATOR" | "REVIEWER" | "VIEWER";
 
 interface ClearanceInput {
   /** Rol in de team-indeling app */
@@ -53,6 +53,7 @@ export function bepaalClearance(input: ClearanceInput): Clearance {
   // Team-indeling context
   if (context === "teamindeling") {
     if (userRol === "EDITOR") return 2; // TC-lid
+    if (userRol === "COORDINATOR") return 1; // Coördinator
     if (userRol === "REVIEWER") return 1; // Trainer/coach
     return 0; // Viewer: geen scores
   }
