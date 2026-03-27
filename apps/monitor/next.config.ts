@@ -10,6 +10,7 @@ const withPWA = withPWAInit({
 const nextConfig: NextConfig = {
   output: "standalone",
   transpilePackages: ["@oranje-wit/database", "@oranje-wit/ui", "@oranje-wit/auth"],
+  turbopack: {},
 };
 
 export default withPWA(nextConfig);

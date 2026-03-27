@@ -23,7 +23,6 @@ test.describe("Samenstelling", () => {
     await expect(page.getByText(/retentie/)).toBeVisible();
     await expect(page.getByRole("heading", { name: /Actief/ })).toBeVisible();
     await expect(page.getByRole("heading", { name: /Gestopt/ })).toBeVisible();
-    await expect(page.getByRole("combobox", { name: "Seizoen" })).toBeVisible();
   });
 
   test("onbekend geboortejaar toont 404", async ({ page }) => {

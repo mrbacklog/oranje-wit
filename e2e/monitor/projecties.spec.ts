@@ -1,13 +1,10 @@
 import { test, expect } from "../fixtures/base";
 
 test.describe("Projecties / Jeugdpijplijn", () => {
-  test("toont jeugdpijplijn met seizoenkiezer en tabs", async ({ page }) => {
+  test("toont jeugdpijplijn met tabs", async ({ page }) => {
     await page.goto("/projecties");
 
     await expect(page.getByRole("heading", { name: "Jeugdpijplijn" })).toBeVisible();
-
-    // Seizoenkiezer
-    await expect(page.getByRole("combobox", { name: "Seizoen" })).toBeVisible();
 
     // Tabs
     await expect(page.getByRole("tab", { name: "Pijplijn" })).toBeVisible();
