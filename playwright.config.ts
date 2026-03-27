@@ -54,6 +54,19 @@ if (needsServer("scouting")) {
   });
 }
 
+if (needsServer("design-system")) {
+  // Design system draait in de team-indeling app (poort 4100)
+  const alreadyHasTI = webServers.some((s) => s.port === 4100);
+  if (!alreadyHasTI) {
+    webServers.push({
+      command: "pnpm dev:ti",
+      port: 4100,
+      reuseExistingServer: !process.env.CI,
+      env: { E2E_TEST: "true" },
+    });
+  }
+}
+
 // Auth setup heeft minstens één server nodig
 if (webServers.length === 0) {
   webServers.push({
@@ -119,6 +132,16 @@ export default defineConfig({
         storageState: "./e2e/.auth/user.json",
       },
       dependencies: ["setup"],
+    },
+    {
+      name: "design-system",
+      testDir: "./e2e/tests",
+      use: {
+        ...devices["Desktop Chrome"],
+        baseURL: "http://localhost:4100",
+        // Geen storageState — design-system pagina heeft geen auth nodig
+      },
+      // Geen dependencies op setup — geen auth vereist
     },
   ],
   webServer: webServers,

@@ -8,6 +8,7 @@ skills:
   - shared/oranje-draad
   - shared/deployment
   - shared/e2e-testing
+  - shared/audit
 hooks:
   PreToolUse:
     - matcher: "Bash"

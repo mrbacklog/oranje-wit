@@ -227,8 +227,8 @@ Elke agent heeft een `skills:` lijst in zijn frontmatter die bepaalt wat hij mag
 | `team-planner` | `team-indeling/*`, `shared/*` |
 | `regel-checker` | `team-indeling/validatie`, `shared/oranje-draad` |
 | `adviseur` | `team-indeling/advies`, `team-indeling/vergelijk`, `shared/oranje-draad`, `shared/score-model` |
-| `ontwikkelaar` | `team-indeling/import`, `team-indeling/evaluatie`, `shared/deployment` |
-| `devops` | `shared/deployment`, `shared/e2e-testing`, `devops/health-check`, `devops/ci-status` |
+| `ontwikkelaar` | `team-indeling/import`, `team-indeling/evaluatie`, `shared/deployment`, `shared/audit` |
+| `devops` | `shared/deployment`, `shared/e2e-testing`, `devops/health-check`, `devops/ci-status`, `shared/audit` |
 | `e2e-tester` | `shared/e2e-testing`, `shared/deployment` |
 | `deployment` | `shared/deployment`, `monitor/railway` |
 | `documentalist` | `team-indeling/blauwdruk`, `team-indeling/scenario`, `team-indeling/validatie`, `shared/oranje-draad` |
@@ -236,8 +236,8 @@ Elke agent heeft een `skills:` lijst in zijn frontmatter die bepaalt wat hij mag
 | `sportwetenschap` | `shared/oranje-draad`, `shared/score-model`, `monitor/jeugdmodel` |
 | `mentaal-coach` | `shared/oranje-draad`, `monitor/jeugdmodel` |
 | `communicatie` | `shared/oranje-draad` |
-| `ux-designer` | `shared/oranje-draad`, `shared/score-model` |
-| `frontend` | `shared/oranje-draad`, `shared/deployment`, `shared/e2e-testing` |
+| `ux-designer` | `shared/oranje-draad`, `shared/score-model`, `shared/audit` |
+| `frontend` | `shared/oranje-draad`, `shared/deployment`, `shared/e2e-testing`, `shared/audit` |
 
 ### Agent Hiërarchie
 
@@ -306,8 +306,8 @@ Alle skills staan in `.claude/skills/<naam>/SKILL.md` (flat structuur). Agent fr
 ### Domein-skills (24)
 advies, batch-plaats, blauwdruk, concept, database, deployment, e2e-testing, evaluatie, exporteer, import, jeugdmodel, knkv-api, ledenverloop, lid-monitor, oranje-draad, pin, railway, scenario, scenario-analyse, score-model, start, teamsamenstelling, validatie, vergelijk
 
-### Infra-skills (3)
-ci-status, health-check, deploy
+### Infra-skills (4)
+audit, ci-status, health-check, deploy
 
 ### Agent Teams (10)
 team-seizoensindeling, team-seizoensanalyse, team-release, team-e2e, team-documentatie, team-kwaliteit, team-devops, team-jeugdontwikkeling, team-ux, team-beheer
