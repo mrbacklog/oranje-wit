@@ -1,5 +1,6 @@
 "use server";
 
+import { requireTC } from "@oranje-wit/auth/checks";
 import { prisma } from "@/lib/db/prisma";
 
 // Prisma 7 type recursie workaround (TS2321)
@@ -33,6 +34,7 @@ export interface SeizoenRow {
  * Alle seizoenen, gesorteerd op startJaar (nieuwste eerst).
  */
 export async function getSeizoenen(): Promise<SeizoenRow[]> {
+  await requireTC();
   const seizoenen = await (prisma.seizoen.findMany as PrismaFn)({
     orderBy: { startJaar: "desc" },
     include: {
@@ -62,6 +64,7 @@ const NieuwSeizoenSchema = z.object({
  * Wijzig de status van een seizoen.
  */
 export async function updateSeizoenStatus(seizoen: string, status: string): Promise<ActionResult> {
+  await requireTC();
   const parsed = SeizoenStatusSchema.safeParse(status);
   if (!parsed.success) {
     return { ok: false, error: "Ongeldige status" };
@@ -88,6 +91,7 @@ export async function updateSeizoenStatus(seizoen: string, status: string): Prom
 export async function maakNieuwSeizoen(
   seizoenStr: string
 ): Promise<ActionResult<{ seizoen: string }>> {
+  await requireTC();
   const parsed = NieuwSeizoenSchema.safeParse({ seizoen: seizoenStr });
   if (!parsed.success) {
     return { ok: false, error: parsed.error.issues[0].message };

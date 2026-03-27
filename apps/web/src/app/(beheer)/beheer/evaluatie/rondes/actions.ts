@@ -1,5 +1,6 @@
 "use server";
 
+import { requireTC } from "@oranje-wit/auth/checks";
 import { prisma } from "@/lib/db/prisma";
 import {
   getRondes as _getRondes,
@@ -23,6 +24,7 @@ export type RondeRow = EvaluatieRondeMetCounts;
  * Alle evaluatierondes met counts.
  */
 export async function getRondes() {
+  await requireTC();
   return _getRondes(prisma);
 }
 
@@ -44,6 +46,7 @@ const RondeStatusSchema = z.enum(["concept", "actief", "gesloten"]);
  * Maak een nieuwe evaluatieronde.
  */
 export async function createRonde(formData: FormData): Promise<ActionResult<{ id: string }>> {
+  await requireTC();
   const raw = {
     seizoen: formData.get("seizoen"),
     ronde: formData.get("ronde"),
@@ -83,6 +86,7 @@ export async function createRonde(formData: FormData): Promise<ActionResult<{ id
  * Wijzig de status van een ronde.
  */
 export async function updateRondeStatus(id: string, status: string): Promise<ActionResult> {
+  await requireTC();
   const parsed = RondeStatusSchema.safeParse(status);
   if (!parsed.success) {
     return { ok: false, error: "Ongeldige status" };

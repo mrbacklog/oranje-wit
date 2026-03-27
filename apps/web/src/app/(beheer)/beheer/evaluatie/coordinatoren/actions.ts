@@ -1,5 +1,6 @@
 "use server";
 
+import { requireTC } from "@oranje-wit/auth/checks";
 import { prisma } from "@/lib/db/prisma";
 import {
   getCoordinatoren as _getCoordinatoren,
@@ -23,6 +24,7 @@ export type CoordinatorRow = CoordinatorMetTeams;
  * Alle coordinatoren met hun teamkoppelingen.
  */
 export async function getCoordinatoren() {
+  await requireTC();
   return _getCoordinatoren(prisma);
 }
 
@@ -42,6 +44,7 @@ const CreateCoordinatorSchema = z.object({
  * Maak een nieuwe coordinator aan.
  */
 export async function createCoordinator(formData: FormData): Promise<ActionResult<{ id: string }>> {
+  await requireTC();
   const raw = {
     naam: formData.get("naam"),
     email: formData.get("email"),
@@ -75,6 +78,7 @@ export async function createCoordinator(formData: FormData): Promise<ActionResul
  * Verwijder een coordinator.
  */
 export async function deleteCoordinator(id: string): Promise<ActionResult> {
+  await requireTC();
   try {
     const result = await _deleteCoordinator(prisma, id);
 

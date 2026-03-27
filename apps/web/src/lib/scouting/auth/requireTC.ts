@@ -1,4 +1,4 @@
-import { auth } from "@oranje-wit/auth";
+import { guardTC, guardScout } from "@oranje-wit/auth/checks";
 import { prisma } from "@/lib/db/prisma";
 import { fail } from "@/lib/api/response";
 
@@ -17,17 +17,21 @@ export type RequireTCResult =
   | { ok: false; response: Response };
 
 /**
- * Verifieer dat de ingelogde gebruiker een Scout-profiel heeft met rol TC.
+ * Verifieer dat de ingelogde gebruiker TC-lid is EN een Scout-profiel heeft.
+ *
+ * Stap 1: centrale auth-guard (JWT-based, geen DB query)
+ * Stap 2: Scout-profiel ophalen (data-lookup)
+ *
  * Retourneert het scout-profiel of een 401/403 fout-response.
  */
 export async function requireTC(): Promise<RequireTCResult> {
-  const session = await auth();
-  if (!session?.user?.email) {
-    return { ok: false, response: fail("Niet ingelogd", 401, "UNAUTHORIZED") };
-  }
+  // Stap 1: centrale auth-check (JWT)
+  const auth = await guardTC();
+  if (!auth.ok) return auth;
 
+  // Stap 2: Scout-profiel ophalen
   const scout = await db.scout.findUnique({
-    where: { email: session.user.email },
+    where: { email: auth.session.user.email },
     select: { id: true, naam: true, email: true, rol: true, userId: true },
   });
 
@@ -55,17 +59,21 @@ type AuthScout = {
 export type RequireScoutResult = { ok: true; scout: AuthScout } | { ok: false; response: Response };
 
 /**
- * Verifieer dat de ingelogde gebruiker een Scout-profiel heeft (rol maakt niet uit).
+ * Verifieer dat de ingelogde gebruiker scout of TC-lid is EN een Scout-profiel heeft.
+ *
+ * Stap 1: centrale auth-guard (JWT-based, geen DB query)
+ * Stap 2: Scout-profiel ophalen (data-lookup)
+ *
  * Retourneert het scout-profiel of een 401/403 fout-response.
  */
 export async function requireScout(): Promise<RequireScoutResult> {
-  const session = await auth();
-  if (!session?.user?.email) {
-    return { ok: false, response: fail("Niet ingelogd", 401, "UNAUTHORIZED") };
-  }
+  // Stap 1: centrale auth-check (JWT)
+  const auth = await guardScout();
+  if (!auth.ok) return auth;
 
+  // Stap 2: Scout-profiel ophalen
   const scout = await db.scout.findUnique({
-    where: { email: session.user.email },
+    where: { email: auth.session.user.email },
     select: { id: true, naam: true, email: true, rol: true },
   });
 

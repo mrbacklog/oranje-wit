@@ -1,5 +1,6 @@
 "use server";
 
+import { requireTC } from "@oranje-wit/auth/checks";
 import { prisma } from "@/lib/db/prisma";
 import { HUIDIG_SEIZOEN } from "@oranje-wit/types";
 
@@ -13,6 +14,7 @@ export type RoosterTeamRow = Awaited<ReturnType<typeof getTeamsVoorRoostering>>[
  * Teams voor roostering: naam, categorie, kleur.
  */
 export async function getTeamsVoorRoostering() {
+  await requireTC();
   const teams = await prisma.oWTeam.findMany({
     where: { seizoen: HUIDIG_SEIZOEN },
     orderBy: [{ sortOrder: "asc" }, { owCode: "asc" }],

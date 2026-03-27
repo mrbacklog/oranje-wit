@@ -1,5 +1,6 @@
 "use server";
 
+import { requireTC } from "@oranje-wit/auth/checks";
 import { prisma } from "@/lib/db/prisma";
 import { logger } from "@oranje-wit/types";
 import { revalidatePath } from "next/cache";
@@ -22,6 +23,7 @@ export interface ValidationResult {
  * Lijst alle raamwerkversies met groepen-count en item-totalen per band.
  */
 export async function getRaamwerkVersies() {
+  await requireTC();
   const versies = await prisma.raamwerkVersie.findMany({
     orderBy: [{ seizoen: "desc" }],
     include: {
@@ -133,6 +135,7 @@ const PIJLERS_PER_BAND: Record<
  * Optioneel: diepe kopie van een bestaande versie (groepen, pijlers, items).
  */
 export async function createRaamwerk(seizoen: string, naam: string, kopieerVan?: string) {
+  await requireTC();
   if (!/^\d{4}-\d{4}$/.test(seizoen)) {
     throw new Error("Ongeldig seizoensformaat (verwacht: 2025-2026)");
   }
@@ -239,6 +242,7 @@ export async function createRaamwerk(seizoen: string, naam: string, kopieerVan?:
  * Voert eerst validatie uit en blokkeert bij ERROR-resultaten.
  */
 export async function publiceerRaamwerk(versieId: string) {
+  await requireTC();
   const versie = await prisma.raamwerkVersie.findUniqueOrThrow({
     where: { id: versieId },
     select: { status: true, seizoen: true },
@@ -272,6 +276,7 @@ export async function publiceerRaamwerk(versieId: string) {
  * Archiveer een raamwerkversie: ACTIEF -> GEARCHIVEERD.
  */
 export async function archiveerRaamwerk(versieId: string) {
+  await requireTC();
   const versie = await prisma.raamwerkVersie.findUniqueOrThrow({
     where: { id: versieId },
     select: { status: true, seizoen: true },
@@ -303,6 +308,7 @@ export async function archiveerRaamwerk(versieId: string) {
  * - STATUS_LOCK: ACTIEF/GEARCHIVEERD niet bewerkbaar (ERROR)
  */
 export async function valideerRaamwerk(versieId: string): Promise<ValidationResult[]> {
+  await requireTC();
   const versie = await prisma.raamwerkVersie.findUniqueOrThrow({
     where: { id: versieId },
     include: {

@@ -1,5 +1,6 @@
 "use server";
 
+import { requireTC } from "@oranje-wit/auth/checks";
 import { prisma } from "@/lib/db/prisma";
 import { logger } from "@oranje-wit/types";
 import { revalidatePath } from "next/cache";
@@ -18,6 +19,7 @@ export type RaamwerkItemDetail = RaamwerkPijlerDetail["items"][number];
  * Haal een versie op met alle groepen, pijlers en items.
  */
 export async function getRaamwerkDetail(versieId: string) {
+  await requireTC();
   const versie = await prisma.raamwerkVersie.findUniqueOrThrow({
     where: { id: versieId },
     include: {
@@ -109,6 +111,7 @@ export async function createItem(
     observatie?: string | null;
   }
 ) {
+  await requireTC();
   const versieId = await getVersieIdViaPijler(pijlerId);
   await assertBewerkbaar(versieId);
 
@@ -166,6 +169,7 @@ export async function updateItem(
     observatie: string | null;
   }>
 ) {
+  await requireTC();
   const versieId = await getVersieIdViaItem(itemId);
   await assertBewerkbaar(versieId);
 
@@ -185,6 +189,7 @@ export async function updateItem(
  * Verwijder een item (alleen bij CONCEPT-status).
  */
 export async function deleteItem(itemId: string) {
+  await requireTC();
   const versieId = await getVersieIdViaItem(itemId);
   await assertBewerkbaar(versieId);
 
@@ -200,6 +205,7 @@ export async function deleteItem(itemId: string) {
  * @param itemIds - De item-IDs in de gewenste volgorde
  */
 export async function reorderItems(pijlerId: string, itemIds: string[]) {
+  await requireTC();
   const versieId = await getVersieIdViaPijler(pijlerId);
   await assertBewerkbaar(versieId);
 
@@ -235,6 +241,7 @@ export async function reorderItems(pijlerId: string, itemIds: string[]) {
  * Toggle het isKern-veld van een item.
  */
 export async function toggleKern(itemId: string) {
+  await requireTC();
   const versieId = await getVersieIdViaItem(itemId);
   await assertBewerkbaar(versieId);
 
@@ -252,6 +259,7 @@ export async function toggleKern(itemId: string) {
  * Update de categorie van een item (bijv. "KERN" | "ONDERSCHEIDEND" | null).
  */
 export async function updateCategorie(itemId: string, categorie: string | null) {
+  await requireTC();
   const versieId = await getVersieIdViaItem(itemId);
   await assertBewerkbaar(versieId);
 
@@ -268,6 +276,7 @@ export async function updateCategorie(itemId: string, categorie: string | null) 
  * Update de observatietekst van een item (hoe herken je dit in de wedstrijd).
  */
 export async function updateObservatie(itemId: string, observatie: string | null) {
+  await requireTC();
   const versieId = await getVersieIdViaItem(itemId);
   await assertBewerkbaar(versieId);
 
@@ -297,6 +306,7 @@ export async function updateGroepSettings(
   groepId: string,
   data: Partial<{ schaalType: string; maxScore: number; doelAantal: number }>
 ) {
+  await requireTC();
   const groep = await prisma.leeftijdsgroep.findUniqueOrThrow({
     where: { id: groepId },
     select: { versieId: true },

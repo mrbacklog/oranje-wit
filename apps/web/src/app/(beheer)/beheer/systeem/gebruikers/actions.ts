@@ -1,5 +1,6 @@
 "use server";
 
+import { requireTC } from "@oranje-wit/auth/checks";
 import { prisma } from "@/lib/db/prisma";
 import { verstuurSmartlinkEmail } from "@oranje-wit/auth/smartlink-email";
 import { maakToegangsToken } from "@oranje-wit/auth/tokens";
@@ -53,6 +54,7 @@ export type { ActionResult } from "@oranje-wit/types";
  * Lijst alle gebruikers, gesorteerd op naam.
  */
 export async function getGebruikers() {
+  await requireTC();
   const gebruikers = await prisma.gebruiker.findMany({
     orderBy: [{ actief: "desc" }, { naam: "asc" }],
   });
@@ -65,6 +67,7 @@ export async function getGebruikers() {
  * Maak een nieuwe gebruiker aan.
  */
 export async function createGebruiker(formData: FormData): Promise<ActionResult<{ id: string }>> {
+  await requireTC();
   const raw = {
     email: formData.get("email"),
     naam: formData.get("naam"),
@@ -117,6 +120,7 @@ export async function createGebruiker(formData: FormData): Promise<ActionResult<
  * Wijzig een bestaande gebruiker.
  */
 export async function updateGebruiker(id: string, formData: FormData): Promise<ActionResult> {
+  await requireTC();
   const raw: Record<string, unknown> = {};
   const naam = formData.get("naam");
   const isTC = formData.get("isTC");
@@ -157,6 +161,7 @@ export async function updateGebruiker(id: string, formData: FormData): Promise<A
  * Het laatste TC-lid kan niet gedeactiveerd worden.
  */
 export async function toggleActief(id: string): Promise<ActionResult> {
+  await requireTC();
   try {
     const gebruiker = await prisma.gebruiker.findUnique({ where: { id } });
     if (!gebruiker) {
@@ -199,6 +204,7 @@ export async function toggleActief(id: string): Promise<ActionResult> {
 export async function stuurSmartlink(
   gebruikerId: string
 ): Promise<ActionResult<{ token: string; url: string }>> {
+  await requireTC();
   try {
     const gebruiker = await prisma.gebruiker.findUnique({
       where: { id: gebruikerId },
@@ -253,6 +259,7 @@ export async function stuurSmartlink(
  * TC-leden kunnen niet verwijderd worden (eerst isTC uitzetten).
  */
 export async function deleteGebruiker(id: string): Promise<ActionResult> {
+  await requireTC();
   try {
     const gebruiker = await prisma.gebruiker.findUnique({ where: { id } });
     if (!gebruiker) {

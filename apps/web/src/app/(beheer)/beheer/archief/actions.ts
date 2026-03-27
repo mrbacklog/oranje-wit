@@ -1,5 +1,6 @@
 "use server";
 
+import { requireTC } from "@oranje-wit/auth/checks";
 import { prisma } from "@/lib/db/prisma";
 
 // ── Types ─────────────────────────────────────────────────────
@@ -15,6 +16,7 @@ export type ArchiefResultaatRow = Awaited<ReturnType<typeof getResultatenVoorSei
  * Toont alle seizoenen, met AFGEROND als voorkeur.
  */
 export async function getAfgerondeSeizoen() {
+  await requireTC();
   const seizoenen = await prisma.seizoen.findMany({
     orderBy: { startJaar: "desc" },
     select: {
@@ -37,6 +39,7 @@ export async function getAfgerondeSeizoen() {
  * Teams voor een specifiek seizoen (read-only).
  */
 export async function getTeamsVoorSeizoen(seizoen: string) {
+  await requireTC();
   const teams = await prisma.oWTeam.findMany({
     where: { seizoen },
     orderBy: [{ sortOrder: "asc" }, { owCode: "asc" }],
@@ -55,6 +58,7 @@ export async function getTeamsVoorSeizoen(seizoen: string) {
  * Competitieresultaten (poolstanden) voor een seizoen (read-only).
  */
 export async function getResultatenVoorSeizoen(seizoen: string) {
+  await requireTC();
   const poolStanden = await prisma.poolStand.findMany({
     where: { seizoen },
     orderBy: [{ periode: "asc" }, { pool: "asc" }],

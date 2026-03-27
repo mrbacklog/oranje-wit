@@ -1,5 +1,6 @@
 "use server";
 
+import { requireTC } from "@oranje-wit/auth/checks";
 import { prisma } from "@/lib/db/prisma";
 
 // ── Types ─────────────────────────────────────────────────────
@@ -12,6 +13,7 @@ export type ScoutRow = Awaited<ReturnType<typeof getScouts>>[number];
  * Alle scouts met XP, level, rol en aantal rapporten.
  */
 export async function getScouts() {
+  await requireTC();
   const scouts = await prisma.scout.findMany({
     orderBy: [{ xp: "desc" }, { naam: "asc" }],
     include: {

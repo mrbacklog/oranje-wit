@@ -1,11 +1,13 @@
 "use server";
 
+import { requireTC } from "@oranje-wit/auth/checks";
 import { prisma } from "@/lib/db/prisma";
 
 /**
  * Haal de import-historie op, meest recent eerst.
  */
 export async function getImportHistorie() {
+  await requireTC();
   const imports = await prisma.import.findMany({
     orderBy: { createdAt: "desc" },
     take: 50,

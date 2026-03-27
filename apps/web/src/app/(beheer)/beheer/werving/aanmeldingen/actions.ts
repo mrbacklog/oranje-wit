@@ -1,5 +1,6 @@
 "use server";
 
+import { requireTC } from "@oranje-wit/auth/checks";
 import { prisma } from "@/lib/db/prisma";
 
 // Prisma 7 type recursie workaround (TS2321)
@@ -20,6 +21,7 @@ export type AanmeldingRow = Awaited<ReturnType<typeof getAanmeldingen>>[number];
  * Alle aanmeldingen, gesorteerd op status (actieve eerst) en datum.
  */
 export async function getAanmeldingen() {
+  await requireTC();
   const aanmeldingen = await prisma.aanmelding.findMany({
     orderBy: [{ createdAt: "desc" }],
   });
@@ -30,6 +32,7 @@ export async function getAanmeldingen() {
  * Funnel-samenvatting: aantal per status.
  */
 export async function getFunnelStats() {
+  await requireTC();
   const stats = await prisma.aanmelding.groupBy({
     by: ["status"],
     _count: true,
@@ -88,6 +91,7 @@ const UpdateAanmeldingSchema = z.object({
  * Maak een nieuwe aanmelding aan.
  */
 export async function createAanmelding(formData: FormData): Promise<ActionResult<{ id: string }>> {
+  await requireTC();
   const raw = {
     naam: formData.get("naam"),
     email: formData.get("email") || undefined,
@@ -130,6 +134,7 @@ export async function createAanmelding(formData: FormData): Promise<ActionResult
  * Wijzig de status van een aanmelding (funnel-stap).
  */
 export async function updateAanmeldingStatus(id: string, status: string): Promise<ActionResult> {
+  await requireTC();
   const parsed = AanmeldingStatusSchema.safeParse(status);
   if (!parsed.success) {
     return { ok: false, error: "Ongeldige status" };
@@ -155,6 +160,7 @@ export async function updateAanmeldingStatus(id: string, status: string): Promis
  * Wijzig gegevens van een aanmelding.
  */
 export async function updateAanmelding(id: string, formData: FormData): Promise<ActionResult> {
+  await requireTC();
   const raw: Record<string, unknown> = {};
   const naam = formData.get("naam");
   const email = formData.get("email");

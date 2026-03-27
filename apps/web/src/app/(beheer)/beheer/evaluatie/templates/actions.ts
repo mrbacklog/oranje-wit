@@ -1,5 +1,6 @@
 "use server";
 
+import { requireTC } from "@oranje-wit/auth/checks";
 import { prisma } from "@/lib/db/prisma";
 import {
   getTemplates as _getTemplates,
@@ -22,6 +23,7 @@ export type TemplateRow = _EmailTemplateRow;
  * Alle e-mail templates.
  */
 export async function getTemplates() {
+  await requireTC();
   return _getTemplates(prisma);
 }
 
@@ -38,6 +40,7 @@ const UpdateTemplateSchema = z.object({
  * Wijzig een bestaande template.
  */
 export async function updateTemplate(id: string, formData: FormData): Promise<ActionResult> {
+  await requireTC();
   const raw = {
     onderwerp: formData.get("onderwerp"),
     inhoudHtml: formData.get("inhoudHtml"),

@@ -1,5 +1,6 @@
 "use server";
 
+import { requireTC } from "@oranje-wit/auth/checks";
 import { prisma } from "@/lib/db/prisma";
 import { HUIDIG_SEIZOEN } from "@oranje-wit/types";
 
@@ -14,6 +15,7 @@ export type TeamDetailRow = Awaited<ReturnType<typeof getTeamDetail>>;
  * Alle teams met leden-count, optioneel per seizoen.
  */
 export async function getTeams(seizoen?: string) {
+  await requireTC();
   const where = { seizoen: seizoen ?? HUIDIG_SEIZOEN };
   const teams = await prisma.oWTeam.findMany({
     where,
@@ -46,6 +48,7 @@ export async function getTeams(seizoen?: string) {
  * Team-detail met alle leden (via competitie_spelers).
  */
 export async function getTeamDetail(teamId: number) {
+  await requireTC();
   const team = await prisma.oWTeam.findUnique({
     where: { id: teamId },
     include: {
@@ -95,6 +98,7 @@ export async function getTeamDetail(teamId: number) {
  * Beschikbare seizoenen voor de seizoen-selector.
  */
 export async function getTeamSeizoenOpties() {
+  await requireTC();
   const seizoenen = await prisma.seizoen.findMany({
     orderBy: { startJaar: "desc" },
     select: { seizoen: true },

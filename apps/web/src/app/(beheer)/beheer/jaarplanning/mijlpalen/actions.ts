@@ -1,5 +1,6 @@
 "use server";
 
+import { requireTC } from "@oranje-wit/auth/checks";
 import { prisma } from "@/lib/db/prisma";
 import { logger, type ActionResult } from "@oranje-wit/types";
 import { revalidatePath } from "next/cache";
@@ -17,6 +18,7 @@ export type MijlpaalRow = Awaited<ReturnType<typeof getMijlpalen>>[number];
  * Alle mijlpalen, gegroepeerd per seizoen.
  */
 export async function getMijlpalen(seizoen?: string) {
+  await requireTC();
   const where = seizoen ? { seizoen } : {};
   const mijlpalen = await prisma.mijlpaal.findMany({
     where,
@@ -29,6 +31,7 @@ export async function getMijlpalen(seizoen?: string) {
  * Beschikbare seizoenen (voor de seizoen-selector).
  */
 export async function getSeizoenOpties() {
+  await requireTC();
   const seizoenen = await prisma.seizoen.findMany({
     orderBy: { startJaar: "desc" },
     select: { seizoen: true, status: true },
@@ -51,6 +54,7 @@ const CreateMijlpaalSchema = z.object({
  * Maak een nieuwe mijlpaal aan.
  */
 export async function createMijlpaal(formData: FormData): Promise<ActionResult<{ id: string }>> {
+  await requireTC();
   const raw = {
     seizoen: formData.get("seizoen"),
     label: formData.get("label"),
@@ -86,6 +90,7 @@ export async function createMijlpaal(formData: FormData): Promise<ActionResult<{
  * Toggle afgerond-status van een mijlpaal.
  */
 export async function toggleMijlpaalAfgerond(id: string): Promise<ActionResult> {
+  await requireTC();
   try {
     const mijlpaal = await prisma.mijlpaal.findUnique({ where: { id } });
     if (!mijlpaal) {
@@ -113,6 +118,7 @@ export async function toggleMijlpaalAfgerond(id: string): Promise<ActionResult> 
  * Verwijder een mijlpaal.
  */
 export async function deleteMijlpaal(id: string): Promise<ActionResult> {
+  await requireTC();
   try {
     await prisma.mijlpaal.delete({ where: { id } });
 
