@@ -132,4 +132,22 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     signIn: "/login",
     verifyRequest: "/login/check-email", // Pagina na magic link versturen
   },
+  // Cross-subdomein sessie: alle apps op *.ckvoranjewit.app delen dezelfde cookie.
+  // In development: standaard cookies (per-app, per-poort).
+  ...(process.env.NODE_ENV === "production"
+    ? {
+        cookies: {
+          sessionToken: {
+            name: "ow-session",
+            options: {
+              httpOnly: true,
+              secure: true,
+              sameSite: "lax" as const,
+              path: "/",
+              domain: ".ckvoranjewit.app",
+            },
+          },
+        },
+      }
+    : {}),
 });

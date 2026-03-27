@@ -16,6 +16,8 @@ export interface SidebarConfig {
   navigation: NavItem[];
   footer?: {
     settingsHref?: string;
+    /** Toon een "Apps" knop met de AppSwitcher */
+    showAppSwitcher?: boolean;
     userMenu?: {
       name: string;
       role: string;

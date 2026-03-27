@@ -10,7 +10,16 @@
   "dependencies": {
     "zod": "^3.24.0"
   },
+  "peerDependencies": {
+    "next": ">=16"
+  },
+  "peerDependenciesMeta": {
+    "next": {
+      "optional": true
+    }
+  },
   "devDependencies": {
+    "next": "16.1.6",
     "vitest": "^4.1.1"
   }
 }

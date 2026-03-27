@@ -6,6 +6,7 @@ import { signOut, useSession } from "next-auth/react";
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useState } from "react";
 import { ICON_MAP, HomeIcon } from "./icons";
+import { AppSwitcher, GridIcon } from "@oranje-wit/ui";
 
 // ── Types ─────────────────────────────────────────────────────
 
@@ -129,6 +130,7 @@ function SidebarNav({ onClose }: { onClose?: () => void }) {
 function SidebarContent({ onClose }: { onClose?: () => void }) {
   const { data: session } = useSession();
   const pathname = usePathname();
+  const [appSwitcherOpen, setAppSwitcherOpen] = useState(false);
 
   return (
     <nav
@@ -182,10 +184,52 @@ function SidebarContent({ onClose }: { onClose?: () => void }) {
       {/* Domein-navigatie */}
       <SidebarNav onClose={onClose} />
 
-      {/* User footer */}
-      <div className="px-4 py-3" style={{ borderTop: "1px solid var(--border-light)" }}>
+      {/* Apps + User footer */}
+      <div className="px-3 py-2" style={{ borderTop: "1px solid var(--border-light)" }}>
+        {/* Apps knop */}
+        <div className="relative">
+          <button
+            onClick={() => setAppSwitcherOpen(!appSwitcherOpen)}
+            className="mb-1 flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors"
+            style={{ color: "var(--text-tertiary)" }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLElement).style.backgroundColor = "var(--state-hover)";
+              (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLElement).style.backgroundColor = "transparent";
+              (e.currentTarget as HTMLElement).style.color = "var(--text-tertiary)";
+            }}
+            aria-label="Open app switcher"
+          >
+            <span className="flex h-[18px] w-[18px] items-center justify-center">
+              <GridIcon active={appSwitcherOpen} />
+            </span>
+            <span>Apps</span>
+          </button>
+
+          {/* Desktop dropdown */}
+          <div className="hidden md:block">
+            <AppSwitcher
+              open={appSwitcherOpen}
+              onClose={() => setAppSwitcherOpen(false)}
+              variant="dropdown"
+            />
+          </div>
+        </div>
+
+        {/* Mobile: sheet variant */}
+        <div className="md:hidden">
+          <AppSwitcher
+            open={appSwitcherOpen}
+            onClose={() => setAppSwitcherOpen(false)}
+            variant="sheet"
+          />
+        </div>
+
+        {/* User info */}
         {session?.user ? (
-          <div className="flex items-center justify-between">
+          <div className="mt-1 flex items-center justify-between px-3 py-2">
             <div className="flex items-center gap-2.5">
               <div
                 className="flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold"

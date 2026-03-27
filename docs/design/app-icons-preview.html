@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="nl" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>App Icons — c.k.v. Oranje Wit</title>
+  <style>
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #141414;
+      --bg-tertiary: #1e1e1e;
+      --text-primary: #fafafa;
+      --text-secondary: #a3a3a3;
+      --text-muted: #666666;
+      --border: #262626;
+      --accent: #ff6b00;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: Inter, system-ui, -apple-system, sans-serif;
+      padding: 32px 24px;
+      min-height: 100vh;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #fafafa 0%, #a3a3a3 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-bottom: 48px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .icon-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+
+    .icon-cell {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .icon-cell .icon-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 16px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      transition: all 300ms ease;
+    }
+
+    .icon-cell .icon-wrapper:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 20px rgba(255, 107, 0, 0.15);
+      transform: scale(1.05);
+    }
+
+    .icon-wrapper.sm { width: 48px; height: 48px; border-radius: 12px; }
+    .icon-wrapper.md { width: 80px; height: 80px; border-radius: 16px; }
+    .icon-wrapper.lg { width: 140px; height: 140px; border-radius: 20px; }
+
+    .icon-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .size-label {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    /* Gradient background variants */
+    .icon-wrapper.gradient {
+      border: none;
+    }
+
+    .app-row {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      margin-bottom: 64px;
+      padding: 32px;
+      border-radius: 20px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+    }
+
+    .app-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .app-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      color: white;
+    }
+
+    .app-info h2 {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .app-info p {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .variants-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+
+    .variant-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .variant-label {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    /* App launcher preview */
+    .launcher-preview {
+      margin-top: 64px;
+      padding: 32px;
+      border-radius: 24px;
+      background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+      border: 1px solid var(--border);
+    }
+
+    .launcher-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+      max-width: 600px;
+      margin: 24px auto 0;
+    }
+
+    .launcher-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 8px;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 200ms ease;
+    }
+
+    .launcher-item:hover {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .launcher-icon-bg {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .launcher-icon-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      box-shadow: inset 0 1px 1px rgba(255,255,255,0.1);
+      pointer-events: none;
+    }
+
+    .launcher-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .launcher-desc {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    svg { display: block; }
+  </style>
+</head>
+<body>
+
+  <h1>App Icons</h1>
+  <p class="subtitle">5 iconische SVG iconen voor het c.k.v. Oranje Wit ecosysteem. Strava-geïnspireerd, premium, consistent.</p>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!--  MONITOR                                                    -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="app-row">
+    <div class="app-header">
+      <div class="app-badge" style="background: linear-gradient(135deg, #22c55e, #16a34a)">
+        <svg viewBox="0 0 48 48" fill="none" width="28" height="28">
+          <rect x="6" y="8" width="36" height="24" rx="4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M16 38h16" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <path d="M24 32v6" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <path d="M12 21h4.5l3-5.5 4 11 4-11 3 5.5H36" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="app-info">
+        <h2>Monitor</h2>
+        <p>Pulse / Hartslag — Live monitoring, dashboards, ledenverloop, signalering</p>
+      </div>
+    </div>
+    <div class="variants-row">
+      <!-- sm monochrome -->
+      <div class="variant-group">
+        <div class="icon-wrapper sm" style="color: var(--text-primary)">
+          <svg viewBox="0 0 24 24" fill="none" width="24" height="24">
+            <rect x="3" y="4" width="18" height="13" rx="2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M8 20h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M12 17v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M6 11h2.5l1.5-3 2 6 2-6 1.5 3H18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="variant-label">24px mono</span>
+      </div>
+      <!-- sm accent -->
+      <div class="variant-group">
+        <div class="icon-wrapper sm">
+          <svg viewBox="0 0 24 24" fill="none" width="24" height="24">
+            <rect x="3" y="4" width="18" height="13" rx="2" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M8 20h8" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M12 17v3" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M6 11h2.5l1.5-3 2 6 2-6 1.5 3H18" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="variant-label">24px accent</span>
+      </div>
+      <!-- md accent -->
+      <div class="variant-group">
+        <div class="icon-wrapper md">
+          <svg viewBox="0 0 48 48" fill="none" width="48" height="48">
+            <rect x="6" y="8" width="36" height="24" rx="4" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M16 38h16" stroke="#22c55e" stroke-width="2" stroke-linecap="round"/>
+            <path d="M24 32v6" stroke="#22c55e" stroke-width="2" stroke-linecap="round"/>
+            <path d="M12 21h4.5l3-5.5 4 11 4-11 3 5.5H36" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="variant-label">48px accent</span>
+      </div>
+      <!-- lg accent -->
+      <div class="variant-group">
+        <div class="icon-wrapper lg">
+          <svg viewBox="0 0 96 96" fill="none" width="96" height="96">
+            <rect x="12" y="14" width="72" height="48" rx="8" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M32 74h32" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M48 62v12" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M20 30h56M20 42h56M20 54h56" stroke="#22c55e" stroke-width="0.5" stroke-linecap="round" opacity="0.2"/>
+            <path d="M22 42h9l6-12 8 24 8-24 6 12H70" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="45" cy="30" r="2" fill="#22c55e" opacity="0.6"/>
+          </svg>
+        </div>
+        <span class="variant-label">96px accent + detail</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!--  TEAM-INDELING                                              -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="app-row">
+    <div class="app-header">
+      <div class="app-badge" style="background: linear-gradient(135deg, #3b82f6, #2563eb)">
+        <svg viewBox="0 0 48 48" fill="none" width="28" height="28">
+          <path d="M24 8L10 24M24 8L38 24M10 24L24 36M38 24L24 36M10 24L38 24" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.35"/>
+          <circle cx="24" cy="8" r="3.5" stroke="white" stroke-width="2"/>
+          <circle cx="10" cy="24" r="3.5" stroke="white" stroke-width="2"/>
+          <circle cx="38" cy="24" r="3.5" stroke="white" stroke-width="2"/>
+          <circle cx="24" cy="36" r="3.5" stroke="white" stroke-width="2"/>
+        </svg>
+      </div>
+      <div class="app-info">
+        <h2>Team-Indeling</h2>
+        <p>Formatie / Strategie — Seizoensindeling, drag-drop, scenario's, teamverband</p>
+      </div>
+    </div>
+    <div class="variants-row">
+      <div class="variant-group">
+        <div class="icon-wrapper sm" style="color: var(--text-primary)">
+          <svg viewBox="0 0 24 24" fill="none" width="24" height="24">
+            <path d="M12 4L5 12M12 4L19 12M5 12L12 18M19 12L12 18M5 12L19 12" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
+            <circle cx="12" cy="4" r="2" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="5" cy="12" r="2" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="19" cy="12" r="2" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="12" cy="18" r="2" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <span class="variant-label">24px mono</span>
+      </div>
+      <div class="variant-group">
+        <div class="icon-wrapper sm">
+          <svg viewBox="0 0 24 24" fill="none" width="24" height="24">
+            <path d="M12 4L5 12M12 4L19 12M5 12L12 18M19 12L12 18M5 12L19 12" stroke="#3b82f6" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
+            <circle cx="12" cy="4" r="2" stroke="#3b82f6" stroke-width="1.5"/>
+            <circle cx="5" cy="12" r="2" stroke="#3b82f6" stroke-width="1.5"/>
+            <circle cx="19" cy="12" r="2" stroke="#3b82f6" stroke-width="1.5"/>
+            <circle cx="12" cy="18" r="2" stroke="#3b82f6" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <span class="variant-label">24px accent</span>
+      </div>
+      <div class="variant-group">
+        <div class="icon-wrapper md">
+          <svg viewBox="0 0 48 48" fill="none" width="48" height="48">
+            <path d="M24 8L10 24M24 8L38 24M10 24L24 36M38 24L24 36M10 24L38 24" stroke="#3b82f6" stroke-width="1.5" stroke-linecap="round" opacity="0.35"/>
+            <circle cx="24" cy="8" r="3.5" stroke="#3b82f6" stroke-width="2"/>
+            <circle cx="10" cy="24" r="3.5" stroke="#3b82f6" stroke-width="2"/>
+            <circle cx="38" cy="24" r="3.5" stroke="#3b82f6" stroke-width="2"/>
+            <circle cx="24" cy="36" r="3.5" stroke="#3b82f6" stroke-width="2"/>
+          </svg>
+        </div>
+        <span class="variant-label">48px accent</span>
+      </div>
+      <div class="variant-group">
+        <div class="icon-wrapper lg">
+          <svg viewBox="0 0 96 96" fill="none" width="96" height="96">
+            <circle cx="48" cy="48" r="38" stroke="#3b82f6" stroke-width="0.75" opacity="0.12"/>
+            <line x1="10" y1="48" x2="86" y2="48" stroke="#3b82f6" stroke-width="0.75" opacity="0.12"/>
+            <path d="M48 14L20 48M48 14L76 48M20 48L48 72M76 48L48 72M20 48L76 48" stroke="#3b82f6" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
+            <circle cx="48" cy="14" r="7" stroke="#3b82f6" stroke-width="2.5"/>
+            <circle cx="20" cy="48" r="7" stroke="#3b82f6" stroke-width="2.5"/>
+            <circle cx="76" cy="48" r="7" stroke="#3b82f6" stroke-width="2.5"/>
+            <circle cx="48" cy="72" r="7" stroke="#3b82f6" stroke-width="2.5"/>
+            <circle cx="48" cy="14" r="2.5" fill="#3b82f6" opacity="0.5"/>
+            <circle cx="20" cy="48" r="2.5" fill="#3b82f6" opacity="0.5"/>
+            <circle cx="76" cy="48" r="2.5" fill="#3b82f6" opacity="0.5"/>
+            <circle cx="48" cy="72" r="2.5" fill="#3b82f6" opacity="0.5"/>
+          </svg>
+        </div>
+        <span class="variant-label">96px accent + detail</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!--  EVALUATIE                                                   -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="app-row">
+    <div class="app-header">
+      <div class="app-badge" style="background: linear-gradient(135deg, #eab308, #ca8a04)">
+        <svg viewBox="0 0 48 48" fill="none" width="28" height="28">
+          <path d="M16 10H13a3 3 0 00-3 3v22a3 3 0 003 3h22a3 3 0 003-3V13a3 3 0 00-3-3h-3" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <rect x="16" y="6" width="16" height="6" rx="2" stroke="white" stroke-width="2"/>
+          <path d="M24 18l3.53 7.14 7.88 1.15-5.7 5.56 1.35 7.85L24 35.64l-7.06 3.71 1.35-7.85-5.7-5.56 7.88-1.15L24 18z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="app-info">
+        <h2>Evaluatie</h2>
+        <p>Ster op klembord — Spelerevaluaties, zelfevaluaties, beoordeling, groei meten</p>
+      </div>
+    </div>
+    <div class="variants-row">
+      <div class="variant-group">
+        <div class="icon-wrapper sm" style="color: var(--text-primary)">
+          <svg viewBox="0 0 24 24" fill="none" width="24" height="24">
+            <path d="M8 5H6.5A1.5 1.5 0 005 6.5v13A1.5 1.5 0 006.5 21h11a1.5 1.5 0 001.5-1.5v-13A1.5 1.5 0 0017.5 5H16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <rect x="8" y="3" width="8" height="3.5" rx="1" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M12 9.5l1.76 3.57 3.94.57-2.85 2.78.67 3.93L12 18.35l-3.52 1.85.67-3.93-2.85-2.78 3.94-.57L12 9.5z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="variant-label">24px mono</span>
+      </div>
+      <div class="variant-group">
+        <div class="icon-wrapper sm">
+          <svg viewBox="0 0 24 24" fill="none" width="24" height="24">
+            <path d="M8 5H6.5A1.5 1.5 0 005 6.5v13A1.5 1.5 0 006.5 21h11a1.5 1.5 0 001.5-1.5v-13A1.5 1.5 0 0017.5 5H16" stroke="#eab308" stroke-width="1.5" stroke-linecap="round"/>
+            <rect x="8" y="3" width="8" height="3.5" rx="1" stroke="#eab308" stroke-width="1.5"/>
+            <path d="M12 9.5l1.76 3.57 3.94.57-2.85 2.78.67 3.93L12 18.35l-3.52 1.85.67-3.93-2.85-2.78 3.94-.57L12 9.5z" stroke="#eab308" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="variant-label">24px accent</span>
+      </div>
+      <div class="variant-group">
+        <div class="icon-wrapper md">
+          <svg viewBox="0 0 48 48" fill="none" width="48" height="48">
+            <path d="M16 10H13a3 3 0 00-3 3v22a3 3 0 003 3h22a3 3 0 003-3V13a3 3 0 00-3-3h-3" stroke="#eab308" stroke-width="2" stroke-linecap="round"/>
+            <rect x="16" y="6" width="16" height="6" rx="2" stroke="#eab308" stroke-width="2"/>
+            <path d="M24 18l3.53 7.14 7.88 1.15-5.7 5.56 1.35 7.85L24 35.64l-7.06 3.71 1.35-7.85-5.7-5.56 7.88-1.15L24 18z" stroke="#eab308" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="variant-label">48px accent</span>
+      </div>
+      <div class="variant-group">
+        <div class="icon-wrapper lg">
+          <svg viewBox="0 0 96 96" fill="none" width="96" height="96">
+            <path d="M32 18H26a6 6 0 00-6 6v46a6 6 0 006 6h44a6 6 0 006-6V24a6 6 0 00-6-6h-6" stroke="#eab308" stroke-width="2.5" stroke-linecap="round"/>
+            <rect x="32" y="10" width="32" height="12" rx="4" stroke="#eab308" stroke-width="2.5"/>
+            <path d="M30 66h36M30 72h24" stroke="#eab308" stroke-width="1" stroke-linecap="round" opacity="0.2"/>
+            <path d="M48 32l7.06 14.28 15.76 2.29-11.41 11.12 2.69 15.71L48 68.28l-14.1 7.42 2.69-15.71-11.41-11.12 15.76-2.29L48 32z" stroke="#eab308" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="48" cy="52" r="3" fill="#eab308" opacity="0.3"/>
+          </svg>
+        </div>
+        <span class="variant-label">96px accent + detail</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!--  SCOUTING                                                    -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="app-row">
+    <div class="app-header">
+      <div class="app-badge" style="background: linear-gradient(135deg, #ff6b00, #e05500)">
+        <svg viewBox="0 0 48 48" fill="none" width="28" height="28">
+          <circle cx="20" cy="20" r="13" stroke="white" stroke-width="2"/>
+          <path d="M30 30l10 10" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M20 13v14M13 20h14" stroke="white" stroke-width="1.25" stroke-linecap="round" opacity="0.4"/>
+          <circle cx="20" cy="20" r="1.5" fill="white" opacity="0.5"/>
+        </svg>
+      </div>
+      <div class="app-info">
+        <h2>Scouting</h2>
+        <p>Vergrootglas met crosshair — Talent spotten, rapporten, spelerskaart, ontdekken</p>
+      </div>
+    </div>
+    <div class="variants-row">
+      <div class="variant-group">
+        <div class="icon-wrapper sm" style="color: var(--text-primary)">
+          <svg viewBox="0 0 24 24" fill="none" width="24" height="24">
+            <circle cx="10.5" cy="10.5" r="7" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M16 16l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M10.5 7v7M7 10.5h7" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+          </svg>
+        </div>
+        <span class="variant-label">24px mono</span>
+      </div>
+      <div class="variant-group">
+        <div class="icon-wrapper sm">
+          <svg viewBox="0 0 24 24" fill="none" width="24" height="24">
+            <circle cx="10.5" cy="10.5" r="7" stroke="#ff6b00" stroke-width="1.5"/>
+            <path d="M16 16l5 5" stroke="#ff6b00" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M10.5 7v7M7 10.5h7" stroke="#ff6b00" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+          </svg>
+        </div>
+        <span class="variant-label">24px accent</span>
+      </div>
+      <div class="variant-group">
+        <div class="icon-wrapper md">
+          <svg viewBox="0 0 48 48" fill="none" width="48" height="48">
+            <circle cx="20" cy="20" r="13" stroke="#ff6b00" stroke-width="2"/>
+            <path d="M30 30l10 10" stroke="#ff6b00" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M20 13v14M13 20h14" stroke="#ff6b00" stroke-width="1.25" stroke-linecap="round" opacity="0.4"/>
+            <circle cx="20" cy="20" r="1.5" fill="#ff6b00" opacity="0.5"/>
+          </svg>
+        </div>
+        <span class="variant-label">48px accent</span>
+      </div>
+      <div class="variant-group">
+        <div class="icon-wrapper lg">
+          <svg viewBox="0 0 96 96" fill="none" width="96" height="96">
+            <circle cx="40" cy="40" r="26" stroke="#ff6b00" stroke-width="2.5"/>
+            <circle cx="40" cy="40" r="18" stroke="#ff6b00" stroke-width="1" opacity="0.15" stroke-dasharray="4 3"/>
+            <path d="M59 59l22 22" stroke="#ff6b00" stroke-width="3.5" stroke-linecap="round"/>
+            <path d="M68 68l4 4" stroke="#ff6b00" stroke-width="1" stroke-linecap="round" opacity="0.3"/>
+            <path d="M40 22v36M22 40h36" stroke="#ff6b00" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
+            <circle cx="40" cy="40" r="3" fill="#ff6b00" opacity="0.4"/>
+            <circle cx="40" cy="40" r="7" stroke="#ff6b00" stroke-width="1" opacity="0.2"/>
+          </svg>
+        </div>
+        <span class="variant-label">96px accent + detail</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!--  BEHEER                                                      -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="app-row">
+    <div class="app-header">
+      <div class="app-badge" style="background: linear-gradient(135deg, #9ca3af, #6b7280)">
+        <svg viewBox="0 0 48 48" fill="none" width="28" height="28">
+          <path d="M20.65 8.634a3.448 3.448 0 016.7 0l.4 1.148a3.448 3.448 0 005.146 1.9l.98-.68a3.448 3.448 0 014.74 4.74l-.68.98a3.448 3.448 0 001.9 5.146l1.148.4a3.448 3.448 0 010 6.7l-1.148.4a3.448 3.448 0 00-1.9 5.146l.68.98a3.448 3.448 0 01-4.74 4.74l-.98-.68a3.448 3.448 0 00-5.146 1.9l-.4 1.148a3.448 3.448 0 01-6.7 0l-.4-1.148a3.448 3.448 0 00-5.146-1.9l-.98.68a3.448 3.448 0 01-4.74-4.74l.68-.98a3.448 3.448 0 00-1.9-5.146l-1.148-.4a3.448 3.448 0 010-6.7l1.148-.4a3.448 3.448 0 001.9-5.146l-.68-.98a3.448 3.448 0 014.74-4.74l.98.68a3.448 3.448 0 005.146-1.9l.4-1.148z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="24" cy="24" r="6" stroke="white" stroke-width="2"/>
+        </svg>
+      </div>
+      <div class="app-info">
+        <h2>Beheer</h2>
+        <p>Tandwiel — Configuratie, 9 TC-domeinen, gebruikersbeheer, raamwerk, onder de motorkap</p>
+      </div>
+    </div>
+    <div class="variants-row">
+      <div class="variant-group">
+        <div class="icon-wrapper sm" style="color: var(--text-primary)">
+          <svg viewBox="0 0 24 24" fill="none" width="24" height="24">
+            <path d="M10.325 4.317a1.724 1.724 0 013.35 0l.2.574a1.724 1.724 0 002.573.95l.49-.34a1.724 1.724 0 012.37 2.37l-.34.49a1.724 1.724 0 00.95 2.573l.574.2a1.724 1.724 0 010 3.35l-.574.2a1.724 1.724 0 00-.95 2.573l.34.49a1.724 1.724 0 01-2.37 2.37l-.49-.34a1.724 1.724 0 00-2.573.95l-.2.574a1.724 1.724 0 01-3.35 0l-.2-.574a1.724 1.724 0 00-2.573-.95l-.49.34a1.724 1.724 0 01-2.37-2.37l.34-.49a1.724 1.724 0 00-.95-2.573l-.574-.2a1.724 1.724 0 010-3.35l.574-.2a1.724 1.724 0 00.95-2.573l-.34-.49a1.724 1.724 0 012.37-2.37l.49.34a1.724 1.724 0 002.573-.95l.2-.574z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <span class="variant-label">24px mono</span>
+      </div>
+      <div class="variant-group">
+        <div class="icon-wrapper sm">
+          <svg viewBox="0 0 24 24" fill="none" width="24" height="24">
+            <path d="M10.325 4.317a1.724 1.724 0 013.35 0l.2.574a1.724 1.724 0 002.573.95l.49-.34a1.724 1.724 0 012.37 2.37l-.34.49a1.724 1.724 0 00.95 2.573l.574.2a1.724 1.724 0 010 3.35l-.574.2a1.724 1.724 0 00-.95 2.573l.34.49a1.724 1.724 0 01-2.37 2.37l-.49-.34a1.724 1.724 0 00-2.573.95l-.2.574a1.724 1.724 0 01-3.35 0l-.2-.574a1.724 1.724 0 00-2.573-.95l-.49.34a1.724 1.724 0 01-2.37-2.37l.34-.49a1.724 1.724 0 00-.95-2.573l-.574-.2a1.724 1.724 0 010-3.35l.574-.2a1.724 1.724 0 00.95-2.573l-.34-.49a1.724 1.724 0 012.37-2.37l.49.34a1.724 1.724 0 002.573-.95l.2-.574z" stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="12" cy="12" r="3" stroke="#9ca3af" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <span class="variant-label">24px accent</span>
+      </div>
+      <div class="variant-group">
+        <div class="icon-wrapper md">
+          <svg viewBox="0 0 48 48" fill="none" width="48" height="48">
+            <path d="M20.65 8.634a3.448 3.448 0 016.7 0l.4 1.148a3.448 3.448 0 005.146 1.9l.98-.68a3.448 3.448 0 014.74 4.74l-.68.98a3.448 3.448 0 001.9 5.146l1.148.4a3.448 3.448 0 010 6.7l-1.148.4a3.448 3.448 0 00-1.9 5.146l.68.98a3.448 3.448 0 01-4.74 4.74l-.98-.68a3.448 3.448 0 00-5.146 1.9l-.4 1.148a3.448 3.448 0 01-6.7 0l-.4-1.148a3.448 3.448 0 00-5.146-1.9l-.98.68a3.448 3.448 0 01-4.74-4.74l.68-.98a3.448 3.448 0 00-1.9-5.146l-1.148-.4a3.448 3.448 0 010-6.7l1.148-.4a3.448 3.448 0 001.9-5.146l-.68-.98a3.448 3.448 0 014.74-4.74l.98.68a3.448 3.448 0 005.146-1.9l.4-1.148z" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="24" cy="24" r="6" stroke="#9ca3af" stroke-width="2"/>
+          </svg>
+        </div>
+        <span class="variant-label">48px accent</span>
+      </div>
+      <div class="variant-group">
+        <div class="icon-wrapper lg">
+          <svg viewBox="0 0 96 96" fill="none" width="96" height="96">
+            <path d="M41.3 17.268a6.896 6.896 0 0113.4 0l.8 2.296a6.896 6.896 0 0010.292 3.8l1.96-1.36a6.896 6.896 0 019.48 9.48l-1.36 1.96a6.896 6.896 0 003.8 10.292l2.296.8a6.896 6.896 0 010 13.4l-2.296.8a6.896 6.896 0 00-3.8 10.292l1.36 1.96a6.896 6.896 0 01-9.48 9.48l-1.96-1.36a6.896 6.896 0 00-10.292 3.8l-.8 2.296a6.896 6.896 0 01-13.4 0l-.8-2.296a6.896 6.896 0 00-10.292-3.8l-1.96 1.36a6.896 6.896 0 01-9.48-9.48l1.36-1.96a6.896 6.896 0 00-3.8-10.292l-2.296-.8a6.896 6.896 0 010-13.4l2.296-.8a6.896 6.896 0 003.8-10.292l-1.36-1.96a6.896 6.896 0 019.48-9.48l1.96 1.36a6.896 6.896 0 0010.292-3.8l.8-2.296z" stroke="#9ca3af" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="48" cy="48" r="12" stroke="#9ca3af" stroke-width="2.5"/>
+            <circle cx="48" cy="48" r="6" stroke="#9ca3af" stroke-width="1" opacity="0.25"/>
+            <circle cx="48" cy="48" r="2.5" fill="#9ca3af" opacity="0.35"/>
+          </svg>
+        </div>
+        <span class="variant-label">96px accent + detail</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!--  APP LAUNCHER PREVIEW                                       -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="launcher-preview">
+    <p class="section-label">App Launcher Preview — hoe het eruitziet in de AppSwitcher</p>
+    <div class="launcher-grid">
+
+      <!-- Monitor -->
+      <div class="launcher-item">
+        <div class="launcher-icon-bg" style="background: linear-gradient(135deg, #22c55e, color-mix(in srgb, #22c55e 70%, black))">
+          <svg viewBox="0 0 48 48" fill="none" width="28" height="28">
+            <rect x="6" y="8" width="36" height="24" rx="4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M16 38h16" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <path d="M24 32v6" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <path d="M12 21h4.5l3-5.5 4 11 4-11 3 5.5H36" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="launcher-name">Monitor</span>
+        <span class="launcher-desc">Verenigingsmonitor</span>
+      </div>
+
+      <!-- Teams -->
+      <div class="launcher-item">
+        <div class="launcher-icon-bg" style="background: linear-gradient(135deg, #3b82f6, color-mix(in srgb, #3b82f6 70%, black))">
+          <svg viewBox="0 0 48 48" fill="none" width="28" height="28">
+            <path d="M24 8L10 24M24 8L38 24M10 24L24 36M38 24L24 36M10 24L38 24" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.35"/>
+            <circle cx="24" cy="8" r="3.5" stroke="white" stroke-width="2"/>
+            <circle cx="10" cy="24" r="3.5" stroke="white" stroke-width="2"/>
+            <circle cx="38" cy="24" r="3.5" stroke="white" stroke-width="2"/>
+            <circle cx="24" cy="36" r="3.5" stroke="white" stroke-width="2"/>
+          </svg>
+        </div>
+        <span class="launcher-name">Teams</span>
+        <span class="launcher-desc">Teamindeling</span>
+      </div>
+
+      <!-- Evaluatie -->
+      <div class="launcher-item">
+        <div class="launcher-icon-bg" style="background: linear-gradient(135deg, #eab308, color-mix(in srgb, #eab308 70%, black))">
+          <svg viewBox="0 0 48 48" fill="none" width="28" height="28">
+            <path d="M16 10H13a3 3 0 00-3 3v22a3 3 0 003 3h22a3 3 0 003-3V13a3 3 0 00-3-3h-3" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <rect x="16" y="6" width="16" height="6" rx="2" stroke="white" stroke-width="2"/>
+            <path d="M24 18l3.53 7.14 7.88 1.15-5.7 5.56 1.35 7.85L24 35.64l-7.06 3.71 1.35-7.85-5.7-5.56 7.88-1.15L24 18z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="launcher-name">Evaluatie</span>
+        <span class="launcher-desc">Spelerevaluaties</span>
+      </div>
+
+      <!-- Scouting -->
+      <div class="launcher-item">
+        <div class="launcher-icon-bg" style="background: linear-gradient(135deg, #ff6b00, color-mix(in srgb, #ff6b00 70%, black))">
+          <svg viewBox="0 0 48 48" fill="none" width="28" height="28">
+            <circle cx="20" cy="20" r="13" stroke="white" stroke-width="2"/>
+            <path d="M30 30l10 10" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M20 13v14M13 20h14" stroke="white" stroke-width="1.25" stroke-linecap="round" opacity="0.4"/>
+            <circle cx="20" cy="20" r="1.5" fill="white" opacity="0.5"/>
+          </svg>
+        </div>
+        <span class="launcher-name">Scout</span>
+        <span class="launcher-desc">Jeugdscouting</span>
+      </div>
+
+      <!-- Beheer -->
+      <div class="launcher-item">
+        <div class="launcher-icon-bg" style="background: linear-gradient(135deg, #9ca3af, color-mix(in srgb, #9ca3af 70%, black))">
+          <svg viewBox="0 0 48 48" fill="none" width="28" height="28">
+            <path d="M20.65 8.634a3.448 3.448 0 016.7 0l.4 1.148a3.448 3.448 0 005.146 1.9l.98-.68a3.448 3.448 0 014.74 4.74l-.68.98a3.448 3.448 0 001.9 5.146l1.148.4a3.448 3.448 0 010 6.7l-1.148.4a3.448 3.448 0 00-1.9 5.146l.68.98a3.448 3.448 0 01-4.74 4.74l-.98-.68a3.448 3.448 0 00-5.146 1.9l-.4 1.148a3.448 3.448 0 01-6.7 0l-.4-1.148a3.448 3.448 0 00-5.146-1.9l-.98.68a3.448 3.448 0 01-4.74-4.74l.68-.98a3.448 3.448 0 00-1.9-5.146l-1.148-.4a3.448 3.448 0 010-6.7l1.148-.4a3.448 3.448 0 001.9-5.146l-.68-.98a3.448 3.448 0 014.74-4.74l.98.68a3.448 3.448 0 005.146-1.9l.4-1.148z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="24" cy="24" r="6" stroke="white" stroke-width="2"/>
+          </svg>
+        </div>
+        <span class="launcher-name">Beheer</span>
+        <span class="launcher-desc">TC Beheer</span>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

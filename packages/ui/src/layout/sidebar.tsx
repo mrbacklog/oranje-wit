@@ -1,8 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { SidebarConfig } from "./types";
+import { AppSwitcher } from "../navigation/app-switcher";
+import { GridIcon } from "../navigation/bottom-nav";
 
 interface SidebarProps extends SidebarConfig {
   onClose?: () => void;
@@ -10,6 +13,7 @@ interface SidebarProps extends SidebarConfig {
 
 export function Sidebar({ branding, navigation, footer, onClose }: SidebarProps) {
   const pathname = usePathname();
+  const [appSwitcherOpen, setAppSwitcherOpen] = useState(false);
 
   function isActive(href: string) {
     if (href === "/") return pathname === "/";
@@ -121,6 +125,37 @@ export function Sidebar({ branding, navigation, footer, onClose }: SidebarProps)
             <span>Instellingen</span>
           </Link>
         )}
+
+        {/* App Switcher knop */}
+        {footer?.showAppSwitcher && (
+          <div className="relative">
+            <button
+              onClick={() => setAppSwitcherOpen(!appSwitcherOpen)}
+              className="mb-1 flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors"
+              style={{ color: "var(--text-tertiary)" }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLElement).style.backgroundColor = "var(--state-hover)";
+                (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLElement).style.backgroundColor = "transparent";
+                (e.currentTarget as HTMLElement).style.color = "var(--text-tertiary)";
+              }}
+              aria-label="Open app switcher"
+            >
+              <span className="flex h-5 w-5 items-center justify-center">
+                <GridIcon active={appSwitcherOpen} />
+              </span>
+              <span>Apps</span>
+            </button>
+            <AppSwitcher
+              open={appSwitcherOpen}
+              onClose={() => setAppSwitcherOpen(false)}
+              variant="dropdown"
+            />
+          </div>
+        )}
+
         {footer?.userMenu && (
           <div className="flex items-center justify-between px-3 py-2 text-xs">
             <div>

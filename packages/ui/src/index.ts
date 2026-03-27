@@ -38,6 +38,18 @@ export { TopBar } from "./navigation/top-bar";
 export type { TopBarProps } from "./navigation/top-bar";
 export { AppSwitcher } from "./navigation/app-switcher";
 export type { AppSwitcherProps, AppInfo } from "./navigation/app-switcher";
+export {
+  MonitorIcon as MonitorAppIcon,
+  TeamIndelingIcon as TeamIndelingAppIcon,
+  EvaluatieIcon as EvaluatieAppIcon,
+  ScoutingIcon as ScoutingAppIcon,
+  BeheerIcon as BeheerAppIcon,
+  APP_ICONS,
+  APP_ACCENTS,
+  APP_IDS,
+  APP_META,
+} from "./navigation/app-icons";
+export type { AppIconProps } from "./navigation/app-icons";
 
 // Primitives
 export { Button } from "./primitives/button";

@@ -53,6 +53,9 @@ const sidebarConfig: SidebarConfig = {
     { label: "Jeugdpijplijn", href: "/projecties", icon: "🎯" },
     { label: "Signalering", href: "/signalering", icon: "⚠️" },
   ],
+  footer: {
+    showAppSwitcher: true,
+  },
 };
 
 // ─── MonitorShell ────────────────────────────────────────────
@@ -71,20 +74,17 @@ export function MonitorShell({ children }: MonitorShellProps) {
   }
 
   return (
-    <>
-      {/* Desktop: sidebar + content in flex row */}
-      <div className="flex h-dvh" style={{ backgroundColor: "var(--surface-page)" }}>
-        {/* Desktop sidebar — verborgen op mobile */}
-        <div className="hidden md:block">
-          <Sidebar {...sidebarConfig} />
-        </div>
-
-        {/* Main content area — extra bottom padding op mobile voor BottomNav */}
-        <main className="flex-1 overflow-y-auto p-4 pb-20 md:p-6 md:pb-6">{children}</main>
+    <div className="flex h-dvh" style={{ backgroundColor: "var(--surface-page)" }}>
+      {/* Desktop sidebar — verborgen op mobile */}
+      <div className="hidden md:block">
+        <Sidebar {...sidebarConfig} />
       </div>
 
-      {/* Mobile BottomNav — position:fixed, buiten de flex container */}
-      <div className="md:hidden">
+      {/* Main content area — extra bottom padding op mobile voor BottomNav */}
+      <main className="flex-1 overflow-y-auto p-4 pb-20 md:p-6 md:pb-6">{children}</main>
+
+      {/* Mobile BottomNav — fixed wrapper zodat het niet de flex layout beïnvloedt */}
+      <div className="fixed inset-x-0 bottom-0 z-50 md:hidden">
         <BottomNav items={bottomNavItems}>
           <button
             onClick={() => setAppSwitcherOpen(true)}
@@ -96,9 +96,10 @@ export function MonitorShell({ children }: MonitorShellProps) {
             <span className="font-medium">Apps</span>
           </button>
         </BottomNav>
-
-        <AppSwitcher open={appSwitcherOpen} onClose={() => setAppSwitcherOpen(false)} />
       </div>
-    </>
+
+      {/* AppSwitcher overlay — altijd beschikbaar, toont zichzelf als open */}
+      <AppSwitcher open={appSwitcherOpen} onClose={() => setAppSwitcherOpen(false)} />
+    </div>
   );
 }

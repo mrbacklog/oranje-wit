@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
+import { FloatingAppSwitcher } from "@/components/FloatingAppSwitcher";
 import "./globals.css";
 
 const geist = Geist({ variable: "--font-geist", subsets: ["latin"] });
@@ -31,6 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         style={{ backgroundColor: "var(--surface-page)", color: "var(--text-primary)" }}
       >
         {children}
+        <FloatingAppSwitcher />
       </body>
     </html>
   );
