@@ -17,4 +17,4 @@ export { TopBar } from "./top-bar";
 export type { TopBarProps } from "./top-bar";
 
 export { AppSwitcher } from "./app-switcher";
-export type { AppSwitcherProps, AppInfo } from "./app-switcher";
+export type { AppSwitcherProps, AppSwitcherProfile, AppInfo } from "./app-switcher";

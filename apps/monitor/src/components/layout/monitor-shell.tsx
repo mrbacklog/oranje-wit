@@ -2,6 +2,7 @@
 
 import { useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
+import { useSession, signOut } from "next-auth/react";
 import {
   Sidebar,
   type SidebarConfig,
@@ -10,22 +11,22 @@ import {
   HomeIcon,
   PeopleIcon,
   ChartIcon,
+  ProfileIcon,
   GridIcon,
   AppSwitcher,
 } from "@oranje-wit/ui";
 
-// ─── Alert icon voor Signalering BottomNav item ──────────────
-function AlertIcon({ active }: { active: boolean }) {
+// ─── Spelers icon voor BottomNav ─────────────────────────────
+function SpelersIcon({ active }: { active: boolean }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6" strokeWidth={active ? 2.5 : 1.5}>
+      <circle cx="12" cy="8" r="4" stroke="currentColor" />
       <path
-        d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
+        d="M6 21v-1a6 6 0 0112 0v1"
         stroke="currentColor"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <line x1="12" y1="9" x2="12" y2="13" stroke="currentColor" strokeLinecap="round" />
-      <line x1="12" y1="17" x2="12.01" y2="17" stroke="currentColor" strokeLinecap="round" />
     </svg>
   );
 }
@@ -35,7 +36,7 @@ const bottomNavItems: NavItem[] = [
   { href: "/", label: "Home", icon: HomeIcon },
   { href: "/teams", label: "Teams", icon: PeopleIcon },
   { href: "/retentie", label: "Analyse", icon: ChartIcon },
-  { href: "/signalering", label: "Signalen", icon: AlertIcon },
+  { href: "/spelers", label: "Spelers", icon: SpelersIcon },
 ];
 
 // ─── Desktop sidebar configuratie ────────────────────────────
@@ -53,9 +54,6 @@ const sidebarConfig: SidebarConfig = {
     { label: "Jeugdpijplijn", href: "/projecties", icon: "🎯" },
     { label: "Signalering", href: "/signalering", icon: "⚠️" },
   ],
-  footer: {
-    showAppSwitcher: true,
-  },
 };
 
 // ─── MonitorShell ────────────────────────────────────────────
@@ -66,12 +64,21 @@ interface MonitorShellProps {
 
 export function MonitorShell({ children }: MonitorShellProps) {
   const pathname = usePathname();
+  const { data: session } = useSession();
   const [appSwitcherOpen, setAppSwitcherOpen] = useState(false);
 
   // Login pagina: geen shell
   if (pathname === "/login") {
     return <>{children}</>;
   }
+
+  const profile = session?.user
+    ? {
+        name: session.user.name || "Gebruiker",
+        detail: session.user.email || undefined,
+        onSignOut: () => signOut({ callbackUrl: "/login" }),
+      }
+    : undefined;
 
   return (
     <div className="flex h-dvh" style={{ backgroundColor: "var(--surface-page)" }}>
@@ -98,8 +105,12 @@ export function MonitorShell({ children }: MonitorShellProps) {
         </BottomNav>
       </div>
 
-      {/* AppSwitcher overlay — altijd beschikbaar, toont zichzelf als open */}
-      <AppSwitcher open={appSwitcherOpen} onClose={() => setAppSwitcherOpen(false)} />
+      {/* AppSwitcher overlay — met profiel */}
+      <AppSwitcher
+        open={appSwitcherOpen}
+        onClose={() => setAppSwitcherOpen(false)}
+        profile={profile}
+      />
     </div>
   );
 }

@@ -40,6 +40,32 @@ Nieuwe gedeelde componenten worden ALTIJD eerst door de ux-designer ontworpen.
 | `--border-default` | Standaard borders |
 | `--ow-oranje-500` | Primaire accent (oranje) |
 
+## Mobile navigatie-patroon
+
+Alle apps volgen hetzelfde mobile navigatie-model:
+
+### TopBar (fixed, boven)
+- **Links**: paginatitel (+ onBack op detailpagina's)
+- **Rechts**: acties (alerts, gebruikersprofiel, info-knop)
+- Component: `TopBar` uit `packages/ui`
+
+### BottomNav (fixed, onder)
+- **4 in-app knoppen** — elke app kiest de 4 belangrijkste secties
+- **1 universele Apps-knop** (5e positie) — opent de `AppSwitcher` bottom sheet
+- Component: `BottomNav` uit `packages/ui`
+- **Geen hamburger menu** — alles wat niet in de BottomNav staat is bereikbaar via links in de content (KPI-cards, inline navigatie, breadcrumbs)
+
+### AppSwitcher
+- Bottom sheet met 3x2 grid van alle OW apps
+- Huidige app gemarkeerd met oranje vinkje
+- Component: `AppSwitcher` uit `packages/ui`
+
+### Regels
+- Maximaal 4 in-app items + 1 Apps-knop = 5 posities totaal
+- Touch targets minimaal 44px
+- Geen verborgen menu's — als het niet in de BottomNav past, is het max 1 tik weg via content
+- Desktop: Sidebar vervangt de BottomNav (alle secties zichtbaar)
+
 ## Visual regression tests
 
 - Bestand: `e2e/tests/design-system.spec.ts`

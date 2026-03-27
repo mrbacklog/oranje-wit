@@ -37,7 +37,7 @@ export {
 export { TopBar } from "./navigation/top-bar";
 export type { TopBarProps } from "./navigation/top-bar";
 export { AppSwitcher } from "./navigation/app-switcher";
-export type { AppSwitcherProps, AppInfo } from "./navigation/app-switcher";
+export type { AppSwitcherProps, AppSwitcherProfile, AppInfo } from "./navigation/app-switcher";
 export {
   MonitorIcon as MonitorAppIcon,
   TeamIndelingIcon as TeamIndelingAppIcon,
