@@ -162,7 +162,7 @@ catch (error) {
 - **VIEW-definitie**: `packages/database/prisma/views.sql` (buiten Prisma-beheer)
 - **NOOIT** `db:push` gebruiken — gebruik `db:migrate` (zie `packages/database/MIGRATIE.md`)
 
-### Tabelverdeling (53+ modellen)
+### Tabelverdeling (61 modellen)
 
 **Competitie-data (2)**:
 CompetitieSpeler (`competitie_spelers`), CompetitieRonde (`competitie_rondes`)
@@ -171,20 +171,23 @@ VIEW `speler_seizoenen` — afgeleid uit `competitie_spelers` (DISTINCT ON rel_c
 **Verenigingsmonitor (12)** (snake_case via `@@map`):
 Lid, LidFoto, Seizoen, OWTeam, TeamAlias, TeamPeriode, Ledenverloop, CohortSeizoen, Signalering, Streefmodel, PoolStand, PoolStandRegel
 
-**Team-Indeling (21)** (PascalCase):
-User, Speler, Staf, StafToewijzing, Blauwdruk, Pin, Concept, Scenario, Versie, Team, SelectieGroep, SelectieSpeler, SelectieStaf, TeamSpeler, TeamStaf, Evaluatie, LogEntry, Import, ReferentieTeam, Werkitem, Actiepunt
+**Team-Indeling (26)** (PascalCase):
+User, Speler, Staf, StafToewijzing, Blauwdruk, BlauwdrukBesluit, BlauwdrukSpeler, StandaardVraag, Pin, Concept, Scenario, ScenarioSnapshot, Versie, Team, SelectieGroep, SelectieSpeler, SelectieStaf, TeamSpeler, TeamStaf, Evaluatie, LogEntry, Import, ReferentieTeam, Werkitem, Actiepunt, Mijlpaal
 
 **Evaluatie (6)**:
 EvaluatieRonde, Coordinator, CoordinatorTeam, EvaluatieUitnodiging, SpelerZelfEvaluatie, EmailTemplate
 
-**Scouting (4)** (snake_case via `@@map`):
-ScoutingVerzoek, ScoutingToewijzing, ScoutingRapport, ScoutingBeoordeling
+**Scouting (9)** (snake_case via `@@map`):
+ScoutingVerzoek, ScoutToewijzing, ScoutingRapport, Scout, TeamScoutingSessie, ScoutBadge, ScoutChallenge, ScoutingVergelijking, ScoutingVergelijkingPositie
 
 **Jeugdontwikkeling (4)** (raamwerk, was: catalogus):
 RaamwerkVersie (`raamwerk_versies`), Leeftijdsgroep (`leeftijdsgroepen`), Pijler (`pijlers`), OntwikkelItem (`ontwikkel_items`)
 
-**Systeem (4)**:
-Gebruiker, GebruikerRol, AuthToken, EmailTemplate
+**Systeem (5)**:
+Gebruiker, VerificatieToken, ToegangsToken, Activiteit, Aanmelding
+
+**Speler-extensies (3)**:
+FysiekProfiel, SpelerUSS, SpelersKaart
 
 ### Competitie-datamodel
 

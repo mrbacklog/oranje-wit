@@ -73,17 +73,19 @@ PLEZIER + ONTWIKKELING + PRESTATIE → DUURZAAMHEID
 ```
 oranje-wit/
 ├── apps/
-│   ├── monitor/          # Verenigingsmonitor (Next.js 16, poort 4102)
-│   ├── team-indeling/    # Team-Indeling (Next.js 16, poort 4100)
-│   ├── evaluatie/        # Evaluatie-app (Next.js 16, poort 4104)
-│   ├── scouting/         # Scouting-app (Next.js 16, mobile-first PWA, poort 4106)
-│   ├── beheer/           # TC Beheer-paneel (Next.js 16, 9 domeinen, poort 4108)
+│   ├── web/              # Geconsolideerde app (Next.js 16, poort 3000, alle domeinen)
+│   │   └── src/app/
+│   │       ├── (monitor)/        # Route group: Verenigingsmonitor
+│   │       ├── (teamindeling)/   # Route group: Team-Indeling
+│   │       ├── (evaluatie)/      # Route group: Evaluatie
+│   │       ├── (scouting)/       # Route group: Scouting (mobile-first PWA)
+│   │       └── (beheer)/         # Route group: TC Beheer (9 domeinen)
 │   └── mcp/              # MCP servers (database, Railway)
 ├── packages/
 │   ├── auth/             # @oranje-wit/auth — NextAuth v5 + Google OAuth
 │   ├── database/         # @oranje-wit/database — Prisma schema + client (source of truth)
 │   ├── types/            # @oranje-wit/types — Gedeelde TypeScript types
-│   └── ui/               # @oranje-wit/ui — Gedeelde React componenten (51 componenten)
+│   └── ui/               # @oranje-wit/ui — Gedeelde React componenten
 ├── .claude/
 │   ├── agents/           # Agent-definities (20 agents)
 │   └── skills/           # Skills (37 skills, flat structuur)
@@ -94,8 +96,8 @@ oranje-wit/
 ```
 
 - **Workspace**: pnpm workspaces
-- **Dev commando's**: `pnpm dev:ti` (TI), `pnpm dev:monitor` (Monitor), `pnpm dev:evaluatie` (Evaluatie), `pnpm dev:beheer` (Beheer)
-- **Build**: `pnpm build:evaluatie`, `pnpm build:beheer`
+- **Dev**: `pnpm dev` (start de geconsolideerde app op poort 3000)
+- **Build**: `pnpm build`
 - **Database**: `pnpm db:generate`, `pnpm db:migrate` (NOOIT `db:push`)
 - **Import**: `pnpm import` (monitor data), `pnpm import:evaluaties` (evaluaties)
 - **Tests**: `pnpm test` (unit), `pnpm test:e2e` (E2E)
@@ -105,17 +107,18 @@ oranje-wit/
 PostgreSQL op Railway (`shinkansen.proxy.rlwy.net:18957`, DB: `oranjewit`).
 Prisma is de source of truth: `packages/database/prisma/schema.prisma`.
 
-**53+ modellen in 7 groepen:**
+**61 modellen in 8 groepen:**
 
 | Groep | Modellen |
 |---|---|
 | Competitie-data (2) | CompetitieSpeler, CompetitieRonde |
 | Monitor (12) | Lid, LidFoto, Seizoen, OWTeam, TeamAlias, TeamPeriode, Ledenverloop, CohortSeizoen, Signalering, Streefmodel, PoolStand, PoolStandRegel |
-| Team-Indeling (21) | User, Speler, Staf, StafToewijzing, Blauwdruk, Pin, Concept, Scenario, Versie, Team, SelectieGroep, SelectieSpeler, SelectieStaf, TeamSpeler, TeamStaf, Evaluatie, LogEntry, Import, ReferentieTeam, Werkitem, Actiepunt |
+| Team-Indeling (26) | User, Speler, Staf, StafToewijzing, Blauwdruk, BlauwdrukBesluit, BlauwdrukSpeler, StandaardVraag, Pin, Concept, Scenario, ScenarioSnapshot, Versie, Team, SelectieGroep, SelectieSpeler, SelectieStaf, TeamSpeler, TeamStaf, Evaluatie, LogEntry, Import, ReferentieTeam, Werkitem, Actiepunt, Mijlpaal |
 | Evaluatie (6) | EvaluatieRonde, Coordinator, CoordinatorTeam, EvaluatieUitnodiging, SpelerZelfEvaluatie, EmailTemplate |
-| Scouting (4) | ScoutingVerzoek, ScoutingToewijzing, ScoutingRapport, ScoutingBeoordeling |
+| Scouting (9) | ScoutingVerzoek, ScoutToewijzing, ScoutingRapport, Scout, TeamScoutingSessie, ScoutBadge, ScoutChallenge, ScoutingVergelijking, ScoutingVergelijkingPositie |
 | Jeugdontwikkeling (4) | RaamwerkVersie, Leeftijdsgroep, Pijler, OntwikkelItem |
-| Systeem (4) | Gebruiker, GebruikerRol, AuthToken, EmailTemplate |
+| Systeem (5) | Gebruiker, VerificatieToken, ToegangsToken, Activiteit, Aanmelding |
+| Speler-extensies (3) | FysiekProfiel, SpelerUSS, SpelersKaart |
 
 **Competitie-datamodel:**
 ```
@@ -189,7 +192,7 @@ Bepaal je domein op basis van je `skills:`-lijst in `.claude/agents/{jouw-naam}.
 
 **Lees ook:** `rules/data.md`
 
-De Verenigingsmonitor is een Next.js 16 app (poort 4102) met dashboards. Data komt uit meerdere bronnen:
+De Verenigingsmonitor is de route group `(monitor)` in `apps/web/` (route `/monitor/*`). Dashboards met data uit meerdere bronnen:
 
 **Data-pipeline:**
 - `competitie_spelers` (primaire tabel, data staat definitief in DB)
@@ -202,7 +205,7 @@ De Verenigingsmonitor is een Next.js 16 app (poort 4102) met dashboards. Data ko
 
 **Lees ook:** `rules/knkv-regels.md`, `rules/ow-voorkeuren.md`
 
-De Team-Indeling is een Next.js 16 app (poort 4100) met:
+De Team-Indeling is de route group `(teamindeling)` in `apps/web/` (route `/teamindeling/*`) met:
 - **Stack**: React 19, Tailwind CSS 4, NextAuth v5 (EDITOR/VIEWER rollen), dnd-kit
 - **Workflow**: blauwdruk → concept → scenario → definitief
 - **Blauwdruk**: teamgrootte-targets, genderregels, leeftijdsgrenzen
@@ -212,7 +215,7 @@ De Team-Indeling is een Next.js 16 app (poort 4100) met:
 
 ### Als je skills `evaluatie/*` bevatten → Evaluatie-domein
 
-De Evaluatie-app is een Next.js 16 app (poort 4104) met:
+De Evaluatie-app is de route group `(evaluatie)` in `apps/web/` (route `/evaluatie/*`) met:
 - Spelerevaluaties en zelfevaluaties per seizoen
 - Uitnodigingen en email templates
 - Direct gekoppeld aan leden en teams via rel_code
