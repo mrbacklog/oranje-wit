@@ -59,6 +59,21 @@ export {
   APP_META,
 } from "./navigation/app-icons";
 export type { AppIconProps, AppId } from "./navigation/app-icons";
+export {
+  APP_MANIFEST,
+  ALL_APPS,
+  MONITOR,
+  TEAM_INDELING,
+  EVALUATIE,
+  SCOUTING,
+  BEHEER,
+} from "./navigation/manifest";
+export type {
+  AppManifest,
+  ManifestNavItem,
+  ManifestPill,
+  ManifestSection,
+} from "./navigation/manifest";
 
 // Primitives
 export { Button } from "./primitives/button";

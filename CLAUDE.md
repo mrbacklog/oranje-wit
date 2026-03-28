@@ -392,6 +392,28 @@ Frontend-wijzigingen MOETEN via het design system:
 - Alle apps hebben `data-theme="dark"` op `<html>`
 - Team-indeling desktop: legacy licht thema (bewust), mobile variant is dark-first
 
+### Navigatie (VERPLICHT — geen afwijkingen)
+
+**Single Source of Truth**: `packages/ui/src/navigation/manifest.ts`
+**Design regels**: `rules/design-system.md` sectie "Navigatie-architectuur"
+
+Alle domein-apps volgen hetzelfde navigatiepatroon:
+- **Mobile-first**: BottomNav + Pills + TopBar. Geen sidebar, geen hamburger
+- **4+1**: precies 4 functionele knoppen + 1 Apps-knop (AppSwitcher)
+- **Geen "Home"**: positie 1 heet naar zijn functie ("Overzicht", "Planning"), nooit "Home"
+- **Pills**: horizontale tabs voor sub-onderdelen binnen een bottom-nav-sectie
+- **Domein-accent**: elke app heeft een eigen kleur (groen, blauw, geel, oranje, grijs) die in TopBar, active nav-item en active pill verschijnt
+
+| App | Pos 1 | Pos 2 | Pos 3 | Pos 4 | Accent |
+|---|---|---|---|---|---|
+| Monitor | Overzicht | Teams | Analyse | Signalen | `#22c55e` |
+| Team-Indeling | Overzicht | Blauwdruk | Werkbord | Scenario's | `#3b82f6` |
+| Evaluatie | Overzicht | Rondes | Teams | Resultaten | `#eab308` |
+| Scouting | Overzicht | Opdrachten | Zoeken | Profiel | `#ff6b00` |
+| Beheer | Planning | Inrichting | Data | Gebruikers | `#9ca3af` |
+
+**Agents MOETEN `manifest.ts` raadplegen** voor navigatiestructuur. NOOIT zelf navigatie-items verzinnen of hardcoden in domain-shell bestanden zonder dat het manifest de bron is.
+
 ### Commando's
 | Commando | Wat |
 |---|---|

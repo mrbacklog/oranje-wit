@@ -78,4 +78,3 @@ export async function getCapabilities(email: string): Promise<GebruikerCapabilit
   }
   return TC_FALLBACK[email.toLowerCase()] ?? null;
 }
-
