@@ -10,6 +10,13 @@ Monorepo voor alle digitale tools van c.k.v. Oranje Wit. Alle domeinen (Monitor,
 oranje-wit/
 ├── apps/
 │   ├── web/              # Geconsolideerde app (Next.js 16, alle domeinen)
+│   │   └── src/app/
+│   │       ├── (teamindeling)/       # Route group: Team-Indeling Mobile (dark)
+│   │       ├── (teamindeling-studio)/ # Route group: Team-Indeling Studio (desktop)
+│   │       ├── (monitor)/            # Route group: Verenigingsmonitor
+│   │       ├── (evaluatie)/          # Route group: Evaluatie
+│   │       ├── (scouting)/           # Route group: Scouting
+│   │       └── (beheer)/             # Route group: TC Beheer
 │   └── mcp/              # MCP servers (database, Railway)
 ├── packages/
 │   ├── auth/             # @oranje-wit/auth — NextAuth v5 + Google OAuth
@@ -20,7 +27,7 @@ oranje-wit/
 ├── .claude/
 │   ├── agents/           # AI agent-definities
 │   └── skills/           # AI skills (37 skills, flat structuur)
-├── rules/                # Contextregels (8 bestanden) — Single Source of Truth
+├── rules/                # Contextregels (9 bestanden) — Single Source of Truth
 ├── scripts/              # Data-pipeline en import scripts
 │   ├── js/               #   JavaScript (verloop, cohorten, signalering)
 │   ├── python/           #   Python (analyses, streefboog)
@@ -64,7 +71,8 @@ oranje-wit/
 |---|---|---|
 | `/` | Portaal (app-launcher) | portaal.ckvoranjewit.app |
 | `/monitor/*` | Verenigingsmonitor | monitor.ckvoranjewit.app |
-| `/teamindeling/*` | Team-Indeling | teamindeling.ckvoranjewit.app |
+| `/teamindeling/*` | Team-Indeling Mobile (dark, review) | nieuw |
+| `/ti-studio/*` | Team-Indeling Studio (desktop, bewerken) | teamindeling.ckvoranjewit.app |
 | `/evaluatie/*` | Evaluatie | evaluatie.ckvoranjewit.app |
 | `/scouting/*` | Scouting | scout.ckvoranjewit.app |
 | `/beheer/*` | TC Beheer (9 domeinen) | beheer.ckvoranjewit.app |
@@ -367,6 +375,7 @@ Rules zijn de **Single Source of Truth** voor domeinkennis. Agents en skills ver
 | `score-model.md` | USS schaal, speler/team score formules, kalibratie, coach/scouting integratie |
 | `beheer.md` | Ubiquitous language, 9 TC-domeinen, autorisatie, temporeel model |
 | `design-system.md` | Dark-first tokens, component hiërarchie, visual tests, design gate |
+| `teamindeling-scheiding.md` | Desktop/mobile scheiding, agent-vuistregels |
 
 ## Design System
 
@@ -390,7 +399,7 @@ Frontend-wijzigingen MOETEN via het design system:
 - `:root` in tokens.css = dark mode (default)
 - `[data-theme="light"]` = light override
 - Alle apps hebben `data-theme="dark"` op `<html>`
-- Team-indeling desktop: legacy licht thema (bewust), mobile variant is dark-first
+- Team-indeling heeft twee route groups: (teamindeling) = mobile dark, (teamindeling-studio) = desktop light (wordt dark). Zie rules/teamindeling-scheiding.md.
 
 ### Navigatie (VERPLICHT — geen afwijkingen)
 
