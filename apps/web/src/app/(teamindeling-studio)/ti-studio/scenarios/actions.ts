@@ -417,7 +417,7 @@ export async function markeerDefinitief(scenarioId: string) {
   });
 
   revalidatePath("/scenarios");
-  redirect("/teamindeling/scenarios");
+  redirect("/ti-studio/scenarios");
 }
 
 // ---------------------------------------------------------------------------

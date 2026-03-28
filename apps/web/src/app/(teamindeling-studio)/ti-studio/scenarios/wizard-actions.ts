@@ -93,7 +93,7 @@ export async function createScenarioVanuitBlauwdruk(
     },
   });
 
-  redirect(`/teamindeling/scenarios/${scenario.id}`);
+  redirect(`/ti-studio/scenarios/${scenario.id}`);
 }
 
 // ---------------------------------------------------------------------------
@@ -131,7 +131,7 @@ export async function createLeegScenario(blauwdrukId: string, naam: string) {
     },
   });
 
-  redirect(`/teamindeling/scenarios/${scenario.id}`);
+  redirect(`/ti-studio/scenarios/${scenario.id}`);
 }
 
 // ---------------------------------------------------------------------------
@@ -267,7 +267,7 @@ export async function kopieerScenario(bronScenarioId: string, naam: string) {
     return nieuwScenario;
   });
 
-  redirect(`/teamindeling/scenarios/${scenario.id}`);
+  redirect(`/ti-studio/scenarios/${scenario.id}`);
 }
 
 // ---------------------------------------------------------------------------
