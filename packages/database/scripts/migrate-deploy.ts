@@ -12,7 +12,8 @@
 import { config } from "dotenv";
 import { resolve, join } from "path";
 
-// Laad .env uit de monorepo root
+// Laad .env.local (als het bestaat), dan .env als fallback — zelfde volgorde als Next.js
+config({ path: resolve(__dirname, "..", "..", "..", ".env.local") });
 config({ path: resolve(__dirname, "..", "..", "..", ".env") });
 
 import { execSync } from "child_process";

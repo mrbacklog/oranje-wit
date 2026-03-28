@@ -1,15 +1,23 @@
--- Baseline migratie: gegenereerd vanuit schema.prisma
--- Deze migratie is gemarkeerd als "already applied" (baselining)
--- De database bevat al alle tabellen — deze SQL is NIET uitgevoerd.
-
--- CreateSchema
-CREATE SCHEMA IF NOT EXISTS "public";
+-- CreateEnum
+CREATE TYPE "SeizoenStatus" AS ENUM ('VOORBEREIDING', 'ACTIEF', 'AFGEROND');
 
 -- CreateEnum
-CREATE TYPE "Rol" AS ENUM ('EDITOR', 'REVIEWER', 'VIEWER');
+CREATE TYPE "Rol" AS ENUM ('EDITOR', 'COORDINATOR', 'REVIEWER', 'VIEWER');
 
 -- CreateEnum
 CREATE TYPE "Geslacht" AS ENUM ('M', 'V');
+
+-- CreateEnum
+CREATE TYPE "GezienStatus" AS ENUM ('ONGEZIEN', 'GROEN', 'GEEL', 'ORANJE', 'ROOD');
+
+-- CreateEnum
+CREATE TYPE "AntwoordType" AS ENUM ('TEKST', 'GETAL', 'JA_NEE', 'KEUZE', 'GETAL_RANGE');
+
+-- CreateEnum
+CREATE TYPE "BesluitStatus" AS ENUM ('ONDUIDELIJK', 'VOORLOPIG', 'DEFINITIEF');
+
+-- CreateEnum
+CREATE TYPE "BesluitNiveau" AS ENUM ('BESTUURLIJK', 'TECHNISCH');
 
 -- CreateEnum
 CREATE TYPE "PinType" AS ENUM ('SPELER_STATUS', 'SPELER_POSITIE', 'STAF_POSITIE');
@@ -48,7 +56,7 @@ CREATE TYPE "WerkitemStatus" AS ENUM ('OPEN', 'IN_BESPREKING', 'OPGELOST', 'GEAC
 CREATE TYPE "Besluitniveau" AS ENUM ('TC', 'BESTUUR', 'TRAINER');
 
 -- CreateEnum
-CREATE TYPE "Doelgroep" AS ENUM ('SENIOREN', 'JUNIOREN', 'ASPIRANTEN', 'PUPILLEN', 'WELPEN', 'ALLE');
+CREATE TYPE "Doelgroep" AS ENUM ('KWEEKVIJVER', 'ONTWIKKELHART', 'TOP', 'WEDSTRIJDSPORT', 'KORFBALPLEZIER', 'ALLE');
 
 -- CreateEnum
 CREATE TYPE "Entiteit" AS ENUM ('SPELER', 'STAF', 'TEAM', 'BLAUWDRUK');
@@ -61,6 +69,39 @@ CREATE TYPE "ActiviteitType" AS ENUM ('OPMERKING', 'ACTIEPUNT', 'STATUS_WIJZIGIN
 
 -- CreateEnum
 CREATE TYPE "ScoutingContext" AS ENUM ('WEDSTRIJD', 'TRAINING', 'OVERIG');
+
+-- CreateEnum
+CREATE TYPE "ScoutRol" AS ENUM ('SCOUT', 'TC');
+
+-- CreateEnum
+CREATE TYPE "VerzoekType" AS ENUM ('GENERIEK', 'SPECIFIEK', 'VERGELIJKING');
+
+-- CreateEnum
+CREATE TYPE "VerzoekStatus" AS ENUM ('OPEN', 'ACTIEF', 'AFGEROND', 'GEANNULEERD');
+
+-- CreateEnum
+CREATE TYPE "ToewijzingStatus" AS ENUM ('UITGENODIGD', 'GEACCEPTEERD', 'AFGEWEZEN', 'AFGEROND', 'GESTOPT');
+
+-- CreateEnum
+CREATE TYPE "VerzoekDoel" AS ENUM ('DOORSTROOM', 'SELECTIE', 'NIVEAUBEPALING', 'OVERIG');
+
+-- CreateEnum
+CREATE TYPE "ScoutSpelerRelatie" AS ENUM ('GEEN', 'OUDER', 'FAMILIE', 'BEKENDE', 'TRAINER');
+
+-- CreateEnum
+CREATE TYPE "RaamwerkStatus" AS ENUM ('CONCEPT', 'ACTIEF', 'GEARCHIVEERD');
+
+-- CreateEnum
+CREATE TYPE "LengteRelatief" AS ENUM ('ONDER_GEMIDDELD', 'GEMIDDELD', 'BOVENGEMIDDELD', 'UITZONDERLIJK');
+
+-- CreateEnum
+CREATE TYPE "Lichaamsbouw" AS ENUM ('LICHT', 'GEMIDDELD_LB', 'STEVIG');
+
+-- CreateEnum
+CREATE TYPE "AtetischType" AS ENUM ('ONDER_GEMIDDELD_AT', 'GEMIDDELD_AT', 'BOVENGEMIDDELD_AT', 'UITZONDERLIJK_AT');
+
+-- CreateEnum
+CREATE TYPE "AanmeldingStatus" AS ENUM ('AANMELDING', 'PROEFLES', 'INTAKE', 'LID', 'AFGEHAAKT');
 
 -- CreateTable
 CREATE TABLE "leden" (
@@ -104,6 +145,7 @@ CREATE TABLE "seizoenen" (
     "start_datum" DATE NOT NULL,
     "eind_datum" DATE NOT NULL,
     "peildatum" DATE NOT NULL,
+    "status" "SeizoenStatus" NOT NULL DEFAULT 'VOORBEREIDING',
 
     CONSTRAINT "seizoenen_pkey" PRIMARY KEY ("seizoen")
 );
@@ -288,6 +330,46 @@ CREATE TABLE "User" (
 );
 
 -- CreateTable
+CREATE TABLE "gebruikers" (
+    "id" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "naam" TEXT NOT NULL,
+    "is_tc" BOOLEAN NOT NULL DEFAULT false,
+    "is_tc_kern" BOOLEAN NOT NULL DEFAULT false,
+    "is_scout" BOOLEAN NOT NULL DEFAULT false,
+    "clearance" INTEGER NOT NULL DEFAULT 0,
+    "doelgroepen" "Doelgroep"[],
+    "actief" BOOLEAN NOT NULL DEFAULT true,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "gebruikers_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "verificatie_tokens" (
+    "identifier" TEXT NOT NULL,
+    "token" TEXT NOT NULL,
+    "expires" TIMESTAMP(3) NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "toegangs_tokens" (
+    "id" TEXT NOT NULL,
+    "token" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "naam" TEXT,
+    "type" TEXT NOT NULL,
+    "scope" JSONB NOT NULL,
+    "verloopt_op" TIMESTAMP(3) NOT NULL,
+    "gebruikt_op" TIMESTAMP(3),
+    "actief" BOOLEAN NOT NULL DEFAULT true,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "toegangs_tokens_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Speler" (
     "id" TEXT NOT NULL,
     "roepnaam" TEXT NOT NULL,
@@ -354,6 +436,65 @@ CREATE TABLE "Blauwdruk" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Blauwdruk_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "BlauwdrukSpeler" (
+    "id" TEXT NOT NULL,
+    "blauwdrukId" TEXT NOT NULL,
+    "spelerId" TEXT NOT NULL,
+    "gezienStatus" "GezienStatus" NOT NULL DEFAULT 'ONGEZIEN',
+    "notitie" TEXT,
+    "signalering" TEXT,
+    "actiepuntId" TEXT,
+    "gezienDoorId" TEXT,
+    "gezienOp" TIMESTAMP(3),
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "BlauwdrukSpeler_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "StandaardVraag" (
+    "id" TEXT NOT NULL,
+    "code" TEXT NOT NULL,
+    "vraag" TEXT NOT NULL,
+    "groep" TEXT NOT NULL,
+    "volgorde" INTEGER NOT NULL DEFAULT 0,
+    "actief" BOOLEAN NOT NULL DEFAULT true,
+    "antwoordType" "AntwoordType" NOT NULL DEFAULT 'TEKST',
+    "opties" TEXT[],
+    "toonAls" JSONB,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "StandaardVraag_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "BlauwdrukBesluit" (
+    "id" TEXT NOT NULL,
+    "blauwdrukId" TEXT NOT NULL,
+    "vraag" TEXT NOT NULL,
+    "isStandaard" BOOLEAN NOT NULL DEFAULT false,
+    "standaardCode" TEXT,
+    "volgorde" INTEGER NOT NULL DEFAULT 0,
+    "antwoordType" "AntwoordType" NOT NULL DEFAULT 'TEKST',
+    "antwoord" TEXT,
+    "antwoordWaarde" JSONB,
+    "opties" TEXT[],
+    "toonAls" JSONB,
+    "groep" TEXT,
+    "toelichting" TEXT,
+    "status" "BesluitStatus" NOT NULL DEFAULT 'ONDUIDELIJK',
+    "niveau" "BesluitNiveau" NOT NULL DEFAULT 'TECHNISCH',
+    "doelgroep" "Doelgroep",
+    "auteurId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "BlauwdrukBesluit_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -610,6 +751,7 @@ CREATE TABLE "Actiepunt" (
     "blauwdrukId" TEXT NOT NULL,
     "toegewezenAanId" TEXT NOT NULL,
     "auteurId" TEXT NOT NULL,
+    "besluitId" TEXT,
     "afgerondOp" TIMESTAMP(3),
     "volgorde" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -755,6 +897,8 @@ CREATE TABLE "scouts" (
     "stafId" TEXT,
     "xp" INTEGER NOT NULL DEFAULT 0,
     "level" INTEGER NOT NULL DEFAULT 1,
+    "rol" "ScoutRol" NOT NULL DEFAULT 'SCOUT',
+    "vrij_scouten" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -774,6 +918,9 @@ CREATE TABLE "scouting_rapporten" (
     "opmerking" TEXT,
     "overallScore" INTEGER,
     "teamSessieId" TEXT,
+    "verzoek_id" TEXT,
+    "relatie" "ScoutSpelerRelatie" NOT NULL DEFAULT 'GEEN',
+    "niet_beoordeeld" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -796,21 +943,53 @@ CREATE TABLE "team_scouting_sessies" (
 );
 
 -- CreateTable
+CREATE TABLE "scouting_verzoeken" (
+    "id" TEXT NOT NULL,
+    "type" "VerzoekType" NOT NULL,
+    "doel" "VerzoekDoel" NOT NULL DEFAULT 'NIVEAUBEPALING',
+    "status" "VerzoekStatus" NOT NULL DEFAULT 'OPEN',
+    "toelichting" TEXT,
+    "deadline" TIMESTAMP(3),
+    "anoniem" BOOLEAN NOT NULL DEFAULT false,
+    "team_id" TEXT,
+    "speler_ids" TEXT[],
+    "seizoen" TEXT NOT NULL,
+    "aangemaakt_door" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "scouting_verzoeken_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "scout_toewijzingen" (
+    "id" TEXT NOT NULL,
+    "verzoek_id" TEXT NOT NULL,
+    "scout_id" TEXT NOT NULL,
+    "status" "ToewijzingStatus" NOT NULL DEFAULT 'UITGENODIGD',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "scout_toewijzingen_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "spelers_kaarten" (
     "id" TEXT NOT NULL,
     "spelerId" TEXT NOT NULL,
     "seizoen" TEXT NOT NULL,
     "overall" INTEGER NOT NULL,
-    "schot" INTEGER NOT NULL,
-    "aanval" INTEGER NOT NULL,
-    "passing" INTEGER NOT NULL,
-    "verdediging" INTEGER NOT NULL,
-    "fysiek" INTEGER NOT NULL,
-    "mentaal" INTEGER NOT NULL,
+    "pijlerScores" JSONB,
     "aantalRapporten" INTEGER NOT NULL DEFAULT 0,
     "betrouwbaarheid" TEXT NOT NULL DEFAULT 'concept',
     "laatsteUpdate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "trendOverall" INTEGER DEFAULT 0,
+    "leeftijdsgroep" TEXT,
+    "schot" INTEGER,
+    "aanval" INTEGER,
+    "passing" INTEGER,
+    "verdediging" INTEGER,
+    "fysiek" INTEGER,
+    "mentaal" INTEGER,
 
     CONSTRAINT "spelers_kaarten_pkey" PRIMARY KEY ("id")
 );
@@ -838,6 +1017,161 @@ CREATE TABLE "scout_challenges" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "scout_challenges_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "raamwerk_versies" (
+    "id" TEXT NOT NULL,
+    "seizoen" TEXT NOT NULL,
+    "naam" TEXT NOT NULL,
+    "status" "RaamwerkStatus" NOT NULL DEFAULT 'CONCEPT',
+    "opmerking" TEXT,
+    "bron_versie_id" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "gepubliceerd_op" TIMESTAMP(3),
+
+    CONSTRAINT "raamwerk_versies_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "leeftijdsgroepen" (
+    "id" TEXT NOT NULL,
+    "versie_id" TEXT NOT NULL,
+    "band" TEXT NOT NULL,
+    "schaal_type" TEXT NOT NULL,
+    "max_score" INTEGER NOT NULL,
+    "doel_aantal" INTEGER NOT NULL DEFAULT 0,
+    "schaal_min" DECIMAL(6,2),
+    "schaal_max" DECIMAL(6,2),
+    "schaal_mediaan" DECIMAL(6,2),
+    "halve_bereik" DECIMAL(6,2),
+    "bandbreedte_coach" INTEGER,
+    "bandbreedte_scout" INTEGER,
+    "kern_items_target" INTEGER,
+
+    CONSTRAINT "leeftijdsgroepen_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "pijlers" (
+    "id" TEXT NOT NULL,
+    "groep_id" TEXT NOT NULL,
+    "code" TEXT NOT NULL,
+    "naam" TEXT NOT NULL,
+    "icoon" TEXT,
+    "volgorde" INTEGER NOT NULL DEFAULT 0,
+    "blok" TEXT,
+    "gewicht" DECIMAL(4,2),
+
+    CONSTRAINT "pijlers_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ontwikkel_items" (
+    "id" TEXT NOT NULL,
+    "pijler_id" TEXT NOT NULL,
+    "item_code" TEXT NOT NULL,
+    "label" TEXT NOT NULL,
+    "vraag_tekst" TEXT NOT NULL,
+    "laag" TEXT,
+    "is_kern" BOOLEAN NOT NULL DEFAULT true,
+    "categorie" TEXT,
+    "observatie" TEXT,
+    "volgorde" INTEGER NOT NULL DEFAULT 0,
+    "actief" BOOLEAN NOT NULL DEFAULT true,
+    "voorloper_id" TEXT,
+
+    CONSTRAINT "ontwikkel_items_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "fysiek_profielen" (
+    "id" TEXT NOT NULL,
+    "spelerId" TEXT NOT NULL,
+    "seizoen" TEXT NOT NULL,
+    "scoutId" TEXT,
+    "lengte" "LengteRelatief",
+    "lichaamsbouw" "Lichaamsbouw",
+    "atletisch_type" "AtetischType",
+    "opmerking" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "fysiek_profielen_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "speler_uss" (
+    "id" TEXT NOT NULL,
+    "spelerId" TEXT NOT NULL,
+    "seizoen" TEXT NOT NULL,
+    "leeftijdsgroep" TEXT NOT NULL,
+    "uss_overall" INTEGER,
+    "uss_pijlers" JSONB,
+    "uss_coach" INTEGER,
+    "uss_scout" INTEGER,
+    "uss_vergelijking" INTEGER,
+    "uss_team" INTEGER,
+    "uss_basislijn" INTEGER,
+    "uss_coach_pijlers" JSONB,
+    "uss_scout_pijlers" JSONB,
+    "uss_vergelijking_pijlers" JSONB,
+    "aantal_coach_sessies" INTEGER NOT NULL DEFAULT 0,
+    "aantal_scout_sessies" INTEGER NOT NULL DEFAULT 0,
+    "aantal_vergelijkingen" INTEGER NOT NULL DEFAULT 0,
+    "betrouwbaarheid" TEXT NOT NULL DEFAULT 'concept',
+    "cross_validatie_signalen" JSONB,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "speler_uss_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "scouting_vergelijkingen" (
+    "id" TEXT NOT NULL,
+    "scoutId" TEXT NOT NULL,
+    "seizoen" TEXT NOT NULL,
+    "datum" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "context" "ScoutingContext" NOT NULL,
+    "opmerking" TEXT,
+    "team_id" INTEGER,
+    "verzoek_id" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "scouting_vergelijkingen_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "scouting_vergelijking_posities" (
+    "id" TEXT NOT NULL,
+    "vergelijking_id" TEXT NOT NULL,
+    "spelerId" TEXT NOT NULL,
+    "pijler_code" TEXT NOT NULL,
+    "balk_positie" DECIMAL(5,2) NOT NULL,
+    "is_anker" BOOLEAN NOT NULL DEFAULT false,
+
+    CONSTRAINT "scouting_vergelijking_posities_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "aanmeldingen" (
+    "id" TEXT NOT NULL,
+    "naam" TEXT NOT NULL,
+    "email" TEXT,
+    "telefoon" TEXT,
+    "geboortejaar" INTEGER,
+    "opmerking" TEXT,
+    "status" "AanmeldingStatus" NOT NULL DEFAULT 'AANMELDING',
+    "bron" TEXT,
+    "ledenadmin" TEXT,
+    "trainer" TEXT,
+    "tc_lid" TEXT,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "aanmeldingen_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -907,6 +1241,21 @@ CREATE UNIQUE INDEX "pool_stand_regels_pool_stand_id_positie_key" ON "pool_stand
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "gebruikers_email_key" ON "gebruikers"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "verificatie_tokens_token_key" ON "verificatie_tokens"("token");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "verificatie_tokens_identifier_token_key" ON "verificatie_tokens"("identifier", "token");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "toegangs_tokens_token_key" ON "toegangs_tokens"("token");
+
+-- CreateIndex
+CREATE INDEX "toegangs_tokens_token_idx" ON "toegangs_tokens"("token");
+
+-- CreateIndex
 CREATE INDEX "Speler_geboortejaar_idx" ON "Speler"("geboortejaar");
 
 -- CreateIndex
@@ -926,6 +1275,30 @@ CREATE UNIQUE INDEX "staf_toewijzingen_staf_id_seizoen_team_key" ON "staf_toewij
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Blauwdruk_seizoen_key" ON "Blauwdruk"("seizoen");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "BlauwdrukSpeler_actiepuntId_key" ON "BlauwdrukSpeler"("actiepuntId");
+
+-- CreateIndex
+CREATE INDEX "BlauwdrukSpeler_blauwdrukId_idx" ON "BlauwdrukSpeler"("blauwdrukId");
+
+-- CreateIndex
+CREATE INDEX "BlauwdrukSpeler_spelerId_idx" ON "BlauwdrukSpeler"("spelerId");
+
+-- CreateIndex
+CREATE INDEX "BlauwdrukSpeler_gezienStatus_idx" ON "BlauwdrukSpeler"("gezienStatus");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "BlauwdrukSpeler_blauwdrukId_spelerId_key" ON "BlauwdrukSpeler"("blauwdrukId", "spelerId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "StandaardVraag_code_key" ON "StandaardVraag"("code");
+
+-- CreateIndex
+CREATE INDEX "BlauwdrukBesluit_blauwdrukId_idx" ON "BlauwdrukBesluit"("blauwdrukId");
+
+-- CreateIndex
+CREATE INDEX "BlauwdrukBesluit_status_idx" ON "BlauwdrukBesluit"("status");
 
 -- CreateIndex
 CREATE INDEX "Pin_blauwdrukId_idx" ON "Pin"("blauwdrukId");
@@ -1078,13 +1451,73 @@ CREATE INDEX "scouting_rapporten_scoutId_datum_idx" ON "scouting_rapporten"("sco
 CREATE INDEX "scouting_rapporten_teamSessieId_idx" ON "scouting_rapporten"("teamSessieId");
 
 -- CreateIndex
+CREATE INDEX "scouting_rapporten_verzoek_id_idx" ON "scouting_rapporten"("verzoek_id");
+
+-- CreateIndex
 CREATE INDEX "team_scouting_sessies_owTeamId_seizoen_idx" ON "team_scouting_sessies"("owTeamId", "seizoen");
+
+-- CreateIndex
+CREATE INDEX "scouting_verzoeken_seizoen_idx" ON "scouting_verzoeken"("seizoen");
+
+-- CreateIndex
+CREATE INDEX "scouting_verzoeken_status_idx" ON "scouting_verzoeken"("status");
+
+-- CreateIndex
+CREATE INDEX "scout_toewijzingen_scout_id_idx" ON "scout_toewijzingen"("scout_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "scout_toewijzingen_verzoek_id_scout_id_key" ON "scout_toewijzingen"("verzoek_id", "scout_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "spelers_kaarten_spelerId_seizoen_key" ON "spelers_kaarten"("spelerId", "seizoen");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "scout_badges_scoutId_badge_key" ON "scout_badges"("scoutId", "badge");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "raamwerk_versies_seizoen_key" ON "raamwerk_versies"("seizoen");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "leeftijdsgroepen_versie_id_band_key" ON "leeftijdsgroepen"("versie_id", "band");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "pijlers_groep_id_code_key" ON "pijlers"("groep_id", "code");
+
+-- CreateIndex
+CREATE INDEX "ontwikkel_items_pijler_id_volgorde_idx" ON "ontwikkel_items"("pijler_id", "volgorde");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ontwikkel_items_pijler_id_item_code_key" ON "ontwikkel_items"("pijler_id", "item_code");
+
+-- CreateIndex
+CREATE INDEX "fysiek_profielen_spelerId_idx" ON "fysiek_profielen"("spelerId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "fysiek_profielen_spelerId_seizoen_key" ON "fysiek_profielen"("spelerId", "seizoen");
+
+-- CreateIndex
+CREATE INDEX "speler_uss_spelerId_idx" ON "speler_uss"("spelerId");
+
+-- CreateIndex
+CREATE INDEX "speler_uss_seizoen_idx" ON "speler_uss"("seizoen");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "speler_uss_spelerId_seizoen_key" ON "speler_uss"("spelerId", "seizoen");
+
+-- CreateIndex
+CREATE INDEX "scouting_vergelijkingen_seizoen_idx" ON "scouting_vergelijkingen"("seizoen");
+
+-- CreateIndex
+CREATE INDEX "scouting_vergelijkingen_scoutId_idx" ON "scouting_vergelijkingen"("scoutId");
+
+-- CreateIndex
+CREATE INDEX "scouting_vergelijking_posities_vergelijking_id_idx" ON "scouting_vergelijking_posities"("vergelijking_id");
+
+-- CreateIndex
+CREATE INDEX "scouting_vergelijking_posities_spelerId_idx" ON "scouting_vergelijking_posities"("spelerId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "scouting_vergelijking_posities_vergelijking_id_spelerId_pij_key" ON "scouting_vergelijking_posities"("vergelijking_id", "spelerId", "pijler_code");
 
 -- AddForeignKey
 ALTER TABLE "lid_fotos" ADD CONSTRAINT "lid_fotos_rel_code_fkey" FOREIGN KEY ("rel_code") REFERENCES "leden"("rel_code") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -1127,6 +1560,24 @@ ALTER TABLE "Staf" ADD CONSTRAINT "Staf_rel_code_fkey" FOREIGN KEY ("rel_code") 
 
 -- AddForeignKey
 ALTER TABLE "staf_toewijzingen" ADD CONSTRAINT "staf_toewijzingen_staf_id_fkey" FOREIGN KEY ("staf_id") REFERENCES "Staf"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "BlauwdrukSpeler" ADD CONSTRAINT "BlauwdrukSpeler_blauwdrukId_fkey" FOREIGN KEY ("blauwdrukId") REFERENCES "Blauwdruk"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "BlauwdrukSpeler" ADD CONSTRAINT "BlauwdrukSpeler_spelerId_fkey" FOREIGN KEY ("spelerId") REFERENCES "Speler"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "BlauwdrukSpeler" ADD CONSTRAINT "BlauwdrukSpeler_actiepuntId_fkey" FOREIGN KEY ("actiepuntId") REFERENCES "Actiepunt"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "BlauwdrukSpeler" ADD CONSTRAINT "BlauwdrukSpeler_gezienDoorId_fkey" FOREIGN KEY ("gezienDoorId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "BlauwdrukBesluit" ADD CONSTRAINT "BlauwdrukBesluit_blauwdrukId_fkey" FOREIGN KEY ("blauwdrukId") REFERENCES "Blauwdruk"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "BlauwdrukBesluit" ADD CONSTRAINT "BlauwdrukBesluit_auteurId_fkey" FOREIGN KEY ("auteurId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Pin" ADD CONSTRAINT "Pin_blauwdrukId_fkey" FOREIGN KEY ("blauwdrukId") REFERENCES "Blauwdruk"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -1225,6 +1676,9 @@ ALTER TABLE "Actiepunt" ADD CONSTRAINT "Actiepunt_toegewezenAanId_fkey" FOREIGN 
 ALTER TABLE "Actiepunt" ADD CONSTRAINT "Actiepunt_auteurId_fkey" FOREIGN KEY ("auteurId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "Actiepunt" ADD CONSTRAINT "Actiepunt_besluitId_fkey" FOREIGN KEY ("besluitId") REFERENCES "BlauwdrukBesluit"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "Activiteit" ADD CONSTRAINT "Activiteit_spelerId_fkey" FOREIGN KEY ("spelerId") REFERENCES "Speler"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -1273,10 +1727,22 @@ ALTER TABLE "scouting_rapporten" ADD CONSTRAINT "scouting_rapporten_spelerId_fke
 ALTER TABLE "scouting_rapporten" ADD CONSTRAINT "scouting_rapporten_teamSessieId_fkey" FOREIGN KEY ("teamSessieId") REFERENCES "team_scouting_sessies"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "scouting_rapporten" ADD CONSTRAINT "scouting_rapporten_verzoek_id_fkey" FOREIGN KEY ("verzoek_id") REFERENCES "scouting_verzoeken"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "team_scouting_sessies" ADD CONSTRAINT "team_scouting_sessies_scoutId_fkey" FOREIGN KEY ("scoutId") REFERENCES "scouts"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "team_scouting_sessies" ADD CONSTRAINT "team_scouting_sessies_owTeamId_fkey" FOREIGN KEY ("owTeamId") REFERENCES "teams"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "scouting_verzoeken" ADD CONSTRAINT "scouting_verzoeken_aangemaakt_door_fkey" FOREIGN KEY ("aangemaakt_door") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "scout_toewijzingen" ADD CONSTRAINT "scout_toewijzingen_verzoek_id_fkey" FOREIGN KEY ("verzoek_id") REFERENCES "scouting_verzoeken"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "scout_toewijzingen" ADD CONSTRAINT "scout_toewijzingen_scout_id_fkey" FOREIGN KEY ("scout_id") REFERENCES "scouts"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "spelers_kaarten" ADD CONSTRAINT "spelers_kaarten_spelerId_fkey" FOREIGN KEY ("spelerId") REFERENCES "Speler"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -1284,3 +1750,32 @@ ALTER TABLE "spelers_kaarten" ADD CONSTRAINT "spelers_kaarten_spelerId_fkey" FOR
 -- AddForeignKey
 ALTER TABLE "scout_badges" ADD CONSTRAINT "scout_badges_scoutId_fkey" FOREIGN KEY ("scoutId") REFERENCES "scouts"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
+-- AddForeignKey
+ALTER TABLE "leeftijdsgroepen" ADD CONSTRAINT "leeftijdsgroepen_versie_id_fkey" FOREIGN KEY ("versie_id") REFERENCES "raamwerk_versies"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "pijlers" ADD CONSTRAINT "pijlers_groep_id_fkey" FOREIGN KEY ("groep_id") REFERENCES "leeftijdsgroepen"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ontwikkel_items" ADD CONSTRAINT "ontwikkel_items_pijler_id_fkey" FOREIGN KEY ("pijler_id") REFERENCES "pijlers"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ontwikkel_items" ADD CONSTRAINT "ontwikkel_items_voorloper_id_fkey" FOREIGN KEY ("voorloper_id") REFERENCES "ontwikkel_items"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "fysiek_profielen" ADD CONSTRAINT "fysiek_profielen_spelerId_fkey" FOREIGN KEY ("spelerId") REFERENCES "Speler"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "fysiek_profielen" ADD CONSTRAINT "fysiek_profielen_scoutId_fkey" FOREIGN KEY ("scoutId") REFERENCES "scouts"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "speler_uss" ADD CONSTRAINT "speler_uss_spelerId_fkey" FOREIGN KEY ("spelerId") REFERENCES "Speler"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "scouting_vergelijkingen" ADD CONSTRAINT "scouting_vergelijkingen_scoutId_fkey" FOREIGN KEY ("scoutId") REFERENCES "scouts"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "scouting_vergelijking_posities" ADD CONSTRAINT "scouting_vergelijking_posities_vergelijking_id_fkey" FOREIGN KEY ("vergelijking_id") REFERENCES "scouting_vergelijkingen"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "scouting_vergelijking_posities" ADD CONSTRAINT "scouting_vergelijking_posities_spelerId_fkey" FOREIGN KEY ("spelerId") REFERENCES "Speler"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

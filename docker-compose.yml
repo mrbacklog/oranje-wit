@@ -1,0 +1,25 @@
+# Lokale ontwikkel-database voor c.k.v. Oranje Wit
+# Start met: docker compose up -d
+# Stop met:  docker compose down
+# Reset met: docker compose down -v  (verwijdert alle data)
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: ow-postgres
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_DB: oranjewit_dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: dev
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  pgdata:
