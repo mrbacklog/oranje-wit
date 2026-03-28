@@ -43,6 +43,8 @@ export {
 } from "./navigation/bottom-nav";
 export { TopBar } from "./navigation/top-bar";
 export type { TopBarProps } from "./navigation/top-bar";
+export { Pills } from "./navigation/pills";
+export type { PillItem, PillsProps } from "./navigation/pills";
 export { BottomNavShell, FloatingAppSwitcherFab } from "./navigation/bottom-nav-shell";
 export type { BottomNavShellProps } from "./navigation/bottom-nav-shell";
 export { AppSwitcher } from "./navigation/app-switcher";
@@ -74,6 +76,7 @@ export type {
   ManifestPill,
   ManifestSection,
 } from "./navigation/manifest";
+export { resolveBottomNav } from "./navigation/manifest-resolve";
 
 // Primitives
 export { Button } from "./primitives/button";

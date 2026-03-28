@@ -1,6 +1,7 @@
 "use client";
 
 import { signOut } from "next-auth/react";
+import { APP_ICONS, type AppId } from "@oranje-wit/ui";
 
 // ── App-definities ───────────────────────────────────────────────
 
@@ -9,7 +10,7 @@ interface AppDef {
   beschrijving: string;
   route: string;
   accent: string;
-  initialen: string;
+  appId: AppId;
   zichtbaar: (cap: UserCapabilities) => boolean;
 }
 
@@ -25,7 +26,7 @@ const APPS: AppDef[] = [
     beschrijving: "Dashboards en signalering",
     route: "/monitor",
     accent: "#22c55e",
-    initialen: "MO",
+    appId: "monitor",
     zichtbaar: (cap) => cap.isTC,
   },
   {
@@ -33,7 +34,7 @@ const APPS: AppDef[] = [
     beschrijving: "Seizoensindeling en scenario's",
     route: "/teamindeling",
     accent: "#3b82f6",
-    initialen: "TI",
+    appId: "team-indeling",
     zichtbaar: (cap) => cap.isTC || cap.doelgroepen.length > 0,
   },
   {
@@ -41,7 +42,7 @@ const APPS: AppDef[] = [
     beschrijving: "Spelerevaluaties en zelfevaluaties",
     route: "/evaluatie",
     accent: "#eab308",
-    initialen: "EV",
+    appId: "evaluatie",
     zichtbaar: () => true,
   },
   {
@@ -49,7 +50,7 @@ const APPS: AppDef[] = [
     beschrijving: "Spelers scouten en beoordelen",
     route: "/scouting",
     accent: "#ff6b00",
-    initialen: "SC",
+    appId: "scouting",
     zichtbaar: (cap) => cap.isTC || cap.isScout,
   },
   {
@@ -57,7 +58,7 @@ const APPS: AppDef[] = [
     beschrijving: "TC beheerpaneel",
     route: "/beheer",
     accent: "#9ca3af",
-    initialen: "BH",
+    appId: "beheer",
     zichtbaar: (cap) => cap.isTC,
   },
 ];
@@ -96,7 +97,10 @@ export function AppGrid({ isTC, isScout, doelgroepen, userName }: AppGridProps) 
                 boxShadow: `0 4px 12px color-mix(in srgb, ${app.accent} 30%, transparent)`,
               }}
             >
-              {app.initialen}
+              {(() => {
+                const Icon = APP_ICONS[app.appId];
+                return <Icon size="sm" accent={false} />;
+              })()}
             </div>
 
             {/* Tekst */}

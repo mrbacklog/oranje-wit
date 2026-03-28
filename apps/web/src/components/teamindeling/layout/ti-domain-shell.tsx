@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 import { signOut, useSession } from "next-auth/react";
-import { DomainShell, type DomainNavItem } from "@oranje-wit/ui";
+import { DomainShell, resolveBottomNav, TEAM_INDELING } from "@oranje-wit/ui";
 import { useSeizoen } from "@/components/teamindeling/providers/SeizoenProvider";
 
 function getUserLabel(user: Record<string, unknown>): string {
@@ -14,13 +14,8 @@ function getUserLabel(user: Record<string, unknown>): string {
   return labels.length > 0 ? labels.join(" \u00b7 ") : "Gebruiker";
 }
 
-// ─── Sidebar navigatie-items ──────────────────────────────────
-const sidebarItems: DomainNavItem[] = [
-  { label: "Dashboard", href: "/teamindeling", icon: <span>🏠</span> },
-  { label: "Blauwdruk", href: "/teamindeling/blauwdruk", icon: <span>🗂️</span> },
-  { label: "Werkbord", href: "/teamindeling/werkbord", icon: <span>📋</span> },
-  { label: "Scenario\u2019s", href: "/teamindeling/scenarios", icon: <span>🏗️</span> },
-];
+// ─── BottomNav items uit manifest ────────────────────────────
+const bottomNavItems = resolveBottomNav(TEAM_INDELING);
 
 // ─── TIDomainShell ──────────────────────────────────────────
 export function TIDomainShell({ children }: { children: ReactNode }) {
@@ -44,12 +39,7 @@ export function TIDomainShell({ children }: { children: ReactNode }) {
     <DomainShell
       domain="team-indeling"
       theme="light"
-      sidebar={{
-        title: "Team-Indeling",
-        subtitle: seizoen ? `Seizoen ${seizoen}` : undefined,
-        items: sidebarItems,
-        settingsHref: "/teamindeling/instellingen",
-      }}
+      bottomNav={bottomNavItems}
       user={user}
       onSignOut={() => signOut()}
       banner={banner}

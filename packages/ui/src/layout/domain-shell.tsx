@@ -167,7 +167,7 @@ export function DomainShell({
           className="flex h-12 shrink-0 items-center justify-between px-4"
           style={{
             backgroundColor: "var(--surface-card)",
-            borderBottom: "1px solid var(--border-default)",
+            borderBottom: `2px solid ${meta.accent}`,
           }}
         >
           <div className="flex items-center gap-2">
@@ -270,7 +270,7 @@ export function DomainShell({
         {sidebarConfig && (
           <div
             className="flex items-center px-4 py-3 md:hidden"
-            style={{ borderBottom: "1px solid var(--border-default)" }}
+            style={{ borderBottom: `2px solid ${meta.accent}` }}
           >
             <button
               onClick={() => setMobileMenuOpen(true)}
@@ -303,7 +303,7 @@ export function DomainShell({
         {!sidebarConfig && (
           <header
             className="hidden items-center justify-between px-6 py-3 md:flex"
-            style={{ borderBottom: "1px solid var(--border-default)" }}
+            style={{ borderBottom: `2px solid ${meta.accent}` }}
           >
             <div className="flex items-center gap-3">
               <span
