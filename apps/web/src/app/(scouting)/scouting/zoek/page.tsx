@@ -60,7 +60,7 @@ export default function ZoekPage() {
     }
 
     // Navigeer naar spelerprofiel
-    router.push(`/speler/${speler.relCode}`);
+    router.push(`/scouting/speler/${speler.relCode}`);
   }
 
   return (
@@ -81,7 +81,7 @@ export default function ZoekPage() {
               <li key={speler.relCode}>
                 <button
                   type="button"
-                  onClick={() => router.push(`/speler/${speler.relCode}`)}
+                  onClick={() => router.push(`/scouting/speler/${speler.relCode}`)}
                   className="touch-target active:bg-surface-elevated flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors"
                 >
                   <SpelerAvatar

@@ -91,7 +91,7 @@ export function SelectieTab({
               {dames.map((s) => (
                 <div key={s.relCode} className="flex items-center justify-between py-0.5 text-sm">
                   <Link
-                    href={`/spelers/${s.relCode}${qs}`}
+                    href={`/monitor/spelers/${s.relCode}${qs}`}
                     className="hover:text-ow-oranje text-text-primary"
                   >
                     {formatNaam(s)}
@@ -110,7 +110,7 @@ export function SelectieTab({
               {heren.map((s) => (
                 <div key={s.relCode} className="flex items-center justify-between py-0.5 text-sm">
                   <Link
-                    href={`/spelers/${s.relCode}${qs}`}
+                    href={`/monitor/spelers/${s.relCode}${qs}`}
                     className="hover:text-ow-oranje text-text-primary"
                   >
                     {formatNaam(s)}

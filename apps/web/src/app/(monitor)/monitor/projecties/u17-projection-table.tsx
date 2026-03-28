@@ -52,7 +52,7 @@ export function U17ProjectionTable({ u17 }: { u17: U17Row[] }) {
                   <td className="px-3 py-2 font-medium">{row.seizoen}</td>
                   <td className="px-3 py-2">
                     <Link
-                      href={`/samenstelling/${row.geboortejaar1eJaars}`}
+                      href={`/monitor/samenstelling/${row.geboortejaar1eJaars}`}
                       className="text-ow-oranje hover:underline"
                     >
                       gj {row.geboortejaar1eJaars}
@@ -60,7 +60,7 @@ export function U17ProjectionTable({ u17 }: { u17: U17Row[] }) {
                   </td>
                   <td className="px-3 py-2">
                     <Link
-                      href={`/samenstelling/${row.geboortejaar2eJaars}`}
+                      href={`/monitor/samenstelling/${row.geboortejaar2eJaars}`}
                       className="text-ow-oranje hover:underline"
                     >
                       gj {row.geboortejaar2eJaars}

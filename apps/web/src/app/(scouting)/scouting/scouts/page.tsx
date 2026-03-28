@@ -54,12 +54,12 @@ export default function ScoutsPage() {
         const profiel = await profielRes.json();
         const rol = profiel.data?.scout?.rol;
         if (rol !== "TC") {
-          router.replace("/verzoeken");
+          router.replace("/scouting/verzoeken");
           return;
         }
         setIsTC(true);
       } else {
-        router.replace("/verzoeken");
+        router.replace("/scouting/verzoeken");
         return;
       }
 

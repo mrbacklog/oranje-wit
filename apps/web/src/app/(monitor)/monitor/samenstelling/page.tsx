@@ -170,7 +170,7 @@ export default async function SamenstellingPage({
                         <tr key={row.geboortejaar} className="border-border-light border-t">
                           <td className="px-3 py-1.5 font-medium">
                             <Link
-                              href={`/samenstelling/${row.geboortejaar}?seizoen=${seizoen}`}
+                              href={`/monitor/samenstelling/${row.geboortejaar}?seizoen=${seizoen}`}
                               className="hover:text-ow-oranje text-text-primary hover:underline"
                             >
                               {row.geboortejaar}

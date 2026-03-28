@@ -37,7 +37,10 @@ export default async function SpelerDetailPage({
   return (
     <PageContainer animated>
       <div className="mb-6">
-        <Link href={`/spelers${qs}`} className="hover:text-ow-oranje text-text-muted text-sm">
+        <Link
+          href={`/monitor/spelers${qs}`}
+          className="hover:text-ow-oranje text-text-muted text-sm"
+        >
           &larr; Terug naar overzicht
         </Link>
       </div>
@@ -63,7 +66,7 @@ export default async function SpelerDetailPage({
               <span>
                 {leeftijd} jaar (
                 <Link
-                  href={`/samenstelling/${speler.geboortejaar}?seizoen=${seizoen}`}
+                  href={`/monitor/samenstelling/${speler.geboortejaar}?seizoen=${seizoen}`}
                   className="text-ow-oranje hover:underline"
                 >
                   {speler.geboortejaar}

@@ -274,7 +274,7 @@ function EditorHeader({ band }: { band: string }) {
   return (
     <div className="flex items-center gap-3">
       <Link
-        href="/admin/raamwerk"
+        href="/scouting/admin/raamwerk"
         className="text-text-muted hover:text-text-secondary transition-colors"
         aria-label="Terug naar overzicht"
       >

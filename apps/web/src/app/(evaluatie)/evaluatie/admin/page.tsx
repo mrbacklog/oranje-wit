@@ -34,7 +34,7 @@ export default function AdminRondesPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold">Evaluatierondes</h1>
         <Link
-          href="/admin/nieuw"
+          href="/evaluatie/admin/nieuw"
           className="bg-ow-oranje hover:bg-ow-oranje-dark rounded-md px-4 py-2 text-sm text-white"
         >
           Nieuwe ronde
@@ -63,7 +63,10 @@ export default function AdminRondesPage() {
             {rondes.map((r) => (
               <tr key={r.id} className="hover:bg-surface-raised">
                 <td className="py-2">
-                  <Link href={`/admin/${r.id}`} className="text-ow-oranje hover:underline">
+                  <Link
+                    href={`/evaluatie/admin/${r.id}`}
+                    className="text-ow-oranje hover:underline"
+                  >
                     {r.naam}
                   </Link>
                 </td>

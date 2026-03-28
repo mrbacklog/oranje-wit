@@ -266,7 +266,9 @@ export default function VerzoekDetailPage() {
                   {!isAfgerond && !isNietBeoordeeld && (
                     <button
                       type="button"
-                      onClick={() => router.push(`/verzoeken/${verzoekId}/beoordeel/${relCode}`)}
+                      onClick={() =>
+                        router.push(`/scouting/verzoeken/${verzoekId}/beoordeel/${relCode}`)
+                      }
                       className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg bg-orange-500 px-4 py-3 text-sm font-semibold text-white shadow-none transition-colors hover:bg-orange-600 active:bg-orange-700"
                     >
                       {heeftDraft ? (

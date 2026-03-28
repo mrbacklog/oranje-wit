@@ -67,7 +67,7 @@ export function PijplijnTable({
                   <td className="px-3 py-2">{row.leeftijd}</td>
                   <td className="px-3 py-2">
                     <Link
-                      href={`/samenstelling/${startJaar - row.leeftijd}`}
+                      href={`/monitor/samenstelling/${startJaar - row.leeftijd}`}
                       className="text-ow-oranje hover:underline"
                     >
                       {startJaar - row.leeftijd}

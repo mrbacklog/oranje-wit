@@ -34,7 +34,7 @@ export function SeizoenBarChart({
         className="cursor-pointer"
         onClick={(state) => {
           if (state?.activePayload?.[0]?.payload?.seizoen) {
-            router.push(`/retentie/${state.activePayload[0].payload.seizoen}`);
+            router.push(`/monitor/retentie/${state.activePayload[0].payload.seizoen}`);
           }
         }}
       >

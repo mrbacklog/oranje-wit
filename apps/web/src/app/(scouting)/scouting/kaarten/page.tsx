@@ -139,7 +139,7 @@ export default function KaartenPage() {
 
   const navigeerNaarSpeler = useCallback(
     (spelerId: string) => {
-      router.push(`/speler/${spelerId}`);
+      router.push(`/scouting/speler/${spelerId}`);
     },
     [router]
   );

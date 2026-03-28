@@ -139,7 +139,7 @@ export function VerzoekRapportWizard({
         });
         if (res.ok) {
           clearDraft();
-          router.push(`/verzoeken/${verzoekId}`);
+          router.push(`/scouting/verzoeken/${verzoekId}`);
         }
       } catch (error) {
         logger.warn("Fout bij niet-beoordeeld:", error);
@@ -201,7 +201,7 @@ export function VerzoekRapportWizard({
           tier: resultaat.tier,
           isNieuw: resultaat.kaartIsNieuw,
         }}
-        onDismiss={() => router.push(`/verzoeken/${verzoekId}`)}
+        onDismiss={() => router.push(`/scouting/verzoeken/${verzoekId}`)}
       />
     );
   }
@@ -215,7 +215,7 @@ export function VerzoekRapportWizard({
             type="button"
             onClick={() => {
               if (confirm("Concept opslaan en terug naar verzoek?")) {
-                router.push(`/verzoeken/${verzoekId}`);
+                router.push(`/scouting/verzoeken/${verzoekId}`);
               }
             }}
             className="text-text-muted text-sm"

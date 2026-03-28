@@ -99,7 +99,7 @@ export default function SpelerProfielPage() {
       {/* Sticky CTA */}
       <div className="fixed inset-x-0 bottom-16 z-40 px-4 pb-4">
         <Link
-          href={`/scout/rapport/nieuw/${profiel.relCode}`}
+          href={`/scouting/rapport/nieuw/${profiel.relCode}`}
           className="touch-target bg-ow-oranje active:bg-ow-oranje-dark flex w-full items-center justify-center gap-2 rounded-xl py-3.5 font-semibold text-white shadow-lg transition-colors"
         >
           <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" strokeWidth={2}>

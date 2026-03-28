@@ -155,7 +155,7 @@ export default function NieuwVerzoekPage() {
           return;
         }
 
-        router.push(`/verzoeken/${data.data.id}`);
+        router.push(`/scouting/verzoeken/${data.data.id}`);
       } catch (error) {
         logger.error("Fout bij aanmaken verzoek:", error);
         setFout("Kon verzoek niet aanmaken. Probeer het opnieuw.");

@@ -117,7 +117,7 @@ export default async function CohortOverzichtPage({
                         <li key={lid.relCode} className="flex items-center justify-between py-1.5">
                           <div>
                             <Link
-                              href={`/spelers/${lid.relCode}`}
+                              href={`/monitor/spelers/${lid.relCode}`}
                               className="hover:text-ow-oranje text-text-primary text-sm font-medium hover:underline"
                             >
                               {formatNaam(lid)}
@@ -155,7 +155,7 @@ export default async function CohortOverzichtPage({
                         <li key={lid.relCode} className="flex items-center justify-between py-1.5">
                           <div>
                             <Link
-                              href={`/spelers/${lid.relCode}`}
+                              href={`/monitor/spelers/${lid.relCode}`}
                               className="hover:text-ow-oranje text-text-primary text-sm font-medium hover:underline"
                             >
                               {formatNaam(lid)}

@@ -41,7 +41,7 @@ export function Ledenboog({ data, seizoen }: LedenboogProps) {
         className={seizoen ? "cursor-pointer" : ""}
         onClick={(state) => {
           if (seizoen && state?.activeLabel) {
-            router.push(`/samenstelling/${state.activeLabel}?seizoen=${seizoen}`);
+            router.push(`/monitor/samenstelling/${state.activeLabel}?seizoen=${seizoen}`);
           }
         }}
       >

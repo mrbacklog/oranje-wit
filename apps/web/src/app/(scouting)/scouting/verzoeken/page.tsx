@@ -90,7 +90,7 @@ export default function VerzoekenPage() {
           {isTC && (
             <button
               type="button"
-              onClick={() => router.push("/verzoeken/nieuw")}
+              onClick={() => router.push("/scouting/verzoeken/nieuw")}
               className="inline-flex items-center gap-1.5 rounded-full bg-orange-500 px-4 py-2 text-sm font-semibold text-white shadow-md transition-colors hover:bg-orange-600 active:bg-orange-700"
             >
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -132,7 +132,7 @@ export default function VerzoekenPage() {
                   voortgang={v.voortgang}
                   toewijzingStatus={v.toewijzingStatus}
                   heeftDraft={draftVerzoekIds.has(v.id)}
-                  onClick={() => router.push(`/verzoeken/${v.id}`)}
+                  onClick={() => router.push(`/scouting/verzoeken/${v.id}`)}
                 />
               ))}
             </div>
@@ -158,7 +158,7 @@ export default function VerzoekenPage() {
                   teamNaam={v.teamNaam}
                   aantalSpelers={v.aantalSpelers}
                   voortgang={v.voortgang}
-                  onClick={() => router.push(`/verzoeken/${v.id}`)}
+                  onClick={() => router.push(`/scouting/verzoeken/${v.id}`)}
                 />
               ))}
             </div>

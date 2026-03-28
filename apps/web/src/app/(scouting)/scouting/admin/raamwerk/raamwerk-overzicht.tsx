@@ -293,8 +293,8 @@ function VersieKaart({
               key={groep.id}
               href={
                 isEditable
-                  ? `/admin/raamwerk/${groep.band}`
-                  : `/admin/raamwerk/${groep.band}?versieId=${versie.id}`
+                  ? `/scouting/admin/raamwerk/${groep.band}`
+                  : `/scouting/admin/raamwerk/${groep.band}?versieId=${versie.id}`
               }
               className="bg-surface-elevated group rounded-xl border border-white/5 p-4 transition-all hover:border-white/20"
             >

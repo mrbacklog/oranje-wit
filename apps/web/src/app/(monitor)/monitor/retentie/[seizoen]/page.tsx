@@ -56,7 +56,7 @@ function VerloopLijst({
                   <span className="text-text-muted text-xs font-semibold">Onbekend</span>
                 ) : (
                   <Link
-                    href={`/samenstelling/${jaar}`}
+                    href={`/monitor/samenstelling/${jaar}`}
                     className="text-ow-oranje text-xs font-semibold hover:underline"
                   >
                     {jaar}
@@ -83,7 +83,7 @@ function VerloopLijst({
                         {STATUS_ICON[lid.status] || "·"}
                       </span>
                       <Link
-                        href={`/spelers/${lid.relCode}`}
+                        href={`/monitor/spelers/${lid.relCode}`}
                         className="hover:text-ow-oranje text-text-primary hover:underline"
                       >
                         {naam}

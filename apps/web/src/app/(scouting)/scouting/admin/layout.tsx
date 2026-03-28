@@ -52,7 +52,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           </div>
           <nav className="flex gap-4">
             <Link
-              href="/admin/raamwerk"
+              href="/scouting/admin/raamwerk"
               className="text-text-secondary hover:text-text-primary text-sm transition-colors"
             >
               Raamwerk

@@ -15,7 +15,7 @@ function SpelerRij({ speler, qs }: { speler: TeamSpeler; qs: string }) {
   return (
     <div className="flex items-center justify-between py-0.5 text-sm">
       <Link
-        href={`/spelers/${speler.relCode}${qs}`}
+        href={`/monitor/spelers/${speler.relCode}${qs}`}
         className="hover:text-ow-oranje text-text-primary"
       >
         {naam}

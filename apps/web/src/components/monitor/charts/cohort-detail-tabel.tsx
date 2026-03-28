@@ -107,7 +107,7 @@ export function CohortDetailTabel({ leden, seizoenen, samenvatting }: CohortDeta
                 <tr key={lid.relCode} className="border-border-light border-b">
                   <td className="bg-surface-card sticky left-0 z-10 px-3 py-1.5 font-medium whitespace-nowrap">
                     <Link
-                      href={`/spelers/${lid.relCode}`}
+                      href={`/monitor/spelers/${lid.relCode}`}
                       className="hover:text-ow-oranje text-text-primary hover:underline"
                     >
                       {naam}

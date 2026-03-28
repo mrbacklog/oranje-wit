@@ -153,7 +153,7 @@ export function SpelersZoeken({ spelers }: Props) {
                 >
                   <td className="px-4 py-2.5">
                     <Link
-                      href={`/spelers/${s.relCode}`}
+                      href={`/monitor/spelers/${s.relCode}`}
                       className="hover:text-ow-oranje text-text-primary flex items-center gap-3 font-medium"
                     >
                       {s.heeftFoto ? (

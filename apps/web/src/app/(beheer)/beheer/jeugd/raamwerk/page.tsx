@@ -74,7 +74,10 @@ export default async function RaamwerkOverzichtPage() {
                   return (
                     <tr key={v.id}>
                       <td>
-                        <a href={`/jeugd/raamwerk/${v.id}`} className="raamwerk-link font-medium">
+                        <a
+                          href={`/beheer/jeugd/raamwerk/${v.id}`}
+                          className="raamwerk-link font-medium"
+                        >
                           {v.seizoen}
                         </a>
                       </td>

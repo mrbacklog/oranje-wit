@@ -39,14 +39,14 @@ export function SeniorenTable({ senioren }: { senioren: SeniorenRow[] }) {
                 <td className="px-3 py-2 font-medium">{row.seizoen}</td>
                 <td className="px-3 py-2">
                   <Link
-                    href={`/samenstelling/${row.geboortejaar2}`}
+                    href={`/monitor/samenstelling/${row.geboortejaar2}`}
                     className="text-ow-oranje hover:underline"
                   >
                     {row.geboortejaar2}
                   </Link>
                   {" + "}
                   <Link
-                    href={`/samenstelling/${row.geboortejaar1}`}
+                    href={`/monitor/samenstelling/${row.geboortejaar1}`}
                     className="text-ow-oranje hover:underline"
                   >
                     {row.geboortejaar1}
