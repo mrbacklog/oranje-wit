@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Badge, Dialog, Input } from "@oranje-wit/ui";
-import type { SeizoenRow, ActionResult } from "./actions";
-import { maakNieuwSeizoen, updateSeizoenStatus } from "./actions";
+import { Button } from "@oranje-wit/ui";
+import type { SeizoenRow } from "./actions";
+import { updateSeizoenStatus } from "./actions";
 
 function formatDatum(d: Date): string {
   return new Date(d).toLocaleDateString("nl-NL", {
@@ -22,7 +22,6 @@ function StatusBadge({ status }: { status: string }) {
   const map: Record<string, { cls: string; label: string }> = {
     ACTIEF: { cls: "actief", label: "Actief" },
     VOORBEREIDING: { cls: "voorbereiding", label: "Voorbereiding" },
-    AFGEROND: { cls: "afgerond", label: "Afgerond" },
   };
   const s = map[status] ?? { cls: "afgerond", label: status };
   return (
@@ -38,27 +37,9 @@ interface SeizoenenLijstProps {
 }
 
 export function SeizoenenLijst({ initialData }: SeizoenenLijstProps) {
-  const [showNieuw, setShowNieuw] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const [pending, setPending] = useState(false);
   const [statusPending, setStatusPending] = useState<string | null>(null);
-
-  async function handleCreate(formData: FormData) {
-    setPending(true);
-    setError(null);
-    const seizoen = formData.get("seizoen") as string;
-    const result = await maakNieuwSeizoen(seizoen);
-    setPending(false);
-    if (!result.ok) {
-      setError(result.error);
-    } else {
-      setShowNieuw(false);
-      setSuccess(`Seizoen ${seizoen} aangemaakt`);
-      setTimeout(() => setSuccess(null), 3000);
-    }
-  }
-
   async function handleStatusWijzig(seizoen: string, nieuweStatus: string) {
     if (!confirm(`Weet je zeker dat je seizoen ${seizoen} naar "${nieuweStatus}" wilt zetten?`))
       return;
@@ -76,15 +57,11 @@ export function SeizoenenLijst({ initialData }: SeizoenenLijstProps) {
 
   return (
     <div className="space-y-4">
-      {/* Actiebalk */}
-      <div className="flex items-center justify-between">
-        <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
-          {initialData.length} seizoen{initialData.length !== 1 ? "en" : ""}
-        </p>
-        <Button size="sm" onClick={() => setShowNieuw(true)}>
-          Nieuw seizoen
-        </Button>
-      </div>
+      {/* Info */}
+      <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
+        {initialData.length} seizoen{initialData.length !== 1 ? "en" : ""} — seizoenen worden
+        automatisch 10 jaar vooruit aangemaakt
+      </p>
 
       {/* Feedback */}
       {error && (
@@ -123,42 +100,34 @@ export function SeizoenenLijst({ initialData }: SeizoenenLijstProps) {
           borderColor: "var(--border-default)",
         }}
       >
-        {initialData.length === 0 ? (
-          <div className="px-6 py-12 text-center">
-            <p className="text-sm" style={{ color: "var(--text-tertiary)" }}>
-              Geen seizoenen gevonden. Maak een nieuw seizoen aan.
-            </p>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="beheer-table">
-              <thead>
-                <tr>
-                  <th>Seizoen</th>
-                  <th>Start</th>
-                  <th>Eind</th>
-                  <th>Peildatum</th>
-                  <th>Status</th>
-                  <th className="text-right">Teams</th>
-                  <th className="text-right">Spelers</th>
-                  <th className="text-right">Acties</th>
-                </tr>
-              </thead>
-              <tbody>
-                {initialData.map((s) => {
-                  const transition = STATUS_TRANSITIONS[s.status];
-                  return (
-                    <tr key={s.seizoen}>
-                      <td className="font-medium">{s.seizoen}</td>
-                      <td className="muted">{formatDatum(s.startDatum)}</td>
-                      <td className="muted">{formatDatum(s.eindDatum)}</td>
-                      <td className="muted">{formatDatum(s.peildatum)}</td>
-                      <td>
-                        <StatusBadge status={s.status} />
-                      </td>
-                      <td className="muted text-right">{s._count.owTeams}</td>
-                      <td className="muted text-right">{s._count.competitieSpelers}</td>
-                      <td className="text-right">
+        <div className="overflow-x-auto">
+          <table className="beheer-table">
+            <thead>
+              <tr>
+                <th>Seizoen</th>
+                <th>Start</th>
+                <th>Eind</th>
+                <th>Status</th>
+                <th className="text-right">Teams</th>
+                <th className="text-right">Spelers</th>
+                <th className="text-right">Acties</th>
+              </tr>
+            </thead>
+            <tbody>
+              {initialData.map((s) => {
+                const transition = STATUS_TRANSITIONS[s.status];
+                return (
+                  <tr key={s.seizoen}>
+                    <td className="font-medium">{s.seizoen}</td>
+                    <td className="muted">{formatDatum(s.startDatum)}</td>
+                    <td className="muted">{formatDatum(s.eindDatum)}</td>
+                    <td>
+                      <StatusBadge status={s.status} />
+                    </td>
+                    <td className="muted text-right">{s._count.owTeams}</td>
+                    <td className="muted text-right">{s._count.competitieSpelers}</td>
+                    <td className="text-right">
+                      <div className="flex items-center justify-end gap-2">
                         {transition && (
                           <Button
                             variant="secondary"
@@ -169,56 +138,15 @@ export function SeizoenenLijst({ initialData }: SeizoenenLijstProps) {
                             {statusPending === s.seizoen ? "Bezig..." : transition.label}
                           </Button>
                         )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
-
-      {/* Nieuw seizoen dialog */}
-      <Dialog
-        open={showNieuw}
-        onClose={() => {
-          setShowNieuw(false);
-          setError(null);
-        }}
-        title="Nieuw seizoen aanmaken"
-        footer={
-          <>
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => {
-                setShowNieuw(false);
-                setError(null);
-              }}
-            >
-              Annuleren
-            </Button>
-            <Button size="sm" type="submit" form="form-nieuw-seizoen" disabled={pending}>
-              {pending ? "Bezig..." : "Aanmaken"}
-            </Button>
-          </>
-        }
-      >
-        <form id="form-nieuw-seizoen" action={handleCreate} className="space-y-4">
-          <Input
-            label="Seizoen"
-            name="seizoen"
-            required
-            placeholder="2026-2027"
-            pattern="\d{4}-\d{4}"
-          />
-          <p className="text-xs" style={{ color: "var(--text-tertiary)" }}>
-            Startdatum wordt 1 augustus, einddatum 30 juni. Status begint als
-            &quot;Voorbereiding&quot;.
-          </p>
-        </form>
-      </Dialog>
     </div>
   );
 }

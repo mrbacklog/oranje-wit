@@ -31,11 +31,50 @@ export interface SeizoenRow {
 // ── Queries ───────────────────────────────────────────────────
 
 /**
- * Alle seizoenen, gesorteerd op startJaar (nieuwste eerst).
+ * Zorg dat seizoenen 10 jaar vooruit bestaan.
+ * Wordt aangeroepen bij het laden van de kalender.
+ */
+export async function ensureSeizoenen(): Promise<void> {
+  await requireTC();
+  const huidigJaar = new Date().getFullYear();
+  const seizoenen: string[] = [];
+  for (let j = huidigJaar; j < huidigJaar + 10; j++) {
+    seizoenen.push(`${j}-${j + 1}`);
+  }
+
+  const bestaand = await (prisma.seizoen.findMany as PrismaFn)({
+    where: { seizoen: { in: seizoenen } },
+    select: { seizoen: true },
+  });
+  const bestaandSet = new Set(bestaand.map((s: { seizoen: string }) => s.seizoen));
+
+  for (const s of seizoenen) {
+    if (bestaandSet.has(s)) continue;
+    const [startStr] = s.split("-");
+    const startJaar = Number(startStr);
+    await (prisma.seizoen.create as PrismaFn)({
+      data: {
+        seizoen: s,
+        startJaar,
+        eindJaar: startJaar + 1,
+        startDatum: new Date(`${startJaar}-07-01`),
+        eindDatum: new Date(`${startJaar + 1}-06-30`),
+        peildatum: new Date(`${startJaar}-12-31`),
+        status: "VOORBEREIDING",
+      },
+    });
+    logger.info(`Seizoen ${s} automatisch aangemaakt`);
+  }
+}
+
+/**
+ * Actieve en voorbereidende seizoenen (afgeronde horen in Archivering).
  */
 export async function getSeizoenen(): Promise<SeizoenRow[]> {
   await requireTC();
+  await ensureSeizoenen();
   const seizoenen = await (prisma.seizoen.findMany as PrismaFn)({
+    where: { status: { in: ["VOORBEREIDING", "ACTIEF"] } },
     orderBy: { startJaar: "desc" },
     include: {
       _count: {
@@ -54,14 +93,11 @@ export async function getSeizoenen(): Promise<SeizoenRow[]> {
 
 const SeizoenStatusSchema = z.enum(["VOORBEREIDING", "ACTIEF", "AFGEROND"]);
 
-const NieuwSeizoenSchema = z.object({
-  seizoen: z.string().regex(/^\d{4}-\d{4}$/, "Formaat moet JJJJ-JJJJ zijn (bijv. 2026-2027)"),
-});
-
 // ── Mutaties ──────────────────────────────────────────────────
 
 /**
  * Wijzig de status van een seizoen.
+ * Bij ACTIEF: er mag maar 1 actief seizoen tegelijk zijn.
  */
 export async function updateSeizoenStatus(seizoen: string, status: string): Promise<ActionResult> {
   await requireTC();
@@ -71,6 +107,20 @@ export async function updateSeizoenStatus(seizoen: string, status: string): Prom
   }
 
   try {
+    // Bij activeren: controleer dat er niet al een ander actief seizoen is
+    if (parsed.data === "ACTIEF") {
+      const huidigActief = await (prisma.seizoen.findFirst as PrismaFn)({
+        where: { status: "ACTIEF", seizoen: { not: seizoen } },
+        select: { seizoen: true },
+      });
+      if (huidigActief) {
+        return {
+          ok: false,
+          error: `Seizoen ${huidigActief.seizoen} is al actief. Rond dat eerst af.`,
+        };
+      }
+    }
+
     await (prisma.seizoen.update as PrismaFn)({
       where: { seizoen },
       data: { status: parsed.data },
@@ -82,54 +132,5 @@ export async function updateSeizoenStatus(seizoen: string, status: string): Prom
   } catch (error) {
     logger.warn("updateSeizoenStatus mislukt:", error);
     return { ok: false, error: "Kon status niet wijzigen" };
-  }
-}
-
-/**
- * Maak een nieuw seizoen aan.
- */
-export async function maakNieuwSeizoen(
-  seizoenStr: string
-): Promise<ActionResult<{ seizoen: string }>> {
-  await requireTC();
-  const parsed = NieuwSeizoenSchema.safeParse({ seizoen: seizoenStr });
-  if (!parsed.success) {
-    return { ok: false, error: parsed.error.issues[0].message };
-  }
-
-  const [startStr, eindStr] = parsed.data.seizoen.split("-");
-  const startJaar = Number(startStr);
-  const eindJaar = Number(eindStr);
-
-  if (eindJaar !== startJaar + 1) {
-    return { ok: false, error: "Eindjaar moet startjaar + 1 zijn" };
-  }
-
-  try {
-    const bestaand = await (prisma.seizoen.findUnique as PrismaFn)({
-      where: { seizoen: parsed.data.seizoen },
-    });
-    if (bestaand) {
-      return { ok: false, error: "Dit seizoen bestaat al" };
-    }
-
-    const seizoen = await (prisma.seizoen.create as PrismaFn)({
-      data: {
-        seizoen: parsed.data.seizoen,
-        startJaar,
-        eindJaar,
-        startDatum: new Date(`${startJaar}-08-01`),
-        eindDatum: new Date(`${eindJaar}-06-30`),
-        peildatum: new Date(`${startJaar}-12-31`),
-        status: "VOORBEREIDING",
-      },
-    });
-
-    logger.info(`Nieuw seizoen aangemaakt: ${seizoen.seizoen}`);
-    revalidatePath("/beheer/jaarplanning/kalender");
-    return { ok: true, data: { seizoen: seizoen.seizoen } };
-  } catch (error) {
-    logger.warn("maakNieuwSeizoen mislukt:", error);
-    return { ok: false, error: "Kon seizoen niet aanmaken" };
   }
 }

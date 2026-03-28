@@ -1,29 +1,17 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("Beheer — Jaarplanning", () => {
-  test("kalender toont seizoenen met CRUD-knoppen", async ({ page }) => {
+  test("kalender toont seizoenen met status-knoppen", async ({ page }) => {
     await page.goto("/beheer/jaarplanning/kalender");
 
     // Pagina laadt
     await expect(page.locator("h1")).toContainText("Jaarkalender");
 
-    // "Nieuw seizoen" knop is aanwezig
-    await expect(page.getByRole("button", { name: "Nieuw seizoen" })).toBeVisible();
-  });
+    // Tabel met seizoenen is zichtbaar (automatisch 10 jaar vooruit)
+    await expect(page.locator("table")).toBeVisible();
 
-  test("nieuw seizoen dialog opent en valideert", async ({ page }) => {
-    await page.goto("/beheer/jaarplanning/kalender");
-
-    // Open dialog
-    await page.getByRole("button", { name: "Nieuw seizoen" }).click();
-    await expect(page.getByText("Nieuw seizoen aanmaken")).toBeVisible();
-
-    // Seizoen veld is aanwezig
-    await expect(page.getByLabel("Seizoen")).toBeVisible();
-
-    // Annuleren sluit dialog
-    await page.getByRole("button", { name: "Annuleren" }).click();
-    await expect(page.getByText("Nieuw seizoen aanmaken")).not.toBeVisible();
+    // Er is minstens 1 seizoen zichtbaar
+    await expect(page.locator("tbody tr").first()).toBeVisible();
   });
 
   test("mijlpalen toont lijst met CRUD-knoppen", async ({ page }) => {
