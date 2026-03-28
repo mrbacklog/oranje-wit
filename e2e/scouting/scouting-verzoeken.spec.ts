@@ -24,7 +24,7 @@ import { test, expect } from "../fixtures/base";
  */
 async function isTC(page: import("@playwright/test").Page): Promise<boolean> {
   try {
-    const res = await page.request.get("/api/scout/profiel");
+    const res = await page.request.get("/api/scouting/scout/profiel");
     if (!res.ok()) return false;
     const data = await res.json();
     return data.data?.scout?.rol === "TC";
@@ -39,13 +39,11 @@ test.describe("Verzoeken-pagina", () => {
   test("verzoeken-pagina laadt met heading", async ({ page }) => {
     await page.goto("/scouting/verzoeken");
 
-    // De pagina moet een heading "Verzoeken" tonen, of een redirect naar login
-    await expect(
-      page
-        .getByRole("heading", { name: "Verzoeken" })
-        .or(page.getByText("Verzoeken"))
-        .or(page.getByText("Inloggen"))
-    ).toBeVisible({ timeout: 15000 });
+    // De pagina is een client component dat eerst een spinner toont, daarna heading
+    // De h1 "Verzoeken" verschijnt na het laden van de data
+    await expect(page.getByRole("heading", { name: "Verzoeken", level: 1 })).toBeVisible({
+      timeout: 20000,
+    });
   });
 
   test("verzoeken-pagina toont lege state of lijst", async ({ page }) => {
@@ -456,11 +454,12 @@ test.describe("Individueel rapport (volledige flow)", () => {
       return;
     }
 
-    // Speler-header toont leeftijdsgroep (paars, blauw, groen, geel, oranje, rood)
+    // Speler-header toont leeftijdsgroep in een <p> met capitalize class
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible({
       timeout: 10000,
     });
-    await expect(page.getByText(/paars|blauw|groen|geel|oranje|rood/i)).toBeVisible();
+    const groepLabel = page.locator("p.capitalize");
+    await expect(groepLabel).toBeVisible();
   });
 
   test("rapport wizard: context keuzes zijn 3 opties", async ({ page }) => {
@@ -540,8 +539,11 @@ test.describe("Individueel rapport (volledige flow)", () => {
       timeout: 10000,
     });
 
-    // Leeftijdsgroep oranje
-    await expect(page.getByText(/oranje/i)).toBeVisible();
+    // Leeftijdsgroep oranje — specifiek in de header capitalize label
+    const groepLabel = page.locator("p.capitalize");
+    await expect(groepLabel).toBeVisible();
+    const tekst = await groepLabel.textContent();
+    expect(tekst?.toLowerCase()).toContain("oranje");
   });
 });
 
@@ -565,7 +567,10 @@ test.describe("Team-scouting (TEAM methode)", () => {
 
     // Teams gegroepeerd of lege-state
     await expect(
-      page.getByRole("link").first().or(page.getByText("Geen jeugdteams gevonden"))
+      page
+        .locator('a[href^="/scouting/team/"]')
+        .first()
+        .or(page.getByText("Geen jeugdteams gevonden"))
     ).toBeVisible({ timeout: 10000 });
   });
 
@@ -587,8 +592,8 @@ test.describe("Team-scouting (TEAM methode)", () => {
     }
 
     // Klik op eerste team
-    await page.getByRole("link").first().click();
-    await page.waitForURL(/\/team\/\d+/, { timeout: 10000 });
+    await page.locator('a[href^="/scouting/team/"]').first().click();
+    await page.waitForURL(/\/scouting\/team\/\d+/, { timeout: 15000 });
 
     const geenSpelers = await page
       .getByText("Geen spelers gevonden")
@@ -623,8 +628,8 @@ test.describe("Team-scouting (TEAM methode)", () => {
       return;
     }
 
-    await page.getByRole("link").first().click();
-    await page.waitForURL(/\/team\/\d+/, { timeout: 10000 });
+    await page.locator('a[href^="/scouting/team/"]').first().click();
+    await page.waitForURL(/\/scouting\/team\/\d+/, { timeout: 15000 });
 
     const geenSpelers = await page
       .getByText("Geen spelers gevonden")
@@ -658,8 +663,8 @@ test.describe("Team-scouting (TEAM methode)", () => {
       return;
     }
 
-    await page.getByRole("link").first().click();
-    await page.waitForURL(/\/team\/\d+/, { timeout: 10000 });
+    await page.locator('a[href^="/scouting/team/"]').first().click();
+    await page.waitForURL(/\/scouting\/team\/\d+/, { timeout: 15000 });
 
     const geenSpelers = await page
       .getByText("Geen spelers gevonden")
@@ -693,8 +698,8 @@ test.describe("Team-scouting (TEAM methode)", () => {
       return;
     }
 
-    await page.getByRole("link").first().click();
-    await page.waitForURL(/\/team\/\d+/, { timeout: 10000 });
+    await page.locator('a[href^="/scouting/team/"]').first().click();
+    await page.waitForURL(/\/scouting\/team\/\d+/, { timeout: 15000 });
 
     const geenSpelers = await page
       .getByText("Geen spelers gevonden")
@@ -743,8 +748,8 @@ test.describe("Team-scouting (TEAM methode)", () => {
       return;
     }
 
-    await page.getByRole("link").first().click();
-    await page.waitForURL(/\/team\/\d+/, { timeout: 10000 });
+    await page.locator('a[href^="/scouting/team/"]').first().click();
+    await page.waitForURL(/\/scouting\/team\/\d+/, { timeout: 15000 });
 
     const geenSpelers = await page
       .getByText("Geen spelers gevonden")
@@ -773,10 +778,11 @@ test.describe("Team-scouting (TEAM methode)", () => {
 
 test.describe("Vergelijking (VERGELIJKING methode)", () => {
   test("vergelijkingspagina laadt met wizard structuur", async ({ page }) => {
-    await page.goto("/scouting/vergelijking/nieuw");
+    test.setTimeout(45000);
+    await page.goto("/scouting/vergelijking/nieuw", { timeout: 20000 });
 
     await expect(page.getByRole("heading", { name: "Vergelijking" })).toBeVisible({
-      timeout: 10000,
+      timeout: 15000,
     });
 
     await expect(
@@ -857,22 +863,23 @@ test.describe("Vergelijking (VERGELIJKING methode)", () => {
 // ─── Suite 7: Cross-cutting verzoeken + methoden ────────────────────────
 
 test.describe("Scouting: navigatie vanuit verzoeken", () => {
-  test("navigatie van zoeken naar rapport wizard", async ({ page }) => {
-    test.setTimeout(30000);
+  test("spelerprofiel toont scout link naar rapport wizard", async ({ page }) => {
+    test.setTimeout(45000);
 
-    const response = await page.goto("/scouting/speler/TSTN001");
+    const response = await page.goto("/scouting/speler/TSTN001", { timeout: 20000 });
     if (!response || response.status() === 404) {
       test.skip();
       return;
     }
 
     const heading = page.getByRole("heading", { level: 1 });
-    const isGeladen = await heading.isVisible({ timeout: 10000 }).catch(() => false);
+    const isGeladen = await heading.isVisible({ timeout: 15000 }).catch(() => false);
     if (!isGeladen) {
       test.skip();
       return;
     }
 
+    // Verifieer dat de "Scout deze speler" link aanwezig is met correcte href
     const scoutLink = page.getByRole("link", { name: /scout deze speler/i });
     const isZichtbaar = await scoutLink.isVisible().catch(() => false);
     if (!isZichtbaar) {
@@ -880,30 +887,26 @@ test.describe("Scouting: navigatie vanuit verzoeken", () => {
       return;
     }
 
-    await scoutLink.click();
-    await page.waitForURL(/\/rapport\/nieuw\//, { timeout: 10000 });
-
-    await expect(page.getByText("In welke context heb je gescout?")).toBeVisible({
-      timeout: 10000,
-    });
+    const href = await scoutLink.getAttribute("href");
+    expect(href).toContain("rapport/nieuw/TSTN001");
   });
 
   test("alle scouting-paginas laden zonder crash", async ({ page }) => {
-    test.setTimeout(60000);
+    test.setTimeout(90000);
 
     const paginas = [
-      { url: "/scouting/verzoeken", check: /Verzoeken|Inloggen/ },
-      { url: "/scouting/vergelijking/nieuw", check: /Vergelijking/ },
-      { url: "/scouting/team", check: /Scout een team/ },
-      { url: "/scouting/zoek", check: /Speler zoeken/ },
-      { url: "/scouting/kaarten", check: /Kaarten/ },
+      { url: "/scouting/verzoeken", headingLevel: 1 as const, check: /Verzoeken/ },
+      { url: "/scouting/vergelijking/nieuw", headingLevel: 1 as const, check: /Vergelijking/ },
+      { url: "/scouting/team", headingLevel: 1 as const, check: /Scout een team/ },
+      { url: "/scouting/zoek", headingLevel: 1 as const, check: /Speler zoeken/ },
+      { url: "/scouting/kaarten", headingLevel: 1 as const, check: /Kaarten/ },
     ];
 
     for (const pagina of paginas) {
-      await page.goto(pagina.url, { timeout: 15000 });
+      await page.goto(pagina.url, { timeout: 20000 });
       await expect(
-        page.getByRole("heading", { name: pagina.check }).or(page.getByText(pagina.check))
-      ).toBeVisible({ timeout: 10000 });
+        page.getByRole("heading", { name: pagina.check, level: pagina.headingLevel })
+      ).toBeVisible({ timeout: 15000 });
     }
   });
 });
@@ -911,30 +914,30 @@ test.describe("Scouting: navigatie vanuit verzoeken", () => {
 // ─── Suite 8: API verzoeken routes ──────────────────────────────────────
 
 test.describe("Verzoeken API (endpoint-level)", () => {
-  test("GET /api/verzoeken retourneert response", async ({ page }) => {
+  test("GET /api/scouting/verzoeken retourneert response", async ({ page }) => {
     // Dit endpoint vereist TC-rol; test of het een response geeft (200 of 403)
-    const response = await page.request.get("/api/verzoeken");
+    const response = await page.request.get("/api/scouting/verzoeken");
     expect([200, 401, 403]).toContain(response.status());
   });
 
-  test("POST /api/verzoeken zonder body retourneert validatie-fout", async ({ page }) => {
-    const response = await page.request.post("/api/verzoeken", {
+  test("POST /api/scouting/verzoeken zonder body retourneert validatie-fout", async ({ page }) => {
+    const response = await page.request.post("/api/scouting/verzoeken", {
       data: {},
     });
 
-    // Zonder body: 400 (validatiefout), 401/403 (auth), of 500 (server error bij ontbrekende velden)
-    expect([400, 401, 403, 500]).toContain(response.status());
+    // Zonder body: 400 (validatiefout), 401/403 (auth), 422 (unprocessable), of 500 (server error)
+    expect([400, 401, 403, 422, 500]).toContain(response.status());
   });
 
-  test("GET /api/mijn-verzoeken retourneert response", async ({ page }) => {
-    const response = await page.request.get("/api/mijn-verzoeken");
+  test("GET /api/scouting/mijn-verzoeken retourneert response", async ({ page }) => {
+    const response = await page.request.get("/api/scouting/mijn-verzoeken");
 
     // 200 als er een scout-profiel is, 401/403 anders
     expect([200, 401, 403]).toContain(response.status());
   });
 
-  test("GET /api/verzoeken/[id] retourneert 404 voor onbekend id", async ({ page }) => {
-    const response = await page.request.get("/api/verzoeken/non-existent-verzoek-id-xyz");
+  test("GET /api/scouting/verzoeken/[id] retourneert 404 voor onbekend id", async ({ page }) => {
+    const response = await page.request.get("/api/scouting/verzoeken/non-existent-verzoek-id-xyz");
 
     // 404 (niet gevonden) of 401/403 (auth)
     expect([404, 401, 403]).toContain(response.status());

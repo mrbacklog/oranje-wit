@@ -33,9 +33,9 @@ test.describe("Speler zoeken", () => {
     // Zoek op een veelvoorkomende letter (er moeten seed spelers zijn)
     await zoekInput.fill("a");
 
-    // Wacht op resultaten of lege state
+    // Wacht op resultaten of lege state (debounce 300ms + API response)
     await expect(page.getByRole("list").or(page.getByText("Geen spelers gevonden"))).toBeVisible({
-      timeout: 5000,
+      timeout: 10000,
     });
   });
 
@@ -45,9 +45,9 @@ test.describe("Speler zoeken", () => {
     // Zoek op 'TST' prefix (seed data rel_codes)
     await zoekInput.fill("TST");
 
-    // Wacht op resultaten
+    // Wacht op resultaten (debounce 300ms + API response)
     const resultatenLijst = page.getByRole("list");
-    const isZichtbaar = await resultatenLijst.isVisible().catch(() => false);
+    const isZichtbaar = await resultatenLijst.isVisible({ timeout: 5000 }).catch(() => false);
 
     if (!isZichtbaar) {
       // Geen seed data beschikbaar, skip
@@ -62,7 +62,7 @@ test.describe("Speler zoeken", () => {
     // Klik op het eerste resultaat
     await eersteResultaat.click();
 
-    // Moet navigeren naar /scouting/speler/[relCode]
+    // ZoekPage navigeert naar /speler/[relCode] (absoluut pad)
     await page.waitForURL(/\/speler\//, { timeout: 10000 });
   });
 

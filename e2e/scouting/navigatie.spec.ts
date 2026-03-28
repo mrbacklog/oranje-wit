@@ -11,24 +11,26 @@ test.describe("Navigatie", () => {
     });
   });
 
-  test("bottom navigatie is zichtbaar met 4 links", async ({ page }) => {
+  test("navigatie is zichtbaar met 4 links", async ({ page }) => {
     await page.goto("/scouting/zoek");
 
+    // Desktop: sidebar navigatie (md:block), Mobile: bottom nav (md:hidden)
+    // Playwright draait op Desktop Chrome -> sidebar is zichtbaar
     const nav = page.getByRole("navigation");
     await expect(nav).toBeVisible();
 
-    // 4 navigatie-items: Home, Verzoeken, Zoeken, Profiel
-    await expect(nav.getByText("Home")).toBeVisible();
+    // Sidebar labels: Dashboard, Verzoeken, Zoeken, Profiel
+    await expect(nav.getByText("Dashboard")).toBeVisible();
     await expect(nav.getByText("Verzoeken")).toBeVisible();
     await expect(nav.getByText("Zoeken", { exact: true })).toBeVisible();
     await expect(nav.getByText("Profiel")).toBeVisible();
   });
 
-  test("bottom nav: Home link navigeert naar dashboard", async ({ page }) => {
+  test("Dashboard link navigeert naar dashboard", async ({ page }) => {
     await page.goto("/scouting/zoek");
 
     const nav = page.getByRole("navigation");
-    await nav.getByText("Home").click();
+    await nav.getByText("Dashboard").click();
 
     // Kan redirecten naar /scouting/zoek of dashboard op /scouting tonen
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible({
@@ -36,11 +38,11 @@ test.describe("Navigatie", () => {
     });
   });
 
-  test("bottom nav: Zoeken link navigeert naar zoekpagina", async ({ page }) => {
-    await page.goto("/scouting/kaarten");
+  test("Zoeken link navigeert naar zoekpagina", async ({ page }) => {
+    await page.goto("/scouting");
 
-    // Wacht tot kaartenpagina geladen is
-    await expect(page.getByRole("heading", { name: "Kaarten" })).toBeVisible({ timeout: 10000 });
+    // Wacht tot dashboard geladen is
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible({ timeout: 15000 });
 
     const nav = page.getByRole("navigation");
     await nav.getByText("Zoeken", { exact: true }).click();
@@ -50,19 +52,19 @@ test.describe("Navigatie", () => {
     });
   });
 
-  test("bottom nav: Verzoeken link navigeert naar verzoekenpagina", async ({ page }) => {
+  test("Verzoeken link navigeert naar verzoekenpagina", async ({ page }) => {
     await page.goto("/scouting/zoek");
 
     const nav = page.getByRole("navigation");
     await nav.getByText("Verzoeken").click();
 
-    // Verzoeken pagina laadt
-    await expect(page.getByRole("heading", { level: 1 })).toBeVisible({
-      timeout: 10000,
+    // Verzoeken pagina laadt (heading of spinner-overgang)
+    await expect(page.getByRole("heading", { name: "Verzoeken" })).toBeVisible({
+      timeout: 15000,
     });
   });
 
-  test("bottom nav: Profiel link navigeert naar profielpagina", async ({ page }) => {
+  test("Profiel link navigeert naar profielpagina", async ({ page }) => {
     await page.goto("/scouting/zoek");
 
     const nav = page.getByRole("navigation");
@@ -74,7 +76,7 @@ test.describe("Navigatie", () => {
         .getByRole("heading", { level: 1 })
         .or(page.getByText("Kon profiel niet laden"))
         .or(page.getByText("Verbindingsfout"))
-    ).toBeVisible({ timeout: 10000 });
+    ).toBeVisible({ timeout: 15000 });
   });
 
   test("navigatie naar elke hoofdpagina werkt", async ({ page }) => {

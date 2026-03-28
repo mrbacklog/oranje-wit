@@ -31,15 +31,16 @@ export default defineConfig({
       testDir: "./e2e/tests",
       use: {
         ...devices["Desktop Chrome"],
-        // Geen storageState — design-system pagina heeft geen auth nodig
+        storageState: "./e2e/.auth/user.json",
       },
-      // Geen dependencies op setup — geen auth vereist
+      dependencies: ["setup"],
     },
   ],
   webServer: {
     command: "pnpm dev:web",
     port: 3000,
     reuseExistingServer: !process.env.CI,
+    timeout: 120000,
     env: { E2E_TEST: "true" },
   },
 });

@@ -22,9 +22,10 @@ test.describe("Team scouting", () => {
       });
 
       // Teams gegroepeerd per leeftijdsgroep OF lege state
-      await expect(
-        page.getByRole("link").first().or(page.getByText("Geen jeugdteams gevonden"))
-      ).toBeVisible({ timeout: 10000 });
+      const teamLink = page.locator('a[href^="/scouting/team/"]').first();
+      await expect(teamLink.or(page.getByText("Geen jeugdteams gevonden"))).toBeVisible({
+        timeout: 10000,
+      });
     });
 
     test("toont leeftijdsgroep-headers als er teams zijn", async ({ page }) => {
@@ -46,8 +47,6 @@ test.describe("Team scouting", () => {
       }
 
       // Minstens een leeftijdsgroep-header (h2) moet zichtbaar zijn
-      // De headers zijn h2 elementen met leeftijdsgroep-labels uit de database
-      // Mogelijke waarden: kleurnamen ("Rood (16-18)" etc.) of categorie-namen ("U19", "U17", "senioren" etc.)
       const h2Headings = page.getByRole("heading", { level: 2 });
       const aantalH2 = await h2Headings.count();
       expect(aantalH2).toBeGreaterThan(0);
@@ -105,13 +104,13 @@ test.describe("Team scouting", () => {
         return;
       }
 
-      // Klik op het eerste team-link
-      const eersteTeamLink = page.getByRole("link").first();
+      // Klik op het eerste team-link (specifiek team-links, niet sidebar-links)
+      const eersteTeamLink = page.locator('a[href^="/scouting/team/"]').first();
       await expect(eersteTeamLink).toBeVisible();
       await eersteTeamLink.click();
 
-      // Navigeert naar /team/[owTeamId]
-      await page.waitForURL(/\/team\/\d+/, { timeout: 10000 });
+      // Navigeert naar /scouting/team/[owTeamId]
+      await page.waitForURL(/\/scouting\/team\/\d+/, { timeout: 15000 });
     });
   });
 
@@ -134,12 +133,12 @@ test.describe("Team scouting", () => {
         return;
       }
 
-      // Klik op eerste team
-      await page.getByRole("link").first().click();
-      await page.waitForURL(/\/team\/\d+/, { timeout: 10000 });
+      // Klik op eerste team (specifiek team-links)
+      await page.locator('a[href^="/scouting/team/"]').first().click();
+      await page.waitForURL(/\/scouting\/team\/\d+/, { timeout: 15000 });
 
       // Wizard header met teamnaam OF "Geen spelers gevonden" melding
-      await expect(page.getByRole("heading", { level: 1 })).toBeVisible({ timeout: 10000 });
+      await expect(page.getByRole("heading", { level: 1 })).toBeVisible({ timeout: 15000 });
 
       // Als het team geen spelers heeft, wordt een andere pagina getoond
       const geenSpelers = await page
@@ -152,7 +151,7 @@ test.describe("Team scouting", () => {
         return;
       }
 
-      // Info over spelers en leeftijdsgroep: "N spelers - groep - Kernset (M items)"
+      // Info over spelers en leeftijdsgroep: "N spelers"
       await expect(page.getByText(/\d+ spelers/)).toBeVisible();
     });
 
@@ -173,8 +172,8 @@ test.describe("Team scouting", () => {
         return;
       }
 
-      await page.getByRole("link").first().click();
-      await page.waitForURL(/\/team\/\d+/, { timeout: 10000 });
+      await page.locator('a[href^="/scouting/team/"]').first().click();
+      await page.waitForURL(/\/scouting\/team\/\d+/, { timeout: 15000 });
 
       // Het team kan geen spelers hebben — dan is er geen wizard
       const geenSpelers = await page
@@ -215,8 +214,8 @@ test.describe("Team scouting", () => {
         return;
       }
 
-      await page.getByRole("link").first().click();
-      await page.waitForURL(/\/team\/\d+/, { timeout: 10000 });
+      await page.locator('a[href^="/scouting/team/"]').first().click();
+      await page.waitForURL(/\/scouting\/team\/\d+/, { timeout: 15000 });
 
       const geenSpelers = await page
         .getByText("Geen spelers gevonden")
@@ -262,8 +261,8 @@ test.describe("Team scouting", () => {
         return;
       }
 
-      await page.getByRole("link").first().click();
-      await page.waitForURL(/\/team\/\d+/, { timeout: 10000 });
+      await page.locator('a[href^="/scouting/team/"]').first().click();
+      await page.waitForURL(/\/scouting\/team\/\d+/, { timeout: 15000 });
 
       const geenSpelers = await page
         .getByText("Geen spelers gevonden")
@@ -283,8 +282,6 @@ test.describe("Team scouting", () => {
 
       // Team wizard heeft 5 stappen: context, beoordeling, ranking, opmerkingen, samenvatting
       // Elke stap is een ronde dot
-      // De actieve stap heeft w-8, inactieve w-2
-      // We verifiereen dat er precies 5 dots zijn
     });
   });
 });

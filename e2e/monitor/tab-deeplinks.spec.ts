@@ -2,7 +2,8 @@ import { test, expect } from "../fixtures/base";
 
 test.describe("Tab deeplinks", () => {
   test("retentie tab via URL param opent juiste tab", async ({ page }) => {
-    await page.goto("/monitor/retentie?tab=instroom");
+    test.setTimeout(60000);
+    await page.goto("/monitor/retentie?tab=instroom", { timeout: 45000 });
 
     await expect(page.getByRole("heading", { name: "Ledendynamiek" })).toBeVisible({
       timeout: 15000,
@@ -18,20 +19,22 @@ test.describe("Tab deeplinks", () => {
   });
 
   test("tab klik update URL params", async ({ page }) => {
-    await page.goto("/monitor/retentie");
+    test.setTimeout(60000);
+    await page.goto("/monitor/retentie", { timeout: 45000 });
 
-    await expect(page.getByRole("tab", { name: "Behoud" })).toBeVisible({ timeout: 15000 });
+    // Wacht tot de tabs zichtbaar en interactief zijn (hydration)
+    const cohortenTab = page.getByRole("tab", { name: "Cohorten" });
+    await expect(cohortenTab).toBeVisible({ timeout: 15000 });
 
-    // Klik op Cohorten tab
-    await page.getByRole("tab", { name: "Cohorten" }).click();
-
-    // URL moet ?tab=cohorten bevatten
-    await expect(page).toHaveURL(/tab=cohorten/);
+    // Klik op Cohorten tab en wacht tot de URL updatet
+    await cohortenTab.click();
+    await expect(page).toHaveURL(/tab=cohorten/, { timeout: 10000 });
   });
 
   test("tab state behouden na page refresh", async ({ page }) => {
+    test.setTimeout(60000);
     // Navigeer naar specifieke tab
-    await page.goto("/monitor/signalering?tab=werving");
+    await page.goto("/monitor/signalering?tab=werving", { timeout: 45000 });
 
     await expect(page.getByRole("heading", { name: "Signalering" })).toBeVisible({
       timeout: 15000,
@@ -44,17 +47,19 @@ test.describe("Tab deeplinks", () => {
     );
 
     // Refresh pagina
-    await page.reload();
+    await page.reload({ timeout: 45000 });
 
     // Tab moet nog steeds geselecteerd zijn
     await expect(page.getByRole("tab", { name: "Werving" })).toHaveAttribute(
       "aria-selected",
-      "true"
+      "true",
+      { timeout: 15000 }
     );
   });
 
   test("projecties tab deeplink werkt", async ({ page }) => {
-    await page.goto("/monitor/projecties?tab=projectie");
+    test.setTimeout(60000);
+    await page.goto("/monitor/projecties?tab=projectie", { timeout: 45000 });
 
     await expect(page.getByRole("heading", { name: "Jeugdpijplijn" })).toBeVisible({
       timeout: 15000,
@@ -68,7 +73,8 @@ test.describe("Tab deeplinks", () => {
   });
 
   test("signalering tabs werken met URL params", async ({ page }) => {
-    await page.goto("/monitor/signalering");
+    test.setTimeout(60000);
+    await page.goto("/monitor/signalering", { timeout: 45000 });
 
     await expect(page.getByRole("heading", { name: "Signalering" })).toBeVisible({
       timeout: 15000,

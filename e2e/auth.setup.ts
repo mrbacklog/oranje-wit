@@ -4,8 +4,10 @@ const AUTH_FILE = "e2e/.auth/user.json";
 const BASE_URL = "http://localhost:3000";
 
 setup("authenticatie via e2e-test provider", async ({ page }) => {
+  setup.setTimeout(60000);
+
   // Ga naar de sign-in pagina om CSRF token op te halen
-  await page.goto(`${BASE_URL}/api/auth/csrf`);
+  await page.goto(`${BASE_URL}/api/auth/csrf`, { timeout: 30000 });
   const csrfResponse = await page.evaluate(() => document.body.innerText.trim());
   const { csrfToken } = JSON.parse(csrfResponse);
 
@@ -27,7 +29,7 @@ setup("authenticatie via e2e-test provider", async ({ page }) => {
   expect(result.ok).toBeTruthy();
 
   // Verifieer dat we ingelogd zijn
-  await page.goto(`${BASE_URL}/`);
+  await page.goto(`${BASE_URL}/`, { timeout: 30000 });
   await expect(page).not.toHaveURL(/\/login/);
 
   // Sla de sessie op voor alle andere tests

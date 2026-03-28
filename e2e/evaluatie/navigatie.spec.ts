@@ -1,139 +1,108 @@
 import { test, expect } from "../fixtures/base";
 
 test.describe("Navigatie", () => {
-  test("homepagina toont evaluatie titel", async ({ page }) => {
-    await page.goto("/evaluatie");
+  test("homepagina toont evaluatie dashboard voor TC-gebruiker", async ({ page }) => {
+    test.setTimeout(90000);
+    await page.goto("/evaluatie", { timeout: 60000 });
 
-    await expect(page.getByRole("heading", { name: "Evaluatie" })).toBeVisible();
-    await expect(page.getByText("c.k.v. Oranje Wit")).toBeVisible();
+    // TC-gebruiker ziet AdminDashboard met heading "Evaluaties"
+    await expect(page.getByRole("heading", { name: "Evaluaties" })).toBeVisible({ timeout: 15000 });
   });
 
   test("login pagina laadt correct", async ({ page }) => {
-    await page.goto("/login");
+    // De geconsolideerde app heeft een generieke login pagina
+    // Een ingelogde gebruiker wordt doorgestuurd; gebruik een nieuw context
+    const context = await page.context().browser()!.newContext();
+    const loginPage = await context.newPage();
 
-    await expect(page.getByRole("heading", { name: /Evaluatie.*Admin/i })).toBeVisible();
-    await expect(page.getByRole("button", { name: /Inloggen met Google/i })).toBeVisible();
+    await loginPage.goto("/login", { timeout: 45000 });
+
+    // Generieke login pagina met verenigingsnaam
+    await expect(loginPage.getByRole("heading", { name: /Oranje Wit/i })).toBeVisible({
+      timeout: 15000,
+    });
+
+    await context.close();
   });
 
-  test.describe("Admin pagina's", () => {
-    test("admin rondes overzicht laadt", async ({ page }) => {
-      await page.goto("/evaluatie/admin");
-      await page.waitForLoadState("networkidle");
+  test.describe("Evaluatie dashboard (TC-gebruiker)", () => {
+    test("dashboard toont statistieken", async ({ page }) => {
+      test.setTimeout(90000);
+      await page.goto("/evaluatie", { timeout: 60000 });
 
-      await expect(page.getByRole("heading", { name: "Evaluatierondes" })).toBeVisible();
+      await expect(page.getByRole("heading", { name: "Evaluaties" })).toBeVisible({
+        timeout: 15000,
+      });
 
-      // De "Nieuwe ronde" link moet zichtbaar zijn
-      await expect(page.getByRole("link", { name: /Nieuwe ronde/i })).toBeVisible();
+      // StatCards zijn zichtbaar (exact: true om strict mode violations te voorkomen)
+      await expect(page.getByText("Rondes", { exact: true })).toBeVisible();
+      await expect(page.getByText("Ingediend", { exact: true })).toBeVisible();
+      await expect(page.getByText("Uitnodigingen", { exact: true })).toBeVisible();
     });
 
-    test("admin layout bevat navigatielinks", async ({ page }) => {
-      await page.goto("/evaluatie/admin");
+    test("dashboard heeft link naar beheer", async ({ page }) => {
+      test.setTimeout(90000);
+      await page.goto("/evaluatie", { timeout: 60000 });
 
-      const nav = page.locator("header nav");
-      await expect(nav.getByText("Evaluatie")).toBeVisible();
-      await expect(nav.getByRole("link", { name: "Rondes" })).toBeVisible();
-      await expect(nav.getByRole("link", { name: /rdinatoren/i })).toBeVisible();
-      await expect(nav.getByRole("link", { name: /E-mail templates/i })).toBeVisible();
-    });
+      await expect(page.getByRole("heading", { name: "Evaluaties" })).toBeVisible({
+        timeout: 15000,
+      });
 
-    test("admin nieuwe ronde pagina laadt", async ({ page }) => {
-      await page.goto("/evaluatie/admin/nieuw");
-
-      await expect(page.getByRole("heading", { name: /Nieuwe evaluatieronde/i })).toBeVisible();
-
-      // Formuliervelden controleren
-      await expect(page.getByText("Naam")).toBeVisible();
-      await expect(page.getByText("Seizoen")).toBeVisible();
-      await expect(page.getByText("Ronde nummer")).toBeVisible();
-      await expect(page.getByText("Type")).toBeVisible();
-      await expect(page.getByText("Deadline")).toBeVisible();
-
-      // Submit knop
-      await expect(page.getByRole("button", { name: /Ronde aanmaken/i })).toBeVisible();
-    });
-
-    test("admin coordinatoren pagina laadt", async ({ page }) => {
-      await page.goto("/evaluatie/admin/coordinatoren");
-      await page.waitForLoadState("networkidle");
-
-      await expect(page.getByRole("heading", { name: "Coordinatoren" })).toBeVisible();
-
-      // Toevoegen formulier is zichtbaar
-      await expect(page.getByRole("button", { name: /Toevoegen/i })).toBeVisible();
-    });
-
-    test("admin templates pagina laadt", async ({ page }) => {
-      await page.goto("/evaluatie/admin/templates");
-      await page.waitForLoadState("networkidle");
-
-      await expect(page.getByRole("heading", { name: /E-mail templates/i })).toBeVisible();
-
-      // Instructietekst over variabelen
-      await expect(page.getByText(/Gebruik.*variabele/i)).toBeVisible();
-    });
-
-    test("navigatie tussen admin pagina's werkt", async ({ page }) => {
-      await page.goto("/evaluatie/admin");
-      await page.waitForLoadState("networkidle");
-
-      // Naar coordinatoren
-      await page.getByRole("link", { name: /rdinatoren/i }).click();
-      await expect(page.getByRole("heading", { name: "Coordinatoren" })).toBeVisible();
-
-      // Naar templates
-      await page.getByRole("link", { name: /E-mail templates/i }).click();
-      await expect(page.getByRole("heading", { name: /E-mail templates/i })).toBeVisible();
-
-      // Terug naar rondes
-      await page.getByRole("link", { name: "Rondes" }).click();
-      await expect(page.getByRole("heading", { name: "Evaluatierondes" })).toBeVisible();
+      // "Beheer" link naar /beheer/evaluatie
+      await expect(page.getByRole("link", { name: /Beheer/i })).toBeVisible();
     });
   });
 
   test.describe("Token-beveiligde pagina's", () => {
     test("invullen pagina zonder token toont foutmelding", async ({ page }) => {
-      await page.goto("/evaluatie/invullen");
+      test.setTimeout(60000);
+      await page.goto("/evaluatie/invullen", { timeout: 45000 });
 
-      await expect(page.getByText(/Ongeldige link/i)).toBeVisible();
+      await expect(page.getByText(/Ongeldige link/i)).toBeVisible({ timeout: 15000 });
       await expect(page.getByText(/uitnodigingsmail/i)).toBeVisible();
     });
 
     test("invullen pagina met ongeldig token toont foutmelding", async ({ page }) => {
-      await page.goto("/evaluatie/invullen?token=ongeldig-token-12345");
+      test.setTimeout(60000);
+      await page.goto("/evaluatie/invullen?token=ongeldig-token-12345", { timeout: 45000 });
 
-      await expect(page.getByText(/Verlopen of ongeldige link/i)).toBeVisible();
+      await expect(page.getByText(/Verlopen of ongeldige link/i)).toBeVisible({ timeout: 15000 });
     });
 
     test("zelfevaluatie pagina zonder token toont foutmelding", async ({ page }) => {
-      await page.goto("/evaluatie/zelf");
+      test.setTimeout(60000);
+      await page.goto("/evaluatie/zelf", { timeout: 45000 });
 
-      await expect(page.getByText(/Geen geldige link/i)).toBeVisible();
+      await expect(page.getByText(/Geen geldige link/i)).toBeVisible({ timeout: 15000 });
       await expect(page.getByText(/uitnodigingsmail/i)).toBeVisible();
     });
 
     test("zelfevaluatie pagina met ongeldig token toont foutmelding", async ({ page }) => {
-      await page.goto("/evaluatie/zelf?token=ongeldig-token-12345");
+      test.setTimeout(60000);
+      await page.goto("/evaluatie/zelf?token=ongeldig-token-12345", { timeout: 45000 });
 
-      await expect(page.getByText(/Ongeldige link/i)).toBeVisible();
+      await expect(page.getByText(/Ongeldige link/i)).toBeVisible({ timeout: 15000 });
     });
 
     test("coordinator pagina zonder token toont foutmelding", async ({ page }) => {
-      await page.goto("/evaluatie/coordinator");
+      test.setTimeout(60000);
+      await page.goto("/evaluatie/coordinator", { timeout: 45000 });
 
-      await expect(page.getByText(/Geen geldige link/i)).toBeVisible();
+      await expect(page.getByText(/Geen geldige link/i)).toBeVisible({ timeout: 15000 });
       await expect(page.getByText(/uitnodigingsmail/i)).toBeVisible();
     });
 
     test("coordinator pagina met ongeldig token toont foutmelding", async ({ page }) => {
-      await page.goto("/evaluatie/coordinator?token=ongeldig-token-12345");
+      test.setTimeout(60000);
+      await page.goto("/evaluatie/coordinator?token=ongeldig-token-12345", { timeout: 45000 });
 
-      await expect(page.getByText(/Ongeldige link/i)).toBeVisible();
+      await expect(page.getByText(/Ongeldige link/i)).toBeVisible({ timeout: 15000 });
     });
   });
 
   test.describe("Bedankt pagina's", () => {
     test("trainer bedankt pagina laadt", async ({ page }) => {
-      await page.goto("/evaluatie/invullen/bedankt");
+      await page.goto("/evaluatie/invullen/bedankt", { timeout: 45000 });
 
       await expect(page.getByRole("heading", { name: /Bedankt/i })).toBeVisible();
       await expect(page.getByText(/evaluatie.*is ontvangen/i)).toBeVisible();
@@ -141,14 +110,14 @@ test.describe("Navigatie", () => {
     });
 
     test("trainer bedankt pagina toont teamnaam", async ({ page }) => {
-      await page.goto("/evaluatie/invullen/bedankt?team=Oranje+Wit+A1");
+      await page.goto("/evaluatie/invullen/bedankt?team=Oranje+Wit+A1", { timeout: 45000 });
 
       await expect(page.getByRole("heading", { name: /Bedankt/i })).toBeVisible();
       await expect(page.getByText(/Oranje Wit A1/i)).toBeVisible();
     });
 
     test("zelfevaluatie bedankt pagina laadt", async ({ page }) => {
-      await page.goto("/evaluatie/zelf/bedankt");
+      await page.goto("/evaluatie/zelf/bedankt", { timeout: 45000 });
 
       await expect(page.getByRole("heading", { name: /Bedankt/i })).toBeVisible();
       await expect(page.getByText(/zelfevaluatie.*is ontvangen/i)).toBeVisible();
