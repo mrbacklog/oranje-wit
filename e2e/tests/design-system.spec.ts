@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 // Design System pagina draait in de geconsolideerde web app op poort 3000.
-const BASE_URL = "http://localhost:3000/teamindeling/design-system";
+const BASE_URL = "http://localhost:3000/ti-studio/design-system";
 
 // ─── Alle 18 secties die op de pagina staan ──────────────────────────
 const SECTIONS = [
