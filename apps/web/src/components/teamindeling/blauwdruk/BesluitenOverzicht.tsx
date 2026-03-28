@@ -7,7 +7,7 @@ import {
   createBesluit,
   deleteBesluit,
   initialiseerStandaardBesluiten,
-} from "@/app/(teamindeling)/teamindeling/blauwdruk/besluit-actions";
+} from "@/app/(teamindeling-studio)/ti-studio/blauwdruk/besluit-actions";
 
 type ActiepuntData = {
   id: string;

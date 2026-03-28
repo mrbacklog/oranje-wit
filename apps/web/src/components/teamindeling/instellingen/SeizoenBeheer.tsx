@@ -3,7 +3,7 @@
 import { Card, CardBody, CardHeader, Button, Select } from "@oranje-wit/ui";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { switchSeizoen } from "@/app/(teamindeling)/teamindeling/instellingen/actions";
+import { switchSeizoen } from "@/app/(teamindeling-studio)/ti-studio/instellingen/actions";
 
 interface Props {
   seizoenen: { seizoen: string; isWerkseizoen: boolean }[];

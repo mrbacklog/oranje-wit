@@ -1,4 +1,7 @@
-import { getWerkitems, getWerkitemStats } from "@/app/(teamindeling)/teamindeling/werkbord/actions";
+import {
+  getWerkitems,
+  getWerkitemStats,
+} from "@/app/(teamindeling-studio)/ti-studio/werkbord/actions";
 import WerkbordOverzicht from "@/components/teamindeling/werkbord/WerkbordOverzicht";
 import { prisma } from "@/lib/teamindeling/db/prisma";
 

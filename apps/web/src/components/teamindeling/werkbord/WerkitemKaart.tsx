@@ -5,7 +5,7 @@ import {
   updateWerkitemStatus,
   updateActiepuntStatus,
   deleteWerkitem,
-} from "@/app/(teamindeling)/teamindeling/werkbord/actions";
+} from "@/app/(teamindeling-studio)/ti-studio/werkbord/actions";
 import type { WerkitemPrioriteit, WerkitemStatus } from "./types";
 
 export type WerkitemData = {

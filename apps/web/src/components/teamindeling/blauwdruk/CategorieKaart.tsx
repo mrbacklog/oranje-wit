@@ -1,10 +1,10 @@
 "use client";
 
-import type { CategorieStats } from "@/app/(teamindeling)/teamindeling/blauwdruk/actions";
+import type { CategorieStats } from "@/app/(teamindeling-studio)/ti-studio/blauwdruk/actions";
 import type {
   CategorieDefinitie,
   CategorieSettings,
-} from "@/app/(teamindeling)/teamindeling/blauwdruk/categorie-kaders";
+} from "@/app/(teamindeling-studio)/ti-studio/blauwdruk/categorie-kaders";
 
 // ============================================================
 // Kleur-mapping voor top-bar

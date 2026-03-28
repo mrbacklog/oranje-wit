@@ -163,7 +163,7 @@ export default function MobileScenarioEditor({
         {/* Terug + scenario naam */}
         <div className="flex items-center gap-2">
           <Link
-            href="/teamindeling/scenarios"
+            href="/ti-studio/scenarios"
             className="flex h-9 w-9 items-center justify-center rounded-lg"
             style={{
               color: "var(--text-secondary)",

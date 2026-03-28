@@ -32,7 +32,7 @@ interface AppInfo {
 const APPS: AppInfo[] = [
   { naam: "Portaal", route: "/", accent: "var(--ow-oranje-500)" },
   { naam: "Monitor", route: "/monitor", accent: "#22c55e" },
-  { naam: "Team-Indeling", route: "/teamindeling", accent: "#3b82f6" },
+  { naam: "Team-Indeling", route: "/ti-studio", accent: "#3b82f6" },
   { naam: "Evaluatie", route: "/evaluatie", accent: "#eab308" },
   { naam: "Scouting", route: "/scouting", accent: "#ff6b00" },
   { naam: "Beheer", route: "/beheer", accent: "#9ca3af" },

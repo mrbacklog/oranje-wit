@@ -8,7 +8,7 @@ import {
   updateGezienStatus,
   batchUpdateGezienStatus,
   initialiseerBlauwdrukSpelers,
-} from "@/app/(teamindeling)/teamindeling/blauwdruk/gezien-actions";
+} from "@/app/(teamindeling-studio)/ti-studio/blauwdruk/gezien-actions";
 
 type SpelerData = {
   id: string;

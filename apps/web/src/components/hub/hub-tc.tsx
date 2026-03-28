@@ -151,7 +151,7 @@ export async function HubTC() {
                 Openstaande actiepunten
               </h3>
               <a
-                href="/teamindeling"
+                href="/ti-studio"
                 className="text-xs font-medium transition-colors hover:opacity-80"
                 style={{ color: "var(--ow-oranje-500)" }}
               >
@@ -202,7 +202,7 @@ export async function HubTC() {
         <div className="grid grid-cols-3 gap-2">
           {[
             { label: "Monitor", href: "/monitor", kleur: "#22c55e" },
-            { label: "Teamindeling", href: "/teamindeling", kleur: "#3b82f6" },
+            { label: "Teamindeling", href: "/ti-studio", kleur: "#3b82f6" },
             { label: "Beheer", href: "/beheer", kleur: "#9ca3af" },
           ].map((link) => (
             <a

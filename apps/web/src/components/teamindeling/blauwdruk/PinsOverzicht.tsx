@@ -1,6 +1,6 @@
 "use client";
 
-import type { PinMetNamen } from "@/app/(teamindeling)/teamindeling/blauwdruk/actions";
+import type { PinMetNamen } from "@/app/(teamindeling-studio)/ti-studio/blauwdruk/actions";
 
 const TYPE_LABELS: Record<string, { label: string; kleur: string }> = {
   SPELER_STATUS: { label: "Status", kleur: "bg-blue-100 text-blue-700" },

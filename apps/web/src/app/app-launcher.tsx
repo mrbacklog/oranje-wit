@@ -25,7 +25,7 @@ const APPS: AppDef[] = [
   {
     naam: "Team-Indeling",
     beschrijving: "Seizoensindeling en scenario's",
-    route: "/teamindeling",
+    route: "/ti-studio",
     accent: "#3b82f6",
     rollen: ["EDITOR", "REVIEWER", "VIEWER"],
     initialen: "TI",

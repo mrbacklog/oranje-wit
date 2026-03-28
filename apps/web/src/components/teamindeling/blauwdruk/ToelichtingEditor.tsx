@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useRef, useEffect } from "react";
 import { logger } from "@oranje-wit/types";
-import { updateToelichting } from "@/app/(teamindeling)/teamindeling/blauwdruk/actions";
+import { updateToelichting } from "@/app/(teamindeling-studio)/ti-studio/blauwdruk/actions";
 
 interface ToelichtingEditorProps {
   blauwdrukId: string;

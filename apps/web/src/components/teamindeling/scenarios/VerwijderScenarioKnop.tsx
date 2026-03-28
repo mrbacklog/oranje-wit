@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { deleteScenario } from "@/app/(teamindeling)/teamindeling/scenarios/actions";
+import { deleteScenario } from "@/app/(teamindeling-studio)/ti-studio/scenarios/actions";
 
 interface VerwijderScenarioKnopProps {
   scenarioId: string;

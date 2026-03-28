@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import {
   herstelScenario,
   definitiefVerwijderScenario,
-} from "@/app/(teamindeling)/teamindeling/scenarios/actions";
+} from "@/app/(teamindeling-studio)/ti-studio/scenarios/actions";
 
 interface VerwijderdScenario {
   id: string;

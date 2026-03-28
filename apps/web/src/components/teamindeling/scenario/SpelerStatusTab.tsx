@@ -11,9 +11,9 @@ import {
   createStatusWerkitem,
   updateActiepuntStatus,
   getUsers,
-} from "@/app/(teamindeling)/teamindeling/werkbord/actions";
+} from "@/app/(teamindeling-studio)/ti-studio/werkbord/actions";
 import type { WerkitemData } from "@/components/teamindeling/werkbord/WerkitemKaart";
-import { updateSpelerStatus } from "@/app/(teamindeling)/teamindeling/blauwdruk/actions";
+import { updateSpelerStatus } from "@/app/(teamindeling-studio)/ti-studio/blauwdruk/actions";
 
 const STATUS_LABELS: Record<string, string> = {
   BESCHIKBAAR: "Beschikbaar",

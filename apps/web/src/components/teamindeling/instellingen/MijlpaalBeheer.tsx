@@ -8,7 +8,7 @@ import {
   createMijlpaal,
   deleteMijlpaal,
   updateMijlpaal,
-} from "@/app/(teamindeling)/teamindeling/instellingen/actions";
+} from "@/app/(teamindeling-studio)/ti-studio/instellingen/actions";
 
 interface Props {
   mijlpalen: Mijlpaal[];

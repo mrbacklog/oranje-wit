@@ -4,14 +4,14 @@ import { useState, useCallback } from "react";
 import type {
   LedenStatistieken,
   CategorieStats,
-} from "@/app/(teamindeling)/teamindeling/blauwdruk/actions";
-import { updateCategorieKaders } from "@/app/(teamindeling)/teamindeling/blauwdruk/actions";
+} from "@/app/(teamindeling-studio)/ti-studio/blauwdruk/actions";
+import { updateCategorieKaders } from "@/app/(teamindeling-studio)/ti-studio/blauwdruk/actions";
 import {
   CATEGORIEEN,
   getMergedSettings,
   type CategorieSettings,
   type CategorieKaders,
-} from "@/app/(teamindeling)/teamindeling/blauwdruk/categorie-kaders";
+} from "@/app/(teamindeling-studio)/ti-studio/blauwdruk/categorie-kaders";
 import { CategorieKaart } from "./CategorieKaart";
 import { SettingsDialog } from "./CategorieSettingsDialog";
 

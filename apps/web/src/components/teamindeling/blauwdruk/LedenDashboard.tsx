@@ -2,8 +2,8 @@
 
 import { useState, useMemo, useCallback, useTransition } from "react";
 import type { SpelerStatus } from "@oranje-wit/database";
-import type { SpelerUitgebreid } from "@/app/(teamindeling)/teamindeling/blauwdruk/actions";
-import { updateSpelerStatus } from "@/app/(teamindeling)/teamindeling/blauwdruk/actions";
+import type { SpelerUitgebreid } from "@/app/(teamindeling-studio)/ti-studio/blauwdruk/actions";
+import { updateSpelerStatus } from "@/app/(teamindeling-studio)/ti-studio/blauwdruk/actions";
 import SpelerAvatar from "@/components/teamindeling/ui/SpelerAvatar";
 import SpelerStatusBadge from "./SpelerStatusBadge";
 import AfmeldBadge from "@/components/teamindeling/scenario/AfmeldBadge";

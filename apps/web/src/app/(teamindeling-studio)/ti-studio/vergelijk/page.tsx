@@ -1,5 +1,5 @@
-import { getBlauwdruk } from "@/app/(teamindeling)/teamindeling/blauwdruk/actions";
-import { getScenario, getScenarios } from "@/app/(teamindeling)/teamindeling/scenarios/actions";
+import { getBlauwdruk } from "@/app/(teamindeling-studio)/ti-studio/blauwdruk/actions";
+import { getScenario, getScenarios } from "@/app/(teamindeling-studio)/ti-studio/scenarios/actions";
 import ScenarioVergelijk from "@/components/teamindeling/vergelijk/ScenarioVergelijk";
 import Link from "next/link";
 import { getActiefSeizoen } from "@/lib/teamindeling/seizoen";
@@ -111,7 +111,7 @@ export default async function VergelijkPage(props: {
           <p className="mt-1 text-sm text-gray-500">Vergelijk twee scenario&apos;s side-by-side</p>
         </div>
         <Link
-          href="/teamindeling/scenarios"
+          href="/ti-studio/scenarios"
           className="text-sm text-gray-500 underline hover:text-gray-700"
         >
           Terug naar scenario&apos;s

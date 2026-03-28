@@ -1,4 +1,4 @@
-import { getBlauwdruk } from "@/app/(teamindeling)/teamindeling/blauwdruk/actions";
+import { getBlauwdruk } from "@/app/(teamindeling-studio)/ti-studio/blauwdruk/actions";
 import { getScenarios, getVerwijderdeScenarios } from "./actions";
 import { getSpelerBasisData } from "./wizard-actions";
 import NieuwScenarioWizard from "@/components/teamindeling/scenarios/NieuwScenarioWizard";
@@ -52,7 +52,7 @@ export default async function ScenariosPage() {
         <div className="flex items-center gap-3">
           {scenarios.length >= 2 && (
             <Link
-              href="/teamindeling/vergelijk"
+              href="/ti-studio/vergelijk"
               className="rounded-md bg-gray-100 px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
             >
               Vergelijk
@@ -79,7 +79,7 @@ export default async function ScenariosPage() {
             return (
               <Link
                 key={scenario.id}
-                href={`/teamindeling/scenarios/${scenario.id}`}
+                href={`/ti-studio/scenarios/${scenario.id}`}
                 className="block rounded-lg border border-gray-200 bg-white p-4 transition-all hover:border-orange-300 hover:shadow-sm"
               >
                 <div className="flex items-start justify-between">

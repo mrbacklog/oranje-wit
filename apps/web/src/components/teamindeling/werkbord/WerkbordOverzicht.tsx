@@ -13,7 +13,7 @@ import {
   type DragStartEvent,
   type DragEndEvent,
 } from "@dnd-kit/core";
-import { updateWerkitemStatus } from "@/app/(teamindeling)/teamindeling/werkbord/actions";
+import { updateWerkitemStatus } from "@/app/(teamindeling-studio)/ti-studio/werkbord/actions";
 import WerkitemKaart, { type WerkitemData } from "./WerkitemKaart";
 import WerkbordFilters, { type WerkbordFilterState } from "./WerkbordFilters";
 import WerkitemDialoog from "./WerkitemDialoog";

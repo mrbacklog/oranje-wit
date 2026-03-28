@@ -7,19 +7,19 @@ import type { ScenarioData, SpelerData, TeamData, SelectieGroepData, PinData } f
 import { PEILJAAR } from "../types";
 import { useValidatie } from "@/hooks/teamindeling/useValidatie";
 import type { TeamUpdateData } from "../TeamEditPanel";
-import { createTeam } from "@/app/(teamindeling)/teamindeling/scenarios/actions";
+import { createTeam } from "@/app/(teamindeling-studio)/ti-studio/scenarios/actions";
 import {
   deleteTeam,
   updateTeam,
   updateTeamType,
-} from "@/app/(teamindeling)/teamindeling/scenarios/team-actions";
-import { updateTeamVolgorde } from "@/app/(teamindeling)/teamindeling/scenarios/team-volgorde-actions";
+} from "@/app/(teamindeling-studio)/ti-studio/scenarios/team-actions";
+import { updateTeamVolgorde } from "@/app/(teamindeling-studio)/ti-studio/scenarios/team-volgorde-actions";
 import { useSelectieHandlers, type VerdeelData } from "./useSelectieHandlers";
 import {
   getPinsVoorScenario,
   createPin,
   deletePin,
-} from "@/app/(teamindeling)/teamindeling/pins/actions";
+} from "@/app/(teamindeling-studio)/ti-studio/pins/actions";
 
 export function useScenarioEditor(scenario: ScenarioData, alleSpelers: SpelerData[]) {
   const laatsteVersie = scenario.versies[0];

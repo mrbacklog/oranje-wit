@@ -32,7 +32,7 @@ const APPS: AppDef[] = [
   {
     naam: "Team-Indeling",
     beschrijving: "Seizoensindeling en scenario's",
-    route: "/teamindeling",
+    route: "/ti-studio",
     accent: "#3b82f6",
     appId: "team-indeling",
     zichtbaar: (cap) => cap.isTC || cap.doelgroepen.length > 0,

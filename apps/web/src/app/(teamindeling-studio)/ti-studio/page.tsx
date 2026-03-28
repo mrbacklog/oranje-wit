@@ -1,7 +1,7 @@
 import {
   getMijlpalen,
   getScenarioOverzicht,
-} from "@/app/(teamindeling)/teamindeling/dashboard/actions";
+} from "@/app/(teamindeling-studio)/ti-studio/dashboard/actions";
 import { MijlpalenTimeline } from "@/components/teamindeling/dashboard/MijlpalenTimeline";
 import { ScenarioStatus } from "@/components/teamindeling/dashboard/ScenarioStatus";
 import { getActiefSeizoen } from "@/lib/teamindeling/seizoen";

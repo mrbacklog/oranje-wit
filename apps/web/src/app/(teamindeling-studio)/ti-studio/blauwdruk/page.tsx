@@ -10,7 +10,10 @@ import type { CategorieKaders } from "./categorie-kaders";
 import BlauwdrukTabs from "@/components/teamindeling/blauwdruk/BlauwdrukTabs";
 import { getActiefSeizoen, vorigSeizoen } from "@/lib/teamindeling/seizoen";
 import { prisma } from "@/lib/teamindeling/db/prisma";
-import { getWerkitems, getWerkitemStats } from "@/app/(teamindeling)/teamindeling/werkbord/actions";
+import {
+  getWerkitems,
+  getWerkitemStats,
+} from "@/app/(teamindeling-studio)/ti-studio/werkbord/actions";
 import type { WerkitemData } from "@/components/teamindeling/werkbord/WerkitemKaart";
 
 export const dynamic = "force-dynamic";

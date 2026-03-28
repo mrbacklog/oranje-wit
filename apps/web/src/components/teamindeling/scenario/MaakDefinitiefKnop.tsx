@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { markeerDefinitief } from "@/app/(teamindeling)/teamindeling/scenarios/actions";
+import { markeerDefinitief } from "@/app/(teamindeling-studio)/ti-studio/scenarios/actions";
 
 interface MaakDefinitiefKnopProps {
   scenarioId: string;

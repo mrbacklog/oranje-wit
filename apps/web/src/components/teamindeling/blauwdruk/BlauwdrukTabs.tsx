@@ -8,9 +8,9 @@ import type {
   LedenStatistieken,
   SpelerUitgebreid,
   PinMetNamen,
-} from "@/app/(teamindeling)/teamindeling/blauwdruk/actions";
-import { deletePin } from "@/app/(teamindeling)/teamindeling/pins/actions";
-import type { CategorieKaders } from "@/app/(teamindeling)/teamindeling/blauwdruk/categorie-kaders";
+} from "@/app/(teamindeling-studio)/ti-studio/blauwdruk/actions";
+import { deletePin } from "@/app/(teamindeling-studio)/ti-studio/pins/actions";
+import type { CategorieKaders } from "@/app/(teamindeling-studio)/ti-studio/blauwdruk/categorie-kaders";
 import CategoriePanel from "./CategoriePanel";
 import ToelichtingEditor from "./ToelichtingEditor";
 import PinsOverzicht from "./PinsOverzicht";
@@ -375,7 +375,7 @@ export default function BlauwdrukTabs({
                     </p>
                   </div>
                   <Link
-                    href="/teamindeling/scenarios"
+                    href="/ti-studio/scenarios"
                     className="inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold text-white transition-all"
                     style={{
                       background:

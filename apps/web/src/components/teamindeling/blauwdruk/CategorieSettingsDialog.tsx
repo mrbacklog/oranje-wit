@@ -9,7 +9,7 @@ import {
   BALMAAT_OPTIES,
   VAKWISSEL_OPTIES,
   type CategorieSettings,
-} from "@/app/(teamindeling)/teamindeling/blauwdruk/categorie-kaders";
+} from "@/app/(teamindeling-studio)/ti-studio/blauwdruk/categorie-kaders";
 import { NumberField, ToggleField, SelectField } from "./categorie-form-fields";
 
 // ============================================================

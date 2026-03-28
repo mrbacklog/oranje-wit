@@ -28,13 +28,13 @@ export function TISidebar({ children }: TISidebarProps) {
       subtitle: seizoen ? `Seizoen ${seizoen}` : undefined,
     },
     navigation: [
-      { label: "Dashboard", href: "/teamindeling", icon: "🏠" },
-      { label: "Blauwdruk", href: "/teamindeling/blauwdruk", icon: "🗂️" },
-      { label: "Werkbord", href: "/teamindeling/werkbord", icon: "📋" },
-      { label: "Scenario's", href: "/teamindeling/scenarios", icon: "🏗️" },
+      { label: "Dashboard", href: "/ti-studio", icon: "🏠" },
+      { label: "Blauwdruk", href: "/ti-studio/blauwdruk", icon: "🗂️" },
+      { label: "Werkbord", href: "/ti-studio/werkbord", icon: "📋" },
+      { label: "Scenario's", href: "/ti-studio/scenarios", icon: "🏗️" },
     ],
     footer: {
-      settingsHref: "/teamindeling/instellingen",
+      settingsHref: "/ti-studio/instellingen",
       showAppSwitcher: true,
       userMenu: session?.user
         ? {

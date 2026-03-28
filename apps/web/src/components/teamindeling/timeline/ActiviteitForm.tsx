@@ -4,7 +4,7 @@ import { useState } from "react";
 import {
   createWerkitem,
   createActiepunt,
-} from "@/app/(teamindeling)/teamindeling/werkbord/actions";
+} from "@/app/(teamindeling-studio)/ti-studio/werkbord/actions";
 import { logger } from "@oranje-wit/types";
 
 interface ActiviteitFormProps {

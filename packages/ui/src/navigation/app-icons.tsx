@@ -55,7 +55,7 @@ export const APP_META: Record<
   "team-indeling": {
     name: "Teams",
     description: "Teamindeling",
-    url: "/teamindeling",
+    url: "/ti-studio",
     accent: APP_ACCENTS["team-indeling"],
   },
   evaluatie: {

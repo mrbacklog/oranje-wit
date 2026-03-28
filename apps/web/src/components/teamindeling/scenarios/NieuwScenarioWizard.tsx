@@ -5,7 +5,7 @@ import {
   createScenarioVanuitBlauwdruk,
   createLeegScenario,
   kopieerScenario,
-} from "@/app/(teamindeling)/teamindeling/scenarios/wizard-actions";
+} from "@/app/(teamindeling-studio)/ti-studio/scenarios/wizard-actions";
 import { berekenBTeamVoorstel, berekenLeeftijdVerdeling } from "@/lib/teamindeling/teamstructuur";
 import type { SpelerBasis, ACatConfig, BTeamVoorstel } from "@/lib/teamindeling/teamstructuur";
 import { PEILJAAR } from "@oranje-wit/types";

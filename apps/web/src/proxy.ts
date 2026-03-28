@@ -72,8 +72,8 @@ export default async function middleware(request: NextRequest) {
     }
   }
 
-  // /teamindeling/* — TC-leden of gebruikers met doelgroepen (trainers/coordinatoren)
-  if (pathname.startsWith("/teamindeling")) {
+  // /ti-studio/* en /teamindeling/* — TC-leden of gebruikers met doelgroepen (trainers/coordinatoren)
+  if (pathname.startsWith("/ti-studio") || pathname.startsWith("/teamindeling")) {
     const doelgroepen = Array.isArray(token.doelgroepen) ? token.doelgroepen : [];
     if (!token.isTC && doelgroepen.length === 0) {
       return NextResponse.redirect(new URL("/?error=geen-toegang", request.url));

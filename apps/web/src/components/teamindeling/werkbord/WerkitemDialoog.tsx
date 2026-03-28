@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { createWerkitem } from "@/app/(teamindeling)/teamindeling/werkbord/actions";
+import { createWerkitem } from "@/app/(teamindeling-studio)/ti-studio/werkbord/actions";
 import type { WerkitemType, WerkitemPrioriteit, Besluitniveau, Doelgroep, Entiteit } from "./types";
 
 interface WerkitemDialoogProps {

@@ -6,7 +6,7 @@ import {
   createWerkitem,
   updateWerkitemStatus,
   updateActiepuntStatus,
-} from "@/app/(teamindeling)/teamindeling/werkbord/actions";
+} from "@/app/(teamindeling-studio)/ti-studio/werkbord/actions";
 import type { WerkitemData } from "@/components/teamindeling/werkbord/WerkitemKaart";
 import type { WerkitemType, WerkitemPrioriteit, WerkitemStatus } from "@oranje-wit/database";
 

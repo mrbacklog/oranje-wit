@@ -102,26 +102,26 @@ export const TEAM_INDELING: AppManifest = {
   name: "Team-Indeling",
   shortName: "Teams",
   description: "Seizoensindeling en scenario's",
-  baseUrl: "/teamindeling",
+  baseUrl: "/ti-studio",
   accent: APP_ACCENTS["team-indeling"],
   sections: [
     {
-      nav: { label: "Overzicht", href: "/teamindeling", icon: "GridIcon" },
+      nav: { label: "Overzicht", href: "/ti-studio", icon: "GridIcon" },
     },
     {
-      nav: { label: "Blauwdruk", href: "/teamindeling/blauwdruk", icon: "ListIcon" },
+      nav: { label: "Blauwdruk", href: "/ti-studio/blauwdruk", icon: "ListIcon" },
       pills: [
-        { label: "Kaders", href: "/teamindeling/blauwdruk?tab=kaders" },
-        { label: "Spelers", href: "/teamindeling/blauwdruk?tab=spelers" },
-        { label: "Staf", href: "/teamindeling/blauwdruk?tab=staf" },
-        { label: "Teams", href: "/teamindeling/blauwdruk?tab=teams" },
+        { label: "Kaders", href: "/ti-studio/blauwdruk?tab=kaders" },
+        { label: "Spelers", href: "/ti-studio/blauwdruk?tab=spelers" },
+        { label: "Staf", href: "/ti-studio/blauwdruk?tab=staf" },
+        { label: "Teams", href: "/ti-studio/blauwdruk?tab=teams" },
       ],
     },
     {
-      nav: { label: "Werkbord", href: "/teamindeling/werkbord", icon: "CompareIcon" },
+      nav: { label: "Werkbord", href: "/ti-studio/werkbord", icon: "CompareIcon" },
     },
     {
-      nav: { label: "Scenario's", href: "/teamindeling/scenarios", icon: "SearchIcon" },
+      nav: { label: "Scenario's", href: "/ti-studio/scenarios", icon: "SearchIcon" },
     },
   ],
   skipRoutes: [],

@@ -19,12 +19,12 @@ import {
   addSpelerToTeam,
   removeSpelerFromTeam,
   moveSpeler,
-} from "@/app/(teamindeling)/teamindeling/scenarios/actions";
+} from "@/app/(teamindeling-studio)/ti-studio/scenarios/actions";
 import {
   koppelSelectie,
   ontkoppelSelectieMetVerdeling,
   updateSelectieNaam,
-} from "@/app/(teamindeling)/teamindeling/scenarios/team-actions";
+} from "@/app/(teamindeling-studio)/ti-studio/scenarios/team-actions";
 
 export interface VerdeelData {
   groepId: string;
