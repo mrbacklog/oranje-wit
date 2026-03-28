@@ -31,11 +31,19 @@ const APPS: AppDef[] = [
   },
   {
     naam: "Team-Indeling",
-    beschrijving: "Seizoensindeling en scenario's",
-    route: "/ti-studio",
+    beschrijving: "Teams, spelers en scenario's bekijken",
+    route: "/teamindeling",
     accent: "#3b82f6",
     appId: "team-indeling",
     zichtbaar: (cap) => cap.isTC || cap.doelgroepen.length > 0,
+  },
+  {
+    naam: "TI Studio",
+    beschrijving: "Scenario's maken en bewerken",
+    route: "/ti-studio",
+    accent: "#6366f1",
+    appId: "team-indeling",
+    zichtbaar: (cap) => cap.isTC,
   },
   {
     naam: "Evaluatie",
