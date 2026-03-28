@@ -43,6 +43,7 @@ const DOMEINEN: NavSection[] = [
   {
     title: "Jeugd",
     items: [
+      { label: "Presentatie", href: "/beheer/jeugd/presentatie", icon: "bookStack" },
       { label: "Raamwerk", href: "/beheer/jeugd/raamwerk", icon: "clipboard" },
       { label: "Progressie", href: "/beheer/jeugd/progressie", icon: "trendUp" },
       { label: "USS-parameters", href: "/beheer/jeugd/uss", icon: "barChart" },
