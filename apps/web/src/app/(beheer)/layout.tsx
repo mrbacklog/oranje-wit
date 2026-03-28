@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { auth } from "@oranje-wit/auth";
+import { redirect } from "next/navigation";
 import { BeheerDomainShell } from "@/components/beheer/beheer-domain-shell";
 
 export const metadata: Metadata = {
@@ -6,6 +8,11 @@ export const metadata: Metadata = {
   description: "Centraal beheerpaneel voor de technische commissie van c.k.v. Oranje Wit",
 };
 
-export default function BeheerLayout({ children }: { children: React.ReactNode }) {
+export default async function BeheerLayout({ children }: { children: React.ReactNode }) {
+  const session = await auth();
+  const user = session?.user as Record<string, unknown> | undefined;
+  if (!session?.user || user?.isTC !== true) {
+    redirect("/login");
+  }
   return <BeheerDomainShell>{children}</BeheerDomainShell>;
 }
