@@ -1,8 +1,21 @@
 export const dynamic = "force-dynamic";
 
-import Link from "next/link";
 import { prisma } from "@/lib/teamindeling/db/prisma";
 import { getActiefSeizoen } from "@/lib/teamindeling/seizoen";
+import {
+  MobileDashboard,
+  type WerkindelingData,
+  type MijnTeamItem,
+} from "@/components/teamindeling/mobile/dashboard/MobileDashboard";
+
+/** Spelvorm-gebaseerde teamgrootte target */
+function getTarget(spelvorm: string | null): number {
+  const s = (spelvorm ?? "").toLowerCase();
+  if (s.includes("viertal") || s.includes("4-tal")) return 6;
+  if (s.includes("zestal") || s.includes("6-tal")) return 8;
+  if (s.includes("achtal") || s.includes("8-tal")) return 10;
+  return 12;
+}
 
 export default async function TeamIndelingMobileDashboard() {
   const seizoen = await getActiefSeizoen();
@@ -36,130 +49,45 @@ export default async function TeamIndelingMobileDashboard() {
     },
   });
 
+  // Haal OWTeams op voor "Mijn teams" sectie
+  const owTeams = await prisma.oWTeam.findMany({
+    where: { seizoen },
+    orderBy: { sortOrder: "asc" },
+  });
+
+  // Bouw werkindeling-data
   const teams = werkindeling?.versies?.[0]?.teams ?? [];
+  const werkindelingData: WerkindelingData | null = werkindeling
+    ? {
+        naam: werkindeling.naam,
+        status: werkindeling.status,
+        updatedAt: werkindeling.updatedAt.toISOString(),
+        teamCount: teams.length,
+        spelerCount: teams.reduce(
+          (sum: number, t: { _count: { spelers: number } }) => sum + t._count.spelers,
+          0
+        ),
+      }
+    : null;
+
+  // Bouw "Mijn teams" — map werkindelingcounts op OWTeams
+  const werkindelingCounts = new Map<string, number>();
+  for (const team of teams) {
+    werkindelingCounts.set(team.naam.toLowerCase(), team._count.spelers);
+  }
+
+  const mijnTeams: MijnTeamItem[] = owTeams.map((owTeam) => {
+    const teamNaam = owTeam.naam ?? owTeam.owCode;
+    return {
+      id: owTeam.id,
+      naam: teamNaam,
+      kleur: owTeam.kleur?.toUpperCase() ?? null,
+      spelersCount: werkindelingCounts.get(teamNaam.toLowerCase()) ?? 0,
+      target: getTarget(owTeam.spelvorm),
+    };
+  });
 
   return (
-    <div style={{ padding: "1rem" }}>
-      <h1
-        style={{
-          fontSize: "1.5rem",
-          fontWeight: 700,
-          color: "var(--text-primary)",
-          marginBottom: "0.25rem",
-        }}
-      >
-        Team-Indeling
-      </h1>
-      <p style={{ color: "var(--text-tertiary)", marginBottom: "1rem" }}>{seizoen}</p>
-
-      {werkindeling ? (
-        <>
-          <div
-            style={{
-              padding: "0.75rem 1rem",
-              backgroundColor: "var(--surface-raised)",
-              borderRadius: "0.5rem",
-              marginBottom: "1rem",
-            }}
-          >
-            <div
-              style={{
-                color: "var(--text-primary)",
-                fontWeight: 600,
-                marginBottom: "0.25rem",
-              }}
-            >
-              {werkindeling.naam}
-            </div>
-            <div
-              style={{
-                color: "var(--text-secondary)",
-                fontSize: "0.875rem",
-              }}
-            >
-              {werkindeling.status} &middot; {teams.length} teams
-            </div>
-          </div>
-
-          <h2
-            style={{
-              fontSize: "1.125rem",
-              fontWeight: 600,
-              color: "var(--text-primary)",
-              marginBottom: "0.5rem",
-            }}
-          >
-            Teams
-          </h2>
-
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "0.5rem",
-            }}
-          >
-            {teams.map(
-              (team: {
-                id: string;
-                naam: string;
-                categorie: string;
-                kleur: string | null;
-                _count: { spelers: number };
-              }) => (
-                <Link
-                  key={team.id}
-                  href={`/teamindeling/teams/${team.id}`}
-                  style={{ textDecoration: "none" }}
-                >
-                  <div
-                    style={{
-                      padding: "0.75rem 1rem",
-                      backgroundColor: "var(--surface-raised)",
-                      borderRadius: "0.5rem",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.75rem",
-                    }}
-                  >
-                    {team.kleur && (
-                      <div
-                        style={{
-                          width: "0.75rem",
-                          height: "0.75rem",
-                          borderRadius: "50%",
-                          backgroundColor: team.kleur,
-                          flexShrink: 0,
-                        }}
-                      />
-                    )}
-                    <div style={{ flex: 1 }}>
-                      <div
-                        style={{
-                          color: "var(--text-primary)",
-                          fontWeight: 600,
-                        }}
-                      >
-                        {team.naam}
-                      </div>
-                      <div
-                        style={{
-                          color: "var(--text-secondary)",
-                          fontSize: "0.875rem",
-                        }}
-                      >
-                        {team.categorie} &middot; {team._count.spelers} spelers
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              )
-            )}
-          </div>
-        </>
-      ) : (
-        <p style={{ color: "var(--text-tertiary)" }}>Nog geen werkindeling voor dit seizoen</p>
-      )}
-    </div>
+    <MobileDashboard seizoen={seizoen} werkindeling={werkindelingData} mijnTeams={mijnTeams} />
   );
 }
