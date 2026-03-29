@@ -466,6 +466,29 @@ De exacte integratie (hoe een signaal automatisch een what-if-suggestie triggert
 
 ---
 
+## 10. Handshake-review gaps (op te lossen voor fase 2)
+
+Drie gaps geïdentificeerd bij kruiscontrole van UX-spec, technisch ontwerp en domeinreview:
+
+### Gap 1: Staf-impact in impact-panel
+**Signaal**: korfbal-expert — stafbezetting is net zo vaak het breekpunt als spelerstekort.
+**Huidige staat**: UX impact-panel toont alleen speler-delta's. Technisch ontwerp heeft `stafIn`/`stafUit` in `TeamDelta`.
+**Oplossing**: UX impact-panel uitbreiden met staf-regel per team: "Senioren 3: 8 spelers, 0 trainers".
+
+### Gap 2: Selectie-paren in start-dialoog
+**Signaal**: korfbal-expert — U15-1/U15-2 zijn altijd een paar, what-if op één moet het andere automatisch meenemen.
+**Huidige staat**: UX start-dialoog toont teams als individuele checkboxes.
+**Oplossing**: Team-checkboxlijst groepeert selectieparen. Aanvinken van één vinkt automatisch het paar aan.
+
+### Gap 3: Lege werkindeling toestand
+**Signaal**: korfbal-expert — in maart/april is de werkindeling nog grotendeels leeg.
+**Huidige staat**: UX onboarding-scherm is goed, maar editor met 0-5 teams niet beschreven.
+**Oplossing**: UX-spec beschrijft hoe editor eruitziet met weinig teams (geen "alles is af" gevoel).
+
+Geen van deze gaps blokkeert fase 1 (werkindeling). Ze worden opgelost voor fase 2 (what-if basis).
+
+---
+
 ## Besluitenlog
 
 | Besluit | Reden |
