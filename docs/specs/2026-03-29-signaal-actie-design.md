@@ -32,6 +32,70 @@ GEVOLG: nieuw signaal, what-if, of terug naar stabiel
 
 De TC begint elk voorjaar met ~300 spelers en ~50 stafleden. Bij 10% afwijking (conservatief) zijn dat 30 signalen die parallel lopen, acties genereren, en door de hele indeling heen doorwerken. Zonder systeem verliest de TC het overzicht. Met systeem wordt de TC proactief in plaats van reactief.
 
+### Methodische onderbouwing: EWIMS (Early Warning Intervention and Monitoring System)
+
+Dit systeem is gemodelleerd naar **EWIMS**, het Early Warning Intervention and Monitoring System dat in het onderwijs wordt gebruikt om leerlingen te identificeren die risico lopen op uitval. De parallellen zijn direct:
+
+| Onderwijs (EWIMS) | c.k.v. Oranje Wit |
+|---|---|
+| Leerling | Speler / staflid |
+| Aanwezigheid + gedrag + cijfers | Retentie + evaluatie + competitie |
+| Flag (at-risk indicator) | Signaal |
+| Interventie | Actie |
+| Leraar → counselor → directeur | Trainer → coördinator → TC |
+| Maandelijks EWIMS-overleg | TC-vergadering |
+| Tier 1 (85%): standaard | STABIEL: geen actie nodig |
+| Tier 2 (10%): groepsondersteuning | AANDACHT: monitoring, lichte actie |
+| Tier 3 (5%): intensief individueel | KRITIEK: what-ifs, domino-analyse |
+
+Aanvullende patronen uit andere domeinen:
+- **ITIL Incident Management**: Impact × Urgency matrix voor triage-prioritering, parent-child incidenten voor domino-ketens
+- **Succession Planning (HR)**: flight risk scores (retentie + evaluatie + leeftijd), readiness-tracking voor doorstroom
+- **ServiceNow parent-child**: bij sluiting van het root-signaal automatisch downstream-signalen bijwerken
+- **CRM pipeline**: stagnatie-detectie — als een signaal te lang in dezelfde status staat, automatisch escaleren
+
+### Seizoenscyclus: de signaal-trechter
+
+Signalen leven het hele jaar, maar de teamindeling is een geconcentreerde fase (maart-juni). Het bindmechanisme is een **trechter** die signalen filtert naar indelingsrelevantie:
+
+```
+BREED (hele jaar, automatisch)
+  │  Monitor-signalering: ~40 spelers met retentierisico
+  │  Evaluatie-flags: ~12 spelers met opvallende scores
+  │  Coördinator-meldingen: ~8 spelers met aandachtspunten
+  │
+GEFILTERD (start indelingsfase, bij blauwdruk-aanmaak)
+  │  Systeem importeert alle actieve signalen naar de blauwdruk
+  │  TC beoordeelt: welke zijn relevant voor de indeling?
+  │  ~20 signalen worden "indelings-signalen"
+  │
+ACTIEF (tijdens indeling)
+  │  Elk signaal wordt een actie of what-if
+  │  "Lisa twijfelt" → actie: gesprek ouders
+  │  "3 twijfelaars bij Sen 3" → what-if: team opheffen?
+  │
+BESLOTEN (einde indeling)
+     Elk signaal heeft een uitkomst
+```
+
+Het jaar in vier modi:
+
+| Periode | Modus | Signaal-activiteit |
+|---|---|---|
+| Sep-Feb | **OBSERVEREN** | Monitor genereert signalen automatisch (retentie, verloop). TC hoeft niet te handelen. |
+| Jan-Mrt | **EVALUEREN** | Evaluaties en coördinator-input komen binnen. Signalen worden concreter. |
+| Mrt-Jun | **INDELEN** | Signalen worden actief: input voor werkindeling en what-ifs. Acties lopen. |
+| Jun-Aug | **COMMUNICEREN** | Indeling gedeeld. Alleen nood-signalen bij late wijzigingen. |
+
+De binding tussen observeren en indelen is automatisch: **bij het aanmaken van de blauwdruk importeert het systeem alle openstaande signalen**. De TC hoeft ze niet handmatig over te tikken.
+
+### Verbeteringen op basis van onderzoek
+
+1. **Periodieke re-assessment**: signalen mogen niet oneindig in dezelfde status staan. Na 4 weken TWIJFELT zonder actie → automatisch herbeoordelings-signaal genereren.
+2. **Stagnatie-detectie**: als een actie te lang OPEN staat → escaleer automatisch naar het TC-lid dat verantwoordelijk is voor de doelgroep.
+3. **TC-vergadering view**: een dashboard dat precies toont wat er besproken moet worden — nieuwe signalen, openstaande acties, stagnerende signalen.
+4. **Individuele risico-score**: combinatie van retentie-data + evaluatie-resultaten + leeftijdsfase tot een per-speler risico-indicator (vergelijkbaar met HR's "flight risk score").
+
 ---
 
 ## 1. Het statusmodel
@@ -1017,3 +1081,6 @@ Met systeem:
 | Staf-status als nieuw veld | De what-if review noemde staf als blinde vlek, dit lost het op |
 | MVP zonder automatische signalen | TC moet eerst wennen aan handmatig registreren |
 | Email + in-app, geen push in v1 | Push-notificaties zijn complex en de TC-doelgroep is klein |
+| EWIMS als methodische basis | Bewezen in onderwijs, directe parallellen met sportverenigingscontext |
+| Signaal-trechter als bindmechanisme | Automatische import bij blauwdruk-aanmaak verbindt observatie- met indelingsfase |
+| Re-assessment na 4 weken | Voorkomt dat signalen oneindig in dezelfde status staan (stagnatie-detectie) |
