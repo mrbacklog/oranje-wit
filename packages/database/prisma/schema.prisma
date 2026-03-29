@@ -720,7 +720,8 @@ model Scenario {
   aannames      Json?
   keuzeWaardes  Json?    // { [keuzeId]: gekozenOptie }
 
-  status      ScenarioStatus @default(ACTIEF)
+  status          ScenarioStatus @default(ACTIEF)
+  isWerkindeling  Boolean        @default(false)
 
   parentId String?
   parent   Scenario?  @relation("ScenarioFork", fields: [parentId], references: [id])
