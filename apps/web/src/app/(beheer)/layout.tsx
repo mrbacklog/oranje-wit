@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { auth } from "@oranje-wit/auth";
 import { redirect } from "next/navigation";
 import { BeheerDomainShell } from "@/components/beheer/beheer-domain-shell";
+import { DaisyChat } from "@/components/daisy/chat-trigger";
 
 export const metadata: Metadata = {
   title: "TC Beheer | c.k.v. Oranje Wit",
@@ -14,5 +15,10 @@ export default async function BeheerLayout({ children }: { children: React.React
   if (!session?.user || user?.isTC !== true) {
     redirect("/login");
   }
-  return <BeheerDomainShell>{children}</BeheerDomainShell>;
+  return (
+    <>
+      <BeheerDomainShell>{children}</BeheerDomainShell>
+      <DaisyChat />
+    </>
+  );
 }
