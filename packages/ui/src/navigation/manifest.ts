@@ -128,6 +128,33 @@ export const TEAM_INDELING: AppManifest = {
   visibility: { requireTC: true },
 };
 
+// ─── Team-Indeling Mobile ──────────────────────────────────────
+
+export const TEAM_INDELING_MOBILE: AppManifest = {
+  id: "team-indeling",
+  name: "Team-Indeling",
+  shortName: "Teams",
+  description: "Teams bekijken en scenario's reviewen",
+  baseUrl: "/teamindeling",
+  accent: APP_ACCENTS["team-indeling"],
+  sections: [
+    {
+      nav: { label: "Teams", href: "/teamindeling/teams", icon: "GridIcon" },
+    },
+    {
+      nav: { label: "Spelers", href: "/teamindeling/spelers", icon: "PeopleIcon" },
+    },
+    {
+      nav: { label: "Indeling", href: "/teamindeling/scenarios", icon: "ListIcon" },
+    },
+    {
+      nav: { label: "Staf", href: "/teamindeling/staf", icon: "StarIcon" },
+    },
+  ],
+  skipRoutes: [],
+  visibility: { requireTC: false },
+};
+
 // ─── Evaluatie ──────────────────────────────────────────────────
 
 export const EVALUATIE: AppManifest = {

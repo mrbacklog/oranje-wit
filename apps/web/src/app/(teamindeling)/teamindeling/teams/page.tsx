@@ -1,85 +1,64 @@
 export const dynamic = "force-dynamic";
 
-import Link from "next/link";
 import { prisma } from "@/lib/teamindeling/db/prisma";
 import { getActiefSeizoen } from "@/lib/teamindeling/seizoen";
+import {
+  TeamsOverzicht,
+  type TeamItem,
+} from "@/components/teamindeling/mobile/teams/TeamsOverzicht";
 
-export default async function TeamsOverview() {
+export default async function TeamsPage() {
   const seizoen = await getActiefSeizoen();
 
-  const teams = await prisma.oWTeam.findMany({
+  // Haal werkindeling op (scenario met isWerkindeling=true) voor spelerscounts
+  const werkindeling = await prisma.scenario.findFirst({
+    where: {
+      isWerkindeling: true,
+      concept: { blauwdruk: { seizoen } },
+    },
+    select: {
+      versies: {
+        orderBy: { nummer: "desc" },
+        take: 1,
+        select: {
+          teams: {
+            select: {
+              naam: true,
+              kleur: true,
+              categorie: true,
+              _count: { select: { spelers: true } },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  // Maak een lookup: teamnaam -> spelercount uit werkindeling
+  const werkindelingCounts = new Map<string, number>();
+  if (werkindeling?.versies[0]) {
+    for (const team of werkindeling.versies[0].teams) {
+      werkindelingCounts.set(team.naam.toLowerCase(), team._count.spelers);
+    }
+  }
+
+  // Haal OWTeams op voor het seizoen
+  const owTeams = await prisma.oWTeam.findMany({
     where: { seizoen },
     orderBy: { sortOrder: "asc" },
   });
 
-  return (
-    <div style={{ padding: "1rem" }}>
-      <h1
-        style={{
-          fontSize: "1.5rem",
-          fontWeight: 700,
-          color: "var(--text-primary)",
-          marginBottom: "0.25rem",
-        }}
-      >
-        Teams
-      </h1>
-      <p style={{ color: "var(--text-tertiary)", marginBottom: "1rem" }}>
-        {seizoen} &middot; {teams.length} teams
-      </p>
+  // Staftoewijzingen per team voor later gebruik
+  const teams: TeamItem[] = owTeams.map((team) => ({
+    id: team.id,
+    naam: team.naam,
+    owCode: team.owCode,
+    categorie: team.categorie,
+    kleur: team.kleur?.toUpperCase() ?? null,
+    leeftijdsgroep: team.leeftijdsgroep,
+    spelvorm: team.spelvorm,
+    spelersCount: werkindelingCounts.get((team.naam ?? team.owCode).toLowerCase()) ?? 0,
+  }));
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-        {teams.map(
-          (team: {
-            id: number;
-            naam: string | null;
-            owCode: string;
-            categorie: string;
-            kleur: string | null;
-          }) => (
-            <Link
-              key={team.id}
-              href={`/teamindeling/teams/${team.id}`}
-              style={{ textDecoration: "none" }}
-            >
-              <div
-                style={{
-                  padding: "0.75rem 1rem",
-                  backgroundColor: "var(--surface-raised)",
-                  borderRadius: "0.5rem",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.75rem",
-                }}
-              >
-                {team.kleur && (
-                  <div
-                    style={{
-                      width: "0.75rem",
-                      height: "0.75rem",
-                      borderRadius: "50%",
-                      backgroundColor: team.kleur,
-                      flexShrink: 0,
-                    }}
-                  />
-                )}
-                <div>
-                  <div style={{ color: "var(--text-primary)", fontWeight: 600 }}>
-                    {team.naam ?? team.owCode}
-                  </div>
-                  <div style={{ color: "var(--text-secondary)", fontSize: "0.875rem" }}>
-                    Categorie {team.categorie.toUpperCase()}
-                  </div>
-                </div>
-              </div>
-            </Link>
-          )
-        )}
-
-        {teams.length === 0 && (
-          <p style={{ color: "var(--text-tertiary)" }}>Geen teams gevonden voor {seizoen}.</p>
-        )}
-      </div>
-    </div>
-  );
+  return <TeamsOverzicht teams={teams} seizoen={seizoen} />;
 }

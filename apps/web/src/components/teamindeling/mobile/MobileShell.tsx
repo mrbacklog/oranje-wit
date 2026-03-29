@@ -2,9 +2,9 @@
 
 import type { ReactNode } from "react";
 import { signOut, useSession } from "next-auth/react";
-import { DomainShell, resolveBottomNav, TEAM_INDELING } from "@oranje-wit/ui";
+import { DomainShell, resolveBottomNav, TEAM_INDELING_MOBILE } from "@oranje-wit/ui";
 
-const bottomNavItems = resolveBottomNav(TEAM_INDELING);
+const bottomNavItems = resolveBottomNav(TEAM_INDELING_MOBILE);
 
 interface MobileShellProps {
   children: ReactNode;
