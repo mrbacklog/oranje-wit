@@ -7,22 +7,47 @@ import { getActiefSeizoen } from "@/lib/teamindeling/seizoen";
 export default async function ScenariosOverview() {
   const seizoen = await getActiefSeizoen();
 
-  const scenarios = await prisma.scenario.findMany({
+  const werkindeling = await prisma.scenario.findFirst({
     where: {
+      isWerkindeling: true,
+      concept: { blauwdruk: { seizoen } },
       verwijderdOp: null,
-      concept: {
-        blauwdruk: {
-          seizoen,
+    },
+    select: {
+      naam: true,
+      status: true,
+      versies: {
+        orderBy: { nummer: "desc" },
+        take: 1,
+        select: {
+          teams: {
+            orderBy: { volgorde: "asc" },
+            select: {
+              id: true,
+              naam: true,
+              categorie: true,
+              kleur: true,
+              spelers: {
+                select: {
+                  speler: {
+                    select: {
+                      id: true,
+                      roepnaam: true,
+                      achternaam: true,
+                      geboortejaar: true,
+                      geslacht: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
       },
     },
-    include: {
-      concept: {
-        select: { naam: true },
-      },
-    },
-    orderBy: { createdAt: "desc" },
   });
+
+  const teams = werkindeling?.versies?.[0]?.teams ?? [];
 
   return (
     <div style={{ padding: "1rem" }}>
@@ -34,42 +59,150 @@ export default async function ScenariosOverview() {
           marginBottom: "0.25rem",
         }}
       >
-        Scenario&apos;s
+        Werkindeling
       </h1>
       <p style={{ color: "var(--text-tertiary)", marginBottom: "1rem" }}>
-        {seizoen} &middot; {scenarios.length} scenario&apos;s
+        {seizoen}
+        {werkindeling && (
+          <span>
+            {" "}
+            &middot; {werkindeling.naam} &middot; {werkindeling.status}
+          </span>
+        )}
       </p>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-        {scenarios.map(
-          (scenario: { id: string; naam: string; status: string; concept: { naam: string } }) => (
-            <Link
-              key={scenario.id}
-              href={`/teamindeling/scenarios/${scenario.id}`}
-              style={{ textDecoration: "none" }}
-            >
+      {teams.length > 0 ? (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "1rem",
+          }}
+        >
+          {teams.map(
+            (team: {
+              id: string;
+              naam: string;
+              categorie: string;
+              kleur: string | null;
+              spelers: Array<{
+                speler: {
+                  id: string;
+                  roepnaam: string | null;
+                  achternaam: string;
+                  geboortejaar: number | null;
+                  geslacht: string | null;
+                };
+              }>;
+            }) => (
               <div
+                key={team.id}
                 style={{
-                  padding: "0.75rem 1rem",
                   backgroundColor: "var(--surface-raised)",
                   borderRadius: "0.5rem",
+                  overflow: "hidden",
                 }}
               >
-                <div style={{ color: "var(--text-primary)", fontWeight: 600 }}>{scenario.naam}</div>
-                <div style={{ color: "var(--text-secondary)", fontSize: "0.875rem" }}>
-                  {scenario.concept.naam} &middot; {scenario.status}
+                <div
+                  style={{
+                    padding: "0.75rem 1rem",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.75rem",
+                    borderBottom: "1px solid var(--border-default, rgba(255,255,255,0.1))",
+                  }}
+                >
+                  {team.kleur && (
+                    <div
+                      style={{
+                        width: "0.75rem",
+                        height: "0.75rem",
+                        borderRadius: "50%",
+                        backgroundColor: team.kleur,
+                        flexShrink: 0,
+                      }}
+                    />
+                  )}
+                  <div>
+                    <div
+                      style={{
+                        color: "var(--text-primary)",
+                        fontWeight: 600,
+                      }}
+                    >
+                      {team.naam}
+                    </div>
+                    <div
+                      style={{
+                        color: "var(--text-secondary)",
+                        fontSize: "0.875rem",
+                      }}
+                    >
+                      {team.categorie} &middot; {team.spelers.length} spelers
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{ padding: "0.5rem 0" }}>
+                  {team.spelers.map(
+                    (ts: {
+                      speler: {
+                        id: string;
+                        roepnaam: string | null;
+                        achternaam: string;
+                        geboortejaar: number | null;
+                        geslacht: string | null;
+                      };
+                    }) => (
+                      <Link
+                        key={ts.speler.id}
+                        href={`/teamindeling/spelers/${ts.speler.id}`}
+                        style={{ textDecoration: "none", display: "block" }}
+                      >
+                        <div
+                          style={{
+                            padding: "0.4rem 1rem",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                          }}
+                        >
+                          <span style={{ color: "var(--text-primary)" }}>
+                            {ts.speler.roepnaam ?? ts.speler.achternaam}{" "}
+                            {ts.speler.roepnaam ? ts.speler.achternaam : ""}
+                          </span>
+                          <span
+                            style={{
+                              color: "var(--text-tertiary)",
+                              fontSize: "0.8125rem",
+                            }}
+                          >
+                            {ts.speler.geboortejaar}
+                            {ts.speler.geslacht && ` · ${ts.speler.geslacht}`}
+                          </span>
+                        </div>
+                      </Link>
+                    )
+                  )}
+                  {team.spelers.length === 0 && (
+                    <div
+                      style={{
+                        padding: "0.4rem 1rem",
+                        color: "var(--text-tertiary)",
+                        fontSize: "0.875rem",
+                      }}
+                    >
+                      Geen spelers
+                    </div>
+                  )}
                 </div>
               </div>
-            </Link>
-          )
-        )}
-
-        {scenarios.length === 0 && (
-          <p style={{ color: "var(--text-tertiary)" }}>
-            Geen scenario&apos;s gevonden voor {seizoen}.
-          </p>
-        )}
-      </div>
+            )
+          )}
+        </div>
+      ) : (
+        <p style={{ color: "var(--text-tertiary)" }}>Nog geen werkindeling voor dit seizoen</p>
+      )}
     </div>
   );
 }
