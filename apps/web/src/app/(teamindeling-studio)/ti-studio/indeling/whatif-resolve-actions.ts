@@ -2,6 +2,8 @@
 
 import { prisma } from "@/lib/teamindeling/db/prisma";
 import { logger } from "@oranje-wit/types";
+import { requireTC } from "@/lib/teamindeling/auth-check";
+import { valideerWhatIfVoorToepassen } from "./whatif-validatie-actions";
 
 // ============================================================
 // WHAT-IF TOEPASSEN & VERWERPEN
@@ -10,14 +12,44 @@ import { logger } from "@oranje-wit/types";
 /**
  * Pas what-if toe op werkindeling (merge).
  *
- * 1. Verifieer dat what-if OPEN of BESLISBAAR is
- * 2. Stale-check: vergelijk basisVersieNummer met huidige versie
- * 3. Maak een nieuwe versie op de werkindeling
- * 4. Kopieer ongeraakte teams naar de nieuwe versie
- * 5. Kopieer what-if teams als vervanging/toevoeging
- * 6. Zet what-if op TOEGEPAST
+ * 1. Draai validatie (pin-schendingen, KNKV-regels, blauwdruk-kaders)
+ * 2. Blokkeer bij harde fouten (ROOD)
+ * 3. Blokkeer bij afwijkingen zonder toelichting
+ * 4. Verifieer dat what-if OPEN of BESLISBAAR is
+ * 5. Stale-check: vergelijk basisVersieNummer met huidige versie
+ * 6. Maak een nieuwe versie op de werkindeling
+ * 7. Kopieer ongeraakte teams naar de nieuwe versie
+ * 8. Kopieer what-if teams als vervanging/toevoeging
+ * 9. Log afwijkingen als BlauwdrukBesluit
+ * 10. Zet what-if op TOEGEPAST
  */
 export async function pasWhatIfToe(whatIfId: string, toelichtingAfwijking?: string): Promise<void> {
+  // --- Validatie vóór de merge ---
+  const validatie = await valideerWhatIfVoorToepassen(whatIfId);
+
+  if (validatie.heeftHardefouten) {
+    const fouten = [
+      ...validatie.pinSchendingen.map((p) => p.beschrijving),
+      ...validatie.crossTeamMeldingen.filter((m) => m.ernst === "kritiek").map((m) => m.bericht),
+      ...Object.values(validatie.teamValidaties)
+        .flatMap((v) => v.meldingen)
+        .filter((m) => m.ernst === "kritiek")
+        .map((m) => m.bericht),
+    ];
+    throw new Error(`What-if kan niet worden toegepast — harde fouten:\n${fouten.join("\n")}`);
+  }
+
+  if (validatie.heeftAfwijkingen && !toelichtingAfwijking) {
+    const afwijkingen = validatie.kaderAfwijkingen.map(
+      (a) =>
+        `${a.categorie}: verwacht ${a.verwachtAantal}, werkelijk ${a.werkelijkAantal} (${a.verschil > 0 ? "+" : ""}${a.verschil})`
+    );
+    throw new Error(
+      `What-if wijkt af van blauwdruk-kaders. Geef een toelichting mee:\n${afwijkingen.join("\n")}`
+    );
+  }
+  // --- Einde validatie ---
+
   const whatIf = await prisma.whatIf.findUniqueOrThrow({
     where: { id: whatIfId },
     select: {
@@ -55,6 +87,11 @@ export async function pasWhatIfToe(whatIfId: string, toelichtingAfwijking?: stri
     where: { id: whatIf.werkindelingId },
     select: {
       id: true,
+      concept: {
+        select: {
+          blauwdruk: { select: { id: true } },
+        },
+      },
       versies: {
         orderBy: { nummer: "desc" as const },
         take: 1,
@@ -131,6 +168,41 @@ export async function pasWhatIfToe(whatIfId: string, toelichtingAfwijking?: stri
         toelichtingAfwijking: toelichtingAfwijking ?? null,
       },
     });
+
+    // 5. Log afwijkingen als BlauwdrukBesluit (als er afwijkingen waren)
+    if (validatie.heeftAfwijkingen && toelichtingAfwijking) {
+      const blauwdrukId = werkindeling.concept?.blauwdruk?.id;
+      if (blauwdrukId) {
+        const session = await requireTC();
+        const user = await tx.user.upsert({
+          where: { email: session.user!.email! },
+          create: {
+            email: session.user!.email!,
+            naam: session.user!.name ?? session.user!.email!,
+            rol: "EDITOR",
+          },
+          update: {},
+          select: { id: true },
+        });
+
+        const afwijkingTekst = validatie.kaderAfwijkingen
+          .map(
+            (a) => `${a.categorie}: verwacht ${a.verwachtAantal}, werkelijk ${a.werkelijkAantal}`
+          )
+          .join("; ");
+
+        await tx.blauwdrukBesluit.create({
+          data: {
+            blauwdrukId,
+            vraag: `What-if "${whatIf.vraag}" wijkt af van blauwdruk-kaders: ${afwijkingTekst}`,
+            antwoord: toelichtingAfwijking,
+            toelichting: `Afwijking geaccepteerd bij toepassen what-if ${whatIfId}`,
+            status: "BEANTWOORD",
+            auteurId: user.id,
+          },
+        });
+      }
+    }
   });
 
   logger.info(`What-if "${whatIf.vraag}" (${whatIfId}) toegepast op werkindeling`);
