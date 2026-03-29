@@ -71,30 +71,12 @@ export const teamindelingTools = {
     description: "Geeft de status van de blauwdruk en alle scenarios voor het huidige seizoen",
     parameters: z.object({}),
     execute: async () => {
-      const blauwdruk = await prisma.blauwdruk.findUnique({
-        where: { seizoen: HUIDIG_SEIZOEN },
-        select: {
-          id: true,
-          seizoen: true,
-          isWerkseizoen: true,
-          createdAt: true,
-          concepten: {
-            select: {
-              id: true,
-              naam: true,
-              status: true,
-              scenarios: {
-                select: {
-                  id: true,
-                  naam: true,
-                  status: true,
-                  isWerkindeling: true,
-                },
-              },
-            },
-          },
-        },
-      });
+      const blauwdrukken = await prisma.$queryRaw<
+        Array<{ id: string; seizoen: string; created_at: Date }>
+      >`
+        SELECT id, seizoen, created_at FROM "Blauwdruk" WHERE seizoen = ${HUIDIG_SEIZOEN} LIMIT 1
+      `;
+      const blauwdruk = blauwdrukken[0] ?? null;
 
       if (!blauwdruk) {
         return {
@@ -104,23 +86,35 @@ export const teamindelingTools = {
         };
       }
 
-      const scenarios = blauwdruk.concepten.flatMap((c) =>
-        c.scenarios.map((s) => ({
-          naam: s.naam,
-          concept: c.naam,
-          status: s.status,
-          isWerkindeling: s.isWerkindeling,
-        }))
-      );
+      const concepten = await prisma.concept.findMany({
+        where: { blauwdrukId: blauwdruk.id },
+        select: { naam: true, status: true },
+      });
+
+      const scenarioRijen = await prisma.scenario.findMany({
+        where: { concept: { blauwdrukId: blauwdruk.id } },
+        select: {
+          naam: true,
+          status: true,
+          isWerkindeling: true,
+          concept: { select: { naam: true } },
+        },
+      });
+
+      const scenarios = scenarioRijen.map((s) => ({
+        naam: s.naam,
+        concept: s.concept.naam,
+        status: s.status,
+        isWerkindeling: s.isWerkindeling,
+      }));
 
       return {
         seizoen: HUIDIG_SEIZOEN,
         blauwdruk: {
           id: blauwdruk.id,
-          isWerkseizoen: blauwdruk.isWerkseizoen,
-          aantalConcepten: blauwdruk.concepten.length,
+          aantalConcepten: concepten.length,
           aantalScenarios: scenarios.length,
-          createdAt: blauwdruk.createdAt,
+          createdAt: blauwdruk.created_at,
         },
         scenarios,
         werkindeling: scenarios.find((s) => s.isWerkindeling) ?? null,
