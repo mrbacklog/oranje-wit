@@ -97,6 +97,88 @@ export async function createScenarioVanuitBlauwdruk(
 }
 
 // ---------------------------------------------------------------------------
+// Wizard: werkindeling aanmaken vanuit blauwdruk
+// ---------------------------------------------------------------------------
+
+/**
+ * Maak een werkindeling aan vanuit de blauwdruk-wizard.
+ * Identiek aan createScenarioVanuitBlauwdruk, maar zet isWerkindeling: true.
+ */
+export async function createWerkindelingVanuitBlauwdruk(
+  blauwdrukId: string,
+  naam: string,
+  aantalSenioren: number,
+  aCatTeams: ACatConfig[],
+  bTeamOverrides?: Record<string, number>
+) {
+  // Guard: max 1 werkindeling per blauwdruk
+  const { assertGeenWerkindeling } = await import("@/lib/teamindeling/db/werkindeling");
+  await assertGeenWerkindeling(blauwdrukId);
+
+  const concept = await prisma.concept.upsert({
+    where: { id: await findConceptIdForBlauwdruk(blauwdrukId) },
+    create: {
+      blauwdrukId,
+      naam: "Standaard",
+      uitgangsprincipe: "Automatisch aangemaakt",
+      keuzes: {},
+    },
+    update: {},
+  });
+
+  const spelers = await prisma.speler.findMany({
+    select: { id: true, geboortejaar: true, geslacht: true, status: true },
+  });
+
+  const spelerBasis: SpelerBasis[] = spelers.map((s) => ({
+    id: s.id,
+    geboortejaar: s.geboortejaar,
+    geslacht: s.geslacht as "M" | "V",
+    status: s.status,
+  }));
+
+  const teamVoorstellen = bouwTeamVoorstellen(
+    spelerBasis,
+    PEILJAAR,
+    aantalSenioren,
+    aCatTeams,
+    bTeamOverrides
+  );
+
+  const scenario = await prisma.scenario.create({
+    data: {
+      conceptId: concept.id,
+      naam,
+      isWerkindeling: true,
+      toelichting: null,
+      aannames: {
+        methode: "blauwdruk",
+        aantalSenioren,
+        aCatTeams,
+        bTeamOverrides: bTeamOverrides ?? null,
+      } as unknown as Prisma.InputJsonValue,
+      versies: {
+        create: {
+          nummer: 1,
+          auteur: "Systeem",
+          naam: "Initieel",
+          teams: {
+            create: teamVoorstellen.map((tv, index) => ({
+              naam: tv.naam,
+              categorie: tv.categorie,
+              kleur: tv.kleur,
+              volgorde: index,
+            })),
+          },
+        },
+      },
+    },
+  });
+
+  redirect(`/ti-studio/scenarios/${scenario.id}`);
+}
+
+// ---------------------------------------------------------------------------
 // Wizard: leeg scenario
 // ---------------------------------------------------------------------------
 
