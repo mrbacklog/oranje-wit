@@ -1936,3 +1936,39 @@ model WhatIfTeamStaf {
   @@index([whatIfTeamId])
   @@map("what_if_team_staf")
 }
+
+// ╔═══════════════════════════════════════════════════════════╗
+// ║  DAISY — AI-commissielid chat                            ║
+// ╚═══════════════════════════════════════════════════════════╝
+
+enum BerichtRol {
+  GEBRUIKER
+  ASSISTENT
+  SYSTEEM
+  TOOL
+}
+
+model AiGesprek {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  seizoen   String
+  titel     String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  berichten AiBericht[]
+
+  @@map("ai_gesprekken")
+}
+
+model AiBericht {
+  id        String     @id @default(cuid())
+  gesprekId String     @map("gesprek_id")
+  gesprek   AiGesprek  @relation(fields: [gesprekId], references: [id], onDelete: Cascade)
+  rol       BerichtRol
+  inhoud    String
+  metadata  Json?
+  createdAt DateTime   @default(now()) @map("created_at")
+
+  @@map("ai_berichten")
+}
