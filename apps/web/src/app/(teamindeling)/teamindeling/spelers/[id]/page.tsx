@@ -1,133 +1,141 @@
 export const dynamic = "force-dynamic";
 
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/teamindeling/db/prisma";
-import { PEILJAAR } from "@oranje-wit/types";
+import { getActiefSeizoen } from "@/lib/teamindeling/seizoen";
+import { PEILJAAR, PEILDATUM } from "@oranje-wit/types";
+import {
+  SpelerDetailView,
+  type SpelerDetailData,
+  type SeizoenEntry,
+} from "@/components/teamindeling/mobile/spelers/SpelerDetailView";
 
 interface Props {
   params: Promise<{ id: string }>;
 }
 
-export default async function SpelerDetail({ params }: Props) {
-  const { id } = await params;
+/** Bereken korfballeeftijd */
+function korfbalLeeftijd(geboortedatum: Date | null, geboortejaar: number): number {
+  if (geboortedatum) {
+    const ms = PEILDATUM.getTime() - geboortedatum.getTime();
+    return Math.round((ms / (365.25 * 86_400_000)) * 100) / 100;
+  }
+  return PEILJAAR - geboortejaar;
+}
 
+/** Kleurindicatie op basis van korfballeeftijd */
+function kleurIndicatie(kl: number): string | null {
+  if (kl < 5) return "PAARS";
+  if (kl <= 8) return "BLAUW";
+  if (kl <= 10) return "GROEN";
+  if (kl <= 12) return "GEEL";
+  if (kl <= 14) return "ORANJE";
+  if (kl <= 18) return "ROOD";
+  return null;
+}
+
+export default async function SpelerDetailPage({ params }: Props) {
+  const { id } = await params;
+  const seizoen = await getActiefSeizoen();
+
+  // Haal speler op
   const speler = await prisma.speler.findUnique({
     where: { id },
   });
 
   if (!speler) notFound();
 
-  const korfbalLeeftijd = PEILJAAR - speler.geboortejaar;
+  // Tussenvoegsel opzoeken via leden-tabel
+  const lid = await prisma.lid.findUnique({
+    where: { relCode: id },
+    select: { tussenvoegsel: true },
+  });
 
-  return (
-    <div style={{ padding: "1rem" }}>
-      <Link
-        href="/teamindeling/spelers"
-        style={{ color: "var(--text-secondary)", fontSize: "0.875rem", textDecoration: "none" }}
-      >
-        &larr; Terug naar spelers
-      </Link>
+  // Zoek huidig team in werkindeling
+  const werkTeamSpeler = await prisma.teamSpeler.findFirst({
+    where: {
+      spelerId: id,
+      team: {
+        versie: {
+          scenario: {
+            isWerkindeling: true,
+            concept: { blauwdruk: { seizoen } },
+          },
+        },
+      },
+    },
+    select: {
+      team: {
+        select: {
+          naam: true,
+          versie: {
+            select: {
+              scenario: {
+                select: {
+                  concept: {
+                    select: {
+                      blauwdruk: { select: { seizoen: true } },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
 
-      <h1
-        style={{
-          fontSize: "1.5rem",
-          fontWeight: 700,
-          color: "var(--text-primary)",
-          marginTop: "0.75rem",
-          marginBottom: "0.25rem",
-        }}
-      >
-        {speler.roepnaam} {speler.achternaam}
-      </h1>
+  const teamNaam = werkTeamSpeler?.team.naam ?? null;
 
-      <div style={{ color: "var(--text-secondary)", marginBottom: "1.5rem" }}>
-        {speler.geslacht} &middot; Korfballeeftijd {korfbalLeeftijd} &middot; geb.{" "}
-        {speler.geboortejaar}
-      </div>
+  // Zoek OWTeam id voor link
+  let teamId: number | null = null;
+  if (teamNaam) {
+    const owTeam = await prisma.oWTeam.findFirst({
+      where: { seizoen, naam: teamNaam },
+      select: { id: true },
+    });
+    teamId = owTeam?.id ?? null;
+  }
 
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "0.75rem",
-        }}
-      >
-        <div
-          style={{
-            padding: "1rem",
-            backgroundColor: "var(--surface-raised)",
-            borderRadius: "0.5rem",
-          }}
-        >
-          <div
-            style={{
-              color: "var(--text-secondary)",
-              fontSize: "0.875rem",
-              marginBottom: "0.25rem",
-            }}
-          >
-            Status
-          </div>
-          <div style={{ color: "var(--text-primary)", fontWeight: 600 }}>{speler.status}</div>
-        </div>
+  // Seizoenshistorie uit spelerspad
+  const seizoensHistorie: SeizoenEntry[] = [];
+  if (speler.spelerspad && Array.isArray(speler.spelerspad)) {
+    for (const entry of speler.spelerspad as Array<{
+      seizoen?: string;
+      team?: string;
+      kleur?: string;
+    }>) {
+      if (entry.seizoen && entry.team) {
+        seizoensHistorie.push({
+          seizoen: entry.seizoen,
+          team: entry.team,
+          kleur: entry.kleur?.toUpperCase() ?? null,
+        });
+      }
+    }
+    // Nieuwste eerst
+    seizoensHistorie.sort((a, b) => b.seizoen.localeCompare(a.seizoen));
+  }
 
-        {speler.lidSinds && (
-          <div
-            style={{
-              padding: "1rem",
-              backgroundColor: "var(--surface-raised)",
-              borderRadius: "0.5rem",
-            }}
-          >
-            <div
-              style={{
-                color: "var(--text-secondary)",
-                fontSize: "0.875rem",
-                marginBottom: "0.25rem",
-              }}
-            >
-              Lid sinds
-            </div>
-            <div style={{ color: "var(--text-primary)", fontWeight: 600 }}>{speler.lidSinds}</div>
-          </div>
-        )}
+  const kl = korfbalLeeftijd(speler.geboortedatum, speler.geboortejaar);
 
-        {speler.seizoenenActief != null && (
-          <div
-            style={{
-              padding: "1rem",
-              backgroundColor: "var(--surface-raised)",
-              borderRadius: "0.5rem",
-            }}
-          >
-            <div
-              style={{
-                color: "var(--text-secondary)",
-                fontSize: "0.875rem",
-                marginBottom: "0.25rem",
-              }}
-            >
-              Seizoenen actief
-            </div>
-            <div style={{ color: "var(--text-primary)", fontWeight: 600 }}>
-              {speler.seizoenenActief}
-            </div>
-          </div>
-        )}
+  const data: SpelerDetailData = {
+    id: speler.id,
+    roepnaam: speler.roepnaam,
+    achternaam: speler.achternaam,
+    tussenvoegsel: lid?.tussenvoegsel ?? null,
+    korfbalLeeftijd: kl,
+    geboortejaar: speler.geboortejaar,
+    geslacht: speler.geslacht,
+    kleur: kleurIndicatie(kl),
+    status: speler.status,
+    teamNaam,
+    teamId,
+    lidSinds: speler.lidSinds,
+    seizoenenActief: speler.seizoenenActief,
+    seizoensHistorie,
+  };
 
-        <div
-          style={{
-            padding: "1rem",
-            backgroundColor: "var(--surface-raised)",
-            borderRadius: "0.5rem",
-          }}
-        >
-          <p style={{ color: "var(--text-tertiary)" }}>
-            Spelersprofiel, evaluaties en plaatsingshistorie worden hier toegevoegd.
-          </p>
-        </div>
-      </div>
-    </div>
-  );
+  return <SpelerDetailView speler={data} />;
 }
