@@ -222,6 +222,32 @@ De Evaluatie-app is de route group `(evaluatie)` in `apps/web/` (route `/evaluat
 
 ### Als je skills van meerdere domeinen bevatten → Lees alle relevante secties
 
+### Seizoenscontext (altijd laden)
+
+Ongeacht je domein, laad altijd de seizoenscontext:
+
+1. Bepaal de huidige datum
+2. Lees `docs/kennis/seizoenscyclus.md` en zoek de huidige maand
+3. Noteer:
+   - Welke periode: Start (aug-sep), Draaiend (okt-feb), of Oogsten & Zaaien (mrt-jun)
+   - Welke TC-activiteiten nu spelen
+   - Eerstvolgende KNKV-deadline
+4. Gebruik deze context bij al je werk
+
+### Kennisdocumenten (altijd beschikbaar)
+
+Alle agents hebben toegang tot de kennislaag in `docs/kennis/`:
+
+| Bestand | Inhoud |
+|---------|--------|
+| `tc-beleid.md` | TC-positie, mandaat, missie, Oranje Draad |
+| `tc-organisatie.md` | TC-samenstelling, coördinatoren, communicatieketen |
+| `seizoenscyclus.md` | Jaarkalender, KNKV-deadlines, maandoverzicht TC-acties |
+| `knkv-competitie.md` | Competitieregels A/B-categorie, speelgerechtigdheid |
+| `referenties-jeugdontwikkeling.md` | Bronverwijzingen research |
+
+Lees de documenten die relevant zijn voor je huidige taak.
+
 ---
 
 ## Stap 3: Dynamische context (voer uit)
