@@ -81,6 +81,11 @@ type AnyPrismaModels = {
   mijlpaal: AnyModel;
   // Snapshots
   scenarioSnapshot: AnyModel;
+  // What-if
+  whatIf: AnyModel;
+  whatIfTeam: AnyModel;
+  whatIfTeamSpeler: AnyModel;
+  whatIfTeamStaf: AnyModel;
 };
 
 type AnyPrismaClient = AnyPrismaModels & {

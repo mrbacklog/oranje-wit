@@ -439,6 +439,7 @@ model Speler {
   spelerUSS            SpelerUSS[]
   vergelijkingPosities ScoutingVergelijkingPositie[]
   blauwdrukStatussen   BlauwdrukSpeler[]
+  whatIfPlaatsingen     WhatIfTeamSpeler[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -470,6 +471,7 @@ model Staf {
   werkitems           Werkitem[]
   activiteiten        Activiteit[]
   scoutProfiel        Scout?
+  whatIfPlaatsingen   WhatIfTeamStaf[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -730,6 +732,7 @@ model Scenario {
   // Relaties
   versies  Versie[]
   werkitems Werkitem[]
+  whatIfs   WhatIf[]
 
   verwijderdOp DateTime? // soft-delete: null = actief, set = verwijderd
 
@@ -811,8 +814,9 @@ model Team {
   selectieGroep   SelectieGroep? @relation(fields: [selectieGroepId], references: [id], onDelete: SetNull)
 
   // Relaties
-  spelers TeamSpeler[]
-  staf    TeamStaf[]
+  spelers       TeamSpeler[]
+  staf          TeamStaf[]
+  whatIfKopieen WhatIfTeam[]
 
   @@index([versieId])
 }
@@ -1107,6 +1111,10 @@ model Werkitem {
   // Optioneel scenario-niveau (null = blauwdruk-breed)
   scenario     Scenario? @relation(fields: [scenarioId], references: [id], onDelete: Cascade)
   scenarioId   String?
+
+  // Optionele koppeling aan what-if
+  whatIf       WhatIf?  @relation("WhatIfActies", fields: [whatIfId], references: [id], onDelete: Cascade)
+  whatIfId     String?
 
   // Optionele koppelingen
   speler       Speler?  @relation(fields: [spelerId], references: [id])
@@ -1836,4 +1844,95 @@ model Aanmelding {
   updatedAt     DateTime         @updatedAt @map("updated_at")
 
   @@map("aanmeldingen")
+}
+
+// ╔═══════════════════════════════════════════════════════════╗
+// ║  WHAT-IF (lichtgewicht branches op werkindeling)         ║
+// ╚═══════════════════════════════════════════════════════════╝
+
+enum WhatIfStatus {
+  OPEN
+  BESLISBAAR
+  TOEGEPAST
+  VERWORPEN
+}
+
+model WhatIf {
+  id                    String        @id @default(cuid())
+  werkindelingId        String
+  werkindeling          Scenario      @relation(fields: [werkindelingId], references: [id], onDelete: Cascade)
+
+  vraag                 String
+  toelichting           String?       @db.Text
+
+  status                WhatIfStatus  @default(OPEN)
+
+  basisVersieNummer     Int
+
+  toelichtingAfwijking  String?       @db.Text
+  toegepastOp           DateTime?
+  verworpenOp           DateTime?
+
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+
+  teams                 WhatIfTeam[]
+  acties                Werkitem[]    @relation("WhatIfActies")
+
+  @@index([werkindelingId])
+  @@index([status])
+  @@map("what_ifs")
+}
+
+model WhatIfTeam {
+  id            String        @id @default(cuid())
+  whatIfId       String
+  whatIf         WhatIf        @relation(fields: [whatIfId], references: [id], onDelete: Cascade)
+
+  bronTeamId    String?
+  bronTeam      Team?         @relation(fields: [bronTeamId], references: [id])
+
+  naam          String
+  categorie     TeamCategorie
+  kleur         Kleur?
+  teamType      TeamType?
+  niveau        String?
+  volgorde      Int           @default(0)
+
+  spelers       WhatIfTeamSpeler[]
+  staf          WhatIfTeamStaf[]
+
+  @@index([whatIfId])
+  @@index([bronTeamId])
+  @@map("what_if_teams")
+}
+
+model WhatIfTeamSpeler {
+  id              String          @id @default(cuid())
+  whatIfTeamId     String
+  whatIfTeam       WhatIfTeam      @relation(fields: [whatIfTeamId], references: [id], onDelete: Cascade)
+  spelerId        String
+  speler          Speler          @relation(fields: [spelerId], references: [id])
+
+  statusOverride  SpelerStatus?
+  notitie         String?         @db.Text
+
+  @@unique([whatIfTeamId, spelerId])
+  @@index([whatIfTeamId])
+  @@index([spelerId])
+  @@map("what_if_team_spelers")
+}
+
+model WhatIfTeamStaf {
+  id              String      @id @default(cuid())
+  whatIfTeamId     String
+  whatIfTeam       WhatIfTeam  @relation(fields: [whatIfTeamId], references: [id], onDelete: Cascade)
+  stafId          String
+  staf            Staf        @relation(fields: [stafId], references: [id])
+
+  rol             String?
+
+  @@unique([whatIfTeamId, stafId])
+  @@index([whatIfTeamId])
+  @@map("what_if_team_staf")
 }
