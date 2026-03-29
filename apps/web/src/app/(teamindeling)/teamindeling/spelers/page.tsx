@@ -1,93 +1,98 @@
 export const dynamic = "force-dynamic";
 
-import Link from "next/link";
 import { prisma } from "@/lib/teamindeling/db/prisma";
-import { PEILJAAR } from "@oranje-wit/types";
+import { getActiefSeizoen } from "@/lib/teamindeling/seizoen";
+import { PEILJAAR, PEILDATUM } from "@oranje-wit/types";
+import {
+  SpelersOverzicht,
+  type SpelerListItem,
+} from "@/components/teamindeling/mobile/spelers/SpelersOverzicht";
 
-export default async function SpelersOverview() {
-  const spelers = await prisma.speler.findMany({
+/** Bereken korfballeeftijd */
+function korfbalLeeftijd(geboortedatum: Date | null, geboortejaar: number): number {
+  if (geboortedatum) {
+    const ms = PEILDATUM.getTime() - geboortedatum.getTime();
+    return Math.round((ms / (365.25 * 86_400_000)) * 100) / 100;
+  }
+  return PEILJAAR - geboortejaar;
+}
+
+/** Kleurindicatie op basis van korfballeeftijd */
+function kleurIndicatie(kl: number): string | null {
+  if (kl < 5) return "PAARS";
+  if (kl <= 8) return "BLAUW";
+  if (kl <= 10) return "GROEN";
+  if (kl <= 12) return "GEEL";
+  if (kl <= 14) return "ORANJE";
+  if (kl <= 18) return "ROOD";
+  return null;
+}
+
+export default async function SpelersPage() {
+  const seizoen = await getActiefSeizoen();
+
+  // Haal alle spelers op
+  const dbSpelers = await prisma.speler.findMany({
     orderBy: [{ geboortejaar: "asc" }, { achternaam: "asc" }],
     select: {
       id: true,
       roepnaam: true,
       achternaam: true,
       geboortejaar: true,
+      geboortedatum: true,
       geslacht: true,
       status: true,
     },
   });
 
-  return (
-    <div style={{ padding: "1rem" }}>
-      <h1
-        style={{
-          fontSize: "1.5rem",
-          fontWeight: 700,
-          color: "var(--text-primary)",
-          marginBottom: "0.25rem",
-        }}
-      >
-        Spelers
-      </h1>
-      <p style={{ color: "var(--text-tertiary)", marginBottom: "1rem" }}>
-        {spelers.length} spelers in pool
-      </p>
+  // Haal werkindeling op voor teamnaam-mapping
+  const werkindeling = await prisma.scenario.findFirst({
+    where: {
+      isWerkindeling: true,
+      concept: { blauwdruk: { seizoen } },
+    },
+    select: {
+      versies: {
+        orderBy: { nummer: "desc" },
+        take: 1,
+        select: {
+          teams: {
+            select: {
+              naam: true,
+              spelers: {
+                select: { spelerId: true },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-        {spelers.map(
-          (speler: {
-            id: string;
-            roepnaam: string;
-            achternaam: string;
-            geboortejaar: number;
-            geslacht: string;
-            status: string;
-          }) => {
-            const korfbalLeeftijd = PEILJAAR - speler.geboortejaar;
-            return (
-              <Link
-                key={speler.id}
-                href={`/teamindeling/spelers/${speler.id}`}
-                style={{ textDecoration: "none" }}
-              >
-                <div
-                  style={{
-                    padding: "0.75rem 1rem",
-                    backgroundColor: "var(--surface-raised)",
-                    borderRadius: "0.5rem",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <div>
-                    <div style={{ color: "var(--text-primary)", fontWeight: 600 }}>
-                      {speler.roepnaam} {speler.achternaam}
-                    </div>
-                    <div style={{ color: "var(--text-secondary)", fontSize: "0.875rem" }}>
-                      {speler.geslacht} &middot; KL {korfbalLeeftijd} &middot; geb.{" "}
-                      {speler.geboortejaar}
-                    </div>
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "0.75rem",
-                      color: "var(--text-tertiary)",
-                      textTransform: "uppercase",
-                    }}
-                  >
-                    {speler.status}
-                  </div>
-                </div>
-              </Link>
-            );
-          }
-        )}
+  // Bouw speler -> teamnaam lookup
+  const spelerTeamMap = new Map<string, string>();
+  if (werkindeling?.versies[0]) {
+    for (const team of werkindeling.versies[0].teams) {
+      for (const ts of team.spelers) {
+        spelerTeamMap.set(ts.spelerId, team.naam);
+      }
+    }
+  }
 
-        {spelers.length === 0 && (
-          <p style={{ color: "var(--text-tertiary)" }}>Geen spelers gevonden.</p>
-        )}
-      </div>
-    </div>
-  );
+  // Map naar SpelerListItem
+  const spelers: SpelerListItem[] = dbSpelers.map((s) => {
+    const kl = korfbalLeeftijd(s.geboortedatum, s.geboortejaar);
+    return {
+      id: s.id,
+      roepnaam: s.roepnaam,
+      achternaam: s.achternaam,
+      korfbalLeeftijd: kl,
+      geslacht: s.geslacht,
+      kleur: kleurIndicatie(kl),
+      teamNaam: spelerTeamMap.get(s.id) ?? null,
+      status: s.status,
+    };
+  });
+
+  return <SpelersOverzicht spelers={spelers} />;
 }
