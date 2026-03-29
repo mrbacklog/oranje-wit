@@ -1,3 +1,10 @@
+---
+paths:
+  - "apps/web/src/app/(teamindeling)/**"
+  - "apps/web/src/app/(teamindeling-studio)/**"
+  - "apps/web/src/components/teamindeling/**"
+---
+
 # Teamindeling — Desktop/Mobile scheiding
 
 De Team-Indeling bestaat uit twee functioneel gescheiden versies:

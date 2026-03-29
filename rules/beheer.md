@@ -1,3 +1,10 @@
+---
+paths:
+  - "apps/web/src/app/(beheer)/**"
+  - "apps/web/src/components/beheer/**"
+  - "apps/web/src/lib/beheer/**"
+---
+
 # Beheer-regels — c.k.v. Oranje Wit
 
 ## Ubiquitous language

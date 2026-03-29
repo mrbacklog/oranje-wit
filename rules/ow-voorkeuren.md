@@ -1,3 +1,11 @@
+---
+paths:
+  - "apps/web/src/app/(teamindeling)/**"
+  - "apps/web/src/app/(teamindeling-studio)/**"
+  - "apps/web/src/components/teamindeling/**"
+  - "apps/web/src/lib/teamindeling/**"
+---
+
 # OW Voorkeuren — Teamsamenstelling
 
 ## Teamgrootte

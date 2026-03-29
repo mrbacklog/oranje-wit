@@ -1,3 +1,10 @@
+---
+paths:
+  - "packages/ui/**"
+  - "apps/web/src/components/**"
+  - "apps/web/src/app/**/globals.css"
+---
+
 # Design System Regels — c.k.v. Oranje Wit
 
 ## Dark-first

@@ -1,3 +1,11 @@
+---
+paths:
+  - "apps/web/src/app/(teamindeling)/**"
+  - "apps/web/src/app/(teamindeling-studio)/**"
+  - "apps/web/src/components/teamindeling/**"
+  - "apps/web/src/lib/teamindeling/**"
+---
+
 # KNKV Competitieregels — Teamsamenstelling
 
 Bron: KNKV Competitie 2.0 (seizoen 2025-2026)
