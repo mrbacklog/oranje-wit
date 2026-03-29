@@ -49,4 +49,26 @@ export interface TeamDelta {
   isNieuw: boolean;
   spelersIn: string[];
   spelersUit: string[];
+  /** Staf die erbij komt in de what-if */
+  stafIn: string[];
+  /** Staf die eruit gaat in de what-if */
+  stafUit: string[];
+  /** Huidig aantal stafleden in werkindeling */
+  stafHuidig: number;
+  /** Nieuw aantal stafleden in what-if */
+  stafNieuw: number;
+}
+
+/** Samenvatting van de volledige impact van een what-if */
+export interface ImpactSamenvatting {
+  /** Teams die in de what-if zitten en gewijzigd zijn */
+  gewijzigdeTeams: TeamDelta[];
+  /** Teams die NIET in de what-if zitten maar wel geraakt worden (spelers kwijtraken) */
+  impactTeams: TeamDelta[];
+  /** Totaal aantal verplaatste spelers */
+  totaalSpelersVerplaatst: number;
+  /** Totaal aantal verplaatste stafleden */
+  totaalStafVerplaatst: number;
+  /** Aantal nieuwe teams in de what-if */
+  nieuwTeams: number;
 }

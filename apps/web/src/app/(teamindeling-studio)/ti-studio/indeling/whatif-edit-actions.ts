@@ -137,6 +137,36 @@ export async function addTeamToWhatIf(
   return { id: created.id };
 }
 
+/**
+ * Neem een team automatisch mee in de what-if.
+ *
+ * Wordt aangeroepen als een speler uit een niet-actief team wordt verplaatst
+ * naar een what-if team. Kopieert het team (met al zijn spelers en staf)
+ * vanuit de werkindeling naar de what-if.
+ *
+ * Retourneert het ID van het aangemaakte WhatIfTeam.
+ */
+export async function neemTeamMeeInWhatIf(
+  whatIfId: string,
+  teamId: string
+): Promise<{ id: string }> {
+  await assertWhatIfBewerkbaarById(whatIfId);
+
+  // Controleer dat het team niet al in de what-if zit
+  const bestaand = await prisma.whatIfTeam.findFirst({
+    where: { whatIfId, bronTeamId: teamId },
+  });
+  if (bestaand) {
+    throw new Error(`Team zit al in deze what-if (whatIfTeamId: ${bestaand.id})`);
+  }
+
+  // Kopieer het team via de bestaande helper
+  const result = await kopieerBronTeam(whatIfId, teamId);
+
+  logger.info(`Team ${teamId} automatisch meegenomen in what-if ${whatIfId}`);
+  return result;
+}
+
 // ============================================================
 // HELPERS
 // ============================================================
