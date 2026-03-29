@@ -42,7 +42,7 @@ export default function EditorToolbar({
       {/* Links: sluiten + scenario info */}
       <div className="flex items-center gap-3">
         <Link
-          href="/ti-studio/scenarios"
+          href="/ti-studio/indeling"
           className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
           title="Terug naar scenario's"
         >

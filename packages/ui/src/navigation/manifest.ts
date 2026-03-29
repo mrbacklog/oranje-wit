@@ -121,7 +121,7 @@ export const TEAM_INDELING: AppManifest = {
       nav: { label: "Werkbord", href: "/ti-studio/werkbord", icon: "CompareIcon" },
     },
     {
-      nav: { label: "Scenario's", href: "/ti-studio/scenarios", icon: "SearchIcon" },
+      nav: { label: "Indeling", href: "/ti-studio/indeling", icon: "SearchIcon" },
     },
   ],
   skipRoutes: [],

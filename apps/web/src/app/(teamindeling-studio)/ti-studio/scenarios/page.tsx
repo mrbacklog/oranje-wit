@@ -6,7 +6,9 @@ import VerwijderScenarioKnop from "@/components/teamindeling/scenarios/Verwijder
 import HernoemScenarioKnop from "@/components/teamindeling/scenarios/HernoemScenarioKnop";
 import Prullenbak from "@/components/teamindeling/scenarios/Prullenbak";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { getActiefSeizoen } from "@/lib/teamindeling/seizoen";
+import { getWerkindelingIdVoorSeizoen } from "@/app/(teamindeling-studio)/ti-studio/indeling/actions";
 
 export const dynamic = "force-dynamic";
 
@@ -26,6 +28,12 @@ const CATEGORIE_LABELS: Record<string, string> = {
 };
 
 export default async function ScenariosPage() {
+  // Als er een werkindeling is, redirect naar de indeling-pagina
+  const werkindelingId = await getWerkindelingIdVoorSeizoen();
+  if (werkindelingId) {
+    redirect("/ti-studio/indeling");
+  }
+
   const seizoen = await getActiefSeizoen();
   const [blauwdruk, spelers] = await Promise.all([getBlauwdruk(seizoen), getSpelerBasisData()]);
   const [scenarios, verwijderdeScenarios] = await Promise.all([

@@ -375,7 +375,7 @@ export default function BlauwdrukTabs({
                     </p>
                   </div>
                   <Link
-                    href="/ti-studio/scenarios"
+                    href="/ti-studio/indeling"
                     className="inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold text-white transition-all"
                     style={{
                       background:

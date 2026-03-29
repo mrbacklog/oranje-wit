@@ -24,7 +24,7 @@ export function ScenarioStatus({ scenarios }: Props) {
     return (
       <div className="rounded-xl border border-dashed border-gray-300 bg-gray-50 p-6 text-center text-sm text-gray-500">
         Nog geen scenario&apos;s.{" "}
-        <Link href="/ti-studio/scenarios" className="text-ow-oranje hover:underline">
+        <Link href="/ti-studio/indeling" className="text-ow-oranje hover:underline">
           Maak een scenario &rarr;
         </Link>
       </div>
@@ -37,7 +37,7 @@ export function ScenarioStatus({ scenarios }: Props) {
       {scenarios.map((s) => (
         <Link
           key={s.id}
-          href={`/ti-studio/scenarios/${s.id}`}
+          href={`/ti-studio/indeling`}
           className="flex items-center justify-between rounded-lg border border-gray-100 bg-white px-3 py-2 text-sm hover:bg-gray-50"
         >
           <span className="font-medium text-gray-900">{s.naam}</span>

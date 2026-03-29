@@ -31,7 +31,7 @@ export function TISidebar({ children }: TISidebarProps) {
       { label: "Dashboard", href: "/ti-studio", icon: "🏠" },
       { label: "Blauwdruk", href: "/ti-studio/blauwdruk", icon: "🗂️" },
       { label: "Werkbord", href: "/ti-studio/werkbord", icon: "📋" },
-      { label: "Scenario's", href: "/ti-studio/scenarios", icon: "🏗️" },
+      { label: "Indeling", href: "/ti-studio/indeling", icon: "🏗️" },
     ],
     footer: {
       settingsHref: "/ti-studio/instellingen",

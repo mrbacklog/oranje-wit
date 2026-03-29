@@ -111,7 +111,7 @@ export default async function VergelijkPage(props: {
           <p className="mt-1 text-sm text-gray-500">Vergelijk twee scenario&apos;s side-by-side</p>
         </div>
         <Link
-          href="/ti-studio/scenarios"
+          href="/ti-studio/indeling"
           className="text-sm text-gray-500 underline hover:text-gray-700"
         >
           Terug naar scenario&apos;s
