@@ -10,6 +10,7 @@ COPY packages/auth/package.json packages/auth/
 COPY packages/database/package.json packages/database/
 COPY packages/types/package.json packages/types/
 COPY packages/ui/package.json packages/ui/
+COPY packages/test-utils/package.json packages/test-utils/
 COPY apps/web/package.json apps/web/
 
 RUN pnpm install --frozen-lockfile
@@ -21,12 +22,12 @@ COPY packages/auth/ packages/auth/
 COPY packages/database/ packages/database/
 COPY packages/types/ packages/types/
 COPY packages/ui/ packages/ui/
+COPY packages/test-utils/ packages/test-utils/
 COPY apps/web/ apps/web/
 
 RUN pnpm db:generate
-# --webpack is nodig zodat @ducanh2912/next-pwa de service worker genereert
-# (de plugin gebruikt workbox-webpack-plugin, werkt niet met Turbopack)
-RUN pnpm --filter @oranje-wit/web exec next build --webpack
+# Custom service worker in public/sw.js — geen webpack plugin meer nodig
+RUN pnpm --filter @oranje-wit/web exec next build
 
 # ── Stage 3: Production runtime ──────────────────────────────────────────────
 FROM node:22-slim AS runner
