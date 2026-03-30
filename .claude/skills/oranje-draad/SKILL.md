@@ -33,17 +33,17 @@ PLEZIER + ONTWIKKELING + PRESTATIE
 
 De verhouding Plezier–Ontwikkeling–Prestatie (POP) verschilt per leeftijds- en niveaugroep. De TC faciliteert elke categorie op de juiste manier.
 
-### Aandachtsgroepen
+### TC-doelgroepen
 
-| Groep | Leeftijd | Kleuren/categorieën | POP-accent |
+| Doelgroep | Wie | Eigenaar | POP-accent |
 |---|---|---|---|
-| **Kweekvijver** | 3–9 jaar | Kangoeroes, Blauw (F), Groen (E) | Recreëren & enthousiasmeren: **plezier** overheerst |
-| **Ontwikkelingshart** | 10–14 jaar | Geel (D), Oranje/U15 (C) | Leren: **ontwikkeling** neemt toe, plezier blijft basis |
-| **Bovenbouw** | 15–18 jaar | Rood/U17 (B), Rood/U19 (A) | Presteren: **prestatie** als middel, ontwikkeling als doel |
-| **Senioren top** | 18+ | Senioren 1e/2e selectie | Wedstrijd- en topsport: prestatie hoog, maar duurzaam |
-| **Korfbalplezier** | 18+ | Senioren breedte, midweek | Sociale betrokkenheid, liefde voor het spel |
+| **Kweekvijver** | 5-9 (Blauw + Groen) | Merel | Spelenderwijs aansteken: **plezier** overheerst |
+| **Opleidingshart** | 10-14 (Geel + Oranje) | Merel | Golden age: **ontwikkeling** neemt toe, plezier blijft basis |
+| **Korfbalplezier** | Rood B, B-senioren, midweek, recreant | Thomas | Verenigingsleven: **plezier** en sociale binding centraal |
+| **Wedstrijdsport** | Senioren A-categorie (Sen 3-4) | Thomas | Competitief buiten de top: **prestatie** als motivator |
+| **Topsport** | U15-1 t/m U19-1, Sen 1-2 | Jasper | Maximaal presteren, hard maar eerlijk, terugbetalen |
 
-**Principe:** Hoe jonger de speler, hoe meer plezier domineert. Hoe hoger het niveau, hoe meer prestatie een rol speelt — maar altijd als middel, nooit als einddoel.
+**Principe:** Elke doelgroep krijgt wat het nodig heeft. De POP-ratio verschuift, maar plezier verdwijnt nooit — het is altijd het fundament.
 
 ---
 
@@ -107,7 +107,7 @@ De vereniging hanteert het ASM als basis voor fysieke en motorische ontwikkeling
 ```
 Technische Commissie (TC) — strategisch beleid
     ├── TC-leden — verantwoordelijk per deelgebied
-    │     ├── Kweekvijver / Ontwikkelingshart
+    │     ├── Kweekvijver / Opleidingshart
     │     ├── Korfbalplezier
     │     └── Top TC
     ├── Coördinatoren — operationeel, per categorie

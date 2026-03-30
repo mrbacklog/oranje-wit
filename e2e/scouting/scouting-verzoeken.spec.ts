@@ -1,6 +1,18 @@
 import { test, expect } from "../fixtures/base";
 
 /**
+ * Detecteer of de pagina een Next.js not-found is.
+ * In dev mode geeft notFound() HTTP 200 terug, niet 404.
+ */
+async function isPageNotFound(page: import("@playwright/test").Page): Promise<boolean> {
+  return page
+    .locator('meta[name="next-error"][content="not-found"]')
+    .count()
+    .then((c) => c > 0)
+    .catch(() => false);
+}
+
+/**
  * Scouting verzoeken-flow & scoutingsmethoden E2E tests.
  *
  * Test de TC-verzoeken workflow (aanmaken, bekijken, detail),
@@ -348,8 +360,8 @@ test.describe("Verzoek detail pagina", () => {
 
 test.describe("Individueel rapport (volledige flow)", () => {
   test("rapport wizard laadt voor bekende speler", async ({ page }) => {
-    const response = await page.goto("/scouting/rapport/nieuw/TSTN001");
-    if (!response || response.status() === 404) {
+    await page.goto("/scouting/rapport/nieuw/TSTN001");
+    if (await isPageNotFound(page)) {
       test.skip();
       return;
     }
@@ -360,8 +372,8 @@ test.describe("Individueel rapport (volledige flow)", () => {
   });
 
   test("rapport wizard: selecteer context -> beoordeling-stap", async ({ page }) => {
-    const response = await page.goto("/scouting/rapport/nieuw/TSTN001");
-    if (!response || response.status() === 404) {
+    await page.goto("/scouting/rapport/nieuw/TSTN001");
+    if (await isPageNotFound(page)) {
       test.skip();
       return;
     }
@@ -383,8 +395,8 @@ test.describe("Individueel rapport (volledige flow)", () => {
   });
 
   test("rapport wizard: pijlers worden getoond in beoordeling", async ({ page }) => {
-    const response = await page.goto("/scouting/rapport/nieuw/TSTN001");
-    if (!response || response.status() === 404) {
+    await page.goto("/scouting/rapport/nieuw/TSTN001");
+    if (await isPageNotFound(page)) {
       test.skip();
       return;
     }
@@ -412,8 +424,8 @@ test.describe("Individueel rapport (volledige flow)", () => {
   });
 
   test("rapport wizard: scores invullen maakt voortgang", async ({ page }) => {
-    const response = await page.goto("/scouting/rapport/nieuw/TSTN001");
-    if (!response || response.status() === 404) {
+    await page.goto("/scouting/rapport/nieuw/TSTN001");
+    if (await isPageNotFound(page)) {
       test.skip();
       return;
     }
@@ -448,8 +460,8 @@ test.describe("Individueel rapport (volledige flow)", () => {
   });
 
   test("rapport wizard: leeftijdsgroep is zichtbaar", async ({ page }) => {
-    const response = await page.goto("/scouting/rapport/nieuw/TSTN001");
-    if (!response || response.status() === 404) {
+    await page.goto("/scouting/rapport/nieuw/TSTN001");
+    if (await isPageNotFound(page)) {
       test.skip();
       return;
     }
@@ -463,8 +475,8 @@ test.describe("Individueel rapport (volledige flow)", () => {
   });
 
   test("rapport wizard: context keuzes zijn 3 opties", async ({ page }) => {
-    const response = await page.goto("/scouting/rapport/nieuw/TSTN001");
-    if (!response || response.status() === 404) {
+    await page.goto("/scouting/rapport/nieuw/TSTN001");
+    if (await isPageNotFound(page)) {
       test.skip();
       return;
     }
@@ -479,8 +491,8 @@ test.describe("Individueel rapport (volledige flow)", () => {
   });
 
   test("rapport wizard: terug van beoordeling bewaart context", async ({ page }) => {
-    const response = await page.goto("/scouting/rapport/nieuw/TSTN001");
-    if (!response || response.status() === 404) {
+    await page.goto("/scouting/rapport/nieuw/TSTN001");
+    if (await isPageNotFound(page)) {
       test.skip();
       return;
     }
@@ -512,8 +524,8 @@ test.describe("Individueel rapport (volledige flow)", () => {
   });
 
   test("rapport wizard: 5 stap-indicatoren", async ({ page }) => {
-    const response = await page.goto("/scouting/rapport/nieuw/TSTN001");
-    if (!response || response.status() === 404) {
+    await page.goto("/scouting/rapport/nieuw/TSTN001");
+    if (await isPageNotFound(page)) {
       test.skip();
       return;
     }
@@ -529,8 +541,8 @@ test.describe("Individueel rapport (volledige flow)", () => {
 
   test("rapport wizard voor U15 speler laadt juiste pijlers", async ({ page }) => {
     // TSTN099 is U15 (oranje, 7 pijlers)
-    const response = await page.goto("/scouting/rapport/nieuw/TSTN099");
-    if (!response || response.status() === 404) {
+    await page.goto("/scouting/rapport/nieuw/TSTN099");
+    if (await isPageNotFound(page)) {
       test.skip();
       return;
     }
@@ -869,8 +881,8 @@ test.describe("Scouting: navigatie vanuit verzoeken", () => {
   test("spelerprofiel toont scout link naar rapport wizard", async ({ page }) => {
     test.setTimeout(45000);
 
-    const response = await page.goto("/scouting/speler/TSTN001", { timeout: 20000 });
-    if (!response || response.status() === 404) {
+    await page.goto("/scouting/speler/TSTN001", { timeout: 20000 });
+    if (await isPageNotFound(page)) {
       test.skip();
       return;
     }

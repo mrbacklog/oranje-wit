@@ -4,6 +4,8 @@ import type { Provider } from "next-auth/providers";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
 import { getCapabilities } from "./allowlist";
+import { verifyEmailLink } from "./hmac-link";
+import { verifyAuthentication } from "./passkey";
 
 // NOTE: Nodemailer provider is verwijderd uit de top-level imports.
 // Nodemailer gebruikt Node.js 'stream' module die incompatibel is met
@@ -99,6 +101,79 @@ providers.push(
   })
 );
 
+// Email-link login: HMAC-gesignde stateless links.
+// Altijd beschikbaar (ook in productie) — langlevende links voor
+// terugkerende gebruikers (coördinatoren, trainers).
+// Geen database nodig — de link zelf bevat alle informatie.
+providers.push(
+  Credentials({
+    id: "email-link",
+    name: "Email Link",
+    credentials: {
+      token: { type: "text" },
+    },
+    async authorize(credentials) {
+      const token = credentials?.token as string;
+      if (!token) return null;
+
+      // Valideer HMAC-token (stateless, geen DB)
+      const verificatie = verifyEmailLink(token);
+      if (!verificatie.valid) return null;
+
+      const email = verificatie.email;
+      if (!email) return null;
+
+      // Check of de gebruiker bestaat en actief is
+      const cap = await getCapabilities(email);
+      if (!cap) return null;
+
+      return {
+        id: `email-link-${email}`,
+        email,
+        name: email.split("@")[0],
+      };
+    },
+  })
+);
+
+// Passkey login: WebAuthn authenticatie via biometrie (vingerafdruk, Face ID).
+// Altijd beschikbaar — gebruikers die een passkey hebben geregistreerd
+// kunnen daarmee snel inloggen zonder wachtwoord of link.
+providers.push(
+  Credentials({
+    id: "passkey",
+    name: "Passkey",
+    credentials: {
+      response: { type: "text" },
+      challengeKey: { type: "text" },
+    },
+    async authorize(credentials) {
+      const responseJson = credentials?.response as string;
+      const challengeKey = credentials?.challengeKey as string;
+      if (!responseJson || !challengeKey) return null;
+
+      try {
+        const parsed = JSON.parse(responseJson);
+        const result = await verifyAuthentication(parsed, challengeKey);
+        if (!result.verified) return null;
+
+        const email = result.gebruiker.email;
+        // Controleer of de gebruiker nog actief is
+        const cap = await getCapabilities(email);
+        if (!cap) return null;
+
+        return {
+          id: `passkey-${email}`,
+          email,
+          name: email.split("@")[0],
+        };
+      } catch {
+        return null;
+      }
+    },
+  })
+);
+
 // === NextAuth configuratie ===
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -109,7 +184,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: (injectedAdapter ?? undefined) as Adapter | undefined,
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 dagen
+    maxAge: 90 * 24 * 60 * 60, // 90 dagen
+    updateAge: 24 * 60 * 60, // 24 uur — sessie wordt bij elk gebruik verlengd
   },
   providers,
   callbacks: {
@@ -117,11 +193,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return !!auth;
     },
     async signIn({ user, profile, account }) {
-      // Credentials providers (E2E, dev, smartlink) — altijd doorlaten (al gecheckt in authorize)
+      // Credentials providers (E2E, dev, smartlink, email-link, passkey) — altijd doorlaten (al gecheckt in authorize)
       if (
         account?.provider === "e2e-test" ||
         account?.provider === "dev-login" ||
-        account?.provider === "smartlink"
+        account?.provider === "smartlink" ||
+        account?.provider === "email-link" ||
+        account?.provider === "passkey"
       )
         return true;
 
@@ -147,7 +225,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         // Onthoud welke provider is gebruikt
         if (account?.provider) {
           token.provider = account.provider;
-          token.authMethode = account.provider === "google" ? "google" : "smartlink";
+          token.authMethode =
+            account.provider === "google"
+              ? "google"
+              : account.provider === "passkey"
+                ? "passkey"
+                : "smartlink";
         }
       }
       return token;

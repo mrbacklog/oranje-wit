@@ -1,9 +1,13 @@
 import nodemailer from "nodemailer";
 import { logger } from "@oranje-wit/types";
+import { generateEmailHmacLink } from "@oranje-wit/auth/email-hmac";
 import { prisma } from "@/lib/db/prisma";
 
 // Prisma 7 type recursie workaround (TS2321)
 type PrismaFn = (...args: any[]) => any;
+
+// Re-export voor gebruik in API routes
+export { generateEmailHmacLink };
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",

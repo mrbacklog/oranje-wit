@@ -8,17 +8,17 @@ Structuur, rolverdeling en werkwijze van de Technische Commissie. Gebaseerd op 8
 
 ### Kern-TC (besluitvormend)
 
-| Lid | Hoofdrol | Aandachtsgebieden |
-|-----|----------|-------------------|
-| **Antjan Laban** | Voorzitter TC | Seizoensplanning, teamindeling, technologie, beleidsvorming |
-| **Merel van Gurp** | Communicatie & evenementen | OB-contact, KT-cursussen, 100-jarig jubileum |
-| **Thomas Isarin** | Operationeel | Trainingsschema-builder (web-app), OB-liaison |
+| Lid | Hoofdrol | Doelgroepen | Overige aandachtsgebieden |
+|-----|----------|-------------|--------------------------|
+| **Antjan Laban** | Voorzitter TC | Overziet alle doelgroepen | Seizoensplanning, teamindeling, technologie, beleidsvorming |
+| **Merel van Gurp** | Communicatie & evenementen | **Kweekvijver**, **Opleidingshart** | OB-contact, KT-cursussen, 100-jarig jubileum |
+| **Thomas Isarin** | Operationeel | **Korfbalplezier**, **Wedstrijdsport** | Trainingsschema-builder (web-app), OB-liaison |
 
 ### Aanvullende TC-leden (specialistisch)
 
 | Lid | Hoofdrol | Aandachtsgebieden |
 |-----|----------|-------------------|
-| **Jasper Kleingeld** | Top-TC | Selectiebeleid A-categorie/senioren, Top-TC coördinatoren |
+| **Jasper Kleingeld** | Top-TC | Selectiebeleid A-categorie/senioren, Top-TC coördinatoren. Doelgroep: **Topsport** |
 | **Alex de Boer** | Trainersontwikkeling | Begeleiding, opleidingen, KT-cursussen |
 | **Rene 't Jong** | Korfbal evenementen | OB-vertegenwoordiger, ledenwerving, schoolkorfbal |
 | **Paul Wolff** | Competitiemanagement | KNKV-contact, Sportlink, wedstrijdsecretaris, materiaal |

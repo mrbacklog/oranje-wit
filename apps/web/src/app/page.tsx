@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { auth } from "@oranje-wit/auth";
 import { redirect } from "next/navigation";
 import { HubTC, HubEvaluatie, HubScouting, HubZelf, HubLeeg, HubSkeleton } from "@/components/hub";
+import { InstallPrompt } from "@/components/pwa";
 import { AppGrid } from "./app-grid";
 import {
   getSignaleringen,
@@ -151,6 +152,9 @@ export default async function HubPage() {
           c.k.v. Oranje Wit &middot; Seizoen 2025-2026 &middot; Dordrecht
         </p>
       </footer>
+
+      {/* ── PWA Install Prompt (subtiele banner onderaan) ─────────── */}
+      <InstallPrompt />
     </main>
   );
 }

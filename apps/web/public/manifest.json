@@ -2,12 +2,16 @@
   "name": "c.k.v. Oranje Wit",
   "short_name": "Oranje Wit",
   "description": "Digitaal platform van c.k.v. Oranje Wit — korfbal uit Dordrecht",
+  "id": "/",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#0f1115",
   "theme_color": "#0f1115",
   "orientation": "portrait-primary",
   "categories": ["sports"],
+  "lang": "nl",
+  "dir": "ltr",
   "icons": [
     {
       "src": "/icons/icon-192.png",

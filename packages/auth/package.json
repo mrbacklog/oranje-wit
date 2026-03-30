@@ -13,10 +13,17 @@
     "./email-template": "./src/email-template.ts",
     "./email": "./src/email.ts",
     "./smartlink-email": "./src/smartlink-email.ts",
-    "./clearance": "./src/clearance.ts"
+    "./clearance": "./src/clearance.ts",
+    "./hmac-link": "./src/hmac-link.ts",
+    "./email-hmac": "./src/email-hmac.ts",
+    "./passkey": "./src/passkey.ts"
+  },
+  "scripts": {
+    "test": "vitest run"
   },
   "dependencies": {
     "@oranje-wit/types": "workspace:*",
+    "@simplewebauthn/server": "^13.3.0",
     "nodemailer": "^6.9.0"
   },
   "peerDependencies": {
@@ -24,6 +31,7 @@
     "next-auth": "5.0.0-beta.28"
   },
   "devDependencies": {
-    "@types/nodemailer": "^6.4.0"
+    "@types/nodemailer": "^6.4.0",
+    "vitest": "^4.1.1"
   }
 }

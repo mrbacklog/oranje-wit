@@ -71,7 +71,19 @@ Dit betekent concreet:
 - Voor **elke leeftijd** is er een team en een passend aanbod
 - Voor **elk niveau** is er een uitdaging (van breedte tot selectie)
 - **Niemand hoeft te stoppen** door gebrek aan aanbod, begeleiding of aandacht
-- De TC bewaakt dat de balans tussen plezier, ontwikkeling en prestatie klopt per leeftijdsgroep
+- De TC bewaakt dat de balans tussen plezier, ontwikkeling en prestatie klopt per doelgroep
+
+De TC bedient alle korfbalspelende leden via vijf **doelgroepen**:
+
+| Doelgroep | Wie | Eigenaar | Kern |
+|---|---|---|---|
+| **Kweekvijver** | 5-9 (Blauw + Groen) | Merel | Spelenderwijs aansteken, veilig klimaat |
+| **Opleidingshart** | 10-15 (Geel + Oranje) | Merel | Golden age, breed opleiden + voorsorteren |
+| **Korfbalplezier** | Rood B, B-senioren, midweek, recreant | Thomas | Plezier, verenigingsleven, brug jeugd-senioren |
+| **Wedstrijdsport** | Senioren A-categorie (Sen 3-4) | Thomas | Competitief buiten de top |
+| **Topsport** | U15-1 t/m U19-1, Sen 1-2 | Jasper | Maximaal presteren, terugbetalen aan club |
+
+Elke doelgroep heeft een eigen POP-ratio, eigen behoeften en eigen TC-strategie. Details: `docs/kennis/tc-doelgroepen.md`
 
 ---
 
@@ -131,19 +143,9 @@ PLEZIER + ONTWIKKELING + PRESTATIE → DUURZAAMHEID
 
 Samen leiden ze tot **duurzaamheid**: beleid dat volhoudbaar is voor spelers én staf. Retentie is belangrijker dan korte-termijn succes.
 
-### POP-ratio per leeftijdsgroep
+### POP-ratio per doelgroep
 
-De verhouding plezier/ontwikkeling/prestatie verschuift met de leeftijd:
-
-| Leeftijd | Kleur | Plezier | Ontwikkeling | Prestatie |
-|----------|-------|---------|--------------|-----------|
-| 5-7 | Blauw | 70% | 25% | 5% |
-| 8-9 | Groen | 55% | 35% | 10% |
-| 10-12 | Geel | 40% | 40% | 20% |
-| 13-15 | Oranje/U15 | 30% | 40% | 30% |
-| 16-18 | Rood/U17/U19 | 25% | 35% | 40% |
-| Senioren wedstrijd | Sen 1-4 | 20% | 25% | 55% |
-| Senioren breedte | Sen 5+ | 50% | 20% | 30% |
+De verhouding plezier/ontwikkeling/prestatie verschuift per doelgroep. De gedetailleerde POP-ratio's staan in `docs/kennis/tc-doelgroepen.md` — dat is de **Single Source of Truth**. Zie ook `rules/oranje-draad.md` voor het toetsingskader.
 
 ### Toetsingsvragen bij elke teamindeling
 

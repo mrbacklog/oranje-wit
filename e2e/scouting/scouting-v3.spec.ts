@@ -12,13 +12,25 @@ import { test, expect } from "../fixtures/base";
  *   - TSTN099+: U15 (geb 2011-2012) -> oranje -> 7 pijlers, slider 1-10
  */
 
+/**
+ * Detecteer of de pagina een Next.js not-found is.
+ * In dev mode geeft notFound() HTTP 200 terug, niet 404.
+ */
+async function isPageNotFound(page: import("@playwright/test").Page): Promise<boolean> {
+  return page
+    .locator('meta[name="next-error"][content="not-found"]')
+    .count()
+    .then((c) => c > 0)
+    .catch(() => false);
+}
+
 // ─── Test 1: Individueel rapport invullen ───────────────────────────────
 
 test.describe("Individueel rapport (INDIVIDUEEL methode)", () => {
   test.describe("Rapport wizard structuur", () => {
     test.beforeEach(async ({ page }) => {
-      const response = await page.goto("/scouting/rapport/nieuw/TSTN001");
-      if (!response || response.status() === 404) {
+      await page.goto("/scouting/rapport/nieuw/TSTN001");
+      if (await isPageNotFound(page)) {
         test.skip();
       }
     });
@@ -95,8 +107,8 @@ test.describe("Individueel rapport (INDIVIDUEEL methode)", () => {
 
   test.describe("Extra observaties stap", () => {
     test("extra-stap toont groei-indicator opties", async ({ page }) => {
-      const response = await page.goto("/scouting/rapport/nieuw/TSTN001");
-      if (!response || response.status() === 404) {
+      await page.goto("/scouting/rapport/nieuw/TSTN001");
+      if (await isPageNotFound(page)) {
         test.skip();
         return;
       }
@@ -120,8 +132,8 @@ test.describe("Individueel rapport (INDIVIDUEEL methode)", () => {
 
   test.describe("Terug-navigatie bewaart state", () => {
     test("terug van beoordeling naar context bewaart selectie", async ({ page }) => {
-      const response = await page.goto("/scouting/rapport/nieuw/TSTN001");
-      if (!response || response.status() === 404) {
+      await page.goto("/scouting/rapport/nieuw/TSTN001");
+      if (await isPageNotFound(page)) {
         test.skip();
         return;
       }
@@ -152,8 +164,8 @@ test.describe("Individueel rapport (INDIVIDUEEL methode)", () => {
 
   test.describe("Opmerking-stap", () => {
     test("suggestie-chips bestaan in de wizard", async ({ page }) => {
-      const response = await page.goto("/scouting/rapport/nieuw/TSTN001");
-      if (!response || response.status() === 404) {
+      await page.goto("/scouting/rapport/nieuw/TSTN001");
+      if (await isPageNotFound(page)) {
         test.skip();
         return;
       }
@@ -520,8 +532,8 @@ test.describe("Spelerskaart weergave", () => {
 
   test.describe("Speler profiel met kaart-tab", () => {
     test.beforeEach(async ({ page }) => {
-      const response = await page.goto("/scouting/speler/TSTN001", { timeout: 20000 });
-      if (!response || response.status() === 404) {
+      await page.goto("/scouting/speler/TSTN001", { timeout: 20000 });
+      if (await isPageNotFound(page)) {
         test.skip();
       }
     });
@@ -823,8 +835,8 @@ test.describe("Pijlerevolutie", () => {
   test.describe("Rapport wizard toont juiste pijlers voor leeftijdsgroep", () => {
     test("rapport wizard voor een speler toont beoordeling met pijlers", async ({ page }) => {
       // TSTN001 is een senior (geb ~1995-2005) -> rood -> 9 pijlers
-      const response = await page.goto("/scouting/rapport/nieuw/TSTN001");
-      if (!response || response.status() === 404) {
+      await page.goto("/scouting/rapport/nieuw/TSTN001");
+      if (await isPageNotFound(page)) {
         test.skip();
         return;
       }
@@ -854,8 +866,8 @@ test.describe("Pijlerevolutie", () => {
 test.describe("USS v2 berekening", () => {
   test.describe("Spelerskaart toont USS-gerelateerde data", () => {
     test("spelerprofiel kaart-tab toont USS-data of lege state", async ({ page }) => {
-      const response = await page.goto("/scouting/speler/TSTN001");
-      if (!response || response.status() === 404) {
+      await page.goto("/scouting/speler/TSTN001");
+      if (await isPageNotFound(page)) {
         test.skip();
         return;
       }
@@ -982,8 +994,8 @@ test.describe("Scouting navigatie en auth", () => {
   test("spelerprofiel toont scout link met rapport wizard href", async ({ page }) => {
     test.setTimeout(45000);
 
-    const response = await page.goto("/scouting/speler/TSTN001", { timeout: 20000 });
-    if (!response || response.status() === 404) {
+    await page.goto("/scouting/speler/TSTN001", { timeout: 20000 });
+    if (await isPageNotFound(page)) {
       test.skip();
       return;
     }

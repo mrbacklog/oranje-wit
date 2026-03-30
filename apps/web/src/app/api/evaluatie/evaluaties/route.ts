@@ -3,7 +3,7 @@ import { prisma } from "@/lib/db/prisma";
 // Prisma 7 type recursie workaround (TS2321)
 type PrismaFn = (...args: any[]) => any;
 import { ok, fail, parseBody } from "@/lib/api/response";
-import { verstuurTemplateEmail } from "@/lib/evaluatie/mail";
+import { verstuurTemplateEmail, generateEmailHmacLink } from "@/lib/evaluatie/mail";
 import { logger } from "@oranje-wit/types";
 import { z } from "zod";
 
@@ -157,9 +157,11 @@ async function notificeerCoordinatoren(
         type: "coordinator",
       },
     });
-    const link = coordUitnodiging
-      ? `${baseUrl}/coordinator?token=${coordUitnodiging.token}`
-      : `${baseUrl}/admin`;
+    // HMAC auto-login link als primaire CTA
+    const destination = coordUitnodiging
+      ? `/evaluatie/coordinator?token=${coordUitnodiging.token}`
+      : `/evaluatie/admin`;
+    const link = generateEmailHmacLink(ct.coordinator.email, destination);
 
     try {
       await verstuurTemplateEmail({

@@ -4,7 +4,7 @@ import { prisma } from "@/lib/db/prisma";
 type PrismaFn = (...args: any[]) => any;
 import { ok, fail } from "@/lib/api/response";
 import { requireTC } from "@oranje-wit/auth/checks";
-import { renderTemplate, verstuurEmail } from "@/lib/evaluatie/mail";
+import { renderTemplate, verstuurEmail, generateEmailHmacLink } from "@/lib/evaluatie/mail";
 import { logger } from "@oranje-wit/types";
 
 export async function POST(_req: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -65,11 +65,17 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
         year: "numeric",
       });
 
+      // HMAC auto-login link als primaire CTA (stateless, 90 dagen geldig)
+      const hmacLink = generateEmailHmacLink(u.email, `/evaluatie/invullen?token=${u.token}`);
+      // Fallback: directe token-link
+      const tokenLink = `${baseUrl}/evaluatie/invullen?token=${u.token}`;
+
       const html = renderTemplate(template.inhoudHtml, {
         trainer_naam: u.naam,
         team_naam: u.owTeam?.naam ?? "Onbekend team",
         deadline: deadlineStr,
-        link: `${baseUrl}/invullen?token=${u.token}`,
+        link: hmacLink,
+        fallback_link: tokenLink,
       });
 
       const onderwerp = renderTemplate(template.onderwerp, {

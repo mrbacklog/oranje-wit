@@ -1,5 +1,31 @@
 import { test, expect } from "../fixtures/base";
 
+/**
+ * Helper: navigeer naar rapport wizard en skip als speler niet in database staat.
+ * Next.js dev mode geeft HTTP 200 terug voor notFound() pages, dus we detecteren
+ * de not-found pagina via de pagina-inhoud (meta tag of heading).
+ */
+async function gotoRapportOfSkip(
+  page: import("@playwright/test").Page,
+  relCode: string,
+  t: typeof test
+) {
+  await page.goto(`/scouting/rapport/nieuw/${relCode}`);
+
+  // Next.js notFound() zet een meta tag: <meta name="next-error" content="not-found"/>
+  const isNotFound = await page
+    .locator('meta[name="next-error"][content="not-found"]')
+    .count()
+    .then((c) => c > 0)
+    .catch(() => false);
+
+  if (isNotFound) {
+    t.skip();
+    return false;
+  }
+  return true;
+}
+
 test.describe("Rapport wizard", () => {
   // Seed-data spelers hebben TSTN-prefix rel_codes.
   // De eerste spelers (TSTN001-TSTN010) zijn senioren (geboortejaar 1995-2005),
@@ -14,13 +40,8 @@ test.describe("Rapport wizard", () => {
     test("directe navigatie naar rapport wizard voor bekende speler", async ({ page }) => {
       test.setTimeout(30000);
 
-      // Navigeer direct naar de rapport wizard (de zoek->profiel->scout flow
-      // heeft een bug in de navigatie URLs, dus testen we de wizard direct)
-      const response = await page.goto("/scouting/rapport/nieuw/TSTN001");
-      if (!response || response.status() === 404) {
-        test.skip();
-        return;
-      }
+      const loaded = await gotoRapportOfSkip(page, "TSTN001", test);
+      if (!loaded) return;
 
       // Context stap moet zichtbaar zijn
       await expect(page.getByText("In welke context heb je gescout?")).toBeVisible({
@@ -34,10 +55,15 @@ test.describe("Rapport wizard", () => {
 
   test.describe("Context-stap", () => {
     test.beforeEach(async ({ page }) => {
-      // Probeer direct naar een seed-speler rapport wizard te navigeren
-      const response = await page.goto("/scouting/rapport/nieuw/TSTN001");
+      await page.goto("/scouting/rapport/nieuw/TSTN001");
 
-      if (!response || response.status() === 404) {
+      const isNotFound = await page
+        .locator('meta[name="next-error"][content="not-found"]')
+        .count()
+        .then((c) => c > 0)
+        .catch(() => false);
+
+      if (isNotFound) {
         test.skip();
       }
     });
@@ -120,9 +146,15 @@ test.describe("Rapport wizard", () => {
 
   test.describe("Beoordeling-stap", () => {
     test.beforeEach(async ({ page }) => {
-      const response = await page.goto("/scouting/rapport/nieuw/TSTN001");
+      await page.goto("/scouting/rapport/nieuw/TSTN001");
 
-      if (!response || response.status() === 404) {
+      const isNotFound = await page
+        .locator('meta[name="next-error"][content="not-found"]')
+        .count()
+        .then((c) => c > 0)
+        .catch(() => false);
+
+      if (isNotFound) {
         test.skip();
         return;
       }
@@ -153,12 +185,8 @@ test.describe("Rapport wizard", () => {
 
   test.describe("Terug-navigatie", () => {
     test("terug naar context-stap bewaart selectie en detail", async ({ page }) => {
-      const response = await page.goto("/scouting/rapport/nieuw/TSTN001");
-
-      if (!response || response.status() === 404) {
-        test.skip();
-        return;
-      }
+      const loaded = await gotoRapportOfSkip(page, "TSTN001", test);
+      if (!loaded) return;
 
       await expect(page.getByText("In welke context heb je gescout?")).toBeVisible({
         timeout: 10000,
@@ -185,16 +213,8 @@ test.describe("Rapport wizard", () => {
 
   test.describe("Opmerking-stap", () => {
     test("toont suggestie-chips die klikbaar zijn", async ({ page }) => {
-      // Deze test navigeert niet door de beoordeling-stap (die is moeilijk
-      // te automatiseren zonder de exacte leeftijdsgroep te kennen).
-      // In plaats daarvan testen we de chips indirect.
-
-      const response = await page.goto("/scouting/rapport/nieuw/TSTN001");
-
-      if (!response || response.status() === 404) {
-        test.skip();
-        return;
-      }
+      const loaded = await gotoRapportOfSkip(page, "TSTN001", test);
+      if (!loaded) return;
 
       // Verifieer dat de wizard geladen is
       await expect(page.getByText("In welke context heb je gescout?")).toBeVisible({
@@ -212,24 +232,17 @@ test.describe("Rapport wizard", () => {
 
   test.describe("Samenvatting-stap", () => {
     test("samenvatting toont 'Rapport indienen' knop", async ({ page }) => {
-      // De samenvatting-stap is alleen bereikbaar als alle vragen zijn beantwoord.
-      // We testen hier de structuur: als de stap bereikt wordt, moet de indienknop er zijn.
-      // In een volledig geseede E2E omgeving zou deze flow end-to-end werken.
-
-      const response = await page.goto("/scouting/rapport/nieuw/TSTN001");
-
-      if (!response || response.status() === 404) {
-        test.skip();
-        return;
-      }
+      const loaded = await gotoRapportOfSkip(page, "TSTN001", test);
+      if (!loaded) return;
 
       await expect(page.getByText("In welke context heb je gescout?")).toBeVisible({
         timeout: 10000,
       });
 
-      // Verifieer dat de wizard 4 stappen heeft (4 dots in de stappen-indicator)
+      // Verifieer dat de wizard 5 stappen heeft (5 dots in de stappen-indicator)
       // Elke stap is een div met rounded-full class
-      // Dit is een structurele check
+      const dots = page.locator("div.h-2.rounded-full");
+      await expect(dots).toHaveCount(5);
     });
   });
 });

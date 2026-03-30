@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { SessionProvider } from "next-auth/react";
+import { ServiceWorkerRegister } from "./sw-register";
 import "./globals.css";
 
 const inter = Inter({
@@ -42,6 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         className="font-sans antialiased"
         style={{ backgroundColor: "#0f1115", color: "#f3f4f6" }}
       >
+        <ServiceWorkerRegister />
         <SessionProvider>{children}</SessionProvider>
       </body>
     </html>

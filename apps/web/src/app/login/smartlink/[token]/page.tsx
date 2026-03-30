@@ -1,19 +1,19 @@
-import { redirect } from "next/navigation";
 import { signIn } from "@oranje-wit/auth";
 import { valideerToegangsToken, markeerTokenGebruikt } from "@oranje-wit/auth/tokens";
 import { getCapabilities } from "@oranje-wit/auth/allowlist";
+import { SmartlinkLoginKnop } from "./SmartlinkLoginKnop";
 
 /**
  * Smartlink login pagina.
  *
- * Flow:
- * 1. Token uit URL valideren
- * 2. Gebruiker opzoeken in Gebruiker-tabel
- * 3. Token markeren als gebruikt
- * 4. NextAuth sessie aanmaken via signIn("smartlink")
+ * Waterval-authenticatie patroon:
+ * - GET (page load) = VEILIG: valideert alleen het token, maakt GEEN sessie aan
+ * - POST (knop klik) = LOGIN: markeert token als gebruikt + maakt NextAuth sessie aan
  *
- * Dit is een server component. De form wordt automatisch gesubmit
- * via een client-side script zodra de validatie slaagt.
+ * Dit is bestand tegen email security scanners die URLs prefetchen:
+ * - Scanners doen alleen GET-requests (geen POST)
+ * - De pagina toont een "Inloggen" knop die de gebruiker zelf moet klikken
+ * - Pas bij klik wordt de server action aangeroepen (POST)
  */
 export default async function SmartlinkLoginPage({
   params,
@@ -22,7 +22,7 @@ export default async function SmartlinkLoginPage({
 }) {
   const { token } = await params;
 
-  // Stap 1: Valideer het token
+  // Stap 1: Valideer het token (GET = veilig, geen side-effects)
   const validatie = await valideerToegangsToken(token);
 
   if (!validatie.ok || !validatie.data) {
@@ -37,12 +37,12 @@ export default async function SmartlinkLoginPage({
     return <FoutPagina bericht="Je account is niet (meer) actief. Neem contact op met de TC." />;
   }
 
-  // Stap 3: Markeer token als gebruikt (voor tracking, token blijft geldig)
-  await markeerTokenGebruikt(token);
-
-  // Stap 4: Maak NextAuth sessie aan via server action
+  // Stap 3: Server action — wordt PAS aangeroepen bij klik op de knop
   async function aanmelden() {
     "use server";
+    // Markeer token als gebruikt (tracking)
+    await markeerTokenGebruikt(token);
+    // Maak NextAuth sessie aan
     await signIn("smartlink", {
       email,
       naam: naam ?? email.split("@")[0],
@@ -50,50 +50,13 @@ export default async function SmartlinkLoginPage({
     });
   }
 
-  // Auto-submit form: de client-side script submit zodra de pagina laadt
+  // Stap 4: Toon de login-knop — GEEN auto-submit
   return (
     <main
       className="flex min-h-screen items-center justify-center px-4"
       style={{ backgroundColor: "var(--surface-page)" }}
     >
-      <div className="w-full max-w-sm text-center">
-        <div
-          className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl text-xl font-black text-white"
-          style={{
-            background: "linear-gradient(135deg, var(--ow-oranje-600), var(--ow-oranje-400))",
-            boxShadow: "0 0 40px rgba(255, 107, 0, 0.25)",
-          }}
-        >
-          OW
-        </div>
-
-        <h1 className="text-xl font-bold" style={{ color: "var(--text-primary)" }}>
-          Even geduld...
-        </h1>
-        <p className="mt-2 text-sm" style={{ color: "var(--text-secondary)" }}>
-          Je wordt ingelogd als {naam ?? email}
-        </p>
-
-        <form id="smartlink-form" action={aanmelden} className="mt-6">
-          <button
-            type="submit"
-            className="w-full cursor-pointer rounded-lg px-4 py-3 text-sm font-semibold text-white transition-all"
-            style={{
-              background: "linear-gradient(135deg, var(--ow-oranje-600), var(--ow-oranje-500))",
-              boxShadow: "0 4px 14px rgba(255, 107, 0, 0.3)",
-            }}
-          >
-            Doorgaan
-          </button>
-        </form>
-
-        {/* Auto-submit: form wordt direct verstuurd */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `document.getElementById("smartlink-form").requestSubmit();`,
-          }}
-        />
-      </div>
+      <SmartlinkLoginKnop naam={naam ?? ""} email={email} aanmeldenAction={aanmelden} />
     </main>
   );
 }
@@ -105,8 +68,9 @@ function FoutPagina({ bericht }: { bericht: string }) {
       style={{ backgroundColor: "var(--surface-page)" }}
     >
       <div className="w-full max-w-sm text-center">
+        {/* Fout-icoon */}
         <div
-          className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl text-2xl"
+          className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl text-2xl font-bold"
           style={{
             backgroundColor: "rgba(239, 68, 68, 0.1)",
             color: "var(--color-error-500, #ef4444)",
@@ -123,17 +87,33 @@ function FoutPagina({ bericht }: { bericht: string }) {
           {bericht}
         </p>
 
-        <a
-          href="/login"
-          className="mt-6 inline-block rounded-lg px-6 py-2.5 text-sm font-medium transition-colors"
-          style={{
-            backgroundColor: "var(--surface-card)",
-            color: "var(--text-primary)",
-            border: "1px solid var(--border-default)",
-          }}
-        >
-          Naar inlogpagina
-        </a>
+        {/* Twee opties: nieuwe link aanvragen of naar login */}
+        <div className="mt-8 flex flex-col gap-3">
+          <a
+            href="/login"
+            className="inline-block w-full cursor-pointer rounded-xl px-6 py-4 text-center text-base font-semibold text-white transition-all"
+            style={{
+              background: "linear-gradient(135deg, var(--ow-oranje-600), var(--ow-oranje-500))",
+              boxShadow: "0 4px 20px rgba(255, 107, 0, 0.4)",
+              minHeight: "56px",
+              lineHeight: "24px",
+            }}
+          >
+            Nieuwe link aanvragen
+          </a>
+
+          <a
+            href="/login"
+            className="inline-block w-full rounded-lg px-6 py-2.5 text-center text-sm font-medium transition-colors"
+            style={{
+              backgroundColor: "var(--surface-card)",
+              color: "var(--text-secondary)",
+              border: "1px solid var(--border-default)",
+            }}
+          >
+            Naar inlogpagina
+          </a>
+        </div>
       </div>
     </main>
   );

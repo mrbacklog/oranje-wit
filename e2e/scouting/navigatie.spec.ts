@@ -96,10 +96,16 @@ test.describe("Navigatie", () => {
   });
 
   test("onbekende URL toont 404", async ({ page }) => {
-    const response = await page.goto("/scouting/deze-pagina-bestaat-niet-xyz");
+    await page.goto("/scouting/deze-pagina-bestaat-niet-xyz");
 
-    // Next.js toont 404 pagina of redirect
-    if (response && response.status() === 404) {
+    // Next.js dev mode geeft HTTP 200 met not-found content
+    const isNotFound = await page
+      .locator('meta[name="next-error"][content="not-found"]')
+      .count()
+      .then((c) => c > 0)
+      .catch(() => false);
+
+    if (isNotFound) {
       await expect(page.getByText("404").or(page.getByText("not found"))).toBeVisible();
     }
   });

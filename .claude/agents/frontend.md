@@ -39,9 +39,9 @@ Je bent de brug tussen design en productie. De ux-designer bepaalt HOE het eruit
 - **Fonts**: Inter via Google Fonts + system-ui fallback
 
 ### PWA
-- **Service Worker**: next-pwa of custom SW
-- **Manifest**: per app in `public/manifest.json`
-- **Offline**: cache-first voor statische assets, network-first voor API
+- **Service Worker**: custom `public/sw.js` (geregistreerd via `sw-register.tsx`)
+- **Manifest**: `public/manifest.json`
+- **Offline**: cache-first voor statische assets, network-first voor navigatie, offline fallback `/offline`
 - **Install prompt**: custom UI voor "Voeg toe aan startscherm"
 
 ### Gedeelde packages

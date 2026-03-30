@@ -366,7 +366,28 @@ model Gebruiker {
   createdAt   DateTime    @default(now()) @map("created_at")
   updatedAt   DateTime    @updatedAt @map("updated_at")
 
+  // Relations
+  passkeys    Passkey[]
+
   @@map("gebruikers")
+}
+
+// WebAuthn/Passkey credentials voor snelle biometrische login
+model Passkey {
+  id                    String   @id @default(cuid())
+  gebruikerId           String   @map("gebruiker_id")
+  gebruiker             Gebruiker @relation(fields: [gebruikerId], references: [id], onDelete: Cascade)
+  credentialId          String   @unique @map("credential_id")
+  credentialPublicKey   Bytes    @map("credential_public_key")
+  counter               BigInt   @default(0)
+  credentialDeviceType  String   @map("credential_device_type")
+  credentialBackedUp    Boolean  @default(false) @map("credential_backed_up")
+  transports            String[]
+  createdAt             DateTime @default(now()) @map("created_at")
+  lastUsedAt            DateTime? @map("last_used_at")
+  deviceName            String?  @map("device_name")
+
+  @@map("passkeys")
 }
 
 // Verificatie-tokens voor magic links (NextAuth EmailProvider)

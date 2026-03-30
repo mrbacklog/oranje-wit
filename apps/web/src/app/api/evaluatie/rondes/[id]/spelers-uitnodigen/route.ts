@@ -4,7 +4,7 @@ import { prisma } from "@/lib/db/prisma";
 type PrismaFn = (...args: any[]) => any;
 import { ok, fail } from "@/lib/api/response";
 import { requireTC } from "@oranje-wit/auth/checks";
-import { renderTemplate, verstuurEmail } from "@/lib/evaluatie/mail";
+import { renderTemplate, verstuurEmail, generateEmailHmacLink } from "@/lib/evaluatie/mail";
 import { logger } from "@oranje-wit/types";
 
 // Categorieen die zelfevaluatie krijgen (geen jongste jeugd)
@@ -121,11 +121,17 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
         },
       });
 
+      // HMAC auto-login link als primaire CTA (stateless, 90 dagen geldig)
+      const hmacLink = generateEmailHmacLink(email, `/evaluatie/zelf?token=${uitnodiging.token}`);
+      // Fallback: directe token-link
+      const tokenLink = `${baseUrl}/evaluatie/zelf?token=${uitnodiging.token}`;
+
       const html = renderTemplate(template.inhoudHtml, {
         speler_naam: naam,
         deadline: deadlineStr,
         ronde_naam: ronde.naam,
-        link: `${baseUrl}/zelf?token=${uitnodiging.token}`,
+        link: hmacLink,
+        fallback_link: tokenLink,
       });
 
       const onderwerp = renderTemplate(template.onderwerp, {

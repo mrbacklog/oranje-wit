@@ -292,11 +292,11 @@ export const BELEID: AppManifest = {
     {
       nav: { label: "Doelgroepen", href: "/beleid/doelgroepen", icon: "PeopleIcon" },
       pills: [
-        { label: "Jeugd", href: "/beleid/doelgroepen?groep=jeugd" },
-        { label: "Overgang", href: "/beleid/doelgroepen?groep=overgang" },
-        { label: "Selectie", href: "/beleid/doelgroepen?groep=selectie" },
-        { label: "Breedte", href: "/beleid/doelgroepen?groep=breedte" },
-        { label: "Recreatief", href: "/beleid/doelgroepen?groep=recreatief" },
+        { label: "Kweekvijver", href: "/beleid/doelgroepen?groep=kweekvijver" },
+        { label: "Opleidingshart", href: "/beleid/doelgroepen?groep=opleidingshart" },
+        { label: "Korfbalplezier", href: "/beleid/doelgroepen?groep=korfbalplezier" },
+        { label: "Wedstrijdsport", href: "/beleid/doelgroepen?groep=wedstrijdsport" },
+        { label: "Topsport", href: "/beleid/doelgroepen?groep=topsport" },
       ],
     },
     {

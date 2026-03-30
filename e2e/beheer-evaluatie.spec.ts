@@ -39,9 +39,10 @@ test.describe("Beheer — Evaluatie / Templates", () => {
 
     await expect(page.locator("h1")).toContainText("E-mail templates");
 
-    // Tabel of lege status is zichtbaar
-    const table = page.locator("table");
+    // Kaarten met templates of lege status is zichtbaar
+    // De pagina toont templates als kaarten (div), niet als tabel
+    const templateKaart = page.locator("h3").first();
     const empty = page.getByText("Geen e-mail templates gevonden.");
-    await expect(table.or(empty).first()).toBeVisible();
+    await expect(templateKaart.or(empty).first()).toBeVisible();
   });
 });

@@ -29,21 +29,36 @@ export default function BeleidPage() {
           </p>
           <div className="mt-4 grid gap-3">
             {[
-              { name: "Jeugd", age: "5-18", color: "#22c55e", desc: "Groeien in veiligheid" },
               {
-                name: "De overgang",
-                age: "16-22",
+                name: "Kweekvijver",
+                age: "5-9",
+                color: "#22c55e",
+                desc: "Spelenderwijs aansteken",
+              },
+              {
+                name: "Opleidingshart",
+                age: "10-14",
                 color: "#f59e0b",
-                desc: "Het gevaarlijkste moment",
+                desc: "De golden age — breed opleiden",
               },
               {
-                name: "Senioren selectie",
-                age: "18+",
-                color: "#3b82f6",
-                desc: "Vlaggenschip en rolmodel",
+                name: "Korfbalplezier",
+                age: "16+",
+                color: "#14b8a6",
+                desc: "Verenigingsleven en plezier",
               },
-              { name: "Senioren breedte", age: "18+", color: "#14b8a6", desc: "De ruggengraat" },
-              { name: "Recreatief", age: "25+", color: "#a855f7", desc: "Altijd een plek" },
+              {
+                name: "Wedstrijdsport",
+                age: "Sen 3-4",
+                color: "#3b82f6",
+                desc: "Competitief buiten de top",
+              },
+              {
+                name: "Topsport",
+                age: "U15+ / Sen 1-2",
+                color: "#a855f7",
+                desc: "Hard maar eerlijk",
+              },
             ].map((g) => (
               <div
                 key={g.name}

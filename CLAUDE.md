@@ -1,6 +1,6 @@
 # c.k.v. Oranje Wit — Monorepo
 
-Platform voor TC-werkzaamheden van korfbalvereniging c.k.v. Oranje Wit (Dordrecht). Alle domeinen (Monitor, Team-Indeling, Evaluatie, Scouting, Beheer) draaien in een geconsolideerde Next.js 16 app.
+Platform voor TC-werkzaamheden van korfbalvereniging c.k.v. Oranje Wit (Dordrecht). Alle domeinen (Monitor, Team-Indeling, Evaluatie, Scouting, Beheer, Beleid) draaien in een geconsolideerde Next.js 16 app.
 
 ---
 
@@ -148,6 +148,20 @@ Details over tabelverdeling, datamodel, rel_code-regels en data flow: zie `rules
 PLEZIER + ONTWIKKELING + PRESTATIE → DUURZAAMHEID
 ```
 Elke teamindeling wordt getoetst aan deze drie pijlers. Details: zie `rules/oranje-draad.md` en `docs/kennis/tc-beleid.md`
+
+## TC-doelgroepen
+
+De TC bedient alle korfbalspelende leden via vijf doelgroepen:
+
+| Doelgroep | Wie | Eigenaar | Kern |
+|---|---|---|---|
+| **Kweekvijver** | 5-9 (Blauw + Groen) | Merel | Spelenderwijs aansteken, veilig klimaat |
+| **Opleidingshart** | 10-15 (Geel + Oranje) | Merel | Golden age, breed opleiden + voorsorteren |
+| **Korfbalplezier** | Rood B, B-senioren, midweek, recreant | Thomas | Plezier, verenigingsleven, brug jeugd-senioren |
+| **Wedstrijdsport** | Senioren A-categorie (Sen 3-4) | Thomas | Competitief buiten de top |
+| **Topsport** | U15-1 t/m U19-1, Sen 1-2 | Jasper | Maximaal presteren, terugbetalen aan club |
+
+Deze termen zijn **ubiquitous** — ze worden overal gebruikt: in de app, documentatie, agents, presentaties en TC-vergaderingen. Details: `rules/oranje-draad.md` en `docs/kennis/tc-doelgroepen.md`
 
 ## Verwijzingen
 

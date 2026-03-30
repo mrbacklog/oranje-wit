@@ -1,5 +1,14 @@
 import { test, expect } from "../fixtures/base";
 
+/** Detecteer Next.js not-found pagina (dev mode geeft HTTP 200) */
+async function isPageNotFound(page: import("@playwright/test").Page): Promise<boolean> {
+  return page
+    .locator('meta[name="next-error"][content="not-found"]')
+    .count()
+    .then((c) => c > 0)
+    .catch(() => false);
+}
+
 test.describe("Speler profiel", () => {
   test.describe("Profiel laden via zoekresultaat", () => {
     test("zoekresultaat navigeert naar spelerprofiel met correcte inhoud", async ({ page }) => {
@@ -33,11 +42,11 @@ test.describe("Speler profiel", () => {
   test.describe("Profiel structuur", () => {
     test.beforeEach(async ({ page }) => {
       // Navigeer direct naar een seed-data speler
-      const response = await page.goto("/scouting/speler/TSTN001");
+      await page.goto("/scouting/speler/TSTN001");
 
-      // Als de API een fout geeft, laden we de pagina maar zien we een foutmelding
-      // of het profiel. We skippen alleen als er een hard 404 is van de route zelf.
-      if (!response || response.status() === 404) {
+      // Als de speler niet in de database staat, toont Next.js een not-found pagina.
+      // In dev mode is dat HTTP 200, niet 404, dus we detecteren via meta tag.
+      if (await isPageNotFound(page)) {
         test.skip();
       }
     });
