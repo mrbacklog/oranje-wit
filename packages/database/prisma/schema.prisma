@@ -1972,3 +1972,17 @@ model AiBericht {
 
   @@map("ai_berichten")
 }
+
+// ╔═══════════════════════════════════════════════════════════╗
+// ║  SYSTEEM — instellingen                                  ║
+// ╚═══════════════════════════════════════════════════════════╝
+
+model Instelling {
+  sleutel    String   @id @map("sleutel")
+  waarde     String
+  geheim     Boolean  @default(false) // true = waarde niet tonen in UI na opslaan
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  updatedBy  String?  @map("updated_by") // email van wie het laatst wijzigde
+
+  @@map("instellingen")
+}

@@ -6,13 +6,14 @@
  */
 
 import { streamText, type UIMessage, type ToolSet, convertToModelMessages, stepCountIs } from "ai";
-import { google } from "@ai-sdk/google";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { guardAuth } from "@oranje-wit/auth/checks";
 import { logger } from "@oranje-wit/types";
 import { fail } from "@/lib/api/response";
 import { buildDaisyPrompt } from "@/lib/ai/daisy";
 import { getDaisyTools } from "@/lib/ai/plugins/registry";
 import { getOfMaakGesprek, slaBerichtOp } from "@/lib/ai/gesprekken";
+import { getAiApiKey } from "@/lib/ai/api-key";
 
 export const maxDuration = 30;
 
@@ -61,9 +62,19 @@ export async function POST(request: Request) {
   // --- Convert UI messages to model messages ---
   const modelMessages = await convertToModelMessages(messages);
 
+  // --- API key ophalen (database > env var) ---
+  const apiKey = await getAiApiKey("GOOGLE_GENERATIVE_AI_API_KEY");
+  if (!apiKey) {
+    return fail(
+      "Geen Gemini API key ingesteld. Ga naar Beheer → Systeem → Instellingen.",
+      503,
+      "NO_API_KEY"
+    );
+  }
+
+  const google = createGoogleGenerativeAI({ apiKey });
+
   // --- Streaming response ---
-  // Tools gebruiken nog het oude `parameters`-formaat (wordt in een volgende taak gemigreerd
-  // naar `inputSchema`). De cast naar ToolSet is veilig zolang de runtime dit accepteert.
   const tools = getDaisyTools(session.user.clearance) as unknown as ToolSet;
   const result = streamText({
     model: google("gemini-2.0-flash"),
