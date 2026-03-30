@@ -19,6 +19,7 @@ export { TeamIndelingIcon } from "./icons/team-indeling-icon";
 export { EvaluatieIcon } from "./icons/evaluatie-icon";
 export { ScoutingIcon } from "./icons/scouting-icon";
 export { BeheerIcon } from "./icons/beheer-icon";
+export { BeleidIcon } from "./icons/beleid-icon";
 
 // ─── Lookup map en exports ─────────────────────────────────────────
 
@@ -29,6 +30,7 @@ import { TeamIndelingIcon } from "./icons/team-indeling-icon";
 import { EvaluatieIcon } from "./icons/evaluatie-icon";
 import { ScoutingIcon } from "./icons/scouting-icon";
 import { BeheerIcon } from "./icons/beheer-icon";
+import { BeleidIcon } from "./icons/beleid-icon";
 
 export const APP_ICONS: Record<AppId, typeof MonitorIcon> = {
   monitor: MonitorIcon,
@@ -36,10 +38,18 @@ export const APP_ICONS: Record<AppId, typeof MonitorIcon> = {
   evaluatie: EvaluatieIcon,
   scouting: ScoutingIcon,
   beheer: BeheerIcon,
+  beleid: BeleidIcon,
 };
 
 /** Alle app-IDs in volgorde (voor iteratie) */
-export const APP_IDS: AppId[] = ["monitor", "team-indeling", "evaluatie", "scouting", "beheer"];
+export const APP_IDS: AppId[] = [
+  "monitor",
+  "team-indeling",
+  "evaluatie",
+  "scouting",
+  "beheer",
+  "beleid",
+];
 
 /** App metadata voor gebruik in launchers en navigatie */
 export const APP_META: Record<
@@ -75,5 +85,11 @@ export const APP_META: Record<
     description: "TC Beheer",
     url: "/beheer",
     accent: APP_ACCENTS.beheer,
+  },
+  beleid: {
+    name: "Beleid",
+    description: "TC Beleid",
+    url: "/beleid",
+    accent: APP_ACCENTS.beleid,
   },
 };

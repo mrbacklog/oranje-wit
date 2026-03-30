@@ -55,6 +55,7 @@ export {
   EvaluatieIcon as EvaluatieAppIcon,
   ScoutingIcon as ScoutingAppIcon,
   BeheerIcon as BeheerAppIcon,
+  BeleidIcon as BeleidAppIcon,
   APP_ICONS,
   APP_ACCENTS,
   APP_IDS,
@@ -70,6 +71,7 @@ export {
   EVALUATIE,
   SCOUTING,
   BEHEER,
+  BELEID,
 } from "./navigation/manifest";
 export type {
   AppManifest,

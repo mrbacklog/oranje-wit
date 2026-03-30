@@ -8,7 +8,7 @@ export interface AppIconProps {
   accent?: boolean;
 }
 
-export type AppId = "monitor" | "team-indeling" | "evaluatie" | "scouting" | "beheer";
+export type AppId = "monitor" | "team-indeling" | "evaluatie" | "scouting" | "beheer" | "beleid";
 
 // ─── Accent kleuren per app ────────────────────────────────────────
 
@@ -18,6 +18,7 @@ export const APP_ACCENTS: Record<AppId, string> = {
   evaluatie: "#eab308",
   scouting: "#ff6b00",
   beheer: "#9ca3af",
+  beleid: "#a855f7",
 };
 
 // ─── Size config ───────────────────────────────────────────────────

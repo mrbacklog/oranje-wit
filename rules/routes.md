@@ -17,6 +17,7 @@ paths:
 | `/evaluatie/*` | Evaluatie | evaluatie.ckvoranjewit.app |
 | `/scouting/*` | Scouting | scout.ckvoranjewit.app |
 | `/beheer/*` | TC Beheer (9 domeinen) | beheer.ckvoranjewit.app |
+| `/beleid/*` | Beleid (visie, doelgroepen, presentatie) | nieuw |
 
 ## Navigatie (VERPLICHT — geen afwijkingen)
 
@@ -45,3 +46,4 @@ Alle domein-apps volgen hetzelfde navigatiepatroon:
 | Evaluatie | Overzicht | Rondes | Teams | Resultaten | `#eab308` |
 | Scouting | Overzicht | Opdrachten | Zoeken | Profiel | `#ff6b00` |
 | Beheer | Planning | Inrichting | Data | Gebruikers | `#9ca3af` |
+| Beleid | Verhaal | Doelgroepen | Bronnen | Delen | `#a855f7` |
