@@ -37,14 +37,14 @@ export function kleurIndicatie(korfballeeftijd: number): Kleur | null {
   return null; // Senioren
 }
 
-/** Tailwind kleuren voor kleurindicatie dot */
+/** Tailwind kleuren voor kleurindicatie dot (via design tokens) */
 export const KLEUR_DOT: Record<string, string> = {
-  PAARS: "bg-purple-400",
-  BLAUW: "bg-blue-400",
-  GROEN: "bg-emerald-400",
-  GEEL: "bg-yellow-400",
-  ORANJE: "bg-orange-400",
-  ROOD: "bg-red-400",
+  PAARS: "bg-[var(--knkv-paars-400)]",
+  BLAUW: "bg-[var(--knkv-blauw-400)]",
+  GROEN: "bg-[var(--knkv-groen-400)]",
+  GEEL: "bg-[var(--knkv-geel-400)]",
+  ORANJE: "bg-[var(--knkv-oranje-400)]",
+  ROOD: "bg-[var(--knkv-rood-400)]",
 };
 
 /** Speler zoals opgehaald uit de database */
@@ -205,27 +205,29 @@ export const CATEGORIE_LABELS: Record<string, string> = {
 };
 
 export const STATUS_KLEUREN: Record<SpelerStatus, string> = {
-  BESCHIKBAAR: "bg-green-500",
-  TWIJFELT: "bg-orange-500",
-  GAAT_STOPPEN: "bg-red-500",
-  NIEUW_POTENTIEEL: "bg-blue-400",
-  NIEUW_DEFINITIEF: "bg-blue-600",
-  ALGEMEEN_RESERVE: "bg-gray-400",
+  BESCHIKBAAR: "bg-[var(--color-success-500)]",
+  TWIJFELT: "bg-[var(--knkv-oranje-500)]",
+  GAAT_STOPPEN: "bg-[var(--color-error-500)]",
+  NIEUW_POTENTIEEL: "bg-[var(--knkv-blauw-400)]",
+  NIEUW_DEFINITIEF: "bg-[var(--knkv-blauw-600)]",
+  ALGEMEEN_RESERVE: "bg-[var(--text-tertiary)]",
 };
 
 export const KLEUR_BADGE_KLEUREN: Record<string, string> = {
-  PAARS: "bg-purple-100 text-purple-700",
-  BLAUW: "bg-blue-100 text-blue-700",
-  GROEN: "bg-green-100 text-green-700",
-  GEEL: "bg-yellow-100 text-yellow-700",
-  ORANJE: "bg-orange-100 text-orange-700",
-  ROOD: "bg-red-100 text-red-700",
+  PAARS: "bg-[var(--knkv-paars-950)] text-[var(--knkv-paars-300)]",
+  BLAUW: "bg-[var(--knkv-blauw-950)] text-[var(--knkv-blauw-300)]",
+  GROEN: "bg-[var(--knkv-groen-950)] text-[var(--knkv-groen-300)]",
+  GEEL: "bg-[var(--knkv-geel-950)] text-[var(--knkv-geel-300)]",
+  ORANJE: "bg-[var(--knkv-oranje-950)] text-[var(--knkv-oranje-300)]",
+  ROOD: "bg-[var(--knkv-rood-950)] text-[var(--knkv-rood-300)]",
 };
 
 /** Categorie-badge styling (A-categorie en Senioren) */
 export const CATEGORIE_BADGE: Record<string, string> = {
-  A_CATEGORIE: "bg-orange-100 text-orange-700 border border-orange-200",
-  SENIOREN: "bg-gray-100 text-gray-500 border border-gray-200",
+  A_CATEGORIE:
+    "bg-[var(--knkv-oranje-950)] text-[var(--knkv-oranje-300)] border border-[var(--knkv-oranje-800)]",
+  SENIOREN:
+    "bg-[var(--surface-sunken)] text-[var(--text-secondary)] border border-[var(--border-default)]",
 };
 
 /** Categorie-badge labels */

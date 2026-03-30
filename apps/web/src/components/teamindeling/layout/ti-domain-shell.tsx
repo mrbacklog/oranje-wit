@@ -30,7 +30,7 @@ export function TIDomainShell({ children }: { children: ReactNode }) {
     : undefined;
 
   const banner = !isWerkseizoen ? (
-    <div className="bg-amber-50 px-4 py-2 text-center text-sm text-amber-700">
+    <div className="bg-[var(--color-warning-50)] px-4 py-2 text-center text-sm text-[var(--color-warning-700)]">
       Je bekijkt seizoen {seizoen} — dit is niet het actieve werkseizoen (alleen-lezen)
     </div>
   ) : null;
@@ -38,7 +38,7 @@ export function TIDomainShell({ children }: { children: ReactNode }) {
   return (
     <DomainShell
       domain="team-indeling"
-      theme="light"
+      theme="dark"
       bottomNav={bottomNavItems}
       user={user}
       onSignOut={() => signOut()}

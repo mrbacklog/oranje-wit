@@ -34,7 +34,7 @@ export default async function TeamIndelingLayout({
   return (
     <div
       className={`${geistSans.variable} ${geistMono.variable}`}
-      data-theme="light"
+      data-theme="dark"
       style={{
         backgroundColor: "var(--surface-page)",
         color: "var(--text-primary)",

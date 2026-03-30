@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { saveInstelling, testAiKey } from "./actions";
-import type { AiProvider } from "./actions";
+import type { AiProvider } from "./ai-providers";
 
 interface Props {
   providers: AiProvider[];

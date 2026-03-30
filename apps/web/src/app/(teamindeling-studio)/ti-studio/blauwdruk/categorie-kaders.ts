@@ -90,7 +90,7 @@ export const CATEGORIEEN: CategorieDefinitie[] = [
   {
     sleutel: "SENIOREN_A",
     label: "Senioren A",
-    kleur: "bg-gray-600",
+    kleur: "bg-[var(--ow-zwart-600)]",
     type: "senioren",
     leeftijdRange: "19+ jaar",
     spelvorm: "8-tal",
@@ -98,7 +98,7 @@ export const CATEGORIEEN: CategorieDefinitie[] = [
   {
     sleutel: "SENIOREN_B",
     label: "Senioren B",
-    kleur: "bg-gray-400",
+    kleur: "bg-[var(--ow-zwart-400)]",
     type: "senioren",
     leeftijdRange: "19+ jaar",
     spelvorm: "8-tal",
@@ -106,7 +106,7 @@ export const CATEGORIEEN: CategorieDefinitie[] = [
   {
     sleutel: "U19",
     label: "U19",
-    kleur: "bg-gray-500",
+    kleur: "bg-[var(--ow-zwart-500)]",
     type: "a-categorie",
     leeftijdRange: "< 19 jaar",
     spelvorm: "8-tal",
@@ -114,7 +114,7 @@ export const CATEGORIEEN: CategorieDefinitie[] = [
   {
     sleutel: "U17",
     label: "U17",
-    kleur: "bg-gray-400",
+    kleur: "bg-[var(--ow-zwart-400)]",
     type: "a-categorie",
     leeftijdRange: "< 17 jaar",
     spelvorm: "8-tal",
@@ -122,7 +122,7 @@ export const CATEGORIEEN: CategorieDefinitie[] = [
   {
     sleutel: "U15",
     label: "U15",
-    kleur: "bg-gray-300",
+    kleur: "bg-[var(--ow-zwart-300)]",
     type: "a-categorie",
     leeftijdRange: "< 15 jaar",
     spelvorm: "8-tal",
@@ -130,7 +130,7 @@ export const CATEGORIEEN: CategorieDefinitie[] = [
   {
     sleutel: "ROOD",
     label: "Rood",
-    kleur: "bg-red-500",
+    kleur: "bg-[var(--knkv-rood-500)]",
     type: "b-achttal",
     leeftijdRange: "13–19 jaar",
     spelvorm: "8-tal",
@@ -138,7 +138,7 @@ export const CATEGORIEEN: CategorieDefinitie[] = [
   {
     sleutel: "ORANJE",
     label: "Oranje",
-    kleur: "bg-orange-500",
+    kleur: "bg-[var(--knkv-oranje-500)]",
     type: "b-achttal",
     leeftijdRange: "11–15 jaar",
     spelvorm: "8-tal",
@@ -146,7 +146,7 @@ export const CATEGORIEEN: CategorieDefinitie[] = [
   {
     sleutel: "GEEL",
     label: "Geel",
-    kleur: "bg-yellow-500",
+    kleur: "bg-[var(--knkv-geel-500)]",
     type: "b-achttal",
     leeftijdRange: "9–13 jaar",
     spelvorm: "8-tal",
@@ -154,7 +154,7 @@ export const CATEGORIEEN: CategorieDefinitie[] = [
   {
     sleutel: "GROEN",
     label: "Groen",
-    kleur: "bg-green-500",
+    kleur: "bg-[var(--knkv-groen-500)]",
     type: "b-viertal",
     leeftijdRange: "7–10 jaar",
     spelvorm: "4-tal",
@@ -162,7 +162,7 @@ export const CATEGORIEEN: CategorieDefinitie[] = [
   {
     sleutel: "BLAUW",
     label: "Blauw",
-    kleur: "bg-blue-500",
+    kleur: "bg-[var(--knkv-blauw-500)]",
     type: "b-viertal",
     leeftijdRange: "5–8 jaar",
     spelvorm: "4-tal",
@@ -170,7 +170,7 @@ export const CATEGORIEEN: CategorieDefinitie[] = [
   {
     sleutel: "KANGOEROES",
     label: "Kangoeroes",
-    kleur: "bg-purple-400",
+    kleur: "bg-[var(--knkv-paars-400)]",
     type: "kangoeroes",
     leeftijdRange: "4–6 jaar",
     spelvorm: "–",

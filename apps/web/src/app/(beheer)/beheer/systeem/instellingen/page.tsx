@@ -1,6 +1,7 @@
 import { requireTC } from "@oranje-wit/auth/checks";
 import { InstellingenPaneel } from "./instellingen-paneel";
-import { getInstellingen, AI_PROVIDERS } from "./actions";
+import { getInstellingen } from "./actions";
+import { AI_PROVIDERS } from "./ai-providers";
 
 export default async function InstellingenPage() {
   await requireTC();
