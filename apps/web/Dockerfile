@@ -26,8 +26,9 @@ COPY packages/test-utils/ packages/test-utils/
 COPY apps/web/ apps/web/
 
 RUN pnpm db:generate
-# Custom service worker in public/sw.js — geen webpack plugin meer nodig
-RUN pnpm --filter @oranje-wit/web exec next build
+# --webpack is nodig zodat @ducanh2912/next-pwa de service worker genereert
+# (de plugin gebruikt workbox-webpack-plugin, werkt niet met Turbopack)
+RUN pnpm --filter @oranje-wit/web exec next build --webpack
 
 # ── Stage 3: Production runtime ──────────────────────────────────────────────
 FROM node:22-slim AS runner

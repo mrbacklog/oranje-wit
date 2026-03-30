@@ -6,22 +6,26 @@ import { DashboardClient } from "./dashboard-client";
 
 async function getDashboardStats() {
   try {
+    const seizoenQuery = prisma.seizoen.findFirst({
+      where: { status: "ACTIEF" },
+      select: { seizoen: true },
+    });
+    const teamsQuery = prisma.oWTeam.count({
+      where: { seizoen: HUIDIG_SEIZOEN },
+    });
+    const raamwerkQuery = prisma.raamwerkVersie.findFirst({
+      where: { status: "ACTIEF" },
+      select: { naam: true },
+    });
+    const ledenQuery = prisma.competitieSpeler.groupBy({
+      by: ["relCode"],
+      where: { seizoen: HUIDIG_SEIZOEN },
+    });
     const [seizoen, teamsCount, raamwerk, uniekeLedenResult] = await Promise.all([
-      prisma.seizoen.findFirst({
-        where: { status: "ACTIEF" },
-        select: { seizoen: true },
-      }),
-      prisma.oWTeam.count({
-        where: { seizoen: HUIDIG_SEIZOEN },
-      }),
-      prisma.raamwerkVersie.findFirst({
-        where: { status: "ACTIEF" },
-        select: { naam: true },
-      }),
-      prisma.competitieSpeler.groupBy({
-        by: ["relCode"],
-        where: { seizoen: HUIDIG_SEIZOEN },
-      }),
+      seizoenQuery,
+      teamsQuery,
+      raamwerkQuery,
+      ledenQuery,
     ]);
 
     return {
