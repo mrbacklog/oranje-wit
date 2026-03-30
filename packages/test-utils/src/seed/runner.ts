@@ -252,6 +252,24 @@ async function seedBlauwdruk(prisma: PrismaClient) {
   });
 }
 
+async function seedBlauwdrukSpelers(
+  prisma: PrismaClient,
+  blauwdrukId: string,
+  spelers: SpelerRecord[]
+) {
+  const spelersMetTeam = spelers.filter((s) => s.team);
+  for (const s of spelersMetTeam) {
+    await prisma.blauwdrukSpeler.create({
+      data: {
+        blauwdrukId,
+        spelerId: s.relCode,
+        gezienStatus: "ONGEZIEN",
+        signalering: null,
+      },
+    });
+  }
+}
+
 // ── Main seed runner ───────────────────────────────────────────────────
 
 export async function runSeed(prisma: PrismaClient) {
@@ -296,6 +314,7 @@ export async function runSeed(prisma: PrismaClient) {
   await seedTISpelers(prisma, spelers);
   await seedStaf(prisma);
   await seedConceptScenarioVersie(prisma, blauwdruk.id, spelers);
+  await seedBlauwdrukSpelers(prisma, blauwdruk.id, spelers);
 
   console.warn(
     `Seed compleet: ${spelers.length} leden, ${spelersMetTeam.length} TI spelers, ` +

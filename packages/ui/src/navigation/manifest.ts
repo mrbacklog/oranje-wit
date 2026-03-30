@@ -139,16 +139,20 @@ export const TEAM_INDELING_MOBILE: AppManifest = {
   accent: APP_ACCENTS["team-indeling"],
   sections: [
     {
-      nav: { label: "Teams", href: "/teamindeling/teams", icon: "GridIcon" },
+      nav: { label: "Overzicht", href: "/teamindeling", icon: "GridIcon" },
     },
     {
-      nav: { label: "Spelers", href: "/teamindeling/spelers", icon: "PeopleIcon" },
+      nav: { label: "Blauwdruk", href: "/teamindeling/blauwdruk", icon: "ListIcon" },
+      pills: [
+        { label: "Spelers", href: "/teamindeling/blauwdruk" },
+        { label: "Besluiten", href: "/teamindeling/blauwdruk/besluiten" },
+      ],
     },
     {
-      nav: { label: "Indeling", href: "/teamindeling/scenarios", icon: "ListIcon" },
+      nav: { label: "Indeling", href: "/teamindeling/scenarios", icon: "PeopleIcon" },
     },
     {
-      nav: { label: "Staf", href: "/teamindeling/staf", icon: "StarIcon" },
+      nav: { label: "Teams", href: "/teamindeling/teams", icon: "StarIcon" },
     },
   ],
   skipRoutes: [],
@@ -264,6 +268,53 @@ export const BEHEER: AppManifest = {
   visibility: { requireTC: true },
 };
 
+// ─── Beleid ─────────────────────────────────────────────────────
+
+export const BELEID: AppManifest = {
+  id: "beleid",
+  name: "Beleid",
+  shortName: "Beleid",
+  description: "Technisch beleid, visie en doelgroepenstrategie",
+  baseUrl: "/beleid",
+  accent: APP_ACCENTS.beleid,
+  sections: [
+    {
+      nav: { label: "Verhaal", href: "/beleid", icon: "ListIcon" },
+      pills: [
+        { label: "Een leven lang!", href: "/beleid" },
+        { label: "Jeugd", href: "/beleid/jeugd" },
+        { label: "Overgang", href: "/beleid/overgang" },
+        { label: "Senioren", href: "/beleid/senioren" },
+        { label: "Recreatief", href: "/beleid/recreatief" },
+        { label: "Binden", href: "/beleid/binden" },
+      ],
+    },
+    {
+      nav: { label: "Doelgroepen", href: "/beleid/doelgroepen", icon: "PeopleIcon" },
+      pills: [
+        { label: "Jeugd", href: "/beleid/doelgroepen?groep=jeugd" },
+        { label: "Overgang", href: "/beleid/doelgroepen?groep=overgang" },
+        { label: "Selectie", href: "/beleid/doelgroepen?groep=selectie" },
+        { label: "Breedte", href: "/beleid/doelgroepen?groep=breedte" },
+        { label: "Recreatief", href: "/beleid/doelgroepen?groep=recreatief" },
+      ],
+    },
+    {
+      nav: { label: "Bronnen", href: "/beleid/bronnen", icon: "SearchIcon" },
+      pills: [
+        { label: "Wetenschap", href: "/beleid/bronnen?type=wetenschap" },
+        { label: "Beleid", href: "/beleid/bronnen?type=beleid" },
+        { label: "Data", href: "/beleid/bronnen?type=data" },
+      ],
+    },
+    {
+      nav: { label: "Delen", href: "/beleid/delen", icon: "StarIcon" },
+    },
+  ],
+  skipRoutes: [],
+  visibility: { requireTC: true },
+};
+
 // ─── Manifest lookup ────────────────────────────────────────────
 
 export const APP_MANIFEST: Record<AppId, AppManifest> = {
@@ -272,7 +323,15 @@ export const APP_MANIFEST: Record<AppId, AppManifest> = {
   evaluatie: EVALUATIE,
   scouting: SCOUTING,
   beheer: BEHEER,
+  beleid: BELEID,
 };
 
 /** Alle app-manifests in weergavevolgorde */
-export const ALL_APPS: AppManifest[] = [MONITOR, TEAM_INDELING, EVALUATIE, SCOUTING, BEHEER];
+export const ALL_APPS: AppManifest[] = [
+  MONITOR,
+  TEAM_INDELING,
+  EVALUATIE,
+  SCOUTING,
+  BEHEER,
+  BELEID,
+];

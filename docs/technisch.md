@@ -475,7 +475,8 @@ Inclusief rapport CRUD, verzoeken, toewijzingen, team-/spelersdata, kaarten, ver
 | Route | Functie |
 |---|---|
 | `/teamindeling` | Dashboard (overzicht blauwdruk + scenario's) |
-| `/teamindeling/blauwdruk` | Blauwdruk beheer (kaders, besluiten, speerpunten) |
+| `/teamindeling/blauwdruk` | Blauwdruk gezien-flow (spelers per categorie, voortgang, signaleringen) |
+| `/teamindeling/blauwdruk/besluiten` | Besluiten-overzicht (standaardvragen, status, antwoorden) |
 | `/teamindeling/scenarios` | Scenario-overzicht |
 | `/teamindeling/scenarios/[id]` | Scenario-editor (drag-and-drop teamsamenstelling) |
 | `/teamindeling/vergelijk` | Scenario's vergelijken |
