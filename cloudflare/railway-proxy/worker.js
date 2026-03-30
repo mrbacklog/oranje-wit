@@ -1,10 +1,13 @@
+// Mono-app: alle domeinen routeren naar dezelfde Railway service
+const MONO_APP_TARGET = "ckvoranjewitapp-production.up.railway.app";
+
 const DOMAIN_MAP = {
-  "www.ckvoranjewit.app": "team-indeling-production.up.railway.app",
-  "ckvoranjewit.app": "team-indeling-production.up.railway.app",
-  "monitor.ckvoranjewit.app": "monitor-production-b2b1.up.railway.app",
-  "teamindeling.ckvoranjewit.app": "team-indeling-production.up.railway.app",
-  "evaluaties.ckvoranjewit.app": "evaluatie-production.up.railway.app",
-  "scout.ckvoranjewit.app": "scouting-production-6128.up.railway.app",
+  "www.ckvoranjewit.app": MONO_APP_TARGET,
+  "ckvoranjewit.app": MONO_APP_TARGET,
+  "monitor.ckvoranjewit.app": MONO_APP_TARGET,
+  "teamindeling.ckvoranjewit.app": MONO_APP_TARGET,
+  "evaluaties.ckvoranjewit.app": MONO_APP_TARGET,
+  "scout.ckvoranjewit.app": MONO_APP_TARGET,
 };
 
 export default {
