@@ -1,5 +1,4 @@
 import type { NextConfig } from "next";
-import withPWA from "@ducanh2912/next-pwa";
 
 const nextConfig: NextConfig = {
   // output: "standalone" is disabled lokaal vanwege Windows NTFS beperking
@@ -13,24 +12,16 @@ const nextConfig: NextConfig = {
     "@oranje-wit/ui",
   ],
   serverExternalPackages: ["pg", "pg-connection-string", "pgpass"],
-  // Lege turbopack config zodat Next.js 16 niet faalt wanneer withPWA
-  // een webpack-config injecteert. Service worker generatie werkt alleen
-  // bij `next build --webpack`; het manifest en statische bestanden in
-  // public/ werken altijd.
-  turbopack: {},
+  // TypeScript checking wordt al gedaan in CI (GitHub Actions) —
+  // in de Docker build is het overbodig en veroorzaakt Prisma type depth errors
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   experimental: {
     serverActions: {
-      allowedOrigins: ["ckvoranjewit.app"],
+      allowedOrigins: ["ckvoranjewit.app", "www.ckvoranjewit.app"],
     },
   },
 };
 
-export default withPWA({
-  dest: "public",
-  register: true,
-  disable: process.env.NODE_ENV === "development",
-  workboxOptions: {
-    skipWaiting: true,
-    clientsClaim: true,
-  },
-})(nextConfig);
+export default nextConfig;
