@@ -1048,23 +1048,26 @@ Met systeem:
 
 ---
 
-## 12. Open vragen voor de product-owner
+## 12. Besluiten product-owner (2026-03-30)
 
-1. **SpelerStatus hernoeming**: is het acceptabel om BESCHIKBAAR te hernoemen naar STABIEL? Dit raakt bestaande code en mogelijk de UI.
+Alle 8 open vragen zijn beantwoord:
 
-2. **ALGEMEEN_RESERVE**: kunnen we deze status verwijderen? Het concept "reserve" is een plaatsing (speler staat in reserve-pool), niet een beschikbaarheidsstatus.
+| # | Vraag | Besluit |
+|---|---|---|
+| 1 | SpelerStatus BESCHIKBAAR → STABIEL? | **Ja, hernoemen.** Stabiel is TC-taal. Migratie nodig. |
+| 2 | ALGEMEEN_RESERVE verwijderen? | **Nee, behouden.** Dit is een bewuste keuze van de speler — ze hoeven niet in de "te plaatsen" lijst. |
+| 3 | Hoe ver met staf-signalen? | **Volledig.** Staf is net zo belangrijk als spelers. Werving, pinnen, domino-effecten — zelfde niveau. |
+| 4 | Hoeveel automatische signalen? | **Multi-indicator filtering.** Alleen signaal als een speler op meerdere indicatoren rood scoort (EWIMS-patroon). Geen losse retentierisico-spam. |
+| 5 | Mogen coördinatoren uitvragen sturen? | **Alleen TC → coördinator.** Coördinator overlegt zelf met trainers buiten de app. Antwoord kan trainer-input bevatten. |
+| 6 | Smartlink of login voor uitvragen? | **Notificatie → app.** Geen smartlink-formulieren. Email zegt "je hebt een actie", gebruiker logt in en werkt in de app. |
+| 7 | Signalen en what-ifs tegelijk live? | **Signalen eerst.** Zelfstandige waarde. What-if integratie komt later. |
+| 8 | WhatsApp-integratie? | **Nee.** Email + in-app volstaat. |
 
-3. **Staf-status**: hoe ver gaan we met staf-signalen? De TC heeft weinig grip op trainerswerving. Is het systeem een hulpmiddel of een herinnering aan een probleem dat niet via software op te lossen is?
+### Aanvullende requirements uit de discussie
 
-4. **Automatische signalen**: hoeveel automatische signalen zijn nuttig voordat het ruis wordt? Als het systeem 50 RETENTIE_RISICO signalen genereert, wordt de TC er niet blij van. Moeten we filteren op ernst?
+**Nieuwkomers zonder rel_code**: spelers die nog geen Sportlink-registratie hebben moeten wel meegenomen worden in de indeling. Ze krijgen later een rel_code gekoppeld.
 
-5. **Scope van uitvragen**: mogen coordinatoren ook uitvragen sturen naar hun trainers, of is dat alleen TC-bevoegdheid?
-
-6. **Smartlink-beveiliging**: is een token-URL voldoende, of willen we Google-login voor coordinatoren/trainers? (Dit raakt het autorisatiemodel uit de scheiding-spec.)
-
-7. **What-if MVP**: moeten signalen en what-ifs tegelijk live gaan, of kan het signaal-systeem eerder live omdat het onafhankelijk waarde heeft?
-
-8. **WhatsApp-integratie**: de TC communiceert via WhatsApp. Is er een route naar WhatsApp-notificaties (WhatsApp Business API) of is dat te complex?
+**Reserveringsplaatsen**: placeholder-posities in een team voor verwachte spelers (bijv. "Dame Senioren Selectie 1"). Vrije naamgeving via tekst-input. Tellen NIET mee in speler-totalen, maar WEL in de team-validatie (controleren of het team vol genoeg wordt).
 
 ---
 
@@ -1084,3 +1087,13 @@ Met systeem:
 | EWIMS als methodische basis | Bewezen in onderwijs, directe parallellen met sportverenigingscontext |
 | Signaal-trechter als bindmechanisme | Automatische import bij blauwdruk-aanmaak verbindt observatie- met indelingsfase |
 | Re-assessment na 4 weken | Voorkomt dat signalen oneindig in dezelfde status staan (stagnatie-detectie) |
+| BESCHIKBAAR → STABIEL | TC-taalgebruik, "stabiel" = gaat door + juist niveau |
+| ALGEMEEN_RESERVE blijft | Bewuste keuze van speler, niet een plaatsingsstatus |
+| Volledige staf-signalen | Staf is net zo belangrijk als spelers voor de TC |
+| Multi-indicator filtering | EWIMS-patroon: alleen signaal bij meerdere rode indicatoren |
+| Alleen TC → coördinator uitvragen | Coördinator overlegt zelf met trainers buiten de app |
+| Notificatie → app, geen smartlinks | Gebruikers werken in de app, niet via externe formulieren |
+| Signalen eerst, what-if integratie later | Signaal-systeem heeft zelfstandige waarde |
+| Geen WhatsApp | Email + in-app volstaat |
+| Nieuwkomers zonder rel_code | Moeten mee in indeling, krijgen later rel_code |
+| Reserveringsplaatsen in teams | Placeholder-posities met vrije naam, tellen niet als speler maar wel voor team-validatie |
