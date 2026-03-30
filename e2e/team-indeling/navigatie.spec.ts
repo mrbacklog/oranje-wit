@@ -12,7 +12,7 @@ test.describe("Team-Indeling navigatie", () => {
     await expect(page.getByRole("heading", { name: /blauwdruk/i })).toBeVisible();
 
     // Blauwdruk tabs moeten zichtbaar zijn
-    await expect(page.getByText("Kaders")).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole("tab", { name: "Kaders" })).toBeVisible({ timeout: 10000 });
   });
 
   test("scenarios pagina is bereikbaar en toont seed-scenario", async ({ page }) => {
