@@ -3,6 +3,8 @@ main = "worker.js"
 compatibility_date = "2024-01-01"
 
 routes = [
+  { pattern = "www.ckvoranjewit.app/*", zone_id = "274388d92ae20e1a2276eb8ead67669c" },
+  { pattern = "ckvoranjewit.app/*", zone_id = "274388d92ae20e1a2276eb8ead67669c" },
   { pattern = "monitor.ckvoranjewit.app/*", zone_id = "274388d92ae20e1a2276eb8ead67669c" },
   { pattern = "teamindeling.ckvoranjewit.app/*", zone_id = "274388d92ae20e1a2276eb8ead67669c" },
   { pattern = "evaluaties.ckvoranjewit.app/*", zone_id = "274388d92ae20e1a2276eb8ead67669c" },

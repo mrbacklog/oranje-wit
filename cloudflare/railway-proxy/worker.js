@@ -1,4 +1,6 @@
 const DOMAIN_MAP = {
+  "www.ckvoranjewit.app": "team-indeling-production.up.railway.app",
+  "ckvoranjewit.app": "team-indeling-production.up.railway.app",
   "monitor.ckvoranjewit.app": "monitor-production-b2b1.up.railway.app",
   "teamindeling.ckvoranjewit.app": "team-indeling-production.up.railway.app",
   "evaluaties.ckvoranjewit.app": "evaluatie-production.up.railway.app",
