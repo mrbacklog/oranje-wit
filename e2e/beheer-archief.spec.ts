@@ -15,11 +15,11 @@ test.describe("Beheer — Archief", () => {
   test("teams-archief toont seizoenen-sectie of lege staat", async ({ page }) => {
     await page.goto("/beheer/archief/teams", GOTO_OPTS);
 
-    // De heading "Seizoenen" (h3) of een tabel
+    // De heading "Seizoenen" (h3) of een tabel — first() voor als beide matchen
     const seizoenHeading = page.getByRole("heading", { name: "Seizoenen" });
     const tabel = page.locator("table");
 
-    await expect(seizoenHeading.or(tabel)).toBeVisible();
+    await expect(seizoenHeading.or(tabel).first()).toBeVisible();
   });
 
   test("resultaten-archief laadt en toont heading", async ({ page }) => {

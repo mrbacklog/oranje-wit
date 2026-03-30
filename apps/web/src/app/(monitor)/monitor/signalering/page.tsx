@@ -22,7 +22,7 @@ const THEMA_LINKS: Record<string, string> = {
 };
 
 function sorteerOpErnst(items: SignaleringRow[]): SignaleringRow[] {
-  const volgorde: Record<string, number> = { kritiek: 0, aandacht: 1, opkoers: 2 };
+  const volgorde: Record<string, number> = { kritiek: 0, aandacht: 1, op_koers: 2, opkoers: 2 };
   return [...items].sort((a, b) => (volgorde[a.ernst] ?? 3) - (volgorde[b.ernst] ?? 3));
 }
 

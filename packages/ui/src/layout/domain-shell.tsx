@@ -359,8 +359,13 @@ export function DomainShell({
         </main>
       </div>
 
-      {/* Mobile BottomNav met AppSwitcher als 5e knop */}
-      {bottomNav && (
+      {/* BottomNav met AppSwitcher als 5e knop — altijd zichtbaar (alle viewports) */}
+      {bottomNav && !sidebarConfig && (
+        <BottomNavShell items={bottomNav} domain={domain} profile={profile} />
+      )}
+
+      {/* Mobile BottomNav als er WEL een sidebar is (sidebar vervangt BottomNav op desktop) */}
+      {bottomNav && sidebarConfig && (
         <div className="md:hidden">
           <BottomNavShell items={bottomNav} domain={domain} profile={profile} />
         </div>

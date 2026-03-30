@@ -63,12 +63,12 @@ test.describe("Verzoeken-pagina", () => {
     await expect(leegOfLijst.first()).toBeVisible({ timeout: 10000 });
   });
 
-  test("bottom navigatie bevat Verzoeken link", async ({ page }) => {
+  test("bottom navigatie bevat Opdrachten link", async ({ page }) => {
     await page.goto("/scouting/verzoeken");
 
     const nav = page.getByRole("navigation");
     await expect(nav).toBeVisible({ timeout: 10000 });
-    await expect(nav.getByText("Verzoeken")).toBeVisible();
+    await expect(nav.getByText("Opdrachten")).toBeVisible();
   });
 });
 
@@ -605,9 +605,12 @@ test.describe("Team-scouting (TEAM methode)", () => {
       return;
     }
 
-    // Context-stap is zichtbaar
+    // Context-stap is zichtbaar — first() voor als beide matchen
     await expect(
-      page.getByText("In welke context heb je gescout?").or(page.getByText(/\d+ spelers/))
+      page
+        .getByText("In welke context heb je gescout?")
+        .or(page.getByText(/\d+ spelers/))
+        .first()
     ).toBeVisible({ timeout: 10000 });
   });
 

@@ -34,10 +34,11 @@ test.describe("Navigatie", () => {
         timeout: 15000,
       });
 
-      // StatCards zijn zichtbaar (exact: true om strict mode violations te voorkomen)
-      await expect(page.getByText("Rondes", { exact: true })).toBeVisible();
-      await expect(page.getByText("Ingediend", { exact: true })).toBeVisible();
-      await expect(page.getByText("Uitnodigingen", { exact: true })).toBeVisible();
+      // StatCards zijn zichtbaar — scoop op main om BottomNav overlap te vermijden
+      const main = page.locator("main");
+      await expect(main.getByText("Rondes", { exact: true })).toBeVisible();
+      await expect(main.getByText("Ingediend", { exact: true })).toBeVisible();
+      await expect(main.getByText("Uitnodigingen", { exact: true })).toBeVisible();
     });
 
     test("dashboard heeft link naar beheer", async ({ page }) => {

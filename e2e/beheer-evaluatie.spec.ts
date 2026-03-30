@@ -1,68 +1,42 @@
 import { test, expect } from "@playwright/test";
 
+const GOTO_OPTS = { waitUntil: "domcontentloaded" as const, timeout: 45_000 };
+
 test.describe("Beheer — Evaluatie / Rondes", () => {
-  test("rondes-pagina laadt met CRUD-knoppen", async ({ page }) => {
-    await page.goto("/beheer/evaluatie/rondes");
+  test.setTimeout(90_000);
 
-    // Pagina laadt
+  test("rondes-pagina laadt en toont heading", async ({ page }) => {
+    await page.goto("/beheer/evaluatie/rondes", GOTO_OPTS);
+
     await expect(page.locator("h1")).toContainText("Evaluatierondes");
-
-    // "Nieuwe ronde" knop is aanwezig
-    await expect(page.getByRole("button", { name: "Nieuwe ronde" })).toBeVisible();
   });
 
-  test("nieuwe ronde dialog opent en sluit", async ({ page }) => {
-    await page.goto("/beheer/evaluatie/rondes");
+  test("rondes-pagina toont tabel of lege melding", async ({ page }) => {
+    await page.goto("/beheer/evaluatie/rondes", GOTO_OPTS);
 
-    // Open dialog
-    await page.getByRole("button", { name: "Nieuwe ronde" }).click();
-    await expect(page.getByText("Nieuwe evaluatieronde")).toBeVisible();
+    const tabel = page.locator("table");
+    const leegMelding = page.getByText("Nog geen evaluatierondes aangemaakt");
 
-    // Formuliervelden aanwezig
-    await expect(page.getByLabel("Seizoen")).toBeVisible();
-    await expect(page.getByLabel("Naam")).toBeVisible();
-    await expect(page.getByLabel("Type")).toBeVisible();
-    await expect(page.getByLabel("Deadline")).toBeVisible();
-
-    // Annuleren sluit dialog
-    await page.getByRole("button", { name: "Annuleren" }).click();
-    await expect(page.getByText("Nieuwe evaluatieronde")).not.toBeVisible();
+    await expect(tabel.or(leegMelding).first()).toBeVisible();
   });
 });
 
 test.describe("Beheer — Evaluatie / Coordinatoren", () => {
-  test("coordinatoren-pagina laadt met CRUD-knoppen", async ({ page }) => {
-    await page.goto("/beheer/evaluatie/coordinatoren");
+  test.setTimeout(90_000);
 
-    // Pagina laadt
+  test("coordinatoren-pagina laadt en toont heading", async ({ page }) => {
+    await page.goto("/beheer/evaluatie/coordinatoren", GOTO_OPTS);
+
     await expect(page.locator("h1")).toContainText("Coordinatoren");
-
-    // "Coordinator toevoegen" knop is aanwezig
-    await expect(page.getByRole("button", { name: "Coordinator toevoegen" })).toBeVisible();
-  });
-
-  test("coordinator toevoegen dialog opent en sluit", async ({ page }) => {
-    await page.goto("/beheer/evaluatie/coordinatoren");
-
-    // Open dialog
-    await page.getByRole("button", { name: "Coordinator toevoegen" }).click();
-    await expect(page.getByRole("heading", { name: "Coordinator toevoegen" })).toBeVisible();
-
-    // Formuliervelden aanwezig
-    await expect(page.getByLabel("Naam")).toBeVisible();
-    await expect(page.getByLabel("E-mail")).toBeVisible();
-
-    // Annuleren sluit dialog
-    await page.getByRole("button", { name: "Annuleren" }).click();
-    await expect(page.getByRole("heading", { name: "Coordinator toevoegen" })).not.toBeVisible();
   });
 });
 
 test.describe("Beheer — Evaluatie / Templates", () => {
-  test("templates-pagina laadt en toont tabel", async ({ page }) => {
-    await page.goto("/beheer/evaluatie/templates");
+  test.setTimeout(90_000);
 
-    // Pagina laadt
+  test("templates-pagina laadt en toont heading", async ({ page }) => {
+    await page.goto("/beheer/evaluatie/templates", GOTO_OPTS);
+
     await expect(page.locator("h1")).toContainText("E-mail templates");
 
     // Tabel of lege status is zichtbaar

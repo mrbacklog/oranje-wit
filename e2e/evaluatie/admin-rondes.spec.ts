@@ -29,10 +29,11 @@ test.describe("Admin rondes beheer", () => {
         timeout: 15000,
       });
 
-      // StatCards: Rondes, Ingediend, Uitnodigingen (exact: true om strict mode te voorkomen)
-      await expect(page.getByText("Rondes", { exact: true })).toBeVisible();
-      await expect(page.getByText("Ingediend", { exact: true })).toBeVisible();
-      await expect(page.getByText("Uitnodigingen", { exact: true })).toBeVisible();
+      // StatCards: Rondes, Ingediend, Uitnodigingen — scoop op main om BottomNav te vermijden
+      const main = page.locator("main");
+      await expect(main.getByText("Rondes", { exact: true })).toBeVisible();
+      await expect(main.getByText("Ingediend", { exact: true })).toBeVisible();
+      await expect(main.getByText("Uitnodigingen", { exact: true })).toBeVisible();
     });
 
     test("beheer link is zichtbaar en wijst naar /beheer/evaluatie", async ({ page }) => {

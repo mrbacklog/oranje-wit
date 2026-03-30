@@ -436,9 +436,12 @@ test.describe("Spelerskaart weergave", () => {
         timeout: 15000,
       });
 
-      // Speler-telling of lege state
+      // Speler-telling of lege state — first() voor als er meerdere matches zijn
       await expect(
-        page.getByText(/\d+ spelers? gescout/).or(page.getByText("Nog geen kaarten"))
+        page
+          .getByText(/\d+ spelers? gescout/)
+          .or(page.getByText("Nog geen kaarten"))
+          .first()
       ).toBeVisible();
     });
 
@@ -893,10 +896,12 @@ test.describe("USS v2 berekening", () => {
       });
 
       // Als er kaarten zijn, worden ze in een grid getoond.
-      // Elke kaart heeft een overall rating en stats.
       // Als er geen kaarten zijn, wordt de lege state getoond.
       await expect(
-        page.getByText(/\d+ spelers? gescout/).or(page.getByText("Nog geen kaarten"))
+        page
+          .getByText(/\d+ spelers? gescout/)
+          .or(page.getByText("Nog geen kaarten"))
+          .first()
       ).toBeVisible();
     });
   });
@@ -905,15 +910,15 @@ test.describe("USS v2 berekening", () => {
 // ─── Cross-cutting: Navigatie en auth ───────────────────────────────────
 
 test.describe("Scouting navigatie en auth", () => {
-  test("navigatie bevat Dashboard, Verzoeken, Zoeken, Profiel", async ({ page }) => {
+  test("navigatie bevat Overzicht, Opdrachten, Zoeken, Profiel", async ({ page }) => {
     await page.goto("/scouting/zoek");
 
-    // Desktop: sidebar navigatie (md:block), labels: Dashboard i.p.v. Home
+    // BottomNav met manifest-labels
     const nav = page.getByRole("navigation");
     await expect(nav).toBeVisible({ timeout: 10000 });
 
-    await expect(nav.getByText("Dashboard")).toBeVisible();
-    await expect(nav.getByText("Verzoeken")).toBeVisible();
+    await expect(nav.getByText("Overzicht")).toBeVisible();
+    await expect(nav.getByText("Opdrachten")).toBeVisible();
     await expect(nav.getByText("Zoeken", { exact: true })).toBeVisible();
     await expect(nav.getByText("Profiel")).toBeVisible();
   });

@@ -32,7 +32,7 @@ const TYPE_LABELS: Record<string, string> = {
 };
 
 export function SignaleringCard({ signalering }: { signalering: SignaleringRow }) {
-  const ernst = signalering.ernst as "kritiek" | "aandacht" | "opkoers";
+  const ernst = signalering.ernst;
   const link = getLinkVoorSignaal(signalering);
 
   const borderColor =

@@ -45,9 +45,8 @@ test.describe("Beheer — Sportlink Sync", () => {
   test("stats-kaarten zijn zichtbaar", async ({ page }) => {
     await page.goto("/beheer/teams/sync", GOTO_OPTS);
 
-    // Stat-labels (exact match)
-    await expect(page.locator(".stat-label").filter({ hasText: /Spelers/ })).toBeVisible();
-    await expect(page.locator(".stat-label").filter({ hasText: /^Teams/ })).toBeVisible();
+    // Stat-labels
+    await expect(page.locator(".stat-label").filter({ hasText: /Leden/ })).toBeVisible();
     await expect(page.locator(".stat-label").filter({ hasText: /Laatste sync/ })).toBeVisible();
   });
 });

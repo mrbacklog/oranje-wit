@@ -1,19 +1,16 @@
 import { test, expect } from "../fixtures/base";
 
 test.describe("Navigatie", () => {
-  test("zijbalk bevat alle pagina-links", async ({ page }) => {
+  test("BottomNav bevat alle navigatie-links", async ({ page }) => {
     test.setTimeout(60000);
     await page.goto("/monitor", { timeout: 45000 });
 
-    // Op desktop is er een zijbalk (nav element), op mobiel een hamburger menu
+    // BottomNav is altijd zichtbaar met 4 manifest-items + Apps knop
     const nav = page.getByRole("navigation");
-    await expect(nav.getByRole("link", { name: "Dashboard" })).toBeVisible({ timeout: 15000 });
+    await expect(nav.getByRole("link", { name: "Overzicht" })).toBeVisible({ timeout: 15000 });
     await expect(nav.getByRole("link", { name: "Teams" })).toBeVisible();
-    await expect(nav.getByRole("link", { name: "Spelers" })).toBeVisible();
-    await expect(nav.getByRole("link", { name: "Samenstelling" })).toBeVisible();
-    await expect(nav.getByRole("link", { name: "Ledendynamiek" })).toBeVisible();
-    await expect(nav.getByRole("link", { name: "Jeugdpijplijn" })).toBeVisible();
-    await expect(nav.getByRole("link", { name: "Signalering" })).toBeVisible();
+    await expect(nav.getByRole("link", { name: "Analyse" })).toBeVisible();
+    await expect(nav.getByRole("link", { name: "Signalen" })).toBeVisible();
   });
 
   test("navigatie naar elke pagina werkt", async ({ page }) => {

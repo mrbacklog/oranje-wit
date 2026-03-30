@@ -15,8 +15,8 @@ test.describe("Werkbord", () => {
     });
   });
 
-  test("navigatie via sidebar naar werkbord", async ({ page }) => {
-    // Start op de scenarios pagina (die geen werkitems laadt)
+  test("navigatie via BottomNav naar werkbord", async ({ page }) => {
+    // Start op de scenarios pagina
     await page.goto("/ti-studio/scenarios", { timeout: 15000 });
     await expect(page).not.toHaveURL(/\/login/);
 
@@ -25,18 +25,10 @@ test.describe("Werkbord", () => {
       timeout: 15000,
     });
 
-    // Op desktop is de sidebar zichtbaar; op mobile moet het hamburger menu geopend worden
-    const werkbordLink = page.getByRole("link", { name: /werkbord/i });
-    const isZichtbaar = await werkbordLink.isVisible().catch(() => false);
-
-    if (!isZichtbaar) {
-      // Open het hamburger menu (mobile layout)
-      const menuKnop = page.getByRole("button", { name: /open menu/i });
-      if (await menuKnop.isVisible().catch(() => false)) {
-        await menuKnop.click();
-        await expect(werkbordLink).toBeVisible({ timeout: 5000 });
-      }
-    }
+    // BottomNav is altijd zichtbaar met manifest-items
+    const nav = page.getByRole("navigation");
+    const werkbordLink = nav.getByRole("link", { name: /werkbord/i });
+    await expect(werkbordLink).toBeVisible({ timeout: 5000 });
 
     // Klik op de Werkbord link
     await werkbordLink.click();

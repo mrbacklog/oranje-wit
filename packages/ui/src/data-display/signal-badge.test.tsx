@@ -27,6 +27,18 @@ describe("SignalBadge", () => {
     expect(badge.style.backgroundColor).toContain("34, 197, 94");
   });
 
+  it("past op_koers styling toe via inline styles", () => {
+    render(<SignalBadge ernst="op_koers">Op koers</SignalBadge>);
+    const badge = screen.getByText("Op koers");
+    expect(badge.style.backgroundColor).toContain("34, 197, 94");
+  });
+
+  it("onbekende ernst valt terug op grijze styling", () => {
+    render(<SignalBadge ernst="onbekend">Fallback</SignalBadge>);
+    const badge = screen.getByText("Fallback");
+    expect(badge.style.backgroundColor).toContain("156, 163, 175");
+  });
+
   it("rendert als een span element", () => {
     render(<SignalBadge ernst="opkoers">Test</SignalBadge>);
     const badge = screen.getByText("Test");

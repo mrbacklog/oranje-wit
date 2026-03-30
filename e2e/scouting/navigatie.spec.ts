@@ -14,23 +14,22 @@ test.describe("Navigatie", () => {
   test("navigatie is zichtbaar met 4 links", async ({ page }) => {
     await page.goto("/scouting/zoek");
 
-    // Desktop: sidebar navigatie (md:block), Mobile: bottom nav (md:hidden)
-    // Playwright draait op Desktop Chrome -> sidebar is zichtbaar
+    // BottomNav is altijd zichtbaar met manifest-labels
     const nav = page.getByRole("navigation");
     await expect(nav).toBeVisible();
 
-    // Sidebar labels: Dashboard, Verzoeken, Zoeken, Profiel
-    await expect(nav.getByText("Dashboard")).toBeVisible();
-    await expect(nav.getByText("Verzoeken")).toBeVisible();
+    // Manifest labels: Overzicht, Opdrachten, Zoeken, Profiel
+    await expect(nav.getByText("Overzicht")).toBeVisible();
+    await expect(nav.getByText("Opdrachten")).toBeVisible();
     await expect(nav.getByText("Zoeken", { exact: true })).toBeVisible();
     await expect(nav.getByText("Profiel")).toBeVisible();
   });
 
-  test("Dashboard link navigeert naar dashboard", async ({ page }) => {
+  test("Overzicht link navigeert naar dashboard", async ({ page }) => {
     await page.goto("/scouting/zoek");
 
     const nav = page.getByRole("navigation");
-    await nav.getByText("Dashboard").click();
+    await nav.getByText("Overzicht").click();
 
     // Kan redirecten naar /scouting/zoek of dashboard op /scouting tonen
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible({
@@ -52,11 +51,11 @@ test.describe("Navigatie", () => {
     });
   });
 
-  test("Verzoeken link navigeert naar verzoekenpagina", async ({ page }) => {
+  test("Opdrachten link navigeert naar verzoekenpagina", async ({ page }) => {
     await page.goto("/scouting/zoek");
 
     const nav = page.getByRole("navigation");
-    await nav.getByText("Verzoeken").click();
+    await nav.getByText("Opdrachten").click();
 
     // Verzoeken pagina laadt (heading of spinner-overgang)
     await expect(page.getByRole("heading", { name: "Verzoeken" })).toBeVisible({

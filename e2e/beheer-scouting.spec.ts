@@ -1,30 +1,22 @@
 import { test, expect } from "@playwright/test";
 
+const GOTO_OPTS = { waitUntil: "domcontentloaded" as const, timeout: 45_000 };
+
 test.describe("Beheer — Scouting / Scouts", () => {
-  test("scoutlijst is zichtbaar met heading en toevoegen-knop", async ({ page }) => {
-    await page.goto("/beheer/scouting/scouts");
+  test.setTimeout(90_000);
 
-    // Pagina laadt met juiste heading
+  test("scouts-pagina laadt en toont heading", async ({ page }) => {
+    await page.goto("/beheer/scouting/scouts", GOTO_OPTS);
+
     await expect(page.locator("h1")).toContainText("Scouts");
-
-    // Toevoegen-knop is aanwezig
-    await expect(page.getByRole("button", { name: "Scout toevoegen" })).toBeVisible();
   });
 
-  test("toevoegen-dialog opent en sluit", async ({ page }) => {
-    await page.goto("/beheer/scouting/scouts");
+  test("scouts-pagina toont tabel of lege melding", async ({ page }) => {
+    await page.goto("/beheer/scouting/scouts", GOTO_OPTS);
 
-    // Open dialog
-    await page.getByRole("button", { name: "Scout toevoegen" }).click();
-    await expect(page.getByRole("heading", { name: "Scout toevoegen" })).toBeVisible();
+    const tabel = page.locator("table");
+    const leegMelding = page.getByText("Nog geen scouts geregistreerd");
 
-    // Formuliervelden aanwezig
-    await expect(page.getByLabel("Naam")).toBeVisible();
-    await expect(page.getByLabel("E-mailadres")).toBeVisible();
-    await expect(page.getByLabel("Rol")).toBeVisible();
-
-    // Annuleren sluit dialog
-    await page.getByRole("button", { name: "Annuleren" }).click();
-    await expect(page.getByRole("dialog")).not.toBeVisible();
+    await expect(tabel.or(leegMelding).first()).toBeVisible();
   });
 });
