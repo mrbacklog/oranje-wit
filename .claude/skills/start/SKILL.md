@@ -2,302 +2,132 @@
 name: start
 description: Projectcontext laden voor agents en gebruikers. Geeft basiskennis (structuur, DB, Oranje Draad) plus domein-specifieke context.
 user-invocable: true
-allowed-tools: Read, Bash, Glob
+allowed-tools: Read, Bash, Glob, Agent
 ---
 
-# Start — Projectcontext voor agents en gebruikers
+# Start — Projectcontext laden
 
-Deze skill laadt de volledige projectcontext. Agents MOETEN alle stappen doorlopen voordat ze aan hun eigenlijke taak beginnen. Gebruikers kunnen `/start` aanroepen voor een volledig overzicht.
+Agents MOETEN alle stappen doorlopen voordat ze aan hun taak beginnen.
 
 ---
 
-## Stap 1: Basiscontext (lees dit)
+## Stap 1: Basiscontext
 
 ### Vereniging
 
-c.k.v. Oranje Wit is een korfbalvereniging uit **Dordrecht**, opgericht in 1926. In 2026 viert de club het 100-jarig jubileum.
+c.k.v. Oranje Wit — korfbalvereniging uit Dordrecht, opgericht 1926. Motto: "Een leven lang!"
 
-- **Adres**: Nieuwe Noordpolderweg 5, 3312 AD Dordrecht (Stadspolders)
-- **Website**: www.ckvoranjewit.nl
-- **Motto**: "Een leven lang!"
-- **Contact**: 078-6146836 / info@ckvoranjewit.nl
-
-### Communicatie
-
-- Schrijf altijd in het **Nederlands**
-- Gebruik een **informele, directe** toon — dit zijn vrijwilligers met weinig tijd
-- Schrijf de naam altijd als **"c.k.v. Oranje Wit"** (met punten, spatie)
-- **Privacy**: schrijf nooit BSN, geboortedatum of adresgegevens naar output
+- **Taal**: altijd Nederlands, informeel en direct
+- **Naam**: altijd "c.k.v. Oranje Wit" (met punten, spatie)
+- **Privacy**: nooit BSN, geboortedatum of adres naar output
 
 ### De Oranje Draad
-
-Het technisch beleid van c.k.v. Oranje Wit:
 
 ```
 PLEZIER + ONTWIKKELING + PRESTATIE → DUURZAAMHEID
 ```
 
-- **Plezier** — Altijd hoogste prioriteit. Niet onderhandelbaar. Elk kind moet met plezier sporten.
-- **Ontwikkeling** — Het echte doel. Spelers uitdagen op hun niveau. Doorstroom bieden.
-- **Prestatie** — Middel, nooit einddoel. Competitief zijn als het bijdraagt aan ontwikkeling.
-- **Duurzaamheid** — Het resultaat van de juiste balans. Meerjarenvisie, retentie boven korte-termijn succes.
+Details: `rules/oranje-draad.md` en `docs/kennis/tc-beleid.md`
 
-#### POP-ratio per leeftijdsgroep
+### Monorepo
 
-| Leeftijd | Plezier | Ontwikkeling | Prestatie |
-|---|---|---|---|
-| 5-7 (Blauw) | 70% | 25% | 5% |
-| 8-9 (Groen) | 55% | 35% | 10% |
-| 10-12 (Geel) | 40% | 40% | 20% |
-| 13-15 (Oranje/U15) | 30% | 40% | 30% |
-| 16-18 (Rood/U17/U19) | 25% | 35% | 40% |
-| Senioren wedstrijd | 20% | 25% | 55% |
-| Senioren breedte | 50% | 20% | 30% |
-
-#### Toetsingsvragen bij teamindeling
-
-1. Heeft elk team voldoende sociale cohesie? (Plezier)
-2. Worden spelers uitgedaagd op hun niveau? (Ontwikkeling)
-3. Zijn de selectieteams sterk genoeg om competitief te zijn? (Prestatie)
-4. Is deze indeling volhoudbaar met de beschikbare staf? (Duurzaamheid)
-5. Zijn er spelers met hoog retentierisico die extra aandacht nodig hebben?
-
-#### Seizoenscyclus
-
-- Juni: pre-season indeling delen
-- Augustus: nieuw seizoen start
-- Competities: veld_najaar, zaal, veld_voorjaar
-
-### Monorepo-structuur
+Eén Next.js 16 app (`apps/web/`) met route groups per domein:
 
 ```
-oranje-wit/
-├── apps/
-│   ├── web/              # Geconsolideerde app (Next.js 16, poort 3000, alle domeinen)
-│   │   └── src/app/
-│   │       ├── (monitor)/        # Route group: Verenigingsmonitor
-│   │       ├── (teamindeling)/   # Route group: Team-Indeling
-│   │       ├── (evaluatie)/      # Route group: Evaluatie
-│   │       ├── (scouting)/       # Route group: Scouting (mobile-first PWA)
-│   │       └── (beheer)/         # Route group: TC Beheer (9 domeinen)
-│   └── mcp/              # MCP servers (database, Railway)
-├── packages/
-│   ├── auth/             # @oranje-wit/auth — NextAuth v5 + Google OAuth
-│   ├── database/         # @oranje-wit/database — Prisma schema + client (source of truth)
-│   ├── types/            # @oranje-wit/types — Gedeelde TypeScript types
-│   └── ui/               # @oranje-wit/ui — Gedeelde React componenten
-├── .claude/
-│   ├── agents/           # Agent-definities (20 agents)
-│   └── skills/           # Skills (37 skills, flat structuur)
-├── rules/                # Domeinregels (8 bestanden, Single Source of Truth)
-├── scripts/              # Data-pipeline en import
-├── data/                 # Ledendata, seizoensdata, exports
-└── docs/                 # Documentatie, plannen, stafgegevens
+/monitor/        — Dashboards, signalering, retentie
+/teamindeling/   — Blauwdruk, scenario's, drag & drop (mobile)
+/ti-studio/      — Team-Indeling desktop workspace (light)
+/evaluatie/      — Rondes, invullen, zelfevaluatie
+/scouting/       — Verzoeken, rapporten, kaarten
+/beheer/         — 9 TC-domeinen, gebruikersbeheer
 ```
 
-- **Workspace**: pnpm workspaces
-- **Dev**: `pnpm dev` (start de geconsolideerde app op poort 3000)
-- **Build**: `pnpm build`
-- **Database**: `pnpm db:generate`, `pnpm db:migrate` (NOOIT `db:push`)
-- **Import**: `pnpm import` (monitor data), `pnpm import:evaluaties` (evaluaties)
-- **Tests**: `pnpm test` (unit), `pnpm test:e2e` (E2E)
+- **Workspace**: pnpm, `pnpm dev` start op poort 3000
+- **Database**: PostgreSQL + Prisma (`packages/database/`), `rel_code` is enige sleutel
+- **Auth**: Google OAuth (TC) + Smartlinks (overige gebruikers)
 
-### Database
+Alle details: `CLAUDE.md` (compact), `rules/` (domeinregels), `docs/kennis/` (domeinkennis)
 
-PostgreSQL op Railway (`shinkansen.proxy.rlwy.net:18957`, DB: `oranjewit`).
-Prisma is de source of truth: `packages/database/prisma/schema.prisma`.
+### Verdieping (lees wanneer relevant)
 
-**61 modellen in 8 groepen:**
-
-| Groep | Modellen |
+| Bron | Onderwerp |
 |---|---|
-| Competitie-data (2) | CompetitieSpeler, CompetitieRonde |
-| Monitor (12) | Lid, LidFoto, Seizoen, OWTeam, TeamAlias, TeamPeriode, Ledenverloop, CohortSeizoen, Signalering, Streefmodel, PoolStand, PoolStandRegel |
-| Team-Indeling (26) | User, Speler, Staf, StafToewijzing, Blauwdruk, BlauwdrukBesluit, BlauwdrukSpeler, StandaardVraag, Pin, Concept, Scenario, ScenarioSnapshot, Versie, Team, SelectieGroep, SelectieSpeler, SelectieStaf, TeamSpeler, TeamStaf, Evaluatie, LogEntry, Import, ReferentieTeam, Werkitem, Actiepunt, Mijlpaal |
-| Evaluatie (6) | EvaluatieRonde, Coordinator, CoordinatorTeam, EvaluatieUitnodiging, SpelerZelfEvaluatie, EmailTemplate |
-| Scouting (9) | ScoutingVerzoek, ScoutToewijzing, ScoutingRapport, Scout, TeamScoutingSessie, ScoutBadge, ScoutChallenge, ScoutingVergelijking, ScoutingVergelijkingPositie |
-| Jeugdontwikkeling (4) | RaamwerkVersie, Leeftijdsgroep, Pijler, OntwikkelItem |
-| Systeem (5) | Gebruiker, VerificatieToken, ToegangsToken, Activiteit, Aanmelding |
-| Speler-extensies (3) | FysiekProfiel, SpelerUSS, SpelersKaart |
-
-**Competitie-datamodel:**
-```
-CompetitieSpeler (primaire tabel: ~4933 records, 1 per speler × seizoen × competitie)
-  └── VIEW speler_seizoenen (afgeleid via DISTINCT ON rel_code+seizoen)
-```
-- Competitie-volgorde: veld_najaar → zaal → veld_voorjaar
-
-**rel_code is de enige sleutel voor spelers/leden (KRITIEK):**
-- `rel_code` (Sportlink relatienummer, bijv. `NJH39X4`) is de **enige stabiele identifier**
-- `Speler.id` = `rel_code` — TI-spelerrecord IS de rel_code
-- Gebruik **altijd** rel_code als lookup-sleutel, **nooit** naam-matching
-- Als een speler niet via rel_code gevonden wordt: meld dit als fout, los het niet stilzwijgend op
-
-**Lees/schrijf-verdeling:**
-- Monitor schrijft: leden, teams, verloop, cohorten, signalering, competitie_spelers
-- Monitor leest: alles
-- Team-Indeling schrijft: blauwdruk, concepten, scenario's, teams, selectiegroepen, pins, log, evaluaties, notities, actiepunten
-- Team-Indeling leest: leden, speler_seizoenen, competitie_spelers, cohort_seizoenen (retentie)
-- Evaluatie schrijft: evaluatierondes, coördinatoren, uitnodigingen, evaluaties, zelfevaluaties, email templates
-- Evaluatie leest: leden, competitie_spelers, teams, spelers, staf
-
-### Agent-hiërarchie
-
-```
-korfbal (hoofd monitor)
-├── spawns: data-analist, speler-scout, team-selector
-
-team-planner (hoofd TI) ← escalates-to: korfbal
-├── spawns: regel-checker, adviseur
-
-ontwikkelaar (dev) ← escalates-to: korfbal
-├── spawns: e2e-tester, devops
-
-devops (infra lead) ← escalates-to: ontwikkelaar
-├── spawns: deployment, e2e-tester
-
-e2e-tester ← escalates-to: ontwikkelaar
-deployment (infra) ← escalates-to: devops
-documentalist (docs) ← escalates-to: ontwikkelaar
-
-jeugd-architect (hoofd jeugdontwikkeling) ← escalates-to: korfbal
-├── spawns: sportwetenschap, mentaal-coach, communicatie
-
-ux-designer (hoofd UX) ← escalates-to: ontwikkelaar
-├── spawns: frontend, ontwikkelaar
-```
-
-### Rules
-
-Lees altijd: `rules/algemeen.md`. Lees extra rules op basis van je domein (zie Stap 2).
-
-| Bestand | Onderwerp |
-|---|---|
-| `rules/algemeen.md` | Taal, toon, naamgeving |
-| `rules/data.md` | Privacy, bestandsnaamgeving, drielagenmodel |
+| `rules/database.md` | 61 modellen, datamodel, rel_code, lees/schrijf |
+| `rules/agents.md` | Agents, fencing, hiërarchie, teams |
+| `rules/routes.md` | Route-tabel, navigatie, 4+1 patroon |
+| `rules/design-system.md` | Dark-first tokens, componenten, design gate |
 | `rules/knkv-regels.md` | KNKV Competitie 2.0 regels |
-| `rules/ow-voorkeuren.md` | OW teamgrootte-targets en genderregels |
-| `rules/oranje-draad.md` | Drie pijlers, POP-ratio's, seizoenscyclus |
-| `rules/score-model.md` | USS schaal, speler/team score formules |
-| `rules/beheer.md` | Ubiquitous language, 9 TC-domeinen |
-| `rules/design-system.md` | Dark-first tokens, design gate |
+| `rules/ow-voorkeuren.md` | OW teamvoorkeuren, indelingsfilosofie |
+| `rules/oranje-draad.md` | POP-ratio's, seizoenscyclus, toetsingsvragen |
+| `rules/score-model.md` | USS schaal, speler/team scores |
+| `rules/beheer.md` | 9 TC-domeinen, autorisatie, temporeel model |
+| `docs/kennis/tc-beleid.md` | TC-positie, mandaat, missie |
+| `docs/kennis/tc-organisatie.md` | TC-samenstelling, coördinatoren |
+| `docs/kennis/seizoenscyclus.md` | Jaarkalender, KNKV-deadlines, maandoverzicht |
+| `docs/kennis/knkv-competitie.md` | Competitieregels, speelgerechtigdheid |
 
 ---
 
-## Stap 2: Domeincontext (lees wat bij je past)
+## Stap 2: Domeincontext
 
-Bepaal je domein op basis van je `skills:`-lijst in `.claude/agents/{jouw-naam}.md`.
+Bepaal je domein op basis van je `skills:`-lijst in `.claude/agents/{jouw-naam}.md` en lees de bijbehorende rules en kennis-documenten.
 
-### Als je skills `monitor/*` bevatten → Monitor-domein
+- **Monitor** → `rules/data.md`
+- **Team-Indeling** → `rules/knkv-regels.md`, `rules/ow-voorkeuren.md`
+- **Evaluatie** → `rules/beheer.md`
+- **Meerdere domeinen** → lees alles dat relevant is
 
-**Lees ook:** `rules/data.md`
+---
 
-De Verenigingsmonitor is de route group `(monitor)` in `apps/web/` (route `/monitor/*`). Dashboards met data uit meerdere bronnen:
-
-**Data-pipeline:**
-- `competitie_spelers` (primaire tabel, data staat definitief in DB)
-- VIEW `speler_seizoenen` leidt hieruit af
-- `bereken-verloop.js` → ledenverloop → `bereken-cohorten.js` → cohort_seizoenen → `genereer-signalering.js` → signalering
-
-**Pipeline-scripts:** `scripts/js/` (JavaScript verloop-pipeline), draaien met `node -r dotenv/config`
-
-### Als je skills `team-indeling/*` bevatten → Team-Indeling-domein
-
-**Lees ook:** `rules/knkv-regels.md`, `rules/ow-voorkeuren.md`
-
-De Team-Indeling is de route group `(teamindeling)` in `apps/web/` (route `/teamindeling/*`) met:
-- **Stack**: React 19, Tailwind CSS 4, NextAuth v5 (EDITOR/VIEWER rollen), dnd-kit
-- **Workflow**: blauwdruk → concept → scenario → definitief
-- **Blauwdruk**: teamgrootte-targets, genderregels, leeftijdsgrenzen
-- **Concept**: drag-and-drop teamsamenstelling
-- **Scenario**: vergelijking van meerdere concepten
-- **Definitief**: besluitenlog, export
-
-### Als je skills `evaluatie/*` bevatten → Evaluatie-domein
-
-De Evaluatie-app is de route group `(evaluatie)` in `apps/web/` (route `/evaluatie/*`) met:
-- Spelerevaluaties en zelfevaluaties per seizoen
-- Uitnodigingen en email templates
-- Direct gekoppeld aan leden en teams via rel_code
-
-### Als je skills van meerdere domeinen bevatten → Lees alle relevante secties
-
-### Seizoenscontext (altijd laden)
-
-Ongeacht je domein, laad altijd de seizoenscontext:
+## Stap 3: Seizoenscontext
 
 1. Bepaal de huidige datum
 2. Lees `docs/kennis/seizoenscyclus.md` en zoek de huidige maand
-3. Noteer:
-   - Welke periode: Start (aug-sep), Draaiend (okt-feb), of Oogsten & Zaaien (mrt-jun)
-   - Welke TC-activiteiten nu spelen
-   - Eerstvolgende KNKV-deadline
-4. Gebruik deze context bij al je werk
-
-### Kennisdocumenten (altijd beschikbaar)
-
-Alle agents hebben toegang tot de kennislaag in `docs/kennis/`:
-
-| Bestand | Inhoud |
-|---------|--------|
-| `tc-beleid.md` | TC-positie, mandaat, missie, Oranje Draad |
-| `tc-organisatie.md` | TC-samenstelling, coördinatoren, communicatieketen |
-| `seizoenscyclus.md` | Jaarkalender, KNKV-deadlines, maandoverzicht TC-acties |
-| `knkv-competitie.md` | Competitieregels A/B-categorie, speelgerechtigdheid |
-| `referenties-jeugdontwikkeling.md` | Bronverwijzingen research |
-
-Lees de documenten die relevant zijn voor je huidige taak.
+3. Noteer: welke periode, welke TC-activiteiten, eerstvolgende KNKV-deadline
 
 ---
 
-## Stap 3: Dynamische context (voer uit)
+## Stap 4: Dynamische context
 
-Voer de volgende commando's uit om de huidige staat te kennen:
-
-1. `git log --oneline -5` — recente commits
-2. `git status --short` — uncommitted changes
-
-Noteer de huidige datum.
+```bash
+git log --oneline -5   # recente commits
+git status --short     # uncommitted changes
+```
 
 ---
 
-## Stap 4: Lees je eigen agent-bestand
+## Stap 5: Memory raadplegen
 
-Lees `.claude/agents/{jouw-naam}.md` voor je specifieke:
-- **triggers** — wanneer word je geactiveerd
-- **skills** — wat mag je gebruiken
-- **spawns** — wie kun je inzetten
-- **escalates-to** — naar wie escaleer je
+1. Lees `MEMORY.md` in de memory-directory
+2. Lees relevante memories op basis van domein en taak
+3. Sla tijdens het werk nieuwe inzichten op als memory
 
 ---
 
-## Stap 5: Memory raadplegen en bijwerken
+## Stap 6: Product Owner afstemming (verplicht)
 
-Agents MOETEN altijd memory raadplegen en bijwerken. Dit is niet optioneel.
+Na het laden van context, spawn **altijd** de `product-owner` agent voordat je aan het werk gaat.
 
-### Bij het starten:
-1. Lees `MEMORY.md` in de memory-directory (`~/.claude/projects/c--Users-antja-oranje-wit/memory/`)
-2. Lees relevante memory-bestanden op basis van je domein en de huidige taak
-3. Gebruik deze context om betere beslissingen te nemen
+De product-owner:
+1. **Analyseert de huidige stand** — git log, open werk, roadmap, seizoenscontext
+2. **Stelt prioriteiten voor** — wat heeft nu de meeste waarde
+3. **Toetst aan visie en strategie** — past dit bij de Oranje Draad
+4. **Formuleert prompts voor parallelle sessies** — de gebruiker werkt met meerdere Claude Code instances tegelijk. De PO schrijft concrete, afgebakende opdrachten zodat sessies onafhankelijk kunnen werken.
 
-### Tijdens het werk:
-- Als je iets leert dat nuttig is voor toekomstige gesprekken → sla het op als memory
-- TC-besluiten, spelersafspraken, verrassende bevindingen → `project`-memory
-- Correcties of bevestigingen van de gebruiker → `feedback`-memory
+```
+/start
+  → context laden (stap 1-5)
+  → spawn product-owner
+  → PO presenteert: stand van zaken + prioriteiten
+  → gebruiker kiest wat er gebouwd wordt
+  → PO schrijft prompts voor parallelle sessies
+  → gebruiker start de sessies
+```
 
-### Memory-types:
-| Type | Wanneer opslaan |
-|---|---|
-| `project` | TC-besluiten, seizoensconclusies, retentierisico's, deploy-issues |
-| `feedback` | Correcties van de gebruiker, bevestigde aanpak, voorkeuren |
-| `user` | Nieuwe inzichten over de gebruiker (rol, verantwoordelijkheden) |
-| `reference` | Pointers naar externe bronnen (Linear, Slack, Grafana) |
-
-### Formaat:
-Sla memories op als apart `.md` bestand met frontmatter (`name`, `description`, `type`) en voeg een regel toe aan `MEMORY.md`.
+Zonder PO-afstemming geen implementatie.
 
 ---
 
 ## Nu ben je klaar
 
-Je hebt nu volledige projectcontext en relevante memories. Ga aan de slag met je eigenlijke taak.
+Je hebt projectcontext, memories én PO-afstemming. Ga aan de slag.
