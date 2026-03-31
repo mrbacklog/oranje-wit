@@ -13,7 +13,7 @@ test.describe("Blauwdruk Mobile — Gezien-flow", () => {
     await expect(page.getByText("Spelers gezien")).toBeVisible();
 
     // Besluiten-kaart
-    await expect(page.getByText("Besluiten")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Besluiten" })).toBeVisible();
   });
 
   test("toont categorie-kaarten met voortgang", async ({ page }) => {

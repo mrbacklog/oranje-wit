@@ -189,9 +189,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   providers,
   callbacks: {
-    authorized({ auth }) {
-      return !!auth;
-    },
+    // GEEN globale authorized callback — auth-checks zitten in de layout.tsx
+    // bestanden per route group. Een globale guard blokkeert ook publieke
+    // routes zoals /login, /offline, /sw.js en /auth/*.
+    //
+    // authorized({ auth }) {
+    //   return !!auth;
+    // },
     async signIn({ user, profile, account }) {
       // Credentials providers (E2E, dev, smartlink, email-link, passkey) — altijd doorlaten (al gecheckt in authorize)
       if (
