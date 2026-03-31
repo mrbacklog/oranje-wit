@@ -68,7 +68,7 @@ test.describe("Shell-integriteit per domein", () => {
       await page.goto(domein.baseUrl, { timeout: 45000 });
 
       // BottomNav is de eerste <nav> — scope daar naartoe
-      const nav = page.getByRole("navigation").first();
+      const nav = page.getByRole("navigation", { name: "Hoofdnavigatie" });
       await expect(nav).toBeVisible({ timeout: 15000 });
 
       // Verifieer alle 4 navigatie-labels
@@ -99,7 +99,7 @@ test.describe("Cross-domain navigatie via AppSwitcher", () => {
       // Navigeer naar het brondomein
       await page.goto(route.vanUrl, { timeout: 45000 });
 
-      const nav = page.getByRole("navigation");
+      const nav = page.getByRole("navigation", { name: "Hoofdnavigatie" });
       await expect(nav).toBeVisible({ timeout: 15000 });
 
       // Open AppSwitcher via de "Apps" knop in de BottomNav
@@ -141,7 +141,7 @@ test.describe("BottomNav navigatie binnen domein", () => {
         const startUrl = item.href === "/monitor" ? "/monitor/teams" : "/monitor";
         await page.goto(startUrl, { timeout: 45000 });
 
-        const nav = page.getByRole("navigation");
+        const nav = page.getByRole("navigation", { name: "Hoofdnavigatie" });
         await expect(nav).toBeVisible({ timeout: 15000 });
 
         // Klik op het nav-item
@@ -170,7 +170,7 @@ test.describe("BottomNav navigatie binnen domein", () => {
         const startUrl = item.href === "/scouting" ? "/scouting/zoek" : "/scouting";
         await page.goto(startUrl, { timeout: 45000 });
 
-        const nav = page.getByRole("navigation");
+        const nav = page.getByRole("navigation", { name: "Hoofdnavigatie" });
         await expect(nav).toBeVisible({ timeout: 15000 });
 
         await nav.getByText(item.label, { exact: true }).click();
@@ -200,7 +200,7 @@ test.describe("BottomNav navigatie binnen domein", () => {
             : "/beheer/jaarplanning/kalender";
         await page.goto(startUrl, { timeout: 45000 });
 
-        const nav = page.getByRole("navigation");
+        const nav = page.getByRole("navigation", { name: "Hoofdnavigatie" });
         await expect(nav).toBeVisible({ timeout: 15000 });
 
         await nav.getByText(item.label, { exact: true }).click();
@@ -213,36 +213,93 @@ test.describe("BottomNav navigatie binnen domein", () => {
 });
 
 // ─── 4. Pills sub-navigatie ────────────────────────────────────
-// Pills-component bestaat maar wordt nog niet gerenderd op pagina's.
-// Deze test wordt geactiveerd zodra pills geïmplementeerd zijn.
+// ManifestPills rendert automatisch pills op basis van manifest + pathname.
+// Pills verschijnen als <nav aria-label="Sub-navigatie"> met Link-elementen.
 
 test.describe("Pills sub-navigatie", () => {
-  test.skip(true, "Pills worden nog niet gerenderd op pagina's");
-
-  test("Monitor/Analyse pills zijn zichtbaar en navigeren correct", async ({ page }) => {
-    test.setTimeout(120000);
-
-    await page.goto("/monitor/retentie", { timeout: 45000 });
-
-    // Pills staan in een <nav aria-label="Sub-navigatie">
+  // Helper: navigeer naar een pagina en check dat de juiste pills zichtbaar zijn
+  async function checkPills(
+    page: import("@playwright/test").Page,
+    url: string,
+    expectedLabels: string[]
+  ) {
+    await page.goto(url, { timeout: 45000 });
     const pillNav = page.getByRole("navigation", { name: "Sub-navigatie" });
     await expect(pillNav).toBeVisible({ timeout: 15000 });
-
-    const pills = [
-      { label: "Retentie", href: "/monitor/retentie" },
-      { label: "Samenstelling", href: "/monitor/samenstelling" },
-      { label: "Projecties", href: "/monitor/projecties" },
-    ];
-
-    for (const pill of pills) {
-      await expect(pillNav.getByRole("link", { name: pill.label })).toBeVisible({ timeout: 15000 });
+    for (const label of expectedLabels) {
+      await expect(pillNav.getByRole("link", { name: label })).toBeVisible({ timeout: 10000 });
     }
+  }
 
-    for (const pill of pills) {
-      await pillNav.getByRole("link", { name: pill.label }).click();
-      await page.waitForURL(`**${pill.href}**`, { timeout: 45000 });
-      expect(page.url()).toContain(pill.href);
-    }
+  test("Monitor/Analyse: pills Retentie, Samenstelling, Projecties", async ({ page }) => {
+    test.setTimeout(90000);
+    await checkPills(page, "/monitor/retentie", ["Retentie", "Samenstelling", "Projecties"]);
+
+    // Navigatie via pills werkt
+    const pillNav = page.getByRole("navigation", { name: "Sub-navigatie" });
+    await pillNav.getByRole("link", { name: "Samenstelling" }).click();
+    await page.waitForURL("**/monitor/samenstelling**", { timeout: 45000 });
+    await pillNav.getByRole("link", { name: "Projecties" }).click();
+    await page.waitForURL("**/monitor/projecties**", { timeout: 45000 });
+  });
+
+  test("Monitor/Overzicht: geen pills (sectie zonder pills)", async ({ page }) => {
+    test.setTimeout(60000);
+    await page.goto("/monitor", { timeout: 45000 });
+    await page.waitForLoadState("domcontentloaded");
+    await page.waitForTimeout(2000);
+    // Overzicht heeft geen pills — alleen de BottomNav <nav> is zichtbaar
+    const pillNav = page.getByRole("navigation", { name: "Sub-navigatie" });
+    await expect(pillNav).not.toBeVisible();
+  });
+
+  test("Scouting/Opdrachten: pills Openstaand, Afgerond", async ({ page }) => {
+    test.setTimeout(90000);
+    await checkPills(page, "/scouting/verzoeken", ["Openstaand", "Afgerond"]);
+  });
+
+  test("Beheer/Planning: pills Kalender, Mijlpalen, Trainingen, Wedstrijden", async ({ page }) => {
+    test.setTimeout(90000);
+    await checkPills(page, "/beheer/jaarplanning/kalender", [
+      "Kalender",
+      "Mijlpalen",
+      "Trainingen",
+      "Wedstrijden",
+    ]);
+  });
+
+  test("Beheer/Inrichting: pills Jeugd, Scouting, Evaluatie, Werving", async ({ page }) => {
+    test.setTimeout(90000);
+    await checkPills(page, "/beheer/jeugd/raamwerk", ["Jeugd", "Scouting", "Evaluatie", "Werving"]);
+  });
+
+  test("Beheer/Data: pills Teams, Sync, Import, Archief", async ({ page }) => {
+    test.setTimeout(90000);
+    await checkPills(page, "/beheer/teams", ["Teams", "Sync", "Import", "Archief"]);
+  });
+
+  test("Beleid/Verhaal: pills Een leven lang! t/m Binden", async ({ page }) => {
+    test.setTimeout(90000);
+    await checkPills(page, "/beleid", [
+      "Een leven lang!",
+      "Jeugd",
+      "Overgang",
+      "Senioren",
+      "Recreatief",
+      "Binden",
+    ]);
+  });
+
+  test.skip("Beleid/Doelgroepen: pills alle 5 doelgroepen", async ({ page }) => {
+    // Skip: /beleid/doelgroepen pagina bestaat nog niet
+    test.setTimeout(90000);
+    await checkPills(page, "/beleid/doelgroepen", [
+      "Kweekvijver",
+      "Opleidingshart",
+      "Korfbalplezier",
+      "Wedstrijdsport",
+      "Topsport",
+    ]);
   });
 });
 
@@ -265,8 +322,8 @@ test.describe("Skip routes: geen shell", () => {
       // Geef de pagina even tijd om te renderen
       await page.waitForTimeout(2000);
 
-      // Er mag geen <nav> element zijn (BottomNav)
-      const navCount = await page.getByRole("navigation").count();
+      // Er mag geen BottomNav zijn
+      const navCount = await page.getByRole("navigation", { name: "Hoofdnavigatie" }).count();
       expect(navCount).toBe(0);
 
       // Er mag ook geen floating AppSwitcher FAB zijn

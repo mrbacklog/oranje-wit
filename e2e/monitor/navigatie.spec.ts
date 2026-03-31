@@ -6,7 +6,7 @@ test.describe("Navigatie", () => {
     await page.goto("/monitor", { timeout: 45000 });
 
     // BottomNav is altijd zichtbaar met 4 manifest-items + Apps knop
-    const nav = page.getByRole("navigation");
+    const nav = page.getByRole("navigation", { name: "Hoofdnavigatie" });
     await expect(nav.getByRole("link", { name: "Overzicht" })).toBeVisible({ timeout: 15000 });
     await expect(nav.getByRole("link", { name: "Teams" })).toBeVisible();
     await expect(nav.getByRole("link", { name: "Analyse" })).toBeVisible();

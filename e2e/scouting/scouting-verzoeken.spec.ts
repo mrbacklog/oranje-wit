@@ -78,7 +78,7 @@ test.describe("Verzoeken-pagina", () => {
   test("bottom navigatie bevat Opdrachten link", async ({ page }) => {
     await page.goto("/scouting/verzoeken");
 
-    const nav = page.getByRole("navigation");
+    const nav = page.getByRole("navigation", { name: "Hoofdnavigatie" });
     await expect(nav).toBeVisible({ timeout: 10000 });
     await expect(nav.getByText("Opdrachten")).toBeVisible();
   });

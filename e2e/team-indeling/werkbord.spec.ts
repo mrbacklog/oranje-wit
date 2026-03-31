@@ -26,7 +26,7 @@ test.describe("Werkbord", () => {
     });
 
     // BottomNav is altijd zichtbaar met manifest-items
-    const nav = page.getByRole("navigation");
+    const nav = page.getByRole("navigation", { name: "Hoofdnavigatie" });
     const werkbordLink = nav.getByRole("link", { name: /werkbord/i });
     await expect(werkbordLink).toBeVisible({ timeout: 5000 });
 

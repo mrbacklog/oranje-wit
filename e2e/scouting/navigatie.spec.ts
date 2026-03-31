@@ -15,7 +15,7 @@ test.describe("Navigatie", () => {
     await page.goto("/scouting/zoek");
 
     // BottomNav is altijd zichtbaar met manifest-labels
-    const nav = page.getByRole("navigation");
+    const nav = page.getByRole("navigation", { name: "Hoofdnavigatie" });
     await expect(nav).toBeVisible();
 
     // Manifest labels: Overzicht, Opdrachten, Zoeken, Profiel
@@ -28,7 +28,7 @@ test.describe("Navigatie", () => {
   test("Overzicht link navigeert naar dashboard", async ({ page }) => {
     await page.goto("/scouting/zoek");
 
-    const nav = page.getByRole("navigation");
+    const nav = page.getByRole("navigation", { name: "Hoofdnavigatie" });
     await nav.getByText("Overzicht").click();
 
     // Kan redirecten naar /scouting/zoek of dashboard op /scouting tonen
@@ -43,7 +43,7 @@ test.describe("Navigatie", () => {
     // Wacht tot dashboard geladen is
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible({ timeout: 15000 });
 
-    const nav = page.getByRole("navigation");
+    const nav = page.getByRole("navigation", { name: "Hoofdnavigatie" });
     await nav.getByText("Zoeken", { exact: true }).click();
 
     await expect(page.getByRole("heading", { name: "Speler zoeken" })).toBeVisible({
@@ -54,7 +54,7 @@ test.describe("Navigatie", () => {
   test("Opdrachten link navigeert naar verzoekenpagina", async ({ page }) => {
     await page.goto("/scouting/zoek");
 
-    const nav = page.getByRole("navigation");
+    const nav = page.getByRole("navigation", { name: "Hoofdnavigatie" });
     await nav.getByText("Opdrachten").click();
 
     // Verzoeken pagina laadt (heading of spinner-overgang)
@@ -66,7 +66,7 @@ test.describe("Navigatie", () => {
   test("Profiel link navigeert naar profielpagina", async ({ page }) => {
     await page.goto("/scouting/zoek");
 
-    const nav = page.getByRole("navigation");
+    const nav = page.getByRole("navigation", { name: "Hoofdnavigatie" });
     await nav.getByText("Profiel").click();
 
     // Profiel laadt (heading of foutmelding)

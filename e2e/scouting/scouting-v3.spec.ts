@@ -926,7 +926,7 @@ test.describe("Scouting navigatie en auth", () => {
     await page.goto("/scouting/zoek");
 
     // BottomNav met manifest-labels
-    const nav = page.getByRole("navigation");
+    const nav = page.getByRole("navigation", { name: "Hoofdnavigatie" });
     await expect(nav).toBeVisible({ timeout: 10000 });
 
     await expect(nav.getByText("Overzicht")).toBeVisible();
