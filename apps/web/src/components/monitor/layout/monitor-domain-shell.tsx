@@ -9,7 +9,12 @@ const bottomNavItems = resolveBottomNav(MONITOR);
 // ─── MonitorDomainShell ──────────────────────────────────────
 export function MonitorDomainShell({ children }: { children: ReactNode }) {
   return (
-    <DomainShell domain="monitor" bottomNav={bottomNavItems} skipRoutes={MONITOR.skipRoutes}>
+    <DomainShell
+      domain="monitor"
+      bottomNav={bottomNavItems}
+      skipRoutes={MONITOR.skipRoutes}
+      manifest={MONITOR}
+    >
       {children}
     </DomainShell>
   );

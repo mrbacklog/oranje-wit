@@ -27,6 +27,7 @@ export function MobileShell({ children }: MobileShellProps) {
       bottomNav={bottomNavItems}
       user={user}
       onSignOut={() => signOut()}
+      manifest={TEAM_INDELING_MOBILE}
     >
       {children}
     </DomainShell>

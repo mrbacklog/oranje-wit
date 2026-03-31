@@ -9,7 +9,7 @@ const bottomNavItems = resolveBottomNav(SCOUTING);
 // ─── ScoutingDomainShell ──────────────────────────────────────
 export function ScoutingDomainShell({ children }: { children: ReactNode }) {
   return (
-    <DomainShell domain="scouting" bottomNav={bottomNavItems}>
+    <DomainShell domain="scouting" bottomNav={bottomNavItems} manifest={SCOUTING}>
       {children}
     </DomainShell>
   );

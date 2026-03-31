@@ -13,7 +13,12 @@ const bottomNavItems = resolveBottomNav(EVALUATIE);
 // zien de volledige BottomNav.
 export function EvaluatieDomainShell({ children }: { children: ReactNode }) {
   return (
-    <DomainShell domain="evaluatie" bottomNav={bottomNavItems} skipRoutes={EVALUATIE.skipRoutes}>
+    <DomainShell
+      domain="evaluatie"
+      bottomNav={bottomNavItems}
+      skipRoutes={EVALUATIE.skipRoutes}
+      manifest={EVALUATIE}
+    >
       {children}
     </DomainShell>
   );

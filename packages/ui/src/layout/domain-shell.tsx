@@ -11,6 +11,8 @@ import { AppSwitcher, type AppSwitcherProfile } from "../navigation/app-switcher
 import { APP_META } from "../navigation/app-icons";
 import type { AppId } from "../navigation/icons/types";
 import { BottomNavShell, FloatingAppSwitcherFab } from "../navigation/bottom-nav-shell";
+import { ManifestPills } from "../navigation/manifest-pills";
+import type { AppManifest } from "../navigation/manifest";
 import { overlayBackdrop, drawerSlide } from "../motion/variants";
 
 // ─── Public types ─────────────────────────────────────────────
@@ -58,6 +60,8 @@ export interface DomainShellProps {
   onSignOut?: () => void;
   /** Optionele banner boven de content (bijv. maintenance melding) */
   banner?: ReactNode;
+  /** App manifest — als opgegeven worden pills automatisch getoond */
+  manifest?: AppManifest;
   children: ReactNode;
 }
 
@@ -115,6 +119,7 @@ export function DomainShell({
   user,
   onSignOut,
   banner,
+  manifest,
   children,
 }: DomainShellProps) {
   const pathname = usePathname();
@@ -211,7 +216,10 @@ export function DomainShell({
 
         {banner}
 
-        <main className="flex-1">{children}</main>
+        <main className="flex-1">
+          {manifest && <ManifestPills manifest={manifest} />}
+          {children}
+        </main>
 
         {/* Floating AppSwitcher FAB op mobile als er geen BottomNav is */}
         <div className="md:hidden">
@@ -355,6 +363,7 @@ export function DomainShell({
               : undefined,
           }}
         >
+          {manifest && <ManifestPills manifest={manifest} />}
           {children}
         </main>
       </div>

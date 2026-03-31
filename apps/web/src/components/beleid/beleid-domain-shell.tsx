@@ -9,7 +9,12 @@ const bottomNavItems = resolveBottomNav(BELEID);
 // ─── BeleidDomainShell ───────────────────────────────────────
 export function BeleidDomainShell({ children }: { children: ReactNode }) {
   return (
-    <DomainShell domain="beleid" bottomNav={bottomNavItems} skipRoutes={BELEID.skipRoutes}>
+    <DomainShell
+      domain="beleid"
+      bottomNav={bottomNavItems}
+      skipRoutes={BELEID.skipRoutes}
+      manifest={BELEID}
+    >
       {children}
     </DomainShell>
   );

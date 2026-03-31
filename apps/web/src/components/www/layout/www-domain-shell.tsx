@@ -9,7 +9,7 @@ const bottomNavItems = resolveBottomNav(WWW);
 // ─── WwwDomainShell ──────────────────────────────────────────
 export function WwwDomainShell({ children }: { children: ReactNode }) {
   return (
-    <DomainShell domain="www" bottomNav={bottomNavItems} skipRoutes={WWW.skipRoutes}>
+    <DomainShell domain="www" bottomNav={bottomNavItems} skipRoutes={WWW.skipRoutes} manifest={WWW}>
       {children}
     </DomainShell>
   );

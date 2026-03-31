@@ -19,5 +19,7 @@ export type { TopBarProps } from "./top-bar";
 export { Pills } from "./pills";
 export type { PillItem, PillsProps } from "./pills";
 
+export { ManifestPills } from "./manifest-pills";
+
 export { AppSwitcher } from "./app-switcher";
 export type { AppSwitcherProps, AppSwitcherProfile, AppInfo } from "./app-switcher";

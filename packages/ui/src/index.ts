@@ -91,6 +91,7 @@ export { AppSwitcher } from "./navigation/app-switcher";
 export type { AppSwitcherProps, AppSwitcherProfile, AppInfo } from "./navigation/app-switcher";
 export { Pills } from "./navigation/pills";
 export type { PillItem, PillsProps } from "./navigation/pills";
+export { ManifestPills } from "./navigation/manifest-pills";
 export { BottomNavShell, FloatingAppSwitcherFab } from "./navigation/bottom-nav-shell";
 
 // ─── Navigation — manifest ───────────────────────────────────────

@@ -22,6 +22,7 @@ export function BeheerDomainShell({ children }: { children: ReactNode }) {
       user={user}
       onSignOut={() => signOut()}
       skipRoutes={BEHEER.skipRoutes}
+      manifest={BEHEER}
     >
       {children}
     </DomainShell>

@@ -43,6 +43,7 @@ export function TIDomainShell({ children }: { children: ReactNode }) {
       user={user}
       onSignOut={() => signOut()}
       banner={banner}
+      manifest={TEAM_INDELING}
     >
       {children}
     </DomainShell>

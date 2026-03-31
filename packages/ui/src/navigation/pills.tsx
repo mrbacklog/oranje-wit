@@ -16,6 +16,8 @@ export interface PillsProps {
   items: PillItem[];
   /** Domein-accent kleur voor de actieve pill (bijv. "#22c55e") */
   accentColor?: string;
+  /** Unieke key voor layoutId animatie (voorkomt conflicten tussen secties) */
+  layoutKey?: string;
 }
 
 // ─── Helpers ────────────────────────────────────────────────────
@@ -43,7 +45,11 @@ function isPillActive(pillHref: string, pathname: string): boolean {
 
 // ─── Component ──────────────────────────────────────────────────
 
-export function Pills({ items, accentColor = "var(--ow-oranje-500)" }: PillsProps) {
+export function Pills({
+  items,
+  accentColor = "var(--ow-oranje-500)",
+  layoutKey = "pills",
+}: PillsProps) {
   const pathname = usePathname();
 
   // Bepaal welke pill actief is — eerste match wint
@@ -78,7 +84,7 @@ export function Pills({ items, accentColor = "var(--ow-oranje-500)" }: PillsProp
               {/* Actieve underline indicator met layoutId voor smooth animatie */}
               {isActive && (
                 <motion.span
-                  layoutId="pills-active-underline"
+                  layoutId={`${layoutKey}-active-underline`}
                   className="absolute inset-x-0 bottom-0 h-0.5 rounded-full"
                   style={{ backgroundColor: accentColor }}
                   transition={easeFast}

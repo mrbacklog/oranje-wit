@@ -195,7 +195,6 @@ export const EVALUATIE: AppManifest = {
   description: "Spelerevaluaties en zelfevaluaties",
   baseUrl: "/evaluatie",
   accent: APP_ACCENTS.evaluatie,
-  minimal: true,
   sections: [
     {
       nav: { label: "Overzicht", href: "/evaluatie", icon: "ListIcon" },

@@ -28,6 +28,7 @@ export function BottomNav({ items, children }: BottomNavProps) {
         borderColor: "var(--border-default)",
         paddingBottom: "env(safe-area-inset-bottom, 0px)",
       }}
+      aria-label="Hoofdnavigatie"
     >
       <div className="mx-auto flex max-w-lg items-center justify-around">
         {items.map((item) => {
