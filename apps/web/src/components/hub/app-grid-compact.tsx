@@ -96,7 +96,7 @@ export function AppGridCompact({ isTC, isScout, doelgroepen, userName }: AppGrid
           <a
             key={app.naam}
             href={app.route}
-            className={`animate-fade-in flex flex-col items-center gap-2 rounded-2xl p-3 text-center transition-transform hover:scale-[1.02] active:scale-[0.98] ${
+            className={`app-tile animate-fade-in flex flex-col items-center gap-2 rounded-2xl p-3 text-center transition-transform hover:scale-[1.02] active:scale-[0.98] ${
               i < 3 ? `animate-fade-in-delay-${i + 7}` : ""
             }`}
             style={{
