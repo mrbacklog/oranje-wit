@@ -24,3 +24,4 @@ export * from "./clearance";
 export * from "./raamwerk-contract";
 export * from "./seizoen-contract";
 export { logger } from "./logger";
+export { validateEnv, type EnvVars } from "./env";

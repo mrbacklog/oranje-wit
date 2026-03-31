@@ -11,6 +11,9 @@
 export async function register() {
   // Alleen op de server (niet in Edge middleware)
   if (typeof window === "undefined" && process.env.NEXT_RUNTIME !== "edge") {
+    const { validateEnv } = await import("@oranje-wit/types");
+    validateEnv();
+
     const { setDbLookup } = await import("@oranje-wit/auth/allowlist");
     const { setPrismaClient } = await import("@oranje-wit/auth/tokens");
     const { setPasskeyDb } = await import("@oranje-wit/auth/passkey");

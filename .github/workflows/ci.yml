@@ -168,6 +168,8 @@ jobs:
       (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+
       - name: Deploy web
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
@@ -178,3 +180,43 @@ jobs:
             -H "Authorization: Bearer $RAILWAY_TOKEN" \
             -H "Content-Type: application/json" \
             -d "{\"query\":\"mutation { serviceInstanceDeploy(environmentId: \\\"$ENV_ID\\\", serviceId: \\\"$SVC_ID\\\", latestCommit: true) }\"}"
+
+      - name: Verify deployment health
+        run: |
+          echo "Wacht 30s op Railway build..."
+          sleep 30
+
+          HEALTH_URL="https://www.ckvoranjewit.app/api/health"
+          MAX_ATTEMPTS=20
+          INTERVAL=15
+
+          for i in $(seq 1 $MAX_ATTEMPTS); do
+            echo "Health check poging $i/$MAX_ATTEMPTS..."
+            RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" "$HEALTH_URL" 2>/dev/null || echo "000")
+
+            if [ "$RESPONSE" = "200" ]; then
+              echo "Deployment gezond! HTTP $RESPONSE"
+              BODY=$(curl -s "$HEALTH_URL")
+              echo "$BODY"
+              exit 0
+            fi
+
+            echo "HTTP $RESPONSE — wacht ${INTERVAL}s..."
+            sleep $INTERVAL
+          done
+
+          echo "FOUT: Deployment niet gezond na $((MAX_ATTEMPTS * INTERVAL + 30))s"
+          echo "Laatste response: HTTP $RESPONSE"
+          curl -s "$HEALTH_URL" || true
+          exit 1
+
+      - name: Deploy Cloudflare Worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "CLOUDFLARE_API_TOKEN niet geconfigureerd, skip Worker deploy"
+            exit 0
+          fi
+          npx wrangler deploy
+        working-directory: cloudflare/railway-proxy

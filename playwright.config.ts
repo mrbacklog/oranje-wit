@@ -5,7 +5,7 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  workers: process.env.CI ? 2 : undefined,
   reporter: process.env.CI ? "github" : "html",
   use: {
     trace: "on-first-retry",
@@ -37,10 +37,12 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "pnpm dev:web",
+    command: process.env.CI
+      ? "pnpm --filter @oranje-wit/web build && pnpm --filter @oranje-wit/web start"
+      : "pnpm dev:web",
     port: 3000,
     reuseExistingServer: !process.env.CI,
-    timeout: 120000,
+    timeout: process.env.CI ? 180000 : 120000,
     env: { E2E_TEST: "true" },
   },
 });
