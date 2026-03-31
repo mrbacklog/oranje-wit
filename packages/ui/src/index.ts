@@ -49,7 +49,7 @@ export { Tooltip } from "./primitives/tooltip";
 export { InfoDrawer } from "./feedback/info-drawer";
 export { InfoButton } from "./feedback/info-button";
 export { ConfirmDialog } from "./feedback/confirm-dialog";
-export { Toast } from "./feedback/toast";
+export { ToastProvider, useToast } from "./feedback/toast";
 export { BottomSheet } from "./feedback/bottom-sheet";
 
 // ─── Overlay ─────────────────────────────────────────────────────
@@ -72,7 +72,7 @@ export { WwwIcon } from "./navigation/icons/www-icon";
 
 // ─── Navigation — components ─────────────────────────────────────
 export { BottomNav } from "./navigation/bottom-nav";
-export type { BottomNavProps } from "./navigation/bottom-nav";
+export type { BottomNavProps, NavItem as BottomNavItem } from "./navigation/bottom-nav";
 export {
   HomeIcon,
   SearchIcon,

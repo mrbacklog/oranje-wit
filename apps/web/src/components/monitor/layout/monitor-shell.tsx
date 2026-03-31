@@ -6,7 +6,7 @@ import {
   Sidebar,
   type SidebarConfig,
   BottomNav,
-  type NavItem,
+  type BottomNavItem,
   HomeIcon,
   PeopleIcon,
   ChartIcon,
@@ -31,7 +31,7 @@ function AlertIcon({ active }: { active: boolean }) {
 }
 
 // ─── BottomNav configuratie (4 items + Apps) ─────────────────
-const bottomNavItems: NavItem[] = [
+const bottomNavItems: BottomNavItem[] = [
   { href: "/monitor", label: "Home", icon: HomeIcon },
   { href: "/monitor/teams", label: "Teams", icon: PeopleIcon },
   { href: "/monitor/retentie", label: "Analyse", icon: ChartIcon },
