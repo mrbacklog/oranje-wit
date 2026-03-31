@@ -10,7 +10,7 @@ paths:
 
 | Route | Domein | Was |
 |---|---|---|
-| `/` | Portaal (app-launcher) | portaal.ckvoranjewit.app |
+| `/` | Mijn Oranje Wit (hub, taken, nieuws, profiel) | portaal.ckvoranjewit.app |
 | `/monitor/*` | Verenigingsmonitor | monitor.ckvoranjewit.app |
 | `/teamindeling/*` | Team-Indeling Mobile (dark, review) | nieuw |
 | `/ti-studio/*` | Team-Indeling Studio (desktop, bewerken) | teamindeling.ckvoranjewit.app |
@@ -41,6 +41,7 @@ Alle domein-apps volgen hetzelfde navigatiepatroon:
 
 | App | Pos 1 | Pos 2 | Pos 3 | Pos 4 | Accent |
 |---|---|---|---|---|---|
+| Mijn OW | Overzicht | Taken | Nieuws | Profiel | `#f97316` |
 | Monitor | Overzicht | Teams | Analyse | Signalen | `#22c55e` |
 | Team-Indeling | Overzicht | Blauwdruk | Werkbord | Scenario's | `#3b82f6` |
 | Evaluatie | Overzicht | Rondes | Teams | Resultaten | `#eab308` |

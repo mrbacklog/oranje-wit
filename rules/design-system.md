@@ -93,6 +93,7 @@ Elke app heeft een eigen accent-kleur die subtiel door de UI schemerT voor locat
 | Evaluatie | `#eab308` geel | TopBar accent-lijn, active nav, active pill |
 | Scouting | `#ff6b00` oranje | TopBar accent-lijn, active nav, active pill |
 | Beheer | `#9ca3af` grijs | TopBar accent-lijn, active nav, active pill |
+| Beleid | `#a855f7` paars | TopBar accent-lijn, active nav, active pill |
 
 ### Bottom nav per domein-app
 

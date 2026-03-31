@@ -68,6 +68,7 @@ export { EvaluatieIcon } from "./navigation/icons/evaluatie-icon";
 export { ScoutingIcon } from "./navigation/icons/scouting-icon";
 export { BeheerIcon } from "./navigation/icons/beheer-icon";
 export { BeleidIcon } from "./navigation/icons/beleid-icon";
+export { WwwIcon } from "./navigation/icons/www-icon";
 
 // ─── Navigation — components ─────────────────────────────────────
 export { BottomNav } from "./navigation/bottom-nav";
@@ -94,6 +95,7 @@ export { BottomNavShell, FloatingAppSwitcherFab } from "./navigation/bottom-nav-
 
 // ─── Navigation — manifest ───────────────────────────────────────
 export {
+  WWW,
   MONITOR,
   TEAM_INDELING,
   TEAM_INDELING_MOBILE,

@@ -20,6 +20,7 @@ export { EvaluatieIcon } from "./icons/evaluatie-icon";
 export { ScoutingIcon } from "./icons/scouting-icon";
 export { BeheerIcon } from "./icons/beheer-icon";
 export { BeleidIcon } from "./icons/beleid-icon";
+export { WwwIcon } from "./icons/www-icon";
 
 // ─── Lookup map en exports ─────────────────────────────────────────
 
@@ -31,8 +32,10 @@ import { EvaluatieIcon } from "./icons/evaluatie-icon";
 import { ScoutingIcon } from "./icons/scouting-icon";
 import { BeheerIcon } from "./icons/beheer-icon";
 import { BeleidIcon } from "./icons/beleid-icon";
+import { WwwIcon } from "./icons/www-icon";
 
 export const APP_ICONS: Record<AppId, typeof MonitorIcon> = {
+  www: WwwIcon,
   monitor: MonitorIcon,
   "team-indeling": TeamIndelingIcon,
   evaluatie: EvaluatieIcon,
@@ -43,6 +46,7 @@ export const APP_ICONS: Record<AppId, typeof MonitorIcon> = {
 
 /** Alle app-IDs in volgorde (voor iteratie) */
 export const APP_IDS: AppId[] = [
+  "www",
   "monitor",
   "team-indeling",
   "evaluatie",
@@ -56,6 +60,12 @@ export const APP_META: Record<
   AppId,
   { name: string; description: string; url: string; accent: string }
 > = {
+  www: {
+    name: "Mijn OW",
+    description: "Mijn Oranje Wit",
+    url: "/",
+    accent: APP_ACCENTS.www,
+  },
   monitor: {
     name: "Monitor",
     description: "Verenigingsmonitor",

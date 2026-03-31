@@ -8,11 +8,19 @@ export interface AppIconProps {
   accent?: boolean;
 }
 
-export type AppId = "monitor" | "team-indeling" | "evaluatie" | "scouting" | "beheer" | "beleid";
+export type AppId =
+  | "www"
+  | "monitor"
+  | "team-indeling"
+  | "evaluatie"
+  | "scouting"
+  | "beheer"
+  | "beleid";
 
 // ─── Accent kleuren per app ────────────────────────────────────────
 
 export const APP_ACCENTS: Record<AppId, string> = {
+  www: "#f97316",
   monitor: "#22c55e",
   "team-indeling": "#3b82f6",
   evaluatie: "#eab308",

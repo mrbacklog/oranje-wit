@@ -40,6 +40,7 @@ Eén Next.js 16 app (`apps/web/`) met route groups per domein:
 /evaluatie/      — Rondes, invullen, zelfevaluatie
 /scouting/       — Verzoeken, rapporten, kaarten
 /beheer/         — 9 TC-domeinen, gebruikersbeheer
+/beleid/         — Visie, doelgroepen, Oranje Draad (TC-only)
 ```
 
 - **Workspace**: pnpm, `pnpm dev` start op poort 3000

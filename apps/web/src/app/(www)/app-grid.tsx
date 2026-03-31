@@ -69,6 +69,14 @@ const APPS: AppDef[] = [
     appId: "beheer",
     zichtbaar: (cap) => cap.isTC,
   },
+  {
+    naam: "Beleid",
+    beschrijving: "Visie, doelgroepen en Oranje Draad",
+    route: "/beleid",
+    accent: "#a855f7",
+    appId: "beleid",
+    zichtbaar: (cap) => cap.isTC,
+  },
 ];
 
 // ── Component ────────────────────────────────────────────────────

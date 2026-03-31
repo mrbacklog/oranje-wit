@@ -63,6 +63,33 @@ export interface AppManifest {
   minimal?: boolean;
 }
 
+// ─── Mijn Oranje Wit (WWW) ──────────────────────────────────────
+
+export const WWW: AppManifest = {
+  id: "www",
+  name: "Mijn Oranje Wit",
+  shortName: "Mijn OW",
+  description: "Persoonlijk overzicht, taken en nieuws",
+  baseUrl: "/",
+  accent: APP_ACCENTS.www,
+  sections: [
+    {
+      nav: { label: "Overzicht", href: "/", icon: "HomeIcon" },
+    },
+    {
+      nav: { label: "Taken", href: "/taken", icon: "ListIcon" },
+    },
+    {
+      nav: { label: "Nieuws", href: "/nieuws", icon: "StarIcon" },
+    },
+    {
+      nav: { label: "Profiel", href: "/profiel", icon: "ProfileIcon" },
+    },
+  ],
+  skipRoutes: ["/login", "/auth"],
+  visibility: { public: true },
+};
+
 // ─── Monitor ────────────────────────────────────────────────────
 
 export const MONITOR: AppManifest = {
@@ -318,6 +345,7 @@ export const BELEID: AppManifest = {
 // ─── Manifest lookup ────────────────────────────────────────────
 
 export const APP_MANIFEST: Record<AppId, AppManifest> = {
+  www: WWW,
   monitor: MONITOR,
   "team-indeling": TEAM_INDELING,
   evaluatie: EVALUATIE,
@@ -328,6 +356,7 @@ export const APP_MANIFEST: Record<AppId, AppManifest> = {
 
 /** Alle app-manifests in weergavevolgorde */
 export const ALL_APPS: AppManifest[] = [
+  WWW,
   MONITOR,
   TEAM_INDELING,
   EVALUATIE,
