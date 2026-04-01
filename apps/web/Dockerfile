@@ -18,6 +18,9 @@ RUN pnpm install --frozen-lockfile
 # ── Stage 2: Build ───────────────────────────────────────────────────────────
 FROM deps AS builder
 
+# NODE_ENV=production zodat next.config.ts ignoreBuildErrors respecteert
+ENV NODE_ENV=production
+
 COPY packages/auth/ packages/auth/
 COPY packages/database/ packages/database/
 COPY packages/types/ packages/types/
@@ -28,6 +31,7 @@ COPY apps/web/ apps/web/
 RUN pnpm db:generate
 # --webpack is nodig zodat @ducanh2912/next-pwa de service worker genereert
 # (de plugin gebruikt workbox-webpack-plugin, werkt niet met Turbopack)
+# TypeScript check wordt al gedaan in CI (ignoreBuildErrors: true in next.config.ts)
 RUN pnpm --filter @oranje-wit/web exec next build --webpack
 
 # ── Stage 3: Production runtime ──────────────────────────────────────────────
