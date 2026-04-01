@@ -49,9 +49,14 @@ export default async function middleware(request: NextRequest) {
   }
 
   // 4. JWT uit session cookie (Edge-compatible, geen DB)
+  // Cookie naam moet matchen met de NextAuth config in @oranje-wit/auth:
+  // - Productie: "ow-session" (custom naam)
+  // - Development: standaard NextAuth cookie
+  const cookieName = process.env.NODE_ENV === "production" ? "ow-session" : "authjs.session-token";
   const token = await getToken({
     req: request,
     secret: process.env.AUTH_SECRET,
+    cookieName,
   });
 
   if (!token) {
