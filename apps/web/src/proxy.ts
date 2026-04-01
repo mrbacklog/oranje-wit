@@ -11,6 +11,8 @@ import type { NextRequest } from "next/server";
 const PUBLIC_PREFIXES = [
   "/login",
   "/api/auth",
+  "/api/health",
+  "/api/scouting/health",
   "/api/smartlink",
   "/_next",
   "/favicon.ico",
