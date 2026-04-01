@@ -66,14 +66,18 @@ curl -s https://ckvoranjewitapp-production.up.railway.app/api/health | jq .
 
 ## CI/CD Pipeline
 
-De pipeline doet automatisch:
+**CI (GitHub Actions)** doet kwaliteitscontrole:
 1. **Quality**: typecheck, lint, format, unit tests
 2. **Build**: Next.js production build
-3. **E2E**: Playwright tests tegen production build
-4. **Deploy**: Railway trigger + health verificatie
-5. **Post-deploy**: health endpoint polling (max 5 min)
+3. **E2E**: Playwright tests
 
-Als de post-deploy health check faalt, faalt de CI pipeline -> je ziet het in GitHub.
+**Deploy (Railway auto-deploy)** doet de deployment:
+- Railway bouwt en deployt automatisch bij elke push naar main
+- Health check via `/api/health` (geconfigureerd in `railway.json`)
+- Bij crash: Railway herstart automatisch (restart policy: ON_FAILURE)
+- Rollback: via Railway Dashboard "Rollback" knop
+
+De deployment en CI zijn ontkoppeld: CI controleert de code, Railway deployt.
 
 ## Logs bekijken
 
