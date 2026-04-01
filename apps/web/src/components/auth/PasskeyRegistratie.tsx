@@ -3,7 +3,7 @@
 /**
  * PasskeyRegistratie — component voor het registreren van een WebAuthn passkey.
  *
- * Toont een knop "Stel vingerafdruk in voor sneller inloggen".
+ * Toont een knop "Passkey instellen" voor sneller inloggen.
  * Bij klik: start de WebAuthn registratie-ceremonie via @simplewebauthn/browser.
  * Detecteert automatisch of WebAuthn beschikbaar is op het device.
  */
@@ -101,10 +101,8 @@ export function PasskeyRegistratie() {
             </svg>
           </div>
           <div>
-            <p className="font-medium text-white">Vingerafdruk ingesteld!</p>
-            <p className="text-sm text-white/60">
-              Je kunt nu snel inloggen met je vingerafdruk of gezichtsherkenning.
-            </p>
+            <p className="font-medium text-white">Passkey ingesteld!</p>
+            <p className="text-sm text-white/60">Je kunt nu snel inloggen zonder wachtwoord.</p>
           </div>
         </div>
       ) : (
@@ -128,8 +126,8 @@ export function PasskeyRegistratie() {
             <div className="flex-1">
               <p className="font-medium text-white">Sneller inloggen</p>
               <p className="mt-0.5 text-sm text-white/60">
-                Stel je vingerafdruk of gezichtsherkenning in zodat je volgende keer direct kunt
-                inloggen.
+                Stel een passkey in zodat je volgende keer direct kunt inloggen met Face ID,
+                vingerafdruk of schermvergrendeling.
               </p>
             </div>
           </div>
@@ -165,7 +163,7 @@ export function PasskeyRegistratie() {
                 Bezig...
               </span>
             ) : (
-              "Vingerafdruk instellen"
+              "Passkey instellen"
             )}
           </button>
         </>

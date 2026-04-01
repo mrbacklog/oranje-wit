@@ -23,7 +23,7 @@ export function GoogleIcon() {
   );
 }
 
-export function FingerprintIcon() {
+export function PasskeyIcon() {
   return (
     <svg
       width="32"
@@ -35,13 +35,10 @@ export function FingerprintIcon() {
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <path d="M2 12C2 6.5 6.5 2 12 2a10 10 0 0 1 8 4" />
-      <path d="M5 19.5C5.5 18 6 15 6 12c0-3.5 2.5-6 6-6 3.5 0 6 2.5 6 6 0 1-.5 3-1 4.5" />
-      <path d="M8.5 16.5c-.5 1.5-1 3.5-1 5.5" />
-      <path d="M12 18c0-1 0-4 0-6" />
-      <path d="M9 12c0-1.5 1.5-3 3-3s3 1.5 3 3-1 4-1 6" />
-      <path d="M15.5 17.5c0 1-.5 3-1 4.5" />
-      <path d="M20 4.5C21.5 6 22 8.5 22 12c0 1-.5 2.5-1 4" />
+      <circle cx="10" cy="7" r="4" />
+      <path d="M10.3 15H7a4 4 0 0 0-4 4v2" />
+      <circle cx="17" cy="17" r="3" />
+      <path d="m21 21-1.9-1.9" />
     </svg>
   );
 }

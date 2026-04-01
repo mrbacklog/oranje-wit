@@ -1,10 +1,10 @@
 "use client";
 
-import { GoogleIcon, FingerprintIcon, EnvelopeIcon, ExternalLinkIcon } from "./login-icons";
+import { GoogleIcon, PasskeyIcon, EnvelopeIcon, ExternalLinkIcon } from "./login-icons";
 import { getEmailDeepLinks, prefersReducedMotion, staggerDelay } from "./login-helpers";
 
 /* ═══════════════════════════════════════════════════════════════
-   Staat 1: Passkey beschikbaar — vingerafdruk/Face ID
+   Staat 1: Passkey beschikbaar — snel inloggen
    ═══════════════════════════════════════════════════════════════ */
 
 export function PasskeyStaat({
@@ -30,7 +30,7 @@ export function PasskeyStaat({
         onClick={onLogin}
         className="w-full cursor-pointer p-8 text-center transition-all active:scale-[0.97]"
         style={{ minHeight: "96px" }}
-        aria-label="Inloggen met vingerafdruk of Face ID"
+        aria-label="Snel inloggen met passkey"
       >
         <div
           className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl"
@@ -39,13 +39,13 @@ export function PasskeyStaat({
             animation: reduced ? "none" : "passkeyPulse 3s ease-in-out infinite",
           }}
         >
-          <FingerprintIcon />
+          <PasskeyIcon />
         </div>
         <p className="text-base font-semibold" style={{ color: "var(--text-primary)" }}>
-          Inloggen met vingerafdruk
+          Snel inloggen
         </p>
         <p className="mt-1 text-sm" style={{ color: "var(--text-secondary)" }}>
-          Tik om in te loggen
+          Met Face ID, vingerafdruk of schermvergrendeling
         </p>
       </button>
       <div className="mx-6 h-px" style={{ backgroundColor: "var(--border-default)" }} />
