@@ -176,10 +176,15 @@ jobs:
           ENV_ID: ${{ secrets.RAILWAY_ENVIRONMENT_ID }}
           SVC_ID: ${{ secrets.RAILWAY_SERVICE_WEB }}
         run: |
-          curl -sf -X POST https://backboard.railway.com/graphql/v2 \
+          RESULT=$(curl -sf -X POST https://backboard.railway.com/graphql/v2 \
             -H "Authorization: Bearer $RAILWAY_TOKEN" \
             -H "Content-Type: application/json" \
-            -d "{\"query\":\"mutation { serviceInstanceDeploy(environmentId: \\\"$ENV_ID\\\", serviceId: \\\"$SVC_ID\\\", latestCommit: true) }\"}"
+            -d "{\"query\":\"mutation { serviceInstanceDeploy(environmentId: \\\"$ENV_ID\\\", serviceId: \\\"$SVC_ID\\\", latestCommit: true) }\"}")
+          echo "$RESULT"
+          if echo "$RESULT" | grep -q '"errors"'; then
+            echo "FOUT: Railway deploy mutation mislukt"
+            exit 1
+          fi
 
       - name: Verify deployment health
         run: |
