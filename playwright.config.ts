@@ -37,10 +37,10 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: process.env.CI ? "pnpm --filter @oranje-wit/web start" : "pnpm dev:web",
+    command: "pnpm dev:web",
     port: 3000,
     reuseExistingServer: !process.env.CI,
-    timeout: process.env.CI ? 30000 : 120000,
+    timeout: 120000,
     env: { E2E_TEST: "true" },
   },
 });
