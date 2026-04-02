@@ -10,6 +10,17 @@ test.describe("Nieuw Scenario Wizard", () => {
     ).toBeVisible();
   });
 
+  test.afterEach(async ({ request }) => {
+    // Reset alle werkindelingen naar inactief voor test-isolatie
+    // Dit voorkomt dat tests elkaar beïnvloeden via de isWerkindeling flag
+    try {
+      await request.post("/api/test/reset-werkindeling");
+    } catch (error) {
+      // Stille fout — niet kritiek als reset mislukt
+      // (e.g. netwerk timeout of server shutdown tussen tests)
+    }
+  });
+
   test("wizard opent met 3 opties", async ({ page }) => {
     await page.getByRole("button", { name: /nieuw scenario/i }).click();
 
