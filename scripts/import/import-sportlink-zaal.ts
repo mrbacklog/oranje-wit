@@ -131,6 +131,37 @@ async function main() {
     console.log(`  ${r.team}: ${r.cnt} spelers`);
   }
 
+  // Alias-stap: koppel ow_team_id via team_aliases
+  const aliasResult = await client.query(
+    `
+    UPDATE competitie_spelers cs
+    SET ow_team_id = a.ow_team_id
+    FROM team_aliases a
+    WHERE a.seizoen = cs.seizoen
+      AND a.alias = cs.team
+      AND cs.seizoen = $1
+      AND cs.competitie = $2
+      AND cs.ow_team_id IS NULL
+  `,
+    [SEIZOEN, COMPETITIE]
+  );
+  console.log(`✓ ${aliasResult.rowCount} spelers gekoppeld aan OW-team (ow_team_id)`);
+
+  // Waarschuw voor onbekende teams
+  const onbekend = await client.query(
+    `
+    SELECT DISTINCT cs.team, COUNT(*)::int as spelers
+    FROM competitie_spelers cs
+    WHERE cs.seizoen = $1 AND cs.competitie = $2 AND cs.ow_team_id IS NULL
+    GROUP BY cs.team ORDER BY cs.team
+  `,
+    [SEIZOEN, COMPETITIE]
+  );
+  if (onbekend.rows.length > 0) {
+    console.warn(`⚠ ${onbekend.rows.length} onbekende teams (geen alias gevonden):`);
+    onbekend.rows.forEach((r: any) => console.warn(`  "${r.team}" (${r.spelers} spelers)`));
+  }
+
   await client.end();
 }
 
