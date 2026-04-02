@@ -2,7 +2,7 @@
 name: communicatie
 description: Communicatiespecialist voor c.k.v. Oranje Wit. Vertaalt beleid, raamwerken en technische analyses naar heldere, toegankelijke presentaties voor ouders, trainers, bestuur en TC. Schrijft toelichtingen, samenvattingen, presentatie-outlines en visuele concepten.
 tools: Read, Grep, Glob, Write, Edit, WebSearch, WebFetch
-model: inherit
+model: haiku
 memory: project
 skills:
   - shared/oranje-draad

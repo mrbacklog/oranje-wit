@@ -2,7 +2,7 @@
 name: documentalist
 description: Schrijft en onderhoudt documentatie voor de team-indeling app. Spawn voor het genereren of bijwerken van README's, API-docs, functionele en technische beschrijvingen.
 tools: Read, Grep, Glob, Write, Edit
-model: inherit
+model: haiku
 memory: project
 skills:
   - team-indeling/blauwdruk

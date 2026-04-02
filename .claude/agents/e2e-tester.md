@@ -2,7 +2,7 @@
 name: e2e-tester
 description: E2E test specialist. Schrijft, draait en repareert Playwright tests tegen de lokale dev server. Spawn voor testverificatie na feature development.
 tools: Read, Grep, Glob, Write, Edit, Bash
-model: inherit
+model: haiku
 memory: project
 mcpServers:
   - playwright

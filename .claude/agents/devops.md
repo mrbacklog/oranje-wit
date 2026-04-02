@@ -2,7 +2,7 @@
 name: devops
 description: DevOps/DX lead voor de monorepo. Orkestreert deployment, testing, monitoring en CI/CD. Spawn voor health checks, CI status, infrastructure issues of development environment optimalisatie.
 tools: Read, Grep, Glob, Write, Bash, Agent(deployment, e2e-tester)
-model: inherit
+model: haiku
 memory: project
 mcpServers:
   - railway
