@@ -838,7 +838,8 @@ model Team {
   // Relaties
   spelers       TeamSpeler[]
   staf          TeamStaf[]
-  whatIfKopieen WhatIfTeam[]
+  whatIfKopieen       WhatIfTeam[]
+  plaatsreserveringen Plaatsreservering[]
 
   @@index([versieId])
 }
@@ -2019,4 +2020,40 @@ model Instelling {
   updatedBy  String?  @map("updated_by") // email van wie het laatst wijzigde
 
   @@map("instellingen")
+}
+
+// ============================================================
+// DAISY — ACTIE-LOG (audit + undo per sessie)
+// ============================================================
+
+model DaisyActie {
+  id           String   @id @default(cuid())
+  sessieId     String
+  tool         String
+  doPayload    Json
+  undoPayload  Json
+  tijdstip     DateTime @default(now())
+  namens       String?
+  uitgevoerdIn String
+  ongedaan     Boolean  @default(false)
+
+  @@index([sessieId])
+  @@index([tijdstip])
+  @@map("daisy_acties")
+}
+
+// ============================================================
+// PLAATSRESERVERING (naamloze placeholder in team)
+// ============================================================
+
+model Plaatsreservering {
+  id        String   @id @default(cuid())
+  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  teamId    String
+  naam      String
+  geslacht  String?
+  createdAt DateTime @default(now())
+
+  @@index([teamId])
+  @@map("plaatsreserveringen")
 }
