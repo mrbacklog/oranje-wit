@@ -80,7 +80,11 @@ export async function POST(request: Request) {
   const modelMessages = await convertToModelMessages(beperkteBerichten);
 
   // --- Streaming response ---
-  const tools = getDaisyTools(session.user.clearance) as unknown as ToolSet;
+  const tools = getDaisyTools({
+    clearance: session.user.clearance,
+    sessieId: gesprekId ?? gesprek.id,
+    gebruikerEmail: session.user.email ?? "onbekend",
+  }) as unknown as ToolSet;
   const result = streamText({
     model,
     system: buildDaisyPrompt(session),
