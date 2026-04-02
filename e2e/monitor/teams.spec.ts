@@ -36,6 +36,6 @@ test.describe("Teams", () => {
     await teamLinks.first().click();
 
     // Spelers sectie
-    await expect(page.getByText(/speler/i)).toBeVisible({ timeout: 15000 });
+    await expect(page.getByText(/speler/i).first()).toBeVisible({ timeout: 15000 });
   });
 });
