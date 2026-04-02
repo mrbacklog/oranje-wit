@@ -8,11 +8,11 @@ test.describe("Retentie / Ledendynamiek", () => {
       timeout: 10000,
     });
 
-    // Controleer tabs
+    // Controleer tabs (na herstructurering: Behoud, Verloop, Cohorten, Prognose)
     await expect(page.getByRole("tab", { name: "Behoud" })).toBeVisible();
-    await expect(page.getByRole("tab", { name: "Instroom" })).toBeVisible();
-    await expect(page.getByRole("tab", { name: "Uitstroom" })).toBeVisible();
+    await expect(page.getByRole("tab", { name: "Verloop" })).toBeVisible();
     await expect(page.getByRole("tab", { name: "Cohorten" })).toBeVisible();
+    await expect(page.getByRole("tab", { name: "Prognose" })).toBeVisible();
   });
 
   // Skip: seizoen-detail vereist verloop-data die niet altijd in CI seed zit
