@@ -81,6 +81,9 @@ type AnyPrismaModels = {
   mijlpaal: AnyModel;
   // Snapshots
   scenarioSnapshot: AnyModel;
+  // Daisy
+  daisyActie: AnyModel;
+  plaatsreservering: AnyModel;
   // What-if
   whatIf: AnyModel;
   whatIfTeam: AnyModel;
