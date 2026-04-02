@@ -12,6 +12,8 @@ import TeamKaart from "./TeamKaart";
 import SelectieBlok from "./SelectieBlok";
 import { CANVAS_WIDTH, CANVAS_HEIGHT } from "./editor/cardSizes";
 
+export type WhatIfZone = "actief" | "impact" | "ongeraakt";
+
 interface WerkgebiedProps {
   teams: TeamData[];
   zichtbareTeamIds: Set<string>;
@@ -29,6 +31,8 @@ interface WerkgebiedProps {
   compactMode?: boolean;
   positions: PositionMap;
   onRepositionCard: (cardId: string, deltaX: number, deltaY: number) => void;
+  /** What-if zone per teamId — als ingesteld wordt de zone-overlay getoond */
+  whatIfZones?: Map<string, WhatIfZone>;
 }
 
 export default function Werkgebied({
@@ -48,6 +52,7 @@ export default function Werkgebied({
   compactMode,
   positions,
   onRepositionCard,
+  whatIfZones,
 }: WerkgebiedProps) {
   const [geselecteerd, setGeselecteerd] = useState<Set<string>>(new Set());
 
@@ -82,6 +87,19 @@ export default function Werkgebied({
   const teamSterkteMap = useMemo(
     () => berekenTeamSterktes(teams, selectieGroepenArray),
     [teams, selectieGroepenArray]
+  );
+
+  const zoneStijl = useCallback(
+    (teamId: string): React.CSSProperties => {
+      if (!whatIfZones) return {};
+      const zone = whatIfZones.get(teamId);
+      if (zone === "actief") return { outline: "2px solid #f97316", borderRadius: 8 };
+      if (zone === "impact")
+        return { outline: "2px dashed #eab308", borderRadius: 8, opacity: 0.85 };
+      if (zone === "ongeraakt") return { opacity: 0.4, pointerEvents: "none" as const };
+      return {};
+    },
+    [whatIfZones]
   );
 
   const handleKoppel = useCallback(() => {
@@ -145,6 +163,9 @@ export default function Werkgebied({
               {Array.from(selectieGroepen.entries()).map(([groepId, groepTeams]) => {
                 const dragId = `selectie-${groepId}`;
                 const pos = positions[dragId] ?? { x: 0, y: 0 };
+                // Zone bepalen op basis van eerste team in selectie
+                const eersteTeamId = groepTeams[0]?.id ?? "";
+                const stijl = zoneStijl(eersteTeamId);
                 return (
                   <GestureCard
                     key={dragId}
@@ -152,28 +173,31 @@ export default function Werkgebied({
                     position={pos}
                     onDragEnd={onRepositionCard}
                   >
-                    <SelectieBlok
-                      teams={groepTeams}
-                      selectieGroep={selectieGroepMap?.get(groepId)}
-                      validatieMap={validatieMap}
-                      selectieValidatie={selectieValidatieMap?.get(groepId)}
-                      detailLevel={detailLevel}
-                      pinnedSpelerIds={pinnedSpelerIds}
-                      showRanking={showRanking}
-                      jIndicatie={jIndicatieMap.get(dragId)}
-                      teamSterkte={teamSterkteMap.get(dragId)}
-                      onOntkoppel={onOntkoppelSelectie}
-                      onUpdateNaam={onUpdateSelectieNaam}
-                      onDelete={onDeleteTeam}
-                      onSpelerClick={onSpelerClick}
-                      onEditTeam={onEditTeam}
-                    />
+                    <div style={stijl}>
+                      <SelectieBlok
+                        teams={groepTeams}
+                        selectieGroep={selectieGroepMap?.get(groepId)}
+                        validatieMap={validatieMap}
+                        selectieValidatie={selectieValidatieMap?.get(groepId)}
+                        detailLevel={detailLevel}
+                        pinnedSpelerIds={pinnedSpelerIds}
+                        showRanking={showRanking}
+                        jIndicatie={jIndicatieMap.get(dragId)}
+                        teamSterkte={teamSterkteMap.get(dragId)}
+                        onOntkoppel={onOntkoppelSelectie}
+                        onUpdateNaam={onUpdateSelectieNaam}
+                        onDelete={onDeleteTeam}
+                        onSpelerClick={onSpelerClick}
+                        onEditTeam={onEditTeam}
+                      />
+                    </div>
                   </GestureCard>
                 );
               })}
               {/* Losse teams */}
               {losseTeams.map((team) => {
                 const pos = positions[team.id] ?? { x: 0, y: 0 };
+                const teamStijl = zoneStijl(team.id);
                 return (
                   <GestureCard
                     key={team.id}
@@ -181,20 +205,22 @@ export default function Werkgebied({
                     position={pos}
                     onDragEnd={onRepositionCard}
                   >
-                    <TeamKaart
-                      team={team}
-                      validatie={validatieMap?.get(team.id)}
-                      detailLevel={detailLevel}
-                      pinnedSpelerIds={pinnedSpelerIds}
-                      showRanking={showRanking}
-                      jIndicatie={jIndicatieMap.get(team.id)}
-                      teamSterkte={teamSterkteMap.get(team.id)}
-                      onDelete={onDeleteTeam}
-                      onSpelerClick={
-                        onSpelerClick ? (speler) => onSpelerClick(speler, team.id) : undefined
-                      }
-                      onEditTeam={onEditTeam}
-                    />
+                    <div style={teamStijl}>
+                      <TeamKaart
+                        team={team}
+                        validatie={validatieMap?.get(team.id)}
+                        detailLevel={detailLevel}
+                        pinnedSpelerIds={pinnedSpelerIds}
+                        showRanking={showRanking}
+                        jIndicatie={jIndicatieMap.get(team.id)}
+                        teamSterkte={teamSterkteMap.get(team.id)}
+                        onDelete={onDeleteTeam}
+                        onSpelerClick={
+                          onSpelerClick ? (speler) => onSpelerClick(speler, team.id) : undefined
+                        }
+                        onEditTeam={onEditTeam}
+                      />
+                    </div>
                   </GestureCard>
                 );
               })}
