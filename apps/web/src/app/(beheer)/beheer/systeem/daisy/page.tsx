@@ -10,7 +10,6 @@ export default async function DaisyInstellingenPage() {
   ]);
 
   const claudeKeyAanwezig = !!process.env.ANTHROPIC_API_KEY;
-  const geminiKeyAanwezig = !!process.env.GOOGLE_GENERATIVE_AI_API_KEY;
 
   return (
     <div className="mx-auto max-w-2xl">
@@ -38,7 +37,7 @@ export default async function DaisyInstellingenPage() {
             className="h-2 w-2 rounded-full"
             style={{ backgroundColor: "var(--semantic-success)" }}
           />
-          Daisy actief via {beschikbaarheid.actieveProvider === "claude" ? "Claude" : "Gemini"}
+          Daisy actief via Claude
         </div>
       ) : (
         <div
@@ -53,16 +52,12 @@ export default async function DaisyInstellingenPage() {
             className="h-2 w-2 rounded-full"
             style={{ backgroundColor: "var(--semantic-warning)" }}
           />
-          Geen provider ingesteld — voeg een API key toe als omgevingsvariabele
+          Geen provider ingesteld — voeg ANTHROPIC_API_KEY toe als omgevingsvariabele
         </div>
       )}
 
       {/* Instellingen paneel */}
-      <InstellingenPaneel
-        initieel={instellingen}
-        claudeKeyAanwezig={claudeKeyAanwezig}
-        geminiKeyAanwezig={geminiKeyAanwezig}
-      />
+      <InstellingenPaneel initieel={instellingen} claudeKeyAanwezig={claudeKeyAanwezig} />
     </div>
   );
 }

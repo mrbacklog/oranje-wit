@@ -17,7 +17,7 @@ import {
 // ─── Defaults ────────────────────────────────────────────────────
 
 const DEFAULTS: AiInstellingen = {
-  provider: "auto",
+  provider: "claude",
   claudeModel: CLAUDE_MODEL_DEFAULT,
   geminiModel: GEMINI_MODEL_DEFAULT,
   maxTokens: 1024,

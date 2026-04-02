@@ -16,9 +16,7 @@ export interface AiModelOptie {
 }
 
 export const AI_PROVIDERS: AiProviderOptie[] = [
-  { sleutel: "auto", label: "Auto" },
   { sleutel: "claude", label: "Claude", envVar: "ANTHROPIC_API_KEY" },
-  { sleutel: "gemini", label: "Gemini", envVar: "GOOGLE_GENERATIVE_AI_API_KEY" },
 ];
 
 export const CLAUDE_MODELLEN: AiModelOptie[] = [

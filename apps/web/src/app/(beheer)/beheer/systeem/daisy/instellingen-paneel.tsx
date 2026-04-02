@@ -5,7 +5,6 @@ import { logger } from "@oranje-wit/types";
 import {
   AI_PROVIDERS,
   CLAUDE_MODELLEN,
-  GEMINI_MODELLEN,
   MAX_TOKENS_MIN,
   MAX_TOKENS_MAX,
   MAX_TOKENS_STEP,
@@ -18,27 +17,21 @@ import { slaInstellingenOp, type DaisyInstellingenData } from "./actions";
 interface InstellingenPaneelProps {
   initieel: DaisyInstellingenData;
   claudeKeyAanwezig: boolean;
-  geminiKeyAanwezig: boolean;
 }
 
 // ─── Component ──────────────────────────────────────────────────
 
-export function InstellingenPaneel({
-  initieel,
-  claudeKeyAanwezig,
-  geminiKeyAanwezig,
-}: InstellingenPaneelProps) {
+export function InstellingenPaneel({ initieel, claudeKeyAanwezig }: InstellingenPaneelProps) {
   const [provider, setProvider] = useState<AiProviderSleutel>(initieel.provider);
   const [claudeModel, setClaudeModel] = useState(initieel.claudeModel);
-  const [geminiModel, setGeminiModel] = useState(initieel.geminiModel);
+  const [geminiModel] = useState(initieel.geminiModel);
   const [maxTokens, setMaxTokens] = useState(initieel.maxTokens);
   const [melding, setMelding] = useState<{ type: "succes" | "fout"; tekst: string } | null>(null);
   const [isPending, startTransition] = useTransition();
 
   const keyAanwezig = (sleutel: AiProviderSleutel) => {
     if (sleutel === "claude") return claudeKeyAanwezig;
-    if (sleutel === "gemini") return geminiKeyAanwezig;
-    return true; // auto
+    return true;
   };
 
   const handleSubmit = (e: FormEvent) => {
@@ -115,30 +108,6 @@ export function InstellingenPaneel({
                 disabled={!claudeKeyAanwezig}
               >
                 {CLAUDE_MODELLEN.map((m) => (
-                  <option key={m.waarde} value={m.waarde}>
-                    {m.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
-
-          {/* Model dropdown — Gemini */}
-          {(provider === "gemini" || provider === "auto") && (
-            <div>
-              <label
-                className="mb-1 block text-xs font-medium"
-                style={{ color: "var(--text-secondary)" }}
-              >
-                Gemini model
-              </label>
-              <select
-                className="input w-full"
-                value={geminiModel}
-                onChange={(e) => setGeminiModel(e.target.value)}
-                disabled={!geminiKeyAanwezig}
-              >
-                {GEMINI_MODELLEN.map((m) => (
                   <option key={m.waarde} value={m.waarde}>
                     {m.label}
                   </option>
