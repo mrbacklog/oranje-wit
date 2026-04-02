@@ -17,22 +17,14 @@ test.describe("Team-Indeling navigatie", () => {
     await expect(page).toHaveURL(/\/kaders/);
   });
 
-  test("scenarios pagina is bereikbaar en toont seed-scenario", async ({ page }) => {
-    // Scenarios pagina kan traag zijn bij eerste compile; verhoog timeout
+  test("scenarios pagina redirect naar indeling (geen werkindeling in seed)", async ({ page }) => {
+    // Seed-data maakt geen werkindeling aan, dus /scenarios toont onboarding op /indeling
     await page.goto("/ti-studio/scenarios", { timeout: 30000 });
-    await expect(page.getByRole("heading", { name: /scenario/i, level: 2 })).toBeVisible({
+    // Redirect naar /indeling (waar onboarding is)
+    await expect(page).toHaveURL(/\/indeling/);
+    await expect(page.getByRole("heading", { name: "Nog geen werkindeling" })).toBeVisible({
       timeout: 15000,
     });
-
-    // Seed scenario moet in de lijst staan; als pagina cached was, reload
-    const scenarioZichtbaar = await page
-      .getByText(SCENARIO_NAAM)
-      .isVisible()
-      .catch(() => false);
-    if (!scenarioZichtbaar) {
-      await page.reload({ timeout: 30000 });
-    }
-    await expect(page.getByText(SCENARIO_NAAM)).toBeVisible({ timeout: 15000 });
   });
 
   test("vergelijk pagina is bereikbaar", async ({ page }) => {

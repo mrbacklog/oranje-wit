@@ -2,8 +2,12 @@ import { test, expect } from "../fixtures/base";
 
 test.describe("Nieuw Scenario Wizard", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/ti-studio/scenarios");
-    await expect(page.getByRole("heading", { name: "Scenario's", exact: true })).toBeVisible();
+    // /ti-studio/indeling toont onboarding als geen werkindeling bestaat
+    // (seed-data maakt geen werkindeling aan, dus wizard is hier bereikbaar)
+    await page.goto("/ti-studio/indeling", { timeout: 15000 });
+    await expect(
+      page.getByRole("heading", { name: "Nog geen werkindeling", exact: true })
+    ).toBeVisible();
   });
 
   test("wizard opent met 3 opties", async ({ page }) => {

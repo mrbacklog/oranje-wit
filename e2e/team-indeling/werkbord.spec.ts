@@ -39,9 +39,9 @@ test.describe("Opvolging (was: Werkbord)", () => {
       timeout: 10000,
     });
 
-    await expect(page.getByText("Blockers")).toBeVisible();
-    await expect(page.getByText("Besluiten")).toBeVisible();
-    await expect(page.getByText("Afgerond")).toBeVisible();
+    await expect(page.getByText("Blockers", { exact: true })).toBeVisible();
+    await expect(page.getByText("Besluiten", { exact: true })).toBeVisible();
+    await expect(page.getByText("Afgerond", { exact: true })).toBeVisible();
   });
 
   test("nieuw werkitem knop is zichtbaar", async ({ page }) => {
