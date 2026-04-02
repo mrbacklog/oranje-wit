@@ -215,28 +215,23 @@ async function main() {
 
   console.log("=== Migratie OW-teams 2025-2026 ===\n");
 
-  // Stap 1: Verwijder verouderde jeugdteams (A1-A3, B1-B3, C1-C3)
-  const verouderd = [
-    "OW-A1",
-    "OW-A2",
-    "OW-A3",
-    "OW-B1",
-    "OW-B2",
-    "OW-B3",
-    "OW-C1",
-    "OW-C2",
-    "OW-C3",
-  ];
-  const res = await client.query(`SELECT id FROM teams WHERE seizoen = $1 AND ow_code = ANY($2)`, [
-    SEIZOEN,
-    verouderd,
-  ]);
-  const verouderdIds = res.rows.map((r: { id: string }) => r.id);
-  if (verouderdIds.length > 0) {
-    await client.query(`DELETE FROM team_periodes WHERE team_id = ANY($1)`, [verouderdIds]);
-    await client.query(`DELETE FROM team_aliases WHERE ow_team_id = ANY($1)`, [verouderdIds]);
-    await client.query(`DELETE FROM teams WHERE id = ANY($1)`, [verouderdIds]);
-    console.log(`✓ ${verouderdIds.length} verouderde teams verwijderd`);
+  // Stap 1: Verwijder ALLE bestaande teams voor 2025-2026
+  // (worden volledig vervangen door de nieuwe correcte set)
+  const bestaand = await client.query(`SELECT id FROM teams WHERE seizoen = $1`, [SEIZOEN]);
+  const bestaandIds = bestaand.rows.map((r: { id: string }) => r.id);
+  if (bestaandIds.length > 0) {
+    await client.query(`DELETE FROM team_periodes WHERE team_id = ANY($1)`, [bestaandIds]);
+    await client.query(`DELETE FROM team_aliases WHERE ow_team_id = ANY($1)`, [bestaandIds]);
+    // Reset ow_team_id op competitie_spelers zodat backfill opnieuw kan
+    await client.query(`UPDATE competitie_spelers SET ow_team_id = NULL WHERE seizoen = $1`, [
+      SEIZOEN,
+    ]);
+    // Verwijder scouting-sessies voor deze teams (geen cascade in schema)
+    await client.query(`DELETE FROM team_scouting_sessies WHERE "owTeamId" = ANY($1)`, [
+      bestaandIds,
+    ]);
+    await client.query(`DELETE FROM teams WHERE id = ANY($1)`, [bestaandIds]);
+    console.log(`✓ ${bestaandIds.length} bestaande teams verwijderd (fresh start)`);
   }
 
   // Stap 2: Maak jeugdteams aan
