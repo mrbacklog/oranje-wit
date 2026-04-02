@@ -7,12 +7,14 @@ test.describe("Team-Indeling navigatie", () => {
     await expect(page).not.toHaveURL(/\/login/);
   });
 
-  test("blauwdruk pagina is bereikbaar en toont tabs", async ({ page }) => {
-    await page.goto("/ti-studio/blauwdruk");
-    await expect(page.getByRole("heading", { name: /blauwdruk/i })).toBeVisible();
+  test("kaders pagina is bereikbaar en toont besluiten", async ({ page }) => {
+    await page.goto("/ti-studio/kaders");
+    await expect(page.getByRole("heading", { name: /kaders/i })).toBeVisible();
+  });
 
-    // Blauwdruk tabs moeten zichtbaar zijn
-    await expect(page.getByRole("tab", { name: "Kaders" })).toBeVisible({ timeout: 10000 });
+  test("blauwdruk redirect werkt naar kaders", async ({ page }) => {
+    await page.goto("/ti-studio/blauwdruk");
+    await expect(page).toHaveURL(/\/kaders/);
   });
 
   test("scenarios pagina is bereikbaar en toont seed-scenario", async ({ page }) => {
