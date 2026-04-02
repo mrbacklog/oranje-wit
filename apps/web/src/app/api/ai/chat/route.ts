@@ -6,13 +6,14 @@
  */
 
 import { streamText, type UIMessage, type ToolSet, convertToModelMessages, stepCountIs } from "ai";
-import { google } from "@ai-sdk/google";
 import { guardAuth } from "@oranje-wit/auth/checks";
 import { logger } from "@oranje-wit/types";
 import { fail } from "@/lib/api/response";
 import { buildDaisyPrompt } from "@/lib/ai/daisy";
 import { getDaisyTools } from "@/lib/ai/plugins/registry";
 import { getOfMaakGesprek, slaBerichtOp } from "@/lib/ai/gesprekken";
+import { getAiInstellingen } from "@/lib/ai/api-key";
+import { getDaisyModel, bepaalActieveProvider } from "@/lib/ai/provider";
 
 export const maxDuration = 30;
 
@@ -58,18 +59,36 @@ export async function POST(request: Request) {
     }
   }
 
-  // --- Convert UI messages to model messages ---
-  const modelMessages = await convertToModelMessages(messages);
+  // --- AI instellingen ophalen ---
+  const aiInstellingen = await getAiInstellingen();
+  let model;
+  let actieveProvider: string;
+  try {
+    model = getDaisyModel(aiInstellingen);
+    actieveProvider = bepaalActieveProvider(aiInstellingen);
+  } catch (error) {
+    logger.error("Geen AI-provider beschikbaar:", error);
+    return fail(
+      error instanceof Error ? error.message : "Geen AI-provider beschikbaar.",
+      503,
+      "NO_AI_PROVIDER"
+    );
+  }
+
+  // --- Convert UI messages to model messages (max 10 beurten) ---
+  const beperkteBerichten = messages.slice(-10);
+  const modelMessages = await convertToModelMessages(beperkteBerichten);
 
   // --- Streaming response ---
   // Tools gebruiken nog het oude `parameters`-formaat (wordt in een volgende taak gemigreerd
   // naar `inputSchema`). De cast naar ToolSet is veilig zolang de runtime dit accepteert.
   const tools = getDaisyTools(session.user.clearance) as unknown as ToolSet;
   const result = streamText({
-    model: google("gemini-2.0-flash"),
+    model,
     system: buildDaisyPrompt(session),
     messages: modelMessages,
     tools,
+    maxOutputTokens: aiInstellingen.maxTokens,
     stopWhen: stepCountIs(3),
     onFinish: async ({ text }) => {
       if (text) {
@@ -85,6 +104,7 @@ export async function POST(request: Request) {
   return result.toTextStreamResponse({
     headers: {
       "X-Gesprek-Id": gesprek.id,
+      "X-Ai-Provider": actieveProvider,
     },
   });
 }

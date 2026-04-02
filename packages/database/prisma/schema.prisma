@@ -1948,6 +1948,18 @@ enum BerichtRol {
   TOOL
 }
 
+model AiProviderInstelling {
+  id             String   @id @default(cuid())
+  provider       String   @default("auto") // "auto" | "claude" | "gemini"
+  claudeModel    String   @default("claude-sonnet-4-6") @map("claude_model")
+  geminiModel    String   @default("gemini-2.0-flash") @map("gemini_model")
+  maxTokens      Int      @default(1024) @map("max_tokens")
+  bijgewerktOp   DateTime @updatedAt @map("bijgewerkt_op")
+  bijgewerktDoor String?  @map("bijgewerkt_door")
+
+  @@map("ai_provider_instelling")
+}
+
 model AiGesprek {
   id        String   @id @default(cuid())
   userId    String   @map("user_id")
