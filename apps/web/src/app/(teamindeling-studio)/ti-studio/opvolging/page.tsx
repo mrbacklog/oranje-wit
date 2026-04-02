@@ -3,6 +3,9 @@ import {
   getWerkitemStats,
 } from "@/app/(teamindeling-studio)/ti-studio/werkbord/actions";
 import WerkbordOverzicht from "@/components/teamindeling/werkbord/WerkbordOverzicht";
+import OpvolgingTabs from "@/components/teamindeling/opvolging/OpvolgingTabs";
+import VoorstellenInbox from "@/components/teamindeling/opvolging/VoorstellenInbox";
+import { getOpenVoorstellen, getGezienVoorstellen } from "./voorstel-actions";
 import { prisma } from "@/lib/teamindeling/db/prisma";
 
 export const dynamic = "force-dynamic";
@@ -32,9 +35,11 @@ export default async function OpvolgingPage() {
     );
   }
 
-  const [werkitems, stats] = await Promise.all([
+  const [werkitems, stats, openVoorstellen, gezienVoorstellen] = await Promise.all([
     getWerkitems(blauwdruk.id),
     getWerkitemStats(blauwdruk.id),
+    getOpenVoorstellen(),
+    getGezienVoorstellen(blauwdruk.id),
   ]);
 
   async function refreshOpvolging() {
@@ -46,6 +51,17 @@ export default async function OpvolgingPage() {
     return { werkitems: nieuweWerkitems, stats: nieuweStats };
   }
 
+  const voorstellenBadge = openVoorstellen.length + gezienVoorstellen.length;
+
+  const tabs = [
+    { id: "werkbord", label: "Werkbord" },
+    {
+      id: "voorstellen",
+      label: "Voorstellen",
+      badge: voorstellenBadge > 0 ? voorstellenBadge : undefined,
+    },
+  ];
+
   return (
     <div className="max-w-4xl space-y-4">
       <div>
@@ -56,12 +72,27 @@ export default async function OpvolgingPage() {
           Acties en besluiten voor seizoen {blauwdruk.seizoen}
         </p>
       </div>
-      <WerkbordOverzicht
-        blauwdrukId={blauwdruk.id}
-        initialWerkitems={werkitems}
-        initialStats={stats}
-        refreshAction={refreshOpvolging}
-      />
+
+      <OpvolgingTabs tabs={tabs}>
+        {(activeTab) => (
+          <>
+            {activeTab === "werkbord" && (
+              <WerkbordOverzicht
+                blauwdrukId={blauwdruk.id}
+                initialWerkitems={werkitems}
+                initialStats={stats}
+                refreshAction={refreshOpvolging}
+              />
+            )}
+            {activeTab === "voorstellen" && (
+              <VoorstellenInbox
+                initialVoorstellen={openVoorstellen}
+                initialGezienVoorstellen={gezienVoorstellen}
+              />
+            )}
+          </>
+        )}
+      </OpvolgingTabs>
     </div>
   );
 }
