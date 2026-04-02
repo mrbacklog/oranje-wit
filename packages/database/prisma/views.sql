@@ -13,8 +13,13 @@ SELECT DISTINCT ON (cp.rel_code, cp.seizoen)
   cp.seizoen,
   cp.team,
   cp.competitie,
-  cp.geslacht
+  cp.geslacht,
+  cp.ow_team_id,
+  t.naam  AS ow_team_naam,
+  t.alias AS ow_team_alias,
+  t.kleur AS ow_team_kleur
 FROM competitie_spelers cp
+LEFT JOIN teams t ON t.id = cp.ow_team_id
 ORDER BY cp.rel_code, cp.seizoen,
   CASE cp.competitie
     WHEN 'veld_najaar'  THEN 1
