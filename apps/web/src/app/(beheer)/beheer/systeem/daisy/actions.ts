@@ -79,7 +79,7 @@ export async function slaInstellingenOp(
           claudeModel: data.claudeModel,
           geminiModel: data.geminiModel,
           maxTokens: data.maxTokens,
-          bijgewerktDoor: session.user.email ?? null,
+          bijgewerktDoor: session.user?.email ?? null,
         },
       });
       revalidatePath("/beheer/systeem/daisy");
@@ -92,7 +92,7 @@ export async function slaInstellingenOp(
         claudeModel: data.claudeModel,
         geminiModel: data.geminiModel,
         maxTokens: data.maxTokens,
-        bijgewerktDoor: session.user.email ?? null,
+        bijgewerktDoor: session.user?.email ?? null,
       },
     });
     revalidatePath("/beheer/systeem/daisy");

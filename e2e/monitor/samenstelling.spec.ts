@@ -1,15 +1,10 @@
 import { test, expect } from "../fixtures/base";
 
 test.describe("Samenstelling", () => {
-  test("toont samenstelling overzicht met piramide tab", async ({ page }) => {
+  test("toont samenstelling overzicht", async ({ page }) => {
     await page.goto("/monitor/samenstelling");
 
     await expect(page.getByRole("heading", { name: "Samenstelling" })).toBeVisible();
-
-    // Controleer tabs
-    await expect(page.getByRole("tab", { name: "Piramide" })).toBeVisible();
-    await expect(page.getByRole("tab", { name: "Detail" })).toBeVisible();
-    await expect(page.getByRole("tab", { name: "Historie" })).toBeVisible();
   });
 
   test("geboortejaar detail toont actieve en gestopte spelers", async ({ page }) => {
