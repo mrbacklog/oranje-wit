@@ -561,6 +561,12 @@ model BlauwdrukSpeler {
   notitie      String?  @db.Text
   signalering  String?  // "DOORSTROOM_U15", "NAAR_SENIOREN", "VERLAAT_KLEUR", etc.
 
+  // Coördinator-voorstel (conceptueel, TC bevestigt definitief)
+  gezienStatusVoorgesteld GezienStatus? @map("gezien_status_voorgesteld")
+  gezienVoorgesteldDoor   String?       @map("gezien_voorgesteld_door")
+  gezienVoorgesteldNotitie String?      @db.Text @map("gezien_voorgesteld_notitie")
+  gezienVoorgesteldOp     DateTime?     @map("gezien_voorgesteld_op")
+
   // Optionele koppeling naar actiepunt (bij GEEL/ORANJE)
   actiepunt    Actiepunt? @relation(fields: [actiepuntId], references: [id])
   actiepuntId  String? @unique
@@ -1270,7 +1276,8 @@ model Coordinator {
   naam  String
   email String @unique
 
-  teams CoordinatorTeam[]
+  teams      CoordinatorTeam[]
+  voorstellen CoordinatorVoorstel[]
 
   createdAt DateTime @default(now())
 
@@ -1287,6 +1294,33 @@ model CoordinatorTeam {
 
   @@unique([coordinatorId, owTeamId, seizoen])
   @@map("coordinator_teams")
+}
+
+// Wijzigingsvoorstellen van coördinatoren (TC beoordeelt)
+model CoordinatorVoorstel {
+  id            String  @id @default(cuid())
+  coordinator   Coordinator @relation(fields: [coordinatorId], references: [id], onDelete: Cascade)
+  coordinatorId String
+
+  type          String  // "SPELERWIJZIGING" | "TEAMSTRUCTUUR" | "OVERIG"
+  omschrijving  String  @db.Text
+
+  // Optionele koppelingen
+  spelerId      String?
+  teamNaam      String?
+  seizoen       String
+
+  // Afhandeling
+  status        String  @default("OPEN")  // "OPEN" | "IN_BEHANDELING" | "VERWERKT" | "AFGEWEZEN"
+  toelichting   String? @db.Text  // TC-reactie
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([coordinatorId])
+  @@index([seizoen])
+  @@index([status])
+  @@map("coordinator_voorstellen")
 }
 
 model EvaluatieUitnodiging {

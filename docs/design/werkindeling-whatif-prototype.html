@@ -1,0 +1,2053 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TI Studio — Werkindeling prototype v4</title>
+<style>
+/* ═══════════════════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════════════════ */
+:root {
+  --bg-0: #0a0a0a;   /* canvas */
+  --bg-1: #141414;   /* kaarten / ribbon */
+  --bg-2: #1e1e1e;   /* verhoogd */
+  --bg-3: #262626;   /* hover */
+  --accent:      #FF6B00;
+  --accent-h:    #FF8533;
+  --accent-dim:  rgba(255,107,0,.12);
+  --text-1: #FAFAFA;
+  --text-2: #A3A3A3;
+  --text-3: #666666;
+  --border-0: #262626;
+  --border-1: #3a3a3a;
+  --ok:    #22C55E;
+  --warn:  #EAB308;
+  --err:   #EF4444;
+  --info:  #3B82F6;
+  --stop:  #F97316;
+  --pink:  #EC4899;
+  --blue:  #60A5FA;
+  /* Gezien-status kleuren (zelfde als GezienStatus enum) */
+  --gz-groen:  #22C55E;
+  --gz-geel:   #EAB308;
+  --gz-oranje: #F97316;
+  --gz-rood:   #EF4444;
+  --gz-geen:   #555566;
+  /* Ribbon breedte */
+  --ribbon: 48px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: Inter, system-ui, sans-serif;
+  background: var(--bg-0); color: var(--text-1);
+  font-size: 14px; line-height: 1.5;
+  overflow: hidden; height: 100vh;
+}
+
+/* ═══════════════════════════════════════════
+   SHELL & SCREENS
+═══════════════════════════════════════════ */
+.shell { display: flex; height: 100vh; overflow: hidden; }
+.screen { display: none; }
+.screen.active { display: flex; }
+
+/* ═══════════════════════════════════════════
+   ① SMALLE ICON RIBBON (links, 48px)
+═══════════════════════════════════════════ */
+.ribbon {
+  width: var(--ribbon);
+  min-width: var(--ribbon);
+  background: var(--bg-1);
+  border-right: 1px solid var(--border-0);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 0;
+  gap: 2px;
+  flex-shrink: 0;
+  overflow: visible;       /* tooltips mogen uitsteken */
+  position: relative;
+  z-index: 30;
+}
+
+/* Logo / branding top */
+.ribbon-logo {
+  width: 32px; height: 32px;
+  background: var(--accent-dim);
+  border: 1px solid rgba(255,107,0,.25);
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; margin-bottom: 8px; flex-shrink: 0;
+}
+
+/* Nav item */
+.ri {
+  width: 36px; height: 36px;
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; background: none; border: none;
+  font-size: 16px; color: var(--text-3);
+  transition: background 150ms, color 150ms;
+  position: relative;
+  flex-shrink: 0;
+  font-family: inherit;
+}
+.ri:hover { background: var(--bg-3); color: var(--text-1); }
+.ri.active {
+  background: var(--accent-dim);
+  color: var(--accent);
+}
+/* Active indicator — verticale streep links */
+.ri.active::before {
+  content: '';
+  position: absolute;
+  left: -8px;           /* buiten het ribbon, op de border */
+  top: 6px; bottom: 6px;
+  width: 3px;
+  background: var(--accent);
+  border-radius: 0 2px 2px 0;
+}
+
+/* Tooltip */
+.ri::after {
+  content: attr(data-tip);
+  position: absolute;
+  left: calc(var(--ribbon) - 4px);  /* direct rechts van ribbon edge */
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--bg-2);
+  border: 1px solid var(--border-1);
+  color: var(--text-1);
+  font-size: 11px; font-weight: 600;
+  padding: 4px 9px;
+  border-radius: 7px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 120ms;
+  z-index: 50;
+  box-shadow: 0 2px 10px rgba(0,0,0,.4);
+}
+.ri:hover::after { opacity: 1; }
+
+/* Badge op ribbon-item */
+.ri .rb {
+  position: absolute; top: 2px; right: 2px;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--accent); color: #fff;
+  font-size: 8px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+}
+
+/* Divider in ribbon */
+.rdiv {
+  width: 24px; height: 1px;
+  background: var(--border-0);
+  margin: 4px 0; flex-shrink: 0;
+}
+
+/* User avatar onderaan ribbon */
+.ribbon-footer {
+  margin-top: auto;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 4px;
+}
+.ribbon-avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--bg-2); border: 1px solid var(--border-1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; color: var(--accent);
+  cursor: pointer; position: relative;
+}
+.ribbon-avatar::after {
+  content: attr(data-tip);
+  position: absolute;
+  left: calc(var(--ribbon) - 4px);
+  top: 50%; transform: translateY(-50%);
+  background: var(--bg-2); border: 1px solid var(--border-1);
+  color: var(--text-1); font-size: 11px; font-weight: 600;
+  padding: 4px 9px; border-radius: 7px;
+  white-space: nowrap; pointer-events: none;
+  opacity: 0; transition: opacity 120ms; z-index: 50;
+  box-shadow: 0 2px 10px rgba(0,0,0,.4);
+}
+.ribbon-avatar:hover::after { opacity: 1; }
+
+/* ═══════════════════════════════════════════
+   MAIN
+═══════════════════════════════════════════ */
+.main {
+  flex: 1; overflow: hidden;
+  display: flex; flex-direction: column;
+  position: relative;
+}
+
+/* ═══════════════════════════════════════════
+   TOOLBAR
+═══════════════════════════════════════════ */
+.toolbar {
+  height: 52px; min-height: 52px;
+  background: var(--bg-1); border-bottom: 1px solid var(--border-0);
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 14px; flex-shrink: 0;
+}
+.tb-title { font-size: 14px; font-weight: 700; }
+.tb-sub   { font-size: 11px; color: var(--text-3); }
+.tb-group { flex: 1; display: flex; align-items: center; gap: 10px; }
+.toolbar-wi { border-bottom: 2px solid var(--accent); }
+.wi-q { flex: 1; font-size: 13px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ═══════════════════════════════════════════
+   BUTTONS
+═══════════════════════════════════════════ */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 8px 14px; border-radius: 9px; font-size: 12px; font-weight: 600;
+  cursor: pointer; border: none; transition: background 150ms, transform 80ms;
+  white-space: nowrap; font-family: inherit;
+}
+.btn:active { transform: scale(.97); }
+.btn-pri { background: var(--accent); color: #fff; }
+.btn-pri:hover { background: var(--accent-h); }
+.btn-sec { background: var(--bg-2); color: var(--text-1); border: 1px solid var(--border-1); }
+.btn-sec:hover { background: var(--bg-3); }
+.btn-ghost { background: transparent; color: var(--text-2); border: 1px solid var(--border-0); }
+.btn-ghost:hover { background: var(--bg-3); color: var(--text-1); }
+.btn-dk { background: transparent; color: var(--err); border: none; }
+.btn-dk:hover { background: rgba(239,68,68,.1); }
+.btn-sm { padding: 4px 10px; font-size: 11px; border-radius: 7px; }
+.btn-w  { width: 100%; }
+
+/* ═══════════════════════════════════════════
+   TAGS
+═══════════════════════════════════════════ */
+.tag {
+  display: inline-flex; align-items: center;
+  padding: 2px 7px; border-radius: 5px; font-size: 11px; font-weight: 600;
+}
+.tg-ok    { background: rgba(34,197,94,.12);   color: var(--ok); }
+.tg-warn  { background: rgba(234,179,8,.12);   color: var(--warn); }
+.tg-err   { background: rgba(239,68,68,.12);   color: var(--err); }
+.tg-acc   { background: var(--accent-dim);     color: var(--accent); }
+.tg-info  { background: rgba(59,130,246,.12);  color: var(--blue); }
+.tg-grey  { background: rgba(255,255,255,.06); color: var(--text-3); }
+
+/* ═══════════════════════════════════════════
+   EDITOR BODY LAYOUT
+═══════════════════════════════════════════ */
+.editor-body { flex: 1; display: flex; overflow: hidden; }
+
+/* SpelersPool */
+.pool {
+  width: 196px; min-width: 196px;
+  background: var(--bg-1); border-right: 1px solid var(--border-0);
+  display: flex; flex-direction: column;
+}
+.pool-head {
+  padding: 9px 12px 7px; border-bottom: 1px solid var(--border-0);
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .6px; color: var(--text-3);
+}
+.pool-filters { padding: 7px 12px; display: flex; gap: 4px; border-bottom: 1px solid var(--border-0); }
+.pill {
+  padding: 3px 8px; border-radius: 6px; font-size: 11px;
+  cursor: pointer; background: var(--bg-2); color: var(--text-2);
+  border: none; font-family: inherit; transition: background 120ms;
+}
+.pill.active { background: rgba(255,107,0,.18); color: var(--accent); }
+.pool-list { flex: 1; overflow-y: auto; padding: 3px 0; }
+.p-sp {
+  display: flex; align-items: center; gap: 7px;
+  padding: 6px 12px; cursor: grab; font-size: 12px; transition: background 120ms;
+}
+.p-sp:hover { background: var(--bg-3); }
+.p-av {
+  width: 22px; height: 22px; border-radius: 50%; background: var(--bg-2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 700; color: var(--text-3); flex-shrink: 0;
+}
+
+/* Werkgebied */
+.wg { flex: 1; overflow: auto; padding: 16px; background: var(--bg-0); position: relative; }
+.wg-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.sec-lbl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--text-3); margin-bottom: 8px; }
+.tgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(174px, 1fr)); gap: 9px; margin-bottom: 18px; }
+
+/* ═══════════════════════════════════════════
+   TEAMKAART
+═══════════════════════════════════════════ */
+.tc {
+  background: var(--bg-1); border: 1px solid var(--border-1);
+  border-radius: 10px; cursor: pointer; overflow: hidden;
+  transition: border-color 180ms;
+}
+.tc:hover { border-color: rgba(255,107,0,.35); }
+
+.tc-h {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 8px 4px; border-bottom: 2px solid transparent;
+}
+.tc-name { font-size: 11px; font-weight: 700; }
+.tc-cat  { font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 4px; flex-shrink: 0; }
+
+/* LOD overzicht */
+.tc-ov { padding: 8px 8px; display: flex; align-items: center; justify-content: space-between; }
+.tc-ov-r { text-align: right; }
+.tc-gem { font-size: 10px; color: var(--text-3); }
+
+/* LOD detail — kolomhoofden */
+.tc-d  { padding: 2px 0 0; }
+.tcols { display: grid; grid-template-columns: 1fr 1fr; }
+.ch    { display: flex; align-items: center; gap: 2px; padding: 2px 6px; font-size: 8px; font-weight: 700; }
+.ch-f  { color: var(--pink); }
+.ch-m  { color: var(--blue); }
+
+/* ═══════════════════════════════════════════
+   ② SPELERRIJ — VASTE BREEDTE, GEEN LAYOUT SHIFT
+   Kolom layout (van links naar rechts, vaste breedte):
+   [status-border 2px] [gezien 14px] [naam flex] [leeftijd 28px] [warns 28px] [notitie 10px]
+═══════════════════════════════════════════ */
+.sr {
+  display: grid;
+  /* pin | gezien | naam | leeftijd | warns | notitie */
+  grid-template-columns: 12px 14px 1fr 28px 28px 10px;
+  align-items: center;
+  padding: 1px 6px 1px 0;
+  font-size: 10px;
+  border-left: 2px solid transparent;
+  transition: background 100ms;
+  min-height: 16px;         /* rij altijd even hoog */
+  gap: 0;
+}
+.sr:hover { background: var(--bg-3); }
+
+/* Status-border kleuren (speler.status) */
+.sr-ok   { border-left-color: #34D399; }
+.sr-twij { border-left-color: var(--warn); }
+.sr-stop { border-left-color: var(--err); }
+
+/* ③ GEZIEN-STATUS — kolom 1, altijd 14px breed */
+/*
+  Drie standen:
+  A. Niet gezien: grijze stip met ? erin
+  B. Voorgesteld door coördinator (nog niet TC): gekleurde volle stip
+  C. Definitief bevestigd door TC: gekleurde stip met ✓
+*/
+.gz {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-size: 7px; font-weight: 900;
+  line-height: 1;
+}
+/* A — niet gezien */
+.gz-none {
+  background: transparent;
+  border: 1.5px solid var(--gz-geen);
+  color: var(--gz-geen);
+}
+/* B — voorgesteld (gekleurde volle stip, geen vinkje) */
+.gz-v-groen  { background: var(--gz-groen);  color: transparent; }
+.gz-v-geel   { background: var(--gz-geel);   color: transparent; }
+.gz-v-oranje { background: var(--gz-oranje); color: transparent; }
+.gz-v-rood   { background: var(--gz-rood);   color: transparent; }
+/* B ring: subtiele glow = "wacht nog" signaal */
+.gz-v-groen,
+.gz-v-geel,
+.gz-v-oranje,
+.gz-v-rood {
+  box-shadow: 0 0 0 2px var(--bg-1), 0 0 0 3px currentColor;
+}
+.gz-v-groen  { box-shadow: 0 0 0 2px var(--bg-1), 0 0 0 3px var(--gz-groen);  }
+.gz-v-geel   { box-shadow: 0 0 0 2px var(--bg-1), 0 0 0 3px var(--gz-geel);   }
+.gz-v-oranje { box-shadow: 0 0 0 2px var(--bg-1), 0 0 0 3px var(--gz-oranje); }
+.gz-v-rood   { box-shadow: 0 0 0 2px var(--bg-1), 0 0 0 3px var(--gz-rood);   }
+/* C — bevestigd (gekleurde stip MET vinkje erin) */
+.gz-c-groen  { background: var(--gz-groen);  color: #fff; }
+.gz-c-geel   { background: var(--gz-geel);   color: var(--bg-0); }
+.gz-c-oranje { background: var(--gz-oranje); color: #fff; }
+.gz-c-rood   { background: var(--gz-rood);   color: #fff; }
+
+/* Naam — kolom 2, overflow ellipsis */
+.sr-naam {
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  color: var(--text-1); padding: 0 3px;
+  font-size: 10px;
+}
+
+/* Leeftijd — kolom 3, vaste 28px */
+.sr-age {
+  font-size: 8.5px; color: var(--text-3);
+  text-align: right; padding-right: 2px;
+  width: 28px; flex-shrink: 0;
+}
+
+/* ④ WARNING-ICONEN — kolom 4, altijd 28px breed, max 3 iconen */
+/*
+  Iconen (van links naar rechts als aanwezig, anders lege ruimte):
+  ! = retentierisico (rood)
+  △ = geen evaluatie (amber)
+  ● = open notitie/voorstel (oranje)
+  Als meer dan 3: toon +N
+*/
+.sr-w {
+  width: 28px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: flex-end;
+  gap: 1px;
+}
+.si {
+  font-size: 8px; line-height: 1; flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 8px;
+}
+.si-r { color: var(--err); }   /* retentie */
+.si-w { color: var(--warn); }  /* geen eval */
+.si-n { color: var(--accent); } /* notitie open */
+.si-p { color: var(--ok); }    /* notitie afgehandeld (groen) — niet getoond als warning */
+
+/* ④ NOTITIE-INDICATOR — kolom 5, altijd 10px breed */
+/*
+  Stip: aanwezig en OPEN = oranje puls
+  Aanwezig en AFGEHANDELD = groen, statisch
+  Geen notitie = leeg (maar ruimte blijft gereserveerd)
+*/
+.sr-nd {
+  width: 10px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.nd-open {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(255,107,0,.5); }
+  50%      { box-shadow: 0 0 0 3px rgba(255,107,0,0); }
+}
+.nd-done {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--ok);
+  opacity: .6;
+}
+/* Geen notitie: geen element — container reserveert de ruimte */
+
+/* ═══════════════════════════════════════════
+   ⑤ SHIRT-ICONEN — korfbalshirt SVG
+   variant: dames (roze) | heren (blauw) | gemengd (paars)
+   maat klein (sm): 18×18px in header, normaal (md): 26×26px in kaart-overzicht
+   Gebruik: in .ch kolom-header en in .tc-ov kaart-overzicht
+═══════════════════════════════════════════ */
+.shirt-wrap {
+  display: inline-flex; align-items: center; justify-content: center;
+  position: relative; flex-shrink: 0;
+}
+.shirt-wrap.sm { width: 18px; height: 18px; }
+.shirt-wrap.md { width: 26px; height: 26px; }
+/* count label bovenop shirt — gecentreerd op het lijfvlak */
+.shirt-wrap .sc {
+  position: absolute;
+  font-weight: 800; line-height: 1; pointer-events: none;
+  top: 58%; left: 50%; transform: translate(-50%, -50%);
+}
+.shirt-wrap.sm .sc { font-size: 8px; }
+.shirt-wrap.md .sc { font-size: 11px; }
+/* header-chip met shirt + getal */
+.ch {
+  display: flex; align-items: center; gap: 4px;
+  padding: 2px 6px; font-size: 8px; font-weight: 700;
+}
+.ch-f { color: var(--pink); }
+.ch-m { color: var(--blue); }
+/* Overzicht-kaart: shirt-rij */
+.tc-gnd { display: flex; gap: 10px; align-items: center; }
+
+/* ═══════════════════════════════════════════
+   ⑥ PIN-INDICATOR — spelerrij kolom 0 (vóór gezien-stip)
+   Actief = oranje punaise, inactief = grijze outline
+   Vaste breedte 12px; gereserveerde ruimte altijd aanwezig
+═══════════════════════════════════════════ */
+/* Grid: pin(12px) | gezien(14px) | naam(flex) | leeftijd(28px) | warns(28px) | notitie(10px) */
+.sr-pin {
+  width: 12px; height: 12px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+/* Gepinde rij — licht geel/amber tint + lock-cursor bij hover */
+.sr.pinned {
+  background: rgba(234,179,8,.06);
+  border-left-color: var(--warn) !important;
+}
+.sr.pinned:hover { background: rgba(234,179,8,.12); cursor: not-allowed; }
+/* Shake-animatie bij drag-poging op pinned */
+@keyframes pinShake {
+  0%,100% { transform: translateX(0); }
+  20%,60% { transform: translateX(-3px); }
+  40%,80% { transform: translateX(3px); }
+}
+.sr.pinned.shake { animation: pinShake 300ms ease; }
+
+/* Kaart footer */
+.tc-f {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 4px 8px 5px; border-top: 1px solid var(--border-0); margin-top: 2px;
+}
+.tc-fc  { font-size: 9px; color: var(--text-3); }
+.tc-fv  { font-size: 9px; display: flex; align-items: center; gap: 2px; }
+.tc-fg  { font-size: 9px; color: var(--text-3); }
+.vok  { color: var(--ok); }
+.vw   { color: var(--warn); }
+.ve   { color: var(--err); }
+
+/* Voorstel banner op kaart */
+.tc-vb {
+  background: rgba(255,107,0,.09); border-top: 1px solid rgba(255,107,0,.2);
+  padding: 4px 8px; font-size: 10px; color: var(--accent); font-weight: 600;
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+/* What-if zones */
+.za { border: 2px solid rgba(255,107,0,.55); box-shadow: 0 0 12px rgba(255,107,0,.08); }
+.zi { border: 2px dashed rgba(234,179,8,.5); opacity: .86; }
+.zu { border: 1px dashed var(--border-0); opacity: .38; background: var(--bg-2); }
+.zn { border: 2px dashed rgba(255,107,0,.44); background: rgba(255,107,0,.03); }
+.dn { color: var(--err);  font-size: 10px; font-weight: 700; }
+.dp { color: var(--ok);   font-size: 10px; font-weight: 700; }
+
+/* ═══════════════════════════════════════════
+   ② NOTITIES POPOVER / DRAWER
+═══════════════════════════════════════════ */
+/* Notitie-kaartje (in drawer / popover) */
+.note-card {
+  background: var(--bg-2); border: 1px solid var(--border-1);
+  border-radius: 8px; padding: 10px 12px; margin-bottom: 7px;
+  position: relative;
+}
+.note-card.open   { border-left: 3px solid var(--accent); }
+.note-card.done   { border-left: 3px solid var(--ok); opacity: .65; }
+
+.note-tekst {
+  font-size: 12px; color: var(--text-2); line-height: 1.5; margin-bottom: 6px;
+}
+/* Doorgestreept als afgehandeld */
+.note-card.done .note-tekst { text-decoration: line-through; color: var(--text-3); }
+
+.note-meta {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 10px; color: var(--text-3);
+}
+.note-auteur { font-weight: 600; color: var(--text-2); }
+.note-datum  { }
+
+/* Afgehandeld badge */
+.note-handled {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 10px; color: var(--ok); font-weight: 600;
+}
+.note-handled::before { content: '✓'; }
+
+/* Afhandelen-knop op open notitie */
+.note-actions { display: flex; gap: 5px; margin-top: 7px; }
+
+/* Notities popover */
+.note-popover {
+  position: absolute;
+  background: var(--bg-1); border: 1px solid var(--border-1);
+  border-radius: 12px; width: 260px; z-index: 40;
+  box-shadow: 0 4px 24px rgba(0,0,0,.5);
+  padding: 0; overflow: hidden;
+  animation: popIn 160ms cubic-bezier(.4,0,.2,1);
+}
+@keyframes popIn { from { opacity: 0; transform: scale(.95) translateY(-4px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+.note-popover.hidden { display: none; }
+.np-head { padding: 10px 12px; border-bottom: 1px solid var(--border-0); display: flex; align-items: center; justify-content: space-between; }
+.np-title { font-size: 12px; font-weight: 700; }
+.np-body  { padding: 10px 12px; max-height: 280px; overflow-y: auto; }
+.np-add   { padding: 8px 12px; border-top: 1px solid var(--border-0); }
+.np-input {
+  width: 100%; background: var(--bg-0); border: 1px solid var(--border-1);
+  border-radius: 8px; color: var(--text-1); font-size: 12px;
+  font-family: inherit; padding: 7px 10px; outline: none; resize: none;
+}
+.np-input:focus { border-color: var(--accent); }
+
+/* ═══════════════════════════════════════════
+   RIGHT SIDETABS
+═══════════════════════════════════════════ */
+.side-r {
+  width: 46px; background: var(--bg-1); border-left: 1px solid var(--border-0);
+  display: flex; flex-direction: column; padding: 8px 0; gap: 3px; align-items: center;
+}
+.stb {
+  width: 34px; height: 34px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 14px; background: none; border: none;
+  color: var(--text-3); position: relative; transition: background 150ms;
+  font-family: inherit;
+}
+.stb:hover  { background: var(--bg-3); color: var(--text-1); }
+.stb.active { background: var(--accent-dim); color: var(--accent); }
+.stb .bdg {
+  position: absolute; top: 1px; right: 1px; width: 13px; height: 13px;
+  border-radius: 50%; background: var(--accent); color: #fff;
+  font-size: 8px; font-weight: 700; display: flex; align-items: center; justify-content: center;
+}
+
+/* ═══════════════════════════════════════════
+   SLIDE-OUT PANELS RECHTS
+═══════════════════════════════════════════ */
+.rpanel {
+  width: 264px; background: var(--bg-1); border-left: 1px solid var(--border-0);
+  display: flex; flex-direction: column; overflow: hidden;
+  animation: slideR 200ms ease;
+}
+@keyframes slideR { from { transform: translateX(264px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+.rp-h { padding: 11px 13px; border-bottom: 1px solid var(--border-0); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.rp-t { font-size: 13px; font-weight: 700; }
+.rp-b { flex: 1; overflow-y: auto; padding: 10px 13px; }
+
+/* What-if kaartje */
+.wic { background: var(--bg-2); border: 1px solid var(--border-1); border-radius: 9px; padding: 9px 11px; margin-bottom: 7px; cursor: pointer; transition: border-color 150ms; }
+.wic:hover { border-color: rgba(255,107,0,.4); }
+.wiq { font-size: 12px; font-weight: 600; line-height: 1.4; margin-bottom: 5px; }
+.wim { display: flex; align-items: center; justify-content: space-between; }
+
+/* What-if footer */
+.wi-foot {
+  height: 52px; min-height: 52px; background: var(--bg-1);
+  border-top: 1px solid var(--border-0);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 16px; flex-shrink: 0;
+}
+
+/* Impact drawer */
+.impact-dr {
+  position: absolute; top: 0; right: 46px; bottom: 0; width: 280px;
+  background: var(--bg-1); border-left: 1px solid var(--border-0);
+  display: flex; flex-direction: column; z-index: 20;
+  box-shadow: -4px 0 24px rgba(0,0,0,.4);
+  animation: slideR 200ms ease;
+}
+.impact-dr.hidden { display: none; }
+.imp-s { padding: 9px 13px 5px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--text-3); }
+.imp-r { padding: 8px 13px; border-bottom: 1px solid var(--border-0); display: flex; justify-content: space-between; align-items: flex-start; }
+.imp-n { font-size: 12px; font-weight: 600; }
+.imp-d { font-size: 11px; color: var(--text-3); }
+.imp-sum { background: var(--bg-2); margin: 10px; border-radius: 9px; padding: 10px 12px; }
+.imp-sr  { display: flex; justify-content: space-between; font-size: 12px; padding: 2px 0; }
+.vi-r    { display: flex; align-items: flex-start; gap: 7px; padding: 7px 13px; border-bottom: 1px solid var(--border-0); font-size: 12px; }
+
+/* Zoom controls */
+.zoom-c {
+  position: absolute; bottom: 14px; right: 58px;
+  background: var(--bg-1); border: 1px solid var(--border-1);
+  border-radius: 9px; display: flex; align-items: center; gap: 2px;
+  padding: 3px 6px; box-shadow: 0 1px 8px rgba(0,0,0,.4); z-index: 10;
+}
+.zb    { padding: 4px 7px; font-size: 11px; font-weight: 700; background: none; border: none; color: var(--text-3); cursor: pointer; border-radius: 5px; font-family: inherit; transition: background 100ms; }
+.zb:hover { background: var(--bg-3); color: var(--text-1); }
+.zpct  { font-size: 11px; color: var(--text-2); min-width: 34px; text-align: center; }
+.zdiv  { width: 1px; height: 13px; background: var(--border-0); }
+
+/* Zone labels */
+.zone-s  { margin-bottom: 20px; }
+.zone-l  { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--text-3); margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+.zdot    { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.zchips  { display: flex; flex-wrap: wrap; gap: 5px; }
+.zchip   { display: flex; align-items: center; justify-content: space-between; gap: 8px; background: var(--bg-2); border: 1px dashed var(--border-1); border-radius: 7px; padding: 5px 9px; opacity: .38; font-size: 11px; color: var(--text-3); min-width: 104px; }
+
+/* ═══════════════════════════════════════════
+   ONBOARDING
+═══════════════════════════════════════════ */
+.ob-wrap { flex: 1; display: flex; align-items: center; justify-content: center; }
+.ob-card { background: var(--bg-1); border: 1px solid var(--border-1); border-radius: 16px; padding: 44px 40px; max-width: 420px; width: 100%; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,.4); }
+.ob-ico  { width: 66px; height: 66px; border-radius: 18px; background: var(--accent-dim); border: 1px solid rgba(255,107,0,.22); display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 20px; }
+.ob-ttl  { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
+.ob-txt  { font-size: 14px; color: var(--text-2); line-height: 1.7; margin-bottom: 24px; }
+
+/* ═══════════════════════════════════════════
+   MODAL
+═══════════════════════════════════════════ */
+.mo-ov { position: fixed; inset: 0; background: rgba(0,0,0,.74); display: flex; align-items: center; justify-content: center; z-index: 100; backdrop-filter: blur(4px); animation: fadeIn 150ms ease; }
+.mo-ov.hidden { display: none; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.modal { background: var(--bg-1); border: 1px solid var(--border-1); border-radius: 16px; width: 480px; max-width: 96vw; max-height: 88vh; display: flex; flex-direction: column; box-shadow: 0 8px 48px rgba(0,0,0,.6); animation: scIn 180ms cubic-bezier(.4,0,.2,1); }
+.modal-sm { width: 360px; }
+@keyframes scIn { from { transform: scale(.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.mh { padding: 15px 17px 11px; border-bottom: 1px solid var(--border-0); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.mh-t { font-size: 15px; font-weight: 700; }
+.mcl { width: 26px; height: 26px; border-radius: 7px; background: none; border: none; color: var(--text-3); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: background 150ms; font-family: inherit; }
+.mcl:hover { background: var(--bg-3); color: var(--text-1); }
+.mb { padding: 17px; overflow-y: auto; flex: 1; }
+.mf { padding: 12px 17px; border-top: 1px solid var(--border-0); display: flex; justify-content: flex-end; gap: 8px; flex-shrink: 0; }
+
+/* Form */
+.fg { margin-bottom: 15px; }
+.fl { display: block; font-size: 11px; font-weight: 700; color: var(--text-2); margin-bottom: 5px; text-transform: uppercase; letter-spacing: .4px; }
+.fl .req { color: var(--err); margin-left: 2px; }
+.fta, .fin { width: 100%; background: var(--bg-0); border: 1px solid var(--border-1); border-radius: 10px; color: var(--text-1); font-size: 13px; font-family: inherit; padding: 9px 12px; outline: none; transition: border-color 150ms; }
+.fta { resize: vertical; min-height: 60px; }
+.fta:focus, .fin:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(255,107,0,.12); }
+.fh { font-size: 11px; color: var(--text-3); margin-top: 4px; }
+.cl { background: var(--bg-0); border: 1px solid var(--border-1); border-radius: 10px; overflow: hidden; max-height: 188px; overflow-y: auto; }
+.cgh { padding: 5px 12px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--text-3); background: var(--bg-1); border-bottom: 1px solid var(--border-0); position: sticky; top: 0; }
+.cr { display: flex; align-items: center; gap: 10px; padding: 7px 12px; cursor: pointer; border-bottom: 1px solid var(--border-0); transition: background 120ms; }
+.cr:last-child { border-bottom: none; }
+.cr:hover { background: var(--bg-3); }
+.cr input[type=checkbox] { width: 14px; height: 14px; accent-color: var(--accent); }
+
+/* Inbox */
+.ib-item { padding: 13px 15px; border-bottom: 1px solid var(--border-0); cursor: pointer; transition: background 120ms; border-left: 3px solid transparent; }
+.ib-item.new { border-left-color: var(--accent); background: rgba(255,107,0,.03); }
+.ib-item:hover { background: var(--bg-3); }
+.ib-h { display: flex; align-items: center; gap: 7px; margin-bottom: 4px; }
+.ib-av { width: 22px; height: 22px; border-radius: 50%; background: var(--bg-3); border: 1px solid var(--border-1); display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: var(--accent); flex-shrink: 0; }
+.ib-nm { font-size: 12px; font-weight: 700; flex: 1; }
+.ib-ts { font-size: 10px; color: var(--text-3); }
+.ib-bd { font-size: 12px; color: var(--text-2); line-height: 1.5; }
+
+/* ═══════════════════════════════════════════
+   MOBILE SHELL
+═══════════════════════════════════════════ */
+.mf-wrap { justify-content: center; background: #000; align-items: stretch; }
+.mfrm { width: 390px; height: 100vh; display: flex; flex-direction: column; background: var(--bg-0); overflow: hidden; }
+.mst  { height: 44px; min-height: 44px; background: var(--bg-0); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; flex-shrink: 0; }
+.mst-t { font-size: 15px; font-weight: 700; }
+.mst-i { font-size: 12px; color: var(--text-2); display: flex; gap: 5px; }
+.mtb  { height: 52px; min-height: 52px; background: var(--bg-1); border-bottom: 1px solid var(--border-0); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; flex-shrink: 0; }
+.mtb-title { font-size: 16px; font-weight: 700; }
+.mtb-back  { font-size: 14px; color: var(--accent); font-weight: 600; cursor: pointer; border: none; background: none; font-family: inherit; }
+.mc   { flex: 1; overflow-y: auto; }
+.mbn  { height: 72px; min-height: 72px; background: var(--bg-1); border-top: 1px solid var(--border-0); display: flex; align-items: center; justify-content: space-around; flex-shrink: 0; }
+.mni  { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 8px 10px; cursor: pointer; border: none; background: none; font-family: inherit; color: var(--text-3); font-size: 10px; flex: 1; }
+.mni-ic { font-size: 20px; }
+.mni.active { color: var(--accent); }
+
+/* Mobile team card */
+.mtc  { margin: 10px 14px; background: var(--bg-1); border: 1px solid var(--border-1); border-radius: 13px; overflow: hidden; }
+.mtch { padding: 13px 14px 10px; border-bottom: 3px solid transparent; }
+.mtcn { font-size: 17px; font-weight: 800; }
+.mtcm { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+
+/* Mobile spelerrij — ook vaste kolommen */
+.msr  {
+  display: grid;
+  grid-template-columns: 36px 1fr 36px;
+  align-items: center;
+  padding: 9px 14px; border-bottom: 1px solid var(--border-0);
+  transition: background 120ms; cursor: pointer; gap: 8px;
+}
+.msr:last-child { border-bottom: none; }
+.msr:hover { background: var(--bg-3); }
+.mav { width: 32px; height: 32px; border-radius: 50%; background: var(--bg-2); border: 1px solid var(--border-1); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--text-2); flex-shrink: 0; }
+.mnw  { overflow: hidden; }
+.mnm  { font-size: 14px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mmeta { font-size: 12px; color: var(--text-3); }
+/* Gezien-status op mobile — groter, 20px */
+.mgz {
+  width: 20px; height: 20px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-size: 9px; font-weight: 900;
+}
+
+/* Mobile gezien-status opties */
+.gz-opt { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--border-1); cursor: pointer; transition: all 150ms; background: var(--bg-2); margin-bottom: 7px; }
+.gz-opt.sel-g  { border-color: rgba(34,197,94,.5);  background: rgba(34,197,94,.09);  }
+.gz-opt.sel-y  { border-color: rgba(234,179,8,.5);  background: rgba(234,179,8,.09);  }
+.gz-opt.sel-o  { border-color: rgba(249,115,22,.5); background: rgba(249,115,22,.09); }
+.gz-opt.sel-r  { border-color: rgba(239,68,68,.5);  background: rgba(239,68,68,.09);  }
+.gz-opt-l { font-size: 14px; font-weight: 600; }
+.gz-opt-s { font-size: 12px; color: var(--text-3); }
+
+/* Mobile compose */
+.mcomp { padding: 16px; }
+.mctt  { font-size: 15px; font-weight: 700; margin-bottom: 3px; }
+.mcts  { font-size: 12px; color: var(--text-3); margin-bottom: 14px; }
+.mcta  { width: 100%; background: var(--bg-1); border: 1px solid var(--border-1); border-radius: 12px; color: var(--text-1); font-size: 14px; font-family: inherit; padding: 12px 14px; outline: none; resize: none; min-height: 100px; }
+.mcta:focus { border-color: var(--accent); }
+
+/* Mobile succes */
+.msuc { margin: 20px 14px; background: rgba(34,197,94,.07); border: 1px solid rgba(34,197,94,.22); border-radius: 14px; padding: 24px; text-align: center; }
+.msuc-ic { width: 50px; height: 50px; border-radius: 50%; background: rgba(34,197,94,.14); display: flex; align-items: center; justify-content: center; font-size: 22px; margin: 0 auto 13px; }
+.msuc-t { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+.msuc-s { font-size: 13px; color: var(--text-3); }
+
+/* ═══════════════════════════════════════════
+   PROTO NAV
+═══════════════════════════════════════════ */
+.pnav {
+  position: fixed; bottom: 12px; left: 50%; transform: translateX(-50%);
+  background: rgba(16,16,16,.97); border: 1px solid var(--border-1);
+  border-radius: 40px; padding: 5px 8px; display: flex; gap: 3px; flex-wrap: wrap;
+  justify-content: center; z-index: 200; box-shadow: 0 4px 24px rgba(0,0,0,.5);
+  backdrop-filter: blur(12px); max-width: 98vw;
+}
+.pb { padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; cursor: pointer; border: none; background: transparent; color: var(--text-3); font-family: inherit; white-space: nowrap; }
+.pb:hover { background: var(--bg-3); color: var(--text-1); }
+.pb.cur { background: var(--accent-dim); color: var(--accent); }
+
+/* Misc */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-1); border-radius: 2px; }
+select option { background: var(--bg-1); }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  PROTO NAV                                                      -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<nav class="pnav">
+  <button class="pb cur"  onclick="go('ob')">1 — Onboarding</button>
+  <button class="pb" onclick="go('ed')">2 — Werkindeling detail</button>
+  <button class="pb" onclick="go('ed-ov')">2b — Overzicht LOD</button>
+  <button class="pb" onclick="go('wi-dlg')">3 — What-if dialog</button>
+  <button class="pb" onclick="go('wi-ed')">4 — What-if editor</button>
+  <button class="pb" onclick="go('mob-t')">5 — Mobile teams</button>
+  <button class="pb" onclick="go('mob-gz')">6 — Mobile gezien</button>
+  <button class="pb" onclick="go('mob-vr')">7 — Mobile voorstel</button>
+  <button class="pb" onclick="go('inbox')">8 — Studio inbox</button>
+</nav>
+
+<!-- Notities popover (globaal, gepositioneerd via JS) -->
+<div class="note-popover hidden" id="note-popover">
+  <div class="np-head">
+    <span class="np-title" id="np-name">Opmerkingen</span>
+    <button class="mcl" onclick="closeNotes()">✕</button>
+  </div>
+  <div class="np-body" id="np-body"></div>
+  <div class="np-add">
+    <textarea class="np-input" id="np-input" rows="2" placeholder="Nieuwe opmerking toevoegen..."></textarea>
+    <div style="display:flex;justify-content:flex-end;margin-top:5px;">
+      <button class="btn btn-sm btn-pri" onclick="addNote()">Opslaan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  1 — ONBOARDING                                                 -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="shell screen active" id="screen-ob">
+  <!-- ① Ribbon -->
+  <nav class="ribbon">
+    <div class="ribbon-logo">🏗️</div>
+    <button class="ri" data-tip="Dashboard">🏠</button>
+    <button class="ri" data-tip="Blauwdruk">🗂️</button>
+    <button class="ri" data-tip="Werkbord">📋</button>
+    <button class="ri active" data-tip="Indeling" onclick="go('ed')">⚙️</button>
+    <div class="rdiv"></div>
+    <button class="ri" data-tip="Vergelijk">⇌</button>
+    <div class="ribbon-footer">
+      <div class="ribbon-avatar" data-tip="Jasper Laban · TC-lid">JL</div>
+    </div>
+  </nav>
+  <main class="main">
+    <div class="ob-wrap">
+      <div class="ob-card">
+        <div class="ob-ico">🏗️</div>
+        <h1 class="ob-ttl">Nog geen werkindeling</h1>
+        <p class="ob-txt">Start de werkindeling vanuit de blauwdruk. Dit is de centrale teamindeling voor het hele seizoen — alle TC-leden werken hieraan samen.</p>
+        <div style="background:var(--bg-0);border:1px solid var(--border-1);border-radius:10px;padding:12px 14px;margin-bottom:20px;text-align:left;">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-3);margin-bottom:8px;">Blauwdruk 2025-2026</div>
+          <div style="display:flex;gap:20px;font-size:12px;">
+            <div><span style="color:var(--text-3)">Spelers</span><br><strong>214</strong></div>
+            <div><span style="color:var(--text-3)">Senioren</span><br><strong>62</strong></div>
+            <div><span style="color:var(--text-3)">Teams</span><br><strong>~22</strong></div>
+          </div>
+        </div>
+        <button class="btn btn-pri btn-w" onclick="go('ed')" style="font-size:14px;padding:12px;">
+          Start werkindeling vanuit blauwdruk
+        </button>
+        <div style="font-size:11px;color:var(--text-3);margin-top:10px;">Of promoveer een bestaand scenario via Scenario's › Meer</div>
+
+        <!-- Legenda: shirt-iconen + pin -->
+        <div style="margin-top:20px;background:var(--bg-0);border:1px solid var(--border-1);border-radius:10px;padding:12px 14px;text-align:left;">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-3);margin-bottom:10px;">Visueel systeem — legenda</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;align-items:center;gap:10px;font-size:12px;">
+              <span id="leg-shirt-f"></span>
+              <span style="color:var(--text-2);">Roze shirt = dames (getal = aantal)</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:12px;">
+              <span id="leg-shirt-m"></span>
+              <span style="color:var(--text-2);">Blauw shirt = heren (getal = aantal)</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:12px;">
+              <span id="leg-shirt-x"></span>
+              <span style="color:var(--text-2);">Paars shirt = gemengd</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:12px;">
+              <span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;" id="leg-pin-on"></span>
+              <span style="color:var(--text-2);">Punaise (oranje) = gepind, niet verplaatsbaar</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;font-size:12px;">
+              <span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;" id="leg-pin-off"></span>
+              <span style="color:var(--text-2);">Punaise (grijs) = niet gepind, klik om te pinnen</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  2 — WERKINDELING EDITOR (detail LOD)                          -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="shell screen" id="screen-ed">
+  <nav class="ribbon">
+    <div class="ribbon-logo">🏗️</div>
+    <button class="ri" data-tip="Dashboard">🏠</button>
+    <button class="ri" data-tip="Blauwdruk">🗂️</button>
+    <button class="ri" data-tip="Werkbord">📋</button>
+    <button class="ri active" data-tip="Indeling">⚙️</button>
+    <div class="rdiv"></div>
+    <button class="ri" data-tip="Vergelijk">⇌</button>
+    <div class="ribbon-footer">
+      <div class="ribbon-avatar" data-tip="Jasper Laban · TC-lid">JL</div>
+    </div>
+  </nav>
+  <main class="main">
+    <div class="toolbar">
+      <div class="tb-group">
+        <div>
+          <div class="tb-title">Werkindeling 2025-2026</div>
+          <div class="tb-sub">22 teams · v3 · 12 apr</div>
+        </div>
+        <span class="tag tg-ok">Definitief</span>
+      </div>
+      <!-- LOD toggle -->
+      <div style="display:flex;gap:2px;background:var(--bg-2);border:1px solid var(--border-1);border-radius:8px;padding:3px;">
+        <button class="zb" onclick="go('ed-ov')" style="font-size:11px;padding:3px 8px;">Overzicht</button>
+        <button class="zb" style="font-size:11px;padding:3px 8px;background:var(--accent-dim);color:var(--accent);border-radius:5px;">Detail</button>
+      </div>
+      <button class="btn btn-ghost btn-sm">⊞ Compact</button>
+      <button class="btn btn-ghost btn-sm">★ Scores</button>
+      <button class="btn btn-ghost btn-sm">＋ Team</button>
+      <button class="btn btn-pri btn-sm" onclick="go('wi-dlg')">⟡ What-if</button>
+      <button class="btn btn-ghost btn-sm" onclick="go('inbox')" style="position:relative;">
+        💬 Voorstellen
+        <span style="position:absolute;top:-3px;right:-3px;background:var(--accent);color:#fff;border-radius:50%;width:15px;height:15px;font-size:8px;font-weight:700;display:flex;align-items:center;justify-content:center;">3</span>
+      </button>
+    </div>
+
+    <div class="editor-body">
+      <!-- Pool -->
+      <div class="pool">
+        <div class="pool-head">Spelerspool</div>
+        <div class="pool-filters">
+          <button class="pill active">Vrij</button>
+          <button class="pill">Sen</button>
+          <button class="pill">U19</button>
+          <button class="pill">U17</button>
+        </div>
+        <div class="pool-list">
+          <div class="p-sp"><div class="p-av">AS</div><span style="flex:1;font-size:12px;color:var(--text-2)">A. Smit</span><span style="font-size:10px;color:var(--text-3)">'04</span></div>
+          <div class="p-sp"><div class="p-av">BJ</div><span style="flex:1;font-size:12px;color:var(--text-2)">B. de Jong</span><span style="font-size:10px;color:var(--text-3)">'06</span></div>
+          <div class="p-sp"><div class="p-av">CK</div><span style="flex:1;font-size:12px;color:var(--text-2)">C. Kok</span><span style="font-size:10px;color:var(--text-3)">'07</span></div>
+          <div class="p-sp"><div class="p-av">DV</div><span style="flex:1;font-size:12px;color:var(--text-2)">D. van Dam</span><span style="font-size:10px;color:var(--text-3)">'05</span></div>
+        </div>
+      </div>
+
+      <!-- Werkgebied -->
+      <div class="wg">
+        <div class="wg-head">
+          <div style="font-size:13px;color:var(--text-2)">22 teams &middot; <span style="color:var(--text-3)">0 niet-ingedeeld</span></div>
+          <button class="btn btn-ghost btn-sm">Sorteren</button>
+        </div>
+
+        <!-- ── SENIOREN ── -->
+        <div class="sec-lbl">Senioren</div>
+        <div class="tgrid">
+
+          <!-- Sen 1: voorstel + diverse gezien-statussen + notities -->
+          <div class="tc">
+            <div class="tc-h" style="border-bottom-color:#EF4444;">
+              <span class="tc-name">Senioren 1</span>
+              <span class="tc-cat" style="background:rgba(239,68,68,.14);color:#EF4444;">Sen A</span>
+            </div>
+            <div class="tc-d">
+              <div class="tcols">
+                <!-- Dames -->
+                <div>
+                  <div class="ch ch-f">♀ 6</div>
+                  <!--
+                    Kolommen per rij:
+                    [gz 14px] [naam flex] [leeftijd 28px] [warns 28px] [notitie-dot 10px]
+                  -->
+                  <!-- C bevestigd groen, 1 open notitie -->
+                  <div class="sr sr-ok" onclick="openNotes('M. de Vries', this)">
+                    <div class="gz gz-c-groen">✓</div>
+                    <span class="sr-naam">M. de Vries</span>
+                    <span class="sr-age">28.4</span>
+                    <span class="sr-w"></span>
+                    <span class="sr-nd"><span class="nd-done" title="Notitie afgehandeld"></span></span>
+                  </div>
+                  <!-- B voorgesteld geel, geen warns -->
+                  <div class="sr sr-ok">
+                    <div class="gz gz-v-geel" title="Voorgesteld: onzeker"></div>
+                    <span class="sr-naam">S. van Berg</span>
+                    <span class="sr-age">26.1</span>
+                    <span class="sr-w"></span>
+                    <span class="sr-nd"></span>
+                  </div>
+                  <!-- twij + geen eval + open notitie -->
+                  <div class="sr sr-twij" onclick="openNotes('L. Peters', this)">
+                    <div class="gz gz-none" title="Niet gezien">?</div>
+                    <span class="sr-naam">L. Peters</span>
+                    <span class="sr-age">24.8</span>
+                    <span class="sr-w"><span class="si si-w" title="Geen evaluatie">△</span></span>
+                    <span class="sr-nd"><span class="nd-open" title="Open opmerking"></span></span>
+                  </div>
+                  <!-- C bevestigd groen -->
+                  <div class="sr sr-ok">
+                    <div class="gz gz-c-groen">✓</div>
+                    <span class="sr-naam">K. Smits</span>
+                    <span class="sr-age">22.3</span>
+                    <span class="sr-w"></span>
+                    <span class="sr-nd"></span>
+                  </div>
+                  <!-- retentie + open notitie -->
+                  <div class="sr sr-ok" onclick="openNotes('R. Kok', this)">
+                    <div class="gz gz-none" title="Niet gezien">?</div>
+                    <span class="sr-naam">R. Kok</span>
+                    <span class="sr-age">20.5</span>
+                    <span class="sr-w"><span class="si si-r" title="Retentierisico">!</span></span>
+                    <span class="sr-nd"><span class="nd-open" title="Open opmerking"></span></span>
+                  </div>
+                  <!-- B voorgesteld oranje + geen eval -->
+                  <div class="sr sr-ok">
+                    <div class="gz gz-v-oranje" title="Voorgesteld: stop-signaal"></div>
+                    <span class="sr-naam">W. Prins</span>
+                    <span class="sr-age">19.2</span>
+                    <span class="sr-w"><span class="si si-w" title="Geen evaluatie">△</span></span>
+                    <span class="sr-nd"></span>
+                  </div>
+                </div>
+                <!-- Heren -->
+                <div>
+                  <div class="ch ch-m">♂ 6</div>
+                  <!-- B voorgesteld groen + voorstel open notitie -->
+                  <div class="sr sr-ok" onclick="openNotes('J. Bakker', this)">
+                    <div class="gz gz-v-groen" title="Voorgesteld: beschikbaar (wacht TC)"></div>
+                    <span class="sr-naam">J. Bakker</span>
+                    <span class="sr-age">29.2</span>
+                    <span class="sr-w"><span class="si si-n" title="Open opmerking">●</span></span>
+                    <span class="sr-nd"><span class="nd-open" title="Open opmerking: voorstel ingediend"></span></span>
+                  </div>
+                  <!-- C bevestigd groen -->
+                  <div class="sr sr-ok">
+                    <div class="gz gz-c-groen">✓</div>
+                    <span class="sr-naam">P. Jansen</span>
+                    <span class="sr-age">27.0</span>
+                    <span class="sr-w"></span>
+                    <span class="sr-nd"></span>
+                  </div>
+                  <!-- C bevestigd groen + afgehandelde notitie -->
+                  <div class="sr sr-ok" onclick="openNotes('T. Groot', this)">
+                    <div class="gz gz-c-groen">✓</div>
+                    <span class="sr-naam">T. Groot</span>
+                    <span class="sr-age">25.5</span>
+                    <span class="sr-w"></span>
+                    <span class="sr-nd"><span class="nd-done" title="Notitie besproken"></span></span>
+                  </div>
+                  <!-- twij + B voorgesteld geel -->
+                  <div class="sr sr-twij">
+                    <div class="gz gz-v-geel" title="Voorgesteld: onzeker"></div>
+                    <span class="sr-naam">H. Laan</span>
+                    <span class="sr-age">23.1</span>
+                    <span class="sr-w"></span>
+                    <span class="sr-nd"></span>
+                  </div>
+                  <!-- C bevestigd groen -->
+                  <div class="sr sr-ok">
+                    <div class="gz gz-c-groen">✓</div>
+                    <span class="sr-naam">N. van Dijk</span>
+                    <span class="sr-age">21.7</span>
+                    <span class="sr-w"></span>
+                    <span class="sr-nd"></span>
+                  </div>
+                  <!-- retentie + niet gezien -->
+                  <div class="sr sr-ok">
+                    <div class="gz gz-none" title="Niet gezien">?</div>
+                    <span class="sr-naam">A. Berg</span>
+                    <span class="sr-age">19.8</span>
+                    <span class="sr-w"><span class="si si-r" title="Retentierisico">!</span><span class="si si-w" title="Geen evaluatie">△</span></span>
+                    <span class="sr-nd"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="tc-vb">
+              <span>1 voorstel van J. Bakker (coord)</span>
+              <button class="btn btn-sm" style="padding:2px 7px;font-size:10px;background:var(--accent-dim);color:var(--accent);border:none;border-radius:5px;" onclick="go('inbox')">Bekijken</button>
+            </div>
+            <div class="tc-f">
+              <div class="tc-fc">12 sp.</div>
+              <div class="tc-fv vok">✓ OK</div>
+              <div class="tc-fg">gem. 25.4</div>
+            </div>
+          </div>
+
+          <!-- Sen 2: validatiewaarschuwing, gemengde statussen -->
+          <div class="tc">
+            <div class="tc-h" style="border-bottom-color:#EF4444;">
+              <span class="tc-name">Senioren 2</span>
+              <span class="tc-cat" style="background:rgba(239,68,68,.14);color:#EF4444;">Sen A</span>
+            </div>
+            <div class="tc-d">
+              <div class="tcols">
+                <div>
+                  <div class="ch ch-f">♀ 5</div>
+                  <div class="sr sr-ok"><div class="gz gz-c-groen">✓</div><span class="sr-naam">A. Mulder</span><span class="sr-age">27.2</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-none" title="Niet gezien">?</div><span class="sr-naam">E. Wolters</span><span class="sr-age">25.4</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-v-groen"></div><span class="sr-naam">C. van Beek</span><span class="sr-age">23.7</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-stop" onclick="openNotes('B. Hendriks', this)"><div class="gz gz-c-rood">✓</div><span class="sr-naam">B. Hendriks</span><span class="sr-age">22.0</span><span class="sr-w"><span class="si si-r" title="Retentierisico">!</span></span><span class="sr-nd"><span class="nd-open"></span></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-none" title="Niet gezien">?</div><span class="sr-naam">Y. Oost</span><span class="sr-age">20.1</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                </div>
+                <div>
+                  <div class="ch ch-m">♂ 5</div>
+                  <div class="sr sr-ok"><div class="gz gz-c-groen">✓</div><span class="sr-naam">D. Klaasen</span><span class="sr-age">28.8</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-none" title="Niet gezien">?</div><span class="sr-naam">R. Visser</span><span class="sr-age">26.3</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-c-groen">✓</div><span class="sr-naam">F. Zwart</span><span class="sr-age">24.1</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-none" title="Niet gezien">?</div><span class="sr-naam">G. Wijnand</span><span class="sr-age">22.5</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-twij"><div class="gz gz-v-geel"></div><span class="sr-naam">H. Ouwens</span><span class="sr-age">20.9</span><span class="sr-w"><span class="si si-w" title="Geen evaluatie">△</span></span><span class="sr-nd"></span></div>
+                </div>
+              </div>
+            </div>
+            <div class="tc-f">
+              <div class="tc-fc">10 sp.</div>
+              <div class="tc-fv vw">◉ min. 10</div>
+              <div class="tc-fg">gem. 24.1</div>
+            </div>
+          </div>
+
+          <!-- Sen 3 -->
+          <div class="tc">
+            <div class="tc-h" style="border-bottom-color:#F97316;">
+              <span class="tc-name">Senioren 3</span>
+              <span class="tc-cat" style="background:rgba(249,115,22,.12);color:#F97316;">Sen B</span>
+            </div>
+            <div class="tc-d">
+              <div class="tcols">
+                <div>
+                  <div class="ch ch-f">♀ 5</div>
+                  <div class="sr sr-ok"><div class="gz gz-c-groen">✓</div><span class="sr-naam">T. van Rooy</span><span class="sr-age">26.0</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-v-geel"></div><span class="sr-naam">Z. Prins</span><span class="sr-age">24.3</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">I. de Wit</span><span class="sr-age">22.1</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">V. Kok</span><span class="sr-age">20.5</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">U. Smit</span><span class="sr-age">19.0</span><span class="sr-w"><span class="si si-w">△</span></span><span class="sr-nd"></span></div>
+                </div>
+                <div>
+                  <div class="ch ch-m">♂ 5</div>
+                  <div class="sr sr-ok"><div class="gz gz-c-groen">✓</div><span class="sr-naam">C. Kok</span><span class="sr-age">27.5</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">D. van Dam</span><span class="sr-age">25.8</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">E. Hoekstra</span><span class="sr-age">23.4</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">Q. Berg</span><span class="sr-age">21.2</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">P. de Vries</span><span class="sr-age">20.0</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                </div>
+              </div>
+            </div>
+            <div class="tc-f">
+              <div class="tc-fc">10 sp.</div>
+              <div class="tc-fv vok">✓ OK</div>
+              <div class="tc-fg">gem. 23.6</div>
+            </div>
+          </div>
+
+          <!-- Sen 4 -->
+          <div class="tc">
+            <div class="tc-h" style="border-bottom-color:#F97316;">
+              <span class="tc-name">Senioren 4</span>
+              <span class="tc-cat" style="background:rgba(249,115,22,.12);color:#F97316;">Sen B</span>
+            </div>
+            <div class="tc-d">
+              <div class="tcols">
+                <div>
+                  <div class="ch ch-f">♀ 5</div>
+                  <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">X. Jansen</span><span class="sr-age">25.0</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">W. de Boer</span><span class="sr-age">23.5</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">V. Peters</span><span class="sr-age">22.0</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">U. Laan</span><span class="sr-age">20.8</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">T. Groot</span><span class="sr-age">19.3</span><span class="sr-w"><span class="si si-w">△</span></span><span class="sr-nd"></span></div>
+                </div>
+                <div>
+                  <div class="ch ch-m">♂ 5</div>
+                  <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">S. van Dijk</span><span class="sr-age">26.2</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">R. Bakker</span><span class="sr-age">24.7</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">Q. Visser</span><span class="sr-age">23.1</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">P. Mulder</span><span class="sr-age">21.5</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">O. Wolters</span><span class="sr-age">20.0</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                </div>
+              </div>
+            </div>
+            <div class="tc-f">
+              <div class="tc-fc">10 sp.</div>
+              <div class="tc-fv vok">✓ OK</div>
+              <div class="tc-fg">gem. 22.8</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rood -->
+        <div class="sec-lbl">Jeugd Rood (16-18)</div>
+        <div class="tgrid">
+          <div class="tc">
+            <div class="tc-h" style="border-bottom-color:#EF4444;"><span class="tc-name">U19-1</span><span class="tc-cat" style="background:rgba(239,68,68,.13);color:#EF4444;">Rood A</span></div>
+            <div class="tc-d"><div class="tcols">
+              <div><div class="ch ch-f">♀ 6</div>
+                <div class="sr sr-ok"><div class="gz gz-c-groen">✓</div><span class="sr-naam">E. Wolters</span><span class="sr-age">17.8</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">D. Klaasen</span><span class="sr-age">17.2</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                <div class="sr sr-ok"><div class="gz gz-v-groen"></div><span class="sr-naam">C. van Beek</span><span class="sr-age">16.9</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">B. Hendriks</span><span class="sr-age">16.5</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">A. de Bruin</span><span class="sr-age">16.2</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">Z. Berg</span><span class="sr-age">16.0</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+              </div>
+              <div><div class="ch ch-m">♂ 6</div>
+                <div class="sr sr-ok"><div class="gz gz-c-groen">✓</div><span class="sr-naam">Y. Kok</span><span class="sr-age">17.9</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">X. Jansen</span><span class="sr-age">17.4</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">W. Peters</span><span class="sr-age">17.1</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">V. Smit</span><span class="sr-age">16.7</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">U. de Wit</span><span class="sr-age">16.4</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">T. Prins</span><span class="sr-age">16.1</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+              </div>
+            </div></div>
+            <div class="tc-f"><div class="tc-fc">12 sp.</div><div class="tc-fv vok">✓ OK</div><div class="tc-fg">gem. 17.4</div></div>
+          </div>
+          <div class="tc">
+            <div class="tc-h" style="border-bottom-color:#EF4444;"><span class="tc-name">U17-1</span><span class="tc-cat" style="background:rgba(239,68,68,.13);color:#EF4444;">Rood A</span></div>
+            <div class="tc-d"><div class="tcols">
+              <div><div class="ch ch-f">♀ 5</div>
+                <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">S. Groot</span><span class="sr-age">16.4</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">R. Laan</span><span class="sr-age">16.1</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">Q. van Dijk</span><span class="sr-age">15.8</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">P. Bakker</span><span class="sr-age">15.5</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">O. Visser</span><span class="sr-age">15.2</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+              </div>
+              <div><div class="ch ch-m">♂ 5</div>
+                <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">N. Mulder</span><span class="sr-age">16.5</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">M. Wolters</span><span class="sr-age">16.2</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">L. van Beek</span><span class="sr-age">15.9</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">K. Hendriks</span><span class="sr-age">15.6</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">J. de Bruin</span><span class="sr-age">15.3</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+              </div>
+            </div></div>
+            <div class="tc-f"><div class="tc-fc">10 sp.</div><div class="tc-fv vok">✓ OK</div><div class="tc-fg">gem. 16.2</div></div>
+          </div>
+        </div>
+
+        <!-- Zoom controls -->
+        <div class="zoom-c">
+          <button class="zb" onclick="simZoom(-25)">−</button>
+          <span class="zpct" id="zpct">100%</span>
+          <div class="zdiv"></div>
+          <button class="zb" onclick="simZoom(25)">+</button>
+          <div class="zdiv"></div>
+          <button class="zb" style="font-size:10px;" onclick="go('ed-ov')">Overzicht</button>
+        </div>
+      </div>
+
+      <!-- Sidetabs rechts -->
+      <div class="side-r">
+        <button class="stb" data-tip="Validatie" title="Validatie">✓</button>
+        <button class="stb" data-tip="Werkbord" title="Werkbord">✦</button>
+        <button class="stb active" data-tip="What-ifs" title="What-ifs" onclick="togglePanel('wip-ed')">⟡<span class="bdg">2</span></button>
+      </div>
+
+      <!-- What-if panel -->
+      <div class="rpanel" id="wip-ed">
+        <div class="rp-h"><div class="rp-t">What-ifs</div><button class="mcl" onclick="togglePanel('wip-ed')">✕</button></div>
+        <div class="rp-b">
+          <div style="font-size:11px;color:var(--text-3);margin-bottom:10px;">Verken hypothetische indelingen zonder de werkindeling te wijzigen.</div>
+          <div class="wic" onclick="go('wi-ed')"><div class="wiq">Wat als we een 3e senioren A-team maken?</div><div class="wim"><span class="tag tg-info">Open</span><span style="font-size:11px;color:var(--text-3)">3 teams · 7 sp.</span></div></div>
+          <div class="wic"><div class="wiq">Wat als Rood A een extra team krijgt?</div><div class="wim"><span class="tag tg-warn">Bewaard</span><span style="font-size:11px;color:var(--text-3)">2 teams · 4 sp.</span></div></div>
+        </div>
+        <div style="padding:0 13px 13px;"><button class="btn btn-pri btn-sm btn-w" onclick="go('wi-dlg')">+ Nieuwe what-if</button></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  2b — WERKINDELING OVERZICHT LOD                               -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="shell screen" id="screen-ed-ov">
+  <nav class="ribbon">
+    <div class="ribbon-logo">🏗️</div>
+    <button class="ri" data-tip="Dashboard">🏠</button>
+    <button class="ri" data-tip="Blauwdruk">🗂️</button>
+    <button class="ri" data-tip="Werkbord">📋</button>
+    <button class="ri active" data-tip="Indeling">⚙️</button>
+    <div class="rdiv"></div>
+    <button class="ri" data-tip="Vergelijk">⇌</button>
+    <div class="ribbon-footer"><div class="ribbon-avatar" data-tip="Jasper Laban · TC-lid">JL</div></div>
+  </nav>
+  <main class="main">
+    <div class="toolbar">
+      <div class="tb-group"><div><div class="tb-title">Werkindeling 2025-2026</div><div class="tb-sub">22 teams · 55%</div></div><span class="tag tg-ok">Definitief</span></div>
+      <div style="display:flex;gap:2px;background:var(--bg-2);border:1px solid var(--border-1);border-radius:8px;padding:3px;">
+        <button class="zb" style="font-size:11px;padding:3px 8px;background:var(--accent-dim);color:var(--accent);border-radius:5px;">Overzicht</button>
+        <button class="zb" onclick="go('ed')" style="font-size:11px;padding:3px 8px;">Detail</button>
+      </div>
+      <button class="btn btn-pri btn-sm" onclick="go('wi-dlg')">⟡ What-if</button>
+    </div>
+    <div class="editor-body">
+      <div class="pool"><div class="pool-head">Spelerspool</div><div class="pool-filters"><button class="pill active">Vrij</button></div><div class="pool-list"><div class="p-sp"><div class="p-av">AS</div><span style="flex:1;font-size:12px;color:var(--text-2)">A. Smit</span></div><div class="p-sp"><div class="p-av">BJ</div><span style="flex:1;font-size:12px;color:var(--text-2)">B. de Jong</span></div></div></div>
+      <div class="wg">
+        <div class="wg-head"><div style="font-size:13px;color:var(--text-2)">22 teams &middot; <span style="color:var(--text-3)">Overzicht-modus (55%)</span></div></div>
+        <div class="sec-lbl">Senioren</div>
+        <div class="tgrid">
+          <div class="tc"><div class="tc-h" style="border-bottom-color:#EF4444;"><span class="tc-name">Senioren 1</span><span class="tc-cat" style="background:rgba(239,68,68,.14);color:#EF4444;">Sen A</span></div><div class="tc-ov"><div class="tc-gnd"><span class="g-f">♀ 6</span><span class="g-m">♂ 6</span></div><div class="tc-ov-r"><div class="tc-gem">gem. 25.4</div><div style="font-size:9px;color:var(--accent);">1 voorstel</div></div></div></div>
+          <div class="tc"><div class="tc-h" style="border-bottom-color:#EF4444;"><span class="tc-name">Senioren 2</span><span class="tc-cat" style="background:rgba(239,68,68,.14);color:#EF4444;">Sen A</span></div><div class="tc-ov"><div class="tc-gnd"><span class="g-f">♀ 5</span><span class="g-m">♂ 5</span></div><div class="tc-ov-r"><div class="tc-gem">gem. 24.1</div><div style="font-size:9px;color:var(--warn);">◉ min. 10</div></div></div></div>
+          <div class="tc"><div class="tc-h" style="border-bottom-color:#F97316;"><span class="tc-name">Senioren 3</span><span class="tc-cat" style="background:rgba(249,115,22,.12);color:#F97316;">Sen B</span></div><div class="tc-ov"><div class="tc-gnd"><span class="g-f">♀ 5</span><span class="g-m">♂ 5</span></div><div class="tc-ov-r"><div class="tc-gem">gem. 23.6</div></div></div></div>
+          <div class="tc"><div class="tc-h" style="border-bottom-color:#F97316;"><span class="tc-name">Senioren 4</span><span class="tc-cat" style="background:rgba(249,115,22,.12);color:#F97316;">Sen B</span></div><div class="tc-ov"><div class="tc-gnd"><span class="g-f">♀ 5</span><span class="g-m">♂ 5</span></div><div class="tc-ov-r"><div class="tc-gem">gem. 22.8</div></div></div></div>
+        </div>
+        <div class="sec-lbl">Jeugd Rood</div>
+        <div class="tgrid">
+          <div class="tc"><div class="tc-h" style="border-bottom-color:#EF4444;"><span class="tc-name">U19-1</span><span class="tc-cat" style="background:rgba(239,68,68,.13);color:#EF4444;">Rood A</span></div><div class="tc-ov"><div class="tc-gnd"><span class="g-f">♀ 6</span><span class="g-m">♂ 6</span></div><div class="tc-ov-r"><div class="tc-gem">gem. 17.4</div></div></div></div>
+          <div class="tc"><div class="tc-h" style="border-bottom-color:#EF4444;"><span class="tc-name">U17-1</span><span class="tc-cat" style="background:rgba(239,68,68,.13);color:#EF4444;">Rood A</span></div><div class="tc-ov"><div class="tc-gnd"><span class="g-f">♀ 5</span><span class="g-m">♂ 5</span></div><div class="tc-ov-r"><div class="tc-gem">gem. 16.2</div></div></div></div>
+          <div class="tc"><div class="tc-h" style="border-bottom-color:#F97316;"><span class="tc-name">U17-2</span><span class="tc-cat" style="background:rgba(249,115,22,.12);color:#F97316;">Rood B</span></div><div class="tc-ov"><div class="tc-gnd"><span class="g-f">♀ 4</span><span class="g-m">♂ 4</span></div><div class="tc-ov-r"><div class="tc-gem">gem. 15.8</div></div></div></div>
+        </div>
+        <div class="zoom-c">
+          <button class="zb" onclick="go('ed-ov')">−</button>
+          <span class="zpct">55%</span>
+          <div class="zdiv"></div>
+          <button class="zb" onclick="go('ed')">+</button>
+          <div class="zdiv"></div>
+          <button class="zb" style="font-size:10px;" onclick="go('ed')">Detail</button>
+        </div>
+      </div>
+      <div class="side-r"><button class="stb" title="Validatie">✓</button><button class="stb" title="Werkbord">✦</button><button class="stb active" title="What-ifs">⟡<span class="bdg">2</span></button></div>
+    </div>
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  3 — WHAT-IF DIALOG                                            -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="shell screen" id="screen-wi-dlg">
+  <nav class="ribbon">
+    <div class="ribbon-logo">🏗️</div>
+    <button class="ri active" data-tip="Indeling">⚙️</button>
+    <div class="ribbon-footer"><div class="ribbon-avatar" data-tip="Jasper Laban · TC-lid">JL</div></div>
+  </nav>
+  <main class="main" style="position:relative;">
+    <div class="toolbar" style="opacity:.35;pointer-events:none;"><div class="tb-group"><div><div class="tb-title">Werkindeling 2025-2026</div></div></div></div>
+    <div class="mo-ov" style="position:absolute;inset:0;">
+      <div class="modal">
+        <div class="mh"><div class="mh-t">Nieuwe what-if</div><button class="mcl" onclick="go('ed')">✕</button></div>
+        <div class="mb">
+          <div class="fg"><label class="fl">Vraag <span class="req">*</span></label><textarea class="fta" rows="3" placeholder="Wat als we...">Wat als we een 3e senioren A-team maken?</textarea><div class="fh">Beschrijf de hypothese die je wilt verkennen.</div></div>
+          <div class="fg">
+            <label class="fl">Teams <span class="req">*</span></label>
+            <div class="cl">
+              <div class="cgh">Senioren</div>
+              <label class="cr"><input type="checkbox" checked><span style="flex:1;font-size:13px;">Senioren 1</span><span style="font-size:11px;color:var(--text-3)">12 sp.</span></label>
+              <label class="cr"><input type="checkbox" checked><span style="flex:1;font-size:13px;">Senioren 2</span><span style="font-size:11px;color:var(--text-3)">12 sp.</span></label>
+              <label class="cr"><input type="checkbox"><span style="flex:1;font-size:13px;">Senioren 3</span><span style="font-size:11px;color:var(--text-3)">10 sp.</span></label>
+              <div class="cgh">Jeugd Rood</div>
+              <label class="cr"><input type="checkbox"><span style="flex:1;font-size:13px;">U19-1</span><span style="font-size:11px;color:var(--text-3)">12 sp.</span></label>
+              <label class="cr"><input type="checkbox"><span style="flex:1;font-size:13px;">U17-1</span><span style="font-size:11px;color:var(--text-3)">10 sp.</span></label>
+            </div>
+            <div class="fh">2 teams geselecteerd. Extra teams worden meegenomen zodra je spelers verplaatst.</div>
+          </div>
+          <div class="fg" style="margin-bottom:0;"><label class="fl">Afhankelijk van <span style="color:var(--text-3);font-weight:400;text-transform:none;">(optioneel)</span></label><select class="fin"><option>Geen (standaard)</option><option>Rood A extra team what-if</option></select></div>
+        </div>
+        <div class="mf"><button class="btn btn-ghost btn-sm" onclick="go('ed')">Annuleren</button><button class="btn btn-pri btn-sm" onclick="go('wi-ed')">Start what-if</button></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  4 — WHAT-IF EDITOR                                            -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="shell screen" id="screen-wi-ed">
+  <nav class="ribbon">
+    <div class="ribbon-logo">🏗️</div>
+    <button class="ri active" data-tip="Indeling">⚙️</button>
+    <div class="ribbon-footer"><div class="ribbon-avatar" data-tip="Jasper Laban · TC-lid">JL</div></div>
+  </nav>
+  <main class="main">
+    <div class="toolbar toolbar-wi">
+      <button class="btn btn-ghost btn-sm" onclick="go('ed')">← Terug</button>
+      <div style="width:1px;height:20px;background:var(--border-0);"></div>
+      <div class="wi-q">Wat als we een 3e senioren A-team maken?</div>
+      <span class="tag tg-info">Open</span>
+      <button class="btn btn-sm btn-sec" id="imp-btn" onclick="toggleImpact()">Impact</button>
+      <button class="btn btn-ghost btn-sm" onclick="go('ed')">✕</button>
+    </div>
+    <div class="editor-body" style="position:relative;">
+      <div class="pool"><div class="pool-head">Spelerspool</div><div class="pool-filters"><button class="pill active">Vrij</button><button class="pill">Sen</button></div><div class="pool-list"><div class="p-sp"><div class="p-av">AS</div><span style="flex:1;font-size:12px;color:var(--text-2)">A. Smit</span><span style="font-size:10px;color:var(--text-3)">'04</span></div><div class="p-sp"><div class="p-av">BJ</div><span style="flex:1;font-size:12px;color:var(--text-2)">B. de Jong</span><span style="font-size:10px;color:var(--text-3)">'06</span></div></div></div>
+      <div class="wg">
+        <div class="zone-s">
+          <div class="zone-l"><span class="zdot" style="background:var(--accent)"></span>Zone 1 — Actieve teams (bewerkbaar)</div>
+          <div class="tgrid">
+            <!-- Zone-active kaart met gezien-status en notities -->
+            <div class="tc za">
+              <div class="tc-h" style="border-bottom-color:#EF4444;"><span class="tc-name">Senioren 1</span><span class="tc-cat" style="background:rgba(239,68,68,.14);color:#EF4444;">Sen A</span></div>
+              <div class="tc-d"><div class="tcols">
+                <div><div class="ch ch-f">♀ 5</div>
+                  <div class="sr sr-ok"><div class="gz gz-c-groen">✓</div><span class="sr-naam">M. de Vries</span><span class="sr-age">28.4</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-v-geel"></div><span class="sr-naam">S. van Berg</span><span class="sr-age">26.1</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-twij"><div class="gz gz-none">?</div><span class="sr-naam">L. Peters</span><span class="sr-age">24.8</span><span class="sr-w"><span class="si si-w">△</span></span><span class="sr-nd"><span class="nd-open"></span></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-c-groen">✓</div><span class="sr-naam">K. Smits</span><span class="sr-age">22.3</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">R. Kok</span><span class="sr-age">20.5</span><span class="sr-w"><span class="si si-r">!</span></span><span class="sr-nd"><span class="nd-open"></span></span></div>
+                </div>
+                <div><div class="ch ch-m">♂ 5</div>
+                  <div class="sr sr-ok"><div class="gz gz-v-groen"></div><span class="sr-naam">J. Bakker</span><span class="sr-age">29.2</span><span class="sr-w"><span class="si si-n">●</span></span><span class="sr-nd"><span class="nd-open"></span></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-c-groen">✓</div><span class="sr-naam">P. Jansen</span><span class="sr-age">27.0</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-c-groen">✓</div><span class="sr-naam">T. Groot</span><span class="sr-age">25.5</span><span class="sr-w"></span><span class="sr-nd"><span class="nd-done"></span></span></div>
+                  <div class="sr sr-twij"><div class="gz gz-v-geel"></div><span class="sr-naam">H. Laan</span><span class="sr-age">23.1</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-c-groen">✓</div><span class="sr-naam">N. van Dijk</span><span class="sr-age">21.7</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                </div>
+              </div></div>
+              <div class="tc-f"><div class="tc-fc">10 sp.</div><div class="dn">12→10</div></div>
+            </div>
+            <div class="tc za">
+              <div class="tc-h" style="border-bottom-color:#EF4444;"><span class="tc-name">Senioren 2</span><span class="tc-cat" style="background:rgba(239,68,68,.14);color:#EF4444;">Sen A</span></div>
+              <div class="tc-d"><div class="tcols">
+                <div><div class="ch ch-f">♀ 4</div>
+                  <div class="sr sr-ok"><div class="gz gz-c-groen">✓</div><span class="sr-naam">A. Mulder</span><span class="sr-age">27.2</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">E. Wolters</span><span class="sr-age">25.4</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-v-groen"></div><span class="sr-naam">C. van Beek</span><span class="sr-age">23.7</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-stop"><div class="gz gz-c-rood">✓</div><span class="sr-naam">B. Hendriks</span><span class="sr-age">22.0</span><span class="sr-w"><span class="si si-r">!</span></span><span class="sr-nd"><span class="nd-open"></span></span></div>
+                </div>
+                <div><div class="ch ch-m">♂ 5</div>
+                  <div class="sr sr-ok"><div class="gz gz-c-groen">✓</div><span class="sr-naam">D. Klaasen</span><span class="sr-age">28.8</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">R. Visser</span><span class="sr-age">26.3</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-c-groen">✓</div><span class="sr-naam">F. Zwart</span><span class="sr-age">24.1</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">G. Wijnand</span><span class="sr-age">22.5</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-twij"><div class="gz gz-v-geel"></div><span class="sr-naam">H. Ouwens</span><span class="sr-age">20.9</span><span class="sr-w"><span class="si si-w">△</span></span><span class="sr-nd"></span></div>
+                </div>
+              </div></div>
+              <div class="tc-f"><div class="tc-fc">9 sp.</div><div class="tc-fv ve">⬛ 9 sp. (min 10)</div><div class="dn">12→9</div></div>
+            </div>
+            <div class="tc zn" style="position:relative;">
+              <div style="position:absolute;top:7px;right:7px;"><span class="tag tg-acc" style="font-size:9px;">Nieuw</span></div>
+              <div class="tc-h" style="border-bottom-color:rgba(255,107,0,.4);padding-right:48px;"><span class="tc-name">Senioren 3</span></div>
+              <div class="tc-d"><div class="tcols">
+                <div><div class="ch ch-f">♀ 4</div>
+                  <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">T. van Rooy</span><span class="sr-age">26.0</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">W. de Bruin</span><span class="sr-age">24.3</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">Y. Oost</span><span class="sr-age">22.1</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-twij"><div class="gz gz-none">?</div><span class="sr-naam">Z. Prins</span><span class="sr-age">20.6</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                </div>
+                <div><div class="ch ch-m">♂ 4</div>
+                  <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">A. Berg</span><span class="sr-age">27.5</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">C. Kok</span><span class="sr-age">25.8</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">D. van Dam</span><span class="sr-age">23.4</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                  <div class="sr sr-ok"><div class="gz gz-none">?</div><span class="sr-naam">E. Hoekstra</span><span class="sr-age">21.2</span><span class="sr-w"></span><span class="sr-nd"></span></div>
+                </div>
+              </div></div>
+              <div class="tc-f"><div class="tc-fc">8 sp.</div><div class="dp">0→8</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="zone-s">
+          <div class="zone-l"><span class="zdot" style="background:var(--warn)"></span>Zone 2 — Impact (read-only)</div>
+          <div class="tgrid">
+            <div class="tc zi"><div class="tc-h" style="border-bottom-color:rgba(239,68,68,.4);"><span class="tc-name">U19-1</span><span class="tc-cat" style="background:rgba(239,68,68,.12);color:#EF4444;">Rood A</span></div><div class="tc-ov"><div class="tc-gnd"><span class="g-f">♀ 6</span><span class="g-m">♂ 6</span></div><div class="tc-ov-r"><div class="tc-gem">gem. 17.4</div><div style="color:var(--warn);font-size:10px;font-weight:700;">14→13</div></div></div></div>
+          </div>
+        </div>
+        <div class="zone-s">
+          <div class="zone-l"><span class="zdot" style="background:var(--border-1)"></span>Zone 3 — Ongeraakt (collapsed)</div>
+          <div class="zchips">
+            <div class="zchip"><span>Senioren 4</span><span>10</span></div>
+            <div class="zchip"><span>U17-1</span><span>10</span></div>
+            <div class="zchip"><span>U17-2</span><span>8</span></div>
+            <div class="zchip"><span>U15-1</span><span>10</span></div>
+            <div class="zchip"><span>U15-2</span><span>8</span></div>
+            <div class="zchip"><span>U13-1</span><span>10</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Impact drawer -->
+      <div class="impact-dr hidden" id="impact-dr">
+        <div class="rp-h"><div class="rp-t">Impact</div><button class="mcl" onclick="toggleImpact()">✕</button></div>
+        <div style="flex:1;overflow-y:auto;">
+          <div class="imp-s">Actieve teams (3)</div>
+          <div class="imp-r"><div><div class="imp-n">Senioren 1</div><div class="imp-d">-2 spelers</div></div><div style="text-align:right;"><div class="dn">12→10</div><div class="vok" style="font-size:11px;font-weight:600;">✓ OK</div></div></div>
+          <div class="imp-r"><div><div class="imp-n">Senioren 2</div><div class="imp-d">-3 spelers</div></div><div style="text-align:right;"><div class="dn">12→9</div><div class="ve" style="font-size:11px;font-weight:600;">⬛ Fout</div></div></div>
+          <div class="imp-r"><div><div class="imp-n">Senioren 3</div><div class="imp-d">+8 (nieuw)</div></div><div style="text-align:right;"><div class="dp">0→8</div><div class="vok" style="font-size:11px;font-weight:600;">✓ OK</div></div></div>
+          <div class="imp-s">Impact (1)</div>
+          <div class="imp-r"><div><div class="imp-n">U19-1</div><div class="imp-d">-1 speler</div></div><div style="text-align:right;"><div style="color:var(--warn);font-size:10px;font-weight:700;">14→13</div><div class="vok" style="font-size:11px;font-weight:600;">✓ OK</div></div></div>
+          <div class="imp-sum"><div class="imp-sr"><span style="color:var(--text-3)">Verplaatst</span><span style="font-weight:600;">7</span></div><div class="imp-sr"><span style="color:var(--text-3)">Nieuwe teams</span><span style="font-weight:600;">1</span></div><div class="imp-sr"><span style="color:var(--text-3)">Teams geraakt</span><span style="font-weight:600;">4</span></div></div>
+          <div class="imp-s">Validatie</div>
+          <div class="vi-r"><span class="ve">⬛</span><div><div style="font-weight:600;color:var(--err);">Senioren 2: 9 sp.</div><div style="color:var(--text-3);">Minimum 10 (KNKV)</div></div></div>
+          <div class="vi-r"><span class="vw">◉</span><div><div style="font-weight:600;color:var(--warn);">3e senioren A</div><div style="color:var(--text-3);">Blauwdruk: 2 teams</div></div></div>
+          <div class="vi-r"><span class="vok">✓</span><div style="color:var(--text-3);">Geslachtsregels OK</div></div>
+        </div>
+      </div>
+      <div class="side-r"><button class="stb" title="Validatie">✓</button><button class="stb" title="Werkbord">✦</button><button class="stb" title="What-ifs">⟡</button></div>
+    </div>
+    <div class="wi-foot">
+      <div style="font-size:12px;color:var(--text-3);">7 verplaatst · 1 validatiefout</div>
+      <div style="display:flex;gap:7px;">
+        <button class="btn btn-dk btn-sm" onclick="showModal('cv')">Verwerpen</button>
+        <button class="btn btn-sec btn-sm">Bewaren</button>
+        <button class="btn btn-pri btn-sm" style="opacity:.4;cursor:not-allowed;" title="Los eerst de fout op">Toepassen →</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  5 — MOBILE: TEAMS                                             -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="shell screen mf-wrap" id="screen-mob-t">
+  <div class="mfrm">
+    <div class="mst"><span class="mst-t">09:41</span><span class="mst-i"><span>●●●</span><span>WiFi</span></span></div>
+    <div class="mtb"><div class="mtb-title">Mijn teams</div><span class="tag tg-acc" style="font-size:11px;">Coördinator</span></div>
+    <div class="mc">
+      <div style="padding:10px 14px 4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-3);">Senioren (jouw scope)</div>
+      <div class="mtc">
+        <div class="mtch" style="border-bottom-color:#EF4444;">
+          <div class="mtcn">Senioren 1</div>
+          <div class="mtcm">Sen A · 12 spelers</div>
+        </div>
+        <!-- msr: 3 kolommen: [avatar 36px] [naam flex] [gz-dot 36px] -->
+        <div class="msr" onclick="go('mob-gz')">
+          <div class="mav">MV</div>
+          <div class="mnw"><div class="mnm">M. de Vries</div><div class="mmeta">♀ · 28 jaar</div></div>
+          <div class="mgz gz-c-groen" style="width:20px;height:20px;font-size:9px;margin:auto;">✓</div>
+        </div>
+        <div class="msr" onclick="go('mob-gz')">
+          <div class="mav">JB</div>
+          <div class="mnw"><div class="mnm">J. Bakker</div><div class="mmeta">♂ · 29 jaar · <span style="color:var(--accent);">voorstel</span></div></div>
+          <!-- B voorgesteld groen (ring, geen check) -->
+          <div class="mgz gz-v-groen" style="width:20px;height:20px;margin:auto;"></div>
+        </div>
+        <div class="msr" onclick="go('mob-gz')">
+          <div class="mav">LP</div>
+          <div class="mnw"><div class="mnm">L. Peters</div><div class="mmeta">♀ · 25 jaar</div></div>
+          <div class="mgz gz-none" style="width:20px;height:20px;font-size:10px;font-weight:900;margin:auto;">?</div>
+        </div>
+        <div class="msr" onclick="go('mob-gz')">
+          <div class="mav">HO</div>
+          <div class="mnw"><div class="mnm">H. Ouwens</div><div class="mmeta">♂ · 21 jaar</div></div>
+          <div class="mgz gz-v-geel" style="width:20px;height:20px;margin:auto;"></div>
+        </div>
+        <div style="padding:8px 14px 12px;">
+          <button class="btn btn-ghost btn-sm btn-w" onclick="go('mob-vr')">+ Wijzigingsvoorstel indienen</button>
+        </div>
+      </div>
+      <!-- Legenda -->
+      <div style="margin:8px 14px;padding:10px 12px;background:var(--bg-1);border:1px solid var(--border-1);border-radius:10px;">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-3);margin-bottom:8px;">Gezien-status legenda</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;align-items:center;gap:9px;font-size:12px;"><div class="gz gz-none" style="width:14px;height:14px;font-size:8px;font-weight:900;flex-shrink:0;">?</div><span style="color:var(--text-2);">Niet gezien — geen actie coördinator</span></div>
+          <div style="display:flex;align-items:center;gap:9px;font-size:12px;"><div class="gz gz-v-groen" style="width:14px;height:14px;flex-shrink:0;"></div><span style="color:var(--text-2);">Voorgesteld door coördinator (wacht TC)</span></div>
+          <div style="display:flex;align-items:center;gap:9px;font-size:12px;"><div class="gz gz-c-groen" style="width:14px;height:14px;font-size:7px;flex-shrink:0;">✓</div><span style="color:var(--text-2);">Bevestigd door TC: Beschikbaar</span></div>
+          <div style="display:flex;align-items:center;gap:9px;font-size:12px;"><div class="gz gz-c-geel" style="width:14px;height:14px;font-size:7px;flex-shrink:0;">✓</div><span style="color:var(--text-2);">Bevestigd door TC: Onzeker</span></div>
+          <div style="display:flex;align-items:center;gap:9px;font-size:12px;"><div class="gz gz-c-rood" style="width:14px;height:14px;font-size:7px;flex-shrink:0;">✓</div><span style="color:var(--text-2);">Bevestigd door TC: Stopt</span></div>
+        </div>
+      </div>
+      <div style="height:80px;"></div>
+    </div>
+    <div class="mbn">
+      <button class="mni active"><span class="mni-ic">🏠</span>Teams</button>
+      <button class="mni" onclick="go('mob-gz')"><span class="mni-ic">👁</span>Gezien</button>
+      <button class="mni" onclick="go('mob-vr')"><span class="mni-ic">💬</span>Voorstel</button>
+      <button class="mni"><span class="mni-ic">☰</span>Meer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  6 — MOBILE: GEZIEN-STATUS BIJWERKEN                          -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="shell screen mf-wrap" id="screen-mob-gz">
+  <div class="mfrm">
+    <div class="mst"><span class="mst-t">09:41</span><span class="mst-i"><span>●●●</span></span></div>
+    <div class="mtb">
+      <button class="mtb-back" onclick="go('mob-t')">← Terug</button>
+      <div class="mtb-title" style="font-size:14px;">Gezien-status</div>
+      <div style="width:48px;"></div>
+    </div>
+    <div class="mc">
+      <div style="padding:15px 14px;background:var(--bg-1);border-bottom:1px solid var(--border-0);display:flex;align-items:center;gap:12px;" id="gz-detail-head">
+        <div style="width:46px;height:46px;border-radius:50%;background:var(--bg-2);border:1px solid var(--border-1);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:var(--accent);flex-shrink:0;">JB</div>
+        <div style="flex:1;">
+          <div style="font-size:17px;font-weight:700;">J. Bakker</div>
+          <div style="font-size:12px;color:var(--text-3);">Senioren 1 · ♂ · 29 jaar</div>
+        </div>
+        <!-- Huidige status: niet gezien -->
+        <div class="gz gz-none" style="width:22px;height:22px;font-size:10px;font-weight:900;">?</div>
+      </div>
+      <div style="padding:14px;" id="gz-detail-body">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--text-3);margin-bottom:10px;">Stel gezien-status voor</div>
+        <div style="font-size:12px;color:var(--text-3);margin-bottom:12px;">Jouw voorstel gaat naar de TC ter bevestiging.</div>
+        <div class="gz-opt" onclick="selectGz(this,'g')"><div><div class="gz-opt-l" style="color:var(--ok);">Beschikbaar</div><div class="gz-opt-s">Inzetbaar en gemotiveerd</div></div><div class="gz gz-c-groen" style="width:20px;height:20px;font-size:9px;flex-shrink:0;">✓</div></div>
+        <div class="gz-opt" onclick="selectGz(this,'y')"><div><div class="gz-opt-l" style="color:var(--warn);">Onzeker</div><div class="gz-opt-s">Beschikbaarheid is onduidelijk</div></div><div class="gz gz-c-geel" style="width:20px;height:20px;font-size:9px;flex-shrink:0;">✓</div></div>
+        <div class="gz-opt" onclick="selectGz(this,'o')"><div><div class="gz-opt-l" style="color:var(--stop);">Stop-signaal</div><div class="gz-opt-s">Twijfelt aan doorgaan</div></div><div class="gz gz-c-oranje" style="width:20px;height:20px;font-size:9px;flex-shrink:0;">✓</div></div>
+        <div class="gz-opt" onclick="selectGz(this,'r')"><div><div class="gz-opt-l" style="color:var(--err);">Stopt</div><div class="gz-opt-s">Stopt zeker dit seizoen</div></div><div class="gz gz-c-rood" style="width:20px;height:20px;font-size:9px;flex-shrink:0;">✓</div></div>
+        <div style="margin-top:14px;">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--text-3);margin-bottom:6px;">Notitie (optioneel)</div>
+          <textarea class="mcta" rows="3" placeholder="Toelichting voor de TC..."></textarea>
+        </div>
+        <button class="btn btn-pri btn-w" style="margin-top:14px;font-size:14px;padding:12px;" onclick="verzendGz()">Voorstel verzenden naar TC</button>
+        <div style="font-size:11px;color:var(--text-3);text-align:center;margin-top:7px;">TC bevestigt de definitieve status in de studio.</div>
+      </div>
+      <div id="gz-succes" style="display:none;">
+        <div class="msuc"><div class="msuc-ic">✓</div><div class="msuc-t">Voorstel verstuurd</div><div class="msuc-s">De TC ontvangt het voorstel en bevestigt in de studio.</div></div>
+        <div style="padding:0 14px;"><button class="btn btn-sec btn-w" onclick="go('mob-t')" style="font-size:14px;padding:12px;">Terug naar teams</button></div>
+      </div>
+    </div>
+    <div class="mbn">
+      <button class="mni" onclick="go('mob-t')"><span class="mni-ic">🏠</span>Teams</button>
+      <button class="mni active"><span class="mni-ic">👁</span>Gezien</button>
+      <button class="mni" onclick="go('mob-vr')"><span class="mni-ic">💬</span>Voorstel</button>
+      <button class="mni"><span class="mni-ic">☰</span>Meer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  7 — MOBILE: WIJZIGINGSVOORSTEL                               -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="shell screen mf-wrap" id="screen-mob-vr">
+  <div class="mfrm">
+    <div class="mst"><span class="mst-t">09:41</span><span class="mst-i"><span>●●●</span></span></div>
+    <div class="mtb"><button class="mtb-back" onclick="go('mob-t')">← Terug</button><div class="mtb-title" style="font-size:14px;">Voorstel indienen</div><div style="width:48px;"></div></div>
+    <div class="mc">
+      <div class="mcomp" id="comp-s">
+        <div class="mctt">Vertel de TC je gedachte</div>
+        <div class="mcts">Over jouw teams: Senioren 1 en 2</div>
+        <div style="display:flex;gap:6px;margin-bottom:13px;flex-wrap:wrap;">
+          <button class="pill" onclick="setTpl('Speler past beter in een ander team')">Ander team</button>
+          <button class="pill" onclick="setTpl('Beschikbaarheidsprobleem in bepaalde periode')">Beschikbaarheid</button>
+          <button class="pill" onclick="setTpl('De teamsamenstelling heeft een onbalans')">Onbalans</button>
+          <button class="pill" onclick="setTpl('')">Vrij</button>
+        </div>
+        <textarea class="mcta" id="vta" rows="4" placeholder="Beschrijf je voorstel..."></textarea>
+        <div style="margin-top:13px;">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--text-3);margin-bottom:7px;">Type</div>
+          <div style="display:flex;gap:6px;">
+            <button class="pill active" id="tv-sp" onclick="setType('sp')">Spelerwijziging</button>
+            <button class="pill" id="tv-te" onclick="setType('te')">Teamstructuur</button>
+            <button class="pill" id="tv-ov" onclick="setType('ov')">Overig</button>
+          </div>
+        </div>
+        <button class="btn btn-pri btn-w" style="margin-top:18px;font-size:14px;padding:12px;" onclick="verzendVr()">Stuur voorstel naar TC</button>
+        <div style="font-size:11px;color:var(--text-3);text-align:center;margin-top:7px;">TC kan dit onderzoeken als what-if.</div>
+      </div>
+      <div id="vr-suc" style="display:none;">
+        <div class="msuc"><div class="msuc-ic">✓</div><div class="msuc-t">Voorstel verstuurd</div><div class="msuc-s">De TC ontvangt dit en kan het onderzoeken als what-if.</div></div>
+        <div style="padding:0 14px;"><button class="btn btn-sec btn-w" onclick="go('mob-t')" style="font-size:14px;padding:12px;">Terug naar teams</button></div>
+      </div>
+    </div>
+    <div class="mbn"><button class="mni" onclick="go('mob-t')"><span class="mni-ic">🏠</span>Teams</button><button class="mni" onclick="go('mob-gz')"><span class="mni-ic">👁</span>Gezien</button><button class="mni active"><span class="mni-ic">💬</span>Voorstel</button><button class="mni"><span class="mni-ic">☰</span>Meer</button></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  8 — STUDIO INBOX                                              -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="shell screen" id="screen-inbox">
+  <nav class="ribbon">
+    <div class="ribbon-logo">🏗️</div>
+    <button class="ri" data-tip="Dashboard">🏠</button>
+    <button class="ri" data-tip="Blauwdruk">🗂️</button>
+    <button class="ri" data-tip="Werkbord">📋</button>
+    <button class="ri active" data-tip="Indeling">⚙️</button>
+    <div class="ribbon-footer"><div class="ribbon-avatar" data-tip="Jasper Laban · TC-lid">JL</div></div>
+  </nav>
+  <main class="main">
+    <div class="toolbar">
+      <button class="btn btn-ghost btn-sm" onclick="go('ed')">← Indeling</button>
+      <div class="tb-group" style="margin-left:8px;">
+        <div class="tb-title">Voorstellen &amp; gezien-updates</div>
+        <span class="tag tg-acc">3 nieuw</span>
+      </div>
+      <div style="display:flex;gap:5px;">
+        <button class="pill active">Alle</button>
+        <button class="pill">Voorstellen</button>
+        <button class="pill">Gezien-updates</button>
+      </div>
+    </div>
+    <div style="display:flex;flex:1;overflow:hidden;">
+      <!-- Lijst -->
+      <div style="width:310px;min-width:310px;border-right:1px solid var(--border-0);overflow-y:auto;background:var(--bg-1);">
+        <div class="ib-item new"><div class="ib-h"><div class="ib-av">TK</div><div class="ib-nm">T. Kuiper (coord)</div><span class="tag tg-acc" style="font-size:10px;">Gezien-update</span><div class="ib-ts">zojuist</div></div><div class="ib-bd">Z. Prins (Sen 3) → <strong style="color:var(--warn);">Onzeker</strong> — "Overweegt te stoppen"</div></div>
+        <div class="ib-item new" style="background:rgba(255,107,0,.04);"><div class="ib-h"><div class="ib-av">MH</div><div class="ib-nm">M. Hendriks (coord)</div><span class="tag tg-acc" style="font-size:10px;">Spelerwijziging</span><div class="ib-ts">12 min</div></div><div class="ib-bd">"J. Bakker past beter in Senioren 2."</div></div>
+        <div class="ib-item new"><div class="ib-h"><div class="ib-av">TK</div><div class="ib-nm">T. Kuiper (coord)</div><span class="tag tg-acc" style="font-size:10px;">Teamstructuur</span><div class="ib-ts">34 min</div></div><div class="ib-bd">"Sen 1 heeft te weinig diepte op heren. 2 U19-heren erbij?"</div></div>
+        <div class="ib-item" style="opacity:.5;"><div class="ib-h"><div class="ib-av">MH</div><div class="ib-nm">M. Hendriks (coord)</div><span class="tag tg-ok" style="font-size:10px;">Verwerkt</span><div class="ib-ts">gisteren</div></div><div class="ib-bd">"A. Mulder naar Sen 2 — presteert boven haar niveau."</div></div>
+      </div>
+      <!-- Detail -->
+      <div style="flex:1;overflow-y:auto;padding:20px;">
+        <div style="background:var(--bg-1);border:1px solid var(--border-1);border-radius:14px;overflow:hidden;max-width:560px;">
+          <div style="padding:15px 17px;border-bottom:1px solid var(--border-0);display:flex;align-items:flex-start;gap:11px;">
+            <div style="width:38px;height:38px;border-radius:50%;background:var(--bg-2);border:1px solid var(--border-1);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--accent);flex-shrink:0;">MH</div>
+            <div style="flex:1;">
+              <div style="display:flex;align-items:center;gap:7px;margin-bottom:2px;"><span style="font-size:14px;font-weight:700;">M. Hendriks</span><span class="tag tg-acc" style="font-size:10px;">Spelerwijziging</span><span class="tag tg-acc" style="font-size:10px;">Nieuw</span></div>
+              <div style="font-size:11px;color:var(--text-3);">Coördinator Senioren · 12 min via mobile</div>
+            </div>
+          </div>
+          <div style="padding:14px 17px;border-bottom:1px solid var(--border-0);">
+            <div style="font-size:13px;color:var(--text-2);line-height:1.7;background:var(--bg-0);border-radius:10px;padding:12px 14px;font-style:italic;">"J. Bakker past beter in Senioren 2. Zijn partner speelt daar ook en niveau-technisch kan hij het aan."</div>
+          </div>
+          <div style="padding:13px 17px;border-bottom:1px solid var(--border-0);">
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-3);margin-bottom:9px;">Context</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+              <div style="background:var(--bg-0);border-radius:8px;padding:9px 11px;"><div style="font-size:10px;color:var(--text-3);margin-bottom:2px;">Speler</div><div style="font-size:13px;font-weight:600;">J. Bakker</div></div>
+              <div style="background:var(--bg-0);border-radius:8px;padding:9px 11px;"><div style="font-size:10px;color:var(--text-3);margin-bottom:2px;">Huidig</div><div style="font-size:13px;font-weight:600;">Senioren 1</div></div>
+              <div style="background:var(--bg-0);border-radius:8px;padding:9px 11px;"><div style="font-size:10px;color:var(--text-3);margin-bottom:2px;">Voorkeur</div><div style="font-size:13px;font-weight:600;">Senioren 2</div></div>
+              <div style="background:var(--bg-0);border-radius:8px;padding:9px 11px;"><div style="font-size:10px;color:var(--text-3);margin-bottom:2px;">Gezien-status</div><div class="gz gz-none" style="width:16px;height:16px;font-size:9px;font-weight:900;margin-top:3px;">?</div></div>
+            </div>
+          </div>
+          <div style="padding:13px 17px;">
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-3);margin-bottom:9px;">TC-actie</div>
+            <div style="display:flex;gap:7px;flex-wrap:wrap;">
+              <button class="btn btn-pri btn-sm" onclick="go('wi-dlg')">⟡ Onderzoeken als what-if</button>
+              <button class="btn btn-sec btn-sm">✓ Verwerken</button>
+              <button class="btn btn-ghost btn-sm">✗ Afwijzen</button>
+            </div>
+            <div style="font-size:11px;color:var(--text-3);margin-top:7px;">"What-if" opent de dialoog met J. Bakker en Sen 1+2 voorgeselecteerd.</div>
+          </div>
+        </div>
+
+        <!-- Gezien-updates sectie -->
+        <div style="max-width:560px;margin-top:16px;">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-3);margin-bottom:9px;">Gezien-updates wachten op bevestiging</div>
+          <div style="background:var(--bg-1);border:1px solid var(--border-1);border-radius:12px;overflow:hidden;">
+            <div style="padding:11px 13px;border-bottom:1px solid var(--border-0);display:flex;align-items:center;gap:9px;">
+              <div style="flex:1;"><div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;"><strong style="font-size:13px;">Z. Prins</strong><span style="font-size:11px;color:var(--text-3);">Sen 3</span></div><div style="font-size:12px;color:var(--text-3);">T. Kuiper stelt voor: <strong style="color:var(--warn);">Onzeker</strong> — "Overweegt te stoppen door studie"</div></div>
+              <div style="display:flex;gap:5px;flex-shrink:0;">
+                <button class="btn btn-sm" style="background:rgba(34,197,94,.14);color:var(--ok);border:1px solid rgba(34,197,94,.3);padding:4px 10px;">✓ Bevestig</button>
+                <button class="btn btn-ghost btn-sm" style="padding:4px 10px;">✗</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  CONFIRM DIALOGS                                               -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="mo-ov hidden" id="cv">
+  <div class="modal modal-sm">
+    <div class="mh"><div class="mh-t" style="color:var(--err);">What-if verwerpen?</div><button class="mcl" onclick="hideModal('cv')">✕</button></div>
+    <div class="mb"><p style="font-size:13px;color:var(--text-2);line-height:1.7;">De wijzigingen gaan verloren en kunnen niet ongedaan worden gemaakt.</p></div>
+    <div class="mf"><button class="btn btn-ghost btn-sm" onclick="hideModal('cv')">Annuleren</button><button class="btn btn-sm" style="background:var(--err);color:#fff;" onclick="go('ed');hideModal('cv');">Verwerpen</button></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!--  JS                                                            -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<script>
+/* ── Screen navigatie ── */
+const SCREENS = { 'ob':'screen-ob','ed':'screen-ed','ed-ov':'screen-ed-ov','wi-dlg':'screen-wi-dlg','wi-ed':'screen-wi-ed','mob-t':'screen-mob-t','mob-gz':'screen-mob-gz','mob-vr':'screen-mob-vr','inbox':'screen-inbox' };
+const LABELS  = { 'ob':'1 — Onboarding','ed':'2 — Werkindeling detail','ed-ov':'2b — Overzicht LOD','wi-dlg':'3 — What-if dialog','wi-ed':'4 — What-if editor','mob-t':'5 — Mobile teams','mob-gz':'6 — Mobile gezien','mob-vr':'7 — Mobile voorstel','inbox':'8 — Studio inbox' };
+function go(id) {
+  Object.entries(SCREENS).forEach(([k,d]) => { const e = document.getElementById(d); if (e) e.classList.toggle('active', k===id); });
+  document.querySelectorAll('.pb').forEach(b => b.classList.toggle('cur', b.textContent.trim() === (LABELS[id]||'')));
+  if (id==='mob-vr') { document.getElementById('comp-s').style.display=''; document.getElementById('vr-suc').style.display='none'; }
+  if (id==='mob-gz') { const s=document.getElementById('gz-succes'); if(s)s.style.display='none'; document.getElementById('gz-detail-body').style.display=''; }
+}
+
+/* ── Panels ── */
+const panelState = {};
+function togglePanel(id) { const e=document.getElementById(id); if(!e)return; panelState[id]=!panelState[id]; e.style.display=panelState[id]?'none':'flex'; if(!panelState[id])e.style.flexDirection='column'; }
+
+/* ── Impact drawer ── */
+let impOpen=false;
+function toggleImpact() { impOpen=!impOpen; document.getElementById('impact-dr').classList.toggle('hidden',!impOpen); const b=document.getElementById('imp-btn'); if(b){b.style.background=impOpen?'var(--accent-dim)':'';b.style.color=impOpen?'var(--accent)':'';} }
+
+/* ── Modals ── */
+function showModal(id){document.getElementById(id).classList.remove('hidden');}
+function hideModal(id){document.getElementById(id).classList.add('hidden');}
+
+/* ── Zoom sim ── */
+let zPct=100;
+function simZoom(d){zPct=Math.max(25,Math.min(200,zPct+d));const e=document.getElementById('zpct');if(e)e.textContent=zPct+'%';}
+
+/* ── Mobile voorstel ── */
+function setTpl(t){const ta=document.getElementById('vta');if(ta){ta.value=t;ta.focus();}}
+function setType(t){['sp','te','ov'].forEach(x=>{const e=document.getElementById('tv-'+x);if(e)e.classList.toggle('active',x===t);});}
+function verzendVr(){document.getElementById('comp-s').style.display='none';document.getElementById('vr-suc').style.display='';}
+
+/* ── Mobile gezien ── */
+function selectGz(el,val){el.closest('.mc').querySelectorAll('.gz-opt').forEach(o=>{o.classList.remove('sel-g','sel-y','sel-o','sel-r');});const map={g:'sel-g',y:'sel-y',o:'sel-o',r:'sel-r'};el.classList.add(map[val]||'sel-g');}
+function verzendGz(){document.getElementById('gz-detail-body').style.display='none';document.getElementById('gz-succes').style.display='';}
+
+/* ── ② Notities popover ── */
+const NOTES = {
+  'M. de Vries': [
+    { id:1, tekst:'Heeft gezegd minder beschikbaar te zijn in de reisperiodes (week 8-12).', auteur:'J. Laban', datum:'10 mrt', open:false, behandeld_door:'T. Kuiper', behandeld_op:'15 mrt' },
+  ],
+  'L. Peters': [
+    { id:2, tekst:'Twijfelt over haar niveau in Sen 1 — wil graag evaluatiegesprek.', auteur:'M. Hendriks', datum:'8 mrt', open:true },
+  ],
+  'R. Kok': [
+    { id:3, tekst:'Retentierisico: overweegt naar andere club vanwege carrière. Contact opgenomen?', auteur:'J. Laban', datum:'5 mrt', open:true },
+    { id:4, tekst:'Tweede aandachtspunt: geboortejaar klopt niet in Sportlink.', auteur:'J. Laban', datum:'6 mrt', open:true },
+  ],
+  'J. Bakker': [
+    { id:5, tekst:'Voorstel ingediend via mobile: wil naar Senioren 2 vanwege partner.', auteur:'M. Hendriks (coord)', datum:'12 apr', open:true },
+  ],
+  'T. Groot': [
+    { id:6, tekst:'Verwacht minder beschikbaar te zijn in Q4 (werk).', auteur:'J. Laban', datum:'2 mrt', open:false, behandeld_door:'J. Laban', behandeld_op:'5 mrt' },
+  ],
+  'B. Hendriks': [
+    { id:7, tekst:'Heeft aangegeven te willen stoppen na dit seizoen. Retentiegesprek ingepland.', auteur:'T. Kuiper', datum:'1 mrt', open:true },
+  ],
+};
+let currentNoteSpeler = null;
+
+function openNotes(naam, triggerEl) {
+  currentNoteSpeler = naam;
+  const pop = document.getElementById('note-popover');
+  document.getElementById('np-name').textContent = naam;
+  renderNotes(naam);
+  pop.classList.remove('hidden');
+  // Positioneer naast de trigger
+  const rect = triggerEl.getBoundingClientRect();
+  pop.style.top = Math.max(8, rect.top - 20) + 'px';
+  pop.style.left = (rect.right + 8) + 'px';
+  // Zorg dat popover niet buiten scherm valt
+  setTimeout(() => {
+    const pr = pop.getBoundingClientRect();
+    if (pr.right > window.innerWidth - 8) pop.style.left = (rect.left - pr.width - 8) + 'px';
+    if (pr.bottom > window.innerHeight - 8) pop.style.top = (window.innerHeight - pr.height - 8) + 'px';
+  }, 0);
+}
+
+function renderNotes(naam) {
+  const body = document.getElementById('np-body');
+  const notes = NOTES[naam] || [];
+  if (notes.length === 0) { body.innerHTML = '<div style="font-size:12px;color:var(--text-3);padding:4px 0;">Geen opmerkingen.</div>'; return; }
+  body.innerHTML = notes.map(n => `
+    <div class="note-card ${n.open ? 'open' : 'done'}" id="note-${n.id}">
+      <div class="note-tekst">${n.tekst}</div>
+      <div class="note-meta">
+        <span><span class="note-auteur">${n.auteur}</span> &middot; ${n.datum}</span>
+        ${n.open
+          ? `<div class="note-actions"><button class="btn btn-sm" style="padding:2px 8px;font-size:10px;background:rgba(34,197,94,.12);color:var(--ok);border:none;border-radius:5px;" onclick="handleNote(${n.id})">✓ Afhandelen</button></div>`
+          : `<span class="note-handled">Besproken op ${n.behandeld_op} door ${n.behandeld_door}</span>`
+        }
+      </div>
+    </div>
+  `).join('');
+}
+
+function handleNote(id) {
+  if (!currentNoteSpeler) return;
+  const notes = NOTES[currentNoteSpeler];
+  const note = notes.find(n => n.id === id);
+  if (note) {
+    note.open = false;
+    note.behandeld_door = 'J. Laban';
+    note.behandeld_op = new Date().toLocaleDateString('nl-NL', { day:'numeric', month:'short' });
+  }
+  renderNotes(currentNoteSpeler);
+  // Update de notitie-dot op de rij
+  updateNoteDots(currentNoteSpeler);
+}
+
+function updateNoteDots(naam) {
+  // Kijk of er nog open notities zijn voor deze speler
+  const notes = NOTES[naam] || [];
+  const heeftOpen = notes.some(n => n.open);
+  const heeftDone = notes.some(n => !n.open);
+  // Vind alle rijen in het werkgebied met deze naam
+  document.querySelectorAll('.sr-naam').forEach(el => {
+    if (el.textContent.trim() === naam) {
+      const row = el.closest('.sr');
+      if (!row) return;
+      const nd = row.querySelector('.sr-nd');
+      if (!nd) return;
+      if (heeftOpen) {
+        nd.innerHTML = '<span class="nd-open" title="Open opmerking"></span>';
+      } else if (heeftDone) {
+        nd.innerHTML = '<span class="nd-done" title="Notitie afgehandeld"></span>';
+      } else {
+        nd.innerHTML = '';
+      }
+    }
+  });
+}
+
+function addNote() {
+  const input = document.getElementById('np-input');
+  const tekst = input.value.trim();
+  if (!tekst || !currentNoteSpeler) return;
+  if (!NOTES[currentNoteSpeler]) NOTES[currentNoteSpeler] = [];
+  const newId = Date.now();
+  NOTES[currentNoteSpeler].unshift({ id: newId, tekst, auteur: 'J. Laban', datum: 'nu', open: true });
+  input.value = '';
+  renderNotes(currentNoteSpeler);
+  updateNoteDots(currentNoteSpeler);
+}
+
+function closeNotes() { document.getElementById('note-popover').classList.add('hidden'); currentNoteSpeler=null; }
+
+// Sluit popover bij klik buiten
+document.addEventListener('click', e => {
+  const pop = document.getElementById('note-popover');
+  if (!pop.classList.contains('hidden') && !pop.contains(e.target) && !e.target.closest('.sr')) closeNotes();
+});
+
+/* ── ⑤ Shirt-icoon helper ──
+   Genereert een korfbalshirt-SVG met getal erin.
+   type: 'f' (dames/roze) | 'm' (heren/blauw) | 'x' (gemengd/paars)
+   size: 'sm' (18px, voor kolomkoppen) | 'md' (26px, voor overzicht-kaart)
+   count: getal dat in het shirt staat
+*/
+let _sId = 0;
+function shirtSvg(type, size, count) {
+  const colors = {
+    f: '#EC4899',
+    m: '#60A5FA',
+    x: '#A78BFA',
+  };
+  const stroke = colors[type] || colors.x;
+  /*
+    Shirt-pad — modern sportshirt silhouet, viewBox 0 0 24 24
+    Set-in schouders, ronde halsopening, licht taps toelopende romp.
+
+    Pad verloopt met de klok mee:
+    Start linkermouwpunt (2,6.5)
+    → mouwonderkant (1,10) → oksel (4.5,11.5)
+    → linker zijnaad omlaag (4.5,22)
+    → onderkant (19.5,22)
+    → rechter zijnaad omhoog (19.5,11.5) → oksel
+    → rechter mouwonderkant (23,10) → mouwpunt (22,6.5)
+    → rechter schouder (18,5)
+    → halsopening boog (rechts→midden→links) via (16,3.5)(12,3)(8,3.5)
+    → linker schouder (6,5)
+    → terug naar startpunt (2,6.5) sluiten
+  */
+  const path =
+    'M2 6.5 L1 10 L4.5 11.5 L4.5 22 L19.5 22 L19.5 11.5 L23 10 L22 6.5 ' +
+    'L18 5 C16.5 3.8 14.5 3 12 3 C9.5 3 7.5 3.8 6 5 Z';
+
+  const px  = size === 'md' ? 26 : 18;
+  const fid = 'sf' + (++_sId);
+  return `<span class="shirt-wrap ${size}" aria-hidden="true">
+    <svg width="${px}" height="${px}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;overflow:visible;">
+      <defs><filter id="${fid}" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="0" stdDeviation="1.2" flood-color="${stroke}" flood-opacity="0.35"/></filter></defs>
+      <path d="${path}" fill="none" stroke="${stroke}" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" filter="url(#${fid})"/>
+    </svg>
+    <span class="sc" style="color:#ffffff;">${count}</span>
+  </span>`;
+}
+
+/* ── Vervang alle .ch koppen met shirt-iconen ── */
+function upgradeShirtHeaders() {
+  document.querySelectorAll('.ch').forEach(el => {
+    // Detecteer geslacht via klasse of inhoud
+    const isFemale = el.classList.contains('ch-f');
+    const isMale   = el.classList.contains('ch-m');
+    if (!isFemale && !isMale) return;
+    // Haal getal op uit tekst: "♀ 6" of "♂ 5"
+    const match = el.textContent.match(/\d+/);
+    if (!match) return;
+    const count = match[0];
+    const type  = isFemale ? 'f' : 'm';
+    el.innerHTML = shirtSvg(type, 'sm', count);
+  });
+}
+
+/* ── Vervang .tc-gnd met shirt-iconen (overzicht-LOD) ── */
+function upgradeShirtOverview() {
+  document.querySelectorAll('.tc-gnd').forEach(el => {
+    // Verwacht twee spans: .g-f "♀ N" en .g-m "♂ N"
+    const spans = el.querySelectorAll('span');
+    if (spans.length < 2) return;
+    const mF = spans[0].textContent.match(/\d+/);
+    const mM = spans[1].textContent.match(/\d+/);
+    if (!mF || !mM) return;
+    el.innerHTML = shirtSvg('f', 'md', mF[0]) + shirtSvg('m', 'md', mM[0]);
+  });
+}
+
+/* ── ⑥ Pin-indicator: voeg pin-kolom toe aan elke .sr rij ── */
+/*
+  Map-pin icoon — Heroicons/Google Maps stijl, viewBox 0 0 16 16
+  Vorm: druppel — brede ronde kop (cirkel r≈3.5 op cy=6), smallere taps
+  toelopende romp die eindigt in een scherpe punt onderaan (8,15).
+  Pad: linker zijde omhoog → boog over kop → rechter zijde omlaag → punt.
+  Binnenste cirkel (highlight) enkel bij actief.
+*/
+const PIN_ACTIVE_SVG = `<svg width="11" height="13" viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M8 1C4.96 1 2.5 3.46 2.5 6.5C2.5 10.75 8 17 8 17C8 17 13.5 10.75 13.5 6.5C13.5 3.46 11.04 1 8 1Z" fill="#F59E0B" stroke="#D97706" stroke-width="1" stroke-linejoin="round"/>
+  <circle cx="8" cy="6.5" r="2" fill="#fff" opacity="0.9"/>
+</svg>`;
+
+const PIN_INACTIVE_SVG = `<svg width="11" height="13" viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M8 1C4.96 1 2.5 3.46 2.5 6.5C2.5 10.75 8 17 8 17C8 17 13.5 10.75 13.5 6.5C13.5 3.46 11.04 1 8 1Z" fill="none" stroke="#555566" stroke-width="1.3" stroke-linejoin="round"/>
+  <circle cx="8" cy="6.5" r="2" stroke="#555566" stroke-width="1" fill="none"/>
+</svg>`;
+
+function buildPinCell(pinned) {
+  const div = document.createElement('div');
+  div.className = 'sr-pin';
+  div.innerHTML = pinned ? PIN_ACTIVE_SVG : PIN_INACTIVE_SVG;
+  div.title = pinned ? 'Gepind — niet verplaatsbaar' : 'Klik om te pinnen';
+  div.addEventListener('click', e => {
+    e.stopPropagation();
+    const row = div.closest('.sr');
+    if (!row) return;
+    const isPinned = row.classList.contains('pinned');
+    row.classList.toggle('pinned', !isPinned);
+    div.innerHTML = isPinned ? PIN_INACTIVE_SVG : PIN_ACTIVE_SVG;
+    div.title = isPinned ? 'Klik om te pinnen' : 'Gepind — niet verplaatsbaar';
+  });
+  return div;
+}
+
+function upgradePinColumn() {
+  // Bepaal welke rijen gepind starten (demo: twee vaste spelers)
+  const PINNED_NAMES = new Set(['M. de Vries', 'D. Klaasen']);
+  document.querySelectorAll('.sr').forEach(row => {
+    // Voorkom dubbele upgrade
+    if (row.querySelector('.sr-pin')) return;
+    const naamEl = row.querySelector('.sr-naam');
+    const naam   = naamEl ? naamEl.textContent.trim() : '';
+    const pinned = PINNED_NAMES.has(naam);
+    if (pinned) row.classList.add('pinned');
+    const pinCell = buildPinCell(pinned);
+    row.prepend(pinCell);
+    // Shake bij drag-poging op gepinde rij (mousedown buiten pin-knop)
+    row.addEventListener('mousedown', ev => {
+      if (row.classList.contains('pinned') && !ev.target.closest('.sr-pin')) {
+        row.classList.add('shake');
+        setTimeout(() => row.classList.remove('shake'), 350);
+      }
+    });
+  });
+}
+
+/* ── Vul legenda-placeholders ── */
+function fillLegenda() {
+  const lf = document.getElementById('leg-shirt-f');
+  const lm = document.getElementById('leg-shirt-m');
+  const lx = document.getElementById('leg-shirt-x');
+  const lon = document.getElementById('leg-pin-on');
+  const loff = document.getElementById('leg-pin-off');
+  if (lf)  lf.innerHTML  = shirtSvg('f', 'md', '6');
+  if (lm)  lm.innerHTML  = shirtSvg('m', 'md', '6');
+  if (lx)  lx.innerHTML  = shirtSvg('x', 'md', '');
+  if (lon) lon.innerHTML  = PIN_ACTIVE_SVG;
+  if (loff) loff.innerHTML = PIN_INACTIVE_SVG;
+}
+
+/* ── Init ── */
+go('ob');
+upgradeShirtHeaders();
+upgradeShirtOverview();
+upgradePinColumn();
+fillLegenda();
+</script>
+</body>
+</html>
