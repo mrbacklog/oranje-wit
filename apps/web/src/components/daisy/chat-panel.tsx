@@ -10,25 +10,60 @@ import { ChatInput } from "./chat-input";
 
 // ─── Types ──────────────────────────────────────────────────────
 
+export type ActieveProvider = "claude" | "gemini" | "niet-beschikbaar" | null;
+
 interface ChatPanelProps {
   open: boolean;
   onClose: () => void;
+  providerInfo?: ActieveProvider;
 }
 
-// ─── Transport (singleton) ──────────────────────────────────────
+// ─── Provider badge stijlen ───────────────────────────────────────
 
-const transport = new TextStreamChatTransport({
-  api: "/api/ai/chat",
-});
+function getProviderBadgeStijl(provider: ActieveProvider): {
+  label: string;
+  bg: string;
+  kleur: string;
+} {
+  switch (provider) {
+    case "claude":
+      return { label: "Claude", bg: "rgba(168,85,247,0.12)", kleur: "#c084fc" };
+    case "gemini":
+      return { label: "Gemini", bg: "rgba(59,130,246,0.12)", kleur: "#60a5fa" };
+    case "niet-beschikbaar":
+      return { label: "Niet beschikbaar", bg: "rgba(239,68,68,0.1)", kleur: "#f87171" };
+    default:
+      return { label: "Auto", bg: "var(--surface-raised)", kleur: "var(--text-muted)" };
+  }
+}
+
+// ─── Transport ──────────────────────────────────────────────────
+// Geen singleton — wordt aangemaakt per instantie zodat we de
+// X-Ai-Provider header kunnen doorgeven via onResponse callback.
+function maakTransport(onProvider: (p: ActieveProvider) => void) {
+  return new TextStreamChatTransport({
+    api: "/api/ai/chat",
+    fetch: async (input, init) => {
+      const response = await fetch(input, init);
+      const provider = response.headers.get("X-Ai-Provider");
+      if (provider === "claude" || provider === "gemini") {
+        onProvider(provider);
+      }
+      return response;
+    },
+  });
+}
 
 // ─── Component ──────────────────────────────────────────────────
 
-export function ChatPanel({ open, onClose }: ChatPanelProps) {
+export function ChatPanel({ open, onClose, providerInfo }: ChatPanelProps) {
   const closeRef = useRef<HTMLButtonElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [input, setInput] = useState("");
+  const [actieveProvider, setActieveProvider] = useState<ActieveProvider>(providerInfo ?? null);
 
-  const { messages, sendMessage, status, error } = useChat({ transport });
+  const transport = useRef(maakTransport(setActieveProvider));
+  const { messages, sendMessage, status, error } = useChat({ transport: transport.current });
 
   const isLoading = status === "submitted" || status === "streaming";
 
@@ -120,9 +155,23 @@ export function ChatPanel({ open, onClose }: ChatPanelProps) {
 
               {/* Naam + status */}
               <div className="flex-1">
-                <p className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>
-                  Daisy
-                </p>
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>
+                    Daisy
+                  </p>
+                  {actieveProvider !== null &&
+                    (() => {
+                      const stijl = getProviderBadgeStijl(actieveProvider);
+                      return (
+                        <span
+                          className="rounded px-1.5 py-0.5 text-xs font-medium"
+                          style={{ backgroundColor: stijl.bg, color: stijl.kleur }}
+                        >
+                          {stijl.label}
+                        </span>
+                      );
+                    })()}
+                </div>
                 <p className="text-xs" style={{ color: "var(--text-tertiary)" }}>
                   {isLoading ? "TC-lid \u00b7 denkt na..." : "TC-lid \u00b7 online"}
                 </p>
