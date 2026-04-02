@@ -1,9 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 import { ProgressBar } from "@oranje-wit/ui";
-
-type TabId = "kaders" | "spelers" | "staf" | "teams" | "scenarios" | "werkbord";
 
 interface VoortgangKpiProps {
   label: string;
@@ -69,14 +68,13 @@ interface BlauwdrukVoortgangProps {
     totaal: number;
     gezien: number;
   };
-  onNavigeerNaarTab: (tab: TabId) => void;
 }
 
 export default function BlauwdrukVoortgang({
   besluitStats,
   gezienVoortgang,
-  onNavigeerNaarTab,
 }: BlauwdrukVoortgangProps) {
+  const router = useRouter();
   const kadersTotaal = besluitStats.totaal;
   const kadersKlaar = besluitStats.definitief;
 
@@ -110,7 +108,7 @@ export default function BlauwdrukVoortgang({
           totaal={kadersTotaal}
           kleur="#3B82F6"
           delay={0}
-          onKlik={() => onNavigeerNaarTab("kaders")}
+          onKlik={() => router.push("/ti-studio/kaders")}
         />
         <VoortgangKpi
           label="Spelers"
@@ -118,7 +116,7 @@ export default function BlauwdrukVoortgang({
           totaal={spelersTotaal}
           kleur="#22C55E"
           delay={0.05}
-          onKlik={() => onNavigeerNaarTab("spelers")}
+          onKlik={() => router.push("/ti-studio/personen/spelers")}
         />
         <VoortgangKpi
           label="Staf"
@@ -126,7 +124,7 @@ export default function BlauwdrukVoortgang({
           totaal={stafTotaal}
           kleur="#FF6B00"
           delay={0.1}
-          onKlik={() => onNavigeerNaarTab("staf")}
+          onKlik={() => {}}
         />
         <VoortgangKpi
           label="Totaal"

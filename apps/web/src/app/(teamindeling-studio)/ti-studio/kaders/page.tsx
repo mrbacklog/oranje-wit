@@ -79,11 +79,7 @@ export default async function KadersPage() {
         </p>
       </div>
 
-      <BlauwdrukVoortgang
-        besluitStats={besluitStats}
-        gezienVoortgang={gezienVoortgang}
-        onNavigeerNaarTab={() => {}}
-      />
+      <BlauwdrukVoortgang besluitStats={besluitStats} gezienVoortgang={gezienVoortgang} />
 
       <BesluitenOverzicht
         blauwdrukId={blauwdruk.id}

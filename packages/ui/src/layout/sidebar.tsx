@@ -17,7 +17,7 @@ export function Sidebar({ branding, navigation, footer, onClose }: SidebarProps)
 
   function isActive(href: string) {
     if (href === "/") return pathname === "/";
-    return pathname.startsWith(href);
+    return pathname === href || pathname.startsWith(href + "/");
   }
 
   return (

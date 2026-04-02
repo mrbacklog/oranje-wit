@@ -18,6 +18,8 @@ export type TeamRegisterEntry = {
   id: number;
   ow_code: string;
   naam: string | null;
+  alias: string | null;
+  teamType: string | null;
   categorie: string;
   kleur: string | null;
   leeftijdsgroep: string | null;
@@ -43,6 +45,8 @@ export async function getTeamsRegister(seizoen: string): Promise<TeamsRegisterRe
       id: number;
       ow_code: string;
       naam: string | null;
+      alias: string | null;
+      team_type: string | null;
       categorie: string;
       kleur: string | null;
       leeftijdsgroep: string | null;
@@ -58,7 +62,7 @@ export async function getTeamsRegister(seizoen: string): Promise<TeamsRegisterRe
       aantal_spelers: number | null;
     }[]
   >`
-    SELECT t.id, t.ow_code, t.naam, t.categorie, t.kleur, t.leeftijdsgroep, t.spelvorm, t.is_selectie, t.selectie_ow_code, t.sort_order,
+    SELECT t.id, t.ow_code, t.naam, t.alias, t.team_type, t.categorie, t.kleur, t.leeftijdsgroep, t.spelvorm, t.is_selectie, t.selectie_ow_code, t.sort_order,
            tp.periode, tp.j_nummer, tp.pool, tp.sterkte, tp.gem_leeftijd, tp.aantal_spelers
     FROM teams t
     LEFT JOIN team_periodes tp ON t.id = tp.team_id
@@ -75,6 +79,8 @@ export async function getTeamsRegister(seizoen: string): Promise<TeamsRegisterRe
         id: r.id,
         ow_code: r.ow_code,
         naam: r.naam,
+        alias: r.alias,
+        teamType: r.team_type,
         categorie: r.categorie,
         kleur: r.kleur,
         leeftijdsgroep: r.leeftijdsgroep,
