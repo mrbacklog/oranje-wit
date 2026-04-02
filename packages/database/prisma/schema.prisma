@@ -62,6 +62,13 @@ enum SeizoenStatus {
   AFGEROND      // seizoenen in het verleden
 }
 
+enum OWTeamType {
+  JEUGD
+  SELECTIE
+  SENIOREN
+  OVERIG
+}
+
 // Seizoenen
 model Seizoen {
   seizoen    String        @id
@@ -90,7 +97,9 @@ model OWTeam {
   id             Int      @id @default(autoincrement())
   seizoen        String
   owCode         String   @map("ow_code")
-  naam           String?
+  naam           String
+  alias          String?
+  teamType       OWTeamType @default(JEUGD) @map("team_type")
   categorie      String   // "a" | "b"
   kleur          String?
   leeftijdsgroep String?
@@ -105,7 +114,8 @@ model OWTeam {
   aliases    TeamAlias[]
   coordinatoren  CoordinatorTeam[]
   uitnodigingen  EvaluatieUitnodiging[]
-  scoutingSessies TeamScoutingSessie[]
+  scoutingSessies   TeamScoutingSessie[]
+  competitieSpelers CompetitieSpeler[]
 
   @@unique([seizoen, owCode])
   @@index([seizoen], map: "idx_teams_seizoen")
@@ -172,9 +182,11 @@ model CompetitieSpeler {
   geslacht    String?  // "M" | "V"
   bron        String   // "telling"
   betrouwbaar Boolean  @default(true)
+  owTeamId    Int?     @map("ow_team_id")
 
   lid        Lid      @relation(fields: [relCode], references: [relCode])
   seizoenRef Seizoen  @relation(fields: [seizoen], references: [seizoen])
+  owTeamRef  OWTeam?  @relation(fields: [owTeamId], references: [id], onDelete: SetNull)
 
   @@unique([relCode, seizoen, competitie])
   @@index([seizoen], map: "idx_cs_seizoen")
