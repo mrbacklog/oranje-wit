@@ -15,12 +15,16 @@ const MobileScenarioEditor = lazy(() => import("../mobile/MobileScenarioEditor")
 import Werkgebied from "../Werkgebied";
 import SpelersPool from "../SpelersPool";
 import TeamEditPanel from "../TeamEditPanel";
-import ValidatieRapport from "../ValidatieRapport";
-import Drawer from "./Drawer";
+import EditorSidebars from "./EditorSidebars";
 import EditorToolbar, { type EditorMode } from "./EditorToolbar";
 import PreviewMode from "./PreviewMode";
 import EditorDialogs from "./EditorDialogs";
 import { SideTabPool, SideTabsRight } from "./SideTabs";
+import WhatIfStartDialoog from "./WhatIfStartDialoog";
+import WhatIfToolbar from "./WhatIfToolbar";
+import WhatIfFooter from "./WhatIfFooter";
+import WhatIfSidebar from "./WhatIfSidebar";
+import { useWhatIf } from "../hooks/useWhatIf";
 
 interface ScenarioEditorFullscreenProps {
   scenario: ScenarioData;
@@ -47,7 +51,11 @@ export default function ScenarioEditorFullscreen({
   const [compactMode, setCompactMode] = useState(false);
   const [syncingScores, setSyncingScores] = useState(false);
   const [werkbordOpen, setWerkbordOpen] = useState(false);
+  const [whatIfOpen, setWhatIfOpen] = useState(false);
+  const [whatIfDialoogOpen, setWhatIfDialoogOpen] = useState(false);
   const syncLockRef = useRef(false);
+
+  const whatIf = useWhatIf({ teams: editor.teams, onRefreshTeams: editor.refreshTeams });
 
   const isPreview = mode === "preview";
   const toggleRanking = useCallback(() => setShowRanking((v) => !v), []);
@@ -267,18 +275,31 @@ export default function ScenarioEditorFullscreen({
   // --- Edit mode ---
   return (
     <div className="fixed inset-0 z-40 flex flex-col bg-gray-50">
-      <EditorToolbar
-        scenario={scenario}
-        zichtbaar={zichtbareCount}
-        totaal={editor.teams.length}
-        mode={mode}
-        showRanking={showRanking}
-        compactMode={compactMode}
-        onToggleRanking={toggleRanking}
-        onToggleCompact={toggleCompact}
-        onToggleMode={toggleMode}
-        onCreateTeam={() => setNieuwTeamOpen(true)}
-      />
+      {/* Toolbar: what-if modus of normaal */}
+      {whatIf.isWhatIfModus ? (
+        <WhatIfToolbar
+          vraag={whatIf.activeWhatIfVraag}
+          heeftHardefouten={whatIf.whatIfHeeftHardefouten}
+          bezig={whatIf.whatIfBezig}
+          onVerlaat={whatIf.handleVerlaatWhatIf}
+          onToepassen={whatIf.handleToepassenWhatIf}
+          onVerwerpen={whatIf.handleVerwerpWhatIf}
+        />
+      ) : (
+        <EditorToolbar
+          scenario={scenario}
+          zichtbaar={zichtbareCount}
+          totaal={editor.teams.length}
+          mode={mode}
+          showRanking={showRanking}
+          compactMode={compactMode}
+          onToggleRanking={toggleRanking}
+          onToggleCompact={toggleCompact}
+          onToggleMode={toggleMode}
+          onCreateTeam={() => setNieuwTeamOpen(true)}
+          onOpenWhatIf={() => setWhatIfDialoogOpen(true)}
+        />
+      )}
 
       <DndProvider
         spelers={alleSpelers}
@@ -286,59 +307,42 @@ export default function ScenarioEditorFullscreen({
         onTeamToTeam={editor.handleTeamToTeam}
         onTeamToPool={editor.handleTeamToPool}
       >
-        {/* Flex-row: gepinde pool (links) | werkgebied | gepind rapport (rechts) */}
         <div className="flex flex-1 overflow-hidden">
-          {/* Gepinde SpelersPool sidebar */}
-          {poolPinned && showPoolDrawer && (
-            <Drawer
-              open={true}
-              onClose={handleClosePool}
-              side="left"
-              width="w-80"
-              title="Spelerspool"
-              pinnable
-              pinned
-              onTogglePin={handleTogglePoolPin}
-            >
-              {spelersPoolContent}
-            </Drawer>
-          )}
-
-          {/* Gepinde TeamEditPanel sidebar */}
-          {poolPinned && showEditDrawer && (
-            <Drawer
-              open={true}
-              onClose={() => editor.setEditTeamId(null)}
-              side="left"
-              width="w-80"
-              title="Team bewerken"
-              pinnable
-              pinned
-              onTogglePin={handleTogglePoolPin}
-            >
-              {teamEditContent}
-            </Drawer>
-          )}
+          <EditorSidebars
+            poolPinned={poolPinned}
+            showPoolDrawer={showPoolDrawer}
+            showEditDrawer={showEditDrawer}
+            spelersPoolContent={spelersPoolContent}
+            teamEditContent={teamEditContent}
+            rapportPinned={rapportPinned}
+            rapportOpen={rapportOpen}
+            teams={editor.teams}
+            validatieMap={editor.validatieMap}
+            dubbeleMeldingen={editor.dubbeleMeldingen ?? []}
+            onClosePool={handleClosePool}
+            onTogglePoolPin={handleTogglePoolPin}
+            onCloseEditTeam={() => editor.setEditTeamId(null)}
+            onCloseRapport={handleCloseRapport}
+            onToggleRapportPin={handleToggleRapportPin}
+          />
 
           {/* Hoofdgebied */}
           <div className="relative flex-1 overflow-hidden">
-            {/* Side-tab: Spelerspool (links) — verberg als gepind */}
-            {!poolPinned && (
+            {!poolPinned && !whatIf.isWhatIfModus && (
               <SideTabPool
                 poolOpen={poolOpen}
                 showEditDrawer={showEditDrawer}
                 onToggle={togglePool}
               />
             )}
-
-            {/* Side-tabs rechts: Validatie + Werkbord */}
             <SideTabsRight
               rapportPinned={rapportPinned}
               werkbordOpen={werkbordOpen}
+              whatIfOpen={whatIfOpen}
               onOpenRapport={() => setRapportOpen(true)}
               onOpenWerkbord={() => setWerkbordOpen(true)}
+              onOpenWhatIf={() => setWhatIfOpen(true)}
             />
-
             <Werkgebied
               teams={editor.teams}
               zichtbareTeamIds={editor.zichtbaar}
@@ -356,50 +360,22 @@ export default function ScenarioEditorFullscreen({
               onEditTeam={editor.handleEditTeam}
               positions={positions}
               onRepositionCard={updatePosition}
+              whatIfZones={whatIf.whatIfZones ?? undefined}
             />
           </div>
-
-          {/* Gepind ValidatieRapport sidebar */}
-          {rapportPinned && rapportOpen && editor.validatieMap && (
-            <ValidatieRapport
-              teams={editor.teams}
-              validatieMap={editor.validatieMap}
-              dubbeleMeldingen={editor.dubbeleMeldingen ?? []}
-              onClose={handleCloseRapport}
-              pinned
-              onTogglePin={handleToggleRapportPin}
-            />
-          )}
         </div>
-
-        {/* Niet-gepinde SpelersPool drawer (links, overlay) */}
-        {!poolPinned && (
-          <Drawer
-            open={showPoolDrawer}
-            onClose={() => setPoolOpen(false)}
-            side="left"
-            width="w-80"
-            title="Spelerspool"
-            pinnable
-            pinned={false}
-            onTogglePin={handleTogglePoolPin}
-          >
-            {spelersPoolContent}
-          </Drawer>
-        )}
-
-        {/* Niet-gepinde TeamEditPanel drawer (links, overlay, vervangt pool) */}
-        {!poolPinned && (
-          <Drawer
-            open={showEditDrawer}
-            onClose={() => editor.setEditTeamId(null)}
-            side="left"
-            width="w-80"
-          >
-            {teamEditContent}
-          </Drawer>
-        )}
       </DndProvider>
+
+      {/* What-if footer — alleen in what-if modus */}
+      {whatIf.isWhatIfModus && (
+        <WhatIfFooter
+          bezig={whatIf.whatIfBezig}
+          heeftHardefouten={whatIf.whatIfHeeftHardefouten}
+          onVerwerpen={whatIf.handleVerwerpWhatIf}
+          onBewaren={whatIf.handleVerlaatWhatIf}
+          onToepassen={whatIf.handleToepassenWhatIf}
+        />
+      )}
 
       {/* Dialogen en overlays */}
       <EditorDialogs
@@ -428,6 +404,28 @@ export default function ScenarioEditorFullscreen({
         onCloseDetail={() => {
           editor.setDetailSpeler(null);
           editor.setDetailTeamId(null);
+        }}
+      />
+
+      {/* What-if zijbalk (rechts, overlay) */}
+      <WhatIfSidebar
+        open={whatIfOpen}
+        werkindelingId={scenario.id}
+        panelKey={whatIf.whatIfPanelKey}
+        activeWhatIfId={whatIf.activeWhatIfId}
+        onClose={() => setWhatIfOpen(false)}
+        onNieuw={() => setWhatIfDialoogOpen(true)}
+        onActiveer={whatIf.handleActiveerWhatIf}
+      />
+
+      {/* What-if aanmaak-dialoog */}
+      <WhatIfStartDialoog
+        open={whatIfDialoogOpen}
+        werkindelingId={scenario.id}
+        teams={editor.teams}
+        onClose={() => setWhatIfDialoogOpen(false)}
+        onCreated={() => {
+          setWhatIfOpen(true);
         }}
       />
     </div>

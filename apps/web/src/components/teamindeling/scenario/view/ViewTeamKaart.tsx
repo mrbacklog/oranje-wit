@@ -24,6 +24,8 @@ import AfmeldBadge from "../AfmeldBadge";
 import RankingBadge from "../RankingBadge";
 import { getCardSize } from "../editor/cardSizes";
 import { useZoomScale } from "../editor/ZoomScaleContext";
+import SpelerRijIconen, { berekenWarnings } from "../editor/SpelerRijIconen";
+import type { GezienStatus } from "../editor/SpelerRijIconen";
 
 interface ViewTeamKaartProps {
   team: TeamData;
@@ -61,6 +63,11 @@ export default function ViewTeamKaart({
           ) / aantalSpelers
         ).toFixed(2)
       : "-";
+
+  const aantalWarnings = team.spelers.reduce(
+    (sum, ts) => sum + berekenWarnings(ts.speler).length,
+    0
+  );
 
   const gesorteerd = sorteerSpelers(team.spelers);
   const heren = gesorteerd.filter((ts) => ts.speler.geslacht === "M");
@@ -147,6 +154,14 @@ export default function ViewTeamKaart({
               <span className="font-semibold text-blue-500">♂ {aantalM}</span>
             </div>
             <span className="text-sm text-gray-400">gem. {gemLeeftijd}</span>
+            {aantalWarnings > 0 && (
+              <span
+                className="flex items-center gap-0.5 rounded-full bg-red-500/20 px-1.5 py-0.5 text-[9px] font-semibold text-red-400"
+                title={`${aantalWarnings} waarschuwing${aantalWarnings > 1 ? "en" : ""}`}
+              >
+                ! {aantalWarnings}
+              </span>
+            )}
           </div>
         ) : (
           <div className="min-h-6 flex-1 overflow-hidden px-0.5">
@@ -311,12 +326,14 @@ function ViewSpelerRij({
   speler,
   statusOverride,
   isPinned,
+  gezienStatus,
   showRanking,
   onSpelerClick,
 }: {
   speler: SpelerData;
   statusOverride: import("@oranje-wit/database").SpelerStatus | null;
   isPinned?: boolean;
+  gezienStatus?: GezienStatus;
   showRanking?: boolean;
   onSpelerClick?: (speler: SpelerData) => void;
 }) {
@@ -365,21 +382,12 @@ function ViewSpelerRij({
       </span>
       <div className="flex shrink-0 items-center gap-0.5">
         {showRanking && leeftijd < 20 && <RankingBadge rating={speler.rating} size="compact" />}
-        {isPinned && (
-          <svg
-            className="h-2 w-2 text-purple-500"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            aria-label="Gepind"
-          >
-            <path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z" />
-          </svg>
-        )}
         <span className="text-[8px] text-gray-500 tabular-nums">{leeftijd.toFixed(2)}</span>
         {kleur && (
           <span className={`h-1.5 w-1.5 rounded-full ring-1 ring-white ${KLEUR_DOT[kleur]}`} />
         )}
       </div>
+      <SpelerRijIconen speler={speler} isPinned={isPinned} gezienStatus={gezienStatus} />
     </div>
   );
 }

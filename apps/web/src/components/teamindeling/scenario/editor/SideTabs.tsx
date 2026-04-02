@@ -39,16 +39,20 @@ export function SideTabPool({ poolOpen, showEditDrawer, onToggle }: SideTabPoolP
 interface SideTabsRightProps {
   rapportPinned: boolean;
   werkbordOpen: boolean;
+  whatIfOpen: boolean;
   onOpenRapport: () => void;
   onOpenWerkbord: () => void;
+  onOpenWhatIf: () => void;
 }
 
-/** Rechter side-tabs: Validatie + Werkbord. */
+/** Rechter side-tabs: Validatie + Werkbord + What-if. */
 export function SideTabsRight({
   rapportPinned,
   werkbordOpen,
+  whatIfOpen,
   onOpenRapport,
   onOpenWerkbord,
+  onOpenWhatIf,
 }: SideTabsRightProps) {
   return (
     <div className="absolute top-4 right-0 z-20 flex flex-col gap-2">
@@ -99,6 +103,32 @@ export function SideTabsRight({
           style={{ writingMode: "vertical-rl" }}
         >
           Werkbord
+        </span>
+      </button>
+
+      {/* Side-tab: What-if */}
+      <button
+        onClick={onOpenWhatIf}
+        className={`flex flex-col items-center gap-1.5 rounded-l-lg border border-r-0 px-2 py-4 shadow-md transition-colors ${
+          whatIfOpen
+            ? "border-orange-300 bg-orange-500 text-white"
+            : "border-orange-200 bg-orange-50 text-orange-600 hover:bg-orange-100"
+        }`}
+        title="What-if"
+      >
+        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+        <span
+          className="text-[10px] font-semibold tracking-wide uppercase"
+          style={{ writingMode: "vertical-rl" }}
+        >
+          What-if
         </span>
       </button>
     </div>
