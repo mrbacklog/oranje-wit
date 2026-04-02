@@ -175,6 +175,73 @@ export function InstellingenPaneel({
         </div>
       </div>
 
+      {/* ── Anthropic account ── */}
+      <div
+        className="mb-4 rounded-xl p-4"
+        style={{
+          backgroundColor: "var(--surface-card)",
+          border: "1px solid var(--border-default)",
+        }}
+      >
+        <h3 className="mb-1 text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
+          Anthropic account
+        </h3>
+        {claudeKeyAanwezig ? (
+          <>
+            <p className="mb-3 text-xs" style={{ color: "var(--text-tertiary)" }}>
+              Controleer verbruik en resterend tegoed in de Anthropic Console.
+            </p>
+            <div className="flex flex-col gap-2">
+              <a
+                href="https://console.anthropic.com/settings/billing"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors"
+                style={{
+                  backgroundColor: "var(--surface-raised)",
+                  color: "var(--text-primary)",
+                }}
+              >
+                <span>Tegoed en gebruik</span>
+                <span style={{ color: "var(--text-muted)" }}>↗</span>
+              </a>
+              <a
+                href="https://console.anthropic.com/settings/keys"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors"
+                style={{
+                  backgroundColor: "var(--surface-raised)",
+                  color: "var(--text-primary)",
+                }}
+              >
+                <span>API keys beheren</span>
+                <span style={{ color: "var(--text-muted)" }}>↗</span>
+              </a>
+            </div>
+          </>
+        ) : (
+          <>
+            <p className="mb-3 text-xs" style={{ color: "var(--text-tertiary)" }}>
+              Stel een Anthropic API key in om Daisy te activeren.
+            </p>
+            <a
+              href="https://console.anthropic.com/settings/keys"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors"
+              style={{
+                backgroundColor: "var(--surface-raised)",
+                color: "var(--text-primary)",
+              }}
+            >
+              <span>API key aanmaken</span>
+              <span style={{ color: "var(--text-muted)" }}>↗</span>
+            </a>
+          </>
+        )}
+      </div>
+
       {/* ── Melding ── */}
       {melding && (
         <div
