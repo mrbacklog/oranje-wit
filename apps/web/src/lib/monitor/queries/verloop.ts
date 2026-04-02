@@ -199,7 +199,9 @@ export async function getSeizoenVerloop(seizoen: string): Promise<SeizoenVerloop
   }));
 
   const instroom = mapped.filter((r) => r.status === "nieuw" || r.status === "herinschrijver");
-  const uitstroom = mapped.filter((r) => r.status === "uitgestroomd");
+  const uitstroom = mapped.filter(
+    (r) => r.status === "uitgestroomd" || r.status === "niet_spelend_geworden"
+  );
   const behouden = mapped.filter((r) => r.status === "behouden").length;
 
   // Totalen: vorig seizoen = behouden + uitstroom, nieuw seizoen = behouden + instroom

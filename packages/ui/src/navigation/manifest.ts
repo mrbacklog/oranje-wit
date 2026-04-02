@@ -105,13 +105,16 @@ export const MONITOR: AppManifest = {
     },
     {
       nav: { label: "Teams", href: "/monitor/teams", icon: "PeopleIcon" },
+      pills: [
+        { label: "Teams", href: "/monitor/teams" },
+        { label: "Spelers", href: "/monitor/spelers" },
+      ],
     },
     {
-      nav: { label: "Analyse", href: "/monitor/retentie", icon: "CompareIcon" },
+      nav: { label: "Analyse", href: "/monitor/samenstelling", icon: "CompareIcon" },
       pills: [
-        { label: "Retentie", href: "/monitor/retentie" },
         { label: "Samenstelling", href: "/monitor/samenstelling" },
-        { label: "Projecties", href: "/monitor/projecties" },
+        { label: "Retentie", href: "/monitor/retentie" },
       ],
     },
     {

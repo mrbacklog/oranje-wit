@@ -109,7 +109,8 @@ Elke app heeft een eigen accent-kleur die subtiel door de UI schemerT voor locat
 
 | App | Sectie | Pills |
 |---|---|---|
-| Monitor | Analyse | Retentie / Samenstelling / Projecties |
+| Monitor | Teams | Teams / Spelers |
+| Monitor | Analyse | Samenstelling / Retentie |
 | Team-Indeling | Blauwdruk | Kaders / Spelers / Staf / Teams |
 | Scouting | Opdrachten | Openstaand / Afgerond |
 | Beheer | Planning | Kalender / Mijlpalen / Trainingen / Wedstrijden |

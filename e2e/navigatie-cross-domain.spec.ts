@@ -231,16 +231,13 @@ test.describe("Pills sub-navigatie", () => {
     }
   }
 
-  test("Monitor/Analyse: pills Retentie, Samenstelling, Projecties", async ({ page }) => {
+  test("Monitor/Analyse: pills Samenstelling, Retentie", async ({ page }) => {
     test.setTimeout(90000);
-    await checkPills(page, "/monitor/retentie", ["Retentie", "Samenstelling", "Projecties"]);
+    await checkPills(page, "/monitor/retentie", ["Samenstelling", "Retentie"]);
 
-    // Navigatie via pills werkt
     const pillNav = page.getByRole("navigation", { name: "Sub-navigatie" });
     await pillNav.getByRole("link", { name: "Samenstelling" }).click();
     await page.waitForURL("**/monitor/samenstelling**", { timeout: 45000 });
-    await pillNav.getByRole("link", { name: "Projecties" }).click();
-    await page.waitForURL("**/monitor/projecties**", { timeout: 45000 });
   });
 
   test("Monitor/Overzicht: geen pills (sectie zonder pills)", async ({ page }) => {

@@ -21,7 +21,6 @@ test.describe("Navigatie", () => {
       { url: "/monitor/teams", heading: /Teams/ },
       { url: "/monitor/samenstelling", heading: /Samenstelling/ },
       { url: "/monitor/retentie", heading: /Ledendynamiek/ },
-      { url: "/monitor/projecties", heading: /Jeugdpijplijn/ },
       { url: "/monitor/signalering", heading: /Signalering/ },
       // Spelers als laatste: zwaarste pagina (alle leden + seizoenen)
       { url: "/monitor/spelers", heading: /Spelers/ },

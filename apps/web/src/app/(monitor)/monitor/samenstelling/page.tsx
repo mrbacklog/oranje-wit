@@ -1,26 +1,25 @@
 export const dynamic = "force-dynamic";
-import Link from "next/link";
 import { Suspense } from "react";
 import { PageContainer } from "@oranje-wit/ui";
 import { InfoPageHeader } from "@/components/monitor/info/InfoPageHeader";
-import { getPerGeboortejaar } from "@/lib/monitor/queries/samenstelling";
+import {
+  getPerGeboortejaar,
+  getPijplijn,
+  getVerwachteInstroom,
+} from "@/lib/monitor/queries/samenstelling";
 import { getCohorten } from "@/lib/monitor/queries/cohorten";
 import { getSeizoen } from "@/lib/monitor/utils/seizoen";
+import { berekenKnelpunten } from "@/lib/monitor/utils/pijplijn";
 import { Ledenboog } from "@/components/monitor/charts/ledenboog";
 import { CohortHeatmap } from "@/components/monitor/charts/cohort-heatmap";
-import { SamenstellingTabs } from "@/components/monitor/samenstelling/samenstelling-tabs";
+import { Doelkaart } from "@/app/(monitor)/monitor/projecties/doelkaart";
+import { PijplijnTable } from "@/app/(monitor)/monitor/projecties/pijplijn-table";
+import { KnelpuntenGrid } from "@/app/(monitor)/monitor/projecties/knelpunten-grid";
+import { RetentieCurve } from "@/app/(monitor)/monitor/projecties/retentie-curve";
 
-const BAND_STIJL: Record<string, { bg: string; text: string; label: string }> = {
-  Kangoeroes: { bg: "bg-band-blauw/30", text: "text-knkv-blauw", label: "" },
-  "F-jeugd": { bg: "bg-band-blauw", text: "text-white", label: "" },
-  "E-jeugd": { bg: "bg-band-groen", text: "text-white", label: "" },
-  "D-jeugd": { bg: "bg-band-geel", text: "text-text-primary", label: "" },
-  "C-jeugd": { bg: "bg-band-oranje", text: "text-white", label: "" },
-  U15: { bg: "bg-band-oranje", text: "text-white", label: "U15" },
-  U17: { bg: "bg-band-rood", text: "text-white", label: "U17" },
-  U19: { bg: "bg-band-rood", text: "text-white", label: "U19" },
-  Senioren: { bg: "bg-surface-raised", text: "text-text-secondary", label: "Sen" },
-};
+function ChartFallback() {
+  return <div className="bg-surface-sunken h-56 animate-pulse rounded-lg" aria-hidden />;
+}
 
 export default async function SamenstellingPage({
   searchParams,
@@ -30,9 +29,23 @@ export default async function SamenstellingPage({
   const params = await searchParams;
   const seizoen = getSeizoen(params);
 
-  const [geboortejaar, cohorten] = await Promise.all([getPerGeboortejaar(seizoen), getCohorten()]);
+  const [geboortejaar, cohorten, pijplijn, verwachteInstroom] = await Promise.all([
+    getPerGeboortejaar(seizoen),
+    getCohorten(),
+    getPijplijn(seizoen),
+    getVerwachteInstroom(seizoen),
+  ]);
 
-  // Bereid ledenboog data voor
+  const startJaar = parseInt(seizoen.split("-")[0], 10);
+  const doel = pijplijn.doelPerCategorie;
+  const categorieen = [
+    { label: "U15", leeftijden: "13-14", ...pijplijn.huidig.U15 },
+    { label: "U17", leeftijden: "15-16", ...pijplijn.huidig.U17 },
+    { label: "U19", leeftijden: "17-18", ...pijplijn.huidig.U19 },
+  ] as const;
+
+  const knelpunten = berekenKnelpunten(pijplijn.groeiFactoren);
+
   const boogMap = new Map<number, { M: number; V: number; band: string }>();
   for (const row of geboortejaar.data) {
     if (!row.geboortejaar) continue;
@@ -53,20 +66,6 @@ export default async function SamenstellingPage({
     .sort(([a], [b]) => a - b)
     .map(([gj, d]) => ({ geboortejaar: gj, ...d }));
 
-  // Detail tabel
-  const startJaar = parseInt(seizoen.split("-")[0]);
-  const detailRows = [...boogMap.entries()]
-    .sort(([a], [b]) => b - a)
-    .map(([gj, d]) => ({
-      geboortejaar: gj,
-      M: d.M,
-      V: d.V,
-      totaal: d.M + d.V,
-      band: d.band,
-      leeftijd: startJaar - gj,
-    }));
-
-  // Cohorten data
   const { seizoenen, per_cohort } = cohorten;
   const seizoenenDesc = [...seizoenen].reverse();
 
@@ -74,7 +73,7 @@ export default async function SamenstellingPage({
     <PageContainer animated>
       <InfoPageHeader
         title="Samenstelling"
-        subtitle="Ledenstructuur en cohortanalyse per geboortejaar."
+        subtitle="Ledenstructuur, pijplijn en cohortanalyse."
         infoTitle="Over Samenstelling"
         actions={null}
       >
@@ -84,125 +83,109 @@ export default async function SamenstellingPage({
               Wat zie je?
             </h4>
             <p>
-              De ledensamenstelling vanuit vier perspectieven: van huidige snapshot tot historische
-              trends.
+              Eén doorlopend overzicht: doelkaart (U15/U17/U19), populatiepiramide, pijplijn per
+              leeftijd, cohort-heatmap over seizoenen, en waar we historisch spelers verliezen of
+              winnen.
             </p>
           </section>
           <section>
             <h4 className="text-text-muted mb-1 text-xs font-semibold tracking-wide uppercase">
-              Tabbladen
+              Secties
             </h4>
-            <p>
-              <strong>Piramide/Detail:</strong> huidige seizoen — hoeveel leden per geboortejaar.
-            </p>
-            <p className="mt-1">
-              <strong>Historie:</strong> historisch — hoe cohorten zich over seizoenen ontwikkelen.
-            </p>
-          </section>
-          <section>
-            <h4 className="text-text-muted mb-1 text-xs font-semibold tracking-wide uppercase">
-              Doorklikken
-            </h4>
-            <p>
-              <strong>Klik op een geboortejaar</strong> voor de individuele leden in dat cohort.
-            </p>
+            <ul className="list-inside list-disc space-y-1 text-sm">
+              <li>
+                <strong>Doelkaart:</strong> vulgraad t.o.v. het streefaantal per selectiecategorie.
+              </li>
+              <li>
+                <strong>Populatiepiramide:</strong> huidige verdeling per geboortejaar (klikbaar
+                naar cohortdetail).
+              </li>
+              <li>
+                <strong>Pijplijn-tabel:</strong> huidig, benodigd en vulgraad per leeftijd, met
+                verwachte instroom waar relevant.
+              </li>
+              <li>
+                <strong>Cohort-heatmap:</strong> actieve leden per geboortejaar door de tijd.
+              </li>
+              <li>
+                <strong>Groei-factoren en knelpunten:</strong> netto behoud per leeftijdsovergang en
+                waar we het meest kunnen investeren.
+              </li>
+            </ul>
           </section>
         </div>
       </InfoPageHeader>
 
-      <Suspense>
-        <SamenstellingTabs
-          piramideContent={
-            <div className="bg-surface-card rounded-xl p-6 shadow-sm">
-              <h3 className="text-text-secondary mb-4 text-sm font-semibold tracking-wide uppercase">
-                Populatiepiramide per geboortejaar
-              </h3>
-              {boogData.length > 0 ? (
-                <Ledenboog data={boogData} seizoen={seizoen} />
-              ) : (
-                <p className="text-text-muted text-sm">Geen data beschikbaar.</p>
-              )}
-            </div>
-          }
-          detailContent={
-            <div className="bg-surface-card rounded-xl p-6 shadow-sm">
-              <h3 className="text-text-secondary mb-4 text-sm font-semibold tracking-wide uppercase">
-                Detail per geboortejaar
-              </h3>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="bg-surface-sunken text-left">
-                      <th className="px-3 py-2 font-semibold">Geboortejaar</th>
-                      <th className="px-3 py-2 font-semibold">Leeftijd</th>
-                      <th className="w-16 px-3 py-2 font-semibold"></th>
-                      <th className="px-3 py-2 text-right font-semibold">
-                        <span style={{ color: "var(--color-info-500)" }}>♂</span>
-                      </th>
-                      <th className="px-3 py-2 text-right font-semibold">
-                        <span style={{ color: "var(--knkv-rood-400)" }}>♀</span>
-                      </th>
-                      <th className="px-3 py-2 text-right font-semibold">Totaal</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {detailRows.map((row) => {
-                      const isU15Sterkte = row.band === "U15" && row.leeftijd >= 14;
-                      const isCjeugdNaarU15 = row.band === "C-jeugd" && row.leeftijd >= 12;
-                      const stijl = isU15Sterkte
-                        ? {
-                            bg: "bg-linear-to-b from-band-oranje to-band-rood",
-                            text: "text-white",
-                            label: "U15",
-                          }
-                        : isCjeugdNaarU15
-                          ? {
-                              bg: "bg-linear-to-b from-band-geel to-band-oranje",
-                              text: "text-text-primary",
-                              label: "",
-                            }
-                          : BAND_STIJL[row.band] || {
-                              bg: "bg-surface-sunken",
-                              text: "text-text-secondary",
-                              label: "",
-                            };
-                      return (
-                        <tr key={row.geboortejaar} className="border-border-light border-t">
-                          <td className="px-3 py-1.5 font-medium">
-                            <Link
-                              href={`/monitor/samenstelling/${row.geboortejaar}?seizoen=${seizoen}`}
-                              className="hover:text-ow-oranje text-text-primary hover:underline"
-                            >
-                              {row.geboortejaar}
-                            </Link>
-                          </td>
-                          <td className="px-3 py-1.5">{row.leeftijd}</td>
-                          <td
-                            className={`px-3 py-1.5 text-center text-xs font-medium ${stijl.bg} ${stijl.text}`}
-                          >
-                            {stijl.label}
-                          </td>
-                          <td className="px-3 py-1.5 text-right">{row.M}</td>
-                          <td className="px-3 py-1.5 text-right">{row.V}</td>
-                          <td className="px-3 py-1.5 text-right font-semibold">{row.totaal}</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          }
-          heatmapContent={
-            <div className="bg-surface-card rounded-xl p-6 shadow-sm">
-              <h3 className="text-text-secondary mb-4 text-sm font-semibold tracking-wide uppercase">
-                Cohort-heatmap (actieve leden per geboortejaar per seizoen)
-              </h3>
-              <CohortHeatmap data={per_cohort} seizoenen={seizoenenDesc} />
-            </div>
-          }
-        />
-      </Suspense>
+      <div className="space-y-8">
+        <section>
+          <h3 className="text-text-secondary mb-1 text-sm font-semibold tracking-wide uppercase">
+            Doelkaart
+          </h3>
+          <p className="text-text-muted mb-4 text-xs">
+            KPI&apos;s voor U15, U17 en U19: huidige aantallen ten opzichte van het doel per
+            categorie.
+          </p>
+          <Doelkaart categorieen={categorieen} doel={doel} />
+        </section>
+
+        <div className="bg-surface-card rounded-xl p-6 shadow-sm">
+          <h3 className="text-text-secondary mb-1 text-sm font-semibold tracking-wide uppercase">
+            Populatiepiramide
+          </h3>
+          <p className="text-text-muted mb-4 text-xs">
+            Horizontale piramide per geboortejaar — klik op een jaartal voor het cohortdetail.
+          </p>
+          <Suspense fallback={<ChartFallback />}>
+            {boogData.length > 0 ? (
+              <Ledenboog data={boogData} seizoen={seizoen} />
+            ) : (
+              <p className="text-text-muted text-sm">Geen data beschikbaar.</p>
+            )}
+          </Suspense>
+        </div>
+
+        <section>
+          <h3 className="text-text-secondary mb-1 text-sm font-semibold tracking-wide uppercase">
+            Pijplijn-tabel
+          </h3>
+          <p className="text-text-muted mb-4 text-xs">
+            Per leeftijd: huidig, benodigd en vulgraad — inclusief verwachte tussentijdse instroom.
+          </p>
+          <PijplijnTable
+            perLeeftijd={pijplijn.perLeeftijd}
+            startJaar={startJaar}
+            verwachteInstroom={verwachteInstroom}
+          />
+        </section>
+
+        <div className="bg-surface-card rounded-xl p-6 shadow-sm">
+          <h3 className="text-text-secondary mb-1 text-sm font-semibold tracking-wide uppercase">
+            Cohort-heatmap
+          </h3>
+          <p className="text-text-muted mb-4 text-xs">
+            Geboortejaar × seizoen: intensiteit toont hoeveel actieve leden per cohort.
+          </p>
+          <Suspense fallback={<ChartFallback />}>
+            <CohortHeatmap data={per_cohort} seizoenen={seizoenenDesc} />
+          </Suspense>
+        </div>
+
+        <section className="space-y-8">
+          <div className="bg-surface-card rounded-xl p-6 shadow-sm">
+            <h3 className="text-text-secondary mb-1 text-sm font-semibold tracking-wide uppercase">
+              Waar lekken we?
+            </h3>
+            <p className="text-text-muted mb-4 text-xs">
+              Netto groei per leeftijdsovergang. Boven 100% = instroom &gt; uitstroom. Onder 100% =
+              nettoverlies.
+            </p>
+            <Suspense fallback={<ChartFallback />}>
+              <RetentieCurve factoren={pijplijn.groeiFactoren} />
+            </Suspense>
+          </div>
+          <KnelpuntenGrid knelpunten={knelpunten} />
+        </section>
+      </div>
     </PageContainer>
   );
 }

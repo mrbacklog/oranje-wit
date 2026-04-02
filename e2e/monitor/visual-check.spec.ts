@@ -9,7 +9,6 @@ test.describe("Visuele controle", () => {
     { url: "/monitor/spelers", name: "spelers" },
     { url: "/monitor/samenstelling", name: "samenstelling" },
     { url: "/monitor/retentie", name: "retentie" },
-    { url: "/monitor/projecties", name: "projecties" },
     { url: "/monitor/signalering", name: "signalering" },
   ];
 

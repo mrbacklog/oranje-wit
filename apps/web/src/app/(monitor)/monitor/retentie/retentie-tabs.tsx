@@ -5,16 +5,16 @@ import { URLTabs } from "@/components/monitor/layout/url-tabs";
 
 interface RetentieTabsProps {
   behoudContent: ReactNode;
-  instroomContent: ReactNode;
-  uitstroomContent: ReactNode;
+  verloopContent: ReactNode;
   cohortenContent: ReactNode;
+  prognoseContent: ReactNode;
 }
 
 export function RetentieTabs({
   behoudContent,
-  instroomContent,
-  uitstroomContent,
+  verloopContent,
   cohortenContent,
+  prognoseContent,
 }: RetentieTabsProps) {
   return (
     <URLTabs
@@ -27,25 +27,25 @@ export function RetentieTabs({
           content: behoudContent,
         },
         {
-          id: "instroom",
-          label: "Instroom",
+          id: "verloop",
+          label: "Verloop",
           beschrijving:
-            "Hoeveel nieuwe spelers komen erbij? Instroom omvat zowel volledig nieuwe leden als herinschrijvers die na een onderbreking terugkeren.",
-          content: instroomContent,
-        },
-        {
-          id: "uitstroom",
-          label: "Uitstroom",
-          beschrijving:
-            "Hoeveel spelers stoppen er? Uitstroom laat per leeftijd zien wanneer leden de vereniging verlaten \u2014 en of dat bij jongens of meisjes vaker voorkomt.",
-          content: uitstroomContent,
+            "Instroom en uitstroom naast elkaar. Hoeveel nieuwe spelers komen erbij, hoeveel stoppen er — en waar zitten de patronen?",
+          content: verloopContent,
         },
         {
           id: "cohorten",
           label: "Cohorten",
           beschrijving:
-            "Hoe presteren instroom-jaargangen over de jaren? Volg elk cohort van binnenkomst tot nu \u2014 en zie welke jaargangen het best vasthouden.",
+            "Hoe presteren instroom-jaargangen over de jaren? Volg elk cohort van binnenkomst tot nu — en zie welke jaargangen het best vasthouden.",
           content: cohortenContent,
+        },
+        {
+          id: "prognose",
+          label: "Prognose",
+          beschrijving:
+            "Waar staan we over 5 jaar? Doorstroomkansen, bevolkingspiramide en projecties voor U17 en senioren op basis van huidige cohorten.",
+          content: prognoseContent,
         },
       ]}
     />

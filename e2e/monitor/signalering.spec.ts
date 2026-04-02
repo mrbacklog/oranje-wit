@@ -1,7 +1,7 @@
 import { test, expect } from "../fixtures/base";
 
 test.describe("Signalering", () => {
-  test("toont signaleringen met tabs", async ({ page }) => {
+  test("toont signaleringen met filterchips", async ({ page }) => {
     test.setTimeout(60000);
     await page.goto("/monitor/signalering", { timeout: 45000 });
 
@@ -9,11 +9,11 @@ test.describe("Signalering", () => {
       timeout: 15000,
     });
 
-    // Controleer tabs
-    await expect(page.getByRole("tab", { name: "Overzicht" })).toBeVisible();
-    await expect(page.getByRole("tab", { name: "Werving" })).toBeVisible();
-    await expect(page.getByRole("tab", { name: "Retentie" })).toBeVisible();
-    await expect(page.getByRole("tab", { name: "Pijplijn" })).toBeVisible();
+    const filterGroup = page.getByRole("group", { name: "Filter op thema" });
+    await expect(filterGroup.getByRole("link", { name: "Alles" })).toBeVisible();
+    await expect(filterGroup.getByRole("link", { name: "Werving" })).toBeVisible();
+    await expect(filterGroup.getByRole("link", { name: "Retentie" })).toBeVisible();
+    await expect(filterGroup.getByRole("link", { name: "Pijplijn" })).toBeVisible();
   });
 
   test("overzicht toont tellers", async ({ page }) => {
@@ -30,7 +30,7 @@ test.describe("Signalering", () => {
     await expect(page.getByText("Op koers", { exact: true })).toBeVisible();
   });
 
-  test("tabs schakelen toont content", async ({ page }) => {
+  test("filterchips updaten de URL", async ({ page }) => {
     test.setTimeout(60000);
     await page.goto("/monitor/signalering", { timeout: 45000 });
 
@@ -38,21 +38,15 @@ test.describe("Signalering", () => {
       timeout: 15000,
     });
 
-    // Wacht tot tabs interactief zijn (hydration kan even duren)
-    const wervingTab = page.getByRole("tab", { name: "Werving" });
-    await expect(wervingTab).toBeVisible();
+    const filterGroup = page.getByRole("group", { name: "Filter op thema" });
+    await filterGroup.getByRole("link", { name: "Werving" }).click();
+    await expect(page).toHaveURL(/filter=werving/, { timeout: 10000 });
 
-    // Klik op Werving tab
-    await wervingTab.click();
-    await expect(page).toHaveURL(/tab=werving/, { timeout: 10000 });
+    await filterGroup.getByRole("link", { name: "Retentie" }).click();
+    await expect(page).toHaveURL(/filter=retentie/, { timeout: 10000 });
 
-    // Klik op Retentie tab
-    await page.getByRole("tab", { name: "Retentie" }).click();
-    await expect(page).toHaveURL(/tab=retentie/, { timeout: 10000 });
-
-    // Terug naar Overzicht
-    await page.getByRole("tab", { name: "Overzicht" }).click();
-    await expect(page).not.toHaveURL(/tab=/, { timeout: 10000 });
+    await filterGroup.getByRole("link", { name: "Alles" }).click();
+    await expect(page).not.toHaveURL(/filter=/, { timeout: 10000 });
   });
 
   test("signaleringen bevatten detail links indien aanwezig", async ({ page }) => {

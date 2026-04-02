@@ -3,17 +3,15 @@ import { test, expect } from "../fixtures/base";
 test.describe("Tab deeplinks", () => {
   test("retentie tab via URL param opent juiste tab", async ({ page }) => {
     test.setTimeout(60000);
-    await page.goto("/monitor/retentie?tab=instroom", { timeout: 45000 });
+    await page.goto("/monitor/retentie?tab=verloop", { timeout: 45000 });
 
     await expect(page.getByRole("heading", { name: "Ledendynamiek" })).toBeVisible({
       timeout: 15000,
     });
 
-    // Instroom tab moet geselecteerd zijn
-    const instroomTab = page.getByRole("tab", { name: "Instroom" });
-    await expect(instroomTab).toHaveAttribute("aria-selected", "true");
+    const verloopTab = page.getByRole("tab", { name: "Verloop" });
+    await expect(verloopTab).toHaveAttribute("aria-selected", "true");
 
-    // Behoud tab moet NIET geselecteerd zijn
     const behoudTab = page.getByRole("tab", { name: "Behoud" });
     await expect(behoudTab).toHaveAttribute("aria-selected", "false");
   });
@@ -31,48 +29,37 @@ test.describe("Tab deeplinks", () => {
     await expect(page).toHaveURL(/tab=cohorten/, { timeout: 10000 });
   });
 
-  test("tab state behouden na page refresh", async ({ page }) => {
+  test("signalering filter state behouden na page refresh", async ({ page }) => {
     test.setTimeout(60000);
-    // Navigeer naar specifieke tab
-    await page.goto("/monitor/signalering?tab=werving", { timeout: 45000 });
+    await page.goto("/monitor/signalering?filter=werving", { timeout: 45000 });
 
     await expect(page.getByRole("heading", { name: "Signalering" })).toBeVisible({
       timeout: 15000,
     });
 
-    // Werving tab moet geselecteerd zijn
-    await expect(page.getByRole("tab", { name: "Werving" })).toHaveAttribute(
-      "aria-selected",
-      "true"
-    );
+    const wervingLink = page
+      .getByRole("group", { name: "Filter op thema" })
+      .getByRole("link", { name: "Werving" });
+    await expect(wervingLink).toHaveAttribute("aria-current", "page");
 
-    // Refresh pagina
     await page.reload({ timeout: 45000 });
 
-    // Tab moet nog steeds geselecteerd zijn
-    await expect(page.getByRole("tab", { name: "Werving" })).toHaveAttribute(
-      "aria-selected",
-      "true",
-      { timeout: 15000 }
-    );
+    await expect(wervingLink).toHaveAttribute("aria-current", "page", { timeout: 15000 });
   });
 
-  test("projecties tab deeplink werkt", async ({ page }) => {
+  test("projecties redirect bewaart niet de tab param", async ({ page }) => {
     test.setTimeout(60000);
     await page.goto("/monitor/projecties?tab=projectie", { timeout: 45000 });
-
-    await expect(page.getByRole("heading", { name: "Jeugdpijplijn" })).toBeVisible({
+    await page.waitForURL("**/monitor/samenstelling**", {
+      timeout: 15000,
+      waitUntil: "commit",
+    });
+    await expect(page.getByRole("heading", { name: /Samenstelling/ })).toBeVisible({
       timeout: 15000,
     });
-
-    // Projectie tab moet geselecteerd zijn
-    await expect(page.getByRole("tab", { name: "Projectie" })).toHaveAttribute(
-      "aria-selected",
-      "true"
-    );
   });
 
-  test("signalering tabs werken met URL params", async ({ page }) => {
+  test("signalering filter werkt met URL params", async ({ page }) => {
     test.setTimeout(60000);
     await page.goto("/monitor/signalering", { timeout: 45000 });
 
@@ -80,15 +67,14 @@ test.describe("Tab deeplinks", () => {
       timeout: 15000,
     });
 
-    // Klik door alle tabs en controleer URL
-    const tabs = ["Werving", "Retentie", "Pijplijn"];
-    for (const tab of tabs) {
-      await page.getByRole("tab", { name: tab }).click();
-      await expect(page).toHaveURL(new RegExp(`tab=${tab.toLowerCase()}`));
+    const filterGroup = page.getByRole("group", { name: "Filter op thema" });
+    const filters = ["Werving", "Retentie", "Pijplijn"] as const;
+    for (const name of filters) {
+      await filterGroup.getByRole("link", { name }).click();
+      await expect(page).toHaveURL(new RegExp(`filter=${name.toLowerCase()}`));
     }
 
-    // Terug naar Overzicht — geen ?tab= in URL
-    await page.getByRole("tab", { name: "Overzicht" }).click();
-    await expect(page).not.toHaveURL(/tab=/);
+    await filterGroup.getByRole("link", { name: "Alles" }).click();
+    await expect(page).not.toHaveURL(/filter=/);
   });
 });
