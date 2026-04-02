@@ -56,9 +56,10 @@ model LidFoto {
 
 // Seizoenstatus: planning → actief → afgerond
 enum SeizoenStatus {
-  VOORBEREIDING
-  ACTIEF
-  AFGEROND
+  GEPLAND       // alvast aangemaakt, nog niet relevant (>1 seizoen in de toekomst)
+  VOORBEREIDING // seizoen direct na het actieve (teamindeling actief)
+  ACTIEF        // huidig seizoen
+  AFGEROND      // seizoenen in het verleden
 }
 
 // Seizoenen
