@@ -19,10 +19,18 @@ import KadersTeamsClient from "./_components/KadersTeamsClient";
 export const dynamic = "force-dynamic";
 
 export default async function KadersPage() {
-  const seizoen = await getActiefSeizoen();
-  const blauwdruk = await getBlauwdruk(seizoen);
+  // Stap 1: haal blauwdruk en seizoen op in één query (werkseizoen als primaire bron)
+  const blauwdrukRecord = await prisma.blauwdruk.findFirst({
+    where: { isWerkseizoen: true },
+    select: { id: true, seizoen: true, kaders: true, speerpunten: true, toelichting: true },
+  });
+
+  // Fallback naar cookie-gebaseerde lookup als er geen werkseizoen is
+  const seizoen = blauwdrukRecord?.seizoen ?? (await getActiefSeizoen());
+  const blauwdruk = blauwdrukRecord ?? (await getBlauwdruk(seizoen));
   const vorigSzn = vorigSeizoen(seizoen);
 
+  // Stap 2: alle afhankelijke queries parallel
   const [
     besluitRecords,
     besluitStats,

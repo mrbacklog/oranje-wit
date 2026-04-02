@@ -3,6 +3,7 @@ import { getScenario, getScenarios } from "@/app/(teamindeling-studio)/ti-studio
 import ScenarioVergelijk from "@/components/teamindeling/vergelijk/ScenarioVergelijk";
 import Link from "next/link";
 import { getActiefSeizoen } from "@/lib/teamindeling/seizoen";
+import { prisma } from "@/lib/teamindeling/db/prisma";
 
 export const dynamic = "force-dynamic";
 
@@ -81,25 +82,33 @@ export default async function VergelijkPage(props: {
   const idA = searchParams.a;
   const idB = searchParams.b;
 
-  // Haal blauwdruk en scenarios op voor de selector
-  const seizoen = await getActiefSeizoen();
-  const blauwdruk = await getBlauwdruk(seizoen);
-  const scenarios = await getScenarios(blauwdruk.id);
+  // Stap 1: blauwdruk via werkseizoen in één query (vermijdt cookie-lookup waterval)
+  const blauwdrukRecord = await prisma.blauwdruk.findFirst({
+    where: { isWerkseizoen: true },
+    select: { id: true, seizoen: true },
+  });
+  const seizoen = blauwdrukRecord?.seizoen ?? (await getActiefSeizoen());
+  const blauwdrukId = blauwdrukRecord?.id ?? (await getBlauwdruk(seizoen)).id;
+
+  // Stap 2: scenarios ophalen, optioneel parallel met scenario-detail
+  const kanVergelijken = Boolean(idA && idB && idA !== idB);
+
+  const [scenarios, scenarioA, scenarioB] = await Promise.all([
+    getScenarios(blauwdrukId),
+    kanVergelijken ? getScenario(idA!) : Promise.resolve(null),
+    kanVergelijken ? getScenario(idB!) : Promise.resolve(null),
+  ]);
 
   const scenarioLijst = scenarios.map((s) => ({ id: s.id, naam: s.naam }));
 
-  // Als beide scenario's geselecteerd, laad ze volledig
-  let scenarioA = null;
-  let scenarioB = null;
   let fout: string | null = null;
-
   if (idA && idB) {
     if (idA === idB) {
       fout = "Kies twee verschillende scenario's om te vergelijken.";
-    } else {
-      [scenarioA, scenarioB] = await Promise.all([getScenario(idA), getScenario(idB)]);
-      if (!scenarioA) fout = "Scenario A niet gevonden.";
-      else if (!scenarioB) fout = "Scenario B niet gevonden.";
+    } else if (!scenarioA) {
+      fout = "Scenario A niet gevonden.";
+    } else if (!scenarioB) {
+      fout = "Scenario B niet gevonden.";
     }
   }
 
