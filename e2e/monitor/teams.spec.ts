@@ -9,37 +9,33 @@ test.describe("Teams", () => {
       timeout: 15000,
     });
 
-    // Er moeten team-buttons bestaan (seed maakt 14 teams aan)
-    const buttons = page.locator("button[aria-pressed]");
-    await expect(buttons.first()).toBeVisible({ timeout: 15000 });
+    // Er moeten team-links bestaan (seed maakt teams aan)
+    const teamLinks = page.getByRole("link").filter({ hasText: /Sen|U\d+/ });
+    await expect(teamLinks.first()).toBeVisible({ timeout: 15000 });
   });
 
-  test("kan een team selecteren en details bekijken", async ({ page }) => {
+  test("kan een team aanklikken en detail bekijken", async ({ page }) => {
     await page.goto("/monitor/teams");
 
-    // Wacht tot team-buttons geladen zijn
-    const buttons = page.locator("button[aria-pressed]");
-    await expect(buttons.first()).toBeVisible({ timeout: 15000 });
+    // Wacht tot team-links geladen zijn
+    const teamLinks = page.getByRole("link").filter({ hasText: /Sen|U\d+/ });
+    await expect(teamLinks.first()).toBeVisible({ timeout: 15000 });
 
     // Klik op eerste team
-    await buttons.first().click();
+    await teamLinks.first().click();
 
-    // Team detail toont heading (level 2) en tabs
-    await expect(page.getByRole("heading", { level: 2 })).toBeVisible();
-    await expect(page.getByRole("tab", { name: "Spelers & Staf" })).toBeVisible();
+    // Team detail toont heading
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible({ timeout: 15000 });
   });
 
-  test("team detail toont spelers en staf", async ({ page }) => {
+  test("team detail pagina toont spelers", async ({ page }) => {
     await page.goto("/monitor/teams");
 
-    const buttons = page.locator("button[aria-pressed]");
-    await expect(buttons.first()).toBeVisible({ timeout: 15000 });
-    await buttons.first().click();
+    const teamLinks = page.getByRole("link").filter({ hasText: /Sen|U\d+/ });
+    await expect(teamLinks.first()).toBeVisible({ timeout: 15000 });
+    await teamLinks.first().click();
 
     // Spelers sectie
-    await expect(page.getByText(/\d+ spelers/)).toBeVisible();
-
-    // Staf sectie
-    await expect(page.getByRole("heading", { name: "Staf", level: 4 })).toBeVisible();
+    await expect(page.getByText(/speler/i)).toBeVisible({ timeout: 15000 });
   });
 });

@@ -129,7 +129,7 @@ test.describe("BottomNav navigatie binnen domein", () => {
     const items = [
       { label: "Overzicht", href: "/monitor" },
       { label: "Teams", href: "/monitor/teams" },
-      { label: "Analyse", href: "/monitor/retentie" },
+      { label: "Analyse", href: "/monitor/samenstelling" },
       { label: "Signalen", href: "/monitor/signalering" },
     ];
 
