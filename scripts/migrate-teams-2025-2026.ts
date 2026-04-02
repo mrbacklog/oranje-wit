@@ -1,15 +1,19 @@
+// eslint-disable-file no-console — migration script, intentional console output
 /**
- * Datamigratescript: OW-teams 2025-2026 opschonen en opnieuw aanmaken.
+ * Datamigratescript: OW-teams 2025-2026 — fresh start.
  *
  * Gebruik:
  *   npx tsx scripts/migrate-teams-2025-2026.ts
  *
  * Wat dit doet:
- * 1. Verwijdert verouderde OW-teams voor 2025-2026 (A1-A3, B1-B3, C1-C3)
+ * 1. Verwijdert ALLE bestaande teams voor 2025-2026 (fresh start — ook scouting sessies)
  * 2. Maakt 31 correcte OW-teams aan met naam, kleur, teamType
  * 3. Vult TeamPeriode met j_nummer per fase voor jeugdteams
  * 4. Vult team_aliases voor 2025-2026
  * 5. Backfilt ow_team_id in competitie_spelers via aliases
+ *
+ * LET OP: Dit script wist en herschrijft alle 2025-2026 teamdata.
+ * Idempotent: meerdere keren draaien geeft hetzelfde eindresultaat.
  */
 
 import "dotenv/config";
