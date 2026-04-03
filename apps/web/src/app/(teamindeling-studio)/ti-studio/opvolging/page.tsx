@@ -2,11 +2,9 @@ import {
   getWerkitems,
   getWerkitemStats,
 } from "@/app/(teamindeling-studio)/ti-studio/werkbord/actions";
-import WerkbordOverzicht from "@/components/teamindeling/werkbord/WerkbordOverzicht";
-import OpvolgingTabs from "@/components/teamindeling/opvolging/OpvolgingTabs";
-import VoorstellenInbox from "@/components/teamindeling/opvolging/VoorstellenInbox";
 import { getOpenVoorstellen, getGezienVoorstellen } from "./voorstel-actions";
 import { prisma } from "@/lib/teamindeling/db/prisma";
+import OpvolgingRenderer from "@/components/teamindeling/opvolging/OpvolgingRenderer";
 
 export const dynamic = "force-dynamic";
 
@@ -53,46 +51,18 @@ export default async function OpvolgingPage() {
 
   const voorstellenBadge = openVoorstellen.length + gezienVoorstellen.length;
 
-  const tabs = [
-    { id: "werkbord", label: "Werkbord" },
-    {
-      id: "voorstellen",
-      label: "Voorstellen",
-      badge: voorstellenBadge > 0 ? voorstellenBadge : undefined,
-    },
-  ];
-
   return (
-    <div className="max-w-4xl space-y-4">
-      <div>
-        <h2 className="text-xl font-bold" style={{ color: "var(--text-primary)" }}>
-          Opvolging
-        </h2>
-        <p className="mt-1 text-sm" style={{ color: "var(--text-secondary)" }}>
-          Acties en besluiten voor seizoen {blauwdruk.seizoen}
-        </p>
-      </div>
-
-      <OpvolgingTabs tabs={tabs}>
-        {(activeTab) => (
-          <>
-            {activeTab === "werkbord" && (
-              <WerkbordOverzicht
-                blauwdrukId={blauwdruk.id}
-                initialWerkitems={werkitems}
-                initialStats={stats}
-                refreshAction={refreshOpvolging}
-              />
-            )}
-            {activeTab === "voorstellen" && (
-              <VoorstellenInbox
-                initialVoorstellen={openVoorstellen}
-                initialGezienVoorstellen={gezienVoorstellen}
-              />
-            )}
-          </>
-        )}
-      </OpvolgingTabs>
+    <div className="max-w-4xl">
+      <OpvolgingRenderer
+        blauwdrukId={blauwdruk.id}
+        seizoen={blauwdruk.seizoen}
+        initialWerkitems={werkitems}
+        initialStats={stats}
+        refreshAction={refreshOpvolging}
+        initialVoorstellen={openVoorstellen}
+        initialGezienVoorstellen={gezienVoorstellen}
+        voorstellenBadge={voorstellenBadge}
+      />
     </div>
   );
 }
