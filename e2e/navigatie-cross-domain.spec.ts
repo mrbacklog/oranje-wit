@@ -28,9 +28,9 @@ const DOMEINEN: DomeinDef[] = [
     bottomNavLabels: ["Overzicht", "Teams", "Analyse", "Signalen"],
   },
   {
-    naam: "Team-Indeling (desktop)",
-    baseUrl: "/ti-studio",
-    bottomNavLabels: ["Overzicht", "Blauwdruk", "Werkbord", "Indeling"],
+    naam: "TI Studio (desktop)",
+    baseUrl: "/ti-studio/indeling",
+    bottomNavLabels: ["Indeling", "Blauwdruk", "Werkbord", "Personen"],
   },
   {
     naam: "Team-Indeling (mobile)",
