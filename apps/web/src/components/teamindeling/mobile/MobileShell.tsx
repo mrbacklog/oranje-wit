@@ -2,9 +2,9 @@
 
 import type { ReactNode } from "react";
 import { signOut, useSession } from "next-auth/react";
-import { DomainShell, resolveBottomNav, TEAM_INDELING_MOBILE } from "@oranje-wit/ui";
+import { DomainShell, resolveBottomNav, TEAM_INDELING } from "@oranje-wit/ui";
 
-const bottomNavItems = resolveBottomNav(TEAM_INDELING_MOBILE);
+const bottomNavItems = resolveBottomNav(TEAM_INDELING);
 
 interface MobileShellProps {
   children: ReactNode;
@@ -27,7 +27,7 @@ export function MobileShell({ children }: MobileShellProps) {
       bottomNav={bottomNavItems}
       user={user}
       onSignOut={() => signOut()}
-      manifest={TEAM_INDELING_MOBILE}
+      manifest={TEAM_INDELING}
     >
       {children}
     </DomainShell>
