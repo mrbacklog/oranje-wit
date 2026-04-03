@@ -33,7 +33,7 @@ const JEUGD_TEAMS: {
     owCode: "OW-ROOD-1",
     aliases: [
       { fase: "veld_najaar", knkvNaam: "OW J1" },
-      { fase: "zaal", knkvNaam: "J1" },
+      { fase: "zaal_deel1", knkvNaam: "J1" },
     ],
   },
   {
@@ -42,7 +42,7 @@ const JEUGD_TEAMS: {
     owCode: "OW-ROOD-2",
     aliases: [
       { fase: "veld_najaar", knkvNaam: "OW J2" },
-      { fase: "zaal", knkvNaam: "J2" },
+      { fase: "zaal_deel1", knkvNaam: "J2" },
     ],
   },
   {
@@ -51,7 +51,7 @@ const JEUGD_TEAMS: {
     owCode: "OW-ORANJE-1",
     aliases: [
       { fase: "veld_najaar", knkvNaam: "OW J4" },
-      { fase: "zaal", knkvNaam: "J4" },
+      { fase: "zaal_deel1", knkvNaam: "J4" },
     ],
   },
   {
@@ -60,7 +60,7 @@ const JEUGD_TEAMS: {
     owCode: "OW-ORANJE-2",
     aliases: [
       { fase: "veld_najaar", knkvNaam: "OW J3" },
-      { fase: "zaal", knkvNaam: "J3" },
+      { fase: "zaal_deel1", knkvNaam: "J3" },
     ],
   },
   {
@@ -69,7 +69,7 @@ const JEUGD_TEAMS: {
     owCode: "OW-ORANJE-3",
     aliases: [
       { fase: "veld_najaar", knkvNaam: "OW J5" },
-      { fase: "zaal", knkvNaam: "J5" },
+      { fase: "zaal_deel1", knkvNaam: "J5" },
     ],
   },
   {
@@ -78,7 +78,7 @@ const JEUGD_TEAMS: {
     owCode: "OW-ORANJE-4",
     aliases: [
       { fase: "veld_najaar", knkvNaam: "OW J6" },
-      { fase: "zaal", knkvNaam: "J6" },
+      { fase: "zaal_deel1", knkvNaam: "J6" },
     ],
   },
   {
@@ -87,7 +87,7 @@ const JEUGD_TEAMS: {
     owCode: "OW-GEEL-1",
     aliases: [
       { fase: "veld_najaar", knkvNaam: "OW J7" },
-      { fase: "zaal", knkvNaam: "J7" },
+      { fase: "zaal_deel1", knkvNaam: "J7" },
     ],
   },
   {
@@ -96,7 +96,7 @@ const JEUGD_TEAMS: {
     owCode: "OW-GEEL-2",
     aliases: [
       { fase: "veld_najaar", knkvNaam: "OW J8" },
-      { fase: "zaal", knkvNaam: "J8" },
+      { fase: "zaal_deel1", knkvNaam: "J8" },
     ],
   },
   {
@@ -105,7 +105,7 @@ const JEUGD_TEAMS: {
     owCode: "OW-GEEL-3",
     aliases: [
       { fase: "veld_najaar", knkvNaam: "OW J9" },
-      { fase: "zaal", knkvNaam: "J9" },
+      { fase: "zaal_deel1", knkvNaam: "J9" },
     ],
   },
   {
@@ -114,7 +114,7 @@ const JEUGD_TEAMS: {
     owCode: "OW-GEEL-4",
     aliases: [
       { fase: "veld_najaar", knkvNaam: "OW J10" },
-      { fase: "zaal", knkvNaam: "J10" },
+      { fase: "zaal_deel1", knkvNaam: "J10" },
     ],
   },
   {
@@ -123,7 +123,7 @@ const JEUGD_TEAMS: {
     owCode: "OW-GROEN-1",
     aliases: [
       { fase: "veld_najaar", knkvNaam: "OW J11" },
-      { fase: "zaal", knkvNaam: "J11" },
+      { fase: "zaal_deel1", knkvNaam: "J11" },
     ],
   },
   {
@@ -132,7 +132,7 @@ const JEUGD_TEAMS: {
     owCode: "OW-GROEN-2",
     aliases: [
       { fase: "veld_najaar", knkvNaam: "OW J12" },
-      { fase: "zaal", knkvNaam: "J12" },
+      { fase: "zaal_deel1", knkvNaam: "J12" },
     ],
   },
   {
@@ -141,7 +141,7 @@ const JEUGD_TEAMS: {
     owCode: "OW-GROEN-3",
     aliases: [
       { fase: "veld_najaar", knkvNaam: "OW J13" },
-      { fase: "zaal", knkvNaam: "J13" },
+      { fase: "zaal_deel1", knkvNaam: "J13" },
     ],
   },
   {
@@ -150,7 +150,7 @@ const JEUGD_TEAMS: {
     owCode: "OW-GROEN-4",
     aliases: [
       { fase: "veld_najaar", knkvNaam: "OW J14" },
-      { fase: "zaal", knkvNaam: "J14" },
+      { fase: "zaal_deel1", knkvNaam: "J14" },
     ],
   },
   {
@@ -159,7 +159,7 @@ const JEUGD_TEAMS: {
     owCode: "OW-BLAUW-1",
     aliases: [
       { fase: "veld_najaar", knkvNaam: "OW J15" },
-      { fase: "zaal", knkvNaam: "J15" },
+      { fase: "zaal_deel1", knkvNaam: "J15" },
     ],
   },
   {
@@ -168,7 +168,7 @@ const JEUGD_TEAMS: {
     owCode: "OW-BLAUW-2",
     aliases: [
       { fase: "veld_najaar", knkvNaam: "OW J17" },
-      { fase: "zaal", knkvNaam: "J17" },
+      { fase: "zaal_deel1", knkvNaam: "J17" },
     ],
   },
   {
@@ -177,7 +177,7 @@ const JEUGD_TEAMS: {
     owCode: "OW-BLAUW-3",
     aliases: [
       { fase: "veld_najaar", knkvNaam: "OW J16" },
-      { fase: "zaal", knkvNaam: "J16" },
+      { fase: "zaal_deel1", knkvNaam: "J16" },
     ],
   },
   {
@@ -186,7 +186,7 @@ const JEUGD_TEAMS: {
     owCode: "OW-BLAUW-4",
     aliases: [
       { fase: "veld_najaar", knkvNaam: "OW J18" },
-      { fase: "zaal", knkvNaam: "J18" },
+      { fase: "zaal_deel1", knkvNaam: "J18" },
     ],
   },
 ];
