@@ -39,6 +39,7 @@
     "lint": "pnpm -r run lint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "verify:deploy": "tsx scripts/verify-deploy.ts",
     "prepare": "husky"
   },
   "lint-staged": {
