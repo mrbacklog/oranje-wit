@@ -28,7 +28,6 @@ export function TISidebar({ children }: TISidebarProps) {
       subtitle: seizoen ? `Seizoen ${seizoen}` : undefined,
     },
     navigation: [
-      { label: "Dashboard", href: "/ti-studio", icon: "🏠" },
       { label: "Indeling", href: "/ti-studio/indeling", icon: "🏗️" },
       { label: "Opvolging", href: "/ti-studio/opvolging", icon: "✅" },
       { label: "Personen", href: "/ti-studio/personen", icon: "👥" },

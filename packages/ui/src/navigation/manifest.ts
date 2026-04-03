@@ -125,18 +125,18 @@ export const MONITOR: AppManifest = {
   visibility: { requireTC: true },
 };
 
-// ─── Team-Indeling ──────────────────────────────────────────────
+// ─── TI Studio (desktop werkplaats) ────────────────────────────
 
-export const TEAM_INDELING: AppManifest = {
-  id: "team-indeling",
-  name: "Team-Indeling",
-  shortName: "Teams",
-  description: "Seizoensindeling en scenario's",
+export const TI_STUDIO: AppManifest = {
+  id: "ti-studio",
+  name: "TI Studio",
+  shortName: "Studio",
+  description: "Werkplaats teamindeling",
   baseUrl: "/ti-studio",
-  accent: APP_ACCENTS["team-indeling"],
+  accent: APP_ACCENTS["ti-studio"],
   sections: [
     {
-      nav: { label: "Overzicht", href: "/ti-studio", icon: "GridIcon" },
+      nav: { label: "Indeling", href: "/ti-studio/indeling", icon: "GridIcon" },
     },
     {
       nav: { label: "Blauwdruk", href: "/ti-studio/blauwdruk", icon: "ListIcon" },
@@ -151,16 +151,16 @@ export const TEAM_INDELING: AppManifest = {
       nav: { label: "Werkbord", href: "/ti-studio/werkbord", icon: "CompareIcon" },
     },
     {
-      nav: { label: "Indeling", href: "/ti-studio/indeling", icon: "SearchIcon" },
+      nav: { label: "Personen", href: "/ti-studio/personen", icon: "SearchIcon" },
     },
   ],
   skipRoutes: [],
   visibility: { requireTC: true },
 };
 
-// ─── Team-Indeling Mobile ──────────────────────────────────────
+// ─── Team-Indeling (mobiel veldkantoor) ─────────────────────────
 
-export const TEAM_INDELING_MOBILE: AppManifest = {
+export const TEAM_INDELING: AppManifest = {
   id: "team-indeling",
   name: "Team-Indeling",
   shortName: "Teams",
@@ -350,6 +350,7 @@ export const APP_MANIFEST: Record<AppId, AppManifest> = {
   www: WWW,
   monitor: MONITOR,
   "team-indeling": TEAM_INDELING,
+  "ti-studio": TI_STUDIO,
   evaluatie: EVALUATIE,
   scouting: SCOUTING,
   beheer: BEHEER,
@@ -360,6 +361,7 @@ export const APP_MANIFEST: Record<AppId, AppManifest> = {
 export const ALL_APPS: AppManifest[] = [
   WWW,
   MONITOR,
+  TI_STUDIO,
   TEAM_INDELING,
   EVALUATIE,
   SCOUTING,

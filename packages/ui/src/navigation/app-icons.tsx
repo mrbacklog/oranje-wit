@@ -1,7 +1,6 @@
 /**
  * App Icons — Iconische SVG iconen voor het c.k.v. Oranje Wit ecosysteem.
  *
- * 5 unieke, premium iconen in 3 maten (sm/md/lg).
  * Stijl: stroke-based, monochroom met optionele accent-kleur, consistent visueel gewicht.
  * Geïnspireerd door Strava, Nike Run Club, Apple Fitness.
  *
@@ -16,6 +15,7 @@ export type { AppId } from "./icons/types";
 
 export { MonitorIcon } from "./icons/monitor-icon";
 export { TeamIndelingIcon } from "./icons/team-indeling-icon";
+export { TiStudioIcon } from "./icons/ti-studio-icon";
 export { EvaluatieIcon } from "./icons/evaluatie-icon";
 export { ScoutingIcon } from "./icons/scouting-icon";
 export { BeheerIcon } from "./icons/beheer-icon";
@@ -28,6 +28,7 @@ import type { AppId } from "./icons/types";
 import { APP_ACCENTS } from "./icons/types";
 import { MonitorIcon } from "./icons/monitor-icon";
 import { TeamIndelingIcon } from "./icons/team-indeling-icon";
+import { TiStudioIcon } from "./icons/ti-studio-icon";
 import { EvaluatieIcon } from "./icons/evaluatie-icon";
 import { ScoutingIcon } from "./icons/scouting-icon";
 import { BeheerIcon } from "./icons/beheer-icon";
@@ -38,6 +39,7 @@ export const APP_ICONS: Record<AppId, typeof MonitorIcon> = {
   www: WwwIcon,
   monitor: MonitorIcon,
   "team-indeling": TeamIndelingIcon,
+  "ti-studio": TiStudioIcon,
   evaluatie: EvaluatieIcon,
   scouting: ScoutingIcon,
   beheer: BeheerIcon,
@@ -49,6 +51,7 @@ export const APP_IDS: AppId[] = [
   "www",
   "monitor",
   "team-indeling",
+  "ti-studio",
   "evaluatie",
   "scouting",
   "beheer",
@@ -75,8 +78,14 @@ export const APP_META: Record<
   "team-indeling": {
     name: "Teams",
     description: "Teamindeling",
-    url: "/ti-studio",
+    url: "/teamindeling",
     accent: APP_ACCENTS["team-indeling"],
+  },
+  "ti-studio": {
+    name: "TI Studio",
+    description: "Werkplaats teamindeling",
+    url: "/ti-studio/indeling",
+    accent: APP_ACCENTS["ti-studio"],
   },
   evaluatie: {
     name: "Evaluatie",

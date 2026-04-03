@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 import { signOut, useSession } from "next-auth/react";
-import { DomainShell, resolveBottomNav, TEAM_INDELING } from "@oranje-wit/ui";
+import { DomainShell, resolveBottomNav, TI_STUDIO } from "@oranje-wit/ui";
 import { useSeizoen } from "@/components/teamindeling/providers/SeizoenProvider";
 
 function getUserLabel(user: Record<string, unknown>): string {
@@ -15,7 +15,7 @@ function getUserLabel(user: Record<string, unknown>): string {
 }
 
 // ─── BottomNav items uit manifest ────────────────────────────
-const bottomNavItems = resolveBottomNav(TEAM_INDELING);
+const bottomNavItems = resolveBottomNav(TI_STUDIO);
 
 // ─── TIDomainShell ──────────────────────────────────────────
 export function TIDomainShell({ children }: { children: ReactNode }) {
@@ -37,13 +37,13 @@ export function TIDomainShell({ children }: { children: ReactNode }) {
 
   return (
     <DomainShell
-      domain="team-indeling"
+      domain="ti-studio"
       theme="dark"
       bottomNav={bottomNavItems}
       user={user}
       onSignOut={() => signOut()}
       banner={banner}
-      manifest={TEAM_INDELING}
+      manifest={TI_STUDIO}
     >
       {children}
     </DomainShell>

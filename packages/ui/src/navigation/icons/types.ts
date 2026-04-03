@@ -12,6 +12,7 @@ export type AppId =
   | "www"
   | "monitor"
   | "team-indeling"
+  | "ti-studio"
   | "evaluatie"
   | "scouting"
   | "beheer"
@@ -22,7 +23,8 @@ export type AppId =
 export const APP_ACCENTS: Record<AppId, string> = {
   www: "#f97316",
   monitor: "#22c55e",
-  "team-indeling": "#3b82f6",
+  "team-indeling": "#3b82f6", // blauw — mobiel veldkantoor
+  "ti-studio": "#6366f1", // indigo — desktop werkplaats
   evaluatie: "#eab308",
   scouting: "#ff6b00",
   beheer: "#9ca3af",
