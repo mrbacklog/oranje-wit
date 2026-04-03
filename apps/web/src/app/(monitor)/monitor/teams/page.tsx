@@ -40,56 +40,95 @@ export default async function TeamsPage({
     getSpelersPerTeam(seizoen),
   ]);
 
-  const regularTeams = register.teams.filter((t) => !t.isSelectie);
-
   // --- Groeperen ---
 
   const KLEUR_VOLGORDE: Record<string, number> = {
-    Rood: 1,
-    Oranje: 2,
-    Geel: 3,
-    Groen: 4,
-    Blauw: 5,
+    // 2025-2026+: uppercase kleuren
+    ROOD: 1,
+    ORANJE: 2,
+    GEEL: 3,
+    GROEN: 4,
+    BLAUW: 5,
+    // historisch: lowercase
+    rood: 1,
+    oranje: 2,
+    geel: 3,
+    groen: 4,
+    blauw: 5,
   };
 
-  const senioren = regularTeams
-    .filter((t) => /^\d+$/.test(t.ow_code) || t.ow_code.startsWith("MW"))
-    .sort((a, b) => {
-      const aIsNum = /^\d+$/.test(a.ow_code);
-      const bIsNum = /^\d+$/.test(b.ow_code);
-      if (aIsNum !== bIsNum) return aIsNum ? -1 : 1;
-      return a.ow_code.localeCompare(b.ow_code, "nl", { numeric: true });
-    });
+  // Gebruik teamType wanneer beschikbaar (2025-2026+), anders val terug op ow_code patronen
+  const hasTeamType = register.teams.some((t) => t.teamType != null);
 
-  const aJeugd = regularTeams
-    .filter((t) => t.ow_code.startsWith("U"))
-    .sort((a, b) => {
-      const [aL, aS] = a.ow_code.replace("U", "").split("-").map(Number);
-      const [bL, bS] = b.ow_code.replace("U", "").split("-").map(Number);
-      if (aL !== bL) return bL - aL;
-      return (aS || 0) - (bS || 0);
-    });
+  let selecties: TeamRegisterEntry[];
+  let senioren: TeamRegisterEntry[];
+  let aJeugd: TeamRegisterEntry[];
+  let bJeugd: TeamRegisterEntry[];
 
-  const seniorenEnUCodes = new Set([
-    ...senioren.map((t) => t.ow_code),
-    ...aJeugd.map((t) => t.ow_code),
-  ]);
+  if (hasTeamType) {
+    selecties = register.teams
+      .filter((t) => t.teamType === "SELECTIE" || t.isSelectie)
+      .sort((a, b) => (a.naam ?? "").localeCompare(b.naam ?? "", "nl", { numeric: true }));
 
-  const bJeugd = regularTeams
-    .filter((t) => !seniorenEnUCodes.has(t.ow_code))
-    .sort((a, b) => {
-      if (a.sortOrder != null && b.sortOrder != null) return a.sortOrder - b.sortOrder;
-      if (a.sortOrder != null) return -1;
-      if (b.sortOrder != null) return 1;
-      const ka = KLEUR_VOLGORDE[a.kleur || ""] ?? 99;
-      const kb = KLEUR_VOLGORDE[b.kleur || ""] ?? 99;
-      return ka - kb || a.ow_code.localeCompare(b.ow_code, "nl", { numeric: true });
-    });
+    senioren = register.teams
+      .filter((t) => t.teamType === "SENIOREN" || t.teamType === "OVERIG")
+      .sort((a, b) => (a.naam ?? "").localeCompare(b.naam ?? "", "nl", { numeric: true }));
+
+    aJeugd = [];
+
+    bJeugd = register.teams
+      .filter((t) => t.teamType === "JEUGD")
+      .sort((a, b) => {
+        const ka = KLEUR_VOLGORDE[a.kleur ?? ""] ?? 99;
+        const kb = KLEUR_VOLGORDE[b.kleur ?? ""] ?? 99;
+        return ka - kb || (a.naam ?? "").localeCompare(b.naam ?? "", "nl", { numeric: true });
+      });
+  } else {
+    // Historische seizoenen: groepeer op ow_code patronen
+    selecties = register.teams.filter((t) => t.isSelectie);
+
+    const regularTeams = register.teams.filter((t) => !t.isSelectie);
+
+    senioren = regularTeams
+      .filter((t) => /^\d+$/.test(t.ow_code) || t.ow_code.startsWith("MW"))
+      .sort((a, b) => {
+        const aIsNum = /^\d+$/.test(a.ow_code);
+        const bIsNum = /^\d+$/.test(b.ow_code);
+        if (aIsNum !== bIsNum) return aIsNum ? -1 : 1;
+        return a.ow_code.localeCompare(b.ow_code, "nl", { numeric: true });
+      });
+
+    aJeugd = regularTeams
+      .filter((t) => t.ow_code.startsWith("U"))
+      .sort((a, b) => {
+        const [aL, aS] = a.ow_code.replace("U", "").split("-").map(Number);
+        const [bL, bS] = b.ow_code.replace("U", "").split("-").map(Number);
+        if (aL !== bL) return bL - aL;
+        return (aS || 0) - (bS || 0);
+      });
+
+    const seniorenEnUCodes = new Set([
+      ...senioren.map((t) => t.ow_code),
+      ...aJeugd.map((t) => t.ow_code),
+    ]);
+
+    bJeugd = regularTeams
+      .filter((t) => !seniorenEnUCodes.has(t.ow_code))
+      .sort((a, b) => {
+        if (a.sortOrder != null && b.sortOrder != null) return a.sortOrder - b.sortOrder;
+        if (a.sortOrder != null) return -1;
+        if (b.sortOrder != null) return 1;
+        const ka = KLEUR_VOLGORDE[a.kleur ?? ""] ?? 99;
+        const kb = KLEUR_VOLGORDE[b.kleur ?? ""] ?? 99;
+        return ka - kb || a.ow_code.localeCompare(b.ow_code, "nl", { numeric: true });
+      });
+  }
 
   const groups: TeamGroup[] = [
     { label: "Senioren", teams: senioren },
     { label: "A-categorie Jeugd", teams: aJeugd },
-    { label: "B-categorie Jeugd", teams: bJeugd },
+    { label: "Jeugd", teams: bJeugd },
+    { label: "Selecties", teams: selecties },
   ].filter((g) => g.teams.length > 0);
 
   // Maps → Records voor serialisatie
