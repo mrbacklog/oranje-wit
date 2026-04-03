@@ -68,6 +68,7 @@ export async function createMijlpaal(formData: FormData): Promise<ActionResult<{
   }
 
   try {
+    // @ts-expect-error TS2321 excessive stack depth (Prisma/TypeScript limitation)
     const mijlpaal = await prisma.mijlpaal.create({
       data: {
         seizoen: parsed.data.seizoen,

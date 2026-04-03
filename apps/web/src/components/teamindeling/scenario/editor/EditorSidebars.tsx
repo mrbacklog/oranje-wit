@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import Drawer from "./Drawer";
 import ValidatieRapport from "../ValidatieRapport";
 import type { TeamData } from "../types";
-import type { TeamValidatie } from "@/lib/teamindeling/validatie/regels";
+import type { TeamValidatie, ValidatieMelding } from "@/lib/teamindeling/validatie/regels";
 
 interface EditorSidebarsProps {
   poolPinned: boolean;
@@ -16,7 +16,7 @@ interface EditorSidebarsProps {
   rapportOpen: boolean;
   teams: TeamData[];
   validatieMap: Map<string, TeamValidatie> | null;
-  dubbeleMeldingen: string[];
+  dubbeleMeldingen: ValidatieMelding[];
   onClosePool: () => void;
   onTogglePoolPin: () => void;
   onCloseEditTeam: () => void;

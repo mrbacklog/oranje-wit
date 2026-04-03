@@ -36,7 +36,9 @@ export async function getCoordinatorTeamsMetSpelers(blauwdrukId: string) {
   }
 
   // Haal per gekoppeld team de spelers op via OWTeam → huidig.team mapping
-  const owTeamNamen = coordinator.teams.map((ct) => ct.owTeam.naam ?? ct.owTeam.owCode);
+  const owTeamNamen = coordinator.teams.map(
+    (ct: { owTeam: { naam: string | null; owCode: string } }) => ct.owTeam.naam ?? ct.owTeam.owCode
+  );
 
   const blauwdrukSpelers = await prisma.blauwdrukSpeler.findMany({
     where: { blauwdrukId },
@@ -78,14 +80,21 @@ export async function getCoordinatorTeamsMetSpelers(blauwdrukId: string) {
 
   return {
     coordinator: { id: coordinator.id, naam: coordinator.naam },
-    teams: coordinator.teams.map((ct) => ({
-      id: ct.id,
-      owTeamId: ct.owTeamId,
-      naam: ct.owTeam.naam ?? ct.owTeam.owCode,
-      kleur: ct.owTeam.kleur,
-      seizoen: ct.seizoen,
-      spelers: spelersPerTeam[ct.owTeam.naam ?? ct.owTeam.owCode] ?? [],
-    })),
+    teams: coordinator.teams.map(
+      (ct: {
+        id: string;
+        owTeamId: number;
+        seizoen: string;
+        owTeam: { naam: string | null; owCode: string; kleur: string | null };
+      }) => ({
+        id: ct.id,
+        owTeamId: ct.owTeamId,
+        naam: ct.owTeam.naam ?? ct.owTeam.owCode,
+        kleur: ct.owTeam.kleur,
+        seizoen: ct.seizoen,
+        spelers: spelersPerTeam[ct.owTeam.naam ?? ct.owTeam.owCode] ?? [],
+      })
+    ),
   };
 }
 

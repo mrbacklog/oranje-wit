@@ -42,7 +42,9 @@ export function useWhatIf({ teams, onRefreshTeams }: UseWhatIfProps) {
 
         const zones = new Map<string, WhatIfZone>();
         const actieveTeamIds = new Set(
-          whatIf.teams.map((t) => t.bronTeamId).filter(Boolean) as string[]
+          whatIf.teams
+            .map((t: { bronTeamId: string | null }) => t.bronTeamId)
+            .filter(Boolean) as string[]
         );
         const impactTeamIds = new Set(
           impact.impactTeams.map((t) => t.bronTeamId).filter(Boolean) as string[]

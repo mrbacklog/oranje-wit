@@ -44,7 +44,7 @@ export async function getOpenVoorstellen(): Promise<VoorstelItem[]> {
     orderBy: { createdAt: "asc" },
   });
 
-  return voorstellen.map((v) => ({
+  return voorstellen.map((v: (typeof voorstellen)[number]) => ({
     id: v.id,
     type: v.type,
     omschrijving: v.omschrijving,

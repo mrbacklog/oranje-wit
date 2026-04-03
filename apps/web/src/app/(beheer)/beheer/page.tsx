@@ -6,7 +6,6 @@ import { DashboardClient } from "./dashboard-client";
 
 async function getDashboardStats() {
   try {
-    // @ts-expect-error Prisma 7 excessive stack depth (TS2321) bij diepe type-recursie
     const seizoenQuery = prisma.seizoen.findFirst({
       where: { status: "ACTIEF" },
       select: { seizoen: true },

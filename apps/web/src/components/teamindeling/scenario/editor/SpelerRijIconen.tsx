@@ -123,8 +123,8 @@ function GezienStip({ status }: { status: GezienStatus }) {
       stroke="currentColor"
       strokeWidth="2.5"
       aria-label="Beoordeeld"
-      title="Beoordeeld"
     >
+      <title>Beoordeeld</title>
       <circle cx="12" cy="12" r="10" />
       <path d="M8 12l3 3 5-5" />
     </svg>

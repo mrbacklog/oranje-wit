@@ -11,9 +11,9 @@ export default async function CoordinatorGezienPage() {
   const { coordinator, teams } = await getCoordinatorTeamsMetSpelers(blauwdruk.id);
 
   // Serialiseer dates voor client
-  const geserialiseerdeTeams = teams.map((team) => ({
+  const geserialiseerdeTeams = teams.map((team: (typeof teams)[number]) => ({
     ...team,
-    spelers: team.spelers.map((bs) => ({
+    spelers: team.spelers.map((bs: (typeof team.spelers)[number]) => ({
       id: bs.id,
       spelerId: bs.spelerId,
       blauwdrukId: bs.blauwdrukId,

@@ -70,6 +70,7 @@ type AnyPrismaModels = {
   evaluatieRonde: AnyModel;
   coordinator: AnyModel;
   coordinatorTeam: AnyModel;
+  coordinatorVoorstel: AnyModel;
   evaluatieUitnodiging: AnyModel;
   spelerZelfEvaluatie: AnyModel;
   emailTemplate: AnyModel;
