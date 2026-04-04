@@ -25,7 +25,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   if (!auth.ok) return auth.response;
 
   try {
-    const { id: scenarioId } = await params;
+    const { id: werkindelingId } = await params;
     const body = await request.json();
     const parsed = FilterSchema.safeParse(body);
     if (!parsed.success) {
@@ -40,7 +40,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
     // Zoek werkindeling + laatste versie + teams
     const scenario = await prisma.werkindeling.findUnique({
-      where: { id: scenarioId },
+      where: { id: werkindelingId },
       select: {
         status: true,
         versies: {

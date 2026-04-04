@@ -29,9 +29,9 @@ async function getWerkBlauwdruk() {
   });
 }
 
-async function getLaatsteVersie(scenarioId: string) {
+async function getLaatsteVersie(werkindelingId: string) {
   return prisma.versie.findFirst({
-    where: { scenarioId },
+    where: { werkindelingId },
     orderBy: { nummer: "desc" },
     select: { id: true, nummer: true },
   });
@@ -153,7 +153,7 @@ const leesTools = {
       "Geeft de volledige bezetting van een team: spelers, USS-scores, geslachtsverhouding en staf.",
     parameters: z.object({
       teamNaam: z.string().describe("(Deel van) de teamnaam, bijv. 'Sen 1' of 'U15'"),
-      inContext: z.string().optional().describe('"werkindeling" (standaard) of een scenarioId'),
+      inContext: z.string().optional().describe('"werkindeling" (standaard) of een werkindelingId'),
     }),
     execute: async ({ teamNaam, inContext }: { teamNaam: string; inContext?: string }) => {
       const versieId = await getVersieId(inContext ?? "werkindeling");
@@ -246,12 +246,12 @@ const leesTools = {
   scenarioVergelijken: {
     description: "Vergelijkt twee scenario's en toont wie verschoven is en wat de score-impact is.",
     parameters: z.object({
-      scenarioIdA: z.string().describe("ID van het eerste scenario"),
-      scenarioIdB: z.string().describe("ID van het tweede scenario"),
+      whatIfIdA: z.string().describe("ID van het eerste scenario"),
+      whatIfIdB: z.string().describe("ID van het tweede scenario"),
     }),
-    execute: async ({ scenarioIdA, scenarioIdB }: { scenarioIdA: string; scenarioIdB: string }) => {
-      async function getTeamplaatsingen(scenarioId: string) {
-        const versie = await getLaatsteVersie(scenarioId);
+    execute: async ({ whatIfIdA, whatIfIdB }: { whatIfIdA: string; whatIfIdB: string }) => {
+      async function getTeamplaatsingen(werkindelingId: string) {
+        const versie = await getLaatsteVersie(werkindelingId);
         if (!versie) return new Map<string, { team: string; naam: string }>();
         const spelers = await prisma.teamSpeler.findMany({
           where: { team: { versieId: versie.id } },
@@ -273,8 +273,8 @@ const leesTools = {
       }
 
       const [plaatsingenA, plaatsingenB] = await Promise.all([
-        getTeamplaatsingen(scenarioIdA),
-        getTeamplaatsingen(scenarioIdB),
+        getTeamplaatsingen(whatIfIdA),
+        getTeamplaatsingen(whatIfIdB),
       ]);
 
       const verschuivingen: Array<{ naam: string; van: string; naar: string }> = [];
@@ -360,7 +360,7 @@ function maakSchrijfToolsSpelers(sessieId: string, gebruikerEmail: string) {
       parameters: z.object({
         spelerId: z.string().describe("ID van de speler (rel_code)"),
         naarTeam: z.string().describe("Naam van het doelteam"),
-        inContext: z.string().describe('"werkindeling" of een scenarioId'),
+        inContext: z.string().describe('"werkindeling" of een werkindelingId'),
       }),
       execute: async ({
         spelerId,
@@ -557,7 +557,7 @@ function maakSchrijfToolsSpelers(sessieId: string, gebruikerEmail: string) {
         teamNaam: z.string().describe("Naam van het team"),
         naam: z.string().describe("Naam voor de placeholder, bijv. 'Verwacht lid'"),
         geslacht: z.enum(["M", "V"]).optional().describe("Optioneel geslacht van de placeholder"),
-        inContext: z.string().describe('"werkindeling" of een scenarioId'),
+        inContext: z.string().describe('"werkindeling" of een werkindelingId'),
       }),
       execute: async ({
         teamNaam,
@@ -670,7 +670,7 @@ function maakSchrijfToolsRest(sessieId: string, gebruikerEmail: string) {
         categorie: z
           .enum(["SENIOREN", "JEUGD_A", "JEUGD_B", "RECREANTEN", "MIXED"])
           .describe("Teamcategorie"),
-        inContext: z.string().describe("scenarioId om het team in aan te maken"),
+        inContext: z.string().describe("werkindelingId om het team in aan te maken"),
       }),
       execute: async ({
         naam,
@@ -706,7 +706,7 @@ function maakSchrijfToolsRest(sessieId: string, gebruikerEmail: string) {
       parameters: z.object({
         naam: z.string().describe("Naam van de selectiegroep"),
         spelerIds: z.array(z.string()).describe("Lijst van speler-IDs"),
-        inContext: z.string().describe("scenarioId"),
+        inContext: z.string().describe("werkindelingId"),
       }),
       execute: async ({
         naam,
@@ -753,7 +753,7 @@ function maakSchrijfToolsRest(sessieId: string, gebruikerEmail: string) {
         stafNaam: z.string().describe("Naam van de stafmedewerker (gedeeltelijk)"),
         rol: z.string().describe('Rol, bijv. "Trainer/Coach", "Assistent", "Begeleider"'),
         teamNaam: z.string().describe("Naam van het doelteam"),
-        inContext: z.string().describe('"werkindeling" of een scenarioId'),
+        inContext: z.string().describe('"werkindeling" of een werkindelingId'),
       }),
       execute: async ({
         stafNaam,
@@ -835,15 +835,15 @@ function maakSchrijfToolsRest(sessieId: string, gebruikerEmail: string) {
         await logDaisyActie({
           sessieId,
           tool: "whatIfScenarioAanmaken",
-          doPayload: { scenarioId: werkindeling.id, naam },
-          undoPayload: { scenarioId: werkindeling.id },
+          doPayload: { werkindelingId: werkindeling.id, naam },
+          undoPayload: { werkindelingId: werkindeling.id },
           namens: gebruikerEmail,
           uitgevoerdIn: `werkindeling:${werkindeling.id}`,
         });
 
         return {
           gedaan: true,
-          scenarioId: werkindeling.id,
+          werkindelingId: werkindeling.id,
           samenvatting: `Werkindeling "${naam}" aangemaakt`,
         };
       },

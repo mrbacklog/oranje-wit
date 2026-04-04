@@ -17,11 +17,10 @@ test.describe("Team-Indeling navigatie", () => {
     await expect(page).toHaveURL(/\/kaders/);
   });
 
-  test("scenarios pagina toont lijst (geen werkindeling in seed)", async ({ page }) => {
-    // Seed-data maakt geen werkindeling aan, dus /scenarios toont de scenario-lijst
-    await page.goto("/ti-studio/scenarios", { timeout: 30000 });
-    // Blijft op /scenarios (redirect treedt alleen op als er wél een werkindeling is)
-    await expect(page).toHaveURL(/\/scenarios/);
+  test("scenarios redirect naar indeling", async ({ page }) => {
+    // De /scenarios route bestaat niet meer — redirect naar /indeling
+    await page.goto("/ti-studio/scenarios/niet-bestaand", { timeout: 30000 });
+    await expect(page).toHaveURL(/\/ti-studio\/indeling/);
   });
 
   test("vergelijk pagina is bereikbaar", async ({ page }) => {

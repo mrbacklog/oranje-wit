@@ -133,14 +133,14 @@ export async function voerUndoUit(actie: DaisyActieRecord): Promise<string> {
     }
 
     case "whatIfScenarioAanmaken": {
-      const { scenarioId } = payload;
+      const { werkindelingId } = payload;
       const teamCount = await prisma.team.count({
-        where: { versie: { werkindelingId: scenarioId } },
+        where: { versie: { werkindelingId } },
       });
       if (teamCount > 0) {
         return `Kan werkindeling niet verwijderen: bevat al ${teamCount} teams. Verwijder handmatig in TI-studio.`;
       }
-      await prisma.werkindeling.delete({ where: { id: scenarioId } });
+      await prisma.werkindeling.delete({ where: { id: werkindelingId } });
       return `Werkindeling verwijderd`;
     }
 
