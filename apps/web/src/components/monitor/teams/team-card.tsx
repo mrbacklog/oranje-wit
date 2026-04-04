@@ -8,6 +8,7 @@ import { getTeamKleurConfig } from "./team-kleuren";
 type TeamCardProps = {
   owCode: string;
   naam: string;
+  bondNaam?: string | null;
   kleur?: string | null;
   leeftijdsgroep?: string | null;
   spelvorm?: string | null;
@@ -80,6 +81,7 @@ function GenderDots({ heren, dames }: { heren: number; dames: number }) {
 export function TeamCard({
   owCode,
   naam,
+  bondNaam,
   kleur,
   leeftijdsgroep,
   spelvorm,
@@ -109,6 +111,14 @@ export function TeamCard({
         <h3 className="text-2xl leading-tight font-bold" style={{ color: config.textOnGradient }}>
           {naam}
         </h3>
+        {bondNaam && (
+          <p
+            className="mt-0.5 text-xs font-medium opacity-60"
+            style={{ color: config.textOnGradient }}
+          >
+            {bondNaam}
+          </p>
+        )}
         {spelvorm && <SpelvormBadge spelvorm={spelvorm} />}
 
         {/* Hover glow */}
