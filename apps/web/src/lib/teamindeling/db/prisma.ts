@@ -48,9 +48,8 @@ type AnyPrismaModels = {
   speler: AnyModel;
   staf: AnyModel;
   blauwdruk: AnyModel;
+  werkindeling: AnyModel;
   pin: AnyModel;
-  concept: AnyModel;
-  scenario: AnyModel;
   versie: AnyModel;
   team: AnyModel;
   teamSpeler: AnyModel;
@@ -81,7 +80,7 @@ type AnyPrismaModels = {
   // Mijlpalen
   mijlpaal: AnyModel;
   // Snapshots
-  scenarioSnapshot: AnyModel;
+  werkindelingSnapshot: AnyModel;
   // Daisy
   daisyActie: AnyModel;
   plaatsreservering: AnyModel;

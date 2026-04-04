@@ -1,6 +1,6 @@
 "use server";
 
-import { prisma } from "@/lib/teamindeling/db/prisma";
+import { prisma } from "./prisma";
 import { logger } from "@oranje-wit/types";
 
 /**
@@ -8,17 +8,12 @@ import { logger } from "@oranje-wit/types";
  * Retourneert null als er geen werkindeling is.
  */
 export async function getWerkindeling(blauwdrukId: string) {
-  return prisma.scenario.findFirst({
-    where: {
-      isWerkindeling: true,
-      concept: { blauwdrukId },
-      verwijderdOp: null,
-    },
+  return prisma.werkindeling.findFirst({
+    where: { blauwdrukId, verwijderdOp: null },
     select: {
       id: true,
       naam: true,
       status: true,
-      isWerkindeling: true,
       toelichting: true,
       createdAt: true,
       updatedAt: true,
@@ -51,68 +46,32 @@ export async function getWerkindeling(blauwdrukId: string) {
  * Haal het werkindeling-ID op, of null als er geen is.
  */
 export async function getWerkindelingId(blauwdrukId: string): Promise<string | null> {
-  const result = await prisma.scenario.findFirst({
-    where: {
-      isWerkindeling: true,
-      concept: { blauwdrukId },
-      verwijderdOp: null,
-    },
+  const result = await prisma.werkindeling.findFirst({
+    where: { blauwdrukId, verwijderdOp: null },
     select: { id: true },
   });
   return result?.id ?? null;
 }
 
 /**
- * Guard: controleer dat er geen werkindeling bestaat voor deze blauwdruk.
- * Gooit een fout als er al een werkindeling is.
+ * Maak een werkindeling aan voor een blauwdruk (eerste lege versie).
+ * Wordt automatisch aangeroepen als er nog geen werkindeling bestaat.
  */
-export async function assertGeenWerkindeling(blauwdrukId: string): Promise<void> {
-  const bestaand = await prisma.scenario.findFirst({
-    where: {
-      isWerkindeling: true,
-      concept: { blauwdrukId },
-      verwijderdOp: null,
-    },
-    select: { id: true, naam: true },
-  });
-  if (bestaand) {
-    throw new Error(`Blauwdruk heeft al een werkindeling: "${bestaand.naam}" (${bestaand.id})`);
-  }
-}
-
-/**
- * Promoveer een bestaand scenario tot werkindeling.
- * Zet alle andere scenario's in dezelfde blauwdruk op isWerkindeling: false.
- */
-export async function promoveerTotWerkindeling(scenarioId: string): Promise<void> {
-  const scenario = await prisma.scenario.findUniqueOrThrow({
-    where: { id: scenarioId },
-    select: {
-      id: true,
-      concept: { select: { blauwdrukId: true, id: true } },
-    },
-  });
-
-  await prisma.$transaction(async (tx: any) => {
-    // Zet alle scenario's in deze blauwdruk op false
-    const conceptIds = await tx.concept.findMany({
-      where: { blauwdrukId: scenario.concept.blauwdrukId },
-      select: { id: true },
-    });
-    await tx.scenario.updateMany({
-      where: {
-        conceptId: { in: conceptIds.map((c: any) => c.id) },
-        isWerkindeling: true,
+export async function maakWerkindelingAan(blauwdrukId: string, auteur: string): Promise<string> {
+  const werkindeling = await prisma.werkindeling.create({
+    data: {
+      blauwdrukId,
+      naam: "Werkindeling",
+      versies: {
+        create: {
+          nummer: 1,
+          naam: "Initieel",
+          auteur,
+        },
       },
-      data: { isWerkindeling: false },
-    });
-
-    // Zet dit scenario op true
-    await tx.scenario.update({
-      where: { id: scenarioId },
-      data: { isWerkindeling: true },
-    });
+    },
+    select: { id: true },
   });
-
-  logger.info(`Scenario ${scenarioId} gepromoveerd tot werkindeling`);
+  logger.info(`Werkindeling aangemaakt voor blauwdruk ${blauwdrukId}`);
+  return werkindeling.id;
 }
