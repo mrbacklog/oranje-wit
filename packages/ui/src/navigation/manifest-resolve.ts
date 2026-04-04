@@ -32,5 +32,7 @@ export function resolveBottomNav(manifest: AppManifest): NavItem[] {
     label: section.nav.label,
     href: section.nav.href,
     icon: ICON_MAP[section.nav.icon] ?? GridIcon,
+    // Alle paden in deze sectie (nav + pills, zonder query string)
+    sectionPaths: [section.nav.href, ...(section.pills?.map((p) => p.href.split("?")[0]) ?? [])],
   }));
 }

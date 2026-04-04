@@ -8,6 +8,8 @@ export interface NavItem {
   href: string;
   label: string;
   icon: (props: { active: boolean }) => ReactNode;
+  /** Alle paden die tot deze sectie behoren (nav href + pill hrefs zonder query) */
+  sectionPaths?: string[];
 }
 
 export interface BottomNavProps {
@@ -17,8 +19,38 @@ export interface BottomNavProps {
   children?: ReactNode;
 }
 
+/** Bereken welk nav-item actief is op basis van beste (meest specifieke) match. */
+function resolveActiveHref(items: NavItem[], pathname: string): string | null {
+  let bestHref: string | null = null;
+  let bestLength = -1;
+
+  for (const item of items) {
+    const paths = item.sectionPaths ?? [item.href];
+    for (const p of paths) {
+      if (item.href === "/" && p === "/") {
+        if (pathname === "/") {
+          if (p.length > bestLength) {
+            bestHref = item.href;
+            bestLength = p.length;
+          }
+        }
+        continue;
+      }
+      if (pathname === p || pathname.startsWith(p + "/")) {
+        if (p.length > bestLength) {
+          bestHref = item.href;
+          bestLength = p.length;
+        }
+      }
+    }
+  }
+
+  return bestHref;
+}
+
 export function BottomNav({ items, children }: BottomNavProps) {
   const pathname = usePathname();
+  const activeHref = resolveActiveHref(items, pathname);
 
   return (
     <nav
@@ -32,7 +64,7 @@ export function BottomNav({ items, children }: BottomNavProps) {
     >
       <div className="mx-auto flex max-w-lg items-center justify-around">
         {items.map((item) => {
-          const isActive = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+          const isActive = item.href === activeHref;
           return (
             <Link
               key={item.href}
