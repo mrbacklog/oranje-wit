@@ -326,6 +326,310 @@ server.tool(
   }
 );
 
+// --- Tool: ow_seizoenen ---
+server.tool("ow_seizoenen", "Alle bekende seizoenen met status", {}, async () => {
+  const res = await pool.query(
+    `SELECT seizoen, start_jaar, eind_jaar, status FROM seizoenen ORDER BY seizoen DESC`
+  );
+  return {
+    content: [{ type: "text", text: JSON.stringify({ seizoenen: res.rows }, null, 2) }],
+  };
+});
+
+// --- Tool: ow_blauwdruk ---
+server.tool(
+  "ow_blauwdruk",
+  "Blauwdruk + concepten + scenario-namen voor een seizoen",
+  {
+    seizoen: z.string().describe('Seizoen (bijv. "2026-2027")'),
+  },
+  async ({ seizoen }) => {
+    const bRes = await pool.query(`SELECT * FROM "Blauwdruk" WHERE seizoen = $1`, [seizoen]);
+    if (bRes.rowCount === 0) {
+      return { content: [{ type: "text", text: `Geen blauwdruk gevonden voor ${seizoen}` }] };
+    }
+    const blauwdruk = bRes.rows[0];
+
+    const cRes = await pool.query(
+      `SELECT c.id, c.naam, c.uitgangsprincipe, c.status, c.volgorde,
+              json_agg(json_build_object('id', s.id, 'naam', s.naam, 'status', s.status, 'isWerkindeling', s."isWerkindeling") ORDER BY s."createdAt") FILTER (WHERE s.id IS NOT NULL) AS scenarios
+       FROM "Concept" c
+       LEFT JOIN "Scenario" s ON s."conceptId" = c.id AND s."verwijderdOp" IS NULL
+       WHERE c."blauwdrukId" = $1
+       GROUP BY c.id ORDER BY c.volgorde`,
+      [blauwdruk.id]
+    );
+
+    const pinsRes = await pool.query(
+      `SELECT COUNT(*) AS aantal FROM "Pin" WHERE "blauwdrukId" = $1`,
+      [blauwdruk.id]
+    );
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: JSON.stringify(
+            {
+              blauwdruk: {
+                id: blauwdruk.id,
+                seizoen: blauwdruk.seizoen,
+                isWerkseizoen: blauwdruk.isWerkseizoen,
+                toelichting: blauwdruk.toelichting,
+                speerpunten: blauwdruk.speerpunten,
+                aantalPins: parseInt(pinsRes.rows[0].aantal),
+              },
+              concepten: cRes.rows,
+            },
+            null,
+            2
+          ),
+        },
+      ],
+    };
+  }
+);
+
+// --- Tool: ow_scenario ---
+server.tool(
+  "ow_scenario",
+  "Scenario ophalen met teams en spelerslijsten (laatste versie)",
+  {
+    scenarioId: z.string().describe("Scenario ID (cuid)"),
+  },
+  async ({ scenarioId }) => {
+    const sRes = await pool.query(
+      `SELECT s.*, c.naam AS concept_naam, c."blauwdrukId"
+       FROM "Scenario" s JOIN "Concept" c ON c.id = s."conceptId"
+       WHERE s.id = $1`,
+      [scenarioId]
+    );
+    if (sRes.rowCount === 0) {
+      return { content: [{ type: "text", text: `Scenario ${scenarioId} niet gevonden` }] };
+    }
+    const scenario = sRes.rows[0];
+
+    // Laatste versie
+    const vRes = await pool.query(
+      `SELECT * FROM "Versie" WHERE "scenarioId" = $1 ORDER BY nummer DESC LIMIT 1`,
+      [scenarioId]
+    );
+    if (vRes.rowCount === 0) {
+      return {
+        content: [{ type: "text", text: JSON.stringify({ scenario, versie: null, teams: [] }, null, 2) }],
+      };
+    }
+    const versie = vRes.rows[0];
+
+    // Teams met spelers en staf
+    const tRes = await pool.query(
+      `SELECT t.id, t.naam, t.alias, t.categorie, t.kleur, t."teamType", t.niveau, t.volgorde,
+              t."validatieStatus",
+              COALESCE(json_agg(
+                json_build_object(
+                  'id', sp.id, 'roepnaam', sp.roepnaam, 'achternaam', sp.achternaam,
+                  'geslacht', sp.geslacht, 'geboortejaar', sp.geboortejaar,
+                  'status', COALESCE(ts."statusOverride"::text, sp.status::text)
+                ) ORDER BY sp.geboortejaar, sp.achternaam
+              ) FILTER (WHERE sp.id IS NOT NULL), '[]') AS spelers
+       FROM "Team" t
+       LEFT JOIN "TeamSpeler" ts ON ts."teamId" = t.id
+       LEFT JOIN "Speler" sp ON sp.id = ts."spelerId"
+       WHERE t."versieId" = $1
+       GROUP BY t.id ORDER BY t.volgorde`,
+      [versie.id]
+    );
+
+    return {
+      content: [
+        {
+          type: "text",
+          text: JSON.stringify(
+            {
+              scenario: {
+                id: scenario.id,
+                naam: scenario.naam,
+                status: scenario.status,
+                isWerkindeling: scenario.isWerkindeling,
+                concept: scenario.concept_naam,
+              },
+              versie: { id: versie.id, nummer: versie.nummer, naam: versie.naam, auteur: versie.auteur, createdAt: versie.createdAt },
+              teams: tRes.rows,
+              aantalTeams: tRes.rowCount,
+              aantalSpelers: tRes.rows.reduce((s, t) => s + (t.spelers?.length || 0), 0),
+            },
+            null,
+            2
+          ),
+        },
+      ],
+    };
+  }
+);
+
+// --- Tool: ow_evaluaties ---
+server.tool(
+  "ow_evaluaties",
+  "Evaluaties ophalen per speler, seizoen of ronde",
+  {
+    spelerId: z.string().optional().describe("Speler ID (rel_code)"),
+    seizoen: z.string().optional().describe("Seizoen (bijv. 2025-2026)"),
+    ronde: z.number().optional().describe("Ronde nummer"),
+  },
+  async ({ spelerId, seizoen, ronde }) => {
+    const conditions = [];
+    const params = [];
+    let i = 1;
+
+    if (spelerId) { conditions.push(`e."spelerId" = $${i++}`); params.push(spelerId); }
+    if (seizoen) { conditions.push(`e.seizoen = $${i++}`); params.push(seizoen); }
+    if (ronde) { conditions.push(`e.ronde = $${i++}`); params.push(ronde); }
+
+    const where = conditions.length ? "WHERE " + conditions.join(" AND ") : "";
+    const res = await pool.query(
+      `SELECT e.id, e."spelerId", sp.roepnaam, sp.achternaam,
+              e.seizoen, e.ronde, e.type, e.scores, e.opmerking,
+              e."teamNaam", e.status, e."ingediendOp"
+       FROM "Evaluatie" e
+       JOIN "Speler" sp ON sp.id = e."spelerId"
+       ${where}
+       ORDER BY e.seizoen DESC, e.ronde, sp.achternaam
+       LIMIT 200`,
+      params
+    );
+    return {
+      content: [{ type: "text", text: JSON.stringify({ evaluaties: res.rows, aantal: res.rowCount }, null, 2) }],
+    };
+  }
+);
+
+// --- Tool: ow_speler_score ---
+server.tool(
+  "ow_speler_score",
+  "USS score (Geunificeerde Score Schaal) voor een speler",
+  {
+    spelerId: z.string().optional().describe("Speler ID (rel_code)"),
+    naam: z.string().optional().describe("Zoek op naam als spelerId onbekend"),
+    seizoen: z.string().optional().describe("Seizoen — leeg = meest recente"),
+  },
+  async ({ spelerId, naam, seizoen }) => {
+    let id = spelerId;
+
+    if (!id && naam) {
+      const zoek = await pool.query(
+        `SELECT id, roepnaam, achternaam FROM "Speler" WHERE roepnaam ILIKE $1 OR achternaam ILIKE $1 LIMIT 5`,
+        [`%${naam}%`]
+      );
+      if (zoek.rowCount === 0)
+        return { content: [{ type: "text", text: `Geen speler gevonden met naam "${naam}"` }] };
+      if (zoek.rowCount > 1)
+        return { content: [{ type: "text", text: JSON.stringify({ meerdere_matches: zoek.rows }) }] };
+      id = zoek.rows[0].id;
+    }
+    if (!id) return { content: [{ type: "text", text: "Geef spelerId of naam mee." }] };
+
+    const seizoenFilter = seizoen
+      ? `u.seizoen = $2`
+      : `u.seizoen = (SELECT MAX(seizoen) FROM speler_uss WHERE "spelerId" = $1)`;
+    const params = seizoen ? [id, seizoen] : [id];
+
+    const res = await pool.query(
+      `SELECT sp.id, sp.roepnaam, sp.achternaam, sp.geboortejaar, sp.geslacht,
+              u.seizoen, u.leeftijdsgroep,
+              u.uss_overall, u.uss_pijlers,
+              u.uss_coach, u.uss_scout, u.uss_vergelijking, u.uss_team, u.uss_basislijn,
+              u.betrouwbaarheid,
+              u.aantal_coach_sessies, u.aantal_scout_sessies, u.aantal_vergelijkingen
+       FROM "Speler" sp
+       JOIN speler_uss u ON u."spelerId" = sp.id
+       WHERE u."spelerId" = $1 AND ${seizoenFilter}`,
+      params
+    );
+
+    if (res.rowCount === 0)
+      return { content: [{ type: "text", text: `Geen USS score gevonden voor speler ${id}` }] };
+
+    return {
+      content: [{ type: "text", text: JSON.stringify(res.rows[0], null, 2) }],
+    };
+  }
+);
+
+// --- Tool: ow_write ---
+server.tool(
+  "ow_write",
+  "Gecontroleerde schrijfoperaties: speler-status, blauwdruk-gezien, teamspeler-plaatsing",
+  {
+    operatie: z.enum([
+      "speler_status",        // Speler.status + notitie bijwerken
+      "blauwdruk_gezien",     // BlauwdrukSpeler.gezienStatus + notitie
+      "team_speler_toevoegen", // Speler aan team toevoegen
+      "team_speler_verwijderen", // Speler uit team verwijderen
+      "scenario_notitie",     // Scenario.toelichting bijwerken
+    ]).describe("Type mutatie"),
+    params: z.record(z.any()).describe(
+      "Parameters: speler_status={spelerId,status,notitie?} | blauwdruk_gezien={blauwdrukId,spelerId,gezienStatus,notitie?} | team_speler_toevoegen={teamId,spelerId,statusOverride?} | team_speler_verwijderen={teamId,spelerId} | scenario_notitie={scenarioId,toelichting}"
+    ),
+  },
+  async ({ operatie, params: p }) => {
+    try {
+      let result;
+
+      if (operatie === "speler_status") {
+        const allowed = ["BESCHIKBAAR","TWIJFELT","GAAT_STOPPEN","NIEUW_POTENTIEEL","NIEUW_DEFINITIEF","ALGEMEEN_RESERVE"];
+        if (!allowed.includes(p.status)) throw new Error(`Ongeldige status: ${p.status}`);
+        const res = await pool.query(
+          `UPDATE "Speler" SET status = $1, notitie = COALESCE($2, notitie), "updatedAt" = NOW() WHERE id = $3 RETURNING id, roepnaam, achternaam, status`,
+          [p.status, p.notitie ?? null, p.spelerId]
+        );
+        result = { bijgewerkt: res.rows[0] };
+
+      } else if (operatie === "blauwdruk_gezien") {
+        const allowed = ["ONGEZIEN","GROEN","GEEL","ORANJE","ROOD"];
+        if (!allowed.includes(p.gezienStatus)) throw new Error(`Ongeldige gezienStatus: ${p.gezienStatus}`);
+        const res = await pool.query(
+          `UPDATE "BlauwdrukSpeler"
+           SET "gezienStatus" = $1, notitie = COALESCE($2, notitie), "updatedAt" = NOW()
+           WHERE "blauwdrukId" = $3 AND "spelerId" = $4
+           RETURNING id, "gezienStatus"`,
+          [p.gezienStatus, p.notitie ?? null, p.blauwdrukId, p.spelerId]
+        );
+        if (res.rowCount === 0) throw new Error("BlauwdrukSpeler record niet gevonden");
+        result = { bijgewerkt: res.rows[0] };
+
+      } else if (operatie === "team_speler_toevoegen") {
+        const res = await pool.query(
+          `INSERT INTO "TeamSpeler" (id, "teamId", "spelerId", "statusOverride")
+           VALUES (gen_random_uuid(), $1, $2, $3)
+           ON CONFLICT ("teamId", "spelerId") DO UPDATE SET "statusOverride" = EXCLUDED."statusOverride"
+           RETURNING id`,
+          [p.teamId, p.spelerId, p.statusOverride ?? null]
+        );
+        result = { geplaatst: { teamId: p.teamId, spelerId: p.spelerId, id: res.rows[0].id } };
+
+      } else if (operatie === "team_speler_verwijderen") {
+        const res = await pool.query(
+          `DELETE FROM "TeamSpeler" WHERE "teamId" = $1 AND "spelerId" = $2 RETURNING id`,
+          [p.teamId, p.spelerId]
+        );
+        result = { verwijderd: res.rowCount > 0, teamId: p.teamId, spelerId: p.spelerId };
+
+      } else if (operatie === "scenario_notitie") {
+        const res = await pool.query(
+          `UPDATE "Scenario" SET toelichting = $1, "updatedAt" = NOW() WHERE id = $2 RETURNING id, naam`,
+          [p.toelichting, p.scenarioId]
+        );
+        if (res.rowCount === 0) throw new Error("Scenario niet gevonden");
+        result = { bijgewerkt: res.rows[0] };
+      }
+
+      return { content: [{ type: "text", text: JSON.stringify({ ok: true, ...result }, null, 2) }] };
+    } catch (e) {
+      return { content: [{ type: "text", text: JSON.stringify({ ok: false, fout: e.message }) }] };
+    }
+  }
+);
+
 // --- Sync tools ---
 const sync = require("./tools/sync.js");
 
