@@ -1,6 +1,8 @@
 # TI-Studio Navigatie Herstructurering
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
+
+**Status: AFGEROND** — 4 april 2026 (commits t/m `db0d297`)
 
 **Goal:** De TI-studio sidebar herschikken naar vijf secties — Dashboard, Indeling, Opvolging, Personen, Kaders — en de huidige BlauwdrukTabs vervangen door losse pagina's per onderwerp.
 
@@ -60,7 +62,7 @@ De route `/ti-studio/werkbord` blijft bestaan als redirect → `/ti-studio/opvol
 **Files:**
 - Modify: `apps/web/src/components/teamindeling/layout/TISidebar.tsx`
 
-- [ ] **Stap 1: Pas de navigation array aan**
+- [x] **Stap 1: Pas de navigation array aan**
 
 Vervang de volledige `navigation` array in `TISidebar.tsx`:
 
@@ -74,11 +76,11 @@ navigation: [
 ],
 ```
 
-- [ ] **Stap 2: Verifieer visueel**
+- [x] **Stap 2: Verifieer visueel**
 
 Start `pnpm dev` en open `/ti-studio`. Sidebar moet tonen: Dashboard · Indeling · Opvolging · Personen · Kaders.
 
-- [ ] **Stap 3: Commit**
+- [x] **Stap 3: Commit**
 
 ```bash
 git add apps/web/src/components/teamindeling/layout/TISidebar.tsx
@@ -93,7 +95,7 @@ git commit -m "feat(ti-studio): herstructureer sidebar — Indeling, Opvolging, 
 - Create: `apps/web/src/app/(teamindeling-studio)/ti-studio/opvolging/page.tsx`
 - Modify: `apps/web/src/app/(teamindeling-studio)/ti-studio/werkbord/page.tsx`
 
-- [ ] **Stap 1: Maak de Opvolging-pagina aan**
+- [x] **Stap 1: Maak de Opvolging-pagina aan**
 
 Kopieer de inhoud van `werkbord/page.tsx` naar `opvolging/page.tsx` en pas de titel aan:
 
@@ -167,7 +169,7 @@ export default async function OpvolgingPage() {
 }
 ```
 
-- [ ] **Stap 2: Zet `/werkbord` om naar redirect**
+- [x] **Stap 2: Zet `/werkbord` om naar redirect**
 
 Vervang de volledige inhoud van `werkbord/page.tsx`:
 
@@ -179,12 +181,12 @@ export default function WerkbordPage() {
 }
 ```
 
-- [ ] **Stap 3: Verifieer**
+- [x] **Stap 3: Verifieer**
 
 Open `/ti-studio/opvolging` — werkitems moeten zichtbaar zijn.
 Open `/ti-studio/werkbord` — moet redirecten naar opvolging.
 
-- [ ] **Stap 4: Commit**
+- [x] **Stap 4: Commit**
 
 ```bash
 git add apps/web/src/app/\(teamindeling-studio\)/ti-studio/opvolging/page.tsx
@@ -203,7 +205,7 @@ git commit -m "feat(ti-studio): opvolging-pagina — acties en besluiten, werkbo
 
 De Personen-sectie heeft twee sub-pagina's: Spelers en Staf. Een gedeelde layout toont de sub-navigatiebalk.
 
-- [ ] **Stap 1: Maak de client sub-nav component aan**
+- [x] **Stap 1: Maak de client sub-nav component aan**
 
 `apps/web/src/app/(teamindeling-studio)/ti-studio/personen/_components/PersonenSubNav.tsx`:
 
@@ -252,7 +254,7 @@ export function PersonenSubNav() {
 }
 ```
 
-- [ ] **Stap 2: Maak de layout aan**
+- [x] **Stap 2: Maak de layout aan**
 
 `apps/web/src/app/(teamindeling-studio)/ti-studio/personen/layout.tsx`:
 
@@ -270,7 +272,7 @@ export default function PersonenLayout({ children }: { children: ReactNode }) {
 }
 ```
 
-- [ ] **Stap 3: Maak redirect-pagina `/personen` → `/personen/spelers`**
+- [x] **Stap 3: Maak redirect-pagina `/personen` → `/personen/spelers`**
 
 `apps/web/src/app/(teamindeling-studio)/ti-studio/personen/page.tsx`:
 
@@ -282,7 +284,7 @@ export default function PersonenPage() {
 }
 ```
 
-- [ ] **Stap 4: Commit**
+- [x] **Stap 4: Commit**
 
 ```bash
 git add apps/web/src/app/\(teamindeling-studio\)/ti-studio/personen/
@@ -298,7 +300,7 @@ git commit -m "feat(ti-studio): personen layout met sub-navigatie (spelers, staf
 
 De Spelers-pagina toont wie welke speler al "gezien" heeft (was de "Spelers"-tab in BlauwdrukTabs met GezienOverzicht).
 
-- [ ] **Stap 1: Maak de pagina aan**
+- [x] **Stap 1: Maak de pagina aan**
 
 ```typescript
 import { getBlauwdruk } from "@/app/(teamindeling-studio)/ti-studio/blauwdruk/actions";
@@ -341,11 +343,11 @@ export default async function PersonenSpelersPage() {
 }
 ```
 
-- [ ] **Stap 2: Verifieer**
+- [x] **Stap 2: Verifieer**
 
 Open `/ti-studio/personen/spelers` — GezienOverzicht moet laden.
 
-- [ ] **Stap 3: Commit**
+- [x] **Stap 3: Commit**
 
 ```bash
 git add apps/web/src/app/\(teamindeling-studio\)/ti-studio/personen/spelers/page.tsx
@@ -361,7 +363,7 @@ git commit -m "feat(ti-studio): personen › spelers pagina — gezien-overzicht
 
 Staf is nu een EmptyState. De pagina is alvast aangemaakt zodat de navigatie compleet is.
 
-- [ ] **Stap 1: Maak de pagina aan**
+- [x] **Stap 1: Maak de pagina aan**
 
 ```typescript
 import { EmptyState } from "@oranje-wit/ui";
@@ -387,7 +389,7 @@ export default function PersonenStafPage() {
 }
 ```
 
-- [ ] **Stap 2: Commit**
+- [x] **Stap 2: Commit**
 
 ```bash
 git add apps/web/src/app/\(teamindeling-studio\)/ti-studio/personen/staf/page.tsx
@@ -405,7 +407,7 @@ git commit -m "feat(ti-studio): personen › staf pagina — placeholder"
 
 De Kaders-pagina toont besluiten, CategoriePanel (teamaantallen), Pins en Uitgangspositie vorig seizoen. Dit is één pagina zonder sub-navigatie.
 
-- [ ] **Stap 1: Maak het client-component voor Pins aan**
+- [x] **Stap 1: Maak het client-component voor Pins aan**
 
 `apps/web/src/app/(teamindeling-studio)/ti-studio/kaders/_components/KadersTeamsClient.tsx`:
 
@@ -476,7 +478,7 @@ export default function KadersTeamsClient({
 }
 ```
 
-- [ ] **Stap 2: Maak `kaders/page.tsx` aan**
+- [x] **Stap 2: Maak `kaders/page.tsx` aan**
 
 ```typescript
 import { getBlauwdruk, getLedenStatistieken, getPinsVoorBlauwdruk } from "@/app/(teamindeling-studio)/ti-studio/blauwdruk/actions";
@@ -572,7 +574,7 @@ export default async function KadersPage() {
 
 > **Note:** `onNavigeerNaarTab` is een no-op — die was voor tab-navigatie in BlauwdrukVoortgang. Aanpassen naar route-links is een toekomstige taak.
 
-- [ ] **Stap 3: Zet `/blauwdruk` om naar redirect**
+- [x] **Stap 3: Zet `/blauwdruk` om naar redirect**
 
 Vervang de volledige inhoud van `blauwdruk/page.tsx`:
 
@@ -584,12 +586,12 @@ export default function BlauwdrukPage() {
 }
 ```
 
-- [ ] **Stap 4: Verifieer**
+- [x] **Stap 4: Verifieer**
 
 Open `/ti-studio/kaders` — besluiten + teamstructuur moeten zichtbaar zijn.
 Open `/ti-studio/blauwdruk` — moet redirecten naar kaders.
 
-- [ ] **Stap 5: Commit**
+- [x] **Stap 5: Commit**
 
 ```bash
 git add apps/web/src/app/\(teamindeling-studio\)/ti-studio/kaders/
@@ -606,13 +608,13 @@ git commit -m "feat(ti-studio): kaders pagina — besluiten, teamstructuur, pins
 
 Nu alle tabs losse pagina's zijn en de blauwdruk-page een redirect is, kan BlauwdrukTabs weg.
 
-- [ ] **Stap 1: Verwijder het bestand**
+- [x] **Stap 1: Verwijder het bestand**
 
 ```bash
 rm apps/web/src/components/teamindeling/blauwdruk/BlauwdrukTabs.tsx
 ```
 
-- [ ] **Stap 2: Check of BlauwdrukTabs nog ergens geïmporteerd wordt**
+- [x] **Stap 2: Check of BlauwdrukTabs nog ergens geïmporteerd wordt**
 
 ```bash
 grep -r "BlauwdrukTabs" apps/web/src --include="*.tsx" --include="*.ts"
@@ -620,7 +622,7 @@ grep -r "BlauwdrukTabs" apps/web/src --include="*.tsx" --include="*.ts"
 
 Verwacht: geen resultaten. Als er wel resultaten zijn: verwijder die imports.
 
-- [ ] **Stap 3: TypeScript check**
+- [x] **Stap 3: TypeScript check**
 
 ```bash
 pnpm --filter web typecheck
@@ -628,7 +630,7 @@ pnpm --filter web typecheck
 
 Verwacht: geen errors. Fix eventuele type-errors voor je commit.
 
-- [ ] **Stap 4: Commit**
+- [x] **Stap 4: Commit**
 
 ```bash
 git add -A
@@ -642,19 +644,19 @@ git commit -m "chore(ti-studio): verwijder BlauwdrukTabs — vervangen door loss
 **Files:**
 - Modify: `e2e/` — bestaande tests die `/ti-studio/blauwdruk` of `/ti-studio/werkbord` bezoeken
 
-- [ ] **Stap 1: Zoek bestaande tests die oude routes gebruiken**
+- [x] **Stap 1: Zoek bestaande tests die oude routes gebruiken**
 
 ```bash
 grep -r "blauwdruk\|werkbord" e2e/ --include="*.ts" -l
 ```
 
-- [ ] **Stap 2: Update gevonden testbestanden**
+- [x] **Stap 2: Update gevonden testbestanden**
 
 Vervang in alle gevonden bestanden:
 - `"/ti-studio/blauwdruk"` → `"/ti-studio/kaders"`
 - `"/ti-studio/werkbord"` → `"/ti-studio/opvolging"`
 
-- [ ] **Stap 3: Draai de E2E tests**
+- [x] **Stap 3: Draai de E2E tests**
 
 ```bash
 pnpm test:e2e
@@ -662,7 +664,7 @@ pnpm test:e2e
 
 Verwacht: alle tests groen (of alleen failures die niets met deze routes te maken hebben).
 
-- [ ] **Stap 4: Commit**
+- [x] **Stap 4: Commit**
 
 ```bash
 git add e2e/
@@ -675,18 +677,18 @@ git commit -m "test(e2e): update routes na ti-studio navigatie herstructurering"
 
 Na alle tasks:
 
-- [ ] `/ti-studio` — Dashboard zichtbaar
-- [ ] `/ti-studio/indeling` — Ongewijzigd, sidebar-label zegt "Indeling"
-- [ ] `/ti-studio/opvolging` — WerkbordOverzicht zichtbaar
-- [ ] `/ti-studio/personen` — Redirect naar `/ti-studio/personen/spelers`
-- [ ] `/ti-studio/personen/spelers` — GezienOverzicht zichtbaar
-- [ ] `/ti-studio/personen/staf` — EmptyState zichtbaar
-- [ ] `/ti-studio/kaders` — Besluiten + teamstructuur + pins + uitgangspositie zichtbaar
-- [ ] `/ti-studio/blauwdruk` — Redirect naar `/ti-studio/kaders`
-- [ ] `/ti-studio/werkbord` — Redirect naar `/ti-studio/opvolging`
-- [ ] Sub-navigatie in Personen toont actieve pagina correct
-- [ ] `pnpm --filter web typecheck` — geen errors
-- [ ] `pnpm test:e2e` — geen regressies
+- [x] `/ti-studio` — Dashboard zichtbaar
+- [x] `/ti-studio/indeling` — Ongewijzigd, sidebar-label zegt "Indeling"
+- [x] `/ti-studio/opvolging` — WerkbordOverzicht zichtbaar
+- [x] `/ti-studio/personen` — Redirect naar `/ti-studio/personen/spelers`
+- [x] `/ti-studio/personen/spelers` — GezienOverzicht zichtbaar
+- [x] `/ti-studio/personen/staf` — EmptyState zichtbaar
+- [x] `/ti-studio/kaders` — Besluiten + teamstructuur + pins + uitgangspositie zichtbaar
+- [x] `/ti-studio/blauwdruk` — Redirect naar `/ti-studio/kaders`
+- [x] `/ti-studio/werkbord` — Redirect naar `/ti-studio/opvolging`
+- [x] Sub-navigatie in Personen toont actieve pagina correct
+- [x] `pnpm --filter web typecheck` — geen errors
+- [x] `pnpm test:e2e` — geen regressies
 
 ---
 
