@@ -10,10 +10,10 @@ async function markeerDefinitief(werkindelingId: string) {
 }
 
 interface MaakDefinitiefKnopProps {
-  scenarioId: string;
+  werkindelingId: string;
 }
 
-export default function MaakDefinitiefKnop({ scenarioId }: MaakDefinitiefKnopProps) {
+export default function MaakDefinitiefKnop({ werkindelingId }: MaakDefinitiefKnopProps) {
   const [bevestig, setBevestig] = useState(false);
   const [isPending, startTransition] = useTransition();
 
@@ -24,7 +24,7 @@ export default function MaakDefinitiefKnop({ scenarioId }: MaakDefinitiefKnopPro
     }
 
     startTransition(() => {
-      markeerDefinitief(scenarioId);
+      markeerDefinitief(werkindelingId);
     });
   }
 

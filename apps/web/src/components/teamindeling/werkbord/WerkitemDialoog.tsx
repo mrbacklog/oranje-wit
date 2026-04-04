@@ -6,7 +6,7 @@ import type { WerkitemType, WerkitemPrioriteit, Besluitniveau, Doelgroep, Entite
 
 interface WerkitemDialoogProps {
   blauwdrukId: string;
-  scenarioId?: string;
+  werkindelingId?: string;
   spelerId?: string;
   stafId?: string;
   teamOwCode?: string;
@@ -16,7 +16,7 @@ interface WerkitemDialoogProps {
 
 export default function WerkitemDialoog({
   blauwdrukId,
-  scenarioId,
+  werkindelingId,
   spelerId,
   stafId,
   teamOwCode,
@@ -49,7 +49,7 @@ export default function WerkitemDialoog({
         besluitniveau: besluitniveau || undefined,
         doelgroep: doelgroep || undefined,
         entiteit: entiteit || undefined,
-        scenarioId,
+        werkindelingId,
         spelerId,
         stafId,
         teamOwCode,

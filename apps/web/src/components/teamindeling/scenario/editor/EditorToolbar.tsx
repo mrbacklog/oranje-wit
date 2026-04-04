@@ -149,7 +149,7 @@ export default function EditorToolbar({
             Nieuw team
           </button>
         )}
-        {!isLocked && mode === "preview" && <MaakDefinitiefKnop scenarioId={scenario.id} />}
+        {!isLocked && mode === "preview" && <MaakDefinitiefKnop werkindelingId={scenario.id} />}
 
         {!isLocked && (
           <button

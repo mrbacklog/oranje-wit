@@ -12,7 +12,7 @@ import type { WerkitemType, WerkitemPrioriteit, WerkitemStatus } from "@oranje-w
 
 interface ScenarioWerkbordPanelProps {
   blauwdrukId: string;
-  scenarioId: string;
+  werkindelingId: string;
 }
 
 const STATUS_KLEUR: Record<string, string> = {
@@ -39,7 +39,7 @@ const TYPE_LABEL: Record<string, string> = {
 
 export default function ScenarioWerkbordPanel({
   blauwdrukId,
-  scenarioId,
+  werkindelingId,
 }: ScenarioWerkbordPanelProps) {
   const [werkitems, setWerkitems] = useState<WerkitemData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -54,12 +54,12 @@ export default function ScenarioWerkbordPanel({
   const refresh = useCallback(async () => {
     // Haal zowel blauwdruk-brede als scenario-specifieke werkitems op
     const [blauwdrukItems, scenarioItems] = await Promise.all([
-      getWerkitems(blauwdrukId, { scenarioId: null }),
-      getWerkitems(blauwdrukId, { scenarioId }),
+      getWerkitems(blauwdrukId, { werkindelingId: null }),
+      getWerkitems(blauwdrukId, { werkindelingId }),
     ]);
     setWerkitems([...scenarioItems, ...blauwdrukItems]);
     setLoading(false);
-  }, [blauwdrukId, scenarioId]);
+  }, [blauwdrukId, werkindelingId]);
 
   useEffect(() => {
     refresh();
@@ -76,11 +76,11 @@ export default function ScenarioWerkbordPanel({
         beschrijving: "",
         type,
         prioriteit,
-        scenarioId: scope === "scenario" ? scenarioId : undefined,
+        werkindelingId: scope === "scenario" ? werkindelingId : undefined,
       });
       await refresh();
     });
-  }, [titel, type, prioriteit, scope, blauwdrukId, scenarioId, refresh]);
+  }, [titel, type, prioriteit, scope, blauwdrukId, werkindelingId, refresh]);
 
   const handleStatusWijzig = useCallback(
     (id: string, status: WerkitemStatus) => {
@@ -111,7 +111,7 @@ export default function ScenarioWerkbordPanel({
     );
   }
 
-  const scenarioItems = werkitems.filter((w) => w.scenario?.id === scenarioId);
+  const scenarioItems = werkitems.filter((w) => w.scenario?.id === werkindelingId);
   const blauwdrukItems = werkitems.filter((w) => !w.scenario);
 
   return (

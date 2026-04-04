@@ -387,7 +387,7 @@ export default function ScenarioEditorFullscreen({
 
       {/* Dialogen en overlays */}
       <EditorDialogs
-        scenarioId={scenario.id}
+        werkindelingId={scenario.id}
         teams={editor.teams}
         showRanking={showRanking}
         nieuwTeamOpen={nieuwTeamOpen}

@@ -17,7 +17,7 @@ interface VerdeelState {
 }
 
 interface EditorDialogsProps {
-  scenarioId: string;
+  werkindelingId: string;
   teams: TeamData[];
   showRanking: boolean;
 
@@ -57,7 +57,7 @@ interface EditorDialogsProps {
 
 /** Alle dialogen en overlays die buiten de DndProvider-context staan. */
 export default function EditorDialogs({
-  scenarioId,
+  werkindelingId,
   teams,
   showRanking,
   nieuwTeamOpen,
@@ -105,7 +105,9 @@ export default function EditorDialogs({
         width="w-96"
         title="Werkbord"
       >
-        {blauwdrukId && <ScenarioWerkbordPanel blauwdrukId={blauwdrukId} scenarioId={scenarioId} />}
+        {blauwdrukId && (
+          <ScenarioWerkbordPanel blauwdrukId={blauwdrukId} werkindelingId={werkindelingId} />
+        )}
       </Drawer>
 
       {verdeelData && (

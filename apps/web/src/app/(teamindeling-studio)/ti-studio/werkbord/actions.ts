@@ -80,7 +80,7 @@ export async function getWerkitems(
     spelerId?: string;
     stafId?: string;
     teamOwCode?: string;
-    scenarioId?: string | null;
+    werkindelingId?: string | null;
   }
 ) {
   const where = {
@@ -94,7 +94,7 @@ export async function getWerkitems(
     ...(filters?.spelerId && { spelerId: filters.spelerId }),
     ...(filters?.stafId && { stafId: filters.stafId }),
     ...(filters?.teamOwCode && { teamOwCode: filters.teamOwCode }),
-    ...(filters?.scenarioId !== undefined && { scenarioId: filters.scenarioId }),
+    ...(filters?.werkindelingId !== undefined && { werkindelingId: filters.werkindelingId }),
   };
 
   return db.werkitem.findMany({
@@ -120,7 +120,7 @@ export async function createWerkitem(data: {
   besluitniveau?: Besluitniveau;
   doelgroep?: Doelgroep;
   entiteit?: Entiteit;
-  scenarioId?: string;
+  werkindelingId?: string;
   spelerId?: string;
   stafId?: string;
   teamOwCode?: string;
@@ -139,7 +139,7 @@ export async function createWerkitem(data: {
       besluitniveau: data.besluitniveau ?? null,
       doelgroep: data.doelgroep ?? null,
       entiteit: data.entiteit ?? null,
-      scenarioId: data.scenarioId ?? null,
+      werkindelingId: data.werkindelingId ?? null,
       spelerId: data.spelerId ?? null,
       stafId: data.stafId ?? null,
       teamOwCode: data.teamOwCode ?? null,
@@ -269,7 +269,7 @@ export async function createActiepunt(data: {
   beschrijving: string;
   toegewezenAanId?: string;
   werkitemId?: string;
-  scenarioId?: string;
+  werkindelingId?: string;
   deadline?: string;
   volgorde?: number;
 }) {
@@ -282,7 +282,7 @@ export async function createActiepunt(data: {
       beschrijving: data.beschrijving,
       toegewezenAanId: data.toegewezenAanId ?? null,
       werkitemId: data.werkitemId ?? null,
-      scenarioId: data.scenarioId ?? null,
+      werkindelingId: data.werkindelingId ?? null,
       deadline: data.deadline ? new Date(data.deadline) : null,
       volgorde: data.volgorde ?? 0,
       auteurId: user.id,
