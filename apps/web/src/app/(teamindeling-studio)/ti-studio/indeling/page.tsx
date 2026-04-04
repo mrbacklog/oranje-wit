@@ -1,11 +1,15 @@
 export const dynamic = "force-dynamic";
 
+import { auth } from "@oranje-wit/auth";
 import { getOfMaakWerkindelingVoorSeizoen } from "./actions";
 import { getWerkindelingVoorEditor, getAlleSpelers, getPosities } from "./werkindeling-actions";
 import ScenarioEditorFullscreen from "@/components/teamindeling/scenario/editor/ScenarioEditorFullscreen";
 
 export default async function IndelingPage() {
-  const werkindeling = await getOfMaakWerkindelingVoorSeizoen("systeem");
+  const session = await auth();
+  const gebruikerEmail = session?.user?.email ?? "systeem";
+
+  const werkindeling = await getOfMaakWerkindelingVoorSeizoen(gebruikerEmail);
 
   if (!werkindeling) {
     return (
@@ -30,6 +34,7 @@ export default async function IndelingPage() {
       alleSpelers={alleSpelers as any}
       initialMode="edit"
       initialPosities={initialPosities as any}
+      gebruikerEmail={gebruikerEmail}
     />
   );
 }

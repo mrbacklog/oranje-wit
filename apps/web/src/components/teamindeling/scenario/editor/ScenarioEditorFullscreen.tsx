@@ -32,6 +32,7 @@ interface ScenarioEditorFullscreenProps {
   alleSpelers: SpelerData[];
   initialMode?: EditorMode;
   initialPosities?: PositionMap | null;
+  gebruikerEmail?: string;
 }
 
 export default function ScenarioEditorFullscreen({
@@ -39,6 +40,7 @@ export default function ScenarioEditorFullscreen({
   alleSpelers,
   initialMode = "edit",
   initialPosities = null,
+  gebruikerEmail = "systeem",
 }: ScenarioEditorFullscreenProps) {
   const isMobile = useIsMobile();
   const editor = useScenarioEditor(scenario, alleSpelers);
@@ -170,11 +172,9 @@ export default function ScenarioEditorFullscreen({
   );
 
   // Preview: validatie
-  const blauwdrukKaders = useMemo(
-    () =>
-      scenario.concept?.blauwdruk?.kaders as Record<string, Record<string, unknown>> | undefined,
-    [scenario.concept?.blauwdruk?.kaders]
-  );
+  const blauwdrukKaders = (scenario as any).blauwdruk?.kaders as
+    | Record<string, Record<string, unknown>>
+    | undefined;
   const { validatieMap: previewValidatieMap } = useValidatie(
     zichtbareTeams,
     PEILJAAR,
@@ -439,7 +439,7 @@ export default function ScenarioEditorFullscreen({
       <VersiesDrawer
         open={versiesOpen}
         versies={versieRijen}
-        gebruikerEmail="systeem"
+        gebruikerEmail={gebruikerEmail}
         onClose={() => setVersiesOpen(false)}
       />
     </div>
