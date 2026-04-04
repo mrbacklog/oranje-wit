@@ -57,9 +57,8 @@ export default async function SpelerDetailPage({ params }: Props) {
       spelerId: id,
       team: {
         versie: {
-          scenario: {
-            isWerkindeling: true,
-            concept: { blauwdruk: { seizoen } },
+          werkindeling: {
+            blauwdruk: { seizoen },
           },
         },
       },
@@ -68,19 +67,6 @@ export default async function SpelerDetailPage({ params }: Props) {
       team: {
         select: {
           naam: true,
-          versie: {
-            select: {
-              scenario: {
-                select: {
-                  concept: {
-                    select: {
-                      blauwdruk: { select: { seizoen: true } },
-                    },
-                  },
-                },
-              },
-            },
-          },
         },
       },
     },

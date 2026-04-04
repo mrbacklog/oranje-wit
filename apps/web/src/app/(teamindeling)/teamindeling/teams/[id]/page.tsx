@@ -62,9 +62,8 @@ export default async function TeamDetailPage({ params }: Props) {
     where: {
       naam: teamNaam,
       versie: {
-        scenario: {
-          isWerkindeling: true,
-          concept: { blauwdruk: { seizoen } },
+        werkindeling: {
+          blauwdruk: { seizoen },
         },
       },
     },

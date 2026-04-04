@@ -104,11 +104,9 @@ export const teamindelingTools = {
         blauwdruk: {
           id: blauwdruk.id,
           aantalWerkindelingen: werkindelingen.length,
-          aantalScenarios: scenarios.length,
           createdAt: blauwdruk.created_at,
         },
-        scenarios,
-        werkindeling: scenarios.find((s) => s.isWerkindeling) ?? null,
+        werkindeling: scenarios[0] ?? null,
       };
     },
   },
