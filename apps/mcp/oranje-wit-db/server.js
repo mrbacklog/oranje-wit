@@ -416,7 +416,9 @@ server.tool(
     );
     if (vRes.rowCount === 0) {
       return {
-        content: [{ type: "text", text: JSON.stringify({ scenario, versie: null, teams: [] }, null, 2) }],
+        content: [
+          { type: "text", text: JSON.stringify({ scenario, versie: null, teams: [] }, null, 2) },
+        ],
       };
     }
     const versie = vRes.rows[0];
@@ -453,7 +455,13 @@ server.tool(
                 isWerkindeling: scenario.isWerkindeling,
                 concept: scenario.concept_naam,
               },
-              versie: { id: versie.id, nummer: versie.nummer, naam: versie.naam, auteur: versie.auteur, createdAt: versie.createdAt },
+              versie: {
+                id: versie.id,
+                nummer: versie.nummer,
+                naam: versie.naam,
+                auteur: versie.auteur,
+                createdAt: versie.createdAt,
+              },
               teams: tRes.rows,
               aantalTeams: tRes.rowCount,
               aantalSpelers: tRes.rows.reduce((s, t) => s + (t.spelers?.length || 0), 0),
@@ -481,9 +489,18 @@ server.tool(
     const params = [];
     let i = 1;
 
-    if (spelerId) { conditions.push(`e."spelerId" = $${i++}`); params.push(spelerId); }
-    if (seizoen) { conditions.push(`e.seizoen = $${i++}`); params.push(seizoen); }
-    if (ronde) { conditions.push(`e.ronde = $${i++}`); params.push(ronde); }
+    if (spelerId) {
+      conditions.push(`e."spelerId" = $${i++}`);
+      params.push(spelerId);
+    }
+    if (seizoen) {
+      conditions.push(`e.seizoen = $${i++}`);
+      params.push(seizoen);
+    }
+    if (ronde) {
+      conditions.push(`e.ronde = $${i++}`);
+      params.push(ronde);
+    }
 
     const where = conditions.length ? "WHERE " + conditions.join(" AND ") : "";
     const res = await pool.query(
@@ -498,7 +515,12 @@ server.tool(
       params
     );
     return {
-      content: [{ type: "text", text: JSON.stringify({ evaluaties: res.rows, aantal: res.rowCount }, null, 2) }],
+      content: [
+        {
+          type: "text",
+          text: JSON.stringify({ evaluaties: res.rows, aantal: res.rowCount }, null, 2),
+        },
+      ],
     };
   }
 );
@@ -523,7 +545,9 @@ server.tool(
       if (zoek.rowCount === 0)
         return { content: [{ type: "text", text: `Geen speler gevonden met naam "${naam}"` }] };
       if (zoek.rowCount > 1)
-        return { content: [{ type: "text", text: JSON.stringify({ meerdere_matches: zoek.rows }) }] };
+        return {
+          content: [{ type: "text", text: JSON.stringify({ meerdere_matches: zoek.rows }) }],
+        };
       id = zoek.rows[0].id;
     }
     if (!id) return { content: [{ type: "text", text: "Geef spelerId of naam mee." }] };
@@ -560,33 +584,44 @@ server.tool(
   "ow_write",
   "Gecontroleerde schrijfoperaties: speler-status, blauwdruk-gezien, teamspeler-plaatsing",
   {
-    operatie: z.enum([
-      "speler_status",        // Speler.status + notitie bijwerken
-      "blauwdruk_gezien",     // BlauwdrukSpeler.gezienStatus + notitie
-      "team_speler_toevoegen", // Speler aan team toevoegen
-      "team_speler_verwijderen", // Speler uit team verwijderen
-      "scenario_notitie",     // Scenario.toelichting bijwerken
-    ]).describe("Type mutatie"),
-    params: z.record(z.any()).describe(
-      "Parameters: speler_status={spelerId,status,notitie?} | blauwdruk_gezien={blauwdrukId,spelerId,gezienStatus,notitie?} | team_speler_toevoegen={teamId,spelerId,statusOverride?} | team_speler_verwijderen={teamId,spelerId} | scenario_notitie={scenarioId,toelichting}"
-    ),
+    operatie: z
+      .enum([
+        "speler_status", // Speler.status + notitie bijwerken
+        "blauwdruk_gezien", // BlauwdrukSpeler.gezienStatus + notitie
+        "team_speler_toevoegen", // Speler aan team toevoegen
+        "team_speler_verwijderen", // Speler uit team verwijderen
+        "scenario_notitie", // Scenario.toelichting bijwerken
+      ])
+      .describe("Type mutatie"),
+    params: z
+      .record(z.any())
+      .describe(
+        "Parameters: speler_status={spelerId,status,notitie?} | blauwdruk_gezien={blauwdrukId,spelerId,gezienStatus,notitie?} | team_speler_toevoegen={teamId,spelerId,statusOverride?} | team_speler_verwijderen={teamId,spelerId} | scenario_notitie={scenarioId,toelichting}"
+      ),
   },
   async ({ operatie, params: p }) => {
     try {
       let result;
 
       if (operatie === "speler_status") {
-        const allowed = ["BESCHIKBAAR","TWIJFELT","GAAT_STOPPEN","NIEUW_POTENTIEEL","NIEUW_DEFINITIEF","ALGEMEEN_RESERVE"];
+        const allowed = [
+          "BESCHIKBAAR",
+          "TWIJFELT",
+          "GAAT_STOPPEN",
+          "NIEUW_POTENTIEEL",
+          "NIEUW_DEFINITIEF",
+          "ALGEMEEN_RESERVE",
+        ];
         if (!allowed.includes(p.status)) throw new Error(`Ongeldige status: ${p.status}`);
         const res = await pool.query(
           `UPDATE "Speler" SET status = $1, notitie = COALESCE($2, notitie), "updatedAt" = NOW() WHERE id = $3 RETURNING id, roepnaam, achternaam, status`,
           [p.status, p.notitie ?? null, p.spelerId]
         );
         result = { bijgewerkt: res.rows[0] };
-
       } else if (operatie === "blauwdruk_gezien") {
-        const allowed = ["ONGEZIEN","GROEN","GEEL","ORANJE","ROOD"];
-        if (!allowed.includes(p.gezienStatus)) throw new Error(`Ongeldige gezienStatus: ${p.gezienStatus}`);
+        const allowed = ["ONGEZIEN", "GROEN", "GEEL", "ORANJE", "ROOD"];
+        if (!allowed.includes(p.gezienStatus))
+          throw new Error(`Ongeldige gezienStatus: ${p.gezienStatus}`);
         const res = await pool.query(
           `UPDATE "BlauwdrukSpeler"
            SET "gezienStatus" = $1, notitie = COALESCE($2, notitie), "updatedAt" = NOW()
@@ -596,7 +631,6 @@ server.tool(
         );
         if (res.rowCount === 0) throw new Error("BlauwdrukSpeler record niet gevonden");
         result = { bijgewerkt: res.rows[0] };
-
       } else if (operatie === "team_speler_toevoegen") {
         const res = await pool.query(
           `INSERT INTO "TeamSpeler" (id, "teamId", "spelerId", "statusOverride")
@@ -606,14 +640,12 @@ server.tool(
           [p.teamId, p.spelerId, p.statusOverride ?? null]
         );
         result = { geplaatst: { teamId: p.teamId, spelerId: p.spelerId, id: res.rows[0].id } };
-
       } else if (operatie === "team_speler_verwijderen") {
         const res = await pool.query(
           `DELETE FROM "TeamSpeler" WHERE "teamId" = $1 AND "spelerId" = $2 RETURNING id`,
           [p.teamId, p.spelerId]
         );
         result = { verwijderd: res.rowCount > 0, teamId: p.teamId, spelerId: p.spelerId };
-
       } else if (operatie === "scenario_notitie") {
         const res = await pool.query(
           `UPDATE "Scenario" SET toelichting = $1, "updatedAt" = NOW() WHERE id = $2 RETURNING id, naam`,
@@ -623,7 +655,9 @@ server.tool(
         result = { bijgewerkt: res.rows[0] };
       }
 
-      return { content: [{ type: "text", text: JSON.stringify({ ok: true, ...result }, null, 2) }] };
+      return {
+        content: [{ type: "text", text: JSON.stringify({ ok: true, ...result }, null, 2) }],
+      };
     } catch (e) {
       return { content: [{ type: "text", text: JSON.stringify({ ok: false, fout: e.message }) }] };
     }
