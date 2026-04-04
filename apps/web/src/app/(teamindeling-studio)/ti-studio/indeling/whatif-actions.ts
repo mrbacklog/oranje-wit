@@ -18,11 +18,10 @@ export async function createWhatIf(
   werkindelingId: string,
   data: { vraag: string; toelichting?: string; teamIds: string[] }
 ): Promise<{ id: string }> {
-  const werkindeling = await prisma.scenario.findUniqueOrThrow({
+  const werkindeling = await prisma.werkindeling.findUniqueOrThrow({
     where: { id: werkindelingId },
     select: {
       id: true,
-      isWerkindeling: true,
       versies: {
         orderBy: { nummer: "desc" as const },
         take: 1,
@@ -51,10 +50,6 @@ export async function createWhatIf(
       },
     },
   });
-
-  if (!werkindeling.isWerkindeling) {
-    throw new Error("Scenario is geen werkindeling");
-  }
 
   const versie = werkindeling.versies[0];
   if (!versie) {
@@ -154,7 +149,7 @@ export async function getWhatIf(whatIfId: string) {
  * Haal alle what-ifs op voor een werkindeling (samenvattingen voor zijbalk).
  */
 export async function getWhatIfs(werkindelingId: string): Promise<WhatIfSummary[]> {
-  const werkindeling = await prisma.scenario.findUniqueOrThrow({
+  const werkindeling = await prisma.werkindeling.findUniqueOrThrow({
     where: { id: werkindelingId },
     select: {
       versies: {

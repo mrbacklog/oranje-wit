@@ -25,20 +25,20 @@ export async function POST(request: Request) {
 
     const nu = new Date();
 
-    // Scenario's soft-deleted > 30 dagen → hard delete
+    // Werkindelingen soft-deleted > 30 dagen → hard delete
     const scenarioDrempel = new Date(nu.getTime() - SOFT_DELETE_DAGEN * 24 * 60 * 60 * 1000);
-    const oudeScenarios = await prisma.scenario.findMany({
+    const oudeScenarios = await prisma.werkindeling.findMany({
       where: { verwijderdOp: { lt: scenarioDrempel } },
       select: { id: true, naam: true },
     });
     for (const s of oudeScenarios) {
-      await prisma.scenario.delete({ where: { id: s.id } });
-      logger.info(`[cleanup] Scenario definitief verwijderd: "${s.naam}" (${s.id})`);
+      await prisma.werkindeling.delete({ where: { id: s.id } });
+      logger.info(`[cleanup] Werkindeling definitief verwijderd: "${s.naam}" (${s.id})`);
     }
 
     // Snapshots > 90 dagen verwijderen
     const snapshotDrempel = new Date(nu.getTime() - SNAPSHOT_DAGEN * 24 * 60 * 60 * 1000);
-    const oudeSnapshots = await prisma.scenarioSnapshot.deleteMany({
+    const oudeSnapshots = await prisma.werkindelingSnapshot.deleteMany({
       where: { createdAt: { lt: snapshotDrempel } },
     });
 

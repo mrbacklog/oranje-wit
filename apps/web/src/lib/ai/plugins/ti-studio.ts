@@ -41,8 +41,8 @@ async function getVersieId(inContext: string): Promise<string | null> {
   if (inContext === "werkindeling") {
     const blauwdruk = await getWerkBlauwdruk();
     if (!blauwdruk) return null;
-    const wi = await prisma.scenario.findFirst({
-      where: { concept: { blauwdrukId: blauwdruk.id }, isWerkindeling: true },
+    const wi = await prisma.werkindeling.findFirst({
+      where: { blauwdrukId: blauwdruk.id, verwijderdOp: null },
     });
     if (!wi) return null;
     const v = await getLaatsteVersie(wi.id);
@@ -307,8 +307,8 @@ const leesTools = {
       const blauwdruk = await getWerkBlauwdruk();
       if (!blauwdruk) return { fout: "Geen actieve blauwdruk gevonden" };
 
-      const werkindeling = await prisma.scenario.findFirst({
-        where: { concept: { blauwdrukId: blauwdruk.id }, isWerkindeling: true },
+      const werkindeling = await prisma.werkindeling.findFirst({
+        where: { blauwdrukId: blauwdruk.id, verwijderdOp: null },
         select: { id: true, naam: true },
       });
       if (!werkindeling) return { fout: "Geen werkindeling gevonden" };
@@ -817,35 +817,34 @@ function maakSchrijfToolsRest(sessieId: string, gebruikerEmail: string) {
         const blauwdruk = await getWerkBlauwdruk();
         if (!blauwdruk) return { fout: "Geen actieve blauwdruk gevonden" };
 
-        const concept = await prisma.concept.findFirst({
-          where: { blauwdrukId: blauwdruk.id },
-          select: { id: true },
-          orderBy: { createdAt: "asc" },
-        });
-        if (!concept) return { fout: "Geen concept gevonden in blauwdruk" };
-
-        const scenario = await prisma.scenario.create({
+        const werkindeling = await prisma.werkindeling.create({
           data: {
-            conceptId: concept.id,
+            blauwdrukId: blauwdruk.id,
             naam,
-            status: "ACTIEF",
-            isWerkindeling: false,
+            versies: {
+              create: {
+                nummer: 1,
+                naam: "Initieel",
+                auteur: gebruikerEmail ?? "daisy",
+              },
+            },
           },
+          select: { id: true },
         });
 
         await logDaisyActie({
           sessieId,
           tool: "whatIfScenarioAanmaken",
-          doPayload: { scenarioId: scenario.id, naam },
-          undoPayload: { scenarioId: scenario.id },
+          doPayload: { scenarioId: werkindeling.id, naam },
+          undoPayload: { scenarioId: werkindeling.id },
           namens: gebruikerEmail,
-          uitgevoerdIn: `scenario:${scenario.id}`,
+          uitgevoerdIn: `werkindeling:${werkindeling.id}`,
         });
 
         return {
           gedaan: true,
-          scenarioId: scenario.id,
-          samenvatting: `What-if scenario "${naam}" aangemaakt`,
+          scenarioId: werkindeling.id,
+          samenvatting: `Werkindeling "${naam}" aangemaakt`,
         };
       },
     },

@@ -15,16 +15,25 @@ import type {
   SelectieSpelerData,
   SelectieStafData,
 } from "../types";
-import {
-  addSpelerToTeam,
-  removeSpelerFromTeam,
-  moveSpeler,
-} from "@/app/(teamindeling-studio)/ti-studio/scenarios/actions";
-import {
-  koppelSelectie,
-  ontkoppelSelectieMetVerdeling,
-  updateSelectieNaam,
-} from "@/app/(teamindeling-studio)/ti-studio/scenarios/team-actions";
+// Tijdelijke stubs — worden in Task 4 vervangen door werkindeling team-actions
+async function addSpelerToTeam(_teamId: string, _spelerId: string) {
+  throw new Error("addSpelerToTeam: nog niet geïmplementeerd voor werkindeling");
+}
+async function removeSpelerFromTeam(_teamId: string, _spelerId: string) {
+  throw new Error("removeSpelerFromTeam: nog niet geïmplementeerd voor werkindeling");
+}
+async function moveSpeler(_spelerId: string, _vanTeamId: string, _naarTeamId: string) {
+  throw new Error("moveSpeler: nog niet geïmplementeerd voor werkindeling");
+}
+async function koppelSelectie(_teamId: string, _data: any) {
+  throw new Error("koppelSelectie: nog niet geïmplementeerd voor werkindeling");
+}
+async function ontkoppelSelectieMetVerdeling(_selectieGroepId: string, _doelTeamId: string) {
+  throw new Error("ontkoppelSelectieMetVerdeling: nog niet geïmplementeerd voor werkindeling");
+}
+async function updateSelectieNaam(_selectieGroepId: string, _naam: string) {
+  throw new Error("updateSelectieNaam: nog niet geïmplementeerd voor werkindeling");
+}
 
 export interface VerdeelData {
   groepId: string;

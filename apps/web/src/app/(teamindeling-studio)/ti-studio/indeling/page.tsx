@@ -1,23 +1,50 @@
 export const dynamic = "force-dynamic";
 
-import { redirect } from "next/navigation";
-import { getWerkindelingVoorSeizoen } from "./actions";
+import { getOfMaakWerkindelingVoorSeizoen } from "./actions";
 import { getActiefSeizoen } from "@/lib/teamindeling/seizoen";
 import { getBlauwdruk } from "@/app/(teamindeling-studio)/ti-studio/blauwdruk/actions";
-import { getSpelerBasisData } from "@/app/(teamindeling-studio)/ti-studio/scenarios/wizard-actions";
-import NieuwScenarioWizard from "@/components/teamindeling/scenarios/NieuwScenarioWizard";
 
 export default async function IndelingPage() {
-  const werkindeling = await getWerkindelingVoorSeizoen();
+  const werkindeling = await getOfMaakWerkindelingVoorSeizoen("systeem");
 
-  // Als er een werkindeling is, ga direct naar de editor
   if (werkindeling) {
-    redirect(`/ti-studio/scenarios/${werkindeling.id}`);
+    // Werkindeling gevonden of aangemaakt — toon basisinfo
+    // In Task 4 wordt hier de volledige editor getoond
+    return (
+      <div
+        style={{
+          padding: "2rem",
+        }}
+      >
+        <h1
+          style={{
+            fontSize: "1.5rem",
+            fontWeight: 700,
+            color: "var(--text-primary)",
+            marginBottom: "0.5rem",
+          }}
+        >
+          {werkindeling.naam}
+        </h1>
+        <p style={{ color: "var(--text-secondary)" }}>
+          Seizoen {werkindeling.blauwdruk?.seizoen} &middot; Status: {werkindeling.status}
+        </p>
+        <p
+          style={{
+            marginTop: "1rem",
+            fontSize: "0.875rem",
+            color: "var(--text-tertiary)",
+          }}
+        >
+          Editor wordt geladen in Task 4.
+        </p>
+      </div>
+    );
   }
 
-  // Geen werkindeling — toon onboarding
+  // Geen blauwdruk — toon melding
   const seizoen = await getActiefSeizoen();
-  const [blauwdruk, spelers] = await Promise.all([getBlauwdruk(seizoen), getSpelerBasisData()]);
+  const blauwdruk = await getBlauwdruk(seizoen).catch(() => null);
 
   return (
     <div
@@ -48,19 +75,17 @@ export default async function IndelingPage() {
             marginBottom: "0.5rem",
           }}
         >
-          Nog geen werkindeling
+          Geen blauwdruk gevonden
         </h2>
         <p
           style={{
             fontSize: "0.875rem",
             color: "var(--text-secondary)",
-            marginBottom: "1.5rem",
           }}
         >
-          Start de werkindeling vanuit de blauwdruk. Dit wordt de teamindeling waar het hele seizoen
-          aan gewerkt wordt.
+          Maak eerst een blauwdruk aan voor seizoen {seizoen} via het beheer-paneel.
+          {blauwdruk && ` (blauwdruk ID: ${blauwdruk.id})`}
         </p>
-        <NieuwScenarioWizard blauwdrukId={blauwdruk.id} spelers={spelers} bestaandeScenarios={[]} />
       </div>
     </div>
   );

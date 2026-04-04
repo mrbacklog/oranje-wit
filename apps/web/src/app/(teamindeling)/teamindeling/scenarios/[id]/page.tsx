@@ -8,19 +8,19 @@ interface Props {
   params: Promise<{ id: string }>;
 }
 
-export default async function ScenarioDetail({ params }: Props) {
+export default async function WerkindelingDetail({ params }: Props) {
   const { id } = await params;
 
-  const scenario = await prisma.scenario.findUnique({
+  const werkindeling = await prisma.werkindeling.findUnique({
     where: { id },
     include: {
-      concept: {
-        select: { naam: true },
+      blauwdruk: {
+        select: { seizoen: true },
       },
     },
   });
 
-  if (!scenario || scenario.verwijderdOp) notFound();
+  if (!werkindeling || werkindeling.verwijderdOp) notFound();
 
   return (
     <div style={{ padding: "1rem" }}>
@@ -28,7 +28,7 @@ export default async function ScenarioDetail({ params }: Props) {
         href="/teamindeling/scenarios"
         style={{ color: "var(--text-secondary)", fontSize: "0.875rem", textDecoration: "none" }}
       >
-        &larr; Terug naar scenario&apos;s
+        &larr; Terug naar werkindeling
       </Link>
 
       <h1
@@ -40,14 +40,14 @@ export default async function ScenarioDetail({ params }: Props) {
           marginBottom: "0.25rem",
         }}
       >
-        {scenario.naam}
+        {werkindeling.naam}
       </h1>
 
       <div style={{ color: "var(--text-secondary)", marginBottom: "1.5rem" }}>
-        {scenario.concept.naam} &middot; {scenario.status}
+        {werkindeling.blauwdruk.seizoen} &middot; {werkindeling.status}
       </div>
 
-      {scenario.toelichting && (
+      {werkindeling.toelichting && (
         <div
           style={{
             padding: "1rem",
@@ -65,7 +65,7 @@ export default async function ScenarioDetail({ params }: Props) {
           >
             Toelichting
           </div>
-          <div style={{ color: "var(--text-primary)" }}>{scenario.toelichting}</div>
+          <div style={{ color: "var(--text-primary)" }}>{werkindeling.toelichting}</div>
         </div>
       )}
 
@@ -77,7 +77,7 @@ export default async function ScenarioDetail({ params }: Props) {
         }}
       >
         <p style={{ color: "var(--text-tertiary)" }}>
-          Teamoverzicht (carousel) en spelersplaatsing worden hier toegevoegd.
+          Teamoverzicht en spelersplaatsing worden hier toegevoegd.
         </p>
       </div>
     </div>

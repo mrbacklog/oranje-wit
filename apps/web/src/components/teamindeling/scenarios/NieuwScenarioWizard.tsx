@@ -1,11 +1,20 @@
 "use client";
 
 import { useState, useCallback, useMemo } from "react";
-import {
-  createScenarioVanuitBlauwdruk,
-  createLeegScenario,
-  kopieerScenario,
-} from "@/app/(teamindeling-studio)/ti-studio/scenarios/wizard-actions";
+// Tijdelijke stubs — worden in Task 4 vervangen door werkindeling wizard-actions
+async function createScenarioVanuitBlauwdruk(
+  _blauwdrukId: string,
+  _naam: string,
+  _data: any
+): Promise<string> {
+  throw new Error("createScenarioVanuitBlauwdruk: nog niet geïmplementeerd voor werkindeling");
+}
+async function createLeegScenario(_blauwdrukId: string, _naam: string): Promise<string> {
+  throw new Error("createLeegScenario: nog niet geïmplementeerd voor werkindeling");
+}
+async function kopieerScenario(_scenarioId: string, _naam: string): Promise<string> {
+  throw new Error("kopieerScenario: nog niet geïmplementeerd voor werkindeling");
+}
 import { berekenBTeamVoorstel, berekenLeeftijdVerdeling } from "@/lib/teamindeling/teamstructuur";
 import type { SpelerBasis, ACatConfig, BTeamVoorstel } from "@/lib/teamindeling/teamstructuur";
 import { PEILJAAR } from "@oranje-wit/types";

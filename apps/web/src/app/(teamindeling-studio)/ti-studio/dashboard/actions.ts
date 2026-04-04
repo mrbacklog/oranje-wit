@@ -11,7 +11,7 @@ export async function getMijlpalen() {
   });
 }
 
-export async function getScenarioOverzicht() {
+export async function getWerkindelingOverzicht() {
   const seizoen = await getActiefSeizoen();
   const blauwdruk = await prisma.blauwdruk.findFirst({
     where: { seizoen },
@@ -19,8 +19,8 @@ export async function getScenarioOverzicht() {
   });
   if (!blauwdruk) return [];
 
-  return prisma.scenario.findMany({
-    where: { concept: { blauwdrukId: blauwdruk.id }, verwijderdOp: null },
+  return prisma.werkindeling.findMany({
+    where: { blauwdrukId: blauwdruk.id, verwijderdOp: null },
     select: {
       id: true,
       naam: true,

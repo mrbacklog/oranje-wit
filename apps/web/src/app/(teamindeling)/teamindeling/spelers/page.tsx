@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { prisma } from "@/lib/teamindeling/db/prisma";
 import { getActiefSeizoen } from "@/lib/teamindeling/seizoen";
+import { getWerkindelingId } from "@/lib/teamindeling/db/werkindeling";
 import { PEILJAAR, PEILDATUM } from "@oranje-wit/types";
 import {
   SpelersOverzicht,
@@ -46,28 +47,32 @@ export default async function SpelersPage() {
   });
 
   // Haal werkindeling op voor teamnaam-mapping
-  const werkindeling = await prisma.scenario.findFirst({
-    where: {
-      isWerkindeling: true,
-      concept: { blauwdruk: { seizoen } },
-    },
-    select: {
-      versies: {
-        orderBy: { nummer: "desc" },
-        take: 1,
+  const blauwdruk = await prisma.blauwdruk.findUnique({
+    where: { seizoen },
+    select: { id: true },
+  });
+  const werkindelingId = blauwdruk ? await getWerkindelingId(blauwdruk.id) : null;
+  const werkindeling = werkindelingId
+    ? await prisma.werkindeling.findUnique({
+        where: { id: werkindelingId },
         select: {
-          teams: {
+          versies: {
+            orderBy: { nummer: "desc" },
+            take: 1,
             select: {
-              naam: true,
-              spelers: {
-                select: { spelerId: true },
+              teams: {
+                select: {
+                  naam: true,
+                  spelers: {
+                    select: { spelerId: true },
+                  },
+                },
               },
             },
           },
         },
-      },
-    },
-  });
+      })
+    : null;
 
   // Bouw speler -> teamnaam lookup
   const spelerTeamMap = new Map<string, string>();

@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { prisma } from "@/lib/teamindeling/db/prisma";
 import { getActiefSeizoen } from "@/lib/teamindeling/seizoen";
+import { getWerkindelingId } from "@/lib/teamindeling/db/werkindeling";
 import {
   WerkindelingView,
   type WerkTeamItem,
@@ -23,34 +24,37 @@ function mapKleur(kleur: string | null): string | null {
 export default async function ScenariosOverview() {
   const seizoen = await getActiefSeizoen();
 
-  const werkindeling = await prisma.scenario.findFirst({
-    where: {
-      isWerkindeling: true,
-      concept: { blauwdruk: { seizoen } },
-      verwijderdOp: null,
-    },
-    select: {
-      naam: true,
-      status: true,
-      versies: {
-        orderBy: { nummer: "desc" },
-        take: 1,
+  const blauwdruk = await prisma.blauwdruk.findUnique({
+    where: { seizoen },
+    select: { id: true },
+  });
+  const werkindelingId = blauwdruk ? await getWerkindelingId(blauwdruk.id) : null;
+  const werkindeling = werkindelingId
+    ? await prisma.werkindeling.findUnique({
+        where: { id: werkindelingId, verwijderdOp: null },
         select: {
-          teams: {
-            orderBy: { volgorde: "asc" },
+          naam: true,
+          status: true,
+          versies: {
+            orderBy: { nummer: "desc" },
+            take: 1,
             select: {
-              id: true,
-              naam: true,
-              categorie: true,
-              kleur: true,
-              teamType: true,
-              _count: { select: { spelers: true } },
+              teams: {
+                orderBy: { volgorde: "asc" },
+                select: {
+                  id: true,
+                  naam: true,
+                  categorie: true,
+                  kleur: true,
+                  teamType: true,
+                  _count: { select: { spelers: true } },
+                },
+              },
             },
           },
         },
-      },
-    },
-  });
+      })
+    : null;
 
   if (!werkindeling) {
     return (

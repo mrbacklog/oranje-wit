@@ -48,21 +48,17 @@ export async function valideerWhatIfVoorToepassen(
       },
       werkindeling: {
         select: {
-          concept: {
+          blauwdrukId: true,
+          blauwdruk: {
             select: {
-              blauwdrukId: true,
-              blauwdruk: {
+              kaders: true,
+              pins: {
                 select: {
-                  kaders: true,
-                  pins: {
-                    select: {
-                      id: true,
-                      type: true,
-                      spelerId: true,
-                      stafId: true,
-                      waarde: true,
-                    },
-                  },
+                  id: true,
+                  type: true,
+                  spelerId: true,
+                  stafId: true,
+                  waarde: true,
                 },
               },
             },
@@ -89,6 +85,7 @@ export async function valideerWhatIfVoorToepassen(
   });
 
   const huidigeVersie = whatIf.werkindeling.versies[0];
+
   if (!huidigeVersie) {
     throw new Error("Werkindeling heeft geen versie");
   }
@@ -136,18 +133,16 @@ export async function valideerWhatIfVoorToepassen(
   const spelerLookup = await laadSpelerLookup([...alleSpelerIds]);
 
   // Bouw pin-data
-  const pins: PinDataVoorValidatie[] = (whatIf.werkindeling.concept.blauwdruk.pins ?? []).map(
-    (p: any) => ({
-      id: p.id,
-      type: p.type,
-      spelerId: p.spelerId,
-      stafId: p.stafId,
-      waarde: p.waarde as { teamNaam: string; teamId: string },
-    })
-  );
+  const pins: PinDataVoorValidatie[] = (whatIf.werkindeling.blauwdruk.pins ?? []).map((p: any) => ({
+    id: p.id,
+    type: p.type,
+    spelerId: p.spelerId,
+    stafId: p.stafId,
+    waarde: p.waarde as { teamNaam: string; teamId: string },
+  }));
 
   // Blauwdruk-kaders
-  const kaders = whatIf.werkindeling.concept.blauwdruk.kaders as BlauwdrukKaders | null;
+  const kaders = whatIf.werkindeling.blauwdruk.kaders as BlauwdrukKaders | null;
 
   // Teamaantal-kaders extraheren uit blauwdruk kaders (als beschikbaar)
   const teamAantalKaders = extractTeamAantalKaders(kaders);

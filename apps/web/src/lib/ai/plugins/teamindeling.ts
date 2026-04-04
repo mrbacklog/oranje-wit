@@ -86,33 +86,24 @@ export const teamindelingTools = {
         };
       }
 
-      const concepten = await prisma.concept.findMany({
-        where: { blauwdrukId: blauwdruk.id },
-        select: { naam: true, status: true },
-      });
-
-      const scenarioRijen = await prisma.scenario.findMany({
-        where: { concept: { blauwdrukId: blauwdruk.id } },
+      const werkindelingen = await prisma.werkindeling.findMany({
+        where: { blauwdrukId: blauwdruk.id, verwijderdOp: null },
         select: {
           naam: true,
           status: true,
-          isWerkindeling: true,
-          concept: { select: { naam: true } },
         },
       });
 
-      const scenarios = scenarioRijen.map((s) => ({
-        naam: s.naam,
-        concept: s.concept.naam,
-        status: s.status,
-        isWerkindeling: s.isWerkindeling,
+      const scenarios = werkindelingen.map((w) => ({
+        naam: w.naam,
+        status: w.status,
       }));
 
       return {
         seizoen: HUIDIG_SEIZOEN,
         blauwdruk: {
           id: blauwdruk.id,
-          aantalConcepten: concepten.length,
+          aantalWerkindelingen: werkindelingen.length,
           aantalScenarios: scenarios.length,
           createdAt: blauwdruk.created_at,
         },

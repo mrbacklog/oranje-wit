@@ -56,7 +56,7 @@ export async function berekenWhatIfImpact(whatIfId: string): Promise<ImpactSamen
   });
 
   // 2. Laad de werkindeling met huidige versie teams + spelers + staf
-  const werkindeling = await prisma.scenario.findUniqueOrThrow({
+  const werkindeling = await prisma.werkindeling.findUniqueOrThrow({
     where: { id: whatIf.werkindelingId },
     select: {
       versies: {

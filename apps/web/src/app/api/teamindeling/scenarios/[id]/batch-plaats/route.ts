@@ -38,8 +38,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
     const { teamNaam, filter, dryRun } = parsed.data;
 
-    // Zoek scenario + laatste versie + teams
-    const scenario = await prisma.scenario.findUnique({
+    // Zoek werkindeling + laatste versie + teams
+    const scenario = await prisma.werkindeling.findUnique({
       where: { id: scenarioId },
       select: {
         status: true,

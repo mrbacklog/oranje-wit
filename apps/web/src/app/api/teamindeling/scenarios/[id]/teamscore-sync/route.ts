@@ -11,8 +11,8 @@ export async function POST(_request: Request, { params }: { params: Promise<{ id
   const { id } = await params;
 
   try {
-    // Haal scenario op met laatste versie + teams + spelers
-    const scenario = await prisma.scenario.findUnique({
+    // Haal werkindeling op met laatste versie + teams + spelers
+    const scenario = await prisma.werkindeling.findUnique({
       where: { id },
       include: {
         versies: {

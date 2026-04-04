@@ -13,9 +13,9 @@ export async function POST() {
   }
 
   try {
-    const result = await prisma.scenario.updateMany({
-      where: { isWerkindeling: true },
-      data: { isWerkindeling: false },
+    const result = await prisma.werkindeling.updateMany({
+      where: {},
+      data: { verwijderdOp: new Date() },
     });
 
     return NextResponse.json({

@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { prisma } from "@/lib/teamindeling/db/prisma";
 import { getActiefSeizoen } from "@/lib/teamindeling/seizoen";
+import { getWerkindelingId } from "@/lib/teamindeling/db/werkindeling";
 import {
   MobileDashboard,
   type WerkindelingData,
@@ -20,34 +21,37 @@ function getTarget(spelvorm: string | null): number {
 export default async function TeamIndelingMobileDashboard() {
   const seizoen = await getActiefSeizoen();
 
-  const werkindeling = await prisma.scenario.findFirst({
-    where: {
-      isWerkindeling: true,
-      concept: { blauwdruk: { seizoen } },
-      verwijderdOp: null,
-    },
-    select: {
-      naam: true,
-      status: true,
-      updatedAt: true,
-      versies: {
-        orderBy: { nummer: "desc" },
-        take: 1,
+  const blauwdruk = await prisma.blauwdruk.findUnique({
+    where: { seizoen },
+    select: { id: true },
+  });
+  const werkindelingId = blauwdruk ? await getWerkindelingId(blauwdruk.id) : null;
+  const werkindeling = werkindelingId
+    ? await prisma.werkindeling.findUnique({
+        where: { id: werkindelingId },
         select: {
-          teams: {
-            orderBy: { volgorde: "asc" },
+          naam: true,
+          status: true,
+          updatedAt: true,
+          versies: {
+            orderBy: { nummer: "desc" },
+            take: 1,
             select: {
-              id: true,
-              naam: true,
-              categorie: true,
-              kleur: true,
-              _count: { select: { spelers: true } },
+              teams: {
+                orderBy: { volgorde: "asc" },
+                select: {
+                  id: true,
+                  naam: true,
+                  categorie: true,
+                  kleur: true,
+                  _count: { select: { spelers: true } },
+                },
+              },
             },
           },
         },
-      },
-    },
-  });
+      })
+    : null;
 
   // Haal OWTeams op voor "Mijn teams" sectie
   const owTeams = await prisma.oWTeam.findMany({

@@ -83,15 +83,11 @@ export async function pasWhatIfToe(whatIfId: string, toelichtingAfwijking?: stri
     throw new Error(`What-if heeft status "${whatIf.status}", kan niet worden toegepast`);
   }
 
-  const werkindeling = await prisma.scenario.findUniqueOrThrow({
+  const werkindeling = await prisma.werkindeling.findUniqueOrThrow({
     where: { id: whatIf.werkindelingId },
     select: {
       id: true,
-      concept: {
-        select: {
-          blauwdruk: { select: { id: true } },
-        },
-      },
+      blauwdruk: { select: { id: true } },
       versies: {
         orderBy: { nummer: "desc" as const },
         take: 1,
@@ -142,9 +138,10 @@ export async function pasWhatIfToe(whatIfId: string, toelichtingAfwijking?: stri
     // 1. Maak nieuwe versie
     const nieuweVersie = await tx.versie.create({
       data: {
-        scenarioId: whatIf.werkindelingId,
+        werkindelingId: whatIf.werkindelingId,
         nummer: huidigeVersie.nummer + 1,
-        beschrijving: `What-if toegepast: "${whatIf.vraag}"`,
+        naam: `What-if toegepast: "${whatIf.vraag}"`,
+        auteur: "systeem",
       },
     });
 
@@ -171,7 +168,7 @@ export async function pasWhatIfToe(whatIfId: string, toelichtingAfwijking?: stri
 
     // 5. Log afwijkingen als BlauwdrukBesluit (als er afwijkingen waren)
     if (validatie.heeftAfwijkingen && toelichtingAfwijking) {
-      const blauwdrukId = werkindeling.concept?.blauwdruk?.id;
+      const blauwdrukId = werkindeling.blauwdruk?.id;
       if (blauwdrukId) {
         const session = await requireTC();
         const user = await tx.user.upsert({

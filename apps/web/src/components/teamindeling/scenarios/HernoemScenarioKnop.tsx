@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition, useRef, useEffect } from "react";
-import { updateScenarioNaam } from "@/app/(teamindeling-studio)/ti-studio/scenarios/actions";
+import { hernoem as updateScenarioNaam } from "@/app/(teamindeling-studio)/ti-studio/indeling/werkindeling-actions";
 
 interface HernoemScenarioKnopProps {
   scenarioId: string;

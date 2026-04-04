@@ -1,7 +1,12 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { deleteScenario } from "@/app/(teamindeling-studio)/ti-studio/scenarios/actions";
+import { verwijderWerkindeling } from "@/app/(teamindeling-studio)/ti-studio/indeling/werkindeling-actions";
+
+// Adapter: verwijderWerkindeling verwacht ook auteur, hier gebruiken we systeem als placeholder
+async function deleteScenario(werkindelingId: string) {
+  await verwijderWerkindeling(werkindelingId, "systeem");
+}
 
 interface VerwijderScenarioKnopProps {
   scenarioId: string;

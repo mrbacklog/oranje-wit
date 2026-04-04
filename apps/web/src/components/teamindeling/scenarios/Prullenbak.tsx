@@ -1,10 +1,14 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import {
-  herstelScenario,
-  definitiefVerwijderScenario,
-} from "@/app/(teamindeling-studio)/ti-studio/scenarios/actions";
+// Tijdelijke stubs voor prullenbak-functies — worden in Task 4 geïmplementeerd
+async function herstelScenario(_id: string) {
+  // TODO Task 4: implementeren als werkindeling herstel (verwijderdOp: null)
+}
+
+async function definitiefVerwijderScenario(_id: string) {
+  // TODO Task 4: implementeren als werkindeling hard delete
+}
 
 interface VerwijderdScenario {
   id: string;

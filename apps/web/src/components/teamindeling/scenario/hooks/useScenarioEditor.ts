@@ -7,19 +7,29 @@ import type { ScenarioData, SpelerData, TeamData, SelectieGroepData, PinData } f
 import { PEILJAAR } from "../types";
 import { useValidatie } from "@/hooks/teamindeling/useValidatie";
 import type { TeamUpdateData } from "../TeamEditPanel";
-import { createTeam } from "@/app/(teamindeling-studio)/ti-studio/scenarios/actions";
-import {
-  deleteTeam,
-  updateTeam,
-  updateTeamType,
-} from "@/app/(teamindeling-studio)/ti-studio/scenarios/team-actions";
-import { updateTeamVolgorde } from "@/app/(teamindeling-studio)/ti-studio/scenarios/team-volgorde-actions";
 import { useSelectieHandlers, type VerdeelData } from "./useSelectieHandlers";
 import {
-  getPinsVoorScenario,
+  getPinsVoorWerkindeling as getPinsVoorScenario,
   createPin,
   deletePin,
 } from "@/app/(teamindeling-studio)/ti-studio/pins/actions";
+
+// Tijdelijke stubs — worden in Task 4 vervangen door werkindeling team-actions
+async function createTeam(_versieId: string, _data: { naam: string; categorie: any; kleur?: any }) {
+  throw new Error("createTeam: nog niet geïmplementeerd voor werkindeling");
+}
+async function deleteTeam(_teamId: string) {
+  throw new Error("deleteTeam: nog niet geïmplementeerd voor werkindeling");
+}
+async function updateTeam(_teamId: string, _data: any) {
+  throw new Error("updateTeam: nog niet geïmplementeerd voor werkindeling");
+}
+async function updateTeamType(_teamId: string, _teamType: any) {
+  throw new Error("updateTeamType: nog niet geïmplementeerd voor werkindeling");
+}
+async function updateTeamVolgorde(_versieId: string, _volgorde: any) {
+  throw new Error("updateTeamVolgorde: nog niet geïmplementeerd voor werkindeling");
+}
 
 export function useScenarioEditor(scenario: ScenarioData, alleSpelers: SpelerData[]) {
   const laatsteVersie = scenario.versies[0];

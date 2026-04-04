@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { prisma } from "@/lib/teamindeling/db/prisma";
 import { getActiefSeizoen } from "@/lib/teamindeling/seizoen";
+import { getWerkindelingId } from "@/lib/teamindeling/db/werkindeling";
 import {
   TeamsOverzicht,
   type TeamItem,
@@ -10,29 +11,33 @@ import {
 export default async function TeamsPage() {
   const seizoen = await getActiefSeizoen();
 
-  // Haal werkindeling op (scenario met isWerkindeling=true) voor spelerscounts
-  const werkindeling = await prisma.scenario.findFirst({
-    where: {
-      isWerkindeling: true,
-      concept: { blauwdruk: { seizoen } },
-    },
-    select: {
-      versies: {
-        orderBy: { nummer: "desc" },
-        take: 1,
+  // Haal werkindeling op voor spelerscounts
+  const blauwdruk = await prisma.blauwdruk.findUnique({
+    where: { seizoen },
+    select: { id: true },
+  });
+  const werkindelingId = blauwdruk ? await getWerkindelingId(blauwdruk.id) : null;
+  const werkindeling = werkindelingId
+    ? await prisma.werkindeling.findUnique({
+        where: { id: werkindelingId },
         select: {
-          teams: {
+          versies: {
+            orderBy: { nummer: "desc" },
+            take: 1,
             select: {
-              naam: true,
-              kleur: true,
-              categorie: true,
-              _count: { select: { spelers: true } },
+              teams: {
+                select: {
+                  naam: true,
+                  kleur: true,
+                  categorie: true,
+                  _count: { select: { spelers: true } },
+                },
+              },
             },
           },
         },
-      },
-    },
-  });
+      })
+    : null;
 
   // Maak een lookup: teamnaam -> spelercount uit werkindeling
   const werkindelingCounts = new Map<string, number>();

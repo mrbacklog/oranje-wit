@@ -81,18 +81,14 @@ export async function deletePin(pinId: string) {
   return prisma.pin.delete({ where: { id: pinId } });
 }
 
-export async function getPinsVoorScenario(scenarioId: string) {
-  const scenario = await prisma.scenario.findUniqueOrThrow({
-    where: { id: scenarioId },
-    select: {
-      concept: {
-        select: { blauwdrukId: true },
-      },
-    },
+export async function getPinsVoorWerkindeling(werkindelingId: string) {
+  const werkindeling = await prisma.werkindeling.findUniqueOrThrow({
+    where: { id: werkindelingId },
+    select: { blauwdrukId: true },
   });
 
   return prisma.pin.findMany({
-    where: { blauwdrukId: scenario.concept.blauwdrukId },
+    where: { blauwdrukId: werkindeling.blauwdrukId },
     include: pinInclude,
     orderBy: { gepindOp: "desc" },
   });

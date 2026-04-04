@@ -14,7 +14,7 @@ import {
   GRID_SNAP,
   getCardSize,
 } from "../editor/cardSizes";
-import { savePosities } from "@/app/(teamindeling-studio)/ti-studio/scenarios/actions";
+import { slaPositiesOp as savePosities } from "@/app/(teamindeling-studio)/ti-studio/indeling/werkindeling-actions";
 
 // ---------------------------------------------------------------------------
 // Types

@@ -9,7 +9,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
   try {
     const { id } = await params;
 
-    const scenario = await prisma.scenario.findUnique({
+    const scenario = await prisma.werkindeling.findUnique({
       where: { id },
       select: {
         versies: {

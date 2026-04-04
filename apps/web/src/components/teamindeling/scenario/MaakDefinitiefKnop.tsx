@@ -1,7 +1,13 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { markeerDefinitief } from "@/app/(teamindeling-studio)/ti-studio/scenarios/actions";
+import { hernoem } from "@/app/(teamindeling-studio)/ti-studio/indeling/werkindeling-actions";
+
+// Tijdelijke stub voor markeerDefinitief — wordt in Task 4 vervangen door werkindeling-status actie
+async function markeerDefinitief(werkindelingId: string) {
+  // Placeholder: in Task 4 implementeren als werkindeling status → DEFINITIEF
+  void werkindelingId;
+}
 
 interface MaakDefinitiefKnopProps {
   scenarioId: string;
