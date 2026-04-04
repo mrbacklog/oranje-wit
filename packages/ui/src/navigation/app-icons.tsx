@@ -76,15 +76,15 @@ export const APP_META: Record<
     accent: APP_ACCENTS.monitor,
   },
   "team-indeling": {
-    name: "Teams",
-    description: "Teamindeling",
+    name: "Teamindeling",
+    description: "Mobiele werkplek",
     url: "/teamindeling",
     accent: APP_ACCENTS["team-indeling"],
   },
   "ti-studio": {
     name: "TI Studio",
-    description: "Werkplaats teamindeling",
-    url: "/ti-studio/indeling",
+    description: "Desktop werkplaats",
+    url: "/ti-studio",
     accent: APP_ACCENTS["ti-studio"],
   },
   evaluatie: {

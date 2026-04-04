@@ -33,7 +33,7 @@ const APPS: AppDef[] = [
     zichtbaar: (c) => c.isTC,
   },
   {
-    naam: "Teams",
+    naam: "Teamindeling",
     route: "/teamindeling",
     accent: "#3b82f6",
     appId: "team-indeling",
@@ -43,7 +43,7 @@ const APPS: AppDef[] = [
     naam: "TI Studio",
     route: "/ti-studio",
     accent: "#6366f1",
-    appId: "team-indeling",
+    appId: "ti-studio",
     zichtbaar: (c) => c.isTC,
   },
   {

@@ -202,7 +202,7 @@ export async function HubTC() {
         <div className="grid grid-cols-3 gap-2">
           {[
             { label: "Monitor", href: "/monitor", kleur: "#22c55e" },
-            { label: "Teamindeling", href: "/ti-studio", kleur: "#3b82f6" },
+            { label: "TI Studio", href: "/ti-studio", kleur: "#6366f1" },
             { label: "Beheer", href: "/beheer", kleur: "#9ca3af" },
           ].map((link) => (
             <a
