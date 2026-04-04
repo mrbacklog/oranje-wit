@@ -25,6 +25,7 @@ import WhatIfToolbar from "./WhatIfToolbar";
 import WhatIfFooter from "./WhatIfFooter";
 import WhatIfSidebar from "./WhatIfSidebar";
 import { useWhatIf } from "../hooks/useWhatIf";
+import VersiesDrawer from "@/components/teamindeling/werkindeling/VersiesDrawer";
 
 interface ScenarioEditorFullscreenProps {
   scenario: ScenarioData;
@@ -53,6 +54,7 @@ export default function ScenarioEditorFullscreen({
   const [werkbordOpen, setWerkbordOpen] = useState(false);
   const [whatIfOpen, setWhatIfOpen] = useState(false);
   const [whatIfDialoogOpen, setWhatIfDialoogOpen] = useState(false);
+  const [versiesOpen, setVersiesOpen] = useState(false);
   const syncLockRef = useRef(false);
 
   const whatIf = useWhatIf({ teams: editor.teams, onRefreshTeams: editor.refreshTeams });
@@ -70,8 +72,7 @@ export default function ScenarioEditorFullscreen({
         method: "POST",
       });
       if (res.ok) {
-        const data = await res.json();
-        logger.info("Teamscores gesynchroniseerd:", data);
+        logger.info("Teamscores gesynchroniseerd:", await res.json());
         editor.refreshTeams();
       }
     } catch (error) {
@@ -82,31 +83,24 @@ export default function ScenarioEditorFullscreen({
     }
   }, [scenario.id, editor]);
 
-  // Build card info for free-form positioning
+  // Card info voor vrije positionering — selectie-groepen als één kaart
   const cardInfos: CardInfo[] = useMemo(() => {
-    const zichtbareTeams = editor.teams.filter((t) => editor.zichtbaar.has(t.id));
     const seen = new Set<string>();
-    const infos: CardInfo[] = [];
-
-    for (const team of zichtbareTeams) {
-      if (team.selectieGroepId) {
-        if (!seen.has(team.selectieGroepId)) {
+    return editor.teams
+      .filter((t) => editor.zichtbaar.has(t.id))
+      .reduce<CardInfo[]>((acc, team) => {
+        if (team.selectieGroepId && !seen.has(team.selectieGroepId)) {
           seen.add(team.selectieGroepId);
-          infos.push({
+          acc.push({
             id: `selectie-${team.selectieGroepId}`,
             teamType: "ACHTAL",
             isSelectie: true,
           });
+        } else if (!team.selectieGroepId) {
+          acc.push({ id: team.id, teamType: team.teamType ?? "ACHTAL", isSelectie: false });
         }
-      } else {
-        infos.push({
-          id: team.id,
-          teamType: team.teamType ?? "ACHTAL",
-          isSelectie: false,
-        });
-      }
-    }
-    return infos;
+        return acc;
+      }, []);
   }, [editor.teams, editor.zichtbaar]);
 
   const { positions, updatePosition } = useCardPositions(
@@ -154,13 +148,26 @@ export default function ScenarioEditorFullscreen({
   const showPoolDrawer = poolOpen && !editor.editTeamId;
   const showEditDrawer = !!editor.editTeamId;
 
-  // Preview: selectieGroepMap voor ViewWerkgebied
+  // Preview: selectieGroepMap
   const selectieGroepMap = useMemo(() => {
-    const laatsteVersie = scenario.versies[0];
     const m = new Map<string, SelectieGroepData>();
-    for (const sg of laatsteVersie?.selectieGroepen ?? []) m.set(sg.id, sg);
+    for (const sg of scenario.versies[0]?.selectieGroepen ?? []) m.set(sg.id, sg);
     return m;
   }, [scenario.versies]);
+
+  // Versie-rijen voor VersiesDrawer (hoogste nummer = huidig)
+  const versieRijen = useMemo(
+    () =>
+      (scenario.versies as any[]).map((v: any, i: number) => ({
+        id: v.id,
+        nummer: v.nummer,
+        naam: v.naam ?? null,
+        auteur: v.auteur,
+        createdAt: v.createdAt instanceof Date ? v.createdAt.toISOString() : String(v.createdAt),
+        isHuidig: i === 0,
+      })),
+    [scenario.versies]
+  );
 
   // Preview: validatie
   const blauwdrukKaders = useMemo(
@@ -184,17 +191,16 @@ export default function ScenarioEditorFullscreen({
 
   // --- Mobile mode ---
   if (isMobile && !isPreview) {
-    return (
-      <Suspense
-        fallback={
-          <div
-            className="fixed inset-0 z-40 flex items-center justify-center"
-            style={{ backgroundColor: "var(--surface-page, #0f1115)" }}
-          >
-            <div style={{ color: "var(--text-tertiary, #6b7280)" }}>Laden...</div>
-          </div>
-        }
+    const fallback = (
+      <div
+        className="fixed inset-0 z-40 flex items-center justify-center"
+        style={{ backgroundColor: "var(--surface-page, #0f1115)" }}
       >
+        <div style={{ color: "var(--text-tertiary, #6b7280)" }}>Laden...</div>
+      </div>
+    );
+    return (
+      <Suspense fallback={fallback}>
         <MobileScenarioEditor
           scenario={scenario}
           alleSpelers={alleSpelers}
@@ -228,8 +234,8 @@ export default function ScenarioEditorFullscreen({
         onSyncScores={handleSyncScores}
         onToggleMode={toggleMode}
         onRepositionCard={updatePosition}
-        onSpelerClick={(speler) => {
-          editor.setDetailSpeler(speler);
+        onSpelerClick={(s) => {
+          editor.setDetailSpeler(s);
           editor.setDetailTeamId(null);
         }}
         onTogglePin={editor.handleTogglePin}
@@ -339,9 +345,11 @@ export default function ScenarioEditorFullscreen({
               rapportPinned={rapportPinned}
               werkbordOpen={werkbordOpen}
               whatIfOpen={whatIfOpen}
+              versiesOpen={versiesOpen}
               onOpenRapport={() => setRapportOpen(true)}
               onOpenWerkbord={() => setWerkbordOpen(true)}
               onOpenWhatIf={() => setWhatIfOpen(true)}
+              onOpenVersies={() => setVersiesOpen(true)}
             />
             <Werkgebied
               teams={editor.teams}
@@ -424,9 +432,15 @@ export default function ScenarioEditorFullscreen({
         werkindelingId={scenario.id}
         teams={editor.teams}
         onClose={() => setWhatIfDialoogOpen(false)}
-        onCreated={() => {
-          setWhatIfOpen(true);
-        }}
+        onCreated={() => setWhatIfOpen(true)}
+      />
+
+      {/* Versies zijbalk (rechts, overlay) */}
+      <VersiesDrawer
+        open={versiesOpen}
+        versies={versieRijen}
+        gebruikerEmail="systeem"
+        onClose={() => setVersiesOpen(false)}
       />
     </div>
   );

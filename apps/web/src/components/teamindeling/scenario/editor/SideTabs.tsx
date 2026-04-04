@@ -40,19 +40,23 @@ interface SideTabsRightProps {
   rapportPinned: boolean;
   werkbordOpen: boolean;
   whatIfOpen: boolean;
+  versiesOpen: boolean;
   onOpenRapport: () => void;
   onOpenWerkbord: () => void;
   onOpenWhatIf: () => void;
+  onOpenVersies: () => void;
 }
 
-/** Rechter side-tabs: Validatie + Werkbord + What-if. */
+/** Rechter side-tabs: Validatie + Werkbord + What-if + Versies. */
 export function SideTabsRight({
   rapportPinned,
   werkbordOpen,
   whatIfOpen,
+  versiesOpen,
   onOpenRapport,
   onOpenWerkbord,
   onOpenWhatIf,
+  onOpenVersies,
 }: SideTabsRightProps) {
   return (
     <div className="absolute top-4 right-0 z-20 flex flex-col gap-2">
@@ -129,6 +133,32 @@ export function SideTabsRight({
           style={{ writingMode: "vertical-rl" }}
         >
           What-if
+        </span>
+      </button>
+
+      {/* Side-tab: Versies */}
+      <button
+        onClick={onOpenVersies}
+        className={`flex flex-col items-center gap-1.5 rounded-l-lg border border-r-0 px-2 py-4 shadow-md transition-colors ${
+          versiesOpen
+            ? "border-orange-300 bg-orange-500 text-white"
+            : "border-orange-200 bg-orange-50 text-orange-600 hover:bg-orange-100"
+        }`}
+        title="Versiegeschiedenis"
+      >
+        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+        <span
+          className="text-[10px] font-semibold tracking-wide uppercase"
+          style={{ writingMode: "vertical-rl" }}
+        >
+          Versies
         </span>
       </button>
     </div>
