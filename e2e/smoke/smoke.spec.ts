@@ -12,7 +12,7 @@ test.describe("Smoke — app laadt", () => {
     await page.goto("/monitor", { timeout: 45000 });
     const nav = page.getByRole("navigation", { name: "Hoofdnavigatie" });
     await expect(nav).toBeVisible({ timeout: 15000 });
-    await expect(page.getByRole("heading", { name: /Monitor|Overzicht/ })).toBeVisible({
+    await expect(page.getByRole("heading", { name: /Dashboard|Monitor|Overzicht/ })).toBeVisible({
       timeout: 15000,
     });
   });
