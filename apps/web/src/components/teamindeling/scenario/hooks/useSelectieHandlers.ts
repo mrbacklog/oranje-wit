@@ -25,13 +25,18 @@ async function removeSpelerFromTeam(_teamId: string, _spelerId: string) {
 async function moveSpeler(_spelerId: string, _vanTeamId: string, _naarTeamId: string) {
   throw new Error("moveSpeler: nog niet geïmplementeerd voor werkindeling");
 }
-async function koppelSelectie(_teamId: string, _data: any) {
+async function koppelSelectie(_teamIds: string[]) {
   throw new Error("koppelSelectie: nog niet geïmplementeerd voor werkindeling");
 }
-async function ontkoppelSelectieMetVerdeling(_selectieGroepId: string, _doelTeamId: string) {
+async function ontkoppelSelectieMetVerdeling(
+  _groepId: string,
+  _spelerVerdeling: Record<string, string[]>,
+  _stafVerdeling: Record<string, string[]>,
+  _alleTeamIds: string[]
+) {
   throw new Error("ontkoppelSelectieMetVerdeling: nog niet geïmplementeerd voor werkindeling");
 }
-async function updateSelectieNaam(_selectieGroepId: string, _naam: string) {
+async function updateSelectieNaam(_selectieGroepId: string, _naam: string | null) {
   throw new Error("updateSelectieNaam: nog niet geïmplementeerd voor werkindeling");
 }
 

@@ -15,7 +15,10 @@ import {
 } from "@/app/(teamindeling-studio)/ti-studio/pins/actions";
 
 // Tijdelijke stubs — worden in Task 4 vervangen door werkindeling team-actions
-async function createTeam(_versieId: string, _data: { naam: string; categorie: any; kleur?: any }) {
+async function createTeam(
+  _versieId: string,
+  _data: { naam: string; categorie: any; kleur?: any }
+): Promise<{ id: string }> {
   throw new Error("createTeam: nog niet geïmplementeerd voor werkindeling");
 }
 async function deleteTeam(_teamId: string) {
