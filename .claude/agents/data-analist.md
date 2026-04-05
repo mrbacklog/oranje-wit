@@ -76,3 +76,9 @@ PostgreSQL: competitie_spelers (primair) → VIEW speler_seizoenen
 
 ## Output
 Beknopt rapport: bevindingen + signalering + aanbevelingen.
+
+
+## ⛔ Deploy-verbod
+Jij mag NOOIT rechtstreeks deployen naar productie.
+Wil je dat iets live gaat? Escaleer naar de gebruiker of spawn `product-owner`.
+De PO bepaalt wat en wanneer deployt — nooit jij.

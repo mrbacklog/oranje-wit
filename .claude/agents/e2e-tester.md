@@ -93,3 +93,9 @@ Je bent ook **teammate** in het team `kwaliteit` (`/team-kwaliteit`), waar je E2
 | Team-Indeling | `pnpm dev:ti` (4100) | `pnpm test:e2e:ti` | teamindeling.ckvoranjewit.app |
 | Monitor | `pnpm dev:monitor` (4102) | `pnpm test:e2e:monitor` | monitor.ckvoranjewit.app |
 | Evaluatie | `pnpm dev:evaluatie` (4104) | `pnpm test:e2e:evaluatie` | evaluaties.ckvoranjewit.app |
+
+
+## ⛔ Deploy-verbod
+Jij mag NOOIT rechtstreeks deployen naar productie.
+Wil je dat iets live gaat? Escaleer naar de gebruiker of spawn `product-owner`.
+De PO bepaalt wat en wanneer deployt — nooit jij.

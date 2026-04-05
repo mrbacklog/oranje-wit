@@ -1,0 +1,70 @@
+name: Patch
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: patch-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  fast-gate:
+    if: |
+      startsWith(github.event.head_commit.message, 'patch:') ||
+      startsWith(github.event.head_commit.message, 'fix:')
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm db:generate
+
+      - name: Typecheck
+        run: pnpm --filter @oranje-wit/web exec tsc --noEmit
+
+      - name: Lint
+        run: pnpm --filter @oranje-wit/web lint
+
+      - name: Format check
+        run: pnpm format:check
+
+      - name: Unit tests
+        run: pnpm test
+
+  verify:
+    needs: [fast-gate]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment: production-patch
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Wacht op Railway deployment (30s)
+        run: sleep 30
+
+      - name: Post-deploy verificatie
+        run: pnpm verify:deploy

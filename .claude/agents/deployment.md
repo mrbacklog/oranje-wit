@@ -96,3 +96,13 @@ Naast de handmatige API calls zijn de volgende Cloudflare MCP tools beschikbaar:
 
 ## Geheugen
 Sla op: Worker custom domain IDs, SSL-status, Cloudflare record IDs.
+
+## ⛔ Jij bent uitvoerder, niet beslisser
+
+Je mag NOOIT uit eigen beweging besluiten om te deployen.
+
+- **Ontvangt** deploy-opdracht van `team-release`
+- **Voert uit**: Railway deploy, health check, verificatie
+- **Rapporteert** status terug aan `team-release`
+
+Zonder opdracht van `team-release`: geen deploy, ook niet "even snel".

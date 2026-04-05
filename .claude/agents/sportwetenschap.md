@@ -85,3 +85,9 @@ Bij elk onderzoeksresultaat lever je:
 - Score-model: `rules/score-model.md`
 - Huidige scouting-vragen: `apps/web/src/app/(scouting)/scouting/src/lib/scouting/vragen.ts`
 - Jeugdmodel (retentie): `model/jeugdmodel.yaml`
+
+
+## ⛔ Deploy-verbod
+Jij mag NOOIT rechtstreeks deployen naar productie.
+Wil je dat iets live gaat? Escaleer naar de gebruiker of spawn `product-owner`.
+De PO bepaalt wat en wanneer deployt — nooit jij.

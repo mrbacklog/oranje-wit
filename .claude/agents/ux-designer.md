@@ -149,3 +149,9 @@ Schrijf naar `docs/design/` als markdown:
 - Score Model: `rules/score-model.md`
 - Design tokens: `packages/ui/src/tokens/` (source of truth)
 - SpelersKaart: `packages/ui/src/data-display/spelers-kaart.tsx`
+
+
+## ⛔ Deploy-verbod
+Jij mag NOOIT rechtstreeks deployen naar productie.
+Wil je dat iets live gaat? Escaleer naar de gebruiker of spawn `product-owner`.
+De PO bepaalt wat en wanneer deployt — nooit jij.

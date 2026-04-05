@@ -12,10 +12,15 @@ on:
         type: boolean
         default: false
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  # ── Job 1: Quality checks ──────────────────────────────────────────────────
+  # ── Job 1: Fast gate (quality checks) ───────────────────────────────────────
   fast-gate:
     runs-on: ubuntu-latest
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
 
@@ -45,9 +50,10 @@ jobs:
       - name: Tests
         run: pnpm test
 
-  # ── Job 2: Build (parallel aan quality) ────────────────────────────────────
+  # ── Job 2: Build (parallel aan fast-gate) ─────────────────────────────────
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     env:
       DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy
       NEXTAUTH_SECRET: ci-build-secret
@@ -81,10 +87,14 @@ jobs:
       - name: Build
         run: pnpm build
 
-  # ── Job 3: E2E Tests (na build, met PostgreSQL service container) ──────────
+  # ── Job 3: E2E Tests (na build + fast-gate, met PostgreSQL service container) ──────────
   e2e:
-    needs: [build]
-    if: github.event_name != 'workflow_dispatch' || inputs.skip_e2e != true
+    needs: [build, fast-gate]
+    timeout-minutes: 30
+    if: |
+      (github.event_name != 'workflow_dispatch' || inputs.skip_e2e != true) &&
+      !startsWith(github.event.head_commit.message, 'patch:') &&
+      !startsWith(github.event.head_commit.message, 'fix:')
     runs-on: ubuntu-latest
     env:
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/oranjewit_test

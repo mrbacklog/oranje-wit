@@ -96,3 +96,9 @@ Per leeftijdsgroep een matrix:
 - Jeugdmodel (retentie): `model/jeugdmodel.yaml`
 - KNKV-regels: `rules/knkv-regels.md`
 - OW-voorkeuren: `rules/ow-voorkeuren.md`
+
+
+## ⛔ Deploy-verbod
+Jij mag NOOIT rechtstreeks deployen naar productie.
+Wil je dat iets live gaat? Escaleer naar de gebruiker of spawn `product-owner`.
+De PO bepaalt wat en wanneer deployt — nooit jij.

@@ -1,0 +1,302 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - "release/**"
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ── Stap 1: Fast gate ──────────────────────────────────────────
+  fast-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm db:generate
+
+      - name: Typecheck
+        run: pnpm --filter @oranje-wit/web exec tsc --noEmit
+
+      - name: Lint
+        run: pnpm --filter @oranje-wit/web lint
+
+      - name: Format check
+        run: pnpm format:check
+
+      - name: Unit tests
+        run: pnpm test
+
+  # ── Stap 2: Build ──────────────────────────────────────────────
+  build:
+    needs: [fast-gate]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy
+      NEXTAUTH_SECRET: ci-build-secret
+      NEXTAUTH_URL: http://localhost:3000
+      ANTHROPIC_API_KEY: sk-dummy-key
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm db:generate
+
+      - uses: actions/cache@v4
+        with:
+          path: apps/web/.next/cache
+          key: nextjs-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('apps/web/src/**', 'packages/*/src/**') }}
+          restore-keys: |
+            nextjs-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-
+            nextjs-${{ runner.os }}-
+
+      - name: Build
+        run: pnpm build
+
+  # ── Stap 3: Smoke E2E ──────────────────────────────────────────
+  smoke-e2e:
+    needs: [build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/oranjewit_test
+      NEXTAUTH_SECRET: e2e-test-secret
+      NEXTAUTH_URL: http://localhost:3000
+      E2E_TEST: "true"
+      AUTH_GOOGLE_ID: dummy
+      AUTH_GOOGLE_SECRET: dummy
+      ANTHROPIC_API_KEY: sk-dummy-key
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: oranjewit_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm db:generate
+
+      - name: Push schema naar test database
+        run: npx prisma db push
+        working-directory: packages/database
+
+      - name: Seed test database
+        run: pnpm dlx tsx e2e/fixtures/seed.ts
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+
+      - name: Install Playwright Chromium
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+
+      - name: Install Playwright deps (cached)
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+
+      - name: Smoke E2E tests
+        run: npx playwright test --project=smoke
+
+      - name: Teardown test database
+        if: always()
+        run: pnpm dlx tsx e2e/fixtures/cleanup.ts
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: smoke-playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+  # ── Stap 4: Full E2E ───────────────────────────────────────────
+  full-e2e:
+    needs: [smoke-e2e]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/oranjewit_test
+      NEXTAUTH_SECRET: e2e-test-secret
+      NEXTAUTH_URL: http://localhost:3000
+      E2E_TEST: "true"
+      AUTH_GOOGLE_ID: dummy
+      AUTH_GOOGLE_SECRET: dummy
+      ANTHROPIC_API_KEY: sk-dummy-key
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: oranjewit_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm db:generate
+
+      - name: Push schema naar test database
+        run: npx prisma db push
+        working-directory: packages/database
+
+      - name: Seed test database
+        run: pnpm dlx tsx e2e/fixtures/seed.ts
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+
+      - name: Install Playwright Chromium
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+
+      - name: Install Playwright deps (cached)
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+
+      - name: Full E2E tests
+        run: npx playwright test --project=web
+
+      - name: Teardown test database
+        if: always()
+        run: pnpm dlx tsx e2e/fixtures/cleanup.ts
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: full-playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+  # ── Stap 5: Deploy — squash-merge naar main ────────────────────
+  deploy:
+    needs: [full-e2e]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: production-release
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Configureer git
+        run: |
+          git config user.email "ci@ckvoranjewit.app"
+          git config user.name "Release Bot"
+
+      - name: Squash-merge release branch naar main
+        run: |
+          BRANCH="${{ github.ref_name }}"
+          git fetch origin main
+          git checkout main
+          git merge --squash "origin/${BRANCH}"
+          git commit -m "release: ${BRANCH} [skip ci]"
+          git push origin main
+
+  # ── Stap 6: Post-deploy verificatie ───────────────────────────
+  verify:
+    needs: [deploy]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Wacht op Railway deployment (60s)
+        run: sleep 60
+
+      - name: Post-deploy verificatie
+        run: pnpm verify:deploy
+
+      - name: Genereer release notes
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: "release-${{ github.run_number }}"
+          release_name: "Release ${{ github.ref_name }}"
+          generate_release_notes: true
+          draft: false
+          prerelease: false

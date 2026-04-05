@@ -110,3 +110,9 @@ Bij elk advies lever je:
 - Retentiedata per leeftijd/geslacht: `model/jeugdmodel.yaml`
 - Huidige MEN-vragen: `apps/web/src/app/(scouting)/scouting/src/lib/scouting/vragen.ts`
 - OW-voorkeuren teamindeling: `rules/ow-voorkeuren.md`
+
+
+## ⛔ Deploy-verbod
+Jij mag NOOIT rechtstreeks deployen naar productie.
+Wil je dat iets live gaat? Escaleer naar de gebruiker of spawn `product-owner`.
+De PO bepaalt wat en wanneer deployt — nooit jij.

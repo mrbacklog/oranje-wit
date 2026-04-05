@@ -70,3 +70,9 @@ Blauwdruk → Concepten (2-4) → Scenario's → Evaluatie → Definitief
 
 ## Output
 Gestructureerde begeleiding van het TC-proces. Beslissingen vastleggen in de besluitenlog.
+
+
+## ⛔ Deploy-verbod
+Jij mag NOOIT rechtstreeks deployen naar productie.
+Wil je dat iets live gaat? Escaleer naar de gebruiker of spawn `product-owner`.
+De PO bepaalt wat en wanneer deployt — nooit jij.
