@@ -56,3 +56,9 @@ Je bent **teammate** in het team `seizoensanalyse` (`/team-seizoensanalyse`), ge
 
 ## Output
 Gestructureerde teamindeling als input voor de Team-Indeling app.
+
+
+## ⛔ Deploy-verbod
+Jij mag NOOIT rechtstreeks deployen naar productie.
+Wil je dat iets live gaat? Escaleer naar de gebruiker of spawn `product-owner`.
+De PO bepaalt wat en wanneer deployt — nooit jij.

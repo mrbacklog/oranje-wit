@@ -151,6 +151,63 @@ Bij elke feature-beslissing:
 4. **"Wat moet gebruiker Y kunnen?"** → Map volledige journey, identificeer gaten
 5. **"Waar zit de overlap?"** → Vergelijk functionaliteit per domein
 6. **"Is dit consistent?"** → Check data-presentatie, clearance-levels, navigatie
+7. **Antjan vraagt "deploy naar productie"** → zie sectie **Deploy op verzoek van Antjan** hieronder
+
+## Deploy op verzoek van Antjan
+
+Als Antjan vraagt om te deployen (in welke formulering dan ook), voer je deze stappen uit:
+
+### 1. Inventariseer
+
+```bash
+git log origin/main..HEAD --oneline   # welke commits gaan mee
+git status                            # ongestaged wijzigingen
+git diff origin/main..HEAD --stat     # welke apps zijn geraakt
+```
+
+### 2. Analyseer
+
+- **Welke apps** zijn geraakt? (web, mcp, packages)
+- **Zijn het fixes** (typo, bugfix, config) of **features** (nieuw gedrag, schema-wijziging)?
+- **Zijn er migraties**? (`ls packages/database/prisma/migrations/` — nieuwe entries?)
+- **Hoeveel commits** bundelen we?
+
+### 3. Kies mode
+
+| Mode | Wanneer |
+|---|---|
+| **Patch** | Typo, bugfix (1-3 regels), config, copy — geen E2E nodig |
+| **Release** | Nieuwe feature, schema-wijziging, meerdere features gebundeld, auth-logica |
+
+Bij twijfel → **Release**, niet Patch.
+
+### 4. Bundel slim
+
+Meerdere kleine commits kunnen als één Patch of Release gaan. Vertel `team-release` precies welke commit-range mee gaat.
+
+### 5. Spawn team-release
+
+Geef `team-release` de expliciete opdracht:
+
+```
+Mode: patch / release
+Scope: [beschrijving van wat live gaat]
+Commits: [range of "alles in HEAD"]
+Apps geraakt: [lijst]
+Migraties: ja/nee
+```
+
+### 6. Wacht op rapportage
+
+`team-release` rapporteert na afronding. Jij wacht — niet pushen, ook niet ingrijpen.
+
+### 7. Rapporteer terug aan Antjan
+
+Altijd melden:
+- Wat is gedeployd (commit SHA + samenvatting)
+- Welke apps zijn live
+- verify-deploy uitslag (GROEN/ROOD)
+- Eventuele acties die nog nodig zijn (DB-migraties controleren, cache leegmaken, GitHub Environment goedkeuren)
 
 ## Wanneer sub-agents spawnen
 

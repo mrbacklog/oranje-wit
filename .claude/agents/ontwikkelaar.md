@@ -110,3 +110,9 @@ Herbruikbare CSS classes:
 - Validatieregels in code: `apps/web/src/app/(teamindeling)/teamindeling/src/lib/validatie/regels.ts`
 - KNKV-regels: → zie `rules/knkv-regels.md`
 - OW-voorkeuren: → zie `rules/ow-voorkeuren.md`
+
+
+## ⛔ Deploy-verbod
+Jij mag NOOIT rechtstreeks deployen naar productie.
+Wil je dat iets live gaat? Escaleer naar de gebruiker of spawn `product-owner`.
+De PO bepaalt wat en wanneer deployt — nooit jij.

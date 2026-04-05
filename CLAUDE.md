@@ -50,9 +50,25 @@ oranje-wit/
 
 ## Code Quality
 
-- **Pre-commit hook**: lint-staged draait ESLint + Prettier op staged bestanden
-- **CI (GitHub Actions)**: typecheck + lint + format + unit tests + E2E tests op elke push/PR naar main
+- **Pre-commit hook**: lint-staged draait alleen **Prettier** op staged bestanden (ESLint zit in CI)
+- **CI (GitHub Actions)**: fast-gate (typecheck + lint + format + unit tests) + E2E tests op elke push/PR naar main
 - **ESLint**: `no-console` (error), `no-empty` (error), `prefer-const` (error), `no-unused-vars` (warn), `max-lines` (400, warn)
+
+## Deploy-modes
+
+![CI](https://github.com/antjanlaban/oranje-wit/actions/workflows/ci.yml/badge.svg)
+
+**Antjan zegt "deploy naar productie"** → Product Owner analyseert + kiest mode → `team-release` voert uit
+
+| Mode | Wanneer | CI-tijd | E2E | Goedkeuring |
+|---|---|---|---|---|
+| **Patch** | Urgente fix, typo, config | ~3-5 min | ❌ geen | Automatisch |
+| **Release** | Features, bundel, schema | ~25-35 min | ✅ smoke + full | Handmatig (Antjan) |
+
+**Enkel `deployment` (aangestuurd door `team-release`) mag deployen.**  
+Alle andere agents: **VERBODEN te deployen** — escaleer naar `product-owner`.
+
+Skills: `/patch` en `/release` — zie `.claude/skills/patch/` en `.claude/skills/release/`
 
 ## Verplichte patronen
 

@@ -1,131 +1,114 @@
 ---
 name: team-release
-description: Start een Agent Team voor feature development + deployment. Gebruik wanneer een feature gebouwd, getest en live gezet moet worden.
+description: Start het release-team om Patch of Release naar productie te brengen. Alleen te starten door product-owner of Antjan.
 disable-model-invocation: true
-argument-hint: "<app> <beschrijving van feature of fix>"
+argument-hint: "<mode: patch|release> <scope: wat gaat live>"
 ---
 
 # Agent Team: Release
 
-Start een agent team voor het bouwen en deployen van features voor c.k.v. Oranje Wit.
+Start dit team om wijzigingen naar productie te brengen. Ontvangt opdracht van `product-owner` met expliciete mode en scope.
+
+## ⛔ Autorisatie
+
+**Alleen `product-owner` of Antjan mag dit team starten.**  
+Andere agents mogen NOOIT dit team of de deploy-skills aanroepen.
+
+## Twee modes
+
+| Mode | Wanneer | CI-tijd | E2E |
+|---|---|---|---|
+| **Patch** | Urgente bugfix, typo, kleine config | ~3-5 min | ❌ geen |
+| **Release** | Features, bundel, schema-wijziging | ~25-35 min | ✅ smoke + full |
+
+Bij ontvangst van opdracht: **bevestig de mode** vóór je verder gaat.
 
 ## Team samenstelling
 
 ### Lead: ontwikkelaar
-- **Rol**: Bouwt de feature, schrijft code, draait tests
-- **Verantwoordelijkheden**:
-  - Implementeert de gevraagde feature of fix
-  - Schrijft en draait tests (`pnpm test:ti`, `pnpm test:monitor`, `pnpm test:evaluatie`)
-  - Controleert typecheck (`pnpm exec tsc --noEmit`)
-  - Controleert formatting (`pnpm format:check`)
-  - Maakt een git commit wanneer alles groen is
-  - Geeft deployment-opdracht aan teammate wanneer code klaar is
+- Bepaalt mode (Patch/Release) op basis van diff-analyse
+- Voert fast-gate lokaal uit
+- Maakt commit met correct prefix (`patch:`/`fix:` voor Patch)
+- Bij Release: maakt release branch + push
+- Rapporteert terug aan PO na afronding
 
 ### Teammate 1: e2e-tester
-- **Rol**: Verifieert de feature via de browser met Playwright E2E tests
-- **Verantwoordelijkheden**:
-  - Draait bestaande E2E tests na development (`pnpm test:e2e:<app>`)
-  - Gebruikt Playwright MCP voor exploratory testing van de nieuwe feature
-  - Rapporteert falende tests terug aan de ontwikkelaar
-  - Geeft go/no-go voor deployment
-  - Na deployment: optionele read-only smoke test tegen productie
+- **Patch**: geen actie vereist
+- **Release**: bewaakt smoke-e2e + full-e2e pipeline
+- Analyseert falende tests, geeft go/no-go voor full-E2E
+- Post-deploy: optionele smoke check tegen productie
 
 ### Teammate 2: deployment
-- **Rol**: Deployt naar Railway, controleert of alles live werkt
-- **Verantwoordelijkheden**:
-  - Monitort of de push naar main een Railway deployment triggert
-  - Controleert build-logs op fouten
-  - Verifieert dat de service live is via healthcheck
-  - Controleert custom domain bereikbaarheid (Cloudflare Worker)
-  - Rapporteert deployment-status terug aan de ontwikkelaar
-  - Bij build-fouten: analyseert logs en meldt de oorzaak
+- Monitort GitHub Actions CI status
+- Bewaakt Railway build + health check
+- Verifieert custom domain bereikbaarheid
+- Rapporteert deployment-status terug aan ontwikkelaar
 
-## Memory
+## Opdracht ontvangen van PO
 
-Bij het starten van dit team MOET de lead relevante memories raadplegen:
+De PO geeft mee:
+- **Mode**: `patch` of `release`
+- **Scope**: welke commits / welke apps / beschrijving
+- **Commit range** (optioneel): bijv. `abc123..HEAD`
 
-1. **Lees** `MEMORY.md` (index) in de memory-directory
-2. **Lees** memories met type `project` of `feedback` gerelateerd aan deployment, builds of bekende issues
-3. **Pas op** voor eerder gesignaleerde valkuilen (bijv. bekende build-issues, env var problemen)
-4. **Sla op** na afloop: nieuwe deploy-issues, workarounds, of feedback als `project`- of `feedback`-memory
+Als mode onduidelijk is: analyseer `git diff origin/main..HEAD --stat` en beslis op basis van de mode-tabel.
 
-Typische memories voor dit team:
-- Bekende build-issues of workarounds
-- Deploy-valkuilen per app (env vars, Dockerfile quirks)
-- Feedback op eerdere releases (wat ging goed/fout)
+## Werkwijze Patch
 
-## Werkwijze
+1. **ontwikkelaar** laadt `/patch` skill en volgt de stappen exact
+2. Fast-gate lokaal → commit (`patch:`/`fix:` prefix) → push naar main
+3. **deployment** monitort CI patch-workflow + Railway deploy
+4. `pnpm verify:deploy` → bevestig productie live
+5. Rapporteer aan PO: SHA, fast-gate status, verify-uitslag
 
-### Fase 1: Development (ontwikkelaar lead)
-1. **ontwikkelaar** analyseert de opdracht en leest relevante code
-2. **ontwikkelaar** implementeert de feature/fix
-3. **ontwikkelaar** draait tests en typecheck
-4. **ontwikkelaar** fixt eventuele fouten
-5. **ontwikkelaar** maakt een commit
+## Werkwijze Release
 
-### Fase 2: E2E Verificatie (VERPLICHT — blokkeert deploy)
-6. **e2e-tester** draait bestaande E2E tests (`pnpm test:e2e:<app>`)
-7. **e2e-tester** doet exploratory testing van de nieuwe feature via Playwright MCP
-8. Bij falende tests: **e2e-tester** rapporteert → **ontwikkelaar** fixt → hertest
-9. **e2e-tester** geeft go-ahead voor deployment
-10. **⚠ BELANGRIJK**: E2E tests MOETEN lokaal slagen vóór push — GitHub Actions CI blokkeert deploy als E2E faalt
+1. **ontwikkelaar** laadt `/release` skill en volgt de stappen exact
+2. Release branch aanmaken → push → CI release-workflow start
+3. **e2e-tester** bewaakt smoke-e2e — bij failure: fix + re-push (geen full-E2E verspilling)
+4. Na smoke groen: full-E2E start (~12-15 min)
+5. Na full-E2E groen: pipeline wacht op handmatige goedkeuring Antjan
+6. **deployment** monitort deploy-job + health check + custom domain
+7. `pnpm verify:deploy` → bevestig productie live
+8. Rapporteer aan PO: release branch, SHAs, test-status, verify-uitslag, GitHub Release URL
 
-### Fase 3: Deployment
-11. **ontwikkelaar** pusht naar main (na bevestiging gebruiker)
-12. **deployment** controleert GitHub Actions CI status: `gh run list --limit 3`
-13. **deployment** wacht tot CI groen is (CI triggert Railway deploy automatisch)
-14. **deployment** verifieert dat de service live is:
-    - Check deployment status via Railway MCP
-    - Check bereikbaarheid via `curl -s https://<app>.ckvoranjewit.app`
-    - Rapporteer resultaat
-15. Bij CI-failure: **deployment** rapporteert falende stap → **ontwikkelaar** fixt → herhaal
-16. Bij Railway build-fout: **deployment** analyseert logs → **ontwikkelaar** fixt
+## Post-deploy verplichte acties (beide modes)
 
-### Fase 4: Post-deploy Verificatie
-17. **e2e-tester** doet read-only smoke test tegen productie URL (alleen navigatie)
-18. **deployment** doet een laatste check op alle services
+- [ ] `pnpm verify:deploy` uitvoeren
+- [ ] SHA-check: productie-SHA = lokale HEAD?
+- [ ] Controleer of Railway build groen is in de CI-logs
+- [ ] Rapporteer statusoverzicht terug aan PO
 
 ## Communicatiepatronen
 
 ```
-TC (gebruiker)
-    ↕ feature-opdracht en goedkeuring
+product-owner (opdracht + mode)
+    ↓
 ontwikkelaar (lead)
-    ↕ code + test-opdracht + deploy-opdracht
-    ├── e2e-tester (test, verify, rapporteer)
-    │   ↕ bugrapporten bij falende tests
-    └── deployment (build, verify, rapporteer)
-        ↕ directe feedback bij fouten
+    ├── e2e-tester (smoke/full E2E bewaking — alleen bij Release)
+    └── deployment (CI + Railway + verify)
+    ↓
+product-owner (rapportage)
+    ↓
+Antjan (eindstatus)
 ```
 
-## App-configuratie
+## Memory
 
-| App | Dev commando | Test | Live URL |
-|---|---|---|---|
-| Team-Indeling | `pnpm dev:ti` (4100) | `pnpm test:ti` | teamindeling.ckvoranjewit.app |
-| Monitor | `pnpm dev:monitor` (4102) | `pnpm test:monitor` | monitor.ckvoranjewit.app |
-| Evaluatie | `pnpm dev:evaluatie` (4104) | `pnpm test:evaluatie` | evaluaties.ckvoranjewit.app |
-
-## Quality gates (verplicht voor commit)
-
-1. `pnpm exec tsc --noEmit` — geen type-fouten
-2. `pnpm test:<app>` — alle tests groen
-3. `pnpm format:check` — formatting correct
-4. ESLint via pre-commit hook (automatisch)
+Bij het starten MOET de lead relevante memories raadplegen:
+- Bekende deploy-issues of workarounds
+- Deploy-valkuilen per app (env vars, Railway quirks)
+- Feedback op eerdere releases
 
 ## Context
 
+- **Patch CI**: `.github/workflows/patch.yml` — environment `production-patch` (auto)
+- **Release CI**: `.github/workflows/release.yml` — environment `production-release` (handmatige goedkeuring)
+- **Smoke suite**: `e2e/smoke/smoke.spec.ts`
+- **Verify**: `pnpm verify:deploy`
+- **Database**: NOOIT `pnpm db:push` draaien
 - **Taal**: Nederlands
-- **Stack**: Next.js 16, Tailwind CSS 4, Prisma, pnpm workspaces
-- **Deployment**: GitHub Actions CI → Railway (deploy alleen als CI groen is)
-- **DNS**: Cloudflare Worker proxy
-- **Database**: PostgreSQL op Railway (NOOIT `pnpm db:push` draaien)
 
 ## Opdracht
 
 $ARGUMENTS
-
-Als er geen specifieke opdracht is meegegeven, vraag dan:
-1. Welke app? (team-indeling / monitor / evaluatie)
-2. Wat moet er gebouwd/gefixt worden?
-3. Moet het ook live gezet worden?
