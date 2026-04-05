@@ -183,7 +183,7 @@ export default function ScenarioEditorFullscreen({
 
   if (!editor.laatsteVersie) {
     return (
-      <div className="fixed inset-0 z-40 flex items-center justify-center bg-gray-50">
+      <div className="fixed inset-0 z-40 flex items-center justify-center bg-[#0f1115]">
         <p className="text-sm text-gray-400">Dit scenario heeft nog geen versie.</p>
       </div>
     );
@@ -280,7 +280,7 @@ export default function ScenarioEditorFullscreen({
 
   // --- Edit mode ---
   return (
-    <div className="fixed inset-0 z-40 flex flex-col bg-gray-50">
+    <div className="fixed inset-0 z-40 flex flex-col bg-[#0f1115]">
       {/* Toolbar: what-if modus of normaal */}
       {whatIf.isWhatIfModus ? (
         <WhatIfToolbar
