@@ -172,17 +172,13 @@ export const TEAM_INDELING: AppManifest = {
       nav: { label: "Overzicht", href: "/teamindeling", icon: "GridIcon" },
     },
     {
-      nav: { label: "Blauwdruk", href: "/teamindeling/blauwdruk", icon: "ListIcon" },
-      pills: [
-        { label: "Spelers", href: "/teamindeling/blauwdruk" },
-        { label: "Besluiten", href: "/teamindeling/blauwdruk/besluiten" },
-      ],
-    },
-    {
       nav: { label: "Indeling", href: "/teamindeling/scenarios", icon: "PeopleIcon" },
     },
     {
       nav: { label: "Teams", href: "/teamindeling/teams", icon: "StarIcon" },
+    },
+    {
+      nav: { label: "Spelers", href: "/teamindeling/spelers", icon: "ProfileIcon" },
     },
   ],
   skipRoutes: [],

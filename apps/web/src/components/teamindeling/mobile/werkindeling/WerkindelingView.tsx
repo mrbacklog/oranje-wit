@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import Link from "next/link";
 import { motion } from "framer-motion";
 import { Chip } from "@oranje-wit/ui";
 
@@ -177,12 +176,8 @@ export function WerkindelingView({ naam, status, seizoen, teams }: WerkindelingV
                   const clampedPct = Math.min(100, pct);
 
                   return (
-                    <Link
-                      key={team.id}
-                      href={`/teamindeling/scenarios/${team.id}`}
-                      className="block"
-                    >
-                      <motion.div
+                    <div key={team.id} className="block">
+                      <div
                         className="px-4 py-3"
                         style={{
                           borderBottom:
@@ -190,8 +185,6 @@ export function WerkindelingView({ naam, status, seizoen, teams }: WerkindelingV
                               ? "1px solid var(--border-default)"
                               : undefined,
                         }}
-                        whileTap={{ scale: 0.98, backgroundColor: "var(--state-pressed)" }}
-                        transition={{ duration: 0.15 }}
                       >
                         {/* Top row: kleur-dot, naam, count */}
                         <div className="mb-2 flex items-center gap-3">
@@ -216,23 +209,6 @@ export function WerkindelingView({ naam, status, seizoen, teams }: WerkindelingV
                           >
                             {team.spelersCount}/{team.target}
                           </span>
-
-                          {/* Chevron */}
-                          <svg
-                            width={16}
-                            height={16}
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth={2}
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            style={{ color: "var(--text-tertiary)" }}
-                            className="shrink-0"
-                            aria-hidden="true"
-                          >
-                            <polyline points="9 18 15 12 9 6" />
-                          </svg>
                         </div>
 
                         {/* Vulgraad-balk */}
@@ -248,8 +224,8 @@ export function WerkindelingView({ naam, status, seizoen, teams }: WerkindelingV
                             }}
                           />
                         </div>
-                      </motion.div>
-                    </Link>
+                      </div>
+                    </div>
                   );
                 })}
               </div>
