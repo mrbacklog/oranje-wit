@@ -166,12 +166,18 @@ jobs:
           path: playwright-report/
           retention-days: 7
 
-  # ── Deployment ──────────────────────────────────────────────────────────────
-  # Railway auto-deploy is ingeschakeld: Railway bouwt en deployt automatisch
-  # bij elke push naar main. CI doet alleen kwaliteitscontrole.
-  #
-  # Railway health check: /api/health (geconfigureerd in apps/web/railway.json)
-  # Railway logs: bekijk via Railway Dashboard of MCP Railway server
-  #
-  # Cloudflare Worker: handmatig deployen via `npx wrangler deploy`
-  # vanuit cloudflare/railway-proxy/ (of automatiseer later).
+  # ── Job 4: Deploy naar Railway ──────────────────────────────────────────────
+  deploy:
+    needs: [fast-gate, build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Trigger Railway deploy
+        run: |
+          RESULT=$(curl -s -X POST "https://backboard.railway.com/graphql/v2" \
+            -H "Authorization: Bearer ${{ secrets.RAILWAY_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d "{\"query\":\"mutation { serviceInstanceDeploy(environmentId: \\\"${{ secrets.RAILWAY_ENVIRONMENT_ID }}\\\", serviceId: \\\"${{ secrets.RAILWAY_SERVICE_WEB }}\\\", commitSha: \\\"${{ github.sha }}\\\") }\"}")
+          echo "Railway response: $RESULT"
+          echo "$RESULT" | grep -q '"serviceInstanceDeploy":true' && echo "Deploy getriggerd (${{ github.sha }})" || (echo "Deploy mislukt" && exit 1)
