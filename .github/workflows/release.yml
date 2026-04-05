@@ -153,7 +153,7 @@ jobs:
         if: always()
         run: pnpm dlx tsx e2e/fixtures/cleanup.ts
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: smoke-playwright-report
@@ -232,7 +232,7 @@ jobs:
         if: always()
         run: pnpm dlx tsx e2e/fixtures/cleanup.ts
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: full-playwright-report
