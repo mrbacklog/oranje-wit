@@ -14,7 +14,7 @@ on:
 
 jobs:
   # ── Job 1: Quality checks ──────────────────────────────────────────────────
-  quality:
+  fast-gate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
