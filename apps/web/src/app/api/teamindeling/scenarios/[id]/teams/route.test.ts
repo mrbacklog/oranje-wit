@@ -59,7 +59,7 @@ describe("GET /api/scenarios/[id]/teams", () => {
     ];
     const selectieGroepen = [{ id: "sg1", spelers: [], staf: [] }];
 
-    mockPrisma.scenario.findUnique.mockResolvedValue({
+    mockPrisma.werkindeling.findUnique.mockResolvedValue({
       versies: [{ teams, selectieGroepen }],
     });
 
@@ -79,7 +79,7 @@ describe("GET /api/scenarios/[id]/teams", () => {
   });
 
   it("geeft lege teams als scenario niet bestaat", async () => {
-    mockPrisma.scenario.findUnique.mockResolvedValue(null);
+    mockPrisma.werkindeling.findUnique.mockResolvedValue(null);
 
     const result = await callRoute(GET, {
       method: "GET",
@@ -96,7 +96,7 @@ describe("GET /api/scenarios/[id]/teams", () => {
   });
 
   it("geeft lege teams als scenario geen versies heeft", async () => {
-    mockPrisma.scenario.findUnique.mockResolvedValue({
+    mockPrisma.werkindeling.findUnique.mockResolvedValue({
       versies: [],
     });
 

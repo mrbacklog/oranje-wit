@@ -14,8 +14,8 @@ import type {
   Entiteit,
 } from "@/components/teamindeling/werkbord/types";
 
-// Werkitem model nog niet in Prisma schema — gebruik untyped accessor
-const db = prisma as never as { werkitem: typeof prisma.actiepunt };
+// Werkitem model via prisma (in AnyPrismaModels)
+const db = prisma;
 
 // ============================================================
 // HELPERS
@@ -59,7 +59,7 @@ const werkitemInclude = {
   auteur: { select: { id: true, naam: true } },
   speler: { select: { id: true, roepnaam: true, achternaam: true } },
   staf: { select: { id: true, naam: true } },
-  scenario: { select: { id: true, naam: true } },
+  werkindeling: { select: { id: true, naam: true } },
   actiepunten: {
     include: {
       toegewezenAan: { select: { id: true, naam: true } },
@@ -269,7 +269,6 @@ export async function createActiepunt(data: {
   beschrijving: string;
   toegewezenAanId?: string;
   werkitemId?: string;
-  werkindelingId?: string;
   deadline?: string;
   volgorde?: number;
 }) {
@@ -282,7 +281,6 @@ export async function createActiepunt(data: {
       beschrijving: data.beschrijving,
       toegewezenAanId: data.toegewezenAanId ?? null,
       werkitemId: data.werkitemId ?? null,
-      werkindelingId: data.werkindelingId ?? null,
       deadline: data.deadline ? new Date(data.deadline) : null,
       volgorde: data.volgorde ?? 0,
       auteurId: user.id,
