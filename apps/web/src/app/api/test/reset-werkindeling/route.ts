@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@oranje-wit/database";
+import { prisma } from "@/lib/teamindeling/db/prisma";
 
 /**
  * Test-only API: Reset alle werkindelingen naar inactief

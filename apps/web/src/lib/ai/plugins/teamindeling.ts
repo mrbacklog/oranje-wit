@@ -3,7 +3,7 @@
  */
 
 import { z } from "zod";
-import { prisma } from "@/lib/db/prisma";
+import { prisma } from "@/lib/teamindeling/db/prisma";
 import { HUIDIG_SEIZOEN } from "@oranje-wit/types";
 
 export const teamindelingTools = {

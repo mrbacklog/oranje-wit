@@ -19,6 +19,7 @@ export async function genereerSmartlinksVoorRonde(
 ): Promise<ActionResult<{ aangemaakt: number; overgeslagen: number }>> {
   try {
     // 1. Haal de ronde op met trainer-uitnodigingen
+    // @ts-expect-error TS2321 excessive stack depth (Prisma/Linux CI limitation)
     const ronde = await prisma.evaluatieRonde.findUnique({
       where: { id: rondeId },
       include: {
