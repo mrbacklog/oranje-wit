@@ -25,7 +25,7 @@ function mapNaarValidatieTeam(team: UITeamData): ValidatieTeamData {
     categorie: team.categorie,
     kleur: team.kleur,
     niveau: team.niveau,
-    spelers: team.spelers.map(
+    spelers: (team.spelers ?? []).map(
       (ts): ValidatieSpelerData => ({
         id: ts.spelerId,
         roepnaam: ts.speler.roepnaam,
