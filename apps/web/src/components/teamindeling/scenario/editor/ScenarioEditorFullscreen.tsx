@@ -85,7 +85,6 @@ export default function ScenarioEditorFullscreen({
     }
   }, [scenario.id, editor]);
 
-  // Card info voor vrije positionering — selectie-groepen als één kaart
   const cardInfos: CardInfo[] = useMemo(() => {
     const seen = new Set<string>();
     return editor.teams
@@ -141,23 +140,16 @@ export default function ScenarioEditorFullscreen({
     setRapportPinned(false);
   }, []);
 
-  const zichtbareTeams = useMemo(
-    () => editor.teams.filter((t) => editor.zichtbaar.has(t.id)),
-    [editor.teams, editor.zichtbaar]
-  );
+  const zichtbareTeams = editor.teams.filter((t) => editor.zichtbaar.has(t.id));
   const zichtbareCount = zichtbareTeams.length;
 
   const showPoolDrawer = poolOpen && !editor.editTeamId;
   const showEditDrawer = !!editor.editTeamId;
 
-  // Preview: selectieGroepMap
-  const selectieGroepMap = useMemo(() => {
-    const m = new Map<string, SelectieGroepData>();
-    for (const sg of scenario.versies[0]?.selectieGroepen ?? []) m.set(sg.id, sg);
-    return m;
-  }, [scenario.versies]);
+  const selectieGroepMap = new Map<string, SelectieGroepData>(
+    (scenario.versies[0]?.selectieGroepen ?? []).map((sg) => [sg.id, sg])
+  );
 
-  // Versie-rijen voor VersiesDrawer (hoogste nummer = huidig)
   const versieRijen = useMemo(
     () =>
       (scenario.versies as any[]).map((v: any, i: number) => ({
@@ -183,17 +175,16 @@ export default function ScenarioEditorFullscreen({
 
   if (!editor.laatsteVersie) {
     return (
-      <div className="fixed inset-0 z-40 flex items-center justify-center bg-[#0f1115]">
+      <div className="absolute inset-0 flex items-center justify-center bg-[#0f1115]">
         <p className="text-sm text-gray-400">Dit scenario heeft nog geen versie.</p>
       </div>
     );
   }
 
-  // --- Mobile mode ---
   if (isMobile && !isPreview) {
     const fallback = (
       <div
-        className="fixed inset-0 z-40 flex items-center justify-center"
+        className="absolute inset-0 flex items-center justify-center"
         style={{ backgroundColor: "var(--surface-page, #0f1115)" }}
       >
         <div style={{ color: "var(--text-tertiary, #6b7280)" }}>Laden...</div>
@@ -210,7 +201,6 @@ export default function ScenarioEditorFullscreen({
     );
   }
 
-  // --- Preview mode ---
   if (isPreview) {
     return (
       <PreviewMode
@@ -278,9 +268,8 @@ export default function ScenarioEditorFullscreen({
     />
   );
 
-  // --- Edit mode ---
   return (
-    <div className="fixed inset-0 z-40 flex flex-col bg-[#0f1115]">
+    <div className="absolute inset-0 flex flex-col bg-[#0f1115]">
       {/* Toolbar: what-if modus of normaal */}
       {whatIf.isWhatIfModus ? (
         <WhatIfToolbar
