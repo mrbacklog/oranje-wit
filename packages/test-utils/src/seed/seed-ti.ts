@@ -30,6 +30,7 @@ interface SpelerRecord {
 }
 
 export async function seedUser(prisma: PrismaClient) {
+  // Maak werkindeling User aan (voor historische redenen)
   await prisma.user.upsert({
     where: { email: E2E_USER_EMAIL },
     update: {},
@@ -37,6 +38,22 @@ export async function seedUser(prisma: PrismaClient) {
       email: E2E_USER_EMAIL,
       naam: E2E_USER_NAAM,
       rol: "EDITOR",
+    },
+  });
+
+  // Maak ook Gebruiker aan voor auth capabilities (isTC=true)
+  // Dit is vereist zodat requireTC() in E2E tests werkt
+  await prisma.gebruiker.upsert({
+    where: { email: E2E_USER_EMAIL },
+    update: { actief: true },
+    create: {
+      email: E2E_USER_EMAIL,
+      naam: E2E_USER_NAAM,
+      isTC: true,
+      isTCKern: false,
+      isScout: false,
+      clearance: 3,
+      actief: true,
     },
   });
 }
