@@ -48,6 +48,7 @@ export function createMockPrisma() {
     staf: mockModel(),
     stafToewijzing: mockModel(),
     blauwdruk: mockModel(),
+    werkindeling: mockModel(),
     pin: mockModel(),
     concept: mockModel(),
     scenario: mockModel(),
