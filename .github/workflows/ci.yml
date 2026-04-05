@@ -178,6 +178,6 @@ jobs:
           RESULT=$(curl -s -X POST "https://backboard.railway.com/graphql/v2" \
             -H "Authorization: Bearer ${{ secrets.RAILWAY_TOKEN }}" \
             -H "Content-Type: application/json" \
-            -d "{\"query\":\"mutation { serviceInstanceDeploy(environmentId: \\\"${{ secrets.RAILWAY_ENVIRONMENT_ID }}\\\", serviceId: \\\"${{ secrets.RAILWAY_SERVICE_WEB }}\\\") }\"}")
+            -d "{\"query\":\"mutation { serviceInstanceDeploy(environmentId: \\\"${{ secrets.RAILWAY_ENVIRONMENT_ID }}\\\", serviceId: \\\"${{ secrets.RAILWAY_SERVICE_WEB }}\\\", commitSha: \\\"${{ github.sha }}\\\") }\"}")
           echo "Railway response: $RESULT"
-          echo "$RESULT" | grep -q '"serviceInstanceDeploy":true' && echo "Deploy getriggerd" || (echo "Deploy mislukt" && exit 1)
+          echo "$RESULT" | grep -q '"serviceInstanceDeploy":true' && echo "Deploy getriggerd (${{ github.sha }})" || (echo "Deploy mislukt" && exit 1)
