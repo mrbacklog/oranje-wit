@@ -17,12 +17,12 @@ test.describe("Smoke — app laadt", () => {
     });
   });
 
-  test("teamindeling: blauwdruk pagina laadt", async ({ page }) => {
+  test("teamindeling: overzicht laadt", async ({ page }) => {
     test.setTimeout(60000);
     await page.goto("/teamindeling", { timeout: 45000 });
     const nav = page.getByRole("navigation", { name: "Hoofdnavigatie" });
     await expect(nav).toBeVisible({ timeout: 15000 });
-    await expect(page.getByRole("link", { name: /Blauwdruk/ })).toBeVisible({ timeout: 15000 });
+    await expect(nav.getByText("Indeling", { exact: true })).toBeVisible({ timeout: 15000 });
   });
 
   test("ti-studio: indeling laadt", async ({ page }) => {
