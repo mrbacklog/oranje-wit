@@ -10,9 +10,16 @@ interface AppShellProps {
   sidebar: SidebarConfig;
   skipRoutes?: string[];
   banner?: ReactNode;
+  noPadding?: boolean;
 }
 
-export function AppShell({ children, sidebar, skipRoutes = ["/login"], banner }: AppShellProps) {
+export function AppShell({
+  children,
+  sidebar,
+  skipRoutes = ["/login"],
+  banner,
+  noPadding = false,
+}: AppShellProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -83,7 +90,11 @@ export function AppShell({ children, sidebar, skipRoutes = ["/login"], banner }:
 
         {banner}
 
-        <main className="flex-1 overflow-y-auto p-6">{children}</main>
+        <main
+          className={noPadding ? "relative flex-1 overflow-hidden" : "flex-1 overflow-y-auto p-6"}
+        >
+          {children}
+        </main>
       </div>
     </div>
   );

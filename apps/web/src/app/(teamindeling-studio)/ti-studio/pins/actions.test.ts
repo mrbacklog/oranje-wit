@@ -25,7 +25,7 @@ vi.mock("@/lib/teamindeling/seizoen", () => ({
 // Import NA mocks
 // ============================================================
 
-const { createPin, deletePin, getPinsVoorScenario } = await import("./actions");
+const { createPin, deletePin, getPinsVoorWerkindeling } = await import("./actions");
 
 // ============================================================
 // Tests
@@ -133,13 +133,13 @@ describe("pins/actions", () => {
   });
 
   // ----------------------------------------------------------
-  // getPinsVoorScenario
+  // getPinsVoorWerkindeling
   // ----------------------------------------------------------
 
-  describe("getPinsVoorScenario", () => {
-    it("haalt pins op via scenario → concept → blauwdrukId", async () => {
-      mockPrisma.scenario.findUniqueOrThrow.mockResolvedValueOnce({
-        concept: { blauwdrukId: "bp-1" },
+  describe("getPinsVoorWerkindeling", () => {
+    it("haalt pins op via werkindeling → blauwdrukId", async () => {
+      mockPrisma.werkindeling.findUniqueOrThrow.mockResolvedValueOnce({
+        blauwdrukId: "bp-1",
       });
       const mockPins = [
         {
@@ -149,7 +149,7 @@ describe("pins/actions", () => {
       ];
       mockPrisma.pin.findMany.mockResolvedValueOnce(mockPins);
 
-      const result = await getPinsVoorScenario("scenario-1");
+      const result = await getPinsVoorWerkindeling("werkindeling-1");
 
       expect(result).toEqual(mockPins);
       expect(mockPrisma.pin.findMany).toHaveBeenCalledWith({
@@ -160,12 +160,12 @@ describe("pins/actions", () => {
     });
 
     it("retourneert lege array als er geen pins zijn", async () => {
-      mockPrisma.scenario.findUniqueOrThrow.mockResolvedValueOnce({
-        concept: { blauwdrukId: "bp-1" },
+      mockPrisma.werkindeling.findUniqueOrThrow.mockResolvedValueOnce({
+        blauwdrukId: "bp-1",
       });
       mockPrisma.pin.findMany.mockResolvedValueOnce([]);
 
-      const result = await getPinsVoorScenario("scenario-1");
+      const result = await getPinsVoorWerkindeling("werkindeling-1");
 
       expect(result).toEqual([]);
     });

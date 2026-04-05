@@ -2,7 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { auth } from "@oranje-wit/auth";
 import { redirect } from "next/navigation";
 import SeizoenProvider from "@/components/teamindeling/providers/SeizoenProvider";
-import { TIDomainShell } from "@/components/teamindeling/layout/ti-domain-shell";
+import { TISidebar } from "@/components/teamindeling/layout/TISidebar";
 import { getActiefSeizoen, isWerkseizoenCheck } from "@/lib/teamindeling/seizoen";
 import "./teamindeling.css";
 
@@ -35,14 +35,10 @@ export default async function TeamIndelingLayout({
     <div
       className={`${geistSans.variable} ${geistMono.variable}`}
       data-theme="dark"
-      style={{
-        backgroundColor: "var(--surface-page)",
-        color: "var(--text-primary)",
-        minHeight: "100dvh",
-      }}
+      style={{ color: "var(--text-primary)" }}
     >
       <SeizoenProvider seizoen={seizoen} isWerkseizoen={isWerkseizoen}>
-        <TIDomainShell>{children}</TIDomainShell>
+        <TISidebar>{children}</TISidebar>
       </SeizoenProvider>
     </div>
   );

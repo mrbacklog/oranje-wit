@@ -82,7 +82,6 @@ export async function getWerkindelingVoorEditor(werkindelingId: string) {
 
 export async function getAlleSpelers() {
   return prisma.speler.findMany({
-    where: { status: { not: "INACTIEF" } },
     orderBy: [{ achternaam: "asc" }, { roepnaam: "asc" }],
     select: {
       id: true,
@@ -94,7 +93,6 @@ export async function getAlleSpelers() {
       status: true,
       huidig: true,
       spelerspad: true,
-      foto: { select: { thumbnailUrl: true } },
     },
   });
 }

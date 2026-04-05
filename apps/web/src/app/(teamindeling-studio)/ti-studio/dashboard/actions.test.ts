@@ -19,7 +19,7 @@ vi.mock("@/lib/teamindeling/seizoen", () => ({
 // Import NA mocks
 // ============================================================
 
-const { getMijlpalen, getScenarioOverzicht } = await import("./actions");
+const { getMijlpalen, getWerkindelingOverzicht } = await import("./actions");
 
 // ============================================================
 // Tests
@@ -61,37 +61,37 @@ describe("dashboard/actions", () => {
   });
 
   // ----------------------------------------------------------
-  // getScenarioOverzicht
+  // getWerkindelingOverzicht
   // ----------------------------------------------------------
 
-  describe("getScenarioOverzicht", () => {
+  describe("getWerkindelingOverzicht", () => {
     it("retourneert lege array als er geen blauwdruk is", async () => {
       mockPrisma.blauwdruk.findFirst.mockResolvedValueOnce(null);
 
-      const result = await getScenarioOverzicht();
+      const result = await getWerkindelingOverzicht();
 
       expect(result).toEqual([]);
-      expect(mockPrisma.scenario.findMany).not.toHaveBeenCalled();
+      expect(mockPrisma.werkindeling.findMany).not.toHaveBeenCalled();
     });
 
-    it("haalt scenario's op via de blauwdruk", async () => {
+    it("haalt werkindelingen op via de blauwdruk", async () => {
       mockPrisma.blauwdruk.findFirst.mockResolvedValueOnce({ id: "bp-1" });
-      const mockScenarios = [
+      const mockWerkindelingen = [
         {
-          id: "s1",
+          id: "w1",
           naam: "Basis",
           status: "CONCEPT",
           updatedAt: new Date("2026-01-15"),
           _count: { versies: 2 },
         },
       ];
-      mockPrisma.scenario.findMany.mockResolvedValueOnce(mockScenarios);
+      mockPrisma.werkindeling.findMany.mockResolvedValueOnce(mockWerkindelingen);
 
-      const result = await getScenarioOverzicht();
+      const result = await getWerkindelingOverzicht();
 
-      expect(result).toEqual(mockScenarios);
-      expect(mockPrisma.scenario.findMany).toHaveBeenCalledWith({
-        where: { concept: { blauwdrukId: "bp-1" }, verwijderdOp: null },
+      expect(result).toEqual(mockWerkindelingen);
+      expect(mockPrisma.werkindeling.findMany).toHaveBeenCalledWith({
+        where: { blauwdrukId: "bp-1", verwijderdOp: null },
         select: {
           id: true,
           naam: true,
