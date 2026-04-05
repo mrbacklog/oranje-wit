@@ -35,7 +35,7 @@ const DOMEINEN: DomeinDef[] = [
   {
     naam: "Team-Indeling (mobile)",
     baseUrl: "/teamindeling",
-    bottomNavLabels: ["Overzicht", "Blauwdruk", "Indeling", "Teams"],
+    bottomNavLabels: ["Overzicht", "Indeling", "Teams", "Spelers"],
   },
   {
     naam: "Evaluatie",
