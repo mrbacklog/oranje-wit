@@ -1,20 +1,20 @@
 #!/bin/sh
 set -e
 
-# Maak runtime Prisma config met DATABASE_URL uit de omgeving
+# Schrijf Prisma config naast de prisma-map zodat relatieve paden kloppen
 node -e "
 const fs = require('fs');
-fs.writeFileSync('/tmp/pc.mjs',
+fs.writeFileSync('/app/packages/database/prisma.config.mjs',
   'export default {' +
-  '  schema: \"packages/database/prisma/schema.prisma\",' +
-  '  migrations: { path: \"packages/database/prisma/migrations\" },' +
+  '  schema: \"prisma/schema.prisma\",' +
+  '  migrations: { path: \"prisma/migrations\" },' +
   '  datasource: { url: \"' + process.env.DATABASE_URL + '\" }' +
   '}'
 );
 "
 
 # Draai pending migraties
-prisma migrate deploy --config /tmp/pc.mjs
+prisma migrate deploy --config /app/packages/database/prisma.config.mjs
 
 # Herstel VIEW speler_seizoenen
 psql "$DATABASE_URL" -f packages/database/prisma/views.sql
