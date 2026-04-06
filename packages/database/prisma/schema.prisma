@@ -5,6 +5,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 // ╔═══════════════════════════════════════════════════════════╗
@@ -350,8 +351,8 @@ model User {
   activiteitenToewijzing Activiteit[] @relation("ActiviteitToewijzing")
   scoutProfiel          Scout?
   scoutingVerzoeken     ScoutingVerzoek[]
-  gezienMarkeringen     BlauwdrukSpeler[] @relation("GezienDoor")
-  besluitenGemaakt      BlauwdrukBesluit[] @relation("BesluitAuteur")
+  gezienMarkeringen     KadersSpeler[] @relation("GezienDoor")
+  besluitenGemaakt      KadersBesluit[] @relation("BesluitAuteur")
 }
 
 enum Rol {
@@ -472,7 +473,7 @@ model Speler {
   fysiekProfielen      FysiekProfiel[]
   spelerUSS            SpelerUSS[]
   vergelijkingPosities ScoutingVergelijkingPositie[]
-  blauwdrukStatussen   BlauwdrukSpeler[]
+  kadersStatussen      KadersSpeler[]
   whatIfPlaatsingen     WhatIfTeamSpeler[]
 
   createdAt DateTime @default(now())
@@ -530,10 +531,10 @@ model StafToewijzing {
 }
 
 // ============================================================
-// BLAUWDRUK (per seizoen)
+// KADERS (per seizoen)
 // ============================================================
 
-model Blauwdruk {
+model Kaders {
   id            String   @id @default(cuid())
   seizoen       String   @unique // "2026-2027"
   isWerkseizoen Boolean  @default(false) // ★ het actieve planningseizoen
@@ -551,23 +552,23 @@ model Blauwdruk {
   actiepunten   Actiepunt[]
   activiteiten  Activiteit[]
 
-  blauwdrukSpelers BlauwdrukSpeler[]
-  besluiten        BlauwdrukBesluit[]
+  kadersSpelers KadersSpeler[]
+  besluiten     KadersBesluit[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 // ============================================================
-// BLAUWDRUK-SPELER (gezien-status per seizoen)
+// KADERS-SPELER (gezien-status per seizoen)
 // ============================================================
 
-model BlauwdrukSpeler {
-  id           String   @id @default(cuid())
-  blauwdruk    Blauwdruk @relation(fields: [blauwdrukId], references: [id], onDelete: Cascade)
-  blauwdrukId  String
-  speler       Speler   @relation(fields: [spelerId], references: [id])
-  spelerId     String
+model KadersSpeler {
+  id        String @id @default(cuid())
+  kaders    Kaders @relation(fields: [kadersId], references: [id], onDelete: Cascade)
+  kadersId  String
+  speler    Speler @relation(fields: [spelerId], references: [id])
+  spelerId  String
 
   gezienStatus GezienStatus @default(ONGEZIEN)
   notitie      String?  @db.Text
@@ -591,8 +592,8 @@ model BlauwdrukSpeler {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  @@unique([blauwdrukId, spelerId])
-  @@index([blauwdrukId])
+  @@unique([kadersId, spelerId])
+  @@index([kadersId])
   @@index([spelerId])
   @@index([gezienStatus])
 }
@@ -634,10 +635,10 @@ enum AntwoordType {
   GETAL_RANGE  // Drie getallen: ideaal M / ideaal V / afwijking
 }
 
-model BlauwdrukBesluit {
-  id            String   @id @default(cuid())
-  blauwdruk     Blauwdruk @relation(fields: [blauwdrukId], references: [id], onDelete: Cascade)
-  blauwdrukId   String
+model KadersBesluit {
+  id        String @id @default(cuid())
+  kaders    Kaders @relation(fields: [kadersId], references: [id], onDelete: Cascade)
+  kadersId  String
 
   // De vraag
   vraag         String   @db.Text
@@ -669,7 +670,7 @@ model BlauwdrukBesluit {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  @@index([blauwdrukId])
+  @@index([kadersId])
   @@index([status])
 }
 
@@ -689,9 +690,9 @@ enum BesluitNiveau {
 // ============================================================
 
 model Pin {
-  id          String  @id @default(cuid())
-  blauwdruk   Blauwdruk @relation(fields: [blauwdrukId], references: [id], onDelete: Cascade)
-  blauwdrukId String
+  id       String @id @default(cuid())
+  kaders   Kaders @relation(fields: [kadersId], references: [id], onDelete: Cascade)
+  kadersId String
 
   type    PinType
   waarde  Json
@@ -706,7 +707,7 @@ model Pin {
   gepindDoorId String
   gepindOp     DateTime @default(now())
 
-  @@index([blauwdrukId])
+  @@index([kadersId])
   @@index([type])
 }
 
@@ -721,9 +722,9 @@ enum PinType {
 // ============================================================
 
 model Werkindeling {
-  id          String    @id @default(cuid())
-  blauwdruk   Blauwdruk @relation(fields: [blauwdrukId], references: [id], onDelete: Cascade)
-  blauwdrukId String
+  id       String @id @default(cuid())
+  kaders   Kaders @relation(fields: [kadersId], references: [id], onDelete: Cascade)
+  kadersId String
 
   naam          String    @default("Werkindeling")
   toelichting   String?   @db.Text
@@ -739,7 +740,7 @@ model Werkindeling {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([blauwdrukId])
+  @@index([kadersId])
   @@map("werkindelingen")
 }
 
@@ -1096,9 +1097,9 @@ enum ActiepuntStatus {
 }
 
 model Werkitem {
-  id           String   @id @default(cuid())
-  blauwdruk    Blauwdruk @relation(fields: [blauwdrukId], references: [id], onDelete: Cascade)
-  blauwdrukId  String
+  id       String @id @default(cuid())
+  kaders   Kaders @relation(fields: [kadersId], references: [id], onDelete: Cascade)
+  kadersId String
 
   titel        String
   beschrijving String   @db.Text
@@ -1109,7 +1110,7 @@ model Werkitem {
   doelgroep    Doelgroep?
   entiteit     Entiteit?
 
-  // Optioneel werkindeling-niveau (null = blauwdruk-breed)
+  // Optioneel werkindeling-niveau (null = kaders-breed)
   werkindeling   Werkindeling? @relation(fields: [werkindelingId], references: [id], onDelete: Cascade)
   werkindelingId String?
 
@@ -1138,7 +1139,7 @@ model Werkitem {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  @@index([blauwdrukId])
+  @@index([kadersId])
   @@index([status])
   @@index([prioriteit])
 }
@@ -1152,8 +1153,8 @@ model Actiepunt {
   werkitem        Werkitem? @relation(fields: [werkitemId], references: [id], onDelete: Cascade)
   werkitemId      String?
 
-  blauwdruk       Blauwdruk @relation(fields: [blauwdrukId], references: [id], onDelete: Cascade)
-  blauwdrukId     String
+  kaders    Kaders @relation(fields: [kadersId], references: [id], onDelete: Cascade)
+  kadersId  String
 
   toegewezenAan   User     @relation("ActiepuntToewijzing", fields: [toegewezenAanId], references: [id])
   toegewezenAanId String
@@ -1161,10 +1162,10 @@ model Actiepunt {
   auteur          User     @relation("ActiepuntAuteur", fields: [auteurId], references: [id])
   auteurId        String
 
-  blauwdrukSpeler BlauwdrukSpeler? // terugrelatie: actiepunt gekoppeld aan gezien-status
+  kadersSpeler KadersSpeler? // terugrelatie: actiepunt gekoppeld aan gezien-status
 
-  besluit         BlauwdrukBesluit? @relation(fields: [besluitId], references: [id])
-  besluitId       String?
+  besluit      KadersBesluit? @relation(fields: [besluitId], references: [id])
+  besluitId    String?
 
   afgerondOp      DateTime?
   volgorde        Int      @default(0)
@@ -1172,7 +1173,7 @@ model Actiepunt {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
-  @@index([blauwdrukId])
+  @@index([kadersId])
   @@index([toegewezenAanId])
   @@index([status])
 }
@@ -1201,17 +1202,17 @@ model Activiteit {
   afgerondOp        DateTime?
 
   // Audit
-  blauwdruk   Blauwdruk @relation(fields: [blauwdrukId], references: [id], onDelete: Cascade)
-  blauwdrukId String
-  auteur      User      @relation("ActiviteitAuteur", fields: [auteurId], references: [id])
-  auteurId    String
+  kaders   Kaders @relation(fields: [kadersId], references: [id], onDelete: Cascade)
+  kadersId String
+  auteur   User   @relation("ActiviteitAuteur", fields: [auteurId], references: [id])
+  auteurId String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([spelerId, createdAt])
   @@index([stafId, createdAt])
-  @@index([blauwdrukId])
+  @@index([kadersId])
 }
 
 enum ActiviteitType {
