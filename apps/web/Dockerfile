@@ -36,7 +36,7 @@ RUN pnpm --filter @oranje-wit/web exec next build --webpack
 
 # ── Stage 3: Production runtime ──────────────────────────────────────────────
 FROM node:22-slim AS runner
-RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
+RUN apt-get update -y && apt-get install -y openssl postgresql-client && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -48,10 +48,11 @@ COPY --from=builder /app/apps/web/.next/standalone ./
 COPY --from=builder /app/apps/web/.next/static apps/web/.next/static
 COPY --from=builder /app/apps/web/public apps/web/public
 
-# Prisma schema + migraties voor startup migrations
+# Prisma migraties bij startup
 COPY --from=builder /app/packages/database/prisma packages/database/prisma
-RUN npm install -g prisma@7.4.1 --no-audit --no-fund --silent
+COPY apps/web/start.sh /start.sh
+RUN npm install -g prisma@7.4.1 --no-audit --no-fund --silent && chmod +x /start.sh
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "if [ -n \"$DATABASE_URL\" ]; then prisma migrate deploy --schema=packages/database/prisma/schema.prisma && prisma db execute --schema=packages/database/prisma/schema.prisma --file=packages/database/prisma/views.sql; fi && node apps/web/server.js"]
+CMD ["/start.sh"]
