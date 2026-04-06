@@ -20,12 +20,12 @@ export default async function OpvolgingPage() {
 
   const seizoen = await getActiefSeizoen();
 
-  const blauwdruk = await prisma.blauwdruk.findUnique({
+  const kaders = await prisma.kaders.findUnique({
     where: { seizoen },
     select: { id: true },
   });
 
-  if (!blauwdruk) {
+  if (!kaders) {
     return (
       <div style={{ padding: "1rem" }}>
         <h1
@@ -46,7 +46,7 @@ export default async function OpvolgingPage() {
   // Actiepunten toegewezen aan de ingelogde gebruiker
   const actiepunten = await prisma.actiepunt.findMany({
     where: {
-      blauwdrukId: blauwdruk.id,
+      kadersId: kaders.id,
       status: { not: "AFGEROND" },
       toegewezenAan: { email: userEmail },
     },
@@ -62,9 +62,9 @@ export default async function OpvolgingPage() {
 
   // Werkitems gefilterd op doelgroep of alles voor TC
   const werkitemWhere = isTC
-    ? { blauwdrukId: blauwdruk.id, status: { not: "GEARCHIVEERD" as const } }
+    ? { kadersId: kaders.id, status: { not: "GEARCHIVEERD" as const } }
     : {
-        blauwdrukId: blauwdruk.id,
+        kadersId: kaders.id,
         status: { not: "GEARCHIVEERD" as const },
         OR: [
           {

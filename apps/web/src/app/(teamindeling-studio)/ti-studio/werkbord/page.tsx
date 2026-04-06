@@ -4,17 +4,17 @@ import { getWerkitems, getWerkitemStats } from "./actions";
 import { prisma } from "@/lib/teamindeling/db/prisma";
 import WerkbordOverzicht from "@/components/teamindeling/werkbord/WerkbordOverzicht";
 
-async function getWerkBlauwdruk() {
-  return prisma.blauwdruk.findFirst({
+async function getWerkKaders() {
+  return prisma.kaders.findFirst({
     where: { isWerkseizoen: true },
     select: { id: true, seizoen: true },
   });
 }
 
 export default async function WerkbordPage() {
-  const blauwdruk = await getWerkBlauwdruk();
+  const kaders = await getWerkKaders();
 
-  if (!blauwdruk) {
+  if (!kaders) {
     return (
       <div className="max-w-4xl space-y-4">
         <div>
@@ -22,7 +22,7 @@ export default async function WerkbordPage() {
             Werkbord
           </h2>
           <p className="mt-1 text-sm" style={{ color: "var(--text-secondary)" }}>
-            Maak eerst een blauwdruk aan om het werkbord te gebruiken.
+            Maak eerst een seizoen aan om het werkbord te gebruiken.
           </p>
         </div>
       </div>
@@ -30,15 +30,15 @@ export default async function WerkbordPage() {
   }
 
   const [werkitems, stats] = await Promise.all([
-    getWerkitems(blauwdruk.id),
-    getWerkitemStats(blauwdruk.id),
+    getWerkitems(kaders.id),
+    getWerkitemStats(kaders.id),
   ]);
 
   async function refreshWerkbord() {
     "use server";
     const [nieuweWerkitems, nieuweStats] = await Promise.all([
-      getWerkitems(blauwdruk!.id),
-      getWerkitemStats(blauwdruk!.id),
+      getWerkitems(kaders!.id),
+      getWerkitemStats(kaders!.id),
     ]);
     return { werkitems: nieuweWerkitems, stats: nieuweStats };
   }
@@ -46,7 +46,7 @@ export default async function WerkbordPage() {
   return (
     <div className="max-w-6xl">
       <WerkbordOverzicht
-        blauwdrukId={blauwdruk.id}
+        kadersId={kaders.id}
         initialWerkitems={werkitems}
         initialStats={stats}
         refreshAction={refreshWerkbord}

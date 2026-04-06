@@ -47,11 +47,11 @@ export default async function SpelersPage() {
   });
 
   // Haal werkindeling op voor teamnaam-mapping
-  const blauwdruk = await prisma.blauwdruk.findUnique({
+  const kaders = await prisma.kaders.findUnique({
     where: { seizoen },
     select: { id: true },
   });
-  const werkindelingId = blauwdruk ? await getWerkindelingId(blauwdruk.id) : null;
+  const werkindelingId = kaders ? await getWerkindelingId(kaders.id) : null;
   const werkindeling = werkindelingId
     ? await prisma.werkindeling.findUnique({
         where: { id: werkindelingId },
