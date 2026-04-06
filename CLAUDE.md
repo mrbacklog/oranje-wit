@@ -54,21 +54,40 @@ oranje-wit/
 - **CI (GitHub Actions)**: fast-gate (typecheck + lint + format + unit tests) + E2E tests op elke push/PR naar main
 - **ESLint**: `no-console` (error), `no-empty` (error), `prefer-const` (error), `no-unused-vars` (warn), `max-lines` (400, warn)
 
-## Deploy-modes
+## Deploy
 
 ![CI](https://github.com/antjanlaban/oranje-wit/actions/workflows/ci.yml/badge.svg)
 
-**Antjan zegt "deploy naar productie"** → Product Owner analyseert + kiest mode → `team-release` voert uit
+### Hoe werkt het
 
-| Mode | Wanneer | CI-tijd | E2E | Goedkeuring |
+Push naar `main` → CI → Railway deploy. Automatisch. Geen handmatige stappen.
+
+| Situatie | Commit prefix | CI workflow | E2E | Deploy |
 |---|---|---|---|---|
-| **Patch** | Urgente fix, typo, config | ~3-5 min | ❌ geen | Automatisch |
-| **Release** | Features, bundel, schema | ~25-35 min | ✅ smoke + full | Handmatig (Antjan) |
+| **Fix / patch** | `fix:` of `patch:` | `ci.yml` | ❌ skip | ✅ auto na fast-gate + build |
+| **Feature / PR** | geen prefix | `ci.yml` | ✅ full | ✅ auto na E2E |
+| **Bundel + grote feature** | `release:` (via release branch) | `release.yml` | ✅ smoke + full | ✅ via merge naar main |
 
-**Enkel `deployment` (aangestuurd door `team-release`) mag deployen.**  
-Alle andere agents: **VERBODEN te deployen** — escaleer naar `product-owner`.
+### Wie deployt
 
-Skills: `/patch` en `/release` — zie `.claude/skills/patch/` en `.claude/skills/release/`
+**Alleen `team-release` deployt.** Andere agents: VERBODEN — escaleer naar `product-owner`.
+
+```
+Antjan → product-owner → /team-release patch <scope>    # kleine fix
+Antjan → product-owner → /team-release release <scope>  # feature bundel
+```
+
+### Monitoring
+
+Gebruik `/team-devops` voor health checks en CI status (observatie, geen deploys).
+
+### Skills
+
+- `/patch` — instructies voor urgente fixes (fast-gate only, geen E2E)
+- `/release` — instructies voor feature releases (smoke + full E2E)
+- `/team-release` — start het release-team
+- `/team-devops` — start het monitoring-team (health-check, ci-status)
+- `/railway` — platform management (Railway services, DNS, SSL)
 
 ## Verplichte patronen
 

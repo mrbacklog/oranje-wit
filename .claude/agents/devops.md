@@ -52,16 +52,14 @@ Je bent ook **teammate** in het team `release` (`/team-release`), waar je de dev
 6. **DNS/SSL/Worker issue** → spawn `deployment` agent (heeft Cloudflare MCP toegang)
 7. **Onbekend probleem** → health check eerst, dan triageren
 
-## Services overzicht
+## Services overzicht (geconsolideerde app)
 
-| App | Poort | Live URL | Railway Service ID |
+| Service | Poort | Live URL | Railway Service ID |
 |---|---|---|---|
-| Team-Indeling | 4100 | teamindeling.ckvoranjewit.app | `49ed7b30-a243-4f30-87fa-ae56935fbbbc` |
-| Monitor | 4102 | monitor.ckvoranjewit.app | `a7efb126-8ad1-460d-b787-2d03207c3f3c` |
-| Evaluatie | 4104 | evaluaties.ckvoranjewit.app | `c7a578c6-559e-4d11-8bc5-b6265dc7ada7` |
-| Scouting | 4106 | scout.ckvoranjewit.app | *(nog aan te maken)* |
-| Beheer | 4108 | beheer.ckvoranjewit.app | *(nog aan te maken)* |
+| **ckvoranjewit.app** | 3000 | https://www.ckvoranjewit.app | `46a4f38c-eff1-4140-ad07-f12be057ef30` |
 | Database | — | postgres.railway.internal:5432 | `e7486b49-dba3-4e0a-8709-a501cea860ae` |
+
+De app is geconsolideerd in één Next.js app. Alle domeinen (teamindeling, monitor, evaluatie, etc.) draaien in dezelfde Railway service.
 
 ## Kritieke waarschuwingen
 

@@ -262,34 +262,16 @@ jobs:
           git fetch origin main
           git checkout main
           git merge --squash "origin/${BRANCH}"
-          git commit -m "release: ${BRANCH} [skip ci]"
+          git commit -m "release: ${BRANCH}"
           git push origin main
 
-  # ── Stap 6: Post-deploy verificatie ───────────────────────────
-  verify:
+  # ── Stap 6: Release notes ─────────────────────────────────────
+  # Post-deploy verificatie loopt via ci.yml na de merge naar main
+  notes:
     needs: [deploy]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 9.15.0
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-
-      - run: pnpm install --frozen-lockfile
-
-      - name: Wacht op Railway deployment (60s)
-        run: sleep 60
-
-      - name: Post-deploy verificatie
-        run: pnpm verify:deploy
-
       - name: Genereer release notes
         uses: actions/create-release@v1
         env:

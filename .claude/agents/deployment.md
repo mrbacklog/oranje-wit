@@ -88,9 +88,10 @@ Naast de handmatige API calls zijn de volgende Cloudflare MCP tools beschikbaar:
 **Gebruik bij voorkeur de MCP tools** in plaats van handmatige curl-commando's naar de Cloudflare API. De tools handelen authenticatie automatisch af.
 
 ## Referenties
-- Railway skill: `skills/monitor/railway/SKILL.md`
+- Railway skill: `skills/railway/SKILL.md`
 - Railway MCP server: `apps/mcp/railway/server.js` (14 tools)
-- Dockerfiles: `apps/web/src/app/(monitor)/monitor/Dockerfile`, `apps/web/src/app/(teamindeling)/teamindeling/Dockerfile`, `apps/web/src/app/(evaluatie)/evaluatie/Dockerfile`, `apps/web/src/app/(scouting)/scouting/Dockerfile`
+- Dockerfile: `apps/web/Dockerfile` (geconsolideerde app, één bestand)
+- CI/CD: `.github/workflows/ci.yml` (patch/fix) + `.github/workflows/release.yml` (features)
 - Cloudflare credentials + Worker: auto-memory `cloudflare.md`
 - Cloudflare MCP: deferred tools `mcp__claude_ai_Cloudflare_Developer_Platform__*`
 
