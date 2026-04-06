@@ -14,17 +14,17 @@ import { prisma } from "@/lib/teamindeling/db/prisma";
  */
 export async function getOfMaakWerkindelingVoorSeizoen(auteur = "systeem") {
   const seizoen = await getActiefSeizoen();
-  const blauwdruk = await prisma.blauwdruk.findUnique({
+  const kaders = await prisma.kaders.findUnique({
     where: { seizoen },
     select: { id: true },
   });
-  if (!blauwdruk) return null;
+  if (!kaders) return null;
 
-  const bestaand = await getWerkindeling(blauwdruk.id);
+  const bestaand = await getWerkindeling(kaders.id);
   if (bestaand) return bestaand;
 
-  await maakWerkindelingAan(blauwdruk.id, auteur);
-  return getWerkindeling(blauwdruk.id);
+  await maakWerkindelingAan(kaders.id, auteur);
+  return getWerkindeling(kaders.id);
 }
 
 /**
@@ -33,12 +33,12 @@ export async function getOfMaakWerkindelingVoorSeizoen(auteur = "systeem") {
  */
 export async function getWerkindelingVoorSeizoen() {
   const seizoen = await getActiefSeizoen();
-  const blauwdruk = await prisma.blauwdruk.findUnique({
+  const kaders = await prisma.kaders.findUnique({
     where: { seizoen },
     select: { id: true },
   });
-  if (!blauwdruk) return null;
-  return getWerkindeling(blauwdruk.id);
+  if (!kaders) return null;
+  return getWerkindeling(kaders.id);
 }
 
 /**
@@ -46,10 +46,10 @@ export async function getWerkindelingVoorSeizoen() {
  */
 export async function getWerkindelingIdVoorSeizoen(): Promise<string | null> {
   const seizoen = await getActiefSeizoen();
-  const blauwdruk = await prisma.blauwdruk.findUnique({
+  const kaders = await prisma.kaders.findUnique({
     where: { seizoen },
     select: { id: true },
   });
-  if (!blauwdruk) return null;
-  return getWerkindelingId(blauwdruk.id);
+  if (!kaders) return null;
+  return getWerkindelingId(kaders.id);
 }

@@ -11,7 +11,7 @@ import type { WerkitemData } from "@/components/teamindeling/werkbord/WerkitemKa
 import type { WerkitemType, WerkitemPrioriteit, WerkitemStatus } from "@oranje-wit/database";
 
 interface ScenarioWerkbordPanelProps {
-  blauwdrukId: string;
+  kadersId: string;
   werkindelingId: string;
 }
 
@@ -38,7 +38,7 @@ const TYPE_LABEL: Record<string, string> = {
 };
 
 export default function ScenarioWerkbordPanel({
-  blauwdrukId,
+  kadersId,
   werkindelingId,
 }: ScenarioWerkbordPanelProps) {
   const [werkitems, setWerkitems] = useState<WerkitemData[]>([]);
@@ -54,12 +54,12 @@ export default function ScenarioWerkbordPanel({
   const refresh = useCallback(async () => {
     // Haal zowel blauwdruk-brede als scenario-specifieke werkitems op
     const [blauwdrukItems, scenarioItems] = await Promise.all([
-      getWerkitems(blauwdrukId, { werkindelingId: null }),
-      getWerkitems(blauwdrukId, { werkindelingId }),
+      getWerkitems(kadersId, { werkindelingId: null }),
+      getWerkitems(kadersId, { werkindelingId }),
     ]);
     setWerkitems([...scenarioItems, ...blauwdrukItems]);
     setLoading(false);
-  }, [blauwdrukId, werkindelingId]);
+  }, [kadersId, werkindelingId]);
 
   useEffect(() => {
     refresh();
@@ -71,7 +71,7 @@ export default function ScenarioWerkbordPanel({
     setTitel("");
     startTransition(async () => {
       await createWerkitem({
-        blauwdrukId,
+        kadersId,
         titel: t,
         beschrijving: "",
         type,
@@ -80,7 +80,7 @@ export default function ScenarioWerkbordPanel({
       });
       await refresh();
     });
-  }, [titel, type, prioriteit, scope, blauwdrukId, werkindelingId, refresh]);
+  }, [titel, type, prioriteit, scope, kadersId, werkindelingId, refresh]);
 
   const handleStatusWijzig = useCallback(
     (id: string, status: WerkitemStatus) => {

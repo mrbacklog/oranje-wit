@@ -1,7 +1,7 @@
 import {
   getBlauwdruk,
   getLedenStatistieken,
-  getPinsVoorBlauwdruk,
+  getPinsVoorKaders,
 } from "@/app/(teamindeling-studio)/ti-studio/blauwdruk/actions";
 import {
   getBesluiten,
@@ -20,7 +20,7 @@ export const dynamic = "force-dynamic";
 
 export default async function KadersPage() {
   // Stap 1: haal blauwdruk en seizoen op in één query (werkseizoen als primaire bron)
-  const blauwdrukRecord = await prisma.blauwdruk.findFirst({
+  const blauwdrukRecord = await prisma.kaders.findFirst({
     where: { isWerkseizoen: true },
     select: { id: true, seizoen: true, kaders: true, speerpunten: true, toelichting: true },
   });
@@ -44,7 +44,7 @@ export default async function KadersPage() {
     getBesluitStats(blauwdruk.id),
     getGezienVoortgang(blauwdruk.id),
     getLedenStatistieken(),
-    getPinsVoorBlauwdruk(blauwdruk.id),
+    getPinsVoorKaders(blauwdruk.id),
     prisma.referentieTeam.findMany({
       where: { seizoen: vorigSzn },
       select: {
@@ -82,7 +82,7 @@ export default async function KadersPage() {
       <BlauwdrukVoortgang besluitStats={besluitStats} gezienVoortgang={gezienVoortgang} />
 
       <BesluitenOverzicht
-        blauwdrukId={blauwdruk.id}
+        kadersId={blauwdruk.id}
         initialBesluiten={besluitRecords}
         initialStats={besluitStats}
       />
@@ -94,11 +94,11 @@ export default async function KadersPage() {
         >
           Teamstructuur
         </h3>
-        <CategoriePanel statistieken={statistieken} kaders={kaders} blauwdrukId={blauwdruk.id} />
+        <CategoriePanel statistieken={statistieken} kaders={kaders} kadersId={blauwdruk.id} />
       </div>
 
       <KadersTeamsClient
-        blauwdrukId={blauwdruk.id}
+        kadersId={blauwdruk.id}
         initialPins={pins}
         referentieTeams={referentieTeams}
         seizoen={seizoen}

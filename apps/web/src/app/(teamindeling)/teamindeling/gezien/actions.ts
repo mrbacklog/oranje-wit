@@ -15,7 +15,7 @@ import { logger } from "@oranje-wit/types";
  * Haal alle teams op voor de ingelogde coördinator (via coordinator_teams).
  * Geeft ook de BlauwdrukSpeler-records terug voor spelers in die teams.
  */
-export async function getCoordinatorTeamsMetSpelers(blauwdrukId: string) {
+export async function getCoordinatorTeamsMetSpelers(kadersId: string) {
   const session = await requireTC();
   const email = session.user!.email!;
 
@@ -40,8 +40,8 @@ export async function getCoordinatorTeamsMetSpelers(blauwdrukId: string) {
     (ct: { owTeam: { naam: string | null; owCode: string } }) => ct.owTeam.naam ?? ct.owTeam.owCode
   );
 
-  const blauwdrukSpelers = await prisma.blauwdrukSpeler.findMany({
-    where: { blauwdrukId },
+  const blauwdrukSpelers = await prisma.kadersSpeler.findMany({
+    where: { kadersId },
     include: {
       speler: {
         select: {
@@ -108,7 +108,7 @@ export async function getCoordinatorTeamsMetSpelers(blauwdrukId: string) {
  */
 export async function stelGezienStatusVoor(
   spelerId: string,
-  blauwdrukId: string,
+  kadersId: string,
   status: GezienStatus,
   notitie?: string
 ): Promise<ActionResult<{ id: string }>> {
@@ -117,8 +117,8 @@ export async function stelGezienStatusVoor(
     const email = session.user!.email!;
     const naam = session.user!.name ?? email;
 
-    const record = await prisma.blauwdrukSpeler.findUnique({
-      where: { blauwdrukId_spelerId: { blauwdrukId, spelerId } },
+    const record = await prisma.kadersSpeler.findUnique({
+      where: { kadersId_spelerId: { kadersId, spelerId } },
       select: { id: true },
     });
 
@@ -126,7 +126,7 @@ export async function stelGezienStatusVoor(
       return { ok: false, error: `Geen BlauwdrukSpeler record gevonden voor speler ${spelerId}` };
     }
 
-    await prisma.blauwdrukSpeler.update({
+    await prisma.kadersSpeler.update({
       where: { id: record.id },
       data: {
         gezienStatusVoorgesteld: status,

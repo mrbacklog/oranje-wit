@@ -11,7 +11,7 @@ import type {
 } from "@/components/teamindeling/blauwdruk/UitgangspositiePanel";
 
 interface KadersTeamsClientProps {
-  blauwdrukId: string;
+  kadersId: string;
   initialPins: PinMetNamen[];
   referentieTeams: ReferentieTeamData[];
   seizoen: string;
@@ -19,7 +19,7 @@ interface KadersTeamsClientProps {
 }
 
 export default function KadersTeamsClient({
-  blauwdrukId: _blauwdrukId,
+  kadersId: _kadersId,
   initialPins,
   referentieTeams,
   seizoen,

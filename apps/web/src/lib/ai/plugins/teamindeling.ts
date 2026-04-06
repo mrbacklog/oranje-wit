@@ -87,7 +87,7 @@ export const teamindelingTools = {
       }
 
       const werkindelingen = await prisma.werkindeling.findMany({
-        where: { blauwdrukId: blauwdruk.id, verwijderdOp: null },
+        where: { kadersId: blauwdruk.id, verwijderdOp: null },
         select: {
           naam: true,
           status: true,

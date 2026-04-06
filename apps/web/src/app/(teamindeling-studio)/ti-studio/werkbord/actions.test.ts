@@ -54,10 +54,10 @@ describe("werkbord/actions", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // Standaard: blauwdruk bewerkbaar
-    mockPrisma.blauwdruk.findUniqueOrThrow.mockResolvedValue({
+    mockPrisma.kaders.findUniqueOrThrow.mockResolvedValue({
       seizoen: "2025-2026",
     });
-    mockPrisma.blauwdruk.findFirst.mockResolvedValue({
+    mockPrisma.kaders.findFirst.mockResolvedValue({
       id: "bp-1",
       seizoen: "2025-2026",
     });
@@ -78,7 +78,7 @@ describe("werkbord/actions", () => {
       expect(result).toEqual([]);
       expect(mockPrisma.werkitem.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: { blauwdrukId: "bp-1" },
+          where: { kadersId: "bp-1" },
         })
       );
     });
@@ -91,7 +91,7 @@ describe("werkbord/actions", () => {
       expect(mockPrisma.werkitem.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
           where: {
-            blauwdrukId: "bp-1",
+            kadersId: "bp-1",
             status: { in: ["OPEN", "IN_BESPREKING"] },
           },
         })
@@ -110,7 +110,7 @@ describe("werkbord/actions", () => {
       expect(mockPrisma.werkitem.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
           where: {
-            blauwdrukId: "bp-1",
+            kadersId: "bp-1",
             status: { in: ["OPEN"] },
             prioriteit: { in: ["BLOCKER"] },
             spelerId: "sp-1",
@@ -155,7 +155,7 @@ describe("werkbord/actions", () => {
       });
 
       await createWerkitem({
-        blauwdrukId: "bp-1",
+        kadersId: "bp-1",
         titel: "Nieuw item",
         beschrijving: "Details",
         type: "SPELER",
@@ -176,7 +176,7 @@ describe("werkbord/actions", () => {
       mockPrisma.werkitem.create.mockResolvedValueOnce({ id: "wi-b" });
 
       await createWerkitem({
-        blauwdrukId: "bp-1",
+        kadersId: "bp-1",
         titel: "Besluit genomen",
         beschrijving: "We kiezen optie A",
         type: "BESLUIT",
@@ -202,7 +202,7 @@ describe("werkbord/actions", () => {
   describe("updateWerkitemStatus", () => {
     it("gooit fout als status OPGELOST is zonder resolutie", async () => {
       mockPrisma.werkitem.findUniqueOrThrow.mockResolvedValueOnce({
-        blauwdrukId: "bp-1",
+        kadersId: "bp-1",
       });
 
       await expect(updateWerkitemStatus("wi-1", "OPGELOST")).rejects.toThrow(
@@ -212,7 +212,7 @@ describe("werkbord/actions", () => {
 
     it("update status met resolutie en opgelostOp", async () => {
       mockPrisma.werkitem.findUniqueOrThrow.mockResolvedValueOnce({
-        blauwdrukId: "bp-1",
+        kadersId: "bp-1",
       });
       mockPrisma.werkitem.update.mockResolvedValueOnce({
         id: "wi-1",
@@ -234,7 +234,7 @@ describe("werkbord/actions", () => {
 
     it("zet opgelostOp voor GEACCEPTEERD_RISICO", async () => {
       mockPrisma.werkitem.findUniqueOrThrow.mockResolvedValueOnce({
-        blauwdrukId: "bp-1",
+        kadersId: "bp-1",
       });
       mockPrisma.werkitem.update.mockResolvedValueOnce({
         id: "wi-1",
@@ -260,7 +260,7 @@ describe("werkbord/actions", () => {
   describe("deleteWerkitem", () => {
     it("verwijdert een werkitem", async () => {
       mockPrisma.werkitem.findUniqueOrThrow.mockResolvedValueOnce({
-        blauwdrukId: "bp-1",
+        kadersId: "bp-1",
       });
       mockPrisma.werkitem.delete.mockResolvedValueOnce({ id: "wi-1" });
 
@@ -285,7 +285,7 @@ describe("werkbord/actions", () => {
       expect(result).toBe(3);
       expect(mockPrisma.werkitem.count).toHaveBeenCalledWith({
         where: {
-          blauwdrukId: "bp-1",
+          kadersId: "bp-1",
           prioriteit: "BLOCKER",
           status: { in: ["OPEN", "IN_BESPREKING"] },
         },
@@ -328,14 +328,14 @@ describe("werkbord/actions", () => {
       });
 
       await createActiepunt({
-        blauwdrukId: "bp-1",
+        kadersId: "bp-1",
         beschrijving: "Bel trainer",
       });
 
       expect(mockPrisma.actiepunt.create).toHaveBeenCalledWith(
         expect.objectContaining({
           data: expect.objectContaining({
-            blauwdrukId: "bp-1",
+            kadersId: "bp-1",
             beschrijving: "Bel trainer",
             auteurId: "user-1",
             volgorde: 0,
@@ -348,7 +348,7 @@ describe("werkbord/actions", () => {
       mockPrisma.actiepunt.create.mockResolvedValueOnce({ id: "ap-2" });
 
       await createActiepunt({
-        blauwdrukId: "bp-1",
+        kadersId: "bp-1",
         beschrijving: "Deadline taak",
         deadline: "2026-06-01",
       });
@@ -366,7 +366,7 @@ describe("werkbord/actions", () => {
   describe("updateActiepuntStatus", () => {
     it("zet afgerondOp bij status AFGEROND", async () => {
       mockPrisma.actiepunt.findUniqueOrThrow.mockResolvedValueOnce({
-        blauwdrukId: "bp-1",
+        kadersId: "bp-1",
       });
       mockPrisma.actiepunt.update.mockResolvedValueOnce({ id: "ap-1" });
 
@@ -384,7 +384,7 @@ describe("werkbord/actions", () => {
 
     it("reset afgerondOp als status niet AFGEROND is", async () => {
       mockPrisma.actiepunt.findUniqueOrThrow.mockResolvedValueOnce({
-        blauwdrukId: "bp-1",
+        kadersId: "bp-1",
       });
       mockPrisma.actiepunt.update.mockResolvedValueOnce({ id: "ap-1" });
 
@@ -404,7 +404,7 @@ describe("werkbord/actions", () => {
   describe("deleteActiepunt", () => {
     it("verwijdert een actiepunt op id", async () => {
       mockPrisma.actiepunt.findUniqueOrThrow.mockResolvedValueOnce({
-        blauwdrukId: "bp-1",
+        kadersId: "bp-1",
       });
       mockPrisma.actiepunt.delete.mockResolvedValueOnce({ id: "ap-1" });
 
@@ -451,7 +451,7 @@ describe("werkbord/actions", () => {
       expect(mockPrisma.werkitem.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
           where: expect.objectContaining({
-            blauwdrukId: "bp-1",
+            kadersId: "bp-1",
             spelerId: "sp-1",
           }),
         })
@@ -459,7 +459,7 @@ describe("werkbord/actions", () => {
     });
 
     it("gooit fout als er geen werkseizoen is", async () => {
-      mockPrisma.blauwdruk.findFirst.mockResolvedValueOnce(null);
+      mockPrisma.kaders.findFirst.mockResolvedValueOnce(null);
 
       await expect(getTimelineVoorSubject({ spelerId: "sp-1" })).rejects.toThrow(
         "Geen werkseizoen gevonden"

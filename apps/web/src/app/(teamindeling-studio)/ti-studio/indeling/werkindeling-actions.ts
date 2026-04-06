@@ -16,30 +16,30 @@ async function assertTeamBewerkbaar(teamId: string) {
     select: {
       versie: {
         select: {
-          werkindeling: { select: { blauwdruk: { select: { seizoen: true } } } },
+          werkindeling: { select: { kaders: { select: { seizoen: true } } } },
         },
       },
     },
-  })) as { versie: { werkindeling: { blauwdruk: { seizoen: string } } } };
-  await assertBewerkbaar(team.versie.werkindeling.blauwdruk.seizoen);
+  })) as { versie: { werkindeling: { kaders: { seizoen: string } } } };
+  await assertBewerkbaar(team.versie.werkindeling.kaders.seizoen);
 }
 
 async function assertVersieBewerkbaar(versieId: string) {
   const versie = await prisma.versie.findUniqueOrThrow({
     where: { id: versieId },
     select: {
-      werkindeling: { select: { blauwdruk: { select: { seizoen: true } } } },
+      werkindeling: { select: { kaders: { select: { seizoen: true } } } },
     },
   });
-  await assertBewerkbaar(versie.werkindeling.blauwdruk.seizoen);
+  await assertBewerkbaar(versie.werkindeling.kaders.seizoen);
 }
 
 async function assertWerkindelingBewerkbaar(werkindelingId: string) {
   const werkindeling = await prisma.werkindeling.findUniqueOrThrow({
     where: { id: werkindelingId },
-    select: { blauwdruk: { select: { seizoen: true } } },
+    select: { kaders: { select: { seizoen: true } } },
   });
-  await assertBewerkbaar(werkindeling.blauwdruk.seizoen);
+  await assertBewerkbaar(werkindeling.kaders.seizoen);
 }
 
 export async function getWerkindelingVoorEditor(werkindelingId: string) {
@@ -50,7 +50,7 @@ export async function getWerkindelingVoorEditor(werkindelingId: string) {
       naam: true,
       status: true,
       toelichting: true,
-      blauwdruk: { select: { id: true, seizoen: true } },
+      kaders: { select: { id: true, seizoen: true } },
       versies: {
         orderBy: { nummer: "desc" },
         select: {

@@ -9,7 +9,7 @@ import { logger } from "@oranje-wit/types";
 
 interface ActiviteitFormProps {
   spelerId: string;
-  blauwdrukId: string;
+  kadersId: string;
   users: { id: string; naam: string }[];
   onCreated: () => void;
 }
@@ -18,7 +18,7 @@ type FormType = "opmerking" | "actiepunt" | null;
 
 export default function ActiviteitForm({
   spelerId,
-  blauwdrukId,
+  kadersId,
   users,
   onCreated,
 }: ActiviteitFormProps) {
@@ -43,7 +43,7 @@ export default function ActiviteitForm({
     try {
       if (formType === "opmerking") {
         await createWerkitem({
-          blauwdrukId,
+          kadersId,
           titel: inhoud.trim(),
           beschrijving: "",
           type: "SPELER",
@@ -53,7 +53,7 @@ export default function ActiviteitForm({
         });
       } else if (formType === "actiepunt") {
         const werkitem = await createWerkitem({
-          blauwdrukId,
+          kadersId,
           titel: inhoud.trim(),
           beschrijving: "",
           type: "SPELER",
@@ -62,7 +62,7 @@ export default function ActiviteitForm({
           spelerId,
         });
         await createActiepunt({
-          blauwdrukId,
+          kadersId,
           beschrijving: inhoud.trim(),
           werkitemId: werkitem.id,
           toegewezenAanId: toegewezenAanId || undefined,

@@ -36,7 +36,7 @@ const {
   updateSpelerStatus,
   getSpelersUitgebreid,
   getLedenStatistieken,
-  getPinsVoorBlauwdruk,
+  getPinsVoorKaders,
   setWerkseizoen,
 } = await import("./actions");
 
@@ -48,11 +48,11 @@ describe("blauwdruk/actions", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // Standaard: blauwdruk bestaat en is bewerkbaar
-    mockPrisma.blauwdruk.findUniqueOrThrow.mockResolvedValue({
+    mockPrisma.kaders.findUniqueOrThrow.mockResolvedValue({
       seizoen: "2025-2026",
       isWerkseizoen: true,
     });
-    mockPrisma.blauwdruk.findUnique.mockResolvedValue({
+    mockPrisma.kaders.findUnique.mockResolvedValue({
       seizoen: "2025-2026",
       isWerkseizoen: true,
     });
@@ -71,12 +71,12 @@ describe("blauwdruk/actions", () => {
         speerpunten: [],
         toelichting: "",
       };
-      mockPrisma.blauwdruk.upsert.mockResolvedValueOnce(mockBlauwdruk);
+      mockPrisma.kaders.upsert.mockResolvedValueOnce(mockBlauwdruk);
 
       const result = await getBlauwdruk("2025-2026");
 
       expect(result).toEqual(mockBlauwdruk);
-      expect(mockPrisma.blauwdruk.upsert).toHaveBeenCalledWith({
+      expect(mockPrisma.kaders.upsert).toHaveBeenCalledWith({
         where: { seizoen: "2025-2026" },
         create: {
           seizoen: "2025-2026",
@@ -96,14 +96,14 @@ describe("blauwdruk/actions", () => {
   describe("updateKaders", () => {
     it("update de kaders van een blauwdruk", async () => {
       const kaders = { BLAUW: { minSpelers: 2 } };
-      mockPrisma.blauwdruk.update.mockResolvedValueOnce({
+      mockPrisma.kaders.update.mockResolvedValueOnce({
         id: "bp-1",
         kaders,
       });
 
       await updateKaders("bp-1", kaders);
 
-      expect(mockPrisma.blauwdruk.update).toHaveBeenCalledWith({
+      expect(mockPrisma.kaders.update).toHaveBeenCalledWith({
         where: { id: "bp-1" },
         data: { kaders },
       });
@@ -117,14 +117,14 @@ describe("blauwdruk/actions", () => {
   describe("updateSpeerpunten", () => {
     it("update de speerpunten-array", async () => {
       const speerpunten = ["Meer plezier", "Betere doorstroom"];
-      mockPrisma.blauwdruk.update.mockResolvedValueOnce({
+      mockPrisma.kaders.update.mockResolvedValueOnce({
         id: "bp-1",
         speerpunten,
       });
 
       await updateSpeerpunten("bp-1", speerpunten);
 
-      expect(mockPrisma.blauwdruk.update).toHaveBeenCalledWith({
+      expect(mockPrisma.kaders.update).toHaveBeenCalledWith({
         where: { id: "bp-1" },
         data: { speerpunten },
       });
@@ -137,14 +137,14 @@ describe("blauwdruk/actions", () => {
 
   describe("updateToelichting", () => {
     it("update de toelichting tekst", async () => {
-      mockPrisma.blauwdruk.update.mockResolvedValueOnce({
+      mockPrisma.kaders.update.mockResolvedValueOnce({
         id: "bp-1",
         toelichting: "Nieuwe tekst",
       });
 
       await updateToelichting("bp-1", "Nieuwe tekst");
 
-      expect(mockPrisma.blauwdruk.update).toHaveBeenCalledWith({
+      expect(mockPrisma.kaders.update).toHaveBeenCalledWith({
         where: { id: "bp-1" },
         data: { toelichting: "Nieuwe tekst" },
       });
@@ -158,14 +158,14 @@ describe("blauwdruk/actions", () => {
   describe("updateCategorieKaders", () => {
     it("merged nieuwe settings met bestaande kaders", async () => {
       // Eerste call: assertBlauwdrukBewerkbaar, tweede call: ophalen kaders
-      mockPrisma.blauwdruk.findUniqueOrThrow
+      mockPrisma.kaders.findUniqueOrThrow
         .mockResolvedValueOnce({ seizoen: "2025-2026" })
         .mockResolvedValueOnce({ kaders: { BLAUW: { minSpelers: 2 } } });
-      mockPrisma.blauwdruk.update.mockResolvedValueOnce({ id: "bp-1" });
+      mockPrisma.kaders.update.mockResolvedValueOnce({ id: "bp-1" });
 
       await updateCategorieKaders("bp-1", "GROEN", { minSpelers: 3 });
 
-      expect(mockPrisma.blauwdruk.update).toHaveBeenCalledWith({
+      expect(mockPrisma.kaders.update).toHaveBeenCalledWith({
         where: { id: "bp-1" },
         data: {
           kaders: {
@@ -177,14 +177,14 @@ describe("blauwdruk/actions", () => {
     });
 
     it("werkt bestaande categorie bij zonder andere te overschrijven", async () => {
-      mockPrisma.blauwdruk.findUniqueOrThrow
+      mockPrisma.kaders.findUniqueOrThrow
         .mockResolvedValueOnce({ seizoen: "2025-2026" })
         .mockResolvedValueOnce({ kaders: { BLAUW: { minSpelers: 2, notitie: "Test" } } });
-      mockPrisma.blauwdruk.update.mockResolvedValueOnce({ id: "bp-1" });
+      mockPrisma.kaders.update.mockResolvedValueOnce({ id: "bp-1" });
 
       await updateCategorieKaders("bp-1", "BLAUW", { minSpelers: 3 });
 
-      expect(mockPrisma.blauwdruk.update).toHaveBeenCalledWith({
+      expect(mockPrisma.kaders.update).toHaveBeenCalledWith({
         where: { id: "bp-1" },
         data: {
           kaders: {
@@ -324,10 +324,10 @@ describe("blauwdruk/actions", () => {
   });
 
   // ----------------------------------------------------------
-  // getPinsVoorBlauwdruk
+  // getPinsVoorKaders
   // ----------------------------------------------------------
 
-  describe("getPinsVoorBlauwdruk", () => {
+  describe("getPinsVoorKaders", () => {
     it("haalt pins op met speler- en stafdata", async () => {
       const mockPins = [
         {
@@ -339,11 +339,11 @@ describe("blauwdruk/actions", () => {
       ];
       mockPrisma.pin.findMany.mockResolvedValueOnce(mockPins);
 
-      const result = await getPinsVoorBlauwdruk("bp-1");
+      const result = await getPinsVoorKaders("bp-1");
 
       expect(result).toEqual(mockPins);
       expect(mockPrisma.pin.findMany).toHaveBeenCalledWith({
-        where: { blauwdrukId: "bp-1" },
+        where: { kadersId: "bp-1" },
         include: expect.objectContaining({
           speler: expect.any(Object),
           staf: expect.any(Object),
@@ -364,18 +364,18 @@ describe("blauwdruk/actions", () => {
     });
 
     it("zet het werkseizoen en schrijft cookie", async () => {
-      mockPrisma.blauwdruk.updateMany.mockResolvedValueOnce({ count: 1 });
-      mockPrisma.blauwdruk.update.mockResolvedValueOnce({
+      mockPrisma.kaders.updateMany.mockResolvedValueOnce({ count: 1 });
+      mockPrisma.kaders.update.mockResolvedValueOnce({
         seizoen: "2025-2026",
         isWerkseizoen: true,
       });
 
       await setWerkseizoen("2025-2026");
 
-      expect(mockPrisma.blauwdruk.updateMany).toHaveBeenCalledWith({
+      expect(mockPrisma.kaders.updateMany).toHaveBeenCalledWith({
         data: { isWerkseizoen: false },
       });
-      expect(mockPrisma.blauwdruk.update).toHaveBeenCalledWith({
+      expect(mockPrisma.kaders.update).toHaveBeenCalledWith({
         where: { seizoen: "2025-2026" },
         data: { isWerkseizoen: true },
       });

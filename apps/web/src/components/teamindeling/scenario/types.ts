@@ -144,7 +144,7 @@ export interface ScenarioData {
   keuzeWaardes: unknown;
   versies: VersieData[];
   concept: {
-    blauwdruk: {
+    kaders: {
       id: string;
       kaders: Record<string, Record<string, unknown>>;
     };

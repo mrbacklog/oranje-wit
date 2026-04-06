@@ -53,9 +53,8 @@ export function useScenarioEditor(scenario: ScenarioData, alleSpelers: SpelerDat
 
   // Blauwdruk-kaders voor validatie
   const blauwdrukKaders = useMemo(
-    () =>
-      scenario.concept?.blauwdruk?.kaders as Record<string, Record<string, unknown>> | undefined,
-    [scenario.concept?.blauwdruk?.kaders]
+    () => scenario.concept?.kaders?.kaders as Record<string, Record<string, unknown>> | undefined,
+    [scenario.concept?.kaders?.kaders]
   );
 
   // Realtime validatie (incl. selectie-validatie)
@@ -67,7 +66,7 @@ export function useScenarioEditor(scenario: ScenarioData, alleSpelers: SpelerDat
   );
 
   // Pins (blauwdruk-level)
-  const blauwdrukId = scenario.concept?.blauwdruk?.id;
+  const kadersId = scenario.concept?.kaders?.id;
   const [pins, setPins] = useState<PinData[]>([]);
   const pinMap = useMemo(() => {
     const map = new Map<string, PinData>();
@@ -95,7 +94,7 @@ export function useScenarioEditor(scenario: ScenarioData, alleSpelers: SpelerDat
 
   const handleTogglePin = useCallback(
     (spelerId: string, teamNaam: string, teamId: string) => {
-      if (!blauwdrukId) return;
+      if (!kadersId) return;
       const bestaandePin = pinMap.get(spelerId);
       if (bestaandePin) {
         // Ontpin — optimistic update
@@ -119,7 +118,7 @@ export function useScenarioEditor(scenario: ScenarioData, alleSpelers: SpelerDat
         startTransition(async () => {
           try {
             const pin = await createPin({
-              blauwdrukId,
+              kadersId,
               spelerId,
               type: "SPELER_POSITIE",
               waarde: { teamNaam, teamId },
@@ -143,7 +142,7 @@ export function useScenarioEditor(scenario: ScenarioData, alleSpelers: SpelerDat
         });
       }
     },
-    [blauwdrukId, pinMap]
+    [kadersId, pinMap]
   );
 
   // Verdeel-dialoog state
@@ -328,7 +327,7 @@ export function useScenarioEditor(scenario: ScenarioData, alleSpelers: SpelerDat
 
   return {
     // Data
-    blauwdrukId,
+    kadersId,
     teams,
     selectieGroepen,
     selectieGroepMap: selectie.selectieGroepMap,

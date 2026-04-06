@@ -53,7 +53,7 @@ interface SpelerDetailProps {
   teamNaam?: string;
   pin?: PinData | null;
   showRanking?: boolean;
-  blauwdrukId?: string;
+  kadersId?: string;
   onClose: () => void;
   onTogglePin?: (spelerId: string, teamNaam: string, teamId: string) => void;
 }
@@ -64,7 +64,7 @@ export default function SpelerDetail({
   teamNaam,
   pin,
   showRanking,
-  blauwdrukId,
+  kadersId,
   onClose,
   onTogglePin,
 }: SpelerDetailProps) {
@@ -366,7 +366,7 @@ export default function SpelerDetail({
           {activeTab === "status" && (
             <SpelerStatusTab
               spelerId={speler.id}
-              blauwdrukId={blauwdrukId ?? ""}
+              kadersId={kadersId ?? ""}
               initialStatus={speler.status}
               notitie={speler.notitie}
             />

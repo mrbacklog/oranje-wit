@@ -5,7 +5,7 @@ import { createWerkitem } from "@/app/(teamindeling-studio)/ti-studio/werkbord/a
 import type { WerkitemType, WerkitemPrioriteit, Besluitniveau, Doelgroep, Entiteit } from "./types";
 
 interface WerkitemDialoogProps {
-  blauwdrukId: string;
+  kadersId: string;
   werkindelingId?: string;
   spelerId?: string;
   stafId?: string;
@@ -15,7 +15,7 @@ interface WerkitemDialoogProps {
 }
 
 export default function WerkitemDialoog({
-  blauwdrukId,
+  kadersId,
   werkindelingId,
   spelerId,
   stafId,
@@ -41,7 +41,7 @@ export default function WerkitemDialoog({
 
     startTransition(async () => {
       await createWerkitem({
-        blauwdrukId,
+        kadersId,
         titel: titel.trim(),
         beschrijving: beschrijving.trim(),
         type,

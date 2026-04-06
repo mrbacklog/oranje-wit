@@ -11,7 +11,7 @@ type Fase = "upload" | "preview" | "verwerken" | "resultaat";
 interface LedenSyncDialoogProps {
   open: boolean;
   onClose: () => void;
-  blauwdrukId: string;
+  kadersId: string;
 }
 
 interface VerwerkResultaat {
@@ -20,7 +20,7 @@ interface VerwerkResultaat {
   spelersGemarkeerd: number;
 }
 
-export default function LedenSyncDialoog({ open, onClose, blauwdrukId }: LedenSyncDialoogProps) {
+export default function LedenSyncDialoog({ open, onClose, kadersId }: LedenSyncDialoogProps) {
   const router = useRouter();
   const [fase, setFase] = useState<Fase>("upload");
   const [bezig, setBezig] = useState(false);
@@ -100,7 +100,7 @@ export default function LedenSyncDialoog({ open, onClose, blauwdrukId }: LedenSy
         JSON.stringify({
           nieuweLeden: Array.from(geselecteerdNieuw),
           vertrokkenSpelers: Array.from(geselecteerdVertrokken),
-          blauwdrukId,
+          kadersId,
         })
       );
       const res = await fetch("/api/teamindeling/leden-sync/verwerk", {
@@ -121,7 +121,7 @@ export default function LedenSyncDialoog({ open, onClose, blauwdrukId }: LedenSy
     } finally {
       setBezig(false);
     }
-  }, [csvFile, diff, geselecteerdNieuw, geselecteerdVertrokken, blauwdrukId]);
+  }, [csvFile, diff, geselecteerdNieuw, geselecteerdVertrokken, kadersId]);
 
   const toggleNieuw = (relCode: string) => {
     setGeselecteerdNieuw((prev) => {

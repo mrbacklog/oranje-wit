@@ -34,16 +34,16 @@ async function getOrCreateUser() {
   });
 }
 
-async function assertBlauwdrukBewerkbaar(blauwdrukId: string) {
-  const blauwdruk = await prisma.blauwdruk.findUniqueOrThrow({
-    where: { id: blauwdrukId },
+async function assertBlauwdrukBewerkbaar(kadersId: string) {
+  const blauwdruk = await prisma.kaders.findUniqueOrThrow({
+    where: { id: kadersId },
     select: { seizoen: true },
   });
   await assertBewerkbaar(blauwdruk.seizoen);
 }
 
 async function getWerkBlauwdruk() {
-  const blauwdruk = await prisma.blauwdruk.findFirst({
+  const blauwdruk = await prisma.kaders.findFirst({
     where: { isWerkseizoen: true },
     select: { id: true, seizoen: true },
   });
@@ -69,7 +69,7 @@ const werkitemInclude = {
 };
 
 export async function getWerkitems(
-  blauwdrukId: string,
+  kadersId: string,
   filters?: {
     status?: WerkitemStatus[];
     prioriteit?: WerkitemPrioriteit[];
@@ -84,7 +84,7 @@ export async function getWerkitems(
   }
 ) {
   const where = {
-    blauwdrukId,
+    kadersId,
     ...(filters?.status?.length && { status: { in: filters.status } }),
     ...(filters?.prioriteit?.length && { prioriteit: { in: filters.prioriteit } }),
     ...(filters?.type?.length && { type: { in: filters.type } }),
@@ -112,7 +112,7 @@ export async function getWerkitem(werkitemId: string) {
 }
 
 export async function createWerkitem(data: {
-  blauwdrukId: string;
+  kadersId: string;
   titel: string;
   beschrijving: string;
   type: WerkitemType;
@@ -126,12 +126,12 @@ export async function createWerkitem(data: {
   teamOwCode?: string;
   resolutie?: string;
 }) {
-  await assertBlauwdrukBewerkbaar(data.blauwdrukId);
+  await assertBlauwdrukBewerkbaar(data.kadersId);
   const user = await getOrCreateUser();
 
   return db.werkitem.create({
     data: {
-      blauwdrukId: data.blauwdrukId,
+      kadersId: data.kadersId,
       titel: data.titel,
       beschrijving: data.beschrijving,
       type: data.type,
@@ -166,9 +166,9 @@ export async function updateWerkitem(
 ) {
   const werkitem = await db.werkitem.findUniqueOrThrow({
     where: { id: werkitemId },
-    select: { blauwdrukId: true },
+    select: { kadersId: true },
   });
-  await assertBlauwdrukBewerkbaar(werkitem.blauwdrukId);
+  await assertBlauwdrukBewerkbaar(werkitem.kadersId);
 
   return db.werkitem.update({
     where: { id: werkitemId },
@@ -184,9 +184,9 @@ export async function updateWerkitemStatus(
 ) {
   const werkitem = await db.werkitem.findUniqueOrThrow({
     where: { id: werkitemId },
-    select: { blauwdrukId: true },
+    select: { kadersId: true },
   });
-  await assertBlauwdrukBewerkbaar(werkitem.blauwdrukId);
+  await assertBlauwdrukBewerkbaar(werkitem.kadersId);
 
   if (status === "OPGELOST" && !resolutie) {
     throw new Error("Resolutie is verplicht bij status OPGELOST");
@@ -210,49 +210,49 @@ export async function updateWerkitemStatus(
 export async function deleteWerkitem(werkitemId: string) {
   const werkitem = await db.werkitem.findUniqueOrThrow({
     where: { id: werkitemId },
-    select: { blauwdrukId: true },
+    select: { kadersId: true },
   });
-  await assertBlauwdrukBewerkbaar(werkitem.blauwdrukId);
+  await assertBlauwdrukBewerkbaar(werkitem.kadersId);
 
   await db.werkitem.delete({ where: { id: werkitemId } });
   revalidatePath("/");
 }
 
-export async function countBlockers(blauwdrukId: string) {
+export async function countBlockers(kadersId: string) {
   return db.werkitem.count({
     where: {
-      blauwdrukId,
+      kadersId,
       prioriteit: "BLOCKER",
       status: { in: ["OPEN", "IN_BESPREKING"] },
     },
   });
 }
 
-export async function getWerkitemStats(blauwdrukId: string) {
+export async function getWerkitemStats(kadersId: string) {
   const [open, blockers, besluiten, afgerond] = await Promise.all([
     db.werkitem.count({
       where: {
-        blauwdrukId,
+        kadersId,
         status: { in: ["OPEN", "IN_BESPREKING"] },
       },
     }),
     db.werkitem.count({
       where: {
-        blauwdrukId,
+        kadersId,
         prioriteit: "BLOCKER",
         status: { in: ["OPEN", "IN_BESPREKING"] },
       },
     }),
     db.werkitem.count({
       where: {
-        blauwdrukId,
+        kadersId,
         type: "BESLUIT",
         status: "OPGELOST",
       },
     }),
     db.werkitem.count({
       where: {
-        blauwdrukId,
+        kadersId,
         status: { in: ["OPGELOST", "GEACCEPTEERD_RISICO"] },
       },
     }),
@@ -265,19 +265,19 @@ export async function getWerkitemStats(blauwdrukId: string) {
 // ============================================================
 
 export async function createActiepunt(data: {
-  blauwdrukId: string;
+  kadersId: string;
   beschrijving: string;
   toegewezenAanId?: string;
   werkitemId?: string;
   deadline?: string;
   volgorde?: number;
 }) {
-  await assertBlauwdrukBewerkbaar(data.blauwdrukId);
+  await assertBlauwdrukBewerkbaar(data.kadersId);
   const user = await getOrCreateUser();
 
   const result = await prisma.actiepunt.create({
     data: {
-      blauwdrukId: data.blauwdrukId,
+      kadersId: data.kadersId,
       beschrijving: data.beschrijving,
       toegewezenAanId: data.toegewezenAanId ?? null,
       werkitemId: data.werkitemId ?? null,
@@ -297,9 +297,9 @@ export async function createActiepunt(data: {
 export async function updateActiepuntStatus(actiepuntId: string, status: ActiepuntStatus) {
   const actiepunt = await prisma.actiepunt.findUniqueOrThrow({
     where: { id: actiepuntId },
-    select: { blauwdrukId: true },
+    select: { kadersId: true },
   });
-  await assertBlauwdrukBewerkbaar(actiepunt.blauwdrukId);
+  await assertBlauwdrukBewerkbaar(actiepunt.kadersId);
 
   const result = await prisma.actiepunt.update({
     where: { id: actiepuntId },
@@ -319,9 +319,9 @@ export async function updateActiepuntStatus(actiepuntId: string, status: Actiepu
 export async function deleteActiepunt(actiepuntId: string) {
   const actiepunt = await prisma.actiepunt.findUniqueOrThrow({
     where: { id: actiepuntId },
-    select: { blauwdrukId: true },
+    select: { kadersId: true },
   });
-  await assertBlauwdrukBewerkbaar(actiepunt.blauwdrukId);
+  await assertBlauwdrukBewerkbaar(actiepunt.kadersId);
 
   await prisma.actiepunt.delete({ where: { id: actiepuntId } });
   revalidatePath("/");
@@ -352,7 +352,7 @@ export async function getTimelineVoorSubject(subject: {
   const blauwdruk = await getWerkBlauwdruk();
 
   const where = {
-    blauwdrukId: blauwdruk.id,
+    kadersId: blauwdruk.id,
     ...(subject.spelerId && { spelerId: subject.spelerId }),
     ...(subject.stafId && { stafId: subject.stafId }),
     ...(subject.teamOwCode && { teamOwCode: subject.teamOwCode }),
@@ -379,7 +379,7 @@ export async function createStatusWerkitem(
 
   const result = await db.werkitem.create({
     data: {
-      blauwdrukId: blauwdruk.id,
+      kadersId: blauwdruk.id,
       titel: `Status: ${oudStatus} → ${nieuwStatus}`,
       beschrijving: `Spelerstatus gewijzigd van ${oudStatus} naar ${nieuwStatus}`,
       type: "SPELER",

@@ -5,11 +5,11 @@ import { logger } from "@oranje-wit/types";
 import { updateToelichting } from "@/app/(teamindeling-studio)/ti-studio/blauwdruk/actions";
 
 interface ToelichtingEditorProps {
-  blauwdrukId: string;
+  kadersId: string;
   initieel: string;
 }
 
-export default function ToelichtingEditor({ blauwdrukId, initieel }: ToelichtingEditorProps) {
+export default function ToelichtingEditor({ kadersId, initieel }: ToelichtingEditorProps) {
   const [tekst, setTekst] = useState(initieel);
   const [status, setStatus] = useState<"idle" | "opslaan" | "opgeslagen">("idle");
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -18,7 +18,7 @@ export default function ToelichtingEditor({ blauwdrukId, initieel }: Toelichting
     async (waarde: string) => {
       setStatus("opslaan");
       try {
-        await updateToelichting(blauwdrukId, waarde);
+        await updateToelichting(kadersId, waarde);
         setStatus("opgeslagen");
         // Reset status na 2 seconden
         setTimeout(() => setStatus("idle"), 2000);
@@ -27,7 +27,7 @@ export default function ToelichtingEditor({ blauwdrukId, initieel }: Toelichting
         setStatus("idle");
       }
     },
-    [blauwdrukId]
+    [kadersId]
   );
 
   const handleChange = useCallback(

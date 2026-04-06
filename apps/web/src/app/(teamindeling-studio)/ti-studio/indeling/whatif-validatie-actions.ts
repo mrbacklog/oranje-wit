@@ -48,8 +48,8 @@ export async function valideerWhatIfVoorToepassen(
       },
       werkindeling: {
         select: {
-          blauwdrukId: true,
-          blauwdruk: {
+          kadersId: true,
+          kaders: {
             select: {
               kaders: true,
               pins: {
@@ -133,7 +133,7 @@ export async function valideerWhatIfVoorToepassen(
   const spelerLookup = await laadSpelerLookup([...alleSpelerIds]);
 
   // Bouw pin-data
-  const pins: PinDataVoorValidatie[] = (whatIf.werkindeling.blauwdruk.pins ?? []).map((p: any) => ({
+  const pins: PinDataVoorValidatie[] = (whatIf.werkindeling.kaders.pins ?? []).map((p: any) => ({
     id: p.id,
     type: p.type,
     spelerId: p.spelerId,
@@ -142,7 +142,7 @@ export async function valideerWhatIfVoorToepassen(
   }));
 
   // Blauwdruk-kaders
-  const kaders = whatIf.werkindeling.blauwdruk.kaders as BlauwdrukKaders | null;
+  const kaders = whatIf.werkindeling.kaders.kaders as BlauwdrukKaders | null;
 
   // Teamaantal-kaders extraheren uit blauwdruk kaders (als beschikbaar)
   const teamAantalKaders = extractTeamAantalKaders(kaders);

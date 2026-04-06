@@ -10,7 +10,7 @@ import { revalidatePath } from "next/cache";
 const SelectieSchema = z.object({
   nieuweLeden: z.array(z.string()),
   vertrokkenSpelers: z.array(z.string()),
-  blauwdrukId: z.string().min(1),
+  kadersId: z.string().min(1),
 });
 
 export async function POST(request: Request) {
@@ -106,7 +106,7 @@ export async function POST(request: Request) {
       // Werkitem per nieuwe speler
       const naam = [rij.roepnaam, rij.tussenvoegsel, rij.achternaam].filter(Boolean).join(" ");
       await createWerkitem({
-        blauwdrukId: selectie.blauwdrukId,
+        kadersId: selectie.kadersId,
         titel: `Nieuwe aanmelding: ${naam}`,
         beschrijving: `Nieuw lid (${rij.geslacht}, ${rij.geboortejaar}) via leden-sync`,
         type: "SPELER",
@@ -122,7 +122,7 @@ export async function POST(request: Request) {
       // Check of er een SPELER_STATUS pin is → skip
       const pin = await prisma.pin.findFirst({
         where: {
-          blauwdrukId: selectie.blauwdrukId,
+          kadersId: selectie.kadersId,
           type: "SPELER_STATUS",
           spelerId: relCode,
         },
@@ -146,7 +146,7 @@ export async function POST(request: Request) {
     // Werkitem voor vertrokken spelers (samenvattend)
     if (spelersGemarkeerd > 0) {
       await createWerkitem({
-        blauwdrukId: selectie.blauwdrukId,
+        kadersId: selectie.kadersId,
         titel: `${spelersGemarkeerd} speler(s) afgemeld`,
         beschrijving: "Automatisch gemarkeerd als 'gaat stoppen' via leden-sync",
         type: "SPELER",

@@ -36,7 +36,7 @@ describe("indeling/actions", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // Reset default: blauwdruk gevonden
-    mockPrisma.blauwdruk.findUnique.mockResolvedValue({ id: "bp-1" });
+    mockPrisma.kaders.findUnique.mockResolvedValue({ id: "bp-1" });
   });
 
   // ----------------------------------------------------------
@@ -66,7 +66,7 @@ describe("indeling/actions", () => {
     });
 
     it("retourneert null als geen blauwdruk", async () => {
-      mockPrisma.blauwdruk.findUnique.mockResolvedValueOnce(null);
+      mockPrisma.kaders.findUnique.mockResolvedValueOnce(null);
 
       const result = await getWerkindelingVoorSeizoen();
 
@@ -90,7 +90,7 @@ describe("indeling/actions", () => {
     });
 
     it("retourneert null als geen blauwdruk", async () => {
-      mockPrisma.blauwdruk.findUnique.mockResolvedValueOnce(null);
+      mockPrisma.kaders.findUnique.mockResolvedValueOnce(null);
 
       const result = await getWerkindelingIdVoorSeizoen();
 

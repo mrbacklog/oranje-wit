@@ -23,7 +23,7 @@ import {
 // ─── Helpers ────────────────────────────────────────────────────
 
 async function getWerkBlauwdruk() {
-  return prisma.blauwdruk.findFirst({
+  return prisma.kaders.findFirst({
     where: { isWerkseizoen: true },
     select: { id: true, seizoen: true, kaders: true, keuzes: true },
   });
@@ -42,7 +42,7 @@ async function getVersieId(inContext: string): Promise<string | null> {
     const blauwdruk = await getWerkBlauwdruk();
     if (!blauwdruk) return null;
     const wi = await prisma.werkindeling.findFirst({
-      where: { blauwdrukId: blauwdruk.id, verwijderdOp: null },
+      where: { kadersId: blauwdruk.id, verwijderdOp: null },
     });
     if (!wi) return null;
     const v = await getLaatsteVersie(wi.id);
@@ -308,7 +308,7 @@ const leesTools = {
       if (!blauwdruk) return { fout: "Geen actieve blauwdruk gevonden" };
 
       const werkindeling = await prisma.werkindeling.findFirst({
-        where: { blauwdrukId: blauwdruk.id, verwijderdOp: null },
+        where: { kadersId: blauwdruk.id, verwijderdOp: null },
         select: { id: true, naam: true },
       });
       if (!werkindeling) return { fout: "Geen werkindeling gevonden" };
@@ -630,7 +630,7 @@ function maakSchrijfToolsSpelers(sessieId: string, gebruikerEmail: string) {
 
         const werkitem = await prisma.werkitem.create({
           data: {
-            blauwdrukId: blauwdruk.id,
+            kadersId: blauwdruk.id,
             titel: `Besluit: ${besluit.slice(0, 80)}`,
             beschrijving: besluit,
             type: "BESLUIT",
@@ -819,7 +819,7 @@ function maakSchrijfToolsRest(sessieId: string, gebruikerEmail: string) {
 
         const werkindeling = await prisma.werkindeling.create({
           data: {
-            blauwdrukId: blauwdruk.id,
+            kadersId: blauwdruk.id,
             naam,
             versies: {
               create: {
@@ -879,7 +879,7 @@ function maakSchrijfToolsRest(sessieId: string, gebruikerEmail: string) {
 
         const werkitem = await prisma.werkitem.create({
           data: {
-            blauwdrukId: blauwdruk.id,
+            kadersId: blauwdruk.id,
             titel,
             beschrijving: beschrijving ?? "",
             type: "STRATEGISCH",

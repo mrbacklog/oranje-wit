@@ -66,7 +66,7 @@ describe("dashboard/actions", () => {
 
   describe("getWerkindelingOverzicht", () => {
     it("retourneert lege array als er geen blauwdruk is", async () => {
-      mockPrisma.blauwdruk.findFirst.mockResolvedValueOnce(null);
+      mockPrisma.kaders.findFirst.mockResolvedValueOnce(null);
 
       const result = await getWerkindelingOverzicht();
 
@@ -75,7 +75,7 @@ describe("dashboard/actions", () => {
     });
 
     it("haalt werkindelingen op via de blauwdruk", async () => {
-      mockPrisma.blauwdruk.findFirst.mockResolvedValueOnce({ id: "bp-1" });
+      mockPrisma.kaders.findFirst.mockResolvedValueOnce({ id: "bp-1" });
       const mockWerkindelingen = [
         {
           id: "w1",
@@ -91,7 +91,7 @@ describe("dashboard/actions", () => {
 
       expect(result).toEqual(mockWerkindelingen);
       expect(mockPrisma.werkindeling.findMany).toHaveBeenCalledWith({
-        where: { blauwdrukId: "bp-1", verwijderdOp: null },
+        where: { kadersId: "bp-1", verwijderdOp: null },
         select: {
           id: true,
           naam: true,

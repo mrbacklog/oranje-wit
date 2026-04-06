@@ -14,8 +14,8 @@ export async function setWerkseizoen(seizoen: string) {
   if (!/^\d{4}-\d{4}$/.test(seizoen)) {
     throw new Error("Ongeldig seizoensformaat");
   }
-  await prisma.blauwdruk.updateMany({ data: { isWerkseizoen: false } });
-  await prisma.blauwdruk.update({ where: { seizoen }, data: { isWerkseizoen: true } });
+  await prisma.kaders.updateMany({ data: { isWerkseizoen: false } });
+  await prisma.kaders.update({ where: { seizoen }, data: { isWerkseizoen: true } });
 
   const cookieStore = await cookies();
   cookieStore.set("actief-seizoen", seizoen, {
@@ -28,9 +28,9 @@ export async function setWerkseizoen(seizoen: string) {
 /**
  * Haal alle pins voor een blauwdruk op, inclusief gekoppelde speler/staf.
  */
-export async function getPinsVoorBlauwdruk(blauwdrukId: string) {
+export async function getPinsVoorKaders(kadersId: string) {
   return prisma.pin.findMany({
-    where: { blauwdrukId },
+    where: { kadersId },
     include: {
       speler: { select: { id: true, roepnaam: true, achternaam: true } },
       staf: { select: { id: true, naam: true } },
@@ -40,14 +40,14 @@ export async function getPinsVoorBlauwdruk(blauwdrukId: string) {
   });
 }
 
-export type PinMetNamen = Awaited<ReturnType<typeof getPinsVoorBlauwdruk>>[number];
+export type PinMetNamen = Awaited<ReturnType<typeof getPinsVoorKaders>>[number];
 
 /**
  * Guard: controleer of de blauwdruk bij het huidige (bewerkbare) seizoen hoort.
  */
-async function assertBlauwdrukBewerkbaar(blauwdrukId: string) {
-  const blauwdruk = await prisma.blauwdruk.findUniqueOrThrow({
-    where: { id: blauwdrukId },
+async function assertBlauwdrukBewerkbaar(kadersId: string) {
+  const blauwdruk = await prisma.kaders.findUniqueOrThrow({
+    where: { id: kadersId },
     select: { seizoen: true },
   });
   await assertBewerkbaar(blauwdruk.seizoen);
@@ -73,7 +73,7 @@ const U_CONFIG = [
  * Haal de blauwdruk voor een seizoen op, of maak een nieuwe aan.
  */
 export async function getBlauwdruk(seizoen: string) {
-  return prisma.blauwdruk.upsert({
+  return prisma.kaders.upsert({
     where: { seizoen },
     create: {
       seizoen,
@@ -88,10 +88,10 @@ export async function getBlauwdruk(seizoen: string) {
 /**
  * Update kaders (JSON).
  */
-export async function updateKaders(blauwdrukId: string, kaders: Prisma.InputJsonValue) {
-  await assertBlauwdrukBewerkbaar(blauwdrukId);
-  return prisma.blauwdruk.update({
-    where: { id: blauwdrukId },
+export async function updateKaders(kadersId: string, kaders: Prisma.InputJsonValue) {
+  await assertBlauwdrukBewerkbaar(kadersId);
+  return prisma.kaders.update({
+    where: { id: kadersId },
     data: { kaders },
   });
 }
@@ -99,10 +99,10 @@ export async function updateKaders(blauwdrukId: string, kaders: Prisma.InputJson
 /**
  * Update speerpunten (string[]).
  */
-export async function updateSpeerpunten(blauwdrukId: string, speerpunten: string[]) {
-  await assertBlauwdrukBewerkbaar(blauwdrukId);
-  return prisma.blauwdruk.update({
-    where: { id: blauwdrukId },
+export async function updateSpeerpunten(kadersId: string, speerpunten: string[]) {
+  await assertBlauwdrukBewerkbaar(kadersId);
+  return prisma.kaders.update({
+    where: { id: kadersId },
     data: { speerpunten },
   });
 }
@@ -110,10 +110,10 @@ export async function updateSpeerpunten(blauwdrukId: string, speerpunten: string
 /**
  * Update toelichting (string).
  */
-export async function updateToelichting(blauwdrukId: string, toelichting: string) {
-  await assertBlauwdrukBewerkbaar(blauwdrukId);
-  return prisma.blauwdruk.update({
-    where: { id: blauwdrukId },
+export async function updateToelichting(kadersId: string, toelichting: string) {
+  await assertBlauwdrukBewerkbaar(kadersId);
+  return prisma.kaders.update({
+    where: { id: kadersId },
     data: { toelichting },
   });
 }
@@ -125,20 +125,20 @@ import type { CategorieSettings, CategorieKaders } from "./categorie-kaders";
  * Merged met bestaande kaders zodat andere categorieën behouden blijven.
  */
 export async function updateCategorieKaders(
-  blauwdrukId: string,
+  kadersId: string,
   categorie: string,
   settings: Partial<CategorieSettings>
 ) {
-  await assertBlauwdrukBewerkbaar(blauwdrukId);
-  const blauwdruk = await prisma.blauwdruk.findUniqueOrThrow({
-    where: { id: blauwdrukId },
+  await assertBlauwdrukBewerkbaar(kadersId);
+  const blauwdruk = await prisma.kaders.findUniqueOrThrow({
+    where: { id: kadersId },
     select: { kaders: true },
   });
 
   const bestaand = (blauwdruk.kaders ?? {}) as CategorieKaders;
 
-  return prisma.blauwdruk.update({
-    where: { id: blauwdrukId },
+  return prisma.kaders.update({
+    where: { id: kadersId },
     data: {
       kaders: {
         ...bestaand,

@@ -21,7 +21,7 @@ import type { WerkitemStatus } from "./types";
 import { logger } from "@oranje-wit/types";
 
 interface WerkbordOverzichtProps {
-  blauwdrukId: string;
+  kadersId: string;
   initialWerkitems: WerkitemData[];
   initialStats: { open: number; blockers: number; besluiten: number; afgerond: number };
   refreshAction: () => Promise<{
@@ -51,7 +51,7 @@ const EMPTY_FILTERS: WerkbordFilterState = {
 };
 
 export default function WerkbordOverzicht({
-  blauwdrukId,
+  kadersId,
   initialWerkitems,
   initialStats,
   refreshAction,
@@ -235,7 +235,7 @@ export default function WerkbordOverzicht({
 
       {dialoogOpen && (
         <WerkitemDialoog
-          blauwdrukId={blauwdrukId}
+          kadersId={kadersId}
           onClose={() => setDialoogOpen(false)}
           onCreated={refresh}
         />

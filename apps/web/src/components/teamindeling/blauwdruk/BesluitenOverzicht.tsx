@@ -34,7 +34,7 @@ type BesluitRecord = {
 };
 
 interface BesluitenOverzichtProps {
-  blauwdrukId: string;
+  kadersId: string;
   initialBesluiten: BesluitRecord[];
   initialStats: { totaal: number; onduidelijk: number; voorlopig: number; definitief: number };
 }
@@ -81,7 +81,7 @@ function StatusBadge({ status }: { status: BesluitStatus }) {
 }
 
 export default function BesluitenOverzicht({
-  blauwdrukId,
+  kadersId,
   initialBesluiten,
   initialStats,
 }: BesluitenOverzichtProps) {
@@ -144,7 +144,7 @@ export default function BesluitenOverzicht({
     if (!nieuweVraag.trim()) return;
     setShowNieuw(false);
     startTransition(async () => {
-      await createBesluit({ blauwdrukId, vraag: nieuweVraag.trim() });
+      await createBesluit({ kadersId, vraag: nieuweVraag.trim() });
       setNieuweVraag("");
       window.location.reload();
     });
@@ -159,7 +159,7 @@ export default function BesluitenOverzicht({
 
   function handleInitialiseer() {
     startTransition(async () => {
-      await initialiseerStandaardBesluiten(blauwdrukId);
+      await initialiseerStandaardBesluiten(kadersId);
       window.location.reload();
     });
   }

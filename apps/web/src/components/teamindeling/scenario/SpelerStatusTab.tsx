@@ -26,14 +26,14 @@ const STATUS_LABELS: Record<string, string> = {
 
 interface SpelerStatusTabProps {
   spelerId: string;
-  blauwdrukId: string;
+  kadersId: string;
   initialStatus: string;
   notitie?: string | null;
 }
 
 export default function SpelerStatusTab({
   spelerId,
-  blauwdrukId,
+  kadersId,
   initialStatus,
   notitie,
 }: SpelerStatusTabProps) {
@@ -106,7 +106,7 @@ export default function SpelerStatusTab({
       {/* Werkitem form + timeline */}
       <ActiviteitForm
         spelerId={spelerId}
-        blauwdrukId={blauwdrukId}
+        kadersId={kadersId}
         users={users}
         onCreated={refreshTimeline}
       />

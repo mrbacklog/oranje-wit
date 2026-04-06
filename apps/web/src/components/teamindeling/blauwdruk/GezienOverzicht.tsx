@@ -7,7 +7,7 @@ import { GezienStatusBadge, GezienStatusDot } from "./GezienStatusBadge";
 import {
   updateGezienStatus,
   batchUpdateGezienStatus,
-  initialiseerBlauwdrukSpelers,
+  initialiseerKadersSpelers,
 } from "@/app/(teamindeling-studio)/ti-studio/blauwdruk/gezien-actions";
 
 type SpelerData = {
@@ -38,7 +38,7 @@ type BlauwdrukSpelerRecord = {
 };
 
 interface GezienOverzichtProps {
-  blauwdrukId: string;
+  kadersId: string;
   initialRecords: BlauwdrukSpelerRecord[];
   initialVoortgang: { totaal: number; gezien: number; perStatus: Record<string, number> };
   users: Array<{ id: string; naam: string }>;
@@ -60,7 +60,7 @@ const SIGNALERING_LABELS: Record<string, string> = {
 };
 
 export default function GezienOverzicht({
-  blauwdrukId,
+  kadersId,
   initialRecords,
   initialVoortgang,
   users,
@@ -97,13 +97,13 @@ export default function GezienOverzicht({
     });
 
     startTransition(async () => {
-      await updateGezienStatus(blauwdrukId, record.spelerId, newStatus);
+      await updateGezienStatus(kadersId, record.spelerId, newStatus);
     });
   }
 
   function handleInitialiseer() {
     startTransition(async () => {
-      await initialiseerBlauwdrukSpelers(blauwdrukId);
+      await initialiseerKadersSpelers(kadersId);
       // Page revalidation will refresh data
       window.location.reload();
     });
