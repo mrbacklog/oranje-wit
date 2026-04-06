@@ -1,124 +1,74 @@
 ---
 name: team-devops
-description: Start een Agent Team voor DevOps/DX taken. Gebruik voor health checks, CI monitoring, deployment troubleshooting, of infrastructure beheer.
+description: Start het DevOps-team voor observatie en monitoring. Health checks, CI status, infrastructure issues, DNS/SSL troubleshooting. GEEN deploys — die gaan via /team-release.
 disable-model-invocation: true
-argument-hint: "<opdracht: health-check | ci-status | deploy | troubleshoot | dx>"
+argument-hint: "<opdracht: health-check | ci-status | troubleshoot | dx>"
 ---
 
-# Agent Team: DevOps
+# Agent Team: DevOps (Monitoring & Observatie)
 
-Start een agent team voor DevOps/DX taken voor c.k.v. Oranje Wit.
+Start dit team voor **observatie, monitoring en infrastructure troubleshooting**. Niet voor deploys — die gaan via `/team-release`.
+
+## ⛔ Dit team deployt NIET
+
+Deploys (patch of release) gaan altijd via `/team-release`. Dit team observeert en triageert.
 
 ## Team samenstelling
 
 ### Lead: devops
-- **Rol**: Orkestreert alle DevOps/DX taken, voert health checks en CI monitoring uit
-- **Verantwoordelijkheden**:
-  - Voert health checks uit op alle services (`/health-check`)
-  - Monitort GitHub Actions CI status (`/ci-status`)
-  - Triageert issues en delegeert aan de juiste teammate
-  - Rapporteert overall status aan de gebruiker
-  - Beheert development environment configuratie
+- Health checks uitvoeren op alle services
+- CI status monitoren en failure analyseren
+- Triageren: is het een platform-issue of code-issue?
+- Rapporteert status en aanbevelingen
 
 ### Teammate 1: deployment
-- **Rol**: Platform specialist voor Railway en Cloudflare
-- **Verantwoordelijkheden**:
-  - Railway deployment management (services, builds, logs, env vars)
-  - Cloudflare DNS en Worker proxy beheer
-  - Custom domain en SSL-certificaat troubleshooting
-  - Build-fout analyse via Railway logs
-  - Rapporteert platform-status terug aan devops
+- Railway en Cloudflare troubleshooting
+- DNS, SSL, custom domain issues
+- Build-log analyse
+- Environment variables
 
-### Teammate 2: e2e-tester
-- **Rol**: Test automation specialist
-- **Verantwoordelijkheden**:
-  - Draait E2E tests per app (`pnpm test:e2e:<app>`)
-  - Post-deploy smoke tests tegen productie (read-only)
-  - Exploratory testing via Playwright MCP
-  - Rapporteert testresultaten terug aan devops
+### Teammate 2: e2e-tester (optioneel)
+- Post-deploy smoke tests (read-only, geen code-wijzigingen)
+- Test-failures analyseren
 
-### Teammate 3: ontwikkelaar (optioneel, bij code fixes)
-- **Rol**: Fixt code-issues die devops of andere teammates detecteren
-- **Verantwoordelijkheden**:
-  - Fixt build-fouten, type-errors, falende tests
-  - Configureert Dockerfiles en CI workflows
-  - Wordt alleen ingeschakeld als er een code-fix nodig is
-
-## Memory
-
-Bij het starten van dit team MOET de lead relevante memories raadplegen:
-
-1. **Lees** `MEMORY.md` (index) in de memory-directory
-2. **Lees** memories met type `project` of `feedback` gerelateerd aan deployment, CI, infrastructure
-3. **Pas op** voor eerder gesignaleerde valkuilen (bekende build-issues, DNS-problemen, env var issues)
-4. **Sla op** na afloop: nieuwe infra-issues, workarounds, of DX-verbeteringen als memory
-
-## Werkwijze
+## Modi
 
 ### Modus A: Health Check
-1. **devops** voert `/health-check` uit (alle services, DB, DNS)
-2. Bij rode items: **devops** spawnt `deployment` voor platform-issues of `e2e-tester` voor test-issues
-3. **devops** rapporteert overall status met stoplicht per component
+```
+/team-devops health-check
+```
+1. devops laadt `/health-check` (alle services, DB, DNS, SSL)
+2. Bij rode items: spawnt `deployment` voor platform-issues
+3. Rapporteert stoplicht-overzicht
 
-### Modus B: CI Monitoring
-1. **devops** voert `/ci-status` uit (recente GitHub Actions runs)
-2. Bij failures: **devops** analyseert de fout
-3. Bij platform-fout: **devops** spawnt `deployment` voor Railway troubleshooting
-4. Bij code-fout: **devops** rapporteert aan gebruiker of spawnt `ontwikkelaar`
+### Modus B: CI Status
+```
+/team-devops ci-status
+```
+1. devops laadt `/ci-status` (recente GitHub Actions runs)
+2. Bij failure: analyseert oorzaak (platform vs code)
+3. Rapporteert met aanbeveling (fix code of escaleer naar PO)
 
-### Modus C: Deploy & Verify
-1. **devops** controleert CI status na push
-2. **deployment** monitort Railway deployment en verifieert live status
-3. **e2e-tester** doet post-deploy smoke test
-4. **devops** rapporteert eindresultaat
+### Modus C: Troubleshoot
+```
+/team-devops troubleshoot <beschrijving>
+```
+1. devops triageert het probleem
+2. Spawnt `deployment` voor platform/DNS/Railway issues
+3. Rapporteert bevindingen en aanbevelingen
 
-### Modus D: Troubleshoot
-1. **devops** analyseert het probleem en triageert
-2. Spawnt de juiste teammate op basis van het type issue
-3. Bij escalatie: rapporteert aan gebruiker met bevindingen en aanbevelingen
+## Deploy-flow ter referentie
 
-### Modus E: DX (Development Experience)
-1. **devops** analyseert de huidige dev-setup
-2. Configureert tools, hooks, of IDE-instellingen
-3. Documenteert veranderingen
-
-## Communicatiepatronen
+Voor deploy-beslissingen:
 
 ```
-Gebruiker
-    ↕ opdracht en statusrapport
-devops (lead)
-    ↕ triagering + delegatie
-    ├── deployment (platform: Railway, Cloudflare, DNS)
-    │   ↕ platform-status en fixes
-    ├── e2e-tester (tests: Playwright, smoke tests)
-    │   ↕ testresultaten en bugs
-    └── ontwikkelaar (code fixes, optioneel)
-        ↕ build/test fixes
+Antjan of PO → /team-release <patch|release> <scope>
 ```
 
-## App-configuratie
-
-| App | Dev commando | Test | E2E | Live URL |
-|---|---|---|---|---|
-| Team-Indeling | `pnpm dev:ti` (4100) | `pnpm test:ti` | `pnpm test:e2e:ti` | teamindeling.ckvoranjewit.app |
-| Monitor | `pnpm dev:monitor` (4102) | `pnpm test:monitor` | `pnpm test:e2e:monitor` | monitor.ckvoranjewit.app |
-| Evaluatie | `pnpm dev:evaluatie` (4104) | `pnpm test:evaluatie` | `pnpm test:e2e:evaluatie` | evaluaties.ckvoranjewit.app |
-| Scouting | `pnpm dev:scouting` (4106) | `pnpm test:scouting` | *(nog te configureren)* | scout.ckvoranjewit.app |
-
-## Context
-
-- **Taal**: Nederlands
-- **Stack**: Next.js 16, Tailwind CSS 4, Prisma, pnpm workspaces
-- **CI/CD**: GitHub Actions → Railway (deploy alleen als CI groen)
-- **DNS**: Cloudflare Worker proxy (`railway-proxy`)
-- **Database**: PostgreSQL op Railway (NOOIT `pnpm db:push` draaien)
+Zie `/team-release` voor de volledige deploy-workflow.
 
 ## Opdracht
 
 $ARGUMENTS
 
-Als er geen specifieke opdracht is meegegeven, voer dan een health check uit:
-1. `/health-check` — status van alle services
-2. `/ci-status` — recente CI runs
-3. Rapporteer bevindingen
+Als er geen specifieke opdracht is: voer health-check + ci-status uit en rapporteer.

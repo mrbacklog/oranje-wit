@@ -28,7 +28,7 @@ Alles draait in één project:
 
 | Project | ID | Functie |
 |---|---|---|
-| oranje-wit-db | `aa87602d-316d-4d3e-8860-f75d352fae27` | Alles: PostgreSQL + Monitor + Team-Indeling |
+| oranje-wit-db | `aa87602d-316d-4d3e-8860-f75d352fae27` | Alles: PostgreSQL + geconsolideerde app |
 
 ### Environment
 
@@ -38,27 +38,35 @@ Alles draait in één project:
 
 ### Services
 
-| Service | ID | URL |
-|---|---|---|
-| Postgres | `e7486b49-dba3-4e0a-8709-a501cea860ae` | `postgres.railway.internal:5432` (intern) |
-| team-indeling | `49ed7b30-a243-4f30-87fa-ae56935fbbbc` | https://team-indeling-production.up.railway.app |
-| monitor | `a7efb126-8ad1-460d-b787-2d03207c3f3c` | https://monitor-production-b2b1.up.railway.app |
-| evaluatie | `c7a578c6-559e-4d11-8bc5-b6265dc7ada7` | — |
+| Service | ID | URL | Status |
+|---|---|---|---|
+| **ckvoranjewit.app** | `46a4f38c-eff1-4140-ad07-f12be057ef30` | https://www.ckvoranjewit.app | ✅ **Actief** — geconsolideerde app |
+| Postgres | `e7486b49-dba3-4e0a-8709-a501cea860ae` | `postgres.railway.internal:5432` (intern) | ✅ Actief |
+| team-indeling | `49ed7b30-a243-4f30-87fa-ae56935fbbbc` | https://team-indeling-production.up.railway.app | ⚠️ Legacy (pre-consolidatie) |
+| evaluatie | `c7a578c6-559e-4d11-8bc5-b6265dc7ada7` | https://evaluatie-production.up.railway.app | ⚠️ Legacy (pre-consolidatie) |
+
+> **Gebruik altijd `46a4f38c` (ckvoranjewit.app) voor deploys.** De legacy services zijn pre-consolidatie en worden niet meer bijgewerkt.
 
 ### GitHub repo
 
 - **Repo**: `mrbacklog/oranje-wit` (publiek)
 - **Branch**: `main` (enige branch, `master` is verwijderd)
-- **Auto-deploy**: Railway repoTriggers op `main` voor team-indeling en monitor
+- **Auto-deploy**: via CI GitHub Actions deploy job (Railway repoTriggers zijn uitgeschakeld)
+
+### GitHub Secrets (correct per 2026-04-06)
+
+| Secret | Waarde |
+|---|---|
+| `RAILWAY_TOKEN` | `758497fe-16c0-4d3b-9fc9-11207eab0163` |
+| `RAILWAY_ENVIRONMENT_ID` | `1751fe16-20bf-4a6a-a5f6-b46ea0f4cfb1` |
+| `RAILWAY_SERVICE_WEB` | `46a4f38c-eff1-4140-ad07-f12be057ef30` |
 
 ### Deployment
 
-Alle drie apps gebruiken **Dockerfiles** (niet Nixpacks):
-- `apps/web/src/app/(teamindeling)/teamindeling/Dockerfile` — Node 22, pnpm workspace, Prisma
-- `apps/web/src/app/(monitor)/monitor/Dockerfile` — Node 22, pnpm workspace, Prisma
-- `apps/web/src/app/(evaluatie)/evaluatie/Dockerfile` — Node 22, pnpm workspace, Prisma
+Eén Dockerfile voor de geconsolideerde app:
+- `apps/web/Dockerfile` — Node 22, pnpm workspace, Prisma
 
-**Deploy-flow**: GitHub push → CI (quality + build) → Railway API (`serviceInstanceDeploy`) → alleen gewijzigde apps
+**Deploy-flow**: GitHub push → CI fast-gate + build → deploy job → Railway `serviceInstanceDeploy` met `commitSha`
 
 ## MCP Tools
 
@@ -102,10 +110,11 @@ Verwijderen + opnieuw aanmaken = nieuwe target = IONOS DNS bijwerken.
 
 ### Huidige custom domains
 
-| Domein | Service | IONOS Record ID |
+| Domein | Service | Status |
 |---|---|---|
-| `ckvoranjewit.app/monitor` | monitor | `e3aae275-d73e-5ad7-6fa6-b81101349fc1` |
-| `ckvoranjewit.app/teamindeling` | team-indeling | `43e88ed9-fbd1-80e2-0152-35418c3bf97e` |
+| `www.ckvoranjewit.app` | ckvoranjewit.app (`46a4f38c`) | ✅ Actief — geconsolideerde app |
+| `teamindeling.ckvoranjewit.app` | team-indeling (`49ed7b30`) | ⚠️ Legacy |
+| `evaluatie.ckvoranjewit.app` | evaluatie (`c7a578c6`) | ⚠️ Legacy |
 
 > **Tip:** Gebruik `railway_custom_domain_status` om de actuele CNAME targets en certificaatstatus op te vragen.
 
@@ -195,7 +204,7 @@ curl -s "https://dns.google/resolve?name=ckvoranjewit.app/monitor&type=CNAME"
 ```
 → railway_deployments
     projectId: "aa87602d-316d-4d3e-8860-f75d352fae27"
-    serviceId: "49ed7b30-a243-4f30-87fa-ae56935fbbbc"  # team-indeling
+    serviceId: "46a4f38c-eff1-4140-ad07-f12be057ef30"  # ckvoranjewit.app
 
 → railway_logs
     deploymentId: "<deployment ID>"
@@ -208,7 +217,7 @@ curl -s "https://dns.google/resolve?name=ckvoranjewit.app/monitor&type=CNAME"
 → railway_variables_get
     projectId: "aa87602d-316d-4d3e-8860-f75d352fae27"
     environmentId: "1751fe16-20bf-4a6a-a5f6-b46ea0f4cfb1"
-    serviceId: "49ed7b30-..."  # of "a7efb126-..."
+    serviceId: "46a4f38c-eff1-4140-ad07-f12be057ef30"  # ckvoranjewit.app
 
 → railway_variable_set
     ...
@@ -220,7 +229,7 @@ curl -s "https://dns.google/resolve?name=ckvoranjewit.app/monitor&type=CNAME"
 ```
 → railway_deploy
     environmentId: "1751fe16-20bf-4a6a-a5f6-b46ea0f4cfb1"
-    serviceId: "49ed7b30-..."  # team-indeling
+    serviceId: "46a4f38c-eff1-4140-ad07-f12be057ef30"  # ckvoranjewit.app
 ```
 
 ### 5. Deploy + wacht op resultaat (aanbevolen)
@@ -229,26 +238,41 @@ curl -s "https://dns.google/resolve?name=ckvoranjewit.app/monitor&type=CNAME"
 → railway_deploy_pipeline
     projectId: "aa87602d-316d-4d3e-8860-f75d352fae27"
     environmentId: "1751fe16-20bf-4a6a-a5f6-b46ea0f4cfb1"
-    serviceId: "49ed7b30-..."  # team-indeling (of "a7efb126-..." voor monitor)
+    serviceId: "46a4f38c-eff1-4140-ad07-f12be057ef30"  # ckvoranjewit.app
 
 # Returnt: { ok: true/false, status, deploymentId, staticUrl, elapsed }
 # Bij FAILED: bekijk logs via railway_logs met het deploymentId
+```
+
+### 6. Handmatig deploy via curl (als MCP niet beschikbaar is)
+
+```bash
+curl -s -X POST "https://backboard.railway.com/graphql/v2" \
+  -H "Authorization: Bearer 758497fe-16c0-4d3b-9fc9-11207eab0163" \
+  -H "Content-Type: application/json" \
+  -d '{"query":"mutation { serviceInstanceDeploy(environmentId: \"1751fe16-20bf-4a6a-a5f6-b46ea0f4cfb1\", serviceId: \"46a4f38c-eff1-4140-ad07-f12be057ef30\") }"}'
+# Met specifieke commit:
+# ...commitSha: \"<sha>\") }"}'
 ```
 
 ## Authenticatie
 
 - **Token type**: Account Token (NIET project token)
 - **Aanmaken**: https://railway.com/account/tokens
-- **Configuratie**: `.mcp.json` → `railway.env.RAILWAY_TOKEN`
+- **Configuratie**: `~/.claude/mcp.json` → `railway-custom.env.RAILWAY_TOKEN`
 - **Account**: info@mrbacklog.nl
 - **GitHub account**: mrbacklog (gekoppeld aan Railway)
+- **Actieve token naam**: "ckvoranjewit" (ID: `6cac6c67-e93f-4283-938e-2c383bd0ff2b`)
 
 ### Token vernieuwen
 
+Als CI deploy job faalt met "Not Authorized":
+
 1. Ga naar https://railway.com/account/tokens
 2. Maak nieuw Account Token aan
-3. Update `.mcp.json` met het nieuwe token
-4. Herstart Claude Code om de MCP server te herladen
+3. Update `~/.claude/mcp.json` met het nieuwe token
+4. Update GitHub secret: `echo "<token>" | gh secret set RAILWAY_TOKEN -R mrbacklog/oranje-wit`
+5. Herstart Claude Code om de MCP server te herladen
 
 ## Beperkingen API tokens
 
@@ -262,8 +286,6 @@ curl -s "https://dns.google/resolve?name=ckvoranjewit.app/monitor&type=CNAME"
 |---|---|
 | `apps/mcp/railway/server.js` | MCP server (14 tools) |
 | `apps/mcp/railway/package.json` | Dependencies |
-| `.mcp.json` | Server registratie + token (gitignored) |
-| `apps/web/src/app/(teamindeling)/teamindeling/Dockerfile` | Docker build voor TI |
-| `apps/web/src/app/(monitor)/monitor/Dockerfile` | Docker build voor monitor |
-| `apps/web/src/app/(teamindeling)/teamindeling/railway.json` | Railway config (legacy, Dockerfile wordt nu gebruikt) |
-| `apps/web/src/app/(monitor)/monitor/railway.json` | Railway config (legacy, Dockerfile wordt nu gebruikt) |
+| `~/.claude/mcp.json` | Server registratie + token (buiten repo) |
+| `apps/web/Dockerfile` | Docker build voor geconsolideerde app |
+| `.github/workflows/ci.yml` | CI pipeline incl. deploy job |
