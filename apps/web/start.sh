@@ -1,23 +1,23 @@
 #!/bin/sh
 set -e
 
-# Maak runtime Prisma config met DATABASE_URL uit de omgeving
-node -e "
-const fs = require('fs');
-fs.writeFileSync('/tmp/pc.mjs',
-  'export default {' +
-  '  schema: \"packages/database/prisma/schema.prisma\",' +
-  '  migrations: { path: \"packages/database/prisma/migrations\" },' +
-  '  datasource: { url: \"' + process.env.DATABASE_URL + '\" }' +
-  '}'
-);
-"
+# Schrijf prisma.config.mjs naast de prisma-map zodat Prisma hem autodiscovered
+# (Prisma 7 zoekt prisma.config.{ts,mjs,js} in de working directory)
+cat > /app/packages/database/prisma.config.mjs << EOF
+export default {
+  schema: "prisma/schema.prisma",
+  migrations: { path: "prisma/migrations" },
+  datasource: { url: "${DATABASE_URL}" }
+}
+EOF
 
-# Draai pending migraties
-prisma migrate deploy --config /tmp/pc.mjs
+# Draai pending migraties vanuit de database package directory
+cd /app/packages/database
+prisma migrate deploy
 
 # Herstel VIEW speler_seizoenen
-psql "$DATABASE_URL" -f packages/database/prisma/views.sql
+psql "$DATABASE_URL" -f prisma/views.sql
 
 # Start de applicatie
+cd /app
 exec node apps/web/server.js
