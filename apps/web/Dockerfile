@@ -54,4 +54,4 @@ RUN npm install -g prisma@7.4.1 --no-audit --no-fund --silent
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "node apps/web/server.js"]
+CMD ["sh", "-c", "if [ -n \"$DATABASE_URL\" ]; then prisma migrate deploy --schema=packages/database/prisma/schema.prisma && prisma db execute --schema=packages/database/prisma/schema.prisma --file=packages/database/prisma/views.sql; fi && node apps/web/server.js"]
