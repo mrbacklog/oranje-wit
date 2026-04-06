@@ -48,6 +48,10 @@ COPY --from=builder /app/apps/web/.next/standalone ./
 COPY --from=builder /app/apps/web/.next/static apps/web/.next/static
 COPY --from=builder /app/apps/web/public apps/web/public
 
+# Prisma schema + migraties voor startup migrations
+COPY --from=builder /app/packages/database/prisma packages/database/prisma
+RUN npm install -g prisma@7.4.1 --no-audit --no-fund --silent
+
 EXPOSE 3000
 
-CMD ["node", "apps/web/server.js"]
+CMD ["sh", "-c", "prisma migrate deploy --schema=packages/database/prisma/schema.prisma && prisma db execute --schema=packages/database/prisma/schema.prisma --file=packages/database/prisma/views.sql && node apps/web/server.js"]
