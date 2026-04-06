@@ -170,7 +170,7 @@ export const TEAM_INDELING: AppManifest = {
       nav: { label: "Indeling", href: "/teamindeling", icon: "GridIcon" },
     },
     {
-      nav: { label: "Opvolging", href: "/teamindeling/opvolging", icon: "StarIcon" },
+      nav: { label: "Opvolging", href: "/teamindeling/opvolging", icon: "ListIcon" },
     },
     {
       nav: { label: "Personen", href: "/teamindeling/personen", icon: "PeopleIcon" },
@@ -180,7 +180,7 @@ export const TEAM_INDELING: AppManifest = {
       ],
     },
     {
-      nav: { label: "Meer", href: "/teamindeling/meer", icon: "ListIcon" },
+      nav: { label: "Apps", href: "/teamindeling/meer", icon: "ProfileIcon" },
     },
   ],
   skipRoutes: [],

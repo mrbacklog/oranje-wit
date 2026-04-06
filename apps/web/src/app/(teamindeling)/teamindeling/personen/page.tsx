@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
-export default function SpelerDetailRedirect() {
+export default function PersonenPage() {
   redirect("/teamindeling/personen/spelers");
 }
