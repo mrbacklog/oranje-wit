@@ -13,7 +13,7 @@ paths:
 | `data-analist` | Monitor (sub) | Data-pipeline, dashboards |
 | `speler-scout` | Monitor (sub) | Individuele spelersanalyse |
 | `team-selector` | Brug | Teamindeling (monitor → TI) |
-| `team-planner` | TI (hoofd) | Workflow blauwdruk → definitief |
+| `team-planner` | TI (hoofd) | Workflow kaders → definitief |
 | `regel-checker` | TI (sub) | KNKV + OW regelvalidatie |
 | `adviseur` | TI (sub) | Spelersadvies, what-if, Oranje Draad |
 | `ontwikkelaar` | TI (dev) | Next.js app bouwen en uitbreiden |
@@ -38,7 +38,7 @@ Elke agent heeft een `skills:` lijst in zijn frontmatter die bepaalt wat hij mag
 | `korfbal` | `monitor/*`, `shared/*` |
 | `data-analist` | `monitor/database`, `monitor/lid-monitor`, `monitor/ledenverloop`, `monitor/jeugdmodel`, `monitor/teamsamenstelling`, `shared/oranje-draad`, `shared/score-model` |
 | `speler-scout` | `monitor/ledenverloop`, `monitor/jeugdmodel`, `shared/oranje-draad`, `shared/score-model` |
-| `team-selector` | `monitor/teamsamenstelling`, `monitor/jeugdmodel`, `team-indeling/blauwdruk`, `shared/oranje-draad`, `shared/score-model` |
+| `team-selector` | `monitor/teamsamenstelling`, `monitor/jeugdmodel`, `shared/oranje-draad`, `shared/score-model` |
 | `team-planner` | `team-indeling/*`, `shared/*` |
 | `regel-checker` | `team-indeling/validatie`, `shared/oranje-draad` |
 | `adviseur` | `team-indeling/advies`, `team-indeling/vergelijk`, `shared/oranje-draad`, `shared/score-model` |
@@ -46,7 +46,7 @@ Elke agent heeft een `skills:` lijst in zijn frontmatter die bepaalt wat hij mag
 | `devops` | `shared/deployment`, `shared/e2e-testing`, `devops/health-check`, `devops/ci-status`, `shared/audit` |
 | `e2e-tester` | `shared/e2e-testing`, `shared/deployment` |
 | `deployment` | `shared/deployment`, `monitor/railway` |
-| `documentalist` | `team-indeling/blauwdruk`, `team-indeling/scenario`, `team-indeling/validatie`, `shared/oranje-draad` |
+| `documentalist` | `team-indeling/scenario`, `team-indeling/validatie`, `shared/oranje-draad` |
 | `jeugd-architect` | `shared/oranje-draad`, `shared/score-model`, `monitor/jeugdmodel`, `monitor/teamsamenstelling` |
 | `sportwetenschap` | `shared/oranje-draad`, `shared/score-model`, `monitor/jeugdmodel` |
 | `mentaal-coach` | `shared/oranje-draad`, `monitor/jeugdmodel` |
@@ -104,7 +104,7 @@ Elf voorgedefinieerde agent teams voor parallelle samenwerking. Activeer met `/t
 
 | Team | Skill | Lead | Teammates | Use case |
 |---|---|---|---|---|
-| **Seizoensindeling** | `/team-seizoensindeling` | team-planner | adviseur, regel-checker, data-analist | Volledig indelingstraject (blauwdruk → definitief) |
+| **Seizoensindeling** | `/team-seizoensindeling` | team-planner | adviseur, regel-checker, data-analist | Volledig indelingstraject (kaders → definitief) |
 | **Seizoensanalyse** | `/team-seizoensanalyse` | korfbal | data-analist, speler-scout, team-selector | Seizoensstart: totaalbeeld leden, retentie, prognoses |
 | **Release** | `/team-release` | ontwikkelaar | e2e-tester, deployment | Feature bouwen + testen + deployen naar Railway |
 | **E2E Testing** | `/team-e2e` | e2e-tester | ontwikkelaar, deployment | E2E testing, regressie, exploratory testing |
@@ -122,8 +122,8 @@ Team-skills staan in `.claude/skills/team-*/SKILL.md`.
 
 Alle skills staan in `.claude/skills/<naam>/SKILL.md` (flat structuur). Agent frontmatter gebruikt domeinprefixen (`shared/oranje-draad`) voor fencing-documentatie.
 
-### Domein-skills (24)
-advies, batch-plaats, blauwdruk, concept, database, deployment, e2e-testing, evaluatie, exporteer, import, jeugdmodel, knkv-api, ledenverloop, lid-monitor, oranje-draad, pin, railway, scenario, scenario-analyse, score-model, start, teamsamenstelling, validatie, vergelijk
+### Domein-skills (23)
+advies, batch-plaats, concept, database, deployment, e2e-testing, evaluatie, exporteer, import, jeugdmodel, knkv-api, ledenverloop, lid-monitor, oranje-draad, pin, railway, scenario, scenario-analyse, score-model, start, teamsamenstelling, validatie, vergelijk
 
 ### Infra-skills (4)
 audit, ci-status, health-check, deploy

@@ -40,7 +40,7 @@ Daisy moet **altijd vragen stellen bij twijfel** en een **controlevraag stellen 
 | Situatie | Daisy doet |
 |---|---|
 | "Verplaats Kees" (welk team?) | "Naar welk team wil je Kees verplaatsen?" |
-| "Maak de gele teams" (hoeveel?) | "Hoeveel gele teams wil je? Nu zijn er 3 in de blauwdruk." |
+| "Maak de gele teams" (hoeveel?) | "Hoeveel gele teams wil je? Nu zijn er 3 in de kaders." |
 | Opdracht is dubbelzinnig | Controlevraag voordat ze iets uitvoert |
 | Opdracht heeft grote impact | "Dit raakt 12 spelers. Wil je dat ik dit doorvoer?" |
 
@@ -72,7 +72,7 @@ Elke schrijf-actie die Daisy uitvoert moet omkeerbaar zijn. Geen uitzonderingen.
 | Mechanisme | Wanneer | Hoe |
 |---|---|---|
 | **Scenario-isolatie** | Teamindeling | Alle wijzigingen in een scenario, nooit in de werkindeling. Scenario verwijderen = alles weg |
-| **Versioning** | Blauwdruk, evaluatierondes | Nieuwe versie aanmaken, vorige blijft bestaan |
+| **Versioning** | Kaders, evaluatierondes | Nieuwe versie aanmaken, vorige blijft bestaan |
 | **Soft delete** | Teams, toewijzingen | `verwijderdOp` timestamp, data blijft in database |
 | **Undo-actie** | Speler verplaatsen, team aanmaken | Daisy biedt direct na uitvoering een undo-optie aan |
 | **Audit trail** | Alles | Elke schrijf-actie wordt gelogd met wie, wat, wanneer, via Daisy |
@@ -94,7 +94,7 @@ Daisy mag deze tools altijd gebruiken, zonder expliciete opdracht. Ze veranderen
 | Tool | Wat | Voorbeeld |
 |---|---|---|
 | `spelersInTeam` | Spelers opzoeken per team | "Wie zitten er in D1?" |
-| `werkindelingStatus` | Blauwdruk en scenario-overzicht | "Hoeveel scenario's hebben we?" |
+| `werkindelingStatus` | Kaders en scenario-overzicht | "Hoeveel scenario's hebben we?" |
 | `ledenPerCategorie` | Ledenaantallen per leeftijdsgroep | "Hoeveel groene spelers zijn er?" |
 | `teamBezetting` | Spelers per team, optioneel per kleur | "Hoe vol zitten de oranje teams?" |
 | `weekOverzicht` | TC-kalender en KNKV-deadlines | "Wat staat er in april op de planning?" |

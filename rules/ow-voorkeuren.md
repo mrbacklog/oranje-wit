@@ -10,7 +10,7 @@ paths:
 
 ## Teamgrootte
 
-De standaard teamgrootte-targets zijn configureerbaar per seizoen in de blauwdruk (`TeamgrootteInstellingen`). Onderstaande waarden zijn de defaults.
+De standaard teamgrootte-targets zijn configureerbaar per seizoen via Kaders (`TeamgrootteInstellingen`). Onderstaande waarden zijn de defaults.
 
 ### 4-tallen (Blauw, Groen)
 - **Min**: 5 | **Ideaal**: 6 | **Max**: 6

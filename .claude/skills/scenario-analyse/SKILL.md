@@ -1,6 +1,6 @@
 ---
 name: scenario-analyse
-description: Analyseert verrassingen en risico's voor de komende teamsamenstelling. Doorloopt stoppende/startende leden, staffwisselingen en individuele risico's. Gebruik na de seizoensblauwdruk (mrt–mei).
+description: Analyseert verrassingen en risico's voor de komende teamsamenstelling. Doorloopt stoppende/startende leden, staffwisselingen en individuele risico's. Gebruik na de seizoensvoorbereiding (mrt–mei).
 user-invocable: true
 allowed-tools: Read, Write, Glob
 argument-hint: "[seizoen, bijv. 2025-2026]"
@@ -12,8 +12,8 @@ Analyseer de verrassingen en risico's voor het seizoen $ARGUMENTS.
 
 ## Stappen
 
-1. **Laad de seizoensblauwdruk**
-   `data/seizoenen/YYYY-YYYY/blauwdruk.md`
+1. **Laad de seizoenskaders**
+   `data/seizoenen/YYYY-YYYY/kaders.md`
 
 2. **Inventariseer bekende veranderingen**
    - Stoppende leden (bevestigd of verwacht)
@@ -22,7 +22,7 @@ Analyseer de verrassingen en risico's voor het seizoen $ARGUMENTS.
    - Ledeninfo uit `data/leden/stamgegevens.json`
 
 3. **Identificeer risico's per team**
-   Voor elk team in de blauwdruk:
+   Voor elk team in de kaders:
    - Positieve verrassing: wie kan een niveau hoger?
    - Negatieve verrassing: wie dreigt te stoppen of niveau te zakken?
    - Staffrisico: is er voldoende begeleiding?
@@ -35,7 +35,7 @@ Analyseer de verrassingen en risico's voor het seizoen $ARGUMENTS.
    Welke scenario's bedreigen de balans Plezier/Ontwikkeling/Prestatie?
 
 6. **Lever aan**
-   Risico-inventarisatie dient als input voor de Team-Indeling app (blauwdruk → concepten → scenario's).
+   Risico-inventarisatie dient als input voor de Team-Indeling app (kaders → concepten → scenario's).
    Optioneel opslaan als `data/seizoenen/YYYY-YYYY/risico-analyse.md`.
 
 ## Output

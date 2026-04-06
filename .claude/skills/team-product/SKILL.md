@@ -102,7 +102,7 @@ product-owner (lead)
 | App | Gebruikers | Kernfunctie | Status |
 |---|---|---|---|
 | Monitor | TC, Bestuur | Dashboards, signalering, retentie | Live |
-| Team-Indeling | TC, Coordinatoren | Blauwdruk → scenario → definitief | Live |
+| Team-Indeling | TC, Coordinatoren | Kaders → scenario → definitief | Live |
 | Evaluatie | TC, Trainers, Spelers | Spelerevaluaties, zelfevaluaties | Live |
 | Scouting | TC, Scouts | Verzoeken, rapporten, spelerskaarten | In ontwikkeling |
 | Beheer | TC (alleen EDITOR) | 9 domeinen, gebruikersbeheer, raamwerk | Nieuw |

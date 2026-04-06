@@ -6,7 +6,7 @@
  * - ~129 spelers met TST-prefix rel_codes
  * - 2 seizoenen (huidig + vorig, voor verloop)
  * - Ledenverloop, cohorten, signaleringen
- * - 1 blauwdruk voor team-indeling
+ * - 1 kaderrecord voor team-indeling
  *
  * Draai met: pnpm seed  (of npx tsx e2e/fixtures/seed.ts)
  */

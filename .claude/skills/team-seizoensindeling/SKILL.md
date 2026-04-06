@@ -1,6 +1,6 @@
 ---
 name: team-seizoensindeling
-description: Start een Agent Team voor het volledige seizoensindelingsproces. Gebruik wanneer de TC het indelingstraject van blauwdruk tot definitieve indeling doorloopt.
+description: Start een Agent Team voor het volledige seizoensindelingsproces. Gebruik wanneer de TC het indelingstraject van kaders tot definitieve indeling doorloopt.
 disable-model-invocation: true
 argument-hint: "[optioneel: specifieke opdracht of focus]"
 ---
@@ -14,7 +14,7 @@ Start een agent team voor het teamindelingsproces van c.k.v. Oranje Wit.
 Stel het volgende agent team samen:
 
 ### Lead: team-planner
-- **Rol**: Coördineert het volledige indelingstraject (blauwdruk → concept → scenario → definitief)
+- **Rol**: Coördineert het volledige indelingstraject (kaders → concept → scenario → definitief)
 - **Verantwoordelijkheden**:
   - Bewaakt het overzicht en de voortgang
   - Verdeelt taken naar teammates
@@ -27,7 +27,7 @@ Stel het volgende agent team samen:
   - Beantwoordt vragen over individuele spelersplaatsing
   - Voert what-if analyses uit ("wat als speler X stopt?")
   - Toetst scenario's aan de Oranje Draad (Plezier + Ontwikkeling + Prestatie)
-  - Genereert startvoorstellen op basis van blauwdruk + concept
+  - Genereert startvoorstellen op basis van kaders + concept
   - Vergelijkt scenario's op trade-offs
 - **Communiceert met**: team-planner (opdrachten), regel-checker (validatie van voorstellen)
 
@@ -68,7 +68,7 @@ Typische memories voor dit team:
 
 ## Werkwijze
 
-1. **team-planner** start met het laden van de huidige blauwdruk en actieve concepten
+1. **team-planner** start met het laden van de huidige kaders en actieve concepten
 2. **team-planner** raadpleegt relevante memories (TC-besluiten, spelersafspraken)
 3. **data-analist** haalt parallel de actuele spelersdata en retentiecijfers op
 3. **team-planner** formuleert de eerste opdrachten:
@@ -103,6 +103,6 @@ team-planner (lead)
 $ARGUMENTS
 
 Als er geen specifieke opdracht is meegegeven, start dan met:
-1. Laad de huidige blauwdruk en actieve scenario's
+1. Laad de huidige kaders en actieve scenario's
 2. Geef een statusoverzicht: hoeveel spelers, hoeveel teams, openstaande issues
 3. Vraag de TC wat de volgende stap is

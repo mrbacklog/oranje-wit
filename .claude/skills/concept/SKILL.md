@@ -1,6 +1,6 @@
 ---
 name: concept
-description: Strategisch concept formuleren binnen een blauwdruk. Elk concept heeft een uitgangsprincipe dat de richting bepaalt.
+description: Strategisch concept formuleren. Elk concept heeft een uitgangsprincipe dat de richting bepaalt.
 user-invocable: false
 allowed-tools: Read, Write, Glob
 ---
@@ -8,10 +8,10 @@ allowed-tools: Read, Write, Glob
 # Skill: Concept
 
 ## Doel
-Een strategisch concept formuleren binnen een blauwdruk. Elk concept heeft een uitgangsprincipe dat de richting bepaalt voor de teamindeling.
+Een strategisch concept formuleren. Elk concept heeft een uitgangsprincipe dat de richting bepaalt voor de teamindeling.
 
 ## Wanneer gebruiken
-- Na het opstellen van de blauwdruk
+- Na het bekijken van de kaders
 - Wanneer de TC strategische richtingen wil verkennen
 - Typisch 2-4 concepten per seizoen
 
@@ -40,4 +40,4 @@ Claude kan suggesties doen voor concepten op basis van:
 - Huidige ledendata en trends
 - Retentiemodel en signalering
 - Streefmodel afwijkingen
-- Seizoensspeerpunten uit de blauwdruk
+- Seizoensspeerpunten uit de kaders

@@ -43,7 +43,7 @@ Alle domein-apps volgen hetzelfde navigatiepatroon:
 |---|---|---|---|---|---|
 | Mijn OW | Overzicht | Taken | Nieuws | Profiel | `#f97316` |
 | Monitor | Overzicht | Teams | Analyse | Signalen | `#22c55e` |
-| Team-Indeling | Overzicht | Blauwdruk | Werkbord | Scenario's | `#3b82f6` |
+| Team-Indeling | Overzicht | Kaders | Werkbord | Scenario's | `#3b82f6` |
 | Evaluatie | Overzicht | Rondes | Teams | Resultaten | `#eab308` |
 | Scouting | Overzicht | Opdrachten | Zoeken | Profiel | `#ff6b00` |
 | Beheer | Planning | Inrichting | Data | Gebruikers | `#9ca3af` |

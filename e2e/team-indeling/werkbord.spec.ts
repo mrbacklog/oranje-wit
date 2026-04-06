@@ -1,7 +1,7 @@
 import { test, expect } from "../fixtures/base";
 
 test.describe("Opvolging (was: Werkbord)", () => {
-  // Seed maakt een blauwdruk aan voor 2025-2026, dus opvolging laadt altijd
+  // Seed maakt kaderdata aan voor 2025-2026, dus opvolging laadt altijd
 
   test("opvolging pagina is bereikbaar via URL", async ({ page }) => {
     await page.goto("/ti-studio/opvolging", { timeout: 15000, waitUntil: "domcontentloaded" });
@@ -30,7 +30,7 @@ test.describe("Opvolging (was: Werkbord)", () => {
       timeout: 10000,
     });
 
-    // Seed blauwdruk garandeert dat het kanban bord toont
+    // Seed kaderdata garandeert dat het kanban bord toont
     await expect(page.getByRole("heading", { name: "Open" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "In bespreking" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Opgelost" })).toBeVisible();

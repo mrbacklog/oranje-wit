@@ -22,7 +22,7 @@ Teamindelingen valideren op KNKV-regels, OW-voorkeuren en Oranje Draad.
 → zie `rules/oranje-draad.md` voor POP-ratio's en toetsingsvragen
 
 ## Teamgrootte-targets
-Validatie gebruikt configureerbare targets uit de blauwdruk (`blauwdruk.keuzes.teamgrootte`):
+Validatie gebruikt configureerbare targets uit de kaders (`kaders.keuzes.teamgrootte`):
 
 | Type | Min | Ideaal | Max | Toepassing |
 |---|---|---|---|---|
@@ -32,7 +32,7 @@ Validatie gebruikt configureerbare targets uit de blauwdruk (`blauwdruk.keuzes.t
 | Selectie | 18 | 20 | 22 | A-cat selectie (2 teams) |
 | Senioren selectie | 20 | 24 | 26 | Senioren A selectie |
 
-De TC kan deze targets aanpassen in de blauwdruk pagina via `TeamgrootteInstellingen`. Bij geen custom targets worden de defaults uit `DEFAULT_TEAMGROOTTE` gebruikt.
+De TC kan deze targets aanpassen via de Kaders pagina (`TeamgrootteInstellingen`). Bij geen custom targets worden de defaults uit `DEFAULT_TEAMGROOTTE` gebruikt.
 
 ## Stoplicht
 - **Groen**: alle regels OK, geen aandachtspunten
