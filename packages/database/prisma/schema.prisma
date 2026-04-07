@@ -556,8 +556,6 @@ model Kaders {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  @@map("Blauwdruk")
 }
 
 // ============================================================
@@ -567,7 +565,7 @@ model Kaders {
 model KadersSpeler {
   id           String   @id @default(cuid())
   kaders       Kaders @relation(fields: [kadersId], references: [id], onDelete: Cascade)
-  kadersId     String @map("blauwdrukId")
+  kadersId     String
   speler       Speler   @relation(fields: [spelerId], references: [id])
   spelerId     String
 
@@ -597,7 +595,6 @@ model KadersSpeler {
   @@index([kadersId])
   @@index([spelerId])
   @@index([gezienStatus])
-  @@map("BlauwdrukSpeler")
 }
 
 enum GezienStatus {
@@ -640,7 +637,7 @@ enum AntwoordType {
 model KadersBesluit {
   id            String   @id @default(cuid())
   kaders        Kaders @relation(fields: [kadersId], references: [id], onDelete: Cascade)
-  kadersId      String @map("blauwdrukId")
+  kadersId      String
 
   // De vraag
   vraag         String   @db.Text
@@ -674,7 +671,6 @@ model KadersBesluit {
 
   @@index([kadersId])
   @@index([status])
-  @@map("BlauwdrukBesluit")
 }
 
 enum BesluitStatus {
