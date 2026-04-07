@@ -115,13 +115,13 @@ export async function seedStaf(prisma: PrismaClient) {
 
 export async function seedConceptScenarioVersie(
   prisma: PrismaClient,
-  blauwdrukId: string,
+  kadersId: string,
   spelers: SpelerRecord[]
 ) {
   // Seed werkindeling (vervangt concept + scenario structuur)
   const werkindeling = await prisma.werkindeling.create({
     data: {
-      blauwdrukId,
+      kadersId,
       naam: SCENARIO_NAAM,
       toelichting: "Automatisch aangemaakt door seed voor E2E tests",
       status: "ACTIEF",
@@ -129,7 +129,7 @@ export async function seedConceptScenarioVersie(
   });
 
   // Gebruik een placeholder voor terugwaartse compatibiliteit
-  const concept = { id: blauwdrukId, naam: CONCEPT_NAAM };
+  const concept = { id: kadersId, naam: CONCEPT_NAAM };
   const scenario = werkindeling;
 
   const versie = await prisma.versie.create({

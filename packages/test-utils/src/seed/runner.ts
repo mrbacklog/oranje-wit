@@ -230,18 +230,18 @@ async function seedCompetitieSpelers(prisma: PrismaClient, spelers: SpelerRecord
   }
 }
 
-async function seedBlauwdruk(prisma: PrismaClient) {
-  // Zorg dat seed blauwdruk het enige werkseizoen is
-  await prisma.blauwdruk.updateMany({
+async function seedKaders(prisma: PrismaClient) {
+  // Zorg dat seed kaders het enige werkseizoen is
+  await prisma.kaders.updateMany({
     where: { isWerkseizoen: true, seizoen: { not: SEIZOEN_HUIDIG } },
     data: { isWerkseizoen: false },
   });
 
-  return prisma.blauwdruk.create({
+  return prisma.kaders.create({
     data: {
       seizoen: SEIZOEN_HUIDIG,
       isWerkseizoen: true,
-      toelichting: "Test blauwdruk voor E2E tests",
+      toelichting: "Test kaders voor E2E tests",
       kaders: {
         knkvRegels: ["Minimaal 4M/4V per achttal", "Leeftijdsgrens per categorie"],
         owRegels: ["Selectieteams hebben prioriteit", "Plezier als basis"],
@@ -252,16 +252,12 @@ async function seedBlauwdruk(prisma: PrismaClient) {
   });
 }
 
-async function seedBlauwdrukSpelers(
-  prisma: PrismaClient,
-  blauwdrukId: string,
-  spelers: SpelerRecord[]
-) {
+async function seedKadersSpelers(prisma: PrismaClient, kadersId: string, spelers: SpelerRecord[]) {
   const spelersMetTeam = spelers.filter((s) => s.team);
   for (const s of spelersMetTeam) {
-    await prisma.blauwdrukSpeler.create({
+    await prisma.kadersSpeler.create({
       data: {
-        blauwdrukId,
+        kadersId,
         spelerId: s.relCode,
         gezienStatus: "ONGEZIEN",
         signalering: null,
@@ -295,7 +291,7 @@ export async function runSeed(prisma: PrismaClient) {
       },
     },
   });
-  await prisma.blauwdruk.deleteMany({ where: { seizoen: SEIZOEN_HUIDIG } });
+  await prisma.kaders.deleteMany({ where: { seizoen: SEIZOEN_HUIDIG } });
 
   const spelers = generateSpelers();
 
@@ -306,15 +302,15 @@ export async function runSeed(prisma: PrismaClient) {
   await seedLedenverloop(prisma, spelers);
   await seedCohorten(prisma, spelers);
   await seedSignaleringen(prisma);
-  const blauwdruk = await seedBlauwdruk(prisma);
+  const kaders = await seedKaders(prisma);
 
   // TI-specifieke seed
   await seedUser(prisma);
   const spelersMetTeam = spelers.filter((s) => s.team);
   await seedTISpelers(prisma, spelers);
   await seedStaf(prisma);
-  await seedConceptScenarioVersie(prisma, blauwdruk.id, spelers);
-  await seedBlauwdrukSpelers(prisma, blauwdruk.id, spelers);
+  await seedConceptScenarioVersie(prisma, kaders.id, spelers);
+  await seedKadersSpelers(prisma, kaders.id, spelers);
 
   console.warn(
     `Seed compleet: ${spelers.length} leden, ${spelersMetTeam.length} TI spelers, ` +
@@ -325,17 +321,17 @@ export async function runSeed(prisma: PrismaClient) {
 export async function cleanupSeed(prisma: PrismaClient) {
   console.warn("Cleanup seed data...");
 
-  // Blauwdruk cascadeert Concept > Scenario > Versie > Team > TeamSpeler/TeamStaf
+  // Kaders cascadeert Werkindeling > Versie > Team > TeamSpeler/TeamStaf
   // Moet VOOR Speler/Staf verwijderd worden (FK constraints)
-  await prisma.blauwdruk.deleteMany({ where: { seizoen: SEIZOEN_HUIDIG } });
+  await prisma.kaders.deleteMany({ where: { seizoen: SEIZOEN_HUIDIG } });
 
-  // Herstel werkseizoen: zet de nieuwste niet-seed blauwdruk als werkseizoen
-  const nieuwste = await prisma.blauwdruk.findFirst({
+  // Herstel werkseizoen: zet de nieuwste niet-seed kaders als werkseizoen
+  const nieuwste = await prisma.kaders.findFirst({
     where: { seizoen: { not: SEIZOEN_HUIDIG } },
     orderBy: { seizoen: "desc" },
   });
   if (nieuwste) {
-    await prisma.blauwdruk.update({
+    await prisma.kaders.update({
       where: { id: nieuwste.id },
       data: { isWerkseizoen: true },
     });
