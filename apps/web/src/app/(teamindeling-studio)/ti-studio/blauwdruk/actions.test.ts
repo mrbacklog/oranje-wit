@@ -16,6 +16,10 @@ vi.mock("@/lib/teamindeling/seizoen", () => ({
   assertBewerkbaar: vi.fn().mockResolvedValue(undefined),
 }));
 
+vi.mock("@oranje-wit/auth/checks", () => ({
+  requireTC: vi.fn().mockResolvedValue(undefined),
+}));
+
 vi.mock("next/headers", () => ({
   cookies: vi.fn().mockResolvedValue({
     get: vi.fn().mockReturnValue({ value: "2025-2026" }),
