@@ -61,7 +61,7 @@ test.describe("Smoke — app laadt", () => {
     await page.goto("/monitor", { timeout: 45000 });
     const nav = page.getByRole("navigation", { name: "Hoofdnavigatie" });
     await expect(nav).toBeVisible({ timeout: 15000 });
-    await nav.getByText("Apps", { exact: true }).click();
+    await nav.getByText("Meer", { exact: true }).click();
     const switcher = page.getByRole("dialog", { name: "App switcher" });
     await expect(switcher).toBeVisible({ timeout: 10000 });
   });
