@@ -1,32 +1,28 @@
 import { test, expect } from "../fixtures/base";
 
-test.describe("Opvolging (was: Werkbord)", () => {
-  // Seed maakt kaderdata aan voor 2025-2026, dus opvolging laadt altijd
+test.describe("Werkbord (TI Studio)", () => {
+  // Seed maakt kaderdata aan voor 2025-2026, dus werkbord laadt altijd
 
-  test("opvolging pagina is bereikbaar via URL", async ({ page }) => {
-    await page.goto("/ti-studio/opvolging", { timeout: 15000, waitUntil: "domcontentloaded" });
-    await expect(page).toHaveURL(/\/opvolging/);
-  });
-
-  test("opvolging heading is zichtbaar", async ({ page }) => {
-    await page.goto("/ti-studio/opvolging", { timeout: 15000, waitUntil: "domcontentloaded" });
-    await expect(page.getByRole("heading", { name: "Opvolging" })).toBeVisible({
-      timeout: 10000,
-    });
-  });
-
-  test("werkbord redirect werkt naar opvolging", async ({ page }) => {
+  test("werkbord pagina is bereikbaar via URL", async ({ page }) => {
     await page.goto("/ti-studio/werkbord", { timeout: 15000, waitUntil: "domcontentloaded" });
-    // Wacht tot de opvolging pagina goed gerenderd is — dit zorgt ook voor de redirect
-    await expect(page.getByRole("heading", { name: "Opvolging" })).toBeVisible({
+    await expect(page).toHaveURL(/\/werkbord/);
+  });
+
+  test("werkbord heading is zichtbaar", async ({ page }) => {
+    await page.goto("/ti-studio/werkbord", { timeout: 15000, waitUntil: "domcontentloaded" });
+    await expect(page.getByRole("heading", { name: "Werkbord" })).toBeVisible({
       timeout: 10000,
     });
-    await expect(page).toHaveURL(/\/opvolging/);
+  });
+
+  test("opvolging redirect werkt naar werkbord", async ({ page }) => {
+    await page.goto("/ti-studio/opvolging", { timeout: 15000, waitUntil: "domcontentloaded" });
+    await expect(page).toHaveURL(/\/werkbord/);
   });
 
   test("toont kanban bord met kolommen", async ({ page }) => {
-    await page.goto("/ti-studio/opvolging", { timeout: 15000, waitUntil: "domcontentloaded" });
-    await expect(page.getByRole("heading", { name: "Opvolging" })).toBeVisible({
+    await page.goto("/ti-studio/werkbord", { timeout: 15000, waitUntil: "domcontentloaded" });
+    await expect(page.getByRole("heading", { name: "Werkbord" })).toBeVisible({
       timeout: 10000,
     });
 
@@ -38,8 +34,8 @@ test.describe("Opvolging (was: Werkbord)", () => {
   });
 
   test("toont statistieken", async ({ page }) => {
-    await page.goto("/ti-studio/opvolging", { timeout: 15000, waitUntil: "domcontentloaded" });
-    await expect(page.getByRole("heading", { name: "Opvolging" })).toBeVisible({
+    await page.goto("/ti-studio/werkbord", { timeout: 15000, waitUntil: "domcontentloaded" });
+    await expect(page.getByRole("heading", { name: "Werkbord" })).toBeVisible({
       timeout: 10000,
     });
 
@@ -49,8 +45,8 @@ test.describe("Opvolging (was: Werkbord)", () => {
   });
 
   test("nieuw werkitem knop is zichtbaar", async ({ page }) => {
-    await page.goto("/ti-studio/opvolging", { timeout: 15000, waitUntil: "domcontentloaded" });
-    await expect(page.getByRole("heading", { name: "Opvolging" })).toBeVisible({
+    await page.goto("/ti-studio/werkbord", { timeout: 15000, waitUntil: "domcontentloaded" });
+    await expect(page.getByRole("heading", { name: "Werkbord" })).toBeVisible({
       timeout: 10000,
     });
 
@@ -58,8 +54,8 @@ test.describe("Opvolging (was: Werkbord)", () => {
   });
 
   test("toon archief checkbox is zichtbaar", async ({ page }) => {
-    await page.goto("/ti-studio/opvolging", { timeout: 15000, waitUntil: "domcontentloaded" });
-    await expect(page.getByRole("heading", { name: "Opvolging" })).toBeVisible({
+    await page.goto("/ti-studio/werkbord", { timeout: 15000, waitUntil: "domcontentloaded" });
+    await expect(page.getByRole("heading", { name: "Werkbord" })).toBeVisible({
       timeout: 10000,
     });
 
