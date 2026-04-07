@@ -180,7 +180,7 @@ export const TEAM_INDELING: AppManifest = {
       ],
     },
     {
-      nav: { label: "Apps", href: "/teamindeling/meer", icon: "ProfileIcon" },
+      nav: { label: "Meer", href: "/teamindeling/meer", icon: "ProfileIcon" },
     },
   ],
   skipRoutes: [],

@@ -44,7 +44,10 @@ export default async function WerkbordPage() {
   }
 
   return (
-    <div className="max-w-6xl">
+    <div className="max-w-6xl space-y-4">
+      <h1 className="text-2xl font-bold" style={{ color: "var(--text-primary)" }}>
+        Werkbord
+      </h1>
       <WerkbordOverzicht
         kadersId={kaders.id}
         initialWerkitems={werkitems}
