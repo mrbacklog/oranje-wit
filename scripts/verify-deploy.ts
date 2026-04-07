@@ -23,25 +23,25 @@ interface HealthCheckResult {
  * 2. Ze geven directe SHA info terug
  * 3. Ze zijn onafhankelijk van Cloudflare-configuratie
  */
-// Geconsolideerde app: alle domeinen draaien op dezelfde Railway service.
-// healthEndpoint verwijst altijd naar de geconsolideerde Railway URL.
-const RAILWAY_HEALTH = "https://team-indeling-production.up.railway.app/api/health";
+// Geconsolideerde app: alle domeinen draaien op één service.
+// /api/health is publiek (geen auth) en bereikbaar via de Cloudflare URL.
+const HEALTH_ENDPOINT = "https://www.ckvoranjewit.app/api/health";
 
 const APPS = [
   {
     name: "Team-Indeling",
     url: "https://www.ckvoranjewit.app/teamindeling",
-    healthEndpoint: RAILWAY_HEALTH,
+    healthEndpoint: HEALTH_ENDPOINT,
   },
   {
     name: "Monitor",
     url: "https://www.ckvoranjewit.app/monitor",
-    healthEndpoint: RAILWAY_HEALTH,
+    healthEndpoint: HEALTH_ENDPOINT,
   },
   {
     name: "Evaluatie",
     url: "https://evaluaties.ckvoranjewit.app",
-    healthEndpoint: RAILWAY_HEALTH,
+    healthEndpoint: HEALTH_ENDPOINT,
   },
 ];
 
