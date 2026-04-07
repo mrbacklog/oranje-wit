@@ -3,13 +3,13 @@ set -e
 
 # Schrijf prisma.config.mjs naast de prisma-map zodat Prisma hem autodiscovered
 # (Prisma 7 zoekt prisma.config.{ts,mjs,js} in de working directory)
-cat > /app/packages/database/prisma.config.mjs << EOF
+cat > /app/packages/database/prisma.config.mjs << PRISMA_EOF
 export default {
   schema: "prisma/schema.prisma",
   migrations: { path: "prisma/migrations" },
   datasource: { url: "${DATABASE_URL}" }
 }
-EOF
+PRISMA_EOF
 
 # Draai pending migraties vanuit de database package directory
 cd /app/packages/database
@@ -22,11 +22,13 @@ echo "$MIGRATE_OUTPUT"
 
 if [ $MIGRATE_EXIT -ne 0 ]; then
   if echo "$MIGRATE_OUTPUT" | grep -q "P3009"; then
-    echo "P3009 gedetecteerd — markeer failed migratie als applied en herstart"
+    echo "P3009 gedetecteerd — markeer failed migraties als applied en herstart"
+    # Haal de naam van de failed migratie op
     FAILED=$(prisma migrate status 2>&1 | grep -A1 "Following migration have failed:" | tail -1 | tr -d '[:space:]')
     if [ -n "$FAILED" ]; then
       echo "Markeer '$FAILED' als applied"
       prisma migrate resolve --applied "$FAILED"
+      # Probeer opnieuw
       prisma migrate deploy
     else
       echo "Kon failed migratie niet bepalen"
