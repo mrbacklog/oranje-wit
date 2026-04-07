@@ -151,7 +151,7 @@ Het teamindelingsproces loopt van maart tot september in 22 stappen. Kernfasen:
 
 | Fase | Periode | Activiteiten |
 |---|---|---|
-| **Voorbereiding** | mrt–apr | Evaluaties, blauwdruk opstellen, competitie-informatie ophalen |
+| **Voorbereiding** | mrt–apr | Evaluaties, kaders opstellen, competitie-informatie ophalen |
 | **Concept 0.1–0.5** | apr–mei | TC stelt eerste concepten op, interne afstemming |
 | **Concept 0.9** | mei | Conceptindeling besproken met coaches en coördinatoren |
 | **Communicatie** | mei–jun | Bericht einde seizoen naar leden, pre-season teamindeling |

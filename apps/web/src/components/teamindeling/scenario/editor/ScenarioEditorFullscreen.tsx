@@ -218,7 +218,7 @@ export default function ScenarioEditorFullscreen({
         detailSpeler={editor.detailSpeler}
         detailTeamId={editor.detailTeamId}
         pinMap={editor.pinMap}
-        blauwdrukId={editor.blauwdrukId}
+        kadersId={editor.kadersId}
         onToggleRanking={toggleRanking}
         onToggleCompact={toggleCompact}
         onSyncScores={handleSyncScores}
@@ -390,7 +390,7 @@ export default function ScenarioEditorFullscreen({
         onToggleRapportPin={handleToggleRapportPin}
         werkbordOpen={werkbordOpen}
         onCloseWerkbord={() => setWerkbordOpen(false)}
-        blauwdrukId={editor.blauwdrukId}
+        kadersId={editor.kadersId}
         verdeelData={editor.verdeelData}
         onCloseVerdeel={() => editor.setVerdeelData(null)}
         onVerdeelBevestig={editor.handleVerdeelBevestig}

@@ -12,20 +12,16 @@ test.describe("Team-Indeling navigatie", () => {
     await expect(page.getByRole("heading", { name: /kaders/i })).toBeVisible();
   });
 
-  test("blauwdruk redirect werkt naar kaders", async ({ page }) => {
-    await page.goto("/ti-studio/blauwdruk");
-    await expect(page).toHaveURL(/\/kaders/);
-  });
-
   test("scenarios redirect naar indeling", async ({ page }) => {
     // De /scenarios route bestaat niet meer — redirect naar /indeling
     await page.goto("/ti-studio/scenarios/niet-bestaand", { timeout: 30000 });
     await expect(page).toHaveURL(/\/ti-studio\/indeling/);
   });
 
-  test("vergelijk pagina is bereikbaar", async ({ page }) => {
-    await page.goto("/ti-studio/vergelijk");
-    await expect(page).toHaveURL(/\/vergelijk/);
+  test("vergelijk redirect naar indeling", async ({ page }) => {
+    // De /vergelijk route is geïntegreerd in /indeling
+    await page.goto("/ti-studio/vergelijk", { timeout: 15000 });
+    await expect(page).toHaveURL(/\/ti-studio\/indeling/);
   });
 
   test("instellingen pagina is bereikbaar", async ({ page }) => {

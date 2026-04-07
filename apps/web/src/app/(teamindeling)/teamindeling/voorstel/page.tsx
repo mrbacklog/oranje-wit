@@ -1,7 +1,5 @@
-export const dynamic = "force-dynamic";
+import { redirect } from "next/navigation";
 
-import { VoorstelFormulier } from "@/components/teamindeling/mobile/voorstel/VoorstelFormulier";
-
-export default function VoorstelPage() {
-  return <VoorstelFormulier />;
+export default function VoorstelRedirect() {
+  redirect("/teamindeling");
 }

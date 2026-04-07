@@ -310,19 +310,19 @@ export async function importData(data: ExportData): Promise<ImportResult> {
   }
 
   // 4. Blauwdruk — upsert kaders, behoud toelichting + speerpunten
-  const bestaande = await prisma.blauwdruk.findUnique({
+  const bestaande = await prisma.kaders.findUnique({
     where: { seizoen: meta.seizoen_nieuw },
   });
 
   if (bestaande) {
-    await prisma.blauwdruk.update({
+    await prisma.kaders.update({
       where: { seizoen: meta.seizoen_nieuw },
       data: { kaders: buildKaders(data) },
       // toelichting en speerpunten worden NIET aangeraakt
     });
     result.blauwdruk.status = "bijgewerkt";
   } else {
-    await prisma.blauwdruk.create({
+    await prisma.kaders.create({
       data: {
         seizoen: meta.seizoen_nieuw,
         toelichting: `Blauwdruk ${meta.seizoen_nieuw}, geimporteerd uit Verenigingsmonitor (${meta.export_datum}).`,

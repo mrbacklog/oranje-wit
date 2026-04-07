@@ -47,7 +47,7 @@ type AnyPrismaModels = {
   user: AnyModel;
   speler: AnyModel;
   staf: AnyModel;
-  blauwdruk: AnyModel;
+  kaders: AnyModel;
   werkindeling: AnyModel;
   pin: AnyModel;
   versie: AnyModel;
@@ -61,8 +61,8 @@ type AnyPrismaModels = {
   selectieGroep: AnyModel;
   selectieSpeler: AnyModel;
   selectieStaf: AnyModel;
-  blauwdrukSpeler: AnyModel;
-  blauwdrukBesluit: AnyModel;
+  kadersSpeler: AnyModel;
+  kadersBesluit: AnyModel;
   standaardVraag: AnyModel;
   stafToewijzing: AnyModel;
   // Evaluatie-app

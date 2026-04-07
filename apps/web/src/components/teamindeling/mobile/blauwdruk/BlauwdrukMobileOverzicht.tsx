@@ -6,7 +6,7 @@ import type { GezienStatus } from "@oranje-wit/database";
 import { PEILJAAR } from "@oranje-wit/types";
 import {
   updateGezienStatus,
-  initialiseerBlauwdrukSpelers,
+  initialiseerKadersSpelers,
 } from "@/app/(teamindeling-studio)/ti-studio/blauwdruk/gezien-actions";
 import { CategorieDetailView, type BlauwdrukRecord } from "./CategorieDetailView";
 
@@ -20,7 +20,7 @@ type CategorieStats = {
 };
 
 interface Props {
-  blauwdrukId: string;
+  kadersId: string;
   seizoen: string;
   voortgang: { totaal: number; gezien: number; perStatus: Record<string, number> };
   categorieStats: CategorieStats[];
@@ -113,7 +113,7 @@ function bepaalCategorie(
 // ─── Component ──────────────────────────────────────────────────
 
 export function BlauwdrukMobileOverzicht({
-  blauwdrukId,
+  kadersId,
   seizoen,
   voortgang: initialVoortgang,
   categorieStats: initialCategorieStats,
@@ -160,13 +160,13 @@ export function BlauwdrukMobileOverzicht({
     });
 
     startTransition(async () => {
-      await updateGezienStatus(blauwdrukId, record.spelerId, newStatus, notitie);
+      await updateGezienStatus(kadersId, record.spelerId, newStatus, notitie);
     });
   }
 
   function handleInitialiseer() {
     startTransition(async () => {
-      await initialiseerBlauwdrukSpelers(blauwdrukId);
+      await initialiseerKadersSpelers(kadersId);
       window.location.reload();
     });
   }

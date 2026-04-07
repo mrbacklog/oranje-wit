@@ -46,9 +46,9 @@ import { test, expect } from "../fixtures/base";
 ```
 4. Schrijf tests met Nederlandse beschrijvingen:
 ```typescript
-test.describe("Blauwdruk beheer", () => {
+test.describe("Kaders beheer", () => {
   test("kan teamgrootte-target aanpassen", async ({ page }) => {
-    await page.goto("/blauwdruk");
+    await page.goto("/kaders");
     // ... test logica
   });
 });
@@ -103,7 +103,7 @@ e2e/
     user.json                # storageState (gitignored)
   team-indeling/
     navigatie.spec.ts        # Basisnavigatie
-    blauwdruk.spec.ts        # Blauwdruk beheer
+    kaders.spec.ts           # Kaders beheer
     scenarios.spec.ts        # Scenario's, drag-drop
     pins.spec.ts             # Pin-systeem
   monitor/

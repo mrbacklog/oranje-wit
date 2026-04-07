@@ -22,9 +22,9 @@ async function getOrCreateUser() {
   });
 }
 
-async function assertBlauwdrukBewerkbaar(blauwdrukId: string) {
-  const blauwdruk = await prisma.blauwdruk.findUniqueOrThrow({
-    where: { id: blauwdrukId },
+async function assertBlauwdrukBewerkbaar(kadersId: string) {
+  const blauwdruk = await prisma.kaders.findUniqueOrThrow({
+    where: { id: kadersId },
     select: { seizoen: true },
   });
   await assertBewerkbaar(blauwdruk.seizoen);
@@ -41,19 +41,19 @@ const pinInclude = {
 };
 
 export async function createPin(data: {
-  blauwdrukId: string;
+  kadersId: string;
   spelerId: string;
   type: PinType;
   waarde: { teamNaam: string; teamId: string };
   notitie?: string;
 }) {
-  await assertBlauwdrukBewerkbaar(data.blauwdrukId);
+  await assertBlauwdrukBewerkbaar(data.kadersId);
   const user = await getOrCreateUser();
 
   // Verwijder eventuele bestaande pin voor dezelfde speler+type (upsert)
   await prisma.pin.deleteMany({
     where: {
-      blauwdrukId: data.blauwdrukId,
+      kadersId: data.kadersId,
       spelerId: data.spelerId,
       type: data.type,
     },
@@ -61,7 +61,7 @@ export async function createPin(data: {
 
   return prisma.pin.create({
     data: {
-      blauwdrukId: data.blauwdrukId,
+      kadersId: data.kadersId,
       spelerId: data.spelerId,
       type: data.type,
       waarde: data.waarde,
@@ -75,20 +75,20 @@ export async function createPin(data: {
 export async function deletePin(pinId: string) {
   const pin = await prisma.pin.findUniqueOrThrow({
     where: { id: pinId },
-    select: { blauwdrukId: true },
+    select: { kadersId: true },
   });
-  await assertBlauwdrukBewerkbaar(pin.blauwdrukId);
+  await assertBlauwdrukBewerkbaar(pin.kadersId);
   return prisma.pin.delete({ where: { id: pinId } });
 }
 
 export async function getPinsVoorWerkindeling(werkindelingId: string) {
   const werkindeling = await prisma.werkindeling.findUniqueOrThrow({
     where: { id: werkindelingId },
-    select: { blauwdrukId: true },
+    select: { kadersId: true },
   });
 
   return prisma.pin.findMany({
-    where: { blauwdrukId: werkindeling.blauwdrukId },
+    where: { kadersId: werkindeling.kadersId },
     include: pinInclude,
     orderBy: { gepindOp: "desc" },
   });

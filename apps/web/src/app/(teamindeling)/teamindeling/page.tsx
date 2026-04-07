@@ -21,7 +21,7 @@ function getTarget(spelvorm: string | null): number {
 export default async function TeamIndelingMobileDashboard() {
   const seizoen = await getActiefSeizoen();
 
-  const blauwdruk = await prisma.blauwdruk.findUnique({
+  const blauwdruk = await prisma.kaders.findUnique({
     where: { seizoen },
     select: { id: true },
   });

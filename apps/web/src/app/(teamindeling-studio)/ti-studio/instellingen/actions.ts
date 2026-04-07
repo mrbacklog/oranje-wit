@@ -15,8 +15,8 @@ export async function switchSeizoen(seizoen: string) {
   if (session?.user?.email !== ADMIN_EMAIL) {
     throw new Error("Alleen admin mag seizoen wisselen");
   }
-  await prisma.blauwdruk.updateMany({ data: { isWerkseizoen: false } });
-  await prisma.blauwdruk.update({
+  await prisma.kaders.updateMany({ data: { isWerkseizoen: false } });
+  await prisma.kaders.update({
     where: { seizoen },
     data: { isWerkseizoen: true },
   });
@@ -75,7 +75,7 @@ export async function getImportHistorie() {
 }
 
 export async function getAlleSeizoenen() {
-  return prisma.blauwdruk.findMany({
+  return prisma.kaders.findMany({
     orderBy: { seizoen: "desc" },
     select: { seizoen: true, isWerkseizoen: true },
   });

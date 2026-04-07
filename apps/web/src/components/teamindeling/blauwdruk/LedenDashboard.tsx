@@ -39,12 +39,12 @@ const RETENTIE_VOLGORDE: Record<string, number> = {
 
 interface LedenDashboardProps {
   spelers: SpelerUitgebreid[];
-  blauwdrukId: string;
+  kadersId: string;
 }
 
 export default function LedenDashboard({
   spelers: initieleSpelers,
-  blauwdrukId,
+  kadersId,
 }: LedenDashboardProps) {
   const [spelers, setSpelers] = useState(initieleSpelers);
   const [zoekterm, setZoekterm] = useState("");
@@ -376,11 +376,7 @@ export default function LedenDashboard({
         {isPending && <p className="text-xs text-gray-400">Opslaan...</p>}
       </div>
 
-      <LedenSyncDialoog
-        open={syncOpen}
-        onClose={() => setSyncOpen(false)}
-        blauwdrukId={blauwdrukId}
-      />
+      <LedenSyncDialoog open={syncOpen} onClose={() => setSyncOpen(false)} kadersId={kadersId} />
     </div>
   );
 }

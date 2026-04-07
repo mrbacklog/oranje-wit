@@ -29,7 +29,7 @@ type Besluit = {
 };
 
 interface Props {
-  blauwdrukId: string;
+  kadersId: string;
   seizoen: string;
   besluiten: Besluit[];
 }
@@ -65,7 +65,7 @@ const fadeUp = {
 // ─── Component ──────────────────────────────────────────────────
 
 export function BesluitenMobileOverzicht({
-  blauwdrukId,
+  kadersId,
   seizoen,
   besluiten: initialBesluiten,
 }: Props) {

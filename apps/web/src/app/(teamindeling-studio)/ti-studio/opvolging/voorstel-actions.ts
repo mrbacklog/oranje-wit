@@ -123,7 +123,7 @@ export async function wijsVoorstelAf(id: string, reden?: string): Promise<Action
 
 export interface GezienVoorstelItem {
   id: string;
-  blauwdrukId: string;
+  kadersId: string;
   spelerId: string;
   spelerNaam: string;
   teamNaam: string | null;
@@ -137,12 +137,12 @@ export interface GezienVoorstelItem {
  * Haal alle BlauwdrukSpeler records op waar een status is voorgesteld
  * maar nog niet definitief bevestigd door de TC.
  */
-export async function getGezienVoorstellen(blauwdrukId: string): Promise<GezienVoorstelItem[]> {
+export async function getGezienVoorstellen(kadersId: string): Promise<GezienVoorstelItem[]> {
   await requireTC();
 
-  const records = await prisma.blauwdrukSpeler.findMany({
+  const records = await prisma.kadersSpeler.findMany({
     where: {
-      blauwdrukId,
+      kadersId,
       gezienStatusVoorgesteld: { not: null },
     },
     include: {
@@ -163,7 +163,7 @@ export async function getGezienVoorstellen(blauwdrukId: string): Promise<GezienV
       const huidig = r.speler.huidig as { team?: string } | null;
       return {
         id: r.id,
-        blauwdrukId: r.blauwdrukId,
+        kadersId: r.kadersId,
         spelerId: r.spelerId,
         spelerNaam: `${r.speler.roepnaam} ${r.speler.achternaam}`,
         teamNaam: huidig?.team ?? null,
@@ -178,7 +178,7 @@ export async function getGezienVoorstellen(blauwdrukId: string): Promise<GezienV
 /**
  * Bevestig de voorgestelde gezien-status als definitief.
  */
-export async function bevestigGezienStatus(blauwdrukSpelerId: string): Promise<ActionResult<void>> {
+export async function bevestigGezienStatus(kadersSpelerId: string): Promise<ActionResult<void>> {
   try {
     const session = await requireTC();
     const email = session.user!.email!;
@@ -191,8 +191,8 @@ export async function bevestigGezienStatus(blauwdrukSpelerId: string): Promise<A
       select: { id: true },
     });
 
-    const record = await prisma.blauwdrukSpeler.findUniqueOrThrow({
-      where: { id: blauwdrukSpelerId },
+    const record = await prisma.kadersSpeler.findUniqueOrThrow({
+      where: { id: kadersSpelerId },
       select: { gezienStatusVoorgesteld: true },
     });
 
@@ -200,8 +200,8 @@ export async function bevestigGezienStatus(blauwdrukSpelerId: string): Promise<A
       return { ok: false, error: "Geen voorgestelde status aanwezig." };
     }
 
-    await prisma.blauwdrukSpeler.update({
-      where: { id: blauwdrukSpelerId },
+    await prisma.kadersSpeler.update({
+      where: { id: kadersSpelerId },
       data: {
         gezienStatus: record.gezienStatusVoorgesteld,
         gezienStatusVoorgesteld: null,
@@ -227,12 +227,12 @@ export async function bevestigGezienStatus(blauwdrukSpelerId: string): Promise<A
 /**
  * Wijs de voorgestelde gezien-status af (wis het voorstel).
  */
-export async function wijsGezienStatusAf(blauwdrukSpelerId: string): Promise<ActionResult<void>> {
+export async function wijsGezienStatusAf(kadersSpelerId: string): Promise<ActionResult<void>> {
   try {
     await requireTC();
 
-    await prisma.blauwdrukSpeler.update({
-      where: { id: blauwdrukSpelerId },
+    await prisma.kadersSpeler.update({
+      where: { id: kadersSpelerId },
       data: {
         gezienStatusVoorgesteld: null,
         gezienVoorgesteldDoor: null,

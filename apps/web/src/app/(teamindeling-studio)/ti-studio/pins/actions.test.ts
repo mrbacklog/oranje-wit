@@ -35,7 +35,7 @@ describe("pins/actions", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // Standaard: blauwdruk bestaat en is bewerkbaar
-    mockPrisma.blauwdruk.findUniqueOrThrow.mockResolvedValue({
+    mockPrisma.kaders.findUniqueOrThrow.mockResolvedValue({
       seizoen: "2025-2026",
     });
   });
@@ -50,7 +50,7 @@ describe("pins/actions", () => {
       mockPrisma.pin.deleteMany.mockResolvedValueOnce({ count: 0 });
       const mockPin = {
         id: "pin-1",
-        blauwdrukId: "bp-1",
+        kadersId: "bp-1",
         spelerId: "sp-1",
         type: "SPELER_POSITIE",
         waarde: { teamNaam: "Geel 1", teamId: "t1" },
@@ -61,7 +61,7 @@ describe("pins/actions", () => {
       mockPrisma.pin.create.mockResolvedValueOnce(mockPin);
 
       const result = await createPin({
-        blauwdrukId: "bp-1",
+        kadersId: "bp-1",
         spelerId: "sp-1",
         type: "SPELER_POSITIE",
         waarde: { teamNaam: "Geel 1", teamId: "t1" },
@@ -70,14 +70,14 @@ describe("pins/actions", () => {
       expect(result).toEqual(mockPin);
       expect(mockPrisma.pin.deleteMany).toHaveBeenCalledWith({
         where: {
-          blauwdrukId: "bp-1",
+          kadersId: "bp-1",
           spelerId: "sp-1",
           type: "SPELER_POSITIE",
         },
       });
       expect(mockPrisma.pin.create).toHaveBeenCalledWith({
         data: expect.objectContaining({
-          blauwdrukId: "bp-1",
+          kadersId: "bp-1",
           spelerId: "sp-1",
           type: "SPELER_POSITIE",
           gepindDoorId: "user-1",
@@ -92,7 +92,7 @@ describe("pins/actions", () => {
       mockPrisma.pin.create.mockResolvedValueOnce({ id: "pin-1" });
 
       await createPin({
-        blauwdrukId: "bp-1",
+        kadersId: "bp-1",
         spelerId: "sp-1",
         type: "SPELER_STATUS",
         waarde: { teamNaam: "Geel 1", teamId: "t1" },
@@ -116,7 +116,7 @@ describe("pins/actions", () => {
   describe("deletePin", () => {
     it("zoekt de pin op en verwijdert deze", async () => {
       mockPrisma.pin.findUniqueOrThrow.mockResolvedValueOnce({
-        blauwdrukId: "bp-1",
+        kadersId: "bp-1",
       });
       mockPrisma.pin.delete.mockResolvedValueOnce({ id: "pin-1" });
 
@@ -124,7 +124,7 @@ describe("pins/actions", () => {
 
       expect(mockPrisma.pin.findUniqueOrThrow).toHaveBeenCalledWith({
         where: { id: "pin-1" },
-        select: { blauwdrukId: true },
+        select: { kadersId: true },
       });
       expect(mockPrisma.pin.delete).toHaveBeenCalledWith({
         where: { id: "pin-1" },
@@ -137,9 +137,9 @@ describe("pins/actions", () => {
   // ----------------------------------------------------------
 
   describe("getPinsVoorWerkindeling", () => {
-    it("haalt pins op via werkindeling → blauwdrukId", async () => {
+    it("haalt pins op via werkindeling → kadersId", async () => {
       mockPrisma.werkindeling.findUniqueOrThrow.mockResolvedValueOnce({
-        blauwdrukId: "bp-1",
+        kadersId: "bp-1",
       });
       const mockPins = [
         {
@@ -153,7 +153,7 @@ describe("pins/actions", () => {
 
       expect(result).toEqual(mockPins);
       expect(mockPrisma.pin.findMany).toHaveBeenCalledWith({
-        where: { blauwdrukId: "bp-1" },
+        where: { kadersId: "bp-1" },
         include: expect.any(Object),
         orderBy: { gepindOp: "desc" },
       });
@@ -161,7 +161,7 @@ describe("pins/actions", () => {
 
     it("retourneert lege array als er geen pins zijn", async () => {
       mockPrisma.werkindeling.findUniqueOrThrow.mockResolvedValueOnce({
-        blauwdrukId: "bp-1",
+        kadersId: "bp-1",
       });
       mockPrisma.pin.findMany.mockResolvedValueOnce([]);
 

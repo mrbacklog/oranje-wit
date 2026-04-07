@@ -87,7 +87,7 @@ export async function pasWhatIfToe(whatIfId: string, toelichtingAfwijking?: stri
     where: { id: whatIf.werkindelingId },
     select: {
       id: true,
-      blauwdruk: { select: { id: true } },
+      kaders: { select: { id: true } },
       versies: {
         orderBy: { nummer: "desc" as const },
         take: 1,
@@ -168,8 +168,8 @@ export async function pasWhatIfToe(whatIfId: string, toelichtingAfwijking?: stri
 
     // 5. Log afwijkingen als BlauwdrukBesluit (als er afwijkingen waren)
     if (validatie.heeftAfwijkingen && toelichtingAfwijking) {
-      const blauwdrukId = werkindeling.blauwdruk?.id;
-      if (blauwdrukId) {
+      const kadersId = werkindeling.kaders?.id;
+      if (kadersId) {
         const session = await requireTC();
         const user = await tx.user.upsert({
           where: { email: session.user!.email! },
@@ -188,9 +188,9 @@ export async function pasWhatIfToe(whatIfId: string, toelichtingAfwijking?: stri
           )
           .join("; ");
 
-        await tx.blauwdrukBesluit.create({
+        await tx.kadersBesluit.create({
           data: {
-            blauwdrukId,
+            kadersId,
             vraag: `What-if "${whatIf.vraag}" wijkt af van blauwdruk-kaders: ${afwijkingTekst}`,
             antwoord: toelichtingAfwijking,
             toelichting: `Afwijking geaccepteerd bij toepassen what-if ${whatIfId}`,

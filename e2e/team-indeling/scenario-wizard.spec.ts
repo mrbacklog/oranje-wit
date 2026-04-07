@@ -10,10 +10,9 @@ test.describe("Werkindeling auto-create", () => {
     await expect(page).toHaveURL(/\/ti-studio\/indeling/);
   });
 
-  test("Vergelijk-pagina toont WhatIf-selector", async ({ page }) => {
+  test("Vergelijk-redirect naar indeling", async ({ page }) => {
+    // /vergelijk is geïntegreerd in /indeling (what-if zit in de indeling-editor)
     await page.goto("/ti-studio/vergelijk", { timeout: 30000 });
-    await expect(page).toHaveURL(/\/ti-studio\/vergelijk/);
-    // WhatIf-header aanwezig
-    await expect(page.getByText("What-If vergelijking")).toBeVisible({ timeout: 10000 });
+    await expect(page).toHaveURL(/\/ti-studio\/indeling/);
   });
 });

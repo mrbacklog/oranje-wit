@@ -25,9 +25,9 @@ async function getOrCreateUser() {
   });
 }
 
-async function assertBlauwdrukBewerkbaar(blauwdrukId: string) {
-  const blauwdruk = await prisma.blauwdruk.findUniqueOrThrow({
-    where: { id: blauwdrukId },
+async function assertBlauwdrukBewerkbaar(kadersId: string) {
+  const blauwdruk = await prisma.kaders.findUniqueOrThrow({
+    where: { id: kadersId },
     select: { seizoen: true },
   });
   await assertBewerkbaar(blauwdruk.seizoen);
@@ -42,8 +42,8 @@ async function assertBlauwdrukBewerkbaar(blauwdrukId: string) {
  * Detecteert doorstroom-signaleringen en maakt records aan.
  * Bestaande records worden niet overschreven.
  */
-export async function initialiseerBlauwdrukSpelers(blauwdrukId: string) {
-  await assertBlauwdrukBewerkbaar(blauwdrukId);
+export async function initialiseerKadersSpelers(kadersId: string) {
+  await assertBlauwdrukBewerkbaar(kadersId);
 
   const spelers = await prisma.speler.findMany({
     where: { status: { not: "GAAT_STOPPEN" } },
@@ -75,12 +75,12 @@ export async function initialiseerBlauwdrukSpelers(blauwdrukId: string) {
   // Upsert: maak records aan, overschrijf geen bestaande status
   let aangemaakt = 0;
   for (const speler of spelers) {
-    const result = await prisma.blauwdrukSpeler.upsert({
+    const result = await prisma.kadersSpeler.upsert({
       where: {
-        blauwdrukId_spelerId: { blauwdrukId, spelerId: speler.id },
+        kadersId_spelerId: { kadersId, spelerId: speler.id },
       },
       create: {
-        blauwdrukId,
+        kadersId,
         spelerId: speler.id,
         gezienStatus: "ONGEZIEN",
         signalering: signaleringMap.get(speler.id) ?? null,
@@ -100,12 +100,12 @@ export async function initialiseerBlauwdrukSpelers(blauwdrukId: string) {
   });
 
   for (const stopper of stoppers) {
-    await prisma.blauwdrukSpeler.upsert({
+    await prisma.kadersSpeler.upsert({
       where: {
-        blauwdrukId_spelerId: { blauwdrukId, spelerId: stopper.id },
+        kadersId_spelerId: { kadersId, spelerId: stopper.id },
       },
       create: {
-        blauwdrukId,
+        kadersId,
         spelerId: stopper.id,
         gezienStatus: "ROOD",
         signalering: null,
@@ -129,9 +129,9 @@ export async function initialiseerBlauwdrukSpelers(blauwdrukId: string) {
 /**
  * Haal alle BlauwdrukSpeler records op met spelerdata.
  */
-export async function getBlauwdrukSpelers(blauwdrukId: string) {
-  return prisma.blauwdrukSpeler.findMany({
-    where: { blauwdrukId },
+export async function getKadersSpelers(kadersId: string) {
+  return prisma.kadersSpeler.findMany({
+    where: { kadersId },
     include: {
       speler: {
         select: {
@@ -164,10 +164,10 @@ export async function getBlauwdrukSpelers(blauwdrukId: string) {
 /**
  * Voortgangsstatistieken voor de gezien-flow.
  */
-export async function getGezienVoortgang(blauwdrukId: string) {
-  const records = await prisma.blauwdrukSpeler.groupBy({
+export async function getGezienVoortgang(kadersId: string) {
+  const records = await prisma.kadersSpeler.groupBy({
     by: ["gezienStatus"],
-    where: { blauwdrukId },
+    where: { kadersId },
     _count: true,
   });
 
@@ -193,18 +193,18 @@ export async function getGezienVoortgang(blauwdrukId: string) {
  * Bij GEEL of ORANJE wordt optioneel een actiepunt aangemaakt.
  */
 export async function updateGezienStatus(
-  blauwdrukId: string,
+  kadersId: string,
   spelerId: string,
   status: GezienStatus,
   notitie?: string,
   toegewezenAanId?: string
 ) {
-  await assertBlauwdrukBewerkbaar(blauwdrukId);
+  await assertBlauwdrukBewerkbaar(kadersId);
   const user = await getOrCreateUser();
 
   // Haal bestaand record op
-  const bestaand = await prisma.blauwdrukSpeler.findUnique({
-    where: { blauwdrukId_spelerId: { blauwdrukId, spelerId } },
+  const bestaand = await prisma.kadersSpeler.findUnique({
+    where: { kadersId_spelerId: { kadersId, spelerId } },
     select: { id: true, actiepuntId: true },
   });
 
@@ -225,7 +225,7 @@ export async function updateGezienStatus(
     const actiepunt = await prisma.actiepunt.create({
       data: {
         beschrijving: `Check ${statusLabel} van ${speler?.roepnaam} ${speler?.achternaam}`,
-        blauwdrukId,
+        kadersId,
         toegewezenAanId,
         auteurId: user.id,
       },
@@ -233,7 +233,7 @@ export async function updateGezienStatus(
     actiepuntId = actiepunt.id;
   }
 
-  await prisma.blauwdrukSpeler.update({
+  await prisma.kadersSpeler.update({
     where: { id: bestaand.id },
     data: {
       gezienStatus: status,
@@ -259,16 +259,16 @@ export async function updateGezienStatus(
  * Batch-update: meerdere spelers tegelijk markeren (bijv. heel team GROEN).
  */
 export async function batchUpdateGezienStatus(
-  blauwdrukId: string,
+  kadersId: string,
   updates: Array<{ spelerId: string; status: GezienStatus; notitie?: string }>
 ) {
-  await assertBlauwdrukBewerkbaar(blauwdrukId);
+  await assertBlauwdrukBewerkbaar(kadersId);
   const user = await getOrCreateUser();
 
   for (const update of updates) {
-    await prisma.blauwdrukSpeler.updateMany({
+    await prisma.kadersSpeler.updateMany({
       where: {
-        blauwdrukId,
+        kadersId,
         spelerId: update.spelerId,
       },
       data: {

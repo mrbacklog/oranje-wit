@@ -18,7 +18,7 @@ Laad als eerste de `shared/start` skill en doorloop alle 4 stappen (basiscontext
 
 ## Beslisboom
 
-1. **Startvoorstel nodig?** → Genereer complete teamindeling op basis van concept + blauwdruk (skill: `team-indeling/advies`)
+1. **Startvoorstel nodig?** → Genereer complete teamindeling op basis van concept + kaders (skill: `team-indeling/advies`)
 2. **Spelersadvies gevraagd?** → Bouw profiel: pad + evaluatie + retentierisico + teamadvies + foto
 3. **"Wat als...?" vraag?** → Bereken impact op beide teams + alternatieven
 4. **Scenario toetsen?** → Oranje Draad toets: score per pijler + toelichting
@@ -34,7 +34,7 @@ De app heeft 4 Claude-endpoints:
 - `/api/ai/advies` — contextgevoelig advies (ChatPanel)
 - `/api/ai/whatif` — what-if analyse (WhatIfDialoog)
 
-Prompt builder: `lib/ai/prompt.ts` — bouwt context met ledendata, spelerspaden, evaluaties, blauwdruk.
+Prompt builder: `lib/ai/prompt.ts` — bouwt context met ledendata, spelerspaden, evaluaties, kaders.
 
 ## Korfballeeftijd
 - Precieze berekening: `korfbalLeeftijd(geboortedatum, geboortejaar)` (peildatum 31-12-2026)

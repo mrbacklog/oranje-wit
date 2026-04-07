@@ -1,6 +1,6 @@
 import { getBlauwdruk } from "@/app/(teamindeling-studio)/ti-studio/blauwdruk/actions";
 import {
-  getBlauwdrukSpelers,
+  getKadersSpelers,
   getGezienVoortgang,
 } from "@/app/(teamindeling-studio)/ti-studio/blauwdruk/gezien-actions";
 import GezienOverzicht from "@/components/teamindeling/blauwdruk/GezienOverzicht";
@@ -14,7 +14,7 @@ export default async function PersonenSpelersPage() {
   const blauwdruk = await getBlauwdruk(seizoen);
 
   const [gezienRecords, gezienVoortgang, gezienUsers] = await Promise.all([
-    getBlauwdrukSpelers(blauwdruk.id),
+    getKadersSpelers(blauwdruk.id),
     getGezienVoortgang(blauwdruk.id),
     prisma.user.findMany({ select: { id: true, naam: true }, orderBy: { naam: "asc" } }),
   ]);
@@ -31,7 +31,7 @@ export default async function PersonenSpelersPage() {
       </div>
 
       <GezienOverzicht
-        blauwdrukId={blauwdruk.id}
+        kadersId={blauwdruk.id}
         initialRecords={gezienRecords}
         initialVoortgang={gezienVoortgang}
         users={gezienUsers}

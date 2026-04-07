@@ -46,7 +46,7 @@ Start een agent team voor een brede analyse van het ledenbestand en de seizoensv
   - Berekent hoeveel teams per kleur/categorie haalbaar zijn
   - Identificeert knelpunten (te weinig spelers, genderbalans)
   - Stelt teamgrootte-scenario's op (optimistisch/realistisch/pessimistisch)
-  - Respecteert blauwdruk-kaders en pins
+  - Respecteert seizoenskaders en pins
 - **Communiceert met**: korfbal (concepten), speler-scout (spelersadvies), data-analist (aantallen)
 
 ## Memory

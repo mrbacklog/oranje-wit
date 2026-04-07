@@ -24,12 +24,12 @@ Streaming SSE chat met tool use. Claude kan zowel data opvragen als mutaties uit
 - Tool-definities: `lib/ai/tools.ts`, tool-handlers: `lib/ai/tool-handlers.ts`
 - Na mutatie: ChatPanel roept `onMutatie` → ScenarioEditor herlaadt teams via `/api/scenarios/{id}/teams`
 
-Prompt builder: `lib/ai/prompt.ts` — bouwt context met ledendata, spelerspaden, evaluaties, blauwdruk, teamgrootte-targets, blauwdruk-kaders.
+Prompt builder: `lib/ai/prompt.ts` — bouwt context met ledendata, spelerspaden, evaluaties, kaders, teamgrootte-targets.
 
 ## Adviestypen
 
 ### Startvoorstel
-Input: concept (uitgangsprincipe + keuzes) + blauwdruk (kaders + pins + teamgrootte-targets)
+Input: concept (uitgangsprincipe + keuzes) + kaders (kaders + pins + teamgrootte-targets)
 Output: complete teamindeling voor alle categorieën met onderbouwing per speler
 
 Claude gebruikt:
@@ -37,7 +37,7 @@ Claude gebruikt:
 - Spelerspaden (meerdere seizoenen)
 - Evaluaties (indien beschikbaar)
 - Retentiemodel (risico, kans_behoud, factoren)
-- Teamgrootte-targets uit blauwdruk
+- Teamgrootte-targets uit kaders
 - Gepinde feiten
 
 ### Spelersadvies
@@ -56,8 +56,8 @@ Output: impact op beide teams + alternatieve opties
 Input: scenario of team
 Output: score per pijler + toelichting
 
-### Blauwdruk-advies
-Input: categorieoverzicht + ledenstatistieken uit blauwdruk
+### Kaders-advies
+Input: categorieoverzicht + ledenstatistieken uit kaders
 Output: aanbevolen speerpunten en aandachtspunten voor het seizoen
 
 ## Korfballeeftijd
@@ -69,4 +69,4 @@ Output: aanbevolen speerpunten en aandachtspunten voor het seizoen
 - Claude geeft advies, beslist niet — TC maakt de keuzes
 - Altijd onderbouwen met data
 - Oranje Draad als toetsingskader bij elk advies
-- Teamgrootte-targets uit blauwdruk als referentie
+- Teamgrootte-targets uit kaders als referentie

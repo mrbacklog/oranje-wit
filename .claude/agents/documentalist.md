@@ -5,7 +5,6 @@ tools: Read, Grep, Glob, Write, Edit
 model: haiku
 memory: project
 skills:
-  - team-indeling/blauwdruk
   - team-indeling/scenario
   - team-indeling/validatie
   - shared/oranje-draad

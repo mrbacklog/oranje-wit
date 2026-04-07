@@ -22,7 +22,7 @@ import { SettingsDialog } from "./CategorieSettingsDialog";
 interface CategoriePanelProps {
   statistieken: LedenStatistieken;
   kaders: CategorieKaders;
-  blauwdrukId: string;
+  kadersId: string;
 }
 
 // ============================================================
@@ -56,7 +56,7 @@ function getStats(statistieken: LedenStatistieken, sleutel: string): CategorieSt
 export default function CategoriePanel({
   statistieken,
   kaders: initieleKaders,
-  blauwdrukId,
+  kadersId,
 }: CategoriePanelProps) {
   const [kaders, setKaders] = useState<CategorieKaders>(initieleKaders);
   const [openDialog, setOpenDialog] = useState<string | null>(null);
@@ -69,10 +69,10 @@ export default function CategoriePanel({
       }));
       // Server-side opslaan via queueMicrotask (non-blocking)
       queueMicrotask(() => {
-        updateCategorieKaders(blauwdrukId, categorie, settings);
+        updateCategorieKaders(kadersId, categorie, settings);
       });
     },
-    [blauwdrukId]
+    [kadersId]
   );
 
   return (

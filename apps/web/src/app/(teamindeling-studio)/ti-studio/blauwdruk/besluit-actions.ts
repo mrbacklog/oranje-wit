@@ -23,9 +23,9 @@ async function getOrCreateUser() {
   });
 }
 
-async function assertBlauwdrukBewerkbaar(blauwdrukId: string) {
-  const blauwdruk = await prisma.blauwdruk.findUniqueOrThrow({
-    where: { id: blauwdrukId },
+async function assertBlauwdrukBewerkbaar(kadersId: string) {
+  const blauwdruk = await prisma.kaders.findUniqueOrThrow({
+    where: { id: kadersId },
     select: { seizoen: true },
   });
   await assertBewerkbaar(blauwdruk.seizoen);
@@ -73,8 +73,8 @@ export async function upsertStandaardVraag(data: {
  * Initialiseer standaardvragen als BlauwdrukBesluit records.
  * Bestaande standaard-besluiten worden niet opnieuw aangemaakt.
  */
-export async function initialiseerStandaardBesluiten(blauwdrukId: string) {
-  await assertBlauwdrukBewerkbaar(blauwdrukId);
+export async function initialiseerStandaardBesluiten(kadersId: string) {
+  await assertBlauwdrukBewerkbaar(kadersId);
   const user = await getOrCreateUser();
 
   const vragen = await prisma.standaardVraag.findMany({
@@ -83,8 +83,8 @@ export async function initialiseerStandaardBesluiten(blauwdrukId: string) {
   });
 
   // Check welke al bestaan
-  const bestaand = await prisma.blauwdrukBesluit.findMany({
-    where: { blauwdrukId, isStandaard: true },
+  const bestaand = await prisma.kadersBesluit.findMany({
+    where: { kadersId, isStandaard: true },
     select: { standaardCode: true },
   });
   const bestaandeCodes = new Set(bestaand.map((b) => b.standaardCode));
@@ -93,9 +93,9 @@ export async function initialiseerStandaardBesluiten(blauwdrukId: string) {
   for (const vraag of vragen) {
     if (bestaandeCodes.has(vraag.code)) continue;
 
-    await prisma.blauwdrukBesluit.create({
+    await prisma.kadersBesluit.create({
       data: {
-        blauwdrukId,
+        kadersId,
         vraag: vraag.vraag,
         isStandaard: true,
         standaardCode: vraag.code,
@@ -114,9 +114,9 @@ export async function initialiseerStandaardBesluiten(blauwdrukId: string) {
 // LEZEN
 // ============================================================
 
-export async function getBesluiten(blauwdrukId: string) {
-  return prisma.blauwdrukBesluit.findMany({
-    where: { blauwdrukId },
+export async function getBesluiten(kadersId: string) {
+  return prisma.kadersBesluit.findMany({
+    where: { kadersId },
     include: {
       auteur: { select: { naam: true } },
       actiepunten: {
@@ -133,10 +133,10 @@ export async function getBesluiten(blauwdrukId: string) {
   });
 }
 
-export async function getBesluitStats(blauwdrukId: string) {
-  const records = await prisma.blauwdrukBesluit.groupBy({
+export async function getBesluitStats(kadersId: string) {
+  const records = await prisma.kadersBesluit.groupBy({
     by: ["status"],
-    where: { blauwdrukId },
+    where: { kadersId },
     _count: true,
   });
 
@@ -160,23 +160,23 @@ export async function getBesluitStats(blauwdrukId: string) {
 // ============================================================
 
 export async function createBesluit(data: {
-  blauwdrukId: string;
+  kadersId: string;
   vraag: string;
   niveau?: BesluitNiveau;
   doelgroep?: Doelgroep;
 }) {
-  await assertBlauwdrukBewerkbaar(data.blauwdrukId);
+  await assertBlauwdrukBewerkbaar(data.kadersId);
   const user = await getOrCreateUser();
 
   // Bepaal hoogste volgorde
-  const maxVolgorde = await prisma.blauwdrukBesluit.aggregate({
-    where: { blauwdrukId: data.blauwdrukId },
+  const maxVolgorde = await prisma.kadersBesluit.aggregate({
+    where: { kadersId: data.kadersId },
     _max: { volgorde: true },
   });
 
-  const besluit = await prisma.blauwdrukBesluit.create({
+  const besluit = await prisma.kadersBesluit.create({
     data: {
-      blauwdrukId: data.blauwdrukId,
+      kadersId: data.kadersId,
       vraag: data.vraag,
       isStandaard: false,
       volgorde: (maxVolgorde._max.volgorde ?? 0) + 1,
@@ -201,13 +201,13 @@ export async function updateBesluit(
     vraag?: string;
   }
 ) {
-  const besluit = await prisma.blauwdrukBesluit.findUniqueOrThrow({
+  const besluit = await prisma.kadersBesluit.findUniqueOrThrow({
     where: { id: besluitId },
-    select: { blauwdrukId: true },
+    select: { kadersId: true },
   });
-  await assertBlauwdrukBewerkbaar(besluit.blauwdrukId);
+  await assertBlauwdrukBewerkbaar(besluit.kadersId);
 
-  await prisma.blauwdrukBesluit.update({
+  await prisma.kadersBesluit.update({
     where: { id: besluitId },
     data: {
       antwoord: data.antwoord ?? undefined,
@@ -223,16 +223,16 @@ export async function updateBesluit(
 }
 
 export async function deleteBesluit(besluitId: string) {
-  const besluit = await prisma.blauwdrukBesluit.findUniqueOrThrow({
+  const besluit = await prisma.kadersBesluit.findUniqueOrThrow({
     where: { id: besluitId },
-    select: { blauwdrukId: true, isStandaard: true },
+    select: { kadersId: true, isStandaard: true },
   });
-  await assertBlauwdrukBewerkbaar(besluit.blauwdrukId);
+  await assertBlauwdrukBewerkbaar(besluit.kadersId);
 
   if (besluit.isStandaard) {
     throw new Error("Standaardvragen kunnen niet verwijderd worden");
   }
 
-  await prisma.blauwdrukBesluit.delete({ where: { id: besluitId } });
+  await prisma.kadersBesluit.delete({ where: { id: besluitId } });
   revalidatePath("/blauwdruk");
 }

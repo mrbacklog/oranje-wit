@@ -29,13 +29,13 @@ const DOMEINEN: DomeinDef[] = [
   },
   {
     naam: "TI Studio (desktop)",
-    baseUrl: "/ti-studio/indeling",
-    bottomNavLabels: ["Indeling", "Kaders", "Personen", "Opvolging"],
+    baseUrl: "/ti-studio/kaders",
+    bottomNavLabels: ["Kaders", "Indeling", "Werkbord", "Personen"],
   },
   {
     naam: "Team-Indeling (mobile)",
     baseUrl: "/teamindeling",
-    bottomNavLabels: ["Overzicht", "Indeling", "Teams", "Spelers"],
+    bottomNavLabels: ["Indeling", "Opvolging", "Personen", "Meer"],
   },
   {
     naam: "Evaluatie",

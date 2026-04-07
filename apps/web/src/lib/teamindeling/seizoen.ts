@@ -18,7 +18,7 @@ export async function getActiefSeizoen(): Promise<string> {
   const cookie = cookieStore.get(COOKIE_NAME)?.value;
 
   if (cookie && SEIZOEN_REGEX.test(cookie)) {
-    const bestaat = await prisma.blauwdruk.findUnique({
+    const bestaat = await prisma.kaders.findUnique({
       where: { seizoen: cookie },
       select: { seizoen: true },
     });
@@ -26,14 +26,14 @@ export async function getActiefSeizoen(): Promise<string> {
   }
 
   // Fallback: het werkseizoen
-  const werkseizoen = await prisma.blauwdruk.findFirst({
+  const werkseizoen = await prisma.kaders.findFirst({
     where: { isWerkseizoen: true },
     select: { seizoen: true },
   });
   if (werkseizoen) return werkseizoen.seizoen;
 
   // Laatste fallback: nieuwste blauwdruk
-  const laatste = await prisma.blauwdruk.findFirst({
+  const laatste = await prisma.kaders.findFirst({
     orderBy: { seizoen: "desc" },
     select: { seizoen: true },
   });
@@ -45,7 +45,7 @@ export async function getActiefSeizoen(): Promise<string> {
  * Alle beschikbare seizoenen met werkseizoen-vlag (nieuwste eerst).
  */
 export async function getAlleSeizoenen(): Promise<SeizoenInfo[]> {
-  const blauwdrukken = await prisma.blauwdruk.findMany({
+  const blauwdrukken = await prisma.kaders.findMany({
     select: { seizoen: true, isWerkseizoen: true },
     orderBy: { seizoen: "desc" },
   });
@@ -56,7 +56,7 @@ export async function getAlleSeizoenen(): Promise<SeizoenInfo[]> {
  * Is dit het werkseizoen (het enige bewerkbare seizoen)?
  */
 export async function isWerkseizoenCheck(seizoen: string): Promise<boolean> {
-  const blauwdruk = await prisma.blauwdruk.findUnique({
+  const blauwdruk = await prisma.kaders.findUnique({
     where: { seizoen },
     select: { isWerkseizoen: true },
   });

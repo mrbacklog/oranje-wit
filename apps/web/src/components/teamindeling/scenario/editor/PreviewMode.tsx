@@ -23,7 +23,7 @@ interface PreviewModeProps {
   detailSpeler: SpelerData | null;
   detailTeamId: string | null;
   pinMap: Map<string, PinData>;
-  blauwdrukId: string | null;
+  kadersId: string | null;
   compactMode?: boolean;
   onToggleRanking: () => void;
   onToggleCompact?: () => void;
@@ -49,7 +49,7 @@ export default function PreviewMode({
   detailSpeler,
   detailTeamId,
   pinMap,
-  blauwdrukId,
+  kadersId,
   compactMode,
   onToggleRanking,
   onToggleCompact,
@@ -96,7 +96,7 @@ export default function PreviewMode({
           teamNaam={detailTeamId ? teams.find((t) => t.id === detailTeamId)?.naam : undefined}
           pin={pinMap.get(detailSpeler.id) ?? null}
           showRanking={showRanking}
-          blauwdrukId={blauwdrukId ?? undefined}
+          kadersId={kadersId ?? undefined}
           onTogglePin={onTogglePin}
           onClose={onCloseDetail}
         />

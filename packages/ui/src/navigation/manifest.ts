@@ -136,22 +136,20 @@ export const TI_STUDIO: AppManifest = {
   accent: APP_ACCENTS["ti-studio"],
   sections: [
     {
-      nav: { label: "Indeling", href: "/ti-studio/indeling", icon: "GridIcon" },
+      nav: { label: "Kaders", href: "/ti-studio/kaders", icon: "ListIcon" },
     },
     {
-      nav: { label: "Blauwdruk", href: "/ti-studio/blauwdruk", icon: "ListIcon" },
-      pills: [
-        { label: "Kaders", href: "/ti-studio/blauwdruk?tab=kaders" },
-        { label: "Spelers", href: "/ti-studio/blauwdruk?tab=spelers" },
-        { label: "Staf", href: "/ti-studio/blauwdruk?tab=staf" },
-        { label: "Teams", href: "/ti-studio/blauwdruk?tab=teams" },
-      ],
+      nav: { label: "Indeling", href: "/ti-studio/indeling", icon: "GridIcon" },
     },
     {
       nav: { label: "Werkbord", href: "/ti-studio/werkbord", icon: "CompareIcon" },
     },
     {
-      nav: { label: "Personen", href: "/ti-studio/personen", icon: "SearchIcon" },
+      nav: { label: "Personen", href: "/ti-studio/personen", icon: "PeopleIcon" },
+      pills: [
+        { label: "Spelers", href: "/ti-studio/personen/spelers" },
+        { label: "Staf", href: "/ti-studio/personen/staf" },
+      ],
     },
   ],
   skipRoutes: [],
@@ -169,16 +167,20 @@ export const TEAM_INDELING: AppManifest = {
   accent: APP_ACCENTS["team-indeling"],
   sections: [
     {
-      nav: { label: "Overzicht", href: "/teamindeling", icon: "GridIcon" },
+      nav: { label: "Indeling", href: "/teamindeling", icon: "GridIcon" },
     },
     {
-      nav: { label: "Indeling", href: "/teamindeling/scenarios", icon: "PeopleIcon" },
+      nav: { label: "Opvolging", href: "/teamindeling/opvolging", icon: "ListIcon" },
     },
     {
-      nav: { label: "Teams", href: "/teamindeling/teams", icon: "StarIcon" },
+      nav: { label: "Personen", href: "/teamindeling/personen", icon: "PeopleIcon" },
+      pills: [
+        { label: "Spelers", href: "/teamindeling/personen/spelers" },
+        { label: "Staf", href: "/teamindeling/personen/staf" },
+      ],
     },
     {
-      nav: { label: "Spelers", href: "/teamindeling/spelers", icon: "ProfileIcon" },
+      nav: { label: "Meer", href: "/teamindeling/meer", icon: "ProfileIcon" },
     },
   ],
   skipRoutes: [],

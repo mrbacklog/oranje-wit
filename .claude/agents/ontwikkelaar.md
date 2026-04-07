@@ -86,7 +86,7 @@ Herbruikbare CSS classes:
 ## Patronen
 
 ### Server Actions
-- `app/blauwdruk/actions.ts` — blauwdruk CRUD, speler-queries, teamgrootte-targets, ledenstatistieken
+- `app/kaders/actions.ts` — kaders CRUD, speler-queries, teamgrootte-targets, ledenstatistieken
 - `app/scenarios/actions.ts` — scenario CRUD, moveSpeler, koppelSelectie, markeerDefinitief
 
 ### Modellen

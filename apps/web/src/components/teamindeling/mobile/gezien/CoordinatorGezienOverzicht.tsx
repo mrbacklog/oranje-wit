@@ -11,7 +11,7 @@ import { GezienStatusSheet } from "./GezienStatusSheet";
 type SpelerRecord = {
   id: string;
   spelerId: string;
-  blauwdrukId: string;
+  kadersId: string;
   gezienStatus: GezienStatus;
   gezienStatusVoorgesteld: GezienStatus | null;
   gezienVoorgesteldDoor: string | null;

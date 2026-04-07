@@ -13,14 +13,14 @@ export async function getMijlpalen() {
 
 export async function getWerkindelingOverzicht() {
   const seizoen = await getActiefSeizoen();
-  const blauwdruk = await prisma.blauwdruk.findFirst({
+  const blauwdruk = await prisma.kaders.findFirst({
     where: { seizoen },
     select: { id: true },
   });
   if (!blauwdruk) return [];
 
   return prisma.werkindeling.findMany({
-    where: { blauwdrukId: blauwdruk.id, verwijderdOp: null },
+    where: { kadersId: blauwdruk.id, verwijderdOp: null },
     select: {
       id: true,
       naam: true,

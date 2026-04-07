@@ -37,7 +37,7 @@ interface EditorDialogsProps {
   // Werkbord
   werkbordOpen: boolean;
   onCloseWerkbord: () => void;
-  blauwdrukId: string | null;
+  kadersId: string | null;
 
   // Verdeel
   verdeelData: VerdeelState | null;
@@ -71,7 +71,7 @@ export default function EditorDialogs({
   onToggleRapportPin,
   werkbordOpen,
   onCloseWerkbord,
-  blauwdrukId,
+  kadersId,
   verdeelData,
   onCloseVerdeel,
   onVerdeelBevestig,
@@ -105,9 +105,7 @@ export default function EditorDialogs({
         width="w-96"
         title="Werkbord"
       >
-        {blauwdrukId && (
-          <ScenarioWerkbordPanel blauwdrukId={blauwdrukId} werkindelingId={werkindelingId} />
-        )}
+        {kadersId && <ScenarioWerkbordPanel kadersId={kadersId} werkindelingId={werkindelingId} />}
       </Drawer>
 
       {verdeelData && (
@@ -127,7 +125,7 @@ export default function EditorDialogs({
           teamNaam={detailTeamId ? teams.find((t) => t.id === detailTeamId)?.naam : undefined}
           pin={pinMap.get(detailSpeler.id) ?? null}
           showRanking={showRanking}
-          blauwdrukId={blauwdrukId ?? undefined}
+          kadersId={kadersId ?? undefined}
           onTogglePin={onTogglePin}
           onClose={onCloseDetail}
         />

@@ -31,7 +31,7 @@ Alles draait in **één Next.js app** (`apps/web/`) met route groups per domein:
 ckvoranjewit.app/
 ├── /                        ← PERSOONLIJKE HUB (taken, notificaties, besluiten)
 ├── /monitor/                ← Dashboards, signalering, retentie
-├── /teamindeling/           ← Blauwdruk, scenario's, drag & drop
+├── /teamindeling/           ← Kaders, scenario's, drag & drop
 ├── /evaluatie/              ← Rondes, invullen, zelfevaluatie, resultaten
 ├── /scouting/               ← Verzoeken, rapporten, kaarten
 └── /beheer/                 ← 9 TC-domeinen, gebruikersbeheer
@@ -103,7 +103,7 @@ Vijf gebruikersrollen, één ingang:
 
 | Rol | Auth-methode | Domeinen | Journey |
 |---|---|---|---|
-| **TC-lid** (EDITOR, ~3) | Google OAuth | Alle | Hub → signalering → blauwdruk → evaluatie → scouting → beheer |
+| **TC-lid** (EDITOR, ~3) | Google OAuth | Alle | Hub → signalering → kaders → evaluatie → scouting → beheer |
 | **Coordinator** (~10) | Smartlink | Teamindeling, Evaluatie | Hub → eigen doelgroep → actiepunten → evaluaties coördineren |
 | **Trainer** (~30) | Smartlink | Evaluatie | Hub → evaluatie invullen → resultaten eigen team |
 | **Scout** (~10) | Smartlink | Scouting | Hub → open verzoeken → rapporten schrijven |

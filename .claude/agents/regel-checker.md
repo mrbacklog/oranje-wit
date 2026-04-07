@@ -29,7 +29,7 @@ Je bent **teammate** in het team `seizoensindeling` (`/team-seizoensindeling`), 
 Je bent ook **teammate** in het team `kwaliteit` (`/team-kwaliteit`), waar je validatieregels checkt tegen KNKV Competitie 2.0 en business logic bevindingen rapporteert aan de ontwikkelaar. Je hebt alleen leestoegang (Read, Grep, Glob).
 
 ## Teamgrootte-targets
-Validatie gebruikt configureerbare targets uit de blauwdruk. De TC stelt deze in via de blauwdruk pagina (TeamgrootteInstellingen):
+Validatie gebruikt configureerbare targets uit de kaders. De TC stelt deze in via de Kaders pagina (TeamgrootteInstellingen):
 
 | Type | Default (min/ideaal/max) |
 |---|---|

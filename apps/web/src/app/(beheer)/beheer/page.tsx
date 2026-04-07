@@ -6,7 +6,7 @@ import { DashboardClient } from "./dashboard-client";
 
 async function getDashboardStats() {
   try {
-    const seizoenQuery = prisma.seizoen.findFirst({
+    const seizoenQuery = (prisma.seizoen as any).findFirst({
       where: { status: "ACTIEF" },
       select: { seizoen: true },
     });

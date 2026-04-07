@@ -35,7 +35,7 @@ Eén Next.js 16 app (`apps/web/`) met route groups per domein:
 
 ```
 /monitor/        — Dashboards, signalering, retentie
-/teamindeling/   — Blauwdruk, scenario's, drag & drop (mobile)
+/teamindeling/   — Kaders, scenario's, drag & drop (mobile)
 /ti-studio/      — Team-Indeling desktop workspace (light)
 /evaluatie/      — Rondes, invullen, zelfevaluatie
 /scouting/       — Verzoeken, rapporten, kaarten

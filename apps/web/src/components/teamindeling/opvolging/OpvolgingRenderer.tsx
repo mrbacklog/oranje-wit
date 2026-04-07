@@ -10,7 +10,7 @@ import type {
 } from "@/app/(teamindeling-studio)/ti-studio/opvolging/voorstel-actions";
 
 interface OpvolgingRendererProps {
-  blauwdrukId: string;
+  kadersId: string;
   seizoen: string;
   initialWerkitems: WerkitemData[];
   initialStats: { open: number; blockers: number; besluiten: number; afgerond: number };
@@ -29,7 +29,7 @@ const TABS = [
 ] as const;
 
 export default function OpvolgingRenderer({
-  blauwdrukId,
+  kadersId,
   seizoen,
   initialWerkitems,
   initialStats,
@@ -96,7 +96,7 @@ export default function OpvolgingRenderer({
       <div role="tabpanel">
         {activeTab === "werkbord" && (
           <WerkbordOverzicht
-            blauwdrukId={blauwdrukId}
+            kadersId={kadersId}
             initialWerkitems={initialWerkitems}
             initialStats={initialStats}
             refreshAction={refreshAction}

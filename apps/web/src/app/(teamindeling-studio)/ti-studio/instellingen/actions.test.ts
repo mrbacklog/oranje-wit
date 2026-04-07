@@ -76,18 +76,18 @@ describe("instellingen/actions", () => {
 
   describe("switchSeizoen", () => {
     it("zet alle blauwdrukken op niet-werkseizoen en activeert het nieuwe", async () => {
-      mockPrisma.blauwdruk.updateMany.mockResolvedValueOnce({ count: 2 });
-      mockPrisma.blauwdruk.update.mockResolvedValueOnce({
+      mockPrisma.kaders.updateMany.mockResolvedValueOnce({ count: 2 });
+      mockPrisma.kaders.update.mockResolvedValueOnce({
         seizoen: "2024-2025",
         isWerkseizoen: true,
       });
 
       await switchSeizoen("2024-2025");
 
-      expect(mockPrisma.blauwdruk.updateMany).toHaveBeenCalledWith({
+      expect(mockPrisma.kaders.updateMany).toHaveBeenCalledWith({
         data: { isWerkseizoen: false },
       });
-      expect(mockPrisma.blauwdruk.update).toHaveBeenCalledWith({
+      expect(mockPrisma.kaders.update).toHaveBeenCalledWith({
         where: { seizoen: "2024-2025" },
         data: { isWerkseizoen: true },
       });
@@ -271,12 +271,12 @@ describe("instellingen/actions", () => {
         { seizoen: "2025-2026", isWerkseizoen: true },
         { seizoen: "2024-2025", isWerkseizoen: false },
       ];
-      mockPrisma.blauwdruk.findMany.mockResolvedValueOnce(data);
+      mockPrisma.kaders.findMany.mockResolvedValueOnce(data);
 
       const result = await getAlleSeizoenen();
 
       expect(result).toEqual(data);
-      expect(mockPrisma.blauwdruk.findMany).toHaveBeenCalledWith({
+      expect(mockPrisma.kaders.findMany).toHaveBeenCalledWith({
         orderBy: { seizoen: "desc" },
         select: { seizoen: true, isWerkseizoen: true },
       });

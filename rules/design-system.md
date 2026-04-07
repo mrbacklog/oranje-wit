@@ -100,7 +100,7 @@ Elke app heeft een eigen accent-kleur die subtiel door de UI schemerT voor locat
 | App | Pos 1 | Pos 2 | Pos 3 | Pos 4 | Pos 5 |
 |---|---|---|---|---|---|
 | **Monitor** | Overzicht | Teams | Analyse | Signalen | Apps |
-| **Team-Indeling** | Overzicht | Blauwdruk | Werkbord | Scenario's | Apps |
+| **Team-Indeling** | Overzicht | Kaders | Werkbord | Scenario's | Apps |
 | **Evaluatie** | Overzicht | Rondes | Teams | Resultaten | Apps |
 | **Scouting** | Overzicht | Opdrachten | Zoeken | Profiel | Apps |
 | **Beheer** | Planning | Inrichting | Data | Gebruikers | Apps |
@@ -111,7 +111,7 @@ Elke app heeft een eigen accent-kleur die subtiel door de UI schemerT voor locat
 |---|---|---|
 | Monitor | Teams | Teams / Spelers |
 | Monitor | Analyse | Samenstelling / Retentie |
-| Team-Indeling | Blauwdruk | Kaders / Spelers / Staf / Teams |
+| Team-Indeling | Kaders | Kaders / Spelers / Staf / Teams |
 | Scouting | Opdrachten | Openstaand / Afgerond |
 | Beheer | Planning | Kalender / Mijlpalen / Trainingen / Wedstrijden |
 | Beheer | Inrichting | Jeugd / Scouting / Evaluatie / Werving |

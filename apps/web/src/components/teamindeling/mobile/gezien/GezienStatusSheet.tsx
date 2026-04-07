@@ -20,7 +20,7 @@ type SpelerData = {
 type BlauwdrukRecord = {
   id: string;
   spelerId: string;
-  blauwdrukId: string;
+  kadersId: string;
   gezienStatus: GezienStatus;
   gezienStatusVoorgesteld: GezienStatus | null;
   gezienVoorgesteldDoor: string | null;
@@ -97,7 +97,7 @@ export function GezienStatusSheet({ record, onVoorstelVerzonden, onClose }: Prop
     startTransition(async () => {
       const result = await stelGezienStatusVoor(
         record.spelerId,
-        record.blauwdrukId,
+        record.kadersId,
         gekozenStatus,
         notitie || undefined
       );

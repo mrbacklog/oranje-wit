@@ -7,9 +7,9 @@ import { logger } from "@oranje-wit/types";
  * Haal de werkindeling op voor een blauwdruk.
  * Retourneert null als er geen werkindeling is.
  */
-export async function getWerkindeling(blauwdrukId: string) {
+export async function getWerkindeling(kadersId: string) {
   return prisma.werkindeling.findFirst({
-    where: { blauwdrukId, verwijderdOp: null },
+    where: { kadersId, verwijderdOp: null },
     select: {
       id: true,
       naam: true,
@@ -45,9 +45,9 @@ export async function getWerkindeling(blauwdrukId: string) {
 /**
  * Haal het werkindeling-ID op, of null als er geen is.
  */
-export async function getWerkindelingId(blauwdrukId: string): Promise<string | null> {
+export async function getWerkindelingId(kadersId: string): Promise<string | null> {
   const result = await prisma.werkindeling.findFirst({
-    where: { blauwdrukId, verwijderdOp: null },
+    where: { kadersId, verwijderdOp: null },
     select: { id: true },
   });
   return result?.id ?? null;
@@ -57,10 +57,10 @@ export async function getWerkindelingId(blauwdrukId: string): Promise<string | n
  * Maak een werkindeling aan voor een blauwdruk (eerste lege versie).
  * Wordt automatisch aangeroepen als er nog geen werkindeling bestaat.
  */
-export async function maakWerkindelingAan(blauwdrukId: string, auteur: string): Promise<string> {
+export async function maakWerkindelingAan(kadersId: string, auteur: string): Promise<string> {
   const werkindeling = await prisma.werkindeling.create({
     data: {
-      blauwdrukId,
+      kadersId,
       naam: "Werkindeling",
       versies: {
         create: {
@@ -72,6 +72,6 @@ export async function maakWerkindelingAan(blauwdrukId: string, auteur: string): 
     },
     select: { id: true },
   });
-  logger.info(`Werkindeling aangemaakt voor blauwdruk ${blauwdrukId}`);
+  logger.info(`Werkindeling aangemaakt voor blauwdruk ${kadersId}`);
   return werkindeling.id;
 }

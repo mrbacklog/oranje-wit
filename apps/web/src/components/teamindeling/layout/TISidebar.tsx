@@ -30,10 +30,10 @@ export function TISidebar({ children }: TISidebarProps) {
       subtitle: seizoen ? `Seizoen ${seizoen}` : undefined,
     },
     navigation: [
-      { label: "Indeling", href: "/ti-studio/indeling", icon: "🏗️" },
       { label: "Kaders", href: "/ti-studio/kaders", icon: "📐" },
+      { label: "Indeling", href: "/ti-studio/indeling", icon: "🏗️" },
+      { label: "Werkbord", href: "/ti-studio/werkbord", icon: "📋" },
       { label: "Personen", href: "/ti-studio/personen", icon: "👥" },
-      { label: "Opvolging", href: "/ti-studio/opvolging", icon: "✅" },
     ],
     footer: {
       settingsHref: "/ti-studio/instellingen",
