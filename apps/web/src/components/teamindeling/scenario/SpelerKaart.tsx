@@ -12,6 +12,19 @@ interface SpelerKaartProps {
   onClick: () => void;
 }
 
+/** Geeft de HEX kleur voor de linker-border-band op basis van KNKV leeftijdskleur */
+function kleurBorderKleur(kleur: string | null): string {
+  const map: Record<string, string> = {
+    PAARS: "#a855f7",
+    BLAUW: "#3b82f6",
+    GROEN: "#22c55e",
+    GEEL: "#eab308",
+    ORANJE: "#f97316",
+    ROOD: "#ef4444",
+  };
+  return map[kleur ?? ""] ?? "var(--border-default)";
+}
+
 export default function SpelerKaart({ speler, isPinned, onClick }: SpelerKaartProps) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: `pool-${speler.id}`,
@@ -32,10 +45,16 @@ export default function SpelerKaart({ speler, isPinned, onClick }: SpelerKaartPr
   return (
     <div
       ref={setNodeRef}
-      style={style}
+      data-speler-id={speler.id}
+      data-dnd-draggable
+      style={{
+        ...style,
+        background: "var(--surface-card)",
+        border: "1px solid var(--border-default)",
+        borderLeft: `3px solid ${kleurBorderKleur(kleur)}`,
+      }}
       {...listeners}
       {...attributes}
-      data-dnd-draggable
       onClick={(e) => {
         // Alleen openen bij klik, niet bij drag
         if (!isDragging) {
@@ -43,7 +62,7 @@ export default function SpelerKaart({ speler, isPinned, onClick }: SpelerKaartPr
           onClick();
         }
       }}
-      className={`flex cursor-grab items-center gap-2 rounded-md border border-gray-200 bg-white px-2 py-1.5 transition-all hover:border-orange-300 hover:shadow-sm ${
+      className={`hover:border-ow-oranje flex cursor-grab items-center gap-2 rounded-md px-2 py-1.5 transition-all hover:shadow-[0_0_8px_rgba(255,107,0,0.15)] ${
         isDragging ? "opacity-50 shadow-lg" : ""
       }`}
     >
@@ -58,7 +77,7 @@ export default function SpelerKaart({ speler, isPinned, onClick }: SpelerKaartPr
             className={`h-2 w-2 shrink-0 rounded-full ${STATUS_KLEUREN[speler.status]}`}
             title={speler.status}
           />
-          <span className="truncate text-sm text-gray-800">
+          <span className="text-text-primary truncate text-sm">
             {speler.roepnaam} {speler.achternaam}
           </span>
           {speler.afmelddatum && <AfmeldBadge afmelddatum={speler.afmelddatum} />}
@@ -81,16 +100,19 @@ export default function SpelerKaart({ speler, isPinned, onClick }: SpelerKaartPr
             title={`Geboortejaar ${speler.geboortejaar}`}
           >
             {kleur && <span className={`h-1.5 w-1.5 rounded-full ${KLEUR_DOT[kleur]}`} />}
-            <span className="text-[11px] text-gray-400">{leeftijd.toFixed(2)}</span>
+            <span className="text-text-secondary text-[11px]">{leeftijd.toFixed(2)}</span>
           </span>
           <span
-            className="text-[11px] text-gray-400"
+            className="text-text-secondary text-[11px]"
             title={speler.geslacht === "M" ? "Man" : "Vrouw"}
           >
             {speler.geslacht === "M" ? "\u2642" : "\u2640"}
           </span>
           {vorigTeam && (
-            <span className="max-w-[60px] truncate text-[10px] text-gray-400" title={vorigTeam}>
+            <span
+              className="text-text-secondary max-w-[60px] truncate text-[10px]"
+              title={vorigTeam}
+            >
               {vorigTeam}
             </span>
           )}

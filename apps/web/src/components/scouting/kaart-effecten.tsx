@@ -3,8 +3,10 @@
 /**
  * Tier-effecten en decoratieve sub-componenten voor de SpelersKaart.
  *
- * Bevat: TierLabel, SilverSheen, GoldShimmer, ShieldFoto, Sterren, StatBar
+ * Bevat: TierLabel, SilverSheen, GoldShimmer, ShieldFoto, CentralShield, Sterren, StatBar
  */
+
+import { SCHILD_GLOWS, SCHILD_RING_GRADIENTS } from "./kaart-constanten";
 
 // ================================================================
 // TierLabel
@@ -24,7 +26,7 @@ export function TierLabel({ tier }: { tier: string }) {
 
   return (
     <span
-      className="absolute top-2 left-2 z-[5] rounded px-1.5 py-0.5 text-[8px] font-extrabold tracking-[1px] uppercase"
+      className="absolute top-2 left-2 z-5 rounded px-1.5 py-0.5 text-[8px] font-extrabold tracking-[1px] uppercase"
       style={{
         background: bgColors[tier],
         color: textColors[tier],
@@ -42,7 +44,7 @@ export function TierLabel({ tier }: { tier: string }) {
 export function SilverSheen() {
   return (
     <div
-      className="pointer-events-none absolute inset-0 z-[3] overflow-hidden"
+      className="pointer-events-none absolute inset-0 z-3 overflow-hidden"
       style={{ backfaceVisibility: "hidden" }}
     >
       <div
@@ -60,7 +62,7 @@ export function SilverSheen() {
 export function GoldShimmer() {
   return (
     <div
-      className="pointer-events-none absolute inset-0 z-[3] overflow-hidden"
+      className="pointer-events-none absolute inset-0 z-3 overflow-hidden"
       style={{ backfaceVisibility: "hidden" }}
     >
       <div
@@ -151,6 +153,91 @@ export function Sterren({
           <path d="M10 1.5l2.47 5.01L18 7.27l-4 3.9.94 5.5L10 14.27l-4.94 2.4.94-5.5-4-3.9 5.53-.76L10 1.5z" />
         </svg>
       ))}
+    </div>
+  );
+}
+
+// ================================================================
+// CentralShield — groot centraal schild (v4 lay-out)
+// ================================================================
+
+const SHIELD_PATH =
+  "polygon(50% 0%, 100% 12%, 100% 65%, 75% 85%, 50% 100%, 25% 85%, 0% 65%, 0% 12%)";
+
+export function CentralShield({
+  fotoUrl,
+  roepnaam,
+  achternaam,
+  tier,
+  width,
+  height,
+}: {
+  fotoUrl?: string;
+  roepnaam: string;
+  achternaam: string;
+  tier: string;
+  width: number;
+  height: number;
+}) {
+  const initialen = `${roepnaam.charAt(0)}${achternaam.charAt(0)}`.toUpperCase();
+  const ringGradient = SCHILD_RING_GRADIENTS[tier] ?? "rgba(255,255,255,0.2)";
+  const glow = SCHILD_GLOWS[tier] ?? "drop-shadow(0 4px 12px rgba(0,0,0,.55))";
+
+  return (
+    <div style={{ position: "relative", width, height, filter: glow }}>
+      {/* Tier-gekleurde ring rondom schild */}
+      <div
+        style={{
+          position: "absolute",
+          inset: -3,
+          clipPath: SHIELD_PATH,
+          background: ringGradient,
+          zIndex: 0,
+        }}
+      />
+      {/* Schild met foto */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 3,
+          clipPath: SHIELD_PATH,
+          overflow: "hidden",
+          background: "rgba(255,255,255,0.12)",
+          zIndex: 1,
+        }}
+      >
+        {fotoUrl ? (
+          <img
+            src={fotoUrl}
+            alt=""
+            loading="lazy"
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: "center top",
+              display: "block",
+            }}
+          />
+        ) : (
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: width * 0.26,
+              fontWeight: 900,
+              color: "rgba(255,255,255,0.55)",
+              letterSpacing: "-2px",
+              textTransform: "uppercase",
+            }}
+          >
+            {initialen}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

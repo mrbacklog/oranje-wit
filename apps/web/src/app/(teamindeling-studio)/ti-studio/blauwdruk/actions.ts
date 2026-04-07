@@ -2,9 +2,12 @@
 
 import { prisma } from "@/lib/teamindeling/db/prisma";
 import type { Prisma, SpelerStatus } from "@oranje-wit/database";
-import { PEILJAAR } from "@oranje-wit/types";
+import { PEILJAAR, type ActionResult } from "@oranje-wit/types";
+import { logger } from "@oranje-wit/types";
 import { assertBewerkbaar, getActiefSeizoen } from "@/lib/teamindeling/seizoen";
+import { requireTC } from "@/lib/teamindeling/auth-check";
 import { cookies } from "next/headers";
+import { revalidatePath } from "next/cache";
 
 /**
  * Stel een seizoen in als werkseizoen (★).
@@ -381,4 +384,61 @@ export async function getLedenStatistieken(): Promise<LedenStatistieken> {
     senioren,
     retentie,
   };
+}
+
+// ============================================================
+// KADERS VOORKEUREN (Laag 2 — OW Voorkeuren TC)
+// ============================================================
+
+export interface SelectieVoorkeur {
+  id: string;
+  naam: string;
+  actief: boolean;
+  team1: string | null;
+  team2: string | null;
+  minV?: number | null;
+  maxV?: number | null;
+  minM?: number | null;
+  maxM?: number | null;
+}
+
+export interface TeamaantallenVoorkeur {
+  minV: number;
+  maxV: number;
+  minM: number;
+  maxM: number;
+  minSpelers: number;
+  maxSpelers: number;
+}
+
+export interface KadersVoorkeuren {
+  selecties?: SelectieVoorkeur[];
+  teamaantallen?: Record<string, TeamaantallenVoorkeur>;
+}
+
+/**
+ * Sla OW-voorkeuren op in het kaders-JSON veld.
+ * Mergt met bestaande inhoud zodat andere sleutels behouden blijven.
+ */
+export async function updateKadersVoorkeuren(
+  kadersId: string,
+  voorkeuren: KadersVoorkeuren
+): Promise<ActionResult> {
+  await requireTC();
+  try {
+    const kaders = await prisma.kaders.findUniqueOrThrow({
+      where: { id: kadersId },
+      select: { kaders: true },
+    });
+    const huidig = (kaders.kaders as Record<string, unknown>) ?? {};
+    await prisma.kaders.update({
+      where: { id: kadersId },
+      data: { kaders: { ...huidig, ...voorkeuren } },
+    });
+    revalidatePath("/ti-studio/kaders");
+    return { ok: true, data: undefined };
+  } catch (error) {
+    logger.warn("updateKadersVoorkeuren mislukt:", error);
+    return { ok: false, error: "Kon voorkeuren niet opslaan" };
+  }
 }

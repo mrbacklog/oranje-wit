@@ -3,23 +3,15 @@
 import { useCallback, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { KaartAchterkant, getDarkGradient, type AchterkantData } from "./kaart-achterkant";
-import {
-  TierLabel,
-  SilverSheen,
-  GoldShimmer,
-  ShieldFoto,
-  Sterren,
-  StatBar,
-} from "./kaart-effecten";
+import { SilverSheen, GoldShimmer, CentralShield, Sterren } from "./kaart-effecten";
 import {
   type KaartSize,
   SIZE_CONFIG,
   TIER_STYLES,
-  STAT_LABELS,
+  TIER_BORDER_GRADIENTS,
   GROEP_LABELS,
   leeftijdNaarGroep,
   getAgeGradient,
-  getPijlersVoorKaart,
 } from "./kaart-constanten";
 
 // ─── Types ───
@@ -138,22 +130,14 @@ export function SpelersKaart({
 
   if (state === "loading") return <SpelersKaartSkeleton size={size} />;
 
-  const fotoSize = size === "large" ? 72 : size === "medium" ? 56 : size === "small" ? 36 : 20;
-  const overallCls =
-    size === "large"
-      ? "text-5xl"
-      : size === "medium"
-        ? "text-4xl"
-        : size === "small"
-          ? "text-2xl"
-          : "text-lg";
-  const sterrenPx = size === "large" ? 14 : size === "medium" ? 12 : 10;
-  const toonStats = size === "large" || size === "medium";
-  const toonBadge = size === "large" || size === "medium";
-  const radarSize = size === "large" ? 120 : 90;
-
-  // Bepaal of we v3 dynamische pijlers of legacy stats tonen
+  const radarSize = size === "large" ? 180 : 120;
   const heeftDynamischePijlers = pijlerScores && Object.keys(pijlerScores).length > 0;
+
+  // v4 schild-afmetingen (74% breed, 58% hoog van kaartbreedte)
+  const schildW = size === "large" ? 222 : size === "medium" ? 148 : size === "small" ? 90 : 0;
+  const schildH = size === "large" ? 261 : size === "medium" ? 174 : size === "small" ? 106 : 0;
+
+  const tierBorderGradient = TIER_BORDER_GRADIENTS[tier];
 
   return (
     <div
@@ -181,30 +165,34 @@ export function SpelersKaart({
           mass: 0.5,
         }}
       >
-        {/* VOORKANT */}
+        {/* ── VOORKANT ── */}
         <div
-          className={`absolute inset-0 overflow-hidden rounded-2xl shadow-lg transition-shadow duration-300 hover:shadow-xl ${
-            state === "disabled" ? "opacity-50 grayscale" : ""
-          } ${state === "selected" ? "ring-ow-oranje ring-offset-surface-dark ring-2 ring-offset-2" : ""}`}
-          style={{ border: `2px solid ${tierStyle.border}`, backfaceVisibility: "hidden" }}
+          className={`absolute inset-0 rounded-2xl ${state === "disabled" ? "opacity-50 grayscale" : ""} ${state === "selected" ? "ring-ow-oranje ring-offset-surface-dark ring-2 ring-offset-2" : ""}`}
+          style={{ backfaceVisibility: "hidden" }}
         >
+          {/* Tier gradient rand */}
           <div
-            className="absolute inset-0"
-            style={{
-              background: `linear-gradient(135deg, ${gradient.from}, ${gradient.to})`,
-              opacity: 0.92,
-            }}
+            className="absolute inset-0 z-1 rounded-2xl"
+            style={{ background: tierBorderGradient }}
           />
-          <div className="absolute inset-0" style={{ background: tierStyle.overlay }} />
-          <NoiseOverlay />
-          {tier === "zilver" && <SilverSheen />}
-          {tier === "goud" && <GoldShimmer />}
 
-          <div className="relative z-[2] flex h-full flex-col p-2">
-            {toonBadge && <TierLabel tier={tier} />}
+          {/* Inner kaart */}
+          <div className="absolute inset-[2px] z-2 overflow-hidden rounded-[10px]">
+            {/* Gradient achtergrond */}
+            <div
+              className="absolute inset-0 z-0"
+              style={{
+                background: `linear-gradient(135deg, ${gradient.from}, ${gradient.to})`,
+                opacity: 0.92,
+              }}
+            />
+            <NoiseOverlay />
+            {tier === "zilver" && <SilverSheen />}
+            {tier === "goud" && <GoldShimmer />}
 
-            {size === "mini" ? (
-              <div className="flex h-full flex-col items-center justify-center gap-0.5">
+            {/* ── MINI ── */}
+            {size === "mini" && (
+              <div className="relative z-2 flex h-full flex-col items-center justify-center gap-0.5">
                 <span
                   className="text-lg leading-none font-black text-white drop-shadow-md"
                   style={{ letterSpacing: "-1px" }}
@@ -216,101 +204,168 @@ export function SpelersKaart({
                   {achternaam.charAt(0)}
                 </span>
               </div>
-            ) : (
-              <>
-                <div className="mt-4 flex items-start gap-2">
-                  <ShieldFoto
-                    fotoUrl={fotoUrl}
-                    roepnaam={roepnaam}
-                    achternaam={achternaam}
-                    fotoSize={fotoSize}
-                  />
-                  <div className="flex-1 text-right">
-                    <div className="text-[8px] font-bold tracking-[1.5px] text-white/50 uppercase">
-                      c.k.v. OW
-                    </div>
+            )}
+
+            {/* ── SMALL ── compact versie */}
+            {size === "small" && (
+              <div className="relative z-2 flex h-full flex-col">
+                {/* Top: tier + USS */}
+                <div className="flex shrink-0 items-start justify-between px-2 pt-2">
+                  <TierPill tier={tier} small />
+                  <div className="text-right">
                     <div
-                      className={`${overallCls} leading-none font-black text-white drop-shadow-md`}
-                      style={{ letterSpacing: "-2px" }}
+                      className="text-[18px] leading-none font-black text-white"
+                      style={{ letterSpacing: "-1px" }}
                     >
                       {overall}
                     </div>
-                    <div className="mt-0.5 flex justify-end">
-                      <Sterren count={sterren} size={sterrenPx} />
-                    </div>
-                    {toonBadge && (
-                      <div className="mt-1 flex items-center justify-end gap-1">
-                        <span
-                          className="inline-block rounded px-1.5 py-0.5 text-[9px] font-bold tracking-wide text-white uppercase backdrop-blur-sm"
-                          style={{ background: "rgba(255,255,255,0.2)" }}
-                        >
-                          {groepLabel}
-                        </span>
-                        {/* Groei-indicator */}
-                        {groeiIndicator && groeiIndicator !== "normaal" && (
-                          <GroeiPijl groei={groeiIndicator} />
-                        )}
-                      </div>
-                    )}
+                    <Sterren count={sterren} size={8} />
                   </div>
                 </div>
-                <div className="mt-2 border-b border-white/15 pb-1.5">
+                {/* Schild */}
+                <div className="flex flex-1 items-center justify-center pt-1">
+                  <CentralShield
+                    fotoUrl={fotoUrl}
+                    roepnaam={roepnaam}
+                    achternaam={achternaam}
+                    tier={tier}
+                    width={schildW}
+                    height={schildH}
+                  />
+                </div>
+                {/* Bottom */}
+                <div
+                  className="shrink-0 px-2 py-1.5"
+                  style={{ background: "rgba(0,0,0,0.35)", backdropFilter: "blur(8px)" }}
+                >
                   <div
-                    className={`truncate font-bold text-white uppercase ${
-                      size === "large"
-                        ? "text-[15px]"
-                        : size === "medium"
-                          ? "text-[13px]"
-                          : "text-[11px]"
-                    }`}
+                    className="truncate text-[10px] font-bold text-white uppercase"
                     style={{ letterSpacing: "0.3px" }}
                   >
                     {roepnaam} {achternaam}
                   </div>
-                  {toonBadge && (
-                    <div className="mt-0.5 text-[11px] text-white/60">
-                      {team && <span>{team}</span>}
-                      {team && <span> &bull; </span>}
-                      <span>{leeftijd} jaar</span>
-                    </div>
-                  )}
+                  {team && <div className="mt-0.5 truncate text-[9px] text-white/50">{team}</div>}
                 </div>
-                {toonStats && (
-                  <div className="mt-auto pt-1.5">
-                    {heeftDynamischePijlers ? (
-                      <DynamischeStats pijlerScores={pijlerScores!} groep={groep} />
-                    ) : (
-                      <div className="grid grid-cols-1 gap-[3px]">
-                        {STAT_LABELS.map(({ key, label }) => (
-                          <StatBar key={key} label={label} value={stats[key]} />
-                        ))}
-                      </div>
+              </div>
+            )}
+
+            {/* ── MEDIUM + LARGE: v4 lay-out ── */}
+            {(size === "medium" || size === "large") && (
+              <div className="relative z-2 flex h-full flex-col">
+                {/* Kaart-top: hoeken L + R */}
+                <div
+                  className="flex shrink-0 items-start justify-between"
+                  style={{
+                    height: size === "large" ? 80 : 58,
+                    padding: size === "large" ? "14px 15px 0" : "10px 11px 0",
+                  }}
+                >
+                  {/* Links: tier + doelgroep */}
+                  <div className="flex flex-col gap-[3px]">
+                    <TierPill tier={tier} />
+                    <InfoPill dim>{groepLabel}</InfoPill>
+                    {groeiIndicator && groeiIndicator !== "normaal" && (
+                      <GroeiPijl groei={groeiIndicator} />
                     )}
                   </div>
-                )}
-              </>
+                  {/* Rechts: USS score */}
+                  <div className="text-right">
+                    <div className="text-[8px] font-bold tracking-[1.5px] text-white/42 uppercase">
+                      USS
+                    </div>
+                    <div
+                      className="leading-none font-black text-white drop-shadow-md"
+                      style={{
+                        fontSize: size === "large" ? 62 : 46,
+                        letterSpacing: "-2px",
+                        textShadow: "0 2px 12px rgba(0,0,0,.4)",
+                      }}
+                    >
+                      {overall}
+                    </div>
+                    <Sterren count={sterren} size={size === "large" ? 14 : 11} />
+                  </div>
+                </div>
+
+                {/* Kaart-mid: groot centraal schild */}
+                <div className="flex flex-1 items-center justify-center pt-1">
+                  <CentralShield
+                    fotoUrl={fotoUrl}
+                    roepnaam={roepnaam}
+                    achternaam={achternaam}
+                    tier={tier}
+                    width={schildW}
+                    height={schildH}
+                  />
+                </div>
+
+                {/* Kaart-bot: frosted panel */}
+                <div
+                  className="shrink-0"
+                  style={{
+                    padding: size === "large" ? "10px 18px 14px" : "8px 13px 11px",
+                    background: "rgba(0,0,0,0.35)",
+                    backdropFilter: "blur(10px)",
+                  }}
+                >
+                  <div
+                    className="truncate font-extrabold text-white uppercase"
+                    style={{
+                      fontSize: size === "large" ? 16 : 14,
+                      letterSpacing: "0.3px",
+                    }}
+                  >
+                    {roepnaam} {achternaam}
+                  </div>
+                  <div
+                    className="mt-0.5 truncate text-white/50"
+                    style={{ fontSize: size === "large" ? 13 : 11 }}
+                  >
+                    {leeftijd} jaar · {groepLabel}
+                  </div>
+                  {/* Mini stats onderaan */}
+                  <div
+                    className="mt-1.5 grid gap-[3px]"
+                    style={{ gridTemplateColumns: "repeat(3, 1fr)" }}
+                  >
+                    {(heeftDynamischePijlers
+                      ? Object.entries(pijlerScores!).slice(0, 3)
+                      : ([
+                          ["SCH", stats.schot],
+                          ["AAN", stats.aanval],
+                          ["FYS", stats.fysiek],
+                        ] as [string, number][])
+                    ).map(([lbl, val]) => (
+                      <MiniStat key={lbl} label={String(lbl).substring(0, 3)} value={Number(val)} />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Watermark */}
+            {size !== "mini" && (
+              <div className="absolute right-2 bottom-1 z-5 text-[7px] font-semibold tracking-wider text-white/15 uppercase">
+                OW Scout
+              </div>
+            )}
+
+            {/* Geselecteerd vinkje */}
+            {state === "selected" && (
+              <div className="bg-ow-oranje absolute right-2 bottom-2 z-10 flex h-6 w-6 items-center justify-center rounded-full text-white">
+                <svg viewBox="0 0 20 20" fill="currentColor" className="h-3.5 w-3.5">
+                  <path
+                    fillRule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
             )}
           </div>
-
-          {toonBadge && (
-            <div className="absolute right-2 bottom-1 z-[5] text-[7px] font-semibold tracking-wider text-white/15 uppercase">
-              OW Scout
-            </div>
-          )}
-          {state === "selected" && (
-            <div className="bg-ow-oranje absolute right-2 bottom-2 z-10 flex h-6 w-6 items-center justify-center rounded-full text-white">
-              <svg viewBox="0 0 20 20" fill="currentColor" className="h-3.5 w-3.5">
-                <path
-                  fillRule="evenodd"
-                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </div>
-          )}
         </div>
 
-        {/* ACHTERKANT */}
+        {/* ── ACHTERKANT ── */}
         {flipbaar && achterkantData && (
           <KaartAchterkant
             roepnaam={roepnaam}
@@ -327,50 +382,73 @@ export function SpelersKaart({
   );
 }
 
-// ─── Dynamische stats (v3) ───
+// ─── Tier pill (linksboven op kaart) ───
 
-function DynamischeStats({
-  pijlerScores,
-  groep,
-}: {
-  pijlerScores: Record<string, number>;
-  groep: string;
-}) {
-  const { blokken, allePijlers } = getPijlersVoorKaart(groep);
-  const heeftBlokken = allePijlers.some((p) => p.blok);
-
-  if (!heeftBlokken) {
-    // Blauw/Groen: eenvoudige lijst
-    return (
-      <div className="grid grid-cols-1 gap-[3px]">
-        {allePijlers.map((pijler) => (
-          <StatBar
-            key={pijler.code}
-            label={pijler.code.substring(0, 3)}
-            value={pijlerScores[pijler.code] ?? 0}
-          />
-        ))}
-      </div>
-    );
-  }
-
-  // Geel+: met blokken
+function TierPill({ tier, small }: { tier: string; small?: boolean }) {
+  const bg: Record<string, string> = {
+    brons: "#cd7f32",
+    zilver: "#c0c0c0",
+    goud: "#ffd700",
+  };
+  const color: Record<string, string> = {
+    brons: "#3d2200",
+    zilver: "#2a2a2a",
+    goud: "#5c4a00",
+  };
   return (
-    <div className="flex flex-col gap-1">
-      {blokken.map((blok) => (
-        <div key={blok.naam}>
-          <div className="text-[7px] font-bold tracking-wider text-white/30 uppercase">
-            {blok.naam}
-          </div>
-          {blok.pijlers.map((pijler) => (
-            <StatBar
-              key={pijler.code}
-              label={pijler.code.substring(0, 3)}
-              value={pijlerScores[pijler.code] ?? 0}
-            />
-          ))}
-        </div>
-      ))}
+    <span
+      className="rounded font-extrabold uppercase"
+      style={{
+        background: bg[tier] ?? "rgba(255,255,255,0.2)",
+        color: color[tier] ?? "white",
+        fontSize: small ? 8 : 9,
+        padding: small ? "2px 6px" : "3px 8px",
+        letterSpacing: "1px",
+      }}
+    >
+      {tier}
+    </span>
+  );
+}
+
+// ─── Info pill (kleine badge) ───
+
+function InfoPill({ children, dim }: { children: React.ReactNode; dim?: boolean }) {
+  return (
+    <span
+      className="rounded uppercase"
+      style={{
+        padding: "3px 8px",
+        fontSize: dim ? 8.5 : 9,
+        fontWeight: dim ? 600 : 800,
+        letterSpacing: "0.7px",
+        background: "rgba(0,0,0,0.32)",
+        color: "rgba(255,255,255,0.82)",
+        backdropFilter: "blur(6px)",
+        opacity: dim ? 0.7 : 1,
+        whiteSpace: "nowrap" as const,
+      }}
+    >
+      {children}
+    </span>
+  );
+}
+
+// ─── Mini stat box (3 vakjes in kaart-bot) ───
+
+function MiniStat({ label, value }: { label: string; value: number }) {
+  return (
+    <div
+      className="rounded text-center"
+      style={{ background: "rgba(0,0,0,0.28)", padding: "4px 2px" }}
+    >
+      <div
+        className="text-[8px] font-bold text-white/42 uppercase"
+        style={{ letterSpacing: "0.5px" }}
+      >
+        {label}
+      </div>
+      <div className="text-[14px] leading-tight font-black text-white">{value}</div>
     </div>
   );
 }

@@ -7,6 +7,7 @@ import { revalidatePath } from "next/cache";
 import { assertBewerkbaar } from "@/lib/teamindeling/seizoen";
 import { assertSpelerVrij } from "@/lib/teamindeling/db/speler-guard";
 import { maakWerkindelingSnapshot } from "@/lib/teamindeling/db/werkindeling-snapshot";
+import { requireTC } from "@oranje-wit/auth/checks";
 
 const NIET_VERWIJDERD = { verwijderdOp: null } as const;
 
@@ -148,4 +149,29 @@ export async function verwijderWerkindeling(werkindelingId: string, auteur: stri
     data: { verwijderdOp: new Date() },
   });
   revalidatePath("/ti-studio/indeling");
+}
+
+export async function getSpelerProfiel(spelerId: string) {
+  await requireTC();
+  return prisma.speler.findUnique({
+    where: { id: spelerId },
+    select: {
+      id: true,
+      roepnaam: true,
+      achternaam: true,
+      geboortejaar: true,
+      geboortedatum: true,
+      geslacht: true,
+      status: true,
+      huidig: true,
+      spelerspad: true,
+      volgendSeizoen: true,
+      rating: true,
+    },
+  });
+}
+
+export async function updateSpelerNotitie(spelerId: string, notitie: string): Promise<void> {
+  await requireTC();
+  logger.info("updateSpelerNotitie stub — spelerId:", spelerId, "notitie:", notitie);
 }

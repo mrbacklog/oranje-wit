@@ -1,85 +1,52 @@
 /**
  * Centrale stijllogica voor teamkaarten.
  * Twee-laags systeem: categorie-rand (altijd) + validatie-ring (optioneel).
+ * Dark theme: alle klassen gebruiken CSS tokens.
  */
 
 import type { TeamCategorie, Kleur } from "@oranje-wit/database";
 
-/** Solid border-kleur per B-categorie kleur */
-const KLEUR_RAND: Record<string, string> = {
-  PAARS: "border-purple-400",
-  BLAUW: "border-blue-400",
-  GROEN: "border-emerald-400",
-  GEEL: "border-yellow-400",
-  ORANJE: "border-orange-400",
-  ROOD: "border-red-400",
+/** KNKV kleurband gradients (als inline style) */
+export const KLEUR_GRADIENT: Record<string, string> = {
+  PAARS: "linear-gradient(135deg, #a855f7, #818cf8)",
+  BLAUW: "linear-gradient(135deg, #3b82f6, #60a5fa)",
+  GROEN: "linear-gradient(135deg, #22c55e, #a3c928)",
+  GEEL: "linear-gradient(135deg, #eab308, #ca8a04)",
+  ORANJE: "linear-gradient(135deg, #f97316, #ea580c)",
+  ROOD: "linear-gradient(135deg, #ef4444, #b91c1c)",
 };
 
-/** Subtiele achtergrondtint per B-categorie kleur */
-const KLEUR_BG: Record<string, string> = {
-  PAARS: "bg-purple-50/30",
-  BLAUW: "bg-blue-50/30",
-  GROEN: "bg-emerald-50/30",
-  GEEL: "bg-yellow-50/30",
-  ORANJE: "bg-orange-50/30",
-  ROOD: "bg-red-50/30",
-};
-
-/** Header-border accent per kleur */
-const KLEUR_HEADER: Record<string, string> = {
-  PAARS: "border-purple-200",
-  BLAUW: "border-blue-200",
-  GROEN: "border-emerald-200",
-  GEEL: "border-yellow-200",
-  ORANJE: "border-orange-200",
-  ROOD: "border-red-200",
-};
-
-/** Footer-border accent per kleur */
-const KLEUR_FOOTER: Record<string, string> = {
-  PAARS: "border-purple-100",
-  BLAUW: "border-blue-100",
-  GROEN: "border-emerald-100",
-  GEEL: "border-yellow-100",
-  ORANJE: "border-orange-100",
-  ROOD: "border-red-100",
-};
+/** Geeft de gradient string terug voor de teamkleur-header-band */
+export function teamKleurGradient(kleur: Kleur | null): string {
+  if (!kleur) return "linear-gradient(135deg, #374151, #1f2937)";
+  return KLEUR_GRADIENT[kleur] ?? "linear-gradient(135deg, #374151, #1f2937)";
+}
 
 /** Bepaal de categorie-rand classes voor een los team */
-export function categorieRandKlassen(categorie: TeamCategorie, kleur: Kleur | null): string {
+export function categorieRandKlassen(categorie: TeamCategorie, _kleur: Kleur | null): string {
   if (categorie === "SENIOREN") {
-    return "border border-gray-300";
+    return "border border-[var(--border-default)]";
   }
   if (categorie === "A_CATEGORIE") {
-    return "border-2 border-dashed border-orange-300";
+    return "border border-dashed border-[var(--border-default)]";
   }
-  // B_CATEGORIE: solid rand in kleurklasse
-  return kleur ? `border-2 ${KLEUR_RAND[kleur] ?? "border-gray-200"}` : "border border-gray-200";
+  // B_CATEGORIE
+  return "border-2 border-[var(--border-default)]";
 }
 
 /** Bepaal de achtergrondkleur op basis van categorie */
-export function categorieAchtergrond(categorie: TeamCategorie, kleur: Kleur | null): string {
-  if (categorie === "SENIOREN") return "bg-gray-50/30";
-  if (categorie === "A_CATEGORIE") return "bg-orange-50/20";
-  return kleur ? (KLEUR_BG[kleur] ?? "bg-white") : "bg-white";
+export function categorieAchtergrond(_categorie: TeamCategorie, _kleur: Kleur | null): string {
+  return "bg-[var(--surface-card)]";
 }
 
 /** Bepaal de header border-kleur */
-export function categorieHeaderBorder(categorie: TeamCategorie, kleur: Kleur | null): string {
-  if (categorie === "B_CATEGORIE" && kleur) {
-    return `border-b ${KLEUR_HEADER[kleur] ?? "border-gray-100"}`;
-  }
-  if (categorie === "A_CATEGORIE") return "border-b border-orange-100";
-  return "border-b border-gray-100";
+export function categorieHeaderBorder(_categorie: TeamCategorie, _kleur: Kleur | null): string {
+  return "border-b border-[var(--border-default)]";
 }
 
 /** Bepaal de footer border-kleur */
-export function categorieFooterBorder(categorie: TeamCategorie, kleur: Kleur | null): string {
-  if (categorie === "B_CATEGORIE" && kleur) {
-    return `border-t ${KLEUR_FOOTER[kleur] ?? "border-gray-100"}`;
-  }
-  if (categorie === "A_CATEGORIE") return "border-t border-orange-100";
-  return "border-t border-gray-100";
+export function categorieFooterBorder(_categorie: TeamCategorie, _kleur: Kleur | null): string {
+  return "border-t border-[var(--border-default)]";
 }
 
 /** Bepaal de validatie-ring classes (stapelt bovenop categorie-rand) */
@@ -87,7 +54,8 @@ export function validatieRingKlassen(
   validatieStatus: "ROOD" | "ORANJE" | "GROEN" | undefined,
   isOver: boolean
 ): string {
-  if (isOver) return "ring-2 ring-orange-200 ring-offset-1";
+  if (isOver)
+    return "ring-2 ring-[var(--ow-oranje-500)]/60 ring-offset-1 ring-offset-[var(--surface-card)]";
   if (validatieStatus === "ROOD") return "ring-2 ring-red-300 ring-offset-1";
   if (validatieStatus === "ORANJE") return "ring-1 ring-orange-300";
   return "";
