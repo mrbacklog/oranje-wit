@@ -793,7 +793,7 @@ test.describe("Team-scouting (TEAM methode)", () => {
 
 test.describe("Vergelijking (VERGELIJKING methode)", () => {
   test("vergelijkingspagina laadt met wizard structuur", async ({ page }) => {
-    test.setTimeout(45000);
+    test.setTimeout(30000);
     await page.goto("/scouting/vergelijking/nieuw", { timeout: 20000 });
 
     await expect(page.getByRole("heading", { name: "Vergelijking" })).toBeVisible({
@@ -879,7 +879,7 @@ test.describe("Vergelijking (VERGELIJKING methode)", () => {
 
 test.describe("Scouting: navigatie vanuit verzoeken", () => {
   test("spelerprofiel toont scout link naar rapport wizard", async ({ page }) => {
-    test.setTimeout(45000);
+    test.setTimeout(30000);
 
     await page.goto("/scouting/speler/TSTN001", { timeout: 20000 });
     if (await isPageNotFound(page)) {

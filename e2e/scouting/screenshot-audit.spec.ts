@@ -12,7 +12,7 @@ const pages = [
 
 for (const [name, path] of pages) {
   test(`screenshot: ${name}`, async ({ page }) => {
-    await page.goto(path, { waitUntil: "networkidle", timeout: 15000 });
+    await page.goto(path, { waitUntil: "load", timeout: 15000 });
     await page.screenshot({ path: `e2e/screenshots/scouting-${name}.png`, fullPage: true });
   });
 }

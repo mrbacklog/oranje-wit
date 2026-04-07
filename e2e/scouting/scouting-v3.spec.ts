@@ -370,7 +370,7 @@ test.describe("Team-scouting (TEAM methode)", () => {
 test.describe("Vergelijking (VERGELIJKING methode)", () => {
   test.describe("Wizard structuur", () => {
     test("vergelijkingspagina laadt met heading en beschrijving", async ({ page }) => {
-      test.setTimeout(45000);
+      test.setTimeout(30000);
       await page.goto("/scouting/vergelijking/nieuw", { timeout: 20000 });
 
       await expect(page.getByRole("heading", { name: "Vergelijking" })).toBeVisible({
@@ -383,7 +383,7 @@ test.describe("Vergelijking (VERGELIJKING methode)", () => {
     });
 
     test("wizard heeft 3 stappen (selectie, vergelijking, samenvatting)", async ({ page }) => {
-      test.setTimeout(45000);
+      test.setTimeout(30000);
       await page.goto("/scouting/vergelijking/nieuw", { timeout: 20000 });
 
       await expect(page.getByRole("heading", { name: "Vergelijking" })).toBeVisible({
@@ -396,7 +396,7 @@ test.describe("Vergelijking (VERGELIJKING methode)", () => {
     });
 
     test("selectie-stap toont speler zoekbalk", async ({ page }) => {
-      test.setTimeout(45000);
+      test.setTimeout(30000);
       await page.goto("/scouting/vergelijking/nieuw", { timeout: 20000 });
 
       await expect(page.getByRole("heading", { name: "Selecteer spelers" })).toBeVisible({
@@ -407,7 +407,7 @@ test.describe("Vergelijking (VERGELIJKING methode)", () => {
     });
 
     test("selectie-stap toont context keuze (Wedstrijd, Training, Overig)", async ({ page }) => {
-      test.setTimeout(45000);
+      test.setTimeout(30000);
       await page.goto("/scouting/vergelijking/nieuw", { timeout: 20000 });
 
       await expect(page.getByRole("heading", { name: "Selecteer spelers" })).toBeVisible({
@@ -420,7 +420,7 @@ test.describe("Vergelijking (VERGELIJKING methode)", () => {
     });
 
     test("volgende is disabled met minder dan 2 spelers", async ({ page }) => {
-      test.setTimeout(45000);
+      test.setTimeout(30000);
       await page.goto("/scouting/vergelijking/nieuw", { timeout: 20000 });
 
       await expect(page.getByRole("heading", { name: "Selecteer spelers" })).toBeVisible({
@@ -441,7 +441,7 @@ test.describe("Vergelijking (VERGELIJKING methode)", () => {
 test.describe("Spelerskaart weergave", () => {
   test.describe("Kaarten-overzicht pagina", () => {
     test("laadt met heading en speler-telling", async ({ page }) => {
-      test.setTimeout(45000);
+      test.setTimeout(30000);
       await page.goto("/scouting/kaarten", { timeout: 20000 });
 
       await expect(page.getByRole("heading", { name: "Kaarten" })).toBeVisible({
@@ -458,7 +458,7 @@ test.describe("Spelerskaart weergave", () => {
     });
 
     test("toont leeftijdsgroep filter chips", async ({ page }) => {
-      test.setTimeout(45000);
+      test.setTimeout(30000);
       await page.goto("/scouting/kaarten", { timeout: 20000 });
 
       await expect(page.getByRole("heading", { name: "Kaarten" })).toBeVisible({
@@ -475,7 +475,7 @@ test.describe("Spelerskaart weergave", () => {
     });
 
     test("toont sorteeropties: Rating, Recent, Naam", async ({ page }) => {
-      test.setTimeout(45000);
+      test.setTimeout(30000);
       await page.goto("/scouting/kaarten", { timeout: 20000 });
 
       await expect(page.getByRole("heading", { name: "Kaarten" })).toBeVisible({
@@ -488,7 +488,7 @@ test.describe("Spelerskaart weergave", () => {
     });
 
     test("filter op leeftijdsgroep werkt", async ({ page }) => {
-      test.setTimeout(45000);
+      test.setTimeout(30000);
       await page.goto("/scouting/kaarten", { timeout: 20000 });
 
       await expect(page.getByRole("heading", { name: "Kaarten" })).toBeVisible({
@@ -511,7 +511,7 @@ test.describe("Spelerskaart weergave", () => {
     });
 
     test("sorteer-optie wisselen werkt", async ({ page }) => {
-      test.setTimeout(45000);
+      test.setTimeout(30000);
       await page.goto("/scouting/kaarten", { timeout: 20000 });
 
       await expect(page.getByRole("heading", { name: "Kaarten" })).toBeVisible({
@@ -622,7 +622,7 @@ test.describe("Spelerskaart weergave", () => {
 test.describe("Admin raamwerk", () => {
   test.describe("Raamwerk overzicht", () => {
     test("admin raamwerk pagina laadt (of redirect bij geen TC-rol)", async ({ page }) => {
-      test.setTimeout(45000);
+      test.setTimeout(30000);
       // Admin vereist TC-rol. Zonder TC-rol wordt de gebruiker geredirect.
       // We testen of de pagina laadt of een redirect plaatsvindt.
       await page.goto("/scouting/admin/raamwerk", { timeout: 20000 });
@@ -750,7 +750,7 @@ test.describe("Admin raamwerk", () => {
 
   test.describe("Leeftijdsgroep detail", () => {
     test("navigeert naar een leeftijdsgroep en toont items per pijler", async ({ page }) => {
-      test.setTimeout(45000);
+      test.setTimeout(30000);
       await page.goto("/scouting/admin/raamwerk", { timeout: 20000 });
 
       const raamwerkHeader = page.getByText("Raamwerk beheer");
@@ -992,7 +992,7 @@ test.describe("Scouting navigatie en auth", () => {
   });
 
   test("spelerprofiel toont scout link met rapport wizard href", async ({ page }) => {
-    test.setTimeout(45000);
+    test.setTimeout(30000);
 
     await page.goto("/scouting/speler/TSTN001", { timeout: 20000 });
     if (await isPageNotFound(page)) {
