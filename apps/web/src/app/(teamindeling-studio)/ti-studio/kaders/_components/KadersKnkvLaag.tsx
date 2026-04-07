@@ -1,62 +1,66 @@
 "use client";
 
 import { useState } from "react";
+import {
+  CATEGORIEEN,
+  CATEGORIE_DEFAULTS,
+} from "@/app/(teamindeling-studio)/ti-studio/blauwdruk/categorie-kaders";
 
-interface KadersKnkvLaagProps {
-  kadersJson: Record<string, unknown> | null;
-}
+// Accent-kleur per categorie-sleutel
+const ACCENT: Record<string, string> = {
+  SENIOREN_A: "#6b7280",
+  SENIOREN_B: "#9ca3af",
+  U19: "var(--ow-oranje-500)",
+  U17: "var(--ow-oranje-400)",
+  U15: "var(--ow-oranje-300)",
+  ROOD: "var(--knkv-rood-500)",
+  ORANJE: "var(--knkv-oranje-500)",
+  GEEL: "var(--knkv-geel-500)",
+  GROEN: "var(--knkv-groen-500)",
+  BLAUW: "var(--knkv-blauw-500)",
+  KANGOEROES: "var(--knkv-paars-400)",
+};
 
-interface KnkvCategorie {
-  sleutel: string;
+function Pill({
+  label,
+  waarde,
+  kleur,
+}: {
   label: string;
-  minV: number;
-  maxV: number;
-  minM: number;
-  maxM: number;
-  accentKleur: string;
+  waarde: string | number;
+  kleur: "roze" | "blauw" | "grijs";
+}) {
+  const stijl =
+    kleur === "roze"
+      ? { background: "rgba(244,114,182,0.12)", color: "#f472b6" }
+      : kleur === "blauw"
+        ? { background: "rgba(59,130,246,0.12)", color: "#60a5fa" }
+        : { background: "rgba(156,163,175,0.12)", color: "#9ca3af" };
+
+  return (
+    <span
+      style={{
+        ...stijl,
+        borderRadius: 4,
+        padding: "1px 7px",
+        fontSize: 11,
+        fontWeight: 600,
+        display: "inline-flex",
+        gap: 3,
+        alignItems: "center",
+      }}
+    >
+      <span style={{ opacity: 0.6, fontSize: 10 }}>{label}</span>
+      {waarde}
+    </span>
+  );
 }
 
-const KNKV_CATEGORIEEN: KnkvCategorie[] = [
-  {
-    sleutel: "SENIOREN",
-    label: "Senioren",
-    minV: 3,
-    maxV: 4,
-    minM: 3,
-    maxM: 4,
-    accentKleur: "#6b7280",
-  },
-  {
-    sleutel: "A_CATEGORIE",
-    label: "A-categorie (U15/U17/U19)",
-    minV: 3,
-    maxV: 4,
-    minM: 3,
-    maxM: 4,
-    accentKleur: "var(--ow-oranje-500)",
-  },
-  {
-    sleutel: "B_ACHTTAL",
-    label: "B-categorie 8-tal (Rood/Oranje/Geel)",
-    minV: 2,
-    maxV: 4,
-    minM: 2,
-    maxM: 4,
-    accentKleur: "#f59e0b",
-  },
-  {
-    sleutel: "B_VIERTAL",
-    label: "B-categorie 4-tal (Groen/Blauw)",
-    minV: 0,
-    maxV: 2,
-    minM: 0,
-    maxM: 2,
-    accentKleur: "#22c55e",
-  },
-];
-
-export default function KadersKnkvLaag({ kadersJson: _kadersJson }: KadersKnkvLaagProps) {
+export default function KadersKnkvLaag() {
   const [open, setOpen] = useState(false);
+
+  // Kangoeroes apart — informeel, geen KNKV-regels
+  const speelCategorieen = CATEGORIEEN.filter((c) => c.sleutel !== "KANGOEROES");
 
   return (
     <section
@@ -86,14 +90,7 @@ export default function KadersKnkvLaag({ kadersJson: _kadersJson }: KadersKnkvLa
         <span style={{ color: "var(--text-secondary)", fontSize: 12, userSelect: "none" }}>
           {open ? "▼" : "▶"}
         </span>
-        <span
-          style={{
-            color: "var(--text-primary)",
-            fontWeight: 600,
-            fontSize: 14,
-            flex: 1,
-          }}
-        >
+        <span style={{ color: "var(--text-primary)", fontWeight: 600, fontSize: 14, flex: 1 }}>
           Laag 1 — KNKV Reglementen
         </span>
         <span
@@ -123,146 +120,105 @@ export default function KadersKnkvLaag({ kadersJson: _kadersJson }: KadersKnkvLa
               lineHeight: 1.6,
             }}
           >
-            KNKV-reglementen zijn niet bewerkbaar en dienen als validatiereferentie.
+            Bron: KNKV Competitie 2.0 · Peildatum leeftijd: 31 december van het seizoensjaar. Niet
+            bewerkbaar — dient als validatiereferentie.
           </p>
 
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(2, 1fr)",
-              gap: 12,
+              gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+              gap: 10,
             }}
           >
-            {KNKV_CATEGORIEEN.map((cat) => (
-              <div
-                key={cat.sleutel}
-                style={{
-                  background: "var(--surface-sunken)",
-                  borderRadius: 8,
-                  padding: "12px 14px",
-                  border: "1px solid var(--border-default)",
-                }}
-              >
-                {/* Categorie naam */}
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 6,
-                    marginBottom: 10,
-                  }}
-                >
-                  <span
-                    style={{
-                      width: 8,
-                      height: 8,
-                      borderRadius: "50%",
-                      background: cat.accentKleur,
-                      flexShrink: 0,
-                    }}
-                  />
-                  <span
-                    style={{
-                      color: "var(--text-primary)",
-                      fontSize: 12,
-                      fontWeight: 600,
-                    }}
-                  >
-                    {cat.label}
-                  </span>
-                </div>
+            {speelCategorieen.map((cat) => {
+              const d = CATEGORIE_DEFAULTS[cat.sleutel];
+              if (!d) return null;
 
-                {/* V-rij */}
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 6,
-                    marginBottom: 6,
-                  }}
-                >
-                  <span
-                    style={{
-                      color: "var(--text-secondary)",
-                      fontSize: 11,
-                      width: 20,
-                    }}
-                  >
-                    V
-                  </span>
-                  <span
-                    style={{
-                      background: "rgba(239,68,68,0.12)",
-                      color: "#f87171",
-                      borderRadius: 4,
-                      padding: "1px 6px",
-                      fontSize: 11,
-                      fontWeight: 600,
-                    }}
-                  >
-                    min {cat.minV}
-                  </span>
-                  <span style={{ color: "var(--text-secondary)", fontSize: 10 }}>—</span>
-                  <span
-                    style={{
-                      background: "rgba(239,68,68,0.12)",
-                      color: "#f87171",
-                      borderRadius: 4,
-                      padding: "1px 6px",
-                      fontSize: 11,
-                      fontWeight: 600,
-                    }}
-                  >
-                    max {cat.maxV}
-                  </span>
-                </div>
+              const maxSpelers = Math.ceil(
+                d.optimaalSpelers * (1 + d.maxAfwijkingPercentage / 100)
+              );
+              const wissels = d.wisselsAantal === null ? "onbeperkt" : String(d.wisselsAantal);
+              const leeftijdTekst =
+                d.gemiddeldeLeeftijdKernMin !== null && d.gemiddeldeLeeftijdKernMax !== null
+                  ? `gem. ${d.gemiddeldeLeeftijdKernMin}–${d.gemiddeldeLeeftijdKernMax} jr`
+                  : null;
+              const bandTekst =
+                d.bandbreedteLeeftijd !== null ? `≤ ${d.bandbreedteLeeftijd} jr spreiding` : null;
 
-                {/* M-rij */}
+              return (
                 <div
+                  key={cat.sleutel}
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 6,
+                    background: "var(--surface-sunken)",
+                    borderRadius: 8,
+                    padding: "12px 14px",
+                    border: "1px solid var(--border-default)",
+                    borderLeft: `3px solid ${ACCENT[cat.sleutel] ?? "#6b7280"}`,
                   }}
                 >
-                  <span
+                  {/* Naam + spelvorm */}
+                  <div
                     style={{
-                      color: "var(--text-secondary)",
-                      fontSize: 11,
-                      width: 20,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      marginBottom: 8,
                     }}
                   >
-                    M
-                  </span>
-                  <span
-                    style={{
-                      background: "rgba(59,130,246,0.12)",
-                      color: "#60a5fa",
-                      borderRadius: 4,
-                      padding: "1px 6px",
-                      fontSize: 11,
-                      fontWeight: 600,
-                    }}
-                  >
-                    min {cat.minM}
-                  </span>
-                  <span style={{ color: "var(--text-secondary)", fontSize: 10 }}>—</span>
-                  <span
-                    style={{
-                      background: "rgba(59,130,246,0.12)",
-                      color: "#60a5fa",
-                      borderRadius: 4,
-                      padding: "1px 6px",
-                      fontSize: 11,
-                      fontWeight: 600,
-                    }}
-                  >
-                    max {cat.maxM}
-                  </span>
+                    <span style={{ color: "var(--text-primary)", fontSize: 12, fontWeight: 600 }}>
+                      {cat.label}
+                    </span>
+                    <span style={{ color: "var(--text-tertiary)", fontSize: 11 }}>
+                      {cat.spelvorm} · {d.korfhoogte}m · bal {d.balMaat}
+                    </span>
+                  </div>
+
+                  {/* Gender */}
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: 6 }}>
+                    {d.verplichtMinV > 0 ? (
+                      <>
+                        <Pill label="V verplicht" waarde={`≥ ${d.verplichtMinV}`} kleur="roze" />
+                        <Pill label="M verplicht" waarde={`≥ ${d.verplichtMinM}`} kleur="blauw" />
+                      </>
+                    ) : d.gewenstMinV > 0 ? (
+                      <>
+                        <Pill label="V gewenst" waarde={`≥ ${d.gewenstMinV}`} kleur="roze" />
+                        <Pill label="M gewenst" waarde={`≥ ${d.gewenstMinM}`} kleur="blauw" />
+                      </>
+                    ) : (
+                      <Pill label="gender" waarde="vrij" kleur="grijs" />
+                    )}
+                    {d.monogenderToestaan && (
+                      <Pill label="" waarde="mono-gender ok" kleur="grijs" />
+                    )}
+                  </div>
+
+                  {/* Teamgrootte */}
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: 6 }}>
+                    <Pill label="min" waarde={`${d.minSpelers} sp`} kleur="grijs" />
+                    <Pill label="optimaal" waarde={`${d.optimaalSpelers} sp`} kleur="grijs" />
+                    <Pill label="max" waarde={`${maxSpelers} sp`} kleur="grijs" />
+                  </div>
+
+                  {/* Leeftijd + speeltijd */}
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+                    {leeftijdTekst && <Pill label="" waarde={leeftijdTekst} kleur="grijs" />}
+                    {bandTekst && <Pill label="" waarde={bandTekst} kleur="grijs" />}
+                    <Pill label="wissels" waarde={wissels} kleur="grijs" />
+                    {d.speeltijdMinuten > 0 && (
+                      <Pill label="" waarde={`2×${d.speeltijdMinuten} min`} kleur="grijs" />
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
+
+          {/* Kangoeroes voetnoot */}
+          <p style={{ color: "var(--text-tertiary)", fontSize: 11, marginTop: 12 }}>
+            Kangoeroes (4–6 jaar) vallen buiten de KNKV-competitieregels — informeel spelformat.
+          </p>
         </div>
       )}
     </section>

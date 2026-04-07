@@ -126,7 +126,7 @@ export default async function KadersPage() {
       </div>
 
       {/* LAAG 1 — KNKV Reglementen */}
-      <KadersKnkvLaag kadersJson={kadersJson} />
+      <KadersKnkvLaag />
 
       {/* LAAG 2 — OW Voorkeuren TC */}
       <section
