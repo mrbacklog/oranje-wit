@@ -47,6 +47,7 @@ export default async function KadersPage() {
     statistieken,
     pins,
     beschikbareTeams,
+    spelersHuidig,
     referentieTeams,
     evaluatieRondes,
   ] = await Promise.all([
@@ -56,9 +57,12 @@ export default async function KadersPage() {
     getLedenStatistieken(),
     getPinsVoorKaders(kaders.id),
     prisma.oWTeam.findMany({
-      where: { seizoen, teamType: { in: ["SELECTIE", "SENIOREN"] } },
-      select: { naam: true, kleur: true },
+      where: { seizoen },
+      select: { naam: true, kleur: true, teamType: true },
       orderBy: { naam: "asc" },
+    }),
+    prisma.speler.findMany({
+      select: { geslacht: true, huidig: true },
     }),
     prisma.referentieTeam.findMany({
       where: { seizoen: vorigSzn },
@@ -83,6 +87,17 @@ export default async function KadersPage() {
 
   const categorieKaders = (kaders.kaders ?? {}) as CategorieKaders;
   const kadersJson = (kaders.kaders ?? {}) as Record<string, unknown>;
+
+  // Bereken speler-aantallen (V/M/totaal) per team op basis van huidig.team
+  const teamTotalen: Record<string, { v: number; m: number; totaal: number }> = {};
+  for (const sp of spelersHuidig) {
+    const huidig = sp.huidig as { team?: string } | null;
+    if (!huidig?.team) continue;
+    if (!teamTotalen[huidig.team]) teamTotalen[huidig.team] = { v: 0, m: 0, totaal: 0 };
+    if (sp.geslacht === "V") teamTotalen[huidig.team].v++;
+    else if (sp.geslacht === "M") teamTotalen[huidig.team].m++;
+    teamTotalen[huidig.team].totaal++;
+  }
 
   // Extraheer Laag 2-data uit het kaders-JSON veld
   const initieleSelecties: SelectieVoorkeur[] = Array.isArray(kadersJson.selecties)
@@ -170,6 +185,7 @@ export default async function KadersPage() {
             kadersId={kaders.id}
             initieleSelecties={initieleSelecties}
             beschikbareTeams={beschikbareTeams}
+            teamTotalen={teamTotalen}
           />
           <KadersTeamsamenstelling kadersId={kaders.id} initieleAantallen={initieleAantallen} />
         </div>
