@@ -8,14 +8,20 @@ interface SideTabPoolProps {
 
 /** Linker side-tab voor de spelerspool (verberg als gepind). */
 export function SideTabPool({ poolOpen, showEditDrawer, onToggle }: SideTabPoolProps) {
+  const isActive = poolOpen || showEditDrawer;
   return (
     <button
       onClick={onToggle}
-      className={`absolute top-4 left-0 z-20 flex flex-col items-center gap-1.5 rounded-r-lg border border-l-0 px-2 py-4 shadow-md transition-colors ${
-        poolOpen || showEditDrawer
-          ? "border-orange-300 bg-orange-500 text-white"
-          : "border-orange-200 bg-orange-50 text-orange-600 hover:bg-orange-100"
-      }`}
+      className="absolute top-4 left-0 z-20 flex flex-col items-center gap-1.5 rounded-r-lg border border-l-0 px-2 py-4 shadow-md transition-colors"
+      style={
+        isActive
+          ? { background: "var(--ow-oranje-500)", borderColor: "var(--ow-oranje-500)", color: "#fff" }
+          : {
+              background: "var(--surface-card)",
+              borderColor: "var(--border-default)",
+              color: "var(--ow-oranje-500)",
+            }
+      }
       title={poolOpen ? "Verberg spelerspool" : "Toon spelerspool"}
     >
       <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -64,7 +70,12 @@ export function SideTabsRight({
       {!rapportPinned && (
         <button
           onClick={onOpenRapport}
-          className="flex flex-col items-center gap-1.5 rounded-l-lg border border-r-0 border-orange-200 bg-orange-50 px-2 py-4 text-orange-600 shadow-md transition-colors hover:bg-orange-100"
+          className="flex flex-col items-center gap-1.5 rounded-l-lg border border-r-0 px-2 py-4 shadow-md transition-colors"
+          style={{
+            background: "var(--surface-card)",
+            borderColor: "var(--border-default)",
+            color: "var(--ow-oranje-500)",
+          }}
           title="Validatierapport"
         >
           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -87,11 +98,16 @@ export function SideTabsRight({
       {/* Side-tab: Werkbord */}
       <button
         onClick={onOpenWerkbord}
-        className={`flex flex-col items-center gap-1.5 rounded-l-lg border border-r-0 px-2 py-4 shadow-md transition-colors ${
+        className="flex flex-col items-center gap-1.5 rounded-l-lg border border-r-0 px-2 py-4 shadow-md transition-colors"
+        style={
           werkbordOpen
-            ? "border-orange-300 bg-orange-500 text-white"
-            : "border-orange-200 bg-orange-50 text-orange-600 hover:bg-orange-100"
-        }`}
+            ? { background: "var(--ow-oranje-500)", borderColor: "var(--ow-oranje-500)", color: "#fff" }
+            : {
+                background: "var(--surface-card)",
+                borderColor: "var(--border-default)",
+                color: "var(--ow-oranje-500)",
+              }
+        }
         title="Werkbord"
       >
         <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -113,11 +129,16 @@ export function SideTabsRight({
       {/* Side-tab: What-if */}
       <button
         onClick={onOpenWhatIf}
-        className={`flex flex-col items-center gap-1.5 rounded-l-lg border border-r-0 px-2 py-4 shadow-md transition-colors ${
+        className="flex flex-col items-center gap-1.5 rounded-l-lg border border-r-0 px-2 py-4 shadow-md transition-colors"
+        style={
           whatIfOpen
-            ? "border-orange-300 bg-orange-500 text-white"
-            : "border-orange-200 bg-orange-50 text-orange-600 hover:bg-orange-100"
-        }`}
+            ? { background: "var(--ow-oranje-500)", borderColor: "var(--ow-oranje-500)", color: "#fff" }
+            : {
+                background: "var(--surface-card)",
+                borderColor: "var(--border-default)",
+                color: "var(--ow-oranje-500)",
+              }
+        }
         title="What-if"
       >
         <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -139,11 +160,16 @@ export function SideTabsRight({
       {/* Side-tab: Versies */}
       <button
         onClick={onOpenVersies}
-        className={`flex flex-col items-center gap-1.5 rounded-l-lg border border-r-0 px-2 py-4 shadow-md transition-colors ${
+        className="flex flex-col items-center gap-1.5 rounded-l-lg border border-r-0 px-2 py-4 shadow-md transition-colors"
+        style={
           versiesOpen
-            ? "border-orange-300 bg-orange-500 text-white"
-            : "border-orange-200 bg-orange-50 text-orange-600 hover:bg-orange-100"
-        }`}
+            ? { background: "var(--ow-oranje-500)", borderColor: "var(--ow-oranje-500)", color: "#fff" }
+            : {
+                background: "var(--surface-card)",
+                borderColor: "var(--border-default)",
+                color: "var(--ow-oranje-500)",
+              }
+        }
         title="Versiegeschiedenis"
       >
         <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

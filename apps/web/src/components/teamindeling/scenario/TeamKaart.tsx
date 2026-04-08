@@ -110,13 +110,20 @@ export default function TeamKaart({
     <div
       ref={setNodeRef}
       data-team-id={team.id}
-      style={{ width: cardWidth, height: cardHeight }}
+      style={{ width: cardWidth, height: cardHeight, position: "relative" }}
       className={`flex flex-col rounded-lg transition-colors ${randKlassen} ${achtergrond} ${ringKlassen}`}
     >
-      {/* KNKV kleurband — 4px gradient bovenaan */}
+      {/* KNKV kleurband — 3px verticaal links */}
       <div
-        style={{ background: teamKleurGradient(team.kleur), height: "4px" }}
-        className="shrink-0 rounded-t-lg"
+        style={{
+          background: teamKleurGradient(team.kleur),
+          width: "3px",
+          position: "absolute",
+          left: 0,
+          top: 0,
+          bottom: 0,
+          borderRadius: "8px 0 0 8px",
+        }}
       />
       <div
         style={

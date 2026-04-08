@@ -40,12 +40,19 @@ export default function EditorToolbar({
   const isLocked = scenario.status === "DEFINITIEF" || scenario.status === "GEARCHIVEERD";
 
   return (
-    <div className="relative flex h-12 items-center justify-between border-b border-gray-200 bg-white px-4">
+    <div
+      className="relative flex h-12 items-center justify-between px-4"
+      style={{
+        background: "var(--surface-card)",
+        borderBottom: "2px solid var(--ow-oranje-500)",
+      }}
+    >
       {/* Links: sluiten + scenario info */}
       <div className="flex items-center gap-3">
         <Link
           href="/ti-studio/indeling"
-          className="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
+          className="rounded-lg p-1.5 transition-colors"
+          style={{ color: "var(--text-secondary)" }}
           title="Terug naar scenario's"
         >
           <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -58,15 +65,18 @@ export default function EditorToolbar({
           </svg>
         </Link>
         <div className="flex items-center gap-2">
-          <h2 className="text-sm font-semibold text-gray-900">{scenario.naam}</h2>
+          <h2 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
+            {scenario.naam}
+          </h2>
           <span
-            className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${
+            className="rounded-full px-2 py-0.5 text-[10px] font-medium"
+            style={
               scenario.status === "DEFINITIEF"
-                ? "bg-green-100 text-green-700"
+                ? { background: "#14532d33", color: "#4ade80" }
                 : scenario.status === "GEARCHIVEERD"
-                  ? "bg-gray-100 text-gray-500"
-                  : "bg-orange-100 text-orange-700"
-            }`}
+                  ? { background: "var(--surface-sunken)", color: "var(--text-secondary)" }
+                  : { background: "#FF6B0022", color: "var(--ow-oranje-500)" }
+            }
           >
             {scenario.status === "DEFINITIEF"
               ? "Definitief"
@@ -78,7 +88,10 @@ export default function EditorToolbar({
       </div>
 
       {/* Midden: teller */}
-      <span className="absolute left-1/2 -translate-x-1/2 text-sm text-gray-500">
+      <span
+        className="absolute left-1/2 -translate-x-1/2 text-sm"
+        style={{ color: "var(--text-secondary)" }}
+      >
         {zichtbaar} van {totaal} teams zichtbaar
       </span>
 
@@ -87,9 +100,12 @@ export default function EditorToolbar({
         {onToggleCompact && (
           <button
             onClick={onToggleCompact}
-            className={`rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors ${
-              compactMode ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-500 hover:bg-gray-200"
-            }`}
+            className="rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors"
+            style={
+              compactMode
+                ? { background: "var(--ow-oranje-500)", color: "#fff" }
+                : { background: "var(--surface-sunken)", color: "var(--text-secondary)" }
+            }
             title={compactMode ? "Schakel naar detailweergave" : "Schakel naar compacte weergave"}
           >
             {compactMode ? "Detail" : "Compact"}
@@ -98,9 +114,12 @@ export default function EditorToolbar({
         {onToggleRanking && (
           <button
             onClick={onToggleRanking}
-            className={`rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors ${
-              showRanking ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-500 hover:bg-gray-200"
-            }`}
+            className="rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors"
+            style={
+              showRanking
+                ? { background: "var(--ow-oranje-500)", color: "#fff" }
+                : { background: "var(--surface-sunken)", color: "var(--text-secondary)" }
+            }
             title={showRanking ? "Verberg scores" : "Toon scores"}
           >
             Score
@@ -110,7 +129,8 @@ export default function EditorToolbar({
           <button
             onClick={onSyncScores}
             disabled={syncingScores}
-            className="rounded-lg bg-gray-100 px-2.5 py-1.5 text-xs font-medium text-gray-500 transition-colors hover:bg-gray-200 disabled:opacity-50"
+            className="rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors disabled:opacity-50"
+            style={{ background: "var(--surface-sunken)", color: "var(--text-secondary)" }}
             title="Synchroniseer teamscores vanuit dit scenario naar competitieteams"
           >
             {syncingScores ? "Syncing..." : "Sync scores"}
@@ -119,7 +139,8 @@ export default function EditorToolbar({
         {onOpenWhatIf && (
           <button
             onClick={onOpenWhatIf}
-            className="flex items-center gap-1 rounded-lg bg-gray-100 px-2.5 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:bg-gray-200"
+            className="flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors"
+            style={{ background: "var(--surface-sunken)", color: "var(--text-secondary)" }}
             title="What-if scenario starten"
           >
             <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -136,7 +157,8 @@ export default function EditorToolbar({
         {!isLocked && onCreateTeam && mode === "edit" && (
           <button
             onClick={onCreateTeam}
-            className="flex items-center gap-1 rounded-lg bg-orange-500 px-2.5 py-1.5 text-xs font-medium text-white transition-colors hover:bg-orange-600"
+            className="flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium text-white transition-colors"
+            style={{ background: "var(--ow-oranje-500)" }}
           >
             <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -154,11 +176,12 @@ export default function EditorToolbar({
         {!isLocked && (
           <button
             onClick={onToggleMode}
-            className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
+            className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors"
+            style={
               mode === "preview"
-                ? "bg-orange-100 text-orange-700 hover:bg-orange-200"
-                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-            }`}
+                ? { background: "#FF6B0022", color: "var(--ow-oranje-500)" }
+                : { background: "var(--surface-sunken)", color: "var(--text-secondary)" }
+            }
             title={mode === "preview" ? "Schakel naar bewerken" : "Schakel naar preview"}
           >
             {mode === "preview" ? (

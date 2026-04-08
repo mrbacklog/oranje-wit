@@ -30,7 +30,12 @@ export default function SpelerFilters({
         value={zoekterm}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => onZoektermChange(e.target.value)}
         placeholder="Zoek speler..."
-        className="w-full rounded-lg border border-gray-300 px-3 py-1.5 text-sm focus:border-orange-400 focus:ring-2 focus:ring-orange-300 focus:outline-none"
+        className="w-full rounded-lg px-3 py-1.5 text-sm focus:outline-none"
+        style={{
+          background: "var(--surface-sunken)",
+          color: "var(--text-primary)",
+          border: "1px solid var(--border-default)",
+        }}
       />
 
       {/* Filterradio's */}
@@ -38,11 +43,20 @@ export default function SpelerFilters({
         {FILTERS.map(({ waarde, label }) => (
           <label
             key={waarde}
-            className={`inline-flex cursor-pointer items-center rounded-full border px-2.5 py-1 text-xs transition-colors ${
+            className="inline-flex cursor-pointer items-center rounded-full border px-2.5 py-1 text-xs transition-colors"
+            style={
               filter === waarde
-                ? "border-orange-400 bg-orange-50 text-orange-700"
-                : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
-            }`}
+                ? {
+                    borderColor: "var(--ow-oranje-500)",
+                    background: "#FF6B0022",
+                    color: "var(--ow-oranje-500)",
+                  }
+                : {
+                    borderColor: "var(--border-default)",
+                    background: "transparent",
+                    color: "var(--text-secondary)",
+                  }
+            }
           >
             <input
               type="radio"

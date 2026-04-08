@@ -137,18 +137,24 @@ export default function SpelersPool({
   return (
     <aside
       ref={setNodeRef}
-      className={`flex w-80 flex-shrink-0 flex-col border-l border-gray-200 bg-white transition-colors ${
-        isOver ? "border-orange-300 bg-orange-50" : ""
-      }`}
+      className="flex w-80 flex-shrink-0 flex-col transition-colors"
+      style={{
+        background: isOver ? "#FF6B0011" : "var(--surface-card)",
+        borderLeft: isOver
+          ? "1px solid var(--ow-oranje-500)"
+          : "1px solid var(--border-default)",
+      }}
     >
-      <div className="border-b border-gray-100 px-4 py-3">
-        <h3 className="text-sm font-semibold text-gray-700">Spelerspool</h3>
-        <p className="mt-0.5 text-xs text-gray-400">
+      <div className="px-4 py-3" style={{ borderBottom: "1px solid var(--border-default)" }}>
+        <h3 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
+          Spelerspool
+        </h3>
+        <p className="mt-0.5 text-xs" style={{ color: "var(--text-secondary)" }}>
           {gefilterdeSpelers.length} van {spelers.length} spelers
         </p>
       </div>
 
-      <div className="border-b border-gray-100 px-3 py-2">
+      <div className="px-3 py-2" style={{ borderBottom: "1px solid var(--border-default)" }}>
         <SpelerFilters
           zoekterm={zoekterm}
           onZoektermChange={setZoekterm}
@@ -159,7 +165,9 @@ export default function SpelersPool({
 
       <div className="max-h-[calc(100vh-16rem)] flex-1 space-y-1 overflow-y-auto px-2 py-2">
         {gefilterdeSpelers.length === 0 ? (
-          <p className="py-6 text-center text-xs text-gray-400">Geen spelers gevonden</p>
+          <p className="py-6 text-center text-xs" style={{ color: "var(--text-secondary)" }}>
+            Geen spelers gevonden
+          </p>
         ) : (
           gefilterdeSpelers.map((speler) => (
             <SpelerKaart

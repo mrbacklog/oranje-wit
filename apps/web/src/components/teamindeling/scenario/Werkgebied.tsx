@@ -121,22 +121,36 @@ export default function Werkgebied({
       {/* Zwevende selectiebalk — alleen zichtbaar bij selectie */}
       {geselecteerd.size > 0 && (
         <div className="absolute top-3 left-1/2 z-10 -translate-x-1/2">
-          <div className="flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 shadow-lg">
-            <span className="text-xs text-gray-500">{geselecteerd.size} geselecteerd</span>
+          <div
+            className="flex items-center gap-2 rounded-full px-4 py-2 shadow-lg"
+            style={{
+              background: "var(--surface-card)",
+              border: "1px solid var(--border-default)",
+            }}
+          >
+            <span className="text-xs" style={{ color: "var(--text-secondary)" }}>
+              {geselecteerd.size} geselecteerd
+            </span>
             <button
               onClick={() => setGeselecteerd(new Set())}
-              className="text-xs text-gray-400 transition-colors hover:text-gray-600"
+              className="text-xs transition-colors"
+              style={{ color: "var(--text-secondary)" }}
             >
               Deselecteer
             </button>
             <button
               onClick={handleKoppel}
               disabled={!kanKoppelen}
-              className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+              className="rounded-full px-3 py-1 text-xs font-medium transition-colors"
+              style={
                 kanKoppelen
-                  ? "bg-orange-500 text-white hover:bg-orange-600"
-                  : "cursor-not-allowed bg-gray-200 text-gray-400"
-              }`}
+                  ? { background: "var(--ow-oranje-500)", color: "#fff" }
+                  : {
+                      background: "var(--surface-sunken)",
+                      color: "var(--text-tertiary)",
+                      cursor: "not-allowed",
+                    }
+              }
             >
               Koppel selectie
             </button>
@@ -150,14 +164,18 @@ export default function Werkgebied({
           const detailLevel = compactMode ? ("overzicht" as const) : zoomDetailLevel;
           return zichtbareTeams.length === 0 ? (
             <div className="flex h-[400px] items-center justify-center">
-              <p className="text-sm text-gray-400">
+              <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
                 Selecteer teams in de navigator om ze hier te tonen.
               </p>
             </div>
           ) : (
             <div
-              className="border border-dashed border-gray-200"
-              style={{ position: "relative", width: CANVAS_WIDTH, height: CANVAS_HEIGHT }}
+              style={{
+                position: "relative",
+                width: CANVAS_WIDTH,
+                height: CANVAS_HEIGHT,
+                border: "1px dashed var(--border-default)",
+              }}
             >
               {/* Selectie-groepen */}
               {Array.from(selectieGroepen.entries()).map(([groepId, groepTeams]) => {

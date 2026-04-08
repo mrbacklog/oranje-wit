@@ -54,11 +54,12 @@ export default function Drawer({
       {pinnable && onTogglePin && (
         <button
           onClick={onTogglePin}
-          className={`rounded p-1 transition-colors ${
+          className="rounded p-1 transition-colors"
+          style={
             pinned
-              ? "text-orange-500 hover:bg-orange-50 hover:text-orange-600"
-              : "text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-          }`}
+              ? { color: "var(--ow-oranje-500)" }
+              : { color: "var(--text-secondary)" }
+          }
           title={pinned ? "Losmaken" : "Vastzetten"}
         >
           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -83,7 +84,8 @@ export default function Drawer({
       )}
       <button
         onClick={onClose}
-        className="rounded p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
+        className="rounded p-1 transition-colors"
+        style={{ color: "var(--text-secondary)" }}
       >
         <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
@@ -101,11 +103,20 @@ export default function Drawer({
   if (pinned) {
     return (
       <aside
-        className={`flex h-full flex-col bg-white ${widthClass} shrink-0 ${borderClass} border-gray-200`}
+        className={`flex h-full flex-col ${widthClass} shrink-0 ${borderClass}`}
+        style={{
+          background: "var(--surface-card)",
+          borderColor: "var(--border-default)",
+        }}
       >
         {title && (
-          <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
-            <h3 className="text-sm font-semibold text-gray-700">{title}</h3>
+          <div
+            className="flex items-center justify-between px-4 py-3"
+            style={{ borderBottom: "1px solid var(--border-default)" }}
+          >
+            <h3 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
+              {title}
+            </h3>
             {headerButtons}
           </div>
         )}
@@ -122,18 +133,24 @@ export default function Drawer({
     <>
       {/* Backdrop */}
       <div
-        className="animate-fade-in fixed inset-0 z-40 bg-black/20"
+        className="animate-fade-in fixed inset-0 z-40 bg-black/40"
         onClick={onClose}
         aria-hidden="true"
       />
 
       {/* Panel */}
       <div
-        className={`fixed inset-y-0 ${panelPositie} z-40 flex flex-col bg-white shadow-xl ${widthClass} ${animatie}`}
+        className={`fixed inset-y-0 ${panelPositie} z-40 flex flex-col shadow-xl ${widthClass} ${animatie}`}
+        style={{ background: "var(--surface-card)" }}
       >
         {title && (
-          <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
-            <h3 className="text-sm font-semibold text-gray-700">{title}</h3>
+          <div
+            className="flex items-center justify-between px-4 py-3"
+            style={{ borderBottom: "1px solid var(--border-default)" }}
+          >
+            <h3 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
+              {title}
+            </h3>
             {headerButtons}
           </div>
         )}
