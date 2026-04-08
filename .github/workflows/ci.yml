@@ -136,9 +136,11 @@ jobs:
       - name: Generate Prisma client
         run: pnpm db:generate
 
-      - name: Push schema naar test database
-        run: npx prisma db push
-        working-directory: packages/database
+      - name: Voer migraties uit op test database
+        run: pnpm db:migrate:deploy
+
+      - name: Herstel database views
+        run: pnpm db:ensure-views
 
       - name: Seed test database
         run: pnpm dlx tsx e2e/fixtures/seed.ts
