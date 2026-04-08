@@ -17,6 +17,7 @@ import {
   categorieHeaderBorder,
   categorieFooterBorder,
   validatieRingKlassen,
+  teamKleurGradient,
 } from "@/lib/teamindeling/teamKaartStijl";
 import TeamSpelerRij from "./TeamSpelerRij";
 import ValidatieBadge from "./ValidatieBadge";
@@ -108,9 +109,15 @@ export default function TeamKaart({
   return (
     <div
       ref={setNodeRef}
+      data-team-id={team.id}
       style={{ width: cardWidth, height: cardHeight }}
       className={`flex flex-col rounded-lg transition-colors ${randKlassen} ${achtergrond} ${ringKlassen}`}
     >
+      {/* KNKV kleurband — 4px gradient bovenaan */}
+      <div
+        style={{ background: teamKleurGradient(team.kleur), height: "4px" }}
+        className="shrink-0 rounded-t-lg"
+      />
       <div
         style={
           textScale > 1
@@ -128,7 +135,7 @@ export default function TeamKaart({
         <div className={`flex items-center justify-between px-1.5 py-1 ${headerBorder}`}>
           <div className="relative flex min-w-0 items-center gap-1">
             {dl === "detail" && (
-              <span className="shrink-0 text-gray-300">
+              <span className="shrink-0 text-[var(--text-tertiary)]">
                 <svg className="h-2.5 w-2.5" viewBox="0 0 10 16" fill="currentColor">
                   <circle cx="3" cy="2" r="1.2" />
                   <circle cx="7" cy="2" r="1.2" />
@@ -146,7 +153,8 @@ export default function TeamKaart({
               />
             )}
             <h4
-              className={`truncate font-semibold text-gray-900 ${
+              onClick={() => onEditTeam?.(team.id)}
+              className={`text-text-primary hover:text-ow-oranje cursor-pointer truncate font-semibold transition-colors ${
                 dl === "overzicht" ? "text-xs" : "text-[11px]"
               }`}
             >
@@ -156,7 +164,7 @@ export default function TeamKaart({
             {dl === "detail" && team.kleur && (
               <span
                 className={`shrink-0 rounded-full px-1 py-px text-[7px] ${
-                  KLEUR_BADGE_KLEUREN[team.kleur] ?? "bg-gray-100 text-gray-500"
+                  KLEUR_BADGE_KLEUREN[team.kleur] ?? "bg-surface-raised text-text-secondary"
                 }`}
               >
                 {team.kleur}
@@ -195,7 +203,7 @@ export default function TeamKaart({
                   e.stopPropagation();
                   onEditTeam?.(team.id);
                 }}
-                className="text-gray-300 transition-colors hover:text-gray-600"
+                className="text-text-muted hover:text-text-primary transition-colors"
                 title="Bewerk team"
               >
                 <svg className="h-2.5 w-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -229,7 +237,7 @@ export default function TeamKaart({
                       setDeleteBevestig(true);
                       deleteTimerRef.current = setTimeout(() => setDeleteBevestig(false), 3000);
                     }}
-                    className="text-[10px] text-gray-300 hover:text-red-500"
+                    className="text-text-muted text-[10px] hover:text-red-500"
                     title="Verwijder team"
                   >
                     &times;
@@ -246,12 +254,14 @@ export default function TeamKaart({
               <span className="font-semibold text-pink-500">♀ {aantalV}</span>
               <span className="font-semibold text-blue-500">♂ {aantalM}</span>
             </div>
-            <span className="text-sm text-gray-400">gem. {gemLeeftijd}</span>
+            <span className="text-text-secondary text-sm">gem. {gemLeeftijd}</span>
           </div>
         ) : (
           <div className="min-h-6 flex-1 overflow-hidden px-0.5">
             {team.spelers.length === 0 ? (
-              <p className="py-2 text-center text-[9px] text-gray-400">Sleep spelers hierheen</p>
+              <p className="text-text-secondary py-2 text-center text-[9px]">
+                Sleep spelers hierheen
+              </p>
             ) : !isDouble ? (
               /* Viertal: gestapeld */
               <>
@@ -394,18 +404,20 @@ export default function TeamKaart({
                   )}
                 </span>
               )}
-              <span className="text-[7px] text-gray-400">{aantalSpelers} sp</span>
+              <span className="text-text-secondary text-[7px]">{aantalSpelers} sp</span>
             </div>
             <div className="flex shrink-0 items-center gap-1">
               {jIndicatie && (
-                <span className="rounded bg-indigo-100 px-1 text-[8px] font-bold text-indigo-700">
+                <span className="rounded bg-indigo-900/30 px-1 text-[8px] font-bold text-indigo-300">
                   {jIndicatie}
                   {teamSterkte != null && (
-                    <span className="font-normal text-indigo-500"> ({teamSterkte})</span>
+                    <span className="font-normal text-indigo-400"> ({teamSterkte})</span>
                   )}
                 </span>
               )}
-              <span className="text-[8px] text-gray-400 tabular-nums">gem. {gemLeeftijd}</span>
+              <span className="text-text-secondary text-[8px] tabular-nums">
+                gem. {gemLeeftijd}
+              </span>
             </div>
           </div>
         )}

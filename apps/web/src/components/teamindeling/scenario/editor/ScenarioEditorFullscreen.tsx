@@ -2,7 +2,8 @@
 
 import { useState, useCallback, useMemo, useRef, lazy, Suspense } from "react";
 import { logger } from "@oranje-wit/types";
-import type { ScenarioData, SpelerData, SelectieGroepData } from "../types";
+import type { ScenarioData, SpelerData, SelectieGroepData, TeamData } from "../types";
+import { SpelerProfielDialog, TeamoverzichtDialog, DaisyWidget } from "@/components/ti-studio";
 import { PEILJAAR } from "../types";
 import { useScenarioEditor } from "../hooks/useScenarioEditor";
 import { useValidatie } from "@/hooks/teamindeling/useValidatie";
@@ -57,6 +58,8 @@ export default function ScenarioEditorFullscreen({
   const [whatIfOpen, setWhatIfOpen] = useState(false);
   const [whatIfDialoogOpen, setWhatIfDialoogOpen] = useState(false);
   const [versiesOpen, setVersiesOpen] = useState(false);
+  const [spelerProfielId, setSpelerProfielId] = useState<string | null>(null);
+  const [teamOverzichtTeam, setTeamOverzichtTeam] = useState<TeamData | null>(null);
   const syncLockRef = useRef(false);
 
   const whatIf = useWhatIf({ teams: editor.teams, onRefreshTeams: editor.refreshTeams });
@@ -237,6 +240,23 @@ export default function ScenarioEditorFullscreen({
     );
   }
 
+  const handleSpelerProfielOpen = useCallback(
+    (speler: SpelerData) => {
+      setSpelerProfielId(speler.id);
+      editor.handleSpelerClick(speler);
+    },
+    [editor]
+  );
+
+  const handleTeamOverzichtOpen = useCallback(
+    (teamId: string) => {
+      const team = editor.teams.find((t) => t.id === teamId) ?? null;
+      setTeamOverzichtTeam(team);
+      editor.handleEditTeam(teamId);
+    },
+    [editor]
+  );
+
   // SpelersPool content (hergebruikt in gepinde sidebar en drawer)
   const spelersPoolContent = (
     <SpelersPool
@@ -245,7 +265,7 @@ export default function ScenarioEditorFullscreen({
       selectieGroepen={editor.selectieGroepen}
       zichtbareTeamIds={editor.zichtbaar}
       pinnedSpelerIds={editor.pinnedSpelerIds}
-      onSpelerClick={(speler) => editor.handleSpelerClick(speler)}
+      onSpelerClick={handleSpelerProfielOpen}
     />
   );
 
@@ -353,8 +373,8 @@ export default function ScenarioEditorFullscreen({
               onKoppelSelectie={editor.handleKoppelSelectie}
               onOntkoppelSelectie={editor.handleOntkoppelSelectie}
               onUpdateSelectieNaam={editor.handleUpdateSelectieNaam}
-              onSpelerClick={editor.handleSpelerClick}
-              onEditTeam={editor.handleEditTeam}
+              onSpelerClick={handleSpelerProfielOpen}
+              onEditTeam={handleTeamOverzichtOpen}
               positions={positions}
               onRepositionCard={updatePosition}
               whatIfZones={whatIf.whatIfZones ?? undefined}
@@ -431,6 +451,26 @@ export default function ScenarioEditorFullscreen({
         gebruikerEmail={gebruikerEmail}
         onClose={() => setVersiesOpen(false)}
       />
+
+      {/* Speler profiel dialog */}
+      <SpelerProfielDialog
+        spelerId={spelerProfielId}
+        open={!!spelerProfielId}
+        onClose={() => setSpelerProfielId(null)}
+      />
+
+      {/* Team overzicht dialog */}
+      <TeamoverzichtDialog
+        team={teamOverzichtTeam}
+        open={!!teamOverzichtTeam}
+        onClose={() => setTeamOverzichtTeam(null)}
+        onSpelerVerwijderd={(spelerId, teamId) => {
+          logger.info("Speler verwijderd uit team via overzicht:", { spelerId, teamId });
+        }}
+      />
+
+      {/* Daisy AI assistent widget */}
+      <DaisyWidget />
     </div>
   );
 }

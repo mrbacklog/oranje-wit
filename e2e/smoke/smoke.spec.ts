@@ -56,14 +56,20 @@ test.describe("Smoke — app laadt", () => {
     await expect(nav).toBeVisible({ timeout: 15000 });
   });
 
-  test("cross-domain: AppSwitcher opent", async ({ page }) => {
-    test.setTimeout(60000);
+  test("cross-domain: AppSwitcher opent", async ({ browser }) => {
+    // AppSwitcher zit in mobile BottomNav — test op mobile viewport
+    const context = await browser.newContext({
+      viewport: { width: 390, height: 844 },
+      storageState: "./e2e/.auth/user.json",
+    });
+    const page = await context.newPage();
     await page.goto("/monitor", { timeout: 45000 });
-    const nav = page.getByRole("navigation", { name: "Hoofdnavigatie" });
-    await expect(nav).toBeVisible({ timeout: 15000 });
-    await nav.getByText("Meer", { exact: true }).click();
+    const btn = page.getByRole("button", { name: "Open app switcher" });
+    await expect(btn).toBeVisible({ timeout: 15000 });
+    await btn.click();
     const switcher = page.getByRole("dialog", { name: "App switcher" });
     await expect(switcher).toBeVisible({ timeout: 10000 });
+    await context.close();
   });
 
   test("api health: antwoordt HTTP 200", async ({ request }) => {

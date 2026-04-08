@@ -18,8 +18,8 @@ const STATUS_BORDER: Record<string, string> = {
 
 /** Status → achtergrondtint voor waarschuwingen */
 const STATUS_BG: Record<string, string> = {
-  TWIJFELT: "bg-amber-50/60",
-  GAAT_STOPPEN: "bg-red-50/60",
+  TWIJFELT: "bg-amber-900/20",
+  GAAT_STOPPEN: "bg-red-900/20",
 };
 
 interface TeamSpelerRijProps {
@@ -65,15 +65,16 @@ export default function TeamSpelerRij({
   const borderLeft = heeftAfmelding
     ? "border-l-red-400"
     : (STATUS_BORDER[status] ?? "border-l-gray-200");
-  const bgWarning = heeftAfmelding ? "bg-red-50/60" : (STATUS_BG[status] ?? "");
+  const bgWarning = heeftAfmelding ? "bg-red-900/20" : (STATUS_BG[status] ?? "");
   const isWarning = heeftAfmelding || status === "TWIJFELT" || status === "GAAT_STOPPEN";
 
   return (
     <div
       ref={setNodeRef}
+      data-speler-id={speler.id}
       style={style}
       className={`flex items-center gap-1 rounded-r border-l-2 px-1 ${borderLeft} ${
-        isDragging ? "bg-gray-100 opacity-40" : bgWarning || "hover:bg-gray-50/80"
+        isDragging ? "bg-surface-raised opacity-40" : bgWarning || "hover:bg-surface-raised"
       } py-px`}
     >
       {/* Drag handle — SVG grip dots */}
@@ -82,7 +83,7 @@ export default function TeamSpelerRij({
           {...listeners}
           {...attributes}
           data-dnd-draggable
-          className="shrink-0 cursor-grab touch-none text-gray-300 hover:text-gray-500"
+          className="text-text-muted hover:text-text-secondary shrink-0 cursor-grab touch-none"
           title="Versleep"
         >
           <svg className="h-2 w-2" viewBox="0 0 10 16" fill="currentColor">
@@ -100,7 +101,7 @@ export default function TeamSpelerRij({
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Regel 1: naam — volledige regelhoogte */}
         <span
-          className={`truncate text-[10px] leading-none font-medium text-gray-800 ${
+          className={`text-text-primary truncate text-[10px] leading-none font-medium ${
             onSpelerClick ? "cursor-pointer hover:text-orange-600" : ""
           } ${isWarning ? "italic" : ""}`}
           onClick={onSpelerClick ? () => onSpelerClick(speler) : undefined}
@@ -111,7 +112,7 @@ export default function TeamSpelerRij({
 
         {/* Regel 2: vorig team — halve regelhoogte */}
         {dl === "detail" && (
-          <div className="text-[8px] leading-none text-gray-400">
+          <div className="text-text-secondary text-[8px] leading-none">
             <span className="truncate">{vorigTeam ?? "\u2014"}</span>
           </div>
         )}
@@ -124,7 +125,7 @@ export default function TeamSpelerRij({
 
         {/* Leeftijd */}
         {dl === "detail" && (
-          <span className="shrink-0 text-[8px] text-gray-500 tabular-nums">
+          <span className="text-text-secondary shrink-0 text-[8px] tabular-nums">
             {leeftijd.toFixed(2)}
           </span>
         )}

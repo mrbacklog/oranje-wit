@@ -7,8 +7,8 @@ export type KaartSize = "mini" | "small" | "medium" | "large";
 export const SIZE_CONFIG: Record<KaartSize, { cls: string }> = {
   mini: { cls: "w-[60px] h-[90px]" },
   small: { cls: "w-[120px] h-[180px]" },
-  medium: { cls: "w-[180px] h-[270px]" },
-  large: { cls: "w-[280px] h-[420px]" },
+  medium: { cls: "w-[200px] h-[300px]" },
+  large: { cls: "w-[300px] h-[450px]" },
 };
 
 export const AGE_GRADIENTS: Record<number, { from: string; to: string }> = {
@@ -32,6 +32,27 @@ export const TIER_STYLES: Record<string, { border: string; overlay: string }> = 
   brons: { border: "var(--tier-brons-border)", overlay: "var(--tier-brons-bg-overlay)" },
   zilver: { border: "var(--tier-zilver-border)", overlay: "var(--tier-zilver-bg-overlay)" },
   goud: { border: "var(--tier-goud-border)", overlay: "var(--tier-goud-bg-overlay)" },
+};
+
+// Gradient-rand per tier (v4 kaart shell)
+export const TIER_BORDER_GRADIENTS: Record<string, string> = {
+  brons: "linear-gradient(160deg, #d4954a, #cd7f32, #8b5e23, #cd7f32)",
+  zilver: "linear-gradient(160deg, #e8e8e8, #c0c0c0, #808080, #e8e8e8)",
+  goud: "linear-gradient(160deg, #ffe44d, #ffd700, #b8960f, #ffe44d)",
+};
+
+// Schild glow per tier
+export const SCHILD_GLOWS: Record<string, string> = {
+  brons: "drop-shadow(0 4px 12px rgba(0,0,0,.55)) drop-shadow(0 0 14px rgba(205,127,50,.6))",
+  zilver: "drop-shadow(0 4px 12px rgba(0,0,0,.55)) drop-shadow(0 0 18px rgba(192,192,192,.7))",
+  goud: "drop-shadow(0 4px 12px rgba(0,0,0,.55)) drop-shadow(0 0 22px rgba(255,215,0,.8))",
+};
+
+// Ring gradient per tier (schild rand)
+export const SCHILD_RING_GRADIENTS: Record<string, string> = {
+  brons: "linear-gradient(160deg, #d4954a, #cd7f32, #8b5e23)",
+  zilver: "linear-gradient(160deg, #e8e8e8, #c0c0c0, #808080)",
+  goud: "linear-gradient(160deg, #ffe44d, #ffd700, #b8960f)",
 };
 
 // Legacy stat labels (backward compatible for old kaarten)
