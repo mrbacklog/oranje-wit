@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { logger } from "@oranje-wit/types";
 import { Button, Badge, Card, CardBody, Input, Dialog } from "@oranje-wit/ui";
 import {
   createItem,
@@ -78,6 +79,7 @@ export function BandEditor({ versie, validatie }: Props) {
       try {
         await publiceerRaamwerk(versie.id);
       } catch (err) {
+        logger.warn("Raamwerk publiceren mislukt:", err);
         setStatusError(err instanceof Error ? err.message : "Publiceren mislukt");
       }
     });
@@ -89,6 +91,7 @@ export function BandEditor({ versie, validatie }: Props) {
       try {
         await archiveerRaamwerk(versie.id);
       } catch (err) {
+        logger.warn("Raamwerk archiveren mislukt:", err);
         setStatusError(err instanceof Error ? err.message : "Archiveren mislukt");
       }
     });
@@ -546,6 +549,7 @@ function NieuwItemDialoog({
         });
         onClose();
       } catch (err) {
+        logger.warn("Raamwerk item aanmaken mislukt:", err);
         setError(err instanceof Error ? err.message : "Aanmaken mislukt");
       }
     });

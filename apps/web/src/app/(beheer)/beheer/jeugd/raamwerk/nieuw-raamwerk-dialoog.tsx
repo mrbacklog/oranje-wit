@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { logger } from "@oranje-wit/types";
 import { Button, Dialog, Input, Select } from "@oranje-wit/ui";
 import { createRaamwerk, type RaamwerkVersieSamenvatting } from "./actions";
 
@@ -36,6 +37,7 @@ export function NieuwRaamwerkDialoog({ versies }: Props) {
         setOpen(false);
         reset();
       } catch (err) {
+        logger.warn("Raamwerk aanmaken mislukt:", err);
         setError(err instanceof Error ? err.message : "Er ging iets mis");
       }
     });

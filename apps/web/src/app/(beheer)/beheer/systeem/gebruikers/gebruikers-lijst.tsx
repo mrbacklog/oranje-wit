@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { logger } from "@oranje-wit/types";
 import { Button, Badge, Dialog, Input, Select } from "@oranje-wit/ui";
 import type { GebruikerRow } from "./actions";
 import {
@@ -87,7 +88,8 @@ export function GebruikersLijst({ initialData }: GebruikersLijstProps) {
         await navigator.clipboard.writeText(url);
         setSmartlinkUrl(url);
         setTimeout(() => setSmartlinkUrl(null), 5000);
-      } catch {
+      } catch (error) {
+        logger.warn("Smartlink naar klembord kopieren mislukt:", error);
         setSmartlinkUrl(url);
       }
     }

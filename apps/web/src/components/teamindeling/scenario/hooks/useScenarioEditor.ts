@@ -136,7 +136,8 @@ export function useScenarioEditor(scenario: ScenarioData, alleSpelers: SpelerDat
                   : p
               )
             );
-          } catch {
+          } catch (error) {
+            logger.warn("Pin aanmaken mislukt, rollback:", error);
             setPins((prev) => prev.filter((p) => p.id !== tempPin.id));
           }
         });

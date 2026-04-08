@@ -7,6 +7,7 @@
  * De gradient is een donkere variant van de voorkant.
  */
 
+import { logger } from "@oranje-wit/types";
 import { RadarChart } from "./radar-chart";
 
 export interface AchterkantData {
@@ -213,7 +214,8 @@ function formatDatum(datum: string): string {
       day: "numeric",
       month: "short",
     });
-  } catch {
+  } catch (error) {
+    logger.warn("Datum formatteren mislukt:", error);
     return datum;
   }
 }

@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { logger } from "@oranje-wit/types";
 import type { LedenDiff } from "@/lib/teamindeling/leden-diff";
 import type { LidCsvRij } from "@/lib/teamindeling/leden-csv";
 import LedenSyncPreview from "./LedenSyncPreview";
@@ -79,7 +80,8 @@ export default function LedenSyncDialoog({ open, onClose, kadersId }: LedenSyncD
       setDiff(d);
       setGeselecteerdNieuw(new Set(d.nieuweLeden.map((l: LidCsvRij) => l.relCode)));
       setGeselecteerdVertrokken(new Set(d.vertrokkenSpelers.map((s) => s.id)));
-    } catch {
+    } catch (error) {
+      logger.warn("Leden sync preview mislukt:", error);
       setFout("Fout bij verbinding met server");
       setFase("upload");
     } finally {
@@ -115,7 +117,8 @@ export default function LedenSyncDialoog({ open, onClose, kadersId }: LedenSyncD
       }
       setResultaat(json.data as VerwerkResultaat);
       setFase("resultaat");
-    } catch {
+    } catch (error) {
+      logger.warn("Leden sync verwerking mislukt:", error);
       setFout("Fout bij verbinding met server");
       setFase("preview");
     } finally {
