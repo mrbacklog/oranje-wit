@@ -182,7 +182,7 @@ export default function TeamSpelerRij({
         {dl === "detail" && kleur && (
           <span
             className={`h-1.5 w-1.5 shrink-0 rounded-full ring-1 ${KLEUR_DOT[kleur]}`}
-            style={{ ringColor: "var(--surface-card)" }}
+            style={{ outline: "1px solid var(--surface-card)" }}
           />
         )}
       </div>
