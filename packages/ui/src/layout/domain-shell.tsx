@@ -307,56 +307,10 @@ export function DomainShell({
           </div>
         )}
 
-        {/* Desktop top-bar zonder sidebar — minimale balk met AppSwitcher */}
-        {!sidebarConfig && (
-          <header
-            className="hidden items-center justify-between px-6 py-3 md:flex"
-            style={{ borderBottom: `2px solid ${meta.accent}` }}
-          >
-            <div className="flex items-center gap-3">
-              <span
-                className="text-xs font-bold tracking-widest"
-                style={{ color: "var(--ow-oranje-500)" }}
-              >
-                OW
-              </span>
-              <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
-                {meta.name}
-              </span>
-            </div>
-
-            <div className="relative">
-              <button
-                onClick={() => setAppSwitcherOpen(!appSwitcherOpen)}
-                className="flex items-center justify-center rounded-lg p-2 transition-colors"
-                style={{ color: "var(--text-tertiary)" }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLElement).style.backgroundColor = "var(--state-hover)";
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLElement).style.backgroundColor = "transparent";
-                }}
-                aria-label="Open app switcher"
-              >
-                <GridIcon active={appSwitcherOpen} />
-              </button>
-              <div className="absolute right-0 bottom-0">
-                <AppSwitcher
-                  open={appSwitcherOpen}
-                  onClose={() => setAppSwitcherOpen(false)}
-                  currentUrl={meta.url}
-                  variant="dropdown"
-                  profile={profile}
-                />
-              </div>
-            </div>
-          </header>
-        )}
-
         {banner}
 
         <main
-          className="flex-1 overflow-y-auto"
+          className="flex-1 overflow-y-auto pt-4 md:pt-6"
           style={{
             paddingBottom: bottomNav
               ? "calc(3.5rem + env(safe-area-inset-bottom, 0px))"
