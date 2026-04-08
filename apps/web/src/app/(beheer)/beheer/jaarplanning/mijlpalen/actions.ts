@@ -68,6 +68,7 @@ export async function createMijlpaal(formData: FormData): Promise<ActionResult<{
   }
 
   try {
+    // @ts-ignore TS2321 excessive stack depth — Prisma type recursie op Linux CI
     const mijlpaal = await prisma.mijlpaal.create({
       data: {
         seizoen: parsed.data.seizoen,

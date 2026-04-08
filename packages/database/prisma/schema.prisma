@@ -691,7 +691,7 @@ enum BesluitNiveau {
 model Pin {
   id          String  @id @default(cuid())
   kaders      Kaders @relation(fields: [kadersId], references: [id], onDelete: Cascade)
-  kadersId    String @map("blauwdrukId")
+  kadersId    String
 
   type    PinType
   waarde  Json
@@ -723,7 +723,7 @@ enum PinType {
 model Werkindeling {
   id          String    @id @default(cuid())
   kaders      Kaders @relation(fields: [kadersId], references: [id], onDelete: Cascade)
-  kadersId    String @map("blauwdrukId")
+  kadersId    String
 
   naam          String    @default("Werkindeling")
   toelichting   String?   @db.Text
@@ -1098,7 +1098,7 @@ enum ActiepuntStatus {
 model Werkitem {
   id           String   @id @default(cuid())
   kaders       Kaders @relation(fields: [kadersId], references: [id], onDelete: Cascade)
-  kadersId     String @map("blauwdrukId")
+  kadersId     String
 
   titel        String
   beschrijving String   @db.Text
@@ -1153,7 +1153,7 @@ model Actiepunt {
   werkitemId      String?
 
   kaders          Kaders @relation(fields: [kadersId], references: [id], onDelete: Cascade)
-  kadersId        String @map("blauwdrukId")
+  kadersId        String
 
   toegewezenAan   User     @relation("ActiepuntToewijzing", fields: [toegewezenAanId], references: [id])
   toegewezenAanId String
@@ -1202,7 +1202,7 @@ model Activiteit {
 
   // Audit
   kaders      Kaders @relation(fields: [kadersId], references: [id], onDelete: Cascade)
-  kadersId    String @map("blauwdrukId")
+  kadersId    String
   auteur      User      @relation("ActiviteitAuteur", fields: [auteurId], references: [id])
   auteurId    String
 
