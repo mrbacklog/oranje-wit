@@ -1,17 +1,11 @@
 export const dynamic = "force-dynamic";
 import { Suspense } from "react";
-import Link from "next/link";
 import { PageContainer } from "@oranje-wit/ui";
 import { InfoPageHeader } from "@/components/monitor/info/InfoPageHeader";
 import { HUIDIG_SEIZOEN } from "@/lib/monitor/utils/seizoen";
-import {
-  KpiCardsSkeleton,
-  ChartsSkeleton,
-  AlertCardsSkeleton,
-} from "@/components/monitor/ui/skeleton";
+import { KpiCardsSkeleton, ChartsSkeleton } from "@/components/monitor/ui/skeleton";
 import { DashboardKpis } from "./dashboard-kpis";
 import { DashboardCharts } from "./dashboard-charts";
-import { DashboardSignaleringen } from "./dashboard-signaleringen";
 
 export default async function DashboardPage() {
   const seizoen = HUIDIG_SEIZOEN;
@@ -29,8 +23,7 @@ export default async function DashboardPage() {
               Wat zie je?
             </h4>
             <p>
-              Overzicht van de belangrijkste cijfers: spelende leden, aantal teams, en signaleringen
-              die aandacht vragen.
+              Overzicht van de belangrijkste cijfers: spelende leden, aantal teams, en ledentrend.
             </p>
           </section>
           <section>
@@ -47,13 +40,7 @@ export default async function DashboardPage() {
             <h4 className="text-text-muted mb-1 text-xs font-semibold tracking-wide uppercase">
               Navigatie
             </h4>
-            <p>
-              Klik op de KPI-kaarten om naar de detailpagina te gaan, of bekijk de{" "}
-              <Link href="/monitor/signalering" className="text-ow-oranje hover:underline">
-                signaleringen
-              </Link>{" "}
-              voor het volledige overzicht.
-            </p>
+            <p>Klik op de KPI-kaarten om naar de detailpagina te gaan.</p>
           </section>
         </div>
       </InfoPageHeader>
@@ -64,10 +51,6 @@ export default async function DashboardPage() {
 
       <Suspense fallback={<ChartsSkeleton />}>
         <DashboardCharts />
-      </Suspense>
-
-      <Suspense fallback={<AlertCardsSkeleton />}>
-        <DashboardSignaleringen seizoen={seizoen} />
       </Suspense>
     </PageContainer>
   );
