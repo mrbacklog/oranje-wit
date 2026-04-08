@@ -55,11 +55,7 @@ export default function Drawer({
         <button
           onClick={onTogglePin}
           className="rounded p-1 transition-colors"
-          style={
-            pinned
-              ? { color: "var(--ow-oranje-500)" }
-              : { color: "var(--text-secondary)" }
-          }
+          style={pinned ? { color: "var(--ow-oranje-500)" } : { color: "var(--text-secondary)" }}
           title={pinned ? "Losmaken" : "Vastzetten"}
         >
           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

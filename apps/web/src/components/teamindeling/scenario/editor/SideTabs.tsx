@@ -15,7 +15,11 @@ export function SideTabPool({ poolOpen, showEditDrawer, onToggle }: SideTabPoolP
       className="absolute top-4 left-0 z-20 flex flex-col items-center gap-1.5 rounded-r-lg border border-l-0 px-2 py-4 shadow-md transition-colors"
       style={
         isActive
-          ? { background: "var(--ow-oranje-500)", borderColor: "var(--ow-oranje-500)", color: "#fff" }
+          ? {
+              background: "var(--ow-oranje-500)",
+              borderColor: "var(--ow-oranje-500)",
+              color: "#fff",
+            }
           : {
               background: "var(--surface-card)",
               borderColor: "var(--border-default)",
@@ -101,7 +105,11 @@ export function SideTabsRight({
         className="flex flex-col items-center gap-1.5 rounded-l-lg border border-r-0 px-2 py-4 shadow-md transition-colors"
         style={
           werkbordOpen
-            ? { background: "var(--ow-oranje-500)", borderColor: "var(--ow-oranje-500)", color: "#fff" }
+            ? {
+                background: "var(--ow-oranje-500)",
+                borderColor: "var(--ow-oranje-500)",
+                color: "#fff",
+              }
             : {
                 background: "var(--surface-card)",
                 borderColor: "var(--border-default)",
@@ -132,7 +140,11 @@ export function SideTabsRight({
         className="flex flex-col items-center gap-1.5 rounded-l-lg border border-r-0 px-2 py-4 shadow-md transition-colors"
         style={
           whatIfOpen
-            ? { background: "var(--ow-oranje-500)", borderColor: "var(--ow-oranje-500)", color: "#fff" }
+            ? {
+                background: "var(--ow-oranje-500)",
+                borderColor: "var(--ow-oranje-500)",
+                color: "#fff",
+              }
             : {
                 background: "var(--surface-card)",
                 borderColor: "var(--border-default)",
@@ -163,7 +175,11 @@ export function SideTabsRight({
         className="flex flex-col items-center gap-1.5 rounded-l-lg border border-r-0 px-2 py-4 shadow-md transition-colors"
         style={
           versiesOpen
-            ? { background: "var(--ow-oranje-500)", borderColor: "var(--ow-oranje-500)", color: "#fff" }
+            ? {
+                background: "var(--ow-oranje-500)",
+                borderColor: "var(--ow-oranje-500)",
+                color: "#fff",
+              }
             : {
                 background: "var(--surface-card)",
                 borderColor: "var(--border-default)",
