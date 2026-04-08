@@ -2,6 +2,7 @@
 
 import { signIn } from "next-auth/react";
 import { useState } from "react";
+import { logger } from "@oranje-wit/types";
 
 /**
  * Client component voor de email-link login knop.
@@ -32,7 +33,8 @@ export function EmailLinkClient({
         redirectTo: destination || "/",
         redirect: true,
       });
-    } catch {
+    } catch (error) {
+      logger.warn("Email-link login mislukt:", error);
       setFout(true);
       setLaden(false);
     }

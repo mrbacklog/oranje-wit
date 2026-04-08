@@ -1,5 +1,7 @@
 /* Helper functies voor de login pagina */
 
+import { logger } from "@oranje-wit/types";
+
 // ── E-mail domein naar deep-link mapping ──────────────────────────
 
 export function getEmailDeepLinks(email: string): Array<{ label: string; url: string }> {
@@ -35,7 +37,8 @@ export async function isPasskeyBeschikbaar(): Promise<boolean> {
     if (!window.PublicKeyCredential) return false;
     if (!window.PublicKeyCredential.isConditionalMediationAvailable) return false;
     return await window.PublicKeyCredential.isConditionalMediationAvailable();
-  } catch {
+  } catch (error) {
+    logger.warn("Passkey beschikbaarheid check mislukt:", error);
     return false;
   }
 }
@@ -47,8 +50,8 @@ export function haptic(pattern: number | number[]): void {
     if ("vibrate" in navigator) {
       navigator.vibrate(pattern);
     }
-  } catch {
-    // niet ondersteund
+  } catch (error) {
+    logger.warn("Haptic feedback niet ondersteund:", error);
   }
 }
 

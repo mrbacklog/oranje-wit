@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { logger } from "@oranje-wit/types";
 
 /**
  * Client component voor de smartlink login.
@@ -53,8 +54,8 @@ export function SmartlinkLoginKnop({
           setLaden(true);
           try {
             await aanmeldenAction();
-          } catch {
-            // Bij fout: knop weer vrijgeven
+          } catch (error) {
+            logger.warn("Smartlink login mislukt:", error);
             setLaden(false);
           }
         }}

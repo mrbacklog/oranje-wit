@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import { logger } from "@oranje-wit/types";
 import {
   SpelerZoek,
   type SpelerZoekResultaat,
@@ -33,8 +34,8 @@ export default function ZoekPage() {
       if (stored) {
         setRecentBekeken(JSON.parse(stored));
       }
-    } catch {
-      // localStorage niet beschikbaar
+    } catch (error) {
+      logger.warn("Recent bekeken laden uit localStorage mislukt:", error);
     }
   }, []);
 
@@ -55,8 +56,8 @@ export default function ZoekPage() {
       const nieuw = [recent, ...bestaand].slice(0, MAX_RECENT);
       localStorage.setItem(RECENT_KEY, JSON.stringify(nieuw));
       setRecentBekeken(nieuw);
-    } catch {
-      // localStorage niet beschikbaar
+    } catch (error) {
+      logger.warn("Recent bekeken opslaan in localStorage mislukt:", error);
     }
 
     // Navigeer naar spelerprofiel

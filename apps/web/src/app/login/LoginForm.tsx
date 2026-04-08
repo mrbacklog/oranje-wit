@@ -126,7 +126,8 @@ export function LoginForm({ googleSignInAction }: { googleSignInAction: () => Pr
           setStatus({ stap: "smartlink", email: email.trim() });
           haptic([10, 50, 10]);
         }
-      } catch {
+      } catch (error) {
+        logger.warn("E-mail submit mislukt:", error);
         setStatus({ stap: "fout", melding: "Er ging iets mis. Probeer het opnieuw." });
         haptic(20);
       }
@@ -141,7 +142,8 @@ export function LoginForm({ googleSignInAction }: { googleSignInAction: () => Pr
     setDevLaden(true);
     try {
       await signIn("dev-login", { email: devEmail.trim(), redirectTo: "/" });
-    } catch {
+    } catch (error) {
+      logger.warn("Dev login mislukt:", error);
       setDevLaden(false);
     }
   }

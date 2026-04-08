@@ -36,8 +36,8 @@ function getInstallState(): InstallState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) return JSON.parse(raw);
-  } catch {
-    // corrupt localStorage
+  } catch (error) {
+    logger.warn("PWA install state laden uit localStorage mislukt:", error);
   }
   return { dismissed: 0, lastDismiss: 0, installed: false, dismissType: null };
 }
@@ -45,15 +45,16 @@ function getInstallState(): InstallState {
 function saveInstallState(state: InstallState) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  } catch {
-    // quota exceeded
+  } catch (error) {
+    logger.warn("PWA install state opslaan mislukt:", error);
   }
 }
 
 function getVisitCount(): number {
   try {
     return parseInt(localStorage.getItem(VISIT_COUNT_KEY) ?? "0", 10);
-  } catch {
+  } catch (error) {
+    logger.warn("Visit count laden mislukt:", error);
     return 0;
   }
 }
@@ -62,8 +63,8 @@ function incrementVisitCount(): number {
   const count = getVisitCount() + 1;
   try {
     localStorage.setItem(VISIT_COUNT_KEY, String(count));
-  } catch {
-    // quota exceeded
+  } catch (error) {
+    logger.warn("Visit count opslaan mislukt:", error);
   }
   return count;
 }
