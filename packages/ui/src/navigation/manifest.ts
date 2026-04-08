@@ -307,35 +307,15 @@ export const BELEID: AppManifest = {
   sections: [
     {
       nav: { label: "Verhaal", href: "/beleid", icon: "ListIcon" },
-      pills: [
-        { label: "Een leven lang!", href: "/beleid" },
-        { label: "Jeugd", href: "/beleid/jeugd" },
-        { label: "Overgang", href: "/beleid/overgang" },
-        { label: "Senioren", href: "/beleid/senioren" },
-        { label: "Recreatief", href: "/beleid/recreatief" },
-        { label: "Binden", href: "/beleid/binden" },
-      ],
     },
     {
-      nav: { label: "Doelgroepen", href: "/beleid/doelgroepen", icon: "PeopleIcon" },
-      pills: [
-        { label: "Kweekvijver", href: "/beleid/doelgroepen?groep=kweekvijver" },
-        { label: "Opleidingshart", href: "/beleid/doelgroepen?groep=opleidingshart" },
-        { label: "Korfbalplezier", href: "/beleid/doelgroepen?groep=korfbalplezier" },
-        { label: "Wedstrijdsport", href: "/beleid/doelgroepen?groep=wedstrijdsport" },
-        { label: "Topsport", href: "/beleid/doelgroepen?groep=topsport" },
-      ],
+      nav: { label: "Doelgroepen", href: "/beleid", icon: "PeopleIcon" },
     },
     {
-      nav: { label: "Bronnen", href: "/beleid/bronnen", icon: "SearchIcon" },
-      pills: [
-        { label: "Wetenschap", href: "/beleid/bronnen?type=wetenschap" },
-        { label: "Beleid", href: "/beleid/bronnen?type=beleid" },
-        { label: "Data", href: "/beleid/bronnen?type=data" },
-      ],
+      nav: { label: "Bronnen", href: "/beleid", icon: "SearchIcon" },
     },
     {
-      nav: { label: "Delen", href: "/beleid/delen", icon: "StarIcon" },
+      nav: { label: "Delen", href: "/beleid", icon: "StarIcon" },
     },
   ],
   skipRoutes: [],
