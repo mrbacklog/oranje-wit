@@ -57,6 +57,7 @@ export default function TeamKaart({
   const dl = detailLevel ?? "detail";
   const [meldingenOpen, setMeldingenOpen] = useState(false);
   const [deleteBevestig, setDeleteBevestig] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const deleteTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -110,8 +111,18 @@ export default function TeamKaart({
     <div
       ref={setNodeRef}
       data-team-id={team.id}
-      style={{ width: cardWidth, height: cardHeight, position: "relative" }}
-      className={`flex flex-col rounded-lg transition-colors ${randKlassen} ${achtergrond} ${ringKlassen}`}
+      style={{
+        width: cardWidth,
+        height: cardHeight,
+        position: "relative",
+        ...(isHovered && {
+          borderColor: "rgba(255,107,0,0.3)",
+          boxShadow: "0 0 0 1px rgba(255,107,0,0.08), 0 4px 16px rgba(0,0,0,0.3)",
+        }),
+      }}
+      className={`flex flex-col rounded-xl transition-colors ${randKlassen} ${achtergrond} ${ringKlassen}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       {/* KNKV kleurband — 3px verticaal links */}
       <div
@@ -161,9 +172,10 @@ export default function TeamKaart({
             )}
             <h4
               onClick={() => onEditTeam?.(team.id)}
-              className={`text-text-primary hover:text-ow-oranje cursor-pointer truncate font-semibold transition-colors ${
+              className={`text-text-primary hover:text-ow-oranje cursor-pointer truncate font-extrabold transition-colors ${
                 dl === "overzicht" ? "text-xs" : "text-[11px]"
               }`}
+              style={{ letterSpacing: "-0.2px" }}
             >
               {weergaveNaam}
             </h4>

@@ -117,7 +117,10 @@ export default function Werkgebied({
   const kanKoppelen = geselecteerd.size === 2 && alleAchtallen;
 
   return (
-    <div className="relative flex min-w-0 flex-1 flex-col overflow-hidden">
+    <div
+      className="relative flex min-w-0 flex-1 flex-col overflow-hidden"
+      style={{ background: "var(--surface-page)" }}
+    >
       {/* Zwevende selectiebalk — alleen zichtbaar bij selectie */}
       {geselecteerd.size > 0 && (
         <div className="absolute top-3 left-1/2 z-10 -translate-x-1/2">

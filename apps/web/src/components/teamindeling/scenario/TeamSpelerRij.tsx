@@ -64,7 +64,7 @@ export default function TeamSpelerRij({
   const heeftAfmelding = !!speler.afmelddatum;
   const borderLeft = heeftAfmelding
     ? "border-l-red-400"
-    : (STATUS_BORDER[status] ?? "border-l-gray-200");
+    : (STATUS_BORDER[status] ?? "border-l-[var(--border-default)]");
   const bgWarning = heeftAfmelding ? "bg-red-900/20" : (STATUS_BG[status] ?? "");
   const isWarning = heeftAfmelding || status === "TWIJFELT" || status === "GAAT_STOPPEN";
 
