@@ -106,7 +106,7 @@ export default function ScenarioWerkbordPanel({
     return (
       <div className="flex items-center gap-2 p-4">
         <div className="h-4 w-4 animate-spin rounded-full border-2 border-orange-300 border-t-transparent" />
-        <span className="text-xs text-gray-400">Laden...</span>
+        <span className="text-xs text-[var(--text-secondary)]">Laden...</span>
       </div>
     );
   }
@@ -117,13 +117,14 @@ export default function ScenarioWerkbordPanel({
   return (
     <div className="flex flex-col gap-3 p-3">
       {/* Quick-add */}
-      <div className="space-y-2 rounded-lg border border-gray-200 bg-gray-50 p-2">
+      <div className="space-y-2 rounded-lg border border-[var(--border-default)] p-2" style={{ background: "var(--surface-sunken)" }}>
         <input
           value={titel}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitel(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleAdd()}
           placeholder="Nieuw werkitem..."
-          className="w-full rounded border border-gray-200 bg-white px-2 py-1.5 text-sm focus:border-orange-300 focus:outline-none"
+          className="w-full rounded border border-[var(--border-default)] px-2 py-1.5 text-sm focus:border-orange-300 focus:outline-none"
+          style={{ background: "var(--surface-card)" }}
         />
         <div className="flex items-center gap-1.5">
           <select
@@ -131,7 +132,7 @@ export default function ScenarioWerkbordPanel({
             onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
               setType(e.target.value as WerkitemType)
             }
-            className="rounded border border-gray-200 px-1.5 py-1 text-xs"
+            className="rounded border border-[var(--border-default)] px-1.5 py-1 text-xs"
           >
             <option value="STRATEGISCH">Strategisch</option>
             <option value="DATA">Data</option>
@@ -145,7 +146,7 @@ export default function ScenarioWerkbordPanel({
             onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
               setPrioriteit(e.target.value as WerkitemPrioriteit)
             }
-            className="rounded border border-gray-200 px-1.5 py-1 text-xs"
+            className="rounded border border-[var(--border-default)] px-1.5 py-1 text-xs"
           >
             <option value="BLOCKER">Blocker</option>
             <option value="HOOG">Hoog</option>
@@ -158,7 +159,7 @@ export default function ScenarioWerkbordPanel({
             onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
               setScope(e.target.value as "scenario" | "blauwdruk")
             }
-            className="rounded border border-gray-200 px-1.5 py-1 text-xs"
+            className="rounded border border-[var(--border-default)] px-1.5 py-1 text-xs"
           >
             <option value="scenario">Dit scenario</option>
             <option value="blauwdruk">Blauwdruk</option>
@@ -194,7 +195,7 @@ export default function ScenarioWerkbordPanel({
       )}
 
       {werkitems.length === 0 && (
-        <p className="py-4 text-center text-xs text-gray-400">Geen werkitems</p>
+        <p className="py-4 text-center text-xs text-[var(--text-secondary)]">Geen werkitems</p>
       )}
     </div>
   );
@@ -215,9 +216,9 @@ function Section({
 }) {
   return (
     <div>
-      <h4 className="mb-1.5 text-[10px] font-semibold tracking-wide text-gray-400 uppercase">
+      <h4 className="mb-1.5 text-[10px] font-semibold tracking-wide text-[var(--text-secondary)] uppercase">
         {label}
-        <span className="ml-1 text-gray-300">({items.length})</span>
+        <span className="ml-1 text-[var(--text-secondary)] opacity-50">({items.length})</span>
       </h4>
       <div className="space-y-1.5">
         {items.map((w) => (
@@ -249,7 +250,8 @@ function CompactKaart({
 
   return (
     <div
-      className={`rounded-lg border border-gray-200 bg-white text-xs ${rand ? `border-l-2 ${rand}` : ""}`}
+      className={`rounded-lg border border-[var(--border-default)] text-xs ${rand ? `border-l-2 ${rand}` : ""}`}
+      style={{ background: "var(--surface-card)" }}
     >
       {/* Header */}
       <button
@@ -260,17 +262,17 @@ function CompactKaart({
           className={`mt-1 h-2 w-2 shrink-0 rounded-full ${STATUS_KLEUR[werkitem.status] ?? "bg-gray-300"}`}
           title={werkitem.status}
         />
-        <span className="flex-1 leading-snug font-medium text-gray-800">{werkitem.titel}</span>
-        <span className="shrink-0 text-[10px] text-gray-400">
+        <span className="flex-1 leading-snug font-medium text-[var(--text-primary)]">{werkitem.titel}</span>
+        <span className="shrink-0 text-[10px] text-[var(--text-secondary)]">
           {TYPE_LABEL[werkitem.type] ?? werkitem.type}
         </span>
       </button>
 
       {/* Expanded */}
       {expanded && (
-        <div className="space-y-2 border-t border-gray-100 px-2 py-2">
+        <div className="space-y-2 border-t border-[var(--border-default)] px-2 py-2">
           {werkitem.beschrijving && (
-            <p className="leading-snug text-gray-600">{werkitem.beschrijving}</p>
+            <p className="leading-snug text-[var(--text-secondary)]">{werkitem.beschrijving}</p>
           )}
 
           {/* Status-knoppen */}
@@ -282,9 +284,10 @@ function CompactKaart({
                 disabled={werkitem.status === s}
                 className={`rounded px-1.5 py-0.5 text-[10px] ${
                   werkitem.status === s
-                    ? "bg-gray-200 font-semibold text-gray-700"
-                    : "text-gray-500 hover:bg-gray-100"
+                    ? "font-semibold text-[var(--text-primary)]"
+                    : "text-[var(--text-secondary)]"
                 }`}
+                style={werkitem.status === s ? { background: "var(--surface-raised)" } : undefined}
               >
                 {s === "OPEN" ? "Open" : s === "IN_BESPREKING" ? "Bespreking" : "Opgelost"}
               </button>
@@ -294,7 +297,7 @@ function CompactKaart({
           {/* Actiepunten */}
           {totaal > 0 && (
             <div className="space-y-1">
-              <span className="text-[10px] text-gray-400">
+              <span className="text-[10px] text-[var(--text-secondary)]">
                 Acties {afgerond}/{totaal}
               </span>
               {werkitem.actiepunten.map((a) => (
@@ -303,10 +306,10 @@ function CompactKaart({
                     type="checkbox"
                     checked={a.status === "AFGEROND"}
                     onChange={() => onActiepuntToggle(a.id, a.status)}
-                    className="mt-0.5 rounded border-gray-300"
+                    className="mt-0.5 rounded border-[var(--border-default)]"
                   />
                   <span
-                    className={`leading-snug ${a.status === "AFGEROND" ? "text-gray-400 line-through" : "text-gray-700"}`}
+                    className={`leading-snug ${a.status === "AFGEROND" ? "text-[var(--text-secondary)] line-through" : "text-[var(--text-primary)]"}`}
                   >
                     {a.beschrijving}
                   </span>
@@ -317,7 +320,7 @@ function CompactKaart({
 
           {/* Koppeling */}
           {werkitem.speler && (
-            <span className="text-[10px] text-gray-400">
+            <span className="text-[10px] text-[var(--text-secondary)]">
               Speler: {werkitem.speler.roepnaam} {werkitem.speler.achternaam}
             </span>
           )}

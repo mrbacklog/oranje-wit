@@ -38,7 +38,7 @@ export default function OpmerkingPopover({
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex h-5 w-5 items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+        className="flex h-5 w-5 items-center justify-center rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
         title="Opmerkingen bekijken"
       >
         <svg className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
@@ -51,25 +51,25 @@ export default function OpmerkingPopover({
       </button>
 
       {open && (
-        <div className="absolute right-0 bottom-full z-50 mb-1 w-64 rounded-lg border border-gray-200 bg-white p-3 shadow-lg">
+        <div className="absolute right-0 bottom-full z-50 mb-1 w-64 rounded-lg border border-[var(--border-default)] p-3 shadow-lg" style={{ background: "var(--surface-card)" }}>
           {/* Pijltje naar beneden */}
-          <div className="absolute right-2 -bottom-1.5 h-3 w-3 rotate-45 border-r border-b border-gray-200 bg-white" />
+          <div className="absolute right-2 -bottom-1.5 h-3 w-3 rotate-45 border-r border-b border-[var(--border-default)]" style={{ background: "var(--surface-card)" }} />
 
           <div className="space-y-2">
             {spelerOpmerkingen && spelerOpmerkingen.trim().length > 0 && (
               <div>
-                <span className="block text-[10px] font-medium tracking-wide text-gray-400 uppercase">
+                <span className="block text-[10px] font-medium tracking-wide text-[var(--text-secondary)] uppercase">
                   Speler
                 </span>
-                <p className="text-xs leading-relaxed text-gray-700">{spelerOpmerkingen}</p>
+                <p className="text-xs leading-relaxed text-[var(--text-primary)]">{spelerOpmerkingen}</p>
               </div>
             )}
             {trainerOpmerking && trainerOpmerking.trim().length > 0 && (
               <div>
-                <span className="block text-[10px] font-medium tracking-wide text-gray-400 uppercase">
+                <span className="block text-[10px] font-medium tracking-wide text-[var(--text-secondary)] uppercase">
                   Trainer
                 </span>
-                <p className="text-xs leading-relaxed text-gray-700">{trainerOpmerking}</p>
+                <p className="text-xs leading-relaxed text-[var(--text-primary)]">{trainerOpmerking}</p>
               </div>
             )}
           </div>

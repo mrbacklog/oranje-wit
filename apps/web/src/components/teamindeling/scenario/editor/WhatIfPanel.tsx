@@ -20,7 +20,7 @@ const STATUS_LABELS: Record<string, string> = {
 const STATUS_KLASSEN: Record<string, string> = {
   OPEN: "bg-orange-100 text-orange-700",
   TOEGEPAST: "bg-green-100 text-green-700",
-  VERWORPEN: "bg-gray-100 text-gray-500",
+  VERWORPEN: "bg-[var(--surface-sunken)] text-[var(--text-secondary)]",
 };
 
 export default function WhatIfPanel({
@@ -50,11 +50,11 @@ export default function WhatIfPanel({
     <div className="flex h-full flex-col">
       <div className="flex-1 overflow-y-auto p-3">
         {laden ? (
-          <p className="py-4 text-center text-xs text-gray-400">Laden...</p>
+          <p className="py-4 text-center text-xs text-[var(--text-secondary)]">Laden...</p>
         ) : items.length === 0 ? (
           <div className="py-6 text-center">
-            <p className="text-xs text-gray-400">Nog geen what-ifs voor dit scenario.</p>
-            <p className="mt-1 text-xs text-gray-400">
+            <p className="text-xs text-[var(--text-secondary)]">Nog geen what-ifs voor dit scenario.</p>
+            <p className="mt-1 text-xs text-[var(--text-secondary)]">
               Gebruik de knop hieronder om een what-if te starten.
             </p>
           </div>
@@ -68,23 +68,27 @@ export default function WhatIfPanel({
                   key={wi.id}
                   className={`rounded-lg border transition-all ${
                     isActief
-                      ? "border-orange-400 bg-orange-50"
-                      : "border-gray-200 bg-white hover:border-orange-200 hover:bg-orange-50"
+                      ? "border-orange-400"
+                      : "border-[var(--border-default)] hover:border-orange-200"
                   }`}
-                  style={isActief ? { borderLeftWidth: 3, borderLeftColor: "#f97316" } : {}}
+                  style={
+                    isActief
+                      ? { background: "rgba(255,107,0,0.12)", borderLeftWidth: 3, borderLeftColor: "#f97316" }
+                      : {}
+                  }
                 >
                   <div className="p-3">
                     <div className="flex items-start justify-between gap-2">
-                      <p className="line-clamp-2 flex-1 text-xs leading-snug font-medium text-gray-800">
+                      <p className="line-clamp-2 flex-1 text-xs leading-snug font-medium text-[var(--text-primary)]">
                         {wi.vraag}
                       </p>
                       <span
-                        className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium ${STATUS_KLASSEN[wi.status] ?? "bg-gray-100 text-gray-500"}`}
+                        className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium ${STATUS_KLASSEN[wi.status] ?? "bg-[var(--surface-sunken)] text-[var(--text-secondary)]"}`}
                       >
                         {STATUS_LABELS[wi.status] ?? wi.status}
                       </span>
                     </div>
-                    <div className="mt-1.5 flex items-center gap-2 text-[10px] text-gray-400">
+                    <div className="mt-1.5 flex items-center gap-2 text-[10px] text-[var(--text-secondary)]">
                       <span>
                         {wi.aantalTeams} team{wi.aantalTeams !== 1 ? "s" : ""}
                       </span>
@@ -98,8 +102,9 @@ export default function WhatIfPanel({
                         className={`mt-2 w-full rounded px-2 py-1 text-[10px] font-medium transition-colors ${
                           isActief
                             ? "bg-orange-500 text-white"
-                            : "bg-gray-100 text-gray-600 hover:bg-orange-100 hover:text-orange-700"
+                            : "text-[var(--text-secondary)] hover:text-orange-700"
                         }`}
+                        style={!isActief ? { background: "var(--surface-sunken)" } : undefined}
                       >
                         {isActief ? "Actief" : "Activeer"}
                       </button>
@@ -112,7 +117,7 @@ export default function WhatIfPanel({
         )}
       </div>
 
-      <div className="shrink-0 border-t border-gray-100 p-3">
+      <div className="shrink-0 border-t border-[var(--border-default)] p-3">
         <button
           onClick={onNieuw}
           className="flex w-full items-center justify-center gap-1.5 rounded-lg bg-orange-500 px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-orange-600"

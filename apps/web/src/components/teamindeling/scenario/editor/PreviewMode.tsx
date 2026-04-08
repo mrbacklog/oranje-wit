@@ -61,7 +61,7 @@ export default function PreviewMode({
   onCloseDetail,
 }: PreviewModeProps) {
   return (
-    <div className="fixed inset-0 z-40 flex flex-col bg-gray-50">
+    <div className="fixed inset-0 z-40 flex flex-col" style={{ background: "var(--surface-sunken)" }}>
       <EditorToolbar
         scenario={scenario}
         zichtbaar={zichtbareTeams.length}
