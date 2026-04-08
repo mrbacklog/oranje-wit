@@ -51,9 +51,15 @@ export default function OpmerkingPopover({
       </button>
 
       {open && (
-        <div className="absolute right-0 bottom-full z-50 mb-1 w-64 rounded-lg border border-[var(--border-default)] p-3 shadow-lg" style={{ background: "var(--surface-card)" }}>
+        <div
+          className="absolute right-0 bottom-full z-50 mb-1 w-64 rounded-lg border border-[var(--border-default)] p-3 shadow-lg"
+          style={{ background: "var(--surface-card)" }}
+        >
           {/* Pijltje naar beneden */}
-          <div className="absolute right-2 -bottom-1.5 h-3 w-3 rotate-45 border-r border-b border-[var(--border-default)]" style={{ background: "var(--surface-card)" }} />
+          <div
+            className="absolute right-2 -bottom-1.5 h-3 w-3 rotate-45 border-r border-b border-[var(--border-default)]"
+            style={{ background: "var(--surface-card)" }}
+          />
 
           <div className="space-y-2">
             {spelerOpmerkingen && spelerOpmerkingen.trim().length > 0 && (
@@ -61,7 +67,9 @@ export default function OpmerkingPopover({
                 <span className="block text-[10px] font-medium tracking-wide text-[var(--text-secondary)] uppercase">
                   Speler
                 </span>
-                <p className="text-xs leading-relaxed text-[var(--text-primary)]">{spelerOpmerkingen}</p>
+                <p className="text-xs leading-relaxed text-[var(--text-primary)]">
+                  {spelerOpmerkingen}
+                </p>
               </div>
             )}
             {trainerOpmerking && trainerOpmerking.trim().length > 0 && (
@@ -69,7 +77,9 @@ export default function OpmerkingPopover({
                 <span className="block text-[10px] font-medium tracking-wide text-[var(--text-secondary)] uppercase">
                   Trainer
                 </span>
-                <p className="text-xs leading-relaxed text-[var(--text-primary)]">{trainerOpmerking}</p>
+                <p className="text-xs leading-relaxed text-[var(--text-primary)]">
+                  {trainerOpmerking}
+                </p>
               </div>
             )}
           </div>

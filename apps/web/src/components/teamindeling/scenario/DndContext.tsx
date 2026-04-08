@@ -115,7 +115,10 @@ function DragOverlayKaart({ speler }: { speler: SpelerData }) {
   const leeftijd = korfbalLeeftijd(speler.geboortedatum, speler.geboortejaar);
   const kleur = kleurIndicatie(leeftijd);
   return (
-    <div className="flex cursor-grabbing items-center gap-2 rounded-md border border-orange-300 px-3 py-2 shadow-lg" style={{ background: "var(--surface-card)" }}>
+    <div
+      className="flex cursor-grabbing items-center gap-2 rounded-md border border-orange-300 px-3 py-2 shadow-lg"
+      style={{ background: "var(--surface-card)" }}
+    >
       <span className={`h-2 w-2 rounded-full ${STATUS_KLEUREN[speler.status]}`} />
       <span className="text-sm text-[var(--text-primary)]">
         {speler.roepnaam} {speler.achternaam}

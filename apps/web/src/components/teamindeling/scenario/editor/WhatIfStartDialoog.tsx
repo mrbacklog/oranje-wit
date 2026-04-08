@@ -110,7 +110,10 @@ export default function WhatIfStartDialoog({
         <div className="dialog-body">
           {/* Vraag */}
           <div>
-            <label htmlFor="whatif-vraag" className="mb-1 block text-sm font-medium text-[var(--text-primary)]">
+            <label
+              htmlFor="whatif-vraag"
+              className="mb-1 block text-sm font-medium text-[var(--text-primary)]"
+            >
               Vraag <span className="text-red-500">*</span>
             </label>
             <textarea
@@ -181,7 +184,9 @@ export default function WhatIfStartDialoog({
                           <label
                             key={team.id}
                             className="flex cursor-pointer items-center gap-2 border-b border-[var(--border-default)] px-4 py-2 text-sm last:border-b-0"
-                          style={{ background: aan ? "rgba(255,107,0,0.12)" : "var(--surface-card)" }}
+                            style={{
+                              background: aan ? "rgba(255,107,0,0.12)" : "var(--surface-card)",
+                            }}
                           >
                             <input
                               type="checkbox"
@@ -189,7 +194,11 @@ export default function WhatIfStartDialoog({
                               onChange={() => toggleTeam(team.id)}
                               className="h-3.5 w-3.5 accent-orange-500"
                             />
-                            <span className={aan ? "font-medium text-orange-400" : "text-[var(--text-primary)]"}>
+                            <span
+                              className={
+                                aan ? "font-medium text-orange-400" : "text-[var(--text-primary)]"
+                              }
+                            >
                               {team.naam}
                             </span>
                           </label>

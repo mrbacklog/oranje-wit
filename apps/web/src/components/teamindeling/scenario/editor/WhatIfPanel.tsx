@@ -53,7 +53,9 @@ export default function WhatIfPanel({
           <p className="py-4 text-center text-xs text-[var(--text-secondary)]">Laden...</p>
         ) : items.length === 0 ? (
           <div className="py-6 text-center">
-            <p className="text-xs text-[var(--text-secondary)]">Nog geen what-ifs voor dit scenario.</p>
+            <p className="text-xs text-[var(--text-secondary)]">
+              Nog geen what-ifs voor dit scenario.
+            </p>
             <p className="mt-1 text-xs text-[var(--text-secondary)]">
               Gebruik de knop hieronder om een what-if te starten.
             </p>
@@ -73,7 +75,11 @@ export default function WhatIfPanel({
                   }`}
                   style={
                     isActief
-                      ? { background: "rgba(255,107,0,0.12)", borderLeftWidth: 3, borderLeftColor: "#f97316" }
+                      ? {
+                          background: "rgba(255,107,0,0.12)",
+                          borderLeftWidth: 3,
+                          borderLeftColor: "#f97316",
+                        }
                       : {}
                   }
                 >

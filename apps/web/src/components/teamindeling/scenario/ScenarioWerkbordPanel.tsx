@@ -117,7 +117,10 @@ export default function ScenarioWerkbordPanel({
   return (
     <div className="flex flex-col gap-3 p-3">
       {/* Quick-add */}
-      <div className="space-y-2 rounded-lg border border-[var(--border-default)] p-2" style={{ background: "var(--surface-sunken)" }}>
+      <div
+        className="space-y-2 rounded-lg border border-[var(--border-default)] p-2"
+        style={{ background: "var(--surface-sunken)" }}
+      >
         <input
           value={titel}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitel(e.target.value)}
@@ -262,7 +265,9 @@ function CompactKaart({
           className={`mt-1 h-2 w-2 shrink-0 rounded-full ${STATUS_KLEUR[werkitem.status] ?? "bg-gray-300"}`}
           title={werkitem.status}
         />
-        <span className="flex-1 leading-snug font-medium text-[var(--text-primary)]">{werkitem.titel}</span>
+        <span className="flex-1 leading-snug font-medium text-[var(--text-primary)]">
+          {werkitem.titel}
+        </span>
         <span className="shrink-0 text-[10px] text-[var(--text-secondary)]">
           {TYPE_LABEL[werkitem.type] ?? werkitem.type}
         </span>
