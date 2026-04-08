@@ -59,9 +59,10 @@ test.describe("Smoke — app laadt", () => {
   test("cross-domain: AppSwitcher opent", async ({ page }) => {
     test.setTimeout(60000);
     await page.goto("/monitor", { timeout: 45000 });
-    const nav = page.getByRole("navigation", { name: "Hoofdnavigatie" });
-    await expect(nav).toBeVisible({ timeout: 15000 });
-    await nav.getByText("Apps", { exact: true }).click();
+    // Klik op de AppSwitcher-knop via aria-label (label-tekst kan variëren per domein)
+    const btn = page.getByRole("button", { name: "Open app switcher" });
+    await expect(btn).toBeVisible({ timeout: 15000 });
+    await btn.click();
     const switcher = page.getByRole("dialog", { name: "App switcher" });
     await expect(switcher).toBeVisible({ timeout: 10000 });
   });
