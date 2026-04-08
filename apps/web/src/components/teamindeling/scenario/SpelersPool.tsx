@@ -135,26 +135,23 @@ export default function SpelersPool({
   }, [spelers, zoekterm, filter, ingedeeldeSpelerIds, passendeSpelerIds]);
 
   return (
-    <aside
-      ref={setNodeRef}
-      className="flex w-80 flex-shrink-0 flex-col transition-colors"
-      style={{
-        background: isOver ? "#FF6B0011" : "var(--surface-card)",
-        borderLeft: isOver
-          ? "1px solid var(--ow-oranje-500)"
-          : "1px solid var(--border-default)",
-      }}
-    >
-      <div className="px-4 py-3" style={{ borderBottom: "1px solid var(--border-default)" }}>
-        <h3 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
-          Spelerspool
-        </h3>
-        <p className="mt-0.5 text-xs" style={{ color: "var(--text-secondary)" }}>
-          {gefilterdeSpelers.length} van {spelers.length} spelers
-        </p>
-      </div>
-
-      <div className="px-3 py-2" style={{ borderBottom: "1px solid var(--border-default)" }}>
+    <div className="flex h-full flex-col" ref={setNodeRef}>
+      {/* Teller + zoek + filters */}
+      <div className="px-3 pt-2 pb-1" style={{ borderBottom: "1px solid var(--border-default)" }}>
+        <div className="mb-2 flex items-center justify-between">
+          <span
+            className="text-[10px] font-bold tracking-widest uppercase"
+            style={{ color: "#666" }}
+          >
+            Spelerspool
+          </span>
+          <span
+            className="rounded px-1.5 py-0.5 text-[10px] font-bold"
+            style={{ background: "rgba(255,107,0,0.12)", color: "var(--ow-oranje-500)" }}
+          >
+            {gefilterdeSpelers.length}
+          </span>
+        </div>
         <SpelerFilters
           zoekterm={zoekterm}
           onZoektermChange={setZoekterm}
@@ -163,9 +160,15 @@ export default function SpelersPool({
         />
       </div>
 
-      <div className="max-h-[calc(100vh-16rem)] flex-1 space-y-1 overflow-y-auto px-2 py-2">
+      {/* Lijst */}
+      <div
+        className="flex-1 overflow-y-auto py-1"
+        style={{
+          background: isOver ? "rgba(255,107,0,0.04)" : undefined,
+        }}
+      >
         {gefilterdeSpelers.length === 0 ? (
-          <p className="py-6 text-center text-xs" style={{ color: "var(--text-secondary)" }}>
+          <p className="py-6 text-center text-xs" style={{ color: "#666" }}>
             Geen spelers gevonden
           </p>
         ) : (
@@ -179,6 +182,6 @@ export default function SpelersPool({
           ))
         )}
       </div>
-    </aside>
+    </div>
   );
 }

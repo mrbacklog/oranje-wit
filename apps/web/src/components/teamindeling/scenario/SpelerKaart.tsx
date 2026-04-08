@@ -2,27 +2,13 @@
 
 import { useDraggable } from "@dnd-kit/core";
 import type { SpelerData, HuidigData } from "./types";
-import { STATUS_KLEUREN, kleurIndicatie, KLEUR_DOT, korfbalLeeftijd } from "./types";
-import SpelerAvatar from "@/components/teamindeling/ui/SpelerAvatar";
+import { korfbalLeeftijd } from "./types";
 import AfmeldBadge from "./AfmeldBadge";
 
 interface SpelerKaartProps {
   speler: SpelerData;
   isPinned?: boolean;
   onClick: () => void;
-}
-
-/** Geeft de HEX kleur voor de linker-border-band op basis van KNKV leeftijdskleur */
-function kleurBorderKleur(kleur: string | null): string {
-  const map: Record<string, string> = {
-    PAARS: "#a855f7",
-    BLAUW: "#3b82f6",
-    GROEN: "#22c55e",
-    GEEL: "#eab308",
-    ORANJE: "#f97316",
-    ROOD: "#ef4444",
-  };
-  return map[kleur ?? ""] ?? "var(--border-default)";
 }
 
 export default function SpelerKaart({ speler, isPinned, onClick }: SpelerKaartProps) {
@@ -32,14 +18,26 @@ export default function SpelerKaart({ speler, isPinned, onClick }: SpelerKaartPr
   });
 
   const leeftijd = korfbalLeeftijd(speler.geboortedatum, speler.geboortejaar);
-  const kleur = kleurIndicatie(leeftijd);
   const huidig = speler.huidig as HuidigData | null;
   const vorigTeam = huidig?.team ?? null;
+  const isVrouw = speler.geslacht === "V";
+
+  const genderStijl = isVrouw ? { borderLeftColor: "#EC4899" } : { borderLeftColor: "#60A5FA" };
+
+  const avatarStijl = isVrouw
+    ? {
+        background: "rgba(236,72,153,0.06)",
+        border: "1px solid rgba(236,72,153,0.25)",
+        color: "#EC4899",
+      }
+    : {
+        background: "rgba(96,165,250,0.06)",
+        border: "1px solid rgba(96,165,250,0.25)",
+        color: "#60A5FA",
+      };
 
   const style = transform
-    ? {
-        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-      }
+    ? { transform: `translate3d(${transform.x}px, ${transform.y}px, 0)` }
     : undefined;
 
   return (
@@ -49,41 +47,41 @@ export default function SpelerKaart({ speler, isPinned, onClick }: SpelerKaartPr
       data-dnd-draggable
       style={{
         ...style,
-        background: "var(--surface-card)",
-        border: "1px solid var(--border-default)",
-        borderLeft: `3px solid ${kleurBorderKleur(kleur)}`,
+        borderLeft: "2px solid transparent",
+        ...genderStijl,
+        transition: "background 120ms",
       }}
       {...listeners}
       {...attributes}
       onClick={(e) => {
-        // Alleen openen bij klik, niet bij drag
         if (!isDragging) {
           e.stopPropagation();
           onClick();
         }
       }}
-      className={`hover:border-ow-oranje flex cursor-grab items-center gap-2 rounded-md px-2 py-1.5 transition-all hover:shadow-[0_0_8px_rgba(255,107,0,0.15)] ${
-        isDragging ? "opacity-50 shadow-lg" : ""
+      className={`flex cursor-grab items-center gap-2 px-3 py-1.5 ${
+        isDragging ? "opacity-40" : "hover:bg-[#262626]"
       }`}
     >
-      {/* Avatar */}
-      <SpelerAvatar spelerId={speler.id} naam={speler.roepnaam} size="sm" />
+      {/* Avatar cirkel */}
+      <div
+        className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[9px] font-bold"
+        style={avatarStijl}
+      >
+        {speler.roepnaam.charAt(0).toUpperCase()}
+      </div>
 
-      {/* Twee regels: naam bovenaan, metadata onderaan */}
+      {/* Naam + meta */}
       <div className="flex min-w-0 flex-1 flex-col">
-        {/* Regel 1: status dot + naam + afmeldbadge */}
         <div className="flex items-center gap-1">
-          <span
-            className={`h-2 w-2 shrink-0 rounded-full ${STATUS_KLEUREN[speler.status]}`}
-            title={speler.status}
-          />
-          <span className="text-text-primary truncate text-sm">
+          <span className="truncate text-[11px] font-semibold" style={{ color: "#FAFAFA" }}>
             {speler.roepnaam} {speler.achternaam}
           </span>
           {speler.afmelddatum && <AfmeldBadge afmelddatum={speler.afmelddatum} />}
           {isPinned && (
             <svg
-              className="h-2.5 w-2.5 shrink-0 text-purple-500"
+              className="h-2.5 w-2.5 shrink-0"
+              style={{ color: "#a855f7" }}
               viewBox="0 0 24 24"
               fill="currentColor"
               aria-label="Gepind"
@@ -92,25 +90,14 @@ export default function SpelerKaart({ speler, isPinned, onClick }: SpelerKaartPr
             </svg>
           )}
         </div>
-
-        {/* Regel 2: leeftijd, geslacht, vorig team */}
-        <div className="flex items-center gap-1.5 pl-3">
-          <span
-            className="inline-flex items-center gap-0.5"
-            title={`Geboortejaar ${speler.geboortejaar}`}
-          >
-            {kleur && <span className={`h-1.5 w-1.5 rounded-full ${KLEUR_DOT[kleur]}`} />}
-            <span className="text-text-secondary text-[11px]">{leeftijd.toFixed(2)}</span>
-          </span>
-          <span
-            className="text-text-secondary text-[11px]"
-            title={speler.geslacht === "M" ? "Man" : "Vrouw"}
-          >
-            {speler.geslacht === "M" ? "\u2642" : "\u2640"}
+        <div className="flex items-center gap-1.5">
+          <span className="text-[10px]" style={{ color: "#666" }}>
+            {leeftijd.toFixed(1)} · {isVrouw ? "V" : "M"}
           </span>
           {vorigTeam && (
             <span
-              className="text-text-secondary max-w-[60px] truncate text-[10px]"
+              className="max-w-[60px] truncate text-[10px]"
+              style={{ color: "#666" }}
               title={vorigTeam}
             >
               {vorigTeam}

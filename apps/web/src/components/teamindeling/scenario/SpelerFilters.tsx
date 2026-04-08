@@ -43,7 +43,7 @@ export default function SpelerFilters({
         {FILTERS.map(({ waarde, label }) => (
           <label
             key={waarde}
-            className="inline-flex cursor-pointer items-center rounded-full border px-2.5 py-1 text-xs transition-colors"
+            className="inline-flex cursor-pointer items-center rounded border px-2 py-0.5 text-[10px] font-semibold transition-colors"
             style={
               filter === waarde
                 ? {
