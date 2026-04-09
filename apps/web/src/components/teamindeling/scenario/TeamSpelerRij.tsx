@@ -79,6 +79,7 @@ export default function TeamSpelerRij({
       ref={setNodeRef}
       {...listeners}
       {...attributes}
+      data-dnd-draggable="true"
       data-speler-id={speler.id}
       style={style}
       className={`flex items-center gap-1 rounded-r border-l-2 px-1 ${borderLeft} ${
