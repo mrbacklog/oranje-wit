@@ -57,10 +57,12 @@ export function TISidebar({ children }: TISidebarProps) {
     </div>
   ) : null;
 
-  const noPadding = pathname.startsWith("/ti-studio/indeling");
+  if (pathname.startsWith("/ti-studio/indeling")) {
+    return <>{children}</>;
+  }
 
   return (
-    <AppShell sidebar={sidebar} banner={banner} noPadding={noPadding}>
+    <AppShell sidebar={sidebar} banner={banner}>
       {children}
     </AppShell>
   );
