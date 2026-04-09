@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useEffect, useCallback } from "react";
+import { useMemo, useEffect, useCallback, useState } from "react";
 import { useCanvasGesture } from "../hooks/useCanvasGesture";
 import { getDetailLevel } from "../types";
 import type { DetailLevel } from "../types";
@@ -45,15 +45,22 @@ export default function GestureCanvas({ children, onZoomLabelChange }: GestureCa
     [setZoom]
   );
 
+  // Viewport dimensions — stabiel op server én client (geen window tijdens SSR)
+  const [vpSize, setVpSize] = useState({ w: 1280, h: 800 });
+  useEffect(() => {
+    setVpSize({ w: window.innerWidth, h: window.innerHeight });
+    const onResize = () => setVpSize({ w: window.innerWidth, h: window.innerHeight });
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
   // Minimap viewport indicator dimensions
   const minimapW = 140;
   const minimapH = 96;
-  const vpW = typeof window !== "undefined" ? window.innerWidth : 1280;
-  const vpH = typeof window !== "undefined" ? window.innerHeight : 800;
   const mmVpLeft = Math.max(0, Math.min(minimapW - 10, (-transform.x / CANVAS_W) * minimapW));
   const mmVpTop = Math.max(0, Math.min(minimapH - 6, (-transform.y / CANVAS_H) * minimapH));
-  const mmVpW = Math.min(minimapW, (vpW / transform.scale / CANVAS_W) * minimapW);
-  const mmVpH = Math.min(minimapH, (vpH / transform.scale / CANVAS_H) * minimapH);
+  const mmVpW = Math.min(minimapW, (vpSize.w / transform.scale / CANVAS_W) * minimapW);
+  const mmVpH = Math.min(minimapH, (vpSize.h / transform.scale / CANVAS_H) * minimapH);
 
   return (
     <div className="relative flex-1 overflow-hidden">
