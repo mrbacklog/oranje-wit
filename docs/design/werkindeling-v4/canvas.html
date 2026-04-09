@@ -1,0 +1,258 @@
+<!-- REFERENTIE: canvas — uit werkindeling-v4.html -->
+<!-- Gebruik dit als 1-op-1 referentie voor de React implementatie -->
+<!-- Het canvas is het centrale werkgebied: scrollable viewport + zoombaar canvas -->
+<!-- Bevat: canvas-wrap (viewport), canvas (schaalbaar), what-if indicator, statusbar, zoom-controls, minimap -->
+<!-- Teamkaarten zitten NIET in dit bestand — zie team-kaart.html -->
+
+<style>
+/* ── CANVAS WRAP (viewport) ── */
+.canvas-wrap {
+  flex: 1; position: relative; overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255,107,0,.02) 0%, transparent 60%),
+    var(--bg-0);
+}
+
+/* Grid dots patroon */
+.canvas-wrap::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,.05) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none;
+}
+
+/* ── CANVAS (schaalbaar, teamkaarten erin) ── */
+.canvas {
+  position: absolute;
+  width: 1400px; height: 900px;
+  transform-origin: 0 0;
+  transition: transform 80ms ease-out;
+}
+
+/* ── ZOOM CONTROLS (linksboven) ── */
+.zoom-controls {
+  position: absolute; bottom: 16px; left: 16px;
+  display: flex; align-items: center; gap: 6px;
+  background: var(--bg-2); border: 1px solid var(--border-1);
+  border-radius: 10px; padding: 6px 10px;
+  box-shadow: var(--sh-card); z-index: 10;
+}
+.zoom-btn {
+  width: 26px; height: 26px; border-radius: 6px;
+  background: none; border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-2); transition: all 100ms; font-size: 14px; font-weight: 700;
+}
+.zoom-btn:hover { background: var(--bg-3); color: var(--text-1); }
+.zoom-label { font-size: 11px; font-weight: 700; color: var(--text-2); min-width: 36px; text-align: center; }
+.zoom-sep { width: 1px; height: 16px; background: var(--border-0); }
+.zoom-slider {
+  -webkit-appearance: none; width: 90px; height: 4px;
+  background: var(--bg-3); border-radius: 2px; outline: none; cursor: pointer;
+}
+.zoom-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 14px; height: 14px;
+  border-radius: 50%; background: var(--accent); cursor: grab;
+  box-shadow: 0 0 6px rgba(255,107,0,.4);
+}
+/* Breakpoint-annotatie onder de slider */
+.zoom-ticks {
+  display: flex; justify-content: space-between;
+  font-size: 8px; color: var(--text-3); margin-top: 1px;
+  width: 90px; padding: 0 1px;
+  letter-spacing: -.3px;
+}
+.zoom-tick-bp {
+  color: rgba(255,107,0,.6); font-weight: 700;
+}
+.fit-btn {
+  padding: 4px 8px; background: none; border: 1px solid var(--border-1);
+  border-radius: 6px; color: var(--text-2); font-size: 10px; font-weight: 600;
+  cursor: pointer; font-family: inherit; transition: all 100ms;
+}
+.fit-btn:hover { background: var(--bg-3); color: var(--text-1); }
+
+/* ── MINI-KAART NAVIGATOR (rechtsonder) ── */
+.minimap {
+  position: absolute; bottom: 16px; right: 16px;
+  width: 140px; height: 96px;
+  background: var(--bg-2); border: 1px solid var(--border-1);
+  border-radius: 8px; overflow: hidden;
+  box-shadow: var(--sh-card); z-index: 10;
+}
+.minimap-label {
+  position: absolute; bottom: 4px; right: 6px;
+  font-size: 9px; color: var(--text-3); font-weight: 600;
+  text-transform: uppercase; letter-spacing: .4px;
+}
+.minimap-viewport {
+  position: absolute; top: 8px; left: 12px;
+  width: 60px; height: 45px;
+  border: 1px solid rgba(255,107,0,.4);
+  background: rgba(255,107,0,.06);
+  border-radius: 3px;
+}
+
+/* ── WHAT-IF INDICATOR (top center, canvas) ── */
+.whatif-indicator {
+  position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+  background: rgba(59,130,246,.15); border: 1px solid rgba(59,130,246,.3);
+  border-radius: 20px; padding: 5px 14px; z-index: 20;
+  display: none; align-items: center; gap: 8px;
+  font-size: 12px; color: var(--info);
+  box-shadow: 0 2px 12px rgba(59,130,246,.2);
+}
+.whatif-indicator.active { display: flex; }
+
+/* What-If bar (boven canvas, uitschuifbaar) */
+.whatif-bar {
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 36px; background: rgba(59,130,246,.12);
+  border-bottom: 1px solid rgba(59,130,246,.2);
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 14px; z-index: 15;
+  transform: translateY(-100%); transition: transform 200ms ease;
+}
+.whatif-bar.active { transform: translateY(0); }
+.whatif-icon { font-size: 14px; color: var(--info); }
+.whatif-text { font-size: 12px; color: var(--info); font-weight: 500; }
+.whatif-undo {
+  margin-left: auto; padding: 3px 9px; border-radius: 5px;
+  background: rgba(59,130,246,.15); color: var(--info);
+  border: 1px solid rgba(59,130,246,.2); font-size: 11px; font-weight: 600;
+  cursor: pointer; font-family: inherit; transition: all 100ms;
+}
+.whatif-undo:hover { background: rgba(59,130,246,.25); }
+.whatif-apply {
+  padding: 3px 9px; border-radius: 5px;
+  background: var(--info); color: #fff;
+  border: none; font-size: 11px; font-weight: 600;
+  cursor: pointer; font-family: inherit; transition: all 100ms;
+}
+.whatif-apply:hover { background: #2563EB; }
+
+/* ── CANVAS STATUSBAR (onderaan canvas, gecentreerd) ── */
+.canvas-statusbar {
+  position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%);
+  background: var(--bg-2); border: 1px solid var(--border-1);
+  border-radius: 20px; padding: 6px 16px;
+  display: flex; align-items: center; gap: 12px;
+  box-shadow: var(--sh-card); z-index: 10; white-space: nowrap;
+}
+.csb-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-2); }
+.csb-dot { width: 6px; height: 6px; border-radius: 50%; }
+.csb-sep { width: 1px; height: 12px; background: var(--border-0); }
+
+/* ── CANVAS DIM OVERLAY (voor Daisy highlight) ── */
+.canvas-dim {
+  position: absolute; inset: 0;
+  background: rgba(10,10,10,.6);
+  opacity: 0; pointer-events: none;
+  transition: opacity 300ms;
+  z-index: 5;
+}
+.canvas-dim.active { opacity: 1; }
+
+/* ── DRAG GHOST ── */
+.drag-ghost {
+  position: fixed; pointer-events: none; z-index: 200;
+  background: var(--bg-2); border: 1px solid rgba(255,107,0,.4);
+  border-radius: 8px; padding: 5px 10px;
+  font-size: 12px; font-weight: 600;
+  box-shadow: 0 8px 24px rgba(0,0,0,.5);
+  display: none; white-space: nowrap;
+}
+
+/* Animaties */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+</style>
+
+<!-- HTML fragment (zonder teamkaarten — zie team-kaart.html) -->
+<div class="canvas-wrap" id="canvasWrap" onscroll="updateMinimap()">
+
+  <!-- What-If indicator (bovenaan canvas) -->
+  <div class="whatif-indicator" id="whatifIndicator">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+    </svg>
+    What-If modus actief — wijzigingen worden niet opgeslagen
+    <button style="margin-left:8px; background:rgba(59,130,246,.15); border:1px solid rgba(59,130,246,.3); border-radius:5px; padding:3px 9px; color:var(--info); font-size:10px; font-weight:700; cursor:pointer; font-family:inherit;" onclick="toggleWhatIf()">Stoppen</button>
+    <button style="background:var(--info); border:none; border-radius:5px; padding:3px 9px; color:#fff; font-size:10px; font-weight:700; cursor:pointer; font-family:inherit;" onclick="applyWhatIf()">Toepassen</button>
+  </div>
+
+  <!-- Canvas (teamkaarten komen hier in — zie team-kaart.html) -->
+  <div class="canvas show-scores" id="canvas" data-zoom-level="normaal">
+    <!-- .show-scores class: score-oct badges zichtbaar -->
+    <!-- data-zoom-level: "compact" | "normaal" | "detail" -->
+    <!-- Teamkaarten worden hier absoluut gepositioneerd met style="left:Xpx; top:Ypx;" -->
+  </div><!-- /canvas -->
+
+  <!-- Canvas statusbar (onderin canvas, gecentreerd boven zoom-controls) -->
+  <div class="canvas-statusbar">
+    <div class="csb-item">
+      <div class="csb-dot" style="background:var(--ok);"></div>
+      4 teams OK
+    </div>
+    <div class="csb-sep"></div>
+    <div class="csb-item">
+      <div class="csb-dot" style="background:var(--warn);"></div>
+      1 waarschuwing
+    </div>
+    <div class="csb-sep"></div>
+    <div class="csb-item">
+      <div class="csb-dot" style="background:var(--err);"></div>
+      1 fout
+    </div>
+    <div class="csb-sep"></div>
+    <div class="csb-item" style="color:var(--text-3);">
+      7 teams · 62 spelers ingedeeld
+    </div>
+  </div>
+
+  <!-- Zoom controls (linksonder) -->
+  <div class="zoom-controls">
+    <button class="zoom-btn" onclick="changeZoomLevel(-0.1)">−</button>
+    <div class="zoom-sep"></div>
+    <div style="display:flex; flex-direction:column; gap:0;">
+      <input class="zoom-slider" type="range" min="0.40" max="1.50" step="0.02" value="0.85"
+        oninput="applyZoomFromUI(parseFloat(this.value))" id="zoomSlider">
+      <div class="zoom-ticks">
+        <span>40</span>
+        <span class="zoom-tick-bp">64</span>
+        <span class="zoom-tick-bp">100</span>
+        <span>150</span>
+      </div>
+    </div>
+    <div class="zoom-sep"></div>
+    <div class="zoom-label" id="zoomLabel">85%</div>
+    <div class="zoom-sep"></div>
+    <button class="zoom-btn" onclick="changeZoomLevel(0.1)">+</button>
+    <div class="zoom-sep"></div>
+    <button class="fit-btn" onclick="fitToScreen()">Passend</button>
+  </div>
+
+  <!-- Minimap (rechtsonder) -->
+  <div class="minimap">
+    <div style="position:absolute; inset:0; background: repeating-linear-gradient(90deg, rgba(255,255,255,.02) 0px, rgba(255,255,255,.02) 1px, transparent 1px, transparent 20px), repeating-linear-gradient(rgba(255,255,255,.02) 0px, rgba(255,255,255,.02) 1px, transparent 1px, transparent 15px);"></div>
+    <!-- Mini teamkaartjes — schaal ~0.10x: 280→28px, 140→14px, 560→56px, 210→21px -->
+    <!-- Rij 1 (top≈6): U12-1 geel (14×21) + U10-1 groen (14×21) + U14-1 oranje (28×21) + U16-1 rood (28×21) -->
+    <div style="position:absolute; top:6px; left:4px;  width:14px; height:21px; background:rgba(234,179,8,.25);  border-radius:2px; border-left:2px solid var(--cat-geel);"></div>
+    <div style="position:absolute; top:6px; left:20px; width:14px; height:21px; background:rgba(34,197,94,.2);   border-radius:2px; border-left:2px solid var(--cat-groen);"></div>
+    <div style="position:absolute; top:6px; left:40px; width:28px; height:21px; background:rgba(249,115,22,.3);  border-radius:2px; border-left:2px solid var(--cat-oranje);"></div>
+    <div style="position:absolute; top:6px; left:70px; width:28px; height:21px; background:rgba(239,68,68,.2);   border-radius:2px; border-left:2px solid var(--err);"></div>
+    <!-- Rij 2 (top≈31): Sen 3 D1 (28×21) + Selectie (56×21) -->
+    <div style="position:absolute; top:31px; left:4px;  width:28px; height:21px; background:rgba(239,68,68,.15); border-radius:2px; border-left:2px solid var(--err);"></div>
+    <div style="position:absolute; top:31px; left:40px; width:56px; height:21px; background:rgba(156,163,175,.2); border-radius:2px; border-left:2px solid var(--cat-senior);"></div>
+    <!-- Rij 3 (top≈56): Sen 1 D1 (28×21) -->
+    <div style="position:absolute; top:56px; left:4px;  width:28px; height:21px; background:rgba(156,163,175,.15); border-radius:2px; border-left:2px solid var(--cat-senior);"></div>
+    <div class="minimap-viewport" id="minimapVP"></div>
+    <div class="minimap-label">Minimap</div>
+  </div>
+
+  <!-- Daisy FAB + panel — zie daisy-panel.html -->
+
+</div><!-- /canvas-wrap -->

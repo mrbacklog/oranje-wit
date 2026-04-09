@@ -1,0 +1,321 @@
+<!-- REFERENTIE: pool-drawer — uit werkindeling-v4.html -->
+<!-- Gebruik dit als 1-op-1 referentie voor de React implementatie -->
+<!-- De spelerspool drawer is een aside links (224px breed), sluitbaar via .closed -->
+<!-- Bevat: zoekbalk, categorie-filters (chips), spelerslijst met drag-and-drop rijen -->
+
+<style>
+/* ── POOL DRAWER WRAPPER ── */
+.drawer-left {
+  width: var(--pool-w);
+  background: var(--bg-1);
+  border-right: 1px solid var(--border-0);
+  display: flex; flex-direction: column;
+  flex-shrink: 0;
+  transition: width 200ms ease, opacity 200ms ease;
+  overflow: hidden;
+  position: relative; z-index: 20;
+}
+.drawer-left.closed { width: 0; opacity: 0; pointer-events: none; }
+
+.drawer-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 12px 8px;
+  border-bottom: 1px solid var(--border-0);
+  flex-shrink: 0;
+}
+.drawer-title {
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .7px;
+  color: var(--text-3);
+}
+.drawer-actions { display: flex; align-items: center; gap: 4px; }
+.icon-btn {
+  width: 26px; height: 26px; border-radius: 6px;
+  background: none; border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-3); transition: all 100ms; font-size: 13px;
+}
+.icon-btn:hover { background: var(--bg-3); color: var(--text-1); }
+
+/* ── ZOEKBALK ── */
+.pool-search-wrap {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border-0);
+  flex-shrink: 0;
+}
+.pool-search {
+  width: 100%; background: var(--bg-0); border: 1px solid var(--border-1);
+  border-radius: 7px; color: var(--text-1); font-size: 12px;
+  font-family: inherit; padding: 6px 10px 6px 28px; outline: none;
+  transition: border-color 150ms;
+}
+.pool-search:focus { border-color: var(--accent); }
+.pool-search-wrap { position: relative; }
+.pool-search-icon {
+  position: absolute; left: 18px; top: 50%; transform: translateY(-50%);
+  color: var(--text-3); font-size: 12px; pointer-events: none;
+}
+
+/* ── FILTERS (chips) ── */
+.pool-filters {
+  padding: 7px 10px 6px; display: flex; flex-wrap: wrap; gap: 4px;
+  border-bottom: 1px solid var(--border-0); flex-shrink: 0;
+}
+.chip {
+  padding: 3px 8px; border-radius: 5px; font-size: 10px; font-weight: 600;
+  cursor: pointer; background: var(--bg-2); color: var(--text-3);
+  border: 1px solid var(--border-1); font-family: inherit; transition: all 100ms;
+}
+.chip.active { background: var(--accent-dim); color: var(--accent); border-color: rgba(255,107,0,.3); }
+.chip:hover:not(.active) { background: var(--bg-3); color: var(--text-1); }
+
+/* ── SECTIEHEADERS ── */
+.pool-section-label {
+  padding: 10px 10px 4px;
+  font-size: 9px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .6px; color: var(--text-3);
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+.pool-list { flex: 1; overflow-y: auto; }
+
+/* ── SPELERRIJ ── */
+.pool-row {
+  display: flex; align-items: center; gap: 7px;
+  padding: 5px 10px; cursor: grab;
+  border-left: 2px solid transparent;
+  transition: background 100ms, border-color 100ms;
+  position: relative;
+}
+.pool-row:hover { background: var(--bg-3); }
+.pool-row.v { border-left-color: var(--pink); }
+.pool-row.m { border-left-color: var(--blue); }
+.pool-row:active { cursor: grabbing; }
+
+.pool-drag-handle {
+  color: var(--text-3); font-size: 11px; opacity: 0;
+  transition: opacity 100ms; flex-shrink: 0;
+  width: 12px;
+}
+.pool-row:hover .pool-drag-handle { opacity: 1; }
+
+.pool-avatar {
+  width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700;
+}
+.pool-avatar.v { background: rgba(236,72,153,.2); color: var(--pink); }
+.pool-avatar.m { background: rgba(96,165,250,.2); color: var(--blue); }
+
+.pool-info { flex: 1; min-width: 0; }
+.pool-name { font-size: 12px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pool-meta { font-size: 10px; color: var(--text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.pool-badges { display: flex; align-items: center; gap: 3px; flex-shrink: 0; }
+
+/* ── STATUS DOTS ── */
+.dot {
+  width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+}
+.dot-ok    { background: var(--ok); }
+.dot-warn  { background: var(--warn); }
+.dot-err   { background: var(--err); }
+.dot-info  { background: var(--info); }
+.dot-muted { background: var(--text-3); }
+
+/* ── RATING BADGE ── */
+.rating {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 16px; border-radius: 4px;
+  font-size: 10px; font-weight: 700;
+}
+.rating-hi { background: rgba(34,197,94,.15); color: var(--ok); }
+.rating-md { background: rgba(234,179,8,.12); color: var(--warn); }
+.rating-lo { background: rgba(239,68,68,.12); color: var(--err); }
+
+/* ── STATUS ICONEN ── */
+.icon-afm { font-size: 10px; color: var(--err); opacity: .8; }
+.icon-pin { font-size: 10px; color: var(--accent); opacity: .8; }
+.icon-new { font-size: 9px; color: var(--ok); background: rgba(34,197,94,.1); border-radius: 3px; padding: 1px 4px; font-weight: 700; }
+
+/* ── TOOLTIP SYSTEEM ── */
+[data-tooltip] { position: relative; }
+[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute; bottom: calc(100% + 6px); left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-3); border: 1px solid var(--border-1);
+  color: var(--text-1); font-size: 10px; font-weight: 600;
+  padding: 3px 8px; border-radius: 5px; white-space: nowrap;
+  pointer-events: none; opacity: 0; transition: opacity 100ms; z-index: 100;
+}
+[data-tooltip]:hover::after { opacity: 1; }
+</style>
+
+<!-- HTML fragment -->
+<aside class="drawer-left" id="drawerPool">
+  <div class="drawer-header">
+    <div class="drawer-title">Spelerspool</div>
+    <div class="drawer-actions">
+      <button class="icon-btn" data-tooltip="Alleen dames" onclick="filterGender('v')" id="filter-v">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="8" r="6"/><path d="M12 14v6M9 17h6"/>
+        </svg>
+      </button>
+      <button class="icon-btn" data-tooltip="Alleen heren" onclick="filterGender('m')" id="filter-m">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="10" cy="14" r="6"/><path d="M20 4l-6 6M14 4h6v6"/>
+        </svg>
+      </button>
+      <button class="icon-btn" onclick="togglePanel('pool')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Zoekbalk -->
+  <div class="pool-search-wrap" style="padding:8px 10px; position:relative;">
+    <svg class="pool-search-icon" style="position:absolute; left:18px; top:50%; transform:translateY(-50%); color:var(--text-3);" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+    <input class="pool-search" type="text" placeholder="Zoek speler..." style="padding-left:28px;" oninput="filterPool(this.value)">
+  </div>
+
+  <!-- Filters -->
+  <div class="pool-filters">
+    <button class="chip active" onclick="setPoolFilter(this, 'zonder')">Zonder team</button>
+    <button class="chip" onclick="setPoolFilter(this, 'passend')">Passend</button>
+    <button class="chip" onclick="setPoolFilter(this, 'ingedeeld')">Ingedeeld</button>
+    <button class="chip" onclick="setPoolFilter(this, 'alle')">Alle</button>
+  </div>
+
+  <!-- Spelerlijst -->
+  <div class="pool-list" id="poolList">
+
+    <div class="pool-section-label">
+      Dames — zonder team
+      <span style="color:var(--text-2); font-weight:700;">12</span>
+    </div>
+
+    <!-- Beschikbare speler -->
+    <div class="pool-row v" onclick="showProfiel(event, 'Emma de Wit', 'v', 14, 7.8, 'Junior 1', 'BESCHIKBAAR', 'Goede schieter, leiderschapskwaliteiten')">
+      <span class="pool-drag-handle">⠿</span>
+      <div class="pool-avatar v">EdW</div>
+      <div class="pool-info">
+        <div class="pool-name">Emma de Wit</div>
+        <div class="pool-meta">14j · Junior 1 (vorig)</div>
+      </div>
+      <div class="pool-badges">
+        <div class="rating rating-hi">7.8</div>
+        <div class="dot dot-ok" data-tooltip="Beschikbaar"></div>
+      </div>
+    </div>
+
+    <!-- Gepinde speler -->
+    <div class="pool-row v" onclick="showProfiel(event, 'Lisa Janssen', 'v', 16, 8.2, 'Sen 3 D2', 'BESCHIKBAAR', 'Snelle aanvaller')">
+      <span class="pool-drag-handle">⠿</span>
+      <div class="pool-avatar v">LJ</div>
+      <div class="pool-info">
+        <div class="pool-name">Lisa Janssen</div>
+        <div class="pool-meta">16j · Sen 3 D2 (vorig)</div>
+      </div>
+      <div class="pool-badges">
+        <div class="rating rating-hi">8.2</div>
+        <span class="icon-pin">📌</span>
+        <div class="dot dot-ok"></div>
+      </div>
+    </div>
+
+    <!-- Twijfelende speler -->
+    <div class="pool-row v" onclick="showProfiel(event, 'Sophie Bakker', 'v', 13, 6.5, 'Junior 2', 'TWIJFELT', 'Afwacht beslissing club')">
+      <span class="pool-drag-handle">⠿</span>
+      <div class="pool-avatar v">SB</div>
+      <div class="pool-info">
+        <div class="pool-name">Sophie Bakker</div>
+        <div class="pool-meta">13j · Junior 2 (vorig)</div>
+      </div>
+      <div class="pool-badges">
+        <div class="rating rating-md">6.5</div>
+        <div class="dot dot-warn" data-tooltip="Twijfelt"></div>
+      </div>
+    </div>
+
+    <!-- Stoppende speler -->
+    <div class="pool-row v" onclick="showProfiel(event, 'Anna van Dijk', 'v', 15, 7.1, 'Junior 1', 'GAAT_STOPPEN', '')">
+      <span class="pool-drag-handle">⠿</span>
+      <div class="pool-avatar v" style="opacity:.6;">AvD</div>
+      <div class="pool-info">
+        <div class="pool-name" style="text-decoration:line-through; opacity:.6;">Anna van Dijk</div>
+        <div class="pool-meta">15j · stopt per juni</div>
+      </div>
+      <div class="pool-badges">
+        <div class="rating rating-lo" style="opacity:.5;">7.1</div>
+        <span class="icon-afm">⚠</span>
+      </div>
+    </div>
+
+    <!-- Nieuw lid -->
+    <div class="pool-row v">
+      <span class="pool-drag-handle">⠿</span>
+      <div class="pool-avatar v">FR</div>
+      <div class="pool-info">
+        <div class="pool-name">Floor Rietdijk</div>
+        <div class="pool-meta">12j · Pupil 1 (vorig)</div>
+      </div>
+      <div class="pool-badges">
+        <span class="icon-new">N</span>
+        <div class="rating rating-md">6.9</div>
+        <div class="dot dot-ok"></div>
+      </div>
+    </div>
+
+    <div class="pool-section-label">
+      Heren — zonder team
+      <span style="color:var(--text-2); font-weight:700;">14</span>
+    </div>
+
+    <div class="pool-row m" onclick="showProfiel(event, 'Tom Smeets', 'm', 15, 7.3, 'Junior 1', 'BESCHIKBAAR', 'Sterke verdediger, kandidaat aanvoerder')">
+      <span class="pool-drag-handle">⠿</span>
+      <div class="pool-avatar m">TS</div>
+      <div class="pool-info">
+        <div class="pool-name">Tom Smeets</div>
+        <div class="pool-meta">15j · Junior 1 (vorig)</div>
+      </div>
+      <div class="pool-badges">
+        <div class="rating rating-hi">7.3</div>
+        <div class="dot dot-ok"></div>
+      </div>
+    </div>
+
+    <div class="pool-row m">
+      <span class="pool-drag-handle">⠿</span>
+      <div class="pool-avatar m">JK</div>
+      <div class="pool-info">
+        <div class="pool-name">Jesse Kooiman</div>
+        <div class="pool-meta">13j · Pupil 1 → Jeugd</div>
+      </div>
+      <div class="pool-badges">
+        <span class="icon-new">N</span>
+        <div class="rating rating-md">6.2</div>
+        <div class="dot dot-ok"></div>
+      </div>
+    </div>
+
+    <div class="pool-row m">
+      <span class="pool-drag-handle">⠿</span>
+      <div class="pool-avatar m">RV</div>
+      <div class="pool-info">
+        <div class="pool-name">Robin Vermeer</div>
+        <div class="pool-meta">16j · Junior 1 (vorig)</div>
+      </div>
+      <div class="pool-badges">
+        <div class="rating rating-hi">8.0</div>
+        <span class="icon-afm">⚠</span>
+        <div class="dot dot-warn"></div>
+      </div>
+    </div>
+
+  </div><!-- /pool-list -->
+</aside>

@@ -1,0 +1,600 @@
+<!-- REFERENTIE: team-kaart — uit werkindeling-v4.html -->
+<!-- Gebruik dit als 1-op-1 referentie voor de React implementatie -->
+<!--
+  DRIE KAARTFORMATEN (eenheid U = 70px):
+    card-viertal : 2×70 = 140px breed, 3×70 = 210px hoog — 2 spelers per geslacht (gestapeld)
+    card-achtal  : 4×70 = 280px breed, 3×70 = 210px hoog — 4 spelers per geslacht (naast elkaar)
+    card-selectie: 8×70 = 560px breed, 3×70 = 210px hoog — 2×4 per geslacht (4 kolommen)
+  Alle kaarten: header 36px, body flex:1 (~146px), footer 28px.
+
+  DRIE ZOOM-LEVELS (data-zoom-level op .canvas):
+    compact  (zoom < 64%):  teamnaam + tellers + validatie-dot; spelerslijst verborgen; inverse scaling
+    normaal  (64-100%):     spelersnamen volledig; leeftijd/rating/iconen verborgen
+    detail   (zoom >= 100%): alles — avatars, leeftijd, rating, status-iconen, footer
+
+  KNKV CATEGORIEKLEURBAND (.tc-band):
+    blauw | groen | geel | oranje | rood | senior
+
+  SCORE OCTAGON (.score-oct):
+    score-top (≥8.5, groen) | score-goed (7.0-8.4, blauw) | score-gem (5.5-6.9, geel) | score-att (<5.5, rood)
+    Verborgen als .canvas:not(.show-scores) of compact-mode
+-->
+
+<style>
+/* ══════════════════════════════════════════════════════════
+   TEAMKAART — BASIS
+══════════════════════════════════════════════════════════ */
+.team-card {
+  position: absolute;
+  background: var(--bg-1);
+  border: 1px solid var(--border-0);
+  border-radius: var(--card-radius);
+  box-shadow: var(--sh-card);
+  overflow: hidden;
+  cursor: default;
+  transition: box-shadow 150ms, border-color 150ms, width 150ms;
+  height: 210px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Drie kaartformaten — eenheid U = 70px ── */
+.card-viertal  { width: 140px;  height: 210px; }
+.card-achtal   { width: 280px;  height: 210px; }
+.card-selectie { width: 560px;  height: 210px; }
+
+/* Uniforme header/footer voor alle kaarttypen */
+.team-card .tc-header { height: 36px; flex-shrink: 0; }
+.team-card .tc-footer { height: 28px; flex-shrink: 0; }
+.team-card .tc-body   { flex: 1; overflow: hidden; }
+
+/* ── Viertal: spelers in twee stapels (dames / heren) met dunne scheidingslijn ── */
+.card-viertal .tc-columns { flex-direction: column; }
+.card-viertal .tc-col { flex: 1; border-right: none; }
+.card-viertal .tc-col-separator {
+  height: 1px; background: var(--border-0);
+  margin: 0 8px; flex-shrink: 0;
+}
+.card-viertal .tc-col-label { padding: 1px 6px 0; font-size: 8px; }
+.card-viertal .tc-sp { flex: 1; min-height: 0; padding: 0 6px; gap: 4px; display: flex; align-items: center; }
+.card-viertal .tc-sp-av  { width: 14px; height: 14px; font-size: 7px; }
+.card-viertal .tc-sp-name { font-size: 10px; }
+.card-viertal .tc-sp-age  { font-size: 9px; }
+.card-viertal .tc-rating  { width: 16px; height: 12px; font-size: 8px; }
+.card-viertal .tc-name    { font-size: 11px; }
+.card-viertal .tc-vm      { font-size: 9px; padding: 1px 4px; }
+.card-viertal .tc-val-dot { width: 6px; height: 6px; }
+.card-viertal .tc-edit    { width: 18px; height: 18px; font-size: 9px; }
+.card-viertal .score-oct  { width: 16px; height: 16px; font-size: 7px; }
+
+/* ── Selectie: 4 kolommen naast elkaar (2 dames + 2 heren) ── */
+.card-selectie .tc-header { height: 36px; }
+.card-selectie .tc-footer { height: 28px; }
+.card-selectie .tc-columns { flex-direction: row; }
+.card-selectie .tc-col { flex: 1; min-width: 0; }
+.card-selectie .tc-sp { flex: 1; min-height: 0; padding: 0 4px; gap: 3px; display: flex; align-items: center; }
+.card-selectie .tc-sp-av   { width: 13px; height: 13px; font-size: 7px; }
+.card-selectie .tc-sp-name { font-size: 10px; }
+.card-selectie .tc-sp-age  { font-size: 9px; }
+.card-selectie .tc-rating  { width: 15px; height: 12px; font-size: 8px; }
+.card-selectie .tc-name    { font-size: 11px; }
+.card-selectie .tc-vm      { font-size: 9px; padding: 1px 3px; }
+.card-selectie .tc-val-dot { width: 6px; height: 6px; }
+.card-selectie .tc-edit    { width: 18px; height: 18px; font-size: 9px; }
+.card-selectie .tc-col-label { padding: 1px 4px 0; font-size: 8px; }
+.card-selectie .score-oct  { width: 15px; height: 15px; font-size: 7px; }
+.card-selectie .tc-type-badge {
+  font-size: 8px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .3px; color: var(--accent); opacity: .7;
+  padding: 1px 4px; border-radius: 3px;
+  background: var(--accent-dim); flex-shrink: 0;
+}
+
+/* Hover en dragging states */
+.team-card:hover {
+  border-color: rgba(255,107,0,.3);
+  box-shadow: var(--accent-glow), var(--sh-raise);
+}
+.team-card.dragging {
+  opacity: .85; cursor: grabbing; z-index: 100;
+  box-shadow: 0 20px 60px rgba(0,0,0,.6), var(--accent-glow);
+}
+
+/* ── KNKV Categorie kleurband (links) ── */
+.tc-band {
+  position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+}
+.tc-band.blauw  { background: var(--cat-blauw); }
+.tc-band.groen  { background: var(--cat-groen); }
+.tc-band.geel   { background: var(--cat-geel); }
+.tc-band.oranje { background: var(--cat-oranje); }
+.tc-band.rood   { background: var(--cat-rood); }
+.tc-band.senior { background: var(--cat-senior); }
+
+/* ── INNER WRAPPER ── */
+.tc-inner {
+  padding: 0 8px 0 14px;
+  flex: 1; display: flex; flex-direction: column;
+  min-height: 0; overflow: hidden;
+}
+
+/* ── HEADER (36px) ── */
+.tc-header {
+  display: flex; align-items: center; gap: 6px;
+  padding: 0 0 0; height: 36px;
+  cursor: grab; border-bottom: 1px solid var(--border-0); flex-shrink: 0;
+}
+.tc-header:active { cursor: grabbing; }
+
+.tc-name {
+  font-size: 13px; font-weight: 700; flex: 1;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.tc-cat-badge {
+  font-size: 9px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .4px; padding: 2px 6px; border-radius: 4px;
+}
+
+/* Validatie status dot in header */
+.tc-val-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+.tc-vm-badges { display: flex; gap: 3px; }
+.tc-vm {
+  display: flex; align-items: center; gap: 3px;
+  font-size: 10px; font-weight: 600; padding: 2px 5px; border-radius: 4px;
+}
+.tc-vm.v { background: rgba(236,72,153,.12); color: var(--pink); }
+.tc-vm.m { background: rgba(96,165,250,.12);  color: var(--blue); }
+
+.tc-edit {
+  width: 22px; height: 22px; border-radius: 5px;
+  background: none; border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-3); font-size: 11px; transition: all 100ms; flex-shrink: 0;
+}
+.tc-edit:hover { background: var(--bg-3); color: var(--text-1); }
+
+/* Daisy banner — verborgen in landscape */
+.tc-daisy-banner { display: none; }
+.tc-daisy-icon { font-size: 12px; color: var(--accent); flex-shrink: 0; margin-top: 1px; }
+.tc-daisy-text { flex: 1; line-height: 1.4; }
+.tc-daisy-text strong { color: var(--accent); font-weight: 600; }
+
+/* ── KOLOMINDELING SPELERS ── */
+.tc-columns {
+  display: flex; flex-direction: row;
+  flex: 1; min-height: 0; overflow: hidden;
+}
+.tc-col {
+  flex: 1; display: flex; flex-direction: column;
+  min-height: 0; overflow: hidden;
+  border-right: 1px solid var(--border-0);
+}
+.tc-col:last-child { border-right: none; }
+.tc-columns > div:not(.tc-col-separator) {
+  flex: 1; display: flex; flex-direction: column;
+  min-height: 0; overflow: hidden;
+  border-right: 1px solid var(--border-0);
+}
+.tc-columns > div:not(.tc-col-separator):last-child { border-right: none; }
+
+.tc-col-label {
+  font-size: 9px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .5px; color: var(--text-3); margin-bottom: 2px;
+  padding: 2px 6px 0; display: flex; align-items: center; gap: 4px; flex-shrink: 0;
+}
+
+/* ── SPELERRIJ ── */
+.tc-sp {
+  display: flex; align-items: center; gap: 5px;
+  padding: 0 8px; border-radius: 6px;
+  transition: background 100ms; cursor: default;
+  flex: 1; min-height: 0;
+}
+.tc-sp:hover { background: var(--bg-2); }
+.tc-sp.draggable { cursor: grab; }
+.tc-sp.draggable:active { cursor: grabbing; }
+
+.tc-sp-av {
+  width: 20px; height: 20px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 8px; font-weight: 700; flex-shrink: 0;
+}
+.tc-sp-av.v { background: rgba(236,72,153,.15); color: var(--pink); }
+.tc-sp-av.m { background: rgba(96,165,250,.15); color: var(--blue); }
+
+.tc-sp-name { font-size: 11px; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tc-sp-age  { font-size: 10px; color: var(--text-3); flex-shrink: 0; }
+
+.tc-sp-icons { display: flex; align-items: center; gap: 2px; flex-shrink: 0; }
+.tc-sp-pin     { font-size: 9px; color: var(--accent); }
+.tc-sp-afm     { font-size: 9px; color: var(--err); }
+.tc-sp-twijfelt { font-size: 9px; color: var(--warn); }
+.tc-sp-nieuw   { font-size: 9px; color: var(--ok); }
+
+/* Rating micro */
+.tc-rating {
+  width: 18px; height: 14px; border-radius: 3px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 700; flex-shrink: 0;
+}
+.tc-rating.hi { background: rgba(34,197,94,.15); color: var(--ok); }
+.tc-rating.md { background: rgba(234,179,8,.1);  color: var(--warn); }
+.tc-rating.lo { background: rgba(239,68,68,.1);  color: var(--err); }
+
+/* Drop zone actief */
+.tc-sp-drop {
+  height: 26px; border: 1px dashed rgba(255,107,0,.3);
+  border-radius: 5px; margin: 2px 0; background: var(--accent-dim);
+  display: none; align-items: center; justify-content: center;
+  font-size: 10px; color: var(--accent); flex-shrink: 0;
+}
+.tc-sp-drop.visible { display: flex; }
+
+/* ── FOOTER (28px) ── */
+.tc-footer {
+  display: flex; align-items: center; gap: 6px;
+  padding: 0 8px; border-top: 1px solid var(--border-0);
+  flex-shrink: 0; height: 28px;
+}
+.tc-stat { font-size: 10px; color: var(--text-3); }
+.tc-stat span { color: var(--text-2); font-weight: 600; }
+.tc-warn-count {
+  display: flex; align-items: center; gap: 3px;
+  font-size: 10px; color: var(--warn);
+  background: rgba(234,179,8,.08); padding: 2px 6px; border-radius: 4px;
+}
+.tc-notitie {
+  width: 18px; height: 18px; border-radius: 4px;
+  background: none; border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; color: var(--text-3); transition: all 100ms;
+}
+.tc-notitie:hover { background: var(--bg-3); color: var(--text-1); }
+.tc-notitie.has-note { color: var(--warn); }
+
+/* ── NOTITIE PILL IN FOOTER ── */
+.tc-note-pill {
+  display: flex; align-items: center; gap: 4px;
+  padding: 3px 7px; background: rgba(234,179,8,.08);
+  border: 1px solid rgba(234,179,8,.15); border-radius: 5px;
+  font-size: 10px; color: var(--warn); cursor: default;
+  font-style: italic; flex: 1; min-width: 0;
+}
+.tc-note-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ══════════════════════════════════════════════════════════
+   ZOOM LEVEL ADAPTIEVE WEERGAVE (data-zoom-level op .canvas)
+   Wiskundige breakpoints (W=280px achtal):
+     compact → normaal: 180px leesbaar → z=0.64 (64%)
+     normaal → detail:  280px volledig → z=1.00 (100%)
+══════════════════════════════════════════════════════════ */
+
+/* ── COMPACT (zoom < 64%) ── */
+[data-zoom-level="compact"] .team-card .tc-columns,
+[data-zoom-level="compact"] .team-card .tc-col-label,
+[data-zoom-level="compact"] .team-card .tc-footer { display: none; }
+
+[data-zoom-level="compact"] .card-viertal .tc-inner,
+[data-zoom-level="compact"] .card-selectie .tc-inner { padding-bottom: 0; }
+
+[data-zoom-level="compact"] .team-card .tc-header { border-bottom: none; }
+[data-zoom-level="compact"] .team-card .tc-inner { padding-bottom: 0; }
+/* Grotere fonts — leesbaar via inverse scaling in JS */
+[data-zoom-level="compact"] .team-card .tc-name { font-size: 18px; font-weight: 900; }
+[data-zoom-level="compact"] .team-card .tc-vm   { font-size: 14px; padding: 2px 5px; }
+[data-zoom-level="compact"] .team-card .tc-edit { display: none; }
+[data-zoom-level="compact"] .team-card .tc-val-dot { width: 14px; height: 14px; }
+[data-zoom-level="compact"] .card-viertal .tc-name { font-size: 13px; }
+[data-zoom-level="compact"] .card-viertal .tc-vm   { font-size: 10px; }
+[data-zoom-level="compact"] .card-selectie .tc-name { font-size: 13px; }
+[data-zoom-level="compact"] .card-selectie .tc-vm   { font-size: 10px; }
+
+/* Compact stats rij */
+[data-zoom-level="compact"] .tc-compact-stats {
+  display: flex; flex: 1; flex-direction: row;
+  align-items: center; justify-content: center;
+  gap: 20px; border-top: none; margin-top: 0; padding: 0;
+}
+[data-zoom-level="compact"] .tc-compact-stat { font-size: 13px; }
+
+/* ── NORMAAL (64% <= zoom < 100%) ── */
+[data-zoom-level="normaal"] .tc-sp-age        { display: none; }
+[data-zoom-level="normaal"] .tc-rating        { display: none; }
+[data-zoom-level="normaal"] .tc-compact-stats { display: none; }
+[data-zoom-level="normaal"] .tc-sp-icons      { display: none; }
+[data-zoom-level="normaal"] .score-oct        { display: none; }
+[data-zoom-level="normaal"] .tc-sp { padding: 0 8px; min-height: 16px; }
+[data-zoom-level="normaal"] .tc-sp-name { font-size: 11px; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ── DETAIL (zoom >= 100%) ── */
+[data-zoom-level="detail"] .tc-compact-stats { display: none; }
+[data-zoom-level="detail"] .tc-sp { padding: 0 8px; min-height: 20px; }
+[data-zoom-level="detail"] .tc-sp-av    { width: 20px; height: 20px; font-size: 8px; }
+[data-zoom-level="detail"] .tc-sp-name  { font-size: 11px; font-weight: 500; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+[data-zoom-level="detail"] .tc-sp-age   { font-size: 10px; color: var(--text-2); }
+[data-zoom-level="detail"] .tc-rating   { display: flex; }
+[data-zoom-level="detail"] .tc-sp-icons { display: flex; }
+[data-zoom-level="detail"] .tc-col-label { font-size: 9px; margin-bottom: 3px; }
+[data-zoom-level="detail"] .tc-stat     { font-size: 10px; }
+[data-zoom-level="detail"] .tc-sp:hover { background: var(--bg-3); border-radius: 6px; }
+
+/* ══════════════════════════════════════════════════════════
+   SCORE OCTAGON BADGE
+══════════════════════════════════════════════════════════ */
+.score-oct {
+  clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; flex-shrink: 0;
+  width: 24px; height: 24px; font-size: 8px;
+  transition: opacity 150ms;
+}
+.score-oct.score-top  { background: #22C55E; color: #000; }  /* USS ≥ 8.5 */
+.score-oct.score-goed { background: #3B82F6; color: #fff; }  /* USS 7.0-8.4 */
+.score-oct.score-gem  { background: #EAB308; color: #000; }  /* USS 5.5-6.9 */
+.score-oct.score-att  { background: #EF4444; color: #fff; }  /* USS < 5.5 */
+
+[data-zoom-level="detail"] .score-oct { width: 24px; height: 24px; font-size: 8px; }
+[data-zoom-level="compact"] .score-oct { display: none; }
+/* Score toggle: canvas zonder .show-scores verbergt badges */
+.canvas:not(.show-scores) .score-oct { display: none; }
+
+/* ── COMPACT STATS RIJ (standaard verborgen, compact-mode zet display:flex) ── */
+.tc-compact-stats { display: none; align-items: center; gap: 8px; }
+.tc-compact-stat  { font-size: 12px; color: var(--text-3); }
+.tc-compact-stat span { color: var(--text-2); font-weight: 600; }
+
+/* ── ANIMATIES ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.team-card { animation: fadeUp 250ms ease both; }
+.team-card:nth-child(1) { animation-delay: 0ms; }
+.team-card:nth-child(2) { animation-delay: 40ms; }
+.team-card:nth-child(3) { animation-delay: 80ms; }
+.team-card:nth-child(4) { animation-delay: 120ms; }
+.team-card:nth-child(5) { animation-delay: 160ms; }
+.team-card:nth-child(6) { animation-delay: 200ms; }
+.team-card:nth-child(7) { animation-delay: 240ms; }
+
+@keyframes validPulse {
+  0%   { box-shadow: var(--sh-card); }
+  50%  { box-shadow: 0 0 0 3px rgba(239,68,68,.25), var(--sh-card); }
+  100% { box-shadow: var(--sh-card); }
+}
+.team-card.pulse-err { animation: validPulse 1.2s ease 3; }
+
+/* Daisy highlight op kaart */
+.team-card.daisy-hl {
+  border-color: rgba(255,107,0,.5);
+  box-shadow: 0 0 0 2px rgba(255,107,0,.2), var(--sh-raise);
+}
+</style>
+
+<!-- ══════════════════════════════════════════════════════════
+     HTML VOORBEELDKAARTEN (3 varianten)
+══════════════════════════════════════════════════════════ -->
+
+<!-- ── VOORBEELD 1: card-achtal (U14-1, Oranje) — OK status, Daisy highlight ── -->
+<div class="team-card card-achtal daisy-hl" id="card-u14-1" style="left:400px; top:60px;"
+  onmousedown="startDrag(event, 'card-u14-1')">
+  <div class="tc-band oranje"></div>
+  <div class="tc-inner">
+    <div class="tc-header">
+      <div class="tc-name">U14-1</div>
+      <div class="tc-vm-badges">
+        <div class="tc-vm v">♀ 4</div>
+        <div class="tc-vm m">♂ 4</div>
+      </div>
+      <div class="tc-val-dot" style="background:var(--ok);" data-tooltip="Voldoet aan alle KNKV-regels"></div>
+      <button class="tc-edit">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Compact stats (alleen zichtbaar in compact-mode) -->
+    <div class="tc-compact-stats">
+      <div class="tc-compact-stat">Gem. <span>13.8j</span></div>
+      <div class="tc-compact-stat">USS <span>7.19</span></div>
+    </div>
+
+    <div class="tc-columns">
+      <div>
+        <div class="tc-col-label">
+          <svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="var(--pink)"/></svg>
+          Dames
+        </div>
+        <div class="tc-sp draggable" onclick="showProfiel(event,'Emma de Wit','v',14,7.8,'U14-1','BESCHIKBAAR','Goede schieter')">
+          <div class="tc-sp-av v">EdW</div>
+          <div class="tc-sp-name">Emma de Wit</div>
+          <div class="tc-sp-age">14</div>
+          <div class="tc-sp-icons"><span class="tc-sp-pin">📌</span></div>
+          <div class="tc-rating hi">7.8</div>
+          <div class="score-oct score-goed" data-uss="7.8">8</div>
+        </div>
+        <div class="tc-sp draggable">
+          <div class="tc-sp-av v">LV</div>
+          <div class="tc-sp-name">Laura Vis</div>
+          <div class="tc-sp-age">13</div>
+          <div class="tc-sp-icons"></div>
+          <div class="tc-rating md">6.9</div>
+          <div class="score-oct score-goed" data-uss="6.9">7</div>
+        </div>
+        <div class="tc-sp draggable">
+          <div class="tc-sp-av v">KM</div>
+          <div class="tc-sp-name">Kim Mol</div>
+          <div class="tc-sp-age">14</div>
+          <div class="tc-sp-icons"><span class="tc-sp-afm">⚠</span></div>
+          <div class="tc-rating md">7.2</div>
+          <div class="score-oct score-goed" data-uss="7.2">7</div>
+        </div>
+        <div class="tc-sp draggable">
+          <div class="tc-sp-av v">PdJ</div>
+          <div class="tc-sp-name">Petra de Jong</div>
+          <div class="tc-sp-age">13</div>
+          <div class="tc-sp-icons"></div>
+          <div class="tc-rating lo">6.1</div>
+          <div class="score-oct score-gem" data-uss="6.1">6</div>
+        </div>
+      </div>
+      <div>
+        <div class="tc-col-label">
+          <svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="var(--blue)"/></svg>
+          Heren
+        </div>
+        <div class="tc-sp draggable">
+          <div class="tc-sp-av m">TS</div>
+          <div class="tc-sp-name">Tom Smeets</div>
+          <div class="tc-sp-age">15</div>
+          <div class="tc-sp-icons"><span class="tc-sp-pin">📌</span></div>
+          <div class="tc-rating hi">7.3</div>
+          <div class="score-oct score-goed" data-uss="7.3">7</div>
+        </div>
+        <div class="tc-sp draggable">
+          <div class="tc-sp-av m">MK</div>
+          <div class="tc-sp-name">Mark Kuijt</div>
+          <div class="tc-sp-age">14</div>
+          <div class="tc-sp-icons"></div>
+          <div class="tc-rating hi">7.6</div>
+          <div class="score-oct score-goed" data-uss="7.6">8</div>
+        </div>
+        <div class="tc-sp draggable">
+          <div class="tc-sp-av m">SH</div>
+          <div class="tc-sp-name">Sander Hoek</div>
+          <div class="tc-sp-age">13</div>
+          <div class="tc-sp-icons"><span class="tc-sp-twijfelt">?</span></div>
+          <div class="tc-rating md">6.7</div>
+          <div class="score-oct score-goed" data-uss="6.7">7</div>
+        </div>
+        <div class="tc-sp draggable">
+          <div class="tc-sp-av m">RB</div>
+          <div class="tc-sp-name">Rick Bosman</div>
+          <div class="tc-sp-age">14</div>
+          <div class="tc-sp-icons"></div>
+          <div class="tc-rating md">7.0</div>
+          <div class="score-oct score-goed" data-uss="7.0">7</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tc-footer">
+      <div class="tc-stat">Gem. <span>13.8j</span></div>
+      <div class="tc-stat">USS <span>7.19</span></div>
+      <button class="tc-notitie has-note" data-tooltip="Notitie: check leeftijdsgrens Kim">📝</button>
+      <div class="tc-note-pill">
+        <span class="tc-note-text">check leeftijdsgrens Kim</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── VOORBEELD 2: card-viertal (U12-1, Geel) — spelers gestapeld ── -->
+<div class="team-card card-viertal" id="card-u12-1" style="left:40px; top:60px;"
+  onmousedown="startDrag(event, 'card-u12-1')">
+  <div class="tc-band geel"></div>
+  <div class="tc-inner">
+    <div class="tc-header">
+      <div class="tc-name">U12-1</div>
+      <div class="tc-vm-badges">
+        <div class="tc-vm v">♀ 4</div>
+        <div class="tc-vm m">♂ 4</div>
+      </div>
+      <div class="tc-val-dot" style="background:var(--ok);"></div>
+      <button class="tc-edit">
+        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+        </svg>
+      </button>
+    </div>
+    <div class="tc-compact-stats">
+      <div class="tc-compact-stat">Gem. <span>11.6j</span></div>
+      <div class="tc-compact-stat">USS <span>6.41</span></div>
+    </div>
+    <!-- Gestapeld: dames bovenste kolom, heren onderste kolom -->
+    <div class="tc-columns">
+      <div class="tc-col">
+        <div class="tc-sp draggable"><div class="tc-sp-av v">FR</div><div class="tc-sp-name">Floor R.</div><div class="tc-sp-age">12</div><div class="tc-rating md">6.9</div><div class="score-oct score-goed" data-uss="6.9">7</div></div>
+        <div class="tc-sp draggable"><div class="tc-sp-av v">ZK</div><div class="tc-sp-name">Zoë Kok</div><div class="tc-sp-age">11</div><div class="tc-rating md">6.5</div><div class="score-oct score-gem" data-uss="6.5">7</div></div>
+      </div>
+      <!-- Scheiding dames/heren in viertal -->
+      <div class="tc-col-separator"></div>
+      <div class="tc-col">
+        <div class="tc-sp draggable"><div class="tc-sp-av m">JK</div><div class="tc-sp-name">Jesse K.</div><div class="tc-sp-age">13</div><div class="tc-rating md">6.2</div><div class="score-oct score-gem" data-uss="6.2">6</div></div>
+        <div class="tc-sp draggable"><div class="tc-sp-av m">KA</div><div class="tc-sp-name">Kees Arens</div><div class="tc-sp-age">11</div><div class="tc-rating lo">6.0</div><div class="score-oct score-gem" data-uss="6.0">6</div></div>
+      </div>
+    </div>
+    <div class="tc-footer">
+      <div class="tc-stat">4 sp <span>6.41</span></div>
+      <button class="tc-notitie">📝</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── VOORBEELD 3: card-selectie (Senioren 1+2) — 4 kolommen ── -->
+<div class="team-card card-selectie" id="card-selectie-sen" style="left:400px; top:310px;"
+  onmousedown="startDrag(event, 'card-selectie-sen')">
+  <div class="tc-band senior"></div>
+  <div class="tc-inner">
+    <div class="tc-header">
+      <div class="tc-name">Senioren 1 + 2</div>
+      <div class="tc-vm-badges">
+        <div class="tc-vm v">♀ 8</div>
+        <div class="tc-vm m">♂ 8</div>
+      </div>
+      <div class="tc-val-dot" style="background:var(--ok);" data-tooltip="Beide teams voldoen aan KNKV-regels"></div>
+      <div class="tc-type-badge">Selectie</div>
+      <button class="tc-edit">
+        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+        </svg>
+      </button>
+    </div>
+    <div class="tc-compact-stats">
+      <div class="tc-compact-stat">16 sp</div>
+      <div class="tc-compact-stat">USS <span>8.30</span></div>
+    </div>
+    <!-- 4 kolommen: dames-1 | dames-2 | heren-1 | heren-2 -->
+    <div class="tc-columns">
+      <div class="tc-col">
+        <div class="tc-col-label"><svg width="7" height="7" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="var(--pink)"/></svg>D-1</div>
+        <div class="tc-sp draggable"><div class="tc-sp-av v">AvL</div><div class="tc-sp-name">Ans v.L.</div><div class="tc-sp-age">28</div><div class="tc-rating hi">8.8</div><div class="score-oct score-top" data-uss="8.8">9</div></div>
+        <div class="tc-sp draggable"><div class="tc-sp-av v">RS</div><div class="tc-sp-name">Roos S.</div><div class="tc-sp-age">25</div><div class="tc-rating hi">8.5</div><div class="score-oct score-top" data-uss="8.5">9</div></div>
+        <div class="tc-sp draggable"><div class="tc-sp-av v">YdK</div><div class="tc-sp-name">Yvonne K.</div><div class="tc-sp-age">23</div><div class="tc-rating hi">8.2</div><div class="score-oct score-top" data-uss="8.2">8</div></div>
+        <div class="tc-sp draggable"><div class="tc-sp-av v">CL</div><div class="tc-sp-name">Carla L.</div><div class="tc-sp-age">27</div><div class="tc-rating hi">8.0</div><div class="score-oct score-top" data-uss="8.0">8</div></div>
+      </div>
+      <div class="tc-col">
+        <div class="tc-col-label"><svg width="7" height="7" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="var(--pink)"/></svg>D-2</div>
+        <div class="tc-sp draggable"><div class="tc-sp-av v">SB</div><div class="tc-sp-name">Sandra B.</div><div class="tc-sp-age">24</div><div class="tc-rating hi">7.9</div><div class="score-oct score-goed" data-uss="7.9">8</div></div>
+        <div class="tc-sp draggable"><div class="tc-sp-av v">TV</div><div class="tc-sp-name">Trees V.</div><div class="tc-sp-age">31</div><div class="tc-rating md">7.3</div><div class="score-oct score-goed" data-uss="7.3">7</div></div>
+        <div class="tc-sp draggable"><div class="tc-sp-av v">HG</div><div class="tc-sp-name">Hanna G.</div><div class="tc-sp-age">22</div><div class="tc-rating md">7.0</div><div class="score-oct score-goed" data-uss="7.0">7</div></div>
+        <div class="tc-sp draggable"><div class="tc-sp-av v">MH</div><div class="tc-sp-name">Maud H.</div><div class="tc-sp-age">17</div><div class="tc-rating hi">7.5</div><div class="score-oct score-goed" data-uss="7.5">8</div></div>
+      </div>
+      <div class="tc-col">
+        <div class="tc-col-label"><svg width="7" height="7" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="var(--blue)"/></svg>H-1</div>
+        <div class="tc-sp draggable"><div class="tc-sp-av m">JP</div><div class="tc-sp-name">Jasper P.</div><div class="tc-sp-age">26</div><div class="tc-rating hi">9.1</div><div class="score-oct score-top" data-uss="9.1">9</div></div>
+        <div class="tc-sp draggable"><div class="tc-sp-av m">TK</div><div class="tc-sp-name">Tim K.</div><div class="tc-sp-age">24</div><div class="tc-rating hi">8.7</div><div class="score-oct score-top" data-uss="8.7">9</div></div>
+        <div class="tc-sp draggable"><div class="tc-sp-av m">GdB</div><div class="tc-sp-name">Gerben B.</div><div class="tc-sp-age">29</div><div class="tc-rating hi">8.4</div><div class="score-oct score-top" data-uss="8.4">8</div></div>
+        <div class="tc-sp draggable"><div class="tc-sp-av m">FH</div><div class="tc-sp-name">Frank H.</div><div class="tc-sp-age">31</div><div class="tc-rating hi">8.1</div><div class="score-oct score-top" data-uss="8.1">8</div></div>
+      </div>
+      <div class="tc-col" style="border-right:none;">
+        <div class="tc-col-label"><svg width="7" height="7" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="var(--blue)"/></svg>H-2</div>
+        <div class="tc-sp draggable"><div class="tc-sp-av m">BM</div><div class="tc-sp-name">Bart M.</div><div class="tc-sp-age">27</div><div class="tc-rating hi">8.3</div><div class="score-oct score-top" data-uss="8.3">8</div></div>
+        <div class="tc-sp draggable"><div class="tc-sp-av m">WdV</div><div class="tc-sp-name">Wim V.</div><div class="tc-sp-age">29</div><div class="tc-rating md">7.2</div><div class="score-oct score-goed" data-uss="7.2">7</div></div>
+        <div class="tc-sp draggable"><div class="tc-sp-av m">JW</div><div class="tc-sp-name">Joris W.</div><div class="tc-sp-age">16</div><div class="tc-rating md">7.0</div><div class="score-oct score-goed" data-uss="7.0">7</div></div>
+        <div class="tc-sp draggable"><div class="tc-sp-av m">PK</div><div class="tc-sp-name">Pieter K.</div><div class="tc-sp-age">15</div><div class="tc-rating md">6.8</div><div class="score-oct score-goed" data-uss="6.8">7</div></div>
+      </div>
+    </div>
+    <div class="tc-footer">
+      <div class="tc-stat">16 sp</div>
+      <div class="tc-stat">gem. USS <span>8.30</span></div>
+      <button class="tc-notitie">📝</button>
+    </div>
+  </div>
+</div>

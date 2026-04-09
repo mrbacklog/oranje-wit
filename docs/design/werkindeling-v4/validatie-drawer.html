@@ -1,0 +1,243 @@
+<!-- REFERENTIE: validatie-drawer — uit werkindeling-v4.html -->
+<!-- Gebruik dit als 1-op-1 referentie voor de React implementatie -->
+<!-- De validatie drawer is een aside rechts (280px breed), sluitbaar via .closed -->
+<!-- Bevat: samenvatting stats grid, team-tabs, per-team validatierapport met val-items -->
+
+<style>
+/* ── VALIDATIE DRAWER WRAPPER ── */
+.drawer-right {
+  width: var(--val-w);
+  background: var(--bg-1);
+  border-left: 1px solid var(--border-0);
+  display: flex; flex-direction: column;
+  flex-shrink: 0;
+  transition: width 200ms ease, opacity 200ms ease;
+  overflow: hidden;
+  position: relative; z-index: 20;
+}
+.drawer-right.closed { width: 0; opacity: 0; pointer-events: none; }
+
+/* ── TEAM TABS ── */
+.val-team-tabs {
+  display: flex; gap: 0;
+  border-bottom: 1px solid var(--border-0);
+  overflow-x: auto; flex-shrink: 0;
+  padding: 0 12px;
+}
+.val-tab {
+  padding: 9px 10px 8px; font-size: 11px; font-weight: 600;
+  cursor: pointer; border: none; background: none;
+  color: var(--text-3); border-bottom: 2px solid transparent;
+  transition: all 100ms; white-space: nowrap; font-family: inherit;
+  display: flex; align-items: center; gap: 5px;
+}
+.val-tab.active { color: var(--text-1); border-bottom-color: var(--accent); }
+.val-tab:hover:not(.active) { color: var(--text-2); }
+.val-err-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+}
+
+/* ── VALIDATIE BODY ── */
+.val-body { flex: 1; overflow-y: auto; padding: 10px 12px; }
+
+.val-section { margin-bottom: 14px; }
+.val-section-title {
+  font-size: 9px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .6px; color: var(--text-3);
+  margin-bottom: 6px;
+  display: flex; align-items: center; gap: 6px;
+}
+.val-section-title::after {
+  content: ''; flex: 1; height: 1px; background: var(--border-0);
+}
+
+/* ── VALIDATIE ITEMS (ok / warn / err) ── */
+.val-item {
+  display: flex; align-items: flex-start; gap: 8px;
+  padding: 8px 10px; border-radius: 8px; margin-bottom: 4px;
+  border: 1px solid transparent;
+}
+.val-item.ok   { background: rgba(34,197,94,.06);  border-color: rgba(34,197,94,.1); }
+.val-item.warn { background: rgba(234,179,8,.06);  border-color: rgba(234,179,8,.1); }
+.val-item.err  { background: rgba(239,68,68,.06);  border-color: rgba(239,68,68,.1); }
+
+.val-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+.val-content { flex: 1; }
+.val-rule { font-size: 12px; font-weight: 600; margin-bottom: 2px; }
+.val-desc { font-size: 11px; color: var(--text-3); line-height: 1.4; }
+.val-fix {
+  display: inline-flex; align-items: center; gap: 4px;
+  margin-top: 6px; padding: 3px 8px; border-radius: 5px;
+  font-size: 10px; font-weight: 600; cursor: pointer; border: none;
+  background: rgba(255,107,0,.12); color: var(--accent); font-family: inherit;
+  transition: all 100ms;
+}
+.val-fix:hover { background: rgba(255,107,0,.2); }
+
+/* ── STATISTIEKEN GRID ── */
+.val-stats-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 6px; margin-bottom: 10px;
+}
+.val-stat-card {
+  background: var(--bg-2); border: 1px solid var(--border-0);
+  border-radius: 8px; padding: 8px 10px;
+}
+.val-stat-label { font-size: 9px; color: var(--text-3); text-transform: uppercase; letter-spacing: .4px; margin-bottom: 3px; }
+.val-stat-value { font-size: 18px; font-weight: 700; }
+.val-stat-sub { font-size: 10px; color: var(--text-3); }
+
+/* ── DRAWER HEADER (gedeeld met pool drawer) ── */
+.drawer-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 12px 8px;
+  border-bottom: 1px solid var(--border-0);
+  flex-shrink: 0;
+}
+.drawer-title {
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .7px;
+  color: var(--text-3);
+}
+.drawer-actions { display: flex; align-items: center; gap: 4px; }
+.icon-btn {
+  width: 26px; height: 26px; border-radius: 6px;
+  background: none; border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-3); transition: all 100ms; font-size: 13px;
+}
+.icon-btn:hover { background: var(--bg-3); color: var(--text-1); }
+</style>
+
+<!-- HTML fragment -->
+<aside class="drawer-right" id="drawerVal">
+  <div class="drawer-header">
+    <div class="drawer-title">Validatierapport</div>
+    <div class="drawer-actions">
+      <button class="icon-btn" onclick="togglePanel('val')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Samenvatting stats -->
+  <div style="padding:10px 12px; border-bottom:1px solid var(--border-0);">
+    <div class="val-stats-grid">
+      <div class="val-stat-card">
+        <div class="val-stat-label">Teams OK</div>
+        <div class="val-stat-value" style="color:var(--ok);">4</div>
+        <div class="val-stat-sub">van 6 totaal</div>
+      </div>
+      <div class="val-stat-card">
+        <div class="val-stat-label">Fouten</div>
+        <div class="val-stat-value" style="color:var(--err);">2</div>
+        <div class="val-stat-sub">in Sen 3 D1</div>
+      </div>
+      <div class="val-stat-card">
+        <div class="val-stat-label">Waarschuw.</div>
+        <div class="val-stat-value" style="color:var(--warn);">1</div>
+        <div class="val-stat-sub">in U16-1</div>
+      </div>
+      <div class="val-stat-card">
+        <div class="val-stat-label">Ingedeeld</div>
+        <div class="val-stat-value">79%</div>
+        <div class="val-stat-sub">95 / 121</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Team tabs -->
+  <div class="val-team-tabs">
+    <button class="val-tab" onclick="switchValTab(this, 'all')" id="vt-all">
+      Alle
+      <div class="val-err-dot" style="background:var(--err);"></div>
+    </button>
+    <button class="val-tab" onclick="switchValTab(this, 'sen3')">
+      Sen 3 D1
+      <div class="val-err-dot" style="background:var(--err);"></div>
+    </button>
+    <button class="val-tab active" onclick="switchValTab(this, 'u16')">
+      U16-1
+      <div class="val-err-dot" style="background:var(--warn);"></div>
+    </button>
+    <button class="val-tab" onclick="switchValTab(this, 'u14')">
+      U14-1
+      <div class="val-err-dot" style="background:var(--ok);"></div>
+    </button>
+  </div>
+
+  <div class="val-body">
+
+    <!-- U16-1 rapport -->
+    <div class="val-section">
+      <div class="val-section-title">U16-1 · Rood categorie</div>
+
+      <div class="val-item warn">
+        <div class="val-icon">⚠️</div>
+        <div class="val-content">
+          <div class="val-rule">Te weinig dames</div>
+          <div class="val-desc">KNKV vereist minimaal 4 dames bij 8-tal. Huidig: 3 dames, 4 heren.</div>
+          <button class="val-fix" onclick="highlightCard('card-u16-1')">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            Dame toevoegen
+          </button>
+        </div>
+      </div>
+
+      <div class="val-item ok">
+        <div class="val-icon">✅</div>
+        <div class="val-content">
+          <div class="val-rule">Leeftijdsgrenzen</div>
+          <div class="val-desc">Alle spelers vallen binnen het U16 leeftijdsbereik (14–16 jaar).</div>
+        </div>
+      </div>
+
+      <div class="val-item ok">
+        <div class="val-icon">✅</div>
+        <div class="val-content">
+          <div class="val-rule">Teamgrootte</div>
+          <div class="val-desc">7 van 8 posities ingevuld. Minimum is 6 spelers voor aanvang competitie.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Speler-specifiek -->
+    <div class="val-section">
+      <div class="val-section-title">Speler-specifiek</div>
+
+      <div class="val-item warn">
+        <div class="val-icon">⚠️</div>
+        <div class="val-content">
+          <div class="val-rule">Robin Vermeer — afmeldingsdatum</div>
+          <div class="val-desc">Afgemeld tot 15 mei. Eerste speelronde is 10 mei — risico voor startopstelling.</div>
+          <button class="val-fix">📋 Notitie plaatsen</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Aanbevelingen -->
+    <div class="val-section">
+      <div class="val-section-title">Aanbevelingen</div>
+
+      <div class="val-item" style="background:var(--bg-2); border-color:var(--border-1);">
+        <div class="val-icon">💡</div>
+        <div class="val-content">
+          <div class="val-rule">Lisa Janssen beschikbaar</div>
+          <div class="val-desc">Lisa (16j, USS 8.2) staat zonder team en past perfect in U16-1 als dame nr. 4.</div>
+          <button class="val-fix" onclick="daisySuggest()">✦ Daisy toevoegen</button>
+        </div>
+      </div>
+
+      <div class="val-item" style="background:var(--bg-2); border-color:var(--border-1);">
+        <div class="val-icon">💡</div>
+        <div class="val-content">
+          <div class="val-rule">Teamsterkte vergelijking</div>
+          <div class="val-desc">U16-1 (USS 7.60) vs U16-2 (USS 6.80): verschil 0.80. KNKV-richtlijn: max 0.70.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /val-body -->
+</aside>
