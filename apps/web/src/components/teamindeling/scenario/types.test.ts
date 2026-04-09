@@ -111,13 +111,17 @@ describe("kleurIndicatie", () => {
 });
 
 describe("getDetailLevel", () => {
-  it("returns overzicht below 0.85", () => {
-    expect(getDetailLevel(0.25)).toBe("overzicht");
-    expect(getDetailLevel(0.55)).toBe("overzicht");
-    expect(getDetailLevel(0.84)).toBe("overzicht");
+  it("returns compact below 0.64", () => {
+    expect(getDetailLevel(0.25)).toBe("compact");
+    expect(getDetailLevel(0.55)).toBe("compact");
+    expect(getDetailLevel(0.63)).toBe("compact");
   });
-  it("returns detail at 0.85 and above", () => {
-    expect(getDetailLevel(0.85)).toBe("detail");
+  it("returns normaal between 0.64 and 1.00", () => {
+    expect(getDetailLevel(0.64)).toBe("normaal");
+    expect(getDetailLevel(0.80)).toBe("normaal");
+    expect(getDetailLevel(0.99)).toBe("normaal");
+  });
+  it("returns detail at 1.00 and above", () => {
     expect(getDetailLevel(1.0)).toBe("detail");
     expect(getDetailLevel(1.2)).toBe("detail");
     expect(getDetailLevel(1.5)).toBe("detail");

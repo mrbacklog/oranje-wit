@@ -164,7 +164,7 @@ export default function Werkgebied({
       {/* Zoomable grid */}
       <GestureCanvas>
         {(zoomDetailLevel) => {
-          const detailLevel = compactMode ? ("overzicht" as const) : zoomDetailLevel;
+          const detailLevel = compactMode ? ("compact" as const) : zoomDetailLevel;
           return zichtbareTeams.length === 0 ? (
             <div className="flex h-[400px] items-center justify-center">
               <p className="text-sm" style={{ color: "var(--text-secondary)" }}>

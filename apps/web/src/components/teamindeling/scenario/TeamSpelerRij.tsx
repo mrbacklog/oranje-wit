@@ -68,49 +68,43 @@ export default function TeamSpelerRij({
   const bgWarning = heeftAfmelding ? "bg-red-900/20" : (STATUS_BG[status] ?? "");
   const isWarning = heeftAfmelding || status === "TWIJFELT" || status === "GAAT_STOPPEN";
 
+  // In compact is de parent TeamKaart geen spelerslijst — rij is niet zichtbaar
+  if (dl === "compact") {
+    return null;
+  }
+
   return (
     <div
       ref={setNodeRef}
+      {...listeners}
+      {...attributes}
       data-speler-id={speler.id}
       style={style}
       className={`flex items-center gap-1 rounded-r border-l-2 px-1 ${borderLeft} ${
         isDragging ? "bg-surface-raised opacity-40" : bgWarning || "hover:bg-surface-raised"
-      } py-px`}
+      } cursor-grab touch-none py-px`}
     >
-      {/* Drag handle — SVG grip dots */}
-      {dl === "detail" && (
-        <span
-          {...listeners}
-          {...attributes}
-          data-dnd-draggable
-          className="text-text-muted hover:text-text-secondary shrink-0 cursor-grab touch-none"
-          title="Versleep"
-        >
-          <svg className="h-2 w-2" viewBox="0 0 10 16" fill="currentColor">
-            <circle cx="3" cy="2" r="1" />
-            <circle cx="7" cy="2" r="1" />
-            <circle cx="3" cy="6" r="1" />
-            <circle cx="7" cy="6" r="1" />
-            <circle cx="3" cy="10" r="1" />
-            <circle cx="7" cy="10" r="1" />
-          </svg>
-        </span>
-      )}
-
       {/* Naam + metadata */}
       <div className="flex min-w-0 flex-1 flex-col">
-        {/* Regel 1: naam — volledige regelhoogte */}
+        {/* Regel 1: naam — altijd zichtbaar in normaal + detail */}
         <span
           className={`text-text-primary truncate text-[10px] leading-none font-medium ${
             onSpelerClick ? "cursor-pointer hover:text-orange-600" : ""
           } ${isWarning ? "italic" : ""}`}
-          onClick={onSpelerClick ? () => onSpelerClick(speler) : undefined}
+          onClick={
+            onSpelerClick
+              ? (e) => {
+                  e.stopPropagation();
+                  onSpelerClick(speler);
+                }
+              : undefined
+          }
         >
           {speler.roepnaam} {speler.achternaam}
           {heeftAfmelding && <AfmeldBadge afmelddatum={speler.afmelddatum!} />}
         </span>
 
-        {/* Regel 2: vorig team — halve regelhoogte */}
+        {/* Regel 2: vorig team — alleen bij detail */}
         {dl === "detail" && (
           <div className="text-text-secondary text-[8px] leading-none">
             <span className="truncate">{vorigTeam ?? "\u2014"}</span>
@@ -123,15 +117,15 @@ export default function TeamSpelerRij({
         {/* Ranking badge */}
         {showRanking && leeftijd < 20 && <RankingBadge rating={speler.rating} size="compact" />}
 
-        {/* Leeftijd */}
+        {/* Leeftijd — alleen bij detail */}
         {dl === "detail" && (
           <span className="text-text-secondary shrink-0 text-[8px] tabular-nums">
             {leeftijd.toFixed(2)}
           </span>
         )}
 
-        {/* Pin indicator */}
-        {isPinned && (
+        {/* Pin indicator — alleen bij detail */}
+        {dl === "detail" && isPinned && (
           <svg
             className="h-2 w-2 text-purple-500"
             viewBox="0 0 24 24"
@@ -142,8 +136,8 @@ export default function TeamSpelerRij({
           </svg>
         )}
 
-        {/* Notitie indicator */}
-        {heeftNotitie && (
+        {/* Notitie indicator — alleen bij detail */}
+        {dl === "detail" && heeftNotitie && (
           <svg
             className="h-2 w-2 text-amber-400"
             viewBox="0 0 24 24"
@@ -154,8 +148,8 @@ export default function TeamSpelerRij({
           </svg>
         )}
 
-        {/* Waarschuwing icoon bij TWIJFELT/GAAT_STOPPEN */}
-        {status === "GAAT_STOPPEN" && (
+        {/* Waarschuwing icoon — alleen bij detail */}
+        {dl === "detail" && status === "GAAT_STOPPEN" && (
           <svg
             className="h-2.5 w-2.5 text-red-400"
             viewBox="0 0 24 24"
@@ -167,7 +161,7 @@ export default function TeamSpelerRij({
             <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" />
           </svg>
         )}
-        {status === "TWIJFELT" && (
+        {dl === "detail" && status === "TWIJFELT" && (
           <svg
             className="h-2.5 w-2.5 text-amber-500"
             viewBox="0 0 24 24"
@@ -178,7 +172,7 @@ export default function TeamSpelerRij({
           </svg>
         )}
 
-        {/* Kleurindicatie dot */}
+        {/* Kleurindicatie dot — alleen bij detail */}
         {dl === "detail" && kleur && (
           <span
             className={`h-1.5 w-1.5 shrink-0 rounded-full ring-1 ${KLEUR_DOT[kleur]}`}

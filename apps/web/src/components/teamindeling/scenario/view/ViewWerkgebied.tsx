@@ -57,7 +57,7 @@ export default function ViewWerkgebied({
   return (
     <GestureCanvas>
       {(zoomDetailLevel) => {
-        const detailLevel = compactMode ? ("overzicht" as const) : zoomDetailLevel;
+        const detailLevel = compactMode ? ("compact" as const) : zoomDetailLevel;
         return teams.length === 0 ? (
           <div className="flex h-[400px] items-center justify-center">
             <p className="text-sm text-gray-400">Dit scenario heeft nog geen teams.</p>

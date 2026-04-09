@@ -343,9 +343,11 @@ export function berekenJIndicaties(
   return map;
 }
 
-// Zoom detail-niveaus: 2 standen (55% overzicht, 120% detail)
-export type DetailLevel = "overzicht" | "detail";
+// Zoom detail-niveaus: 3 standen (compact / normaal / detail)
+export type DetailLevel = "compact" | "normaal" | "detail";
 
 export function getDetailLevel(zoomScale: number): DetailLevel {
-  return zoomScale >= 0.85 ? "detail" : "overzicht";
+  if (zoomScale < 0.64) return "compact";
+  if (zoomScale < 1.0) return "normaal";
+  return "detail";
 }

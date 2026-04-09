@@ -152,7 +152,7 @@ export default function SelectieBlok({
             ) : (
               <h4
                 className={`truncate font-semibold text-gray-900 ${
-                  dl === "overzicht" ? "text-xs" : "text-[11px]"
+                  dl === "compact" ? "text-xs" : "text-[11px]"
                 } ${dl === "detail" && onUpdateNaam ? "cursor-pointer hover:text-orange-600" : ""}`}
                 title={teamNamen}
                 onClick={
@@ -263,8 +263,8 @@ export default function SelectieBlok({
           </div>
         )}
 
-        {/* ── Body: overzicht = grote stats, detail = spelerrijen ── */}
-        {dl === "overzicht" ? (
+        {/* ── Body: compact = grote stats, normaal/detail = spelerrijen ── */}
+        {dl === "compact" ? (
           <div
             ref={setNodeRef}
             className="flex flex-1 flex-col items-center justify-center gap-2 px-2"
@@ -294,7 +294,7 @@ export default function SelectieBlok({
         )}
 
         {/* ── Footer: alerts + gem. leeftijd ── */}
-        {dl !== "overzicht" && (
+        {dl !== "compact" && (
           <div className="mt-auto flex items-center justify-between border-t border-orange-100 px-1.5 py-0.5">
             <div className="flex items-center gap-1">
               {meldingen.length > 0 && (

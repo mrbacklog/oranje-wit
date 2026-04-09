@@ -40,7 +40,8 @@ export default function DndProvider({
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 5,
+        delay: 300, // 300ms lang indrukken = drag start
+        tolerance: 5, // 5px beweging = ook drag start
       },
     })
   );

@@ -116,7 +116,7 @@ export default function ViewTeamKaart({
             )}
             <h4
               className={`truncate font-semibold text-gray-900 ${
-                dl === "overzicht" ? "text-xs" : "text-[11px]"
+                dl === "compact" ? "text-xs" : "text-[11px]"
               }`}
             >
               {weergaveNaam}
@@ -147,7 +147,7 @@ export default function ViewTeamKaart({
         </div>
 
         {/* Body */}
-        {dl === "overzicht" ? (
+        {dl === "compact" ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-2 px-2">
             <div className="flex items-center gap-3 text-base">
               <span className="font-semibold text-pink-500">♀ {aantalV}</span>
@@ -280,7 +280,7 @@ export default function ViewTeamKaart({
         )}
 
         {/* Footer */}
-        {dl !== "overzicht" && (
+        {dl !== "compact" && (
           <div
             className={`mt-auto flex items-center justify-between px-1.5 py-0.5 ${footerBorder}`}
           >

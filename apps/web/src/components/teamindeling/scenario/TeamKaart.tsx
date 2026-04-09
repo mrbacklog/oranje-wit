@@ -100,9 +100,11 @@ export default function TeamKaart({
   const { w: cardWidth, h: cardHeight } = getCardSize(team.teamType ?? "ACHTAL", false);
   const isDouble = (team.teamType ?? "ACHTAL") !== "VIERTAL";
 
-  // Compenseer tekst voor zoom
+  // Compenseer tekst voor zoom — alleen bij compact
   const zoomScale = useZoomScale();
-  const textScale = zoomScale < 1 ? 1 / Math.max(zoomScale, 0.5) : 1;
+  const targetReadableZoom = 0.8;
+  const inverseScale =
+    dl === "compact" && zoomScale < 0.64 ? targetReadableZoom / Math.max(zoomScale, 0.4) : 1;
 
   // Validatie meldingen voor footer
   const meldingen = validatie?.meldingen ?? [];
@@ -138,19 +140,22 @@ export default function TeamKaart({
       />
       <div
         style={
-          textScale > 1
+          inverseScale > 1
             ? {
-                transform: `scale(${textScale})`,
+                transform: `scale(${inverseScale})`,
                 transformOrigin: "top left",
-                width: `${100 / textScale}%`,
-                height: `${100 / textScale}%`,
+                width: `${100 / inverseScale}%`,
+                height: `${100 / inverseScale}%`,
               }
             : undefined
         }
         className="flex h-full flex-col"
       >
         {/* ── Header: [drag] TEAMNAAM [badges] [acties] ── */}
-        <div className={`flex items-center justify-between px-1.5 py-1 ${headerBorder}`}>
+        <div
+          style={{ height: 36 }}
+          className={`flex items-center justify-between px-1.5 py-1 ${headerBorder}`}
+        >
           <div className="relative flex min-w-0 items-center gap-1">
             {dl === "detail" && (
               <span className="shrink-0 text-[var(--text-tertiary)]">
@@ -173,7 +178,7 @@ export default function TeamKaart({
             <h4
               onClick={() => onEditTeam?.(team.id)}
               className={`text-text-primary hover:text-ow-oranje cursor-pointer truncate font-extrabold transition-colors ${
-                dl === "overzicht" ? "text-xs" : "text-[11px]"
+                dl === "compact" ? "text-xs" : "text-[11px]"
               }`}
               style={{ letterSpacing: "-0.2px" }}
             >
@@ -266,8 +271,8 @@ export default function TeamKaart({
           )}
         </div>
 
-        {/* ── Body: overzicht = grote stats, detail = spelerrijen ── */}
-        {dl === "overzicht" ? (
+        {/* ── Body: compact = grote stats, normaal/detail = spelerrijen ── */}
+        {dl === "compact" ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-2 px-2">
             <div className="flex items-center gap-3 text-base">
               <span className="font-semibold text-pink-500">♀ {aantalV}</span>
@@ -401,10 +406,11 @@ export default function TeamKaart({
           </div>
         )}
 
-        {/* ── Footer: alerts + gem. leeftijd ── */}
-        {dl !== "overzicht" && (
+        {/* ── Footer: alerts + gem. leeftijd — altijd zichtbaar behalve compact ── */}
+        {dl !== "compact" && (
           <div
-            className={`mt-auto flex items-center justify-between px-1.5 py-0.5 ${footerBorder}`}
+            style={{ height: 28 }}
+            className={`flex items-center justify-between px-1.5 py-0.5 ${footerBorder}`}
           >
             <div className="flex items-center gap-1">
               {meldingen.length > 0 && (
