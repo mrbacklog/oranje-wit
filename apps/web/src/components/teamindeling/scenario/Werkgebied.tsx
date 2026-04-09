@@ -33,6 +33,7 @@ interface WerkgebiedProps {
   onRepositionCard: (cardId: string, deltaX: number, deltaY: number) => void;
   /** What-if zone per teamId — als ingesteld wordt de zone-overlay getoond */
   whatIfZones?: Map<string, WhatIfZone>;
+  onZoomLabelChange?: (label: string) => void;
 }
 
 export default function Werkgebied({
@@ -53,6 +54,7 @@ export default function Werkgebied({
   positions,
   onRepositionCard,
   whatIfZones,
+  onZoomLabelChange,
 }: WerkgebiedProps) {
   const [geselecteerd, setGeselecteerd] = useState<Set<string>>(new Set());
 
@@ -162,7 +164,7 @@ export default function Werkgebied({
       )}
 
       {/* Zoomable grid */}
-      <GestureCanvas>
+      <GestureCanvas onZoomLabelChange={onZoomLabelChange}>
         {(zoomDetailLevel) => {
           const detailLevel = compactMode ? ("compact" as const) : zoomDetailLevel;
           return zichtbareTeams.length === 0 ? (

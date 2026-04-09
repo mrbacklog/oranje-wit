@@ -208,20 +208,34 @@ export default function TeamKaart({
               />
             )}
           </div>
-          {dl === "detail" && (
-            <div className="flex shrink-0 items-center gap-0.5">
-              {notitieCount != null && notitieCount > 0 && (
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onNotitiesClick?.(team.alias ?? team.naam);
-                  }}
-                  className="inline-flex h-3 min-w-3 items-center justify-center rounded-full bg-orange-500 px-0.5 text-[7px] font-bold text-white hover:bg-orange-600"
-                  title={`${notitieCount} notitie(s)`}
-                >
-                  {notitieCount}
-                </button>
-              )}
+          <div className="flex shrink-0 items-center gap-0.5">
+            {/* V♀ badge — altijd zichtbaar */}
+            <span
+              className="rounded px-1 py-px text-[9px] font-semibold"
+              style={{ background: "rgba(236,72,153,0.12)", color: "#EC4899" }}
+            >
+              ♀{aantalV}
+            </span>
+            {/* M♂ badge — altijd zichtbaar */}
+            <span
+              className="rounded px-1 py-px text-[9px] font-semibold"
+              style={{ background: "rgba(96,165,250,0.12)", color: "#60A5FA" }}
+            >
+              ♂{aantalM}
+            </span>
+            {dl === "detail" && notitieCount != null && notitieCount > 0 && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onNotitiesClick?.(team.alias ?? team.naam);
+                }}
+                className="inline-flex h-3 min-w-3 items-center justify-center rounded-full bg-orange-500 px-0.5 text-[7px] font-bold text-white hover:bg-orange-600"
+                title={`${notitieCount} notitie(s)`}
+              >
+                {notitieCount}
+              </button>
+            )}
+            {dl === "detail" && (
               <button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -239,36 +253,37 @@ export default function TeamKaart({
                   />
                 </svg>
               </button>
-              {onDelete &&
-                (deleteBevestig ? (
-                  <button
-                    onClick={() => {
-                      if (deleteTimerRef.current) clearTimeout(deleteTimerRef.current);
-                      setDeleteBevestig(false);
-                      onDelete(team.id);
-                    }}
-                    onBlur={() => {
-                      if (deleteTimerRef.current) clearTimeout(deleteTimerRef.current);
-                      setDeleteBevestig(false);
-                    }}
-                    className="animate-pulse text-[8px] font-medium text-red-600 hover:text-red-700"
-                  >
-                    Bevestig?
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => {
-                      setDeleteBevestig(true);
-                      deleteTimerRef.current = setTimeout(() => setDeleteBevestig(false), 3000);
-                    }}
-                    className="text-text-muted text-[10px] hover:text-red-500"
-                    title="Verwijder team"
-                  >
-                    &times;
-                  </button>
-                ))}
-            </div>
-          )}
+            )}
+            {dl === "detail" &&
+              onDelete &&
+              (deleteBevestig ? (
+                <button
+                  onClick={() => {
+                    if (deleteTimerRef.current) clearTimeout(deleteTimerRef.current);
+                    setDeleteBevestig(false);
+                    onDelete(team.id);
+                  }}
+                  onBlur={() => {
+                    if (deleteTimerRef.current) clearTimeout(deleteTimerRef.current);
+                    setDeleteBevestig(false);
+                  }}
+                  className="animate-pulse text-[8px] font-medium text-red-600 hover:text-red-700"
+                >
+                  Bevestig?
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    setDeleteBevestig(true);
+                    deleteTimerRef.current = setTimeout(() => setDeleteBevestig(false), 3000);
+                  }}
+                  className="text-text-muted text-[10px] hover:text-red-500"
+                  title="Verwijder team"
+                >
+                  &times;
+                </button>
+              ))}
+          </div>
         </div>
 
         {/* ── Body: compact = grote stats, normaal/detail = spelerrijen ── */}

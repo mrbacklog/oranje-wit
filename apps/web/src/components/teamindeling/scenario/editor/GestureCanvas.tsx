@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import { useCanvasGesture } from "../hooks/useCanvasGesture";
 import { getDetailLevel } from "../types";
 import type { DetailLevel } from "../types";
@@ -8,13 +8,25 @@ import { ZoomScaleProvider } from "./ZoomScaleContext";
 
 interface GestureCanvasProps {
   children: (detailLevel: DetailLevel) => React.ReactNode;
+  onZoomLabelChange?: (label: string) => void;
 }
 
-export default function GestureCanvas({ children }: GestureCanvasProps) {
+function getZoomLabel(scale: number): string {
+  if (scale < 0.64) return "Compact";
+  if (scale < 1.0) return "Normaal";
+  return "Detail";
+}
+
+export default function GestureCanvas({ children, onZoomLabelChange }: GestureCanvasProps) {
   const { transform, containerRef, toggleZoom, zoomIn, zoomOut, resetZoom } = useCanvasGesture();
   const detailLevel = useMemo(() => getDetailLevel(transform.scale), [transform.scale]);
   const isDetail = detailLevel === "detail";
   const zoomPct = Math.round(transform.scale * 100);
+  const zoomLabel = getZoomLabel(transform.scale);
+
+  useEffect(() => {
+    onZoomLabelChange?.(zoomLabel);
+  }, [zoomLabel, onZoomLabelChange]);
 
   return (
     <div className="relative flex-1 overflow-hidden">
@@ -22,6 +34,7 @@ export default function GestureCanvas({ children }: GestureCanvasProps) {
         ref={containerRef}
         className="h-full w-full overflow-hidden"
         style={{ touchAction: "none" }}
+        data-zoom-level={detailLevel}
       >
         <div
           style={
