@@ -6,7 +6,7 @@ import type { TeamValidatie } from "@/lib/teamindeling/validatie/regels";
 import type { useScenarioEditor } from "../hooks/useScenarioEditor";
 import type { useWhatIf } from "../hooks/useWhatIf";
 import type { VersieRij } from "@/components/teamindeling/werkindeling/VersiesDrawer";
-import { SpelerProfielDialog, TeamoverzichtDialog, DaisyWidget } from "@/components/ti-studio";
+import { TeamoverzichtDialog, DaisyWidget } from "@/components/ti-studio";
 import EditorDialogs from "./EditorDialogs";
 import WhatIfSidebar from "./WhatIfSidebar";
 import WhatIfStartDialoog from "./WhatIfStartDialoog";
@@ -27,7 +27,6 @@ interface EditorOverlaysProps {
   whatIfOpen: boolean;
   whatIfDialoogOpen: boolean;
   versiesOpen: boolean;
-  spelerProfielId: string | null;
   teamOverzichtTeam: TeamData | null;
   // Setters
   onCloseNieuwTeam: () => void;
@@ -39,7 +38,6 @@ interface EditorOverlaysProps {
   onOpenWhatIf: () => void;
   onCloseWhatIfDialoog: () => void;
   onCloseVersies: () => void;
-  onCloseSpelerProfiel: () => void;
   onCloseTeamOverzicht: () => void;
 }
 
@@ -57,7 +55,6 @@ export default function EditorOverlays({
   whatIfOpen,
   whatIfDialoogOpen,
   versiesOpen,
-  spelerProfielId,
   teamOverzichtTeam,
   onCloseNieuwTeam,
   onCloseRapport,
@@ -68,7 +65,6 @@ export default function EditorOverlays({
   onOpenWhatIf,
   onCloseWhatIfDialoog,
   onCloseVersies,
-  onCloseSpelerProfiel,
   onCloseTeamOverzicht,
 }: EditorOverlaysProps) {
   return (
@@ -125,12 +121,6 @@ export default function EditorOverlays({
         versies={versieRijen}
         gebruikerEmail={gebruikerEmail}
         onClose={onCloseVersies}
-      />
-
-      <SpelerProfielDialog
-        spelerId={spelerProfielId}
-        open={!!spelerProfielId}
-        onClose={onCloseSpelerProfiel}
       />
 
       <TeamoverzichtDialog

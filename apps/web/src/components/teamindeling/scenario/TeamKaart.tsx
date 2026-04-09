@@ -6,11 +6,9 @@ import type { TeamData, SpelerData, DetailLevel } from "./types";
 import type { TeamValidatie } from "@/lib/teamindeling/validatie/regels";
 import { korfbalLeeftijd, sorteerSpelers } from "./types";
 import {
-  categorieRandKlassen,
   categorieAchtergrond,
   categorieHeaderBorder,
   categorieFooterBorder,
-  validatieRingKlassen,
   teamKleurGradient,
 } from "@/lib/teamindeling/teamKaartStijl";
 import { getCardSize } from "./editor/cardSizes";
@@ -84,11 +82,9 @@ export default function TeamKaart({
   const dames = gesorteerd.filter((ts) => ts.speler.geslacht === "V");
 
   // Stijlen
-  const randKlassen = categorieRandKlassen(team.categorie, team.kleur);
   const achtergrond = categorieAchtergrond(team.categorie, team.kleur);
   const headerBorder = categorieHeaderBorder(team.categorie, team.kleur);
   const footerBorder = categorieFooterBorder(team.categorie, team.kleur);
-  const ringKlassen = validatieRingKlassen(validatie?.status, isOver);
 
   const { w: cardWidth, h: cardHeight } = getCardSize(team.teamType ?? "ACHTAL", false);
   const isDouble = (team.teamType ?? "ACHTAL") !== "VIERTAL";
@@ -106,12 +102,23 @@ export default function TeamKaart({
         width: cardWidth,
         height: cardHeight,
         position: "relative",
-        ...(isHovered && {
-          borderColor: "rgba(255,107,0,0.3)",
-          boxShadow: "0 0 0 1px rgba(255,107,0,0.08), 0 4px 16px rgba(0,0,0,0.3)",
-        }),
+        border:
+          validatie?.status === "ROOD"
+            ? "2px solid rgba(239,68,68,0.6)"
+            : validatie?.status === "ORANJE"
+              ? "1px solid rgba(249,115,22,0.4)"
+              : isOver
+                ? "1px solid rgba(255,107,0,0.5)"
+                : isHovered
+                  ? "1px solid rgba(255,107,0,0.3)"
+                  : "1px solid var(--border-default)",
+        boxShadow: isOver
+          ? "0 0 0 2px rgba(255,107,0,0.2), 0 4px 16px rgba(0,0,0,0.4)"
+          : isHovered
+            ? "0 0 0 1px rgba(255,107,0,0.08), 0 4px 16px rgba(0,0,0,0.3)"
+            : "0 2px 4px rgba(0,0,0,.5), 0 8px 24px rgba(0,0,0,.35)",
       }}
-      className={`flex flex-col rounded-xl transition-colors ${randKlassen} ${achtergrond} ${ringKlassen}`}
+      className={`flex flex-col rounded-xl transition-colors ${achtergrond}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >

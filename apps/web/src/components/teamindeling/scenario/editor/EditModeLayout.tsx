@@ -59,7 +59,6 @@ export default function EditModeLayout({
   const [whatIfDialoogOpen, setWhatIfDialoogOpen] = useState(false);
   const [versiesOpen, setVersiesOpen] = useState(false);
   const [zoomLabel, setZoomLabel] = useState("Normaal");
-  const [spelerProfielId, setSpelerProfielId] = useState<string | null>(null);
   const [teamOverzichtTeam, setTeamOverzichtTeam] = useState<TeamData | null>(null);
   const syncLockRef = useRef(false);
 
@@ -111,7 +110,6 @@ export default function EditModeLayout({
 
   const handleSpelerProfielOpen = useCallback(
     (speler: SpelerData) => {
-      setSpelerProfielId(speler.id);
       editor.handleSpelerClick(speler);
     },
     [editor]
@@ -311,7 +309,6 @@ export default function EditModeLayout({
           whatIfOpen={whatIfOpen}
           whatIfDialoogOpen={whatIfDialoogOpen}
           versiesOpen={versiesOpen}
-          spelerProfielId={spelerProfielId}
           teamOverzichtTeam={teamOverzichtTeam}
           onCloseNieuwTeam={() => setNieuwTeamOpen(false)}
           onCloseRapport={handleCloseRapport}
@@ -322,7 +319,6 @@ export default function EditModeLayout({
           onOpenWhatIf={() => setWhatIfOpen(true)}
           onCloseWhatIfDialoog={() => setWhatIfDialoogOpen(false)}
           onCloseVersies={() => setVersiesOpen(false)}
-          onCloseSpelerProfiel={() => setSpelerProfielId(null)}
           onCloseTeamOverzicht={() => setTeamOverzichtTeam(null)}
         />
       </div>
