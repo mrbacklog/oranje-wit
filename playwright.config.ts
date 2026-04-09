@@ -44,6 +44,16 @@ export default defineConfig({
       },
       dependencies: ["setup"],
     },
+    {
+      name: "production",
+      testMatch: /.*production-verify\.spec\.ts/,
+      use: {
+        ...devices["Desktop Chrome"],
+        storageState: "./e2e/.auth/production.json",
+        baseURL: "https://www.ckvoranjewit.app",
+      },
+      dependencies: ["setup"],
+    },
   ],
   webServer: {
     command: "pnpm dev:web",

@@ -15,6 +15,8 @@ const PAGES = [
 ];
 
 test.describe("Productie verificatie — key pages", () => {
+  test.skip(!!process.env.CI, "Productie verificatie alleen lokaal uitvoeren");
+
   for (const pagina of PAGES) {
     test(`${pagina.naam} laadt correct`, async ({ page }) => {
       test.setTimeout(30000);
@@ -55,7 +57,7 @@ test.describe("Productie verificatie — key pages", () => {
         .toLowerCase();
       await page.screenshot({
         path: `e2e/screenshots/${projectName}-${pagina.naam.toLowerCase().replace(/[^a-z0-9]/g, "-")}.png`,
-        fullPage: false,
+        fullPage: true,
       });
     });
   }
