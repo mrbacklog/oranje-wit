@@ -167,6 +167,7 @@ export default function TeamKaart({
           isDouble={isDouble}
           pinnedSpelerIds={pinnedSpelerIds}
           showRanking={showRanking}
+          teamSterkte={teamSterkte}
           onSpelerClick={onSpelerClick}
         />
         {dl !== "compact" && (

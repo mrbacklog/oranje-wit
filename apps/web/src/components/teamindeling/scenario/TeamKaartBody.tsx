@@ -14,6 +14,7 @@ interface TeamKaartBodyProps {
   isDouble: boolean;
   pinnedSpelerIds?: Set<string>;
   showRanking?: boolean;
+  teamSterkte?: number;
   onSpelerClick?: (speler: SpelerData) => void;
 }
 
@@ -28,16 +29,31 @@ export default function TeamKaartBody({
   isDouble,
   pinnedSpelerIds,
   showRanking,
+  teamSterkte,
   onSpelerClick,
 }: TeamKaartBodyProps) {
   if (dl === "compact") {
     return (
-      <div className="flex flex-1 flex-col items-center justify-center gap-2 px-2">
-        <div className="flex items-center gap-3 text-base">
-          <span className="font-semibold text-pink-500">♀ {aantalV}</span>
-          <span className="font-semibold text-blue-500">♂ {aantalM}</span>
+      <div className="flex flex-1 flex-col items-center justify-center gap-3">
+        {/* V/M tellers groot */}
+        <div className="flex items-center gap-4">
+          <span className="text-lg font-bold text-pink-400">♀ {aantalV}</span>
+          <span className="text-sm text-[var(--border-default)]">|</span>
+          <span className="text-lg font-bold text-blue-400">♂ {aantalM}</span>
         </div>
-        <span className="text-text-secondary text-sm">gem. {gemLeeftijd}</span>
+        {/* Gemiddelde leeftijd */}
+        <span className="text-xs" style={{ color: "var(--text-secondary)" }}>
+          gem. {gemLeeftijd} j
+        </span>
+        {/* USS score als beschikbaar */}
+        {teamSterkte != null && (
+          <span
+            className="rounded px-2 py-0.5 text-xs font-bold"
+            style={{ background: "rgba(255,107,0,0.12)", color: "var(--ow-oranje-500)" }}
+          >
+            USS {teamSterkte.toFixed(1)}
+          </span>
+        )}
       </div>
     );
   }

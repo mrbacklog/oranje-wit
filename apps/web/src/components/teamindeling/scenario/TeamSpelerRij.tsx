@@ -5,6 +5,7 @@ import type { TeamSpelerData, SpelerData, HuidigData, DetailLevel } from "./type
 import { kleurIndicatie, KLEUR_DOT, korfbalLeeftijd } from "./types";
 import AfmeldBadge from "./AfmeldBadge";
 import RankingBadge from "./RankingBadge";
+import ScoreOctagon from "./editor/ScoreOctagon";
 
 /** Status → linkerrand kleur */
 const STATUS_BORDER: Record<string, string> = {
@@ -104,82 +105,83 @@ export default function TeamSpelerRij({
           {heeftAfmelding && <AfmeldBadge afmelddatum={speler.afmelddatum!} />}
         </span>
 
-        {/* Regel 2: vorig team — alleen bij detail */}
-        {dl === "detail" && (
-          <div className="text-text-secondary text-[8px] leading-none">
-            <span className="truncate">{vorigTeam ?? "\u2014"}</span>
-          </div>
-        )}
+        {/* Regel 2: vorig team — zichtbaar in normaal + detail */}
+        <div className="text-text-secondary text-[8px] leading-none">
+          <span className="truncate">{vorigTeam ?? "\u2014"}</span>
+        </div>
       </div>
 
-      {/* Rechter indicatoren */}
-      <div className="flex shrink-0 items-center gap-0.5">
-        {/* Ranking badge */}
-        {showRanking && leeftijd < 20 && <RankingBadge rating={speler.rating} size="compact" />}
+      {/* Rechter indicatoren — alleen bij detail */}
+      {dl === "detail" && (
+        <div className="flex shrink-0 items-center gap-0.5">
+          {/* Ranking badge */}
+          {showRanking && leeftijd < 20 && <RankingBadge rating={speler.rating} size="compact" />}
 
-        {/* Leeftijd — alleen bij detail */}
-        {dl === "detail" && (
+          {/* ScoreOctagon */}
+          <ScoreOctagon rating={speler.rating} size={14} />
+
+          {/* Leeftijd */}
           <span className="text-text-secondary shrink-0 text-[8px] tabular-nums">
             {leeftijd.toFixed(2)}
           </span>
-        )}
 
-        {/* Pin indicator — alleen bij detail */}
-        {dl === "detail" && isPinned && (
-          <svg
-            className="h-2 w-2 text-purple-500"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            aria-label="Gepind"
-          >
-            <path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z" />
-          </svg>
-        )}
+          {/* Pin indicator */}
+          {isPinned && (
+            <svg
+              className="h-2 w-2 text-purple-500"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-label="Gepind"
+            >
+              <path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z" />
+            </svg>
+          )}
 
-        {/* Notitie indicator — alleen bij detail */}
-        {dl === "detail" && heeftNotitie && (
-          <svg
-            className="h-2 w-2 text-amber-400"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            aria-label="Heeft notitie"
-          >
-            <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" />
-          </svg>
-        )}
+          {/* Notitie indicator */}
+          {heeftNotitie && (
+            <svg
+              className="h-2 w-2 text-amber-400"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-label="Heeft notitie"
+            >
+              <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" />
+            </svg>
+          )}
 
-        {/* Waarschuwing icoon — alleen bij detail */}
-        {dl === "detail" && status === "GAAT_STOPPEN" && (
-          <svg
-            className="h-2.5 w-2.5 text-red-400"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.5"
-            aria-label="Gaat stoppen"
-          >
-            <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" />
-          </svg>
-        )}
-        {dl === "detail" && status === "TWIJFELT" && (
-          <svg
-            className="h-2.5 w-2.5 text-amber-500"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            aria-label="Twijfelt"
-          >
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
-          </svg>
-        )}
+          {/* Waarschuwing icoon */}
+          {status === "GAAT_STOPPEN" && (
+            <svg
+              className="h-2.5 w-2.5 text-red-400"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              aria-label="Gaat stoppen"
+            >
+              <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" />
+            </svg>
+          )}
+          {status === "TWIJFELT" && (
+            <svg
+              className="h-2.5 w-2.5 text-amber-500"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-label="Twijfelt"
+            >
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+            </svg>
+          )}
 
-        {/* Kleurindicatie dot — alleen bij detail */}
-        {dl === "detail" && kleur && (
-          <span
-            className={`h-1.5 w-1.5 shrink-0 rounded-full ring-1 ${KLEUR_DOT[kleur]}`}
-            style={{ outline: "1px solid var(--surface-card)" }}
-          />
-        )}
-      </div>
+          {/* Kleurindicatie dot */}
+          {kleur && (
+            <span
+              className={`h-1.5 w-1.5 shrink-0 rounded-full ring-1 ${KLEUR_DOT[kleur]}`}
+              style={{ outline: "1px solid var(--surface-card)" }}
+            />
+          )}
+        </div>
+      )}
     </div>
   );
 }
