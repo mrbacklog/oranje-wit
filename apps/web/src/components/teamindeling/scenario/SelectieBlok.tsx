@@ -85,10 +85,6 @@ export default function SelectieBlok({
     data: { type: "team", teamId: eersteTeam?.id },
   });
 
-  const borderKleur = isOver
-    ? "border-orange-400 ring-2 ring-orange-200"
-    : "border-orange-300 ring-2 ring-orange-100 ring-offset-1";
-
   const { w: cardWidth, h: cardHeight } = getCardSize("ACHTAL", true);
 
   const zoomScale = useZoomScale();
@@ -96,8 +92,15 @@ export default function SelectieBlok({
 
   return (
     <div
-      style={{ width: cardWidth, height: cardHeight }}
-      className={`flex flex-col rounded-lg border-2 border-dashed bg-orange-50/50 ${borderKleur}`}
+      style={{
+        width: cardWidth,
+        height: cardHeight,
+        border: isOver ? "2px dashed rgba(255,107,0,0.7)" : "2px dashed rgba(255,107,0,0.35)",
+        boxShadow: isOver
+          ? "0 0 0 2px rgba(255,107,0,0.15), 0 4px 16px rgba(0,0,0,0.4)"
+          : "0 2px 4px rgba(0,0,0,.5), 0 8px 24px rgba(0,0,0,.35)",
+      }}
+      className="bg-surface-card flex flex-col rounded-lg"
     >
       <div
         style={
@@ -113,10 +116,13 @@ export default function SelectieBlok({
         className="flex h-full flex-col"
       >
         {/* ── Header: [drag] Selectie NAAM [acties] ── */}
-        <div className="flex items-center justify-between rounded-t-lg border-b border-orange-200 bg-orange-50 px-1.5 py-1">
+        <div
+          className="border-border-default flex items-center justify-between rounded-t-lg border-b px-1.5 py-1"
+          style={{ height: 36 }}
+        >
           <div className="flex min-w-0 items-center gap-1">
             {dl === "detail" && (
-              <span className="shrink-0 text-orange-300">
+              <span className="text-text-muted shrink-0">
                 <svg className="h-2.5 w-2.5" viewBox="0 0 10 16" fill="currentColor">
                   <circle cx="3" cy="2" r="1.2" />
                   <circle cx="7" cy="2" r="1.2" />
@@ -127,13 +133,13 @@ export default function SelectieBlok({
                 </svg>
               </span>
             )}
-            <span className="shrink-0 text-[7px] font-medium tracking-wide text-orange-600 uppercase">
+            <span className="text-ow-oranje shrink-0 text-[7px] font-medium tracking-wide uppercase">
               Selectie
             </span>
             {naamEdit && onUpdateNaam && selectieGroep ? (
               <input
                 autoFocus
-                className="min-w-0 flex-1 rounded border border-orange-300 bg-white px-1 text-[11px] font-semibold text-gray-900 outline-none focus:ring-1 focus:ring-orange-400"
+                className="border-border-default bg-surface-raised text-text-primary min-w-0 flex-1 rounded border px-1 text-[11px] font-semibold outline-none focus:ring-1 focus:ring-orange-400"
                 value={naamWaarde}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNaamWaarde(e.target.value)}
                 onBlur={() => {
@@ -151,9 +157,9 @@ export default function SelectieBlok({
               />
             ) : (
               <h4
-                className={`truncate font-semibold text-gray-900 ${
+                className={`text-text-primary hover:text-ow-oranje truncate font-extrabold transition-colors ${
                   dl === "compact" ? "text-xs" : "text-[11px]"
-                } ${dl === "detail" && onUpdateNaam ? "cursor-pointer hover:text-orange-600" : ""}`}
+                } ${dl === "detail" && onUpdateNaam ? "cursor-pointer" : ""}`}
                 title={teamNamen}
                 onClick={
                   dl === "detail" && onUpdateNaam && selectieGroep
@@ -174,7 +180,7 @@ export default function SelectieBlok({
               {selectieGroep && (
                 <button
                   onClick={() => onOntkoppel(selectieGroep.id)}
-                  className="text-orange-400 transition-colors hover:text-orange-700"
+                  className="text-text-muted hover:text-text-primary transition-colors"
                   title="Ontkoppel selectie"
                 >
                   <svg
@@ -196,7 +202,7 @@ export default function SelectieBlok({
               {eersteTeam && (
                 <button
                   onClick={() => onEditTeam?.(eersteTeam.id)}
-                  className="text-orange-400 transition-colors hover:text-orange-700"
+                  className="text-text-muted hover:text-text-primary transition-colors"
                   title="Bewerk selectie"
                 >
                   <svg
@@ -238,7 +244,7 @@ export default function SelectieBlok({
                       setDeleteBevestig(true);
                       deleteTimerRef.current = setTimeout(() => setDeleteBevestig(false), 3000);
                     }}
-                    className="text-[10px] text-orange-300 hover:text-red-500"
+                    className="text-text-muted text-[10px] hover:text-red-500"
                     title="Verwijder team"
                   >
                     &times;
@@ -250,8 +256,8 @@ export default function SelectieBlok({
 
         {/* Staf (compact) */}
         {dl === "detail" && alleStaf.length > 0 && (
-          <div className="border-b border-orange-100 px-1.5 py-px">
-            <span className="text-[7px] text-gray-500">
+          <div className="border-border-default border-b px-1.5 py-px">
+            <span className="text-text-tertiary text-[7px]">
               Staf:{" "}
               {alleStaf.map((ts, i) => (
                 <span key={ts.id}>
@@ -270,15 +276,17 @@ export default function SelectieBlok({
             className="flex flex-1 flex-col items-center justify-center gap-2 px-2"
           >
             <div className="flex items-center gap-3 text-base">
-              <span className="font-semibold text-pink-500">♀ {aantalV}</span>
-              <span className="font-semibold text-blue-500">♂ {aantalM}</span>
+              <span className="font-bold text-pink-400">♀ {aantalV}</span>
+              <span className="font-bold text-blue-400">♂ {aantalM}</span>
             </div>
-            <span className="text-sm text-gray-400">gem. {gemLeeftijd}</span>
+            <span className="text-text-secondary text-sm">gem. {gemLeeftijd}</span>
           </div>
         ) : (
           <div ref={setNodeRef} className="min-h-6 flex-1 overflow-hidden px-0.5">
             {alleSpelers.length === 0 ? (
-              <p className="py-2 text-center text-[9px] text-gray-400">Sleep spelers hierheen</p>
+              <p className="text-text-secondary py-2 text-center text-[9px]">
+                Sleep spelers hierheen
+              </p>
             ) : (
               <SelectieSpelerGrid
                 dames={dames}
@@ -295,7 +303,10 @@ export default function SelectieBlok({
 
         {/* ── Footer: alerts + gem. leeftijd ── */}
         {dl !== "compact" && (
-          <div className="mt-auto flex items-center justify-between border-t border-orange-100 px-1.5 py-0.5">
+          <div
+            className="border-border-default mt-auto flex items-center justify-between border-t px-1.5 py-0.5"
+            style={{ height: 28 }}
+          >
             <div className="flex items-center gap-1">
               {meldingen.length > 0 && (
                 <span className="group relative" title={meldingen.map((m) => m.bericht).join("\n")}>
@@ -313,18 +324,20 @@ export default function SelectieBlok({
                   )}
                 </span>
               )}
-              <span className="text-[7px] text-gray-400">{aantalSpelers} sp</span>
+              <span className="text-text-secondary text-[7px]">{aantalSpelers} sp</span>
             </div>
             <div className="flex shrink-0 items-center gap-1">
               {jIndicatie && (
-                <span className="rounded bg-indigo-100 px-1 text-[8px] font-bold text-indigo-700">
+                <span className="rounded bg-indigo-900/30 px-1 text-[8px] font-bold text-indigo-300">
                   {jIndicatie}
                   {teamSterkte != null && (
-                    <span className="font-normal text-indigo-500"> ({teamSterkte})</span>
+                    <span className="font-normal text-indigo-400"> ({teamSterkte})</span>
                   )}
                 </span>
               )}
-              <span className="text-[8px] text-gray-400 tabular-nums">gem. {gemLeeftijd}</span>
+              <span className="text-text-secondary text-[8px] tabular-nums">
+                gem. {gemLeeftijd}
+              </span>
             </div>
           </div>
         )}
