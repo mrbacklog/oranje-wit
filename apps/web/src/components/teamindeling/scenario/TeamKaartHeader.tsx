@@ -77,15 +77,13 @@ export default function TeamKaartHeader({
         )}
         {dl !== "compact" && validatie && (
           <span
-            className="h-1.5 w-1.5 shrink-0 rounded-full"
-            style={{
-              background:
-                validatie.status === "ROOD"
-                  ? "#ef4444"
-                  : validatie.status === "ORANJE"
-                    ? "#f97316"
-                    : "#22c55e",
-            }}
+            className={`h-1.5 w-1.5 shrink-0 rounded-full ${
+              validatie.status === "ROOD"
+                ? "bg-red-500"
+                : validatie.status === "ORANJE"
+                  ? "bg-orange-500"
+                  : "bg-green-500"
+            }`}
           />
         )}
         <h4
@@ -119,16 +117,10 @@ export default function TeamKaartHeader({
       </div>
 
       <div className="flex shrink-0 items-center gap-0.5">
-        <span
-          className="rounded px-1 py-px text-[9px] font-semibold"
-          style={{ background: "rgba(236,72,153,0.12)", color: "#EC4899" }}
-        >
+        <span className="rounded bg-pink-400/10 px-1 py-px text-[9px] font-semibold text-pink-400">
           ♀{aantalV}
         </span>
-        <span
-          className="rounded px-1 py-px text-[9px] font-semibold"
-          style={{ background: "rgba(96,165,250,0.12)", color: "#60A5FA" }}
-        >
+        <span className="rounded bg-blue-400/10 px-1 py-px text-[9px] font-semibold text-blue-400">
           ♂{aantalM}
         </span>
         {dl === "detail" && notitieCount != null && notitieCount > 0 && (

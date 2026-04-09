@@ -47,10 +47,7 @@ export default function TeamKaartBody({
         </span>
         {/* USS score — alleen als showRanking aan staat */}
         {showRanking && teamSterkte != null && (
-          <span
-            className="rounded px-2 py-0.5 text-xs font-bold"
-            style={{ background: "rgba(255,107,0,0.12)", color: "var(--ow-oranje-500)" }}
-          >
+          <span className="bg-ow-oranje-bg text-ow-oranje rounded px-2 py-0.5 text-xs font-bold">
             USS {teamSterkte.toFixed(1)}
           </span>
         )}
