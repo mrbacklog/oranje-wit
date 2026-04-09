@@ -90,7 +90,7 @@ export default function TeamSpelerRij({
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Regel 1: naam — altijd zichtbaar in normaal + detail */}
         <span
-          className={`text-text-primary truncate text-[10px] leading-none font-medium ${
+          className={`text-text-primary truncate text-[11px] leading-none font-medium ${
             onSpelerClick ? "cursor-pointer hover:text-orange-600" : ""
           } ${isWarning ? "italic" : ""}`}
           onClick={
@@ -107,8 +107,16 @@ export default function TeamSpelerRij({
         </span>
 
         {/* Regel 2: vorig team — zichtbaar in normaal + detail */}
-        <div className="text-text-secondary text-[8px] leading-none">
-          <span className="truncate">{vorigTeam ?? "\u2014"}</span>
+        <div className="flex items-center gap-1 text-[8px] leading-none">
+          {dl === "normaal" && speler.rating != null && (
+            <span
+              className="shrink-0 text-[8px] font-bold tabular-nums"
+              style={{ color: "var(--text-tertiary)" }}
+            >
+              {speler.rating.toFixed(0)}
+            </span>
+          )}
+          <span className="text-text-secondary truncate">{vorigTeam ?? "\u2014"}</span>
         </div>
       </div>
 

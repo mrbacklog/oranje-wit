@@ -75,6 +75,19 @@ export default function TeamKaartHeader({
         {dl === "detail" && validatie && (
           <ValidatieBadge status={validatie.status} onClick={onMeldingenToggle} />
         )}
+        {dl !== "compact" && validatie && (
+          <span
+            className="h-1.5 w-1.5 shrink-0 rounded-full"
+            style={{
+              background:
+                validatie.status === "ROOD"
+                  ? "#ef4444"
+                  : validatie.status === "ORANJE"
+                    ? "#f97316"
+                    : "#22c55e",
+            }}
+          />
+        )}
         <h4
           onClick={() => onEditTeam?.(team.id)}
           className={`text-text-primary hover:text-ow-oranje cursor-pointer truncate font-extrabold transition-colors ${
@@ -84,7 +97,7 @@ export default function TeamKaartHeader({
         >
           {weergaveNaam}
         </h4>
-        {dl === "detail" && team.kleur && (
+        {dl !== "compact" && team.kleur && (
           <span
             className={`shrink-0 rounded-full px-1 py-px text-[7px] ${
               KLEUR_BADGE_KLEUREN[team.kleur] ?? "bg-surface-raised text-text-secondary"
@@ -93,7 +106,7 @@ export default function TeamKaartHeader({
             {team.kleur}
           </span>
         )}
-        {dl === "detail" && CATEGORIE_BADGE[team.categorie] && (
+        {dl !== "compact" && CATEGORIE_BADGE[team.categorie] && (
           <span
             className={`shrink-0 rounded-full px-1 py-px text-[7px] font-medium ${CATEGORIE_BADGE[team.categorie]}`}
           >

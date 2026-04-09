@@ -60,7 +60,7 @@ export default function SpelerKaart({ speler, isPinned, onClick }: SpelerKaartPr
         }
       }}
       className={`flex cursor-grab items-center gap-2 px-3 py-1.5 ${
-        isDragging ? "opacity-40" : "hover:bg-[#262626]"
+        isDragging ? "opacity-40" : "hover:bg-surface-raised"
       }`}
     >
       {/* Avatar cirkel */}
@@ -74,7 +74,10 @@ export default function SpelerKaart({ speler, isPinned, onClick }: SpelerKaartPr
       {/* Naam + meta */}
       <div className="flex min-w-0 flex-1 flex-col">
         <div className="flex items-center gap-1">
-          <span className="truncate text-[11px] font-semibold" style={{ color: "#FAFAFA" }}>
+          <span
+            className="truncate text-[11px] font-semibold"
+            style={{ color: "var(--text-primary)" }}
+          >
             {speler.roepnaam} {speler.achternaam}
           </span>
           {speler.afmelddatum && <AfmeldBadge afmelddatum={speler.afmelddatum} />}
@@ -91,13 +94,13 @@ export default function SpelerKaart({ speler, isPinned, onClick }: SpelerKaartPr
           )}
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="text-[10px]" style={{ color: "#666" }}>
+          <span className="text-[10px]" style={{ color: "var(--text-tertiary)" }}>
             {leeftijd.toFixed(1)} · {isVrouw ? "V" : "M"}
           </span>
           {vorigTeam && (
             <span
               className="max-w-[60px] truncate text-[10px]"
-              style={{ color: "#666" }}
+              style={{ color: "var(--text-tertiary)" }}
               title={vorigTeam}
             >
               {vorigTeam}
