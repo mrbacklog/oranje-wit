@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useCallback, useMemo, useRef, lazy, Suspense } from "react";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { logger } from "@oranje-wit/types";
+
 import type { ScenarioData, SpelerData, SelectieGroepData, TeamData } from "../types";
 import { SpelerProfielDialog, TeamoverzichtDialog, DaisyWidget } from "@/components/ti-studio";
 import { PEILJAAR } from "../types";
