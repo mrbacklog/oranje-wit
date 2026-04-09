@@ -180,8 +180,19 @@ export default function Werkgebied({
                 width: CANVAS_WIDTH,
                 height: CANVAS_HEIGHT,
                 border: "1px dashed var(--border-default)",
+                background:
+                  "radial-gradient(circle at 50% 50%, rgba(255,107,0,.02) 0%, transparent 60%), var(--surface-base, #0a0a0a)",
               }}
             >
+              {/* Grid-dots patroon */}
+              <div
+                className="pointer-events-none absolute inset-0"
+                style={{
+                  backgroundImage:
+                    "radial-gradient(circle, rgba(255,255,255,.05) 1px, transparent 1px)",
+                  backgroundSize: "28px 28px",
+                }}
+              />
               {/* Selectie-groepen */}
               {Array.from(selectieGroepen.entries()).map(([groepId, groepTeams]) => {
                 const dragId = `selectie-${groepId}`;
