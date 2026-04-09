@@ -25,7 +25,6 @@ export default function GestureCanvas({ children, onZoomLabelChange }: GestureCa
   const { transform, containerRef, toggleZoom, zoomIn, zoomOut, resetZoom, setZoom, setPan } =
     useCanvasGesture();
   const detailLevel = useMemo(() => getDetailLevel(transform.scale), [transform.scale]);
-  const isDetail = detailLevel === "detail";
   const zoomPct = Math.round(transform.scale * 100);
   const zoomLabel = getZoomLabel(transform.scale);
 
@@ -159,9 +158,19 @@ export default function GestureCanvas({ children, onZoomLabelChange }: GestureCa
             onClick={toggleZoom}
             className="hover:bg-surface-raised rounded px-2 py-1 text-xs font-medium transition-colors"
             style={{ color: "var(--text-secondary)" }}
-            title={isDetail ? "Schakel naar overzicht" : "Schakel naar detail"}
+            title={
+              detailLevel === "detail"
+                ? "Schakel naar compact"
+                : detailLevel === "normaal"
+                  ? "Schakel naar detail"
+                  : "Schakel naar normaal"
+            }
           >
-            {isDetail ? "Overzicht" : "Detail"}
+            {detailLevel === "detail"
+              ? "Compact"
+              : detailLevel === "normaal"
+                ? "Detail"
+                : "Normaal"}
           </button>
         </div>
       </div>

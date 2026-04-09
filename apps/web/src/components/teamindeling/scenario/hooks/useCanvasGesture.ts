@@ -115,10 +115,17 @@ export function useCanvasGesture(): CanvasGestureResult {
     }
   );
 
+  // 3-stap cycle: compact (0.55) → normaal (0.75) → detail (1.2) → compact
+  const ZOOM_NORMAAL = 0.75;
   const toggleZoom = useCallback(() => {
     const prev = transformRef.current;
-    const isDetail = prev.scale >= 0.85;
-    zoomToPoint(isDetail ? ZOOM_OVERZICHT : ZOOM_DETAIL);
+    if (prev.scale >= 1.0) {
+      zoomToPoint(ZOOM_OVERZICHT); // detail → compact
+    } else if (prev.scale >= 0.64) {
+      zoomToPoint(ZOOM_DETAIL); // normaal → detail
+    } else {
+      zoomToPoint(ZOOM_NORMAAL); // compact → normaal
+    }
   }, [zoomToPoint]);
 
   const zoomIn = useCallback(() => {
