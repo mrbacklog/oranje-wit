@@ -9,6 +9,7 @@ interface TeamKaartFooterProps {
   footerBorder: string;
   jIndicatie?: string;
   teamSterkte?: number;
+  showRanking?: boolean;
 }
 
 export default function TeamKaartFooter({
@@ -18,6 +19,7 @@ export default function TeamKaartFooter({
   footerBorder,
   jIndicatie,
   teamSterkte,
+  showRanking,
 }: TeamKaartFooterProps) {
   return (
     <div
@@ -53,7 +55,7 @@ export default function TeamKaartFooter({
         {jIndicatie && (
           <span className="rounded bg-indigo-900/30 px-1 text-[8px] font-bold text-indigo-300">
             {jIndicatie}
-            {teamSterkte != null && (
+            {showRanking && teamSterkte != null && (
               <span className="font-normal text-indigo-400"> ({teamSterkte})</span>
             )}
           </span>

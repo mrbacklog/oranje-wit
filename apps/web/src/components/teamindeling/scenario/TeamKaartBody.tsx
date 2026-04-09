@@ -45,8 +45,8 @@ export default function TeamKaartBody({
         <span className="text-xs" style={{ color: "var(--text-secondary)" }}>
           gem. {gemLeeftijd} j
         </span>
-        {/* USS score als beschikbaar */}
-        {teamSterkte != null && (
+        {/* USS score — alleen als showRanking aan staat */}
+        {showRanking && teamSterkte != null && (
           <span
             className="rounded px-2 py-0.5 text-xs font-bold"
             style={{ background: "rgba(255,107,0,0.12)", color: "var(--ow-oranje-500)" }}

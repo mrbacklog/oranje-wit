@@ -185,6 +185,7 @@ export default function TeamKaart({
             footerBorder={footerBorder}
             jIndicatie={jIndicatie}
             teamSterkte={teamSterkte}
+            showRanking={showRanking}
           />
         )}
       </div>

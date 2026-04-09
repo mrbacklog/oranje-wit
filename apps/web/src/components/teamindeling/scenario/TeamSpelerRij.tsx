@@ -108,7 +108,7 @@ export default function TeamSpelerRij({
 
         {/* Regel 2: vorig team — zichtbaar in normaal + detail */}
         <div className="flex items-center gap-1 text-[8px] leading-none">
-          {dl === "normaal" && speler.rating != null && (
+          {dl === "normaal" && showRanking && speler.rating != null && (
             <span
               className="shrink-0 text-[8px] font-bold tabular-nums"
               style={{ color: "var(--text-tertiary)" }}
@@ -126,8 +126,8 @@ export default function TeamSpelerRij({
           {/* Ranking badge */}
           {showRanking && leeftijd < 20 && <RankingBadge rating={speler.rating} size="compact" />}
 
-          {/* ScoreOctagon */}
-          <ScoreOctagon rating={speler.rating} size={14} />
+          {/* ScoreOctagon — alleen als showRanking aan staat */}
+          {showRanking && <ScoreOctagon rating={speler.rating} size={14} />}
 
           {/* Leeftijd */}
           <span className="text-text-secondary shrink-0 text-[8px] tabular-nums">
