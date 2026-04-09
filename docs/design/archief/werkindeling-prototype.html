@@ -1,0 +1,2077 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TI Studio — Werkindeling v3</title>
+<style>
+/* ═══════════════════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════════════════ */
+:root {
+  --bg-0: #0a0a0a;
+  --bg-1: #141414;
+  --bg-2: #1e1e1e;
+  --bg-3: #262626;
+  --accent:     #FF6B00;
+  --accent-h:   #FF8533;
+  --accent-dim: rgba(255,107,0,.12);
+  --text-1: #FAFAFA;
+  --text-2: #A3A3A3;
+  --text-3: #666666;
+  --border-0: #262626;
+  --border-1: #3a3a3a;
+  --ok:   #22C55E;
+  --warn: #EAB308;
+  --err:  #EF4444;
+  --info: #3B82F6;
+  --pink: #EC4899;
+  --blue: #60A5FA;
+  --ribbon: 48px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: Inter, system-ui, sans-serif;
+  background: var(--bg-0); color: var(--text-1);
+  font-size: 14px; line-height: 1.5;
+  overflow: hidden; height: 100vh;
+  user-select: none;
+}
+
+/* ═══════════════════════════════════════════
+   SHELL
+═══════════════════════════════════════════ */
+.shell { display: flex; height: 100vh; overflow: hidden; }
+
+/* ═══════════════════════════════════════════
+   RIBBON
+═══════════════════════════════════════════ */
+.ribbon {
+  width: var(--ribbon); min-width: var(--ribbon);
+  background: var(--bg-1); border-right: 1px solid var(--border-0);
+  display: flex; flex-direction: column; align-items: center;
+  padding: 8px 0; gap: 2px; flex-shrink: 0;
+  overflow: visible; position: relative; z-index: 30;
+}
+.ribbon-logo {
+  width: 32px; height: 32px; background: var(--accent-dim);
+  border: 1px solid rgba(255,107,0,.25); border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; margin-bottom: 8px; flex-shrink: 0;
+}
+.ri {
+  width: 36px; height: 36px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; background: none; border: none;
+  font-size: 16px; color: var(--text-3);
+  transition: background 150ms, color 150ms;
+  position: relative; flex-shrink: 0; font-family: inherit;
+}
+.ri:hover { background: var(--bg-3); color: var(--text-1); }
+.ri.active { background: var(--accent-dim); color: var(--accent); }
+.ri.active::before {
+  content: ''; position: absolute;
+  left: -8px; top: 6px; bottom: 6px;
+  width: 3px; background: var(--accent); border-radius: 0 2px 2px 0;
+}
+.ri::after {
+  content: attr(data-tip);
+  position: absolute; left: calc(var(--ribbon) - 4px); top: 50%;
+  transform: translateY(-50%);
+  background: var(--bg-2); border: 1px solid var(--border-1);
+  color: var(--text-1); font-size: 11px; font-weight: 600;
+  padding: 4px 9px; border-radius: 7px; white-space: nowrap;
+  pointer-events: none; opacity: 0; transition: opacity 120ms;
+  z-index: 50; box-shadow: 0 2px 10px rgba(0,0,0,.4);
+}
+.ri:hover::after { opacity: 1; }
+.rdiv { width: 24px; height: 1px; background: var(--border-0); margin: 4px 0; flex-shrink: 0; }
+.ribbon-footer { margin-top: auto; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.ribbon-avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--bg-2); border: 1px solid var(--border-1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; color: var(--accent);
+  cursor: pointer; position: relative;
+}
+.ribbon-avatar::after {
+  content: attr(data-tip); position: absolute;
+  left: calc(var(--ribbon) - 4px); top: 50%; transform: translateY(-50%);
+  background: var(--bg-2); border: 1px solid var(--border-1);
+  color: var(--text-1); font-size: 11px; font-weight: 600;
+  padding: 4px 9px; border-radius: 7px; white-space: nowrap;
+  pointer-events: none; opacity: 0; transition: opacity 120ms;
+  z-index: 50; box-shadow: 0 2px 10px rgba(0,0,0,.4);
+}
+.ribbon-avatar:hover::after { opacity: 1; }
+
+/* ═══════════════════════════════════════════
+   MAIN
+═══════════════════════════════════════════ */
+.main { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+
+/* ═══════════════════════════════════════════
+   TOOLBAR
+═══════════════════════════════════════════ */
+.toolbar {
+  height: 52px; min-height: 52px;
+  background: var(--bg-1); border-bottom: 2px solid var(--accent);
+  display: flex; align-items: center; gap: 8px;
+  padding: 0 14px; flex-shrink: 0;
+}
+.tb-title { font-size: 14px; font-weight: 700; white-space: nowrap; }
+.tb-sub   { font-size: 11px; color: var(--text-3); white-space: nowrap; }
+.tb-sep   { width: 1px; height: 18px; background: var(--border-0); flex-shrink: 0; }
+.tb-spacer { flex: 1; }
+
+/* ═══════════════════════════════════════════
+   BUTTONS
+═══════════════════════════════════════════ */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 8px 14px; border-radius: 9px; font-size: 12px; font-weight: 600;
+  cursor: pointer; border: none; transition: background 150ms, transform 80ms;
+  white-space: nowrap; font-family: inherit;
+}
+.btn:active { transform: scale(.97); }
+.btn-pri { background: var(--accent); color: #fff; }
+.btn-pri:hover { background: var(--accent-h); }
+.btn-sec { background: var(--bg-2); color: var(--text-1); border: 1px solid var(--border-1); }
+.btn-sec:hover { background: var(--bg-3); }
+.btn-ghost { background: transparent; color: var(--text-2); border: 1px solid var(--border-0); }
+.btn-ghost:hover { background: var(--bg-3); color: var(--text-1); }
+.btn-dk { background: transparent; color: var(--err); border: none; }
+.btn-dk:hover { background: rgba(239,68,68,.1); }
+.btn-sm { padding: 4px 10px; font-size: 11px; border-radius: 7px; }
+.btn-xs { padding: 3px 8px; font-size: 10px; border-radius: 6px; }
+.btn-daisy {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 10px; border-radius: 7px; font-size: 10px; font-weight: 700;
+  cursor: pointer; border: 1px solid rgba(255,107,0,.3);
+  background: var(--accent-dim); color: var(--accent);
+  transition: all 150ms; font-family: inherit;
+}
+.btn-daisy:hover { background: rgba(255,107,0,.2); border-color: rgba(255,107,0,.5); }
+
+/* ═══════════════════════════════════════════
+   TAGS / PILLS
+═══════════════════════════════════════════ */
+.tag {
+  display: inline-flex; align-items: center;
+  padding: 2px 7px; border-radius: 5px; font-size: 11px; font-weight: 600;
+}
+.tg-ok   { background: rgba(34,197,94,.12);   color: var(--ok); }
+.tg-warn { background: rgba(234,179,8,.12);   color: var(--warn); }
+.tg-err  { background: rgba(239,68,68,.12);   color: var(--err); }
+.tg-acc  { background: var(--accent-dim);     color: var(--accent); }
+.tg-info { background: rgba(59,130,246,.12);  color: var(--blue); }
+.tg-grey { background: rgba(255,255,255,.06); color: var(--text-3); }
+
+.view-pills {
+  display: flex; gap: 2px;
+  background: var(--bg-0); border: 1px solid var(--border-1);
+  border-radius: 9px; padding: 3px;
+}
+.vp {
+  padding: 4px 12px; border-radius: 7px; font-size: 11px; font-weight: 600;
+  cursor: pointer; border: none; background: transparent;
+  color: var(--text-3); transition: background 120ms, color 120ms;
+  font-family: inherit; white-space: nowrap;
+}
+.vp.active { background: var(--bg-2); color: var(--text-1); }
+
+.versie-select {
+  background: var(--bg-0); border: 1px solid var(--border-1);
+  border-radius: 8px; color: var(--text-1); font-size: 12px;
+  font-family: inherit; padding: 6px 28px 6px 10px;
+  outline: none; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23666'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 9px center;
+  cursor: pointer; transition: border-color 150ms;
+}
+.versie-select:focus { border-color: var(--accent); }
+
+.val-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 10px; border-radius: 7px; font-size: 11px; font-weight: 700;
+  cursor: pointer; transition: background 120ms; white-space: nowrap;
+}
+.val-ok   { background: rgba(34,197,94,.12);  color: var(--ok);  border: 1px solid rgba(34,197,94,.2); }
+.val-warn { background: rgba(234,179,8,.12);  color: var(--warn); border: 1px solid rgba(234,179,8,.2); }
+.val-err  { background: rgba(239,68,68,.12);  color: var(--err);  border: 1px solid rgba(239,68,68,.2); }
+.val-badge:hover { filter: brightness(1.15); }
+
+/* ═══════════════════════════════════════════
+   BODY LAYOUT
+═══════════════════════════════════════════ */
+.body-wrap { flex: 1; display: flex; overflow: hidden; }
+
+/* ═══════════════════════════════════════════
+   SPELERSPOOL
+═══════════════════════════════════════════ */
+.pool-panel {
+  width: 210px; min-width: 210px;
+  background: var(--bg-1); border-right: 1px solid var(--border-0);
+  display: flex; flex-direction: column; flex-shrink: 0;
+  transition: width 200ms ease, min-width 200ms ease, opacity 200ms ease;
+  overflow: hidden;
+}
+.pool-panel.collapsed { width: 0; min-width: 0; opacity: 0; pointer-events: none; }
+.pool-header {
+  padding: 10px 12px 8px; border-bottom: 1px solid var(--border-0); flex-shrink: 0;
+}
+.pool-title {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .6px; color: var(--text-3); margin-bottom: 7px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.pool-count {
+  background: var(--accent-dim); color: var(--accent);
+  border-radius: 4px; padding: 1px 6px; font-size: 10px; font-weight: 700;
+}
+.pool-search {
+  width: 100%; background: var(--bg-0); border: 1px solid var(--border-1);
+  border-radius: 7px; color: var(--text-1); font-size: 12px;
+  font-family: inherit; padding: 6px 9px; outline: none;
+  transition: border-color 150ms;
+}
+.pool-search:focus { border-color: var(--accent); }
+.pool-filters {
+  padding: 7px 12px; display: flex; gap: 4px; flex-wrap: wrap;
+  border-bottom: 1px solid var(--border-0); flex-shrink: 0;
+}
+.pill {
+  padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 600;
+  cursor: pointer; background: var(--bg-2); color: var(--text-2);
+  border: 1px solid var(--border-1); font-family: inherit; transition: all 120ms;
+}
+.pill.active { background: rgba(255,107,0,.18); color: var(--accent); border-color: rgba(255,107,0,.3); }
+.pill:hover:not(.active) { background: var(--bg-3); color: var(--text-1); }
+.pool-list { flex: 1; overflow-y: auto; padding: 4px 0; }
+
+.pool-sp {
+  display: flex; align-items: center; gap: 7px;
+  padding: 6px 12px; cursor: grab; font-size: 12px;
+  transition: background 120ms; border-left: 2px solid transparent;
+}
+.pool-sp:hover { background: var(--bg-3); }
+.pool-sp.v { border-left-color: var(--pink); }
+.pool-sp.m { border-left-color: var(--blue); }
+.pool-sp.dragging { opacity: .4; transform: scale(.97); }
+.pool-sp.drag-over-pool { background: rgba(255,107,0,.08); border-left-color: var(--accent); }
+
+.pool-av {
+  width: 24px; height: 24px; border-radius: 50%; background: var(--bg-2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 700; color: var(--text-3); flex-shrink: 0;
+  border: 1px solid var(--border-1);
+}
+.pool-av.v { color: var(--pink); border-color: rgba(236,72,153,.25); background: rgba(236,72,153,.06); }
+.pool-av.m { color: var(--blue); border-color: rgba(96,165,250,.25); background: rgba(96,165,250,.06); }
+.pool-sp-info { flex: 1; overflow: hidden; }
+.pool-sp-naam { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-1); font-size: 11px; }
+.pool-sp-meta { font-size: 10px; color: var(--text-3); }
+
+/* ═══════════════════════════════════════════
+   WERKGEBIED
+═══════════════════════════════════════════ */
+.werkgebied {
+  flex: 1; overflow: auto; padding: 18px;
+  background: var(--bg-0); position: relative;
+}
+.cat-section { margin-bottom: 28px; }
+.cat-label {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .6px; color: var(--text-3); margin-bottom: 10px;
+}
+.cat-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(218px, 1fr));
+  gap: 10px;
+}
+.team-grid.zoom { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+
+/* ═══════════════════════════════════════════
+   TEAMKAART
+═══════════════════════════════════════════ */
+.tk {
+  background: var(--bg-1); border: 1px solid var(--border-1);
+  border-radius: 12px; overflow: hidden;
+  transition: border-color 180ms, box-shadow 180ms;
+  cursor: default; position: relative;
+}
+.tk:hover {
+  border-color: rgba(255,107,0,.3);
+  box-shadow: 0 0 0 1px rgba(255,107,0,.08), 0 4px 16px rgba(0,0,0,.3);
+}
+.tk.drop-active {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 2px rgba(255,107,0,.25), 0 4px 20px rgba(0,0,0,.4) !important;
+  background: rgba(255,107,0,.03) !important;
+}
+.tk-band {
+  position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: var(--team-color, #FF6B00);
+  border-radius: 12px 0 0 12px;
+}
+.tk-val {
+  position: absolute; top: 10px; right: 10px;
+  width: 7px; height: 7px; border-radius: 50%;
+}
+.tk-h {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 9px 12px 7px 14px;
+  border-bottom: 1px solid var(--border-0);
+  cursor: pointer; transition: background 120ms; user-select: none;
+}
+.tk-h:hover { background: rgba(255,255,255,.03); }
+.tk-naam { font-size: 13px; font-weight: 800; letter-spacing: -.2px; }
+.tk-count { font-size: 11px; color: var(--text-3); margin-right: 20px; }
+.tk-cols {
+  display: grid; grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid var(--border-0);
+}
+.tk-col-head {
+  display: flex; align-items: center; gap: 4px;
+  padding: 3px 8px 3px 10px; font-size: 9px; font-weight: 700;
+}
+.tk-col-head.v { color: var(--pink); border-right: 1px solid var(--border-0); }
+.tk-col-head.m { color: var(--blue); }
+.tk-body {
+  display: grid; grid-template-columns: 1fr 1fr;
+  min-height: 28px;
+}
+.tk-col { padding: 3px 0; }
+.tk-col.v { border-right: 1px solid var(--border-0); }
+.tk-col.drop-col {
+  background: rgba(255,107,0,.06);
+}
+
+/* Speler chip compact */
+.sp-chip {
+  display: flex; align-items: center; gap: 4px;
+  padding: 2px 8px 2px 10px; font-size: 10px; font-weight: 500;
+  color: var(--text-2); cursor: grab; transition: background 100ms;
+  white-space: nowrap; border-left: 2px solid transparent;
+  user-select: none;
+}
+.sp-chip:hover { background: var(--bg-3); color: var(--text-1); }
+.sp-chip.v { border-left-color: rgba(236,72,153,.2); }
+.sp-chip.m { border-left-color: rgba(96,165,250,.2); }
+.sp-chip.pinned { background: rgba(234,179,8,.06); color: var(--text-1); }
+.sp-chip.dragging { opacity: .4; }
+.sp-chip .pin-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--warn); flex-shrink: 0; }
+
+/* Speler rij (zoom mode) */
+.sp-row {
+  display: flex; align-items: center; gap: 7px;
+  padding: 5px 10px 5px 12px; font-size: 12px;
+  border-bottom: 1px solid var(--border-0);
+  transition: background 100ms; cursor: grab;
+  user-select: none;
+}
+.sp-row:last-child { border-bottom: none; }
+.sp-row:hover { background: var(--bg-3); }
+.sp-row-av {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--bg-0); border: 1px solid var(--border-1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 8px; font-weight: 700; color: var(--text-3); flex-shrink: 0;
+}
+.sp-row-av.v { color: var(--pink); border-color: rgba(236,72,153,.25); }
+.sp-row-av.m { color: var(--blue); border-color: rgba(96,165,250,.25); }
+.sp-row-naam { flex: 1; font-weight: 500; font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sp-row-age { font-size: 9px; color: var(--text-3); flex-shrink: 0; }
+.sp-row-pin { font-size: 9px; color: var(--warn); flex-shrink: 0; }
+
+.tk-empty {
+  padding: 10px; text-align: center;
+  color: var(--text-3); font-size: 10px; grid-column: span 2;
+}
+.tk-drop-hint {
+  border: 1px dashed rgba(255,107,0,.4);
+  border-radius: 5px; margin: 4px 8px;
+  padding: 4px 8px; font-size: 10px; color: var(--accent);
+  text-align: center; display: none;
+}
+.tk.drop-active .tk-drop-hint { display: block; }
+
+.tk-f {
+  padding: 5px 10px 6px 12px; border-top: 1px solid var(--border-0);
+  display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+}
+.tk-f-stat { font-size: 10px; color: var(--text-3); }
+.tk-f-sep { width: 1px; height: 10px; background: var(--border-0); }
+.open-chip {
+  padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 600;
+  background: rgba(255,107,0,.07); color: var(--accent);
+  border: 1px dashed rgba(255,107,0,.3);
+}
+
+/* ═══════════════════════════════════════════
+   OVERLAYS (backdrop)
+═══════════════════════════════════════════ */
+.overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.78);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 200; backdrop-filter: blur(6px);
+  animation: fadeIn 150ms ease;
+}
+.overlay.hidden { display: none; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* ═══════════════════════════════════════════
+   TEAMOVERZICHT DIALOG (90vw × 90vh)
+═══════════════════════════════════════════ */
+.team-dialog {
+  background: var(--bg-1); border: 1px solid var(--border-1);
+  border-radius: 16px; width: 90vw; height: 90vh;
+  display: flex; flex-direction: column;
+  box-shadow: 0 16px 64px rgba(0,0,0,.7);
+  animation: dlgIn 200ms cubic-bezier(.4,0,.2,1);
+  overflow: hidden;
+}
+@keyframes dlgIn {
+  from { transform: scale(.96) translateY(12px); opacity: 0; }
+  to   { transform: scale(1)   translateY(0);    opacity: 1; }
+}
+.td-head {
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px 20px; border-bottom: 1px solid var(--border-0);
+  flex-shrink: 0;
+}
+.td-kleurband { width: 4px; height: 44px; border-radius: 2px; flex-shrink: 0; }
+.td-naam { font-size: 22px; font-weight: 800; }
+.td-meta { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+.td-spacer { flex: 1; }
+.td-close {
+  width: 32px; height: 32px; border-radius: 9px;
+  background: none; border: none; color: var(--text-2);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 16px; transition: background 150ms; font-family: inherit;
+}
+.td-close:hover { background: var(--bg-3); color: var(--text-1); }
+
+.td-body {
+  flex: 1; overflow: hidden; display: flex; flex-direction: column;
+}
+.td-cols {
+  flex: 1; display: grid; grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+}
+.td-col {
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.td-col.v { border-right: 1px solid var(--border-0); }
+.td-col-head {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 16px; border-bottom: 1px solid var(--border-0);
+  font-size: 11px; font-weight: 700; flex-shrink: 0;
+}
+.td-col-head.v { color: var(--pink); }
+.td-col-head.m { color: var(--blue); }
+.td-col-list { flex: 1; overflow-y: auto; padding: 6px 0; }
+
+.td-sp-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 16px; transition: background 100ms;
+  cursor: grab; border-left: 2px solid transparent;
+}
+.td-sp-row:hover { background: var(--bg-3); }
+.td-sp-row.v { border-left-color: rgba(236,72,153,.25); }
+.td-sp-row.m { border-left-color: rgba(96,165,250,.25); }
+.td-sp-row.pinned { background: rgba(234,179,8,.05); }
+.td-sp-av {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; flex-shrink: 0;
+}
+.td-sp-av.v { background: rgba(236,72,153,.1); color: var(--pink); border: 1px solid rgba(236,72,153,.25); }
+.td-sp-av.m { background: rgba(96,165,250,.1); color: var(--blue); border: 1px solid rgba(96,165,250,.25); }
+.td-sp-info { flex: 1; overflow: hidden; }
+.td-sp-naam { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
+.td-sp-naam:hover { color: var(--accent); text-decoration: underline; }
+.td-sp-meta { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+.td-sp-vorig { font-size: 10px; color: var(--text-3); background: var(--bg-2); border-radius: 4px; padding: 1px 5px; flex-shrink: 0; }
+.td-sp-pin { font-size: 12px; color: var(--warn); flex-shrink: 0; }
+.td-sp-del {
+  width: 24px; height: 24px; border-radius: 6px;
+  background: none; border: none; color: var(--text-3);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 13px; transition: all 100ms; font-family: inherit; flex-shrink: 0;
+}
+.td-sp-del:hover { background: rgba(239,68,68,.12); color: var(--err); }
+
+.td-add-btn {
+  display: flex; align-items: center; gap: 7px;
+  padding: 10px 16px; border-top: 1px solid var(--border-0);
+  cursor: pointer; transition: background 120ms;
+  font-size: 12px; font-weight: 600; color: var(--accent); flex-shrink: 0;
+}
+.td-add-btn:hover { background: var(--accent-dim); }
+
+.td-staf {
+  border-top: 1px solid var(--border-0); padding: 12px 16px; flex-shrink: 0;
+}
+.td-staf-head {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .5px; color: var(--text-3); margin-bottom: 8px;
+}
+.td-staf-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.staf-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 9px; border-radius: 7px; font-size: 11px; font-weight: 600;
+  background: var(--bg-2); border: 1px solid var(--border-1); color: var(--text-2);
+}
+.staf-chip .role { font-size: 10px; color: var(--text-3); font-weight: 400; }
+
+/* ═══════════════════════════════════════════
+   SPELER DIALOG
+═══════════════════════════════════════════ */
+.speler-dialog {
+  background: var(--bg-1); border: 1px solid var(--border-1);
+  border-radius: 16px; width: 480px; max-width: 96vw;
+  max-height: 88vh; display: flex; flex-direction: column;
+  box-shadow: 0 16px 64px rgba(0,0,0,.7);
+  animation: dlgIn 180ms cubic-bezier(.4,0,.2,1);
+  overflow: hidden; z-index: 10;
+}
+.sd-head {
+  padding: 20px 20px 16px; flex-shrink: 0;
+  background: linear-gradient(180deg, rgba(255,107,0,.06) 0%, transparent 100%);
+  border-bottom: 1px solid var(--border-0);
+}
+.sd-naam { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+.sd-badges { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.sd-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700;
+}
+.sd-badge-v { background: rgba(236,72,153,.12); color: var(--pink); }
+.sd-badge-m { background: rgba(96,165,250,.12); color: var(--blue); }
+.sd-badge-cat { background: var(--bg-2); color: var(--text-2); border: 1px solid var(--border-1); }
+.sd-badge-status-ok  { background: rgba(34,197,94,.12); color: var(--ok); cursor: pointer; }
+.sd-badge-status-warn{ background: rgba(234,179,8,.12); color: var(--warn); cursor: pointer; }
+.sd-badge-status-err { background: rgba(239,68,68,.12); color: var(--err); cursor: pointer; }
+.sd-badge-status-grey{ background: rgba(255,255,255,.06); color: var(--text-3); cursor: pointer; }
+
+.sd-body { flex: 1; overflow-y: auto; padding: 16px 20px; }
+
+.sd-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 8px; margin-bottom: 16px;
+}
+.sd-stat {
+  background: var(--bg-2); border: 1px solid var(--border-1);
+  border-radius: 10px; padding: 10px 12px; text-align: center;
+}
+.sd-stat-val { font-size: 22px; font-weight: 800; line-height: 1; }
+.sd-stat-lbl { font-size: 10px; color: var(--text-3); margin-top: 3px; }
+
+.sd-section { margin-bottom: 14px; }
+.sd-label {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .5px; color: var(--text-3); margin-bottom: 6px;
+}
+.sd-huidig-team {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600;
+  background: var(--bg-2); border: 1px solid var(--border-1);
+  cursor: pointer; transition: all 150ms;
+}
+.sd-huidig-team:hover { border-color: rgba(255,107,0,.4); color: var(--accent); }
+
+.sd-pad-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 5px 0; font-size: 12px; border-bottom: 1px solid var(--border-0);
+}
+.sd-pad-item:last-child { border-bottom: none; }
+.sd-pad-seizoen { font-size: 10px; color: var(--text-3); min-width: 60px; flex-shrink: 0; }
+.sd-pad-team { font-weight: 600; }
+.sd-pad-arrow { color: var(--text-3); font-size: 10px; }
+
+.sd-flag-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 8px; border-radius: 8px; margin-bottom: 4px;
+  background: var(--bg-2); font-size: 12px;
+}
+.sd-flag-item.warn { background: rgba(234,179,8,.07); }
+.sd-flag-item.err  { background: rgba(239,68,68,.07); }
+
+.sd-memo {
+  width: 100%; background: var(--bg-0); border: 1px solid var(--border-1);
+  border-radius: 8px; color: var(--text-1); font-size: 12px;
+  font-family: inherit; padding: 9px 12px; outline: none; resize: vertical;
+  min-height: 60px; transition: border-color 150ms;
+}
+.sd-memo:focus { border-color: var(--accent); }
+
+.sd-pin-status {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 12px; border-radius: 10px;
+  background: var(--bg-2); border: 1px solid var(--border-1);
+}
+.sd-pin-lbl { font-size: 12px; font-weight: 600; }
+.sd-pin-sub { font-size: 10px; color: var(--text-3); margin-top: 1px; }
+.sd-toggle {
+  width: 36px; height: 20px; border-radius: 10px; background: var(--border-1);
+  position: relative; cursor: pointer; transition: background 200ms;
+  border: none; flex-shrink: 0;
+}
+.sd-toggle.on { background: var(--accent); }
+.sd-toggle::after {
+  content: ''; position: absolute;
+  width: 14px; height: 14px; border-radius: 50%; background: #fff;
+  top: 3px; left: 3px; transition: transform 200ms;
+}
+.sd-toggle.on::after { transform: translateX(16px); }
+
+.sd-foot {
+  padding: 12px 20px; border-top: 1px solid var(--border-0);
+  display: flex; justify-content: flex-end; gap: 8px; flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════
+   SMALL MODAL (confirm etc.)
+═══════════════════════════════════════════ */
+.small-modal {
+  background: var(--bg-1); border: 1px solid var(--border-1);
+  border-radius: 14px; width: 360px; max-width: 96vw;
+  display: flex; flex-direction: column;
+  box-shadow: 0 12px 48px rgba(0,0,0,.6);
+  animation: dlgIn 180ms cubic-bezier(.4,0,.2,1);
+  z-index: 10;
+}
+.sm-head { padding: 14px 16px 10px; border-bottom: 1px solid var(--border-0); display: flex; align-items: center; justify-content: space-between; }
+.sm-title { font-size: 14px; font-weight: 700; }
+.sm-close { width: 24px; height: 24px; border-radius: 6px; background: none; border: none; color: var(--text-3); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px; transition: background 150ms; font-family: inherit; }
+.sm-close:hover { background: var(--bg-3); }
+.sm-body { padding: 14px 16px; }
+.sm-foot { padding: 10px 16px; border-top: 1px solid var(--border-0); display: flex; justify-content: flex-end; gap: 7px; }
+
+/* ═══════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════ */
+.toast-wrap { position: fixed; top: 16px; right: 16px; z-index: 500; display: flex; flex-direction: column; gap: 6px; pointer-events: none; }
+.toast {
+  background: var(--bg-1); border: 1px solid var(--border-1);
+  border-radius: 10px; padding: 10px 14px; font-size: 12px; font-weight: 600;
+  box-shadow: 0 4px 20px rgba(0,0,0,.5); max-width: 320px;
+  display: flex; align-items: center; gap: 8px;
+  animation: toastIn 200ms ease; pointer-events: all;
+}
+@keyframes toastIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+.toast.ok   { border-left: 3px solid var(--ok); }
+.toast.warn { border-left: 3px solid var(--warn); }
+.toast.err  { border-left: 3px solid var(--err); }
+.toast.info { border-left: 3px solid var(--accent); }
+
+/* ═══════════════════════════════════════════
+   DAISY WIDGET
+═══════════════════════════════════════════ */
+.daisy-btn {
+  position: fixed; bottom: 64px; right: 20px; z-index: 400;
+  display: flex; align-items: center; gap: 8px;
+  background: var(--bg-2); border: 1px solid var(--border-1);
+  border-radius: 24px; padding: 8px 14px 8px 10px;
+  cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,.5);
+  transition: border-color 150ms, box-shadow 150ms; font-family: inherit;
+}
+.daisy-btn:hover { border-color: rgba(255,107,0,.4); box-shadow: 0 4px 24px rgba(255,107,0,.15); }
+.daisy-icon {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--accent-dim); border: 1px solid rgba(255,107,0,.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0;
+}
+.daisy-label { font-size: 12px; font-weight: 700; color: var(--text-1); }
+.daisy-badge { font-size: 9px; font-weight: 700; color: var(--accent); background: var(--accent-dim); border-radius: 4px; padding: 1px 5px; }
+.daisy-notif {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent); position: absolute; top: 6px; right: 6px;
+  animation: dPulse 2s infinite;
+}
+@keyframes dPulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(255,107,0,.5); }
+  50%      { box-shadow: 0 0 0 4px rgba(255,107,0,0); }
+}
+.daisy-panel {
+  position: fixed; bottom: 110px; right: 20px; z-index: 400;
+  width: 320px; background: var(--bg-1); border: 1px solid var(--border-1);
+  border-radius: 14px; box-shadow: 0 8px 40px rgba(0,0,0,.6);
+  display: flex; flex-direction: column; overflow: hidden;
+  animation: panelIn 180ms cubic-bezier(.4,0,.2,1);
+}
+.daisy-panel.hidden { display: none; }
+@keyframes panelIn { from { opacity: 0; transform: translateY(12px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.dp-head { display: flex; align-items: center; gap: 9px; padding: 11px 13px; border-bottom: 1px solid var(--border-0); flex-shrink: 0; }
+.dp-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--accent-dim); border: 1px solid rgba(255,107,0,.3); display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+.dp-name { font-size: 13px; font-weight: 700; flex: 1; }
+.dp-sub  { font-size: 10px; color: var(--accent); font-weight: 600; }
+.dp-close { width: 22px; height: 22px; border-radius: 6px; background: none; border: none; color: var(--text-3); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px; font-family: inherit; transition: background 150ms; }
+.dp-close:hover { background: var(--bg-3); color: var(--text-1); }
+.dp-body { padding: 12px; flex: 1; max-height: 320px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+.dp-msg { border-radius: 10px; padding: 9px 11px; font-size: 12px; line-height: 1.5; max-width: 92%; }
+.dp-msg.ai { background: var(--bg-2); border: 1px solid var(--border-0); color: var(--text-1); align-self: flex-start; border-bottom-left-radius: 3px; }
+.dp-msg.user { background: var(--accent-dim); border: 1px solid rgba(255,107,0,.2); color: var(--text-1); align-self: flex-end; border-bottom-right-radius: 3px; }
+.dp-suggest {
+  background: var(--bg-2); border: 1px solid rgba(255,107,0,.2);
+  border-radius: 10px; padding: 10px 11px; font-size: 12px; line-height: 1.5;
+  align-self: flex-start;
+}
+.dp-suggest-text { color: var(--text-1); margin-bottom: 8px; }
+.dp-suggest-actions { display: flex; gap: 6px; }
+.dp-footer { padding: 8px 12px; border-top: 1px solid var(--border-0); display: flex; gap: 6px; flex-shrink: 0; }
+.dp-input { flex: 1; background: var(--bg-0); border: 1px solid var(--border-1); border-radius: 8px; color: var(--text-1); font-size: 12px; font-family: inherit; padding: 7px 10px; outline: none; transition: border-color 150ms; }
+.dp-input:focus { border-color: var(--accent); }
+.dp-send { width: 32px; height: 32px; border-radius: 8px; background: var(--accent); border: none; color: #fff; cursor: pointer; font-size: 14px; transition: background 150ms; display: flex; align-items: center; justify-content: center; font-family: inherit; }
+.dp-send:hover { background: var(--accent-h); }
+
+/* ═══════════════════════════════════════════
+   DAISY CURSOR (AI animatie)
+═══════════════════════════════════════════ */
+#daisy-cursor {
+  position: fixed; z-index: 9999;
+  pointer-events: none;
+  display: none;
+  flex-direction: column; align-items: center;
+  transition: left 0.6s cubic-bezier(.4,0,.2,1), top 0.6s cubic-bezier(.4,0,.2,1);
+}
+#daisy-cursor .dc-icon {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--accent); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; box-shadow: 0 0 12px rgba(255,107,0,.6);
+}
+#daisy-cursor .dc-label {
+  margin-top: 4px; font-size: 10px; font-weight: 700;
+  color: var(--accent); background: rgba(0,0,0,.8);
+  padding: 2px 6px; border-radius: 4px; white-space: nowrap;
+}
+
+/* Daisy glow op element */
+.daisy-glow {
+  animation: daisyGlow 0.6s ease-in-out infinite alternate;
+}
+@keyframes daisyGlow {
+  from { box-shadow: 0 0 8px rgba(255,107,0,.4); }
+  to   { box-shadow: 0 0 24px rgba(255,107,0,.9), 0 0 0 3px rgba(255,107,0,.3); }
+}
+
+/* Drop animatie */
+@keyframes chipDrop {
+  0%   { transform: scale(.7) translateY(-8px); opacity: 0; }
+  60%  { transform: scale(1.1) translateY(2px); opacity: 1; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+.chip-drop-anim { animation: chipDrop 350ms cubic-bezier(.4,0,.2,1) forwards; }
+
+/* ═══════════════════════════════════════════
+   PROTO NAV
+═══════════════════════════════════════════ */
+.pnav {
+  position: fixed; bottom: 12px; left: 50%; transform: translateX(-50%);
+  background: rgba(16,16,16,.97); border: 1px solid var(--border-1);
+  border-radius: 40px; padding: 5px 8px; display: flex; gap: 3px;
+  z-index: 600; box-shadow: 0 4px 24px rgba(0,0,0,.5);
+  backdrop-filter: blur(12px);
+}
+.pb { padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; cursor: pointer; border: none; background: transparent; color: var(--text-3); font-family: inherit; white-space: nowrap; }
+.pb:hover { background: var(--bg-3); color: var(--text-1); }
+.pb.cur { background: var(--accent-dim); color: var(--accent); }
+
+/* ═══════════════════════════════════════════
+   SCROLLBAR
+═══════════════════════════════════════════ */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-1); border-radius: 2px; }
+select option { background: var(--bg-1); }
+</style>
+</head>
+<body>
+
+<!-- ─── Proto nav ──────────────────────────────────── -->
+<nav class="pnav">
+  <button class="pb" onclick="goTo('kaders')">Kaders</button>
+  <button class="pb cur">Indeling</button>
+  <button class="pb" onclick="goTo('werkbord')">Werkbord</button>
+  <button class="pb" onclick="goTo('personen')">Personen</button>
+</nav>
+
+<!-- ─── Toast ─────────────────────────────────────── -->
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<!-- ─── Daisy cursor (AI animatie) ────────────────── -->
+<div id="daisy-cursor">
+  <div class="dc-icon">✨</div>
+  <div class="dc-label">Daisy</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     OVERLAY 1: TEAMOVERZICHT DIALOG
+═══════════════════════════════════════════════ -->
+<div class="overlay hidden" id="overlay-team" onclick="handleOverlayClick(event,'overlay-team')">
+  <div class="team-dialog" onclick="event.stopPropagation()" id="team-dialog">
+
+    <div class="td-head" id="td-head">
+      <div class="td-kleurband" id="td-kleurband"></div>
+      <div>
+        <div class="td-naam" id="td-naam">Team</div>
+        <div class="td-meta" id="td-meta"></div>
+      </div>
+      <div class="td-spacer"></div>
+      <button class="btn btn-ghost btn-sm" onclick="openAddSpelerDialog()">+ Speler</button>
+      <button class="td-close" onclick="closeOverlay('overlay-team')">✕</button>
+    </div>
+
+    <div class="td-body">
+      <div class="td-cols" id="td-cols">
+
+        <!-- Dames kolom -->
+        <div class="td-col v" id="td-col-v"
+             ondragover="tdColDragOver(event,'v')" ondrop="tdColDrop(event,'v')" ondragleave="tdColDragLeave(event,'v')">
+          <div class="td-col-head v">
+            <span>&#9646;</span>
+            <span>Dames</span>
+            <span id="td-v-count" style="margin-left:auto;font-size:10px;color:var(--text-3);"></span>
+          </div>
+          <div class="td-col-list" id="td-list-v"></div>
+          <div class="td-add-btn" onclick="openAddSpelerDialog('V')">
+            <span style="font-size:16px;color:var(--pink);">+</span>
+            <span>Dame toevoegen</span>
+          </div>
+        </div>
+
+        <!-- Heren kolom -->
+        <div class="td-col m" id="td-col-m"
+             ondragover="tdColDragOver(event,'m')" ondrop="tdColDrop(event,'m')" ondragleave="tdColDragLeave(event,'m')">
+          <div class="td-col-head m">
+            <span>&#9646;</span>
+            <span>Heren</span>
+            <span id="td-m-count" style="margin-left:auto;font-size:10px;color:var(--text-3);"></span>
+          </div>
+          <div class="td-col-list" id="td-list-m"></div>
+          <div class="td-add-btn" onclick="openAddSpelerDialog('M')">
+            <span style="font-size:16px;color:var(--blue);">+</span>
+            <span>Heer toevoegen</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Staf -->
+      <div class="td-staf">
+        <div class="td-staf-head">Staf</div>
+        <div class="td-staf-list" id="td-staf-list"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     OVERLAY 2: SPELER DIALOG (bovenop alles)
+═══════════════════════════════════════════════ -->
+<div class="overlay hidden" id="overlay-speler" onclick="handleOverlayClick(event,'overlay-speler')">
+  <div class="speler-dialog" onclick="event.stopPropagation()" id="speler-dialog">
+
+    <div class="sd-head">
+      <div class="sd-naam" id="sd-naam">Naam</div>
+      <div class="sd-badges" id="sd-badges"></div>
+    </div>
+
+    <div class="sd-body" id="sd-body">
+      <!-- Gevuld door JS -->
+    </div>
+
+    <div class="sd-foot">
+      <button class="btn btn-ghost btn-sm" onclick="closeOverlay('overlay-speler')">Sluiten</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     OVERLAY 3: SPELER TOEVOEGEN (small modal)
+═══════════════════════════════════════════════ -->
+<div class="overlay hidden" id="overlay-add" onclick="handleOverlayClick(event,'overlay-add')">
+  <div class="small-modal" onclick="event.stopPropagation()">
+    <div class="sm-head">
+      <span class="sm-title">Speler toevoegen</span>
+      <button class="sm-close" onclick="closeOverlay('overlay-add')">✕</button>
+    </div>
+    <div class="sm-body">
+      <input class="pool-search" id="add-search" type="text" placeholder="Zoek op naam..." oninput="renderAddList()" style="margin-bottom:10px;">
+      <div id="add-list" style="max-height:220px;overflow-y:auto;background:var(--bg-0);border:1px solid var(--border-1);border-radius:8px;"></div>
+    </div>
+    <div class="sm-foot">
+      <button class="btn btn-ghost btn-sm" onclick="closeOverlay('overlay-add')">Annuleren</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SHELL
+═══════════════════════════════════════════════ -->
+<div class="shell">
+
+  <!-- Ribbon -->
+  <nav class="ribbon">
+    <div class="ribbon-logo">&#127381;</div>
+    <button class="ri" data-tip="Dashboard">&#127968;</button>
+    <button class="ri" data-tip="Kaders" onclick="goTo('kaders')">&#128218;</button>
+    <button class="ri active" data-tip="Indeling">&#9881;&#65039;</button>
+    <button class="ri" data-tip="Werkbord" onclick="goTo('werkbord')">&#128203;</button>
+    <button class="ri" data-tip="Personen" onclick="goTo('personen')">&#128101;</button>
+    <div class="rdiv"></div>
+    <button class="ri" data-tip="Vergelijk">&#8651;</button>
+    <div class="ribbon-footer">
+      <div class="ribbon-avatar" data-tip="Jasper Laban · TC-lid">JL</div>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main class="main">
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <span class="tb-title">TI Studio</span>
+      <div class="tb-sep"></div>
+      <span class="tb-sub">Werkindeling 2026-2027</span>
+      <button class="btn btn-ghost btn-sm" id="pool-toggle-btn" onclick="togglePool()" title="Spelerpool in/uitklappen">
+        <span id="pool-toggle-icon">&#9643;</span> Pool
+      </button>
+      <select class="versie-select" onchange="showToast('Versie gewisseld','info')">
+        <option value="1">Versie 1 — Initieel</option>
+        <option value="2">Versie 2 — Na TC-gesprek</option>
+        <option value="3" selected>Versie 3 — Definitief concept</option>
+      </select>
+      <div class="view-pills">
+        <button class="vp active" id="vp-chip" onclick="setView('chip')">Compact</button>
+        <button class="vp" id="vp-zoom" onclick="setView('zoom')">Rijen</button>
+      </div>
+      <div class="tb-sep"></div>
+      <div class="val-badge val-warn" id="val-badge" onclick="cycleVal()">
+        <span id="val-icon">&#9888;&#65039;</span>
+        <span id="val-txt">2 waarschuwingen</span>
+      </div>
+      <div class="tb-spacer"></div>
+      <button class="btn btn-ghost btn-sm" onclick="showToast('Exporteer als PDF','info')">Exporteer</button>
+      <button class="btn btn-pri btn-sm" onclick="showToast('Indeling opgeslagen','ok')">Opslaan</button>
+    </div>
+
+    <!-- Body: pool + werkgebied -->
+    <div class="body-wrap">
+
+      <!-- Spelerspool -->
+      <div class="pool-panel" id="pool-panel">
+        <div class="pool-header">
+          <div class="pool-title">
+            <span>Spelerspool</span>
+            <span class="pool-count" id="pool-count">0</span>
+          </div>
+          <input class="pool-search" type="text" id="pool-search" placeholder="Zoek speler..." oninput="filterPool()">
+        </div>
+        <div class="pool-filters">
+          <button class="pill active" onclick="filterPill(this,'all')">Allen</button>
+          <button class="pill" onclick="filterPill(this,'V')">Dames</button>
+          <button class="pill" onclick="filterPill(this,'M')">Heren</button>
+          <button class="pill" onclick="filterPill(this,'vrij')">Vrij</button>
+        </div>
+        <div class="pool-list" id="pool-list"
+             ondragover="poolDragOver(event)" ondrop="poolDrop(event)" ondragleave="poolDragLeave(event)">
+          <!-- Gevuld door JS -->
+        </div>
+      </div>
+
+      <!-- Werkgebied -->
+      <div class="werkgebied" id="werkgebied">
+        <!-- Gevuld door JS -->
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- ─── Daisy widget ───────────────────────────────── -->
+<button class="daisy-btn" onclick="toggleDaisy()" style="position:relative;">
+  <div class="daisy-icon">&#10024;</div>
+  <div>
+    <div class="daisy-label">Daisy</div>
+    <div class="daisy-badge">AI TC-lid</div>
+  </div>
+  <div class="daisy-notif" id="daisy-notif"></div>
+</button>
+
+<div class="daisy-panel hidden" id="daisy-panel">
+  <div class="dp-head">
+    <div class="dp-avatar">&#10024;</div>
+    <div>
+      <div class="dp-name">Daisy</div>
+      <div class="dp-sub">AI TC-lid</div>
+    </div>
+    <button class="dp-close" onclick="closeDaisy()">&#10005;</button>
+  </div>
+  <div class="dp-body" id="daisy-body">
+    <div class="dp-msg ai">Ik zie 2 validatiewaarschuwingen. Dames 2 heeft maar 4 spelers — minimum Sen-B is 8. Ik heb een paar suggesties.</div>
+
+    <div class="dp-suggest" id="daisy-suggest-0">
+      <div class="dp-suggest-text">Sen-A heeft 3 open plekken. Ik stel voor <strong>Emma de Vries</strong> en <strong>Laura Bakker</strong> toe te voegen vanuit de pool.</div>
+      <div class="dp-suggest-actions">
+        <button class="btn-daisy" onclick="daisyExecute(0)">&#9654; Uitvoeren</button>
+        <button class="btn btn-ghost btn-xs" onclick="this.closest('.dp-suggest').style.opacity='.4'">Overslaan</button>
+      </div>
+    </div>
+
+    <div class="dp-suggest" id="daisy-suggest-1">
+      <div class="dp-suggest-text">U17 heeft teveel mannen (7/6 max). Verplaats <strong>Kevin Smit</strong> naar U19?</div>
+      <div class="dp-suggest-actions">
+        <button class="btn-daisy" onclick="daisyExecute(1)">&#9654; Uitvoeren</button>
+        <button class="btn btn-ghost btn-xs" onclick="this.closest('.dp-suggest').style.opacity='.4'">Overslaan</button>
+      </div>
+    </div>
+
+    <div class="dp-suggest" id="daisy-suggest-2">
+      <div class="dp-suggest-text">Heren 1 mist nog een dame. Ik zie <strong>Sara Jansen</strong> als beste match vanuit de pool.</div>
+      <div class="dp-suggest-actions">
+        <button class="btn-daisy" onclick="daisyExecute(2)">&#9654; Uitvoeren</button>
+        <button class="btn btn-ghost btn-xs" onclick="this.closest('.dp-suggest').style.opacity='.4'">Overslaan</button>
+      </div>
+    </div>
+  </div>
+  <div class="dp-footer">
+    <input class="dp-input" id="daisy-input" type="text" placeholder="Vraag Daisy iets..." onkeydown="if(event.key==='Enter')sendDaisy()">
+    <button class="dp-send" onclick="sendDaisy()">&#10148;</button>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   DATA
+═══════════════════════════════════════════════════ */
+let poolSpelers = [
+  { id:'p1', naam:'Emma de Vries',  gender:'V', geb:'04', cat:'Sen',  status:'vrij',       vorig:'Sen B' },
+  { id:'p2', naam:'Laura Bakker',   gender:'V', geb:'05', cat:'Sen',  status:'vrij',       vorig:'U19-1' },
+  { id:'p3', naam:'Sara Jansen',    gender:'V', geb:'05', cat:'Sen',  status:'vrij',       vorig:'Sen B' },
+  { id:'p4', naam:'Sem de Jong',    gender:'M', geb:'07', cat:'U19',  status:'vrij',       vorig:'U19-2' },
+  { id:'p5', naam:'Noa Hendriks',   gender:'V', geb:'06', cat:'Sen',  status:'vrij',       vorig:'Dames 2' },
+  { id:'p6', naam:'Kevin Smit',     gender:'M', geb:'07', cat:'U17',  status:'twijfel',    vorig:'U17-1' },
+  { id:'p7', naam:'Daan Visser',    gender:'M', geb:'08', cat:'U17',  status:'vrij',       vorig:'U17-2' },
+  { id:'p8', naam:'Julia Prins',    gender:'V', geb:'07', cat:'U19',  status:'geblesseerd',vorig:'U19-1' },
+  { id:'p9', naam:'Floor de Boer',  gender:'V', geb:'09', cat:'U17',  status:'vrij',       vorig:'U17-1' },
+];
+
+const categorien = [
+  {
+    id:'sen', catLabel:'Senioren A', catColor:'#F97316', catBg:'rgba(249,115,22,.12)',
+    teams:[
+      {
+        id:'heren1', naam:'Heren 1', kleur:'#F97316', max:11, val:'warn',
+        spelers:[
+          {id:'s1', naam:'Jasper Laban',  gender:'M', geb:'96', pinned:true,  vorig:'Heren 1'},
+          {id:'s2', naam:'Maarten Smit',  gender:'M', geb:'97', pinned:true,  vorig:'Heren 1'},
+          {id:'s3', naam:'Lisa van Dam',  gender:'V', geb:'99', pinned:true,  vorig:'Heren 1'},
+          {id:'s4', naam:'Bas de Boer',   gender:'M', geb:'01', pinned:false, vorig:'Heren 2'},
+          {id:'s5', naam:'Petra Vos',     gender:'V', geb:'00', pinned:false, vorig:'Heren 1'},
+          {id:'s6', naam:'Robin Bakker',  gender:'M', geb:'98', pinned:true,  vorig:'Heren 1'},
+          {id:'s7', naam:'Laura Berg',    gender:'V', geb:'02', pinned:false, vorig:'Heren 2'},
+          {id:'s8', naam:'Kevin Groot',   gender:'M', geb:'03', pinned:false, vorig:'Heren 2'},
+          {id:'s9', naam:'Hannah Post',   gender:'V', geb:'01', pinned:false, vorig:'Heren 1'},
+        ],
+        staf:[{naam:'Thomas de Wit', rol:'Trainer'},{naam:'Merel Brouwer', rol:'Teammanager'}]
+      },
+      {
+        id:'heren2', naam:'Heren 2', kleur:'#FB923C', max:11, val:'ok',
+        spelers:[
+          {id:'s10',naam:'Quincy Brand',  gender:'M', geb:'00', pinned:false, vorig:'Heren 2'},
+          {id:'s11',naam:'Tessa Meer',    gender:'V', geb:'01', pinned:false, vorig:'Heren 2'},
+          {id:'s12',naam:'Sander Wolf',   gender:'M', geb:'02', pinned:false, vorig:'U19-1'},
+          {id:'s13',naam:'Rosa Steen',    gender:'V', geb:'03', pinned:false, vorig:'Heren 2'},
+          {id:'s14',naam:'Ian Loos',      gender:'M', geb:'99', pinned:false, vorig:'Heren 2'},
+          {id:'s15',naam:'Alex Blom',     gender:'M', geb:'01', pinned:false, vorig:'U19-1'},
+          {id:'s16',naam:'Carmen Roos',   gender:'V', geb:'02', pinned:false, vorig:'Heren 2'},
+          {id:'s17',naam:'Gijs Hoek',     gender:'M', geb:'00', pinned:false, vorig:'Heren 2'},
+          {id:'s18',naam:'Emma den Boer', gender:'V', geb:'03', pinned:false, vorig:'U19-2'},
+          {id:'s19',naam:'Nick Prins',    gender:'M', geb:'01', pinned:false, vorig:'Heren 2'},
+        ],
+        staf:[{naam:'Jan Wiers', rol:'Trainer'}]
+      },
+      {
+        id:'dames1', naam:'Dames 1', kleur:'#EC4899', max:11, val:'ok',
+        spelers:[
+          {id:'s20',naam:'Sara Kooij',    gender:'V', geb:'98', pinned:true,  vorig:'Dames 1'},
+          {id:'s21',naam:'Mila Jansen',   gender:'V', geb:'00', pinned:true,  vorig:'Dames 1'},
+          {id:'s22',naam:'Tom de Vries',  gender:'M', geb:'99', pinned:false, vorig:'Dames 1'},
+          {id:'s23',naam:'Eva Wolters',   gender:'V', geb:'01', pinned:false, vorig:'Dames 1'},
+          {id:'s24',naam:'David Meijer',  gender:'M', geb:'00', pinned:false, vorig:'Heren 1'},
+          {id:'s25',naam:'Nina Kok',      gender:'V', geb:'02', pinned:false, vorig:'U19-1'},
+          {id:'s26',naam:'Max Visser',    gender:'M', geb:'01', pinned:false, vorig:'Dames 1'},
+          {id:'s27',naam:'Lea van Rijn',  gender:'V', geb:'03', pinned:false, vorig:'U19-1'},
+        ],
+        staf:[{naam:'Merel Brouwer', rol:'Trainer'}]
+      },
+      {
+        id:'dames2', naam:'Dames 2', kleur:'#F472B6', max:11, val:'err',
+        spelers:[
+          {id:'s28',naam:'Emma van Dijk', gender:'V', geb:'02', pinned:false, vorig:'Dames 2'},
+          {id:'s29',naam:'Daan Visser',   gender:'M', geb:'03', pinned:false, vorig:'U19-2'},
+          {id:'s30',naam:'Oscar Bos',     gender:'M', geb:'02', pinned:false, vorig:'Dames 2'},
+          {id:'s31',naam:'Anne Dijkstra', gender:'V', geb:'04', pinned:false, vorig:'U19-1'},
+        ],
+        staf:[]
+      },
+    ]
+  },
+  {
+    id:'u19', catLabel:'U19', catColor:'#EF4444', catBg:'rgba(239,68,68,.12)',
+    teams:[
+      {
+        id:'u191', naam:'U19-1', kleur:'#EF4444', max:12, val:'ok',
+        spelers:[
+          {id:'s32',naam:'Finn Peters',   gender:'M', geb:'06', pinned:false, vorig:'U19-1'},
+          {id:'s33',naam:'Nadia Blom',    gender:'V', geb:'06', pinned:false, vorig:'U19-1'},
+          {id:'s34',naam:'Tom Berg',      gender:'M', geb:'07', pinned:false, vorig:'U17-1'},
+          {id:'s35',naam:'Eva Laan',      gender:'V', geb:'07', pinned:false, vorig:'U19-1'},
+          {id:'s36',naam:'Ian Vos',       gender:'M', geb:'06', pinned:false, vorig:'U19-1'},
+          {id:'s37',naam:'Rosa Hoek',     gender:'V', geb:'07', pinned:false, vorig:'U17-1'},
+          {id:'s38',naam:'Bas Hendriks',  gender:'M', geb:'07', pinned:false, vorig:'U19-1'},
+          {id:'s39',naam:'Lisa Bosman',   gender:'V', geb:'06', pinned:false, vorig:'U19-1'},
+          {id:'s40',naam:'Rick Staal',    gender:'M', geb:'07', pinned:false, vorig:'U19-1'},
+          {id:'s41',naam:'Hanna Post',    gender:'V', geb:'07', pinned:false, vorig:'U19-2'},
+        ],
+        staf:[{naam:'Jasper Laban', rol:'Coach'}]
+      },
+      {
+        id:'u192', naam:'U19-2', kleur:'#F87171', max:12, val:'ok',
+        spelers:[
+          {id:'s42',naam:'Max Visser jr', gender:'M', geb:'07', pinned:false, vorig:'U19-2'},
+          {id:'s43',naam:'Nina Smit',     gender:'V', geb:'07', pinned:false, vorig:'U19-2'},
+          {id:'s44',naam:'Oscar de Boer', gender:'M', geb:'08', pinned:false, vorig:'U17-1'},
+          {id:'s45',naam:'Hannah Veen',   gender:'V', geb:'07', pinned:false, vorig:'U19-2'},
+          {id:'s46',naam:'Sander Berg',   gender:'M', geb:'08', pinned:false, vorig:'U19-2'},
+          {id:'s47',naam:'Tessa Kool',    gender:'V', geb:'08', pinned:false, vorig:'U17-2'},
+        ],
+        staf:[]
+      },
+    ]
+  },
+  {
+    id:'u17', catLabel:'U17', catColor:'#EAB308', catBg:'rgba(234,179,8,.12)',
+    teams:[
+      {
+        id:'u171', naam:'U17-1', kleur:'#EAB308', max:12, val:'ok',
+        spelers:[
+          {id:'s48',naam:'Carmen Roos',   gender:'V', geb:'08', pinned:false, vorig:'U17-1'},
+          {id:'s49',naam:'Ian Hoek',      gender:'M', geb:'08', pinned:false, vorig:'U17-1'},
+          {id:'s50',naam:'Emma van Dijk jr',gender:'V',geb:'09',pinned:false, vorig:'U15-1'},
+          {id:'s51',naam:'Sander Wolf',   gender:'M', geb:'09', pinned:false, vorig:'U17-1'},
+          {id:'s52',naam:'Rosa Steen jr', gender:'V', geb:'09', pinned:false, vorig:'U17-1'},
+          {id:'s53',naam:'Gijs Hoek jr',  gender:'M', geb:'08', pinned:false, vorig:'U17-1'},
+        ],
+        staf:[{naam:'Thomas de Wit', rol:'Coach'}]
+      },
+      {
+        id:'u172', naam:'U17-2', kleur:'#FBBF24', max:12, val:'ok',
+        spelers:[
+          {id:'s54',naam:'Alex Berg',     gender:'M', geb:'09', pinned:false, vorig:'U15-1'},
+          {id:'s55',naam:'Nina Kool',     gender:'V', geb:'09', pinned:false, vorig:'U17-2'},
+          {id:'s56',naam:'Max Prins',     gender:'M', geb:'09', pinned:false, vorig:'U15-2'},
+          {id:'s57',naam:'Hannah Meijer', gender:'V', geb:'09', pinned:false, vorig:'U17-2'},
+        ],
+        staf:[]
+      },
+    ]
+  },
+];
+
+/* ═══════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════ */
+let currentView    = 'chip';
+let poolOpen       = true;
+let poolFilter     = 'all';
+let currentTeamId  = null;  // voor team-dialog
+let addGenderFilter = null; // voor add-speler dialog
+
+// Drag state
+let dragState = {
+  spelerId: null,
+  source: null,  // 'pool' | team-id
+  gender: null,
+};
+
+/* ═══════════════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════════════ */
+function initials(naam) {
+  return naam.split(' ').filter(w => /^[A-Z]/.test(w)).map(w => w[0]).join('').slice(0,2).toUpperCase();
+}
+function valColor(v) {
+  return v==='ok' ? 'var(--ok)' : v==='warn' ? 'var(--warn)' : 'var(--err)';
+}
+function findTeam(id) {
+  for (const cat of categorien) {
+    const t = cat.teams.find(t => t.id === id);
+    if (t) return t;
+  }
+  return null;
+}
+function findSpelerById(id) {
+  for (const cat of categorien) {
+    for (const t of cat.teams) {
+      const s = t.spelers.find(s => s.id === id);
+      if (s) return { speler: s, team: t };
+    }
+  }
+  const ps = poolSpelers.find(s => s.id === id);
+  if (ps) return { speler: ps, team: null };
+  return null;
+}
+function leeftijd(geb) {
+  const yr = parseInt(geb) < 30 ? 2000 + parseInt(geb) : 1900 + parseInt(geb);
+  return 2026 - yr;
+}
+
+/* ═══════════════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════════════ */
+function goTo(page) {
+  const map = {
+    kaders:  'kaders-prototype.html',
+    werkbord:'werkbord-prototype.html',
+    personen:'personen-prototype.html',
+  };
+  showToast('Navigeert naar ' + page, 'info');
+}
+
+/* ═══════════════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════════════ */
+function showToast(msg, type='ok') {
+  const wrap = document.getElementById('toast-wrap');
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  const icon = type==='ok' ? '&#10003;' : type==='warn' ? '&#9888;' : type==='err' ? '&#10005;' : 'i';
+  t.innerHTML = `<span>${icon}</span><span>${msg}</span>`;
+  wrap.appendChild(t);
+  setTimeout(() => { t.style.animation = 'none'; t.style.opacity = '0'; t.style.transition = 'opacity 300ms'; setTimeout(()=>t.remove(), 300); }, 3200);
+}
+
+/* ═══════════════════════════════════════════════════
+   TOOLBAR
+═══════════════════════════════════════════════════ */
+function togglePool() {
+  poolOpen = !poolOpen;
+  document.getElementById('pool-panel').classList.toggle('collapsed', !poolOpen);
+  document.getElementById('pool-toggle-icon').textContent = poolOpen ? '◧' : '◨';
+}
+function setView(v) {
+  currentView = v;
+  document.getElementById('vp-chip').classList.toggle('active', v==='chip');
+  document.getElementById('vp-zoom').classList.toggle('active', v==='zoom');
+  renderWerkgebied();
+  document.getElementById('team-grid') && document.querySelectorAll('.team-grid').forEach(g => {
+    g.classList.toggle('zoom', v==='zoom');
+  });
+}
+
+/* ═══════════════════════════════════════════════════
+   SPELERSPOOL RENDER
+═══════════════════════════════════════════════════ */
+function renderPool() {
+  const list = document.getElementById('pool-list');
+  const q = (document.getElementById('pool-search').value || '').toLowerCase();
+  const filtered = poolSpelers.filter(sp => {
+    const mQ = !q || sp.naam.toLowerCase().includes(q);
+    const mF = poolFilter==='all' || sp.gender===poolFilter || sp.status===poolFilter;
+    return mQ && mF;
+  });
+  document.getElementById('pool-count').textContent = filtered.length;
+  if (filtered.length === 0) {
+    list.innerHTML = '<div style="padding:16px 12px;text-align:center;font-size:11px;color:var(--text-3);">Geen spelers</div>';
+    return;
+  }
+  list.innerHTML = filtered.map(sp => `
+    <div class="pool-sp ${sp.gender.toLowerCase()}" id="pool-sp-${sp.id}"
+         draggable="true"
+         ondragstart="poolDragStart(event,'${sp.id}')"
+         ondragend="dragEnd(event)"
+         onclick="openSpelerDialog('${sp.id}')"
+         title="${sp.naam} — sleep naar een team of klik voor profiel">
+      <div class="pool-av ${sp.gender.toLowerCase()}">${initials(sp.naam)}</div>
+      <div class="pool-sp-info">
+        <div class="pool-sp-naam">${sp.naam}</div>
+        <div class="pool-sp-meta">${sp.gender==='V'?'Dame':'Heer'} &middot; ${sp.cat} &middot; '${sp.geb}${sp.status==='geblesseerd'?' &middot; <span style="color:var(--warn);">geblesseerd</span>':sp.status==='twijfel'?' &middot; <span style="color:var(--warn);">twijfel</span>':''}</div>
+      </div>
+    </div>`).join('');
+}
+function filterPool() { renderPool(); }
+function filterPill(el, f) {
+  poolFilter = f;
+  document.querySelectorAll('.pool-filters .pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  renderPool();
+}
+
+/* ═══════════════════════════════════════════════════
+   WERKGEBIED RENDER
+═══════════════════════════════════════════════════ */
+function renderWerkgebied() {
+  const wg = document.getElementById('werkgebied');
+  let html = '';
+  for (const cat of categorien) {
+    html += `<div class="cat-section">
+      <div class="cat-label">
+        <span class="cat-dot" style="background:${cat.catColor};"></span>
+        ${cat.catLabel}
+        <span style="color:var(--text-3);font-size:10px;">${cat.teams.reduce((a,t)=>a+t.spelers.length,0)} spelers</span>
+      </div>
+      <div class="team-grid${currentView==='zoom'?' zoom':''}">`;
+    for (const team of cat.teams) {
+      html += renderTeamkaart(team);
+    }
+    html += `</div></div>`;
+  }
+  wg.innerHTML = html;
+  // Bind drag events op teamkaarten
+  bindTeamDragEvents();
+}
+
+function renderTeamkaart(t) {
+  const vc = valColor(t.val);
+  const vSp = t.spelers.filter(s => s.gender === 'V');
+  const mSp = t.spelers.filter(s => s.gender === 'M');
+  const openPl = Math.max(0, 8 - t.spelers.length);
+  const pinCnt = t.spelers.filter(s => s.pinned).length;
+
+  let bodyHtml = '';
+  if (currentView === 'zoom') {
+    bodyHtml = `<div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border-0);">
+      <div style="padding:3px 0;border-right:1px solid var(--border-0);">
+        <div style="padding:3px 10px;font-size:9px;font-weight:700;color:var(--pink);text-transform:uppercase;letter-spacing:.4px;">V (${vSp.length})</div>
+        ${vSp.map(sp=>`<div class="sp-row" draggable="true" id="chip-${sp.id}"
+            ondragstart="chipDragStart(event,'${sp.id}','${t.id}')"
+            ondragend="dragEnd(event)"
+            onclick="openSpelerDialog('${sp.id}')">
+            <div class="sp-row-av v">${initials(sp.naam)}</div>
+            <span class="sp-row-naam">${sp.naam}</span>
+            <span class="sp-row-age">'${sp.geb}</span>
+            ${sp.pinned?'<span class="sp-row-pin">&#128204;</span>':''}
+          </div>`).join('') || '<div style="padding:5px 10px;font-size:10px;color:var(--text-3);">—</div>'}
+      </div>
+      <div style="padding:3px 0;">
+        <div style="padding:3px 10px;font-size:9px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.4px;">M (${mSp.length})</div>
+        ${mSp.map(sp=>`<div class="sp-row" draggable="true" id="chip-${sp.id}"
+            ondragstart="chipDragStart(event,'${sp.id}','${t.id}')"
+            ondragend="dragEnd(event)"
+            onclick="openSpelerDialog('${sp.id}')">
+            <div class="sp-row-av m">${initials(sp.naam)}</div>
+            <span class="sp-row-naam">${sp.naam}</span>
+            <span class="sp-row-age">'${sp.geb}</span>
+            ${sp.pinned?'<span class="sp-row-pin">&#128204;</span>':''}
+          </div>`).join('') || '<div style="padding:5px 10px;font-size:10px;color:var(--text-3);">—</div>'}
+      </div>
+    </div>`;
+  } else {
+    // Chip view
+    const vChips = vSp.map(sp => `
+      <div class="sp-chip v ${sp.pinned?'pinned':''}" id="chip-${sp.id}"
+           draggable="true"
+           ondragstart="chipDragStart(event,'${sp.id}','${t.id}')"
+           ondragend="dragEnd(event)"
+           onclick="openSpelerDialog('${sp.id}')"
+           title="${sp.naam}">
+        ${sp.pinned?'<span class="pin-dot"></span>':''}
+        <span style="overflow:hidden;text-overflow:ellipsis;">${sp.naam.split(' ')[0]}</span>
+      </div>`).join('');
+    const mChips = mSp.map(sp => `
+      <div class="sp-chip m ${sp.pinned?'pinned':''}" id="chip-${sp.id}"
+           draggable="true"
+           ondragstart="chipDragStart(event,'${sp.id}','${t.id}')"
+           ondragend="dragEnd(event)"
+           onclick="openSpelerDialog('${sp.id}')"
+           title="${sp.naam}">
+        ${sp.pinned?'<span class="pin-dot"></span>':''}
+        <span style="overflow:hidden;text-overflow:ellipsis;">${sp.naam.split(' ')[0]}</span>
+      </div>`).join('');
+    bodyHtml = `
+      <div class="tk-cols">
+        <div class="tk-col-head v">&#9673; V (${vSp.length})</div>
+        <div class="tk-col-head m">&#9673; M (${mSp.length})</div>
+      </div>
+      <div class="tk-body">
+        <div class="tk-col v">${vChips || ''}</div>
+        <div class="tk-col m">${mChips || ''}</div>
+      </div>`;
+  }
+
+  return `
+    <div class="tk" id="tk-${t.id}"
+         style="--team-color:${t.kleur};"
+         ondragover="tkDragOver(event,'${t.id}')"
+         ondrop="tkDrop(event,'${t.id}')"
+         ondragleave="tkDragLeave(event,'${t.id}')">
+      <div class="tk-band" style="background:${t.kleur};"></div>
+      <div class="tk-val" style="background:${vc};"></div>
+      <div class="tk-h" onclick="openTeamDialog('${t.id}')">
+        <span class="tk-naam">${t.naam}</span>
+        <span class="tk-count">${t.spelers.length}${t.max?'/'+t.max:''}</span>
+      </div>
+      <div class="tk-drop-hint">Zet hier neer</div>
+      ${bodyHtml}
+      <div class="tk-f">
+        <span class="tk-f-stat">&#128204; ${pinCnt}</span>
+        ${openPl > 0 ? `<div class="tk-f-sep"></div><span class="open-chip">+${openPl} open</span>` : ''}
+        <span style="flex:1;"></span>
+        <span style="font-size:9px;color:${vc};">&#9679;</span>
+      </div>
+    </div>`;
+}
+
+function bindTeamDragEvents() {
+  // Events zijn inline in de HTML, dus niets extra nodig
+}
+
+/* ═══════════════════════════════════════════════════
+   DRAG & DROP — POOL
+═══════════════════════════════════════════════════ */
+function poolDragStart(event, spelerId) {
+  const sp = poolSpelers.find(s => s.id === spelerId);
+  if (!sp) return;
+  dragState = { spelerId: spelerId, source: 'pool', gender: sp.gender };
+  event.dataTransfer.effectAllowed = 'move';
+  event.dataTransfer.setData('text/plain', spelerId);
+  setTimeout(() => {
+    const el = document.getElementById('pool-sp-' + spelerId);
+    if (el) el.classList.add('dragging');
+  }, 0);
+}
+
+function poolDragOver(event) {
+  if (dragState.source !== 'pool') {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+    document.getElementById('pool-list').classList.add('drag-over-pool');
+  }
+}
+function poolDragLeave(event) {
+  document.getElementById('pool-list').classList.remove('drag-over-pool');
+}
+function poolDrop(event) {
+  event.preventDefault();
+  document.getElementById('pool-list').classList.remove('drag-over-pool');
+  if (!dragState.spelerId || dragState.source === 'pool') return;
+  // Haal speler op uit team en zet in pool
+  const srcTeam = findTeam(dragState.source);
+  if (!srcTeam) return;
+  const idx = srcTeam.spelers.findIndex(s => s.id === dragState.spelerId);
+  if (idx === -1) return;
+  const [sp] = srcTeam.spelers.splice(idx, 1);
+  poolSpelers.push({ ...sp, cat: srcTeam.naam, status: 'vrij' });
+  showToast(sp.naam + ' terug naar spelerspool', 'info');
+  dragState = {};
+  renderPool();
+  renderWerkgebied();
+  if (currentTeamId) renderTeamDialog(currentTeamId);
+}
+
+/* ═══════════════════════════════════════════════════
+   DRAG & DROP — CHIP (speler in team)
+═══════════════════════════════════════════════════ */
+function chipDragStart(event, spelerId, teamId) {
+  const res = findSpelerById(spelerId);
+  if (!res) return;
+  dragState = { spelerId: spelerId, source: teamId, gender: res.speler.gender };
+  event.dataTransfer.effectAllowed = 'move';
+  event.dataTransfer.setData('text/plain', spelerId);
+  setTimeout(() => {
+    const el = document.getElementById('chip-' + spelerId);
+    if (el) el.classList.add('dragging');
+  }, 0);
+}
+
+/* ═══════════════════════════════════════════════════
+   DRAG & DROP — TEAMKAART TARGET
+═══════════════════════════════════════════════════ */
+function tkDragOver(event, teamId) {
+  if (!dragState.spelerId) return;
+  if (dragState.source === teamId) return; // Zelfde team
+  event.preventDefault();
+  event.dataTransfer.dropEffect = 'move';
+  const tk = document.getElementById('tk-' + teamId);
+  if (tk) tk.classList.add('drop-active');
+}
+function tkDragLeave(event, teamId) {
+  const tk = document.getElementById('tk-' + teamId);
+  if (tk) tk.classList.remove('drop-active');
+}
+function tkDrop(event, teamId) {
+  event.preventDefault();
+  const tk = document.getElementById('tk-' + teamId);
+  if (tk) tk.classList.remove('drop-active');
+  if (!dragState.spelerId) return;
+  if (dragState.source === teamId) { dragState = {}; return; }
+
+  const targetTeam = findTeam(teamId);
+  if (!targetTeam) return;
+
+  let speler = null;
+
+  if (dragState.source === 'pool') {
+    // Van pool naar team
+    const idx = poolSpelers.findIndex(s => s.id === dragState.spelerId);
+    if (idx === -1) return;
+    [speler] = poolSpelers.splice(idx, 1);
+  } else {
+    // Van team naar team
+    const srcTeam = findTeam(dragState.source);
+    if (!srcTeam) return;
+    const idx = srcTeam.spelers.findIndex(s => s.id === dragState.spelerId);
+    if (idx === -1) return;
+    [speler] = srcTeam.spelers.splice(idx, 1);
+  }
+
+  // Check al in team
+  if (targetTeam.spelers.some(s => s.id === speler.id)) {
+    showToast(speler.naam + ' zit al in ' + targetTeam.naam, 'warn');
+    if (dragState.source === 'pool') poolSpelers.push(speler);
+    else findTeam(dragState.source) && findTeam(dragState.source).spelers.push(speler);
+    dragState = {};
+    return;
+  }
+
+  targetTeam.spelers.push({ ...speler, pinned: speler.pinned || false, vorig: speler.vorig || '—' });
+  showToast(speler.naam + ' naar ' + targetTeam.naam, 'ok');
+  dragState = {};
+  renderPool();
+  renderWerkgebied();
+  if (currentTeamId) renderTeamDialog(currentTeamId);
+}
+
+function dragEnd(event) {
+  // Verwijder dragging klassen
+  document.querySelectorAll('.dragging').forEach(el => el.classList.remove('dragging'));
+  document.querySelectorAll('.drop-active').forEach(el => el.classList.remove('drop-active'));
+}
+
+/* ═══════════════════════════════════════════════════
+   DRAG & DROP — TEAM DIALOG KOLOMMEN
+═══════════════════════════════════════════════════ */
+function tdColDragOver(event, gender) {
+  if (!dragState.spelerId) return;
+  event.preventDefault();
+  const el = document.getElementById('td-col-' + gender);
+  if (el) el.style.background = 'rgba(255,107,0,.06)';
+}
+function tdColDragLeave(event, gender) {
+  const el = document.getElementById('td-col-' + gender);
+  if (el) el.style.background = '';
+}
+function tdColDrop(event, gender) {
+  event.preventDefault();
+  const el = document.getElementById('td-col-' + gender);
+  if (el) el.style.background = '';
+  if (!dragState.spelerId || !currentTeamId) return;
+
+  const targetTeam = findTeam(currentTeamId);
+  if (!targetTeam) return;
+
+  // Als de speler al in dit team zit, update gender (als korfbalregels het toelaten)
+  const existing = targetTeam.spelers.find(s => s.id === dragState.spelerId);
+  if (existing) { dragState = {}; return; }
+
+  // Anders: verplaats
+  let speler = null;
+  if (dragState.source === 'pool') {
+    const idx = poolSpelers.findIndex(s => s.id === dragState.spelerId);
+    if (idx === -1) return;
+    [speler] = poolSpelers.splice(idx, 1);
+  } else {
+    const srcTeam = findTeam(dragState.source);
+    if (!srcTeam) return;
+    const idx = srcTeam.spelers.findIndex(s => s.id === dragState.spelerId);
+    if (idx === -1) return;
+    [speler] = srcTeam.spelers.splice(idx, 1);
+  }
+  targetTeam.spelers.push({ ...speler, pinned: speler.pinned || false });
+  showToast(speler.naam + ' toegevoegd aan ' + targetTeam.naam, 'ok');
+  dragState = {};
+  renderPool();
+  renderWerkgebied();
+  renderTeamDialog(currentTeamId);
+}
+
+/* ═══════════════════════════════════════════════════
+   OVERLAY BEHEER
+═══════════════════════════════════════════════════ */
+function handleOverlayClick(event, overlayId) {
+  if (event.target.id === overlayId) closeOverlay(overlayId);
+}
+function closeOverlay(id) {
+  document.getElementById(id).classList.add('hidden');
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    // Sluit bovenste open overlay
+    ['overlay-add','overlay-speler','overlay-team'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el.classList.contains('hidden')) {
+        el.classList.add('hidden');
+        throw ''; // stop loop
+      }
+    });
+  }
+});
+
+/* ═══════════════════════════════════════════════════
+   TEAM DIALOG
+═══════════════════════════════════════════════════ */
+function openTeamDialog(teamId) {
+  currentTeamId = teamId;
+  renderTeamDialog(teamId);
+  document.getElementById('overlay-team').classList.remove('hidden');
+}
+
+function renderTeamDialog(teamId) {
+  const t = findTeam(teamId);
+  if (!t) return;
+
+  const vSp = t.spelers.filter(s => s.gender === 'V');
+  const mSp = t.spelers.filter(s => s.gender === 'M');
+
+  document.getElementById('td-naam').textContent = t.naam;
+  document.getElementById('td-meta').textContent =
+    `${t.spelers.length} spelers${t.max ? ' / max '+t.max : ''} &middot; ${vSp.length}V ${mSp.length}M`;
+  document.getElementById('td-kleurband').style.background = t.kleur;
+  document.getElementById('td-v-count').textContent = vSp.length;
+  document.getElementById('td-m-count').textContent = mSp.length;
+
+  function spRowHtml(sp) {
+    const g = sp.gender.toLowerCase();
+    return `<div class="td-sp-row ${g} ${sp.pinned?'pinned':''}" id="td-sp-${sp.id}"
+        draggable="true"
+        ondragstart="chipDragStart(event,'${sp.id}','${teamId}')"
+        ondragend="dragEnd(event)">
+      <div class="td-sp-av ${g}">${initials(sp.naam)}</div>
+      <div class="td-sp-info">
+        <div class="td-sp-naam" onclick="openSpelerDialog('${sp.id}')">${sp.naam}</div>
+        <div class="td-sp-meta">${sp.gender==='V'?'Dame':'Heer'} &middot; '${sp.geb} &middot; ${leeftijd(sp.geb)} jaar</div>
+      </div>
+      <span class="td-sp-vorig">${sp.vorig}</span>
+      ${sp.pinned ? '<span class="td-sp-pin" title="Gepind">&#128204;</span>' : ''}
+      <button class="td-sp-del" onclick="removeFromTeam('${sp.id}','${teamId}')" title="Verwijderen">&#10005;</button>
+    </div>`;
+  }
+
+  document.getElementById('td-list-v').innerHTML = vSp.length
+    ? vSp.map(spRowHtml).join('')
+    : '<div style="padding:14px 16px;color:var(--text-3);font-size:12px;">Geen dames</div>';
+  document.getElementById('td-list-m').innerHTML = mSp.length
+    ? mSp.map(spRowHtml).join('')
+    : '<div style="padding:14px 16px;color:var(--text-3);font-size:12px;">Geen heren</div>';
+
+  // Staf
+  const stafList = document.getElementById('td-staf-list');
+  stafList.innerHTML = (t.staf || []).map(s =>
+    `<div class="staf-chip">${s.naam} <span class="role">${s.rol}</span></div>`
+  ).join('') || '<span style="font-size:11px;color:var(--text-3);">Nog geen staf gekoppeld</span>';
+}
+
+function removeFromTeam(spelerId, teamId) {
+  const team = findTeam(teamId);
+  if (!team) return;
+  const idx = team.spelers.findIndex(s => s.id === spelerId);
+  if (idx === -1) return;
+  const [sp] = team.spelers.splice(idx, 1);
+  poolSpelers.push({ ...sp, cat: team.naam, status: 'vrij' });
+  showToast(sp.naam + ' terug naar spelerspool', 'info');
+  renderPool();
+  renderWerkgebied();
+  renderTeamDialog(teamId);
+}
+
+/* ═══════════════════════════════════════════════════
+   SPELER TOEVOEGEN DIALOG
+═══════════════════════════════════════════════════ */
+function openAddSpelerDialog(genderFilter) {
+  addGenderFilter = genderFilter || null;
+  document.getElementById('add-search').value = '';
+  renderAddList();
+  document.getElementById('overlay-add').classList.remove('hidden');
+}
+function renderAddList() {
+  const q = document.getElementById('add-search').value.toLowerCase();
+  const list = document.getElementById('add-list');
+  const filtered = poolSpelers.filter(sp => {
+    const mQ = !q || sp.naam.toLowerCase().includes(q);
+    const mG = !addGenderFilter || sp.gender === addGenderFilter;
+    return mQ && mG;
+  });
+  if (filtered.length === 0) {
+    list.innerHTML = '<div style="padding:12px;text-align:center;font-size:11px;color:var(--text-3);">Geen beschikbare spelers</div>';
+    return;
+  }
+  list.innerHTML = filtered.map(sp => `
+    <div style="display:flex;align-items:center;gap:9px;padding:9px 12px;cursor:pointer;transition:background 120ms;border-bottom:1px solid var(--border-0);"
+         onmouseenter="this.style.background='var(--bg-3)'"
+         onmouseleave="this.style.background=''"
+         onclick="addSpelerToCurrentTeam('${sp.id}')">
+      <div class="pool-av ${sp.gender.toLowerCase()}" style="flex-shrink:0;">${initials(sp.naam)}</div>
+      <div style="flex:1;overflow:hidden;">
+        <div style="font-weight:600;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${sp.naam}</div>
+        <div style="font-size:10px;color:var(--text-3);">${sp.gender==='V'?'Dame':'Heer'} &middot; ${sp.cat} &middot; '${sp.geb}</div>
+      </div>
+      <button style="padding:3px 8px;border-radius:5px;background:var(--accent-dim);color:var(--accent);border:1px solid rgba(255,107,0,.2);font-size:10px;font-weight:700;cursor:pointer;font-family:inherit;">+ Voeg toe</button>
+    </div>`).join('');
+}
+function addSpelerToCurrentTeam(spelerId) {
+  if (!currentTeamId) return;
+  const team = findTeam(currentTeamId);
+  if (!team) return;
+  const idx = poolSpelers.findIndex(s => s.id === spelerId);
+  if (idx === -1) return;
+  const [sp] = poolSpelers.splice(idx, 1);
+  team.spelers.push({ ...sp, pinned: false });
+  showToast(sp.naam + ' toegevoegd aan ' + team.naam, 'ok');
+  renderPool();
+  renderWerkgebied();
+  renderTeamDialog(currentTeamId);
+  renderAddList();
+}
+
+/* ═══════════════════════════════════════════════════
+   SPELER DIALOG
+═══════════════════════════════════════════════════ */
+function openSpelerDialog(spelerId) {
+  const res = findSpelerById(spelerId);
+  if (!res) return;
+  const { speler: sp, team } = res;
+
+  document.getElementById('sd-naam').textContent = sp.naam;
+
+  // Badges
+  const gBadge = sp.gender === 'V'
+    ? '<span class="sd-badge sd-badge-v">Dame</span>'
+    : '<span class="sd-badge sd-badge-m">Heer</span>';
+  const catBadge = `<span class="sd-badge sd-badge-cat">${sp.cat || (team ? team.naam : 'Pool')}</span>`;
+  let statusBadge = '';
+  const statusMap = {
+    vrij:        ['ok',   'Beschikbaar'],
+    twijfel:     ['warn', 'Twijfel'],
+    geblesseerd: ['warn', 'Geblesseerd'],
+    gestopt:     ['err',  'Gestopt'],
+    onbekend:    ['grey', 'Onbekend'],
+  };
+  const [sType, sLabel] = statusMap[sp.status] || ['grey', sp.status];
+  statusBadge = `<span class="sd-badge sd-badge-status-${sType}" onclick="cycleStatus('${spelerId}')" title="Klik om te wijzigen">${sLabel}</span>`;
+  document.getElementById('sd-badges').innerHTML = gBadge + catBadge + statusBadge;
+
+  // Body
+  const leeft = leeftijd(sp.geb);
+  const jaar = parseInt(sp.geb) < 30 ? 2000 + parseInt(sp.geb) : 1900 + parseInt(sp.geb);
+  const seizoenen = Math.max(1, 2026 - jaar - 12);
+
+  let body = `
+    <div class="sd-stats">
+      <div class="sd-stat"><div class="sd-stat-val" style="color:var(--accent);">${leeft}</div><div class="sd-stat-lbl">Leeftijd</div></div>
+      <div class="sd-stat"><div class="sd-stat-val" style="color:var(--blue);">${seizoenen}</div><div class="sd-stat-lbl">Seizoenen</div></div>
+      <div class="sd-stat"><div class="sd-stat-val" style="color:var(--ok);">12</div><div class="sd-stat-lbl">Instroom</div></div>
+    </div>`;
+
+  // Huidig team
+  if (team) {
+    body += `<div class="sd-section">
+      <div class="sd-label">Huidig team</div>
+      <div class="sd-huidig-team" onclick="closeOverlay('overlay-speler');openTeamDialog('${team.id}')">
+        <span style="width:8px;height:8px;border-radius:50%;background:${team.kleur};flex-shrink:0;display:inline-block;"></span>
+        ${team.naam}
+        <span style="font-size:10px;color:var(--text-3);">&#8594; Open team</span>
+      </div>
+    </div>`;
+  } else {
+    body += `<div class="sd-section"><div class="sd-label">Huidig team</div><span style="font-size:12px;color:var(--text-3);">In spelerspool — nog niet ingedeeld</span></div>`;
+  }
+
+  // Vorig seizoen
+  body += `<div class="sd-section">
+    <div class="sd-label">Vorig seizoen</div>
+    <span style="font-size:12px;color:var(--text-2);">${sp.vorig || '—'}</span>
+  </div>`;
+
+  // Spelerspad (fictief)
+  const pad = [
+    { seizoen: '2022-23', team: 'U13-1' },
+    { seizoen: '2023-24', team: 'U15-1' },
+    { seizoen: '2024-25', team: sp.vorig || 'U17-1' },
+    { seizoen: '2025-26', team: team ? team.naam : '(pool)' },
+  ];
+  body += `<div class="sd-section">
+    <div class="sd-label">Spelerspad</div>
+    <div style="background:var(--bg-2);border:1px solid var(--border-1);border-radius:10px;padding:8px 12px;">
+      ${pad.map((p,i) => `
+        <div class="sd-pad-item" style="${i===pad.length-1?'border-bottom:none;font-weight:700;color:var(--text-1);':''}">
+          <span class="sd-pad-seizoen">${p.seizoen}</span>
+          <span class="sd-pad-arrow">&#8594;</span>
+          <span class="sd-pad-team">${p.team}</span>
+          ${i===pad.length-1?'<span style="margin-left:auto;font-size:9px;background:var(--accent-dim);color:var(--accent);padding:1px 5px;border-radius:3px;">Huidig</span>':''}
+        </div>`).join('')}
+    </div>
+  </div>`;
+
+  // Bijzonderheden
+  const flags = [];
+  if (sp.status === 'twijfel') flags.push({type:'warn', icon:'&#9888;', text:'Twijfelachtig — gesprek gepland'});
+  if (sp.status === 'geblesseerd') flags.push({type:'err', icon:'&#129657;', text:'Geblesseerd — herstelstatus onbekend'});
+  if (sp.pinned) flags.push({type:'', icon:'&#128204;', text:'Gepind in deze selectie'});
+  if (flags.length) {
+    body += `<div class="sd-section">
+      <div class="sd-label">Bijzonderheden</div>
+      ${flags.map(f=>`<div class="sd-flag-item ${f.type}"><span>${f.icon}</span><span>${f.text}</span></div>`).join('')}
+    </div>`;
+  }
+
+  // Memo
+  body += `<div class="sd-section">
+    <div class="sd-label">TC-memo</div>
+    <textarea class="sd-memo" placeholder="Voeg intern notitie toe..." rows="2">${sp.memo||''}</textarea>
+  </div>`;
+
+  // Pin
+  const isPinned = sp.pinned || false;
+  body += `<div class="sd-section">
+    <div class="sd-pin-status">
+      <div>
+        <div class="sd-pin-lbl">${isPinned ? 'Gepind &#128204;' : 'Niet gepind'}</div>
+        <div class="sd-pin-sub">${isPinned ? 'Vastgezet in deze selectie' : 'Vrij te verplaatsen'}</div>
+      </div>
+      <button class="sd-toggle ${isPinned?'on':''}" id="pin-toggle-${spelerId}" onclick="togglePin('${spelerId}')"></button>
+    </div>
+  </div>`;
+
+  document.getElementById('sd-body').innerHTML = body;
+  document.getElementById('overlay-speler').classList.remove('hidden');
+}
+
+function cycleStatus(spelerId) {
+  const res = findSpelerById(spelerId);
+  if (!res) return;
+  const sp = res.speler;
+  const cycle = ['vrij','twijfel','geblesseerd','gestopt'];
+  const idx = cycle.indexOf(sp.status);
+  sp.status = cycle[(idx+1) % cycle.length];
+  openSpelerDialog(spelerId);
+  showToast('Status bijgewerkt: ' + sp.status, 'info');
+}
+function togglePin(spelerId) {
+  const res = findSpelerById(spelerId);
+  if (!res) return;
+  res.speler.pinned = !res.speler.pinned;
+  const btn = document.getElementById('pin-toggle-' + spelerId);
+  if (btn) btn.classList.toggle('on', res.speler.pinned);
+  showToast(res.speler.pinned ? 'Speler gepind' : 'Pin verwijderd', 'info');
+  renderWerkgebied();
+  if (currentTeamId) renderTeamDialog(currentTeamId);
+  openSpelerDialog(spelerId); // herrender
+}
+
+/* ═══════════════════════════════════════════════════
+   VALIDATIE BADGE
+═══════════════════════════════════════════════════ */
+let valState = 0;
+const valStates = [
+  { cls:'val-warn', icon:'&#9888;&#65039;', txt:'2 waarschuwingen' },
+  { cls:'val-err',  icon:'&#10060;',        txt:'1 fout — Dames 2' },
+  { cls:'val-ok',   icon:'&#9989;',         txt:'Alles klopt' },
+];
+function cycleVal() {
+  valState = (valState + 1) % valStates.length;
+  const b = document.getElementById('val-badge');
+  b.className = 'val-badge ' + valStates[valState].cls;
+  document.getElementById('val-icon').innerHTML = valStates[valState].icon;
+  document.getElementById('val-txt').textContent = valStates[valState].txt;
+}
+
+/* ═══════════════════════════════════════════════════
+   DAISY WIDGET
+═══════════════════════════════════════════════════ */
+let daisyOpen = false;
+function toggleDaisy() {
+  daisyOpen = !daisyOpen;
+  document.getElementById('daisy-panel').classList.toggle('hidden', !daisyOpen);
+  document.getElementById('daisy-notif').style.display = daisyOpen ? 'none' : '';
+}
+function closeDaisy() {
+  daisyOpen = false;
+  document.getElementById('daisy-panel').classList.add('hidden');
+}
+function sendDaisy() {
+  const inp = document.getElementById('daisy-input');
+  const msg = inp.value.trim();
+  if (!msg) return;
+  const body = document.getElementById('daisy-body');
+  body.innerHTML += `<div class="dp-msg user">${msg}</div>`;
+  inp.value = '';
+  setTimeout(() => {
+    body.innerHTML += `<div class="dp-msg ai">Goed punt! Ik kijk dat na in de huidige indelingsdata...</div>`;
+    body.scrollTop = body.scrollHeight;
+  }, 900);
+  body.scrollTop = body.scrollHeight;
+}
+
+/* ═══════════════════════════════════════════════════
+   DAISY UITVOEREN — geanimeerde drag-simulatie
+═══════════════════════════════════════════════════ */
+const daisySuggesties = [
+  {
+    naam: 'Emma de Vries',
+    fromPool: true,
+    sourceId: 'p1',
+    targetTeam: 'dames2',
+    feedback: 'Gedaan! Emma de Vries staat nu in Dames 2. Het team heeft nu 5 spelers — nog 3 open plekken.'
+  },
+  {
+    naam: 'Kevin Smit',
+    fromPool: false,
+    sourceId: 'p6',
+    targetTeam: 'u192',
+    feedback: 'Kevin Smit is verplaatst naar U19-2. De geslachtsbalans in U17 is nu beter.'
+  },
+  {
+    naam: 'Sara Jansen',
+    fromPool: true,
+    sourceId: 'p3',
+    targetTeam: 'heren1',
+    feedback: 'Sara Jansen toegevoegd aan Heren 1. Het team heeft nu meer balans qua spelers.'
+  }
+];
+
+function daisyExecute(index) {
+  const suggestie = daisySuggesties[index];
+  const suggestBtn = document.querySelector(`#daisy-suggest-${index} .btn-daisy`);
+  if (suggestBtn) {
+    suggestBtn.disabled = true;
+    suggestBtn.textContent = 'Bezig...';
+  }
+
+  // Verzeker dat Daisy-panel open is
+  if (!daisyOpen) toggleDaisy();
+
+  // Stap 1: Vind bronelement
+  let sourceEl = null;
+  if (suggestie.fromPool) {
+    sourceEl = document.getElementById('pool-sp-' + suggestie.sourceId);
+  } else {
+    sourceEl = document.getElementById('chip-' + suggestie.sourceId);
+  }
+
+  // Stap 2: Vind doelelement
+  const targetEl = document.getElementById('tk-' + suggestie.targetTeam);
+
+  if (!sourceEl || !targetEl) {
+    // Fallback zonder animatie
+    executeDaisySuggestie(index, suggestie);
+    return;
+  }
+
+  const srcRect = sourceEl.getBoundingClientRect();
+  const tgtRect = targetEl.getBoundingClientRect();
+
+  // Cursor zichtbaar
+  const cursor = document.getElementById('daisy-cursor');
+  cursor.style.display = 'flex';
+  cursor.style.left = (srcRect.left + srcRect.width/2 - 15) + 'px';
+  cursor.style.top  = (srcRect.top  + srcRect.height/2 - 15) + 'px';
+  cursor.style.transition = 'none';
+
+  // Glow op bron
+  sourceEl.classList.add('daisy-glow');
+
+  setTimeout(() => {
+    // Cursor beweegt naar doel
+    cursor.style.transition = 'left 0.7s cubic-bezier(.4,0,.2,1), top 0.7s cubic-bezier(.4,0,.2,1)';
+    cursor.style.left = (tgtRect.left + tgtRect.width/2 - 15) + 'px';
+    cursor.style.top  = (tgtRect.top  + tgtRect.height/2 - 15) + 'px';
+    targetEl.classList.add('drop-active');
+  }, 300);
+
+  setTimeout(() => {
+    // Voer de actie uit
+    sourceEl.classList.remove('daisy-glow');
+    targetEl.classList.remove('drop-active');
+    cursor.style.display = 'none';
+    executeDaisySuggestie(index, suggestie);
+  }, 1100);
+}
+
+function executeDaisySuggestie(index, suggestie) {
+  const targetTeam = findTeam(suggestie.targetTeam);
+  if (!targetTeam) return;
+
+  let speler = null;
+
+  if (suggestie.fromPool) {
+    const idx = poolSpelers.findIndex(s => s.id === suggestie.sourceId);
+    if (idx === -1) {
+      showToast(suggestie.naam + ' niet meer in de pool', 'warn');
+      return;
+    }
+    [speler] = poolSpelers.splice(idx, 1);
+  } else {
+    // Zoek door alle teams
+    for (const cat of categorien) {
+      for (const t of cat.teams) {
+        const idx = t.spelers.findIndex(s => s.id === suggestie.sourceId);
+        if (idx !== -1) {
+          [speler] = t.spelers.splice(idx, 1);
+          break;
+        }
+      }
+      if (speler) break;
+    }
+  }
+
+  if (!speler) {
+    showToast('Speler niet gevonden', 'err');
+    return;
+  }
+
+  targetTeam.spelers.push({ ...speler, pinned: false });
+
+  renderPool();
+  renderWerkgebied();
+  if (currentTeamId) renderTeamDialog(currentTeamId);
+
+  // Bounce animatie op nieuwe chip
+  setTimeout(() => {
+    const newChip = document.getElementById('chip-' + speler.id);
+    if (newChip) newChip.classList.add('chip-drop-anim');
+  }, 100);
+
+  showToast('Daisy: ' + speler.naam + ' verplaatst naar ' + targetTeam.naam, 'info');
+
+  // Daisy feedback in chat
+  const body = document.getElementById('daisy-body');
+  const suggest = document.getElementById('daisy-suggest-' + index);
+  if (suggest) {
+    suggest.style.opacity = '.4';
+    suggest.style.pointerEvents = 'none';
+  }
+  setTimeout(() => {
+    body.innerHTML += `<div class="dp-msg ai">${suggestie.feedback}</div>`;
+    body.scrollTop = body.scrollHeight;
+  }, 400);
+}
+
+/* ═══════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════ */
+renderPool();
+renderWerkgebied();
+</script>
+</body>
+</html>

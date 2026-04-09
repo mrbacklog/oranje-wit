@@ -1,0 +1,1737 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TI Studio — Kaders prototype v2</title>
+<style>
+/* ═══════════════════════════════════════════
+   DESIGN TOKENS — identiek aan werkindeling-whatif-prototype
+═══════════════════════════════════════════ */
+:root {
+  --bg-0: #0a0a0a;
+  --bg-1: #141414;
+  --bg-2: #1e1e1e;
+  --bg-3: #262626;
+  --accent:      #FF6B00;
+  --accent-h:    #FF8533;
+  --accent-dim:  rgba(255,107,0,.12);
+  --text-1: #FAFAFA;
+  --text-2: #A3A3A3;
+  --text-3: #666666;
+  --border-0: #262626;
+  --border-1: #3a3a3a;
+  --ok:    #22C55E;
+  --warn:  #EAB308;
+  --err:   #EF4444;
+  --info:  #3B82F6;
+  --stop:  #F97316;
+  --pink:  #EC4899;
+  --blue:  #60A5FA;
+  --ribbon: 48px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: Inter, system-ui, sans-serif;
+  background: var(--bg-0); color: var(--text-1);
+  font-size: 14px; line-height: 1.5;
+  overflow: hidden; height: 100vh;
+}
+
+/* ═══════════════════════════════════════════
+   SHELL
+═══════════════════════════════════════════ */
+.shell { display: flex; height: 100vh; overflow: hidden; }
+
+/* ═══════════════════════════════════════════
+   RIBBON
+═══════════════════════════════════════════ */
+.ribbon {
+  width: var(--ribbon); min-width: var(--ribbon);
+  background: var(--bg-1); border-right: 1px solid var(--border-0);
+  display: flex; flex-direction: column; align-items: center;
+  padding: 8px 0; gap: 2px; flex-shrink: 0;
+  overflow: visible; position: relative; z-index: 30;
+}
+.ribbon-logo {
+  width: 32px; height: 32px;
+  background: var(--accent-dim);
+  border: 1px solid rgba(255,107,0,.25);
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; margin-bottom: 8px; flex-shrink: 0;
+}
+.ri {
+  width: 36px; height: 36px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; background: none; border: none;
+  font-size: 16px; color: var(--text-3);
+  transition: background 150ms, color 150ms;
+  position: relative; flex-shrink: 0; font-family: inherit;
+}
+.ri:hover { background: var(--bg-3); color: var(--text-1); }
+.ri.active { background: var(--accent-dim); color: var(--accent); }
+.ri.active::before {
+  content: ''; position: absolute;
+  left: -8px; top: 6px; bottom: 6px;
+  width: 3px; background: var(--accent); border-radius: 0 2px 2px 0;
+}
+.ri::after {
+  content: attr(data-tip);
+  position: absolute; left: calc(var(--ribbon) - 4px); top: 50%;
+  transform: translateY(-50%);
+  background: var(--bg-2); border: 1px solid var(--border-1);
+  color: var(--text-1); font-size: 11px; font-weight: 600;
+  padding: 4px 9px; border-radius: 7px; white-space: nowrap;
+  pointer-events: none; opacity: 0; transition: opacity 120ms;
+  z-index: 50; box-shadow: 0 2px 10px rgba(0,0,0,.4);
+}
+.ri:hover::after { opacity: 1; }
+.rdiv { width: 24px; height: 1px; background: var(--border-0); margin: 4px 0; flex-shrink: 0; }
+.ribbon-footer { margin-top: auto; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.ribbon-avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--bg-2); border: 1px solid var(--border-1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; color: var(--accent);
+  cursor: pointer; position: relative;
+}
+.ribbon-avatar::after {
+  content: attr(data-tip); position: absolute;
+  left: calc(var(--ribbon) - 4px); top: 50%; transform: translateY(-50%);
+  background: var(--bg-2); border: 1px solid var(--border-1);
+  color: var(--text-1); font-size: 11px; font-weight: 600;
+  padding: 4px 9px; border-radius: 7px; white-space: nowrap;
+  pointer-events: none; opacity: 0; transition: opacity 120ms;
+  z-index: 50; box-shadow: 0 2px 10px rgba(0,0,0,.4);
+}
+.ribbon-avatar:hover::after { opacity: 1; }
+
+/* ═══════════════════════════════════════════
+   MAIN
+═══════════════════════════════════════════ */
+.main { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+
+/* ═══════════════════════════════════════════
+   TOOLBAR
+═══════════════════════════════════════════ */
+.toolbar {
+  height: 52px; min-height: 52px;
+  background: var(--bg-1); border-bottom: 1px solid var(--border-0);
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 14px; flex-shrink: 0;
+}
+.tb-title { font-size: 14px; font-weight: 700; }
+.tb-sub   { font-size: 11px; color: var(--text-3); }
+.tb-sep   { width: 1px; height: 18px; background: var(--border-0); flex-shrink: 0; }
+.tb-group { flex: 1; display: flex; align-items: center; gap: 10px; }
+
+/* ═══════════════════════════════════════════
+   BUTTONS
+═══════════════════════════════════════════ */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 8px 14px; border-radius: 9px; font-size: 12px; font-weight: 600;
+  cursor: pointer; border: none; transition: background 150ms, transform 80ms;
+  white-space: nowrap; font-family: inherit;
+}
+.btn:active { transform: scale(.97); }
+.btn-pri { background: var(--accent); color: #fff; }
+.btn-pri:hover { background: var(--accent-h); }
+.btn-sec { background: var(--bg-2); color: var(--text-1); border: 1px solid var(--border-1); }
+.btn-sec:hover { background: var(--bg-3); }
+.btn-ghost { background: transparent; color: var(--text-2); border: 1px solid var(--border-0); }
+.btn-ghost:hover { background: var(--bg-3); color: var(--text-1); }
+.btn-dk { background: transparent; color: var(--err); border: none; }
+.btn-dk:hover { background: rgba(239,68,68,.1); }
+.btn-sm { padding: 4px 10px; font-size: 11px; border-radius: 7px; }
+.btn-xs { padding: 3px 8px; font-size: 10px; border-radius: 6px; }
+.btn-w  { width: 100%; }
+
+/* ═══════════════════════════════════════════
+   TAGS
+═══════════════════════════════════════════ */
+.tag {
+  display: inline-flex; align-items: center;
+  padding: 2px 7px; border-radius: 5px; font-size: 11px; font-weight: 600;
+}
+.tg-ok   { background: rgba(34,197,94,.12);   color: var(--ok); }
+.tg-warn { background: rgba(234,179,8,.12);   color: var(--warn); }
+.tg-err  { background: rgba(239,68,68,.12);   color: var(--err); }
+.tg-acc  { background: var(--accent-dim);     color: var(--accent); }
+.tg-info { background: rgba(59,130,246,.12);  color: var(--blue); }
+.tg-grey { background: rgba(255,255,255,.06); color: var(--text-3); }
+
+/* ═══════════════════════════════════════════
+   BODY LAYOUT — sidebar + content
+═══════════════════════════════════════════ */
+.body-wrap { flex: 1; display: flex; overflow: hidden; }
+
+/* ─── Zijbalk ─────────────────────────────── */
+.sidebar {
+  width: 200px; min-width: 200px;
+  background: var(--bg-1); border-right: 1px solid var(--border-0);
+  display: flex; flex-direction: column; flex-shrink: 0;
+  overflow: hidden;
+}
+.sb-head {
+  padding: 14px 14px 10px;
+  border-bottom: 1px solid var(--border-0);
+  flex-shrink: 0;
+}
+.sb-seizoen {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .6px; color: var(--text-3); margin-bottom: 4px;
+}
+.sb-naam { font-size: 13px; font-weight: 700; }
+.sb-status { margin-top: 5px; }
+
+.sb-nav { padding: 8px 0; flex: 1; overflow-y: auto; }
+.sni {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 14px; cursor: pointer;
+  font-size: 13px; font-weight: 500; color: var(--text-2);
+  border-left: 2px solid transparent;
+  transition: background 120ms, color 120ms;
+  border: none; background: none; width: 100%; font-family: inherit;
+  text-align: left;
+}
+.sni:hover { background: var(--bg-3); color: var(--text-1); }
+.sni.active {
+  color: var(--accent); background: var(--accent-dim);
+  border-left-color: var(--accent);
+  font-weight: 600;
+}
+.sni-ic { font-size: 14px; flex-shrink: 0; }
+
+.sb-footer {
+  padding: 10px 14px; border-top: 1px solid var(--border-0);
+  flex-shrink: 0;
+}
+.sb-prog-lbl {
+  display: flex; justify-content: space-between;
+  font-size: 10px; color: var(--text-3); margin-bottom: 5px;
+}
+.sb-prog-bar {
+  height: 4px; background: var(--bg-3); border-radius: 2px; overflow: hidden;
+}
+.sb-prog-fill {
+  height: 100%; background: var(--accent); border-radius: 2px;
+  transition: width 300ms ease;
+}
+
+/* ─── Content gebied ──────────────────────── */
+.content {
+  flex: 1; overflow-y: auto; padding: 24px 28px;
+  background: var(--bg-0);
+}
+
+/* ═══════════════════════════════════════════
+   SECTIE BLOKKEN
+═══════════════════════════════════════════ */
+.section {
+  margin-bottom: 20px;
+  background: var(--bg-1); border: 1px solid var(--border-0);
+  border-radius: 12px; overflow: hidden;
+}
+.section-head {
+  display: flex; align-items: center; gap: 10px;
+  padding: 13px 16px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 120ms;
+  border-bottom: 1px solid transparent;
+}
+.section-head:hover { background: var(--bg-2); }
+.section.open .section-head { border-bottom-color: var(--border-0); }
+.section-icon { font-size: 16px; flex-shrink: 0; }
+.section-titles { flex: 1; }
+.section-title { font-size: 14px; font-weight: 700; }
+.section-subtitle { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+.section-chevron {
+  font-size: 11px; color: var(--text-3);
+  transition: transform 200ms ease; flex-shrink: 0;
+}
+.section.open .section-chevron { transform: rotate(180deg); }
+.section-body { display: none; padding: 16px; }
+.section.open .section-body { display: block; }
+
+/* Laag-badge */
+.layer-badge {
+  font-size: 9px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .5px; padding: 2px 7px; border-radius: 4px;
+  flex-shrink: 0;
+}
+.lb-fixed { background: rgba(59,130,246,.12); color: var(--blue); }
+.lb-pref  { background: rgba(255,107,0,.12);  color: var(--accent); }
+.lb-live  { background: rgba(34,197,94,.12);  color: var(--ok); }
+
+/* ═══════════════════════════════════════════
+   LAAG 1 — KNKV REGLEMENTEN
+═══════════════════════════════════════════ */
+.knkv-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+}
+.knkv-cat {
+  background: var(--bg-2); border: 1px solid var(--border-0);
+  border-radius: 9px; padding: 12px 14px;
+}
+.knkv-cat-head {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+}
+.knkv-cat-name { font-size: 12px; font-weight: 700; }
+.knkv-cat-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+.knkv-rule {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 4px 0; border-bottom: 1px solid var(--border-0);
+  font-size: 12px;
+}
+.knkv-rule:last-child { border-bottom: none; }
+.knkv-rule-lbl { color: var(--text-3); font-size: 11px; }
+.knkv-rule-val { font-weight: 600; color: var(--text-2); font-size: 12px; }
+.knkv-rule-val.hard { color: var(--err); }
+.knkv-readonly-note {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; color: var(--text-3);
+  background: var(--bg-0); border: 1px solid var(--border-0);
+  border-radius: 7px; padding: 8px 11px; margin-top: 12px;
+}
+
+/* ═══════════════════════════════════════════
+   LAAG 2 — OW VOORKEUREN
+═══════════════════════════════════════════ */
+.selecties-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+.selectie-row {
+  background: var(--bg-2); border: 1px solid var(--border-0);
+  border-radius: 10px; overflow: hidden;
+  transition: border-color 150ms;
+}
+.selectie-row.enabled { border-color: var(--border-1); }
+.selectie-row.disabled { opacity: .5; }
+.sel-row-head {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px;
+}
+.sel-toggle { position: relative; flex-shrink: 0; }
+.sel-toggle input { display: none; }
+.sel-toggle-track {
+  width: 32px; height: 18px; background: var(--bg-3);
+  border-radius: 9px; cursor: pointer; transition: background 150ms;
+  display: flex; align-items: center; padding: 2px;
+}
+.sel-toggle input:checked + .sel-toggle-track { background: var(--accent); }
+.sel-toggle-thumb {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: #fff; transition: transform 150ms; flex-shrink: 0;
+}
+.sel-toggle input:checked + .sel-toggle-track .sel-toggle-thumb { transform: translateX(14px); }
+.sel-naam-input {
+  flex: 1; background: transparent; border: none;
+  color: var(--text-1); font-size: 13px; font-weight: 600;
+  font-family: inherit; outline: none;
+  padding: 2px 4px; border-radius: 5px;
+  transition: background 120ms;
+}
+.sel-naam-input:focus { background: var(--bg-0); }
+.sel-naam-input:disabled { color: var(--text-3); }
+.sel-row-body {
+  padding: 0 14px 12px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+}
+.sel-field { display: flex; flex-direction: column; gap: 4px; }
+.sel-field-label { font-size: 10px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: .4px; }
+.sel-select {
+  background: var(--bg-0); border: 1px solid var(--border-1);
+  border-radius: 8px; color: var(--text-1); font-size: 12px;
+  font-family: inherit; padding: 7px 10px; outline: none;
+  transition: border-color 150ms; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23666'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center;
+  padding-right: 28px;
+}
+.sel-select:focus { border-color: var(--accent); }
+.sel-select:disabled { opacity: .4; cursor: not-allowed; }
+.sel-vm-grid {
+  padding: 0 14px 12px;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+}
+.sel-vm-field { display: flex; flex-direction: column; gap: 4px; }
+.sel-vm-label { font-size: 10px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: .4px; }
+.vm-label-f { color: var(--pink) !important; }
+.vm-label-m { color: var(--blue) !important; }
+.sel-vm-in {
+  width: 100%; background: var(--bg-0); border: 1px solid var(--border-1);
+  border-radius: 8px; color: var(--text-1); font-size: 13px; font-weight: 600;
+  font-family: inherit; padding: 7px 10px; outline: none;
+  transition: border-color 150ms; text-align: center;
+}
+.sel-vm-in:focus { border-color: var(--accent); }
+.sel-vm-in:disabled { opacity: .4; }
+
+/* Teamsamenstelling tabel */
+.ts-table {
+  width: 100%; border-collapse: collapse;
+}
+.ts-table th, .ts-table td {
+  padding: 8px 10px; text-align: left; font-size: 12px;
+  border-bottom: 1px solid var(--border-0);
+}
+.ts-table th {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .5px; color: var(--text-3);
+  background: var(--bg-0);
+}
+.ts-table td:first-child { color: var(--text-2); font-weight: 600; }
+.ts-table tr:last-child td { border-bottom: none; }
+.ts-table tr:hover td { background: var(--bg-2); }
+.ts-num {
+  width: 56px; background: var(--bg-0); border: 1px solid var(--border-1);
+  border-radius: 7px; color: var(--text-1); font-size: 12px; font-weight: 600;
+  font-family: inherit; padding: 5px 8px; outline: none; text-align: center;
+  transition: border-color 150ms;
+}
+.ts-num:focus { border-color: var(--accent); }
+.ts-cat-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+
+/* ═══════════════════════════════════════════
+   LAAG 3 — PINS & RESERVERINGEN (read-only pins)
+═══════════════════════════════════════════ */
+.pin-tabs {
+  display: flex; gap: 4px; margin-bottom: 16px; flex-wrap: wrap;
+}
+.pin-tab {
+  padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 600;
+  cursor: pointer; border: 1px solid var(--border-1);
+  background: var(--bg-2); color: var(--text-2);
+  transition: all 150ms; font-family: inherit;
+}
+.pin-tab.active {
+  background: var(--accent-dim); color: var(--accent);
+  border-color: rgba(255,107,0,.3);
+}
+.pin-tab:hover:not(.active) { background: var(--bg-3); color: var(--text-1); }
+
+.pin-layout { display: grid; grid-template-columns: 1fr 340px; gap: 16px; }
+
+.pin-teams-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px;
+}
+.pin-team-card {
+  background: var(--bg-2); border: 1px solid var(--border-1);
+  border-radius: 10px; overflow: hidden;
+}
+.ptc-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 9px 12px 7px;
+  border-bottom: 2px solid transparent;
+}
+.ptc-name { font-size: 12px; font-weight: 700; }
+.ptc-count { font-size: 10px; color: var(--text-3); }
+.ptc-list { padding: 4px 0; min-height: 40px; }
+.ptc-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 5px 12px;
+  font-size: 12px; transition: background 100ms;
+}
+.ptc-item:hover { background: var(--bg-3); }
+
+/* Pin-icoon als read-only indicator */
+.pin-icon-ro {
+  font-size: 12px; color: var(--warn); flex-shrink: 0;
+  opacity: .7;
+}
+/* Verwijder-icoon voor unpinnen */
+.pin-remove {
+  margin-left: auto; width: 18px; height: 18px; border-radius: 4px;
+  background: none; border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; color: var(--text-3);
+  transition: background 100ms, color 100ms;
+  font-family: inherit;
+}
+.pin-remove:hover { background: rgba(239,68,68,.12); color: var(--err); }
+
+.ptc-av {
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--bg-0); border: 1px solid var(--border-1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 8px; font-weight: 700; color: var(--text-3); flex-shrink: 0;
+}
+.ptc-naam { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ptc-pin-lbl {
+  font-size: 9px; color: var(--warn); font-weight: 700; flex-shrink: 0;
+}
+
+.pin-unassigned {
+  background: var(--bg-2); border: 1px dashed var(--border-1);
+  border-radius: 10px; padding: 12px;
+}
+.pin-unassigned-head {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .5px; color: var(--text-3); margin-bottom: 8px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.pin-unassigned-list { display: flex; flex-wrap: wrap; gap: 5px; }
+.pin-chip {
+  display: flex; align-items: center; gap: 5px;
+  background: var(--bg-1); border: 1px solid var(--border-1);
+  border-radius: 7px; padding: 4px 8px; font-size: 11px;
+}
+.pin-chip-remove {
+  font-size: 10px; color: var(--text-3); cursor: pointer;
+  transition: color 100ms; background: none; border: none;
+  font-family: inherit; padding: 0; line-height: 1;
+}
+.pin-chip-remove:hover { color: var(--err); }
+
+.res-panel {
+  background: var(--bg-2); border: 1px solid var(--border-1);
+  border-radius: 10px; display: flex; flex-direction: column;
+  overflow: hidden;
+}
+.res-head {
+  padding: 11px 14px; border-bottom: 1px solid var(--border-0);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+}
+.res-title { font-size: 13px; font-weight: 700; }
+.res-subtitle { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+.res-list { flex: 1; overflow-y: auto; padding: 8px 0; }
+.res-item {
+  padding: 10px 14px; border-bottom: 1px solid var(--border-0);
+  transition: background 120ms;
+}
+.res-item:last-child { border-bottom: none; }
+.res-item:hover { background: var(--bg-3); }
+.res-item-head {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 5px;
+}
+.res-naam { font-size: 12px; font-weight: 700; flex: 1; }
+.res-item-meta {
+  font-size: 11px; color: var(--text-3);
+  display: flex; align-items: center; gap: 6px;
+}
+.res-speler-list { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.res-sp-chip {
+  display: flex; align-items: center; gap: 4px;
+  background: var(--bg-1); border: 1px solid var(--border-0);
+  border-radius: 5px; padding: 2px 7px; font-size: 10px; font-weight: 600;
+}
+.res-add { padding: 10px 14px; border-top: 1px solid var(--border-0); flex-shrink: 0; }
+
+.pin-empty {
+  text-align: center; padding: 28px 16px; color: var(--text-3); font-size: 12px;
+}
+.pin-empty-icon { font-size: 28px; margin-bottom: 8px; opacity: .4; }
+
+/* Info-hint boven pins sectie */
+.pin-hint {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(59,130,246,.07); border: 1px solid rgba(59,130,246,.2);
+  border-radius: 8px; padding: 8px 12px;
+  font-size: 11px; color: var(--text-2); margin-bottom: 14px;
+}
+.pin-hint-icon { font-size: 13px; flex-shrink: 0; color: var(--blue); }
+
+/* ═══════════════════════════════════════════
+   FORM
+═══════════════════════════════════════════ */
+.fg { margin-bottom: 14px; }
+.fl {
+  display: block; font-size: 10px; font-weight: 700; color: var(--text-2);
+  margin-bottom: 5px; text-transform: uppercase; letter-spacing: .4px;
+}
+.fin {
+  width: 100%; background: var(--bg-0); border: 1px solid var(--border-1);
+  border-radius: 9px; color: var(--text-1); font-size: 13px;
+  font-family: inherit; padding: 8px 12px; outline: none;
+  transition: border-color 150ms;
+}
+.fin:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(255,107,0,.12); }
+.fh { font-size: 11px; color: var(--text-3); margin-top: 4px; }
+
+/* ═══════════════════════════════════════════
+   MODAL
+═══════════════════════════════════════════ */
+.mo-ov {
+  position: fixed; inset: 0; background: rgba(0,0,0,.74);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 100; backdrop-filter: blur(4px); animation: fadeIn 150ms ease;
+}
+.mo-ov.hidden { display: none; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.modal {
+  background: var(--bg-1); border: 1px solid var(--border-1);
+  border-radius: 16px; width: 460px; max-width: 96vw;
+  max-height: 88vh; display: flex; flex-direction: column;
+  box-shadow: 0 8px 48px rgba(0,0,0,.6);
+  animation: scIn 180ms cubic-bezier(.4,0,.2,1);
+}
+@keyframes scIn { from { transform: scale(.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.mh { padding: 15px 17px 11px; border-bottom: 1px solid var(--border-0); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.mh-t { font-size: 15px; font-weight: 700; }
+.mcl { width: 26px; height: 26px; border-radius: 7px; background: none; border: none; color: var(--text-3); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: background 150ms; font-family: inherit; }
+.mcl:hover { background: var(--bg-3); color: var(--text-1); }
+.mb { padding: 17px; overflow-y: auto; flex: 1; }
+.mf { padding: 12px 17px; border-top: 1px solid var(--border-0); display: flex; justify-content: flex-end; gap: 8px; flex-shrink: 0; }
+
+/* ═══════════════════════════════════════════
+   PROTO NAV
+═══════════════════════════════════════════ */
+.pnav {
+  position: fixed; bottom: 12px; left: 50%; transform: translateX(-50%);
+  background: rgba(16,16,16,.97); border: 1px solid var(--border-1);
+  border-radius: 40px; padding: 5px 8px; display: flex; gap: 3px;
+  z-index: 200; box-shadow: 0 4px 24px rgba(0,0,0,.5);
+  backdrop-filter: blur(12px);
+}
+.pb { padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; cursor: pointer; border: none; background: transparent; color: var(--text-3); font-family: inherit; white-space: nowrap; }
+.pb:hover { background: var(--bg-3); color: var(--text-1); }
+.pb.cur { background: var(--accent-dim); color: var(--accent); }
+
+/* Toast */
+.toast-wrap { position: fixed; top: 16px; right: 16px; z-index: 300; display: flex; flex-direction: column; gap: 6px; }
+.toast {
+  background: var(--bg-1); border: 1px solid var(--border-1);
+  border-radius: 10px; padding: 10px 14px; font-size: 12px; font-weight: 600;
+  box-shadow: 0 4px 20px rgba(0,0,0,.5); max-width: 280px;
+  display: flex; align-items: center; gap: 8px;
+  animation: toastIn 200ms ease;
+}
+@keyframes toastIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+.toast.ok   { border-left: 3px solid var(--ok); }
+.toast.warn { border-left: 3px solid var(--warn); }
+
+/* ═══════════════════════════════════════════
+   DAISY WIDGET
+═══════════════════════════════════════════ */
+.daisy-btn {
+  position: fixed; bottom: 64px; right: 20px; z-index: 150;
+  display: flex; align-items: center; gap: 8px;
+  background: var(--bg-2); border: 1px solid var(--border-1);
+  border-radius: 24px; padding: 8px 14px 8px 10px;
+  cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,.5);
+  transition: border-color 150ms, box-shadow 150ms;
+  font-family: inherit;
+}
+.daisy-btn:hover {
+  border-color: rgba(255,107,0,.4);
+  box-shadow: 0 4px 24px rgba(255,107,0,.15);
+}
+.daisy-icon {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--accent-dim); border: 1px solid rgba(255,107,0,.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0;
+}
+.daisy-label { font-size: 12px; font-weight: 700; color: var(--text-1); }
+.daisy-badge {
+  font-size: 9px; font-weight: 700; color: var(--accent);
+  background: var(--accent-dim); border-radius: 4px; padding: 1px 5px;
+}
+.daisy-notif {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent); position: absolute; top: 6px; right: 6px;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(255,107,0,.5); }
+  50%      { box-shadow: 0 0 0 4px rgba(255,107,0,0); }
+}
+
+.daisy-panel {
+  position: fixed; bottom: 110px; right: 20px; z-index: 150;
+  width: 300px; background: var(--bg-1); border: 1px solid var(--border-1);
+  border-radius: 14px; box-shadow: 0 8px 40px rgba(0,0,0,.6);
+  display: flex; flex-direction: column; overflow: hidden;
+  animation: panelIn 180ms cubic-bezier(.4,0,.2,1);
+}
+.daisy-panel.hidden { display: none; }
+@keyframes panelIn { from { opacity: 0; transform: translateY(12px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+.dp-head {
+  display: flex; align-items: center; gap: 9px;
+  padding: 11px 13px; border-bottom: 1px solid var(--border-0);
+  flex-shrink: 0;
+}
+.dp-avatar {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--accent-dim); border: 1px solid rgba(255,107,0,.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; flex-shrink: 0;
+}
+.dp-name { font-size: 13px; font-weight: 700; flex: 1; }
+.dp-sub  { font-size: 10px; color: var(--accent); font-weight: 600; }
+.dp-close { width: 22px; height: 22px; border-radius: 6px; background: none; border: none; color: var(--text-3); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px; font-family: inherit; transition: background 150ms; }
+.dp-close:hover { background: var(--bg-3); color: var(--text-1); }
+
+.dp-body { padding: 12px; flex: 1; max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+
+.dp-msg {
+  border-radius: 10px; padding: 9px 11px; font-size: 12px; line-height: 1.5;
+  max-width: 90%;
+}
+.dp-msg.ai {
+  background: var(--bg-2); border: 1px solid var(--border-0);
+  color: var(--text-1); align-self: flex-start;
+  border-bottom-left-radius: 3px;
+}
+.dp-msg.user {
+  background: var(--accent-dim); border: 1px solid rgba(255,107,0,.2);
+  color: var(--text-1); align-self: flex-end;
+  border-bottom-right-radius: 3px;
+}
+.dp-msg-icon { font-size: 14px; margin-bottom: 4px; display: block; }
+.dp-tip {
+  display: flex; align-items: flex-start; gap: 7px;
+  background: rgba(234,179,8,.07); border: 1px solid rgba(234,179,8,.2);
+  border-radius: 8px; padding: 8px 10px; font-size: 11px; color: var(--text-2);
+}
+.dp-tip-icon { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+
+.dp-footer { padding: 8px 12px; border-top: 1px solid var(--border-0); display: flex; gap: 6px; flex-shrink: 0; }
+.dp-input {
+  flex: 1; background: var(--bg-0); border: 1px solid var(--border-1);
+  border-radius: 8px; color: var(--text-1); font-size: 12px;
+  font-family: inherit; padding: 7px 10px; outline: none;
+  transition: border-color 150ms;
+}
+.dp-input:focus { border-color: var(--accent); }
+.dp-send {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: var(--accent); border: none; color: #fff;
+  cursor: pointer; font-size: 14px; transition: background 150ms;
+  display: flex; align-items: center; justify-content: center;
+}
+.dp-send:hover { background: var(--accent-h); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-1); border-radius: 2px; }
+select option { background: var(--bg-1); }
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+</style>
+</head>
+<body>
+
+<!-- Proto nav -->
+<nav class="pnav">
+  <button class="pb cur" onclick="showScreen('kaders')">Kaders</button>
+  <button class="pb" onclick="showScreen('indeling')">Indeling</button>
+  <button class="pb" onclick="showScreen('werkbord')">Werkbord</button>
+  <button class="pb" onclick="showScreen('personen')">Personen</button>
+</nav>
+
+<!-- Toast container -->
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<!-- Modal: reservering toevoegen -->
+<div class="mo-ov hidden" id="modal-res">
+  <div class="modal">
+    <div class="mh">
+      <span class="mh-t">Reservering toevoegen</span>
+      <button class="mcl" onclick="closeModal('modal-res')">✕</button>
+    </div>
+    <div class="mb">
+      <div class="fg">
+        <label class="fl">Naam reservering <span style="color:var(--err)">*</span></label>
+        <input class="fin" id="res-naam" type="text" placeholder="Bijv. Twijfelgeval blessure Sem">
+        <div class="fh">Vrij te benoemen, zichtbaar als label bij de selectie</div>
+      </div>
+      <div class="fg">
+        <label class="fl">Speler(s)</label>
+        <input class="fin" id="res-speler" type="text" placeholder="Naam of nummer...">
+      </div>
+      <div class="fg">
+        <label class="fl">Toelichting</label>
+        <input class="fin" id="res-toelichting" type="text" placeholder="Optioneel">
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-ghost" onclick="closeModal('modal-res')">Annuleren</button>
+      <button class="btn btn-pri" onclick="saveReservering()">Opslaan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  SCREEN: KADERS                                         -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="shell" id="screen-kaders">
+
+  <!-- Ribbon -->
+  <nav class="ribbon">
+    <div class="ribbon-logo">🏗️</div>
+    <button class="ri" data-tip="Dashboard">🏠</button>
+    <button class="ri active" data-tip="Kaders">🗂️</button>
+    <button class="ri" data-tip="Indeling" onclick="showScreen('indeling')">⚙️</button>
+    <button class="ri" data-tip="Werkbord" onclick="showScreen('werkbord')">📋</button>
+    <button class="ri" data-tip="Personen" onclick="showScreen('personen')">👥</button>
+    <div class="rdiv"></div>
+    <button class="ri" data-tip="Vergelijk">⇌</button>
+    <div class="ribbon-footer">
+      <div class="ribbon-avatar" data-tip="Jasper Laban · TC-lid">JL</div>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main class="main">
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <span class="tb-title">TI Studio</span>
+      <div class="tb-sep"></div>
+      <span class="tb-sub">Seizoen 2026–2027</span>
+      <div class="tb-group"></div>
+      <span class="tag tg-warn">Concept</span>
+      <button class="btn btn-ghost btn-sm">Exporteren</button>
+      <button class="btn btn-pri btn-sm" onclick="showToast('Kaders opgeslagen', 'ok')">Opslaan</button>
+    </div>
+
+    <!-- Body: sidebar + content -->
+    <div class="body-wrap">
+
+      <!-- Sidebar nav -->
+      <nav class="sidebar">
+        <div class="sb-head">
+          <div class="sb-seizoen">Teamindeling</div>
+          <div class="sb-naam">Seizoen 2026–2027</div>
+          <div class="sb-status">
+            <span class="tag tg-warn">Concept</span>
+          </div>
+        </div>
+        <div class="sb-nav">
+          <button class="sni active">
+            <span class="sni-ic">🗂️</span>
+            Kaders
+          </button>
+          <button class="sni" onclick="showScreen('indeling')">
+            <span class="sni-ic">⚙️</span>
+            Indeling
+          </button>
+          <button class="sni" onclick="showScreen('werkbord')">
+            <span class="sni-ic">📋</span>
+            Werkbord
+          </button>
+          <button class="sni" onclick="showScreen('personen')">
+            <span class="sni-ic">👥</span>
+            Personen
+          </button>
+        </div>
+        <div class="sb-footer">
+          <div class="sb-prog-lbl">
+            <span>Voortgang</span>
+            <span style="color:var(--text-2);font-weight:600;">34%</span>
+          </div>
+          <div class="sb-prog-bar">
+            <div class="sb-prog-fill" style="width:34%"></div>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Content -->
+      <div class="content">
+
+        <!-- Page header -->
+        <div style="margin-bottom:22px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+            <h1 style="font-size:20px;font-weight:700;">Kaders</h1>
+            <span class="tag tg-grey">Seizoen 2026–2027</span>
+          </div>
+          <p style="font-size:13px;color:var(--text-3);max-width:600px;line-height:1.6;">
+            Drie lagen bepalen de spelruimte voor de teamindeling: vaste KNKV-regels, OW-voorkeuren van de TC, en actuele pins en reserveringen.
+          </p>
+        </div>
+
+        <!-- ── LAAG 1: KNKV Reglementen ────────────────── -->
+        <div class="section" id="laag1">
+          <div class="section-head" onclick="toggleSection('laag1')">
+            <span class="section-icon">📜</span>
+            <div class="section-titles">
+              <div class="section-title">KNKV Reglementen</div>
+              <div class="section-subtitle">Harde eisen per categorie — niet bewerkbaar door TC</div>
+            </div>
+            <span class="layer-badge lb-fixed">Laag 1 · Vast</span>
+            <span class="section-chevron">▼</span>
+          </div>
+          <div class="section-body">
+
+            <div class="knkv-grid">
+
+              <div class="knkv-cat">
+                <div class="knkv-cat-head">
+                  <div class="knkv-cat-dot" style="background:#F97316;"></div>
+                  <span class="knkv-cat-name">A-categorie (senioren)</span>
+                  <span class="tag tg-info" style="margin-left:auto;font-size:9px;">Competitie 2.0</span>
+                </div>
+                <div class="knkv-rule">
+                  <span class="knkv-rule-lbl">Min. vrouwen per team</span>
+                  <span class="knkv-rule-val hard">3</span>
+                </div>
+                <div class="knkv-rule">
+                  <span class="knkv-rule-lbl">Max. vrouwen per team</span>
+                  <span class="knkv-rule-val hard">5</span>
+                </div>
+                <div class="knkv-rule">
+                  <span class="knkv-rule-lbl">Min. mannen per team</span>
+                  <span class="knkv-rule-val hard">3</span>
+                </div>
+                <div class="knkv-rule">
+                  <span class="knkv-rule-lbl">Max. mannen per team</span>
+                  <span class="knkv-rule-val hard">5</span>
+                </div>
+                <div class="knkv-rule">
+                  <span class="knkv-rule-lbl">Teamgrootte (vast)</span>
+                  <span class="knkv-rule-val">8 spelers</span>
+                </div>
+                <div class="knkv-rule">
+                  <span class="knkv-rule-lbl">Invallers toegestaan</span>
+                  <span class="knkv-rule-val" style="color:var(--ok);">Ja, max. 3</span>
+                </div>
+              </div>
+
+              <div class="knkv-cat">
+                <div class="knkv-cat-head">
+                  <div class="knkv-cat-dot" style="background:#EAB308;"></div>
+                  <span class="knkv-cat-name">B-categorie (jeugd)</span>
+                  <span class="tag tg-info" style="margin-left:auto;font-size:9px;">Competitie 2.0</span>
+                </div>
+                <div class="knkv-rule">
+                  <span class="knkv-rule-lbl">Min. vrouwen per team</span>
+                  <span class="knkv-rule-val hard">3</span>
+                </div>
+                <div class="knkv-rule">
+                  <span class="knkv-rule-lbl">Max. vrouwen per team</span>
+                  <span class="knkv-rule-val hard">5</span>
+                </div>
+                <div class="knkv-rule">
+                  <span class="knkv-rule-lbl">Min. mannen per team</span>
+                  <span class="knkv-rule-val hard">3</span>
+                </div>
+                <div class="knkv-rule">
+                  <span class="knkv-rule-lbl">Max. mannen per team</span>
+                  <span class="knkv-rule-val hard">5</span>
+                </div>
+                <div class="knkv-rule">
+                  <span class="knkv-rule-lbl">Teamgrootte (vast)</span>
+                  <span class="knkv-rule-val">8 spelers</span>
+                </div>
+                <div class="knkv-rule">
+                  <span class="knkv-rule-lbl">Speelgerechtigde leeftijd</span>
+                  <span class="knkv-rule-val">t/m 18 jaar</span>
+                </div>
+              </div>
+
+              <div class="knkv-cat">
+                <div class="knkv-cat-head">
+                  <div class="knkv-cat-dot" style="background:#22C55E;"></div>
+                  <span class="knkv-cat-name">U10/U12 (10–12 jaar)</span>
+                  <span class="tag tg-info" style="margin-left:auto;font-size:9px;">KNKV jeugd</span>
+                </div>
+                <div class="knkv-rule">
+                  <span class="knkv-rule-lbl">Min. spelers per team</span>
+                  <span class="knkv-rule-val">6</span>
+                </div>
+                <div class="knkv-rule">
+                  <span class="knkv-rule-lbl">Max. spelers per team</span>
+                  <span class="knkv-rule-val">8</span>
+                </div>
+                <div class="knkv-rule">
+                  <span class="knkv-rule-lbl">Genderbalans</span>
+                  <span class="knkv-rule-val">Gemengd verplicht</span>
+                </div>
+              </div>
+
+              <div class="knkv-cat">
+                <div class="knkv-cat-head">
+                  <div class="knkv-cat-dot" style="background:#3B82F6;"></div>
+                  <span class="knkv-cat-name">Instroom (5–9 jaar)</span>
+                  <span class="tag tg-grey" style="margin-left:auto;font-size:9px;">Intern</span>
+                </div>
+                <div class="knkv-rule">
+                  <span class="knkv-rule-lbl">Teamgrootte</span>
+                  <span class="knkv-rule-val">Vrij (4–8)</span>
+                </div>
+                <div class="knkv-rule">
+                  <span class="knkv-rule-lbl">Genderbalans</span>
+                  <span class="knkv-rule-val">Niet verplicht</span>
+                </div>
+                <div class="knkv-rule">
+                  <span class="knkv-rule-lbl">Competitievorm</span>
+                  <span class="knkv-rule-val">Intern / feestjes</span>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="knkv-readonly-note">
+              <span>🔒</span>
+              <span>KNKV-regels zijn read-only. Wijzigingen gaan via de KNKV-regelset in Beheer.</span>
+              <a href="#" style="margin-left:auto;color:var(--accent);font-size:11px;font-weight:600;text-decoration:none;">Naar Beheer →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── LAAG 2: OW Voorkeuren TC ────────────────── -->
+        <div class="section open" id="laag2">
+          <div class="section-head" onclick="toggleSection('laag2')">
+            <span class="section-icon">⚙️</span>
+            <div class="section-titles">
+              <div class="section-title">OW Voorkeuren TC</div>
+              <div class="section-subtitle">Selectiestructuur en teamsamenstelling — per seizoen instelbaar</div>
+            </div>
+            <span class="layer-badge lb-pref">Laag 2 · Voorkeur</span>
+            <span class="section-chevron">▼</span>
+          </div>
+          <div class="section-body">
+
+            <!-- Selectiestructuur -->
+            <div style="margin-bottom:20px;">
+              <div style="margin-bottom:12px;">
+                <div style="font-size:13px;font-weight:700;">Selectiestructuur</div>
+                <div style="font-size:11px;color:var(--text-3);margin-top:2px;">Welke selecties zijn actief dit seizoen? Max. 5. Elk met twee teams en optioneel V/M-aantallen.</div>
+              </div>
+
+              <div class="selecties-list">
+
+                <div class="selectie-row enabled" id="sel-1">
+                  <div class="sel-row-head">
+                    <label class="sel-toggle">
+                      <input type="checkbox" checked onchange="toggleSelectie('sel-1', this.checked)">
+                      <div class="sel-toggle-track"><div class="sel-toggle-thumb"></div></div>
+                    </label>
+                    <input class="sel-naam-input" type="text" value="Heer 1e selectie">
+                    <span class="tag tg-acc" style="font-size:9px;">Actief</span>
+                  </div>
+                  <div class="sel-row-body">
+                    <div class="sel-field">
+                      <div class="sel-field-label">Team A</div>
+                      <select class="sel-select"><option>Heren 1</option><option>Heren 2</option></select>
+                    </div>
+                    <div class="sel-field">
+                      <div class="sel-field-label">Team B</div>
+                      <select class="sel-select"><option>Heren 2</option><option>Heren 1</option></select>
+                    </div>
+                  </div>
+                  <div class="sel-vm-grid">
+                    <div class="sel-vm-field"><div class="sel-vm-label vm-label-f">Min V</div><input class="sel-vm-in" type="number" value="8" min="0" max="30"></div>
+                    <div class="sel-vm-field"><div class="sel-vm-label vm-label-f">Max V</div><input class="sel-vm-in" type="number" value="12" min="0" max="30"></div>
+                    <div class="sel-vm-field"><div class="sel-vm-label vm-label-m">Min M</div><input class="sel-vm-in" type="number" value="8" min="0" max="30"></div>
+                    <div class="sel-vm-field"><div class="sel-vm-label vm-label-m">Max M</div><input class="sel-vm-in" type="number" value="12" min="0" max="30"></div>
+                  </div>
+                </div>
+
+                <div class="selectie-row enabled" id="sel-2">
+                  <div class="sel-row-head">
+                    <label class="sel-toggle">
+                      <input type="checkbox" checked onchange="toggleSelectie('sel-2', this.checked)">
+                      <div class="sel-toggle-track"><div class="sel-toggle-thumb"></div></div>
+                    </label>
+                    <input class="sel-naam-input" type="text" value="Dame 1e selectie">
+                    <span class="tag tg-acc" style="font-size:9px;">Actief</span>
+                  </div>
+                  <div class="sel-row-body">
+                    <div class="sel-field">
+                      <div class="sel-field-label">Team A</div>
+                      <select class="sel-select"><option>Dames 1</option><option>Dames 2</option></select>
+                    </div>
+                    <div class="sel-field">
+                      <div class="sel-field-label">Team B</div>
+                      <select class="sel-select"><option>Dames 2</option><option>Dames 1</option></select>
+                    </div>
+                  </div>
+                  <div class="sel-vm-grid">
+                    <div class="sel-vm-field"><div class="sel-vm-label vm-label-f">Min V</div><input class="sel-vm-in" type="number" value="8" min="0" max="30"></div>
+                    <div class="sel-vm-field"><div class="sel-vm-label vm-label-f">Max V</div><input class="sel-vm-in" type="number" value="12" min="0" max="30"></div>
+                    <div class="sel-vm-field"><div class="sel-vm-label vm-label-m">Min M</div><input class="sel-vm-in" type="number" value="8" min="0" max="30"></div>
+                    <div class="sel-vm-field"><div class="sel-vm-label vm-label-m">Max M</div><input class="sel-vm-in" type="number" value="12" min="0" max="30"></div>
+                  </div>
+                </div>
+
+                <div class="selectie-row enabled" id="sel-3">
+                  <div class="sel-row-head">
+                    <label class="sel-toggle">
+                      <input type="checkbox" checked onchange="toggleSelectie('sel-3', this.checked)">
+                      <div class="sel-toggle-track"><div class="sel-toggle-thumb"></div></div>
+                    </label>
+                    <input class="sel-naam-input" type="text" value="U19 Selectie">
+                    <span class="tag tg-acc" style="font-size:9px;">Actief</span>
+                  </div>
+                  <div class="sel-row-body">
+                    <div class="sel-field">
+                      <div class="sel-field-label">Team A</div>
+                      <select class="sel-select"><option>U19-1</option><option>U19-2</option></select>
+                    </div>
+                    <div class="sel-field">
+                      <div class="sel-field-label">Team B</div>
+                      <select class="sel-select"><option>U19-2</option><option>U19-1</option></select>
+                    </div>
+                  </div>
+                  <div class="sel-vm-grid">
+                    <div class="sel-vm-field"><div class="sel-vm-label vm-label-f">Min V</div><input class="sel-vm-in" type="number" value="6" min="0" max="30"></div>
+                    <div class="sel-vm-field"><div class="sel-vm-label vm-label-f">Max V</div><input class="sel-vm-in" type="number" value="10" min="0" max="30"></div>
+                    <div class="sel-vm-field"><div class="sel-vm-label vm-label-m">Min M</div><input class="sel-vm-in" type="number" value="6" min="0" max="30"></div>
+                    <div class="sel-vm-field"><div class="sel-vm-label vm-label-m">Max M</div><input class="sel-vm-in" type="number" value="10" min="0" max="30"></div>
+                  </div>
+                </div>
+
+                <div class="selectie-row disabled" id="sel-4">
+                  <div class="sel-row-head">
+                    <label class="sel-toggle">
+                      <input type="checkbox" onchange="toggleSelectie('sel-4', this.checked)">
+                      <div class="sel-toggle-track"><div class="sel-toggle-thumb"></div></div>
+                    </label>
+                    <input class="sel-naam-input" type="text" value="Selectie 4" disabled>
+                    <span class="tag tg-grey" style="font-size:9px;">Uit</span>
+                  </div>
+                </div>
+
+                <div class="selectie-row disabled" id="sel-5">
+                  <div class="sel-row-head">
+                    <label class="sel-toggle">
+                      <input type="checkbox" onchange="toggleSelectie('sel-5', this.checked)">
+                      <div class="sel-toggle-track"><div class="sel-toggle-thumb"></div></div>
+                    </label>
+                    <input class="sel-naam-input" type="text" value="Selectie 5" disabled>
+                    <span class="tag tg-grey" style="font-size:9px;">Uit</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <div style="height:1px;background:var(--border-0);margin-bottom:20px;"></div>
+
+            <!-- Teamsamenstelling per categorie -->
+            <div>
+              <div style="margin-bottom:12px;">
+                <div style="font-size:13px;font-weight:700;">Teamsamenstelling per categorie</div>
+                <div style="font-size:11px;color:var(--text-3);margin-top:2px;">Minimum en maximum aantallen per team. Waarden strakker dan KNKV zijn toegestaan; losser geeft een validatiewaarschuwing.</div>
+              </div>
+              <div style="background:var(--bg-0);border:1px solid var(--border-0);border-radius:10px;overflow:hidden;">
+                <table class="ts-table">
+                  <thead>
+                    <tr>
+                      <th style="min-width:160px;">Categorie</th>
+                      <th style="color:var(--pink);">V Min</th><th style="color:var(--pink);">V Max</th>
+                      <th style="color:var(--blue);">M Min</th><th style="color:var(--blue);">M Max</th>
+                      <th>Team Min</th><th>Team Max</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><span class="ts-cat-dot" style="background:#F97316;"></span>Senioren A</td>
+                      <td><input class="ts-num" type="number" value="3" min="0" max="8"></td>
+                      <td><input class="ts-num" type="number" value="5" min="0" max="8"></td>
+                      <td><input class="ts-num" type="number" value="3" min="0" max="8"></td>
+                      <td><input class="ts-num" type="number" value="5" min="0" max="8"></td>
+                      <td><input class="ts-num" type="number" value="8" min="4" max="14"></td>
+                      <td><input class="ts-num" type="number" value="11" min="4" max="14"></td>
+                    </tr>
+                    <tr>
+                      <td><span class="ts-cat-dot" style="background:#F97316;opacity:.6;"></span>Senioren B</td>
+                      <td><input class="ts-num" type="number" value="3" min="0" max="8"></td>
+                      <td><input class="ts-num" type="number" value="5" min="0" max="8"></td>
+                      <td><input class="ts-num" type="number" value="3" min="0" max="8"></td>
+                      <td><input class="ts-num" type="number" value="5" min="0" max="8"></td>
+                      <td><input class="ts-num" type="number" value="8" min="4" max="14"></td>
+                      <td><input class="ts-num" type="number" value="12" min="4" max="14"></td>
+                    </tr>
+                    <tr>
+                      <td><span class="ts-cat-dot" style="background:#EF4444;"></span>U19</td>
+                      <td><input class="ts-num" type="number" value="3" min="0" max="8"></td>
+                      <td><input class="ts-num" type="number" value="5" min="0" max="8"></td>
+                      <td><input class="ts-num" type="number" value="3" min="0" max="8"></td>
+                      <td><input class="ts-num" type="number" value="5" min="0" max="8"></td>
+                      <td><input class="ts-num" type="number" value="8" min="4" max="14"></td>
+                      <td><input class="ts-num" type="number" value="12" min="4" max="14"></td>
+                    </tr>
+                    <tr>
+                      <td><span class="ts-cat-dot" style="background:#EAB308;"></span>U15/U17</td>
+                      <td><input class="ts-num" type="number" value="3" min="0" max="8"></td>
+                      <td><input class="ts-num" type="number" value="5" min="0" max="8"></td>
+                      <td><input class="ts-num" type="number" value="3" min="0" max="8"></td>
+                      <td><input class="ts-num" type="number" value="5" min="0" max="8"></td>
+                      <td><input class="ts-num" type="number" value="8" min="4" max="14"></td>
+                      <td><input class="ts-num" type="number" value="12" min="4" max="14"></td>
+                    </tr>
+                    <tr>
+                      <td><span class="ts-cat-dot" style="background:#22C55E;"></span>U10/U12</td>
+                      <td><input class="ts-num" type="number" value="2" min="0" max="8"></td>
+                      <td><input class="ts-num" type="number" value="4" min="0" max="8"></td>
+                      <td><input class="ts-num" type="number" value="2" min="0" max="8"></td>
+                      <td><input class="ts-num" type="number" value="4" min="0" max="8"></td>
+                      <td><input class="ts-num" type="number" value="6" min="4" max="14"></td>
+                      <td><input class="ts-num" type="number" value="8" min="4" max="14"></td>
+                    </tr>
+                    <tr>
+                      <td><span class="ts-cat-dot" style="background:#3B82F6;"></span>Instroom (5–9)</td>
+                      <td><input class="ts-num" type="number" value="0" min="0" max="8"></td>
+                      <td><input class="ts-num" type="number" value="8" min="0" max="8"></td>
+                      <td><input class="ts-num" type="number" value="0" min="0" max="8"></td>
+                      <td><input class="ts-num" type="number" value="8" min="0" max="8"></td>
+                      <td><input class="ts-num" type="number" value="4" min="4" max="14"></td>
+                      <td><input class="ts-num" type="number" value="8" min="4" max="14"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ── LAAG 3: Pins & Reserveringen ───────────── -->
+        <div class="section open" id="laag3">
+          <div class="section-head" style="cursor:default;">
+            <span class="section-icon">📌</span>
+            <div class="section-titles">
+              <div class="section-title">Pins &amp; Reserveringen</div>
+              <div class="section-subtitle">Overzicht gepinde spelers — reserveringen beheer je hier</div>
+            </div>
+            <span class="layer-badge lb-live">Laag 3 · Actueel</span>
+            <div style="margin-left:auto;display:flex;gap:8px;align-items:center;" onclick="event.stopPropagation()">
+              <button class="btn btn-ghost btn-sm" onclick="openModal('modal-res')">+ Reservering</button>
+            </div>
+          </div>
+          <div class="section-body">
+
+            <!-- Info hint over pinnen -->
+            <div class="pin-hint">
+              <span class="pin-hint-icon">ℹ️</span>
+              <span>Pinnen beheer je in de Indeling. Hier zie je de actuele stand. Je kunt wel unpinnen.</span>
+              <a href="#" onclick="showScreen('indeling');return false;" style="margin-left:auto;color:var(--accent);font-size:11px;font-weight:600;text-decoration:none;white-space:nowrap;">Naar Indeling →</a>
+            </div>
+
+            <!-- Selectie-tabs -->
+            <div class="pin-tabs">
+              <button class="pin-tab active" onclick="switchPinTab(0, this)">Heer 1e selectie</button>
+              <button class="pin-tab" onclick="switchPinTab(1, this)">Dame 1e selectie</button>
+              <button class="pin-tab" onclick="switchPinTab(2, this)">U19 Selectie</button>
+            </div>
+
+            <!-- Tab 0: Heer 1e selectie -->
+            <div id="pin-tab-0">
+              <div class="pin-layout">
+                <div>
+                  <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-3);margin-bottom:10px;">Gepinde spelers per team</div>
+                  <div class="pin-teams-grid">
+
+                    <div class="pin-team-card">
+                      <div class="ptc-head" style="border-bottom-color:#F97316;">
+                        <span class="ptc-name">Heren 1</span>
+                        <span class="ptc-count">3 pins</span>
+                      </div>
+                      <div class="ptc-list">
+                        <div class="ptc-item">
+                          <span class="pin-icon-ro">📌</span>
+                          <div class="ptc-av">JL</div>
+                          <span class="ptc-naam">Jasper Laban</span>
+                          <button class="pin-remove" onclick="removePin(this)" title="Unpinnen">✕</button>
+                        </div>
+                        <div class="ptc-item">
+                          <span class="pin-icon-ro">📌</span>
+                          <div class="ptc-av">MS</div>
+                          <span class="ptc-naam">Maarten Smit</span>
+                          <button class="pin-remove" onclick="removePin(this)" title="Unpinnen">✕</button>
+                        </div>
+                        <div class="ptc-item">
+                          <span class="pin-icon-ro">📌</span>
+                          <div class="ptc-av">LV</div>
+                          <span class="ptc-naam">Lisa van Dam</span>
+                          <button class="pin-remove" onclick="removePin(this)" title="Unpinnen">✕</button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="pin-team-card">
+                      <div class="ptc-head" style="border-bottom-color:#F97316;opacity:.7;">
+                        <span class="ptc-name">Heren 2</span>
+                        <span class="ptc-count">1 pin</span>
+                      </div>
+                      <div class="ptc-list">
+                        <div class="ptc-item">
+                          <span class="pin-icon-ro">📌</span>
+                          <div class="ptc-av">RB</div>
+                          <span class="ptc-naam">Robin Bakker</span>
+                          <button class="pin-remove" onclick="removePin(this)" title="Unpinnen">✕</button>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <!-- Selectie-pins (zonder team) -->
+                  <div style="margin-top:12px;">
+                    <div class="pin-unassigned">
+                      <div class="pin-unassigned-head">
+                        <span>Selectie-pins (nog geen team)</span>
+                        <span style="font-size:11px;color:var(--text-2);font-weight:600;">2</span>
+                      </div>
+                      <div class="pin-unassigned-list">
+                        <div class="pin-chip">
+                          <span>📌</span>
+                          <span>Tom de Vries</span>
+                          <button class="pin-chip-remove" onclick="removeChip(this)" title="Unpinnen">✕</button>
+                        </div>
+                        <div class="pin-chip">
+                          <span>📌</span>
+                          <span>Eva Wolters</span>
+                          <button class="pin-chip-remove" onclick="removeChip(this)" title="Unpinnen">✕</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Reserveringen -->
+                <div class="res-panel">
+                  <div class="res-head">
+                    <div>
+                      <div class="res-title">Reserveringen</div>
+                      <div class="res-subtitle">Voor als spelers afvallen</div>
+                    </div>
+                    <button class="btn btn-ghost btn-sm" onclick="openModal('modal-res')">+ Nieuw</button>
+                  </div>
+                  <div class="res-list">
+                    <div class="res-item">
+                      <div class="res-item-head">
+                        <span class="res-naam">Twijfelgeval blessure</span>
+                        <span class="tag tg-warn" style="font-size:9px;">1 speler</span>
+                        <button class="btn btn-dk btn-sm" style="margin-left:auto;font-size:10px;padding:2px 6px;" onclick="removeRes(this)">✕</button>
+                      </div>
+                      <div class="res-item-meta">Gekoppeld aan: <strong style="color:var(--text-2);">Heer 1e selectie</strong></div>
+                      <div class="res-speler-list">
+                        <div class="res-sp-chip"><span>⚠️</span><span>Sem de Jong</span></div>
+                      </div>
+                    </div>
+                    <div class="res-item">
+                      <div class="res-item-head">
+                        <span class="res-naam">Terugkeerders buitenland</span>
+                        <span class="tag tg-info" style="font-size:9px;">2 spelers</span>
+                        <button class="btn btn-dk btn-sm" style="margin-left:auto;font-size:10px;padding:2px 6px;" onclick="removeRes(this)">✕</button>
+                      </div>
+                      <div class="res-item-meta">Gekoppeld aan: <strong style="color:var(--text-2);">Heer 1e selectie</strong></div>
+                      <div class="res-speler-list">
+                        <div class="res-sp-chip"><span>✈️</span><span>Noa Hendriks</span></div>
+                        <div class="res-sp-chip"><span>✈️</span><span>Daan Visser</span></div>
+                      </div>
+                    </div>
+                    <div class="res-item">
+                      <div class="res-item-head">
+                        <span class="res-naam">Potentieel opstromen U19</span>
+                        <span class="tag tg-ok" style="font-size:9px;">1 speler</span>
+                        <button class="btn btn-dk btn-sm" style="margin-left:auto;font-size:10px;padding:2px 6px;" onclick="removeRes(this)">✕</button>
+                      </div>
+                      <div class="res-item-meta">Gekoppeld aan: <strong style="color:var(--text-2);">Heer 1e selectie</strong></div>
+                      <div class="res-speler-list">
+                        <div class="res-sp-chip"><span>⬆️</span><span>Finn Peters</span></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="res-add">
+                    <button class="btn btn-ghost btn-sm btn-w" onclick="openModal('modal-res')">+ Reservering toevoegen</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab 1: Dame 1e selectie -->
+            <div id="pin-tab-1" style="display:none;">
+              <div class="pin-layout">
+                <div>
+                  <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-3);margin-bottom:10px;">Gepinde spelers per team</div>
+                  <div class="pin-teams-grid">
+                    <div class="pin-team-card">
+                      <div class="ptc-head" style="border-bottom-color:#EC4899;">
+                        <span class="ptc-name">Dames 1</span>
+                        <span class="ptc-count">2 pins</span>
+                      </div>
+                      <div class="ptc-list">
+                        <div class="ptc-item">
+                          <span class="pin-icon-ro">📌</span>
+                          <div class="ptc-av">SK</div>
+                          <span class="ptc-naam">Sara Kooij</span>
+                          <button class="pin-remove" onclick="removePin(this)" title="Unpinnen">✕</button>
+                        </div>
+                        <div class="ptc-item">
+                          <span class="pin-icon-ro">📌</span>
+                          <div class="ptc-av">MJ</div>
+                          <span class="ptc-naam">Mila Jansen</span>
+                          <button class="pin-remove" onclick="removePin(this)" title="Unpinnen">✕</button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="pin-team-card">
+                      <div class="ptc-head" style="border-bottom-color:#EC4899;opacity:.7;">
+                        <span class="ptc-name">Dames 2</span>
+                        <span class="ptc-count">0 pins</span>
+                      </div>
+                      <div class="ptc-list">
+                        <div class="pin-empty">
+                          <div class="pin-empty-icon">📌</div>
+                          Geen pins
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="res-panel">
+                  <div class="res-head">
+                    <div>
+                      <div class="res-title">Reserveringen</div>
+                      <div class="res-subtitle">Voor als spelers afvallen</div>
+                    </div>
+                    <button class="btn btn-ghost btn-sm" onclick="openModal('modal-res')">+ Nieuw</button>
+                  </div>
+                  <div class="res-list">
+                    <div class="res-item">
+                      <div class="res-item-head">
+                        <span class="res-naam">Zwangerschapsverlof reserve</span>
+                        <span class="tag tg-warn" style="font-size:9px;">1 speler</span>
+                        <button class="btn btn-dk btn-sm" style="margin-left:auto;font-size:10px;padding:2px 6px;" onclick="removeRes(this)">✕</button>
+                      </div>
+                      <div class="res-item-meta">Gekoppeld aan: <strong style="color:var(--text-2);">Dame 1e selectie</strong></div>
+                      <div class="res-speler-list">
+                        <div class="res-sp-chip"><span>Julia Prins</span></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="res-add">
+                    <button class="btn btn-ghost btn-sm btn-w" onclick="openModal('modal-res')">+ Reservering toevoegen</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab 2: U19 Selectie -->
+            <div id="pin-tab-2" style="display:none;">
+              <div class="pin-empty" style="padding:48px 0;">
+                <div class="pin-empty-icon">📌</div>
+                Nog geen pins voor U19 Selectie
+                <div style="margin-top:10px;font-size:11px;color:var(--text-3);">Pinnen gaat via de <a href="#" onclick="showScreen('indeling');return false;" style="color:var(--accent);font-weight:600;text-decoration:none;">Indeling →</a></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div style="height:80px;"></div>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  SCREEN: INDELING (placeholder)                         -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="shell" id="screen-indeling" style="display:none;">
+  <nav class="ribbon">
+    <div class="ribbon-logo">🏗️</div>
+    <button class="ri" data-tip="Dashboard">🏠</button>
+    <button class="ri" data-tip="Kaders" onclick="showScreen('kaders')">🗂️</button>
+    <button class="ri active" data-tip="Indeling">⚙️</button>
+    <button class="ri" data-tip="Werkbord" onclick="showScreen('werkbord')">📋</button>
+    <button class="ri" data-tip="Personen" onclick="showScreen('personen')">👥</button>
+    <div class="ribbon-footer">
+      <div class="ribbon-avatar" data-tip="Jasper Laban · TC-lid">JL</div>
+    </div>
+  </nav>
+  <main class="main">
+    <div class="toolbar">
+      <span class="tb-title">TI Studio</span>
+      <div class="tb-sep"></div>
+      <span class="tb-sub">Indeling — Seizoen 2026–2027</span>
+    </div>
+    <div style="flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:var(--text-3);">
+      <div style="font-size:32px;opacity:.3;">⚙️</div>
+      <div style="font-size:14px;font-weight:600;">Indeling-scherm</div>
+      <div style="font-size:12px;">Zie werkindeling-prototype.html</div>
+      <button class="btn btn-sec" onclick="showScreen('kaders')" style="margin-top:4px;">← Terug naar Kaders</button>
+    </div>
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  SCREEN: WERKBORD (placeholder)                         -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="shell" id="screen-werkbord" style="display:none;">
+  <nav class="ribbon">
+    <div class="ribbon-logo">🏗️</div>
+    <button class="ri" data-tip="Dashboard">🏠</button>
+    <button class="ri" data-tip="Kaders" onclick="showScreen('kaders')">🗂️</button>
+    <button class="ri" data-tip="Indeling" onclick="showScreen('indeling')">⚙️</button>
+    <button class="ri active" data-tip="Werkbord">📋</button>
+    <button class="ri" data-tip="Personen" onclick="showScreen('personen')">👥</button>
+    <div class="ribbon-footer">
+      <div class="ribbon-avatar" data-tip="Jasper Laban · TC-lid">JL</div>
+    </div>
+  </nav>
+  <main class="main">
+    <div class="toolbar">
+      <span class="tb-title">TI Studio</span>
+      <div class="tb-sep"></div>
+      <span class="tb-sub">Werkbord — Seizoen 2026–2027</span>
+    </div>
+    <div style="flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:var(--text-3);">
+      <div style="font-size:32px;opacity:.3;">📋</div>
+      <div style="font-size:14px;font-weight:600;">Werkbord</div>
+      <button class="btn btn-sec" onclick="showScreen('kaders')" style="margin-top:4px;">← Terug naar Kaders</button>
+    </div>
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  SCREEN: PERSONEN (placeholder)                         -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="shell" id="screen-personen" style="display:none;">
+  <nav class="ribbon">
+    <div class="ribbon-logo">🏗️</div>
+    <button class="ri" data-tip="Dashboard">🏠</button>
+    <button class="ri" data-tip="Kaders" onclick="showScreen('kaders')">🗂️</button>
+    <button class="ri" data-tip="Indeling" onclick="showScreen('indeling')">⚙️</button>
+    <button class="ri" data-tip="Werkbord" onclick="showScreen('werkbord')">📋</button>
+    <button class="ri active" data-tip="Personen">👥</button>
+    <div class="ribbon-footer">
+      <div class="ribbon-avatar" data-tip="Jasper Laban · TC-lid">JL</div>
+    </div>
+  </nav>
+  <main class="main">
+    <div class="toolbar">
+      <span class="tb-title">TI Studio</span>
+      <div class="tb-sep"></div>
+      <span class="tb-sub">Personen — Seizoen 2026–2027</span>
+    </div>
+    <div style="flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:var(--text-3);">
+      <div style="font-size:32px;opacity:.3;">👥</div>
+      <div style="font-size:14px;font-weight:600;">Personen</div>
+      <div style="font-size:12px;">Zie spelersoverzicht-studio-prototype.html</div>
+      <button class="btn btn-sec" onclick="showScreen('kaders')" style="margin-top:4px;">← Terug naar Kaders</button>
+    </div>
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  DAISY WIDGET (globaal, zichtbaar op alle screens)      -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<button class="daisy-btn" onclick="toggleDaisy()">
+  <div class="daisy-icon">✨</div>
+  <div>
+    <div class="daisy-label">Daisy</div>
+    <div class="daisy-badge">AI TC-lid</div>
+  </div>
+  <div class="daisy-notif" id="daisy-notif"></div>
+</button>
+
+<div class="daisy-panel hidden" id="daisy-panel">
+  <div class="dp-head">
+    <div class="dp-avatar">✨</div>
+    <div>
+      <div class="dp-name">Daisy</div>
+      <div class="dp-sub">AI TC-lid</div>
+    </div>
+    <button class="dp-close" onclick="closeDaisy()">✕</button>
+  </div>
+  <div class="dp-body" id="daisy-body">
+    <div class="dp-msg ai">
+      <span class="dp-msg-icon">👋</span>
+      Hoi! Ik heb een paar observaties over de huidige kadersinstellingen.
+    </div>
+    <div class="dp-tip">
+      <span class="dp-tip-icon">⚠️</span>
+      <span>Heer 1e selectie heeft 2 open plekken. Finn Peters staat als reservering — overweeg hem te bespreken in de volgende TC.</span>
+    </div>
+    <div class="dp-tip">
+      <span class="dp-tip-icon">📌</span>
+      <span>Heren 1 heeft 3 gepinde spelers. Als alle pins doorgaan, blijven er 5 plekken vrij voor de rest van de selectie.</span>
+    </div>
+    <div class="dp-tip">
+      <span class="dp-tip-icon">✅</span>
+      <span>Dame 1e selectie: genderbalans zit goed met de huidige pins (2V, 0M). Ruimte voor aanvulling.</span>
+    </div>
+  </div>
+  <div class="dp-footer">
+    <input class="dp-input" id="daisy-input" type="text" placeholder="Stel een vraag aan Daisy..." onkeydown="if(event.key==='Enter')sendDaisy()">
+    <button class="dp-send" onclick="sendDaisy()">➤</button>
+  </div>
+</div>
+
+<script>
+/* ─── Screen navigatie ──────────────────────────── */
+function showScreen(name) {
+  document.querySelectorAll('.shell').forEach(s => s.style.display = 'none');
+  const sc = document.getElementById('screen-' + name);
+  if (sc) sc.style.display = 'flex';
+  document.querySelectorAll('.pb').forEach(b => b.classList.remove('cur'));
+  const pb = document.querySelector('.pb[onclick*="' + name + '"]');
+  if (pb) pb.classList.add('cur');
+}
+
+/* ─── Section collapse/expand ───────────────────── */
+function toggleSection(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+/* ─── Selectie toggle ───────────────────────────── */
+function toggleSelectie(id, enabled) {
+  const row = document.getElementById(id);
+  const tag = row.querySelector('.tag');
+  const nameInput = row.querySelector('.sel-naam-input');
+  const body = row.querySelector('.sel-row-body');
+  const vmGrid = row.querySelector('.sel-vm-grid');
+  if (enabled) {
+    row.classList.remove('disabled'); row.classList.add('enabled');
+    if (tag) { tag.className = 'tag tg-acc'; tag.textContent = 'Actief'; }
+    if (nameInput) nameInput.disabled = false;
+    if (body) body.style.display = '';
+    if (vmGrid) vmGrid.style.display = '';
+    row.querySelectorAll('.sel-select, .sel-vm-in').forEach(el => el.disabled = false);
+    showToast('Selectie geactiveerd', 'ok');
+  } else {
+    row.classList.remove('enabled'); row.classList.add('disabled');
+    if (tag) { tag.className = 'tag tg-grey'; tag.textContent = 'Uit'; }
+    if (nameInput) nameInput.disabled = true;
+    if (body) body.style.display = 'none';
+    if (vmGrid) vmGrid.style.display = 'none';
+    showToast('Selectie uitgeschakeld', 'warn');
+  }
+}
+
+/* ─── Pin tabs ──────────────────────────────────── */
+function switchPinTab(idx, btn) {
+  document.querySelectorAll('.pin-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  [0,1,2].forEach(i => {
+    const el = document.getElementById('pin-tab-' + i);
+    if (el) el.style.display = (i === idx) ? '' : 'none';
+  });
+}
+
+/* ─── Pin verwijderen (unpinnen) ────────────────── */
+function removePin(btn) {
+  const row = btn.closest('.ptc-item');
+  if (!row) return;
+  const naam = row.querySelector('.ptc-naam');
+  const n = naam ? naam.textContent.trim() : 'Speler';
+  row.style.transition = 'opacity 200ms';
+  row.style.opacity = '0';
+  setTimeout(() => { row.remove(); showToast(n + ' unpinned', 'warn'); }, 200);
+}
+function removeChip(btn) {
+  const chip = btn.closest('.pin-chip');
+  if (!chip) return;
+  chip.style.transition = 'opacity 200ms';
+  chip.style.opacity = '0';
+  setTimeout(() => chip.remove(), 200);
+}
+function removeRes(btn) {
+  const item = btn.closest('.res-item');
+  if (!item) return;
+  item.style.transition = 'opacity 200ms';
+  item.style.opacity = '0';
+  setTimeout(() => { item.remove(); showToast('Reservering verwijderd', 'warn'); }, 200);
+}
+
+/* ─── Modal ─────────────────────────────────────── */
+function openModal(id) {
+  document.getElementById(id).classList.remove('hidden');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.add('hidden');
+}
+document.querySelectorAll('.mo-ov').forEach(ov => {
+  ov.addEventListener('click', e => { if (e.target === ov) ov.classList.add('hidden'); });
+});
+
+/* ─── Reservering opslaan ───────────────────────── */
+function saveReservering() {
+  const naam = document.getElementById('res-naam');
+  if (!naam || !naam.value.trim()) {
+    if (naam) naam.style.borderColor = 'var(--err)';
+    return;
+  }
+  const val = naam.value.trim();
+  closeModal('modal-res');
+  naam.value = ''; naam.style.borderColor = '';
+  showToast('Reservering "' + val + '" opgeslagen', 'ok');
+}
+
+/* ─── Toast ─────────────────────────────────────── */
+function showToast(msg, type) {
+  type = type || 'ok';
+  const wrap = document.getElementById('toast-wrap');
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.innerHTML = (type === 'ok' ? '&#10003;' : '&#9888;') + ' ' + msg;
+  wrap.appendChild(t);
+  setTimeout(() => {
+    t.style.transition = 'opacity 300ms'; t.style.opacity = '0';
+    setTimeout(() => t.remove(), 300);
+  }, 2800);
+}
+
+/* ─── Daisy widget ──────────────────────────────── */
+let daisyOpen = false;
+const daisyResponses = [
+  'Op basis van de kaders zie ik dat Heer 1e selectie 2 open plekken heeft. Wil je dat ik alternatieven voorstel?',
+  'De genderbalans voor Dames 1 ziet er goed uit. Mila Jansen en Sara Kooij zijn gepind — is dat definitief?',
+  'U19 heeft nog geen pins. Wil je starten met de beste U19-kandidaten uit het vorige seizoen?',
+  'Tip: reserveringen zijn nu gekoppeld aan selecties, maar nog niet aan specifieke teams. Wil je dat verfijnen?',
+  'Ik zie dat Finn Peters als reservering staat voor Heer 1e selectie en ook in de U19. Dat kan leiden tot conflicten — check je dat even?',
+];
+let daisyIdx = 0;
+
+function toggleDaisy() {
+  const panel = document.getElementById('daisy-panel');
+  const notif = document.getElementById('daisy-notif');
+  daisyOpen = !daisyOpen;
+  panel.classList.toggle('hidden', !daisyOpen);
+  if (daisyOpen) { notif.style.display = 'none'; }
+}
+function closeDaisy() {
+  daisyOpen = false;
+  document.getElementById('daisy-panel').classList.add('hidden');
+}
+function sendDaisy() {
+  const input = document.getElementById('daisy-input');
+  const body = document.getElementById('daisy-body');
+  const txt = input.value.trim();
+  if (!txt) return;
+  input.value = '';
+
+  // User bubble
+  const userMsg = document.createElement('div');
+  userMsg.className = 'dp-msg user';
+  userMsg.textContent = txt;
+  body.appendChild(userMsg);
+
+  // Simulated AI response
+  setTimeout(() => {
+    const aiMsg = document.createElement('div');
+    aiMsg.className = 'dp-msg ai';
+    aiMsg.textContent = daisyResponses[daisyIdx % daisyResponses.length];
+    daisyIdx++;
+    body.appendChild(aiMsg);
+    body.scrollTop = body.scrollHeight;
+  }, 600);
+  body.scrollTop = body.scrollHeight;
+}
+
+/* ─── Init ──────────────────────────────────────── */
+['sel-4', 'sel-5'].forEach(id => {
+  const row = document.getElementById(id);
+  if (!row) return;
+  const body = row.querySelector('.sel-row-body');
+  const vmGrid = row.querySelector('.sel-vm-grid');
+  if (body) body.style.display = 'none';
+  if (vmGrid) vmGrid.style.display = 'none';
+});
+</script>
+</body>
+</html>

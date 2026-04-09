@@ -1,0 +1,1221 @@
+<!doctype html>
+<html lang="nl" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OW — Spelerskaarten v4 · Definitief ontwerp</title>
+    <style>
+      /* ═══════════════════════════════════════════════════════════════
+         OW SPELERSKAARTEN v4 — DEFINITIEF ONTWERP
+         Originele kaart-shell (gradient + noise + sheen) uit v1
+         + nieuwe lay-out: hoeken · groot schild · naam onderaan
+         c.k.v. Oranje Wit — Dordrecht
+      ═══════════════════════════════════════════════════════════════ */
+
+      :root {
+        --ow-orange:     #ff6b00;
+        --ow-orange-lt:  #ff8f3f;
+        --ow-orange-dk:  #cc5500;
+
+        /* Leeftijdsgradients — origineel levendig */
+        --grad-7:  linear-gradient(135deg, #2478cc 0%, #2d9d5e 100%);
+        --grad-9:  linear-gradient(135deg, #22c55e 0%, #a3c928 100%);
+        --grad-10: linear-gradient(135deg, #e8b829 0%, #6bbf59 100%);
+        --grad-12: linear-gradient(135deg, #f0c024 0%, #f09030 100%);
+        --grad-13: linear-gradient(135deg, #f07830 0%, #e8c020 100%);
+        --grad-14: linear-gradient(135deg, #f06820 0%, #e85d18 100%);
+        --grad-15: linear-gradient(135deg, #e85518 0%, #cc2222 100%);
+        --grad-17: linear-gradient(135deg, #b91c1c 0%, #cc2222 100%);
+        --grad-sr: linear-gradient(135deg, #374151 0%, #1f2937 100%);
+
+        /* Tier */
+        --tier-brons:    #cd7f32;
+        --tier-brons-lt: #d4954a;
+        --tier-brons-dk: #8b5e23;
+        --tier-zilver:   #c0c0c0;
+        --tier-zilver-lt:#e8e8e8;
+        --tier-zilver-dk:#808080;
+        --tier-goud:     #ffd700;
+        --tier-goud-lt:  #ffe44d;
+        --tier-goud-dk:  #b8960f;
+
+        --cw: 200px;
+        --ch: 300px;
+        --cr: 14px;
+      }
+
+      :root, [data-theme="dark"] {
+        --bg:     #0d1117;
+        --bg2:    #161b22;
+        --bg3:    #21262d;
+        --txt:    #e6edf3;
+        --txt2:   #8b949e;
+        --txt3:   #484f58;
+        --border: #30363d;
+        --sh-sm:  0 1px 3px rgba(0,0,0,.35);
+        --sh-md:  0 4px 16px rgba(0,0,0,.55);
+        --sh-lg:  0 12px 40px rgba(0,0,0,.70);
+      }
+      [data-theme="light"] {
+        --bg:     #f0f2f5;
+        --bg2:    #ffffff;
+        --bg3:    #e8eaed;
+        --txt:    #1a1a2e;
+        --txt2:   #4a4a6a;
+        --txt3:   #8a8aaa;
+        --border: #dde0e6;
+        --sh-sm:  0 1px 3px rgba(0,0,0,.08);
+        --sh-md:  0 4px 16px rgba(0,0,0,.12);
+        --sh-lg:  0 12px 40px rgba(0,0,0,.18);
+      }
+
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      html { font-size: 16px; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+      body {
+        font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+        background: var(--bg); color: var(--txt); min-height: 100vh;
+        transition: background .3s, color .3s;
+      }
+
+      /* ── Header ── */
+      .header {
+        background: color-mix(in srgb, var(--bg2) 88%, transparent);
+        border-bottom: 1px solid var(--border);
+        padding: 16px 28px; position: sticky; top: 0; z-index: 200;
+        backdrop-filter: blur(16px);
+      }
+      .header-inner {
+        max-width: 1400px; margin: 0 auto;
+        display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+      }
+      .brand { display: flex; align-items: center; gap: 12px; }
+      .logo {
+        width: 38px; height: 38px; border-radius: 10px; background: var(--ow-orange);
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 900; font-size: 14px; letter-spacing: -1px; color: white;
+      }
+      .brand-text h1 { font-size: 15px; font-weight: 800; letter-spacing: -.3px; }
+      .brand-text p  { font-size: 12px; color: var(--txt2); margin-top: 1px; }
+      .controls { display: flex; gap: 8px; flex-wrap: wrap; }
+      .ctrl {
+        background: var(--bg3); border: 1px solid var(--border); border-radius: 8px;
+        padding: 6px 14px; font-size: 12px; font-weight: 600; color: var(--txt2);
+        cursor: pointer; transition: all .2s; font-family: inherit;
+      }
+      .ctrl:hover { background: var(--border); color: var(--txt); }
+      .ctrl.on { background: var(--ow-orange); border-color: var(--ow-orange); color: white; }
+
+      /* ── Pagina lay-out ── */
+      .main { max-width: 1400px; margin: 0 auto; padding: 40px 28px 80px; }
+      .sectie { margin-bottom: 64px; }
+      .sectie-header {
+        display: flex; align-items: flex-end; gap: 16px;
+        margin-bottom: 28px; padding-bottom: 10px;
+        border-bottom: 2px solid var(--border);
+      }
+      .vbadge {
+        display: inline-flex; padding: 3px 10px; border-radius: 20px;
+        font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px;
+      }
+      .b-a { background: color-mix(in srgb, var(--txt3) 20%, transparent); color: var(--txt2); }
+      .b-r { background: color-mix(in srgb, var(--ow-orange) 18%, transparent); color: var(--ow-orange-lt); }
+      .b-t { background: color-mix(in srgb, var(--tier-goud) 18%, transparent); color: var(--tier-goud); }
+      .sectie-header h2 { font-size: 22px; font-weight: 800; letter-spacing: -.4px; }
+      .sectie-header p  { font-size: 13px; color: var(--txt2); margin-bottom: 2px; }
+      .kaarten-rij { display: flex; gap: 20px; flex-wrap: wrap; }
+
+      /* ══════════════════════════════════════════════════════════════
+         DE KAART — KERN
+         Dezelfde shell als spelerskaarten-varianten.html:
+         .kaart → .kaart-border → .kaart-inner (bg + noise + sheen) → .kaart-content
+      ══════════════════════════════════════════════════════════════ */
+      .kaart {
+        width: var(--cw); height: var(--ch);
+        border-radius: var(--cr);
+        position: relative; overflow: hidden;
+        cursor: pointer; flex-shrink: 0;
+        box-shadow: var(--sh-md);
+        transition: transform .4s cubic-bezier(.23,1,.32,1), box-shadow .4s ease;
+      }
+      .kaart:hover {
+        transform: translateY(-10px) rotateX(5deg) rotateY(-2deg) scale(1.02);
+        box-shadow: var(--sh-lg);
+      }
+
+      /* ── Tier border ── */
+      .kaart-border {
+        position: absolute; inset: 0; border-radius: var(--cr);
+        padding: 2px; z-index: 1; pointer-events: none;
+        /* geen tier: subtiele witte rand */
+        background: linear-gradient(160deg, rgba(255,255,255,.18) 0%, rgba(255,255,255,.05) 50%, rgba(255,255,255,.02) 100%);
+      }
+      .tier-brons .kaart-border { background: linear-gradient(160deg, var(--tier-brons-lt), var(--tier-brons), var(--tier-brons-dk), var(--tier-brons)); }
+      .tier-zilver .kaart-border { background: linear-gradient(160deg, var(--tier-zilver-lt), var(--tier-zilver), var(--tier-zilver-dk), var(--tier-zilver-lt)); }
+      .tier-goud   .kaart-border { background: linear-gradient(160deg, var(--tier-goud-lt), var(--tier-goud), var(--tier-goud-dk), var(--tier-goud-lt)); }
+
+      /* ── Inner (gradient bg + noise + sheen/shimmer) ── */
+      .kaart-inner {
+        position: absolute; inset: 2px;
+        border-radius: calc(var(--cr) - 2px);
+        overflow: hidden; z-index: 2;
+      }
+
+      /* Noise texture */
+      .kaart-inner::before {
+        content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none;
+        background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      }
+
+      /* Zilver sheen */
+      .tier-zilver .kaart-inner::after {
+        content: ""; position: absolute;
+        top: -50%; left: -50%; width: 200%; height: 200%;
+        background: linear-gradient(45deg,
+          transparent 30%, rgba(255,255,255,.08) 45%,
+          rgba(255,255,255,.18) 50%, rgba(255,255,255,.08) 55%, transparent 70%);
+        z-index: 4; pointer-events: none;
+        animation: sheen 4s ease-in-out infinite;
+      }
+      /* Goud shimmer */
+      .tier-goud .kaart-inner::after {
+        content: ""; position: absolute;
+        top: -100%; left: -100%; width: 300%; height: 300%;
+        background: linear-gradient(45deg,
+          transparent 25%, rgba(255,215,0,.06) 35%,
+          rgba(255,215,0,.18) 40%, rgba(255,255,255,.24) 45%,
+          rgba(255,215,0,.18) 50%, rgba(255,215,0,.06) 55%, transparent 65%);
+        z-index: 4; pointer-events: none;
+        animation: shimmer 3s ease-in-out infinite;
+      }
+      @keyframes sheen   { 0%,100% { transform: translateX(-60%) translateY(-60%) } 50% { transform: translateX(60%) translateY(60%) } }
+      @keyframes shimmer { 0%,100% { transform: translateX(-50%) translateY(-50%) rotate(30deg) } 50% { transform: translateX(50%) translateY(50%) rotate(30deg) } }
+
+      /* Gradient achtergrond */
+      .kaart-bg {
+        position: absolute; inset: 0; z-index: 0; opacity: .92;
+      }
+
+      /* Content (zit boven bg, noise en sheen) */
+      .kaart-content {
+        position: relative; z-index: 2;
+        display: flex; flex-direction: column; height: 100%;
+      }
+
+      /* ── TOP STRIP (hoeken) ── */
+      .kaart-top {
+        height: 58px; flex-shrink: 0;
+        display: flex; align-items: flex-start; justify-content: space-between;
+        padding: 10px 11px 0;
+      }
+
+      .top-l, .top-r { display: flex; flex-direction: column; gap: 3px; }
+      .top-r { align-items: flex-end; }
+
+      .info-pill {
+        padding: 3px 8px; border-radius: 5px;
+        font-size: 9px; font-weight: 800; letter-spacing: .7px; text-transform: uppercase;
+        background: rgba(0,0,0,.32); color: rgba(255,255,255,.82);
+        backdrop-filter: blur(6px); white-space: nowrap;
+      }
+      .info-pill.dim { opacity: .7; font-weight: 600; font-size: 8.5px; }
+
+      /* Tier pill linksboven */
+      .tier-pill {
+        padding: 3px 8px; border-radius: 5px;
+        font-size: 9px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;
+      }
+      .tier-brons .tier-pill { background: var(--tier-brons); color: #3d2200; }
+      .tier-zilver .tier-pill { background: var(--tier-zilver); color: #2a2a2a; }
+      .tier-goud   .tier-pill { background: var(--tier-goud);   color: #5c4a00; }
+
+      /* USS score rechtsboven */
+      .uss-blok { text-align: right; }
+      .uss-lbl  { font-size: 8px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,.42); }
+      .uss-val  { font-size: 50px; font-weight: 900; line-height: 1; color: white; letter-spacing: -2px; text-shadow: 0 2px 12px rgba(0,0,0,.4); }
+      .uss-stars { font-size: 11px; color: rgba(255,255,255,.55); }
+      .uss-stars .s { color: var(--tier-goud); text-shadow: 0 0 5px rgba(255,215,0,.55); }
+
+      /* ── MIDDEN: groot schild ── */
+      .kaart-mid {
+        flex: 1;
+        display: flex; align-items: center; justify-content: center;
+        padding: 4px 0 0;
+      }
+
+      /* Wrapper met drop-shadow glow */
+      .schild-wrap {
+        position: relative;
+        width: 148px; height: 174px;
+      }
+      .geen-tier .schild-wrap  { filter: drop-shadow(0 4px 12px rgba(0,0,0,.55)) drop-shadow(0 0  8px rgba(255,255,255,.12)); }
+      .tier-brons .schild-wrap { filter: drop-shadow(0 4px 12px rgba(0,0,0,.55)) drop-shadow(0 0 14px rgba(205,127,50,.6)); }
+      .tier-zilver .schild-wrap{ filter: drop-shadow(0 4px 12px rgba(0,0,0,.55)) drop-shadow(0 0 18px rgba(192,192,192,.7)); }
+      .tier-goud   .schild-wrap{ filter: drop-shadow(0 4px 12px rgba(0,0,0,.55)) drop-shadow(0 0 22px rgba(255,215,0,.8)); }
+
+      /* Tier-gekleurde rand rondom schild */
+      .schild-ring {
+        position: absolute; inset: -3px;
+        clip-path: polygon(50% 0%, 100% 12%, 100% 65%, 75% 85%, 50% 100%, 25% 85%, 0% 65%, 0% 12%);
+        z-index: 0;
+        background: rgba(255,255,255,.2);
+      }
+      .tier-brons .schild-ring { background: linear-gradient(160deg, var(--tier-brons-lt), var(--tier-brons), var(--tier-brons-dk)); }
+      .tier-zilver .schild-ring { background: linear-gradient(160deg, var(--tier-zilver-lt), var(--tier-zilver), var(--tier-zilver-dk)); }
+      .tier-goud   .schild-ring { background: linear-gradient(160deg, var(--tier-goud-lt), var(--tier-goud), var(--tier-goud-dk)); }
+
+      /* Het schildvormige foto-vlak */
+      .schild {
+        position: absolute; inset: 3px;
+        clip-path: polygon(50% 0%, 100% 12%, 100% 65%, 75% 85%, 50% 100%, 25% 85%, 0% 65%, 0% 12%);
+        overflow: hidden; z-index: 1;
+        background: rgba(255,255,255,.12);
+      }
+      .schild img {
+        width: 100%; height: 100%;
+        object-fit: cover; object-position: center top;
+        display: block;
+      }
+      /* Geen foto: initialen */
+      .schild-init {
+        width: 100%; height: 100%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 38px; font-weight: 900; color: rgba(255,255,255,.55);
+        text-transform: uppercase; letter-spacing: -2px;
+      }
+
+      /* Optionele kleur-tint op schild */
+      .schild-tint {
+        position: absolute; inset: 0; z-index: 2; pointer-events: none;
+        opacity: 0; transition: opacity .4s ease;
+      }
+      .tier-brons .schild-tint { background: var(--tier-brons); mix-blend-mode: color; }
+      .tier-zilver .schild-tint { background: var(--tier-zilver); mix-blend-mode: color; }
+      .tier-goud   .schild-tint { background: var(--tier-goud);   mix-blend-mode: color; }
+      .geen-tier   .schild-tint { mix-blend-mode: color; }
+      body.tint-aan .schild-tint { opacity: .22; }
+
+      /* ── ONDERKANT: naam + info ── */
+      .kaart-bot {
+        padding: 8px 13px 11px;
+        background: rgba(0,0,0,.35);
+        backdrop-filter: blur(10px);
+        flex-shrink: 0;
+      }
+      .kaart-naam {
+        font-size: 14px; font-weight: 800; color: white;
+        text-transform: uppercase; letter-spacing: .3px;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      .kaart-sub {
+        font-size: 11px; color: rgba(255,255,255,.5); margin-top: 2px;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      /* Team rij (algemene kaart) */
+      .kaart-team {
+        margin-top: 5px;
+        display: inline-flex; align-items: center; gap: 5px;
+        background: rgba(255,255,255,.08); border-radius: 5px;
+        padding: 3px 8px;
+      }
+      .tdot  { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,.5); }
+      .tlbl  { font-size: 11px; font-weight: 700; color: rgba(255,255,255,.8); }
+      /* Mini stats (ranking + totaal) */
+      .kaart-stats {
+        margin-top: 5px;
+        display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px;
+      }
+      .sbox { background: rgba(0,0,0,.28); border-radius: 5px; padding: 4px 2px; text-align: center; }
+      .slbl { font-size: 8px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: rgba(255,255,255,.42); }
+      .sval { font-size: 14px; font-weight: 900; color: white; line-height: 1.1; }
+
+      /* Watermark */
+      .wm {
+        position: absolute; bottom: 5px; right: 8px; z-index: 6;
+        font-size: 7px; font-weight: 600; letter-spacing: .4px;
+        color: rgba(255,255,255,.1); text-transform: uppercase;
+      }
+      /* Flip hint */
+      .fhint {
+        position: absolute; bottom: 7px; left: 50%; transform: translateX(-50%);
+        font-size: 9px; font-weight: 600; letter-spacing: .6px; text-transform: uppercase;
+        color: rgba(255,255,255,.25); z-index: 6;
+        display: flex; align-items: center; gap: 4px; white-space: nowrap;
+      }
+
+      /* ══════════════════════════════════════════════════════════════
+         VARIANT 3 — TOTALE KAART (flip)
+      ══════════════════════════════════════════════════════════════ */
+      .flip-wrap {
+        width: var(--cw); height: var(--ch);
+        perspective: 1000px; flex-shrink: 0; cursor: pointer;
+      }
+      .flip-wrap:hover .flip-inner:not(.flipped) {
+        transform: translateY(-10px) rotateX(5deg) rotateY(-2deg) scale(1.02);
+        box-shadow: var(--sh-lg);
+      }
+      .flip-inner {
+        width: 100%; height: 100%; border-radius: var(--cr);
+        position: relative; transform-style: preserve-3d;
+        transition: transform .65s cubic-bezier(.25,.8,.25,1), box-shadow .4s ease;
+        box-shadow: var(--sh-md);
+      }
+      .flip-inner.flipped { transform: rotateY(180deg); box-shadow: var(--sh-lg); }
+
+      .flip-front, .flip-back {
+        position: absolute; inset: 0; border-radius: var(--cr);
+        backface-visibility: hidden; -webkit-backface-visibility: hidden; overflow: hidden;
+      }
+      .flip-back { transform: rotateY(180deg); }
+
+      /* ── ACHTERKANT ── */
+      .back-border {
+        position: absolute; inset: 0; border-radius: var(--cr);
+        padding: 2px; z-index: 1; pointer-events: none;
+      }
+      .tier-brons .back-border { background: linear-gradient(160deg, var(--tier-brons-lt), var(--tier-brons), var(--tier-brons-dk)); }
+      .tier-zilver .back-border { background: linear-gradient(160deg, var(--tier-zilver-lt), var(--tier-zilver), var(--tier-zilver-dk), var(--tier-zilver-lt)); }
+      .tier-goud   .back-border { background: linear-gradient(160deg, var(--tier-goud-lt), var(--tier-goud), var(--tier-goud-dk), var(--tier-goud-lt)); }
+
+      .back-inner {
+        position: absolute; inset: 2px; border-radius: calc(var(--cr) - 2px);
+        overflow: hidden; display: flex; flex-direction: column;
+        background: #09090d; z-index: 2;
+      }
+      .back-inner::before {
+        content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+        background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+      }
+      .back-content {
+        position: relative; z-index: 2;
+        display: flex; flex-direction: column; height: 100%;
+        padding: 12px 14px 10px;
+      }
+      .bc-club { font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,.28); text-align: center; }
+      .bc-naam { font-size: 13px; font-weight: 800; color: white; text-transform: uppercase; letter-spacing: .4px; text-align: center; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .bc-sep  { height: 1px; background: rgba(255,255,255,.08); margin: 8px 0; }
+
+      /* Klein schild met foto op achterkant */
+      .bc-schild {
+        width: 56px; height: 64px; margin: 0 auto 4px;
+        position: relative; flex-shrink: 0;
+      }
+      .bc-schild .schild-ring { position: absolute; inset: -2px; }
+      .bc-schild .schild      { position: absolute; inset: 2px; }
+
+      .radar-wrap { width: 144px; height: 132px; margin: 0 auto; flex-shrink: 0; }
+      .radar-wrap svg { width: 100%; height: 100%; }
+
+      .bc-bio { padding: 4px 0; }
+      .bc-bio-row { display: flex; justify-content: space-between; padding: 2px 0; font-size: 11px; }
+      .bc-bio-lbl { color: rgba(255,255,255,.36); font-weight: 600; }
+      .bc-bio-val { color: white; font-weight: 700; }
+
+      .bc-rep { margin-top: 5px; flex: 1; }
+      .bc-rep-lbl { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,.26); margin-bottom: 4px; }
+      .bc-rep-row { display: flex; align-items: center; gap: 5px; padding: 2.5px 0; border-bottom: 1px solid rgba(255,255,255,.05); }
+      .bc-rep-sc  { font-size: 12px; font-weight: 800; color: white; min-width: 22px; }
+      .bc-rep-mt  { font-size: 10px; color: rgba(255,255,255,.36); flex: 1; }
+      .bc-rep-bar { width: 32px; height: 3px; background: rgba(255,255,255,.1); border-radius: 2px; overflow: hidden; }
+      .bc-rep-fill{ height: 100%; border-radius: 2px; background: var(--ow-orange); }
+
+      .bc-btn {
+        margin-top: auto; padding: 7px 0;
+        background: rgba(255,107,0,.13); border: 1px solid rgba(255,107,0,.28); border-radius: 8px;
+        font-size: 11px; font-weight: 700; color: var(--ow-orange-lt);
+        text-align: center; display: flex; align-items: center; justify-content: center; gap: 5px;
+      }
+
+      /* ── Footer ── */
+      .page-footer { text-align: center; padding: 24px; font-size: 12px; color: var(--txt3); }
+    </style>
+  </head>
+  <body>
+
+    <header class="header">
+      <div class="header-inner">
+        <div class="brand">
+          <div class="logo">OW</div>
+          <div class="brand-text">
+            <h1>Spelerskaarten v4 — Definitief ontwerp</h1>
+            <p>c.k.v. Oranje Wit · Grote foto in schild · Hoeken met info · Omdraaien bij Totaal</p>
+          </div>
+        </div>
+        <div class="controls">
+          <button class="ctrl" id="btn-tint" onclick="toggleTint()">Kleur-tint: UIT</button>
+          <button class="ctrl" onclick="toggleTheme()">☀ / ☾</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="main">
+
+      <!-- ══════════════════════════════════════════
+           VARIANT 1 — ALGEMENE KAART
+      ══════════════════════════════════════════ -->
+      <section class="sectie">
+        <div class="sectie-header">
+          <div>
+            <span class="vbadge b-a">Variant 1</span>
+            <h2>Algemene Kaart</h2>
+          </div>
+          <p>Links: leeftijd + categorie · Rechts: team · Groot schild · Geen score</p>
+        </div>
+        <div class="kaarten-rij">
+
+          <!-- Kweekvijver 7 jr -->
+          <div class="kaart geen-tier">
+            <div class="kaart-border"></div>
+            <div class="kaart-inner">
+              <div class="kaart-bg" style="background: var(--grad-7);"></div>
+              <div class="kaart-content">
+                <div class="kaart-top">
+                  <div class="top-l">
+                    <span class="info-pill">7 jaar</span>
+                    <span class="info-pill dim">Kweekvijver</span>
+                  </div>
+                  <div class="top-r">
+                    <span class="info-pill">Blauw C7</span>
+                    <span class="info-pill dim">Meisjes · 4-tal</span>
+                  </div>
+                </div>
+                <div class="kaart-mid">
+                  <div class="schild-wrap">
+                    <div class="schild-ring"></div>
+                    <div class="schild">
+                      <img src="https://i.pravatar.cc/300?img=47" alt="Noor Peters" />
+                      <div class="schild-tint"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="kaart-bot">
+                  <div class="kaart-naam">Noor Peters</div>
+                  <div class="kaart-sub">7 jaar · Kweekvijver</div>
+                  <div class="kaart-team"><div class="tdot"></div><span class="tlbl">Blauw C7</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="wm">c.k.v. Oranje Wit</div>
+          </div>
+
+          <!-- Opleidingshart 12 jr -->
+          <div class="kaart geen-tier">
+            <div class="kaart-border"></div>
+            <div class="kaart-inner">
+              <div class="kaart-bg" style="background: var(--grad-12);"></div>
+              <div class="kaart-content">
+                <div class="kaart-top">
+                  <div class="top-l">
+                    <span class="info-pill">12 jaar</span>
+                    <span class="info-pill dim">Opleidingshart</span>
+                  </div>
+                  <div class="top-r">
+                    <span class="info-pill">Oranje B12</span>
+                    <span class="info-pill dim">Jongens · 8-tal</span>
+                  </div>
+                </div>
+                <div class="kaart-mid">
+                  <div class="schild-wrap">
+                    <div class="schild-ring"></div>
+                    <div class="schild">
+                      <img src="https://i.pravatar.cc/300?img=33" alt="Liam Visser" />
+                      <div class="schild-tint"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="kaart-bot">
+                  <div class="kaart-naam">Liam Visser</div>
+                  <div class="kaart-sub">12 jaar · Opleidingshart</div>
+                  <div class="kaart-team"><div class="tdot"></div><span class="tlbl">Oranje B12</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="wm">c.k.v. Oranje Wit</div>
+          </div>
+
+          <!-- Topsport 16 jr -->
+          <div class="kaart geen-tier">
+            <div class="kaart-border"></div>
+            <div class="kaart-inner">
+              <div class="kaart-bg" style="background: var(--grad-15);"></div>
+              <div class="kaart-content">
+                <div class="kaart-top">
+                  <div class="top-l">
+                    <span class="info-pill">16 jaar</span>
+                    <span class="info-pill dim">Topsport</span>
+                  </div>
+                  <div class="top-r">
+                    <span class="info-pill">U17-1</span>
+                    <span class="info-pill dim">Meisjes · 8-tal</span>
+                  </div>
+                </div>
+                <div class="kaart-mid">
+                  <div class="schild-wrap">
+                    <div class="schild-ring"></div>
+                    <div class="schild">
+                      <img src="https://i.pravatar.cc/300?img=9" alt="Sophie de Boer" />
+                      <div class="schild-tint"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="kaart-bot">
+                  <div class="kaart-naam">Sophie de Boer</div>
+                  <div class="kaart-sub">16 jaar · Topsport</div>
+                  <div class="kaart-team"><div class="tdot"></div><span class="tlbl">U17-1</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="wm">c.k.v. Oranje Wit</div>
+          </div>
+
+          <!-- Senior -->
+          <div class="kaart geen-tier">
+            <div class="kaart-border"></div>
+            <div class="kaart-inner">
+              <div class="kaart-bg" style="background: var(--grad-sr);"></div>
+              <div class="kaart-content">
+                <div class="kaart-top">
+                  <div class="top-l">
+                    <span class="info-pill">Senior</span>
+                    <span class="info-pill dim">Wedstrijdsport</span>
+                  </div>
+                  <div class="top-r">
+                    <span class="info-pill">Senioren 3</span>
+                    <span class="info-pill dim">Gemengd · 8-tal</span>
+                  </div>
+                </div>
+                <div class="kaart-mid">
+                  <div class="schild-wrap">
+                    <div class="schild-ring"></div>
+                    <div class="schild">
+                      <img src="https://i.pravatar.cc/300?img=52" alt="Mark Jansen" />
+                      <div class="schild-tint"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="kaart-bot">
+                  <div class="kaart-naam">Mark Jansen</div>
+                  <div class="kaart-sub">Senior · Wedstrijdsport</div>
+                  <div class="kaart-team"><div class="tdot"></div><span class="tlbl">Senioren 3</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="wm">c.k.v. Oranje Wit</div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════
+           VARIANT 2 — RANKING KAART
+      ══════════════════════════════════════════ -->
+      <section class="sectie">
+        <div class="sectie-header">
+          <div>
+            <span class="vbadge b-r">Variant 2</span>
+            <h2>Ranking Kaart</h2>
+          </div>
+          <p>Links: tier + leeftijd · Rechts: USS score + sterren · 3 topattributen onderaan</p>
+        </div>
+        <div class="kaarten-rij">
+
+          <!-- Brons 10 jr -->
+          <div class="kaart tier-brons">
+            <div class="kaart-border"></div>
+            <div class="kaart-inner">
+              <div class="kaart-bg" style="background: var(--grad-10);"></div>
+              <div class="kaart-content">
+                <div class="kaart-top">
+                  <div class="top-l">
+                    <span class="tier-pill">Brons</span>
+                    <span class="info-pill dim" style="margin-top:2px;">10 jr · Geel A10</span>
+                  </div>
+                  <div class="top-r">
+                    <div class="uss-blok">
+                      <div class="uss-lbl">USS</div>
+                      <div class="uss-val">62</div>
+                      <div class="uss-stars"><span class="s">★</span><span class="s">★</span>☆☆☆</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="kaart-mid">
+                  <div class="schild-wrap">
+                    <div class="schild-ring"></div>
+                    <div class="schild">
+                      <img src="https://i.pravatar.cc/300?img=60" alt="Tim Hoekstra" />
+                      <div class="schild-tint"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="kaart-bot">
+                  <div class="kaart-naam">Tim Hoekstra</div>
+                  <div class="kaart-sub">10 jaar · Geel A10</div>
+                  <div class="kaart-stats">
+                    <div class="sbox"><div class="slbl">AAN</div><div class="sval">65</div></div>
+                    <div class="sbox"><div class="slbl">PAS</div><div class="sval">58</div></div>
+                    <div class="sbox"><div class="slbl">VER</div><div class="sval">61</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="wm">c.k.v. Oranje Wit</div>
+          </div>
+
+          <!-- Brons 14 jr -->
+          <div class="kaart tier-brons">
+            <div class="kaart-border"></div>
+            <div class="kaart-inner">
+              <div class="kaart-bg" style="background: var(--grad-14);"></div>
+              <div class="kaart-content">
+                <div class="kaart-top">
+                  <div class="top-l">
+                    <span class="tier-pill">Brons</span>
+                    <span class="info-pill dim" style="margin-top:2px;">14 jr · Rood A14</span>
+                  </div>
+                  <div class="top-r">
+                    <div class="uss-blok">
+                      <div class="uss-lbl">USS</div>
+                      <div class="uss-val">68</div>
+                      <div class="uss-stars"><span class="s">★</span><span class="s">★</span>☆☆☆</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="kaart-mid">
+                  <div class="schild-wrap">
+                    <div class="schild-ring"></div>
+                    <div class="schild">
+                      <img src="https://i.pravatar.cc/300?img=25" alt="Fleur Lammers" />
+                      <div class="schild-tint"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="kaart-bot">
+                  <div class="kaart-naam">Fleur Lammers</div>
+                  <div class="kaart-sub">14 jaar · Rood A14</div>
+                  <div class="kaart-stats">
+                    <div class="sbox"><div class="slbl">SCH</div><div class="sval">71</div></div>
+                    <div class="sbox"><div class="slbl">AAN</div><div class="sval">66</div></div>
+                    <div class="sbox"><div class="slbl">MEN</div><div class="sval">69</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="wm">c.k.v. Oranje Wit</div>
+          </div>
+
+          <!-- Zilver 13 jr -->
+          <div class="kaart tier-zilver">
+            <div class="kaart-border"></div>
+            <div class="kaart-inner">
+              <div class="kaart-bg" style="background: var(--grad-13);"></div>
+              <div class="kaart-content">
+                <div class="kaart-top">
+                  <div class="top-l">
+                    <span class="tier-pill">Zilver</span>
+                    <span class="info-pill dim" style="margin-top:2px;">13 jr · Oranje B13</span>
+                  </div>
+                  <div class="top-r">
+                    <div class="uss-blok">
+                      <div class="uss-lbl">USS</div>
+                      <div class="uss-val">74</div>
+                      <div class="uss-stars"><span class="s">★</span><span class="s">★</span><span class="s">★</span>☆☆</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="kaart-mid">
+                  <div class="schild-wrap">
+                    <div class="schild-ring"></div>
+                    <div class="schild">
+                      <img src="https://i.pravatar.cc/300?img=15" alt="Jasper Berg" />
+                      <div class="schild-tint"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="kaart-bot">
+                  <div class="kaart-naam">Jasper Berg</div>
+                  <div class="kaart-sub">13 jaar · Oranje B13</div>
+                  <div class="kaart-stats">
+                    <div class="sbox"><div class="slbl">FYS</div><div class="sval">78</div></div>
+                    <div class="sbox"><div class="slbl">AAN</div><div class="sval">75</div></div>
+                    <div class="sbox"><div class="slbl">VER</div><div class="sval">72</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="wm">c.k.v. Oranje Wit</div>
+          </div>
+
+          <!-- Zilver Senior -->
+          <div class="kaart tier-zilver">
+            <div class="kaart-border"></div>
+            <div class="kaart-inner">
+              <div class="kaart-bg" style="background: var(--grad-sr);"></div>
+              <div class="kaart-content">
+                <div class="kaart-top">
+                  <div class="top-l">
+                    <span class="tier-pill">Zilver</span>
+                    <span class="info-pill dim" style="margin-top:2px;">Senior · Sen. 2</span>
+                  </div>
+                  <div class="top-r">
+                    <div class="uss-blok">
+                      <div class="uss-lbl">USS</div>
+                      <div class="uss-val">76</div>
+                      <div class="uss-stars"><span class="s">★</span><span class="s">★</span><span class="s">★</span>☆☆</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="kaart-mid">
+                  <div class="schild-wrap">
+                    <div class="schild-ring"></div>
+                    <div class="schild">
+                      <img src="https://i.pravatar.cc/300?img=5" alt="Kim Roos" />
+                      <div class="schild-tint"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="kaart-bot">
+                  <div class="kaart-naam">Kim Roos</div>
+                  <div class="kaart-sub">Senior · Senioren 2</div>
+                  <div class="kaart-stats">
+                    <div class="sbox"><div class="slbl">PAS</div><div class="sval">80</div></div>
+                    <div class="sbox"><div class="slbl">MEN</div><div class="sval">77</div></div>
+                    <div class="sbox"><div class="slbl">AAN</div><div class="sval">74</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="wm">c.k.v. Oranje Wit</div>
+          </div>
+
+          <!-- Goud 15 jr -->
+          <div class="kaart tier-goud">
+            <div class="kaart-border"></div>
+            <div class="kaart-inner">
+              <div class="kaart-bg" style="background: var(--grad-15);"></div>
+              <div class="kaart-content">
+                <div class="kaart-top">
+                  <div class="top-l">
+                    <span class="tier-pill">Goud</span>
+                    <span class="info-pill dim" style="margin-top:2px;">15 jr · U15-1</span>
+                  </div>
+                  <div class="top-r">
+                    <div class="uss-blok">
+                      <div class="uss-lbl">USS</div>
+                      <div class="uss-val">84</div>
+                      <div class="uss-stars"><span class="s">★</span><span class="s">★</span><span class="s">★</span><span class="s">★</span>☆</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="kaart-mid">
+                  <div class="schild-wrap">
+                    <div class="schild-ring"></div>
+                    <div class="schild">
+                      <img src="https://i.pravatar.cc/300?img=20" alt="Anna Wolff" />
+                      <div class="schild-tint"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="kaart-bot">
+                  <div class="kaart-naam">Anna Wolff</div>
+                  <div class="kaart-sub">15 jaar · U15-1</div>
+                  <div class="kaart-stats">
+                    <div class="sbox"><div class="slbl">SCH</div><div class="sval">88</div></div>
+                    <div class="sbox"><div class="slbl">AAN</div><div class="sval">84</div></div>
+                    <div class="sbox"><div class="slbl">FYS</div><div class="sval">82</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="wm">c.k.v. Oranje Wit</div>
+          </div>
+
+          <!-- Goud Senior -->
+          <div class="kaart tier-goud">
+            <div class="kaart-border"></div>
+            <div class="kaart-inner">
+              <div class="kaart-bg" style="background: var(--grad-17);"></div>
+              <div class="kaart-content">
+                <div class="kaart-top">
+                  <div class="top-l">
+                    <span class="tier-pill">Goud</span>
+                    <span class="info-pill dim" style="margin-top:2px;">Senior · Sen. 1</span>
+                  </div>
+                  <div class="top-r">
+                    <div class="uss-blok">
+                      <div class="uss-lbl">USS</div>
+                      <div class="uss-val">91</div>
+                      <div class="uss-stars"><span class="s">★</span><span class="s">★</span><span class="s">★</span><span class="s">★</span><span class="s">★</span></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="kaart-mid">
+                  <div class="schild-wrap">
+                    <div class="schild-ring"></div>
+                    <div class="schild">
+                      <img src="https://i.pravatar.cc/300?img=53" alt="Ruben van Dijk" />
+                      <div class="schild-tint"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="kaart-bot">
+                  <div class="kaart-naam">Ruben van Dijk</div>
+                  <div class="kaart-sub">Senior · Senioren 1</div>
+                  <div class="kaart-stats">
+                    <div class="sbox"><div class="slbl">SCH</div><div class="sval">93</div></div>
+                    <div class="sbox"><div class="slbl">AAN</div><div class="sval">90</div></div>
+                    <div class="sbox"><div class="slbl">MEN</div><div class="sval">88</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="wm">c.k.v. Oranje Wit</div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════
+           VARIANT 3 — TOTALE KAART (omdraaien)
+      ══════════════════════════════════════════ -->
+      <section class="sectie">
+        <div class="sectie-header">
+          <div>
+            <span class="vbadge b-t">Variant 3</span>
+            <h2>Totale Kaart</h2>
+          </div>
+          <p>Ranking voorkant · Klik om te draaien → radardiagram + 6 pijlers + rapporten</p>
+        </div>
+        <div class="kaarten-rij">
+
+          <!-- Goud 15jr — Anna Wolff -->
+          <div class="flip-wrap tier-goud" onclick="flipKaart(this)">
+            <div class="flip-inner">
+              <div class="flip-front">
+                <div class="kaart-border"></div>
+                <div class="kaart-inner">
+                  <div class="kaart-bg" style="background: var(--grad-15);"></div>
+                  <div class="kaart-content">
+                    <div class="kaart-top">
+                      <div class="top-l">
+                        <span class="tier-pill">Goud</span>
+                        <span class="info-pill dim" style="margin-top:2px;">15 jr · U15-1</span>
+                      </div>
+                      <div class="top-r">
+                        <div class="uss-blok">
+                          <div class="uss-lbl">USS</div>
+                          <div class="uss-val">84</div>
+                          <div class="uss-stars"><span class="s">★</span><span class="s">★</span><span class="s">★</span><span class="s">★</span>☆</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="kaart-mid">
+                      <div class="schild-wrap">
+                        <div class="schild-ring"></div>
+                        <div class="schild">
+                          <img src="https://i.pravatar.cc/300?img=20" alt="Anna Wolff" />
+                          <div class="schild-tint"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="kaart-bot">
+                      <div class="kaart-naam">Anna Wolff</div>
+                      <div class="kaart-sub">15 jaar · U15-1</div>
+                      <div class="kaart-stats">
+                        <div class="sbox"><div class="slbl">SCH</div><div class="sval">88</div></div>
+                        <div class="sbox"><div class="slbl">AAN</div><div class="sval">84</div></div>
+                        <div class="sbox"><div class="slbl">FYS</div><div class="sval">82</div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="fhint"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>klik om te draaien</div>
+                <div class="wm">c.k.v. Oranje Wit</div>
+              </div>
+              <div class="flip-back">
+                <div class="back-border"></div>
+                <div class="back-inner">
+                  <div class="back-content">
+                    <div class="bc-club">c.k.v. Oranje Wit</div>
+                    <div class="bc-naam">Anna Wolff</div>
+                    <div class="bc-sep"></div>
+                    <div class="bc-schild">
+                      <div class="schild-ring" style="position:absolute;inset:-2px;clip-path:polygon(50% 0%,100% 12%,100% 65%,75% 85%,50% 100%,25% 85%,0% 65%,0% 12%);background:linear-gradient(160deg,var(--tier-goud-lt),var(--tier-goud),var(--tier-goud-dk));"></div>
+                      <div class="schild" style="position:absolute;inset:2px;clip-path:polygon(50% 0%,100% 12%,100% 65%,75% 85%,50% 100%,25% 85%,0% 65%,0% 12%);overflow:hidden;background:rgba(255,255,255,.12);">
+                        <img src="https://i.pravatar.cc/300?img=20" alt="" style="width:100%;height:100%;object-fit:cover;object-position:top;" />
+                      </div>
+                    </div>
+                    <div class="radar-wrap">
+                      <svg viewBox="0 0 140 130" xmlns="http://www.w3.org/2000/svg">
+                        <polygon points="70,15 113,40 113,90 70,115 27,90 27,40" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+                        <polygon points="70,27 103,45 103,85 70,103 37,85 37,45" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+                        <polygon points="70,40 93,52 93,78 70,90 47,78 47,52" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+                        <polygon points="70,52 83,58 83,72 70,78 57,72 57,58" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+                        <line x1="70" y1="65" x2="70"  y2="15"  stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+                        <line x1="70" y1="65" x2="113" y2="40"  stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+                        <line x1="70" y1="65" x2="113" y2="90"  stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+                        <line x1="70" y1="65" x2="70"  y2="115" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+                        <line x1="70" y1="65" x2="27"  y2="90"  stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+                        <line x1="70" y1="65" x2="27"  y2="40"  stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+                        <polygon points="70,21 106.4,43.8 101.2,83 70,103 34.5,85.5 36.2,45.5" fill="rgba(255,215,0,.2)" stroke="#ffd700" stroke-width="1.5" stroke-linejoin="round"/>
+                        <text x="70"  y="11"  text-anchor="middle" font-size="9" font-weight="700" fill="rgba(255,255,255,.55)">SCH</text>
+                        <text x="118" y="42"  text-anchor="start"  font-size="9" font-weight="700" fill="rgba(255,255,255,.55)">AAN</text>
+                        <text x="118" y="94"  text-anchor="start"  font-size="9" font-weight="700" fill="rgba(255,255,255,.55)">PAS</text>
+                        <text x="70"  y="126" text-anchor="middle" font-size="9" font-weight="700" fill="rgba(255,255,255,.55)">VER</text>
+                        <text x="22"  y="94"  text-anchor="end"    font-size="9" font-weight="700" fill="rgba(255,255,255,.55)">FYS</text>
+                        <text x="22"  y="42"  text-anchor="end"    font-size="9" font-weight="700" fill="rgba(255,255,255,.55)">MEN</text>
+                        <circle cx="70"    cy="21"   r="2.5" fill="#ffd700"/>
+                        <circle cx="106.4" cy="43.8" r="2.5" fill="#ffd700"/>
+                        <circle cx="101.2" cy="83"   r="2.5" fill="#ffd700"/>
+                        <circle cx="70"    cy="103"  r="2.5" fill="#ffd700"/>
+                        <circle cx="34.5"  cy="85.5" r="2.5" fill="#ffd700"/>
+                        <circle cx="36.2"  cy="45.5" r="2.5" fill="#ffd700"/>
+                      </svg>
+                    </div>
+                    <div class="bc-bio">
+                      <div class="bc-bio-row"><span class="bc-bio-lbl">Team</span><span class="bc-bio-val">U15-1</span></div>
+                      <div class="bc-bio-row"><span class="bc-bio-lbl">USS score</span><span class="bc-bio-val">84 ↑ +3</span></div>
+                      <div class="bc-bio-row"><span class="bc-bio-lbl">Tier</span><span class="bc-bio-val" style="color:var(--tier-goud)">Goud</span></div>
+                    </div>
+                    <div class="bc-sep"></div>
+                    <div class="bc-rep">
+                      <div class="bc-rep-lbl">Rapporten</div>
+                      <div class="bc-rep-row"><span class="bc-rep-sc">87</span><span class="bc-rep-mt">sep '25 · training</span><div class="bc-rep-bar"><div class="bc-rep-fill" style="width:87%"></div></div></div>
+                      <div class="bc-rep-row"><span class="bc-rep-sc">82</span><span class="bc-rep-mt">jun '25 · wedstrijd</span><div class="bc-rep-bar"><div class="bc-rep-fill" style="width:82%"></div></div></div>
+                    </div>
+                    <div class="bc-btn"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Alle rapporten bekijken</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Zilver Senior — Kim Roos -->
+          <div class="flip-wrap tier-zilver" onclick="flipKaart(this)">
+            <div class="flip-inner">
+              <div class="flip-front">
+                <div class="kaart-border"></div>
+                <div class="kaart-inner">
+                  <div class="kaart-bg" style="background: var(--grad-sr);"></div>
+                  <div class="kaart-content">
+                    <div class="kaart-top">
+                      <div class="top-l">
+                        <span class="tier-pill">Zilver</span>
+                        <span class="info-pill dim" style="margin-top:2px;">Senior · Sen. 2</span>
+                      </div>
+                      <div class="top-r">
+                        <div class="uss-blok">
+                          <div class="uss-lbl">USS</div>
+                          <div class="uss-val">76</div>
+                          <div class="uss-stars"><span class="s">★</span><span class="s">★</span><span class="s">★</span>☆☆</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="kaart-mid">
+                      <div class="schild-wrap">
+                        <div class="schild-ring"></div>
+                        <div class="schild">
+                          <img src="https://i.pravatar.cc/300?img=5" alt="Kim Roos" />
+                          <div class="schild-tint"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="kaart-bot">
+                      <div class="kaart-naam">Kim Roos</div>
+                      <div class="kaart-sub">Senior · Senioren 2</div>
+                      <div class="kaart-stats">
+                        <div class="sbox"><div class="slbl">PAS</div><div class="sval">80</div></div>
+                        <div class="sbox"><div class="slbl">MEN</div><div class="sval">77</div></div>
+                        <div class="sbox"><div class="slbl">AAN</div><div class="sval">74</div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="fhint"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>klik om te draaien</div>
+                <div class="wm">c.k.v. Oranje Wit</div>
+              </div>
+              <div class="flip-back">
+                <div class="back-border"></div>
+                <div class="back-inner">
+                  <div class="back-content">
+                    <div class="bc-club">c.k.v. Oranje Wit</div>
+                    <div class="bc-naam">Kim Roos</div>
+                    <div class="bc-sep"></div>
+                    <div class="bc-schild">
+                      <div class="schild-ring" style="position:absolute;inset:-2px;clip-path:polygon(50% 0%,100% 12%,100% 65%,75% 85%,50% 100%,25% 85%,0% 65%,0% 12%);background:linear-gradient(160deg,var(--tier-zilver-lt),var(--tier-zilver),var(--tier-zilver-dk));"></div>
+                      <div class="schild" style="position:absolute;inset:2px;clip-path:polygon(50% 0%,100% 12%,100% 65%,75% 85%,50% 100%,25% 85%,0% 65%,0% 12%);overflow:hidden;background:rgba(255,255,255,.12);">
+                        <img src="https://i.pravatar.cc/300?img=5" alt="" style="width:100%;height:100%;object-fit:cover;object-position:top;" />
+                      </div>
+                    </div>
+                    <div class="radar-wrap">
+                      <svg viewBox="0 0 140 130" xmlns="http://www.w3.org/2000/svg">
+                        <polygon points="70,15 113,40 113,90 70,115 27,90 27,40" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+                        <polygon points="70,27 103,45 103,85 70,103 37,85 37,45" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+                        <polygon points="70,40 93,52 93,78 70,90 47,78 47,52" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+                        <polygon points="70,52 83,58 83,72 70,78 57,72 57,58" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+                        <line x1="70" y1="65" x2="70"  y2="15"  stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+                        <line x1="70" y1="65" x2="113" y2="40"  stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+                        <line x1="70" y1="65" x2="113" y2="90"  stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+                        <line x1="70" y1="65" x2="70"  y2="115" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+                        <line x1="70" y1="65" x2="27"  y2="90"  stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+                        <line x1="70" y1="65" x2="27"  y2="40"  stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+                        <polygon points="70,29.5 102.1,46.5 104.6,85 70,99 38.4,83.3 36.7,46.7" fill="rgba(192,192,192,.18)" stroke="#c0c0c0" stroke-width="1.5" stroke-linejoin="round"/>
+                        <text x="70"  y="11"  text-anchor="middle" font-size="9" font-weight="700" fill="rgba(255,255,255,.55)">SCH</text>
+                        <text x="118" y="42"  text-anchor="start"  font-size="9" font-weight="700" fill="rgba(255,255,255,.55)">AAN</text>
+                        <text x="118" y="94"  text-anchor="start"  font-size="9" font-weight="700" fill="rgba(255,255,255,.55)">PAS</text>
+                        <text x="70"  y="126" text-anchor="middle" font-size="9" font-weight="700" fill="rgba(255,255,255,.55)">VER</text>
+                        <text x="22"  y="94"  text-anchor="end"    font-size="9" font-weight="700" fill="rgba(255,255,255,.55)">FYS</text>
+                        <text x="22"  y="42"  text-anchor="end"    font-size="9" font-weight="700" fill="rgba(255,255,255,.55)">MEN</text>
+                        <circle cx="70"    cy="29.5" r="2.5" fill="#c0c0c0"/>
+                        <circle cx="102.1" cy="46.5" r="2.5" fill="#c0c0c0"/>
+                        <circle cx="104.6" cy="85"   r="2.5" fill="#c0c0c0"/>
+                        <circle cx="70"    cy="99"   r="2.5" fill="#c0c0c0"/>
+                        <circle cx="38.4"  cy="83.3" r="2.5" fill="#c0c0c0"/>
+                        <circle cx="36.7"  cy="46.7" r="2.5" fill="#c0c0c0"/>
+                      </svg>
+                    </div>
+                    <div class="bc-bio">
+                      <div class="bc-bio-row"><span class="bc-bio-lbl">Team</span><span class="bc-bio-val">Senioren 2</span></div>
+                      <div class="bc-bio-row"><span class="bc-bio-lbl">USS score</span><span class="bc-bio-val">76 ↑ +1</span></div>
+                      <div class="bc-bio-row"><span class="bc-bio-lbl">Tier</span><span class="bc-bio-val" style="color:var(--tier-zilver)">Zilver</span></div>
+                    </div>
+                    <div class="bc-sep"></div>
+                    <div class="bc-rep">
+                      <div class="bc-rep-lbl">Rapporten</div>
+                      <div class="bc-rep-row"><span class="bc-rep-sc">78</span><span class="bc-rep-mt">okt '25 · wedstrijd</span><div class="bc-rep-bar"><div class="bc-rep-fill" style="width:78%"></div></div></div>
+                      <div class="bc-rep-row"><span class="bc-rep-sc">74</span><span class="bc-rep-mt">aug '25 · training</span><div class="bc-rep-bar"><div class="bc-rep-fill" style="width:74%"></div></div></div>
+                    </div>
+                    <div class="bc-btn"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Alle rapporten bekijken</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Goud Senior — Ruben van Dijk -->
+          <div class="flip-wrap tier-goud" onclick="flipKaart(this)">
+            <div class="flip-inner">
+              <div class="flip-front">
+                <div class="kaart-border"></div>
+                <div class="kaart-inner">
+                  <div class="kaart-bg" style="background: var(--grad-17);"></div>
+                  <div class="kaart-content">
+                    <div class="kaart-top">
+                      <div class="top-l">
+                        <span class="tier-pill">Goud</span>
+                        <span class="info-pill dim" style="margin-top:2px;">Senior · Sen. 1</span>
+                      </div>
+                      <div class="top-r">
+                        <div class="uss-blok">
+                          <div class="uss-lbl">USS</div>
+                          <div class="uss-val">91</div>
+                          <div class="uss-stars"><span class="s">★</span><span class="s">★</span><span class="s">★</span><span class="s">★</span><span class="s">★</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="kaart-mid">
+                      <div class="schild-wrap">
+                        <div class="schild-ring"></div>
+                        <div class="schild">
+                          <img src="https://i.pravatar.cc/300?img=53" alt="Ruben van Dijk" />
+                          <div class="schild-tint"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="kaart-bot">
+                      <div class="kaart-naam">Ruben van Dijk</div>
+                      <div class="kaart-sub">Senior · Senioren 1</div>
+                      <div class="kaart-stats">
+                        <div class="sbox"><div class="slbl">SCH</div><div class="sval">93</div></div>
+                        <div class="sbox"><div class="slbl">AAN</div><div class="sval">90</div></div>
+                        <div class="sbox"><div class="slbl">MEN</div><div class="sval">88</div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="fhint"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>klik om te draaien</div>
+                <div class="wm">c.k.v. Oranje Wit</div>
+              </div>
+              <div class="flip-back">
+                <div class="back-border"></div>
+                <div class="back-inner">
+                  <div class="back-content">
+                    <div class="bc-club">c.k.v. Oranje Wit</div>
+                    <div class="bc-naam">Ruben van Dijk</div>
+                    <div class="bc-sep"></div>
+                    <div class="bc-schild">
+                      <div class="schild-ring" style="position:absolute;inset:-2px;clip-path:polygon(50% 0%,100% 12%,100% 65%,75% 85%,50% 100%,25% 85%,0% 65%,0% 12%);background:linear-gradient(160deg,var(--tier-goud-lt),var(--tier-goud),var(--tier-goud-dk));"></div>
+                      <div class="schild" style="position:absolute;inset:2px;clip-path:polygon(50% 0%,100% 12%,100% 65%,75% 85%,50% 100%,25% 85%,0% 65%,0% 12%);overflow:hidden;background:rgba(255,255,255,.12);">
+                        <img src="https://i.pravatar.cc/300?img=53" alt="" style="width:100%;height:100%;object-fit:cover;object-position:top;" />
+                      </div>
+                    </div>
+                    <div class="radar-wrap">
+                      <svg viewBox="0 0 140 130" xmlns="http://www.w3.org/2000/svg">
+                        <polygon points="70,15 113,40 113,90 70,115 27,90 27,40" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+                        <polygon points="70,27 103,45 103,85 70,103 37,85 37,45" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+                        <polygon points="70,40 93,52 93,78 70,90 47,78 47,52" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+                        <polygon points="70,52 83,58 83,72 70,78 57,72 57,58" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+                        <line x1="70" y1="65" x2="70"  y2="15"  stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+                        <line x1="70" y1="65" x2="113" y2="40"  stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+                        <line x1="70" y1="65" x2="113" y2="90"  stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+                        <line x1="70" y1="65" x2="70"  y2="115" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+                        <line x1="70" y1="65" x2="27"  y2="90"  stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+                        <line x1="70" y1="65" x2="27"  y2="40"  stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+                        <polygon points="70,18.5 109,42.5 106.4,87 70,107 31.4,88 31.6,46" fill="rgba(255,215,0,.2)" stroke="#ffd700" stroke-width="1.5" stroke-linejoin="round"/>
+                        <text x="70"  y="11"  text-anchor="middle" font-size="9" font-weight="700" fill="rgba(255,255,255,.55)">SCH</text>
+                        <text x="118" y="42"  text-anchor="start"  font-size="9" font-weight="700" fill="rgba(255,255,255,.55)">AAN</text>
+                        <text x="118" y="94"  text-anchor="start"  font-size="9" font-weight="700" fill="rgba(255,255,255,.55)">PAS</text>
+                        <text x="70"  y="126" text-anchor="middle" font-size="9" font-weight="700" fill="rgba(255,255,255,.55)">VER</text>
+                        <text x="22"  y="94"  text-anchor="end"    font-size="9" font-weight="700" fill="rgba(255,255,255,.55)">FYS</text>
+                        <text x="22"  y="42"  text-anchor="end"    font-size="9" font-weight="700" fill="rgba(255,255,255,.55)">MEN</text>
+                        <circle cx="70"    cy="18.5" r="2.5" fill="#ffd700"/>
+                        <circle cx="109"   cy="42.5" r="2.5" fill="#ffd700"/>
+                        <circle cx="106.4" cy="87"   r="2.5" fill="#ffd700"/>
+                        <circle cx="70"    cy="107"  r="2.5" fill="#ffd700"/>
+                        <circle cx="31.4"  cy="88"   r="2.5" fill="#ffd700"/>
+                        <circle cx="31.6"  cy="46"   r="2.5" fill="#ffd700"/>
+                      </svg>
+                    </div>
+                    <div class="bc-bio">
+                      <div class="bc-bio-row"><span class="bc-bio-lbl">Team</span><span class="bc-bio-val">Senioren 1</span></div>
+                      <div class="bc-bio-row"><span class="bc-bio-lbl">USS score</span><span class="bc-bio-val">91 ↑ +5</span></div>
+                      <div class="bc-bio-row"><span class="bc-bio-lbl">Tier</span><span class="bc-bio-val" style="color:var(--tier-goud)">Goud</span></div>
+                    </div>
+                    <div class="bc-sep"></div>
+                    <div class="bc-rep">
+                      <div class="bc-rep-lbl">Rapporten</div>
+                      <div class="bc-rep-row"><span class="bc-rep-sc">93</span><span class="bc-rep-mt">nov '25 · wedstrijd</span><div class="bc-rep-bar"><div class="bc-rep-fill" style="width:93%"></div></div></div>
+                      <div class="bc-rep-row"><span class="bc-rep-sc">90</span><span class="bc-rep-mt">sep '25 · training</span><div class="bc-rep-bar"><div class="bc-rep-fill" style="width:90%"></div></div></div>
+                      <div class="bc-rep-row"><span class="bc-rep-sc">87</span><span class="bc-rep-mt">jun '25 · wedstrijd</span><div class="bc-rep-bar"><div class="bc-rep-fill" style="width:87%"></div></div></div>
+                    </div>
+                    <div class="bc-btn"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Alle rapporten bekijken</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <div class="page-footer">c.k.v. Oranje Wit · Spelerskaarten v4 · Definitief ontwerp</div>
+
+    <script>
+      function toggleTheme() {
+        const h = document.documentElement;
+        h.setAttribute('data-theme', h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+      }
+      let tintAan = false;
+      function toggleTint() {
+        tintAan = !tintAan;
+        document.body.classList.toggle('tint-aan', tintAan);
+        const b = document.getElementById('btn-tint');
+        b.textContent = 'Kleur-tint: ' + (tintAan ? 'AAN' : 'UIT');
+        b.classList.toggle('on', tintAan);
+      }
+      function flipKaart(wrapper) {
+        wrapper.querySelector('.flip-inner').classList.toggle('flipped');
+      }
+    </script>
+  </body>
+</html>

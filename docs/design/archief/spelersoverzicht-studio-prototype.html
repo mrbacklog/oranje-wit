@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TI Studio — Personen prototype</title>
+<style>
+/* ═══════════════════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════════════════ */
+:root {
+  --bg-0: #0a0a0a;
+  --bg-1: #141414;
+  --bg-2: #1e1e1e;
+  --bg-3: #262626;
+  --accent:      #FF6B00;
+  --accent-h:    #FF8533;
+  --accent-dim:  rgba(255,107,0,.12);
+  --text-1: #FAFAFA;
+  --text-2: #A3A3A3;
+  --text-3: #666666;
+  --border-0: #262626;
+  --border-1: #3a3a3a;
+  --ok:    #22C55E;
+  --warn:  #EAB308;
+  --err:   #EF4444;
+  --info:  #3B82F6;
+  --stop:  #F97316;
+  --pink:  #EC4899;
+  --blue:  #60A5FA;
+  --ribbon: 48px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: Inter, system-ui, sans-serif;
+  background: var(--bg-0); color: var(--text-1);
+  font-size: 14px; line-height: 1.5;
+  overflow: hidden; height: 100vh;
+}
+
+/* ═══════════════════════════════════════════
+   SHELL
+═══════════════════════════════════════════ */
+.shell { display: flex; height: 100vh; overflow: hidden; }
+
+/* ═══════════════════════════════════════════
+   RIBBON
+═══════════════════════════════════════════ */
+.ribbon {
+  width: var(--ribbon); min-width: var(--ribbon);
+  background: var(--bg-1); border-right: 1px solid var(--border-0);
+  display: flex; flex-direction: column; align-items: center;
+  padding: 8px 0; gap: 2px; flex-shrink: 0;
+  overflow: visible; position: relative; z-index: 30;
+}
+.ribbon-logo {
+  width: 32px; height: 32px; background: var(--accent-dim);
+  border: 1px solid rgba(255,107,0,.25); border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; margin-bottom: 8px; flex-shrink: 0;
+}
+.ri {
+  width: 36px; height: 36px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; background: none; border: none;
+  font-size: 16px; color: var(--text-3);
+  transition: background 150ms, color 150ms;
+  position: relative; flex-shrink: 0; font-family: inherit;
+}
+.ri:hover { background: var(--bg-3); color: var(--text-1); }
+.ri.active { background: var(--accent-dim); color: var(--accent); }
+.ri.active::before {
+  content: ''; position: absolute;
+  left: -8px; top: 6px; bottom: 6px;
+  width: 3px; background: var(--accent); border-radius: 0 2px 2px 0;
+}
+.ri::after {
+  content: attr(data-tip);
+  position: absolute; left: calc(var(--ribbon) - 4px); top: 50%;
+  transform: translateY(-50%);
+  background: var(--bg-2); border: 1px solid var(--border-1);
+  color: var(--text-1); font-size: 11px; font-weight: 600;
+  padding: 4px 9px; border-radius: 7px; white-space: nowrap;
+  pointer-events: none; opacity: 0; transition: opacity 120ms;
+  z-index: 50; box-shadow: 0 2px 10px rgba(0,0,0,.4);
+}
+.ri:hover::after { opacity: 1; }
+.rdiv { width: 24px; height: 1px; background: var(--border-0); margin: 4px 0; flex-shrink: 0; }
+.ribbon-footer { margin-top: auto; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.ribbon-avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--bg-2); border: 1px solid var(--border-1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; color: var(--accent);
+  cursor: pointer; position: relative;
+}
+.ribbon-avatar::after {
+  content: attr(data-tip); position: absolute;
+  left: calc(var(--ribbon) - 4px); top: 50%; transform: translateY(-50%);
+  background: var(--bg-2); border: 1px solid var(--border-1);
+  color: var(--text-1); font-size: 11px; font-weight: 600;
+  padding: 4px 9px; border-radius: 7px; white-space: nowrap;
+  pointer-events: none; opacity: 0; transition: opacity 120ms;
+  z-index: 50; box-shadow: 0 2px 10px rgba(0,0,0,.4);
+}
+.ribbon-avatar:hover::after { opacity: 1; }
+
+/* ═══════════════════════════════════════════
+   MAIN
+═══════════════════════════════════════════ */
+.main { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+
+/* ═══════════════════════════════════════════
+   TOOLBAR
+═══════════════════════════════════════════ */
+.toolbar {
+  height: 52px; min-height: 52px;
+  background: var(--bg-1); border-bottom: 1px solid var(--border-0);
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 14px; flex-shrink: 0;
+}
+.tb-title { font-size: 14px; font-weight: 700; }
+.tb-sub   { font-size: 11px; color: var(--text-3); }
+.tb-sep   { width: 1px; height: 18px; background: var(--border-0); flex-shrink: 0; }
+.tb-group { flex: 1; display: flex; align-items: center; gap: 10px; }
+
+/* ═══════════════════════════════════════════
+   BUTTONS & TAGS
+═══════════════════════════════════════════ */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 8px 14px; border-radius: 9px; font-size: 12px; font-weight: 600;
+  cursor: pointer; border: none; transition: background 150ms, transform 80ms;
+  white-space: nowrap; font-family: inherit;
+}
+.btn:active { transform: scale(.97); }
+.btn-pri { background: var(--accent); color: #fff; }
+.btn-pri:hover { background: var(--accent-h); }
+.btn-sec { background: var(--bg-2); color: var(--text-1); border: 1px solid var(--border-1); }
+.btn-sec:hover { background: var(--bg-3); }
+.btn-ghost { background: transparent; color: var(--text-2); border: 1px solid var(--border-0); }
+.btn-ghost:hover { background: var(--bg-3); color: var(--text-1); }
+.btn-sm { padding: 4px 10px; font-size: 11px; border-radius: 7px; }
+
+.tag {
+  display: inline-flex; align-items: center;
+  padding: 2px 7px; border-radius: 5px; font-size: 11px; font-weight: 600;
+}
+.tg-ok   { background: rgba(34,197,94,.12);   color: var(--ok); }
+.tg-warn { background: rgba(234,179,8,.12);   color: var(--warn); }
+.tg-err  { background: rgba(239,68,68,.12);   color: var(--err); }
+.tg-acc  { background: var(--accent-dim);     color: var(--accent); }
+.tg-info { background: rgba(59,130,246,.12);  color: var(--blue); }
+.tg-grey { background: rgba(255,255,255,.06); color: var(--text-3); }
+.tg-stop { background: rgba(249,115,22,.12);  color: var(--stop); }
+
+/* ═══════════════════════════════════════════
+   BODY LAYOUT
+═══════════════════════════════════════════ */
+.body-wrap { flex: 1; display: flex; overflow: hidden; }
+
+/* Sidebar */
+.sidebar {
+  width: 200px; min-width: 200px;
+  background: var(--bg-1); border-right: 1px solid var(--border-0);
+  display: flex; flex-direction: column; flex-shrink: 0; overflow: hidden;
+}
+.sb-head { padding: 14px 14px 10px; border-bottom: 1px solid var(--border-0); flex-shrink: 0; }
+.sb-seizoen { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--text-3); margin-bottom: 4px; }
+.sb-naam { font-size: 13px; font-weight: 700; }
+.sb-status { margin-top: 5px; }
+.sb-nav { padding: 8px 0; flex: 1; overflow-y: auto; }
+.sni {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 14px; cursor: pointer;
+  font-size: 13px; font-weight: 500; color: var(--text-2);
+  border-left: 2px solid transparent;
+  transition: background 120ms, color 120ms;
+  border: none; background: none; width: 100%; font-family: inherit; text-align: left;
+}
+.sni:hover { background: var(--bg-3); color: var(--text-1); }
+.sni.active { color: var(--accent); background: var(--accent-dim); border-left-color: var(--accent); font-weight: 600; }
+.sni-ic { font-size: 14px; flex-shrink: 0; }
+.sb-footer { padding: 10px 14px; border-top: 1px solid var(--border-0); flex-shrink: 0; }
+.sb-prog-lbl { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-3); margin-bottom: 5px; }
+.sb-prog-bar { height: 4px; background: var(--bg-3); border-radius: 2px; overflow: hidden; }
+.sb-prog-fill { height: 100%; background: var(--accent); border-radius: 2px; }
+
+/* ═══════════════════════════════════════════
+   PERSONEN CONTENT
+═══════════════════════════════════════════ */
+.content {
+  flex: 1; overflow: hidden;
+  display: flex; flex-direction: column;
+  background: var(--bg-0);
+}
+
+/* ── Filter bar ── */
+.filter-bar {
+  padding: 12px 20px; border-bottom: 1px solid var(--border-0);
+  background: var(--bg-1);
+  display: flex; align-items: center; gap: 10px; flex-shrink: 0; flex-wrap: wrap;
+}
+.search-wrap {
+  position: relative; flex: 1; min-width: 180px; max-width: 280px;
+}
+.search-icon {
+  position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+  font-size: 13px; color: var(--text-3); pointer-events: none;
+}
+.search-in {
+  width: 100%; background: var(--bg-0); border: 1px solid var(--border-1);
+  border-radius: 9px; color: var(--text-1); font-size: 12px; font-family: inherit;
+  padding: 7px 10px 7px 32px; outline: none; transition: border-color 150ms;
+}
+.search-in:focus { border-color: var(--accent); }
+.search-in::placeholder { color: var(--text-3); }
+.filter-select {
+  background: var(--bg-0); border: 1px solid var(--border-1);
+  border-radius: 8px; color: var(--text-1); font-size: 12px; font-family: inherit;
+  padding: 7px 28px 7px 10px; outline: none; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23666'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 9px center;
+  transition: border-color 150ms; cursor: pointer;
+}
+.filter-select:focus { border-color: var(--accent); }
+.filter-count {
+  font-size: 11px; color: var(--text-3); margin-left: auto;
+}
+.filter-count strong { color: var(--text-2); font-weight: 700; }
+
+/* ── Tabel ── */
+.table-wrap { flex: 1; overflow: auto; }
+
+.sp-table {
+  width: 100%; border-collapse: collapse; min-width: 900px;
+}
+.sp-table th {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--bg-1); border-bottom: 1px solid var(--border-1);
+  padding: 8px 12px; text-align: left;
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .5px; color: var(--text-3); white-space: nowrap;
+  user-select: none;
+}
+.sp-table th.sortable { cursor: pointer; }
+.sp-table th.sortable:hover { color: var(--text-1); }
+.sort-icon { font-size: 9px; opacity: .5; margin-left: 4px; }
+.sort-asc .sort-icon, .sort-desc .sort-icon { opacity: 1; color: var(--accent); }
+
+.sp-table td {
+  padding: 8px 12px; border-bottom: 1px solid var(--border-0);
+  font-size: 12px; vertical-align: middle;
+}
+.sp-table tr:hover td { background: var(--bg-2); cursor: pointer; }
+.sp-table tr.selected td { background: rgba(255,107,0,.06); border-bottom-color: rgba(255,107,0,.15); }
+
+/* naam cel */
+.td-naam-wrap { display: flex; align-items: center; gap: 9px; }
+.td-av {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--bg-2); border: 1px solid var(--border-1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; color: var(--text-2); flex-shrink: 0;
+}
+.td-naam-txt { font-weight: 600; color: var(--text-1); }
+.td-gender {
+  font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 4px; margin-left: 4px;
+}
+.td-gender.v { background: rgba(236,72,153,.12); color: var(--pink); }
+.td-gender.m { background: rgba(96,165,250,.12);  color: var(--blue); }
+
+/* status badge */
+.status-dot {
+  width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; display: inline-block; margin-right: 5px;
+}
+
+/* bijzonderheden iconen */
+.biz-icons { display: flex; align-items: center; gap: 4px; }
+.biz-ic {
+  font-size: 13px; cursor: default;
+  position: relative;
+}
+.biz-ic[title]:hover::after {
+  content: attr(title);
+  position: absolute; bottom: calc(100% + 4px); left: 50%; transform: translateX(-50%);
+  background: var(--bg-2); border: 1px solid var(--border-1);
+  color: var(--text-1); font-size: 11px; font-weight: 600;
+  padding: 3px 8px; border-radius: 6px; white-space: nowrap;
+  pointer-events: none; z-index: 50;
+}
+
+/* memo preview */
+.td-memo {
+  font-size: 11px; color: var(--text-3);
+  max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.td-memo.heeft-memo { color: var(--text-2); }
+
+/* team chip */
+.team-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 2px 8px; border-radius: 5px; font-size: 11px; font-weight: 600;
+}
+
+/* categorie chip */
+.cat-chip {
+  display: inline-flex; align-items: center;
+  padding: 2px 8px; border-radius: 5px; font-size: 11px; font-weight: 700;
+  letter-spacing: .2px;
+}
+
+/* ═══════════════════════════════════════════
+   DETAIL PANEL (slide-in rechts)
+═══════════════════════════════════════════ */
+.detail-panel {
+  width: 320px; min-width: 320px;
+  background: var(--bg-1); border-left: 1px solid var(--border-0);
+  display: flex; flex-direction: column; overflow: hidden;
+  animation: slideR 200ms ease; flex-shrink: 0;
+}
+.detail-panel.hidden { display: none; }
+@keyframes slideR {
+  from { transform: translateX(320px); opacity: 0; }
+  to   { transform: translateX(0);     opacity: 1; }
+}
+
+.dp-head {
+  padding: 14px 16px; border-bottom: 1px solid var(--border-0);
+  display: flex; align-items: flex-start; gap: 12px; flex-shrink: 0;
+}
+.dp-big-av {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--bg-2); border: 2px solid var(--border-1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 700; color: var(--accent); flex-shrink: 0;
+}
+.dp-naam-blok { flex: 1; }
+.dp-fullname  { font-size: 16px; font-weight: 700; line-height: 1.2; }
+.dp-meta      { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+.dp-close {
+  width: 24px; height: 24px; border-radius: 6px; background: none; border: none;
+  color: var(--text-3); cursor: pointer; font-size: 13px; font-family: inherit;
+  transition: background 150ms; display: flex; align-items: center; justify-content: center;
+}
+.dp-close:hover { background: var(--bg-3); color: var(--text-1); }
+
+.dp-body { flex: 1; overflow-y: auto; padding: 14px 16px; display: flex; flex-direction: column; gap: 16px; }
+
+.dp-section-title {
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px;
+  color: var(--text-3); margin-bottom: 8px;
+}
+.dp-row {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding: 5px 0; border-bottom: 1px solid var(--border-0);
+  font-size: 12px; gap: 12px;
+}
+.dp-row:last-child { border-bottom: none; }
+.dp-row-lbl { color: var(--text-3); flex-shrink: 0; }
+.dp-row-val { color: var(--text-1); font-weight: 500; text-align: right; }
+
+/* Memo editor */
+.memo-box {
+  background: var(--bg-0); border: 1px solid var(--border-1);
+  border-radius: 9px; padding: 10px 12px;
+  font-size: 12px; color: var(--text-2); line-height: 1.6;
+  min-height: 72px; resize: none; width: 100%;
+  font-family: inherit; outline: none; transition: border-color 150ms;
+}
+.memo-box:focus { border-color: var(--accent); color: var(--text-1); }
+
+.dp-footer {
+  padding: 10px 16px; border-top: 1px solid var(--border-0); flex-shrink: 0;
+  display: flex; gap: 6px;
+}
+
+/* ═══════════════════════════════════════════
+   PROTO NAV
+═══════════════════════════════════════════ */
+.pnav {
+  position: fixed; bottom: 12px; left: 50%; transform: translateX(-50%);
+  background: rgba(16,16,16,.97); border: 1px solid var(--border-1);
+  border-radius: 40px; padding: 5px 8px; display: flex; gap: 3px;
+  z-index: 200; box-shadow: 0 4px 24px rgba(0,0,0,.5);
+  backdrop-filter: blur(12px);
+}
+.pb { padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; cursor: pointer; border: none; background: transparent; color: var(--text-3); font-family: inherit; white-space: nowrap; }
+.pb:hover { background: var(--bg-3); color: var(--text-1); }
+.pb.cur { background: var(--accent-dim); color: var(--accent); }
+
+/* Toast */
+.toast-wrap { position: fixed; top: 16px; right: 16px; z-index: 300; display: flex; flex-direction: column; gap: 6px; }
+.toast {
+  background: var(--bg-1); border: 1px solid var(--border-1);
+  border-radius: 10px; padding: 10px 14px; font-size: 12px; font-weight: 600;
+  box-shadow: 0 4px 20px rgba(0,0,0,.5); max-width: 280px;
+  display: flex; align-items: center; gap: 8px;
+  animation: toastIn 200ms ease;
+}
+@keyframes toastIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+.toast.ok   { border-left: 3px solid var(--ok); }
+.toast.warn { border-left: 3px solid var(--warn); }
+
+/* ═══════════════════════════════════════════
+   DAISY WIDGET
+═══════════════════════════════════════════ */
+.daisy-btn {
+  position: fixed; bottom: 64px; right: 20px; z-index: 150;
+  display: flex; align-items: center; gap: 8px;
+  background: var(--bg-2); border: 1px solid var(--border-1);
+  border-radius: 24px; padding: 8px 14px 8px 10px;
+  cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,.5);
+  transition: border-color 150ms, box-shadow 150ms; font-family: inherit;
+}
+.daisy-btn:hover { border-color: rgba(255,107,0,.4); box-shadow: 0 4px 24px rgba(255,107,0,.15); }
+.daisy-icon {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--accent-dim); border: 1px solid rgba(255,107,0,.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0;
+}
+.daisy-label { font-size: 12px; font-weight: 700; color: var(--text-1); }
+.daisy-badge { font-size: 9px; font-weight: 700; color: var(--accent); background: var(--accent-dim); border-radius: 4px; padding: 1px 5px; }
+.daisy-notif {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent); position: absolute; top: 6px; right: 6px;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(255,107,0,.5); }
+  50%      { box-shadow: 0 0 0 4px rgba(255,107,0,0); }
+}
+.daisy-panel {
+  position: fixed; bottom: 110px; right: 20px; z-index: 150;
+  width: 300px; background: var(--bg-1); border: 1px solid var(--border-1);
+  border-radius: 14px; box-shadow: 0 8px 40px rgba(0,0,0,.6);
+  display: flex; flex-direction: column; overflow: hidden;
+  animation: panelIn 180ms cubic-bezier(.4,0,.2,1);
+}
+.daisy-panel.hidden { display: none; }
+@keyframes panelIn { from { opacity: 0; transform: translateY(12px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.dp2-head { display: flex; align-items: center; gap: 9px; padding: 11px 13px; border-bottom: 1px solid var(--border-0); flex-shrink: 0; }
+.dp2-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--accent-dim); border: 1px solid rgba(255,107,0,.3); display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+.dp2-name { font-size: 13px; font-weight: 700; flex: 1; }
+.dp2-sub  { font-size: 10px; color: var(--accent); font-weight: 600; }
+.dp2-close { width: 22px; height: 22px; border-radius: 6px; background: none; border: none; color: var(--text-3); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 13px; font-family: inherit; transition: background 150ms; }
+.dp2-close:hover { background: var(--bg-3); color: var(--text-1); }
+.dp2-body { padding: 12px; flex: 1; max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+.dp2-msg { border-radius: 10px; padding: 9px 11px; font-size: 12px; line-height: 1.5; max-width: 90%; }
+.dp2-msg.ai { background: var(--bg-2); border: 1px solid var(--border-0); color: var(--text-1); align-self: flex-start; border-bottom-left-radius: 3px; }
+.dp2-msg.user { background: var(--accent-dim); border: 1px solid rgba(255,107,0,.2); color: var(--text-1); align-self: flex-end; border-bottom-right-radius: 3px; }
+.dp2-tip { display: flex; align-items: flex-start; gap: 7px; background: rgba(234,179,8,.07); border: 1px solid rgba(234,179,8,.2); border-radius: 8px; padding: 8px 10px; font-size: 11px; color: var(--text-2); }
+.dp2-tip-icon { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+.dp2-footer { padding: 8px 12px; border-top: 1px solid var(--border-0); display: flex; gap: 6px; flex-shrink: 0; }
+.dp2-input { flex: 1; background: var(--bg-0); border: 1px solid var(--border-1); border-radius: 8px; color: var(--text-1); font-size: 12px; font-family: inherit; padding: 7px 10px; outline: none; transition: border-color 150ms; }
+.dp2-input:focus { border-color: var(--accent); }
+.dp2-send { width: 32px; height: 32px; border-radius: 8px; background: var(--accent); border: none; color: #fff; cursor: pointer; font-size: 14px; transition: background 150ms; display: flex; align-items: center; justify-content: center; }
+.dp2-send:hover { background: var(--accent-h); }
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-1); border-radius: 2px; }
+select option { background: var(--bg-1); }
+</style>
+</head>
+<body>
+
+<nav class="pnav">
+  <button class="pb" onclick="goTo('kaders')">Kaders</button>
+  <button class="pb" onclick="goTo('indeling')">Indeling</button>
+  <button class="pb" onclick="goTo('werkbord')">Werkbord</button>
+  <button class="pb cur">Personen</button>
+</nav>
+
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  SHELL                                                   -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="shell">
+
+  <!-- Ribbon -->
+  <nav class="ribbon">
+    <div class="ribbon-logo">🏗️</div>
+    <button class="ri" data-tip="Dashboard">🏠</button>
+    <button class="ri" data-tip="Kaders" onclick="goTo('kaders')">🗂️</button>
+    <button class="ri" data-tip="Indeling" onclick="goTo('indeling')">⚙️</button>
+    <button class="ri" data-tip="Werkbord" onclick="goTo('werkbord')">📋</button>
+    <button class="ri active" data-tip="Personen">👥</button>
+    <div class="rdiv"></div>
+    <button class="ri" data-tip="Vergelijk">⇌</button>
+    <div class="ribbon-footer">
+      <div class="ribbon-avatar" data-tip="Jasper Laban · TC-lid">JL</div>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main class="main">
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <span class="tb-title">TI Studio</span>
+      <div class="tb-sep"></div>
+      <span class="tb-sub">Personen — Seizoen 2026–2027</span>
+      <div class="tb-group"></div>
+      <span class="tag tg-warn">Concept</span>
+      <button class="btn btn-ghost btn-sm">Exporteren</button>
+    </div>
+
+    <!-- Body: sidebar + content + detail -->
+    <div class="body-wrap">
+
+      <!-- Sidebar -->
+      <nav class="sidebar">
+        <div class="sb-head">
+          <div class="sb-seizoen">Teamindeling</div>
+          <div class="sb-naam">Seizoen 2026–2027</div>
+          <div class="sb-status"><span class="tag tg-warn">Concept</span></div>
+        </div>
+        <div class="sb-nav">
+          <button class="sni" onclick="goTo('kaders')"><span class="sni-ic">🗂️</span>Kaders</button>
+          <button class="sni" onclick="goTo('indeling')"><span class="sni-ic">⚙️</span>Indeling</button>
+          <button class="sni" onclick="goTo('werkbord')"><span class="sni-ic">📋</span>Werkbord</button>
+          <button class="sni active"><span class="sni-ic">👥</span>Personen</button>
+        </div>
+        <div class="sb-footer">
+          <div class="sb-prog-lbl"><span>Voortgang</span><span style="color:var(--text-2);font-weight:600;">34%</span></div>
+          <div class="sb-prog-bar"><div class="sb-prog-fill" style="width:34%"></div></div>
+        </div>
+      </nav>
+
+      <!-- Content -->
+      <div class="content">
+
+        <!-- Filter bar -->
+        <div class="filter-bar">
+          <div class="search-wrap">
+            <span class="search-icon">🔍</span>
+            <input class="search-in" id="search-in" type="text" placeholder="Zoek op naam..." oninput="filterTable()">
+          </div>
+          <select class="filter-select" id="filter-status" onchange="filterTable()">
+            <option value="">Alle statussen</option>
+            <option value="beschikbaar">Beschikbaar</option>
+            <option value="geblesseerd">Geblesseerd</option>
+            <option value="gestopt">Gestopt</option>
+            <option value="onbekend">Onbekend</option>
+          </select>
+          <select class="filter-select" id="filter-cat" onchange="filterTable()">
+            <option value="">Alle categorieen</option>
+            <option value="Sen-A">Sen-A</option>
+            <option value="Sen-B">Sen-B</option>
+            <option value="U19">U19</option>
+            <option value="U17">U17</option>
+            <option value="U15">U15</option>
+            <option value="U12">U12</option>
+          </select>
+          <div class="filter-count" id="filter-count"><strong>32</strong> spelers</div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-wrap">
+          <table class="sp-table" id="sp-table">
+            <thead>
+              <tr>
+                <th class="sortable" onclick="sortTable('naam')" style="min-width:180px;">
+                  Naam <span class="sort-icon" id="sort-naam">↕</span>
+                </th>
+                <th class="sortable" onclick="sortTable('status')" style="min-width:110px;">
+                  Status <span class="sort-icon" id="sort-status">↕</span>
+                </th>
+                <th style="min-width:100px;">Bijzonderheden</th>
+                <th style="min-width:160px;">Memo</th>
+                <th class="sortable" onclick="sortTable('vorigteam')" style="min-width:120px;">
+                  Vorig seizoen <span class="sort-icon" id="sort-vorigteam">↕</span>
+                </th>
+                <th style="min-width:120px;">Huidig team</th>
+                <th class="sortable" onclick="sortTable('cat')" style="min-width:80px;">
+                  Categorie <span class="sort-icon" id="sort-cat">↕</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody id="sp-tbody">
+              <!-- Gevuld door JS -->
+            </tbody>
+          </table>
+        </div>
+
+      </div><!-- /content -->
+
+      <!-- Detail panel -->
+      <div class="detail-panel hidden" id="detail-panel">
+        <div class="dp-head">
+          <div class="dp-big-av" id="dp-av">JL</div>
+          <div class="dp-naam-blok">
+            <div class="dp-fullname" id="dp-name">Jasper Laban</div>
+            <div class="dp-meta" id="dp-meta">M · Sen-A · rel. 12345</div>
+          </div>
+          <button class="dp-close" onclick="closeDetail()">✕</button>
+        </div>
+        <div class="dp-body">
+
+          <!-- Status & bijzonderheden -->
+          <div>
+            <div class="dp-section-title">Status & situatie</div>
+            <div class="dp-row">
+              <span class="dp-row-lbl">Status</span>
+              <span class="dp-row-val" id="dp-status">—</span>
+            </div>
+            <div class="dp-row">
+              <span class="dp-row-lbl">Bijzonderheden</span>
+              <span class="dp-row-val" id="dp-biz">—</span>
+            </div>
+            <div class="dp-row">
+              <span class="dp-row-lbl">Categorie</span>
+              <span class="dp-row-val" id="dp-cat">—</span>
+            </div>
+          </div>
+
+          <!-- Teams -->
+          <div>
+            <div class="dp-section-title">Teams</div>
+            <div class="dp-row">
+              <span class="dp-row-lbl">Vorig seizoen</span>
+              <span class="dp-row-val" id="dp-vteam">—</span>
+            </div>
+            <div class="dp-row">
+              <span class="dp-row-lbl">Huidig (concept)</span>
+              <span class="dp-row-val" id="dp-hteam">—</span>
+            </div>
+          </div>
+
+          <!-- Memo -->
+          <div>
+            <div class="dp-section-title">Intern TC-memo</div>
+            <textarea class="memo-box" id="dp-memo" rows="4" placeholder="Voeg een intern memo toe..."></textarea>
+          </div>
+
+          <!-- Pin status -->
+          <div>
+            <div class="dp-section-title">Pin & Indeling</div>
+            <div class="dp-row">
+              <span class="dp-row-lbl">Gepind aan</span>
+              <span class="dp-row-val" id="dp-pin">Niet gepind</span>
+            </div>
+            <div class="dp-row">
+              <span class="dp-row-lbl">Gescoord (USS)</span>
+              <span class="dp-row-val" id="dp-score">—</span>
+            </div>
+          </div>
+
+        </div>
+        <div class="dp-footer">
+          <button class="btn btn-ghost btn-sm" onclick="showToast('Openen in spelersdossier', 'ok')">Dossier</button>
+          <button class="btn btn-pri btn-sm" style="flex:1;" onclick="saveMemo()">Memo opslaan</button>
+        </div>
+      </div>
+
+    </div><!-- /body-wrap -->
+  </main>
+</div><!-- /shell -->
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  DAISY WIDGET                                           -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<button class="daisy-btn" onclick="toggleDaisy()">
+  <div class="daisy-icon">✨</div>
+  <div>
+    <div class="daisy-label">Daisy</div>
+    <div class="daisy-badge">AI TC-lid</div>
+  </div>
+  <div class="daisy-notif" id="daisy-notif"></div>
+</button>
+
+<div class="daisy-panel hidden" id="daisy-panel">
+  <div class="dp2-head">
+    <div class="dp2-avatar">✨</div>
+    <div>
+      <div class="dp2-name">Daisy</div>
+      <div class="dp2-sub">AI TC-lid</div>
+    </div>
+    <button class="dp2-close" onclick="closeDaisy()">✕</button>
+  </div>
+  <div class="dp2-body" id="daisy-body">
+    <div class="dp2-msg ai">
+      Ik zie 3 spelers met status "Onbekend" — wil je dat ik een overzicht maak van wie nog geen statusupdate heeft?
+    </div>
+    <div class="dp2-tip">
+      <span class="dp2-tip-icon">⚠️</span>
+      <span>Sem de Jong staat als "geblesseerd" maar heeft geen memo. Overweeg een toelichting toe te voegen.</span>
+    </div>
+    <div class="dp2-tip">
+      <span class="dp2-tip-icon">📋</span>
+      <span>4 spelers hebben een "gesprek gepland" markering. Zijn die gesprekken al gedaan?</span>
+    </div>
+  </div>
+  <div class="dp2-footer">
+    <input class="dp2-input" id="daisy-input" type="text" placeholder="Vraag Daisy iets..." onkeydown="if(event.key==='Enter')sendDaisy()">
+    <button class="dp2-send" onclick="sendDaisy()">➤</button>
+  </div>
+</div>
+
+<script>
+/* ─── Dataset ─────────────────────────────────────── */
+const spelers = [
+  { id:1,  naam:'Jasper Laban',      gender:'M', status:'beschikbaar', biz:[],               memo:'Aanvoerder vorig seizoen, prime kandidaat Sen 1.',    vorigTeam:'Heren 1',  huidigTeam:'Heren 1',    cat:'Sen-A', pin:'Heren 1', score:'82' },
+  { id:2,  naam:'Sara Kooij',        gender:'V', status:'beschikbaar', biz:['gesprek'],       memo:'',                                                    vorigTeam:'Dames 1',  huidigTeam:'Dames 1',    cat:'Sen-A', pin:'Dames 1',score:'79' },
+  { id:3,  naam:'Maarten Smit',      gender:'M', status:'beschikbaar', biz:[],               memo:'Sterke verdediger, goed in coachen jongeren.',        vorigTeam:'Heren 1',  huidigTeam:'Heren 1',    cat:'Sen-A', pin:'Heren 1', score:'74' },
+  { id:4,  naam:'Mila Jansen',       gender:'V', status:'beschikbaar', biz:[],               memo:'',                                                    vorigTeam:'Dames 1',  huidigTeam:'Dames 1',    cat:'Sen-A', pin:'Dames 1',score:'71' },
+  { id:5,  naam:'Robin Bakker',      gender:'M', status:'beschikbaar', biz:[],               memo:'Heeft interesse in Sen 1 doorgegeven.',               vorigTeam:'Heren 2',  huidigTeam:'Heren 2',    cat:'Sen-B', pin:'Heren 2', score:'67' },
+  { id:6,  naam:'Sem de Jong',       gender:'M', status:'geblesseerd', biz:['blessure'],     memo:'Knieblessure, herstel verwacht maart 2027.',          vorigTeam:'Heren 1',  huidigTeam:'Niet gekoppeld',cat:'Sen-A', pin:null, score:'73' },
+  { id:7,  naam:'Noa Hendriks',      gender:'V', status:'onbekend',    biz:['buitenland'],   memo:'Studeert in het buitenland, terugkomst onzeker.',     vorigTeam:'Dames 2',  huidigTeam:'Niet gekoppeld',cat:'Sen-B', pin:null, score:'58' },
+  { id:8,  naam:'Daan Visser',       gender:'M', status:'onbekend',    biz:['buitenland'],   memo:'',                                                    vorigTeam:'Heren 3',  huidigTeam:'Niet gekoppeld',cat:'Sen-B', pin:null, score:'52' },
+  { id:9,  naam:'Lisa van Dam',      gender:'V', status:'beschikbaar', biz:[],               memo:'',                                                    vorigTeam:'Dames 1',  huidigTeam:'Heren 1',    cat:'Sen-A', pin:'Heren 1', score:'68' },
+  { id:10, naam:'Tom de Vries',      gender:'M', status:'beschikbaar', biz:['gesprek'],      memo:'TC-gesprek gepland volgende week.',                   vorigTeam:'U19-1',    huidigTeam:'Niet gekoppeld',cat:'U19',   pin:'Heer 1e sel.', score:'65' },
+  { id:11, naam:'Eva Wolters',       gender:'V', status:'beschikbaar', biz:[],               memo:'',                                                    vorigTeam:'U19-1',    huidigTeam:'Niet gekoppeld',cat:'U19',   pin:'Heer 1e sel.', score:'63' },
+  { id:12, naam:'Finn Peters',       gender:'M', status:'beschikbaar', biz:[],               memo:'Talent. Kansen bij opstromen Sen.',                   vorigTeam:'U19-2',    huidigTeam:'Niet gekoppeld',cat:'U19',   pin:null, score:'70' },
+  { id:13, naam:'Julia Prins',       gender:'V', status:'beschikbaar', biz:['verlof'],       memo:'Zwangerschapsverlof, terug sept 2026.',               vorigTeam:'Dames 1',  huidigTeam:'Niet gekoppeld',cat:'Sen-A', pin:null, score:'64' },
+  { id:14, naam:'Kevin Groot',       gender:'M', status:'beschikbaar', biz:[],               memo:'',                                                    vorigTeam:'Heren 2',  huidigTeam:'Heren 2',    cat:'Sen-B', pin:null, score:'59' },
+  { id:15, naam:'Laura Berg',        gender:'V', status:'beschikbaar', biz:[],               memo:'',                                                    vorigTeam:'Dames 2',  huidigTeam:'Dames 2',    cat:'Sen-B', pin:null, score:'61' },
+  { id:16, naam:'Alex Blom',         gender:'M', status:'beschikbaar', biz:['geen-eval'],    memo:'Geen evaluatie ontvangen.',                           vorigTeam:'U19-1',    huidigTeam:'U19-1',      cat:'U19',   pin:null, score:'—'  },
+  { id:17, naam:'Carmen Roos',       gender:'V', status:'beschikbaar', biz:[],               memo:'',                                                    vorigTeam:'U17-1',    huidigTeam:'U17-1',      cat:'U17',   pin:null, score:'55' },
+  { id:18, naam:'David Meijer',      gender:'M', status:'gestopt',     biz:[],               memo:'Gestopt, deelname rekr. dag 2026.',                   vorigTeam:'Heren 3',  huidigTeam:'Niet gekoppeld',cat:'Sen-B', pin:null, score:'—'  },
+  { id:19, naam:'Emma van Dijk',     gender:'V', status:'beschikbaar', biz:[],               memo:'',                                                    vorigTeam:'U15-1',    huidigTeam:'U15-1',      cat:'U15',   pin:null, score:'51' },
+  { id:20, naam:'Gijs Hoek',         gender:'M', status:'onbekend',    biz:[],               memo:'Geen reactie op uitnodiging.',                        vorigTeam:'Heren 2',  huidigTeam:'Niet gekoppeld',cat:'Sen-B', pin:null, score:'56' },
+  { id:21, naam:'Hannah Post',       gender:'V', status:'beschikbaar', biz:['gesprek'],      memo:'Gesprek gepland over Sen-A kandidatuur.',             vorigTeam:'Dames 2',  huidigTeam:'Dames 2',    cat:'Sen-B', pin:null, score:'62' },
+  { id:22, naam:'Ian Loos',          gender:'M', status:'beschikbaar', biz:[],               memo:'',                                                    vorigTeam:'U17-1',    huidigTeam:'U17-1',      cat:'U17',   pin:null, score:'53' },
+  { id:23, naam:'Max Visser',        gender:'M', status:'beschikbaar', biz:[],               memo:'',                                                    vorigTeam:'U12-1',    huidigTeam:'U12-1',      cat:'U12',   pin:null, score:'—'  },
+  { id:24, naam:'Nina Kok',          gender:'V', status:'beschikbaar', biz:[],               memo:'',                                                    vorigTeam:'U12-1',    huidigTeam:'U12-1',      cat:'U12',   pin:null, score:'—'  },
+  { id:25, naam:'Oscar Bos',         gender:'M', status:'geblesseerd', biz:['blessure','geen-eval'], memo:'Enkel geblesseerd, verwacht dec 2026.',      vorigTeam:'U19-2',    huidigTeam:'Niet gekoppeld',cat:'U19',   pin:null, score:'—'  },
+  { id:26, naam:'Petra Vos',         gender:'V', status:'beschikbaar', biz:[],               memo:'',                                                    vorigTeam:'Dames 1',  huidigTeam:'Dames 1',    cat:'Sen-A', pin:null, score:'66' },
+  { id:27, naam:'Quincy Brand',      gender:'M', status:'beschikbaar', biz:[],               memo:'',                                                    vorigTeam:'Heren 3',  huidigTeam:'Heren 3',    cat:'Sen-B', pin:null, score:'48' },
+  { id:28, naam:'Rosa Steen',        gender:'V', status:'beschikbaar', biz:[],               memo:'',                                                    vorigTeam:'U15-1',    huidigTeam:'U15-1',      cat:'U15',   pin:null, score:'49' },
+  { id:29, naam:'Sander Wolf',       gender:'M', status:'beschikbaar', biz:[],               memo:'',                                                    vorigTeam:'U17-2',    huidigTeam:'U17-2',      cat:'U17',   pin:null, score:'47' },
+  { id:30, naam:'Tessa Meer',        gender:'V', status:'beschikbaar', biz:[],               memo:'',                                                    vorigTeam:'Dames 3',  huidigTeam:'Dames 3',    cat:'Sen-B', pin:null, score:'44' },
+  { id:31, naam:'Bas de Boer',       gender:'M', status:'beschikbaar', biz:[],               memo:'',                                                    vorigTeam:'Heren 1',  huidigTeam:'Heren 1',    cat:'Sen-A', pin:null, score:'69' },
+  { id:32, naam:'Anne Dijkstra',     gender:'V', status:'beschikbaar', biz:['geen-eval'],    memo:'',                                                    vorigTeam:'U19-1',    huidigTeam:'U19-1',      cat:'U19',   pin:null, score:'—'  },
+];
+
+const statusConfig = {
+  beschikbaar: { kleur: '#22C55E', label: 'Beschikbaar' },
+  geblesseerd: { kleur: '#EAB308', label: 'Geblesseerd' },
+  gestopt:     { kleur: '#EF4444', label: 'Gestopt' },
+  onbekend:    { kleur: '#666666', label: 'Onbekend' },
+};
+
+const bizConfig = {
+  blessure:  { icon: '🩹', tip: 'Blessure' },
+  gesprek:   { icon: '📋', tip: 'Gesprek gepland' },
+  buitenland:{ icon: '✈️', tip: 'Buitenland/afwezig' },
+  verlof:    { icon: '🤱', tip: 'Verlof' },
+  'geen-eval':{ icon: '⚠️', tip: 'Geen evaluatie' },
+};
+
+const catColors = {
+  'Sen-A': { bg: 'rgba(249,115,22,.15)', color: '#F97316' },
+  'Sen-B': { bg: 'rgba(249,115,22,.08)', color: '#FB923C' },
+  'U19':   { bg: 'rgba(239,68,68,.12)',  color: '#EF4444' },
+  'U17':   { bg: 'rgba(234,179,8,.12)', color: '#EAB308' },
+  'U15':   { bg: 'rgba(234,179,8,.08)', color: '#FBBF24' },
+  'U12':   { bg: 'rgba(34,197,94,.10)', color: '#22C55E' },
+};
+
+let sortField = null, sortDir = 1, selectedId = null;
+
+function buildTable(data) {
+  const tbody = document.getElementById('sp-tbody');
+  const count = document.getElementById('filter-count');
+  count.innerHTML = `<strong>${data.length}</strong> spelers`;
+
+  tbody.innerHTML = data.map(sp => {
+    const sc = statusConfig[sp.status] || statusConfig.onbekend;
+    const biz = (sp.biz || []).map(b => {
+      const bc = bizConfig[b] || { icon: '?', tip: b };
+      return `<span class="biz-ic" title="${bc.tip}">${bc.icon}</span>`;
+    }).join('');
+    const cc = catColors[sp.cat] || { bg: 'rgba(255,255,255,.06)', color: '#A3A3A3' };
+    const memoClass = sp.memo ? 'heeft-memo' : '';
+    const memoTxt = sp.memo || '—';
+    const hTeamColor = sp.huidigTeam !== 'Niet gekoppeld'
+      ? 'background:rgba(255,107,0,.10);color:var(--accent);'
+      : 'background:rgba(255,255,255,.04);color:var(--text-3);';
+    const selClass = selectedId === sp.id ? 'selected' : '';
+
+    return `<tr class="${selClass}" onclick="openDetail(${sp.id})">
+      <td>
+        <div class="td-naam-wrap">
+          <div class="td-av">${initials(sp.naam)}</div>
+          <span class="td-naam-txt">${sp.naam}</span>
+          <span class="td-gender ${sp.gender.toLowerCase()}">${sp.gender}</span>
+        </div>
+      </td>
+      <td>
+        <span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;">
+          <span class="status-dot" style="background:${sc.kleur};"></span>
+          ${sc.label}
+        </span>
+      </td>
+      <td><div class="biz-icons">${biz || '<span style="color:var(--text-3);font-size:11px;">—</span>'}</div></td>
+      <td><div class="td-memo ${memoClass}" title="${sp.memo}">${memoTxt}</div></td>
+      <td>
+        <span class="team-chip" style="background:rgba(255,255,255,.06);color:var(--text-2);">${sp.vorigTeam}</span>
+      </td>
+      <td>
+        <span class="team-chip" style="${hTeamColor}">${sp.huidigTeam}</span>
+      </td>
+      <td>
+        <span class="cat-chip" style="background:${cc.bg};color:${cc.color};">${sp.cat}</span>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function initials(naam) {
+  return naam.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+}
+
+function filterTable() {
+  const q = document.getElementById('search-in').value.toLowerCase();
+  const st = document.getElementById('filter-status').value;
+  const ct = document.getElementById('filter-cat').value;
+  let data = spelers.filter(sp => {
+    if (q && !sp.naam.toLowerCase().includes(q)) return false;
+    if (st && sp.status !== st) return false;
+    if (ct && sp.cat !== ct) return false;
+    return true;
+  });
+  if (sortField) {
+    data = [...data].sort((a, b) => {
+      const av = a[sortField] || ''; const bv = b[sortField] || '';
+      return av.localeCompare(bv) * sortDir;
+    });
+  }
+  buildTable(data);
+}
+
+function sortTable(field) {
+  if (sortField === field) sortDir = -sortDir;
+  else { sortField = field; sortDir = 1; }
+  ['naam','status','vorigteam','cat'].forEach(f => {
+    const el = document.getElementById('sort-' + f);
+    if (el) el.textContent = '↕';
+  });
+  const el = document.getElementById('sort-' + field);
+  if (el) el.textContent = sortDir === 1 ? '↑' : '↓';
+  filterTable();
+}
+
+function openDetail(id) {
+  const sp = spelers.find(s => s.id === id);
+  if (!sp) return;
+  selectedId = id;
+  filterTable();
+
+  const sc = statusConfig[sp.status] || statusConfig.onbekend;
+  const cc = catColors[sp.cat] || { bg: '', color: '#A3A3A3' };
+  const bizText = (sp.biz || []).map(b => bizConfig[b]?.tip || b).join(', ') || '—';
+
+  document.getElementById('dp-av').textContent = initials(sp.naam);
+  document.getElementById('dp-name').textContent = sp.naam;
+  document.getElementById('dp-meta').textContent = sp.gender + ' · ' + sp.cat + ' · rel. ' + (10000 + id);
+  document.getElementById('dp-status').innerHTML = `<span style="display:inline-flex;align-items:center;gap:5px;"><span class="status-dot" style="background:${sc.kleur};display:inline-block;width:7px;height:7px;border-radius:50%;"></span>${sc.label}</span>`;
+  document.getElementById('dp-biz').textContent = bizText;
+  document.getElementById('dp-cat').innerHTML = `<span class="cat-chip" style="background:${cc.bg};color:${cc.color};">${sp.cat}</span>`;
+  document.getElementById('dp-vteam').textContent = sp.vorigTeam;
+  document.getElementById('dp-hteam').textContent = sp.huidigTeam;
+  document.getElementById('dp-memo').value = sp.memo;
+  document.getElementById('dp-pin').textContent = sp.pin ? 'Gepind aan: ' + sp.pin : 'Niet gepind';
+  document.getElementById('dp-score').textContent = sp.score !== '—' ? sp.score + ' USS' : '—';
+
+  const panel = document.getElementById('detail-panel');
+  panel.classList.remove('hidden');
+}
+
+function closeDetail() {
+  selectedId = null;
+  document.getElementById('detail-panel').classList.add('hidden');
+  filterTable();
+}
+
+function saveMemo() {
+  if (!selectedId) return;
+  const sp = spelers.find(s => s.id === selectedId);
+  if (sp) sp.memo = document.getElementById('dp-memo').value;
+  showToast('Memo opgeslagen', 'ok');
+  filterTable();
+}
+
+/* ─── Navigation ────────────────────────────── */
+function goTo(screen) {
+  const files = {
+    kaders: 'kaders-prototype.html',
+    indeling: 'werkindeling-prototype.html',
+    werkbord: 'kaders-prototype.html',
+    personen: 'spelersoverzicht-studio-prototype.html',
+  };
+  showToast('Navigeert naar ' + screen + '...', 'ok');
+}
+
+/* ─── Toast ─────────────────────────────────── */
+function showToast(msg, type) {
+  type = type || 'ok';
+  const wrap = document.getElementById('toast-wrap');
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.innerHTML = (type === 'ok' ? '&#10003;' : '&#9888;') + ' ' + msg;
+  wrap.appendChild(t);
+  setTimeout(() => {
+    t.style.transition = 'opacity 300ms'; t.style.opacity = '0';
+    setTimeout(() => t.remove(), 300);
+  }, 2800);
+}
+
+/* ─── Daisy ─────────────────────────────────── */
+let daisyOpen = false;
+const daisyResponses = [
+  'Op basis van de personenlijst zie ik 3 spelers met onbekende status. Wil je een reminder sturen?',
+  'Finn Peters heeft een hoge score (70 USS) maar is nog niet gekoppeld. Goed kandidaat voor opstromen.',
+  'Julia Prins staat als reservering maar heeft verlof. Zorg dat dit ook in de Kaders correct staat.',
+  'Ik zie 2 spelers zonder evaluatie. Wil je een overzicht van wie mist?',
+  'De genderbalans in Sen-A ziet er gezond uit: 6V en 5M tot nu toe (inclusief pins).',
+];
+let daisyIdx = 0;
+
+function toggleDaisy() {
+  const panel = document.getElementById('daisy-panel');
+  daisyOpen = !daisyOpen;
+  panel.classList.toggle('hidden', !daisyOpen);
+  if (daisyOpen) document.getElementById('daisy-notif').style.display = 'none';
+}
+function closeDaisy() {
+  daisyOpen = false;
+  document.getElementById('daisy-panel').classList.add('hidden');
+}
+function sendDaisy() {
+  const input = document.getElementById('daisy-input');
+  const body = document.getElementById('daisy-body');
+  const txt = input.value.trim();
+  if (!txt) return;
+  input.value = '';
+  const userMsg = document.createElement('div');
+  userMsg.className = 'dp2-msg user';
+  userMsg.textContent = txt;
+  body.appendChild(userMsg);
+  setTimeout(() => {
+    const aiMsg = document.createElement('div');
+    aiMsg.className = 'dp2-msg ai';
+    aiMsg.textContent = daisyResponses[daisyIdx % daisyResponses.length];
+    daisyIdx++;
+    body.appendChild(aiMsg);
+    body.scrollTop = body.scrollHeight;
+  }, 600);
+  body.scrollTop = body.scrollHeight;
+}
+
+/* ─── Init ──────────────────────────────────── */
+buildTable(spelers);
+</script>
+</body>
+</html>

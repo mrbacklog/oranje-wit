@@ -176,14 +176,17 @@ export default function WerkbordOverzicht({
           <WerkbordFilters filters={filters} onChange={setFilters} />
         </div>
         <div className="flex items-center gap-2">
-          <label className="flex items-center gap-1.5 text-sm text-gray-500">
+          <label
+            className="flex items-center gap-1.5 text-sm"
+            style={{ color: "var(--text-secondary)" }}
+          >
             <input
               type="checkbox"
               checked={toonArchief}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setToonArchief(e.target.checked)
               }
-              className="rounded border-gray-300"
+              className="rounded"
             />
             Toon archief
           </label>
@@ -276,17 +279,36 @@ function KanbanKolom({
   return (
     <div
       ref={setNodeRef}
-      className={`flex min-h-[300px] flex-col rounded-lg border bg-gray-50 transition-colors ${isOver ? "border-orange-300 bg-orange-50" : "border-gray-200"}`}
+      style={{
+        background: isOver ? "rgba(255,107,0,0.05)" : "var(--surface-card)",
+        border: `1px solid ${isOver ? "rgba(255,107,0,0.3)" : "var(--border-default)"}`,
+      }}
+      className="flex min-h-[300px] flex-col rounded-lg transition-colors"
     >
-      <div className="flex items-center gap-2 border-b border-gray-200 px-3 py-2.5">
+      <div
+        className="flex items-center gap-2 px-3 py-2.5"
+        style={{ borderBottom: "1px solid var(--border-default)" }}
+      >
         <span className={`h-2.5 w-2.5 rounded-full ${kleur}`} />
-        <h3 className="text-sm font-semibold text-gray-700">{label}</h3>
-        <span className="badge-gray ml-auto">{items.length}</span>
+        <h3 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
+          {label}
+        </h3>
+        <span
+          className="ml-auto rounded-full px-2 py-0.5 text-xs font-bold"
+          style={{ background: "var(--surface-sunken)", color: "var(--text-secondary)" }}
+        >
+          {items.length}
+        </span>
       </div>
 
       {resolutieTarget && (
-        <div className="animate-fade-in m-2 rounded-md border border-green-200 bg-green-50 p-3">
-          <p className="mb-2 text-xs font-medium text-green-800">Hoe is dit opgelost?</p>
+        <div
+          className="animate-fade-in m-2 rounded-md p-3"
+          style={{ border: "1px solid rgba(34,197,94,0.3)", background: "rgba(34,197,94,0.08)" }}
+        >
+          <p className="mb-2 text-xs font-medium" style={{ color: "#86efac" }}>
+            Hoe is dit opgelost?
+          </p>
           <textarea
             ref={resolutieRef}
             value={resolutieTekst}
@@ -323,7 +345,9 @@ function KanbanKolom({
           <DraggableKaart key={item.id} werkitem={item} />
         ))}
         {items.length === 0 && !resolutieTarget && (
-          <p className="py-8 text-center text-xs text-gray-400">Geen items</p>
+          <p className="py-8 text-center text-xs" style={{ color: "var(--text-tertiary)" }}>
+            Geen items
+          </p>
         )}
       </div>
     </div>
