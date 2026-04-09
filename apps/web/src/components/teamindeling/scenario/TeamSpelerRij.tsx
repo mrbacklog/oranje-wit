@@ -106,18 +106,15 @@ export default function TeamSpelerRij({
           {heeftAfmelding && <AfmeldBadge afmelddatum={speler.afmelddatum!} />}
         </span>
 
-        {/* Regel 2: vorig team — zichtbaar in normaal + detail */}
-        <div className="flex items-center gap-1 text-[8px] leading-none">
-          {dl === "normaal" && showRanking && speler.rating != null && (
-            <span
-              className="shrink-0 text-[8px] font-bold tabular-nums"
-              style={{ color: "var(--text-tertiary)" }}
-            >
-              {speler.rating.toFixed(0)}
-            </span>
-          )}
-          <span className="text-text-secondary truncate">{vorigTeam ?? "\u2014"}</span>
-        </div>
+        {/* Regel 2: vorig team — alleen tonen als zinvol */}
+        {vorigTeam && (
+          <span
+            className="truncate text-[8px] leading-none"
+            style={{ color: "var(--text-tertiary)" }}
+          >
+            {vorigTeam}
+          </span>
+        )}
       </div>
 
       {/* Rechter indicatoren — alleen bij detail */}
@@ -129,10 +126,12 @@ export default function TeamSpelerRij({
           {/* ScoreOctagon — alleen als showRanking aan staat */}
           {showRanking && <ScoreOctagon rating={speler.rating} size={14} />}
 
-          {/* Leeftijd */}
-          <span className="text-text-secondary shrink-0 text-[8px] tabular-nums">
-            {leeftijd.toFixed(2)}
-          </span>
+          {/* Leeftijd — alleen als showRanking aan staat */}
+          {showRanking && (
+            <span className="text-text-secondary shrink-0 text-[8px] tabular-nums">
+              {leeftijd.toFixed(1)}
+            </span>
+          )}
 
           {/* Pin indicator */}
           {isPinned && (
@@ -182,12 +181,9 @@ export default function TeamSpelerRij({
             </svg>
           )}
 
-          {/* Kleurindicatie dot */}
-          {kleur && (
-            <span
-              className={`h-1.5 w-1.5 shrink-0 rounded-full ring-1 ${KLEUR_DOT[kleur]}`}
-              style={{ outline: "1px solid var(--surface-card)" }}
-            />
+          {/* Kleurindicatie dot — alleen als showRanking aan staat */}
+          {showRanking && kleur && (
+            <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${KLEUR_DOT[kleur]}`} />
           )}
         </div>
       )}

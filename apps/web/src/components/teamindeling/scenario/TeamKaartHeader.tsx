@@ -97,7 +97,7 @@ export default function TeamKaartHeader({
         >
           {weergaveNaam}
         </h4>
-        {dl !== "compact" && team.kleur && (
+        {dl === "detail" && team.kleur && (
           <span
             className={`shrink-0 rounded-full px-1 py-px text-[7px] ${
               KLEUR_BADGE_KLEUREN[team.kleur] ?? "bg-surface-raised text-text-secondary"
@@ -106,7 +106,7 @@ export default function TeamKaartHeader({
             {team.kleur}
           </span>
         )}
-        {dl !== "compact" && CATEGORIE_BADGE[team.categorie] && (
+        {dl === "detail" && CATEGORIE_BADGE[team.categorie] && (
           <span
             className={`shrink-0 rounded-full px-1 py-px text-[7px] font-medium ${CATEGORIE_BADGE[team.categorie]}`}
           >
