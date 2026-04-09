@@ -1,0 +1,40 @@
+/* apps/web/src/components/ti-studio/werkbord/tokens.css */
+/* OW Design Tokens — 1-op-1 uit werkindeling-v4.html */
+
+:root {
+  --bg-0: #0a0a0a;
+  --bg-1: #141414;
+  --bg-2: #1e1e1e;
+  --bg-3: #262626;
+  --accent: #ff6b00;
+  --accent-h: #ff8533;
+  --accent-dim: rgba(255, 107, 0, 0.12);
+  --accent-glow: 0 0 0 1px rgba(255, 107, 0, 0.4), 0 0 16px rgba(255, 107, 0, 0.2);
+  --text-1: #fafafa;
+  --text-2: #a3a3a3;
+  --text-3: #666666;
+  --border-0: #262626;
+  --border-1: #3a3a3a;
+  --ok: #22c55e;
+  --warn: #eab308;
+  --err: #ef4444;
+  --info: #3b82f6;
+  --pink: #ec4899;
+  --blue: #60a5fa;
+
+  --cat-blauw: #3b82f6;
+  --cat-groen: #22c55e;
+  --cat-geel: #eab308;
+  --cat-oranje: #f97316;
+  --cat-rood: #ef4444;
+  --cat-senior: #9ca3af;
+
+  --ribbon: 48px;
+  --toolbar: 52px;
+  --pool-w: 224px;
+  --val-w: 280px;
+  --daisy-w: 320px;
+  --card-radius: 14px;
+  --sh-card: 0 2px 4px rgba(0, 0, 0, 0.5), 0 8px 24px rgba(0, 0, 0, 0.35);
+  --sh-raise: 0 4px 12px rgba(0, 0, 0, 0.5), 0 16px 40px rgba(0, 0, 0, 0.4);
+}
