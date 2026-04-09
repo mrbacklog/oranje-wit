@@ -118,7 +118,7 @@ describe("getDetailLevel", () => {
   });
   it("returns normaal between 0.64 and 1.00", () => {
     expect(getDetailLevel(0.64)).toBe("normaal");
-    expect(getDetailLevel(0.80)).toBe("normaal");
+    expect(getDetailLevel(0.8)).toBe("normaal");
     expect(getDetailLevel(0.99)).toBe("normaal");
   });
   it("returns detail at 1.00 and above", () => {
