@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useMemo, useRef, lazy, Suspense } from "react";
+import { logger } from "@oranje-wit/types";
 
 import type { ScenarioData, SpelerData, SelectieGroepData, TeamData } from "../types";
 import { SpelerProfielDialog, TeamoverzichtDialog, DaisyWidget } from "@/components/ti-studio";
