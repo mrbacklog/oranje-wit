@@ -2,7 +2,7 @@
 
 import VersiesPanel from "./VersiesPanel";
 
-interface VersieRij {
+export interface VersieRij {
   id: string;
   nummer: number;
   naam: string | null;
