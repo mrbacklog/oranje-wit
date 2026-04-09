@@ -16,6 +16,8 @@ export interface CanvasGestureResult {
   zoomIn: () => void;
   zoomOut: () => void;
   resetZoom: () => void;
+  setZoom: (scale: number) => void;
+  setPan: (pan: { x: number; y: number }) => void;
 }
 
 // Twee preset zoomstanden
@@ -133,5 +135,16 @@ export function useCanvasGesture(): CanvasGestureResult {
     zoomToPoint(1.0);
   }, [zoomToPoint]);
 
-  return { transform, containerRef, toggleZoom, zoomIn, zoomOut, resetZoom };
+  const setZoom = useCallback(
+    (scale: number) => {
+      zoomToPoint(scale);
+    },
+    [zoomToPoint]
+  );
+
+  const setPan = useCallback((pan: { x: number; y: number }) => {
+    setTransform((prev) => ({ ...prev, x: pan.x, y: pan.y }));
+  }, []);
+
+  return { transform, containerRef, toggleZoom, zoomIn, zoomOut, resetZoom, setZoom, setPan };
 }

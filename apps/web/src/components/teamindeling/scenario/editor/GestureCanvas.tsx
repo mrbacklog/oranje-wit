@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useEffect } from "react";
+import { useMemo, useEffect, useCallback } from "react";
 import { useCanvasGesture } from "../hooks/useCanvasGesture";
 import { getDetailLevel } from "../types";
 import type { DetailLevel } from "../types";
@@ -17,8 +17,13 @@ function getZoomLabel(scale: number): string {
   return "Detail";
 }
 
+// Canvas virtual dimensions used for minimap calculations
+const CANVAS_W = 4000;
+const CANVAS_H = 3000;
+
 export default function GestureCanvas({ children, onZoomLabelChange }: GestureCanvasProps) {
-  const { transform, containerRef, toggleZoom, zoomIn, zoomOut, resetZoom } = useCanvasGesture();
+  const { transform, containerRef, toggleZoom, zoomIn, zoomOut, resetZoom, setZoom, setPan } =
+    useCanvasGesture();
   const detailLevel = useMemo(() => getDetailLevel(transform.scale), [transform.scale]);
   const isDetail = detailLevel === "detail";
   const zoomPct = Math.round(transform.scale * 100);
@@ -27,6 +32,28 @@ export default function GestureCanvas({ children, onZoomLabelChange }: GestureCa
   useEffect(() => {
     onZoomLabelChange?.(zoomLabel);
   }, [zoomLabel, onZoomLabelChange]);
+
+  const handleFit = useCallback(() => {
+    setZoom(0.75);
+    setPan({ x: 20, y: 20 });
+  }, [setZoom, setPan]);
+
+  const handleSliderChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setZoom(Number(e.target.value));
+    },
+    [setZoom]
+  );
+
+  // Minimap viewport indicator dimensions
+  const minimapW = 140;
+  const minimapH = 96;
+  const vpW = typeof window !== "undefined" ? window.innerWidth : 1280;
+  const vpH = typeof window !== "undefined" ? window.innerHeight : 800;
+  const mmVpLeft = Math.max(0, Math.min(minimapW - 10, (-transform.x / CANVAS_W) * minimapW));
+  const mmVpTop = Math.max(0, Math.min(minimapH - 6, (-transform.y / CANVAS_H) * minimapH));
+  const mmVpW = Math.min(minimapW, (vpW / transform.scale / CANVAS_W) * minimapW);
+  const mmVpH = Math.min(minimapH, (vpH / transform.scale / CANVAS_H) * minimapH);
 
   return (
     <div className="relative flex-1 overflow-hidden">
@@ -49,46 +76,120 @@ export default function GestureCanvas({ children, onZoomLabelChange }: GestureCa
           <ZoomScaleProvider value={transform.scale}>{children(detailLevel)}</ZoomScaleProvider>
         </div>
       </div>
+
+      {/* Zoom controls — links-beneden */}
       <div
-        className="absolute right-4 bottom-4 z-10 flex items-center gap-1 rounded-lg px-1 py-1 shadow-sm"
+        className="absolute bottom-4 left-4 z-10 flex flex-col gap-1"
+        style={{ userSelect: "none" }}
+      >
+        {/* Tick labels */}
+        <div
+          className="flex justify-between text-[9px] font-medium"
+          style={{
+            width: 122,
+            paddingLeft: 28,
+            paddingRight: 4,
+            color: "var(--text-tertiary, #666)",
+          }}
+        >
+          <span>40%</span>
+          <span style={{ color: "var(--ow-oranje-500, #ff6b00)" }}>64%</span>
+          <span style={{ color: "var(--ow-oranje-500, #ff6b00)" }}>100%</span>
+          <span>150%</span>
+        </div>
+
+        {/* Controls row */}
+        <div
+          className="flex items-center gap-1 rounded-lg px-1.5 py-1 shadow-sm"
+          style={{
+            background: "var(--surface-card)",
+            border: "1px solid var(--border-default)",
+          }}
+        >
+          <button
+            onClick={zoomOut}
+            className="hover:bg-surface-raised rounded px-1.5 py-1 text-xs font-bold transition-colors"
+            style={{ color: "var(--text-secondary)" }}
+            title="Zoom uit"
+          >
+            −
+          </button>
+          <input
+            type="range"
+            min={0.4}
+            max={1.5}
+            step={0.01}
+            value={transform.scale}
+            onChange={handleSliderChange}
+            style={{ width: 90, accentColor: "var(--ow-oranje-500, #ff6b00)" }}
+            title={`Zoom: ${zoomPct}%`}
+          />
+          <button
+            onClick={zoomIn}
+            className="hover:bg-surface-raised rounded px-1.5 py-1 text-xs font-bold transition-colors"
+            style={{ color: "var(--text-secondary)" }}
+            title="Zoom in"
+          >
+            +
+          </button>
+          <span
+            className="min-w-[32px] text-center text-xs font-medium"
+            style={{ color: "var(--text-secondary)" }}
+          >
+            {zoomPct}%
+          </span>
+          <div className="mx-0.5 h-4 w-px" style={{ background: "var(--border-default)" }} />
+          <button
+            onClick={handleFit}
+            className="hover:bg-surface-raised rounded px-2 py-1 text-xs font-medium transition-colors"
+            style={{ color: "var(--text-secondary)" }}
+            title="Fit — toon alle kaarten"
+          >
+            Fit
+          </button>
+          <div className="mx-0.5 h-4 w-px" style={{ background: "var(--border-default)" }} />
+          <button
+            onClick={toggleZoom}
+            className="hover:bg-surface-raised rounded px-2 py-1 text-xs font-medium transition-colors"
+            style={{ color: "var(--text-secondary)" }}
+            title={isDetail ? "Schakel naar overzicht" : "Schakel naar detail"}
+          >
+            {isDetail ? "Overzicht" : "Detail"}
+          </button>
+        </div>
+      </div>
+
+      {/* Minimap — rechts-beneden */}
+      <div
+        className="absolute z-10 overflow-hidden rounded-lg border"
         style={{
+          bottom: 16,
+          right: 16,
+          width: minimapW,
+          height: minimapH,
           background: "var(--surface-card)",
-          border: "1px solid var(--border-default)",
+          borderColor: "var(--border-default)",
+          boxShadow: "0 2px 4px rgba(0,0,0,.5)",
         }}
       >
-        <button
-          onClick={zoomOut}
-          className="hover:bg-surface-raised rounded px-1.5 py-1 text-xs font-bold transition-colors"
-          style={{ color: "var(--text-secondary)" }}
-          title="Zoom uit"
+        {/* Viewport indicator */}
+        <div
+          className="absolute rounded-sm border"
+          style={{
+            top: mmVpTop,
+            left: mmVpLeft,
+            width: mmVpW,
+            height: mmVpH,
+            borderColor: "rgba(255,107,0,.4)",
+            background: "rgba(255,107,0,.06)",
+          }}
+        />
+        <span
+          className="absolute right-1.5 bottom-1 text-[9px] font-semibold tracking-wide uppercase"
+          style={{ color: "var(--text-tertiary, #666)" }}
         >
-          −
-        </button>
-        <button
-          onClick={resetZoom}
-          className="hover:bg-surface-raised min-w-[38px] rounded px-1 py-1 text-center text-xs font-medium transition-colors"
-          style={{ color: "var(--text-secondary)" }}
-          title="Reset zoom naar 100%"
-        >
-          {zoomPct}%
-        </button>
-        <button
-          onClick={zoomIn}
-          className="hover:bg-surface-raised rounded px-1.5 py-1 text-xs font-bold transition-colors"
-          style={{ color: "var(--text-secondary)" }}
-          title="Zoom in"
-        >
-          +
-        </button>
-        <div className="mx-0.5 h-4 w-px" style={{ background: "var(--border-default)" }} />
-        <button
-          onClick={toggleZoom}
-          className="hover:bg-surface-raised rounded px-2 py-1 text-xs font-medium transition-colors"
-          style={{ color: "var(--text-secondary)" }}
-          title={isDetail ? "Schakel naar overzicht" : "Schakel naar detail"}
-        >
-          {isDetail ? "Overzicht" : "Detail"}
-        </button>
+          Map
+        </span>
       </div>
     </div>
   );
