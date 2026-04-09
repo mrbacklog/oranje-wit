@@ -137,7 +137,7 @@ export default function WerkitemKaart({ werkitem, onMutatie, compact }: Werkitem
           )}
         </div>
         {werkitem.actiepunten.length > 0 && (
-          <span className="text-xs text-gray-400">
+          <span className="text-xs" style={{ color: "var(--text-tertiary)" }}>
             ✓ {afgerondeActiepunten}/{werkitem.actiepunten.length}
           </span>
         )}
@@ -145,13 +145,17 @@ export default function WerkitemKaart({ werkitem, onMutatie, compact }: Werkitem
 
       {/* Body */}
       <div className="space-y-1.5 px-3 pb-2">
-        <p className="text-sm font-medium text-gray-900">{werkitem.titel}</p>
+        <p className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
+          {werkitem.titel}
+        </p>
         {!compact && werkitem.beschrijving && (
-          <p className="line-clamp-2 text-sm text-gray-600">{werkitem.beschrijving}</p>
+          <p className="line-clamp-2 text-sm" style={{ color: "var(--text-secondary)" }}>
+            {werkitem.beschrijving}
+          </p>
         )}
 
         {/* Koppeling + meta */}
-        <div className="flex flex-wrap gap-2 text-xs text-gray-400">
+        <div className="flex flex-wrap gap-2 text-xs" style={{ color: "var(--text-tertiary)" }}>
           {koppelingParts.length > 0 && <span>{koppelingParts.join(" · ")}</span>}
           <span>{werkitem.auteur.naam}</span>
           <span>
@@ -164,7 +168,14 @@ export default function WerkitemKaart({ werkitem, onMutatie, compact }: Werkitem
 
         {/* Resolutie */}
         {werkitem.resolutie && isAfgehandeld && (
-          <div className="rounded border-l-2 border-green-400 bg-green-50 px-2 py-1 text-xs text-green-700">
+          <div
+            className="rounded px-2 py-1 text-xs"
+            style={{
+              background: "rgba(34,197,94,0.08)",
+              color: "#86efac",
+              borderLeft: "2px solid rgba(34,197,94,0.4)",
+            }}
+          >
             {werkitem.resolutie}
           </div>
         )}
@@ -173,18 +184,26 @@ export default function WerkitemKaart({ werkitem, onMutatie, compact }: Werkitem
         {!compact && werkitem.actiepunten.length > 0 && (
           <div className="space-y-0.5">
             {werkitem.actiepunten.map((ap) => (
-              <label key={ap.id} className="flex items-center gap-1.5 text-xs text-gray-600">
+              <label
+                key={ap.id}
+                className="flex items-center gap-1.5 text-xs"
+                style={{ color: "var(--text-secondary)" }}
+              >
                 <input
                   type="checkbox"
                   checked={ap.status === "AFGEROND"}
                   onChange={() => handleActiepuntToggle(ap.id, ap.status)}
-                  className="rounded border-gray-300 text-orange-500 focus:ring-orange-300"
+                  className="rounded text-orange-500 focus:ring-orange-300"
+                  style={{ borderColor: "var(--border-default)" }}
                 />
-                <span className={ap.status === "AFGEROND" ? "text-gray-400 line-through" : ""}>
+                <span
+                  className={ap.status === "AFGEROND" ? "line-through" : ""}
+                  style={ap.status === "AFGEROND" ? { color: "var(--text-tertiary)" } : undefined}
+                >
                   {ap.beschrijving}
                 </span>
                 {ap.toegewezenAan && (
-                  <span className="text-gray-400">— {ap.toegewezenAan.naam}</span>
+                  <span style={{ color: "var(--text-tertiary)" }}>— {ap.toegewezenAan.naam}</span>
                 )}
               </label>
             ))}
@@ -249,8 +268,11 @@ export default function WerkitemKaart({ werkitem, onMutatie, compact }: Werkitem
 
         {/* Verwijder bevestiging */}
         {toonVerwijder && (
-          <div className="flex items-center gap-2 rounded bg-red-50 px-2 py-1.5 text-sm">
-            <span className="text-red-700">Zeker?</span>
+          <div
+            className="flex items-center gap-2 rounded px-2 py-1.5 text-sm"
+            style={{ background: "rgba(239,68,68,0.08)" }}
+          >
+            <span style={{ color: "#f87171" }}>Zeker?</span>
             <button className="btn-danger btn-sm" onClick={handleVerwijder}>
               Ja
             </button>
