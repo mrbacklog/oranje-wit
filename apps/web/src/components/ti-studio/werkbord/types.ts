@@ -43,6 +43,13 @@ export interface WerkbordSpelerInTeam {
   notitie: string | null;
 }
 
+export interface WerkbordStafInTeam {
+  id: string;
+  stafId: string;
+  naam: string;
+  rol: string;
+}
+
 export interface WerkbordTeam {
   id: string;
   naam: string;
@@ -54,6 +61,7 @@ export interface WerkbordTeam {
   canvasY: number;
   dames: WerkbordSpelerInTeam[];
   heren: WerkbordSpelerInTeam[];
+  staf: WerkbordStafInTeam[];
   notitie: string | null;
   ussScore: number | null;
   gemiddeldeLeeftijd: number | null;
