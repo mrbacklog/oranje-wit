@@ -12,11 +12,12 @@ interface WerkbordCanvasProps {
   zoom: number;
   zoomPercent: number;
   showScores: boolean;
+  onToggleScores: () => void;
   onZoomIn: () => void;
   onZoomOut: () => void;
   onZoomReset: () => void;
   onZoomChange: (value: number) => void;
-  onBewerkenTeam: (teamId: string) => void;
+  onOpenTeamDrawer: (teamId: string) => void;
   onDropSpelerOpTeam: (
     spelerData: WerkbordSpeler,
     vanTeamId: string | null,
@@ -44,7 +45,6 @@ interface PanState {
 
 const CANVAS_W = 1400;
 const CANVAS_H = 900;
-const HUIDIGE_JAAR = new Date().getFullYear();
 const MINIMAP_W = 160;
 const MINIMAP_H = 110;
 const MIN_ZOOM = 0.4;
@@ -58,11 +58,12 @@ export function WerkbordCanvas({
   zoom,
   zoomPercent,
   showScores,
+  onToggleScores,
   onZoomIn,
   onZoomOut,
   onZoomReset,
   onZoomChange,
-  onBewerkenTeam,
+  onOpenTeamDrawer,
   onDropSpelerOpTeam,
   onTeamPositionChange,
   onTeamDragEnd,
@@ -281,9 +282,8 @@ export function WerkbordCanvas({
             team={team}
             zoomLevel={zoomLevel}
             showScores={showScores}
-            huidigeJaar={HUIDIGE_JAAR}
             isDragging={draggingTeam?.teamId === team.id}
-            onBewerken={onBewerkenTeam}
+            onOpenTeamDrawer={onOpenTeamDrawer}
             onDropSpeler={(spelerData, vanTeamId, naarGeslacht) =>
               onDropSpelerOpTeam(spelerData, vanTeamId, team.id, naarGeslacht)
             }
@@ -291,6 +291,45 @@ export function WerkbordCanvas({
           />
         ))}
       </div>
+
+      {/* ─── Score-knop rechtsonder, boven zoom ─────────────────────────────── */}
+      <button
+        onClick={onToggleScores}
+        title={showScores ? "Scores verbergen" : "Scores tonen"}
+        style={{
+          position: "absolute",
+          bottom: 16,
+          right: 196,
+          zIndex: 10,
+          display: "flex",
+          alignItems: "center",
+          gap: 5,
+          padding: "5px 10px",
+          borderRadius: 8,
+          fontSize: 11,
+          fontWeight: 600,
+          cursor: "pointer",
+          fontFamily: "inherit",
+          background: showScores ? "var(--accent-dim)" : "var(--bg-2)",
+          border: showScores ? "1px solid rgba(255,107,0,.3)" : "1px solid var(--border-1)",
+          color: showScores ? "var(--accent)" : "var(--text-2)",
+          boxShadow: "var(--sh-card)",
+          transition: "background 120ms, color 120ms, border-color 120ms",
+        }}
+      >
+        <svg
+          width="11"
+          height="11"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+        >
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+        </svg>
+        Score
+      </button>
 
       {/* ─── Zoom + Minimap panel rechtsonder ─────────────────────────────── */}
       <div

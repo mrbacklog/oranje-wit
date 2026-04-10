@@ -7,7 +7,7 @@ import { Ribbon } from "./Ribbon";
 import { Toolbar } from "./Toolbar";
 import { SpelersPoolDrawer } from "./SpelersPoolDrawer";
 import { WerkbordCanvas } from "./WerkbordCanvas";
-import { ValidatieDrawer } from "./ValidatieDrawer";
+import { TeamDrawer } from "./TeamDrawer";
 import { VersiesDrawer } from "./VersiesDrawer";
 import { useZoom } from "./hooks/useZoom";
 import type {
@@ -24,6 +24,7 @@ type ActivePanel = "pool" | "teams" | "werkbord" | "versies" | "kader" | null;
 export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellProps) {
   const router = useRouter();
   const [activePanel, setActivePanel] = useState<ActivePanel>("teams");
+  const [geselecteerdTeamId, setGeselecteerdTeamId] = useState<string | null>(null);
   const [showScores, setShowScores] = useState(true);
   const [drawerData, setDrawerData] = useState<DrawerData | null>(null);
   const { zoom, setZoom, zoomIn, zoomOut, resetZoom, zoomLevel, zoomPercent } = useZoom();
@@ -59,6 +60,12 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
 
   function togglePanel(panel: "pool" | "teams" | "werkbord" | "versies" | "kader") {
     setActivePanel((prev) => (prev === panel ? null : panel));
+    if (panel !== "teams") setGeselecteerdTeamId(null);
+  }
+
+  function openTeamDrawer(teamId: string) {
+    setActivePanel("teams");
+    setGeselecteerdTeamId(teamId);
   }
 
   const hasErrors = initieleState.validatie.some((v) => v.type === "err");
@@ -129,6 +136,26 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
     setTeams((prev) =>
       prev.map((t) =>
         t.id === teamId ? { ...t, canvasX: Math.max(0, x), canvasY: Math.max(0, y) } : t
+      )
+    );
+  }, []);
+
+  const updateTeamLokaal = useCallback((teamId: string, update: Partial<WerkbordTeam>) => {
+    setTeams((prev) => prev.map((t) => (t.id === teamId ? { ...t, ...update } : t)));
+  }, []);
+
+  const koppelSelectieLokaal = useCallback((teamId: string, selectieGroepId: string) => {
+    setTeams((prev) =>
+      prev.map((t) => (t.id === teamId ? { ...t, selectieGroepId, formaat: "selectie" } : t))
+    );
+  }, []);
+
+  const ontkoppelSelectieLokaal = useCallback((selectieGroepId: string) => {
+    setTeams((prev) =>
+      prev.map((t) =>
+        t.selectieGroepId === selectieGroepId
+          ? { ...t, selectieGroepId: null, formaat: "achtal" }
+          : t
       )
     );
   }, []);
@@ -289,16 +316,23 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
           onZoomOut={zoomOut}
           onZoomReset={resetZoom}
           onZoomChange={setZoom}
-          onBewerkenTeam={() => {}}
+          onOpenTeamDrawer={openTeamDrawer}
           onDropSpelerOpTeam={verplaatsSpeler}
           onTeamPositionChange={verplaatsTeamKaart}
           onTeamDragEnd={slaTeamPositieOp}
         />
-        <ValidatieDrawer
-          open={activePanel === "kader"}
+        <TeamDrawer
+          open={activePanel === "teams"}
+          geselecteerdTeamId={geselecteerdTeamId}
           teams={teams}
           validatie={initieleState.validatie}
+          versieId={versieId}
           onClose={() => setActivePanel(null)}
+          onTeamSelect={setGeselecteerdTeamId}
+          onNieuwTeam={() => {}}
+          onConfigUpdated={updateTeamLokaal}
+          onSelectieGekoppeld={koppelSelectieLokaal}
+          onSelectieOntkoppeld={ontkoppelSelectieLokaal}
         />
         <VersiesDrawer
           open={activePanel === "versies"}

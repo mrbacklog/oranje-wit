@@ -10,7 +10,8 @@ const KAART_BREEDTE: Record<KaartFormaat, number> = {
   achtal: 280,
   selectie: 560,
 };
-const KAART_HOOGTE = 210;
+const KAART_HOOGTE_NORMAAL = 210;
+const KAART_HOOGTE_DETAIL = 380;
 
 const COMPACT_HEADER_HOOGTE: Record<KaartFormaat, number> = {
   viertal: 36,
@@ -62,8 +63,8 @@ interface TeamKaartProps {
   team: WerkbordTeam;
   zoomLevel: ZoomLevel;
   showScores: boolean;
-  huidigeJaar: number;
-  onBewerken: (teamId: string) => void;
+  isDragging: boolean;
+  onOpenTeamDrawer: (teamId: string) => void;
   onDropSpeler: (
     spelerData: WerkbordSpeler,
     vanTeamId: string | null,
@@ -76,14 +77,15 @@ export function TeamKaart({
   team,
   zoomLevel,
   showScores,
-  huidigeJaar,
-  onBewerken,
+  isDragging,
+  onOpenTeamDrawer,
   onDropSpeler,
   onHeaderMouseDown,
 }: TeamKaartProps) {
   const breedte = KAART_BREEDTE[team.formaat];
   const isCompact = zoomLevel === "compact";
   const isDetail = zoomLevel === "detail";
+  const kaartHoogte = isDetail ? KAART_HOOGTE_DETAIL : KAART_HOOGTE_NORMAAL;
 
   const [dropOverGeslacht, setDropOverGeslacht] = useState<"V" | "M" | null>(null);
 
@@ -124,7 +126,7 @@ export function TeamKaart({
         top: team.canvasY,
         pointerEvents: "auto", // canvas heeft pointer-events: none; kaart zet het terug
         width: breedte,
-        height: KAART_HOOGTE,
+        height: kaartHoogte,
         background: "var(--bg-1)",
         border: "1px solid var(--border-0)",
         borderRadius: "var(--card-radius)",
@@ -431,7 +433,7 @@ export function TeamKaart({
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                onBewerken(team.id);
+                onOpenTeamDrawer(team.id);
               }}
               style={{
                 width: 22,
@@ -514,11 +516,7 @@ export function TeamKaart({
                   key={sp.id}
                   spelerInTeam={sp}
                   teamId={team.id}
-                  showRating={isDetail}
-                  showLeeftijd={isDetail}
-                  showIcons={isDetail}
-                  showScore={showScores}
-                  huidigeJaar={huidigeJaar}
+                  isDetail={isDetail}
                 />
               ))}
             </div>
@@ -562,11 +560,7 @@ export function TeamKaart({
                   key={sp.id}
                   spelerInTeam={sp}
                   teamId={team.id}
-                  showRating={isDetail}
-                  showLeeftijd={isDetail}
-                  showIcons={isDetail}
-                  showScore={showScores}
-                  huidigeJaar={huidigeJaar}
+                  isDetail={isDetail}
                 />
               ))}
             </div>
