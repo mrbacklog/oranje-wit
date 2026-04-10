@@ -3,6 +3,9 @@ export const dynamic = "force-dynamic";
 import { auth } from "@oranje-wit/auth";
 import { getOfMaakWerkindelingVoorSeizoen } from "./actions";
 import { getWerkindelingVoorEditor, getAlleSpelers } from "./werkindeling-actions";
+import { getTeamtypeKaders } from "@/app/(teamindeling-studio)/ti-studio/kader/actions";
+import { mergeMetDefaults } from "@/app/(teamindeling-studio)/ti-studio/kader/kader-defaults";
+import { berekenTeamValidatie, berekenValidatieStatus } from "@/lib/teamindeling/validatie-engine";
 import { TiStudioShell } from "@/components/ti-studio/werkbord/TiStudioShell";
 import type {
   WerkbordState,
@@ -51,6 +54,12 @@ export default async function IndelingPage() {
   const prismaSpelers = await getAlleSpelers();
   const huidigeJaar = new Date().getFullYear();
   const versie = volledig.versies[0];
+
+  // Kaders laden en peiljaar bepalen
+  const seizoen = volledig.kaders.seizoen; // bijv. "2025-2026"
+  const peiljaar = parseInt(seizoen.split("-")[1], 10);
+  const opgeslagenKaders = await getTeamtypeKaders(seizoen);
+  const tcKaders = mergeMetDefaults(opgeslagenKaders);
 
   // Bouw teamId-lookup: spelerId → teamId
   const spelerTeamMap = new Map<string, string>();
@@ -286,10 +295,19 @@ export default async function IndelingPage() {
     (s) => s.teamId !== null || s.selectieGroepId !== null
   ).length;
 
+  // Validatie berekenen op basis van kaders
+  const validatie: WerkbordValidatieItem[] = [];
+  for (const team of teams) {
+    const items = berekenTeamValidatie(team, tcKaders, peiljaar);
+    validatie.push(...items);
+    team.validatieStatus = berekenValidatieStatus(items);
+    team.validatieCount = items.filter((i) => i.type !== "ok").length;
+  }
+
   const initieleState: WerkbordState = {
     teams,
     alleSpelers,
-    validatie: [] as WerkbordValidatieItem[],
+    validatie,
     werkindelingId: volledig.id,
     versieId: versie?.id ?? "",
     kadersId: volledig.kaders.id,
