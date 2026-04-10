@@ -1,6 +1,7 @@
 // apps/web/src/components/ti-studio/werkbord/TiStudioShell.tsx
 "use client";
 import { useState, useCallback, useEffect } from "react";
+import { logger } from "@oranje-wit/types";
 import { Toolbar } from "./Toolbar";
 import { SpelersPoolDrawer } from "./SpelersPoolDrawer";
 import { WerkbordCanvas } from "./WerkbordCanvas";
@@ -61,7 +62,9 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
     if (panelRechts !== "versies") return;
     getVersiesVoorDrawer(initieleState.werkindelingId)
       .then(setDrawerData)
-      .catch(() => {});
+      .catch((error) => {
+        logger.warn("Versies drawer laden mislukt:", error);
+      });
   }, [panelRechts, initieleState.werkindelingId, drawerRefreshTeller]);
 
   const togglePanelLinks = useCallback((panel: PanelLinks) => {
