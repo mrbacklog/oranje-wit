@@ -82,11 +82,14 @@ export async function getWerkindelingVoorEditor(werkindelingId: string) {
 
   if (!volledig) return null;
 
+  type VersieRij = (typeof volledig.versies)[number];
+  type TeamRij = VersieRij["teams"][number];
+
   return {
     ...volledig,
-    versies: volledig.versies.map((v) => ({
+    versies: volledig.versies.map((v: VersieRij) => ({
       ...v,
-      teams: v.teams.map((t) => ({ ...t, werkitems: [] })),
+      teams: v.teams.map((t: TeamRij) => ({ ...t, werkitems: [] })),
     })),
   };
 }
