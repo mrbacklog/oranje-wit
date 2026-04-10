@@ -76,5 +76,6 @@ ALTER TABLE "Actiepunt" ADD CONSTRAINT "Actiepunt_kadersId_fkey"
 ALTER TABLE "Activiteit" ADD CONSTRAINT "Activiteit_kadersId_fkey"
     FOREIGN KEY ("kadersId") REFERENCES "Kaders"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
--- Stap 8: Hernoem de unieke index op BlauwdrukSpeler.seizoen → Kaders.seizoen
-ALTER TABLE "Kaders" RENAME CONSTRAINT "Blauwdruk_seizoen_key" TO "Kaders_seizoen_key";
+-- Stap 8: Hernoem de unieke index op Blauwdruk.seizoen → Kaders.seizoen
+-- (Dit is een INDEX, niet een CONSTRAINT — gebruik ALTER INDEX)
+ALTER INDEX "Blauwdruk_seizoen_key" RENAME TO "Kaders_seizoen_key";

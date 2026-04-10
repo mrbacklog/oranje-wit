@@ -1,6 +1,10 @@
 -- AlterEnum
 ALTER TYPE "SeizoenStatus" ADD VALUE IF NOT EXISTS 'GEPLAND';
 
+-- Commit de enum-uitbreiding zodat de nieuwe waarde bruikbaar is in dezelfde migratie
+COMMIT;
+BEGIN;
+
 -- Zet historische seizoenen op AFGEROND (t/m 2024-2025, eind_jaar <= 2025)
 UPDATE seizoenen SET status = 'AFGEROND' WHERE eind_jaar <= 2025;
 

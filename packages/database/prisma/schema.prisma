@@ -455,9 +455,6 @@ model Speler {
   seizoenenActief Int?
   instroomLeeftijd Int?
   status        SpelerStatus @default(BESCHIKBAAR)
-  notitie       String? @db.Text
-  memoStatus    String  @default("gesloten")
-  besluit       String? @db.Text
   rating          Int?
   ratingBerekend  Int?  @map("rating_berekend")
 
@@ -496,7 +493,6 @@ model Staf {
   geboortejaar Int?
   email        String?
   rollen       String[] // ["trainer", "assistent", "manager", "coordinator"]
-  notitie      String?  @db.Text
 
   // Relaties
   lid                 Lid?     @relation(fields: [relCode], references: [relCode])
@@ -810,11 +806,6 @@ model Team {
 
   validatieStatus    ValidatieStatus @default(ONBEKEND)
   validatieMeldingen Json?
-
-  // Memo
-  notitie    String?  @db.Text
-  memoStatus String   @default("gesloten")
-  besluit    String?  @db.Text
 
   // Selectie-koppeling
   selectieGroepId String?
