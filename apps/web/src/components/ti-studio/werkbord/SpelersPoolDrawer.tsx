@@ -18,7 +18,10 @@ export function SpelersPoolDrawer({ open, spelers, onClose }: SpelersPoolDrawerP
   const [filter, setFilter] = useState<SpelerFilter>("zonder_team");
   const [geslachtFilter, setGeslachtFilter] = useState<"alle" | "v" | "m">("alle");
 
+  const arSpelers = spelers.filter((sp) => sp.status === "ALGEMEEN_RESERVE");
+
   const gefilterd = spelers.filter((sp) => {
+    if (sp.status === "ALGEMEEN_RESERVE") return false;
     if (sp.selectieGroepId !== null) return false;
     const naam = `${sp.roepnaam} ${sp.achternaam}`.toLowerCase();
     if (zoek && !naam.includes(zoek.toLowerCase())) return false;
@@ -277,6 +280,40 @@ export function SpelersPoolDrawer({ open, spelers, onClose }: SpelersPoolDrawerP
           >
             Geen spelers gevonden
           </div>
+        )}
+        {arSpelers.length > 0 && (
+          <>
+            <div
+              style={{
+                margin: "8px 10px 0",
+                borderTop: "1px solid var(--border-0)",
+              }}
+            />
+            <div
+              style={{
+                padding: "8px 10px 4px",
+                fontSize: 9,
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: ".6px",
+                color: "var(--text-3)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <span>Algemeen Reserve</span>
+              <span style={{ color: "var(--text-2)", fontWeight: 700 }}>{arSpelers.length}</span>
+            </div>
+            {arSpelers.map((sp) => (
+              <SpelerKaart
+                key={sp.id}
+                speler={sp}
+                vanTeamId={null}
+                seizoenEindjaar={HUIDIG_SEIZOEN_EINDJAAR}
+              />
+            ))}
+          </>
         )}
       </div>
     </aside>
