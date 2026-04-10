@@ -11,6 +11,7 @@ import KadersSelectieStructuur from "./_components/KadersSelectieStructuur";
 import KadersTeamsamenstelling from "./_components/KadersTeamsamenstelling";
 import KadersPinsLaag from "./_components/KadersPinsLaag";
 import KadersDaisyWrapper from "./_components/KadersDaisyWrapper";
+import KadersMemosClient, { type KadersMemosData } from "./_components/KadersMemosClient";
 
 export const dynamic = "force-dynamic";
 
@@ -47,6 +48,7 @@ export default async function KadersPage() {
   }
 
   const kadersJson = (kaders.kaders ?? {}) as Record<string, unknown>;
+  const initialeMemos: KadersMemosData = (kadersJson.memos ?? {}) as KadersMemosData;
   const initieleSelecties: SelectieVoorkeur[] = Array.isArray(kadersJson.selecties)
     ? (kadersJson.selecties as SelectieVoorkeur[])
     : [];
@@ -121,6 +123,33 @@ export default async function KadersPage() {
       <KadersPinsLaag kadersId={kaders.id} initialPins={pins} />
 
       <KadersDaisyWrapper />
+
+      {/* Memo's — doelgroepen + TC */}
+      <section
+        style={{
+          background: "var(--surface-card)",
+          borderRadius: 12,
+          border: "1px solid var(--border-default)",
+          overflow: "hidden",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            padding: "14px 20px",
+            borderBottom: "1px solid var(--border-default)",
+          }}
+        >
+          <span style={{ color: "var(--text-primary)", fontWeight: 600, fontSize: 14, flex: 1 }}>
+            Memo's — doelgroepen &amp; TC
+          </span>
+        </div>
+        <div style={{ padding: "16px 20px" }}>
+          <KadersMemosClient kadersId={kaders.id} initialeMemos={initialeMemos} />
+        </div>
+      </section>
     </div>
   );
 }
