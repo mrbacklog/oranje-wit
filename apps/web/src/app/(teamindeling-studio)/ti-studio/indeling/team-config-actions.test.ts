@@ -5,14 +5,37 @@ vi.mock("@oranje-wit/auth/checks", () => ({
 }));
 
 const mockUpdate = vi.fn().mockResolvedValue({ id: "team-1" });
+const mockFindUniqueOrThrow = vi.fn().mockResolvedValue({
+  id: "team-1",
+  categorie: "SENIOREN",
+  kleur: null,
+  teamType: null,
+  niveau: null,
+  versie: { werkindeling: { kaders: { seizoen: "2025-2026" } } },
+  spelers: [],
+});
 const mockCreate = vi.fn().mockResolvedValue({ id: "groep-1" });
 const mockDelete = vi.fn().mockResolvedValue({ id: "groep-1" });
 
 vi.mock("@/lib/teamindeling/db/prisma", () => ({
   prisma: {
-    team: { update: mockUpdate },
+    team: { update: mockUpdate, findUniqueOrThrow: mockFindUniqueOrThrow },
     selectieGroep: { create: mockCreate, delete: mockDelete },
   },
+}));
+
+vi.mock("@/app/(teamindeling-studio)/ti-studio/kader/actions", () => ({
+  getTeamtypeKaders: vi.fn().mockResolvedValue([]),
+}));
+
+vi.mock("@/app/(teamindeling-studio)/ti-studio/kader/kader-defaults", () => ({
+  mergeMetDefaults: vi.fn().mockReturnValue({}),
+}));
+
+vi.mock("@/lib/teamindeling/validatie-engine", () => ({
+  berekenTeamValidatie: vi.fn().mockReturnValue([]),
+  berekenValidatieStatus: vi.fn().mockReturnValue("ok"),
+  korfbalLeeftijd: vi.fn().mockReturnValue(20),
 }));
 
 describe("updateTeamConfig", () => {
