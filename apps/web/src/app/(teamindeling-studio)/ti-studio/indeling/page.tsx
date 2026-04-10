@@ -118,7 +118,6 @@ export default async function IndelingPage() {
   const opgeslagenPosities = (versie?.posities ?? {}) as Record<string, { x: number; y: number }>;
 
   // Teams als WerkbordTeam
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const teams: WerkbordTeam[] = ((versie?.teams ?? []) as any[]).map((team: any, i: number) => {
     const dames = (team.spelers as any[])
       .filter((ts: any) => ts.speler?.geslacht === "V")

@@ -341,17 +341,17 @@ export function useWerkbordState(
         vanTeamId,
         naarTeamId,
         naarGeslacht,
-      }); // eslint-disable-line react-hooks/exhaustive-deps
+      });
     },
-    [verplaatsSpelerLokaal] // eslint-disable-line react-hooks/exhaustive-deps
+    [verplaatsSpelerLokaal]
   );
 
   const verwijderSpelerUitTeam = useCallback(
     (spelerId: string, vanTeamId: string) => {
       verwijderSpelerUitTeamLokaal(spelerId, vanTeamId);
-      stuurMutatie({ type: "speler_naar_pool", spelerId, vanTeamId }); // eslint-disable-line react-hooks/exhaustive-deps
+      stuurMutatie({ type: "speler_naar_pool", spelerId, vanTeamId });
     },
-    [verwijderSpelerUitTeamLokaal] // eslint-disable-line react-hooks/exhaustive-deps
+    [verwijderSpelerUitTeamLokaal]
   );
 
   const verplaatsTeamKaart = useCallback(
@@ -359,12 +359,9 @@ export function useWerkbordState(
     [verplaatsTeamKaartLokaal]
   );
 
-  const slaTeamPositieOp = useCallback(
-    (teamId: string, x: number, y: number) => {
-      stuurMutatie({ type: "team_positie", teamId, x: Math.round(x), y: Math.round(y) }); // eslint-disable-line react-hooks/exhaustive-deps
-    },
-    [] // eslint-disable-line react-hooks/exhaustive-deps
-  );
+  const slaTeamPositieOp = useCallback((teamId: string, x: number, y: number) => {
+    stuurMutatie({ type: "team_positie", teamId, x: Math.round(x), y: Math.round(y) });
+  }, []);
 
   // ─── SSE ─────────────────────────────────────────────────────
 
