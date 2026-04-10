@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { renderHook } from "@testing-library/react";
+import { describe, it, expect, vi } from "vitest";
+import { renderHook, act } from "@testing-library/react";
 import { useState, useEffect, useRef } from "react";
 
 // Test de isLanding state-machine: isDragging false → isLanding true → isLanding false na timeout
@@ -36,5 +36,20 @@ describe("Landing state machine", () => {
     expect(result.current).toBe(false);
     rerender({ dragging: false });
     expect(result.current).toBe(true);
+  });
+
+  it("isLanding wordt na timeout weer false", async () => {
+    vi.useFakeTimers();
+    const { result, rerender } = renderHook(
+      ({ dragging }: { dragging: boolean }) => useLandingState(dragging),
+      { initialProps: { dragging: true } }
+    );
+    rerender({ dragging: false });
+    expect(result.current).toBe(true);
+    await act(async () => {
+      vi.advanceTimersByTime(650);
+    });
+    expect(result.current).toBe(false);
+    vi.useRealTimers();
   });
 });
