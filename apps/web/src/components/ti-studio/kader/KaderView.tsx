@@ -884,7 +884,7 @@ export function KaderView({ seizoen, opgeslagenKaders }: KaderViewProps) {
             </>
           )}
 
-          {B_CATEGORIE_IDS.has(actieveTab) && (
+          {isBCategorie && (
             <SingleInput
               label="Max leeftijdsspreiding (jaar)"
               value={huidigKader.bandbreedteMax}
