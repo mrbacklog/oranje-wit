@@ -68,7 +68,16 @@ export async function getWerkindelingVoorEditor(werkindelingId: string) {
           },
           teams: {
             orderBy: { volgorde: "asc" },
-            include: {
+            select: {
+              id: true,
+              naam: true,
+              categorie: true,
+              kleur: true,
+              teamType: true,
+              niveau: true,
+              selectieGroepId: true,
+              volgorde: true,
+              validatieStatus: true,
               spelers: { include: { speler: true } },
               staf: { include: { staf: true } },
             },

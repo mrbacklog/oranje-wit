@@ -53,10 +53,13 @@ export default async function IndelingPage() {
 
   // Bouw teamId-lookup: spelerId → teamId
   const spelerTeamMap = new Map<string, string>();
+  // Bouw teamNaam-lookup: spelerId → teamNaam
+  const spelerTeamNaamMap = new Map<string, string>();
   if (versie) {
     for (const team of versie.teams) {
       for (const ts of team.spelers) {
         spelerTeamMap.set(ts.spelerId, team.id);
+        spelerTeamNaamMap.set(ts.spelerId, team.naam);
       }
     }
   }
@@ -67,6 +70,7 @@ export default async function IndelingPage() {
     roepnaam: sp.roepnaam,
     achternaam: sp.achternaam,
     geboortejaar: sp.geboortejaar ?? huidigeJaar - 20,
+    geboortedatum: sp.geboortedatum ? sp.geboortedatum.toISOString().split("T")[0] : null,
     geslacht: sp.geslacht === "V" ? ("V" as const) : ("M" as const),
     status: "BESCHIKBAAR" as const,
     rating: null,
@@ -75,6 +79,8 @@ export default async function IndelingPage() {
     teamId: spelerTeamMap.get(sp.id) ?? null,
     gepind: false,
     isNieuw: false,
+    huidigTeam: (sp.huidig as { team?: string } | null)?.team ?? null,
+    ingedeeldTeamNaam: spelerTeamNaamMap.get(sp.id) ?? null,
   }));
 
   // Teams als WerkbordTeam
@@ -90,6 +96,9 @@ export default async function IndelingPage() {
           roepnaam: ts.speler?.roepnaam ?? "?",
           achternaam: ts.speler?.achternaam ?? "",
           geboortejaar: ts.speler?.geboortejaar ?? huidigeJaar - 15,
+          geboortedatum: ts.speler?.geboortedatum
+            ? (ts.speler.geboortedatum as Date).toISOString().split("T")[0]
+            : null,
           geslacht: "V" as const,
           status: "BESCHIKBAAR" as const,
           rating: null,
@@ -98,6 +107,8 @@ export default async function IndelingPage() {
           teamId: team.id,
           gepind: false,
           isNieuw: false,
+          huidigTeam: (ts.speler?.huidig as { team?: string } | null)?.team ?? null,
+          ingedeeldTeamNaam: team.naam,
         },
         notitie: null,
       }));
@@ -112,6 +123,9 @@ export default async function IndelingPage() {
           roepnaam: ts.speler?.roepnaam ?? "?",
           achternaam: ts.speler?.achternaam ?? "",
           geboortejaar: ts.speler?.geboortejaar ?? huidigeJaar - 15,
+          geboortedatum: ts.speler?.geboortedatum
+            ? (ts.speler.geboortedatum as Date).toISOString().split("T")[0]
+            : null,
           geslacht: "M" as const,
           status: "BESCHIKBAAR" as const,
           rating: null,
@@ -120,6 +134,8 @@ export default async function IndelingPage() {
           teamId: team.id,
           gepind: false,
           isNieuw: false,
+          huidigTeam: (ts.speler?.huidig as { team?: string } | null)?.team ?? null,
+          ingedeeldTeamNaam: team.naam,
         },
         notitie: null,
       }));
@@ -132,13 +148,12 @@ export default async function IndelingPage() {
           }, 0) / totaalSpelers
         : 0;
 
-    // Formaat bepalen op basis van totaal spelers
-    const formaat =
-      totaalSpelers <= 4
-        ? ("viertal" as const)
-        : totaalSpelers <= 8
-          ? ("achtal" as const)
-          : ("selectie" as const);
+    // Formaat bepalen: selectieGroep → altijd "selectie"; anders uit teamType in DB
+    const formaat: "viertal" | "achtal" | "selectie" = team.selectieGroepId
+      ? "selectie"
+      : team.teamType === "VIERTAL"
+        ? "viertal"
+        : "achtal";
 
     // KNKV kleur mapping
     const kleur = (KLEUR_MAP[team.kleur ?? ""] ?? "senior") as WerkbordTeam["kleur"];
@@ -166,6 +181,9 @@ export default async function IndelingPage() {
       gemiddeldeLeeftijd: totaalSpelers > 0 ? Math.round(gemLeeftijd * 10) / 10 : null,
       validatieStatus: "ok" as const,
       validatieCount: 0,
+      teamCategorie: (team.categorie ?? "SENIOREN") as "SENIOREN" | "A_CATEGORIE" | "B_CATEGORIE",
+      niveau: (team.niveau ?? null) as "U15" | "U17" | "U19" | null,
+      selectieGroepId: team.selectieGroepId ?? null,
     };
   });
 
