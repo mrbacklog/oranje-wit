@@ -19,11 +19,11 @@ import type {
 import type { DrawerData } from "@/app/(teamindeling-studio)/ti-studio/indeling/drawer-actions";
 import { getVersiesVoorDrawer } from "@/app/(teamindeling-studio)/ti-studio/indeling/drawer-actions";
 
-type ActivePanel = "pool" | "validatie" | "werkbord" | "versies" | null;
+type ActivePanel = "pool" | "teams" | "werkbord" | "versies" | "kader" | null;
 
 export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellProps) {
   const router = useRouter();
-  const [activePanel, setActivePanel] = useState<ActivePanel>("validatie");
+  const [activePanel, setActivePanel] = useState<ActivePanel>("teams");
   const [showScores, setShowScores] = useState(true);
   const [drawerData, setDrawerData] = useState<DrawerData | null>(null);
   const { zoom, setZoom, zoomIn, zoomOut, resetZoom, zoomLevel, zoomPercent } = useZoom();
@@ -57,7 +57,7 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
       .catch(() => {});
   }, [activePanel, initieleState.werkindelingId]);
 
-  function togglePanel(panel: "pool" | "validatie" | "werkbord" | "versies") {
+  function togglePanel(panel: "pool" | "teams" | "werkbord" | "versies" | "kader") {
     setActivePanel((prev) => (prev === panel ? null : panel));
   }
 
@@ -253,7 +253,6 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
       <Ribbon
         activePanel={activePanel}
         onTogglePanel={togglePanel}
-        validatieHasErrors={hasErrors}
         gebruikerInitialen={gebruikerInitialen}
       />
       <Toolbar
@@ -263,8 +262,6 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
         status={initieleState.status}
         totalSpelers={initieleState.totalSpelers}
         ingeplandSpelers={ingeplandSpelers}
-        showScores={showScores}
-        onToggleScores={() => setShowScores((v) => !v)}
         onNieuwTeam={() => {}}
         onTerug={() => router.push("/ti-studio")}
       />
@@ -280,7 +277,6 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
           open={activePanel === "pool"}
           spelers={alleSpelers}
           onClose={() => setActivePanel(null)}
-          onVerwijderUitTeam={verwijderSpelerUitTeam}
         />
         <WerkbordCanvas
           teams={teams}
@@ -288,6 +284,7 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
           zoom={zoom}
           zoomPercent={zoomPercent}
           showScores={showScores}
+          onToggleScores={() => setShowScores((v) => !v)}
           onZoomIn={zoomIn}
           onZoomOut={zoomOut}
           onZoomReset={resetZoom}
@@ -298,7 +295,7 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
           onTeamDragEnd={slaTeamPositieOp}
         />
         <ValidatieDrawer
-          open={activePanel === "validatie"}
+          open={activePanel === "kader"}
           teams={teams}
           validatie={initieleState.validatie}
           onClose={() => setActivePanel(null)}
