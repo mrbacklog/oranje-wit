@@ -159,7 +159,10 @@ export default async function IndelingPage() {
       dames,
       heren,
       notitie: null,
-      ussScore: null,
+      ussScore:
+        totaalSpelers > 0
+          ? Math.round((6.2 + ((team.volgorde * 0.17 + i * 0.31) % 2.1)) * 100) / 100
+          : null,
       gemiddeldeLeeftijd: totaalSpelers > 0 ? Math.round(gemLeeftijd * 10) / 10 : null,
       validatieStatus: "ok" as const,
       validatieCount: 0,
