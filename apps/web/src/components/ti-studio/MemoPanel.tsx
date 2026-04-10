@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import type { MemoData } from "@/components/ti-studio/werkbord/types";
+// MemoData — lokaal type (verouderd patroon, wordt vervangen door WerkbordWerkitem)
+type MemoData = { tekst: string; memoStatus: "open" | "gesloten"; besluit: string | null };
 
 // ──────────────────────────────────────────────────────────
 // Design tokens

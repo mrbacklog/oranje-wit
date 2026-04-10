@@ -350,6 +350,19 @@ export function TeamKaart({
             ⚠ {team.validatieCount}
           </div>
         )}
+        {(team.werkitems?.some((w) => w.status === "OPEN" || w.status === "IN_BESPREKING") ??
+          false) && (
+          <div
+            style={{
+              fontSize: 10,
+              color: "var(--accent)",
+              lineHeight: 1,
+            }}
+            title="Open werkitems"
+          >
+            ▲
+          </div>
+        )}
         <div style={{ flex: 1 }} />
         {team.gemiddeldeLeeftijd !== null && (
           <div style={{ fontSize: 10, color: "var(--text-3)" }}>

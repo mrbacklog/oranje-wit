@@ -3,13 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import {
   getSpelerProfiel,
-  updateSpelerMemo,
   updateSpelerStatus,
 } from "@/app/(teamindeling-studio)/ti-studio/indeling/werkindeling-actions";
 import { logger } from "@oranje-wit/types";
 import type { EvaluatieScore, TeamGemiddelde } from "@oranje-wit/types";
-import type { MemoData } from "@/components/ti-studio/werkbord/types";
-import { MemoPanel } from "@/components/ti-studio/MemoPanel";
+import { WerkitemPanel } from "@/components/ti-studio/WerkitemPanel";
 
 // ──────────────────────────────────────────────────────────
 // Types
@@ -61,6 +59,7 @@ export interface SpelerProfielDialogProps {
   open: boolean;
   onClose: () => void;
   teamId?: string;
+  kadersId?: string;
 }
 
 // ──────────────────────────────────────────────────────────
@@ -556,10 +555,11 @@ export default function SpelerProfielDialog({
   open,
   onClose,
   teamId,
+  kadersId,
 }: SpelerProfielDialogProps) {
   const [profiel, setProfiel] = useState<SpelerProfiel>(null);
   const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<"pad" | "evaluaties" | "memo">("pad");
+  const [activeTab, setActiveTab] = useState<"pad" | "evaluaties" | "werkitems">("pad");
 
   // Status
   const [huidigStatus, setHuidigStatus] = useState<StatusKey>("BESCHIKBAAR");
@@ -571,14 +571,6 @@ export default function SpelerProfielDialog({
   const [teamVergelijking, setTeamVergelijking] = useState<TeamGemiddelde | null>(null);
   const [evalLoading, setEvalLoading] = useState(false);
   const [openGroepen, setOpenGroepen] = useState<Set<string>>(new Set());
-
-  // Memo
-  const [memoData, setMemoData] = useState<MemoData>({
-    tekst: "",
-    memoStatus: "gesloten",
-    besluit: null,
-  });
-  const [opslaanBezig, setOpslaanBezig] = useState(false);
 
   const statusMenuRef = useRef<HTMLDivElement>(null);
 
@@ -596,11 +588,6 @@ export default function SpelerProfielDialog({
       .then((data) => {
         setProfiel(data);
         setHuidigStatus((data?.status as StatusKey) ?? "BESCHIKBAAR");
-        setMemoData({
-          tekst: data?.notitie ?? "",
-          memoStatus: (data?.memoStatus as MemoData["memoStatus"]) ?? "gesloten",
-          besluit: (data as { besluit?: string | null })?.besluit ?? null,
-        });
       })
       .catch((err: unknown) => {
         logger.error("SpelerProfielDialog: fout bij ophalen profiel", err);
@@ -674,23 +661,6 @@ export default function SpelerProfielDialog({
       logger.error("SpelerProfielDialog: fout bij status-update", err);
     } finally {
       setStatusBezig(false);
-    }
-  }
-
-  async function slaMemoOp(data: MemoData) {
-    if (!spelerId) return;
-    setOpslaanBezig(true);
-    try {
-      const result = await updateSpelerMemo(spelerId, data);
-      if (result.ok) {
-        setMemoData(data);
-      } else {
-        logger.warn("SpelerProfielDialog: memo opslaan mislukt", result.error);
-      }
-    } catch (err) {
-      logger.error("SpelerProfielDialog: fout bij opslaan memo", err);
-    } finally {
-      setOpslaanBezig(false);
     }
   }
 
@@ -1182,9 +1152,9 @@ export default function SpelerProfielDialog({
             borderBottom: `1px solid ${T.border0}`,
           }}
         >
-          {(["pad", "evaluaties", "memo"] as const).map((tab) => {
+          {(["pad", "evaluaties", "werkitems"] as const).map((tab) => {
             const isActive = activeTab === tab;
-            const label = tab === "pad" ? "Pad" : tab === "evaluaties" ? "Evaluaties" : "Memo";
+            const label = tab === "pad" ? "Pad" : tab === "evaluaties" ? "Evaluaties" : "Notities";
             return (
               <button
                 key={tab}
@@ -1219,9 +1189,10 @@ export default function SpelerProfielDialog({
                     }}
                   />
                 )}
-                {tab === "memo" && memoData.memoStatus === "open" && (
-                  <span style={{ fontSize: 8, color: T.accent }}>▲</span>
-                )}
+                {tab === "werkitems" &&
+                  profiel?.werkitems?.some(
+                    (w: { status: string }) => w.status === "OPEN" || w.status === "IN_BESPREKING"
+                  ) && <span style={{ fontSize: 8, color: T.accent }}>▲</span>}
               </button>
             );
           })}
@@ -1436,9 +1407,26 @@ export default function SpelerProfielDialog({
             </div>
           )}
 
-          {/* ── Tab: Memo ── */}
-          {activeTab === "memo" && (
-            <MemoPanel memo={memoData} onSave={slaMemoOp} opslaanBezig={opslaanBezig} />
+          {/* ── Tab: Werkitems ── */}
+          {activeTab === "werkitems" && spelerId && (
+            <WerkitemPanel
+              entiteitType="SPELER"
+              spelerId={spelerId}
+              kadersId={kadersId ?? ""}
+              initieleWerkitems={
+                (profiel?.werkitems as Array<{
+                  id: string;
+                  titel: string | null;
+                  beschrijving: string;
+                  type: string;
+                  status: string;
+                  prioriteit: string;
+                  volgorde: number;
+                  resolutie: string | null;
+                  createdAt: string;
+                }>) ?? []
+              }
+            />
           )}
         </div>
       </div>

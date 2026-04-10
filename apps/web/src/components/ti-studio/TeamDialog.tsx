@@ -1,10 +1,8 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { logger } from "@oranje-wit/types";
-import type { MemoData } from "@/components/ti-studio/werkbord/types";
+import { useState } from "react";
 import type { WerkbordTeam, WerkbordValidatieItem } from "@/components/ti-studio/werkbord/types";
-import { MemoPanel } from "./MemoPanel";
+import { WerkitemPanel } from "./WerkitemPanel";
 import { TeamKaartSpelerRij } from "./werkbord/TeamKaartSpelerRij";
 
 // ──────────────────────────────────────────────────────────
@@ -72,21 +70,23 @@ export interface TeamDialogProps {
   teams: WerkbordTeam[];
   validatie: WerkbordValidatieItem[];
   onClose: () => void;
-  onMemoSaved: (
-    teamId: string,
-    notitie: string,
-    memoStatus: "open" | "gesloten",
-    besluit: string | null
-  ) => void;
+  kadersId: string;
+  werkindelingId?: string;
 }
 
 // ──────────────────────────────────────────────────────────
 // TeamDialog
 // ──────────────────────────────────────────────────────────
 
-export function TeamDialog({ teamId, teams, validatie, onClose, onMemoSaved }: TeamDialogProps) {
-  const [activeTab, setActiveTab] = useState<"overzicht" | "validatie" | "memo">("overzicht");
-  const [memoBezig, setMemoBezig] = useState(false);
+export function TeamDialog({
+  teamId,
+  teams,
+  validatie,
+  onClose,
+  kadersId,
+  werkindelingId,
+}: TeamDialogProps) {
+  const [activeTab, setActiveTab] = useState<"overzicht" | "validatie" | "werkitems">("overzicht");
 
   const team = teamId ? (teams.find((t) => t.id === teamId) ?? null) : null;
 
@@ -96,28 +96,6 @@ export function TeamDialog({ teamId, teams, validatie, onClose, onMemoSaved }: T
       const volgorde = { err: 0, warn: 1, ok: 2 };
       return (volgorde[a.type] ?? 3) - (volgorde[b.type] ?? 3);
     });
-
-  const handleMemoSave = useCallback(
-    async (data: MemoData) => {
-      if (!teamId) return;
-      setMemoBezig(true);
-      try {
-        const { updateTeamMemo } =
-          await import("@/app/(teamindeling-studio)/ti-studio/indeling/memo-actions");
-        const result = await updateTeamMemo(teamId, data);
-        if (result.ok) {
-          onMemoSaved(teamId, data.tekst, data.memoStatus, data.besluit);
-        } else {
-          logger.warn("TeamDialog: memo opslaan mislukt", result.error);
-        }
-      } catch (err) {
-        logger.error("TeamDialog: fout bij opslaan memo", err);
-      } finally {
-        setMemoBezig(false);
-      }
-    },
-    [teamId, onMemoSaved]
-  );
 
   if (!team) return null;
 
@@ -175,8 +153,13 @@ export function TeamDialog({ teamId, teams, validatie, onClose, onMemoSaved }: T
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontSize: 16, fontWeight: 700, color: T.text1, lineHeight: 1.3 }}>
                 {teamLabel}
-                {team.memoStatus === "open" && (
-                  <span style={{ fontSize: 11, color: T.accent, marginLeft: 6 }} title="Open memo">
+                {team.werkitems.some(
+                  (w) => w.status === "OPEN" || w.status === "IN_BESPREKING"
+                ) && (
+                  <span
+                    style={{ fontSize: 11, color: T.accent, marginLeft: 6 }}
+                    title="Open werkitems"
+                  >
                     ▲
                   </span>
                 )}
@@ -233,9 +216,16 @@ export function TeamDialog({ teamId, teams, validatie, onClose, onMemoSaved }: T
             flexShrink: 0,
           }}
         >
-          {(["overzicht", "validatie", "memo"] as const).map((tab) => {
+          {(["overzicht", "validatie", "werkitems"] as const).map((tab) => {
             const isActive = activeTab === tab;
-            const labels = { overzicht: "Overzicht", validatie: "Validatie", memo: "Memo" };
+            const labels = {
+              overzicht: "Overzicht",
+              validatie: "Validatie",
+              werkitems: "Notities",
+            };
+            const openWerkitems = team.werkitems.filter(
+              (w) => w.status === "OPEN" || w.status === "IN_BESPREKING"
+            ).length;
             return (
               <button
                 key={tab}
@@ -256,7 +246,7 @@ export function TeamDialog({ teamId, teams, validatie, onClose, onMemoSaved }: T
                 }}
               >
                 {labels[tab]}
-                {tab === "memo" && team.memoStatus === "open" && (
+                {tab === "werkitems" && openWerkitems > 0 && (
                   <span style={{ fontSize: 8, color: T.accent }}>▲</span>
                 )}
                 {tab === "validatie" && team.validatieCount > 0 && (
@@ -506,16 +496,14 @@ export function TeamDialog({ teamId, teams, validatie, onClose, onMemoSaved }: T
             </div>
           )}
 
-          {/* ── Memo tab ── */}
-          {activeTab === "memo" && (
-            <MemoPanel
-              memo={{
-                tekst: team.notitie ?? "",
-                memoStatus: team.memoStatus,
-                besluit: team.besluit,
-              }}
-              onSave={handleMemoSave}
-              opslaanBezig={memoBezig}
+          {/* ── Werkitems tab ── */}
+          {activeTab === "werkitems" && (
+            <WerkitemPanel
+              entiteitType="TEAM"
+              teamId={team.id}
+              kadersId={kadersId}
+              werkindelingId={werkindelingId}
+              initieleWerkitems={team.werkitems ?? []}
             />
           )}
         </div>

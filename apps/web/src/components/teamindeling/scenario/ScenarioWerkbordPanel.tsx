@@ -35,6 +35,7 @@ const TYPE_LABEL: Record<string, string> = {
   TRAINER: "Trainer",
   SPELER: "Speler",
   BESLUIT: "Besluit",
+  MEMO: "Memo",
 };
 
 export default function ScenarioWerkbordPanel({
@@ -143,6 +144,7 @@ export default function ScenarioWerkbordPanel({
             <option value="TRAINER">Trainer</option>
             <option value="SPELER">Speler</option>
             <option value="BESLUIT">Besluit</option>
+            <option value="MEMO">Memo</option>
           </select>
           <select
             value={prioriteit}

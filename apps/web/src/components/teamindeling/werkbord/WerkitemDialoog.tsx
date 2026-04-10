@@ -112,6 +112,7 @@ export default function WerkitemDialoog({
                 <option value="REGEL">Regel</option>
                 <option value="TRAINER">Trainer</option>
                 <option value="SPELER">Speler</option>
+                <option value="MEMO">Memo</option>
               </select>
             </div>
             <div className="flex-1">

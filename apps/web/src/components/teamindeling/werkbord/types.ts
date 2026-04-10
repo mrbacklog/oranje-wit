@@ -5,7 +5,14 @@
  * Deze types fungeren als placeholder totdat het model wordt toegevoegd.
  */
 
-export type WerkitemType = "BESLUIT" | "STRATEGISCH" | "DATA" | "REGEL" | "TRAINER" | "SPELER";
+export type WerkitemType =
+  | "BESLUIT"
+  | "STRATEGISCH"
+  | "DATA"
+  | "REGEL"
+  | "TRAINER"
+  | "SPELER"
+  | "MEMO";
 
 export type WerkitemPrioriteit = "BLOCKER" | "HOOG" | "MIDDEL" | "LAAG" | "INFO";
 

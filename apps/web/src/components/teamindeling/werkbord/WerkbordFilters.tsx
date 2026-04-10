@@ -30,6 +30,7 @@ const TYPE_OPTIES: { value: WerkitemType; label: string }[] = [
   { value: "REGEL", label: "Regel" },
   { value: "TRAINER", label: "Trainer" },
   { value: "SPELER", label: "Speler" },
+  { value: "MEMO", label: "Memo" },
 ];
 
 const BESLUITNIVEAU_OPTIES: { value: Besluitniveau; label: string }[] = [

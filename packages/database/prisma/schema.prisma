@@ -825,6 +825,7 @@ model Team {
   staf          TeamStaf[]
   whatIfKopieen       WhatIfTeam[]
   plaatsreserveringen Plaatsreservering[]
+  werkitems           Werkitem[]  @relation("TeamWerkitems")
 
   @@index([versieId])
 }
@@ -1056,6 +1057,7 @@ enum WerkitemType {
   TRAINER
   SPELER
   BESLUIT
+  MEMO
 }
 
 enum WerkitemPrioriteit {
@@ -1107,7 +1109,7 @@ model Werkitem {
   kaders       Kaders @relation(fields: [kadersId], references: [id], onDelete: Cascade)
   kadersId     String
 
-  titel        String
+  titel        String?
   beschrijving String   @db.Text
   type         WerkitemType
   prioriteit   WerkitemPrioriteit @default(MIDDEL)
@@ -1129,6 +1131,8 @@ model Werkitem {
   spelerId     String?
   staf         Staf?    @relation(fields: [stafId], references: [id])
   stafId       String?
+  team         Team?    @relation("TeamWerkitems", fields: [teamId], references: [id], onDelete: SetNull)
+  teamId       String?
   teamOwCode   String?
 
   // Oplossing

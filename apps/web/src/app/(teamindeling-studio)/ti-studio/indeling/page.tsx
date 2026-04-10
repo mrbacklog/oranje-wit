@@ -10,7 +10,6 @@ import type {
   WerkbordSpelerInTeam,
   WerkbordTeam,
   WerkbordValidatieItem,
-  MemoStatus,
 } from "@/components/ti-studio/werkbord/types";
 
 // Prisma Kleur enum → KnkvCategorie token
@@ -184,7 +183,7 @@ export default async function IndelingPage() {
         naam: ts.staf?.naam ?? "?",
         rol: ts.rol ?? "",
       })),
-      notitie: null,
+      werkitems: [],
       ussScore:
         totaalSpelers > 0
           ? Math.round((6.2 + ((team.volgorde * 0.17 + i * 0.31) % 2.1)) * 100) / 100
@@ -199,8 +198,6 @@ export default async function IndelingPage() {
       selectieDames: [] as WerkbordSpelerInTeam[],
       selectieHeren: [] as WerkbordSpelerInTeam[],
       gebundeld: false,
-      memoStatus: (team.memoStatus as MemoStatus) ?? "gesloten",
-      besluit: (team as any).besluit ?? null,
     };
   });
 
@@ -295,6 +292,7 @@ export default async function IndelingPage() {
     validatie: [] as WerkbordValidatieItem[],
     werkindelingId: volledig.id,
     versieId: versie?.id ?? "",
+    kadersId: volledig.kaders.id,
     seizoen: volledig.kaders.seizoen,
     naam: volledig.naam,
     status: volledig.status === "DEFINITIEF" ? "definitief" : "concept",

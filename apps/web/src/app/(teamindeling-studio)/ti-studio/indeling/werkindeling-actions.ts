@@ -8,6 +8,10 @@ import { assertBewerkbaar } from "@/lib/teamindeling/seizoen";
 import { assertSpelerVrij } from "@/lib/teamindeling/db/speler-guard";
 import { maakWerkindelingSnapshot } from "@/lib/teamindeling/db/werkindeling-snapshot";
 import { requireTC } from "@oranje-wit/auth/checks";
+import type { ActionResult } from "@oranje-wit/types";
+
+// Tijdelijk inline type — wordt verwijderd zodra SpelerProfielDialog naar werkitem-actions migreert
+type MemoData = { tekst?: string; memoStatus?: string; besluit?: string | null };
 
 const NIET_VERWIJDERD = { verwijderdOp: null } as const;
 
@@ -196,8 +200,8 @@ export async function updateSpelerNotitie(spelerId: string, notitie: string): Pr
 
 export async function updateSpelerMemo(
   spelerId: string,
-  memo: import("@/components/ti-studio/werkbord/types").MemoData
-): Promise<import("@oranje-wit/types").ActionResult<void>> {
+  memo: MemoData
+): Promise<ActionResult<void>> {
   try {
     await requireTC();
     await prisma.speler.update({

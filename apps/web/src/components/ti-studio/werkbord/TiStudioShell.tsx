@@ -10,7 +10,7 @@ import SpelerProfielDialog from "../SpelerProfielDialog";
 import { TeamDialog } from "../TeamDialog";
 import { useZoom } from "./hooks/useZoom";
 import { useWerkbordState } from "./hooks/useWerkbordState";
-import type { TiStudioShellProps, MemoStatus } from "./types";
+import type { TiStudioShellProps } from "./types";
 import type { DrawerData } from "@/app/(teamindeling-studio)/ti-studio/indeling/drawer-actions";
 import { getVersiesVoorDrawer } from "@/app/(teamindeling-studio)/ti-studio/indeling/drawer-actions";
 
@@ -49,17 +49,6 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
   const openTeamDialog = useCallback((teamId: string) => {
     setDialogTeamId(teamId);
   }, []);
-
-  const handleTeamMemoSaved = useCallback(
-    (teamId: string, notitie: string, memoStatus: "open" | "gesloten", besluit: string | null) => {
-      updateTeamLokaal(teamId, {
-        notitie: notitie || null,
-        memoStatus: memoStatus as MemoStatus,
-        besluit,
-      });
-    },
-    [updateTeamLokaal]
-  );
 
   useEffect(() => {
     if (panelRechts !== "versies") return;
@@ -178,7 +167,8 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
         teams={teams}
         validatie={initieleState.validatie}
         onClose={() => setDialogTeamId(null)}
-        onMemoSaved={handleTeamMemoSaved}
+        kadersId={initieleState.kadersId}
+        werkindelingId={initieleState.werkindelingId}
       />
     </div>
   );
