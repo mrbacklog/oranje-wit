@@ -1,11 +1,10 @@
 // apps/web/src/components/ti-studio/werkbord/TeamKaartSpelerRij.tsx
 "use client";
 import { useRef } from "react";
+import { PEILJAAR } from "@oranje-wit/types";
 import "./tokens.css";
 import { SpelerKaart } from "./SpelerKaart";
 import type { WerkbordSpelerInTeam, WerkbordSpeler, ZoomLevel } from "./types";
-
-const HUIDIG_SEIZOEN_EINDJAAR = 2026;
 
 interface TeamKaartSpelerRijProps {
   spelerInTeam: WerkbordSpelerInTeam;
@@ -16,11 +15,7 @@ interface TeamKaartSpelerRijProps {
 export function TeamKaartSpelerRij({ spelerInTeam, teamId, zoomLevel }: TeamKaartSpelerRijProps) {
   if (zoomLevel === "detail") {
     return (
-      <SpelerKaart
-        speler={spelerInTeam.speler}
-        vanTeamId={teamId}
-        seizoenEindjaar={HUIDIG_SEIZOEN_EINDJAAR}
-      />
+      <SpelerKaart speler={spelerInTeam.speler} vanTeamId={teamId} seizoenEindjaar={PEILJAAR} />
     );
   }
 
@@ -56,9 +51,9 @@ function NormaalSpelerRij({ speler, teamId }: { speler: WerkbordSpeler; teamId: 
   const leeftijd = berekenKorfbalLeeftijdNormaal(
     speler.geboortedatum,
     speler.geboortejaar,
-    HUIDIG_SEIZOEN_EINDJAAR
+    PEILJAAR
   );
-  const leeftijdTekst = String(leeftijd);
+  const leeftijdTekst = leeftijd.toFixed(2);
 
   return (
     <>
@@ -74,12 +69,7 @@ function NormaalSpelerRij({ speler, teamId }: { speler: WerkbordSpeler; teamId: 
           zIndex: -1,
         }}
       >
-        <SpelerKaart
-          speler={speler}
-          vanTeamId={teamId}
-          seizoenEindjaar={HUIDIG_SEIZOEN_EINDJAAR}
-          asGhost
-        />
+        <SpelerKaart speler={speler} vanTeamId={teamId} seizoenEindjaar={PEILJAAR} asGhost />
       </div>
 
       {/* Normaal rij */}
@@ -167,12 +157,7 @@ function CompactSpelerRij({ speler, teamId }: { speler: WerkbordSpeler; teamId: 
           zIndex: -1,
         }}
       >
-        <SpelerKaart
-          speler={speler}
-          vanTeamId={teamId}
-          seizoenEindjaar={HUIDIG_SEIZOEN_EINDJAAR}
-          asGhost
-        />
+        <SpelerKaart speler={speler} vanTeamId={teamId} seizoenEindjaar={PEILJAAR} asGhost />
       </div>
 
       {/* Compacte rij */}
