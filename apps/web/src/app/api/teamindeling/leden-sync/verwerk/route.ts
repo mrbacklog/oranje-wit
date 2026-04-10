@@ -2,7 +2,7 @@ import { guardTC } from "@oranje-wit/auth/checks";
 import { ok, fail } from "@/lib/teamindeling/api";
 import { parseCsvContent } from "@/lib/teamindeling/leden-csv";
 import { prisma } from "@/lib/teamindeling/db/prisma";
-import { createWerkitem } from "@/app/(teamindeling-studio)/ti-studio/werkbord/actions";
+import { createWerkitem } from "@/app/(teamindeling-studio)/ti-studio/indeling/werkitem-actions";
 import { logger } from "@oranje-wit/types";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";

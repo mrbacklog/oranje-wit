@@ -190,3 +190,38 @@ export async function verwijderWerkitem(id: string): Promise<ActionResult<void>>
     return { ok: false, error: error instanceof Error ? error.message : String(error) };
   }
 }
+
+// Systeem-werkitem (voor automatische processen zoals leden-sync)
+export async function createWerkitem(data: {
+  kadersId: string;
+  titel: string;
+  beschrijving: string;
+  type: string;
+  prioriteit?: string;
+  entiteit?: string;
+  spelerId?: string;
+  stafId?: string;
+  werkindelingId?: string;
+}): Promise<void> {
+  try {
+    await prisma.werkitem.create({
+      data: {
+        kadersId: data.kadersId,
+        titel: data.titel,
+        beschrijving: data.beschrijving,
+        type: data.type as import("@oranje-wit/database").WerkitemType,
+        prioriteit: (data.prioriteit ??
+          "MIDDEL") as import("@oranje-wit/database").WerkitemPrioriteit,
+        status: "OPEN",
+        entiteit: data.entiteit ? (data.entiteit as import("@oranje-wit/database").Entiteit) : null,
+        spelerId: data.spelerId ?? null,
+        stafId: data.stafId ?? null,
+        werkindelingId: data.werkindelingId ?? null,
+        auteurId: "systeem",
+      },
+    });
+    revalideerPaden();
+  } catch (error) {
+    logger.warn("createWerkitem (systeem) mislukt:", error);
+  }
+}
