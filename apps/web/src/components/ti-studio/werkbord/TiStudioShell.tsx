@@ -87,6 +87,8 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
     setProfielTeamId(teamId);
   }
 
+  const arCount = alleSpelers.filter((s) => s.status === "ALGEMEEN_RESERVE").length;
+  const inTeDelenTotaal = initieleState.totalSpelers - arCount;
   const ingeplandSpelers = alleSpelers.filter(
     (s) => s.teamId !== null || s.selectieGroepId !== null
   ).length;
@@ -106,7 +108,8 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
         naam={initieleState.naam}
         versieNaam={initieleState.versieNaam}
         versieNummer={initieleState.versieNummer}
-        totalSpelers={initieleState.totalSpelers}
+        totalSpelers={inTeDelenTotaal}
+        arCount={arCount}
         ingeplandSpelers={ingeplandSpelers}
         panelLinks={panelLinks}
         panelRechts={panelRechts}

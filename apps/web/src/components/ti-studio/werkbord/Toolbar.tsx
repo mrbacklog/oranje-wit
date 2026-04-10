@@ -9,6 +9,7 @@ interface ToolbarProps {
   isWhatIf?: boolean;
   totalSpelers: number;
   ingeplandSpelers: number;
+  arCount?: number;
   panelLinks: "pool" | "staf" | null;
   panelRechts: "teams" | "versies" | null;
   onTogglePanelLinks: (panel: "pool" | "staf") => void;
@@ -23,6 +24,7 @@ export function Toolbar({
   isWhatIf = false,
   totalSpelers,
   ingeplandSpelers,
+  arCount = 0,
   panelLinks,
   panelRechts,
   onTogglePanelLinks,
@@ -193,6 +195,11 @@ export function Toolbar({
           <div>
             <span style={{ fontWeight: 700, fontSize: 13 }}>{ingeplandSpelers}</span>
             <span style={{ color: "var(--text-3)", fontSize: 10 }}> / {totalSpelers}</span>
+            {arCount > 0 && (
+              <span style={{ color: "var(--text-3)", fontSize: 9, marginLeft: 4 }}>
+                (+{arCount} AR)
+              </span>
+            )}
           </div>
         </div>
       </div>
