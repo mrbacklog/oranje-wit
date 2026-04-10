@@ -22,11 +22,13 @@ export interface MemoData {
 // Team-configuratie beslisboom
 export type TeamHoofdCategorie = "SENIOREN" | "A_CATEGORIE" | "B_CATEGORIE";
 export type TeamLeeftijdsCat = "U15" | "U17" | "U19";
+export type TeamSeniorenCategorie = "A" | "B"; // A = topsport/wedstrijdsport, B = recreant/korfbalplezier
+export type TeamNiveau = TeamLeeftijdsCat | TeamSeniorenCategorie;
 
 export interface TeamConfigUpdate {
   hoofdCategorie: TeamHoofdCategorie;
   kleur: KnkvCategorie | null; // alleen voor B_CATEGORIE
-  niveau: TeamLeeftijdsCat | null; // alleen voor A_CATEGORIE
+  niveau: TeamNiveau | null; // A_CATEGORIE → U15/U17/U19, SENIOREN → A/B
   teamType: "viertal" | "achtal" | null; // alleen voor B_CATEGORIE GEEL
 }
 
@@ -82,7 +84,7 @@ export interface WerkbordTeam {
   validatieCount: number;
   // Team-configuratie velden (uit DB)
   teamCategorie: TeamHoofdCategorie;
-  niveau: TeamLeeftijdsCat | null;
+  niveau: TeamNiveau | null;
   selectieGroepId: string | null;
   selectieNaam: string | null;
   // Selectie-bundeling velden

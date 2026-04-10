@@ -7,8 +7,10 @@ import type { WerkbordSpeler } from "./types";
 interface SpelerKaartProps {
   speler: WerkbordSpeler;
   vanTeamId: string | null; // null = komt uit pool
+  vanSelectieGroepId?: string | null; // meegeven vanuit team-context voor correcte drag-data
   seizoenEindjaar: number; // bijv. 2026
   asGhost?: boolean; // true = niet-draggable, gebruikt als drag-image bron
+  smal?: boolean; // true = compacte variant voor teamkaart-kolommen (~130px)
   onClick?: () => void;
 }
 
@@ -31,8 +33,10 @@ function berekenKorfbalLeeftijd(
 export function SpelerKaart({
   speler,
   vanTeamId,
+  vanSelectieGroepId = null,
   seizoenEindjaar,
   asGhost = false,
+  smal = false,
   onClick,
 }: SpelerKaartProps) {
   const kaartRef = useRef<HTMLDivElement>(null);
@@ -86,7 +90,10 @@ export function SpelerKaart({
           ? undefined
           : (e) => {
               e.stopPropagation();
-              e.dataTransfer.setData("speler", JSON.stringify({ speler, vanTeamId }));
+              e.dataTransfer.setData(
+                "speler",
+                JSON.stringify({ speler, vanTeamId, vanSelectieGroepId })
+              );
               e.dataTransfer.effectAllowed = "move";
               if (kaartRef.current) {
                 e.dataTransfer.setDragImage(kaartRef.current, 20, 24);
@@ -104,72 +111,219 @@ export function SpelerKaart({
       onClick={asGhost ? undefined : onClick}
       style={{
         display: "flex",
-        flexDirection: "column",
-        height: 48,
-        borderLeft: `2px solid ${geslachtKleur}`,
+        flexDirection: "row",
+        alignItems: "center",
+        height: smal ? 21 : 40,
+        borderLeft: "none",
+        borderBottom: "1px solid var(--border-0)",
         opacity: stopGezet ? 0.5 : isHeld ? 0.6 : 1,
         cursor: isHeld ? "grabbing" : "grab",
         background: isHeld ? "rgba(255,107,0,.10)" : "transparent",
         outline: isHeld ? "1.5px solid var(--accent)" : "none",
         transition: "opacity 100ms ease, background 100ms ease",
-        padding: "0 8px 0 6px",
+        padding: smal ? "0 4px 0 6px" : "0 6px 0 6px",
+        gap: smal ? 4 : 6,
         flexShrink: 0,
+        minWidth: 0,
+        position: "relative",
       }}
     >
-      {/* Regel 1: avatar + naam + badges */}
+      {/* Avatar */}
       <div
         style={{
+          width: smal ? 14 : 22,
+          height: smal ? 14 : 22,
+          borderRadius: "50%",
+          flexShrink: 0,
           display: "flex",
           alignItems: "center",
-          gap: 6,
-          flex: 1,
-          minWidth: 0,
+          justifyContent: "center",
+          fontSize: smal ? 7 : 9,
+          fontWeight: 700,
+          background: geslachtBg,
+          color: geslachtKleur,
+          border: `${smal ? 1 : 1.5}px solid ${geslachtKleur}`,
+          boxSizing: "border-box",
         }}
       >
-        {/* Avatar */}
-        <div
-          style={{
-            width: 28,
-            height: 28,
-            borderRadius: "50%",
-            flexShrink: 0,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: 10,
-            fontWeight: 700,
-            background: geslachtBg,
-            color: geslachtKleur,
-            border: `2px solid ${geslachtKleur}`,
-            boxSizing: "border-box",
-          }}
-        >
-          {initialen}
-        </div>
+        {initialen}
+      </div>
 
-        {/* Naam */}
+      {/* Naam + meta — smal: 2-regels compact kolom */}
+      {smal ? (
         <div
           style={{
-            fontSize: 13,
-            fontWeight: 600,
             flex: 1,
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            color: "var(--text-1)",
-            textDecoration: stopGezet ? "line-through" : "none",
+            minWidth: 0,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            gap: 0,
           }}
         >
-          {speler.roepnaam} {speler.achternaam}
+          {/* Rij 1: naam + status */}
+          <div style={{ display: "flex", alignItems: "center", gap: 2, minWidth: 0 }}>
+            <div
+              style={{
+                flex: 1,
+                fontSize: 9,
+                fontWeight: 600,
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                color: "var(--text-1)",
+                textDecoration: stopGezet ? "line-through" : "none",
+                lineHeight: 1.1,
+              }}
+            >
+              {speler.roepnaam} {speler.achternaam.charAt(0)}.
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 1, flexShrink: 0 }}>
+              {speler.isNieuw && (
+                <span style={{ fontSize: 7, fontWeight: 700, color: "var(--ok)" }}>N</span>
+              )}
+              {speler.status === "TWIJFELT" && (
+                <span style={{ fontSize: 8, fontWeight: 700, color: "var(--warn)" }}>?</span>
+              )}
+              {speler.status === "AFGEMELD" && (
+                <span style={{ fontSize: 8, color: "var(--err)" }}>⚠</span>
+              )}
+              {speler.gepind && <span style={{ fontSize: 8, color: "var(--accent)" }}>·</span>}
+            </div>
+          </div>
+          {/* Rij 2: team badge + leeftijd */}
+          <div style={{ display: "flex", alignItems: "center", gap: 2, minWidth: 0 }}>
+            {speler.huidigTeam && (
+              <span
+                style={{
+                  fontSize: 8,
+                  color: "var(--text-3)",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  flex: 1,
+                }}
+              >
+                {speler.huidigTeam}
+              </span>
+            )}
+            <span
+              style={{ fontSize: 8, color: "var(--text-3)", flexShrink: 0, marginLeft: "auto" }}
+            >
+              {leeftijd.toFixed(1)}
+            </span>
+          </div>
         </div>
-
-        {/* Badges rechts */}
+      ) : (
+        /* Naam + meta — normaal: kolom layout */
         <div
           style={{
+            flex: 1,
+            minWidth: 0,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+          }}
+        >
+          <div
+            style={{
+              fontSize: 11,
+              fontWeight: 600,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              color: "var(--text-1)",
+              textDecoration: stopGezet ? "line-through" : "none",
+              lineHeight: 1.2,
+            }}
+          >
+            {speler.roepnaam} {speler.achternaam}
+          </div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              minWidth: 0,
+              gap: 4,
+              marginTop: 2,
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 3,
+                minWidth: 0,
+                overflow: "hidden",
+              }}
+            >
+              {speler.huidigTeam && (
+                <span
+                  style={{
+                    fontSize: 9,
+                    fontWeight: 600,
+                    color: "var(--text-2)",
+                    border: "1px solid var(--border-1)",
+                    borderRadius: 3,
+                    padding: "0 4px",
+                    whiteSpace: "nowrap",
+                    flexShrink: 0,
+                  }}
+                >
+                  {speler.huidigTeam}
+                </span>
+              )}
+              {speler.ingedeeldTeamNaam ? (
+                <span
+                  style={{
+                    fontSize: 9,
+                    fontWeight: 600,
+                    color: "var(--accent)",
+                    border: "1px solid rgba(255,107,0,.4)",
+                    borderRadius: 3,
+                    padding: "0 4px",
+                    whiteSpace: "nowrap",
+                    flexShrink: 0,
+                    background: "var(--accent-dim)",
+                  }}
+                >
+                  {speler.ingedeeldTeamNaam}
+                </span>
+              ) : (
+                <span
+                  style={{
+                    fontSize: 9,
+                    fontWeight: 600,
+                    color: "var(--text-3)",
+                    border: "1px dashed var(--border-1)",
+                    borderRadius: 3,
+                    padding: "0 4px",
+                    whiteSpace: "nowrap",
+                    flexShrink: 0,
+                  }}
+                >
+                  —
+                </span>
+              )}
+            </div>
+            <span style={{ fontSize: 9, color: "var(--text-3)", flexShrink: 0 }}>
+              {leeftijd.toFixed(2)}
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* Badges — normaal variant (rechtsboven) */}
+      {!smal && (
+        <div
+          style={{
+            position: "absolute",
+            top: 4,
+            right: 6,
             display: "flex",
             alignItems: "center",
             gap: 3,
-            flexShrink: 0,
           }}
         >
           {speler.isNieuw && (
@@ -187,109 +341,14 @@ export function SpelerKaart({
             </span>
           )}
           {speler.status === "TWIJFELT" && (
-            <span
-              style={{
-                fontSize: 10,
-                fontWeight: 700,
-                color: "var(--warn)",
-              }}
-            >
-              ?
-            </span>
+            <span style={{ fontSize: 10, fontWeight: 700, color: "var(--warn)" }}>?</span>
           )}
           {speler.status === "AFGEMELD" && (
             <span style={{ fontSize: 10, color: "var(--err)" }}>⚠</span>
           )}
           {speler.gepind && <span style={{ fontSize: 10, color: "var(--accent)" }}>📌</span>}
         </div>
-      </div>
-
-      {/* Regel 2: chips links + leeftijd rechts */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          flex: 1,
-          minWidth: 0,
-          gap: 4,
-          paddingLeft: 34, // inspringen zodat chips uitgelijnd zijn na avatar
-        }}
-      >
-        {/* Chips links */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 3,
-            minWidth: 0,
-            overflow: "hidden",
-          }}
-        >
-          {/* Huidig team chip — neutraal grijs */}
-          {speler.huidigTeam && (
-            <span
-              style={{
-                fontSize: 9,
-                fontWeight: 600,
-                color: "var(--text-2)",
-                border: "1px solid var(--border-1)",
-                borderRadius: 3,
-                padding: "0 4px",
-                whiteSpace: "nowrap",
-                flexShrink: 0,
-              }}
-            >
-              {speler.huidigTeam}
-            </span>
-          )}
-
-          {/* Ingedeeld team chip — oranje accent of grijs gestippeld */}
-          {speler.ingedeeldTeamNaam ? (
-            <span
-              style={{
-                fontSize: 9,
-                fontWeight: 600,
-                color: "var(--accent)",
-                border: "1px solid rgba(255,107,0,.4)",
-                borderRadius: 3,
-                padding: "0 4px",
-                whiteSpace: "nowrap",
-                flexShrink: 0,
-                background: "var(--accent-dim)",
-              }}
-            >
-              {speler.ingedeeldTeamNaam}
-            </span>
-          ) : (
-            <span
-              style={{
-                fontSize: 9,
-                fontWeight: 600,
-                color: "var(--text-3)",
-                border: "1px dashed var(--border-1)",
-                borderRadius: 3,
-                padding: "0 4px",
-                whiteSpace: "nowrap",
-                flexShrink: 0,
-              }}
-            >
-              —
-            </span>
-          )}
-        </div>
-
-        {/* Korfballeeftijd rechts */}
-        <span
-          style={{
-            fontSize: 10,
-            color: "var(--text-3)",
-            flexShrink: 0,
-          }}
-        >
-          {leeftijd.toFixed(2)}
-        </span>
-      </div>
+      )}
     </div>
   );
 }

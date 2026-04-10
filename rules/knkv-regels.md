@@ -11,20 +11,36 @@ paths:
 Bron: KNKV Competitie 2.0 (seizoen 2025-2026)
 Peildatum leeftijd: 31 december van het seizoensjaar
 
+## Wisselregels — twee aparte instellingen
+
+### 1. Spelerswissel (aantal keer speler wisselen)
+- **A-categorie**: max 8 spelerwissels per wedstrijd
+- **B-categorie**: onbeperkt spelerwissels
+
+### 2. Vakwissel (wanneer wisselen aanval ↔ verdediging)
+- **Na 2 doelpunten**: Rood, Senioren A
+- **Op tijd** (vast tijdstip): Geel, Oranje, Senioren B
+- **Blauw/Groen**: geen formele vakwissel (kleuters/mini)
+
+---
+
 ## A-categorie (Wedstrijdkorfbal)
 
 ### Algemeen
 - Spelformat: 8-tal (4 dames + 4 heren op het veld)
 - Gender: **verplicht** 4V + 4M op het veld
-- Wissels: na 2 goals
+- Spelerwissels: max 8 per wedstrijd
+- Vakwissel: na 2 doelpunten
 - Speeltijd: 2×30 min
 - Vastspelen: na 3 wedstrijden in zelfde team → speler is vastgespeeld
 
 ### Jeugd (U15, U17, U19)
-- Bandbreedte: 2 geboortejaren per categorie
-  - U15: geboortejaar [seizoenjaar - 13, seizoenjaar - 14]
-  - U17: geboortejaar [seizoenjaar - 15, seizoenjaar - 16]
-  - U19: geboortejaar [seizoenjaar - 17, seizoenjaar - 18]
+- Geen bandbreedte — alleen maximumleeftijd is bepalend
+- Een jongere speler mag altijd in een hogere U-categorie spelen
+- Leeftijdsgrenzen (op peildatum 31 december):
+  - U15: max 15,00
+  - U17: max 17,00
+  - U19: max 19,00
 
 ### Senioren A (Sen 1-4)
 - Geen leeftijdsbeperking
@@ -45,9 +61,12 @@ Peildatum leeftijd: 31 december van het seizoensjaar
 
 ### 8-tallen (Geel, Oranje, Rood)
 - Max 3 jaar leeftijdsspreiding
-- Min gemiddelde leeftijd: 9.0 jaar
-- 6-8 spelers op het veld
-- Wissels: onbeperkt (Geel, Oranje) of na 2 goals (Rood)
+- Gemiddelde teamsleeftijd: min en max per kleur (zie TC kader)
+- 8 spelers op het veld
+- Gender: volledig vrij — 0+8 t/m 8+0 is toegestaan
+- Spelerwissels: onbeperkt
+- Vakwissel: op tijd (Geel, Oranje) of na 2 doelpunten (Rood)
+- Invallers: moeten voldoen aan de leeftijdsbandbreedte van het team
 
 ### Invallers (B-categorie)
 - Spelers jonger dan gemiddelde leeftijd team: mogen altijd invallen
@@ -64,12 +83,15 @@ Peildatum leeftijd: 31 december van het seizoensjaar
 
 ## Bal, paal en speeltijd per kleur
 
-| Kleur | Paalhoogte | Bal | Wissels | Speeltijd |
-|---|---|---|---|---|
-| Blauw | 2.5m | 3 | onbeperkt | — |
-| Groen | 3.0m | 4 | onbeperkt | — |
-| Geel | 3.0m | 4 | onbeperkt | 2×25m |
-| Oranje | 3.5m | 5 | onbeperkt | 2×25m |
-| Rood | 3.5m | 5 | na 2 goals | 2×30m |
-| Senioren A | 3.5m | 5 | na 2 goals | 2×30m |
-| Senioren B | 3.5m | 5 | onbeperkt | 2×30m |
+| Kleur | Paalhoogte | Bal | Spelerwissels | Vakwissel | Speeltijd |
+|---|---|---|---|---|---|
+| Blauw | 2.5m | 3 | onbeperkt | — | — |
+| Groen | 3.0m | 4 | onbeperkt | — | — |
+| Geel | 3.0m | 4 | onbeperkt | op tijd | 2×25m |
+| Oranje | 3.5m | 5 | onbeperkt | op tijd | 2×25m |
+| Rood | 3.5m | 5 | onbeperkt | na 2 doelpunten | 2×30m |
+| U15 | 3.5m | 5 | max 8 | na 2 doelpunten | 2×25m |
+| U17 | 3.5m | 5 | max 8 | na 2 doelpunten | 2×25m of 25m zuiver |
+| U19 | 3.5m | 5 | max 8 | na 2 doelpunten | 2×25m of 25m zuiver |
+| Senioren A | 3.5m | 5 | max 8 | na 2 doelpunten | 2×30m of 25m zuiver |
+| Senioren B | 3.5m | 5 | onbeperkt | na 2 doelpunten | 2×30m |

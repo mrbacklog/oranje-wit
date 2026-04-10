@@ -8,6 +8,7 @@ import type {
   TeamConfigUpdate,
   TeamHoofdCategorie,
   TeamLeeftijdsCat,
+  TeamSeniorenCategorie,
   KnkvCategorie,
 } from "./types";
 import {
@@ -15,6 +16,7 @@ import {
   koppelSelectie,
   ontkoppelSelectie,
   updateSelectieNaam,
+  verwijderTeam,
 } from "@/app/(teamindeling-studio)/ti-studio/indeling/team-config-actions";
 
 interface TeamDrawerProps {
@@ -27,6 +29,7 @@ interface TeamDrawerProps {
   onTeamSelect: (teamId: string | null) => void;
   onNieuwTeam: () => void;
   onConfigUpdated: (teamId: string, update: Partial<WerkbordTeam>) => void;
+  onTeamVerwijderd: (teamId: string) => void;
   onSelectieGekoppeld: (teamId: string, selectieGroepId: string) => void;
   onSelectieOntkoppeld: (selectieGroepId: string) => void;
   onSelectieNaamUpdated: (selectieGroepId: string, naam: string) => void;
@@ -278,9 +281,28 @@ function ConfiguratieForm({
       </div>
 
       {isSenioren && (
-        <div style={{ fontSize: 11, color: "var(--text-3)", marginBottom: 8 }}>
-          8-tal · KNKV Senioren regels
-        </div>
+        <>
+          <span style={labelStyle}>Competitie-categorie</span>
+          <div style={rijStyle}>
+            {(["A", "B"] as TeamSeniorenCategorie[]).map((cat) => (
+              <button
+                key={cat}
+                style={btnStyle(config.niveau === cat)}
+                onClick={() => sla({ niveau: cat })}
+              >
+                {cat === "A" ? "Categorie A" : "Categorie B"}
+              </button>
+            ))}
+          </div>
+          <div style={{ fontSize: 11, color: "var(--text-3)", marginBottom: 8 }}>
+            8-tal ·{" "}
+            {config.niveau === "A"
+              ? "Topsport / Wedstrijdsport"
+              : config.niveau === "B"
+                ? "Korfbalplezier / Recreant"
+                : "Kies categorie voor kadervereisten"}
+          </div>
+        </>
       )}
 
       {isJeugdA && (
@@ -648,7 +670,9 @@ function TeamDetailPanel({
   alleTeams,
   validatie,
   versieId,
+  onTerug,
   onConfigUpdated,
+  onTeamVerwijderd,
   onSelectieGekoppeld,
   onSelectieOntkoppeld,
   onSelectieNaamUpdated,
@@ -657,41 +681,73 @@ function TeamDetailPanel({
   alleTeams: WerkbordTeam[];
   validatie: WerkbordValidatieItem[];
   versieId: string;
+  onTerug: () => void;
   onConfigUpdated: (teamId: string, update: Partial<WerkbordTeam>) => void;
+  onTeamVerwijderd: (teamId: string) => void;
   onSelectieGekoppeld: (teamId: string, selectieGroepId: string) => void;
   onSelectieOntkoppeld: (selectieGroepId: string) => void;
   onSelectieNaamUpdated: (selectieGroepId: string, naam: string) => void;
 }) {
+  const [verwijderBezig, setVerwijderBezig] = useState(false);
+  const [verwijderConfirm, setVerwijderConfirm] = useState(false);
   const teamValidatie = validatie.filter((v) => v.teamId === team.id);
 
+  async function handleVerwijder() {
+    setVerwijderBezig(true);
+    const result = await verwijderTeam(team.id);
+    setVerwijderBezig(false);
+    if (result.ok) {
+      onTeamVerwijderd(team.id);
+      onTerug();
+    }
+  }
+
   return (
-    <div
-      style={{
-        width: "var(--val-w)",
-        background: "var(--bg-2)",
-        borderLeft: "1px solid var(--border-0)",
-        display: "flex",
-        flexDirection: "column",
-        flexShrink: 0,
-        overflowY: "auto",
-      }}
-    >
+    <div style={{ display: "flex", flexDirection: "column", flex: 1, overflowY: "auto" }}>
+      {/* Header met terugknop */}
       <div
-        style={{ padding: "10px 14px", borderBottom: "1px solid var(--border-0)", flexShrink: 0 }}
+        style={{
+          height: 44,
+          display: "flex",
+          alignItems: "center",
+          gap: 6,
+          padding: "0 12px",
+          borderBottom: "1px solid var(--border-0)",
+          flexShrink: 0,
+        }}
       >
-        <div style={{ fontSize: 15, fontWeight: 800, color: "var(--text-1)", marginBottom: 2 }}>
-          {team.naam}
-        </div>
-        <div
+        <button
+          onClick={onTerug}
           style={{
-            fontSize: 10,
+            display: "flex",
+            alignItems: "center",
+            gap: 4,
+            background: "none",
+            border: "none",
             color: "var(--text-3)",
-            textTransform: "uppercase",
-            letterSpacing: ".5px",
+            fontSize: 12,
+            fontFamily: "inherit",
+            cursor: "pointer",
+            padding: "4px 6px",
+            borderRadius: 5,
           }}
         >
-          Inrichting · Validatie
-        </div>
+          <svg
+            width="13"
+            height="13"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+          >
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+          Teams
+        </button>
+        <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text-1)", flex: 1 }}>
+          {team.naam}
+        </span>
       </div>
       <ConfiguratieForm team={team} onConfigUpdated={onConfigUpdated} />
       <ValidatieLijst items={teamValidatie} />
@@ -703,6 +759,93 @@ function TeamDetailPanel({
         onSelectieOntkoppeld={onSelectieOntkoppeld}
         onSelectieNaamUpdated={onSelectieNaamUpdated}
       />
+
+      {/* Danger zone */}
+      <div
+        style={{
+          margin: "12px 14px 16px",
+          padding: "10px 12px",
+          borderRadius: 8,
+          border: "1px solid rgba(239,68,68,.18)",
+          background: "rgba(239,68,68,.04)",
+        }}
+      >
+        <div
+          style={{
+            fontSize: 9,
+            fontWeight: 700,
+            textTransform: "uppercase",
+            letterSpacing: ".5px",
+            color: "var(--err)",
+            marginBottom: 8,
+            opacity: 0.7,
+          }}
+        >
+          Danger zone
+        </div>
+        {verwijderConfirm ? (
+          <div>
+            <div style={{ fontSize: 11, color: "var(--text-2)", marginBottom: 8, lineHeight: 1.4 }}>
+              Team verwijderen? Spelers gaan terug naar de pool.
+            </div>
+            <div style={{ display: "flex", gap: 6 }}>
+              <button
+                onClick={handleVerwijder}
+                disabled={verwijderBezig}
+                style={{
+                  flex: 1,
+                  padding: "5px 0",
+                  borderRadius: 6,
+                  background: "var(--err)",
+                  border: "none",
+                  color: "#fff",
+                  fontSize: 11,
+                  fontWeight: 700,
+                  cursor: verwijderBezig ? "not-allowed" : "pointer",
+                  fontFamily: "inherit",
+                  opacity: verwijderBezig ? 0.6 : 1,
+                }}
+              >
+                {verwijderBezig ? "Bezig…" : "Ja, verwijder"}
+              </button>
+              <button
+                onClick={() => setVerwijderConfirm(false)}
+                disabled={verwijderBezig}
+                style={{
+                  padding: "5px 10px",
+                  borderRadius: 6,
+                  background: "var(--bg-2)",
+                  border: "1px solid var(--border-1)",
+                  color: "var(--text-2)",
+                  fontSize: 11,
+                  cursor: "pointer",
+                  fontFamily: "inherit",
+                }}
+              >
+                Annuleer
+              </button>
+            </div>
+          </div>
+        ) : (
+          <button
+            onClick={() => setVerwijderConfirm(true)}
+            style={{
+              width: "100%",
+              padding: "6px 0",
+              borderRadius: 6,
+              background: "none",
+              border: "1px solid rgba(239,68,68,.3)",
+              color: "var(--err)",
+              fontSize: 11,
+              fontWeight: 600,
+              cursor: "pointer",
+              fontFamily: "inherit",
+            }}
+          >
+            Team verwijderen
+          </button>
+        )}
+      </div>
     </div>
   );
 }
@@ -715,95 +858,72 @@ export function TeamDrawer({
   versieId,
   onClose,
   onTeamSelect,
-  onNieuwTeam,
+  onNieuwTeam: _onNieuwTeam,
   onConfigUpdated,
+  onTeamVerwijderd,
   onSelectieGekoppeld,
   onSelectieOntkoppeld,
   onSelectieNaamUpdated,
 }: TeamDrawerProps) {
   const geselecteerdTeam = teams.find((t) => t.id === geselecteerdTeamId) ?? null;
-  const detailOpen = geselecteerdTeam !== null;
   const gesorteerdeTeams = [...teams].sort((a, b) => a.volgorde - b.volgorde);
 
   return (
-    <div
+    <aside
       style={{
-        display: "flex",
-        flexDirection: "row",
-        width: open ? (detailOpen ? "calc(var(--val-w) * 2)" : "var(--val-w)") : 0,
-        transition: "width 200ms ease",
+        width: open ? "var(--val-w)" : 0,
+        transition: "width 200ms ease, opacity 200ms ease",
         overflow: "hidden",
         opacity: open ? 1 : 0,
         pointerEvents: open ? "auto" : "none",
         flexShrink: 0,
+        background: "var(--bg-1)",
+        borderLeft: "1px solid var(--border-0)",
+        display: "flex",
+        flexDirection: "column",
         position: "relative",
         zIndex: 20,
       }}
     >
-      <aside
-        style={{
-          width: "var(--val-w)",
-          flexShrink: 0,
-          background: "var(--bg-1)",
-          borderLeft: "1px solid var(--border-0)",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <div
-          style={{
-            height: 44,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "0 12px",
-            borderBottom: "1px solid var(--border-0)",
-            flexShrink: 0,
-          }}
-        >
-          <span
+      {geselecteerdTeam ? (
+        <TeamDetailPanel
+          key={geselecteerdTeam.id}
+          team={geselecteerdTeam}
+          alleTeams={teams}
+          validatie={validatie}
+          versieId={versieId}
+          onTerug={() => onTeamSelect(null)}
+          onConfigUpdated={onConfigUpdated}
+          onTeamVerwijderd={onTeamVerwijderd}
+          onSelectieGekoppeld={onSelectieGekoppeld}
+          onSelectieOntkoppeld={onSelectieOntkoppeld}
+          onSelectieNaamUpdated={onSelectieNaamUpdated}
+        />
+      ) : (
+        <>
+          {/* Header: lijst */}
+          <div
             style={{
-              fontSize: 12,
-              fontWeight: 700,
-              color: "var(--text-3)",
-              textTransform: "uppercase",
-              letterSpacing: ".5px",
+              height: 44,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "0 12px",
+              borderBottom: "1px solid var(--border-0)",
+              flexShrink: 0,
             }}
           >
-            Teams
-          </span>
-          <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-            <button
-              onClick={onNieuwTeam}
+            <span
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 4,
-                background: "var(--accent-dim)",
-                border: "1px solid rgba(255,107,0,.25)",
-                color: "var(--accent)",
-                fontSize: 11,
+                fontSize: 12,
                 fontWeight: 700,
-                padding: "4px 9px",
-                borderRadius: 6,
-                cursor: "pointer",
-                fontFamily: "inherit",
+                color: "var(--text-3)",
+                textTransform: "uppercase",
+                letterSpacing: ".5px",
               }}
             >
-              <svg
-                width="9"
-                height="9"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="3"
-                strokeLinecap="round"
-              >
-                <line x1="12" y1="5" x2="12" y2="19" />
-                <line x1="5" y1="12" x2="19" y2="12" />
-              </svg>
-              Nieuw
-            </button>
+              Teams
+            </span>
             <button
               onClick={onClose}
               title="Sluiten"
@@ -834,34 +954,20 @@ export function TeamDrawer({
               </svg>
             </button>
           </div>
-        </div>
 
-        <div style={{ flex: 1, overflowY: "auto" }}>
-          {gesorteerdeTeams.map((team) => (
-            <PlatteTeamKaart
-              key={team.id}
-              team={team}
-              geselecteerd={team.id === geselecteerdTeamId}
-              showScores={true}
-              onClick={() => onTeamSelect(team.id === geselecteerdTeamId ? null : team.id)}
-            />
-          ))}
-        </div>
-      </aside>
-
-      {detailOpen && geselecteerdTeam && (
-        <TeamDetailPanel
-          key={geselecteerdTeam.id}
-          team={geselecteerdTeam}
-          alleTeams={teams}
-          validatie={validatie}
-          versieId={versieId}
-          onConfigUpdated={onConfigUpdated}
-          onSelectieGekoppeld={onSelectieGekoppeld}
-          onSelectieOntkoppeld={onSelectieOntkoppeld}
-          onSelectieNaamUpdated={onSelectieNaamUpdated}
-        />
+          <div style={{ flex: 1, overflowY: "auto" }}>
+            {gesorteerdeTeams.map((team) => (
+              <PlatteTeamKaart
+                key={team.id}
+                team={team}
+                geselecteerd={false}
+                showScores={true}
+                onClick={() => onTeamSelect(team.id)}
+              />
+            ))}
+          </div>
+        </>
       )}
-    </div>
+    </aside>
   );
 }

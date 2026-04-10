@@ -258,6 +258,17 @@ export default async function IndelingPage() {
       const teamIdx = teams.findIndex((t) => t.id === primaryTeam.id);
       if (teamIdx >= 0) {
         teams[teamIdx] = { ...teams[teamIdx], selectieDames, selectieHeren, gebundeld: true };
+        // Sync canvas-positie naar alle andere teams in de groep (deduplicatie toont alleen primary)
+        for (const other of groepTeams.slice(1)) {
+          const otherIdx = teams.findIndex((t) => t.id === other.id);
+          if (otherIdx >= 0) {
+            teams[otherIdx] = {
+              ...teams[otherIdx],
+              canvasX: teams[teamIdx].canvasX,
+              canvasY: teams[teamIdx].canvasY,
+            };
+          }
+        }
       }
     }
   }

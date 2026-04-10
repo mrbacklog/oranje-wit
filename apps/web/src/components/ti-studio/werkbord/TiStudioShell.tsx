@@ -1,9 +1,6 @@
 // apps/web/src/components/ti-studio/werkbord/TiStudioShell.tsx
 "use client";
-import { useState, useCallback, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import "./tokens.css";
-import { Ribbon } from "./Ribbon";
+import { useState, useCallback, useEffect } from "react";
 import { Toolbar } from "./Toolbar";
 import { SpelersPoolDrawer } from "./SpelersPoolDrawer";
 import { WerkbordCanvas } from "./WerkbordCanvas";
@@ -12,54 +9,41 @@ import { VersiesDrawer } from "./VersiesDrawer";
 import SpelerProfielDialog from "../SpelerProfielDialog";
 import { TeamDialog } from "../TeamDialog";
 import { useZoom } from "./hooks/useZoom";
-import type {
-  TiStudioShellProps,
-  WerkbordTeam,
-  WerkbordSpeler,
-  WerkbordSpelerInTeam,
-  MemoStatus,
-} from "./types";
+import { useWerkbordState } from "./hooks/useWerkbordState";
+import type { TiStudioShellProps, MemoStatus } from "./types";
 import type { DrawerData } from "@/app/(teamindeling-studio)/ti-studio/indeling/drawer-actions";
 import { getVersiesVoorDrawer } from "@/app/(teamindeling-studio)/ti-studio/indeling/drawer-actions";
-import {
-  voegSelectieSpelerToe,
-  verwijderSelectieSpeler,
-  toggleSelectieBundeling,
-} from "@/app/(teamindeling-studio)/ti-studio/indeling/werkindeling-actions";
 
 type PanelLinks = "pool" | null;
 type PanelRechts = "teams" | "versies" | null;
 
 export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellProps) {
-  const router = useRouter();
   const [panelLinks, setPanelLinks] = useState<PanelLinks>(null);
   const [panelRechts, setPanelRechts] = useState<PanelRechts>("teams");
   const [geselecteerdTeamId, setGeselecteerdTeamId] = useState<string | null>(null);
   const [showScores, setShowScores] = useState(true);
   const [drawerData, setDrawerData] = useState<DrawerData | null>(null);
-  const { zoom, setZoom, zoomIn, zoomOut, resetZoom, zoomLevel, zoomPercent } = useZoom();
-
-  // Mutable werkbord state
-  const [teams, setTeams] = useState<WerkbordTeam[]>(initieleState.teams);
-  const [alleSpelers, setAlleSpelers] = useState<WerkbordSpeler[]>(initieleState.alleSpelers);
-
-  // Refs voor gebruik in SSE-handler (vermijdt stale closures)
-  const alleSpelersRef = useRef(alleSpelers);
-  useEffect(() => {
-    alleSpelersRef.current = alleSpelers;
-  }, [alleSpelers]);
-
-  // Unieke sessie-ID per browser-tab (zodat we onze eigen SSE-events kunnen overslaan)
-  const sessionId = useRef<string>(crypto.randomUUID());
-
-  const versieId = initieleState.versieId;
-
+  const [drawerRefreshTeller, setDrawerRefreshTeller] = useState(0);
   const [profielSpelerId, setProfielSpelerId] = useState<string | null>(null);
   const [profielTeamId, setProfielTeamId] = useState<string | null>(null);
-  function openProfiel(spelerId: string, teamId: string | null) {
-    setProfielSpelerId(spelerId);
-    setProfielTeamId(teamId);
-  }
+
+  const { zoom, setZoom, zoomIn, zoomOut, resetZoom, zoomLevel, zoomPercent } = useZoom();
+
+  const {
+    teams,
+    alleSpelers,
+    verplaatsSpeler,
+    verwijderSpelerUitTeam,
+    verplaatsTeamKaart,
+    slaTeamPositieOp,
+    updateTeamLokaal,
+    verwijderTeamLokaal,
+    koppelSelectieLokaal,
+    ontkoppelSelectieLokaal,
+    updateSelectieNaamLokaal,
+    toggleBundeling,
+    onDropSpelerOpSelectieFn,
+  } = useWerkbordState(initieleState.versieId, initieleState.teams, initieleState.alleSpelers);
 
   const [dialogTeamId, setDialogTeamId] = useState<string | null>(null);
   const openTeamDialog = useCallback((teamId: string) => {
@@ -68,30 +52,21 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
 
   const handleTeamMemoSaved = useCallback(
     (teamId: string, notitie: string, memoStatus: "open" | "gesloten", besluit: string | null) => {
-      setTeams((prev) =>
-        prev.map((t) =>
-          t.id === teamId
-            ? { ...t, notitie: notitie || null, memoStatus: memoStatus as MemoStatus, besluit }
-            : t
-        )
-      );
+      updateTeamLokaal(teamId, {
+        notitie: notitie || null,
+        memoStatus: memoStatus as MemoStatus,
+        besluit,
+      });
     },
-    []
+    [updateTeamLokaal]
   );
-
-  const gebruikerInitialen = gebruikerEmail
-    .split("@")[0]
-    .split(".")
-    .map((p) => p.charAt(0).toUpperCase())
-    .join("")
-    .slice(0, 2);
 
   useEffect(() => {
     if (panelRechts !== "versies") return;
     getVersiesVoorDrawer(initieleState.werkindelingId)
       .then(setDrawerData)
       .catch(() => {});
-  }, [panelRechts, initieleState.werkindelingId]);
+  }, [panelRechts, initieleState.werkindelingId, drawerRefreshTeller]);
 
   const togglePanelLinks = useCallback((panel: PanelLinks) => {
     setPanelLinks((prev) => (prev === panel ? null : panel));
@@ -107,400 +82,39 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
     setGeselecteerdTeamId(teamId);
   }, []);
 
-  const _hasErrors = initieleState.validatie.some((v) => v.type === "err"); // eslint-disable-line @typescript-eslint/no-unused-vars
-
-  // ─── Lokale state-mutaties ─────────────────────────────────────────────────
-
-  const verplaatsSpelerLokaal = useCallback(
-    (
-      spelerData: WerkbordSpeler,
-      vanTeamId: string | null,
-      naarTeamId: string,
-      naarGeslacht: "V" | "M"
-    ) => {
-      setTeams((prev) =>
-        prev.map((team) => {
-          let updated = { ...team };
-          if (vanTeamId && team.id === vanTeamId) {
-            updated = {
-              ...updated,
-              dames: updated.dames.filter((s) => s.spelerId !== spelerData.id),
-              heren: updated.heren.filter((s) => s.spelerId !== spelerData.id),
-            };
-          }
-          if (team.id === naarTeamId) {
-            const spelerInTeam: WerkbordSpelerInTeam = {
-              id: `sit-${spelerData.id}-${naarTeamId}-${Date.now()}`,
-              spelerId: spelerData.id,
-              speler: { ...spelerData, teamId: naarTeamId },
-              notitie: null,
-            };
-            if (naarGeslacht === "V") {
-              updated = {
-                ...updated,
-                dames: [...updated.dames.filter((s) => s.spelerId !== spelerData.id), spelerInTeam],
-              };
-            } else {
-              updated = {
-                ...updated,
-                heren: [...updated.heren.filter((s) => s.spelerId !== spelerData.id), spelerInTeam],
-              };
-            }
-          }
-          return updated;
-        })
-      );
-      setAlleSpelers((prev) =>
-        prev.map((s) => (s.id === spelerData.id ? { ...s, teamId: naarTeamId } : s))
-      );
-    },
-    []
-  );
-
-  const verwijderSpelerUitTeamLokaal = useCallback((spelerId: string, vanTeamId: string) => {
-    setTeams((prev) =>
-      prev.map((team) => {
-        if (team.id !== vanTeamId) return team;
-        return {
-          ...team,
-          dames: team.dames.filter((s) => s.spelerId !== spelerId),
-          heren: team.heren.filter((s) => s.spelerId !== spelerId),
-        };
-      })
-    );
-    setAlleSpelers((prev) => prev.map((s) => (s.id === spelerId ? { ...s, teamId: null } : s)));
-  }, []);
-
-  const verplaatsTeamKaartLokaal = useCallback((teamId: string, x: number, y: number) => {
-    setTeams((prev) =>
-      prev.map((t) =>
-        t.id === teamId ? { ...t, canvasX: Math.max(0, x), canvasY: Math.max(0, y) } : t
-      )
-    );
-  }, []);
-
-  const updateTeamLokaal = useCallback((teamId: string, update: Partial<WerkbordTeam>) => {
-    setTeams((prev) => prev.map((t) => (t.id === teamId ? { ...t, ...update } : t)));
-  }, []);
-
-  const koppelSelectieLokaal = useCallback((teamId: string, selectieGroepId: string) => {
-    setTeams((prev) =>
-      prev.map((t) =>
-        t.id === teamId
-          ? {
-              ...t,
-              selectieGroepId,
-              formaat: "selectie",
-              selectieNaam: null,
-              selectieDames: [],
-              selectieHeren: [],
-              gebundeld: false,
-            }
-          : t
-      )
-    );
-  }, []);
-
-  const ontkoppelSelectieLokaal = useCallback((selectieGroepId: string) => {
-    setTeams((prev) =>
-      prev.map((t) => {
-        if (t.selectieGroepId !== selectieGroepId) return t;
-        // Herstel formaat op basis van teamCategorie + kleur (blauw/groen → viertal, rest → achtal)
-        const formaatHerstel: "viertal" | "achtal" =
-          t.teamCategorie === "B_CATEGORIE" && (t.kleur === "blauw" || t.kleur === "groen")
-            ? "viertal"
-            : "achtal";
-        return { ...t, selectieGroepId: null, selectieNaam: null, formaat: formaatHerstel };
-      })
-    );
-  }, []);
-
-  const updateSelectieNaamLokaal = useCallback((selectieGroepId: string, naam: string) => {
-    setTeams((prev) =>
-      prev.map((t) =>
-        t.selectieGroepId === selectieGroepId ? { ...t, selectieNaam: naam || null } : t
-      )
-    );
-  }, []);
-
-  const bundelSelectieLokaal = useCallback((selectieGroepId: string) => {
-    setTeams((prev) => {
-      const sel = prev
-        .filter((t) => t.selectieGroepId === selectieGroepId)
-        .sort((a, b) => a.volgorde - b.volgorde);
-      const [primary, partner] = sel;
-      if (!primary || !partner) return prev;
-      const selectieDames = [...primary.dames, ...partner.dames];
-      const selectieHeren = [...primary.heren, ...partner.heren];
-      return prev.map((t) => {
-        if (t.id === primary.id)
-          return { ...t, dames: [], heren: [], selectieDames, selectieHeren, gebundeld: true };
-        if (t.id === partner.id) return { ...t, dames: [], heren: [], gebundeld: true };
-        return t;
-      });
-    });
-  }, []);
-
-  const ontbundelSelectieLokaal = useCallback((selectieGroepId: string) => {
-    setTeams((prev) => {
-      const sel = prev
-        .filter((t) => t.selectieGroepId === selectieGroepId)
-        .sort((a, b) => a.volgorde - b.volgorde);
-      const [primary] = sel;
-      if (!primary) return prev;
-      return prev.map((t) => {
-        if (t.id === primary.id)
-          return {
-            ...t,
-            dames: primary.selectieDames,
-            heren: primary.selectieHeren,
-            selectieDames: [],
-            selectieHeren: [],
-            gebundeld: false,
-          };
-        if (t.selectieGroepId === selectieGroepId) return { ...t, gebundeld: false };
-        return t;
-      });
-    });
-    setAlleSpelers((prev) =>
-      prev.map((s) => (s.selectieGroepId === selectieGroepId ? { ...s, selectieGroepId: null } : s))
-    );
-  }, []);
-
-  const voegSelectieSpelerToeLokaal = useCallback(
-    (naarSelectieGroepId: string, spelerData: WerkbordSpeler, geslacht: "V" | "M") => {
-      setTeams((prev) => {
-        const primaryTeam = [...prev]
-          .filter((t) => t.selectieGroepId === naarSelectieGroepId)
-          .sort((a, b) => a.volgorde - b.volgorde)[0];
-        if (!primaryTeam) return prev;
-        const spelerInTeam: WerkbordSpelerInTeam = {
-          id: `ssel-${spelerData.id}-${Date.now()}`,
-          spelerId: spelerData.id,
-          speler: { ...spelerData, teamId: null, selectieGroepId: naarSelectieGroepId },
-          notitie: null,
-        };
-        return prev.map((t) => {
-          if (t.id !== primaryTeam.id) return t;
-          if (geslacht === "V") {
-            return {
-              ...t,
-              selectieDames: [
-                ...t.selectieDames.filter((s) => s.spelerId !== spelerData.id),
-                spelerInTeam,
-              ],
-            };
-          }
-          return {
-            ...t,
-            selectieHeren: [
-              ...t.selectieHeren.filter((s) => s.spelerId !== spelerData.id),
-              spelerInTeam,
-            ],
-          };
-        });
-      });
-      setAlleSpelers((prev) =>
-        prev.map((s) =>
-          s.id === spelerData.id ? { ...s, teamId: null, selectieGroepId: naarSelectieGroepId } : s
-        )
-      );
-    },
-    []
-  );
-
-  const toggleBundeling = useCallback(
-    async (selectieGroepId: string, gebundeld: boolean) => {
-      if (gebundeld) {
-        bundelSelectieLokaal(selectieGroepId);
-        await toggleSelectieBundeling(selectieGroepId, true);
-      } else {
-        const alleCurTeams = teams.filter((t) => t.selectieGroepId === selectieGroepId);
-        const primaryTeam = alleCurTeams.sort((a, b) => a.volgorde - b.volgorde)[0];
-        ontbundelSelectieLokaal(selectieGroepId);
-        await toggleSelectieBundeling(selectieGroepId, false, primaryTeam?.id);
-      }
-    },
-    [bundelSelectieLokaal, ontbundelSelectieLokaal, teams]
-  );
-
-  const onDropSpelerOpSelectieFn = useCallback(
-    async (
-      spelerData: WerkbordSpeler,
-      vanTeamId: string | null,
-      vanSelectieGroepId: string | null,
-      naarSelectieGroepId: string,
-      geslacht: "V" | "M"
-    ) => {
-      if (vanTeamId) {
-        verwijderSpelerUitTeamLokaal(spelerData.id, vanTeamId);
-      } else if (vanSelectieGroepId) {
-        setTeams((prev) =>
-          prev.map((t) => {
-            if (t.selectieGroepId !== vanSelectieGroepId) return t;
-            return {
-              ...t,
-              selectieDames: t.selectieDames.filter((s) => s.spelerId !== spelerData.id),
-              selectieHeren: t.selectieHeren.filter((s) => s.spelerId !== spelerData.id),
-            };
-          })
-        );
-      }
-      voegSelectieSpelerToeLokaal(naarSelectieGroepId, spelerData, geslacht);
-      const result = await voegSelectieSpelerToe(naarSelectieGroepId, spelerData.id);
-      if (!result.ok) {
-        void verwijderSelectieSpeler(naarSelectieGroepId, spelerData.id);
-      }
-    },
-    [verwijderSpelerUitTeamLokaal, voegSelectieSpelerToeLokaal]
-  );
-
-  // ─── API-calls + SSE ────────────────────────────────────────────────────────
-
-  async function stuurMutatie(body: Record<string, unknown>) {
-    try {
-      await fetch(`/api/ti-studio/indeling/${versieId}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...body, sessionId: sessionId.current }),
-      });
-    } catch {
-      // Stil falen — optimistic update blijft, server-sync retry via SSE reconnect
-    }
+  function openProfiel(spelerId: string, teamId: string | null) {
+    setProfielSpelerId(spelerId);
+    setProfielTeamId(teamId);
   }
-
-  // Speler-verplaatsing: optimistic + opslaan
-  const verplaatsSpeler = useCallback(
-    (
-      spelerData: WerkbordSpeler,
-      vanTeamId: string | null,
-      naarTeamId: string,
-      naarGeslacht: "V" | "M"
-    ) => {
-      verplaatsSpelerLokaal(spelerData, vanTeamId, naarTeamId, naarGeslacht);
-      stuurMutatie({
-        type: "speler_verplaatst",
-        spelerId: spelerData.id,
-        vanTeamId,
-        naarTeamId,
-        naarGeslacht,
-      });
-    },
-    [verplaatsSpelerLokaal] // eslint-disable-line react-hooks/exhaustive-deps
-  );
-
-  // Speler terug naar pool: optimistic + opslaan
-  const verwijderSpelerUitTeam = useCallback(
-    (spelerId: string, vanTeamId: string) => {
-      verwijderSpelerUitTeamLokaal(spelerId, vanTeamId);
-      stuurMutatie({ type: "speler_naar_pool", spelerId, vanTeamId });
-    },
-    [verwijderSpelerUitTeamLokaal] // eslint-disable-line react-hooks/exhaustive-deps
-  );
-
-  // Teamkaart verplaatsen: instant lokaal (tijdens drag), API-call alleen bij loslaten
-  const verplaatsTeamKaart = useCallback(
-    (teamId: string, x: number, y: number) => {
-      verplaatsTeamKaartLokaal(teamId, x, y);
-    },
-    [verplaatsTeamKaartLokaal]
-  );
-
-  const slaTeamPositieOp = useCallback(
-    (teamId: string, x: number, y: number) => {
-      stuurMutatie({ type: "team_positie", teamId, x: Math.round(x), y: Math.round(y) });
-    },
-    [] // eslint-disable-line react-hooks/exhaustive-deps
-  );
-
-  // ─── SSE-verbinding ────────────────────────────────────────────────────────
-
-  useEffect(() => {
-    if (!versieId) return;
-
-    const es = new EventSource(`/api/ti-studio/indeling/${versieId}/stream`);
-
-    es.onmessage = (e) => {
-      let event: Record<string, unknown>;
-      try {
-        event = JSON.parse(e.data as string);
-      } catch {
-        return;
-      }
-
-      if (event.type === "ping") return;
-      // Sla onze eigen events over (we hebben al optimistic update gedaan)
-      if (event.sessionId === sessionId.current) return;
-
-      if (event.type === "speler_verplaatst") {
-        const sp = alleSpelersRef.current.find((s) => s.id === event.spelerId);
-        if (sp) {
-          verplaatsSpelerLokaal(
-            sp,
-            event.vanTeamId as string | null,
-            event.naarTeamId as string,
-            event.naarGeslacht as "V" | "M"
-          );
-        }
-      } else if (event.type === "speler_naar_pool") {
-        verwijderSpelerUitTeamLokaal(event.spelerId as string, event.vanTeamId as string);
-      } else if (event.type === "team_positie") {
-        verplaatsTeamKaartLokaal(event.teamId as string, event.x as number, event.y as number);
-      }
-    };
-
-    return () => es.close();
-  }, [versieId, verplaatsSpelerLokaal, verwijderSpelerUitTeamLokaal, verplaatsTeamKaartLokaal]);
-
-  // ─── Render ────────────────────────────────────────────────────────────────
 
   const ingeplandSpelers = alleSpelers.filter(
     (s) => s.teamId !== null || s.selectieGroepId !== null
   ).length;
 
+  const versieId = initieleState.versieId;
+
   return (
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: "var(--ribbon) 1fr",
         gridTemplateRows: "var(--toolbar) 1fr",
-        height: "100vh",
+        height: "100%",
         overflow: "hidden",
-        fontFamily: "Inter, system-ui, sans-serif",
-        fontSize: 13,
-        lineHeight: 1.5,
-        background: "var(--bg-0)",
-        color: "var(--text-1)",
-        userSelect: "none",
       }}
     >
-      <Ribbon
-        gebruikerInitialen={gebruikerInitialen}
-        onNaarKader={() => router.push("/ti-studio/kader")}
-        onNaarSpelers={() => router.push("/teamindeling/personen/spelers")}
-      />
       <Toolbar
         naam={initieleState.naam}
         versieNaam={initieleState.versieNaam}
         versieNummer={initieleState.versieNummer}
-        status={initieleState.status}
         totalSpelers={initieleState.totalSpelers}
         ingeplandSpelers={ingeplandSpelers}
         panelLinks={panelLinks}
         panelRechts={panelRechts}
         onTogglePanelLinks={togglePanelLinks}
         onTogglePanelRechts={togglePanelRechts}
-        onNieuwTeam={() => {}}
-        onTerug={() => router.push("/ti-studio")}
+        onVersiesOpen={() => togglePanelRechts("versies")}
       />
-      <div
-        style={{
-          gridColumn: 2,
-          gridRow: 2,
-          display: "flex",
-          overflow: "hidden",
-        }}
-      >
+      <div style={{ display: "flex", overflow: "hidden" }}>
         <SpelersPoolDrawer
           open={panelLinks === "pool"}
           spelers={alleSpelers}
@@ -519,6 +133,9 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
           onZoomChange={setZoom}
           onOpenTeamDrawer={openTeamDrawer}
           onDropSpelerOpTeam={verplaatsSpeler}
+          onReturneerNaarPool={(spelerData, vanTeamId) =>
+            verwijderSpelerUitTeam(spelerData.id, vanTeamId)
+          }
           onTeamPositionChange={verplaatsTeamKaart}
           onTeamDragEnd={slaTeamPositieOp}
           onSpelerClick={openProfiel}
@@ -536,6 +153,7 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
           onTeamSelect={setGeselecteerdTeamId}
           onNieuwTeam={() => {}}
           onConfigUpdated={updateTeamLokaal}
+          onTeamVerwijderd={verwijderTeamLokaal}
           onSelectieGekoppeld={koppelSelectieLokaal}
           onSelectieOntkoppeld={ontkoppelSelectieLokaal}
           onSelectieNaamUpdated={updateSelectieNaamLokaal}
@@ -546,6 +164,7 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
           werkindelingId={initieleState.werkindelingId}
           gebruikerEmail={gebruikerEmail}
           onClose={() => setPanelRechts(null)}
+          onRefresh={() => setDrawerRefreshTeller((n) => n + 1)}
         />
       </div>
       <SpelerProfielDialog

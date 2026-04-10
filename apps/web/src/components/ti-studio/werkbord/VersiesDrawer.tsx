@@ -22,6 +22,7 @@ interface VersiesDrawerProps {
   werkindelingId: string;
   gebruikerEmail: string;
   onClose: () => void;
+  onRefresh: () => void;
 }
 
 export function VersiesDrawer({
@@ -30,6 +31,7 @@ export function VersiesDrawer({
   werkindelingId,
   gebruikerEmail,
   onClose,
+  onRefresh,
 }: VersiesDrawerProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -58,6 +60,7 @@ export function VersiesDrawer({
       });
       setNieuweVraag("");
       setToonNieuweWI(false);
+      onRefresh();
       startTransition(() => router.refresh());
     } catch (err) {
       logger.error("Fout bij aanmaken what-if", err);
@@ -80,6 +83,7 @@ export function VersiesDrawer({
         await verwijderVersie(confirm.versieId);
       }
       setConfirm(null);
+      onRefresh();
       startTransition(() => router.refresh());
     } catch (err) {
       logger.error("Fout bij drawer-actie", err);

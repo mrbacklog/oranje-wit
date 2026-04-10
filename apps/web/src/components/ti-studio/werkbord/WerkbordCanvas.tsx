@@ -26,6 +26,7 @@ interface WerkbordCanvasProps {
   ) => void;
   onTeamPositionChange: (teamId: string, x: number, y: number) => void;
   onTeamDragEnd: (teamId: string, x: number, y: number) => void;
+  onReturneerNaarPool: (spelerData: WerkbordSpeler, vanTeamId: string) => void;
   onSpelerClick?: (spelerId: string, teamId: string | null) => void;
   onDropSpelerOpSelectie: (
     spelerData: WerkbordSpeler,
@@ -59,22 +60,31 @@ const MINIMAP_W = 160;
 const MINIMAP_H = 110;
 const MIN_ZOOM = 0.4;
 const MAX_ZOOM = 1.5;
-const KAART_BREEDTE: Record<KaartFormaat, number> = { viertal: 140, achtal: 280, selectie: 560 };
+const KAART_BREEDTE: Record<KaartFormaat, number> = { viertal: 160, achtal: 320, selectie: 640 };
+const RIJ_HOOGTE = 40; // SPELER_RIJ_HOOGTE — vaste rijhoogte alle zoomniveaus
+const MIN_DROPZONE = 8 * RIJ_HOOGTE; // 320px
 
-function schatKaartHoogte(team: WerkbordTeam, zoomLevel: ZoomLevel): number {
-  if (zoomLevel === "compact") return 210;
+function schatKaartHoogte(team: WerkbordTeam): number {
+  // Kaartstructuur is zoomlevel-onafhankelijk: header + dropzone + staf + footer
   const aantalStaf = team.staf.length;
-  const rijHoogte = zoomLevel === "detail" ? 48 : 21;
   const labelHoogte = 14;
   const headerHoogte = 34;
   const footerHoogte = 26;
   const stafHoogte = aantalStaf > 0 ? aantalStaf * 20 + 1 : 0;
   if (team.formaat === "viertal") {
-    const aantalSpelers = team.dames.length + team.heren.length;
-    return headerHoogte + 2 * labelHoogte + aantalSpelers * rijHoogte + stafHoogte + footerHoogte;
+    // Viertal: dames + heren gestapeld in 1 kolom
+    const kolomHoogte = Math.max(
+      (team.dames.length + team.heren.length) * RIJ_HOOGTE,
+      MIN_DROPZONE * 2 // 2 secties elk min 320px
+    );
+    return headerHoogte + 2 * labelHoogte + kolomHoogte + stafHoogte + footerHoogte;
   }
-  const maxKolom = Math.max(team.dames.length, team.heren.length);
-  return headerHoogte + labelHoogte + maxKolom * rijHoogte + stafHoogte + footerHoogte;
+  const kolomHoogte = Math.max(
+    team.dames.length * RIJ_HOOGTE,
+    team.heren.length * RIJ_HOOGTE,
+    MIN_DROPZONE
+  );
+  return headerHoogte + labelHoogte + kolomHoogte + stafHoogte + footerHoogte;
 }
 
 export function WerkbordCanvas({
@@ -90,6 +100,7 @@ export function WerkbordCanvas({
   onZoomChange,
   onOpenTeamDrawer,
   onDropSpelerOpTeam,
+  onReturneerNaarPool,
   onTeamPositionChange,
   onTeamDragEnd,
   onSpelerClick,
@@ -160,7 +171,7 @@ export function WerkbordCanvas({
     const minX = Math.min(...teams.map((t) => t.canvasX)) - margin;
     const minY = Math.min(...teams.map((t) => t.canvasY)) - margin;
     const maxX = Math.max(...teams.map((t) => t.canvasX + KAART_BREEDTE[t.formaat])) + margin;
-    const maxY = Math.max(...teams.map((t) => t.canvasY + schatKaartHoogte(t, zoomLevel))) + margin;
+    const maxY = Math.max(...teams.map((t) => t.canvasY + schatKaartHoogte(t))) + margin;
     const contentW = maxX - minX;
     const contentH = maxY - minY;
     const cw = containerRef.current.offsetWidth;
@@ -204,11 +215,17 @@ export function WerkbordCanvas({
     if (draggingTeam) {
       const dx = (e.clientX - draggingTeam.startMouseX) / zoom;
       const dy = (e.clientY - draggingTeam.startMouseY) / zoom;
-      onTeamPositionChange(
-        draggingTeam.teamId,
-        draggingTeam.startCanvasX + dx,
-        draggingTeam.startCanvasY + dy
-      );
+      const newX = draggingTeam.startCanvasX + dx;
+      const newY = draggingTeam.startCanvasY + dy;
+      onTeamPositionChange(draggingTeam.teamId, newX, newY);
+      // Selectie-partner meeslepen
+      const draggend = teams.find((t) => t.id === draggingTeam.teamId);
+      if (draggend?.selectieGroepId) {
+        const partner = teams.find(
+          (t) => t.selectieGroepId === draggend.selectieGroepId && t.id !== draggend.id
+        );
+        if (partner) onTeamPositionChange(partner.id, newX, newY);
+      }
     } else if (panState) {
       setPanX(panState.startPanX + (e.clientX - panState.startMouseX));
       setPanY(panState.startPanY + (e.clientY - panState.startMouseY));
@@ -226,7 +243,16 @@ export function WerkbordCanvas({
     document.body.style.cursor = ""; // globale cursor terugzetten
     if (draggingTeam) {
       const team = teams.find((t) => t.id === draggingTeam.teamId);
-      if (team) onTeamDragEnd(draggingTeam.teamId, team.canvasX, team.canvasY);
+      if (team) {
+        onTeamDragEnd(draggingTeam.teamId, team.canvasX, team.canvasY);
+        // Selectie-partner positie ook opslaan
+        if (team.selectieGroepId) {
+          const partner = teams.find(
+            (t) => t.selectieGroepId === team.selectieGroepId && t.id !== team.id
+          );
+          if (partner) onTeamDragEnd(partner.id, team.canvasX, team.canvasY);
+        }
+      }
       setDraggingTeam(null);
     }
     setPanState(null);
@@ -281,6 +307,19 @@ export function WerkbordCanvas({
       {/* Achtergrond dot-patroon — pan-zone */}
       <div
         onMouseDown={handleBgMouseDown}
+        onDragOver={(e) => {
+          if (!e.dataTransfer.types.includes("speler")) return;
+          e.preventDefault();
+          e.dataTransfer.dropEffect = "move";
+        }}
+        onDrop={(e) => {
+          e.preventDefault();
+          const raw = e.dataTransfer.getData("speler");
+          if (!raw) return;
+          const data = JSON.parse(raw) as { speler: WerkbordSpeler; vanTeamId: string | null };
+          if (!data.vanTeamId) return; // al in pool
+          onReturneerNaarPool(data.speler, data.vanTeamId);
+        }}
         style={{
           position: "absolute",
           inset: 0,
@@ -310,6 +349,8 @@ export function WerkbordCanvas({
             ? (teams.find((t) => t.selectieGroepId === team.selectieGroepId && t.id !== team.id) ??
               null)
             : null;
+          // Toon alleen één kaart per selectiegroep: de primaire (laagste index)
+          if (partner && teams.indexOf(team) > teams.indexOf(partner)) return null;
           return (
             <TeamKaart
               key={team.id}
@@ -440,21 +481,29 @@ export function WerkbordCanvas({
               }}
             />
             {/* Teamkaarten als mini-rechthoeken */}
-            {teams.map((team) => (
-              <div
-                key={team.id}
-                style={{
-                  position: "absolute",
-                  left: (team.canvasX / CANVAS_W) * MINIMAP_W,
-                  top: (team.canvasY / CANVAS_H) * MINIMAP_H,
-                  width: Math.max(3, (KAART_BREEDTE[team.formaat] / CANVAS_W) * MINIMAP_W),
-                  height: Math.max(2, (schatKaartHoogte(team, zoomLevel) / CANVAS_H) * MINIMAP_H),
-                  background: "rgba(255,107,0,.5)",
-                  borderRadius: 1,
-                  pointerEvents: "none",
-                }}
-              />
-            ))}
+            {teams.map((team) => {
+              const partnerIdx = team.selectieGroepId
+                ? teams.findIndex(
+                    (t) => t.selectieGroepId === team.selectieGroepId && t.id !== team.id
+                  )
+                : -1;
+              if (partnerIdx !== -1 && teams.indexOf(team) > partnerIdx) return null;
+              return (
+                <div
+                  key={team.id}
+                  style={{
+                    position: "absolute",
+                    left: (team.canvasX / CANVAS_W) * MINIMAP_W,
+                    top: (team.canvasY / CANVAS_H) * MINIMAP_H,
+                    width: Math.max(3, (KAART_BREEDTE[team.formaat] / CANVAS_W) * MINIMAP_W),
+                    height: Math.max(2, (schatKaartHoogte(team, zoomLevel) / CANVAS_H) * MINIMAP_H),
+                    background: "rgba(255,107,0,.5)",
+                    borderRadius: 1,
+                    pointerEvents: "none",
+                  }}
+                />
+              );
+            })}
             {/* Viewport indicator — dit is wat je vastgrijpt */}
             <div
               style={{

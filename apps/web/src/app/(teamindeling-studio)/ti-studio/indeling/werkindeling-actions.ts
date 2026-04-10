@@ -153,27 +153,36 @@ export async function verwijderWerkindeling(werkindelingId: string, auteur: stri
 
 export async function getSpelerProfiel(spelerId: string) {
   await requireTC();
-  return prisma.speler.findUnique({
-    where: { id: spelerId },
-    select: {
-      id: true,
-      roepnaam: true,
-      achternaam: true,
-      geboortejaar: true,
-      geboortedatum: true,
-      geslacht: true,
-      status: true,
-      huidig: true,
-      spelerspad: true,
-      volgendSeizoen: true,
-      rating: true,
-      lidSinds: true,
-      notitie: true,
-      memoStatus: true,
-      besluit: true,
-      seizoenenActief: true,
-    },
-  });
+  const [speler, competitieHistorie] = await Promise.all([
+    prisma.speler.findUnique({
+      where: { id: spelerId },
+      select: {
+        id: true,
+        roepnaam: true,
+        achternaam: true,
+        geboortejaar: true,
+        geboortedatum: true,
+        geslacht: true,
+        status: true,
+        huidig: true,
+        spelerspad: true,
+        volgendSeizoen: true,
+        rating: true,
+        lidSinds: true,
+        notitie: true,
+        memoStatus: true,
+        besluit: true,
+        seizoenenActief: true,
+      },
+    }),
+    prisma.competitieSpeler.findMany({
+      where: { relCode: spelerId },
+      select: { seizoen: true, team: true },
+      orderBy: { seizoen: "desc" },
+      distinct: ["seizoen"],
+    }),
+  ]);
+  return speler ? { ...speler, competitieHistorie } : null;
 }
 
 export async function updateSpelerNotitie(spelerId: string, notitie: string): Promise<void> {

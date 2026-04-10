@@ -89,6 +89,20 @@ export async function ontkoppelSelectie(groepId: string): Promise<ActionResult<v
   }
 }
 
+export async function verwijderTeam(teamId: string): Promise<ActionResult<void>> {
+  await requireTC();
+  try {
+    await prisma.team.delete({ where: { id: teamId } });
+    return { ok: true, data: undefined };
+  } catch (error) {
+    logger.warn(`Fout bij verwijderen team ${teamId}:`, error);
+    return {
+      ok: false,
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
+}
+
 export async function updateSelectieNaam(
   groepId: string,
   naam: string

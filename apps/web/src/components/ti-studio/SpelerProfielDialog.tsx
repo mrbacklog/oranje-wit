@@ -708,10 +708,17 @@ export default function SpelerProfielDialog({
 
   if (!open) return null;
 
-  // Spelerspad
-  const spelerspad: SpelerspadItem[] = Array.isArray(profiel?.spelerspad)
+  // Spelerspad — recent eerst, aangevuld met competitieHistorie voor oudere seizoenen
+  const padItems: SpelerspadItem[] = Array.isArray(profiel?.spelerspad)
     ? (profiel.spelerspad as SpelerspadItem[])
     : [];
+  const padSeizoen = new Set(padItems.map((p) => p.seizoen));
+  const extraItems: SpelerspadItem[] = (profiel?.competitieHistorie ?? [])
+    .filter((h: { seizoen: string; team: string }) => !padSeizoen.has(h.seizoen))
+    .map((h: { seizoen: string; team: string }) => ({ seizoen: h.seizoen, team: h.team }));
+  const spelerspad: SpelerspadItem[] = [...padItems, ...extraItems].sort((a, b) =>
+    (b.seizoen ?? "").localeCompare(a.seizoen ?? "")
+  );
 
   // Team-info
   const huidigTeamObj = profiel?.huidig as HuidigTeam | null | undefined;

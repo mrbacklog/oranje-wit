@@ -1,14 +1,21 @@
 // apps/web/src/components/ti-studio/werkbord/Ribbon.tsx
 "use client";
-import "./tokens.css";
 
 interface RibbonProps {
   gebruikerInitialen: string;
+  activeRoute: string;
+  onNaarIndeling: () => void;
   onNaarKader: () => void;
-  onNaarSpelers: () => void;
+  onNaarPersonen: () => void;
 }
 
-export function Ribbon({ gebruikerInitialen, onNaarKader, onNaarSpelers }: RibbonProps) {
+export function Ribbon({
+  gebruikerInitialen,
+  activeRoute,
+  onNaarIndeling,
+  onNaarKader,
+  onNaarPersonen,
+}: RibbonProps) {
   return (
     <nav
       style={{
@@ -50,8 +57,12 @@ export function Ribbon({ gebruikerInitialen, onNaarKader, onNaarSpelers }: Ribbo
 
       {/* Hoofd-groep */}
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
-        {/* Werkbord — altijd actief (we zijn op de indeling-pagina) */}
-        <RibbonBtn tip="Werkbord" active={true} onClick={() => {}}>
+        {/* Werkbord */}
+        <RibbonBtn
+          tip="Werkbord"
+          active={activeRoute.includes("/indeling")}
+          onClick={onNaarIndeling}
+        >
           <svg
             width="17"
             height="17"
@@ -70,7 +81,7 @@ export function Ribbon({ gebruikerInitialen, onNaarKader, onNaarSpelers }: Ribbo
         </RibbonBtn>
 
         {/* Kader */}
-        <RibbonBtn tip="Kader" active={false} onClick={onNaarKader}>
+        <RibbonBtn tip="Kader" active={activeRoute.includes("/kader")} onClick={onNaarKader}>
           <svg
             width="17"
             height="17"
@@ -86,8 +97,12 @@ export function Ribbon({ gebruikerInitialen, onNaarKader, onNaarSpelers }: Ribbo
           </svg>
         </RibbonBtn>
 
-        {/* Spelerslijst */}
-        <RibbonBtn tip="Spelerslijst" active={false} onClick={onNaarSpelers}>
+        {/* Personen */}
+        <RibbonBtn
+          tip="Personen"
+          active={activeRoute.includes("/personen")}
+          onClick={onNaarPersonen}
+        >
           <svg
             width="17"
             height="17"
