@@ -1,6 +1,6 @@
 // apps/web/src/components/ti-studio/werkbord/TeamKaartSpelerRij.tsx
 "use client";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { PEILJAAR } from "@oranje-wit/types";
 import "./tokens.css";
 import { SpelerKaart } from "./SpelerKaart";
@@ -98,6 +98,8 @@ function CompactSpelerRij({
   selectieGroepId?: string | null;
 }) {
   const ghostRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isLanding, setIsLanding] = useState(false);
   const geslacht = speler.geslacht.toLowerCase() as "v" | "m";
   const geslachtKleur = geslacht === "v" ? "var(--pink)" : "var(--blue)";
   const geslachtBg = geslacht === "v" ? "rgba(236,72,153,.18)" : "rgba(96,165,250,.18)";
@@ -122,6 +124,8 @@ function CompactSpelerRij({
       <div
         draggable
         onDragStart={(e) => {
+          setIsDragging(true);
+          setIsLanding(false);
           e.stopPropagation();
           e.dataTransfer.setData(
             "speler",
@@ -132,7 +136,29 @@ function CompactSpelerRij({
             })
           );
           e.dataTransfer.effectAllowed = "move";
-          if (ghostRef.current) e.dataTransfer.setDragImage(ghostRef.current, 20, 24);
+          if (ghostRef.current) {
+            ghostRef.current.style.background = "var(--bg-2)";
+            ghostRef.current.style.border = "1.5px solid rgba(255,107,0,.6)";
+            ghostRef.current.style.borderRadius = "var(--card-radius)";
+            ghostRef.current.style.boxShadow =
+              "0 10px 28px rgba(0,0,0,.65), 0 32px 72px rgba(0,0,0,.5), 0 0 0 1px rgba(255,107,0,.2)";
+            ghostRef.current.style.padding = "4px";
+            e.dataTransfer.setDragImage(ghostRef.current, 24, 28);
+            requestAnimationFrame(() => {
+              if (ghostRef.current) {
+                ghostRef.current.style.background = "";
+                ghostRef.current.style.border = "";
+                ghostRef.current.style.borderRadius = "";
+                ghostRef.current.style.boxShadow = "";
+                ghostRef.current.style.padding = "";
+              }
+            });
+          }
+        }}
+        onDragEnd={() => {
+          setIsDragging(false);
+          setIsLanding(true);
+          setTimeout(() => setIsLanding(false), 650);
         }}
         style={{
           height: SPELER_RIJ_HOOGTE,
@@ -141,8 +167,18 @@ function CompactSpelerRij({
           gap: 8,
           padding: "0 10px",
           flexShrink: 0,
-          cursor: "grab",
+          cursor: isDragging ? "grabbing" : "grab",
           borderBottom: "1px solid rgba(255,255,255,.05)",
+          transform: isDragging ? "scale(1.04) translateY(-4px)" : "none",
+          background: isDragging ? "rgba(255,107,0,.10)" : "transparent",
+          outline: isDragging ? "1.5px solid rgba(255,107,0,.5)" : "none",
+          boxShadow: isDragging ? "var(--sh-lift-speler)" : "none",
+          transition: isDragging
+            ? "transform 220ms cubic-bezier(0.34,1.56,0.64,1), box-shadow 220ms ease"
+            : undefined,
+          animation: isLanding ? "dropLandSpeler 650ms cubic-bezier(0.16,1,0.3,1) both" : undefined,
+          zIndex: isDragging ? 50 : undefined,
+          position: "relative",
         }}
       >
         <div
@@ -178,6 +214,20 @@ function CompactSpelerRij({
           {naam}
         </div>
       </div>
+      <style>{`
+        @keyframes dropLandSpeler {
+          from {
+            transform: scale(1.04) translateY(-4px);
+            box-shadow: 0 6px 18px rgba(0,0,0,.6), 0 0 0 1.5px rgba(255,107,0,.45);
+            outline: 1.5px solid rgba(255,107,0,.5);
+          }
+          to {
+            transform: scale(1) translateY(0);
+            box-shadow: none;
+            outline: none;
+          }
+        }
+      `}</style>
     </>
   );
 }
@@ -195,6 +245,8 @@ function NormaalSpelerRij({
   selectieGroepId?: string | null;
 }) {
   const ghostRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isLanding, setIsLanding] = useState(false);
   const geslacht = speler.geslacht.toLowerCase() as "v" | "m";
   const geslachtKleur = geslacht === "v" ? "var(--pink)" : "var(--blue)";
   const geslachtBg = geslacht === "v" ? "rgba(236,72,153,.18)" : "rgba(96,165,250,.18)";
@@ -221,6 +273,8 @@ function NormaalSpelerRij({
       <div
         draggable
         onDragStart={(e) => {
+          setIsDragging(true);
+          setIsLanding(false);
           e.stopPropagation();
           e.dataTransfer.setData(
             "speler",
@@ -231,7 +285,29 @@ function NormaalSpelerRij({
             })
           );
           e.dataTransfer.effectAllowed = "move";
-          if (ghostRef.current) e.dataTransfer.setDragImage(ghostRef.current, 20, 24);
+          if (ghostRef.current) {
+            ghostRef.current.style.background = "var(--bg-2)";
+            ghostRef.current.style.border = "1.5px solid rgba(255,107,0,.6)";
+            ghostRef.current.style.borderRadius = "var(--card-radius)";
+            ghostRef.current.style.boxShadow =
+              "0 10px 28px rgba(0,0,0,.65), 0 32px 72px rgba(0,0,0,.5), 0 0 0 1px rgba(255,107,0,.2)";
+            ghostRef.current.style.padding = "4px";
+            e.dataTransfer.setDragImage(ghostRef.current, 24, 28);
+            requestAnimationFrame(() => {
+              if (ghostRef.current) {
+                ghostRef.current.style.background = "";
+                ghostRef.current.style.border = "";
+                ghostRef.current.style.borderRadius = "";
+                ghostRef.current.style.boxShadow = "";
+                ghostRef.current.style.padding = "";
+              }
+            });
+          }
+        }}
+        onDragEnd={() => {
+          setIsDragging(false);
+          setIsLanding(true);
+          setTimeout(() => setIsLanding(false), 650);
         }}
         style={{
           height: SPELER_RIJ_HOOGTE,
@@ -240,8 +316,18 @@ function NormaalSpelerRij({
           gap: 7,
           padding: "0 8px",
           flexShrink: 0,
-          cursor: "grab",
+          cursor: isDragging ? "grabbing" : "grab",
           borderBottom: "1px solid rgba(255,255,255,.05)",
+          transform: isDragging ? "scale(1.04) translateY(-4px)" : "none",
+          background: isDragging ? "rgba(255,107,0,.10)" : "transparent",
+          outline: isDragging ? "1.5px solid rgba(255,107,0,.5)" : "none",
+          boxShadow: isDragging ? "var(--sh-lift-speler)" : "none",
+          transition: isDragging
+            ? "transform 220ms cubic-bezier(0.34,1.56,0.64,1), box-shadow 220ms ease"
+            : undefined,
+          animation: isLanding ? "dropLandSpeler 650ms cubic-bezier(0.16,1,0.3,1) both" : undefined,
+          zIndex: isDragging ? 50 : undefined,
+          position: "relative",
         }}
       >
         <div
@@ -304,6 +390,20 @@ function NormaalSpelerRij({
           </span>
         </div>
       </div>
+      <style>{`
+        @keyframes dropLandSpeler {
+          from {
+            transform: scale(1.04) translateY(-4px);
+            box-shadow: 0 6px 18px rgba(0,0,0,.6), 0 0 0 1.5px rgba(255,107,0,.45);
+            outline: 1.5px solid rgba(255,107,0,.5);
+          }
+          to {
+            transform: scale(1) translateY(0);
+            box-shadow: none;
+            outline: none;
+          }
+        }
+      `}</style>
     </>
   );
 }

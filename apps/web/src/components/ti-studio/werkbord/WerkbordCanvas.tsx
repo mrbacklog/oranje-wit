@@ -362,6 +362,14 @@ export function WerkbordCanvas({
               team={team}
               zoomLevel={zoomLevel}
               showScores={showScores}
+              isDragging={
+                draggingTeam?.teamId === team.id ||
+                // selectie-partner lift mee op
+                (!!team.selectieGroepId &&
+                  !!draggingTeam &&
+                  teams.find((t) => t.id === draggingTeam.teamId)?.selectieGroepId ===
+                    team.selectieGroepId)
+              }
               onOpenTeamDrawer={onOpenTeamDrawer}
               onDropSpeler={(spelerData, vanTeamId, naarGeslacht) =>
                 onDropSpelerOpTeam(spelerData, vanTeamId, team.id, naarGeslacht)
