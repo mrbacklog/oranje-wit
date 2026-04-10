@@ -183,6 +183,28 @@ export async function updateSpelerNotitie(spelerId: string, notitie: string): Pr
   revalidatePath("/ti-studio/indeling");
 }
 
+export async function updateSpelerMemo(
+  spelerId: string,
+  memo: import("@/components/ti-studio/werkbord/types").MemoData
+): Promise<import("@oranje-wit/types").ActionResult<void>> {
+  try {
+    await requireTC();
+    await prisma.speler.update({
+      where: { id: spelerId },
+      data: {
+        notitie: memo.tekst || null,
+        memoStatus: memo.memoStatus,
+        besluit: memo.besluit ?? null,
+      },
+    });
+    revalidatePath("/ti-studio/indeling");
+    return { ok: true, data: undefined };
+  } catch (error) {
+    logger.error("updateSpelerMemo mislukt:", error);
+    return { ok: false, error: error instanceof Error ? error.message : String(error) };
+  }
+}
+
 export async function updateSpelerStatus(spelerId: string, status: string): Promise<void> {
   await requireTC();
   await prisma.speler.update({
