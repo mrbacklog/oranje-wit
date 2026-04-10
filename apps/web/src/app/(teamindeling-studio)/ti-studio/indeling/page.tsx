@@ -201,7 +201,7 @@ export default async function IndelingPage() {
       validatieStatus: "ok" as const,
       validatieCount: 0,
       teamCategorie: (team.categorie ?? "SENIOREN") as "SENIOREN" | "A_CATEGORIE" | "B_CATEGORIE",
-      niveau: (team.niveau ?? null) as "U15" | "U17" | "U19" | null,
+      niveau: (team.niveau ?? null) as "A" | "B" | "U15" | "U17" | "U19" | null,
       selectieGroepId: team.selectieGroepId ?? null,
       selectieNaam: (team as any).selectieGroep?.naam ?? null,
       selectieDames: [] as WerkbordSpelerInTeam[],
@@ -298,7 +298,10 @@ export default async function IndelingPage() {
   // Validatie berekenen op basis van kaders
   const validatie: WerkbordValidatieItem[] = [];
   for (const team of teams) {
-    const items = berekenTeamValidatie(team, tcKaders, peiljaar);
+    const effectief = team.gebundeld
+      ? { ...team, dames: team.selectieDames, heren: team.selectieHeren }
+      : team;
+    const items = berekenTeamValidatie(effectief, tcKaders, peiljaar);
     validatie.push(...items);
     team.validatieStatus = berekenValidatieStatus(items);
     team.validatieCount = items.filter((i) => i.type !== "ok").length;
