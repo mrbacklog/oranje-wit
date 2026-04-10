@@ -169,3 +169,13 @@ Het kader-icoon was verwijderd in de blauwdruk-fase; het keert terug met directe
 - Kader-pagina inhoud (KNKV-regels configureren, TC-kaders instellen) — volgt als apart traject
 - Historische validatie-logging
 - Notificaties bij kaderwijziging voor al bestaande teams
+
+---
+
+## Vervolgtraject
+
+Na afronding van de TeamDrawer implementatie is de **Kader-pagina** het volgende prioritaire traject. Deze pagina bevat:
+- KNKV-kader: harde competitieregels per teamtype (leeftijdsbandbreedte, geslachtsverhouding, min/max spelers)
+- TC-kader: OW-voorkeuren en indelingsfilosofie als zachte regels
+
+De TeamDrawer validatie is hiervan afhankelijk — zonder kaderregels toont de validatielijst een lege toestand.
