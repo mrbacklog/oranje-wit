@@ -50,7 +50,22 @@ const MINIMAP_H = 110;
 const MIN_ZOOM = 0.4;
 const MAX_ZOOM = 1.5;
 const KAART_BREEDTE: Record<KaartFormaat, number> = { viertal: 140, achtal: 280, selectie: 560 };
-const KAART_HOOGTE = 210;
+
+function schatKaartHoogte(team: WerkbordTeam, zoomLevel: ZoomLevel): number {
+  if (zoomLevel === "compact") return 210;
+  const aantalStaf = team.staf.length;
+  const rijHoogte = zoomLevel === "detail" ? 48 : 21;
+  const labelHoogte = 14;
+  const headerHoogte = 34;
+  const footerHoogte = 26;
+  const stafHoogte = aantalStaf > 0 ? aantalStaf * 20 + 1 : 0;
+  if (team.formaat === "viertal") {
+    const aantalSpelers = team.dames.length + team.heren.length;
+    return headerHoogte + 2 * labelHoogte + aantalSpelers * rijHoogte + stafHoogte + footerHoogte;
+  }
+  const maxKolom = Math.max(team.dames.length, team.heren.length);
+  return headerHoogte + labelHoogte + maxKolom * rijHoogte + stafHoogte + footerHoogte;
+}
 
 export function WerkbordCanvas({
   teams,
@@ -131,7 +146,7 @@ export function WerkbordCanvas({
     const minX = Math.min(...teams.map((t) => t.canvasX)) - margin;
     const minY = Math.min(...teams.map((t) => t.canvasY)) - margin;
     const maxX = Math.max(...teams.map((t) => t.canvasX + KAART_BREEDTE[t.formaat])) + margin;
-    const maxY = Math.max(...teams.map((t) => t.canvasY + KAART_HOOGTE)) + margin;
+    const maxY = Math.max(...teams.map((t) => t.canvasY + schatKaartHoogte(t, zoomLevel))) + margin;
     const contentW = maxX - minX;
     const contentH = maxY - minY;
     const cw = containerRef.current.offsetWidth;
@@ -400,7 +415,7 @@ export function WerkbordCanvas({
                   left: (team.canvasX / CANVAS_W) * MINIMAP_W,
                   top: (team.canvasY / CANVAS_H) * MINIMAP_H,
                   width: Math.max(3, (KAART_BREEDTE[team.formaat] / CANVAS_W) * MINIMAP_W),
-                  height: Math.max(2, (KAART_HOOGTE / CANVAS_H) * MINIMAP_H),
+                  height: Math.max(2, (schatKaartHoogte(team, zoomLevel) / CANVAS_H) * MINIMAP_H),
                   background: "rgba(255,107,0,.5)",
                   borderRadius: 1,
                   pointerEvents: "none",
