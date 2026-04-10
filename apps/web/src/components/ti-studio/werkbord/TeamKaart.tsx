@@ -12,22 +12,22 @@ import type {
 } from "./types";
 
 // ── Kaartverhoudingen ───────────────────────────────────────────────────────
-// Elke kolom is 160px breed. Aantal kolommen bepaalt kaartbreedte:
-//   viertal  → 1 kolom  → 160px  (dames + heren gestapeld)
-//   achtal   → 2 kolommen → 320px (dames | heren naast elkaar)
-//   selectie → 4 kolommen → 640px (dam1 | her1 | dam2 | her2)
+// Elke kolom is 180px breed. Aantal kolommen bepaalt kaartbreedte:
+//   viertal  → 1 kolom  → 180px  (dames + heren gestapeld)
+//   achtal   → 2 kolommen → 360px (dames | heren naast elkaar)
+//   selectie → 4 kolommen → 720px (dam1 | her1 | dam2 | her2)
 // Dropzone: altijd 8 × SPELER_RIJ_HOOGTE (= 320px) per kolom.
 
-export const KOLOM_BREEDTE = 160;
+export const KOLOM_BREEDTE = 180;
 
 const KAART_BREEDTE: Record<KaartFormaat, number> = {
-  viertal: KOLOM_BREEDTE * 1, // 160
-  achtal: KOLOM_BREEDTE * 2, // 320
-  selectie: KOLOM_BREEDTE * 4, // 640
+  viertal: KOLOM_BREEDTE * 1, // 180
+  achtal: KOLOM_BREEDTE * 2, // 360
+  selectie: KOLOM_BREEDTE * 4, // 720
 };
 
-const HEADER_HOOGTE = 34;
-const FOOTER_HOOGTE = 26;
+const HEADER_HOOGTE = 85; // was 34 — 2,5× vergroot voor meer ruimte
+const FOOTER_HOOGTE = 65; // was 26 — 2,5× vergroot voor meer ruimte
 const MIN_DROPZONE = 8 * SPELER_RIJ_HOOGTE; // 320px — 8 spelers × 40px
 
 const KNKV_KLEUR: Record<string, string> = {
@@ -151,8 +151,8 @@ export function TeamKaart({
           height: HEADER_HOOGTE,
           display: "flex",
           alignItems: "center",
-          gap: 6,
-          padding: "0 8px 0 14px",
+          gap: 8,
+          padding: "0 12px 0 18px",
           borderBottom: "1px solid var(--border-0)",
           flexShrink: 0,
           cursor: "grab",
@@ -161,7 +161,7 @@ export function TeamKaart({
         <div
           onClick={() => onTitelKlik?.(team.id)}
           style={{
-            fontSize: 13,
+            fontSize: zoomLevel === "compact" ? 22 : 13,
             fontWeight: 700,
             flex: 1,
             whiteSpace: "nowrap",
@@ -172,38 +172,40 @@ export function TeamKaart({
         >
           {selectieLabel}
         </div>
-        <div style={{ display: "flex", gap: 3 }}>
-          <span
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 3,
-              fontSize: 10,
-              fontWeight: 600,
-              padding: "2px 5px",
-              borderRadius: 4,
-              background: "rgba(236,72,153,.12)",
-              color: "var(--pink)",
-            }}
-          >
-            ♀ {team.dames.length}
-          </span>
-          <span
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 3,
-              fontSize: 10,
-              fontWeight: 600,
-              padding: "2px 5px",
-              borderRadius: 4,
-              background: "rgba(96,165,250,.12)",
-              color: "var(--blue)",
-            }}
-          >
-            ♂ {team.heren.length}
-          </span>
-        </div>
+        {zoomLevel !== "compact" && (
+          <div style={{ display: "flex", gap: 3 }}>
+            <span
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 3,
+                fontSize: 13,
+                fontWeight: 600,
+                padding: "4px 8px",
+                borderRadius: 6,
+                background: "rgba(236,72,153,.12)",
+                color: "var(--pink)",
+              }}
+            >
+              ♀ {team.dames.length}
+            </span>
+            <span
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 3,
+                fontSize: 13,
+                fontWeight: 600,
+                padding: "4px 8px",
+                borderRadius: 6,
+                background: "rgba(96,165,250,.12)",
+                color: "var(--blue)",
+              }}
+            >
+              ♂ {team.heren.length}
+            </span>
+          </div>
+        )}
         <div
           onClick={(e) => {
             e.stopPropagation();
@@ -211,12 +213,12 @@ export function TeamKaart({
           }}
           title="Team details"
           style={{
-            width: 10,
-            height: 10,
+            width: 14,
+            height: 14,
             borderRadius: "50%",
             flexShrink: 0,
             background: VAL_KLEUR[team.validatieStatus],
-            boxShadow: `0 0 4px 1px ${VAL_KLEUR[team.validatieStatus]}50`,
+            boxShadow: `0 0 6px 1px ${VAL_KLEUR[team.validatieStatus]}50`,
             cursor: "pointer",
           }}
         />
@@ -242,9 +244,19 @@ export function TeamKaart({
 
       {/* ── DROPZONE ───────────────────────────────────────────────────── */}
       {isSelectie && team.gebundeld ? (
+        // Per team: dam1 | her1 | dam2 | her2
         <SelectieBundelDropzone
           team={team}
           partnerTeam={partnerTeam!}
+          zoomLevel={zoomLevel}
+          onSpelerClick={onSpelerClick}
+          onDropSpelerOpSelectie={onDropSpelerOpSelectie}
+        />
+      ) : isSelectie && partnerTeam ? (
+        // Selectie als geheel: dam1 | dam2 | her1 | her2
+        <SelectieGeheelDropzone
+          team={team}
+          partnerTeam={partnerTeam}
           zoomLevel={zoomLevel}
           onSpelerClick={onSpelerClick}
           onDropSpelerOpSelectie={onDropSpelerOpSelectie}
@@ -320,14 +332,14 @@ export function TeamKaart({
           height: FOOTER_HOOGTE,
           display: "flex",
           alignItems: "center",
-          gap: 6,
-          padding: "0 8px 0 14px",
+          gap: 8,
+          padding: "0 12px 0 18px",
           borderTop: "1px solid var(--border-0)",
           flexShrink: 0,
         }}
       >
         {showScores && team.ussScore !== null && (
-          <div style={{ fontSize: 10, color: "var(--text-3)" }}>
+          <div style={{ fontSize: 13, color: "var(--text-3)" }}>
             USS{" "}
             <span style={{ color: "var(--text-2)", fontWeight: 600 }}>
               {team.ussScore.toFixed(2)}
@@ -339,12 +351,12 @@ export function TeamKaart({
             style={{
               display: "flex",
               alignItems: "center",
-              gap: 3,
-              fontSize: 10,
+              gap: 4,
+              fontSize: 13,
               color: "var(--warn)",
               background: "rgba(234,179,8,.08)",
-              padding: "2px 6px",
-              borderRadius: 4,
+              padding: "4px 8px",
+              borderRadius: 6,
             }}
           >
             ⚠ {team.validatieCount}
@@ -354,7 +366,7 @@ export function TeamKaart({
           false) && (
           <div
             style={{
-              fontSize: 10,
+              fontSize: 13,
               color: "var(--accent)",
               lineHeight: 1,
             }}
@@ -365,7 +377,7 @@ export function TeamKaart({
         )}
         <div style={{ flex: 1 }} />
         {team.gemiddeldeLeeftijd !== null && (
-          <div style={{ fontSize: 10, color: "var(--text-3)" }}>
+          <div style={{ fontSize: 13, color: "var(--text-3)" }}>
             Gem.{" "}
             <span style={{ color: "var(--text-2)", fontWeight: 600 }}>
               {team.gemiddeldeLeeftijd.toFixed(1)}j
@@ -380,6 +392,111 @@ export function TeamKaart({
           to   { opacity: 1; transform: translateY(0); }
         }
       `}</style>
+    </div>
+  );
+}
+
+// ── Selectie als geheel: 4 kolommen (dam1 | dam2 | her1 | her2) ───────────
+// Spelers zijn nog niet per team ingedeeld — kolommen gegroepeerd op geslacht.
+
+function SelectieGeheelDropzone({
+  team,
+  partnerTeam,
+  zoomLevel,
+  onSpelerClick,
+  onDropSpelerOpSelectie,
+}: {
+  team: WerkbordTeam;
+  partnerTeam: WerkbordTeam;
+  zoomLevel: ZoomLevel;
+  onSpelerClick?: (spelerId: string, teamId: string | null) => void;
+  onDropSpelerOpSelectie?: (
+    spelerData: WerkbordSpeler,
+    vanTeamId: string | null,
+    vanSelectieGroepId: string | null,
+    geslacht: "V" | "M"
+  ) => void;
+}) {
+  const [dropOver, setDropOver] = useState<string | null>(null);
+
+  function makeHandlers(col: string, geslacht: "V" | "M") {
+    return {
+      onDragOver: (e: React.DragEvent) => {
+        e.preventDefault();
+        setDropOver(col);
+      },
+      onDragLeave: () => setDropOver(null),
+      onDrop: (e: React.DragEvent) => {
+        e.preventDefault();
+        setDropOver(null);
+        try {
+          const data = JSON.parse(e.dataTransfer.getData("speler")) as {
+            speler: WerkbordSpeler;
+            vanTeamId: string | null;
+            vanSelectieGroepId: string | null;
+          };
+          onDropSpelerOpSelectie?.(data.speler, data.vanTeamId, data.vanSelectieGroepId, geslacht);
+        } catch {
+          /* ignore */
+        }
+      },
+    };
+  }
+
+  // Volgorde: dam1 | dam2 | her1 | her2 — geslacht eerst, team daarna
+  const cols = [
+    {
+      id: "dam1",
+      label: `♀ ${team.naam}`,
+      kleur: "V" as const,
+      spelers: team.selectieDames,
+      teamId: team.id,
+    },
+    {
+      id: "dam2",
+      label: `♀ ${partnerTeam.naam}`,
+      kleur: "V" as const,
+      spelers: partnerTeam.selectieDames,
+      teamId: partnerTeam.id,
+    },
+    {
+      id: "her1",
+      label: `♂ ${team.naam}`,
+      kleur: "M" as const,
+      spelers: team.selectieHeren,
+      teamId: team.id,
+    },
+    {
+      id: "her2",
+      label: `♂ ${partnerTeam.naam}`,
+      kleur: "M" as const,
+      spelers: partnerTeam.selectieHeren,
+      teamId: partnerTeam.id,
+    },
+  ];
+
+  return (
+    <div style={{ display: "flex" }}>
+      {cols.map((col, i) => {
+        const h = makeHandlers(col.id, col.kleur);
+        return (
+          <DropzoneKolom
+            key={col.id}
+            label={col.label}
+            kleur={col.kleur}
+            spelers={col.spelers}
+            teamId={col.teamId}
+            selectieGroepId={team.selectieGroepId}
+            zoomLevel={zoomLevel}
+            dropActief={dropOver === col.id}
+            onDragOver={h.onDragOver}
+            onDragLeave={h.onDragLeave}
+            onDrop={h.onDrop}
+            onSpelerClick={onSpelerClick}
+            borderRight={i < cols.length - 1}
+          />
+        );
+      })}
     </div>
   );
 }
@@ -417,6 +534,12 @@ function DropzoneKolom({
 }: KolomProps) {
   const labelKleur = kleur === "V" ? "rgba(236,72,153,.65)" : "rgba(96,165,250,.65)";
   const dropBg = kleur === "V" ? "rgba(236,72,153,.07)" : "rgba(96,165,250,.07)";
+  const isCompact = zoomLevel === "compact";
+
+  // Altijd gesorteerd op voornaam
+  const gesorteerd = [...spelers].sort((a, b) =>
+    a.speler.roepnaam.localeCompare(b.speler.roepnaam, "nl")
+  );
 
   return (
     <div
@@ -432,32 +555,90 @@ function DropzoneKolom({
         transition: "background 120ms ease",
       }}
     >
-      <div
-        style={{
-          fontSize: 8,
-          fontWeight: 700,
-          textTransform: "uppercase",
-          letterSpacing: ".6px",
-          color: labelKleur,
-          padding: "3px 8px 2px",
-          borderBottom: "1px solid rgba(255,255,255,.04)",
-          flexShrink: 0,
-        }}
-      >
-        {label}
-      </div>
-      <div style={{ minHeight: MIN_DROPZONE, display: "flex", flexDirection: "column" }}>
-        {spelers.map((sp) => (
-          <TeamKaartSpelerRij
-            key={sp.id}
-            spelerInTeam={sp}
-            teamId={teamId}
-            selectieGroepId={selectieGroepId}
-            zoomLevel={zoomLevel}
-            onSpelerClick={onSpelerClick}
-          />
-        ))}
-      </div>
+      {/* Label: verborgen in compact — Venus/Mars icoon dient als label */}
+      {!isCompact && (
+        <div
+          style={{
+            fontSize: 8,
+            fontWeight: 700,
+            textTransform: "uppercase",
+            letterSpacing: ".6px",
+            color: labelKleur,
+            padding: "3px 8px 2px",
+            borderBottom: "1px solid rgba(255,255,255,.04)",
+            flexShrink: 0,
+          }}
+        >
+          {label}
+        </div>
+      )}
+
+      {/* Body: teller in compact, spelersrijen in normaal/detail */}
+      {isCompact ? (
+        <div
+          style={{
+            minHeight: MIN_DROPZONE,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 8,
+          }}
+        >
+          {kleur === "V" ? (
+            <svg
+              width={20}
+              height={20}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="var(--pink)"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
+              <circle cx="12" cy="8" r="6" />
+              <line x1="12" y1="14" x2="12" y2="22" />
+              <line x1="9" y1="19" x2="15" y2="19" />
+            </svg>
+          ) : (
+            <svg
+              width={20}
+              height={20}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="var(--blue)"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
+              <circle cx="10" cy="14" r="6" />
+              <line x1="21" y1="3" x2="15" y2="9" />
+              <polyline points="16 3 21 3 21 8" />
+            </svg>
+          )}
+          <span
+            style={{
+              fontSize: 32,
+              fontWeight: 900,
+              color: labelKleur,
+              lineHeight: 1,
+            }}
+          >
+            {spelers.length}
+          </span>
+        </div>
+      ) : (
+        <div style={{ minHeight: MIN_DROPZONE, display: "flex", flexDirection: "column" }}>
+          {gesorteerd.map((sp) => (
+            <TeamKaartSpelerRij
+              key={sp.id}
+              spelerInTeam={sp}
+              teamId={teamId}
+              selectieGroepId={selectieGroepId}
+              zoomLevel={zoomLevel}
+              onSpelerClick={onSpelerClick}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

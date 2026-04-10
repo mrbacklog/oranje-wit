@@ -60,7 +60,7 @@ const MINIMAP_W = 160;
 const MINIMAP_H = 110;
 const MIN_ZOOM = 0.4;
 const MAX_ZOOM = 1.5;
-const KAART_BREEDTE: Record<KaartFormaat, number> = { viertal: 160, achtal: 320, selectie: 640 };
+const KAART_BREEDTE: Record<KaartFormaat, number> = { viertal: 180, achtal: 360, selectie: 720 };
 const RIJ_HOOGTE = 40; // SPELER_RIJ_HOOGTE — vaste rijhoogte alle zoomniveaus
 const MIN_DROPZONE = 8 * RIJ_HOOGTE; // 320px
 

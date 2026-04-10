@@ -201,7 +201,7 @@ export default async function IndelingPage() {
     const opgeslagen = opgeslagenPosities[team.id];
     const col = i % 3;
     const rij = Math.floor(i / 3);
-    const canvasX = opgeslagen ? opgeslagen.x : 40 + col * 320;
+    const canvasX = opgeslagen ? opgeslagen.x : 40 + col * 360;
     const canvasY = opgeslagen ? opgeslagen.y : 60 + rij * 240;
 
     return {
