@@ -1,6 +1,6 @@
 // apps/web/src/components/ti-studio/werkbord/TiStudioShell.tsx
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import "./tokens.css";
 import { Ribbon } from "./Ribbon";
@@ -10,7 +10,12 @@ import { WerkbordCanvas } from "./WerkbordCanvas";
 import { ValidatieDrawer } from "./ValidatieDrawer";
 import { VersiesDrawer } from "./VersiesDrawer";
 import { useZoom } from "./hooks/useZoom";
-import type { TiStudioShellProps } from "./types";
+import type {
+  TiStudioShellProps,
+  WerkbordTeam,
+  WerkbordSpeler,
+  WerkbordSpelerInTeam,
+} from "./types";
 import type { DrawerData } from "@/app/(teamindeling-studio)/ti-studio/indeling/drawer-actions";
 import { getVersiesVoorDrawer } from "@/app/(teamindeling-studio)/ti-studio/indeling/drawer-actions";
 
@@ -22,6 +27,21 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
   const [showScores, setShowScores] = useState(true);
   const [drawerData, setDrawerData] = useState<DrawerData | null>(null);
   const { zoom, setZoom, zoomIn, zoomOut, resetZoom, zoomLevel, zoomPercent } = useZoom();
+
+  // Mutable werkbord state
+  const [teams, setTeams] = useState<WerkbordTeam[]>(initieleState.teams);
+  const [alleSpelers, setAlleSpelers] = useState<WerkbordSpeler[]>(initieleState.alleSpelers);
+
+  // Refs voor gebruik in SSE-handler (vermijdt stale closures)
+  const alleSpelersRef = useRef(alleSpelers);
+  useEffect(() => {
+    alleSpelersRef.current = alleSpelers;
+  }, [alleSpelers]);
+
+  // Unieke sessie-ID per browser-tab (zodat we onze eigen SSE-events kunnen overslaan)
+  const sessionId = useRef<string>(crypto.randomUUID());
+
+  const versieId = initieleState.versieId;
 
   const gebruikerInitialen = gebruikerEmail
     .split("@")[0]
@@ -43,6 +63,177 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
 
   const hasErrors = initieleState.validatie.some((v) => v.type === "err");
 
+  // ─── Lokale state-mutaties ─────────────────────────────────────────────────
+
+  const verplaatsSpelerLokaal = useCallback(
+    (
+      spelerData: WerkbordSpeler,
+      vanTeamId: string | null,
+      naarTeamId: string,
+      naarGeslacht: "V" | "M"
+    ) => {
+      setTeams((prev) =>
+        prev.map((team) => {
+          let updated = { ...team };
+          if (vanTeamId && team.id === vanTeamId) {
+            updated = {
+              ...updated,
+              dames: updated.dames.filter((s) => s.spelerId !== spelerData.id),
+              heren: updated.heren.filter((s) => s.spelerId !== spelerData.id),
+            };
+          }
+          if (team.id === naarTeamId) {
+            const spelerInTeam: WerkbordSpelerInTeam = {
+              id: `sit-${spelerData.id}-${naarTeamId}-${Date.now()}`,
+              spelerId: spelerData.id,
+              speler: { ...spelerData, teamId: naarTeamId },
+              notitie: null,
+            };
+            if (naarGeslacht === "V") {
+              updated = {
+                ...updated,
+                dames: [...updated.dames.filter((s) => s.spelerId !== spelerData.id), spelerInTeam],
+              };
+            } else {
+              updated = {
+                ...updated,
+                heren: [...updated.heren.filter((s) => s.spelerId !== spelerData.id), spelerInTeam],
+              };
+            }
+          }
+          return updated;
+        })
+      );
+      setAlleSpelers((prev) =>
+        prev.map((s) => (s.id === spelerData.id ? { ...s, teamId: naarTeamId } : s))
+      );
+    },
+    []
+  );
+
+  const verwijderSpelerUitTeamLokaal = useCallback((spelerId: string, vanTeamId: string) => {
+    setTeams((prev) =>
+      prev.map((team) => {
+        if (team.id !== vanTeamId) return team;
+        return {
+          ...team,
+          dames: team.dames.filter((s) => s.spelerId !== spelerId),
+          heren: team.heren.filter((s) => s.spelerId !== spelerId),
+        };
+      })
+    );
+    setAlleSpelers((prev) => prev.map((s) => (s.id === spelerId ? { ...s, teamId: null } : s)));
+  }, []);
+
+  const verplaatsTeamKaartLokaal = useCallback((teamId: string, x: number, y: number) => {
+    setTeams((prev) =>
+      prev.map((t) =>
+        t.id === teamId ? { ...t, canvasX: Math.max(0, x), canvasY: Math.max(0, y) } : t
+      )
+    );
+  }, []);
+
+  // ─── API-calls + SSE ────────────────────────────────────────────────────────
+
+  async function stuurMutatie(body: Record<string, unknown>) {
+    try {
+      await fetch(`/api/ti-studio/indeling/${versieId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...body, sessionId: sessionId.current }),
+      });
+    } catch {
+      // Stil falen — optimistic update blijft, server-sync retry via SSE reconnect
+    }
+  }
+
+  // Speler-verplaatsing: optimistic + opslaan
+  const verplaatsSpeler = useCallback(
+    (
+      spelerData: WerkbordSpeler,
+      vanTeamId: string | null,
+      naarTeamId: string,
+      naarGeslacht: "V" | "M"
+    ) => {
+      verplaatsSpelerLokaal(spelerData, vanTeamId, naarTeamId, naarGeslacht);
+      stuurMutatie({
+        type: "speler_verplaatst",
+        spelerId: spelerData.id,
+        vanTeamId,
+        naarTeamId,
+        naarGeslacht,
+      });
+    },
+    [verplaatsSpelerLokaal] // eslint-disable-line react-hooks/exhaustive-deps
+  );
+
+  // Speler terug naar pool: optimistic + opslaan
+  const verwijderSpelerUitTeam = useCallback(
+    (spelerId: string, vanTeamId: string) => {
+      verwijderSpelerUitTeamLokaal(spelerId, vanTeamId);
+      stuurMutatie({ type: "speler_naar_pool", spelerId, vanTeamId });
+    },
+    [verwijderSpelerUitTeamLokaal] // eslint-disable-line react-hooks/exhaustive-deps
+  );
+
+  // Teamkaart verplaatsen: instant lokaal (tijdens drag), API-call alleen bij loslaten
+  const verplaatsTeamKaart = useCallback(
+    (teamId: string, x: number, y: number) => {
+      verplaatsTeamKaartLokaal(teamId, x, y);
+    },
+    [verplaatsTeamKaartLokaal]
+  );
+
+  const slaTeamPositieOp = useCallback(
+    (teamId: string, x: number, y: number) => {
+      stuurMutatie({ type: "team_positie", teamId, x: Math.round(x), y: Math.round(y) });
+    },
+    [] // eslint-disable-line react-hooks/exhaustive-deps
+  );
+
+  // ─── SSE-verbinding ────────────────────────────────────────────────────────
+
+  useEffect(() => {
+    if (!versieId) return;
+
+    const es = new EventSource(`/api/ti-studio/indeling/${versieId}/stream`);
+
+    es.onmessage = (e) => {
+      let event: Record<string, unknown>;
+      try {
+        event = JSON.parse(e.data as string);
+      } catch {
+        return;
+      }
+
+      if (event.type === "ping") return;
+      // Sla onze eigen events over (we hebben al optimistic update gedaan)
+      if (event.sessionId === sessionId.current) return;
+
+      if (event.type === "speler_verplaatst") {
+        const sp = alleSpelersRef.current.find((s) => s.id === event.spelerId);
+        if (sp) {
+          verplaatsSpelerLokaal(
+            sp,
+            event.vanTeamId as string | null,
+            event.naarTeamId as string,
+            event.naarGeslacht as "V" | "M"
+          );
+        }
+      } else if (event.type === "speler_naar_pool") {
+        verwijderSpelerUitTeamLokaal(event.spelerId as string, event.vanTeamId as string);
+      } else if (event.type === "team_positie") {
+        verplaatsTeamKaartLokaal(event.teamId as string, event.x as number, event.y as number);
+      }
+    };
+
+    return () => es.close();
+  }, [versieId, verplaatsSpelerLokaal, verwijderSpelerUitTeamLokaal, verplaatsTeamKaartLokaal]);
+
+  // ─── Render ────────────────────────────────────────────────────────────────
+
+  const ingeplandSpelers = alleSpelers.filter((s) => s.teamId !== null).length;
+
   return (
     <div
       style={{
@@ -59,32 +250,24 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
         userSelect: "none",
       }}
     >
-      {/* Ribbon — beslaat beide rijen */}
       <Ribbon
         activePanel={activePanel}
         onTogglePanel={togglePanel}
         validatieHasErrors={hasErrors}
         gebruikerInitialen={gebruikerInitialen}
       />
-
-      {/* Toolbar */}
       <Toolbar
         naam={initieleState.naam}
         versieNaam={initieleState.versieNaam}
         versieNummer={initieleState.versieNummer}
         status={initieleState.status}
         totalSpelers={initieleState.totalSpelers}
-        ingeplandSpelers={initieleState.ingeplandSpelers}
-        zoomLevel={zoomLevel}
-        zoomPercent={zoomPercent}
+        ingeplandSpelers={ingeplandSpelers}
         showScores={showScores}
         onToggleScores={() => setShowScores((v) => !v)}
         onNieuwTeam={() => {}}
-        onPreview={() => {}}
         onTerug={() => router.push("/ti-studio")}
       />
-
-      {/* Body */}
       <div
         style={{
           gridColumn: 2,
@@ -95,11 +278,12 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
       >
         <SpelersPoolDrawer
           open={activePanel === "pool"}
-          spelers={initieleState.alleSpelers}
+          spelers={alleSpelers}
           onClose={() => setActivePanel(null)}
+          onVerwijderUitTeam={verwijderSpelerUitTeam}
         />
         <WerkbordCanvas
-          teams={initieleState.teams}
+          teams={teams}
           zoomLevel={zoomLevel}
           zoom={zoom}
           zoomPercent={zoomPercent}
@@ -109,10 +293,13 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
           onZoomReset={resetZoom}
           onZoomChange={setZoom}
           onBewerkenTeam={() => {}}
+          onDropSpelerOpTeam={verplaatsSpeler}
+          onTeamPositionChange={verplaatsTeamKaart}
+          onTeamDragEnd={slaTeamPositieOp}
         />
         <ValidatieDrawer
           open={activePanel === "validatie"}
-          teams={initieleState.teams}
+          teams={teams}
           validatie={initieleState.validatie}
           onClose={() => setActivePanel(null)}
         />

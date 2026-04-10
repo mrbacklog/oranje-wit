@@ -1,7 +1,6 @@
 // apps/web/src/components/ti-studio/werkbord/Toolbar.tsx
 "use client";
 import "./tokens.css";
-import type { ZoomLevel } from "./types";
 
 interface ToolbarProps {
   naam: string;
@@ -10,12 +9,9 @@ interface ToolbarProps {
   status: "concept" | "definitief";
   totalSpelers: number;
   ingeplandSpelers: number;
-  zoomLevel: ZoomLevel;
-  zoomPercent: number;
   showScores: boolean;
   onToggleScores: () => void;
   onNieuwTeam: () => void;
-  onPreview: () => void;
   onTerug: () => void;
 }
 
@@ -26,12 +22,9 @@ export function Toolbar({
   status,
   totalSpelers,
   ingeplandSpelers,
-  zoomLevel,
-  zoomPercent,
   showScores,
   onToggleScores,
   onNieuwTeam,
-  onPreview,
   onTerug,
 }: ToolbarProps) {
   const pct = totalSpelers > 0 ? Math.round((ingeplandSpelers / totalSpelers) * 100) : 0;
@@ -204,39 +197,6 @@ export function Toolbar({
         </div>
       </div>
 
-      <div style={{ width: 1, height: 20, background: "var(--border-0)", flexShrink: 0 }} />
-
-      {/* Zoom level badge */}
-      <div
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: 5,
-          padding: "4px 10px",
-          borderRadius: 7,
-          fontSize: 11,
-          fontWeight: 600,
-          background: "var(--bg-2)",
-          border: "1px solid var(--border-1)",
-          color: "var(--text-2)",
-          whiteSpace: "nowrap",
-        }}
-      >
-        <svg
-          width="11"
-          height="11"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-        >
-          <circle cx="11" cy="11" r="8" />
-          <line x1="21" y1="21" x2="16.65" y2="16.65" />
-        </svg>
-        {zoomPercent}% · {zoomLevel.charAt(0).toUpperCase() + zoomLevel.slice(1)}
-      </div>
-
       {/* Werkversie context */}
       <span
         style={{
@@ -280,23 +240,6 @@ export function Toolbar({
           <line x1="5" y1="12" x2="19" y2="12" />
         </svg>
         Team
-      </TbBtn>
-
-      {/* Preview */}
-      <TbBtn onClick={onPreview} variant="pri">
-        <svg
-          width="12"
-          height="12"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-        >
-          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-          <circle cx="12" cy="12" r="3" />
-        </svg>
-        Preview
       </TbBtn>
     </header>
   );

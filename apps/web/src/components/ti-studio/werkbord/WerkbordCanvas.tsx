@@ -1,10 +1,10 @@
 // apps/web/src/components/ti-studio/werkbord/WerkbordCanvas.tsx
 "use client";
-import { useRef } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import "./tokens.css";
 import { TeamKaart } from "./TeamKaart";
 import { DaisyPanel } from "./DaisyPanel";
-import type { WerkbordTeam, ZoomLevel } from "./types";
+import type { WerkbordTeam, WerkbordSpeler, ZoomLevel, KaartFormaat } from "./types";
 
 interface WerkbordCanvasProps {
   teams: WerkbordTeam[];
@@ -17,26 +17,40 @@ interface WerkbordCanvasProps {
   onZoomReset: () => void;
   onZoomChange: (value: number) => void;
   onBewerkenTeam: (teamId: string) => void;
+  onDropSpelerOpTeam: (
+    spelerData: WerkbordSpeler,
+    vanTeamId: string | null,
+    naarTeamId: string,
+    naarGeslacht: "V" | "M"
+  ) => void;
+  onTeamPositionChange: (teamId: string, x: number, y: number) => void;
+  onTeamDragEnd: (teamId: string, x: number, y: number) => void;
+}
+
+interface TeamDragState {
+  teamId: string;
+  startMouseX: number;
+  startMouseY: number;
+  startCanvasX: number;
+  startCanvasY: number;
+}
+
+interface PanState {
+  startMouseX: number;
+  startMouseY: number;
+  startPanX: number;
+  startPanY: number;
 }
 
 const CANVAS_W = 1400;
 const CANVAS_H = 900;
 const HUIDIGE_JAAR = new Date().getFullYear();
-
-const zoomBtnStyle: React.CSSProperties = {
-  width: 26,
-  height: 26,
-  borderRadius: 6,
-  background: "none",
-  border: "none",
-  cursor: "pointer",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  color: "var(--text-2)",
-  fontSize: 14,
-  fontWeight: 700,
-};
+const MINIMAP_W = 160;
+const MINIMAP_H = 110;
+const MIN_ZOOM = 0.4;
+const MAX_ZOOM = 1.5;
+const KAART_BREEDTE: Record<KaartFormaat, number> = { viertal: 140, achtal: 280, selectie: 560 };
+const KAART_HOOGTE = 210;
 
 export function WerkbordCanvas({
   teams,
@@ -49,41 +63,216 @@ export function WerkbordCanvas({
   onZoomReset,
   onZoomChange,
   onBewerkenTeam,
+  onDropSpelerOpTeam,
+  onTeamPositionChange,
+  onTeamDragEnd,
 }: WerkbordCanvasProps) {
-  const canvasRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const minimapRef = useRef<HTMLDivElement>(null);
+  const [panX, setPanX] = useState(0);
+  const [panY, setPanY] = useState(0);
+  const [draggingTeam, setDraggingTeam] = useState<TeamDragState | null>(null);
+  const [panState, setPanState] = useState<PanState | null>(null);
+  const [minimapDragging, setMinimapDragging] = useState(false);
+  const [panelOpen, setPanelOpen] = useState(false);
+
+  // Refs zodat wheel-handler altijd verse waarden heeft
+  const zoomRef = useRef(zoom);
+  const panXRef = useRef(panX);
+  const panYRef = useRef(panY);
+  const onZoomChangeRef = useRef(onZoomChange);
+  useEffect(() => {
+    zoomRef.current = zoom;
+  }, [zoom]);
+  useEffect(() => {
+    panXRef.current = panX;
+  }, [panX]);
+  useEffect(() => {
+    panYRef.current = panY;
+  }, [panY]);
+  useEffect(() => {
+    onZoomChangeRef.current = onZoomChange;
+  }, [onZoomChange]);
+
+  // Scroll-zoom naar cursor — passive: false vereist
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const handler = (e: WheelEvent) => {
+      e.preventDefault();
+      const rect = el.getBoundingClientRect();
+      const cursorX = e.clientX - rect.left;
+      const cursorY = e.clientY - rect.top;
+      const currentZoom = zoomRef.current;
+      const factor = Math.abs(e.deltaY) < 50 ? 0.04 : 0.08;
+      const delta = e.deltaY > 0 ? -factor : factor;
+      const newZoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, currentZoom + delta));
+      const canvasPtX = (cursorX - panXRef.current) / currentZoom;
+      const canvasPtY = (cursorY - panYRef.current) / currentZoom;
+      setPanX(cursorX - canvasPtX * newZoom);
+      setPanY(cursorY - canvasPtY * newZoom);
+      onZoomChangeRef.current(newZoom);
+    };
+    el.addEventListener("wheel", handler, { passive: false });
+    return () => el.removeEventListener("wheel", handler);
+  }, []);
+
+  // Fit: zoom + pan zodat alle kaarten zichtbaar zijn
+  const handleFit = useCallback(() => {
+    if (!containerRef.current) return;
+    const margin = 40;
+    if (teams.length === 0) {
+      onZoomReset();
+      setPanX(0);
+      setPanY(0);
+      return;
+    }
+    const minX = Math.min(...teams.map((t) => t.canvasX)) - margin;
+    const minY = Math.min(...teams.map((t) => t.canvasY)) - margin;
+    const maxX = Math.max(...teams.map((t) => t.canvasX + KAART_BREEDTE[t.formaat])) + margin;
+    const maxY = Math.max(...teams.map((t) => t.canvasY + KAART_HOOGTE)) + margin;
+    const contentW = maxX - minX;
+    const contentH = maxY - minY;
+    const cw = containerRef.current.offsetWidth;
+    const ch = containerRef.current.offsetHeight;
+    const fitZoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, Math.min(cw / contentW, ch / contentH)));
+    onZoomChange(fitZoom);
+    setPanX(cw / 2 - (minX + contentW / 2) * fitZoom);
+    setPanY(ch / 2 - (minY + contentH / 2) * fitZoom);
+  }, [teams, onZoomChange, onZoomReset]);
+
+  // ─── Canvas event handlers ─────────────────────────────────────────────────
+
+  function handleBgMouseDown(e: React.MouseEvent) {
+    if (e.button !== 0) return;
+    e.preventDefault();
+    setPanState({
+      startMouseX: e.clientX,
+      startMouseY: e.clientY,
+      startPanX: panX,
+      startPanY: panY,
+    });
+  }
+
+  function handleTeamHeaderMouseDown(e: React.MouseEvent, teamId: string) {
+    e.preventDefault();
+    e.stopPropagation();
+    const team = teams.find((t) => t.id === teamId);
+    if (!team) return;
+    // Globale cursor direct — browser update wacht anders op muisbeweging
+    document.body.style.cursor = "grabbing";
+    setDraggingTeam({
+      teamId,
+      startMouseX: e.clientX,
+      startMouseY: e.clientY,
+      startCanvasX: team.canvasX,
+      startCanvasY: team.canvasY,
+    });
+  }
+
+  function handleMouseMove(e: React.MouseEvent) {
+    if (draggingTeam) {
+      const dx = (e.clientX - draggingTeam.startMouseX) / zoom;
+      const dy = (e.clientY - draggingTeam.startMouseY) / zoom;
+      onTeamPositionChange(
+        draggingTeam.teamId,
+        draggingTeam.startCanvasX + dx,
+        draggingTeam.startCanvasY + dy
+      );
+    } else if (panState) {
+      setPanX(panState.startPanX + (e.clientX - panState.startMouseX));
+      setPanY(panState.startPanY + (e.clientY - panState.startMouseY));
+    } else if (minimapDragging && minimapRef.current) {
+      const rect = minimapRef.current.getBoundingClientRect();
+      const mx = Math.max(0, Math.min(MINIMAP_W, e.clientX - rect.left));
+      const my = Math.max(0, Math.min(MINIMAP_H, e.clientY - rect.top));
+      const { x, y } = minimapToPan(mx, my);
+      setPanX(x);
+      setPanY(y);
+    }
+  }
+
+  function handleMouseUp() {
+    document.body.style.cursor = ""; // globale cursor terugzetten
+    if (draggingTeam) {
+      const team = teams.find((t) => t.id === draggingTeam.teamId);
+      if (team) onTeamDragEnd(draggingTeam.teamId, team.canvasX, team.canvasY);
+      setDraggingTeam(null);
+    }
+    setPanState(null);
+    setMinimapDragging(false);
+  }
+
+  // ─── Minimap ────────────────────────────────────────────────────────────────
+
+  function minimapToPan(mx: number, my: number): { x: number; y: number } {
+    const cw = containerRef.current?.offsetWidth ?? 800;
+    const ch = containerRef.current?.offsetHeight ?? 600;
+    const cx = (mx / MINIMAP_W) * CANVAS_W;
+    const cy = (my / MINIMAP_H) * CANVAS_H;
+    return { x: cw / 2 - cx * zoom, y: ch / 2 - cy * zoom };
+  }
+
+  function handleMinimapMouseDown(e: React.MouseEvent<HTMLDivElement>) {
+    e.preventDefault();
+    e.stopPropagation();
+    const rect = e.currentTarget.getBoundingClientRect();
+    const { x, y } = minimapToPan(e.clientX - rect.left, e.clientY - rect.top);
+    setPanX(x);
+    setPanY(y);
+    setMinimapDragging(true);
+  }
+
+  // Viewport indicator berekening
+  const cw = containerRef.current?.offsetWidth ?? 800;
+  const ch = containerRef.current?.offsetHeight ?? 600;
+  const vpW = Math.min(MINIMAP_W, (cw / zoom / CANVAS_W) * MINIMAP_W);
+  const vpH = Math.min(MINIMAP_H, (ch / zoom / CANVAS_H) * MINIMAP_H);
+  const vpX = Math.max(0, (-panX / zoom / CANVAS_W) * MINIMAP_W);
+  const vpY = Math.max(0, (-panY / zoom / CANVAS_H) * MINIMAP_H);
+
+  const isBusy = !!draggingTeam || !!panState;
 
   return (
     <div
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
       style={{
         flex: 1,
         position: "relative",
         overflow: "hidden",
+        cursor: panState ? "grabbing" : draggingTeam ? "grabbing" : "default",
         background:
           "radial-gradient(circle at 50% 50%, rgba(255,107,0,.02) 0%, transparent 60%), var(--bg-0)",
       }}
     >
-      {/* Dot-patroon achtergrond */}
+      {/* Achtergrond dot-patroon — pan-zone */}
       <div
+        onMouseDown={handleBgMouseDown}
         style={{
           position: "absolute",
           inset: 0,
           backgroundImage: "radial-gradient(circle, rgba(255,255,255,.05) 1px, transparent 1px)",
           backgroundSize: "28px 28px",
-          pointerEvents: "none",
+          cursor: panState ? "grabbing" : "grab",
+          zIndex: 0,
         }}
       />
 
-      {/* Canvas — schaalbaar, teamkaarten erin */}
+      {/* Canvas — geschaald + getransleerd */}
       <div
-        ref={canvasRef}
         data-zoom-level={zoomLevel}
         style={{
           position: "absolute",
           width: CANVAS_W,
           height: CANVAS_H,
           transformOrigin: "0 0",
-          transform: `scale(${zoom})`,
-          transition: "transform 80ms ease-out",
+          transform: `translate(${panX}px, ${panY}px) scale(${zoom})`,
+          transition: isBusy ? "none" : "transform 80ms ease-out",
+          zIndex: 1,
+          pointerEvents: "none",
         }}
       >
         {teams.map((team) => (
@@ -93,120 +282,248 @@ export function WerkbordCanvas({
             zoomLevel={zoomLevel}
             showScores={showScores}
             huidigeJaar={HUIDIGE_JAAR}
+            isDragging={draggingTeam?.teamId === team.id}
             onBewerken={onBewerkenTeam}
-            onDragMove={() => {}}
+            onDropSpeler={(spelerData, vanTeamId, naarGeslacht) =>
+              onDropSpelerOpTeam(spelerData, vanTeamId, team.id, naarGeslacht)
+            }
+            onHeaderMouseDown={handleTeamHeaderMouseDown}
           />
         ))}
       </div>
 
-      {/* Zoom controls (linksonder) */}
+      {/* ─── Zoom + Minimap panel rechtsonder ─────────────────────────────── */}
       <div
-        style={{
-          position: "absolute",
-          bottom: 16,
-          left: 16,
-          display: "flex",
-          alignItems: "center",
-          gap: 6,
-          background: "var(--bg-2)",
-          border: "1px solid var(--border-1)",
-          borderRadius: 10,
-          padding: "6px 10px",
-          boxShadow: "var(--sh-card)",
-          zIndex: 10,
+        onMouseEnter={() => setPanelOpen(true)}
+        onMouseLeave={() => {
+          if (!minimapDragging) setPanelOpen(false);
         }}
-      >
-        <button onClick={onZoomOut} style={zoomBtnStyle}>
-          −
-        </button>
-        <span
-          style={{
-            fontSize: 11,
-            fontWeight: 700,
-            color: "var(--text-2)",
-            minWidth: 36,
-            textAlign: "center",
-          }}
-        >
-          {zoomPercent}%
-        </span>
-        <button onClick={onZoomIn} style={zoomBtnStyle}>
-          +
-        </button>
-        <div style={{ width: 1, height: 16, background: "var(--border-0)" }} />
-        <input
-          type="range"
-          min={40}
-          max={150}
-          value={zoomPercent}
-          onChange={(e) => onZoomChange(parseInt(e.target.value, 10) / 100)}
-          style={{
-            width: 90,
-            height: 4,
-            accentColor: "var(--accent)",
-            cursor: "pointer",
-          }}
-        />
-        <div style={{ width: 1, height: 16, background: "var(--border-0)" }} />
-        <button
-          onClick={onZoomReset}
-          style={{
-            padding: "4px 8px",
-            background: "none",
-            border: "1px solid var(--border-1)",
-            borderRadius: 6,
-            color: "var(--text-2)",
-            fontSize: 10,
-            fontWeight: 600,
-            cursor: "pointer",
-            fontFamily: "inherit",
-          }}
-        >
-          Fit
-        </button>
-      </div>
-
-      {/* Minimap (rechtsonder) */}
-      <div
         style={{
           position: "absolute",
           bottom: 16,
           right: 16,
-          width: 140,
-          height: 96,
-          background: "var(--bg-2)",
-          border: "1px solid var(--border-1)",
-          borderRadius: 8,
-          overflow: "hidden",
-          boxShadow: "var(--sh-card)",
           zIndex: 10,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "stretch",
+          gap: 0,
         }}
       >
+        {/* Uitklapbaar gedeelte — minimap + zoom controls */}
         <div
           style={{
-            position: "absolute",
-            top: 8,
-            left: 12,
-            width: 60,
-            height: 45,
-            border: "1px solid rgba(255,107,0,.4)",
-            background: "rgba(255,107,0,.06)",
-            borderRadius: 3,
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            bottom: 4,
-            right: 6,
-            fontSize: 9,
-            color: "var(--text-3)",
-            fontWeight: 600,
-            textTransform: "uppercase",
-            letterSpacing: ".4px",
+            overflow: "hidden",
+            maxHeight: panelOpen ? 260 : 0,
+            opacity: panelOpen ? 1 : 0,
+            transform: panelOpen ? "translateY(0)" : "translateY(6px)",
+            transition: "max-height 220ms ease, opacity 160ms ease, transform 160ms ease",
+            pointerEvents: panelOpen ? "auto" : "none",
+            background: "var(--bg-2)",
+            border: "1px solid var(--border-1)",
+            borderRadius: "10px 10px 0 0",
+            borderBottom: "none",
+            boxShadow: "var(--sh-card)",
           }}
         >
-          Minimap
+          {/* Minimap */}
+          <div
+            ref={minimapRef}
+            onMouseDown={handleMinimapMouseDown}
+            onMouseUp={(e) => {
+              e.stopPropagation();
+              setMinimapDragging(false);
+            }}
+            style={{
+              width: MINIMAP_W,
+              height: MINIMAP_H,
+              position: "relative",
+              overflow: "hidden",
+              cursor: minimapDragging ? "grabbing" : "grab",
+              borderBottom: "1px solid var(--border-0)",
+            }}
+          >
+            {/* Achtergrond dot-patroon */}
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                backgroundImage:
+                  "radial-gradient(circle, rgba(255,255,255,.04) 1px, transparent 1px)",
+                backgroundSize: "6px 6px",
+                pointerEvents: "none",
+              }}
+            />
+            {/* Teamkaarten als mini-rechthoeken */}
+            {teams.map((team) => (
+              <div
+                key={team.id}
+                style={{
+                  position: "absolute",
+                  left: (team.canvasX / CANVAS_W) * MINIMAP_W,
+                  top: (team.canvasY / CANVAS_H) * MINIMAP_H,
+                  width: Math.max(3, (KAART_BREEDTE[team.formaat] / CANVAS_W) * MINIMAP_W),
+                  height: Math.max(2, (KAART_HOOGTE / CANVAS_H) * MINIMAP_H),
+                  background: "rgba(255,107,0,.5)",
+                  borderRadius: 1,
+                  pointerEvents: "none",
+                }}
+              />
+            ))}
+            {/* Viewport indicator — dit is wat je vastgrijpt */}
+            <div
+              style={{
+                position: "absolute",
+                left: vpX,
+                top: vpY,
+                width: vpW,
+                height: vpH,
+                border: "1.5px solid rgba(255,107,0,.9)",
+                background: "rgba(255,107,0,.08)",
+                borderRadius: 2,
+                pointerEvents: "none",
+                boxShadow: "0 0 0 1px rgba(0,0,0,.3)",
+              }}
+            />
+          </div>
+
+          {/* Zoom controls */}
+          <div
+            style={{
+              padding: "7px 10px",
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+            }}
+          >
+            <button
+              onClick={onZoomOut}
+              title="Zoom uit"
+              style={{
+                width: 24,
+                height: 24,
+                borderRadius: 5,
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "var(--text-2)",
+                fontSize: 16,
+                fontWeight: 700,
+              }}
+            >
+              −
+            </button>
+            <input
+              type="range"
+              min={40}
+              max={150}
+              value={zoomPercent}
+              onChange={(e) => onZoomChange(parseInt(e.target.value, 10) / 100)}
+              style={{
+                flex: 1,
+                height: 4,
+                accentColor: "var(--accent)",
+                cursor: "pointer",
+              }}
+            />
+            <button
+              onClick={onZoomIn}
+              title="Zoom in"
+              style={{
+                width: 24,
+                height: 24,
+                borderRadius: 5,
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "var(--text-2)",
+                fontSize: 16,
+                fontWeight: 700,
+              }}
+            >
+              +
+            </button>
+            <div style={{ width: 1, height: 14, background: "var(--border-0)" }} />
+            <button
+              onClick={handleFit}
+              title="Alle kaarten in beeld"
+              style={{
+                padding: "3px 7px",
+                background: "none",
+                border: "1px solid var(--border-1)",
+                borderRadius: 5,
+                color: "var(--text-2)",
+                fontSize: 10,
+                fontWeight: 600,
+                cursor: "pointer",
+                fontFamily: "inherit",
+                whiteSpace: "nowrap",
+              }}
+            >
+              Fit
+            </button>
+          </div>
+        </div>
+
+        {/* Trigger pill — altijd zichtbaar */}
+        <div
+          style={{
+            background: "var(--bg-2)",
+            border: "1px solid var(--border-1)",
+            borderRadius: panelOpen ? "0 0 8px 8px" : 8,
+            padding: "5px 10px",
+            display: "flex",
+            alignItems: "center",
+            gap: 7,
+            cursor: "default",
+            boxShadow: panelOpen ? "none" : "var(--sh-card)",
+            transition: "border-radius 220ms ease",
+            userSelect: "none",
+          }}
+        >
+          {/* Zoom icoon */}
+          <svg
+            width="13"
+            height="13"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="var(--text-3)"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            <line x1="11" y1="8" x2="11" y2="14" />
+            <line x1="8" y1="11" x2="14" y2="11" />
+          </svg>
+          <span
+            style={{
+              fontSize: 12,
+              fontWeight: 700,
+              color: "var(--text-2)",
+              minWidth: 28,
+              textAlign: "right",
+            }}
+          >
+            {zoomPercent}%
+          </span>
+          {/* Zoom level indicator */}
+          <span
+            style={{
+              fontSize: 10,
+              fontWeight: 600,
+              color: "var(--text-3)",
+              borderLeft: "1px solid var(--border-0)",
+              paddingLeft: 7,
+            }}
+          >
+            {zoomLevel === "compact" ? "Compact" : zoomLevel === "normaal" ? "Normaal" : "Detail"}
+          </span>
         </div>
       </div>
 
