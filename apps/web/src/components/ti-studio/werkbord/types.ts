@@ -10,15 +10,6 @@ export type KnkvCategorie = "blauw" | "groen" | "geel" | "oranje" | "rood" | "se
 
 export type SpelerFilter = "zonder_team" | "ingedeeld" | "alle";
 
-// Memo-patroon: status van een memo (open = actie vereist, gesloten = afgerond met besluit)
-export type MemoStatus = "open" | "gesloten";
-
-export interface MemoData {
-  tekst: string; // UI: "Memo" — DB kolom: "notitie"
-  memoStatus: MemoStatus;
-  besluit: string | null;
-}
-
 // Team-configuratie beslisboom
 export type TeamHoofdCategorie = "SENIOREN" | "A_CATEGORIE" | "B_CATEGORIE";
 export type TeamLeeftijdsCat = "U15" | "U17" | "U19";
@@ -65,6 +56,19 @@ export interface WerkbordStafInTeam {
   rol: string;
 }
 
+// Werkitem als memo — vervangt notitie/memoStatus/besluit op Team/Speler/Staf
+export interface WerkbordWerkitem {
+  id: string;
+  titel: string | null;
+  beschrijving: string;
+  type: string;
+  status: string; // WerkitemStatus: OPEN | IN_BESPREKING | OPGELOST | GEACCEPTEERD_RISICO | GEARCHIVEERD
+  prioriteit: string; // WerkitemPrioriteit: BLOCKER | HOOG | MIDDEL | LAAG | INFO
+  volgorde: number;
+  resolutie: string | null;
+  createdAt: string; // ISO string
+}
+
 export interface WerkbordTeam {
   id: string;
   naam: string;
@@ -77,7 +81,6 @@ export interface WerkbordTeam {
   dames: WerkbordSpelerInTeam[];
   heren: WerkbordSpelerInTeam[];
   staf: WerkbordStafInTeam[];
-  notitie: string | null;
   ussScore: number | null;
   gemiddeldeLeeftijd: number | null;
   validatieStatus: "ok" | "warn" | "err";
@@ -91,9 +94,8 @@ export interface WerkbordTeam {
   selectieDames: WerkbordSpelerInTeam[]; // spelers op selectie-niveau (geslacht V)
   selectieHeren: WerkbordSpelerInTeam[]; // spelers op selectie-niveau (geslacht M)
   gebundeld: boolean;
-  // Memo-patroon velden
-  memoStatus: MemoStatus;
-  besluit: string | null;
+  // Werkitems (memos, actiepunten)
+  werkitems: WerkbordWerkitem[];
 }
 
 export interface WerkbordValidatieItem {
@@ -110,6 +112,7 @@ export interface WerkbordState {
   validatie: WerkbordValidatieItem[];
   werkindelingId: string;
   versieId: string;
+  kadersId: string;
   seizoen: string;
   naam: string;
   status: "concept" | "definitief";
@@ -122,6 +125,13 @@ export interface WerkbordState {
 export interface TiStudioShellProps {
   initieleState: WerkbordState;
   gebruikerEmail: string;
+}
+
+export interface ValidatieUpdate {
+  teamId: string;
+  items: WerkbordValidatieItem[];
+  status: "ok" | "warn" | "err";
+  count: number;
 }
 
 export type VersiesDrawerConfirm =
