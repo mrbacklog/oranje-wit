@@ -20,7 +20,6 @@ import OpmerkingPopover from "./OpmerkingPopover";
 import RatingEditor from "./RatingEditor";
 import RankingBadge from "./RankingBadge";
 import Spinner from "@/components/teamindeling/ui/Spinner";
-import SpelerStatusTab from "./SpelerStatusTab";
 
 /** Groepeer evaluaties per seizoen, rondes in oplopende volgorde */
 function groepeerPerSeizoen(evaluaties: EvaluatieData[]): [string, EvaluatieData[]][] {
@@ -74,7 +73,7 @@ export default function SpelerDetail({
   const spelerspad = (speler.spelerspad ?? []) as SpelerspadEntry[];
 
   // Tab state
-  const [activeTab, setActiveTab] = useState<"overzicht" | "status">("overzicht");
+  const [activeTab, setActiveTab] = useState<"overzicht">("overzicht");
 
   // Foto lightbox
   const [fotoOpen, setFotoOpen] = useState(false);
@@ -257,16 +256,6 @@ export default function SpelerDetail({
             >
               Overzicht
             </button>
-            <button
-              onClick={() => setActiveTab("status")}
-              className={`px-4 py-2 text-sm font-medium transition-colors ${
-                activeTab === "status"
-                  ? "border-b-2 border-orange-500 text-orange-600"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
-            >
-              Status
-            </button>
           </div>
         </div>
 
@@ -361,15 +350,6 @@ export default function SpelerDetail({
                 )}
               </div>
             </>
-          )}
-
-          {activeTab === "status" && (
-            <SpelerStatusTab
-              spelerId={speler.id}
-              kadersId={kadersId ?? ""}
-              initialStatus={speler.status}
-              notitie={speler.notitie}
-            />
           )}
         </div>
       </div>

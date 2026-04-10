@@ -12,6 +12,11 @@ export function ServiceWorkerRegister() {
     if (typeof window === "undefined" || !("serviceWorker" in navigator)) {
       return;
     }
+    // Service worker alleen in production — in development veroorzaakt de
+    // gecachede build-manifest loop-reloads
+    if (process.env.NODE_ENV !== "production") {
+      return;
+    }
 
     // Registreer bij window load om de initiële paginalaadtijd niet te vertragen
     const register = async () => {

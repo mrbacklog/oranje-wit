@@ -496,7 +496,7 @@ export function WerkbordCanvas({
                     left: (team.canvasX / CANVAS_W) * MINIMAP_W,
                     top: (team.canvasY / CANVAS_H) * MINIMAP_H,
                     width: Math.max(3, (KAART_BREEDTE[team.formaat] / CANVAS_W) * MINIMAP_W),
-                    height: Math.max(2, (schatKaartHoogte(team, zoomLevel) / CANVAS_H) * MINIMAP_H),
+                    height: Math.max(2, (schatKaartHoogte(team) / CANVAS_H) * MINIMAP_H),
                     background: "rgba(255,107,0,.5)",
                     borderRadius: 1,
                     pointerEvents: "none",

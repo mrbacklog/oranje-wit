@@ -10,9 +10,6 @@ import { maakWerkindelingSnapshot } from "@/lib/teamindeling/db/werkindeling-sna
 import { requireTC } from "@oranje-wit/auth/checks";
 import type { ActionResult } from "@oranje-wit/types";
 
-// Tijdelijk inline type — wordt verwijderd zodra SpelerProfielDialog naar werkitem-actions migreert
-type MemoData = { tekst?: string; memoStatus?: string; besluit?: string | null };
-
 const NIET_VERWIJDERD = { verwijderdOp: null } as const;
 
 async function assertTeamBewerkbaar(teamId: string) {
@@ -48,7 +45,7 @@ async function assertWerkindelingBewerkbaar(werkindelingId: string) {
 }
 
 export async function getWerkindelingVoorEditor(werkindelingId: string) {
-  return prisma.werkindeling.findUnique({
+  const volledig = await prisma.werkindeling.findUnique({
     where: { id: werkindelingId, ...NIET_VERWIJDERD },
     select: {
       id: true,
@@ -81,6 +78,16 @@ export async function getWerkindelingVoorEditor(werkindelingId: string) {
       },
     },
   });
+
+  if (!volledig) return null;
+
+  return {
+    ...volledig,
+    versies: volledig.versies.map((v) => ({
+      ...v,
+      teams: v.teams.map((t) => ({ ...t, werkitems: [] })),
+    })),
+  };
 }
 
 export async function getAlleSpelers() {
@@ -173,9 +180,6 @@ export async function getSpelerProfiel(spelerId: string) {
         volgendSeizoen: true,
         rating: true,
         lidSinds: true,
-        notitie: true,
-        memoStatus: true,
-        besluit: true,
         seizoenenActief: true,
       },
     }),
@@ -187,37 +191,6 @@ export async function getSpelerProfiel(spelerId: string) {
     }),
   ]);
   return speler ? { ...speler, competitieHistorie } : null;
-}
-
-export async function updateSpelerNotitie(spelerId: string, notitie: string): Promise<void> {
-  await requireTC();
-  await prisma.speler.update({
-    where: { id: spelerId },
-    data: { notitie },
-  });
-  revalidatePath("/ti-studio/indeling");
-}
-
-export async function updateSpelerMemo(
-  spelerId: string,
-  memo: MemoData
-): Promise<ActionResult<void>> {
-  try {
-    await requireTC();
-    await prisma.speler.update({
-      where: { id: spelerId },
-      data: {
-        notitie: memo.tekst || null,
-        memoStatus: memo.memoStatus,
-        besluit: memo.besluit ?? null,
-      },
-    });
-    revalidatePath("/ti-studio/indeling");
-    return { ok: true, data: undefined };
-  } catch (error) {
-    logger.error("updateSpelerMemo mislukt:", error);
-    return { ok: false, error: error instanceof Error ? error.message : String(error) };
-  }
 }
 
 export async function updateSpelerStatus(spelerId: string, status: string): Promise<void> {

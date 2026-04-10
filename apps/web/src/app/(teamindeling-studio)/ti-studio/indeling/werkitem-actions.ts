@@ -192,7 +192,7 @@ export async function verwijderWerkitem(id: string): Promise<ActionResult<void>>
 }
 
 // Systeem-werkitem (voor automatische processen zoals leden-sync)
-export async function createWerkitem(data: {
+export async function createSysteemWerkitem(data: {
   kadersId: string;
   titel: string;
   beschrijving: string;
