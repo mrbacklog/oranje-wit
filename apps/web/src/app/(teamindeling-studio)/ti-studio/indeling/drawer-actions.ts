@@ -124,6 +124,8 @@ export async function createWhatIfVanHuidigeVersie(
     throw new Error("Werkindeling heeft geen versie");
   }
 
+  type BronTeam = (typeof hoogsteVersie)["teams"][number];
+
   const whatIf = await prisma.whatIf.create({
     data: {
       werkindelingId,
@@ -131,7 +133,7 @@ export async function createWhatIfVanHuidigeVersie(
       toelichting: data.toelichting ?? null,
       basisVersieNummer: hoogsteVersie.nummer,
       teams: {
-        create: hoogsteVersie.teams.map((team) => ({
+        create: hoogsteVersie.teams.map((team: BronTeam) => ({
           bronTeamId: team.id,
           naam: team.naam,
           categorie: team.categorie,
