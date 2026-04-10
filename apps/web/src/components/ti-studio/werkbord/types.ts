@@ -2,7 +2,13 @@
 // Lokale types voor het werkbord — gebaseerd op bestaande types in components/teamindeling/scenario/types.ts
 
 export type Geslacht = "V" | "M";
-export type SpelerStatus = "BESCHIKBAAR" | "TWIJFELT" | "GAAT_STOPPEN" | "GESTOPT" | "AFGEMELD";
+export type SpelerStatus =
+  | "BESCHIKBAAR"
+  | "TWIJFELT"
+  | "GAAT_STOPPEN"
+  | "GESTOPT"
+  | "AFGEMELD"
+  | "ALGEMEEN_RESERVE";
 
 export type ZoomLevel = "compact" | "normaal" | "detail";
 export type KaartFormaat = "viertal" | "achtal" | "selectie";
