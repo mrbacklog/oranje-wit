@@ -18,7 +18,12 @@ export function SpelersPoolDrawer({ open, spelers, onClose }: SpelersPoolDrawerP
   const [filter, setFilter] = useState<SpelerFilter>("zonder_team");
   const [geslachtFilter, setGeslachtFilter] = useState<"alle" | "v" | "m">("alle");
 
-  const arSpelers = spelers.filter((sp) => sp.status === "ALGEMEEN_RESERVE");
+  const arSpelers = spelers
+    .filter((sp) => sp.status === "ALGEMEEN_RESERVE")
+    .filter((sp) => {
+      if (!zoek) return true;
+      return `${sp.roepnaam} ${sp.achternaam}`.toLowerCase().includes(zoek.toLowerCase());
+    });
 
   const gefilterd = spelers.filter((sp) => {
     if (sp.status === "ALGEMEEN_RESERVE") return false;

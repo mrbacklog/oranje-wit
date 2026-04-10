@@ -106,7 +106,7 @@ export default async function IndelingPage() {
     rating: null,
     notitie: null,
     afmelddatum: null,
-    teamId: spelerTeamMap.get(sp.id) ?? null,
+    teamId: sp.status === "ALGEMEEN_RESERVE" ? null : (spelerTeamMap.get(sp.id) ?? null),
     gepind: false,
     isNieuw: false,
     huidigTeam: (sp.huidig as { team?: string } | null)?.team ?? null,
