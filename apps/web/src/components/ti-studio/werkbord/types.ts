@@ -10,6 +10,17 @@ export type KnkvCategorie = "blauw" | "groen" | "geel" | "oranje" | "rood" | "se
 
 export type SpelerFilter = "zonder_team" | "ingedeeld" | "alle";
 
+// Team-configuratie beslisboom
+export type TeamHoofdCategorie = "SENIOREN" | "A_CATEGORIE" | "B_CATEGORIE";
+export type TeamLeeftijdsCat = "U15" | "U17" | "U19";
+
+export interface TeamConfigUpdate {
+  hoofdCategorie: TeamHoofdCategorie;
+  kleur: KnkvCategorie | null; // alleen voor B_CATEGORIE
+  niveau: TeamLeeftijdsCat | null; // alleen voor A_CATEGORIE
+  teamType: "viertal" | "achtal" | null; // alleen voor B_CATEGORIE GEEL
+}
+
 export interface WerkbordSpeler {
   id: string;
   roepnaam: string;
@@ -20,13 +31,13 @@ export interface WerkbordSpeler {
   rating: number | null;
   notitie: string | null;
   afmelddatum: string | null;
-  teamId: string | null; // null = niet ingedeeld
+  teamId: string | null;
   gepind: boolean;
-  isNieuw: boolean; // eerste seizoen
+  isNieuw: boolean;
 }
 
 export interface WerkbordSpelerInTeam {
-  id: string; // TeamSpeler.id
+  id: string;
   spelerId: string;
   speler: WerkbordSpeler;
   notitie: string | null;
@@ -35,21 +46,23 @@ export interface WerkbordSpelerInTeam {
 export interface WerkbordTeam {
   id: string;
   naam: string;
-  categorie: string; // "U14", "Sen 1", etc.
+  categorie: string;
   kleur: KnkvCategorie;
   formaat: KaartFormaat;
   volgorde: number;
-  // Canvas positie
   canvasX: number;
   canvasY: number;
-  // Spelers gesplitst op geslacht
   dames: WerkbordSpelerInTeam[];
   heren: WerkbordSpelerInTeam[];
   notitie: string | null;
   ussScore: number | null;
   gemiddeldeLeeftijd: number | null;
   validatieStatus: "ok" | "warn" | "err";
-  validatieCount: number; // aantal waarschuwingen
+  validatieCount: number;
+  // Team-configuratie velden (uit DB)
+  teamCategorie: TeamHoofdCategorie;
+  niveau: TeamLeeftijdsCat | null;
+  selectieGroepId: string | null;
 }
 
 export interface WerkbordValidatieItem {
@@ -57,6 +70,7 @@ export interface WerkbordValidatieItem {
   type: "ok" | "warn" | "err";
   regel: string;
   beschrijving: string;
+  laag?: "KNKV" | "TC"; // optioneel — ontbreekt = onbekend
 }
 
 export interface WerkbordState {
