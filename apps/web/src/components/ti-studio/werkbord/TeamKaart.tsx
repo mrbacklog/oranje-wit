@@ -1,6 +1,6 @@
 // apps/web/src/components/ti-studio/werkbord/TeamKaart.tsx
 "use client";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./tokens.css";
 import { TeamKaartSpelerRij, SPELER_RIJ_HOOGTE } from "./TeamKaartSpelerRij";
 import type {
@@ -49,6 +49,7 @@ interface TeamKaartProps {
   team: WerkbordTeam;
   zoomLevel: ZoomLevel;
   showScores: boolean;
+  isDragging?: boolean;
   onOpenTeamDrawer: (teamId: string) => void;
   onDropSpeler: (
     spelerData: WerkbordSpeler,
@@ -72,6 +73,7 @@ export function TeamKaart({
   team,
   zoomLevel,
   showScores,
+  isDragging,
   onOpenTeamDrawer,
   onDropSpeler,
   onHeaderMouseDown,
@@ -88,6 +90,17 @@ export function TeamKaart({
     : team.naam;
 
   const [dropOverGeslacht, setDropOverGeslacht] = useState<"V" | "M" | null>(null);
+  const [isLanding, setIsLanding] = useState(false);
+  const wasLiftedRef = useRef(false);
+
+  useEffect(() => {
+    if (!isDragging && wasLiftedRef.current) {
+      setIsLanding(true);
+      const t = setTimeout(() => setIsLanding(false), 650);
+      return () => clearTimeout(t);
+    }
+    wasLiftedRef.current = isDragging ?? false;
+  }, [isDragging]);
 
   function handleDragOver(e: React.DragEvent, geslacht: "V" | "M") {
     if (!e.dataTransfer.types.includes("speler")) return;
@@ -119,14 +132,21 @@ export function TeamKaart({
         width: breedte,
         height: "auto",
         background: "var(--bg-1)",
-        border: "1px solid var(--border-0)",
+        border: `1px solid ${isDragging ? "rgba(255,107,0,.3)" : "var(--border-0)"}`,
         borderRadius: "var(--card-radius)",
-        boxShadow: "var(--sh-card)",
+        boxShadow: isDragging ? "var(--sh-lifted)" : "var(--sh-card)",
         overflow: "hidden",
         display: "flex",
         flexDirection: "column",
         cursor: "default",
-        animation: "fadeUp 250ms ease both",
+        transform: isDragging ? "scale(1.04) translateY(-10px)" : "none",
+        transition: isDragging
+          ? "transform 280ms cubic-bezier(0.34,1.56,0.64,1), box-shadow 280ms ease, border-color 200ms ease"
+          : undefined,
+        animation: isLanding
+          ? "dropLand 650ms cubic-bezier(0.16,1,0.3,1) both"
+          : "fadeUp 250ms ease both",
+        zIndex: isDragging ? 100 : undefined,
       }}
     >
       {/* Kleurband links — 4px */}
@@ -378,6 +398,16 @@ export function TeamKaart({
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(10px); }
           to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes dropLand {
+          from {
+            transform: scale(1.04) translateY(-10px);
+            box-shadow: 0 10px 28px rgba(0,0,0,.65), 0 32px 72px rgba(0,0,0,.5), 0 0 0 1px rgba(255,107,0,.2);
+          }
+          to {
+            transform: scale(1) translateY(0);
+            box-shadow: 0 2px 4px rgba(0,0,0,.5), 0 8px 24px rgba(0,0,0,.35);
+          }
         }
       `}</style>
     </div>
