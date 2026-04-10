@@ -10,6 +10,15 @@ export type KnkvCategorie = "blauw" | "groen" | "geel" | "oranje" | "rood" | "se
 
 export type SpelerFilter = "zonder_team" | "ingedeeld" | "alle";
 
+// Memo-patroon: status van een memo (open = actie vereist, gesloten = afgerond met besluit)
+export type MemoStatus = "open" | "gesloten";
+
+export interface MemoData {
+  tekst: string; // UI: "Memo" — DB kolom: "notitie"
+  memoStatus: MemoStatus;
+  besluit: string | null;
+}
+
 // Team-configuratie beslisboom
 export type TeamHoofdCategorie = "SENIOREN" | "A_CATEGORIE" | "B_CATEGORIE";
 export type TeamLeeftijdsCat = "U15" | "U17" | "U19";
@@ -80,6 +89,9 @@ export interface WerkbordTeam {
   selectieDames: WerkbordSpelerInTeam[]; // spelers op selectie-niveau (geslacht V)
   selectieHeren: WerkbordSpelerInTeam[]; // spelers op selectie-niveau (geslacht M)
   gebundeld: boolean;
+  // Memo-patroon velden
+  memoStatus: MemoStatus;
+  besluit: string | null;
 }
 
 export interface WerkbordValidatieItem {

@@ -10,6 +10,7 @@ import type {
   WerkbordSpelerInTeam,
   WerkbordTeam,
   WerkbordValidatieItem,
+  MemoStatus,
 } from "@/components/ti-studio/werkbord/types";
 
 // Prisma Kleur enum → KnkvCategorie token
@@ -198,6 +199,8 @@ export default async function IndelingPage() {
       selectieDames: [] as WerkbordSpelerInTeam[],
       selectieHeren: [] as WerkbordSpelerInTeam[],
       gebundeld: false,
+      memoStatus: (team.memoStatus as MemoStatus) ?? "gesloten",
+      besluit: (team as any).besluit ?? null,
     };
   });
 
