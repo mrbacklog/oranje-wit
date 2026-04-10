@@ -1,4 +1,3 @@
-// apps/web/src/app/(teamindeling-studio)/ti-studio/indeling/team-config-actions.test.ts
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 vi.mock("@oranje-wit/auth/checks", () => ({
