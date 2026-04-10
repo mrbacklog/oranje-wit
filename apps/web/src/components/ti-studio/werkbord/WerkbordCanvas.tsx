@@ -1,6 +1,6 @@
 // apps/web/src/components/ti-studio/werkbord/WerkbordCanvas.tsx
 "use client";
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import "./tokens.css";
 import { TeamKaart } from "./TeamKaart";
 import { DaisyPanel } from "./DaisyPanel";
@@ -76,6 +76,21 @@ export function WerkbordCanvas({
   const [panState, setPanState] = useState<PanState | null>(null);
   const [minimapDragging, setMinimapDragging] = useState(false);
   const [panelOpen, setPanelOpen] = useState(false);
+
+  // Selectie pairs: één gecombineerde kaart per selectieGroep
+  const canvasTeams = useMemo(() => {
+    const seen = new Set<string>();
+    return [...teams]
+      .sort((a, b) => a.volgorde - b.volgorde)
+      .flatMap((team) => {
+        if (!team.selectieGroepId) return [{ team, partner: null as WerkbordTeam | null }];
+        if (seen.has(team.selectieGroepId)) return [];
+        seen.add(team.selectieGroepId);
+        const partner =
+          teams.find((t) => t.selectieGroepId === team.selectieGroepId && t.id !== team.id) ?? null;
+        return [{ team, partner }];
+      });
+  }, [teams]);
 
   // Refs zodat wheel-handler altijd verse waarden heeft
   const zoomRef = useRef(zoom);
@@ -276,10 +291,11 @@ export function WerkbordCanvas({
           pointerEvents: "none",
         }}
       >
-        {teams.map((team) => (
+        {canvasTeams.map(({ team, partner }) => (
           <TeamKaart
             key={team.id}
             team={team}
+            partnerTeam={partner}
             zoomLevel={zoomLevel}
             showScores={showScores}
             isDragging={draggingTeam?.teamId === team.id}
@@ -287,56 +303,19 @@ export function WerkbordCanvas({
             onDropSpeler={(spelerData, vanTeamId, naarGeslacht) =>
               onDropSpelerOpTeam(spelerData, vanTeamId, team.id, naarGeslacht)
             }
+            onDropSpelerOpPartner={
+              partner
+                ? (spelerData, vanTeamId, naarGeslacht) =>
+                    onDropSpelerOpTeam(spelerData, vanTeamId, partner.id, naarGeslacht)
+                : undefined
+            }
             onHeaderMouseDown={handleTeamHeaderMouseDown}
           />
         ))}
       </div>
 
-      {/* ─── Score-knop rechtsonder, boven zoom ─────────────────────────────── */}
-      <button
-        onClick={onToggleScores}
-        title={showScores ? "Scores verbergen" : "Scores tonen"}
-        style={{
-          position: "absolute",
-          bottom: 16,
-          right: 196,
-          zIndex: 10,
-          display: "flex",
-          alignItems: "center",
-          gap: 5,
-          padding: "5px 10px",
-          borderRadius: 8,
-          fontSize: 11,
-          fontWeight: 600,
-          cursor: "pointer",
-          fontFamily: "inherit",
-          background: showScores ? "var(--accent-dim)" : "var(--bg-2)",
-          border: showScores ? "1px solid rgba(255,107,0,.3)" : "1px solid var(--border-1)",
-          color: showScores ? "var(--accent)" : "var(--text-2)",
-          boxShadow: "var(--sh-card)",
-          transition: "background 120ms, color 120ms, border-color 120ms",
-        }}
-      >
-        <svg
-          width="11"
-          height="11"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-        >
-          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-        </svg>
-        Score
-      </button>
-
-      {/* ─── Zoom + Minimap panel rechtsonder ─────────────────────────────── */}
+      {/* ─── Score + Zoom + Minimap kolom rechtsonder ─────────────────────── */}
       <div
-        onMouseEnter={() => setPanelOpen(true)}
-        onMouseLeave={() => {
-          if (!minimapDragging) setPanelOpen(false);
-        }}
         style={{
           position: "absolute",
           bottom: 16,
@@ -345,224 +324,297 @@ export function WerkbordCanvas({
           display: "flex",
           flexDirection: "column",
           alignItems: "stretch",
-          gap: 0,
+          gap: 6,
         }}
       >
-        {/* Uitklapbaar gedeelte — minimap + zoom controls */}
-        <div
+        {/* Score octagon-knop */}
+        <button
+          onClick={onToggleScores}
+          title={showScores ? "Scores verbergen" : "Scores tonen"}
           style={{
-            overflow: "hidden",
-            maxHeight: panelOpen ? 260 : 0,
-            opacity: panelOpen ? 1 : 0,
-            transform: panelOpen ? "translateY(0)" : "translateY(6px)",
-            transition: "max-height 220ms ease, opacity 160ms ease, transform 160ms ease",
-            pointerEvents: panelOpen ? "auto" : "none",
-            background: "var(--bg-2)",
-            border: "1px solid var(--border-1)",
-            borderRadius: "10px 10px 0 0",
-            borderBottom: "none",
-            boxShadow: "var(--sh-card)",
+            position: "relative",
+            width: 160,
+            height: 36,
+            cursor: "pointer",
+            border: "none",
+            background: "transparent",
+            padding: 0,
+            fontFamily: "inherit",
           }}
         >
-          {/* Minimap */}
-          <div
-            ref={minimapRef}
-            onMouseDown={handleMinimapMouseDown}
-            onMouseUp={(e) => {
-              e.stopPropagation();
-              setMinimapDragging(false);
-            }}
-            style={{
-              width: MINIMAP_W,
-              height: MINIMAP_H,
-              position: "relative",
-              overflow: "hidden",
-              cursor: minimapDragging ? "grabbing" : "grab",
-              borderBottom: "1px solid var(--border-0)",
-            }}
-          >
-            {/* Achtergrond dot-patroon */}
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                backgroundImage:
-                  "radial-gradient(circle, rgba(255,255,255,.04) 1px, transparent 1px)",
-                backgroundSize: "6px 6px",
-                pointerEvents: "none",
-              }}
-            />
-            {/* Teamkaarten als mini-rechthoeken */}
-            {teams.map((team) => (
-              <div
-                key={team.id}
-                style={{
-                  position: "absolute",
-                  left: (team.canvasX / CANVAS_W) * MINIMAP_W,
-                  top: (team.canvasY / CANVAS_H) * MINIMAP_H,
-                  width: Math.max(3, (KAART_BREEDTE[team.formaat] / CANVAS_W) * MINIMAP_W),
-                  height: Math.max(2, (KAART_HOOGTE / CANVAS_H) * MINIMAP_H),
-                  background: "rgba(255,107,0,.5)",
-                  borderRadius: 1,
-                  pointerEvents: "none",
-                }}
-              />
-            ))}
-            {/* Viewport indicator — dit is wat je vastgrijpt */}
-            <div
-              style={{
-                position: "absolute",
-                left: vpX,
-                top: vpY,
-                width: vpW,
-                height: vpH,
-                border: "1.5px solid rgba(255,107,0,.9)",
-                background: "rgba(255,107,0,.08)",
-                borderRadius: 2,
-                pointerEvents: "none",
-                boxShadow: "0 0 0 1px rgba(0,0,0,.3)",
-              }}
-            />
-          </div>
-
-          {/* Zoom controls */}
-          <div
-            style={{
-              padding: "7px 10px",
-              display: "flex",
-              alignItems: "center",
-              gap: 6,
-            }}
-          >
-            <button
-              onClick={onZoomOut}
-              title="Zoom uit"
-              style={{
-                width: 24,
-                height: 24,
-                borderRadius: 5,
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "var(--text-2)",
-                fontSize: 16,
-                fontWeight: 700,
-              }}
-            >
-              −
-            </button>
-            <input
-              type="range"
-              min={40}
-              max={150}
-              value={zoomPercent}
-              onChange={(e) => onZoomChange(parseInt(e.target.value, 10) / 100)}
-              style={{
-                flex: 1,
-                height: 4,
-                accentColor: "var(--accent)",
-                cursor: "pointer",
-              }}
-            />
-            <button
-              onClick={onZoomIn}
-              title="Zoom in"
-              style={{
-                width: 24,
-                height: 24,
-                borderRadius: 5,
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "var(--text-2)",
-                fontSize: 16,
-                fontWeight: 700,
-              }}
-            >
-              +
-            </button>
-            <div style={{ width: 1, height: 14, background: "var(--border-0)" }} />
-            <button
-              onClick={handleFit}
-              title="Alle kaarten in beeld"
-              style={{
-                padding: "3px 7px",
-                background: "none",
-                border: "1px solid var(--border-1)",
-                borderRadius: 5,
-                color: "var(--text-2)",
-                fontSize: 10,
-                fontWeight: 600,
-                cursor: "pointer",
-                fontFamily: "inherit",
-                whiteSpace: "nowrap",
-              }}
-            >
-              Fit
-            </button>
-          </div>
-        </div>
-
-        {/* Trigger pill — altijd zichtbaar */}
-        <div
-          style={{
-            background: "var(--bg-2)",
-            border: "1px solid var(--border-1)",
-            borderRadius: panelOpen ? "0 0 8px 8px" : 8,
-            padding: "5px 10px",
-            display: "flex",
-            alignItems: "center",
-            gap: 7,
-            cursor: "default",
-            boxShadow: panelOpen ? "none" : "var(--sh-card)",
-            transition: "border-radius 220ms ease",
-            userSelect: "none",
-          }}
-        >
-          {/* Zoom icoon */}
+          {/* Octagon achtergrond via SVG */}
           <svg
-            width="13"
-            height="13"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="var(--text-3)"
-            strokeWidth="2.5"
-            strokeLinecap="round"
+            viewBox="0 0 100 40"
+            width="100%"
+            height="36"
+            style={{ position: "absolute", inset: 0 }}
           >
-            <circle cx="11" cy="11" r="8" />
-            <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            <line x1="11" y1="8" x2="11" y2="14" />
-            <line x1="8" y1="11" x2="14" y2="11" />
+            <polygon
+              points="10,0 90,0 100,10 100,30 90,40 10,40 0,30 0,10"
+              fill={showScores ? "rgba(255,107,0,.15)" : "var(--bg-2)"}
+              stroke={showScores ? "rgba(255,107,0,.5)" : "var(--border-1)"}
+              strokeWidth="1.5"
+            />
           </svg>
           <span
             style={{
-              fontSize: 12,
+              position: "relative",
+              zIndex: 1,
+              fontSize: 11,
               fontWeight: 700,
-              color: "var(--text-2)",
-              minWidth: 28,
-              textAlign: "right",
+              letterSpacing: ".4px",
+              color: showScores ? "var(--accent)" : "var(--text-2)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 5,
+              height: "100%",
+              transition: "color 120ms",
             }}
           >
-            {zoomPercent}%
+            <svg
+              width="10"
+              height="10"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            >
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+            </svg>
+            Score
           </span>
-          {/* Zoom level indicator */}
-          <span
+        </button>
+
+        <div
+          onMouseEnter={() => setPanelOpen(true)}
+          onMouseLeave={() => {
+            if (!minimapDragging) setPanelOpen(false);
+          }}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "stretch",
+            gap: 0,
+          }}
+        >
+          {/* Uitklapbaar gedeelte — minimap + zoom controls */}
+          <div
             style={{
-              fontSize: 10,
-              fontWeight: 600,
-              color: "var(--text-3)",
-              borderLeft: "1px solid var(--border-0)",
-              paddingLeft: 7,
+              overflow: "hidden",
+              maxHeight: panelOpen ? 260 : 0,
+              opacity: panelOpen ? 1 : 0,
+              transform: panelOpen ? "translateY(0)" : "translateY(6px)",
+              transition: "max-height 220ms ease, opacity 160ms ease, transform 160ms ease",
+              pointerEvents: panelOpen ? "auto" : "none",
+              background: "var(--bg-2)",
+              border: "1px solid var(--border-1)",
+              borderRadius: "10px 10px 0 0",
+              borderBottom: "none",
+              boxShadow: "var(--sh-card)",
             }}
           >
-            {zoomLevel === "compact" ? "Compact" : zoomLevel === "normaal" ? "Normaal" : "Detail"}
-          </span>
+            {/* Minimap */}
+            <div
+              ref={minimapRef}
+              onMouseDown={handleMinimapMouseDown}
+              onMouseUp={(e) => {
+                e.stopPropagation();
+                setMinimapDragging(false);
+              }}
+              style={{
+                width: MINIMAP_W,
+                height: MINIMAP_H,
+                position: "relative",
+                overflow: "hidden",
+                cursor: minimapDragging ? "grabbing" : "grab",
+                borderBottom: "1px solid var(--border-0)",
+              }}
+            >
+              {/* Achtergrond dot-patroon */}
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  backgroundImage:
+                    "radial-gradient(circle, rgba(255,255,255,.04) 1px, transparent 1px)",
+                  backgroundSize: "6px 6px",
+                  pointerEvents: "none",
+                }}
+              />
+              {/* Teamkaarten als mini-rechthoeken */}
+              {teams.map((team) => (
+                <div
+                  key={team.id}
+                  style={{
+                    position: "absolute",
+                    left: (team.canvasX / CANVAS_W) * MINIMAP_W,
+                    top: (team.canvasY / CANVAS_H) * MINIMAP_H,
+                    width: Math.max(3, (KAART_BREEDTE[team.formaat] / CANVAS_W) * MINIMAP_W),
+                    height: Math.max(2, (KAART_HOOGTE / CANVAS_H) * MINIMAP_H),
+                    background: "rgba(255,107,0,.5)",
+                    borderRadius: 1,
+                    pointerEvents: "none",
+                  }}
+                />
+              ))}
+              {/* Viewport indicator — dit is wat je vastgrijpt */}
+              <div
+                style={{
+                  position: "absolute",
+                  left: vpX,
+                  top: vpY,
+                  width: vpW,
+                  height: vpH,
+                  border: "1.5px solid rgba(255,107,0,.9)",
+                  background: "rgba(255,107,0,.08)",
+                  borderRadius: 2,
+                  pointerEvents: "none",
+                  boxShadow: "0 0 0 1px rgba(0,0,0,.3)",
+                }}
+              />
+            </div>
+
+            {/* Zoom controls */}
+            <div
+              style={{
+                padding: "7px 10px",
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+              }}
+            >
+              <button
+                onClick={onZoomOut}
+                title="Zoom uit"
+                style={{
+                  width: 24,
+                  height: 24,
+                  borderRadius: 5,
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "var(--text-2)",
+                  fontSize: 16,
+                  fontWeight: 700,
+                }}
+              >
+                −
+              </button>
+              <input
+                type="range"
+                min={40}
+                max={150}
+                value={zoomPercent}
+                onChange={(e) => onZoomChange(parseInt(e.target.value, 10) / 100)}
+                style={{
+                  flex: 1,
+                  height: 4,
+                  accentColor: "var(--accent)",
+                  cursor: "pointer",
+                }}
+              />
+              <button
+                onClick={onZoomIn}
+                title="Zoom in"
+                style={{
+                  width: 24,
+                  height: 24,
+                  borderRadius: 5,
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "var(--text-2)",
+                  fontSize: 16,
+                  fontWeight: 700,
+                }}
+              >
+                +
+              </button>
+              <div style={{ width: 1, height: 14, background: "var(--border-0)" }} />
+              <button
+                onClick={handleFit}
+                title="Alle kaarten in beeld"
+                style={{
+                  padding: "3px 7px",
+                  background: "none",
+                  border: "1px solid var(--border-1)",
+                  borderRadius: 5,
+                  color: "var(--text-2)",
+                  fontSize: 10,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  fontFamily: "inherit",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                Fit
+              </button>
+            </div>
+          </div>
+
+          {/* Trigger pill — altijd zichtbaar */}
+          <div
+            style={{
+              background: "var(--bg-2)",
+              border: "1px solid var(--border-1)",
+              borderRadius: panelOpen ? "0 0 8px 8px" : 8,
+              padding: "5px 10px",
+              display: "flex",
+              alignItems: "center",
+              gap: 7,
+              cursor: "default",
+              boxShadow: panelOpen ? "none" : "var(--sh-card)",
+              transition: "border-radius 220ms ease",
+              userSelect: "none",
+            }}
+          >
+            {/* Zoom icoon */}
+            <svg
+              width="13"
+              height="13"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="var(--text-3)"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              <line x1="11" y1="8" x2="11" y2="14" />
+              <line x1="8" y1="11" x2="14" y2="11" />
+            </svg>
+            <span
+              style={{
+                fontSize: 12,
+                fontWeight: 700,
+                color: "var(--text-2)",
+                minWidth: 28,
+                textAlign: "right",
+              }}
+            >
+              {zoomPercent}%
+            </span>
+            {/* Zoom level indicator */}
+            <span
+              style={{
+                fontSize: 10,
+                fontWeight: 600,
+                color: "var(--text-3)",
+                borderLeft: "1px solid var(--border-0)",
+                paddingLeft: 7,
+              }}
+            >
+              {zoomLevel === "compact" ? "Compact" : zoomLevel === "normaal" ? "Normaal" : "Detail"}
+            </span>
+          </div>
         </div>
       </div>
 

@@ -14,6 +14,7 @@ import {
   updateTeamConfig,
   koppelSelectie,
   ontkoppelSelectie,
+  updateSelectieNaam,
 } from "@/app/(teamindeling-studio)/ti-studio/indeling/team-config-actions";
 
 interface TeamDrawerProps {
@@ -28,6 +29,7 @@ interface TeamDrawerProps {
   onConfigUpdated: (teamId: string, update: Partial<WerkbordTeam>) => void;
   onSelectieGekoppeld: (teamId: string, selectieGroepId: string) => void;
   onSelectieOntkoppeld: (selectieGroepId: string) => void;
+  onSelectieNaamUpdated: (selectieGroepId: string, naam: string) => void;
 }
 
 const VAL_KLEUR: Record<string, string> = {
@@ -439,20 +441,25 @@ function SelectieKoppeling({
   versieId,
   onSelectieGekoppeld,
   onSelectieOntkoppeld,
+  onSelectieNaamUpdated,
 }: {
   team: WerkbordTeam;
   alleTeams: WerkbordTeam[];
   versieId: string;
   onSelectieGekoppeld: (teamId: string, selectieGroepId: string) => void;
   onSelectieOntkoppeld: (selectieGroepId: string) => void;
+  onSelectieNaamUpdated: (selectieGroepId: string, naam: string) => void;
 }) {
   const [isPending, startTransition] = useTransition();
   const [gekozenTeamId, setGekozenTeamId] = useState("");
+  const [naamInput, setNaamInput] = useState(team.selectieNaam ?? "");
 
   const beschikbaar = alleTeams.filter((t) => t.id !== team.id && !t.selectieGroepId);
   const gekoppeldAan = alleTeams.find(
     (t) => t.selectieGroepId === team.selectieGroepId && t.id !== team.id
   );
+
+  const naamPlaceholder = gekoppeldAan ? `${team.naam} ↔ ${gekoppeldAan.naam}` : "Selectienaam…";
 
   function koppel() {
     if (!gekozenTeamId) return;
@@ -473,6 +480,18 @@ function SelectieKoppeling({
       const result = await ontkoppelSelectie(groepId);
       if (result.ok) {
         onSelectieOntkoppeld(groepId);
+        setNaamInput("");
+      }
+    });
+  }
+
+  function slaSelectieNaamOp() {
+    if (!team.selectieGroepId) return;
+    const groepId = team.selectieGroepId;
+    startTransition(async () => {
+      const result = await updateSelectieNaam(groepId, naamInput);
+      if (result.ok) {
+        onSelectieNaamUpdated(groepId, naamInput.trim());
       }
     });
   }
@@ -492,9 +511,70 @@ function SelectieKoppeling({
         Selectie-koppeling
       </div>
       {team.selectieGroepId ? (
-        <div>
-          <div style={{ fontSize: 11, color: "var(--text-2)", marginBottom: 8 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <div style={{ fontSize: 11, color: "var(--text-2)" }}>
             Gekoppeld aan: <strong>{gekoppeldAan?.naam ?? "—"}</strong>
+          </div>
+          {/* Selectienaam */}
+          <div>
+            <div
+              style={{
+                fontSize: 9,
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: ".4px",
+                color: "var(--text-3)",
+                marginBottom: 4,
+              }}
+            >
+              Selectienaam
+            </div>
+            <div style={{ display: "flex", gap: 6 }}>
+              <input
+                type="text"
+                value={naamInput}
+                onChange={(e) => setNaamInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") slaSelectieNaamOp();
+                }}
+                placeholder={naamPlaceholder}
+                style={{
+                  flex: 1,
+                  padding: "5px 8px",
+                  fontSize: 11,
+                  borderRadius: 6,
+                  border: "1px solid var(--border-0)",
+                  background: "var(--bg-2)",
+                  color: "var(--text-1)",
+                  fontFamily: "inherit",
+                  outline: "none",
+                }}
+              />
+              <button
+                onClick={slaSelectieNaamOp}
+                disabled={isPending}
+                style={{
+                  padding: "5px 9px",
+                  fontSize: 11,
+                  fontWeight: 700,
+                  borderRadius: 6,
+                  border: "1px solid var(--accent)",
+                  background: "var(--accent-dim)",
+                  color: "var(--accent)",
+                  cursor: "pointer",
+                  fontFamily: "inherit",
+                  opacity: isPending ? 0.6 : 1,
+                  flexShrink: 0,
+                }}
+              >
+                OK
+              </button>
+            </div>
+            {!naamInput && (
+              <div style={{ fontSize: 10, color: "var(--text-3)", marginTop: 4 }}>
+                Leeg = {naamPlaceholder}
+              </div>
+            )}
           </div>
           <button
             onClick={ontkoppel}
@@ -510,6 +590,7 @@ function SelectieKoppeling({
               cursor: "pointer",
               fontFamily: "inherit",
               opacity: isPending ? 0.6 : 1,
+              alignSelf: "flex-start",
             }}
           >
             Koppeling verwijderen
@@ -570,6 +651,7 @@ function TeamDetailPanel({
   onConfigUpdated,
   onSelectieGekoppeld,
   onSelectieOntkoppeld,
+  onSelectieNaamUpdated,
 }: {
   team: WerkbordTeam;
   alleTeams: WerkbordTeam[];
@@ -578,6 +660,7 @@ function TeamDetailPanel({
   onConfigUpdated: (teamId: string, update: Partial<WerkbordTeam>) => void;
   onSelectieGekoppeld: (teamId: string, selectieGroepId: string) => void;
   onSelectieOntkoppeld: (selectieGroepId: string) => void;
+  onSelectieNaamUpdated: (selectieGroepId: string, naam: string) => void;
 }) {
   const teamValidatie = validatie.filter((v) => v.teamId === team.id);
 
@@ -618,6 +701,7 @@ function TeamDetailPanel({
         versieId={versieId}
         onSelectieGekoppeld={onSelectieGekoppeld}
         onSelectieOntkoppeld={onSelectieOntkoppeld}
+        onSelectieNaamUpdated={onSelectieNaamUpdated}
       />
     </div>
   );
@@ -635,6 +719,7 @@ export function TeamDrawer({
   onConfigUpdated,
   onSelectieGekoppeld,
   onSelectieOntkoppeld,
+  onSelectieNaamUpdated,
 }: TeamDrawerProps) {
   const geselecteerdTeam = teams.find((t) => t.id === geselecteerdTeamId) ?? null;
   const detailOpen = geselecteerdTeam !== null;
@@ -774,6 +859,7 @@ export function TeamDrawer({
           onConfigUpdated={onConfigUpdated}
           onSelectieGekoppeld={onSelectieGekoppeld}
           onSelectieOntkoppeld={onSelectieOntkoppeld}
+          onSelectieNaamUpdated={onSelectieNaamUpdated}
         />
       )}
     </div>

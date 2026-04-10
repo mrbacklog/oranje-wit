@@ -26,6 +26,7 @@ export interface WerkbordSpeler {
   roepnaam: string;
   achternaam: string;
   geboortejaar: number;
+  geboortedatum: string | null;
   geslacht: Geslacht;
   status: SpelerStatus;
   rating: number | null;
@@ -34,6 +35,8 @@ export interface WerkbordSpeler {
   teamId: string | null;
   gepind: boolean;
   isNieuw: boolean;
+  huidigTeam: string | null;
+  ingedeeldTeamNaam: string | null;
 }
 
 export interface WerkbordSpelerInTeam {
@@ -63,6 +66,7 @@ export interface WerkbordTeam {
   teamCategorie: TeamHoofdCategorie;
   niveau: TeamLeeftijdsCat | null;
   selectieGroepId: string | null;
+  selectieNaam: string | null;
 }
 
 export interface WerkbordValidatieItem {

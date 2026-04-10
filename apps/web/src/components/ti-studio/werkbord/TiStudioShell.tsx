@@ -146,7 +146,9 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
 
   const koppelSelectieLokaal = useCallback((teamId: string, selectieGroepId: string) => {
     setTeams((prev) =>
-      prev.map((t) => (t.id === teamId ? { ...t, selectieGroepId, formaat: "selectie" } : t))
+      prev.map((t) =>
+        t.id === teamId ? { ...t, selectieGroepId, formaat: "selectie", selectieNaam: null } : t
+      )
     );
   }, []);
 
@@ -159,8 +161,16 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
           t.teamCategorie === "B_CATEGORIE" && (t.kleur === "blauw" || t.kleur === "groen")
             ? "viertal"
             : "achtal";
-        return { ...t, selectieGroepId: null, formaat: formaatHerstel };
+        return { ...t, selectieGroepId: null, selectieNaam: null, formaat: formaatHerstel };
       })
+    );
+  }, []);
+
+  const updateSelectieNaamLokaal = useCallback((selectieGroepId: string, naam: string) => {
+    setTeams((prev) =>
+      prev.map((t) =>
+        t.selectieGroepId === selectieGroepId ? { ...t, selectieNaam: naam || null } : t
+      )
     );
   }, []);
 
@@ -337,6 +347,7 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
           onConfigUpdated={updateTeamLokaal}
           onSelectieGekoppeld={koppelSelectieLokaal}
           onSelectieOntkoppeld={ontkoppelSelectieLokaal}
+          onSelectieNaamUpdated={updateSelectieNaamLokaal}
         />
         <VersiesDrawer
           open={activePanel === "versies"}

@@ -76,6 +76,7 @@ export async function getWerkindelingVoorEditor(werkindelingId: string) {
               teamType: true,
               niveau: true,
               selectieGroepId: true,
+              selectieGroep: { select: { naam: true } },
               volgorde: true,
               validatieStatus: true,
               spelers: { include: { speler: true } },

@@ -88,3 +88,23 @@ export async function ontkoppelSelectie(groepId: string): Promise<ActionResult<v
     };
   }
 }
+
+export async function updateSelectieNaam(
+  groepId: string,
+  naam: string
+): Promise<ActionResult<void>> {
+  await requireTC();
+  try {
+    await prisma.selectieGroep.update({
+      where: { id: groepId },
+      data: { naam: naam.trim() || null },
+    });
+    return { ok: true, data: undefined };
+  } catch (error) {
+    logger.warn(`Fout bij selectienaam update voor ${groepId}:`, error);
+    return {
+      ok: false,
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
+}

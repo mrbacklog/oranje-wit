@@ -184,6 +184,7 @@ export default async function IndelingPage() {
       teamCategorie: (team.categorie ?? "SENIOREN") as "SENIOREN" | "A_CATEGORIE" | "B_CATEGORIE",
       niveau: (team.niveau ?? null) as "U15" | "U17" | "U19" | null,
       selectieGroepId: team.selectieGroepId ?? null,
+      selectieNaam: (team as any).selectieGroep?.naam ?? null,
     };
   });
 
