@@ -58,15 +58,15 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
       .catch(() => {});
   }, [activePanel, initieleState.werkindelingId]);
 
-  function togglePanel(panel: "pool" | "teams" | "werkbord" | "versies" | "kader") {
+  const togglePanel = useCallback((panel: "pool" | "teams" | "werkbord" | "versies" | "kader") => {
     setActivePanel((prev) => (prev === panel ? null : panel));
     if (panel !== "teams") setGeselecteerdTeamId(null);
-  }
+  }, []);
 
-  function openTeamDrawer(teamId: string) {
+  const openTeamDrawer = useCallback((teamId: string) => {
     setActivePanel("teams");
     setGeselecteerdTeamId(teamId);
-  }
+  }, []);
 
   const hasErrors = initieleState.validatie.some((v) => v.type === "err");
 
@@ -152,11 +152,15 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
 
   const ontkoppelSelectieLokaal = useCallback((selectieGroepId: string) => {
     setTeams((prev) =>
-      prev.map((t) =>
-        t.selectieGroepId === selectieGroepId
-          ? { ...t, selectieGroepId: null, formaat: "achtal" }
-          : t
-      )
+      prev.map((t) => {
+        if (t.selectieGroepId !== selectieGroepId) return t;
+        // Herstel formaat op basis van teamCategorie + kleur (blauw/groen → viertal, rest → achtal)
+        const formaatHerstel: "viertal" | "achtal" =
+          t.teamCategorie === "B_CATEGORIE" && (t.kleur === "blauw" || t.kleur === "groen")
+            ? "viertal"
+            : "achtal";
+        return { ...t, selectieGroepId: null, formaat: formaatHerstel };
+      })
     );
   }, []);
 
