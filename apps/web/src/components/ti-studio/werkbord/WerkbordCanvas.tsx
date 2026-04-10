@@ -26,6 +26,8 @@ interface WerkbordCanvasProps {
   ) => void;
   onTeamPositionChange: (teamId: string, x: number, y: number) => void;
   onTeamDragEnd: (teamId: string, x: number, y: number) => void;
+  onReturneerNaarPool: (spelerData: WerkbordSpeler, vanTeamId: string) => void;
+  onSpelerClick?: (spelerId: string, teamId: string | null) => void;
 }
 
 interface TeamDragState {
@@ -67,6 +69,7 @@ export function WerkbordCanvas({
   onDropSpelerOpTeam,
   onTeamPositionChange,
   onTeamDragEnd,
+  onReturneerNaarPool,
 }: WerkbordCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const minimapRef = useRef<HTMLDivElement>(null);
@@ -264,9 +267,22 @@ export function WerkbordCanvas({
           "radial-gradient(circle at 50% 50%, rgba(255,107,0,.02) 0%, transparent 60%), var(--bg-0)",
       }}
     >
-      {/* Achtergrond dot-patroon — pan-zone */}
+      {/* Achtergrond dot-patroon — pan-zone + speler-naar-pool drop */}
       <div
         onMouseDown={handleBgMouseDown}
+        onDragOver={(e) => {
+          if (!e.dataTransfer.types.includes("speler")) return;
+          e.preventDefault();
+          e.dataTransfer.dropEffect = "move";
+        }}
+        onDrop={(e) => {
+          e.preventDefault();
+          const raw = e.dataTransfer.getData("speler");
+          if (!raw) return;
+          const data = JSON.parse(raw) as { speler: WerkbordSpeler; vanTeamId: string | null };
+          if (!data.vanTeamId) return; // al in pool
+          onReturneerNaarPool(data.speler, data.vanTeamId);
+        }}
         style={{
           position: "absolute",
           inset: 0,
@@ -327,64 +343,41 @@ export function WerkbordCanvas({
           gap: 6,
         }}
       >
-        {/* Score octagon-knop */}
+        {/* USS Scores toggle — pill */}
         <button
           onClick={onToggleScores}
-          title={showScores ? "Scores verbergen" : "Scores tonen"}
+          title={showScores ? "USS Scores verbergen" : "USS Scores tonen"}
           style={{
-            position: "relative",
             width: 160,
             height: 36,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 6,
+            borderRadius: 8,
+            border: showScores ? "1px solid rgba(255,107,0,.4)" : "1px solid var(--border-1)",
+            background: showScores ? "rgba(255,107,0,.12)" : "var(--bg-2)",
+            color: showScores ? "var(--accent)" : "var(--text-2)",
+            boxShadow: showScores
+              ? "0 0 8px rgba(255,107,0,.15), var(--sh-card)"
+              : "var(--sh-card)",
             cursor: "pointer",
-            border: "none",
-            background: "transparent",
-            padding: 0,
+            fontSize: 11,
+            fontWeight: 700,
+            letterSpacing: ".5px",
+            textTransform: "uppercase",
             fontFamily: "inherit",
+            transition:
+              "background 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease",
+            padding: 0,
           }}
         >
-          {/* Octagon achtergrond via SVG */}
-          <svg
-            viewBox="0 0 100 40"
-            width="100%"
-            height="36"
-            style={{ position: "absolute", inset: 0 }}
-          >
-            <polygon
-              points="10,0 90,0 100,10 100,30 90,40 10,40 0,30 0,10"
-              fill={showScores ? "rgba(255,107,0,.15)" : "var(--bg-2)"}
-              stroke={showScores ? "rgba(255,107,0,.5)" : "var(--border-1)"}
-              strokeWidth="1.5"
-            />
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+            <rect x="3" y="12" width="4" height="9" rx="1" />
+            <rect x="10" y="7" width="4" height="14" rx="1" />
+            <rect x="17" y="3" width="4" height="18" rx="1" />
           </svg>
-          <span
-            style={{
-              position: "relative",
-              zIndex: 1,
-              fontSize: 11,
-              fontWeight: 700,
-              letterSpacing: ".4px",
-              color: showScores ? "var(--accent)" : "var(--text-2)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 5,
-              height: "100%",
-              transition: "color 120ms",
-            }}
-          >
-            <svg
-              width="10"
-              height="10"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-            >
-              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-            </svg>
-            Score
-          </span>
+          USS Scores
         </button>
 
         <div

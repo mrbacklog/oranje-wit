@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma, anyTeam } from "@/lib/teamindeling/db/prisma";
-import type { Prisma, TeamCategorie, Kleur } from "@oranje-wit/database";
+import type { Prisma, TeamCategorie, Kleur, SpelerStatus } from "@oranje-wit/database";
 import { logger } from "@oranje-wit/types";
 import { revalidatePath } from "next/cache";
 import { assertBewerkbaar } from "@/lib/teamindeling/seizoen";
@@ -68,17 +68,7 @@ export async function getWerkindelingVoorEditor(werkindelingId: string) {
           },
           teams: {
             orderBy: { volgorde: "asc" },
-            select: {
-              id: true,
-              naam: true,
-              categorie: true,
-              kleur: true,
-              teamType: true,
-              niveau: true,
-              selectieGroepId: true,
-              selectieGroep: { select: { naam: true } },
-              volgorde: true,
-              validatieStatus: true,
+            include: {
               spelers: { include: { speler: true } },
               staf: { include: { staf: true } },
             },
@@ -177,11 +167,27 @@ export async function getSpelerProfiel(spelerId: string) {
       spelerspad: true,
       volgendSeizoen: true,
       rating: true,
+      lidSinds: true,
+      notitie: true,
+      seizoenenActief: true,
     },
   });
 }
 
 export async function updateSpelerNotitie(spelerId: string, notitie: string): Promise<void> {
   await requireTC();
-  logger.info("updateSpelerNotitie stub — spelerId:", spelerId, "notitie:", notitie);
+  await prisma.speler.update({
+    where: { id: spelerId },
+    data: { notitie },
+  });
+  revalidatePath("/ti-studio/indeling");
+}
+
+export async function updateSpelerStatus(spelerId: string, status: string): Promise<void> {
+  await requireTC();
+  await prisma.speler.update({
+    where: { id: spelerId },
+    data: { status: status as SpelerStatus },
+  });
+  revalidatePath("/ti-studio/indeling");
 }

@@ -334,6 +334,9 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
           onDropSpelerOpTeam={verplaatsSpeler}
           onTeamPositionChange={verplaatsTeamKaart}
           onTeamDragEnd={slaTeamPositieOp}
+          onReturneerNaarPool={(spelerData, vanTeamId) =>
+            verwijderSpelerUitTeamLokaal(spelerData.id, vanTeamId)
+          }
         />
         <TeamDrawer
           open={activePanel === "teams"}

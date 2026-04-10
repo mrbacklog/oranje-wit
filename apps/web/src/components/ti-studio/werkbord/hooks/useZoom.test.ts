@@ -3,17 +3,19 @@ import { renderHook, act } from "@testing-library/react";
 import { useZoom } from "./useZoom";
 
 describe("useZoom", () => {
-  it("begint op 0.75 — compact (onder nieuw breakpoint 0.80)", () => {
+  it("begint op 0.75 — compact (onder breakpoint 0.80)", () => {
     const { result } = renderHook(() => useZoom());
     expect(result.current.zoom).toBe(0.75);
     expect(result.current.zoomLevel).toBe("compact");
   });
 
-  it("zoomLevel is normaal bij zoom >= 0.80 en < 1.0", () => {
+  it("zoomLevel is normaal bij zoom >= 0.80 en < 1.20", () => {
     const { result } = renderHook(() => useZoom());
     act(() => result.current.setZoom(0.8));
     expect(result.current.zoomLevel).toBe("normaal");
-    act(() => result.current.setZoom(0.99));
+    act(() => result.current.setZoom(1.0));
+    expect(result.current.zoomLevel).toBe("normaal");
+    act(() => result.current.setZoom(1.19));
     expect(result.current.zoomLevel).toBe("normaal");
   });
 
@@ -25,9 +27,11 @@ describe("useZoom", () => {
     expect(result.current.zoomLevel).toBe("compact");
   });
 
-  it("zoomLevel is detail bij zoom >= 1.0", () => {
+  it("zoomLevel is detail bij zoom >= 1.20", () => {
     const { result } = renderHook(() => useZoom());
-    act(() => result.current.setZoom(1.0));
+    act(() => result.current.setZoom(1.2));
+    expect(result.current.zoomLevel).toBe("detail");
+    act(() => result.current.setZoom(1.5));
     expect(result.current.zoomLevel).toBe("detail");
   });
 

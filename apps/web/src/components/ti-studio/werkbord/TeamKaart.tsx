@@ -111,7 +111,7 @@ export function TeamKaart({
     setDropOverGeslacht(geslacht);
   }
 
-  function handleDrop(e: React.DragEvent, geslacht: "V" | "M") {
+  function handleDrop(e: React.DragEvent, _zoneGeslacht: "V" | "M") {
     e.preventDefault();
     e.stopPropagation();
     setDropOverGeslacht(null);
@@ -119,7 +119,7 @@ export function TeamKaart({
     if (!raw) return;
     const data = JSON.parse(raw) as { speler: WerkbordSpeler; vanTeamId: string | null };
     if (data.vanTeamId === team.id) return;
-    onDropSpeler(data.speler, data.vanTeamId, geslacht);
+    onDropSpeler(data.speler, data.vanTeamId, data.speler.geslacht);
   }
 
   function handleDragOverPartner(e: React.DragEvent, geslacht: "V" | "M") {
@@ -130,7 +130,7 @@ export function TeamKaart({
     setDropOverGeslachtPartner(geslacht);
   }
 
-  function handleDropPartner(e: React.DragEvent, geslacht: "V" | "M") {
+  function handleDropPartner(e: React.DragEvent, _zoneGeslacht: "V" | "M") {
     e.preventDefault();
     e.stopPropagation();
     setDropOverGeslachtPartner(null);
@@ -138,7 +138,7 @@ export function TeamKaart({
     if (!raw) return;
     const data = JSON.parse(raw) as { speler: WerkbordSpeler; vanTeamId: string | null };
     if (data.vanTeamId === partnerTeam!.id) return;
-    onDropSpelerOpPartner?.(data.speler, data.vanTeamId, geslacht);
+    onDropSpelerOpPartner?.(data.speler, data.vanTeamId, data.speler.geslacht);
   }
 
   return (

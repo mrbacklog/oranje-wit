@@ -3,6 +3,9 @@
 import { useState } from "react";
 import "./tokens.css";
 import type { WerkbordSpeler, SpelerFilter } from "./types";
+import { SpelerKaart } from "./SpelerKaart";
+
+const HUIDIG_SEIZOEN_EINDJAAR = 2026;
 
 interface SpelersPoolDrawerProps {
   open: boolean;
@@ -225,7 +228,12 @@ export function SpelersPoolDrawer({ open, spelers, onClose }: SpelersPoolDrawerP
               <span style={{ color: "var(--text-2)", fontWeight: 700 }}>{dames.length}</span>
             </div>
             {dames.map((sp) => (
-              <PoolRij key={sp.id} speler={sp} />
+              <SpelerKaart
+                key={sp.id}
+                speler={sp}
+                vanTeamId={sp.teamId}
+                seizoenEindjaar={HUIDIG_SEIZOEN_EINDJAAR}
+              />
             ))}
           </>
         )}
@@ -248,7 +256,12 @@ export function SpelersPoolDrawer({ open, spelers, onClose }: SpelersPoolDrawerP
               <span style={{ color: "var(--text-2)", fontWeight: 700 }}>{heren.length}</span>
             </div>
             {heren.map((sp) => (
-              <PoolRij key={sp.id} speler={sp} />
+              <SpelerKaart
+                key={sp.id}
+                speler={sp}
+                vanTeamId={sp.teamId}
+                seizoenEindjaar={HUIDIG_SEIZOEN_EINDJAAR}
+              />
             ))}
           </>
         )}
@@ -266,121 +279,6 @@ export function SpelersPoolDrawer({ open, spelers, onClose }: SpelersPoolDrawerP
         )}
       </div>
     </aside>
-  );
-}
-
-function PoolRij({ speler }: { speler: WerkbordSpeler }) {
-  const geslacht = speler.geslacht.toLowerCase() as "v" | "m";
-  const initialen = `${speler.roepnaam.charAt(0)}${speler.achternaam.charAt(0)}`.toUpperCase();
-  const rating = speler.rating;
-
-  const ratingKleur =
-    rating && rating >= 7.5
-      ? { bg: "rgba(34,197,94,.15)", color: "var(--ok)" }
-      : rating && rating >= 6.5
-        ? { bg: "rgba(234,179,8,.12)", color: "var(--warn)" }
-        : { bg: "rgba(239,68,68,.12)", color: "var(--err)" };
-
-  return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 7,
-        padding: "5px 10px",
-        borderLeft: `2px solid ${geslacht === "v" ? "var(--pink)" : "var(--blue)"}`,
-        opacity: speler.status === "GAAT_STOPPEN" ? 0.5 : 1,
-        cursor: "grab",
-      }}
-    >
-      <div
-        style={{
-          width: 26,
-          height: 26,
-          borderRadius: "50%",
-          flexShrink: 0,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: 10,
-          fontWeight: 700,
-          background: geslacht === "v" ? "rgba(236,72,153,.2)" : "rgba(96,165,250,.2)",
-          color: geslacht === "v" ? "var(--pink)" : "var(--blue)",
-        }}
-      >
-        {initialen}
-      </div>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div
-          style={{
-            fontSize: 12,
-            fontWeight: 500,
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            textDecoration: speler.status === "GAAT_STOPPEN" ? "line-through" : "none",
-          }}
-        >
-          {speler.roepnaam} {speler.achternaam}
-        </div>
-        <div
-          style={{
-            fontSize: 10,
-            color: "var(--text-3)",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
-          {new Date().getFullYear() - speler.geboortejaar}j{speler.teamId ? " · ingedeeld" : ""}
-        </div>
-      </div>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 3,
-          flexShrink: 0,
-        }}
-      >
-        {speler.isNieuw && (
-          <span
-            style={{
-              fontSize: 9,
-              color: "var(--ok)",
-              background: "rgba(34,197,94,.1)",
-              borderRadius: 3,
-              padding: "1px 4px",
-              fontWeight: 700,
-            }}
-          >
-            N
-          </span>
-        )}
-        {speler.gepind && <span style={{ fontSize: 10, color: "var(--accent)" }}>📌</span>}
-        {speler.status === "AFGEMELD" && (
-          <span style={{ fontSize: 10, color: "var(--err)" }}>⚠</span>
-        )}
-        {rating !== null && (
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: 22,
-              height: 16,
-              borderRadius: 4,
-              fontSize: 10,
-              fontWeight: 700,
-              background: ratingKleur.bg,
-              color: ratingKleur.color,
-            }}
-          >
-            {rating.toFixed(1)}
-          </div>
-        )}
-      </div>
-    </div>
   );
 }
 

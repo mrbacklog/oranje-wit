@@ -13,7 +13,7 @@ export function DaisyPanel() {
         onClick={() => setOpen(true)}
         style={{
           position: "absolute",
-          bottom: 20,
+          top: 20,
           right: 20,
           width: 48,
           height: 48,
@@ -38,7 +38,7 @@ export function DaisyPanel() {
       <div
         style={{
           position: "absolute",
-          bottom: 16,
+          top: 16,
           right: 16,
           width: "var(--daisy-w)",
           height: 420,
