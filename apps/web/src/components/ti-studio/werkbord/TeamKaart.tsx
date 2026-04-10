@@ -82,6 +82,7 @@ interface TeamKaartProps {
     geslacht: "V" | "M"
   ) => void;
   onToggleBundeling?: (selectieGroepId: string, gebundeld: boolean) => void;
+  onTitelKlik?: (teamId: string) => void;
 }
 
 export function TeamKaart({
@@ -95,6 +96,7 @@ export function TeamKaart({
   partnerTeam,
   onDropSpelerOpSelectie,
   onToggleBundeling,
+  onTitelKlik,
 }: TeamKaartProps) {
   const breedte = KAART_BREEDTE[team.formaat];
   const isCompact = zoomLevel === "compact";
@@ -207,16 +209,29 @@ export function TeamKaart({
             }}
           >
             <div
+              onClick={(e) => {
+                e.stopPropagation();
+                onTitelKlik?.(team.id);
+              }}
               style={{
                 fontSize: COMPACT_HEADER_FONT[team.formaat],
                 fontWeight: 700,
                 whiteSpace: "nowrap",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
+                cursor: onTitelKlik ? "pointer" : "default",
               }}
             >
               {team.naam}
             </div>
+            {team.memoStatus === "open" && (
+              <span
+                style={{ fontSize: 9, color: "var(--accent)", flexShrink: 0, lineHeight: 1 }}
+                title="Open memo"
+              >
+                ▲
+              </span>
+            )}
           </div>
 
           {/* Midden — Venus/Mars tellers */}
@@ -394,6 +409,10 @@ export function TeamKaart({
             }}
           >
             <div
+              onClick={(e) => {
+                e.stopPropagation();
+                onTitelKlik?.(team.id);
+              }}
               style={{
                 fontSize: 13,
                 fontWeight: 700,
@@ -401,9 +420,18 @@ export function TeamKaart({
                 whiteSpace: "nowrap",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
+                cursor: onTitelKlik ? "pointer" : "default",
               }}
             >
               {selectieLabel}
+              {team.memoStatus === "open" && (
+                <span
+                  style={{ fontSize: 9, color: "var(--accent)", marginLeft: 4 }}
+                  title="Open memo"
+                >
+                  ▲
+                </span>
+              )}
             </div>
             <div style={{ display: "flex", gap: 3 }}>
               <span
