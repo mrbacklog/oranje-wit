@@ -1,29 +1,135 @@
 // apps/web/src/components/ti-studio/werkbord/TeamKaartSpelerRij.tsx
 "use client";
+import { useRef } from "react";
 import "./tokens.css";
-import type { WerkbordSpelerInTeam } from "./types";
+import type { WerkbordSpelerInTeam, WerkbordSpeler, ZoomLevel } from "./types";
+
+const HUIDIG_SEIZOEN_EINDJAAR = 2026;
 
 interface TeamKaartSpelerRijProps {
   spelerInTeam: WerkbordSpelerInTeam;
-  showRating: boolean;
-  showLeeftijd: boolean;
-  showIcons: boolean;
-  showScore: boolean;
-  huidigeJaar: number;
+  teamId: string;
+  zoomLevel: ZoomLevel;
 }
 
-export function TeamKaartSpelerRij({
-  spelerInTeam,
-  showRating,
-  showLeeftijd,
-  showIcons,
-  showScore,
-  huidigeJaar,
-}: TeamKaartSpelerRijProps) {
-  const { speler } = spelerInTeam;
-  const leeftijd = huidigeJaar - speler.geboortejaar;
+export function TeamKaartSpelerRij({ spelerInTeam, teamId, zoomLevel }: TeamKaartSpelerRijProps) {
+  if (zoomLevel === "normaal") {
+    return <NormaalSpelerRij speler={spelerInTeam.speler} teamId={teamId} />;
+  }
+
+  if (zoomLevel === "detail") {
+    return <DetailSpelerRij speler={spelerInTeam.speler} teamId={teamId} />;
+  }
+
+  return <CompactSpelerRij speler={spelerInTeam.speler} teamId={teamId} />;
+}
+
+// Normaal rij — 1 regel hoog (21px): sekse-stip · naam · korfballeeftijd
+function berekenKorfbalLeeftijd(geboortejaar: number, seizoenEindjaar: number): number {
+  return seizoenEindjaar - geboortejaar;
+}
+
+function NormaalSpelerRij({ speler, teamId }: { speler: WerkbordSpeler; teamId: string }) {
+  const ghostRef = useRef<HTMLDivElement>(null);
   const geslacht = speler.geslacht.toLowerCase() as "v" | "m";
-  const initialen = `${speler.roepnaam.charAt(0)}${speler.achternaam.charAt(0)}`.toUpperCase();
+  const stipKleur = geslacht === "v" ? "rgba(236,72,153,.7)" : "rgba(96,165,250,.7)";
+  const naam = `${speler.roepnaam} ${speler.achternaam.charAt(0)}.`;
+  const leeftijd = berekenKorfbalLeeftijd(speler.geboortejaar, HUIDIG_SEIZOEN_EINDJAAR);
+
+  return (
+    <>
+      {/* Verborgen detail-rij — alleen als drag-image bron */}
+      <div
+        ref={ghostRef}
+        style={{
+          position: "fixed",
+          left: -9999,
+          top: 0,
+          width: 220,
+          pointerEvents: "none",
+          zIndex: -1,
+        }}
+      >
+        <DetailSpelerRij speler={speler} teamId={teamId} asGhost />
+      </div>
+
+      {/* Normaal rij */}
+      <div
+        draggable
+        onDragStart={(e) => {
+          e.stopPropagation();
+          e.dataTransfer.setData("speler", JSON.stringify({ speler, vanTeamId: teamId }));
+          e.dataTransfer.effectAllowed = "move";
+          if (ghostRef.current) {
+            e.dataTransfer.setDragImage(ghostRef.current, 20, 24);
+          }
+        }}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 4,
+          padding: "0 6px 0 8px",
+          height: 21,
+          flexShrink: 0,
+          cursor: "grab",
+          borderBottom: "1px solid rgba(255,255,255,.04)",
+        }}
+      >
+        {/* Sekse-stip */}
+        <div
+          style={{
+            width: 5,
+            height: 5,
+            borderRadius: "50%",
+            background: stipKleur,
+            flexShrink: 0,
+          }}
+        />
+        {/* Naam */}
+        <div
+          style={{
+            flex: 1,
+            fontSize: 10.5,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            color: "var(--text-1)",
+          }}
+        >
+          {naam}
+        </div>
+        {/* Korfballeeftijd */}
+        <div
+          style={{
+            fontSize: 9,
+            color: "var(--text-3)",
+            flexShrink: 0,
+            minWidth: 28,
+            textAlign: "right",
+          }}
+        >
+          {leeftijd}
+        </div>
+      </div>
+    </>
+  );
+}
+
+// Detail rij — volledigere weergave met rating, status-iconen
+function DetailSpelerRij({
+  speler,
+  teamId,
+  asGhost,
+}: {
+  speler: WerkbordSpeler;
+  teamId: string;
+  asGhost?: boolean;
+}) {
+  const ghostRef = useRef<HTMLDivElement>(null);
+  const geslacht = speler.geslacht.toLowerCase() as "v" | "m";
+  const geslachtKleur = geslacht === "v" ? "var(--pink)" : "var(--blue)";
+  const leeftijd = berekenKorfbalLeeftijd(speler.geboortejaar, HUIDIG_SEIZOEN_EINDJAAR);
+  const stopGezet = speler.status === "GAAT_STOPPEN";
 
   const ratingKleur =
     speler.rating && speler.rating >= 7.5
@@ -31,107 +137,92 @@ export function TeamKaartSpelerRij({
       : speler.rating && speler.rating >= 6.5
         ? "md"
         : "lo";
-
   const ratingColors = {
     hi: { bg: "rgba(34,197,94,.15)", color: "var(--ok)" },
     md: { bg: "rgba(234,179,8,.1)", color: "var(--warn)" },
     lo: { bg: "rgba(239,68,68,.1)", color: "var(--err)" },
   };
 
-  const ussKlasse =
-    speler.rating && speler.rating >= 8
-      ? "score-top"
-      : speler.rating && speler.rating >= 7
-        ? "score-goed"
-        : speler.rating && speler.rating >= 6
-          ? "score-gem"
-          : "score-att";
-
-  const ussColors = {
-    "score-top": { bg: "#22C55E", color: "#000" },
-    "score-goed": { bg: "#3B82F6", color: "#fff" },
-    "score-gem": { bg: "#EAB308", color: "#000" },
-    "score-att": { bg: "#EF4444", color: "#fff" },
-  };
-
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 5,
-        padding: "0 8px",
-        borderRadius: 6,
-        flex: 1,
-        minHeight: 0,
-        cursor: "grab",
-      }}
-    >
-      {/* Avatar */}
-      <div
-        style={{
-          width: 20,
-          height: 20,
-          borderRadius: "50%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: 8,
-          fontWeight: 700,
-          flexShrink: 0,
-          background: geslacht === "v" ? "rgba(236,72,153,.15)" : "rgba(96,165,250,.15)",
-          color: geslacht === "v" ? "var(--pink)" : "var(--blue)",
-        }}
-      >
-        {initialen}
-      </div>
-
-      {/* Naam */}
-      <div
-        style={{
-          fontSize: 11,
-          flex: 1,
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          fontWeight: 500,
-          opacity: speler.status === "GAAT_STOPPEN" ? 0.5 : 1,
-          textDecoration: speler.status === "GAAT_STOPPEN" ? "line-through" : "none",
-        }}
-      >
-        {speler.roepnaam} {speler.achternaam.charAt(0)}.
-      </div>
-
-      {/* Leeftijd */}
-      {showLeeftijd && (
-        <div style={{ fontSize: 10, color: "var(--text-2)", flexShrink: 0 }}>{leeftijd}</div>
-      )}
-
-      {/* Status iconen */}
-      {showIcons && (
+    <>
+      {!asGhost && (
         <div
+          ref={ghostRef}
           style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 2,
-            flexShrink: 0,
+            position: "fixed",
+            left: -9999,
+            top: 0,
+            width: 220,
+            pointerEvents: "none",
+            zIndex: -1,
           }}
         >
-          {speler.gepind && <span style={{ fontSize: 9, color: "var(--accent)" }}>📌</span>}
+          <DetailSpelerRij speler={speler} teamId={teamId} asGhost />
+        </div>
+      )}
+
+      {/* Detail rij */}
+      <div
+        draggable={!asGhost}
+        onDragStart={
+          asGhost
+            ? undefined
+            : (e) => {
+                e.stopPropagation();
+                e.dataTransfer.setData("speler", JSON.stringify({ speler, vanTeamId: teamId }));
+                e.dataTransfer.effectAllowed = "move";
+                if (ghostRef.current) {
+                  e.dataTransfer.setDragImage(ghostRef.current, 20, 24);
+                }
+              }
+        }
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 5,
+          padding: "0 8px",
+          borderLeft: `2px solid ${geslachtKleur}`,
+          minHeight: 28,
+          flexShrink: 0,
+          opacity: stopGezet ? 0.5 : 1,
+          cursor: asGhost ? "default" : "grab",
+          borderBottom: "1px solid rgba(255,255,255,.04)",
+        }}
+      >
+        {/* Naam + leeftijd */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div
+            style={{
+              fontSize: 11,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              fontWeight: 500,
+              textDecoration: stopGezet ? "line-through" : "none",
+            }}
+          >
+            {speler.roepnaam} {speler.achternaam.charAt(0)}.
+          </div>
+          <div style={{ fontSize: 9, color: "var(--text-3)" }}>{leeftijd}j</div>
+        </div>
+
+        {/* Status-iconen */}
+        <div style={{ display: "flex", alignItems: "center", gap: 2, flexShrink: 0 }}>
+          {speler.gepind && <span style={{ fontSize: 8, color: "var(--accent)" }}>📌</span>}
           {speler.status === "AFGEMELD" && (
             <span style={{ fontSize: 9, color: "var(--err)" }}>⚠</span>
           )}
           {speler.status === "TWIJFELT" && (
-            <span style={{ fontSize: 9, color: "var(--warn)" }}>?</span>
+            <span style={{ fontSize: 9, fontWeight: 700, color: "var(--warn)" }}>?</span>
           )}
           {speler.isNieuw && (
             <span
               style={{
-                fontSize: 9,
+                fontSize: 8,
                 color: "var(--ok)",
                 background: "rgba(34,197,94,.1)",
                 borderRadius: 3,
-                padding: "1px 4px",
+                padding: "1px 3px",
                 fontWeight: 700,
               }}
             >
@@ -139,50 +230,140 @@ export function TeamKaartSpelerRij({
             </span>
           )}
         </div>
-      )}
 
-      {/* Rating */}
-      {showRating && speler.rating !== null && (
+        {/* Rating */}
+        {speler.rating !== null && (
+          <div
+            style={{
+              width: 22,
+              height: 16,
+              borderRadius: 3,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 9,
+              fontWeight: 700,
+              flexShrink: 0,
+              background: ratingColors[ratingKleur].bg,
+              color: ratingColors[ratingKleur].color,
+            }}
+          >
+            {speler.rating.toFixed(1)}
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
+
+// Compacte rij voor compact zoomlevel.
+// Gebruikt een verborgen detail-rij als drag-ghost.
+function CompactSpelerRij({ speler, teamId }: { speler: WerkbordSpeler; teamId: string }) {
+  const ghostRef = useRef<HTMLDivElement>(null);
+  const geslacht = speler.geslacht.toLowerCase() as "v" | "m";
+  const geslachtKleur = geslacht === "v" ? "var(--pink)" : "var(--blue)";
+  const initialen = `${speler.roepnaam.charAt(0)}${speler.achternaam.charAt(0)}`.toUpperCase();
+  const stopGezet = speler.status === "GAAT_STOPPEN";
+
+  return (
+    <>
+      {/* Verborgen detail-rij — alleen als drag-image bron */}
+      <div
+        ref={ghostRef}
+        style={{
+          position: "fixed",
+          left: -9999,
+          top: 0,
+          width: 220,
+          pointerEvents: "none",
+          zIndex: -1,
+        }}
+      >
+        <DetailSpelerRij speler={speler} teamId={teamId} asGhost />
+      </div>
+
+      {/* Compacte rij */}
+      <div
+        draggable
+        onDragStart={(e) => {
+          e.stopPropagation();
+          e.dataTransfer.setData("speler", JSON.stringify({ speler, vanTeamId: teamId }));
+          e.dataTransfer.effectAllowed = "move";
+          if (ghostRef.current) {
+            e.dataTransfer.setDragImage(ghostRef.current, 20, 24);
+          }
+        }}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 5,
+          padding: "0 8px",
+          borderLeft: `2px solid ${geslachtKleur}`,
+          minHeight: 22,
+          flexShrink: 0,
+          opacity: stopGezet ? 0.5 : 1,
+          cursor: "grab",
+        }}
+      >
+        {/* Avatar */}
         <div
           style={{
             width: 18,
-            height: 14,
-            borderRadius: 3,
+            height: 18,
+            borderRadius: "50%",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            fontSize: 9,
+            fontSize: 7,
             fontWeight: 700,
             flexShrink: 0,
-            background: ratingColors[ratingKleur].bg,
-            color: ratingColors[ratingKleur].color,
+            background: geslacht === "v" ? "rgba(236,72,153,.15)" : "rgba(96,165,250,.15)",
+            color: geslachtKleur,
           }}
         >
-          {speler.rating.toFixed(1)}
+          {initialen}
         </div>
-      )}
 
-      {/* USS Score octagon */}
-      {showScore && speler.rating !== null && (
+        {/* Naam */}
         <div
           style={{
-            clipPath:
-              "polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontWeight: 800,
-            flexShrink: 0,
-            width: 24,
-            height: 24,
-            fontSize: 8,
-            background: ussColors[ussKlasse].bg,
-            color: ussColors[ussKlasse].color,
+            fontSize: 11,
+            flex: 1,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            fontWeight: 500,
+            textDecoration: stopGezet ? "line-through" : "none",
           }}
         >
-          {Math.round(speler.rating)}
+          {speler.roepnaam} {speler.achternaam.charAt(0)}.
         </div>
-      )}
-    </div>
+
+        {/* Status-iconen */}
+        <div style={{ display: "flex", alignItems: "center", gap: 2, flexShrink: 0 }}>
+          {speler.gepind && <span style={{ fontSize: 8, color: "var(--accent)" }}>📌</span>}
+          {speler.status === "AFGEMELD" && (
+            <span style={{ fontSize: 9, color: "var(--err)" }}>⚠</span>
+          )}
+          {speler.status === "TWIJFELT" && (
+            <span style={{ fontSize: 9, fontWeight: 700, color: "var(--warn)" }}>?</span>
+          )}
+          {speler.isNieuw && (
+            <span
+              style={{
+                fontSize: 8,
+                color: "var(--ok)",
+                background: "rgba(34,197,94,.1)",
+                borderRadius: 3,
+                padding: "1px 3px",
+                fontWeight: 700,
+              }}
+            >
+              N
+            </span>
+          )}
+        </div>
+      </div>
+    </>
   );
 }
