@@ -1,5 +1,6 @@
 // apps/web/src/components/ti-studio/werkbord/hooks/useWerkbordState.ts
 import { useState, useCallback, useRef, useEffect } from "react";
+import { logger } from "@oranje-wit/types";
 import type {
   WerkbordTeam,
   WerkbordSpeler,
@@ -312,8 +313,8 @@ export function useWerkbordState(
           updateValidatieLokaal(data.validatieUpdates);
         }
       }
-    } catch {
-      // Stil falen — optimistic update blijft
+    } catch (error) {
+      logger.warn("stuurMutatie fout (optimistic update blijft):", error);
     }
   }
 

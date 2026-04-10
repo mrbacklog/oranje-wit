@@ -246,12 +246,15 @@ export async function POST(
     // Validatie herberekenen voor betrokken teams
     const validatieUpdates: ValidatieUpdate[] = [];
     if (event.type === "speler_verplaatst") {
-      validatieUpdates.push(await haalValidatieUpdate(event.naarTeamId as string));
-      if (event.vanTeamId) {
-        validatieUpdates.push(await haalValidatieUpdate(event.vanTeamId as string));
-      }
+      const updates = await Promise.all([
+        haalValidatieUpdate(event.naarTeamId),
+        ...(event.vanTeamId ? [haalValidatieUpdate(event.vanTeamId)] : []),
+      ]);
+      validatieUpdates.push(...updates);
     } else if (event.type === "speler_naar_pool") {
-      validatieUpdates.push(await haalValidatieUpdate(event.vanTeamId as string));
+      if (event.vanTeamId) {
+        validatieUpdates.push(await haalValidatieUpdate(event.vanTeamId));
+      }
     }
 
     return ok({ opgeslagen: true, validatieUpdates });
