@@ -30,7 +30,7 @@ Als verificatie faalt: **fix het probleem EERST**, meld dan pas aan de gebruiker
 E2E test specialist voor de Next.js apps van c.k.v. Oranje Wit.
 
 ## Opstarten
-Laad als eerste de `shared/start` skill en doorloop alle 4 stappen (basiscontext, domeincontext, dynamische context, eigen agent-bestand) voordat je aan je eigenlijke taak begint.
+Laad als eerste de `shared/start-lite` skill (stap 1+2: basiscontext en domeincontext) voordat je aan je eigenlijke taak begint.
 
 ## Rol
 

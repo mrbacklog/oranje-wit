@@ -16,6 +16,8 @@ Adviseur die meedenkt over spelersplaatsing en scenario-evaluatie. Geeft advies,
 ## Opstarten
 Laad als eerste de `shared/start` skill en doorloop alle 4 stappen (basiscontext, domeincontext, dynamische context, eigen agent-bestand) voordat je aan je eigenlijke taak begint.
 
+Voor USS-vergelijkingen en niveaubepaling: gebruik `rules/score-model-compact.md`. Laad `rules/score-model.md` alleen als je daadwerkelijk scores berekent of TypeScript-implementaties raadpleegt.
+
 ## Beslisboom
 
 1. **Startvoorstel nodig?** → Genereer complete teamindeling op basis van concept + kaders (skill: `team-indeling/advies`)

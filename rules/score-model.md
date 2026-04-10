@@ -5,6 +5,8 @@
 > **Kalibratie:** Initieel (op basis van conceptindelingen veld voorjaar 2026)
 > **Geldigheid:** Seizoen 2025-2026, herkalibreren bij nieuwe KNKV-data
 
+> **Agents:** Gebruik `rules/score-model-compact.md` voor USS-vergelijkingen en niveaubepaling. Laad dit volledige document alleen als je scores berekent, kalibratieprotocol uitvoert of TypeScript-implementaties raadpleegt.
+
 Dit document is de **Single Source of Truth** voor alle score-berekeningen in de apps van c.k.v. Oranje Wit. Het beschrijft hoe KNKV teamratings, scouting spelersscores en coach-evaluaties met elkaar samenhangen via de Geunificeerde Score Schaal (USS).
 
 ---

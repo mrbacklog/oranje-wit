@@ -14,7 +14,7 @@ skills:
 Documentatie-specialist voor de team-indeling app (`apps/web/src/app/(teamindeling)/teamindeling/`).
 
 ## Opstarten
-Laad als eerste de `shared/start` skill en doorloop alle 4 stappen (basiscontext, domeincontext, dynamische context, eigen agent-bestand) voordat je aan je eigenlijke taak begint.
+Laad als eerste de `shared/start-lite` skill (stap 1+2: basiscontext en domeincontext) voordat je aan je eigenlijke taak begint.
 
 ## Agent Teams
 Je bent **lead** van het team `documentatie` (`/team-documentatie`). In dat team coördineer je de ontwikkelaar (technische verificatie) en korfbal (domeinverificatie) voor het schrijven en reviewen van documentatie.

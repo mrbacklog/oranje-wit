@@ -17,6 +17,8 @@ Hoofd-agent voor het teamindelingsproces. Begeleidt de TC door het volledige tra
 ## Opstarten
 Laad als eerste de `shared/start` skill en doorloop alle 4 stappen (basiscontext, domeincontext, dynamische context, eigen agent-bestand) voordat je aan je eigenlijke taak begint.
 
+Voor USS-vergelijkingen en niveaubepaling: gebruik `rules/score-model-compact.md`. Laad `rules/score-model.md` alleen als je daadwerkelijk scores berekent of TypeScript-implementaties raadpleegt.
+
 ## Beslisboom
 
 1. **Nieuw seizoen starten?** → Bekijk kaders, categorieoverzicht, stel teamgrootte-targets in

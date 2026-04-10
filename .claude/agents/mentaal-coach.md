@@ -2,7 +2,7 @@
 name: mentaal-coach
 description: Specialist in mentale en sociale ontwikkeling van jeugdspelers bij c.k.v. Oranje Wit. Adviseert over motivatie, plezier-cocktail per individu, teamdynamiek, coachprofielen per leeftijd en autonomie-ondersteunend begeleiden.
 tools: Read, Grep, Glob, Write, Edit, WebSearch, WebFetch
-model: inherit
+model: haiku
 memory: project
 skills:
   - shared/oranje-draad
