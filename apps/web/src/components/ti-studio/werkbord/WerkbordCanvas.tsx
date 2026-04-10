@@ -12,7 +12,6 @@ interface WerkbordCanvasProps {
   zoom: number;
   zoomPercent: number;
   showScores: boolean;
-  whatIfActief: boolean;
   onZoomIn: () => void;
   onZoomOut: () => void;
   onZoomReset: () => void;
@@ -45,7 +44,6 @@ export function WerkbordCanvas({
   zoom,
   zoomPercent,
   showScores,
-  whatIfActief,
   onZoomIn,
   onZoomOut,
   onZoomReset,
@@ -74,42 +72,6 @@ export function WerkbordCanvas({
           pointerEvents: "none",
         }}
       />
-
-      {/* What-If indicator */}
-      {whatIfActief && (
-        <div
-          style={{
-            position: "absolute",
-            top: 10,
-            left: "50%",
-            transform: "translateX(-50%)",
-            background: "rgba(59,130,246,.15)",
-            border: "1px solid rgba(59,130,246,.3)",
-            borderRadius: 20,
-            padding: "5px 14px",
-            zIndex: 20,
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            fontSize: 12,
-            color: "var(--info)",
-            boxShadow: "0 2px 12px rgba(59,130,246,.2)",
-          }}
-        >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-          >
-            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-          </svg>
-          What-If modus actief — wijzigingen worden niet opgeslagen
-        </div>
-      )}
 
       {/* Canvas — schaalbaar, teamkaarten erin */}
       <div

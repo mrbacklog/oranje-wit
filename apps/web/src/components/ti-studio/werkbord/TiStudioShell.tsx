@@ -1,6 +1,6 @@
 // apps/web/src/components/ti-studio/werkbord/TiStudioShell.tsx
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import "./tokens.css";
 import { Ribbon } from "./Ribbon";
@@ -8,16 +8,19 @@ import { Toolbar } from "./Toolbar";
 import { SpelersPoolDrawer } from "./SpelersPoolDrawer";
 import { WerkbordCanvas } from "./WerkbordCanvas";
 import { ValidatieDrawer } from "./ValidatieDrawer";
+import { VersiesDrawer } from "./VersiesDrawer";
 import { useZoom } from "./hooks/useZoom";
 import type { TiStudioShellProps } from "./types";
+import type { DrawerData } from "@/app/(teamindeling-studio)/ti-studio/indeling/drawer-actions";
+import { getVersiesVoorDrawer } from "@/app/(teamindeling-studio)/ti-studio/indeling/drawer-actions";
 
-type ActivePanel = "pool" | "validatie" | "werkbord" | null;
+type ActivePanel = "pool" | "validatie" | "werkbord" | "versies" | null;
 
 export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellProps) {
   const router = useRouter();
   const [activePanel, setActivePanel] = useState<ActivePanel>("validatie");
   const [showScores, setShowScores] = useState(true);
-  const [whatIfActief, setWhatIfActief] = useState(false);
+  const [drawerData, setDrawerData] = useState<DrawerData | null>(null);
   const { zoom, setZoom, zoomIn, zoomOut, resetZoom, zoomLevel, zoomPercent } = useZoom();
 
   const gebruikerInitialen = gebruikerEmail
@@ -27,7 +30,14 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
     .join("")
     .slice(0, 2);
 
-  function togglePanel(panel: "pool" | "validatie" | "werkbord") {
+  useEffect(() => {
+    if (activePanel !== "versies") return;
+    getVersiesVoorDrawer(initieleState.werkindelingId)
+      .then(setDrawerData)
+      .catch(() => {});
+  }, [activePanel, initieleState.werkindelingId]);
+
+  function togglePanel(panel: "pool" | "validatie" | "werkbord" | "versies") {
     setActivePanel((prev) => (prev === panel ? null : panel));
   }
 
@@ -53,7 +63,6 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
       <Ribbon
         activePanel={activePanel}
         onTogglePanel={togglePanel}
-        onToggleWhatIf={() => setWhatIfActief((v) => !v)}
         validatieHasErrors={hasErrors}
         gebruikerInitialen={gebruikerInitialen}
       />
@@ -69,8 +78,6 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
         zoomLevel={zoomLevel}
         zoomPercent={zoomPercent}
         showScores={showScores}
-        whatIfActief={whatIfActief}
-        onToggleWhatIf={() => setWhatIfActief((v) => !v)}
         onToggleScores={() => setShowScores((v) => !v)}
         onNieuwTeam={() => {}}
         onPreview={() => {}}
@@ -97,7 +104,6 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
           zoom={zoom}
           zoomPercent={zoomPercent}
           showScores={showScores}
-          whatIfActief={whatIfActief}
           onZoomIn={zoomIn}
           onZoomOut={zoomOut}
           onZoomReset={resetZoom}
@@ -108,6 +114,13 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
           open={activePanel === "validatie"}
           teams={initieleState.teams}
           validatie={initieleState.validatie}
+          onClose={() => setActivePanel(null)}
+        />
+        <VersiesDrawer
+          open={activePanel === "versies"}
+          data={drawerData}
+          werkindelingId={initieleState.werkindelingId}
+          gebruikerEmail={gebruikerEmail}
           onClose={() => setActivePanel(null)}
         />
       </div>

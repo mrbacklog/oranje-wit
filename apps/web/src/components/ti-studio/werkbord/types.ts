@@ -78,3 +78,19 @@ export interface TiStudioShellProps {
   initieleState: WerkbordState;
   gebruikerEmail: string;
 }
+
+export type VersiesDrawerConfirm =
+  | {
+      type: "promoveer-whatif";
+      whatIfId: string;
+      vraag: string;
+      basisVersieNummer: number;
+    }
+  | {
+      type: "herstel-versie";
+      versieId: string;
+      nummer: number;
+      naam: string | null;
+    }
+  | { type: "verwijder-versie"; versieId: string; nummer: number }
+  | { type: "archiveer-whatif"; whatIfId: string; vraag: string };

@@ -13,8 +13,6 @@ interface ToolbarProps {
   zoomLevel: ZoomLevel;
   zoomPercent: number;
   showScores: boolean;
-  whatIfActief: boolean;
-  onToggleWhatIf: () => void;
   onToggleScores: () => void;
   onNieuwTeam: () => void;
   onPreview: () => void;
@@ -31,8 +29,6 @@ export function Toolbar({
   zoomLevel,
   zoomPercent,
   showScores,
-  whatIfActief,
-  onToggleWhatIf,
   onToggleScores,
   onNieuwTeam,
   onPreview,
@@ -241,21 +237,17 @@ export function Toolbar({
         {zoomPercent}% · {zoomLevel.charAt(0).toUpperCase() + zoomLevel.slice(1)}
       </div>
 
-      {/* What-If knop */}
-      <TbBtn onClick={onToggleWhatIf} variant={whatIfActief ? "pri" : "ghost"}>
-        <svg
-          width="12"
-          height="12"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-        >
-          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-        </svg>
-        What-If
-      </TbBtn>
+      {/* Werkversie context */}
+      <span
+        style={{
+          fontSize: 11,
+          color: "var(--text-3)",
+          whiteSpace: "nowrap",
+          padding: "4px 8px",
+        }}
+      >
+        ⭐ v{versieNummer} — werkversie
+      </span>
 
       {/* Score toggle */}
       <TbBtn onClick={onToggleScores} variant={showScores ? "sec-active" : "sec"}>

@@ -2,12 +2,11 @@
 "use client";
 import "./tokens.css";
 
-type ActivePanel = "pool" | "validatie" | "werkbord" | null;
+type ActivePanel = "pool" | "validatie" | "werkbord" | "versies" | null;
 
 interface RibbonProps {
   activePanel: ActivePanel;
-  onTogglePanel: (panel: "pool" | "validatie" | "werkbord") => void;
-  onToggleWhatIf: () => void;
+  onTogglePanel: (panel: "pool" | "validatie" | "werkbord" | "versies") => void;
   validatieHasErrors: boolean;
   gebruikerInitialen: string;
 }
@@ -15,7 +14,6 @@ interface RibbonProps {
 export function Ribbon({
   activePanel,
   onTogglePanel,
-  onToggleWhatIf,
   validatieHasErrors,
   gebruikerInitialen,
 }: RibbonProps) {
@@ -105,8 +103,12 @@ export function Ribbon({
           gap: 2,
         }}
       >
-        <RibbonBtn icon="whatif" tip="What-If" active={false} onClick={onToggleWhatIf} />
-        <RibbonBtn icon="versies" tip="Versies" active={false} onClick={() => {}} />
+        <RibbonBtn
+          icon="versies"
+          tip="Versies & What-Ifs"
+          active={activePanel === "versies"}
+          onClick={() => onTogglePanel("versies")}
+        />
       </div>
 
       {/* Footer */}
