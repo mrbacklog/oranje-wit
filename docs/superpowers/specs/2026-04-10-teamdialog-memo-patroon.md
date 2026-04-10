@@ -83,10 +83,22 @@ Een memo is een actiepunt gekoppeld aan een entiteit:
 - **Open**: er is nog een actie nodig → indicator zichtbaar op de entiteitskaart
 - **Gesloten**: actiepunt is afgehandeld, besluit is vastgelegd → geen indicator
 
+### Naamgeving — UI vs. code
+
+| Context | Naam |
+|---|---|
+| UI labels (tabs, headers, knoppen) | **Memo** — altijd, overal |
+| Textarea placeholder | "Schrijf een memo…" (niet "Notitie" of "Opmerking") |
+| DB veld (`Team`, `Speler`) | `notitie` — bestaande naam behouden voor Speler, Team krijgt ook `notitie` |
+| TypeScript interface | `MemoData.tekst` (intern, zie onder) |
+| Component naam | `MemoPanel` |
+
+In de huidige `SpelerProfielDialog` staat de sectietitel "Notitie" en placeholder "Voeg een notitie toe…" — die worden bij implementatie hernoemd naar **Memo**.
+
 ### Data model (per entiteit)
 ```ts
 interface MemoData {
-  notitie: string
+  tekst: string             // UI: "Memo" — DB kolom: "notitie"
   memoStatus: "open" | "gesloten"
   besluit: string | null   // ingevuld bij sluiten
 }
