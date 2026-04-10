@@ -2,6 +2,8 @@
 
 import { prisma } from "@/lib/teamindeling/db/prisma";
 import { requireTC } from "@oranje-wit/auth/checks";
+import { assertBewerkbaar } from "@/lib/teamindeling/seizoen";
+import type { PinType } from "@oranje-wit/database";
 
 export async function getSpelersVoorStudio() {
   await requireTC();
@@ -112,3 +114,77 @@ export async function getSpelersVoorStudio() {
 }
 
 export type StudioSpeler = Awaited<ReturnType<typeof getSpelersVoorStudio>>[number];
+
+// ─── Pins ────────────────────────────────────────────────────────────────────
+
+async function assertKadersBewerkbaar(kadersId: string) {
+  const kaders = await prisma.kaders.findUniqueOrThrow({
+    where: { id: kadersId },
+    select: { seizoen: true },
+  });
+  await assertBewerkbaar(kaders.seizoen);
+}
+
+async function getOrCreateUser() {
+  const session = await requireTC();
+  const email = session.user!.email!;
+  const naam = session.user!.name ?? email;
+  return prisma.user.upsert({
+    where: { email },
+    create: { email, naam, rol: "EDITOR" },
+    update: { naam },
+    select: { id: true },
+  });
+}
+
+const pinInclude = {
+  speler: { select: { id: true, roepnaam: true, achternaam: true } },
+  staf: { select: { id: true, naam: true } },
+  gepindDoor: { select: { id: true, naam: true } },
+};
+
+export async function createPin(data: {
+  kadersId: string;
+  spelerId: string;
+  type: PinType;
+  waarde: { teamNaam: string; teamId: string };
+  notitie?: string;
+}) {
+  await assertKadersBewerkbaar(data.kadersId);
+  const user = await getOrCreateUser();
+  await prisma.pin.deleteMany({
+    where: { kadersId: data.kadersId, spelerId: data.spelerId, type: data.type },
+  });
+  return prisma.pin.create({
+    data: {
+      kadersId: data.kadersId,
+      spelerId: data.spelerId,
+      type: data.type,
+      waarde: data.waarde,
+      notitie: data.notitie ?? null,
+      gepindDoorId: user.id,
+    },
+    include: pinInclude,
+  });
+}
+
+export async function deletePin(pinId: string) {
+  const pin = await prisma.pin.findUniqueOrThrow({
+    where: { id: pinId },
+    select: { kadersId: true },
+  });
+  await assertKadersBewerkbaar(pin.kadersId);
+  return prisma.pin.delete({ where: { id: pinId } });
+}
+
+export async function getPinsVoorWerkindeling(werkindelingId: string) {
+  const werkindeling = await prisma.werkindeling.findUniqueOrThrow({
+    where: { id: werkindelingId },
+    select: { kadersId: true },
+  });
+  return prisma.pin.findMany({
+    where: { kadersId: werkindeling.kadersId },
+    include: pinInclude,
+    orderBy: { gepindOp: "desc" },
+  });
+}

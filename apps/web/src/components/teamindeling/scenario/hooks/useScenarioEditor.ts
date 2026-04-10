@@ -12,7 +12,7 @@ import {
   getPinsVoorWerkindeling as getPinsVoorScenario,
   createPin,
   deletePin,
-} from "@/app/(teamindeling-studio)/ti-studio/pins/actions";
+} from "@/app/(teamindeling-studio)/ti-studio/personen/actions";
 
 // Tijdelijke stubs — worden in Task 4 vervangen door werkindeling team-actions
 async function createTeam(
