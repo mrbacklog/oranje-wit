@@ -62,7 +62,7 @@ export function SpelerKaart({
       ref={kaartRef}
       draggable={!asGhost && !isAR}
       onPointerDown={
-        asGhost
+        asGhost || isAR
           ? undefined
           : (e) => {
               document.body.style.cursor = "grabbing";
@@ -71,7 +71,7 @@ export function SpelerKaart({
             }
       }
       onPointerUp={
-        asGhost
+        asGhost || isAR
           ? undefined
           : () => {
               document.body.style.cursor = "";
@@ -79,7 +79,7 @@ export function SpelerKaart({
             }
       }
       onPointerCancel={
-        asGhost
+        asGhost || isAR
           ? undefined
           : () => {
               document.body.style.cursor = "";
@@ -87,7 +87,7 @@ export function SpelerKaart({
             }
       }
       onDragStart={
-        asGhost
+        asGhost || isAR
           ? undefined
           : (e) => {
               e.stopPropagation();
@@ -102,7 +102,7 @@ export function SpelerKaart({
             }
       }
       onDragEnd={
-        asGhost
+        asGhost || isAR
           ? undefined
           : () => {
               document.body.style.cursor = "";
