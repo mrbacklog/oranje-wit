@@ -128,6 +128,7 @@ export function TeamDialog({
           left: "50%",
           transform: "translate(-50%, -50%)",
           width: 560,
+          height: 640,
           maxWidth: "calc(100vw - 32px)",
           maxHeight: "calc(100vh - 64px)",
           background: T.bg1,

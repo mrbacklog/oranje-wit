@@ -64,13 +64,13 @@ const KAART_BREEDTE: Record<KaartFormaat, number> = { viertal: 160, achtal: 320,
 const RIJ_HOOGTE = 40; // SPELER_RIJ_HOOGTE — vaste rijhoogte alle zoomniveaus
 const MIN_DROPZONE = 8 * RIJ_HOOGTE; // 320px
 
-function schatKaartHoogte(team: WerkbordTeam): number {
-  // Kaartstructuur is zoomlevel-onafhankelijk: header + dropzone + staf + footer
+function schatKaartHoogte(team: WerkbordTeam, zoomLevel?: ZoomLevel): number {
+  // In compact modus: geen label boven de dropzone (14px minder), maar verder identiek.
   const aantalStaf = team.staf.length;
-  const labelHoogte = 14;
-  const headerHoogte = 34;
-  const footerHoogte = 26;
+  const headerHoogte = 85; // 2,5× vergroot
+  const footerHoogte = 65; // 2,5× vergroot
   const stafHoogte = aantalStaf > 0 ? aantalStaf * 20 + 1 : 0;
+  const labelHoogte = zoomLevel === "compact" ? 0 : 14;
   if (team.formaat === "viertal") {
     // Viertal: dames + heren gestapeld in 1 kolom
     const kolomHoogte = Math.max(
@@ -113,6 +113,7 @@ export function WerkbordCanvas({
   const [panX, setPanX] = useState(0);
   const [panY, setPanY] = useState(0);
   const [draggingTeam, setDraggingTeam] = useState<TeamDragState | null>(null);
+  const dragHasMovedRef = useRef(false);
   const [panState, setPanState] = useState<PanState | null>(null);
   const [minimapDragging, setMinimapDragging] = useState(false);
   const [panelOpen, setPanelOpen] = useState(false);
@@ -171,7 +172,7 @@ export function WerkbordCanvas({
     const minX = Math.min(...teams.map((t) => t.canvasX)) - margin;
     const minY = Math.min(...teams.map((t) => t.canvasY)) - margin;
     const maxX = Math.max(...teams.map((t) => t.canvasX + KAART_BREEDTE[t.formaat])) + margin;
-    const maxY = Math.max(...teams.map((t) => t.canvasY + schatKaartHoogte(t))) + margin;
+    const maxY = Math.max(...teams.map((t) => t.canvasY + schatKaartHoogte(t, zoomLevel))) + margin;
     const contentW = maxX - minX;
     const contentH = maxY - minY;
     const cw = containerRef.current.offsetWidth;
@@ -202,6 +203,7 @@ export function WerkbordCanvas({
     if (!team) return;
     // Globale cursor direct — browser update wacht anders op muisbeweging
     document.body.style.cursor = "grabbing";
+    dragHasMovedRef.current = false;
     setDraggingTeam({
       teamId,
       startMouseX: e.clientX,
@@ -213,8 +215,11 @@ export function WerkbordCanvas({
 
   function handleMouseMove(e: React.MouseEvent) {
     if (draggingTeam) {
-      const dx = (e.clientX - draggingTeam.startMouseX) / zoom;
-      const dy = (e.clientY - draggingTeam.startMouseY) / zoom;
+      const rawDx = e.clientX - draggingTeam.startMouseX;
+      const rawDy = e.clientY - draggingTeam.startMouseY;
+      if (Math.abs(rawDx) > 4 || Math.abs(rawDy) > 4) dragHasMovedRef.current = true;
+      const dx = rawDx / zoom;
+      const dy = rawDy / zoom;
       const newX = draggingTeam.startCanvasX + dx;
       const newY = draggingTeam.startCanvasY + dy;
       onTeamPositionChange(draggingTeam.teamId, newX, newY);
@@ -374,7 +379,13 @@ export function WerkbordCanvas({
                 )
               }
               onToggleBundeling={onToggleBundeling}
-              onTitelKlik={onTitelKlik}
+              onTitelKlik={
+                onTitelKlik
+                  ? (id) => {
+                      if (!dragHasMovedRef.current) onTitelKlik(id);
+                    }
+                  : undefined
+              }
             />
           );
         })}
@@ -496,7 +507,7 @@ export function WerkbordCanvas({
                     left: (team.canvasX / CANVAS_W) * MINIMAP_W,
                     top: (team.canvasY / CANVAS_H) * MINIMAP_H,
                     width: Math.max(3, (KAART_BREEDTE[team.formaat] / CANVAS_W) * MINIMAP_W),
-                    height: Math.max(2, (schatKaartHoogte(team) / CANVAS_H) * MINIMAP_H),
+                    height: Math.max(2, (schatKaartHoogte(team, zoomLevel) / CANVAS_H) * MINIMAP_H),
                     background: "rgba(255,107,0,.5)",
                     borderRadius: 1,
                     pointerEvents: "none",
