@@ -72,10 +72,7 @@ Push naar `main` → CI → Railway deploy. Automatisch. Geen handmatige stappen
 
 **Alleen `team-release` deployt.** Andere agents: VERBODEN — escaleer naar `product-owner`.
 
-```
-Antjan → product-owner → /team-release patch <scope>    # kleine fix
-Antjan → product-owner → /team-release release <scope>  # feature bundel
-```
+`Antjan → product-owner → /team-release patch|release <scope>`
 
 ### Monitoring
 
@@ -91,76 +88,21 @@ Gebruik `/team-devops` voor health checks en CI status (observatie, geen deploys
 
 ## Verplichte patronen
 
-**Logger** — gebruik altijd `logger` uit `@oranje-wit/types`, nooit `console.log`:
-```ts
-import { logger } from "@oranje-wit/types";
-logger.info("...");   // alleen in development
-logger.warn("...");   // altijd
-logger.error("...");  // altijd
-```
+**Logger** — gebruik `logger` uit `@oranje-wit/types`, nooit `console.log`. `logger.info` alleen in development, `logger.warn`/`logger.error` altijd.
 
-**Auth guards** — gebruik `guard*()` in API routes, `require*()` in server actions:
-```ts
-// API route (returns Result, geen throw)
-import { guardTC } from "@oranje-wit/auth/checks";
-export async function POST(request: Request) {
-  const auth = await guardTC();
-  if (!auth.ok) return auth.response;
-  const { session } = auth;
-}
+**Auth guards** — `guardTC()` in API routes (returnt Result, geen throw), `requireTC()` in server actions (throwt als niet-TC). Beide in `@oranje-wit/auth/checks`.
 
-// Server action (throws, Next.js vangt)
-import { requireTC } from "@oranje-wit/auth/checks";
-export async function mijnAction() {
-  const session = await requireTC(); // throws als niet-TC
-}
-```
+**API routes** — gebruik `ok()`/`fail()`/`parseBody()` uit `@/lib/api`. Altijd `guardTC()` als eerste, dan body parsen met Zod schema, dan try/catch met `fail(error)`.
 
-**API routes** — gebruik `ok()`/`fail()`/`parseBody()` uit `@/lib/api`:
-```ts
-import { ok, fail, parseBody } from "@/lib/api";
-import { guardTC } from "@oranje-wit/auth/checks";
-import { z } from "zod";
-
-const Schema = z.object({ naam: z.string().min(1) });
-
-export async function POST(request: Request) {
-  const auth = await guardTC();
-  if (!auth.ok) return auth.response;
-  try {
-    const parsed = await parseBody(request, Schema);
-    if (!parsed.ok) return parsed.response;
-    const result = await prisma.model.create({ data: parsed.data });
-    return ok(result);
-  } catch (error) {
-    return fail(error instanceof Error ? error.message : String(error));
-  }
-}
-```
-
-**Server Action results** — gebruik `ActionResult<T>` uit `@oranje-wit/types`:
-```ts
-import { type ActionResult } from "@oranje-wit/types";
-export async function mijnAction(data: FormData): Promise<ActionResult<{ id: string }>> {
-  return { ok: true, data: { id: "abc" } };
-}
-```
+**Server Action results** — return type altijd `ActionResult<T>` uit `@oranje-wit/types`. `{ ok: true, data: T }` of `{ ok: false, error: string }`.
 
 **Wanneer server action vs API route:**
 - Server action: interne UI-interactie, formulier-submit, revalidation
 - API route: externe clients, smartlink-gebruikers, file uploads, CORS
 
-**Constanten** — importeer uit `@oranje-wit/types`, definieer niet lokaal:
-```ts
-import { PEILJAAR, HUIDIG_SEIZOEN, PEILDATUM } from "@oranje-wit/types";
-```
+**Constanten** — importeer `PEILJAAR`, `HUIDIG_SEIZOEN`, `PEILDATUM` uit `@oranje-wit/types`, definieer niet lokaal.
 
-**Error handling** — geen lege catch blocks, altijd loggen:
-```ts
-catch (error) {
-  logger.warn("Context:", error);
-}
-```
+**Error handling** — geen lege catch blocks, altijd loggen met `logger.warn("context:", error)`.
 
 ## Database
 
