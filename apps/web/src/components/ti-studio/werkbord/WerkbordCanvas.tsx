@@ -282,7 +282,6 @@ export function WerkbordCanvas({
             team={team}
             zoomLevel={zoomLevel}
             showScores={showScores}
-            isDragging={draggingTeam?.teamId === team.id}
             onOpenTeamDrawer={onOpenTeamDrawer}
             onDropSpeler={(spelerData, vanTeamId, naarGeslacht) =>
               onDropSpelerOpTeam(spelerData, vanTeamId, team.id, naarGeslacht)

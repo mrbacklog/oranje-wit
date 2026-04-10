@@ -10,9 +10,6 @@ const KAART_BREEDTE: Record<KaartFormaat, number> = {
   achtal: 280,
   selectie: 560,
 };
-const KAART_HOOGTE_NORMAAL = 210;
-const KAART_HOOGTE_DETAIL = 380;
-
 const COMPACT_HEADER_HOOGTE: Record<KaartFormaat, number> = {
   viertal: 36,
   achtal: 40,
@@ -63,7 +60,6 @@ interface TeamKaartProps {
   team: WerkbordTeam;
   zoomLevel: ZoomLevel;
   showScores: boolean;
-  isDragging: boolean;
   onOpenTeamDrawer: (teamId: string) => void;
   onDropSpeler: (
     spelerData: WerkbordSpeler,
@@ -77,15 +73,12 @@ export function TeamKaart({
   team,
   zoomLevel,
   showScores,
-  isDragging,
   onOpenTeamDrawer,
   onDropSpeler,
   onHeaderMouseDown,
 }: TeamKaartProps) {
   const breedte = KAART_BREEDTE[team.formaat];
   const isCompact = zoomLevel === "compact";
-  const isDetail = zoomLevel === "detail";
-  const kaartHoogte = isDetail ? KAART_HOOGTE_DETAIL : KAART_HOOGTE_NORMAAL;
 
   const [dropOverGeslacht, setDropOverGeslacht] = useState<"V" | "M" | null>(null);
 
@@ -126,7 +119,7 @@ export function TeamKaart({
         top: team.canvasY,
         pointerEvents: "auto", // canvas heeft pointer-events: none; kaart zet het terug
         width: breedte,
-        height: kaartHoogte,
+        height: isCompact ? 210 : "auto",
         background: "var(--bg-1)",
         border: "1px solid var(--border-0)",
         borderRadius: "var(--card-radius)",
@@ -353,27 +346,25 @@ export function TeamKaart({
       {!isCompact && (
         <div
           style={{
-            padding: "0 8px 0 14px",
-            flex: 1,
+            padding: "0 0 0 14px",
             display: "flex",
             flexDirection: "column",
-            minHeight: 0,
-            overflow: "hidden",
           }}
         >
-          {/* Header — 36px, drag handle voor kaart verplaatsen */}
+          {/* Header — 34px, drag handle voor kaart verplaatsen */}
           <div
             onMouseDown={(e) => {
               if ((e.target as HTMLElement).closest("button")) return;
               onHeaderMouseDown(e, team.id);
             }}
             style={{
-              height: 36,
+              height: 34,
               display: "flex",
               alignItems: "center",
               gap: 6,
               borderBottom: "1px solid var(--border-0)",
               flexShrink: 0,
+              paddingRight: 8,
               cursor: "grab",
             }}
           >
@@ -465,17 +456,14 @@ export function TeamKaart({
             </button>
           </div>
 
-          {/* Spelers kolommen — body flex:1 */}
+          {/* Spelers — achtal: 2 kolommen, viertal: 1 kolom */}
           <div
             style={{
               display: "flex",
               flexDirection: team.formaat === "viertal" ? "column" : "row",
-              flex: 1,
-              minHeight: 0,
-              overflow: "hidden",
             }}
           >
-            {/* Dames kolom */}
+            {/* Dames kolom/sectie */}
             <div
               onDragOver={(e) => handleDragOver(e, "V")}
               onDragLeave={() => setDropOverGeslacht(null)}
@@ -484,31 +472,25 @@ export function TeamKaart({
                 flex: 1,
                 display: "flex",
                 flexDirection: "column",
-                minHeight: 0,
-                overflow: "hidden",
                 borderRight: team.formaat === "viertal" ? "none" : "1px solid var(--border-0)",
                 borderBottom: team.formaat === "viertal" ? "1px solid var(--border-0)" : "none",
                 background: dropOverGeslacht === "V" ? "rgba(236,72,153,.07)" : "transparent",
                 transition: "background 120ms ease",
+                paddingRight: team.formaat === "viertal" ? 8 : 0,
               }}
             >
+              {/* Kolomlabel */}
               <div
                 style={{
-                  fontSize: 9,
+                  fontSize: 8,
                   fontWeight: 700,
                   textTransform: "uppercase",
-                  letterSpacing: ".5px",
-                  color: "var(--text-3)",
-                  padding: "2px 6px 0",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 4,
-                  flexShrink: 0,
+                  letterSpacing: ".6px",
+                  color: "rgba(236,72,153,.65)",
+                  padding: "3px 8px 2px",
+                  borderBottom: "1px solid rgba(255,255,255,.04)",
                 }}
               >
-                <svg width="8" height="8" viewBox="0 0 8 8">
-                  <circle cx="4" cy="4" r="4" fill="var(--pink)" />
-                </svg>
                 Dames
               </div>
               {team.dames.map((sp) => (
@@ -516,12 +498,12 @@ export function TeamKaart({
                   key={sp.id}
                   spelerInTeam={sp}
                   teamId={team.id}
-                  isDetail={isDetail}
+                  zoomLevel={zoomLevel}
                 />
               ))}
             </div>
 
-            {/* Heren kolom */}
+            {/* Heren kolom/sectie */}
             <div
               onDragOver={(e) => handleDragOver(e, "M")}
               onDragLeave={() => setDropOverGeslacht(null)}
@@ -530,29 +512,23 @@ export function TeamKaart({
                 flex: 1,
                 display: "flex",
                 flexDirection: "column",
-                minHeight: 0,
-                overflow: "hidden",
                 background: dropOverGeslacht === "M" ? "rgba(96,165,250,.07)" : "transparent",
                 transition: "background 120ms ease",
+                paddingRight: 8,
               }}
             >
+              {/* Kolomlabel */}
               <div
                 style={{
-                  fontSize: 9,
+                  fontSize: 8,
                   fontWeight: 700,
                   textTransform: "uppercase",
-                  letterSpacing: ".5px",
-                  color: "var(--text-3)",
-                  padding: "2px 6px 0",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 4,
-                  flexShrink: 0,
+                  letterSpacing: ".6px",
+                  color: "rgba(96,165,250,.65)",
+                  padding: "3px 8px 2px",
+                  borderBottom: "1px solid rgba(255,255,255,.04)",
                 }}
               >
-                <svg width="8" height="8" viewBox="0 0 8 8">
-                  <circle cx="4" cy="4" r="4" fill="var(--blue)" />
-                </svg>
                 Heren
               </div>
               {team.heren.map((sp) => (
@@ -560,29 +536,77 @@ export function TeamKaart({
                   key={sp.id}
                   spelerInTeam={sp}
                   teamId={team.id}
-                  isDetail={isDetail}
+                  zoomLevel={zoomLevel}
                 />
               ))}
             </div>
           </div>
 
-          {/* Footer — 28px */}
+          {/* Stafsectie — alleen tonen als er staf is */}
+          {team.staf.length > 0 && (
+            <div
+              style={{
+                borderTop: "1px solid var(--border-0)",
+                background: "rgba(255,255,255,.015)",
+              }}
+            >
+              {team.staf.map((s) => (
+                <div
+                  key={s.id}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 6,
+                    padding: "0 8px 0 0",
+                    height: 20,
+                  }}
+                >
+                  {/* Staf-vierkantje */}
+                  <div
+                    style={{
+                      width: 5,
+                      height: 5,
+                      borderRadius: 2,
+                      background: "var(--purple)",
+                      opacity: 0.7,
+                      flexShrink: 0,
+                    }}
+                  />
+                  {/* Naam — rol */}
+                  <div
+                    style={{
+                      fontSize: 9.5,
+                      color: "rgba(168,85,247,.85)",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      flex: 1,
+                    }}
+                  >
+                    {s.naam} — {s.rol}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Footer — 26px */}
           <div
             style={{
-              height: 28,
+              height: 26,
               display: "flex",
               alignItems: "center",
               gap: 6,
-              padding: "0 8px",
+              padding: "0 8px 0 0",
               borderTop: "1px solid var(--border-0)",
               flexShrink: 0,
             }}
           >
-            {team.gemiddeldeLeeftijd && (
+            {showScores && team.ussScore !== null && (
               <div style={{ fontSize: 10, color: "var(--text-3)" }}>
-                Gem.{" "}
+                USS{" "}
                 <span style={{ color: "var(--text-2)", fontWeight: 600 }}>
-                  {team.gemiddeldeLeeftijd.toFixed(1)}j
+                  {team.ussScore.toFixed(2)}
                 </span>
               </div>
             )}
@@ -603,11 +627,11 @@ export function TeamKaart({
               </div>
             )}
             <div style={{ flex: 1 }} />
-            {showScores && team.ussScore && (
+            {team.gemiddeldeLeeftijd !== null && (
               <div style={{ fontSize: 10, color: "var(--text-3)" }}>
-                USS{" "}
+                Gem.{" "}
                 <span style={{ color: "var(--text-2)", fontWeight: 600 }}>
-                  {team.ussScore.toFixed(2)}
+                  {team.gemiddeldeLeeftijd.toFixed(1)}j
                 </span>
               </div>
             )}
