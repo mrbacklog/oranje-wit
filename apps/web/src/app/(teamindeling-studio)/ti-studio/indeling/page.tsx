@@ -31,6 +31,20 @@ const KLEUR_MAP: Record<string, string> = {
   ROOD: "rood",
 };
 
+const TOEGESTANE_STATUSSEN = new Set([
+  "BESCHIKBAAR",
+  "TWIJFELT",
+  "GAAT_STOPPEN",
+  "GESTOPT",
+  "AFGEMELD",
+  "ALGEMEEN_RESERVE",
+]);
+
+function mapStatus(s: string | null | undefined): WerkbordSpeler["status"] {
+  if (s && TOEGESTANE_STATUSSEN.has(s)) return s as WerkbordSpeler["status"];
+  return "BESCHIKBAAR";
+}
+
 export default async function IndelingPage() {
   const session = await auth();
   const gebruikerEmail = session?.user?.email ?? "systeem";
@@ -88,7 +102,7 @@ export default async function IndelingPage() {
     geboortejaar: sp.geboortejaar ?? huidigeJaar - 20,
     geboortedatum: sp.geboortedatum ? sp.geboortedatum.toISOString().split("T")[0] : null,
     geslacht: sp.geslacht === "V" ? ("V" as const) : ("M" as const),
-    status: "BESCHIKBAAR" as const,
+    status: mapStatus(sp.status),
     rating: null,
     notitie: null,
     afmelddatum: null,
@@ -120,7 +134,7 @@ export default async function IndelingPage() {
             ? (ts.speler.geboortedatum as Date).toISOString().split("T")[0]
             : null,
           geslacht: "V" as const,
-          status: "BESCHIKBAAR" as const,
+          status: mapStatus(ts.speler?.status),
           rating: null,
           notitie: null,
           afmelddatum: null,
@@ -148,7 +162,7 @@ export default async function IndelingPage() {
             ? (ts.speler.geboortedatum as Date).toISOString().split("T")[0]
             : null,
           geslacht: "M" as const,
-          status: "BESCHIKBAAR" as const,
+          status: mapStatus(ts.speler?.status),
           rating: null,
           notitie: null,
           afmelddatum: null,
@@ -250,7 +264,7 @@ export default async function IndelingPage() {
             ? (sp.speler.geboortedatum as Date).toISOString().split("T")[0]
             : null,
           geslacht: (geslacht === "V" ? "V" : "M") as "V" | "M",
-          status: "BESCHIKBAAR" as const,
+          status: mapStatus(sp.speler?.status),
           rating: null,
           notitie: null,
           afmelddatum: null,
