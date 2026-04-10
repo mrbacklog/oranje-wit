@@ -55,11 +55,12 @@ export function SpelerKaart({
   );
 
   const stopGezet = speler.status === "GAAT_STOPPEN";
+  const isAR = speler.status === "ALGEMEEN_RESERVE";
 
   return (
     <div
       ref={kaartRef}
-      draggable={!asGhost}
+      draggable={!asGhost && !isAR}
       onPointerDown={
         asGhost
           ? undefined
@@ -108,7 +109,7 @@ export function SpelerKaart({
               setIsHeld(false);
             }
       }
-      onClick={asGhost ? undefined : onClick}
+      onClick={asGhost || isAR ? undefined : onClick}
       style={{
         display: "flex",
         flexDirection: "row",
@@ -117,7 +118,7 @@ export function SpelerKaart({
         borderLeft: "none",
         borderBottom: "1px solid var(--border-0)",
         opacity: stopGezet ? 0.5 : isHeld ? 0.6 : 1,
-        cursor: isHeld ? "grabbing" : "grab",
+        cursor: isAR ? "default" : isHeld ? "grabbing" : "grab",
         background: isHeld ? "rgba(255,107,0,.10)" : "transparent",
         outline: isHeld ? "1.5px solid var(--accent)" : "none",
         transition: "opacity 100ms ease, background 100ms ease",
@@ -179,6 +180,9 @@ export function SpelerKaart({
               {speler.roepnaam} {speler.achternaam.charAt(0)}.
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 1, flexShrink: 0 }}>
+              {isAR && (
+                <span style={{ fontSize: 7, fontWeight: 700, color: "var(--text-3)" }}>AR</span>
+              )}
               {speler.isNieuw && (
                 <span style={{ fontSize: 7, fontWeight: 700, color: "var(--ok)" }}>N</span>
               )}
@@ -326,6 +330,21 @@ export function SpelerKaart({
             gap: 3,
           }}
         >
+          {isAR && (
+            <span
+              style={{
+                fontSize: 9,
+                fontWeight: 700,
+                color: "var(--text-2)",
+                background: "var(--bg-2)",
+                border: "1px solid var(--border-1)",
+                borderRadius: 3,
+                padding: "1px 4px",
+              }}
+            >
+              AR
+            </span>
+          )}
           {speler.isNieuw && (
             <span
               style={{
