@@ -54,8 +54,8 @@ interface PanState {
   startPanY: number;
 }
 
-const CANVAS_W = 1400;
-const CANVAS_H = 900;
+const CANVAS_W = 3000;
+const CANVAS_H = 2400;
 const MINIMAP_W = 160;
 const MINIMAP_H = 110;
 const MIN_ZOOM = 0.4;

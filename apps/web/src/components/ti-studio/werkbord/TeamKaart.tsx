@@ -172,40 +172,38 @@ export function TeamKaart({
         >
           {selectieLabel}
         </div>
-        {zoomLevel !== "compact" && (
-          <div style={{ display: "flex", gap: 3 }}>
-            <span
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 3,
-                fontSize: 13,
-                fontWeight: 600,
-                padding: "4px 8px",
-                borderRadius: 6,
-                background: "rgba(236,72,153,.12)",
-                color: "var(--pink)",
-              }}
-            >
-              ♀ {team.dames.length}
-            </span>
-            <span
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 3,
-                fontSize: 13,
-                fontWeight: 600,
-                padding: "4px 8px",
-                borderRadius: 6,
-                background: "rgba(96,165,250,.12)",
-                color: "var(--blue)",
-              }}
-            >
-              ♂ {team.heren.length}
-            </span>
-          </div>
-        )}
+        <div style={{ display: "flex", gap: 3 }}>
+          <span
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 3,
+              fontSize: zoomLevel === "compact" ? 22 : 13,
+              fontWeight: 700,
+              padding: zoomLevel === "compact" ? "2px 6px" : "4px 8px",
+              borderRadius: 6,
+              background: "rgba(236,72,153,.12)",
+              color: "var(--pink)",
+            }}
+          >
+            ♀ {team.dames.length}
+          </span>
+          <span
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 3,
+              fontSize: zoomLevel === "compact" ? 22 : 13,
+              fontWeight: 700,
+              padding: zoomLevel === "compact" ? "2px 6px" : "4px 8px",
+              borderRadius: 6,
+              background: "rgba(96,165,250,.12)",
+              color: "var(--blue)",
+            }}
+          >
+            ♂ {team.heren.length}
+          </span>
+        </div>
         <div
           onClick={(e) => {
             e.stopPropagation();
@@ -377,9 +375,9 @@ export function TeamKaart({
         )}
         <div style={{ flex: 1 }} />
         {team.gemiddeldeLeeftijd !== null && (
-          <div style={{ fontSize: 13, color: "var(--text-3)" }}>
-            Gem.{" "}
-            <span style={{ color: "var(--text-2)", fontWeight: 600 }}>
+          <div style={{ fontSize: zoomLevel === "compact" ? 26 : 13, color: "var(--text-3)" }}>
+            {zoomLevel !== "compact" && "Gem. "}
+            <span style={{ color: "var(--text-2)", fontWeight: 700 }}>
               {team.gemiddeldeLeeftijd.toFixed(1)}j
             </span>
           </div>
