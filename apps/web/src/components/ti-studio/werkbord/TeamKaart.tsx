@@ -539,16 +539,18 @@ export function TeamKaart({
                 <div style={{ padding: "2px 6px", fontSize: 11, color: "var(--text-3)" }}>
                   ♀ Dames
                 </div>
-                {team.selectieDames.map((sit: WerkbordSpelerInTeam) => (
-                  <TeamKaartSpelerRij
-                    key={sit.id}
-                    spelerInTeam={sit}
-                    teamId={team.id}
-                    selectieGroepId={team.selectieGroepId}
-                    zoomLevel={zoomLevel}
-                    onSpelerClick={onSpelerClick}
-                  />
-                ))}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}>
+                  {team.selectieDames.map((sit: WerkbordSpelerInTeam) => (
+                    <TeamKaartSpelerRij
+                      key={sit.id}
+                      spelerInTeam={sit}
+                      teamId={team.id}
+                      selectieGroepId={team.selectieGroepId}
+                      zoomLevel={zoomLevel}
+                      onSpelerClick={onSpelerClick}
+                    />
+                  ))}
+                </div>
               </div>
               {/* Heren selectie dropzone */}
               <div
@@ -585,16 +587,18 @@ export function TeamKaart({
                 <div style={{ padding: "2px 6px", fontSize: 11, color: "var(--text-3)" }}>
                   ♂ Heren
                 </div>
-                {team.selectieHeren.map((sit: WerkbordSpelerInTeam) => (
-                  <TeamKaartSpelerRij
-                    key={sit.id}
-                    spelerInTeam={sit}
-                    teamId={team.id}
-                    selectieGroepId={team.selectieGroepId}
-                    zoomLevel={zoomLevel}
-                    onSpelerClick={onSpelerClick}
-                  />
-                ))}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}>
+                  {team.selectieHeren.map((sit: WerkbordSpelerInTeam) => (
+                    <TeamKaartSpelerRij
+                      key={sit.id}
+                      spelerInTeam={sit}
+                      teamId={team.id}
+                      selectieGroepId={team.selectieGroepId}
+                      zoomLevel={zoomLevel}
+                      onSpelerClick={onSpelerClick}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           ) : (
