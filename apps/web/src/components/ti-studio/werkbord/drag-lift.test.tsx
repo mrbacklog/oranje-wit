@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { renderHook, act } from "@testing-library/react";
+import { renderHook } from "@testing-library/react";
 import { useState, useEffect, useRef } from "react";
 
 // Test de isLanding state-machine: isDragging false → isLanding true → isLanding false na timeout
