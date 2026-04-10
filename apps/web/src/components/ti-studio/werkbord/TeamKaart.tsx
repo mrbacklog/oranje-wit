@@ -3,7 +3,13 @@
 import { useState } from "react";
 import "./tokens.css";
 import { TeamKaartSpelerRij } from "./TeamKaartSpelerRij";
-import type { WerkbordTeam, WerkbordSpeler, KaartFormaat, ZoomLevel } from "./types";
+import type {
+  WerkbordTeam,
+  WerkbordSpeler,
+  WerkbordSpelerInTeam,
+  KaartFormaat,
+  ZoomLevel,
+} from "./types";
 
 const KAART_BREEDTE: Record<KaartFormaat, number> = {
   viertal: 140,
@@ -67,6 +73,15 @@ interface TeamKaartProps {
     naarGeslacht: "V" | "M"
   ) => void;
   onHeaderMouseDown: (e: React.MouseEvent, teamId: string) => void;
+  onSpelerClick?: (spelerId: string, teamId: string | null) => void;
+  partnerTeam?: WerkbordTeam | null;
+  onDropSpelerOpSelectie?: (
+    spelerData: WerkbordSpeler,
+    vanTeamId: string | null,
+    vanSelectieGroepId: string | null,
+    geslacht: "V" | "M"
+  ) => void;
+  onToggleBundeling?: (selectieGroepId: string, gebundeld: boolean) => void;
 }
 
 export function TeamKaart({
@@ -76,11 +91,21 @@ export function TeamKaart({
   onOpenTeamDrawer,
   onDropSpeler,
   onHeaderMouseDown,
+  onSpelerClick,
+  partnerTeam,
+  onDropSpelerOpSelectie,
+  onToggleBundeling,
 }: TeamKaartProps) {
   const breedte = KAART_BREEDTE[team.formaat];
   const isCompact = zoomLevel === "compact";
 
   const [dropOverGeslacht, setDropOverGeslacht] = useState<"V" | "M" | null>(null);
+  const [dropOverGeslachtSelectie, setDropOverGeslachtSelectie] = useState<"V" | "M" | null>(null);
+
+  const isSelectie = team.formaat === "selectie" && !!partnerTeam;
+  const selectieLabel = isSelectie
+    ? team.selectieNaam || `${team.naam} ↔ ${partnerTeam!.naam}`
+    : team.naam;
 
   function handleDragOver(e: React.DragEvent, geslacht: "V" | "M") {
     if (!e.dataTransfer.types.includes("speler")) return;
@@ -378,7 +403,7 @@ export function TeamKaart({
                 textOverflow: "ellipsis",
               }}
             >
-              {team.naam}
+              {selectieLabel}
             </div>
             <div style={{ display: "flex", gap: 3 }}>
               <span
@@ -421,6 +446,24 @@ export function TeamKaart({
                 background: VAL_KLEUR[team.validatieStatus],
               }}
             />
+            {isSelectie && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onToggleBundeling?.(team.selectieGroepId!, !team.gebundeld);
+                }}
+                title={team.gebundeld ? "Ontbundelen (per team)" : "Bundelen (op geslacht)"}
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  color: team.gebundeld ? "var(--accent)" : "var(--text-3)",
+                  padding: "2px 4px",
+                }}
+              >
+                {team.gebundeld ? "♀♂" : "⊞"}
+              </button>
+            )}
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -457,90 +500,192 @@ export function TeamKaart({
           </div>
 
           {/* Spelers — achtal: 2 kolommen, viertal: 1 kolom */}
-          <div
-            style={{
-              display: "flex",
-              flexDirection: team.formaat === "viertal" ? "column" : "row",
-            }}
-          >
-            {/* Dames kolom/sectie */}
-            <div
-              onDragOver={(e) => handleDragOver(e, "V")}
-              onDragLeave={() => setDropOverGeslacht(null)}
-              onDrop={(e) => handleDrop(e, "V")}
-              style={{
-                flex: 1,
-                display: "flex",
-                flexDirection: "column",
-                borderRight: team.formaat === "viertal" ? "none" : "1px solid var(--border-0)",
-                borderBottom: team.formaat === "viertal" ? "1px solid var(--border-0)" : "none",
-                background: dropOverGeslacht === "V" ? "rgba(236,72,153,.07)" : "transparent",
-                transition: "background 120ms ease",
-                paddingRight: team.formaat === "viertal" ? 8 : 0,
-              }}
-            >
-              {/* Kolomlabel */}
+          {isSelectie && team.gebundeld ? (
+            // Gebundeld: één dames-kolom + één heren-kolom (selectie-niveau)
+            <div style={{ display: "flex", gap: 0 }}>
+              {/* Dames selectie dropzone */}
               <div
                 style={{
-                  fontSize: 8,
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  letterSpacing: ".6px",
-                  color: "rgba(236,72,153,.65)",
-                  padding: "3px 8px 2px",
-                  borderBottom: "1px solid rgba(255,255,255,.04)",
+                  flex: 1,
+                  minHeight: 40,
+                  background: dropOverGeslachtSelectie === "V" ? "var(--accent-dim)" : undefined,
+                  borderRight: "1px solid var(--border-0)",
+                }}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setDropOverGeslachtSelectie("V");
+                }}
+                onDragLeave={() => setDropOverGeslachtSelectie(null)}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  setDropOverGeslachtSelectie(null);
+                  try {
+                    const data = JSON.parse(e.dataTransfer.getData("speler")) as {
+                      speler: WerkbordSpeler;
+                      vanTeamId: string | null;
+                      vanSelectieGroepId: string | null;
+                    };
+                    onDropSpelerOpSelectie?.(
+                      data.speler,
+                      data.vanTeamId ?? null,
+                      data.vanSelectieGroepId ?? null,
+                      "V"
+                    );
+                  } catch {
+                    /* ignore */
+                  }
                 }}
               >
-                Dames
+                <div style={{ padding: "2px 6px", fontSize: 11, color: "var(--text-3)" }}>
+                  ♀ Dames
+                </div>
+                {team.selectieDames.map((sit: WerkbordSpelerInTeam) => (
+                  <TeamKaartSpelerRij
+                    key={sit.id}
+                    spelerInTeam={sit}
+                    teamId={team.id}
+                    selectieGroepId={team.selectieGroepId}
+                    zoomLevel={zoomLevel}
+                    onSpelerClick={onSpelerClick}
+                  />
+                ))}
               </div>
-              {team.dames.map((sp) => (
-                <TeamKaartSpelerRij
-                  key={sp.id}
-                  spelerInTeam={sp}
-                  teamId={team.id}
-                  zoomLevel={zoomLevel}
-                />
-              ))}
+              {/* Heren selectie dropzone */}
+              <div
+                style={{
+                  flex: 1,
+                  minHeight: 40,
+                  background: dropOverGeslachtSelectie === "M" ? "var(--accent-dim)" : undefined,
+                }}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setDropOverGeslachtSelectie("M");
+                }}
+                onDragLeave={() => setDropOverGeslachtSelectie(null)}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  setDropOverGeslachtSelectie(null);
+                  try {
+                    const data = JSON.parse(e.dataTransfer.getData("speler")) as {
+                      speler: WerkbordSpeler;
+                      vanTeamId: string | null;
+                      vanSelectieGroepId: string | null;
+                    };
+                    onDropSpelerOpSelectie?.(
+                      data.speler,
+                      data.vanTeamId ?? null,
+                      data.vanSelectieGroepId ?? null,
+                      "M"
+                    );
+                  } catch {
+                    /* ignore */
+                  }
+                }}
+              >
+                <div style={{ padding: "2px 6px", fontSize: 11, color: "var(--text-3)" }}>
+                  ♂ Heren
+                </div>
+                {team.selectieHeren.map((sit: WerkbordSpelerInTeam) => (
+                  <TeamKaartSpelerRij
+                    key={sit.id}
+                    spelerInTeam={sit}
+                    teamId={team.id}
+                    selectieGroepId={team.selectieGroepId}
+                    zoomLevel={zoomLevel}
+                    onSpelerClick={onSpelerClick}
+                  />
+                ))}
+              </div>
             </div>
+          ) : (
+            // Niet-gebundeld of geen selectie: normale layout
+            <div
+              style={{
+                display: "flex",
+                flexDirection: team.formaat === "viertal" ? "column" : "row",
+              }}
+            >
+              {/* Dames kolom/sectie */}
+              <div
+                onDragOver={(e) => handleDragOver(e, "V")}
+                onDragLeave={() => setDropOverGeslacht(null)}
+                onDrop={(e) => handleDrop(e, "V")}
+                style={{
+                  flex: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  borderRight: team.formaat === "viertal" ? "none" : "1px solid var(--border-0)",
+                  borderBottom: team.formaat === "viertal" ? "1px solid var(--border-0)" : "none",
+                  background: dropOverGeslacht === "V" ? "rgba(236,72,153,.07)" : "transparent",
+                  transition: "background 120ms ease",
+                  paddingRight: team.formaat === "viertal" ? 8 : 0,
+                }}
+              >
+                {/* Kolomlabel */}
+                <div
+                  style={{
+                    fontSize: 8,
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: ".6px",
+                    color: "rgba(236,72,153,.65)",
+                    padding: "3px 8px 2px",
+                    borderBottom: "1px solid rgba(255,255,255,.04)",
+                  }}
+                >
+                  Dames
+                </div>
+                {team.dames.map((sp) => (
+                  <TeamKaartSpelerRij
+                    key={sp.id}
+                    spelerInTeam={sp}
+                    teamId={team.id}
+                    zoomLevel={zoomLevel}
+                    onSpelerClick={onSpelerClick}
+                  />
+                ))}
+              </div>
 
-            {/* Heren kolom/sectie */}
-            <div
-              onDragOver={(e) => handleDragOver(e, "M")}
-              onDragLeave={() => setDropOverGeslacht(null)}
-              onDrop={(e) => handleDrop(e, "M")}
-              style={{
-                flex: 1,
-                display: "flex",
-                flexDirection: "column",
-                background: dropOverGeslacht === "M" ? "rgba(96,165,250,.07)" : "transparent",
-                transition: "background 120ms ease",
-                paddingRight: 8,
-              }}
-            >
-              {/* Kolomlabel */}
+              {/* Heren kolom/sectie */}
               <div
+                onDragOver={(e) => handleDragOver(e, "M")}
+                onDragLeave={() => setDropOverGeslacht(null)}
+                onDrop={(e) => handleDrop(e, "M")}
                 style={{
-                  fontSize: 8,
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  letterSpacing: ".6px",
-                  color: "rgba(96,165,250,.65)",
-                  padding: "3px 8px 2px",
-                  borderBottom: "1px solid rgba(255,255,255,.04)",
+                  flex: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  background: dropOverGeslacht === "M" ? "rgba(96,165,250,.07)" : "transparent",
+                  transition: "background 120ms ease",
+                  paddingRight: 8,
                 }}
               >
-                Heren
+                {/* Kolomlabel */}
+                <div
+                  style={{
+                    fontSize: 8,
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: ".6px",
+                    color: "rgba(96,165,250,.65)",
+                    padding: "3px 8px 2px",
+                    borderBottom: "1px solid rgba(255,255,255,.04)",
+                  }}
+                >
+                  Heren
+                </div>
+                {team.heren.map((sp) => (
+                  <TeamKaartSpelerRij
+                    key={sp.id}
+                    spelerInTeam={sp}
+                    teamId={team.id}
+                    zoomLevel={zoomLevel}
+                    onSpelerClick={onSpelerClick}
+                  />
+                ))}
               </div>
-              {team.heren.map((sp) => (
-                <TeamKaartSpelerRij
-                  key={sp.id}
-                  spelerInTeam={sp}
-                  teamId={team.id}
-                  zoomLevel={zoomLevel}
-                />
-              ))}
             </div>
-          </div>
+          )}
 
           {/* Stafsectie — alleen tonen als er staf is */}
           {team.staf.length > 0 && (

@@ -19,6 +19,7 @@ export function SpelersPoolDrawer({ open, spelers, onClose }: SpelersPoolDrawerP
   const [geslachtFilter, setGeslachtFilter] = useState<"alle" | "v" | "m">("alle");
 
   const gefilterd = spelers.filter((sp) => {
+    if (sp.selectieGroepId !== null) return false;
     const naam = `${sp.roepnaam} ${sp.achternaam}`.toLowerCase();
     if (zoek && !naam.includes(zoek.toLowerCase())) return false;
     if (geslachtFilter !== "alle" && sp.geslacht.toLowerCase() !== geslachtFilter) return false;

@@ -191,3 +191,121 @@ export async function updateSpelerStatus(spelerId: string, status: string): Prom
   });
   revalidatePath("/ti-studio/indeling");
 }
+
+// ─── Selectie-bundeling actions ──────────────────────────────────────────────
+
+export async function voegSelectieSpelerToe(
+  selectieGroepId: string,
+  spelerId: string
+): Promise<import("@oranje-wit/types").ActionResult<{ id: string }>> {
+  await requireTC();
+  try {
+    const selectieGroep = await prisma.selectieGroep.findUniqueOrThrow({
+      where: { id: selectieGroepId },
+      select: {
+        versieId: true,
+        teams: { select: { id: true } },
+      },
+    });
+    const teamIds = selectieGroep.teams.map((t: { id: string }) => t.id);
+    await prisma.teamSpeler.deleteMany({
+      where: { spelerId, teamId: { in: teamIds } },
+    });
+    const selectieSpeler = await prisma.selectieSpeler.upsert({
+      where: { selectieGroepId_spelerId: { selectieGroepId, spelerId } },
+      create: { selectieGroepId, spelerId },
+      update: {},
+      select: { id: true },
+    });
+    revalidatePath("/ti-studio/indeling");
+    return { ok: true, data: { id: selectieSpeler.id } };
+  } catch (error) {
+    logger.warn("voegSelectieSpelerToe fout:", error);
+    return { ok: false, error: error instanceof Error ? error.message : String(error) };
+  }
+}
+
+export async function verwijderSelectieSpeler(
+  selectieGroepId: string,
+  spelerId: string
+): Promise<import("@oranje-wit/types").ActionResult<void>> {
+  await requireTC();
+  try {
+    await prisma.selectieSpeler.deleteMany({ where: { selectieGroepId, spelerId } });
+    revalidatePath("/ti-studio/indeling");
+    return { ok: true, data: undefined };
+  } catch (error) {
+    logger.warn("verwijderSelectieSpeler fout:", error);
+    return { ok: false, error: error instanceof Error ? error.message : String(error) };
+  }
+}
+
+export async function toggleSelectieBundeling(
+  selectieGroepId: string,
+  gebundeld: boolean,
+  primaryTeamId?: string
+): Promise<import("@oranje-wit/types").ActionResult<void>> {
+  await requireTC();
+  try {
+    const selectieGroep = await prisma.selectieGroep.findUniqueOrThrow({
+      where: { id: selectieGroepId },
+      select: {
+        teams: {
+          select: { id: true },
+          orderBy: { volgorde: "asc" },
+        },
+        spelers: { select: { spelerId: true, statusOverride: true, notitie: true } },
+      },
+    });
+    const teamIds = selectieGroep.teams.map((t: { id: string }) => t.id);
+    const primaryId = primaryTeamId ?? selectieGroep.teams[0]?.id;
+
+    if (gebundeld) {
+      const teamSpelers = await prisma.teamSpeler.findMany({
+        where: { teamId: { in: teamIds } },
+        select: { spelerId: true, statusOverride: true, notitie: true },
+      });
+      await prisma.$transaction([
+        ...teamSpelers.map(
+          (ts: { spelerId: string; statusOverride: string | null; notitie: string | null }) =>
+            prisma.selectieSpeler.upsert({
+              where: { selectieGroepId_spelerId: { selectieGroepId, spelerId: ts.spelerId } },
+              create: {
+                selectieGroepId,
+                spelerId: ts.spelerId,
+                statusOverride: ts.statusOverride,
+                notitie: ts.notitie,
+              },
+              update: {},
+            })
+        ),
+        prisma.teamSpeler.deleteMany({ where: { teamId: { in: teamIds } } }),
+      ]);
+    } else {
+      if (!primaryId) throw new Error("Geen primary team gevonden voor ontbundelen");
+      const selectieSpelers = selectieGroep.spelers;
+      await prisma.$transaction([
+        ...selectieSpelers.map(
+          (ss: { spelerId: string; statusOverride: string | null; notitie: string | null }) =>
+            prisma.teamSpeler.upsert({
+              where: { teamId_spelerId: { teamId: primaryId, spelerId: ss.spelerId } },
+              create: {
+                teamId: primaryId,
+                spelerId: ss.spelerId,
+                statusOverride: ss.statusOverride,
+                notitie: ss.notitie,
+              },
+              update: {},
+            })
+        ),
+        prisma.selectieSpeler.deleteMany({ where: { selectieGroepId } }),
+      ]);
+    }
+
+    revalidatePath("/ti-studio/indeling");
+    return { ok: true, data: undefined };
+  } catch (error) {
+    logger.warn("toggleSelectieBundeling fout:", error);
+    return { ok: false, error: error instanceof Error ? error.message : String(error) };
+  }
+}

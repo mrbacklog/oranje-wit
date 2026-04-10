@@ -9,21 +9,46 @@ import type { WerkbordSpelerInTeam, WerkbordSpeler, ZoomLevel } from "./types";
 interface TeamKaartSpelerRijProps {
   spelerInTeam: WerkbordSpelerInTeam;
   teamId: string;
+  selectieGroepId?: string | null;
   zoomLevel: ZoomLevel;
+  onSpelerClick?: (spelerId: string, teamId: string | null) => void;
 }
 
-export function TeamKaartSpelerRij({ spelerInTeam, teamId, zoomLevel }: TeamKaartSpelerRijProps) {
+export function TeamKaartSpelerRij({
+  spelerInTeam,
+  teamId,
+  selectieGroepId,
+  zoomLevel,
+  onSpelerClick,
+}: TeamKaartSpelerRijProps) {
   if (zoomLevel === "detail") {
     return (
-      <SpelerKaart speler={spelerInTeam.speler} vanTeamId={teamId} seizoenEindjaar={PEILJAAR} />
+      <SpelerKaart
+        speler={spelerInTeam.speler}
+        vanTeamId={teamId}
+        seizoenEindjaar={PEILJAAR}
+        onClick={onSpelerClick ? () => onSpelerClick(spelerInTeam.speler.id, teamId) : undefined}
+      />
     );
   }
 
   if (zoomLevel === "normaal") {
-    return <NormaalSpelerRij speler={spelerInTeam.speler} teamId={teamId} />;
+    return (
+      <NormaalSpelerRij
+        speler={spelerInTeam.speler}
+        teamId={teamId}
+        selectieGroepId={selectieGroepId}
+      />
+    );
   }
 
-  return <CompactSpelerRij speler={spelerInTeam.speler} teamId={teamId} />;
+  return (
+    <CompactSpelerRij
+      speler={spelerInTeam.speler}
+      teamId={teamId}
+      selectieGroepId={selectieGroepId}
+    />
+  );
 }
 
 // Normaal rij — 1 regel hoog (21px): sekse-stip · naam · korfballeeftijd
@@ -43,7 +68,15 @@ function berekenKorfbalLeeftijdNormaal(
   return seizoenEindjaar - geboortejaar;
 }
 
-function NormaalSpelerRij({ speler, teamId }: { speler: WerkbordSpeler; teamId: string }) {
+function NormaalSpelerRij({
+  speler,
+  teamId,
+  selectieGroepId,
+}: {
+  speler: WerkbordSpeler;
+  teamId: string;
+  selectieGroepId?: string | null;
+}) {
   const ghostRef = useRef<HTMLDivElement>(null);
   const geslacht = speler.geslacht.toLowerCase() as "v" | "m";
   const stipKleur = geslacht === "v" ? "rgba(236,72,153,.7)" : "rgba(96,165,250,.7)";
@@ -77,7 +110,14 @@ function NormaalSpelerRij({ speler, teamId }: { speler: WerkbordSpeler; teamId: 
         draggable
         onDragStart={(e) => {
           e.stopPropagation();
-          e.dataTransfer.setData("speler", JSON.stringify({ speler, vanTeamId: teamId }));
+          e.dataTransfer.setData(
+            "speler",
+            JSON.stringify({
+              speler,
+              vanTeamId: teamId,
+              vanSelectieGroepId: selectieGroepId ?? null,
+            })
+          );
           e.dataTransfer.effectAllowed = "move";
           if (ghostRef.current) {
             e.dataTransfer.setDragImage(ghostRef.current, 20, 24);
@@ -136,7 +176,15 @@ function NormaalSpelerRij({ speler, teamId }: { speler: WerkbordSpeler; teamId: 
 
 // Compacte rij voor compact zoomlevel.
 // Gebruikt een verborgen SpelerKaart als drag-ghost.
-function CompactSpelerRij({ speler, teamId }: { speler: WerkbordSpeler; teamId: string }) {
+function CompactSpelerRij({
+  speler,
+  teamId,
+  selectieGroepId,
+}: {
+  speler: WerkbordSpeler;
+  teamId: string;
+  selectieGroepId?: string | null;
+}) {
   const ghostRef = useRef<HTMLDivElement>(null);
   const geslacht = speler.geslacht.toLowerCase() as "v" | "m";
   const geslachtKleur = geslacht === "v" ? "var(--pink)" : "var(--blue)";
@@ -165,7 +213,14 @@ function CompactSpelerRij({ speler, teamId }: { speler: WerkbordSpeler; teamId: 
         draggable
         onDragStart={(e) => {
           e.stopPropagation();
-          e.dataTransfer.setData("speler", JSON.stringify({ speler, vanTeamId: teamId }));
+          e.dataTransfer.setData(
+            "speler",
+            JSON.stringify({
+              speler,
+              vanTeamId: teamId,
+              vanSelectieGroepId: selectieGroepId ?? null,
+            })
+          );
           e.dataTransfer.effectAllowed = "move";
           if (ghostRef.current) {
             e.dataTransfer.setDragImage(ghostRef.current, 20, 24);

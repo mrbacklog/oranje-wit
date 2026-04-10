@@ -37,6 +37,7 @@ export interface WerkbordSpeler {
   isNieuw: boolean;
   huidigTeam: string | null;
   ingedeeldTeamNaam: string | null;
+  selectieGroepId: string | null; // null = in team of vrij
 }
 
 export interface WerkbordSpelerInTeam {
@@ -75,6 +76,10 @@ export interface WerkbordTeam {
   niveau: TeamLeeftijdsCat | null;
   selectieGroepId: string | null;
   selectieNaam: string | null;
+  // Selectie-bundeling velden
+  selectieDames: WerkbordSpelerInTeam[]; // spelers op selectie-niveau (geslacht V)
+  selectieHeren: WerkbordSpelerInTeam[]; // spelers op selectie-niveau (geslacht M)
+  gebundeld: boolean;
 }
 
 export interface WerkbordValidatieItem {

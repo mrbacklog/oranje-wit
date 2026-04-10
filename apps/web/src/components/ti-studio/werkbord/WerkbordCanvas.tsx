@@ -26,6 +26,15 @@ interface WerkbordCanvasProps {
   ) => void;
   onTeamPositionChange: (teamId: string, x: number, y: number) => void;
   onTeamDragEnd: (teamId: string, x: number, y: number) => void;
+  onSpelerClick?: (spelerId: string, teamId: string | null) => void;
+  onDropSpelerOpSelectie: (
+    spelerData: WerkbordSpeler,
+    vanTeamId: string | null,
+    vanSelectieGroepId: string | null,
+    naarSelectieGroepId: string,
+    geslacht: "V" | "M"
+  ) => void;
+  onToggleBundeling: (selectieGroepId: string, gebundeld: boolean) => void;
 }
 
 interface TeamDragState {
@@ -82,6 +91,9 @@ export function WerkbordCanvas({
   onDropSpelerOpTeam,
   onTeamPositionChange,
   onTeamDragEnd,
+  onSpelerClick,
+  onDropSpelerOpSelectie,
+  onToggleBundeling,
 }: WerkbordCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const minimapRef = useRef<HTMLDivElement>(null);
@@ -291,19 +303,37 @@ export function WerkbordCanvas({
           pointerEvents: "none",
         }}
       >
-        {teams.map((team) => (
-          <TeamKaart
-            key={team.id}
-            team={team}
-            zoomLevel={zoomLevel}
-            showScores={showScores}
-            onOpenTeamDrawer={onOpenTeamDrawer}
-            onDropSpeler={(spelerData, vanTeamId, naarGeslacht) =>
-              onDropSpelerOpTeam(spelerData, vanTeamId, team.id, naarGeslacht)
-            }
-            onHeaderMouseDown={handleTeamHeaderMouseDown}
-          />
-        ))}
+        {teams.map((team) => {
+          const partner = team.selectieGroepId
+            ? (teams.find((t) => t.selectieGroepId === team.selectieGroepId && t.id !== team.id) ??
+              null)
+            : null;
+          return (
+            <TeamKaart
+              key={team.id}
+              team={team}
+              zoomLevel={zoomLevel}
+              showScores={showScores}
+              onOpenTeamDrawer={onOpenTeamDrawer}
+              onDropSpeler={(spelerData, vanTeamId, naarGeslacht) =>
+                onDropSpelerOpTeam(spelerData, vanTeamId, team.id, naarGeslacht)
+              }
+              onHeaderMouseDown={handleTeamHeaderMouseDown}
+              onSpelerClick={onSpelerClick}
+              partnerTeam={partner}
+              onDropSpelerOpSelectie={(spelerData, vanTeamId, vanSelectieGroepId, geslacht) =>
+                onDropSpelerOpSelectie(
+                  spelerData,
+                  vanTeamId,
+                  vanSelectieGroepId,
+                  team.selectieGroepId!,
+                  geslacht
+                )
+              }
+              onToggleBundeling={onToggleBundeling}
+            />
+          );
+        })}
       </div>
 
       {/* ─── Score-knop rechtsonder, boven zoom ─────────────────────────────── */}

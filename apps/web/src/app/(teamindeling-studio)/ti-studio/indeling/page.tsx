@@ -7,6 +7,7 @@ import { TiStudioShell } from "@/components/ti-studio/werkbord/TiStudioShell";
 import type {
   WerkbordState,
   WerkbordSpeler,
+  WerkbordSpelerInTeam,
   WerkbordTeam,
   WerkbordValidatieItem,
 } from "@/components/ti-studio/werkbord/types";
@@ -81,6 +82,7 @@ export default async function IndelingPage() {
     isNieuw: false,
     huidigTeam: (sp.huidig as { team?: string } | null)?.team ?? null,
     ingedeeldTeamNaam: spelerTeamNaamMap.get(sp.id) ?? null,
+    selectieGroepId: null,
   }));
 
   // Teams als WerkbordTeam
@@ -109,6 +111,7 @@ export default async function IndelingPage() {
           isNieuw: false,
           huidigTeam: (ts.speler?.huidig as { team?: string } | null)?.team ?? null,
           ingedeeldTeamNaam: team.naam,
+          selectieGroepId: null,
         },
         notitie: null,
       }));
@@ -136,6 +139,7 @@ export default async function IndelingPage() {
           isNieuw: false,
           huidigTeam: (ts.speler?.huidig as { team?: string } | null)?.team ?? null,
           ingedeeldTeamNaam: team.naam,
+          selectieGroepId: null,
         },
         notitie: null,
       }));
@@ -191,10 +195,85 @@ export default async function IndelingPage() {
       niveau: (team.niveau ?? null) as "U15" | "U17" | "U19" | null,
       selectieGroepId: team.selectieGroepId ?? null,
       selectieNaam: (team as any).selectieGroep?.naam ?? null,
+      selectieDames: [] as WerkbordSpelerInTeam[],
+      selectieHeren: [] as WerkbordSpelerInTeam[],
+      gebundeld: false,
     };
   });
 
-  const ingeplandSpelers = alleSpelers.filter((s) => s.teamId !== null).length;
+  // Post-processing: vul selectieDames/selectieHeren/gebundeld in voor selectie-teams
+  if (versie) {
+    for (const selectieGroep of (versie as any).selectieGroepen ?? []) {
+      if (!selectieGroep.spelers?.length) continue;
+
+      const groepTeams = teams
+        .filter((t) => t.selectieGroepId === selectieGroep.id)
+        .sort((a, b) => a.volgorde - b.volgorde);
+      const primaryTeam = groepTeams[0];
+      if (!primaryTeam) continue;
+
+      const selectieDames: WerkbordSpelerInTeam[] = [];
+      const selectieHeren: WerkbordSpelerInTeam[] = [];
+
+      for (const sp of selectieGroep.spelers as any[]) {
+        const geslacht = sp.speler?.geslacht;
+        const spelerObj = alleSpelers.find((s) => s.id === sp.spelerId) ?? {
+          id: sp.spelerId,
+          roepnaam: sp.speler?.roepnaam ?? "?",
+          achternaam: sp.speler?.achternaam ?? "",
+          geboortejaar: sp.speler?.geboortejaar ?? huidigeJaar - 15,
+          geboortedatum: sp.speler?.geboortedatum
+            ? (sp.speler.geboortedatum as Date).toISOString().split("T")[0]
+            : null,
+          geslacht: (geslacht === "V" ? "V" : "M") as "V" | "M",
+          status: "BESCHIKBAAR" as const,
+          rating: null,
+          notitie: null,
+          afmelddatum: null,
+          teamId: null,
+          gepind: false,
+          isNieuw: false,
+          huidigTeam: (sp.speler?.huidig as { team?: string } | null)?.team ?? null,
+          ingedeeldTeamNaam: null,
+          selectieGroepId: selectieGroep.id,
+        };
+
+        const spelerInTeam: WerkbordSpelerInTeam = {
+          id: sp.id,
+          spelerId: sp.spelerId,
+          speler: spelerObj,
+          notitie: sp.notitie ?? null,
+        };
+
+        if (geslacht === "V") {
+          selectieDames.push(spelerInTeam);
+        } else {
+          selectieHeren.push(spelerInTeam);
+        }
+      }
+
+      const teamIdx = teams.findIndex((t) => t.id === primaryTeam.id);
+      if (teamIdx >= 0) {
+        teams[teamIdx] = { ...teams[teamIdx], selectieDames, selectieHeren, gebundeld: true };
+      }
+    }
+  }
+
+  // Spelers in selectiegroep ook markeren als ingedeeld
+  if (versie) {
+    for (const selectieGroep of (versie as any).selectieGroepen ?? []) {
+      for (const sp of selectieGroep.spelers as any[]) {
+        const idx = alleSpelers.findIndex((s) => s.id === sp.spelerId);
+        if (idx >= 0) {
+          alleSpelers[idx] = { ...alleSpelers[idx], selectieGroepId: selectieGroep.id };
+        }
+      }
+    }
+  }
+
+  const ingeplandSpelers = alleSpelers.filter(
+    (s) => s.teamId !== null || s.selectieGroepId !== null
+  ).length;
 
   const initieleState: WerkbordState = {
     teams,

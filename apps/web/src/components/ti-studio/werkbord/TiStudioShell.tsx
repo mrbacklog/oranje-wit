@@ -9,6 +9,7 @@ import { SpelersPoolDrawer } from "./SpelersPoolDrawer";
 import { WerkbordCanvas } from "./WerkbordCanvas";
 import { TeamDrawer } from "./TeamDrawer";
 import { VersiesDrawer } from "./VersiesDrawer";
+import SpelerProfielDialog from "../SpelerProfielDialog";
 import { useZoom } from "./hooks/useZoom";
 import type {
   TiStudioShellProps,
@@ -18,6 +19,11 @@ import type {
 } from "./types";
 import type { DrawerData } from "@/app/(teamindeling-studio)/ti-studio/indeling/drawer-actions";
 import { getVersiesVoorDrawer } from "@/app/(teamindeling-studio)/ti-studio/indeling/drawer-actions";
+import {
+  voegSelectieSpelerToe,
+  verwijderSelectieSpeler,
+  toggleSelectieBundeling,
+} from "@/app/(teamindeling-studio)/ti-studio/indeling/werkindeling-actions";
 
 type ActivePanel = "pool" | "teams" | "werkbord" | "versies" | "kader" | null;
 
@@ -43,6 +49,13 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
   const sessionId = useRef<string>(crypto.randomUUID());
 
   const versieId = initieleState.versieId;
+
+  const [profielSpelerId, setProfielSpelerId] = useState<string | null>(null);
+  const [profielTeamId, setProfielTeamId] = useState<string | null>(null);
+  function openProfiel(spelerId: string, teamId: string | null) {
+    setProfielSpelerId(spelerId);
+    setProfielTeamId(teamId);
+  }
 
   const gebruikerInitialen = gebruikerEmail
     .split("@")[0]
@@ -147,7 +160,17 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
   const koppelSelectieLokaal = useCallback((teamId: string, selectieGroepId: string) => {
     setTeams((prev) =>
       prev.map((t) =>
-        t.id === teamId ? { ...t, selectieGroepId, formaat: "selectie", selectieNaam: null } : t
+        t.id === teamId
+          ? {
+              ...t,
+              selectieGroepId,
+              formaat: "selectie",
+              selectieNaam: null,
+              selectieDames: [],
+              selectieHeren: [],
+              gebundeld: false,
+            }
+          : t
       )
     );
   }, []);
@@ -173,6 +196,138 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
       )
     );
   }, []);
+
+  const bundelSelectieLokaal = useCallback((selectieGroepId: string) => {
+    setTeams((prev) => {
+      const sel = prev
+        .filter((t) => t.selectieGroepId === selectieGroepId)
+        .sort((a, b) => a.volgorde - b.volgorde);
+      const [primary, partner] = sel;
+      if (!primary || !partner) return prev;
+      const selectieDames = [...primary.dames, ...partner.dames];
+      const selectieHeren = [...primary.heren, ...partner.heren];
+      return prev.map((t) => {
+        if (t.id === primary.id)
+          return { ...t, dames: [], heren: [], selectieDames, selectieHeren, gebundeld: true };
+        if (t.id === partner.id) return { ...t, dames: [], heren: [], gebundeld: true };
+        return t;
+      });
+    });
+  }, []);
+
+  const ontbundelSelectieLokaal = useCallback((selectieGroepId: string) => {
+    setTeams((prev) => {
+      const sel = prev
+        .filter((t) => t.selectieGroepId === selectieGroepId)
+        .sort((a, b) => a.volgorde - b.volgorde);
+      const [primary] = sel;
+      if (!primary) return prev;
+      return prev.map((t) => {
+        if (t.id === primary.id)
+          return {
+            ...t,
+            dames: primary.selectieDames,
+            heren: primary.selectieHeren,
+            selectieDames: [],
+            selectieHeren: [],
+            gebundeld: false,
+          };
+        if (t.selectieGroepId === selectieGroepId) return { ...t, gebundeld: false };
+        return t;
+      });
+    });
+    setAlleSpelers((prev) =>
+      prev.map((s) => (s.selectieGroepId === selectieGroepId ? { ...s, selectieGroepId: null } : s))
+    );
+  }, []);
+
+  const voegSelectieSpelerToeLokaal = useCallback(
+    (naarSelectieGroepId: string, spelerData: WerkbordSpeler, geslacht: "V" | "M") => {
+      setTeams((prev) => {
+        const primaryTeam = [...prev]
+          .filter((t) => t.selectieGroepId === naarSelectieGroepId)
+          .sort((a, b) => a.volgorde - b.volgorde)[0];
+        if (!primaryTeam) return prev;
+        const spelerInTeam: WerkbordSpelerInTeam = {
+          id: `ssel-${spelerData.id}-${Date.now()}`,
+          spelerId: spelerData.id,
+          speler: { ...spelerData, teamId: null, selectieGroepId: naarSelectieGroepId },
+          notitie: null,
+        };
+        return prev.map((t) => {
+          if (t.id !== primaryTeam.id) return t;
+          if (geslacht === "V") {
+            return {
+              ...t,
+              selectieDames: [
+                ...t.selectieDames.filter((s) => s.spelerId !== spelerData.id),
+                spelerInTeam,
+              ],
+            };
+          }
+          return {
+            ...t,
+            selectieHeren: [
+              ...t.selectieHeren.filter((s) => s.spelerId !== spelerData.id),
+              spelerInTeam,
+            ],
+          };
+        });
+      });
+      setAlleSpelers((prev) =>
+        prev.map((s) =>
+          s.id === spelerData.id ? { ...s, teamId: null, selectieGroepId: naarSelectieGroepId } : s
+        )
+      );
+    },
+    []
+  );
+
+  const toggleBundeling = useCallback(
+    async (selectieGroepId: string, gebundeld: boolean) => {
+      if (gebundeld) {
+        bundelSelectieLokaal(selectieGroepId);
+        await toggleSelectieBundeling(selectieGroepId, true);
+      } else {
+        const alleCurTeams = teams.filter((t) => t.selectieGroepId === selectieGroepId);
+        const primaryTeam = alleCurTeams.sort((a, b) => a.volgorde - b.volgorde)[0];
+        ontbundelSelectieLokaal(selectieGroepId);
+        await toggleSelectieBundeling(selectieGroepId, false, primaryTeam?.id);
+      }
+    },
+    [bundelSelectieLokaal, ontbundelSelectieLokaal, teams]
+  );
+
+  const onDropSpelerOpSelectieFn = useCallback(
+    async (
+      spelerData: WerkbordSpeler,
+      vanTeamId: string | null,
+      vanSelectieGroepId: string | null,
+      naarSelectieGroepId: string,
+      geslacht: "V" | "M"
+    ) => {
+      if (vanTeamId) {
+        verwijderSpelerUitTeamLokaal(spelerData.id, vanTeamId);
+      } else if (vanSelectieGroepId) {
+        setTeams((prev) =>
+          prev.map((t) => {
+            if (t.selectieGroepId !== vanSelectieGroepId) return t;
+            return {
+              ...t,
+              selectieDames: t.selectieDames.filter((s) => s.spelerId !== spelerData.id),
+              selectieHeren: t.selectieHeren.filter((s) => s.spelerId !== spelerData.id),
+            };
+          })
+        );
+      }
+      voegSelectieSpelerToeLokaal(naarSelectieGroepId, spelerData, geslacht);
+      const result = await voegSelectieSpelerToe(naarSelectieGroepId, spelerData.id);
+      if (!result.ok) {
+        void verwijderSelectieSpeler(naarSelectieGroepId, spelerData.id);
+      }
+    },
+    [verwijderSpelerUitTeamLokaal, voegSelectieSpelerToeLokaal]
+  );
 
   // ─── API-calls + SSE ────────────────────────────────────────────────────────
 
@@ -273,7 +428,9 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
 
   // ─── Render ────────────────────────────────────────────────────────────────
 
-  const ingeplandSpelers = alleSpelers.filter((s) => s.teamId !== null).length;
+  const ingeplandSpelers = alleSpelers.filter(
+    (s) => s.teamId !== null || s.selectieGroepId !== null
+  ).length;
 
   return (
     <div
@@ -334,9 +491,9 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
           onDropSpelerOpTeam={verplaatsSpeler}
           onTeamPositionChange={verplaatsTeamKaart}
           onTeamDragEnd={slaTeamPositieOp}
-          onReturneerNaarPool={(spelerData, vanTeamId) =>
-            verwijderSpelerUitTeamLokaal(spelerData.id, vanTeamId)
-          }
+          onSpelerClick={openProfiel}
+          onDropSpelerOpSelectie={onDropSpelerOpSelectieFn}
+          onToggleBundeling={toggleBundeling}
         />
         <TeamDrawer
           open={activePanel === "teams"}
@@ -360,6 +517,12 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
           onClose={() => setActivePanel(null)}
         />
       </div>
+      <SpelerProfielDialog
+        spelerId={profielSpelerId}
+        open={profielSpelerId !== null}
+        onClose={() => setProfielSpelerId(null)}
+        teamId={profielTeamId ?? undefined}
+      />
     </div>
   );
 }
