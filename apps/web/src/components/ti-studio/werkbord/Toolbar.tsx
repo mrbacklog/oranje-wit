@@ -9,9 +9,9 @@ interface ToolbarProps {
   isWhatIf?: boolean;
   totalSpelers: number;
   ingeplandSpelers: number;
-  panelLinks: "pool" | null;
+  panelLinks: "pool" | "staf" | null;
   panelRechts: "teams" | "versies" | null;
-  onTogglePanelLinks: (panel: "pool") => void;
+  onTogglePanelLinks: (panel: "pool" | "staf") => void;
   onTogglePanelRechts: (panel: "teams" | "versies") => void;
   onVersiesOpen: () => void;
 }
@@ -221,7 +221,7 @@ export function Toolbar({
           ‹
         </span>
 
-        <div style={{ pointerEvents: "auto" }}>
+        <div style={{ display: "flex", gap: 2, pointerEvents: "auto" }}>
           <PanelBtn
             tip="Spelerspool (links)"
             active={panelLinks === "pool"}
@@ -238,6 +238,30 @@ export function Toolbar({
             >
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
               <circle cx="12" cy="7" r="4" />
+            </svg>
+          </PanelBtn>
+          <PanelBtn
+            tip="Stafleden (links)"
+            active={panelLinks === "staf"}
+            onClick={() => onTogglePanelLinks("staf")}
+          >
+            {/* Persoon met pet/cap */}
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="9" r="3" />
+              {/* Cap brim */}
+              <path d="M7.5 6.5h9" />
+              {/* Cap crown */}
+              <path d="M9.5 6.5V5a2.5 2.5 0 0 1 5 0v1.5" />
             </svg>
           </PanelBtn>
         </div>

@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect } from "react";
 import { logger } from "@oranje-wit/types";
 import { Toolbar } from "./Toolbar";
 import { SpelersPoolDrawer } from "./SpelersPoolDrawer";
+import { StafPoolDrawer } from "./StafPoolDrawer";
 import { WerkbordCanvas } from "./WerkbordCanvas";
 import { TeamDrawer } from "./TeamDrawer";
 import { VersiesDrawer } from "./VersiesDrawer";
@@ -15,7 +16,7 @@ import type { TiStudioShellProps } from "./types";
 import type { DrawerData } from "@/app/(teamindeling-studio)/ti-studio/indeling/drawer-actions";
 import { getVersiesVoorDrawer } from "@/app/(teamindeling-studio)/ti-studio/indeling/drawer-actions";
 
-type PanelLinks = "pool" | null;
+type PanelLinks = "pool" | "staf" | null;
 type PanelRechts = "teams" | "versies" | null;
 
 export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellProps) {
@@ -67,7 +68,7 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
       });
   }, [panelRechts, initieleState.werkindelingId, drawerRefreshTeller]);
 
-  const togglePanelLinks = useCallback((panel: PanelLinks) => {
+  const togglePanelLinks = useCallback((panel: "pool" | "staf") => {
     setPanelLinks((prev) => (prev === panel ? null : panel));
   }, []);
 
@@ -117,6 +118,11 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
         <SpelersPoolDrawer
           open={panelLinks === "pool"}
           spelers={alleSpelers}
+          onClose={() => setPanelLinks(null)}
+        />
+        <StafPoolDrawer
+          open={panelLinks === "staf"}
+          staf={initieleState.alleStaf}
           onClose={() => setPanelLinks(null)}
         />
         <WerkbordCanvas

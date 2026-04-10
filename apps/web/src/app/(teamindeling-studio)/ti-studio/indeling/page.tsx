@@ -17,6 +17,8 @@ import type {
   WerkbordSpelerInTeam,
   WerkbordTeam,
   WerkbordValidatieItem,
+  WerkbordStaf,
+  WerkbordStafTeamrol,
 } from "@/components/ti-studio/werkbord/types";
 
 // Prisma Kleur enum → KnkvCategorie token
@@ -314,9 +316,40 @@ export default async function IndelingPage() {
     team.validatieCount = items.filter((i) => i.type !== "ok").length;
   }
 
+  // Bouw alleStaf: stafleden met hun teams + rollen
+  const stafTeamMap = new Map<string, WerkbordStafTeamrol[]>();
+  if (versie) {
+    for (const team of versie.teams as any[]) {
+      const kleur = KLEUR_MAP[team.kleur ?? ""] ?? "groen";
+      for (const ts of team.staf as any[]) {
+        const bestaand = stafTeamMap.get(ts.stafId) ?? [];
+        bestaand.push({ teamId: team.id, teamNaam: team.naam, kleur, rol: ts.rol ?? "" });
+        stafTeamMap.set(ts.stafId, bestaand);
+      }
+    }
+  }
+
+  const alleStaf: WerkbordStaf[] = [];
+  const gezienStafIds = new Set<string>();
+  if (versie) {
+    for (const team of versie.teams as any[]) {
+      for (const ts of team.staf as any[]) {
+        if (gezienStafIds.has(ts.stafId)) continue;
+        gezienStafIds.add(ts.stafId);
+        alleStaf.push({
+          id: ts.stafId,
+          naam: ts.staf?.naam ?? "?",
+          rollen: (ts.staf?.rollen as string[]) ?? [],
+          teams: stafTeamMap.get(ts.stafId) ?? [],
+        });
+      }
+    }
+  }
+
   const initieleState: WerkbordState = {
     teams,
     alleSpelers,
+    alleStaf,
     validatie,
     werkindelingId: volledig.id,
     versieId: versie?.id ?? "",
