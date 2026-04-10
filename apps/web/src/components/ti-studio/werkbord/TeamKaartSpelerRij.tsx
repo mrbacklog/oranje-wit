@@ -1,33 +1,140 @@
 // apps/web/src/components/ti-studio/werkbord/TeamKaartSpelerRij.tsx
 "use client";
 import { useRef } from "react";
+import { PEILJAAR } from "@oranje-wit/types";
 import "./tokens.css";
 import { SpelerKaart } from "./SpelerKaart";
-import type { WerkbordSpelerInTeam, WerkbordSpeler } from "./types";
-
-const HUIDIG_SEIZOEN_EINDJAAR = 2026;
+import type { WerkbordSpelerInTeam, WerkbordSpeler, ZoomLevel } from "./types";
 
 interface TeamKaartSpelerRijProps {
   spelerInTeam: WerkbordSpelerInTeam;
   teamId: string;
-  isDetail: boolean;
+  zoomLevel: ZoomLevel;
 }
 
-export function TeamKaartSpelerRij({ spelerInTeam, teamId, isDetail }: TeamKaartSpelerRijProps) {
-  if (isDetail) {
+export function TeamKaartSpelerRij({ spelerInTeam, teamId, zoomLevel }: TeamKaartSpelerRijProps) {
+  if (zoomLevel === "detail") {
     return (
-      <SpelerKaart
-        speler={spelerInTeam.speler}
-        vanTeamId={teamId}
-        seizoenEindjaar={HUIDIG_SEIZOEN_EINDJAAR}
-      />
+      <SpelerKaart speler={spelerInTeam.speler} vanTeamId={teamId} seizoenEindjaar={PEILJAAR} />
     );
+  }
+
+  if (zoomLevel === "normaal") {
+    return <NormaalSpelerRij speler={spelerInTeam.speler} teamId={teamId} />;
   }
 
   return <CompactSpelerRij speler={spelerInTeam.speler} teamId={teamId} />;
 }
 
-// Compacte rij voor normaal/compact zoomlevel.
+// Normaal rij — 1 regel hoog (21px): sekse-stip · naam · korfballeeftijd
+function berekenKorfbalLeeftijdNormaal(
+  geboortedatum: string | null,
+  geboortejaar: number,
+  seizoenEindjaar: number
+): number {
+  if (geboortedatum) {
+    const peildatum = new Date(seizoenEindjaar, 0, 1);
+    const geboorte = new Date(geboortedatum);
+    return (
+      Math.floor(((peildatum.getTime() - geboorte.getTime()) / (365.25 * 24 * 3600 * 1000)) * 100) /
+      100
+    );
+  }
+  return seizoenEindjaar - geboortejaar;
+}
+
+function NormaalSpelerRij({ speler, teamId }: { speler: WerkbordSpeler; teamId: string }) {
+  const ghostRef = useRef<HTMLDivElement>(null);
+  const geslacht = speler.geslacht.toLowerCase() as "v" | "m";
+  const stipKleur = geslacht === "v" ? "rgba(236,72,153,.7)" : "rgba(96,165,250,.7)";
+  const naam = `${speler.roepnaam} ${speler.achternaam.charAt(0)}.`;
+  const leeftijd = berekenKorfbalLeeftijdNormaal(
+    speler.geboortedatum,
+    speler.geboortejaar,
+    PEILJAAR
+  );
+  const leeftijdTekst = leeftijd.toFixed(2);
+
+  return (
+    <>
+      {/* Verborgen SpelerKaart — alleen als drag-image bron */}
+      <div
+        ref={ghostRef}
+        style={{
+          position: "fixed",
+          left: -9999,
+          top: 0,
+          width: 220,
+          pointerEvents: "none",
+          zIndex: -1,
+        }}
+      >
+        <SpelerKaart speler={speler} vanTeamId={teamId} seizoenEindjaar={PEILJAAR} asGhost />
+      </div>
+
+      {/* Normaal rij */}
+      <div
+        draggable
+        onDragStart={(e) => {
+          e.stopPropagation();
+          e.dataTransfer.setData("speler", JSON.stringify({ speler, vanTeamId: teamId }));
+          e.dataTransfer.effectAllowed = "move";
+          if (ghostRef.current) {
+            e.dataTransfer.setDragImage(ghostRef.current, 20, 24);
+          }
+        }}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 4,
+          padding: "0 6px 0 8px",
+          height: 21,
+          flexShrink: 0,
+          cursor: "grab",
+          borderBottom: "1px solid rgba(255,255,255,.04)",
+        }}
+      >
+        {/* Sekse-stip */}
+        <div
+          style={{
+            width: 5,
+            height: 5,
+            borderRadius: "50%",
+            background: stipKleur,
+            flexShrink: 0,
+          }}
+        />
+        {/* Naam */}
+        <div
+          style={{
+            flex: 1,
+            fontSize: 10.5,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            color: "var(--text-1)",
+          }}
+        >
+          {naam}
+        </div>
+        {/* Korfballeeftijd */}
+        <div
+          style={{
+            fontSize: 9,
+            color: "var(--text-3)",
+            flexShrink: 0,
+            minWidth: 28,
+            textAlign: "right",
+          }}
+        >
+          {leeftijdTekst}
+        </div>
+      </div>
+    </>
+  );
+}
+
+// Compacte rij voor compact zoomlevel.
 // Gebruikt een verborgen SpelerKaart als drag-ghost.
 function CompactSpelerRij({ speler, teamId }: { speler: WerkbordSpeler; teamId: string }) {
   const ghostRef = useRef<HTMLDivElement>(null);
@@ -50,12 +157,7 @@ function CompactSpelerRij({ speler, teamId }: { speler: WerkbordSpeler; teamId: 
           zIndex: -1,
         }}
       >
-        <SpelerKaart
-          speler={speler}
-          vanTeamId={teamId}
-          seizoenEindjaar={HUIDIG_SEIZOEN_EINDJAAR}
-          asGhost
-        />
+        <SpelerKaart speler={speler} vanTeamId={teamId} seizoenEindjaar={PEILJAAR} asGhost />
       </div>
 
       {/* Compacte rij */}

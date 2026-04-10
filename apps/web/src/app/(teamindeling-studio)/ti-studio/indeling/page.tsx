@@ -173,6 +173,12 @@ export default async function IndelingPage() {
       canvasY: 60 + rij * 240,
       dames,
       heren,
+      staf: (team.staf as any[]).map((ts: any) => ({
+        id: ts.id,
+        stafId: ts.stafId,
+        naam: ts.staf?.naam ?? "?",
+        rol: ts.rol ?? "",
+      })),
       notitie: null,
       ussScore:
         totaalSpelers > 0
