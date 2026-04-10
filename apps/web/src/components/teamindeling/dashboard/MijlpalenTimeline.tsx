@@ -10,7 +10,7 @@ export function MijlpalenTimeline({ mijlpalen }: Props) {
     return (
       <div className="rounded-xl border border-dashed border-gray-300 bg-gray-50 p-6 text-center text-sm text-gray-500">
         Nog geen mijlpalen ingesteld.{" "}
-        <Link href="/ti-studio/instellingen" className="text-ow-oranje hover:underline">
+        <Link href="/beheer/jaarplanning/mijlpalen" className="text-ow-oranje hover:underline">
           Configureer mijlpalen &rarr;
         </Link>
       </div>
