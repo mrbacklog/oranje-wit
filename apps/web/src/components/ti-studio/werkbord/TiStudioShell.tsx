@@ -32,6 +32,8 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
   const {
     teams,
     alleSpelers,
+    validatie,
+    updateValidatieLokaal,
     verplaatsSpeler,
     verwijderSpelerUitTeam,
     verplaatsTeamKaart,
@@ -43,7 +45,12 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
     updateSelectieNaamLokaal,
     toggleBundeling,
     onDropSpelerOpSelectieFn,
-  } = useWerkbordState(initieleState.versieId, initieleState.teams, initieleState.alleSpelers);
+  } = useWerkbordState(
+    initieleState.versieId,
+    initieleState.teams,
+    initieleState.alleSpelers,
+    initieleState.validatie
+  );
 
   const [dialogTeamId, setDialogTeamId] = useState<string | null>(null);
   const openTeamDialog = useCallback((teamId: string) => {
@@ -136,7 +143,7 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
           open={panelRechts === "teams"}
           geselecteerdTeamId={geselecteerdTeamId}
           teams={teams}
-          validatie={initieleState.validatie}
+          validatie={validatie}
           versieId={versieId}
           onClose={() => setPanelRechts(null)}
           onTeamSelect={setGeselecteerdTeamId}
@@ -165,7 +172,7 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
       <TeamDialog
         teamId={dialogTeamId}
         teams={teams}
-        validatie={initieleState.validatie}
+        validatie={validatie}
         onClose={() => setDialogTeamId(null)}
         kadersId={initieleState.kadersId}
         werkindelingId={initieleState.werkindelingId}

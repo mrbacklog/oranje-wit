@@ -1,6 +1,12 @@
 // apps/web/src/components/ti-studio/werkbord/hooks/useWerkbordState.ts
 import { useState, useCallback, useRef, useEffect } from "react";
-import type { WerkbordTeam, WerkbordSpeler, WerkbordSpelerInTeam } from "../types";
+import type {
+  WerkbordTeam,
+  WerkbordSpeler,
+  WerkbordSpelerInTeam,
+  WerkbordValidatieItem,
+  ValidatieUpdate,
+} from "../types";
 import {
   voegSelectieSpelerToe,
   verwijderSelectieSpeler,
@@ -10,10 +16,12 @@ import {
 export function useWerkbordState(
   versieId: string,
   initieleTeams: WerkbordTeam[],
-  initieleSpelers: WerkbordSpeler[]
+  initieleSpelers: WerkbordSpeler[],
+  initieleValidatie: WerkbordValidatieItem[]
 ) {
   const [teams, setTeams] = useState<WerkbordTeam[]>(initieleTeams);
   const [alleSpelers, setAlleSpelers] = useState<WerkbordSpeler[]>(initieleSpelers);
+  const [validatie, setValidatie] = useState<WerkbordValidatieItem[]>(initieleValidatie);
 
   const alleSpelersRef = useRef(alleSpelers);
   useEffect(() => {
@@ -271,15 +279,39 @@ export function useWerkbordState(
     [verwijderSpelerUitTeamLokaal, voegSelectieSpelerToeLokaal]
   );
 
+  const updateValidatieLokaal = useCallback((updates: ValidatieUpdate[]) => {
+    setValidatie((prev) => {
+      let nieuw = [...prev];
+      for (const update of updates) {
+        nieuw = nieuw.filter((v) => v.teamId !== update.teamId);
+        nieuw.push(...update.items);
+      }
+      return nieuw;
+    });
+    setTeams((prev) =>
+      prev.map((t) => {
+        const update = updates.find((u) => u.teamId === t.id);
+        if (!update) return t;
+        return { ...t, validatieStatus: update.status, validatieCount: update.count };
+      })
+    );
+  }, []);
+
   // ─── API-calls ───────────────────────────────────────────────
 
   async function stuurMutatie(body: Record<string, unknown>) {
     try {
-      await fetch(`/api/ti-studio/indeling/${versieId}`, {
+      const resp = await fetch(`/api/ti-studio/indeling/${versieId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...body, sessionId: sessionId.current }),
       });
+      if (resp.ok) {
+        const data = (await resp.json()) as { validatieUpdates?: ValidatieUpdate[] };
+        if (data.validatieUpdates?.length) {
+          updateValidatieLokaal(data.validatieUpdates);
+        }
+      }
     } catch {
       // Stil falen — optimistic update blijft
     }
@@ -359,6 +391,8 @@ export function useWerkbordState(
   return {
     teams,
     alleSpelers,
+    validatie,
+    updateValidatieLokaal,
     verplaatsSpeler,
     verwijderSpelerUitTeam,
     verplaatsTeamKaart,
