@@ -101,6 +101,7 @@ export function TeamKaart({
 
   const [dropOverGeslacht, setDropOverGeslacht] = useState<"V" | "M" | null>(null);
   const [dropOverGeslachtPartner, setDropOverGeslachtPartner] = useState<"V" | "M" | null>(null);
+  const [gebundeld, setGebundeld] = useState(false);
 
   function handleDragOver(e: React.DragEvent, geslacht: "V" | "M") {
     if (!e.dataTransfer.types.includes("speler")) return;
@@ -469,6 +470,89 @@ export function TeamKaart({
             >
               SEL
             </span>
+            {/* Bundeling toggle */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setGebundeld((v) => !v);
+              }}
+              title={gebundeld ? "Per team weergeven" : "Bundelen op geslacht"}
+              style={{
+                width: 22,
+                height: 22,
+                borderRadius: 5,
+                background: gebundeld ? "var(--accent-dim)" : "none",
+                border: gebundeld ? "1px solid rgba(255,107,0,.3)" : "none",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: gebundeld ? "var(--accent)" : "var(--text-3)",
+                flexShrink: 0,
+              }}
+            >
+              {gebundeld ? (
+                <svg width="13" height="11" viewBox="0 0 13 11" fill="none">
+                  <rect
+                    x="0.5"
+                    y="0.5"
+                    width="5"
+                    height="10"
+                    rx="1"
+                    stroke="currentColor"
+                    strokeWidth="1.2"
+                  />
+                  <rect
+                    x="7.5"
+                    y="0.5"
+                    width="5"
+                    height="10"
+                    rx="1"
+                    stroke="currentColor"
+                    strokeWidth="1.2"
+                  />
+                </svg>
+              ) : (
+                <svg width="13" height="11" viewBox="0 0 13 11" fill="none">
+                  <rect
+                    x="0.5"
+                    y="0.5"
+                    width="5"
+                    height="4.5"
+                    rx="1"
+                    stroke="currentColor"
+                    strokeWidth="1.2"
+                  />
+                  <rect
+                    x="7.5"
+                    y="0.5"
+                    width="5"
+                    height="4.5"
+                    rx="1"
+                    stroke="currentColor"
+                    strokeWidth="1.2"
+                  />
+                  <rect
+                    x="0.5"
+                    y="6"
+                    width="5"
+                    height="4.5"
+                    rx="1"
+                    stroke="currentColor"
+                    strokeWidth="1.2"
+                  />
+                  <rect
+                    x="7.5"
+                    y="6"
+                    width="5"
+                    height="4.5"
+                    rx="1"
+                    stroke="currentColor"
+                    strokeWidth="1.2"
+                  />
+                </svg>
+              )}
+            </button>
             <div
               style={{
                 width: 8,
@@ -513,236 +597,437 @@ export function TeamKaart({
             </button>
           </div>
 
-          {/* Twee sub-panels naast elkaar */}
+          {/* Body — per team of gebundeld op geslacht */}
           <div style={{ flex: 1, display: "flex", minHeight: 0, overflow: "hidden" }}>
-            {/* Team1 panel */}
-            <div
-              style={{
-                flex: 1,
-                display: "flex",
-                flexDirection: "column",
-                borderRight: "2px solid var(--accent-dim)",
-                minHeight: 0,
-                overflow: "hidden",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: 9,
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  letterSpacing: ".4px",
-                  color: "var(--accent)",
-                  padding: "3px 6px",
-                  flexShrink: 0,
-                  background: "var(--accent-dim)",
-                }}
-              >
-                {team.naam}
-              </div>
-              <div style={{ flex: 1, display: "flex", minHeight: 0, overflow: "hidden" }}>
+            {gebundeld ? (
+              /* ── GEBUNDELD: links alle dames, rechts alle heren ── */
+              <>
+                {/* Dames kolom (team1 + partner) */}
                 <div
-                  onDragOver={(e) => handleDragOver(e, "V")}
-                  onDragLeave={() => setDropOverGeslacht(null)}
-                  onDrop={(e) => handleDrop(e, "V")}
                   style={{
                     flex: 1,
                     display: "flex",
                     flexDirection: "column",
+                    borderRight: "2px solid var(--border-0)",
                     minHeight: 0,
                     overflow: "hidden",
-                    borderRight: "1px solid var(--border-0)",
-                    background: dropOverGeslacht === "V" ? "rgba(236,72,153,.07)" : "transparent",
-                    transition: "background 120ms ease",
                   }}
                 >
                   <div
                     style={{
-                      fontSize: 9,
+                      fontSize: 8,
                       fontWeight: 700,
                       textTransform: "uppercase",
-                      letterSpacing: ".5px",
-                      color: "var(--text-3)",
-                      padding: "2px 6px 0",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 4,
+                      letterSpacing: ".6px",
+                      color: "rgba(236,72,153,.7)",
+                      padding: "2px 6px",
+                      borderBottom: "1px solid rgba(255,255,255,.04)",
                       flexShrink: 0,
                     }}
                   >
-                    <svg width="8" height="8" viewBox="0 0 8 8">
-                      <circle cx="4" cy="4" r="4" fill="var(--pink)" />
-                    </svg>
                     Dames
                   </div>
-                  {team.dames.map((sp) => (
-                    <TeamKaartSpelerRij
-                      key={sp.id}
-                      spelerInTeam={sp}
-                      teamId={team.id}
-                      isDetail={isDetail}
-                    />
-                  ))}
-                </div>
-                <div
-                  onDragOver={(e) => handleDragOver(e, "M")}
-                  onDragLeave={() => setDropOverGeslacht(null)}
-                  onDrop={(e) => handleDrop(e, "M")}
-                  style={{
-                    flex: 1,
-                    display: "flex",
-                    flexDirection: "column",
-                    minHeight: 0,
-                    overflow: "hidden",
-                    background: dropOverGeslacht === "M" ? "rgba(96,165,250,.07)" : "transparent",
-                    transition: "background 120ms ease",
-                  }}
-                >
+                  {/* Team1 dames */}
                   <div
+                    onDragOver={(e) => handleDragOver(e, "V")}
+                    onDragLeave={() => setDropOverGeslacht(null)}
+                    onDrop={(e) => handleDrop(e, "V")}
                     style={{
-                      fontSize: 9,
-                      fontWeight: 700,
-                      textTransform: "uppercase",
-                      letterSpacing: ".5px",
-                      color: "var(--text-3)",
-                      padding: "2px 6px 0",
                       display: "flex",
-                      alignItems: "center",
-                      gap: 4,
-                      flexShrink: 0,
+                      flexDirection: "column",
+                      background: dropOverGeslacht === "V" ? "rgba(236,72,153,.07)" : "transparent",
+                      transition: "background 120ms ease",
                     }}
                   >
-                    <svg width="8" height="8" viewBox="0 0 8 8">
-                      <circle cx="4" cy="4" r="4" fill="var(--blue)" />
-                    </svg>
-                    Heren
+                    <div
+                      style={{
+                        fontSize: 8,
+                        fontWeight: 600,
+                        color: "var(--accent)",
+                        padding: "1px 6px",
+                        opacity: 0.7,
+                        flexShrink: 0,
+                      }}
+                    >
+                      {team.naam}
+                    </div>
+                    {team.dames.map((sp) => (
+                      <TeamKaartSpelerRij
+                        key={sp.id}
+                        spelerInTeam={sp}
+                        teamId={team.id}
+                        isDetail={isDetail}
+                      />
+                    ))}
                   </div>
-                  {team.heren.map((sp) => (
-                    <TeamKaartSpelerRij
-                      key={sp.id}
-                      spelerInTeam={sp}
-                      teamId={team.id}
-                      isDetail={isDetail}
-                    />
-                  ))}
+                  {/* Scheidingslijn */}
+                  <div style={{ height: 1, background: "var(--border-0)", flexShrink: 0 }} />
+                  {/* Partner dames */}
+                  <div
+                    onDragOver={(e) => handleDragOverPartner(e, "V")}
+                    onDragLeave={() => setDropOverGeslachtPartner(null)}
+                    onDrop={(e) => handleDropPartner(e, "V")}
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      background:
+                        dropOverGeslachtPartner === "V" ? "rgba(236,72,153,.07)" : "transparent",
+                      transition: "background 120ms ease",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontSize: 8,
+                        fontWeight: 600,
+                        color: "var(--accent)",
+                        padding: "1px 6px",
+                        opacity: 0.7,
+                        flexShrink: 0,
+                      }}
+                    >
+                      {partnerTeam!.naam}
+                    </div>
+                    {partnerTeam!.dames.map((sp) => (
+                      <TeamKaartSpelerRij
+                        key={sp.id}
+                        spelerInTeam={sp}
+                        teamId={partnerTeam!.id}
+                        isDetail={isDetail}
+                      />
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </div>
 
-            {/* Partner panel */}
-            <div
-              style={{
-                flex: 1,
-                display: "flex",
-                flexDirection: "column",
-                minHeight: 0,
-                overflow: "hidden",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: 9,
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  letterSpacing: ".4px",
-                  color: "var(--accent)",
-                  padding: "3px 6px",
-                  flexShrink: 0,
-                  background: "var(--accent-dim)",
-                }}
-              >
-                {partnerTeam!.naam}
-              </div>
-              <div style={{ flex: 1, display: "flex", minHeight: 0, overflow: "hidden" }}>
+                {/* Heren kolom (team1 + partner) */}
                 <div
-                  onDragOver={(e) => handleDragOverPartner(e, "V")}
-                  onDragLeave={() => setDropOverGeslachtPartner(null)}
-                  onDrop={(e) => handleDropPartner(e, "V")}
                   style={{
                     flex: 1,
                     display: "flex",
                     flexDirection: "column",
                     minHeight: 0,
                     overflow: "hidden",
-                    borderRight: "1px solid var(--border-0)",
-                    background:
-                      dropOverGeslachtPartner === "V" ? "rgba(236,72,153,.07)" : "transparent",
-                    transition: "background 120ms ease",
                   }}
                 >
                   <div
                     style={{
-                      fontSize: 9,
+                      fontSize: 8,
                       fontWeight: 700,
                       textTransform: "uppercase",
-                      letterSpacing: ".5px",
-                      color: "var(--text-3)",
-                      padding: "2px 6px 0",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 4,
+                      letterSpacing: ".6px",
+                      color: "rgba(96,165,250,.7)",
+                      padding: "2px 6px",
+                      borderBottom: "1px solid rgba(255,255,255,.04)",
                       flexShrink: 0,
                     }}
                   >
-                    <svg width="8" height="8" viewBox="0 0 8 8">
-                      <circle cx="4" cy="4" r="4" fill="var(--pink)" />
-                    </svg>
-                    Dames
-                  </div>
-                  {partnerTeam!.dames.map((sp) => (
-                    <TeamKaartSpelerRij
-                      key={sp.id}
-                      spelerInTeam={sp}
-                      teamId={partnerTeam!.id}
-                      isDetail={isDetail}
-                    />
-                  ))}
-                </div>
-                <div
-                  onDragOver={(e) => handleDragOverPartner(e, "M")}
-                  onDragLeave={() => setDropOverGeslachtPartner(null)}
-                  onDrop={(e) => handleDropPartner(e, "M")}
-                  style={{
-                    flex: 1,
-                    display: "flex",
-                    flexDirection: "column",
-                    minHeight: 0,
-                    overflow: "hidden",
-                    background:
-                      dropOverGeslachtPartner === "M" ? "rgba(96,165,250,.07)" : "transparent",
-                    transition: "background 120ms ease",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: 9,
-                      fontWeight: 700,
-                      textTransform: "uppercase",
-                      letterSpacing: ".5px",
-                      color: "var(--text-3)",
-                      padding: "2px 6px 0",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 4,
-                      flexShrink: 0,
-                    }}
-                  >
-                    <svg width="8" height="8" viewBox="0 0 8 8">
-                      <circle cx="4" cy="4" r="4" fill="var(--blue)" />
-                    </svg>
                     Heren
                   </div>
-                  {partnerTeam!.heren.map((sp) => (
-                    <TeamKaartSpelerRij
-                      key={sp.id}
-                      spelerInTeam={sp}
-                      teamId={partnerTeam!.id}
-                      isDetail={isDetail}
-                    />
-                  ))}
+                  {/* Team1 heren */}
+                  <div
+                    onDragOver={(e) => handleDragOver(e, "M")}
+                    onDragLeave={() => setDropOverGeslacht(null)}
+                    onDrop={(e) => handleDrop(e, "M")}
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      background: dropOverGeslacht === "M" ? "rgba(96,165,250,.07)" : "transparent",
+                      transition: "background 120ms ease",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontSize: 8,
+                        fontWeight: 600,
+                        color: "var(--accent)",
+                        padding: "1px 6px",
+                        opacity: 0.7,
+                        flexShrink: 0,
+                      }}
+                    >
+                      {team.naam}
+                    </div>
+                    {team.heren.map((sp) => (
+                      <TeamKaartSpelerRij
+                        key={sp.id}
+                        spelerInTeam={sp}
+                        teamId={team.id}
+                        isDetail={isDetail}
+                      />
+                    ))}
+                  </div>
+                  {/* Scheidingslijn */}
+                  <div style={{ height: 1, background: "var(--border-0)", flexShrink: 0 }} />
+                  {/* Partner heren */}
+                  <div
+                    onDragOver={(e) => handleDragOverPartner(e, "M")}
+                    onDragLeave={() => setDropOverGeslachtPartner(null)}
+                    onDrop={(e) => handleDropPartner(e, "M")}
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      background:
+                        dropOverGeslachtPartner === "M" ? "rgba(96,165,250,.07)" : "transparent",
+                      transition: "background 120ms ease",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontSize: 8,
+                        fontWeight: 600,
+                        color: "var(--accent)",
+                        padding: "1px 6px",
+                        opacity: 0.7,
+                        flexShrink: 0,
+                      }}
+                    >
+                      {partnerTeam!.naam}
+                    </div>
+                    {partnerTeam!.heren.map((sp) => (
+                      <TeamKaartSpelerRij
+                        key={sp.id}
+                        spelerInTeam={sp}
+                        teamId={partnerTeam!.id}
+                        isDetail={isDetail}
+                      />
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </div>
+              </>
+            ) : (
+              /* ── PER TEAM: team1 panel | partner panel ── */
+              <>
+                {/* Team1 panel */}
+                <div
+                  style={{
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    borderRight: "2px solid var(--accent-dim)",
+                    minHeight: 0,
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: 9,
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                      letterSpacing: ".4px",
+                      color: "var(--accent)",
+                      padding: "3px 6px",
+                      flexShrink: 0,
+                      background: "var(--accent-dim)",
+                    }}
+                  >
+                    {team.naam}
+                  </div>
+                  <div style={{ flex: 1, display: "flex", minHeight: 0, overflow: "hidden" }}>
+                    <div
+                      onDragOver={(e) => handleDragOver(e, "V")}
+                      onDragLeave={() => setDropOverGeslacht(null)}
+                      onDrop={(e) => handleDrop(e, "V")}
+                      style={{
+                        flex: 1,
+                        display: "flex",
+                        flexDirection: "column",
+                        minHeight: 0,
+                        overflow: "hidden",
+                        borderRight: "1px solid var(--border-0)",
+                        background:
+                          dropOverGeslacht === "V" ? "rgba(236,72,153,.07)" : "transparent",
+                        transition: "background 120ms ease",
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontSize: 9,
+                          fontWeight: 700,
+                          textTransform: "uppercase",
+                          letterSpacing: ".5px",
+                          color: "var(--text-3)",
+                          padding: "2px 6px 0",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 4,
+                          flexShrink: 0,
+                        }}
+                      >
+                        <svg width="8" height="8" viewBox="0 0 8 8">
+                          <circle cx="4" cy="4" r="4" fill="var(--pink)" />
+                        </svg>
+                        Dames
+                      </div>
+                      {team.dames.map((sp) => (
+                        <TeamKaartSpelerRij
+                          key={sp.id}
+                          spelerInTeam={sp}
+                          teamId={team.id}
+                          isDetail={isDetail}
+                        />
+                      ))}
+                    </div>
+                    <div
+                      onDragOver={(e) => handleDragOver(e, "M")}
+                      onDragLeave={() => setDropOverGeslacht(null)}
+                      onDrop={(e) => handleDrop(e, "M")}
+                      style={{
+                        flex: 1,
+                        display: "flex",
+                        flexDirection: "column",
+                        minHeight: 0,
+                        overflow: "hidden",
+                        background:
+                          dropOverGeslacht === "M" ? "rgba(96,165,250,.07)" : "transparent",
+                        transition: "background 120ms ease",
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontSize: 9,
+                          fontWeight: 700,
+                          textTransform: "uppercase",
+                          letterSpacing: ".5px",
+                          color: "var(--text-3)",
+                          padding: "2px 6px 0",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 4,
+                          flexShrink: 0,
+                        }}
+                      >
+                        <svg width="8" height="8" viewBox="0 0 8 8">
+                          <circle cx="4" cy="4" r="4" fill="var(--blue)" />
+                        </svg>
+                        Heren
+                      </div>
+                      {team.heren.map((sp) => (
+                        <TeamKaartSpelerRij
+                          key={sp.id}
+                          spelerInTeam={sp}
+                          teamId={team.id}
+                          isDetail={isDetail}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Partner panel */}
+                <div
+                  style={{
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    minHeight: 0,
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: 9,
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                      letterSpacing: ".4px",
+                      color: "var(--accent)",
+                      padding: "3px 6px",
+                      flexShrink: 0,
+                      background: "var(--accent-dim)",
+                    }}
+                  >
+                    {partnerTeam!.naam}
+                  </div>
+                  <div style={{ flex: 1, display: "flex", minHeight: 0, overflow: "hidden" }}>
+                    <div
+                      onDragOver={(e) => handleDragOverPartner(e, "V")}
+                      onDragLeave={() => setDropOverGeslachtPartner(null)}
+                      onDrop={(e) => handleDropPartner(e, "V")}
+                      style={{
+                        flex: 1,
+                        display: "flex",
+                        flexDirection: "column",
+                        minHeight: 0,
+                        overflow: "hidden",
+                        borderRight: "1px solid var(--border-0)",
+                        background:
+                          dropOverGeslachtPartner === "V" ? "rgba(236,72,153,.07)" : "transparent",
+                        transition: "background 120ms ease",
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontSize: 9,
+                          fontWeight: 700,
+                          textTransform: "uppercase",
+                          letterSpacing: ".5px",
+                          color: "var(--text-3)",
+                          padding: "2px 6px 0",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 4,
+                          flexShrink: 0,
+                        }}
+                      >
+                        <svg width="8" height="8" viewBox="0 0 8 8">
+                          <circle cx="4" cy="4" r="4" fill="var(--pink)" />
+                        </svg>
+                        Dames
+                      </div>
+                      {partnerTeam!.dames.map((sp) => (
+                        <TeamKaartSpelerRij
+                          key={sp.id}
+                          spelerInTeam={sp}
+                          teamId={partnerTeam!.id}
+                          isDetail={isDetail}
+                        />
+                      ))}
+                    </div>
+                    <div
+                      onDragOver={(e) => handleDragOverPartner(e, "M")}
+                      onDragLeave={() => setDropOverGeslachtPartner(null)}
+                      onDrop={(e) => handleDropPartner(e, "M")}
+                      style={{
+                        flex: 1,
+                        display: "flex",
+                        flexDirection: "column",
+                        minHeight: 0,
+                        overflow: "hidden",
+                        background:
+                          dropOverGeslachtPartner === "M" ? "rgba(96,165,250,.07)" : "transparent",
+                        transition: "background 120ms ease",
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontSize: 9,
+                          fontWeight: 700,
+                          textTransform: "uppercase",
+                          letterSpacing: ".5px",
+                          color: "var(--text-3)",
+                          padding: "2px 6px 0",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 4,
+                          flexShrink: 0,
+                        }}
+                      >
+                        <svg width="8" height="8" viewBox="0 0 8 8">
+                          <circle cx="4" cy="4" r="4" fill="var(--blue)" />
+                        </svg>
+                        Heren
+                      </div>
+                      {partnerTeam!.heren.map((sp) => (
+                        <TeamKaartSpelerRij
+                          key={sp.id}
+                          spelerInTeam={sp}
+                          teamId={partnerTeam!.id}
+                          isDetail={isDetail}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
 
           {/* Footer */}
