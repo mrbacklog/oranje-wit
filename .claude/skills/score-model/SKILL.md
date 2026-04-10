@@ -7,6 +7,8 @@ allowed-tools: Read, Write, Glob, Bash
 
 # Skill: Score-Model (USS)
 
+> **Laden:** Gebruik `rules/score-model-compact.md` voor overzichten en USS-vergelijkingen. Laad `rules/score-model.md` alleen voor kalibratie, TypeScript-implementaties of gedetailleerde voorbeeldberekeningen.
+
 ## Doel
 
 Beheer en toepassing van de Geunificeerde Score Schaal (USS) — het wiskundige model dat de brug vormt tussen KNKV teamratings, scouting spelersscores en coach-evaluaties.
