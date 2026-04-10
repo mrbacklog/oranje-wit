@@ -3,11 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import {
   getSpelerProfiel,
-  updateSpelerNotitie,
+  updateSpelerMemo,
   updateSpelerStatus,
 } from "@/app/(teamindeling-studio)/ti-studio/indeling/werkindeling-actions";
 import { logger } from "@oranje-wit/types";
 import type { EvaluatieScore, TeamGemiddelde } from "@oranje-wit/types";
+import type { MemoData } from "@/components/ti-studio/werkbord/types";
+import { MemoPanel } from "@/components/ti-studio/MemoPanel";
 
 // ──────────────────────────────────────────────────────────
 // Types
@@ -571,7 +573,11 @@ export default function SpelerProfielDialog({
   const [openGroepen, setOpenGroepen] = useState<Set<string>>(new Set());
 
   // Memo
-  const [notitie, setNotitie] = useState("");
+  const [memoData, setMemoData] = useState<MemoData>({
+    tekst: "",
+    memoStatus: "gesloten",
+    besluit: null,
+  });
   const [opslaanBezig, setOpslaanBezig] = useState(false);
 
   const statusMenuRef = useRef<HTMLDivElement>(null);
@@ -590,7 +596,11 @@ export default function SpelerProfielDialog({
       .then((data) => {
         setProfiel(data);
         setHuidigStatus((data?.status as StatusKey) ?? "BESCHIKBAAR");
-        setNotitie(data?.notitie ?? "");
+        setMemoData({
+          tekst: data?.notitie ?? "",
+          memoStatus: (data?.memoStatus as MemoData["memoStatus"]) ?? "gesloten",
+          besluit: (data as { besluit?: string | null })?.besluit ?? null,
+        });
       })
       .catch((err: unknown) => {
         logger.error("SpelerProfielDialog: fout bij ophalen profiel", err);
@@ -667,13 +677,18 @@ export default function SpelerProfielDialog({
     }
   }
 
-  async function slaNotitieOp() {
+  async function slaMemoOp(data: MemoData) {
     if (!spelerId) return;
     setOpslaanBezig(true);
     try {
-      await updateSpelerNotitie(spelerId, notitie);
+      const result = await updateSpelerMemo(spelerId, data);
+      if (result.ok) {
+        setMemoData(data);
+      } else {
+        logger.warn("SpelerProfielDialog: memo opslaan mislukt", result.error);
+      }
     } catch (err) {
-      logger.error("SpelerProfielDialog: fout bij opslaan notitie", err);
+      logger.error("SpelerProfielDialog: fout bij opslaan memo", err);
     } finally {
       setOpslaanBezig(false);
     }
@@ -1197,25 +1212,8 @@ export default function SpelerProfielDialog({
                     }}
                   />
                 )}
-                {tab === "memo" && notitie && (
-                  <span
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      minWidth: 17,
-                      height: 17,
-                      borderRadius: 9,
-                      fontSize: 10,
-                      fontWeight: 700,
-                      background: T.accentDim,
-                      color: T.accent,
-                      border: `1px solid ${T.accentBorder}`,
-                      padding: "0 4px",
-                    }}
-                  >
-                    1
-                  </span>
+                {tab === "memo" && memoData.memoStatus === "open" && (
+                  <span style={{ fontSize: 8, color: T.accent }}>▲</span>
                 )}
               </button>
             );
@@ -1433,65 +1431,7 @@ export default function SpelerProfielDialog({
 
           {/* ── Tab: Memo ── */}
           {activeTab === "memo" && (
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              <div
-                style={{
-                  fontSize: 10,
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.8px",
-                  color: T.text3,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                }}
-              >
-                Notitie
-                <span style={{ flex: 1, height: 1, background: T.border0 }} />
-              </div>
-
-              <textarea
-                value={notitie}
-                onChange={(e) => setNotitie(e.target.value)}
-                placeholder="Voeg een notitie toe over deze speler..."
-                rows={5}
-                style={{
-                  width: "100%",
-                  background: T.bg2,
-                  border: `1px dashed ${T.border1}`,
-                  borderRadius: 9,
-                  padding: "10px 12px",
-                  color: T.text1,
-                  fontSize: 12,
-                  fontFamily: "Inter, system-ui, sans-serif",
-                  lineHeight: 1.55,
-                  resize: "none",
-                  outline: "none",
-                  boxSizing: "border-box",
-                }}
-              />
-
-              <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                <button
-                  onClick={slaNotitieOp}
-                  disabled={opslaanBezig}
-                  style={{
-                    background: T.accent,
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: 7,
-                    padding: "7px 16px",
-                    fontSize: 12,
-                    fontWeight: 600,
-                    cursor: opslaanBezig ? "not-allowed" : "pointer",
-                    opacity: opslaanBezig ? 0.7 : 1,
-                    fontFamily: "Inter, system-ui, sans-serif",
-                  }}
-                >
-                  {opslaanBezig ? "Opslaan..." : "Opslaan"}
-                </button>
-              </div>
-            </div>
+            <MemoPanel memo={memoData} onSave={slaMemoOp} opslaanBezig={opslaanBezig} />
           )}
         </div>
       </div>

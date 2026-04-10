@@ -169,6 +169,8 @@ export async function getSpelerProfiel(spelerId: string) {
       rating: true,
       lidSinds: true,
       notitie: true,
+      memoStatus: true,
+      besluit: true,
       seizoenenActief: true,
     },
   });
