@@ -43,7 +43,10 @@ export async function updateTeamConfig(
     return { ok: true, data: undefined };
   } catch (error) {
     logger.warn(`Fout bij team config update voor ${teamId}:`, error);
-    return { ok: false, error: error instanceof Error ? error.message : String(error) };
+    return {
+      ok: false,
+      error: error instanceof Error ? error.message : String(error),
+    };
   }
 }
 
@@ -64,7 +67,10 @@ export async function koppelSelectie(
     return { ok: true, data: { groepId: groep.id } };
   } catch (error) {
     logger.warn(`Fout bij selectie koppeling:`, error);
-    return { ok: false, error: error instanceof Error ? error.message : String(error) };
+    return {
+      ok: false,
+      error: error instanceof Error ? error.message : String(error),
+    };
   }
 }
 
@@ -76,6 +82,9 @@ export async function ontkoppelSelectie(groepId: string): Promise<ActionResult<v
     return { ok: true, data: undefined };
   } catch (error) {
     logger.warn(`Fout bij selectie ontkoppeling voor ${groepId}:`, error);
-    return { ok: false, error: error instanceof Error ? error.message : String(error) };
+    return {
+      ok: false,
+      error: error instanceof Error ? error.message : String(error),
+    };
   }
 }
