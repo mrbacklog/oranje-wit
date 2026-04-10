@@ -10,6 +10,7 @@ import type {
   TeamLeeftijdsCat,
   TeamSeniorenCategorie,
   KnkvCategorie,
+  ValidatieUpdate,
 } from "./types";
 import {
   updateTeamConfig,
@@ -29,6 +30,7 @@ interface TeamDrawerProps {
   onTeamSelect: (teamId: string | null) => void;
   onNieuwTeam: () => void;
   onConfigUpdated: (teamId: string, update: Partial<WerkbordTeam>) => void;
+  onValidatieUpdated: (update: ValidatieUpdate) => void;
   onTeamVerwijderd: (teamId: string) => void;
   onSelectieGekoppeld: (teamId: string, selectieGroepId: string) => void;
   onSelectieOntkoppeld: (selectieGroepId: string) => void;
@@ -180,9 +182,11 @@ function PlatteTeamKaart({
 function ConfiguratieForm({
   team,
   onConfigUpdated,
+  onValidatieUpdated,
 }: {
   team: WerkbordTeam;
   onConfigUpdated: (teamId: string, update: Partial<WerkbordTeam>) => void;
+  onValidatieUpdated: (update: ValidatieUpdate) => void;
 }) {
   const [isPending, startTransition] = useTransition();
   const [config, setConfig] = useState<TeamConfigUpdate>({
@@ -212,6 +216,9 @@ function ConfiguratieForm({
           formaat: nieuwFormaat,
           kleur: nieuw.kleur ?? team.kleur,
         });
+        if (result.data.validatieUpdate) {
+          onValidatieUpdated(result.data.validatieUpdate);
+        }
       }
     });
   }
@@ -672,6 +679,7 @@ function TeamDetailPanel({
   versieId,
   onTerug,
   onConfigUpdated,
+  onValidatieUpdated,
   onTeamVerwijderd,
   onSelectieGekoppeld,
   onSelectieOntkoppeld,
@@ -683,6 +691,7 @@ function TeamDetailPanel({
   versieId: string;
   onTerug: () => void;
   onConfigUpdated: (teamId: string, update: Partial<WerkbordTeam>) => void;
+  onValidatieUpdated: (update: ValidatieUpdate) => void;
   onTeamVerwijderd: (teamId: string) => void;
   onSelectieGekoppeld: (teamId: string, selectieGroepId: string) => void;
   onSelectieOntkoppeld: (selectieGroepId: string) => void;
@@ -749,7 +758,11 @@ function TeamDetailPanel({
           {team.naam}
         </span>
       </div>
-      <ConfiguratieForm team={team} onConfigUpdated={onConfigUpdated} />
+      <ConfiguratieForm
+        team={team}
+        onConfigUpdated={onConfigUpdated}
+        onValidatieUpdated={onValidatieUpdated}
+      />
       <ValidatieLijst items={teamValidatie} />
       <SelectieKoppeling
         team={team}
@@ -860,6 +873,7 @@ export function TeamDrawer({
   onTeamSelect,
   onNieuwTeam: _onNieuwTeam,
   onConfigUpdated,
+  onValidatieUpdated,
   onTeamVerwijderd,
   onSelectieGekoppeld,
   onSelectieOntkoppeld,
@@ -894,6 +908,7 @@ export function TeamDrawer({
           versieId={versieId}
           onTerug={() => onTeamSelect(null)}
           onConfigUpdated={onConfigUpdated}
+          onValidatieUpdated={onValidatieUpdated}
           onTeamVerwijderd={onTeamVerwijderd}
           onSelectieGekoppeld={onSelectieGekoppeld}
           onSelectieOntkoppeld={onSelectieOntkoppeld}

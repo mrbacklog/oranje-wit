@@ -149,6 +149,7 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
           onTeamSelect={setGeselecteerdTeamId}
           onNieuwTeam={() => {}}
           onConfigUpdated={updateTeamLokaal}
+          onValidatieUpdated={(update) => updateValidatieLokaal([update])}
           onTeamVerwijderd={verwijderTeamLokaal}
           onSelectieGekoppeld={koppelSelectieLokaal}
           onSelectieOntkoppeld={ontkoppelSelectieLokaal}
