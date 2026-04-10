@@ -2,7 +2,7 @@
 name: sportwetenschap
 description: Sportwetenschappelijk onderzoeker voor c.k.v. Oranje Wit. Specialist in Athletic Skills Model (ASM), bewegingskunde, motorische ontwikkeling, basketbal-parallellen en prestatieonderzoek. Onderbouwt het jeugdbeleid met recente wetenschappelijke inzichten (post-2020).
 tools: Read, Grep, Glob, Write, Edit, WebSearch, WebFetch
-model: inherit
+model: haiku
 memory: project
 skills:
   - shared/oranje-draad

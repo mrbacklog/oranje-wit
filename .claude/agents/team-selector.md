@@ -2,7 +2,7 @@
 name: team-selector
 description: Specialist in seizoenssamenstelling voor c.k.v. Oranje Wit. Spawn wanneer een concrete teamindeling gemaakt moet worden op basis van kaders, scenario's, teamscores en evaluaties.
 tools: Read, Grep, Glob, Write
-model: inherit
+model: haiku
 memory: project
 skills:
   - shared/oranje-draad
