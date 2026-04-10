@@ -299,7 +299,7 @@ export function TeamKaart({
               padding: "0 4px",
             }}
           >
-            {team.ussScore !== null && (
+            {showScores && team.ussScore !== null && (
               <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
                 <span
                   style={{
@@ -517,7 +517,7 @@ export function TeamKaart({
                   showRating={isDetail}
                   showLeeftijd={isDetail}
                   showIcons={isDetail}
-                  showScore={showScores && isDetail}
+                  showScore={showScores}
                   huidigeJaar={huidigeJaar}
                 />
               ))}
@@ -565,7 +565,7 @@ export function TeamKaart({
                   showRating={isDetail}
                   showLeeftijd={isDetail}
                   showIcons={isDetail}
-                  showScore={showScores && isDetail}
+                  showScore={showScores}
                   huidigeJaar={huidigeJaar}
                 />
               ))}
@@ -609,7 +609,7 @@ export function TeamKaart({
               </div>
             )}
             <div style={{ flex: 1 }} />
-            {team.ussScore && (
+            {showScores && team.ussScore && (
               <div style={{ fontSize: 10, color: "var(--text-3)" }}>
                 USS{" "}
                 <span style={{ color: "var(--text-2)", fontWeight: 600 }}>
