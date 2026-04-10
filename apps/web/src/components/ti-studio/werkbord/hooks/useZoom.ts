@@ -9,7 +9,7 @@ const DEFAULT_ZOOM = 0.75;
 
 function toZoomLevel(zoom: number): ZoomLevel {
   if (zoom < 0.8) return "compact";
-  if (zoom < 1.0) return "normaal";
+  if (zoom < 1.2) return "normaal";
   return "detail";
 }
 
