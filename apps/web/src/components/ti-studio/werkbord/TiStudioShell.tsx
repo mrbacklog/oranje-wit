@@ -25,11 +25,13 @@ import {
   toggleSelectieBundeling,
 } from "@/app/(teamindeling-studio)/ti-studio/indeling/werkindeling-actions";
 
-type ActivePanel = "pool" | "teams" | "werkbord" | "versies" | "kader" | null;
+type PanelLinks = "pool" | null;
+type PanelRechts = "teams" | "versies" | null;
 
 export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellProps) {
   const router = useRouter();
-  const [activePanel, setActivePanel] = useState<ActivePanel>("teams");
+  const [panelLinks, setPanelLinks] = useState<PanelLinks>(null);
+  const [panelRechts, setPanelRechts] = useState<PanelRechts>("teams");
   const [geselecteerdTeamId, setGeselecteerdTeamId] = useState<string | null>(null);
   const [showScores, setShowScores] = useState(true);
   const [drawerData, setDrawerData] = useState<DrawerData | null>(null);
@@ -65,23 +67,27 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
     .slice(0, 2);
 
   useEffect(() => {
-    if (activePanel !== "versies") return;
+    if (panelRechts !== "versies") return;
     getVersiesVoorDrawer(initieleState.werkindelingId)
       .then(setDrawerData)
       .catch(() => {});
-  }, [activePanel, initieleState.werkindelingId]);
+  }, [panelRechts, initieleState.werkindelingId]);
 
-  const togglePanel = useCallback((panel: "pool" | "teams" | "werkbord" | "versies" | "kader") => {
-    setActivePanel((prev) => (prev === panel ? null : panel));
+  const togglePanelLinks = useCallback((panel: PanelLinks) => {
+    setPanelLinks((prev) => (prev === panel ? null : panel));
+  }, []);
+
+  const togglePanelRechts = useCallback((panel: Exclude<PanelRechts, null>) => {
+    setPanelRechts((prev) => (prev === panel ? null : panel));
     if (panel !== "teams") setGeselecteerdTeamId(null);
   }, []);
 
   const openTeamDrawer = useCallback((teamId: string) => {
-    setActivePanel("teams");
+    setPanelRechts("teams");
     setGeselecteerdTeamId(teamId);
   }, []);
 
-  const hasErrors = initieleState.validatie.some((v) => v.type === "err");
+  const _hasErrors = initieleState.validatie.some((v) => v.type === "err"); // eslint-disable-line @typescript-eslint/no-unused-vars
 
   // ─── Lokale state-mutaties ─────────────────────────────────────────────────
 
@@ -449,9 +455,9 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
       }}
     >
       <Ribbon
-        activePanel={activePanel}
-        onTogglePanel={togglePanel}
         gebruikerInitialen={gebruikerInitialen}
+        onNaarKader={() => router.push("/ti-studio/kader")}
+        onNaarSpelers={() => router.push("/teamindeling/personen/spelers")}
       />
       <Toolbar
         naam={initieleState.naam}
@@ -460,6 +466,10 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
         status={initieleState.status}
         totalSpelers={initieleState.totalSpelers}
         ingeplandSpelers={ingeplandSpelers}
+        panelLinks={panelLinks}
+        panelRechts={panelRechts}
+        onTogglePanelLinks={togglePanelLinks}
+        onTogglePanelRechts={togglePanelRechts}
         onNieuwTeam={() => {}}
         onTerug={() => router.push("/ti-studio")}
       />
@@ -472,9 +482,9 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
         }}
       >
         <SpelersPoolDrawer
-          open={activePanel === "pool"}
+          open={panelLinks === "pool"}
           spelers={alleSpelers}
-          onClose={() => setActivePanel(null)}
+          onClose={() => setPanelLinks(null)}
         />
         <WerkbordCanvas
           teams={teams}
@@ -496,12 +506,12 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
           onToggleBundeling={toggleBundeling}
         />
         <TeamDrawer
-          open={activePanel === "teams"}
+          open={panelRechts === "teams"}
           geselecteerdTeamId={geselecteerdTeamId}
           teams={teams}
           validatie={initieleState.validatie}
           versieId={versieId}
-          onClose={() => setActivePanel(null)}
+          onClose={() => setPanelRechts(null)}
           onTeamSelect={setGeselecteerdTeamId}
           onNieuwTeam={() => {}}
           onConfigUpdated={updateTeamLokaal}
@@ -510,11 +520,11 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
           onSelectieNaamUpdated={updateSelectieNaamLokaal}
         />
         <VersiesDrawer
-          open={activePanel === "versies"}
+          open={panelRechts === "versies"}
           data={drawerData}
           werkindelingId={initieleState.werkindelingId}
           gebruikerEmail={gebruikerEmail}
-          onClose={() => setActivePanel(null)}
+          onClose={() => setPanelRechts(null)}
         />
       </div>
       <SpelerProfielDialog

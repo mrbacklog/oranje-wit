@@ -9,6 +9,7 @@ interface SpelerKaartProps {
   vanTeamId: string | null; // null = komt uit pool
   seizoenEindjaar: number; // bijv. 2026
   asGhost?: boolean; // true = niet-draggable, gebruikt als drag-image bron
+  onClick?: () => void;
 }
 
 function berekenKorfbalLeeftijd(
@@ -32,6 +33,7 @@ export function SpelerKaart({
   vanTeamId,
   seizoenEindjaar,
   asGhost = false,
+  onClick,
 }: SpelerKaartProps) {
   const kaartRef = useRef<HTMLDivElement>(null);
   const [isHeld, setIsHeld] = useState(false);
@@ -99,6 +101,7 @@ export function SpelerKaart({
               setIsHeld(false);
             }
       }
+      onClick={asGhost ? undefined : onClick}
       style={{
         display: "flex",
         flexDirection: "column",

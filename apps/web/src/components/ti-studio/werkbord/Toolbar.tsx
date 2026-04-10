@@ -9,6 +9,10 @@ interface ToolbarProps {
   status: "concept" | "definitief";
   totalSpelers: number;
   ingeplandSpelers: number;
+  panelLinks: "pool" | null;
+  panelRechts: "teams" | "versies" | null;
+  onTogglePanelLinks: (panel: "pool") => void;
+  onTogglePanelRechts: (panel: "teams" | "versies") => void;
   onNieuwTeam: () => void;
   onTerug: () => void;
 }
@@ -20,6 +24,10 @@ export function Toolbar({
   status,
   totalSpelers,
   ingeplandSpelers,
+  panelLinks,
+  panelRechts,
+  onTogglePanelLinks,
+  onTogglePanelRechts,
   onNieuwTeam,
   onTerug,
 }: ToolbarProps) {
@@ -205,6 +213,68 @@ export function Toolbar({
         ⭐ v{versieNummer} — werkversie
       </span>
 
+      {/* Panel-triggers */}
+      <div style={{ display: "flex", alignItems: "center", gap: 3 }}>
+        <PanelBtn
+          tip="Spelerspool"
+          active={panelLinks === "pool"}
+          onClick={() => onTogglePanelLinks("pool")}
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+          >
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+        </PanelBtn>
+        <PanelBtn
+          tip="Teams"
+          active={panelRechts === "teams"}
+          onClick={() => onTogglePanelRechts("teams")}
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+          >
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+        </PanelBtn>
+        <PanelBtn
+          tip="Versies & What-If"
+          active={panelRechts === "versies"}
+          onClick={() => onTogglePanelRechts("versies")}
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+          >
+            <line x1="6" y1="3" x2="6" y2="15" />
+            <circle cx="18" cy="6" r="3" />
+            <circle cx="6" cy="18" r="3" />
+            <path d="M18 9a9 9 0 0 1-9 9" />
+          </svg>
+        </PanelBtn>
+      </div>
+
       {/* Nieuw team */}
       <TbBtn onClick={onNieuwTeam} variant="sec">
         <svg
@@ -267,6 +337,41 @@ function TbBtn({
         fontFamily: "inherit",
         whiteSpace: "nowrap",
         ...styles[variant],
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
+function PanelBtn({
+  tip,
+  active,
+  onClick,
+  children,
+}: {
+  tip: string;
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      title={tip}
+      style={{
+        width: 26,
+        height: 26,
+        borderRadius: 6,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        cursor: "pointer",
+        background: active ? "var(--accent-dim)" : "var(--bg-2)",
+        border: active ? "1px solid rgba(255,107,0,.3)" : "1px solid var(--border-1)",
+        color: active ? "var(--accent)" : "var(--text-3)",
+        transition: "background 120ms, color 120ms, border-color 120ms",
+        flexShrink: 0,
       }}
     >
       {children}

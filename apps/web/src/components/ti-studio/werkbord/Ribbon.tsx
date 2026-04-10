@@ -2,15 +2,13 @@
 "use client";
 import "./tokens.css";
 
-type ActivePanel = "pool" | "teams" | "werkbord" | "versies" | "kader" | null;
-
 interface RibbonProps {
-  activePanel: ActivePanel;
-  onTogglePanel: (panel: "pool" | "teams" | "werkbord" | "versies" | "kader") => void;
   gebruikerInitialen: string;
+  onNaarKader: () => void;
+  onNaarSpelers: () => void;
 }
 
-export function Ribbon({ activePanel, onTogglePanel, gebruikerInitialen }: RibbonProps) {
+export function Ribbon({ gebruikerInitialen, onNaarKader, onNaarSpelers }: RibbonProps) {
   return (
     <nav
       style={{
@@ -52,30 +50,62 @@ export function Ribbon({ activePanel, onTogglePanel, gebruikerInitialen }: Ribbo
 
       {/* Hoofd-groep */}
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
-        <RibbonBtn
-          icon="pool"
-          tip="Spelerspool"
-          active={activePanel === "pool"}
-          onClick={() => onTogglePanel("pool")}
-        />
-        <RibbonBtn
-          icon="werkbord"
-          tip="Werkbord"
-          active={activePanel === "werkbord"}
-          onClick={() => onTogglePanel("werkbord")}
-        />
-        <RibbonBtn
-          icon="teams"
-          tip="Teams"
-          active={activePanel === "teams"}
-          onClick={() => onTogglePanel("teams")}
-        />
-        <RibbonBtn
-          icon="kader"
-          tip="Kader"
-          active={activePanel === "kader"}
-          onClick={() => onTogglePanel("kader")}
-        />
+        {/* Werkbord — altijd actief (we zijn op de indeling-pagina) */}
+        <RibbonBtn tip="Werkbord" active={true} onClick={() => {}}>
+          <svg
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <rect x="3" y="3" width="7" height="7" />
+            <rect x="14" y="3" width="7" height="7" />
+            <rect x="14" y="14" width="7" height="7" />
+            <rect x="3" y="14" width="7" height="7" />
+          </svg>
+        </RibbonBtn>
+
+        {/* Kader */}
+        <RibbonBtn tip="Kader" active={false} onClick={onNaarKader}>
+          <svg
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            <polyline points="9 12 11 14 15 10" />
+          </svg>
+        </RibbonBtn>
+
+        {/* Spelerslijst */}
+        <RibbonBtn tip="Spelerslijst" active={false} onClick={onNaarSpelers}>
+          <svg
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <line x1="10" y1="6" x2="21" y2="6" />
+            <line x1="10" y1="12" x2="21" y2="12" />
+            <line x1="10" y1="18" x2="21" y2="18" />
+            <polyline points="3 6 4 7 6 5" />
+            <polyline points="3 12 4 13 6 11" />
+            <polyline points="3 18 4 19 6 17" />
+          </svg>
+        </RibbonBtn>
       </div>
 
       {/* Footer */}
@@ -89,7 +119,21 @@ export function Ribbon({ activePanel, onTogglePanel, gebruikerInitialen }: Ribbo
         }}
       >
         <div style={{ width: 22, height: 1, background: "var(--border-0)", margin: "6px 0" }} />
-        <RibbonBtn icon="instellingen" tip="Instellingen" active={false} onClick={() => {}} />
+        <RibbonBtn tip="Instellingen" active={false} onClick={() => {}}>
+          <svg
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19.07 4.93A10 10 0 0 0 4.93 19.07M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+          </svg>
+        </RibbonBtn>
         <div
           title={gebruikerInitialen}
           style={{
@@ -115,17 +159,15 @@ export function Ribbon({ activePanel, onTogglePanel, gebruikerInitialen }: Ribbo
 }
 
 function RibbonBtn({
-  icon,
   tip,
   active,
   onClick,
-  badge = false,
+  children,
 }: {
-  icon: string;
   tip: string;
   active: boolean;
   onClick: () => void;
-  badge?: boolean;
+  children: React.ReactNode;
 }) {
   return (
     <button
@@ -160,88 +202,7 @@ function RibbonBtn({
           }}
         />
       )}
-      <RibbonIcon name={icon} />
-      {badge && (
-        <span
-          style={{
-            position: "absolute",
-            top: 4,
-            right: 4,
-            width: 8,
-            height: 8,
-            borderRadius: "50%",
-            background: "var(--err)",
-            border: "2px solid var(--bg-1)",
-          }}
-        />
-      )}
+      {children}
     </button>
   );
-}
-
-function RibbonIcon({ name }: { name: string }) {
-  const props = {
-    width: 17,
-    height: 17,
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: 2,
-    strokeLinecap: "round" as const,
-    strokeLinejoin: "round" as const,
-  };
-  switch (name) {
-    case "pool":
-      return (
-        <svg {...props}>
-          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-          <circle cx="9" cy="7" r="4" />
-          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-        </svg>
-      );
-    case "teams":
-      return (
-        <svg {...props}>
-          <path d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4z" />
-          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-          <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-        </svg>
-      );
-    case "kader":
-      return (
-        <svg {...props}>
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-          <polyline points="9 12 11 14 15 10" />
-        </svg>
-      );
-    case "werkbord":
-      return (
-        <svg {...props}>
-          <rect x="3" y="3" width="7" height="7" />
-          <rect x="14" y="3" width="7" height="7" />
-          <rect x="14" y="14" width="7" height="7" />
-          <rect x="3" y="14" width="7" height="7" />
-        </svg>
-      );
-    case "versies":
-      return (
-        <svg {...props}>
-          <line x1="6" y1="3" x2="6" y2="15" />
-          <circle cx="18" cy="6" r="3" />
-          <circle cx="6" cy="18" r="3" />
-          <path d="M18 9a9 9 0 0 1-9 9" />
-        </svg>
-      );
-    case "instellingen":
-      return (
-        <svg {...props}>
-          <circle cx="12" cy="12" r="3" />
-          <path d="M19.07 4.93A10 10 0 0 0 4.93 19.07M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
-        </svg>
-      );
-    default:
-      return null;
-  }
 }
