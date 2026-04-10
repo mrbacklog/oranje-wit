@@ -23,7 +23,7 @@ interface TeamDrawerProps {
   validatie: WerkbordValidatieItem[];
   versieId: string;
   onClose: () => void;
-  onTeamSelect: (teamId: string) => void;
+  onTeamSelect: (teamId: string | null) => void;
   onNieuwTeam: () => void;
   onConfigUpdated: (teamId: string, update: Partial<WerkbordTeam>) => void;
   onSelectieGekoppeld: (teamId: string, selectieGroepId: string) => void;
@@ -205,6 +205,7 @@ function ConfiguratieForm({
           teamCategorie: nieuw.hoofdCategorie,
           niveau: nieuw.niveau,
           formaat: nieuwFormaat,
+          kleur: nieuw.kleur ?? team.kleur,
         });
       }
     });
@@ -385,9 +386,9 @@ function ValidatieLijst({ items }: { items: WerkbordValidatieItem[] }) {
           Geen kaderregels geconfigureerd
         </div>
       ) : (
-        items.map((item, i) => (
+        items.map((item) => (
           <div
-            key={i}
+            key={`${item.teamId}-${item.regel}`}
             style={{
               display: "flex",
               alignItems: "flex-start",
@@ -757,7 +758,7 @@ export function TeamDrawer({
               team={team}
               geselecteerd={team.id === geselecteerdTeamId}
               showScores={true}
-              onClick={() => onTeamSelect(team.id === geselecteerdTeamId ? "" : team.id)}
+              onClick={() => onTeamSelect(team.id === geselecteerdTeamId ? null : team.id)}
             />
           ))}
         </div>
@@ -765,6 +766,7 @@ export function TeamDrawer({
 
       {detailOpen && geselecteerdTeam && (
         <TeamDetailPanel
+          key={geselecteerdTeam.id}
           team={geselecteerdTeam}
           alleTeams={teams}
           validatie={validatie}
