@@ -414,7 +414,7 @@ function ValidatieLijst({ items }: { items: WerkbordValidatieItem[] }) {
       </div>
       {items.length === 0 ? (
         <div style={{ fontSize: 11, color: "var(--text-3)", fontStyle: "italic" }}>
-          Geen kaderregels geconfigureerd
+          Alles voldoet aan de kaders
         </div>
       ) : (
         items.map((item) => (

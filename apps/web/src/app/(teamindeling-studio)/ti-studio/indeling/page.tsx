@@ -5,7 +5,11 @@ import { getOfMaakWerkindelingVoorSeizoen } from "./actions";
 import { getWerkindelingVoorEditor, getAlleSpelers } from "./werkindeling-actions";
 import { getTeamtypeKaders } from "@/app/(teamindeling-studio)/ti-studio/kader/actions";
 import { mergeMetDefaults } from "@/app/(teamindeling-studio)/ti-studio/kader/kader-defaults";
-import { berekenTeamValidatie, berekenValidatieStatus } from "@/lib/teamindeling/validatie-engine";
+import {
+  berekenTeamValidatie,
+  berekenValidatieStatus,
+  korfbalLeeftijd,
+} from "@/lib/teamindeling/validatie-engine";
 import { TiStudioShell } from "@/components/ti-studio/werkbord/TiStudioShell";
 import type {
   WerkbordState,
@@ -157,7 +161,10 @@ export default async function IndelingPage() {
     const gemLeeftijd =
       totaalSpelers > 0
         ? (team.spelers as any[]).reduce((acc: number, ts: any) => {
-            return acc + (huidigeJaar - (ts.speler?.geboortejaar ?? huidigeJaar - 15));
+            const gbd = ts.speler?.geboortedatum
+              ? (ts.speler.geboortedatum as Date).toISOString().split("T")[0]
+              : null;
+            return acc + korfbalLeeftijd(gbd, ts.speler?.geboortejaar ?? peiljaar - 15, peiljaar);
           }, 0) / totaalSpelers
         : 0;
 
