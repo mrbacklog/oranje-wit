@@ -2,21 +2,15 @@
 "use client";
 import "./tokens.css";
 
-type ActivePanel = "pool" | "validatie" | "werkbord" | "versies" | null;
+type ActivePanel = "pool" | "teams" | "werkbord" | "versies" | "kader" | null;
 
 interface RibbonProps {
   activePanel: ActivePanel;
-  onTogglePanel: (panel: "pool" | "validatie" | "werkbord" | "versies") => void;
-  validatieHasErrors: boolean;
+  onTogglePanel: (panel: "pool" | "teams" | "werkbord" | "versies" | "kader") => void;
   gebruikerInitialen: string;
 }
 
-export function Ribbon({
-  activePanel,
-  onTogglePanel,
-  validatieHasErrors,
-  gebruikerInitialen,
-}: RibbonProps) {
+export function Ribbon({ activePanel, onTogglePanel, gebruikerInitialen }: RibbonProps) {
   return (
     <nav
       style={{
@@ -57,14 +51,7 @@ export function Ribbon({
       </div>
 
       {/* Hoofd-groep */}
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: 2,
-        }}
-      >
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
         <RibbonBtn
           icon="pool"
           tip="Spelerspool"
@@ -72,42 +59,22 @@ export function Ribbon({
           onClick={() => onTogglePanel("pool")}
         />
         <RibbonBtn
-          icon="validatie"
-          tip="Validatie"
-          active={activePanel === "validatie"}
-          onClick={() => onTogglePanel("validatie")}
-          badge={validatieHasErrors}
-        />
-        <RibbonBtn
           icon="werkbord"
           tip="Werkbord"
           active={activePanel === "werkbord"}
           onClick={() => onTogglePanel("werkbord")}
         />
-      </div>
-
-      <div
-        style={{
-          width: 22,
-          height: 1,
-          background: "var(--border-0)",
-          margin: "6px 0",
-        }}
-      />
-
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: 2,
-        }}
-      >
         <RibbonBtn
-          icon="versies"
-          tip="Versies & What-Ifs"
-          active={activePanel === "versies"}
-          onClick={() => onTogglePanel("versies")}
+          icon="teams"
+          tip="Teams"
+          active={activePanel === "teams"}
+          onClick={() => onTogglePanel("teams")}
+        />
+        <RibbonBtn
+          icon="kader"
+          tip="Kader"
+          active={activePanel === "kader"}
+          onClick={() => onTogglePanel("kader")}
         />
       </div>
 
@@ -121,14 +88,7 @@ export function Ribbon({
           gap: 6,
         }}
       >
-        <div
-          style={{
-            width: 22,
-            height: 1,
-            background: "var(--border-0)",
-            margin: "6px 0",
-          }}
-        />
+        <div style={{ width: 22, height: 1, background: "var(--border-0)", margin: "6px 0" }} />
         <RibbonBtn icon="instellingen" tip="Instellingen" active={false} onClick={() => {}} />
         <div
           title={gebruikerInitialen}
@@ -240,10 +200,20 @@ function RibbonIcon({ name }: { name: string }) {
           <path d="M16 3.13a4 4 0 0 1 0 7.75" />
         </svg>
       );
-    case "validatie":
+    case "teams":
+      return (
+        <svg {...props}>
+          <path d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4z" />
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+        </svg>
+      );
+    case "kader":
       return (
         <svg {...props}>
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          <polyline points="9 12 11 14 15 10" />
         </svg>
       );
     case "werkbord":
@@ -253,12 +223,6 @@ function RibbonIcon({ name }: { name: string }) {
           <rect x="14" y="3" width="7" height="7" />
           <rect x="14" y="14" width="7" height="7" />
           <rect x="3" y="14" width="7" height="7" />
-        </svg>
-      );
-    case "whatif":
-      return (
-        <svg {...props}>
-          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
         </svg>
       );
     case "versies":
