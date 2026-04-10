@@ -195,10 +195,19 @@ export function useWerkbordState(
   const voegSelectieSpelerToeLokaal = useCallback(
     (naarSelectieGroepId: string, spelerData: WerkbordSpeler, geslacht: "V" | "M") => {
       setTeams((prev) => {
-        const primaryTeam = [...prev]
+        const teamsInGroep = [...prev]
           .filter((t) => t.selectieGroepId === naarSelectieGroepId)
-          .sort((a, b) => a.volgorde - b.volgorde)[0];
-        if (!primaryTeam) return prev;
+          .sort((a, b) => a.volgorde - b.volgorde);
+        if (teamsInGroep.length === 0) return prev;
+
+        // Verdeel gelijkwaardig: kies het team met de minste spelers van dit geslacht.
+        // Bij gelijke stand wint het team met de laagste volgorde (primary).
+        const doelTeam = teamsInGroep.reduce((min, t) => {
+          const countMin = geslacht === "V" ? min.selectieDames.length : min.selectieHeren.length;
+          const countT = geslacht === "V" ? t.selectieDames.length : t.selectieHeren.length;
+          return countT < countMin ? t : min;
+        }, teamsInGroep[0]);
+
         const spelerInTeam: WerkbordSpelerInTeam = {
           id: `ssel-${spelerData.id}-${Date.now()}`,
           spelerId: spelerData.id,
@@ -206,7 +215,7 @@ export function useWerkbordState(
           notitie: null,
         };
         return prev.map((t) => {
-          if (t.id !== primaryTeam.id) return t;
+          if (t.id !== doelTeam.id) return t;
           if (geslacht === "V") {
             return {
               ...t,

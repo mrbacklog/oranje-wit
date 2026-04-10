@@ -268,13 +268,13 @@ function NormaalSpelerRij({
             flex: 1,
             minWidth: 0,
             display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            gap: 2,
+            alignItems: "center",
+            gap: 4,
           }}
         >
           <div
             style={{
+              flex: 1,
               fontSize: 11,
               fontWeight: 600,
               whiteSpace: "nowrap",
@@ -282,23 +282,26 @@ function NormaalSpelerRij({
               textOverflow: "ellipsis",
               color: "var(--text-1)",
               textDecoration: stopGezet ? "line-through" : "none",
-              lineHeight: 1.2,
             }}
           >
             {naam}
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-            <span style={{ fontSize: 9.5, color: "var(--text-3)" }}>{leeftijd.toFixed(1)}</span>
-            {speler.isNieuw && (
-              <span style={{ fontSize: 9, fontWeight: 700, color: "var(--ok)" }}>N</span>
-            )}
-            {speler.status === "TWIJFELT" && (
-              <span style={{ fontSize: 9, fontWeight: 700, color: "var(--warn)" }}>?</span>
-            )}
-            {speler.status === "AFGEMELD" && (
-              <span style={{ fontSize: 9, color: "var(--err)" }}>⚠</span>
-            )}
-          </div>
+          {speler.isNieuw && (
+            <span style={{ fontSize: 9, fontWeight: 700, color: "var(--ok)", flexShrink: 0 }}>
+              N
+            </span>
+          )}
+          {speler.status === "TWIJFELT" && (
+            <span style={{ fontSize: 9, fontWeight: 700, color: "var(--warn)", flexShrink: 0 }}>
+              ?
+            </span>
+          )}
+          {speler.status === "AFGEMELD" && (
+            <span style={{ fontSize: 9, color: "var(--err)", flexShrink: 0 }}>⚠</span>
+          )}
+          <span style={{ fontSize: 9.5, color: "var(--text-3)", flexShrink: 0 }}>
+            {leeftijd.toFixed(1)}
+          </span>
         </div>
       </div>
     </>
