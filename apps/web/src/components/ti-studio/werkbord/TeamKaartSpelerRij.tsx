@@ -32,7 +32,19 @@ export function TeamKaartSpelerRij({ spelerInTeam, teamId, zoomLevel }: TeamKaar
 }
 
 // Normaal rij — 1 regel hoog (21px): sekse-stip · naam · korfballeeftijd
-function berekenKorfbalLeeftijdNormaal(geboortejaar: number, seizoenEindjaar: number): number {
+function berekenKorfbalLeeftijdNormaal(
+  geboortedatum: string | null,
+  geboortejaar: number,
+  seizoenEindjaar: number
+): number {
+  if (geboortedatum) {
+    const peildatum = new Date(seizoenEindjaar, 0, 1);
+    const geboorte = new Date(geboortedatum);
+    return (
+      Math.floor(((peildatum.getTime() - geboorte.getTime()) / (365.25 * 24 * 3600 * 1000)) * 100) /
+      100
+    );
+  }
   return seizoenEindjaar - geboortejaar;
 }
 
@@ -41,7 +53,11 @@ function NormaalSpelerRij({ speler, teamId }: { speler: WerkbordSpeler; teamId: 
   const geslacht = speler.geslacht.toLowerCase() as "v" | "m";
   const stipKleur = geslacht === "v" ? "rgba(236,72,153,.7)" : "rgba(96,165,250,.7)";
   const naam = `${speler.roepnaam} ${speler.achternaam.charAt(0)}.`;
-  const leeftijd = berekenKorfbalLeeftijdNormaal(speler.geboortejaar, HUIDIG_SEIZOEN_EINDJAAR);
+  const leeftijd = berekenKorfbalLeeftijdNormaal(
+    speler.geboortedatum,
+    speler.geboortejaar,
+    HUIDIG_SEIZOEN_EINDJAAR
+  );
   const leeftijdTekst = String(leeftijd);
 
   return (
