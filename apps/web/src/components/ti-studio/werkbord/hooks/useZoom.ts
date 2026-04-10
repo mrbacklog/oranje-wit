@@ -8,7 +8,7 @@ const MAX_ZOOM = 1.5;
 const DEFAULT_ZOOM = 0.75;
 
 function toZoomLevel(zoom: number): ZoomLevel {
-  if (zoom < 0.64) return "compact";
+  if (zoom < 0.8) return "compact";
   if (zoom < 1.0) return "normaal";
   return "detail";
 }
