@@ -1,3 +1,9 @@
+---
+paths:
+  - "apps/web/src/**/*.tsx"
+  - "packages/ui/**"
+---
+
 # Daisy — Beleid en richtlijnen
 
 > DAISY = Doet Alle Irritante Shit, Yo!

@@ -1,0 +1,40 @@
+# Claude Code — context exclusions
+# Doel: voorkom dat grote gegenereerde directories de context vervuilen
+
+# Next.js build output (30-40% context reductie)
+.next/
+apps/web/.next/
+
+# Node modules
+node_modules/
+apps/web/node_modules/
+packages/*/node_modules/
+
+# Build artifacts
+dist/
+.turbo/
+
+# Prisma generated client (153k LOC, agents hoeven dit nooit te lezen)
+packages/database/src/generated/
+packages/database/node_modules/
+
+# Data files (nooit direct gelezen door agents — database is source of truth)
+data/*.csv
+data/*.xlsx
+data/evaluaties/
+data/seizoenen/
+
+# Concept-indelingen (xlsx in root)
+*.xlsx
+
+# Logs
+*.log
+logs/
+
+# Test output
+coverage/
+playwright-report/
+test-results/
+
+# E2E screenshots (gegenereerde testafbeeldingen)
+e2e/screenshots/
