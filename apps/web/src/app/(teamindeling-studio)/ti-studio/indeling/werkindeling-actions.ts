@@ -61,6 +61,7 @@ export async function getWerkindelingVoorEditor(werkindelingId: string) {
           naam: true,
           auteur: true,
           createdAt: true,
+          posities: true,
           selectieGroepen: {
             include: {
               spelers: { include: { speler: true } },

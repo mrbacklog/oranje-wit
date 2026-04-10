@@ -100,6 +100,9 @@ export default async function IndelingPage() {
     selectieGroepId: null,
   }));
 
+  // Opgeslagen canvas-posities per teamId
+  const opgeslagenPosities = (versie?.posities ?? {}) as Record<string, { x: number; y: number }>;
+
   // Teams als WerkbordTeam
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const teams: WerkbordTeam[] = ((versie?.teams ?? []) as any[]).map((team: any, i: number) => {
@@ -180,9 +183,12 @@ export default async function IndelingPage() {
     // KNKV kleur mapping
     const kleur = (KLEUR_MAP[team.kleur ?? ""] ?? "senior") as WerkbordTeam["kleur"];
 
-    // Grid-positie: 3 kolommen, 240px stapeling
+    // Canvas-positie: opgeslagen waarde heeft prioriteit, anders grid-fallback
+    const opgeslagen = opgeslagenPosities[team.id];
     const col = i % 3;
     const rij = Math.floor(i / 3);
+    const canvasX = opgeslagen ? opgeslagen.x : 40 + col * 320;
+    const canvasY = opgeslagen ? opgeslagen.y : 60 + rij * 240;
 
     return {
       id: team.id,
@@ -191,8 +197,8 @@ export default async function IndelingPage() {
       kleur,
       formaat,
       volgorde: team.volgorde,
-      canvasX: 40 + col * 320,
-      canvasY: 60 + rij * 240,
+      canvasX,
+      canvasY,
       dames,
       heren,
       staf: (team.staf as any[]).map((ts: any) => ({
