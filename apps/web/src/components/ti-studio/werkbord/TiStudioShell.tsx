@@ -10,12 +10,14 @@ import { WerkbordCanvas } from "./WerkbordCanvas";
 import { TeamDrawer } from "./TeamDrawer";
 import { VersiesDrawer } from "./VersiesDrawer";
 import SpelerProfielDialog from "../SpelerProfielDialog";
+import { TeamDialog } from "../TeamDialog";
 import { useZoom } from "./hooks/useZoom";
 import type {
   TiStudioShellProps,
   WerkbordTeam,
   WerkbordSpeler,
   WerkbordSpelerInTeam,
+  MemoStatus,
 } from "./types";
 import type { DrawerData } from "@/app/(teamindeling-studio)/ti-studio/indeling/drawer-actions";
 import { getVersiesVoorDrawer } from "@/app/(teamindeling-studio)/ti-studio/indeling/drawer-actions";
@@ -58,6 +60,24 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
     setProfielSpelerId(spelerId);
     setProfielTeamId(teamId);
   }
+
+  const [dialogTeamId, setDialogTeamId] = useState<string | null>(null);
+  const openTeamDialog = useCallback((teamId: string) => {
+    setDialogTeamId(teamId);
+  }, []);
+
+  const handleTeamMemoSaved = useCallback(
+    (teamId: string, notitie: string, memoStatus: "open" | "gesloten", besluit: string | null) => {
+      setTeams((prev) =>
+        prev.map((t) =>
+          t.id === teamId
+            ? { ...t, notitie: notitie || null, memoStatus: memoStatus as MemoStatus, besluit }
+            : t
+        )
+      );
+    },
+    []
+  );
 
   const gebruikerInitialen = gebruikerEmail
     .split("@")[0]
@@ -504,6 +524,7 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
           onSpelerClick={openProfiel}
           onDropSpelerOpSelectie={onDropSpelerOpSelectieFn}
           onToggleBundeling={toggleBundeling}
+          onTitelKlik={openTeamDialog}
         />
         <TeamDrawer
           open={panelRechts === "teams"}
@@ -532,6 +553,13 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
         open={profielSpelerId !== null}
         onClose={() => setProfielSpelerId(null)}
         teamId={profielTeamId ?? undefined}
+      />
+      <TeamDialog
+        teamId={dialogTeamId}
+        teams={teams}
+        validatie={initieleState.validatie}
+        onClose={() => setDialogTeamId(null)}
+        onMemoSaved={handleTeamMemoSaved}
       />
     </div>
   );
