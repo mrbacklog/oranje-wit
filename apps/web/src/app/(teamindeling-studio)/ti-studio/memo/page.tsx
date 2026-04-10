@@ -133,7 +133,7 @@ export default async function MemoOverzichtPage() {
           tekst: data.tekst ?? null,
           memoStatus: data.memoStatus ?? "gesloten",
           besluit: data.besluit ?? null,
-          href: "/ti-studio/kaders",
+          href: "/ti-studio/kader",
         });
       }
     }
