@@ -2,6 +2,7 @@
 "use client";
 import { useRef } from "react";
 import "./tokens.css";
+import { SpelerKaart } from "./SpelerKaart";
 import type { WerkbordSpelerInTeam, WerkbordSpeler, ZoomLevel } from "./types";
 
 const HUIDIG_SEIZOEN_EINDJAAR = 2026;
@@ -13,19 +14,25 @@ interface TeamKaartSpelerRijProps {
 }
 
 export function TeamKaartSpelerRij({ spelerInTeam, teamId, zoomLevel }: TeamKaartSpelerRijProps) {
-  if (zoomLevel === "normaal") {
-    return <NormaalSpelerRij speler={spelerInTeam.speler} teamId={teamId} />;
+  if (zoomLevel === "detail") {
+    return (
+      <SpelerKaart
+        speler={spelerInTeam.speler}
+        vanTeamId={teamId}
+        seizoenEindjaar={HUIDIG_SEIZOEN_EINDJAAR}
+      />
+    );
   }
 
-  if (zoomLevel === "detail") {
-    return <DetailSpelerRij speler={spelerInTeam.speler} teamId={teamId} />;
+  if (zoomLevel === "normaal") {
+    return <NormaalSpelerRij speler={spelerInTeam.speler} teamId={teamId} />;
   }
 
   return <CompactSpelerRij speler={spelerInTeam.speler} teamId={teamId} />;
 }
 
 // Normaal rij — 1 regel hoog (21px): sekse-stip · naam · korfballeeftijd
-function berekenKorfbalLeeftijd(geboortejaar: number, seizoenEindjaar: number): number {
+function berekenKorfbalLeeftijdNormaal(geboortejaar: number, seizoenEindjaar: number): number {
   return seizoenEindjaar - geboortejaar;
 }
 
@@ -34,11 +41,12 @@ function NormaalSpelerRij({ speler, teamId }: { speler: WerkbordSpeler; teamId: 
   const geslacht = speler.geslacht.toLowerCase() as "v" | "m";
   const stipKleur = geslacht === "v" ? "rgba(236,72,153,.7)" : "rgba(96,165,250,.7)";
   const naam = `${speler.roepnaam} ${speler.achternaam.charAt(0)}.`;
-  const leeftijd = berekenKorfbalLeeftijd(speler.geboortejaar, HUIDIG_SEIZOEN_EINDJAAR);
+  const leeftijd = berekenKorfbalLeeftijdNormaal(speler.geboortejaar, HUIDIG_SEIZOEN_EINDJAAR);
+  const leeftijdTekst = String(leeftijd);
 
   return (
     <>
-      {/* Verborgen detail-rij — alleen als drag-image bron */}
+      {/* Verborgen SpelerKaart — alleen als drag-image bron */}
       <div
         ref={ghostRef}
         style={{
@@ -50,7 +58,12 @@ function NormaalSpelerRij({ speler, teamId }: { speler: WerkbordSpeler; teamId: 
           zIndex: -1,
         }}
       >
-        <DetailSpelerRij speler={speler} teamId={teamId} asGhost />
+        <SpelerKaart
+          speler={speler}
+          vanTeamId={teamId}
+          seizoenEindjaar={HUIDIG_SEIZOEN_EINDJAAR}
+          asGhost
+        />
       </div>
 
       {/* Normaal rij */}
@@ -108,156 +121,15 @@ function NormaalSpelerRij({ speler, teamId }: { speler: WerkbordSpeler; teamId: 
             textAlign: "right",
           }}
         >
-          {leeftijd}
+          {leeftijdTekst}
         </div>
-      </div>
-    </>
-  );
-}
-
-// Detail rij — volledigere weergave met rating, status-iconen
-function DetailSpelerRij({
-  speler,
-  teamId,
-  asGhost,
-}: {
-  speler: WerkbordSpeler;
-  teamId: string;
-  asGhost?: boolean;
-}) {
-  const ghostRef = useRef<HTMLDivElement>(null);
-  const geslacht = speler.geslacht.toLowerCase() as "v" | "m";
-  const geslachtKleur = geslacht === "v" ? "var(--pink)" : "var(--blue)";
-  const leeftijd = berekenKorfbalLeeftijd(speler.geboortejaar, HUIDIG_SEIZOEN_EINDJAAR);
-  const stopGezet = speler.status === "GAAT_STOPPEN";
-
-  const ratingKleur =
-    speler.rating && speler.rating >= 7.5
-      ? "hi"
-      : speler.rating && speler.rating >= 6.5
-        ? "md"
-        : "lo";
-  const ratingColors = {
-    hi: { bg: "rgba(34,197,94,.15)", color: "var(--ok)" },
-    md: { bg: "rgba(234,179,8,.1)", color: "var(--warn)" },
-    lo: { bg: "rgba(239,68,68,.1)", color: "var(--err)" },
-  };
-
-  return (
-    <>
-      {!asGhost && (
-        <div
-          ref={ghostRef}
-          style={{
-            position: "fixed",
-            left: -9999,
-            top: 0,
-            width: 220,
-            pointerEvents: "none",
-            zIndex: -1,
-          }}
-        >
-          <DetailSpelerRij speler={speler} teamId={teamId} asGhost />
-        </div>
-      )}
-
-      {/* Detail rij */}
-      <div
-        draggable={!asGhost}
-        onDragStart={
-          asGhost
-            ? undefined
-            : (e) => {
-                e.stopPropagation();
-                e.dataTransfer.setData("speler", JSON.stringify({ speler, vanTeamId: teamId }));
-                e.dataTransfer.effectAllowed = "move";
-                if (ghostRef.current) {
-                  e.dataTransfer.setDragImage(ghostRef.current, 20, 24);
-                }
-              }
-        }
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 5,
-          padding: "0 8px",
-          borderLeft: `2px solid ${geslachtKleur}`,
-          minHeight: 28,
-          flexShrink: 0,
-          opacity: stopGezet ? 0.5 : 1,
-          cursor: asGhost ? "default" : "grab",
-          borderBottom: "1px solid rgba(255,255,255,.04)",
-        }}
-      >
-        {/* Naam + leeftijd */}
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div
-            style={{
-              fontSize: 11,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              fontWeight: 500,
-              textDecoration: stopGezet ? "line-through" : "none",
-            }}
-          >
-            {speler.roepnaam} {speler.achternaam.charAt(0)}.
-          </div>
-          <div style={{ fontSize: 9, color: "var(--text-3)" }}>{leeftijd}j</div>
-        </div>
-
-        {/* Status-iconen */}
-        <div style={{ display: "flex", alignItems: "center", gap: 2, flexShrink: 0 }}>
-          {speler.gepind && <span style={{ fontSize: 8, color: "var(--accent)" }}>📌</span>}
-          {speler.status === "AFGEMELD" && (
-            <span style={{ fontSize: 9, color: "var(--err)" }}>⚠</span>
-          )}
-          {speler.status === "TWIJFELT" && (
-            <span style={{ fontSize: 9, fontWeight: 700, color: "var(--warn)" }}>?</span>
-          )}
-          {speler.isNieuw && (
-            <span
-              style={{
-                fontSize: 8,
-                color: "var(--ok)",
-                background: "rgba(34,197,94,.1)",
-                borderRadius: 3,
-                padding: "1px 3px",
-                fontWeight: 700,
-              }}
-            >
-              N
-            </span>
-          )}
-        </div>
-
-        {/* Rating */}
-        {speler.rating !== null && (
-          <div
-            style={{
-              width: 22,
-              height: 16,
-              borderRadius: 3,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 9,
-              fontWeight: 700,
-              flexShrink: 0,
-              background: ratingColors[ratingKleur].bg,
-              color: ratingColors[ratingKleur].color,
-            }}
-          >
-            {speler.rating.toFixed(1)}
-          </div>
-        )}
       </div>
     </>
   );
 }
 
 // Compacte rij voor compact zoomlevel.
-// Gebruikt een verborgen detail-rij als drag-ghost.
+// Gebruikt een verborgen SpelerKaart als drag-ghost.
 function CompactSpelerRij({ speler, teamId }: { speler: WerkbordSpeler; teamId: string }) {
   const ghostRef = useRef<HTMLDivElement>(null);
   const geslacht = speler.geslacht.toLowerCase() as "v" | "m";
@@ -267,7 +139,7 @@ function CompactSpelerRij({ speler, teamId }: { speler: WerkbordSpeler; teamId: 
 
   return (
     <>
-      {/* Verborgen detail-rij — alleen als drag-image bron */}
+      {/* Verborgen SpelerKaart — alleen als drag-image bron */}
       <div
         ref={ghostRef}
         style={{
@@ -279,7 +151,12 @@ function CompactSpelerRij({ speler, teamId }: { speler: WerkbordSpeler; teamId: 
           zIndex: -1,
         }}
       >
-        <DetailSpelerRij speler={speler} teamId={teamId} asGhost />
+        <SpelerKaart
+          speler={speler}
+          vanTeamId={teamId}
+          seizoenEindjaar={HUIDIG_SEIZOEN_EINDJAAR}
+          asGhost
+        />
       </div>
 
       {/* Compacte rij */}
