@@ -161,7 +161,12 @@ const leesTools = {
       "Geeft de volledige bezetting van een team: spelers, USS-scores, geslachtsverhouding en staf.",
     parameters: z.object({
       teamNaam: z.string().describe("(Deel van) de teamnaam, bijv. 'Sen 1' of 'U15'"),
-      inContext: z.string().optional().describe('"werkindeling" (standaard) of een werkindelingId'),
+      inContext: z
+        .string()
+        .optional()
+        .describe(
+          '"werkindeling" (standaard), werkindelingId, of "v:<versieId>" voor directe versie'
+        ),
     }),
     execute: async ({ teamNaam, inContext }: { teamNaam: string; inContext?: string }) => {
       const versieId = await getVersieId(inContext ?? "werkindeling");
@@ -368,7 +373,11 @@ function maakSchrijfToolsSpelers(sessieId: string, gebruikerEmail: string) {
       parameters: z.object({
         spelerId: z.string().describe("ID van de speler (rel_code)"),
         naarTeam: z.string().describe("Naam van het doelteam"),
-        inContext: z.string().describe('"werkindeling" of een werkindelingId'),
+        inContext: z
+          .string()
+          .describe(
+            '"werkindeling" (standaard), werkindelingId, of "v:<versieId>" voor directe versie'
+          ),
       }),
       execute: async ({
         spelerId,
@@ -565,7 +574,11 @@ function maakSchrijfToolsSpelers(sessieId: string, gebruikerEmail: string) {
         teamNaam: z.string().describe("Naam van het team"),
         naam: z.string().describe("Naam voor de placeholder, bijv. 'Verwacht lid'"),
         geslacht: z.enum(["M", "V"]).optional().describe("Optioneel geslacht van de placeholder"),
-        inContext: z.string().describe('"werkindeling" of een werkindelingId'),
+        inContext: z
+          .string()
+          .describe(
+            '"werkindeling" (standaard), werkindelingId, of "v:<versieId>" voor directe versie'
+          ),
       }),
       execute: async ({
         teamNaam,
@@ -678,7 +691,9 @@ function maakSchrijfToolsRest(sessieId: string, gebruikerEmail: string) {
         categorie: z
           .enum(["SENIOREN", "JEUGD_A", "JEUGD_B", "RECREANTEN", "MIXED"])
           .describe("Teamcategorie"),
-        inContext: z.string().describe("werkindelingId om het team in aan te maken"),
+        inContext: z
+          .string()
+          .describe('werkindelingId of "v:<versieId>" om het team in aan te maken'),
       }),
       execute: async ({
         naam,
@@ -714,7 +729,7 @@ function maakSchrijfToolsRest(sessieId: string, gebruikerEmail: string) {
       parameters: z.object({
         naam: z.string().describe("Naam van de selectiegroep"),
         spelerIds: z.array(z.string()).describe("Lijst van speler-IDs"),
-        inContext: z.string().describe("werkindelingId"),
+        inContext: z.string().describe('werkindelingId of "v:<versieId>"'),
       }),
       execute: async ({
         naam,
@@ -761,7 +776,11 @@ function maakSchrijfToolsRest(sessieId: string, gebruikerEmail: string) {
         stafNaam: z.string().describe("Naam van de stafmedewerker (gedeeltelijk)"),
         rol: z.string().describe('Rol, bijv. "Trainer/Coach", "Assistent", "Begeleider"'),
         teamNaam: z.string().describe("Naam van het doelteam"),
-        inContext: z.string().describe('"werkindeling" of een werkindelingId'),
+        inContext: z
+          .string()
+          .describe(
+            '"werkindeling" (standaard), werkindelingId, of "v:<versieId>" voor directe versie'
+          ),
       }),
       execute: async ({
         stafNaam,
