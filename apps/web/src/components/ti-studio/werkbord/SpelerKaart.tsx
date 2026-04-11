@@ -333,38 +333,39 @@ export function SpelerKaart({
                   {speler.huidigTeam}
                 </span>
               )}
-              {speler.ingedeeldTeamNaam ? (
-                <span
-                  style={{
-                    fontSize: 9,
-                    fontWeight: 600,
-                    color: "var(--accent)",
-                    border: "1px solid rgba(255,107,0,.4)",
-                    borderRadius: 3,
-                    padding: "0 4px",
-                    whiteSpace: "nowrap",
-                    flexShrink: 0,
-                    background: "var(--accent-dim)",
-                  }}
-                >
-                  {speler.ingedeeldTeamNaam}
-                </span>
-              ) : (
-                <span
-                  style={{
-                    fontSize: 9,
-                    fontWeight: 600,
-                    color: "var(--text-3)",
-                    border: "1px dashed var(--border-1)",
-                    borderRadius: 3,
-                    padding: "0 4px",
-                    whiteSpace: "nowrap",
-                    flexShrink: 0,
-                  }}
-                >
-                  —
-                </span>
-              )}
+              {vanTeamId === null &&
+                (speler.ingedeeldTeamNaam ? (
+                  <span
+                    style={{
+                      fontSize: 9,
+                      fontWeight: 600,
+                      color: "var(--accent)",
+                      border: "1px solid rgba(255,107,0,.4)",
+                      borderRadius: 3,
+                      padding: "0 4px",
+                      whiteSpace: "nowrap",
+                      flexShrink: 0,
+                      background: "var(--accent-dim)",
+                    }}
+                  >
+                    {speler.ingedeeldTeamNaam}
+                  </span>
+                ) : (
+                  <span
+                    style={{
+                      fontSize: 9,
+                      fontWeight: 600,
+                      color: "var(--text-3)",
+                      border: "1px dashed var(--border-1)",
+                      borderRadius: 3,
+                      padding: "0 4px",
+                      whiteSpace: "nowrap",
+                      flexShrink: 0,
+                    }}
+                  >
+                    —
+                  </span>
+                ))}
             </div>
             <span style={{ fontSize: 9, color: "var(--text-3)", flexShrink: 0 }}>
               {leeftijd.toFixed(2)}
