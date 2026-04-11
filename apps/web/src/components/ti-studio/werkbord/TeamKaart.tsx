@@ -85,10 +85,12 @@ export function TeamKaart({
   onTitelKlik,
 }: TeamKaartProps) {
   const breedte = KAART_BREEDTE[team.formaat];
+  const isSelectieGebundeld = team.formaat === "selectie" && team.gebundeld;
   const isSelectie = team.formaat === "selectie" && !!partnerTeam;
-  const selectieLabel = isSelectie
-    ? team.selectieNaam || `${team.naam} ↔ ${partnerTeam!.naam}`
-    : team.naam;
+  const selectieLabel =
+    isSelectieGebundeld || isSelectie
+      ? team.selectieNaam || (partnerTeam ? `${team.naam} ↔ ${partnerTeam.naam}` : team.naam)
+      : team.naam;
 
   const [dropOverGeslacht, setDropOverGeslacht] = useState<"V" | "M" | null>(null);
   const [isLanding, setIsLanding] = useState(false);
@@ -260,8 +262,8 @@ export function TeamKaart({
       </div>
 
       {/* ── DROPZONE ───────────────────────────────────────────────────── */}
-      {isSelectie && team.gebundeld ? (
-        // Gebundeld: ♀ Dames | ♂ Heren (gecombineerde pool)
+      {isSelectieGebundeld ? (
+        // Gebundeld: 2 dame-kolommen | 2 heren-kolommen — altijd 720px breed
         <SelectieBundelDropzone
           team={team}
           zoomLevel={zoomLevel}
