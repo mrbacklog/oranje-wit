@@ -21,7 +21,7 @@
 |---|---|---|
 | Speler-duplicaat cross-team | ja | ✅ `fix: blokkeer cross-team speler-duplicaat bij pool-drop` |
 | Auth guards write-actions | ja (K1-K4) | ✅ `fix: requireTC op alle write-actions + getVersiesVoorDrawer` |
-| Toast bij opslaan | nee | ⏭️ defer (P1) |
+| Toast bij opslaan | nee | ✅ `opslaanStatus` state-feedback in TiStudioShell |
 | ValidatieDrawer | nee | ⏭️ defer (state in worktree) |
 | Kaartformaat auto-update | nee | ⏭️ defer (P1) |
 
@@ -38,7 +38,6 @@
 
 - SSE-verbindingsindicator: geen visuele feedback bij disconnect
 - ValidatieDrawer: bestaat alleen in worktree, nog niet gemerged naar release-branch
-- Toast bij opslaan: stille fouten bij netwerkstoringen
 - Kaartformaat auto-update: viertal → achtal bij ≥5 spelers
 - any-casts in page.tsx (W1, tech debt)
 - Rollback bij mislukte optimistic update (K5, complex)
