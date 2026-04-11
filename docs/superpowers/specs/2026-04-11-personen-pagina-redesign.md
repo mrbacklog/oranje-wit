@@ -85,6 +85,38 @@ Knop **"+ Nieuwe speler"** rechtsboven de tabel opent een compact dialoog.
 **Lidnummer koppelen:** buiten scope. TC kan later via Beheer handmatig `rel_code` invullen
 zodra de speler een Sportlink-lidnummer krijgt. Geen automatische flow.
 
+### Reserveringsspelers (aparte sectie binnen spelers-tab)
+
+Reserveringsspelers zijn naamloze placeholders die een teamspot opvullen. Ze verschijnen
+als eigen sectie in de personen-pagina én als eigen sectie in de `SpelersPoolDrawer`
+(vergelijkbaar met de AR-sectie, maar wél draggable naar teams).
+
+**Datavelden:**
+- Titel (verplicht) — vrij tekst, bijv. "Meisje reserve" of "Jongen Geel-1"
+- Geslacht (verplicht) — M / V toggle
+- Geen achternaam, geboortedatum, rel_code of status
+
+**Sectie in personen-pagina (onder de hoofdtabel):**
+
+```
+┌─ Reserveringsspelers ─────────────────────── [+ Nieuwe reservering] ─┐
+│  Titel ↕              Geslacht   Indeling          📌                 │
+│  ────────────────────────────────────────────────────────────────────│
+│  Meisje reserve       ♀          [Geel-2]          📌                │
+│  Jongen placeholder   ♂          —                                   │
+└────────────────────────────────────────────────────────────────────┘
+```
+
+Kolommen: **Titel** (sorteerbaar), **Geslacht**, **Indeling** (sorteer/filterbaar), **📌** (toggle).
+Geen Status, Gezien, Huidig team of Memo — dat zijn velden die niet van toepassing zijn.
+
+**"+ Nieuwe reservering"** opent een minimaal dialoog: Titel + Geslacht. Dat is alles.
+
+**In de `SpelersPoolDrawer`:**
+- Eigen sectie onderaan (na AR-sectie), label "Reservering"
+- Zelfde `SpelerKaart`-vormgeving maar met Titel als naam
+- Wél draggable naar teams (anders dan AR)
+
 ---
 
 ## Staf-tab
@@ -130,6 +162,11 @@ de hoofdtrainer-koppeling kunt pinnen maar een tijdelijke hulpcoach niet.
   als indeling-pagina zodat beide views synchroon blijven.
 - Nieuwe speler aanmaken: server action die een speler aanmaakt met `rel_code = null`,
   status `NIEUW_POTENTIEEL`, en de opgegeven velden.
+- Nieuwe reserveringsspeler aanmaken: server action met alleen Titel + Geslacht,
+  apart model of een dedicated status (`RESERVERING`) op het bestaande speler-model —
+  keuze te maken bij implementatie op basis van Prisma schema.
+- Reserveringsspelers zijn draggable (anders dan AR): drag-lock in `SpelerKaart` wordt
+  uitgebreid van `isAR` naar `isAR || isReservering` is dus NIET van toepassing.
 - Nieuwe staf aanmaken: server action die een staflid aanmaakt.
 
 ---
