@@ -325,14 +325,58 @@ export default async function IndelingPage() {
 
   // Validatie berekenen op basis van kaders
   const validatie: WerkbordValidatieItem[] = [];
+
+  // Groepeer teams per selectieGroep zodat we ze samen kunnen verwerken
+  const verwerktSelectieGroepen = new Set<string>();
+
   for (const team of teams) {
-    const effectief = team.gebundeld
-      ? { ...team, dames: team.selectieDames, heren: team.selectieHeren }
-      : team;
-    const items = berekenTeamValidatie(effectief, tcKaders, peiljaar);
-    validatie.push(...items);
-    team.validatieStatus = berekenValidatieStatus(items);
-    team.validatieCount = items.filter((i) => i.type !== "ok").length;
+    if (team.selectieGroepId) {
+      if (verwerktSelectieGroepen.has(team.selectieGroepId)) continue; // partner al verwerkt
+      verwerktSelectieGroepen.add(team.selectieGroepId);
+
+      const groepTeams = teams
+        .filter((t) => t.selectieGroepId === team.selectieGroepId)
+        .sort((a, b) => a.volgorde - b.volgorde);
+      const primary = groepTeams[0];
+      if (!primary) continue;
+
+      if (primary.gebundeld) {
+        // Gecombineerde pool: valideer als één team met selectieDames + selectieHeren
+        const effectief = {
+          ...primary,
+          dames: primary.selectieDames,
+          heren: primary.selectieHeren,
+        };
+        const items = berekenTeamValidatie(effectief, tcKaders, peiljaar);
+        validatie.push(...items);
+        primary.validatieStatus = berekenValidatieStatus(items);
+        primary.validatieCount = items.filter((i) => i.type !== "ok").length;
+        // Partner geen eigen validatie (spelers zitten op primary)
+        for (const partner of groepTeams.slice(1)) {
+          partner.validatieStatus = primary.validatieStatus;
+          partner.validatieCount = 0;
+        }
+      } else {
+        // Niet gebundeld: valideer elk team apart, toon slechtste status op primary
+        const alleItems: WerkbordValidatieItem[] = [];
+        for (const t of groepTeams) {
+          const items = berekenTeamValidatie(t, tcKaders, peiljaar);
+          validatie.push(...items);
+          alleItems.push(...items);
+          t.validatieStatus = berekenValidatieStatus(items);
+          t.validatieCount = items.filter((i) => i.type !== "ok").length;
+        }
+        // Primary-indicator toont slechtste status van de hele groep
+        primary.validatieStatus = berekenValidatieStatus(alleItems);
+        primary.validatieCount = alleItems.filter((i) => i.type !== "ok").length;
+      }
+    } else {
+      // Gewoon team: individuele validatie
+      const items = berekenTeamValidatie(team, tcKaders, peiljaar);
+      validatie.push(...items);
+      team.validatieStatus = berekenValidatieStatus(items);
+      team.validatieCount = items.filter((i) => i.type !== "ok").length;
+    }
   }
 
   // Bouw alleStaf: stafleden met hun teams + rollen
