@@ -23,6 +23,7 @@ export function useWerkbordState(
   const [teams, setTeams] = useState<WerkbordTeam[]>(initieleTeams);
   const [alleSpelers, setAlleSpelers] = useState<WerkbordSpeler[]>(initieleSpelers);
   const [validatie, setValidatie] = useState<WerkbordValidatieItem[]>(initieleValidatie);
+  const [opslaanStatus, setOpslaanStatus] = useState<"idle" | "bezig" | "ok" | "fout">("idle");
 
   const alleSpelersRef = useRef(alleSpelers);
   useEffect(() => {
@@ -320,6 +321,7 @@ export function useWerkbordState(
   // ─── API-calls ───────────────────────────────────────────────
 
   async function stuurMutatie(body: Record<string, unknown>) {
+    setOpslaanStatus("bezig");
     try {
       const resp = await fetch(`/api/ti-studio/indeling/${versieId}`, {
         method: "POST",
@@ -331,8 +333,13 @@ export function useWerkbordState(
         if (data.validatieUpdates?.length) {
           updateValidatieLokaal(data.validatieUpdates);
         }
+        setOpslaanStatus("ok");
+      } else {
+        setOpslaanStatus("fout");
+        logger.warn("stuurMutatie: server fout", { status: resp.status });
       }
     } catch (error) {
+      setOpslaanStatus("fout");
       logger.warn("stuurMutatie fout (optimistic update blijft):", error);
     }
   }
@@ -409,6 +416,7 @@ export function useWerkbordState(
     teams,
     alleSpelers,
     validatie,
+    opslaanStatus,
     updateValidatieLokaal,
     verplaatsSpeler,
     verwijderSpelerUitTeam,
