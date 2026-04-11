@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { auth } from "@oranje-wit/auth";
+import { prisma } from "@/lib/teamindeling/db/prisma";
 import { getOfMaakWerkindelingVoorSeizoen } from "./actions";
 import { getWerkindelingVoorEditor, getAlleSpelers } from "./werkindeling-actions";
 import { getTeamtypeKaders } from "@/app/(teamindeling-studio)/ti-studio/kader/actions";
@@ -94,6 +95,39 @@ export default async function IndelingPage() {
     }
   }
 
+  // Open memo-counts per team en per speler
+  const kadersId = volledig.kaders.id;
+
+  const teamMemoCounts = await prisma.werkitem.groupBy({
+    by: ["teamId"],
+    where: {
+      kadersId,
+      type: "MEMO",
+      status: { in: ["OPEN", "IN_BESPREKING"] },
+      teamId: { not: null },
+    },
+    _count: { id: true },
+  });
+  const openMemoPerTeam: Record<string, number> = {};
+  for (const row of teamMemoCounts) {
+    if (row.teamId) openMemoPerTeam[row.teamId] = row._count.id;
+  }
+
+  const spelerMemoCounts = await prisma.werkitem.groupBy({
+    by: ["spelerId"],
+    where: {
+      kadersId,
+      type: "MEMO",
+      status: { in: ["OPEN", "IN_BESPREKING"] },
+      spelerId: { not: null },
+    },
+    _count: { id: true },
+  });
+  const openMemoPerSpeler: Record<string, number> = {};
+  for (const row of spelerMemoCounts) {
+    if (row.spelerId) openMemoPerSpeler[row.spelerId] = row._count.id;
+  }
+
   // Alle spelers als WerkbordSpeler
   const alleSpelers: WerkbordSpeler[] = prismaSpelers.map((sp) => ({
     id: sp.id,
@@ -109,6 +143,7 @@ export default async function IndelingPage() {
     teamId: sp.status === "ALGEMEEN_RESERVE" ? null : (spelerTeamMap.get(sp.id) ?? null),
     gepind: false,
     isNieuw: false,
+    openMemoCount: openMemoPerSpeler[sp.id] ?? 0,
     huidigTeam: (sp.huidig as { team?: string } | null)?.team ?? null,
     ingedeeldTeamNaam: spelerTeamNaamMap.get(sp.id) ?? null,
     selectieGroepId: null,
@@ -140,6 +175,7 @@ export default async function IndelingPage() {
           teamId: team.id,
           gepind: false,
           isNieuw: false,
+          openMemoCount: openMemoPerSpeler[ts.spelerId] ?? 0,
           huidigTeam: (ts.speler?.huidig as { team?: string } | null)?.team ?? null,
           ingedeeldTeamNaam: team.naam,
           selectieGroepId: null,
@@ -168,6 +204,7 @@ export default async function IndelingPage() {
           teamId: team.id,
           gepind: false,
           isNieuw: false,
+          openMemoCount: openMemoPerSpeler[ts.spelerId] ?? 0,
           huidigTeam: (ts.speler?.huidig as { team?: string } | null)?.team ?? null,
           ingedeeldTeamNaam: team.naam,
           selectieGroepId: null,
@@ -235,6 +272,7 @@ export default async function IndelingPage() {
       selectieDames: [] as WerkbordSpelerInTeam[],
       selectieHeren: [] as WerkbordSpelerInTeam[],
       gebundeld: false,
+      openMemoCount: openMemoPerTeam[team.id] ?? 0,
     };
   });
 
@@ -270,6 +308,7 @@ export default async function IndelingPage() {
           teamId: null,
           gepind: false,
           isNieuw: false,
+          openMemoCount: openMemoPerSpeler[sp.spelerId] ?? 0,
           huidigTeam: (sp.speler?.huidig as { team?: string } | null)?.team ?? null,
           ingedeeldTeamNaam: null,
           selectieGroepId: selectieGroep.id,
