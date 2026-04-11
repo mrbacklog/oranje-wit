@@ -704,11 +704,11 @@ function maakSchrijfToolsRest(sessieId: string, gebruikerEmail: string) {
         categorie: string;
         inContext: string;
       }) => {
-        const versie = await getLaatsteVersie(inContext);
+        const versie = await getVersieId(inContext);
         if (!versie) return { fout: "Scenario niet gevonden" };
 
         const team = await prisma.team.create({
-          data: { versieId: versie.id, naam, categorie, volgorde: 99 },
+          data: { versieId: versie, naam, categorie, volgorde: 99 },
         });
 
         await logDaisyActie({
@@ -740,12 +740,12 @@ function maakSchrijfToolsRest(sessieId: string, gebruikerEmail: string) {
         spelerIds: string[];
         inContext: string;
       }) => {
-        const versie = await getLaatsteVersie(inContext);
+        const versie = await getVersieId(inContext);
         if (!versie) return { fout: "Scenario niet gevonden" };
 
         const groep = await prisma.selectieGroep.create({
           data: {
-            versieId: versie.id,
+            versieId: versie,
             naam,
             spelers: {
               create: spelerIds.map((spelerId) => ({ spelerId })),
