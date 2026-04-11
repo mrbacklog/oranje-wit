@@ -40,6 +40,16 @@ export function useWerkbordState(
       naarTeamId: string,
       naarGeslacht: "V" | "M"
     ) => {
+      const huidigSpeler = alleSpelersRef.current.find((s) => s.id === spelerData.id);
+      const huidigTeamId = huidigSpeler?.teamId ?? null;
+      if (huidigTeamId !== null && huidigTeamId !== naarTeamId && huidigTeamId !== vanTeamId) {
+        logger.warn("Duplicaat geblokkeerd: speler al in team", {
+          spelerId: spelerData.id,
+          huidigTeamId,
+          naarTeamId,
+        });
+        return;
+      }
       setTeams((prev) =>
         prev.map((team) => {
           let updated = { ...team };
