@@ -360,6 +360,7 @@ export function WerkbordCanvas({
               team={team}
               zoomLevel={zoomLevel}
               showScores={showScores}
+              openMemoCount={team.openMemoCount}
               isDragging={
                 draggingTeam?.teamId === team.id ||
                 // selectie-partner lift mee op

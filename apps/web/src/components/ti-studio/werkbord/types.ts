@@ -43,6 +43,7 @@ export interface WerkbordSpeler {
   teamId: string | null;
   gepind: boolean;
   isNieuw: boolean;
+  openMemoCount: number;
   huidigTeam: string | null;
   ingedeeldTeamNaam: string | null;
   selectieGroepId: string | null; // null = in team of vrij
@@ -124,6 +125,7 @@ export interface WerkbordTeam {
   gebundeld: boolean;
   // Werkitems (memos, actiepunten)
   werkitems: WerkbordWerkitem[];
+  openMemoCount: number;
 }
 
 export interface WerkbordValidatieItem {

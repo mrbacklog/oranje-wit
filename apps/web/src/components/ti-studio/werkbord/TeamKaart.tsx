@@ -51,6 +51,7 @@ interface TeamKaartProps {
   zoomLevel: ZoomLevel;
   showScores: boolean;
   isDragging?: boolean;
+  openMemoCount?: number;
   onOpenTeamDrawer: (teamId: string) => void;
   onDropSpeler: (
     spelerData: WerkbordSpeler,
@@ -74,6 +75,7 @@ export function TeamKaart({
   zoomLevel,
   showScores,
   isDragging,
+  openMemoCount = 0,
   onOpenTeamDrawer,
   onDropSpeler,
   onHeaderMouseDown,
@@ -191,6 +193,20 @@ export function TeamKaart({
         >
           {selectieLabel}
         </div>
+        {openMemoCount > 0 && (
+          <span
+            style={{
+              fontSize: 10,
+              color: "var(--accent)",
+              fontWeight: 700,
+              lineHeight: 1,
+              flexShrink: 0,
+            }}
+            title={`${openMemoCount} open memo${openMemoCount !== 1 ? "'s" : ""}`}
+          >
+            ▲
+          </span>
+        )}
         <div style={{ display: "flex", gap: 3 }}>
           <span
             style={{
@@ -642,6 +658,7 @@ function DropzoneKolom({
               teamId={teamId}
               selectieGroepId={selectieGroepId}
               zoomLevel={zoomLevel}
+              openMemoCount={sp.speler.openMemoCount}
               onSpelerClick={onSpelerClick}
             />
           ))}
@@ -714,6 +731,7 @@ function ViertalDropzone({
               spelerInTeam={sp}
               teamId={team.id}
               zoomLevel={zoomLevel}
+              openMemoCount={sp.speler.openMemoCount}
               onSpelerClick={onSpelerClick}
             />
           ))
@@ -754,6 +772,7 @@ function ViertalDropzone({
               spelerInTeam={sp}
               teamId={team.id}
               zoomLevel={zoomLevel}
+              openMemoCount={sp.speler.openMemoCount}
               onSpelerClick={onSpelerClick}
             />
           ))

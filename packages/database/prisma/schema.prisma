@@ -1149,7 +1149,9 @@ model Werkitem {
   auteur       User     @relation("WerkitemAuteur", fields: [auteurId], references: [id])
   auteurId     String
 
-  actiepunten  Actiepunt[]
+  actiepunten   Actiepunt[]
+  toelichtingen WerkitemToelichting[]
+  activiteiten  WerkitemLog[]
   volgorde     Int      @default(0)
 
   createdAt    DateTime @default(now())
@@ -1158,6 +1160,43 @@ model Werkitem {
   @@index([kadersId])
   @@index([status])
   @@index([prioriteit])
+}
+
+// auteurNaam/auteurEmail zijn bewust gedenormaliseerd (geen User FK):
+// audit-semantiek — auteur-identiteit wordt vastgelegd op het moment van schrijven,
+// zodat historische vermeldingen intact blijven als een gebruikersaccount wijzigt.
+model WerkitemToelichting {
+  id          String   @id @default(cuid())
+  werkitem    Werkitem @relation(fields: [werkitemId], references: [id], onDelete: Cascade)
+  werkitemId  String
+  auteurNaam  String
+  auteurEmail String
+  tekst       String   @db.Text
+  timestamp   DateTime @default(now())
+
+  @@index([werkitemId])
+}
+
+// WerkitemLog: systeem-events (aanmaken, status-wijziging, verwijderen).
+// VERWIJDERD wordt gelogd vóór de cascade-delete om het event te bewaren.
+model WerkitemLog {
+  id          String   @id @default(cuid())
+  werkitem    Werkitem @relation(fields: [werkitemId], references: [id], onDelete: Cascade)
+  werkitemId  String
+  auteurNaam  String
+  auteurEmail String
+  actie       LogActie
+  detail      String?
+  timestamp   DateTime @default(now())
+
+  @@index([werkitemId])
+}
+
+enum LogActie {
+  AANGEMAAKT
+  BEWERKT
+  STATUS_GEWIJZIGD
+  VERWIJDERD
 }
 
 model Actiepunt {

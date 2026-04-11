@@ -25,6 +25,7 @@ interface TeamKaartSpelerRijProps {
   teamId: string;
   selectieGroepId?: string | null;
   zoomLevel: ZoomLevel;
+  openMemoCount?: number;
   onSpelerClick?: (spelerId: string, teamId: string | null) => void;
 }
 
@@ -33,6 +34,7 @@ export function TeamKaartSpelerRij({
   teamId,
   selectieGroepId,
   zoomLevel,
+  openMemoCount = 0,
   onSpelerClick,
 }: TeamKaartSpelerRijProps) {
   if (zoomLevel === "detail") {
@@ -53,6 +55,7 @@ export function TeamKaartSpelerRij({
         speler={spelerInTeam.speler}
         teamId={teamId}
         selectieGroepId={selectieGroepId}
+        openMemoCount={openMemoCount}
       />
     );
   }
@@ -239,10 +242,12 @@ function NormaalSpelerRij({
   speler,
   teamId,
   selectieGroepId,
+  openMemoCount = 0,
 }: {
   speler: WerkbordSpeler;
   teamId: string;
   selectieGroepId?: string | null;
+  openMemoCount?: number;
 }) {
   const ghostRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -388,6 +393,20 @@ function NormaalSpelerRij({
           <span style={{ fontSize: 9.5, color: "var(--text-3)", flexShrink: 0 }}>
             {leeftijd.toFixed(1)}
           </span>
+          {openMemoCount > 0 && (
+            <span
+              style={{
+                fontSize: 9,
+                color: "var(--accent)",
+                fontWeight: 700,
+                lineHeight: 1,
+                flexShrink: 0,
+              }}
+              title={`${openMemoCount} open memo${openMemoCount !== 1 ? "'s" : ""}`}
+            >
+              ▲
+            </span>
+          )}
         </div>
       </div>
       <style>{`
