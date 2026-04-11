@@ -53,6 +53,8 @@ export async function createWerkitem(
       ((session.user as Record<string, unknown>)?.id as string | undefined) ??
       session.user?.email ??
       "unknown";
+    const auteurNaamCreate = (session.user?.name as string | undefined) ?? auteurId;
+    const auteurEmailCreate = (session.user?.email as string | undefined) ?? auteurId;
     const entiteit = leidEntiteitAf(input);
 
     const werkitem = await prisma.werkitem.create({
@@ -87,7 +89,7 @@ export async function createWerkitem(
       },
     });
 
-    await registreerLog(werkitem.id, auteurId, auteurId, "AANGEMAAKT");
+    await registreerLog(werkitem.id, auteurNaamCreate, auteurEmailCreate, "AANGEMAAKT");
     revalideerPaden();
     return {
       ok: true,
