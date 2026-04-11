@@ -24,6 +24,7 @@ import { valideerWhatIfVoorToepassen } from "./whatif-validatie-actions";
  * 10. Zet what-if op TOEGEPAST
  */
 export async function pasWhatIfToe(whatIfId: string, toelichtingAfwijking?: string): Promise<void> {
+  const session = await requireTC();
   // --- Validatie vóór de merge ---
   const validatie = await valideerWhatIfVoorToepassen(whatIfId);
 
@@ -170,7 +171,6 @@ export async function pasWhatIfToe(whatIfId: string, toelichtingAfwijking?: stri
     if (validatie.heeftAfwijkingen && toelichtingAfwijking) {
       const kadersId = werkindeling.kaders?.id;
       if (kadersId) {
-        const session = await requireTC();
         const user = await tx.user.upsert({
           where: { email: session.user!.email! },
           create: {
@@ -209,6 +209,7 @@ export async function pasWhatIfToe(whatIfId: string, toelichtingAfwijking?: stri
  * Verwerp een what-if. Data blijft bewaard voor historie.
  */
 export async function verwerpWhatIf(whatIfId: string): Promise<void> {
+  await requireTC();
   const whatIf = await prisma.whatIf.findUniqueOrThrow({
     where: { id: whatIfId },
     select: { id: true, status: true, vraag: true },
