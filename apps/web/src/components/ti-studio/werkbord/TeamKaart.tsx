@@ -85,10 +85,12 @@ export function TeamKaart({
   onTitelKlik,
 }: TeamKaartProps) {
   const breedte = KAART_BREEDTE[team.formaat];
+  const isSelectieGebundeld = team.formaat === "selectie" && team.gebundeld;
   const isSelectie = team.formaat === "selectie" && !!partnerTeam;
-  const selectieLabel = isSelectie
-    ? team.selectieNaam || `${team.naam} ↔ ${partnerTeam!.naam}`
-    : team.naam;
+  const selectieLabel =
+    isSelectieGebundeld || isSelectie
+      ? team.selectieNaam || (partnerTeam ? `${team.naam} ↔ ${partnerTeam.naam}` : team.naam)
+      : team.naam;
 
   const [dropOverGeslacht, setDropOverGeslacht] = useState<"V" | "M" | null>(null);
   const [isLanding, setIsLanding] = useState(false);
@@ -118,8 +120,10 @@ export function TeamKaart({
     const raw = e.dataTransfer.getData("speler");
     if (!raw) return;
     const data = JSON.parse(raw) as { speler: WerkbordSpeler; vanTeamId: string | null };
-    if (data.vanTeamId === team.id) return;
-    onDropSpeler(data.speler, data.vanTeamId, data.speler.geslacht);
+    // Als de speler al in een team zit (vanuit pool gedropt), gebruik teamId als effectieve bron
+    const effectiefVanTeamId = data.vanTeamId ?? data.speler.teamId;
+    if (effectiefVanTeamId === team.id) return;
+    onDropSpeler(data.speler, effectiefVanTeamId, data.speler.geslacht);
   }
 
   return (
@@ -207,38 +211,40 @@ export function TeamKaart({
             ▲
           </span>
         )}
-        <div style={{ display: "flex", gap: 3 }}>
-          <span
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 3,
-              fontSize: zoomLevel === "compact" ? 22 : 13,
-              fontWeight: 700,
-              padding: zoomLevel === "compact" ? "2px 6px" : "4px 8px",
-              borderRadius: 6,
-              background: "rgba(236,72,153,.12)",
-              color: "var(--pink)",
-            }}
-          >
-            ♀ {team.dames.length}
-          </span>
-          <span
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 3,
-              fontSize: zoomLevel === "compact" ? 22 : 13,
-              fontWeight: 700,
-              padding: zoomLevel === "compact" ? "2px 6px" : "4px 8px",
-              borderRadius: 6,
-              background: "rgba(96,165,250,.12)",
-              color: "var(--blue)",
-            }}
-          >
-            ♂ {team.heren.length}
-          </span>
-        </div>
+        {zoomLevel !== "compact" && (
+          <div style={{ display: "flex", gap: 3 }}>
+            <span
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 3,
+                fontSize: 13,
+                fontWeight: 700,
+                padding: "4px 8px",
+                borderRadius: 6,
+                background: "rgba(236,72,153,.12)",
+                color: "var(--pink)",
+              }}
+            >
+              ♀ {team.dames.length}
+            </span>
+            <span
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 3,
+                fontSize: 13,
+                fontWeight: 700,
+                padding: "4px 8px",
+                borderRadius: 6,
+                background: "rgba(96,165,250,.12)",
+                color: "var(--blue)",
+              }}
+            >
+              ♂ {team.heren.length}
+            </span>
+          </div>
+        )}
         <div
           onClick={(e) => {
             e.stopPropagation();
@@ -258,10 +264,11 @@ export function TeamKaart({
       </div>
 
       {/* ── DROPZONE ───────────────────────────────────────────────────── */}
-      {isSelectie && team.gebundeld ? (
-        // Gebundeld: ♀ Dames | ♂ Heren (gecombineerde pool)
+      {isSelectieGebundeld ? (
+        // Gebundeld: 2 dame-kolommen | 2 heren-kolommen — altijd 720px breed
         <SelectieBundelDropzone
           team={team}
+          partnerTeam={partnerTeam}
           zoomLevel={zoomLevel}
           onSpelerClick={onSpelerClick}
           onDropSpelerOpSelectie={onDropSpelerOpSelectie}
@@ -467,13 +474,20 @@ function SelectieGeheelDropzone({
     };
   }
 
-  // Volgorde: dam1 | dam2 | her1 | her2 — geslacht eerst, team daarna
+  // Volgorde: dam1 | her1 | dam2 | her2 — team eerst, geslacht daarna
   const cols = [
     {
       id: "dam1",
       label: `♀ ${team.naam}`,
       kleur: "V" as const,
       spelers: team.dames,
+      teamId: team.id,
+    },
+    {
+      id: "her1",
+      label: `♂ ${team.naam}`,
+      kleur: "M" as const,
+      spelers: team.heren,
       teamId: team.id,
     },
     {
@@ -484,13 +498,6 @@ function SelectieGeheelDropzone({
       teamId: partnerTeam.id,
     },
     {
-      id: "her1",
-      label: `♂ ${team.naam}`,
-      kleur: "M" as const,
-      spelers: team.heren,
-      teamId: team.id,
-    },
-    {
       id: "her2",
       label: `♂ ${partnerTeam.naam}`,
       kleur: "M" as const,
@@ -499,28 +506,61 @@ function SelectieGeheelDropzone({
     },
   ];
 
+  const teamLabelStijl: React.CSSProperties = {
+    fontSize: 9,
+    fontWeight: 700,
+    textTransform: "uppercase",
+    letterSpacing: ".5px",
+    color: "var(--text-3)",
+    padding: "3px 8px",
+    borderBottom: "1px solid var(--border-0)",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    flex: 1,
+  };
+
   return (
-    <div style={{ display: "flex" }}>
-      {cols.map((col, i) => {
-        const h = makeHandlers(col.id, col.kleur);
-        return (
-          <DropzoneKolom
-            key={col.id}
-            label={col.label}
-            kleur={col.kleur}
-            spelers={col.spelers}
-            teamId={col.teamId}
-            selectieGroepId={team.selectieGroepId}
-            zoomLevel={zoomLevel}
-            dropActief={dropOver === col.id}
-            onDragOver={h.onDragOver}
-            onDragLeave={h.onDragLeave}
-            onDrop={h.onDrop}
-            onSpelerClick={onSpelerClick}
-            borderRight={i < cols.length - 1}
-          />
-        );
-      })}
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      {/* Teamnamen boven de kolommen: team links | partnerTeam rechts */}
+      {zoomLevel !== "compact" && (
+        <div style={{ display: "flex", borderBottom: "1px solid var(--border-0)" }}>
+          <div
+            style={{
+              ...teamLabelStijl,
+              borderBottom: "none",
+              borderRight: "1px solid var(--border-0)",
+            }}
+          >
+            {team.naam}
+          </div>
+          <div style={{ ...teamLabelStijl, borderBottom: "none", textAlign: "right" }}>
+            {partnerTeam.naam}
+          </div>
+        </div>
+      )}
+      <div style={{ display: "flex" }}>
+        {cols.map((col, i) => {
+          const h = makeHandlers(col.id, col.kleur);
+          return (
+            <DropzoneKolom
+              key={col.id}
+              label={col.label}
+              kleur={col.kleur}
+              spelers={col.spelers}
+              teamId={col.teamId}
+              selectieGroepId={team.selectieGroepId}
+              zoomLevel={zoomLevel}
+              dropActief={dropOver === col.id}
+              onDragOver={h.onDragOver}
+              onDragLeave={h.onDragLeave}
+              onDrop={h.onDrop}
+              onSpelerClick={onSpelerClick}
+              borderRight={i < cols.length - 1}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -579,8 +619,8 @@ function DropzoneKolom({
         transition: "background 120ms ease",
       }}
     >
-      {/* Label: verborgen in compact — Venus/Mars icoon dient als label */}
-      {!isCompact && (
+      {/* Label: verborgen in compact of als label leeg is */}
+      {!isCompact && label && (
         <div
           style={{
             fontSize: 8,
@@ -833,15 +873,19 @@ function AchtalDropzone({
   );
 }
 
-// ── Selectie gebundeld: 2 kolommen (♀ Dames | ♂ Heren) ─────────────────────
+// ── Selectie gebundeld: 2 kolommen compact, 4 kolommen normaal/detail ────────
+// Normaal/detail: dames over 2 kolommen, heren over 2 kolommen (elk 180px).
+// Compact: 2 kolommen met totaaltellers (♀ N | ♂ N).
 
 function SelectieBundelDropzone({
   team,
+  partnerTeam,
   zoomLevel,
   onSpelerClick,
   onDropSpelerOpSelectie,
 }: {
   team: WerkbordTeam;
+  partnerTeam?: WerkbordTeam | null;
   zoomLevel: ZoomLevel;
   onSpelerClick?: (spelerId: string, teamId: string | null) => void;
   onDropSpelerOpSelectie?: (
@@ -851,13 +895,13 @@ function SelectieBundelDropzone({
     geslacht: "V" | "M"
   ) => void;
 }) {
-  const [dropOver, setDropOver] = useState<string | null>(null);
+  const [dropOver, setDropOver] = useState<"V" | "M" | null>(null);
 
-  function makeHandlers(col: string, geslacht: "V" | "M") {
+  function makeHandlers(geslacht: "V" | "M") {
     return {
       onDragOver: (e: React.DragEvent) => {
         e.preventDefault();
-        setDropOver(col);
+        setDropOver(geslacht);
       },
       onDragLeave: () => setDropOver(null),
       onDrop: (e: React.DragEvent) => {
@@ -877,45 +921,119 @@ function SelectieBundelDropzone({
     };
   }
 
-  const cols = [
+  if (zoomLevel === "compact") {
+    // Compact: 2 brede kolommen met totaaltellers
+    const cols = [
+      { id: "dames", label: "♀ Dames", kleur: "V" as const, spelers: team.selectieDames },
+      { id: "heren", label: "♂ Heren", kleur: "M" as const, spelers: team.selectieHeren },
+    ];
+    return (
+      <div style={{ display: "flex" }}>
+        {cols.map((col, i) => {
+          const h = makeHandlers(col.kleur);
+          return (
+            <DropzoneKolom
+              key={col.id}
+              label={col.label}
+              kleur={col.kleur}
+              spelers={col.spelers}
+              teamId={team.id}
+              selectieGroepId={team.selectieGroepId}
+              zoomLevel={zoomLevel}
+              dropActief={dropOver === col.kleur}
+              onDragOver={h.onDragOver}
+              onDragLeave={h.onDragLeave}
+              onDrop={h.onDrop}
+              onSpelerClick={onSpelerClick}
+              borderRight={i === 0}
+            />
+          );
+        })}
+      </div>
+    );
+  }
+
+  // Normaal/detail: 4 kolommen — dames gesplitst over 2, heren over 2
+  const damesSorted = [...team.selectieDames].sort((a, b) =>
+    a.speler.roepnaam.localeCompare(b.speler.roepnaam, "nl")
+  );
+  const herenSorted = [...team.selectieHeren].sort((a, b) =>
+    a.speler.roepnaam.localeCompare(b.speler.roepnaam, "nl")
+  );
+
+  const cols4 = [
     {
-      id: "dames",
+      id: "dam-a",
       label: "♀ Dames",
       kleur: "V" as const,
-      spelers: team.selectieDames,
-      teamId: team.id,
+      spelers: damesSorted.filter((_, i) => i % 2 === 0),
     },
     {
-      id: "heren",
+      id: "dam-b",
+      label: "",
+      kleur: "V" as const,
+      spelers: damesSorted.filter((_, i) => i % 2 === 1),
+    },
+    {
+      id: "her-a",
       label: "♂ Heren",
       kleur: "M" as const,
-      spelers: team.selectieHeren,
-      teamId: team.id,
+      spelers: herenSorted.filter((_, i) => i % 2 === 0),
+    },
+    {
+      id: "her-b",
+      label: "",
+      kleur: "M" as const,
+      spelers: herenSorted.filter((_, i) => i % 2 === 1),
     },
   ];
 
+  const centerLabel = partnerTeam
+    ? `${team.selectieNaam ?? team.naam} ↔ ${partnerTeam.naam}`
+    : (team.selectieNaam ?? team.naam);
+
   return (
-    <div style={{ display: "flex" }}>
-      {cols.map((col, i) => {
-        const h = makeHandlers(col.id, col.kleur);
-        return (
-          <DropzoneKolom
-            key={col.id}
-            label={col.label}
-            kleur={col.kleur}
-            spelers={col.spelers}
-            teamId={col.teamId}
-            selectieGroepId={team.selectieGroepId}
-            zoomLevel={zoomLevel}
-            dropActief={dropOver === col.id}
-            onDragOver={h.onDragOver}
-            onDragLeave={h.onDragLeave}
-            onDrop={h.onDrop}
-            onSpelerClick={onSpelerClick}
-            borderRight={i < cols.length - 1}
-          />
-        );
-      })}
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      {/* Beide teamnamen gecentreerd in het midden */}
+      <div
+        style={{
+          fontSize: 9,
+          fontWeight: 700,
+          textTransform: "uppercase",
+          letterSpacing: ".5px",
+          color: "var(--text-3)",
+          padding: "3px 8px",
+          borderBottom: "1px solid var(--border-0)",
+          textAlign: "center",
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+        }}
+      >
+        {centerLabel}
+      </div>
+      <div style={{ display: "flex" }}>
+        {cols4.map((col, i) => {
+          const h = makeHandlers(col.kleur);
+          return (
+            <DropzoneKolom
+              key={col.id}
+              label={col.label}
+              kleur={col.kleur}
+              spelers={col.spelers}
+              teamId={team.id}
+              selectieGroepId={team.selectieGroepId}
+              zoomLevel={zoomLevel}
+              dropActief={dropOver === col.kleur}
+              onDragOver={h.onDragOver}
+              onDragLeave={h.onDragLeave}
+              onDrop={h.onDrop}
+              onSpelerClick={onSpelerClick}
+              borderRight={i < cols4.length - 1}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 }

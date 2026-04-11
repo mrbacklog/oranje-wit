@@ -4,8 +4,7 @@ import { useState } from "react";
 import "./tokens.css";
 import type { WerkbordSpeler, SpelerFilter, WerkbordReservering } from "./types";
 import { SpelerKaart } from "./SpelerKaart";
-
-const HUIDIG_SEIZOEN_EINDJAAR = 2026;
+import { PEILJAAR } from "@oranje-wit/types";
 
 interface SpelersPoolDrawerProps {
   open: boolean;
@@ -247,7 +246,7 @@ export function SpelersPoolDrawer({
                 key={sp.id}
                 speler={sp}
                 vanTeamId={sp.teamId}
-                seizoenEindjaar={HUIDIG_SEIZOEN_EINDJAAR}
+                seizoenEindjaar={PEILJAAR}
               />
             ))}
           </>
@@ -275,7 +274,7 @@ export function SpelersPoolDrawer({
                 key={sp.id}
                 speler={sp}
                 vanTeamId={sp.teamId}
-                seizoenEindjaar={HUIDIG_SEIZOEN_EINDJAAR}
+                seizoenEindjaar={PEILJAAR}
               />
             ))}
           </>
@@ -317,12 +316,33 @@ export function SpelersPoolDrawer({
               <span style={{ color: "var(--text-2)", fontWeight: 700 }}>{arSpelers.length}</span>
             </div>
             {arSpelers.map((sp) => (
-              <SpelerKaart
-                key={sp.id}
-                speler={sp}
-                vanTeamId={null}
-                seizoenEindjaar={HUIDIG_SEIZOEN_EINDJAAR}
-              />
+              <SpelerKaart key={sp.id} speler={sp} vanTeamId={null} seizoenEindjaar={PEILJAAR} />
+            ))}
+          </>
+        )}
+        {reserveringen.length > 0 && (
+          <>
+            <div style={{ margin: "8px 10px 0", borderTop: "1px solid var(--border-0)" }} />
+            <div
+              style={{
+                padding: "8px 10px 4px",
+                fontSize: 9,
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: ".6px",
+                color: "var(--text-3)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <span>Reservering</span>
+              <span style={{ color: "var(--text-2)", fontWeight: 700 }}>
+                {reserveringen.length}
+              </span>
+            </div>
+            {reserveringen.map((r) => (
+              <ReserveringKaartje key={r.id} reservering={r} />
             ))}
           </>
         )}

@@ -23,6 +23,7 @@ export function useWerkbordState(
   const [teams, setTeams] = useState<WerkbordTeam[]>(initieleTeams);
   const [alleSpelers, setAlleSpelers] = useState<WerkbordSpeler[]>(initieleSpelers);
   const [validatie, setValidatie] = useState<WerkbordValidatieItem[]>(initieleValidatie);
+  const [opslaanStatus, setOpslaanStatus] = useState<"idle" | "bezig" | "ok" | "fout">("idle");
 
   const alleSpelersRef = useRef(alleSpelers);
   useEffect(() => {
@@ -40,6 +41,16 @@ export function useWerkbordState(
       naarTeamId: string,
       naarGeslacht: "V" | "M"
     ) => {
+      const huidigSpeler = alleSpelersRef.current.find((s) => s.id === spelerData.id);
+      const huidigTeamId = huidigSpeler?.teamId ?? null;
+      if (huidigTeamId !== null && huidigTeamId !== naarTeamId && huidigTeamId !== vanTeamId) {
+        logger.warn("Duplicaat geblokkeerd: speler al in team", {
+          spelerId: spelerData.id,
+          huidigTeamId,
+          naarTeamId,
+        });
+        return;
+      }
       setTeams((prev) =>
         prev.map((team) => {
           let updated = { ...team };
@@ -305,6 +316,7 @@ export function useWerkbordState(
   // ─── API-calls ───────────────────────────────────────────────
 
   async function stuurMutatie(body: Record<string, unknown>) {
+    setOpslaanStatus("bezig");
     try {
       const resp = await fetch(`/api/ti-studio/indeling/${versieId}`, {
         method: "POST",
@@ -316,8 +328,13 @@ export function useWerkbordState(
         if (data.validatieUpdates?.length) {
           updateValidatieLokaal(data.validatieUpdates);
         }
+        setOpslaanStatus("ok");
+      } else {
+        setOpslaanStatus("fout");
+        logger.warn("stuurMutatie: server fout", { status: resp.status });
       }
     } catch (error) {
+      setOpslaanStatus("fout");
       logger.warn("stuurMutatie fout (optimistic update blijft):", error);
     }
   }
@@ -394,6 +411,7 @@ export function useWerkbordState(
     teams,
     alleSpelers,
     validatie,
+    opslaanStatus,
     updateValidatieLokaal,
     verplaatsSpeler,
     verwijderSpelerUitTeam,

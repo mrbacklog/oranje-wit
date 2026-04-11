@@ -120,11 +120,13 @@ export async function getPosities(versieId: string) {
 }
 
 export async function slaPositiesOp(versieId: string, posities: Record<string, unknown>) {
+  await requireTC();
   await assertVersieBewerkbaar(versieId);
   await prisma.versie.update({ where: { id: versieId }, data: { posities } });
 }
 
 export async function hernoem(werkindelingId: string, naam: string) {
+  await requireTC();
   await assertWerkindelingBewerkbaar(werkindelingId);
   if (!naam.trim()) throw new Error("Naam mag niet leeg zijn");
   await prisma.werkindeling.update({
@@ -139,6 +141,7 @@ export async function voegSpelerToeAanTeam(
   spelerId: string,
   statusOverride?: string
 ) {
+  await requireTC();
   await assertTeamBewerkbaar(teamId);
   await assertSpelerVrij(spelerId, teamId);
   await anyTeam.update({
@@ -151,12 +154,14 @@ export async function voegSpelerToeAanTeam(
 }
 
 export async function verwijderSpelerUitTeam(teamId: string, spelerId: string) {
+  await requireTC();
   await assertTeamBewerkbaar(teamId);
   await prisma.teamSpeler.deleteMany({ where: { teamId, spelerId } });
   revalidatePath("/ti-studio/indeling");
 }
 
 export async function verwijderWerkindeling(werkindelingId: string, auteur: string) {
+  await requireTC();
   await assertWerkindelingBewerkbaar(werkindelingId);
   await maakWerkindelingSnapshot(werkindelingId, "VERWIJDERD", auteur);
   await prisma.werkindeling.update({

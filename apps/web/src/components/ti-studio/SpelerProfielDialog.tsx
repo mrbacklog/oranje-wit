@@ -107,6 +107,7 @@ const T = {
 type StatusKey =
   | "BESCHIKBAAR"
   | "TWIJFELT"
+  | "GEBLESSEERD"
   | "GAAT_STOPPEN"
   | "NIEUW_POTENTIEEL"
   | "NIEUW_DEFINITIEF"
@@ -118,6 +119,7 @@ const STATUS_CONFIG: Record<
 > = {
   BESCHIKBAAR: { label: "Beschikbaar", kleur: T.ok, bg: T.okDim, border: T.okBorder },
   TWIJFELT: { label: "Twijfelt", kleur: T.warn, bg: T.warnDim, border: T.warnBorder },
+  GEBLESSEERD: { label: "Geblesseerd", kleur: T.err, bg: T.errDim, border: T.errBorder },
   GAAT_STOPPEN: { label: "Stopt", kleur: T.err, bg: T.errDim, border: T.errBorder },
   NIEUW_POTENTIEEL: {
     label: "Nieuw (potentieel)",
