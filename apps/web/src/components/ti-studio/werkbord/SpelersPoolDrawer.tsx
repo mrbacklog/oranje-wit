@@ -4,8 +4,7 @@ import { useState } from "react";
 import "./tokens.css";
 import type { WerkbordSpeler, SpelerFilter, WerkbordReservering } from "./types";
 import { SpelerKaart } from "./SpelerKaart";
-
-const HUIDIG_SEIZOEN_EINDJAAR = 2026;
+import { PEILJAAR } from "@oranje-wit/types";
 
 interface SpelersPoolDrawerProps {
   open: boolean;
@@ -247,7 +246,7 @@ export function SpelersPoolDrawer({
                 key={sp.id}
                 speler={sp}
                 vanTeamId={sp.teamId}
-                seizoenEindjaar={HUIDIG_SEIZOEN_EINDJAAR}
+                seizoenEindjaar={PEILJAAR}
               />
             ))}
           </>
@@ -275,7 +274,7 @@ export function SpelersPoolDrawer({
                 key={sp.id}
                 speler={sp}
                 vanTeamId={sp.teamId}
-                seizoenEindjaar={HUIDIG_SEIZOEN_EINDJAAR}
+                seizoenEindjaar={PEILJAAR}
               />
             ))}
           </>
@@ -317,12 +316,7 @@ export function SpelersPoolDrawer({
               <span style={{ color: "var(--text-2)", fontWeight: 700 }}>{arSpelers.length}</span>
             </div>
             {arSpelers.map((sp) => (
-              <SpelerKaart
-                key={sp.id}
-                speler={sp}
-                vanTeamId={null}
-                seizoenEindjaar={HUIDIG_SEIZOEN_EINDJAAR}
-              />
+              <SpelerKaart key={sp.id} speler={sp} vanTeamId={null} seizoenEindjaar={PEILJAAR} />
             ))}
           </>
         )}

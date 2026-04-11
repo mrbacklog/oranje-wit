@@ -35,6 +35,7 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
     teams,
     alleSpelers,
     validatie,
+    opslaanStatus,
     updateValidatieLokaal,
     verplaatsSpeler,
     verwijderSpelerUitTeam,
@@ -120,7 +121,43 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
         onTogglePanelRechts={togglePanelRechts}
         onVersiesOpen={() => togglePanelRechts("versies")}
       />
-      <div style={{ display: "flex", overflow: "hidden" }}>
+      <div style={{ display: "flex", overflow: "hidden", position: "relative" }}>
+        {opslaanStatus === "bezig" && (
+          <div
+            style={{
+              position: "absolute",
+              bottom: 12,
+              right: 12,
+              zIndex: 100,
+              background: "var(--bg-2)",
+              border: "1px solid var(--border-1)",
+              borderRadius: 6,
+              padding: "4px 10px",
+              fontSize: 11,
+              color: "var(--text-2)",
+            }}
+          >
+            Opslaan...
+          </div>
+        )}
+        {opslaanStatus === "fout" && (
+          <div
+            style={{
+              position: "absolute",
+              bottom: 12,
+              right: 12,
+              zIndex: 100,
+              background: "rgba(239,68,68,.15)",
+              border: "1px solid rgba(239,68,68,.4)",
+              borderRadius: 6,
+              padding: "4px 10px",
+              fontSize: 11,
+              color: "#ef4444",
+            }}
+          >
+            Opslaan mislukt
+          </div>
+        )}
         <SpelersPoolDrawer
           open={panelLinks === "pool"}
           spelers={alleSpelers}
