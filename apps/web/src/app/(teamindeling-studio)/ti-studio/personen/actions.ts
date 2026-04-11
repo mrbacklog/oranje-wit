@@ -190,6 +190,7 @@ export async function createPin(data: {
 }
 
 export async function deletePin(pinId: string) {
+  await requireTC();
   const pin = await prisma.pin.findUniqueOrThrow({
     where: { id: pinId },
     select: { kadersId: true },
@@ -199,6 +200,7 @@ export async function deletePin(pinId: string) {
 }
 
 export async function getPinsVoorWerkindeling(werkindelingId: string) {
+  await requireTC();
   const werkindeling = await prisma.werkindeling.findUniqueOrThrow({
     where: { id: werkindelingId },
     select: { kadersId: true },
