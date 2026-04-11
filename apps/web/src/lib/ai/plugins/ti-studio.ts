@@ -38,6 +38,14 @@ async function getLaatsteVersie(werkindelingId: string) {
 }
 
 async function getVersieId(inContext: string): Promise<string | null> {
+  if (inContext.startsWith("v:")) {
+    const id = inContext.slice(2);
+    const versie = await prisma.versie.findUnique({
+      where: { id },
+      select: { id: true },
+    });
+    return versie?.id ?? null;
+  }
   if (inContext === "werkindeling") {
     const blauwdruk = await getWerkBlauwdruk();
     if (!blauwdruk) return null;
