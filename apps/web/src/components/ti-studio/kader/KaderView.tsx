@@ -7,6 +7,8 @@ import {
   TC_DEFAULTS,
   mergeMetDefaults,
 } from "@/app/(teamindeling-studio)/ti-studio/kader/kader-defaults";
+import type { WerkbordWerkitem } from "@/components/ti-studio/werkbord/types";
+import { DoelgroepMemoSectie } from "@/components/ti-studio/DoelgroepMemoSectie";
 
 // ---------------------------------------------------------------------------
 // Teamtype data
@@ -437,9 +439,18 @@ type OpslaanStatus = "idle" | "saving" | "ok" | "error";
 interface KaderViewProps {
   seizoen: string;
   opgeslagenKaders: Record<string, TcKader> | null;
+  kadersId: string;
+  tcAlgemeenMemos: WerkbordWerkitem[];
+  memosPerDoelgroep: Record<string, WerkbordWerkitem[]>;
 }
 
-export function KaderView({ seizoen, opgeslagenKaders }: KaderViewProps) {
+export function KaderView({
+  seizoen,
+  opgeslagenKaders,
+  kadersId,
+  tcAlgemeenMemos,
+  memosPerDoelgroep,
+}: KaderViewProps) {
   const initieleKaders = mergeMetDefaults(opgeslagenKaders);
 
   const [actieveTab, setActieveTab] = useState<TeamtypeId>("SEN_A");
@@ -902,6 +913,18 @@ export function KaderView({ seizoen, opgeslagenKaders }: KaderViewProps) {
             />
           )}
         </div>
+      </div>
+
+      {/* Scheidingslijn */}
+      <div style={{ height: 1, background: "var(--border-0)", margin: "32px 0", flexShrink: 0 }} />
+
+      {/* Memo's */}
+      <div style={{ padding: "0 20px 32px", overflowY: "auto", flexShrink: 0 }}>
+        <DoelgroepMemoSectie
+          kadersId={kadersId}
+          tcAlgemeenWerkitems={tcAlgemeenMemos}
+          werkitemsPerDoelgroep={memosPerDoelgroep}
+        />
       </div>
     </div>
   );

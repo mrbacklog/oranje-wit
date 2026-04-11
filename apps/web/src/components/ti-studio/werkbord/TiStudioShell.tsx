@@ -87,6 +87,8 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
     setProfielTeamId(teamId);
   }
 
+  const alleReserveringen = initieleState.alleReserveringen ?? [];
+
   const arCount = alleSpelers.filter((s) => s.status === "ALGEMEEN_RESERVE").length;
   const inTeDelenTotaal = initieleState.totalSpelers - arCount;
   const ingeplandSpelers = alleSpelers.filter(
@@ -100,7 +102,8 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
       style={{
         display: "grid",
         gridTemplateRows: "var(--toolbar) 1fr",
-        height: "100%",
+        flex: 1,
+        minHeight: 0,
         overflow: "hidden",
       }}
     >
@@ -121,6 +124,7 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
         <SpelersPoolDrawer
           open={panelLinks === "pool"}
           spelers={alleSpelers}
+          reserveringen={alleReserveringen}
           onClose={() => setPanelLinks(null)}
         />
         <StafPoolDrawer
@@ -148,7 +152,6 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
           onTeamDragEnd={slaTeamPositieOp}
           onSpelerClick={openProfiel}
           onDropSpelerOpSelectie={onDropSpelerOpSelectieFn}
-          onToggleBundeling={toggleBundeling}
           onTitelKlik={openTeamDialog}
         />
         <TeamDrawer
@@ -166,6 +169,7 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
           onSelectieGekoppeld={koppelSelectieLokaal}
           onSelectieOntkoppeld={ontkoppelSelectieLokaal}
           onSelectieNaamUpdated={updateSelectieNaamLokaal}
+          onToggleBundeling={toggleBundeling}
         />
         <VersiesDrawer
           open={panelRechts === "versies"}

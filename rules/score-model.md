@@ -1,3 +1,10 @@
+---
+paths:
+  - "apps/web/src/**/*score*"
+  - "apps/web/src/**/*uss*"
+  - "packages/database/**/*score*"
+---
+
 # Score-Model — Geunificeerde Score Schaal (USS)
 
 > **Versie:** 1.0

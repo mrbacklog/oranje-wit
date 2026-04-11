@@ -35,6 +35,7 @@ interface TeamDrawerProps {
   onSelectieGekoppeld: (teamId: string, selectieGroepId: string) => void;
   onSelectieOntkoppeld: (selectieGroepId: string) => void;
   onSelectieNaamUpdated: (selectieGroepId: string, naam: string) => void;
+  onToggleBundeling: (selectieGroepId: string, gebundeld: boolean) => void | Promise<void>;
 }
 
 const VAL_KLEUR: Record<string, string> = {
@@ -471,6 +472,7 @@ function SelectieKoppeling({
   onSelectieGekoppeld,
   onSelectieOntkoppeld,
   onSelectieNaamUpdated,
+  onToggleBundeling,
 }: {
   team: WerkbordTeam;
   alleTeams: WerkbordTeam[];
@@ -478,6 +480,7 @@ function SelectieKoppeling({
   onSelectieGekoppeld: (teamId: string, selectieGroepId: string) => void;
   onSelectieOntkoppeld: (selectieGroepId: string) => void;
   onSelectieNaamUpdated: (selectieGroepId: string, naam: string) => void;
+  onToggleBundeling: (selectieGroepId: string, gebundeld: boolean) => void | Promise<void>;
 }) {
   const [isPending, startTransition] = useTransition();
   const [gekozenTeamId, setGekozenTeamId] = useState("");
@@ -605,6 +608,49 @@ function SelectieKoppeling({
               </div>
             )}
           </div>
+          {/* Bundeling toggle */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "flex-start",
+              justifyContent: "space-between",
+              gap: 10,
+              padding: "8px 0",
+              borderTop: "1px solid var(--border-0)",
+            }}
+          >
+            <div>
+              <div
+                style={{ fontSize: 11, fontWeight: 600, color: "var(--text-1)", marginBottom: 2 }}
+              >
+                Gecombineerde spelerspool
+              </div>
+              <div style={{ fontSize: 10, color: "var(--text-3)", lineHeight: 1.4 }}>
+                Dames en heren van beide teams samen op één kaart, verdeeld per geslacht.
+              </div>
+            </div>
+            <button
+              onClick={() => onToggleBundeling(team.selectieGroepId!, !team.gebundeld)}
+              disabled={isPending}
+              title={team.gebundeld ? "Ontbundelen" : "Bundelen"}
+              style={{
+                flexShrink: 0,
+                padding: "4px 10px",
+                fontSize: 11,
+                fontWeight: 700,
+                borderRadius: 6,
+                border: `1px solid ${team.gebundeld ? "var(--accent)" : "var(--border-0)"}`,
+                background: team.gebundeld ? "var(--accent-dim)" : "var(--bg-2)",
+                color: team.gebundeld ? "var(--accent)" : "var(--text-2)",
+                cursor: "pointer",
+                fontFamily: "inherit",
+                opacity: isPending ? 0.6 : 1,
+              }}
+            >
+              {team.gebundeld ? "Aan" : "Uit"}
+            </button>
+          </div>
+
           <button
             onClick={ontkoppel}
             disabled={isPending}
@@ -684,6 +730,7 @@ function TeamDetailPanel({
   onSelectieGekoppeld,
   onSelectieOntkoppeld,
   onSelectieNaamUpdated,
+  onToggleBundeling,
 }: {
   team: WerkbordTeam;
   alleTeams: WerkbordTeam[];
@@ -696,6 +743,7 @@ function TeamDetailPanel({
   onSelectieGekoppeld: (teamId: string, selectieGroepId: string) => void;
   onSelectieOntkoppeld: (selectieGroepId: string) => void;
   onSelectieNaamUpdated: (selectieGroepId: string, naam: string) => void;
+  onToggleBundeling: (selectieGroepId: string, gebundeld: boolean) => void | Promise<void>;
 }) {
   const [verwijderBezig, setVerwijderBezig] = useState(false);
   const [verwijderConfirm, setVerwijderConfirm] = useState(false);
@@ -771,6 +819,7 @@ function TeamDetailPanel({
         onSelectieGekoppeld={onSelectieGekoppeld}
         onSelectieOntkoppeld={onSelectieOntkoppeld}
         onSelectieNaamUpdated={onSelectieNaamUpdated}
+        onToggleBundeling={onToggleBundeling}
       />
 
       {/* Danger zone */}
@@ -878,6 +927,7 @@ export function TeamDrawer({
   onSelectieGekoppeld,
   onSelectieOntkoppeld,
   onSelectieNaamUpdated,
+  onToggleBundeling,
 }: TeamDrawerProps) {
   const geselecteerdTeam = teams.find((t) => t.id === geselecteerdTeamId) ?? null;
   const gesorteerdeTeams = [...teams].sort((a, b) => a.volgorde - b.volgorde);
@@ -913,6 +963,7 @@ export function TeamDrawer({
           onSelectieGekoppeld={onSelectieGekoppeld}
           onSelectieOntkoppeld={onSelectieOntkoppeld}
           onSelectieNaamUpdated={onSelectieNaamUpdated}
+          onToggleBundeling={onToggleBundeling}
         />
       ) : (
         <>

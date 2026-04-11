@@ -1,3 +1,10 @@
+---
+paths:
+  - "apps/web/src/**/*score*"
+  - "apps/web/src/**/*uss*"
+  - "packages/database/**/*score*"
+---
+
 # Score-Model Compact — USS Referentie
 
 > Versie 1.0 — Zie `rules/score-model.md` voor volledige uitleg, TypeScript, kalibratie en voorbeelden.

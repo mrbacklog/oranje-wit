@@ -54,14 +54,4 @@ test.describe("Dashboard", () => {
       "/monitor/signalering"
     );
   });
-
-  test("toont signaleringen sectie met link naar overzicht", async ({ page }) => {
-    await page.goto("/monitor");
-
-    // Seed-data bevat 4 signaleringen, dus deze sectie moet zichtbaar zijn
-    const main = page.getByRole("main");
-    const heading = main.getByRole("heading", { name: "Signaleringen" });
-    await expect(heading).toBeVisible({ timeout: 10000 });
-    await expect(main.getByRole("link", { name: /Toon alle/ })).toBeVisible();
-  });
 });

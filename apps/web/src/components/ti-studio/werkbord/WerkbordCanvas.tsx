@@ -35,7 +35,6 @@ interface WerkbordCanvasProps {
     naarSelectieGroepId: string,
     geslacht: "V" | "M"
   ) => void;
-  onToggleBundeling: (selectieGroepId: string, gebundeld: boolean) => void;
   onTitelKlik?: (teamId: string) => void;
 }
 
@@ -105,7 +104,6 @@ export function WerkbordCanvas({
   onTeamDragEnd,
   onSpelerClick,
   onDropSpelerOpSelectie,
-  onToggleBundeling,
   onTitelKlik,
 }: WerkbordCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -362,6 +360,15 @@ export function WerkbordCanvas({
               team={team}
               zoomLevel={zoomLevel}
               showScores={showScores}
+              openMemoCount={team.openMemoCount}
+              isDragging={
+                draggingTeam?.teamId === team.id ||
+                // selectie-partner lift mee op
+                (!!team.selectieGroepId &&
+                  !!draggingTeam &&
+                  teams.find((t) => t.id === draggingTeam.teamId)?.selectieGroepId ===
+                    team.selectieGroepId)
+              }
               onOpenTeamDrawer={onOpenTeamDrawer}
               onDropSpeler={(spelerData, vanTeamId, naarGeslacht) =>
                 onDropSpelerOpTeam(spelerData, vanTeamId, team.id, naarGeslacht)
@@ -378,7 +385,6 @@ export function WerkbordCanvas({
                   geslacht
                 )
               }
-              onToggleBundeling={onToggleBundeling}
               onTitelKlik={
                 onTitelKlik
                   ? (id) => {

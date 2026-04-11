@@ -1,16 +1,19 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useTransition } from "react";
 import type { StudioSpeler } from "../actions";
+import { togglePinSpeler } from "../actions";
 
-interface SpelersOverzichtStudioProps {
-  spelers: StudioSpeler[];
-  onRowClick: (spelerId: string) => void;
-}
-
-type SortKey = "achternaam" | "geboortejaar" | "status" | "gezienStatus";
+type SortKey =
+  | "achternaam"
+  | "geboortejaar"
+  | "status"
+  | "gezienStatus"
+  | "huidigTeam"
+  | "indeling"
+  | "memo"
+  | "gepind";
 type SortDir = "asc" | "desc";
-
 type StatusFilter =
   | "allen"
   | "BESCHIKBAAR"
@@ -18,7 +21,6 @@ type StatusFilter =
   | "GAAT_STOPPEN"
   | "NIEUW"
   | "ALGEMEEN_RESERVE";
-type GeslachtFilter = "allen" | "M" | "V";
 
 const STATUS_LABELS: Record<string, string> = {
   BESCHIKBAAR: "Beschikbaar",
@@ -46,110 +48,134 @@ const GEZIEN_DOT: Record<string, string> = {
   ONGEZIEN: "#4b5563",
 };
 
-const GEZIEN_LABEL: Record<string, string> = {
-  GROEN: "Groen",
-  GEEL: "Geel",
-  ORANJE: "Oranje",
-  ROOD: "Rood",
-  ONGEZIEN: "Ongezien",
-};
-
 const KLEUR_DOT: Record<string, string> = {
   blauw: "#3b82f6",
   groen: "#22c55e",
   geel: "#eab308",
   oranje: "#f97316",
   rood: "#ef4444",
-  paars: "#a855f7",
+  senior: "#94a3b8",
+  BLAUW: "#3b82f6",
+  GROEN: "#22c55e",
+  GEEL: "#eab308",
+  ORANJE: "#f97316",
+  ROOD: "#ef4444",
+  SENIOR: "#94a3b8",
 };
-
-function geboortejaarKleur(jaar: number): string {
-  const leeftijd = new Date().getFullYear() - jaar;
-  if (leeftijd <= 8) return "#3b82f6";
-  if (leeftijd <= 9) return "#22c55e";
-  if (leeftijd <= 12) return "#eab308";
-  if (leeftijd <= 15) return "#f97316";
-  if (leeftijd <= 18) return "#ef4444";
-  return "#6b7280";
-}
-
-function initialen(roepnaam: string, achternaam: string): string {
-  const v = roepnaam.trim().charAt(0).toUpperCase();
-  const a = achternaam.trim().charAt(0).toUpperCase();
-  return `${v}${a}`.trim() || "??";
-}
 
 function matchesStatusFilter(speler: StudioSpeler, filter: StatusFilter): boolean {
   if (filter === "allen") return true;
-  if (filter === "NIEUW") {
+  if (filter === "NIEUW")
     return speler.status === "NIEUW_POTENTIEEL" || speler.status === "NIEUW_DEFINITIEF";
-  }
   return speler.status === filter;
 }
 
-const STATUS_FILTER_LABELS: { value: StatusFilter; label: string }[] = [
-  { value: "allen", label: "Allen" },
-  { value: "BESCHIKBAAR", label: "Beschikbaar" },
-  { value: "TWIJFELT", label: "Twijfelt" },
-  { value: "GAAT_STOPPEN", label: "Gaat stoppen" },
-  { value: "NIEUW", label: "Nieuw" },
-  { value: "ALGEMEEN_RESERVE", label: "Reserve" },
-];
+interface Props {
+  spelers: StudioSpeler[];
+  onRowClick: (spelerId: string) => void;
+}
 
-export default function SpelersOverzichtStudio({
-  spelers,
-  onRowClick,
-}: SpelersOverzichtStudioProps) {
+export default function SpelersOverzichtStudio({ spelers, onRowClick }: Props) {
   const [zoekterm, setZoekterm] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("allen");
-  const [geslachtFilter, setGeslachtFilter] = useState<GeslachtFilter>("allen");
+  const [huidigTeamFilter, setHuidigTeamFilter] = useState("allen");
+  const [indelingFilter, setIndelingFilter] = useState("allen");
+  const [memoFilter, setMemoFilter] = useState(false);
+  const [gepindFilter, setGepindFilter] = useState(false);
   const [sortKey, setSortKey] = useState<SortKey>("achternaam");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
+  const [, startTransition] = useTransition();
 
-  function handleKolomKlik(key: SortKey) {
-    if (sortKey === key) {
-      setSortDir((d) => (d === "asc" ? "desc" : "asc"));
-    } else {
+  const huidigeTeams = useMemo(
+    () => [...new Set(spelers.map((s) => s.huidigTeamNaam).filter(Boolean))].sort() as string[],
+    [spelers]
+  );
+  const indelingTeams = useMemo(
+    () =>
+      [
+        ...new Set(spelers.map((s) => s.huidigIndelingTeam?.naam).filter(Boolean)),
+      ].sort() as string[],
+    [spelers]
+  );
+
+  function handleSort(key: SortKey) {
+    if (sortKey === key) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    else {
       setSortKey(key);
       setSortDir("asc");
     }
   }
 
+  function handlePinToggle(e: React.MouseEvent, spelerId: string) {
+    e.stopPropagation();
+    startTransition(async () => {
+      await togglePinSpeler(spelerId);
+    });
+  }
+
   const gefilterd = useMemo(() => {
     let result = spelers;
-
     if (zoekterm.trim()) {
       const q = zoekterm.trim().toLowerCase();
       result = result.filter(
         (s) => s.roepnaam.toLowerCase().includes(q) || s.achternaam.toLowerCase().includes(q)
       );
     }
-
-    if (statusFilter !== "allen") {
+    if (statusFilter !== "allen")
       result = result.filter((s) => matchesStatusFilter(s, statusFilter));
-    }
+    if (huidigTeamFilter !== "allen")
+      result = result.filter((s) => s.huidigTeamNaam === huidigTeamFilter);
+    if (indelingFilter !== "allen")
+      result = result.filter((s) => s.huidigIndelingTeam?.naam === indelingFilter);
+    if (memoFilter) result = result.filter((s) => s.heeftActiefMemo);
+    if (gepindFilter) result = result.filter((s) => s.gepind);
 
-    if (geslachtFilter !== "allen") {
-      result = result.filter((s) => s.geslacht === geslachtFilter);
-    }
-
-    result = [...result].sort((a, b) => {
+    return [...result].sort((a, b) => {
       let cmp = 0;
-      if (sortKey === "achternaam") {
-        cmp = a.achternaam.localeCompare(b.achternaam, "nl");
-      } else if (sortKey === "geboortejaar") {
-        cmp = (a.geboortejaar ?? 0) - (b.geboortejaar ?? 0);
-      } else if (sortKey === "status") {
-        cmp = (a.status ?? "").localeCompare(b.status ?? "", "nl");
-      } else if (sortKey === "gezienStatus") {
-        const volgorde = ["ROOD", "ORANJE", "GEEL", "GROEN", "ONGEZIEN"];
-        cmp = volgorde.indexOf(a.gezienStatus) - volgorde.indexOf(b.gezienStatus);
+      switch (sortKey) {
+        case "achternaam":
+          cmp = a.achternaam.localeCompare(b.achternaam, "nl");
+          break;
+        case "geboortejaar":
+          cmp = (a.geboortejaar ?? 0) - (b.geboortejaar ?? 0);
+          break;
+        case "status":
+          cmp = (a.status ?? "").localeCompare(b.status ?? "", "nl");
+          break;
+        case "gezienStatus": {
+          const v = ["ROOD", "ORANJE", "GEEL", "GROEN", "ONGEZIEN"];
+          cmp = v.indexOf(a.gezienStatus) - v.indexOf(b.gezienStatus);
+          break;
+        }
+        case "huidigTeam":
+          cmp = (a.huidigTeamNaam ?? "zzz").localeCompare(b.huidigTeamNaam ?? "zzz", "nl");
+          break;
+        case "indeling":
+          cmp = (a.huidigIndelingTeam?.naam ?? "zzz").localeCompare(
+            b.huidigIndelingTeam?.naam ?? "zzz",
+            "nl"
+          );
+          break;
+        case "memo":
+          cmp = Number(b.heeftActiefMemo) - Number(a.heeftActiefMemo);
+          break;
+        case "gepind":
+          cmp = Number(b.gepind) - Number(a.gepind);
+          break;
       }
       return sortDir === "asc" ? cmp : -cmp;
     });
-
-    return result;
-  }, [spelers, zoekterm, statusFilter, geslachtFilter, sortKey, sortDir]);
+  }, [
+    spelers,
+    zoekterm,
+    statusFilter,
+    huidigTeamFilter,
+    indelingFilter,
+    memoFilter,
+    gepindFilter,
+    sortKey,
+    sortDir,
+  ]);
 
   function SortIcon({ col }: { col: SortKey }) {
     if (sortKey !== col) return <span style={{ opacity: 0.3, fontSize: "0.65rem" }}> ↕</span>;
@@ -161,18 +187,47 @@ export default function SpelersOverzichtStudio({
     );
   }
 
+  const chipStyle = (actief: boolean): React.CSSProperties => ({
+    padding: "0.25rem 0.625rem",
+    borderRadius: 99,
+    border: actief ? "1px solid var(--ow-oranje-500)" : "1px solid var(--border-default)",
+    background: actief ? "rgba(255,107,0,0.12)" : "var(--surface-card)",
+    color: actief ? "var(--ow-oranje-500)" : "var(--text-secondary)",
+    fontSize: "0.8125rem",
+    fontWeight: 500,
+    cursor: "pointer",
+    fontFamily: "inherit",
+  });
+
+  const dropdownStyle: React.CSSProperties = {
+    background: "var(--surface-sunken)",
+    border: "1px solid var(--border-default)",
+    borderRadius: 8,
+    padding: "0.375rem 0.625rem",
+    color: "var(--text-primary)",
+    fontSize: "0.8125rem",
+    outline: "none",
+    cursor: "pointer",
+    fontFamily: "inherit",
+  };
+
+  const thStyle = (sortable: boolean): React.CSSProperties => ({
+    padding: "0.625rem 0.875rem",
+    textAlign: "left",
+    fontSize: "0.6875rem",
+    fontWeight: 600,
+    textTransform: "uppercase",
+    letterSpacing: "0.06em",
+    color: "var(--text-secondary)",
+    cursor: sortable ? "pointer" : "default",
+    userSelect: "none",
+    whiteSpace: "nowrap",
+  });
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-      {/* Filter bar */}
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "0.75rem",
-          alignItems: "center",
-        }}
-      >
-        {/* Zoek */}
+      {/* Filterbar */}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.625rem", alignItems: "center" }}>
         <input
           type="search"
           placeholder="Zoek op naam..."
@@ -187,76 +242,60 @@ export default function SpelersOverzichtStudio({
             fontSize: "0.875rem",
             outline: "none",
             width: 200,
+            fontFamily: "inherit",
           }}
         />
-
-        {/* Status filter pills */}
         <div style={{ display: "flex", gap: "0.375rem", flexWrap: "wrap" }}>
-          {STATUS_FILTER_LABELS.map(({ value, label }) => (
-            <button
-              key={value}
-              onClick={() => setStatusFilter(value)}
-              style={{
-                padding: "0.25rem 0.625rem",
-                borderRadius: 99,
-                border:
-                  statusFilter === value
-                    ? "1px solid var(--ow-oranje-500)"
-                    : "1px solid var(--border-default)",
-                background: statusFilter === value ? "rgba(255,107,0,0.12)" : "var(--surface-card)",
-                color: statusFilter === value ? "var(--ow-oranje-500)" : "var(--text-secondary)",
-                fontSize: "0.8125rem",
-                fontWeight: 500,
-                cursor: "pointer",
-                transition: "all 0.15s",
-              }}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-
-        {/* Geslacht filter */}
-        <div style={{ display: "flex", gap: "0.375rem" }}>
           {(
             [
               { value: "allen", label: "Allen" },
-              { value: "V", label: "Dames" },
-              { value: "M", label: "Heren" },
+              { value: "BESCHIKBAAR", label: "Beschikbaar" },
+              { value: "TWIJFELT", label: "Twijfelt" },
+              { value: "GAAT_STOPPEN", label: "Gaat stoppen" },
+              { value: "NIEUW", label: "Nieuw" },
+              { value: "ALGEMEEN_RESERVE", label: "Reserve" },
             ] as const
           ).map(({ value, label }) => (
             <button
               key={value}
-              onClick={() => setGeslachtFilter(value as GeslachtFilter)}
-              style={{
-                padding: "0.25rem 0.625rem",
-                borderRadius: 99,
-                border:
-                  geslachtFilter === value
-                    ? "1px solid var(--ow-oranje-500)"
-                    : "1px solid var(--border-default)",
-                background:
-                  geslachtFilter === value ? "rgba(255,107,0,0.12)" : "var(--surface-card)",
-                color: geslachtFilter === value ? "var(--ow-oranje-500)" : "var(--text-secondary)",
-                fontSize: "0.8125rem",
-                fontWeight: 500,
-                cursor: "pointer",
-                transition: "all 0.15s",
-              }}
+              onClick={() => setStatusFilter(value)}
+              style={chipStyle(statusFilter === value)}
             >
               {label}
             </button>
           ))}
         </div>
-
-        {/* Count */}
-        <span
-          style={{
-            marginLeft: "auto",
-            fontSize: "0.8125rem",
-            color: "var(--text-secondary)",
-          }}
+        <select
+          value={huidigTeamFilter}
+          onChange={(e) => setHuidigTeamFilter(e.target.value)}
+          style={dropdownStyle}
         >
+          <option value="allen">Huidig team: Allen</option>
+          {huidigeTeams.map((t) => (
+            <option key={t} value={t}>
+              {t}
+            </option>
+          ))}
+        </select>
+        <select
+          value={indelingFilter}
+          onChange={(e) => setIndelingFilter(e.target.value)}
+          style={dropdownStyle}
+        >
+          <option value="allen">Indeling: Allen</option>
+          {indelingTeams.map((t) => (
+            <option key={t} value={t}>
+              {t}
+            </option>
+          ))}
+        </select>
+        <button onClick={() => setMemoFilter((v) => !v)} style={chipStyle(memoFilter)}>
+          ▲ Memo
+        </button>
+        <button onClick={() => setGepindFilter((v) => !v)} style={chipStyle(gepindFilter)}>
+          📌 Gepind
+        </button>
+        <span style={{ marginLeft: "auto", fontSize: "0.8125rem", color: "var(--text-secondary)" }}>
           {gefilterd.length} speler{gefilterd.length !== 1 ? "s" : ""}
         </span>
       </div>
@@ -270,56 +309,54 @@ export default function SpelersOverzichtStudio({
           border: "1px solid var(--border-default)",
         }}
       >
-        <table
-          style={{
-            width: "100%",
-            borderCollapse: "collapse",
-            tableLayout: "auto",
-          }}
-        >
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
-            <tr
-              style={{
-                borderBottom: "1px solid var(--border-default)",
-              }}
-            >
-              {(
-                [
-                  { label: "Naam", key: "achternaam" as SortKey },
-                  { label: "Status", key: "status" as SortKey },
-                  { label: "Gezien", key: "gezienStatus" as SortKey },
-                  { label: "Vorig team", key: null },
-                  { label: "Indeling", key: null },
-                  { label: "Jaar", key: "geboortejaar" as SortKey },
-                ] as { label: string; key: SortKey | null }[]
-              ).map(({ label, key }) => (
-                <th
-                  key={label}
-                  onClick={key ? () => handleKolomKlik(key) : undefined}
-                  style={{
-                    padding: "0.625rem 0.875rem",
-                    textAlign: "left",
-                    fontSize: "0.6875rem",
-                    fontWeight: 600,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.06em",
-                    color: "var(--text-secondary)",
-                    cursor: key ? "pointer" : "default",
-                    userSelect: "none",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {label}
-                  {key && <SortIcon col={key} />}
-                </th>
-              ))}
+            <tr style={{ borderBottom: "1px solid var(--border-default)" }}>
+              <th onClick={() => handleSort("achternaam")} style={thStyle(true)}>
+                Naam
+                <SortIcon col="achternaam" />
+              </th>
+              <th onClick={() => handleSort("geboortejaar")} style={thStyle(true)}>
+                Jaar
+                <SortIcon col="geboortejaar" />
+              </th>
+              <th onClick={() => handleSort("status")} style={thStyle(true)}>
+                Status
+                <SortIcon col="status" />
+              </th>
+              <th onClick={() => handleSort("gezienStatus")} style={thStyle(true)}>
+                Gezien
+                <SortIcon col="gezienStatus" />
+              </th>
+              <th onClick={() => handleSort("huidigTeam")} style={thStyle(true)}>
+                Huidig team
+                <SortIcon col="huidigTeam" />
+              </th>
+              <th onClick={() => handleSort("indeling")} style={thStyle(true)}>
+                Indeling
+                <SortIcon col="indeling" />
+              </th>
+              <th
+                onClick={() => handleSort("gepind")}
+                style={{ ...thStyle(true), textAlign: "center" }}
+              >
+                📌
+                <SortIcon col="gepind" />
+              </th>
+              <th
+                onClick={() => handleSort("memo")}
+                style={{ ...thStyle(true), textAlign: "center" }}
+              >
+                ▲
+                <SortIcon col="memo" />
+              </th>
             </tr>
           </thead>
           <tbody>
             {gefilterd.length === 0 && (
               <tr>
                 <td
-                  colSpan={6}
+                  colSpan={8}
                   style={{
                     padding: "2rem",
                     textAlign: "center",
@@ -332,18 +369,21 @@ export default function SpelersOverzichtStudio({
               </tr>
             )}
             {gefilterd.map((speler, i) => {
-              const avatarKleur = geboortejaarKleur(speler.geboortejaar);
-              const init = initialen(speler.roepnaam, speler.achternaam);
-              const statusLabel = STATUS_LABELS[speler.status] ?? speler.status;
+              const init =
+                `${speler.roepnaam.charAt(0)}${speler.achternaam.charAt(0)}`.toUpperCase();
+              const geslachtKleur = speler.geslacht === "V" ? "#f9a8d4" : "#93c5fd";
+              const geslachtBg =
+                speler.geslacht === "V" ? "rgba(236,72,153,0.15)" : "rgba(59,130,246,0.15)";
               const statusDot = STATUS_DOT[speler.status] ?? "#6b7280";
               const gezienDot = GEZIEN_DOT[speler.gezienStatus] ?? "#4b5563";
-              const gezienLabel = GEZIEN_LABEL[speler.gezienStatus] ?? speler.gezienStatus;
-              const vorigKleur = speler.vorigTeamKleur
-                ? (KLEUR_DOT[speler.vorigTeamKleur.toLowerCase()] ?? "#6b7280")
-                : "#6b7280";
-              const indelingKleur = speler.huidigIndelingTeam?.kleur
-                ? (KLEUR_DOT[speler.huidigIndelingTeam.kleur.toLowerCase()] ?? "#22c55e")
-                : "#22c55e";
+              const huidigKleur =
+                KLEUR_DOT[speler.huidigTeamKleur?.toLowerCase() ?? ""] ??
+                KLEUR_DOT[speler.huidigTeamKleur ?? ""] ??
+                "#6b7280";
+              const indelingKleur =
+                KLEUR_DOT[speler.huidigIndelingTeam?.kleur?.toLowerCase() ?? ""] ??
+                KLEUR_DOT[speler.huidigIndelingTeam?.kleur ?? ""] ??
+                "#6b7280";
 
               return (
                 <tr
@@ -363,58 +403,51 @@ export default function SpelersOverzichtStudio({
                     (e.currentTarget as HTMLTableRowElement).style.background = "transparent";
                   }}
                 >
-                  {/* Naam */}
+                  {/* Naam + avatar */}
                   <td style={{ padding: "0.625rem 0.875rem" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
-                      {/* Avatar */}
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                       <div
                         style={{
-                          width: 32,
-                          height: 32,
+                          width: 30,
+                          height: 30,
                           borderRadius: "50%",
-                          background: avatarKleur,
+                          background: geslachtBg,
+                          border: `1.5px solid ${geslachtKleur}`,
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
                           fontSize: "0.6875rem",
                           fontWeight: 800,
-                          color: "#fff",
+                          color: geslachtKleur,
                           flexShrink: 0,
-                          letterSpacing: "0.03em",
                         }}
                       >
                         {init}
                       </div>
-                      <div>
-                        <div
-                          style={{
-                            fontSize: "0.875rem",
-                            fontWeight: 600,
-                            color: "var(--text-primary)",
-                            lineHeight: 1.2,
-                          }}
-                        >
-                          {speler.roepnaam} {speler.achternaam}
-                        </div>
-                      </div>
-                      {/* Geslacht badge */}
                       <span
                         style={{
-                          fontSize: "0.7rem",
-                          padding: "0.1rem 0.35rem",
-                          borderRadius: 99,
-                          background:
-                            speler.geslacht === "V"
-                              ? "rgba(236,72,153,0.15)"
-                              : "rgba(59,130,246,0.15)",
-                          color: speler.geslacht === "V" ? "#f9a8d4" : "#93c5fd",
-                          fontWeight: 700,
-                          lineHeight: 1.4,
+                          fontSize: "0.875rem",
+                          fontWeight: 600,
+                          color: "var(--text-primary)",
                         }}
                       >
-                        {speler.geslacht === "V" ? "♀" : "♂"}
+                        {speler.roepnaam} {speler.achternaam}
                       </span>
                     </div>
+                  </td>
+
+                  {/* Jaar */}
+                  <td style={{ padding: "0.625rem 0.875rem" }}>
+                    <span
+                      style={{
+                        fontSize: "0.8125rem",
+                        color: "var(--text-secondary)",
+                        fontVariantNumeric: "tabular-nums",
+                      }}
+                    >
+                      {speler.geboortejaar} ·{" "}
+                      {new Date().getFullYear() - (speler.geboortejaar ?? 0)}
+                    </span>
                   </td>
 
                   {/* Status */}
@@ -437,7 +470,7 @@ export default function SpelersOverzichtStudio({
                           flexShrink: 0,
                         }}
                       />
-                      {statusLabel}
+                      {STATUS_LABELS[speler.status] ?? speler.status}
                     </span>
                   </td>
 
@@ -445,31 +478,18 @@ export default function SpelersOverzichtStudio({
                   <td style={{ padding: "0.625rem 0.875rem" }}>
                     <span
                       style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: "0.35rem",
-                        fontSize: "0.8125rem",
-                        color: "var(--text-secondary)",
+                        width: 8,
+                        height: 8,
+                        borderRadius: "50%",
+                        background: gezienDot,
+                        display: "inline-block",
                       }}
-                    >
-                      <span
-                        style={{
-                          width: 8,
-                          height: 8,
-                          borderRadius: "50%",
-                          background: gezienDot,
-                          flexShrink: 0,
-                          boxShadow:
-                            speler.gezienStatus !== "ONGEZIEN" ? `0 0 4px ${gezienDot}88` : "none",
-                        }}
-                      />
-                      {gezienLabel}
-                    </span>
+                    />
                   </td>
 
-                  {/* Vorig team */}
+                  {/* Huidig team */}
                   <td style={{ padding: "0.625rem 0.875rem" }}>
-                    {speler.vorigTeamNaam ? (
+                    {speler.huidigTeamNaam ? (
                       <span
                         style={{
                           display: "inline-flex",
@@ -488,11 +508,10 @@ export default function SpelersOverzichtStudio({
                             width: 6,
                             height: 6,
                             borderRadius: "50%",
-                            background: vorigKleur,
-                            flexShrink: 0,
+                            background: huidigKleur,
                           }}
                         />
-                        {speler.vorigTeamNaam}
+                        {speler.huidigTeamNaam}
                       </span>
                     ) : (
                       <span style={{ color: "var(--text-secondary)", fontSize: "0.8125rem" }}>
@@ -524,7 +543,6 @@ export default function SpelersOverzichtStudio({
                             height: 6,
                             borderRadius: "50%",
                             background: indelingKleur,
-                            flexShrink: 0,
                           }}
                         />
                         {speler.huidigIndelingTeam.naam}
@@ -536,17 +554,37 @@ export default function SpelersOverzichtStudio({
                     )}
                   </td>
 
-                  {/* Jaar */}
-                  <td style={{ padding: "0.625rem 0.875rem" }}>
-                    <span
+                  {/* Pin toggle */}
+                  <td style={{ padding: "0.625rem 0.875rem", textAlign: "center" }}>
+                    <button
+                      onClick={(e) => handlePinToggle(e, speler.id)}
+                      title={speler.gepind ? "Ontpinnen" : "Pinnen"}
                       style={{
-                        fontSize: "0.8125rem",
-                        color: "var(--text-secondary)",
-                        fontVariantNumeric: "tabular-nums",
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        fontSize: "0.875rem",
+                        opacity: speler.gepind ? 1 : 0.2,
+                        transition: "opacity 0.15s",
                       }}
                     >
-                      {speler.geboortejaar}
-                    </span>
+                      📌
+                    </button>
+                  </td>
+
+                  {/* Memo indicator */}
+                  <td style={{ padding: "0.625rem 0.875rem", textAlign: "center" }}>
+                    {speler.heeftActiefMemo && (
+                      <span
+                        style={{
+                          fontSize: "0.75rem",
+                          color: "var(--ow-oranje-500)",
+                          fontWeight: 700,
+                        }}
+                      >
+                        ▲
+                      </span>
+                    )}
                   </td>
                 </tr>
               );

@@ -43,6 +43,7 @@ export interface WerkbordSpeler {
   teamId: string | null;
   gepind: boolean;
   isNieuw: boolean;
+  openMemoCount: number;
   huidigTeam: string | null;
   ingedeeldTeamNaam: string | null;
   selectieGroepId: string | null; // null = in team of vrij
@@ -74,6 +75,14 @@ export interface WerkbordStaf {
   naam: string;
   rollen: string[]; // globale rollen uit Staf.rollen
   teams: WerkbordStafTeamrol[]; // per team welke rol
+}
+
+export interface WerkbordReservering {
+  id: string;
+  titel: string;
+  geslacht: Geslacht;
+  teamId: string | null;
+  ingedeeldTeamNaam: string | null;
 }
 
 // Werkitem als memo — vervangt notitie/memoStatus/besluit op Team/Speler/Staf
@@ -116,6 +125,7 @@ export interface WerkbordTeam {
   gebundeld: boolean;
   // Werkitems (memos, actiepunten)
   werkitems: WerkbordWerkitem[];
+  openMemoCount: number;
 }
 
 export interface WerkbordValidatieItem {
@@ -130,6 +140,7 @@ export interface WerkbordState {
   teams: WerkbordTeam[];
   alleSpelers: WerkbordSpeler[];
   alleStaf: WerkbordStaf[];
+  alleReserveringen: WerkbordReservering[];
   validatie: WerkbordValidatieItem[];
   werkindelingId: string;
   versieId: string;

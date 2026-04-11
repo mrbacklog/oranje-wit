@@ -2,7 +2,7 @@
 "use client";
 import { useState } from "react";
 import "./tokens.css";
-import type { WerkbordSpeler, SpelerFilter } from "./types";
+import type { WerkbordSpeler, SpelerFilter, WerkbordReservering } from "./types";
 import { SpelerKaart } from "./SpelerKaart";
 
 const HUIDIG_SEIZOEN_EINDJAAR = 2026;
@@ -10,10 +10,16 @@ const HUIDIG_SEIZOEN_EINDJAAR = 2026;
 interface SpelersPoolDrawerProps {
   open: boolean;
   spelers: WerkbordSpeler[];
+  reserveringen: WerkbordReservering[];
   onClose: () => void;
 }
 
-export function SpelersPoolDrawer({ open, spelers, onClose }: SpelersPoolDrawerProps) {
+export function SpelersPoolDrawer({
+  open,
+  spelers,
+  reserveringen,
+  onClose,
+}: SpelersPoolDrawerProps) {
   const [zoek, setZoek] = useState("");
   const [filter, setFilter] = useState<SpelerFilter>("zonder_team");
   const [geslachtFilter, setGeslachtFilter] = useState<"alle" | "v" | "m">("alle");
@@ -320,8 +326,87 @@ export function SpelersPoolDrawer({ open, spelers, onClose }: SpelersPoolDrawerP
             ))}
           </>
         )}
+        {reserveringen.length > 0 && (
+          <>
+            <div style={{ margin: "8px 10px 0", borderTop: "1px solid var(--border-0)" }} />
+            <div
+              style={{
+                padding: "8px 10px 4px",
+                fontSize: 9,
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: ".6px",
+                color: "var(--text-3)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <span>Reservering</span>
+              <span style={{ color: "var(--text-2)", fontWeight: 700 }}>
+                {reserveringen.length}
+              </span>
+            </div>
+            {reserveringen.map((r) => (
+              <ReserveringKaartje key={r.id} reservering={r} />
+            ))}
+          </>
+        )}
       </div>
     </aside>
+  );
+}
+
+function ReserveringKaartje({ reservering }: { reservering: WerkbordReservering }) {
+  const geslachtKleur = reservering.geslacht === "V" ? "var(--pink)" : "var(--blue)";
+  const geslachtBg = reservering.geslacht === "V" ? "rgba(236,72,153,.18)" : "rgba(96,165,250,.18)";
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        height: 40,
+        borderBottom: "1px solid var(--border-0)",
+        padding: "0 6px",
+        gap: 6,
+      }}
+    >
+      <div
+        style={{
+          width: 22,
+          height: 22,
+          borderRadius: "50%",
+          flexShrink: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: 9,
+          fontWeight: 700,
+          background: geslachtBg,
+          color: geslachtKleur,
+          border: `1.5px solid ${geslachtKleur}`,
+          boxSizing: "border-box",
+        }}
+      >
+        {reservering.geslacht === "V" ? "♀" : "♂"}
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div
+          style={{
+            fontSize: 11,
+            fontWeight: 600,
+            color: "var(--text-1)",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {reservering.titel}
+        </div>
+        <div style={{ fontSize: 9, color: "var(--text-3)" }}>Reservering</div>
+      </div>
+    </div>
   );
 }
 

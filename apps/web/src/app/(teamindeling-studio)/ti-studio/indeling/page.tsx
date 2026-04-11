@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { auth } from "@oranje-wit/auth";
+import { prisma } from "@/lib/teamindeling/db/prisma";
 import { getOfMaakWerkindelingVoorSeizoen } from "./actions";
 import { getWerkindelingVoorEditor, getAlleSpelers } from "./werkindeling-actions";
 import { getTeamtypeKaders } from "@/app/(teamindeling-studio)/ti-studio/kader/actions";
@@ -19,6 +20,7 @@ import type {
   WerkbordValidatieItem,
   WerkbordStaf,
   WerkbordStafTeamrol,
+  WerkbordReservering,
 } from "@/components/ti-studio/werkbord/types";
 
 // Prisma Kleur enum → KnkvCategorie token
@@ -94,6 +96,39 @@ export default async function IndelingPage() {
     }
   }
 
+  // Open memo-counts per team en per speler
+  const kadersId = volledig.kaders.id;
+
+  const teamMemoCounts = await prisma.werkitem.groupBy({
+    by: ["teamId"],
+    where: {
+      kadersId,
+      type: "MEMO",
+      status: { in: ["OPEN", "IN_BESPREKING"] },
+      teamId: { not: null },
+    },
+    _count: { id: true },
+  });
+  const openMemoPerTeam: Record<string, number> = {};
+  for (const row of teamMemoCounts) {
+    if (row.teamId) openMemoPerTeam[row.teamId] = row._count.id;
+  }
+
+  const spelerMemoCounts = await prisma.werkitem.groupBy({
+    by: ["spelerId"],
+    where: {
+      kadersId,
+      type: "MEMO",
+      status: { in: ["OPEN", "IN_BESPREKING"] },
+      spelerId: { not: null },
+    },
+    _count: { id: true },
+  });
+  const openMemoPerSpeler: Record<string, number> = {};
+  for (const row of spelerMemoCounts) {
+    if (row.spelerId) openMemoPerSpeler[row.spelerId] = row._count.id;
+  }
+
   // Alle spelers als WerkbordSpeler
   const alleSpelers: WerkbordSpeler[] = prismaSpelers.map((sp) => ({
     id: sp.id,
@@ -109,6 +144,7 @@ export default async function IndelingPage() {
     teamId: sp.status === "ALGEMEEN_RESERVE" ? null : (spelerTeamMap.get(sp.id) ?? null),
     gepind: false,
     isNieuw: false,
+    openMemoCount: openMemoPerSpeler[sp.id] ?? 0,
     huidigTeam: (sp.huidig as { team?: string } | null)?.team ?? null,
     ingedeeldTeamNaam: spelerTeamNaamMap.get(sp.id) ?? null,
     selectieGroepId: null,
@@ -140,6 +176,7 @@ export default async function IndelingPage() {
           teamId: team.id,
           gepind: false,
           isNieuw: false,
+          openMemoCount: openMemoPerSpeler[ts.spelerId] ?? 0,
           huidigTeam: (ts.speler?.huidig as { team?: string } | null)?.team ?? null,
           ingedeeldTeamNaam: team.naam,
           selectieGroepId: null,
@@ -168,6 +205,7 @@ export default async function IndelingPage() {
           teamId: team.id,
           gepind: false,
           isNieuw: false,
+          openMemoCount: openMemoPerSpeler[ts.spelerId] ?? 0,
           huidigTeam: (ts.speler?.huidig as { team?: string } | null)?.team ?? null,
           ingedeeldTeamNaam: team.naam,
           selectieGroepId: null,
@@ -235,6 +273,7 @@ export default async function IndelingPage() {
       selectieDames: [] as WerkbordSpelerInTeam[],
       selectieHeren: [] as WerkbordSpelerInTeam[],
       gebundeld: false,
+      openMemoCount: openMemoPerTeam[team.id] ?? 0,
     };
   });
 
@@ -270,6 +309,7 @@ export default async function IndelingPage() {
           teamId: null,
           gepind: false,
           isNieuw: false,
+          openMemoCount: openMemoPerSpeler[sp.spelerId] ?? 0,
           huidigTeam: (sp.speler?.huidig as { team?: string } | null)?.team ?? null,
           ingedeeldTeamNaam: null,
           selectieGroepId: selectieGroep.id,
@@ -325,14 +365,58 @@ export default async function IndelingPage() {
 
   // Validatie berekenen op basis van kaders
   const validatie: WerkbordValidatieItem[] = [];
+
+  // Groepeer teams per selectieGroep zodat we ze samen kunnen verwerken
+  const verwerktSelectieGroepen = new Set<string>();
+
   for (const team of teams) {
-    const effectief = team.gebundeld
-      ? { ...team, dames: team.selectieDames, heren: team.selectieHeren }
-      : team;
-    const items = berekenTeamValidatie(effectief, tcKaders, peiljaar);
-    validatie.push(...items);
-    team.validatieStatus = berekenValidatieStatus(items);
-    team.validatieCount = items.filter((i) => i.type !== "ok").length;
+    if (team.selectieGroepId) {
+      if (verwerktSelectieGroepen.has(team.selectieGroepId)) continue; // partner al verwerkt
+      verwerktSelectieGroepen.add(team.selectieGroepId);
+
+      const groepTeams = teams
+        .filter((t) => t.selectieGroepId === team.selectieGroepId)
+        .sort((a, b) => a.volgorde - b.volgorde);
+      const primary = groepTeams[0];
+      if (!primary) continue;
+
+      if (primary.gebundeld) {
+        // Gecombineerde pool: valideer als één team met selectieDames + selectieHeren
+        const effectief = {
+          ...primary,
+          dames: primary.selectieDames,
+          heren: primary.selectieHeren,
+        };
+        const items = berekenTeamValidatie(effectief, tcKaders, peiljaar);
+        validatie.push(...items);
+        primary.validatieStatus = berekenValidatieStatus(items);
+        primary.validatieCount = items.filter((i) => i.type !== "ok").length;
+        // Partner geen eigen validatie (spelers zitten op primary)
+        for (const partner of groepTeams.slice(1)) {
+          partner.validatieStatus = primary.validatieStatus;
+          partner.validatieCount = 0;
+        }
+      } else {
+        // Niet gebundeld: valideer elk team apart, toon slechtste status op primary
+        const alleItems: WerkbordValidatieItem[] = [];
+        for (const t of groepTeams) {
+          const items = berekenTeamValidatie(t, tcKaders, peiljaar);
+          validatie.push(...items);
+          alleItems.push(...items);
+          t.validatieStatus = berekenValidatieStatus(items);
+          t.validatieCount = items.filter((i) => i.type !== "ok").length;
+        }
+        // Primary-indicator toont slechtste status van de hele groep
+        primary.validatieStatus = berekenValidatieStatus(alleItems);
+        primary.validatieCount = alleItems.filter((i) => i.type !== "ok").length;
+      }
+    } else {
+      // Gewoon team: individuele validatie
+      const items = berekenTeamValidatie(team, tcKaders, peiljaar);
+      validatie.push(...items);
+      team.validatieStatus = berekenValidatieStatus(items);
+      team.validatieCount = items.filter((i) => i.type !== "ok").length;
+    }
   }
 
   // Bouw alleStaf: stafleden met hun teams + rollen
@@ -365,10 +449,30 @@ export default async function IndelingPage() {
     }
   }
 
+  const prismaReserveringen = await prisma.reserveringsspeler.findMany({
+    select: {
+      id: true,
+      titel: true,
+      geslacht: true,
+      teamId: true,
+      team: { select: { naam: true } },
+    },
+    orderBy: { titel: "asc" },
+  });
+
+  const alleReserveringen: WerkbordReservering[] = prismaReserveringen.map((r) => ({
+    id: r.id,
+    titel: r.titel,
+    geslacht: r.geslacht as "M" | "V",
+    teamId: r.teamId,
+    ingedeeldTeamNaam: r.team?.naam ?? null,
+  }));
+
   const initieleState: WerkbordState = {
     teams,
     alleSpelers,
     alleStaf,
+    alleReserveringen,
     validatie,
     werkindelingId: volledig.id,
     versieId: versie?.id ?? "",

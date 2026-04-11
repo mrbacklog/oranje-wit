@@ -75,6 +75,8 @@ type AnyPrismaModels = {
   emailTemplate: AnyModel;
   // Werkbord & Activiteiten
   werkitem: AnyModel;
+  werkitemToelichting: AnyModel;
+  werkitemLog: AnyModel;
   actiepunt: AnyModel;
   activiteit: AnyModel;
   // Mijlpalen
@@ -84,6 +86,7 @@ type AnyPrismaModels = {
   // Daisy
   daisyActie: AnyModel;
   plaatsreservering: AnyModel;
+  reserveringsspeler: AnyModel;
   // What-if
   whatIf: AnyModel;
   whatIfTeam: AnyModel;

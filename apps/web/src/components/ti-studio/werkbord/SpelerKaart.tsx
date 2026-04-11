@@ -41,6 +41,8 @@ export function SpelerKaart({
 }: SpelerKaartProps) {
   const kaartRef = useRef<HTMLDivElement>(null);
   const [isHeld, setIsHeld] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isLanding, setIsLanding] = useState(false);
 
   const geslacht = speler.geslacht.toLowerCase() as "v" | "m";
   const geslachtKleur = geslacht === "v" ? "var(--pink)" : "var(--blue)";
@@ -87,9 +89,11 @@ export function SpelerKaart({
             }
       }
       onDragStart={
-        asGhost || isAR
+        asGhost
           ? undefined
           : (e) => {
+              setIsDragging(true);
+              setIsLanding(false);
               e.stopPropagation();
               e.dataTransfer.setData(
                 "speler",
@@ -97,16 +101,34 @@ export function SpelerKaart({
               );
               e.dataTransfer.effectAllowed = "move";
               if (kaartRef.current) {
-                e.dataTransfer.setDragImage(kaartRef.current, 20, 24);
+                kaartRef.current.style.background = "var(--bg-2)";
+                kaartRef.current.style.border = "1.5px solid rgba(255,107,0,.6)";
+                kaartRef.current.style.borderRadius = "var(--card-radius)";
+                kaartRef.current.style.boxShadow =
+                  "0 10px 28px rgba(0,0,0,.65), 0 32px 72px rgba(0,0,0,.5), 0 0 0 1px rgba(255,107,0,.2)";
+                kaartRef.current.style.padding = "4px";
+                e.dataTransfer.setDragImage(kaartRef.current, 24, 28);
+                requestAnimationFrame(() => {
+                  if (kaartRef.current) {
+                    kaartRef.current.style.background = "";
+                    kaartRef.current.style.border = "";
+                    kaartRef.current.style.borderRadius = "";
+                    kaartRef.current.style.boxShadow = "";
+                    kaartRef.current.style.padding = "";
+                  }
+                });
               }
             }
       }
       onDragEnd={
-        asGhost || isAR
+        asGhost
           ? undefined
           : () => {
               document.body.style.cursor = "";
               setIsHeld(false);
+              setIsDragging(false);
+              setIsLanding(true);
+              setTimeout(() => setIsLanding(false), 650);
             }
       }
       onClick={asGhost || isAR ? undefined : onClick}
@@ -117,16 +139,30 @@ export function SpelerKaart({
         height: smal ? 21 : 40,
         borderLeft: "none",
         borderBottom: "1px solid var(--border-0)",
-        opacity: stopGezet ? 0.5 : isHeld ? 0.6 : 1,
-        cursor: isAR ? "default" : isHeld ? "grabbing" : "grab",
-        background: isHeld ? "rgba(255,107,0,.10)" : "transparent",
-        outline: isHeld ? "1.5px solid var(--accent)" : "none",
-        transition: "opacity 100ms ease, background 100ms ease",
+        opacity: stopGezet ? 0.5 : isHeld || isDragging ? 0.6 : 1,
+        cursor: isHeld || isDragging ? "grabbing" : "grab",
+        background: isDragging
+          ? "rgba(255,107,0,.10)"
+          : isHeld
+            ? "rgba(255,107,0,.10)"
+            : "transparent",
+        outline: isDragging
+          ? "1.5px solid rgba(255,107,0,.5)"
+          : isHeld
+            ? "1.5px solid var(--accent)"
+            : "none",
+        boxShadow: isDragging ? "var(--sh-lift-speler)" : "none",
+        transform: isDragging ? "scale(1.04) translateY(-4px)" : "none",
+        transition: isDragging
+          ? "transform 220ms cubic-bezier(0.34,1.56,0.64,1), box-shadow 220ms ease"
+          : "opacity 100ms ease, background 100ms ease",
+        animation: isLanding ? "dropLandSpeler 650ms cubic-bezier(0.16,1,0.3,1) both" : undefined,
         padding: smal ? "0 4px 0 6px" : "0 6px 0 6px",
         gap: smal ? 4 : 6,
         flexShrink: 0,
         minWidth: 0,
         position: "relative",
+        zIndex: isDragging ? 50 : undefined,
       }}
     >
       {/* Avatar */}
@@ -368,6 +404,20 @@ export function SpelerKaart({
           {speler.gepind && <span style={{ fontSize: 10, color: "var(--accent)" }}>📌</span>}
         </div>
       )}
+      <style>{`
+        @keyframes dropLandSpeler {
+          from {
+            transform: scale(1.04) translateY(-4px);
+            box-shadow: 0 6px 18px rgba(0,0,0,.6), 0 0 0 1.5px rgba(255,107,0,.45);
+            outline: 1.5px solid rgba(255,107,0,.5);
+          }
+          to {
+            transform: scale(1) translateY(0);
+            box-shadow: none;
+            outline: none;
+          }
+        }
+      `}</style>
     </div>
   );
 }
