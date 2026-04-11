@@ -397,43 +397,57 @@ export function WerkbordCanvas({
         })}
       </div>
 
-      {/* ─── Score-knop rechtsonder, boven zoom ─────────────────────────────── */}
+      {/* ─── Score-knop — zweeft onder Daisy-knop rechtsbovenhoek ─────────── */}
       <button
         onClick={onToggleScores}
         title={showScores ? "Scores verbergen" : "Scores tonen"}
         style={{
           position: "absolute",
-          bottom: 16,
-          right: 196,
-          zIndex: 10,
+          top: 76,
+          right: 20,
+          zIndex: 30,
+          width: 48,
+          height: 48,
           display: "flex",
           alignItems: "center",
-          gap: 5,
-          padding: "5px 10px",
-          borderRadius: 8,
-          fontSize: 11,
-          fontWeight: 600,
+          justifyContent: "center",
           cursor: "pointer",
           fontFamily: "inherit",
-          background: showScores ? "var(--accent-dim)" : "var(--bg-2)",
-          border: showScores ? "1px solid rgba(255,107,0,.3)" : "1px solid var(--border-1)",
-          color: showScores ? "var(--accent)" : "var(--text-2)",
-          boxShadow: "var(--sh-card)",
-          transition: "background 120ms, color 120ms, border-color 120ms",
+          background: "none",
+          border: "none",
+          padding: 0,
         }}
       >
         <svg
-          width="11"
-          height="11"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.5"
-          strokeLinecap="round"
+          width="48"
+          height="48"
+          viewBox="0 0 48 48"
+          fill={showScores ? "var(--accent)" : "var(--bg-2)"}
+          stroke={showScores ? "rgba(255,107,0,.6)" : "var(--border-1)"}
+          strokeWidth="1.5"
+          style={{
+            filter: showScores
+              ? "drop-shadow(0 4px 12px rgba(255,107,0,.45))"
+              : "drop-shadow(0 2px 6px rgba(0,0,0,.4))",
+            transition: "fill 120ms, stroke 120ms, filter 120ms",
+          }}
         >
-          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+          {/* Octagon */}
+          <polygon points="17,4 31,4 44,17 44,31 31,44 17,44 4,31 4,17" />
+          {/* USS tekst */}
+          <text
+            x="24"
+            y="28"
+            textAnchor="middle"
+            fontSize="11"
+            fontWeight="700"
+            fontFamily="inherit"
+            fill={showScores ? "#fff" : "var(--text-2)"}
+            stroke="none"
+          >
+            USS
+          </text>
         </svg>
-        Score
       </button>
 
       {/* ─── Zoom + Minimap panel rechtsonder ─────────────────────────────── */}
