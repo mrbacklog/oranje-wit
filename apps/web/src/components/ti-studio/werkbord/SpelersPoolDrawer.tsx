@@ -346,6 +346,32 @@ export function SpelersPoolDrawer({
             ))}
           </>
         )}
+        {reserveringen.length > 0 && (
+          <>
+            <div style={{ margin: "8px 10px 0", borderTop: "1px solid var(--border-0)" }} />
+            <div
+              style={{
+                padding: "8px 10px 4px",
+                fontSize: 9,
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: ".6px",
+                color: "var(--text-3)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <span>Reservering</span>
+              <span style={{ color: "var(--text-2)", fontWeight: 700 }}>
+                {reserveringen.length}
+              </span>
+            </div>
+            {reserveringen.map((r) => (
+              <ReserveringKaartje key={r.id} reservering={r} />
+            ))}
+          </>
+        )}
       </div>
     </aside>
   );
