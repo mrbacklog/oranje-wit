@@ -241,8 +241,8 @@ export function StafOverzicht({ stafLeden }: Props) {
             {gefilterd.map((staf, i) => {
               const initialen = staf.naam
                 .split(" ")
-                .filter((w) => w.length > 0 && w[0] === w[0].toUpperCase())
-                .map((w) => w[0])
+                .filter((w: string) => w.length > 0 && w[0] === w[0].toUpperCase())
+                .map((w: string) => w[0])
                 .join("")
                 .slice(0, 2)
                 .toUpperCase();

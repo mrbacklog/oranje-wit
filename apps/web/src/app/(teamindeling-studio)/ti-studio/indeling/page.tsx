@@ -411,21 +411,21 @@ export default async function IndelingPage() {
     }
   }
 
-  const prismaReserveringen = await prisma.plaatsreservering.findMany({
+  const prismaReserveringen = await prisma.reserveringsspeler.findMany({
     select: {
       id: true,
-      naam: true,
+      titel: true,
       geslacht: true,
       teamId: true,
       team: { select: { naam: true } },
     },
-    orderBy: { naam: "asc" },
+    orderBy: { titel: "asc" },
   });
 
   const alleReserveringen: WerkbordReservering[] = prismaReserveringen.map((r) => ({
     id: r.id,
-    titel: r.naam,
-    geslacht: (r.geslacht === "V" ? "V" : "M") as "M" | "V",
+    titel: r.titel,
+    geslacht: r.geslacht as "M" | "V",
     teamId: r.teamId,
     ingedeeldTeamNaam: r.team?.naam ?? null,
   }));
