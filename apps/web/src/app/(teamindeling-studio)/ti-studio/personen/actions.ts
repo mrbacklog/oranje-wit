@@ -216,6 +216,7 @@ export async function togglePinSpeler(
   spelerId: string
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   try {
+    await requireTC();
     const kaders = await prisma.kaders.findFirst({
       where: { isWerkseizoen: true },
       select: { id: true },
@@ -280,7 +281,7 @@ export async function maakHandmatigeSpelerAan(data: {
           geslacht: data.geslacht,
           geboortedatum: new Date(data.geboortedatum),
           geboortejaar,
-          status: (data.status as "NIEUW_POTENTIEEL") ?? "NIEUW_POTENTIEEL",
+          status: "NIEUW_POTENTIEEL",
         },
       }),
       prisma.kadersSpeler.create({
