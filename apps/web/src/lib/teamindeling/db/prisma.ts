@@ -75,6 +75,8 @@ type AnyPrismaModels = {
   emailTemplate: AnyModel;
   // Werkbord & Activiteiten
   werkitem: AnyModel;
+  werkitemToelichting: AnyModel;
+  werkitemLog: AnyModel;
   actiepunt: AnyModel;
   activiteit: AnyModel;
   // Mijlpalen

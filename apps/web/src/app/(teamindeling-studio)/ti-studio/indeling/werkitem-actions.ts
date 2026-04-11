@@ -5,6 +5,7 @@ import { logger } from "@oranje-wit/types";
 import type { ActionResult } from "@oranje-wit/types";
 import { revalidatePath } from "next/cache";
 import { requireTC } from "@oranje-wit/auth/checks";
+import { registreerLog } from "./log-actions";
 
 // Return type voor een werkitem (gebruikt in werkbord state)
 export type WerkitemData = {
@@ -86,6 +87,7 @@ export async function createWerkitem(
       },
     });
 
+    await registreerLog(werkitem.id, auteurId, auteurId, "AANGEMAAKT");
     revalideerPaden();
     return {
       ok: true,
@@ -108,11 +110,14 @@ export async function updateWerkitemStatus(
   status: string
 ): Promise<ActionResult<void>> {
   try {
-    await requireTC();
+    const session2 = await requireTC().catch(() => null);
+    const email2 = ((session2?.user as Record<string, unknown>)?.email as string) ?? "systeem";
+    const naam2 = ((session2?.user as Record<string, unknown>)?.name as string) ?? email2;
     await prisma.werkitem.update({
       where: { id },
       data: { status: status as import("@oranje-wit/database").WerkitemStatus },
     });
+    await registreerLog(id, naam2, email2, "STATUS_GEWIJZIGD", status);
     revalideerPaden();
     return { ok: true, data: undefined };
   } catch (error) {
@@ -181,7 +186,10 @@ export async function updateWerkitemInhoud(
 
 export async function verwijderWerkitem(id: string): Promise<ActionResult<void>> {
   try {
-    await requireTC();
+    const session3 = await requireTC().catch(() => null);
+    const email3 = ((session3?.user as Record<string, unknown>)?.email as string) ?? "systeem";
+    const naam3 = ((session3?.user as Record<string, unknown>)?.name as string) ?? email3;
+    await registreerLog(id, naam3, email3, "VERWIJDERD");
     await prisma.werkitem.delete({ where: { id } });
     revalideerPaden();
     return { ok: true, data: undefined };
