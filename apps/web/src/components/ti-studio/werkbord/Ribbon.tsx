@@ -18,8 +18,8 @@ export function Ribbon({
 }: RibbonProps) {
   return (
     <nav
+      aria-label="Hoofdnavigatie"
       style={{
-        gridRow: "1 / 3",
         gridColumn: "1",
         width: "var(--ribbon)",
         background: "var(--bg-1)",
