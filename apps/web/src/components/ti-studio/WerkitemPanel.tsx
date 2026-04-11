@@ -21,6 +21,7 @@ export interface WerkitemPanelProps {
   kadersId: string;
   werkindelingId?: string;
   initieleWerkitems: WerkbordWerkitem[];
+  doelgroep?: string;
 }
 
 type Prioriteit = "BLOCKER" | "HOOG" | "MIDDEL" | "LAAG" | "INFO";
@@ -95,6 +96,7 @@ export function WerkitemPanel({
   kadersId,
   werkindelingId,
   initieleWerkitems,
+  doelgroep,
 }: WerkitemPanelProps) {
   const [werkitems, setWerkitems] = useState<WerkbordWerkitem[]>(initieleWerkitems);
   const [formulierOpen, setFormulierOpen] = useState(false);
@@ -117,6 +119,7 @@ export function WerkitemPanel({
         stafId,
         beschrijving,
         prioriteit: nieuwePrioriteit,
+        doelgroep,
       });
       if (result.ok && result.data) {
         setWerkitems((prev) => [result.data!, ...prev]);
