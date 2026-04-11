@@ -1,10 +1,12 @@
 "use client";
 // Importeert tokens.css EENMALIG voor alle TI Studio pagina's
 import "./tokens.css";
+import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Ribbon } from "./Ribbon";
 import { useSeizoen } from "@/components/teamindeling/providers/SeizoenProvider";
+import { getOpenMemoCount } from "@/app/(teamindeling-studio)/ti-studio/indeling/memo-count-actions";
 
 interface TiStudioPageShellProps {
   children: React.ReactNode;
@@ -23,6 +25,14 @@ export function TiStudioPageShell({ children }: TiStudioPageShellProps) {
     .map((p) => p.charAt(0).toUpperCase())
     .join("")
     .slice(0, 2);
+
+  const [openMemoCount, setOpenMemoCount] = useState(0);
+
+  useEffect(() => {
+    getOpenMemoCount()
+      .then(setOpenMemoCount)
+      .catch(() => {});
+  }, []);
 
   const isWerkbord = pathname.startsWith("/ti-studio/indeling");
 
@@ -87,6 +97,8 @@ export function TiStudioPageShell({ children }: TiStudioPageShellProps) {
           onNaarIndeling={() => router.push("/ti-studio/indeling")}
           onNaarKader={() => router.push("/ti-studio/kader")}
           onNaarPersonen={() => router.push("/ti-studio/personen")}
+          onNaarMemo={() => router.push("/ti-studio/memo")}
+          openMemoCount={openMemoCount}
         />
 
         {/* Content kolom */}

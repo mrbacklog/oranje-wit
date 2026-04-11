@@ -207,6 +207,7 @@ export const CATEGORIE_LABELS: Record<string, string> = {
 export const STATUS_KLEUREN: Record<SpelerStatus, string> = {
   BESCHIKBAAR: "bg-[var(--color-success-500)]",
   TWIJFELT: "bg-[var(--knkv-oranje-500)]",
+  GEBLESSEERD: "bg-[var(--color-error-500)]",
   GAAT_STOPPEN: "bg-[var(--color-error-500)]",
   NIEUW_POTENTIEEL: "bg-[var(--knkv-blauw-400)]",
   NIEUW_DEFINITIEF: "bg-[var(--knkv-blauw-600)]",

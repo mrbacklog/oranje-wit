@@ -77,6 +77,7 @@ export async function haalValidatieUpdate(teamId: string): Promise<ValidatieUpda
         teamId,
         gepind: false,
         isNieuw: false,
+        openMemoCount: 0,
         huidigTeam: null,
         ingedeeldTeamNaam: null,
         selectieGroepId: null,
@@ -102,6 +103,7 @@ export async function haalValidatieUpdate(teamId: string): Promise<ValidatieUpda
         teamId,
         gepind: false,
         isNieuw: false,
+        openMemoCount: 0,
         huidigTeam: null,
         ingedeeldTeamNaam: null,
         selectieGroepId: null,
@@ -153,6 +155,7 @@ export async function haalValidatieUpdate(teamId: string): Promise<ValidatieUpda
     selectieDames: [],
     selectieHeren: [],
     gebundeld: false,
+    openMemoCount: 0,
   };
 
   const items = berekenTeamValidatie(teamVoorValidatie, tcKaders, peiljaar);

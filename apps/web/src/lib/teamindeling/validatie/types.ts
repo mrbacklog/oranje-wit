@@ -34,6 +34,7 @@ export interface SpelerData {
   status?:
     | "BESCHIKBAAR"
     | "TWIJFELT"
+    | "GEBLESSEERD"
     | "GAAT_STOPPEN"
     | "NIEUW_POTENTIEEL"
     | "NIEUW_DEFINITIEF"

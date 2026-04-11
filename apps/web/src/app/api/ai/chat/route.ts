@@ -35,9 +35,17 @@ export async function POST(request: Request) {
   const body = (await request.json()) as {
     messages?: UIMessage[];
     gesprekId?: string;
+    versieId?: string;
+    werkindelingId?: string;
+    werkindelingNaam?: string;
   };
 
-  const { messages, gesprekId } = body;
+  const { messages, gesprekId, versieId, werkindelingId, werkindelingNaam } = body;
+
+  const werkbordContext =
+    versieId && werkindelingId
+      ? { versieId, werkindelingId, werkindelingNaam: werkindelingNaam ?? "" }
+      : undefined;
 
   if (!messages || messages.length === 0) {
     return fail("Geen berichten meegegeven.", 400, "BAD_REQUEST");
@@ -87,7 +95,7 @@ export async function POST(request: Request) {
   }) as unknown as ToolSet;
   const result = streamText({
     model,
-    system: buildDaisyPrompt(session),
+    system: buildDaisyPrompt(session, werkbordContext),
     messages: modelMessages,
     tools,
     maxOutputTokens: aiInstellingen.maxTokens,

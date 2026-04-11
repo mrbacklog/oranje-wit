@@ -9,6 +9,7 @@ import AfmeldBadge from "./AfmeldBadge";
 const STATUS_LABELS: Record<string, string> = {
   BESCHIKBAAR: "Beschikbaar",
   TWIJFELT: "Twijfelt",
+  GEBLESSEERD: "Geblesseerd",
   GAAT_STOPPEN: "Stopt",
   NIEUW_POTENTIEEL: "Nieuw",
   NIEUW_DEFINITIEF: "Nieuw",

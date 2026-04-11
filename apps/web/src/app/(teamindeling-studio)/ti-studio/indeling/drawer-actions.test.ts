@@ -114,8 +114,10 @@ describe("createWhatIfVanHuidigeVersie", () => {
   it("gooit een fout als de werkindeling geen versie heeft", async () => {
     mockPrisma.versie.findFirst.mockResolvedValue(null);
 
-    await expect(createWhatIfVanHuidigeVersie("werkindeling-1", { vraag: "Test" })).rejects.toThrow(
-      "Werkindeling heeft geen versie"
-    );
+    await expect(
+      createWhatIfVanHuidigeVersie("werkindeling-1", { vraag: "Test" })
+    ).rejects.toMatchObject({
+      message: "Werkindeling heeft geen versie",
+    });
   });
 });

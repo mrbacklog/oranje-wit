@@ -43,6 +43,7 @@ export interface DrawerData {
 // ─── getVersiesVoorDrawer ─────────────────────────────────────
 
 export async function getVersiesVoorDrawer(werkindelingId: string): Promise<DrawerData> {
+  await requireTC();
   const versies = await prisma.versie.findMany({
     where: { werkindelingId },
     orderBy: { nummer: "desc" },

@@ -152,6 +152,9 @@ const MANUAL_REL_CODE = {
   "Jany Lacroes": null,
   "Kim de Reus": null,
   "Lindi Fasbender": null,
+  // Dio Naaktgeboren — typfout "Naakgeboren" in CSV-historische data
+  "Dio Naaktgeboren": "NFS05D0",
+  "Dio Naakgeboren": "NFS05D0",
 };
 
 // Niet-persoon patronen (vacatures, carrousel, etc.)

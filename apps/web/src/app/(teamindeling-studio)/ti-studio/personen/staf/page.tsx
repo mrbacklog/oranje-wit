@@ -1,21 +1,15 @@
-import { EmptyState } from "@oranje-wit/ui";
+export const dynamic = "force-dynamic";
 
-export default function PersonenStafPage() {
+import { getStafVoorStudio } from "../staf-actions";
+import { StafOverzicht } from "../_components/StafOverzicht";
+import { DaisyWidget } from "@/components/ti-studio";
+
+export default async function PersonenStafPage() {
+  const stafLeden = await getStafVoorStudio();
   return (
-    <div className="space-y-4">
-      <div>
-        <h2 className="text-xl font-bold" style={{ color: "var(--text-primary)" }}>
-          Staf
-        </h2>
-        <p className="mt-1 text-sm" style={{ color: "var(--text-secondary)" }}>
-          Trainers en coaches toewijzen aan teams
-        </p>
-      </div>
-
-      <EmptyState
-        title="Staf-module"
-        description="De staf-module komt in een volgende fase. Hier kun je straks coaches en trainers toewijzen aan teams."
-      />
-    </div>
+    <>
+      <StafOverzicht stafLeden={stafLeden} />
+      <DaisyWidget />
+    </>
   );
 }

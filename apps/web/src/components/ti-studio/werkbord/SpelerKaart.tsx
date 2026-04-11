@@ -225,6 +225,25 @@ export function SpelerKaart({
               {speler.status === "TWIJFELT" && (
                 <span style={{ fontSize: 8, fontWeight: 700, color: "var(--warn)" }}>?</span>
               )}
+              {speler.status === "GEBLESSEERD" && (
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: 10,
+                    height: 10,
+                    border: "1.5px solid rgba(255,255,255,0.8)",
+                    borderRadius: 2,
+                    flexShrink: 0,
+                  }}
+                >
+                  <svg width="6" height="6" viewBox="0 0 6 6" fill="none">
+                    <rect x="2.5" y="0" width="1" height="6" fill="#ff2d2d" />
+                    <rect x="0" y="2.5" width="6" height="1" fill="#ff2d2d" />
+                  </svg>
+                </span>
+              )}
               {speler.status === "AFGEMELD" && (
                 <span style={{ fontSize: 8, color: "var(--err)" }}>⚠</span>
               )}

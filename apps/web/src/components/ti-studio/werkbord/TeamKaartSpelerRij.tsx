@@ -25,6 +25,7 @@ interface TeamKaartSpelerRijProps {
   teamId: string;
   selectieGroepId?: string | null;
   zoomLevel: ZoomLevel;
+  openMemoCount?: number;
   onSpelerClick?: (spelerId: string, teamId: string | null) => void;
 }
 
@@ -33,6 +34,7 @@ export function TeamKaartSpelerRij({
   teamId,
   selectieGroepId,
   zoomLevel,
+  openMemoCount = 0,
   onSpelerClick,
 }: TeamKaartSpelerRijProps) {
   if (zoomLevel === "detail") {
@@ -53,6 +55,7 @@ export function TeamKaartSpelerRij({
         speler={spelerInTeam.speler}
         teamId={teamId}
         selectieGroepId={selectieGroepId}
+        openMemoCount={openMemoCount}
       />
     );
   }
@@ -239,10 +242,12 @@ function NormaalSpelerRij({
   speler,
   teamId,
   selectieGroepId,
+  openMemoCount = 0,
 }: {
   speler: WerkbordSpeler;
   teamId: string;
   selectieGroepId?: string | null;
+  openMemoCount?: number;
 }) {
   const ghostRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -382,12 +387,45 @@ function NormaalSpelerRij({
               ?
             </span>
           )}
+          {speler.status === "GEBLESSEERD" && (
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: 11,
+                height: 11,
+                border: "1.5px solid rgba(255,255,255,0.8)",
+                borderRadius: 2,
+                flexShrink: 0,
+              }}
+            >
+              <svg width="7" height="7" viewBox="0 0 6 6" fill="none">
+                <rect x="2.5" y="0" width="1" height="6" fill="#ff2d2d" />
+                <rect x="0" y="2.5" width="6" height="1" fill="#ff2d2d" />
+              </svg>
+            </span>
+          )}
           {speler.status === "AFGEMELD" && (
             <span style={{ fontSize: 9, color: "var(--err)", flexShrink: 0 }}>⚠</span>
           )}
           <span style={{ fontSize: 9.5, color: "var(--text-3)", flexShrink: 0 }}>
             {leeftijd.toFixed(1)}
           </span>
+          {openMemoCount > 0 && (
+            <span
+              style={{
+                fontSize: 9,
+                color: "var(--accent)",
+                fontWeight: 700,
+                lineHeight: 1,
+                flexShrink: 0,
+              }}
+              title={`${openMemoCount} open memo${openMemoCount !== 1 ? "'s" : ""}`}
+            >
+              ▲
+            </span>
+          )}
         </div>
       </div>
       <style>{`
