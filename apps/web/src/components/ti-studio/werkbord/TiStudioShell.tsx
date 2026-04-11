@@ -87,6 +87,8 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
     setProfielTeamId(teamId);
   }
 
+  const alleReserveringen = initieleState.alleReserveringen ?? [];
+
   const arCount = alleSpelers.filter((s) => s.status === "ALGEMEEN_RESERVE").length;
   const inTeDelenTotaal = initieleState.totalSpelers - arCount;
   const ingeplandSpelers = alleSpelers.filter(
@@ -122,6 +124,7 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
         <SpelersPoolDrawer
           open={panelLinks === "pool"}
           spelers={alleSpelers}
+          reserveringen={alleReserveringen}
           onClose={() => setPanelLinks(null)}
         />
         <StafPoolDrawer

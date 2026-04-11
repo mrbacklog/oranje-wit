@@ -76,6 +76,14 @@ export interface WerkbordStaf {
   teams: WerkbordStafTeamrol[]; // per team welke rol
 }
 
+export interface WerkbordReservering {
+  id: string;
+  titel: string;
+  geslacht: Geslacht;
+  teamId: string | null;
+  ingedeeldTeamNaam: string | null;
+}
+
 // Werkitem als memo — vervangt notitie/memoStatus/besluit op Team/Speler/Staf
 export interface WerkbordWerkitem {
   id: string;
@@ -130,6 +138,7 @@ export interface WerkbordState {
   teams: WerkbordTeam[];
   alleSpelers: WerkbordSpeler[];
   alleStaf: WerkbordStaf[];
+  alleReserveringen: WerkbordReservering[];
   validatie: WerkbordValidatieItem[];
   werkindelingId: string;
   versieId: string;

@@ -84,6 +84,7 @@ type AnyPrismaModels = {
   // Daisy
   daisyActie: AnyModel;
   plaatsreservering: AnyModel;
+  reserveringsspeler: AnyModel;
   // What-if
   whatIf: AnyModel;
   whatIfTeam: AnyModel;

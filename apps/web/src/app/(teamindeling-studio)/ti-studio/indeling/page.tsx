@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { auth } from "@oranje-wit/auth";
+import { prisma } from "@/lib/teamindeling/db/prisma";
 import { getOfMaakWerkindelingVoorSeizoen } from "./actions";
 import { getWerkindelingVoorEditor, getAlleSpelers } from "./werkindeling-actions";
 import { getTeamtypeKaders } from "@/app/(teamindeling-studio)/ti-studio/kader/actions";
@@ -19,6 +20,7 @@ import type {
   WerkbordValidatieItem,
   WerkbordStaf,
   WerkbordStafTeamrol,
+  WerkbordReservering,
 } from "@/components/ti-studio/werkbord/types";
 
 // Prisma Kleur enum → KnkvCategorie token
@@ -409,10 +411,30 @@ export default async function IndelingPage() {
     }
   }
 
+  const prismaReserveringen = await prisma.reserveringsspeler.findMany({
+    select: {
+      id: true,
+      titel: true,
+      geslacht: true,
+      teamId: true,
+      team: { select: { naam: true } },
+    },
+    orderBy: { titel: "asc" },
+  });
+
+  const alleReserveringen: WerkbordReservering[] = prismaReserveringen.map((r) => ({
+    id: r.id,
+    titel: r.titel,
+    geslacht: r.geslacht as "M" | "V",
+    teamId: r.teamId,
+    ingedeeldTeamNaam: r.team?.naam ?? null,
+  }));
+
   const initieleState: WerkbordState = {
     teams,
     alleSpelers,
     alleStaf,
+    alleReserveringen,
     validatie,
     werkindelingId: volledig.id,
     versieId: versie?.id ?? "",
