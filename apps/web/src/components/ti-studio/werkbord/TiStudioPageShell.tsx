@@ -1,7 +1,7 @@
 "use client";
 // Importeert tokens.css EENMALIG voor alle TI Studio pagina's
 import "./tokens.css";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Ribbon } from "./Ribbon";
@@ -27,11 +27,35 @@ export function TiStudioPageShell({ children }: TiStudioPageShellProps) {
     .slice(0, 2);
 
   const [openMemoCount, setOpenMemoCount] = useState(0);
+  const [nieuweVersie, setNieuweVersie] = useState(false);
+  const huidigeVersie = useRef<string | null>(null);
 
   useEffect(() => {
     getOpenMemoCount()
       .then(setOpenMemoCount)
       .catch(() => {});
+  }, []);
+
+  // Versiedetectie: poll /api/health elke 60s, toon banner bij nieuwe deploy
+  useEffect(() => {
+    async function checkVersie() {
+      try {
+        const res = await fetch("/api/health", { cache: "no-store" });
+        if (!res.ok) return;
+        const data = (await res.json()) as { version?: string };
+        if (!data.version) return;
+        if (huidigeVersie.current === null) {
+          huidigeVersie.current = data.version;
+        } else if (huidigeVersie.current !== data.version) {
+          setNieuweVersie(true);
+        }
+      } catch {
+        // netwerk even weg — negeer
+      }
+    }
+    checkVersie();
+    const interval = setInterval(checkVersie, 60_000);
+    return () => clearInterval(interval);
   }, []);
 
   const isWerkbord = pathname.startsWith("/ti-studio/indeling");
@@ -110,6 +134,42 @@ export function TiStudioPageShell({ children }: TiStudioPageShellProps) {
             overflow: "hidden",
           }}
         >
+          {/* Nieuwe versie banner */}
+          {nieuweVersie && (
+            <div
+              style={{
+                padding: "7px 20px",
+                fontSize: 12,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 12,
+                background: "rgba(255,107,0,.1)",
+                color: "var(--accent)",
+                borderBottom: "1px solid rgba(255,107,0,.2)",
+                flexShrink: 0,
+              }}
+            >
+              <span>Nieuwe versie beschikbaar — sla lopend werk op en vernieuw de pagina.</span>
+              <button
+                onClick={() => window.location.reload()}
+                style={{
+                  padding: "2px 10px",
+                  borderRadius: 4,
+                  border: "1px solid var(--accent)",
+                  background: "transparent",
+                  color: "var(--accent)",
+                  fontSize: 11,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  flexShrink: 0,
+                }}
+              >
+                Vernieuwen
+              </button>
+            </div>
+          )}
+
           {/* Niet-werkseizoen banner */}
           {!isWerkseizoen && (
             <div
