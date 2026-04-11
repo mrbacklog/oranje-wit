@@ -190,6 +190,9 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
           onSpelerClick={openProfiel}
           onDropSpelerOpSelectie={onDropSpelerOpSelectieFn}
           onTitelKlik={openTeamDialog}
+          versieId={versieId}
+          werkindelingId={initieleState.werkindelingId}
+          werkindelingNaam={initieleState.naam}
         />
         <TeamDrawer
           open={panelRechts === "teams"}
