@@ -701,6 +701,7 @@ export function WerkbordCanvas({
 
       {/* Daisy Panel */}
       <DaisyPanel
+        key={versieId}
         versieId={versieId}
         werkindelingId={werkindelingId}
         werkindelingNaam={werkindelingNaam}

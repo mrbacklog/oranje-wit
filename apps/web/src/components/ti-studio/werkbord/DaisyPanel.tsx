@@ -27,7 +27,7 @@ export function DaisyPanel({ versieId, werkindelingId, werkindelingNaam }: Daisy
     })
   );
 
-  const { messages, sendMessage, status } = useChat({ transport: transport.current });
+  const { messages, sendMessage, status, error } = useChat({ transport: transport.current });
   const isLoading = status === "submitted" || status === "streaming";
 
   useEffect(() => {
@@ -56,6 +56,14 @@ export function DaisyPanel({ versieId, werkindelingId, werkindelingNaam }: Daisy
   };
 
   const lastMessageIsUser = messages.length > 0 && messages[messages.length - 1].role === "user";
+
+  const lastToolCallId = (() => {
+    for (let i = messages.length - 1; i >= 0; i--) {
+      const m = messages[i];
+      if (m.role === "assistant" && heeftToolCall(m)) return m.id;
+    }
+    return null;
+  })();
 
   return (
     <>
@@ -107,12 +115,14 @@ export function DaisyPanel({ versieId, werkindelingId, werkindelingNaam }: Daisy
           transform: open ? "scale(1) translateY(0)" : "scale(0.9) translateY(20px)",
           opacity: open ? 1 : 0,
           pointerEvents: open ? "all" : "none",
+          visibility: open ? "visible" : "hidden",
           transition: "all 200ms cubic-bezier(0.34, 1.56, 0.64, 1)",
           transformOrigin: "bottom right",
         }}
         role="dialog"
         aria-label="Daisy chat"
         aria-modal="true"
+        aria-hidden={!open}
       >
         {/* Header */}
         <div
@@ -245,8 +255,8 @@ export function DaisyPanel({ versieId, werkindelingId, werkindelingNaam }: Daisy
                         ))}
                     </div>
                   </div>
-                  {/* Undo-knop na assistent-bericht met tool-call */}
-                  {m.role === "assistant" && heeftToolCall(m) && (
+                  {/* Undo-knop na laatste assistent-bericht met tool-call */}
+                  {m.id === lastToolCallId && (
                     <div style={{ display: "flex", justifyContent: "flex-start", marginTop: 4 }}>
                       <button
                         onClick={handleOngedaan}
@@ -291,6 +301,24 @@ export function DaisyPanel({ versieId, werkindelingId, werkindelingNaam }: Daisy
             </>
           )}
         </div>
+
+        {/* Error banner */}
+        {error && (
+          <div
+            style={{
+              margin: "0 12px 8px",
+              padding: "6px 10px",
+              borderRadius: 8,
+              fontSize: 11,
+              background: "rgba(239,68,68,0.1)",
+              color: "var(--err)",
+              border: "1px solid rgba(239,68,68,0.2)",
+              flexShrink: 0,
+            }}
+          >
+            {error.message || "Er ging iets mis. Probeer het opnieuw."}
+          </div>
+        )}
 
         {/* Input */}
         <div
