@@ -118,8 +118,10 @@ export function TeamKaart({
     const raw = e.dataTransfer.getData("speler");
     if (!raw) return;
     const data = JSON.parse(raw) as { speler: WerkbordSpeler; vanTeamId: string | null };
-    if (data.vanTeamId === team.id) return;
-    onDropSpeler(data.speler, data.vanTeamId, data.speler.geslacht);
+    // Als de speler al in een team zit (vanuit pool gedropt), gebruik teamId als effectieve bron
+    const effectiefVanTeamId = data.vanTeamId ?? data.speler.teamId;
+    if (effectiefVanTeamId === team.id) return;
+    onDropSpeler(data.speler, effectiefVanTeamId, data.speler.geslacht);
   }
 
   return (
