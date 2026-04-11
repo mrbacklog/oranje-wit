@@ -20,7 +20,7 @@ function berekenKorfbalLeeftijd(
   seizoenEindjaar: number
 ): number {
   if (geboortedatum) {
-    const peildatum = new Date(seizoenEindjaar, 0, 1); // 1 jan eindjaar
+    const peildatum = new Date(seizoenEindjaar, 11, 31); // 31 dec eindjaar
     const geboorte = new Date(geboortedatum);
     return (
       Math.floor(((peildatum.getTime() - geboorte.getTime()) / (365.25 * 24 * 3600 * 1000)) * 100) /
