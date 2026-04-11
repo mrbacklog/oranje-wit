@@ -1147,6 +1147,9 @@ model Werkitem {
   @@index([prioriteit])
 }
 
+// auteurNaam/auteurEmail zijn bewust gedenormaliseerd (geen User FK):
+// audit-semantiek — auteur-identiteit wordt vastgelegd op het moment van schrijven,
+// zodat historische vermeldingen intact blijven als een gebruikersaccount wijzigt.
 model WerkitemToelichting {
   id          String   @id @default(cuid())
   werkitem    Werkitem @relation(fields: [werkitemId], references: [id], onDelete: Cascade)
@@ -1159,6 +1162,8 @@ model WerkitemToelichting {
   @@index([werkitemId])
 }
 
+// WerkitemLog: systeem-events (aanmaken, status-wijziging, verwijderen).
+// VERWIJDERD wordt gelogd vóór de cascade-delete om het event te bewaren.
 model WerkitemLog {
   id          String   @id @default(cuid())
   werkitem    Werkitem @relation(fields: [werkitemId], references: [id], onDelete: Cascade)
