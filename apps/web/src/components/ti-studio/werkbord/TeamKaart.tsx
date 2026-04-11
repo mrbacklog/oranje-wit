@@ -471,7 +471,7 @@ function SelectieGeheelDropzone({
     };
   }
 
-  // Volgorde: dam1 | dam2 | her1 | her2 — geslacht eerst, team daarna
+  // Volgorde: dam1 | her1 | dam2 | her2 — team eerst, geslacht daarna
   const cols = [
     {
       id: "dam1",
@@ -481,18 +481,18 @@ function SelectieGeheelDropzone({
       teamId: team.id,
     },
     {
-      id: "dam2",
-      label: `♀ ${partnerTeam.naam}`,
-      kleur: "V" as const,
-      spelers: partnerTeam.dames,
-      teamId: partnerTeam.id,
-    },
-    {
       id: "her1",
       label: `♂ ${team.naam}`,
       kleur: "M" as const,
       spelers: team.heren,
       teamId: team.id,
+    },
+    {
+      id: "dam2",
+      label: `♀ ${partnerTeam.naam}`,
+      kleur: "V" as const,
+      spelers: partnerTeam.dames,
+      teamId: partnerTeam.id,
     },
     {
       id: "her2",
