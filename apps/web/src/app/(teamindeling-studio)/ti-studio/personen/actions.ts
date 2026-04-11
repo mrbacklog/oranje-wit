@@ -17,7 +17,7 @@ export async function getSpelersVoorStudio() {
   if (!kaders) return [];
 
   // Haal alle spelers parallel op
-  const [kadersSpelers, spelers, werkindeling] = await Promise.all([
+  const [kadersSpelers, spelers, werkindeling, pins, actieveWerkitems] = await Promise.all([
     prisma.kadersSpeler.findMany({
       where: { kadersId: kaders.id },
       select: {
@@ -61,6 +61,21 @@ export async function getSpelersVoorStudio() {
         },
       },
     }),
+
+    // 4e: gepinde spelers voor dit kaders (SPELER_GEPIND type)
+    prisma.pin.findMany({
+      where: { kadersId: kaders.id, spelerId: { not: null }, type: "SPELER_GEPIND" },
+      select: { spelerId: true },
+    }),
+
+    // 5e: actieve werkitems op spelers (niet-gearchiveerde)
+    prisma.werkitem.findMany({
+      where: {
+        spelerId: { not: null },
+        status: { notIn: ["GEARCHIVEERD"] },
+      },
+      select: { spelerId: true },
+    }),
   ]);
 
   // Bouw spelerId → huidig indelingsteam mapping
@@ -75,6 +90,8 @@ export async function getSpelersVoorStudio() {
   }
 
   const gezienMap = new Map(kadersSpelers.map((ks) => [ks.spelerId, ks]));
+  const gepindSet = new Set(pins.map((p) => p.spelerId).filter(Boolean) as string[]);
+  const memoSet = new Set(actieveWerkitems.map((w) => w.spelerId).filter(Boolean) as string[]);
 
   return spelers.map((s) => {
     const gezien = gezienMap.get(s.id);
@@ -109,6 +126,8 @@ export async function getSpelersVoorStudio() {
         naam: string;
         kleur: string | null;
       } | null,
+      gepind: gepindSet.has(s.id),
+      heeftActiefMemo: memoSet.has(s.id),
     };
   });
 }
