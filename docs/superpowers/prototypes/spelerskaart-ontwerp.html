@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SpelerKaart — Definitief ontwerp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ================================================================
+   Design tokens
+   ================================================================ */
+:root {
+  --bg-0: #0a0a0a;
+  --bg-1: #141414;
+  --bg-2: #1e1e1e;
+  --bg-3: #262626;
+  --accent: #ff6b00;
+  --accent-dim: rgba(255,107,0,.12);
+  --accent-border: rgba(255,107,0,.4);
+  --text-1: #fafafa;
+  --text-2: #a3a3a3;
+  --text-3: #666666;
+  --border-0: #262626;
+  --border-1: #3a3a3a;
+  --ok: #22c55e;
+  --warn: #eab308;
+  --err: #ef4444;
+  --pink: #ec4899;
+  --blue: #60a5fa;
+
+  /* Afgeleid */
+  --ok-dim: rgba(34,197,94,.12);
+  --warn-dim: rgba(234,179,8,.12);
+  --err-dim: rgba(239,68,68,.12);
+  --pink-dim: rgba(236,72,153,.15);
+  --blue-dim: rgba(96,165,250,.15);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg-0);
+  color: var(--text-1);
+  min-height: 100vh;
+  padding: 48px 40px 120px;
+  line-height: 1.4;
+}
+
+/* ================================================================
+   Pagina-header
+   ================================================================ */
+.page-header {
+  max-width: 1280px;
+  margin: 0 auto 56px;
+  border-bottom: 1px solid var(--border-0);
+  padding-bottom: 28px;
+}
+.page-header .badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-dim);
+  border: 1px solid var(--accent-border);
+  border-radius: 4px;
+  padding: 3px 8px;
+  margin-bottom: 12px;
+}
+.page-header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-1);
+  margin-bottom: 8px;
+}
+.page-header p {
+  font-size: 14px;
+  color: var(--text-2);
+}
+.page-header .decision {
+  margin-top: 16px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.decision-chip {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: rgba(34,197,94,.12);
+  border: 1px solid rgba(34,197,94,.3);
+  color: var(--ok);
+}
+
+/* ================================================================
+   Sectie-structuur
+   ================================================================ */
+.section {
+  max-width: 1280px;
+  margin: 0 auto 80px;
+}
+.section-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-bottom: 4px;
+}
+.section-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-1);
+  margin-bottom: 6px;
+}
+.section-desc {
+  font-size: 13px;
+  color: var(--text-2);
+  margin-bottom: 28px;
+  max-width: 640px;
+}
+.section-divider {
+  height: 1px;
+  background: var(--border-0);
+  margin-bottom: 28px;
+}
+
+/* ================================================================
+   Annotatie-systeem
+   ================================================================ */
+.anno-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.anno-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.anno-label {
+  font-size: 10px;
+  color: var(--text-3);
+  font-family: 'Inter', monospace;
+  white-space: nowrap;
+}
+.anno-label b {
+  color: var(--text-2);
+  font-weight: 600;
+}
+.anno-arrow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  color: var(--text-3);
+}
+.anno-line {
+  width: 1px;
+  background: var(--border-1);
+  flex-shrink: 0;
+}
+.anno-brace {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.anno-bracket {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  align-items: center;
+  padding-top: 2px;
+}
+.anno-bracket-body {
+  width: 1px;
+  background: var(--border-1);
+  flex: 1;
+}
+.anno-bracket-tip {
+  width: 8px;
+  height: 1px;
+  background: var(--border-1);
+}
+
+/* ================================================================
+   SPELERSKAART — definitief ontwerp
+   ================================================================ */
+
+/*
+   Hoogte-berekening voor viertal:
+   - TeamKaart header:        36px
+   - Sub-header dames:        22px
+   - Sub-header heren:        22px
+   - 8 spelerskaarten:        8 × 48px = 384px
+   - TeamKaart footer:        28px
+   - Totaal:                  492px
+
+   Spelerskaart hoogte: 48px (padding 8px t/b)
+   Dit past binnen een standaard desktop-viertal-kolom.
+*/
+
+.speler-kaart {
+  height: 48px;
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-1);
+  border-bottom: 1px solid var(--border-0);
+  position: relative;
+  cursor: pointer;
+  transition: background 150ms ease;
+  overflow: hidden;
+}
+.speler-kaart:hover {
+  background: var(--bg-2);
+}
+.speler-kaart:last-child {
+  border-bottom: none;
+}
+
+/* Geslachtsstreep links */
+.speler-kaart::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 2px;
+  border-radius: 0 1px 1px 0;
+}
+.speler-kaart.vrouw::before { background: var(--pink); }
+.speler-kaart.man::before   { background: var(--blue); }
+
+/* Avatar */
+.sk-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  flex-shrink: 0;
+  letter-spacing: 0;
+}
+.sk-avatar.vrouw {
+  background: var(--pink-dim);
+  border: 1.5px solid rgba(236,72,153,.35);
+  color: var(--pink);
+}
+.sk-avatar.man {
+  background: var(--blue-dim);
+  border: 1.5px solid rgba(96,165,250,.35);
+  color: var(--blue);
+}
+
+/* Inhoud */
+.sk-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+/* Regel 1 */
+.sk-row1 {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.sk-naam {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
+  line-height: 1.2;
+}
+.sk-naam.doorgestreept {
+  text-decoration: line-through;
+  color: var(--text-3);
+}
+.sk-badges {
+  display: flex;
+  gap: 3px;
+  flex-shrink: 0;
+  align-items: center;
+}
+.sk-badge {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 4px;
+  border-radius: 3px;
+  line-height: 1.4;
+  letter-spacing: .3px;
+}
+.sk-badge.nieuw    { background: rgba(34,197,94,.15); color: var(--ok); border: 1px solid rgba(34,197,94,.3); }
+.sk-badge.twijfelt { background: rgba(234,179,8,.15); color: var(--warn); border: 1px solid rgba(234,179,8,.3); }
+.sk-badge.afgemeld { background: rgba(239,68,68,.15); color: var(--err); border: 1px solid rgba(239,68,68,.3); }
+.sk-badge.gepind   { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent-border); }
+
+/* Regel 2 */
+.sk-row2 {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  justify-content: space-between;
+}
+.sk-chips {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+}
+.sk-leeftijd {
+  font-size: 10px;
+  color: var(--text-3);
+  font-weight: 400;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Team-chips — Optie B: twee aparte chips */
+.sk-chip {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: 4px;
+  line-height: 1.5;
+  white-space: nowrap;
+  letter-spacing: .2px;
+}
+/* Huidig team: neutraal grijs */
+.sk-chip.huidig {
+  background: transparent;
+  border: 1px solid var(--border-1);
+  color: var(--text-3);
+}
+/* Ingedeeld in: oranje accent */
+.sk-chip.ingedeeld {
+  background: var(--accent-dim);
+  border: 1px solid var(--accent-border);
+  color: var(--accent);
+}
+/* Niet ingedeeld */
+.sk-chip.leeg {
+  background: transparent;
+  border: 1px dashed var(--border-0);
+  color: var(--text-3);
+  letter-spacing: 0;
+}
+
+/* GAAT_STOPPEN: 50% opacity */
+.speler-kaart.stopt {
+  opacity: 0.5;
+}
+
+/* ================================================================
+   TEAMKAART
+   ================================================================ */
+.team-kaart {
+  background: var(--bg-1);
+  border: 1px solid var(--border-0);
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.tk-header {
+  height: 36px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--border-0);
+  flex-shrink: 0;
+}
+.tk-teamnaam {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-1);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.tk-valid-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ok);
+  flex-shrink: 0;
+}
+.tk-tellers {
+  display: flex;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--text-2);
+}
+.tk-teller { display: flex; align-items: center; gap: 3px; }
+
+.tk-sub-header {
+  height: 22px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  background: var(--bg-0);
+  border-bottom: 1px solid var(--border-0);
+  flex-shrink: 0;
+}
+.tk-sub-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .6px;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.tk-footer {
+  height: 28px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-2);
+  border-top: 1px solid var(--border-0);
+  flex-shrink: 0;
+}
+.tk-footer-stat {
+  font-size: 11px;
+  color: var(--text-2);
+}
+
+/* Achtal: twee kolommen naast elkaar */
+.tk-kolommen {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+.tk-kolom {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border-0);
+}
+.tk-kolom:last-child {
+  border-right: none;
+}
+
+/* ================================================================
+   Spelerspool
+   ================================================================ */
+.spelerspool {
+  width: 224px;
+  height: 600px;
+  background: var(--bg-1);
+  border: 1px solid var(--border-0);
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.pool-header {
+  padding: 10px 12px 8px;
+  border-bottom: 1px solid var(--border-0);
+  flex-shrink: 0;
+}
+.pool-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-1);
+  margin-bottom: 8px;
+}
+.pool-filters {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+.pool-filter {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+  border: 1px solid var(--border-1);
+  color: var(--text-3);
+  background: transparent;
+  letter-spacing: .2px;
+}
+.pool-filter.active {
+  background: var(--accent-dim);
+  border-color: var(--accent-border);
+  color: var(--accent);
+}
+.pool-body {
+  flex: 1;
+  overflow-y: auto;
+}
+.pool-section-header {
+  padding: 6px 12px 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .6px;
+  text-transform: uppercase;
+  color: var(--text-3);
+  background: var(--bg-0);
+  border-bottom: 1px solid var(--border-0);
+  position: sticky;
+  top: 0;
+}
+
+/* In de pool zijn kaarten iets smaller-padded */
+.spelerspool .speler-kaart {
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+}
+
+/* ================================================================
+   Drag ghost
+   ================================================================ */
+.drag-ghost {
+  transform: rotate(2deg);
+  box-shadow:
+    0 0 0 2px var(--accent),
+    0 8px 24px rgba(0,0,0,.7),
+    0 2px 8px rgba(255,107,0,.2);
+  opacity: 0.95;
+  border-radius: 6px;
+  overflow: hidden;
+  width: 220px;
+}
+
+/* ================================================================
+   Maten-tabel
+   ================================================================ */
+.maten-tabel {
+  border-collapse: collapse;
+  font-size: 13px;
+  width: 100%;
+  max-width: 540px;
+}
+.maten-tabel th, .maten-tabel td {
+  padding: 8px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-0);
+}
+.maten-tabel th {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.maten-tabel td:first-child {
+  color: var(--text-2);
+}
+.maten-tabel td:last-child {
+  font-weight: 600;
+  color: var(--text-1);
+  font-variant-numeric: tabular-nums;
+}
+.maten-tabel tr:hover td {
+  background: var(--bg-2);
+}
+
+/* ================================================================
+   Annotatie-overlay (visuele maten-markers)
+   ================================================================ */
+.anno-wrap {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+.anno-sidebar {
+  font-size: 10px;
+  color: var(--text-3);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 0;
+  min-width: 160px;
+}
+.anno-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 48px; /* zelfde als spelerskaart */
+  border-left: 2px solid var(--border-1);
+  padding-left: 6px;
+  font-size: 10px;
+  color: var(--text-3);
+  line-height: 1.3;
+}
+.anno-row b {
+  color: var(--text-2);
+  font-weight: 600;
+}
+.anno-row.header-row {
+  height: 36px;
+  border-left-color: var(--border-0);
+}
+.anno-row.sub-row {
+  height: 22px;
+  border-left-color: var(--border-0);
+}
+.anno-row.footer-row {
+  height: 28px;
+  border-left-color: var(--border-0);
+}
+.anno-total {
+  margin-top: 6px;
+  padding: 6px 8px;
+  background: var(--bg-2);
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-1);
+  border: 1px solid var(--border-1);
+}
+
+/* Kaart-inline annotaties */
+.anno-kaart-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+.anno-kaart-labels {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding-top: 4px;
+}
+.anno-kaart-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  color: var(--text-3);
+  white-space: nowrap;
+  line-height: 1.3;
+}
+.anno-kaart-label::before {
+  content: '←';
+  color: var(--border-1);
+  font-size: 10px;
+}
+.anno-kaart-label b {
+  color: var(--text-2);
+}
+
+/* ================================================================
+   Layout helpers
+   ================================================================ */
+.flex-row  { display: flex; gap: 32px; align-items: flex-start; flex-wrap: wrap; }
+.flex-col  { display: flex; flex-direction: column; gap: 12px; }
+.mt-8  { margin-top: 8px; }
+.mt-16 { margin-top: 16px; }
+.mt-24 { margin-top: 24px; }
+.text-muted { font-size: 12px; color: var(--text-3); }
+
+</style>
+</head>
+<body>
+
+<!-- ================================================================
+     PAGINA HEADER
+     ================================================================ -->
+<header class="page-header">
+  <span class="badge">Definitief ontwerp — goedgekeurd 2026-04-10</span>
+  <h1>SpelerKaart</h1>
+  <p>Design review document. Toont het definitieve ontwerp voor alle contexten: pool, viertal, achtal, drag ghost.</p>
+  <div class="decision">
+    <span class="decision-chip">Variant 2 — Twee regels</span>
+    <span class="decision-chip">Optie B — Twee aparte chips</span>
+    <span class="decision-chip">Hoogte 48px</span>
+    <span class="decision-chip">Geslachtsstreep links 2px</span>
+  </div>
+</header>
+
+
+<!-- ================================================================
+     SECTIE 1 — DE KAART OP WARE GROOTTE
+     ================================================================ -->
+<section class="section">
+  <div class="section-label">Sectie 1 van 6</div>
+  <h2 class="section-title">De kaart op ware grootte</h2>
+  <p class="section-desc">
+    Alle vijf voorbeeldspelers. Annotaties rechts tonen de exacte maten.
+    Hoogte 48px is het ontwerpanker — dit getal stuurt alle andere afmetingen.
+  </p>
+  <div class="section-divider"></div>
+
+  <div class="flex-row">
+    <!-- Kaarten -->
+    <div style="width: 320px; background: var(--bg-1); border-radius: 10px; overflow: hidden; border: 1px solid var(--border-0);">
+
+      <!-- Lotte — nieuw, V, U19-1 → U17-1 -->
+      <div class="speler-kaart vrouw">
+        <div class="sk-avatar vrouw">LB</div>
+        <div class="sk-content">
+          <div class="sk-row1">
+            <span class="sk-naam">Lotte van den Berg</span>
+            <div class="sk-badges">
+              <span class="sk-badge nieuw">N</span>
+            </div>
+          </div>
+          <div class="sk-row2">
+            <div class="sk-chips">
+              <span class="sk-chip huidig">U19-1</span>
+              <span class="sk-chip ingedeeld">U17-1</span>
+            </div>
+            <span class="sk-leeftijd" data-geboortedatum="2007-03-15"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Jasper — gepind, M, Sen 2 → Sen 1 -->
+      <div class="speler-kaart man">
+        <div class="sk-avatar man">JK</div>
+        <div class="sk-content">
+          <div class="sk-row1">
+            <span class="sk-naam">Jasper Kooiman</span>
+            <div class="sk-badges">
+              <span class="sk-badge gepind">📌</span>
+            </div>
+          </div>
+          <div class="sk-row2">
+            <div class="sk-chips">
+              <span class="sk-chip huidig">Sen 2</span>
+              <span class="sk-chip ingedeeld">Sen 1</span>
+            </div>
+            <span class="sk-leeftijd" data-geboortedatum="2002-09-22"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Merel — twijfelt, V, Sen 1, niet ingedeeld -->
+      <div class="speler-kaart vrouw">
+        <div class="sk-avatar vrouw">MV</div>
+        <div class="sk-content">
+          <div class="sk-row1">
+            <span class="sk-naam">Merel de Vries</span>
+            <div class="sk-badges">
+              <span class="sk-badge twijfelt">?</span>
+            </div>
+          </div>
+          <div class="sk-row2">
+            <div class="sk-chips">
+              <span class="sk-chip huidig">Sen 1</span>
+              <span class="sk-chip leeg">—</span>
+            </div>
+            <span class="sk-leeftijd" data-geboortedatum="1994-06-08"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Thomas — afgemeld, M, U17-2 → U15-1 -->
+      <div class="speler-kaart man">
+        <div class="sk-avatar man">TB</div>
+        <div class="sk-content">
+          <div class="sk-row1">
+            <span class="sk-naam">Thomas Bakker</span>
+            <div class="sk-badges">
+              <span class="sk-badge afgemeld">⚠</span>
+            </div>
+          </div>
+          <div class="sk-row2">
+            <div class="sk-chips">
+              <span class="sk-chip huidig">U17-2</span>
+              <span class="sk-chip ingedeeld">U15-1</span>
+            </div>
+            <span class="sk-leeftijd" data-geboortedatum="2009-11-03"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sanne — GAAT_STOPPEN, V, Sen 3 → Sen 2 -->
+      <div class="speler-kaart vrouw stopt">
+        <div class="sk-avatar vrouw">SV</div>
+        <div class="sk-content">
+          <div class="sk-row1">
+            <span class="sk-naam doorgestreept">Sanne Verhoeven</span>
+            <div class="sk-badges">
+              <span class="sk-badge afgemeld">✕</span>
+            </div>
+          </div>
+          <div class="sk-row2">
+            <div class="sk-chips">
+              <span class="sk-chip huidig">Sen 3</span>
+              <span class="sk-chip ingedeeld">Sen 2</span>
+            </div>
+            <span class="sk-leeftijd" data-geboortedatum="1991-04-27"></span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /kaarten -->
+
+    <!-- Annotaties rechts -->
+    <div style="display: flex; flex-direction: column; gap: 0; padding-top: 0;">
+
+      <!-- Header-annotatie boven de kaarten -->
+      <div style="height: 0; overflow: visible; display: flex; align-items: center; gap: 8px; margin-bottom: 2px;">
+      </div>
+
+      <!-- Per kaart annotatie (48px blokken) -->
+      <div style="display: flex; flex-direction: column;">
+        <div class="anno-row" style="border-left-color: var(--pink);">
+          <div>
+            <b>48px</b> hoog<br>
+            Geslachtsstreep <b>2px</b> roze links<br>
+            Avatar <b>28px</b> cirkel
+          </div>
+        </div>
+        <div class="anno-row" style="border-left-color: var(--blue);">
+          <div>
+            Padding links <b>8px</b> + streak<br>
+            Naam <b>13px/600</b> truncate<br>
+            Chip font <b>10px/600</b>
+          </div>
+        </div>
+        <div class="anno-row" style="border-left-color: var(--pink);">
+          <div>
+            Huidig: grijs chip (border only)<br>
+            Niet ingedeeld: <b>gestippeld</b> chip<br>
+            Badge font <b>9px/700</b>
+          </div>
+        </div>
+        <div class="anno-row" style="border-left-color: var(--blue);">
+          <div>
+            Gap rij 1→2: <b>3px</b><br>
+            Leeftijd <b>10px/400</b> rechts, 2 dec.<br>
+            Oranje chip: accent fill + border
+          </div>
+        </div>
+        <div class="anno-row" style="border-left-color: var(--pink); opacity: 0.5;">
+          <div>
+            GAAT_STOPPEN<br>
+            <b>50% opacity</b>, naam doorgestreept<br>
+            Alle chips behouden kleur
+          </div>
+        </div>
+      </div>
+
+      <div class="anno-total mt-8">
+        Totale kaartrij: <b>48px</b><br>
+        <span style="font-size: 10px; color: var(--text-3); font-weight: 400;">inclusief 1px border-bottom</span>
+      </div>
+    </div>
+  </div><!-- /flex-row -->
+
+  <!-- Legende badges/chips -->
+  <div class="mt-24" style="display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-start;">
+    <div>
+      <p class="text-muted" style="margin-bottom: 8px; font-weight: 600;">Badges (rechts in regel 1)</p>
+      <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
+        <span class="sk-badge nieuw">N</span><span class="text-muted">Nieuw lid</span>
+        <span style="color: var(--border-1);">|</span>
+        <span class="sk-badge twijfelt">?</span><span class="text-muted">Twijfelt</span>
+        <span style="color: var(--border-1);">|</span>
+        <span class="sk-badge afgemeld">⚠</span><span class="text-muted">Afgemeld</span>
+        <span style="color: var(--border-1);">|</span>
+        <span class="sk-badge gepind">📌</span><span class="text-muted">Gepind</span>
+        <span style="color: var(--border-1);">|</span>
+        <span class="sk-badge afgemeld">✕</span><span class="text-muted">Gaat stoppen</span>
+      </div>
+    </div>
+    <div>
+      <p class="text-muted" style="margin-bottom: 8px; font-weight: 600;">Team-chips (Optie B)</p>
+      <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
+        <span class="sk-chip huidig">Sen 2</span><span class="text-muted">Huidig team (neutraal)</span>
+        <span style="color: var(--border-1);">|</span>
+        <span class="sk-chip ingedeeld">Sen 1</span><span class="text-muted">Ingedeeld in (oranje)</span>
+        <span style="color: var(--border-1);">|</span>
+        <span class="sk-chip leeg">—</span><span class="text-muted">Niet ingedeeld</span>
+      </div>
+    </div>
+    <div>
+      <p class="text-muted" style="margin-bottom: 8px; font-weight: 600;">Geslachtsstreep (links, 2px)</p>
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <div style="width: 2px; height: 24px; background: var(--pink); border-radius: 1px;"></div>
+          <span class="text-muted">Vrouw (roze)</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <div style="width: 2px; height: 24px; background: var(--blue); border-radius: 1px;"></div>
+          <span class="text-muted">Man (blauw)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================================
+     SECTIE 2 — SPELERSPOOL CONTEXT
+     ================================================================ -->
+<section class="section">
+  <div class="section-label">Sectie 2 van 6</div>
+  <h2 class="section-title">SpelersPool context</h2>
+  <p class="section-desc">
+    224px brede pool (typische pool-breedte in TI Studio). Kaarten zijn identiek aan sectie 1.
+    Hover-state op Jasper Kooiman actief.
+  </p>
+  <div class="section-divider"></div>
+
+  <div class="spelerspool">
+    <div class="pool-header">
+      <div class="pool-title">Spelerspool</div>
+      <div class="pool-filters">
+        <span class="pool-filter active">Alle</span>
+        <span class="pool-filter">Dames</span>
+        <span class="pool-filter">Heren</span>
+        <span class="pool-filter">Vrij</span>
+      </div>
+    </div>
+    <div class="pool-body">
+
+      <div class="pool-section-header">Dames (3)</div>
+
+      <div class="speler-kaart vrouw">
+        <div class="sk-avatar vrouw">LB</div>
+        <div class="sk-content">
+          <div class="sk-row1">
+            <span class="sk-naam">Lotte van den Berg</span>
+            <div class="sk-badges"><span class="sk-badge nieuw">N</span></div>
+          </div>
+          <div class="sk-row2">
+            <div class="sk-chips">
+              <span class="sk-chip huidig">U19-1</span>
+              <span class="sk-chip ingedeeld">U17-1</span>
+            </div>
+            <span class="sk-leeftijd" data-geboortedatum="2007-03-15"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="speler-kaart vrouw">
+        <div class="sk-avatar vrouw">MV</div>
+        <div class="sk-content">
+          <div class="sk-row1">
+            <span class="sk-naam">Merel de Vries</span>
+            <div class="sk-badges"><span class="sk-badge twijfelt">?</span></div>
+          </div>
+          <div class="sk-row2">
+            <div class="sk-chips">
+              <span class="sk-chip huidig">Sen 1</span>
+              <span class="sk-chip leeg">—</span>
+            </div>
+            <span class="sk-leeftijd" data-geboortedatum="1994-06-08"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="speler-kaart vrouw stopt">
+        <div class="sk-avatar vrouw">SV</div>
+        <div class="sk-content">
+          <div class="sk-row1">
+            <span class="sk-naam doorgestreept">Sanne Verhoeven</span>
+            <div class="sk-badges"><span class="sk-badge afgemeld">✕</span></div>
+          </div>
+          <div class="sk-row2">
+            <div class="sk-chips">
+              <span class="sk-chip huidig">Sen 3</span>
+              <span class="sk-chip ingedeeld">Sen 2</span>
+            </div>
+            <span class="sk-leeftijd" data-geboortedatum="1991-04-27"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pool-section-header">Heren (2)</div>
+
+      <!-- Hover-state gesimuleerd -->
+      <div class="speler-kaart man" style="background: var(--bg-2);">
+        <div class="sk-avatar man">JK</div>
+        <div class="sk-content">
+          <div class="sk-row1">
+            <span class="sk-naam">Jasper Kooiman</span>
+            <div class="sk-badges"><span class="sk-badge gepind">📌</span></div>
+          </div>
+          <div class="sk-row2">
+            <div class="sk-chips">
+              <span class="sk-chip huidig">Sen 2</span>
+              <span class="sk-chip ingedeeld">Sen 1</span>
+            </div>
+            <span class="sk-leeftijd" data-geboortedatum="2002-09-22"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="speler-kaart man">
+        <div class="sk-avatar man">TB</div>
+        <div class="sk-content">
+          <div class="sk-row1">
+            <span class="sk-naam">Thomas Bakker</span>
+            <div class="sk-badges"><span class="sk-badge afgemeld">⚠</span></div>
+          </div>
+          <div class="sk-row2">
+            <div class="sk-chips">
+              <span class="sk-chip huidig">U17-2</span>
+              <span class="sk-chip ingedeeld">U15-1</span>
+            </div>
+            <span class="sk-leeftijd" data-geboortedatum="2009-11-03"></span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /pool-body -->
+  </div>
+</section>
+
+
+<!-- ================================================================
+     SECTIE 3 — TEAMKAART DETAIL (VIERTAL)
+     ================================================================ -->
+<section class="section">
+  <div class="section-label">Sectie 3 van 6</div>
+  <h2 class="section-title">TeamKaart detail — viertal</h2>
+  <p class="section-desc">
+    140px breed. 5 spelers (fictief extremum). Hoogte-berekening:
+    header 36px + sub-header dames 22px + 2 dames × 48px + sub-header heren 22px + 3 heren × 48px + footer 28px = <strong style="color: var(--text-1);">420px</strong>.
+    Geen scroll nodig.
+  </p>
+  <div class="section-divider"></div>
+
+  <div class="flex-row">
+    <!-- TeamKaart viertal -->
+    <div class="team-kaart" style="width: 140px; height: 420px;">
+      <!-- Header -->
+      <div class="tk-header">
+        <div class="tk-teamnaam">
+          <span class="tk-valid-dot"></span>
+          U17-1
+        </div>
+        <div class="tk-tellers">
+          <span class="tk-teller">♀2</span>
+          <span class="tk-teller">♂3</span>
+        </div>
+      </div>
+
+      <!-- Sub-header dames -->
+      <div class="tk-sub-header">
+        <span class="tk-sub-label">Dames</span>
+      </div>
+
+      <!-- Dames -->
+      <div class="speler-kaart vrouw" style="border-radius: 0;">
+        <div class="sk-avatar vrouw" style="width: 22px; height: 22px; font-size: 8px;">LB</div>
+        <div class="sk-content">
+          <div class="sk-row1">
+            <span class="sk-naam" style="font-size: 11px;">Lotte v.d. Berg</span>
+            <div class="sk-badges"><span class="sk-badge nieuw">N</span></div>
+          </div>
+          <div class="sk-row2">
+            <div class="sk-chips">
+              <span class="sk-chip ingedeeld" style="font-size: 9px;">U17-1</span>
+            </div>
+            <span class="sk-leeftijd" data-geboortedatum="2007-03-15"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="speler-kaart vrouw" style="border-radius: 0;">
+        <div class="sk-avatar vrouw" style="width: 22px; height: 22px; font-size: 8px;">MV</div>
+        <div class="sk-content">
+          <div class="sk-row1">
+            <span class="sk-naam" style="font-size: 11px;">Merel de Vries</span>
+            <div class="sk-badges"><span class="sk-badge twijfelt">?</span></div>
+          </div>
+          <div class="sk-row2">
+            <div class="sk-chips">
+              <span class="sk-chip leeg" style="font-size: 9px;">—</span>
+            </div>
+            <span class="sk-leeftijd" data-geboortedatum="1994-06-08"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sub-header heren -->
+      <div class="tk-sub-header">
+        <span class="tk-sub-label">Heren</span>
+      </div>
+
+      <!-- Heren -->
+      <div class="speler-kaart man" style="border-radius: 0;">
+        <div class="sk-avatar man" style="width: 22px; height: 22px; font-size: 8px;">JK</div>
+        <div class="sk-content">
+          <div class="sk-row1">
+            <span class="sk-naam" style="font-size: 11px;">Jasper Kooiman</span>
+            <div class="sk-badges"><span class="sk-badge gepind">📌</span></div>
+          </div>
+          <div class="sk-row2">
+            <div class="sk-chips">
+              <span class="sk-chip ingedeeld" style="font-size: 9px;">Sen 1</span>
+            </div>
+            <span class="sk-leeftijd" data-geboortedatum="2002-09-22"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="speler-kaart man" style="border-radius: 0;">
+        <div class="sk-avatar man" style="width: 22px; height: 22px; font-size: 8px;">TB</div>
+        <div class="sk-content">
+          <div class="sk-row1">
+            <span class="sk-naam" style="font-size: 11px;">Thomas Bakker</span>
+            <div class="sk-badges"><span class="sk-badge afgemeld">⚠</span></div>
+          </div>
+          <div class="sk-row2">
+            <div class="sk-chips">
+              <span class="sk-chip ingedeeld" style="font-size: 9px;">U15-1</span>
+            </div>
+            <span class="sk-leeftijd" data-geboortedatum="2009-11-03"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="speler-kaart vrouw stopt" style="border-radius: 0;">
+        <div class="sk-avatar vrouw" style="width: 22px; height: 22px; font-size: 8px;">SV</div>
+        <div class="sk-content">
+          <div class="sk-row1">
+            <span class="sk-naam doorgestreept" style="font-size: 11px;">Sanne Verhoeven</span>
+          </div>
+          <div class="sk-row2">
+            <div class="sk-chips">
+              <span class="sk-chip ingedeeld" style="font-size: 9px;">Sen 2</span>
+            </div>
+            <span class="sk-leeftijd" data-geboortedatum="1991-04-27"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="tk-footer" style="margin-top: auto;">
+        <span class="tk-footer-stat">gem. 25j</span>
+        <span class="tk-footer-stat" style="color: var(--warn);">1 ⚠</span>
+      </div>
+    </div><!-- /team-kaart viertal -->
+
+    <!-- Annotaties rechts -->
+    <div style="display: flex; flex-direction: column; gap: 0; padding-top: 0; min-width: 200px;">
+      <div class="anno-row header-row" style="height: 36px;">
+        <div><b>36px</b> — header (teamnaam + tellers)</div>
+      </div>
+      <div class="anno-row sub-row" style="height: 22px;">
+        <div><b>22px</b> — sub-header "Dames"</div>
+      </div>
+      <div class="anno-row" style="height: 48px;">
+        <div><b>48px</b> — SpelerKaart (Lotte)</div>
+      </div>
+      <div class="anno-row" style="height: 48px;">
+        <div><b>48px</b> — SpelerKaart (Merel)</div>
+      </div>
+      <div class="anno-row sub-row" style="height: 22px;">
+        <div><b>22px</b> — sub-header "Heren"</div>
+      </div>
+      <div class="anno-row" style="height: 48px;">
+        <div><b>48px</b> — SpelerKaart (Jasper)</div>
+      </div>
+      <div class="anno-row" style="height: 48px;">
+        <div><b>48px</b> — SpelerKaart (Thomas)</div>
+      </div>
+      <div class="anno-row" style="height: 48px; opacity: 0.5;">
+        <div><b>48px</b> — SpelerKaart (Sanne, stopt)</div>
+      </div>
+      <div class="anno-row footer-row" style="height: 28px;">
+        <div><b>28px</b> — footer</div>
+      </div>
+      <div class="anno-total">
+        Totaal: 36 + 22 + 96 + 22 + 144 + 28 = <b>420px</b><br>
+        <span style="font-size: 10px; color: var(--text-3); font-weight: 400;">Maximale belasting: 8 spelers = 512px totaal</span>
+      </div>
+
+      <div class="mt-16" style="font-size: 11px; color: var(--text-3); max-width: 200px; line-height: 1.5;">
+        In een viertal staan dames en heren verticaal gestapeld. De 5-spelersvariant (2D+3H) past in 420px. De maximale 8-spelersvariant (4D+4H) zou 512px worden — dat overstijgt een typisch viewport-hoogte en vraagt om scroll. De standaard per team is 4 spelers (2+2), dat past altijd in 276px.
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ================================================================
+     SECTIE 4 — TEAMKAART DETAIL (ACHTAL)
+     ================================================================ -->
+<section class="section">
+  <div class="section-label">Sectie 4 van 6</div>
+  <h2 class="section-title">TeamKaart detail — achtal</h2>
+  <p class="section-desc">
+    280px breed (2× 140px kolommen). Dames links, heren rechts. Zelfde hoogte als viertal: <strong style="color: var(--text-1);">420px</strong>.
+  </p>
+  <div class="section-divider"></div>
+
+  <div class="team-kaart" style="width: 280px; height: 420px;">
+    <!-- Header -->
+    <div class="tk-header">
+      <div class="tk-teamnaam">
+        <span class="tk-valid-dot"></span>
+        U17-1
+      </div>
+      <div class="tk-tellers">
+        <span class="tk-teller">♀2</span>
+        <span class="tk-teller">♂3</span>
+      </div>
+    </div>
+
+    <!-- Twee kolommen -->
+    <div class="tk-kolommen" style="flex: 1; overflow: hidden;">
+
+      <!-- Kolom dames -->
+      <div class="tk-kolom">
+        <div class="tk-sub-header">
+          <span class="tk-sub-label">Dames</span>
+        </div>
+        <div class="speler-kaart vrouw" style="border-radius: 0;">
+          <div class="sk-avatar vrouw" style="width: 22px; height: 22px; font-size: 8px;">LB</div>
+          <div class="sk-content">
+            <div class="sk-row1">
+              <span class="sk-naam" style="font-size: 11px;">Lotte v.d. Berg</span>
+              <div class="sk-badges"><span class="sk-badge nieuw">N</span></div>
+            </div>
+            <div class="sk-row2">
+              <div class="sk-chips">
+                <span class="sk-chip ingedeeld" style="font-size: 9px;">U17-1</span>
+              </div>
+              <span class="sk-leeftijd" data-geboortedatum="2007-03-15"></span>
+            </div>
+          </div>
+        </div>
+        <div class="speler-kaart vrouw" style="border-radius: 0;">
+          <div class="sk-avatar vrouw" style="width: 22px; height: 22px; font-size: 8px;">MV</div>
+          <div class="sk-content">
+            <div class="sk-row1">
+              <span class="sk-naam" style="font-size: 11px;">Merel de Vries</span>
+              <div class="sk-badges"><span class="sk-badge twijfelt">?</span></div>
+            </div>
+            <div class="sk-row2">
+              <div class="sk-chips">
+                <span class="sk-chip leeg" style="font-size: 9px;">—</span>
+              </div>
+              <span class="sk-leeftijd" data-geboortedatum="1994-06-08"></span>
+            </div>
+          </div>
+        </div>
+      </div><!-- /kolom dames -->
+
+      <!-- Kolom heren -->
+      <div class="tk-kolom">
+        <div class="tk-sub-header">
+          <span class="tk-sub-label">Heren</span>
+        </div>
+        <div class="speler-kaart man" style="border-radius: 0;">
+          <div class="sk-avatar man" style="width: 22px; height: 22px; font-size: 8px;">JK</div>
+          <div class="sk-content">
+            <div class="sk-row1">
+              <span class="sk-naam" style="font-size: 11px;">Jasper Kooiman</span>
+              <div class="sk-badges"><span class="sk-badge gepind">📌</span></div>
+            </div>
+            <div class="sk-row2">
+              <div class="sk-chips">
+                <span class="sk-chip ingedeeld" style="font-size: 9px;">Sen 1</span>
+              </div>
+              <span class="sk-leeftijd" data-geboortedatum="2002-09-22"></span>
+            </div>
+          </div>
+        </div>
+        <div class="speler-kaart man" style="border-radius: 0;">
+          <div class="sk-avatar man" style="width: 22px; height: 22px; font-size: 8px;">TB</div>
+          <div class="sk-content">
+            <div class="sk-row1">
+              <span class="sk-naam" style="font-size: 11px;">Thomas Bakker</span>
+              <div class="sk-badges"><span class="sk-badge afgemeld">⚠</span></div>
+            </div>
+            <div class="sk-row2">
+              <div class="sk-chips">
+                <span class="sk-chip ingedeeld" style="font-size: 9px;">U15-1</span>
+              </div>
+              <span class="sk-leeftijd" data-geboortedatum="2009-11-03"></span>
+            </div>
+          </div>
+        </div>
+        <div class="speler-kaart vrouw stopt" style="border-radius: 0;">
+          <div class="sk-avatar vrouw" style="width: 22px; height: 22px; font-size: 8px;">SV</div>
+          <div class="sk-content">
+            <div class="sk-row1">
+              <span class="sk-naam doorgestreept" style="font-size: 11px;">Sanne Verhoeven</span>
+            </div>
+            <div class="sk-row2">
+              <div class="sk-chips">
+                <span class="sk-chip ingedeeld" style="font-size: 9px;">Sen 2</span>
+              </div>
+              <span class="sk-leeftijd" data-geboortedatum="1991-04-27"></span>
+            </div>
+          </div>
+        </div>
+      </div><!-- /kolom heren -->
+
+    </div><!-- /kolommen -->
+
+    <!-- Footer -->
+    <div class="tk-footer">
+      <span class="tk-footer-stat">gem. 25j</span>
+      <span class="tk-footer-stat" style="color: var(--warn);">1 ⚠</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================================================================
+     SECTIE 5 — DRAG GHOST
+     ================================================================ -->
+<section class="section">
+  <div class="section-label">Sectie 5 van 6</div>
+  <h2 class="section-title">Drag ghost</h2>
+  <p class="section-desc">
+    Oranje outline via box-shadow, 2 graden rotatie, 0.95 opacity. Schaduwen geven diepte.
+    Breedte volgt de context (pool of teamkolom).
+  </p>
+  <div class="section-divider"></div>
+
+  <div style="padding: 48px; background: var(--bg-0); border-radius: 12px; border: 1px solid var(--border-0); display: inline-block;">
+    <div class="drag-ghost">
+      <div class="speler-kaart man" style="border-radius: 0;">
+        <div class="sk-avatar man">JK</div>
+        <div class="sk-content">
+          <div class="sk-row1">
+            <span class="sk-naam">Jasper Kooiman</span>
+            <div class="sk-badges"><span class="sk-badge gepind">📌</span></div>
+          </div>
+          <div class="sk-row2">
+            <div class="sk-chips">
+              <span class="sk-chip huidig">Sen 2</span>
+              <span class="sk-chip ingedeeld">Sen 1</span>
+            </div>
+            <span class="sk-leeftijd" data-geboortedatum="2002-09-22"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-16 text-muted" style="max-width: 400px; line-height: 1.6;">
+    CSS:<br>
+    <code style="font-size: 11px; color: var(--text-2); background: var(--bg-2); padding: 8px 12px; border-radius: 6px; display: block; margin-top: 6px; line-height: 1.8;">
+      transform: rotate(2deg);<br>
+      box-shadow: 0 0 0 2px var(--accent),<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0 8px 24px rgba(0,0,0,.7),<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0 2px 8px rgba(255,107,0,.2);<br>
+      opacity: 0.95;
+    </code>
+  </div>
+</section>
+
+
+<!-- ================================================================
+     SECTIE 6 — MATEN-TABEL
+     ================================================================ -->
+<section class="section">
+  <div class="section-label">Sectie 6 van 6</div>
+  <h2 class="section-title">Maten-overzicht</h2>
+  <p class="section-desc">
+    Alle afmetingen van het definitieve ontwerp. Dit is de implementatie-referentie voor de frontend agent.
+  </p>
+  <div class="section-divider"></div>
+
+  <table class="maten-tabel">
+    <thead>
+      <tr>
+        <th>Element</th>
+        <th>Waarde</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>SpelerKaart hoogte</td><td>48px</td></tr>
+      <tr><td>SpelerKaart padding links/rechts</td><td>8px</td></tr>
+      <tr><td>SpelerKaart padding top/bottom</td><td>0px (hoogte via flex align-items center)</td></tr>
+      <tr><td>Avatar diameter (pool / detail)</td><td>28px / 22px</td></tr>
+      <tr><td>Geslachtsstreep breedte</td><td>2px (links, top 8px, bottom 8px)</td></tr>
+      <tr><td>Naam font-size (pool)</td><td>13px / 600</td></tr>
+      <tr><td>Naam font-size (teamkolom)</td><td>11px / 600</td></tr>
+      <tr><td>Meta font-size (leeftijd)</td><td>10px / 400 — rechts in regel 2, 2 decimalen</td></tr>
+      <tr><td>Team-chip font-size (pool)</td><td>10px / 600</td></tr>
+      <tr><td>Team-chip font-size (teamkolom)</td><td>9px / 600</td></tr>
+      <tr><td>Badge font-size</td><td>9px / 700</td></tr>
+      <tr><td>Gap rij 1 naar rij 2</td><td>3px</td></tr>
+      <tr><td>Avatar–content gap</td><td>8px</td></tr>
+      <tr><td>TeamKaart header hoogte</td><td>36px</td></tr>
+      <tr><td>TeamKaart sub-header hoogte</td><td>22px</td></tr>
+      <tr><td>TeamKaart footer hoogte</td><td>28px</td></tr>
+      <tr><td>Viertal breedte</td><td>140px</td></tr>
+      <tr><td>Achtal breedte</td><td>280px</td></tr>
+      <tr><td>SpelersPool breedte</td><td>224px</td></tr>
+      <tr>
+        <td>TeamKaart hoogte — standaard 4 spelers (2D+2H)</td>
+        <td>36 + 22 + 96 + 22 + 96 + 28 = <strong>300px</strong></td>
+      </tr>
+      <tr>
+        <td>TeamKaart hoogte — 5 spelers (2D+3H)</td>
+        <td>36 + 22 + 96 + 22 + 144 + 28 = <strong>420px</strong></td>
+      </tr>
+      <tr>
+        <td>TeamKaart hoogte — maximaal 8 spelers (4D+4H)</td>
+        <td>36 + 22 + 192 + 22 + 192 + 28 = <strong>492px</strong></td>
+      </tr>
+      <tr><td>Drag ghost rotatie</td><td>2deg</td></tr>
+      <tr><td>Drag ghost opacity</td><td>0.95</td></tr>
+      <tr><td>Hover achtergrond</td><td>var(--bg-2) = #1e1e1e</td></tr>
+      <tr><td>Transition hover</td><td>background 150ms ease</td></tr>
+    </tbody>
+  </table>
+</section>
+
+
+
+<script>
+// Korfballeeftijd: (peildatum - geboortedatum) / (365.25 * 24 * 3600 * 1000)
+// Peildatum: 1 januari van het eindjaar van het seizoen (2025-2026 → 2026-01-01)
+(function() {
+  var peildatum = new Date('2026-01-01');
+  var msPerJaar = 365.25 * 24 * 3600 * 1000;
+  document.querySelectorAll('.sk-leeftijd[data-geboortedatum]').forEach(function(el) {
+    var geboortedatum = new Date(el.getAttribute('data-geboortedatum'));
+    var leeftijd = (peildatum - geboortedatum) / msPerJaar;
+    el.textContent = leeftijd.toFixed(2);
+  });
+})();
+</script>
+
+</body>
+</html>

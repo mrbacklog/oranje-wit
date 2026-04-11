@@ -1,0 +1,354 @@
+{
+  "bron": "conceptindelingen veld voorjaar 2026.xlsx",
+  "seizoen": "2025-2026",
+  "per_kleur": {
+    "Rood": {
+      "teams": [
+        {
+          "kleur": "Rood",
+          "leeftijd": 16.45,
+          "score": 118,
+          "naam": "J1"
+        },
+        {
+          "kleur": "Rood",
+          "leeftijd": 15.42,
+          "score": 120,
+          "naam": "J2"
+        },
+        {
+          "kleur": "Rood",
+          "leeftijd": 13.75,
+          "score": 111,
+          "naam": "J4"
+        }
+      ],
+      "leeftijd": {
+        "min": 13.75,
+        "gem": 15.21,
+        "max": 16.45
+      },
+      "score": {
+        "min": 111,
+        "gem": 116.3,
+        "max": 120
+      }
+    },
+    "Oranje": {
+      "teams": [
+        {
+          "kleur": "Oranje",
+          "leeftijd": 14.14,
+          "score": 90,
+          "naam": "J3"
+        },
+        {
+          "kleur": "Oranje",
+          "leeftijd": 12.63,
+          "score": 97,
+          "naam": "J5"
+        },
+        {
+          "kleur": "Oranje",
+          "leeftijd": 12.58,
+          "score": 112,
+          "naam": "J6"
+        }
+      ],
+      "leeftijd": {
+        "min": 12.58,
+        "gem": 13.12,
+        "max": 14.14
+      },
+      "score": {
+        "min": 90,
+        "gem": 99.7,
+        "max": 112
+      }
+    },
+    "Geel": {
+      "teams": [
+        {
+          "kleur": "Geel",
+          "leeftijd": 11.8,
+          "score": 75,
+          "naam": "J7"
+        },
+        {
+          "kleur": "Geel",
+          "leeftijd": 11.68,
+          "score": 106,
+          "naam": "J8"
+        },
+        {
+          "kleur": "Geel",
+          "leeftijd": 11.12,
+          "score": 97,
+          "naam": "J9"
+        },
+        {
+          "kleur": "Geel",
+          "leeftijd": 10.41,
+          "score": 75,
+          "naam": "J10"
+        }
+      ],
+      "leeftijd": {
+        "min": 10.41,
+        "gem": 11.25,
+        "max": 11.8
+      },
+      "score": {
+        "min": 75,
+        "gem": 88.2,
+        "max": 106
+      }
+    },
+    "Groen": {
+      "teams": [
+        {
+          "kleur": "Groen",
+          "leeftijd": 9.79,
+          "score": 75,
+          "naam": "J11"
+        },
+        {
+          "kleur": "Groen",
+          "leeftijd": 9.32,
+          "score": 81,
+          "naam": "J12"
+        },
+        {
+          "kleur": "Groen",
+          "leeftijd": 8.41,
+          "score": 79,
+          "naam": "J13"
+        },
+        {
+          "kleur": "Groen",
+          "leeftijd": 8.31,
+          "score": 62,
+          "naam": "J14"
+        }
+      ],
+      "leeftijd": {
+        "min": 8.31,
+        "gem": 8.96,
+        "max": 9.79
+      },
+      "score": {
+        "min": 62,
+        "gem": 74.2,
+        "max": 81
+      }
+    },
+    "Blauw": {
+      "teams": [
+        {
+          "kleur": "Blauw",
+          "leeftijd": 7.75,
+          "score": 57,
+          "naam": "J15"
+        },
+        {
+          "kleur": "Blauw",
+          "leeftijd": 7.24,
+          "score": 45,
+          "naam": "J16"
+        },
+        {
+          "kleur": "Blauw",
+          "leeftijd": 7.19,
+          "score": 47,
+          "naam": "J17"
+        },
+        {
+          "kleur": "Blauw",
+          "leeftijd": 6.49,
+          "score": 12,
+          "naam": "J18"
+        }
+      ],
+      "leeftijd": {
+        "min": 6.49,
+        "gem": 7.17,
+        "max": 7.75
+      },
+      "score": {
+        "min": 12,
+        "gem": 40.2,
+        "max": 57
+      }
+    }
+  },
+  "teams": {
+    "J1": {
+      "kleur": "Rood",
+      "leeftijd": 16.45,
+      "score": 118
+    },
+    "J2": {
+      "kleur": "Rood",
+      "leeftijd": 15.42,
+      "score": 120
+    },
+    "J3": {
+      "kleur": "Oranje",
+      "leeftijd": 14.14,
+      "score": 90
+    },
+    "J4": {
+      "kleur": "Rood",
+      "leeftijd": 13.75,
+      "score": 111
+    },
+    "J5": {
+      "kleur": "Oranje",
+      "leeftijd": 12.63,
+      "score": 97
+    },
+    "J6": {
+      "kleur": "Oranje",
+      "leeftijd": 12.58,
+      "score": 112
+    },
+    "J7": {
+      "kleur": "Geel",
+      "leeftijd": 11.8,
+      "score": 75
+    },
+    "J8": {
+      "kleur": "Geel",
+      "leeftijd": 11.68,
+      "score": 106
+    },
+    "J9": {
+      "kleur": "Geel",
+      "leeftijd": 11.12,
+      "score": 97
+    },
+    "J10": {
+      "kleur": "Geel",
+      "leeftijd": 10.41,
+      "score": 75
+    },
+    "J11": {
+      "kleur": "Groen",
+      "leeftijd": 9.79,
+      "score": 75
+    },
+    "J12": {
+      "kleur": "Groen",
+      "leeftijd": 9.32,
+      "score": 81
+    },
+    "J13": {
+      "kleur": "Groen",
+      "leeftijd": 8.41,
+      "score": 79
+    },
+    "J14": {
+      "kleur": "Groen",
+      "leeftijd": 8.31,
+      "score": 62
+    },
+    "J15": {
+      "kleur": "Blauw",
+      "leeftijd": 7.75,
+      "score": 57
+    },
+    "J16": {
+      "kleur": "Blauw",
+      "leeftijd": 7.24,
+      "score": 45
+    },
+    "J17": {
+      "kleur": "Blauw",
+      "leeftijd": 7.19,
+      "score": 47
+    },
+    "J18": {
+      "kleur": "Blauw",
+      "leeftijd": 6.49,
+      "score": 12
+    }
+  },
+  "alle_teams_nl_analyse": {
+    "Rood": {
+      "n": 593,
+      "min": 13.04,
+      "p5": 13.78,
+      "p10": 14.0,
+      "gem": 15.7,
+      "p90": 17.68,
+      "p95": 17.96,
+      "max": 19.17
+    },
+    "Oranje": {
+      "n": 472,
+      "min": 10.91,
+      "p5": 11.58,
+      "p10": 11.82,
+      "gem": 12.71,
+      "p90": 13.61,
+      "p95": 13.81,
+      "max": 14.53
+    },
+    "Geel": {
+      "n": 845,
+      "min": 8.64,
+      "p5": 9.34,
+      "p10": 9.48,
+      "gem": 10.53,
+      "p90": 11.58,
+      "p95": 11.77,
+      "max": 12.93
+    },
+    "Groen": {
+      "n": 659,
+      "min": 6.94,
+      "p5": 7.61,
+      "p10": 7.91,
+      "gem": 8.66,
+      "p90": 9.35,
+      "p95": 9.51,
+      "max": 10.2
+    },
+    "Blauw": {
+      "n": 558,
+      "min": 5.57,
+      "p5": 6.27,
+      "p10": 6.42,
+      "gem": 7.12,
+      "p90": 7.69,
+      "p95": 7.85,
+      "max": 8.43
+    }
+  },
+  "kleur_leeftijdsgrenzen": {
+    "_toelichting": "Zachte validatiegrenzen gem. leeftijd per kleur. Min = Blauw absoluut / P80 lagere kleur. Max = P20 hogere kleur / Rood absoluut. Editable in kader-pagina.",
+    "_methode": "P20/P80 aangrenzende kleur, gebaseerd op 3117 NL B-teams voorjaar 2026",
+    "grenzen": {
+      "Blauw": {
+        "min": 5.5,
+        "max": 8.2
+      },
+      "Groen": {
+        "min": 7.5,
+        "max": 9.7
+      },
+      "Geel": {
+        "min": 9.2,
+        "max": 12.1
+      },
+      "Oranje": {
+        "min": 11.3,
+        "max": 14.4
+      },
+      "Rood": {
+        "min": 13.4,
+        "max": 18.5
+      }
+    }
+  }
+}

@@ -37,12 +37,20 @@ Thumbs.db
 # Data (raw/sensitive)
 data/leden/snapshots/raw/
 data/ledenverloop/benchmark/knkv-kwartaal/raw/
+data/snapshot-*.json
+data/evaluaties/whatsapp_*.txt
+data/evaluaties/overzicht_*.txt
+data/evaluaties/parsed_*.json
+data/evaluaties/spelers_db.json
 
 # Playwright
 e2e/.auth/
 playwright-report/
+playwright-production-report/
 test-results/
 blob-report/
+e2e/screenshots/
+e2e/verify/
 
 # Misc
 *.log
@@ -52,6 +60,8 @@ output/
 __pycache__/
 capture-request-details.md
 network-requests.txt
+*.xlsx
+*.py
 
 # PWA (gegenereerde service worker bestanden)
 **/public/sw.js

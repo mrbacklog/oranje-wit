@@ -1,0 +1,1524 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SpelerDetail Dialog — TI Studio prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+/* ================================================================
+   Design tokens — TI Studio
+   ================================================================ */
+:root {
+  --bg-0: #0a0a0a;
+  --bg-1: #141414;
+  --bg-2: #1e1e1e;
+  --bg-3: #262626;
+  --accent: #ff6b00;
+  --accent-dim: rgba(255,107,0,.12);
+  --accent-border: rgba(255,107,0,.4);
+  --accent-hover: #ff8533;
+  --text-1: #fafafa;
+  --text-2: #a3a3a3;
+  --text-3: #666666;
+  --border-0: #262626;
+  --border-1: #3a3a3a;
+  --ok: #22c55e;
+  --ok-dim: rgba(34,197,94,.12);
+  --ok-border: rgba(34,197,94,.3);
+  --warn: #eab308;
+  --warn-dim: rgba(234,179,8,.12);
+  --warn-border: rgba(234,179,8,.3);
+  --err: #ef4444;
+  --err-dim: rgba(239,68,68,.12);
+  --err-border: rgba(239,68,68,.3);
+  --pink: #ec4899;
+  --pink-dim: rgba(236,72,153,.15);
+  --pink-border: rgba(236,72,153,.35);
+  --blue: #60a5fa;
+  --blue-dim: rgba(96,165,250,.15);
+  --blue-border: rgba(96,165,250,.35);
+  --indigo: #818cf8;
+  --indigo-dim: rgba(129,140,248,.15);
+  --indigo-border: rgba(129,140,248,.35);
+  --card-radius: 14px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg-0);
+  color: var(--text-1);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ================================================================
+   Pagina — gesloten staat
+   ================================================================ */
+.page-bg {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 48px;
+  text-align: center;
+}
+.page-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.demo-kaart {
+  height: 48px;
+  width: 280px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-1);
+  border: 1px solid var(--border-0);
+  border-radius: var(--card-radius);
+  cursor: pointer;
+  transition: background 150ms ease, border-color 150ms ease;
+  position: relative;
+  overflow: hidden;
+}
+.demo-kaart::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 8px; bottom: 8px;
+  width: 2px;
+  border-radius: 0 1px 1px 0;
+  background: var(--blue);
+}
+.demo-kaart:hover { background: var(--bg-2); border-color: var(--border-1); }
+.demo-avatar {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--blue-dim);
+  border: 1.5px solid var(--blue-border);
+  color: var(--blue);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; flex-shrink: 0;
+}
+.demo-naam { font-size: 13px; font-weight: 600; color: var(--text-1); flex: 1; }
+.demo-hint { font-size: 11px; color: var(--text-3); }
+.shortcut-hint { font-size: 11px; color: var(--text-3); }
+kbd {
+  background: var(--bg-2);
+  border: 1px solid var(--border-1);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-family: monospace;
+  font-size: 11px;
+  color: var(--text-2);
+}
+
+/* ================================================================
+   Backdrop
+   ================================================================ */
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9980;
+  background: rgba(0,0,0,0.72);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease;
+}
+.dialog-backdrop.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ================================================================
+   Dialog shell
+   ================================================================ */
+.dialog {
+  position: relative;
+  z-index: 9990;
+  background: var(--bg-1);
+  border: 1px solid var(--border-1);
+  border-radius: 18px;
+  width: 680px;
+  max-width: 92vw;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 28px 80px rgba(0,0,0,0.8), 0 4px 16px rgba(0,0,0,0.5);
+  transform: translateY(14px) scale(0.975);
+  transition: transform 240ms cubic-bezier(0.4,0,0.2,1), opacity 240ms ease;
+  opacity: 0;
+  overflow: hidden;
+}
+.dialog-backdrop.open .dialog {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+/* ================================================================
+   Dialog header — twee-koloms layout, 240px hoogte
+   ================================================================ */
+.dialog-header {
+  flex-shrink: 0;
+  display: flex;
+  height: 240px;
+  border-bottom: 1px solid var(--border-0);
+  position: relative;
+}
+
+/* Links — 280px, gradient + avatar + status dropdown */
+.header-links {
+  width: 280px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 24px 20px 20px;
+  /* heer = blauw, wordt inline overschreven voor dame */
+  background: linear-gradient(160deg, #1a2a4a 0%, #0d1f3c 55%, #0a0a14 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decoratieve achtergrondgloed */
+.header-links::before {
+  content: '';
+  position: absolute;
+  width: 320px; height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(96,165,250,.14) 0%, transparent 65%);
+  top: -120px; left: -60px;
+  pointer-events: none;
+}
+
+/* Avatar — 200px met geslacht-ring */
+.header-avatar {
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 38px; font-weight: 700; letter-spacing: 0;
+  flex-shrink: 0;
+  position: relative; z-index: 1;
+  /* heer default, wordt overschreven via JS voor dame */
+  background: rgba(96,165,250,.14);
+  border: 3px solid #60a5fa;
+  color: #93c5fd;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.5), 0 0 0 5px rgba(96,165,250,.1);
+}
+
+/* Status dropdown — vol breedte onder avatar */
+.status-dropdown-wrap {
+  position: relative;
+  width: 100%;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.status-dropdown-trigger {
+  width: 100%;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid var(--ok-border);
+  background: var(--ok-dim);
+  color: var(--ok);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'Inter', system-ui, sans-serif;
+  cursor: pointer;
+  user-select: none;
+  transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
+  gap: 7px;
+}
+.status-dropdown-trigger:hover { filter: brightness(1.12); }
+
+.status-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.status-trigger-label { flex: 1; }
+.status-caret {
+  font-size: 8px;
+  opacity: 0.7;
+  flex-shrink: 0;
+  transition: transform 150ms ease;
+}
+.status-caret.open { transform: rotate(180deg); }
+
+.status-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  width: 100%;
+  background: var(--bg-2);
+  border: 1px solid var(--border-1);
+  border-radius: 10px;
+  overflow: hidden;
+  z-index: 200;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+  display: none;
+}
+.status-dropdown-menu.open { display: block; }
+
+.status-option {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 12px;
+  font-size: 12px; font-weight: 600;
+  cursor: pointer;
+  transition: background 100ms ease;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+.status-option:hover { background: var(--bg-3); }
+.status-option.selected { background: var(--bg-3); }
+
+.status-option[data-val="BESCHIKBAAR"] { color: var(--ok); }
+.status-option[data-val="TWIJFELT"]    { color: var(--warn); }
+.status-option[data-val="STOPT"]       { color: var(--err); }
+.status-option[data-val="GEBLESSEERD"] { color: var(--indigo); }
+
+/* Scheidingslijn links/rechts */
+.header-scheiding {
+  width: 1px;
+  background: var(--border-0);
+  flex-shrink: 0;
+  align-self: stretch;
+}
+
+/* Rechts — flex:1, naam + kenmerken */
+.header-rechts {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 20px 20px 22px;
+  gap: 0;
+  min-width: 0;
+  background: var(--bg-1);
+  position: relative;
+}
+
+/* Sluit-knop rechts-boven */
+.header-close {
+  position: absolute;
+  top: 12px; right: 12px;
+  width: 30px; height: 30px;
+  border-radius: 7px;
+  background: none;
+  border: 1px solid transparent;
+  color: var(--text-3);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
+}
+.header-close:hover {
+  background: var(--bg-3);
+  border-color: var(--border-0);
+  color: var(--text-1);
+}
+
+/* Gepind badge */
+.header-pin {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--accent-dim);
+  border: 1px solid var(--accent-border);
+  border-radius: 4px;
+  padding: 2px 7px;
+  margin-bottom: 8px;
+  width: fit-content;
+  letter-spacing: 0.3px;
+}
+
+/* Naam */
+.header-naam {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-1);
+  line-height: 1.15;
+  letter-spacing: -0.2px;
+  margin-bottom: 14px;
+  padding-right: 36px; /* ruimte voor sluit-knop */
+}
+
+/* Kenmerken-lijst */
+.header-kenmerken {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  flex: 1;
+}
+
+.kenmerk-rij {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.kenmerk-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-3);
+  width: 96px;
+  flex-shrink: 0;
+}
+
+.kenmerk-val {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-1);
+}
+.kenmerk-val.accent { color: var(--accent); }
+
+/* Team huidig → voorstel inline */
+.team-rij {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.team-chip {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border-1);
+  background: var(--bg-3);
+  color: var(--text-1);
+  white-space: nowrap;
+}
+.team-chip.voorstel {
+  color: var(--accent);
+  border-color: var(--accent-border);
+  background: var(--accent-dim);
+}
+.team-arrow {
+  font-size: 12px;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* ================================================================
+   Tabs — 40px vast
+   ================================================================ */
+.dialog-tabs {
+  flex-shrink: 0;
+  height: 40px;
+  display: flex;
+  padding: 0 16px;
+  background: var(--bg-1);
+  border-bottom: 1px solid var(--border-0);
+  z-index: 2;
+}
+.tab-btn {
+  padding: 0 14px;
+  height: 40px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-3);
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: color 150ms ease;
+  white-space: nowrap;
+  font-family: 'Inter', system-ui, sans-serif;
+  display: flex; align-items: center; gap: 6px;
+}
+.tab-btn:hover { color: var(--text-2); }
+.tab-btn.active { color: var(--text-1); font-weight: 600; }
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 6px; right: 6px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 2px 2px 0 0;
+}
+.tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 17px; height: 17px;
+  border-radius: 9px;
+  font-size: 10px; font-weight: 700;
+  background: var(--accent-dim);
+  color: var(--accent);
+  border: 1px solid var(--accent-border);
+  padding: 0 4px;
+}
+
+/* ================================================================
+   Tab body — flex:1, scrollend
+   ================================================================ */
+.dialog-body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 18px 18px 16px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--bg-3) transparent;
+  min-height: 220px;
+  max-height: 320px;
+}
+.dialog-body::-webkit-scrollbar { width: 4px; }
+.dialog-body::-webkit-scrollbar-track { background: transparent; }
+.dialog-body::-webkit-scrollbar-thumb { background: var(--bg-3); border-radius: 3px; }
+
+.tab-panel { display: none; }
+.tab-panel.active { display: flex; flex-direction: column; gap: 14px; }
+
+/* ================================================================
+   Tab 1: Profiel — tijdlijn + eventuele extra content
+   ================================================================ */
+
+/* Tijdlijn */
+.section-header {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-3);
+  flex-shrink: 0;
+}
+
+.tijdlijn {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+.tijdlijn-item {
+  display: flex;
+  align-items: stretch;
+  min-height: 32px;
+}
+.tl-gutter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 20px;
+  flex-shrink: 0;
+  padding-top: 3px;
+}
+.tl-dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  position: relative; z-index: 1;
+}
+.tl-lijn {
+  flex: 1;
+  width: 1px;
+  background: var(--border-0);
+  margin-top: 2px;
+}
+.tijdlijn-item:last-child .tl-lijn { display: none; }
+.tl-content {
+  flex: 1;
+  padding: 1px 0 10px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.tl-seizoen {
+  font-size: 11px;
+  color: var(--text-3);
+  font-weight: 500;
+  width: 64px;
+  flex-shrink: 0;
+}
+.tl-team {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-1);
+  flex: 1;
+}
+.tl-cat {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+/* ================================================================
+   Tab 2: Evaluaties — meest recent direct zichtbaar, ouder inklapbaar
+   ================================================================ */
+.eval-seizoen-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-2);
+  cursor: pointer;
+  user-select: none;
+  flex-shrink: 0;
+}
+.eval-seizoen-header::after {
+  content: '';
+  flex: 1; height: 1px;
+  background: var(--border-0);
+}
+.eval-caret {
+  font-size: 9px;
+  color: var(--text-3);
+  transition: transform 150ms ease;
+  flex-shrink: 0;
+}
+.eval-caret.open { transform: rotate(90deg); }
+
+.eval-group-body { display: none; }
+.eval-group-body.open { display: flex; flex-direction: column; gap: 8px; }
+
+.eval-block {
+  background: var(--bg-2);
+  border: 1px solid var(--border-0);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+.eval-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.eval-ronde { font-size: 12px; font-weight: 600; color: var(--text-1); }
+.eval-meta { font-size: 10px; color: var(--text-3); margin-top: 2px; }
+
+/* Score rij: naam + vergelijk-balk + eigen waarde */
+.eval-scores { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
+.score-row { display: flex; flex-direction: column; gap: 4px; }
+.score-row-top { display: flex; align-items: center; gap: 8px; }
+.score-naam {
+  font-size: 10px; font-weight: 600; color: var(--text-2);
+  width: 72px; flex-shrink: 0;
+  text-transform: uppercase; letter-spacing: 0.4px;
+}
+
+/* Vergelijk-balk: 1–5 schaal met anonieme dots + gemiddelde lijn + eigen marker */
+.score-track {
+  flex: 1;
+  position: relative;
+  height: 16px;
+  display: flex;
+  align-items: center;
+}
+.score-track-bg {
+  position: absolute;
+  left: 0; right: 0;
+  height: 4px;
+  background: var(--bg-3);
+  border-radius: 2px;
+}
+/* Anonieme teamgenoot-dots */
+.score-dot {
+  position: absolute;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--border-1);
+  transform: translateX(-50%);
+  top: 50%; margin-top: -3px;
+}
+/* Gemiddelde lijn */
+.score-avg-line {
+  position: absolute;
+  width: 2px; height: 12px;
+  background: var(--text-3);
+  border-radius: 1px;
+  transform: translateX(-50%);
+  top: 50%; margin-top: -6px;
+}
+/* Eigen score marker */
+.score-self {
+  position: absolute;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--bg-1);
+  transform: translateX(-50%);
+  top: 50%; margin-top: -5px;
+  z-index: 2;
+  box-shadow: 0 0 6px rgba(255,107,0,.5);
+}
+
+.score-val {
+  font-size: 12px; font-weight: 700;
+  width: 20px; text-align: right; flex-shrink: 0;
+}
+.score-avg-label {
+  font-size: 10px; color: var(--text-3);
+  margin-left: 4px; flex-shrink: 0;
+}
+
+/* Legenda onder de scores */
+.score-legenda {
+  display: flex; align-items: center; gap: 10px;
+  margin-top: 2px; margin-bottom: 8px;
+}
+.legenda-item { display: flex; align-items: center; gap: 4px; font-size: 9px; color: var(--text-3); }
+.legenda-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border-1); flex-shrink: 0; }
+.legenda-self { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+.legenda-avg { width: 2px; height: 10px; background: var(--text-3); border-radius: 1px; flex-shrink: 0; }
+
+.eval-opmerking {
+  font-size: 11px; color: var(--text-2); line-height: 1.5;
+  padding: 8px 10px;
+  background: var(--bg-3);
+  border-radius: 7px;
+  border-left: 2px solid var(--border-1);
+  font-style: italic;
+  margin-top: 4px;
+}
+.eval-opmerking-label {
+  font-size: 9px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.5px; color: var(--text-3); margin-bottom: 4px;
+}
+.eval-chip {
+  font-size: 10px; font-weight: 700;
+  padding: 2px 7px; border-radius: 20px;
+}
+.eval-chip.ok { background: var(--ok-dim); color: var(--ok); border: 1px solid var(--ok-border); }
+.eval-chip.warn { background: var(--warn-dim); color: var(--warn); border: 1px solid var(--warn-border); }
+
+/* ================================================================
+   Tab 3: Memo — open direct, gesloten ingeklapt
+   ================================================================ */
+.memo-sectie-header {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-3);
+  display: flex; align-items: center; gap: 8px;
+  flex-shrink: 0;
+}
+.memo-sectie-header::after {
+  content: ''; flex: 1; height: 1px; background: var(--border-0);
+}
+
+.memo-lijst { display: flex; flex-direction: column; gap: 6px; }
+
+.memo-kaart {
+  background: var(--bg-2);
+  border: 1px solid var(--border-0);
+  border-radius: 10px;
+  padding: 11px 14px;
+}
+.memo-kaart.open-memo { border-left: 3px solid var(--accent); }
+.memo-kaart.gesloten-memo { opacity: 0.55; }
+.memo-kaart-header {
+  display: flex; align-items: flex-start;
+  justify-content: space-between; gap: 10px; margin-bottom: 7px;
+}
+.memo-tekst { font-size: 12px; color: var(--text-1); line-height: 1.5; flex: 1; }
+.memo-kaart.gesloten-memo .memo-tekst { color: var(--text-2); }
+.memo-datum { font-size: 10px; color: var(--text-3); white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
+
+.memo-kaart-footer {
+  display: flex; align-items: center;
+  justify-content: space-between; margin-top: 8px;
+}
+.memo-status-label {
+  font-size: 10px; font-weight: 600;
+  display: flex; align-items: center; gap: 4px;
+}
+.memo-status-label.open { color: var(--accent); }
+.memo-status-label.gesloten { color: var(--text-3); }
+.memo-status-dot { width: 5px; height: 5px; border-radius: 50%; }
+.open .memo-status-dot { background: var(--accent); }
+.gesloten .memo-status-dot { background: var(--text-3); }
+
+.btn-afronden {
+  font-size: 11px; font-weight: 600;
+  padding: 3px 10px; border-radius: 20px;
+  border: 1px solid var(--accent-border);
+  background: var(--accent-dim); color: var(--accent);
+  cursor: pointer; font-family: 'Inter', system-ui, sans-serif;
+  transition: background 150ms ease, color 150ms ease;
+}
+.btn-afronden:hover { background: var(--accent); color: #fff; }
+
+.gesloten-toggle-btn {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; color: var(--text-3);
+  cursor: pointer; padding: 4px 0;
+  user-select: none; width: 100%;
+  background: none; border: none;
+  font-family: 'Inter', system-ui, sans-serif;
+  transition: color 150ms ease;
+  flex-shrink: 0;
+}
+.gesloten-toggle-btn:hover { color: var(--text-2); }
+.gt-icon { font-size: 9px; transition: transform 200ms ease; }
+.gt-icon.open { transform: rotate(90deg); }
+
+#gesloten-lijst { display: none; }
+#gesloten-lijst.zichtbaar { display: flex; flex-direction: column; gap: 6px; }
+
+/* Nieuw memo */
+.memo-add-section {
+  display: flex; flex-direction: column; gap: 8px;
+  flex-shrink: 0;
+  padding-top: 4px;
+  border-top: 1px solid var(--border-0);
+}
+textarea.memo-nieuw-input {
+  width: 100%;
+  background: var(--bg-2);
+  border: 1px dashed var(--border-1);
+  border-radius: 9px;
+  padding: 10px 12px;
+  color: var(--text-1);
+  font-size: 12px;
+  font-family: 'Inter', system-ui, sans-serif;
+  line-height: 1.55;
+  resize: none;
+  height: 60px;
+  outline: none;
+  transition: border-color 150ms ease, border-style 150ms ease;
+}
+textarea.memo-nieuw-input:focus {
+  border-color: var(--accent-border); border-style: solid;
+}
+textarea.memo-nieuw-input::placeholder { color: var(--text-3); }
+.memo-add-row {
+  display: flex; justify-content: flex-end;
+}
+.btn-memo-toevoegen {
+  background: var(--accent); color: #fff;
+  border: none; border-radius: 7px;
+  padding: 7px 16px; font-size: 12px; font-weight: 600;
+  cursor: pointer; font-family: 'Inter', system-ui, sans-serif;
+  transition: background 150ms ease;
+}
+.btn-memo-toevoegen:hover { background: var(--accent-hover); }
+
+</style>
+</head>
+<body>
+
+<!-- ================================================================
+     Pagina — gesloten staat
+     ================================================================ -->
+<div class="page-bg">
+  <div class="page-label">TI Studio — SpelerDetail Dialog</div>
+  <div class="demo-kaart" onclick="openDialog()">
+    <div class="demo-avatar">JK</div>
+    <div style="flex:1;min-width:0;">
+      <div class="demo-naam">Jasper Kooiman</div>
+      <div style="font-size:11px;color:var(--text-3);margin-top:1px;">Speler &middot; Sen 2 &middot; 23 jr</div>
+    </div>
+    <div class="demo-hint">klik &rarr;</div>
+  </div>
+  <div class="shortcut-hint">
+    <kbd>O</kbd> openen &nbsp;&middot;&nbsp; <kbd>ESC</kbd> sluiten
+  </div>
+</div>
+
+
+<!-- ================================================================
+     Backdrop + Dialog
+     ================================================================ -->
+<div class="dialog-backdrop" id="dialog-backdrop" onclick="handleBackdropClick(event)">
+  <div class="dialog" id="dialog" role="dialog" aria-modal="true" aria-label="Spelersprofiel Jasper Kooiman">
+
+    <!-- ============================================================
+         HEADER — twee kolommen, 240px
+         ============================================================ -->
+    <div class="dialog-header">
+
+      <!-- Links: gradient + avatar + status dropdown -->
+      <div class="header-links" id="header-links">
+        <div class="header-avatar" id="header-avatar">JK</div>
+
+        <!-- Status dropdown onder avatar -->
+        <div class="status-dropdown-wrap" id="status-dropdown-wrap">
+          <div class="status-dropdown-trigger" id="status-trigger" onclick="toggleStatusMenu()">
+            <span class="status-dot" id="status-dot" style="background:var(--ok);"></span>
+            <span class="status-trigger-label" id="status-label">Beschikbaar</span>
+            <span class="status-caret" id="status-caret">&#9660;</span>
+          </div>
+          <div class="status-dropdown-menu" id="status-menu">
+            <div class="status-option selected" data-val="BESCHIKBAAR" onclick="setStatus('BESCHIKBAAR')">
+              <span class="status-dot" style="background:var(--ok);"></span> Beschikbaar
+            </div>
+            <div class="status-option" data-val="TWIJFELT" onclick="setStatus('TWIJFELT')">
+              <span class="status-dot" style="background:var(--warn);"></span> Twijfelt
+            </div>
+            <div class="status-option" data-val="STOPT" onclick="setStatus('STOPT')">
+              <span class="status-dot" style="background:var(--err);"></span> Stopt
+            </div>
+            <div class="status-option" data-val="GEBLESSEERD" onclick="setStatus('GEBLESSEERD')">
+              <span class="status-dot" style="background:var(--indigo);"></span> Geblesseerd
+            </div>
+          </div>
+        </div>
+      </div><!-- /header-links -->
+
+      <div class="header-scheiding"></div>
+
+      <!-- Rechts: naam + kenmerken -->
+      <div class="header-rechts">
+
+        <!-- Sluit rechtsboven -->
+        <button class="header-close" onclick="closeDialog()" aria-label="Sluiten">&#215;</button>
+
+        <!-- Gepind badge -->
+        <div class="header-pin">&#9733; Gepind</div>
+
+        <!-- Naam -->
+        <div class="header-naam">Jasper Kooiman</div>
+
+        <!-- Kenmerken-lijst — geen duplicaten t.o.v. links -->
+        <div class="header-kenmerken">
+          <div class="kenmerk-rij">
+            <span class="kenmerk-label">Geboortedatum</span>
+            <span class="kenmerk-val">22-09-2002</span>
+          </div>
+          <div class="kenmerk-rij">
+            <span class="kenmerk-label">Korfballeeftijd</span>
+            <span class="kenmerk-val accent">23.27</span>
+          </div>
+          <div class="kenmerk-rij">
+            <span class="kenmerk-label">Team</span>
+            <div class="team-rij">
+              <span class="team-chip">Sen 2</span>
+              <span class="team-arrow">&rarr;</span>
+              <span class="team-chip voorstel">Sen 1</span>
+            </div>
+          </div>
+          <div class="kenmerk-rij">
+            <span class="kenmerk-label">Lid</span>
+            <span class="kenmerk-val">2018 &nbsp;<span style="color:var(--text-3);font-weight:400;">(7 seizoenen)</span></span>
+          </div>
+        </div>
+
+      </div><!-- /header-rechts -->
+    </div><!-- /dialog-header -->
+
+
+    <!-- ============================================================
+         TABS — 40px
+         ============================================================ -->
+    <div class="dialog-tabs">
+      <button class="tab-btn active" data-tab="profiel" onclick="switchTab('profiel')">Pad</button>
+      <button class="tab-btn" data-tab="evaluaties" onclick="switchTab('evaluaties')">Evaluaties</button>
+      <button class="tab-btn" data-tab="memo" onclick="switchTab('memo')">
+        Memo
+        <span class="tab-badge" id="memo-badge">1</span>
+      </button>
+    </div>
+
+
+    <!-- ============================================================
+         TAB BODY — flex:1, inner scroll
+         ============================================================ -->
+    <div class="dialog-body" id="dialog-body">
+
+      <!-- ==================== TAB: PROFIEL ==================== -->
+      <div class="tab-panel active" id="tab-profiel">
+
+        <!-- Spelerspad — tijdlijn, onderaan na andere info -->
+        <div class="section-header">Spelerspad</div>
+        <div class="tijdlijn">
+
+          <div class="tijdlijn-item">
+            <div class="tl-gutter">
+              <div class="tl-dot" style="background:#6b7280;box-shadow:0 0 4px rgba(107,114,128,.5);"></div>
+              <div class="tl-lijn"></div>
+            </div>
+            <div class="tl-content">
+              <span class="tl-seizoen">2025–2026</span>
+              <span class="tl-team">Sen 2</span>
+              <span class="tl-cat" style="background:rgba(107,114,128,.12);color:#9ca3af;border:1px solid rgba(107,114,128,.22);">Senior</span>
+            </div>
+          </div>
+
+          <div class="tijdlijn-item">
+            <div class="tl-gutter">
+              <div class="tl-dot" style="background:#6b7280;"></div>
+              <div class="tl-lijn"></div>
+            </div>
+            <div class="tl-content">
+              <span class="tl-seizoen">2024–2025</span>
+              <span class="tl-team">Sen 2</span>
+              <span class="tl-cat" style="background:rgba(107,114,128,.12);color:#9ca3af;border:1px solid rgba(107,114,128,.22);">Senior</span>
+            </div>
+          </div>
+
+          <div class="tijdlijn-item">
+            <div class="tl-gutter">
+              <div class="tl-dot" style="background:#6b7280;"></div>
+              <div class="tl-lijn"></div>
+            </div>
+            <div class="tl-content">
+              <span class="tl-seizoen">2023–2024</span>
+              <span class="tl-team">Sen 3</span>
+              <span class="tl-cat" style="background:rgba(107,114,128,.12);color:#9ca3af;border:1px solid rgba(107,114,128,.22);">Senior</span>
+            </div>
+          </div>
+
+          <div class="tijdlijn-item">
+            <div class="tl-gutter">
+              <div class="tl-dot" style="background:#ef4444;box-shadow:0 0 4px rgba(239,68,68,.4);"></div>
+              <div class="tl-lijn"></div>
+            </div>
+            <div class="tl-content">
+              <span class="tl-seizoen">2022–2023</span>
+              <span class="tl-team">U19-1</span>
+              <span class="tl-cat" style="background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.22);">Rood</span>
+            </div>
+          </div>
+
+          <div class="tijdlijn-item">
+            <div class="tl-gutter">
+              <div class="tl-dot" style="background:#ef4444;"></div>
+              <div class="tl-lijn"></div>
+            </div>
+            <div class="tl-content">
+              <span class="tl-seizoen">2021–2022</span>
+              <span class="tl-team">U19-1</span>
+              <span class="tl-cat" style="background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.22);">Rood</span>
+            </div>
+          </div>
+
+        </div><!-- /tijdlijn -->
+
+      </div><!-- /tab-profiel -->
+
+
+      <!-- ==================== TAB: EVALUATIES ==================== -->
+      <!-- Schalen: Niveau 1–5 | Inzet 1–3 (Minder/Normaal/Meer) | Groei 1–4 (Geen/Weinig/Normaal/Veel) -->
+      <!-- Positie dot/marker = (waarde/max)×100% -->
+      <div class="tab-panel" id="tab-evaluaties">
+
+        <!-- Meest recente seizoen — direct open -->
+        <div>
+          <div class="eval-seizoen-header" onclick="toggleEvalSeizoen('eval-2526')">
+            <span class="eval-caret open" id="caret-eval-2526">&#9658;</span>
+            Seizoen 2025–2026
+          </div>
+          <div class="eval-group-body open" id="eval-2526">
+
+            <!-- Ronde 2 — twee coaches: positie = (waarde/max)×100% -->
+            <!-- Niveau(1-5): eigen=4→80%, team=[4,4,3,5,3,4,4] gem=3.86→77% -->
+            <!-- Inzet(1-3):  eigen=3"Meer"→100%, team=[2,3,3,2,3,2,3] gem=2.57→86% -->
+            <!-- Groei(1-4):  eigen=4"Veel"→100%, team=[3,3,2,3,2,4,3] gem=2.86→71% -->
+            <div class="eval-block">
+              <div class="eval-block-header">
+                <div>
+                  <div class="eval-ronde">Ronde 2</div>
+                  <div class="eval-meta">Thomas Bakker &amp; Linda Smit · Sen 2</div>
+                </div>
+                <span class="eval-chip ok">Niveau 4/5</span>
+              </div>
+              <div class="eval-scores">
+
+                <div class="score-row">
+                  <div class="score-row-top">
+                    <div class="score-naam">Niveau</div>
+                    <div class="score-track">
+                      <div class="score-track-bg"></div>
+                      <div class="score-dot" style="left:80%"></div><!-- 4 -->
+                      <div class="score-dot" style="left:80%"></div><!-- 4 -->
+                      <div class="score-dot" style="left:60%"></div><!-- 3 -->
+                      <div class="score-dot" style="left:100%"></div><!-- 5 -->
+                      <div class="score-dot" style="left:60%"></div><!-- 3 -->
+                      <div class="score-dot" style="left:80%"></div><!-- 4 -->
+                      <div class="score-dot" style="left:80%"></div><!-- 4 -->
+                      <div class="score-avg-line" style="left:77%"></div><!-- gem 3.86 -->
+                      <div class="score-self" style="left:80%"></div><!-- eigen 4 -->
+                    </div>
+                    <div class="score-val" style="color:var(--accent);">4</div>
+                    <div class="score-avg-label">/ gem 3.9</div>
+                  </div>
+                </div>
+
+                <div class="score-row">
+                  <div class="score-row-top">
+                    <div class="score-naam">Inzet</div>
+                    <div class="score-track">
+                      <div class="score-track-bg"></div>
+                      <div class="score-dot" style="left:67%"></div><!-- 2 Normaal -->
+                      <div class="score-dot" style="left:100%"></div><!-- 3 Meer -->
+                      <div class="score-dot" style="left:100%"></div><!-- 3 Meer -->
+                      <div class="score-dot" style="left:67%"></div><!-- 2 Normaal -->
+                      <div class="score-dot" style="left:100%"></div><!-- 3 Meer -->
+                      <div class="score-dot" style="left:67%"></div><!-- 2 Normaal -->
+                      <div class="score-dot" style="left:100%"></div><!-- 3 Meer -->
+                      <div class="score-avg-line" style="left:86%"></div><!-- gem 2.57 -->
+                      <div class="score-self" style="left:100%"></div><!-- eigen 3 Meer -->
+                    </div>
+                    <div class="score-val" style="color:var(--ok);">Meer</div>
+                    <div class="score-avg-label">/ gem Meer</div>
+                  </div>
+                </div>
+
+                <div class="score-row">
+                  <div class="score-row-top">
+                    <div class="score-naam">Groei</div>
+                    <div class="score-track">
+                      <div class="score-track-bg"></div>
+                      <div class="score-dot" style="left:75%"></div><!-- 3 Normaal -->
+                      <div class="score-dot" style="left:75%"></div><!-- 3 Normaal -->
+                      <div class="score-dot" style="left:50%"></div><!-- 2 Weinig -->
+                      <div class="score-dot" style="left:75%"></div><!-- 3 Normaal -->
+                      <div class="score-dot" style="left:50%"></div><!-- 2 Weinig -->
+                      <div class="score-dot" style="left:100%"></div><!-- 4 Veel -->
+                      <div class="score-dot" style="left:75%"></div><!-- 3 Normaal -->
+                      <div class="score-avg-line" style="left:71%"></div><!-- gem 2.86 -->
+                      <div class="score-self" style="left:100%"></div><!-- eigen 4 Veel -->
+                    </div>
+                    <div class="score-val" style="color:var(--ok);">Veel</div>
+                    <div class="score-avg-label">/ gem Normaal</div>
+                  </div>
+                </div>
+
+              </div>
+              <div class="score-legenda">
+                <div class="legenda-item"><div class="legenda-self"></div> Jij</div>
+                <div class="legenda-item"><div class="legenda-dot"></div> Teamgenoot</div>
+                <div class="legenda-item"><div class="legenda-avg"></div> Gem. team</div>
+              </div>
+              <div class="eval-opmerking-label">Opmerking trainer</div>
+              <div class="eval-opmerking">"Duidelijke groei zichtbaar in aanvalsrol. Niveau is stabiel, inzet altijd aanwezig."</div>
+              <div class="eval-opmerking-label" style="margin-top:8px;color:var(--blue);border-left:2px solid var(--blue);padding-left:6px;">Ingevuld door speler</div>
+              <div class="eval-opmerking" style="border-left-color:rgba(96,165,250,.35);color:var(--blue);">"Ik wil graag meer in de aanval spelen, voel me daar sterker."</div>
+            </div>
+
+            <!-- Ronde 1 -->
+            <!-- Niveau(1-5): eigen=4→80%, team=[3,4,3,4,3,4,5] gem=3.71→74% -->
+            <!-- Inzet(1-3):  eigen=3"Meer"→100%, team=[3,2,3,3,2,3,2] gem=2.57→86% -->
+            <!-- Groei(1-4):  eigen=3"Normaal"→75%, team=[2,3,3,3,2,3,3] gem=2.71→68% -->
+            <div class="eval-block">
+              <div class="eval-block-header">
+                <div>
+                  <div class="eval-ronde">Ronde 1</div>
+                  <div class="eval-meta">Thomas Bakker · Sen 2</div>
+                </div>
+                <span class="eval-chip ok">Niveau 4/5</span>
+              </div>
+              <div class="eval-scores">
+                <div class="score-row">
+                  <div class="score-row-top">
+                    <div class="score-naam">Niveau</div>
+                    <div class="score-track">
+                      <div class="score-track-bg"></div>
+                      <div class="score-dot" style="left:60%"></div><!-- 3 -->
+                      <div class="score-dot" style="left:80%"></div><!-- 4 -->
+                      <div class="score-dot" style="left:60%"></div><!-- 3 -->
+                      <div class="score-dot" style="left:80%"></div><!-- 4 -->
+                      <div class="score-dot" style="left:60%"></div><!-- 3 -->
+                      <div class="score-dot" style="left:80%"></div><!-- 4 -->
+                      <div class="score-dot" style="left:100%"></div><!-- 5 -->
+                      <div class="score-avg-line" style="left:74%"></div><!-- gem 3.71 -->
+                      <div class="score-self" style="left:80%"></div><!-- eigen 4 -->
+                    </div>
+                    <div class="score-val" style="color:var(--accent);">4</div>
+                    <div class="score-avg-label">/ gem 3.7</div>
+                  </div>
+                </div>
+                <div class="score-row">
+                  <div class="score-row-top">
+                    <div class="score-naam">Inzet</div>
+                    <div class="score-track">
+                      <div class="score-track-bg"></div>
+                      <div class="score-dot" style="left:100%"></div><!-- 3 Meer -->
+                      <div class="score-dot" style="left:67%"></div><!-- 2 Normaal -->
+                      <div class="score-dot" style="left:100%"></div><!-- 3 Meer -->
+                      <div class="score-dot" style="left:100%"></div><!-- 3 Meer -->
+                      <div class="score-dot" style="left:67%"></div><!-- 2 Normaal -->
+                      <div class="score-dot" style="left:100%"></div><!-- 3 Meer -->
+                      <div class="score-dot" style="left:67%"></div><!-- 2 Normaal -->
+                      <div class="score-avg-line" style="left:86%"></div><!-- gem 2.57 -->
+                      <div class="score-self" style="left:100%"></div><!-- eigen 3 Meer -->
+                    </div>
+                    <div class="score-val" style="color:var(--ok);">Meer</div>
+                    <div class="score-avg-label">/ gem Meer</div>
+                  </div>
+                </div>
+                <div class="score-row">
+                  <div class="score-row-top">
+                    <div class="score-naam">Groei</div>
+                    <div class="score-track">
+                      <div class="score-track-bg"></div>
+                      <div class="score-dot" style="left:50%"></div><!-- 2 Weinig -->
+                      <div class="score-dot" style="left:75%"></div><!-- 3 Normaal -->
+                      <div class="score-dot" style="left:75%"></div><!-- 3 Normaal -->
+                      <div class="score-dot" style="left:75%"></div><!-- 3 Normaal -->
+                      <div class="score-dot" style="left:50%"></div><!-- 2 Weinig -->
+                      <div class="score-dot" style="left:75%"></div><!-- 3 Normaal -->
+                      <div class="score-dot" style="left:75%"></div><!-- 3 Normaal -->
+                      <div class="score-avg-line" style="left:68%"></div><!-- gem 2.71 -->
+                      <div class="score-self" style="left:75%"></div><!-- eigen 3 Normaal -->
+                    </div>
+                    <div class="score-val" style="color:var(--text-2);">Normaal</div>
+                    <div class="score-avg-label">/ gem Normaal</div>
+                  </div>
+                </div>
+              </div>
+              <div class="score-legenda">
+                <div class="legenda-item"><div class="legenda-self"></div> Jij</div>
+                <div class="legenda-item"><div class="legenda-dot"></div> Teamgenoot</div>
+                <div class="legenda-item"><div class="legenda-avg"></div> Gem. team</div>
+              </div>
+              <div class="eval-opmerking-label">Opmerking trainer</div>
+              <div class="eval-opmerking">"Jasper pakt zijn rol als ervaren speler goed op."</div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Oudere seizoenen — standaard ingeklapt -->
+        <!-- Niveau(1-5): eigen=4→80%, team=[3,4,3,3,2,4] gem=3.17→63% -->
+        <!-- Inzet(1-3):  eigen=2"Normaal"→67%, team=[2,2,3,2,2,2] gem=2.17→72% -->
+        <!-- Groei(1-4):  eigen=3"Normaal"→75%, team=[2,3,2,2,3,2] gem=2.33→58% -->
+        <div>
+          <div class="eval-seizoen-header" onclick="toggleEvalSeizoen('eval-2425')">
+            <span class="eval-caret" id="caret-eval-2425">&#9658;</span>
+            Seizoen 2024–2025
+          </div>
+          <div class="eval-group-body" id="eval-2425">
+
+            <div class="eval-block">
+              <div class="eval-block-header">
+                <div>
+                  <div class="eval-ronde">Ronde 1</div>
+                  <div class="eval-meta">Jasper Kooiman · Sen 3</div>
+                </div>
+                <span class="eval-chip warn">Niveau 4/5</span>
+              </div>
+              <div class="eval-scores">
+                <div class="score-row">
+                  <div class="score-row-top">
+                    <div class="score-naam">Niveau</div>
+                    <div class="score-track">
+                      <div class="score-track-bg"></div>
+                      <div class="score-dot" style="left:60%"></div><!-- 3 -->
+                      <div class="score-dot" style="left:80%"></div><!-- 4 -->
+                      <div class="score-dot" style="left:60%"></div><!-- 3 -->
+                      <div class="score-dot" style="left:60%"></div><!-- 3 -->
+                      <div class="score-dot" style="left:40%"></div><!-- 2 -->
+                      <div class="score-dot" style="left:80%"></div><!-- 4 -->
+                      <div class="score-avg-line" style="left:63%"></div><!-- gem 3.17 -->
+                      <div class="score-self" style="left:80%"></div><!-- eigen 4 -->
+                    </div>
+                    <div class="score-val" style="color:var(--accent);">4</div>
+                    <div class="score-avg-label">/ gem 3.2</div>
+                  </div>
+                </div>
+                <div class="score-row">
+                  <div class="score-row-top">
+                    <div class="score-naam">Inzet</div>
+                    <div class="score-track">
+                      <div class="score-track-bg"></div>
+                      <div class="score-dot" style="left:67%"></div><!-- 2 Normaal -->
+                      <div class="score-dot" style="left:67%"></div><!-- 2 Normaal -->
+                      <div class="score-dot" style="left:100%"></div><!-- 3 Meer -->
+                      <div class="score-dot" style="left:67%"></div><!-- 2 Normaal -->
+                      <div class="score-dot" style="left:67%"></div><!-- 2 Normaal -->
+                      <div class="score-dot" style="left:67%"></div><!-- 2 Normaal -->
+                      <div class="score-avg-line" style="left:72%"></div><!-- gem 2.17 -->
+                      <div class="score-self" style="left:67%"></div><!-- eigen 2 Normaal -->
+                    </div>
+                    <div class="score-val" style="color:var(--text-2);">Normaal</div>
+                    <div class="score-avg-label">/ gem Normaal</div>
+                  </div>
+                </div>
+                <div class="score-row">
+                  <div class="score-row-top">
+                    <div class="score-naam">Groei</div>
+                    <div class="score-track">
+                      <div class="score-track-bg"></div>
+                      <div class="score-dot" style="left:50%"></div><!-- 2 Weinig -->
+                      <div class="score-dot" style="left:75%"></div><!-- 3 Normaal -->
+                      <div class="score-dot" style="left:50%"></div><!-- 2 Weinig -->
+                      <div class="score-dot" style="left:50%"></div><!-- 2 Weinig -->
+                      <div class="score-dot" style="left:75%"></div><!-- 3 Normaal -->
+                      <div class="score-dot" style="left:50%"></div><!-- 2 Weinig -->
+                      <div class="score-avg-line" style="left:58%"></div><!-- gem 2.33 -->
+                      <div class="score-self" style="left:75%"></div><!-- eigen 3 Normaal -->
+                    </div>
+                    <div class="score-val" style="color:var(--accent);">Normaal</div>
+                    <div class="score-avg-label">/ gem Weinig</div>
+                  </div>
+                </div>
+              </div>
+              <div class="score-legenda">
+                <div class="legenda-item"><div class="legenda-self"></div> Jij</div>
+                <div class="legenda-item"><div class="legenda-dot"></div> Teamgenoot</div>
+                <div class="legenda-item"><div class="legenda-avg"></div> Gem. team</div>
+              </div>
+              <div class="eval-opmerking-label">Opmerking trainer</div>
+              <div class="eval-opmerking">"Wil meer uitdaging op hoger niveau."</div>
+            </div>
+
+          </div>
+        </div>
+
+      </div><!-- /tab-evaluaties -->
+
+
+      <!-- ==================== TAB: MEMO ==================== -->
+      <div class="tab-panel" id="tab-memo">
+
+        <!-- Open memo's — direct zichtbaar -->
+        <div class="memo-sectie-header">Open</div>
+        <div class="memo-lijst" id="memo-open-lijst"></div>
+
+        <!-- Gesloten memo's — ingeklapt -->
+        <button class="gesloten-toggle-btn" onclick="toggleGesloten()">
+          <span class="gt-icon" id="gt-icon">&#9658;</span>
+          <span id="gesloten-label">Gesloten (2)</span>
+        </button>
+        <div id="gesloten-lijst"></div>
+
+        <!-- Nieuw memo -->
+        <div class="memo-add-section">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--text-3);">Nieuw memo</div>
+          <textarea class="memo-nieuw-input" id="memo-nieuw-input" placeholder="Typ een memo..."></textarea>
+          <div class="memo-add-row">
+            <button class="btn-memo-toevoegen" onclick="voegMemoToe()">Toevoegen</button>
+          </div>
+        </div>
+
+      </div><!-- /tab-memo -->
+
+    </div><!-- /dialog-body -->
+  </div><!-- /dialog -->
+</div><!-- /dialog-backdrop -->
+
+
+<script>
+// ================================================================
+//  State
+// ================================================================
+var memos = [
+  { id: 1, tekst: "Gesprek voeren over selectieambitie voor Sen 1", status: "open", datum: "2026-04-08" },
+  { id: 2, tekst: "Evaluatie ronde 2 besproken \u2014 positief", status: "gesloten", datum: "2026-03-15" },
+  { id: 3, tekst: "Check in na winterstop", status: "gesloten", datum: "2026-01-10" }
+];
+var memoCounter = 4;
+var geslotenZichtbaar = false;
+
+// Status configuratie
+var STATUS_CFG = {
+  BESCHIKBAAR: { label: "Beschikbaar", kleur: "var(--ok)", bg: "var(--ok-dim)", border: "var(--ok-border)" },
+  TWIJFELT:    { label: "Twijfelt",    kleur: "var(--warn)", bg: "var(--warn-dim)", border: "var(--warn-border)" },
+  STOPT:       { label: "Stopt",       kleur: "var(--err)", bg: "var(--err-dim)", border: "var(--err-border)" },
+  GEBLESSEERD: { label: "Geblesseerd", kleur: "var(--indigo)", bg: "var(--indigo-dim)", border: "var(--indigo-border)" }
+};
+var huidigStatus = "BESCHIKBAAR";
+var statusMenuOpen = false;
+
+// ================================================================
+//  Dialog open/close
+// ================================================================
+function openDialog() {
+  document.getElementById('dialog-backdrop').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  renderMemos();
+  updateMemoBadge();
+}
+
+function closeDialog() {
+  document.getElementById('dialog-backdrop').classList.remove('open');
+  document.body.style.overflow = '';
+  if (statusMenuOpen) sluitStatusMenu();
+}
+
+function handleBackdropClick(e) {
+  if (e.target === document.getElementById('dialog-backdrop')) closeDialog();
+  if (statusMenuOpen && !document.getElementById('status-dropdown-wrap').contains(e.target)) {
+    sluitStatusMenu();
+  }
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    if (statusMenuOpen) { sluitStatusMenu(); return; }
+    closeDialog();
+  }
+  if ((e.key === 'o' || e.key === 'O') && !e.target.matches('input,textarea,button,select')) {
+    if (!document.getElementById('dialog-backdrop').classList.contains('open')) openDialog();
+  }
+});
+
+// Sluit status-menu bij klik buiten
+document.addEventListener('click', function(e) {
+  if (statusMenuOpen && !document.getElementById('status-dropdown-wrap').contains(e.target)) {
+    sluitStatusMenu();
+  }
+});
+
+// ================================================================
+//  Tabs
+// ================================================================
+function switchTab(naam) {
+  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+  document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+  document.querySelector('[data-tab="' + naam + '"]').classList.add('active');
+  document.getElementById('tab-' + naam).classList.add('active');
+  // Reset scroll naar boven bij switchen
+  document.getElementById('dialog-body').scrollTop = 0;
+}
+
+// ================================================================
+//  Status dropdown
+// ================================================================
+function toggleStatusMenu() {
+  statusMenuOpen ? sluitStatusMenu() : openStatusMenu();
+}
+
+function openStatusMenu() {
+  statusMenuOpen = true;
+  document.getElementById('status-menu').classList.add('open');
+  document.getElementById('status-caret').classList.add('open');
+}
+
+function sluitStatusMenu() {
+  statusMenuOpen = false;
+  document.getElementById('status-menu').classList.remove('open');
+  document.getElementById('status-caret').classList.remove('open');
+}
+
+function setStatus(val) {
+  huidigStatus = val;
+  var cfg = STATUS_CFG[val];
+
+  // Trigger updaten
+  var trigger = document.getElementById('status-trigger');
+  trigger.style.background = cfg.bg;
+  trigger.style.borderColor = cfg.border;
+  trigger.style.color = cfg.kleur;
+  document.getElementById('status-dot').style.background = cfg.kleur;
+  document.getElementById('status-label').textContent = cfg.label;
+
+  // Selected markering
+  document.querySelectorAll('.status-option').forEach(function(opt) {
+    opt.classList.toggle('selected', opt.getAttribute('data-val') === val);
+  });
+
+  sluitStatusMenu();
+}
+
+// ================================================================
+//  Evaluaties inklapbaar
+// ================================================================
+function toggleEvalSeizoen(id) {
+  var body = document.getElementById(id);
+  var caret = document.getElementById('caret-' + id);
+  var isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  caret.classList.toggle('open', !isOpen);
+}
+
+// ================================================================
+//  Memo systeem
+// ================================================================
+function datumLabel(iso) {
+  var d = iso.split('-');
+  return d.length === 3 ? d[2] + '-' + d[1] + '-' + d[0] : iso;
+}
+
+function renderMemos() {
+  var openItems = memos.filter(function(m) { return m.status === 'open'; });
+  var geslotenItems = memos.filter(function(m) { return m.status === 'gesloten'; });
+
+  var openEl = document.getElementById('memo-open-lijst');
+  openEl.innerHTML = openItems.length === 0
+    ? '<div style="font-size:12px;color:var(--text-3);padding:8px 0;">Geen open memo\'s.</div>'
+    : openItems.map(memoKaartHtml).join('');
+
+  var geslotenEl = document.getElementById('gesloten-lijst');
+  geslotenEl.innerHTML = geslotenItems.map(memoKaartHtml).join('');
+
+  document.getElementById('gesloten-label').textContent = 'Gesloten (' + geslotenItems.length + ')';
+}
+
+function memoKaartHtml(memo) {
+  var isOpen = memo.status === 'open';
+  return '<div class="memo-kaart ' + (isOpen ? 'open-memo' : 'gesloten-memo') + '">' +
+    '<div class="memo-kaart-header">' +
+      '<div class="memo-tekst">' + escHtml(memo.tekst) + '</div>' +
+      '<div class="memo-datum">' + datumLabel(memo.datum) + '</div>' +
+    '</div>' +
+    '<div class="memo-kaart-footer">' +
+      '<span class="memo-status-label ' + (isOpen ? 'open' : 'gesloten') + '">' +
+        '<span class="memo-status-dot"></span>' +
+        (isOpen ? 'Open' : 'Afgerond') +
+      '</span>' +
+      (isOpen ? '<button class="btn-afronden" onclick="rondAf(' + memo.id + ')">Afronden</button>' : '') +
+    '</div>' +
+  '</div>';
+}
+
+function rondAf(id) {
+  var m = memos.find(function(x) { return x.id === id; });
+  if (m) { m.status = 'gesloten'; renderMemos(); updateMemoBadge(); }
+  if (!geslotenZichtbaar) toggleGesloten();
+}
+
+function updateMemoBadge() {
+  var n = memos.filter(function(m) { return m.status === 'open'; }).length;
+  var badge = document.getElementById('memo-badge');
+  badge.textContent = n;
+  badge.style.display = n > 0 ? 'inline-flex' : 'none';
+}
+
+function toggleGesloten() {
+  geslotenZichtbaar = !geslotenZichtbaar;
+  document.getElementById('gesloten-lijst').classList.toggle('zichtbaar', geslotenZichtbaar);
+  document.getElementById('gt-icon').classList.toggle('open', geslotenZichtbaar);
+}
+
+function voegMemoToe() {
+  var input = document.getElementById('memo-nieuw-input');
+  var tekst = input.value.trim();
+  if (!tekst) return;
+  var nu = new Date();
+  var datum = nu.getFullYear() + '-' +
+    String(nu.getMonth() + 1).padStart(2,'0') + '-' +
+    String(nu.getDate()).padStart(2,'0');
+  memos.unshift({ id: memoCounter++, tekst: tekst, status: 'open', datum: datum });
+  input.value = '';
+  renderMemos();
+  updateMemoBadge();
+  document.getElementById('dialog-body').scrollTop = 0;
+}
+
+function escHtml(s) {
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
