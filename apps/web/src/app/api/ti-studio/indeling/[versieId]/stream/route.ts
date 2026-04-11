@@ -3,6 +3,7 @@
 // Elke browser-tab die dit endpoint opent krijgt een pg-verbinding.
 // De verbinding wordt gesloten zodra de client weggaat (req.signal abort).
 import { guardTC } from "@oranje-wit/auth/checks";
+import { logger } from "@oranje-wit/types";
 import { Client } from "pg";
 
 export const dynamic = "force-dynamic";
@@ -14,15 +15,20 @@ export async function GET(request: Request, { params }: { params: Promise<{ vers
   const { versieId } = await params;
   const kanaal = `ti_studio_${versieId}`.slice(0, 63);
 
+  // Gebruik DATABASE_DIRECT_URL als die beschikbaar is — PgBouncer (transaction-mode)
+  // ondersteunt LISTEN/NOTIFY niet. DATABASE_DIRECT_URL bypassed de pooler.
+  const connStr = process.env.DATABASE_DIRECT_URL ?? process.env.DATABASE_URL;
+
   const pgClient = new Client({
-    connectionString: process.env.DATABASE_URL,
+    connectionString: connStr,
     ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : undefined,
   });
 
   try {
     await pgClient.connect();
     await pgClient.query(`LISTEN "${kanaal}"`);
-  } catch {
+  } catch (error) {
+    logger.warn("SSE stream: database verbinding mislukt", { versieId, error });
     return new Response("Database verbinding mislukt", { status: 503 });
   }
 
