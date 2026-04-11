@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 test.describe("Daisy panel", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/ti-studio/indeling");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("domcontentloaded");
   });
 
   test("FAB opent het panel", async ({ page }) => {
