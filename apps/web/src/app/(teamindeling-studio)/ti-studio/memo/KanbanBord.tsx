@@ -5,6 +5,9 @@ import {
   updateWerkitemStatus,
   updateWerkitemVolgorde,
 } from "@/app/(teamindeling-studio)/ti-studio/indeling/werkitem-actions";
+import { filterWerkitems, type FilterType } from "./kanban-filter";
+import { MemoDrawer, type DrawerWerkitem } from "@/components/ti-studio/MemoDrawer";
+import { useSession } from "next-auth/react";
 
 // ──────────────────────────────────────────────────────────
 // Types
@@ -20,9 +23,26 @@ export type KanbanWerkitem = {
   teamId: string | null;
   spelerId: string | null;
   stafId: string | null;
+  doelgroep: string | null;
   team: { naam: string; categorie: string } | null;
   speler: { roepnaam: string; achternaam: string } | null;
   staf: { naam: string } | null;
+  resolutie: string | null;
+  toelichtingen: Array<{
+    id: string;
+    auteurNaam: string;
+    auteurEmail: string;
+    tekst: string;
+    timestamp: string;
+  }>;
+  activiteiten: Array<{
+    id: string;
+    auteurNaam: string;
+    auteurEmail: string;
+    actie: string;
+    detail: string | null;
+    timestamp: string;
+  }>;
 };
 
 type Lane = {
@@ -140,9 +160,11 @@ function korteDatum(iso: string): string {
 function KanbanKaart({
   item,
   onDragStart,
+  onKaartKlik,
 }: {
   item: KanbanWerkitem;
   onDragStart: (e: React.DragEvent, id: string, vanStatus: string) => void;
+  onKaartKlik: (id: string) => void;
 }) {
   const entiteit = entiteitInfo(item);
   const prio = PRIORITEIT_BADGE[item.prioriteit] ?? { label: item.prioriteit, kleur: "#9ca3af" };
@@ -152,12 +174,13 @@ function KanbanKaart({
     <div
       draggable
       onDragStart={(e) => onDragStart(e, item.id, item.status)}
+      onClick={() => onKaartKlik(item.id)}
       style={{
         background: "var(--surface-card)",
         border: "1px solid var(--border-default)",
         borderRadius: 8,
         padding: "10px 12px",
-        cursor: "grab",
+        cursor: "pointer",
         userSelect: "none",
         display: "flex",
         flexDirection: "column",
@@ -241,6 +264,7 @@ function KanbanKolom({
   onDragOver,
   onDrop,
   onDragLeave,
+  onKaartKlik,
 }: {
   lane: Lane;
   items: KanbanWerkitem[];
@@ -249,6 +273,7 @@ function KanbanKolom({
   onDragOver: (e: React.DragEvent, status: string) => void;
   onDrop: (e: React.DragEvent, naarStatus: string) => void;
   onDragLeave: () => void;
+  onKaartKlik: (id: string) => void;
 }) {
   return (
     <div
@@ -317,7 +342,12 @@ function KanbanKolom({
         }}
       >
         {items.map((item) => (
-          <KanbanKaart key={item.id} item={item} onDragStart={onDragStart} />
+          <KanbanKaart
+            key={item.id}
+            item={item}
+            onDragStart={onDragStart}
+            onKaartKlik={onKaartKlik}
+          />
         ))}
         {items.length === 0 && (
           <div
@@ -344,6 +374,51 @@ function KanbanKolom({
 export default function KanbanBord({ initialItems }: { initialItems: KanbanWerkitem[] }) {
   const [items, setItems] = useState<KanbanWerkitem[]>(initialItems);
   const [dragOverStatus, setDragOverStatus] = useState<string | null>(null);
+  const [actieveFilter, setActieveFilter] = useState<FilterType>("alles");
+  const [geselecteerdId, setGeselecteerdId] = useState<string | null>(null);
+  const { data: session } = useSession();
+  const gebruikerNaam = (session?.user?.name ?? session?.user?.email ?? "Onbekend") as string;
+
+  function leidEntiteitAf(item: KanbanWerkitem): DrawerWerkitem["entiteitType"] {
+    if (item.teamId) return "team";
+    if (item.spelerId) return "speler";
+    if (item.doelgroep && item.doelgroep !== "ALLE") return "doelgroep";
+    return "tc";
+  }
+
+  function leidEntiteitNaamAf(item: KanbanWerkitem): string {
+    if (item.team) return item.team.naam;
+    if (item.speler) return `${item.speler.roepnaam} ${item.speler.achternaam}`;
+    if (item.doelgroep && item.doelgroep !== "ALLE") {
+      const LABELS: Record<string, string> = {
+        KWEEKVIJVER: "Kweekvijver",
+        ONTWIKKELHART: "Opleidingshart",
+        TOP: "Topsport",
+        WEDSTRIJDSPORT: "Wedstrijdsport",
+        KORFBALPLEZIER: "Korfbalplezier",
+      };
+      return LABELS[item.doelgroep] ?? item.doelgroep;
+    }
+    return "TC — Algemeen";
+  }
+
+  const geselecteerdItem = items.find((i) => i.id === geselecteerdId) ?? null;
+  const drawerWerkitem: DrawerWerkitem | null = geselecteerdItem
+    ? {
+        id: geselecteerdItem.id,
+        beschrijving: geselecteerdItem.beschrijving,
+        status: geselecteerdItem.status,
+        prioriteit: geselecteerdItem.prioriteit,
+        resolutie: geselecteerdItem.resolutie,
+        entiteitType: leidEntiteitAf(geselecteerdItem),
+        entiteitNaam: leidEntiteitNaamAf(geselecteerdItem),
+        toelichtingen: geselecteerdItem.toelichtingen.map((t) => ({
+          ...t,
+          type: "toelichting" as const,
+        })),
+        activiteiten: geselecteerdItem.activiteiten.map((a) => ({ ...a, type: "log" as const })),
+      }
+    : null;
 
   const handleDragStart = useCallback((e: React.DragEvent, id: string, vanStatus: string) => {
     e.dataTransfer.setData("werkitemId", id);
@@ -404,11 +479,11 @@ export default function KanbanBord({ initialItems }: { initialItems: KanbanWerki
     }
   }, []);
 
-  // Groepeer per status
+  // Groepeer per status met filter
+  const gefilterdeItems = filterWerkitems(items, actieveFilter);
   const itemsPerStatus = (status: string) =>
-    items.filter((i) => i.status === status).sort((a, b) => a.volgorde - b.volgorde);
-
-  const totaal = items.length;
+    gefilterdeItems.filter((i) => i.status === status).sort((a, b) => a.volgorde - b.volgorde);
+  const totaal = gefilterdeItems.length;
 
   return (
     <div
@@ -419,19 +494,52 @@ export default function KanbanBord({ initialItems }: { initialItems: KanbanWerki
         fontFamily: "Inter, system-ui, sans-serif",
       }}
     >
-      {/* Header */}
-      <div style={{ display: "flex", alignItems: "baseline", gap: 12 }}>
-        <h2
-          style={{
-            fontSize: 18,
-            fontWeight: 700,
-            color: "var(--text-1, #f3f4f6)",
-            margin: 0,
-          }}
-        >
-          Memo&apos;s
-        </h2>
-        <span style={{ fontSize: 12, color: "var(--text-2, #9ca3af)" }}>{totaal} werkitems</span>
+      {/* Header + filter */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: 8,
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "baseline", gap: 12 }}>
+          <h2 style={{ fontSize: 18, fontWeight: 700, color: "var(--text-1)", margin: 0 }}>
+            Memo&apos;s
+          </h2>
+          <span style={{ fontSize: 12, color: "var(--text-3)" }}>{totaal} werkitems</span>
+        </div>
+        {/* Filter chips */}
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+          {(["alles", "team", "speler", "doelgroep", "tc-algemeen"] as FilterType[]).map((f) => (
+            <button
+              key={f}
+              onClick={() => setActieveFilter(f)}
+              style={{
+                background: actieveFilter === f ? "rgba(249,115,22,.12)" : "rgba(255,255,255,.04)",
+                border: `1px solid ${actieveFilter === f ? "rgba(249,115,22,.4)" : "var(--border-0)"}`,
+                borderRadius: 20,
+                color: actieveFilter === f ? "var(--accent)" : "var(--text-3)",
+                fontSize: 11,
+                fontWeight: actieveFilter === f ? 600 : 400,
+                padding: "3px 10px",
+                cursor: "pointer",
+                fontFamily: "Inter, system-ui, sans-serif",
+              }}
+            >
+              {f === "alles"
+                ? "Alles"
+                : f === "team"
+                  ? "Team"
+                  : f === "speler"
+                    ? "Speler"
+                    : f === "doelgroep"
+                      ? "Doelgroep"
+                      : "TC-algemeen"}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Bord — horizontaal scrollbaar */}
@@ -459,6 +567,7 @@ export default function KanbanBord({ initialItems }: { initialItems: KanbanWerki
               onDragOver={handleDragOver}
               onDrop={handleDrop}
               onDragLeave={handleDragLeave}
+              onKaartKlik={(id) => setGeselecteerdId(id)}
             />
           ))}
         </div>
@@ -476,6 +585,18 @@ export default function KanbanBord({ initialItems }: { initialItems: KanbanWerki
           Geen memo-werkitems gevonden
         </div>
       )}
+
+      <MemoDrawer
+        werkitem={drawerWerkitem}
+        onSluiten={() => setGeselecteerdId(null)}
+        onVerwijderd={(id) => setItems((prev) => prev.filter((i) => i.id !== id))}
+        onBijgewerkt={(id, w) =>
+          setItems((prev) =>
+            prev.map((i) => (i.id === id ? ({ ...i, ...w } as KanbanWerkitem) : i))
+          )
+        }
+        huidigeGebruikerNaam={gebruikerNaam}
+      />
     </div>
   );
 }
