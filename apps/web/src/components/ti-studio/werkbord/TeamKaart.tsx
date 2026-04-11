@@ -579,8 +579,8 @@ function DropzoneKolom({
         transition: "background 120ms ease",
       }}
     >
-      {/* Label: verborgen in compact — Venus/Mars icoon dient als label */}
-      {!isCompact && (
+      {/* Label: verborgen in compact of als label leeg is */}
+      {!isCompact && label && (
         <div
           style={{
             fontSize: 8,
@@ -833,7 +833,9 @@ function AchtalDropzone({
   );
 }
 
-// ── Selectie gebundeld: 2 kolommen (♀ Dames | ♂ Heren) ─────────────────────
+// ── Selectie gebundeld: 2 kolommen compact, 4 kolommen normaal/detail ────────
+// Normaal/detail: dames over 2 kolommen, heren over 2 kolommen (elk 180px).
+// Compact: 2 kolommen met totaaltellers (♀ N | ♂ N).
 
 function SelectieBundelDropzone({
   team,
@@ -851,13 +853,13 @@ function SelectieBundelDropzone({
     geslacht: "V" | "M"
   ) => void;
 }) {
-  const [dropOver, setDropOver] = useState<string | null>(null);
+  const [dropOver, setDropOver] = useState<"V" | "M" | null>(null);
 
-  function makeHandlers(col: string, geslacht: "V" | "M") {
+  function makeHandlers(geslacht: "V" | "M") {
     return {
       onDragOver: (e: React.DragEvent) => {
         e.preventDefault();
-        setDropOver(col);
+        setDropOver(geslacht);
       },
       onDragLeave: () => setDropOver(null),
       onDrop: (e: React.DragEvent) => {
@@ -877,42 +879,92 @@ function SelectieBundelDropzone({
     };
   }
 
-  const cols = [
+  if (zoomLevel === "compact") {
+    // Compact: 2 brede kolommen met totaaltellers
+    const cols = [
+      { id: "dames", label: "♀ Dames", kleur: "V" as const, spelers: team.selectieDames },
+      { id: "heren", label: "♂ Heren", kleur: "M" as const, spelers: team.selectieHeren },
+    ];
+    return (
+      <div style={{ display: "flex" }}>
+        {cols.map((col, i) => {
+          const h = makeHandlers(col.kleur);
+          return (
+            <DropzoneKolom
+              key={col.id}
+              label={col.label}
+              kleur={col.kleur}
+              spelers={col.spelers}
+              teamId={team.id}
+              selectieGroepId={team.selectieGroepId}
+              zoomLevel={zoomLevel}
+              dropActief={dropOver === col.kleur}
+              onDragOver={h.onDragOver}
+              onDragLeave={h.onDragLeave}
+              onDrop={h.onDrop}
+              onSpelerClick={onSpelerClick}
+              borderRight={i === 0}
+            />
+          );
+        })}
+      </div>
+    );
+  }
+
+  // Normaal/detail: 4 kolommen — dames gesplitst over 2, heren over 2
+  const damesSorted = [...team.selectieDames].sort((a, b) =>
+    a.speler.roepnaam.localeCompare(b.speler.roepnaam, "nl")
+  );
+  const herenSorted = [...team.selectieHeren].sort((a, b) =>
+    a.speler.roepnaam.localeCompare(b.speler.roepnaam, "nl")
+  );
+
+  const cols4 = [
     {
-      id: "dames",
+      id: "dam-a",
       label: "♀ Dames",
       kleur: "V" as const,
-      spelers: team.selectieDames,
-      teamId: team.id,
+      spelers: damesSorted.filter((_, i) => i % 2 === 0),
     },
     {
-      id: "heren",
+      id: "dam-b",
+      label: "",
+      kleur: "V" as const,
+      spelers: damesSorted.filter((_, i) => i % 2 === 1),
+    },
+    {
+      id: "her-a",
       label: "♂ Heren",
       kleur: "M" as const,
-      spelers: team.selectieHeren,
-      teamId: team.id,
+      spelers: herenSorted.filter((_, i) => i % 2 === 0),
+    },
+    {
+      id: "her-b",
+      label: "",
+      kleur: "M" as const,
+      spelers: herenSorted.filter((_, i) => i % 2 === 1),
     },
   ];
 
   return (
     <div style={{ display: "flex" }}>
-      {cols.map((col, i) => {
-        const h = makeHandlers(col.id, col.kleur);
+      {cols4.map((col, i) => {
+        const h = makeHandlers(col.kleur);
         return (
           <DropzoneKolom
             key={col.id}
             label={col.label}
             kleur={col.kleur}
             spelers={col.spelers}
-            teamId={col.teamId}
+            teamId={team.id}
             selectieGroepId={team.selectieGroepId}
             zoomLevel={zoomLevel}
-            dropActief={dropOver === col.id}
+            dropActief={dropOver === col.kleur}
             onDragOver={h.onDragOver}
             onDragLeave={h.onDragLeave}
             onDrop={h.onDrop}
             onSpelerClick={onSpelerClick}
-            borderRight={i < cols.length - 1}
+            borderRight={i < cols4.length - 1}
           />
         );
       })}
