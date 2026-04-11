@@ -32,6 +32,7 @@ describe("buildDaisyPrompt", () => {
     });
     expect(prompt).toContain("Veld Voorjaar 2026");
     expect(prompt).toContain("v:abc-123");
+    expect(prompt).toContain("wi-456");
   });
 
   it("bevat altijd de basisregels ongeacht context", () => {
