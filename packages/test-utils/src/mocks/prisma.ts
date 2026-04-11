@@ -67,6 +67,8 @@ export function createMockPrisma() {
     import: mockModel(),
     referentieTeam: mockModel(),
     werkitem: mockModel(),
+    werkitemToelichting: mockModel(),
+    werkitemLog: mockModel(),
     actiepunt: mockModel(),
     activiteit: mockModel(),
     coordinatorVoorstel: mockModel(),
