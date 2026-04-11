@@ -363,17 +363,11 @@ function ReserveringKaartje({ reservering }: { reservering: WerkbordReservering 
 
   return (
     <div
-      draggable
-      onDragStart={(e) => {
-        e.dataTransfer.setData("reservering", JSON.stringify(reservering));
-        e.dataTransfer.effectAllowed = "move";
-      }}
       style={{
         display: "flex",
         alignItems: "center",
         height: 40,
         borderBottom: "1px solid var(--border-0)",
-        cursor: "grab",
         padding: "0 6px",
         gap: 6,
       }}
