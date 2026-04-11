@@ -47,6 +47,13 @@ describe("getVersieId via tool (prefix v:)", () => {
       where: { id: mockVersieId },
       select: { id: true },
     });
+
+    // Versie is gevonden, maar team niet → fout over team
+    expect(result).toEqual(
+      expect.objectContaining({
+        fout: expect.stringContaining('Geen team gevonden met naam "Sen 1"'),
+      })
+    );
   });
 
   it("versieId-prefix met onbekend uuid geeft null terug (geen versie)", async () => {
