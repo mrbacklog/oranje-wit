@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import withPWA from "@ducanh2912/next-pwa";
 
 const nextConfig: NextConfig = {
   // output: "standalone" is disabled lokaal vanwege Windows NTFS beperking
@@ -17,6 +18,9 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  // Lege turbopack config zodat Next.js 16 niet faalt wanneer withPWA
+  // een webpack-config injecteert.
+  turbopack: {},
   experimental: {
     serverActions: {
       allowedOrigins: ["ckvoranjewit.app", "www.ckvoranjewit.app"],
@@ -24,4 +28,12 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withPWA({
+  dest: "public",
+  register: true,
+  disable: process.env.NODE_ENV === "development",
+  workboxOptions: {
+    skipWaiting: true,
+    clientsClaim: true,
+  },
+})(nextConfig);
