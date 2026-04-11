@@ -122,7 +122,7 @@ export function DaisyPanel({ versieId, werkindelingId, werkindelingNaam }: Daisy
         role="dialog"
         aria-label="Daisy chat"
         aria-modal="true"
-        aria-hidden={!open}
+        inert={!open ? true : undefined}
       >
         {/* Header */}
         <div
