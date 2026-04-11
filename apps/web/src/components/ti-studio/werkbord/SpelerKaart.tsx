@@ -225,6 +225,9 @@ export function SpelerKaart({
               {speler.status === "TWIJFELT" && (
                 <span style={{ fontSize: 8, fontWeight: 700, color: "var(--warn)" }}>?</span>
               )}
+              {speler.status === "GEBLESSEERD" && (
+                <span style={{ fontSize: 8, fontWeight: 700, color: "var(--err)" }}>B</span>
+              )}
               {speler.status === "AFGEMELD" && (
                 <span style={{ fontSize: 8, color: "var(--err)" }}>⚠</span>
               )}

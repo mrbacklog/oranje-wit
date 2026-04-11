@@ -387,6 +387,11 @@ function NormaalSpelerRij({
               ?
             </span>
           )}
+          {speler.status === "GEBLESSEERD" && (
+            <span style={{ fontSize: 9, fontWeight: 700, color: "var(--err)", flexShrink: 0 }}>
+              B
+            </span>
+          )}
           {speler.status === "AFGEMELD" && (
             <span style={{ fontSize: 9, color: "var(--err)", flexShrink: 0 }}>⚠</span>
           )}
