@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from "react";
 import { logger } from "@oranje-wit/types";
 import {
   updateWerkitemInhoud,
+  updateWerkitemPrioriteit,
   updateWerkitemStatus,
   verwijderWerkitem,
 } from "@/app/(teamindeling-studio)/ti-studio/indeling/werkitem-actions";
@@ -99,7 +100,7 @@ export function MemoDrawer({
     if (!werkitem) return;
     setOpslaan(true);
     try {
-      const [r1, r2] = await Promise.all([
+      const [r1, r2, r3] = await Promise.all([
         updateWerkitemInhoud(werkitem.id, {
           beschrijving,
           resolutie: toonResolutie ? resolutie : null,
@@ -107,11 +108,15 @@ export function MemoDrawer({
         status !== werkitem.status
           ? updateWerkitemStatus(werkitem.id, status)
           : Promise.resolve({ ok: true }),
+        prioriteit !== werkitem.prioriteit
+          ? updateWerkitemPrioriteit(werkitem.id, prioriteit)
+          : Promise.resolve({ ok: true }),
       ]);
-      if (r1.ok && (r2 as { ok: boolean }).ok) {
+      if (r1.ok && (r2 as { ok: boolean }).ok && (r3 as { ok: boolean }).ok) {
         onBijgewerkt(werkitem.id, {
           beschrijving,
           status,
+          prioriteit,
           resolutie: toonResolutie ? resolutie : null,
         });
       } else {

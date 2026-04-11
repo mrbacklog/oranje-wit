@@ -112,9 +112,9 @@ export async function updateWerkitemStatus(
   status: string
 ): Promise<ActionResult<void>> {
   try {
-    const session2 = await requireTC().catch(() => null);
-    const email2 = ((session2?.user as Record<string, unknown>)?.email as string) ?? "systeem";
-    const naam2 = ((session2?.user as Record<string, unknown>)?.name as string) ?? email2;
+    const session2 = await requireTC();
+    const email2 = ((session2.user as Record<string, unknown>)?.email as string) ?? "systeem";
+    const naam2 = ((session2.user as Record<string, unknown>)?.name as string) ?? email2;
     await prisma.werkitem.update({
       where: { id },
       data: { status: status as import("@oranje-wit/database").WerkitemStatus },
@@ -188,9 +188,9 @@ export async function updateWerkitemInhoud(
 
 export async function verwijderWerkitem(id: string): Promise<ActionResult<void>> {
   try {
-    const session3 = await requireTC().catch(() => null);
-    const email3 = ((session3?.user as Record<string, unknown>)?.email as string) ?? "systeem";
-    const naam3 = ((session3?.user as Record<string, unknown>)?.name as string) ?? email3;
+    const session3 = await requireTC();
+    const email3 = ((session3.user as Record<string, unknown>)?.email as string) ?? "systeem";
+    const naam3 = ((session3.user as Record<string, unknown>)?.name as string) ?? email3;
     await registreerLog(id, naam3, email3, "VERWIJDERD");
     await prisma.werkitem.delete({ where: { id } });
     revalideerPaden();
