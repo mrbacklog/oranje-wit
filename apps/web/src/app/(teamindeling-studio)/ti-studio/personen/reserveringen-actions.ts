@@ -7,52 +7,28 @@ import { logger } from "@oranje-wit/types";
 
 export async function getReserveringenVoorStudio() {
   await requireTC();
-
-  const kaders = await prisma.kaders.findFirst({
-    where: { isWerkseizoen: true },
-    select: { id: true },
-  });
-
-  if (!kaders) return [];
-
-  const werkindeling = await prisma.werkindeling.findFirst({
-    where: { kadersId: kaders.id, status: "ACTIEF" },
-    select: {
-      versies: {
-        orderBy: { nummer: "desc" },
-        take: 1,
-        select: { id: true },
-      },
-    },
-  });
-
-  const versieId = werkindeling?.versies?.[0]?.id;
-  if (!versieId) return [];
-
-  return prisma.plaatsreservering.findMany({
-    where: { team: { versieId } },
+  return prisma.reserveringsspeler.findMany({
     select: {
       id: true,
-      naam: true,
+      titel: true,
       geslacht: true,
       teamId: true,
       team: { select: { naam: true, kleur: true } },
     },
-    orderBy: { naam: "asc" },
+    orderBy: { titel: "asc" },
   });
 }
 
 export type StudioReservering = Awaited<ReturnType<typeof getReserveringenVoorStudio>>[number];
 
 export async function maakReserveringAan(data: {
-  naam: string;
-  geslacht?: string;
-  teamId: string;
+  titel: string;
+  geslacht: "M" | "V";
 }): Promise<{ ok: true } | { ok: false; error: string }> {
   try {
     await requireTC();
-    await prisma.plaatsreservering.create({
-      data: { naam: data.naam, geslacht: data.geslacht ?? null, teamId: data.teamId },
+    await prisma.reserveringsspeler.create({
+      data: { titel: data.titel, geslacht: data.geslacht },
     });
     revalidatePath("/ti-studio/personen/spelers");
     return { ok: true };
