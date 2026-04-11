@@ -5,6 +5,12 @@
 import type { AuthSession } from "@oranje-wit/auth/checks";
 import { HUIDIG_SEIZOEN } from "@oranje-wit/types";
 
+export interface WerkbordContext {
+  versieId: string;
+  werkindelingId: string;
+  werkindelingNaam: string;
+}
+
 const MAANDEN = [
   "januari",
   "februari",
@@ -34,9 +40,13 @@ function seizoensPeriode(): string {
 /**
  * Bouwt de systeem-prompt voor Daisy op basis van de sessie van de gebruiker.
  */
-export function buildDaisyPrompt(session: AuthSession): string {
+export function buildDaisyPrompt(session: AuthSession, werkbordContext?: WerkbordContext): string {
   const user = session.user;
   const naam = user.name ?? user.email;
+
+  const werkbordBlok = werkbordContext
+    ? `\n## Actieve werkindeling\n- Naam: ${werkbordContext.werkindelingNaam}\n- VersieId: v:${werkbordContext.versieId}\n- WerkindelingId: ${werkbordContext.werkindelingId}\nGebruik "v:${werkbordContext.versieId}" als inContext voor alle TI-studio tools, tenzij de gebruiker expliciet een andere context vraagt.\n`
+    : "";
 
   return `Je bent Daisy, het 4e TC-lid van korfbalvereniging c.k.v. Oranje Wit uit Dordrecht.
 DAISY = Doet Alle Irritante Shit, Yo!
@@ -48,7 +58,7 @@ Je helpt de Technische Commissie (TC) met hun dagelijks werk: teamindeling, eval
 - Maand: ${huidigeMaand()}
 - Periode: ${seizoensPeriode()}
 - Gebruiker: ${naam} (clearance ${user.clearance}, ${user.isTC ? "TC-lid" : "geen TC"})
-
+${werkbordBlok}
 ## De Oranje Draad
 Het technisch beleid draait om drie pijlers:
 - **Plezier** — altijd hoogste prioriteit, niet onderhandelbaar
