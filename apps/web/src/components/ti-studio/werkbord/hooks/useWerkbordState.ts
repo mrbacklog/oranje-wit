@@ -200,13 +200,8 @@ export function useWerkbordState(
           .sort((a, b) => a.volgorde - b.volgorde);
         if (teamsInGroep.length === 0) return prev;
 
-        // Verdeel gelijkwaardig: kies het team met de minste spelers van dit geslacht.
-        // Bij gelijke stand wint het team met de laagste volgorde (primary).
-        const doelTeam = teamsInGroep.reduce((min, t) => {
-          const countMin = geslacht === "V" ? min.selectieDames.length : min.selectieHeren.length;
-          const countT = geslacht === "V" ? t.selectieDames.length : t.selectieHeren.length;
-          return countT < countMin ? t : min;
-        }, teamsInGroep[0]);
+        // Altijd op primaryTeam (server slaat op in selectieGroep-pool, page.tsx zet alles op primary)
+        const doelTeam = teamsInGroep[0];
 
         const spelerInTeam: WerkbordSpelerInTeam = {
           id: `ssel-${spelerData.id}-${Date.now()}`,

@@ -100,7 +100,8 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
       style={{
         display: "grid",
         gridTemplateRows: "var(--toolbar) 1fr",
-        height: "100%",
+        flex: 1,
+        minHeight: 0,
         overflow: "hidden",
       }}
     >
@@ -148,7 +149,6 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
           onTeamDragEnd={slaTeamPositieOp}
           onSpelerClick={openProfiel}
           onDropSpelerOpSelectie={onDropSpelerOpSelectieFn}
-          onToggleBundeling={toggleBundeling}
           onTitelKlik={openTeamDialog}
         />
         <TeamDrawer
@@ -166,6 +166,7 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
           onSelectieGekoppeld={koppelSelectieLokaal}
           onSelectieOntkoppeld={ontkoppelSelectieLokaal}
           onSelectieNaamUpdated={updateSelectieNaamLokaal}
+          onToggleBundeling={toggleBundeling}
         />
         <VersiesDrawer
           open={panelRechts === "versies"}

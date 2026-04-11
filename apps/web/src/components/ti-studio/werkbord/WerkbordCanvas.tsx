@@ -35,7 +35,6 @@ interface WerkbordCanvasProps {
     naarSelectieGroepId: string,
     geslacht: "V" | "M"
   ) => void;
-  onToggleBundeling: (selectieGroepId: string, gebundeld: boolean) => void;
   onTitelKlik?: (teamId: string) => void;
 }
 
@@ -105,7 +104,6 @@ export function WerkbordCanvas({
   onTeamDragEnd,
   onSpelerClick,
   onDropSpelerOpSelectie,
-  onToggleBundeling,
   onTitelKlik,
 }: WerkbordCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -386,7 +384,6 @@ export function WerkbordCanvas({
                   geslacht
                 )
               }
-              onToggleBundeling={onToggleBundeling}
               onTitelKlik={
                 onTitelKlik
                   ? (id) => {
