@@ -36,6 +36,9 @@ interface WerkbordCanvasProps {
     geslacht: "V" | "M"
   ) => void;
   onTitelKlik?: (teamId: string) => void;
+  versieId: string;
+  werkindelingId: string;
+  werkindelingNaam: string;
 }
 
 interface TeamDragState {
@@ -105,6 +108,9 @@ export function WerkbordCanvas({
   onSpelerClick,
   onDropSpelerOpSelectie,
   onTitelKlik,
+  versieId,
+  werkindelingId,
+  werkindelingNaam,
 }: WerkbordCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const minimapRef = useRef<HTMLDivElement>(null);
@@ -694,7 +700,11 @@ export function WerkbordCanvas({
       </div>
 
       {/* Daisy Panel */}
-      <DaisyPanel />
+      <DaisyPanel
+        versieId={versieId}
+        werkindelingId={werkindelingId}
+        werkindelingNaam={werkindelingNaam}
+      />
     </div>
   );
 }
