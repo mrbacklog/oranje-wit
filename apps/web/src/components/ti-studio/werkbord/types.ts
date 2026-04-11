@@ -5,6 +5,7 @@ export type Geslacht = "V" | "M";
 export type SpelerStatus =
   | "BESCHIKBAAR"
   | "TWIJFELT"
+  | "GEBLESSEERD"
   | "GAAT_STOPPEN"
   | "GESTOPT"
   | "AFGEMELD"

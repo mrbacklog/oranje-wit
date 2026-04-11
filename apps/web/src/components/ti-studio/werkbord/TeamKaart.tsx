@@ -995,25 +995,23 @@ function SelectieBundelDropzone({
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
       {/* Beide teamnamen gecentreerd in het midden */}
-      {zoomLevel !== "compact" && (
-        <div
-          style={{
-            fontSize: 9,
-            fontWeight: 700,
-            textTransform: "uppercase",
-            letterSpacing: ".5px",
-            color: "var(--text-3)",
-            padding: "3px 8px",
-            borderBottom: "1px solid var(--border-0)",
-            textAlign: "center",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
-          {centerLabel}
-        </div>
-      )}
+      <div
+        style={{
+          fontSize: 9,
+          fontWeight: 700,
+          textTransform: "uppercase",
+          letterSpacing: ".5px",
+          color: "var(--text-3)",
+          padding: "3px 8px",
+          borderBottom: "1px solid var(--border-0)",
+          textAlign: "center",
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+        }}
+      >
+        {centerLabel}
+      </div>
       <div style={{ display: "flex" }}>
         {cols4.map((col, i) => {
           const h = makeHandlers(col.kleur);
