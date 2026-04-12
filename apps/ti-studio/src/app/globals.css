@@ -1,0 +1,349 @@
+/* globals.css — TI Studio — importeer UI tokens (bevat tailwindcss + tokens.css al) */
+@import "@oranje-wit/ui/tokens/globals.css";
+
+/* Dark-first body defaults */
+body {
+  background-color: var(--surface-page);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+}
+
+/* ================================================================
+   TEAM-INDELING — Styling (token-based, dark-first compatible)
+   Aanvullende classes voor de teamindeling studio.
+   Alle kleuren via design tokens uit tokens.css.
+   ================================================================ */
+
+/* --- Dialogen / Modals ------------------------------------ */
+
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--surface-overlay);
+  animation: ti-fade-in 0.15s ease-out;
+}
+
+.dialog-panel {
+  background-color: var(--surface-card);
+  border-radius: 0.75rem;
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+}
+
+.dialog-header {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.dialog-body {
+  padding: 1rem 1.5rem;
+}
+
+.dialog-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-top: 1px solid var(--border-light);
+}
+
+/* --- Buttons ---------------------------------------------- */
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-inverse);
+  background-color: var(--ow-oranje-600);
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.btn-primary:hover {
+  background-color: var(--ow-oranje-700);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  background-color: var(--surface-card);
+  border: 1px solid var(--border-strong);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition:
+    background-color 0.15s,
+    border-color 0.15s;
+}
+
+.btn-secondary:hover {
+  background-color: var(--state-hover);
+  border-color: var(--text-tertiary);
+}
+
+.btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: none;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition:
+    color 0.15s,
+    background-color 0.15s;
+}
+
+.btn-ghost:hover {
+  color: var(--text-primary);
+  background-color: var(--state-hover);
+}
+
+.btn-sm {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.8125rem;
+}
+
+/* --- Form Input ------------------------------------------- */
+
+.input {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--text-primary);
+  background-color: var(--surface-card);
+  border: 1px solid var(--border-strong);
+  border-radius: 0.5rem;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--ow-oranje-600);
+  box-shadow: 0 0 0 2px var(--state-focus);
+}
+
+.input::placeholder {
+  color: var(--text-tertiary);
+}
+
+select.input {
+  appearance: auto;
+}
+
+textarea.input {
+  resize: vertical;
+}
+
+/* --- Cards ------------------------------------------------ */
+
+.card {
+  background-color: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: 0.75rem;
+  box-shadow: var(--shadow-xs);
+}
+
+.card-header {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.card-body {
+  padding: 1rem 1.25rem;
+}
+
+.stat-card {
+  background-color: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+  box-shadow: var(--shadow-xs);
+}
+
+/* --- Badges ----------------------------------------------- */
+
+.badge-green {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.125rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-success-700);
+  background-color: var(--color-success-50);
+  border-radius: 9999px;
+}
+
+.badge-orange {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.125rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--knkv-oranje-700);
+  background-color: var(--knkv-oranje-50);
+  border-radius: 9999px;
+}
+
+.badge-red {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.125rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-error-700);
+  background-color: var(--color-error-50);
+  border-radius: 9999px;
+}
+
+.badge-blue {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.125rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-info-700);
+  background-color: var(--color-info-50);
+  border-radius: 9999px;
+}
+
+.badge-gray {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.125rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background-color: var(--surface-sunken);
+  border-radius: 9999px;
+}
+
+/* --- Stat Cards ------------------------------------------- */
+
+.stat-value {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--text-primary);
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: 0.125rem;
+}
+
+/* --- Danger Button ---------------------------------------- */
+
+.btn-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-inverse);
+  background-color: var(--color-error-600);
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.btn-danger:hover {
+  background-color: var(--color-error-700);
+}
+
+/* ============================================================
+   Animaties
+   ============================================================ */
+
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.25s ease-out;
+}
+
+@keyframes slide-in-left {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 0.2s ease-out;
+}
+
+@keyframes ti-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: ti-fade-in 0.15s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-slide-in-left,
+  .animate-slide-in-right,
+  .animate-fade-in {
+    animation: none;
+  }
+}
