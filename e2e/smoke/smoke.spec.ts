@@ -78,4 +78,15 @@ test.describe("Smoke — app laadt", () => {
     const body = await response.json();
     expect(body).toHaveProperty("status");
   });
+
+  test("api health daisy: SSE verbinding + AI-config", async ({ request }) => {
+    const response = await request.get("/api/health/daisy");
+    // Accepteer 200 (ok) of 503 (degraded) — endpoint moet altijd JSON teruggeven
+    expect([200, 503]).toContain(response.status());
+    const body = await response.json();
+    expect(body).toHaveProperty("status");
+    expect(body).toHaveProperty("checks.sse");
+    // SSE verbinding moet werken — test DB is beschikbaar in CI
+    expect(body.checks.sse.status).toBe("ok");
+  });
 });
