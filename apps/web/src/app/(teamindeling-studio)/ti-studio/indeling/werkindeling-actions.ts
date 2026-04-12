@@ -113,7 +113,7 @@ export async function getAlleSpelers() {
 
   // Haal tussenvoegsels en USS-scores parallel op
   const relCodes = spelers.map((s) => s.id);
-  const [leden, ussScores] = await Promise.all([
+  const [leden, ussScores, fotos] = await Promise.all([
     prisma.lid.findMany({
       where: { relCode: { in: relCodes } },
       select: { relCode: true, tussenvoegsel: true },
@@ -121,6 +121,10 @@ export async function getAlleSpelers() {
     prisma.spelerUSS.findMany({
       where: { spelerId: { in: relCodes }, seizoen: HUIDIG_SEIZOEN },
       select: { spelerId: true, ussOverall: true },
+    }),
+    prisma.lidFoto.findMany({
+      where: { relCode: { in: relCodes } },
+      select: { relCode: true },
     }),
   ]);
 
@@ -136,11 +140,13 @@ export async function getAlleSpelers() {
       u.ussOverall ?? null,
     ])
   );
+  const fotoSet = new Set<string>(fotos.map((f: { relCode: string }) => f.relCode));
 
   return spelers.map((s) => ({
     ...s,
     tussenvoegsel: tussenvoegelMap.get(s.id) ?? null,
     ussScore: ussMap.get(s.id) ?? null,
+    heeftFoto: fotoSet.has(s.id),
   }));
 }
 
