@@ -2,7 +2,7 @@ import { test, expect } from "../fixtures/base";
 
 test.describe("Daisy panel", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/ti-studio/indeling");
+    await page.goto("/indeling");
     await page.waitForLoadState("domcontentloaded");
   });
 
@@ -69,15 +69,12 @@ test.describe("Daisy panel", () => {
 
     const sseStatussen: number[] = [];
     page.on("response", (response) => {
-      if (
-        response.url().includes("/api/ti-studio/indeling/") &&
-        response.url().includes("/stream")
-      ) {
+      if (response.url().includes("/api/indeling/") && response.url().includes("/stream")) {
         sseStatussen.push(response.status());
       }
     });
 
-    await page.goto("/ti-studio/indeling", { timeout: 60_000 });
+    await page.goto("/indeling", { timeout: 60_000 });
     const nav = page.getByRole("navigation", { name: "Hoofdnavigatie" });
     await expect(nav).toBeVisible({ timeout: 20_000 });
 

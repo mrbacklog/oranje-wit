@@ -10,7 +10,7 @@ test.describe("TI Studio — Smoke Tests", () => {
   test.setTimeout(120_000);
 
   test("Flow 1 — Werkbord pagina laadt (navigatie zichtbaar)", async ({ page }) => {
-    await page.goto("/ti-studio/indeling", { timeout: 60_000 });
+    await page.goto("/indeling", { timeout: 60_000 });
 
     // Hoofdnavigatie moet zichtbaar zijn — is kritieke indicator dat pagina niet redirected
     const nav = page.getByRole("navigation", { name: "Hoofdnavigatie" });
@@ -18,7 +18,7 @@ test.describe("TI Studio — Smoke Tests", () => {
   });
 
   test("Flow 2 — Memo pagina laadt (navigatie zichtbaar)", async ({ page }) => {
-    await page.goto("/ti-studio/memo", { timeout: 60_000 });
+    await page.goto("/memo", { timeout: 60_000 });
 
     // Hoofdnavigatie moet zichtbaar zijn
     const nav = page.getByRole("navigation", { name: "Hoofdnavigatie" });
@@ -26,7 +26,7 @@ test.describe("TI Studio — Smoke Tests", () => {
   });
 
   test("Flow 3 — Personen/spelers pagina laadt (navigatie zichtbaar)", async ({ page }) => {
-    await page.goto("/ti-studio/personen/spelers", { timeout: 60_000 });
+    await page.goto("/personen/spelers", { timeout: 60_000 });
 
     // Hoofdnavigatie moet zichtbaar zijn
     const nav = page.getByRole("navigation", { name: "Hoofdnavigatie" });
@@ -35,7 +35,7 @@ test.describe("TI Studio — Smoke Tests", () => {
 
   test("Flow 4 — Werkindeling navigatie (indeling → memo → personen)", async ({ page }) => {
     // Start op werkbord
-    await page.goto("/ti-studio/indeling", { timeout: 60_000 });
+    await page.goto("/indeling", { timeout: 60_000 });
 
     const nav = page.getByRole("navigation", { name: "Hoofdnavigatie" });
     await expect(nav).toBeVisible({ timeout: 20_000 });
@@ -57,7 +57,7 @@ test.describe("TI Studio — Smoke Tests", () => {
   });
 
   test("Flow 5 — Geen crash op page refresh", async ({ page }) => {
-    await page.goto("/ti-studio/indeling", { timeout: 60_000 });
+    await page.goto("/indeling", { timeout: 60_000 });
 
     const nav = page.getByRole("navigation", { name: "Hoofdnavigatie" });
     await expect(nav).toBeVisible({ timeout: 20_000 });
@@ -80,7 +80,7 @@ test.describe("TI Studio — Smoke Tests", () => {
   });
 
   test("Flow 7 — TI Studio werkbord canvas is scrollable", async ({ page }) => {
-    await page.goto("/ti-studio/indeling", { timeout: 60_000 });
+    await page.goto("/indeling", { timeout: 60_000 });
 
     const nav = page.getByRole("navigation", { name: "Hoofdnavigatie" });
     await expect(nav).toBeVisible({ timeout: 20_000 });
@@ -94,7 +94,7 @@ test.describe("TI Studio — Smoke Tests", () => {
   });
 
   test("Flow 8 — Memo pagina laadt zonder redirect", async ({ page }) => {
-    await page.goto("/ti-studio/memo", { timeout: 60_000 });
+    await page.goto("/memo", { timeout: 60_000 });
 
     const nav = page.getByRole("navigation", { name: "Hoofdnavigatie" });
     await expect(nav).toBeVisible({ timeout: 20_000 });
@@ -112,7 +112,7 @@ test.describe("TI Studio — Smoke Tests", () => {
       }
     });
 
-    await page.goto("/ti-studio/indeling", { timeout: 60_000 });
+    await page.goto("/indeling", { timeout: 60_000 });
 
     const nav = page.getByRole("navigation", { name: "Hoofdnavigatie" });
     await expect(nav).toBeVisible({ timeout: 20_000 });
@@ -139,11 +139,11 @@ test.describe("TI Studio — Smoke Tests", () => {
 
   test("Flow 10 — Cross-domain: Desktop layout laadt", async ({ page }) => {
     // Desktop layout test
-    await page.goto("/ti-studio/indeling", { timeout: 60_000 });
+    await page.goto("/indeling", { timeout: 60_000 });
 
     const nav = page.getByRole("navigation", { name: "Hoofdnavigatie" });
     await expect(nav).toBeVisible({ timeout: 20_000 });
 
-    expect(page.url()).toContain("/ti-studio");
+    expect(page.url()).toContain("/indeling");
   });
 });

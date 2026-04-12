@@ -6,7 +6,7 @@ test.describe("TI Studio — Validatie", () => {
   test.setTimeout(90_000);
 
   test("validatie indicator zichtbaar op teamkaart", async ({ page }) => {
-    await page.goto("/ti-studio/indeling", GOTO_OPTS);
+    await page.goto("/indeling", GOTO_OPTS);
 
     // Indeling pagina heeft mogelijk een error — controleer of pagina totaal laadt
     const body = page.locator("body");
@@ -36,7 +36,7 @@ test.describe("TI Studio — Validatie", () => {
         await expect(teams.first()).toBeVisible();
       } else {
         // Fallback: pagina laadt (geen teams zichtbaar door mogelijk error)
-        expect(page.url()).toContain("/ti-studio");
+        expect(page.url()).toContain("/indeling");
       }
     }
   });
