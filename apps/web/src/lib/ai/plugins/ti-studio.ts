@@ -66,7 +66,7 @@ const leesTools = {
   spelersZoeken: {
     description:
       "Zoek spelers op met filters. Gebruik dit om kandidaten te vinden voor verplaatsing of analyse.",
-    parameters: z.object({
+    inputSchema: z.object({
       geslacht: z.enum(["M", "V"]).optional().describe("Filter op geslacht"),
       geboortejaar: z.number().optional().describe("Filter op exact geboortejaar"),
       leeftijdVolgendSeizoen: z
@@ -159,7 +159,7 @@ const leesTools = {
   teamSamenstelling: {
     description:
       "Geeft de volledige bezetting van een team: spelers, USS-scores, geslachtsverhouding en staf.",
-    parameters: z.object({
+    inputSchema: z.object({
       teamNaam: z.string().describe("(Deel van) de teamnaam, bijv. 'Sen 1' of 'U15'"),
       inContext: z
         .string()
@@ -258,7 +258,7 @@ const leesTools = {
 
   scenarioVergelijken: {
     description: "Vergelijkt twee scenario's en toont wie verschoven is en wat de score-impact is.",
-    parameters: z.object({
+    inputSchema: z.object({
       whatIfIdA: z.string().describe("ID van het eerste scenario"),
       whatIfIdB: z.string().describe("ID van het tweede scenario"),
     }),
@@ -315,7 +315,7 @@ const leesTools = {
   blauwdrukToetsen: {
     description:
       "Toetst de huidige werkindeling aan de blauwdruk-kaders: teamgrootte, categorieën en knelpunten.",
-    parameters: z.object({}),
+    inputSchema: z.object({}),
     execute: async () => {
       const blauwdruk = await getWerkBlauwdruk();
       if (!blauwdruk) return { fout: "Geen actieve blauwdruk gevonden" };
@@ -370,7 +370,7 @@ function maakSchrijfToolsSpelers(sessieId: string, gebruikerEmail: string) {
     spelerVerplaatsen: {
       description:
         "Verplaatst een speler van het ene team naar het andere. Werkt in scenario of werkindeling.",
-      parameters: z.object({
+      inputSchema: z.object({
         spelerId: z.string().describe("ID van de speler (rel_code)"),
         naarTeam: z.string().describe("Naam van het doelteam"),
         inContext: z
@@ -439,7 +439,7 @@ function maakSchrijfToolsSpelers(sessieId: string, gebruikerEmail: string) {
 
     spelerStatusZetten: {
       description: "Zet de status van een speler (bijv. TWIJFELT, GAAT_STOPPEN, BESCHIKBAAR).",
-      parameters: z.object({
+      inputSchema: z.object({
         spelerId: z.string().describe("ID van de speler"),
         status: z
           .enum([
@@ -480,7 +480,7 @@ function maakSchrijfToolsSpelers(sessieId: string, gebruikerEmail: string) {
 
     spelerNotitieZetten: {
       description: "Schrijft of overschrijft de notitie op een speler.",
-      parameters: z.object({
+      inputSchema: z.object({
         spelerId: z.string().describe("ID van de speler"),
         notitie: z.string().describe("Nieuwe notitie (max 500 tekens)"),
       }),
@@ -520,7 +520,7 @@ function maakSchrijfToolsSpelers(sessieId: string, gebruikerEmail: string) {
     nieuwLidInBlauwdruk: {
       description:
         "Maakt een nieuw verwacht lid aan in de blauwdruk (iemand die nog niet in het systeem staat).",
-      parameters: z.object({
+      inputSchema: z.object({
         naam: z.string().describe("Volledige naam van het nieuwe lid"),
         geslacht: z.enum(["M", "V"]).describe("Geslacht"),
         geboortejaar: z.number().int().min(2000).max(2030).describe("Geboortejaar"),
@@ -570,7 +570,7 @@ function maakSchrijfToolsSpelers(sessieId: string, gebruikerEmail: string) {
     plaatsreserveringZetten: {
       description:
         "Plaatst een naamloze of benoemde placeholder in een team (bijv. 'verwacht: Robin').",
-      parameters: z.object({
+      inputSchema: z.object({
         teamNaam: z.string().describe("Naam van het team"),
         naam: z.string().describe("Naam voor de placeholder, bijv. 'Verwacht lid'"),
         geslacht: z.enum(["M", "V"]).optional().describe("Optioneel geslacht van de placeholder"),
@@ -623,7 +623,7 @@ function maakSchrijfToolsSpelers(sessieId: string, gebruikerEmail: string) {
     besluitVastleggen: {
       description:
         "Legt een besluit vast namens een TC-lid als werkitem. Vereist altijd een 'namens' attribuering.",
-      parameters: z.object({
+      inputSchema: z.object({
         besluit: z.string().describe("Tekst van het besluit"),
         namens: z.string().describe("Naam of e-mail van het TC-lid dat het besluit nam"),
       }),
@@ -686,7 +686,7 @@ function maakSchrijfToolsRest(sessieId: string, gebruikerEmail: string) {
   return {
     teamAanmaken: {
       description: "Maakt een nieuw team aan in een scenario.",
-      parameters: z.object({
+      inputSchema: z.object({
         naam: z.string().describe("Naam van het nieuwe team"),
         categorie: z
           .enum(["SENIOREN", "JEUGD_A", "JEUGD_B", "RECREANTEN", "MIXED"])
@@ -726,7 +726,7 @@ function maakSchrijfToolsRest(sessieId: string, gebruikerEmail: string) {
 
     selectieAanmaken: {
       description: "Maakt een selectiegroep aan en koppelt spelers.",
-      parameters: z.object({
+      inputSchema: z.object({
         naam: z.string().describe("Naam van de selectiegroep"),
         spelerIds: z.array(z.string()).describe("Lijst van speler-IDs"),
         inContext: z.string().describe('werkindelingId of "v:<versieId>"'),
@@ -772,7 +772,7 @@ function maakSchrijfToolsRest(sessieId: string, gebruikerEmail: string) {
 
     stafPlaatsen: {
       description: "Wijst een stafmedewerker toe aan een team in een scenario of werkindeling.",
-      parameters: z.object({
+      inputSchema: z.object({
         stafNaam: z.string().describe("Naam van de stafmedewerker (gedeeltelijk)"),
         rol: z.string().describe('Rol, bijv. "Trainer/Coach", "Assistent", "Begeleider"'),
         teamNaam: z.string().describe("Naam van het doelteam"),
@@ -837,7 +837,7 @@ function maakSchrijfToolsRest(sessieId: string, gebruikerEmail: string) {
 
     whatIfScenarioAanmaken: {
       description: "Maakt een kopie van de werkindeling als nieuw what-if scenario.",
-      parameters: z.object({
+      inputSchema: z.object({
         naam: z.string().describe("Naam voor het nieuwe scenario"),
       }),
       execute: async ({ naam }: { naam: string }) => {
@@ -878,7 +878,7 @@ function maakSchrijfToolsRest(sessieId: string, gebruikerEmail: string) {
 
     actiePlaatsen: {
       description: "Plaatst een actiepunt/werkitem op het werkbord.",
-      parameters: z.object({
+      inputSchema: z.object({
         titel: z.string().describe("Korte titel van de actie"),
         beschrijving: z.string().optional().describe("Optionele uitleg"),
         toegewezenAan: z
@@ -941,7 +941,7 @@ function maakUndoTools(sessieId: string) {
     actieOngedaanMaken: {
       description:
         "Maakt de laatste Daisy-actie ongedaan (of een specifieke actie op basis van ID).",
-      parameters: z.object({
+      inputSchema: z.object({
         actieId: z
           .string()
           .optional()
@@ -972,7 +972,7 @@ function maakUndoTools(sessieId: string) {
     sessieTerugdraaien: {
       description:
         "Draait alle Daisy-acties van de huidige chat-sessie terug in omgekeerde volgorde.",
-      parameters: z.object({}),
+      inputSchema: z.object({}),
       execute: async () => {
         const acties = await getDaisyActies(sessieId, 100);
         if (acties.length === 0)

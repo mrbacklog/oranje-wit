@@ -97,7 +97,7 @@ const seizoenscyclus: Record<
 export const planningTools = {
   weekOverzicht: {
     description: "Geeft TC-activiteiten en KNKV-deadlines voor een bepaalde maand in het seizoen",
-    parameters: z.object({
+    inputSchema: z.object({
       maand: z
         .string()
         .describe("Naam van de maand in het Nederlands (bijv. 'maart', 'september')"),

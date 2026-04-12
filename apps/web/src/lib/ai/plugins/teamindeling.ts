@@ -9,7 +9,7 @@ import { HUIDIG_SEIZOEN } from "@oranje-wit/types";
 export const teamindelingTools = {
   spelersInTeam: {
     description: "Zoekt een team op naam (fuzzy) en geeft de spelers in dat team terug",
-    parameters: z.object({
+    inputSchema: z.object({
       teamNaam: z.string().describe("(Deel van) de teamnaam, bijv. 'D1' of 'Oranje Wit'"),
     }),
     execute: async ({ teamNaam }: { teamNaam: string }) => {
@@ -69,7 +69,7 @@ export const teamindelingTools = {
 
   werkindelingStatus: {
     description: "Geeft de status van de blauwdruk en alle scenarios voor het huidige seizoen",
-    parameters: z.object({}),
+    inputSchema: z.object({}),
     execute: async () => {
       const blauwdrukken = await prisma.$queryRaw<
         Array<{ id: string; seizoen: string; created_at: Date }>

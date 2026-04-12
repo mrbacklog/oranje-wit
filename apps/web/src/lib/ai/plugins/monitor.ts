@@ -9,7 +9,7 @@ import { HUIDIG_SEIZOEN } from "@oranje-wit/types";
 export const monitorTools = {
   ledenPerCategorie: {
     description: "Telt het aantal actieve leden per kleur (leeftijdsgroep) in het huidige seizoen",
-    parameters: z.object({}),
+    inputSchema: z.object({}),
     execute: async () => {
       const teams = await prisma.oWTeam.findMany({
         where: { seizoen: HUIDIG_SEIZOEN },
@@ -40,7 +40,7 @@ export const monitorTools = {
 
   teamBezetting: {
     description: "Telt het aantal spelers per team, optioneel gefilterd op kleur (leeftijdsgroep)",
-    parameters: z.object({
+    inputSchema: z.object({
       kleur: z
         .string()
         .optional()
