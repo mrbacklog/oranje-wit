@@ -46,6 +46,7 @@ type AnyPrismaModels = {
   // Team-Indeling
   user: AnyModel;
   speler: AnyModel;
+  spelerUSS: AnyModel;
   staf: AnyModel;
   kaders: AnyModel;
   werkindeling: AnyModel;
@@ -83,6 +84,8 @@ type AnyPrismaModels = {
   mijlpaal: AnyModel;
   // Snapshots
   werkindelingSnapshot: AnyModel;
+  // Team-aliassen (KNKV-competitienamen)
+  teamAlias: AnyModel;
   // Daisy
   daisyActie: AnyModel;
   plaatsreservering: AnyModel;

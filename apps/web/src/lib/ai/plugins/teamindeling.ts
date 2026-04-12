@@ -8,41 +8,61 @@ import { HUIDIG_SEIZOEN } from "@oranje-wit/types";
 
 export const teamindelingTools = {
   spelersInTeam: {
-    description: "Zoekt een team op naam (fuzzy) en geeft de spelers in dat team terug",
+    description:
+      "Zoekt een team op naam en geeft de spelers terug. Accepteert KNKV-competitienamen (J3, J8, OW J4, 1, 2, MW1) én OW-teamnamen (Oranje-2, Rood-1, Geel, ...).",
     inputSchema: z.object({
-      teamNaam: z.string().describe("(Deel van) de teamnaam, bijv. 'D1' of 'Oranje Wit'"),
+      teamNaam: z
+        .string()
+        .describe(
+          "Teamnaam: KNKV-code (J3, OW J8, 1, 2, MW1) of OW-naam (Oranje-2, Rood-1, Geel). Geef exact de code door zoals de gebruiker die noemt."
+        ),
     }),
     execute: async ({ teamNaam }: { teamNaam: string }) => {
-      const teams = await prisma.oWTeam.findMany({
-        where: {
-          seizoen: HUIDIG_SEIZOEN,
-          naam: { contains: teamNaam, mode: "insensitive" },
-        },
-        select: { owCode: true, naam: true, kleur: true, categorie: true },
+      // Probeer eerst exacte alias-lookup (KNKV-competitienamen: "J3", "OW J8", "1", "2", ...)
+      const alias = await prisma.teamAlias.findUnique({
+        where: { seizoen_alias: { seizoen: HUIDIG_SEIZOEN, alias: teamNaam } },
+        select: { owCode: true },
       });
+
+      let teams;
+      if (alias) {
+        teams = await prisma.oWTeam.findMany({
+          where: { seizoen: HUIDIG_SEIZOEN, owCode: alias.owCode },
+          select: { id: true, owCode: true, naam: true, kleur: true, categorie: true },
+        });
+      } else {
+        // Fuzzy search op OW-teamnaam (bijv. "Oranje-2", "Rood")
+        teams = await prisma.oWTeam.findMany({
+          where: {
+            seizoen: HUIDIG_SEIZOEN,
+            naam: { contains: teamNaam, mode: "insensitive" },
+          },
+          select: { id: true, owCode: true, naam: true, kleur: true, categorie: true },
+        });
+      }
 
       if (teams.length === 0) {
         return { fout: `Geen team gevonden met naam "${teamNaam}"` };
       }
 
-      const owCodes = teams.map((t) => t.owCode);
+      const teamIds = teams.map((t) => t.id);
 
-      // CompetitieSpeler heeft geen naam-veld, join met Lid voor de naam
+      // Filter op owTeamId (FK naar OWTeam.id) — het team-veld bevat KNKV-competitiecodes
       const spelers = await prisma.competitieSpeler.findMany({
         where: {
           seizoen: HUIDIG_SEIZOEN,
-          team: { in: owCodes },
+          owTeamId: { in: teamIds },
         },
         select: {
           relCode: true,
           geslacht: true,
-          team: true,
+          owTeamId: true,
           lid: { select: { roepnaam: true, achternaam: true, tussenvoegsel: true } },
         },
         distinct: ["relCode"],
       });
 
-      const teamNaamMap = new Map(teams.map((t) => [t.owCode, t.naam]));
+      const teamNaamMap = new Map(teams.map((t) => [t.id, t.naam]));
 
       // Sorteer op achternaam
       const gesorteerd = spelers.sort((a, b) =>
@@ -60,7 +80,7 @@ export const teamindelingTools = {
             relCode: s.relCode,
             naam,
             geslacht: s.geslacht,
-            team: teamNaamMap.get(s.team) ?? s.team,
+            team: teamNaamMap.get(s.owTeamId) ?? teamNaam,
           };
         }),
       };
