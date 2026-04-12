@@ -226,7 +226,12 @@ export function TeamKaart({
                 color: "var(--pink)",
               }}
             >
-              ♀ {team.dames.length}
+              ♀{" "}
+              {isSelectieGebundeld
+                ? team.selectieDames.length
+                : isSelectie && partnerTeam
+                  ? team.dames.length + partnerTeam.dames.length
+                  : team.dames.length}
             </span>
             <span
               style={{
@@ -241,7 +246,12 @@ export function TeamKaart({
                 color: "var(--blue)",
               }}
             >
-              ♂ {team.heren.length}
+              ♂{" "}
+              {isSelectieGebundeld
+                ? team.selectieHeren.length
+                : isSelectie && partnerTeam
+                  ? team.heren.length + partnerTeam.heren.length
+                  : team.heren.length}
             </span>
           </div>
         )}
@@ -286,9 +296,6 @@ export function TeamKaart({
         <ViertalDropzone
           team={team}
           zoomLevel={zoomLevel}
-          dropOverGeslacht={dropOverGeslacht}
-          onDragOver={handleDragOver}
-          onDragLeave={() => setDropOverGeslacht(null)}
           onDrop={handleDrop}
           onSpelerClick={onSpelerClick}
         />
@@ -708,116 +715,77 @@ function DropzoneKolom({
   );
 }
 
-// ── Viertal dropzone: 1 kolom, dames + heren gestapeld, geen labels ─────────
+// ── Viertal dropzone: 1 gecombineerde zone, dames (V) eerst dan heren (M) ────
+// Dynamische hoogte — geen vaste minHeight per sectie.
 
 function ViertalDropzone({
   team,
   zoomLevel,
-  dropOverGeslacht,
-  onDragOver,
-  onDragLeave,
   onDrop,
   onSpelerClick,
 }: {
   team: WerkbordTeam;
   zoomLevel: ZoomLevel;
-  dropOverGeslacht: "V" | "M" | null;
-  onDragOver: (e: React.DragEvent, g: "V" | "M") => void;
-  onDragLeave: () => void;
   onDrop: (e: React.DragEvent, g: "V" | "M") => void;
   onSpelerClick?: (spelerId: string, teamId: string | null) => void;
 }) {
-  const damesSorted = [...team.dames].sort((a, b) =>
-    a.speler.roepnaam.localeCompare(b.speler.roepnaam, "nl")
-  );
-  const herenSorted = [...team.heren].sort((a, b) =>
-    a.speler.roepnaam.localeCompare(b.speler.roepnaam, "nl")
-  );
+  const [dropOver, setDropOver] = useState(false);
+
+  // Dames (V) eerst, alfabetisch; daarna heren (M), alfabetisch
+  const allSpelers = [
+    ...[...team.dames].sort((a, b) => a.speler.roepnaam.localeCompare(b.speler.roepnaam, "nl")),
+    ...[...team.heren].sort((a, b) => a.speler.roepnaam.localeCompare(b.speler.roepnaam, "nl")),
+  ];
 
   return (
-    <div style={{ display: "flex", flexDirection: "column" }}>
-      {/* Dames sectie — geen label */}
-      <div
-        onDragOver={(e) => onDragOver(e, "V")}
-        onDragLeave={onDragLeave}
-        onDrop={(e) => onDrop(e, "V")}
-        style={{
-          minHeight: MIN_DROPZONE_VIERTAL,
-          display: "flex",
-          flexDirection: "column",
-          borderBottom: "1px solid var(--border-0)",
-          background: dropOverGeslacht === "V" ? "rgba(236,72,153,.07)" : "transparent",
-          transition: "background 120ms ease",
-        }}
-      >
-        {zoomLevel === "compact" ? (
-          <div
-            style={{
-              flex: 1,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 6,
-            }}
-          >
-            <span style={{ fontSize: 22, fontWeight: 900, color: "rgba(236,72,153,.65)" }}>
-              ♀ {team.dames.length}
-            </span>
-          </div>
-        ) : (
-          damesSorted.map((sp) => (
-            <TeamKaartSpelerRij
-              key={sp.id}
-              spelerInTeam={sp}
-              teamId={team.id}
-              zoomLevel={zoomLevel}
-              openMemoCount={sp.speler.openMemoCount}
-              onSpelerClick={onSpelerClick}
-            />
-          ))
-        )}
-      </div>
-
-      {/* Heren sectie — geen label */}
-      <div
-        onDragOver={(e) => onDragOver(e, "M")}
-        onDragLeave={onDragLeave}
-        onDrop={(e) => onDrop(e, "M")}
-        style={{
-          minHeight: MIN_DROPZONE_VIERTAL,
-          display: "flex",
-          flexDirection: "column",
-          background: dropOverGeslacht === "M" ? "rgba(96,165,250,.07)" : "transparent",
-          transition: "background 120ms ease",
-        }}
-      >
-        {zoomLevel === "compact" ? (
-          <div
-            style={{
-              flex: 1,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 6,
-            }}
-          >
-            <span style={{ fontSize: 22, fontWeight: 900, color: "rgba(96,165,250,.65)" }}>
-              ♂ {team.heren.length}
-            </span>
-          </div>
-        ) : (
-          herenSorted.map((sp) => (
-            <TeamKaartSpelerRij
-              key={sp.id}
-              spelerInTeam={sp}
-              teamId={team.id}
-              zoomLevel={zoomLevel}
-              openMemoCount={sp.speler.openMemoCount}
-              onSpelerClick={onSpelerClick}
-            />
-          ))
-        )}
-      </div>
+    <div
+      onDragOver={(e) => {
+        if (!e.dataTransfer.types.includes("speler")) return;
+        e.preventDefault();
+        setDropOver(true);
+      }}
+      onDragLeave={() => setDropOver(false)}
+      onDrop={(e) => {
+        setDropOver(false);
+        onDrop(e, "V"); // geslacht wordt bepaald uit spelerdata in handleDrop
+      }}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: MIN_DROPZONE_VIERTAL * 2,
+        background: dropOver ? "rgba(255,107,0,.06)" : "transparent",
+        transition: "background 120ms ease",
+      }}
+    >
+      {zoomLevel === "compact" ? (
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 16,
+          }}
+        >
+          <span style={{ fontSize: 22, fontWeight: 900, color: "rgba(236,72,153,.65)" }}>
+            ♀ {team.dames.length}
+          </span>
+          <span style={{ fontSize: 22, fontWeight: 900, color: "rgba(96,165,250,.65)" }}>
+            ♂ {team.heren.length}
+          </span>
+        </div>
+      ) : (
+        allSpelers.map((sp) => (
+          <TeamKaartSpelerRij
+            key={sp.id}
+            spelerInTeam={sp}
+            teamId={team.id}
+            zoomLevel={zoomLevel}
+            openMemoCount={sp.speler.openMemoCount}
+            onSpelerClick={onSpelerClick}
+          />
+        ))
+      )}
     </div>
   );
 }
@@ -964,25 +932,21 @@ function SelectieBundelDropzone({
   const cols4 = [
     {
       id: "dam-a",
-      label: "♀ Dames",
       kleur: "V" as const,
       spelers: damesSorted.filter((_, i) => i % 2 === 0),
     },
     {
       id: "dam-b",
-      label: "",
       kleur: "V" as const,
       spelers: damesSorted.filter((_, i) => i % 2 === 1),
     },
     {
       id: "her-a",
-      label: "♂ Heren",
       kleur: "M" as const,
       spelers: herenSorted.filter((_, i) => i % 2 === 0),
     },
     {
       id: "her-b",
-      label: "",
       kleur: "M" as const,
       spelers: herenSorted.filter((_, i) => i % 2 === 1),
     },
@@ -1012,13 +976,43 @@ function SelectieBundelDropzone({
       >
         {centerLabel}
       </div>
+      {/* Geslachtsheader: ♀ over kolom 1+2, ♂ over kolom 3+4 */}
+      <div style={{ display: "flex", borderBottom: "1px solid var(--border-0)" }}>
+        <div
+          style={{
+            flex: 2,
+            fontSize: 8,
+            fontWeight: 700,
+            textTransform: "uppercase",
+            letterSpacing: ".6px",
+            color: "rgba(236,72,153,.65)",
+            padding: "3px 8px 2px",
+            borderRight: "1px solid var(--border-0)",
+          }}
+        >
+          ♀ Dames
+        </div>
+        <div
+          style={{
+            flex: 2,
+            fontSize: 8,
+            fontWeight: 700,
+            textTransform: "uppercase",
+            letterSpacing: ".6px",
+            color: "rgba(96,165,250,.65)",
+            padding: "3px 8px 2px",
+          }}
+        >
+          ♂ Heren
+        </div>
+      </div>
       <div style={{ display: "flex" }}>
         {cols4.map((col, i) => {
           const h = makeHandlers(col.kleur);
           return (
             <DropzoneKolom
               key={col.id}
-              label={col.label}
+              label=""
               kleur={col.kleur}
               spelers={col.spelers}
               teamId={team.id}
