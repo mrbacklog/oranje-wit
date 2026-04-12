@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/teamindeling/db/prisma";
-import { getActiefSeizoen } from "@/lib/teamindeling/seizoen";
+import { getActiefSeizoen } from "@oranje-wit/teamindeling-shared/seizoen";
 
 export async function getMijlpalen() {
   const seizoen = await getActiefSeizoen();

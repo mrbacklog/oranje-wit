@@ -4,7 +4,7 @@ import { prisma, anyTeam } from "@/lib/teamindeling/db/prisma";
 import type { Prisma, TeamCategorie, Kleur, SpelerStatus } from "@oranje-wit/database";
 import { logger } from "@oranje-wit/types";
 import { revalidatePath } from "next/cache";
-import { assertBewerkbaar } from "@/lib/teamindeling/seizoen";
+import { assertBewerkbaar } from "@oranje-wit/teamindeling-shared/seizoen";
 import { assertSpelerVrij } from "@/lib/teamindeling/db/speler-guard";
 import { maakWerkindelingSnapshot } from "@/lib/teamindeling/db/werkindeling-snapshot";
 import { requireTC } from "@oranje-wit/auth/checks";

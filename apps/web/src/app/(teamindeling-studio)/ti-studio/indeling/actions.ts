@@ -1,6 +1,6 @@
 "use server";
 
-import { getActiefSeizoen } from "@/lib/teamindeling/seizoen";
+import { getActiefSeizoen } from "@oranje-wit/teamindeling-shared/seizoen";
 import {
   getWerkindeling,
   getWerkindelingId,

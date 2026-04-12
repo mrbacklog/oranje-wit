@@ -4,7 +4,7 @@ import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
-import { useSeizoen } from "@/components/teamindeling/providers/SeizoenProvider";
+import { useSeizoen } from "@oranje-wit/teamindeling-shared/seizoen-provider";
 
 const NAV_ITEMS = [
   { label: "Kaders", href: "/ti-studio/kaders", icon: "📐" },

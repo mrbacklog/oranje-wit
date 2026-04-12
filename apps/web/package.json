@@ -21,6 +21,7 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@oranje-wit/auth": "workspace:*",
     "@oranje-wit/database": "workspace:*",
+    "@oranje-wit/teamindeling-shared": "workspace:*",
     "@oranje-wit/types": "workspace:*",
     "@oranje-wit/ui": "workspace:*",
     "@react-spring/web": "^10.0.3",

@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 import { signOut, useSession } from "next-auth/react";
 import { DomainShell, resolveBottomNav, TI_STUDIO } from "@oranje-wit/ui";
-import { useSeizoen } from "@/components/teamindeling/providers/SeizoenProvider";
+import { useSeizoen } from "@oranje-wit/teamindeling-shared/seizoen-provider";
 
 function getUserLabel(user: Record<string, unknown>): string {
   const labels: string[] = [];

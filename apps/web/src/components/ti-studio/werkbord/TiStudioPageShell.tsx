@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Ribbon } from "./Ribbon";
-import { useSeizoen } from "@/components/teamindeling/providers/SeizoenProvider";
+import { useSeizoen } from "@oranje-wit/teamindeling-shared/seizoen-provider";
 import { getOpenMemoCount } from "@/app/(teamindeling-studio)/ti-studio/indeling/memo-count-actions";
 
 interface TiStudioPageShellProps {

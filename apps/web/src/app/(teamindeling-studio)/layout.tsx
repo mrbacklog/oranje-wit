@@ -1,9 +1,9 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import { auth } from "@oranje-wit/auth";
 import { redirect } from "next/navigation";
-import SeizoenProvider from "@/components/teamindeling/providers/SeizoenProvider";
+import SeizoenProvider from "@oranje-wit/teamindeling-shared/seizoen-provider";
 import { TiStudioPageShell } from "@/components/ti-studio/werkbord/TiStudioPageShell";
-import { getActiefSeizoen, isWerkseizoenCheck } from "@/lib/teamindeling/seizoen";
+import { getActiefSeizoen, isWerkseizoenCheck } from "@oranje-wit/teamindeling-shared/seizoen";
 import "./teamindeling.css";
 
 const geistSans = Geist({

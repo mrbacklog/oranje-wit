@@ -11,7 +11,7 @@ vi.mock("@/lib/teamindeling/db/prisma", () => ({
   prisma: mockPrisma,
 }));
 
-vi.mock("@/lib/teamindeling/seizoen", () => ({
+vi.mock("@oranje-wit/teamindeling-shared/seizoen", () => ({
   getActiefSeizoen: vi.fn().mockResolvedValue("2026-2027"),
 }));
 

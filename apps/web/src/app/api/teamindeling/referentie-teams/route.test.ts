@@ -5,7 +5,7 @@ import { createMockPrisma, callRoute } from "@oranje-wit/test-utils";
 const mockPrisma = createMockPrisma();
 vi.mock("@/lib/teamindeling/db/prisma", () => ({ prisma: mockPrisma }));
 vi.mock("@oranje-wit/database", () => ({ prisma: mockPrisma }));
-vi.mock("@/lib/teamindeling/seizoen", () => ({
+vi.mock("@oranje-wit/teamindeling-shared/seizoen", () => ({
   getActiefSeizoen: vi.fn().mockResolvedValue("2025-2026"),
 }));
 

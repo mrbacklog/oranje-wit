@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/teamindeling/db/prisma";
 import { ok } from "@/lib/teamindeling/api/response";
-import { getActiefSeizoen } from "@/lib/teamindeling/seizoen";
+import { getActiefSeizoen } from "@oranje-wit/teamindeling-shared/seizoen";
 import { guardTC } from "@oranje-wit/auth/checks";
 
 export async function GET() {

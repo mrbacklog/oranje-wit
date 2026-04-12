@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic";
 import { auth } from "@oranje-wit/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/teamindeling/db/prisma";
-import { getActiefSeizoen } from "@/lib/teamindeling/seizoen";
+import { getActiefSeizoen } from "@oranje-wit/teamindeling-shared/seizoen";
 
 export default async function OpvolgingPage() {
   const session = await auth();
