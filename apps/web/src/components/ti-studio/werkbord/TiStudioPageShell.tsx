@@ -18,17 +18,22 @@ export function TiStudioPageShell({ children }: TiStudioPageShellProps) {
   const { data: session } = useSession();
   const { seizoen, isWerkseizoen } = useSeizoen();
 
-  const email = session?.user?.email ?? "";
-  const gebruikerInitialen = email
-    .split("@")[0]
-    .split(".")
-    .map((p) => p.charAt(0).toUpperCase())
-    .join("")
-    .slice(0, 2);
-
+  const [gebruikerInitialen, setGebruikerInitialen] = useState("");
   const [openMemoCount, setOpenMemoCount] = useState(0);
   const [nieuweVersie, setNieuweVersie] = useState(false);
   const huidigeVersie = useRef<string | null>(null);
+
+  // Initialen client-side berekenen — voorkomt hydration mismatch (server heeft geen sessie)
+  useEffect(() => {
+    const email = session?.user?.email ?? "";
+    const initials = email
+      .split("@")[0]
+      .split(".")
+      .map((p) => p.charAt(0).toUpperCase())
+      .join("")
+      .slice(0, 2);
+    setGebruikerInitialen(initials);
+  }, [session]);
 
   useEffect(() => {
     getOpenMemoCount()

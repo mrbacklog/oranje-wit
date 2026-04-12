@@ -280,21 +280,23 @@ export function DaisyPanel({ versieId, werkindelingId, werkindelingNaam }: Daisy
                   )}
                 </div>
               ))}
-              {/* Loading indicator */}
+              {/* Loading indicator — drie animerende stipjes */}
               {isLoading && lastMessageIsUser && (
                 <div style={{ display: "flex", justifyContent: "flex-start" }}>
                   <div
                     style={{
-                      padding: "8px 12px",
+                      padding: "10px 14px",
                       borderRadius: 12,
                       borderBottomLeftRadius: 4,
                       background: "var(--bg-2)",
                       border: "1px solid var(--border-1)",
-                      fontSize: 12,
-                      color: "var(--text-3)",
                     }}
                   >
-                    …
+                    <div className="daisy-typing">
+                      <span />
+                      <span />
+                      <span />
+                    </div>
                   </div>
                 </div>
               )}
