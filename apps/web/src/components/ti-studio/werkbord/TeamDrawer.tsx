@@ -18,6 +18,7 @@ import {
   ontkoppelSelectie,
   updateSelectieNaam,
   verwijderTeam,
+  hernoemTeam,
 } from "@/app/(teamindeling-studio)/ti-studio/indeling/team-config-actions";
 
 interface TeamDrawerProps {
@@ -747,7 +748,29 @@ function TeamDetailPanel({
 }) {
   const [verwijderBezig, setVerwijderBezig] = useState(false);
   const [verwijderConfirm, setVerwijderConfirm] = useState(false);
+  const [naamEdit, setNaamEdit] = useState(false);
+  const [naamInput, setNaamInput] = useState(team.naam);
+  const [naamBezig, setNaamBezig] = useState(false);
   const teamValidatie = validatie.filter((v) => v.teamId === team.id);
+
+  async function slaTeamNaamOp() {
+    const schoon = naamInput.trim();
+    if (!schoon || schoon === team.naam) {
+      setNaamInput(team.naam);
+      setNaamEdit(false);
+      return;
+    }
+    setNaamBezig(true);
+    const result = await hernoemTeam(team.id, schoon);
+    setNaamBezig(false);
+    if (result.ok) {
+      onConfigUpdated(team.id, { naam: schoon });
+      setNaamEdit(false);
+    } else {
+      setNaamInput(team.naam);
+      setNaamEdit(false);
+    }
+  }
 
   async function handleVerwijder() {
     setVerwijderBezig(true);
@@ -802,9 +825,74 @@ function TeamDetailPanel({
           </svg>
           Teams
         </button>
-        <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text-1)", flex: 1 }}>
-          {team.naam}
-        </span>
+
+        {naamEdit ? (
+          <input
+            autoFocus
+            value={naamInput}
+            onChange={(e) => setNaamInput(e.target.value)}
+            onBlur={slaTeamNaamOp}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") slaTeamNaamOp();
+              if (e.key === "Escape") {
+                setNaamInput(team.naam);
+                setNaamEdit(false);
+              }
+            }}
+            disabled={naamBezig}
+            style={{
+              flex: 1,
+              fontSize: 13,
+              fontWeight: 700,
+              color: "var(--text-1)",
+              background: "var(--bg-2)",
+              border: "1px solid var(--accent)",
+              borderRadius: 5,
+              padding: "2px 6px",
+              fontFamily: "inherit",
+              outline: "none",
+              opacity: naamBezig ? 0.6 : 1,
+            }}
+          />
+        ) : (
+          <button
+            onClick={() => {
+              setNaamInput(team.naam);
+              setNaamEdit(true);
+            }}
+            title="Naam wijzigen"
+            style={{
+              flex: 1,
+              display: "flex",
+              alignItems: "center",
+              gap: 5,
+              background: "none",
+              border: "none",
+              padding: "2px 4px",
+              borderRadius: 5,
+              cursor: "text",
+              textAlign: "left",
+            }}
+          >
+            <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text-1)" }}>
+              {team.naam}
+            </span>
+            <svg
+              width="11"
+              height="11"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="var(--text-3)"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{ flexShrink: 0, opacity: 0.5 }}
+            >
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+            </svg>
+          </button>
+        )}
       </div>
       <ConfiguratieForm
         team={team}

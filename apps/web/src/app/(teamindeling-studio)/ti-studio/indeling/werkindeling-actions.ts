@@ -9,6 +9,7 @@ import { assertSpelerVrij } from "@/lib/teamindeling/db/speler-guard";
 import { maakWerkindelingSnapshot } from "@/lib/teamindeling/db/werkindeling-snapshot";
 import { requireTC } from "@oranje-wit/auth/checks";
 import type { ActionResult } from "@oranje-wit/types";
+import { HUIDIG_SEIZOEN } from "@oranje-wit/types";
 
 const NIET_VERWIJDERD = { verwijderdOp: null } as const;
 
@@ -110,19 +111,36 @@ export async function getAlleSpelers() {
     },
   });
 
-  // Haal tussenvoegsels op via Lid (Speler.id === Lid.relCode)
+  // Haal tussenvoegsels en USS-scores parallel op
   const relCodes = spelers.map((s) => s.id);
-  const leden = await prisma.lid.findMany({
-    where: { relCode: { in: relCodes } },
-    select: { relCode: true, tussenvoegsel: true },
-  });
+  const [leden, ussScores] = await Promise.all([
+    prisma.lid.findMany({
+      where: { relCode: { in: relCodes } },
+      select: { relCode: true, tussenvoegsel: true },
+    }),
+    prisma.spelerUSS.findMany({
+      where: { spelerId: { in: relCodes }, seizoen: HUIDIG_SEIZOEN },
+      select: { spelerId: true, ussOverall: true },
+    }),
+  ]);
+
   const tussenvoegelMap = new Map<string, string | null>(
-    leden.map((l) => [l.relCode, l.tussenvoegsel])
+    leden.map((l: { relCode: string; tussenvoegsel: string | null }) => [
+      l.relCode,
+      l.tussenvoegsel,
+    ])
+  );
+  const ussMap = new Map<string, number | null>(
+    ussScores.map((u: { spelerId: string; ussOverall: number | null }) => [
+      u.spelerId,
+      u.ussOverall ?? null,
+    ])
   );
 
   return spelers.map((s) => ({
     ...s,
     tussenvoegsel: tussenvoegelMap.get(s.id) ?? null,
+    ussScore: ussMap.get(s.id) ?? null,
   }));
 }
 

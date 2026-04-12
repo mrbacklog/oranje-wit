@@ -46,6 +46,7 @@ export interface WerkbordSpeler {
   gepind: boolean;
   isNieuw: boolean;
   openMemoCount: number;
+  ussScore: number | null;
   huidigTeam: string | null;
   ingedeeldTeamNaam: string | null;
   selectieGroepId: string | null; // null = in team of vrij

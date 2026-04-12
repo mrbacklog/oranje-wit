@@ -125,3 +125,17 @@ export async function updateSelectieNaam(
     };
   }
 }
+
+export async function hernoemTeam(teamId: string, naam: string): Promise<ActionResult<void>> {
+  await requireTC();
+  const schoon = naam.trim();
+  if (!schoon) return { ok: false, error: "Naam mag niet leeg zijn" };
+  try {
+    await prisma.team.update({ where: { id: teamId }, data: { naam: schoon } });
+    logger.info(`Team ${teamId} hernoemd naar "${schoon}"`);
+    return { ok: true, data: undefined };
+  } catch (error) {
+    logger.warn(`Fout bij hernoemen team ${teamId}:`, error);
+    return { ok: false, error: error instanceof Error ? error.message : String(error) };
+  }
+}

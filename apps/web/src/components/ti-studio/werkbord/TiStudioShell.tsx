@@ -15,6 +15,7 @@ import { useWerkbordState } from "./hooks/useWerkbordState";
 import type { TiStudioShellProps } from "./types";
 import type { DrawerData } from "@/app/(teamindeling-studio)/ti-studio/indeling/drawer-actions";
 import { getVersiesVoorDrawer } from "@/app/(teamindeling-studio)/ti-studio/indeling/drawer-actions";
+import { HoverKaartProvider } from "./HoverSpelersKaart";
 
 type PanelLinks = "pool" | "staf" | null;
 type PanelRechts = "teams" | "versies" | null;
@@ -99,141 +100,143 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
   const versieId = initieleState.versieId;
 
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateRows: "var(--toolbar) 1fr",
-        flex: 1,
-        minHeight: 0,
-        overflow: "hidden",
-      }}
-    >
-      <Toolbar
-        naam={initieleState.naam}
-        versieNaam={initieleState.versieNaam}
-        versieNummer={initieleState.versieNummer}
-        totalSpelers={inTeDelenTotaal}
-        arCount={arCount}
-        ingeplandSpelers={ingeplandSpelers}
-        panelLinks={panelLinks}
-        panelRechts={panelRechts}
-        onTogglePanelLinks={togglePanelLinks}
-        onTogglePanelRechts={togglePanelRechts}
-        onVersiesOpen={() => togglePanelRechts("versies")}
-      />
-      <div style={{ display: "flex", overflow: "hidden", position: "relative" }}>
-        {opslaanStatus === "bezig" && (
-          <div
-            style={{
-              position: "absolute",
-              bottom: 12,
-              right: 12,
-              zIndex: 100,
-              background: "var(--bg-2)",
-              border: "1px solid var(--border-1)",
-              borderRadius: 6,
-              padding: "4px 10px",
-              fontSize: 11,
-              color: "var(--text-2)",
-            }}
-          >
-            Opslaan...
-          </div>
-        )}
-        {opslaanStatus === "fout" && (
-          <div
-            style={{
-              position: "absolute",
-              bottom: 12,
-              right: 12,
-              zIndex: 100,
-              background: "rgba(239,68,68,.15)",
-              border: "1px solid rgba(239,68,68,.4)",
-              borderRadius: 6,
-              padding: "4px 10px",
-              fontSize: 11,
-              color: "#ef4444",
-            }}
-          >
-            Opslaan mislukt
-          </div>
-        )}
-        <SpelersPoolDrawer
-          open={panelLinks === "pool"}
-          spelers={alleSpelers}
-          reserveringen={alleReserveringen}
-          onClose={() => setPanelLinks(null)}
+    <HoverKaartProvider>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateRows: "var(--toolbar) 1fr",
+          flex: 1,
+          minHeight: 0,
+          overflow: "hidden",
+        }}
+      >
+        <Toolbar
+          naam={initieleState.naam}
+          versieNaam={initieleState.versieNaam}
+          versieNummer={initieleState.versieNummer}
+          totalSpelers={inTeDelenTotaal}
+          arCount={arCount}
+          ingeplandSpelers={ingeplandSpelers}
+          panelLinks={panelLinks}
+          panelRechts={panelRechts}
+          onTogglePanelLinks={togglePanelLinks}
+          onTogglePanelRechts={togglePanelRechts}
+          onVersiesOpen={() => togglePanelRechts("versies")}
         />
-        <StafPoolDrawer
-          open={panelLinks === "staf"}
-          staf={initieleState.alleStaf}
-          onClose={() => setPanelLinks(null)}
+        <div style={{ display: "flex", overflow: "hidden", position: "relative" }}>
+          {opslaanStatus === "bezig" && (
+            <div
+              style={{
+                position: "absolute",
+                bottom: 12,
+                right: 12,
+                zIndex: 100,
+                background: "var(--bg-2)",
+                border: "1px solid var(--border-1)",
+                borderRadius: 6,
+                padding: "4px 10px",
+                fontSize: 11,
+                color: "var(--text-2)",
+              }}
+            >
+              Opslaan...
+            </div>
+          )}
+          {opslaanStatus === "fout" && (
+            <div
+              style={{
+                position: "absolute",
+                bottom: 12,
+                right: 12,
+                zIndex: 100,
+                background: "rgba(239,68,68,.15)",
+                border: "1px solid rgba(239,68,68,.4)",
+                borderRadius: 6,
+                padding: "4px 10px",
+                fontSize: 11,
+                color: "#ef4444",
+              }}
+            >
+              Opslaan mislukt
+            </div>
+          )}
+          <SpelersPoolDrawer
+            open={panelLinks === "pool"}
+            spelers={alleSpelers}
+            reserveringen={alleReserveringen}
+            onClose={() => setPanelLinks(null)}
+          />
+          <StafPoolDrawer
+            open={panelLinks === "staf"}
+            staf={initieleState.alleStaf}
+            onClose={() => setPanelLinks(null)}
+          />
+          <WerkbordCanvas
+            teams={teams}
+            zoomLevel={zoomLevel}
+            zoom={zoom}
+            zoomPercent={zoomPercent}
+            showScores={showScores}
+            onToggleScores={() => setShowScores((v) => !v)}
+            onZoomIn={zoomIn}
+            onZoomOut={zoomOut}
+            onZoomReset={resetZoom}
+            onZoomChange={setZoom}
+            onOpenTeamDrawer={openTeamDrawer}
+            onDropSpelerOpTeam={verplaatsSpeler}
+            onReturneerNaarPool={(spelerData, vanTeamId) =>
+              verwijderSpelerUitTeam(spelerData.id, vanTeamId)
+            }
+            onTeamPositionChange={verplaatsTeamKaart}
+            onTeamDragEnd={slaTeamPositieOp}
+            onSpelerClick={openProfiel}
+            onDropSpelerOpSelectie={onDropSpelerOpSelectieFn}
+            onTitelKlik={openTeamDialog}
+            versieId={versieId}
+            werkindelingId={initieleState.werkindelingId}
+            werkindelingNaam={initieleState.naam}
+          />
+          <TeamDrawer
+            open={panelRechts === "teams"}
+            geselecteerdTeamId={geselecteerdTeamId}
+            teams={teams}
+            validatie={validatie}
+            versieId={versieId}
+            onClose={() => setPanelRechts(null)}
+            onTeamSelect={setGeselecteerdTeamId}
+            onNieuwTeam={() => {}}
+            onConfigUpdated={updateTeamLokaal}
+            onValidatieUpdated={(update) => updateValidatieLokaal([update])}
+            onTeamVerwijderd={verwijderTeamLokaal}
+            onSelectieGekoppeld={koppelSelectieLokaal}
+            onSelectieOntkoppeld={ontkoppelSelectieLokaal}
+            onSelectieNaamUpdated={updateSelectieNaamLokaal}
+            onToggleBundeling={toggleBundeling}
+          />
+          <VersiesDrawer
+            open={panelRechts === "versies"}
+            data={drawerData}
+            werkindelingId={initieleState.werkindelingId}
+            gebruikerEmail={gebruikerEmail}
+            onClose={() => setPanelRechts(null)}
+            onRefresh={() => setDrawerRefreshTeller((n) => n + 1)}
+          />
+        </div>
+        <SpelerProfielDialog
+          spelerId={profielSpelerId}
+          open={profielSpelerId !== null}
+          onClose={() => setProfielSpelerId(null)}
+          teamId={profielTeamId ?? undefined}
         />
-        <WerkbordCanvas
-          teams={teams}
-          zoomLevel={zoomLevel}
-          zoom={zoom}
-          zoomPercent={zoomPercent}
-          showScores={showScores}
-          onToggleScores={() => setShowScores((v) => !v)}
-          onZoomIn={zoomIn}
-          onZoomOut={zoomOut}
-          onZoomReset={resetZoom}
-          onZoomChange={setZoom}
-          onOpenTeamDrawer={openTeamDrawer}
-          onDropSpelerOpTeam={verplaatsSpeler}
-          onReturneerNaarPool={(spelerData, vanTeamId) =>
-            verwijderSpelerUitTeam(spelerData.id, vanTeamId)
-          }
-          onTeamPositionChange={verplaatsTeamKaart}
-          onTeamDragEnd={slaTeamPositieOp}
-          onSpelerClick={openProfiel}
-          onDropSpelerOpSelectie={onDropSpelerOpSelectieFn}
-          onTitelKlik={openTeamDialog}
-          versieId={versieId}
-          werkindelingId={initieleState.werkindelingId}
-          werkindelingNaam={initieleState.naam}
-        />
-        <TeamDrawer
-          open={panelRechts === "teams"}
-          geselecteerdTeamId={geselecteerdTeamId}
+        <TeamDialog
+          teamId={dialogTeamId}
           teams={teams}
           validatie={validatie}
-          versieId={versieId}
-          onClose={() => setPanelRechts(null)}
-          onTeamSelect={setGeselecteerdTeamId}
-          onNieuwTeam={() => {}}
-          onConfigUpdated={updateTeamLokaal}
-          onValidatieUpdated={(update) => updateValidatieLokaal([update])}
-          onTeamVerwijderd={verwijderTeamLokaal}
-          onSelectieGekoppeld={koppelSelectieLokaal}
-          onSelectieOntkoppeld={ontkoppelSelectieLokaal}
-          onSelectieNaamUpdated={updateSelectieNaamLokaal}
-          onToggleBundeling={toggleBundeling}
-        />
-        <VersiesDrawer
-          open={panelRechts === "versies"}
-          data={drawerData}
+          onClose={() => setDialogTeamId(null)}
+          kadersId={initieleState.kadersId}
           werkindelingId={initieleState.werkindelingId}
-          gebruikerEmail={gebruikerEmail}
-          onClose={() => setPanelRechts(null)}
-          onRefresh={() => setDrawerRefreshTeller((n) => n + 1)}
         />
       </div>
-      <SpelerProfielDialog
-        spelerId={profielSpelerId}
-        open={profielSpelerId !== null}
-        onClose={() => setProfielSpelerId(null)}
-        teamId={profielTeamId ?? undefined}
-      />
-      <TeamDialog
-        teamId={dialogTeamId}
-        teams={teams}
-        validatie={validatie}
-        onClose={() => setDialogTeamId(null)}
-        kadersId={initieleState.kadersId}
-        werkindelingId={initieleState.werkindelingId}
-      />
-    </div>
+    </HoverKaartProvider>
   );
 }

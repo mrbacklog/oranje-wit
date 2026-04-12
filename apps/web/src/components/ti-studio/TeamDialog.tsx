@@ -293,7 +293,7 @@ export function TeamDialog({
                             spelerInTeam={sit}
                             teamId={team.id}
                             selectieGroepId={team.selectieGroepId}
-                            zoomLevel="normaal"
+                            zoomLevel="detail"
                           />
                         ))}
                       </div>
@@ -309,7 +309,7 @@ export function TeamDialog({
                             spelerInTeam={sit}
                             teamId={team.id}
                             selectieGroepId={team.selectieGroepId}
-                            zoomLevel="normaal"
+                            zoomLevel="detail"
                           />
                         ))}
                       </div>
@@ -339,7 +339,7 @@ export function TeamDialog({
                         key={sp.id}
                         spelerInTeam={sp}
                         teamId={team.id}
-                        zoomLevel="normaal"
+                        zoomLevel="detail"
                       />
                     ))
                   )}
@@ -359,7 +359,7 @@ export function TeamDialog({
                         key={sp.id}
                         spelerInTeam={sp}
                         teamId={team.id}
-                        zoomLevel="normaal"
+                        zoomLevel="detail"
                       />
                     ))
                   )}

@@ -76,11 +76,12 @@
  * ╚══════════════════════════════════════════════════════════════════════════════╝
  */
 
-import { useRef, useState } from "react";
+import { useRef, useState, useCallback } from "react";
 import { PEILJAAR } from "@oranje-wit/types";
 import "./tokens.css";
 import { SpelerKaart } from "./SpelerKaart";
 import type { WerkbordSpelerInTeam } from "./types";
+import { useHoverKaart } from "./HoverSpelersKaart";
 
 // ── Constanten ──────────────────────────────────────────────────────────────
 
@@ -106,6 +107,7 @@ interface SpelerRijProps {
   selectieGroepId?: string | null;
   variant: "compact" | "normaal" | "pool";
   openMemoCount?: number;
+  showScores?: boolean;
   onSpelerClick?: (spelerId: string, teamId: string | null) => void;
 }
 
@@ -288,6 +290,7 @@ export function SpelerRij({
   selectieGroepId,
   variant,
   openMemoCount = 0,
+  showScores = false,
   onSpelerClick,
 }: SpelerRijProps) {
   if (variant === "compact") {
@@ -307,6 +310,7 @@ export function SpelerRij({
         teamId={teamId}
         selectieGroepId={selectieGroepId}
         openMemoCount={openMemoCount}
+        showScores={showScores}
         onSpelerClick={onSpelerClick}
       />
     );
@@ -317,6 +321,7 @@ export function SpelerRij({
       teamId={teamId}
       selectieGroepId={selectieGroepId}
       openMemoCount={openMemoCount}
+      showScores={showScores}
       onSpelerClick={onSpelerClick}
     />
   );
@@ -486,18 +491,39 @@ function NormaalRij({
   teamId,
   selectieGroepId,
   openMemoCount = 0,
+  showScores = false,
   onSpelerClick,
 }: {
   spelerInTeam: WerkbordSpelerInTeam;
   teamId: string;
   selectieGroepId?: string | null;
   openMemoCount?: number;
+  showScores?: boolean;
   onSpelerClick?: (spelerId: string, teamId: string | null) => void;
 }) {
   const { speler } = spelerInTeam;
   const ghostRef = useRef<HTMLDivElement>(null);
   const { isDragging, isLanding, setIsDragging, setIsLanding } = useDragState();
   const [isHovered, setIsHovered] = useState(false);
+  const { registerHover, cancelHover, updatePos } = useHoverKaart();
+
+  const handleMouseEnter = useCallback(
+    (e: React.MouseEvent) => {
+      setIsHovered(true);
+      registerHover(speler, e.clientX, e.clientY);
+    },
+    [speler, registerHover]
+  );
+  const handleMouseLeave = useCallback(() => {
+    setIsHovered(false);
+    cancelHover();
+  }, [cancelHover]);
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent) => {
+      updatePos(e.clientX, e.clientY);
+    },
+    [updatePos]
+  );
   const isAR = speler.status === "ALGEMEEN_RESERVE";
   const isStopt =
     speler.status === "GAAT_STOPPEN" || speler.status === "GESTOPT" || speler.status === "AFGEMELD";
@@ -542,8 +568,9 @@ function NormaalRij({
         draggable={!isAR}
         {...dragHandlers}
         onClick={onSpelerClick ? () => onSpelerClick(speler.id, teamId) : undefined}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onMouseMove={handleMouseMove}
         style={{
           height: SPELER_RIJ_HOOGTE,
           display: "flex",
@@ -645,6 +672,30 @@ function NormaalRij({
         <span style={{ fontSize: 9.5, color: "var(--text-3)", flexShrink: 0 }}>
           {leeftijd.toFixed(1)}
         </span>
+
+        {/* USS score — octagon badge, alleen als showScores=true en score beschikbaar */}
+        {showScores && speler.ussScore !== null && (
+          <span
+            title={`USS score: ${speler.ussScore}`}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: 22,
+              height: 22,
+              flexShrink: 0,
+              clipPath:
+                "polygon(29% 0%, 71% 0%, 100% 29%, 100% 71%, 71% 100%, 29% 100%, 0% 71%, 0% 29%)",
+              background: "rgba(255,107,0,.18)",
+              fontSize: 8,
+              fontWeight: 700,
+              color: "var(--accent)",
+              lineHeight: 1,
+            }}
+          >
+            {speler.ussScore.toFixed(1)}
+          </span>
+        )}
       </div>
 
       <style>{`
@@ -674,18 +725,39 @@ function PoolRij({
   teamId,
   selectieGroepId,
   openMemoCount = 0,
+  showScores = false,
   onSpelerClick,
 }: {
   spelerInTeam: WerkbordSpelerInTeam;
   teamId: string;
   selectieGroepId?: string | null;
   openMemoCount?: number;
+  showScores?: boolean;
   onSpelerClick?: (spelerId: string, teamId: string | null) => void;
 }) {
   const { speler } = spelerInTeam;
   const ghostRef = useRef<HTMLDivElement>(null);
   const { isDragging, isLanding, setIsDragging, setIsLanding } = useDragState();
   const [isHovered, setIsHovered] = useState(false);
+  const { registerHover, cancelHover, updatePos } = useHoverKaart();
+
+  const handleMouseEnter = useCallback(
+    (e: React.MouseEvent) => {
+      setIsHovered(true);
+      registerHover(speler, e.clientX, e.clientY);
+    },
+    [speler, registerHover]
+  );
+  const handleMouseLeave = useCallback(() => {
+    setIsHovered(false);
+    cancelHover();
+  }, [cancelHover]);
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent) => {
+      updatePos(e.clientX, e.clientY);
+    },
+    [updatePos]
+  );
   const isAR = speler.status === "ALGEMEEN_RESERVE";
   const isStopt =
     speler.status === "GAAT_STOPPEN" || speler.status === "GESTOPT" || speler.status === "AFGEMELD";
@@ -733,8 +805,9 @@ function PoolRij({
         draggable={!isAR}
         {...dragHandlers}
         onClick={onSpelerClick ? () => onSpelerClick(speler.id, vanTeamId) : undefined}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onMouseMove={handleMouseMove}
         style={{
           height: SPELER_RIJ_HOOGTE,
           display: "flex",
@@ -908,6 +981,30 @@ function PoolRij({
             <span style={{ fontSize: 8.5, color: "#ddd", flexShrink: 0 }}>
               {leeftijd.toFixed(1)}
             </span>
+
+            {/* USS score — octagon badge, helemaal rechts als showScores=true */}
+            {showScores && speler.ussScore !== null && (
+              <span
+                title={`USS score: ${speler.ussScore}`}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: 20,
+                  height: 20,
+                  flexShrink: 0,
+                  clipPath:
+                    "polygon(29% 0%, 71% 0%, 100% 29%, 100% 71%, 71% 100%, 29% 100%, 0% 71%, 0% 29%)",
+                  background: "rgba(255,107,0,.18)",
+                  fontSize: 7,
+                  fontWeight: 700,
+                  color: "var(--accent)",
+                  lineHeight: 1,
+                }}
+              >
+                {speler.ussScore.toFixed(1)}
+              </span>
+            )}
           </div>
         </div>
       </div>
