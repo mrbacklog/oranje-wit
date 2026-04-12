@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { HUIDIG_SEIZOEN } from "@oranje-wit/types";
+import { HUIDIG_SEIZOEN, logger } from "@oranje-wit/types";
 import { prisma as _prisma } from "@oranje-wit/database";
 
 // Cast naar any om TS2321 recursie-diepte overschrijding te vermijden (Prisma 7.x op Linux/CI)
@@ -23,53 +23,68 @@ export interface SeizoenInfo {
  * Haal het actieve seizoen op uit de cookie, of val terug op het werkseizoen.
  */
 export async function getActiefSeizoen(): Promise<string> {
-  const cookieStore = await cookies();
-  const cookie = cookieStore.get(COOKIE_NAME)?.value;
+  try {
+    const cookieStore = await cookies();
+    const cookie = cookieStore.get(COOKIE_NAME)?.value;
 
-  if (cookie && SEIZOEN_REGEX.test(cookie)) {
-    const bestaat = await prisma.kaders.findUnique({
-      where: { seizoen: cookie },
+    if (cookie && SEIZOEN_REGEX.test(cookie)) {
+      const bestaat = await prisma.kaders.findUnique({
+        where: { seizoen: cookie },
+        select: { seizoen: true },
+      });
+      if (bestaat) return cookie;
+    }
+
+    // Fallback: het werkseizoen
+    const werkseizoen = await prisma.kaders.findFirst({
+      where: { isWerkseizoen: true },
       select: { seizoen: true },
     });
-    if (bestaat) return cookie;
+    if (werkseizoen) return werkseizoen.seizoen;
+
+    // Laatste fallback: nieuwste blauwdruk
+    const laatste = await prisma.kaders.findFirst({
+      orderBy: { seizoen: "desc" },
+      select: { seizoen: true },
+    });
+
+    return laatste?.seizoen ?? HUIDIG_SEIZOEN;
+  } catch (error) {
+    logger.warn("getActiefSeizoen: DB-fout, fallback op HUIDIG_SEIZOEN:", error);
+    return HUIDIG_SEIZOEN;
   }
-
-  // Fallback: het werkseizoen
-  const werkseizoen = await prisma.kaders.findFirst({
-    where: { isWerkseizoen: true },
-    select: { seizoen: true },
-  });
-  if (werkseizoen) return werkseizoen.seizoen;
-
-  // Laatste fallback: nieuwste blauwdruk
-  const laatste = await prisma.kaders.findFirst({
-    orderBy: { seizoen: "desc" },
-    select: { seizoen: true },
-  });
-
-  return laatste?.seizoen ?? HUIDIG_SEIZOEN;
 }
 
 /**
  * Alle beschikbare seizoenen met werkseizoen-vlag (nieuwste eerst).
  */
 export async function getAlleSeizoenen(): Promise<SeizoenInfo[]> {
-  const blauwdrukken = await prisma.kaders.findMany({
-    select: { seizoen: true, isWerkseizoen: true },
-    orderBy: { seizoen: "desc" },
-  });
-  return blauwdrukken.map((b: any) => ({ seizoen: b.seizoen, isWerkseizoen: b.isWerkseizoen }));
+  try {
+    const blauwdrukken = await prisma.kaders.findMany({
+      select: { seizoen: true, isWerkseizoen: true },
+      orderBy: { seizoen: "desc" },
+    });
+    return blauwdrukken.map((b: any) => ({ seizoen: b.seizoen, isWerkseizoen: b.isWerkseizoen }));
+  } catch (error) {
+    logger.warn("getAlleSeizoenen: DB-fout, fallback op lege array:", error);
+    return [];
+  }
 }
 
 /**
  * Is dit het werkseizoen (het enige bewerkbare seizoen)?
  */
 export async function isWerkseizoenCheck(seizoen: string): Promise<boolean> {
-  const blauwdruk = await prisma.kaders.findUnique({
-    where: { seizoen },
-    select: { isWerkseizoen: true },
-  });
-  return blauwdruk?.isWerkseizoen === true;
+  try {
+    const blauwdruk = await prisma.kaders.findUnique({
+      where: { seizoen },
+      select: { isWerkseizoen: true },
+    });
+    return blauwdruk?.isWerkseizoen === true;
+  } catch (error) {
+    logger.warn("isWerkseizoenCheck: DB-fout, fallback op false:", error);
+    return false;
+  }
 }
 
 /**
@@ -78,6 +93,7 @@ export async function isWerkseizoenCheck(seizoen: string): Promise<boolean> {
 export async function assertBewerkbaar(seizoen: string): Promise<void> {
   const bewerkbaar = await isWerkseizoenCheck(seizoen);
   if (!bewerkbaar) {
+    logger.warn("assertBewerkbaar: seizoen is alleen-lezen:", seizoen);
     throw new Error(`Seizoen ${seizoen} is alleen-lezen`);
   }
 }
