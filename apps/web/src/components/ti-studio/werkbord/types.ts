@@ -33,6 +33,7 @@ export interface TeamConfigUpdate {
 export interface WerkbordSpeler {
   id: string;
   roepnaam: string;
+  tussenvoegsel: string | null;
   achternaam: string;
   geboortejaar: number;
   geboortedatum: string | null;

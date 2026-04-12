@@ -133,6 +133,7 @@ export default async function IndelingPage() {
   const alleSpelers: WerkbordSpeler[] = prismaSpelers.map((sp) => ({
     id: sp.id,
     roepnaam: sp.roepnaam,
+    tussenvoegsel: sp.tussenvoegsel ?? null,
     achternaam: sp.achternaam,
     geboortejaar: sp.geboortejaar ?? huidigeJaar - 20,
     geboortedatum: sp.geboortedatum ? sp.geboortedatum.toISOString().split("T")[0] : null,
@@ -163,6 +164,7 @@ export default async function IndelingPage() {
         speler: alleSpelers.find((s) => s.id === ts.spelerId) ?? {
           id: ts.spelerId,
           roepnaam: ts.speler?.roepnaam ?? "?",
+          tussenvoegsel: null,
           achternaam: ts.speler?.achternaam ?? "",
           geboortejaar: ts.speler?.geboortejaar ?? huidigeJaar - 15,
           geboortedatum: ts.speler?.geboortedatum
@@ -192,6 +194,7 @@ export default async function IndelingPage() {
         speler: alleSpelers.find((s) => s.id === ts.spelerId) ?? {
           id: ts.spelerId,
           roepnaam: ts.speler?.roepnaam ?? "?",
+          tussenvoegsel: null,
           achternaam: ts.speler?.achternaam ?? "",
           geboortejaar: ts.speler?.geboortejaar ?? huidigeJaar - 15,
           geboortedatum: ts.speler?.geboortedatum
@@ -296,6 +299,7 @@ export default async function IndelingPage() {
         const spelerObj = alleSpelers.find((s) => s.id === sp.spelerId) ?? {
           id: sp.spelerId,
           roepnaam: sp.speler?.roepnaam ?? "?",
+          tussenvoegsel: null,
           achternaam: sp.speler?.achternaam ?? "",
           geboortejaar: sp.speler?.geboortejaar ?? huidigeJaar - 15,
           geboortedatum: sp.speler?.geboortedatum

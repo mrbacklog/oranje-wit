@@ -2,15 +2,24 @@
 "use client";
 import { useState } from "react";
 import "./tokens.css";
-import type { WerkbordSpeler, SpelerFilter, WerkbordReservering } from "./types";
-import { SpelerKaart } from "./SpelerKaart";
-import { PEILJAAR } from "@oranje-wit/types";
+import type {
+  WerkbordSpeler,
+  SpelerFilter,
+  WerkbordReservering,
+  WerkbordSpelerInTeam,
+} from "./types";
+import { SpelerRij } from "./SpelerRij";
 
 interface SpelersPoolDrawerProps {
   open: boolean;
   spelers: WerkbordSpeler[];
   reserveringen: WerkbordReservering[];
   onClose: () => void;
+}
+
+/** Wikkel een losse WerkbordSpeler in een WerkbordSpelerInTeam voor SpelerRij */
+function alsSpelerInTeam(sp: WerkbordSpeler): WerkbordSpelerInTeam {
+  return { id: sp.id, spelerId: sp.id, speler: sp, notitie: null };
 }
 
 export function SpelersPoolDrawer({
@@ -242,11 +251,12 @@ export function SpelersPoolDrawer({
               <span style={{ color: "var(--text-2)", fontWeight: 700 }}>{dames.length}</span>
             </div>
             {dames.map((sp) => (
-              <SpelerKaart
+              <SpelerRij
                 key={sp.id}
-                speler={sp}
-                vanTeamId={sp.teamId}
-                seizoenEindjaar={PEILJAAR}
+                spelerInTeam={alsSpelerInTeam(sp)}
+                teamId={sp.teamId ?? ""}
+                variant="pool"
+                openMemoCount={sp.openMemoCount}
               />
             ))}
           </>
@@ -270,11 +280,12 @@ export function SpelersPoolDrawer({
               <span style={{ color: "var(--text-2)", fontWeight: 700 }}>{heren.length}</span>
             </div>
             {heren.map((sp) => (
-              <SpelerKaart
+              <SpelerRij
                 key={sp.id}
-                speler={sp}
-                vanTeamId={sp.teamId}
-                seizoenEindjaar={PEILJAAR}
+                spelerInTeam={alsSpelerInTeam(sp)}
+                teamId={sp.teamId ?? ""}
+                variant="pool"
+                openMemoCount={sp.openMemoCount}
               />
             ))}
           </>
@@ -316,7 +327,13 @@ export function SpelersPoolDrawer({
               <span style={{ color: "var(--text-2)", fontWeight: 700 }}>{arSpelers.length}</span>
             </div>
             {arSpelers.map((sp) => (
-              <SpelerKaart key={sp.id} speler={sp} vanTeamId={null} seizoenEindjaar={PEILJAAR} />
+              <SpelerRij
+                key={sp.id}
+                spelerInTeam={alsSpelerInTeam(sp)}
+                teamId=""
+                variant="pool"
+                openMemoCount={sp.openMemoCount}
+              />
             ))}
           </>
         )}

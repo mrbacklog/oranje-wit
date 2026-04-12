@@ -95,7 +95,7 @@ export async function getWerkindelingVoorEditor(werkindelingId: string) {
 }
 
 export async function getAlleSpelers() {
-  return prisma.speler.findMany({
+  const spelers = await prisma.speler.findMany({
     orderBy: [{ achternaam: "asc" }, { roepnaam: "asc" }],
     select: {
       id: true,
@@ -109,6 +109,21 @@ export async function getAlleSpelers() {
       spelerspad: true,
     },
   });
+
+  // Haal tussenvoegsels op via Lid (Speler.id === Lid.relCode)
+  const relCodes = spelers.map((s) => s.id);
+  const leden = await prisma.lid.findMany({
+    where: { relCode: { in: relCodes } },
+    select: { relCode: true, tussenvoegsel: true },
+  });
+  const tussenvoegelMap = new Map<string, string | null>(
+    leden.map((l) => [l.relCode, l.tussenvoegsel])
+  );
+
+  return spelers.map((s) => ({
+    ...s,
+    tussenvoegsel: tussenvoegelMap.get(s.id) ?? null,
+  }));
 }
 
 export async function getPosities(versieId: string) {
