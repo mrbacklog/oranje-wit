@@ -11,7 +11,7 @@ import {
   berekenValidatieStatus,
   korfbalLeeftijd,
 } from "@/lib/teamindeling/validatie-engine";
-import { TiStudioShell } from "@/components/ti-studio/werkbord/TiStudioShell";
+import { TiStudioShell } from "@/components/werkbord/TiStudioShell";
 import type {
   WerkbordState,
   WerkbordSpeler,
@@ -21,7 +21,7 @@ import type {
   WerkbordStaf,
   WerkbordStafTeamrol,
   WerkbordReservering,
-} from "@/components/ti-studio/werkbord/types";
+} from "@/components/werkbord/types";
 
 // Prisma Kleur enum → KnkvCategorie token
 const KLEUR_MAP: Record<string, string> = {

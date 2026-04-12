@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { prisma } from "@/lib/teamindeling/db/prisma";
 import { getTeamtypeKaders, getKaderMemos } from "./actions";
-import { KaderView } from "@/components/ti-studio/kader/KaderView";
+import { KaderView } from "@/components/kader/KaderView";
 import { HUIDIG_SEIZOEN } from "@oranje-wit/types";
 
 // ──────────────────────────────────────────────────────────

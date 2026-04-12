@@ -4,6 +4,7 @@ import { auth } from "@oranje-wit/auth";
 import { redirect } from "next/navigation";
 import SeizoenProvider from "@oranje-wit/teamindeling-shared/seizoen-provider";
 import { getActiefSeizoen, isWerkseizoenCheck } from "@oranje-wit/teamindeling-shared/seizoen";
+import { TiStudioPageShell } from "@/components/werkbord/TiStudioPageShell";
 import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
@@ -31,7 +32,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html lang="nl">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <SeizoenProvider seizoen={seizoen} isWerkseizoen={isWerkseizoen}>
-          {children}
+          <TiStudioPageShell>{children}</TiStudioPageShell>
         </SeizoenProvider>
       </body>
     </html>

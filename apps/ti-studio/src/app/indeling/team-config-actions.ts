@@ -4,7 +4,7 @@
 import { requireTC } from "@oranje-wit/auth/checks";
 import { prisma } from "@/lib/teamindeling/db/prisma";
 import type { ActionResult } from "@oranje-wit/types";
-import type { TeamConfigUpdate, ValidatieUpdate } from "@/components/ti-studio/werkbord/types";
+import type { TeamConfigUpdate, ValidatieUpdate } from "@/components/werkbord/types";
 import { logger } from "@oranje-wit/types";
 import { haalValidatieUpdate } from "@/lib/teamindeling/validatie-update";
 

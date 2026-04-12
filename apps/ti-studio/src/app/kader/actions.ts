@@ -5,7 +5,7 @@ import { requireTC } from "@/lib/teamindeling/auth-check";
 import { logger, type ActionResult } from "@oranje-wit/types";
 import type { Prisma } from "@oranje-wit/database";
 import type { TcKader } from "./kader-defaults";
-import type { WerkbordWerkitem } from "@/components/ti-studio/werkbord/types";
+import type { WerkbordWerkitem } from "@/components/werkbord/types";
 
 // ---------------------------------------------------------------------------
 // getTeamtypeKaders

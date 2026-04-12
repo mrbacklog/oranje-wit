@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react";
 import { updateWerkitemStatus, updateWerkitemVolgorde } from "@/app/indeling/werkitem-actions";
 import { filterWerkitems, type FilterType } from "./kanban-filter";
-import { MemoDrawer, type DrawerWerkitem } from "@/components/ti-studio/MemoDrawer";
+import { MemoDrawer, type DrawerWerkitem } from "@/components/MemoDrawer";
 import { useSession } from "next-auth/react";
 
 // ──────────────────────────────────────────────────────────

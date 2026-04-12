@@ -4,7 +4,7 @@ import { useState } from "react";
 import SpelersOverzichtStudio from "./SpelersOverzichtStudio";
 import { ReserveringenOverzicht } from "./ReserveringenOverzicht";
 import { NieuweSpelerDialog } from "./NieuweSpelerDialog";
-import { SpelerProfielDialog, DaisyWidget } from "@/components/ti-studio";
+import { SpelerProfielDialog, DaisyWidget } from "@/components";
 import type { StudioSpeler } from "../actions";
 import type { StudioReservering } from "../reserveringen-actions";
 
