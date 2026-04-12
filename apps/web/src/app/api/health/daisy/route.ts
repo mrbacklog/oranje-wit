@@ -30,7 +30,8 @@ async function checkSseVerbinding(): Promise<{
   const connStr = process.env.DATABASE_DIRECT_URL ?? process.env.DATABASE_URL;
   const client = new Client({
     connectionString: connStr,
-    ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : undefined,
+    // Railway interne PostgreSQL ondersteunt geen SSL — ssl: false voorkomt handshake.
+    ssl: false,
   });
   try {
     await Promise.race([

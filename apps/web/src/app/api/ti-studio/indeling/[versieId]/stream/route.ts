@@ -21,7 +21,9 @@ export async function GET(request: Request, { params }: { params: Promise<{ vers
 
   const pgClient = new Client({
     connectionString: connStr,
-    ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : undefined,
+    // Railway interne PostgreSQL (postgres.railway.internal) ondersteunt geen SSL.
+    // ssl: false voorkomt dat pg een SSL-handshake probeert.
+    ssl: false,
   });
 
   try {
