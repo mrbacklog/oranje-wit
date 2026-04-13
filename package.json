@@ -28,6 +28,7 @@
     "test:ui": "pnpm --filter @oranje-wit/ui test",
     "test:e2e": "playwright test",
     "test:e2e:design-system": "playwright test --project=design-system",
+    "test:e2e:ti-studio-production": "playwright test --project=ti-studio-production-setup --project=ti-studio-production",
     "test:e2e:ui": "playwright test --ui",
     "seed": "npx tsx -r dotenv/config e2e/fixtures/seed.ts",
     "seed:clean": "npx tsx -r dotenv/config e2e/fixtures/cleanup.ts",

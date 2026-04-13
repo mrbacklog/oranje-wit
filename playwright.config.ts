@@ -64,6 +64,20 @@ export default defineConfig({
       },
       dependencies: ["setup"],
     },
+    {
+      name: "ti-studio-production-setup",
+      testMatch: /.*ti-studio-production-auth\.setup\.ts/,
+    },
+    {
+      name: "ti-studio-production",
+      testMatch: /.*ti-studio-production\.spec\.ts/,
+      use: {
+        ...devices["Desktop Chrome"],
+        storageState: "./e2e/.auth/ti-studio-production.json",
+        baseURL: "https://teamindeling.ckvoranjewit.app",
+      },
+      dependencies: ["ti-studio-production-setup"],
+    },
   ],
   webServer: [
     {
