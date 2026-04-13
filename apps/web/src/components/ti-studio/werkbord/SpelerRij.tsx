@@ -88,13 +88,15 @@ import { useHoverKaart } from "./HoverSpelersKaart";
 export const SPELER_RIJ_HOOGTE = 40;
 
 // Waas-kleuren per status (definitief design contract)
-const WAAS_NIEUW = "rgba(34,197,94,.07)";
+const WAAS_BESCHIKBAAR = "rgba(34,197,94,.06)";
+const WAAS_NIEUW = "rgba(34,197,94,.10)";
 const WAAS_TWIJFELT = "rgba(249,115,22,.08)";
 const WAAS_GEBLESSEERD = "rgba(249,115,22,.10)";
 const WAAS_STOPT = "rgba(239,68,68,.07)";
 
 // Hover-versterkingen
-const WAAS_NIEUW_H = "rgba(34,197,94,.12)";
+const WAAS_BESCHIKBAAR_H = "rgba(34,197,94,.10)";
+const WAAS_NIEUW_H = "rgba(34,197,94,.15)";
 const WAAS_TWIJFELT_H = "rgba(249,115,22,.13)";
 const WAAS_GEBLESSEERD_H = "rgba(249,115,22,.15)";
 const WAAS_STOPT_H = "rgba(239,68,68,.11)";
@@ -179,6 +181,7 @@ function waasKleur(status: string, isNieuw: boolean): { normaal: string; hover: 
   if (status === "GEBLESSEERD") return { normaal: WAAS_GEBLESSEERD, hover: WAAS_GEBLESSEERD_H };
   if (status === "TWIJFELT") return { normaal: WAAS_TWIJFELT, hover: WAAS_TWIJFELT_H };
   if (isNieuw) return { normaal: WAAS_NIEUW, hover: WAAS_NIEUW_H };
+  if (status === "BESCHIKBAAR") return { normaal: WAAS_BESCHIKBAAR, hover: WAAS_BESCHIKBAAR_H };
   return null;
 }
 
@@ -401,12 +404,14 @@ function CompactChip({
           border: isDragging
             ? "1px solid rgba(255,107,0,.5)"
             : speler.isNieuw
-              ? "1px solid rgba(34,197,94,.45)"
+              ? "1px solid rgba(34,197,94,.55)"
               : speler.status === "TWIJFELT" || speler.status === "GEBLESSEERD"
                 ? "1px solid rgba(249,115,22,.45)"
                 : isStopt
                   ? "1px solid rgba(239,68,68,.4)"
-                  : "1px solid rgba(255,255,255,.06)",
+                  : speler.status === "BESCHIKBAAR"
+                    ? "1px solid rgba(34,197,94,.30)"
+                    : "1px solid rgba(255,255,255,.06)",
           background: achtergrond,
           cursor: isAR ? "default" : isDragging ? "grabbing" : "grab",
           overflow: "hidden",
