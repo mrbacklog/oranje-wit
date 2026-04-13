@@ -56,7 +56,6 @@ interface TeamKaartProps {
   onDropSpeler: (
     spelerData: WerkbordSpeler,
     vanTeamId: string | null,
-    vanSelectieGroepId: string | null,
     naarGeslacht: "V" | "M"
   ) => void;
   onHeaderMouseDown: (e: React.MouseEvent, teamId: string) => void;
@@ -120,14 +119,11 @@ export function TeamKaart({
     setDropOverGeslacht(null);
     const raw = e.dataTransfer.getData("speler");
     if (!raw) return;
-    const data = JSON.parse(raw) as {
-      speler: WerkbordSpeler;
-      vanTeamId: string | null;
-      vanSelectieGroepId: string | null;
-    };
+    const data = JSON.parse(raw) as { speler: WerkbordSpeler; vanTeamId: string | null };
+    // Als de speler al in een team zit (vanuit pool gedropt), gebruik teamId als effectieve bron
     const effectiefVanTeamId = data.vanTeamId ?? data.speler.teamId;
     if (effectiefVanTeamId === team.id) return;
-    onDropSpeler(data.speler, effectiefVanTeamId, data.vanSelectieGroepId, data.speler.geslacht);
+    onDropSpeler(data.speler, effectiefVanTeamId, data.speler.geslacht);
   }
 
   return (

@@ -40,6 +40,7 @@ const TOEGESTANE_STATUSSEN = new Set([
   "GESTOPT",
   "AFGEMELD",
   "ALGEMEEN_RESERVE",
+  "GEBLESSEERD",
 ]);
 
 function mapStatus(s: string | null | undefined): WerkbordSpeler["status"] {
@@ -144,9 +145,10 @@ export default async function IndelingPage() {
     afmelddatum: null,
     teamId: sp.status === "ALGEMEEN_RESERVE" ? null : (spelerTeamMap.get(sp.id) ?? null),
     gepind: false,
-    isNieuw: false,
+    isNieuw: sp.seizoenenActief === 1,
     openMemoCount: openMemoPerSpeler[sp.id] ?? 0,
     ussScore: sp.ussScore ?? null,
+    fotoUrl: sp.heeftFoto ? `/api/scouting/spelers/${sp.id}/foto` : null,
     huidigTeam: (sp.huidig as { team?: string } | null)?.team ?? null,
     ingedeeldTeamNaam: spelerTeamNaamMap.get(sp.id) ?? null,
     selectieGroepId: null,
@@ -181,6 +183,7 @@ export default async function IndelingPage() {
           isNieuw: false,
           openMemoCount: openMemoPerSpeler[ts.spelerId] ?? 0,
           ussScore: null,
+          fotoUrl: null,
           huidigTeam: (ts.speler?.huidig as { team?: string } | null)?.team ?? null,
           ingedeeldTeamNaam: team.naam,
           selectieGroepId: null,
@@ -212,6 +215,7 @@ export default async function IndelingPage() {
           isNieuw: false,
           openMemoCount: openMemoPerSpeler[ts.spelerId] ?? 0,
           ussScore: null,
+          fotoUrl: null,
           huidigTeam: (ts.speler?.huidig as { team?: string } | null)?.team ?? null,
           ingedeeldTeamNaam: team.naam,
           selectieGroepId: null,
@@ -318,6 +322,7 @@ export default async function IndelingPage() {
           isNieuw: false,
           openMemoCount: openMemoPerSpeler[sp.spelerId] ?? 0,
           ussScore: null,
+          fotoUrl: null,
           huidigTeam: (sp.speler?.huidig as { team?: string } | null)?.team ?? null,
           ingedeeldTeamNaam: null,
           selectieGroepId: selectieGroep.id,

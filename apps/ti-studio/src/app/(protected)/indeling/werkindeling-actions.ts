@@ -74,7 +74,6 @@ export async function getWerkindelingVoorEditor(werkindelingId: string) {
             include: {
               spelers: { include: { speler: true } },
               staf: { include: { staf: true } },
-              selectieGroep: { select: { naam: true } },
             },
           },
         },
@@ -109,12 +108,13 @@ export async function getAlleSpelers() {
       status: true,
       huidig: true,
       spelerspad: true,
+      seizoenenActief: true,
     },
   });
 
   // Haal tussenvoegsels en USS-scores parallel op
   const relCodes = spelers.map((s) => s.id);
-  const [leden, ussScores] = await Promise.all([
+  const [leden, ussScores, fotos] = await Promise.all([
     prisma.lid.findMany({
       where: { relCode: { in: relCodes } },
       select: { relCode: true, tussenvoegsel: true },
@@ -122,6 +122,10 @@ export async function getAlleSpelers() {
     prisma.spelerUSS.findMany({
       where: { spelerId: { in: relCodes }, seizoen: HUIDIG_SEIZOEN },
       select: { spelerId: true, ussOverall: true },
+    }),
+    prisma.lidFoto.findMany({
+      where: { relCode: { in: relCodes } },
+      select: { relCode: true },
     }),
   ]);
 
@@ -137,11 +141,13 @@ export async function getAlleSpelers() {
       u.ussOverall ?? null,
     ])
   );
+  const fotoSet = new Set<string>(fotos.map((f: { relCode: string }) => f.relCode));
 
   return spelers.map((s) => ({
     ...s,
     tussenvoegsel: tussenvoegelMap.get(s.id) ?? null,
     ussScore: ussMap.get(s.id) ?? null,
+    heeftFoto: fotoSet.has(s.id),
   }));
 }
 
@@ -167,7 +173,7 @@ export async function hernoem(werkindelingId: string, naam: string) {
     where: { id: werkindelingId },
     data: { naam: naam.trim() },
   });
-  revalidatePath("/indeling");
+  revalidatePath("/ti-studio/indeling");
 }
 
 export async function voegSpelerToeAanTeam(
@@ -184,14 +190,14 @@ export async function voegSpelerToeAanTeam(
       spelers: { create: { spelerId, statusOverride: statusOverride ?? null } },
     },
   });
-  revalidatePath("/indeling");
+  revalidatePath("/ti-studio/indeling");
 }
 
 export async function verwijderSpelerUitTeam(teamId: string, spelerId: string) {
   await requireTC();
   await assertTeamBewerkbaar(teamId);
   await prisma.teamSpeler.deleteMany({ where: { teamId, spelerId } });
-  revalidatePath("/indeling");
+  revalidatePath("/ti-studio/indeling");
 }
 
 export async function verwijderWerkindeling(werkindelingId: string, auteur: string) {
@@ -202,7 +208,7 @@ export async function verwijderWerkindeling(werkindelingId: string, auteur: stri
     where: { id: werkindelingId },
     data: { verwijderdOp: new Date() },
   });
-  revalidatePath("/indeling");
+  revalidatePath("/ti-studio/indeling");
 }
 
 export async function getSpelerProfiel(spelerId: string) {
@@ -242,7 +248,7 @@ export async function updateSpelerStatus(spelerId: string, status: string): Prom
     where: { id: spelerId },
     data: { status: status as SpelerStatus },
   });
-  revalidatePath("/indeling");
+  revalidatePath("/ti-studio/indeling");
 }
 
 // ─── Selectie-bundeling actions ──────────────────────────────────────────────
@@ -255,27 +261,22 @@ export async function voegSelectieSpelerToe(
   try {
     const selectieGroep = await prisma.selectieGroep.findUniqueOrThrow({
       where: { id: selectieGroepId },
-      select: { versieId: true },
+      select: {
+        versieId: true,
+        teams: { select: { id: true } },
+      },
     });
-    // Verwijder uit alle teams en selectiegroepen in deze versie (voorkomt duplicaten)
-    await prisma.$transaction([
-      prisma.teamSpeler.deleteMany({
-        where: { spelerId, team: { versieId: selectieGroep.versieId } },
-      }),
-      prisma.selectieSpeler.deleteMany({
-        where: {
-          spelerId,
-          selectieGroep: { versieId: selectieGroep.versieId, id: { not: selectieGroepId } },
-        },
-      }),
-    ]);
+    const teamIds = selectieGroep.teams.map((t: { id: string }) => t.id);
+    await prisma.teamSpeler.deleteMany({
+      where: { spelerId, teamId: { in: teamIds } },
+    });
     const selectieSpeler = await prisma.selectieSpeler.upsert({
       where: { selectieGroepId_spelerId: { selectieGroepId, spelerId } },
       create: { selectieGroepId, spelerId },
       update: {},
       select: { id: true },
     });
-    revalidatePath("/indeling");
+    revalidatePath("/ti-studio/indeling");
     return { ok: true, data: { id: selectieSpeler.id } };
   } catch (error) {
     logger.warn("voegSelectieSpelerToe fout:", error);
@@ -290,7 +291,7 @@ export async function verwijderSelectieSpeler(
   await requireTC();
   try {
     await prisma.selectieSpeler.deleteMany({ where: { selectieGroepId, spelerId } });
-    revalidatePath("/indeling");
+    revalidatePath("/ti-studio/indeling");
     return { ok: true, data: undefined };
   } catch (error) {
     logger.warn("verwijderSelectieSpeler fout:", error);
@@ -360,7 +361,7 @@ export async function toggleSelectieBundeling(
       ]);
     }
 
-    revalidatePath("/indeling");
+    revalidatePath("/ti-studio/indeling");
     return { ok: true, data: undefined };
   } catch (error) {
     logger.warn("toggleSelectieBundeling fout:", error);

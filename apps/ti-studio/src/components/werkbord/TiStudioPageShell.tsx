@@ -63,7 +63,7 @@ export function TiStudioPageShell({ children }: TiStudioPageShellProps) {
     return () => clearInterval(interval);
   }, []);
 
-  const isWerkbord = pathname.startsWith("/indeling");
+  const isWerkbord = pathname.startsWith("/ti-studio/indeling");
 
   return (
     <>
@@ -123,10 +123,10 @@ export function TiStudioPageShell({ children }: TiStudioPageShellProps) {
         <Ribbon
           gebruikerInitialen={gebruikerInitialen}
           activeRoute={pathname}
-          onNaarIndeling={() => router.push("/indeling")}
-          onNaarKader={() => router.push("/kader")}
-          onNaarPersonen={() => router.push("/personen")}
-          onNaarMemo={() => router.push("/memo")}
+          onNaarIndeling={() => router.push("/ti-studio/indeling")}
+          onNaarKader={() => router.push("/ti-studio/kader")}
+          onNaarPersonen={() => router.push("/ti-studio/personen")}
+          onNaarMemo={() => router.push("/ti-studio/memo")}
           openMemoCount={openMemoCount}
         />
 

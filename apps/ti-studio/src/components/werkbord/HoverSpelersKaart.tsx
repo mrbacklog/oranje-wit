@@ -442,20 +442,35 @@ function KaartVoorkant({
               overflow: "hidden",
             }}
           >
-            {/* Initialen als placeholder */}
-            <span
-              style={{
-                fontSize: 34,
-                fontWeight: 800,
-                color: geslachtKleur,
-                opacity: 0.4,
-                lineHeight: 1,
-                userSelect: "none",
-              }}
-            >
-              {speler.roepnaam.charAt(0)}
-              {speler.achternaam.charAt(0)}
-            </span>
+            {speler.fotoUrl ? (
+              <img
+                src={speler.fotoUrl}
+                alt=""
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  objectPosition: "top center",
+                }}
+              />
+            ) : (
+              /* Initialen als placeholder */
+              <span
+                style={{
+                  fontSize: 34,
+                  fontWeight: 800,
+                  color: geslachtKleur,
+                  opacity: 0.4,
+                  lineHeight: 1,
+                  userSelect: "none",
+                }}
+              >
+                {speler.roepnaam.charAt(0)}
+                {speler.achternaam.charAt(0)}
+              </span>
+            )}
 
             {/* Subtiele gender-kleur tint onderaan */}
             <div

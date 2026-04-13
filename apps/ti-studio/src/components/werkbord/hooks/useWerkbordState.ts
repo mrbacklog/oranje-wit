@@ -38,13 +38,11 @@ export function useWerkbordState(
     (
       spelerData: WerkbordSpeler,
       vanTeamId: string | null,
-      vanSelectieGroepId: string | null,
       naarTeamId: string,
       naarGeslacht: "V" | "M"
     ) => {
       const huidigSpeler = alleSpelersRef.current.find((s) => s.id === spelerData.id);
       const huidigTeamId = huidigSpeler?.teamId ?? null;
-      // Blokkeer alleen als speler al in een ánder team zit (niet vanwaar hij komt)
       if (huidigTeamId !== null && huidigTeamId !== naarTeamId && huidigTeamId !== vanTeamId) {
         logger.warn("Duplicaat geblokkeerd: speler al in team", {
           spelerId: spelerData.id,
@@ -56,20 +54,11 @@ export function useWerkbordState(
       setTeams((prev) =>
         prev.map((team) => {
           let updated = { ...team };
-          // Verwijder uit oud team
           if (vanTeamId && team.id === vanTeamId) {
             updated = {
               ...updated,
               dames: updated.dames.filter((s) => s.spelerId !== spelerData.id),
               heren: updated.heren.filter((s) => s.spelerId !== spelerData.id),
-            };
-          }
-          // Verwijder uit selectieGroep-pool (gecombineerde selectie)
-          if (vanSelectieGroepId && team.selectieGroepId === vanSelectieGroepId) {
-            updated = {
-              ...updated,
-              selectieDames: updated.selectieDames.filter((s) => s.spelerId !== spelerData.id),
-              selectieHeren: updated.selectieHeren.filter((s) => s.spelerId !== spelerData.id),
             };
           }
           if (team.id === naarTeamId) {
@@ -329,7 +318,7 @@ export function useWerkbordState(
   async function stuurMutatie(body: Record<string, unknown>) {
     setOpslaanStatus("bezig");
     try {
-      const resp = await fetch(`/api/indeling/${versieId}`, {
+      const resp = await fetch(`/api/ti-studio/indeling/${versieId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...body, sessionId: sessionId.current }),
@@ -354,11 +343,10 @@ export function useWerkbordState(
     (
       spelerData: WerkbordSpeler,
       vanTeamId: string | null,
-      vanSelectieGroepId: string | null,
       naarTeamId: string,
       naarGeslacht: "V" | "M"
     ) => {
-      verplaatsSpelerLokaal(spelerData, vanTeamId, vanSelectieGroepId, naarTeamId, naarGeslacht);
+      verplaatsSpelerLokaal(spelerData, vanTeamId, naarTeamId, naarGeslacht);
       stuurMutatie({
         type: "speler_verplaatst",
         spelerId: spelerData.id,
@@ -391,7 +379,7 @@ export function useWerkbordState(
 
   useEffect(() => {
     if (!versieId) return;
-    const es = new EventSource(`/api/indeling/${versieId}/stream`);
+    const es = new EventSource(`/api/ti-studio/indeling/${versieId}/stream`);
     es.onmessage = (e) => {
       let event: Record<string, unknown>;
       try {
@@ -407,7 +395,6 @@ export function useWerkbordState(
           verplaatsSpelerLokaal(
             sp,
             event.vanTeamId as string | null,
-            null, // SSE heeft geen vanSelectieGroepId
             event.naarTeamId as string,
             event.naarGeslacht as "V" | "M"
           );

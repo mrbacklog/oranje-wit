@@ -21,7 +21,6 @@ interface WerkbordCanvasProps {
   onDropSpelerOpTeam: (
     spelerData: WerkbordSpeler,
     vanTeamId: string | null,
-    vanSelectieGroepId: string | null,
     naarTeamId: string,
     naarGeslacht: "V" | "M"
   ) => void;
@@ -377,8 +376,8 @@ export function WerkbordCanvas({
                     team.selectieGroepId)
               }
               onOpenTeamDrawer={onOpenTeamDrawer}
-              onDropSpeler={(spelerData, vanTeamId, vanSelectieGroepId, naarGeslacht) =>
-                onDropSpelerOpTeam(spelerData, vanTeamId, vanSelectieGroepId, team.id, naarGeslacht)
+              onDropSpeler={(spelerData, vanTeamId, naarGeslacht) =>
+                onDropSpelerOpTeam(spelerData, vanTeamId, team.id, naarGeslacht)
               }
               onHeaderMouseDown={handleTeamHeaderMouseDown}
               onSpelerClick={onSpelerClick}
