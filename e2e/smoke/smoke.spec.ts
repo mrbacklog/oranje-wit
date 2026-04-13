@@ -25,13 +25,6 @@ test.describe("Smoke — app laadt", () => {
     await expect(nav.getByText("Indeling", { exact: true })).toBeVisible({ timeout: 15000 });
   });
 
-  test("ti-studio: indeling laadt", async ({ page }) => {
-    test.setTimeout(60000);
-    await page.goto("/ti-studio/indeling", { timeout: 45000 });
-    const nav = page.getByRole("navigation", { name: "Hoofdnavigatie" });
-    await expect(nav).toBeVisible({ timeout: 15000 });
-  });
-
   test("evaluatie: overzicht laadt", async ({ page }) => {
     test.setTimeout(60000);
     await page.goto("/evaluatie", { timeout: 45000 });

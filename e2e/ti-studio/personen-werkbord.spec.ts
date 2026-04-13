@@ -6,7 +6,7 @@ test.describe("TI Studio — Personen & Werkbord", () => {
   test.setTimeout(90_000);
 
   test("personen spelers pagina laadt", async ({ page }) => {
-    await page.goto("/ti-studio/personen/spelers", GOTO_OPTS);
+    await page.goto("/personen/spelers", GOTO_OPTS);
 
     // Pagina moet laden zonder error
     const body = page.locator("body");
@@ -30,7 +30,7 @@ test.describe("TI Studio — Personen & Werkbord", () => {
   });
 
   test("pin knop aanwezig op speler", async ({ page }) => {
-    await page.goto("/ti-studio/personen/spelers", GOTO_OPTS);
+    await page.goto("/personen/spelers", GOTO_OPTS);
 
     // Pagina moet laden
     const body = page.locator("body");

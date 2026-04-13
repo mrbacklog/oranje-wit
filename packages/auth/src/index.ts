@@ -271,6 +271,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               secure: true,
               sameSite: "lax" as const,
               path: "/",
+              domain: ".ckvoranjewit.app",
             },
           },
         },

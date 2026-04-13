@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { prisma } from "@/lib/teamindeling/db/prisma";
-import { getActiefSeizoen } from "@/lib/teamindeling/seizoen";
+import { getActiefSeizoen } from "@oranje-wit/teamindeling-shared/seizoen";
 import { getWerkindelingId } from "@/lib/teamindeling/db/werkindeling";
 import {
   MobileDashboard,

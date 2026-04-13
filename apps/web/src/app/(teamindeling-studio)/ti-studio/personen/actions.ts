@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/teamindeling/db/prisma";
 import { requireTC } from "@oranje-wit/auth/checks";
-import { assertBewerkbaar } from "@/lib/teamindeling/seizoen";
+import { assertBewerkbaar } from "@oranje-wit/teamindeling-shared/seizoen";
 import { logger } from "@oranje-wit/types";
 import type { PinType } from "@oranje-wit/database";
 

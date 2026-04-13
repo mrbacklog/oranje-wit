@@ -1,0 +1,24 @@
+{
+  "name": "@oranje-wit/teamindeling-shared",
+  "version": "1.0.0",
+  "private": true,
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./seizoen": "./src/seizoen.ts",
+    "./seizoen-provider": "./src/SeizoenProvider.tsx"
+  },
+  "dependencies": {
+    "@oranje-wit/database": "workspace:*",
+    "@oranje-wit/types": "workspace:*"
+  },
+  "peerDependencies": {
+    "next": "^15.0.0 || ^16.0.0",
+    "react": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "typescript": "^5"
+  }
+}

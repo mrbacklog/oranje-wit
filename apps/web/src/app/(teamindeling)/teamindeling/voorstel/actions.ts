@@ -2,7 +2,7 @@
 
 import { prisma } from "@/lib/teamindeling/db/prisma";
 import { requireTC } from "@/lib/teamindeling/auth-check";
-import { getActiefSeizoen } from "@/lib/teamindeling/seizoen";
+import { getActiefSeizoen } from "@oranje-wit/teamindeling-shared/seizoen";
 import type { ActionResult } from "@oranje-wit/types";
 import { logger } from "@oranje-wit/types";
 

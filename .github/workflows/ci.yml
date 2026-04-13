@@ -44,6 +44,12 @@ jobs:
       - name: Lint
         run: pnpm --filter @oranje-wit/web lint
 
+      - name: Typecheck (ti-studio)
+        run: pnpm --filter @oranje-wit/ti-studio exec tsc --noEmit
+
+      - name: Lint (ti-studio)
+        run: pnpm --filter @oranje-wit/ti-studio lint
+
       - name: Format check
         run: pnpm format:check
 
@@ -86,6 +92,9 @@ jobs:
 
       - name: Build
         run: pnpm build
+
+      - name: Build (ti-studio)
+        run: pnpm --filter @oranje-wit/ti-studio build
 
   # ── Job 3: E2E Tests (na build + fast-gate, met PostgreSQL service container) ──────────
   e2e:

@@ -19,10 +19,20 @@ export default defineConfig({
     },
     {
       name: "web",
-      testIgnore: ["**/tests/**"],
+      testIgnore: ["**/tests/**", "**/ti-studio/**"],
       use: {
         ...devices["Desktop Chrome"],
         storageState: "./e2e/.auth/user.json",
+      },
+      dependencies: ["setup"],
+    },
+    {
+      name: "ti-studio",
+      testDir: "./e2e/ti-studio",
+      use: {
+        ...devices["Desktop Chrome"],
+        storageState: "./e2e/.auth/user.json",
+        baseURL: "http://localhost:3001",
       },
       dependencies: ["setup"],
     },
@@ -55,11 +65,20 @@ export default defineConfig({
       dependencies: ["setup"],
     },
   ],
-  webServer: {
-    command: "pnpm dev:web",
-    port: 3000,
-    reuseExistingServer: !process.env.CI,
-    timeout: 120000,
-    env: { E2E_TEST: "true" },
-  },
+  webServer: [
+    {
+      command: "pnpm dev:web",
+      port: 3000,
+      reuseExistingServer: !process.env.CI,
+      timeout: 120000,
+      env: { E2E_TEST: "true" },
+    },
+    {
+      command: "pnpm dev:ti-studio",
+      port: 3001,
+      reuseExistingServer: !process.env.CI,
+      timeout: 120000,
+      env: { E2E_TEST: "true" },
+    },
+  ],
 });
