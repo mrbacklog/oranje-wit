@@ -22,6 +22,7 @@ import { createContext, useCallback, useContext, useRef, useState, useEffect } f
 import type { ReactNode } from "react";
 import type { WerkbordSpeler } from "./types";
 import { PEILJAAR } from "@oranje-wit/types";
+import { leeftijdsGradient, leeftijdsKleur } from "./leeftijds-kleuren";
 
 // ── Constanten ──────────────────────────────────────────────────────────────
 
@@ -58,18 +59,6 @@ const TIER_RAND_GRADIENT: Record<Tier, string | null> = {
   zilver: "linear-gradient(135deg, #c0c0c0, #888, #c0c0c0)",
   goud: "linear-gradient(135deg, #ffd700, #b8860b, #ffd700)",
 };
-
-// ── Leeftijdstint ──────────────────────────────────────────────────────────
-
-function leeftijdsTint(leeftijd: number): string {
-  if (leeftijd <= 12) return "#4fc3f7"; // jong blauw
-  if (leeftijd <= 15) return "#81c784"; // groen
-  if (leeftijd <= 18) return "#aed581"; // geel-groen
-  if (leeftijd <= 21) return "#ffb74d"; // oranje-geel
-  if (leeftijd <= 28) return "#ff8a65"; // warm oranje
-  if (leeftijd <= 35) return "#a1887f"; // rood-bruin
-  return "#78909c"; // blauw-grijs (ouder)
-}
 
 function berekenLeeftijdKaart(
   geboortedatum: string | null,
@@ -240,7 +229,8 @@ function HoverSpelersKaartPortal({
 
   const speler = state.speler;
   const leeftijd = berekenLeeftijdKaart(speler.geboortedatum, speler.geboortejaar, PEILJAAR);
-  const tint = leeftijdsTint(leeftijd);
+  const gradient = leeftijdsGradient(leeftijd);
+  const kleur = leeftijdsKleur(leeftijd);
   const tier = bepaalTier(speler.ussScore);
   const tierGradient = TIER_RAND_GRADIENT[tier];
 
@@ -293,12 +283,18 @@ function HoverSpelersKaartPortal({
           >
             {/* VOORKANT */}
             <div className="hover-kaart-face hover-kaart-voor" style={{ borderRadius: 9 }}>
-              <KaartVoorkant speler={speler} leeftijd={leeftijd} tint={tint} tier={tier} />
+              <KaartVoorkant
+                speler={speler}
+                leeftijd={leeftijd}
+                gradient={gradient}
+                kleur={kleur}
+                tier={tier}
+              />
             </div>
 
             {/* ACHTERKANT */}
             <div className="hover-kaart-face hover-kaart-achter" style={{ borderRadius: 9 }}>
-              <KaartAchterkant speler={speler} leeftijd={leeftijd} tint={tint} />
+              <KaartAchterkant speler={speler} leeftijd={leeftijd} kleur={kleur} />
             </div>
           </div>
         </div>
@@ -312,12 +308,14 @@ function HoverSpelersKaartPortal({
 function KaartVoorkant({
   speler,
   leeftijd,
-  tint,
+  gradient,
+  kleur,
   tier,
 }: {
   speler: WerkbordSpeler;
   leeftijd: number;
-  tint: string;
+  gradient: string;
+  kleur: string;
   tier: Tier;
 }) {
   const geslacht = speler.geslacht.toLowerCase() as "v" | "m";
@@ -335,18 +333,44 @@ function KaartVoorkant({
         position: "relative",
       }}
     >
-      {/* Leeftijdstint achtergrond */}
+      {/* Volledige KNKV gradient als achtergrond */}
       <div
         style={{
           position: "absolute",
           inset: 0,
-          background: `linear-gradient(145deg, #141414 0%, ${tint}28 100%)`,
+          background: gradient,
+          borderRadius: 9,
+          opacity: 0.85,
+        }}
+      />
+      {/* Donkere overlay voor leesbaarheid */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background: "linear-gradient(180deg, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.55) 100%)",
           borderRadius: 9,
         }}
       />
 
       {/* Noise textuur */}
       <div className="hover-kaart-noise" />
+      {/* Statisch glim-effect — geen animatie */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          borderRadius: 9,
+          background:
+            tier === "goud"
+              ? "linear-gradient(135deg, transparent 10%, rgba(255,215,0,0.06) 28%, rgba(255,255,255,0.18) 42%, rgba(255,215,0,0.10) 55%, transparent 70%)"
+              : tier === "zilver"
+                ? "linear-gradient(135deg, transparent 15%, rgba(255,255,255,0.06) 30%, rgba(255,255,255,0.16) 45%, rgba(255,255,255,0.06) 60%, transparent 75%)"
+                : "linear-gradient(135deg, transparent 20%, rgba(255,255,255,0.04) 35%, rgba(255,255,255,0.10) 45%, rgba(255,255,255,0.04) 55%, transparent 70%)",
+          pointerEvents: "none",
+          zIndex: 1,
+        }}
+      />
 
       {/* Inhoud */}
       <div
@@ -452,7 +476,7 @@ function KaartVoorkant({
                   width: "100%",
                   height: "100%",
                   objectFit: "cover",
-                  objectPosition: "center 10%",
+                  objectPosition: "center 5%",
                 }}
               />
             ) : (
@@ -551,11 +575,11 @@ function KaartVoorkant({
 function KaartAchterkant({
   speler,
   leeftijd,
-  tint,
+  kleur,
 }: {
   speler: WerkbordSpeler;
   leeftijd: number;
-  tint: string;
+  kleur: string;
 }) {
   const teamLabel = speler.huidigTeam ?? speler.ingedeeldTeamNaam ?? "—";
 
@@ -575,7 +599,7 @@ function KaartAchterkant({
         style={{
           position: "absolute",
           inset: 0,
-          background: `linear-gradient(215deg, #141414 0%, ${tint}20 100%)`,
+          background: `linear-gradient(215deg, #141414 0%, ${kleur}20 100%)`,
           borderRadius: 9,
         }}
       />
