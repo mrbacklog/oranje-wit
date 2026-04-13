@@ -48,9 +48,8 @@ Je schrijft, draait en repareert Playwright E2E tests. Je gebruikt twee modi:
 
 ## Test Environment
 
-- **Dev servers**: `E2E_TEST=true pnpm dev:<app>` (automatisch gestart door Playwright config)
+- **Dev server**: `E2E_TEST=true pnpm dev` op poort 3000 (automatisch gestart door Playwright config)
 - **Auth**: Conditionele Credentials provider (geen Google OAuth nodig)
-- **Poorten**: team-indeling (4100), monitor (4102), evaluatie (4104)
 - **NOOIT** testen tegen productie met mutaties — alleen read-only navigatie
 
 ## Conventies
@@ -86,10 +85,11 @@ Je bent ook **teammate** in het team `release` (`/team-release`), waar je E2E ve
 
 Je bent ook **teammate** in het team `kwaliteit` (`/team-kwaliteit`), waar je E2E tests draait, testdekking analyseert en gaps rapporteert aan de ontwikkelaar.
 
-## Apps
+## App (geconsolideerd)
 
-| App | Dev | Test | Live URL |
+| Domein | Dev | Test | Live URL |
 |---|---|---|---|
-| Team-Indeling | `pnpm dev:ti` (4100) | `pnpm test:e2e:ti` | teamindeling.ckvoranjewit.app |
-| Monitor | `pnpm dev:monitor` (4102) | `pnpm test:e2e:monitor` | monitor.ckvoranjewit.app |
-| Evaluatie | `pnpm dev:evaluatie` (4104) | `pnpm test:e2e:evaluatie` | evaluaties.ckvoranjewit.app |
+| Team-Indeling | `pnpm dev` (3000) | `pnpm test:e2e:ti` | www.ckvoranjewit.app/teamindeling |
+| TI Studio | `pnpm dev` (3000) | `pnpm test:e2e:ti` | www.ckvoranjewit.app/ti-studio |
+| Monitor | `pnpm dev` (3000) | `pnpm test:e2e:monitor` | www.ckvoranjewit.app/monitor |
+| Evaluatie | `pnpm dev` (3000) | `pnpm test:e2e:evaluatie` | www.ckvoranjewit.app/evaluatie |
