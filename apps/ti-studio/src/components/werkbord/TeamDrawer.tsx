@@ -1374,11 +1374,13 @@ export function TeamDrawer({
   const [nieuwFormOpen, setNieuwFormOpen] = useState(false);
   const [nieuwNaam, setNieuwNaam] = useState("");
   const [nieuwCategorie, setNieuwCategorie] = useState("SENIOREN");
+  const [nieuwTeamFout, setNieuwTeamFout] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   function handleNieuwTeamSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!nieuwNaam.trim()) return;
+    setNieuwTeamFout(null);
     startTransition(async () => {
       const result = await maakTeamAan(versieId, nieuwNaam, nieuwCategorie);
       if (result.ok) {
@@ -1386,6 +1388,8 @@ export function TeamDrawer({
         setNieuwNaam("");
         setNieuwCategorie("SENIOREN");
         setNieuwFormOpen(false);
+      } else {
+        setNieuwTeamFout(result.error ?? "Onbekende fout");
       }
     });
   }
@@ -1547,11 +1551,14 @@ export function TeamDrawer({
                 }}
               >
                 <option value="SENIOREN">Senioren</option>
-                <option value="JEUGD_A">Jeugd A</option>
-                <option value="JEUGD_B">Jeugd B</option>
-                <option value="RECREANTEN">Recreanten</option>
-                <option value="MIXED">Mixed</option>
+                <option value="A_CATEGORIE">A-categorie</option>
+                <option value="B_CATEGORIE">B-categorie</option>
               </select>
+              {nieuwTeamFout && (
+                <span style={{ color: "var(--error, #f87171)", fontSize: 11 }}>
+                  {nieuwTeamFout}
+                </span>
+              )}
               <div style={{ display: "flex", gap: 6 }}>
                 <button
                   type="submit"
@@ -1576,6 +1583,7 @@ export function TeamDrawer({
                   onClick={() => {
                     setNieuwFormOpen(false);
                     setNieuwNaam("");
+                    setNieuwTeamFout(null);
                   }}
                   disabled={isPending}
                   style={{

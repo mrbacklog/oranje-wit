@@ -689,8 +689,8 @@ function maakSchrijfToolsRest(sessieId: string, gebruikerEmail: string) {
       inputSchema: z.object({
         naam: z.string().describe("Naam van het nieuwe team"),
         categorie: z
-          .enum(["SENIOREN", "JEUGD_A", "JEUGD_B", "RECREANTEN", "MIXED"])
-          .describe("Teamcategorie"),
+          .enum(["SENIOREN", "A_CATEGORIE", "B_CATEGORIE"])
+          .describe("Teamcategorie (SENIOREN, A_CATEGORIE of B_CATEGORIE)"),
         inContext: z
           .string()
           .describe('werkindelingId of "v:<versieId>" om het team in aan te maken'),
