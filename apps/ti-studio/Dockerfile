@@ -44,7 +44,6 @@ ENV HOSTNAME="0.0.0.0"
 
 COPY --from=builder /app/apps/ti-studio/.next/standalone ./
 COPY --from=builder /app/apps/ti-studio/.next/static apps/ti-studio/.next/static
-COPY --from=builder /app/apps/ti-studio/public apps/ti-studio/public
 
 COPY apps/ti-studio/start.sh /start.sh
 RUN chmod +x /start.sh
