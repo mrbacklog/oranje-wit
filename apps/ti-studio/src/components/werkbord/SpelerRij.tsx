@@ -150,13 +150,26 @@ function kortTussenvoegsel(tvs: string): string {
 }
 
 /**
+ * Geeft het achternaam-deel zonder tussenvoegsel-prefix.
+ * Sommige records in de DB slaan achternaam op als "van Rooij" i.p.v. "Rooij".
+ * Dan moet de initiaal "R." zijn, niet "V.".
+ */
+function achternaamKern(achternaam: string, tussenvoegsel: string | null): string {
+  if (!tussenvoegsel || !achternaam) return achternaam;
+  const prefix = tussenvoegsel.toLowerCase().trim() + " ";
+  if (achternaam.toLowerCase().startsWith(prefix)) return achternaam.slice(prefix.length);
+  return achternaam;
+}
+
+/**
  * Formatteert naam voor de normaal-variant:
  * "roepnaam [tvs-kort] [achternaam-initial.]"
  * Voorbeeld: "Freek" + "van der" + "Laban" → "Freek vd L."
  */
 function naamNormaal(roepnaam: string, tussenvoegsel: string | null, achternaam: string): string {
   const tvsKort = tussenvoegsel ? ` ${kortTussenvoegsel(tussenvoegsel)}` : "";
-  const achternaamInitiaal = achternaam ? ` ${achternaam.charAt(0).toUpperCase()}.` : "";
+  const an = achternaamKern(achternaam, tussenvoegsel);
+  const achternaamInitiaal = an ? ` ${an.charAt(0).toUpperCase()}.` : "";
   return `${roepnaam}${tvsKort}${achternaamInitiaal}`;
 }
 
@@ -545,7 +558,8 @@ function NormaalRij({
   const geslacht = speler.geslacht.toLowerCase() as "v" | "m";
   const geslachtKleur = geslacht === "v" ? "var(--pink)" : "var(--blue)";
   const geslachtBg = geslacht === "v" ? "rgba(236,72,153,.18)" : "rgba(96,165,250,.18)";
-  const initialen = `${speler.roepnaam.charAt(0)}${speler.achternaam.charAt(0)}`.toUpperCase();
+  const initialen =
+    `${speler.roepnaam.charAt(0)}${achternaamKern(speler.achternaam, speler.tussenvoegsel).charAt(0)}`.toUpperCase();
   const naam = naamNormaal(speler.roepnaam, speler.tussenvoegsel, speler.achternaam);
   const leeftijd = berekenLeeftijd(speler.geboortedatum, speler.geboortejaar, PEILJAAR);
 
@@ -779,7 +793,8 @@ function PoolRij({
   const geslacht = speler.geslacht.toLowerCase() as "v" | "m";
   const geslachtKleur = geslacht === "v" ? "var(--pink)" : "var(--blue)";
   const geslachtBg = geslacht === "v" ? "rgba(236,72,153,.18)" : "rgba(96,165,250,.18)";
-  const initialen = `${speler.roepnaam.charAt(0)}${speler.achternaam.charAt(0)}`.toUpperCase();
+  const initialen =
+    `${speler.roepnaam.charAt(0)}${achternaamKern(speler.achternaam, speler.tussenvoegsel).charAt(0)}`.toUpperCase();
   const naam = naamPool(speler.roepnaam, speler.tussenvoegsel, speler.achternaam);
   const leeftijd = berekenLeeftijd(speler.geboortedatum, speler.geboortejaar, PEILJAAR);
 
