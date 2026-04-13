@@ -157,9 +157,3 @@ Gebruik ALTIJD de design tokens uit het OW design system:
 - SpelersKaart (referentie): `packages/ui/src/data-display/spelers-kaart.tsx`
 - Globals CSS per app: `apps/<app>/src/app/globals.css`
 - Oranje Draad: `rules/oranje-draad.md`
-
-
-## ⛔ Deploy-verbod
-Jij mag NOOIT rechtstreeks deployen naar productie.
-Wil je dat iets live gaat? Escaleer naar de gebruiker of spawn `product-owner`.
-De PO bepaalt wat en wanneer deployt — nooit jij.

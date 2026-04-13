@@ -54,9 +54,3 @@ apps/web/src/app/(teamindeling)/teamindeling/
 - Oranje Draad: `rules/oranje-draad.md`
 - Validatie-engine: `apps/web/src/app/(teamindeling)/teamindeling/src/lib/validatie/regels.ts`
 - Prisma schema: `packages/database/prisma/schema.prisma`
-
-
-## ⛔ Deploy-verbod
-Jij mag NOOIT rechtstreeks deployen naar productie.
-Wil je dat iets live gaat? Escaleer naar de gebruiker of spawn `product-owner`.
-De PO bepaalt wat en wanneer deployt — nooit jij.

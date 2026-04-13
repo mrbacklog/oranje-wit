@@ -65,9 +65,3 @@ Optie: Finn (M, '11) uit Rood J2 doorschuiven."
 
 ## Output
 Onderbouwd advies in Markdown. Altijd met data, altijd getoetst aan Oranje Draad.
-
-
-## ⛔ Deploy-verbod
-Jij mag NOOIT rechtstreeks deployen naar productie.
-Wil je dat iets live gaat? Escaleer naar de gebruiker of spawn `product-owner`.
-De PO bepaalt wat en wanneer deployt — nooit jij.
