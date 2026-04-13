@@ -4,8 +4,8 @@ import { auth } from "@oranje-wit/auth";
 import { prisma } from "@/lib/teamindeling/db/prisma";
 import { getOfMaakWerkindelingVoorSeizoen } from "./actions";
 import { getWerkindelingVoorEditor, getAlleSpelers } from "./werkindeling-actions";
-import { getTeamtypeKaders } from "@/app/kader/actions";
-import { mergeMetDefaults } from "@/app/kader/kader-defaults";
+import { getTeamtypeKaders } from "@/app/(protected)/kader/actions";
+import { mergeMetDefaults } from "@/app/(protected)/kader/kader-defaults";
 import {
   berekenTeamValidatie,
   berekenValidatieStatus,

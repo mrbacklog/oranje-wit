@@ -1,8 +1,12 @@
 "use client";
 import { useState } from "react";
 import { logger } from "@oranje-wit/types";
-import { slaTeamtypeKadersOp } from "@/app/kader/actions";
-import { type TcKader, TC_DEFAULTS, mergeMetDefaults } from "@/app/kader/kader-defaults";
+import { slaTeamtypeKadersOp } from "@/app/(protected)/kader/actions";
+import {
+  type TcKader,
+  TC_DEFAULTS,
+  mergeMetDefaults,
+} from "@/app/(protected)/kader/kader-defaults";
 import type { WerkbordWerkitem } from "@/components/werkbord/types";
 import { DoelgroepMemoSectie } from "@/components/DoelgroepMemoSectie";
 

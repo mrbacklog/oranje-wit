@@ -12,7 +12,7 @@ import {
   voegSelectieSpelerToe,
   verwijderSelectieSpeler,
   toggleSelectieBundeling,
-} from "@/app/indeling/werkindeling-actions";
+} from "@/app/(protected)/indeling/werkindeling-actions";
 
 export function useWerkbordState(
   versieId: string,

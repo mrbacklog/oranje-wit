@@ -2,9 +2,9 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { logger } from "@oranje-wit/types";
-import { createToelichting } from "@/app/indeling/toelichting-actions";
-import { mergeTijdlijn } from "@/app/memo/tijdlijn-utils";
-import type { TijdlijnToelichting, TijdlijnLog } from "@/app/memo/tijdlijn-utils";
+import { createToelichting } from "@/app/(protected)/indeling/toelichting-actions";
+import { mergeTijdlijn } from "@/app/(protected)/memo/tijdlijn-utils";
+import type { TijdlijnToelichting, TijdlijnLog } from "@/app/(protected)/memo/tijdlijn-utils";
 
 const LOG_ACTIE_LABEL: Record<string, string> = {
   AANGEMAAKT: "maakte aan",

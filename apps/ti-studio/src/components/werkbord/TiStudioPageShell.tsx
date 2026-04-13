@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Ribbon } from "./Ribbon";
 import { useSeizoen } from "@oranje-wit/teamindeling-shared/seizoen-provider";
-import { getOpenMemoCount } from "@/app/indeling/memo-count-actions";
+import { getOpenMemoCount } from "@/app/(protected)/indeling/memo-count-actions";
 
 interface TiStudioPageShellProps {
   children: React.ReactNode;

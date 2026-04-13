@@ -19,7 +19,7 @@ import {
   updateSelectieNaam,
   verwijderTeam,
   hernoemTeam,
-} from "@/app/indeling/team-config-actions";
+} from "@/app/(protected)/indeling/team-config-actions";
 
 interface TeamDrawerProps {
   open: boolean;

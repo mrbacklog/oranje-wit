@@ -6,7 +6,7 @@ import type { WerkbordTeam, WerkbordSpeler, WerkbordValidatieItem } from "../typ
 
 // ── Mocks ────────────────────────────────────────────────────────────────────
 
-vi.mock("@/app/indeling/werkindeling-actions", () => ({
+vi.mock("@/app/(protected)/indeling/werkindeling-actions", () => ({
   voegSelectieSpelerToe: vi.fn().mockResolvedValue({ ok: true }),
   verwijderSelectieSpeler: vi.fn().mockResolvedValue({ ok: true }),
   toggleSelectieBundeling: vi.fn().mockResolvedValue({ ok: true }),

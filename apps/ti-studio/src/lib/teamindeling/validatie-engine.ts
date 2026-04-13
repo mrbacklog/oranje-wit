@@ -1,7 +1,7 @@
 // apps/web/src/lib/teamindeling/validatie-engine.ts
 
 import type { WerkbordTeam, WerkbordValidatieItem } from "@/components/werkbord/types";
-import type { TcKader } from "@/app/kader/kader-defaults";
+import type { TcKader } from "@/app/(protected)/kader/kader-defaults";
 
 const MS_PER_JAAR = 365.25 * 24 * 60 * 60 * 1000;
 

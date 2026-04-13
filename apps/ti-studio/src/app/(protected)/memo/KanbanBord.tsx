@@ -1,7 +1,10 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { updateWerkitemStatus, updateWerkitemVolgorde } from "@/app/indeling/werkitem-actions";
+import {
+  updateWerkitemStatus,
+  updateWerkitemVolgorde,
+} from "@/app/(protected)/indeling/werkitem-actions";
 import { filterWerkitems, type FilterType } from "./kanban-filter";
 import { MemoDrawer, type DrawerWerkitem } from "@/components/MemoDrawer";
 import { useSession } from "next-auth/react";

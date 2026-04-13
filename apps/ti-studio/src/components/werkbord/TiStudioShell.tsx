@@ -13,8 +13,8 @@ import { TeamDialog } from "../TeamDialog";
 import { useZoom } from "./hooks/useZoom";
 import { useWerkbordState } from "./hooks/useWerkbordState";
 import type { TiStudioShellProps } from "./types";
-import type { DrawerData } from "@/app/indeling/drawer-actions";
-import { getVersiesVoorDrawer } from "@/app/indeling/drawer-actions";
+import type { DrawerData } from "@/app/(protected)/indeling/drawer-actions";
+import { getVersiesVoorDrawer } from "@/app/(protected)/indeling/drawer-actions";
 import { HoverKaartProvider } from "./HoverSpelersKaart";
 
 type PanelLinks = "pool" | "staf" | null;

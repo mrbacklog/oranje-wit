@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { getSpelerProfiel, updateSpelerStatus } from "@/app/indeling/werkindeling-actions";
+import {
+  getSpelerProfiel,
+  updateSpelerStatus,
+} from "@/app/(protected)/indeling/werkindeling-actions";
 import { logger } from "@oranje-wit/types";
 import type { EvaluatieScore, TeamGemiddelde } from "@oranje-wit/types";
 import { WerkitemPanel } from "@/components/WerkitemPanel";

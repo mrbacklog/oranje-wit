@@ -7,7 +7,7 @@ import {
   createWerkitem,
   updateWerkitemStatus,
   verwijderWerkitem,
-} from "@/app/indeling/werkitem-actions";
+} from "@/app/(protected)/indeling/werkitem-actions";
 
 // ──────────────────────────────────────────────────────────
 // Types

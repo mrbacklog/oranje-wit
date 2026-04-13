@@ -3,11 +3,11 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import "./tokens.css";
-import type { DrawerData } from "@/app/indeling/drawer-actions";
+import type { DrawerData } from "@/app/(protected)/indeling/drawer-actions";
 import type { VersiesDrawerConfirm } from "./types";
-import { createWhatIfVanHuidigeVersie } from "@/app/indeling/drawer-actions";
-import { pasWhatIfToe, verwerpWhatIf } from "@/app/indeling/whatif-resolve-actions";
-import { herstelVersie, verwijderVersie } from "@/app/indeling/versies-actions";
+import { createWhatIfVanHuidigeVersie } from "@/app/(protected)/indeling/drawer-actions";
+import { pasWhatIfToe, verwerpWhatIf } from "@/app/(protected)/indeling/whatif-resolve-actions";
+import { herstelVersie, verwijderVersie } from "@/app/(protected)/indeling/versies-actions";
 import { logger } from "@oranje-wit/types";
 
 interface VersiesDrawerProps {

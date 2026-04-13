@@ -6,9 +6,9 @@ import {
   updateWerkitemPrioriteit,
   updateWerkitemStatus,
   verwijderWerkitem,
-} from "@/app/indeling/werkitem-actions";
+} from "@/app/(protected)/indeling/werkitem-actions";
 import { WerkitemTijdlijn } from "./WerkitemTijdlijn";
-import type { TijdlijnToelichting, TijdlijnLog } from "@/app/memo/tijdlijn-utils";
+import type { TijdlijnToelichting, TijdlijnLog } from "@/app/(protected)/memo/tijdlijn-utils";
 
 const STATUS_LABELS: Record<string, string> = {
   OPEN: "Open",

@@ -2,8 +2,8 @@
 // Gedeelde helper voor het berekenen van ValidatieUpdate vanuit een teamId.
 // Gebruikt door de API route (route.ts) én de server action (team-config-actions.ts).
 import { prisma } from "@/lib/teamindeling/db/prisma";
-import { getTeamtypeKaders } from "@/app/kader/actions";
-import { mergeMetDefaults } from "@/app/kader/kader-defaults";
+import { getTeamtypeKaders } from "@/app/(protected)/kader/actions";
+import { mergeMetDefaults } from "@/app/(protected)/kader/kader-defaults";
 import {
   berekenTeamValidatie,
   berekenValidatieStatus,
