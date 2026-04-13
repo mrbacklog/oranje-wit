@@ -398,7 +398,15 @@ function CompactChip({
           minWidth: 60,
           maxWidth: 130,
           borderRadius: 5,
-          border: isDragging ? "1px solid rgba(255,107,0,.5)" : "1px solid rgba(255,255,255,.06)",
+          border: isDragging
+            ? "1px solid rgba(255,107,0,.5)"
+            : speler.isNieuw
+              ? "1px solid rgba(34,197,94,.45)"
+              : speler.status === "TWIJFELT" || speler.status === "GEBLESSEERD"
+                ? "1px solid rgba(249,115,22,.45)"
+                : isStopt
+                  ? "1px solid rgba(239,68,68,.4)"
+                  : "1px solid rgba(255,255,255,.06)",
           background: achtergrond,
           cursor: isAR ? "default" : isDragging ? "grabbing" : "grab",
           overflow: "hidden",
