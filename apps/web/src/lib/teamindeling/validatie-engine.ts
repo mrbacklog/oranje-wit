@@ -64,10 +64,13 @@ export function berekenTeamValidatie(
 
   const kader = kaders[sleutel];
   const items: WerkbordValidatieItem[] = [];
-  const alleSpelers = [...team.dames, ...team.heren];
+  // Gecombineerde selecties: spelers zitten in selectieDames/selectieHeren, niet in dames/heren
+  const effectieveDames = team.gebundeld ? team.selectieDames : team.dames;
+  const effectieveHeren = team.gebundeld ? team.selectieHeren : team.heren;
+  const alleSpelers = [...effectieveDames, ...effectieveHeren];
   const totaal = alleSpelers.length;
-  const dames = team.dames.length;
-  const heren = team.heren.length;
+  const dames = effectieveDames.length;
+  const heren = effectieveHeren.length;
 
   // 1. Teamgrootte
   if (totaal < kader.teamMin) {
@@ -136,6 +139,9 @@ export function berekenTeamValidatie(
   }
 
   // 4. Gemiddelde leeftijd
+  // Noot: bij gecombineerde selecties (gebundeld: true) is gemiddeldeLeeftijd altijd null
+  // (berekend op directe team.spelers, niet op selectieDames/selectieHeren).
+  // Leeftijdsvalidatie wordt daardoor overgeslagen — pre-existing beperking.
   if (
     kader.gemLeeftijdMin !== undefined &&
     kader.gemLeeftijdMax !== undefined &&
