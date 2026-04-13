@@ -272,12 +272,18 @@ export function useWerkbordState(
       naarSelectieGroepId: string,
       geslacht: "V" | "M"
     ) => {
-      if (vanTeamId) {
-        verwijderSpelerUitTeamLokaal(spelerData.id, vanTeamId);
-      } else if (vanSelectieGroepId) {
+      const huidigSpeler = alleSpelersRef.current.find((s) => s.id === spelerData.id);
+      const huidigTeamId = huidigSpeler?.teamId ?? vanTeamId;
+      const huidigSelectieGroepId = huidigSpeler?.selectieGroepId ?? vanSelectieGroepId;
+
+      if (huidigTeamId) {
+        verwijderSpelerUitTeamLokaal(spelerData.id, huidigTeamId);
+      }
+
+      if (huidigSelectieGroepId && huidigSelectieGroepId !== naarSelectieGroepId) {
         setTeams((prev) =>
           prev.map((t) => {
-            if (t.selectieGroepId !== vanSelectieGroepId) return t;
+            if (t.selectieGroepId !== huidigSelectieGroepId) return t;
             return {
               ...t,
               selectieDames: t.selectieDames.filter((s) => s.spelerId !== spelerData.id),
@@ -285,7 +291,9 @@ export function useWerkbordState(
             };
           })
         );
+        void verwijderSelectieSpeler(huidigSelectieGroepId, spelerData.id);
       }
+
       voegSelectieSpelerToeLokaal(naarSelectieGroepId, spelerData, geslacht);
       const result = await voegSelectieSpelerToe(naarSelectieGroepId, spelerData.id);
       if (!result.ok) {

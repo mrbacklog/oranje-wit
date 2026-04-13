@@ -283,12 +283,22 @@ export function useWerkbordState(
       naarSelectieGroepId: string,
       geslacht: "V" | "M"
     ) => {
-      if (vanTeamId) {
-        verwijderSpelerUitTeamLokaal(spelerData.id, vanTeamId);
-      } else if (vanSelectieGroepId && vanSelectieGroepId !== naarSelectieGroepId) {
+      // Gebruik de werkelijke huidige staat (niet alleen de drag-data) om
+      // te bepalen of de speler al ergens anders ingedeeld staat.
+      const huidigSpeler = alleSpelersRef.current.find((s) => s.id === spelerData.id);
+      const huidigTeamId = huidigSpeler?.teamId ?? vanTeamId;
+      const huidigSelectieGroepId = huidigSpeler?.selectieGroepId ?? vanSelectieGroepId;
+
+      // Verwijder uit huidig team (los van selectie-logica)
+      if (huidigTeamId) {
+        verwijderSpelerUitTeamLokaal(spelerData.id, huidigTeamId);
+      }
+
+      // Verwijder uit huidige selectie als dat een andere is dan het doel
+      if (huidigSelectieGroepId && huidigSelectieGroepId !== naarSelectieGroepId) {
         setTeams((prev) =>
           prev.map((t) => {
-            if (t.selectieGroepId !== vanSelectieGroepId) return t;
+            if (t.selectieGroepId !== huidigSelectieGroepId) return t;
             return {
               ...t,
               selectieDames: t.selectieDames.filter((s) => s.spelerId !== spelerData.id),
@@ -296,9 +306,9 @@ export function useWerkbordState(
             };
           })
         );
-        // Verwijder server-side uit de oude selectie
-        void verwijderSelectieSpeler(vanSelectieGroepId, spelerData.id);
+        void verwijderSelectieSpeler(huidigSelectieGroepId, spelerData.id);
       }
+
       voegSelectieSpelerToeLokaal(naarSelectieGroepId, spelerData, geslacht);
       const result = await voegSelectieSpelerToe(naarSelectieGroepId, spelerData.id);
       if (!result.ok) {
