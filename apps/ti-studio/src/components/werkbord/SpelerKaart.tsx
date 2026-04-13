@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import "./tokens.css";
 import type { WerkbordSpeler } from "./types";
+import { leeftijdsKleur } from "./leeftijds-kleuren";
 
 interface SpelerKaartProps {
   speler: WerkbordSpeler;
@@ -55,6 +56,7 @@ export function SpelerKaart({
     speler.geboortejaar,
     seizoenEindjaar
   );
+  const leeftKleur = leeftijdsKleur(leeftijd);
 
   const stopGezet = speler.status === "GAAT_STOPPEN";
   const isAR = speler.status === "ALGEMEEN_RESERVE";
@@ -188,11 +190,26 @@ export function SpelerKaart({
           fontWeight: 700,
           background: geslachtBg,
           color: geslachtKleur,
-          border: `${smal ? 1 : 1.5}px solid ${geslachtKleur}`,
+          border: smal ? `1px solid ${geslachtKleur}` : `2px solid ${leeftKleur}`,
+          boxShadow: smal ? undefined : `0 0 6px ${leeftKleur}40`,
           boxSizing: "border-box",
         }}
       >
-        {initialen}
+        {speler.fotoUrl ? (
+          <img
+            src={speler.fotoUrl}
+            alt=""
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: "center top",
+              borderRadius: "50%",
+            }}
+          />
+        ) : (
+          initialen
+        )}
       </div>
 
       {/* Naam + meta — smal: 2-regels compact kolom */}
@@ -408,6 +425,25 @@ export function SpelerKaart({
               }}
             >
               AR
+            </span>
+          )}
+          {speler.status === "GEBLESSEERD" && (
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: 12,
+                height: 12,
+                border: "1.5px solid rgba(255,255,255,0.8)",
+                borderRadius: 2,
+                flexShrink: 0,
+              }}
+            >
+              <svg width="7" height="7" viewBox="0 0 6 6" fill="none">
+                <rect x="2.5" y="0" width="1" height="6" fill="#ff2d2d" />
+                <rect x="0" y="2.5" width="6" height="1" fill="#ff2d2d" />
+              </svg>
             </span>
           )}
           {speler.isNieuw && (
