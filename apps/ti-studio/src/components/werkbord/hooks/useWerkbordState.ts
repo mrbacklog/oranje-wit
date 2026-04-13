@@ -285,7 +285,7 @@ export function useWerkbordState(
     ) => {
       if (vanTeamId) {
         verwijderSpelerUitTeamLokaal(spelerData.id, vanTeamId);
-      } else if (vanSelectieGroepId) {
+      } else if (vanSelectieGroepId && vanSelectieGroepId !== naarSelectieGroepId) {
         setTeams((prev) =>
           prev.map((t) => {
             if (t.selectieGroepId !== vanSelectieGroepId) return t;
@@ -296,6 +296,8 @@ export function useWerkbordState(
             };
           })
         );
+        // Verwijder server-side uit de oude selectie
+        void verwijderSelectieSpeler(vanSelectieGroepId, spelerData.id);
       }
       voegSelectieSpelerToeLokaal(naarSelectieGroepId, spelerData, geslacht);
       const result = await voegSelectieSpelerToe(naarSelectieGroepId, spelerData.id);
