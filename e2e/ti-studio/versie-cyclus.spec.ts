@@ -6,7 +6,7 @@ test.describe("TI Studio — Versie Cyclus", () => {
   test.setTimeout(90_000);
 
   test("opslaan knop is zichtbaar en klikbaar", async ({ page }) => {
-    await page.goto("/indeling", GOTO_OPTS);
+    await page.goto("/ti-studio/indeling", GOTO_OPTS);
 
     // Indeling pagina heeft mogelijk een error — controleer of pagina totaal laadt
     const body = page.locator("body");
@@ -40,7 +40,7 @@ test.describe("TI Studio — Versie Cyclus", () => {
         await expect(allBtns.first()).toBeVisible({ timeout: 5_000 });
       } else {
         // Pagina laadt zonder knoppen (mogelijk error boundary)
-        expect(page.url()).toContain("/indeling");
+        expect(page.url()).toContain("/ti-studio/indeling");
       }
     }
   });
