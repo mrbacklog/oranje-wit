@@ -58,22 +58,8 @@ export function SpelerKaart({
 
   const stopGezet = speler.status === "GAAT_STOPPEN";
   const isAR = speler.status === "ALGEMEEN_RESERVE";
-  const isNieuw = speler.isNieuw;
   const isStopt =
     speler.status === "GAAT_STOPPEN" || speler.status === "GESTOPT" || speler.status === "AFGEMELD";
-
-  const waasAchtergrond =
-    isDragging || isHeld
-      ? "rgba(255,107,0,.10)"
-      : isNieuw
-        ? "rgba(34,197,94,.07)"
-        : speler.status === "TWIJFELT"
-          ? "rgba(249,115,22,.08)"
-          : speler.status === "GEBLESSEERD"
-            ? "rgba(249,115,22,.10)"
-            : isStopt
-              ? "rgba(239,68,68,.07)"
-              : "transparent";
 
   return (
     <div
@@ -160,9 +146,9 @@ export function SpelerKaart({
             : "1px solid rgba(255,255,255,.07)",
         borderRadius: 4,
         marginBottom: smal ? 1 : 2,
-        opacity: isStopt ? 0.52 : isHeld || isDragging ? 0.6 : 1,
-        cursor: isAR ? "default" : isHeld || isDragging ? "grabbing" : "grab",
-        background: waasAchtergrond,
+        opacity: stopGezet ? 0.5 : isHeld || isDragging ? 0.6 : 1,
+        cursor: isHeld || isDragging ? "grabbing" : "grab",
+        background: isDragging || isHeld ? "rgba(255,107,0,.10)" : "transparent",
         outline: "none",
         boxShadow: isDragging ? "var(--sh-lift-speler)" : "none",
         transform: isDragging ? "scale(1.04) translateY(-4px)" : "none",
