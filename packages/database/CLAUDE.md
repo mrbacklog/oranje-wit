@@ -1,34 +1,32 @@
-# packages/database — Prisma + PostgreSQL
+# Database Package — @oranje-wit/database
 
-## Source of truth
-`prisma/schema.prisma` is de enige bron voor het datamodel.
-Wijzigingen in het schema altijd via migraties, nooit via push.
+Prisma schema + client voor de PostgreSQL database op Railway.
 
-## Verplichte regels
-- **NOOIT** `pnpm db:push` — dropt de VIEW `speler_seizoenen` (onomkeerbaar)
-- Migraties: `pnpm db:migrate` (development) of `pnpm db:migrate:deploy` (productie)
-- Na elke migratie: `pnpm db:ensure-views` draaien om VIEW te herstellen
+## Source of Truth
+`packages/database/prisma/schema.prisma` is de ENIGE source of truth voor het datamodel.
+
+## Commando's
+| Commando | Wanneer |
+|---|---|
+| `pnpm db:generate` | Na schema-wijziging — genereert Prisma client |
+| `pnpm db:migrate` | Nieuwe migratie aanmaken (development) |
+| `pnpm db:migrate:deploy` | Pending migraties draaien + VIEW herstellen (productie) |
+| `pnpm db:migrate:status` | Migratiestatus bekijken |
+| `pnpm db:ensure-views` | VIEW speler_seizoenen controleren/herstellen |
+
+## VERBODEN
+- **NOOIT `pnpm db:push`** — dropt de VIEW `speler_seizoenen` permanent
+- **NOOIT `npx prisma db push`** — zelfde probleem
 
 ## VIEW speler_seizoenen
-- Staat in `prisma/views.sql` — buiten Prisma beheerd
-- Bevat korfballeeftijd, categorie, team per speler per seizoen
-- Mag NOOIT worden gedropt — zie `rules/database.md`
+Deze VIEW aggregeert spelershistorie over alle seizoenen. Wordt hersteld door `db:migrate:deploy`. Als de VIEW mist: `pnpm db:ensure-views`.
 
-## Speler-identifier
-- `rel_code` (Sportlink relatienummer) = enige stabiele identifier
-- Nooit naam-matching, nooit email-matching
-- `rel_code` = `Speler.id` in het schema
+## Identifier-regel
+`rel_code` (Sportlink relatienummer) is de ENIGE stabiele identifier voor leden en spelers. Gebruik NOOIT naam-matching — namen zijn niet uniek en veranderen.
 
-## Migratie workflow
-```
-# Development
-pnpm db:migrate        # Nieuwe migratie aanmaken
-pnpm db:ensure-views   # VIEW herstellen na migratie
+## Modellen
+61 Prisma-modellen in twee groepen:
+- **Monitor** (snake_case via `@@map`): Lid, Seizoen, CompetitieSpeler, LidFoto, OWTeam, OWTeamType, etc.
+- **TI** (PascalCase): Speler, Team, Scenario, Versie, Kader, etc.
 
-# Productie
-pnpm db:migrate:deploy # Pending migraties draaien + VIEW herstellen
-```
-
-## Scripts
-Hulpscripts in `packages/database/scripts/` voor seeding en VIEW-herstel.
-Detail over alle 61 modellen: zie `rules/database.md`.
+Details: `rules/database.md`

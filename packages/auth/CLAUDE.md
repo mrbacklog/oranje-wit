@@ -1,39 +1,38 @@
-# packages/auth — NextAuth v5 + auth guards
+# Auth Package — @oranje-wit/auth
 
-## Stack
-- NextAuth v5 met Google OAuth provider
-- Geen JWT-tokens handmatig aanmaken of verifiëren
+NextAuth v5 + Google OAuth voor het platform.
 
-## Auth guards (`@oranje-wit/auth/checks`)
-| Functie | Gebruik | Gedrag |
+## Auth Guards (verplicht patroon)
+
+**API routes** — gebruik `guardTC()`:
+```typescript
+import { guardTC } from '@oranje-wit/auth/checks'
+
+export async function GET(req: Request) {
+  const guard = await guardTC()
+  if (!guard.ok) return fail(guard.error, 401)
+  // ... rest van de handler
+}
+```
+
+**Server actions** — gebruik `requireTC()`:
+```typescript
+import { requireTC } from '@oranje-wit/auth/checks'
+
+export async function myAction(data: FormData) {
+  await requireTC() // throwt als niet-TC
+  // ... rest van de action
+}
+```
+
+## Rollen
+- **TC-leden** (3 personen): Google OAuth → volledige toegang
+- **Smartlink-gebruikers**: scoped op rol + doelgroep, 14-daagse sessie
+
+## Clearance niveaus
+| Clearance | Ziet | Wie |
 |---|---|---|
-| `guardTC()` | API routes | Returnt `Result<User, Response>` — geen throw |
-| `requireTC()` | Server actions | Throwt als gebruiker geen TC-lid is |
-
-## Gebruik in API routes
-```ts
-import { guardTC } from "@oranje-wit/auth/checks";
-
-export async function GET() {
-  const guard = await guardTC();
-  if (!guard.ok) return guard.error; // Response met 401/403
-  // guard.data = ingelogde TC-gebruiker
-}
-```
-
-## Gebruik in server actions
-```ts
-import { requireTC } from "@oranje-wit/auth/checks";
-
-export async function myAction() {
-  const user = await requireTC(); // throwt als niet-TC
-  // ...
-  return { ok: true, data: result } satisfies ActionResult<typeof result>;
-}
-```
-
-## Overige exports
-- `adapter.ts` — Prisma adapter voor NextAuth sessies
-- `allowlist.ts` — TC-ledenlijst voor toegangsbeheer
-- `smartlink-email.ts` — Smartlink/HMAC e-mail voor externe gebruikers
-- `passkey.ts` — Passkey authenticatie (WebAuthn)
+| 0 | Naam + team | Scout, ouder/speler |
+| 1 | + relatieve positie | Coordinator, trainer |
+| 2 | + USS score + trend | TC-lid |
+| 3 | + volledige kaart | TC-kern |

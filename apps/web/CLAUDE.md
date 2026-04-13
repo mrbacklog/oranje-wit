@@ -1,31 +1,38 @@
-# apps/web — Next.js frontend
+# Web App — apps/web/
 
-## Framework & taal
-- Next.js 16, React, TypeScript, Tailwind CSS
-- Taal: altijd Nederlands (comments, variabelen, labels)
+Geconsolideerde Next.js 16 app met alle domeinen.
 
-## Design system
-- **Dark-first**: TI Studio gebruikt dark mode (CSS variabelen)
-- **Light**: Monitor en overige domeinen gebruiken light mode
-- Gedeelde UI-componenten staan in `packages/ui/` (`@oranje-wit/ui`)
-- Design tokens: zie `rules/design-system.md`
+## Route Groups
+```
+apps/web/src/app/
+├── (monitor)/monitor/       # Dashboards, signalering, retentie
+├── (teamindeling)/          # Mobile TI (dark mode)
+├── (ti-studio)/ti-studio/   # Desktop TI workspace (light mode)
+├── (evaluatie)/evaluatie/   # Rondes, invullen, zelfevaluatie
+├── (scouting)/scouting/     # Verzoeken, rapporten, kaarten
+├── (beheer)/beheer/         # 9 TC-domeinen, gebruikersbeheer
+└── (beleid)/beleid/         # Visie, doelgroepen, Oranje Draad
+```
 
-## Patronen
-- **Server Components** voor data-fetching (geen client-side fetch tenzij nodig)
-- **Server Actions** voor formulier-submits en interne UI-interactie — return type altijd `ActionResult<T>` uit `@oranje-wit/types`
-- **API Routes** voor externe clients, file uploads en CORS — gebruik `ok()`/`fail()`/`parseBody()` uit `@/lib/api`
-- Auth in server actions: `requireTC()` (throwt); in API routes: `guardTC()` (returnt Result)
+## Design System
+- **Dark-first** voor alle domeinen behalve TI Studio (light)
+- Tokens in `packages/ui/src/tokens/`
+- CSS classes in `apps/web/src/app/globals.css` — gebruik `.btn`, `.card`, `.badge`, etc.
+- **NOOIT** hardcoded kleuren — altijd `var(--ow-*)` tokens of Tailwind
 
-## Logging & constanten
-- Nooit `console.log` — gebruik `logger` uit `@oranje-wit/types`
-- Importeer `PEILJAAR`, `HUIDIG_SEIZOEN`, `PEILDATUM` uit `@oranje-wit/types`, definieer nooit lokaal
+## Tailwind CSS 4
+- Config via CSS: `@import "tailwindcss"` + `@theme inline { ... }`
+- **GEEN** `tailwind.config.ts`
+- `@apply` alleen met standaard Tailwind utilities
 
-## Domeinen
-| Route group | Domein | Mode |
-|---|---|---|
-| `(teamindeling-studio)` | TI Studio — drag-drop editor | Dark |
-| `(teamindeling)` | Teamindeling (legacy/mobile) | Dark |
-| `(monitor)` | Verenigingsmonitor | Light |
-| `(evaluatie)` | Evaluaties | Light |
-| `(scouting)` | Scouting | Light |
-| `(beheer)` | Beheer | Light |
+## Server Actions vs API Routes
+- **Server action**: UI-interactie, formulier-submit, `revalidatePath()`
+- **API route**: externe clients, smartlinks, file uploads, CORS
+
+## AI Endpoints
+- `/api/ai/voorstel` — startvoorstel genereren
+- `/api/ai/chat` — contextgevoelige chat
+- `/api/ai/advies` — spelersadvies
+- `/api/ai/whatif` — what-if analyse
+
+Details routes: `rules/routes.md`
