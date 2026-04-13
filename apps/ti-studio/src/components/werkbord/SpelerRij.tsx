@@ -398,8 +398,8 @@ function CompactChip({
           gap: 5,
           height: 32,
           padding: "0 9px",
-          minWidth: 60,
-          maxWidth: 130,
+          minWidth: 80,
+          maxWidth: 180,
           borderRadius: 6,
           border: isDragging
             ? "1px solid rgba(255,107,0,.5)"
@@ -437,10 +437,10 @@ function CompactChip({
           }}
         />
 
-        {/* Roepnaam */}
+        {/* Naam: roepnaam + afgekorte tvs + achternaam-initiaal */}
         <span
           style={{
-            fontSize: 12,
+            fontSize: 17,
             fontWeight: 600,
             color: "var(--text-1)",
             whiteSpace: "nowrap",
@@ -451,7 +451,7 @@ function CompactChip({
             textDecoration: isStopt ? "line-through" : "none",
           }}
         >
-          {speler.roepnaam}
+          {naamNormaal(speler.roepnaam, speler.tussenvoegsel, speler.achternaam)}
         </span>
 
         {/* Badges */}

@@ -644,29 +644,58 @@ function DropzoneKolom({
         </div>
       )}
 
-      {/* Body: compacte chips of spelersrijen */}
+      {/* Teller: prominent geslacht-icoon + aantal */}
       {isCompact && (
         <div
           style={{
-            height: 20,
             display: "flex",
+            flexDirection: "column",
             alignItems: "center",
-            padding: "0 8px",
-            gap: 6,
-            background: "rgba(255,255,255,.03)",
-            borderBottom: "1px solid rgba(255,255,255,.05)",
+            justifyContent: "center",
+            padding: "10px 0 8px",
+            gap: 2,
+            borderBottom: "1px solid rgba(255,255,255,.06)",
             flexShrink: 0,
           }}
         >
+          {kleur === "V" ? (
+            <svg
+              width={26}
+              height={26}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="rgba(236,72,153,.8)"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
+              <circle cx="12" cy="8" r="6" />
+              <line x1="12" y1="14" x2="12" y2="22" />
+              <line x1="9" y1="19" x2="15" y2="19" />
+            </svg>
+          ) : (
+            <svg
+              width={26}
+              height={26}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="rgba(96,165,250,.8)"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
+              <circle cx="10" cy="14" r="6" />
+              <line x1="21" y1="3" x2="15" y2="9" />
+              <polyline points="16 3 21 3 21 8" />
+            </svg>
+          )}
           <span
             style={{
-              fontSize: 10,
-              fontWeight: 700,
-              letterSpacing: ".3px",
+              fontSize: 40,
+              fontWeight: 900,
+              lineHeight: 1,
               color: kleur === "V" ? "rgba(236,72,153,.75)" : "rgba(96,165,250,.75)",
             }}
           >
-            {kleur === "V" ? "♀" : "♂"} {spelers.length}
+            {spelers.length}
           </span>
         </div>
       )}
@@ -745,44 +774,66 @@ function ViertalDropzone({
       {zoomLevel === "compact" && (
         <div
           style={{
-            height: 20,
             display: "flex",
             alignItems: "center",
-            padding: "0 8px",
-            gap: 8,
-            background: "rgba(255,255,255,.03)",
-            borderBottom: "1px solid rgba(255,255,255,.05)",
+            justifyContent: "center",
+            gap: 20,
+            padding: "10px 0 8px",
+            borderBottom: "1px solid rgba(255,255,255,.06)",
             flexShrink: 0,
           }}
         >
-          <span
-            style={{
-              fontSize: 10,
-              fontWeight: 700,
-              letterSpacing: ".3px",
-              color: "rgba(236,72,153,.75)",
-            }}
-          >
-            ♀ {team.dames.length}
-          </span>
-          <span
-            style={{
-              width: 1,
-              height: 10,
-              background: "rgba(255,255,255,.12)",
-              display: "inline-block",
-            }}
-          />
-          <span
-            style={{
-              fontSize: 10,
-              fontWeight: 700,
-              letterSpacing: ".3px",
-              color: "rgba(96,165,250,.75)",
-            }}
-          >
-            ♂ {team.heren.length}
-          </span>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
+            <svg
+              width={24}
+              height={24}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="rgba(236,72,153,.8)"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
+              <circle cx="12" cy="8" r="6" />
+              <line x1="12" y1="14" x2="12" y2="22" />
+              <line x1="9" y1="19" x2="15" y2="19" />
+            </svg>
+            <span
+              style={{
+                fontSize: 36,
+                fontWeight: 900,
+                lineHeight: 1,
+                color: "rgba(236,72,153,.75)",
+              }}
+            >
+              {team.dames.length}
+            </span>
+          </div>
+          <div style={{ width: 1, height: 52, background: "rgba(255,255,255,.08)" }} />
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
+            <svg
+              width={24}
+              height={24}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="rgba(96,165,250,.8)"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
+              <circle cx="10" cy="14" r="6" />
+              <line x1="21" y1="3" x2="15" y2="9" />
+              <polyline points="16 3 21 3 21 8" />
+            </svg>
+            <span
+              style={{
+                fontSize: 36,
+                fontWeight: 900,
+                lineHeight: 1,
+                color: "rgba(96,165,250,.75)",
+              }}
+            >
+              {team.heren.length}
+            </span>
+          </div>
         </div>
       )}
       <div
