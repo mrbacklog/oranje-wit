@@ -186,9 +186,34 @@ export function TiStudioPageShell({ children }: TiStudioPageShellProps) {
                 color: "#fbbf24",
                 borderBottom: "1px solid rgba(234,179,8,.15)",
                 flexShrink: 0,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 12,
               }}
             >
-              Je bekijkt seizoen {seizoen} — dit is niet het actieve werkseizoen (alleen-lezen)
+              <span>
+                Je bekijkt seizoen {seizoen} — dit is niet het actieve werkseizoen (alleen-lezen)
+              </span>
+              <button
+                onClick={() => {
+                  document.cookie = "actief-seizoen=; path=/; max-age=0";
+                  router.refresh();
+                }}
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: "#fbbf24",
+                  background: "rgba(234,179,8,.15)",
+                  border: "1px solid rgba(234,179,8,.3)",
+                  borderRadius: 4,
+                  padding: "2px 8px",
+                  cursor: "pointer",
+                  flexShrink: 0,
+                }}
+              >
+                Ga naar werkseizoen
+              </button>
             </div>
           )}
 
