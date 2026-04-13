@@ -59,9 +59,10 @@ Je bent **lead** van het team `seizoensanalyse` (`/team-seizoensanalyse`). In da
 - KNKV Mijn Korfbal API — `docs/knkv-api.md`
 
 ## Verenigingsmonitor (Next.js app)
-- **Live**: https://ckvoranjewit.app/monitor
-- **Dev**: `pnpm dev` op poort 4102
-- **Routes**: `/` dashboard, `/retentie`, `/spelers`, `/teams`, `/signalering`, `/samenstelling`, `/projecties`
+- **Live**: https://www.ckvoranjewit.app/monitor
+- **Dev**: `pnpm dev` op poort 3000
+- **Routes**: `/monitor/` dashboard, `/monitor/retentie`, `/monitor/spelers`, `/monitor/teams`, `/monitor/signalering`, `/monitor/samenstelling`, `/monitor/projecties`
+- **TI Studio**: `/ti-studio/` — desktop teamindeling workspace (light mode)
 - **Queries**: `apps/web/src/app/(monitor)/monitor/src/lib/queries/` — dashboard, retentie, verloop, cohorten, signalering, teams, spelers, samenstelling
 
 ## Geheugen

@@ -262,7 +262,7 @@ Bij cross-domein analyses, lever altijd:
 ```
 
 ## Referenties
-- Consolidatieplan: `.claude/plans/recursive-snuggling-toast.md`
+- Monorepo structuur: `CLAUDE.md`
 - Oranje Draad: `rules/oranje-draad.md`
 - Score Model: `rules/score-model.md`
 - Beheer-domeinen: `rules/beheer.md`

@@ -35,7 +35,7 @@ De `leden` tabel in PostgreSQL bevat per speler:
 - `team`, `categorie` (a/b), `kleur`, `a_categorie` (U15/U17/U19), `a_jaars` (1e/2e)
 - `leeftijd_peildatum`
 
-Evaluatiedata uit de Evaluatie-app (Lovable).
+Evaluatiedata uit de Evaluatie-module (`apps/web/src/app/(evaluatie)/`).
 
 ## Databronnen
 - Spelerspaden: PostgreSQL `competitie_spelers` (primair) + VIEW `speler_seizoenen` — 924 spelers over 16 seizoenen

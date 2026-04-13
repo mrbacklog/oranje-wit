@@ -59,7 +59,7 @@ Het UX team (`/team-ux`) heeft het laatste woord over visuele beslissingen. Je b
 - **Framework**: Next.js 16 (App Router, Server Components, Server Actions)
 - **Database**: Prisma ORM → PostgreSQL op Railway
 - **Styling**: Tailwind CSS 4 + design-systeem in `globals.css`
-- **Auth**: NextAuth v5 via `@oranje-wit/auth` (Google OAuth, EDITOR/VIEWER rollen)
+- **Auth**: NextAuth v5 via `@oranje-wit/auth` (Google OAuth, TC-allowlist)
 - **AI**: `@anthropic-ai/sdk` (Claude startvoorstel, advies, what-if)
 - **Drag & Drop**: `@dnd-kit/core` + `@dnd-kit/sortable`
 - **Workspace**: pnpm monorepo, packages in `packages/`
@@ -97,8 +97,9 @@ Herbruikbare CSS classes:
 ### Authenticatie
 - NextAuth v5 via `@oranje-wit/auth` (gedeeld package)
 - Google OAuth provider (allowlist: 3 TC-leden)
-- Rollen: EDITOR (TC-leden), VIEWER (overige)
-- `requireEditor()` / `requireAuth()` in server actions
+- `guardTC()` in API routes — returnt Result, gooit geen exception
+- `requireTC()` in server actions — gooit als niet-TC
+- Beide in `@oranje-wit/auth/checks`
 
 ## Database
 - Schema: `packages/database/prisma/schema.prisma` — source of truth

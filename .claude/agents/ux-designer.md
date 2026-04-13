@@ -127,7 +127,7 @@ Alle apps zijn installeerbaar als PWA:
 ## Output formaat
 
 ### HTML Prototypes
-Schrijf naar `apps/<app>/design/` als standalone HTML:
+Schrijf naar `apps/web/src/app/<domein>/design/` als standalone HTML:
 - Geen externe dependencies (inline CSS/JS)
 - Dark-first met OW design tokens
 - Responsive maar geoptimaliseerd voor 430px
