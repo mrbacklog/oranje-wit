@@ -43,7 +43,7 @@ De `skills:`-lijst in elke agent-file is **informatief**: het documenteert welke
 | `devops` | `shared/deployment`, `shared/e2e-testing`, `devops/health-check`, `devops/ci-status`, `shared/audit` |
 | `e2e-tester` | `shared/e2e-testing`, `shared/deployment` |
 | `deployment` | `shared/deployment`, `monitor/railway` |
-| `documentalist` | `team-indeling/scenario`, `team-indeling/validatie`, `shared/oranje-draad` |
+| `documentalist` | `team-indeling/scenario`, `team-indeling/validatie`, `shared/oranje-draad`, `shared/retro` |
 | `jeugdbeleid` | `shared/oranje-draad`, `shared/score-model`, `monitor/jeugdmodel`, `monitor/teamsamenstelling` |
 | `ux-designer` | `shared/oranje-draad`, `shared/score-model`, `shared/audit` |
 | `frontend` | `shared/oranje-draad`, `shared/deployment`, `shared/e2e-testing`, `shared/audit` |
@@ -94,7 +94,7 @@ Elf voorgedefinieerde agent teams voor parallelle samenwerking. Activeer met `/t
 |---|---|---|---|---|
 | **Seizoensindeling** | `/team-seizoensindeling` | team-planner | adviseur, regel-checker, data-analist | Volledig indelingstraject (kaders → definitief) |
 | **Seizoensanalyse** | `/team-seizoensanalyse` | korfbal | data-analist, speler-scout, team-selector | Seizoensstart: totaalbeeld leden, retentie, prognoses |
-| **Release** | `/team-release` | ontwikkelaar | e2e-tester, deployment | Feature bouwen + testen + deployen naar Railway |
+| **Release** | `/team-release` | ontwikkelaar | e2e-tester, deployment | Feature bouwen + testen + deployen naar Railway, inclusief benchmark + canary na elke deploy |
 | **E2E Testing** | `/team-e2e` | e2e-tester | ontwikkelaar, deployment | E2E testing, regressie, exploratory testing |
 | **Documentatie** | `/team-documentatie` | documentalist | ontwikkelaar, korfbal | Documentatie schrijven en bijwerken |
 | **Kwaliteit** | `/team-kwaliteit` | ontwikkelaar | e2e-tester, regel-checker, deployment | Code quality review, health check, codebase sweep |
@@ -113,8 +113,8 @@ Alle skills staan in `.claude/skills/<naam>/SKILL.md` (flat structuur). Agent fr
 ### Domein-skills (23)
 advies, batch-plaats, concept, database, deployment, e2e-testing, evaluatie, exporteer, import, jeugdmodel, knkv-api, ledenverloop, lid-monitor, oranje-draad, pin, railway, scenario, scenario-analyse, score-model, start, teamsamenstelling, validatie, vergelijk
 
-### Infra-skills (4)
-audit, ci-status, health-check, deploy
+### Infra-skills (8)
+audit, ci-status, health-check, deploy, security, canary, benchmark, retro
 
 ### Agent Teams (11)
 team-seizoensindeling, team-seizoensanalyse, team-release, team-e2e, team-documentatie, team-kwaliteit, team-devops, team-jeugdontwikkeling, team-ux, team-beheer, team-product
@@ -123,3 +123,13 @@ team-seizoensindeling, team-seizoensanalyse, team-release, team-e2e, team-docume
 Skills staan in `.claude/skills/<naam>/SKILL.md` (flat structuur).
 Agent frontmatter verwijst met domeinprefixen (`shared/oranje-draad`).
 Dit is documentatie-conventie, geen directory-structuur.
+
+## Retro & Learnings Cyclus
+
+Na elke `/team-release` (zowel patch als release) MOET `/retro` worden gedraaid door de `documentalist` agent.
+
+**Trigger:** `product-owner` roept `/retro <release-naam>` aan nadat `team-release` klaar rapporteert.
+
+**Opslag:** Learnings staan in `docs/learnings/` en worden automatisch geladen door `/start` (Stap 5).
+
+**Doel:** Inzichten uit elke release beschikbaar maken voor toekomstige sessies, zonder dat context opnieuw moet worden uitgelegd.

@@ -91,6 +91,25 @@ Verwacht output: `✅ Productie is live` met correcte SHA.
 
 Als verify faalt: analyseer oorzaak, rapporteer aan `product-owner`. **Nooit stille failure.**
 
+### 7. Benchmark + Canary (verplicht na succesvolle verify)
+
+```bash
+# Stap 7a: Sla performance baseline op voor deze release SHA
+# Aanroepen via: /benchmark save
+# Sla de output op — bevat de filename van de baseline
+
+# Stap 7b: Vergelijk met vorige baseline
+# Aanroepen via: /canary
+# Output: GROEN/ORANJE/ROOD verdict
+```
+
+Bij **ROOD** canary-resultaat: **pauzeer rapportage aan PO** en analyseer oorzaak eerst (spawn `deployment` agent).
+
+Voeg het canary-resultaat toe aan de rapportage aan Product Owner:
+```
+- Canary check: GROEN/ORANJE/ROOD (response delta: X%)
+```
+
 ## Rapportage aan Product Owner
 
 Na afronding rapporteer aan PO:

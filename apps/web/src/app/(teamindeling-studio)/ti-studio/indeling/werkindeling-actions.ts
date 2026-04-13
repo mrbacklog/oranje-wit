@@ -108,6 +108,7 @@ export async function getAlleSpelers() {
       status: true,
       huidig: true,
       spelerspad: true,
+      seizoenenActief: true,
     },
   });
 

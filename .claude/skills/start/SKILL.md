@@ -97,7 +97,29 @@ git status --short     # uncommitted changes
 
 ---
 
-## Stap 5: Memory raadplegen
+## Stap 5: Recente learnings laden
+
+Controleer of er recente learnings zijn:
+
+```bash
+ls -t docs/learnings/*.md 2>/dev/null | head -3
+```
+
+Als er 3 of meer learnings zijn: lees de 3 meest recente.
+Als er minder zijn: lees alle beschikbare.
+Als `docs/learnings/` niet bestaat of leeg is: sla deze stap over.
+
+Extraheer uit elke learning de sectie **"Actiepunten volgende sprint"**. Neem deze actiepunten mee als actieve context voor deze sessie:
+
+- Zijn deze actiepunten nu van toepassing op de huidige taak?
+- Is er een actiepunt dat deze sessie opgepakt kan worden?
+- Zijn er actiepunten die inmiddels zijn opgelost? (Dan hoef je ze niet meer te noemen)
+
+Rapporteer actieve openstaande actiepunten kort aan de gebruiker bij het opstarten (alleen als relevant voor de huidige taak).
+
+---
+
+## Stap 6: Memory raadplegen
 
 1. Lees `MEMORY.md` in de memory-directory
 2. Lees relevante memories op basis van domein en taak
@@ -105,7 +127,7 @@ git status --short     # uncommitted changes
 
 ---
 
-## Stap 6: Product Owner afstemming (verplicht)
+## Stap 7: Product Owner afstemming (verplicht)
 
 Na het laden van context, spawn **altijd** de `product-owner` agent voordat je aan het werk gaat.
 
@@ -117,7 +139,7 @@ De product-owner:
 
 ```
 /start
-  → context laden (stap 1-5)
+  → context laden (stap 1-6)
   → spawn product-owner
   → PO presenteert: stand van zaken + prioriteiten
   → gebruiker kiest wat er gebouwd wordt

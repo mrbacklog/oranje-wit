@@ -40,6 +40,7 @@ const TOEGESTANE_STATUSSEN = new Set([
   "GESTOPT",
   "AFGEMELD",
   "ALGEMEEN_RESERVE",
+  "GEBLESSEERD",
 ]);
 
 function mapStatus(s: string | null | undefined): WerkbordSpeler["status"] {
@@ -144,7 +145,7 @@ export default async function IndelingPage() {
     afmelddatum: null,
     teamId: sp.status === "ALGEMEEN_RESERVE" ? null : (spelerTeamMap.get(sp.id) ?? null),
     gepind: false,
-    isNieuw: false,
+    isNieuw: sp.seizoenenActief === 1,
     openMemoCount: openMemoPerSpeler[sp.id] ?? 0,
     ussScore: sp.ussScore ?? null,
     fotoUrl: sp.heeftFoto ? `/api/scouting/spelers/${sp.id}/foto` : null,

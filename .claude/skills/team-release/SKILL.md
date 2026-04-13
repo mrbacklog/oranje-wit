@@ -70,13 +70,17 @@ Als mode onduidelijk is: analyseer `git diff origin/main..HEAD --stat` en beslis
 5. Na full-E2E groen: pipeline wacht op handmatige goedkeuring Antjan
 6. **deployment** monitort deploy-job + health check + custom domain
 7. `pnpm verify:deploy` → bevestig productie live
-8. Rapporteer aan PO: release branch, SHAs, test-status, verify-uitslag, GitHub Release URL
+8. **deployment** draait `/benchmark save` → vervolgens `/canary` → rapporteert resultaat aan `ontwikkelaar`
+9. **ontwikkelaar** verwerkt het canary-resultaat in de eindrapportage aan PO
+10. Rapporteer aan PO: release branch, SHAs, test-status, verify-uitslag, canary-resultaat, GitHub Release URL
 
 ## Post-deploy verplichte acties (beide modes)
 
 - [ ] `pnpm verify:deploy` uitvoeren
 - [ ] SHA-check: productie-SHA = lokale HEAD?
 - [ ] Controleer of Railway build groen is in de CI-logs
+- [ ] Patch: `/benchmark save` (baseline opslaan, geen canary)
+- [ ] Release: `/benchmark save` → `/canary` → canary-resultaat in rapportage PO
 - [ ] Rapporteer statusoverzicht terug aan PO
 
 ## Communicatiepatronen

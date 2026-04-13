@@ -190,6 +190,26 @@ Totaal: 3/3 GROEN, 0 ORANJE, 0 ROOD
 /team-devops [deployment probleem beschrijving]
 ```
 
+### ✅ Stap 9b: Benchmark + Canary (verplicht na succesvolle verify-deploy)
+
+**Bij Release-deploys:**
+
+```bash
+# 1. Sla performance baseline op voor deze deploy
+# (Aanroepen als deployment agent via /benchmark save)
+
+# 2. Vergelijk met vorige baseline
+# (Aanroepen als deployment agent via /canary)
+```
+
+- Bij canary **ROOD**: rapporteer aan `product-owner` vóórdat je "deploy voltooid" meldt. Overweeg rollback.
+- Bij canary **ORANJE**: noteer in de rapportage aan stakeholders. Geen blokkade.
+- Bij canary **GROEN**: ga door naar Stap 10.
+
+**Bij Patch-deploys:**
+
+Sla alleen de baseline op (`/benchmark save`) — geen canary-vergelijking (te klein voor gedragsmonitoring).
+
 ### ✅ Stap 10: Rapporteer aan stakeholders
 
 Via Slack (als nodig):
