@@ -184,7 +184,7 @@ jobs:
     timeout-minutes: 5
     if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     steps:
-      - name: Trigger Railway deploy
+      - name: Trigger Railway deploy (web)
         run: |
           RESULT=$(curl -s -X POST "https://backboard.railway.com/graphql/v2" \
             -H "Authorization: Bearer ${{ secrets.RAILWAY_TOKEN }}" \
@@ -192,3 +192,18 @@ jobs:
             -d "{\"query\":\"mutation { serviceInstanceDeploy(environmentId: \\\"${{ secrets.RAILWAY_ENVIRONMENT_ID }}\\\", serviceId: \\\"${{ secrets.RAILWAY_SERVICE_WEB }}\\\", commitSha: \\\"${{ github.sha }}\\\") }\"}")
           echo "Railway response: $RESULT"
           echo "$RESULT" | grep -q '"serviceInstanceDeploy":true' && echo "Deploy getriggerd (${{ github.sha }})" || (echo "Deploy mislukt" && exit 1)
+
+      - name: Trigger Railway deploy (ti-studio)
+        env:
+          RAILWAY_SERVICE_TI_STUDIO: ${{ secrets.RAILWAY_SERVICE_TI_STUDIO }}
+        run: |
+          if [ -z "$RAILWAY_SERVICE_TI_STUDIO" ]; then
+            echo "RAILWAY_SERVICE_TI_STUDIO niet ingesteld — ti-studio deploy overgeslagen"
+            exit 0
+          fi
+          RESULT=$(curl -s -X POST "https://backboard.railway.com/graphql/v2" \
+            -H "Authorization: Bearer ${{ secrets.RAILWAY_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d "{\"query\":\"mutation { serviceInstanceDeploy(environmentId: \\\"${{ secrets.RAILWAY_ENVIRONMENT_ID }}\\\", serviceId: \\\"$RAILWAY_SERVICE_TI_STUDIO\\\", commitSha: \\\"${{ github.sha }}\\\") }\"}")
+          echo "Railway ti-studio response: $RESULT"
+          echo "$RESULT" | grep -q '"serviceInstanceDeploy":true' && echo "TI-Studio deploy getriggerd (${{ github.sha }})" || (echo "TI-Studio deploy mislukt" && exit 1)
