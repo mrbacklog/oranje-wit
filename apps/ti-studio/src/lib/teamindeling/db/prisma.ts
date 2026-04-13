@@ -86,6 +86,10 @@ type AnyPrismaModels = {
   werkindelingSnapshot: AnyModel;
   // Team-aliassen (KNKV-competitienamen)
   teamAlias: AnyModel;
+  // AI
+  aiProviderInstelling: AnyModel;
+  gesprek: AnyModel;
+  gesprekBericht: AnyModel;
   // Daisy
   daisyActie: AnyModel;
   plaatsreservering: AnyModel;

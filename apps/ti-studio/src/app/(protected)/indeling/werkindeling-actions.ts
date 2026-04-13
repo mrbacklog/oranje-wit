@@ -402,3 +402,29 @@ export async function toggleSelectieBundeling(
     return { ok: false, error: error instanceof Error ? error.message : String(error) };
   }
 }
+
+export async function maakTeamAan(
+  versieId: string,
+  naam: string,
+  categorie: string
+): Promise<ActionResult<{ id: string; naam: string; categorie: string; volgorde: number }>> {
+  await requireTC();
+  try {
+    const versie = await prisma.versie.findUniqueOrThrow({
+      where: { id: versieId },
+      select: { werkindeling: { select: { kaders: { select: { seizoen: true } } } } },
+    });
+    await assertBewerkbaar(versie.werkindeling.kaders.seizoen);
+
+    const aantalBestaand = await prisma.team.count({ where: { versieId } });
+    const team = await prisma.team.create({
+      data: { versieId, naam: naam.trim(), categorie, volgorde: aantalBestaand + 1 },
+      select: { id: true, naam: true, categorie: true, volgorde: true },
+    });
+
+    return { ok: true, data: team };
+  } catch (error) {
+    logger.warn("maakTeamAan fout:", error);
+    return { ok: false, error: error instanceof Error ? error.message : String(error) };
+  }
+}

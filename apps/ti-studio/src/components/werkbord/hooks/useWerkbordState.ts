@@ -131,6 +131,36 @@ export function useWerkbordState(
     setTeams((prev) => prev.filter((t) => t.id !== teamId));
   }, []);
 
+  const voegTeamLokaalToe = useCallback(
+    (team: Pick<WerkbordTeam, "id" | "naam" | "categorie" | "volgorde">) => {
+      const nieuwTeam: WerkbordTeam = {
+        ...team,
+        kleur: "senior",
+        formaat: "achtal",
+        canvasX: 0,
+        canvasY: 0,
+        dames: [],
+        heren: [],
+        staf: [],
+        ussScore: null,
+        gemiddeldeLeeftijd: null,
+        validatieStatus: "ok",
+        validatieCount: 0,
+        teamCategorie: "SENIOREN",
+        niveau: null,
+        selectieGroepId: null,
+        selectieNaam: null,
+        selectieDames: [],
+        selectieHeren: [],
+        gebundeld: false,
+        werkitems: [],
+        openMemoCount: 0,
+      };
+      setTeams((prev) => [...prev, nieuwTeam]);
+    },
+    []
+  );
+
   const koppelSelectieLokaal = useCallback((teamId: string, selectieGroepId: string) => {
     setTeams((prev) =>
       prev.map((t) =>
@@ -442,6 +472,7 @@ export function useWerkbordState(
     slaTeamPositieOp,
     updateTeamLokaal,
     verwijderTeamLokaal,
+    voegTeamLokaalToe,
     koppelSelectieLokaal,
     ontkoppelSelectieLokaal,
     updateSelectieNaamLokaal,

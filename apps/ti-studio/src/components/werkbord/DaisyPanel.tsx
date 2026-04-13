@@ -318,7 +318,9 @@ export function DaisyPanel({ versieId, werkindelingId, werkindelingNaam }: Daisy
               flexShrink: 0,
             }}
           >
-            {error.message || "Er ging iets mis. Probeer het opnieuw."}
+            {error.message?.startsWith("<!") || error.message?.startsWith("<")
+              ? "Er ging iets mis met de verbinding. Probeer het opnieuw."
+              : error.message || "Er ging iets mis. Probeer het opnieuw."}
           </div>
         )}
 

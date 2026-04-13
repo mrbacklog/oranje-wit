@@ -44,6 +44,7 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
     slaTeamPositieOp,
     updateTeamLokaal,
     verwijderTeamLokaal,
+    voegTeamLokaalToe,
     koppelSelectieLokaal,
     ontkoppelSelectieLokaal,
     updateSelectieNaamLokaal,
@@ -204,7 +205,7 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
             versieId={versieId}
             onClose={() => setPanelRechts(null)}
             onTeamSelect={setGeselecteerdTeamId}
-            onNieuwTeam={() => {}}
+            onNieuwTeam={voegTeamLokaalToe}
             onConfigUpdated={updateTeamLokaal}
             onValidatieUpdated={(update) => updateValidatieLokaal([update])}
             onTeamVerwijderd={verwijderTeamLokaal}

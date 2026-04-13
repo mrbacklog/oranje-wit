@@ -20,6 +20,7 @@ import {
   verwijderTeam,
   hernoemTeam,
 } from "@/app/(protected)/indeling/team-config-actions";
+import { maakTeamAan } from "@/app/(protected)/indeling/werkindeling-actions";
 
 interface TeamDrawerProps {
   open: boolean;
@@ -29,7 +30,7 @@ interface TeamDrawerProps {
   versieId: string;
   onClose: () => void;
   onTeamSelect: (teamId: string | null) => void;
-  onNieuwTeam: () => void;
+  onNieuwTeam: (team: Pick<WerkbordTeam, "id" | "naam" | "categorie" | "volgorde">) => void;
   onConfigUpdated: (teamId: string, update: Partial<WerkbordTeam>) => void;
   onValidatieUpdated: (update: ValidatieUpdate) => void;
   onTeamVerwijderd: (teamId: string) => void;
@@ -1358,7 +1359,7 @@ export function TeamDrawer({
   versieId,
   onClose,
   onTeamSelect,
-  onNieuwTeam: _onNieuwTeam,
+  onNieuwTeam,
   onConfigUpdated,
   onValidatieUpdated,
   onTeamVerwijderd,
@@ -1369,6 +1370,25 @@ export function TeamDrawer({
 }: TeamDrawerProps) {
   const geselecteerdTeam = teams.find((t) => t.id === geselecteerdTeamId) ?? null;
   const gesorteerdeTeams = [...teams].sort((a, b) => a.volgorde - b.volgorde);
+
+  const [nieuwFormOpen, setNieuwFormOpen] = useState(false);
+  const [nieuwNaam, setNieuwNaam] = useState("");
+  const [nieuwCategorie, setNieuwCategorie] = useState("SENIOREN");
+  const [isPending, startTransition] = useTransition();
+
+  function handleNieuwTeamSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!nieuwNaam.trim()) return;
+    startTransition(async () => {
+      const result = await maakTeamAan(versieId, nieuwNaam, nieuwCategorie);
+      if (result.ok) {
+        onNieuwTeam(result.data);
+        setNieuwNaam("");
+        setNieuwCategorie("SENIOREN");
+        setNieuwFormOpen(false);
+      }
+    });
+  }
 
   return (
     <aside
@@ -1413,7 +1433,7 @@ export function TeamDrawer({
               alignItems: "center",
               justifyContent: "space-between",
               padding: "0 12px",
-              borderBottom: "1px solid var(--border-0)",
+              borderBottom: nieuwFormOpen ? "none" : "1px solid var(--border-0)",
               flexShrink: 0,
             }}
           >
@@ -1428,36 +1448,152 @@ export function TeamDrawer({
             >
               Teams
             </span>
-            <button
-              onClick={onClose}
-              title="Sluiten"
+            <div style={{ display: "flex", gap: 4 }}>
+              <button
+                onClick={() => setNieuwFormOpen((v) => !v)}
+                title="Team toevoegen"
+                style={{
+                  width: 24,
+                  height: 24,
+                  borderRadius: 6,
+                  background: nieuwFormOpen ? "var(--accent)" : "none",
+                  border: "none",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: nieuwFormOpen ? "#fff" : "var(--text-3)",
+                  fontSize: 16,
+                }}
+              >
+                +
+              </button>
+              <button
+                onClick={onClose}
+                title="Sluiten"
+                style={{
+                  width: 24,
+                  height: 24,
+                  borderRadius: 6,
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "var(--text-3)",
+                }}
+              >
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                >
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          {/* Inline formulier: nieuw team */}
+          {nieuwFormOpen && (
+            <form
+              onSubmit={handleNieuwTeamSubmit}
               style={{
-                width: 24,
-                height: 24,
-                borderRadius: 6,
-                background: "none",
-                border: "none",
-                cursor: "pointer",
+                padding: "10px 12px",
+                borderBottom: "1px solid var(--border-0)",
                 display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "var(--text-3)",
+                flexDirection: "column",
+                gap: 8,
+                background: "var(--bg-0)",
+                flexShrink: 0,
               }}
             >
-              <svg
-                width="12"
-                height="12"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
+              <input
+                autoFocus
+                placeholder="Teamnaam"
+                value={nieuwNaam}
+                onChange={(e) => setNieuwNaam(e.target.value)}
+                disabled={isPending}
+                style={{
+                  background: "var(--bg-2)",
+                  border: "1px solid var(--border-1)",
+                  borderRadius: 6,
+                  color: "var(--text-1)",
+                  fontSize: 12,
+                  padding: "6px 8px",
+                  outline: "none",
+                  fontFamily: "inherit",
+                }}
+              />
+              <select
+                value={nieuwCategorie}
+                onChange={(e) => setNieuwCategorie(e.target.value)}
+                disabled={isPending}
+                style={{
+                  background: "var(--bg-2)",
+                  border: "1px solid var(--border-1)",
+                  borderRadius: 6,
+                  color: "var(--text-1)",
+                  fontSize: 12,
+                  padding: "6px 8px",
+                  outline: "none",
+                  fontFamily: "inherit",
+                }}
               >
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
-              </svg>
-            </button>
-          </div>
+                <option value="SENIOREN">Senioren</option>
+                <option value="JEUGD_A">Jeugd A</option>
+                <option value="JEUGD_B">Jeugd B</option>
+                <option value="RECREANTEN">Recreanten</option>
+                <option value="MIXED">Mixed</option>
+              </select>
+              <div style={{ display: "flex", gap: 6 }}>
+                <button
+                  type="submit"
+                  disabled={isPending || !nieuwNaam.trim()}
+                  style={{
+                    flex: 1,
+                    padding: "6px 0",
+                    borderRadius: 6,
+                    background: isPending || !nieuwNaam.trim() ? "var(--bg-2)" : "var(--accent)",
+                    color: isPending || !nieuwNaam.trim() ? "var(--text-3)" : "#fff",
+                    border: "none",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    cursor: isPending || !nieuwNaam.trim() ? "not-allowed" : "pointer",
+                    fontFamily: "inherit",
+                  }}
+                >
+                  {isPending ? "Aanmaken…" : "Aanmaken"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setNieuwFormOpen(false);
+                    setNieuwNaam("");
+                  }}
+                  disabled={isPending}
+                  style={{
+                    padding: "6px 10px",
+                    borderRadius: 6,
+                    background: "var(--bg-2)",
+                    color: "var(--text-3)",
+                    border: "1px solid var(--border-1)",
+                    fontSize: 12,
+                    cursor: "pointer",
+                    fontFamily: "inherit",
+                  }}
+                >
+                  Annuleer
+                </button>
+              </div>
+            </form>
+          )}
 
           <div style={{ flex: 1, overflowY: "auto" }}>
             {groepeerTeams(gesorteerdeTeams).map((groep) => {
