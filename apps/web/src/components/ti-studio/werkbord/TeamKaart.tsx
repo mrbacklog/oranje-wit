@@ -644,73 +644,33 @@ function DropzoneKolom({
         </div>
       )}
 
-      {/* Body: teller in compact, spelersrijen in normaal/detail */}
-      {isCompact ? (
-        <div
-          style={{
-            minHeight: MIN_DROPZONE,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 8,
-          }}
-        >
-          {kleur === "V" ? (
-            <svg
-              width={20}
-              height={20}
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="var(--pink)"
-              strokeWidth="2"
-              strokeLinecap="round"
-            >
-              <circle cx="12" cy="8" r="6" />
-              <line x1="12" y1="14" x2="12" y2="22" />
-              <line x1="9" y1="19" x2="15" y2="19" />
-            </svg>
-          ) : (
-            <svg
-              width={20}
-              height={20}
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="var(--blue)"
-              strokeWidth="2"
-              strokeLinecap="round"
-            >
-              <circle cx="10" cy="14" r="6" />
-              <line x1="21" y1="3" x2="15" y2="9" />
-              <polyline points="16 3 21 3 21 8" />
-            </svg>
-          )}
-          <span
-            style={{
-              fontSize: 32,
-              fontWeight: 900,
-              color: labelKleur,
-              lineHeight: 1,
-            }}
-          >
-            {spelers.length}
-          </span>
-        </div>
-      ) : (
-        <div style={{ minHeight: MIN_DROPZONE, display: "flex", flexDirection: "column" }}>
-          {gesorteerd.map((sp) => (
-            <TeamKaartSpelerRij
-              key={sp.id}
-              spelerInTeam={sp}
-              teamId={teamId}
-              selectieGroepId={selectieGroepId}
-              zoomLevel={zoomLevel}
-              openMemoCount={sp.speler.openMemoCount}
-              onSpelerClick={onSpelerClick}
-            />
-          ))}
-        </div>
-      )}
+      {/* Body: compacte chips of spelersrijen */}
+      <div
+        style={
+          isCompact
+            ? {
+                minHeight: MIN_DROPZONE,
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 2,
+                padding: "4px 6px",
+                alignContent: "flex-start",
+              }
+            : { minHeight: MIN_DROPZONE, display: "flex", flexDirection: "column" }
+        }
+      >
+        {gesorteerd.map((sp) => (
+          <TeamKaartSpelerRij
+            key={sp.id}
+            spelerInTeam={sp}
+            teamId={teamId}
+            selectieGroepId={selectieGroepId}
+            zoomLevel={zoomLevel}
+            openMemoCount={sp.speler.openMemoCount}
+            onSpelerClick={onSpelerClick}
+          />
+        ))}
+      </div>
     </div>
   );
 }
@@ -757,25 +717,21 @@ function ViertalDropzone({
         transition: "background 120ms ease",
       }}
     >
-      {zoomLevel === "compact" ? (
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 16,
-          }}
-        >
-          <span style={{ fontSize: 22, fontWeight: 900, color: "rgba(236,72,153,.65)" }}>
-            ♀ {team.dames.length}
-          </span>
-          <span style={{ fontSize: 22, fontWeight: 900, color: "rgba(96,165,250,.65)" }}>
-            ♂ {team.heren.length}
-          </span>
-        </div>
-      ) : (
-        allSpelers.map((sp) => (
+      <div
+        style={
+          zoomLevel === "compact"
+            ? {
+                minHeight: MIN_DROPZONE_VIERTAL * 2,
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 2,
+                padding: "4px 6px",
+                alignContent: "flex-start",
+              }
+            : { display: "flex", flexDirection: "column" }
+        }
+      >
+        {allSpelers.map((sp) => (
           <TeamKaartSpelerRij
             key={sp.id}
             spelerInTeam={sp}
@@ -784,8 +740,8 @@ function ViertalDropzone({
             openMemoCount={sp.speler.openMemoCount}
             onSpelerClick={onSpelerClick}
           />
-        ))
-      )}
+        ))}
+      </div>
     </div>
   );
 }
