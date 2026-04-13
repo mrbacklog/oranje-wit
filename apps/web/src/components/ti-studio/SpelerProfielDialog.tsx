@@ -789,23 +789,32 @@ export default function SpelerProfielDialog({
               padding: "24px 20px 20px",
               background: headerGradient,
               position: "relative",
-              overflow: "hidden",
+              overflow: "visible",
             }}
           >
-            {/* Achtergrondgloed */}
+            {/* Achtergrondgloed — eigen clip-laag zodat de dropdown niet geclipped wordt */}
             <div
               aria-hidden="true"
               style={{
                 position: "absolute",
-                width: 320,
-                height: 320,
-                borderRadius: "50%",
-                background: glowKleur,
-                top: -120,
-                left: -60,
+                inset: 0,
+                overflow: "hidden",
+                borderRadius: "inherit",
                 pointerEvents: "none",
               }}
-            />
+            >
+              <div
+                style={{
+                  position: "absolute",
+                  width: 320,
+                  height: 320,
+                  borderRadius: "50%",
+                  background: glowKleur,
+                  top: -120,
+                  left: -60,
+                }}
+              />
+            </div>
 
             {/* Avatar */}
             <div
@@ -837,7 +846,7 @@ export default function SpelerProfielDialog({
                 position: "relative",
                 width: "100%",
                 flexShrink: 0,
-                zIndex: 10,
+                zIndex: 300,
               }}
             >
               <button
