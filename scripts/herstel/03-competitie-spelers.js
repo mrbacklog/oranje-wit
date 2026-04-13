@@ -14,10 +14,7 @@ const path = require("path");
 const fs = require("fs");
 
 const EXPORT_PATH = path.resolve(__dirname, "../../data/export/export-2026-2027.json");
-const CSV_PATH = path.resolve(
-  __dirname,
-  "../../data/leden/Leden 528 personen gevonden.csv"
-);
+const CSV_PATH = path.resolve(__dirname, "../../data/leden/Leden 528 personen gevonden.csv");
 
 function parseCsvLine(line) {
   const vals = [];
@@ -62,7 +59,15 @@ async function main() {
   const alleSeizoenen = new Set();
 
   // ── INSERT helper ───────────────────────────────────────────────────────────
-  async function upsertRecord({ rel_code, seizoen, competitie, team, geslacht, bron, betrouwbaar }) {
+  async function upsertRecord({
+    rel_code,
+    seizoen,
+    competitie,
+    team,
+    geslacht,
+    bron,
+    betrouwbaar,
+  }) {
     try {
       const res = await client.query(
         `INSERT INTO competitie_spelers (rel_code, seizoen, competitie, team, geslacht, bron, betrouwbaar)
@@ -88,7 +93,9 @@ async function main() {
         // FK violation
         fkFouten++;
         fkFoutenLog.push({ rel_code, seizoen, competitie, fout: err.detail });
-        console.warn(`[WARN] FK-fout overgeslagen: ${rel_code} / ${seizoen} / ${competitie} — ${err.detail}`);
+        console.warn(
+          `[WARN] FK-fout overgeslagen: ${rel_code} / ${seizoen} / ${competitie} — ${err.detail}`
+        );
       } else {
         console.error(`[ERROR] Onverwachte fout bij ${rel_code}: ${err.message}`);
         throw err;
@@ -142,7 +149,9 @@ async function main() {
   const idxLokaleTeams = headers.indexOf("Lokale teams");
   const idxSpelBond = headers.indexOf("Spelactiviteiten (bond)");
 
-  console.log(`CSV kolommen — Lidsoort: ${idxLidsoort}, Rel.code: ${idxRelCode}, Geslacht: ${idxGeslacht}, Lokale teams: ${idxLokaleTeams}, SpelBond: ${idxSpelBond}`);
+  console.log(
+    `CSV kolommen — Lidsoort: ${idxLidsoort}, Rel.code: ${idxRelCode}, Geslacht: ${idxGeslacht}, Lokale teams: ${idxLokaleTeams}, SpelBond: ${idxSpelBond}`
+  );
 
   // Bouw set van rel_codes die al in competitie_spelers zitten voor 2025-2026
   const bestaandeRelCodes2025 = new Set();
@@ -188,9 +197,7 @@ async function main() {
 
     // Skip niet-spelende leden
     const isSpelend =
-      spelBond &&
-      !spelBond.toLowerCase().includes("niet spelend") &&
-      spelBond.trim() !== "";
+      spelBond && !spelBond.toLowerCase().includes("niet spelend") && spelBond.trim() !== "";
     if (!isSpelend) {
       bron2Overgeslagen++;
       continue;
@@ -206,7 +213,10 @@ async function main() {
     let team = "onbekend";
     let betrouwbaar = false;
     if (lokaleTeamsRaw) {
-      const teamsLijst = lokaleTeamsRaw.split(",").map((t) => t.trim()).filter(Boolean);
+      const teamsLijst = lokaleTeamsRaw
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean);
       if (teamsLijst.length > 0) {
         team = teamsLijst[0];
         betrouwbaar = true;
@@ -225,7 +235,9 @@ async function main() {
     bron2Verwerkt++;
   }
 
-  console.log(`Bron 2 verwerkt: ${bron2Verwerkt} records ingevoegd/bijgewerkt, ${bron2Overgeslagen} overgeslagen`);
+  console.log(
+    `Bron 2 verwerkt: ${bron2Verwerkt} records ingevoegd/bijgewerkt, ${bron2Overgeslagen} overgeslagen`
+  );
 
   // ── Eindrapport ─────────────────────────────────────────────────────────────
   const totaalRecords = await client.query("SELECT COUNT(*) FROM competitie_spelers");

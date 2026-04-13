@@ -78,7 +78,9 @@ async function main() {
   if (totaal >= 16) {
     console.log("\nStatus: DONE — seizoenen tabel correct gevuld.");
   } else {
-    console.log(`\nStatus: DONE_WITH_CONCERNS — slechts ${totaal} seizoenen in DB, verwacht >= 16.`);
+    console.log(
+      `\nStatus: DONE_WITH_CONCERNS — slechts ${totaal} seizoenen in DB, verwacht >= 16.`
+    );
   }
 
   await client.end();
