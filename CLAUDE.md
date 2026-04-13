@@ -136,7 +136,7 @@ Detail-informatie staat in path-scoped rules en docs:
 | Bestand | Onderwerp |
 |---|---|
 | `rules/database.md` | Tabelverdeling (61 modellen), datamodel, rel_code, lees/schrijf, data flow |
-| `rules/agents.md` | 19 agents, fencing, hiërarchie, startup, 11 teams |
+| `rules/agents.md` | 16 agents, fencing, hiërarchie, startup, 11 teams |
 | `rules/routes.md` | Route-tabel, navigatie-architectuur, 4+1 patroon |
 | `rules/design-system.md` | Dark-first tokens, componenten, design gate, visual tests |
 | `rules/knkv-regels.md` | KNKV competitieregels (Competitie 2.0) |

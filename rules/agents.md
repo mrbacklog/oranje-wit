@@ -21,16 +21,13 @@ paths:
 | `devops` | Infra (lead) | DevOps/DX lead, orkestreert deployment + testing + monitoring |
 | `deployment` | Infra (sub) | Railway deployments, Cloudflare Worker proxy, DNS |
 | `documentalist` | TI (docs) | Documentatie schrijven en onderhouden |
-| `jeugd-architect` | Jeugd (lead) | Architect jeugdontwikkelingsbeleid, vaardigheidsraamwerk |
-| `sportwetenschap` | Jeugd (sub) | ASM, bewegingskunde, basketbal-parallellen, onderzoek |
-| `mentaal-coach` | Jeugd (sub) | Mentale/sociale ontwikkeling, plezier-cocktail, coachprofielen |
-| `communicatie` | Jeugd (sub) | Vertaalt beleid naar presentaties, toelichtingen en one-pagers |
+| `jeugdbeleid` | Jeugd | Vaardigheidsraamwerk, POP-ratio's, mentale ontwikkeling, presentaties |
 | `ux-designer` | UX (lead) | Design system, prototypes, visuele consistentie, dark design |
 | `frontend` | UX (sub) | React componenten, Tailwind, animaties, PWA implementatie |
 
-## Agent Fencing
+## Agent Skills (documentatie — geen automatische enforcement)
 
-Elke agent heeft een `skills:` lijst in zijn frontmatter die bepaalt wat hij mag gebruiken:
+De `skills:`-lijst in elke agent-file is **informatief**: het documenteert welke skills de agent typisch gebruikt. Er is geen technisch systeem dat agents buiten hun skills blokkeert — het is een conventie voor consistentie en context-controle.
 
 | Agent | Mag gebruiken |
 |---|---|
@@ -47,10 +44,7 @@ Elke agent heeft een `skills:` lijst in zijn frontmatter die bepaalt wat hij mag
 | `e2e-tester` | `shared/e2e-testing`, `shared/deployment` |
 | `deployment` | `shared/deployment`, `monitor/railway` |
 | `documentalist` | `team-indeling/scenario`, `team-indeling/validatie`, `shared/oranje-draad` |
-| `jeugd-architect` | `shared/oranje-draad`, `shared/score-model`, `monitor/jeugdmodel`, `monitor/teamsamenstelling` |
-| `sportwetenschap` | `shared/oranje-draad`, `shared/score-model`, `monitor/jeugdmodel` |
-| `mentaal-coach` | `shared/oranje-draad`, `monitor/jeugdmodel` |
-| `communicatie` | `shared/oranje-draad` |
+| `jeugdbeleid` | `shared/oranje-draad`, `shared/score-model`, `monitor/jeugdmodel`, `monitor/teamsamenstelling` |
 | `ux-designer` | `shared/oranje-draad`, `shared/score-model`, `shared/audit` |
 | `frontend` | `shared/oranje-draad`, `shared/deployment`, `shared/e2e-testing`, `shared/audit` |
 
@@ -58,7 +52,7 @@ Elke agent heeft een `skills:` lijst in zijn frontmatter die bepaalt wat hij mag
 
 ```
 product-owner (hoofd platform)
-├── spawns: korfbal, ontwikkelaar, ux-designer, data-analist, communicatie, regel-checker
+├── spawns: korfbal, ontwikkelaar, ux-designer, data-analist, jeugdbeleid, regel-checker
 │
 korfbal (hoofd monitor) ← escalates-to: product-owner
 ├── spawns: data-analist, speler-scout, team-selector
@@ -79,14 +73,8 @@ deployment (infra) ← escalates-to: devops
 documentalist (docs) ← escalates-to: ontwikkelaar
 ├── spawns: ontwikkelaar (technische verificatie), korfbal (domeinverificatie)
 │
-jeugd-architect (hoofd jeugdontwikkeling) ← escalates-to: korfbal
-├── spawns: sportwetenschap, mentaal-coach, communicatie, korfbal, speler-scout
-│
-sportwetenschap (onderzoek) ← escalates-to: jeugd-architect
-│
-mentaal-coach (mentaal/sociaal) ← escalates-to: jeugd-architect
-│
-communicatie (presentatie/toelichting) ← escalates-to: jeugd-architect
+jeugdbeleid (jeugdontwikkelingsbeleid) ← escalates-to: korfbal
+├── spawns: korfbal (korfbal-technisch), speler-scout (spelersdata)
 │
 ux-designer (hoofd UX) ← escalates-to: ontwikkelaar
 ├── spawns: frontend, ontwikkelaar
@@ -111,7 +99,7 @@ Elf voorgedefinieerde agent teams voor parallelle samenwerking. Activeer met `/t
 | **Documentatie** | `/team-documentatie` | documentalist | ontwikkelaar, korfbal | Documentatie schrijven en bijwerken |
 | **Kwaliteit** | `/team-kwaliteit` | ontwikkelaar | e2e-tester, regel-checker, deployment | Code quality review, health check, codebase sweep |
 | **DevOps** | `/team-devops` | devops | deployment, e2e-tester, ontwikkelaar | Health checks, CI monitoring, deployment, DX |
-| **Jeugdontwikkeling** | `/team-jeugdontwikkeling` | jeugd-architect | sportwetenschap, mentaal-coach, communicatie, korfbal, speler-scout | Vaardigheidsraamwerk, beoordelingscriteria, jeugdbeleid, presentaties |
+| **Jeugdontwikkeling** | `/team-jeugdontwikkeling` | jeugdbeleid | korfbal, speler-scout | Vaardigheidsraamwerk, jeugdbeleid, presentaties voor doelgroepen |
 | **UX** | `/team-ux` | ux-designer | frontend, ontwikkelaar | Design system, prototypes, dark theme, PWA, cross-app navigatie |
 | **Beheer** | `/team-beheer` | ontwikkelaar | regel-checker, e2e-tester, korfbal | Backend voor 9 TC-domeinen, server actions, data-modellen, handshake voor team-ux |
 | **Product** | `/team-product` | product-owner | korfbal, ontwikkelaar, ux-designer | Cross-app samenhang, feature-prioritering, gebruikersreizen, data-contracten |
