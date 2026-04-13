@@ -77,7 +77,7 @@ export function SpelersKaart({ speler, clearance, compact = false }: SpelersKaar
           style={{ backgroundColor: kleur.bg, color: kleur.text }}
         >
           {speler.roepnaam.charAt(0)}
-          {speler.achternaam.charAt(0)}
+          {(speler.achternaam.split(" ").at(-1) ?? speler.achternaam).charAt(0)}
         </div>
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-semibold" style={{ color: "var(--text-primary)" }}>

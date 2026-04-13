@@ -370,7 +370,7 @@ export default function SpelersOverzichtStudio({ spelers, onRowClick }: Props) {
             )}
             {gefilterd.map((speler, i) => {
               const init =
-                `${speler.roepnaam.charAt(0)}${speler.achternaam.charAt(0)}`.toUpperCase();
+                `${speler.roepnaam.charAt(0)}${(speler.achternaam.split(" ").at(-1) ?? speler.achternaam).charAt(0)}`.toUpperCase();
               const geslachtKleur = speler.geslacht === "V" ? "#f9a8d4" : "#93c5fd";
               const geslachtBg =
                 speler.geslacht === "V" ? "rgba(236,72,153,0.15)" : "rgba(59,130,246,0.15)";
