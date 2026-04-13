@@ -318,7 +318,7 @@ export function useWerkbordState(
   async function stuurMutatie(body: Record<string, unknown>) {
     setOpslaanStatus("bezig");
     try {
-      const resp = await fetch(`/api/ti-studio/indeling/${versieId}`, {
+      const resp = await fetch(`/api/indeling/${versieId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...body, sessionId: sessionId.current }),
@@ -379,7 +379,7 @@ export function useWerkbordState(
 
   useEffect(() => {
     if (!versieId) return;
-    const es = new EventSource(`/api/ti-studio/indeling/${versieId}/stream`);
+    const es = new EventSource(`/api/indeling/${versieId}/stream`);
     es.onmessage = (e) => {
       let event: Record<string, unknown>;
       try {
