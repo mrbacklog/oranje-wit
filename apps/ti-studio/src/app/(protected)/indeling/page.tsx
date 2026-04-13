@@ -177,6 +177,12 @@ export default async function IndelingPage() {
   // Opgeslagen canvas-posities per teamId
   const opgeslagenPosities = (versie?.posities ?? {}) as Record<string, { x: number; y: number }>;
 
+  // Selectiegroep naam-lookup: versie.selectieGroepen heeft naam als scalar veld (al geladen via include)
+  const selectieGroepNaam = new Map<string, string | null>();
+  for (const sg of (versie as any)?.selectieGroepen ?? []) {
+    selectieGroepNaam.set(sg.id, sg.naam ?? null);
+  }
+
   // Teams als WerkbordTeam
   const teams: WerkbordTeam[] = ((versie?.teams ?? []) as any[]).map((team: any, i: number) => {
     const dames = (team.spelers as any[])
@@ -301,7 +307,7 @@ export default async function IndelingPage() {
       teamCategorie: (team.categorie ?? "SENIOREN") as "SENIOREN" | "A_CATEGORIE" | "B_CATEGORIE",
       niveau: (team.niveau ?? null) as "A" | "B" | "U15" | "U17" | "U19" | null,
       selectieGroepId: team.selectieGroepId ?? null,
-      selectieNaam: (team as any).selectieGroep?.naam ?? null,
+      selectieNaam: selectieGroepNaam.get(team.selectieGroepId ?? "") ?? null,
       selectieDames: [] as WerkbordSpelerInTeam[],
       selectieHeren: [] as WerkbordSpelerInTeam[],
       gebundeld: false,

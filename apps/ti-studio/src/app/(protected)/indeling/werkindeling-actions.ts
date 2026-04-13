@@ -254,15 +254,21 @@ export async function getSpelerProfiel(spelerId: string, kadersId?: string) {
 }
 
 export async function getKadersStatusOverrides(kadersId: string): Promise<Record<string, string>> {
-  const overrides = await prisma.kadersSpeler.findMany({
-    where: { kadersId, statusOverride: { not: null } },
-    select: { spelerId: true, statusOverride: true },
-  });
-  const result: Record<string, string> = {};
-  for (const o of overrides) {
-    if (o.statusOverride) result[o.spelerId] = o.statusOverride;
+  try {
+    const overrides = await prisma.kadersSpeler.findMany({
+      where: { kadersId, statusOverride: { not: null } },
+      select: { spelerId: true, statusOverride: true },
+    });
+    const result: Record<string, string> = {};
+    for (const o of overrides) {
+      if (o.statusOverride) result[o.spelerId] = o.statusOverride;
+    }
+    return result;
+  } catch (error) {
+    // Defensief: kolom bestaat mogelijk nog niet als migratie nog niet is uitgevoerd
+    logger.warn("getKadersStatusOverrides fout (migratie pending?):", error);
+    return {};
   }
-  return result;
 }
 
 export async function updateSpelerStatus(
