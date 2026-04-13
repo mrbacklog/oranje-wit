@@ -1196,6 +1196,7 @@ export default function SpelerProfielDialog({
           }}
         >
           {(["pad", "evaluaties", "werkitems"] as const).map((tab) => {
+            if (tab === "werkitems" && !kadersId) return null;
             const isActive = activeTab === tab;
             const label = tab === "pad" ? "Pad" : tab === "evaluaties" ? "Evaluaties" : "Notities";
             return (

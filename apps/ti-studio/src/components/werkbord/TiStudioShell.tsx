@@ -227,6 +227,7 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
           open={profielSpelerId !== null}
           onClose={() => setProfielSpelerId(null)}
           teamId={profielTeamId ?? undefined}
+          kadersId={initieleState.kadersId}
         />
         <TeamDialog
           teamId={dialogTeamId}
