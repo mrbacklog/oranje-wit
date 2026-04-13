@@ -1,4 +1,4 @@
-// apps/web/src/lib/teamindeling/validatie-engine.ts
+// apps/ti-studio/src/lib/teamindeling/validatie-engine.ts
 
 import type { WerkbordTeam, WerkbordValidatieItem } from "@/components/werkbord/types";
 import type { TcKader } from "@/app/(protected)/kader/kader-defaults";
@@ -139,6 +139,9 @@ export function berekenTeamValidatie(
   }
 
   // 4. Gemiddelde leeftijd
+  // Noot: bij gecombineerde selecties (gebundeld: true) is gemiddeldeLeeftijd altijd null
+  // (berekend op directe team.spelers, niet op selectieDames/selectieHeren).
+  // Leeftijdsvalidatie wordt daardoor overgeslagen — pre-existing beperking.
   if (
     kader.gemLeeftijdMin !== undefined &&
     kader.gemLeeftijdMax !== undefined &&
