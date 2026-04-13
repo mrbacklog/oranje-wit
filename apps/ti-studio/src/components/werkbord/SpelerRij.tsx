@@ -392,12 +392,12 @@ function CompactChip({
         style={{
           display: "inline-flex",
           alignItems: "center",
-          gap: 4,
-          height: 26,
-          padding: "0 8px",
+          gap: 5,
+          height: 32,
+          padding: "0 9px",
           minWidth: 60,
           maxWidth: 130,
-          borderRadius: 5,
+          borderRadius: 6,
           border: isDragging
             ? "1px solid rgba(255,107,0,.5)"
             : speler.isNieuw
@@ -424,8 +424,8 @@ function CompactChip({
         {/* Gender-stip */}
         <span
           style={{
-            width: 5,
-            height: 5,
+            width: 6,
+            height: 6,
             borderRadius: "50%",
             background: stipKleur,
             flexShrink: 0,
@@ -435,7 +435,7 @@ function CompactChip({
         {/* Roepnaam */}
         <span
           style={{
-            fontSize: 11,
+            fontSize: 12,
             fontWeight: 600,
             color: "var(--text-1)",
             whiteSpace: "nowrap",
@@ -451,7 +451,7 @@ function CompactChip({
 
         {/* Badges */}
         {speler.isNieuw && (
-          <span style={{ fontSize: 9, color: "var(--ok)", flexShrink: 0, lineHeight: 1 }}>✦</span>
+          <span style={{ fontSize: 10, color: "var(--ok)", flexShrink: 0, lineHeight: 1 }}>✦</span>
         )}
         {speler.status === "GEBLESSEERD" && (
           <span
@@ -459,14 +459,14 @@ function CompactChip({
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
-              width: 9,
-              height: 9,
+              width: 13,
+              height: 13,
               background: "rgba(255,255,255,.88)",
               borderRadius: 2,
               flexShrink: 0,
             }}
           >
-            <svg width="5" height="5" viewBox="0 0 6 6" fill="none">
+            <svg width="9" height="9" viewBox="0 0 6 6" fill="none">
               <rect x="2.5" y="0" width="1" height="6" fill="#e00" />
               <rect x="0" y="2.5" width="6" height="1" fill="#e00" />
             </svg>

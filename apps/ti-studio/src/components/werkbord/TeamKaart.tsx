@@ -654,6 +654,31 @@ function DropzoneKolom({
       )}
 
       {/* Body: compacte chips of spelersrijen */}
+      {isCompact && (
+        <div
+          style={{
+            height: 20,
+            display: "flex",
+            alignItems: "center",
+            padding: "0 8px",
+            gap: 6,
+            background: "rgba(255,255,255,.03)",
+            borderBottom: "1px solid rgba(255,255,255,.05)",
+            flexShrink: 0,
+          }}
+        >
+          <span
+            style={{
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: ".3px",
+              color: kleur === "V" ? "rgba(236,72,153,.75)" : "rgba(96,165,250,.75)",
+            }}
+          >
+            {kleur === "V" ? "♀" : "♂"} {spelers.length}
+          </span>
+        </div>
+      )}
       <div
         style={
           isCompact
@@ -661,8 +686,8 @@ function DropzoneKolom({
                 minHeight: MIN_DROPZONE,
                 display: "flex",
                 flexWrap: "wrap",
-                gap: 2,
-                padding: "4px 6px",
+                gap: 3,
+                padding: "6px 6px",
                 alignContent: "flex-start",
               }
             : { minHeight: MIN_DROPZONE, display: "flex", flexDirection: "column" }
@@ -726,6 +751,49 @@ function ViertalDropzone({
         transition: "background 120ms ease",
       }}
     >
+      {zoomLevel === "compact" && (
+        <div
+          style={{
+            height: 20,
+            display: "flex",
+            alignItems: "center",
+            padding: "0 8px",
+            gap: 8,
+            background: "rgba(255,255,255,.03)",
+            borderBottom: "1px solid rgba(255,255,255,.05)",
+            flexShrink: 0,
+          }}
+        >
+          <span
+            style={{
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: ".3px",
+              color: "rgba(236,72,153,.75)",
+            }}
+          >
+            ♀ {team.dames.length}
+          </span>
+          <span
+            style={{
+              width: 1,
+              height: 10,
+              background: "rgba(255,255,255,.12)",
+              display: "inline-block",
+            }}
+          />
+          <span
+            style={{
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: ".3px",
+              color: "rgba(96,165,250,.75)",
+            }}
+          >
+            ♂ {team.heren.length}
+          </span>
+        </div>
+      )}
       <div
         style={
           zoomLevel === "compact"
@@ -733,8 +801,8 @@ function ViertalDropzone({
                 minHeight: MIN_DROPZONE_VIERTAL * 2,
                 display: "flex",
                 flexWrap: "wrap",
-                gap: 2,
-                padding: "4px 6px",
+                gap: 3,
+                padding: "6px 6px",
                 alignContent: "flex-start",
               }
             : { display: "flex", flexDirection: "column" }
