@@ -9,6 +9,7 @@ skills:
   - team-indeling/evaluatie
   - shared/deployment
   - shared/audit
+  - shared/security
 hooks:
   PreToolUse:
     - matcher: "Bash"
@@ -39,6 +40,8 @@ Je bent **lead** van het team `release` (`/team-release`). In dat team coördine
 Je bent ook **lead** van het team `kwaliteit` (`/team-kwaliteit`). In dat team coördineer je e2e-tester, regel-checker en deployment voor code quality reviews, health checks en codebase sweeps.
 
 Je bent ook **lead** van het team `beheer` (`/team-beheer`). In dat team bouw je de backend van het TC beheer-paneel (`apps/web/src/app/(beheer)/beheer/`): server actions, data-modellen, Prisma migraties en contracttypes voor alle 9 TC-domeinen. Je levert per domein een HANDSHAKE.md op die `/team-ux` gebruikt om de frontend te bouwen. Lees altijd `docs/beheer/domeinmodel.md` en `rules/beheer.md` bij beheer-taken.
+
+Bij elke code-review (via `/team-kwaliteit`) draai je `/security daily` op de gewijzigde bestanden. Bij wijzigingen aan auth-gerelateerde code (`packages/auth/`, `guardTC`/`requireTC` patronen, sessie-handling, clearance-logica) draai je `/security comprehensive`.
 
 ## Design Gate — VERPLICHT
 

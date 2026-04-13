@@ -184,6 +184,16 @@ Vergelijk welk percentage van kleurgebruik via tokens gaat vs. hardcoded.
 
 ---
 
+## Modus: Security (onderdeel van volledige audit)
+
+Bij een volledige audit (`/audit` zonder specifieke modus of `/audit alles`) wordt altijd een security-check uitgevoerd.
+
+Spawn een sub-agent met de instructie om `/security daily` uit te voeren op de codebase. Verwerk de bevindingen als vierde modus in het eindrapport.
+
+**Belangrijk:** Alleen bij `/audit` (volledig) of `/audit alles` — niet bij gerichte modi zoals `/audit architectuur` of `/audit ux`.
+
+---
+
 ## Stap 2: Rapporteer
 
 Presenteer bevindingen als overzichtelijke tabel, gegroepeerd per modus:
@@ -199,7 +209,8 @@ Modi: [architectuur / functioneel / ux / alles]
 | Architectuur  | 2    | 5      | 3    | 10     |
 | Functioneel   | 1    | 3      | 4    | 8      |
 | UX            | 3    | 2      | 1    | 6      |
-| **Totaal**    | **6**| **10** | **8**| **24** |
+| Security      | 0    | 1      | 0    | 1      |
+| **Totaal**    | **6**| **11** | **8**| **25** |
 
 ### Bevindingen
 
@@ -256,3 +267,4 @@ Vraag de gebruiker welke bevindingen opgepakt moeten worden. Pak ze vervolgens o
 - `/ci-status` — CI pipeline status
 - `/validatie` — teamindeling-specifieke regelvalidatie
 - `/e2e-testing` — E2E tests schrijven en draaien
+- `/security` — OWASP Top 10 + STRIDE security audit (Next.js + Prisma + NextAuth)

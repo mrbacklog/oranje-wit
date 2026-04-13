@@ -58,6 +58,7 @@ Start een agent team voor het bewaken en verbeteren van de codekwaliteit van de 
    - **e2e-tester**: draait tests + schrijft nieuwe voor gewijzigde flows
    - **regel-checker**: valideert business logic in gewijzigde code
    - **deployment**: typecheck + lint + format + build
+   - **ontwikkelaar (security)**: draait `/security daily` op de gewijzigde code (grep op diff-bestanden)
 3. **ontwikkelaar** reviewt code op patronen, complexiteit, security
 4. **ontwikkelaar** combineert bevindingen → kwaliteitsrapport
 
@@ -125,6 +126,10 @@ Elk rapport bevat:
 | **Oranje** (aandacht) | Warnings, ontbrekende testdekking, >400 regels, patroonafwijking |
 | **Groen** | Alle checks slagen, geen significante issues |
 
+### Security confidence gate
+
+Als `/security daily` een confidence score < 8/10 rapporteert voor een ROOD bevinding, blokkeert dit het kwaliteitsrapport: de review krijgt status **GEBLOKKEERD** totdat de security-bevinding is opgelost. Dit wordt als ROOD bevinding opgenomen in het kwaliteitsrapport.
+
 ## Context
 
 - **Taal**: Nederlands
@@ -134,6 +139,13 @@ Elk rapport bevat:
 - **Regels**: `rules/knkv-regels.md`, `rules/ow-voorkeuren.md`
 - **CI**: `.github/workflows/ci.yml`
 - **ESLint**: `apps/web/src/app/(teamindeling)/teamindeling/eslint.config.mjs` + root `eslint.config.mjs`
+
+## Gerelateerde skills
+
+- `/security` — OWASP Top 10 + STRIDE security audit (Next.js + Prisma + NextAuth)
+- `/audit` — codebase-brede kwaliteitsaudit (architectuur, functioneel, UX, security)
+- `/e2e-testing` — E2E tests schrijven en draaien
+- `/health-check` — infrastructuur-gezondheid (services, DNS, SSL)
 
 ## Opdracht
 
