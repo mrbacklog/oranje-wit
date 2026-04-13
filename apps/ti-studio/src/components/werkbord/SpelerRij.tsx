@@ -78,6 +78,7 @@
 
 import { useRef, useState, useCallback } from "react";
 import { PEILJAAR } from "@oranje-wit/types";
+import { leeftijdsKleur } from "./leeftijds-kleuren";
 import "./tokens.css";
 import { SpelerKaart } from "./SpelerKaart";
 import type { WerkbordSpelerInTeam } from "./types";
@@ -562,6 +563,7 @@ function NormaalRij({
     `${speler.roepnaam.charAt(0)}${achternaamKern(speler.achternaam, speler.tussenvoegsel).charAt(0)}`.toUpperCase();
   const naam = naamNormaal(speler.roepnaam, speler.tussenvoegsel, speler.achternaam);
   const leeftijd = berekenLeeftijd(speler.geboortedatum, speler.geboortejaar, PEILJAAR);
+  const leeftKleur = leeftijdsKleur(leeftijd);
 
   const dragHandlers = isAR
     ? {}
@@ -607,6 +609,7 @@ function NormaalRij({
           flexShrink: 0,
           cursor: isAR ? "default" : isDragging ? "grabbing" : "grab",
           borderBottom: "1px solid rgba(255,255,255,.05)",
+          borderLeft: `3px solid ${leeftKleur}40`,
           background: achtergrond,
           opacity: isStopt ? 0.52 : isDragging ? 0.6 : 1,
           outline: isDragging ? "1.5px solid rgba(255,107,0,.5)" : "none",
@@ -797,6 +800,7 @@ function PoolRij({
     `${speler.roepnaam.charAt(0)}${achternaamKern(speler.achternaam, speler.tussenvoegsel).charAt(0)}`.toUpperCase();
   const naam = naamPool(speler.roepnaam, speler.tussenvoegsel, speler.achternaam);
   const leeftijd = berekenLeeftijd(speler.geboortedatum, speler.geboortejaar, PEILJAAR);
+  const leeftKleur = leeftijdsKleur(leeftijd);
 
   // Pool: vanTeamId is de huidige teamId (null als de speler geen team heeft)
   const vanTeamId = speler.teamId ?? null;
@@ -845,6 +849,7 @@ function PoolRij({
           flexShrink: 0,
           cursor: isAR ? "default" : isDragging ? "grabbing" : "grab",
           borderBottom: "1px solid rgba(255,255,255,.05)",
+          borderLeft: `3px solid ${leeftKleur}40`,
           background: achtergrond,
           opacity: isStopt ? 0.52 : isDragging ? 0.6 : 1,
           outline: isDragging ? "1.5px solid rgba(255,107,0,.5)" : "none",
