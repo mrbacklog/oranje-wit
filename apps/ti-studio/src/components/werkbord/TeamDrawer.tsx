@@ -104,12 +104,94 @@ function groepeerTeams(teams: WerkbordTeam[]): TeamGroep[] {
         type: "selectie",
         teams: partners,
         selectieGroepId: team.selectieGroepId,
-        gebundeld: partners.some((t) => t.gebundeld),
+        gebundeld: partners.every((t) => t.gebundeld),
       });
     }
     gezien.add(team.id);
   }
   return groepen;
+}
+
+// ─── TeamRij: één rij in de drawer-lijst ─────────────────────────────────────
+
+function TeamRij({
+  team,
+  geselecteerdTeamId,
+  showScores,
+  onTeamSelect,
+}: {
+  team: WerkbordTeam;
+  geselecteerdTeamId: string | null;
+  showScores: boolean;
+  onTeamSelect: (teamId: string) => void;
+}) {
+  const geselecteerd = team.id === geselecteerdTeamId;
+  const teamDotKleur =
+    team.validatieStatus === "err"
+      ? "var(--err)"
+      : team.validatieStatus === "warn"
+        ? "var(--warn)"
+        : "var(--ok)";
+
+  return (
+    <div
+      onClick={() => onTeamSelect(team.id)}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "8px 10px",
+        cursor: "pointer",
+        transition: "background 120ms",
+        position: "relative",
+        background: geselecteerd ? "rgba(255,107,0,.05)" : "transparent",
+      }}
+      onMouseEnter={(e) => {
+        if (!geselecteerd)
+          (e.currentTarget as HTMLDivElement).style.background = "rgba(255,255,255,.03)";
+      }}
+      onMouseLeave={(e) => {
+        if (!geselecteerd) (e.currentTarget as HTMLDivElement).style.background = "transparent";
+      }}
+    >
+      {geselecteerd && (
+        <div
+          style={{
+            position: "absolute",
+            left: 0,
+            top: 0,
+            bottom: 0,
+            width: 3,
+            background: "var(--accent)",
+            borderRadius: "0 2px 2px 0",
+          }}
+        />
+      )}
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text-1)" }}>{team.naam}</span>
+      </div>
+      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        {showScores && team.ussScore !== null && (
+          <span style={{ fontSize: 10, color: "var(--text-3)" }}>
+            USS{" "}
+            <span style={{ color: "var(--text-2)", fontWeight: 600 }}>
+              {team.ussScore.toFixed(2)}
+            </span>
+          </span>
+        )}
+        <div
+          style={{
+            width: 7,
+            height: 7,
+            borderRadius: "50%",
+            background: teamDotKleur,
+            boxShadow: `0 0 4px 1px ${teamDotKleur}40`,
+            flexShrink: 0,
+          }}
+        />
+      </div>
+    </div>
+  );
 }
 
 // ─── Gecombineerde selectie: blauwe border-frame met 2 teamrijen ─────────────
@@ -137,76 +219,6 @@ function SelectieGroepBlok({
   );
   const dotKleur =
     comboStatus === "err" ? "var(--err)" : comboStatus === "warn" ? "var(--warn)" : "var(--ok)";
-
-  function TeamRij({ team }: { team: WerkbordTeam }) {
-    const geselecteerd = team.id === geselecteerdTeamId;
-    const teamDotKleur =
-      team.validatieStatus === "err"
-        ? "var(--err)"
-        : team.validatieStatus === "warn"
-          ? "var(--warn)"
-          : "var(--ok)";
-
-    return (
-      <div
-        onClick={() => onTeamSelect(team.id)}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "8px 10px",
-          cursor: "pointer",
-          transition: "background 120ms",
-          position: "relative",
-          background: geselecteerd ? "rgba(255,107,0,.05)" : "transparent",
-        }}
-        onMouseEnter={(e) => {
-          if (!geselecteerd)
-            (e.currentTarget as HTMLDivElement).style.background = "rgba(255,255,255,.03)";
-        }}
-        onMouseLeave={(e) => {
-          if (!geselecteerd) (e.currentTarget as HTMLDivElement).style.background = "transparent";
-        }}
-      >
-        {geselecteerd && (
-          <div
-            style={{
-              position: "absolute",
-              left: 0,
-              top: 0,
-              bottom: 0,
-              width: 3,
-              background: "var(--accent)",
-              borderRadius: "0 2px 2px 0",
-            }}
-          />
-        )}
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text-1)" }}>{team.naam}</span>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          {showScores && team.ussScore !== null && (
-            <span style={{ fontSize: 10, color: "var(--text-3)" }}>
-              USS{" "}
-              <span style={{ color: "var(--text-2)", fontWeight: 600 }}>
-                {team.ussScore.toFixed(2)}
-              </span>
-            </span>
-          )}
-          <div
-            style={{
-              width: 7,
-              height: 7,
-              borderRadius: "50%",
-              background: teamDotKleur,
-              boxShadow: `0 0 4px 1px ${teamDotKleur}40`,
-              flexShrink: 0,
-            }}
-          />
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div style={{ margin: "4px 8px 8px" }}>
@@ -276,7 +288,14 @@ function SelectieGroepBlok({
         </div>
 
         {/* Team A */}
-        {teamA && <TeamRij team={teamA} />}
+        {teamA && (
+          <TeamRij
+            team={teamA}
+            geselecteerdTeamId={geselecteerdTeamId}
+            showScores={showScores}
+            onTeamSelect={onTeamSelect}
+          />
+        )}
 
         {/* Connector */}
         <div style={{ display: "flex", alignItems: "center", padding: "0 10px", gap: 6 }}>
@@ -286,7 +305,14 @@ function SelectieGroepBlok({
         </div>
 
         {/* Team B */}
-        {teamB && <TeamRij team={teamB} />}
+        {teamB && (
+          <TeamRij
+            team={teamB}
+            geselecteerdTeamId={geselecteerdTeamId}
+            showScores={showScores}
+            onTeamSelect={onTeamSelect}
+          />
+        )}
       </div>
     </div>
   );
