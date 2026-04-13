@@ -5,8 +5,9 @@ import {
   getSpelerProfiel,
   updateSpelerStatus,
 } from "@/app/(protected)/indeling/werkindeling-actions";
-import { logger } from "@oranje-wit/types";
+import { logger, PEILJAAR } from "@oranje-wit/types";
 import type { EvaluatieScore, TeamGemiddelde } from "@oranje-wit/types";
+import { korfbalLeeftijd as berekenKorfbalLeeftijd } from "@/lib/teamindeling/validatie-engine";
 import { WerkitemPanel } from "@/components/WerkitemPanel";
 
 // ──────────────────────────────────────────────────────────
@@ -176,17 +177,12 @@ function korfbalLeeftijd(
   geboortedatum: Date | string | null | undefined,
   geboortejaar: number | null | undefined
 ): string {
-  const peildatum = new Date("2026-01-01");
-  if (geboortedatum) {
-    const geb = new Date(geboortedatum);
-    const ms = peildatum.getTime() - geb.getTime();
-    const jaren = ms / (365.25 * 24 * 3600 * 1000);
-    return jaren.toFixed(2);
-  }
-  if (geboortejaar) {
-    return String(2026 - geboortejaar);
-  }
-  return "—";
+  if (!geboortejaar && !geboortedatum) return "—";
+  const gbd =
+    geboortedatum instanceof Date
+      ? geboortedatum.toISOString().split("T")[0]
+      : (geboortedatum ?? null);
+  return berekenKorfbalLeeftijd(gbd, geboortejaar ?? PEILJAAR - 15, PEILJAAR).toFixed(2);
 }
 
 function SpelerFoto({

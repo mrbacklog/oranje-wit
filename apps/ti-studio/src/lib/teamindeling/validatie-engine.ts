@@ -11,7 +11,7 @@ export function korfbalLeeftijd(
   peiljaar: number
 ): number {
   if (geboortedatum) {
-    const peil = new Date(peiljaar - 1, 11, 31); // 31 dec van het eerste seizoensjaar (KNKV peildatum)
+    const peil = new Date(peiljaar, 11, 31); // 31 dec van het peiljaar (KNKV peildatum)
     const geb = new Date(geboortedatum);
     return Math.round(((peil.getTime() - geb.getTime()) / MS_PER_JAAR) * 100) / 100;
   }

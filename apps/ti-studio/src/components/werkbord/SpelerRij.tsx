@@ -78,6 +78,7 @@
 
 import { useRef, useState, useCallback } from "react";
 import { PEILJAAR } from "@oranje-wit/types";
+import { korfbalLeeftijd } from "@/lib/teamindeling/validatie-engine";
 import { leeftijdsKleur } from "./leeftijds-kleuren";
 import "./tokens.css";
 import { SpelerKaart } from "./SpelerKaart";
@@ -115,23 +116,6 @@ interface SpelerRijProps {
 }
 
 // ── Hulpfuncties ────────────────────────────────────────────────────────────
-
-/** Bereken korfballeeftijd op peildatum 31 december van het seizoeneindjaar */
-function berekenLeeftijd(
-  geboortedatum: string | null,
-  geboortejaar: number,
-  seizoenEindjaar: number
-): number {
-  if (geboortedatum) {
-    const peildatum = new Date(seizoenEindjaar, 11, 31);
-    const geboorte = new Date(geboortedatum);
-    return (
-      Math.floor(((peildatum.getTime() - geboorte.getTime()) / (365.25 * 24 * 3600 * 1000)) * 100) /
-      100
-    );
-  }
-  return seizoenEindjaar - geboortejaar;
-}
 
 /** Afkortmap voor tussenvoegsels */
 const TVS_AFKORT: Record<string, string> = {
@@ -562,7 +546,7 @@ function NormaalRij({
   const initialen =
     `${speler.roepnaam.charAt(0)}${achternaamKern(speler.achternaam, speler.tussenvoegsel).charAt(0)}`.toUpperCase();
   const naam = naamNormaal(speler.roepnaam, speler.tussenvoegsel, speler.achternaam);
-  const leeftijd = berekenLeeftijd(speler.geboortedatum, speler.geboortejaar, PEILJAAR);
+  const leeftijd = korfbalLeeftijd(speler.geboortedatum, speler.geboortejaar, PEILJAAR);
   const leeftKleur = leeftijdsKleur(leeftijd);
 
   const dragHandlers = isAR
@@ -799,7 +783,7 @@ function PoolRij({
   const initialen =
     `${speler.roepnaam.charAt(0)}${achternaamKern(speler.achternaam, speler.tussenvoegsel).charAt(0)}`.toUpperCase();
   const naam = naamPool(speler.roepnaam, speler.tussenvoegsel, speler.achternaam);
-  const leeftijd = berekenLeeftijd(speler.geboortedatum, speler.geboortejaar, PEILJAAR);
+  const leeftijd = korfbalLeeftijd(speler.geboortedatum, speler.geboortejaar, PEILJAAR);
   const leeftKleur = leeftijdsKleur(leeftijd);
 
   // Pool: vanTeamId is de huidige teamId (null als de speler geen team heeft)

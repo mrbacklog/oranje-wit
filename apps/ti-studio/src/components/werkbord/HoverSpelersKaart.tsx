@@ -22,6 +22,7 @@ import { createContext, useCallback, useContext, useRef, useState, useEffect } f
 import type { ReactNode } from "react";
 import type { WerkbordSpeler } from "./types";
 import { PEILJAAR } from "@oranje-wit/types";
+import { korfbalLeeftijd } from "@/lib/teamindeling/validatie-engine";
 import { leeftijdsGradient, leeftijdsKleur } from "./leeftijds-kleuren";
 
 // ── Constanten ──────────────────────────────────────────────────────────────
@@ -59,22 +60,6 @@ const TIER_RAND_GRADIENT: Record<Tier, string | null> = {
   zilver: "linear-gradient(135deg, #c0c0c0, #888, #c0c0c0)",
   goud: "linear-gradient(135deg, #ffd700, #b8860b, #ffd700)",
 };
-
-function berekenLeeftijdKaart(
-  geboortedatum: string | null,
-  geboortejaar: number,
-  seizoenEindjaar: number
-): number {
-  if (geboortedatum) {
-    const peildatum = new Date(seizoenEindjaar, 11, 31);
-    const geboorte = new Date(geboortedatum);
-    return (
-      Math.floor(((peildatum.getTime() - geboorte.getTime()) / (365.25 * 24 * 3600 * 1000)) * 10) /
-      10
-    );
-  }
-  return seizoenEindjaar - geboortejaar;
-}
 
 // ── Context ─────────────────────────────────────────────────────────────────
 
@@ -228,7 +213,7 @@ function HoverSpelersKaartPortal({
   if (!state.speler) return null;
 
   const speler = state.speler;
-  const leeftijd = berekenLeeftijdKaart(speler.geboortedatum, speler.geboortejaar, PEILJAAR);
+  const leeftijd = korfbalLeeftijd(speler.geboortedatum, speler.geboortejaar, PEILJAAR);
   const gradient = leeftijdsGradient(leeftijd);
   const kleur = leeftijdsKleur(leeftijd);
   const tier = bepaalTier(speler.ussScore);
