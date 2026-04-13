@@ -155,5 +155,5 @@ Gebruik ALTIJD de design tokens uit het OW design system:
 ## Referenties
 - Design tokens: `packages/ui/src/tokens/`
 - SpelersKaart (referentie): `packages/ui/src/data-display/spelers-kaart.tsx`
-- Globals CSS per app: `apps/<app>/src/app/globals.css`
+- Globals CSS: `apps/web/src/app/globals.css`
 - Oranje Draad: `rules/oranje-draad.md`
