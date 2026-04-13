@@ -1,5 +1,6 @@
 import { auth } from "@oranje-wit/auth";
 import { redirect } from "next/navigation";
+import { SessionProvider } from "next-auth/react";
 import SeizoenProvider from "@oranje-wit/teamindeling-shared/seizoen-provider";
 import { getActiefSeizoen, isWerkseizoenCheck } from "@oranje-wit/teamindeling-shared/seizoen";
 import { TiStudioPageShell } from "@/components/werkbord/TiStudioPageShell";
@@ -15,8 +16,10 @@ export default async function ProtectedLayout({ children }: { children: React.Re
   const isWerkseizoen = await isWerkseizoenCheck(seizoen);
 
   return (
-    <SeizoenProvider seizoen={seizoen} isWerkseizoen={isWerkseizoen}>
-      <TiStudioPageShell>{children}</TiStudioPageShell>
-    </SeizoenProvider>
+    <SessionProvider session={session}>
+      <SeizoenProvider seizoen={seizoen} isWerkseizoen={isWerkseizoen}>
+        <TiStudioPageShell>{children}</TiStudioPageShell>
+      </SeizoenProvider>
+    </SessionProvider>
   );
 }
