@@ -3,7 +3,11 @@ export const dynamic = "force-dynamic";
 import { auth } from "@oranje-wit/auth";
 import { prisma } from "@/lib/teamindeling/db/prisma";
 import { getOfMaakWerkindelingVoorSeizoen } from "./actions";
-import { getWerkindelingVoorEditor, getAlleSpelers } from "./werkindeling-actions";
+import {
+  getWerkindelingVoorEditor,
+  getAlleSpelers,
+  getKadersStatusOverrides,
+} from "./werkindeling-actions";
 import { getTeamtypeKaders } from "@/app/(teamindeling-studio)/ti-studio/kader/actions";
 import { mergeMetDefaults } from "@/app/(teamindeling-studio)/ti-studio/kader/kader-defaults";
 import {
@@ -48,6 +52,14 @@ function mapStatus(s: string | null | undefined): WerkbordSpeler["status"] {
   return "BESCHIKBAAR";
 }
 
+function effectief(
+  spelerId: string,
+  sportlinkStatus: string | null | undefined,
+  overrideMap: Record<string, string>
+): WerkbordSpeler["status"] {
+  return mapStatus(overrideMap[spelerId] ?? sportlinkStatus);
+}
+
 export default async function IndelingPage() {
   const session = await auth();
   const gebruikerEmail = session?.user?.email ?? "systeem";
@@ -74,7 +86,12 @@ export default async function IndelingPage() {
   const volledig = await getWerkindelingVoorEditor(werkindeling.id);
   if (!volledig) return null;
 
-  const prismaSpelers = await getAlleSpelers();
+  const kadersId = volledig.kaders.id;
+
+  const [prismaSpelers, statusOverrides] = await Promise.all([
+    getAlleSpelers(),
+    getKadersStatusOverrides(kadersId),
+  ]);
   const huidigeJaar = new Date().getFullYear();
   const versie = volledig.versies[0];
 
@@ -98,7 +115,6 @@ export default async function IndelingPage() {
   }
 
   // Open memo-counts per team en per speler
-  const kadersId = volledig.kaders.id;
 
   const teamMemoCounts = await prisma.werkitem.groupBy({
     by: ["teamId"],
@@ -131,28 +147,32 @@ export default async function IndelingPage() {
   }
 
   // Alle spelers als WerkbordSpeler
-  const alleSpelers: WerkbordSpeler[] = prismaSpelers.map((sp) => ({
-    id: sp.id,
-    roepnaam: sp.roepnaam,
-    tussenvoegsel: sp.tussenvoegsel ?? null,
-    achternaam: sp.achternaam,
-    geboortejaar: sp.geboortejaar ?? huidigeJaar - 20,
-    geboortedatum: sp.geboortedatum ? sp.geboortedatum.toISOString().split("T")[0] : null,
-    geslacht: sp.geslacht === "V" ? ("V" as const) : ("M" as const),
-    status: mapStatus(sp.status),
-    rating: null,
-    notitie: null,
-    afmelddatum: null,
-    teamId: sp.status === "ALGEMEEN_RESERVE" ? null : (spelerTeamMap.get(sp.id) ?? null),
-    gepind: false,
-    isNieuw: sp.seizoenenActief === 1,
-    openMemoCount: openMemoPerSpeler[sp.id] ?? 0,
-    ussScore: sp.ussScore ?? null,
-    fotoUrl: sp.heeftFoto ? `/api/scouting/spelers/${sp.id}/foto` : null,
-    huidigTeam: (sp.huidig as { team?: string } | null)?.team ?? null,
-    ingedeeldTeamNaam: spelerTeamNaamMap.get(sp.id) ?? null,
-    selectieGroepId: null,
-  }));
+  const alleSpelers: WerkbordSpeler[] = prismaSpelers.map((sp) => {
+    const effectieveStatus = effectief(sp.id, sp.status, statusOverrides);
+    return {
+      id: sp.id,
+      roepnaam: sp.roepnaam,
+      tussenvoegsel: sp.tussenvoegsel ?? null,
+      achternaam: sp.achternaam,
+      geboortejaar: sp.geboortejaar ?? huidigeJaar - 20,
+      geboortedatum: sp.geboortedatum ? sp.geboortedatum.toISOString().split("T")[0] : null,
+      geslacht: sp.geslacht === "V" ? ("V" as const) : ("M" as const),
+      status: effectieveStatus,
+      sportlinkStatus: mapStatus(sp.status),
+      rating: null,
+      notitie: null,
+      afmelddatum: null,
+      teamId: effectieveStatus === "ALGEMEEN_RESERVE" ? null : (spelerTeamMap.get(sp.id) ?? null),
+      gepind: false,
+      isNieuw: sp.seizoenenActief === 1,
+      openMemoCount: openMemoPerSpeler[sp.id] ?? 0,
+      ussScore: sp.ussScore ?? null,
+      fotoUrl: sp.heeftFoto ? `/api/scouting/spelers/${sp.id}/foto` : null,
+      huidigTeam: (sp.huidig as { team?: string } | null)?.team ?? null,
+      ingedeeldTeamNaam: spelerTeamNaamMap.get(sp.id) ?? null,
+      selectieGroepId: null,
+    };
+  });
 
   // Opgeslagen canvas-posities per teamId
   const opgeslagenPosities = (versie?.posities ?? {}) as Record<string, { x: number; y: number }>;
@@ -174,7 +194,8 @@ export default async function IndelingPage() {
             ? (ts.speler.geboortedatum as Date).toISOString().split("T")[0]
             : null,
           geslacht: "V" as const,
-          status: mapStatus(ts.speler?.status),
+          status: effectief(ts.spelerId, ts.speler?.status, statusOverrides),
+          sportlinkStatus: mapStatus(ts.speler?.status),
           rating: null,
           notitie: null,
           afmelddatum: null,
@@ -206,7 +227,8 @@ export default async function IndelingPage() {
             ? (ts.speler.geboortedatum as Date).toISOString().split("T")[0]
             : null,
           geslacht: "M" as const,
-          status: mapStatus(ts.speler?.status),
+          status: effectief(ts.spelerId, ts.speler?.status, statusOverrides),
+          sportlinkStatus: mapStatus(ts.speler?.status),
           rating: null,
           notitie: null,
           afmelddatum: null,
@@ -313,7 +335,8 @@ export default async function IndelingPage() {
             ? (sp.speler.geboortedatum as Date).toISOString().split("T")[0]
             : null,
           geslacht: (geslacht === "V" ? "V" : "M") as "V" | "M",
-          status: mapStatus(sp.speler?.status),
+          status: effectief(sp.spelerId, sp.speler?.status, statusOverrides),
+          sportlinkStatus: mapStatus(sp.speler?.status),
           rating: null,
           notitie: null,
           afmelddatum: null,

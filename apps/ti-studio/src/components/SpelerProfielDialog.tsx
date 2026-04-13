@@ -136,7 +136,14 @@ const STATUS_CONFIG: Record<
   ALGEMEEN_RESERVE: { label: "Reserve", kleur: T.text2, bg: T.bg3, border: T.border1 },
 };
 
-const STATUSSEN = Object.keys(STATUS_CONFIG) as StatusKey[];
+// Statussen die de TC via override kan instellen
+const TC_STATUSSEN: StatusKey[] = [
+  "BESCHIKBAAR",
+  "TWIJFELT",
+  "GEBLESSEERD",
+  "GAAT_STOPPEN",
+  "ALGEMEEN_RESERVE",
+];
 
 // ──────────────────────────────────────────────────────────
 // Kleur-dot mapping
@@ -594,8 +601,12 @@ export default function SpelerProfielDialog({
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<"pad" | "evaluaties" | "werkitems">("pad");
 
-  // Status
+  // Status: huidigStatus = TC-override (of Sportlink als geen override)
+  // sportlinkStatus = onbewerkte Sportlink-waarde (lees-alleen)
+  // heeftOverride = true als TC een eigen status heeft gezet
   const [huidigStatus, setHuidigStatus] = useState<StatusKey>("BESCHIKBAAR");
+  const [sportlinkStatus, setSportlinkStatus] = useState<StatusKey>("BESCHIKBAAR");
+  const [heeftOverride, setHeeftOverride] = useState(false);
   const [statusMenuOpen, setStatusMenuOpen] = useState(false);
   const [statusBezig, setStatusBezig] = useState(false);
 
@@ -617,10 +628,14 @@ export default function SpelerProfielDialog({
     }
     setLoading(true);
     setActiveTab("pad");
-    getSpelerProfiel(spelerId)
+    getSpelerProfiel(spelerId, kadersId)
       .then((data) => {
         setProfiel(data);
-        setHuidigStatus((data?.status as StatusKey) ?? "BESCHIKBAAR");
+        const sl = (data?.status as StatusKey) ?? "BESCHIKBAAR";
+        const override = data?.statusOverride as StatusKey | null | undefined;
+        setSportlinkStatus(sl);
+        setHeeftOverride(!!override);
+        setHuidigStatus(override ?? sl);
       })
       .catch((err: unknown) => {
         logger.error("SpelerProfielDialog: fout bij ophalen profiel", err);
@@ -680,16 +695,27 @@ export default function SpelerProfielDialog({
     return () => document.removeEventListener("mousedown", handler);
   }, [statusMenuOpen]);
 
-  async function selecteerStatus(nieuweStatus: StatusKey) {
-    if (!spelerId || nieuweStatus === huidigStatus) {
+  async function selecteerStatus(nieuweStatus: StatusKey | null) {
+    if (!spelerId || !kadersId) {
+      setStatusMenuOpen(false);
+      return;
+    }
+    if (nieuweStatus !== null && nieuweStatus === huidigStatus && heeftOverride) {
       setStatusMenuOpen(false);
       return;
     }
     setStatusBezig(true);
     setStatusMenuOpen(false);
     try {
-      await updateSpelerStatus(spelerId, nieuweStatus);
-      setHuidigStatus(nieuweStatus);
+      await updateSpelerStatus(kadersId, spelerId, nieuweStatus);
+      if (nieuweStatus === null) {
+        // Reset: terug naar Sportlink
+        setHuidigStatus(sportlinkStatus);
+        setHeeftOverride(false);
+      } else {
+        setHuidigStatus(nieuweStatus);
+        setHeeftOverride(true);
+      }
     } catch (err) {
       logger.error("SpelerProfielDialog: fout bij status-update", err);
     } finally {
@@ -871,7 +897,7 @@ export default function SpelerProfielDialog({
               <SpelerFoto spelerId={spelerId} init={init} kleur={avatarTextKleur} />
             </div>
 
-            {/* Status dropdown */}
+            {/* Status — TC-override dropdown + Sportlink-badge */}
             <div
               ref={statusMenuRef}
               style={{
@@ -879,11 +905,16 @@ export default function SpelerProfielDialog({
                 width: "100%",
                 flexShrink: 0,
                 zIndex: 300,
+                display: "flex",
+                flexDirection: "column",
+                gap: 5,
               }}
             >
+              {/* TC-status knop */}
               <button
                 onClick={() => setStatusMenuOpen((v) => !v)}
-                disabled={statusBezig}
+                disabled={statusBezig || !kadersId}
+                title={!kadersId ? "Kaders niet beschikbaar" : undefined}
                 style={{
                   width: "100%",
                   height: 32,
@@ -891,13 +922,13 @@ export default function SpelerProfielDialog({
                   alignItems: "center",
                   padding: "0 10px",
                   borderRadius: 8,
-                  border: `1px solid ${statusCfg.border}`,
+                  border: `1px solid ${heeftOverride ? T.accentBorder : statusCfg.border}`,
                   background: statusCfg.bg,
                   color: statusCfg.kleur,
                   fontSize: 12,
                   fontWeight: 600,
                   fontFamily: "Inter, system-ui, sans-serif",
-                  cursor: statusBezig ? "not-allowed" : "pointer",
+                  cursor: statusBezig || !kadersId ? "not-allowed" : "pointer",
                   gap: 7,
                   opacity: statusBezig ? 0.7 : 1,
                 }}
@@ -912,8 +943,33 @@ export default function SpelerProfielDialog({
                   }}
                 />
                 <span style={{ flex: 1, textAlign: "left" }}>{statusCfg.label}</span>
+                {heeftOverride && (
+                  <span style={{ fontSize: 9, opacity: 0.8, color: T.accent }}>TC</span>
+                )}
                 <span style={{ fontSize: 8, opacity: 0.7 }}>▾</span>
               </button>
+
+              {/* Sportlink-status badge — alleen tonen als TC-override actief */}
+              {heeftOverride && (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 5,
+                    fontSize: 10,
+                    color: T.text3,
+                  }}
+                >
+                  <span>Sportlink:</span>
+                  <span
+                    style={{
+                      color: (STATUS_CONFIG[sportlinkStatus] ?? STATUS_CONFIG.BESCHIKBAAR).kleur,
+                    }}
+                  >
+                    {(STATUS_CONFIG[sportlinkStatus] ?? STATUS_CONFIG.BESCHIKBAAR).label}
+                  </span>
+                </div>
+              )}
 
               {statusMenuOpen && (
                 <div
@@ -930,7 +986,7 @@ export default function SpelerProfielDialog({
                     boxShadow: "0 8px 24px rgba(0,0,0,0.6)",
                   }}
                 >
-                  {STATUSSEN.map((s) => {
+                  {TC_STATUSSEN.map((s) => {
                     const cfg = STATUS_CONFIG[s];
                     return (
                       <div
@@ -962,6 +1018,25 @@ export default function SpelerProfielDialog({
                       </div>
                     );
                   })}
+                  {/* Reset naar Sportlink — alleen tonen als er een override is */}
+                  {heeftOverride && (
+                    <div
+                      onClick={() => selecteerStatus(null)}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 8,
+                        padding: "9px 12px",
+                        fontSize: 11,
+                        cursor: "pointer",
+                        color: T.text3,
+                        borderTop: `1px solid ${T.border0}`,
+                        fontFamily: "Inter, system-ui, sans-serif",
+                      }}
+                    >
+                      ↺ Reset naar Sportlink
+                    </div>
+                  )}
                 </div>
               )}
             </div>

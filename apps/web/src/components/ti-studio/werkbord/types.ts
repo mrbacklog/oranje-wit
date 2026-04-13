@@ -38,7 +38,8 @@ export interface WerkbordSpeler {
   geboortejaar: number;
   geboortedatum: string | null;
   geslacht: Geslacht;
-  status: SpelerStatus;
+  status: SpelerStatus; // effectieve status: override ?? Sportlink
+  sportlinkStatus: SpelerStatus; // onbewerkte Sportlink-status (read-only)
   rating: number | null;
   notitie: string | null;
   afmelddatum: string | null;

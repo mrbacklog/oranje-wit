@@ -580,9 +580,10 @@ model KadersSpeler {
   speler       Speler   @relation(fields: [spelerId], references: [id])
   spelerId     String
 
-  gezienStatus GezienStatus @default(ONGEZIEN)
-  notitie      String?  @db.Text
-  signalering  String?  // "DOORSTROOM_U15", "NAAR_SENIOREN", "VERLAAT_KLEUR", etc.
+  gezienStatus   GezienStatus  @default(ONGEZIEN)
+  notitie        String?       @db.Text
+  signalering    String?       // "DOORSTROOM_U15", "NAAR_SENIOREN", "VERLAAT_KLEUR", etc.
+  statusOverride SpelerStatus? // TC-status — overschrijft Sportlink, wordt niet gereset bij import
 
   // Coördinator-voorstel (conceptueel, TC bevestigt definitief)
   gezienStatusVoorgesteld GezienStatus? @map("gezien_status_voorgesteld")

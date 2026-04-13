@@ -211,9 +211,9 @@ export async function verwijderWerkindeling(werkindelingId: string, auteur: stri
   revalidatePath("/indeling");
 }
 
-export async function getSpelerProfiel(spelerId: string) {
+export async function getSpelerProfiel(spelerId: string, kadersId?: string) {
   await requireTC();
-  const [speler, competitieHistorie] = await Promise.all([
+  const [speler, competitieHistorie, kadersSpeler] = await Promise.all([
     prisma.speler.findUnique({
       where: { id: spelerId },
       select: {
@@ -238,15 +238,43 @@ export async function getSpelerProfiel(spelerId: string) {
       orderBy: { seizoen: "desc" },
       distinct: ["seizoen"],
     }),
+    kadersId
+      ? prisma.kadersSpeler.findUnique({
+          where: { kadersId_spelerId: { kadersId, spelerId } },
+          select: { statusOverride: true },
+        })
+      : Promise.resolve(null),
   ]);
-  return speler ? { ...speler, competitieHistorie } : null;
+  if (!speler) return null;
+  return {
+    ...speler,
+    competitieHistorie,
+    statusOverride: kadersSpeler?.statusOverride ?? null,
+  };
 }
 
-export async function updateSpelerStatus(spelerId: string, status: string): Promise<void> {
+export async function getKadersStatusOverrides(kadersId: string): Promise<Record<string, string>> {
+  const overrides = await prisma.kadersSpeler.findMany({
+    where: { kadersId, statusOverride: { not: null } },
+    select: { spelerId: true, statusOverride: true },
+  });
+  const result: Record<string, string> = {};
+  for (const o of overrides) {
+    if (o.statusOverride) result[o.spelerId] = o.statusOverride;
+  }
+  return result;
+}
+
+export async function updateSpelerStatus(
+  kadersId: string,
+  spelerId: string,
+  status: string | null // null = reset naar Sportlink-status
+): Promise<void> {
   await requireTC();
-  await prisma.speler.update({
-    where: { id: spelerId },
-    data: { status: status as SpelerStatus },
+  await prisma.kadersSpeler.upsert({
+    where: { kadersId_spelerId: { kadersId, spelerId } },
+    update: { statusOverride: status as SpelerStatus | null },
+    create: { kadersId, spelerId, statusOverride: status as SpelerStatus | null },
   });
   revalidatePath("/indeling");
 }
