@@ -104,6 +104,8 @@ Gebruik `/team-devops` voor health checks en CI status (observatie, geen deploys
 
 **Error handling** — geen lege catch blocks, altijd loggen met `logger.warn("context:", error)`.
 
+**Deploy** — Alleen `team-release` deployt. Alle andere agents: VERBODEN. Escaleer naar `product-owner`.
+
 ## Database
 
 - **PostgreSQL op Railway**, Prisma schema in `packages/database/` is source of truth
@@ -119,26 +121,13 @@ Details over tabelverdeling, datamodel, rel_code-regels en data flow: zie `rules
 - **Verenigingsnaam**: "c.k.v. Oranje Wit" (met punten, spatie)
 - **Privacy**: nooit BSN, geboortedatum of adres tonen/loggen
 
-## De Oranje Draad
+## Oranje Draad & TC-doelgroepen
 
-```
-PLEZIER + ONTWIKKELING + PRESTATIE → DUURZAAMHEID
-```
-Elke teamindeling wordt getoetst aan deze drie pijlers. Details: zie `rules/oranje-draad.md` en `docs/kennis/tc-beleid.md`
+Toets altijd aan: **Plezier + Ontwikkeling + Prestatie → Duurzaamheid**
 
-## TC-doelgroepen
+De vijf TC-doelgroepen (Kweekvijver, Opleidingshart, Korfbalplezier, Wedstrijdsport, Topsport) zijn ubiquitous — gebruik deze termen overal consistent.
 
-De TC bedient alle korfbalspelende leden via vijf doelgroepen:
-
-| Doelgroep | Wie | Eigenaar | Kern |
-|---|---|---|---|
-| **Kweekvijver** | 5-9 (Blauw + Groen) | Merel | Spelenderwijs aansteken, veilig klimaat |
-| **Opleidingshart** | 10-15 (Geel + Oranje) | Merel | Golden age, breed opleiden + voorsorteren |
-| **Korfbalplezier** | Rood B, B-senioren, midweek, recreant | Thomas | Plezier, verenigingsleven, brug jeugd-senioren |
-| **Wedstrijdsport** | Senioren A-categorie (Sen 3-4) | Thomas | Competitief buiten de top |
-| **Topsport** | U15-1 t/m U19-1, Sen 1-2 | Jasper | Maximaal presteren, terugbetalen aan club |
-
-Deze termen zijn **ubiquitous** — ze worden overal gebruikt: in de app, documentatie, agents, presentaties en TC-vergaderingen. Details: `rules/oranje-draad.md` en `docs/kennis/tc-doelgroepen.md`
+Details: `rules/oranje-draad.md` en `docs/kennis/tc-doelgroepen.md`
 
 ## Verwijzingen
 
