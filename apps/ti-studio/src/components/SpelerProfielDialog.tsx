@@ -182,6 +182,37 @@ function korfbalLeeftijd(
   return "—";
 }
 
+function SpelerFoto({
+  spelerId,
+  init,
+  kleur,
+}: {
+  spelerId: string | null;
+  init: string;
+  kleur: string;
+}) {
+  const [fout, setFout] = useState(false);
+
+  if (!spelerId || fout) {
+    return <span>{init}</span>;
+  }
+
+  return (
+    <img
+      src={`/api/scouting/spelers/${spelerId}/foto`}
+      alt=""
+      onError={() => setFout(true)}
+      style={{
+        width: "100%",
+        height: "100%",
+        objectFit: "cover",
+        objectPosition: "center top",
+        display: "block",
+      }}
+    />
+  );
+}
+
 function leeftijdLabel(
   geboortedatum: Date | string | null | undefined,
   geboortejaar: number | null | undefined
@@ -830,13 +861,14 @@ export default function SpelerProfielDialog({
                 flexShrink: 0,
                 position: "relative",
                 zIndex: 1,
+                overflow: "hidden",
                 background: avatarBg,
                 border: `3px solid ${avatarRingKleur}`,
                 color: avatarTextKleur,
                 boxShadow: `0 4px 24px rgba(0,0,0,0.5), 0 0 0 5px ${isVrouw ? "rgba(236,72,153,.1)" : "rgba(96,165,250,.1)"}`,
               }}
             >
-              {init}
+              <SpelerFoto spelerId={spelerId} init={init} kleur={avatarTextKleur} />
             </div>
 
             {/* Status dropdown */}
