@@ -379,6 +379,9 @@ export function WerkbordCanvas({
               onDropSpeler={(spelerData, vanTeamId, naarGeslacht) =>
                 onDropSpelerOpTeam(spelerData, vanTeamId, team.id, naarGeslacht)
               }
+              onDropSpelerOpTeamDirect={(spelerData, vanTeamId, naarTeamId, geslacht) =>
+                onDropSpelerOpTeam(spelerData, vanTeamId, naarTeamId, geslacht)
+              }
               onHeaderMouseDown={handleTeamHeaderMouseDown}
               onSpelerClick={onSpelerClick}
               partnerTeam={partner}

@@ -173,7 +173,7 @@ export async function hernoem(werkindelingId: string, naam: string) {
     where: { id: werkindelingId },
     data: { naam: naam.trim() },
   });
-  revalidatePath("/ti-studio/indeling");
+  revalidatePath("/indeling");
 }
 
 export async function voegSpelerToeAanTeam(
@@ -190,14 +190,14 @@ export async function voegSpelerToeAanTeam(
       spelers: { create: { spelerId, statusOverride: statusOverride ?? null } },
     },
   });
-  revalidatePath("/ti-studio/indeling");
+  revalidatePath("/indeling");
 }
 
 export async function verwijderSpelerUitTeam(teamId: string, spelerId: string) {
   await requireTC();
   await assertTeamBewerkbaar(teamId);
   await prisma.teamSpeler.deleteMany({ where: { teamId, spelerId } });
-  revalidatePath("/ti-studio/indeling");
+  revalidatePath("/indeling");
 }
 
 export async function verwijderWerkindeling(werkindelingId: string, auteur: string) {
@@ -208,7 +208,7 @@ export async function verwijderWerkindeling(werkindelingId: string, auteur: stri
     where: { id: werkindelingId },
     data: { verwijderdOp: new Date() },
   });
-  revalidatePath("/ti-studio/indeling");
+  revalidatePath("/indeling");
 }
 
 export async function getSpelerProfiel(spelerId: string) {
@@ -248,7 +248,7 @@ export async function updateSpelerStatus(spelerId: string, status: string): Prom
     where: { id: spelerId },
     data: { status: status as SpelerStatus },
   });
-  revalidatePath("/ti-studio/indeling");
+  revalidatePath("/indeling");
 }
 
 // ─── Selectie-bundeling actions ──────────────────────────────────────────────
@@ -276,7 +276,7 @@ export async function voegSelectieSpelerToe(
       update: {},
       select: { id: true },
     });
-    revalidatePath("/ti-studio/indeling");
+    revalidatePath("/indeling");
     return { ok: true, data: { id: selectieSpeler.id } };
   } catch (error) {
     logger.warn("voegSelectieSpelerToe fout:", error);
@@ -291,7 +291,7 @@ export async function verwijderSelectieSpeler(
   await requireTC();
   try {
     await prisma.selectieSpeler.deleteMany({ where: { selectieGroepId, spelerId } });
-    revalidatePath("/ti-studio/indeling");
+    revalidatePath("/indeling");
     return { ok: true, data: undefined };
   } catch (error) {
     logger.warn("verwijderSelectieSpeler fout:", error);
@@ -361,7 +361,7 @@ export async function toggleSelectieBundeling(
       ]);
     }
 
-    revalidatePath("/ti-studio/indeling");
+    revalidatePath("/indeling");
     return { ok: true, data: undefined };
   } catch (error) {
     logger.warn("toggleSelectieBundeling fout:", error);

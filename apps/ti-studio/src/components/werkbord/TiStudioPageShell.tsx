@@ -63,7 +63,7 @@ export function TiStudioPageShell({ children }: TiStudioPageShellProps) {
     return () => clearInterval(interval);
   }, []);
 
-  const isWerkbord = pathname.startsWith("/ti-studio/indeling");
+  const isWerkbord = pathname.startsWith("/indeling");
 
   return (
     <>
@@ -88,21 +88,6 @@ export function TiStudioPageShell({ children }: TiStudioPageShellProps) {
         <p style={{ fontSize: 14, color: "var(--text-2)", maxWidth: 280, textAlign: "center" }}>
           Open deze pagina op een laptop of computer voor de volledige Team-Indeling werkplaats.
         </p>
-        <a
-          href="/teamindeling"
-          style={{
-            marginTop: 8,
-            borderRadius: 8,
-            padding: "8px 16px",
-            fontSize: 14,
-            fontWeight: 500,
-            background: "var(--accent)",
-            color: "white",
-            textDecoration: "none",
-          }}
-        >
-          Naar mobiele teamindeling
-        </a>
       </div>
 
       {/* Desktop */}
@@ -123,10 +108,10 @@ export function TiStudioPageShell({ children }: TiStudioPageShellProps) {
         <Ribbon
           gebruikerInitialen={gebruikerInitialen}
           activeRoute={pathname}
-          onNaarIndeling={() => router.push("/ti-studio/indeling")}
-          onNaarKader={() => router.push("/ti-studio/kader")}
-          onNaarPersonen={() => router.push("/ti-studio/personen")}
-          onNaarMemo={() => router.push("/ti-studio/memo")}
+          onNaarIndeling={() => router.push("/indeling")}
+          onNaarKader={() => router.push("/kader")}
+          onNaarPersonen={() => router.push("/personen")}
+          onNaarMemo={() => router.push("/memo")}
           openMemoCount={openMemoCount}
         />
 

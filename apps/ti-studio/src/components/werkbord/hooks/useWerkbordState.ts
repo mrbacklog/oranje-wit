@@ -61,6 +61,17 @@ export function useWerkbordState(
               heren: updated.heren.filter((s) => s.spelerId !== spelerData.id),
             };
           }
+          // Ook uit selectie pool opruimen (voor het geval speler in selectieDames/selectieHeren zit)
+          if (
+            updated.selectieDames.some((s) => s.spelerId === spelerData.id) ||
+            updated.selectieHeren.some((s) => s.spelerId === spelerData.id)
+          ) {
+            updated = {
+              ...updated,
+              selectieDames: updated.selectieDames.filter((s) => s.spelerId !== spelerData.id),
+              selectieHeren: updated.selectieHeren.filter((s) => s.spelerId !== spelerData.id),
+            };
+          }
           if (team.id === naarTeamId) {
             const spelerInTeam: WerkbordSpelerInTeam = {
               id: `sit-${spelerData.id}-${naarTeamId}-${Date.now()}`,
@@ -318,7 +329,7 @@ export function useWerkbordState(
   async function stuurMutatie(body: Record<string, unknown>) {
     setOpslaanStatus("bezig");
     try {
-      const resp = await fetch(`/api/ti-studio/indeling/${versieId}`, {
+      const resp = await fetch(`/api/indeling/${versieId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...body, sessionId: sessionId.current }),
@@ -379,7 +390,7 @@ export function useWerkbordState(
 
   useEffect(() => {
     if (!versieId) return;
-    const es = new EventSource(`/api/ti-studio/indeling/${versieId}/stream`);
+    const es = new EventSource(`/api/indeling/${versieId}/stream`);
     es.onmessage = (e) => {
       let event: Record<string, unknown>;
       try {

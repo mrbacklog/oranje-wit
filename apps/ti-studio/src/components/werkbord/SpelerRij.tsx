@@ -241,7 +241,7 @@ function bouwDragHandlers(
   ghostRef: React.RefObject<HTMLDivElement | null>,
   dragData: {
     speler: WerkbordSpelerInTeam["speler"];
-    vanTeamId: string;
+    vanTeamId: string | null;
     vanSelectieGroepId: string | null;
   },
   setIsDragging: (v: boolean) => void,
@@ -785,7 +785,7 @@ function PoolRij({
     ? {}
     : bouwDragHandlers(
         ghostRef,
-        { speler, vanTeamId: vanTeamId ?? "", vanSelectieGroepId: selectieGroepId ?? null },
+        { speler, vanTeamId: vanTeamId, vanSelectieGroepId: selectieGroepId ?? null },
         setIsDragging,
         setIsLanding
       );

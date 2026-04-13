@@ -67,6 +67,12 @@ interface TeamKaartProps {
     vanSelectieGroepId: string | null,
     geslacht: "V" | "M"
   ) => void;
+  onDropSpelerOpTeamDirect?: (
+    spelerData: WerkbordSpeler,
+    vanTeamId: string | null,
+    naarTeamId: string,
+    geslacht: "V" | "M"
+  ) => void;
   onTitelKlik?: (teamId: string) => void;
 }
 
@@ -82,6 +88,7 @@ export function TeamKaart({
   onSpelerClick,
   partnerTeam,
   onDropSpelerOpSelectie,
+  onDropSpelerOpTeamDirect,
   onTitelKlik,
 }: TeamKaartProps) {
   const breedte = KAART_BREEDTE[team.formaat];
@@ -284,13 +291,13 @@ export function TeamKaart({
           onDropSpelerOpSelectie={onDropSpelerOpSelectie}
         />
       ) : isSelectie && partnerTeam ? (
-        // Ongebundeld: dam1 | dam2 | her1 | her2 (per team)
+        // Ongebundeld: dam1 | her1 | dam2 | her2 (per team) — drops gaan naar specifiek team
         <SelectieGeheelDropzone
           team={team}
           partnerTeam={partnerTeam}
           zoomLevel={zoomLevel}
           onSpelerClick={onSpelerClick}
-          onDropSpelerOpSelectie={onDropSpelerOpSelectie}
+          onDropSpelerOpTeam={onDropSpelerOpTeamDirect}
         />
       ) : team.formaat === "viertal" ? (
         <ViertalDropzone
@@ -442,22 +449,22 @@ function SelectieGeheelDropzone({
   partnerTeam,
   zoomLevel,
   onSpelerClick,
-  onDropSpelerOpSelectie,
+  onDropSpelerOpTeam,
 }: {
   team: WerkbordTeam;
   partnerTeam: WerkbordTeam;
   zoomLevel: ZoomLevel;
   onSpelerClick?: (spelerId: string, teamId: string | null) => void;
-  onDropSpelerOpSelectie?: (
+  onDropSpelerOpTeam?: (
     spelerData: WerkbordSpeler,
     vanTeamId: string | null,
-    vanSelectieGroepId: string | null,
+    naarTeamId: string,
     geslacht: "V" | "M"
   ) => void;
 }) {
   const [dropOver, setDropOver] = useState<string | null>(null);
 
-  function makeHandlers(col: string, geslacht: "V" | "M") {
+  function makeHandlers(col: string, geslacht: "V" | "M", naarTeamId: string) {
     return {
       onDragOver: (e: React.DragEvent) => {
         e.preventDefault();
@@ -473,7 +480,9 @@ function SelectieGeheelDropzone({
             vanTeamId: string | null;
             vanSelectieGroepId: string | null;
           };
-          onDropSpelerOpSelectie?.(data.speler, data.vanTeamId, data.vanSelectieGroepId, geslacht);
+          const effectiefVanTeamId = data.vanTeamId;
+          if (effectiefVanTeamId === naarTeamId) return;
+          onDropSpelerOpTeam?.(data.speler, effectiefVanTeamId, naarTeamId, geslacht);
         } catch {
           /* ignore */
         }
@@ -548,7 +557,7 @@ function SelectieGeheelDropzone({
       )}
       <div style={{ display: "flex" }}>
         {cols.map((col, i) => {
-          const h = makeHandlers(col.id, col.kleur);
+          const h = makeHandlers(col.id, col.kleur, col.teamId);
           return (
             <DropzoneKolom
               key={col.id}
