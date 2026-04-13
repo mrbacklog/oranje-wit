@@ -74,6 +74,7 @@ export async function getWerkindelingVoorEditor(werkindelingId: string) {
             include: {
               spelers: { include: { speler: true } },
               staf: { include: { staf: true } },
+              selectieGroep: { select: { naam: true } },
             },
           },
         },
@@ -254,15 +255,20 @@ export async function voegSelectieSpelerToe(
   try {
     const selectieGroep = await prisma.selectieGroep.findUniqueOrThrow({
       where: { id: selectieGroepId },
-      select: {
-        versieId: true,
-        teams: { select: { id: true } },
-      },
+      select: { versieId: true },
     });
-    const teamIds = selectieGroep.teams.map((t: { id: string }) => t.id);
-    await prisma.teamSpeler.deleteMany({
-      where: { spelerId, teamId: { in: teamIds } },
-    });
+    // Verwijder uit alle teams en selectiegroepen in deze versie (voorkomt duplicaten)
+    await prisma.$transaction([
+      prisma.teamSpeler.deleteMany({
+        where: { spelerId, team: { versieId: selectieGroep.versieId } },
+      }),
+      prisma.selectieSpeler.deleteMany({
+        where: {
+          spelerId,
+          selectieGroep: { versieId: selectieGroep.versieId, id: { not: selectieGroepId } },
+        },
+      }),
+    ]);
     const selectieSpeler = await prisma.selectieSpeler.upsert({
       where: { selectieGroepId_spelerId: { selectieGroepId, spelerId } },
       create: { selectieGroepId, spelerId },

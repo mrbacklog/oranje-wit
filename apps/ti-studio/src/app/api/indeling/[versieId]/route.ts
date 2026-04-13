@@ -51,10 +51,15 @@ export async function POST(
 
   try {
     if (event.type === "speler_verplaatst") {
-      // Verwijder uit alle teams in deze versie (voorkomt duplicaten ongeacht vanTeamId)
-      await prisma.teamSpeler.deleteMany({
-        where: { spelerId: event.spelerId, team: { versieId } },
-      });
+      // Verwijder uit alle teams én selectiegroepen in deze versie (voorkomt duplicaten)
+      await prisma.$transaction([
+        prisma.teamSpeler.deleteMany({
+          where: { spelerId: event.spelerId, team: { versieId } },
+        }),
+        prisma.selectieSpeler.deleteMany({
+          where: { spelerId: event.spelerId, selectieGroep: { versieId } },
+        }),
+      ]);
       await prisma.teamSpeler.upsert({
         where: {
           teamId_spelerId: { teamId: event.naarTeamId, spelerId: event.spelerId },
@@ -63,9 +68,15 @@ export async function POST(
         update: {},
       });
     } else if (event.type === "speler_naar_pool") {
-      await prisma.teamSpeler.deleteMany({
-        where: { teamId: event.vanTeamId, spelerId: event.spelerId },
-      });
+      // Verwijder uit alle teams én selectiegroepen in deze versie
+      await prisma.$transaction([
+        prisma.teamSpeler.deleteMany({
+          where: { spelerId: event.spelerId, team: { versieId } },
+        }),
+        prisma.selectieSpeler.deleteMany({
+          where: { spelerId: event.spelerId, selectieGroep: { versieId } },
+        }),
+      ]);
     } else if (event.type === "team_positie") {
       const versie = await prisma.versie.findUniqueOrThrow({
         where: { id: versieId },
