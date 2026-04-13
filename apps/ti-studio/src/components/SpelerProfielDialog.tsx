@@ -897,6 +897,63 @@ export default function SpelerProfielDialog({
               <SpelerFoto spelerId={spelerId} init={init} kleur={avatarTextKleur} />
             </div>
 
+            {/* USS Octagon — alleen tonen als score beschikbaar */}
+            {profiel?.ussScore != null &&
+              (() => {
+                const uss = profiel.ussScore!;
+                const tier =
+                  uss >= 8.5 ? "goud" : uss >= 7.5 ? "zilver" : uss >= 6.5 ? "brons" : "geen";
+                const tierKleur =
+                  tier === "goud"
+                    ? "#ffd700"
+                    : tier === "zilver"
+                      ? "#c0c0c0"
+                      : tier === "brons"
+                        ? "#cd7f32"
+                        : T.accent;
+                const tierBg =
+                  tier === "goud"
+                    ? "rgba(255,215,0,.2)"
+                    : tier === "zilver"
+                      ? "rgba(192,192,192,.18)"
+                      : tier === "brons"
+                        ? "rgba(205,127,50,.18)"
+                        : "rgba(255,107,0,.15)";
+                return (
+                  <div
+                    style={{
+                      marginTop: 8,
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      gap: 2,
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 44,
+                        height: 44,
+                        clipPath:
+                          "polygon(29% 0%, 71% 0%, 100% 29%, 100% 71%, 71% 100%, 29% 100%, 0% 71%, 0% 29%)",
+                        background: tierBg,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: 13,
+                        fontWeight: 800,
+                        color: tierKleur,
+                        lineHeight: 1,
+                      }}
+                    >
+                      {uss.toFixed(1)}
+                    </div>
+                    <span style={{ fontSize: 9, color: T.text3, letterSpacing: "0.06em" }}>
+                      USS
+                    </span>
+                  </div>
+                );
+              })()}
+
             {/* Status — TC-override dropdown + Sportlink-badge */}
             <div
               ref={statusMenuRef}

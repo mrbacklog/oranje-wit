@@ -213,7 +213,7 @@ export async function verwijderWerkindeling(werkindelingId: string, auteur: stri
 
 export async function getSpelerProfiel(spelerId: string, kadersId?: string) {
   await requireTC();
-  const [speler, competitieHistorie, kadersSpeler] = await Promise.all([
+  const [speler, competitieHistorie, kadersSpeler, ussRecord] = await Promise.all([
     prisma.speler.findUnique({
       where: { id: spelerId },
       select: {
@@ -244,12 +244,17 @@ export async function getSpelerProfiel(spelerId: string, kadersId?: string) {
           select: { statusOverride: true },
         })
       : Promise.resolve(null),
+    prisma.spelerUSS.findFirst({
+      where: { spelerId, seizoen: HUIDIG_SEIZOEN },
+      select: { ussOverall: true },
+    }),
   ]);
   if (!speler) return null;
   return {
     ...speler,
     competitieHistorie,
     statusOverride: kadersSpeler?.statusOverride ?? null,
+    ussScore: ussRecord?.ussOverall ?? null,
   };
 }
 
