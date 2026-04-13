@@ -49,12 +49,18 @@ export async function createWerkitem(
 ): Promise<ActionResult<WerkitemData>> {
   try {
     const session = await requireTC();
-    const auteurId =
-      ((session.user as Record<string, unknown>)?.id as string | undefined) ??
-      session.user?.email ??
-      "unknown";
-    const auteurNaamCreate = (session.user?.name as string | undefined) ?? auteurId;
-    const auteurEmailCreate = (session.user?.email as string | undefined) ?? auteurId;
+    const email = (session.user?.email as string | undefined) ?? "";
+    const auteurNaamCreate = (session.user?.name as string | undefined) ?? email;
+    const auteurEmailCreate = email;
+
+    const gebruiker = await prisma.user.findUnique({
+      where: { email },
+      select: { id: true },
+    });
+    if (!gebruiker) {
+      return { ok: false, error: `Gebruiker '${email}' niet gevonden in de database` };
+    }
+    const auteurId = gebruiker.id;
     const entiteit = leidEntiteitAf(input);
 
     const werkitem = await prisma.werkitem.create({
