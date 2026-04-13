@@ -51,11 +51,10 @@ export async function POST(
 
   try {
     if (event.type === "speler_verplaatst") {
-      if (event.vanTeamId) {
-        await prisma.teamSpeler.deleteMany({
-          where: { teamId: event.vanTeamId, spelerId: event.spelerId },
-        });
-      }
+      // Verwijder uit alle teams in deze versie (voorkomt duplicaten ongeacht vanTeamId)
+      await prisma.teamSpeler.deleteMany({
+        where: { spelerId: event.spelerId, team: { versieId } },
+      });
       await prisma.teamSpeler.upsert({
         where: {
           teamId_spelerId: { teamId: event.naarTeamId, spelerId: event.spelerId },

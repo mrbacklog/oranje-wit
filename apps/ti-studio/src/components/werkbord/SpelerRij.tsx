@@ -777,7 +777,7 @@ function PoolRij({
     ? {}
     : bouwDragHandlers(
         ghostRef,
-        { speler, vanTeamId: vanTeamId ?? "", vanSelectieGroepId: selectieGroepId ?? null },
+        { speler, vanTeamId: vanTeamId, vanSelectieGroepId: selectieGroepId ?? null },
         setIsDragging,
         setIsLanding
       );
