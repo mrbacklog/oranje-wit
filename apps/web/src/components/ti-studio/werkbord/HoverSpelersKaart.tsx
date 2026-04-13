@@ -443,7 +443,6 @@ function KaartVoorkant({
             }}
           >
             {speler.fotoUrl ? (
-              /* eslint-disable-next-line @next/next/no-img-element */
               <img
                 src={speler.fotoUrl}
                 alt=""

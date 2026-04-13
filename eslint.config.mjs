@@ -38,6 +38,8 @@ export default defineConfig([
       "apps/*/next.config.ts",
       "apps/*/postcss.config.mjs",
       "apps/*/eslint.config.mjs",
+      "apps/**/.next/**",
+      "apps/**/dist/**",
     ],
   },
   {
