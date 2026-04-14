@@ -27,7 +27,6 @@ interface Props {
 export function StafOverzicht({ stafLeden }: Props) {
   const [zoekterm, setZoekterm] = useState("");
   const [teamFilter, setTeamFilter] = useState("allen");
-  const [rolFilter, setRolFilter] = useState("allen");
   const [gepindFilter, setGepindFilter] = useState(false);
   const [toonInactief, setToonInactief] = useState(false);
   const [sortKey, setSortKey] = useState<"naam" | "teams" | "gepind">("naam");
@@ -37,10 +36,6 @@ export function StafOverzicht({ stafLeden }: Props) {
 
   const alleTeams = useMemo(
     () => [...new Set(stafLeden.flatMap((s) => s.teams.map((t) => t.teamNaam)))].sort(),
-    [stafLeden]
-  );
-  const alleRollen = useMemo(
-    () => [...new Set(stafLeden.flatMap((s) => s.rollen))].sort(),
     [stafLeden]
   );
 
@@ -67,7 +62,6 @@ export function StafOverzicht({ stafLeden }: Props) {
     }
     if (teamFilter !== "allen")
       result = result.filter((s) => s.teams.some((t) => t.teamNaam === teamFilter));
-    if (rolFilter !== "allen") result = result.filter((s) => s.rollen.includes(rolFilter));
     if (gepindFilter) result = result.filter((s) => s.gepind);
     return [...result].sort((a, b) => {
       let cmp = 0;
@@ -84,7 +78,7 @@ export function StafOverzicht({ stafLeden }: Props) {
       }
       return sortDir === "asc" ? cmp : -cmp;
     });
-  }, [stafLeden, zoekterm, teamFilter, rolFilter, gepindFilter, toonInactief, sortKey, sortDir]);
+  }, [stafLeden, zoekterm, teamFilter, gepindFilter, toonInactief, sortKey, sortDir]);
 
   function SortIcon({ col }: { col: "naam" | "teams" | "gepind" }) {
     if (sortKey !== col) return <span style={{ opacity: 0.3, fontSize: "0.65rem" }}> ↕</span>;
@@ -165,18 +159,6 @@ export function StafOverzicht({ stafLeden }: Props) {
             </option>
           ))}
         </select>
-        <select
-          value={rolFilter}
-          onChange={(e) => setRolFilter(e.target.value)}
-          style={dropdownStyle}
-        >
-          <option value="allen">Rol: Allen</option>
-          {alleRollen.map((r) => (
-            <option key={r} value={r}>
-              {r}
-            </option>
-          ))}
-        </select>
         <button onClick={() => setGepindFilter((v) => !v)} style={chipStyle(gepindFilter)}>
           📌 Gepind
         </button>
@@ -224,7 +206,6 @@ export function StafOverzicht({ stafLeden }: Props) {
                 Naam
                 <SortIcon col="naam" />
               </th>
-              <th style={{ ...thStyle, cursor: "default" }}>Globale rollen</th>
               <th onClick={() => handleSort("teams")} style={thStyle}>
                 Teams + rol
                 <SortIcon col="teams" />
@@ -240,7 +221,7 @@ export function StafOverzicht({ stafLeden }: Props) {
             {gefilterd.length === 0 && (
               <tr>
                 <td
-                  colSpan={5}
+                  colSpan={4}
                   style={{
                     padding: "2rem",
                     textAlign: "center",
@@ -305,15 +286,6 @@ export function StafOverzicht({ stafLeden }: Props) {
                         {staf.naam}
                       </span>
                     </div>
-                  </td>
-                  <td
-                    style={{
-                      padding: "0.625rem 0.875rem",
-                      fontSize: "0.8125rem",
-                      color: "var(--text-secondary)",
-                    }}
-                  >
-                    {staf.rollen.length > 0 ? staf.rollen.join(", ") : "—"}
                   </td>
                   <td style={{ padding: "0.625rem 0.875rem" }}>
                     {staf.teams.length > 0 ? (

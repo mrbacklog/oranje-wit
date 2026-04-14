@@ -16,7 +16,7 @@ export async function getStafVoorStudio() {
   const [stafLeden, teamStafKoppelingen, pins] = await Promise.all([
     prisma.staf.findMany({
       where: { actief: true },
-      select: { id: true, naam: true, rollen: true, geboortejaar: true },
+      select: { id: true, naam: true, geboortejaar: true },
       orderBy: { naam: "asc" },
     }),
     prisma.teamStaf.findMany({
@@ -54,7 +54,6 @@ export async function getStafVoorStudio() {
   return stafLeden.map((s) => ({
     id: s.id,
     naam: s.naam,
-    rollen: s.rollen as string[],
     geboortejaar: s.geboortejaar as number | null,
     gepind: gepindSet.has(s.id),
     teams: teamMap.get(s.id) ?? [],
@@ -73,7 +72,7 @@ export async function getAlleStafVoorBeheer() {
 
   const [stafLeden, teamStafKoppelingen, pins] = await Promise.all([
     prisma.staf.findMany({
-      select: { id: true, naam: true, rollen: true, geboortejaar: true, actief: true },
+      select: { id: true, naam: true, geboortejaar: true, actief: true },
       orderBy: { naam: "asc" },
     }),
     prisma.teamStaf.findMany({
@@ -111,7 +110,6 @@ export async function getAlleStafVoorBeheer() {
   return stafLeden.map((s) => ({
     id: s.id,
     naam: s.naam,
-    rollen: s.rollen as string[],
     geboortejaar: s.geboortejaar as number | null,
     actief: s.actief,
     gepind: gepindSet.has(s.id),

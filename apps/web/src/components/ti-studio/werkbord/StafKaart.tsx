@@ -72,22 +72,6 @@ export function StafKaart({ staf }: StafKaartProps) {
           {staf.naam}
         </div>
 
-        {/* Globale rollen */}
-        {staf.rollen.length > 0 && (
-          <div
-            style={{
-              fontSize: 10,
-              color: "var(--text-3)",
-              marginTop: 1,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-          >
-            {staf.rollen.join(" · ")}
-          </div>
-        )}
-
         {/* Teams */}
         {staf.teams.length > 0 && (
           <div style={{ display: "flex", flexDirection: "column", gap: 3, marginTop: 6 }}>

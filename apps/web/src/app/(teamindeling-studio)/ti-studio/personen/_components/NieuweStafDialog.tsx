@@ -33,13 +33,11 @@ const labelStyle: React.CSSProperties = {
 
 export function NieuweStafDialog({ open, onClose }: Props) {
   const [naam, setNaam] = useState("");
-  const [rollenTekst, setRollenTekst] = useState("");
   const [fout, setFout] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   function reset() {
     setNaam("");
-    setRollenTekst("");
     setFout(null);
   }
 
@@ -54,12 +52,8 @@ export function NieuweStafDialog({ open, onClose }: Props) {
       return;
     }
     setFout(null);
-    const rollen = rollenTekst
-      .split(",")
-      .map((r) => r.trim())
-      .filter(Boolean);
     startTransition(async () => {
-      const result = await maakStafAan({ naam: naam.trim(), rollen });
+      const result = await maakStafAan({ naam: naam.trim() });
       if (result.ok) {
         reset();
         onClose();
@@ -107,15 +101,6 @@ export function NieuweStafDialog({ open, onClose }: Props) {
             onChange={(e) => setNaam(e.target.value)}
             style={inputStyle}
             placeholder="Piet Trainer"
-          />
-        </div>
-        <div>
-          <label style={labelStyle}>Rollen (komma-gescheiden, optioneel)</label>
-          <input
-            value={rollenTekst}
-            onChange={(e) => setRollenTekst(e.target.value)}
-            style={inputStyle}
-            placeholder="Trainer, Assistent"
           />
         </div>
         {fout && (

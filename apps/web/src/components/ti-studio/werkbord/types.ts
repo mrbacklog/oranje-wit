@@ -78,7 +78,6 @@ export interface WerkbordStafTeamrol {
 export interface WerkbordStaf {
   id: string;
   naam: string;
-  rollen: string[]; // globale rollen uit Staf.rollen
   teams: WerkbordStafTeamrol[]; // per team welke rol
 }
 

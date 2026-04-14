@@ -455,7 +455,7 @@ export default async function IndelingPage() {
     }
   }
 
-  // Bouw alleStaf: stafleden met hun teams + rollen
+  // Bouw alleStaf: stafleden met hun teams
   const stafTeamMap = new Map<string, WerkbordStafTeamrol[]>();
   if (versie) {
     for (const team of versie.teams as any[]) {
@@ -478,7 +478,6 @@ export default async function IndelingPage() {
         alleStaf.push({
           id: ts.stafId,
           naam: ts.staf?.naam ?? "?",
-          rollen: (ts.staf?.rollen as string[]) ?? [],
           teams: stafTeamMap.get(ts.stafId) ?? [],
         });
       }
