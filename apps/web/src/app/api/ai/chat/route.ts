@@ -17,11 +17,31 @@ import { getDaisyModel, bepaalActieveProvider } from "@/lib/ai/provider";
 
 export const maxDuration = 30;
 
+const SERVICE_KEY = process.env.DAISY_SERVICE_KEY ?? "ow-daisy-service-2026";
+
+const SERVICE_SESSION: import("@oranje-wit/auth/checks").AuthSession = {
+  user: {
+    email: "service@oranjewit.internal",
+    name: "Daisy (service)",
+    isTC: true,
+    isScout: false,
+    clearance: 3,
+    doelgroepen: [],
+  },
+};
+
 export async function POST(request: Request) {
-  // --- Auth ---
-  const auth = await guardAuth();
-  if (!auth.ok) return auth.response;
-  const { session } = auth;
+  // --- Auth: service key of echte sessie ---
+  let session: import("@oranje-wit/auth/checks").AuthSession;
+
+  const serviceKey = request.headers.get("X-Daisy-Service-Key");
+  if (serviceKey && serviceKey === SERVICE_KEY) {
+    session = SERVICE_SESSION;
+  } else {
+    const auth = await guardAuth();
+    if (!auth.ok) return auth.response;
+    session = auth.session;
+  }
 
   if (session.user.clearance < 1) {
     return fail(
