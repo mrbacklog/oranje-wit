@@ -67,50 +67,58 @@ export function DoelgroepMemoSectie({
       style={{
         display: "flex",
         flexDirection: "column",
-        gap: 20,
-        fontFamily: "Inter, system-ui, sans-serif",
+        gap: 16,
       }}
     >
       {/* TC — Algemeen */}
-      <div>
+      <div
+        style={{
+          background: "var(--bg-1)",
+          border: "1px solid var(--border-0)",
+          borderRadius: 10,
+          overflow: "hidden",
+        }}
+      >
         <div
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            marginBottom: 10,
+            padding: "12px 16px",
+            borderBottom: "1px solid var(--border-0)",
+            background: "var(--bg-2)",
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ fontSize: 15, fontWeight: 700, color: "var(--text-1)" }}>
+            <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text-1)" }}>
               TC — Algemeen
             </span>
             {tcOpenCount > 0 && (
               <span
                 style={{
                   fontSize: 10,
-                  padding: "1px 7px",
+                  padding: "2px 8px",
                   borderRadius: 10,
                   background: "rgba(249,115,22,.15)",
                   color: "var(--accent)",
                   fontWeight: 700,
+                  border: "1px solid rgba(249,115,22,.2)",
                 }}
               >
-                {tcOpenCount} open
+                ▲ {tcOpenCount}
               </span>
             )}
           </div>
         </div>
-        <WerkitemPanel
-          entiteitType="TEAM"
-          kadersId={kadersId}
-          doelgroep="ALLE"
-          initieleWerkitems={tcAlgemeenWerkitems}
-        />
+        <div style={{ padding: "12px 16px" }}>
+          <WerkitemPanel
+            entiteitType="TEAM"
+            kadersId={kadersId}
+            doelgroep="ALLE"
+            initieleWerkitems={tcAlgemeenWerkitems}
+          />
+        </div>
       </div>
-
-      {/* Scheidingslijn */}
-      <div style={{ height: 1, background: "var(--border-0)" }} />
 
       {/* Per doelgroep */}
       <div>
@@ -121,10 +129,10 @@ export function DoelgroepMemoSectie({
             color: "var(--text-3)",
             textTransform: "uppercase",
             letterSpacing: ".6px",
-            marginBottom: 12,
+            marginBottom: 10,
           }}
         >
-          Memo&apos;s per doelgroep
+          Per doelgroep
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
           {DOELGROEPEN.map((d) => {
@@ -138,9 +146,11 @@ export function DoelgroepMemoSectie({
               <div
                 key={d}
                 style={{
-                  border: `1px solid ${isOpen ? `${kleur}40` : "var(--border-0)"}`,
-                  borderRadius: 8,
+                  border: `1px solid ${isOpen ? `${kleur}35` : "var(--border-0)"}`,
+                  borderLeft: `4px solid ${isOpen ? kleur : `${kleur}50`}`,
+                  borderRadius: 10,
                   overflow: "hidden",
+                  transition: "border-color 150ms",
                 }}
               >
                 <button
@@ -151,35 +161,52 @@ export function DoelgroepMemoSectie({
                     alignItems: "center",
                     justifyContent: "space-between",
                     padding: "10px 14px",
-                    background: isOpen ? `${kleur}10` : "none",
+                    background: isOpen ? `${kleur}0d` : "none",
                     border: "none",
                     cursor: "pointer",
-                    fontFamily: "Inter, system-ui, sans-serif",
+                    transition: "background 150ms",
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <span style={{ fontSize: 13, fontWeight: 600, color: kleur }}>
+                    <span
+                      style={{
+                        width: 8,
+                        height: 8,
+                        borderRadius: "50%",
+                        background: kleur,
+                        flexShrink: 0,
+                        display: "inline-block",
+                      }}
+                    />
+                    <span style={{ fontSize: 13, fontWeight: 600, color: "var(--text-1)" }}>
                       {DOELGROEP_LABEL[d]}
                     </span>
                     {openCount > 0 && (
                       <span
                         style={{
                           fontSize: 10,
-                          padding: "1px 6px",
+                          padding: "2px 7px",
                           borderRadius: 8,
-                          background: "rgba(249,115,22,.15)",
-                          color: "var(--accent)",
+                          background: `${kleur}20`,
+                          color: kleur,
                           fontWeight: 700,
+                          border: `1px solid ${kleur}35`,
                         }}
                       >
                         ▲ {openCount}
                       </span>
                     )}
                   </div>
-                  <span style={{ fontSize: 12, color: "var(--text-3)" }}>{isOpen ? "▾" : "▸"}</span>
+                  <span style={{ fontSize: 11, color: "var(--text-3)" }}>{isOpen ? "▾" : "▸"}</span>
                 </button>
                 {isOpen && (
-                  <div style={{ padding: "10px 14px", borderTop: `1px solid ${kleur}20` }}>
+                  <div
+                    style={{
+                      padding: "10px 14px",
+                      borderTop: `1px solid ${kleur}20`,
+                      background: `${kleur}05`,
+                    }}
+                  >
                     <WerkitemPanel
                       entiteitType="TEAM"
                       kadersId={kadersId}
