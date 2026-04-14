@@ -25,6 +25,7 @@ export async function getSpelersVoorStudio() {
       select: {
         spelerId: true,
         gezienStatus: true,
+        statusOverride: true,
         notitie: true,
       },
     }),
@@ -59,6 +60,20 @@ export async function getSpelersVoorStudio() {
                 },
               },
             },
+            selectieGroepen: {
+              where: { gebundeld: true },
+              select: {
+                naam: true,
+                gebundeld: true,
+                teams: {
+                  select: { naam: true, kleur: true, volgorde: true },
+                  orderBy: { volgorde: "asc" },
+                },
+                spelers: {
+                  select: { spelerId: true },
+                },
+              },
+            },
           },
         },
       },
@@ -80,13 +95,34 @@ export async function getSpelersVoorStudio() {
     }),
   ]);
 
-  // Bouw spelerId → huidig indelingsteam mapping
+  // Bouw spelerId → huidig indelingsdoel mapping (team of gebundelde selectie)
   const teamMapping = new Map<string, { naam: string; kleur: string | null }>();
   const versie = werkindeling?.versies?.[0];
   if (versie) {
+    // Eerst losse teams
     for (const team of versie.teams) {
       for (const ts of team.spelers) {
         teamMapping.set(ts.spelerId, { naam: team.naam, kleur: team.kleur ?? null });
+      }
+    }
+    // Daarna gebundelde selecties — overrule team-koppeling als speler in een pool zit
+    const selectieGroepen =
+      (
+        versie as unknown as {
+          selectieGroepen?: Array<{
+            naam: string | null;
+            gebundeld: boolean;
+            teams: Array<{ naam: string; kleur: string | null }>;
+            spelers: Array<{ spelerId: string }>;
+          }>;
+        }
+      ).selectieGroepen ?? [];
+    for (const sg of selectieGroepen) {
+      if (!sg.gebundeld) continue;
+      const selectieNaam = sg.naam ?? sg.teams.map((t) => t.naam).join(" + ");
+      const selectieKleur = sg.teams[0]?.kleur ?? null;
+      for (const ss of sg.spelers) {
+        teamMapping.set(ss.spelerId, { naam: selectieNaam, kleur: selectieKleur });
       }
     }
   }
@@ -112,7 +148,7 @@ export async function getSpelersVoorStudio() {
       achternaam: s.achternaam as string,
       geboortejaar: s.geboortejaar as number,
       geslacht: s.geslacht as "M" | "V",
-      status: s.status as string,
+      status: (gezien?.statusOverride ?? s.status) as string,
       gezienStatus: (gezien?.gezienStatus ?? "ONGEZIEN") as
         | "ONGEZIEN"
         | "GROEN"

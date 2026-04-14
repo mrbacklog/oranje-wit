@@ -4,9 +4,9 @@ import { useState, useMemo, useTransition, useEffect, useRef } from "react";
 import type { BeheerStaf } from "../staf-actions";
 import {
   setStafActief,
-  voegStafAanTeamToe,
-  verwijderStafUitTeam,
-  updateStafRol,
+  voegStafAanDoelToe,
+  verwijderStafUitDoel,
+  updateStafRolOpDoel,
 } from "../staf-actions";
 import { NieuweStafDialog } from "./NieuweStafDialog";
 
@@ -20,7 +20,13 @@ const ROL_SUGGESTIES = [
   "Manager",
 ];
 
-type TeamOptie = { id: string; naam: string; kleur: string | null; volgorde: number };
+type DoelOptie = {
+  id: string;
+  naam: string;
+  kleur: string | null;
+  volgorde: number;
+  type: "team" | "selectie";
+};
 
 const KLEUR_DOT: Record<string, string> = {
   BLAUW: "#3b82f6",
@@ -41,7 +47,7 @@ type SortKey = "naam" | "volgorde" | "gepind";
 
 interface Props {
   stafLeden: BeheerStaf[];
-  alleTeams: TeamOptie[];
+  alleDoelen: DoelOptie[];
 }
 
 type StafRij = {
@@ -51,7 +57,7 @@ type StafRij = {
   team?: BeheerStaf["teams"][number];
 };
 
-export function StafOverzicht({ stafLeden, alleTeams }: Props) {
+export function StafOverzicht({ stafLeden, alleDoelen }: Props) {
   const [zoekterm, setZoekterm] = useState("");
   const [editorStafId, setEditorStafId] = useState<string | null>(null);
   const [teamFilter, setTeamFilter] = useState("allen");
@@ -424,6 +430,20 @@ export function StafOverzicht({ stafLeden, alleTeams }: Props) {
                             >
                               {t.teamNaam}
                             </span>
+                            {t.doelType === "selectie" && (
+                              <span
+                                style={{
+                                  fontSize: "0.6rem",
+                                  padding: "0.08rem 0.3rem",
+                                  borderRadius: 3,
+                                  background: "rgba(59,130,246,0.15)",
+                                  color: "#60a5fa",
+                                  fontWeight: 700,
+                                }}
+                              >
+                                SEL
+                              </span>
+                            )}
                             {t.rol && (
                               <span
                                 style={{
@@ -444,19 +464,43 @@ export function StafOverzicht({ stafLeden, alleTeams }: Props) {
                       </div>
                     ) : (
                       <span
+                        aria-label={`Wijs ${staf.naam} toe aan team of selectie`}
+                        title="Voeg team of selectie toe"
                         style={{
-                          fontSize: "0.8125rem",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          width: 22,
+                          height: 22,
+                          borderRadius: 6,
+                          border: "1px dashed var(--border-default)",
+                          background: "transparent",
                           color: "var(--text-secondary)",
-                          fontStyle: "italic",
+                          fontSize: "0.95rem",
+                          lineHeight: 1,
+                          opacity: 0.7,
+                          transition: "opacity 120ms, border-color 120ms, color 120ms",
+                        }}
+                        onMouseEnter={(e) => {
+                          const b = e.currentTarget as HTMLSpanElement;
+                          b.style.opacity = "1";
+                          b.style.borderColor = "var(--accent)";
+                          b.style.color = "var(--accent)";
+                        }}
+                        onMouseLeave={(e) => {
+                          const b = e.currentTarget as HTMLSpanElement;
+                          b.style.opacity = "0.7";
+                          b.style.borderColor = "var(--border-default)";
+                          b.style.color = "var(--text-secondary)";
                         }}
                       >
-                        Niet ingedeeld ✏
+                        +
                       </span>
                     )}
                     {editorStafId === staf.id && (
                       <TeamRolEditor
                         staf={staf}
-                        alleTeams={alleTeams}
+                        alleDoelen={alleDoelen}
                         onClose={() => setEditorStafId(null)}
                       />
                     )}
@@ -484,15 +528,15 @@ export function StafOverzicht({ stafLeden, alleTeams }: Props) {
 
 function TeamRolEditor({
   staf,
-  alleTeams,
+  alleDoelen,
   onClose,
 }: {
   staf: BeheerStaf;
-  alleTeams: TeamOptie[];
+  alleDoelen: DoelOptie[];
   onClose: () => void;
 }) {
   const [isPending, startTransition] = useTransition();
-  const [nieuwTeamId, setNieuwTeamId] = useState<string>("");
+  const [nieuwDoelId, setNieuwDoelId] = useState<string>("");
   const [nieuwRol, setNieuwRol] = useState<string>("Trainer");
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -505,27 +549,48 @@ function TeamRolEditor({
     return () => document.removeEventListener("mousedown", handleDocClick);
   }, [onClose]);
 
-  const huidigeTeamIds = new Set(staf.teams.map((t) => t.teamId));
-  const beschikbareTeams = alleTeams.filter((t) => !huidigeTeamIds.has(t.id));
+  // Bepaal reeds-gekoppelde doelen (team-id of selectie-id via teamId legacy alias)
+  const huidigeIds = new Set(staf.teams.map((t) => t.teamId));
+  const beschikbareDoelen = alleDoelen.filter((d) => !huidigeIds.has(d.id));
+  const losseTeams = beschikbareDoelen.filter((d) => d.type === "team");
+  const selecties = beschikbareDoelen.filter((d) => d.type === "selectie");
+
+  function resolveDoel(doelId: string): { id: string; type: "team" | "selectie" } | null {
+    const d = alleDoelen.find((o) => o.id === doelId);
+    return d ? { id: d.id, type: d.type } : null;
+  }
 
   function handleVoegToe() {
-    if (!nieuwTeamId || !nieuwRol.trim()) return;
+    if (!nieuwDoelId || !nieuwRol.trim()) return;
+    const doel = resolveDoel(nieuwDoelId);
+    if (!doel) return;
     startTransition(async () => {
-      await voegStafAanTeamToe(staf.id, nieuwTeamId, nieuwRol.trim());
-      setNieuwTeamId("");
+      await voegStafAanDoelToe(staf.id, doel, nieuwRol.trim());
+      setNieuwDoelId("");
       setNieuwRol("Trainer");
     });
   }
 
-  function handleVerwijder(teamId: string) {
+  function handleVerwijder(doelId: string) {
+    // Koppeling-info uit staf.teams vinden voor doelType
+    const koppeling = staf.teams.find((t) => t.teamId === doelId);
+    const doel = {
+      id: doelId,
+      type: koppeling?.doelType ?? "team",
+    } as { id: string; type: "team" | "selectie" };
     startTransition(async () => {
-      await verwijderStafUitTeam(staf.id, teamId);
+      await verwijderStafUitDoel(staf.id, doel);
     });
   }
 
-  function handleRolWijzig(teamId: string, rol: string) {
+  function handleRolWijzig(doelId: string, rol: string) {
+    const koppeling = staf.teams.find((t) => t.teamId === doelId);
+    const doel = {
+      id: doelId,
+      type: koppeling?.doelType ?? "team",
+    } as { id: string; type: "team" | "selectie" };
     startTransition(async () => {
-      await updateStafRol(staf.id, teamId, rol);
+      await updateStafRolOpDoel(staf.id, doel, rol);
     });
   }
 
@@ -552,65 +617,117 @@ function TeamRolEditor({
       }}
     >
       <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: 600 }}>
-        Teams + rollen voor {staf.naam}
+        Teams &amp; selecties + rollen voor {staf.naam}
       </div>
       {staf.teams.length === 0 && (
         <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontStyle: "italic" }}>
-          Nog geen team-koppelingen
+          Nog geen koppelingen
         </div>
       )}
-      {staf.teams.map((t) => (
-        <div key={t.teamId} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <span
-            style={{
-              fontSize: "0.8125rem",
-              color: "var(--text-primary)",
-              fontWeight: 500,
-              minWidth: 110,
-            }}
-          >
-            {t.teamNaam}
-          </span>
-          <input
-            type="text"
-            defaultValue={t.rol}
-            disabled={isPending}
-            onBlur={(e) => {
-              if (e.target.value.trim() && e.target.value.trim() !== t.rol) {
-                handleRolWijzig(t.teamId, e.target.value);
-              }
-            }}
-            list={`rol-suggesties-${staf.id}`}
-            style={{
-              flex: 1,
-              background: "var(--surface-sunken)",
-              border: "1px solid var(--border-default)",
-              borderRadius: 6,
-              padding: "0.25rem 0.5rem",
-              color: "var(--text-primary)",
-              fontSize: "0.75rem",
-              outline: "none",
-              fontFamily: "inherit",
-            }}
-          />
-          <button
-            type="button"
-            onClick={() => handleVerwijder(t.teamId)}
-            disabled={isPending}
-            title="Verwijder uit team"
-            style={{
-              background: "transparent",
-              border: "none",
-              color: "var(--text-secondary)",
-              cursor: isPending ? "not-allowed" : "pointer",
-              fontSize: "0.875rem",
-              padding: "0 4px",
-            }}
-          >
-            ✕
-          </button>
-        </div>
-      ))}
+      {staf.teams.map((t) => {
+        const isSelectie = t.doelType === "selectie";
+        return (
+          <div key={t.teamId} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 5,
+                fontSize: "0.8125rem",
+                color: "var(--text-primary)",
+                fontWeight: 500,
+                minWidth: 110,
+              }}
+            >
+              <span
+                style={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: "50%",
+                  background: KLEUR_DOT[t.kleur] ?? "#94a3b8",
+                  flexShrink: 0,
+                }}
+              />
+              {t.teamNaam}
+              {isSelectie && (
+                <span
+                  style={{
+                    fontSize: "0.55rem",
+                    padding: "0.1rem 0.3rem",
+                    borderRadius: 3,
+                    background: "rgba(59,130,246,0.15)",
+                    color: "#60a5fa",
+                    fontWeight: 700,
+                  }}
+                >
+                  SEL
+                </span>
+              )}
+            </span>
+            <input
+              type="text"
+              defaultValue={t.rol}
+              disabled={isPending}
+              onBlur={(e) => {
+                if (e.target.value.trim() && e.target.value.trim() !== t.rol) {
+                  handleRolWijzig(t.teamId, e.target.value);
+                }
+              }}
+              list={`rol-suggesties-${staf.id}`}
+              style={{
+                flex: 1,
+                background: "var(--surface-sunken)",
+                border: "1px solid var(--border-default)",
+                borderRadius: 6,
+                padding: "0.25rem 0.5rem",
+                color: "var(--text-primary)",
+                fontSize: "0.75rem",
+                outline: "none",
+                fontFamily: "inherit",
+              }}
+            />
+            <button
+              type="button"
+              onClick={() => handleVerwijder(t.teamId)}
+              disabled={isPending}
+              aria-label={`Verwijder ${staf.naam} uit ${t.teamNaam}`}
+              title="Verwijder koppeling"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: 22,
+                height: 22,
+                borderRadius: 5,
+                border: "1px solid var(--border-default)",
+                background: "var(--surface-sunken)",
+                color: "var(--text-secondary)",
+                cursor: isPending ? "not-allowed" : "pointer",
+                fontSize: "0.75rem",
+                padding: 0,
+                lineHeight: 1,
+                fontFamily: "inherit",
+                transition: "background 120ms, color 120ms, border-color 120ms",
+              }}
+              onMouseEnter={(e) => {
+                if (isPending) return;
+                const b = e.currentTarget as HTMLButtonElement;
+                b.style.background = "rgba(239,68,68,0.15)";
+                b.style.borderColor = "rgba(239,68,68,0.35)";
+                b.style.color = "#f87171";
+              }}
+              onMouseLeave={(e) => {
+                const b = e.currentTarget as HTMLButtonElement;
+                b.style.background = "var(--surface-sunken)";
+                b.style.borderColor = "var(--border-default)";
+                b.style.color = "var(--text-secondary)";
+              }}
+            >
+              ×
+            </button>
+          </div>
+        );
+      })}
       <datalist id={`rol-suggesties-${staf.id}`}>
         {ROL_SUGGESTIES.map((r) => (
           <option key={r} value={r} />
@@ -626,10 +743,28 @@ function TeamRolEditor({
           alignItems: "center",
         }}
       >
+        <div
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: 22,
+            height: 22,
+            borderRadius: 5,
+            border: "1px dashed var(--border-default)",
+            background: "transparent",
+            color: "var(--text-secondary)",
+            fontSize: "0.9rem",
+            flexShrink: 0,
+          }}
+          aria-hidden="true"
+        >
+          +
+        </div>
         <select
-          value={nieuwTeamId}
-          onChange={(e) => setNieuwTeamId(e.target.value)}
-          disabled={isPending || beschikbareTeams.length === 0}
+          value={nieuwDoelId}
+          onChange={(e) => setNieuwDoelId(e.target.value)}
+          disabled={isPending || beschikbareDoelen.length === 0}
           style={{
             flex: 1,
             background: "var(--surface-sunken)",
@@ -642,12 +777,25 @@ function TeamRolEditor({
             fontFamily: "inherit",
           }}
         >
-          <option value="">+ Team…</option>
-          {beschikbareTeams.map((t) => (
-            <option key={t.id} value={t.id}>
-              {t.naam}
-            </option>
-          ))}
+          <option value="">Kies team of selectie…</option>
+          {losseTeams.length > 0 && (
+            <optgroup label="Teams">
+              {losseTeams.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.naam}
+                </option>
+              ))}
+            </optgroup>
+          )}
+          {selecties.length > 0 && (
+            <optgroup label="Selecties (gecombineerd)">
+              {selecties.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.naam}
+                </option>
+              ))}
+            </optgroup>
+          )}
         </select>
         <input
           type="text"
@@ -671,7 +819,7 @@ function TeamRolEditor({
         <button
           type="button"
           onClick={handleVoegToe}
-          disabled={isPending || !nieuwTeamId || !nieuwRol.trim()}
+          disabled={isPending || !nieuwDoelId || !nieuwRol.trim()}
           style={{
             padding: "0.25rem 0.625rem",
             borderRadius: 6,
@@ -680,9 +828,9 @@ function TeamRolEditor({
             color: "#fff",
             fontSize: "0.75rem",
             fontWeight: 700,
-            cursor: isPending || !nieuwTeamId ? "not-allowed" : "pointer",
+            cursor: isPending || !nieuwDoelId ? "not-allowed" : "pointer",
             fontFamily: "inherit",
-            opacity: isPending || !nieuwTeamId || !nieuwRol.trim() ? 0.6 : 1,
+            opacity: isPending || !nieuwDoelId || !nieuwRol.trim() ? 0.6 : 1,
           }}
         >
           Voeg toe

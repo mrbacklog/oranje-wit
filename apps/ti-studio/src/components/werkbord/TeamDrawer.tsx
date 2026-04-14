@@ -133,6 +133,154 @@ const SEL_HEADER_STYLE: React.CSSProperties = {
   borderBottom: "1px solid rgba(59,130,246,.25)",
 };
 
+// ─── Confirm-dialog voor bundelen/ontbundelen ────────────────────────────────
+
+function BundelingBevestigingDialog({
+  state,
+  onBevestig,
+  onAnnuleer,
+}: {
+  state: { nieuwGebundeld: boolean; spelers: number; staf: number; doelNaam: string };
+  onBevestig: () => void;
+  onAnnuleer: () => void;
+}) {
+  const titel = state.nieuwGebundeld
+    ? "Teams combineren tot selectiepool"
+    : "Selectiepool ontbinden";
+  const uitleg = state.nieuwGebundeld
+    ? `Alle spelers en staf van de teams worden verplaatst naar een gecombineerde spelerspool. Je kunt ze daarna niet meer aan een individueel team koppelen — alleen aan de selectie.`
+    : `Alle spelers en staf uit de gecombineerde pool worden teruggeplaatst op team ${state.doelNaam}. Je kunt ze daarna weer verdelen over de losse teams.`;
+  const totaalItems: string[] = [];
+  if (state.spelers > 0)
+    totaalItems.push(`${state.spelers} speler${state.spelers === 1 ? "" : "s"}`);
+  if (state.staf > 0) totaalItems.push(`${state.staf} staflid${state.staf === 1 ? "" : "eden"}`);
+  const totaalTekst = totaalItems.length > 0 ? totaalItems.join(" + ") : "Niks";
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(0,0,0,.55)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 9999,
+        backdropFilter: "blur(2px)",
+      }}
+      onClick={onAnnuleer}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          background: "var(--bg-1)",
+          border: "1px solid var(--border-0)",
+          borderRadius: 12,
+          maxWidth: 380,
+          width: "90%",
+          padding: 18,
+          boxShadow: "0 20px 48px rgba(0,0,0,.4)",
+        }}
+      >
+        <div
+          style={{
+            fontSize: 14,
+            fontWeight: 700,
+            color: "var(--text-1)",
+            marginBottom: 8,
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+          }}
+        >
+          <span
+            style={{
+              width: 22,
+              height: 22,
+              borderRadius: 6,
+              background: state.nieuwGebundeld ? "var(--accent-dim)" : "rgba(249,115,22,.15)",
+              color: state.nieuwGebundeld ? "var(--accent)" : "#f97316",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 13,
+              fontWeight: 700,
+            }}
+          >
+            {state.nieuwGebundeld ? "⇌" : "↺"}
+          </span>
+          {titel}
+        </div>
+        <div style={{ fontSize: 12, color: "var(--text-2)", lineHeight: 1.5, marginBottom: 12 }}>
+          {uitleg}
+        </div>
+        <div
+          style={{
+            background: "var(--bg-2)",
+            border: "1px solid var(--border-0)",
+            borderRadius: 8,
+            padding: "10px 12px",
+            marginBottom: 14,
+          }}
+        >
+          <div
+            style={{
+              fontSize: 10,
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: ".5px",
+              color: "var(--text-3)",
+              marginBottom: 3,
+            }}
+          >
+            Wordt verplaatst
+          </div>
+          <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-1)" }}>{totaalTekst}</div>
+          <div style={{ fontSize: 11, color: "var(--text-3)", marginTop: 2 }}>
+            → {state.doelNaam}
+          </div>
+        </div>
+        <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+          <button
+            onClick={onAnnuleer}
+            style={{
+              padding: "7px 14px",
+              fontSize: 12,
+              fontWeight: 600,
+              borderRadius: 6,
+              border: "1px solid var(--border-0)",
+              background: "var(--bg-2)",
+              color: "var(--text-2)",
+              cursor: "pointer",
+              fontFamily: "inherit",
+            }}
+          >
+            Annuleren
+          </button>
+          <button
+            onClick={onBevestig}
+            style={{
+              padding: "7px 14px",
+              fontSize: 12,
+              fontWeight: 700,
+              borderRadius: 6,
+              border: "1px solid var(--accent)",
+              background: "var(--accent)",
+              color: "#fff",
+              cursor: "pointer",
+              fontFamily: "inherit",
+            }}
+          >
+            {state.nieuwGebundeld ? "Combineren" : "Ontbinden"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function SelBadge() {
   return (
     <span
@@ -756,13 +904,68 @@ function SelectieKoppeling({
   const [isPending, startTransition] = useTransition();
   const [gekozenTeamId, setGekozenTeamId] = useState("");
   const [naamInput, setNaamInput] = useState(team.selectieNaam ?? "");
+  const [bundelingBevestiging, setBundelingBevestiging] = useState<null | {
+    nieuwGebundeld: boolean;
+    spelers: number;
+    staf: number;
+    doelNaam: string;
+  }>(null);
 
   const beschikbaar = alleTeams.filter((t) => t.id !== team.id && !t.selectieGroepId);
   const gekoppeldAan = alleTeams.find(
     (t) => t.selectieGroepId === team.selectieGroepId && t.id !== team.id
   );
+  const teamsInSelectie = team.selectieGroepId
+    ? alleTeams
+        .filter((t) => t.selectieGroepId === team.selectieGroepId)
+        .sort((a, b) => a.volgorde - b.volgorde)
+    : [];
 
   const naamPlaceholder = gekoppeldAan ? `${team.naam} ↔ ${gekoppeldAan.naam}` : "Selectienaam…";
+
+  function vraagBundelingBevestiging(nieuwGebundeld: boolean) {
+    if (!team.selectieGroepId || teamsInSelectie.length === 0) return;
+    if (nieuwGebundeld) {
+      // Bundelen — tel spelers + staf van álle teams in de selectie
+      const spelerIds = new Set<string>();
+      const stafIds = new Set<string>();
+      for (const t of teamsInSelectie) {
+        t.dames.forEach((s) => spelerIds.add(s.spelerId));
+        t.heren.forEach((s) => spelerIds.add(s.spelerId));
+        t.staf.forEach((s) => stafIds.add(s.stafId));
+      }
+      setBundelingBevestiging({
+        nieuwGebundeld: true,
+        spelers: spelerIds.size,
+        staf: stafIds.size,
+        doelNaam: teamsInSelectie.map((t) => t.naam).join(" + "),
+      });
+    } else {
+      // Ontbundelen — tel selectieDames/selectieHeren/selectieStaf op primary team
+      const primary = teamsInSelectie[0];
+      const spelerIds = new Set<string>();
+      primary.selectieDames.forEach((s) => spelerIds.add(s.spelerId));
+      primary.selectieHeren.forEach((s) => spelerIds.add(s.spelerId));
+      const stafIds = new Set<string>();
+      // Staf wordt bij gebundelde selecties ook op primary geplaatst via server
+      primary.staf.forEach((s) => stafIds.add(s.stafId));
+      setBundelingBevestiging({
+        nieuwGebundeld: false,
+        spelers: spelerIds.size,
+        staf: stafIds.size,
+        doelNaam: primary.naam,
+      });
+    }
+  }
+
+  function bevestigBundeling() {
+    if (!bundelingBevestiging || !team.selectieGroepId) return;
+    const nieuwGebundeld = bundelingBevestiging.nieuwGebundeld;
+    setBundelingBevestiging(null);
+    startTransition(async () => {
+      await onToggleBundeling(team.selectieGroepId!, nieuwGebundeld);
+    });
+  }
 
   function koppel() {
     if (!gekozenTeamId) return;
@@ -901,7 +1104,7 @@ function SelectieKoppeling({
               </div>
             </div>
             <button
-              onClick={() => onToggleBundeling(team.selectieGroepId!, !team.gebundeld)}
+              onClick={() => vraagBundelingBevestiging(!team.gebundeld)}
               disabled={isPending}
               title={team.gebundeld ? "Ontbundelen" : "Bundelen"}
               style={{
@@ -921,6 +1124,13 @@ function SelectieKoppeling({
               {team.gebundeld ? "Aan" : "Uit"}
             </button>
           </div>
+          {bundelingBevestiging && (
+            <BundelingBevestigingDialog
+              state={bundelingBevestiging}
+              onBevestig={bevestigBundeling}
+              onAnnuleer={() => setBundelingBevestiging(null)}
+            />
+          )}
 
           <button
             onClick={ontkoppel}

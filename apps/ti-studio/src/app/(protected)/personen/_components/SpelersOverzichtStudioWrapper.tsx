@@ -14,7 +14,12 @@ interface Props {
   context: {
     kadersId: string | null;
     versieId: string | null;
-    teams: { id: string; naam: string; kleur: string | null }[];
+    doelen: {
+      id: string;
+      naam: string;
+      kleur: string | null;
+      type: "team" | "selectie";
+    }[];
   };
 }
 
@@ -47,7 +52,7 @@ export default function SpelersOverzichtStudioWrapper({ spelers, reserveringen, 
         onOpenProfiel={setProfielId}
         kadersId={context.kadersId}
         versieId={context.versieId}
-        versieTeams={context.teams}
+        versieDoelen={context.doelen}
       />
       <ReserveringenOverzicht reserveringen={reserveringen} />
       <NieuweSpelerDialog open={nieuwDialogOpen} onClose={() => setNieuwDialogOpen(false)} />

@@ -7,7 +7,12 @@ import { togglePinSpeler } from "../actions";
 import { updateSpelerStatus } from "../../indeling/werkindeling-actions";
 import { setGezienStatus, zetSpelerIndeling } from "../speler-edit-actions";
 
-type VersieTeam = { id: string; naam: string; kleur: string | null };
+type IndelingsDoel = {
+  id: string;
+  naam: string;
+  kleur: string | null;
+  type: "team" | "selectie";
+};
 type SpelerStatusWaarde =
   | "BESCHIKBAAR"
   | "TWIJFELT"
@@ -92,7 +97,7 @@ interface Props {
   onOpenProfiel: (spelerId: string) => void;
   kadersId: string | null;
   versieId: string | null;
-  versieTeams: VersieTeam[];
+  versieDoelen: IndelingsDoel[];
 }
 
 export default function SpelersOverzichtStudio({
@@ -100,7 +105,7 @@ export default function SpelersOverzichtStudio({
   onOpenProfiel,
   kadersId,
   versieId,
-  versieTeams,
+  versieDoelen,
 }: Props) {
   const router = useRouter();
   const [editorCel, setEditorCel] = useState<{
@@ -669,40 +674,47 @@ export default function SpelersOverzichtStudio({
                     )}
                   </td>
 
-                  {/* Indelingsteam — inline bewerkbaar */}
+                  {/* Indelingsteam — inline bewerkbaar met [+] of chip + [x] */}
                   <td style={{ padding: "0.625rem 0.875rem", position: "relative" }}>
-                    <button
-                      type="button"
-                      disabled={!versieId}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setEditorCel(
-                          editorCel?.spelerId === speler.id && editorCel.kolom === "indeling"
-                            ? null
-                            : { spelerId: speler.id, kolom: "indeling" }
-                        );
-                      }}
-                      style={{
-                        background: "none",
-                        border: "none",
-                        padding: 0,
-                        cursor: versieId ? "pointer" : "default",
-                        fontFamily: "inherit",
-                      }}
-                    >
-                      {indelingTeam ? (
-                        <span
+                    {indelingTeam ? (
+                      <span
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "0.35rem",
+                          background: "rgba(34,197,94,0.1)",
+                          border: "1px solid rgba(34,197,94,0.25)",
+                          borderRadius: 6,
+                          padding: "0.15rem 0.15rem 0.15rem 0.5rem",
+                          fontSize: "0.75rem",
+                          color: "#4ade80",
+                          fontWeight: 500,
+                        }}
+                      >
+                        <button
+                          type="button"
+                          disabled={!versieId}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setEditorCel(
+                              editorCel?.spelerId === speler.id && editorCel.kolom === "indeling"
+                                ? null
+                                : { spelerId: speler.id, kolom: "indeling" }
+                            );
+                          }}
                           style={{
                             display: "inline-flex",
                             alignItems: "center",
                             gap: "0.35rem",
-                            background: "rgba(34,197,94,0.1)",
-                            border: "1px solid rgba(34,197,94,0.25)",
-                            borderRadius: 6,
-                            padding: "0.2rem 0.5rem",
-                            fontSize: "0.75rem",
-                            color: "#4ade80",
-                            fontWeight: 500,
+                            background: "none",
+                            border: "none",
+                            padding: "0.05rem 0.15rem",
+                            margin: 0,
+                            cursor: versieId ? "pointer" : "default",
+                            color: "inherit",
+                            fontFamily: "inherit",
+                            fontSize: "inherit",
+                            fontWeight: "inherit",
                           }}
                         >
                           <span
@@ -711,45 +723,134 @@ export default function SpelersOverzichtStudio({
                               height: 6,
                               borderRadius: "50%",
                               background: indelingKleur,
+                              flexShrink: 0,
                             }}
                           />
                           {indelingTeam.naam}
-                        </span>
-                      ) : (
-                        <span style={{ color: "var(--text-secondary)", fontSize: "0.8125rem" }}>
-                          —
-                        </span>
-                      )}
-                    </button>
+                        </button>
+                        <button
+                          type="button"
+                          disabled={!versieId}
+                          aria-label={`Haal ${speler.roepnaam} uit ${indelingTeam.naam}`}
+                          title="Verwijder indeling"
+                          onClick={async (e) => {
+                            e.stopPropagation();
+                            if (!versieId) return;
+                            setOptimistischIndeling((prev) => ({ ...prev, [speler.id]: null }));
+                            const resultaat = await zetSpelerIndeling(versieId, speler.id, null);
+                            if (resultaat.ok) {
+                              router.refresh();
+                            } else {
+                              setOptimistischIndeling((prev) => {
+                                const kopie = { ...prev };
+                                delete kopie[speler.id];
+                                return kopie;
+                              });
+                              setFoutMelding(resultaat.error);
+                            }
+                          }}
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            width: 16,
+                            height: 16,
+                            borderRadius: 4,
+                            border: "none",
+                            background: "rgba(34,197,94,0.18)",
+                            color: "#4ade80",
+                            cursor: versieId ? "pointer" : "default",
+                            padding: 0,
+                            fontFamily: "inherit",
+                            lineHeight: 1,
+                            fontSize: "0.75rem",
+                          }}
+                          onMouseEnter={(e) => {
+                            (e.currentTarget as HTMLButtonElement).style.background =
+                              "rgba(239,68,68,0.25)";
+                            (e.currentTarget as HTMLButtonElement).style.color = "#f87171";
+                          }}
+                          onMouseLeave={(e) => {
+                            (e.currentTarget as HTMLButtonElement).style.background =
+                              "rgba(34,197,94,0.18)";
+                            (e.currentTarget as HTMLButtonElement).style.color = "#4ade80";
+                          }}
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ) : (
+                      <button
+                        type="button"
+                        disabled={!versieId}
+                        aria-label={`Wijs ${speler.roepnaam} toe aan team of selectie`}
+                        title="Voeg indeling toe"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setEditorCel(
+                            editorCel?.spelerId === speler.id && editorCel.kolom === "indeling"
+                              ? null
+                              : { spelerId: speler.id, kolom: "indeling" }
+                          );
+                        }}
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          width: 22,
+                          height: 22,
+                          borderRadius: 6,
+                          border: "1px dashed var(--border-default)",
+                          background: "transparent",
+                          color: "var(--text-secondary)",
+                          cursor: versieId ? "pointer" : "default",
+                          padding: 0,
+                          fontFamily: "inherit",
+                          fontSize: "0.95rem",
+                          lineHeight: 1,
+                          opacity: versieId ? 0.7 : 0.35,
+                          transition: "opacity 120ms, border-color 120ms, color 120ms",
+                        }}
+                        onMouseEnter={(e) => {
+                          if (!versieId) return;
+                          const b = e.currentTarget as HTMLButtonElement;
+                          b.style.opacity = "1";
+                          b.style.borderColor = "var(--accent)";
+                          b.style.color = "var(--accent)";
+                        }}
+                        onMouseLeave={(e) => {
+                          const b = e.currentTarget as HTMLButtonElement;
+                          b.style.opacity = versieId ? "0.7" : "0.35";
+                          b.style.borderColor = "var(--border-default)";
+                          b.style.color = "var(--text-secondary)";
+                        }}
+                      >
+                        +
+                      </button>
+                    )}
                     {editorCel?.spelerId === speler.id &&
                       editorCel.kolom === "indeling" &&
                       versieId && (
                         <IndelingDropdown
-                          teams={versieTeams}
-                          huidigTeamId={
-                            versieTeams.find((t) => t.naam === indelingTeam?.naam)?.id ?? null
+                          teams={versieDoelen}
+                          huidigId={
+                            versieDoelen.find((t) => t.naam === indelingTeam?.naam)?.id ?? null
                           }
-                          onKies={async (nieuwTeamId) => {
-                            const nieuwTeam = nieuwTeamId
-                              ? versieTeams.find((t) => t.id === nieuwTeamId)
+                          onKies={async (doel) => {
+                            const nieuwDoel = doel
+                              ? (versieDoelen.find((t) => t.id === doel.id) ?? null)
                               : null;
-                            // Optimistische update
                             setOptimistischIndeling((prev) => ({
                               ...prev,
-                              [speler.id]: nieuwTeam
-                                ? { naam: nieuwTeam.naam, kleur: nieuwTeam.kleur }
+                              [speler.id]: nieuwDoel
+                                ? { naam: nieuwDoel.naam, kleur: nieuwDoel.kleur }
                                 : null,
                             }));
                             setEditorCel(null);
-                            const resultaat = await zetSpelerIndeling(
-                              versieId,
-                              speler.id,
-                              nieuwTeamId
-                            );
+                            const resultaat = await zetSpelerIndeling(versieId, speler.id, doel);
                             if (resultaat.ok) {
                               router.refresh();
                             } else {
-                              // Rollback
                               setOptimistischIndeling((prev) => {
                                 const kopie = { ...prev };
                                 delete kopie[speler.id];
@@ -892,16 +993,19 @@ function StatusDropdown({
 
 function IndelingDropdown({
   teams,
-  huidigTeamId,
+  huidigId,
   onKies,
   onClose,
 }: {
-  teams: VersieTeam[];
-  huidigTeamId: string | null;
-  onKies: (nieuwTeamId: string | null) => Promise<void> | void;
+  teams: IndelingsDoel[];
+  huidigId: string | null;
+  onKies: (doel: { id: string; type: "team" | "selectie" } | null) => Promise<void> | void;
   onClose: () => void;
 }) {
   const ref = useClickOutside(onClose);
+  // Groepeer: losse teams eerst, dan gebundelde selecties
+  const losseTeams = teams.filter((t) => t.type === "team");
+  const selecties = teams.filter((t) => t.type === "selectie");
   return (
     <div ref={ref} style={popoverStyle} onClick={(e) => e.stopPropagation()}>
       <button
@@ -909,7 +1013,7 @@ function IndelingDropdown({
         onClick={() => {
           void onKies(null);
         }}
-        style={popoverItemStyle(huidigTeamId === null)}
+        style={popoverItemStyle(huidigId === null)}
       >
         <span style={{ fontStyle: "italic", color: "var(--text-secondary)" }}>
           — geen indeling —
@@ -927,7 +1031,7 @@ function IndelingDropdown({
           Geen teams in versie
         </div>
       )}
-      {teams.map((t) => {
+      {losseTeams.map((t) => {
         const kleur =
           KLEUR_DOT[(t.kleur ?? "").toLowerCase()] ?? KLEUR_DOT[t.kleur ?? ""] ?? "#6b7280";
         return (
@@ -935,9 +1039,9 @@ function IndelingDropdown({
             key={t.id}
             type="button"
             onClick={() => {
-              void onKies(t.id);
+              void onKies({ id: t.id, type: "team" });
             }}
-            style={popoverItemStyle(t.id === huidigTeamId)}
+            style={popoverItemStyle(t.id === huidigId)}
           >
             <span
               style={{
@@ -952,6 +1056,62 @@ function IndelingDropdown({
           </button>
         );
       })}
+      {selecties.length > 0 && (
+        <>
+          <div
+            style={{
+              fontSize: "0.625rem",
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.5px",
+              color: "var(--text-secondary)",
+              padding: "0.375rem 0.5rem 0.2rem",
+              marginTop: losseTeams.length > 0 ? "0.25rem" : 0,
+              borderTop: losseTeams.length > 0 ? "1px solid var(--border-default)" : "none",
+            }}
+          >
+            Selecties (gecombineerd)
+          </div>
+          {selecties.map((t) => {
+            const kleur =
+              KLEUR_DOT[(t.kleur ?? "").toLowerCase()] ?? KLEUR_DOT[t.kleur ?? ""] ?? "#6b7280";
+            return (
+              <button
+                key={t.id}
+                type="button"
+                onClick={() => {
+                  void onKies({ id: t.id, type: "selectie" });
+                }}
+                style={popoverItemStyle(t.id === huidigId)}
+              >
+                <span
+                  style={{
+                    width: 6,
+                    height: 6,
+                    borderRadius: "50%",
+                    background: kleur,
+                    flexShrink: 0,
+                  }}
+                />
+                {t.naam}
+                <span
+                  style={{
+                    fontSize: "0.6rem",
+                    padding: "0.1rem 0.35rem",
+                    borderRadius: 4,
+                    background: "rgba(59,130,246,0.15)",
+                    color: "#60a5fa",
+                    fontWeight: 700,
+                    marginLeft: "auto",
+                  }}
+                >
+                  SEL
+                </span>
+              </button>
+            );
+          })}
+        </>
+      )}
     </div>
   );
 }

@@ -288,6 +288,8 @@ export async function updateSpelerStatus(
     create: { kadersId, spelerId, statusOverride: status as SpelerStatus | null },
   });
   revalidatePath("/indeling");
+  revalidatePath("/personen");
+  revalidatePath("/personen/spelers");
 }
 
 // ─── Selectie-bundeling actions ──────────────────────────────────────────────
@@ -342,66 +344,139 @@ export async function toggleSelectieBundeling(
   selectieGroepId: string,
   gebundeld: boolean,
   primaryTeamId?: string
-): Promise<import("@oranje-wit/types").ActionResult<void>> {
+): Promise<
+  import("@oranje-wit/types").ActionResult<{
+    spelersVerplaatst: number;
+    stafVerplaatst: number;
+    doelTeamNaam?: string;
+  }>
+> {
   await requireTC();
   try {
     const selectieGroep = await prisma.selectieGroep.findUniqueOrThrow({
       where: { id: selectieGroepId },
       select: {
         teams: {
-          select: { id: true },
+          select: { id: true, naam: true },
           orderBy: { volgorde: "asc" },
         },
         spelers: { select: { spelerId: true, statusOverride: true, notitie: true } },
+        staf: { select: { stafId: true, rol: true } },
       },
     });
-    const teamIds = selectieGroep.teams.map((t: { id: string }) => t.id);
-    const primaryId = primaryTeamId ?? selectieGroep.teams[0]?.id;
+    type GroepTeam = { id: string; naam: string };
+    type GroepSpeler = { spelerId: string; statusOverride: string | null; notitie: string | null };
+    type GroepStaf = { stafId: string; rol: string };
+    const groepTeams = selectieGroep.teams as GroepTeam[];
+    const groepSpelers = selectieGroep.spelers as GroepSpeler[];
+    const groepStaf = selectieGroep.staf as GroepStaf[];
+    const teamIds = groepTeams.map((t: GroepTeam) => t.id);
+    const primaryTeam = primaryTeamId
+      ? groepTeams.find((t: GroepTeam) => t.id === primaryTeamId)
+      : groepTeams[0];
+    const primaryId = primaryTeam?.id;
+
+    let spelersVerplaatst = 0;
+    let stafVerplaatst = 0;
 
     if (gebundeld) {
-      const teamSpelers = await prisma.teamSpeler.findMany({
-        where: { teamId: { in: teamIds } },
-        select: { spelerId: true, statusOverride: true, notitie: true },
-      });
+      // BUNDELEN: verhuis TeamSpeler + TeamStaf → SelectieSpeler + SelectieStaf
+      const [teamSpelers, teamStaf] = await Promise.all([
+        prisma.teamSpeler.findMany({
+          where: { teamId: { in: teamIds } },
+          select: { spelerId: true, statusOverride: true, notitie: true },
+        }),
+        prisma.teamStaf.findMany({
+          where: { teamId: { in: teamIds } },
+          select: { stafId: true, rol: true },
+        }),
+      ]);
+
+      // Dedupe — een speler kan in meerdere teams van de selectie zitten
+      const uniekeSpelers = new Map<string, (typeof teamSpelers)[number]>();
+      for (const ts of teamSpelers) {
+        if (!uniekeSpelers.has(ts.spelerId)) uniekeSpelers.set(ts.spelerId, ts);
+      }
+      const uniekeStaf = new Map<string, (typeof teamStaf)[number]>();
+      for (const ts of teamStaf) {
+        if (!uniekeStaf.has(ts.stafId)) uniekeStaf.set(ts.stafId, ts);
+      }
+
       await prisma.$transaction([
-        ...teamSpelers.map(
-          (ts: { spelerId: string; statusOverride: string | null; notitie: string | null }) =>
-            prisma.selectieSpeler.upsert({
-              where: { selectieGroepId_spelerId: { selectieGroepId, spelerId: ts.spelerId } },
-              create: {
-                selectieGroepId,
-                spelerId: ts.spelerId,
-                statusOverride: ts.statusOverride,
-                notitie: ts.notitie,
-              },
-              update: {},
-            })
+        ...[...uniekeSpelers.values()].map((ts) =>
+          prisma.selectieSpeler.upsert({
+            where: { selectieGroepId_spelerId: { selectieGroepId, spelerId: ts.spelerId } },
+            create: {
+              selectieGroepId,
+              spelerId: ts.spelerId,
+              statusOverride: ts.statusOverride,
+              notitie: ts.notitie,
+            },
+            update: {},
+          })
+        ),
+        ...[...uniekeStaf.values()].map((ts) =>
+          prisma.selectieStaf.upsert({
+            where: { selectieGroepId_stafId: { selectieGroepId, stafId: ts.stafId } },
+            create: { selectieGroepId, stafId: ts.stafId, rol: ts.rol },
+            update: { rol: ts.rol },
+          })
         ),
         prisma.teamSpeler.deleteMany({ where: { teamId: { in: teamIds } } }),
+        prisma.teamStaf.deleteMany({ where: { teamId: { in: teamIds } } }),
+        prisma.selectieGroep.update({
+          where: { id: selectieGroepId },
+          data: { gebundeld: true },
+        }),
       ]);
+
+      spelersVerplaatst = uniekeSpelers.size;
+      stafVerplaatst = uniekeStaf.size;
     } else {
+      // ONTBUNDELEN: verhuis SelectieSpeler + SelectieStaf → TeamSpeler + TeamStaf op primary team
       if (!primaryId) throw new Error("Geen primary team gevonden voor ontbundelen");
-      const selectieSpelers = selectieGroep.spelers;
+
       await prisma.$transaction([
-        ...selectieSpelers.map(
-          (ss: { spelerId: string; statusOverride: string | null; notitie: string | null }) =>
-            prisma.teamSpeler.upsert({
-              where: { teamId_spelerId: { teamId: primaryId, spelerId: ss.spelerId } },
-              create: {
-                teamId: primaryId,
-                spelerId: ss.spelerId,
-                statusOverride: ss.statusOverride,
-                notitie: ss.notitie,
-              },
-              update: {},
-            })
+        ...groepSpelers.map((ss: GroepSpeler) =>
+          prisma.teamSpeler.upsert({
+            where: { teamId_spelerId: { teamId: primaryId, spelerId: ss.spelerId } },
+            create: {
+              teamId: primaryId,
+              spelerId: ss.spelerId,
+              statusOverride: ss.statusOverride,
+              notitie: ss.notitie,
+            },
+            update: {},
+          })
+        ),
+        ...groepStaf.map((ss: GroepStaf) =>
+          prisma.teamStaf.upsert({
+            where: { teamId_stafId: { teamId: primaryId, stafId: ss.stafId } },
+            create: { teamId: primaryId, stafId: ss.stafId, rol: ss.rol },
+            update: { rol: ss.rol },
+          })
         ),
         prisma.selectieSpeler.deleteMany({ where: { selectieGroepId } }),
+        prisma.selectieStaf.deleteMany({ where: { selectieGroepId } }),
+        prisma.selectieGroep.update({
+          where: { id: selectieGroepId },
+          data: { gebundeld: false },
+        }),
       ]);
+
+      spelersVerplaatst = groepSpelers.length;
+      stafVerplaatst = groepStaf.length;
     }
 
     revalidatePath("/indeling");
-    return { ok: true, data: undefined };
+    return {
+      ok: true,
+      data: {
+        spelersVerplaatst,
+        stafVerplaatst,
+        doelTeamNaam: gebundeld ? undefined : primaryTeam?.naam,
+      },
+    };
   } catch (error) {
     logger.warn("toggleSelectieBundeling fout:", error);
     return { ok: false, error: error instanceof Error ? error.message : String(error) };

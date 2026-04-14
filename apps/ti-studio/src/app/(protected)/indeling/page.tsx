@@ -316,15 +316,24 @@ export default async function IndelingPage() {
   });
 
   // Post-processing: vul selectieDames/selectieHeren/gebundeld in voor selectie-teams
+  // `gebundeld` komt uit de DB (SelectieGroep.gebundeld) — de aanwezigheid van SelectieSpeler records
+  // is geen betrouwbare indicator meer sinds we het veld persistent opslaan.
   if (versie) {
     for (const selectieGroep of (versie as any).selectieGroepen ?? []) {
-      if (!selectieGroep.spelers?.length) continue;
+      const isGebundeld = Boolean(selectieGroep.gebundeld);
+      if (!isGebundeld) continue;
 
       const groepTeams = teams
         .filter((t) => t.selectieGroepId === selectieGroep.id)
         .sort((a, b) => a.volgorde - b.volgorde);
       const primaryTeam = groepTeams[0];
       if (!primaryTeam) continue;
+
+      // Markeer alle teams in de groep als gebundeld (ook secondary teams hebben geen drop-target)
+      for (const gt of groepTeams) {
+        const idx = teams.findIndex((t) => t.id === gt.id);
+        if (idx >= 0) teams[idx] = { ...teams[idx], gebundeld: true };
+      }
 
       const selectieDames: WerkbordSpelerInTeam[] = [];
       const selectieHeren: WerkbordSpelerInTeam[] = [];

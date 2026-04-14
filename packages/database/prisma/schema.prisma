@@ -493,6 +493,7 @@ model Staf {
   geboortejaar Int?
   email        String?
   rollen       String[] // ["trainer", "assistent", "manager", "coordinator"]
+  actief       Boolean  @default(true)
 
   // Relaties
   lid                 Lid?     @relation(fields: [relCode], references: [relCode])
@@ -847,6 +848,9 @@ model SelectieGroep {
   versieId String
 
   naam     String?
+  // Gebundelde spelerspool: als true, hangen spelers/staf aan SelectieGroep i.p.v. individuele teams.
+  // Transitie bundelen/ontbundelen verhuist TeamSpeler/TeamStaf ↔ SelectieSpeler/SelectieStaf atomair.
+  gebundeld Boolean @default(false)
 
   teams    Team[]
   spelers  SelectieSpeler[]
