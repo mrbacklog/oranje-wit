@@ -17,6 +17,7 @@ export * from "./constanten";
 export * from "./api";
 export * from "./api-response";
 export * from "./evaluatie";
+export * from "./korfballeeftijd";
 export * from "./leeftijdsgroep-config";
 export * from "./score-model";
 export * from "./score-model-v2";
