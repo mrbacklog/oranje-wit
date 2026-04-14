@@ -218,7 +218,6 @@ const leesTools = {
         const map: Record<string, string> = {
           s1s2: "S1S2",
           "1e selectie": "S1S2",
-          s1s2: "S1S2",
           s3: "S3",
           "senioren 3": "S3",
           "3e": "S3",
