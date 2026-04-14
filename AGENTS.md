@@ -33,7 +33,7 @@ Next.js 16 monorepo met PostgreSQL, Prisma en pnpm workspaces.
 - NOOIT `pnpm db:push` — gebruik `pnpm db:migrate`
 - Schema in `packages/database/prisma/schema.prisma` is source of truth
 
-**Constanten**: importeer `PEILJAAR`, `HUIDIG_SEIZOEN`, `PEILDATUM` uit `@oranje-wit/types`
+**Constanten**: importeer `HUIDIG_SEIZOEN`, `HUIDIGE_PEILDATUM` en de korfballeeftijd-helpers (`korfbalPeildatum`, `berekenKorfbalLeeftijd`, `berekenKorfbalLeeftijdExact`, `grofKorfbalLeeftijd`, `formatKorfbalLeeftijd`, `valtBinnenCategorie`) uit `@oranje-wit/types`. `PEILJAAR` en `PEILDATUM` bestaan niet meer.
 
 **Error handling**: geen lege catch blocks, altijd loggen met `logger.warn("context:", error)`
 

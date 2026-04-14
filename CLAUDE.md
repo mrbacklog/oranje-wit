@@ -1,6 +1,10 @@
 # c.k.v. Oranje Wit — Monorepo
 
-Platform voor TC-werkzaamheden van korfbalvereniging c.k.v. Oranje Wit (Dordrecht). Alle domeinen (Monitor, Team-Indeling, Evaluatie, Scouting, Beheer, Beleid) draaien in een geconsolideerde Next.js 16 app.
+Platform voor TC-werkzaamheden van korfbalvereniging c.k.v. Oranje Wit (Dordrecht).
+Twee Next.js 16 apps met een duidelijke scheiding:
+
+- **`apps/web`** (`www.ckvoranjewit.app`) — Monitor, Evaluatie, Scouting, Beheer, Beleid
+- **`apps/ti-studio`** (`teamindeling.ckvoranjewit.app`) — volledige Team-Indeling workspace
 
 ---
 
@@ -9,7 +13,8 @@ Platform voor TC-werkzaamheden van korfbalvereniging c.k.v. Oranje Wit (Dordrech
 ```
 oranje-wit/
 ├── apps/
-│   ├── web/              # Geconsolideerde app (Next.js 16, alle domeinen)
+│   ├── web/              # Monitor, Evaluatie, Scouting, Beheer, Beleid (Next.js 16)
+│   ├── ti-studio/        # Team-Indeling workspace (Next.js 16, eigen Railway service)
 │   └── mcp/              # MCP servers (database, Railway)
 ├── packages/
 │   ├── auth/             # @oranje-wit/auth — NextAuth v5 + Google OAuth
@@ -26,7 +31,26 @@ oranje-wit/
 ```
 
 - **Workspace**: pnpm workspaces (`packages/*`, `apps/*`, `apps/mcp/*`)
-- **Database**: Prisma in `packages/database/` is de **source of truth**
+- **Database**: Prisma in `packages/database/` is de **source of truth** voor beide apps
+
+## App-scheiding — één waarheid per domein
+
+De TI Studio splitsing is per 2026-04-14 afgerond (Fase B). Gevolg:
+
+| Domein | App | URL | Wanneer hier werken |
+|---|---|---|---|
+| Monitor, Signalering, Retentie | `apps/web` | `www.ckvoranjewit.app/monitor/*` | Dashboards, cohortanalyse |
+| Evaluatie | `apps/web` | `www.ckvoranjewit.app/evaluatie/*` | Rondes, spelerevaluaties |
+| Scouting | `apps/web` | `www.ckvoranjewit.app/scouting/*` | Verzoeken, rapporten |
+| Beheer | `apps/web` | `www.ckvoranjewit.app/beheer/*` | Gebruikers, 9 TC-domeinen |
+| Beleid | `apps/web` | `www.ckvoranjewit.app/beleid/*` | Oranje Draad, visie |
+| **Team-Indeling (alles)** | **`apps/ti-studio`** | **`teamindeling.ckvoranjewit.app/ti-studio/*`** | **Teams, Spelers, Staf, Werkindeling, Kader, Selectie, Werkbord** |
+
+**Let op voor agents en ontwikkelaars:**
+- Alles rond teams, spelers, staf, werkindeling, kader, selectie, werkbord, scenario's, what-if hoort in **`apps/ti-studio`**.
+- `apps/web/proxy.ts` redirect `/ti-studio/*` en `/teamindeling/*` met een 308 naar de ti-studio service — niet opnieuw toevoegen aan apps/web.
+- Oude paden `/teamindeling/*` (mobile TI) bestaan niet meer — mobile kan later opnieuw gebouwd worden binnen apps/ti-studio.
+- Beide apps delen de Prisma client (`packages/database`) en de auth, types en ui packages.
 
 ## Commando's
 
@@ -100,7 +124,7 @@ Gebruik `/team-devops` voor health checks en CI status (observatie, geen deploys
 - Server action: interne UI-interactie, formulier-submit, revalidation
 - API route: externe clients, smartlink-gebruikers, file uploads, CORS
 
-**Constanten** — importeer `PEILJAAR`, `HUIDIG_SEIZOEN`, `PEILDATUM` uit `@oranje-wit/types`, definieer niet lokaal.
+**Constanten & korfballeeftijd** — importeer `HUIDIG_SEIZOEN`, `HUIDIGE_PEILDATUM` uit `@oranje-wit/types`. Voor leeftijdsberekening gebruik de korfballeeftijd-helpers (`korfbalPeildatum`, `berekenKorfbalLeeftijd`, `berekenKorfbalLeeftijdExact`, `grofKorfbalLeeftijd`, `formatKorfbalLeeftijd`, `valtBinnenCategorie`) — nooit zelf `Math.floor`/`Math.round` op `(peildatum - geboortedatum)`, nooit `.toFixed(1|2)` op een leeftijd. `PEILJAAR` en `PEILDATUM` bestaan niet meer; binnen een scenario-context gebruik `korfbalPeildatum(state.seizoen)` en geef de peildatum expliciet door aan validatie-functies en components.
 
 **Error handling** — geen lege catch blocks, altijd loggen met `logger.warn("context:", error)`.
 

@@ -75,7 +75,7 @@ Zoek naar `prisma.` imports buiten `actions.ts`, `route.ts` en `lib/db/` bestand
 ### A5. Inconsistente imports
 Zoek naar patronen die afwijken van de standaard:
 - `console.log` i.p.v. `logger` uit `@oranje-wit/types`
-- Lokale constanten die in `@oranje-wit/types` horen (PEILJAAR, HUIDIG_SEIZOEN, etc.)
+- Lokale constanten die in `@oranje-wit/types` horen (HUIDIG_SEIZOEN, HUIDIGE_PEILDATUM, korfballeeftijd-helpers, etc.)
 - Directe Prisma-client imports i.p.v. via `@oranje-wit/database`
 
 ### A6. Ongebruikte dependencies

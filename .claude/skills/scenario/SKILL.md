@@ -37,10 +37,14 @@ Een scenario uitwerken binnen een concept: concrete teamindeling met spelers via
 - Klik op speler → SpelerDetail popup (evaluaties, spelerspad, team-vergelijking)
 
 ## Korfballeeftijd
-- **Peildatum**: 31 december 2026 (constant `PEILDATUM`)
-- **Berekening**: `korfbalLeeftijd(geboortedatum, geboortejaar)` — precieze leeftijd met 2 decimalen
-- **Kleurindicatie**: `kleurIndicatie(leeftijd)` → dot in teamkleur (Blauw/Groen/Geel/Oranje/Rood)
-- **Helpers**: `KLEUR_DOT` (tailwind kleuren), `PEILJAAR` (2026)
+- **Peildatum**: 31 december van het startjaar van het seizoen (`korfbalPeildatum(seizoen)` uit `@oranje-wit/types`). Voor het lopende seizoen: `HUIDIGE_PEILDATUM`.
+- **Berekening** (weergave): `berekenKorfbalLeeftijd(geboortedatum, geboortejaar, peildatum)` — 2 decimalen.
+- **Berekening** (validatie/grens/bandbreedte): `berekenKorfbalLeeftijdExact(...)` — onafgerond.
+- **Grens-check** (U15/U17/U19 speelgerechtigdheid): `valtBinnenCategorie(exact, "U15")` — `≤` op 15.00.
+- **Integer leeftijd** (alleen op basis van geboortejaar): `grofKorfbalLeeftijd(geboortejaar, peildatum)`.
+- **Weergave-string**: `formatKorfbalLeeftijd(leeftijd)` → `"14.99"`.
+- **Kleurindicatie**: `kleurIndicatie(leeftijd)` → dot in teamkleur (Blauw/Groen/Geel/Oranje/Rood).
+- **Helpers**: `KLEUR_DOT` (tailwind kleuren).
 
 ## Spelerfoto's
 - `SpelerAvatar` component: toont webp foto uit `/api/foto/[id]`

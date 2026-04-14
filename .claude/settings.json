@@ -48,7 +48,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo 'HERINNERING na compaction:\\n- Gebruik logger uit @oranje-wit/types, NOOIT console.log\\n- API routes: ok()/fail() uit @/lib/api met Zod validatie\\n- Constanten importeren uit @oranje-wit/types (PEILJAAR, HUIDIG_SEIZOEN, PEILDATUM)\\n- rel_code is de ENIGE speler-sleutel, NOOIT naam-matching\\n- pnpm db:push NIET draaien (dropt VIEW speler_seizoenen)\\n- Taal: altijd Nederlands\\n- Agents staan in .claude/agents/'"
+            "command": "echo 'HERINNERING na compaction:\\n- Gebruik logger uit @oranje-wit/types, NOOIT console.log\\n- API routes: ok()/fail() uit @/lib/api met Zod validatie\\n- Constanten uit @oranje-wit/types (HUIDIG_SEIZOEN, HUIDIGE_PEILDATUM) + korfballeeftijd-helpers\\n- rel_code is de ENIGE speler-sleutel, NOOIT naam-matching\\n- pnpm db:push NIET draaien (dropt VIEW speler_seizoenen)\\n- Taal: altijd Nederlands\\n- Agents staan in .claude/agents/'"
           }
         ]
       }
