@@ -36,12 +36,18 @@ export default async function middleware(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
 
   // 0. Redirect legacy ti-studio en teamindeling routes naar de ti-studio service.
-  //    Fase B van de splitsing heeft alle TI-code uit apps/web verwijderd —
-  //    bookmarks en deep-links worden via een 308 naar teamindeling.ckvoranjewit.app
-  //    geleid. Gebeurt vóór elke andere check zodat ook unauth-gebruikers correct
+  //    Fase B van de splitsing heeft alle TI-code uit apps/web verwijderd.
+  //    - /ti-studio/* → 308 naar dezelfde path op de ti-studio service (bestaat daar)
+  //    - /teamindeling/* → 308 naar de ti-studio root (mobile TI is vervallen)
+  //    Gebeurt vóór elke andere check zodat ook unauth-gebruikers correct
   //    worden doorverwezen.
-  if (pathname.startsWith("/ti-studio") || pathname.startsWith("/teamindeling")) {
+  if (pathname.startsWith("/ti-studio")) {
     const target = new URL(`https://teamindeling.ckvoranjewit.app${pathname}${search}`);
+    return NextResponse.redirect(target, 308);
+  }
+  if (pathname.startsWith("/teamindeling")) {
+    // Mobile TI is weg — stuur naar root van de ti-studio service
+    const target = new URL("https://teamindeling.ckvoranjewit.app/ti-studio");
     return NextResponse.redirect(target, 308);
   }
 
