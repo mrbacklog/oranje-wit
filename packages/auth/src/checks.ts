@@ -39,6 +39,8 @@ export interface AuthSession {
     role?: string;
     provider?: string;
     authMethode?: string;
+    isAgent?: boolean;
+    agentRunId?: string;
   };
 }
 
@@ -133,6 +135,8 @@ export async function guardAuth(): Promise<AuthResult> {
       role: user.role as string | undefined,
       provider: user.provider as string | undefined,
       authMethode: user.authMethode as string | undefined,
+      isAgent: user.isAgent as boolean | undefined,
+      agentRunId: user.agentRunId as string | undefined,
     },
   };
   return { ok: true, session: typed };
