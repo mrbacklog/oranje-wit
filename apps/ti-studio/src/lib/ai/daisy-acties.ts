@@ -104,10 +104,20 @@ export async function voerUndoUit(actie: DaisyActieRecord): Promise<string> {
     }
 
     case "besluitVastleggen":
-    case "actiePlaatsen": {
+    case "actiePlaatsen":
+    case "memoAanmaken": {
       const { werkitemId } = payload;
       await prisma.werkitem.delete({ where: { id: werkitemId } });
       return `Werkitem verwijderd`;
+    }
+
+    case "memoStatusZetten": {
+      const { memoId, status, prioriteit } = payload;
+      const updateData: Record<string, unknown> = {};
+      if (status) updateData.status = status;
+      if (prioriteit) updateData.prioriteit = prioriteit;
+      await prisma.werkitem.update({ where: { id: memoId }, data: updateData as any });
+      return `Memo hersteld naar status ${status ?? "ongewijzigd"}`;
     }
 
     case "teamAanmaken": {

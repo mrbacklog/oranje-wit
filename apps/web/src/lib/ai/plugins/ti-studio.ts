@@ -1,12 +1,13 @@
 /* eslint-disable max-lines */
 /**
- * TI-studio plugin voor Daisy — 16 tools voor de teamindeling.
+ * TI-studio plugin voor Daisy — 19 tools voor de teamindeling.
  *
  * Lees-tools (4): spelersZoeken, teamSamenstelling, scenarioVergelijken, blauwdrukToetsen
  * Schrijf-tools spelers (5): spelerVerplaatsen, spelerStatusZetten,
  *   nieuwLidInBlauwdruk, plaatsreserveringZetten, besluitVastleggen
  * Schrijf-tools teams & staf (3): teamAanmaken, selectieAanmaken, stafPlaatsen
  * Schrijf-tools werkbord & scenario (2): whatIfScenarioAanmaken, actiePlaatsen
+ * Memo-tools (3): memosOphalen, memoAanmaken, memoStatusZetten
  * Undo (2): actieOngedaanMaken, sessieTerugdraaien
  */
 import { z } from "zod";
@@ -901,6 +902,260 @@ function maakSchrijfToolsRest(sessieId: string, gebruikerEmail: string) {
   };
 }
 
+// ─── Memo-tools ─────────────────────────────────────────────────
+
+function maakMemoTools(sessieId: string, gebruikerEmail: string) {
+  async function vindAuteurId(namens?: string): Promise<string | null> {
+    const zoekEmail = namens ?? gebruikerEmail;
+    const user = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { email: { contains: zoekEmail, mode: "insensitive" } },
+          { naam: { contains: zoekEmail, mode: "insensitive" } },
+        ],
+      },
+      select: { id: true },
+    });
+    if (user) return user.id;
+    const tc = await prisma.user.findFirst({
+      where: { isTCKern: true },
+      select: { id: true },
+    });
+    return tc?.id ?? null;
+  }
+
+  return {
+    memosOphalen: {
+      description:
+        "Haalt memo's (werkitems) op uit het kanban-bord. Filterbaar op status, prioriteit, entiteit of doelgroep.",
+      inputSchema: z.object({
+        status: z
+          .enum(["OPEN", "IN_BESPREKING", "OPGELOST", "GEACCEPTEERD_RISICO", "GEARCHIVEERD"])
+          .optional()
+          .describe("Filter op status (standaard: OPEN + IN_BESPREKING)"),
+        prioriteit: z
+          .enum(["BLOCKER", "HOOG", "MIDDEL", "LAAG", "INFO"])
+          .optional()
+          .describe("Filter op prioriteit"),
+        entiteit: z
+          .enum(["SPELER", "TEAM", "STAF", "BLAUWDRUK"])
+          .optional()
+          .describe("Filter op type entiteit"),
+        doelgroep: z
+          .enum(["KWEEKVIJVER", "ONTWIKKELHART", "TOP", "WEDSTRIJDSPORT", "KORFBALPLEZIER", "ALLE"])
+          .optional()
+          .describe("Filter op doelgroep"),
+        spelerId: z.string().optional().describe("Memo's voor één specifieke speler"),
+        teamId: z.string().optional().describe("Memo's voor één specifiek team"),
+      }),
+      execute: async (params: {
+        status?: string;
+        prioriteit?: string;
+        entiteit?: string;
+        doelgroep?: string;
+        spelerId?: string;
+        teamId?: string;
+      }) => {
+        const blauwdruk = await getWerkBlauwdruk();
+        if (!blauwdruk) return { fout: "Geen actieve blauwdruk gevonden" };
+
+        const statusFilter = params.status ? [params.status] : ["OPEN", "IN_BESPREKING"];
+
+        const memos = await prisma.werkitem.findMany({
+          where: {
+            kadersId: blauwdruk.id,
+            type: "MEMO",
+            status: { in: statusFilter as any[] },
+            ...(params.prioriteit ? { prioriteit: params.prioriteit as any } : {}),
+            ...(params.entiteit ? { entiteit: params.entiteit as any } : {}),
+            ...(params.doelgroep ? { doelgroep: params.doelgroep as any } : {}),
+            ...(params.spelerId ? { spelerId: params.spelerId } : {}),
+            ...(params.teamId ? { teamId: params.teamId } : {}),
+          },
+          select: {
+            id: true,
+            titel: true,
+            beschrijving: true,
+            status: true,
+            prioriteit: true,
+            entiteit: true,
+            doelgroep: true,
+            resolutie: true,
+            createdAt: true,
+            speler: { select: { roepnaam: true, achternaam: true } },
+            team: { select: { naam: true } },
+          },
+          orderBy: [{ prioriteit: "asc" }, { createdAt: "desc" }],
+          take: 50,
+        });
+
+        return {
+          aantalGevonden: memos.length,
+          memos: memos.map((m) => ({
+            id: m.id,
+            titel: m.titel,
+            beschrijving: m.beschrijving,
+            status: m.status,
+            prioriteit: m.prioriteit,
+            entiteit: m.entiteit,
+            doelgroep: m.doelgroep,
+            resolutie: m.resolutie,
+            speler: m.speler ? `${m.speler.roepnaam} ${m.speler.achternaam}` : null,
+            team: m.team?.naam ?? null,
+            aangemaakt: m.createdAt.toISOString(),
+          })),
+        };
+      },
+    },
+
+    memoAanmaken: {
+      description:
+        "Maakt een nieuw memo aan op het kanban-bord. Koppelbaar aan speler, team, doelgroep of TC-algemeen.",
+      inputSchema: z.object({
+        beschrijving: z.string().describe("Inhoud van het memo"),
+        titel: z.string().optional().describe("Optionele korte titel"),
+        prioriteit: z
+          .enum(["BLOCKER", "HOOG", "MIDDEL", "LAAG", "INFO"])
+          .optional()
+          .describe("Prioriteit (standaard: MIDDEL)"),
+        spelerId: z.string().optional().describe("Koppel aan speler (speler-ID)"),
+        teamId: z.string().optional().describe("Koppel aan team (team-ID)"),
+        doelgroep: z
+          .enum(["KWEEKVIJVER", "ONTWIKKELHART", "TOP", "WEDSTRIJDSPORT", "KORFBALPLEZIER", "ALLE"])
+          .optional()
+          .describe("Koppel aan doelgroep (laat weg voor TC-algemeen)"),
+        namens: z
+          .string()
+          .optional()
+          .describe("Naam of e-mail van de TC-auteur (optioneel, standaard: Daisy)"),
+      }),
+      execute: async (params: {
+        beschrijving: string;
+        titel?: string;
+        prioriteit?: string;
+        spelerId?: string;
+        teamId?: string;
+        doelgroep?: string;
+        namens?: string;
+      }) => {
+        const blauwdruk = await getWerkBlauwdruk();
+        if (!blauwdruk) return { fout: "Geen actieve blauwdruk gevonden" };
+
+        const auteurId = await vindAuteurId(params.namens);
+        if (!auteurId) return { fout: "Geen TC-gebruiker gevonden om het memo aan te koppelen" };
+
+        const entiteit = params.spelerId ? "SPELER" : params.teamId ? "TEAM" : null;
+
+        const memo = await prisma.werkitem.create({
+          data: {
+            kadersId: blauwdruk.id,
+            titel: params.titel ?? null,
+            beschrijving: params.beschrijving,
+            type: "MEMO",
+            status: "OPEN",
+            prioriteit: (params.prioriteit ?? "MIDDEL") as any,
+            entiteit: entiteit as any,
+            doelgroep: params.doelgroep ? (params.doelgroep as any) : null,
+            spelerId: params.spelerId ?? null,
+            teamId: params.teamId ?? null,
+            auteurId,
+          },
+          select: { id: true, titel: true, status: true, prioriteit: true },
+        });
+
+        await logDaisyActie({
+          sessieId,
+          tool: "memoAanmaken",
+          doPayload: { werkitemId: memo.id, beschrijving: params.beschrijving },
+          undoPayload: { werkitemId: memo.id },
+          namens: params.namens ?? gebruikerEmail,
+          uitgevoerdIn: "kanban",
+        });
+
+        return {
+          gedaan: true,
+          werkitemId: memo.id,
+          samenvatting: `Memo aangemaakt: "${(params.titel ?? params.beschrijving).slice(0, 60)}"`,
+        };
+      },
+    },
+
+    memoStatusZetten: {
+      description:
+        "Wijzigt de status of prioriteit van een bestaand memo. Gebruik dit om een memo op te lossen, te archiveren of te escaleren.",
+      inputSchema: z.object({
+        memoId: z.string().describe("ID van het memo (werkitem-ID)"),
+        status: z
+          .enum(["OPEN", "IN_BESPREKING", "OPGELOST", "GEACCEPTEERD_RISICO", "GEARCHIVEERD"])
+          .optional()
+          .describe("Nieuwe status"),
+        prioriteit: z
+          .enum(["BLOCKER", "HOOG", "MIDDEL", "LAAG", "INFO"])
+          .optional()
+          .describe("Nieuwe prioriteit"),
+        resolutie: z
+          .string()
+          .optional()
+          .describe("Toelichting bij oplossing (invullen bij OPGELOST of GEACCEPTEERD_RISICO)"),
+      }),
+      execute: async (params: {
+        memoId: string;
+        status?: string;
+        prioriteit?: string;
+        resolutie?: string;
+      }) => {
+        const memo = await prisma.werkitem.findUnique({
+          where: { id: params.memoId },
+          select: {
+            id: true,
+            titel: true,
+            beschrijving: true,
+            status: true,
+            prioriteit: true,
+          },
+        });
+        if (!memo) return { fout: `Memo ${params.memoId} niet gevonden` };
+
+        const updateData: Record<string, unknown> = {};
+        if (params.status) updateData.status = params.status;
+        if (params.prioriteit) updateData.prioriteit = params.prioriteit;
+        if (params.resolutie !== undefined) updateData.resolutie = params.resolutie;
+        if (params.status === "OPGELOST" || params.status === "GEACCEPTEERD_RISICO") {
+          updateData.opgelostOp = new Date();
+        }
+
+        if (Object.keys(updateData).length === 0) {
+          return { fout: "Geen wijziging opgegeven (status of prioriteit vereist)" };
+        }
+
+        await prisma.werkitem.update({
+          where: { id: params.memoId },
+          data: updateData as any,
+        });
+
+        await logDaisyActie({
+          sessieId,
+          tool: "memoStatusZetten",
+          doPayload: { memoId: params.memoId, ...updateData },
+          undoPayload: {
+            memoId: params.memoId,
+            status: memo.status,
+            prioriteit: memo.prioriteit,
+          },
+          namens: gebruikerEmail,
+          uitgevoerdIn: "kanban",
+        });
+
+        const label = memo.titel ?? memo.beschrijving.slice(0, 50);
+        return {
+          gedaan: true,
+          samenvatting: `Memo "${label}" bijgewerkt${params.status ? ` → ${params.status}` : ""}${params.prioriteit ? ` (${params.prioriteit})` : ""}`,
+        };
+      },
+    },
+  };
+}
+
 // ─── Undo-tools ─────────────────────────────────────────────────
 
 function maakUndoTools(sessieId: string) {
@@ -969,6 +1224,7 @@ export function getTiStudioTools(sessieId: string, gebruikerEmail: string) {
     ...leesTools,
     ...maakSchrijfToolsSpelers(sessieId, gebruikerEmail),
     ...maakSchrijfToolsRest(sessieId, gebruikerEmail),
+    ...maakMemoTools(sessieId, gebruikerEmail),
     ...maakUndoTools(sessieId),
   };
 }

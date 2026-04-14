@@ -75,8 +75,8 @@ async function bepaalTeamscore(speler: { id: string; huidig: any }): Promise<num
     }
   }
 
-  // 3. B-categorie jeugdteams: "Ro-135" → knkvRating 135 → USS 135
-  const bCatMatch = poolVeld.match(/^[A-Za-z]+-(\d+)$/);
+  // 3. B-categorie jeugdteams: "Gr4-173", "Bl4-084", "Ro-135" → knkvRating → USS
+  const bCatMatch = poolVeld.match(/-(\d+)$/);
   if (bCatMatch) {
     const knkvRating = parseInt(bCatMatch[1], 10);
     if (!isNaN(knkvRating)) return knkvNaarUSS(knkvRating);
