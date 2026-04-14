@@ -347,3 +347,21 @@ textarea.input {
     animation: none;
   }
 }
+
+/* ============================================================
+   Dashboard tegels
+   ============================================================ */
+
+.ti-dashboard-primary:hover {
+  border-color: rgba(59, 130, 246, 0.55) !important;
+  box-shadow:
+    0 0 0 1px rgba(59, 130, 246, 0.15),
+    0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.ti-dashboard-secondary:hover {
+  background: #22223a !important;
+  border-color: rgba(255, 255, 255, 0.16) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  transform: translateY(-1px);
+}
