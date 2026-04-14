@@ -12,9 +12,17 @@ function getGroet(): string {
   return "Goedenavond";
 }
 
-function getVoornaam(name: string | null | undefined, email: string | null | undefined): string {
-  if (name) return name.split(" ")[0];
-  if (email) return email.split("@")[0].split(".")[0];
+async function getVoornaam(email: string | null | undefined): Promise<string> {
+  if (!email) return "";
+  try {
+    const user = await prisma.user.findUnique({
+      where: { email },
+      select: { naam: true },
+    });
+    if (user?.naam) return user.naam.split(" ")[0];
+  } catch {
+    // geen probleem
+  }
   return "";
 }
 
@@ -94,14 +102,14 @@ async function getMemoStats() {
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export default async function DashboardPage() {
-  const [session, seizoen, volledigheid, memo] = await Promise.all([
-    auth(),
+  const session = await auth();
+  const [voornaam, seizoen, volledigheid, memo] = await Promise.all([
+    getVoornaam(session?.user?.email),
     getActiefSeizoen(),
     getVolledigheid(),
     getMemoStats(),
   ]);
 
-  const voornaam = getVoornaam(session?.user?.name, session?.user?.email);
   const groet = getGroet();
 
   const { totalSpelers, ingeplandSpelers } = volledigheid;
