@@ -117,6 +117,10 @@ const leesTools = {
       if (params.leeftijdVolgendSeizoen)
         where.geboortejaar = PEILJAAR - params.leeftijdVolgendSeizoen;
       if (params.status) where.status = params.status;
+      // Team-filter op DB-niveau via JSON path (huidig->>'team')
+      if (params.team) {
+        where.huidig = { path: ["team"], string_contains: params.team };
+      }
 
       const spelers = await prisma.speler.findMany({
         where,
@@ -133,7 +137,7 @@ const leesTools = {
           huidig: true,
         },
         orderBy: [{ achternaam: "asc" }, { roepnaam: "asc" }],
-        take: 50,
+        take: params.team ? 30 : 50,
       });
 
       let resultaat = spelers.map((s) => ({
@@ -154,10 +158,6 @@ const leesTools = {
         resultaat = resultaat.filter((s) => s.uss != null && s.uss <= params.ussMax!);
       if (params.retentierisico)
         resultaat = resultaat.filter((s) => s.retentierisico === params.retentierisico);
-      if (params.team)
-        resultaat = resultaat.filter((s) =>
-          s.huidigTeam?.toLowerCase().includes(params.team!.toLowerCase())
-        );
 
       return { aantalGevonden: resultaat.length, spelers: resultaat };
     },
