@@ -38,7 +38,14 @@ export default async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // 2. Dev bypass — lokale ontwikkeling zonder auth
+  // 2. Daisy service key — programmatische toegang voor scripts/tests
+  const serviceKey = request.headers.get("X-Daisy-Service-Key");
+  const expectedKey = process.env.DAISY_SERVICE_KEY ?? "ow-daisy-service-2026";
+  if (serviceKey && serviceKey === expectedKey) {
+    return NextResponse.next();
+  }
+
+  // 3. Dev bypass — lokale ontwikkeling zonder auth
   if (process.env.NODE_ENV === "development") {
     return NextResponse.next();
   }
