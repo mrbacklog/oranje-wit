@@ -44,6 +44,7 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
     slaTeamPositieOp,
     updateTeamLokaal,
     verwijderTeamLokaal,
+    herorderTeamsLokaal,
     voegTeamLokaalToe,
     koppelSelectieLokaal,
     ontkoppelSelectieLokaal,
@@ -213,6 +214,7 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
             onSelectieOntkoppeld={ontkoppelSelectieLokaal}
             onSelectieNaamUpdated={updateSelectieNaamLokaal}
             onToggleBundeling={toggleBundeling}
+            onTeamsHerordend={herorderTeamsLokaal}
           />
           <VersiesDrawer
             open={panelRechts === "versies"}

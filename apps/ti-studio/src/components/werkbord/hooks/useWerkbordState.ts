@@ -131,6 +131,11 @@ export function useWerkbordState(
     setTeams((prev) => prev.filter((t) => t.id !== teamId));
   }, []);
 
+  const herorderTeamsLokaal = useCallback((nieuweVolgorde: { id: string; volgorde: number }[]) => {
+    const map = new Map(nieuweVolgorde.map((u) => [u.id, u.volgorde]));
+    setTeams((prev) => prev.map((t) => (map.has(t.id) ? { ...t, volgorde: map.get(t.id)! } : t)));
+  }, []);
+
   const voegTeamLokaalToe = useCallback(
     (team: Pick<WerkbordTeam, "id" | "naam" | "categorie" | "volgorde">) => {
       const nieuwTeam: WerkbordTeam = {
@@ -472,6 +477,7 @@ export function useWerkbordState(
     slaTeamPositieOp,
     updateTeamLokaal,
     verwijderTeamLokaal,
+    herorderTeamsLokaal,
     voegTeamLokaalToe,
     koppelSelectieLokaal,
     ontkoppelSelectieLokaal,

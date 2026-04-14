@@ -139,3 +139,18 @@ export async function hernoemTeam(teamId: string, naam: string): Promise<ActionR
     return { ok: false, error: error instanceof Error ? error.message : String(error) };
   }
 }
+
+export async function updateTeamVolgorde(
+  updates: { id: string; volgorde: number }[]
+): Promise<ActionResult<void>> {
+  await requireTC();
+  try {
+    await prisma.$transaction(
+      updates.map(({ id, volgorde }) => prisma.team.update({ where: { id }, data: { volgorde } }))
+    );
+    return { ok: true, data: undefined };
+  } catch (error) {
+    logger.warn(`Fout bij herordenen teams:`, error);
+    return { ok: false, error: error instanceof Error ? error.message : String(error) };
+  }
+}

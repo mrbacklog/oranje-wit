@@ -1,6 +1,6 @@
 // apps/web/src/components/ti-studio/werkbord/TeamDrawer.tsx
 "use client";
-import { useState, useTransition } from "react";
+import { useState, useRef, useTransition } from "react";
 import "./tokens.css";
 import type {
   WerkbordTeam,
@@ -19,6 +19,7 @@ import {
   updateSelectieNaam,
   verwijderTeam,
   hernoemTeam,
+  updateTeamVolgorde,
 } from "@/app/(protected)/indeling/team-config-actions";
 import { maakTeamAan } from "@/app/(protected)/indeling/werkindeling-actions";
 
@@ -38,6 +39,7 @@ interface TeamDrawerProps {
   onSelectieOntkoppeld: (selectieGroepId: string) => void;
   onSelectieNaamUpdated: (selectieGroepId: string, naam: string) => void;
   onToggleBundeling: (selectieGroepId: string, gebundeld: boolean) => void | Promise<void>;
+  onTeamsHerordend: (updates: { id: string; volgorde: number }[]) => void;
 }
 
 const VAL_KLEUR: Record<string, string> = {
@@ -1284,6 +1286,7 @@ export function TeamDrawer({
   onSelectieOntkoppeld,
   onSelectieNaamUpdated,
   onToggleBundeling,
+  onTeamsHerordend,
 }: TeamDrawerProps) {
   const geselecteerdTeam = teams.find((t) => t.id === geselecteerdTeamId) ?? null;
   const gesorteerdeTeams = [...teams].sort((a, b) => a.volgorde - b.volgorde);
@@ -1293,6 +1296,46 @@ export function TeamDrawer({
   const [nieuwCategorie, setNieuwCategorie] = useState("SENIOREN");
   const [nieuwTeamFout, setNieuwTeamFout] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+
+  // ─── Drag-and-drop volgorde ──────────────────────────────────
+  const dragGroepIndexRef = useRef<number | null>(null);
+  const [dropGroepIndex, setDropGroepIndex] = useState<number | null>(null);
+
+  function handleDragStart(index: number) {
+    dragGroepIndexRef.current = index;
+  }
+
+  function handleDragOver(e: React.DragEvent, index: number) {
+    e.preventDefault();
+    setDropGroepIndex(index);
+  }
+
+  function handleDragEnd() {
+    const vanIndex = dragGroepIndexRef.current;
+    const naarIndex = dropGroepIndex;
+
+    dragGroepIndexRef.current = null;
+    setDropGroepIndex(null);
+
+    if (vanIndex === null || naarIndex === null || vanIndex === naarIndex) return;
+
+    const groepen = groepeerTeams(gesorteerdeTeams);
+    const nieuw = [...groepen];
+    const [verplaatst] = nieuw.splice(vanIndex, 1);
+    nieuw.splice(naarIndex, 0, verplaatst);
+
+    // Nieuwe volgorde: groepIndex * 10 (ruimte laten voor later)
+    const updates: { id: string; volgorde: number }[] = [];
+    nieuw.forEach((groep, gi) => {
+      const teamsInGroep = groep.type === "los" ? [groep.team] : groep.teams;
+      teamsInGroep.forEach((team, ti) => {
+        updates.push({ id: team.id, volgorde: gi * 10 + ti });
+      });
+    });
+
+    onTeamsHerordend(updates);
+    void updateTeamVolgorde(updates);
+  }
 
   function handleNieuwTeamSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -1521,35 +1564,46 @@ export function TeamDrawer({
           )}
 
           <div style={{ flex: 1, overflowY: "auto" }}>
-            {groepeerTeams(gesorteerdeTeams).map((groep) => {
-              if (groep.type === "los") {
-                return (
-                  <PlatteTeamKaart
-                    key={groep.team.id}
-                    team={groep.team}
-                    geselecteerd={groep.team.id === geselecteerdTeamId}
-                    showScores={true}
-                    onClick={() => onTeamSelect(groep.team.id)}
-                  />
-                );
-              }
-              if (groep.gebundeld) {
-                return (
-                  <SelectieGroepBlok
-                    key={groep.selectieGroepId}
-                    groep={groep}
-                    geselecteerdTeamId={geselecteerdTeamId}
-                    onTeamSelect={onTeamSelect}
-                  />
-                );
-              }
+            {groepeerTeams(gesorteerdeTeams).map((groep, index) => {
+              const key = groep.type === "los" ? groep.team.id : groep.selectieGroepId;
+              const isDragTarget = dropGroepIndex === index;
               return (
-                <SelectieGroepOngebundeld
-                  key={groep.selectieGroepId}
-                  groep={groep}
-                  geselecteerdTeamId={geselecteerdTeamId}
-                  onTeamSelect={onTeamSelect}
-                />
+                <div
+                  key={key}
+                  draggable
+                  onDragStart={() => handleDragStart(index)}
+                  onDragOver={(e) => handleDragOver(e, index)}
+                  onDragEnd={handleDragEnd}
+                  style={{
+                    outline: isDragTarget ? "2px solid rgba(255,107,0,.5)" : "none",
+                    outlineOffset: -2,
+                    borderRadius: groep.type === "selectie" ? 11 : 0,
+                    opacity: dragGroepIndexRef.current === index ? 0.4 : 1,
+                    transition: "opacity 120ms, outline 80ms",
+                    cursor: "grab",
+                  }}
+                >
+                  {groep.type === "los" ? (
+                    <PlatteTeamKaart
+                      team={groep.team}
+                      geselecteerd={groep.team.id === geselecteerdTeamId}
+                      showScores={true}
+                      onClick={() => onTeamSelect(groep.team.id)}
+                    />
+                  ) : groep.gebundeld ? (
+                    <SelectieGroepBlok
+                      groep={groep}
+                      geselecteerdTeamId={geselecteerdTeamId}
+                      onTeamSelect={onTeamSelect}
+                    />
+                  ) : (
+                    <SelectieGroepOngebundeld
+                      groep={groep}
+                      geselecteerdTeamId={geselecteerdTeamId}
+                      onTeamSelect={onTeamSelect}
+                    />
+                  )}
+                </div>
               );
             })}
           </div>
