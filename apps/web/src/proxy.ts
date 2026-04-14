@@ -6,6 +6,7 @@ import type { NextRequest } from "next/server";
  * Publieke routes die GEEN authenticatie vereisen.
  * - /login en /api/auth: NextAuth flows
  * - /api/smartlink: magic link validatie (pre-auth)
+ * - /api/agent: agent backdoor, authentiseert via AGENT_SECRET in body
  * - /_next, /favicon.ico, /icons, /manifest.json: statische assets
  */
 const PUBLIC_PREFIXES = [
@@ -14,6 +15,7 @@ const PUBLIC_PREFIXES = [
   "/api/health",
   "/api/scouting/health",
   "/api/smartlink",
+  "/api/agent",
   "/_next",
   "/favicon.ico",
   "/icons",
