@@ -205,89 +205,103 @@ const leesTools = {
 
   competitieTeamZoeken: {
     description:
-      "Zoek wie er daadwerkelijk uitkomt in een competitieteam — gebaseerd op de echte KNKV-competitiedata (Sportlink). Gebruik dit als iemand vraagt wie er 'speelt' in een team, niet wie er gepland staat in de werkindeling. Teamcodes: S1S2, S3-S6, MW1, U15-1, U17, U19, J1-J18, K.",
+      "Zoek wie er daadwerkelijk uitkomt in een competitieteam volgens Sportlink. Gebruik dit als iemand vraagt wie er 'speelt' in een team (S1, S2, S3, U17-1, J7 enz.). De tool zoekt via team_aliases naar het OW-team en haalt spelers + staf op uit competitie_spelers en competitie_staf.",
     inputSchema: z.object({
       team: z
         .string()
-        .describe(
-          "Teamcode zoals S1S2, S3, U17, J1 enz. Of gedeelte van een naam — de tool zoekt ook op veld 'bevat'."
-        ),
+        .describe("Teamnaam of alias, bijv. 'S1', 'Senioren 2', 'U17-1', 'J7', 'Rood 1', 'MW1'."),
       seizoen: z
         .string()
         .optional()
         .describe(`Seizoen, bijv. "2025-2026". Standaard: huidig seizoen (${HUIDIG_SEIZOEN}).`),
       geslacht: z.enum(["M", "V"]).optional().describe("Filter op geslacht"),
+      metStaf: z.boolean().optional().describe("Toon ook de staf (default true)"),
     }),
-    execute: async (params: { team: string; seizoen?: string; geslacht?: "M" | "V" }) => {
-      function vertaalNaarCompetitieCode(t: string): string {
-        const s = t.trim().toLowerCase();
-        const map: Record<string, string> = {
-          s1s2: "S1S2",
-          "1e selectie": "S1S2",
-          s3: "S3",
-          "senioren 3": "S3",
-          "3e": "S3",
-          s4: "S4",
-          "senioren 4": "S4",
-          "4e": "S4",
-          s5: "S5",
-          "senioren 5": "S5",
-          "5e": "S5",
-          s6: "S6",
-          "senioren 6": "S6",
-          "6e": "S6",
-          midweek: "MW1",
-          mw: "MW1",
-          mw1: "MW1",
-          "midweek 1": "MW1",
-          u15: "U15-1",
-          "u15-1": "U15-1",
-          u17: "U17",
-          "u17-1": "U17",
-          "u17-2": "U17",
-          u19: "U19",
-          "u19-1": "U19",
-          "u19-2": "U19",
+    execute: async (params: {
+      team: string;
+      seizoen?: string;
+      geslacht?: "M" | "V";
+      metStaf?: boolean;
+    }) => {
+      const seizoen = params.seizoen ?? HUIDIG_SEIZOEN;
+      const zoek = params.team.trim();
+      const zoekLower = zoek.toLowerCase();
+      const metStaf = params.metStaf !== false;
+
+      const aliasRijen = await prisma.$queryRaw<Array<{ ow_team_id: number; ow_code: string }>>`
+        SELECT DISTINCT ow_team_id, ow_code
+        FROM team_aliases
+        WHERE seizoen = ${seizoen}
+          AND (LOWER(alias) = ${zoekLower} OR ow_code = ${zoek.toUpperCase()})
+      `;
+
+      if (aliasRijen.length === 0) {
+        return {
+          team: zoek,
+          seizoen,
+          aantalGevonden: 0,
+          foutmelding: `Geen team gevonden voor "${zoek}" in seizoen ${seizoen}. Probeer: S1, S2, U17-1, J7, MW1, etc.`,
         };
-        return map[s] ?? params.team.trim();
       }
 
-      const seizoen = params.seizoen ?? HUIDIG_SEIZOEN;
-      const teamCode = vertaalNaarCompetitieCode(params.team);
-      const zoekterm = "%" + params.team.trim() + "%";
+      const owTeamIds = aliasRijen.map((r) => r.ow_team_id);
+      const owCode = aliasRijen[0].ow_code;
 
-      const rijen = await prisma.$queryRaw<
+      const spelerRijen = await prisma.$queryRaw<
         Array<{
+          rel_code: string;
           roepnaam: string;
           achternaam: string;
           geslacht: string;
-          rel_code: string;
-          competitie: string;
+          competities: string;
         }>
       >`
-        SELECT l.roepnaam, l.achternaam, l.geslacht, cs.rel_code, cs.competitie
+        SELECT cs.rel_code, l.roepnaam, l.achternaam, l.geslacht,
+               STRING_AGG(DISTINCT cs.competitie, ', ' ORDER BY cs.competitie) as competities
         FROM competitie_spelers cs
         JOIN leden l ON l.rel_code = cs.rel_code
         WHERE cs.seizoen = ${seizoen}
-          AND (cs.team = ${teamCode} OR cs.team ILIKE ${zoekterm})
+          AND cs.ow_team_id = ANY(${owTeamIds})
+        GROUP BY cs.rel_code, l.roepnaam, l.achternaam, l.geslacht
         ORDER BY l.geslacht, l.achternaam
       `;
 
-      let spelers = (rijen as any[]).map((r) => ({
+      let spelers = spelerRijen.map((r) => ({
         naam: `${r.roepnaam} ${r.achternaam}`,
         geslacht: r.geslacht,
         relCode: r.rel_code,
-        competitie: r.competitie,
+        competities: r.competities,
       }));
       if (params.geslacht) {
         spelers = spelers.filter((s) => s.geslacht === params.geslacht);
       }
 
+      let staf: Array<{ naam: string; rol: string; relCode: string }> = [];
+      if (metStaf) {
+        const stafRijen = await prisma.$queryRaw<
+          Array<{ rel_code: string; roepnaam: string; achternaam: string; rol: string }>
+        >`
+          SELECT DISTINCT cst.rel_code, l.roepnaam, l.achternaam, cst.rol
+          FROM competitie_staf cst
+          JOIN leden l ON l.rel_code = cst.rel_code
+          WHERE cst.seizoen = ${seizoen}
+            AND cst.ow_team_id = ANY(${owTeamIds})
+          ORDER BY cst.rol, l.achternaam
+        `;
+        staf = stafRijen.map((r) => ({
+          naam: `${r.roepnaam} ${r.achternaam}`,
+          rol: r.rol,
+          relCode: r.rel_code,
+        }));
+      }
+
       return {
-        team: teamCode,
+        team: owCode,
         seizoen,
         aantalGevonden: spelers.length,
         spelers,
+        aantalStaf: staf.length,
+        staf: metStaf ? staf : undefined,
       };
     },
   },
