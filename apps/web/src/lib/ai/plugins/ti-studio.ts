@@ -917,12 +917,9 @@ function maakMemoTools(sessieId: string, gebruikerEmail: string) {
       select: { id: true },
     });
     if (user) return user.id;
-    // Fallback: eerste TC-lid
-    const tc = await prisma.user.findFirst({
-      where: { isTC: true },
-      select: { id: true },
-    });
-    return tc?.id ?? null;
+    // Fallback: eerste beschikbare gebruiker (service-key context)
+    const fallback = await prisma.user.findFirst({ select: { id: true } });
+    return fallback?.id ?? null;
   }
 
   return {
