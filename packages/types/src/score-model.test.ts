@@ -52,7 +52,8 @@ describe("isSpeelgerechtigd", () => {
     expect(isSpeelgerechtigd(new Date(2012, 5, 23), "U15", peildatum)).toBe(true);
   });
 
-  it("iemand geboren 31-12-2011 is exact 15.00 → NIET speelgerechtigd voor U15", () => {
+  it("iemand geboren 31-12-2011 is iets ouder dan 15 → NIET speelgerechtigd voor U15", () => {
+    // 5479 dagen / 365.25 = 15.0007 (net over de grens)
     expect(isSpeelgerechtigd(new Date(2011, 11, 31), "U15", peildatum)).toBe(false);
   });
 
@@ -60,7 +61,7 @@ describe("isSpeelgerechtigd", () => {
     expect(isSpeelgerechtigd(new Date(2012, 0, 1), "U15", peildatum)).toBe(true);
   });
 
-  it("iemand geboren 31-12-2007 is exact 19.00 → NIET speelgerechtigd voor U19", () => {
+  it("iemand geboren 31-12-2007 is iets ouder dan 19 → NIET speelgerechtigd voor U19", () => {
     expect(isSpeelgerechtigd(new Date(2007, 11, 31), "U19", peildatum)).toBe(false);
   });
 

@@ -1,24 +1,23 @@
 import { describe, it, expect } from "vitest";
-import { PEILJAAR, HUIDIG_SEIZOEN, PEILDATUM, MIN_GENDER_PER_TEAM } from "./constanten";
+import { HUIDIG_SEIZOEN, HUIDIGE_PEILDATUM, MIN_GENDER_PER_TEAM } from "./constanten";
+import { korfbalPeildatum } from "./korfballeeftijd";
 
 describe("constanten", () => {
-  it("PEILJAAR is een redelijk jaartal", () => {
-    expect(PEILJAAR).toBeGreaterThanOrEqual(2024);
-    expect(PEILJAAR).toBeLessThanOrEqual(2030);
+  it("HUIDIG_SEIZOEN heeft het formaat YYYY-YYYY", () => {
+    expect(HUIDIG_SEIZOEN).toMatch(/^\d{4}-\d{4}$/);
   });
 
-  it("HUIDIG_SEIZOEN bevat het peiljaar", () => {
-    expect(HUIDIG_SEIZOEN).toContain(String(PEILJAAR - 1));
-    expect(HUIDIG_SEIZOEN).toContain(String(PEILJAAR));
+  it("HUIDIGE_PEILDATUM komt overeen met korfbalPeildatum(HUIDIG_SEIZOEN)", () => {
+    const expected = korfbalPeildatum(HUIDIG_SEIZOEN);
+    expect(HUIDIGE_PEILDATUM.getTime()).toBe(expected.getTime());
   });
 
-  it("PEILDATUM is 31 december van het peiljaar", () => {
-    expect(PEILDATUM.getFullYear()).toBe(PEILJAAR);
-    expect(PEILDATUM.getMonth()).toBe(11); // december = 11
-    expect(PEILDATUM.getDate()).toBe(31);
+  it("HUIDIGE_PEILDATUM is 31 december", () => {
+    expect(HUIDIGE_PEILDATUM.getMonth()).toBe(11);
+    expect(HUIDIGE_PEILDATUM.getDate()).toBe(31);
   });
 
-  it("MIN_GENDER_PER_TEAM is positief", () => {
-    expect(MIN_GENDER_PER_TEAM).toBeGreaterThan(0);
+  it("MIN_GENDER_PER_TEAM is 2", () => {
+    expect(MIN_GENDER_PER_TEAM).toBe(2);
   });
 });

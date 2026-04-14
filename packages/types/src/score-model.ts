@@ -10,7 +10,12 @@
  *   3. Coach-evaluaties (niveau 1-5)
  */
 
-import { PEILDATUM } from "./constanten";
+import { HUIDIGE_PEILDATUM } from "./constanten";
+import {
+  berekenKorfbalLeeftijd,
+  berekenKorfbalLeeftijdExact,
+  valtBinnenCategorie,
+} from "./korfballeeftijd";
 import type { LeeftijdsgroepNaam } from "./leeftijdsgroep-config";
 
 // ============================================================
@@ -117,38 +122,28 @@ export const GEWICHTEN: {
 // ============================================================
 
 /**
- * Bereken de exacte leeftijd in jaren met 2 decimalen.
- *
- * Voorbeeld: geboren 15-03-2012, peildatum 31-12-2026 → 14.79
+ * @deprecated Gebruik `berekenKorfbalLeeftijd` uit `./korfballeeftijd` direct.
+ * Deze wrapper bestaat voor backwards compat binnen score-model.
  */
-export function berekenExacteLeeftijd(geboortedatum: Date, peildatum: Date = PEILDATUM): number {
-  const ms = peildatum.getTime() - geboortedatum.getTime();
-  const dagen = ms / (1000 * 60 * 60 * 24);
-  return Math.round((dagen / 365.25) * 100) / 100;
+export function berekenExacteLeeftijd(
+  geboortedatum: Date,
+  peildatum: Date = HUIDIGE_PEILDATUM
+): number {
+  return berekenKorfbalLeeftijd(geboortedatum, geboortedatum.getFullYear(), peildatum);
 }
 
 /**
  * Check of een speler speelgerechtigd is voor een A-categorie.
- * Grens: exacte leeftijd (onafgerond) moet strikt kleiner zijn dan de categoriegrens.
- *
- * Gebruikt de onafgeronde waarde om afrondingsfouten bij de grens te voorkomen
- * (bijv. 14.9966 afgerond tot 15.00 zou onterecht uitsluiten).
+ * Grens is inclusief (≤): een speler met exact 15.00 op peildatum valt nog in U15.
+ * Gebruikt de onafgeronde waarde om afrondingsfouten bij de grens te voorkomen.
  */
 export function isSpeelgerechtigd(
   geboortedatum: Date,
   categorie: "U15" | "U17" | "U19",
-  peildatum: Date = PEILDATUM
+  peildatum: Date = HUIDIGE_PEILDATUM
 ): boolean {
-  const grenzen: Record<string, number> = {
-    U15: 15.0,
-    U17: 17.0,
-    U19: 19.0,
-  };
-  // Gebruik onafgeronde waarde voor grenscheck
-  const ms = peildatum.getTime() - geboortedatum.getTime();
-  const dagen = ms / (1000 * 60 * 60 * 24);
-  const leeftijdExact = dagen / 365.25;
-  return leeftijdExact < grenzen[categorie];
+  const exact = berekenKorfbalLeeftijdExact(geboortedatum, geboortedatum.getFullYear(), peildatum);
+  return valtBinnenCategorie(exact, categorie);
 }
 
 // ============================================================

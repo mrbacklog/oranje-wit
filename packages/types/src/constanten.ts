@@ -1,13 +1,15 @@
 import type { Seizoen } from "./index";
+import { korfbalPeildatum } from "./korfballeeftijd";
 
-/** Peiljaar voor korfballeeftijd (31-12 van dit jaar) */
-export const PEILJAAR = 2026;
-
-/** Huidig seizoen waarvoor indelingen gemaakt worden */
+/** Huidig seizoen waarvoor indelingen gemaakt worden. */
 export const HUIDIG_SEIZOEN: Seizoen = "2025-2026";
 
-/** Peildatum: 31 december van het peiljaar */
-export const PEILDATUM = new Date(PEILJAAR, 11, 31);
+/**
+ * Peildatum voor het huidige seizoen.
+ * Gebruik ALLEEN op plekken zonder scenario-context (personen-overzicht,
+ * scouting-lijsten). Binnen een scenario: gebruik `korfbalPeildatum(scenario.seizoen)`.
+ */
+export const HUIDIGE_PEILDATUM: Date = korfbalPeildatum(HUIDIG_SEIZOEN);
 
 /** Minimum aantal spelers van elk geslacht per team */
 export const MIN_GENDER_PER_TEAM = 2;
