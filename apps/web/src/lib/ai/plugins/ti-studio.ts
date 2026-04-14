@@ -122,7 +122,6 @@ const leesTools = {
           ratingBerekend: true,
           retentie: true,
           huidig: true,
-          notitie: true,
         },
         orderBy: [{ achternaam: "asc" }, { roepnaam: "asc" }],
         take: 50,
@@ -138,7 +137,6 @@ const leesTools = {
         uss: s.rating ?? s.ratingBerekend ?? null,
         retentierisico: (s.retentie as any)?.risico ?? null,
         huidigTeam: (s.huidig as any)?.team ?? null,
-        notitie: s.notitie ?? null,
       }));
 
       if (params.ussMin != null)
