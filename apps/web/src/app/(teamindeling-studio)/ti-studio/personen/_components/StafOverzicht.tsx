@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import type { StudioStaf } from "../staf-actions";
+import { useState, useMemo, useTransition } from "react";
+import type { BeheerStaf } from "../staf-actions";
+import { setStafActief } from "../staf-actions";
 import { NieuweStafDialog } from "./NieuweStafDialog";
 
 const KLEUR_DOT: Record<string, string> = {
@@ -20,7 +21,7 @@ const KLEUR_DOT: Record<string, string> = {
 };
 
 interface Props {
-  stafLeden: StudioStaf[];
+  stafLeden: BeheerStaf[];
 }
 
 export function StafOverzicht({ stafLeden }: Props) {
@@ -28,9 +29,11 @@ export function StafOverzicht({ stafLeden }: Props) {
   const [teamFilter, setTeamFilter] = useState("allen");
   const [rolFilter, setRolFilter] = useState("allen");
   const [gepindFilter, setGepindFilter] = useState(false);
+  const [toonInactief, setToonInactief] = useState(false);
   const [sortKey, setSortKey] = useState<"naam" | "teams" | "gepind">("naam");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   const alleTeams = useMemo(
     () => [...new Set(stafLeden.flatMap((s) => s.teams.map((t) => t.teamNaam)))].sort(),
@@ -49,8 +52,15 @@ export function StafOverzicht({ stafLeden }: Props) {
     }
   }
 
+  function handleToggleActief(stafId: string, huidigActief: boolean) {
+    startTransition(async () => {
+      await setStafActief(stafId, !huidigActief);
+    });
+  }
+
   const gefilterd = useMemo(() => {
     let result = stafLeden;
+    if (!toonInactief) result = result.filter((s) => s.actief);
     if (zoekterm.trim()) {
       const q = zoekterm.trim().toLowerCase();
       result = result.filter((s) => s.naam.toLowerCase().includes(q));
@@ -74,7 +84,7 @@ export function StafOverzicht({ stafLeden }: Props) {
       }
       return sortDir === "asc" ? cmp : -cmp;
     });
-  }, [stafLeden, zoekterm, teamFilter, rolFilter, gepindFilter, sortKey, sortDir]);
+  }, [stafLeden, zoekterm, teamFilter, rolFilter, gepindFilter, toonInactief, sortKey, sortDir]);
 
   function SortIcon({ col }: { col: "naam" | "teams" | "gepind" }) {
     if (sortKey !== col) return <span style={{ opacity: 0.3, fontSize: "0.65rem" }}> ↕</span>;
@@ -170,6 +180,9 @@ export function StafOverzicht({ stafLeden }: Props) {
         <button onClick={() => setGepindFilter((v) => !v)} style={chipStyle(gepindFilter)}>
           📌 Gepind
         </button>
+        <button onClick={() => setToonInactief((v) => !v)} style={chipStyle(toonInactief)}>
+          Toon inactief
+        </button>
         <span
           style={{
             marginLeft: "auto",
@@ -220,13 +233,14 @@ export function StafOverzicht({ stafLeden }: Props) {
                 📌
                 <SortIcon col="gepind" />
               </th>
+              <th style={{ ...thStyle, cursor: "default", textAlign: "right" }}>Acties</th>
             </tr>
           </thead>
           <tbody>
             {gefilterd.length === 0 && (
               <tr>
                 <td
-                  colSpan={4}
+                  colSpan={5}
                   style={{
                     padding: "2rem",
                     textAlign: "center",
@@ -246,12 +260,14 @@ export function StafOverzicht({ stafLeden }: Props) {
                 .join("")
                 .slice(0, 2)
                 .toUpperCase();
+              const isInactief = !staf.actief;
               return (
                 <tr
                   key={staf.id}
                   style={{
                     borderBottom:
                       i < gefilterd.length - 1 ? "1px solid var(--border-default)" : "none",
+                    opacity: isInactief ? 0.45 : 1,
                   }}
                 >
                   <td style={{ padding: "0.625rem 0.875rem" }}>
@@ -261,14 +277,18 @@ export function StafOverzicht({ stafLeden }: Props) {
                           width: 30,
                           height: 30,
                           borderRadius: "50%",
-                          background: "rgba(255,107,0,.15)",
-                          border: "1.5px solid rgba(255,107,0,.3)",
+                          background: isInactief
+                            ? "rgba(148,163,184,0.15)"
+                            : "rgba(255,107,0,.15)",
+                          border: isInactief
+                            ? "1.5px solid rgba(148,163,184,0.3)"
+                            : "1.5px solid rgba(255,107,0,.3)",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
                           fontSize: "0.6875rem",
                           fontWeight: 800,
-                          color: "var(--accent)",
+                          color: isInactief ? "var(--text-secondary)" : "var(--accent)",
                           flexShrink: 0,
                         }}
                       >
@@ -279,6 +299,7 @@ export function StafOverzicht({ stafLeden }: Props) {
                           fontSize: "0.875rem",
                           fontWeight: 600,
                           color: "var(--text-primary)",
+                          fontStyle: isInactief ? "italic" : "normal",
                         }}
                       >
                         {staf.naam}
@@ -352,6 +373,31 @@ export function StafOverzicht({ stafLeden }: Props) {
                   </td>
                   <td style={{ padding: "0.625rem 0.875rem", textAlign: "center" }}>
                     <span style={{ fontSize: "0.875rem", opacity: staf.gepind ? 1 : 0.2 }}>📌</span>
+                  </td>
+                  <td style={{ padding: "0.625rem 0.875rem", textAlign: "right" }}>
+                    <button
+                      disabled={isPending}
+                      onClick={() => handleToggleActief(staf.id, staf.actief)}
+                      style={{
+                        padding: "0.25rem 0.625rem",
+                        borderRadius: 6,
+                        border: isInactief
+                          ? "1px solid rgba(34,197,94,0.4)"
+                          : "1px solid rgba(239,68,68,0.4)",
+                        background: isInactief
+                          ? "rgba(34,197,94,0.08)"
+                          : "rgba(239,68,68,0.08)",
+                        color: isInactief ? "#4ade80" : "#f87171",
+                        fontSize: "0.75rem",
+                        fontWeight: 500,
+                        cursor: isPending ? "not-allowed" : "pointer",
+                        fontFamily: "inherit",
+                        opacity: isPending ? 0.6 : 1,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {isInactief ? "Activeer" : "Zet inactief"}
+                    </button>
                   </td>
                 </tr>
               );

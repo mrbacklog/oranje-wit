@@ -15,6 +15,7 @@ export async function getStafVoorStudio() {
 
   const [stafLeden, teamStafKoppelingen, pins] = await Promise.all([
     prisma.staf.findMany({
+      where: { actief: true },
       select: { id: true, naam: true, rollen: true, geboortejaar: true },
       orderBy: { naam: "asc" },
     }),
@@ -61,6 +62,82 @@ export async function getStafVoorStudio() {
 }
 
 export type StudioStaf = Awaited<ReturnType<typeof getStafVoorStudio>>[number];
+
+export async function getAlleStafVoorBeheer() {
+  await requireTC();
+
+  const kaders = await prisma.kaders.findFirst({
+    where: { isWerkseizoen: true },
+    select: { id: true },
+  });
+
+  const [stafLeden, teamStafKoppelingen, pins] = await Promise.all([
+    prisma.staf.findMany({
+      select: { id: true, naam: true, rollen: true, geboortejaar: true, actief: true },
+      orderBy: { naam: "asc" },
+    }),
+    prisma.teamStaf.findMany({
+      select: {
+        stafId: true,
+        rol: true,
+        team: { select: { id: true, naam: true, kleur: true } },
+      },
+    }),
+    kaders
+      ? prisma.pin.findMany({
+          where: { kadersId: kaders.id, stafId: { not: null } },
+          select: { stafId: true },
+        })
+      : Promise.resolve([]),
+  ]);
+
+  const gepindSet = new Set(pins.map((p) => p.stafId).filter(Boolean) as string[]);
+
+  const teamMap = new Map<
+    string,
+    { teamId: string; teamNaam: string; kleur: string; rol: string }[]
+  >();
+  for (const k of teamStafKoppelingen) {
+    const bestaande = teamMap.get(k.stafId) ?? [];
+    bestaande.push({
+      teamId: k.team.id,
+      teamNaam: k.team.naam,
+      kleur: k.team.kleur ?? "ONBEKEND",
+      rol: k.rol,
+    });
+    teamMap.set(k.stafId, bestaande);
+  }
+
+  return stafLeden.map((s) => ({
+    id: s.id,
+    naam: s.naam,
+    rollen: s.rollen as string[],
+    geboortejaar: s.geboortejaar as number | null,
+    actief: s.actief,
+    gepind: gepindSet.has(s.id),
+    teams: teamMap.get(s.id) ?? [],
+  }));
+}
+
+export type BeheerStaf = Awaited<ReturnType<typeof getAlleStafVoorBeheer>>[number];
+
+export async function setStafActief(
+  stafId: string,
+  actief: boolean
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  try {
+    await requireTC();
+    await prisma.staf.update({
+      where: { id: stafId },
+      data: { actief },
+    });
+    revalidatePath("/ti-studio/personen/staf");
+    return { ok: true };
+  } catch (err) {
+    logger.warn("setStafActief mislukt:", err);
+    return { ok: false, error: "Kon status niet bijwerken" };
+  }
+}
 
 export async function maakStafAan(data: {
   naam: string;
