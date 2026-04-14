@@ -8,7 +8,6 @@ import { updateSpelerStatus } from "../../indeling/werkindeling-actions";
 import { setGezienStatus, zetSpelerIndeling } from "../speler-edit-actions";
 
 type VersieTeam = { id: string; naam: string; kleur: string | null };
-type GezienWaarde = "ONGEZIEN" | "GROEN" | "GEEL" | "ORANJE" | "ROOD";
 type SpelerStatusWaarde =
   | "BESCHIKBAAR"
   | "TWIJFELT"
@@ -27,8 +26,6 @@ const SPELER_STATUS_OPTIES: { value: SpelerStatusWaarde; label: string }[] = [
   { value: "NIEUW_DEFINITIEF", label: "Nieuw definitief" },
   { value: "ALGEMEEN_RESERVE", label: "Reserve" },
 ];
-
-const GEZIEN_VOLGORDE: GezienWaarde[] = ["ONGEZIEN", "GROEN", "GEEL", "ORANJE", "ROOD"];
 
 type SortKey =
   | "achternaam"
@@ -51,6 +48,7 @@ type StatusFilter =
 const STATUS_LABELS: Record<string, string> = {
   BESCHIKBAAR: "Beschikbaar",
   TWIJFELT: "Twijfelt",
+  GEBLESSEERD: "Geblesseerd",
   GAAT_STOPPEN: "Gaat stoppen",
   NIEUW_POTENTIEEL: "Nieuw",
   NIEUW_DEFINITIEF: "Nieuw",
@@ -60,18 +58,11 @@ const STATUS_LABELS: Record<string, string> = {
 const STATUS_DOT: Record<string, string> = {
   BESCHIKBAAR: "#22c55e",
   TWIJFELT: "#f59e0b",
+  GEBLESSEERD: "#f97316",
   GAAT_STOPPEN: "#ef4444",
   NIEUW_POTENTIEEL: "#3b82f6",
   NIEUW_DEFINITIEF: "#3b82f6",
   ALGEMEEN_RESERVE: "#6b7280",
-};
-
-const GEZIEN_DOT: Record<string, string> = {
-  GROEN: "#22c55e",
-  GEEL: "#eab308",
-  ORANJE: "#f97316",
-  ROOD: "#ef4444",
-  ONGEZIEN: "#4b5563",
 };
 
 const KLEUR_DOT: Record<string, string> = {
@@ -117,6 +108,10 @@ export default function SpelersOverzichtStudio({
   >(null);
   const [optimistischIndeling, setOptimistischIndeling] = useState<
     Record<string, { naam: string; kleur: string | null } | null>
+  >({});
+  const [optimistischStatus, setOptimistischStatus] = useState<Record<string, string>>({});
+  const [optimistischGezien, setOptimistischGezien] = useState<
+    Record<string, "ONGEZIEN" | "GROEN">
   >({});
   const [foutMelding, setFoutMelding] = useState<string | null>(null);
   const [zoekterm, setZoekterm] = useState("");
@@ -449,8 +444,13 @@ export default function SpelersOverzichtStudio({
               const geslachtKleur = speler.geslacht === "V" ? "#f9a8d4" : "#93c5fd";
               const geslachtBg =
                 speler.geslacht === "V" ? "rgba(236,72,153,0.15)" : "rgba(59,130,246,0.15)";
-              const statusDot = STATUS_DOT[speler.status] ?? "#6b7280";
-              const gezienDot = GEZIEN_DOT[speler.gezienStatus] ?? "#4b5563";
+              const statusEffectief = optimistischStatus[speler.id] ?? speler.status;
+              const statusDot = STATUS_DOT[statusEffectief] ?? "#6b7280";
+              // Gezien is vereenvoudigd tot ONGEZIEN/GROEN. Legacy waarden
+              // (GEEL/ORANJE/ROOD) worden als "gezien" behandeld.
+              const gezienServer = speler.gezienStatus === "ONGEZIEN" ? "ONGEZIEN" : "GROEN";
+              const gezienEffectief: "ONGEZIEN" | "GROEN" =
+                optimistischGezien[speler.id] ?? gezienServer;
               const huidigKleur =
                 KLEUR_DOT[speler.huidigTeamKleur?.toLowerCase() ?? ""] ??
                 KLEUR_DOT[speler.huidigTeamKleur ?? ""] ??
@@ -567,36 +567,57 @@ export default function SpelersOverzichtStudio({
                           flexShrink: 0,
                         }}
                       />
-                      {STATUS_LABELS[speler.status] ?? speler.status}
+                      {STATUS_LABELS[statusEffectief] ?? statusEffectief}
                     </button>
                     {editorCel?.spelerId === speler.id &&
                       editorCel.kolom === "status" &&
                       kadersId && (
                         <StatusDropdown
-                          huidig={speler.status as SpelerStatusWaarde}
+                          huidig={statusEffectief as SpelerStatusWaarde}
                           onKies={async (nieuw) => {
+                            setOptimistischStatus((prev) => ({ ...prev, [speler.id]: nieuw }));
                             setEditorCel(null);
-                            await updateSpelerStatus(kadersId, speler.id, nieuw);
-                            router.refresh();
+                            try {
+                              await updateSpelerStatus(kadersId, speler.id, nieuw);
+                              router.refresh();
+                            } catch (err) {
+                              setOptimistischStatus((prev) => {
+                                const kopie = { ...prev };
+                                delete kopie[speler.id];
+                                return kopie;
+                              });
+                              setFoutMelding(
+                                err instanceof Error ? err.message : "Kon status niet bijwerken"
+                              );
+                            }
                           }}
                           onClose={() => setEditorCel(null)}
                         />
                       )}
                   </td>
 
-                  {/* Gezien — inline bewerkbaar als vink */}
-                  <td style={{ padding: "0.625rem 0.875rem", position: "relative" }}>
+                  {/* Gezien — toggle groen/grijs */}
+                  <td style={{ padding: "0.625rem 0.875rem" }}>
                     <button
                       type="button"
                       disabled={!kadersId}
-                      title={`Gezien: ${speler.gezienStatus}`}
-                      onClick={(e) => {
+                      title={gezienEffectief === "GROEN" ? "Gezien" : "Niet gezien"}
+                      onClick={async (e) => {
                         e.stopPropagation();
-                        setEditorCel(
-                          editorCel?.spelerId === speler.id && editorCel.kolom === "gezien"
-                            ? null
-                            : { spelerId: speler.id, kolom: "gezien" }
-                        );
+                        if (!kadersId) return;
+                        const nieuw = gezienEffectief === "GROEN" ? "ONGEZIEN" : "GROEN";
+                        setOptimistischGezien((prev) => ({ ...prev, [speler.id]: nieuw }));
+                        const resultaat = await setGezienStatus(kadersId, speler.id, nieuw);
+                        if (resultaat.ok) {
+                          router.refresh();
+                        } else {
+                          setOptimistischGezien((prev) => {
+                            const kopie = { ...prev };
+                            delete kopie[speler.id];
+                            return kopie;
+                          });
+                          setFoutMelding(resultaat.error);
+                        }
                       }}
                       style={{
                         background: "none",
@@ -604,35 +625,14 @@ export default function SpelersOverzichtStudio({
                         padding: "2px 4px",
                         cursor: kadersId ? "pointer" : "default",
                         fontSize: "0.95rem",
-                        color: gezienDot,
-                        opacity: speler.gezienStatus === "ONGEZIEN" ? 0.35 : 1,
+                        color: gezienEffectief === "GROEN" ? "#22c55e" : "#4b5563",
+                        opacity: gezienEffectief === "GROEN" ? 1 : 0.35,
                         fontFamily: "inherit",
                         fontWeight: 700,
                       }}
                     >
                       ✓
                     </button>
-                    {editorCel?.spelerId === speler.id &&
-                      editorCel.kolom === "gezien" &&
-                      kadersId && (
-                        <GezienDropdown
-                          huidig={speler.gezienStatus}
-                          onKies={async (nieuw) => {
-                            setEditorCel(null);
-                            const resultaat = await setGezienStatus(
-                              kadersId,
-                              speler.id,
-                              nieuw
-                            );
-                            if (resultaat.ok) {
-                              router.refresh();
-                            } else {
-                              setFoutMelding(resultaat.error);
-                            }
-                          }}
-                          onClose={() => setEditorCel(null)}
-                        />
-                      )}
                   </td>
 
                   {/* Huidig team */}
@@ -883,51 +883,6 @@ function StatusDropdown({
             }}
           />
           {opt.label}
-        </button>
-      ))}
-    </div>
-  );
-}
-
-function GezienDropdown({
-  huidig,
-  onKies,
-  onClose,
-}: {
-  huidig: GezienWaarde;
-  onKies: (nieuw: GezienWaarde) => void;
-  onClose: () => void;
-}) {
-  const [, startTransition] = useTransition();
-  const ref = useClickOutside(onClose);
-  const labels: Record<GezienWaarde, string> = {
-    ONGEZIEN: "Ongezien",
-    GROEN: "Groen",
-    GEEL: "Geel",
-    ORANJE: "Oranje",
-    ROOD: "Rood",
-  };
-  return (
-    <div ref={ref} style={popoverStyle} onClick={(e) => e.stopPropagation()}>
-      {GEZIEN_VOLGORDE.map((val) => (
-        <button
-          key={val}
-          type="button"
-          onClick={() => startTransition(() => onKies(val))}
-          style={popoverItemStyle(val === huidig)}
-        >
-          <span
-            style={{
-              color: GEZIEN_DOT[val],
-              opacity: val === "ONGEZIEN" ? 0.4 : 1,
-              fontWeight: 700,
-              width: 14,
-              display: "inline-block",
-            }}
-          >
-            ✓
-          </span>
-          {labels[val]}
         </button>
       ))}
     </div>
