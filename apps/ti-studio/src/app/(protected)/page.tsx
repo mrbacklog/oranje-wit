@@ -1,8 +1,22 @@
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
+import { auth } from "@oranje-wit/auth";
 import { getActiefSeizoen } from "@oranje-wit/teamindeling-shared/seizoen";
 import { prisma } from "@/lib/teamindeling/db/prisma";
+
+function getGroet(): string {
+  const uur = new Date().getUTCHours() + 1; // CET (winter), close enough voor serverside
+  if (uur < 12) return "Goedemorgen";
+  if (uur < 18) return "Goedemiddag";
+  return "Goedenavond";
+}
+
+function getVoornaam(name: string | null | undefined, email: string | null | undefined): string {
+  if (name) return name.split(" ")[0];
+  if (email) return email.split("@")[0].split(".")[0];
+  return "";
+}
 
 // ── Data ophalen ──────────────────────────────────────────────────────────────
 
@@ -80,11 +94,15 @@ async function getMemoStats() {
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export default async function DashboardPage() {
-  const [seizoen, volledigheid, memo] = await Promise.all([
+  const [session, seizoen, volledigheid, memo] = await Promise.all([
+    auth(),
     getActiefSeizoen(),
     getVolledigheid(),
     getMemoStats(),
   ]);
+
+  const voornaam = getVoornaam(session?.user?.name, session?.user?.email);
+  const groet = getGroet();
 
   const { totalSpelers, ingeplandSpelers } = volledigheid;
   const pct = totalSpelers > 0 ? Math.round((ingeplandSpelers / totalSpelers) * 100) : 0;
@@ -115,7 +133,8 @@ export default async function DashboardPage() {
                 margin: 0,
               }}
             >
-              TI Studio
+              {groet}
+              {voornaam ? `, ${voornaam}` : ""}
             </h1>
             <span
               style={{
@@ -144,7 +163,7 @@ export default async function DashboardPage() {
             </span>
           </div>
           <p style={{ fontSize: 13, color: "var(--text-3, #555570)", margin: 0 }}>
-            Teamindelingsomgeving · c.k.v. Oranje Wit
+            TI Studio · c.k.v. Oranje Wit
           </p>
         </div>
 
