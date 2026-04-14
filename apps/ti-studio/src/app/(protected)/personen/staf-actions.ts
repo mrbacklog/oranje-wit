@@ -79,7 +79,7 @@ export async function getAlleStafVoorBeheer() {
       select: {
         stafId: true,
         rol: true,
-        team: { select: { id: true, naam: true, kleur: true } },
+        team: { select: { id: true, naam: true, kleur: true, volgorde: true } },
       },
     }),
     kaders
@@ -94,7 +94,7 @@ export async function getAlleStafVoorBeheer() {
 
   const teamMap = new Map<
     string,
-    { teamId: string; teamNaam: string; kleur: string; rol: string }[]
+    { teamId: string; teamNaam: string; kleur: string; rol: string; volgorde: number }[]
   >();
   for (const k of teamStafKoppelingen) {
     const bestaande = teamMap.get(k.stafId) ?? [];
@@ -103,6 +103,7 @@ export async function getAlleStafVoorBeheer() {
       teamNaam: k.team.naam,
       kleur: k.team.kleur ?? "ONBEKEND",
       rol: k.rol,
+      volgorde: k.team.volgorde ?? 9999,
     });
     teamMap.set(k.stafId, bestaande);
   }
@@ -113,7 +114,7 @@ export async function getAlleStafVoorBeheer() {
     geboortejaar: s.geboortejaar as number | null,
     actief: s.actief,
     gepind: gepindSet.has(s.id),
-    teams: teamMap.get(s.id) ?? [],
+    teams: (teamMap.get(s.id) ?? []).sort((a, b) => a.volgorde - b.volgorde),
   }));
 }
 

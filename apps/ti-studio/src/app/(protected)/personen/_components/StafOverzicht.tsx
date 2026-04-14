@@ -20,26 +20,36 @@ const KLEUR_DOT: Record<string, string> = {
   senior: "#94a3b8",
 };
 
+type SortKey = "naam" | "volgorde" | "gepind";
+
 interface Props {
   stafLeden: BeheerStaf[];
 }
+
+type StafRij = {
+  rowKey: string;
+  staf: BeheerStaf;
+  // Als sortKey === "volgorde" tonen we per team een eigen rij; anders undefined.
+  team?: BeheerStaf["teams"][number];
+};
 
 export function StafOverzicht({ stafLeden }: Props) {
   const [zoekterm, setZoekterm] = useState("");
   const [teamFilter, setTeamFilter] = useState("allen");
   const [gepindFilter, setGepindFilter] = useState(false);
   const [toonInactief, setToonInactief] = useState(false);
-  const [sortKey, setSortKey] = useState<"naam" | "teams" | "gepind">("naam");
+  const [sortKey, setSortKey] = useState<SortKey>("naam");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const [optimistischActief, setOptimistischActief] = useState<Record<string, boolean>>({});
 
   const alleTeams = useMemo(
     () => [...new Set(stafLeden.flatMap((s) => s.teams.map((t) => t.teamNaam)))].sort(),
     [stafLeden]
   );
 
-  function handleSort(key: "naam" | "teams" | "gepind") {
+  function handleSort(key: SortKey) {
     if (sortKey === key) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
     else {
       setSortKey(key);
@@ -47,15 +57,28 @@ export function StafOverzicht({ stafLeden }: Props) {
     }
   }
 
-  function handleToggleActief(stafId: string, huidigActief: boolean) {
+  function handleToggleActief(stafId: string, nieuwActief: boolean) {
+    setOptimistischActief((prev) => ({ ...prev, [stafId]: nieuwActief }));
     startTransition(async () => {
-      await setStafActief(stafId, !huidigActief);
+      const resultaat = await setStafActief(stafId, nieuwActief);
+      if (!resultaat.ok) {
+        setOptimistischActief((prev) => {
+          const kopie = { ...prev };
+          delete kopie[stafId];
+          return kopie;
+        });
+      }
     });
   }
 
-  const gefilterd = useMemo(() => {
+  function isActief(s: BeheerStaf): boolean {
+    return optimistischActief[s.id] ?? s.actief;
+  }
+
+  const rijen: StafRij[] = useMemo(() => {
+    // Filteren
     let result = stafLeden;
-    if (!toonInactief) result = result.filter((s) => s.actief);
+    if (!toonInactief) result = result.filter((s) => isActief(s));
     if (zoekterm.trim()) {
       const q = zoekterm.trim().toLowerCase();
       result = result.filter((s) => s.naam.toLowerCase().includes(q));
@@ -63,24 +86,62 @@ export function StafOverzicht({ stafLeden }: Props) {
     if (teamFilter !== "allen")
       result = result.filter((s) => s.teams.some((t) => t.teamNaam === teamFilter));
     if (gepindFilter) result = result.filter((s) => s.gepind);
-    return [...result].sort((a, b) => {
+
+    // Bouw rijen (bij team-sortering: 1 rij per team op een staflid)
+    const allerijen: StafRij[] = [];
+    if (sortKey === "volgorde") {
+      for (const s of result) {
+        if (s.teams.length === 0) {
+          allerijen.push({ rowKey: s.id, staf: s });
+        } else {
+          for (const team of s.teams) {
+            allerijen.push({ rowKey: `${s.id}:${team.teamId}`, staf: s, team });
+          }
+        }
+      }
+    } else {
+      for (const s of result) allerijen.push({ rowKey: s.id, staf: s });
+    }
+
+    // Sorteren — inactief altijd onderaan (ongeacht richting)
+    allerijen.sort((a, b) => {
+      const aActief = isActief(a.staf);
+      const bActief = isActief(b.staf);
+      if (aActief !== bActief) return aActief ? -1 : 1;
+
       let cmp = 0;
       switch (sortKey) {
         case "naam":
-          cmp = a.naam.localeCompare(b.naam, "nl");
+          cmp = a.staf.naam.localeCompare(b.staf.naam, "nl");
           break;
-        case "teams":
-          cmp = (a.teams[0]?.teamNaam ?? "zzz").localeCompare(b.teams[0]?.teamNaam ?? "zzz", "nl");
+        case "volgorde": {
+          const av = a.team?.volgorde ?? 99999;
+          const bv = b.team?.volgorde ?? 99999;
+          cmp = av - bv;
+          if (cmp === 0) cmp = a.staf.naam.localeCompare(b.staf.naam, "nl");
           break;
+        }
         case "gepind":
-          cmp = Number(b.gepind) - Number(a.gepind);
+          cmp = Number(b.staf.gepind) - Number(a.staf.gepind);
+          if (cmp === 0) cmp = a.staf.naam.localeCompare(b.staf.naam, "nl");
           break;
       }
       return sortDir === "asc" ? cmp : -cmp;
     });
-  }, [stafLeden, zoekterm, teamFilter, gepindFilter, toonInactief, sortKey, sortDir]);
 
-  function SortIcon({ col }: { col: "naam" | "teams" | "gepind" }) {
+    return allerijen;
+  }, [
+    stafLeden,
+    optimistischActief,
+    zoekterm,
+    teamFilter,
+    gepindFilter,
+    toonInactief,
+    sortKey,
+    sortDir,
+  ]);
+
+  function SortIcon({ col }: { col: SortKey }) {
     if (sortKey !== col) return <span style={{ opacity: 0.3, fontSize: "0.65rem" }}> ↕</span>;
     return (
       <span style={{ fontSize: "0.65rem", color: "var(--ow-oranje-500)" }}>
@@ -90,12 +151,12 @@ export function StafOverzicht({ stafLeden }: Props) {
     );
   }
 
-  const chipStyle = (actief: boolean): React.CSSProperties => ({
+  const chipStyle = (aan: boolean): React.CSSProperties => ({
     padding: "0.25rem 0.625rem",
     borderRadius: 99,
-    border: actief ? "1px solid var(--ow-oranje-500)" : "1px solid var(--border-default)",
-    background: actief ? "rgba(255,107,0,0.12)" : "var(--surface-card)",
-    color: actief ? "var(--ow-oranje-500)" : "var(--text-secondary)",
+    border: aan ? "1px solid var(--ow-oranje-500)" : "1px solid var(--border-default)",
+    background: aan ? "rgba(255,107,0,0.12)" : "var(--surface-card)",
+    color: aan ? "var(--ow-oranje-500)" : "var(--text-secondary)",
     fontSize: "0.8125rem",
     fontWeight: 500,
     cursor: "pointer",
@@ -126,6 +187,12 @@ export function StafOverzicht({ stafLeden }: Props) {
     userSelect: "none",
     whiteSpace: "nowrap",
   };
+
+  // Tel unieke stafleden in gefilterde weergave (niet duplicaten bij team-sortering)
+  const aantalUniek = useMemo(
+    () => new Set(rijen.map((r) => r.staf.id)).size,
+    [rijen]
+  );
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
@@ -172,7 +239,10 @@ export function StafOverzicht({ stafLeden }: Props) {
             color: "var(--text-secondary)",
           }}
         >
-          {gefilterd.length} staflid{gefilterd.length !== 1 ? "en" : ""}
+          {aantalUniek} staflid{aantalUniek !== 1 ? "en" : ""}
+          {sortKey === "volgorde" && rijen.length !== aantalUniek && (
+            <span style={{ opacity: 0.7 }}> · {rijen.length} rijen</span>
+          )}
         </span>
         <button
           onClick={() => setDialogOpen(true)}
@@ -206,19 +276,19 @@ export function StafOverzicht({ stafLeden }: Props) {
                 Naam
                 <SortIcon col="naam" />
               </th>
-              <th onClick={() => handleSort("teams")} style={thStyle}>
-                Teams + rol
-                <SortIcon col="teams" />
+              <th onClick={() => handleSort("volgorde")} style={thStyle}>
+                Team + rol
+                <SortIcon col="volgorde" />
               </th>
               <th onClick={() => handleSort("gepind")} style={{ ...thStyle, textAlign: "center" }}>
                 📌
                 <SortIcon col="gepind" />
               </th>
-              <th style={{ ...thStyle, cursor: "default", textAlign: "right" }}>Acties</th>
+              <th style={{ ...thStyle, cursor: "default", textAlign: "center" }}>Actief</th>
             </tr>
           </thead>
           <tbody>
-            {gefilterd.length === 0 && (
+            {rijen.length === 0 && (
               <tr>
                 <td
                   colSpan={4}
@@ -233,7 +303,9 @@ export function StafOverzicht({ stafLeden }: Props) {
                 </td>
               </tr>
             )}
-            {gefilterd.map((staf, i) => {
+            {rijen.map((rij, i) => {
+              const staf = rij.staf;
+              const actief = isActief(staf);
               const initialen = staf.naam
                 .split(" ")
                 .filter((w: string) => w.length > 0 && w[0] === w[0].toUpperCase())
@@ -241,14 +313,16 @@ export function StafOverzicht({ stafLeden }: Props) {
                 .join("")
                 .slice(0, 2)
                 .toUpperCase();
-              const isInactief = !staf.actief;
+              const isInactief = !actief;
+              // Bij team-sortering: teams te tonen = alleen dit specifieke team
+              const teamsOmTeTonen = rij.team ? [rij.team] : staf.teams;
               return (
                 <tr
-                  key={staf.id}
+                  key={rij.rowKey}
                   style={{
                     borderBottom:
-                      i < gefilterd.length - 1 ? "1px solid var(--border-default)" : "none",
-                    opacity: isInactief ? 0.45 : 1,
+                      i < rijen.length - 1 ? "1px solid var(--border-default)" : "none",
+                    opacity: isInactief ? 0.5 : 1,
                   }}
                 >
                   <td style={{ padding: "0.625rem 0.875rem" }}>
@@ -288,9 +362,9 @@ export function StafOverzicht({ stafLeden }: Props) {
                     </div>
                   </td>
                   <td style={{ padding: "0.625rem 0.875rem" }}>
-                    {staf.teams.length > 0 ? (
+                    {teamsOmTeTonen.length > 0 ? (
                       <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                        {staf.teams.map((t) => (
+                        {teamsOmTeTonen.map((t) => (
                           <div
                             key={t.teamId}
                             style={{ display: "flex", alignItems: "center", gap: 5 }}
@@ -346,30 +420,12 @@ export function StafOverzicht({ stafLeden }: Props) {
                   <td style={{ padding: "0.625rem 0.875rem", textAlign: "center" }}>
                     <span style={{ fontSize: "0.875rem", opacity: staf.gepind ? 1 : 0.2 }}>📌</span>
                   </td>
-                  <td style={{ padding: "0.625rem 0.875rem", textAlign: "right" }}>
-                    <button
+                  <td style={{ padding: "0.625rem 0.875rem", textAlign: "center" }}>
+                    <ActiefToggle
+                      actief={actief}
                       disabled={isPending}
-                      onClick={() => handleToggleActief(staf.id, staf.actief)}
-                      style={{
-                        padding: "0.25rem 0.625rem",
-                        borderRadius: 6,
-                        border: isInactief
-                          ? "1px solid rgba(34,197,94,0.4)"
-                          : "1px solid rgba(239,68,68,0.4)",
-                        background: isInactief
-                          ? "rgba(34,197,94,0.08)"
-                          : "rgba(239,68,68,0.08)",
-                        color: isInactief ? "#4ade80" : "#f87171",
-                        fontSize: "0.75rem",
-                        fontWeight: 500,
-                        cursor: isPending ? "not-allowed" : "pointer",
-                        fontFamily: "inherit",
-                        opacity: isPending ? 0.6 : 1,
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {isInactief ? "Activeer" : "Zet inactief"}
-                    </button>
+                      onChange={(nieuw) => handleToggleActief(staf.id, nieuw)}
+                    />
                   </td>
                 </tr>
               );
@@ -379,5 +435,54 @@ export function StafOverzicht({ stafLeden }: Props) {
       </div>
       <NieuweStafDialog open={dialogOpen} onClose={() => setDialogOpen(false)} />
     </div>
+  );
+}
+
+function ActiefToggle({
+  actief,
+  disabled,
+  onChange,
+}: {
+  actief: boolean;
+  disabled: boolean;
+  onChange: (nieuw: boolean) => void;
+}) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={actief}
+      aria-label={actief ? "Zet inactief" : "Zet actief"}
+      disabled={disabled}
+      onClick={() => onChange(!actief)}
+      style={{
+        width: 36,
+        height: 20,
+        borderRadius: 999,
+        border: "none",
+        padding: 0,
+        position: "relative",
+        background: actief ? "rgba(34,197,94,0.55)" : "rgba(148,163,184,0.35)",
+        cursor: disabled ? "not-allowed" : "pointer",
+        transition: "background 150ms ease",
+        flexShrink: 0,
+        outline: "none",
+        opacity: disabled ? 0.7 : 1,
+      }}
+    >
+      <span
+        style={{
+          position: "absolute",
+          top: 2,
+          left: actief ? 18 : 2,
+          width: 16,
+          height: 16,
+          borderRadius: "50%",
+          background: "#fff",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.3)",
+          transition: "left 150ms ease",
+        }}
+      />
+    </button>
   );
 }
