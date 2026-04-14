@@ -135,7 +135,9 @@ async function main() {
   console.log(`📚 ${aliasMap.size} aliases geladen voor ${SEIZOEN}\n`);
 
   // Laad bestaande leden om te checken of rel_codes bestaan
-  const alleRelCodes = [...new Set([...spelers.map((s) => s.relCode), ...staf.map((s) => s.relCode)])];
+  const alleRelCodes = [
+    ...new Set([...spelers.map((s) => s.relCode), ...staf.map((s) => s.relCode)]),
+  ];
   const { rows: ledenRows } = await client.query(
     `SELECT rel_code FROM leden WHERE rel_code = ANY($1)`,
     [alleRelCodes]
@@ -143,7 +145,9 @@ async function main() {
   const bekendeLeden = new Set(ledenRows.map((r) => r.rel_code));
   const onbekendeLeden = alleRelCodes.filter((rc) => !bekendeLeden.has(rc));
   if (onbekendeLeden.length > 0) {
-    console.log(`⚠️  ${onbekendeLeden.length} rel_codes niet in leden-tabel — worden toegevoegd uit CSV:`);
+    console.log(
+      `⚠️  ${onbekendeLeden.length} rel_codes niet in leden-tabel — worden toegevoegd uit CSV:`
+    );
     for (const rc of onbekendeLeden) {
       const l = ledenData.get(rc);
       if (!l) continue;
@@ -154,7 +158,18 @@ async function main() {
           `INSERT INTO leden (rel_code, roepnaam, voorletters, tussenvoegsel, achternaam, geslacht, geboortejaar, geboortedatum, email, lidsoort)
            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
            ON CONFLICT (rel_code) DO NOTHING`,
-          [rc, l.roepnaam, l.voorletters, l.tussenvoegsel, l.achternaam, l.geslacht, geboortejaar, l.gebDat, l.email, l.lidsoort]
+          [
+            rc,
+            l.roepnaam,
+            l.voorletters,
+            l.tussenvoegsel,
+            l.achternaam,
+            l.geslacht,
+            geboortejaar,
+            l.gebDat,
+            l.email,
+            l.lidsoort,
+          ]
         );
         bekendeLeden.add(rc);
       }
@@ -167,7 +182,10 @@ async function main() {
     if (!aliasMap.has(s.team)) onbekendeTeams.add(s.team);
   }
   if (onbekendeTeams.size > 0) {
-    console.log(`⚠️  ${onbekendeTeams.size} onbekende teams (geen alias):`, [...onbekendeTeams].join(", "));
+    console.log(
+      `⚠️  ${onbekendeTeams.size} onbekende teams (geen alias):`,
+      [...onbekendeTeams].join(", ")
+    );
   }
 
   // ─── Spelers verwerken ────────────────────────────────────────
@@ -261,7 +279,9 @@ async function main() {
        WHERE seizoen = $1 AND competitie = ANY($2) AND bron = 'sportlink'`,
       [SEIZOEN, COMPETITIES]
     );
-    console.log(`\n🗑️  ${delRes.rowCount} bestaande speler-rijen verwijderd (bron=sportlink, competities=${COMPETITIES.join(",")})`);
+    console.log(
+      `\n🗑️  ${delRes.rowCount} bestaande speler-rijen verwijderd (bron=sportlink, competities=${COMPETITIES.join(",")})`
+    );
 
     for (const r of spelerRijen) {
       await client.query(
