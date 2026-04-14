@@ -20,10 +20,29 @@ export function DaisyPanel({ versieId, werkindelingId, werkindelingNaam }: Daisy
   const [input, setInput] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  const gesprekIdRef = useRef<string | null>(null);
+
   const transport = useRef(
     new TextStreamChatTransport({
       api: "/api/ai/chat",
-      body: { versieId, werkindelingId, werkindelingNaam },
+      fetch: async (input, init) => {
+        if (init?.body && typeof init.body === "string") {
+          try {
+            const parsed = JSON.parse(init.body) as Record<string, unknown>;
+            parsed.versieId = versieId;
+            parsed.werkindelingId = werkindelingId;
+            parsed.werkindelingNaam = werkindelingNaam;
+            if (gesprekIdRef.current) parsed.gesprekId = gesprekIdRef.current;
+            init = { ...init, body: JSON.stringify(parsed) };
+          } catch {
+            // body niet parseerbaar — laat staan
+          }
+        }
+        const response = await fetch(input, init);
+        const gesprekId = response.headers.get("X-Gesprek-Id");
+        if (gesprekId) gesprekIdRef.current = gesprekId;
+        return response;
+      },
     })
   );
 

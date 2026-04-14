@@ -88,6 +88,8 @@ type AnyPrismaModels = {
   teamAlias: AnyModel;
   // AI
   aiProviderInstelling: AnyModel;
+  aiGesprek: AnyModel;
+  aiBericht: AnyModel;
   gesprek: AnyModel;
   gesprekBericht: AnyModel;
   // Daisy

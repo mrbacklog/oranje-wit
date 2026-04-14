@@ -10,6 +10,7 @@ import { buildDaisyPrompt } from "@/lib/ai/daisy";
 import { getTiStudioTools } from "@/lib/ai/plugins/ti-studio";
 import { getAiInstellingen } from "@/lib/ai/api-key";
 import { getDaisyModel, bepaalActieveProvider } from "@/lib/ai/provider";
+import { getOfMaakGesprek, slaBerichtOp } from "@/lib/ai/gesprekken";
 
 export const maxDuration = 30;
 
@@ -21,7 +22,6 @@ export async function POST(request: Request) {
   const expectedKey = process.env.DAISY_SERVICE_KEY;
 
   if (serviceKey && expectedKey && serviceKey === expectedKey) {
-    // Programmatische toegang via service-key (Claude Code, scripts)
     session = {
       user: {
         email: "service@oranjewit.internal",
@@ -41,12 +41,13 @@ export async function POST(request: Request) {
   // --- Request body ---
   const body = (await request.json()) as {
     messages?: UIMessage[];
+    gesprekId?: string;
     versieId?: string;
     werkindelingId?: string;
     werkindelingNaam?: string;
   };
 
-  const { messages, versieId, werkindelingId, werkindelingNaam } = body;
+  const { messages, gesprekId, versieId, werkindelingId, werkindelingNaam } = body;
 
   const werkbordContext =
     versieId && werkindelingId
@@ -55,6 +56,28 @@ export async function POST(request: Request) {
 
   if (!messages || messages.length === 0) {
     return Response.json({ error: "Geen berichten meegegeven." }, { status: 400 });
+  }
+
+  // --- Gesprek ophalen of aanmaken + laatste user-bericht opslaan ---
+  const gebruikerEmail = session.user.email ?? "onbekend";
+  const gesprek = await getOfMaakGesprek(gebruikerEmail, gesprekId);
+
+  const laatsteBericht = messages[messages.length - 1];
+  if (laatsteBericht?.role === "user") {
+    const tekstInhoud = laatsteBericht.parts
+      ?.filter((p): p is { type: "text"; text: string } => p.type === "text")
+      .map((p) => p.text)
+      .join("\n");
+    if (tekstInhoud) {
+      try {
+        await slaBerichtOp(gesprek.id, "GEBRUIKER", tekstInhoud, {
+          werkindelingId: werkindelingId ?? null,
+          versieId: versieId ?? null,
+        });
+      } catch (error) {
+        logger.error("Fout bij opslaan gebruiker-bericht:", error);
+      }
+    }
   }
 
   // --- AI instellingen ophalen ---
@@ -77,8 +100,7 @@ export async function POST(request: Request) {
   const modelMessages = await convertToModelMessages(beperkteBerichten);
 
   // --- Streaming response ---
-  const sessieId = `ti-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
-  const tools = getTiStudioTools(sessieId, session.user.email) as unknown as ToolSet;
+  const tools = getTiStudioTools(gesprek.id, gebruikerEmail) as unknown as ToolSet;
 
   const result = streamText({
     model,
@@ -87,10 +109,20 @@ export async function POST(request: Request) {
     tools,
     maxOutputTokens: aiInstellingen.maxTokens,
     stopWhen: stepCountIs(3),
+    onFinish: async ({ text }) => {
+      if (text) {
+        try {
+          await slaBerichtOp(gesprek.id, "ASSISTENT", text);
+        } catch (error) {
+          logger.error("Fout bij opslaan assistent-bericht:", error);
+        }
+      }
+    },
   });
 
   return result.toTextStreamResponse({
     headers: {
+      "X-Gesprek-Id": gesprek.id,
       "X-Ai-Provider": actieveProvider,
     },
   });
