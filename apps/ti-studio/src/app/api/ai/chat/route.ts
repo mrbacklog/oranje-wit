@@ -13,10 +13,38 @@ import { getDaisyModel, bepaalActieveProvider } from "@/lib/ai/provider";
 export const maxDuration = 30;
 
 export async function POST(request: Request) {
-  // --- Auth ---
-  const auth = await guardAuth();
-  if (!auth.ok) return auth.response;
-  const { session } = auth;
+  // --- Auth: browser-sessie OF service-key ---
+  let session: {
+    user: {
+      email: string;
+      name?: string | null;
+      isTC: boolean;
+      isScout: boolean;
+      clearance: number;
+      doelgroepen: string[];
+    };
+  };
+
+  const serviceKey = request.headers.get("X-Daisy-Service-Key");
+  const expectedKey = process.env.DAISY_SERVICE_KEY;
+
+  if (serviceKey && expectedKey && serviceKey === expectedKey) {
+    // Programmatische toegang via service-key (Claude Code, scripts)
+    session = {
+      user: {
+        email: "service@oranjewit.internal",
+        name: "Service",
+        isTC: true,
+        isScout: false,
+        clearance: 3,
+        doelgroepen: [],
+      },
+    };
+  } else {
+    const auth = await guardAuth();
+    if (!auth.ok) return auth.response;
+    session = auth.session;
+  }
 
   // --- Request body ---
   const body = (await request.json()) as {
