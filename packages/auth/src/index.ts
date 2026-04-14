@@ -3,6 +3,7 @@ import type { Adapter } from "next-auth/adapters";
 import type { Provider } from "next-auth/providers";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
+import { authorizeAgent } from "./agent-provider";
 import { getCapabilities } from "./allowlist";
 import { verifyEmailLink } from "./hmac-link";
 import { verifyAuthentication } from "./passkey";
@@ -97,6 +98,22 @@ providers.push(
       const cap = await getCapabilities(email);
       if (!cap) return null;
       return { id: `smartlink-${email}`, email, name: naam || email.split("@")[0] };
+    },
+  })
+);
+
+// Agent login: autonoom authenticeren via AGENT_SECRET env var.
+// Werkt in alle omgevingen (dev én prod) — anders dan dev-login.
+// Geeft een TC-sessie met isAgent: true + uniek agentRunId.
+providers.push(
+  Credentials({
+    id: "agent-login",
+    name: "Agent Login",
+    credentials: {
+      secret: { type: "text" },
+    },
+    async authorize(credentials) {
+      return authorizeAgent({ secret: credentials?.secret as string });
     },
   })
 );
@@ -201,6 +218,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (
         account?.provider === "e2e-test" ||
         account?.provider === "dev-login" ||
+        account?.provider === "agent-login" ||
         account?.provider === "smartlink" ||
         account?.provider === "email-link" ||
         account?.provider === "passkey"
@@ -216,6 +234,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return (await getCapabilities(email)) !== null;
     },
     async jwt({ token, user, profile, account }) {
+      // Agent-sessie: sla isAgent en agentRunId op in JWT
+      if (account?.provider === "agent-login") {
+        const agentUser = user as { isTC?: boolean; agentRunId?: string };
+        token.isAgent = true;
+        token.agentRunId = agentUser.agentRunId;
+        token.isTC = true;
+        token.isScout = false;
+        token.clearance = 3;
+        token.doelgroepen = ["ALLE"];
+        token.authMethode = "agent";
+        token.provider = "agent-login";
+        return token;
+      }
+
       // Bij eerste login: capabilities opslaan in JWT
       const email = profile?.email ?? user?.email;
       if (email) {
@@ -250,6 +282,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         user.authMethode = token.authMethode ?? "google";
         if (token.provider) {
           user.provider = token.provider as string;
+        }
+        // Agent-specifieke velden
+        user.isAgent = token.isAgent ?? false;
+        if (token.agentRunId) {
+          user.agentRunId = token.agentRunId as string;
         }
       }
       return session;
