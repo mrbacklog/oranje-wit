@@ -134,8 +134,8 @@ export function berekenExacteLeeftijd(
 
 /**
  * Check of een speler speelgerechtigd is voor een A-categorie.
- * Grens is inclusief (≤): een speler met exact 15.00 op peildatum valt nog in U15.
- * Gebruikt de onafgeronde waarde om afrondingsfouten bij de grens te voorkomen.
+ * Grens is strikt (`<`): een speler die op peildatum exact 15 wordt valt uit U15.
+ * Gebruikt de kalenderjaar-aware exacte waarde om drift op verjaardagen te voorkomen.
  */
 export function isSpeelgerechtigd(
   geboortedatum: Date,
