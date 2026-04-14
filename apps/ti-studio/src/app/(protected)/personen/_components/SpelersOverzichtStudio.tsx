@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useTransition, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import type { StudioSpeler } from "../actions";
 import { togglePinSpeler } from "../actions";
 import { updateSpelerStatus } from "../../indeling/werkindeling-actions";
@@ -110,9 +111,14 @@ export default function SpelersOverzichtStudio({
   versieId,
   versieTeams,
 }: Props) {
+  const router = useRouter();
   const [editorCel, setEditorCel] = useState<
     { spelerId: string; kolom: "status" | "gezien" | "indeling" } | null
   >(null);
+  const [optimistischIndeling, setOptimistischIndeling] = useState<
+    Record<string, { naam: string; kleur: string | null } | null>
+  >({});
+  const [foutMelding, setFoutMelding] = useState<string | null>(null);
   const [zoekterm, setZoekterm] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("allen");
   const [huidigTeamFilter, setHuidigTeamFilter] = useState("allen");
@@ -263,6 +269,38 @@ export default function SpelersOverzichtStudio({
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+      {foutMelding && (
+        <div
+          style={{
+            padding: "0.5rem 0.75rem",
+            borderRadius: 8,
+            background: "rgba(239,68,68,0.12)",
+            border: "1px solid rgba(239,68,68,0.35)",
+            color: "#f87171",
+            fontSize: "0.8125rem",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "0.5rem",
+          }}
+        >
+          <span>⚠ {foutMelding}</span>
+          <button
+            type="button"
+            onClick={() => setFoutMelding(null)}
+            style={{
+              background: "none",
+              border: "none",
+              color: "inherit",
+              cursor: "pointer",
+              fontSize: "1rem",
+              padding: 0,
+            }}
+          >
+            ×
+          </button>
+        </div>
+      )}
       {/* Filterbar */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: "0.625rem", alignItems: "center" }}>
         <input
@@ -417,9 +455,14 @@ export default function SpelersOverzichtStudio({
                 KLEUR_DOT[speler.huidigTeamKleur?.toLowerCase() ?? ""] ??
                 KLEUR_DOT[speler.huidigTeamKleur ?? ""] ??
                 "#6b7280";
+              // Gebruik optimistische indeling als die bestaat, anders de server-waarde
+              const indelingTeam =
+                speler.id in optimistischIndeling
+                  ? optimistischIndeling[speler.id]
+                  : speler.huidigIndelingTeam;
               const indelingKleur =
-                KLEUR_DOT[speler.huidigIndelingTeam?.kleur?.toLowerCase() ?? ""] ??
-                KLEUR_DOT[speler.huidigIndelingTeam?.kleur ?? ""] ??
+                KLEUR_DOT[indelingTeam?.kleur?.toLowerCase() ?? ""] ??
+                KLEUR_DOT[indelingTeam?.kleur ?? ""] ??
                 "#6b7280";
 
               return (
@@ -534,6 +577,7 @@ export default function SpelersOverzichtStudio({
                           onKies={async (nieuw) => {
                             setEditorCel(null);
                             await updateSpelerStatus(kadersId, speler.id, nieuw);
+                            router.refresh();
                           }}
                           onClose={() => setEditorCel(null)}
                         />
@@ -575,7 +619,16 @@ export default function SpelersOverzichtStudio({
                           huidig={speler.gezienStatus}
                           onKies={async (nieuw) => {
                             setEditorCel(null);
-                            await setGezienStatus(kadersId, speler.id, nieuw);
+                            const resultaat = await setGezienStatus(
+                              kadersId,
+                              speler.id,
+                              nieuw
+                            );
+                            if (resultaat.ok) {
+                              router.refresh();
+                            } else {
+                              setFoutMelding(resultaat.error);
+                            }
                           }}
                           onClose={() => setEditorCel(null)}
                         />
@@ -636,7 +689,7 @@ export default function SpelersOverzichtStudio({
                         fontFamily: "inherit",
                       }}
                     >
-                      {speler.huidigIndelingTeam ? (
+                      {indelingTeam ? (
                         <span
                           style={{
                             display: "inline-flex",
@@ -659,7 +712,7 @@ export default function SpelersOverzichtStudio({
                               background: indelingKleur,
                             }}
                           />
-                          {speler.huidigIndelingTeam.naam}
+                          {indelingTeam.naam}
                         </span>
                       ) : (
                         <span style={{ color: "var(--text-secondary)", fontSize: "0.8125rem" }}>
@@ -673,12 +726,36 @@ export default function SpelersOverzichtStudio({
                         <IndelingDropdown
                           teams={versieTeams}
                           huidigTeamId={
-                            versieTeams.find((t) => t.naam === speler.huidigIndelingTeam?.naam)
-                              ?.id ?? null
+                            versieTeams.find((t) => t.naam === indelingTeam?.naam)?.id ?? null
                           }
                           onKies={async (nieuwTeamId) => {
+                            const nieuwTeam = nieuwTeamId
+                              ? versieTeams.find((t) => t.id === nieuwTeamId)
+                              : null;
+                            // Optimistische update
+                            setOptimistischIndeling((prev) => ({
+                              ...prev,
+                              [speler.id]: nieuwTeam
+                                ? { naam: nieuwTeam.naam, kleur: nieuwTeam.kleur }
+                                : null,
+                            }));
                             setEditorCel(null);
-                            await zetSpelerIndeling(versieId, speler.id, nieuwTeamId);
+                            const resultaat = await zetSpelerIndeling(
+                              versieId,
+                              speler.id,
+                              nieuwTeamId
+                            );
+                            if (resultaat.ok) {
+                              router.refresh();
+                            } else {
+                              // Rollback
+                              setOptimistischIndeling((prev) => {
+                                const kopie = { ...prev };
+                                delete kopie[speler.id];
+                                return kopie;
+                              });
+                              setFoutMelding(resultaat.error);
+                            }
                           }}
                           onClose={() => setEditorCel(null)}
                         />
@@ -753,6 +830,8 @@ const popoverStyle: React.CSSProperties = {
   borderRadius: 8,
   padding: "0.375rem",
   minWidth: 180,
+  maxHeight: 260,
+  overflowY: "auto",
   boxShadow: "0 6px 16px rgba(0,0,0,0.25)",
   display: "flex",
   flexDirection: "column",
@@ -863,16 +942,17 @@ function IndelingDropdown({
 }: {
   teams: VersieTeam[];
   huidigTeamId: string | null;
-  onKies: (nieuwTeamId: string | null) => void;
+  onKies: (nieuwTeamId: string | null) => Promise<void> | void;
   onClose: () => void;
 }) {
-  const [, startTransition] = useTransition();
   const ref = useClickOutside(onClose);
   return (
     <div ref={ref} style={popoverStyle} onClick={(e) => e.stopPropagation()}>
       <button
         type="button"
-        onClick={() => startTransition(() => onKies(null))}
+        onClick={() => {
+          void onKies(null);
+        }}
         style={popoverItemStyle(huidigTeamId === null)}
       >
         <span style={{ fontStyle: "italic", color: "var(--text-secondary)" }}>
@@ -898,7 +978,9 @@ function IndelingDropdown({
           <button
             key={t.id}
             type="button"
-            onClick={() => startTransition(() => onKies(t.id))}
+            onClick={() => {
+              void onKies(t.id);
+            }}
             style={popoverItemStyle(t.id === huidigTeamId)}
           >
             <span
