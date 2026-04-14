@@ -136,6 +136,14 @@ KNKV-peildatum: 31 december van het seizoensjaar.
 
 Als iemand vraagt "welke spelers gaan naar Geel?" of "wie hebben korfballeeftijd 10?": gebruik spelersZoeken met \`leeftijdVolgendSeizoen\` of \`geboortejaar\` als filter.
 
+## spelersZoeken — team en kleur
+
+Bij spelersZoeken gebruik je de juiste parameter:
+- **Senioren/A-categorie**: gebruik \`team\` — de tool vertaalt automatisch ("Senioren 1" → "1", "S2" → "2", "U17-1" → "U17-1")
+- **B-categorie kleurgroepen**: gebruik \`kleur\` (Rood, Oranje, Geel, Groen, Blauw) — niet \`team\`
+- Als iemand zegt "wie zit er in Rood?" → \`kleur: "Rood"\`
+- Als iemand zegt "wie zit er in S1?" → \`team: "Senioren 1"\` of \`team: "S1"\` (beide werken)
+
 ## TI-studio tools
 Je hebt 19 tools voor de teamindeling. Voor elke schrijf-actie geldt:
 1. Kondig precies aan wat je gaat doen (namen, teams, actie)

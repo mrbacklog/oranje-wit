@@ -80,7 +80,16 @@ const leesTools = {
         .enum(["hoog", "middel", "laag"])
         .optional()
         .describe("Filter op retentierisico"),
-      team: z.string().optional().describe("Filter op huidig team (gedeeltelijke naam)"),
+      team: z
+        .string()
+        .optional()
+        .describe(
+          "Filter op huidig senioren-team: gebruik '1' t/m '6' voor Senioren 1-6, of U15-1, U17-2 etc. voor A-categorie"
+        ),
+      kleur: z
+        .enum(["Rood", "Oranje", "Geel", "Groen", "Blauw"])
+        .optional()
+        .describe("Filter op kleurgroep (B-categorie jeugd)"),
       naam: z.string().optional().describe("Zoek op (deel van) voor- of achternaam"),
       status: z
         .enum([
@@ -103,8 +112,37 @@ const leesTools = {
       ussMax?: number;
       retentierisico?: "hoog" | "middel" | "laag";
       team?: string;
+      kleur?: string;
       status?: string;
     }) => {
+      // Vertaal veelgebruikte teamnamen naar interne codes
+      function vertaalTeam(t: string): string {
+        const s = t.trim().toLowerCase();
+        const senMap: Record<string, string> = {
+          "senioren 1": "1",
+          s1: "1",
+          "1e": "1",
+          "sen 1": "1",
+          "senioren 2": "2",
+          s2: "2",
+          "2e": "2",
+          "sen 2": "2",
+          "senioren 3": "3",
+          s3: "3",
+          "3e": "3",
+          "senioren 4": "4",
+          s4: "4",
+          "4e": "4",
+          "senioren 5": "5",
+          s5: "5",
+          "5e": "5",
+          "senioren 6": "6",
+          s6: "6",
+          "6e": "6",
+        };
+        return senMap[s] ?? t;
+      }
+
       const where: Record<string, any> = {};
       if (params.naam) {
         where.OR = [
@@ -117,9 +155,11 @@ const leesTools = {
       if (params.leeftijdVolgendSeizoen)
         where.geboortejaar = PEILJAAR - params.leeftijdVolgendSeizoen;
       if (params.status) where.status = params.status;
-      // Team-filter op DB-niveau via JSON path (huidig->>'team')
-      if (params.team) {
-        where.huidig = { path: ["team"], string_contains: params.team };
+      // Team-filter: senioren via team-code, A-cat via naam, B-cat via kleur
+      if (params.kleur) {
+        where.huidig = { path: ["kleur"], string_contains: params.kleur };
+      } else if (params.team) {
+        where.huidig = { path: ["team"], string_contains: vertaalTeam(params.team) };
       }
 
       const spelers = await prisma.speler.findMany({
