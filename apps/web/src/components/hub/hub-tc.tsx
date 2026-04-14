@@ -151,7 +151,7 @@ export async function HubTC() {
                 Openstaande actiepunten
               </h3>
               <a
-                href="/ti-studio"
+                href="https://teamindeling.ckvoranjewit.app/ti-studio"
                 className="text-xs font-medium transition-colors hover:opacity-80"
                 style={{ color: "var(--ow-oranje-500)" }}
               >

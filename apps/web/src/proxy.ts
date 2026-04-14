@@ -33,7 +33,17 @@ const PUBLIC_PREFIXES = [
  * - clearance: number  (0-3, spelersdata zichtbaarheid)
  */
 export default async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const { pathname, search } = request.nextUrl;
+
+  // 0. Redirect legacy ti-studio en teamindeling routes naar de ti-studio service.
+  //    Fase B van de splitsing heeft alle TI-code uit apps/web verwijderd —
+  //    bookmarks en deep-links worden via een 308 naar teamindeling.ckvoranjewit.app
+  //    geleid. Gebeurt vóór elke andere check zodat ook unauth-gebruikers correct
+  //    worden doorverwezen.
+  if (pathname.startsWith("/ti-studio") || pathname.startsWith("/teamindeling")) {
+    const target = new URL(`https://teamindeling.ckvoranjewit.app${pathname}${search}`);
+    return NextResponse.redirect(target, 308);
+  }
 
   // 1. Publieke routes — altijd doorlaten
   if (PUBLIC_PREFIXES.some((p) => pathname.startsWith(p))) {
@@ -88,13 +98,8 @@ export default async function middleware(request: NextRequest) {
     }
   }
 
-  // /ti-studio/* en /teamindeling/* — TC-leden of gebruikers met doelgroepen (trainers/coordinatoren)
-  if (pathname.startsWith("/ti-studio") || pathname.startsWith("/teamindeling")) {
-    const doelgroepen = Array.isArray(token.doelgroepen) ? token.doelgroepen : [];
-    if (!token.isTC && doelgroepen.length === 0) {
-      return NextResponse.redirect(new URL("/?error=geen-toegang", request.url));
-    }
-  }
+  // Legacy check voor /ti-studio en /teamindeling is verwijderd: stap 0 redirect
+  // deze pathnamen al naar de ti-studio service voordat auth überhaupt wordt gecheckt.
 
   // /evaluatie/* — elke geauthenticeerde gebruiker
   // (token check hierboven is voldoende)

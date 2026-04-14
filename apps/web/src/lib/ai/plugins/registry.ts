@@ -1,12 +1,11 @@
 /**
- * Plugin-registry voor Daisy — combineert alle tools op basis van context
+ * Plugin-registry voor Daisy — combineert alle tools op basis van context.
+ * TI-studio en teamindeling tools zijn verhuisd naar apps/ti-studio (Fase B splitsing).
  */
 
 import type { Clearance } from "@oranje-wit/types";
 import { planningTools } from "./planning";
 import { monitorTools } from "./monitor";
-import { teamindelingTools } from "./teamindeling";
-import { getTiStudioTools } from "./ti-studio";
 
 export interface DaisyContext {
   clearance: Clearance;
@@ -16,8 +15,7 @@ export interface DaisyContext {
 
 /**
  * Geeft alle beschikbare Daisy-tools terug op basis van context.
- * Clearance 0 = geen tools.
- * Clearance 1+ = alle tools inclusief TI-studio schrijf-tools.
+ * Clearance 0 = geen tools. Clearance 1+ = alle tools.
  */
 export function getDaisyTools(context: DaisyContext) {
   if (context.clearance < 1) {
@@ -27,7 +25,5 @@ export function getDaisyTools(context: DaisyContext) {
   return {
     ...planningTools,
     ...monitorTools,
-    ...teamindelingTools,
-    ...getTiStudioTools(context.sessieId, context.gebruikerEmail),
   };
 }
