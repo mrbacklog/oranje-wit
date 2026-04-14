@@ -18,11 +18,7 @@ interface Props {
   };
 }
 
-export default function SpelersOverzichtStudioWrapper({
-  spelers,
-  reserveringen,
-  context,
-}: Props) {
+export default function SpelersOverzichtStudioWrapper({ spelers, reserveringen, context }: Props) {
   const [profielId, setProfielId] = useState<string | null>(null);
   const [nieuwDialogOpen, setNieuwDialogOpen] = useState(false);
 

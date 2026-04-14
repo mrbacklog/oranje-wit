@@ -258,9 +258,7 @@ export function StafOverzicht({ stafLeden }: Props) {
                           width: 30,
                           height: 30,
                           borderRadius: "50%",
-                          background: isInactief
-                            ? "rgba(148,163,184,0.15)"
-                            : "rgba(255,107,0,.15)",
+                          background: isInactief ? "rgba(148,163,184,0.15)" : "rgba(255,107,0,.15)",
                           border: isInactief
                             ? "1.5px solid rgba(148,163,184,0.3)"
                             : "1.5px solid rgba(255,107,0,.3)",
@@ -356,9 +354,7 @@ export function StafOverzicht({ stafLeden }: Props) {
                         border: isInactief
                           ? "1px solid rgba(34,197,94,0.4)"
                           : "1px solid rgba(239,68,68,0.4)",
-                        background: isInactief
-                          ? "rgba(34,197,94,0.08)"
-                          : "rgba(239,68,68,0.08)",
+                        background: isInactief ? "rgba(34,197,94,0.08)" : "rgba(239,68,68,0.08)",
                         color: isInactief ? "#4ade80" : "#f87171",
                         fontSize: "0.75rem",
                         fontWeight: 500,

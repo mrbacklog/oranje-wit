@@ -200,10 +200,7 @@ export function StafOverzicht({ stafLeden, alleTeams }: Props) {
   };
 
   // Tel unieke stafleden in gefilterde weergave (niet duplicaten bij team-sortering)
-  const aantalUniek = useMemo(
-    () => new Set(rijen.map((r) => r.staf.id)).size,
-    [rijen]
-  );
+  const aantalUniek = useMemo(() => new Set(rijen.map((r) => r.staf.id)).size, [rijen]);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
@@ -331,8 +328,7 @@ export function StafOverzicht({ stafLeden, alleTeams }: Props) {
                 <tr
                   key={rij.rowKey}
                   style={{
-                    borderBottom:
-                      i < rijen.length - 1 ? "1px solid var(--border-default)" : "none",
+                    borderBottom: i < rijen.length - 1 ? "1px solid var(--border-default)" : "none",
                     opacity: isInactief ? 0.5 : 1,
                   }}
                 >
@@ -343,9 +339,7 @@ export function StafOverzicht({ stafLeden, alleTeams }: Props) {
                           width: 30,
                           height: 30,
                           borderRadius: "50%",
-                          background: isInactief
-                            ? "rgba(148,163,184,0.15)"
-                            : "rgba(255,107,0,.15)",
+                          background: isInactief ? "rgba(148,163,184,0.15)" : "rgba(255,107,0,.15)",
                           border: isInactief
                             ? "1.5px solid rgba(148,163,184,0.3)"
                             : "1.5px solid rgba(255,107,0,.3)",
@@ -558,10 +552,7 @@ function TeamRolEditor({
         </div>
       )}
       {staf.teams.map((t) => (
-        <div
-          key={t.teamId}
-          style={{ display: "flex", alignItems: "center", gap: 6 }}
-        >
+        <div key={t.teamId} style={{ display: "flex", alignItems: "center", gap: 6 }}>
           <span
             style={{
               fontSize: "0.8125rem",

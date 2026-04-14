@@ -103,9 +103,10 @@ export default function SpelersOverzichtStudio({
   versieTeams,
 }: Props) {
   const router = useRouter();
-  const [editorCel, setEditorCel] = useState<
-    { spelerId: string; kolom: "status" | "gezien" | "indeling" } | null
-  >(null);
+  const [editorCel, setEditorCel] = useState<{
+    spelerId: string;
+    kolom: "status" | "gezien" | "indeling";
+  } | null>(null);
   const [optimistischIndeling, setOptimistischIndeling] = useState<
     Record<string, { naam: string; kleur: string | null } | null>
   >({});
