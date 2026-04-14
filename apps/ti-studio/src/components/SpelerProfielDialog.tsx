@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   getSpelerProfiel,
   updateSpelerStatus,
@@ -613,6 +614,7 @@ export default function SpelerProfielDialog({
   const [openGroepen, setOpenGroepen] = useState<Set<string>>(new Set());
 
   const statusMenuRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   // Laad profiel
   useEffect(() => {
@@ -705,13 +707,13 @@ export default function SpelerProfielDialog({
     try {
       await updateSpelerStatus(kadersId, spelerId, nieuweStatus);
       if (nieuweStatus === null) {
-        // Reset: terug naar Sportlink
         setHuidigStatus(sportlinkStatus);
         setHeeftOverride(false);
       } else {
         setHuidigStatus(nieuweStatus);
         setHeeftOverride(true);
       }
+      router.refresh();
     } catch (err) {
       logger.error("SpelerProfielDialog: fout bij status-update", err);
     } finally {
