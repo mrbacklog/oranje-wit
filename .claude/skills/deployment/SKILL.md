@@ -51,7 +51,7 @@ Niet elke push deployt alle apps. De `changes` job detecteert welke paden gewijz
 
 | Trigger | Deployt |
 |---|---|
-| `apps/web/src/app/(teamindeling)/teamindeling/**` gewijzigd | Alleen team-indeling |
+| `apps/ti-studio/**` gewijzigd | Alleen ti-studio service |
 | `apps/web/src/app/(monitor)/monitor/**` gewijzigd | Alleen monitor |
 | `apps/web/src/app/(evaluatie)/evaluatie/**` gewijzigd | Alleen evaluatie |
 | `packages/**` gewijzigd | Alle apps (gedeelde dependency) |
@@ -178,10 +178,9 @@ Custom domeinen draaien via **Cloudflare Worker** `railway-proxy` (niet via Rail
 
 ### Build-configuratie
 
-Alle apps gebruiken **Dockerfiles** (niet Nixpacks):
-- `apps/web/src/app/(teamindeling)/teamindeling/Dockerfile`
-- `apps/web/src/app/(monitor)/monitor/Dockerfile`
-- `apps/web/src/app/(evaluatie)/evaluatie/Dockerfile`
+Beide apps gebruiken **Dockerfiles** (niet Nixpacks):
+- `apps/web/Dockerfile` (monitor, evaluatie, scouting, beheer, beleid)
+- `apps/ti-studio/Dockerfile` (volledige team-indeling)
 
 Basis: Node 22-slim, pnpm workspace, Prisma generate.
 

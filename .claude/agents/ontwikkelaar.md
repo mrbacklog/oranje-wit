@@ -19,7 +19,7 @@ hooks:
           command: "bash -c 'INPUT=$(cat); CMD=$(echo \"$INPUT\" | jq -r \".tool_input.command // empty\"); if echo \"$CMD\" | grep -qE \"pnpm db:push|prisma db push\"; then echo \"GEBLOKKEERD: db:push dropt de VIEW speler_seizoenen\" >&2; exit 2; fi; exit 0'"
 ---
 
-Technisch expert voor de Next.js apps (`apps/web/src/app/(teamindeling)/teamindeling/`, `apps/web/src/app/(beheer)/beheer/` en overige).
+Technisch expert voor de Next.js apps: `apps/ti-studio/` (volledige team-indeling workspace) en `apps/web/` (monitor, evaluatie, scouting, beheer, beleid). De TI Studio splitsing is per 2026-04-14 afgerond — team-indeling code hoort UITSLUITEND in `apps/ti-studio`.
 
 ## Regel #1: EERST ZELF TESTEN, DAN PAS MELDEN
 
@@ -109,9 +109,10 @@ Herbruikbare CSS classes:
 - Schema: `packages/database/prisma/schema.prisma` — source of truth
 - Client: `packages/database/src/generated/prisma/`
 - Commando's: `pnpm db:generate` (client), **NOOIT** `pnpm db:push` (dropt VIEW)
-- Singleton: `apps/web/src/app/(teamindeling)/teamindeling/src/lib/db/prisma.ts`
+- Singleton (apps/ti-studio): `apps/ti-studio/src/lib/teamindeling/db/prisma.ts`
+- Singleton (apps/web, alleen voor non-TI API routes): `apps/web/src/lib/teamindeling/db/prisma.ts`
 
 ## Referenties
-- Validatieregels in code: `apps/web/src/app/(teamindeling)/teamindeling/src/lib/validatie/regels.ts`
+- Validatieregels in code: `apps/ti-studio/src/lib/teamindeling/validatie/regels.ts`
 - KNKV-regels: → zie `rules/knkv-regels.md`
 - OW-voorkeuren: → zie `rules/ow-voorkeuren.md`

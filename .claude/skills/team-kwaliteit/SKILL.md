@@ -133,12 +133,12 @@ Als `/security daily` een confidence score < 8/10 rapporteert voor een ROOD bevi
 ## Context
 
 - **Taal**: Nederlands
-- **App**: Team-Indeling (`apps/web/src/app/(teamindeling)/teamindeling/`)
-- **Tests**: E2E (`e2e/team-indeling/`), Unit (`apps/web/src/app/(teamindeling)/teamindeling/src/**/*.test.*`)
+- **App**: Team-Indeling (`apps/ti-studio/`)
+- **Tests**: E2E (`e2e/team-indeling/`), Unit (`apps/ti-studio/src/**/*.test.*`)
 - **Database schema**: `packages/database/prisma/schema.prisma`
 - **Regels**: `rules/knkv-regels.md`, `rules/ow-voorkeuren.md`
 - **CI**: `.github/workflows/ci.yml`
-- **ESLint**: `apps/web/src/app/(teamindeling)/teamindeling/eslint.config.mjs` + root `eslint.config.mjs`
+- **ESLint**: `apps/ti-studio/eslint.config.mjs` + root `eslint.config.mjs`
 
 ## Gerelateerde skills
 

@@ -61,7 +61,7 @@ Optie: Finn (M, '11) uit Rood J2 doorschuiven."
 ## Referenties
 - Beleid: → zie `rules/oranje-draad.md`
 - Regels: → zie `rules/knkv-regels.md`, `rules/ow-voorkeuren.md`
-- Validatie-code: `apps/web/src/app/(teamindeling)/teamindeling/src/lib/validatie/regels.ts`
+- Validatie-code: `apps/ti-studio/src/lib/teamindeling/validatie/regels.ts`
 
 ## Output
 Onderbouwd advies in Markdown. Altijd met data, altijd getoetst aan Oranje Draad.

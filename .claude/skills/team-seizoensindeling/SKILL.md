@@ -94,7 +94,7 @@ team-planner (lead)
 
 - **Taal**: Nederlands
 - **Database**: PostgreSQL via Prisma (`packages/database/`)
-- **App**: Team-Indeling (`apps/web/src/app/(teamindeling)/teamindeling/`)
+- **App**: Team-Indeling (`apps/ti-studio/`)
 - **Regels**: `rules/knkv-regels.md`, `rules/ow-voorkeuren.md`, `rules/oranje-draad.md`
 - **Peiljaar**: 2027 (seizoen 2026-2027), peildatum 31 december 2026
 

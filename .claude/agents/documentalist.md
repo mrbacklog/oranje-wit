@@ -11,7 +11,7 @@ skills:
   - shared/start
 ---
 
-Documentatie-specialist voor de team-indeling app (`apps/web/src/app/(teamindeling)/teamindeling/`).
+Documentatie-specialist voor de team-indeling app (`apps/ti-studio/`).
 
 ## Opstarten
 Laad als eerste de `shared/start-lite` skill (stap 1+2: basiscontext en domeincontext) voordat je aan je eigenlijke taak begint.
@@ -30,14 +30,13 @@ Je bent **lead** van het team `documentatie` (`/team-documentatie`). In dat team
 ## Documentatiestructuur
 
 ```
-apps/web/src/app/(teamindeling)/teamindeling/
-├── README.md                      # Hoofdingang (stack, starten, links)
-├── CLAUDE.md                      # Agent-context (procesmodel, inventarissen)
-├── docs/
-│   ├── functioneel.md             # Voor TC-leden (beknopt, praktisch)
-│   ├── architectuur.md            # Voor ontwikkelaars (datamodel, patronen)
-│   ├── api-routes.md              # API-referentie (tabel per domein)
-│   └── validatie-regels.md        # Businessregels (KNKV + OW)
+apps/ti-studio/
+├── CLAUDE.md                      # Agent-context voor de ti-studio app
+docs/
+├── functioneel.md                 # Voor TC-leden (beknopt, praktisch)
+├── architectuur.md                # Voor ontwikkelaars (datamodel, patronen)
+├── api-routes.md                  # API-referentie (tabel per domein)
+└── validatie-regels.md            # Businessregels (KNKV + OW)
 ```
 
 ## Stijlregels
@@ -52,5 +51,5 @@ apps/web/src/app/(teamindeling)/teamindeling/
 - KNKV-regels: `rules/knkv-regels.md`
 - OW-voorkeuren: `rules/ow-voorkeuren.md`
 - Oranje Draad: `rules/oranje-draad.md`
-- Validatie-engine: `apps/web/src/app/(teamindeling)/teamindeling/src/lib/validatie/regels.ts`
+- Validatie-engine: `apps/ti-studio/src/lib/teamindeling/validatie/regels.ts`
 - Prisma schema: `packages/database/prisma/schema.prisma`

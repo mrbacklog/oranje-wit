@@ -29,7 +29,7 @@ pnpm import
 - `ReferentieTeam` — huidige teamstructuur als referentie
 
 ### Logica
-`apps/web/src/app/(teamindeling)/teamindeling/src/lib/import.ts` — verwerking en mapping
+`apps/ti-studio/src/lib/teamindeling/import.ts` — verwerking en mapping
 
 ## Evaluatie-import
 

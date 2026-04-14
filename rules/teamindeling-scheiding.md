@@ -1,52 +1,53 @@
 ---
 paths:
-  - "apps/web/src/app/(teamindeling)/**"
-  - "apps/web/src/app/(teamindeling-studio)/**"
-  - "apps/web/src/components/teamindeling/**"
+  - "apps/ti-studio/**"
 ---
 
-# Teamindeling — Desktop/Mobile scheiding
+# Team-Indeling — één waarheid in `apps/ti-studio`
 
-De Team-Indeling bestaat uit twee functioneel gescheiden versies:
+**Status: per 2026-04-14 is de TI Studio splitsing afgerond (Fase B).**
 
-## Twee route groups
+De hele team-indeling workspace — desktop werkbord én eventueel herbouwde
+mobile-variant — draait uitsluitend in **`apps/ti-studio`**, bereikbaar op
+`teamindeling.ckvoranjewit.app`. Dit is een aparte Next.js 16 app met een
+eigen Railway service.
 
-| | Mobile | Desktop (Studio) |
-|---|---|---|
-| Route group | `(teamindeling)` | `(teamindeling-studio)` |
-| URL | `/teamindeling/*` | `/ti-studio/*` |
-| Thema | Dark | Light (wordt dark) |
-| Focus | Bekijken, reviewen, communiceren | Maken, bewerken, drag & drop |
+## Wat is verhuisd
 
-## Regels voor agents
+Alles wat vroeger in `apps/web/src/app/(teamindeling)/`,
+`apps/web/src/app/(teamindeling-studio)/`, `apps/web/src/components/teamindeling/`,
+`apps/web/src/components/ti-studio/` of `apps/web/src/lib/teamindeling/` stond
+bestaat daar **niet meer**. `apps/web/proxy.ts` redirect `/ti-studio/*` en
+`/teamindeling/*` met een 308 naar de ti-studio service zodat oude bookmarks
+en deep-links blijven werken.
 
-1. **Werk in `(teamindeling)` of `components/teamindeling/mobile/`** → mobile versie
-2. **Werk in `(teamindeling-studio)` of `components/teamindeling/studio/`** → desktop versie
-3. **Werk in `src/lib/teamindeling/` of `components/teamindeling/shared/`** → gedeelde laag
-4. Mobile bevat **nooit** drag & drop of scenario-editing
-5. Studio bevat **nooit** mobile-specifieke componenten
-6. Prisma queries en server actions staan in `src/lib/teamindeling/`, nooit in pagina-bestanden
-7. API routes onder `/api/teamindeling/` worden door beide versies gebruikt
+## Regels voor agents en ontwikkelaars
 
-## Componentlocaties
-
-```
-components/teamindeling/
-├── mobile/          # Mobile-only (MobileShell, etc.)
-├── studio/          # Desktop-only (toekomstig)
-├── shared/          # Gedeeld
-└── (overige mappen) # Legacy studio-componenten
-```
+1. **Teams, Spelers, Staf, Werkindeling, Kader, Selectie, Werkbord,
+   Scenario's, What-if, Validatie** → `apps/ti-studio`
+2. Nooit nieuwe team-indeling code toevoegen aan `apps/web` — `apps/web` host
+   alleen nog Monitor, Evaluatie, Scouting, Beheer en Beleid
+3. Mobile TI is tijdelijk **weg**. Als er weer behoefte aan een mobile-
+   variant is, bouw hem opnieuw binnen `apps/ti-studio` — niet terug naar
+   `apps/web`
+4. Gedeelde code gaat via `packages/*` (auth, database, types, ui). Geen
+   rechtstreekse imports over app-grenzen heen
 
 ## Gedeelde data-laag
 
-```
-src/lib/teamindeling/
-├── db/              # Prisma client en queries
-├── validatie/       # KNKV-regelvalidatie
-├── seizoen.ts       # Seizoen-logica
-├── auth.ts          # Auth helpers
-└── ...
-```
+- **Prisma schema**: `packages/database/prisma/schema.prisma` — één schema
+  voor beide apps. Migraties worden door beide apps gedraaid via
+  `db:migrate:deploy`.
+- **Prisma client in apps/ti-studio**: `apps/ti-studio/src/lib/teamindeling/db/prisma.ts`
+- **Prisma client in apps/web**: `apps/web/src/lib/teamindeling/db/prisma.ts`
+  (alleen nodig voor niet-TI API routes die ook met de DB praten)
 
-Beide versies importeren uit `src/lib/teamindeling/`. Data-logica wordt nooit in pagina-bestanden geschreven.
+## Deploy
+
+| App | Service | URL | Trigger |
+|---|---|---|---|
+| `apps/web` | `ckvoranjewit.app` | `www.ckvoranjewit.app` | Push naar main → Railway bouwt apps/web |
+| `apps/ti-studio` | `ti-studio` | `teamindeling.ckvoranjewit.app` | Push naar main → Railway bouwt apps/ti-studio |
+
+Beide services worden parallel gebouwd. CI (ci.yml) draait typecheck/lint/tests
+over de hele monorepo; E2E test verifieert beide hostings.

@@ -1,23 +1,53 @@
 ---
 paths:
   - "apps/web/src/app/**"
+  - "apps/ti-studio/src/app/**"
   - "packages/ui/src/navigation/**"
 ---
 
 # Routes & Navigatie
 
-## Routes
+## Apps
+
+Platform draait in twee Next.js 16 apps:
+
+| App | Service | URL |
+|---|---|---|
+| `apps/web` | `ckvoranjewit.app` | `www.ckvoranjewit.app` |
+| `apps/ti-studio` | `ti-studio` | `teamindeling.ckvoranjewit.app` |
+
+## Routes in apps/web (`www.ckvoranjewit.app`)
 
 | Route | Domein | Was |
 |---|---|---|
 | `/` | Mijn Oranje Wit (hub, taken, nieuws, profiel) | portaal.ckvoranjewit.app |
 | `/monitor/*` | Verenigingsmonitor | monitor.ckvoranjewit.app |
-| `/teamindeling/*` | Team-Indeling Mobile (dark, review) | nieuw |
-| `/ti-studio/*` | Team-Indeling Studio (desktop, bewerken) | teamindeling.ckvoranjewit.app |
 | `/evaluatie/*` | Evaluatie | evaluatie.ckvoranjewit.app |
 | `/scouting/*` | Scouting | scout.ckvoranjewit.app |
 | `/beheer/*` | TC Beheer (9 domeinen) | beheer.ckvoranjewit.app |
 | `/beleid/*` | Beleid (visie, doelgroepen, presentatie) | nieuw |
+| `/ti-studio/*` | → **308 redirect** naar `teamindeling.ckvoranjewit.app/ti-studio/*` | legacy |
+| `/teamindeling/*` | → **308 redirect** naar `teamindeling.ckvoranjewit.app/ti-studio` | legacy, mobile TI verwijderd |
+
+## Routes in apps/ti-studio (`teamindeling.ckvoranjewit.app`)
+
+| Route | Onderdeel |
+|---|---|
+| `/ti-studio` | Dashboard (landing) |
+| `/ti-studio/kader` | Teamkaders + memo's per doelgroep |
+| `/ti-studio/indeling` | Werkbord — drag & drop teamindeling |
+| `/ti-studio/personen` | Spelers + staf beheer |
+| `/ti-studio/personen/spelers` | Spelersoverzicht (inline bewerkbaar) |
+| `/ti-studio/personen/staf` | Stafoverzicht (team + rol koppeling) |
+| `/ti-studio/memo` | Memo's / werkitems overzicht |
+| `/api/...` | TI-specifieke server actions + API routes |
+
+## Belangrijk voor agents
+
+- **Team-indeling URL's staan in `apps/ti-studio`.** Voeg geen `/ti-studio/*`
+  of `/teamindeling/*` routes toe aan `apps/web` — die worden geredirect via
+  `apps/web/proxy.ts` (stap 0).
+- Mobile TI is **weg** (Fase B). Herbouw kan alleen binnen `apps/ti-studio`.
 
 ## Navigatie (VERPLICHT — geen afwijkingen)
 

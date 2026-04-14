@@ -76,20 +76,19 @@ documentalist (lead)
 ## Documentatiestructuur
 
 ```
-apps/web/src/app/(teamindeling)/teamindeling/
-├── README.md                      # Hoofdingang (stack, starten, links)
-├── CLAUDE.md                      # Agent-context (procesmodel, inventarissen)
-├── docs/
-│   ├── functioneel.md             # Voor TC-leden (beknopt, praktisch)
-│   ├── architectuur.md            # Voor ontwikkelaars (datamodel, patronen)
-│   ├── api-routes.md              # API-referentie (tabel per domein)
-│   └── validatie-regels.md        # Businessregels (KNKV + OW)
+apps/ti-studio/
+├── CLAUDE.md                      # Agent-context (app-specifiek)
+docs/
+├── functioneel.md                 # Voor TC-leden (beknopt, praktisch)
+├── architectuur.md                # Voor ontwikkelaars (datamodel, patronen)
+├── api-routes.md                  # API-referentie (tabel per domein)
+└── validatie-regels.md            # Businessregels (KNKV + OW)
 ```
 
 ## Context
 
 - **Taal**: Nederlands
-- **App**: `apps/web/src/app/(teamindeling)/teamindeling/` (Next.js 16, Tailwind CSS 4)
+- **App**: `apps/ti-studio/` (Next.js 16, Tailwind CSS 4)
 - **Database**: PostgreSQL op Railway, schema in `packages/database/prisma/schema.prisma`
 - **Regels**: `rules/knkv-regels.md`, `rules/ow-voorkeuren.md`, `rules/oranje-draad.md`
 

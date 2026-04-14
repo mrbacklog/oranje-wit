@@ -218,7 +218,7 @@ Modi: [architectuur / functioneel / ux / alles]
 | # | Modus | Bevinding | Locatie | Actie |
 |---|-------|-----------|---------|-------|
 | 1 | A1    | prisma.ts gedupliceerd in 3 apps | apps/*/lib/db/ | Centraliseer in packages/database |
-| 2 | U1    | 47x hardcoded bg-white | apps/web/src/app/(teamindeling)/teamindeling/ | Vervang door design tokens |
+| 2 | U1    | 47x hardcoded bg-white | apps/ti-studio/ | Vervang door design tokens |
 
 #### MIDDEN — Plan actie
 | # | Modus | Bevinding | Locatie | Actie |
