@@ -80,6 +80,7 @@ const leesTools = {
         .optional()
         .describe("Filter op retentierisico"),
       team: z.string().optional().describe("Filter op huidig team (gedeeltelijke naam)"),
+      naam: z.string().optional().describe("Zoek op (deel van) voor- of achternaam"),
       status: z
         .enum([
           "BESCHIKBAAR",
@@ -93,6 +94,7 @@ const leesTools = {
         .describe("Filter op spelerstatus"),
     }),
     execute: async (params: {
+      naam?: string;
       geslacht?: "M" | "V";
       geboortejaar?: number;
       leeftijdVolgendSeizoen?: number;
@@ -103,6 +105,12 @@ const leesTools = {
       status?: string;
     }) => {
       const where: Record<string, any> = {};
+      if (params.naam) {
+        where.OR = [
+          { roepnaam: { contains: params.naam, mode: "insensitive" } },
+          { achternaam: { contains: params.naam, mode: "insensitive" } },
+        ];
+      }
       if (params.geslacht) where.geslacht = params.geslacht;
       if (params.geboortejaar) where.geboortejaar = params.geboortejaar;
       if (params.leeftijdVolgendSeizoen)
