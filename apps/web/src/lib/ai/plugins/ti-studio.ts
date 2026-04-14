@@ -1,9 +1,9 @@
 /* eslint-disable max-lines */
 /**
- * TI-studio plugin voor Daisy — 17 tools voor de teamindeling.
+ * TI-studio plugin voor Daisy — 16 tools voor de teamindeling.
  *
  * Lees-tools (4): spelersZoeken, teamSamenstelling, scenarioVergelijken, blauwdrukToetsen
- * Schrijf-tools spelers (6): spelerVerplaatsen, spelerStatusZetten, spelerNotitieZetten,
+ * Schrijf-tools spelers (5): spelerVerplaatsen, spelerStatusZetten,
  *   nieuwLidInBlauwdruk, plaatsreserveringZetten, besluitVastleggen
  * Schrijf-tools teams & staf (3): teamAanmaken, selectieAanmaken, stafPlaatsen
  * Schrijf-tools werkbord & scenario (2): whatIfScenarioAanmaken, actiePlaatsen
@@ -472,45 +472,6 @@ function maakSchrijfToolsSpelers(sessieId: string, gebruikerEmail: string) {
         return {
           gedaan: true,
           samenvatting: `Status van ${speler.roepnaam} ${speler.achternaam} gezet op ${status}`,
-        };
-      },
-    },
-
-    spelerNotitieZetten: {
-      description: "Schrijft of overschrijft de notitie op een speler.",
-      inputSchema: z.object({
-        spelerId: z.string().describe("ID van de speler"),
-        notitie: z.string().describe("Nieuwe notitie (max 500 tekens)"),
-      }),
-      execute: async ({ spelerId, notitie }: { spelerId: string; notitie: string }) => {
-        const speler = await prisma.speler.findUnique({
-          where: { id: spelerId },
-          select: { roepnaam: true, achternaam: true, notitie: true },
-        });
-        if (!speler) return { fout: `Speler ${spelerId} niet gevonden` };
-
-        const oudeNotitie = speler.notitie ?? null;
-        await prisma.speler.update({
-          where: { id: spelerId },
-          data: { notitie: notitie.slice(0, 500) },
-        });
-
-        await logDaisyActie({
-          sessieId,
-          tool: "spelerNotitieZetten",
-          doPayload: {
-            spelerId,
-            spelerNaam: `${speler.roepnaam} ${speler.achternaam}`,
-            notitie,
-          },
-          undoPayload: { spelerId, notitie: oudeNotitie },
-          namens: gebruikerEmail,
-          uitgevoerdIn: "werkindeling",
-        });
-
-        return {
-          gedaan: true,
-          samenvatting: `Notitie op ${speler.roepnaam} ${speler.achternaam} bijgewerkt`,
         };
       },
     },
