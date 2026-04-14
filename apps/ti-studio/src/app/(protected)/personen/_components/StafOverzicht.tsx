@@ -1,9 +1,18 @@
 "use client";
 
-import { useState, useMemo, useTransition } from "react";
+import { useState, useMemo, useTransition, useEffect, useRef } from "react";
 import type { BeheerStaf } from "../staf-actions";
-import { setStafActief } from "../staf-actions";
+import {
+  setStafActief,
+  voegStafAanTeamToe,
+  verwijderStafUitTeam,
+  updateStafRol,
+} from "../staf-actions";
 import { NieuweStafDialog } from "./NieuweStafDialog";
+
+const ROL_SUGGESTIES = ["Trainer", "Coach", "Assistent", "Manager", "Begeleider", "Verzorger"];
+
+type TeamOptie = { id: string; naam: string; kleur: string | null; volgorde: number };
 
 const KLEUR_DOT: Record<string, string> = {
   BLAUW: "#3b82f6",
@@ -24,6 +33,7 @@ type SortKey = "naam" | "volgorde" | "gepind";
 
 interface Props {
   stafLeden: BeheerStaf[];
+  alleTeams: TeamOptie[];
 }
 
 type StafRij = {
@@ -33,8 +43,9 @@ type StafRij = {
   team?: BeheerStaf["teams"][number];
 };
 
-export function StafOverzicht({ stafLeden }: Props) {
+export function StafOverzicht({ stafLeden, alleTeams }: Props) {
   const [zoekterm, setZoekterm] = useState("");
+  const [editorStafId, setEditorStafId] = useState<string | null>(null);
   const [teamFilter, setTeamFilter] = useState("allen");
   const [gepindFilter, setGepindFilter] = useState(false);
   const [toonInactief, setToonInactief] = useState(false);
@@ -44,7 +55,7 @@ export function StafOverzicht({ stafLeden }: Props) {
   const [isPending, startTransition] = useTransition();
   const [optimistischActief, setOptimistischActief] = useState<Record<string, boolean>>({});
 
-  const alleTeams = useMemo(
+  const teamFilterOpties = useMemo(
     () => [...new Set(stafLeden.flatMap((s) => s.teams.map((t) => t.teamNaam)))].sort(),
     [stafLeden]
   );
@@ -220,7 +231,7 @@ export function StafOverzicht({ stafLeden }: Props) {
           style={dropdownStyle}
         >
           <option value="allen">Team: Allen</option>
-          {alleTeams.map((t) => (
+          {teamFilterOpties.map((t) => (
             <option key={t} value={t}>
               {t}
             </option>
@@ -359,9 +370,33 @@ export function StafOverzicht({ stafLeden }: Props) {
                       >
                         {staf.naam}
                       </span>
+                      {staf.openMemoCount > 0 && (
+                        <span
+                          title={`${staf.openMemoCount} open memo${staf.openMemoCount !== 1 ? "'s" : ""}`}
+                          style={{
+                            fontSize: 10,
+                            color: "var(--accent)",
+                            fontWeight: 700,
+                            marginLeft: 2,
+                          }}
+                        >
+                          ▲
+                        </span>
+                      )}
                     </div>
                   </td>
-                  <td style={{ padding: "0.625rem 0.875rem" }}>
+                  <td
+                    style={{
+                      padding: "0.625rem 0.875rem",
+                      position: "relative",
+                      cursor: "pointer",
+                    }}
+                    title="Klik om team + rol te bewerken"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setEditorStafId(editorStafId === staf.id ? null : staf.id);
+                    }}
+                  >
                     {teamsOmTeTonen.length > 0 ? (
                       <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                         {teamsOmTeTonen.map((t) => (
@@ -413,8 +448,15 @@ export function StafOverzicht({ stafLeden }: Props) {
                           fontStyle: "italic",
                         }}
                       >
-                        Niet ingedeeld
+                        Niet ingedeeld ✏
                       </span>
+                    )}
+                    {editorStafId === staf.id && (
+                      <TeamRolEditor
+                        staf={staf}
+                        alleTeams={alleTeams}
+                        onClose={() => setEditorStafId(null)}
+                      />
                     )}
                   </td>
                   <td style={{ padding: "0.625rem 0.875rem", textAlign: "center" }}>
@@ -434,6 +476,219 @@ export function StafOverzicht({ stafLeden }: Props) {
         </table>
       </div>
       <NieuweStafDialog open={dialogOpen} onClose={() => setDialogOpen(false)} />
+    </div>
+  );
+}
+
+function TeamRolEditor({
+  staf,
+  alleTeams,
+  onClose,
+}: {
+  staf: BeheerStaf;
+  alleTeams: TeamOptie[];
+  onClose: () => void;
+}) {
+  const [isPending, startTransition] = useTransition();
+  const [nieuwTeamId, setNieuwTeamId] = useState<string>("");
+  const [nieuwRol, setNieuwRol] = useState<string>("Trainer");
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleDocClick(e: MouseEvent) {
+      if (!containerRef.current) return;
+      if (!containerRef.current.contains(e.target as Node)) onClose();
+    }
+    document.addEventListener("mousedown", handleDocClick);
+    return () => document.removeEventListener("mousedown", handleDocClick);
+  }, [onClose]);
+
+  const huidigeTeamIds = new Set(staf.teams.map((t) => t.teamId));
+  const beschikbareTeams = alleTeams.filter((t) => !huidigeTeamIds.has(t.id));
+
+  function handleVoegToe() {
+    if (!nieuwTeamId || !nieuwRol.trim()) return;
+    startTransition(async () => {
+      await voegStafAanTeamToe(staf.id, nieuwTeamId, nieuwRol.trim());
+      setNieuwTeamId("");
+      setNieuwRol("Trainer");
+    });
+  }
+
+  function handleVerwijder(teamId: string) {
+    startTransition(async () => {
+      await verwijderStafUitTeam(staf.id, teamId);
+    });
+  }
+
+  function handleRolWijzig(teamId: string, rol: string) {
+    startTransition(async () => {
+      await updateStafRol(staf.id, teamId, rol);
+    });
+  }
+
+  return (
+    <div
+      ref={containerRef}
+      onClick={(e) => e.stopPropagation()}
+      style={{
+        position: "absolute",
+        top: "100%",
+        left: 0,
+        marginTop: 4,
+        zIndex: 50,
+        background: "var(--surface-card)",
+        border: "1px solid var(--border-default)",
+        borderRadius: 8,
+        padding: "0.75rem",
+        minWidth: 340,
+        boxShadow: "0 6px 16px rgba(0,0,0,0.25)",
+        display: "flex",
+        flexDirection: "column",
+        gap: "0.5rem",
+        cursor: "default",
+      }}
+    >
+      <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: 600 }}>
+        Teams + rollen voor {staf.naam}
+      </div>
+      {staf.teams.length === 0 && (
+        <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontStyle: "italic" }}>
+          Nog geen team-koppelingen
+        </div>
+      )}
+      {staf.teams.map((t) => (
+        <div
+          key={t.teamId}
+          style={{ display: "flex", alignItems: "center", gap: 6 }}
+        >
+          <span
+            style={{
+              fontSize: "0.8125rem",
+              color: "var(--text-primary)",
+              fontWeight: 500,
+              minWidth: 110,
+            }}
+          >
+            {t.teamNaam}
+          </span>
+          <input
+            type="text"
+            defaultValue={t.rol}
+            disabled={isPending}
+            onBlur={(e) => {
+              if (e.target.value.trim() && e.target.value.trim() !== t.rol) {
+                handleRolWijzig(t.teamId, e.target.value);
+              }
+            }}
+            list={`rol-suggesties-${staf.id}`}
+            style={{
+              flex: 1,
+              background: "var(--surface-sunken)",
+              border: "1px solid var(--border-default)",
+              borderRadius: 6,
+              padding: "0.25rem 0.5rem",
+              color: "var(--text-primary)",
+              fontSize: "0.75rem",
+              outline: "none",
+              fontFamily: "inherit",
+            }}
+          />
+          <button
+            type="button"
+            onClick={() => handleVerwijder(t.teamId)}
+            disabled={isPending}
+            title="Verwijder uit team"
+            style={{
+              background: "transparent",
+              border: "none",
+              color: "var(--text-secondary)",
+              cursor: isPending ? "not-allowed" : "pointer",
+              fontSize: "0.875rem",
+              padding: "0 4px",
+            }}
+          >
+            ✕
+          </button>
+        </div>
+      ))}
+      <datalist id={`rol-suggesties-${staf.id}`}>
+        {ROL_SUGGESTIES.map((r) => (
+          <option key={r} value={r} />
+        ))}
+      </datalist>
+      <div
+        style={{
+          borderTop: "1px solid var(--border-default)",
+          paddingTop: "0.5rem",
+          marginTop: "0.25rem",
+          display: "flex",
+          gap: 6,
+          alignItems: "center",
+        }}
+      >
+        <select
+          value={nieuwTeamId}
+          onChange={(e) => setNieuwTeamId(e.target.value)}
+          disabled={isPending || beschikbareTeams.length === 0}
+          style={{
+            flex: 1,
+            background: "var(--surface-sunken)",
+            border: "1px solid var(--border-default)",
+            borderRadius: 6,
+            padding: "0.25rem 0.5rem",
+            color: "var(--text-primary)",
+            fontSize: "0.75rem",
+            outline: "none",
+            fontFamily: "inherit",
+          }}
+        >
+          <option value="">+ Team…</option>
+          {beschikbareTeams.map((t) => (
+            <option key={t.id} value={t.id}>
+              {t.naam}
+            </option>
+          ))}
+        </select>
+        <input
+          type="text"
+          value={nieuwRol}
+          onChange={(e) => setNieuwRol(e.target.value)}
+          disabled={isPending}
+          list={`rol-suggesties-${staf.id}`}
+          placeholder="Rol"
+          style={{
+            width: 110,
+            background: "var(--surface-sunken)",
+            border: "1px solid var(--border-default)",
+            borderRadius: 6,
+            padding: "0.25rem 0.5rem",
+            color: "var(--text-primary)",
+            fontSize: "0.75rem",
+            outline: "none",
+            fontFamily: "inherit",
+          }}
+        />
+        <button
+          type="button"
+          onClick={handleVoegToe}
+          disabled={isPending || !nieuwTeamId || !nieuwRol.trim()}
+          style={{
+            padding: "0.25rem 0.625rem",
+            borderRadius: 6,
+            border: "none",
+            background: "var(--accent)",
+            color: "#fff",
+            fontSize: "0.75rem",
+            fontWeight: 700,
+            cursor: isPending || !nieuwTeamId ? "not-allowed" : "pointer",
+            fontFamily: "inherit",
+            opacity: isPending || !nieuwTeamId || !nieuwRol.trim() ? 0.6 : 1,
+          }}
+        >
+          Voeg toe
+        </button>
+      </div>
     </div>
   );
 }

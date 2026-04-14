@@ -1,8 +1,33 @@
 "use client";
 
-import { useState, useMemo, useTransition } from "react";
+import { useState, useMemo, useTransition, useEffect, useRef } from "react";
 import type { StudioSpeler } from "../actions";
 import { togglePinSpeler } from "../actions";
+import { updateSpelerStatus } from "../../indeling/werkindeling-actions";
+import { setGezienStatus, zetSpelerIndeling } from "../speler-edit-actions";
+
+type VersieTeam = { id: string; naam: string; kleur: string | null };
+type GezienWaarde = "ONGEZIEN" | "GROEN" | "GEEL" | "ORANJE" | "ROOD";
+type SpelerStatusWaarde =
+  | "BESCHIKBAAR"
+  | "TWIJFELT"
+  | "GEBLESSEERD"
+  | "GAAT_STOPPEN"
+  | "NIEUW_POTENTIEEL"
+  | "NIEUW_DEFINITIEF"
+  | "ALGEMEEN_RESERVE";
+
+const SPELER_STATUS_OPTIES: { value: SpelerStatusWaarde; label: string }[] = [
+  { value: "BESCHIKBAAR", label: "Beschikbaar" },
+  { value: "TWIJFELT", label: "Twijfelt" },
+  { value: "GEBLESSEERD", label: "Geblesseerd" },
+  { value: "GAAT_STOPPEN", label: "Gaat stoppen" },
+  { value: "NIEUW_POTENTIEEL", label: "Nieuw potentieel" },
+  { value: "NIEUW_DEFINITIEF", label: "Nieuw definitief" },
+  { value: "ALGEMEEN_RESERVE", label: "Reserve" },
+];
+
+const GEZIEN_VOLGORDE: GezienWaarde[] = ["ONGEZIEN", "GROEN", "GEEL", "ORANJE", "ROOD"];
 
 type SortKey =
   | "achternaam"
@@ -72,10 +97,22 @@ function matchesStatusFilter(speler: StudioSpeler, filter: StatusFilter): boolea
 
 interface Props {
   spelers: StudioSpeler[];
-  onRowClick: (spelerId: string) => void;
+  onOpenProfiel: (spelerId: string) => void;
+  kadersId: string | null;
+  versieId: string | null;
+  versieTeams: VersieTeam[];
 }
 
-export default function SpelersOverzichtStudio({ spelers, onRowClick }: Props) {
+export default function SpelersOverzichtStudio({
+  spelers,
+  onOpenProfiel,
+  kadersId,
+  versieId,
+  versieTeams,
+}: Props) {
+  const [editorCel, setEditorCel] = useState<
+    { spelerId: string; kolom: "status" | "gezien" | "indeling" } | null
+  >(null);
   const [zoekterm, setZoekterm] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("allen");
   const [huidigTeamFilter, setHuidigTeamFilter] = useState("allen");
@@ -388,11 +425,9 @@ export default function SpelersOverzichtStudio({ spelers, onRowClick }: Props) {
               return (
                 <tr
                   key={speler.id}
-                  onClick={() => onRowClick(speler.id)}
                   style={{
                     borderBottom:
                       i < gefilterd.length - 1 ? "1px solid var(--border-default)" : "none",
-                    cursor: "pointer",
                     transition: "background 0.1s",
                   }}
                   onMouseEnter={(e) => {
@@ -403,8 +438,12 @@ export default function SpelersOverzichtStudio({ spelers, onRowClick }: Props) {
                     (e.currentTarget as HTMLTableRowElement).style.background = "transparent";
                   }}
                 >
-                  {/* Naam + avatar */}
-                  <td style={{ padding: "0.625rem 0.875rem" }}>
+                  {/* Naam + avatar — klik opent profiel */}
+                  <td
+                    style={{ padding: "0.625rem 0.875rem", cursor: "pointer" }}
+                    onClick={() => onOpenProfiel(speler.id)}
+                    title="Open spelerprofiel"
+                  >
                     <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                       <div
                         style={{
@@ -450,15 +489,30 @@ export default function SpelersOverzichtStudio({ spelers, onRowClick }: Props) {
                     </span>
                   </td>
 
-                  {/* Status */}
-                  <td style={{ padding: "0.625rem 0.875rem" }}>
-                    <span
+                  {/* Status — inline bewerkbaar */}
+                  <td style={{ padding: "0.625rem 0.875rem", position: "relative" }}>
+                    <button
+                      type="button"
+                      disabled={!kadersId}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setEditorCel(
+                          editorCel?.spelerId === speler.id && editorCel.kolom === "status"
+                            ? null
+                            : { spelerId: speler.id, kolom: "status" }
+                        );
+                      }}
                       style={{
                         display: "inline-flex",
                         alignItems: "center",
                         gap: "0.35rem",
                         fontSize: "0.8125rem",
                         color: "var(--text-primary)",
+                        background: "none",
+                        border: "none",
+                        padding: 0,
+                        cursor: kadersId ? "pointer" : "default",
+                        fontFamily: "inherit",
                       }}
                     >
                       <span
@@ -471,20 +525,61 @@ export default function SpelersOverzichtStudio({ spelers, onRowClick }: Props) {
                         }}
                       />
                       {STATUS_LABELS[speler.status] ?? speler.status}
-                    </span>
+                    </button>
+                    {editorCel?.spelerId === speler.id &&
+                      editorCel.kolom === "status" &&
+                      kadersId && (
+                        <StatusDropdown
+                          huidig={speler.status as SpelerStatusWaarde}
+                          onKies={async (nieuw) => {
+                            setEditorCel(null);
+                            await updateSpelerStatus(kadersId, speler.id, nieuw);
+                          }}
+                          onClose={() => setEditorCel(null)}
+                        />
+                      )}
                   </td>
 
-                  {/* Gezien */}
-                  <td style={{ padding: "0.625rem 0.875rem" }}>
-                    <span
-                      style={{
-                        width: 8,
-                        height: 8,
-                        borderRadius: "50%",
-                        background: gezienDot,
-                        display: "inline-block",
+                  {/* Gezien — inline bewerkbaar als vink */}
+                  <td style={{ padding: "0.625rem 0.875rem", position: "relative" }}>
+                    <button
+                      type="button"
+                      disabled={!kadersId}
+                      title={`Gezien: ${speler.gezienStatus}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setEditorCel(
+                          editorCel?.spelerId === speler.id && editorCel.kolom === "gezien"
+                            ? null
+                            : { spelerId: speler.id, kolom: "gezien" }
+                        );
                       }}
-                    />
+                      style={{
+                        background: "none",
+                        border: "none",
+                        padding: "2px 4px",
+                        cursor: kadersId ? "pointer" : "default",
+                        fontSize: "0.95rem",
+                        color: gezienDot,
+                        opacity: speler.gezienStatus === "ONGEZIEN" ? 0.35 : 1,
+                        fontFamily: "inherit",
+                        fontWeight: 700,
+                      }}
+                    >
+                      ✓
+                    </button>
+                    {editorCel?.spelerId === speler.id &&
+                      editorCel.kolom === "gezien" &&
+                      kadersId && (
+                        <GezienDropdown
+                          huidig={speler.gezienStatus}
+                          onKies={async (nieuw) => {
+                            setEditorCel(null);
+                            await setGezienStatus(kadersId, speler.id, nieuw);
+                          }}
+                          onClose={() => setEditorCel(null)}
+                        />
+                      )}
                   </td>
 
                   {/* Huidig team */}
@@ -520,38 +615,74 @@ export default function SpelersOverzichtStudio({ spelers, onRowClick }: Props) {
                     )}
                   </td>
 
-                  {/* Indelingsteam */}
-                  <td style={{ padding: "0.625rem 0.875rem" }}>
-                    {speler.huidigIndelingTeam ? (
-                      <span
-                        style={{
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: "0.35rem",
-                          background: "rgba(34,197,94,0.1)",
-                          border: "1px solid rgba(34,197,94,0.25)",
-                          borderRadius: 6,
-                          padding: "0.2rem 0.5rem",
-                          fontSize: "0.75rem",
-                          color: "#4ade80",
-                          fontWeight: 500,
-                        }}
-                      >
+                  {/* Indelingsteam — inline bewerkbaar */}
+                  <td style={{ padding: "0.625rem 0.875rem", position: "relative" }}>
+                    <button
+                      type="button"
+                      disabled={!versieId}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setEditorCel(
+                          editorCel?.spelerId === speler.id && editorCel.kolom === "indeling"
+                            ? null
+                            : { spelerId: speler.id, kolom: "indeling" }
+                        );
+                      }}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        padding: 0,
+                        cursor: versieId ? "pointer" : "default",
+                        fontFamily: "inherit",
+                      }}
+                    >
+                      {speler.huidigIndelingTeam ? (
                         <span
                           style={{
-                            width: 6,
-                            height: 6,
-                            borderRadius: "50%",
-                            background: indelingKleur,
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "0.35rem",
+                            background: "rgba(34,197,94,0.1)",
+                            border: "1px solid rgba(34,197,94,0.25)",
+                            borderRadius: 6,
+                            padding: "0.2rem 0.5rem",
+                            fontSize: "0.75rem",
+                            color: "#4ade80",
+                            fontWeight: 500,
                           }}
+                        >
+                          <span
+                            style={{
+                              width: 6,
+                              height: 6,
+                              borderRadius: "50%",
+                              background: indelingKleur,
+                            }}
+                          />
+                          {speler.huidigIndelingTeam.naam}
+                        </span>
+                      ) : (
+                        <span style={{ color: "var(--text-secondary)", fontSize: "0.8125rem" }}>
+                          —
+                        </span>
+                      )}
+                    </button>
+                    {editorCel?.spelerId === speler.id &&
+                      editorCel.kolom === "indeling" &&
+                      versieId && (
+                        <IndelingDropdown
+                          teams={versieTeams}
+                          huidigTeamId={
+                            versieTeams.find((t) => t.naam === speler.huidigIndelingTeam?.naam)
+                              ?.id ?? null
+                          }
+                          onKies={async (nieuwTeamId) => {
+                            setEditorCel(null);
+                            await zetSpelerIndeling(versieId, speler.id, nieuwTeamId);
+                          }}
+                          onClose={() => setEditorCel(null)}
                         />
-                        {speler.huidigIndelingTeam.naam}
-                      </span>
-                    ) : (
-                      <span style={{ color: "var(--text-secondary)", fontSize: "0.8125rem" }}>
-                        —
-                      </span>
-                    )}
+                      )}
                   </td>
 
                   {/* Pin toggle */}
@@ -592,6 +723,197 @@ export default function SpelersOverzichtStudio({ spelers, onRowClick }: Props) {
           </tbody>
         </table>
       </div>
+    </div>
+  );
+}
+
+// ─── Inline dropdown helpers ────────────────────────────────────────────────
+
+function useClickOutside(onClose: () => void) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    function handler(e: MouseEvent) {
+      if (!ref.current) return;
+      if (!ref.current.contains(e.target as Node)) onClose();
+    }
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [onClose]);
+  return ref;
+}
+
+const popoverStyle: React.CSSProperties = {
+  position: "absolute",
+  top: "100%",
+  left: 0,
+  marginTop: 4,
+  zIndex: 50,
+  background: "var(--surface-card)",
+  border: "1px solid var(--border-default)",
+  borderRadius: 8,
+  padding: "0.375rem",
+  minWidth: 180,
+  boxShadow: "0 6px 16px rgba(0,0,0,0.25)",
+  display: "flex",
+  flexDirection: "column",
+  gap: 2,
+};
+
+const popoverItemStyle = (actief: boolean): React.CSSProperties => ({
+  padding: "0.375rem 0.5rem",
+  borderRadius: 6,
+  background: actief ? "rgba(255,107,0,0.12)" : "transparent",
+  color: actief ? "var(--ow-oranje-500)" : "var(--text-primary)",
+  fontSize: "0.8125rem",
+  border: "none",
+  textAlign: "left",
+  cursor: "pointer",
+  fontFamily: "inherit",
+  display: "flex",
+  alignItems: "center",
+  gap: 6,
+});
+
+function StatusDropdown({
+  huidig,
+  onKies,
+  onClose,
+}: {
+  huidig: SpelerStatusWaarde;
+  onKies: (nieuw: string) => void;
+  onClose: () => void;
+}) {
+  const [, startTransition] = useTransition();
+  const ref = useClickOutside(onClose);
+  return (
+    <div ref={ref} style={popoverStyle} onClick={(e) => e.stopPropagation()}>
+      {SPELER_STATUS_OPTIES.map((opt) => (
+        <button
+          key={opt.value}
+          type="button"
+          onClick={() => startTransition(() => onKies(opt.value))}
+          style={popoverItemStyle(opt.value === huidig)}
+        >
+          <span
+            style={{
+              width: 7,
+              height: 7,
+              borderRadius: "50%",
+              background: STATUS_DOT[opt.value] ?? "#6b7280",
+              flexShrink: 0,
+            }}
+          />
+          {opt.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function GezienDropdown({
+  huidig,
+  onKies,
+  onClose,
+}: {
+  huidig: GezienWaarde;
+  onKies: (nieuw: GezienWaarde) => void;
+  onClose: () => void;
+}) {
+  const [, startTransition] = useTransition();
+  const ref = useClickOutside(onClose);
+  const labels: Record<GezienWaarde, string> = {
+    ONGEZIEN: "Ongezien",
+    GROEN: "Groen",
+    GEEL: "Geel",
+    ORANJE: "Oranje",
+    ROOD: "Rood",
+  };
+  return (
+    <div ref={ref} style={popoverStyle} onClick={(e) => e.stopPropagation()}>
+      {GEZIEN_VOLGORDE.map((val) => (
+        <button
+          key={val}
+          type="button"
+          onClick={() => startTransition(() => onKies(val))}
+          style={popoverItemStyle(val === huidig)}
+        >
+          <span
+            style={{
+              color: GEZIEN_DOT[val],
+              opacity: val === "ONGEZIEN" ? 0.4 : 1,
+              fontWeight: 700,
+              width: 14,
+              display: "inline-block",
+            }}
+          >
+            ✓
+          </span>
+          {labels[val]}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function IndelingDropdown({
+  teams,
+  huidigTeamId,
+  onKies,
+  onClose,
+}: {
+  teams: VersieTeam[];
+  huidigTeamId: string | null;
+  onKies: (nieuwTeamId: string | null) => void;
+  onClose: () => void;
+}) {
+  const [, startTransition] = useTransition();
+  const ref = useClickOutside(onClose);
+  return (
+    <div ref={ref} style={popoverStyle} onClick={(e) => e.stopPropagation()}>
+      <button
+        type="button"
+        onClick={() => startTransition(() => onKies(null))}
+        style={popoverItemStyle(huidigTeamId === null)}
+      >
+        <span style={{ fontStyle: "italic", color: "var(--text-secondary)" }}>
+          — geen indeling —
+        </span>
+      </button>
+      {teams.length === 0 && (
+        <div
+          style={{
+            padding: "0.375rem 0.5rem",
+            fontSize: "0.75rem",
+            color: "var(--text-secondary)",
+            fontStyle: "italic",
+          }}
+        >
+          Geen teams in versie
+        </div>
+      )}
+      {teams.map((t) => {
+        const kleur =
+          KLEUR_DOT[(t.kleur ?? "").toLowerCase()] ?? KLEUR_DOT[t.kleur ?? ""] ?? "#6b7280";
+        return (
+          <button
+            key={t.id}
+            type="button"
+            onClick={() => startTransition(() => onKies(t.id))}
+            style={popoverItemStyle(t.id === huidigTeamId)}
+          >
+            <span
+              style={{
+                width: 6,
+                height: 6,
+                borderRadius: "50%",
+                background: kleur,
+                flexShrink: 0,
+              }}
+            />
+            {t.naam}
+          </button>
+        );
+      })}
     </div>
   );
 }

@@ -11,9 +11,18 @@ import type { StudioReservering } from "../reserveringen-actions";
 interface Props {
   spelers: StudioSpeler[];
   reserveringen: StudioReservering[];
+  context: {
+    kadersId: string | null;
+    versieId: string | null;
+    teams: { id: string; naam: string; kleur: string | null }[];
+  };
 }
 
-export default function SpelersOverzichtStudioWrapper({ spelers, reserveringen }: Props) {
+export default function SpelersOverzichtStudioWrapper({
+  spelers,
+  reserveringen,
+  context,
+}: Props) {
   const [profielId, setProfielId] = useState<string | null>(null);
   const [nieuwDialogOpen, setNieuwDialogOpen] = useState(false);
 
@@ -37,7 +46,13 @@ export default function SpelersOverzichtStudioWrapper({ spelers, reserveringen }
           + Nieuwe speler
         </button>
       </div>
-      <SpelersOverzichtStudio spelers={spelers} onRowClick={setProfielId} />
+      <SpelersOverzichtStudio
+        spelers={spelers}
+        onOpenProfiel={setProfielId}
+        kadersId={context.kadersId}
+        versieId={context.versieId}
+        versieTeams={context.teams}
+      />
       <ReserveringenOverzicht reserveringen={reserveringen} />
       <NieuweSpelerDialog open={nieuwDialogOpen} onClose={() => setNieuwDialogOpen(false)} />
       <SpelerProfielDialog
