@@ -10,7 +10,15 @@ import {
 } from "../staf-actions";
 import { NieuweStafDialog } from "./NieuweStafDialog";
 
-const ROL_SUGGESTIES = ["Trainer", "Coach", "Assistent", "Manager", "Begeleider", "Verzorger"];
+const ROL_SUGGESTIES = [
+  "Trainer/Coach",
+  "Coach",
+  "Trainer",
+  "Assistent",
+  "Verzorger",
+  "Begeleider",
+  "Manager",
+];
 
 type TeamOptie = { id: string; naam: string; kleur: string | null; volgorde: number };
 
