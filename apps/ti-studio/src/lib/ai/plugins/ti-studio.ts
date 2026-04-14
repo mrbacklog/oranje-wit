@@ -1,8 +1,8 @@
 /* eslint-disable max-lines */
 /**
- * TI-studio plugin voor Daisy — 19 tools voor de teamindeling.
+ * TI-studio plugin voor Daisy — 20 tools voor de teamindeling.
  *
- * Lees-tools (4): spelersZoeken, teamSamenstelling, scenarioVergelijken, blauwdrukToetsen
+ * Lees-tools (5): spelersZoeken, competitieTeamZoeken, teamSamenstelling, scenarioVergelijken, blauwdrukToetsen
  * Schrijf-tools spelers (5): spelerVerplaatsen, spelerStatusZetten,
  *   nieuwLidInBlauwdruk, plaatsreserveringZetten, besluitVastleggen
  * Schrijf-tools teams & staf (3): teamAanmaken, selectieAanmaken, stafPlaatsen
@@ -200,6 +200,95 @@ const leesTools = {
         resultaat = resultaat.filter((s) => s.retentierisico === params.retentierisico);
 
       return { aantalGevonden: resultaat.length, spelers: resultaat };
+    },
+  },
+
+  competitieTeamZoeken: {
+    description:
+      "Zoek wie er daadwerkelijk uitkomt in een competitieteam — gebaseerd op de echte KNKV-competitiedata (Sportlink). Gebruik dit als iemand vraagt wie er 'speelt' in een team, niet wie er gepland staat in de werkindeling. Teamcodes: S1S2, S3-S6, MW1, U15-1, U17, U19, J1-J18, K.",
+    inputSchema: z.object({
+      team: z
+        .string()
+        .describe(
+          "Teamcode zoals S1S2, S3, U17, J1 enz. Of gedeelte van een naam — de tool zoekt ook op veld 'bevat'."
+        ),
+      seizoen: z
+        .string()
+        .optional()
+        .describe(`Seizoen, bijv. "2025-2026". Standaard: huidig seizoen (${HUIDIG_SEIZOEN}).`),
+      geslacht: z.enum(["M", "V"]).optional().describe("Filter op geslacht"),
+    }),
+    execute: async (params: { team: string; seizoen?: string; geslacht?: "M" | "V" }) => {
+      function vertaalNaarCompetitieCode(t: string): string {
+        const s = t.trim().toLowerCase();
+        const map: Record<string, string> = {
+          s1s2: "S1S2",
+          "1e selectie": "S1S2",
+          s3: "S3",
+          "senioren 3": "S3",
+          "3e": "S3",
+          s4: "S4",
+          "senioren 4": "S4",
+          "4e": "S4",
+          s5: "S5",
+          "senioren 5": "S5",
+          "5e": "S5",
+          s6: "S6",
+          "senioren 6": "S6",
+          "6e": "S6",
+          midweek: "MW1",
+          mw: "MW1",
+          mw1: "MW1",
+          "midweek 1": "MW1",
+          u15: "U15-1",
+          "u15-1": "U15-1",
+          u17: "U17",
+          "u17-1": "U17",
+          "u17-2": "U17",
+          u19: "U19",
+          "u19-1": "U19",
+          "u19-2": "U19",
+        };
+        return map[s] ?? params.team.trim();
+      }
+
+      const seizoen = params.seizoen ?? HUIDIG_SEIZOEN;
+      const teamCode = vertaalNaarCompetitieCode(params.team);
+      const zoekterm = "%" + params.team.trim() + "%";
+
+      const rijen = await prisma.$queryRaw<
+        Array<{
+          roepnaam: string;
+          achternaam: string;
+          geslacht: string;
+          rel_code: string;
+          competitie: string;
+        }>
+      >`
+        SELECT l.roepnaam, l.achternaam, l.geslacht, cs.rel_code, cs.competitie
+        FROM competitie_spelers cs
+        JOIN leden l ON l.rel_code = cs.rel_code
+        WHERE cs.seizoen = ${seizoen}
+          AND (cs.team = ${teamCode} OR cs.team ILIKE ${zoekterm})
+        ORDER BY l.geslacht, l.achternaam
+      `;
+
+      let spelers = (rijen as any[]).map((r) => ({
+        naam: `${r.roepnaam} ${r.achternaam}`,
+        geslacht: r.geslacht,
+        relCode: r.rel_code,
+        competitie: r.competitie,
+      }));
+      if (params.geslacht) {
+        spelers = spelers.filter((s) => s.geslacht === params.geslacht);
+      }
+
+      return {
+        team: teamCode,
+        seizoen,
+        aantalGevonden: spelers.length,
+        spelers,
+      };
     },
   },
 

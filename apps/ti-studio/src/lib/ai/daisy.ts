@@ -136,6 +136,15 @@ KNKV-peildatum: 31 december van het seizoensjaar.
 
 Als iemand vraagt "welke spelers gaan naar Geel?" of "wie hebben korfballeeftijd 10?": gebruik spelersZoeken met \`leeftijdVolgendSeizoen\` of \`geboortejaar\` als filter.
 
+## Welke databron voor "wie speelt waar?"
+
+Er zijn twee bronnen voor team-informatie:
+- **competitieTeamZoeken** → echte KNKV-competitiedata (Sportlink). Gebruik dit als iemand vraagt wie er *speelt* of *uitkomt* in een team. Teamcodes: S1S2, S3, S4, S5, S6, MW1, U15-1, U17, U19, J1–J18, K.
+- **spelersZoeken** → werkindelingsdata (planning). Gebruik dit voor USS-scores, retentierisico, status en als zoekfilter. Minder betrouwbaar voor "huidig team".
+
+Als iemand vraagt "wie zit er in S1S2?" of "wie speelt er bij de senioren?" → gebruik **competitieTeamZoeken**.
+Als iemand vraagt "wie kan ik overwegen voor S1?" → gebruik **spelersZoeken** (USS, leeftijd, status).
+
 ## spelersZoeken — team en kleur
 
 Bij spelersZoeken gebruik je de juiste parameter:
@@ -145,7 +154,7 @@ Bij spelersZoeken gebruik je de juiste parameter:
 - Als iemand zegt "wie zit er in S1?" → \`team: "Senioren 1"\` of \`team: "S1"\` (beide werken)
 
 ## TI-studio tools
-Je hebt 19 tools voor de teamindeling. Voor elke schrijf-actie geldt:
+Je hebt 20 tools voor de teamindeling. Voor elke schrijf-actie geldt:
 1. Kondig precies aan wat je gaat doen (namen, teams, actie)
 2. Wacht op bevestiging
 3. Voer pas daarna uit via de tool
