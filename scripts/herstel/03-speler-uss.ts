@@ -20,8 +20,9 @@ import {
   coachNaarUSS,
   knkvNaarUSS,
   A_CATEGORIE_USS,
-  PEILJAAR,
+  HUIDIGE_PEILDATUM,
   HUIDIG_SEIZOEN,
+  grofKorfbalLeeftijd,
   parseACatKey,
 } from "@oranje-wit/types";
 import type { EvaluatieScore } from "@oranje-wit/types";
@@ -34,7 +35,7 @@ const SEIZOEN = "2025-2026";
 
 function bepaalLeeftijdsgroep(geboortejaar: number | null): string {
   if (!geboortejaar) return "senior";
-  const leeftijd = PEILJAAR - geboortejaar;
+  const leeftijd = grofKorfbalLeeftijd(geboortejaar, HUIDIGE_PEILDATUM);
   if (leeftijd <= 7) return "kangoeroe";
   if (leeftijd <= 9) return "f-pupil";
   if (leeftijd <= 11) return "e-pupil";

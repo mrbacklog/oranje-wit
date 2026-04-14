@@ -22,7 +22,11 @@ import { logger } from "@oranje-wit/types";
 
 const SEIZOENEN = ["2022-2023", "2023-2024", "2024-2025", "2025-2026"] as const;
 const HUIDIG_SEIZOEN = "2025-2026";
-const PEILJAAR = 2026; // 31 december van dit jaar
+// Demo-peildatum: hardcoded 31-12-2026 om snapshot-stabiliteit te behouden.
+// De echte peildatum komt uit `@oranje-wit/types` (HUIDIGE_PEILDATUM); deze
+// seed kiest bewust een iets latere waarde zodat de geboortejaar-to-leeftijd
+// mapping in demo-data 1-op-1 overeenkomt met de oude PEILJAAR=2026 logica.
+const PEILDATUM_JAAR = 2026;
 
 // Prefix voor demo-data — maakt cleanup eenvoudig
 // Tests (e2e/scouting) verwachten TSTN als prefix (TSTN001, TSTN099, etc.)
@@ -1301,7 +1305,7 @@ async function seedTISpelers(spelers: DemoSpeler[], toewijzingenHuidig: SeizoenT
         const teamDef = tw ? teamDefs.find((t) => t.naam === tw.team) : null;
 
         // Bereken leeftijd op peildatum
-        const leeftijd = PEILJAAR - s.geboortejaar;
+        const leeftijd = PEILDATUM_JAAR - s.geboortejaar;
 
         // Bepaal A-categorie info
         let aCat: string | undefined;
@@ -1348,7 +1352,7 @@ async function seedTISpelers(spelers: DemoSpeler[], toewijzingenHuidig: SeizoenT
                 leeftijd,
               }
             : null,
-          seizoenenActief: Math.max(1, PEILJAAR - parseInt(s.startSeizoen.split("-")[0])),
+          seizoenenActief: Math.max(1, PEILDATUM_JAAR - parseInt(s.startSeizoen.split("-")[0])),
           instroomLeeftijd: parseInt(s.startSeizoen.split("-")[0]) - s.geboortejaar,
           status: "BESCHIKBAAR" as const,
         };

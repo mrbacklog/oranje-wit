@@ -23,7 +23,7 @@ export interface TeamDef {
 
 export const SEIZOEN_HUIDIG = "2025-2026";
 export const SEIZOEN_VORIG = "2024-2025";
-export const PEILJAAR = 2025;
+export const PEILDATUM_JAAR = 2025;
 
 export const TEAMS: TeamDef[] = [
   // ── Senioren ──────────────────────────────────────────────────────────
