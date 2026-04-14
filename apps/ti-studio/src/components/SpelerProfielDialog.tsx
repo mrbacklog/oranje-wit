@@ -6,9 +6,13 @@ import {
   getSpelerProfiel,
   updateSpelerStatus,
 } from "@/app/(protected)/indeling/werkindeling-actions";
-import { logger, PEILJAAR } from "@oranje-wit/types";
+import {
+  logger,
+  HUIDIGE_PEILDATUM,
+  berekenKorfbalLeeftijd,
+  formatKorfbalLeeftijd,
+} from "@oranje-wit/types";
 import type { EvaluatieScore, TeamGemiddelde } from "@oranje-wit/types";
-import { korfbalLeeftijd as berekenKorfbalLeeftijd } from "@/lib/teamindeling/validatie-engine";
 import { WerkitemPanel } from "@/components/WerkitemPanel";
 
 // ──────────────────────────────────────────────────────────
@@ -183,7 +187,15 @@ function korfbalLeeftijd(
     geboortedatum instanceof Date
       ? geboortedatum.toISOString().split("T")[0]
       : (geboortedatum ?? null);
-  return berekenKorfbalLeeftijd(gbd, geboortejaar ?? PEILJAAR - 15, PEILJAAR).toFixed(2);
+  // SpelerProfielDialog wordt ook buiten een scenario-context gebruikt
+  // (personen-overzicht). Daarom valt deze helper terug op HUIDIGE_PEILDATUM.
+  return formatKorfbalLeeftijd(
+    berekenKorfbalLeeftijd(
+      gbd,
+      geboortejaar ?? HUIDIGE_PEILDATUM.getFullYear() - 15,
+      HUIDIGE_PEILDATUM
+    )
+  );
 }
 
 function SpelerFoto({

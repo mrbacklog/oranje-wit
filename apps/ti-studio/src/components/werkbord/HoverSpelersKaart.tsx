@@ -21,9 +21,9 @@
 import { createContext, useCallback, useContext, useRef, useState, useEffect } from "react";
 import type { ReactNode } from "react";
 import type { WerkbordSpeler } from "./types";
-import { PEILJAAR } from "@oranje-wit/types";
-import { korfbalLeeftijd } from "@/lib/teamindeling/validatie-engine";
+import { berekenKorfbalLeeftijd } from "@oranje-wit/types";
 import { leeftijdsGradient, leeftijdsKleur } from "./leeftijds-kleuren";
+import { usePeildatum } from "./peildatum-context";
 
 // ── Constanten ──────────────────────────────────────────────────────────────
 
@@ -210,10 +210,12 @@ function HoverSpelersKaartPortal({
     setIsFlipped((prev) => (e.deltaY > 0 ? true : false));
   }, []);
 
+  const peildatum = usePeildatum();
+
   if (!state.speler) return null;
 
   const speler = state.speler;
-  const leeftijd = korfbalLeeftijd(speler.geboortedatum, speler.geboortejaar, PEILJAAR);
+  const leeftijd = berekenKorfbalLeeftijd(speler.geboortedatum, speler.geboortejaar, peildatum);
   const gradient = leeftijdsGradient(leeftijd);
   const kleur = leeftijdsKleur(leeftijd);
   const tier = bepaalTier(speler.ussScore);

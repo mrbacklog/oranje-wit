@@ -77,13 +77,13 @@
  */
 
 import { useRef, useState, useCallback } from "react";
-import { PEILJAAR } from "@oranje-wit/types";
-import { korfbalLeeftijd } from "@/lib/teamindeling/validatie-engine";
+import { berekenKorfbalLeeftijd } from "@oranje-wit/types";
 import { leeftijdsKleur } from "./leeftijds-kleuren";
 import "./tokens.css";
 import { SpelerKaart } from "./SpelerKaart";
 import type { WerkbordSpelerInTeam } from "./types";
 import { useHoverKaart } from "./HoverSpelersKaart";
+import { usePeildatum } from "./peildatum-context";
 
 // ── Constanten ──────────────────────────────────────────────────────────────
 
@@ -379,7 +379,7 @@ function CompactChip({
       {/* Drag-image ghost */}
       {!isAR && (
         <div ref={ghostRef} style={dragImageStyle()}>
-          <SpelerKaart speler={speler} vanTeamId={teamId} seizoenEindjaar={PEILJAAR} asGhost />
+          <SpelerKaart speler={speler} vanTeamId={teamId} asGhost />
         </div>
       )}
 
@@ -546,7 +546,8 @@ function NormaalRij({
   const initialen =
     `${speler.roepnaam.charAt(0)}${achternaamKern(speler.achternaam, speler.tussenvoegsel).charAt(0)}`.toUpperCase();
   const naam = naamNormaal(speler.roepnaam, speler.tussenvoegsel, speler.achternaam);
-  const leeftijd = korfbalLeeftijd(speler.geboortedatum, speler.geboortejaar, PEILJAAR);
+  const peildatum = usePeildatum();
+  const leeftijd = berekenKorfbalLeeftijd(speler.geboortedatum, speler.geboortejaar, peildatum);
   const leeftKleur = leeftijdsKleur(leeftijd);
 
   const dragHandlers = isAR
@@ -573,7 +574,7 @@ function NormaalRij({
       {/* Drag-image ghost */}
       {!isAR && (
         <div ref={ghostRef} style={dragImageStyle()}>
-          <SpelerKaart speler={speler} vanTeamId={teamId} seizoenEindjaar={PEILJAAR} asGhost />
+          <SpelerKaart speler={speler} vanTeamId={teamId} asGhost />
         </div>
       )}
 
@@ -783,7 +784,8 @@ function PoolRij({
   const initialen =
     `${speler.roepnaam.charAt(0)}${achternaamKern(speler.achternaam, speler.tussenvoegsel).charAt(0)}`.toUpperCase();
   const naam = naamPool(speler.roepnaam, speler.tussenvoegsel, speler.achternaam);
-  const leeftijd = korfbalLeeftijd(speler.geboortedatum, speler.geboortejaar, PEILJAAR);
+  const peildatum = usePeildatum();
+  const leeftijd = berekenKorfbalLeeftijd(speler.geboortedatum, speler.geboortejaar, peildatum);
   const leeftKleur = leeftijdsKleur(leeftijd);
 
   // Pool: vanTeamId is de huidige teamId (null als de speler geen team heeft)
@@ -813,7 +815,7 @@ function PoolRij({
       {/* Drag-image ghost */}
       {!isAR && (
         <div ref={ghostRef} style={dragImageStyle()}>
-          <SpelerKaart speler={speler} vanTeamId={vanTeamId} seizoenEindjaar={PEILJAAR} asGhost />
+          <SpelerKaart speler={speler} vanTeamId={vanTeamId} asGhost />
         </div>
       )}
 

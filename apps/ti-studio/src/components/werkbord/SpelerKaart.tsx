@@ -1,45 +1,30 @@
-// apps/web/src/components/ti-studio/werkbord/SpelerKaart.tsx
+// apps/ti-studio/src/components/werkbord/SpelerKaart.tsx
 "use client";
 import { useRef, useState } from "react";
 import "./tokens.css";
 import type { WerkbordSpeler } from "./types";
 import { leeftijdsKleur } from "./leeftijds-kleuren";
+import { berekenKorfbalLeeftijd } from "@oranje-wit/types";
+import { usePeildatum } from "./peildatum-context";
 
 interface SpelerKaartProps {
   speler: WerkbordSpeler;
   vanTeamId: string | null; // null = komt uit pool
   vanSelectieGroepId?: string | null; // meegeven vanuit team-context voor correcte drag-data
-  seizoenEindjaar: number; // bijv. 2026
   asGhost?: boolean; // true = niet-draggable, gebruikt als drag-image bron
   smal?: boolean; // true = compacte variant voor teamkaart-kolommen (~130px)
   onClick?: () => void;
-}
-
-function berekenKorfbalLeeftijd(
-  geboortedatum: string | null,
-  geboortejaar: number,
-  seizoenEindjaar: number
-): number {
-  if (geboortedatum) {
-    const peildatum = new Date(seizoenEindjaar, 11, 31); // 31 dec eindjaar
-    const geboorte = new Date(geboortedatum);
-    return (
-      Math.floor(((peildatum.getTime() - geboorte.getTime()) / (365.25 * 24 * 3600 * 1000)) * 100) /
-      100
-    );
-  }
-  return seizoenEindjaar - geboortejaar;
 }
 
 export function SpelerKaart({
   speler,
   vanTeamId,
   vanSelectieGroepId = null,
-  seizoenEindjaar,
   asGhost = false,
   smal = false,
   onClick,
 }: SpelerKaartProps) {
+  const peildatum = usePeildatum();
   const kaartRef = useRef<HTMLDivElement>(null);
   const [isHeld, setIsHeld] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -51,11 +36,7 @@ export function SpelerKaart({
 
   const initialen = `${speler.roepnaam.charAt(0)}${speler.achternaam.charAt(0)}`.toUpperCase();
 
-  const leeftijd = berekenKorfbalLeeftijd(
-    speler.geboortedatum,
-    speler.geboortejaar,
-    seizoenEindjaar
-  );
+  const leeftijd = berekenKorfbalLeeftijd(speler.geboortedatum, speler.geboortejaar, peildatum);
   const leeftKleur = leeftijdsKleur(leeftijd);
 
   const stopGezet = speler.status === "GAAT_STOPPEN";

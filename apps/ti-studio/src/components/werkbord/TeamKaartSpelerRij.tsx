@@ -1,10 +1,9 @@
-// apps/web/src/components/ti-studio/werkbord/TeamKaartSpelerRij.tsx
+// apps/ti-studio/src/components/werkbord/TeamKaartSpelerRij.tsx
 // Dunne wrapper die delegeert naar SpelerRij (compact/normaal) of SpelerKaart (detail).
 "use client";
 import "./tokens.css";
 import { SpelerKaart } from "./SpelerKaart";
 import { SpelerRij, SPELER_RIJ_HOOGTE } from "./SpelerRij";
-import { PEILJAAR } from "@oranje-wit/types";
 import type { WerkbordSpelerInTeam, ZoomLevel } from "./types";
 
 export { SPELER_RIJ_HOOGTE };
@@ -39,7 +38,6 @@ export function TeamKaartSpelerRij({
         speler={spelerInTeam.speler}
         vanTeamId={teamId}
         vanSelectieGroepId={selectieGroepId ?? null}
-        seizoenEindjaar={PEILJAAR}
         onClick={onSpelerClick ? () => onSpelerClick(spelerInTeam.speler.id, teamId) : undefined}
       />
     );
