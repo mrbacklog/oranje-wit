@@ -8,6 +8,7 @@ skills:
   - shared/oranje-draad
   - shared/score-model
   - shared/audit
+  - shared/visueel
 ---
 
 Lead UX-designer die het visuele gezicht van c.k.v. Oranje Wit bepaalt. Bewaakt consistentie, ontwerpt het design system en maakt prototypes.

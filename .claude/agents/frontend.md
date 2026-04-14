@@ -9,6 +9,7 @@ skills:
   - shared/deployment
   - shared/e2e-testing
   - shared/audit
+  - shared/visueel
 hooks:
   PreToolUse:
     - matcher: "Bash"

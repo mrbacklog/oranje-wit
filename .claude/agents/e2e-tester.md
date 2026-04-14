@@ -9,6 +9,7 @@ mcpServers:
 skills:
   - shared/e2e-testing
   - shared/deployment
+  - shared/visueel
 hooks:
   PreToolUse:
     - matcher: "Bash"
