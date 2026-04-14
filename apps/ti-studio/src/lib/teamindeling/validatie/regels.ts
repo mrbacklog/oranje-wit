@@ -39,7 +39,7 @@ import { valideerGender, valideerDuplicaten } from "./zachte-regels";
 
 export function valideerTeam(
   team: TeamData,
-  seizoenJaar: number,
+  peildatum: Date,
   overrides?: TeamgrootteOverrides,
   kaders?: BlauwdrukKaders
 ): TeamValidatie {
@@ -51,9 +51,9 @@ export function valideerTeam(
 
   // Bepaal teamtype
   if (isBCat && team.kleur) {
-    valideerBCategorie(team, seizoenJaar, meldingen, overrides, kaders);
+    valideerBCategorie(team, peildatum, meldingen, overrides, kaders);
   } else if (isACat) {
-    valideerACategorie(team, seizoenJaar, meldingen, overrides, kaders);
+    valideerACategorie(team, peildatum, meldingen, overrides, kaders);
   } else if (team.categorie === "SENIOREN") {
     // Senioren zonder duidelijke A/B → valideer als achttal
     valideerSenioren(team, meldingen, overrides, kaders);

@@ -17,7 +17,7 @@ export const KLEUR_FORMAT: Record<string, "viertal" | "achttal"> = {
   ROOD: "achttal",
 };
 
-/** Leeftijdsrange per kleur (individuele korfballeeftijd in peiljaar).
+/** Leeftijdsrange per kleur (individuele korfballeeftijd op peildatum).
  *  Gebaseerd op landelijke conceptindelingen veld voorjaar 2026. */
 export const KLEUR_LEEFTIJD: Record<string, { min: number; max: number }> = {
   PAARS: { min: 4, max: 6 },

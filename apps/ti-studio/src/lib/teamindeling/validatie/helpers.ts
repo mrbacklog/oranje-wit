@@ -10,6 +10,7 @@ import type {
   SpelerData,
 } from "./types";
 import { DEFAULT_TEAMGROOTTE } from "./constanten";
+import { berekenKorfbalLeeftijdExact } from "@oranje-wit/types";
 
 export function getTeamgrootte(
   format: "viertal" | "achttal",
@@ -126,8 +127,9 @@ export function detecteerACategorie(teamNaam: string): "U15" | "U17" | "U19" | n
 
 export function aCategorieGeboortejaren(
   categorie: "U15" | "U17" | "U19",
-  seizoenJaar: number
+  peildatum: Date
 ): [number, number] {
+  const seizoenJaar = peildatum.getFullYear();
   switch (categorie) {
     case "U15":
       return [seizoenJaar - 14, seizoenJaar - 13];
@@ -139,18 +141,10 @@ export function aCategorieGeboortejaren(
 }
 
 /**
- * Bereken precieze korfballeeftijd op peildatum 31-12 van het seizoensjaar.
- * Gebruikt geboortedatum als beschikbaar (2 decimalen), anders fallback op geboortejaar.
+ * Bereken precieze (onafgeronde) korfballeeftijd op peildatum.
+ * Onafgerond voor vergelijkingen; callers die weergave willen moeten
+ * `formatKorfbalLeeftijd(...)` toepassen.
  */
-export function spelerKorfbalLeeftijd(speler: SpelerData, seizoenJaar: number): number {
-  if (speler.geboortedatum) {
-    const gd =
-      typeof speler.geboortedatum === "string"
-        ? new Date(speler.geboortedatum)
-        : speler.geboortedatum;
-    const peildatum = new Date(seizoenJaar, 11, 31); // 31 december
-    const ms = peildatum.getTime() - gd.getTime();
-    return Math.round((ms / (365.25 * 86_400_000)) * 100) / 100;
-  }
-  return seizoenJaar - speler.geboortejaar;
+export function spelerKorfbalLeeftijd(speler: SpelerData, peildatum: Date): number {
+  return berekenKorfbalLeeftijdExact(speler.geboortedatum ?? null, speler.geboortejaar, peildatum);
 }

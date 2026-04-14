@@ -4,6 +4,7 @@
  */
 import type { ValidatieStatus, ValidatieMelding, BlauwdrukKaders } from "./regels";
 import { KLEUR_VEILIGE_RANGE } from "./regels";
+import { grofKorfbalLeeftijd, formatKorfbalLeeftijd } from "@oranje-wit/types";
 
 export interface SelectieValidatie {
   status: ValidatieStatus;
@@ -35,7 +36,7 @@ const SELECTIE_GROOTTE = {
 export function valideerSelectie(
   spelers: SelectieSpeler[],
   teams: SelectieTeamInfo[],
-  seizoenJaar: number,
+  peildatum: Date,
   _kaders?: BlauwdrukKaders
 ): SelectieValidatie {
   const meldingen: ValidatieMelding[] = [];
@@ -83,7 +84,7 @@ export function valideerSelectie(
   // --- Leeftijdsrange controle per kleur ---
   const kleuren = [...new Set(teams.map((t) => t.kleur).filter(Boolean))] as string[];
   if (kleuren.length > 0 && spelers.length > 0) {
-    const leeftijden = spelers.map((s) => seizoenJaar - s.geboortejaar);
+    const leeftijden = spelers.map((s) => grofKorfbalLeeftijd(s.geboortejaar, peildatum));
     const gemLeeftijd = leeftijden.reduce((a, b) => a + b, 0) / leeftijden.length;
 
     for (const kleur of kleuren) {
@@ -94,13 +95,13 @@ export function valideerSelectie(
         meldingen.push({
           regel: "selectie_kleur_grens",
           ernst: "aandacht",
-          bericht: `Gem. leeftijd ${gemLeeftijd.toFixed(1)} te laag voor ${kleur.toLowerCase()} (min ${range.min})`,
+          bericht: `Gem. leeftijd ${formatKorfbalLeeftijd(gemLeeftijd)} te laag voor ${kleur.toLowerCase()} (min ${range.min})`,
         });
       } else if (gemLeeftijd > range.max) {
         meldingen.push({
           regel: "selectie_kleur_grens",
           ernst: "aandacht",
-          bericht: `Gem. leeftijd ${gemLeeftijd.toFixed(1)} te hoog voor ${kleur.toLowerCase()} (max ${range.max})`,
+          bericht: `Gem. leeftijd ${formatKorfbalLeeftijd(gemLeeftijd)} te hoog voor ${kleur.toLowerCase()} (max ${range.max})`,
         });
       }
     }

@@ -18,6 +18,7 @@ import {
   aCategorieGeboortejaren,
   spelerKorfbalLeeftijd,
 } from "./helpers";
+import { formatKorfbalLeeftijd } from "@oranje-wit/types";
 
 // ============================================================
 // B-categorie validatie
@@ -25,7 +26,7 @@ import {
 
 export function valideerBCategorie(
   team: TeamData,
-  seizoenJaar: number,
+  peildatum: Date,
   meldingen: ValidatieMelding[],
   overrides?: TeamgrootteOverrides,
   kaders?: BlauwdrukKaders
@@ -57,16 +58,16 @@ export function valideerBCategorie(
     });
   }
 
-  // Leeftijdsspreiding (precieze korfballeeftijd, 2 decimalen)
+  // Leeftijdsspreiding (precieze onafgeronde korfballeeftijd)
   if (team.spelers.length > 0) {
-    const leeftijden = team.spelers.map((s) => spelerKorfbalLeeftijd(s, seizoenJaar));
+    const leeftijden = team.spelers.map((s) => spelerKorfbalLeeftijd(s, peildatum));
     const spreiding = Math.max(...leeftijden) - Math.min(...leeftijden);
     const maxSpreiding = format === "viertal" ? 2 : 3;
 
     if (spreiding > maxSpreiding) {
       meldingen.push({
         regel: "bandbreedte",
-        bericht: `${team.naam}: leeftijdsspreiding ${spreiding.toFixed(1)} jaar, max is ${maxSpreiding}`,
+        bericht: `${team.naam}: leeftijdsspreiding ${formatKorfbalLeeftijd(spreiding)} jaar, max is ${maxSpreiding}`,
         ernst: "kritiek",
       });
     }
@@ -76,11 +77,11 @@ export function valideerBCategorie(
   if (team.kleur && KLEUR_LEEFTIJD[team.kleur] && team.spelers.length > 0) {
     const range = KLEUR_LEEFTIJD[team.kleur];
     for (const speler of team.spelers) {
-      const leeftijd = spelerKorfbalLeeftijd(speler, seizoenJaar);
+      const leeftijd = spelerKorfbalLeeftijd(speler, peildatum);
       if (leeftijd < range.min || leeftijd > range.max) {
         meldingen.push({
           regel: "leeftijd_kleur",
-          bericht: `${speler.roepnaam} ${speler.achternaam} (${leeftijd.toFixed(1)} jr) valt buiten ${team.kleur.toLowerCase()} (${range.min}-${range.max} jr)`,
+          bericht: `${speler.roepnaam} ${speler.achternaam} (${formatKorfbalLeeftijd(leeftijd)} jr) valt buiten ${team.kleur.toLowerCase()} (${range.min}-${range.max} jr)`,
           ernst: "aandacht",
         });
       }
@@ -90,31 +91,27 @@ export function valideerBCategorie(
   // Gemiddelde leeftijd (8-tallen)
   if (format === "achttal" && team.spelers.length > 0) {
     const gemiddeldeLeeftijd =
-      team.spelers.reduce((sum, s) => sum + spelerKorfbalLeeftijd(s, seizoenJaar), 0) /
+      team.spelers.reduce((sum, s) => sum + spelerKorfbalLeeftijd(s, peildatum), 0) /
       team.spelers.length;
 
     if (gemiddeldeLeeftijd < MIN_GEMIDDELDE_LEEFTIJD_8TAL) {
       meldingen.push({
         regel: "gemiddelde_leeftijd",
-        bericht: `${team.naam}: gemiddelde leeftijd ${gemiddeldeLeeftijd.toFixed(1)}, minimum is ${MIN_GEMIDDELDE_LEEFTIJD_8TAL}`,
+        bericht: `${team.naam}: gemiddelde leeftijd ${formatKorfbalLeeftijd(gemiddeldeLeeftijd)}, minimum is ${MIN_GEMIDDELDE_LEEFTIJD_8TAL}`,
         ernst: "kritiek",
       });
     }
   }
 
   // Kleur-grens: risico op herindeling door de bond
-  valideerKleurGrens(team, seizoenJaar, meldingen);
+  valideerKleurGrens(team, peildatum, meldingen);
 }
 
 // ============================================================
 // Kleur-grens validatie (herindelingsrisico)
 // ============================================================
 
-export function valideerKleurGrens(
-  team: TeamData,
-  seizoenJaar: number,
-  meldingen: ValidatieMelding[]
-) {
+export function valideerKleurGrens(team: TeamData, peildatum: Date, meldingen: ValidatieMelding[]) {
   if (!team.kleur || team.spelers.length === 0) return;
 
   const kleur = team.kleur;
@@ -122,7 +119,7 @@ export function valideerKleurGrens(
   if (!range) return;
 
   const gemLeeftijd =
-    team.spelers.reduce((sum, s) => sum + spelerKorfbalLeeftijd(s, seizoenJaar), 0) /
+    team.spelers.reduce((sum, s) => sum + spelerKorfbalLeeftijd(s, peildatum), 0) /
     team.spelers.length;
 
   const idx = KLEUR_VOLGORDE.indexOf(kleur as (typeof KLEUR_VOLGORDE)[number]);
@@ -130,10 +127,10 @@ export function valideerKleurGrens(
   // Te oud voor huidige kleur?
   if (gemLeeftijd > range.max && idx < KLEUR_VOLGORDE.length - 1) {
     const volgende = KLEUR_VOLGORDE[idx + 1].toLowerCase();
-    const over = (gemLeeftijd - range.max).toFixed(1);
+    const over = formatKorfbalLeeftijd(gemLeeftijd - range.max);
     meldingen.push({
       regel: "kleur_grens",
-      bericht: `${team.naam}: gem. ${gemLeeftijd.toFixed(1)} jr — ${over} jr boven ${kleur.toLowerCase()}-grens (max ${range.max}), risico herindeling naar ${volgende}`,
+      bericht: `${team.naam}: gem. ${formatKorfbalLeeftijd(gemLeeftijd)} jr — ${over} jr boven ${kleur.toLowerCase()}-grens (max ${range.max}), risico herindeling naar ${volgende}`,
       ernst: "aandacht",
     });
   }
@@ -141,10 +138,10 @@ export function valideerKleurGrens(
   // Te jong voor huidige kleur?
   if (gemLeeftijd < range.min && idx > 0) {
     const vorige = KLEUR_VOLGORDE[idx - 1].toLowerCase();
-    const onder = (range.min - gemLeeftijd).toFixed(1);
+    const onder = formatKorfbalLeeftijd(range.min - gemLeeftijd);
     meldingen.push({
       regel: "kleur_grens",
-      bericht: `${team.naam}: gem. ${gemLeeftijd.toFixed(1)} jr — ${onder} jr onder ${kleur.toLowerCase()}-grens (min ${range.min}), risico herindeling naar ${vorige}`,
+      bericht: `${team.naam}: gem. ${formatKorfbalLeeftijd(gemLeeftijd)} jr — ${onder} jr onder ${kleur.toLowerCase()}-grens (min ${range.min}), risico herindeling naar ${vorige}`,
       ernst: "aandacht",
     });
   }
@@ -156,7 +153,7 @@ export function valideerKleurGrens(
 
 export function valideerACategorie(
   team: TeamData,
-  seizoenJaar: number,
+  peildatum: Date,
   meldingen: ValidatieMelding[],
   overrides?: TeamgrootteOverrides,
   kaders?: BlauwdrukKaders
@@ -190,7 +187,7 @@ export function valideerACategorie(
   if (team.spelers.length > 0) {
     const categorie = detecteerACategorie(team.naam);
     if (categorie) {
-      const [minJaar, maxJaar] = aCategorieGeboortejaren(categorie, seizoenJaar);
+      const [minJaar, maxJaar] = aCategorieGeboortejaren(categorie, peildatum);
 
       for (const speler of team.spelers) {
         if (speler.geboortejaar < minJaar || speler.geboortejaar > maxJaar) {

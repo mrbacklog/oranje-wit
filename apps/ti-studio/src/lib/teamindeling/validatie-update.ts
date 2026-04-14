@@ -4,11 +4,8 @@
 import { prisma } from "@/lib/teamindeling/db/prisma";
 import { getTeamtypeKaders } from "@/app/(protected)/kader/actions";
 import { mergeMetDefaults } from "@/app/(protected)/kader/kader-defaults";
-import {
-  berekenTeamValidatie,
-  berekenValidatieStatus,
-  korfbalLeeftijd,
-} from "@/lib/teamindeling/validatie-engine";
+import { berekenTeamValidatie, berekenValidatieStatus } from "@/lib/teamindeling/validatie-engine";
+import { korfbalPeildatum, berekenKorfbalLeeftijd, type Seizoen } from "@oranje-wit/types";
 import type { ValidatieUpdate } from "@/components/werkbord/types";
 
 export const DB_KLEUR_MAP: Record<string, string> = {
@@ -54,7 +51,7 @@ export async function haalValidatieUpdate(teamId: string): Promise<ValidatieUpda
   });
 
   const seizoen = teamData.versie.werkindeling.kaders.seizoen;
-  const peiljaar = parseInt(seizoen.split("-")[1], 10);
+  const peildatum = korfbalPeildatum(seizoen as Seizoen);
   const tcKaders = mergeMetDefaults(await getTeamtypeKaders(seizoen));
 
   type TeamSpelerRow = (typeof teamData.spelers)[number];
@@ -118,7 +115,14 @@ export async function haalValidatieUpdate(teamId: string): Promise<ValidatieUpda
           const gbd = ts.speler.geboortedatum
             ? (ts.speler.geboortedatum as Date).toISOString().split("T")[0]
             : null;
-          return acc + korfbalLeeftijd(gbd, ts.speler.geboortejaar ?? peiljaar - 15, peiljaar);
+          return (
+            acc +
+            berekenKorfbalLeeftijd(
+              gbd,
+              ts.speler.geboortejaar ?? peildatum.getFullYear() - 15,
+              peildatum
+            )
+          );
         }, 0) / totaalSpelers
       : null;
 
@@ -158,7 +162,7 @@ export async function haalValidatieUpdate(teamId: string): Promise<ValidatieUpda
     openMemoCount: 0,
   };
 
-  const items = berekenTeamValidatie(teamVoorValidatie, tcKaders, peiljaar);
+  const items = berekenTeamValidatie(teamVoorValidatie, tcKaders, peildatum);
   return {
     teamId,
     items,

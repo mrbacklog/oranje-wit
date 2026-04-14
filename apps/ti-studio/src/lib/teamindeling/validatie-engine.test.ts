@@ -83,13 +83,13 @@ describe("berekenTeamValidatie", () => {
     const dames = ["d1", "d2", "d3", "d4", "d5"].map((id) => maakSpeler(id, "V"));
     const heren = ["h1", "h2", "h3", "h4", "h5"].map((id) => maakSpeler(id, "M"));
     const team = maakBasisTeam({ dames, heren });
-    const items = berekenTeamValidatie(team, KADER_SEN_A, 2026);
+    const items = berekenTeamValidatie(team, KADER_SEN_A, new Date(2026, 11, 31));
     expect(items.filter((i) => i.type === "err")).toHaveLength(0);
   });
 
   it("geeft fout wanneer gebundeld team GEEN selectiespelers heeft", () => {
     const team = maakBasisTeam({ gebundeld: true, selectieGroepId: "groep-1" });
-    const items = berekenTeamValidatie(team, KADER_SEN_A, 2026);
+    const items = berekenTeamValidatie(team, KADER_SEN_A, new Date(2026, 11, 31));
     expect(items.some((i) => i.type === "err" && i.regel === "Te weinig spelers")).toBe(true);
   });
 
@@ -102,7 +102,7 @@ describe("berekenTeamValidatie", () => {
       selectieDames,
       selectieHeren,
     });
-    const items = berekenTeamValidatie(team, KADER_SEN_A, 2026);
+    const items = berekenTeamValidatie(team, KADER_SEN_A, new Date(2026, 11, 31));
     expect(items.filter((i) => i.type === "err")).toHaveLength(0);
   });
 });

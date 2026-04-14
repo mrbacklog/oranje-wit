@@ -2,20 +2,22 @@
 
 import type { WerkbordTeam, WerkbordValidatieItem } from "@/components/werkbord/types";
 import type { TcKader } from "@/app/(protected)/kader/kader-defaults";
+import {
+  berekenKorfbalLeeftijd,
+  berekenKorfbalLeeftijdExact,
+  formatKorfbalLeeftijd,
+} from "@oranje-wit/types";
 
-const MS_PER_JAAR = 365.25 * 24 * 60 * 60 * 1000;
-
+/**
+ * @deprecated Gebruik `berekenKorfbalLeeftijd` / `berekenKorfbalLeeftijdExact` direct.
+ * Deze wrapper blijft tijdelijk bestaan zodat importers van deze file nog werken.
+ */
 export function korfbalLeeftijd(
   geboortedatum: string | null,
   geboortejaar: number,
-  peiljaar: number
+  peildatum: Date
 ): number {
-  if (geboortedatum) {
-    const peil = new Date(peiljaar, 11, 31); // 31 dec van het peiljaar (KNKV peildatum)
-    const geb = new Date(geboortedatum);
-    return Math.round(((peil.getTime() - geb.getTime()) / MS_PER_JAAR) * 100) / 100;
-  }
-  return peiljaar - geboortejaar;
+  return berekenKorfbalLeeftijd(geboortedatum, geboortejaar, peildatum);
 }
 
 export function bepaalKaderSleutel(
@@ -47,7 +49,7 @@ export function bepaalKaderSleutel(
 export function berekenTeamValidatie(
   team: WerkbordTeam,
   kaders: Record<string, TcKader>,
-  peiljaar: number
+  peildatum: Date
 ): WerkbordValidatieItem[] {
   const sleutel = bepaalKaderSleutel(team);
 
@@ -166,35 +168,37 @@ export function berekenTeamValidatie(
     }
   }
 
-  // 5. Leeftijdsbandbreedte
+  // 5. Leeftijdsbandbreedte — exacte waarden om grens-afrondings-bugs te vermijden
   if (kader.bandbreedteMax !== undefined && alleSpelers.length >= 2) {
-    const leeftijden = alleSpelers.map((sit) =>
-      korfbalLeeftijd(sit.speler.geboortedatum, sit.speler.geboortejaar, peiljaar)
+    const leeftijdenExact = alleSpelers.map((sit) =>
+      berekenKorfbalLeeftijdExact(sit.speler.geboortedatum, sit.speler.geboortejaar, peildatum)
     );
-    const minL = Math.min(...leeftijden);
-    const maxL = Math.max(...leeftijden);
-    const spreiding = Math.round((maxL - minL) * 100) / 100;
-    if (spreiding > kader.bandbreedteMax) {
+    const spreidingExact = Math.max(...leeftijdenExact) - Math.min(...leeftijdenExact);
+    if (spreidingExact > kader.bandbreedteMax) {
       items.push({
         teamId: team.id,
         type: "err",
         regel: "Leeftijdsbandbreedte overschreden",
-        beschrijving: `Spreiding ${spreiding.toFixed(2)} jaar, maximum is ${kader.bandbreedteMax} jaar`,
+        beschrijving: `Spreiding ${formatKorfbalLeeftijd(spreidingExact)} jaar, maximum is ${kader.bandbreedteMax} jaar`,
         laag: "KNKV",
       });
     }
   }
 
-  // 6. Max leeftijd per speler
+  // 6. Max leeftijd per speler — exacte vergelijking
   if (kader.maxLeeftijdPerSpeler !== undefined) {
     for (const sit of alleSpelers) {
-      const leeftijd = korfbalLeeftijd(sit.speler.geboortedatum, sit.speler.geboortejaar, peiljaar);
-      if (leeftijd > kader.maxLeeftijdPerSpeler) {
+      const leeftijdExact = berekenKorfbalLeeftijdExact(
+        sit.speler.geboortedatum,
+        sit.speler.geboortejaar,
+        peildatum
+      );
+      if (leeftijdExact > kader.maxLeeftijdPerSpeler) {
         items.push({
           teamId: team.id,
           type: "err",
           regel: `${sit.speler.roepnaam} ${sit.speler.achternaam} te oud`,
-          beschrijving: `${leeftijd.toFixed(2)} jaar, maximum is ${kader.maxLeeftijdPerSpeler.toFixed(2)} jaar`,
+          beschrijving: `${formatKorfbalLeeftijd(leeftijdExact)} jaar, maximum is ${formatKorfbalLeeftijd(kader.maxLeeftijdPerSpeler)} jaar`,
           laag: "KNKV",
         });
       }

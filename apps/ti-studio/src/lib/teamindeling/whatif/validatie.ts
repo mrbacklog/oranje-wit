@@ -101,7 +101,7 @@ export function valideerWhatIf(
   whatIfTeams: WhatIfTeamData[],
   werkindelingTeams: WerkindelingTeamData[],
   spelerLookup: Map<string, SpelerLookup>,
-  seizoenJaar: number,
+  peildatum: Date,
   options?: ValideerWhatIfOptions
 ): WhatIfValidatie {
   const { kaders, overrides, pins, teamAantalKaders } = options ?? {};
@@ -113,7 +113,7 @@ export function valideerWhatIf(
   const teamValidaties = new Map<string, ReturnType<typeof valideerTeam>>();
   for (const wiTeam of whatIfTeams) {
     const teamData = whatIfTeamNaarTeamData(wiTeam, spelerLookup);
-    const resultaat = valideerTeam(teamData, seizoenJaar, overrides, kaders);
+    const resultaat = valideerTeam(teamData, peildatum, overrides, kaders);
     teamValidaties.set(wiTeam.id, resultaat);
   }
 
