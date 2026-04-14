@@ -200,6 +200,23 @@ export async function verwerkLedenSync(csvRijen: LidCsvRij[]): Promise<LedenSync
       });
       bijgewerkt++;
 
+      // Houd de bijbehorende Speler-record in sync met geboortedatum en
+      // geboortejaar. De Speler-tabel wordt door de werkbord-leeftijd
+      // gelezen; zonder geboortedatum valt de berekening terug op integer
+      // (toont "23.00" ipv "23.83"). Alleen updaten als er een Speler is.
+      const spelerBestaat = await prisma.speler.count({
+        where: { id: rij.relCode },
+      });
+      if (spelerBestaat > 0) {
+        await (prisma.speler.update as Function)({
+          where: { id: rij.relCode },
+          data: {
+            geboortedatum: rij.geboortedatum ? new Date(rij.geboortedatum) : null,
+            geboortejaar: rij.geboortejaar,
+          },
+        });
+      }
+
       // Signaleer als lid nu afgemeld is maar dat eerder niet was
       if (rij.afmelddatum && !bestaand.afmelddatum) {
         afgemeldGemarkeerd++;
