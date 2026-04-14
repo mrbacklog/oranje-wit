@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="nl" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Selectie Overzicht Dialog · TI Studio</title>
+  <style>
+    :root {
+      --surface-page:    #0f0f1a;
+      --surface-dialog:  #13131f;
+      --surface-card:    #1a1a2e;
+      --surface-raised:  #20203a;
+      --surface-hover:   #22223a;
+      --border-default:  rgba(255,255,255,.08);
+      --border-strong:   rgba(255,255,255,.14);
+      --text-primary:    #f1f5f9;
+      --text-secondary:  #94a3b8;
+      --text-muted:      #475569;
+      --pink:            #f472b6;
+      --pink-dim:        rgba(244,114,182,.14);
+      --blue:            #60a5fa;
+      --blue-dim:        rgba(96,165,250,.14);
+      --oranje:          #ff6b00;
+      --oranje-dim:      rgba(255,107,0,.12);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--surface-page);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 2rem 1rem;
+      gap: 3rem;
+    }
+
+    h1 {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    /* ─── DIALOG SHELL ─────────────────────────────────── */
+    .dialog {
+      background: var(--surface-dialog);
+      border: 1px solid var(--border-strong);
+      border-radius: 20px;
+      width: 680px;
+      max-width: 96vw;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 24px 64px rgba(0,0,0,.6);
+    }
+
+    /* ─── DIALOG HEADER ────────────────────────────────── */
+    .dialog-header {
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+      padding: 1.125rem 1.375rem;
+      border-bottom: 1px solid var(--border-default);
+    }
+    .header-band {
+      width: 5px;
+      height: 40px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+    .header-info { flex: 1; min-width: 0; }
+    .header-title {
+      font-size: 1.0625rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+    .header-subtitle {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+    .header-counts {
+      display: flex;
+      gap: 0.375rem;
+      align-items: center;
+    }
+    .count-badge {
+      border-radius: 99px;
+      padding: 0.2rem 0.6rem;
+      font-size: 0.8125rem;
+      font-weight: 700;
+    }
+    .count-dame {
+      background: var(--pink-dim);
+      color: var(--pink);
+    }
+    .count-heer {
+      background: var(--blue-dim);
+      color: var(--blue);
+    }
+    .close-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 1.375rem;
+      cursor: pointer;
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+      line-height: 1;
+    }
+
+    /* ─── DIALOG BODY ──────────────────────────────────── */
+    .dialog-body {
+      padding: 1.125rem 1.375rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+
+    /* ─── GECOMBINEERD: 1 pool ─────────────────────────── */
+    /* Selectie is gebundeld → dames-pool en heren-pool
+       over beide teams heen, in 2 kolommen */
+    .gecombineerd-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .gender-kolom {}
+    .gender-label {
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+      margin-bottom: 0.5rem;
+    }
+    .gender-label-text {
+      font-size: 0.8125rem;
+      font-weight: 700;
+    }
+    .gender-label-count {
+      margin-left: auto;
+      border-radius: 99px;
+      padding: 0.1rem 0.45rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .gender-dame .gender-label-text { color: var(--pink); }
+    .gender-dame .gender-label-count { background: var(--pink-dim); color: var(--pink); }
+    .gender-heer .gender-label-text { color: var(--blue); }
+    .gender-heer .gender-label-count { background: var(--blue-dim); color: var(--blue); }
+
+    .speler-lijst {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3125rem;
+    }
+
+    /* ─── NIET-GECOMBINEERD: per team ──────────────────── */
+    /* Twee teams naast elkaar, elk met hun eigen
+       dames + heren oplijsting */
+    .teams-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.875rem;
+    }
+
+    .team-kolom {
+      background: var(--surface-card);
+      border: 1px solid var(--border-default);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .team-kolom-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.625rem 0.875rem;
+      border-bottom: 1px solid var(--border-default);
+      background: rgba(255,255,255,.025);
+    }
+    .team-kolom-band {
+      width: 4px;
+      height: 22px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+    .team-kolom-naam {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      flex: 1;
+    }
+    .team-kolom-counts {
+      display: flex;
+      gap: 0.25rem;
+    }
+    .team-kolom-count {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      border-radius: 99px;
+      padding: 0.1rem 0.4rem;
+    }
+
+    .team-kolom-body {
+      padding: 0.625rem 0.875rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .team-gender-sectie {}
+    .team-gender-label {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      margin-bottom: 0.3125rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .tgl-dame { color: var(--pink); }
+    .tgl-heer { color: var(--blue); }
+    .tgl-count {
+      margin-left: auto;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      border-radius: 99px;
+      padding: 0.075rem 0.4rem;
+    }
+    .tgl-dame .tgl-count { background: var(--pink-dim); color: var(--pink); }
+    .tgl-heer .tgl-count { background: var(--blue-dim); color: var(--blue); }
+
+    /* ─── SPELER RIJ ────────────────────────────────────── */
+    .speler-rij {
+      display: flex;
+      align-items: center;
+      gap: 0.4375rem;
+      padding: 0.375rem 0.5rem;
+      border-radius: 7px;
+      background: var(--surface-raised);
+      border: 1px solid var(--border-default);
+    }
+    .speler-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.625rem;
+      font-weight: 800;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .speler-naam {
+      flex: 1;
+      min-width: 0;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .speler-leeftijd {
+      font-size: 0.6875rem;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+    .speler-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .speler-rij-compact {
+      padding: 0.3rem 0.4rem;
+    }
+    .speler-rij-compact .speler-avatar {
+      width: 24px;
+      height: 24px;
+      font-size: 0.5625rem;
+    }
+    .speler-rij-compact .speler-naam {
+      font-size: 0.75rem;
+    }
+
+    /* ─── DIALOG FOOTER ────────────────────────────────── */
+    .dialog-footer {
+      border-top: 1px solid var(--border-default);
+      padding: 0.875rem 1.375rem;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .footer-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      background: var(--oranje-dim);
+      color: var(--oranje);
+      border: 1px solid rgba(255,107,0,.25);
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* ─── DIVIDER LABEL ─────────────────────────────────── */
+    .divider-label {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: var(--text-muted);
+      padding: 0 0 0.375rem;
+      border-bottom: 1px solid var(--border-default);
+      margin-bottom: 0.25rem;
+    }
+
+    /* ─── DEMO LABELS ───────────────────────────────────── */
+    .demo-label {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.375rem;
+      border-bottom: 1px solid var(--border-default);
+    }
+    .demo-note {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      line-height: 1.5;
+      max-width: 640px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════
+     VARIANT A — GECOMBINEERDE SELECTIE (gebundeld = true)
+     Beide teams zijn samengevoegd. Spelers zitten in 1
+     pool: selectieDames[] en selectieHeren[].
+     Weergave: 2-kolom (dames | heren), teams als subtitle.
+══════════════════════════════════════════════════════════ -->
+<div>
+  <div class="demo-label">Variant A — Gecombineerde selectie (gebundeld)</div>
+  <p class="demo-note">
+    Beide teams zijn samengevoegd tot één selectiepool.
+    Er is één set dames en één set heren. De teamnamen staan als subtitel.
+  </p>
+
+  <div class="dialog">
+
+    <!-- Header -->
+    <div class="dialog-header">
+      <div class="header-band" style="background: linear-gradient(180deg, #3b82f6, #f472b6);"></div>
+      <div class="header-info">
+        <div class="header-title">Heer 1e Selectie</div>
+        <div class="header-subtitle">Gecombineerd · Heer 1 + Heer 2</div>
+      </div>
+      <div class="header-counts">
+        <span class="count-badge count-dame">♀ 8</span>
+        <span class="count-badge count-heer">♂ 8</span>
+      </div>
+      <button class="close-btn">×</button>
+    </div>
+
+    <!-- Body: 2-kolom gecombineerd -->
+    <div class="dialog-body">
+      <div class="gecombineerd-grid">
+
+        <!-- Dames pool -->
+        <div class="gender-kolom gender-dame">
+          <div class="gender-label">
+            <span>♀</span>
+            <span class="gender-label-text">Dames</span>
+            <span class="gender-label-count">8</span>
+          </div>
+          <div class="speler-lijst">
+            <div class="speler-rij">
+              <div class="speler-avatar" style="background: linear-gradient(135deg,#f97316,#e8c020);">SJ</div>
+              <span class="speler-naam">Sara Jansen</span>
+              <span class="speler-leeftijd">22</span>
+              <span class="speler-dot" style="background:#22c55e;box-shadow:0 0 5px #22c55e66;"></span>
+            </div>
+            <div class="speler-rij">
+              <div class="speler-avatar" style="background: linear-gradient(135deg,#ef4444,#cc2222);">LB</div>
+              <span class="speler-naam">Lisa de Boer</span>
+              <span class="speler-leeftijd">24</span>
+              <span class="speler-dot" style="background:#22c55e;box-shadow:0 0 5px #22c55e66;"></span>
+            </div>
+            <div class="speler-rij">
+              <div class="speler-avatar" style="background: linear-gradient(135deg,#3b82f6,#60a5fa);">AM</div>
+              <span class="speler-naam">Anna van der Meer</span>
+              <span class="speler-leeftijd">19</span>
+              <span class="speler-dot" style="background:#facc15;box-shadow:0 0 5px #facc1566;"></span>
+            </div>
+            <div class="speler-rij">
+              <div class="speler-avatar" style="background: linear-gradient(135deg,#22c55e,#a3c928);">FW</div>
+              <span class="speler-naam">Fleur Willems</span>
+              <span class="speler-leeftijd">21</span>
+              <span class="speler-dot" style="background:#22c55e;box-shadow:0 0 5px #22c55e66;"></span>
+            </div>
+            <div class="speler-rij">
+              <div class="speler-avatar" style="background: linear-gradient(135deg,#eab308,#f09030);">NK</div>
+              <span class="speler-naam">Nina Kok</span>
+              <span class="speler-leeftijd">26</span>
+              <span class="speler-dot" style="background:#22c55e;box-shadow:0 0 5px #22c55e66;"></span>
+            </div>
+            <div class="speler-rij">
+              <div class="speler-avatar" style="background: linear-gradient(135deg,#f97316,#e8c020);">EV</div>
+              <span class="speler-naam">Emma Visser</span>
+              <span class="speler-leeftijd">23</span>
+              <span class="speler-dot" style="background:#22c55e;box-shadow:0 0 5px #22c55e66;"></span>
+            </div>
+            <div class="speler-rij">
+              <div class="speler-avatar" style="background: linear-gradient(135deg,#ef4444,#cc2222);">MS</div>
+              <span class="speler-naam">Mila Smit</span>
+              <span class="speler-leeftijd">20</span>
+              <span class="speler-dot" style="background:#f87171;box-shadow:0 0 5px #f8717166;"></span>
+            </div>
+            <div class="speler-rij">
+              <div class="speler-avatar" style="background: linear-gradient(135deg,#374151,#1f2937);">RP</div>
+              <span class="speler-naam">Rosa Peters</span>
+              <span class="speler-leeftijd">28</span>
+              <span class="speler-dot" style="background:#22c55e;box-shadow:0 0 5px #22c55e66;"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Heren pool -->
+        <div class="gender-kolom gender-heer">
+          <div class="gender-label">
+            <span>♂</span>
+            <span class="gender-label-text">Heren</span>
+            <span class="gender-label-count">8</span>
+          </div>
+          <div class="speler-lijst">
+            <div class="speler-rij">
+              <div class="speler-avatar" style="background: linear-gradient(135deg,#374151,#1f2937);">JB</div>
+              <span class="speler-naam">Jan de Bruin</span>
+              <span class="speler-leeftijd">25</span>
+              <span class="speler-dot" style="background:#22c55e;box-shadow:0 0 5px #22c55e66;"></span>
+            </div>
+            <div class="speler-rij">
+              <div class="speler-avatar" style="background: linear-gradient(135deg,#ef4444,#cc2222);">TH</div>
+              <span class="speler-naam">Tom Hendriks</span>
+              <span class="speler-leeftijd">22</span>
+              <span class="speler-dot" style="background:#22c55e;box-shadow:0 0 5px #22c55e66;"></span>
+            </div>
+            <div class="speler-rij">
+              <div class="speler-avatar" style="background: linear-gradient(135deg,#f97316,#e8c020);">MK</div>
+              <span class="speler-naam">Mark Koster</span>
+              <span class="speler-leeftijd">27</span>
+              <span class="speler-dot" style="background:#facc15;box-shadow:0 0 5px #facc1566;"></span>
+            </div>
+            <div class="speler-rij">
+              <div class="speler-avatar" style="background: linear-gradient(135deg,#3b82f6,#60a5fa);">DV</div>
+              <span class="speler-naam">David van Rijn</span>
+              <span class="speler-leeftijd">23</span>
+              <span class="speler-dot" style="background:#22c55e;box-shadow:0 0 5px #22c55e66;"></span>
+            </div>
+            <div class="speler-rij">
+              <div class="speler-avatar" style="background: linear-gradient(135deg,#22c55e,#a3c928);">PL</div>
+              <span class="speler-naam">Peter van der Laan</span>
+              <span class="speler-leeftijd">24</span>
+              <span class="speler-dot" style="background:#22c55e;box-shadow:0 0 5px #22c55e66;"></span>
+            </div>
+            <div class="speler-rij">
+              <div class="speler-avatar" style="background: linear-gradient(135deg,#eab308,#f09030);">RS</div>
+              <span class="speler-naam">Rick Smeets</span>
+              <span class="speler-leeftijd">21</span>
+              <span class="speler-dot" style="background:#22c55e;box-shadow:0 0 5px #22c55e66;"></span>
+            </div>
+            <div class="speler-rij">
+              <div class="speler-avatar" style="background: linear-gradient(135deg,#ef4444,#cc2222);">WD</div>
+              <span class="speler-naam">Wouter Dijk</span>
+              <span class="speler-leeftijd">29</span>
+              <span class="speler-dot" style="background:#22c55e;box-shadow:0 0 5px #22c55e66;"></span>
+            </div>
+            <div class="speler-rij">
+              <div class="speler-avatar" style="background: linear-gradient(135deg,#374151,#1f2937);">BN</div>
+              <span class="speler-naam">Bas Nooij</span>
+              <span class="speler-leeftijd">26</span>
+              <span class="speler-dot" style="background:#f87171;box-shadow:0 0 5px #f8717166;"></span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="dialog-footer">
+      <button class="footer-btn">+ Speler toevoegen</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     VARIANT B — NIET-GECOMBINEERDE SELECTIE (gebundeld = false)
+     Beide teams zijn apart. Elk team heeft eigen dames
+     en eigen heren. Weergave: 2 teamkolommen naast elkaar,
+     elk met gender-opdeling.
+══════════════════════════════════════════════════════════ -->
+<div>
+  <div class="demo-label">Variant B — Niet-gecombineerde selectie (eigen teams)</div>
+  <p class="demo-note">
+    Twee aparte teams binnen dezelfde selectie.
+    Elk team heeft zijn eigen dames en heren.
+    Weergave: per team een kolom, daarbinnen de geslachtsgroepen.
+  </p>
+
+  <div class="dialog">
+
+    <!-- Header -->
+    <div class="dialog-header">
+      <div class="header-band" style="background: linear-gradient(180deg, #3b82f6, #818cf8);"></div>
+      <div class="header-info">
+        <div class="header-title">Heer 1e Selectie</div>
+        <div class="header-subtitle">2 teams · ♀ 4+4 dames · ♂ 4+4 heren</div>
+      </div>
+      <div class="header-counts">
+        <span class="count-badge count-dame">♀ 8</span>
+        <span class="count-badge count-heer">♂ 8</span>
+      </div>
+      <button class="close-btn">×</button>
+    </div>
+
+    <!-- Body: 2 teamkolommen -->
+    <div class="dialog-body">
+      <div class="teams-grid">
+
+        <!-- Team 1 -->
+        <div class="team-kolom">
+          <div class="team-kolom-header">
+            <div class="team-kolom-band" style="background: linear-gradient(180deg,#3b82f6,#60a5fa);"></div>
+            <span class="team-kolom-naam">Heer 1</span>
+            <div class="team-kolom-counts">
+              <span class="team-kolom-count" style="background:var(--pink-dim);color:var(--pink);">♀4</span>
+              <span class="team-kolom-count" style="background:var(--blue-dim);color:var(--blue);">♂4</span>
+            </div>
+          </div>
+          <div class="team-kolom-body">
+
+            <!-- Dames sectie -->
+            <div class="team-gender-sectie">
+              <div class="team-gender-label tgl-dame">
+                <span>♀</span><span>Dames</span>
+                <span class="tgl-count">4</span>
+              </div>
+              <div class="speler-lijst">
+                <div class="speler-rij speler-rij-compact">
+                  <div class="speler-avatar" style="background:linear-gradient(135deg,#f97316,#e8c020);">SJ</div>
+                  <span class="speler-naam">Sara Jansen</span>
+                  <span class="speler-leeftijd">22</span>
+                  <span class="speler-dot" style="background:#22c55e;"></span>
+                </div>
+                <div class="speler-rij speler-rij-compact">
+                  <div class="speler-avatar" style="background:linear-gradient(135deg,#ef4444,#cc2222);">LB</div>
+                  <span class="speler-naam">Lisa de Boer</span>
+                  <span class="speler-leeftijd">24</span>
+                  <span class="speler-dot" style="background:#22c55e;"></span>
+                </div>
+                <div class="speler-rij speler-rij-compact">
+                  <div class="speler-avatar" style="background:linear-gradient(135deg,#3b82f6,#60a5fa);">AM</div>
+                  <span class="speler-naam">Anna van der Meer</span>
+                  <span class="speler-leeftijd">19</span>
+                  <span class="speler-dot" style="background:#facc15;"></span>
+                </div>
+                <div class="speler-rij speler-rij-compact">
+                  <div class="speler-avatar" style="background:linear-gradient(135deg,#22c55e,#a3c928);">FW</div>
+                  <span class="speler-naam">Fleur Willems</span>
+                  <span class="speler-leeftijd">21</span>
+                  <span class="speler-dot" style="background:#22c55e;"></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Heren sectie -->
+            <div class="team-gender-sectie">
+              <div class="team-gender-label tgl-heer">
+                <span>♂</span><span>Heren</span>
+                <span class="tgl-count">4</span>
+              </div>
+              <div class="speler-lijst">
+                <div class="speler-rij speler-rij-compact">
+                  <div class="speler-avatar" style="background:linear-gradient(135deg,#374151,#1f2937);">JB</div>
+                  <span class="speler-naam">Jan de Bruin</span>
+                  <span class="speler-leeftijd">25</span>
+                  <span class="speler-dot" style="background:#22c55e;"></span>
+                </div>
+                <div class="speler-rij speler-rij-compact">
+                  <div class="speler-avatar" style="background:linear-gradient(135deg,#ef4444,#cc2222);">TH</div>
+                  <span class="speler-naam">Tom Hendriks</span>
+                  <span class="speler-leeftijd">22</span>
+                  <span class="speler-dot" style="background:#22c55e;"></span>
+                </div>
+                <div class="speler-rij speler-rij-compact">
+                  <div class="speler-avatar" style="background:linear-gradient(135deg,#f97316,#e8c020);">MK</div>
+                  <span class="speler-naam">Mark Koster</span>
+                  <span class="speler-leeftijd">27</span>
+                  <span class="speler-dot" style="background:#facc15;"></span>
+                </div>
+                <div class="speler-rij speler-rij-compact">
+                  <div class="speler-avatar" style="background:linear-gradient(135deg,#3b82f6,#60a5fa);">DV</div>
+                  <span class="speler-naam">David van Rijn</span>
+                  <span class="speler-leeftijd">23</span>
+                  <span class="speler-dot" style="background:#22c55e;"></span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Team 2 -->
+        <div class="team-kolom">
+          <div class="team-kolom-header">
+            <div class="team-kolom-band" style="background: linear-gradient(180deg,#818cf8,#a855f7);"></div>
+            <span class="team-kolom-naam">Heer 2</span>
+            <div class="team-kolom-counts">
+              <span class="team-kolom-count" style="background:var(--pink-dim);color:var(--pink);">♀4</span>
+              <span class="team-kolom-count" style="background:var(--blue-dim);color:var(--blue);">♂4</span>
+            </div>
+          </div>
+          <div class="team-kolom-body">
+
+            <!-- Dames sectie -->
+            <div class="team-gender-sectie">
+              <div class="team-gender-label tgl-dame">
+                <span>♀</span><span>Dames</span>
+                <span class="tgl-count">4</span>
+              </div>
+              <div class="speler-lijst">
+                <div class="speler-rij speler-rij-compact">
+                  <div class="speler-avatar" style="background:linear-gradient(135deg,#eab308,#f09030);">NK</div>
+                  <span class="speler-naam">Nina Kok</span>
+                  <span class="speler-leeftijd">26</span>
+                  <span class="speler-dot" style="background:#22c55e;"></span>
+                </div>
+                <div class="speler-rij speler-rij-compact">
+                  <div class="speler-avatar" style="background:linear-gradient(135deg,#f97316,#e8c020);">EV</div>
+                  <span class="speler-naam">Emma Visser</span>
+                  <span class="speler-leeftijd">23</span>
+                  <span class="speler-dot" style="background:#22c55e;"></span>
+                </div>
+                <div class="speler-rij speler-rij-compact">
+                  <div class="speler-avatar" style="background:linear-gradient(135deg,#ef4444,#cc2222);">MS</div>
+                  <span class="speler-naam">Mila Smit</span>
+                  <span class="speler-leeftijd">20</span>
+                  <span class="speler-dot" style="background:#f87171;"></span>
+                </div>
+                <div class="speler-rij speler-rij-compact">
+                  <div class="speler-avatar" style="background:linear-gradient(135deg,#374151,#1f2937);">RP</div>
+                  <span class="speler-naam">Rosa Peters</span>
+                  <span class="speler-leeftijd">28</span>
+                  <span class="speler-dot" style="background:#22c55e;"></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Heren sectie -->
+            <div class="team-gender-sectie">
+              <div class="team-gender-label tgl-heer">
+                <span>♂</span><span>Heren</span>
+                <span class="tgl-count">4</span>
+              </div>
+              <div class="speler-lijst">
+                <div class="speler-rij speler-rij-compact">
+                  <div class="speler-avatar" style="background:linear-gradient(135deg,#22c55e,#a3c928);">PL</div>
+                  <span class="speler-naam">Peter van der Laan</span>
+                  <span class="speler-leeftijd">24</span>
+                  <span class="speler-dot" style="background:#22c55e;"></span>
+                </div>
+                <div class="speler-rij speler-rij-compact">
+                  <div class="speler-avatar" style="background:linear-gradient(135deg,#eab308,#f09030);">RS</div>
+                  <span class="speler-naam">Rick Smeets</span>
+                  <span class="speler-leeftijd">21</span>
+                  <span class="speler-dot" style="background:#22c55e;"></span>
+                </div>
+                <div class="speler-rij speler-rij-compact">
+                  <div class="speler-avatar" style="background:linear-gradient(135deg,#ef4444,#cc2222);">WD</div>
+                  <span class="speler-naam">Wouter Dijk</span>
+                  <span class="speler-leeftijd">29</span>
+                  <span class="speler-dot" style="background:#22c55e;"></span>
+                </div>
+                <div class="speler-rij speler-rij-compact">
+                  <div class="speler-avatar" style="background:linear-gradient(135deg,#374151,#1f2937);">BN</div>
+                  <span class="speler-naam">Bas Nooij</span>
+                  <span class="speler-leeftijd">26</span>
+                  <span class="speler-dot" style="background:#f87171;"></span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="dialog-footer">
+      <button class="footer-btn">+ Speler toevoegen</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     VARIANT C — GEWOON TEAM (geen selectie)
+     Ongewijzigd t.o.v. huidige TeamoverzichtDialog.
+     Ter referentie.
+══════════════════════════════════════════════════════════ -->
+<div>
+  <div class="demo-label">Variant C — Gewoon team (geen selectie, ter referentie)</div>
+  <p class="demo-note">
+    Een normaal team zonder selectie-koppeling. Huidig gedrag blijft ongewijzigd.
+  </p>
+
+  <div class="dialog">
+    <div class="dialog-header">
+      <div class="header-band" style="background: linear-gradient(135deg,#22c55e,#a3c928);"></div>
+      <div class="header-info">
+        <div class="header-title">Groen 1</div>
+        <div class="header-subtitle">Groen · 8 spelers</div>
+      </div>
+      <div class="header-counts">
+        <span class="count-badge count-dame">♀ 4</span>
+        <span class="count-badge count-heer">♂ 4</span>
+      </div>
+      <button class="close-btn">×</button>
+    </div>
+    <div class="dialog-body">
+      <div class="gecombineerd-grid">
+        <div class="gender-kolom gender-dame">
+          <div class="gender-label">
+            <span>♀</span>
+            <span class="gender-label-text">Dames</span>
+            <span class="gender-label-count">4</span>
+          </div>
+          <div class="speler-lijst">
+            <div class="speler-rij"><div class="speler-avatar" style="background:linear-gradient(135deg,#22c55e,#a3c928);">SJ</div><span class="speler-naam">Sara Jansen</span><span class="speler-leeftijd">12</span><span class="speler-dot" style="background:#22c55e;"></span></div>
+            <div class="speler-rij"><div class="speler-avatar" style="background:linear-gradient(135deg,#f0c024,#f09030);">LB</div><span class="speler-naam">Lisa de Boer</span><span class="speler-leeftijd">11</span><span class="speler-dot" style="background:#22c55e;"></span></div>
+            <div class="speler-rij"><div class="speler-avatar" style="background:linear-gradient(135deg,#22c55e,#a3c928);">AM</div><span class="speler-naam">Anna Mulder</span><span class="speler-leeftijd">12</span><span class="speler-dot" style="background:#22c55e;"></span></div>
+            <div class="speler-rij"><div class="speler-avatar" style="background:linear-gradient(135deg,#f0c024,#f09030);">FW</div><span class="speler-naam">Fien Willems</span><span class="speler-leeftijd">10</span><span class="speler-dot" style="background:#60a5fa;"></span></div>
+          </div>
+        </div>
+        <div class="gender-kolom gender-heer">
+          <div class="gender-label">
+            <span>♂</span>
+            <span class="gender-label-text">Heren</span>
+            <span class="gender-label-count">4</span>
+          </div>
+          <div class="speler-lijst">
+            <div class="speler-rij"><div class="speler-avatar" style="background:linear-gradient(135deg,#22c55e,#a3c928);">JB</div><span class="speler-naam">Joris Bakker</span><span class="speler-leeftijd">12</span><span class="speler-dot" style="background:#22c55e;"></span></div>
+            <div class="speler-rij"><div class="speler-avatar" style="background:linear-gradient(135deg,#f0c024,#f09030);">TH</div><span class="speler-naam">Tim Hendriks</span><span class="speler-leeftijd">11</span><span class="speler-dot" style="background:#22c55e;"></span></div>
+            <div class="speler-rij"><div class="speler-avatar" style="background:linear-gradient(135deg,#22c55e,#a3c928);">MK</div><span class="speler-naam">Maarten Kok</span><span class="speler-leeftijd">12</span><span class="speler-dot" style="background:#facc15;"></span></div>
+            <div class="speler-rij"><div class="speler-avatar" style="background:linear-gradient(135deg,#f0c024,#f09030);">DV</div><span class="speler-naam">Daan Visser</span><span class="speler-leeftijd">10</span><span class="speler-dot" style="background:#22c55e;"></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="dialog-footer">
+      <button class="footer-btn">+ Speler toevoegen</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

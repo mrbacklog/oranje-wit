@@ -113,21 +113,60 @@ function groepeerTeams(teams: WerkbordTeam[]): TeamGroep[] {
   return groepen;
 }
 
-// ─── TeamRij: één rij in de drawer-lijst ─────────────────────────────────────
+// ─── Gedeelde stijl voor selectie-blok frame ─────────────────────────────────
 
-function TeamRij({
+const SEL_FRAME_STYLE: React.CSSProperties = {
+  border: "1px solid rgba(59,130,246,.35)",
+  borderRadius: 11,
+  overflow: "hidden",
+  background: "rgba(59,130,246,.03)",
+};
+
+const SEL_HEADER_STYLE: React.CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  gap: 7,
+  padding: "8px 10px 7px",
+  background: "rgba(59,130,246,.07)",
+  borderBottom: "1px solid rgba(59,130,246,.25)",
+};
+
+function SelBadge() {
+  return (
+    <span
+      style={{
+        fontSize: 8,
+        fontWeight: 800,
+        letterSpacing: ".4px",
+        textTransform: "uppercase" as const,
+        color: "rgba(59,130,246,1)",
+        background: "rgba(59,130,246,.12)",
+        border: "1px solid rgba(59,130,246,.30)",
+        borderRadius: 4,
+        padding: "1px 5px",
+        flexShrink: 0,
+      }}
+    >
+      Sel
+    </span>
+  );
+}
+
+// ─── Gedeelde teamrij binnen een selectie-blok ───────────────────────────────
+
+function SelectieTeamRij({
   team,
   geselecteerdTeamId,
-  showScores,
+  rechts,
   onTeamSelect,
 }: {
   team: WerkbordTeam;
   geselecteerdTeamId: string | null;
-  showScores: boolean;
+  rechts: React.ReactNode;
   onTeamSelect: (teamId: string) => void;
 }) {
   const geselecteerd = team.id === geselecteerdTeamId;
-  const teamDotKleur =
+  const dotKleur =
     team.validatieStatus === "err"
       ? "var(--err)"
       : team.validatieStatus === "warn"
@@ -163,30 +202,21 @@ function TeamRij({
             top: 0,
             bottom: 0,
             width: 3,
-            background: "var(--accent)",
+            background: "var(--oranje)",
             borderRadius: "0 2px 2px 0",
           }}
         />
       )}
+      <span style={{ fontSize: 13, fontWeight: 600, color: "var(--text-1)" }}>{team.naam}</span>
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text-1)" }}>{team.naam}</span>
-      </div>
-      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        {showScores && team.ussScore !== null && (
-          <span style={{ fontSize: 10, color: "var(--text-3)" }}>
-            USS{" "}
-            <span style={{ color: "var(--text-2)", fontWeight: 600 }}>
-              {team.ussScore.toFixed(2)}
-            </span>
-          </span>
-        )}
+        {rechts}
         <div
           style={{
             width: 7,
             height: 7,
             borderRadius: "50%",
-            background: teamDotKleur,
-            boxShadow: `0 0 4px 1px ${teamDotKleur}40`,
+            background: dotKleur,
+            boxShadow: `0 0 4px 1px ${dotKleur}40`,
             flexShrink: 0,
           }}
         />
@@ -195,255 +225,142 @@ function TeamRij({
   );
 }
 
-// ─── Gecombineerde selectie: blauwe border-frame met 2 teamrijen ─────────────
+// ─── Gecombineerde selectie (gebundeld = true) ───────────────────────────────
+// Header: selectienaam + 1 dame-count + 1 heer-count (gezamenlijke pool)
+// Per team: alleen naam — geen per-team gender-split (alles is gecombineerd)
 
 function SelectieGroepBlok({
   groep,
   geselecteerdTeamId,
-  showScores,
   onTeamSelect,
 }: {
   groep: Extract<TeamGroep, { type: "selectie" }>;
   geselecteerdTeamId: string | null;
-  showScores: boolean;
   onTeamSelect: (teamId: string) => void;
 }) {
-  const [teamA, teamB] = groep.teams;
-  const totalDames = teamA?.selectieDames.length ?? 0;
-  const totalHeren = teamA?.selectieHeren.length ?? 0;
-  const selectieNaam = teamA?.selectieNaam ?? groep.teams.map((t) => t.naam).join(" ↔ ");
-
-  const statusPrio = (s: "ok" | "warn" | "err") => (s === "err" ? 2 : s === "warn" ? 1 : 0);
-  const comboStatus = groep.teams.reduce<"ok" | "warn" | "err">(
-    (acc, t) => (statusPrio(t.validatieStatus) > statusPrio(acc) ? t.validatieStatus : acc),
-    "ok"
-  );
-  const dotKleur =
-    comboStatus === "err" ? "var(--err)" : comboStatus === "warn" ? "var(--warn)" : "var(--ok)";
+  const primary = groep.teams[0];
+  const totalDames = primary?.selectieDames.length ?? 0;
+  const totalHeren = primary?.selectieHeren.length ?? 0;
+  const selectieNaam = primary?.selectieNaam ?? groep.teams.map((t) => t.naam).join(" ↔ ");
 
   return (
-    <div style={{ margin: "4px 8px 8px" }}>
-      <div
-        style={{
-          border: "1px solid rgba(59,130,246,.40)",
-          borderRadius: 12,
-          overflow: "hidden",
-          background: "rgba(59,130,246,.04)",
-        }}
-      >
-        {/* Selectie-header */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "7px 10px 6px",
-            background: "rgba(59,130,246,.08)",
-            borderBottom: "1px solid rgba(59,130,246,.25)",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <span
-              style={{
-                fontSize: 8,
-                fontWeight: 800,
-                letterSpacing: ".5px",
-                textTransform: "uppercase" as const,
-                color: "rgba(59,130,246,1)",
-                background: "rgba(59,130,246,.12)",
-                border: "1px solid rgba(59,130,246,.35)",
-                borderRadius: 4,
-                padding: "2px 5px",
-              }}
-            >
-              GECOMB
+    <div style={{ margin: "3px 8px 8px" }}>
+      <div style={SEL_FRAME_STYLE}>
+        <div style={SEL_HEADER_STYLE}>
+          <SelBadge />
+          <span
+            style={{
+              fontSize: 12,
+              fontWeight: 700,
+              color: "var(--text-1)",
+              flex: 1,
+              minWidth: 0,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {selectieNaam}
+          </span>
+          <div style={{ display: "flex", alignItems: "center", gap: 5, flexShrink: 0 }}>
+            <span style={{ fontSize: 10, color: "var(--pink)", opacity: 0.6 }}>♀</span>
+            <span style={{ fontSize: 12, fontWeight: 800, color: "var(--pink)" }}>
+              {totalDames}
             </span>
-            <span style={{ fontSize: 11, fontWeight: 600, color: "rgba(59,130,246,.9)" }}>
-              {selectieNaam}
+            <span style={{ fontSize: 10, color: "var(--blue)", opacity: 0.6, marginLeft: 2 }}>
+              ♂
+            </span>
+            <span style={{ fontSize: 12, fontWeight: 800, color: "var(--blue)" }}>
+              {totalHeren}
             </span>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-              <VenusIcon size={11} />
-              <span style={{ fontSize: 13, fontWeight: 800, color: "var(--pink)" }}>
-                {totalDames}
-              </span>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-              <MarsIcon size={11} />
-              <span style={{ fontSize: 13, fontWeight: 800, color: "var(--blue)" }}>
-                {totalHeren}
-              </span>
-            </div>
-            <div
-              style={{
-                width: 7,
-                height: 7,
-                borderRadius: "50%",
-                background: dotKleur,
-                boxShadow: `0 0 4px 1px ${dotKleur}40`,
-                flexShrink: 0,
-              }}
+        </div>
+
+        {groep.teams.map((team, i) => (
+          <div key={team.id} style={i > 0 ? { borderTop: "1px solid rgba(255,255,255,.05)" } : {}}>
+            <SelectieTeamRij
+              team={team}
+              geselecteerdTeamId={geselecteerdTeamId}
+              rechts={null}
+              onTeamSelect={onTeamSelect}
             />
           </div>
-        </div>
-
-        {/* Team A */}
-        {teamA && (
-          <TeamRij
-            team={teamA}
-            geselecteerdTeamId={geselecteerdTeamId}
-            showScores={showScores}
-            onTeamSelect={onTeamSelect}
-          />
-        )}
-
-        {/* Connector */}
-        <div style={{ display: "flex", alignItems: "center", padding: "0 10px", gap: 6 }}>
-          <div style={{ flex: 1, height: 1, background: "rgba(59,130,246,.30)" }} />
-          <span style={{ fontSize: 10, color: "rgba(59,130,246,.7)", fontWeight: 700 }}>+</span>
-          <div style={{ flex: 1, height: 1, background: "rgba(59,130,246,.30)" }} />
-        </div>
-
-        {/* Team B */}
-        {teamB && (
-          <TeamRij
-            team={teamB}
-            geselecteerdTeamId={geselecteerdTeamId}
-            showScores={showScores}
-            onTeamSelect={onTeamSelect}
-          />
-        )}
+        ))}
       </div>
     </div>
   );
 }
 
-// ─── Niet-gecombineerde selectie: subtiele koppeling, eigen aantallen ─────────
+// ─── Niet-gecombineerde selectie (gebundeld = false) ─────────────────────────
+// Header: selectienaam + opgetelde ♀/♂ totalen
+// Per team: naam + eigen ♀N/♂N telling
 
-function SoloSelectieRij({
-  team,
-  gekoppeldAan,
-  geselecteerd,
-  showScores,
-  onClick,
+function SelectieGroepOngebundeld({
+  groep,
+  geselecteerdTeamId,
+  onTeamSelect,
 }: {
-  team: WerkbordTeam;
-  gekoppeldAan: WerkbordTeam | undefined;
-  geselecteerd: boolean;
-  showScores: boolean;
-  onClick: () => void;
+  groep: Extract<TeamGroep, { type: "selectie" }>;
+  geselecteerdTeamId: string | null;
+  onTeamSelect: (teamId: string) => void;
 }) {
-  const selectieNaam =
-    team.selectieNaam ?? (gekoppeldAan ? `${team.naam} + ${gekoppeldAan.naam}` : team.naam);
-  const dotKleur =
-    team.validatieStatus === "err"
-      ? "var(--err)"
-      : team.validatieStatus === "warn"
-        ? "var(--warn)"
-        : "var(--ok)";
+  const selectieNaam = groep.teams[0]?.selectieNaam ?? groep.teams.map((t) => t.naam).join(" ↔ ");
+  const totalDames = groep.teams.reduce((s, t) => s + t.dames.length, 0);
+  const totalHeren = groep.teams.reduce((s, t) => s + t.heren.length, 0);
 
   return (
-    <div style={{ position: "relative", margin: "4px 8px 6px" }}>
-      {/* Paarse rail links */}
-      <div
-        style={{
-          position: "absolute",
-          left: 0,
-          top: 0,
-          bottom: 0,
-          width: 2,
-          background: "rgba(129,140,248,.60)",
-          borderRadius: 2,
-        }}
-      />
-      {/* Selectie-label */}
-      <div style={{ display: "flex", alignItems: "center", gap: 5, padding: "4px 10px 3px 10px" }}>
-        <span
-          style={{
-            fontSize: 8,
-            fontWeight: 800,
-            letterSpacing: ".5px",
-            textTransform: "uppercase" as const,
-            color: "#818cf8",
-            background: "rgba(129,140,248,.10)",
-            border: "1px solid rgba(129,140,248,.25)",
-            borderRadius: 4,
-            padding: "1px 5px",
-          }}
-        >
-          SELECTIE
-        </span>
-        <span style={{ fontSize: 10, fontWeight: 500, color: "var(--text-3)" }}>
-          {selectieNaam}
-        </span>
-      </div>
-      {/* Teamrij */}
-      <div
-        onClick={onClick}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: geselecteerd ? "8px 10px 8px 9px" : "8px 10px",
-          cursor: "pointer",
-          borderRadius: 10,
-          borderLeft: geselecteerd ? "3px solid var(--accent)" : "1px solid rgba(255,255,255,.10)",
-          borderTop: "1px solid rgba(255,255,255,.10)",
-          borderRight: "1px solid rgba(255,255,255,.10)",
-          borderBottom: "1px solid rgba(255,255,255,.10)",
-          background: geselecteerd ? "rgba(255,107,0,.05)" : "rgba(26,26,46,1)",
-          transition: "background 120ms, border-color 120ms",
-        }}
-        onMouseEnter={(e) => {
-          if (!geselecteerd) {
-            (e.currentTarget as HTMLDivElement).style.background = "rgba(34,34,58,1)";
-          }
-        }}
-        onMouseLeave={(e) => {
-          if (!geselecteerd) {
-            (e.currentTarget as HTMLDivElement).style.background = "rgba(26,26,46,1)";
-          }
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text-1)" }}>{team.naam}</span>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-            <VenusIcon size={11} />
-            <span style={{ fontSize: 13, fontWeight: 800, color: "var(--pink)" }}>
-              {team.dames.length}
-            </span>
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-            <MarsIcon size={11} />
-            <span style={{ fontSize: 13, fontWeight: 800, color: "var(--blue)" }}>
-              {team.heren.length}
-            </span>
-          </div>
-          {showScores && team.ussScore !== null && (
-            <>
-              <div style={{ width: 1, height: 12, background: "var(--border-0)" }} />
-              <span style={{ fontSize: 10, color: "var(--text-3)" }}>
-                USS{" "}
-                <span style={{ color: "var(--text-2)", fontWeight: 600 }}>
-                  {team.ussScore.toFixed(2)}
-                </span>
-              </span>
-            </>
-          )}
-          <div
+    <div style={{ margin: "3px 8px 8px" }}>
+      <div style={SEL_FRAME_STYLE}>
+        <div style={SEL_HEADER_STYLE}>
+          <SelBadge />
+          <span
             style={{
-              width: 7,
-              height: 7,
-              borderRadius: "50%",
-              background: dotKleur,
-              boxShadow: `0 0 4px 1px ${dotKleur}40`,
-              flexShrink: 0,
+              fontSize: 12,
+              fontWeight: 700,
+              color: "var(--text-1)",
+              flex: 1,
+              minWidth: 0,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
             }}
-          />
+          >
+            {selectieNaam}
+          </span>
+          <div style={{ display: "flex", alignItems: "center", gap: 5, flexShrink: 0 }}>
+            <span style={{ fontSize: 10, color: "var(--pink)", opacity: 0.6 }}>♀</span>
+            <span style={{ fontSize: 12, fontWeight: 800, color: "var(--pink)" }}>
+              {totalDames}
+            </span>
+            <span style={{ fontSize: 10, color: "var(--blue)", opacity: 0.6, marginLeft: 2 }}>
+              ♂
+            </span>
+            <span style={{ fontSize: 12, fontWeight: 800, color: "var(--blue)" }}>
+              {totalHeren}
+            </span>
+          </div>
         </div>
+
+        {groep.teams.map((team, i) => (
+          <div key={team.id} style={i > 0 ? { borderTop: "1px solid rgba(255,255,255,.05)" } : {}}>
+            <SelectieTeamRij
+              team={team}
+              geselecteerdTeamId={geselecteerdTeamId}
+              rechts={
+                <div style={{ display: "flex", alignItems: "center", gap: 3 }}>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: "var(--pink)" }}>
+                    ♀{team.dames.length}
+                  </span>
+                  <span style={{ fontSize: 10, color: "var(--text-3)" }}>/</span>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: "var(--blue)" }}>
+                    ♂{team.heren.length}
+                  </span>
+                </div>
+              }
+              onTeamSelect={onTeamSelect}
+            />
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -1622,21 +1539,18 @@ export function TeamDrawer({
                     key={groep.selectieGroepId}
                     groep={groep}
                     geselecteerdTeamId={geselecteerdTeamId}
-                    showScores={true}
                     onTeamSelect={onTeamSelect}
                   />
                 );
               }
-              return groep.teams.map((team) => (
-                <SoloSelectieRij
-                  key={team.id}
-                  team={team}
-                  gekoppeldAan={groep.teams.find((t) => t.id !== team.id)}
-                  geselecteerd={team.id === geselecteerdTeamId}
-                  showScores={true}
-                  onClick={() => onTeamSelect(team.id)}
+              return (
+                <SelectieGroepOngebundeld
+                  key={groep.selectieGroepId}
+                  groep={groep}
+                  geselecteerdTeamId={geselecteerdTeamId}
+                  onTeamSelect={onTeamSelect}
                 />
-              ));
+              );
             })}
           </div>
         </>
