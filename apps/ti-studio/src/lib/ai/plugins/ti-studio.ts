@@ -917,9 +917,8 @@ function maakMemoTools(sessieId: string, gebruikerEmail: string) {
       select: { id: true },
     });
     if (user) return user.id;
-    // Fallback: eerste beschikbare gebruiker (service-key context)
-    const fallback = await prisma.user.findFirst({ select: { id: true } });
-    return fallback?.id ?? null;
+    // Fallback: Daisy service-user (altijd aanwezig)
+    return "daisy-service";
   }
 
   return {
