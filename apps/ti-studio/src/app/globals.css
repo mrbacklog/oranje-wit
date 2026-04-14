@@ -365,3 +365,9 @@ textarea.input {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
   transform: translateY(-1px);
 }
+
+.ti-dashboard-memo-urgent:hover {
+  border-color: rgba(239, 68, 68, 0.5) !important;
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.12);
+  transform: translateY(-1px);
+}
