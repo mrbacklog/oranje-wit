@@ -4,6 +4,7 @@
 
 import { streamText, type UIMessage, type ToolSet, convertToModelMessages, stepCountIs } from "ai";
 import { guardAuth } from "@oranje-wit/auth/checks";
+import type { AuthSession } from "@oranje-wit/auth/checks";
 import { logger } from "@oranje-wit/types";
 import { buildDaisyPrompt } from "@/lib/ai/daisy";
 import { getTiStudioTools } from "@/lib/ai/plugins/ti-studio";
@@ -14,16 +15,7 @@ export const maxDuration = 30;
 
 export async function POST(request: Request) {
   // --- Auth: browser-sessie OF service-key ---
-  let session: {
-    user: {
-      email: string;
-      name?: string | null;
-      isTC: boolean;
-      isScout: boolean;
-      clearance: number;
-      doelgroepen: string[];
-    };
-  };
+  let session: AuthSession;
 
   const serviceKey = request.headers.get("X-Daisy-Service-Key");
   const expectedKey = process.env.DAISY_SERVICE_KEY;
@@ -39,7 +31,7 @@ export async function POST(request: Request) {
         clearance: 3,
         doelgroepen: [],
       },
-    };
+    } as AuthSession;
   } else {
     const auth = await guardAuth();
     if (!auth.ok) return auth.response;
