@@ -10,7 +10,7 @@
 import "dotenv/config";
 import * as fs from "fs";
 import * as path from "path";
-import { importData, type ExportData } from "../../apps/team-indeling/src/lib/import";
+import { importData, type ExportData } from "../../apps/web/src/lib/teamindeling/import";
 
 const ROOT = path.resolve(__dirname, "../..");
 const EXPORT_DIR = path.join(ROOT, "data", "export");
