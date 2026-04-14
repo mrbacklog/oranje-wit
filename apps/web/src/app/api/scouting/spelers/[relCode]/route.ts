@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { logger, PEILJAAR, HUIDIG_SEIZOEN } from "@oranje-wit/types";
+import { logger, HUIDIG_SEIZOEN, grofKorfbalLeeftijd, HUIDIGE_PEILDATUM } from "@oranje-wit/types";
 import { prisma } from "@/lib/scouting/db/prisma";
 import { ok, fail } from "@/lib/scouting/api";
 import { guardAuth } from "@oranje-wit/auth/checks";
@@ -149,7 +149,7 @@ export async function GET(
 
     const huidig = speler.huidig as Record<string, unknown> | null;
     const spelerspad = speler.spelerspad as Array<Record<string, unknown>> | null;
-    const leeftijd = PEILJAAR - speler.geboortejaar;
+    const leeftijd = grofKorfbalLeeftijd(speler.geboortejaar, HUIDIGE_PEILDATUM);
     const kleur = (huidig?.kleur as string) ?? leeftijdNaarKleur(leeftijd);
 
     const volleAchternaam = lid?.tussenvoegsel

@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { logger, PEILJAAR, HUIDIG_SEIZOEN } from "@oranje-wit/types";
+import { logger, HUIDIG_SEIZOEN, grofKorfbalLeeftijd, HUIDIGE_PEILDATUM } from "@oranje-wit/types";
 import { prisma } from "@/lib/scouting/db/prisma";
 import { ok, fail } from "@/lib/scouting/api";
 import { leeftijdsgroepVanLeeftijd } from "@/lib/scouting/leeftijdsgroep";
@@ -79,7 +79,7 @@ export async function GET(
     }
 
     // Leeftijdsgroep en tier berekenen
-    const leeftijd = PEILJAAR - speler.geboortejaar;
+    const leeftijd = grofKorfbalLeeftijd(speler.geboortejaar, HUIDIGE_PEILDATUM);
     const groep = leeftijdsgroepVanLeeftijd(leeftijd);
     const tier = bepaalTier(kaart.overall, groep);
 

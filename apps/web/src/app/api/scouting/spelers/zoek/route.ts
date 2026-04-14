@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { z } from "zod";
-import { logger, PEILJAAR } from "@oranje-wit/types";
+import { logger, grofKorfbalLeeftijd, HUIDIGE_PEILDATUM } from "@oranje-wit/types";
 import { prisma } from "@/lib/scouting/db/prisma";
 import { ok, fail } from "@/lib/scouting/api";
 import { guardAuth } from "@oranje-wit/auth/checks";
@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
 
     const resultaten = spelers.map((speler) => {
       const huidig = speler.huidig as Record<string, unknown> | null;
-      const leeftijd = PEILJAAR - speler.geboortejaar;
+      const leeftijd = grofKorfbalLeeftijd(speler.geboortejaar, HUIDIGE_PEILDATUM);
       const kleur = huidig?.kleur as string | undefined;
       const team = huidig?.team as string | undefined;
 
