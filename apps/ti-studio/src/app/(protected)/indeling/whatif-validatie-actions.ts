@@ -8,7 +8,7 @@ import type { TeamAantalKaders } from "@/lib/teamindeling/whatif/kader-validatie
 import type { WhatIfTeamData, WhatIfValidatie } from "@/lib/teamindeling/whatif/types";
 import type { WerkindelingTeamData } from "@/lib/teamindeling/whatif/delta";
 import type { BlauwdrukKaders } from "@/lib/teamindeling/validatie/types";
-import { PEILJAAR } from "@oranje-wit/types";
+import { korfbalPeildatum, type Seizoen } from "@oranje-wit/types";
 import { logger } from "@oranje-wit/types";
 
 // ============================================================
@@ -52,6 +52,7 @@ export async function valideerWhatIfVoorToepassen(
           kaders: {
             select: {
               kaders: true,
+              seizoen: true,
               pins: {
                 select: {
                   id: true,
@@ -147,8 +148,11 @@ export async function valideerWhatIfVoorToepassen(
   // Teamaantal-kaders extraheren uit blauwdruk kaders (als beschikbaar)
   const teamAantalKaders = extractTeamAantalKaders(kaders);
 
+  // Peildatum afleiden uit het seizoen van de kaders
+  const peildatum = korfbalPeildatum(whatIf.werkindeling.kaders.seizoen as Seizoen);
+
   // Draai validatie
-  const validatie = valideerWhatIf(whatIfTeams, werkindelingTeams, spelerLookup, PEILJAAR, {
+  const validatie = valideerWhatIf(whatIfTeams, werkindelingTeams, spelerLookup, peildatum, {
     kaders: kaders ?? undefined,
     pins,
     teamAantalKaders,

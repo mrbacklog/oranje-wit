@@ -12,7 +12,7 @@
  */
 import { z } from "zod";
 import { prisma } from "@/lib/teamindeling/db/prisma";
-import { HUIDIG_SEIZOEN, PEILJAAR } from "@oranje-wit/types";
+import { HUIDIG_SEIZOEN, HUIDIGE_PEILDATUM, grofKorfbalLeeftijd } from "@oranje-wit/types";
 import {
   logDaisyActie,
   getDaisyActies,
@@ -73,7 +73,9 @@ const leesTools = {
       leeftijdVolgendSeizoen: z
         .number()
         .optional()
-        .describe(`Leeftijd volgend seizoen (peiljaar ${PEILJAAR})`),
+        .describe(
+          `Leeftijd volgend seizoen (op peildatum ${HUIDIGE_PEILDATUM.toISOString().slice(0, 10)})`
+        ),
       ussMin: z.number().optional().describe("Minimale USS-score"),
       ussMax: z.number().optional().describe("Maximale USS-score"),
       retentierisico: z
@@ -153,7 +155,7 @@ const leesTools = {
       if (params.geslacht) where.geslacht = params.geslacht;
       if (params.geboortejaar) where.geboortejaar = params.geboortejaar;
       if (params.leeftijdVolgendSeizoen)
-        where.geboortejaar = PEILJAAR - params.leeftijdVolgendSeizoen;
+        where.geboortejaar = HUIDIGE_PEILDATUM.getFullYear() - params.leeftijdVolgendSeizoen;
       if (params.status) where.status = params.status;
       // Team-filter: senioren via team-code, A-cat via naam, B-cat via kleur
       if (params.kleur) {
@@ -185,7 +187,7 @@ const leesTools = {
         naam: `${s.roepnaam} ${s.achternaam}`,
         geslacht: s.geslacht,
         geboortejaar: s.geboortejaar,
-        leeftijdVolgendSeizoen: PEILJAAR - s.geboortejaar,
+        leeftijdVolgendSeizoen: grofKorfbalLeeftijd(s.geboortejaar, HUIDIGE_PEILDATUM),
         status: s.status,
         uss: s.rating ?? s.ratingBerekend ?? null,
         retentierisico: (s.retentie as any)?.risico ?? null,

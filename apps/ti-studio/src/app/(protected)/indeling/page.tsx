@@ -10,11 +10,8 @@ import {
 } from "./werkindeling-actions";
 import { getTeamtypeKaders } from "@/app/(protected)/kader/actions";
 import { mergeMetDefaults } from "@/app/(protected)/kader/kader-defaults";
-import {
-  berekenTeamValidatie,
-  berekenValidatieStatus,
-  korfbalLeeftijd,
-} from "@/lib/teamindeling/validatie-engine";
+import { berekenTeamValidatie, berekenValidatieStatus } from "@/lib/teamindeling/validatie-engine";
+import { korfbalPeildatum, berekenKorfbalLeeftijd, type Seizoen } from "@oranje-wit/types";
 import { TiStudioShell } from "@/components/werkbord/TiStudioShell";
 import type {
   WerkbordState,
@@ -96,9 +93,9 @@ export default async function IndelingPage() {
   const huidigeJaar = new Date().getFullYear();
   const versie = volledig.versies[0];
 
-  // Kaders laden en peiljaar bepalen
+  // Kaders laden en peildatum bepalen
   const seizoen = volledig.kaders.seizoen; // bijv. "2025-2026"
-  const peiljaar = parseInt(seizoen.split("-")[1], 10);
+  const peildatum = korfbalPeildatum(seizoen as Seizoen);
   const opgeslagenKaders = await getTeamtypeKaders(seizoen);
   const tcKaders = mergeMetDefaults(opgeslagenKaders);
 
@@ -258,7 +255,14 @@ export default async function IndelingPage() {
             const gbd = ts.speler?.geboortedatum
               ? (ts.speler.geboortedatum as Date).toISOString().split("T")[0]
               : null;
-            return acc + korfbalLeeftijd(gbd, ts.speler?.geboortejaar ?? peiljaar - 15, peiljaar);
+            return (
+              acc +
+              berekenKorfbalLeeftijd(
+                gbd,
+                ts.speler?.geboortejaar ?? peildatum.getFullYear() - 15,
+                peildatum
+              )
+            );
           }, 0) / totaalSpelers
         : 0;
 
@@ -438,7 +442,7 @@ export default async function IndelingPage() {
           dames: primary.selectieDames,
           heren: primary.selectieHeren,
         };
-        const items = berekenTeamValidatie(effectief, tcKaders, peiljaar);
+        const items = berekenTeamValidatie(effectief, tcKaders, peildatum);
         validatie.push(...items);
         primary.validatieStatus = berekenValidatieStatus(items);
         primary.validatieCount = items.filter((i) => i.type !== "ok").length;
@@ -451,7 +455,7 @@ export default async function IndelingPage() {
         // Niet gebundeld: valideer elk team apart, toon slechtste status op primary
         const alleItems: WerkbordValidatieItem[] = [];
         for (const t of groepTeams) {
-          const items = berekenTeamValidatie(t, tcKaders, peiljaar);
+          const items = berekenTeamValidatie(t, tcKaders, peildatum);
           validatie.push(...items);
           alleItems.push(...items);
           t.validatieStatus = berekenValidatieStatus(items);
@@ -463,7 +467,7 @@ export default async function IndelingPage() {
       }
     } else {
       // Gewoon team: individuele validatie
-      const items = berekenTeamValidatie(team, tcKaders, peiljaar);
+      const items = berekenTeamValidatie(team, tcKaders, peildatum);
       validatie.push(...items);
       team.validatieStatus = berekenValidatieStatus(items);
       team.validatieCount = items.filter((i) => i.type !== "ok").length;
