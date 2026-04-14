@@ -1,8 +1,8 @@
 /**
  * Leeftijdsgroep-bepaling op basis van KNKV Competitie 2.0.
  *
- * Korfballeeftijd = peiljaar - geboortejaar.
- * Peildatum is 31 december van het peiljaar (2026).
+ * Korfballeeftijd = peildatumjaar - geboortejaar (grof, alleen op jaar).
+ * Peildatum is 31 december van het startjaar van het seizoen.
  *
  * Groepen:
  *   Paars  = leeftijd 5
@@ -13,7 +13,7 @@
  *   Rood   = leeftijd 16-18
  */
 
-import { PEILJAAR } from "@oranje-wit/types";
+import { grofKorfbalLeeftijd, HUIDIGE_PEILDATUM } from "@oranje-wit/types";
 import type { LeeftijdsgroepNaam } from "@oranje-wit/types";
 
 export type { LeeftijdsgroepNaam };
@@ -28,10 +28,10 @@ interface SpelerMetGeboortejaar {
 
 /**
  * Bereken de korfballeeftijd op basis van geboortejaar.
- * Korfballeeftijd = peiljaar - geboortejaar.
+ * Korfballeeftijd = peildatumjaar - geboortejaar.
  */
 export function bepaalKorfbalLeeftijd(geboortejaar: number): number {
-  return PEILJAAR - geboortejaar;
+  return grofKorfbalLeeftijd(geboortejaar, HUIDIGE_PEILDATUM);
 }
 
 /**

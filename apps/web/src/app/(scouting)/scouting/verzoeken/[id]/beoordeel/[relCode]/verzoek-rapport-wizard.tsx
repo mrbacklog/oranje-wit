@@ -8,7 +8,7 @@ import { DeadlineBadge } from "@/components/scouting/deadline-badge";
 import { useDraft } from "@/hooks/scouting/useDraft";
 import type { ScoutingVraag } from "@/lib/scouting/vragen";
 import type { SchaalType, LeeftijdsgroepNaam } from "@/lib/scouting/leeftijdsgroep";
-import { logger, PEILJAAR } from "@oranje-wit/types";
+import { logger, grofKorfbalLeeftijd, HUIDIGE_PEILDATUM } from "@oranje-wit/types";
 import {
   StapContext,
   StapOpmerking,
@@ -230,7 +230,7 @@ export function VerzoekRapportWizard({
           achternaam={speler.achternaam}
           tussenvoegsel={speler.tussenvoegsel}
           geboortejaar={speler.geboortejaar}
-          korfbalLeeftijd={PEILJAAR - speler.geboortejaar}
+          korfbalLeeftijd={grofKorfbalLeeftijd(speler.geboortejaar, HUIDIGE_PEILDATUM)}
           geslacht={speler.geslacht}
           seizoenenActief={speler.seizoenenActief}
           heeftFoto={speler.heeftFoto}

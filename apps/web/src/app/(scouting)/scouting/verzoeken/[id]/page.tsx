@@ -5,7 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import { DeadlineBadge } from "@/components/scouting/deadline-badge";
 import { SpelerContext } from "@/components/scouting/speler-context";
 import { getAllDrafts } from "@/hooks/scouting/useDraft";
-import { logger, PEILJAAR } from "@oranje-wit/types";
+import { logger, grofKorfbalLeeftijd, HUIDIGE_PEILDATUM } from "@oranje-wit/types";
 
 interface VerzoekDetail {
   id: string;
@@ -105,7 +105,7 @@ export default function VerzoekDetailPage() {
               achternaam: s.achternaam,
               tussenvoegsel: s.tussenvoegsel ?? null,
               geboortejaar: s.geboortejaar,
-              korfbalLeeftijd: PEILJAAR - s.geboortejaar,
+              korfbalLeeftijd: grofKorfbalLeeftijd(s.geboortejaar, HUIDIGE_PEILDATUM),
               geslacht: s.geslacht as "M" | "V",
               team: huidig?.team ?? "",
               kleur: huidig?.kleur ?? "blauw",

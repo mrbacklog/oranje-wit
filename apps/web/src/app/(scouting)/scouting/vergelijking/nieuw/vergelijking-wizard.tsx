@@ -2,12 +2,15 @@
 
 import { useCallback, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { logger } from "@oranje-wit/types";
+import {
+  logger,
+  LEEFTIJDSGROEP_CONFIG,
+  grofKorfbalLeeftijd,
+  HUIDIGE_PEILDATUM,
+} from "@oranje-wit/types";
 import type { LeeftijdsgroepNaamV3 } from "@oranje-wit/types";
-import { LEEFTIJDSGROEP_CONFIG } from "@oranje-wit/types";
 import { SpelerZoek } from "@/components/scouting/speler-zoek";
 import { leeftijdNaarGroep } from "@/components/scouting/kaart-constanten";
-import { PEILJAAR } from "@oranje-wit/types";
 import { StapVergelijking } from "./stap-vergelijking";
 import { StapVergelijkingSamenvatting } from "./stap-samenvatting";
 
@@ -45,7 +48,7 @@ export function VergelijkingWizard({
   // Bepaal leeftijdsgroep van de geselecteerde spelers
   const groep = useMemo(() => {
     if (gekozenSpelers.length === 0) return "geel" as LeeftijdsgroepNaamV3;
-    const gemLeeftijd = PEILJAAR - gekozenSpelers[0].geboortejaar;
+    const gemLeeftijd = grofKorfbalLeeftijd(gekozenSpelers[0].geboortejaar, HUIDIGE_PEILDATUM);
     return leeftijdNaarGroep(gemLeeftijd) as LeeftijdsgroepNaamV3;
   }, [gekozenSpelers]);
 
