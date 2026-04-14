@@ -650,15 +650,31 @@ async function main() {
     [huidigSeizoen, huidigSeizoenJaar]
   );
 
+  // Fallback-categorie op basis van team-naam (voor teams die niet in teams-knkv.json staan,
+  // zoals snapshot-namen met S-prefix: S1S2, S3, S4; U-teams; MW-teams; K/onbekend).
+  // Voorkomt NULL in ReferentieTeam.categorie (verplicht veld).
+  function bepaalCategorieFallback(teamNaam) {
+    if (!teamNaam) return "a";
+    const t = String(teamNaam).toUpperCase();
+    if (/^J\d+$/.test(t)) return "b"; // jeugdteams (Rood/Oranje/Geel/Groen/Blauw)
+    if (/^U\d+$/.test(t)) return "a"; // U15/U17/U19
+    if (/^MW\d+$/.test(t)) return "a"; // midweek senioren
+    if (/^S?\d+(S?\d+)?$/.test(t)) return "a"; // 1, 2, S3, S1S2
+    return "a"; // K, onbekend, rest → senioren-default
+  }
+
   const teamsHuidig = teamStats.map((team) => {
-    const knkvTeam = teamsKNKV?.find((t) => t.team === team.team);
+    // Probeer exacte match, daarna zonder S-prefix (S3 → 3), daarna fallback
+    const knkvTeam =
+      teamsKNKV?.find((t) => t.team === team.team) ||
+      teamsKNKV?.find((t) => `S${t.team}` === team.team);
     const owCode = owCodeLookup.get(team.team) || team.team;
     const owTeam = owCodeTeamLookup.get(owCode);
     return {
       team: team.team,
       ow_code: owCode,
       werknaam: owTeam?.naam || null,
-      categorie: knkvTeam?.categorie || null,
+      categorie: knkvTeam?.categorie || bepaalCategorieFallback(team.team),
       kleur: knkvTeam?.kleur || null,
       niveau: knkvTeam?.niveau || null,
       spelvorm:
@@ -729,6 +745,7 @@ async function main() {
   const exportData = {
     meta: {
       export_datum: new Date().toISOString().split("T")[0],
+      snapshot_datum: new Date().toISOString().split("T")[0],
       export_versie: "2.0",
       bron: "database (speler_seizoenen + competitie_spelers + leden)",
       seizoen_huidig: huidigSeizoen,
