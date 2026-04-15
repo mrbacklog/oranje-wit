@@ -16,6 +16,7 @@ paths:
 | `team-planner` | TI (hoofd) | Workflow kaders → definitief |
 | `regel-checker` | TI (sub) | KNKV + OW regelvalidatie |
 | `adviseur` | TI (sub) | Spelersadvies, what-if, Oranje Draad |
+| `daisy-coach` | TI (AI-laag) | Onderhoudt Daisy's systeemprompt, tool-descriptions en output-regels bewijsgestuurd op basis van opgeslagen gesprekken |
 | `ontwikkelaar` | TI (dev) | Next.js app bouwen en uitbreiden |
 | `e2e-tester` | Test | Playwright E2E tests schrijven, draaien en repareren |
 | `devops` | Infra (lead) | DevOps/DX lead, orkestreert deployment + testing + monitoring |
