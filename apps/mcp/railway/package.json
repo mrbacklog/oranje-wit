@@ -4,7 +4,7 @@
   "description": "MCP server voor Railway platform management via GraphQL API v2",
   "main": "server.js",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.12.1",
+    "@modelcontextprotocol/sdk": "^1.29.0",
     "zod": "^3.24.0"
   }
 }
