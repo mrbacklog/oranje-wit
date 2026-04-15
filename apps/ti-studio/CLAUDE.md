@@ -49,6 +49,16 @@ Daisy in ti-studio heeft de **volledige** plugin-set: planning, monitor,
 teamindeling én ti-studio tools (inclusief schrijf-acties op de werkindeling
 zoals spelerVerplaatsen, spelerStatusZetten, teamAanmaken, etc.).
 
+### Wijzigingen aan de AI-laag
+
+Wijzigingen aan `src/lib/ai/daisy.ts` (systeemprompt) of aan de `description`-
+velden in `src/lib/ai/plugins/ti-studio.ts` (tool-descriptions) lopen via de
+agent `daisy-coach`. Die agent werkt bewijsgestuurd: hij leest eerst echte
+gesprekken uit `ai_gesprekken` voordat hij iets verandert. Spawn hem met een
+concrete opdracht. De execute-functies van tools blijven bij `ontwikkelaar`.
+
+Zie `.claude/skills/daisy-coach/SKILL.md` voor de workflow.
+
 ## Belangrijke conventies
 
 - **Logger**: `logger` uit `@oranje-wit/types`, nooit `console.log`
