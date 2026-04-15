@@ -6,7 +6,7 @@ test.describe("TI Studio — Memo Pagina", () => {
   test.setTimeout(90_000);
 
   test("memo pagina laadt met kanban structuur", async ({ page }) => {
-    await page.goto("/ti-studio/memo", GOTO_OPTS);
+    await page.goto("/memo", GOTO_OPTS);
 
     // Pagina moet laden zonder error
     const body = page.locator("body");
@@ -38,7 +38,7 @@ test.describe("TI Studio — Memo Pagina", () => {
   });
 
   test("nieuw memo knop is aanwezig", async ({ page }) => {
-    await page.goto("/ti-studio/memo", GOTO_OPTS);
+    await page.goto("/memo", GOTO_OPTS);
 
     // Pagina moet laden
     const body = page.locator("body");

@@ -6,7 +6,7 @@ test.describe("TI Studio — Personen & Werkbord", () => {
   test.setTimeout(90_000);
 
   test("personen spelers pagina laadt", async ({ page }) => {
-    await page.goto("/ti-studio/personen/spelers", GOTO_OPTS);
+    await page.goto("/personen/spelers", GOTO_OPTS);
 
     const body = page.locator("body");
     await expect(body).toBeVisible({ timeout: 30_000 });

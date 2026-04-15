@@ -27,7 +27,7 @@ async function setZoom(page: any, percent: number) {
 }
 
 async function gaaNaarWerkbord(page: any) {
-  await page.goto("/ti-studio/indeling", { timeout: 60_000 });
+  await page.goto("/indeling", { timeout: 60_000 });
   // Wacht tot de pagina laadt (slider is aanwezig als werkbord geladen is)
   const slider = page.locator('input[type="range"][min="40"][max="150"]');
   await slider.waitFor({ timeout: 30_000 });

@@ -2,7 +2,7 @@ import { test, expect } from "../fixtures/base";
 
 test.describe("Daisy panel", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/ti-studio/indeling");
+    await page.goto("/indeling");
     await page.waitForLoadState("domcontentloaded");
   });
 
@@ -74,7 +74,7 @@ test.describe("Daisy panel", () => {
       }
     });
 
-    await page.goto("/ti-studio/indeling", { timeout: 60_000 });
+    await page.goto("/indeling", { timeout: 60_000 });
     const nav = page.getByRole("navigation", { name: "Hoofdnavigatie" });
     await expect(nav).toBeVisible({ timeout: 20_000 });
 
