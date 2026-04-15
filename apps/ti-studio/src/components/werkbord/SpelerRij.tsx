@@ -54,12 +54,6 @@
  * ║  "van der" → "vd"   "van de" → "vd"   "van" → "v"                        ║
  * ║  "de" → "d"         "den" → "d"        "ter" → "t"   "te" → "t"           ║
  * ║                                                                             ║
- * ║  PIN (alleen pool-variant)                                                  ║
- * ║  ─────────────────────────                                                  ║
- * ║  Gepind: 📌 (11px)                                                         ║
- * ║  Niet gepind: kleine lege cirkel (8px, border 1px #2a2a2a)                 ║
- * ║  Pin-slot is altijd 14px breed, links in de rij                            ║
- * ║                                                                             ║
  * ║  MEMO (▲ indicator)                                                         ║
  * ║  ──────────────────                                                         ║
  * ║  normaal: vaste 14px slot rechts van naam, voor leeftijd                   ║
@@ -849,32 +843,6 @@ function PoolRij({
           position: "relative",
         }}
       >
-        {/* Pin-slot */}
-        <div
-          style={{
-            width: 14,
-            flexShrink: 0,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          {speler.gepind ? (
-            <span style={{ fontSize: 11, lineHeight: 1 }}>📌</span>
-          ) : (
-            <span
-              style={{
-                width: 8,
-                height: 8,
-                borderRadius: "50%",
-                border: "1px solid #2a2a2a",
-                background: "transparent",
-                display: "inline-block",
-              }}
-            />
-          )}
-        </div>
-
         {/* Avatar */}
         <div
           style={{

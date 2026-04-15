@@ -341,7 +341,6 @@ model User {
   updatedAt DateTime @updatedAt
 
   // Relaties
-  pins     Pin[]
   logItems LogEntry[]
   werkitems             Werkitem[]  @relation("WerkitemAuteur")
   actiepuntenGemaakt    Actiepunt[] @relation("ActiepuntAuteur")
@@ -369,7 +368,7 @@ model Gebruiker {
 
   // Capabilities
   isTC        Boolean     @default(false) @map("is_tc")
-  isTCKern    Boolean     @default(false) @map("is_tc_kern") // mag scenario's/pins bewerken
+  isTCKern    Boolean     @default(false) @map("is_tc_kern") // mag scenario's bewerken
   isScout     Boolean     @default(false) @map("is_scout")
   clearance   Int         @default(0)     // 0-3, ingesteld door TC in Beheer
   doelgroepen Doelgroep[]                  // TC-lid: verantwoordelijk voor deze doelgroepen
@@ -463,7 +462,6 @@ model Speler {
   selectiePlaatsingen SelectieSpeler[]
   evaluaties         Evaluatie[]
   zelfEvaluaties     SpelerZelfEvaluatie[]
-  pins               Pin[]
   werkitems          Werkitem[]
   activiteiten       Activiteit[]
   scoutingRapporten    ScoutingRapport[]
@@ -499,7 +497,6 @@ model Staf {
   lid                 Lid?     @relation(fields: [relCode], references: [relCode])
   teamStaf            TeamStaf[]
   selectiePlaatsingen SelectieStaf[]
-  pins                Pin[]
   toewijzingen        StafToewijzing[]
   werkitems           Werkitem[]
   activiteiten        Activiteit[]
@@ -558,7 +555,6 @@ model Kaders {
 
   // Relaties
   werkindelingen  Werkindeling[]
-  pins        Pin[]
   werkitems     Werkitem[]
   actiepunten   Actiepunt[]
   activiteiten  Activiteit[]
@@ -695,39 +691,6 @@ enum BesluitStatus {
 enum BesluitNiveau {
   BESTUURLIJK // Bestuursbesluit
   TECHNISCH   // TC-besluit
-}
-
-// ============================================================
-// PIN-SYSTEEM
-// ============================================================
-
-model Pin {
-  id          String  @id @default(cuid())
-  kaders      Kaders @relation(fields: [kadersId], references: [id], onDelete: Cascade)
-  kadersId    String
-
-  type    PinType
-  waarde  Json
-  notitie String? @db.Text
-
-  speler   Speler? @relation(fields: [spelerId], references: [id])
-  spelerId String?
-  staf     Staf?   @relation(fields: [stafId], references: [id])
-  stafId   String?
-
-  gepindDoor   User     @relation(fields: [gepindDoorId], references: [id])
-  gepindDoorId String
-  gepindOp     DateTime @default(now())
-
-  @@index([kadersId])
-  @@index([type])
-}
-
-enum PinType {
-  SPELER_STATUS
-  SPELER_POSITIE
-  STAF_POSITIE
-  SPELER_GEPIND
 }
 
 // ============================================================

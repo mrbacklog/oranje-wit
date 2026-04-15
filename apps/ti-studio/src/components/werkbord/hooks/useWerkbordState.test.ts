@@ -46,7 +46,6 @@ function maakSpeler(
     notitie: null,
     afmelddatum: null,
     teamId: null,
-    gepind: false,
     isNieuw: false,
     openMemoCount: 0,
     huidigTeam: null,

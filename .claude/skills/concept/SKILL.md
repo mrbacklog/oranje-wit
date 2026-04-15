@@ -29,7 +29,7 @@ Concrete beslissingen die uit het uitgangsprincipe volgen:
 - Welke spelers doorschuiven?
 - Hoe omgaan met twijfelaars?
 
-### Niet-gepinde aannames
+### Aannames
 Zaken die nog niet vast staan maar in dit concept als aanname gelden:
 - Trainertoewijzingen (nog niet bevestigd)
 - Verwachte uitstroom van twijfelaars

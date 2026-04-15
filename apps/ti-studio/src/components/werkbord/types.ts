@@ -44,7 +44,6 @@ export interface WerkbordSpeler {
   notitie: string | null;
   afmelddatum: string | null;
   teamId: string | null;
-  gepind: boolean;
   isNieuw: boolean;
   openMemoCount: number;
   ussScore: number | null;

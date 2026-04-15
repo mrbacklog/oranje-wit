@@ -111,8 +111,8 @@ Team-skills staan in `.claude/skills/team-*/SKILL.md`.
 
 Alle skills staan in `.claude/skills/<naam>/SKILL.md` (flat structuur). Agent frontmatter gebruikt domeinprefixen (`shared/oranje-draad`) voor fencing-documentatie.
 
-### Domein-skills (23)
-advies, batch-plaats, concept, database, deployment, e2e-testing, evaluatie, exporteer, import, jeugdmodel, knkv-api, ledenverloop, lid-monitor, oranje-draad, pin, railway, scenario, scenario-analyse, score-model, start, teamsamenstelling, validatie, vergelijk
+### Domein-skills (22)
+advies, batch-plaats, concept, database, deployment, e2e-testing, evaluatie, exporteer, import, jeugdmodel, knkv-api, ledenverloop, lid-monitor, oranje-draad, railway, scenario, scenario-analyse, score-model, start, teamsamenstelling, validatie, vergelijk
 
 ### Infra-skills (8)
 audit, ci-status, health-check, deploy, security, canary, benchmark, retro

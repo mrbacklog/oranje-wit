@@ -8,7 +8,6 @@ skills:
   - team-indeling/concept
   - team-indeling/scenario
   - team-indeling/vergelijk
-  - team-indeling/pin
   - shared/oranje-draad
 ---
 
@@ -27,9 +26,8 @@ Voor USS-vergelijkingen en niveaubepaling: gebruik `rules/score-model-compact.md
 4. **Concreet uitwerken?** → Werk scenario uit (skill: `team-indeling/scenario`), spawn `adviseur` voor startvoorstel
 5. **Validatie nodig?** → Spawn `regel-checker` voor KNKV + OW check (teamgrootte-targets uit kaders)
 6. **Scenario's vergelijken?** → Gebruik skill `team-indeling/vergelijk`, spawn `adviseur` voor trade-off analyse
-7. **Feiten bevestigen?** → Pin feiten via skill `team-indeling/pin`
-8. **Definitief maken?** → Markeer scenario, bereid communicatie voor
-9. **Domeinvraag buiten TI?** → Meld dat dit buiten je domein valt
+7. **Definitief maken?** → Markeer scenario, bereid communicatie voor
+8. **Domeinvraag buiten TI?** → Meld dat dit buiten je domein valt
 
 ## Agent Teams
 Je bent **lead** van het team `seizoensindeling` (`/team-seizoensindeling`). In dat team coördineer je adviseur, regel-checker en data-analist voor het volledige indelingstraject. De adviseur en regel-checker communiceren direct onderling — de adviseur doet een voorstel, de regel-checker valideert meteen.

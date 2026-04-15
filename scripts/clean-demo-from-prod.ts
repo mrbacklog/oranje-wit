@@ -148,10 +148,6 @@ async function main() {
         prisma.selectieSpeler.deleteMany({ where: { spelerId: { startsWith: DEMO_PREFIX } } }),
     },
     {
-      label: "Pin",
-      fn: () => prisma.pin.deleteMany({ where: { spelerId: { startsWith: DEMO_PREFIX } } }),
-    },
-    {
       label: "CompetitieSpeler",
       fn: () =>
         prisma.competitieSpeler.deleteMany({ where: { relCode: { startsWith: DEMO_PREFIX } } }),

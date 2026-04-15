@@ -105,7 +105,6 @@ e2e/
     navigatie.spec.ts        # Basisnavigatie
     kaders.spec.ts           # Kaders beheer
     scenarios.spec.ts        # Scenario's, drag-drop
-    pins.spec.ts             # Pin-systeem
   monitor/
     dashboard.spec.ts        # Dashboard KPI's
     leden.spec.ts            # Ledenlijst

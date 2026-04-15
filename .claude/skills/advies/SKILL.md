@@ -19,7 +19,7 @@ De app heeft 4 Claude-endpoints (via `@anthropic-ai/sdk`):
 
 ### ChatPanel (`/api/ai/chat`)
 Streaming SSE chat met tool use. Claude kan zowel data opvragen als mutaties uitvoeren:
-- **Read-only tools** (11): bekijk_huidige_indeling, bekijk_spelerspool, bekijk_speler_details, bekijk_voorgaande_indeling, bekijk_teamsterktes, bekijk_evaluaties, bekijk_blauwdruk_kaders, bekijk_pins, bekijk_retentie_overzicht, bekijk_teamgenoten, valideer_teams
+- **Read-only tools** (10): bekijk_huidige_indeling, bekijk_spelerspool, bekijk_speler_details, bekijk_voorgaande_indeling, bekijk_teamsterktes, bekijk_evaluaties, bekijk_blauwdruk_kaders, bekijk_retentie_overzicht, bekijk_teamgenoten, valideer_teams
 - **Mutatie tools** (5): verplaats_speler, voeg_speler_toe, verwijder_speler_uit_team, wissel_spelers, maak_team_aan
 - Tool-definities: `lib/ai/tools.ts`, tool-handlers: `lib/ai/tool-handlers.ts`
 - Na mutatie: ChatPanel roept `onMutatie` → ScenarioEditor herlaadt teams via `/api/scenarios/{id}/teams`
@@ -29,7 +29,7 @@ Prompt builder: `lib/ai/prompt.ts` — bouwt context met ledendata, spelerspaden
 ## Adviestypen
 
 ### Startvoorstel
-Input: concept (uitgangsprincipe + keuzes) + kaders (kaders + pins + teamgrootte-targets)
+Input: concept (uitgangsprincipe + keuzes) + kaders (kaders + teamgrootte-targets)
 Output: complete teamindeling voor alle categorieën met onderbouwing per speler
 
 Claude gebruikt:
@@ -38,7 +38,6 @@ Claude gebruikt:
 - Evaluaties (indien beschikbaar)
 - Retentiemodel (risico, kans_behoud, factoren)
 - Teamgrootte-targets uit kaders
-- Gepinde feiten
 
 ### Spelersadvies
 Input: speler ID

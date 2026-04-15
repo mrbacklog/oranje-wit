@@ -2,10 +2,9 @@
  * What-if validatie: draait de bestaande validatie-engine op what-if teams
  * plus de samengevoegde staat met ongewijzigde werkindeling-teams.
  *
- * Drie lagen:
+ * Twee lagen:
  * 1. KNKV-regels (valideerTeam per team + cross-team duplicaten)
- * 2. Pin-schendingen (valideerPinsInWhatIf)
- * 3. Blauwdruk-kader-afwijkingen (valideerBlauwdrukKaders)
+ * 2. Blauwdruk-kader-afwijkingen (valideerBlauwdrukKaders)
  */
 
 import type {
@@ -15,8 +14,7 @@ import type {
   TeamgrootteOverrides,
 } from "../validatie/types";
 import { valideerTeam, valideerDubbeleSpelersOverTeams } from "../validatie/regels";
-import type { WhatIfTeamData, WhatIfValidatie, PinSchending, KaderAfwijking } from "./types";
-import { valideerPinsInWhatIf, type PinDataVoorValidatie } from "./pin-validatie";
+import type { WhatIfTeamData, WhatIfValidatie, KaderAfwijking } from "./types";
 import { valideerBlauwdrukKaders, type TeamAantalKaders } from "./kader-validatie";
 import type { WerkindelingTeamData } from "./delta";
 
@@ -80,8 +78,6 @@ export interface ValideerWhatIfOptions {
   kaders?: BlauwdrukKaders;
   /** Teamgrootte overrides */
   overrides?: TeamgrootteOverrides;
-  /** Pins uit de blauwdruk */
-  pins?: PinDataVoorValidatie[];
   /** Teamaantal-kaders per categorie voor blauwdruk-afwijking check */
   teamAantalKaders?: TeamAantalKaders;
 }
@@ -94,8 +90,7 @@ export interface ValideerWhatIfOptions {
  * ongewijzigde werkindeling-teams blijven erin. Draait dan:
  * 1. valideerTeam() op elk what-if team
  * 2. valideerDubbeleSpelersOverTeams() op de samengevoegde lijst
- * 3. pin-validatie op de samengevoegde lijst
- * 4. blauwdruk-kader-validatie op de samengevoegde lijst
+ * 3. blauwdruk-kader-validatie op de samengevoegde lijst
  */
 export function valideerWhatIf(
   whatIfTeams: WhatIfTeamData[],
@@ -104,7 +99,7 @@ export function valideerWhatIf(
   peildatum: Date,
   options?: ValideerWhatIfOptions
 ): WhatIfValidatie {
-  const { kaders, overrides, pins, teamAantalKaders } = options ?? {};
+  const { kaders, overrides, teamAantalKaders } = options ?? {};
 
   // 1. Bouw samengevoegde teamlijst
   const samengevoegd = bouwSamengevoegdeTeamlijst(whatIfTeams, werkindelingTeams, spelerLookup);
@@ -120,26 +115,21 @@ export function valideerWhatIf(
   // 3. Cross-team duplicaten op samengevoegde lijst
   const crossTeamMeldingen = valideerDubbeleSpelersOverTeams(samengevoegd);
 
-  // 4. Pin-validatie
-  const pinSchendingen = pins ? valideerPinsInWhatIf(whatIfTeams, werkindelingTeams, pins) : [];
-
-  // 5. Blauwdruk-kader-validatie
+  // 4. Blauwdruk-kader-validatie
   const kaderAfwijkingen = teamAantalKaders
     ? valideerBlauwdrukKaders(samengevoegd, teamAantalKaders)
     : [];
 
-  // 6. Bepaal of er harde fouten of afwijkingen zijn
+  // 5. Bepaal of er harde fouten of afwijkingen zijn
   const heeftHardefouten =
     [...teamValidaties.values()].some((v) => v.status === "ROOD") ||
-    crossTeamMeldingen.some((m) => m.ernst === "kritiek") ||
-    pinSchendingen.length > 0;
+    crossTeamMeldingen.some((m) => m.ernst === "kritiek");
 
   const heeftAfwijkingen = kaderAfwijkingen.length > 0;
 
   return {
     teamValidaties,
     crossTeamMeldingen,
-    pinSchendingen,
     kaderAfwijkingen,
     heeftHardefouten,
     heeftAfwijkingen,

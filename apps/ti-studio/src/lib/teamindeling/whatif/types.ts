@@ -85,25 +85,12 @@ export interface WhatIfValidatie {
   teamValidaties: Map<string, TeamValidatie>;
   /** Cross-team meldingen (dubbele plaatsingen, etc.) */
   crossTeamMeldingen: ValidatieMelding[];
-  /** Pins die geschonden worden */
-  pinSchendingen: PinSchending[];
   /** Afwijkingen t.o.v. blauwdruk-kaders */
   kaderAfwijkingen: KaderAfwijking[];
   /** True als er harde fouten zijn die toepassen blokkeren */
   heeftHardefouten: boolean;
   /** True als er afwijkingen zijn die toelichting vereisen */
   heeftAfwijkingen: boolean;
-}
-
-/** Een pin die geschonden wordt door de what-if */
-export interface PinSchending {
-  pinId: string;
-  type: string;
-  beschrijving: string;
-  /** Team waar de speler nu in staat (in de what-if of werkindeling) */
-  huidigTeam: string | null;
-  /** Team waar de speler volgens de pin zou moeten staan */
-  verwachtTeam: string;
 }
 
 /** Afwijking van een blauwdruk-kader */

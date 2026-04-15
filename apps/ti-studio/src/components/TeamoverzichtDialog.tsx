@@ -37,7 +37,6 @@ type SpelerInTeam = {
     status: string;
     huidig?: unknown;
   };
-  isPinned?: boolean;
 };
 
 interface TeamoverzichtDialogProps {
@@ -144,16 +143,6 @@ function SpelerRij({
         }}
         title={speler.status.replace("_", " ")}
       />
-
-      {/* Pin icoon */}
-      {item.isPinned && (
-        <span
-          title="Gepind"
-          style={{ fontSize: "0.75rem", color: "var(--ow-oranje-500, #ff6b00)", flexShrink: 0 }}
-        >
-          📌
-        </span>
-      )}
 
       {/* Verwijder knop */}
       {onVerwijderd && (

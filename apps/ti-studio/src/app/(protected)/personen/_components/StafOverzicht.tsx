@@ -43,7 +43,7 @@ const KLEUR_DOT: Record<string, string> = {
   senior: "#94a3b8",
 };
 
-type SortKey = "naam" | "volgorde" | "gepind";
+type SortKey = "naam" | "volgorde";
 
 interface Props {
   stafLeden: BeheerStaf[];
@@ -61,7 +61,6 @@ export function StafOverzicht({ stafLeden, alleDoelen }: Props) {
   const [zoekterm, setZoekterm] = useState("");
   const [editorStafId, setEditorStafId] = useState<string | null>(null);
   const [teamFilter, setTeamFilter] = useState("allen");
-  const [gepindFilter, setGepindFilter] = useState(false);
   const [toonInactief, setToonInactief] = useState(false);
   const [sortKey, setSortKey] = useState<SortKey>("naam");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
@@ -110,7 +109,6 @@ export function StafOverzicht({ stafLeden, alleDoelen }: Props) {
     }
     if (teamFilter !== "allen")
       result = result.filter((s) => s.teams.some((t) => t.teamNaam === teamFilter));
-    if (gepindFilter) result = result.filter((s) => s.gepind);
 
     // Bouw rijen (bij team-sortering: 1 rij per team op een staflid)
     const allerijen: StafRij[] = [];
@@ -146,25 +144,12 @@ export function StafOverzicht({ stafLeden, alleDoelen }: Props) {
           if (cmp === 0) cmp = a.staf.naam.localeCompare(b.staf.naam, "nl");
           break;
         }
-        case "gepind":
-          cmp = Number(b.staf.gepind) - Number(a.staf.gepind);
-          if (cmp === 0) cmp = a.staf.naam.localeCompare(b.staf.naam, "nl");
-          break;
       }
       return sortDir === "asc" ? cmp : -cmp;
     });
 
     return allerijen;
-  }, [
-    stafLeden,
-    optimistischActief,
-    zoekterm,
-    teamFilter,
-    gepindFilter,
-    toonInactief,
-    sortKey,
-    sortDir,
-  ]);
+  }, [stafLeden, optimistischActief, zoekterm, teamFilter, toonInactief, sortKey, sortDir]);
 
   function SortIcon({ col }: { col: SortKey }) {
     if (sortKey !== col) return <span style={{ opacity: 0.3, fontSize: "0.65rem" }}> ↕</span>;
@@ -248,9 +233,6 @@ export function StafOverzicht({ stafLeden, alleDoelen }: Props) {
             </option>
           ))}
         </select>
-        <button onClick={() => setGepindFilter((v) => !v)} style={chipStyle(gepindFilter)}>
-          📌 Gepind
-        </button>
         <button onClick={() => setToonInactief((v) => !v)} style={chipStyle(toonInactief)}>
           Toon inactief
         </button>
@@ -302,10 +284,6 @@ export function StafOverzicht({ stafLeden, alleDoelen }: Props) {
                 Team + rol
                 <SortIcon col="volgorde" />
               </th>
-              <th onClick={() => handleSort("gepind")} style={{ ...thStyle, textAlign: "center" }}>
-                📌
-                <SortIcon col="gepind" />
-              </th>
               <th style={{ ...thStyle, cursor: "default", textAlign: "center" }}>Actief</th>
             </tr>
           </thead>
@@ -313,7 +291,7 @@ export function StafOverzicht({ stafLeden, alleDoelen }: Props) {
             {rijen.length === 0 && (
               <tr>
                 <td
-                  colSpan={4}
+                  colSpan={3}
                   style={{
                     padding: "2rem",
                     textAlign: "center",
@@ -504,9 +482,6 @@ export function StafOverzicht({ stafLeden, alleDoelen }: Props) {
                         onClose={() => setEditorStafId(null)}
                       />
                     )}
-                  </td>
-                  <td style={{ padding: "0.625rem 0.875rem", textAlign: "center" }}>
-                    <span style={{ fontSize: "0.875rem", opacity: staf.gepind ? 1 : 0.2 }}>📌</span>
                   </td>
                   <td style={{ padding: "0.625rem 0.875rem", textAlign: "center" }}>
                     <ActiefToggle

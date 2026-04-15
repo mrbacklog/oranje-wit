@@ -19,7 +19,7 @@ Laad als eerste de `shared/start` skill en doorloop alle 4 stappen (basiscontext
 ## Beslisboom
 
 1. **Invoer compleet?** → Laad alle bronnen (zie hieronder), controleer actualiteit
-2. **Kaders beschikbaar?** → Volg kaders en speerpunten, respecteer pins
+2. **Kaders beschikbaar?** → Volg kaders en speerpunten
 3. **Per categorie indelen** → Gebruik indelingsprioriteiten uit `rules/ow-voorkeuren.md`
 4. **Valideren** → Controleer tegen `rules/knkv-regels.md` (bandbreedte, gender, teamgrootte)
 5. **Toetsen** → Vergelijk met streefmodel, toets aan Oranje Draad

@@ -3,7 +3,6 @@
 import { prisma } from "@/lib/teamindeling/db/prisma";
 import { valideerWhatIf } from "@/lib/teamindeling/whatif/validatie";
 import type { SpelerLookup } from "@/lib/teamindeling/whatif/validatie";
-import type { PinDataVoorValidatie } from "@/lib/teamindeling/whatif/pin-validatie";
 import type { TeamAantalKaders } from "@/lib/teamindeling/whatif/kader-validatie";
 import type { WhatIfTeamData, WhatIfValidatie } from "@/lib/teamindeling/whatif/types";
 import type { WerkindelingTeamData } from "@/lib/teamindeling/whatif/delta";
@@ -53,15 +52,6 @@ export async function valideerWhatIfVoorToepassen(
             select: {
               kaders: true,
               seizoen: true,
-              pins: {
-                select: {
-                  id: true,
-                  type: true,
-                  spelerId: true,
-                  stafId: true,
-                  waarde: true,
-                },
-              },
             },
           },
           versies: {
@@ -133,15 +123,6 @@ export async function valideerWhatIfVoorToepassen(
   // Laad speler-gegevens voor de lookup
   const spelerLookup = await laadSpelerLookup([...alleSpelerIds]);
 
-  // Bouw pin-data
-  const pins: PinDataVoorValidatie[] = (whatIf.werkindeling.kaders.pins ?? []).map((p: any) => ({
-    id: p.id,
-    type: p.type,
-    spelerId: p.spelerId,
-    stafId: p.stafId,
-    waarde: p.waarde as { teamNaam: string; teamId: string },
-  }));
-
   // Blauwdruk-kaders
   const kaders = whatIf.werkindeling.kaders.kaders as BlauwdrukKaders | null;
 
@@ -154,14 +135,12 @@ export async function valideerWhatIfVoorToepassen(
   // Draai validatie
   const validatie = valideerWhatIf(whatIfTeams, werkindelingTeams, spelerLookup, peildatum, {
     kaders: kaders ?? undefined,
-    pins,
     teamAantalKaders,
   });
 
   logger.info(
     `What-if ${whatIfId} gevalideerd: ` +
       `${validatie.teamValidaties.size} teams, ` +
-      `${validatie.pinSchendingen.length} pin-schendingen, ` +
       `${validatie.kaderAfwijkingen.length} kader-afwijkingen`
   );
 
@@ -238,13 +217,6 @@ export interface WhatIfValidatieResultaat {
     }
   >;
   crossTeamMeldingen: Array<{ regel: string; bericht: string; ernst: string }>;
-  pinSchendingen: Array<{
-    pinId: string;
-    type: string;
-    beschrijving: string;
-    huidigTeam: string | null;
-    verwachtTeam: string;
-  }>;
   kaderAfwijkingen: Array<{
     categorie: string;
     verwachtAantal: number;
@@ -275,7 +247,6 @@ function serialiseerValidatie(validatie: WhatIfValidatie): WhatIfValidatieResult
       bericht: m.bericht,
       ernst: m.ernst,
     })),
-    pinSchendingen: validatie.pinSchendingen,
     kaderAfwijkingen: validatie.kaderAfwijkingen,
     heeftHardefouten: validatie.heeftHardefouten,
     heeftAfwijkingen: validatie.heeftAfwijkingen,

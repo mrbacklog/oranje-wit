@@ -3,7 +3,6 @@
 import { useState, useMemo, useTransition, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import type { StudioSpeler } from "../actions";
-import { togglePinSpeler } from "../actions";
 import { updateSpelerStatus } from "../../indeling/werkindeling-actions";
 import { setGezienStatus, zetSpelerIndeling } from "../speler-edit-actions";
 
@@ -39,8 +38,7 @@ type SortKey =
   | "gezienStatus"
   | "huidigTeam"
   | "indeling"
-  | "memo"
-  | "gepind";
+  | "memo";
 type SortDir = "asc" | "desc";
 type StatusFilter =
   | "allen"
@@ -125,10 +123,8 @@ export default function SpelersOverzichtStudio({
   const [huidigTeamFilter, setHuidigTeamFilter] = useState("allen");
   const [indelingFilter, setIndelingFilter] = useState("allen");
   const [memoFilter, setMemoFilter] = useState(false);
-  const [gepindFilter, setGepindFilter] = useState(false);
   const [sortKey, setSortKey] = useState<SortKey>("achternaam");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
-  const [, startTransition] = useTransition();
 
   const huidigeTeams = useMemo(
     () => [...new Set(spelers.map((s) => s.huidigTeamNaam).filter(Boolean))].sort() as string[],
@@ -150,13 +146,6 @@ export default function SpelersOverzichtStudio({
     }
   }
 
-  function handlePinToggle(e: React.MouseEvent, spelerId: string) {
-    e.stopPropagation();
-    startTransition(async () => {
-      await togglePinSpeler(spelerId);
-    });
-  }
-
   const gefilterd = useMemo(() => {
     let result = spelers;
     if (zoekterm.trim()) {
@@ -172,7 +161,6 @@ export default function SpelersOverzichtStudio({
     if (indelingFilter !== "allen")
       result = result.filter((s) => s.huidigIndelingTeam?.naam === indelingFilter);
     if (memoFilter) result = result.filter((s) => s.heeftActiefMemo);
-    if (gepindFilter) result = result.filter((s) => s.gepind);
 
     return [...result].sort((a, b) => {
       let cmp = 0;
@@ -203,9 +191,6 @@ export default function SpelersOverzichtStudio({
         case "memo":
           cmp = Number(b.heeftActiefMemo) - Number(a.heeftActiefMemo);
           break;
-        case "gepind":
-          cmp = Number(b.gepind) - Number(a.gepind);
-          break;
       }
       return sortDir === "asc" ? cmp : -cmp;
     });
@@ -216,7 +201,6 @@ export default function SpelersOverzichtStudio({
     huidigTeamFilter,
     indelingFilter,
     memoFilter,
-    gepindFilter,
     sortKey,
     sortDir,
   ]);
@@ -368,9 +352,6 @@ export default function SpelersOverzichtStudio({
         <button onClick={() => setMemoFilter((v) => !v)} style={chipStyle(memoFilter)}>
           ▲ Memo
         </button>
-        <button onClick={() => setGepindFilter((v) => !v)} style={chipStyle(gepindFilter)}>
-          📌 Gepind
-        </button>
         <span style={{ marginLeft: "auto", fontSize: "0.8125rem", color: "var(--text-secondary)" }}>
           {gefilterd.length} speler{gefilterd.length !== 1 ? "s" : ""}
         </span>
@@ -413,13 +394,6 @@ export default function SpelersOverzichtStudio({
                 <SortIcon col="indeling" />
               </th>
               <th
-                onClick={() => handleSort("gepind")}
-                style={{ ...thStyle(true), textAlign: "center" }}
-              >
-                📌
-                <SortIcon col="gepind" />
-              </th>
-              <th
                 onClick={() => handleSort("memo")}
                 style={{ ...thStyle(true), textAlign: "center" }}
               >
@@ -432,7 +406,7 @@ export default function SpelersOverzichtStudio({
             {gefilterd.length === 0 && (
               <tr>
                 <td
-                  colSpan={8}
+                  colSpan={7}
                   style={{
                     padding: "2rem",
                     textAlign: "center",
@@ -862,24 +836,6 @@ export default function SpelersOverzichtStudio({
                           onClose={() => setEditorCel(null)}
                         />
                       )}
-                  </td>
-
-                  {/* Pin toggle */}
-                  <td style={{ padding: "0.625rem 0.875rem", textAlign: "center" }}>
-                    <button
-                      onClick={(e) => handlePinToggle(e, speler.id)}
-                      title={speler.gepind ? "Ontpinnen" : "Pinnen"}
-                      style={{
-                        background: "none",
-                        border: "none",
-                        cursor: "pointer",
-                        fontSize: "0.875rem",
-                        opacity: speler.gepind ? 1 : 0.2,
-                        transition: "opacity 0.15s",
-                      }}
-                    >
-                      📌
-                    </button>
                   </td>
 
                   {/* Memo indicator */}

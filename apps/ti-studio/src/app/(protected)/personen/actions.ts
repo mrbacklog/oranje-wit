@@ -3,9 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/teamindeling/db/prisma";
 import { requireTC } from "@oranje-wit/auth/checks";
-import { assertBewerkbaar } from "@oranje-wit/teamindeling-shared/seizoen";
 import { logger } from "@oranje-wit/types";
-import type { PinType } from "@oranje-wit/database";
 
 export async function getSpelersVoorStudio() {
   await requireTC();
@@ -19,7 +17,7 @@ export async function getSpelersVoorStudio() {
   if (!kaders) return [];
 
   // Haal alle spelers parallel op
-  const [kadersSpelers, spelers, werkindeling, pins, actieveWerkitems] = await Promise.all([
+  const [kadersSpelers, spelers, werkindeling, actieveWerkitems] = await Promise.all([
     prisma.kadersSpeler.findMany({
       where: { kadersId: kaders.id },
       select: {
@@ -79,13 +77,7 @@ export async function getSpelersVoorStudio() {
       },
     }),
 
-    // 4e: gepinde spelers voor dit kaders (SPELER_GEPIND type)
-    prisma.pin.findMany({
-      where: { kadersId: kaders.id, spelerId: { not: null }, type: "SPELER_GEPIND" },
-      select: { spelerId: true },
-    }),
-
-    // 5e: actieve werkitems op spelers (niet-gearchiveerde)
+    // 4e: actieve werkitems op spelers (niet-gearchiveerde)
     prisma.werkitem.findMany({
       where: {
         spelerId: { not: null },
@@ -128,7 +120,6 @@ export async function getSpelersVoorStudio() {
   }
 
   const gezienMap = new Map(kadersSpelers.map((ks) => [ks.spelerId, ks]));
-  const gepindSet = new Set(pins.map((p) => p.spelerId).filter(Boolean) as string[]);
   const memoSet = new Set(actieveWerkitems.map((w) => w.spelerId).filter(Boolean) as string[]);
 
   return spelers.map((s) => {
@@ -164,130 +155,12 @@ export async function getSpelersVoorStudio() {
         naam: string;
         kleur: string | null;
       } | null,
-      gepind: gepindSet.has(s.id),
       heeftActiefMemo: memoSet.has(s.id),
     };
   });
 }
 
 export type StudioSpeler = Awaited<ReturnType<typeof getSpelersVoorStudio>>[number];
-
-// ─── Pins ────────────────────────────────────────────────────────────────────
-
-async function assertKadersBewerkbaar(kadersId: string) {
-  const kaders = await prisma.kaders.findUniqueOrThrow({
-    where: { id: kadersId },
-    select: { seizoen: true },
-  });
-  await assertBewerkbaar(kaders.seizoen);
-}
-
-async function getOrCreateUser() {
-  const session = await requireTC();
-  const email = session.user!.email!;
-  const naam = session.user!.name ?? email;
-  return prisma.user.upsert({
-    where: { email },
-    create: { email, naam, rol: "EDITOR" },
-    update: { naam },
-    select: { id: true },
-  });
-}
-
-const pinInclude = {
-  speler: { select: { id: true, roepnaam: true, achternaam: true } },
-  staf: { select: { id: true, naam: true } },
-  gepindDoor: { select: { id: true, naam: true } },
-};
-
-export async function createPin(data: {
-  kadersId: string;
-  spelerId: string;
-  type: PinType;
-  waarde: { teamNaam: string; teamId: string };
-  notitie?: string;
-}) {
-  await assertKadersBewerkbaar(data.kadersId);
-  const user = await getOrCreateUser();
-  await prisma.pin.deleteMany({
-    where: { kadersId: data.kadersId, spelerId: data.spelerId, type: data.type },
-  });
-  return prisma.pin.create({
-    data: {
-      kadersId: data.kadersId,
-      spelerId: data.spelerId,
-      type: data.type,
-      waarde: data.waarde,
-      notitie: data.notitie ?? null,
-      gepindDoorId: user.id,
-    },
-    include: pinInclude,
-  });
-}
-
-export async function deletePin(pinId: string) {
-  await requireTC();
-  const pin = await prisma.pin.findUniqueOrThrow({
-    where: { id: pinId },
-    select: { kadersId: true },
-  });
-  await assertKadersBewerkbaar(pin.kadersId);
-  return prisma.pin.delete({ where: { id: pinId } });
-}
-
-export async function getPinsVoorWerkindeling(werkindelingId: string) {
-  await requireTC();
-  const werkindeling = await prisma.werkindeling.findUniqueOrThrow({
-    where: { id: werkindelingId },
-    select: { kadersId: true },
-  });
-  return prisma.pin.findMany({
-    where: { kadersId: werkindeling.kadersId },
-    include: pinInclude,
-    orderBy: { gepindOp: "desc" },
-  });
-}
-
-// ─── Speler-pin toggle ────────────────────────────────────────────────────────
-
-export async function togglePinSpeler(
-  spelerId: string
-): Promise<{ ok: true } | { ok: false; error: string }> {
-  try {
-    await requireTC();
-    const kaders = await prisma.kaders.findFirst({
-      where: { isWerkseizoen: true },
-      select: { id: true },
-    });
-    if (!kaders) return { ok: false, error: "Geen actief werkseizoen" };
-
-    const bestaandePin = await prisma.pin.findFirst({
-      where: { kadersId: kaders.id, spelerId, type: "SPELER_GEPIND" },
-    });
-
-    if (bestaandePin) {
-      await prisma.pin.delete({ where: { id: bestaandePin.id } });
-    } else {
-      const user = await getOrCreateUser();
-      await prisma.pin.create({
-        data: {
-          kadersId: kaders.id,
-          spelerId,
-          type: "SPELER_GEPIND",
-          waarde: {},
-          gepindDoorId: user.id,
-        },
-      });
-    }
-
-    revalidatePath("/personen/spelers");
-    revalidatePath("/indeling");
-    return { ok: true };
-  } catch (err) {
-    logger.warn("togglePinSpeler mislukt:", err);
-    return { ok: false, error: "Kon pin niet togglen" };
-  }
-}
 
 // ─── Handmatige speler aanmaken ───────────────────────────────────────────────
 

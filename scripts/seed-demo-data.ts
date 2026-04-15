@@ -1200,11 +1200,6 @@ async function cleanup() {
   });
   logger.info(`  SelectieSpeler: ${deletedSP.count} verwijderd`);
 
-  const deletedPins = await prisma.pin.deleteMany({
-    where: { spelerId: { startsWith: DEMO_PREFIX } },
-  });
-  logger.info(`  Pin: ${deletedPins.count} verwijderd`);
-
   // Competitie-data
   const deletedCS = await prisma.competitieSpeler.deleteMany({
     where: { relCode: { startsWith: DEMO_PREFIX } },

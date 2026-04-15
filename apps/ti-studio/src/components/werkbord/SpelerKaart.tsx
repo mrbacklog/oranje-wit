@@ -254,7 +254,6 @@ export function SpelerKaart({
               {speler.status === "AFGEMELD" && (
                 <span style={{ fontSize: 8, color: "var(--err)" }}>⚠</span>
               )}
-              {speler.gepind && <span style={{ fontSize: 8, color: "var(--accent)" }}>·</span>}
             </div>
           </div>
           {/* Rij 2: team badge + leeftijd */}
@@ -447,7 +446,6 @@ export function SpelerKaart({
           {speler.status === "AFGEMELD" && (
             <span style={{ fontSize: 10, color: "var(--err)" }}>⚠</span>
           )}
-          {speler.gepind && <span style={{ fontSize: 10, color: "var(--accent)" }}>📌</span>}
         </div>
       )}
       <style>{`

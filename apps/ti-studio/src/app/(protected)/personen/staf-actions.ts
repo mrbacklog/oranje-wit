@@ -8,12 +8,7 @@ import { logger } from "@oranje-wit/types";
 export async function getStafVoorStudio() {
   await requireTC();
 
-  const kaders = await prisma.kaders.findFirst({
-    where: { isWerkseizoen: true },
-    select: { id: true },
-  });
-
-  const [stafLeden, teamStafKoppelingen, pins] = await Promise.all([
+  const [stafLeden, teamStafKoppelingen] = await Promise.all([
     prisma.staf.findMany({
       where: { actief: true },
       select: { id: true, naam: true, geboortejaar: true },
@@ -26,15 +21,7 @@ export async function getStafVoorStudio() {
         team: { select: { id: true, naam: true, kleur: true } },
       },
     }),
-    kaders
-      ? prisma.pin.findMany({
-          where: { kadersId: kaders.id, stafId: { not: null } },
-          select: { stafId: true },
-        })
-      : Promise.resolve([]),
   ]);
-
-  const gepindSet = new Set(pins.map((p) => p.stafId).filter(Boolean) as string[]);
 
   const teamMap = new Map<
     string,
@@ -55,7 +42,6 @@ export async function getStafVoorStudio() {
     id: s.id,
     naam: s.naam,
     geboortejaar: s.geboortejaar as number | null,
-    gepind: gepindSet.has(s.id),
     teams: teamMap.get(s.id) ?? [],
   }));
 }
@@ -130,11 +116,6 @@ async function getActieveVersieMetDoelen(): Promise<VersieMetDoelen | null> {
 export async function getAlleStafVoorBeheer() {
   await requireTC();
 
-  const kaders = await prisma.kaders.findFirst({
-    where: { isWerkseizoen: true },
-    select: { id: true },
-  });
-
   const versie = await getActieveVersieMetDoelen();
   const teamIdsInVersie: string[] = versie?.teams.map((t: VersieDoelTeam) => t.id) ?? [];
   const selectieGroepIdsInVersie: string[] =
@@ -145,7 +126,7 @@ export async function getAlleStafVoorBeheer() {
       .map((sg: VersieDoelSelGroep) => sg.id) ?? []
   );
 
-  const [stafLeden, teamStafKoppelingen, selectieStafKoppelingen, pins, openMemoWerkitems] =
+  const [stafLeden, teamStafKoppelingen, selectieStafKoppelingen, openMemoWerkitems] =
     await Promise.all([
       prisma.staf.findMany({
         select: { id: true, naam: true, geboortejaar: true, actief: true },
@@ -185,12 +166,6 @@ export async function getAlleStafVoorBeheer() {
           },
         },
       }),
-      kaders
-        ? prisma.pin.findMany({
-            where: { kadersId: kaders.id, stafId: { not: null } },
-            select: { stafId: true },
-          })
-        : Promise.resolve([]),
       prisma.werkitem.findMany({
         where: {
           stafId: { not: null },
@@ -199,8 +174,6 @@ export async function getAlleStafVoorBeheer() {
         select: { stafId: true },
       }),
     ]);
-
-  const gepindSet = new Set(pins.map((p) => p.stafId).filter(Boolean) as string[]);
 
   const memoCountMap = new Map<string, number>();
   for (const w of openMemoWerkitems) {
@@ -265,7 +238,6 @@ export async function getAlleStafVoorBeheer() {
     naam: s.naam,
     geboortejaar: s.geboortejaar as number | null,
     actief: s.actief,
-    gepind: gepindSet.has(s.id),
     openMemoCount: memoCountMap.get(s.id) ?? 0,
     teams: (doelenMap.get(s.id) ?? []).sort((a, b) => a.volgorde - b.volgorde),
   }));

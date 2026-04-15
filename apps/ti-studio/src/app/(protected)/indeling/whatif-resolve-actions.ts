@@ -12,7 +12,7 @@ import { valideerWhatIfVoorToepassen } from "./whatif-validatie-actions";
 /**
  * Pas what-if toe op werkindeling (merge).
  *
- * 1. Draai validatie (pin-schendingen, KNKV-regels, blauwdruk-kaders)
+ * 1. Draai validatie (KNKV-regels, blauwdruk-kaders)
  * 2. Blokkeer bij harde fouten (ROOD)
  * 3. Blokkeer bij afwijkingen zonder toelichting
  * 4. Verifieer dat what-if OPEN of BESLISBAAR is
@@ -30,7 +30,6 @@ export async function pasWhatIfToe(whatIfId: string, toelichtingAfwijking?: stri
 
   if (validatie.heeftHardefouten) {
     const fouten = [
-      ...validatie.pinSchendingen.map((p) => p.beschrijving),
       ...validatie.crossTeamMeldingen.filter((m) => m.ernst === "kritiek").map((m) => m.bericht),
       ...Object.values(validatie.teamValidaties)
         .flatMap((v) => v.meldingen)

@@ -57,8 +57,8 @@ VIEW `speler_seizoenen` — afgeleid uit `competitie_spelers` (DISTINCT ON rel_c
 **Verenigingsmonitor (12)** (snake_case via `@@map`):
 Lid, LidFoto, Seizoen, OWTeam, TeamAlias, TeamPeriode, Ledenverloop, CohortSeizoen, Signalering, Streefmodel, PoolStand, PoolStandRegel
 
-**Team-Indeling (26)** (PascalCase):
-User, Speler, Staf, StafToewijzing, Blauwdruk, BlauwdrukBesluit, BlauwdrukSpeler, StandaardVraag, Pin, Concept, Scenario, ScenarioSnapshot, Versie, Team, SelectieGroep, SelectieSpeler, SelectieStaf, TeamSpeler, TeamStaf, Evaluatie, LogEntry, Import, ReferentieTeam, Werkitem, Actiepunt, Mijlpaal
+**Team-Indeling (25)** (PascalCase):
+User, Speler, Staf, StafToewijzing, Blauwdruk, BlauwdrukBesluit, BlauwdrukSpeler, StandaardVraag, Concept, Scenario, ScenarioSnapshot, Versie, Team, SelectieGroep, SelectieSpeler, SelectieStaf, TeamSpeler, TeamStaf, Evaluatie, LogEntry, Import, ReferentieTeam, Werkitem, Actiepunt, Mijlpaal
 
 **Evaluatie (6)**:
 EvaluatieRonde, Coordinator, CoordinatorTeam, EvaluatieUitnodiging, SpelerZelfEvaluatie, EmailTemplate
@@ -93,7 +93,7 @@ CompetitieSpeler (primaire tabel: 1 per speler × seizoen × competitie)
 
 ## Lees/schrijf-verdeling
 
-- **Team-Indeling schrijft**: blauwdruk, concepten, scenario's, teams, selectiegroepen, pins, log, evaluaties, notities, actiepunten
+- **Team-Indeling schrijft**: blauwdruk, concepten, scenario's, teams, selectiegroepen, log, evaluaties, notities, actiepunten
 - **Team-Indeling leest**: leden, speler_seizoenen, competitie_spelers, cohort_seizoenen (retentiePct)
 - **Monitor schrijft**: leden, teams, verloop, cohorten, signalering, competitie_spelers
 - **Monitor leest**: alles (dashboards, signalering, MCP tools)

@@ -74,7 +74,7 @@ Elk scenario heeft versies (snapshots):
 ## AI-ondersteuning
 - **Startvoorstel** (`VoorstelDialoog`): Claude genereert complete teamindeling
 - **AI Chat** (`ChatPanel`): streaming chat met Claude via `/api/ai/chat` (SSE). 16 tools beschikbaar:
-  - Read-only: `bekijk_huidige_indeling`, `bekijk_spelerspool`, `bekijk_speler_details`, `bekijk_voorgaande_indeling`, `bekijk_teamsterktes`, `bekijk_evaluaties`, `bekijk_blauwdruk_kaders`, `bekijk_pins`, `bekijk_retentie_overzicht`, `bekijk_teamgenoten`, `valideer_teams`
+  - Read-only: `bekijk_huidige_indeling`, `bekijk_spelerspool`, `bekijk_speler_details`, `bekijk_voorgaande_indeling`, `bekijk_teamsterktes`, `bekijk_evaluaties`, `bekijk_blauwdruk_kaders`, `bekijk_retentie_overzicht`, `bekijk_teamgenoten`, `valideer_teams`
   - Mutaties: `verplaats_speler`, `voeg_speler_toe`, `verwijder_speler_uit_team`, `wissel_spelers`, `maak_team_aan`
   - Na mutatie → `onMutatie` callback herlaadt teams in ScenarioEditor
 - **What-if** (`WhatIfDialoog`): impact doorrekenen bij verplaatsingen
