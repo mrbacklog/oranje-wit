@@ -1,6 +1,7 @@
 ---
 name: team-kwaliteit
 description: Kwaliteitsteam voor de team-indeling app — code review, tests, build validatie en tech debt. Gebruik na feature development, als health check, of voor proactieve codebase sweep.
+context: fork
 disable-model-invocation: true
 argument-hint: "<beschrijving feature> | health-check | sweep"
 ---

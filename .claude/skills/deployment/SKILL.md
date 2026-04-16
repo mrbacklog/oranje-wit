@@ -1,6 +1,7 @@
 ---
 name: deployment
 description: Deployen naar productie, deployment status controleren, logs bekijken. Geldt voor alle apps (monitor, team-indeling, evaluatie).
+context: fork
 user-invocable: true
 allowed-tools: Read, Bash, Glob
 argument-hint: "[actie: push, status, logs, rollback] [app: monitor, team-indeling, evaluatie, alle]"

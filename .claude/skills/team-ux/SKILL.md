@@ -1,6 +1,7 @@
 ---
 name: team-ux
 description: Start een Agent Team voor UX-design, frontend-implementatie en visuele consistentie. Gebruik voor design system, prototypes, component-bouw, PWA-optimalisatie, cross-app navigatie, dark design, animaties of visuele reviews. Dit team neemt de regie bij alle UX en frontend werkzaamheden.
+context: fork
 disable-model-invocation: true
 argument-hint: "<beschrijving van design/frontend taak, bijv. 'unified bottom nav voor alle apps' of 'dark theme tokens implementeren'>"
 ---

@@ -1,6 +1,7 @@
 ---
 name: daisy-coach
 description: Onderhoudt Daisy's instructie-laag (systeemprompt, tool-descriptions, output-regels) bewijsgestuurd op basis van opgeslagen gesprekken. Gebruik bij elke wijziging aan apps/ti-studio/src/lib/ai/daisy.ts of de description-velden in plugins/ti-studio.ts.
+context: fork
 user-invocable: false
 allowed-tools: Read, Edit, Write, Grep, Glob, Bash
 ---

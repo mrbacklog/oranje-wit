@@ -1,6 +1,7 @@
 ---
 name: security
 description: Security audit op OWASP Top 10 + STRIDE threat modeling voor Next.js 16 + Prisma + NextAuth v5 + Railway. Daily mode (snel, confidence gate 8/10) of Comprehensive mode (maandelijks, trend tracking).
+context: fork
 user-invocable: true
 allowed-tools: Read, Grep, Glob, Bash, Write
 argument-hint: "[modus: daily | comprehensive] [scope: alles | auth | prisma | env | deps]"

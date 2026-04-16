@@ -19,6 +19,7 @@ packages/database/src/generated/
 
 # Claude Code (local/sensitive)
 .claude/settings.local.json
+.claude/compact-log.txt
 .claude/worktrees/
 .claude/agent-memory/
 .claude/agent-memory-local/

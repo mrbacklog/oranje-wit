@@ -1,6 +1,7 @@
 ---
 name: audit
 description: Codebase-brede audit op architectuur, functionele duplicatie en UX-consistentie. Vindt dubbel werk, onnodige structuren en inconsistenties.
+context: fork
 user-invocable: true
 allowed-tools: Read, Grep, Glob, Bash, Edit, Write, Agent(ontwikkelaar, ux-designer, frontend, e2e-tester)
 argument-hint: "[modus: alles | architectuur | functioneel | ux] [scope: alles | apps/monitor | apps/scouting | packages/ui | ...]"

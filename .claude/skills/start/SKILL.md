@@ -1,6 +1,7 @@
 ---
 name: start
 description: Projectcontext laden voor agents en gebruikers. Geeft basiskennis (structuur, DB, Oranje Draad) plus domein-specifieke context.
+context: fork
 user-invocable: true
 allowed-tools: Read, Bash, Glob, Agent
 ---

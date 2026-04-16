@@ -1,6 +1,7 @@
 ---
 name: railway
 description: Beheer Railway deployments, custom domains en IONOS DNS. Services, env vars, deployments, custom domains, SSL-certificaten en DNS-records.
+context: fork
 user-invocable: true
 allowed-tools: Read, Write, Glob, Bash
 argument-hint: "[actie: status, deploy, logs, variables, domains, dns]"

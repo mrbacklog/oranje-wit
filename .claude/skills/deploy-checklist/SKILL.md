@@ -1,6 +1,7 @@
 ---
 name: deploy-checklist
 description: Pre/post-deploy checklist — zorgt ervoor dat deploys voorkomen dat productie out-of-sync raakt met code
+context: fork
 user-invocable: true
 allowed-tools: Bash, Read, Glob
 argument-hint: "[fase: pre | post | full] [app: alle | team-indeling | monitor | evaluatie]"

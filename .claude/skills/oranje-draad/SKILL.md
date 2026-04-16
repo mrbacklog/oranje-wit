@@ -1,6 +1,7 @@
 ---
 name: oranje-draad
 description: Toont en evalueert het technisch beleid van c.k.v. Oranje Wit (de Oranje Draad). Gebruik om een beslissing of scenario te toetsen aan de verenigingsvisie, of om het technisch beleid op te vragen.
+context: fork
 user-invocable: true
 argument-hint: "[optioneel: beschrijving van het scenario of de beslissing om te toetsen]"
 ---

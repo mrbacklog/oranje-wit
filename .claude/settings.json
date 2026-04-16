@@ -53,13 +53,13 @@
         ]
       }
     ],
-    "Notification": [
+    "PreCompact": [
       {
         "matcher": "",
         "hooks": [
           {
             "type": "command",
-            "command": "powershell.exe -Command \"[System.Reflection.Assembly]::LoadWithPartialName('System.Windows.Forms') | Out-Null; [System.Windows.Forms.MessageBox]::Show('Claude Code heeft je aandacht nodig', 'Claude Code')\""
+            "command": "echo \"PRE-COMPACT: $(date)\" >> .claude/compact-log.txt && git status --short >> .claude/compact-log.txt 2>/dev/null || true"
           }
         ]
       }
