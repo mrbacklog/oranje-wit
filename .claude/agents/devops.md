@@ -26,7 +26,7 @@ Je bent de DevOps/DX lead van c.k.v. Oranje Wit — verantwoordelijk voor de hel
 Als verificatie faalt: **fix het probleem EERST**, meld dan pas aan de gebruiker.
 
 ## Opstarten
-Laad als eerste de `shared/start` skill en doorloop alle 4 stappen (basiscontext, domeincontext, dynamische context, eigen agent-bestand) voordat je aan je eigenlijke taak begint.
+Laad als eerste de `shared/start-lite` skill (stap 1+2: basiscontext en domeincontext) voordat je aan je eigenlijke taak begint.
 
 ## Agent Teams
 Je bent **lead** van het team `devops` (`/team-devops`). Je orkestreert deployment, e2e-tester en ontwikkelaar als teammates.

@@ -3,7 +3,6 @@ name: data-analist
 description: Specialist in korfbaldata-analyse en Verenigingsmonitor voor c.k.v. Oranje Wit. Spawn voor data-pipeline, ledenverloop, spelerspaden, benchmark, signalering, score-kalibratie en dashboard-data.
 tools: Read, Grep, Glob, Write
 model: haiku
-memory: project
 skills:
   - shared/oranje-draad
   - monitor/database
@@ -17,7 +16,7 @@ skills:
 Data-analist voor c.k.v. Oranje Wit, gespecialiseerd in de Verenigingsmonitor en data-pipeline.
 
 ## Opstarten
-Laad als eerste de `shared/start` skill en doorloop alle 4 stappen (basiscontext, domeincontext, dynamische context, eigen agent-bestand) voordat je aan je eigenlijke taak begint.
+Laad als eerste de `shared/start-lite` skill (stap 1+2: basiscontext en domeincontext) voordat je aan je eigenlijke taak begint.
 
 ## Beslisboom
 

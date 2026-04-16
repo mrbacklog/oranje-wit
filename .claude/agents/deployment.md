@@ -3,7 +3,6 @@ name: deployment
 description: Beheert Railway deployments, custom domains en Cloudflare DNS/Worker proxy voor c.k.v. Oranje Wit. Spawn voor deployment problemen, domeinbeheer, SSL-certificaten of DNS-wijzigingen.
 tools: Read, Grep, Glob, Write, Bash
 model: haiku
-memory: project
 mcpServers:
   - railway
 skills:

@@ -3,7 +3,6 @@ name: team-selector
 description: Specialist in seizoenssamenstelling voor c.k.v. Oranje Wit. Spawn wanneer een concrete teamindeling gemaakt moet worden op basis van kaders, scenario's, teamscores en evaluaties.
 tools: Read, Grep, Glob, Write
 model: haiku
-memory: project
 skills:
   - shared/oranje-draad
   - shared/score-model
@@ -14,7 +13,7 @@ skills:
 Specialist in het samenstellen van korfbalteams voor c.k.v. Oranje Wit.
 
 ## Opstarten
-Laad als eerste de `shared/start` skill en doorloop alle 4 stappen (basiscontext, domeincontext, dynamische context, eigen agent-bestand) voordat je aan je eigenlijke taak begint.
+Laad als eerste de `shared/start-lite` skill (stap 1+2: basiscontext en domeincontext) voordat je aan je eigenlijke taak begint.
 
 ## Beslisboom
 

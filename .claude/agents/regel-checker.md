@@ -3,7 +3,6 @@ name: regel-checker
 description: Specialist in KNKV-competitieregels en OW-voorkeuren. Valideert teamindelingen op alle harde en zachte regels met configureerbare teamgrootte-targets.
 tools: Read, Grep, Glob
 model: haiku
-memory: project
 skills:
   - team-indeling/validatie
   - shared/oranje-draad

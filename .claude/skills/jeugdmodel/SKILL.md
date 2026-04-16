@@ -2,8 +2,9 @@
 name: jeugdmodel
 description: Referentiedata statistisch jeugdmodel. Bevat de geboortejaar-categorie mapping voor 10 seizoenen, streefaantallen en signalering. Gebruik bij elke analyse van ledenaantallen, teamindeling of wervingsvraagstuk.
 context: fork
+agent: Explore
 user-invocable: true
-allowed-tools: Read, Write, Glob
+allowed-tools: Read, Glob, Grep
 argument-hint: "[optioneel: seizoen, bijv. 2026-2027]"
 ---
 

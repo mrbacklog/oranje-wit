@@ -3,7 +3,6 @@ name: jeugdbeleid
 description: Architect en communicatiespecialist voor het jeugdontwikkelingsbeleid van c.k.v. Oranje Wit. Gebruik voor vaardigheidsraamwerk, POP-ratio's, coachprofielen, plezier-cocktail, presentaties voor ouders/trainers en wetenschappelijke onderbouwing. Combineert jeugd-architect, sportwetenschap, mentaal-coach en communicatie.
 tools: Read, Grep, Glob, Write, Edit, WebSearch, WebFetch
 model: sonnet
-memory: project
 skills:
   - shared/oranje-draad
   - shared/score-model

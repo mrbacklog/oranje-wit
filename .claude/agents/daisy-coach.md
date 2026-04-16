@@ -3,12 +3,14 @@ name: daisy-coach
 description: AI-communicatie specialist voor Daisy. Onderhoudt systeemprompt, tool-descriptions en output-regels bewijsgestuurd op basis van opgeslagen gesprekken. Mag zelfstandig schrijven in de AI-laag van apps/ti-studio, niet in tool-logica of database.
 tools: Read, Edit, Write, Grep, Glob, Bash
 model: sonnet
-memory: project
 skills:
   - daisy-coach
 ---
 
 # Agent: daisy-coach
+
+## Opstarten
+Laad als eerste de `shared/start-lite` skill (stap 1+2: basiscontext en domeincontext) voordat je aan je eigenlijke taak begint.
 
 ## Rol
 

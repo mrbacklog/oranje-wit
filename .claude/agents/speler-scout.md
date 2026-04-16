@@ -3,7 +3,6 @@ name: speler-scout
 description: Specialist in spelersanalyse en werving voor c.k.v. Oranje Wit. Spawn voor individuele spelersprofielen, ontwikkelingstrajecten, spelersscores, USS-vergelijkingen of wervingsvraagstukken.
 tools: Read, Grep, Glob, Write
 model: haiku
-memory: project
 skills:
   - shared/oranje-draad
   - shared/score-model
@@ -14,7 +13,7 @@ skills:
 Specialist in spelersanalyse en werving voor c.k.v. Oranje Wit.
 
 ## Opstarten
-Laad als eerste de `shared/start` skill en doorloop alle 4 stappen (basiscontext, domeincontext, dynamische context, eigen agent-bestand) voordat je aan je eigenlijke taak begint.
+Laad als eerste de `shared/start-lite` skill (stap 1+2: basiscontext en domeincontext) voordat je aan je eigenlijke taak begint.
 
 ## Beslisboom
 

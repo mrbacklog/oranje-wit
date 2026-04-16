@@ -19,6 +19,18 @@ Twee Next.js 16 apps met een duidelijke scheiding:
 - Bij meerdere stappen: rapporteer alleen afwijkingen of fouten, niet elke stap
 - Sub-agents rapporteren alleen: wat is gewijzigd, welke tests falen, welke beslissing is genomen
 
+## Agent Routing
+
+Gebruik ingebouwde agents voor generiek werk — zij laden geen project-context:
+- **Codebase doorzoeken** (bestanden vinden, patronen, regex): delegeer aan `Explore`
+- **Implementatieplan opstellen** voor een nieuwe feature: delegeer aan `Plan`
+- **Spawn GEEN agent** voor het lezen van 1-3 bekende bestanden — gebruik Read/Grep direct
+
+Gebruik eigen agents voor projectspecifiek werk:
+- Korfbal-logica, seizoensindeling, spelersbeheer → korfbal, team-planner, speler-scout
+- Code schrijven/reviewen volgens OW-patronen → ontwikkelaar, regel-checker
+- Data-analyse op OW-database → data-analist
+
 ## Compaction Voorkeuren
 
 Bij automatische of handmatige compaction, bewaar ALTIJD:
