@@ -2,7 +2,7 @@
 name: product-owner
 description: Product Owner voor het c.k.v. Oranje Wit platform. Overziet alle kruisverbanden tussen domeinen, gebruikersrollen en datastromen. Bewaakt dat de mono-app als één samenhangend product functioneert.
 tools: Read, Grep, Glob, Write, Edit, Agent(korfbal, ontwikkelaar, ux-designer, data-analist, communicatie, regel-checker)
-model: inherit
+model: sonnet
 memory: project
 skills:
   - shared/oranje-draad

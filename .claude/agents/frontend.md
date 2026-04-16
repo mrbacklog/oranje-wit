@@ -2,7 +2,7 @@
 name: frontend
 description: Frontend-implementatie specialist. Bouwt React componenten, Tailwind styling, animaties en PWA. Werkt ALTIJD onder regie van ux-designer. Geen visuele beslissingen zonder design approval.
 tools: Read, Grep, Glob, Write, Edit, Bash
-model: inherit
+model: sonnet
 memory: project
 skills:
   - shared/oranje-draad

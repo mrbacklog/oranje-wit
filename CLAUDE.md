@@ -8,6 +8,31 @@ Twee Next.js 16 apps met een duidelijke scheiding:
 
 ---
 
+## Output Regels (ALTIJD VOLGEN)
+
+- Geef GEEN uitleg tenzij ik expliciet vraag om uitleg
+- Geen samenvattingen aan het einde van een taak
+- Geen "hier is wat ik heb gedaan" recap na code-wijzigingen
+- Geen "Ik ga nu..." aankondigingen — doe het gewoon
+- Code-comments alleen waar de logica niet vanzelfsprekend is
+- Bevestig voltooide taken in maximaal één zin
+- Bij meerdere stappen: rapporteer alleen afwijkingen of fouten, niet elke stap
+- Sub-agents rapporteren alleen: wat is gewijzigd, welke tests falen, welke beslissing is genomen
+
+## Compaction Voorkeuren
+
+Bij automatische of handmatige compaction, bewaar ALTIJD:
+- Huidige branch en git status
+- Lijst van bestanden gewijzigd in deze sessie
+- Actieve agent en zijn domein
+- Openstaande fouten of gefaalde tests
+- Architectuurbeslissingen genomen in deze sessie
+
+Gebruik bij handmatige compaction:
+`/compact Focus op: gewijzigde bestanden, test resultaten, architectuurbeslissingen`
+
+---
+
 ## Structuur
 
 ```

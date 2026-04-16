@@ -2,7 +2,7 @@
 name: team-planner
 description: Hoofd-agent voor het teamindelingsproces in de Next.js app. Begeleidt de TC door kaders → concept → scenario → definitief.
 tools: Read, Grep, Glob, Write, Agent(regel-checker, adviseur)
-model: inherit
+model: sonnet
 memory: project
 skills:
   - team-indeling/concept

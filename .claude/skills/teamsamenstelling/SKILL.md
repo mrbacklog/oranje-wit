@@ -1,6 +1,7 @@
 ---
 name: teamsamenstelling
 description: KNKV-regels en Oranje Wit-voorkeuren voor teamsamenstelling per categorie en kleur. Gebruik bij het samenstellen van teams, controleren van speelgerechtigdheid, of plannen van teamindelingen.
+context: fork
 user-invocable: true
 allowed-tools: Read, Write, Glob
 argument-hint: "[optioneel: categorie, bijv. U15 of Geel]"

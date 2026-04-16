@@ -2,7 +2,7 @@
 name: korfbal
 description: Korfbal-technisch expert voor c.k.v. Oranje Wit. Gebruik voor alles rondom teams, spelers, seizoensplanning, evaluaties en technisch beleid. Kent de KNKV Competitie 2.0 regels en de Oranje Draad.
 tools: Read, Grep, Glob, Write, Agent(data-analist, speler-scout, team-selector)
-model: inherit
+model: sonnet
 memory: project
 skills:
   - shared/oranje-draad

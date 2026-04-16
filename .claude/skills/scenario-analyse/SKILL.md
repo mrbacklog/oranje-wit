@@ -1,6 +1,7 @@
 ---
 name: scenario-analyse
 description: Analyseert verrassingen en risico's voor de komende teamsamenstelling. Doorloopt stoppende/startende leden, staffwisselingen en individuele risico's. Gebruik na de seizoensvoorbereiding (mrt–mei).
+context: fork
 user-invocable: true
 allowed-tools: Read, Write, Glob
 argument-hint: "[seizoen, bijv. 2025-2026]"

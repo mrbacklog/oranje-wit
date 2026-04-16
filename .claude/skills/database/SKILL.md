@@ -1,6 +1,7 @@
 ---
 name: database
 description: Beheer en query de PostgreSQL database op Railway. Bevraag leden/teams/competities/verloop, en beheer het schema.
+context: fork
 user-invocable: true
 allowed-tools: Read, Write, Glob, Bash
 argument-hint: "[query of sync-opdracht]"

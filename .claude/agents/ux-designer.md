@@ -2,7 +2,7 @@
 name: ux-designer
 description: Lead UX-designer voor c.k.v. Oranje Wit. Ontwerpt het design system, user flows, wireframes en interactieve HTML prototypes. Bewaakt visuele consistentie over alle apps. Strava-geïnspireerd dark design.
 tools: Read, Grep, Glob, Write, Edit, WebSearch, WebFetch
-model: inherit
+model: sonnet
 memory: project
 skills:
   - shared/oranje-draad

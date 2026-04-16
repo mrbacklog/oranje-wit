@@ -26,7 +26,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "jq -r '.tool_input.file_path // empty' | xargs -I {} npx prettier --write \"{}\" 2>/dev/null || true"
+            "command": "jq -r '.tool_input.file_path // empty' | grep -E '\\.(ts|tsx|css|js|jsx)$' | xargs -I {} npx prettier --write \"{}\" 2>/dev/null || true"
           }
         ]
       }
@@ -44,11 +44,11 @@
     ],
     "SessionStart": [
       {
-        "matcher": "compact",
+        "matcher": "",
         "hooks": [
           {
             "type": "command",
-            "command": "echo 'HERINNERING na compaction:\\n- Gebruik logger uit @oranje-wit/types, NOOIT console.log\\n- API routes: ok()/fail() uit @/lib/api met Zod validatie\\n- Constanten uit @oranje-wit/types (HUIDIG_SEIZOEN, HUIDIGE_PEILDATUM) + korfballeeftijd-helpers\\n- rel_code is de ENIGE speler-sleutel, NOOIT naam-matching\\n- pnpm db:push NIET draaien (dropt VIEW speler_seizoenen)\\n- Taal: altijd Nederlands\\n- Agents staan in .claude/agents/'"
+            "command": "echo 'HERINNERING: logger uit @oranje-wit/types (NOOIT console.log) | rel_code is enige speler-sleutel | NOOIT pnpm db:push | Deploy: alleen via team-release | Taal: altijd Nederlands'"
           }
         ]
       }
@@ -64,5 +64,6 @@
         ]
       }
     ]
-  }
+  },
+  "enabledMcpjsonServers": ["oranje-wit-db", "railway"]
 }

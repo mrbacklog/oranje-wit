@@ -1,6 +1,7 @@
 ---
 name: ledenverloop
 description: Analyseer retentie, instroom, uitstroom en KNKV-benchmark over alle seizoenen
+context: fork
 user-invocable: true
 allowed-tools: Read, Write, Glob, Grep, WebFetch
 argument-hint: "[optioneel: seizoen zoals 2025-2026, of 'benchmark' voor alleen KNKV-vergelijking]"
