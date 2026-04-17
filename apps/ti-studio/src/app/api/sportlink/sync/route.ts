@@ -12,10 +12,10 @@ const SyncSchema = z.object({
 
 export async function POST(req: NextRequest) {
   const guard = await guardTC();
-  if (!guard.ok) return fail(guard.error, 401);
+  if (!guard.ok) return guard.response;
 
   const body = await parseBody(req, SyncSchema);
-  if (!body.ok) return fail(body.error);
+  if (!body.ok) return body.response;
 
   try {
     const { navajoToken } = await sportlinkLogin(body.data.email, body.data.password);
