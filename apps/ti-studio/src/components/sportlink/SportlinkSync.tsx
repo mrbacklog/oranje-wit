@@ -197,58 +197,65 @@ function LoginState({
           </div>
         )}
 
-        <div style={{ marginBottom: 16 }}>
-          <label
-            style={{
-              display: "block",
-              fontSize: 11,
-              fontWeight: 600,
-              color: "var(--text-3, #666)",
-              textTransform: "uppercase",
-              letterSpacing: ".5px",
-              marginBottom: 6,
-            }}
-          >
-            E-mailadres
-          </label>
-          <FormInput
-            type="email"
-            placeholder="naam@voorbeeld.nl"
-            value={email}
-            onChange={setEmail}
-          />
-        </div>
-
-        <div style={{ marginBottom: 16 }}>
-          <label
-            style={{
-              display: "block",
-              fontSize: 11,
-              fontWeight: 600,
-              color: "var(--text-3, #666)",
-              textTransform: "uppercase",
-              letterSpacing: ".5px",
-              marginBottom: 6,
-            }}
-          >
-            Wachtwoord
-          </label>
-          <FormInput
-            type="password"
-            placeholder="Sportlink wachtwoord"
-            value={password}
-            onChange={setPassword}
-          />
-        </div>
-
-        <button
-          className="btn-primary"
-          style={{ width: "100%", marginTop: 8 }}
-          disabled={!email || !password}
-          onClick={() => onSubmit(email, password)}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (email && password) onSubmit(email, password);
+          }}
         >
-          Ophalen
-        </button>
+          <div style={{ marginBottom: 16 }}>
+            <label
+              style={{
+                display: "block",
+                fontSize: 11,
+                fontWeight: 600,
+                color: "var(--text-3, #666)",
+                textTransform: "uppercase",
+                letterSpacing: ".5px",
+                marginBottom: 6,
+              }}
+            >
+              E-mailadres
+            </label>
+            <FormInput
+              type="email"
+              placeholder="naam@voorbeeld.nl"
+              value={email}
+              onChange={setEmail}
+            />
+          </div>
+
+          <div style={{ marginBottom: 16 }}>
+            <label
+              style={{
+                display: "block",
+                fontSize: 11,
+                fontWeight: 600,
+                color: "var(--text-3, #666)",
+                textTransform: "uppercase",
+                letterSpacing: ".5px",
+                marginBottom: 6,
+              }}
+            >
+              Wachtwoord
+            </label>
+            <FormInput
+              type="password"
+              placeholder="Sportlink wachtwoord"
+              value={password}
+              onChange={setPassword}
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="btn-primary"
+            style={{ width: "100%", marginTop: 8 }}
+            disabled={!email || !password}
+          >
+            Ophalen
+          </button>
+        </form>
 
         <p
           style={{

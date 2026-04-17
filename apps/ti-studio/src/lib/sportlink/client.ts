@@ -13,6 +13,26 @@ interface LoginResult {
   userName: string;
 }
 
+/**
+ * Haal set-cookie headers op — met fallback voor oudere Node.js versies
+ * waar getSetCookie() niet beschikbaar is.
+ */
+function extractCookies(headers: Headers): string[] {
+  if (typeof headers.getSetCookie === "function") {
+    return headers.getSetCookie();
+  }
+  // Fallback: parse raw set-cookie header
+  const raw = headers.get("set-cookie");
+  if (!raw) return [];
+  // Meerdere set-cookie headers worden door sommige runtimes als komma-gescheiden string geleverd
+  // Maar cookies bevatten ook komma's in expires — split op ", " gevolgd door een cookie-naam
+  return raw.split(/,\s*(?=[A-Z_]+=)/i).filter(Boolean);
+}
+
+function cookieString(cookies: string[]): string {
+  return cookies.map((c) => c.split(";")[0]).join("; ");
+}
+
 export async function sportlinkLogin(email: string, password: string): Promise<LoginResult> {
   // Step 1: PKCE
   const codeVerifier = crypto.randomBytes(32).toString("base64url");
@@ -34,10 +54,13 @@ export async function sportlinkLogin(email: string, password: string): Promise<L
 
   const authRes = await fetch(authUrl, { redirect: "manual" });
   const authHtml = await authRes.text();
-  const cookies = authRes.headers.getSetCookie?.() ?? [];
-  const cookieStr = cookies.map((c) => c.split(";")[0]).join("; ");
+  const cookies = extractCookies(authRes.headers);
+  const cookieStr = cookieString(cookies);
   const actionMatch = authHtml.match(/action="([^"]+)"/);
-  if (!actionMatch) throw new Error("Kan Sportlink login-pagina niet laden");
+  if (!actionMatch) {
+    logger.error("[sportlink] Geen form action gevonden in auth-pagina, status:", authRes.status);
+    throw new Error("Kan Sportlink login-pagina niet laden");
+  }
   const formAction = actionMatch[1].replace(/&amp;/g, "&");
 
   // Step 3: POST credentials
@@ -58,11 +81,13 @@ export async function sportlinkLogin(email: string, password: string): Promise<L
       throw new Error(errorMatch?.[1]?.trim() ?? "Onjuiste inloggegevens");
     }
     const otpMatch = loginHtml.match(/action="([^"]+)"/);
-    if (!otpMatch) throw new Error("Onverwachte Sportlink-pagina na login");
+    if (!otpMatch) {
+      logger.error("[sportlink] Geen OTP form action, login status:", loginRes.status);
+      throw new Error("Onverwachte Sportlink-pagina na login");
+    }
     const otpAction = otpMatch[1].replace(/&amp;/g, "&");
-    const allCookies = [...cookies, ...(loginRes.headers.getSetCookie?.() ?? [])]
-      .map((c) => c.split(";")[0])
-      .join("; ");
+    const loginCookies = extractCookies(loginRes.headers);
+    const allCookies = cookieString([...cookies, ...loginCookies]);
     const otpRes = await fetch(otpAction, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded", Cookie: allCookies },
