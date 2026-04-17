@@ -9,6 +9,7 @@ interface RibbonProps {
   onNaarPersonen: () => void;
   onNaarMemo: () => void;
   openMemoCount: number;
+  onNaarSportlink: () => void;
 }
 
 export function Ribbon({
@@ -19,6 +20,7 @@ export function Ribbon({
   onNaarPersonen,
   onNaarMemo,
   openMemoCount,
+  onNaarSportlink,
 }: RibbonProps) {
   return (
     <nav
@@ -173,6 +175,29 @@ export function Ribbon({
             </span>
           )}
         </div>
+
+        {/* Sportlink */}
+        <RibbonBtn
+          tip="Sportlink"
+          active={activeRoute.includes("/sportlink")}
+          onClick={onNaarSportlink}
+        >
+          <svg
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M21.5 2v6h-6" />
+            <path d="M2.5 22v-6h6" />
+            <path d="M2 11.5a10 10 0 0 1 18.8-4.3" />
+            <path d="M22 12.5a10 10 0 0 1-18.8 4.2" />
+          </svg>
+        </RibbonBtn>
       </div>
 
       {/* Footer */}

@@ -113,6 +113,7 @@ export function TiStudioPageShell({ children }: TiStudioPageShellProps) {
           onNaarPersonen={() => router.push("/personen")}
           onNaarMemo={() => router.push("/memo")}
           openMemoCount={openMemoCount}
+          onNaarSportlink={() => router.push("/sportlink")}
         />
 
         {/* Content kolom */}
