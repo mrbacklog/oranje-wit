@@ -30,8 +30,8 @@ const T = {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-function initials(firstName: string, lastName: string): string {
-  return (firstName[0] ?? "") + (lastName[0] ?? "");
+function initials(firstName: string | null, lastName: string | null): string {
+  return (firstName?.[0] ?? "") + (lastName?.[0] ?? "");
 }
 
 function genderChar(code: "Male" | "Female"): "m" | "v" {
@@ -53,8 +53,8 @@ function Avatar({
   lastName,
   gender,
 }: {
-  firstName: string;
-  lastName: string;
+  firstName: string | null;
+  lastName: string | null;
   gender: "Male" | "Female";
 }) {
   const g = genderChar(gender);

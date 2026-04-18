@@ -1,8 +1,9 @@
 /** Lid uit Sportlink SearchMembers response */
 export interface SportlinkLid {
   PublicPersonId: string;
-  FirstName: string;
-  LastName: string;
+  FirstName: string | null;
+  LastName: string | null;
+  FullName: string | null;
   Infix: string | null;
   DateOfBirth: string;
   GenderCode: "Male" | "Female";
