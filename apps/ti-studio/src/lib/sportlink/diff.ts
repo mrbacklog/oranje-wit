@@ -3,7 +3,7 @@ import type { SportlinkLid, SyncDiff, NieuwLid, AfgemeldLid, FuzzyMatch } from "
 
 export async function berekenDiff(leden: SportlinkLid[]): Promise<SyncDiff> {
   const spelers = await prisma.speler.findMany({
-    select: { id: true, roepnaam: true, achternaam: true, geboortedatum: true },
+    select: { id: true, roepnaam: true, achternaam: true, geboortedatum: true, status: true },
   });
 
   const spelerById = new Map(spelers.map((s) => [s.id, s]));
@@ -20,9 +20,10 @@ export async function berekenDiff(leden: SportlinkLid[]): Promise<SyncDiff> {
     const relCode = lid.PublicPersonId;
 
     if (bekendeIds.has(relCode)) {
+      const speler = spelerById.get(relCode)!;
       const isAfgemeld = lid.RelationEnd !== null || lid.MemberStatus !== "ACTIVE";
-      if (isAfgemeld) {
-        const speler = spelerById.get(relCode)!;
+      // Skip als speler al als GAAT_STOPPEN is gemarkeerd
+      if (isAfgemeld && speler.status !== "GAAT_STOPPEN") {
         afgemeld.push({
           lid,
           spelerId: speler.id,
