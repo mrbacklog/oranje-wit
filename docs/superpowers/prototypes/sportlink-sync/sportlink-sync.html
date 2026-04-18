@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sportlink Sync — Prototype</title>
+  <link rel="stylesheet" href="tokens.css">
+  <style>
+    /* ─── Reset ─────────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg-0);
+      color: var(--text-1);
+      min-height: 100vh;
+    }
+
+    /* ─── Layout: Ribbon + Content ──────────────────────────────────── */
+    .shell {
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      min-height: 100vh;
+    }
+
+    /* ─── Ribbon (simplified) ───────────────────────────────────────── */
+    .ribbon {
+      background: var(--bg-1);
+      border-right: 1px solid var(--border-0);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px 0;
+      gap: 4px;
+    }
+    .ribbon-logo {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--ow-accent), #e85d00);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 12px; color: #fff;
+      margin-bottom: 12px;
+    }
+    .ribbon-btn {
+      width: 40px; height: 40px;
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      color: var(--text-3);
+      transition: all .15s;
+    }
+    .ribbon-btn:hover { background: var(--bg-2); color: var(--text-1); }
+    .ribbon-btn.active { color: var(--ow-accent); background: rgba(255, 107, 0, .1); }
+    .ribbon-btn svg { width: 20px; height: 20px; }
+    .ribbon-divider { width: 28px; height: 1px; background: var(--border-0); margin: 8px 0; }
+
+    /* ─── Content ───────────────────────────────────────────────────── */
+    .content {
+      padding: 32px 40px;
+      max-width: 900px;
+    }
+    .page-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .page-subtitle {
+      font-size: 13px;
+      color: var(--text-3);
+      margin-bottom: 28px;
+    }
+
+    /* ─── States (tabs) ─────────────────────────────────────────────── */
+    .state { display: none; }
+    .state.active { display: block; }
+
+    /* ─── Login form ────────────────────────────────────────────────── */
+    .login-card {
+      background: var(--bg-1);
+      border: 1px solid var(--border-1);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      max-width: 400px;
+    }
+    .login-card h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .login-card h3 .sportlink-logo {
+      width: 20px; height: 20px;
+      background: #003082;
+      border-radius: 4px;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 800; color: #fff;
+    }
+    .form-group { margin-bottom: 16px; }
+    .form-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-bottom: 6px;
+    }
+    .form-input {
+      width: 100%;
+      padding: 9px 12px;
+      font-size: 14px;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: var(--radius-sm);
+      color: var(--text-1);
+      outline: none;
+      transition: border-color .15s;
+    }
+    .form-input:focus {
+      border-color: var(--ow-accent);
+      box-shadow: 0 0 0 2px var(--input-focus);
+    }
+    .form-input::placeholder { color: var(--text-muted); }
+
+    .btn-primary {
+      width: 100%;
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      background: var(--ow-accent);
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: opacity .15s;
+      margin-top: 8px;
+    }
+    .btn-primary:hover { opacity: .9; }
+    .btn-primary:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    .privacy-note {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 12px;
+      line-height: 1.4;
+    }
+
+    /* ─── Loading state ─────────────────────────────────────────────── */
+    .loading-card {
+      background: var(--bg-1);
+      border: 1px solid var(--border-1);
+      border-radius: var(--radius-lg);
+      padding: 40px 28px;
+      max-width: 400px;
+      text-align: center;
+    }
+    .spinner {
+      width: 32px; height: 32px;
+      border: 3px solid var(--border-1);
+      border-top-color: var(--ow-accent);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-text { font-size: 14px; color: var(--text-2); }
+    .loading-steps {
+      margin-top: 16px;
+      font-size: 12px;
+      color: var(--text-3);
+      line-height: 1.8;
+    }
+    .loading-steps .done { color: var(--sync-nieuw); }
+    .loading-steps .active { color: var(--text-1); }
+
+    /* ─── Diff results ──────────────────────────────────────────────── */
+    .diff-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .diff-stats {
+      display: flex;
+      gap: 16px;
+    }
+    .diff-stat {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--text-2);
+    }
+    .diff-stat .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+    }
+    .diff-stat .dot.nieuw { background: var(--sync-nieuw); }
+    .diff-stat .dot.afgemeld { background: var(--sync-afgemeld); }
+    .diff-stat .dot.match { background: var(--sync-match); }
+
+    /* ─── Category section ──────────────────────────────────────────── */
+    .category {
+      margin-bottom: 24px;
+    }
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-0);
+      margin-bottom: 2px;
+    }
+    .category-indicator {
+      width: 3px;
+      height: 18px;
+      border-radius: 2px;
+    }
+    .category-indicator.nieuw { background: var(--sync-nieuw); }
+    .category-indicator.afgemeld { background: var(--sync-afgemeld); }
+    .category-indicator.match { background: var(--sync-match); }
+
+    .category-title {
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .category-count {
+      font-size: 12px;
+      color: var(--text-3);
+      margin-left: auto;
+    }
+    .category-select-all {
+      font-size: 11px;
+      color: var(--ow-accent);
+      cursor: pointer;
+      margin-left: 8px;
+    }
+    .category-select-all:hover { text-decoration: underline; }
+
+    /* ─── Member row ────────────────────────────────────────────────── */
+    .member-row {
+      display: flex;
+      align-items: center;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      transition: background .1s;
+      gap: 12px;
+    }
+    .member-row:hover { background: var(--bg-2); }
+
+    .member-checkbox {
+      width: 16px; height: 16px;
+      accent-color: var(--ow-accent);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .member-avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700;
+      flex-shrink: 0;
+    }
+    .member-avatar.m { background: rgba(37, 99, 235, .15); color: var(--sexe-h); }
+    .member-avatar.v { background: rgba(217, 70, 239, .15); color: var(--sexe-v); }
+
+    .member-info { flex: 1; min-width: 0; }
+    .member-name {
+      font-size: 14px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .member-detail {
+      font-size: 12px;
+      color: var(--text-3);
+      margin-top: 1px;
+    }
+
+    .member-meta {
+      display: flex;
+      gap: 16px;
+      font-size: 12px;
+      color: var(--text-3);
+      flex-shrink: 0;
+    }
+    .member-meta .label { color: var(--text-muted); margin-right: 3px; }
+
+    /* ─── Fuzzy match badge ─────────────────────────────────────────── */
+    .match-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--sync-match);
+      background: var(--sync-match-bg);
+      border: 1px solid var(--sync-match-border);
+      border-radius: 4px;
+      padding: 3px 8px;
+    }
+    .match-link svg { width: 12px; height: 12px; }
+
+    /* ─── Afmelding detail ──────────────────────────────────────────── */
+    .afmeld-detail {
+      font-size: 11px;
+      color: var(--sync-afgemeld);
+      background: var(--sync-afgemeld-bg);
+      border: 1px solid var(--sync-afgemeld-border);
+      border-radius: 4px;
+      padding: 3px 8px;
+    }
+
+    /* ─── Footer bar ────────────────────────────────────────────────── */
+    .action-bar {
+      position: sticky;
+      bottom: 0;
+      background: var(--bg-1);
+      border-top: 1px solid var(--border-1);
+      padding: 14px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 24px;
+    }
+    .action-bar .selected-count {
+      font-size: 13px;
+      color: var(--text-2);
+    }
+    .action-bar .selected-count strong {
+      color: var(--text-1);
+    }
+    .btn-apply {
+      padding: 9px 24px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+      background: var(--ow-accent);
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+    }
+    .btn-apply:hover { opacity: .9; }
+    .btn-cancel {
+      padding: 9px 16px;
+      font-size: 13px;
+      color: var(--text-2);
+      background: var(--bg-2);
+      border: 1px solid var(--border-1);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      margin-right: 8px;
+    }
+
+    /* ─── Done state ────────────────────────────────────────────────── */
+    .done-card {
+      background: var(--bg-1);
+      border: 1px solid var(--border-1);
+      border-radius: var(--radius-lg);
+      padding: 40px 28px;
+      max-width: 400px;
+      text-align: center;
+    }
+    .done-icon {
+      width: 48px; height: 48px;
+      background: rgba(16, 185, 129, .1);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+      color: var(--sync-nieuw);
+    }
+    .done-icon svg { width: 24px; height: 24px; }
+    .done-title { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+    .done-detail { font-size: 13px; color: var(--text-3); line-height: 1.5; }
+
+    /* ─── Demo controls ─────────────────────────────────────────────── */
+    .demo-bar {
+      position: fixed;
+      top: 0; left: 56px; right: 0;
+      background: rgba(255, 107, 0, .08);
+      border-bottom: 1px solid rgba(255, 107, 0, .2);
+      padding: 6px 16px;
+      display: flex;
+      gap: 8px;
+      z-index: 100;
+      font-size: 12px;
+    }
+    .demo-btn {
+      padding: 4px 12px;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 107, 0, .3);
+      background: transparent;
+      color: var(--ow-accent);
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .demo-btn.active { background: var(--ow-accent); color: #fff; }
+    .demo-label { color: var(--text-3); line-height: 28px; margin-right: 8px; }
+  </style>
+</head>
+<body>
+  <!-- Demo controls -->
+  <div class="demo-bar">
+    <span class="demo-label">State:</span>
+    <button class="demo-btn active" onclick="showState('login')">1. Login</button>
+    <button class="demo-btn" onclick="showState('loading')">2. Laden</button>
+    <button class="demo-btn" onclick="showState('diff')">3. Diff</button>
+    <button class="demo-btn" onclick="showState('done')">4. Klaar</button>
+  </div>
+
+  <div class="shell">
+    <!-- Ribbon -->
+    <nav class="ribbon">
+      <div class="ribbon-logo">OW</div>
+      <div class="ribbon-btn" title="Werkbord">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      </div>
+      <div class="ribbon-btn" title="Kader">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <div class="ribbon-btn" title="Personen">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div class="ribbon-btn" title="Memo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      </div>
+      <div class="ribbon-divider"></div>
+      <div class="ribbon-btn active" title="Sportlink">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      </div>
+    </nav>
+
+    <!-- Content area -->
+    <main class="content" style="padding-top: 52px;">
+
+      <!-- ═══ State 1: Login ═══ -->
+      <div id="state-login" class="state active">
+        <h1 class="page-title">Sportlink Sync</h1>
+        <p class="page-subtitle">Haal de actuele ledenlijst op uit Sportlink en vergelijk met de spelerspool.</p>
+
+        <div class="login-card">
+          <h3>
+            <span class="sportlink-logo">SL</span>
+            Inloggen bij Sportlink
+          </h3>
+          <div class="form-group">
+            <label class="form-label">E-mailadres</label>
+            <input type="email" class="form-input" placeholder="naam@voorbeeld.nl" value="antjanlaban@gmail.com">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Wachtwoord</label>
+            <input type="password" class="form-input" placeholder="Sportlink wachtwoord" value="••••••••">
+          </div>
+          <button class="btn-primary" onclick="showState('loading')">Ophalen</button>
+          <p class="privacy-note">Je gegevens worden niet opgeslagen. Ze worden eenmalig gebruikt om in te loggen bij Sportlink en worden daarna verwijderd.</p>
+        </div>
+      </div>
+
+      <!-- ═══ State 2: Loading ═══ -->
+      <div id="state-loading" class="state">
+        <h1 class="page-title">Sportlink Sync</h1>
+        <p class="page-subtitle">Bezig met ophalen...</p>
+
+        <div class="loading-card">
+          <div class="spinner"></div>
+          <div class="loading-text">Ledendata ophalen uit Sportlink</div>
+          <div class="loading-steps">
+            <div class="done">✓ Ingelogd bij Sportlink</div>
+            <div class="done">✓ Clubgegevens opgehaald</div>
+            <div class="active">◦ Ledenlijst ophalen...</div>
+            <div>◦ Vergelijken met spelerspool</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ State 3: Diff results ═══ -->
+      <div id="state-diff" class="state">
+        <h1 class="page-title">Sportlink Sync</h1>
+        <p class="page-subtitle">Vergelijking met spelerspool — selecteer wat je wilt doorvoeren.</p>
+
+        <div class="diff-header">
+          <div class="diff-stats">
+            <div class="diff-stat"><span class="dot nieuw"></span> 3 nieuwe leden</div>
+            <div class="diff-stat"><span class="dot afgemeld"></span> 1 afmelding</div>
+            <div class="diff-stat"><span class="dot match"></span> 2 koppelingen</div>
+          </div>
+        </div>
+
+        <!-- Nieuwe leden -->
+        <div class="category">
+          <div class="category-header">
+            <div class="category-indicator nieuw"></div>
+            <div class="category-title">Nieuwe leden</div>
+            <div class="category-count">3</div>
+            <div class="category-select-all">Alles selecteren</div>
+          </div>
+
+          <div class="member-row">
+            <input type="checkbox" class="member-checkbox" checked>
+            <div class="member-avatar v">EV</div>
+            <div class="member-info">
+              <div class="member-name">Emma Vermeer</div>
+              <div class="member-detail">Aangemeld 2026-03-15</div>
+            </div>
+            <div class="member-meta">
+              <span><span class="label">Leeftijd</span> 12</span>
+              <span><span class="label">Cat.</span> Jeugd</span>
+              <span><span class="label">Rel.</span> NXK42P7</span>
+            </div>
+          </div>
+
+          <div class="member-row">
+            <input type="checkbox" class="member-checkbox" checked>
+            <div class="member-avatar m">LJ</div>
+            <div class="member-info">
+              <div class="member-name">Liam de Jong</div>
+              <div class="member-detail">Aangemeld 2026-04-01</div>
+            </div>
+            <div class="member-meta">
+              <span><span class="label">Leeftijd</span> 9</span>
+              <span><span class="label">Cat.</span> Jeugd Heren</span>
+              <span><span class="label">Rel.</span> NPR18K5</span>
+            </div>
+          </div>
+
+          <div class="member-row">
+            <input type="checkbox" class="member-checkbox">
+            <div class="member-avatar v">SB</div>
+            <div class="member-info">
+              <div class="member-name">Sophie Bakker</div>
+              <div class="member-detail">Aangemeld 2026-04-10</div>
+            </div>
+            <div class="member-meta">
+              <span><span class="label">Leeftijd</span> 28</span>
+              <span><span class="label">Cat.</span> Senioren</span>
+              <span><span class="label">Rel.</span> NMW55R2</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Afmeldingen -->
+        <div class="category">
+          <div class="category-header">
+            <div class="category-indicator afgemeld"></div>
+            <div class="category-title">Afmeldingen</div>
+            <div class="category-count">1</div>
+            <div class="category-select-all">Alles selecteren</div>
+          </div>
+
+          <div class="member-row">
+            <input type="checkbox" class="member-checkbox" checked>
+            <div class="member-avatar m">TV</div>
+            <div class="member-info">
+              <div class="member-name">Thomas Visser</div>
+              <div class="member-detail">In spelerspool als actief</div>
+            </div>
+            <div class="afmeld-detail">Afmelddatum 2026-04-30</div>
+          </div>
+        </div>
+
+        <!-- Fuzzy matches -->
+        <div class="category">
+          <div class="category-header">
+            <div class="category-indicator match"></div>
+            <div class="category-title">Mogelijke koppelingen</div>
+            <div class="category-count">2</div>
+            <div class="category-select-all">Alles selecteren</div>
+          </div>
+
+          <div class="member-row">
+            <input type="checkbox" class="member-checkbox" checked>
+            <div class="member-avatar v">LH</div>
+            <div class="member-info">
+              <div class="member-name">Lisa Hendriks</div>
+              <div class="member-detail">Geboortedatum 2008-07-22 · Sportlink rel. NKQ33M8</div>
+            </div>
+            <div class="match-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              Koppel aan "L. Hendriks" (zonder rel_code)
+            </div>
+          </div>
+
+          <div class="member-row">
+            <input type="checkbox" class="member-checkbox">
+            <div class="member-avatar m">JM</div>
+            <div class="member-info">
+              <div class="member-name">Jayden Mulder</div>
+              <div class="member-detail">Geboortedatum 2014-11-03 · Sportlink rel. NRW71K4</div>
+            </div>
+            <div class="match-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              Koppel aan "J. Mulder" (zonder rel_code)
+            </div>
+          </div>
+        </div>
+
+        <!-- Action bar -->
+        <div class="action-bar">
+          <div class="selected-count"><strong>5</strong> van 6 geselecteerd</div>
+          <div>
+            <button class="btn-cancel" onclick="showState('login')">Annuleren</button>
+            <button class="btn-apply" onclick="showState('done')">Doorvoeren</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ State 4: Done ═══ -->
+      <div id="state-done" class="state">
+        <h1 class="page-title">Sportlink Sync</h1>
+        <p class="page-subtitle">Synchronisatie voltooid.</p>
+
+        <div class="done-card">
+          <div class="done-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="done-title">Wijzigingen doorgevoerd</div>
+          <div class="done-detail">
+            2 spelers aangemaakt<br>
+            1 afmelding gesignaleerd<br>
+            2 rel_codes gekoppeld
+          </div>
+          <button class="btn-primary" style="margin-top: 20px; width: auto; padding: 9px 24px; display: inline-block;" onclick="showState('login')">Opnieuw synchroniseren</button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    function showState(name) {
+      document.querySelectorAll('.state').forEach(el => el.classList.remove('active'));
+      document.getElementById('state-' + name).classList.add('active');
+      document.querySelectorAll('.demo-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.textContent.toLowerCase().includes(
+          name === 'login' ? 'login' : name === 'loading' ? 'laden' : name === 'diff' ? 'diff' : 'klaar'
+        ));
+      });
+    }
+  </script>
+</body>
+</html>
