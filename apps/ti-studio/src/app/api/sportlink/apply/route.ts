@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
     for (const spelerId of afgemeld) {
       await prisma.speler.update({
         where: { id: spelerId },
-        data: { status: "STOPT" },
+        data: { status: "GAAT_STOPPEN" },
       });
       afgemeldCount++;
     }
