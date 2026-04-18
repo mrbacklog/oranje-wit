@@ -280,14 +280,15 @@ function LoginState({
 
 // ─── State: Loading ───────────────────────────────────────────────────────────
 
-const LOADING_STEPS = [
-  "Ingelogd bij Sportlink",
-  "Clubgegevens opgehaald",
-  "Ledenlijst ophalen...",
-  "Vergelijken met spelerspool",
-];
+interface Voortgang {
+  stap: string;
+  tekst: string;
+  aantal?: number;
+}
 
-function LoadingState() {
+function LoadingState({ stappen }: { stappen: Voortgang[] }) {
+  const huidigeStap = stappen[stappen.length - 1];
+
   return (
     <div>
       <h1 style={{ fontSize: 22, fontWeight: 700, marginBottom: 4 }}>Sportlink Sync</h1>
@@ -324,26 +325,20 @@ function LoadingState() {
         />
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
         <div style={{ fontSize: 14, color: "var(--text-2, #a3a3a3)" }}>
-          Ledendata ophalen uit Sportlink
+          {huidigeStap?.tekst ?? "Verbinden met Sportlink..."}
         </div>
         <div
           style={{
             marginTop: 16,
             fontSize: 12,
             color: "var(--text-3, #666)",
-            lineHeight: 1.8,
+            lineHeight: 2,
             textAlign: "left",
           }}
         >
-          {LOADING_STEPS.map((step, i) => (
-            <div
-              key={step}
-              style={{
-                color:
-                  i < 2 ? T.syncNieuw : i === 2 ? "var(--text-1, #fafafa)" : "var(--text-3, #666)",
-              }}
-            >
-              {i < 2 ? "✓" : "◦"} {step}
+          {stappen.map((s) => (
+            <div key={s.stap} style={{ color: T.syncNieuw }}>
+              ✓ {s.tekst}
             </div>
           ))}
         </div>
@@ -892,9 +887,11 @@ export function SportlinkSync() {
   const [result, setResult] = useState<ApplyResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [applying, setApplying] = useState(false);
+  const [voortgang, setVoortgang] = useState<Voortgang[]>([]);
 
   async function handleLogin(email: string, password: string) {
     setError(null);
+    setVoortgang([]);
     setState("loading");
 
     try {
@@ -905,14 +902,53 @@ export function SportlinkSync() {
         body: JSON.stringify({ email, password }),
       });
 
-      if (!res.ok) {
+      if (!res.ok || !res.body) {
         const body = await res.json().catch(() => ({}));
-        throw new Error((body as { error?: string }).error ?? `Fout ${res.status}`);
+        throw new Error(
+          (body as { error?: { message?: string } }).error?.message ?? `Fout ${res.status}`
+        );
       }
 
-      const data: SyncDiff = await res.json();
-      setDiff(data);
-      setState("diff");
+      // Lees SSE stream voor voortgang
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n\n");
+        buffer = lines.pop() ?? "";
+
+        for (const chunk of lines) {
+          const dataLine = chunk.replace(/^data: /, "").trim();
+          if (!dataLine) continue;
+
+          const event = JSON.parse(dataLine) as {
+            stap: string;
+            tekst: string;
+            aantal?: number;
+            diff?: SyncDiff;
+          };
+
+          if (event.stap === "fout") {
+            throw new Error(event.tekst);
+          }
+
+          if (event.stap === "klaar" && event.diff) {
+            setDiff(event.diff);
+            setState("diff");
+            return;
+          }
+
+          setVoortgang((prev) => [
+            ...prev,
+            { stap: event.stap, tekst: event.tekst, aantal: event.aantal },
+          ]);
+        }
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Onbekende fout bij ophalen Sportlink data.");
       setState("login");
@@ -989,7 +1025,7 @@ export function SportlinkSync() {
   return (
     <div style={{ padding: "32px 40px", maxWidth: 900 }}>
       {state === "login" && <LoginState onSubmit={handleLogin} error={error} />}
-      {state === "loading" && <LoadingState />}
+      {state === "loading" && <LoadingState stappen={voortgang} />}
       {state === "diff" && diff && (
         <DiffState diff={diff} onApply={handleApply} onCancel={handleReset} applying={applying} />
       )}
