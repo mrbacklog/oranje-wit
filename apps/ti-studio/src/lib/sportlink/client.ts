@@ -175,10 +175,10 @@ export async function sportlinkZoekLeden(navajoToken: string): Promise<Sportlink
   }
 
   // Stap 2: Stel de gewenste selecties in
-  // TypeOfMember: alle typen geselecteerd
-  selecteerOpties(inputExtended.TypeOfMember, ["KERNELMEMBER", "CLUBMEMBER", "CLUBRELATION"]);
-  // MemberStatus: actief + afmelding in de toekomst + oud lid
-  selecteerOpties(inputExtended.MemberStatus, ["ACTIVE", "ELIGABLE_FOR_REMOVE", "INACTIVE"]);
+  // Alleen bondsleden (geen verenigingsleden/relaties)
+  selecteerOpties(inputExtended.TypeOfMember, ["KERNELMEMBER"]);
+  // Alleen actief + afmelding in de toekomst (geen oud-leden)
+  selecteerOpties(inputExtended.MemberStatus, ["ACTIVE", "ELIGABLE_FOR_REMOVE"]);
 
   // Stap 3: Zoek met het volledige filterobject
   const searchRes = await fetch(`${NAVAJO_BASE}/member/search/SearchMembers`, {
@@ -194,8 +194,20 @@ export async function sportlinkZoekLeden(navajoToken: string): Promise<Sportlink
 
   const data = await searchRes.json();
   if (data.Error) throw new Error(`Sportlink zoekfout: ${data.Message}`);
-  logger.info(`[sportlink] ${data.Members?.length ?? 0} leden opgehaald`);
-  return data.Members ?? [];
+
+  const alleLeden: SportlinkLid[] = data.Members ?? [];
+
+  // Filter op korfbalspelers: alleen leden met Veld of Zaal spelactiviteit
+  // Dit sluit donateurs, bowlers, biljarters, niet-spelende leden etc. uit
+  const korfballers = alleLeden.filter((lid) => {
+    const act = lid.KernelGameActivities ?? "";
+    return act.includes("Veld") || act.includes("Zaal");
+  });
+
+  logger.info(
+    `[sportlink] ${alleLeden.length} leden opgehaald, ${korfballers.length} korfbalspelers na filter`
+  );
+  return korfballers;
 }
 
 /** Zet IsSelected op true voor de opgegeven IDs in een MULTISELECT filter */
