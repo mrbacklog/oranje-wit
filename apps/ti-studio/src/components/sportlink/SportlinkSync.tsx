@@ -497,11 +497,38 @@ function DiffState({
         style={{
           fontSize: 13,
           color: "var(--text-3, #666)",
-          marginBottom: 28,
+          marginBottom: 16,
         }}
       >
         Vergelijking met spelerspool — selecteer wat je wilt doorvoeren.
       </p>
+
+      {/* Sync samenvatting */}
+      <div
+        style={{
+          background: "rgba(255,255,255,.04)",
+          border: "1px solid rgba(255,255,255,.08)",
+          borderRadius: 8,
+          padding: "12px 16px",
+          marginBottom: 24,
+          fontSize: 13,
+          color: "var(--text-2, #a3a3a3)",
+          display: "flex",
+          gap: 24,
+        }}
+      >
+        <span>
+          <strong style={{ color: "var(--text-1, #e5e5e5)" }}>{diff.stats.ledenVergeleken}</strong>{" "}
+          leden vergeleken
+        </span>
+        <span>
+          <strong style={{ color: "var(--text-1, #e5e5e5)" }}>{diff.stats.spelersInPool}</strong>{" "}
+          spelers in pool
+        </span>
+        <span>
+          <strong style={{ color: "#10b981" }}>{diff.stats.ongewijzigd}</strong> ongewijzigd
+        </span>
+      </div>
 
       {/* Stats bar */}
       <div

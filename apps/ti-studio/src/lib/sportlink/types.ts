@@ -22,6 +22,11 @@ export interface SyncDiff {
   nieuwe: NieuwLid[];
   afgemeld: AfgemeldLid[];
   fuzzyMatches: FuzzyMatch[];
+  stats: {
+    ledenVergeleken: number;
+    spelersInPool: number;
+    ongewijzigd: number;
+  };
 }
 
 export interface NieuwLid {

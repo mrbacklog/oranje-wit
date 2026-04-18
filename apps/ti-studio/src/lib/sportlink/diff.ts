@@ -100,7 +100,19 @@ export async function berekenDiff(leden: SportlinkLid[]): Promise<SyncDiff> {
     }
   }
 
-  return { nieuwe, afgemeld, fuzzyMatches };
+  const gewijzigd = nieuwe.length + afgemeld.length + fuzzyMatches.length;
+  return {
+    nieuwe,
+    afgemeld,
+    fuzzyMatches,
+    stats: {
+      ledenVergeleken: leden.length,
+      spelersInPool: spelers.length,
+      ongewijzigd:
+        spelers.filter((s) => s.id.match(/^[A-Z]{1,3}\w+$/) && gezienInSportlink.has(s.id)).length -
+        afgemeld.filter((a) => gezienInSportlink.has(a.spelerId)).length,
+    },
+  };
 }
 
 function normaliseer(naam: string | null | undefined): string {
