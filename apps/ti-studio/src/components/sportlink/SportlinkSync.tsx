@@ -34,8 +34,8 @@ function initials(firstName: string | null, lastName: string | null): string {
   return (firstName?.[0] ?? "") + (lastName?.[0] ?? "");
 }
 
-function genderChar(code: "Male" | "Female"): "m" | "v" {
-  return code === "Male" ? "m" : "v";
+function genderChar(code: "Male" | "Female"): "M" | "V" {
+  return code === "Male" ? "M" : "V";
 }
 
 function geboortejaar(dob: string): number {
@@ -85,8 +85,8 @@ function Avatar({
         fontSize: 12,
         fontWeight: 700,
         flexShrink: 0,
-        background: g === "m" ? "rgba(37, 99, 235, .15)" : "rgba(217, 70, 239, .15)",
-        color: g === "m" ? T.sexeH : T.sexeV,
+        background: g === "M" ? "rgba(37, 99, 235, .15)" : "rgba(217, 70, 239, .15)",
+        color: g === "M" ? T.sexeH : T.sexeV,
       }}
     >
       {initials(firstName, lastName).toUpperCase()}
