@@ -628,7 +628,12 @@ function DiffState({
                     marginTop: 1,
                   }}
                 >
-                  {isNieuwLid ? "Nieuw lid" : "Korfbalspeler"} · aangemeld {lid.RelationStart}
+                  {isNieuwLid
+                    ? "Nieuw lid"
+                    : (lid.KernelGameActivities ?? "").includes("Recreant")
+                      ? "Recreant"
+                      : "Korfbalspeler"}{" "}
+                  · aangemeld {lid.RelationStart}
                 </div>
               </div>
               <div

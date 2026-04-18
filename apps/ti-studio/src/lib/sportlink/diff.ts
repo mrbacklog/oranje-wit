@@ -62,7 +62,9 @@ export async function berekenDiff(leden: SportlinkLid[]): Promise<SyncDiff> {
       });
     } else {
       const act = lid.KernelGameActivities ?? "";
-      const isNieuwLid = !act.includes("Veld") && !act.includes("Zaal");
+      const isKorfbalspeler = act.includes("Veld") || act.includes("Zaal");
+      const isRecreant = act.includes("Recreant");
+      const isNieuwLid = !isKorfbalspeler && !isRecreant;
       nieuwe.push({ lid, isNieuwLid });
     }
   }

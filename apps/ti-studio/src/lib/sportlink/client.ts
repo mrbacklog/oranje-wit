@@ -197,21 +197,35 @@ export async function sportlinkZoekLeden(navajoToken: string): Promise<Sportlink
 
   const alleLeden: SportlinkLid[] = data.Members ?? [];
 
-  // Filter op korfbalspelers + nieuwe leden die nog geen spelactiviteit hebben
-  // Seizoenstart = 1 juli van het eerste jaar van het huidige seizoen
+  // Filter op relevante leden voor de teamindeling
   const seizoenStart = `${HUIDIG_SEIZOEN.split("-")[0]}-07-01`;
 
   const relevant = alleLeden.filter((lid) => {
+    // Alleen geldige Sportlink relCodes
+    if (!lid.PublicPersonId.match(/^[A-Z]{1,3}\w+$/)) return false;
+
     const act = lid.KernelGameActivities ?? "";
-    // Actieve korfbalspelers (Veld of Zaal)
+
+    // Actieve korfbalspelers (Veld of Zaal spelactiviteit)
     if (act.includes("Veld") || act.includes("Zaal")) return true;
-    // Nieuw lid: geen spelactiviteit, dit seizoen ingeschreven, geen afmelddatum
-    if (!lid.RelationEnd && lid.RelationStart >= seizoenStart) return true;
+
+    // Recreanten — expliciet relevant
+    if (act.includes("Recreant")) return true;
+
+    // Ouder-lidmaatschap — niet relevant voor teamindeling
+    if (act.includes("Ouder lidmaatschap")) return false;
+
+    // Nieuw lid (dit seizoen, geen afmelddatum, minimaal korfballeeftijd 3)
+    if (!lid.RelationEnd && lid.RelationStart >= seizoenStart) {
+      const leeftijd = new Date().getFullYear() - new Date(lid.DateOfBirth).getFullYear();
+      return leeftijd >= 3;
+    }
+
     return false;
   });
 
   logger.info(
-    `[sportlink] ${alleLeden.length} leden opgehaald, ${relevant.length} relevant na filter (korfbalspelers + nieuwe leden)`
+    `[sportlink] ${alleLeden.length} leden opgehaald, ${relevant.length} relevant na filter`
   );
   return relevant;
 }
