@@ -4,6 +4,22 @@ import { ok, fail, parseBody } from "@oranje-wit/types";
 import { z } from "zod";
 import { prisma } from "@/lib/teamindeling/db/prisma";
 import { logger } from "@oranje-wit/types";
+import type { SpelerStatus } from "@oranje-wit/database";
+
+function lidTypeNaarStatus(lidType: string): SpelerStatus {
+  switch (lidType) {
+    case "recreant":
+      return "RECREANT";
+    case "algemeen-reserve":
+      return "ALGEMEEN_RESERVE";
+    case "niet-spelend":
+      return "NIET_SPELEND";
+    case "nieuw-lid":
+      return "NIEUW_DEFINITIEF";
+    default:
+      return "BESCHIKBAAR";
+  }
+}
 
 const ApplySchema = z.object({
   nieuwe: z.array(
@@ -14,7 +30,10 @@ const ApplySchema = z.object({
       geboortejaar: z.number(),
       geboortedatum: z.string(),
       geslacht: z.enum(["M", "V"]),
-      isNieuwLid: z.boolean().optional().default(false),
+      lidType: z
+        .enum(["korfbalspeler", "recreant", "algemeen-reserve", "niet-spelend", "nieuw-lid"])
+        .optional()
+        .default("korfbalspeler"),
     })
   ),
   afgemeld: z.array(z.string()),
@@ -48,7 +67,7 @@ export async function POST(req: NextRequest) {
           geboortejaar: speler.geboortejaar,
           geboortedatum: new Date(speler.geboortedatum),
           geslacht: speler.geslacht === "M" ? "MAN" : "VROUW",
-          status: speler.isNieuwLid ? "NIEUW_DEFINITIEF" : "BESCHIKBAAR",
+          status: lidTypeNaarStatus(speler.lidType ?? "korfbalspeler"),
         },
       });
       aangemaakt++;

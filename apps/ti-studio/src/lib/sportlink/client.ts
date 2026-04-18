@@ -212,6 +212,12 @@ export async function sportlinkZoekLeden(navajoToken: string): Promise<Sportlink
     // Recreanten — expliciet relevant
     if (act.includes("Recreant")) return true;
 
+    // Algemeen reserve — relevant
+    if (act.includes("Algemeen reserve")) return true;
+
+    // Niet-spelend lid — relevant (sommigen vragen om indeling)
+    if (act.includes("Niet spelend")) return true;
+
     // Ouder-lidmaatschap — niet relevant voor teamindeling
     if (act.includes("Ouder lidmaatschap")) return false;
 

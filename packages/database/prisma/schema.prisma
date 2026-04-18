@@ -904,6 +904,8 @@ enum SpelerStatus {
   NIEUW_POTENTIEEL
   NIEUW_DEFINITIEF
   ALGEMEEN_RESERVE
+  RECREANT
+  NIET_SPELEND
 }
 
 // ============================================================

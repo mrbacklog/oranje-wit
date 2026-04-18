@@ -1,0 +1,3 @@
+-- AlterEnum
+ALTER TYPE "SpelerStatus" ADD VALUE 'RECREANT';
+ALTER TYPE "SpelerStatus" ADD VALUE 'NIET_SPELEND';

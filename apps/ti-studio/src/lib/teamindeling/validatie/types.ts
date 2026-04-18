@@ -38,7 +38,9 @@ export interface SpelerData {
     | "GAAT_STOPPEN"
     | "NIEUW_POTENTIEEL"
     | "NIEUW_DEFINITIEF"
-    | "ALGEMEEN_RESERVE";
+    | "ALGEMEEN_RESERVE"
+    | "RECREANT"
+    | "NIET_SPELEND";
 }
 
 /**

@@ -29,9 +29,16 @@ export interface SyncDiff {
   };
 }
 
+export type LidType =
+  | "korfbalspeler"
+  | "recreant"
+  | "algemeen-reserve"
+  | "niet-spelend"
+  | "nieuw-lid";
+
 export interface NieuwLid {
   lid: SportlinkLid;
-  isNieuwLid: boolean;
+  lidType: LidType;
 }
 
 export type AfmeldReden = "afmelddatum" | "niet-actief" | "niet-spelend" | "verdwenen";

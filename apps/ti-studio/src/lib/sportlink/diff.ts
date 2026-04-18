@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/teamindeling/db/prisma";
-import type { SportlinkLid, SyncDiff, NieuwLid, AfgemeldLid, FuzzyMatch } from "./types";
+import type { SportlinkLid, SyncDiff, NieuwLid, AfgemeldLid, FuzzyMatch, LidType } from "./types";
 
 export async function berekenDiff(leden: SportlinkLid[]): Promise<SyncDiff> {
   const spelers = await prisma.speler.findMany({
@@ -61,11 +61,7 @@ export async function berekenDiff(leden: SportlinkLid[]): Promise<SyncDiff> {
         spelerNaam: `${fuzzyHit.roepnaam} ${fuzzyHit.achternaam}`,
       });
     } else {
-      const act = lid.KernelGameActivities ?? "";
-      const isKorfbalspeler = act.includes("Veld") || act.includes("Zaal");
-      const isRecreant = act.includes("Recreant");
-      const isNieuwLid = !isKorfbalspeler && !isRecreant;
-      nieuwe.push({ lid, isNieuwLid });
+      nieuwe.push({ lid, lidType: bepaalLidType(lid) });
     }
   }
 
@@ -119,4 +115,13 @@ export async function berekenDiff(leden: SportlinkLid[]): Promise<SyncDiff> {
 
 function normaliseer(naam: string | null | undefined): string {
   return (naam ?? "").toLowerCase().trim().replace(/\s+/g, " ");
+}
+
+function bepaalLidType(lid: SportlinkLid): LidType {
+  const act = lid.KernelGameActivities ?? "";
+  if (act.includes("Veld") || act.includes("Zaal")) return "korfbalspeler";
+  if (act.includes("Recreant")) return "recreant";
+  if (act.includes("Algemeen reserve")) return "algemeen-reserve";
+  if (act.includes("Niet spelend")) return "niet-spelend";
+  return "nieuw-lid";
 }

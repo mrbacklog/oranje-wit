@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { SyncDiff, NieuwLid, AfgemeldLid, FuzzyMatch } from "@/lib/sportlink/types";
+import type { SyncDiff, NieuwLid, AfgemeldLid, FuzzyMatch, LidType } from "@/lib/sportlink/types";
 
 type State = "login" | "loading" | "diff" | "done";
 
@@ -44,6 +44,21 @@ function geboortejaar(dob: string): number {
 
 function korfbalLeeftijd(dob: string): number {
   return new Date().getFullYear() - new Date(dob).getFullYear();
+}
+
+function lidTypeLabel(type: LidType): string {
+  switch (type) {
+    case "korfbalspeler":
+      return "Korfbalspeler";
+    case "recreant":
+      return "Recreant";
+    case "algemeen-reserve":
+      return "Algemeen reserve";
+    case "niet-spelend":
+      return "Niet-spelend lid";
+    case "nieuw-lid":
+      return "Nieuw lid";
+  }
 }
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
@@ -593,7 +608,7 @@ function DiffState({
               )
             }
           />
-          {diff.nieuwe.map(({ lid, isNieuwLid }: NieuwLid) => (
+          {diff.nieuwe.map(({ lid, lidType }: NieuwLid) => (
             <MemberRow key={lid.PublicPersonId}>
               <input
                 type="checkbox"
@@ -628,12 +643,7 @@ function DiffState({
                     marginTop: 1,
                   }}
                 >
-                  {isNieuwLid
-                    ? "Nieuw lid"
-                    : (lid.KernelGameActivities ?? "").includes("Recreant")
-                      ? "Recreant"
-                      : "Korfbalspeler"}{" "}
-                  · aangemeld {lid.RelationStart}
+                  {lidTypeLabel(lidType)} · aangemeld {lid.RelationStart}
                 </div>
               </div>
               <div
@@ -1004,14 +1014,14 @@ export function SportlinkSync() {
     try {
       const nieuwePayload = diff.nieuwe
         .filter((n) => selectedNieuwe.has(n.lid.PublicPersonId))
-        .map(({ lid, isNieuwLid }) => ({
+        .map(({ lid, lidType }) => ({
           relCode: lid.PublicPersonId,
           roepnaam: lid.FirstName,
           achternaam: lid.LastName,
           geboortejaar: geboortejaar(lid.DateOfBirth),
           geboortedatum: lid.DateOfBirth,
           geslacht: genderChar(lid.GenderCode),
-          isNieuwLid,
+          lidType,
         }));
 
       const afgemeldPayload = diff.afgemeld
