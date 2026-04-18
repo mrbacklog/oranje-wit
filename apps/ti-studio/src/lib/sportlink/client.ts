@@ -116,14 +116,17 @@ export async function sportlinkLogin(email: string, password: string): Promise<L
   const tokenData = await tokenRes.json();
   if (!tokenData.access_token) throw new Error("Kan geen Keycloak-token verkrijgen");
 
-  // Step 6: LinkToPerson
+  // Step 6: LinkToPerson — PUT met ClubId/UnionId in body
   const linkRes = await fetch(`${NAVAJO_BASE}/user/LinkToPerson`, {
+    method: "PUT",
     headers: {
       Authorization: `Bearer ${tokenData.access_token}`,
+      "Content-Type": "text/plain;charset=UTF-8",
       "X-Navajo-Entity": "user/LinkToPerson",
-      "X-Navajo-Instance": "KNKV",
+      "X-Navajo-Instance": "Generic",
       "X-Navajo-Locale": "nl",
     },
+    body: JSON.stringify({ ClubId: "NCX19J3", UnionId: "KNKV" }),
   });
   const linkData = await linkRes.json();
   if (!linkData.TokenObject?.accessToken) throw new Error("Kan geen Sportlink-sessie starten");
@@ -136,47 +139,72 @@ export async function sportlinkLogin(email: string, password: string): Promise<L
   };
 }
 
+function navajoHeaders(entity: string, token: string) {
+  return {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "text/plain;charset=UTF-8",
+    "X-Navajo-Entity": entity,
+    "X-Navajo-Instance": "KNKV",
+    "X-Navajo-Locale": "nl",
+  };
+}
+
+/**
+ * Haal alle actieve + afgemelde leden op.
+ *
+ * De Navajo API verwacht het volledige filter-object (inclusief Labels, IsRequired, etc.)
+ * Daarom halen we eerst de filter-definities op via FilterMembersExtended en FilterMembersSimple,
+ * zetten de gewenste selecties, en sturen het complete object mee.
+ */
 export async function sportlinkZoekLeden(navajoToken: string): Promise<SportlinkLid[]> {
-  const res = await fetch(`${NAVAJO_BASE}/member/search/SearchMembers`, {
+  // Stap 1: Haal filter-definities op
+  const [extRes, simpleRes] = await Promise.all([
+    fetch(`${NAVAJO_BASE}/member/search/FilterMembersExtended`, {
+      headers: navajoHeaders("member/search/FilterMembersExtended", navajoToken),
+    }),
+    fetch(`${NAVAJO_BASE}/member/search/FilterMembersSimple`, {
+      headers: navajoHeaders("member/search/FilterMembersSimple", navajoToken),
+    }),
+  ]);
+
+  const inputExtended = await extRes.json();
+  const inputSimple = await simpleRes.json();
+
+  if (inputExtended.Error) {
+    throw new Error(`Sportlink filter-fout: ${inputExtended.Message}`);
+  }
+
+  // Stap 2: Stel de gewenste selecties in
+  // TypeOfMember: alle typen geselecteerd
+  selecteerOpties(inputExtended.TypeOfMember, ["KERNELMEMBER", "CLUBMEMBER", "CLUBRELATION"]);
+  // MemberStatus: actief + afmelding in de toekomst + oud lid
+  selecteerOpties(inputExtended.MemberStatus, ["ACTIVE", "ELIGABLE_FOR_REMOVE", "INACTIVE"]);
+
+  // Stap 3: Zoek met het volledige filterobject
+  const searchRes = await fetch(`${NAVAJO_BASE}/member/search/SearchMembers`, {
     method: "POST",
-    headers: {
-      Authorization: `Bearer ${navajoToken}`,
-      "Content-Type": "text/plain;charset=UTF-8",
-      "X-Navajo-Entity": "member/search/SearchMembers",
-      "X-Navajo-Instance": "KNKV",
-      "X-Navajo-Locale": "nl",
-    },
+    headers: navajoHeaders("member/search/SearchMembers", navajoToken),
     body: JSON.stringify({
       Filters: {
-        InputExtended: {
-          TypeOfMember: {
-            Type: "MULTISELECT",
-            Options: [
-              { Id: "KERNELMEMBER", IsSelected: true },
-              { Id: "CLUBMEMBER", IsSelected: true },
-              { Id: "CLUBRELATION", IsSelected: true },
-            ],
-          },
-          MemberStatus: {
-            Type: "MULTISELECT",
-            Options: [
-              { Id: "ACTIVE", IsSelected: true },
-              { Id: "INACTIVE", IsSelected: true },
-              { Id: "ELIGABLE_FOR_REMOVE", IsSelected: true },
-            ],
-          },
-        },
-        InputSimple: {
-          SearchValue: {
-            Type: "INPUT",
-            Options: [{ Name: "SEARCHVALUE", Type: "TEXT", Value: "" }],
-          },
-        },
+        InputExtended: inputExtended,
+        InputSimple: inputSimple,
       },
     }),
   });
-  const data = await res.json();
+
+  const data = await searchRes.json();
   if (data.Error) throw new Error(`Sportlink zoekfout: ${data.Message}`);
   logger.info(`[sportlink] ${data.Members?.length ?? 0} leden opgehaald`);
   return data.Members ?? [];
+}
+
+/** Zet IsSelected op true voor de opgegeven IDs in een MULTISELECT filter */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function selecteerOpties(filter: any, ids: string[]) {
+  if (!filter?.Options) return;
+  const selectSet = new Set(ids);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  for (const opt of filter.Options as any[]) {
+    opt.IsSelected = selectSet.has(opt.Id);
+  }
 }

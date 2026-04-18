@@ -84,17 +84,20 @@ function FormInput({
   placeholder,
   value,
   onChange,
+  autoComplete,
 }: {
   type: string;
   placeholder: string;
   value: string;
   onChange: (v: string) => void;
+  autoComplete?: string;
 }) {
   return (
     <input
       type={type}
       placeholder={placeholder}
       value={value}
+      autoComplete={autoComplete}
       onChange={(e) => onChange(e.target.value)}
       style={{
         width: "100%",
@@ -222,6 +225,7 @@ function LoginState({
               placeholder="naam@voorbeeld.nl"
               value={email}
               onChange={setEmail}
+              autoComplete="email"
             />
           </div>
 
@@ -244,6 +248,7 @@ function LoginState({
               placeholder="Sportlink wachtwoord"
               value={password}
               onChange={setPassword}
+              autoComplete="current-password"
             />
           </div>
 
