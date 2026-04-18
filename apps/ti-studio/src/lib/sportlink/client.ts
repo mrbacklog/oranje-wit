@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import { logger } from "@oranje-wit/types";
+import { logger, HUIDIG_SEIZOEN } from "@oranje-wit/types";
 import type { SportlinkLid } from "./types";
 
 const KEYCLOAK_BASE = "https://idm.sportlink.com/realms/sportlink";
@@ -197,17 +197,23 @@ export async function sportlinkZoekLeden(navajoToken: string): Promise<Sportlink
 
   const alleLeden: SportlinkLid[] = data.Members ?? [];
 
-  // Filter op korfbalspelers: alleen leden met Veld of Zaal spelactiviteit
-  // Dit sluit donateurs, bowlers, biljarters, niet-spelende leden etc. uit
-  const korfballers = alleLeden.filter((lid) => {
+  // Filter op korfbalspelers + nieuwe leden die nog geen spelactiviteit hebben
+  // Seizoenstart = 1 juli van het eerste jaar van het huidige seizoen
+  const seizoenStart = `${HUIDIG_SEIZOEN.split("-")[0]}-07-01`;
+
+  const relevant = alleLeden.filter((lid) => {
     const act = lid.KernelGameActivities ?? "";
-    return act.includes("Veld") || act.includes("Zaal");
+    // Actieve korfbalspelers (Veld of Zaal)
+    if (act.includes("Veld") || act.includes("Zaal")) return true;
+    // Nieuw lid: geen spelactiviteit, dit seizoen ingeschreven, geen afmelddatum
+    if (!lid.RelationEnd && lid.RelationStart >= seizoenStart) return true;
+    return false;
   });
 
   logger.info(
-    `[sportlink] ${alleLeden.length} leden opgehaald, ${korfballers.length} korfbalspelers na filter`
+    `[sportlink] ${alleLeden.length} leden opgehaald, ${relevant.length} relevant na filter (korfbalspelers + nieuwe leden)`
   );
-  return korfballers;
+  return relevant;
 }
 
 /** Zet IsSelected op true voor de opgegeven IDs in een MULTISELECT filter */

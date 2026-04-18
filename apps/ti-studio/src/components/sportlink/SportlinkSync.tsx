@@ -566,7 +566,7 @@ function DiffState({
               )
             }
           />
-          {diff.nieuwe.map(({ lid }: NieuwLid) => (
+          {diff.nieuwe.map(({ lid, isNieuwLid }: NieuwLid) => (
             <MemberRow key={lid.PublicPersonId}>
               <input
                 type="checkbox"
@@ -601,7 +601,7 @@ function DiffState({
                     marginTop: 1,
                   }}
                 >
-                  Aangemeld {lid.RelationStart}
+                  {isNieuwLid ? "Nieuw lid" : "Korfbalspeler"} · aangemeld {lid.RelationStart}
                 </div>
               </div>
               <div
@@ -645,7 +645,7 @@ function DiffState({
               )
             }
           />
-          {diff.afgemeld.map(({ lid, spelerId, spelerNaam }: AfgemeldLid) => (
+          {diff.afgemeld.map(({ lid, spelerId, spelerNaam, reden }: AfgemeldLid) => (
             <MemberRow key={spelerId}>
               <input
                 type="checkbox"
@@ -683,7 +683,13 @@ function DiffState({
                   flexShrink: 0,
                 }}
               >
-                Afmelddatum {lid.RelationEnd ?? "onbekend"}
+                {reden === "afmelddatum"
+                  ? `Afmelddatum ${lid.RelationEnd ?? "onbekend"}`
+                  : reden === "niet-actief"
+                    ? "Lidmaatschap niet actief"
+                    : reden === "niet-spelend"
+                      ? "Geen spelactiviteit meer"
+                      : "Niet meer in Sportlink"}
               </div>
             </MemberRow>
           ))}
@@ -966,13 +972,14 @@ export function SportlinkSync() {
     try {
       const nieuwePayload = diff.nieuwe
         .filter((n) => selectedNieuwe.has(n.lid.PublicPersonId))
-        .map(({ lid }) => ({
+        .map(({ lid, isNieuwLid }) => ({
           relCode: lid.PublicPersonId,
           roepnaam: lid.FirstName,
           achternaam: lid.LastName,
           geboortejaar: geboortejaar(lid.DateOfBirth),
           geboortedatum: lid.DateOfBirth,
           geslacht: genderChar(lid.GenderCode),
+          isNieuwLid,
         }));
 
       const afgemeldPayload = diff.afgemeld

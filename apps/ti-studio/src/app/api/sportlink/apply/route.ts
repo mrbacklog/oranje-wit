@@ -14,6 +14,7 @@ const ApplySchema = z.object({
       geboortejaar: z.number(),
       geboortedatum: z.string(),
       geslacht: z.enum(["M", "V"]),
+      isNieuwLid: z.boolean().optional().default(false),
     })
   ),
   afgemeld: z.array(z.string()),
@@ -47,7 +48,7 @@ export async function POST(req: NextRequest) {
           geboortejaar: speler.geboortejaar,
           geboortedatum: new Date(speler.geboortedatum),
           geslacht: speler.geslacht === "M" ? "MAN" : "VROUW",
-          status: "BESCHIKBAAR",
+          status: speler.isNieuwLid ? "NIEUW_DEFINITIEF" : "BESCHIKBAAR",
         },
       });
       aangemaakt++;

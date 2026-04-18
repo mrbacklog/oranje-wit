@@ -26,12 +26,16 @@ export interface SyncDiff {
 
 export interface NieuwLid {
   lid: SportlinkLid;
+  isNieuwLid: boolean;
 }
+
+export type AfmeldReden = "afmelddatum" | "niet-actief" | "niet-spelend" | "verdwenen";
 
 export interface AfgemeldLid {
   lid: SportlinkLid;
   spelerId: string;
   spelerNaam: string;
+  reden: AfmeldReden;
 }
 
 export interface FuzzyMatch {
