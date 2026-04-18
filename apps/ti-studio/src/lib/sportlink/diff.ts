@@ -55,6 +55,6 @@ export async function berekenDiff(leden: SportlinkLid[]): Promise<SyncDiff> {
   return { nieuwe, afgemeld, fuzzyMatches };
 }
 
-function normaliseer(naam: string): string {
-  return naam.toLowerCase().trim().replace(/\s+/g, " ");
+function normaliseer(naam: string | null | undefined): string {
+  return (naam ?? "").toLowerCase().trim().replace(/\s+/g, " ");
 }
