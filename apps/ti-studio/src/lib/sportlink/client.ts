@@ -199,12 +199,13 @@ export async function sportlinkZoekLeden(navajoToken: string): Promise<Sportlink
 }
 
 /** Zet IsSelected op true voor de opgegeven IDs in een MULTISELECT filter */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function selecteerOpties(filter: any, ids: string[]) {
+function selecteerOpties(
+  filter: { Options?: { Id: string; IsSelected: boolean }[] },
+  ids: string[]
+) {
   if (!filter?.Options) return;
   const selectSet = new Set(ids);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  for (const opt of filter.Options as any[]) {
+  for (const opt of filter.Options) {
     opt.IsSelected = selectSet.has(opt.Id);
   }
 }
