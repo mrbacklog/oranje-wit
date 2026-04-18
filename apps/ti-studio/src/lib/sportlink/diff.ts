@@ -1,4 +1,4 @@
-import { prisma } from "@oranje-wit/database";
+import { prisma } from "@/lib/teamindeling/db/prisma";
 import type { SportlinkLid, SyncDiff, NieuwLid, AfgemeldLid, FuzzyMatch } from "./types";
 
 export async function berekenDiff(leden: SportlinkLid[]): Promise<SyncDiff> {
