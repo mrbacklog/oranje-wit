@@ -287,6 +287,7 @@ export function TeamKaart({
           team={team}
           partnerTeam={partnerTeam}
           zoomLevel={zoomLevel}
+          showScores={showScores}
           onSpelerClick={onSpelerClick}
           onDropSpelerOpSelectie={onDropSpelerOpSelectie}
         />
@@ -296,6 +297,7 @@ export function TeamKaart({
           team={team}
           partnerTeam={partnerTeam}
           zoomLevel={zoomLevel}
+          showScores={showScores}
           onSpelerClick={onSpelerClick}
           onDropSpelerOpTeam={onDropSpelerOpTeamDirect}
         />
@@ -303,6 +305,7 @@ export function TeamKaart({
         <ViertalDropzone
           team={team}
           zoomLevel={zoomLevel}
+          showScores={showScores}
           onDrop={handleDrop}
           onSpelerClick={onSpelerClick}
         />
@@ -310,6 +313,7 @@ export function TeamKaart({
         <AchtalDropzone
           team={team}
           zoomLevel={zoomLevel}
+          showScores={showScores}
           dropOverGeslacht={dropOverGeslacht}
           onDragOver={handleDragOver}
           onDragLeave={() => setDropOverGeslacht(null)}
@@ -373,14 +377,6 @@ export function TeamKaart({
           flexShrink: 0,
         }}
       >
-        {showScores && team.ussScore !== null && (
-          <div style={{ fontSize: 13, color: "var(--text-3)" }}>
-            USS{" "}
-            <span style={{ color: "var(--text-2)", fontWeight: 600 }}>
-              {team.ussScore.toFixed(2)}
-            </span>
-          </div>
-        )}
         {team.validatieCount > 0 && (
           <div
             style={{
@@ -448,12 +444,14 @@ function SelectieGeheelDropzone({
   team,
   partnerTeam,
   zoomLevel,
+  showScores,
   onSpelerClick,
   onDropSpelerOpTeam,
 }: {
   team: WerkbordTeam;
   partnerTeam: WerkbordTeam;
   zoomLevel: ZoomLevel;
+  showScores?: boolean;
   onSpelerClick?: (spelerId: string, teamId: string | null) => void;
   onDropSpelerOpTeam?: (
     spelerData: WerkbordSpeler,
@@ -567,6 +565,7 @@ function SelectieGeheelDropzone({
               teamId={col.teamId}
               selectieGroepId={team.selectieGroepId}
               zoomLevel={zoomLevel}
+              showScores={showScores}
               dropActief={dropOver === col.id}
               onDragOver={h.onDragOver}
               onDragLeave={h.onDragLeave}
@@ -590,6 +589,7 @@ interface KolomProps {
   teamId: string;
   selectieGroepId?: string | null;
   zoomLevel: ZoomLevel;
+  showScores?: boolean;
   dropActief: boolean;
   onDragOver: (e: React.DragEvent) => void;
   onDragLeave: () => void;
@@ -605,6 +605,7 @@ function DropzoneKolom({
   teamId,
   selectieGroepId,
   zoomLevel,
+  showScores = false,
   dropActief,
   onDragOver,
   onDragLeave,
@@ -730,6 +731,7 @@ function DropzoneKolom({
             selectieGroepId={selectieGroepId}
             zoomLevel={zoomLevel}
             openMemoCount={sp.speler.openMemoCount}
+            showScores={showScores}
             onSpelerClick={onSpelerClick}
           />
         ))}
@@ -744,11 +746,13 @@ function DropzoneKolom({
 function ViertalDropzone({
   team,
   zoomLevel,
+  showScores,
   onDrop,
   onSpelerClick,
 }: {
   team: WerkbordTeam;
   zoomLevel: ZoomLevel;
+  showScores?: boolean;
   onDrop: (e: React.DragEvent, g: "V" | "M") => void;
   onSpelerClick?: (spelerId: string, teamId: string | null) => void;
 }) {
@@ -866,6 +870,7 @@ function ViertalDropzone({
             teamId={team.id}
             zoomLevel={zoomLevel}
             openMemoCount={sp.speler.openMemoCount}
+            showScores={showScores}
             onSpelerClick={onSpelerClick}
           />
         ))}
@@ -879,6 +884,7 @@ function ViertalDropzone({
 function AchtalDropzone({
   team,
   zoomLevel,
+  showScores,
   dropOverGeslacht,
   onDragOver,
   onDragLeave,
@@ -887,6 +893,7 @@ function AchtalDropzone({
 }: {
   team: WerkbordTeam;
   zoomLevel: ZoomLevel;
+  showScores?: boolean;
   dropOverGeslacht: "V" | "M" | null;
   onDragOver: (e: React.DragEvent, g: "V" | "M") => void;
   onDragLeave: () => void;
@@ -901,6 +908,7 @@ function AchtalDropzone({
         spelers={team.dames}
         teamId={team.id}
         zoomLevel={zoomLevel}
+        showScores={showScores}
         dropActief={dropOverGeslacht === "V"}
         onDragOver={(e) => onDragOver(e, "V")}
         onDragLeave={onDragLeave}
@@ -914,6 +922,7 @@ function AchtalDropzone({
         spelers={team.heren}
         teamId={team.id}
         zoomLevel={zoomLevel}
+        showScores={showScores}
         dropActief={dropOverGeslacht === "M"}
         onDragOver={(e) => onDragOver(e, "M")}
         onDragLeave={onDragLeave}
@@ -933,12 +942,14 @@ function SelectieBundelDropzone({
   team,
   partnerTeam,
   zoomLevel,
+  showScores,
   onSpelerClick,
   onDropSpelerOpSelectie,
 }: {
   team: WerkbordTeam;
   partnerTeam?: WerkbordTeam | null;
   zoomLevel: ZoomLevel;
+  showScores?: boolean;
   onSpelerClick?: (spelerId: string, teamId: string | null) => void;
   onDropSpelerOpSelectie?: (
     spelerData: WerkbordSpeler,
@@ -992,6 +1003,7 @@ function SelectieBundelDropzone({
               teamId={team.id}
               selectieGroepId={team.selectieGroepId}
               zoomLevel={zoomLevel}
+              showScores={showScores}
               dropActief={dropOver === col.kleur}
               onDragOver={h.onDragOver}
               onDragLeave={h.onDragLeave}
@@ -1102,6 +1114,7 @@ function SelectieBundelDropzone({
               teamId={team.id}
               selectieGroepId={team.selectieGroepId}
               zoomLevel={zoomLevel}
+              showScores={showScores}
               dropActief={dropOver === col.kleur}
               onDragOver={h.onDragOver}
               onDragLeave={h.onDragLeave}
