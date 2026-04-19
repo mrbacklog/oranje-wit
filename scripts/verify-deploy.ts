@@ -23,25 +23,16 @@ interface HealthCheckResult {
  * 2. Ze geven directe SHA info terug
  * 3. Ze zijn onafhankelijk van Cloudflare-configuratie
  */
-// Geconsolideerde app: alle domeinen draaien op één service.
-// /api/health is publiek (geen auth) en bereikbaar via de Cloudflare URL.
-const HEALTH_ENDPOINT = "https://www.ckvoranjewit.app/api/health";
-
 const APPS = [
   {
-    name: "Team-Indeling",
-    url: "https://www.ckvoranjewit.app/teamindeling",
-    healthEndpoint: HEALTH_ENDPOINT,
+    name: "Web",
+    url: "https://www.ckvoranjewit.app",
+    healthEndpoint: "https://www.ckvoranjewit.app/api/health",
   },
   {
-    name: "Monitor",
-    url: "https://www.ckvoranjewit.app/monitor",
-    healthEndpoint: HEALTH_ENDPOINT,
-  },
-  {
-    name: "Evaluatie",
-    url: "https://evaluaties.ckvoranjewit.app",
-    healthEndpoint: HEALTH_ENDPOINT,
+    name: "TI-Studio",
+    url: "https://teamindeling.ckvoranjewit.app",
+    healthEndpoint: "https://teamindeling.ckvoranjewit.app/api/health",
   },
 ];
 
