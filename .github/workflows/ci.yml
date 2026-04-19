@@ -207,3 +207,22 @@ jobs:
             -d "{\"query\":\"mutation { serviceInstanceDeploy(environmentId: \\\"${{ secrets.RAILWAY_ENVIRONMENT_ID }}\\\", serviceId: \\\"$RAILWAY_SERVICE_TI_STUDIO\\\", commitSha: \\\"${{ github.sha }}\\\") }\"}")
           echo "Railway ti-studio response: $RESULT"
           echo "$RESULT" | grep -q '"serviceInstanceDeploy":true' && echo "TI-Studio deploy getriggerd (${{ github.sha }})" || (echo "TI-Studio deploy mislukt" && exit 1)
+
+      - name: Wacht op Railway deployment (90s)
+        run: sleep 90
+
+      - name: Post-deploy health check
+        run: |
+          FAIL=0
+          for URL in "https://www.ckvoranjewit.app/api/health" "https://teamindeling.ckvoranjewit.app/api/health"; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "$URL" || echo "000")
+            if [ "$STATUS" != "200" ]; then
+              echo "::warning::$URL returned HTTP $STATUS"
+              FAIL=1
+            else
+              echo "OK: $URL (HTTP $STATUS)"
+            fi
+          done
+          if [ "$FAIL" = "1" ]; then
+            echo "::warning::Een of meer health checks gefaald — controleer Railway dashboard"
+          fi

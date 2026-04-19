@@ -1,61 +1,21 @@
-name: Patch
+name: Patch Post-Deploy Verify
 
 on:
-  push:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
     branches: [main]
 
-concurrency:
-  group: patch-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
-  # Patch workflow draait alleen als commit begint met patch: of fix:
-  # Volledige ci.yml draait parallel (maar slaat E2E over bij patch prefix)
-  fast-gate:
-    if: |
-      startsWith(github.event.head_commit.message, 'patch:') ||
-      startsWith(github.event.head_commit.message, 'patch(') ||
-      startsWith(github.event.head_commit.message, 'fix:') ||
-      startsWith(github.event.head_commit.message, 'fix(')
-    runs-on: ubuntu-latest
-    timeout-minutes: 8
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 9.15.0
-
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: pnpm
-
-      - run: pnpm install --frozen-lockfile
-
-      - name: Generate Prisma client
-        run: pnpm db:generate
-
-      - name: Typecheck
-        run: pnpm --filter @oranje-wit/web exec tsc --noEmit
-
-      - name: Lint
-        run: pnpm --filter @oranje-wit/web lint
-
-      - name: Format check
-        run: pnpm format:check
-
-      - name: Unit tests
-        run: pnpm test
-
   verify:
-    needs: [fast-gate]
+    if: |
+      github.event.workflow_run.conclusion == 'success' &&
+      (startsWith(github.event.workflow_run.head_commit.message, 'patch:') ||
+       startsWith(github.event.workflow_run.head_commit.message, 'patch(') ||
+       startsWith(github.event.workflow_run.head_commit.message, 'fix:') ||
+       startsWith(github.event.workflow_run.head_commit.message, 'fix('))
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    env:
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-      NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
     steps:
       - uses: actions/checkout@v4
 
@@ -70,8 +30,8 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - name: Wacht op Railway deployment (30s)
-        run: sleep 30
+      - name: Wacht op Railway deployment (120s)
+        run: sleep 120
 
       - name: Post-deploy verificatie
         run: pnpm verify:deploy
