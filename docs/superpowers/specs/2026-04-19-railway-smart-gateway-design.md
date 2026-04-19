@@ -343,6 +343,55 @@ Nergens in de codebase is het TI-Studio Railway service ID gedocumenteerd. Het s
 - Cloudflare Worker proxy routes evalueren
 - TI-Studio service ID documenteren
 
+## Teststrategie
+
+### MCP Server unit tests
+
+Elke tool krijgt unit tests in `apps/mcp/railway/server.test.js`:
+
+| Test | Wat |
+|---|---|
+| **Service-alias resolutie** | `"web"` → correct UUID, `"onbekend"` → foutmelding met beschikbare opties |
+| **OW-defaults** | Calls naar GraphQL bevatten correcte PROJECT_ID/ENV_ID zonder dat agent ze meegeeft |
+| **railway_ask** | CLI wordt aangeroepen met juiste flags, timeout wordt afgehandeld, JSON output wordt geparsed |
+| **railway_deploy wait=true** | Polling-loop werkt: simuleert BUILDING → SUCCESS en BUILDING → FAILED |
+| **railway_deploy wait=false** | Fire-and-forget: returnt direct na trigger |
+| **railway_logs** | Haalt automatisch laatste deployment, respecteert `lines` parameter |
+| **railway_variables get** | Ophalen zonder `set` parameter |
+| **railway_variables set** | Upsert met `set`, returnt bijgewerkte variabelen |
+| **railway_domains** | Status en create acties, foutmelding bij create zonder domain |
+| **Foutafhandeling** | API down → duidelijke foutmelding, CLI timeout → hint |
+
+**Aanpak**: Mock de `fetch` (GraphQL) en `child_process.execFile` (CLI agent) zodat tests geen netwerk nodig hebben.
+
+### Integratietest (handmatig, eenmalig)
+
+Na implementatie een live-test met de echte Railway API:
+
+```
+1. railway_status          → verwacht: 3 services (web, ti-studio, database)
+2. railway_logs web        → verwacht: runtime logs van laatste deploy
+3. railway_variables web   → verwacht: env vars (DATABASE_URL, etc.)
+4. railway_domains         → verwacht: custom domains met SSL status
+5. railway_ask "toon de laatste 3 deploys van web" → verwacht: Railway agent antwoord
+```
+
+### CI integratie
+
+- Unit tests draaien mee in `pnpm test` (Vitest, via workspace)
+- Geen E2E/integratietests in CI — Railway API mag niet vanuit CI aangeroepen worden
+- `package.json` van `apps/mcp/railway` krijgt een `test` script
+
+### Post-deploy verificatie
+
+`scripts/verify-deploy.ts` wordt herschreven met:
+
+| Check | Endpoint | Verwacht |
+|---|---|---|
+| Web app | `https://www.ckvoranjewit.app/api/health` | HTTP 200 + SHA match |
+| TI-Studio | `https://teamindeling.ckvoranjewit.app/api/health` | HTTP 200 + SHA match |
+| DNS resolutie | `dns.google/resolve` voor beide domeinen | CNAME correct |
+
 ## Vereisten
 
 - **Railway CLI v4.9+**: Geinstalleerd (v4.30.5 aanwezig)
