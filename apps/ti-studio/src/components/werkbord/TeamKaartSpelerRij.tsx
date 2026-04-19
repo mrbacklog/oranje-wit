@@ -20,6 +20,7 @@ interface TeamKaartSpelerRijProps {
   selectieGroepId?: string | null;
   zoomLevel: ZoomLevel;
   openMemoCount?: number;
+  showScores?: boolean;
   onSpelerClick?: (spelerId: string, teamId: string | null) => void;
 }
 
@@ -29,6 +30,7 @@ export function TeamKaartSpelerRij({
   selectieGroepId,
   zoomLevel,
   openMemoCount = 0,
+  showScores = false,
   onSpelerClick,
 }: TeamKaartSpelerRijProps) {
   // detail-variant: SpelerKaart (FIFA-stijl, behoudt eigen drag-logica)
@@ -51,6 +53,7 @@ export function TeamKaartSpelerRij({
       selectieGroepId={selectieGroepId}
       variant={zoomLevel === "normaal" ? "normaal" : "compact"}
       openMemoCount={openMemoCount}
+      showScores={showScores}
       onSpelerClick={onSpelerClick}
     />
   );
