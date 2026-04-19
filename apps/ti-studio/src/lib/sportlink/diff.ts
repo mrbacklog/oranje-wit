@@ -23,18 +23,31 @@ export async function berekenDiff(leden: SportlinkLid[]): Promise<SyncDiff> {
 
     if (bekendeIds.has(relCode)) {
       const speler = spelerById.get(relCode)!;
+
+      // Spelers die al een niet-actieve status hebben hoeven niet opnieuw als afgemeld gemeld
+      const alNietActief = [
+        "GAAT_STOPPEN",
+        "NIEUW_DEFINITIEF",
+        "NIEUW_POTENTIEEL",
+        "NIET_SPELEND",
+        "RECREANT",
+        "ALGEMEEN_RESERVE",
+      ].includes(speler.status);
+      if (alNietActief) continue;
+
+      // Alleen voor actieve spelers (BESCHIKBAAR, TWIJFELT, GEBLESSEERD) controleren
       const act = lid.KernelGameActivities ?? "";
       const heeftSpelactiviteit = act.includes("Veld") || act.includes("Zaal");
-      const isAfgemeld =
-        lid.RelationEnd !== null || lid.MemberStatus !== "ACTIVE" || !heeftSpelactiviteit;
-      // Markeer als afgemeld/niet-spelend als Sportlink dat zegt maar speler nog niet GAAT_STOPPEN is
-      if (isAfgemeld && speler.status !== "GAAT_STOPPEN") {
-        const reden =
-          lid.RelationEnd !== null
-            ? ("afmelddatum" as const)
-            : lid.MemberStatus !== "ACTIVE"
-              ? ("niet-actief" as const)
-              : ("niet-spelend" as const);
+      const reden =
+        lid.RelationEnd !== null
+          ? ("afmelddatum" as const)
+          : lid.MemberStatus !== "ACTIVE"
+            ? ("niet-actief" as const)
+            : !heeftSpelactiviteit
+              ? ("niet-spelend" as const)
+              : null;
+
+      if (reden) {
         afgemeld.push({
           lid,
           spelerId: speler.id,
@@ -68,11 +81,15 @@ export async function berekenDiff(leden: SportlinkLid[]): Promise<SyncDiff> {
   // Spelers die in de database staan met Sportlink relCode maar NIET meer in
   // Sportlink voorkomen — waarschijnlijk afgemeld tussen syncs in
   for (const speler of spelers) {
-    if (
-      speler.id.match(/^[A-Z]{1,3}\w+$/) &&
-      !gezienInSportlink.has(speler.id) &&
-      speler.status !== "GAAT_STOPPEN"
-    ) {
+    const alNietActief = [
+      "GAAT_STOPPEN",
+      "NIEUW_DEFINITIEF",
+      "NIEUW_POTENTIEEL",
+      "NIET_SPELEND",
+      "RECREANT",
+      "ALGEMEEN_RESERVE",
+    ].includes(speler.status);
+    if (speler.id.match(/^[A-Z]{1,3}\w+$/) && !gezienInSportlink.has(speler.id) && !alNietActief) {
       afgemeld.push({
         lid: {
           PublicPersonId: speler.id,
