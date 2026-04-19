@@ -1,4 +1,4 @@
-import type { SportlinkLid } from "@oranje-wit/sportlink";
+import type { SportlinkLid } from "./types";
 
 /** Resultaat van de diff engine (Sportlink ↔ Speler vergelijking) */
 export interface SyncDiff {

@@ -12,6 +12,10 @@ export { syncLeden } from "./sync/leden-sync";
 export { syncNotificaties } from "./sync/notificatie-sync";
 export { teamSyncDryRun, syncTeams } from "./sync/team-sync";
 
+// Sync helpers
+export { detecteerWijzigingen } from "./sync/wijzigings-detectie";
+export type { WijzigingsSignaal } from "./sync/wijzigings-detectie";
+
 // Types
 export type {
   SportlinkLid,
