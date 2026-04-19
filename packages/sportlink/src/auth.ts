@@ -126,7 +126,7 @@ export async function sportlinkLogin(email: string, password: string): Promise<S
   const linkData = await linkRes.json();
   if (!linkData.TokenObject?.accessToken) throw new Error("Kan geen Sportlink-sessie starten");
 
-  logger.info("[sportlink] Login geslaagd voor", email);
+  logger.info("[sportlink] Login geslaagd");
   return {
     navajoToken: linkData.TokenObject.accessToken,
     clubId: linkData.ClubId,

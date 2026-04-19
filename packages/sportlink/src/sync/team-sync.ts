@@ -107,18 +107,18 @@ export async function syncTeams(
     where: { seizoen, competitie: periode, bron: "sportlink" },
   });
 
+  const bestaandeLeden = new Set(
+    (await prisma.lid.findMany({ select: { relCode: true } })).map((l) => l.relCode)
+  );
+
   let aangemaakt = 0;
   for (const speler of spelers) {
     const relCode = speler.PublicPersonId;
     if (!relCode.match(/^[A-Z]{1,3}\w+$/)) continue;
 
-    const lidBestaat = await prisma.lid.findUnique({ where: { relCode } });
-    if (!lidBestaat) continue;
+    if (!bestaandeLeden.has(relCode)) continue;
 
     // Prisma 7 TS2321 workaround — type-recursie op CompetitieSpeler
-    await (prisma.competitieSpeler as any).deleteMany({
-      where: { relCode, seizoen, competitie: periode },
-    });
     await (prisma.competitieSpeler as any).create({
       data: {
         relCode,

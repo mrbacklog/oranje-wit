@@ -13,6 +13,10 @@ export async function syncLeden(leden: SportlinkLid[]): Promise<LedenSyncResulta
   let nieuw = 0;
   const nu = new Date();
 
+  const bestaandeRelCodes = new Set(
+    (await prisma.lid.findMany({ select: { relCode: true } })).map((l) => l.relCode)
+  );
+
   for (const lid of leden) {
     const relCode = lid.PublicPersonId;
 
@@ -43,13 +47,12 @@ export async function syncLeden(leden: SportlinkLid[]): Promise<LedenSyncResulta
       updatedAt: nu,
     };
 
-    const bestaand = await prisma.lid.findUnique({ where: { relCode } });
-
-    if (bestaand) {
-      await prisma.lid.update({ where: { relCode }, data });
+    if (bestaandeRelCodes.has(relCode)) {
+      // Prisma 7 TS2321 workaround — type-recursie op LidClient
+      await (prisma.lid as any).update({ where: { relCode }, data });
       bijgewerkt++;
     } else {
-      await prisma.lid.create({ data: { relCode, ...data, createdAt: nu } });
+      await (prisma.lid as any).create({ data: { relCode, ...data, createdAt: nu } });
       nieuw++;
     }
   }

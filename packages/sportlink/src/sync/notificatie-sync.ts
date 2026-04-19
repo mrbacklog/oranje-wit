@@ -19,6 +19,15 @@ export async function syncNotificaties(
     ["member", "membership", "player"].includes(n.Entity)
   );
 
+  const relCodes = [...new Set(relevant.map((n) => n.PublicPersonId))];
+  const bestaande = await prisma.sportlinkNotificatie.findMany({
+    where: { relCode: { in: relCodes } },
+    select: { relCode: true, datum: true, actie: true, beschrijving: true },
+  });
+  const bestaandeKeys = new Set(
+    bestaande.map((b) => `${b.relCode}|${b.datum.toISOString()}|${b.actie}|${b.beschrijving}`)
+  );
+
   for (const notif of relevant) {
     // Alleen geldige relCodes
     if (!notif.PublicPersonId.match(/^[A-Z]{1,3}\w+$/)) {
@@ -26,17 +35,8 @@ export async function syncNotificaties(
       continue;
     }
 
-    // Check of we deze notificatie al hebben (op basis van datum+relCode+actie+beschrijving)
-    const bestaat = await prisma.sportlinkNotificatie.findFirst({
-      where: {
-        relCode: notif.PublicPersonId,
-        datum: new Date(notif.DateOfChange),
-        actie: notif.TypeOfAction,
-        beschrijving: notif.Description,
-      },
-    });
-
-    if (bestaat) {
+    const key = `${notif.PublicPersonId}|${new Date(notif.DateOfChange).toISOString()}|${notif.TypeOfAction}|${notif.Description}`;
+    if (bestaandeKeys.has(key)) {
       overgeslagen++;
       continue;
     }
