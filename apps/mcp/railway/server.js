@@ -128,7 +128,12 @@ server.tool(
   async ({ question, service }) => {
     try {
       const { cmd, args } = buildAskCommand(question, service);
-      const { stdout } = await execFileAsync(cmd, args, { timeout: 120_000, shell: true });
+      const { PROJECT_ID, ENV_ID } = require("./config.js");
+      const { stdout } = await execFileAsync(cmd, args, {
+        timeout: 120_000,
+        shell: true,
+        env: { ...process.env, RAILWAY_PROJECT_ID: PROJECT_ID, RAILWAY_ENVIRONMENT_ID: ENV_ID },
+      });
       try {
         return ok(JSON.parse(stdout));
       } catch {
@@ -197,7 +202,12 @@ server.tool(
         if (dep && terminal.includes(dep.status)) {
           const elapsed = Math.round((Date.now() - start) / 1000);
           if (dep.status === "SUCCESS") {
-            return ok({ service, status: dep.status, deploymentId: dep.id, elapsed: `${elapsed}s` });
+            return ok({
+              service,
+              status: dep.status,
+              deploymentId: dep.id,
+              elapsed: `${elapsed}s`,
+            });
           }
           return ok({
             service,

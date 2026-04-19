@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Staf" ADD COLUMN "actief" BOOLEAN NOT NULL DEFAULT true;

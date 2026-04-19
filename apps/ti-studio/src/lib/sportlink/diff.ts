@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/teamindeling/db/prisma";
-import type { SportlinkLid, SyncDiff, NieuwLid, AfgemeldLid, FuzzyMatch, LidType } from "./types";
+import type { SportlinkLid } from "./types";
+import type { SyncDiff, NieuwLid, AfgemeldLid, FuzzyMatch, LidType } from "./diff-types";
 
 export async function berekenDiff(leden: SportlinkLid[]): Promise<SyncDiff> {
   const spelers = await prisma.speler.findMany({
