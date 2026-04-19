@@ -59,16 +59,18 @@ export async function POST(req: NextRequest) {
     let gekoppeld = 0;
 
     for (const speler of nieuwe) {
-      await prisma.speler.create({
-        data: {
-          id: speler.relCode,
-          roepnaam: speler.roepnaam,
-          achternaam: speler.achternaam,
-          geboortejaar: speler.geboortejaar,
-          geboortedatum: new Date(speler.geboortedatum),
-          geslacht: speler.geslacht === "M" ? "MAN" : "VROUW",
-          status: lidTypeNaarStatus(speler.lidType ?? "korfbalspeler"),
-        },
+      const data = {
+        roepnaam: speler.roepnaam,
+        achternaam: speler.achternaam,
+        geboortejaar: speler.geboortejaar,
+        geboortedatum: new Date(speler.geboortedatum),
+        geslacht: speler.geslacht === "M" ? "MAN" : "VROUW",
+        status: lidTypeNaarStatus(speler.lidType ?? "korfbalspeler"),
+      } as const;
+      await prisma.speler.upsert({
+        where: { id: speler.relCode },
+        create: { id: speler.relCode, ...data },
+        update: data,
       });
       aangemaakt++;
     }
