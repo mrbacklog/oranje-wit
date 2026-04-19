@@ -1109,17 +1109,18 @@ git commit -m "feat(sportlink): add team-sync with dry-run (Layer 2)"
 
 ---
 
-### Task 11: Update index.ts exports
+### Task 11: Update index.ts exports + fix type-locaties
 
 **Files:**
 - Modify: `packages/sportlink/src/index.ts`
 
 - [ ] **Step 1: Verifieer dat alle exports kloppen**
 
+Let op: `SportlinkToken` staat in `types.ts`, NIET in `auth.ts`. Task 1 had de verkeerde locatie.
+
 ```typescript
 // Auth
 export { sportlinkLogin } from "./auth";
-export type { SportlinkToken } from "./types";
 
 // Endpoints
 export { zoekLeden } from "./endpoints/search-members";
@@ -1131,6 +1132,7 @@ export { haalBondsteamsOp } from "./endpoints/union-teams";
 export { syncLeden } from "./sync/leden-sync";
 export { syncNotificaties } from "./sync/notificatie-sync";
 export { teamSyncDryRun, syncTeams } from "./sync/team-sync";
+export { detecteerWijzigingen } from "./sync/wijzigings-detectie";
 
 // Types
 export type {
@@ -1138,28 +1140,47 @@ export type {
   SportlinkTeam,
   SportlinkTeamLid,
   SportlinkNotificatie,
+  SportlinkToken,
   LedenSyncResultaat,
   TeamSyncDryRun,
   TeamSyncWijziging,
   TeamSyncTeam,
 } from "./types";
+export type { WijzigingsSignaal } from "./sync/wijzigings-detectie";
 ```
 
-- [ ] **Step 2: Typecheck**
+- [ ] **Step 2: Voeg `@oranje-wit/sportlink` toe als dependency in BEIDE apps (vóór UI-taken)**
+
+In `apps/ti-studio/package.json` EN `apps/web/package.json`:
+
+```json
+"@oranje-wit/sportlink": "workspace:*"
+```
+
+Run: `pnpm install`
+
+Dit moet NU gebeuren, niet in Task 14, anders falen Tasks 12-13.
+
+- [ ] **Step 3: Typecheck**
 
 Run: `cd packages/sportlink && npx tsc --noEmit`
 Expected: Geen fouten
 
-- [ ] **Step 3: Commit**
+- [ ] **Step 4: Commit**
 
 ```bash
-git add packages/sportlink/src/index.ts
-git commit -m "feat(sportlink): finalize package exports"
+git add packages/sportlink/src/index.ts apps/ti-studio/package.json apps/web/package.json
+pnpm install
+git commit -m "feat(sportlink): finalize exports, add dependency to both apps"
 ```
 
 ---
 
-## Fase 4: TI Studio integratie — Leden-sync UI
+## Fase 4: TI Studio integratie — API routes + UI
+
+> **Belangrijk:** De UI-componenten worden zo opgezet dat ze later ook in apps/web
+> kunnen worden opgenomen. De logica zit in het shared package (`@oranje-wit/sportlink`),
+> de UI-componenten zijn app-specifiek maar volgen dezelfde patronen.
 
 ### Task 12: Leden-sync API route
 
@@ -1335,9 +1356,210 @@ git commit -m "feat(ti-studio): add team-sync API with dry-run and apply"
 
 ---
 
-## Fase 5: Refactor bestaande Sportlink sync
+### Task 14: diff-types.ts — TI-specifieke types voor de Speler-sync
 
-### Task 14: TI Studio — verwijder dubbele code, verwijs naar shared package
+De huidige `types.ts` bevat zowel Sportlink API types als TI-specifieke diff-types.
+De API types verhuizen naar `@oranje-wit/sportlink`. De diff-types (`SyncDiff`, `NieuwLid`,
+`AfgemeldLid`, `FuzzyMatch`, `LidType`, `AfmeldReden`) zijn TI-specifiek en blijven lokaal.
+
+**Files:**
+- Create: `apps/ti-studio/src/lib/sportlink/diff-types.ts`
+
+- [ ] **Step 1: Schrijf diff-types.ts met de TI-specifieke types**
+
+```typescript
+import type { SportlinkLid } from "@oranje-wit/sportlink";
+
+/** Resultaat van de diff engine (Sportlink ↔ Speler vergelijking) */
+export interface SyncDiff {
+  nieuwe: NieuwLid[];
+  afgemeld: AfgemeldLid[];
+  fuzzyMatches: FuzzyMatch[];
+  stats: {
+    ledenVergeleken: number;
+    spelersInPool: number;
+    ongewijzigd: number;
+  };
+}
+
+export type LidType =
+  | "korfbalspeler"
+  | "recreant"
+  | "algemeen-reserve"
+  | "niet-spelend"
+  | "nieuw-lid";
+
+export interface NieuwLid {
+  lid: SportlinkLid;
+  lidType: LidType;
+}
+
+export type AfmeldReden = "afmelddatum" | "niet-actief" | "niet-spelend" | "verdwenen";
+
+export interface AfgemeldLid {
+  lid: SportlinkLid;
+  spelerId: string;
+  spelerNaam: string;
+  reden: AfmeldReden;
+}
+
+export interface FuzzyMatch {
+  lid: SportlinkLid;
+  spelerId: string;
+  spelerNaam: string;
+}
+```
+
+- [ ] **Step 2: Commit**
+
+```bash
+git add apps/ti-studio/src/lib/sportlink/diff-types.ts
+git commit -m "feat(ti-studio): add diff-types.ts for TI-specific Sportlink types"
+```
+
+---
+
+### Task 15: LedenSync UI-component
+
+De Laag 1 UI: login → leden ophalen → synchroniseren → resultaat tonen.
+Vervangt het login/sync deel van de bestaande `SportlinkSync.tsx`.
+
+**Files:**
+- Create: `apps/ti-studio/src/components/sportlink/LedenSync.tsx`
+
+- [ ] **Step 1: Schrijf LedenSync component**
+
+SSE consumer die de `/api/sportlink/leden-sync` route aanroept.
+States: login → loading (SSE voortgang) → resultaat (nieuw/bijgewerkt/notificaties).
+
+Het component hergebruikt de bestaande `LoginState` en `LoadingState` patronen
+uit `SportlinkSync.tsx` maar toont een ander resultaat: leden-sync statistieken
+i.p.v. de Speler-diff. Gebruik dezelfde Sportlink UI-tokens (`T.syncNieuw`, etc.).
+
+States:
+- **login**: Email/wachtwoord formulier (hergebruik patroon uit SportlinkSync)
+- **syncing**: SSE voortgang (stap: login → leden → sync → notificaties → klaar)
+- **resultaat**: Samenvatting: X leden vergeleken, Y nieuw, Z bijgewerkt, N notificaties
+
+Geen selectie-UI nodig — leden-sync is altijd een volledige sync.
+
+- [ ] **Step 2: Commit**
+
+```bash
+git add apps/ti-studio/src/components/sportlink/LedenSync.tsx
+git commit -m "feat(ti-studio): add LedenSync UI component"
+```
+
+---
+
+### Task 16: TeamSync UI-component — 4-staps flow
+
+De Laag 2 UI: spelvorm kiezen → periode kiezen → dry run → accept.
+
+**Files:**
+- Create: `apps/ti-studio/src/components/sportlink/TeamSync.tsx`
+
+- [ ] **Step 1: Schrijf TeamSync component**
+
+States:
+1. **keuze**: Twee knoppen (Veld / Zaal). Onder de knoppen een voorstel op basis van
+   seizoensperiode: "Het is april — Veld voorjaar aanbevolen".
+2. **periode**: Dropdown met periodes voor de gekozen spelvorm:
+   - Veld → "Veld najaar" / "Veld voorjaar"
+   - Zaal → "Zaal" / "Zaal deel 1" / "Zaal deel 2"
+3. **dry-run**: Login formulier + "Vergelijken" knop. Na login: POST naar
+   `/api/sportlink/team-sync`. Toont resultaat:
+   - Samenvatting per team (aantal spelers + staf)
+   - Nieuwe spelers in teams (groen)
+   - Spelers uit teams (rood)
+   - Teamwissels (oranje)
+   - Staf-wijzigingen (blauw)
+4. **apply**: "Doorvoeren" knop → PUT naar `/api/sportlink/team-sync`.
+   Na succes: resultaat tonen (X aangemaakt, Y verwijderd).
+
+- [ ] **Step 2: Commit**
+
+```bash
+git add apps/ti-studio/src/components/sportlink/TeamSync.tsx
+git commit -m "feat(ti-studio): add TeamSync UI component with 4-step flow"
+```
+
+---
+
+### Task 17: WijzigingsSignalen UI-component
+
+De Laag 3 UI: signalen voor de TC op basis van leden-sync + team-sync data.
+
+**Files:**
+- Create: `apps/ti-studio/src/components/sportlink/WijzigingsSignalen.tsx`
+
+- [ ] **Step 1: Schrijf WijzigingsSignalen component**
+
+Haalt signalen op via een server action die `detecteerWijzigingen()` uit
+`@oranje-wit/sportlink` aanroept. Geen Sportlink login nodig — leest uit
+de al gesynchroniseerde Lid-tabel en notificaties.
+
+Toont:
+- Aantal signalen per type (nieuw-lid, afmelding, status-wijziging, etc.)
+- Per signaal: naam, beschrijving, oud/nieuw, bron (leden-sync/notificatie/team-sync)
+- Acties per signaal: "Accepteren" / "Negeren" (TC beslist)
+
+Bij "Accepteren" van een nieuw-lid → doorsturen naar bestaande Speler-aanmaak flow.
+Bij "Accepteren" van een afmelding → status wijzigen naar GAAT_STOPPEN.
+
+- [ ] **Step 2: Commit**
+
+```bash
+git add apps/ti-studio/src/components/sportlink/WijzigingsSignalen.tsx
+git commit -m "feat(ti-studio): add WijzigingsSignalen UI component"
+```
+
+---
+
+### Task 18: Sportlink pagina refactor — tabs voor 3 lagen
+
+De bestaande `/sportlink` pagina wordt uitgebreid met tabs voor alle 3 lagen.
+De bestaande Speler-sync (diff → apply) blijft als tab beschikbaar.
+
+**Files:**
+- Modify: `apps/ti-studio/src/app/(protected)/sportlink/page.tsx`
+- Modify: `apps/ti-studio/src/components/sportlink/SportlinkSync.tsx` (rename naar SpelerSync)
+
+- [ ] **Step 1: Refactor SportlinkSync.tsx → SpelerSync.tsx**
+
+Rename het bestand en de component. Dit is de bestaande Sportlink ↔ Speler sync
+(nieuwe spelers toevoegen, afmeldingen doorvoeren, fuzzy koppelingen).
+Imports aanpassen naar `@oranje-wit/sportlink` en `./diff-types`.
+
+- [ ] **Step 2: Update page.tsx — 4 tabs**
+
+```
+Sportlink Sync
+├── Leden          → <LedenSync />      (Laag 1: Sportlink → Lid-tabel)
+├── Teams          → <TeamSync />       (Laag 2: Sportlink → CompetitieSpeler)
+├── Wijzigingen    → <WijzigingsSignalen /> (Laag 3: signalen voor werkindeling)
+└── Spelers        → <SpelerSync />     (bestaand: Lid → Speler doorvoeren)
+```
+
+Gebruik een simpele tab-navigatie met state. Geen router-tabs nodig.
+
+- [ ] **Step 3: Typecheck**
+
+Run: `cd apps/ti-studio && npx tsc --noEmit`
+Expected: Geen fouten
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add apps/ti-studio/src/app/(protected)/sportlink/ apps/ti-studio/src/components/sportlink/
+git commit -m "feat(ti-studio): refactor Sportlink page with 4 tabs (leden/teams/wijzigingen/spelers)"
+```
+
+---
+
+## Fase 5: Opruimen — verwijder dubbele code
+
+### Task 19: TI Studio — verwijder oude Sportlink bestanden
 
 Dit is de cruciale opruim-taak. Na deze taak mag er GEEN dubbele Sportlink-logica meer bestaan.
 
@@ -1443,7 +1665,7 @@ git commit -m "refactor(ti-studio): remove duplicate Sportlink code, use @oranje
 
 ---
 
-### Task 15: apps/web sync — verwijst naar shared package
+### Task 20: apps/web sync — verwijst naar shared package
 
 De bestaande CSV-sync pagina in apps/web moet ook de shared sync gebruiken.
 
@@ -1497,7 +1719,7 @@ git commit -m "refactor(web): use @oranje-wit/sportlink, deprecate CSV import"
 
 ## Fase 6: Wijzigingsdetectie (Laag 3)
 
-### Task 16: Wijzigingsdetectie functie
+### Task 21: Wijzigingsdetectie functie
 
 **Files:**
 - Create: `packages/sportlink/src/sync/wijzigings-detectie.ts`
@@ -1657,7 +1879,7 @@ git commit -m "feat(sportlink): add wijzigingsdetectie function (Layer 3)"
 
 ## Fase 7: Deploy en validatie
 
-### Task 17: Typecheck en build
+### Task 22: Typecheck en build
 
 **Files:** Geen wijzigingen, alleen verificatie
 
@@ -1678,7 +1900,7 @@ Expected: Alle tests slagen
 
 ---
 
-### Task 18: Migratie draaien op productie
+### Task 23: Migratie draaien op productie
 
 **Files:** Geen wijzigingen
 
@@ -1696,7 +1918,7 @@ Check: `sportlink_notificaties` tabel bestaat
 
 ---
 
-### Task 19: Eerste leden-sync draaien
+### Task 24: Eerste leden-sync draaien
 
 **Files:** Geen wijzigingen
 
@@ -1707,7 +1929,7 @@ Check: `sportlink_notificaties` tabel bestaat
 
 ---
 
-### Task 20: Eerste team-sync draaien (Zaal 2025-2026 definitief)
+### Task 25: Eerste team-sync draaien (Zaal 2025-2026 definitief)
 
 **Files:** Geen wijzigingen
 
