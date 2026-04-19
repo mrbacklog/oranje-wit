@@ -26,6 +26,11 @@ model Lid {
   afmelddatum      DateTime? @db.Date
   lidsoort         String?
   email            String?
+  lidStatus        String?   @map("lid_status")
+  spelactiviteiten String?
+  clubTeams        String?   @map("club_teams")
+  leeftijdscategorie String? @map("leeftijdscategorie")
+  laatstGesyncOp   DateTime? @map("laatst_gesynct_op") @db.Timestamptz(6)
   registratieDatum DateTime? @map("registratie_datum") @db.Date
   createdAt        DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt        DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
@@ -36,6 +41,23 @@ model Lid {
   stafleden         Staf[]
 
   @@map("leden")
+}
+
+model SportlinkNotificatie {
+  id            Int      @id @default(autoincrement())
+  relCode       String   @map("rel_code")
+  datum         DateTime @db.Timestamptz(6)
+  actie         String   // insert | update | delete
+  entiteit      String   // member | membership | player | clubfunction
+  beschrijving  String
+  categorie     String
+  gewijzigdDoor String   @map("gewijzigd_door")
+  gesyncOp      DateTime @default(now()) @map("gesynct_op") @db.Timestamptz(6)
+
+  @@index([relCode])
+  @@index([datum])
+  @@index([entiteit])
+  @@map("sportlink_notificaties")
 }
 
 // Profielfoto per lid (opgeslagen als webp binary)
