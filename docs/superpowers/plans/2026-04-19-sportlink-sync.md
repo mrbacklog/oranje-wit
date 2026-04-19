@@ -12,6 +12,64 @@
 
 ---
 
+## Migratie-overzicht: bestaand → nieuw
+
+Onderstaande tabel documenteert exact wat er met elk bestaand onderdeel gebeurt.
+Niets mag dubbel bestaan na implementatie.
+
+### Bestanden die VERHUIZEN naar `packages/sportlink/`
+
+| Bestaand bestand | Wat erin zit | Wordt | Actie op origineel |
+|---|---|---|---|
+| `apps/ti-studio/src/lib/sportlink/client.ts` regels 1-35 | `extractCookies`, `cookieString`, constanten | `packages/sportlink/src/auth.ts` | **Verwijder** functie-bodies, vervang door re-export |
+| `apps/ti-studio/src/lib/sportlink/client.ts` regels 36-140 | `sportlinkLogin()` | `packages/sportlink/src/auth.ts` | **Verwijder**, vervang door `export { sportlinkLogin } from "@oranje-wit/sportlink"` |
+| `apps/ti-studio/src/lib/sportlink/client.ts` regels 142-150 | `navajoHeaders()` | `packages/sportlink/src/navajo.ts` | **Verwijder** |
+| `apps/ti-studio/src/lib/sportlink/client.ts` regels 159-237 | `sportlinkZoekLeden()` (gefilterd) | Verdwijnt — Laag 1 haalt ALLES op, Laag 3 (diff) doet de filtering | **Verwijder** |
+| `apps/ti-studio/src/lib/sportlink/client.ts` regels 239-249 | `selecteerOpties()` | `packages/sportlink/src/endpoints/search-members.ts` | **Verwijder** |
+| `apps/ti-studio/src/lib/sportlink/types.ts` | `SportlinkLid`, `SyncDiff`, `LidType`, `AfmeldReden`, etc. | `packages/sportlink/src/types.ts` (uitgebreid) | **Verwijder** bestand volledig |
+
+### Bestanden die VERANDEREN
+
+| Bestaand bestand | Huidige functie | Wat verandert |
+|---|---|---|
+| `apps/ti-studio/src/lib/sportlink/diff.ts` | `berekenDiff()` — Sportlink ↔ Speler vergelijking | Wordt **Laag 3**: importeert types uit `@oranje-wit/sportlink`, gebruikt `zoekLeden()` uit shared package. Diff-logica (LidType, AfmeldReden, bepaalLidType) blijft hier — het is TI-specifiek |
+| `apps/ti-studio/src/app/api/sportlink/sync/route.ts` | SSE streaming sync (login → zoek → diff) | **Refactor**: gebruikt `sportlinkLogin` en `zoekLeden` uit `@oranje-wit/sportlink` |
+| `apps/ti-studio/src/app/api/sportlink/apply/route.ts` | Nieuwe spelers aanmaken, afmeldingen doorvoeren | **Blijft** — dit is TI-werkindeling logica (Speler upsert), niet sync |
+| `apps/ti-studio/src/components/sportlink/SportlinkSync.tsx` | Volledige sync UI (login, diff, apply) | **Refactor**: split in tabs — Leden-sync tab + Team-sync tab + bestaande Speler-sync |
+| `apps/ti-studio/package.json` | Dependencies | **Toevoegen**: `"@oranje-wit/sportlink": "workspace:*"` |
+| `apps/web/src/app/(beheer)/beheer/teams/sync/page.tsx` | CSV-import sync pagina | **Refactor**: verwijst naar `@oranje-wit/sportlink` voor leden-sync i.p.v. CSV upload |
+
+### Bestanden die VERDWIJNEN
+
+| Bestand | Reden |
+|---|---|
+| `apps/ti-studio/src/lib/sportlink/client.ts` | Volledig verhuisd naar `packages/sportlink/` |
+| `apps/ti-studio/src/lib/sportlink/types.ts` | Volledig verhuisd naar `packages/sportlink/src/types.ts` |
+| `scripts/import/sync-leden-csv.ts` | Vervangen door API-sync — deprecated markeren in Fase 5, verwijderen in Fase 7 |
+
+### Bestanden die NIEUW zijn
+
+| Bestand | Doel |
+|---|---|
+| `packages/sportlink/` (hele package) | Shared Sportlink client + sync functies |
+| `packages/database/prisma/migrations/20260419100000_*/migration.sql` | Lid-tabel uitbreiding + SportlinkNotificatie model |
+| `apps/ti-studio/src/app/api/sportlink/leden-sync/route.ts` | Laag 1 API: leden-sync + notificaties |
+| `apps/ti-studio/src/app/api/sportlink/team-sync/route.ts` | Laag 2 API: team-sync dry run + apply |
+
+### Wat de diff engine wordt (Laag 3)
+
+De huidige `diff.ts` (`berekenDiff`) doet Sportlink ↔ Speler vergelijking voor de TI-werkindeling. Dit IS Laag 3 — de wijzigingsdetectie. Het verschil met het huidige gedrag:
+
+| Nu | Straks |
+|---|---|
+| Haalt zelf leden op via `sportlinkZoekLeden()` (gefilterd) | Krijgt leden van Laag 1 (Lid-tabel, al gesynchroniseerd) |
+| Vergelijkt direct met Speler-tabel | Vergelijkt Lid-tabel ↔ Speler-tabel + team-sync delta's |
+| Draait bij elke sync-actie | Kan ook draaien zonder Sportlink login (data staat al in Lid-tabel) |
+
+De `diff.ts` blijft in `apps/ti-studio/src/lib/sportlink/` maar importeert types uit `@oranje-wit/sportlink` en leest uit de Lid-tabel i.p.v. direct uit de Sportlink API.
+
+---
+
 ## Bestandsstructuur
 
 ### Nieuw package: `packages/sportlink/`
@@ -1279,13 +1337,18 @@ git commit -m "feat(ti-studio): add team-sync API with dry-run and apply"
 
 ## Fase 5: Refactor bestaande Sportlink sync
 
-### Task 14: TI Studio client refactoren naar shared package
+### Task 14: TI Studio — verwijder dubbele code, verwijs naar shared package
+
+Dit is de cruciale opruim-taak. Na deze taak mag er GEEN dubbele Sportlink-logica meer bestaan.
 
 **Files:**
-- Modify: `apps/ti-studio/src/lib/sportlink/client.ts`
-- Modify: `apps/ti-studio/src/app/api/sportlink/sync/route.ts`
-- Modify: `apps/ti-studio/src/lib/sportlink/diff.ts`
-- Modify: `apps/ti-studio/package.json`
+- Delete: `apps/ti-studio/src/lib/sportlink/client.ts` (volledig)
+- Delete: `apps/ti-studio/src/lib/sportlink/types.ts` (volledig)
+- Modify: `apps/ti-studio/src/lib/sportlink/diff.ts` (imports aanpassen)
+- Modify: `apps/ti-studio/src/app/api/sportlink/sync/route.ts` (imports aanpassen)
+- Modify: `apps/ti-studio/src/app/api/sportlink/apply/route.ts` (imports aanpassen)
+- Modify: `apps/ti-studio/src/components/sportlink/SportlinkSync.tsx` (imports aanpassen)
+- Modify: `apps/ti-studio/package.json` (dependency toevoegen)
 
 - [ ] **Step 1: Voeg @oranje-wit/sportlink toe als dependency**
 
@@ -1297,38 +1360,144 @@ In `apps/ti-studio/package.json`, voeg toe bij dependencies:
 
 Run: `pnpm install`
 
-- [ ] **Step 2: Refactor client.ts — gebruik shared auth en endpoints**
+- [ ] **Step 2: Verwijder `apps/ti-studio/src/lib/sportlink/types.ts`**
 
-Vervang de login-functie en zoekLeden-functie door imports uit het shared package.
-Behoud de bestaande diff-logica (die is specifiek voor de TI-sync).
+Dit bestand wordt volledig vervangen door `@oranje-wit/sportlink/types`.
+De types `SportlinkLid`, `SyncDiff`, `NieuwLid`, `AfgemeldLid`, `FuzzyMatch`, `LidType`, `AfmeldReden` moeten allemaal in het shared package staan.
 
-In `apps/ti-studio/src/lib/sportlink/client.ts`:
+Run: `rm apps/ti-studio/src/lib/sportlink/types.ts`
+
+- [ ] **Step 3: Verwijder `apps/ti-studio/src/lib/sportlink/client.ts`**
+
+Login, zoekLeden, navajoHeaders, selecteerOpties — allemaal verhuisd naar `packages/sportlink/`.
+
+Run: `rm apps/ti-studio/src/lib/sportlink/client.ts`
+
+- [ ] **Step 4: Update `diff.ts` — imports uit shared package**
+
+In `apps/ti-studio/src/lib/sportlink/diff.ts`, vervang:
 
 ```typescript
-// Re-export vanuit shared package voor backward compatibility
-export { sportlinkLogin } from "@oranje-wit/sportlink";
-export { zoekLeden as sportlinkZoekLeden } from "@oranje-wit/sportlink";
+// OUD:
+import type { SportlinkLid, SyncDiff, NieuwLid, AfgemeldLid, FuzzyMatch, LidType } from "./types";
+
+// NIEUW:
+import type { SportlinkLid } from "@oranje-wit/sportlink";
 ```
 
-Let op: de bestaande `sportlinkZoekLeden` filtert op relevante leden (korfbalspelers + nieuwe leden + recreanten). De shared `zoekLeden` haalt ALLES op. De TI-sync route moet zijn eigen filtering behouden tot Laag 3 volledig is.
+De `SyncDiff`, `NieuwLid`, `AfgemeldLid`, `FuzzyMatch`, `LidType`, `AfmeldReden` types zijn TI-specifiek (ze beschrijven de diff-output, niet de Sportlink API). Deze verhuizen naar `diff.ts` zelf als lokale types, of naar een nieuw bestand `apps/ti-studio/src/lib/sportlink/diff-types.ts`.
 
-- [ ] **Step 3: Typecheck**
+De functies `bepaalLidType()` en `normaliseer()` blijven in `diff.ts` — ze zijn TI-specifiek.
+
+- [ ] **Step 5: Update `sync/route.ts` — imports uit shared package**
+
+In `apps/ti-studio/src/app/api/sportlink/sync/route.ts`, vervang:
+
+```typescript
+// OUD:
+import { sportlinkLogin, sportlinkZoekLeden } from "@/lib/sportlink/client";
+import { berekenDiff } from "@/lib/sportlink/diff";
+
+// NIEUW:
+import { sportlinkLogin, zoekLeden } from "@oranje-wit/sportlink";
+import { berekenDiff } from "@/lib/sportlink/diff";
+```
+
+Let op: de bestaande sync route haalt gefilterde leden op (`sportlinkZoekLeden` met korfbalspelers-filter). De shared `zoekLeden` haalt ALLES op. De `berekenDiff` in diff.ts moet de filtering overnemen, of de route filtert zelf na het ophalen.
+
+- [ ] **Step 6: Update `apply/route.ts` — imports uit shared package**
+
+```typescript
+// OUD:
+import type { SpelerStatus } from "@oranje-wit/database";
+
+// Dit bestand importeert NIET uit de sportlink client, dus geen wijziging nodig.
+// Verifieer dat het geen imports heeft uit ./client of ./types.
+```
+
+- [ ] **Step 7: Update `SportlinkSync.tsx` — imports uit shared package**
+
+```typescript
+// OUD:
+import type { SyncDiff, NieuwLid, AfgemeldLid, FuzzyMatch, LidType } from "@/lib/sportlink/types";
+
+// NIEUW:
+import type { SportlinkLid } from "@oranje-wit/sportlink";
+import type { SyncDiff, NieuwLid, AfgemeldLid, FuzzyMatch, LidType } from "@/lib/sportlink/diff-types";
+```
+
+- [ ] **Step 8: Typecheck — verifieer geen dubbele code**
 
 Run: `cd apps/ti-studio && npx tsc --noEmit`
 Expected: Geen fouten
 
-- [ ] **Step 4: Commit**
+Run: `grep -r "sportlinkLogin\|sportlinkZoekLeden\|navajoHeaders" apps/ti-studio/src/lib/sportlink/`
+Expected: Geen resultaten (alles verwijderd)
+
+- [ ] **Step 9: Commit**
 
 ```bash
 git add apps/ti-studio/
-git commit -m "refactor(ti-studio): use @oranje-wit/sportlink for auth and endpoints"
+git commit -m "refactor(ti-studio): remove duplicate Sportlink code, use @oranje-wit/sportlink"
+```
+
+---
+
+### Task 15: apps/web sync — verwijst naar shared package
+
+De bestaande CSV-sync pagina in apps/web moet ook de shared sync gebruiken.
+
+**Files:**
+- Modify: `apps/web/src/app/(beheer)/beheer/teams/sync/page.tsx`
+- Modify: `apps/web/package.json`
+
+- [ ] **Step 1: Voeg @oranje-wit/sportlink toe als dependency**
+
+In `apps/web/package.json`, voeg toe bij dependencies:
+
+```json
+"@oranje-wit/sportlink": "workspace:*"
+```
+
+Run: `pnpm install`
+
+- [ ] **Step 2: Update sync pagina — verwijder CSV-verwijzing, gebruik API-sync**
+
+De pagina toont nu "Synchroniseer leden en teams vanuit Sportlink CSV-exports".
+Verander naar: "Synchroniseer leden vanuit Sportlink".
+De `laatsteImport` query blijft — maar checkt nu `laatstGesyncOp` op de Lid-tabel.
+
+```typescript
+// Vervang de import-check door een sync-check
+const laatsteSync = await prisma.lid.aggregate({
+  _max: { laatstGesyncOp: true },
+});
+```
+
+- [ ] **Step 3: Markeer CSV-import als deprecated**
+
+In `scripts/import/sync-leden-csv.ts`, voeg bovenaan toe:
+
+```typescript
+/**
+ * @deprecated Vervangen door @oranje-wit/sportlink leden-sync via API.
+ * Zie docs/superpowers/specs/2026-04-19-sportlink-sync-design.md
+ * Dit script wordt verwijderd in een toekomstige release.
+ */
+```
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add apps/web/ scripts/import/sync-leden-csv.ts
+git commit -m "refactor(web): use @oranje-wit/sportlink, deprecate CSV import"
 ```
 
 ---
 
 ## Fase 6: Wijzigingsdetectie (Laag 3)
 
-### Task 15: Wijzigingsdetectie functie
+### Task 16: Wijzigingsdetectie functie
 
 **Files:**
 - Create: `packages/sportlink/src/sync/wijzigings-detectie.ts`
@@ -1488,7 +1657,7 @@ git commit -m "feat(sportlink): add wijzigingsdetectie function (Layer 3)"
 
 ## Fase 7: Deploy en validatie
 
-### Task 16: Typecheck en build
+### Task 17: Typecheck en build
 
 **Files:** Geen wijzigingen, alleen verificatie
 
@@ -1509,7 +1678,7 @@ Expected: Alle tests slagen
 
 ---
 
-### Task 17: Migratie draaien op productie
+### Task 18: Migratie draaien op productie
 
 **Files:** Geen wijzigingen
 
@@ -1527,7 +1696,7 @@ Check: `sportlink_notificaties` tabel bestaat
 
 ---
 
-### Task 18: Eerste leden-sync draaien
+### Task 19: Eerste leden-sync draaien
 
 **Files:** Geen wijzigingen
 
@@ -1538,7 +1707,7 @@ Check: `sportlink_notificaties` tabel bestaat
 
 ---
 
-### Task 19: Eerste team-sync draaien (Zaal 2025-2026 definitief)
+### Task 20: Eerste team-sync draaien (Zaal 2025-2026 definitief)
 
 **Files:** Geen wijzigingen
 
