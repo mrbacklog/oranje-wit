@@ -128,7 +128,7 @@ server.tool(
   async ({ question, service }) => {
     try {
       const { cmd, args } = buildAskCommand(question, service);
-      const { stdout } = await execFileAsync(cmd, args, { timeout: 120_000 });
+      const { stdout } = await execFileAsync(cmd, args, { timeout: 120_000, shell: true });
       try {
         return ok(JSON.parse(stdout));
       } catch {
@@ -350,13 +350,14 @@ server.tool(
         const svc = resolveService(alias);
         const data = await railwayQuery(
           `query ($projectId: String!, $envId: String!, $svcId: String!) {
-            customDomains(projectId: $projectId, environmentId: $envId, serviceId: $svcId) {
-              id domain status { dnsRecords { hostName type requiredValue currentValue status } }
+            domains(projectId: $projectId, environmentId: $envId, serviceId: $svcId) {
+              customDomains { id domain }
+              serviceDomains { domain }
             }
           }`,
           { projectId: PROJECT_ID, envId: ENV_ID, svcId: svc.id }
         );
-        results.push({ service: alias, domains: data.customDomains });
+        results.push({ service: alias, ...data.domains });
       }
       return ok(results);
     } catch (e) {
