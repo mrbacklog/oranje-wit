@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+import { FormInput } from "./shared";
+
 type Stap = "spelvorm" | "periode" | "dryrun" | "bezig" | "resultaat" | "apply" | "klaar";
 type Spelvorm = "Veld" | "Zaal";
 type Periode = "veld_najaar" | "veld_voorjaar" | "zaal" | "zaal_deel1" | "zaal_deel2";
@@ -39,20 +41,18 @@ interface ApplyResultaat {
 
 // ─── Tokens ───────────────────────────────────────────────────────────────────
 const T = {
-  nieuw: "#10b981",
+  nieuw: "var(--color-success, #10b981)",
   nieuwBg: "rgba(16,185,129,.08)",
   nieuwBorder: "rgba(16,185,129,.35)",
-  uit: "#ef4444",
+  uit: "var(--color-error, #ef4444)",
   uitBg: "rgba(239,68,68,.08)",
   uitBorder: "rgba(239,68,68,.35)",
-  wissel: "#f59e0b",
+  wissel: "var(--color-warning, #f59e0b)",
   wisselBg: "rgba(245,158,11,.08)",
   wisselBorder: "rgba(245,158,11,.35)",
-  staf: "#3b82f6",
+  staf: "var(--color-info, #3b82f6)",
   stafBg: "rgba(59,130,246,.08)",
   stafBorder: "rgba(59,130,246,.35)",
-  inputBg: "#141416",
-  inputBorder: "#2a2a2e",
 };
 
 function aanbevolenSpelvorm(): { spelvorm: Spelvorm; label: string } {
@@ -78,49 +78,6 @@ function periodeLabel(p: Periode): string {
 }
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
-
-function FormInput({
-  type,
-  placeholder,
-  value,
-  onChange,
-  autoComplete,
-}: {
-  type: string;
-  placeholder: string;
-  value: string;
-  onChange: (v: string) => void;
-  autoComplete?: string;
-}) {
-  return (
-    <input
-      type={type}
-      placeholder={placeholder}
-      value={value}
-      autoComplete={autoComplete}
-      onChange={(e) => onChange(e.target.value)}
-      style={{
-        width: "100%",
-        padding: "9px 12px",
-        fontSize: 14,
-        background: T.inputBg,
-        border: `1px solid ${T.inputBorder}`,
-        borderRadius: "var(--radius-sm, 6px)",
-        color: "var(--text-1, #fafafa)",
-        outline: "none",
-        boxSizing: "border-box",
-      }}
-      onFocus={(e) => {
-        e.currentTarget.style.borderColor = "var(--accent, #ff6b00)";
-        e.currentTarget.style.boxShadow = "0 0 0 2px rgba(255,107,0,.4)";
-      }}
-      onBlur={(e) => {
-        e.currentTarget.style.borderColor = T.inputBorder;
-        e.currentTarget.style.boxShadow = "none";
-      }}
-    />
-  );
-}
 
 function KiesSpelvorm({ onKies }: { onKies: (s: Spelvorm) => void }) {
   const aanbeveling = aanbevolenSpelvorm();
