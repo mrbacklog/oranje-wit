@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { resolveService } from "./config.js";
+import { buildAskCommand } from "./server.js";
 
 describe("resolveService", () => {
   it('web → correct ID', () => {
@@ -16,5 +17,22 @@ describe("resolveService", () => {
 
   it('onbekend → throws met beschikbare services', () => {
     expect(() => resolveService("onbekend")).toThrow("beschikbaar: web, ti-studio, database");
+  });
+});
+
+describe("buildAskCommand", () => {
+  it("builds command without service", () => {
+    const { cmd, args } = buildAskCommand("test question");
+    expect(cmd).toBe("railway");
+    expect(args).toContain("-p");
+    expect(args).toContain("test question");
+    expect(args).toContain("--json");
+    expect(args).not.toContain("--service");
+  });
+
+  it("builds command with service scope", () => {
+    const { cmd, args } = buildAskCommand("test", "web");
+    expect(args).toContain("--service");
+    expect(args).toContain("ckvoranjewit.app");
   });
 });
