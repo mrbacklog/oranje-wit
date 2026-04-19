@@ -1,7 +1,7 @@
 # Railway Smart Gateway — Design Spec
 
 **Datum**: 2026-04-19
-**Status**: Ontwerp
+**Status**: In implementatie
 **Doel**: Eenduidige, maximale Railway-integratie voor AI-agents
 
 ---
@@ -152,7 +152,7 @@ Eén centrale map in de MCP server:
 ```javascript
 const SERVICES = {
   web:         { id: "46a4f38c-eff1-4140-ad07-f12be057ef30", name: "ckvoranjewit.app" },
-  "ti-studio": { id: "<TI_STUDIO_SERVICE_ID>",               name: "ti-studio" },
+  "ti-studio": { id: "4feb4549-cafb-433c-89fb-505aeb05ae44",  name: "ti-studio" },
   database:    { id: "e7486b49-dba3-4e0a-8709-a501cea860ae", name: "Postgres" },
 };
 const PROJECT_ID = "aa87602d-316d-4d3e-8860-f75d352fae27";
