@@ -800,7 +800,7 @@ export function TeamSync() {
       <DryRunForm
         spelvorm={spelvorm}
         periode={periode}
-        onVergelijken={handleVergelijken}
+        onVergelijk={handleVergelijken}
         onTerug={() => setStap("periode")}
         error={error}
       />
