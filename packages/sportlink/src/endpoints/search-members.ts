@@ -13,8 +13,12 @@ export async function zoekLeden(token: string): Promise<SportlinkLid[]> {
     navajoGet<Record<string, unknown>>("member/search/FilterMembersSimple", token),
   ]);
 
-  selecteerOpties(inputExtended.TypeOfMember, ["KERNELMEMBER"]);
-  selecteerOpties(inputExtended.MemberStatus, ["ACTIVE", "INACTIVE", "ELIGABLE_FOR_REMOVE"]);
+  selecteerOpties(inputExtended.TypeOfMember as FilterField, ["KERNELMEMBER"]);
+  selecteerOpties(inputExtended.MemberStatus as FilterField, [
+    "ACTIVE",
+    "INACTIVE",
+    "ELIGABLE_FOR_REMOVE",
+  ]);
 
   const data = await navajoPost<{ Members: SportlinkLid[] }>("member/search/SearchMembers", token, {
     Filters: { InputExtended: inputExtended, InputSimple: inputSimple },
@@ -25,10 +29,9 @@ export async function zoekLeden(token: string): Promise<SportlinkLid[]> {
   return leden;
 }
 
-function selecteerOpties(
-  filter: { Options?: { Id: string; IsSelected: boolean }[] } | undefined,
-  ids: string[]
-) {
+type FilterField = { Options?: { Id: string; IsSelected: boolean }[] } | undefined;
+
+function selecteerOpties(filter: FilterField, ids: string[]) {
   if (!filter?.Options) return;
   const selectSet = new Set(ids);
   for (const opt of filter.Options) {

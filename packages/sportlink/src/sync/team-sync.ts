@@ -115,20 +115,15 @@ export async function syncTeams(
     const lidBestaat = await prisma.lid.findUnique({ where: { relCode } });
     if (!lidBestaat) continue;
 
-    await prisma.competitieSpeler.upsert({
-      where: {
-        relCode_seizoen_competitie: { relCode, seizoen, competitie: periode },
-      },
-      create: {
+    // Prisma 7 TS2321 workaround — type-recursie op CompetitieSpeler
+    await (prisma.competitieSpeler as any).deleteMany({
+      where: { relCode, seizoen, competitie: periode },
+    });
+    await (prisma.competitieSpeler as any).create({
+      data: {
         relCode,
         seizoen,
         competitie: periode,
-        team: speler.TeamName,
-        geslacht: speler.GenderCode === "Male" ? "M" : "V",
-        bron: "sportlink",
-        betrouwbaar: true,
-      },
-      update: {
         team: speler.TeamName,
         geslacht: speler.GenderCode === "Male" ? "M" : "V",
         bron: "sportlink",

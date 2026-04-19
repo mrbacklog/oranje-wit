@@ -52,7 +52,7 @@ export async function PUT(req: NextRequest) {
     const { email, password, spelvorm, periode, seizoen } = body.data;
     const { navajoToken } = await sportlinkLogin(email, password);
     const teamleden = await zoekTeams(navajoToken, spelvorm);
-    const resultaat = await syncTeams(teamleden, seizoen, periode);
+    const resultaat = await syncTeams(teamleden, seizoen ?? HUIDIG_SEIZOEN, periode);
     return ok(resultaat);
   } catch (error) {
     logger.error("[sportlink] Team-sync apply fout:", error);
