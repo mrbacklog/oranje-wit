@@ -105,6 +105,40 @@ export async function detecteerWijzigingen(): Promise<WijzigingsSignaal[]> {
     });
   }
 
+  // 4. Recente relevante notificaties (membership + player events)
+  const recenteNotificaties = await prisma.sportlinkNotificatie.findMany({
+    where: {
+      entiteit: { in: ["membership", "player"] },
+      gesyncOp: { gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
+    },
+    orderBy: { datum: "desc" },
+    take: 50,
+  });
+
+  for (const notif of recenteNotificaties) {
+    if (notif.beschrijving.includes("Lid geworden van Oranje Wit")) {
+      signalen.push({
+        type: "nieuw-lid",
+        relCode: notif.relCode,
+        naam: notif.relCode, // naam niet beschikbaar in notificatie
+        beschrijving: `${notif.beschrijving} op ${notif.datum.toISOString().slice(0, 10)}`,
+        oud: null,
+        nieuw: "Nieuw lid",
+        bron: "notificatie",
+      });
+    } else if (notif.entiteit === "player") {
+      signalen.push({
+        type: "activiteit-wijziging",
+        relCode: notif.relCode,
+        naam: notif.relCode,
+        beschrijving: `${notif.beschrijving} (${notif.actie}) op ${notif.datum.toISOString().slice(0, 10)}`,
+        oud: null,
+        nieuw: notif.actie,
+        bron: "notificatie",
+      });
+    }
+  }
+
   logger.info(`[sportlink] Wijzigingsdetectie: ${signalen.length} signalen gevonden`);
   return signalen;
 }

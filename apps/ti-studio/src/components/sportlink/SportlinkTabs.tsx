@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { LedenSync } from "./LedenSync";
 import { TeamSync } from "./TeamSync";
 import { WijzigingsSignalen } from "./WijzigingsSignalen";
 import { SportlinkSync } from "./SportlinkSync";
+import type { WijzigingsSignaal } from "@oranje-wit/sportlink";
 
 type Tab = "leden" | "teams" | "wijzigingen" | "spelers";
 
@@ -17,6 +18,20 @@ const TABS: { id: Tab; label: string }[] = [
 
 export function SportlinkTabs() {
   const [activeTab, setActiveTab] = useState<Tab>("leden");
+  const [signalen, setSignalen] = useState<WijzigingsSignaal[]>([]);
+  const [signalenLoading, setSignalenLoading] = useState(false);
+
+  useEffect(() => {
+    if (activeTab === "wijzigingen" && signalen.length === 0 && !signalenLoading) {
+      setSignalenLoading(true);
+      fetch("/api/sportlink/wijzigingen", { credentials: "same-origin" })
+        .then((r) => r.json())
+        .then((data) => {
+          if (data.data?.signalen) setSignalen(data.data.signalen);
+        })
+        .finally(() => setSignalenLoading(false));
+    }
+  }, [activeTab]);
 
   return (
     <div>
@@ -59,7 +74,7 @@ export function SportlinkTabs() {
       {/* Tab inhoud */}
       {activeTab === "leden" && <LedenSync />}
       {activeTab === "teams" && <TeamSync />}
-      {activeTab === "wijzigingen" && <WijzigingsSignalen signalen={[]} />}
+      {activeTab === "wijzigingen" && <WijzigingsSignalen signalen={signalen} />}
       {activeTab === "spelers" && <SportlinkSync />}
     </div>
   );
