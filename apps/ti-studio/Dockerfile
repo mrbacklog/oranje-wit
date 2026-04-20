@@ -10,6 +10,7 @@ COPY packages/auth/package.json packages/auth/
 COPY packages/database/package.json packages/database/
 COPY packages/types/package.json packages/types/
 COPY packages/ui/package.json packages/ui/
+COPY packages/sportlink/package.json packages/sportlink/
 COPY packages/teamindeling-shared/package.json packages/teamindeling-shared/
 COPY packages/test-utils/package.json packages/test-utils/
 COPY apps/ti-studio/package.json apps/ti-studio/
@@ -25,6 +26,7 @@ COPY packages/auth/ packages/auth/
 COPY packages/database/ packages/database/
 COPY packages/types/ packages/types/
 COPY packages/ui/ packages/ui/
+COPY packages/sportlink/ packages/sportlink/
 COPY packages/teamindeling-shared/ packages/teamindeling-shared/
 COPY packages/test-utils/ packages/test-utils/
 COPY apps/ti-studio/ apps/ti-studio/

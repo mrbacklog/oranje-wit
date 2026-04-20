@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
     "@oranje-wit/types",
     "@oranje-wit/auth",
     "@oranje-wit/ui",
+    "@oranje-wit/sportlink",
     "@oranje-wit/teamindeling-shared",
   ],
   serverExternalPackages: ["pg", "pg-connection-string", "pgpass"],
