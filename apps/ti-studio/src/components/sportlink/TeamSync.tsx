@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { FormInput } from "./shared";
+import { useSportlinkCredentials } from "./SportlinkAuth";
 
 type Stap = "spelvorm" | "periode" | "dryrun" | "bezig" | "resultaat" | "apply" | "klaar";
 type Spelvorm = "Veld" | "Zaal";
@@ -220,13 +220,10 @@ function DryRunForm({
 }: {
   spelvorm: Spelvorm;
   periode: Periode;
-  onVergelijk: (email: string, password: string) => void;
+  onVergelijk: () => void;
   onTerug: () => void;
   error: string | null;
 }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
   return (
     <div>
       <h1 style={{ fontSize: 22, fontWeight: 700, marginBottom: 4 }}>Team Sync</h1>
@@ -243,35 +240,6 @@ function DryRunForm({
           maxWidth: 420,
         }}
       >
-        <h3
-          style={{
-            fontSize: 15,
-            fontWeight: 600,
-            marginBottom: 20,
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-          }}
-        >
-          <span
-            style={{
-              width: 20,
-              height: 20,
-              background: "#003082",
-              borderRadius: 4,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 10,
-              fontWeight: 800,
-              color: "#fff",
-            }}
-          >
-            SL
-          </span>
-          Inloggen bij Sportlink
-        </h3>
-
         {error && (
           <div
             style={{
@@ -288,84 +256,26 @@ function DryRunForm({
           </div>
         )}
 
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (email && password) onVergelijk(email, password);
-          }}
-        >
-          <div style={{ marginBottom: 16 }}>
-            <label
-              style={{
-                display: "block",
-                fontSize: 11,
-                fontWeight: 600,
-                color: "var(--text-3, #666)",
-                textTransform: "uppercase",
-                letterSpacing: ".5px",
-                marginBottom: 6,
-              }}
-            >
-              E-mailadres
-            </label>
-            <FormInput
-              type="email"
-              placeholder="naam@voorbeeld.nl"
-              value={email}
-              onChange={setEmail}
-              autoComplete="email"
-            />
-          </div>
-
-          <div style={{ marginBottom: 20 }}>
-            <label
-              style={{
-                display: "block",
-                fontSize: 11,
-                fontWeight: 600,
-                color: "var(--text-3, #666)",
-                textTransform: "uppercase",
-                letterSpacing: ".5px",
-                marginBottom: 6,
-              }}
-            >
-              Wachtwoord
-            </label>
-            <FormInput
-              type="password"
-              placeholder="Sportlink wachtwoord"
-              value={password}
-              onChange={setPassword}
-              autoComplete="current-password"
-            />
-          </div>
-
-          <div style={{ display: "flex", gap: 10 }}>
-            <button
-              type="button"
-              onClick={onTerug}
-              style={{
-                padding: "9px 16px",
-                fontSize: 13,
-                background: "var(--bg-2, #1e1e1e)",
-                border: "1px solid var(--border-1, #3a3a3a)",
-                borderRadius: 6,
-                color: "var(--text-3, #666)",
-                cursor: "pointer",
-              }}
-            >
-              ← Terug
-            </button>
-            <button
-              type="submit"
-              className="btn-primary"
-              style={{ flex: 1 }}
-              disabled={!email || !password}
-            >
-              Vergelijken
-            </button>
-          </div>
-        </form>
+        <div style={{ display: "flex", gap: 10 }}>
+          <button
+            type="button"
+            onClick={onTerug}
+            style={{
+              padding: "9px 16px",
+              fontSize: 13,
+              background: "var(--bg-2, #1e1e1e)",
+              border: "1px solid var(--border-1, #3a3a3a)",
+              borderRadius: 6,
+              color: "var(--text-3, #666)",
+              cursor: "pointer",
+            }}
+          >
+            ← Terug
+          </button>
+          <button type="button" className="btn-primary" style={{ flex: 1 }} onClick={onVergelijk}>
+            Vergelijken
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -652,18 +562,17 @@ function ApplyKlaarView({
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export function TeamSync() {
+  const credentials = useSportlinkCredentials();
   const [stap, setStap] = useState<Stap>("spelvorm");
   const [spelvorm, setSpelvorm] = useState<Spelvorm | null>(null);
   const [periode, setPeriode] = useState<Periode | null>(null);
   const [dryRunResultaat, setDryRunResultaat] = useState<DryRunResultaat | null>(null);
   const [applyResultaat, setApplyResultaat] = useState<ApplyResultaat | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [credentials, setCredentials] = useState<{ email: string; password: string } | null>(null);
 
-  async function handleVergelijken(email: string, password: string) {
+  async function handleVergelijken() {
     if (!spelvorm || !periode) return;
     setError(null);
-    setCredentials({ email, password });
     setStap("bezig");
 
     try {
@@ -671,7 +580,7 @@ export function TeamSync() {
         method: "POST",
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, spelvorm, periode }),
+        body: JSON.stringify({ ...credentials, spelvorm, periode }),
       });
 
       const envelope = (await res.json()) as
@@ -691,7 +600,7 @@ export function TeamSync() {
   }
 
   async function handleDoorvoeren() {
-    if (!spelvorm || !periode || !credentials) return;
+    if (!spelvorm || !periode) return;
     setStap("apply");
 
     try {
@@ -724,7 +633,6 @@ export function TeamSync() {
     setPeriode(null);
     setDryRunResultaat(null);
     setApplyResultaat(null);
-    setCredentials(null);
     setError(null);
   }
 

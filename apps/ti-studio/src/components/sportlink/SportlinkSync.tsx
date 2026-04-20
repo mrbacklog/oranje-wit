@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import type { SyncDiff, NieuwLid, AfgemeldLid, FuzzyMatch, LidType } from "@/lib/sportlink/types";
+import { useSportlinkCredentials } from "./SportlinkAuth";
 
-type State = "login" | "loading" | "diff" | "done";
+type State = "start" | "loading" | "diff" | "done";
 
 interface ApplyResult {
   aangemaakt: number;
@@ -136,21 +137,12 @@ function FormInput({
   );
 }
 
-// ─── State: Login ─────────────────────────────────────────────────────────────
+// ─── State: Start ─────────────────────────────────────────────────────────────
 
-function LoginState({
-  onSubmit,
-  error,
-}: {
-  onSubmit: (email: string, password: string) => void;
-  error: string | null;
-}) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
+function StartState({ onStart, error }: { onStart: () => void; error: string | null }) {
   return (
     <div>
-      <h1 style={{ fontSize: 22, fontWeight: 700, marginBottom: 4 }}>Sportlink Sync</h1>
+      <h1 style={{ fontSize: 22, fontWeight: 700, marginBottom: 4 }}>Spelers Sync</h1>
       <p
         style={{
           fontSize: 13,
@@ -170,35 +162,6 @@ function LoginState({
           maxWidth: 400,
         }}
       >
-        <h3
-          style={{
-            fontSize: 15,
-            fontWeight: 600,
-            marginBottom: 20,
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-          }}
-        >
-          <span
-            style={{
-              width: 20,
-              height: 20,
-              background: "#003082",
-              borderRadius: 4,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 10,
-              fontWeight: 800,
-              color: "#fff",
-            }}
-          >
-            SL
-          </span>
-          Inloggen bij Sportlink
-        </h3>
-
         {error && (
           <div
             style={{
@@ -215,79 +178,9 @@ function LoginState({
           </div>
         )}
 
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (email && password) onSubmit(email, password);
-          }}
-        >
-          <div style={{ marginBottom: 16 }}>
-            <label
-              style={{
-                display: "block",
-                fontSize: 11,
-                fontWeight: 600,
-                color: "var(--text-3, #666)",
-                textTransform: "uppercase",
-                letterSpacing: ".5px",
-                marginBottom: 6,
-              }}
-            >
-              E-mailadres
-            </label>
-            <FormInput
-              type="email"
-              placeholder="naam@voorbeeld.nl"
-              value={email}
-              onChange={setEmail}
-              autoComplete="email"
-            />
-          </div>
-
-          <div style={{ marginBottom: 16 }}>
-            <label
-              style={{
-                display: "block",
-                fontSize: 11,
-                fontWeight: 600,
-                color: "var(--text-3, #666)",
-                textTransform: "uppercase",
-                letterSpacing: ".5px",
-                marginBottom: 6,
-              }}
-            >
-              Wachtwoord
-            </label>
-            <FormInput
-              type="password"
-              placeholder="Sportlink wachtwoord"
-              value={password}
-              onChange={setPassword}
-              autoComplete="current-password"
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="btn-primary"
-            style={{ width: "100%", marginTop: 8 }}
-            disabled={!email || !password}
-          >
-            Ophalen
-          </button>
-        </form>
-
-        <p
-          style={{
-            fontSize: 11,
-            color: "var(--text-3, #666)",
-            marginTop: 12,
-            lineHeight: 1.4,
-          }}
-        >
-          Je gegevens worden niet opgeslagen. Ze worden eenmalig gebruikt om in te loggen bij
-          Sportlink en worden daarna verwijderd.
-        </p>
+        <button type="button" className="btn-primary" style={{ width: "100%" }} onClick={onStart}>
+          Ophalen en vergelijken
+        </button>
       </div>
     </div>
   );
@@ -930,14 +823,15 @@ function DoneState({ result, onReset }: { result: ApplyResult; onReset: () => vo
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export function SportlinkSync() {
-  const [state, setState] = useState<State>("login");
+  const credentials = useSportlinkCredentials();
+  const [state, setState] = useState<State>("start");
   const [diff, setDiff] = useState<SyncDiff | null>(null);
   const [result, setResult] = useState<ApplyResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [applying, setApplying] = useState(false);
   const [voortgang, setVoortgang] = useState<Voortgang[]>([]);
 
-  async function handleLogin(email: string, password: string) {
+  async function handleStart() {
     setError(null);
     setVoortgang([]);
     setState("loading");
@@ -947,7 +841,7 @@ export function SportlinkSync() {
         method: "POST",
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify(credentials),
       });
 
       if (!res.ok || !res.body) {
@@ -999,7 +893,7 @@ export function SportlinkSync() {
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Onbekende fout bij ophalen Sportlink data.");
-      setState("login");
+      setState("start");
     }
   }
 
@@ -1068,12 +962,12 @@ export function SportlinkSync() {
     setDiff(null);
     setResult(null);
     setError(null);
-    setState("login");
+    setState("start");
   }
 
   return (
     <div style={{ padding: "32px 40px", maxWidth: 900 }}>
-      {state === "login" && <LoginState onSubmit={handleLogin} error={error} />}
+      {state === "start" && <StartState onStart={handleStart} error={error} />}
       {state === "loading" && <LoadingState stappen={voortgang} />}
       {state === "diff" && diff && (
         <DiffState diff={diff} onApply={handleApply} onCancel={handleReset} applying={applying} />

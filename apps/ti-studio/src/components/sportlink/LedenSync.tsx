@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 
-import { FormInput } from "./shared";
+import { useSportlinkCredentials } from "./SportlinkAuth";
 
-type State = "login" | "syncing" | "resultaat" | "fout";
+type State = "start" | "syncing" | "resultaat" | "fout";
 
 interface SyncResultaat {
   bijgewerkt: number;
@@ -32,18 +32,9 @@ const T = {
   syncFoutBorder: "rgba(239, 68, 68, .40)",
 };
 
-// ─── State: Login ─────────────────────────────────────────────────────────────
+// ─── State: Start ─────────────────────────────────────────────────────────────
 
-function LoginState({
-  onSubmit,
-  error,
-}: {
-  onSubmit: (email: string, password: string) => void;
-  error: string | null;
-}) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
+function StartState({ onStart, error }: { onStart: () => void; error: string | null }) {
   return (
     <div>
       <h1 style={{ fontSize: 22, fontWeight: 700, marginBottom: 4 }}>Leden Sync</h1>
@@ -60,35 +51,6 @@ function LoginState({
           maxWidth: 400,
         }}
       >
-        <h3
-          style={{
-            fontSize: 15,
-            fontWeight: 600,
-            marginBottom: 20,
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-          }}
-        >
-          <span
-            style={{
-              width: 20,
-              height: 20,
-              background: "#003082",
-              borderRadius: 4,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 10,
-              fontWeight: 800,
-              color: "#fff",
-            }}
-          >
-            SL
-          </span>
-          Inloggen bij Sportlink
-        </h3>
-
         {error && (
           <div
             style={{
@@ -105,72 +67,9 @@ function LoginState({
           </div>
         )}
 
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (email && password) onSubmit(email, password);
-          }}
-        >
-          <div style={{ marginBottom: 16 }}>
-            <label
-              style={{
-                display: "block",
-                fontSize: 11,
-                fontWeight: 600,
-                color: "var(--text-3, #666)",
-                textTransform: "uppercase",
-                letterSpacing: ".5px",
-                marginBottom: 6,
-              }}
-            >
-              E-mailadres
-            </label>
-            <FormInput
-              type="email"
-              placeholder="naam@voorbeeld.nl"
-              value={email}
-              onChange={setEmail}
-              autoComplete="email"
-            />
-          </div>
-
-          <div style={{ marginBottom: 16 }}>
-            <label
-              style={{
-                display: "block",
-                fontSize: 11,
-                fontWeight: 600,
-                color: "var(--text-3, #666)",
-                textTransform: "uppercase",
-                letterSpacing: ".5px",
-                marginBottom: 6,
-              }}
-            >
-              Wachtwoord
-            </label>
-            <FormInput
-              type="password"
-              placeholder="Sportlink wachtwoord"
-              value={password}
-              onChange={setPassword}
-              autoComplete="current-password"
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="btn-primary"
-            style={{ width: "100%", marginTop: 8 }}
-            disabled={!email || !password}
-          >
-            Synchroniseren
-          </button>
-        </form>
-
-        <p style={{ fontSize: 11, color: "var(--text-3, #666)", marginTop: 12, lineHeight: 1.4 }}>
-          Je gegevens worden niet opgeslagen. Ze worden eenmalig gebruikt om in te loggen bij
-          Sportlink en worden daarna verwijderd.
-        </p>
+        <button type="button" className="btn-primary" style={{ width: "100%" }} onClick={onStart}>
+          Start leden synchronisatie
+        </button>
       </div>
     </div>
   );
@@ -382,13 +281,14 @@ function ResultaatState({
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export function LedenSync() {
-  const [state, setState] = useState<State>("login");
+  const credentials = useSportlinkCredentials();
+  const [state, setState] = useState<State>("start");
   const [voortgang, setVoortgang] = useState<Voortgang[]>([]);
   const [resultaat, setResultaat] = useState<SyncResultaat | null>(null);
   const [notifResultaat, setNotifResultaat] = useState<NotifResultaat | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  async function handleLogin(email: string, password: string) {
+  async function handleStart() {
     setError(null);
     setVoortgang([]);
     setState("syncing");
@@ -398,7 +298,7 @@ export function LedenSync() {
         method: "POST",
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify(credentials),
       });
 
       if (!res.ok || !res.body) {
@@ -447,12 +347,12 @@ export function LedenSync() {
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Onbekende fout bij leden sync.");
-      setState("login");
+      setState("start");
     }
   }
 
   function handleReset() {
-    setState("login");
+    setState("start");
     setVoortgang([]);
     setResultaat(null);
     setNotifResultaat(null);
@@ -469,5 +369,5 @@ export function LedenSync() {
     );
   }
 
-  return <LoginState onSubmit={handleLogin} error={error} />;
+  return <StartState onStart={handleStart} error={error} />;
 }
