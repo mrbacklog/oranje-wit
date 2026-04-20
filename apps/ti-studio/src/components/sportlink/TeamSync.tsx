@@ -674,15 +674,15 @@ export function TeamSync() {
         body: JSON.stringify({ email, password, spelvorm, periode }),
       });
 
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(
-          (body as { error?: { message?: string } }).error?.message ?? `Fout ${res.status}`
-        );
+      const envelope = (await res.json()) as
+        | { ok: true; data: DryRunResultaat }
+        | { ok: false; error: { message?: string } };
+
+      if (!res.ok || !envelope.ok) {
+        throw new Error((!envelope.ok && envelope.error?.message) || `Fout ${res.status}`);
       }
 
-      const data = (await res.json()) as DryRunResultaat;
-      setDryRunResultaat(data);
+      setDryRunResultaat(envelope.data);
       setStap("resultaat");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Onbekende fout bij vergelijken.");
@@ -702,15 +702,15 @@ export function TeamSync() {
         body: JSON.stringify({ ...credentials, spelvorm, periode }),
       });
 
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(
-          (body as { error?: { message?: string } }).error?.message ?? `Fout ${res.status}`
-        );
+      const envelope = (await res.json()) as
+        | { ok: true; data: ApplyResultaat }
+        | { ok: false; error: { message?: string } };
+
+      if (!res.ok || !envelope.ok) {
+        throw new Error((!envelope.ok && envelope.error?.message) || `Fout ${res.status}`);
       }
 
-      const data = (await res.json()) as ApplyResultaat;
-      setApplyResultaat(data);
+      setApplyResultaat(envelope.data);
       setStap("klaar");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Onbekende fout bij doorvoeren.");
