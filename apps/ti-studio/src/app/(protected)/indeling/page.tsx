@@ -181,7 +181,7 @@ export default async function IndelingPage() {
 
   // Teams als WerkbordTeam
   const teams: WerkbordTeam[] = ((versie?.teams ?? []) as any[]).map((team: any, i: number) => {
-    const dames = (team.spelers as any[])
+    const dames = ((team.spelers ?? []) as any[])
       .filter((ts: any) => ts.speler?.geslacht === "V")
       .map((ts: any) => ({
         id: ts.id,
@@ -213,7 +213,7 @@ export default async function IndelingPage() {
         notitie: null,
       }));
 
-    const heren = (team.spelers as any[])
+    const heren = ((team.spelers ?? []) as any[])
       .filter((ts: any) => ts.speler?.geslacht === "M")
       .map((ts: any) => ({
         id: ts.id,
@@ -245,10 +245,10 @@ export default async function IndelingPage() {
         notitie: null,
       }));
 
-    const totaalSpelers = team.spelers.length;
+    const totaalSpelers = (team.spelers ?? []).length;
     const gemLeeftijd =
       totaalSpelers > 0
-        ? (team.spelers as any[]).reduce((acc: number, ts: any) => {
+        ? ((team.spelers ?? []) as any[]).reduce((acc: number, ts: any) => {
             const gbd = ts.speler?.geboortedatum
               ? (ts.speler.geboortedatum as Date).toISOString().split("T")[0]
               : null;
