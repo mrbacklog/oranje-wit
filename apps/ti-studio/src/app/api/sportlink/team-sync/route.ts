@@ -100,9 +100,9 @@ export async function PUT(req: NextRequest) {
     const { navajoToken } = await sportlinkLogin(email, password);
     const teamleden = await zoekTeams(navajoToken, spelvorm);
     const resultaat = await syncTeams(teamleden, seizoen ?? HUIDIG_SEIZOEN, periode, {
-      nieuwRelCodes,
-      uitRelCodes,
-      wisselRelCodes,
+      nieuwRelCodes: nieuwRelCodes ?? [],
+      uitRelCodes: uitRelCodes ?? [],
+      wisselRelCodes: wisselRelCodes ?? [],
     });
     return ok(resultaat);
   } catch (error) {
