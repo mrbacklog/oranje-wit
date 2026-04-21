@@ -228,3 +228,113 @@ async function kopieerBronTeam(whatIfId: string, bronTeamId: string): Promise<{ 
   logger.info(`Bestaand team "${bronTeam.naam}" gekopieerd naar what-if ${whatIfId}`);
   return { id: created.id };
 }
+
+// ============================================================
+// CANVAS-GEORIËNTEERDE WRAPPERS
+// Accepteren werkversie-team-ids (canvas id) en lazy-creëren
+// WhatIfTeam-records waar nodig. Gebruikt door de canvas-variant
+// modus, waar het canvas werkversie-team-ids als team.id toont.
+// ============================================================
+
+async function resolveOfCreateWhatIfTeamVoorBron(
+  whatIfId: string,
+  bronTeamId: string
+): Promise<string> {
+  const bestaand = await prisma.whatIfTeam.findFirst({
+    where: { whatIfId, bronTeamId },
+    select: { id: true },
+  });
+  if (bestaand) return bestaand.id;
+  const created = await kopieerBronTeam(whatIfId, bronTeamId);
+  return created.id;
+}
+
+async function resolveWhatIfTeamId(whatIfId: string, canvasTeamId: string): Promise<string> {
+  // canvasTeamId kan zijn:
+  // (a) een werkversie-team-id → zoek of lazy-create WhatIfTeam via bronTeamId
+  // (b) een al-bestaand WhatIfTeam.id (voor nieuwe what-if teams zonder bron)
+  const alsWhatIfTeam = await prisma.whatIfTeam.findUnique({
+    where: { id: canvasTeamId },
+    select: { id: true, whatIfId: true },
+  });
+  if (alsWhatIfTeam && alsWhatIfTeam.whatIfId === whatIfId) {
+    return alsWhatIfTeam.id;
+  }
+  return resolveOfCreateWhatIfTeamVoorBron(whatIfId, canvasTeamId);
+}
+
+/**
+ * Verplaats een speler in een what-if op basis van canvas-team-ids.
+ * Lazy-creëert WhatIfTeam-records voor nog niet gekopieerde werkversie-teams.
+ */
+export async function verplaatsSpelerInWhatIfViaCanvas(
+  whatIfId: string,
+  spelerId: string,
+  vanCanvasTeamId: string | null,
+  naarCanvasTeamId: string
+): Promise<void> {
+  await assertWhatIfBewerkbaarById(whatIfId);
+
+  const naarWhatIfTeamId = await resolveWhatIfTeamId(whatIfId, naarCanvasTeamId);
+
+  if (!vanCanvasTeamId) {
+    // Toevoegen vanuit pool
+    const bestaand = await prisma.whatIfTeamSpeler.findFirst({
+      where: { whatIfTeamId: naarWhatIfTeamId, spelerId },
+    });
+    if (bestaand) return;
+    await prisma.whatIfTeamSpeler.create({
+      data: { whatIfTeamId: naarWhatIfTeamId, spelerId },
+    });
+    logger.info(`Speler ${spelerId} toegevoegd aan what-if team ${naarWhatIfTeamId} (via canvas)`);
+    return;
+  }
+
+  const vanWhatIfTeamId = await resolveWhatIfTeamId(whatIfId, vanCanvasTeamId);
+  if (vanWhatIfTeamId === naarWhatIfTeamId) return;
+
+  await prisma.$transaction(async (txRaw: unknown) => {
+    const tx = txRaw as typeof prisma;
+    const plaatsing = await tx.whatIfTeamSpeler.findFirst({
+      where: { whatIfTeamId: vanWhatIfTeamId, spelerId },
+    });
+    if (plaatsing) {
+      await tx.whatIfTeamSpeler.delete({ where: { id: plaatsing.id } });
+    }
+    const bestaandInDoel = await tx.whatIfTeamSpeler.findFirst({
+      where: { whatIfTeamId: naarWhatIfTeamId, spelerId },
+    });
+    if (!bestaandInDoel) {
+      await tx.whatIfTeamSpeler.create({
+        data: { whatIfTeamId: naarWhatIfTeamId, spelerId },
+      });
+    }
+  });
+
+  logger.info(
+    `Speler ${spelerId} verplaatst in what-if ${whatIfId}: ${vanWhatIfTeamId} → ${naarWhatIfTeamId}`
+  );
+}
+
+/**
+ * Verwijder een speler uit een what-if team op basis van canvas-team-id.
+ * Lazy-creëert een WhatIfTeam-record voor het werkversie-team als het
+ * nog niet in de what-if zit (anders is er niets te verwijderen).
+ */
+export async function verwijderSpelerUitWhatIfViaCanvas(
+  whatIfId: string,
+  spelerId: string,
+  vanCanvasTeamId: string
+): Promise<void> {
+  await assertWhatIfBewerkbaarById(whatIfId);
+
+  const vanWhatIfTeamId = await resolveWhatIfTeamId(whatIfId, vanCanvasTeamId);
+
+  const plaatsing = await prisma.whatIfTeamSpeler.findFirst({
+    where: { whatIfTeamId: vanWhatIfTeamId, spelerId },
+  });
+  if (!plaatsing) return;
+  await prisma.whatIfTeamSpeler.delete({ where: { id: plaatsing.id } });
+
+  logger.info(`Speler ${spelerId} verwijderd uit what-if team ${vanWhatIfTeamId} (via canvas)`);
+}

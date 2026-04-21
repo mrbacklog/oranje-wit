@@ -1,6 +1,6 @@
 // apps/web/src/components/ti-studio/werkbord/TiStudioShell.tsx
 "use client";
-import { useState, useCallback, useEffect, useMemo } from "react";
+import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import { logger, korfbalPeildatum, type Seizoen } from "@oranje-wit/types";
 import { Toolbar } from "./Toolbar";
 import { SpelersPoolDrawer } from "./SpelersPoolDrawer";
@@ -89,18 +89,24 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
   }, [panelRechts, initieleState.werkindelingId, drawerRefreshTeller]);
 
   // Mode-switch: herlaad canvas-state vanaf de server (werkversie of variant)
+  // Refs naar initieleState voorkomen een herlaad-loop als de parent opnieuw rendert
+  // met nieuwe array-references — we willen alleen herladen bij een mode-wissel.
+  const initieleStateRef = useRef(initieleState);
+  useEffect(() => {
+    initieleStateRef.current = initieleState;
+  }, [initieleState]);
   useEffect(() => {
     let geannuleerd = false;
+    const snapshot = initieleStateRef.current;
     if (actieveWhatIfId) {
       getWhatIfVoorCanvas(actieveWhatIfId)
         .then((res) => {
           if (geannuleerd) return;
           if (!res.ok) {
             logger.warn("What-if canvas laden mislukt:", res.error);
-            // Fallback: terug naar werkversie
             setActieveWhatIfId(null);
             setActieveWhatIfMeta(null);
-            herlaadStaat(initieleState.teams, initieleState.alleSpelers, initieleState.validatie);
+            herlaadStaat(snapshot.teams, snapshot.alleSpelers, snapshot.validatie);
             return;
           }
           herlaadStaat(res.data.teams, res.data.alleSpelers, res.data.validatie);
@@ -110,19 +116,12 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
           logger.warn("What-if canvas laden fout:", error);
         });
     } else {
-      // Werkversie: herstel initiële snapshot
-      herlaadStaat(initieleState.teams, initieleState.alleSpelers, initieleState.validatie);
+      herlaadStaat(snapshot.teams, snapshot.alleSpelers, snapshot.validatie);
     }
     return () => {
       geannuleerd = true;
     };
-  }, [
-    actieveWhatIfId,
-    herlaadStaat,
-    initieleState.teams,
-    initieleState.alleSpelers,
-    initieleState.validatie,
-  ]);
+  }, [actieveWhatIfId, herlaadStaat]);
 
   const openWhatIfOpCanvas = useCallback(
     (whatIfId: string, meta: { vraag: string; basisVersieNummer: number }) => {

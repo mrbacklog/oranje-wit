@@ -14,9 +14,8 @@ import {
   toggleSelectieBundeling,
 } from "@/app/(protected)/indeling/werkindeling-actions";
 import {
-  moveSpelerInWhatIf,
-  addSpelerToWhatIfTeam,
-  removeSpelerFromWhatIfTeam,
+  verplaatsSpelerInWhatIfViaCanvas,
+  verwijderSpelerUitWhatIfViaCanvas,
 } from "@/app/(protected)/indeling/whatif-edit-actions";
 
 export type WerkbordMode = { kind: "werkversie" } | { kind: "whatif"; whatIfId: string };
@@ -446,17 +445,11 @@ export function useWerkbordState(
       verplaatsSpelerLokaal(spelerData, vanTeamId, naarTeamId, naarGeslacht);
       const huidigMode = modeRef.current;
       if (huidigMode.kind === "whatif") {
-        if (vanTeamId && vanTeamId !== naarTeamId) {
-          stuurWhatIfMutatie(
-            () => moveSpelerInWhatIf(spelerData.id, vanTeamId, naarTeamId),
-            "moveSpelerInWhatIf"
-          );
-        } else if (!vanTeamId) {
-          stuurWhatIfMutatie(
-            () => addSpelerToWhatIfTeam(naarTeamId, spelerData.id),
-            "addSpelerToWhatIfTeam"
-          );
-        }
+        const whatIfId = huidigMode.whatIfId;
+        stuurWhatIfMutatie(
+          () => verplaatsSpelerInWhatIfViaCanvas(whatIfId, spelerData.id, vanTeamId, naarTeamId),
+          "verplaatsSpelerInWhatIfViaCanvas"
+        );
         return;
       }
       stuurMutatie({
@@ -475,9 +468,10 @@ export function useWerkbordState(
       verwijderSpelerUitTeamLokaal(spelerId, vanTeamId);
       const huidigMode = modeRef.current;
       if (huidigMode.kind === "whatif") {
+        const whatIfId = huidigMode.whatIfId;
         stuurWhatIfMutatie(
-          () => removeSpelerFromWhatIfTeam(vanTeamId, spelerId),
-          "removeSpelerFromWhatIfTeam"
+          () => verwijderSpelerUitWhatIfViaCanvas(whatIfId, spelerId, vanTeamId),
+          "verwijderSpelerUitWhatIfViaCanvas"
         );
         return;
       }
