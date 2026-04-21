@@ -96,11 +96,28 @@ export interface SportlinkToken {
   userName: string;
 }
 
+/** Enkele veld-wijziging binnen een lid */
+export interface VeldWijziging {
+  veld: string;
+  oud: string | null;
+  nieuw: string | null;
+}
+
+/** Wijziging op lid-niveau (nieuw of bestaande met één of meer veld-wijzigingen) */
+export interface LidWijziging {
+  relCode: string;
+  naam: string;
+  type: "nieuw" | "bijgewerkt";
+  wijzigingen: VeldWijziging[];
+}
+
 /** Sync resultaat voor leden */
 export interface LedenSyncResultaat {
   bijgewerkt: number;
   nieuw: number;
+  ongewijzigd: number;
   totaalVergeleken: number;
+  wijzigingen: LidWijziging[];
 }
 
 /** Team-sync dry run resultaat */

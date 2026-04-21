@@ -6,11 +6,45 @@ import { useSportlinkCredentials } from "./SportlinkAuth";
 
 type State = "start" | "syncing" | "resultaat" | "fout";
 
+interface VeldWijziging {
+  veld: string;
+  oud: string | null;
+  nieuw: string | null;
+}
+
+interface LidWijziging {
+  relCode: string;
+  naam: string;
+  type: "nieuw" | "bijgewerkt";
+  wijzigingen: VeldWijziging[];
+}
+
 interface SyncResultaat {
   bijgewerkt: number;
   nieuw: number;
+  ongewijzigd: number;
   totaalVergeleken: number;
+  wijzigingen: LidWijziging[];
 }
+
+const VELD_LABELS: Record<string, string> = {
+  roepnaam: "Roepnaam",
+  achternaam: "Achternaam",
+  tussenvoegsel: "Tussenvoegsel",
+  voorletters: "Voorletters",
+  geslacht: "Geslacht",
+  geboortejaar: "Geboortejaar",
+  geboortedatum: "Geboortedatum",
+  email: "E-mail",
+  lidSinds: "Lid sinds",
+  registratieDatum: "Registratie",
+  afmelddatum: "Afmelddatum",
+  lidsoort: "Lidsoort",
+  lidStatus: "Lidstatus",
+  spelactiviteiten: "Spelactiviteiten",
+  clubTeams: "Clubteams",
+  leeftijdscategorie: "Leeftijdscategorie",
+};
 
 interface NotifResultaat {
   opgeslagen: number;
@@ -167,6 +201,116 @@ function SyncingState({ voortgang }: { voortgang: Voortgang[] }) {
 
 // ─── State: Resultaat ─────────────────────────────────────────────────────────
 
+function WijzigingKaart({ w }: { w: LidWijziging }) {
+  const [open, setOpen] = useState(false);
+  const isNieuw = w.type === "nieuw";
+  const kleur = isNieuw ? T.syncNieuw : "var(--accent, #ff6b00)";
+  const bg = isNieuw ? T.syncNieuwBg : "rgba(255,107,0,.08)";
+  const border = isNieuw ? T.syncNieuwBorder : "rgba(255,107,0,.35)";
+
+  return (
+    <div
+      style={{
+        background: "var(--bg-2, #1e1e1e)",
+        border: "1px solid var(--border-1, #3a3a3a)",
+        borderRadius: 8,
+        marginBottom: 8,
+        overflow: "hidden",
+      }}
+    >
+      <button
+        type="button"
+        onClick={() => !isNieuw && setOpen(!open)}
+        disabled={isNieuw}
+        style={{
+          width: "100%",
+          padding: "10px 14px",
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+          background: "none",
+          border: "none",
+          color: "var(--text-1, #fafafa)",
+          cursor: isNieuw ? "default" : "pointer",
+          textAlign: "left",
+        }}
+      >
+        <span
+          style={{
+            fontSize: 10,
+            fontWeight: 700,
+            padding: "2px 7px",
+            borderRadius: 4,
+            background: bg,
+            border: `1px solid ${border}`,
+            color: kleur,
+            textTransform: "uppercase",
+            letterSpacing: ".5px",
+            flexShrink: 0,
+          }}
+        >
+          {isNieuw ? "Nieuw" : `${w.wijzigingen.length} wijz.`}
+        </span>
+        <span style={{ fontSize: 13, fontWeight: 500, flex: 1 }}>{w.naam}</span>
+        <span style={{ fontSize: 11, color: "var(--text-3, #666)" }}>{w.relCode}</span>
+        {!isNieuw && (
+          <span
+            style={{
+              fontSize: 12,
+              color: "var(--text-3, #666)",
+              transform: open ? "rotate(90deg)" : "none",
+              transition: "transform .15s",
+            }}
+          >
+            ▸
+          </span>
+        )}
+      </button>
+
+      {!isNieuw && open && (
+        <div
+          style={{
+            padding: "10px 14px 12px",
+            borderTop: "1px solid var(--border-0, #262626)",
+            fontSize: 12,
+            color: "var(--text-2, #a3a3a3)",
+          }}
+        >
+          {w.wijzigingen.map((v, i) => (
+            <div
+              key={i}
+              style={{ display: "flex", gap: 8, padding: "4px 0", alignItems: "baseline" }}
+            >
+              <div
+                style={{
+                  fontWeight: 600,
+                  color: "var(--text-1, #fafafa)",
+                  minWidth: 140,
+                  fontSize: 11,
+                }}
+              >
+                {VELD_LABELS[v.veld] ?? v.veld}
+              </div>
+              <div style={{ flex: 1 }}>
+                <span
+                  style={{
+                    textDecoration: "line-through",
+                    color: "var(--text-3, #666)",
+                    marginRight: 8,
+                  }}
+                >
+                  {v.oud ?? "∅"}
+                </span>
+                <span style={{ color: kleur, fontWeight: 500 }}>→ {v.nieuw ?? "∅"}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function ResultaatState({
   resultaat,
   notifResultaat,
@@ -176,62 +320,40 @@ function ResultaatState({
   notifResultaat: NotifResultaat | null;
   onReset: () => void;
 }) {
+  const [filter, setFilter] = useState<"alle" | "nieuw" | "bijgewerkt">("alle");
+
+  const zichtbaar = resultaat.wijzigingen.filter((w) => filter === "alle" || w.type === filter);
+
   return (
     <div>
       <h1 style={{ fontSize: 22, fontWeight: 700, marginBottom: 4 }}>Leden Sync</h1>
-      <p style={{ fontSize: 13, color: "var(--text-3, #666)", marginBottom: 28 }}>
+      <p style={{ fontSize: 13, color: "var(--text-3, #666)", marginBottom: 20 }}>
         Synchronisatie voltooid.
       </p>
 
+      {/* Samenvatting */}
       <div
         style={{
           background: "var(--bg-1, #141414)",
           border: "1px solid var(--border-1, #3a3a3a)",
           borderRadius: 12,
-          padding: 28,
-          maxWidth: 400,
-          textAlign: "center",
+          padding: 20,
+          maxWidth: 720,
+          marginBottom: 16,
         }}
       >
         <div
           style={{
-            width: 44,
-            height: 44,
-            borderRadius: "50%",
-            background: T.syncNieuwBg,
-            border: `1px solid ${T.syncNieuwBorder}`,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            margin: "0 auto 16px",
-            color: T.syncNieuw,
-          }}
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={2.5}
-            style={{ width: 22, height: 22 }}
-          >
-            <polyline points="20 6 9 17 4 12" />
-          </svg>
-        </div>
-
-        <div style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Sync geslaagd</div>
-
-        <div
-          style={{
             display: "grid",
-            gridTemplateColumns: "1fr 1fr 1fr",
-            gap: 12,
-            marginBottom: notifResultaat ? 12 : 20,
+            gridTemplateColumns: "repeat(4, 1fr)",
+            gap: 10,
           }}
         >
           {[
             { label: "Vergeleken", value: resultaat.totaalVergeleken },
             { label: "Nieuw", value: resultaat.nieuw },
             { label: "Bijgewerkt", value: resultaat.bijgewerkt },
+            { label: "Ongewijzigd", value: resultaat.ongewijzigd },
           ].map(({ label, value }) => (
             <div
               key={label}
@@ -239,7 +361,8 @@ function ResultaatState({
                 background: "var(--bg-2, #1e1e1e)",
                 border: "1px solid var(--border-1, #3a3a3a)",
                 borderRadius: 8,
-                padding: "10px 8px",
+                padding: "12px 10px",
+                textAlign: "center",
               }}
             >
               <div style={{ fontSize: 20, fontWeight: 700, color: "var(--text-1, #fafafa)" }}>
@@ -257,23 +380,82 @@ function ResultaatState({
             style={{
               fontSize: 12,
               color: "var(--text-3, #666)",
-              marginBottom: 20,
-              lineHeight: 1.5,
+              marginTop: 12,
+              textAlign: "center",
             }}
           >
             {notifResultaat.opgeslagen} notificaties opgeslagen, {notifResultaat.overgeslagen}{" "}
             overgeslagen
           </div>
         )}
-
-        <button
-          className="btn-primary"
-          style={{ width: "auto", padding: "9px 24px" }}
-          onClick={onReset}
-        >
-          Opnieuw synchroniseren
-        </button>
       </div>
+
+      {/* Wijzigingen lijst */}
+      {resultaat.wijzigingen.length > 0 && (
+        <div style={{ maxWidth: 720, marginBottom: 16 }}>
+          <div style={{ display: "flex", gap: 4, marginBottom: 12 }}>
+            {(
+              [
+                { key: "alle", label: `Alle (${resultaat.wijzigingen.length})` },
+                { key: "nieuw", label: `Nieuw (${resultaat.nieuw})` },
+                { key: "bijgewerkt", label: `Bijgewerkt (${resultaat.bijgewerkt})` },
+              ] as const
+            ).map((f) => (
+              <button
+                key={f.key}
+                onClick={() => setFilter(f.key)}
+                style={{
+                  padding: "6px 12px",
+                  fontSize: 12,
+                  background: filter === f.key ? "var(--accent, #ff6b00)" : "var(--bg-2, #1e1e1e)",
+                  border: `1px solid ${filter === f.key ? "var(--accent, #ff6b00)" : "var(--border-1, #3a3a3a)"}`,
+                  borderRadius: 6,
+                  color: filter === f.key ? "#fff" : "var(--text-2, #a3a3a3)",
+                  cursor: "pointer",
+                  fontWeight: filter === f.key ? 600 : 400,
+                }}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+
+          <div
+            style={{
+              maxHeight: 500,
+              overflowY: "auto",
+              padding: 2,
+            }}
+          >
+            {zichtbaar.map((w) => (
+              <WijzigingKaart key={`${w.type}-${w.relCode}`} w={w} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {resultaat.wijzigingen.length === 0 && (
+        <div
+          style={{
+            fontSize: 13,
+            color: "var(--text-3, #666)",
+            maxWidth: 720,
+            marginBottom: 16,
+            textAlign: "center",
+            padding: 20,
+          }}
+        >
+          Geen wijzigingen — alle leden zijn al actueel.
+        </div>
+      )}
+
+      <button
+        className="btn-primary"
+        style={{ width: "auto", padding: "9px 24px" }}
+        onClick={onReset}
+      >
+        Opnieuw synchroniseren
+      </button>
     </div>
   );
 }
