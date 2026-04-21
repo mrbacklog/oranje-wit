@@ -298,7 +298,6 @@ export default function StafProfielDialog({
             {/* Koppelingen + speler-badge */}
             {profiel && (
               <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
-                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                 {profiel.koppelingen.map((k: any) => (
                   <span
                     key={k.teamId}

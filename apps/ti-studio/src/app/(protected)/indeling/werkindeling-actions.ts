@@ -272,7 +272,6 @@ export async function getStafProfiel(stafId: string, kadersId?: string) {
   if (!staf) return null;
 
   // Koppelingen: huidige teams via teamStaf
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const koppelingen = staf.teamStaf.map((ts: any) => ({
     teamId: ts.team.id,
     teamNaam: ts.team.naam,
@@ -304,11 +303,9 @@ export async function getStafProfiel(stafId: string, kadersId?: string) {
 
   // Memo count: open werkitems
   const memoCount = staf.werkitems.filter(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (w: any) => w.status === "OPEN" || w.status === "IN_BESPREKING"
   ).length;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const werkitems = staf.werkitems.map((w: any) => ({
     ...w,
     createdAt: w.createdAt.toISOString(),
