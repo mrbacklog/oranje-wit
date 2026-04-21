@@ -211,6 +211,136 @@ export async function verwijderWerkindeling(werkindelingId: string, auteur: stri
   revalidatePath("/indeling");
 }
 
+export async function getStafProfiel(stafId: string, kadersId?: string) {
+  await requireTC();
+  const staf = await prisma.staf.findUnique({
+    where: { id: stafId },
+    select: {
+      id: true,
+      relCode: true,
+      naam: true,
+      rollen: true,
+      actief: true,
+      teamStaf: {
+        select: {
+          id: true,
+          rol: true,
+          team: {
+            select: {
+              id: true,
+              naam: true,
+              kleur: true,
+              versie: {
+                select: {
+                  werkindeling: {
+                    select: {
+                      kaders: { select: { seizoen: true } },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      toewijzingen: {
+        select: { seizoen: true, team: true, rol: true },
+        orderBy: { seizoen: "desc" },
+      },
+      werkitems: {
+        where: { verwijderdOp: null },
+        select: {
+          id: true,
+          titel: true,
+          beschrijving: true,
+          type: true,
+          status: true,
+          prioriteit: true,
+          volgorde: true,
+          resolutie: true,
+          createdAt: true,
+        },
+        orderBy: { volgorde: "asc" },
+      },
+      lid: {
+        select: {
+          foto: { select: { relCode: true } },
+        },
+      },
+    },
+  });
+  if (!staf) return null;
+
+  // Koppelingen: huidige teams via teamStaf
+  const koppelingen = staf.teamStaf.map((ts) => ({
+    teamId: ts.team.id,
+    teamNaam: ts.team.naam,
+    teamKleur: (ts.team.kleur as string | null) ?? "grijs",
+    rol: ts.rol,
+    seizoen: ts.team.versie?.werkindeling?.kaders?.seizoen ?? null,
+  }));
+
+  // Bepaal primaire rol (eerste in rollen array)
+  const rol = staf.rollen[0] ?? null;
+
+  // Is ook speler? Zoek via relCode
+  let isSpeler = false;
+  let spelerTeamNaam: string | null = null;
+  if (staf.relCode) {
+    const spelerRecord = await prisma.speler.findFirst({
+      where: { relCode: staf.relCode },
+      select: {
+        huidig: true,
+      },
+    });
+    if (spelerRecord) {
+      isSpeler = true;
+      const huidig = spelerRecord.huidig as { team?: string } | null;
+      spelerTeamNaam = huidig?.team ?? null;
+    }
+  }
+  const heeftFoto = Boolean(staf.lid?.foto);
+
+  // Memo count: open werkitems
+  const memoCount = staf.werkitems.filter(
+    (w) => w.status === "OPEN" || w.status === "IN_BESPREKING"
+  ).length;
+
+  const werkitems = staf.werkitems.map((w) => ({
+    ...w,
+    createdAt: w.createdAt.toISOString(),
+  }));
+
+  // Groepeer toewijzingen per seizoen (deduplicate seizoen+team combo)
+  const historieMap = new Map<
+    string,
+    { seizoen: string; teamNaam: string; teamKleur: string; rol: string }[]
+  >();
+  for (const t of staf.toewijzingen) {
+    const arr = historieMap.get(t.seizoen) ?? [];
+    arr.push({ seizoen: t.seizoen, teamNaam: t.team, teamKleur: "grijs", rol: t.rol });
+    historieMap.set(t.seizoen, arr);
+  }
+  const historie = Array.from(historieMap.entries())
+    .sort(([a], [b]) => b.localeCompare(a))
+    .map(([seizoen, items]) => ({ seizoen, items }));
+
+  return {
+    id: staf.id,
+    relCode: staf.relCode,
+    naam: staf.naam,
+    rollen: staf.rollen,
+    rol,
+    fotoUrl: heeftFoto ? `/api/scouting/staf/${staf.id}/foto` : null,
+    koppelingen,
+    historie,
+    memoCount,
+    isSpeler,
+    spelerTeamNaam,
+    werkitems,
+  };
+}
+
 export async function getSpelerProfiel(spelerId: string, kadersId?: string) {
   await requireTC();
   const [speler, competitieHistorie, kadersSpeler, ussRecord] = await Promise.all([

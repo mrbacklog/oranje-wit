@@ -470,7 +470,7 @@ export default async function IndelingPage() {
     }
   }
 
-  // Bouw alleStaf: stafleden met hun teams + rollen
+  // Bouw alleStaf: ALLE actieve stafleden, met hun team- en selectie-koppelingen
   const stafTeamMap = new Map<string, WerkbordStafTeamrol[]>();
   if (versie) {
     for (const team of versie.teams as any[]) {
@@ -481,24 +481,51 @@ export default async function IndelingPage() {
         stafTeamMap.set(ts.stafId, bestaand);
       }
     }
-  }
-
-  const alleStaf: WerkbordStaf[] = [];
-  const gezienStafIds = new Set<string>();
-  if (versie) {
-    for (const team of versie.teams as any[]) {
-      for (const ts of team.staf as any[]) {
-        if (gezienStafIds.has(ts.stafId)) continue;
-        gezienStafIds.add(ts.stafId);
-        alleStaf.push({
-          id: ts.stafId,
-          naam: ts.staf?.naam ?? "?",
-          rollen: (ts.staf?.rollen as string[]) ?? [],
-          teams: stafTeamMap.get(ts.stafId) ?? [],
+    for (const sg of ((versie as any).selectieGroepen ?? []) as any[]) {
+      // Selectie-staf koppelen aan de primary (laagste volgorde) team van de groep
+      const groepTeams = ((versie as any).teams as any[])
+        .filter((t: any) => t.selectieGroepId === sg.id)
+        .sort((a: any, b: any) => (a.volgorde ?? 0) - (b.volgorde ?? 0));
+      const primary = groepTeams[0];
+      if (!primary) continue;
+      const kleur = KLEUR_MAP[primary.kleur ?? ""] ?? "groen";
+      for (const ss of (sg.staf ?? []) as any[]) {
+        const bestaand = stafTeamMap.get(ss.stafId) ?? [];
+        bestaand.push({
+          teamId: primary.id,
+          teamNaam: sg.naam ?? primary.naam,
+          kleur,
+          rol: ss.rol ?? "",
         });
+        stafTeamMap.set(ss.stafId, bestaand);
       }
     }
   }
+
+  const stafLeden = await prisma.staf.findMany({
+    where: { actief: true },
+    select: { id: true, naam: true, relCode: true, rollen: true },
+    orderBy: { naam: "asc" },
+  });
+
+  const stafRelCodes = stafLeden
+    .map((s) => s.relCode)
+    .filter((r): r is string => r !== null && r !== undefined);
+  const stafFotos = stafRelCodes.length
+    ? await prisma.lidFoto.findMany({
+        where: { relCode: { in: stafRelCodes } },
+        select: { relCode: true },
+      })
+    : [];
+  const stafFotoSet = new Set<string>(stafFotos.map((f) => f.relCode));
+
+  const alleStaf: WerkbordStaf[] = stafLeden.map((s) => ({
+    id: s.id,
+    naam: s.naam,
+    rollen: (s.rollen as string[]) ?? [],
+    teams: stafTeamMap.get(s.id) ?? [],
+    fotoUrl: s.relCode && stafFotoSet.has(s.relCode) ? `/api/scouting/staf/${s.id}/foto` : null,
+  }));
 
   const prismaReserveringen = await prisma.reserveringsspeler.findMany({
     select: {
