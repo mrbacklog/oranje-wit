@@ -1,6 +1,12 @@
 import { prisma } from "@oranje-wit/database";
 import { logger } from "@oranje-wit/types";
-import type { SportlinkTeamLid, TeamSyncDryRun, TeamSyncWijziging, TeamSyncTeam } from "../types";
+import type {
+  SportlinkTeamLid,
+  TeamSyncDryRun,
+  TeamSyncWijziging,
+  TeamSyncTeam,
+  TeamSyncSelectie,
+} from "../types";
 
 type Periode = "veld_najaar" | "veld_voorjaar" | "zaal" | "zaal_deel1" | "zaal_deel2";
 
@@ -10,8 +16,11 @@ export async function teamSyncDryRun(
   periode: Periode,
   spelvorm: "Veld" | "Zaal"
 ): Promise<TeamSyncDryRun> {
+  // Alleen records met bron='sportlink' meenemen — records uit andere bronnen
+  // (import, handmatig) mogen niet als "Uit" verschijnen in de dry-run, omdat
+  // syncTeams() ze ook niet aanraakt.
   const huidigeRecords = await prisma.competitieSpeler.findMany({
-    where: { seizoen, competitie: periode },
+    where: { seizoen, competitie: periode, bron: "sportlink" },
     include: { lid: { select: { roepnaam: true, achternaam: true } } },
   });
 
@@ -96,29 +105,50 @@ export async function teamSyncDryRun(
   return { spelvorm, periode, teams, nieuwInTeam, uitTeam, teamWissels, stafWijzigingen };
 }
 
+/**
+ * Selectieve apply op basis van TC-keuzes uit de dry-run.
+ * Voert alleen de items door die expliciet aangevinkt zijn — niet-geselecteerde
+ * records blijven ongemoeid.
+ */
 export async function syncTeams(
   teamleden: SportlinkTeamLid[],
   seizoen: string,
-  periode: Periode
-): Promise<{ aangemaakt: number; verwijderd: number }> {
-  const spelers = teamleden.filter((t) => t.IsPlayer);
-
-  const { count: verwijderd } = await prisma.competitieSpeler.deleteMany({
-    where: { seizoen, competitie: periode, bron: "sportlink" },
-  });
+  periode: Periode,
+  selectie: TeamSyncSelectie
+): Promise<{ aangemaakt: number; verwijderd: number; bijgewerkt: number }> {
+  const spelerByRelCode = new Map<string, SportlinkTeamLid>();
+  for (const t of teamleden.filter((x) => x.IsPlayer)) {
+    spelerByRelCode.set(t.PublicPersonId, t);
+  }
 
   const bestaandeLeden = new Set(
     (await prisma.lid.findMany({ select: { relCode: true } })).map((l) => l.relCode)
   );
 
-  let aangemaakt = 0;
-  for (const speler of spelers) {
-    const relCode = speler.PublicPersonId;
-    if (!relCode.match(/^[A-Z]{1,3}\w+$/)) continue;
+  const nieuwSet = new Set(selectie.nieuwRelCodes);
+  const uitSet = new Set(selectie.uitRelCodes);
+  const wisselSet = new Set(selectie.wisselRelCodes);
 
+  // 1. Verwijderen — alleen bron='sportlink' records voor geselecteerde relCodes
+  const verwijderd = uitSet.size
+    ? await prisma.competitieSpeler.deleteMany({
+        where: {
+          seizoen,
+          competitie: periode,
+          bron: "sportlink",
+          relCode: { in: [...uitSet] },
+        },
+      })
+    : { count: 0 };
+
+  // 2. Aanmaken — nieuwe records uit Sportlink
+  let aangemaakt = 0;
+  for (const relCode of nieuwSet) {
+    const speler = spelerByRelCode.get(relCode);
+    if (!speler) continue;
+    if (!relCode.match(/^[A-Z]{1,3}\w+$/)) continue;
     if (!bestaandeLeden.has(relCode)) continue;
 
-    // Prisma 7 TS2321 workaround — type-recursie op CompetitieSpeler
     await (prisma.competitieSpeler as any).create({
       data: {
         relCode,
@@ -133,9 +163,22 @@ export async function syncTeams(
     aangemaakt++;
   }
 
+  // 3. Teamwissels — update team op bestaande sportlink-records
+  let bijgewerkt = 0;
+  for (const relCode of wisselSet) {
+    const speler = spelerByRelCode.get(relCode);
+    if (!speler) continue;
+
+    const res = await prisma.competitieSpeler.updateMany({
+      where: { seizoen, competitie: periode, bron: "sportlink", relCode },
+      data: { team: speler.TeamName },
+    });
+    if (res.count > 0) bijgewerkt++;
+  }
+
   logger.info(
-    `[sportlink] Team-sync ${seizoen} ${periode}: ${aangemaakt} aangemaakt, ${verwijderd} verwijderd`
+    `[sportlink] Team-sync ${seizoen} ${periode}: ${aangemaakt} aangemaakt, ${verwijderd.count} verwijderd, ${bijgewerkt} bijgewerkt`
   );
 
-  return { aangemaakt, verwijderd };
+  return { aangemaakt, verwijderd: verwijderd.count, bijgewerkt };
 }

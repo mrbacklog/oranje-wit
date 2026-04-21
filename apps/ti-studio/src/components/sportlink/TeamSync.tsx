@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { useSportlinkCredentials } from "./SportlinkAuth";
 
-type Stap = "spelvorm" | "periode" | "dryrun" | "bezig" | "resultaat" | "apply" | "klaar";
+type Stap = "scope" | "bezig" | "resultaat" | "apply" | "klaar";
 type Spelvorm = "Veld" | "Zaal";
 type Periode = "veld_najaar" | "veld_voorjaar" | "zaal" | "zaal_deel1" | "zaal_deel2";
 
@@ -37,6 +37,13 @@ interface DryRunResultaat {
 interface ApplyResultaat {
   aangemaakt: number;
   verwijderd: number;
+  bijgewerkt: number;
+}
+
+interface Voortgang {
+  stap: string;
+  tekst: string;
+  aantal?: number;
 }
 
 // ─── Tokens ───────────────────────────────────────────────────────────────────
@@ -66,6 +73,10 @@ function aanbevolenSpelvorm(): { spelvorm: Spelvorm; label: string } {
   return { spelvorm: "Veld", label: "Veld najaar aanbevolen" };
 }
 
+function periodesVoorSpelvorm(s: Spelvorm): Periode[] {
+  return s === "Veld" ? ["veld_najaar", "veld_voorjaar"] : ["zaal", "zaal_deel1", "zaal_deel2"];
+}
+
 function periodeLabel(p: Periode): string {
   const labels: Record<Periode, string> = {
     veld_najaar: "Veld najaar",
@@ -77,10 +88,37 @@ function periodeLabel(p: Periode): string {
   return labels[p];
 }
 
-// ─── Sub-components ───────────────────────────────────────────────────────────
+// ─── Stap 1: één keuzescherm voor spelvorm + periode ────────────────────────
 
-function KiesSpelvorm({ onKies }: { onKies: (s: Spelvorm) => void }) {
+function KiesScope({
+  initialSpelvorm,
+  initialPeriode,
+  onVergelijk,
+  error,
+}: {
+  initialSpelvorm: Spelvorm | null;
+  initialPeriode: Periode | null;
+  onVergelijk: (s: Spelvorm, p: Periode) => void;
+  error: string | null;
+}) {
   const aanbeveling = aanbevolenSpelvorm();
+  const [spelvorm, setSpelvorm] = useState<Spelvorm>(initialSpelvorm ?? aanbeveling.spelvorm);
+  const [periode, setPeriode] = useState<Periode | null>(
+    initialPeriode ?? (spelvorm === "Veld" ? "veld_voorjaar" : "zaal_deel1")
+  );
+
+  const periodes = periodesVoorSpelvorm(spelvorm);
+  const periodeGeldig = periode !== null && periodes.includes(periode);
+  const effectievePeriode: Periode | null = periodeGeldig ? periode : (periodes[0] ?? null);
+
+  function kiesSpelvorm(nieuw: Spelvorm) {
+    setSpelvorm(nieuw);
+    // Reset periode naar eerste geldige voor deze spelvorm
+    const geldig = periodesVoorSpelvorm(nieuw);
+    if (!periode || !geldig.includes(periode)) {
+      setPeriode(geldig[0] ?? null);
+    }
+  }
 
   return (
     <div>
@@ -94,152 +132,104 @@ function KiesSpelvorm({ onKies }: { onKies: (s: Spelvorm) => void }) {
           background: "var(--bg-1, #141414)",
           border: "1px solid var(--border-1, #3a3a3a)",
           borderRadius: 12,
-          padding: 28,
-          maxWidth: 420,
+          padding: 24,
+          maxWidth: 480,
         }}
       >
-        <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 16 }}>Kies spelvorm</div>
+        {/* Spelvorm */}
+        <div
+          style={{
+            fontSize: 12,
+            fontWeight: 600,
+            marginBottom: 10,
+            color: "var(--text-2, #a3a3a3)",
+          }}
+        >
+          Spelvorm
+        </div>
+        <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
+          {(["Veld", "Zaal"] as Spelvorm[]).map((s) => {
+            const actief = s === spelvorm;
+            return (
+              <button
+                key={s}
+                type="button"
+                onClick={() => kiesSpelvorm(s)}
+                style={{
+                  flex: 1,
+                  padding: "10px 0",
+                  fontSize: 14,
+                  fontWeight: actief ? 600 : 400,
+                  background: actief ? "rgba(255,107,0,.12)" : "var(--bg-2, #1e1e1e)",
+                  border: `1px solid ${actief ? "rgba(255,107,0,.5)" : "var(--border-1, #3a3a3a)"}`,
+                  borderRadius: 8,
+                  color: actief ? "var(--accent, #ff6b00)" : "var(--text-1, #fafafa)",
+                  cursor: "pointer",
+                }}
+              >
+                {s}
+              </button>
+            );
+          })}
+        </div>
 
-        <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
-          {(["Veld", "Zaal"] as Spelvorm[]).map((s) => (
-            <button
-              key={s}
-              onClick={() => onKies(s)}
-              style={{
-                flex: 1,
-                padding: "14px 0",
-                fontSize: 15,
-                fontWeight: 600,
-                background:
-                  s === aanbeveling.spelvorm ? "rgba(255,107,0,.12)" : "var(--bg-2, #1e1e1e)",
-                border: `1px solid ${s === aanbeveling.spelvorm ? "rgba(255,107,0,.5)" : "var(--border-1, #3a3a3a)"}`,
-                borderRadius: 8,
-                color:
-                  s === aanbeveling.spelvorm ? "var(--accent, #ff6b00)" : "var(--text-1, #fafafa)",
-                cursor: "pointer",
-              }}
-            >
-              {s}
-            </button>
-          ))}
+        {/* Periode */}
+        <div
+          style={{
+            fontSize: 12,
+            fontWeight: 600,
+            marginBottom: 10,
+            color: "var(--text-2, #a3a3a3)",
+          }}
+        >
+          Periode
+        </div>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: periodes.length === 2 ? "1fr 1fr" : "1fr 1fr 1fr",
+            gap: 8,
+            marginBottom: 20,
+          }}
+        >
+          {periodes.map((p) => {
+            const actief = p === effectievePeriode;
+            return (
+              <button
+                key={p}
+                type="button"
+                onClick={() => setPeriode(p)}
+                style={{
+                  padding: "10px 0",
+                  fontSize: 13,
+                  fontWeight: actief ? 600 : 400,
+                  background: actief ? "rgba(255,107,0,.12)" : "var(--bg-2, #1e1e1e)",
+                  border: `1px solid ${actief ? "rgba(255,107,0,.5)" : "var(--border-1, #3a3a3a)"}`,
+                  borderRadius: 8,
+                  color: actief ? "var(--accent, #ff6b00)" : "var(--text-1, #fafafa)",
+                  cursor: "pointer",
+                }}
+              >
+                {periodeLabel(p)}
+              </button>
+            );
+          })}
         </div>
 
         <div
           style={{
-            fontSize: 12,
+            fontSize: 11,
             color: "var(--text-3, #666)",
-            padding: "8px 12px",
+            padding: "7px 10px",
             background: "var(--bg-2, #1e1e1e)",
             border: "1px solid var(--border-1, #3a3a3a)",
             borderRadius: 6,
+            marginBottom: 16,
           }}
         >
-          {aanbeveling.label} op basis van de huidige maand
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function KiesPeriode({
-  spelvorm,
-  onKies,
-  onTerug,
-}: {
-  spelvorm: Spelvorm;
-  onKies: (p: Periode) => void;
-  onTerug: () => void;
-}) {
-  const periodes: Periode[] =
-    spelvorm === "Veld" ? ["veld_najaar", "veld_voorjaar"] : ["zaal", "zaal_deel1", "zaal_deel2"];
-
-  return (
-    <div>
-      <h1 style={{ fontSize: 22, fontWeight: 700, marginBottom: 4 }}>Team Sync</h1>
-      <p style={{ fontSize: 13, color: "var(--text-3, #666)", marginBottom: 28 }}>
-        Spelvorm: <strong style={{ color: "var(--text-1, #fafafa)" }}>{spelvorm}</strong>
-      </p>
-
-      <div
-        style={{
-          background: "var(--bg-1, #141414)",
-          border: "1px solid var(--border-1, #3a3a3a)",
-          borderRadius: 12,
-          padding: 28,
-          maxWidth: 420,
-        }}
-      >
-        <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 16 }}>Kies periode</div>
-
-        <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 20 }}>
-          {periodes.map((p) => (
-            <button
-              key={p}
-              onClick={() => onKies(p)}
-              style={{
-                padding: "12px 16px",
-                fontSize: 14,
-                fontWeight: 500,
-                background: "var(--bg-2, #1e1e1e)",
-                border: "1px solid var(--border-1, #3a3a3a)",
-                borderRadius: 8,
-                color: "var(--text-1, #fafafa)",
-                cursor: "pointer",
-                textAlign: "left",
-              }}
-            >
-              {periodeLabel(p)}
-            </button>
-          ))}
+          {aanbeveling.label} op basis van huidige maand
         </div>
 
-        <button
-          onClick={onTerug}
-          style={{
-            fontSize: 13,
-            color: "var(--text-3, #666)",
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            padding: 0,
-          }}
-        >
-          ← Terug
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function DryRunForm({
-  spelvorm,
-  periode,
-  onVergelijk,
-  onTerug,
-  error,
-}: {
-  spelvorm: Spelvorm;
-  periode: Periode;
-  onVergelijk: () => void;
-  onTerug: () => void;
-  error: string | null;
-}) {
-  return (
-    <div>
-      <h1 style={{ fontSize: 22, fontWeight: 700, marginBottom: 4 }}>Team Sync</h1>
-      <p style={{ fontSize: 13, color: "var(--text-3, #666)", marginBottom: 28 }}>
-        {periodeLabel(periode)} · {spelvorm}
-      </p>
-
-      <div
-        style={{
-          background: "var(--bg-1, #141414)",
-          border: "1px solid var(--border-1, #3a3a3a)",
-          borderRadius: 12,
-          padding: 28,
-          maxWidth: 420,
-        }}
-      >
         {error && (
           <div
             style={{
@@ -256,30 +246,110 @@ function DryRunForm({
           </div>
         )}
 
-        <div style={{ display: "flex", gap: 10 }}>
-          <button
-            type="button"
-            onClick={onTerug}
-            style={{
-              padding: "9px 16px",
-              fontSize: 13,
-              background: "var(--bg-2, #1e1e1e)",
-              border: "1px solid var(--border-1, #3a3a3a)",
-              borderRadius: 6,
-              color: "var(--text-3, #666)",
-              cursor: "pointer",
-            }}
-          >
-            ← Terug
-          </button>
-          <button type="button" className="btn-primary" style={{ flex: 1 }} onClick={onVergelijk}>
-            Vergelijken
-          </button>
-        </div>
+        <button
+          type="button"
+          className="btn-primary"
+          style={{ width: "100%" }}
+          disabled={!effectievePeriode}
+          onClick={() => effectievePeriode && onVergelijk(spelvorm, effectievePeriode)}
+        >
+          Vergelijken
+        </button>
       </div>
     </div>
   );
 }
+
+// ─── Stap 2: bezig met voortgang ─────────────────────────────────────────────
+
+const BEZIG_STAPPEN = ["login", "teams", "vergelijken", "klaar"];
+const BEZIG_LABELS: Record<string, string> = {
+  login: "Inloggen",
+  teams: "Teams ophalen",
+  vergelijken: "Vergelijken",
+  klaar: "Klaar",
+};
+
+function BezigState({ voortgang }: { voortgang: Voortgang[] }) {
+  const huidigStap = voortgang.at(-1)?.stap ?? "login";
+
+  return (
+    <div>
+      <h1 style={{ fontSize: 22, fontWeight: 700, marginBottom: 4 }}>Team Sync</h1>
+      <p style={{ fontSize: 13, color: "var(--text-3, #666)", marginBottom: 28 }}>
+        Bezig met vergelijken...
+      </p>
+
+      <div
+        style={{
+          background: "var(--bg-1, #141414)",
+          border: "1px solid var(--border-1, #3a3a3a)",
+          borderRadius: 12,
+          padding: 24,
+          maxWidth: 400,
+        }}
+      >
+        {BEZIG_STAPPEN.map((stap) => {
+          const gedaan = voortgang.some((v) => v.stap === stap);
+          const actief = huidigStap === stap && !gedaan;
+          const entry = voortgang.find((v) => v.stap === stap);
+
+          return (
+            <div
+              key={stap}
+              style={{
+                display: "flex",
+                alignItems: "flex-start",
+                gap: 12,
+                marginBottom: 14,
+                opacity: !gedaan && !actief ? 0.35 : 1,
+              }}
+            >
+              <div
+                style={{
+                  width: 20,
+                  height: 20,
+                  borderRadius: "50%",
+                  flexShrink: 0,
+                  marginTop: 1,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  background: gedaan
+                    ? T.nieuwBg
+                    : actief
+                      ? "rgba(255,107,0,.12)"
+                      : "var(--bg-2, #1e1e1e)",
+                  border: `1px solid ${gedaan ? T.nieuwBorder : actief ? "rgba(255,107,0,.5)" : "var(--border-1, #3a3a3a)"}`,
+                  color: gedaan
+                    ? T.nieuw
+                    : actief
+                      ? "var(--accent, #ff6b00)"
+                      : "var(--text-3, #666)",
+                  fontSize: 10,
+                }}
+              >
+                {gedaan ? "✓" : actief ? "…" : "·"}
+              </div>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-1, #fafafa)" }}>
+                  {BEZIG_LABELS[stap] ?? stap}
+                </div>
+                {entry && (
+                  <div style={{ fontSize: 12, color: "var(--text-3, #666)", marginTop: 2 }}>
+                    {entry.tekst}
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ─── Stap 3: resultaat met checkboxes ────────────────────────────────────────
 
 function WijzigingBadge({ type }: { type: "nieuw" | "uit" | "wissel" | "staf" }) {
   const config = {
@@ -300,7 +370,7 @@ function WijzigingBadge({ type }: { type: "nieuw" | "uit" | "wissel" | "staf" })
         border: `1px solid ${config.border}`,
         color: config.kleur,
         textTransform: "uppercase",
-        letterSpacing: ".4px",
+        letterSpacing: ".5px",
         flexShrink: 0,
       }}
     >
@@ -309,81 +379,152 @@ function WijzigingBadge({ type }: { type: "nieuw" | "uit" | "wissel" | "staf" })
   );
 }
 
-function WijzigingLijst({
+function SelecteerbareLijst({
   titel,
   items,
   type,
+  selectie,
+  onToggle,
+  onToggleAlle,
+  selecteerbaar,
 }: {
   titel: string;
   items: WijzigingRegel[];
   type: "nieuw" | "uit" | "wissel" | "staf";
+  selectie: Set<string>;
+  onToggle: (relCode: string) => void;
+  onToggleAlle: () => void;
+  selecteerbaar: boolean;
 }) {
   if (items.length === 0) return null;
+  const allesGeselecteerd = items.every((i) => selectie.has(i.relCode));
+  const aantalGeselecteerd = items.filter((i) => selectie.has(i.relCode)).length;
 
   return (
-    <div style={{ marginBottom: 20 }}>
+    <div style={{ marginBottom: 16 }}>
       <div
         style={{
-          fontSize: 12,
-          fontWeight: 600,
-          color: "var(--text-3, #666)",
-          textTransform: "uppercase",
-          letterSpacing: ".5px",
-          marginBottom: 8,
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+          padding: "10px 0",
+          borderBottom: "1px solid var(--border-0, #262626)",
+          marginBottom: 4,
         }}
       >
-        {titel} ({items.length})
+        <span style={{ fontSize: 13, fontWeight: 600 }}>{titel}</span>
+        <span style={{ fontSize: 12, color: "var(--text-3, #666)" }}>
+          {selecteerbaar ? `${aantalGeselecteerd} / ${items.length}` : items.length}
+        </span>
+        {selecteerbaar && (
+          <button
+            type="button"
+            onClick={onToggleAlle}
+            style={{
+              fontSize: 11,
+              marginLeft: "auto",
+              color: allesGeselecteerd ? "var(--text-3, #666)" : "var(--accent, #ff6b00)",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              padding: 0,
+            }}
+          >
+            {allesGeselecteerd ? "Alles deselecteren" : "Alles selecteren"}
+          </button>
+        )}
       </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-        {items.map((item) => (
-          <div
+
+      {items.map((item) => {
+        const gekozen = selectie.has(item.relCode);
+        return (
+          <label
             key={item.relCode}
             style={{
               display: "flex",
               alignItems: "center",
               gap: 10,
-              padding: "8px 12px",
+              padding: "8px 10px",
               background: "var(--bg-2, #1e1e1e)",
               border: "1px solid var(--border-1, #3a3a3a)",
               borderRadius: 6,
-              fontSize: 13,
+              marginBottom: 4,
+              cursor: selecteerbaar ? "pointer" : "default",
+              opacity: selecteerbaar && !gekozen ? 0.6 : 1,
             }}
           >
+            {selecteerbaar && (
+              <input
+                type="checkbox"
+                checked={gekozen}
+                onChange={() => onToggle(item.relCode)}
+                style={{ accentColor: "var(--accent, #ff6b00)" }}
+              />
+            )}
             <WijzigingBadge type={type} />
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontWeight: 500, color: "var(--text-1, #fafafa)" }}>{item.naam}</div>
+              <div style={{ fontWeight: 500, color: "var(--text-1, #fafafa)", fontSize: 13 }}>
+                {item.naam}
+              </div>
               <div style={{ fontSize: 11, color: "var(--text-3, #666)", marginTop: 1 }}>
                 {item.vanTeam && item.naarTeam
                   ? `${item.vanTeam} → ${item.naarTeam}`
                   : item.vanTeam
                     ? item.vanTeam
-                    : item.naarTeam}
+                    : (item.naarTeam ?? "onbekend")}
                 {item.functie && ` · ${item.functie}`}
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          </label>
+        );
+      })}
     </div>
   );
 }
 
 function DryRunResultaatView({
   resultaat,
+  selectie,
+  setSelectie,
   onDoorvoeren,
   onTerug,
+  applying,
+  applyError,
 }: {
   resultaat: DryRunResultaat;
+  selectie: {
+    nieuw: Set<string>;
+    uit: Set<string>;
+    wissel: Set<string>;
+  };
+  setSelectie: React.Dispatch<
+    React.SetStateAction<{ nieuw: Set<string>; uit: Set<string>; wissel: Set<string> }>
+  >;
   onDoorvoeren: () => void;
   onTerug: () => void;
+  applying: boolean;
+  applyError: string | null;
 }) {
   const totaalSpelers = resultaat.teams.reduce((s, t) => s + t.aantalSpelers, 0);
   const totaalStaf = resultaat.teams.reduce((s, t) => s + t.aantalStaf, 0);
-  const totaalWijzigingen =
-    resultaat.nieuwInTeam.length +
-    resultaat.uitTeam.length +
-    resultaat.teamWissels.length +
-    resultaat.stafWijzigingen.length;
+  const totaalGeselecteerd = selectie.nieuw.size + selectie.uit.size + selectie.wissel.size;
+
+  function toggle(categorie: "nieuw" | "uit" | "wissel", relCode: string) {
+    setSelectie((prev) => {
+      const next = new Set(prev[categorie]);
+      if (next.has(relCode)) next.delete(relCode);
+      else next.add(relCode);
+      return { ...prev, [categorie]: next };
+    });
+  }
+
+  function toggleAlle(categorie: "nieuw" | "uit" | "wissel", items: WijzigingRegel[]) {
+    setSelectie((prev) => {
+      const alles = items.every((i) => prev[categorie].has(i.relCode));
+      const next = new Set(alles ? [] : items.map((i) => i.relCode));
+      return { ...prev, [categorie]: next };
+    });
+  }
 
   return (
     <div>
@@ -392,12 +533,14 @@ function DryRunResultaatView({
         {periodeLabel(resultaat.periode)} · {resultaat.spelvorm}
       </p>
 
+      {/* Samenvatting */}
       <div
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(3,1fr)",
           gap: 10,
-          marginBottom: 24,
+          marginBottom: 20,
+          maxWidth: 720,
         }}
       >
         {[
@@ -408,14 +551,14 @@ function DryRunResultaatView({
           <div
             key={label}
             style={{
-              background: "var(--bg-1, #141414)",
+              background: "var(--bg-2, #1e1e1e)",
               border: "1px solid var(--border-1, #3a3a3a)",
               borderRadius: 8,
-              padding: "12px 10px",
+              padding: "10px 12px",
               textAlign: "center",
             }}
           >
-            <div style={{ fontSize: 22, fontWeight: 700, color: "var(--text-1, #fafafa)" }}>
+            <div style={{ fontSize: 20, fontWeight: 700, color: "var(--text-1, #fafafa)" }}>
               {value}
             </div>
             <div style={{ fontSize: 11, color: "var(--text-3, #666)", marginTop: 2 }}>{label}</div>
@@ -423,61 +566,97 @@ function DryRunResultaatView({
         ))}
       </div>
 
-      {totaalWijzigingen === 0 ? (
-        <div
-          style={{
-            padding: "16px",
-            background: T.nieuwBg,
-            border: `1px solid ${T.nieuwBorder}`,
-            borderRadius: 8,
-            fontSize: 13,
-            color: T.nieuw,
-            marginBottom: 20,
-          }}
-        >
-          Geen wijzigingen — database is al up-to-date.
-        </div>
-      ) : (
-        <>
-          <WijzigingLijst titel="Nieuw in team" items={resultaat.nieuwInTeam} type="nieuw" />
-          <WijzigingLijst titel="Uit team" items={resultaat.uitTeam} type="uit" />
-          <WijzigingLijst titel="Teamwissels" items={resultaat.teamWissels} type="wissel" />
-          <WijzigingLijst titel="Stafwijzigingen" items={resultaat.stafWijzigingen} type="staf" />
-        </>
-      )}
-
-      <div style={{ display: "flex", gap: 10, marginTop: 8 }}>
-        <button
-          onClick={onTerug}
-          style={{
-            padding: "9px 16px",
-            fontSize: 13,
-            background: "var(--bg-2, #1e1e1e)",
-            border: "1px solid var(--border-1, #3a3a3a)",
-            borderRadius: 6,
-            color: "var(--text-3, #666)",
-            cursor: "pointer",
-          }}
-        >
-          ← Terug
-        </button>
-        {totaalWijzigingen > 0 && (
-          <button className="btn-primary" style={{ flex: 1 }} onClick={onDoorvoeren}>
-            Doorvoeren ({totaalWijzigingen} wijzigingen)
-          </button>
+      <div style={{ maxWidth: 720 }}>
+        {applyError && (
+          <div
+            style={{
+              background: T.uitBg,
+              border: `1px solid ${T.uitBorder}`,
+              borderRadius: 6,
+              padding: "10px 12px",
+              fontSize: 13,
+              color: T.uit,
+              marginBottom: 16,
+            }}
+          >
+            {applyError}
+          </div>
         )}
+
+        <SelecteerbareLijst
+          titel="Nieuw in team"
+          items={resultaat.nieuwInTeam}
+          type="nieuw"
+          selectie={selectie.nieuw}
+          onToggle={(r) => toggle("nieuw", r)}
+          onToggleAlle={() => toggleAlle("nieuw", resultaat.nieuwInTeam)}
+          selecteerbaar
+        />
+        <SelecteerbareLijst
+          titel="Uit team"
+          items={resultaat.uitTeam}
+          type="uit"
+          selectie={selectie.uit}
+          onToggle={(r) => toggle("uit", r)}
+          onToggleAlle={() => toggleAlle("uit", resultaat.uitTeam)}
+          selecteerbaar
+        />
+        <SelecteerbareLijst
+          titel="Teamwissels"
+          items={resultaat.teamWissels}
+          type="wissel"
+          selectie={selectie.wissel}
+          onToggle={(r) => toggle("wissel", r)}
+          onToggleAlle={() => toggleAlle("wissel", resultaat.teamWissels)}
+          selecteerbaar
+        />
+        <SelecteerbareLijst
+          titel="Stafwijzigingen (informatief)"
+          items={resultaat.stafWijzigingen}
+          type="staf"
+          selectie={new Set()}
+          onToggle={() => {}}
+          onToggleAlle={() => {}}
+          selecteerbaar={false}
+        />
+
+        <div style={{ display: "flex", gap: 10, marginTop: 16 }}>
+          <button
+            type="button"
+            onClick={onTerug}
+            disabled={applying}
+            style={{
+              padding: "9px 16px",
+              fontSize: 13,
+              background: "var(--bg-2, #1e1e1e)",
+              border: "1px solid var(--border-1, #3a3a3a)",
+              borderRadius: 6,
+              color: "var(--text-3, #666)",
+              cursor: applying ? "not-allowed" : "pointer",
+            }}
+          >
+            ← Terug
+          </button>
+          <button
+            type="button"
+            className="btn-primary"
+            style={{ flex: 1 }}
+            disabled={applying || totaalGeselecteerd === 0}
+            onClick={onDoorvoeren}
+          >
+            {applying
+              ? "Bezig met doorvoeren..."
+              : `Doorvoeren (${totaalGeselecteerd} geselecteerd)`}
+          </button>
+        </div>
       </div>
     </div>
   );
 }
 
-function ApplyKlaarView({
-  resultaat,
-  onReset,
-}: {
-  resultaat: ApplyResultaat;
-  onReset: () => void;
-}) {
+// ─── Stap 5: klaar ───────────────────────────────────────────────────────────
+
+function KlaarView({ resultaat, onReset }: { resultaat: ApplyResultaat; onReset: () => void }) {
   return (
     <div>
       <h1 style={{ fontSize: 22, fontWeight: 700, marginBottom: 4 }}>Team Sync</h1>
@@ -490,7 +669,7 @@ function ApplyKlaarView({
           background: "var(--bg-1, #141414)",
           border: "1px solid var(--border-1, #3a3a3a)",
           borderRadius: 12,
-          padding: 28,
+          padding: 24,
           maxWidth: 420,
           textAlign: "center",
         }}
@@ -509,15 +688,7 @@ function ApplyKlaarView({
             color: T.nieuw,
           }}
         >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={2.5}
-            style={{ width: 22, height: 22 }}
-          >
-            <polyline points="20 6 9 17 4 12" />
-          </svg>
+          ✓
         </div>
 
         <div style={{ fontSize: 16, fontWeight: 600, marginBottom: 16 }}>Sync geslaagd</div>
@@ -525,25 +696,28 @@ function ApplyKlaarView({
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: 12,
-            marginBottom: 24,
+            gridTemplateColumns: "1fr 1fr 1fr",
+            gap: 10,
+            marginBottom: 20,
           }}
         >
           {[
-            { label: "Aangemaakt", value: resultaat.aangemaakt, kleur: T.nieuw },
-            { label: "Verwijderd", value: resultaat.verwijderd, kleur: T.uit },
-          ].map(({ label, value, kleur }) => (
+            { label: "Aangemaakt", value: resultaat.aangemaakt },
+            { label: "Bijgewerkt", value: resultaat.bijgewerkt },
+            { label: "Verwijderd", value: resultaat.verwijderd },
+          ].map(({ label, value }) => (
             <div
               key={label}
               style={{
                 background: "var(--bg-2, #1e1e1e)",
                 border: "1px solid var(--border-1, #3a3a3a)",
                 borderRadius: 8,
-                padding: "12px 10px",
+                padding: "10px 8px",
               }}
             >
-              <div style={{ fontSize: 24, fontWeight: 700, color: kleur }}>{value}</div>
+              <div style={{ fontSize: 20, fontWeight: 700, color: "var(--text-1, #fafafa)" }}>
+                {value}
+              </div>
               <div style={{ fontSize: 11, color: "var(--text-3, #666)", marginTop: 2 }}>
                 {label}
               </div>
@@ -551,7 +725,12 @@ function ApplyKlaarView({
           ))}
         </div>
 
-        <button className="btn-primary" style={{ padding: "9px 24px" }} onClick={onReset}>
+        <button
+          type="button"
+          className="btn-primary"
+          style={{ width: "auto", padding: "9px 24px" }}
+          onClick={onReset}
+        >
           Nieuwe sync
         </button>
       </div>
@@ -563,16 +742,26 @@ function ApplyKlaarView({
 
 export function TeamSync() {
   const credentials = useSportlinkCredentials();
-  const [stap, setStap] = useState<Stap>("spelvorm");
+  const [stap, setStap] = useState<Stap>("scope");
   const [spelvorm, setSpelvorm] = useState<Spelvorm | null>(null);
   const [periode, setPeriode] = useState<Periode | null>(null);
+  const [voortgang, setVoortgang] = useState<Voortgang[]>([]);
   const [dryRunResultaat, setDryRunResultaat] = useState<DryRunResultaat | null>(null);
   const [applyResultaat, setApplyResultaat] = useState<ApplyResultaat | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [selectie, setSelectie] = useState<{
+    nieuw: Set<string>;
+    uit: Set<string>;
+    wissel: Set<string>;
+  }>({ nieuw: new Set(), uit: new Set(), wissel: new Set() });
+  const [scopeError, setScopeError] = useState<string | null>(null);
+  const [applyError, setApplyError] = useState<string | null>(null);
+  const [applying, setApplying] = useState(false);
 
-  async function handleVergelijken() {
-    if (!spelvorm || !periode) return;
-    setError(null);
+  async function handleVergelijken(s: Spelvorm, p: Periode) {
+    setSpelvorm(s);
+    setPeriode(p);
+    setScopeError(null);
+    setVoortgang([]);
     setStap("bezig");
 
     try {
@@ -580,35 +769,86 @@ export function TeamSync() {
         method: "POST",
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...credentials, spelvorm, periode }),
+        body: JSON.stringify({ ...credentials, spelvorm: s, periode: p }),
       });
 
-      const envelope = (await res.json()) as
-        | { ok: true; data: DryRunResultaat }
-        | { ok: false; error: { message?: string } };
-
-      if (!res.ok || !envelope.ok) {
-        throw new Error((!envelope.ok && envelope.error?.message) || `Fout ${res.status}`);
+      if (!res.ok || !res.body) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(
+          (body as { error?: { message?: string } }).error?.message ?? `Fout ${res.status}`
+        );
       }
 
-      setDryRunResultaat(envelope.data);
-      setStap("resultaat");
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n\n");
+        buffer = lines.pop() ?? "";
+
+        for (const chunk of lines) {
+          const dataLine = chunk.replace(/^data: /, "").trim();
+          if (!dataLine) continue;
+
+          const event = JSON.parse(dataLine) as {
+            stap: string;
+            tekst: string;
+            aantal?: number;
+            resultaat?: DryRunResultaat;
+          };
+
+          if (event.stap === "fout") {
+            throw new Error(event.tekst);
+          }
+
+          if (event.stap === "klaar" && event.resultaat) {
+            setDryRunResultaat(event.resultaat);
+            // Default: alles geselecteerd
+            setSelectie({
+              nieuw: new Set(event.resultaat.nieuwInTeam.map((i) => i.relCode)),
+              uit: new Set(event.resultaat.uitTeam.map((i) => i.relCode)),
+              wissel: new Set(event.resultaat.teamWissels.map((i) => i.relCode)),
+            });
+            setVoortgang((prev) => [...prev, { stap: event.stap, tekst: event.tekst }]);
+            setStap("resultaat");
+            return;
+          }
+
+          setVoortgang((prev) => [
+            ...prev,
+            { stap: event.stap, tekst: event.tekst, aantal: event.aantal },
+          ]);
+        }
+      }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Onbekende fout bij vergelijken.");
-      setStap("dryrun");
+      setScopeError(err instanceof Error ? err.message : "Onbekende fout bij vergelijken.");
+      setStap("scope");
     }
   }
 
   async function handleDoorvoeren() {
     if (!spelvorm || !periode) return;
-    setStap("apply");
+    setApplyError(null);
+    setApplying(true);
 
     try {
       const res = await fetch("/api/sportlink/team-sync", {
         method: "PUT",
         credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...credentials, spelvorm, periode }),
+        body: JSON.stringify({
+          ...credentials,
+          spelvorm,
+          periode,
+          nieuwRelCodes: [...selectie.nieuw],
+          uitRelCodes: [...selectie.uit],
+          wisselRelCodes: [...selectie.wissel],
+        }),
       });
 
       const envelope = (await res.json()) as
@@ -622,78 +862,55 @@ export function TeamSync() {
       setApplyResultaat(envelope.data);
       setStap("klaar");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Onbekende fout bij doorvoeren.");
-      setStap("resultaat");
+      setApplyError(err instanceof Error ? err.message : "Onbekende fout bij doorvoeren.");
+    } finally {
+      setApplying(false);
     }
   }
 
   function reset() {
-    setStap("spelvorm");
+    setStap("scope");
     setSpelvorm(null);
     setPeriode(null);
     setDryRunResultaat(null);
     setApplyResultaat(null);
-    setError(null);
+    setSelectie({ nieuw: new Set(), uit: new Set(), wissel: new Set() });
+    setScopeError(null);
+    setApplyError(null);
+    setVoortgang([]);
   }
 
-  if (stap === "spelvorm") {
+  if (stap === "scope") {
     return (
-      <KiesSpelvorm
-        onKies={(s) => {
-          setSpelvorm(s);
-          setStap("periode");
-        }}
-      />
-    );
-  }
-
-  if (stap === "periode" && spelvorm) {
-    return (
-      <KiesPeriode
-        spelvorm={spelvorm}
-        onKies={(p) => {
-          setPeriode(p);
-          setStap("dryrun");
-        }}
-        onTerug={() => setStap("spelvorm")}
-      />
-    );
-  }
-
-  if ((stap === "dryrun" || stap === "bezig") && spelvorm && periode) {
-    return (
-      <DryRunForm
-        spelvorm={spelvorm}
-        periode={periode}
+      <KiesScope
+        initialSpelvorm={spelvorm}
+        initialPeriode={periode}
         onVergelijk={handleVergelijken}
-        onTerug={() => setStap("periode")}
-        error={error}
+        error={scopeError}
       />
     );
   }
 
-  if (stap === "resultaat" && dryRunResultaat) {
-    return (
-      <DryRunResultaatView
-        resultaat={dryRunResultaat}
-        onDoorvoeren={handleDoorvoeren}
-        onTerug={() => setStap("dryrun")}
-      />
-    );
+  if (stap === "bezig") {
+    return <BezigState voortgang={voortgang} />;
   }
 
-  if (stap === "apply" && dryRunResultaat) {
+  if ((stap === "resultaat" || stap === "apply") && dryRunResultaat) {
     return (
       <DryRunResultaatView
         resultaat={dryRunResultaat}
+        selectie={selectie}
+        setSelectie={setSelectie}
         onDoorvoeren={handleDoorvoeren}
-        onTerug={() => setStap("dryrun")}
+        onTerug={() => setStap("scope")}
+        applying={applying}
+        applyError={applyError}
       />
     );
   }
 
   if (stap === "klaar" && applyResultaat) {
-    return <ApplyKlaarView resultaat={applyResultaat} onReset={reset} />;
+    return <KlaarView resultaat={applyResultaat} onReset={reset} />;
   }
 
   return null;

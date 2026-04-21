@@ -146,3 +146,13 @@ export interface TeamSyncWijziging {
   rol: string;
   functie: string | null;
 }
+
+/** Selectie die de TC aanlevert bij het doorvoeren van de dry-run */
+export interface TeamSyncSelectie {
+  /** relCodes van nieuw-in-team items die aangemaakt moeten worden */
+  nieuwRelCodes: string[];
+  /** relCodes van uit-team items (alleen bron='sportlink') die verwijderd moeten worden */
+  uitRelCodes: string[];
+  /** relCodes van team-wissel items waarvan team bijgewerkt moet worden */
+  wisselRelCodes: string[];
+}
