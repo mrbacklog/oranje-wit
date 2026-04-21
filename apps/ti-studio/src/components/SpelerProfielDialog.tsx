@@ -6,14 +6,10 @@ import {
   getSpelerProfiel,
   updateSpelerStatus,
 } from "@/app/(protected)/indeling/werkindeling-actions";
-import {
-  logger,
-  HUIDIGE_PEILDATUM,
-  berekenKorfbalLeeftijd,
-  formatKorfbalLeeftijd,
-} from "@oranje-wit/types";
+import { logger, berekenKorfbalLeeftijd, formatKorfbalLeeftijd } from "@oranje-wit/types";
 import type { EvaluatieScore, TeamGemiddelde } from "@oranje-wit/types";
 import { WerkitemPanel } from "@/components/WerkitemPanel";
+import { usePeildatum } from "@/components/werkbord/peildatum-context";
 
 // ──────────────────────────────────────────────────────────
 // Types
@@ -180,21 +176,19 @@ function initialen(
 
 function korfbalLeeftijd(
   geboortedatum: Date | string | null | undefined,
-  geboortejaar: number | null | undefined
+  geboortejaar: number | null | undefined,
+  peildatum: Date
 ): string {
   if (!geboortejaar && !geboortedatum) return "—";
   const gbd =
     geboortedatum instanceof Date
       ? geboortedatum.toISOString().split("T")[0]
       : (geboortedatum ?? null);
-  // SpelerProfielDialog wordt ook buiten een scenario-context gebruikt
-  // (personen-overzicht). Daarom valt deze helper terug op HUIDIGE_PEILDATUM.
+  // Peildatum komt uit de PeildatumContext (scenario-peildatum) of valt
+  // terug op HUIDIGE_PEILDATUM wanneer de dialog buiten het werkbord wordt
+  // gebruikt (bv. personen-overzicht).
   return formatKorfbalLeeftijd(
-    berekenKorfbalLeeftijd(
-      gbd,
-      geboortejaar ?? HUIDIGE_PEILDATUM.getFullYear() - 15,
-      HUIDIGE_PEILDATUM
-    )
+    berekenKorfbalLeeftijd(gbd, geboortejaar ?? peildatum.getFullYear() - 15, peildatum)
   );
 }
 
@@ -627,6 +621,7 @@ export default function SpelerProfielDialog({
 
   const statusMenuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const peildatum = usePeildatum();
 
   // Laad profiel
   useEffect(() => {
@@ -1224,7 +1219,7 @@ export default function SpelerProfielDialog({
                       Korfballeeftijd
                     </span>
                     <span style={{ fontSize: 13, fontWeight: 600, color: T.accent }}>
-                      {korfbalLeeftijd(profiel.geboortedatum, profiel.geboortejaar)}
+                      {korfbalLeeftijd(profiel.geboortedatum, profiel.geboortejaar, peildatum)}
                     </span>
                   </div>
 
