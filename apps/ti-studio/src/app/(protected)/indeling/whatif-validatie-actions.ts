@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/teamindeling/db/prisma";
+import { requireTC } from "@/lib/teamindeling/auth-check";
 import { valideerWhatIf } from "@/lib/teamindeling/whatif/validatie";
 import type { SpelerLookup } from "@/lib/teamindeling/whatif/validatie";
 import type { TeamAantalKaders } from "@/lib/teamindeling/whatif/kader-validatie";
@@ -23,6 +24,7 @@ import { logger } from "@oranje-wit/types";
 export async function valideerWhatIfVoorToepassen(
   whatIfId: string
 ): Promise<WhatIfValidatieResultaat> {
+  await requireTC();
   const whatIf = await prisma.whatIf.findUniqueOrThrow({
     where: { id: whatIfId },
     select: {

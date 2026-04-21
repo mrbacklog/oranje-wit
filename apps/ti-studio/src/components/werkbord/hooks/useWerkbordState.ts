@@ -13,12 +13,20 @@ import {
   verwijderSelectieSpeler,
   toggleSelectieBundeling,
 } from "@/app/(protected)/indeling/werkindeling-actions";
+import {
+  moveSpelerInWhatIf,
+  addSpelerToWhatIfTeam,
+  removeSpelerFromWhatIfTeam,
+} from "@/app/(protected)/indeling/whatif-edit-actions";
+
+export type WerkbordMode = { kind: "werkversie" } | { kind: "whatif"; whatIfId: string };
 
 export function useWerkbordState(
   versieId: string,
   initieleTeams: WerkbordTeam[],
   initieleSpelers: WerkbordSpeler[],
-  initieleValidatie: WerkbordValidatieItem[]
+  initieleValidatie: WerkbordValidatieItem[],
+  mode: WerkbordMode = { kind: "werkversie" }
 ) {
   const [teams, setTeams] = useState<WerkbordTeam[]>(initieleTeams);
   const [alleSpelers, setAlleSpelers] = useState<WerkbordSpeler[]>(initieleSpelers);
@@ -371,7 +379,27 @@ export function useWerkbordState(
     );
   }, []);
 
+  // ─── Herlaad-helper: volledig nieuwe snapshot (bv. na mode-switch) ───
+  const herlaadStaat = useCallback(
+    (
+      nieuweTeams: WerkbordTeam[],
+      nieuweSpelers: WerkbordSpeler[],
+      nieuweValidatie: WerkbordValidatieItem[]
+    ) => {
+      setTeams(nieuweTeams);
+      setAlleSpelers(nieuweSpelers);
+      setValidatie(nieuweValidatie);
+      setOpslaanStatus("idle");
+    },
+    []
+  );
+
   // ─── API-calls ───────────────────────────────────────────────
+
+  const modeRef = useRef(mode);
+  useEffect(() => {
+    modeRef.current = mode;
+  }, [mode]);
 
   async function stuurMutatie(body: Record<string, unknown>) {
     setOpslaanStatus("bezig");
@@ -397,6 +425,17 @@ export function useWerkbordState(
     }
   }
 
+  async function stuurWhatIfMutatie(actie: () => Promise<void>, context: string) {
+    setOpslaanStatus("bezig");
+    try {
+      await actie();
+      setOpslaanStatus("ok");
+    } catch (error) {
+      setOpslaanStatus("fout");
+      logger.warn(`stuurWhatIfMutatie fout (${context}):`, error);
+    }
+  }
+
   const verplaatsSpeler = useCallback(
     (
       spelerData: WerkbordSpeler,
@@ -405,6 +444,21 @@ export function useWerkbordState(
       naarGeslacht: "V" | "M"
     ) => {
       verplaatsSpelerLokaal(spelerData, vanTeamId, naarTeamId, naarGeslacht);
+      const huidigMode = modeRef.current;
+      if (huidigMode.kind === "whatif") {
+        if (vanTeamId && vanTeamId !== naarTeamId) {
+          stuurWhatIfMutatie(
+            () => moveSpelerInWhatIf(spelerData.id, vanTeamId, naarTeamId),
+            "moveSpelerInWhatIf"
+          );
+        } else if (!vanTeamId) {
+          stuurWhatIfMutatie(
+            () => addSpelerToWhatIfTeam(naarTeamId, spelerData.id),
+            "addSpelerToWhatIfTeam"
+          );
+        }
+        return;
+      }
       stuurMutatie({
         type: "speler_verplaatst",
         spelerId: spelerData.id,
@@ -419,6 +473,14 @@ export function useWerkbordState(
   const verwijderSpelerUitTeam = useCallback(
     (spelerId: string, vanTeamId: string) => {
       verwijderSpelerUitTeamLokaal(spelerId, vanTeamId);
+      const huidigMode = modeRef.current;
+      if (huidigMode.kind === "whatif") {
+        stuurWhatIfMutatie(
+          () => removeSpelerFromWhatIfTeam(vanTeamId, spelerId),
+          "removeSpelerFromWhatIfTeam"
+        );
+        return;
+      }
       stuurMutatie({ type: "speler_naar_pool", spelerId, vanTeamId });
     },
     [verwijderSpelerUitTeamLokaal]
@@ -430,6 +492,8 @@ export function useWerkbordState(
   );
 
   const slaTeamPositieOp = useCallback((teamId: string, x: number, y: number) => {
+    // In what-if modus slaan we geen posities op (schema heeft geen WhatIfTeamPositie)
+    if (modeRef.current.kind === "whatif") return;
     stuurMutatie({ type: "team_positie", teamId, x: Math.round(x), y: Math.round(y) });
   }, []);
 
@@ -437,6 +501,9 @@ export function useWerkbordState(
 
   useEffect(() => {
     if (!versieId) return;
+    // SSE alleen in werkversie-modus: in variant-modus komen updates niet via
+    // dezelfde versie-stream en zouden ze de what-if-snapshot overschrijven.
+    if (mode.kind !== "werkversie") return;
     const es = new EventSource(`/api/indeling/${versieId}/stream`);
     es.onmessage = (e) => {
       let event: Record<string, unknown>;
@@ -463,7 +530,13 @@ export function useWerkbordState(
       }
     };
     return () => es.close();
-  }, [versieId, verplaatsSpelerLokaal, verwijderSpelerUitTeamLokaal, verplaatsTeamKaartLokaal]);
+  }, [
+    versieId,
+    mode.kind,
+    verplaatsSpelerLokaal,
+    verwijderSpelerUitTeamLokaal,
+    verplaatsTeamKaartLokaal,
+  ]);
 
   return {
     teams,
@@ -484,5 +557,6 @@ export function useWerkbordState(
     updateSelectieNaamLokaal,
     toggleBundeling,
     onDropSpelerOpSelectieFn,
+    herlaadStaat,
   };
 }

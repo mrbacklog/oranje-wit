@@ -39,6 +39,7 @@ interface WerkbordCanvasProps {
   versieId: string;
   werkindelingId: string;
   werkindelingNaam: string;
+  variantBadge?: { vraag: string; basisVersieNummer: number } | null;
 }
 
 interface TeamDragState {
@@ -111,6 +112,7 @@ export function WerkbordCanvas({
   versieId,
   werkindelingId,
   werkindelingNaam,
+  variantBadge = null,
 }: WerkbordCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const minimapRef = useRef<HTMLDivElement>(null);
@@ -311,8 +313,58 @@ export function WerkbordCanvas({
         cursor: panState ? "grabbing" : draggingTeam ? "grabbing" : "default",
         background:
           "radial-gradient(circle at 50% 50%, rgba(255,107,0,.02) 0%, transparent 60%), var(--bg-0)",
+        boxShadow: variantBadge ? "inset 0 0 0 3px var(--accent)" : undefined,
       }}
     >
+      {variantBadge && (
+        <div
+          style={{
+            position: "absolute",
+            top: 12,
+            left: 12,
+            zIndex: 40,
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            padding: "6px 12px",
+            borderRadius: 6,
+            background: "var(--bg-2)",
+            border: "1px solid var(--accent)",
+            boxShadow: "var(--sh-card)",
+            fontFamily: "inherit",
+            pointerEvents: "none",
+          }}
+        >
+          <span
+            style={{
+              fontSize: 9,
+              fontWeight: 800,
+              textTransform: "uppercase",
+              letterSpacing: ".6px",
+              color: "var(--accent)",
+            }}
+          >
+            Variant
+          </span>
+          <span
+            style={{
+              fontSize: 12,
+              fontWeight: 600,
+              color: "var(--text-1)",
+              maxWidth: 320,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+            title={variantBadge.vraag}
+          >
+            {variantBadge.vraag}
+          </span>
+          <span style={{ fontSize: 10, color: "var(--text-3)" }}>
+            gebaseerd op v{variantBadge.basisVersieNummer}
+          </span>
+        </div>
+      )}
       {/* Achtergrond dot-patroon — pan-zone */}
       <div
         onMouseDown={handleBgMouseDown}

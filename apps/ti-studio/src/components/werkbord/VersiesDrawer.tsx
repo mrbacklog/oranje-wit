@@ -1,12 +1,16 @@
-// apps/web/src/components/ti-studio/werkbord/VersiesDrawer.tsx
+// apps/ti-studio/src/components/werkbord/VersiesDrawer.tsx
 "use client";
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import "./tokens.css";
 import type { DrawerData } from "@/app/(protected)/indeling/drawer-actions";
 import type { VersiesDrawerConfirm } from "./types";
 import { createWhatIfVanHuidigeVersie } from "@/app/(protected)/indeling/drawer-actions";
 import { pasWhatIfToe, verwerpWhatIf } from "@/app/(protected)/indeling/whatif-resolve-actions";
+import {
+  valideerWhatIfVoorToepassen,
+  type WhatIfValidatieResultaat,
+} from "@/app/(protected)/indeling/whatif-validatie-actions";
 import { herstelVersie, verwijderVersie } from "@/app/(protected)/indeling/versies-actions";
 import { logger } from "@oranje-wit/types";
 
@@ -17,6 +21,11 @@ interface VersiesDrawerProps {
   gebruikerEmail: string;
   onClose: () => void;
   onRefresh: () => void;
+  actieveWhatIfId?: string | null;
+  onOpenWhatIfOpCanvas?: (
+    whatIfId: string,
+    meta: { vraag: string; basisVersieNummer: number }
+  ) => void;
 }
 
 export function VersiesDrawer({
@@ -26,6 +35,8 @@ export function VersiesDrawer({
   gebruikerEmail,
   onClose,
   onRefresh,
+  actieveWhatIfId = null,
+  onOpenWhatIfOpCanvas,
 }: VersiesDrawerProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -33,8 +44,40 @@ export function VersiesDrawer({
   const [toonNieuweWI, setToonNieuweWI] = useState(false);
   const [nieuweVraag, setNieuweVraag] = useState("");
   const [bezig, setBezig] = useState(false);
+  const [validatie, setValidatie] = useState<WhatIfValidatieResultaat | null>(null);
+  const [validatieLaadt, setValidatieLaadt] = useState(false);
+  const [toelichting, setToelichting] = useState("");
+  const [confirmFout, setConfirmFout] = useState<string | null>(null);
 
   const huidigVersieNummer = data?.werkversie.nummer ?? 0;
+
+  // Pre-fetch validatie zodra de promoveer-dialoog opent
+  useEffect(() => {
+    if (confirm?.type !== "promoveer-whatif") {
+      setValidatie(null);
+      setToelichting("");
+      setConfirmFout(null);
+      return;
+    }
+    let actief = true;
+    setValidatieLaadt(true);
+    setValidatie(null);
+    setConfirmFout(null);
+    valideerWhatIfVoorToepassen(confirm.whatIfId)
+      .then((result) => {
+        if (actief) setValidatie(result);
+      })
+      .catch((err) => {
+        logger.error("Validatie what-if faalde", err);
+        if (actief) setConfirmFout("Validatie kon niet geladen worden.");
+      })
+      .finally(() => {
+        if (actief) setValidatieLaadt(false);
+      });
+    return () => {
+      actief = false;
+    };
+  }, [confirm]);
 
   function datumLabel(d: Date): string {
     const nu = new Date();
@@ -66,13 +109,28 @@ export function VersiesDrawer({
   async function handleConfirm() {
     if (!confirm || bezig) return;
     setBezig(true);
+    setConfirmFout(null);
     try {
       if (confirm.type === "promoveer-whatif") {
-        await pasWhatIfToe(confirm.whatIfId);
+        const heeftAfwijkingen = validatie?.heeftAfwijkingen ?? false;
+        const toelichtingArg = heeftAfwijkingen ? toelichting.trim() : undefined;
+        if (heeftAfwijkingen && !toelichtingArg) {
+          setConfirmFout("Vul een toelichting in voor de kaderafwijking.");
+          return;
+        }
+        const result = await pasWhatIfToe(confirm.whatIfId, toelichtingArg);
+        if (!result.ok) {
+          setConfirmFout(result.error);
+          return;
+        }
       } else if (confirm.type === "herstel-versie") {
         await herstelVersie(confirm.versieId, gebruikerEmail);
       } else if (confirm.type === "archiveer-whatif") {
-        await verwerpWhatIf(confirm.whatIfId);
+        const result = await verwerpWhatIf(confirm.whatIfId);
+        if (!result.ok) {
+          setConfirmFout(result.error);
+          return;
+        }
       } else if (confirm.type === "verwijder-versie") {
         await verwijderVersie(confirm.versieId);
       }
@@ -81,6 +139,7 @@ export function VersiesDrawer({
       startTransition(() => router.refresh());
     } catch (err) {
       logger.error("Fout bij drawer-actie", err);
+      setConfirmFout(err instanceof Error ? err.message : "Onbekende fout");
     } finally {
       setBezig(false);
     }
@@ -400,8 +459,62 @@ export function VersiesDrawer({
                           padding: "0 8px 8px 37px",
                           display: "flex",
                           gap: 5,
+                          flexWrap: "wrap",
                         }}
                       >
+                        {onOpenWhatIfOpCanvas &&
+                          (actieveWhatIfId === wi.id ? (
+                            <button
+                              onClick={() =>
+                                onOpenWhatIfOpCanvas(wi.id, {
+                                  vraag: wi.vraag,
+                                  basisVersieNummer: wi.basisVersieNummer,
+                                })
+                              }
+                              style={btnCanvasActief}
+                              title="Deze variant staat op het canvas"
+                            >
+                              <svg
+                                width="10"
+                                height="10"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2.5"
+                                strokeLinecap="round"
+                              >
+                                <circle cx="12" cy="12" r="9" />
+                                <circle cx="12" cy="12" r="3" fill="currentColor" />
+                              </svg>
+                              Op canvas
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() =>
+                                onOpenWhatIfOpCanvas(wi.id, {
+                                  vraag: wi.vraag,
+                                  basisVersieNummer: wi.basisVersieNummer,
+                                })
+                              }
+                              style={btnOpenCanvas}
+                              title="Open deze variant op het canvas"
+                            >
+                              <svg
+                                width="10"
+                                height="10"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2.5"
+                                strokeLinecap="round"
+                              >
+                                <path d="M14 3h7v7" />
+                                <path d="M21 3l-9 9" />
+                                <path d="M21 14v7H3V3h7" />
+                              </svg>
+                              Open op canvas
+                            </button>
+                          ))}
                         <button
                           onClick={() =>
                             setConfirm({
@@ -586,6 +699,11 @@ export function VersiesDrawer({
           onJa={handleConfirm}
           onNee={() => setConfirm(null)}
           bezig={bezig || isPending}
+          validatie={validatie}
+          validatieLaadt={validatieLaadt}
+          toelichting={toelichting}
+          onToelichtingChange={setToelichting}
+          fout={confirmFout}
         />
       )}
 
@@ -850,16 +968,45 @@ function ConfirmDialog({
   onJa,
   onNee,
   bezig,
+  validatie,
+  validatieLaadt,
+  toelichting,
+  onToelichtingChange,
+  fout,
 }: {
   confirm: VersiesDrawerConfirm;
   huidigVersieNummer: number;
   onJa: () => void;
   onNee: () => void;
   bezig: boolean;
+  validatie: WhatIfValidatieResultaat | null;
+  validatieLaadt: boolean;
+  toelichting: string;
+  onToelichtingChange: (v: string) => void;
+  fout: string | null;
 }) {
   const nieuweNummer = huidigVersieNummer + 1;
   let titel = "";
   let body: React.ReactNode = null;
+
+  const isPromoveer = confirm.type === "promoveer-whatif";
+  const heeftHardefouten = isPromoveer && (validatie?.heeftHardefouten ?? false);
+  const heeftAfwijkingen = isPromoveer && (validatie?.heeftAfwijkingen ?? false);
+  const hardeFoutmeldingen =
+    isPromoveer && validatie
+      ? [
+          ...validatie.crossTeamMeldingen
+            .filter((m) => m.ernst === "kritiek")
+            .map((m) => m.bericht),
+          ...Object.values(validatie.teamValidaties)
+            .flatMap((v) => v.meldingen)
+            .filter((m) => m.ernst === "kritiek")
+            .map((m) => m.bericht),
+        ]
+      : [];
+  const toelichtingOntbreekt = heeftAfwijkingen && !toelichting.trim();
+  const knopDisabled =
+    bezig || (isPromoveer && (validatieLaadt || heeftHardefouten || toelichtingOntbreekt));
 
   if (confirm.type === "promoveer-whatif") {
     titel = "What-If promoveren?";
@@ -887,6 +1034,149 @@ function ConfirmDialog({
         <p style={{ fontSize: 11, color: "var(--text-3)", marginTop: 4 }}>
           v{huidigVersieNummer} blijft bewaard in het archief
         </p>
+
+        {validatieLaadt && (
+          <p
+            style={{
+              fontSize: 11,
+              color: "var(--text-3)",
+              marginTop: 10,
+              fontStyle: "italic",
+            }}
+          >
+            Validatie laden…
+          </p>
+        )}
+
+        {heeftHardefouten && (
+          <div
+            style={{
+              marginTop: 10,
+              padding: "8px 10px",
+              background: "rgba(239,68,68,.08)",
+              border: "1px solid rgba(239,68,68,.25)",
+              borderRadius: 6,
+            }}
+          >
+            <p
+              style={{
+                fontSize: 11,
+                fontWeight: 700,
+                color: "#ef4444",
+                marginBottom: 4,
+              }}
+            >
+              Harde fouten — promotie geblokkeerd
+            </p>
+            <ul
+              style={{
+                fontSize: 11,
+                color: "var(--text-2)",
+                lineHeight: 1.5,
+                paddingLeft: 16,
+                margin: 0,
+              }}
+            >
+              {hardeFoutmeldingen.slice(0, 5).map((m, i) => (
+                <li key={i}>{m}</li>
+              ))}
+              {hardeFoutmeldingen.length > 5 && (
+                <li style={{ color: "var(--text-3)" }}>
+                  …en nog {hardeFoutmeldingen.length - 5} fout(en)
+                </li>
+              )}
+            </ul>
+          </div>
+        )}
+
+        {heeftAfwijkingen && !heeftHardefouten && validatie && (
+          <div
+            style={{
+              marginTop: 10,
+              padding: "8px 10px",
+              background: "rgba(234,179,8,.08)",
+              border: "1px solid rgba(234,179,8,.25)",
+              borderRadius: 6,
+            }}
+          >
+            <p
+              style={{
+                fontSize: 11,
+                fontWeight: 700,
+                color: "#eab308",
+                marginBottom: 6,
+              }}
+            >
+              Afwijkt van blauwdruk-kaders
+            </p>
+            <ul
+              style={{
+                fontSize: 11,
+                color: "var(--text-2)",
+                lineHeight: 1.5,
+                paddingLeft: 16,
+                margin: "0 0 8px 0",
+              }}
+            >
+              {validatie.kaderAfwijkingen.map((a, i) => (
+                <li key={i}>
+                  {a.categorie}: verwacht {a.verwachtAantal}, werkelijk {a.werkelijkAantal} (
+                  {a.verschil > 0 ? "+" : ""}
+                  {a.verschil})
+                </li>
+              ))}
+            </ul>
+            <label
+              style={{
+                display: "block",
+                fontSize: 10,
+                fontWeight: 700,
+                color: "var(--text-3)",
+                textTransform: "uppercase",
+                letterSpacing: ".6px",
+                marginBottom: 4,
+              }}
+            >
+              Toelichting afwijking (verplicht)
+            </label>
+            <textarea
+              value={toelichting}
+              onChange={(e) => onToelichtingChange(e.target.value)}
+              rows={3}
+              placeholder="Waarom is deze afwijking gerechtvaardigd?"
+              style={{
+                width: "100%",
+                background: "var(--bg-0)",
+                border: "1px solid var(--border-1)",
+                borderRadius: 6,
+                color: "var(--text-1)",
+                fontSize: 11,
+                fontFamily: "inherit",
+                padding: "6px 8px",
+                outline: "none",
+                boxSizing: "border-box",
+                resize: "vertical",
+              }}
+            />
+          </div>
+        )}
+
+        {fout && (
+          <div
+            style={{
+              marginTop: 10,
+              padding: "8px 10px",
+              background: "rgba(239,68,68,.08)",
+              border: "1px solid rgba(239,68,68,.25)",
+              borderRadius: 6,
+              fontSize: 11,
+              color: "#ef4444",
+              whiteSpace: "pre-wrap",
+            }}
+          >
+            {fout}
+          </div>
+        )}
       </>
     );
   } else if (confirm.type === "herstel-versie") {
@@ -966,7 +1256,7 @@ function ConfirmDialog({
         </button>
         <button
           onClick={onJa}
-          disabled={bezig}
+          disabled={knopDisabled}
           style={{
             fontSize: 11,
             padding: "6px 14px",
@@ -975,9 +1265,9 @@ function ConfirmDialog({
             background: "var(--accent)",
             color: "#fff",
             border: "none",
-            cursor: "pointer",
+            cursor: knopDisabled ? "not-allowed" : "pointer",
             fontFamily: "inherit",
-            opacity: bezig ? 0.5 : 1,
+            opacity: knopDisabled ? 0.5 : 1,
           }}
         >
           Ja, maak v{nieuweNummer}
@@ -1013,5 +1303,35 @@ const btnSecundair: React.CSSProperties = {
   color: "var(--text-3)",
   border: "1px solid var(--border-0)",
   cursor: "pointer",
+  fontFamily: "inherit",
+};
+
+const btnOpenCanvas: React.CSSProperties = {
+  fontSize: 10,
+  fontWeight: 600,
+  padding: "4px 10px",
+  borderRadius: 6,
+  background: "rgba(59,130,246,.1)",
+  color: "var(--info)",
+  border: "1px solid rgba(59,130,246,.22)",
+  cursor: "pointer",
+  display: "flex",
+  alignItems: "center",
+  gap: 4,
+  fontFamily: "inherit",
+};
+
+const btnCanvasActief: React.CSSProperties = {
+  fontSize: 10,
+  fontWeight: 700,
+  padding: "4px 10px",
+  borderRadius: 6,
+  background: "var(--accent-dim)",
+  color: "var(--accent)",
+  border: "1px solid rgba(255,107,0,.35)",
+  cursor: "pointer",
+  display: "flex",
+  alignItems: "center",
+  gap: 4,
   fontFamily: "inherit",
 };

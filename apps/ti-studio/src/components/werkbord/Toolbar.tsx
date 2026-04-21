@@ -15,6 +15,10 @@ interface ToolbarProps {
   onTogglePanelLinks: (panel: "pool" | "staf") => void;
   onTogglePanelRechts: (panel: "teams" | "versies") => void;
   onVersiesOpen: () => void;
+  variantActief?: boolean;
+  variantVraag?: string | null;
+  variantBasis?: number | null;
+  onTerugNaarWerkversie?: () => void;
 }
 
 export function Toolbar({
@@ -30,6 +34,10 @@ export function Toolbar({
   onTogglePanelLinks,
   onTogglePanelRechts,
   onVersiesOpen,
+  variantActief = false,
+  variantVraag = null,
+  variantBasis = null,
+  onTerugNaarWerkversie,
 }: ToolbarProps) {
   const pct = totalSpelers > 0 ? Math.round((ingeplandSpelers / totalSpelers) * 100) : 0;
   const circumference = 75.4;
@@ -140,6 +148,69 @@ export function Toolbar({
           </div>
         )}
       </div>
+
+      {variantActief && (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            marginLeft: 12,
+            padding: "4px 10px",
+            borderRadius: 6,
+            background: "var(--accent-dim)",
+            border: "1px solid rgba(255,107,0,.35)",
+          }}
+        >
+          <span
+            style={{
+              fontSize: 10,
+              fontWeight: 800,
+              textTransform: "uppercase",
+              letterSpacing: ".6px",
+              color: "var(--accent)",
+            }}
+          >
+            Variant
+          </span>
+          <span
+            style={{
+              fontSize: 11,
+              color: "var(--text-1)",
+              maxWidth: 240,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+            title={variantVraag ?? ""}
+          >
+            {variantVraag ?? ""}
+          </span>
+          {variantBasis !== null && (
+            <span style={{ fontSize: 10, color: "var(--text-3)" }}>
+              (gebaseerd op v{variantBasis})
+            </span>
+          )}
+          <button
+            onClick={onTerugNaarWerkversie}
+            style={{
+              fontSize: 10,
+              fontWeight: 700,
+              padding: "3px 9px",
+              borderRadius: 5,
+              background: "var(--bg-2)",
+              color: "var(--text-1)",
+              border: "1px solid var(--border-1)",
+              cursor: "pointer",
+              fontFamily: "inherit",
+              whiteSpace: "nowrap",
+            }}
+            title="Terug naar werkversie"
+          >
+            ← Werkversie
+          </button>
+        </div>
+      )}
 
       <div style={{ flex: 1 }} />
 

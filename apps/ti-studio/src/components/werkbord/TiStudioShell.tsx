@@ -11,10 +11,11 @@ import { VersiesDrawer } from "./VersiesDrawer";
 import SpelerProfielDialog from "../SpelerProfielDialog";
 import { TeamDialog } from "../TeamDialog";
 import { useZoom } from "./hooks/useZoom";
-import { useWerkbordState } from "./hooks/useWerkbordState";
+import { useWerkbordState, type WerkbordMode } from "./hooks/useWerkbordState";
 import type { TiStudioShellProps } from "./types";
 import type { DrawerData } from "@/app/(protected)/indeling/drawer-actions";
 import { getVersiesVoorDrawer } from "@/app/(protected)/indeling/drawer-actions";
+import { getWhatIfVoorCanvas } from "@/app/(protected)/indeling/whatif-canvas-actions";
 import { HoverKaartProvider } from "./HoverSpelersKaart";
 import { PeildatumProvider } from "./peildatum-context";
 
@@ -31,7 +32,19 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
   const [profielSpelerId, setProfielSpelerId] = useState<string | null>(null);
   const [profielTeamId, setProfielTeamId] = useState<string | null>(null);
 
+  const [actieveWhatIfId, setActieveWhatIfId] = useState<string | null>(null);
+  const [actieveWhatIfMeta, setActieveWhatIfMeta] = useState<{
+    vraag: string;
+    basisVersieNummer: number;
+  } | null>(null);
+
   const { zoom, setZoom, zoomIn, zoomOut, resetZoom, zoomLevel, zoomPercent } = useZoom();
+
+  const werkbordMode: WerkbordMode = useMemo(
+    () =>
+      actieveWhatIfId ? { kind: "whatif", whatIfId: actieveWhatIfId } : { kind: "werkversie" },
+    [actieveWhatIfId]
+  );
 
   const {
     teams,
@@ -52,11 +65,13 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
     updateSelectieNaamLokaal,
     toggleBundeling,
     onDropSpelerOpSelectieFn,
+    herlaadStaat,
   } = useWerkbordState(
     initieleState.versieId,
     initieleState.teams,
     initieleState.alleSpelers,
-    initieleState.validatie
+    initieleState.validatie,
+    werkbordMode
   );
 
   const [dialogTeamId, setDialogTeamId] = useState<string | null>(null);
@@ -72,6 +87,55 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
         logger.warn("Versies drawer laden mislukt:", error);
       });
   }, [panelRechts, initieleState.werkindelingId, drawerRefreshTeller]);
+
+  // Mode-switch: herlaad canvas-state vanaf de server (werkversie of variant)
+  useEffect(() => {
+    let geannuleerd = false;
+    if (actieveWhatIfId) {
+      getWhatIfVoorCanvas(actieveWhatIfId)
+        .then((res) => {
+          if (geannuleerd) return;
+          if (!res.ok) {
+            logger.warn("What-if canvas laden mislukt:", res.error);
+            // Fallback: terug naar werkversie
+            setActieveWhatIfId(null);
+            setActieveWhatIfMeta(null);
+            herlaadStaat(initieleState.teams, initieleState.alleSpelers, initieleState.validatie);
+            return;
+          }
+          herlaadStaat(res.data.teams, res.data.alleSpelers, res.data.validatie);
+        })
+        .catch((error) => {
+          if (geannuleerd) return;
+          logger.warn("What-if canvas laden fout:", error);
+        });
+    } else {
+      // Werkversie: herstel initiële snapshot
+      herlaadStaat(initieleState.teams, initieleState.alleSpelers, initieleState.validatie);
+    }
+    return () => {
+      geannuleerd = true;
+    };
+  }, [
+    actieveWhatIfId,
+    herlaadStaat,
+    initieleState.teams,
+    initieleState.alleSpelers,
+    initieleState.validatie,
+  ]);
+
+  const openWhatIfOpCanvas = useCallback(
+    (whatIfId: string, meta: { vraag: string; basisVersieNummer: number }) => {
+      setActieveWhatIfId(whatIfId);
+      setActieveWhatIfMeta(meta);
+    },
+    []
+  );
+
+  const terugNaarWerkversie = useCallback(() => {
+    setActieveWhatIfId(null);
+    setActieveWhatIfMeta(null);
+  }, []);
 
   const togglePanelLinks = useCallback((panel: "pool" | "staf") => {
     setPanelLinks((prev) => (prev === panel ? null : panel));
@@ -130,6 +194,10 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
             onTogglePanelLinks={togglePanelLinks}
             onTogglePanelRechts={togglePanelRechts}
             onVersiesOpen={() => togglePanelRechts("versies")}
+            variantActief={actieveWhatIfId !== null}
+            variantVraag={actieveWhatIfMeta?.vraag ?? null}
+            variantBasis={actieveWhatIfMeta?.basisVersieNummer ?? null}
+            onTerugNaarWerkversie={terugNaarWerkversie}
           />
           <div style={{ display: "flex", overflow: "hidden", position: "relative" }}>
             {opslaanStatus === "bezig" && (
@@ -203,6 +271,14 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
               versieId={versieId}
               werkindelingId={initieleState.werkindelingId}
               werkindelingNaam={initieleState.naam}
+              variantBadge={
+                actieveWhatIfId && actieveWhatIfMeta
+                  ? {
+                      vraag: actieveWhatIfMeta.vraag,
+                      basisVersieNummer: actieveWhatIfMeta.basisVersieNummer,
+                    }
+                  : null
+              }
             />
             <TeamDrawer
               open={panelRechts === "teams"}
@@ -229,6 +305,8 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
               gebruikerEmail={gebruikerEmail}
               onClose={() => setPanelRechts(null)}
               onRefresh={() => setDrawerRefreshTeller((n) => n + 1)}
+              actieveWhatIfId={actieveWhatIfId}
+              onOpenWhatIfOpCanvas={openWhatIfOpCanvas}
             />
           </div>
           <SpelerProfielDialog
