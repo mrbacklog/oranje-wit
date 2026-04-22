@@ -16,6 +16,7 @@ import {
 import {
   verplaatsSpelerInWhatIfViaCanvas,
   verwijderSpelerUitWhatIfViaCanvas,
+  slaWhatIfTeamPositieOp,
 } from "@/app/(protected)/indeling/whatif-edit-actions";
 
 export type WerkbordMode = { kind: "werkversie" } | { kind: "whatif"; whatIfId: string };
@@ -486,8 +487,15 @@ export function useWerkbordState(
   );
 
   const slaTeamPositieOp = useCallback((teamId: string, x: number, y: number) => {
-    // In what-if modus slaan we geen posities op (schema heeft geen WhatIfTeamPositie)
-    if (modeRef.current.kind === "whatif") return;
+    const huidigMode = modeRef.current;
+    if (huidigMode.kind === "whatif") {
+      const whatIfId = huidigMode.whatIfId;
+      stuurWhatIfMutatie(
+        () => slaWhatIfTeamPositieOp(whatIfId, teamId, x, y),
+        "slaWhatIfTeamPositieOp"
+      );
+      return;
+    }
     stuurMutatie({ type: "team_positie", teamId, x: Math.round(x), y: Math.round(y) });
   }, []);
 

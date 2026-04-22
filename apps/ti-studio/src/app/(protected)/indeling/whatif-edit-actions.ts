@@ -338,3 +338,33 @@ export async function verwijderSpelerUitWhatIfViaCanvas(
 
   logger.info(`Speler ${spelerId} verwijderd uit what-if team ${vanWhatIfTeamId} (via canvas)`);
 }
+
+/**
+ * Sla de canvas-positie van een team op binnen een what-if.
+ * Posities worden opgeslagen als Record<canvasTeamId, {x,y}> in what-ifs.posities.
+ * De werkversie wordt nooit aangeraakt.
+ */
+export async function slaWhatIfTeamPositieOp(
+  whatIfId: string,
+  canvasTeamId: string,
+  x: number,
+  y: number
+): Promise<void> {
+  await assertWhatIfBewerkbaarById(whatIfId);
+
+  const huidig = await prisma.whatIf.findUniqueOrThrow({
+    where: { id: whatIfId },
+    select: { posities: true },
+  });
+
+  const huidigePosities = (huidig.posities ?? {}) as Record<string, { x: number; y: number }>;
+  const nieuwePosities = {
+    ...huidigePosities,
+    [canvasTeamId]: { x: Math.round(x), y: Math.round(y) },
+  };
+
+  await prisma.whatIf.update({
+    where: { id: whatIfId },
+    data: { posities: nieuwePosities },
+  });
+}
