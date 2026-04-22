@@ -97,6 +97,9 @@ type MinWhatIfTeam = {
   teamType: string | null;
   niveau: string | null;
   volgorde: number;
+  selectieGroepBronId: string | null;
+  selectieNaam: string | null;
+  gebundeld: boolean;
   spelers: MinSpelerInTeam[];
   staf: MinStafInTeam[];
 };
@@ -123,6 +126,7 @@ export async function getWhatIfVoorCanvas(
       select: {
         id: true,
         werkindelingId: true,
+        posities: true,
         teams: {
           orderBy: { volgorde: "asc" as const },
           select: {
@@ -134,6 +138,9 @@ export async function getWhatIfVoorCanvas(
             teamType: true,
             niveau: true,
             volgorde: true,
+            selectieGroepBronId: true,
+            selectieNaam: true,
+            gebundeld: true,
             spelers: {
               select: {
                 id: true,
@@ -261,7 +268,11 @@ export async function getWhatIfVoorCanvas(
     const peildatum = korfbalPeildatum(seizoen);
     const huidigeJaar = new Date().getFullYear();
 
-    const opgeslagenPosities = (versie.posities ?? {}) as Record<string, { x: number; y: number }>;
+    // Posities: what-if eigen posities hebben voorrang, anders val terug op de
+    // werkversie-posities via het bron-team. Zo blijven verschoven kaarten
+    // binnen een variant bewaard zonder de werkversie aan te raken.
+    const werkversiePosities = (versie.posities ?? {}) as Record<string, { x: number; y: number }>;
+    const whatIfPosities = (whatIf.posities ?? {}) as Record<string, { x: number; y: number }>;
 
     // Lookup: selectiegroepen uit de werkversie per id, zodat we de spelers
     // van gebundelde pools in het canvas-team kunnen tonen.
@@ -476,7 +487,7 @@ export async function getWhatIfVoorCanvas(
       const whatIfTeam = bronIdToWhatIfTeam.get(werkTeam.id);
       const teamId = werkTeam.id; // we gebruiken het WERKVERSIE team-id als canvas-id
       const teamNaam = whatIfTeam?.naam ?? werkTeam.naam;
-      const opgeslagen = opgeslagenPosities[werkTeam.id];
+      const opgeslagen = whatIfPosities[teamId] ?? werkversiePosities[werkTeam.id];
       const col = i % 3;
       const rij = Math.floor(i / 3);
       const canvasX = opgeslagen ? opgeslagen.x : 40 + col * 360;
@@ -533,8 +544,14 @@ export async function getWhatIfVoorCanvas(
             | "U17"
             | "U19"
             | null,
-          selectieGroepId: werkTeam.selectieGroepId ?? null,
-          ...bouwSelectieData(werkTeam.selectieGroepId, teamId, teamNaam),
+          // In variant-modus zijn gebundelde pool-spelers al platgeslagen naar
+          // dames/heren van het team. We houden wel de selectie-metadata
+          // (formaat, naam) zodat het team als 'selectie' herkenbaar blijft.
+          selectieGroepId: werkTeam.selectieGroepId ?? whatIfTeam.selectieGroepBronId ?? null,
+          selectieNaam: whatIfTeam.selectieNaam ?? null,
+          selectieDames: [],
+          selectieHeren: [],
+          gebundeld: false,
           werkitems: [],
           openMemoCount: 0,
         });

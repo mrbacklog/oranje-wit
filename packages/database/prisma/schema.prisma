@@ -1951,6 +1951,10 @@ model WhatIf {
   toegepastOp           DateTime?
   verworpenOp           DateTime?
 
+  // Canvas-posities per canvas-team-id in deze variant.
+  // Record<teamId, {x,y}>. Leeg = val terug op werkversie-positie van bron-team.
+  posities              Json?
+
   createdAt             DateTime      @default(now())
   updatedAt             DateTime      @updatedAt
 
@@ -1976,6 +1980,14 @@ model WhatIfTeam {
   teamType      TeamType?
   niveau        String?
   volgorde      Int           @default(0)
+
+  // Selectie-pool metadata (snapshot vanaf de werkversie bij aanmaken van what-if).
+  // Niet-relationele snapshot: als de werkversie-SelectieGroep later wijzigt,
+  // blijft de variant ongemoeid. Bij promotie wordt hiermee de SelectieGroep
+  // in v2 gereconstrueerd.
+  selectieGroepBronId String?
+  selectieNaam        String?
+  gebundeld           Boolean  @default(false)
 
   spelers       WhatIfTeamSpeler[]
   staf          WhatIfTeamStaf[]

@@ -101,6 +101,8 @@ export async function createWhatIfVanHuidigeVersie(
 ): Promise<{ id: string }> {
   await requireTC();
 
+  // Haal de huidige werkversie volledig op — inclusief selectiegroepen en hun
+  // gebundelde spelers/staf, zodat de what-if een exacte kopie kan zijn.
   const hoogsteVersie = await prisma.versie.findFirst({
     where: { werkindelingId },
     orderBy: { nummer: "desc" },
@@ -114,6 +116,16 @@ export async function createWhatIfVanHuidigeVersie(
           teamType: true,
           niveau: true,
           volgorde: true,
+          selectieGroepId: true,
+          spelers: { select: { spelerId: true, statusOverride: true, notitie: true } },
+          staf: { select: { stafId: true, rol: true } },
+        },
+      },
+      selectieGroepen: {
+        select: {
+          id: true,
+          naam: true,
+          gebundeld: true,
           spelers: { select: { spelerId: true, statusOverride: true, notitie: true } },
           staf: { select: { stafId: true, rol: true } },
         },
@@ -126,6 +138,43 @@ export async function createWhatIfVanHuidigeVersie(
   }
 
   type BronTeam = (typeof hoogsteVersie)["teams"][number];
+  type BronSG = (typeof hoogsteVersie)["selectieGroepen"][number];
+
+  const sgById = new Map<string, BronSG>();
+  for (const sg of hoogsteVersie.selectieGroepen) sgById.set(sg.id, sg);
+
+  // Voor elk team dat bij een gebundelde pool hoort: plat de pool-spelers/staf
+  // mee in de what-if-team. Bij promotie reconstrueren we de pool weer in v2.
+  const teamsData = hoogsteVersie.teams.map((team: BronTeam) => {
+    const sg = team.selectieGroepId ? sgById.get(team.selectieGroepId) : null;
+    const gebundeld = sg?.gebundeld ?? false;
+
+    const extraSpelers = gebundeld && sg ? sg.spelers : [];
+    const extraStaf = gebundeld && sg ? sg.staf : [];
+
+    // Ontdubbel: een speler mag niet twee keer in hetzelfde team zitten
+    const spelerIds = new Set(team.spelers.map((s: { spelerId: string }) => s.spelerId));
+    const stafIds = new Set(team.staf.map((s: { stafId: string }) => s.stafId));
+    const extraSpelersGefilterd = extraSpelers.filter(
+      (s: { spelerId: string }) => !spelerIds.has(s.spelerId)
+    );
+    const extraStafGefilterd = extraStaf.filter((s: { stafId: string }) => !stafIds.has(s.stafId));
+
+    return {
+      bronTeamId: team.id,
+      naam: team.naam,
+      categorie: team.categorie,
+      kleur: team.kleur,
+      teamType: team.teamType,
+      niveau: team.niveau,
+      volgorde: team.volgorde,
+      selectieGroepBronId: team.selectieGroepId,
+      selectieNaam: sg?.naam ?? null,
+      gebundeld,
+      spelers: { create: [...team.spelers, ...extraSpelersGefilterd] },
+      staf: { create: [...team.staf, ...extraStafGefilterd] },
+    };
+  });
 
   const whatIf = await prisma.whatIf.create({
     data: {
@@ -133,18 +182,9 @@ export async function createWhatIfVanHuidigeVersie(
       vraag: data.vraag,
       toelichting: data.toelichting ?? null,
       basisVersieNummer: hoogsteVersie.nummer,
+      posities: hoogsteVersie.posities ?? undefined,
       teams: {
-        create: hoogsteVersie.teams.map((team: BronTeam) => ({
-          bronTeamId: team.id,
-          naam: team.naam,
-          categorie: team.categorie,
-          kleur: team.kleur,
-          teamType: team.teamType,
-          niveau: team.niveau,
-          volgorde: team.volgorde,
-          spelers: { create: team.spelers },
-          staf: { create: team.staf },
-        })),
+        create: teamsData,
       },
     },
     select: { id: true },

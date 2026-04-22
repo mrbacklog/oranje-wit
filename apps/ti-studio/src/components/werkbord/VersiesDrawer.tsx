@@ -301,6 +301,23 @@ export function VersiesDrawer({
               count={data.whatIfs.filter((wi) => wi.status === "OPEN").length + " open"}
             />
 
+            <div
+              style={{
+                margin: "0 10px 8px",
+                padding: "8px 10px",
+                background: "rgba(59,130,246,.06)",
+                border: "1px solid rgba(59,130,246,.18)",
+                borderRadius: 8,
+                fontSize: 11,
+                color: "var(--text-2)",
+                lineHeight: 1.45,
+              }}
+            >
+              Een what-if is een <strong>vrije kopie</strong> van je werkindeling. Schuif spelers,
+              teams en staf zoals je wilt — de werkindeling blijft ongemoeid. Pas als je op{" "}
+              <strong>Overnemen</strong> klikt wordt de variant de nieuwe werkversie.
+            </div>
+
             {data.whatIfs.map((wi) => {
               const isOpen = wi.status === "OPEN";
               const isDone = wi.status === "TOEGEPAST";

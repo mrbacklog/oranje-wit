@@ -38,6 +38,9 @@ type WhatIfTeamData = {
   teamType?: Prisma.TeamCreateInput["teamType"];
   niveau: string | null;
   volgorde: number;
+  selectieGroepBronId: string | null;
+  selectieNaam: string | null;
+  gebundeld: boolean;
   spelers: {
     spelerId: string;
     statusOverride: Prisma.TeamSpelerCreateInput["statusOverride"];
@@ -106,6 +109,7 @@ export async function pasWhatIfToe(
         werkindelingId: true,
         basisVersieNummer: true,
         vraag: true,
+        posities: true,
         teams: {
           select: {
             id: true,
@@ -116,6 +120,9 @@ export async function pasWhatIfToe(
             teamType: true,
             niveau: true,
             volgorde: true,
+            selectieGroepBronId: true,
+            selectieNaam: true,
+            gebundeld: true,
             spelers: {
               select: { spelerId: true, statusOverride: true, notitie: true },
             },
@@ -229,11 +236,15 @@ export async function pasWhatIfToe(
     }
 
     // Bepaal welke selectiegroepen meegenomen moeten worden:
-    // alle groepen die ten minste één ongeraakt team bevatten.
+    // - alle groepen die ten minste één ongeraakt team bevatten
+    // - alle groepen die gerefereerd worden door een what-if-team (selectieGroepBronId)
     const ongeraakteTeams = huidigeTeams.filter((t) => !overschrevenTeamIds.has(t.id));
     const actieveSelectieGroepIds = new Set<string>();
     for (const t of ongeraakteTeams) {
       if (t.selectieGroepId) actieveSelectieGroepIds.add(t.selectieGroepId);
+    }
+    for (const t of whatIfTeams) {
+      if (t.selectieGroepBronId) actieveSelectieGroepIds.add(t.selectieGroepBronId);
     }
 
     const teamIdMap = new Map<string, string>(); // oudTeamId → nieuwTeamId
@@ -318,8 +329,24 @@ export async function pasWhatIfToe(
           teamIdMap.set(team.id, nieuwTeamId);
         }
 
-        // 4. Kopieer what-if teams (als nieuw of als vervanging)
+        // 4. Kopieer what-if teams (als nieuw of als vervanging).
+        // Als een what-if-team gebundeld was: reconstrueer de pool — verhuis de
+        // spelers/staf naar SelectieSpeler/SelectieStaf i.p.v. TeamSpeler.
+        // We houden bij welke spelers al per (poolId, spelerId) in de pool zitten
+        // om dubbele rijen te voorkomen wanneer meerdere what-if-teams dezelfde
+        // bron-pool delen.
+        const poolSpelerSet = new Set<string>(); // key: `${nieuwPoolId}:${spelerId}`
+        const poolStafSet = new Set<string>();
+
         for (const wiTeam of whatIfTeams) {
+          const nieuwPoolId =
+            wiTeam.gebundeld && wiTeam.selectieGroepBronId
+              ? (selectieGroepIdMap.get(wiTeam.selectieGroepBronId) ?? null)
+              : null;
+
+          const teamSpelers = nieuwPoolId ? [] : wiTeam.spelers;
+          const teamStaf = nieuwPoolId ? [] : wiTeam.staf;
+
           const nieuwTeamId = await kopieerTeamNaarVersie(tx, nieuweVersie.id, {
             naam: wiTeam.naam,
             alias: null,
@@ -328,22 +355,58 @@ export async function pasWhatIfToe(
             teamType: wiTeam.teamType ?? null,
             niveau: wiTeam.niveau,
             volgorde: wiTeam.volgorde,
-            selectieGroepId: null,
-            spelers: wiTeam.spelers,
-            staf: wiTeam.staf,
+            selectieGroepId: nieuwPoolId,
+            spelers: teamSpelers,
+            staf: teamStaf,
           });
           if (wiTeam.bronTeamId) {
             teamIdMap.set(wiTeam.bronTeamId, nieuwTeamId);
           }
+
+          // Verhuis spelers/staf naar de pool
+          if (nieuwPoolId) {
+            for (const s of wiTeam.spelers) {
+              const key = `${nieuwPoolId}:${s.spelerId}`;
+              if (poolSpelerSet.has(key)) continue;
+              poolSpelerSet.add(key);
+              await tx.selectieSpeler.create({
+                data: {
+                  selectieGroepId: nieuwPoolId,
+                  spelerId: s.spelerId,
+                  statusOverride: s.statusOverride,
+                  notitie: s.notitie,
+                },
+              });
+            }
+            for (const s of wiTeam.staf) {
+              const key = `${nieuwPoolId}:${s.stafId}`;
+              if (poolStafSet.has(key)) continue;
+              poolStafSet.add(key);
+              await tx.selectieStaf.create({
+                data: {
+                  selectieGroepId: nieuwPoolId,
+                  stafId: s.stafId,
+                  rol: s.rol ?? "",
+                },
+              });
+            }
+          }
         }
 
-        // 5. Remap canvas-posities naar nieuwe team-ID's
-        const oudePosities = (huidigeVersie.posities ?? {}) as Record<
+        // 5. Remap canvas-posities naar nieuwe team-ID's.
+        // What-if eigen posities hebben voorrang boven werkversie-posities —
+        // teams die binnen een variant verschoven zijn behouden hun plek in v2.
+        const werkversiePosities = (huidigeVersie.posities ?? {}) as Record<
           string,
           { x: number; y: number }
         >;
+        const whatIfPosities = (whatIf.posities ?? {}) as Record<string, { x: number; y: number }>;
+        const samengevoegdePosities: Record<string, { x: number; y: number }> = {
+          ...werkversiePosities,
+          ...whatIfPosities,
+        };
         const nieuwePosities: Record<string, { x: number; y: number }> = {};
-        for (const [oudTeamId, pos] of Object.entries(oudePosities)) {
+        for (const [oudTeamId, pos] of Object.entries(samengevoegdePosities)) {
           const nieuwTeamId = teamIdMap.get(oudTeamId);
           if (nieuwTeamId) {
             nieuwePosities[nieuwTeamId] = pos;
