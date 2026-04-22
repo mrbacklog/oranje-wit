@@ -2,7 +2,13 @@
 
 import { prisma } from "@/lib/teamindeling/db/prisma";
 import { requireTC } from "@oranje-wit/auth/checks";
-import { logger, korfbalPeildatum, berekenKorfbalLeeftijd, type Seizoen } from "@oranje-wit/types";
+import {
+  logger,
+  korfbalPeildatum,
+  berekenKorfbalLeeftijd,
+  HUIDIG_SEIZOEN,
+  type Seizoen,
+} from "@oranje-wit/types";
 import type { ActionResult } from "@oranje-wit/types";
 import type {
   WerkbordTeam,
@@ -303,6 +309,36 @@ export async function getWhatIfVoorCanvas(
       },
     });
 
+    // Join tussenvoegsel uit Lid + ussScore + fotocheck, zoals getAlleSpelers.
+    const spelerIds = extraSpelers.map((s) => s.id);
+    const [leden, ussScores, fotos] = await Promise.all([
+      prisma.lid.findMany({
+        where: { relCode: { in: spelerIds } },
+        select: { relCode: true, tussenvoegsel: true },
+      }),
+      prisma.spelerUSS.findMany({
+        where: { spelerId: { in: spelerIds }, seizoen: HUIDIG_SEIZOEN },
+        select: { spelerId: true, ussOverall: true },
+      }),
+      prisma.lidFoto.findMany({
+        where: { relCode: { in: spelerIds } },
+        select: { relCode: true },
+      }),
+    ]);
+    const tussenvoegselMap = new Map<string, string | null>(
+      leden.map((l: { relCode: string; tussenvoegsel: string | null }) => [
+        l.relCode,
+        l.tussenvoegsel,
+      ])
+    );
+    const ussMap = new Map<string, number | null>(
+      ussScores.map((u: { spelerId: string; ussOverall: number | null }) => [
+        u.spelerId,
+        u.ussOverall ?? null,
+      ])
+    );
+    const fotoSet = new Set<string>(fotos.map((f: { relCode: string }) => f.relCode));
+
     // Effectieve teamId per speler in variant-context
     const spelerTeamInVariant = new Map<string, string>();
     const spelerTeamNaamInVariant = new Map<string, string>();
@@ -330,7 +366,7 @@ export async function getWhatIfVoorCanvas(
       const werkbordSpeler: WerkbordSpeler = {
         id: spelerData.id,
         roepnaam: spelerData.roepnaam,
-        tussenvoegsel: null,
+        tussenvoegsel: tussenvoegselMap.get(spelerData.id) ?? null,
         achternaam: spelerData.achternaam,
         geboortejaar: spelerData.geboortejaar ?? huidigeJaar - 15,
         geboortedatum: spelerData.geboortedatum
@@ -616,7 +652,7 @@ export async function getWhatIfVoorCanvas(
       return {
         id: sp.id,
         roepnaam: sp.roepnaam,
-        tussenvoegsel: null,
+        tussenvoegsel: tussenvoegselMap.get(sp.id) ?? null,
         achternaam: sp.achternaam,
         geboortejaar: sp.geboortejaar ?? huidigeJaar - 20,
         geboortedatum: sp.geboortedatum ? sp.geboortedatum.toISOString().split("T")[0] : null,
@@ -629,8 +665,8 @@ export async function getWhatIfVoorCanvas(
         teamId: effectieveStatus === "ALGEMEEN_RESERVE" ? null : inVariantTeamId,
         isNieuw: sp.seizoenenActief === 1,
         openMemoCount: 0,
-        ussScore: null,
-        fotoUrl: null,
+        ussScore: ussMap.get(sp.id) ?? null,
+        fotoUrl: fotoSet.has(sp.id) ? `/api/scouting/spelers/${sp.id}/foto` : null,
         huidigTeam: (sp.huidig as { team?: string } | null)?.team ?? null,
         ingedeeldTeamNaam: spelerTeamNaamInVariant.get(sp.id) ?? null,
         selectieGroepId: null,
