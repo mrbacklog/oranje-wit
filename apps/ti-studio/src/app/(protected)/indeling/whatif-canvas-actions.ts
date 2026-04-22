@@ -48,7 +48,6 @@ export interface WhatIfCanvasData {
 type MinSpelerData = {
   id: string;
   roepnaam: string;
-  tussenvoegsel: string | null;
   achternaam: string;
   geboortejaar: number | null;
   geboortedatum: Date | null;
@@ -139,7 +138,6 @@ export async function getWhatIfVoorCanvas(
                   select: {
                     id: true,
                     roepnaam: true,
-                    tussenvoegsel: true,
                     achternaam: true,
                     geboortejaar: true,
                     geboortedatum: true,
@@ -206,7 +204,6 @@ export async function getWhatIfVoorCanvas(
                       select: {
                         id: true,
                         roepnaam: true,
-                        tussenvoegsel: true,
                         achternaam: true,
                         geboortejaar: true,
                         geboortedatum: true,
@@ -264,15 +261,12 @@ export async function getWhatIfVoorCanvas(
       select: {
         id: true,
         roepnaam: true,
-        tussenvoegsel: true,
         achternaam: true,
         geboortejaar: true,
         geboortedatum: true,
         geslacht: true,
         status: true,
         seizoenenActief: true,
-        ussScore: true,
-        heeftFoto: true,
         huidig: true,
       },
     });
@@ -291,7 +285,6 @@ export async function getWhatIfVoorCanvas(
       spelerData: {
         id: string;
         roepnaam: string;
-        tussenvoegsel: string | null;
         achternaam: string;
         geboortejaar: number | null;
         geboortedatum: Date | null;
@@ -305,7 +298,7 @@ export async function getWhatIfVoorCanvas(
       const werkbordSpeler: WerkbordSpeler = {
         id: spelerData.id,
         roepnaam: spelerData.roepnaam,
-        tussenvoegsel: spelerData.tussenvoegsel ?? null,
+        tussenvoegsel: null,
         achternaam: spelerData.achternaam,
         geboortejaar: spelerData.geboortejaar ?? huidigeJaar - 15,
         geboortedatum: spelerData.geboortedatum
@@ -558,7 +551,7 @@ export async function getWhatIfVoorCanvas(
       return {
         id: sp.id,
         roepnaam: sp.roepnaam,
-        tussenvoegsel: sp.tussenvoegsel ?? null,
+        tussenvoegsel: null,
         achternaam: sp.achternaam,
         geboortejaar: sp.geboortejaar ?? huidigeJaar - 20,
         geboortedatum: sp.geboortedatum ? sp.geboortedatum.toISOString().split("T")[0] : null,
@@ -571,8 +564,8 @@ export async function getWhatIfVoorCanvas(
         teamId: effectieveStatus === "ALGEMEEN_RESERVE" ? null : inVariantTeamId,
         isNieuw: sp.seizoenenActief === 1,
         openMemoCount: 0,
-        ussScore: sp.ussScore ?? null,
-        fotoUrl: sp.heeftFoto ? `/api/scouting/spelers/${sp.id}/foto` : null,
+        ussScore: null,
+        fotoUrl: null,
         huidigTeam: (sp.huidig as { team?: string } | null)?.team ?? null,
         ingedeeldTeamNaam: spelerTeamNaamInVariant.get(sp.id) ?? null,
         selectieGroepId: null,
