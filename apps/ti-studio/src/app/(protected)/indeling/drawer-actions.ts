@@ -141,7 +141,7 @@ export async function createWhatIfVanHuidigeVersie(
   type BronSG = (typeof hoogsteVersie)["selectieGroepen"][number];
 
   const sgById = new Map<string, BronSG>();
-  for (const sg of hoogsteVersie.selectieGroepen) sgById.set(sg.id, sg);
+  for (const sg of hoogsteVersie.selectieGroepen ?? []) sgById.set(sg.id, sg);
 
   // Voor elk team dat bij een gebundelde pool hoort: plat de pool-spelers/staf
   // mee in de what-if-team. Bij promotie reconstrueren we de pool weer in v2.
