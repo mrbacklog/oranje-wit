@@ -182,6 +182,24 @@ export async function getWhatIfVoorCanvas(
                 id: true,
                 naam: true,
                 gebundeld: true,
+                spelers: {
+                  select: {
+                    id: true,
+                    spelerId: true,
+                    notitie: true,
+                    speler: {
+                      select: {
+                        id: true,
+                        roepnaam: true,
+                        achternaam: true,
+                        geboortejaar: true,
+                        geboortedatum: true,
+                        geslacht: true,
+                        status: true,
+                      },
+                    },
+                  },
+                },
               },
             },
             teams: {
@@ -238,6 +256,20 @@ export async function getWhatIfVoorCanvas(
     const huidigeJaar = new Date().getFullYear();
 
     const opgeslagenPosities = (versie.posities ?? {}) as Record<string, { x: number; y: number }>;
+
+    // Lookup: selectiegroepen uit de werkversie per id, zodat we de spelers
+    // van gebundelde pools in het canvas-team kunnen tonen.
+    type MinSelectieGroep = {
+      id: string;
+      naam: string | null;
+      gebundeld: boolean;
+      spelers: MinSpelerInTeam[];
+    };
+    const selectieGroepen = (versie.selectieGroepen ?? []) as unknown as MinSelectieGroep[];
+    const selectieGroepById = new Map<string, MinSelectieGroep>();
+    for (const sg of selectieGroepen) {
+      selectieGroepById.set(sg.id, sg);
+    }
 
     // Lookup: welk werkversie-team wordt overschreven door een what-if team?
     const bronIdToWhatIfTeam = new Map<string, MinWhatIfTeam>();
@@ -363,6 +395,45 @@ export async function getWhatIfVoorCanvas(
       return Math.round((totaal / spelers.length) * 10) / 10;
     }
 
+    // Helper: bouw selectie-pool-data voor een team op basis van de SelectieGroep
+    // uit de werkversie. Gebundelde selecties tonen hun spelers in het canvas
+    // team (selectieDames/selectieHeren).
+    function bouwSelectieData(
+      selectieGroepId: string | null,
+      teamId: string,
+      teamNaam: string
+    ): Pick<WerkbordTeam, "selectieNaam" | "selectieDames" | "selectieHeren" | "gebundeld"> {
+      if (!selectieGroepId) {
+        return {
+          selectieNaam: null,
+          selectieDames: [],
+          selectieHeren: [],
+          gebundeld: false,
+        };
+      }
+      const sg = selectieGroepById.get(selectieGroepId);
+      if (!sg) {
+        return {
+          selectieNaam: null,
+          selectieDames: [],
+          selectieHeren: [],
+          gebundeld: false,
+        };
+      }
+      const damesBron = sg.spelers.filter((s) => s.speler.geslacht === "V");
+      const herenBron = sg.spelers.filter((s) => s.speler.geslacht === "M");
+      return {
+        selectieNaam: sg.naam ?? null,
+        selectieDames: damesBron.map((s) =>
+          bouwSpelerInTeam(s.id, s.spelerId, s.notitie, s.speler, teamId, teamNaam)
+        ),
+        selectieHeren: herenBron.map((s) =>
+          bouwSpelerInTeam(s.id, s.spelerId, s.notitie, s.speler, teamId, teamNaam)
+        ),
+        gebundeld: sg.gebundeld,
+      };
+    }
+
     // Bouw teams: voor elk werkversie-team kies between what-if override of origineel
     const versieTeams = versie.teams as unknown as MinTeamKern[];
     versieTeams.forEach((werkTeam: MinTeamKern, i: number) => {
@@ -427,10 +498,7 @@ export async function getWhatIfVoorCanvas(
             | "U19"
             | null,
           selectieGroepId: werkTeam.selectieGroepId ?? null,
-          selectieNaam: null,
-          selectieDames: [],
-          selectieHeren: [],
-          gebundeld: false,
+          ...bouwSelectieData(werkTeam.selectieGroepId, teamId, teamNaam),
           werkitems: [],
           openMemoCount: 0,
         });
@@ -479,10 +547,7 @@ export async function getWhatIfVoorCanvas(
             | "B_CATEGORIE",
           niveau: (werkTeam.niveau ?? null) as "A" | "B" | "U15" | "U17" | "U19" | null,
           selectieGroepId: werkTeam.selectieGroepId ?? null,
-          selectieNaam: null,
-          selectieDames: [],
-          selectieHeren: [],
-          gebundeld: false,
+          ...bouwSelectieData(werkTeam.selectieGroepId, teamId, teamNaam),
           werkitems: [],
           openMemoCount: 0,
         });

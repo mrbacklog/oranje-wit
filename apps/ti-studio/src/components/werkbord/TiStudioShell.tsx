@@ -278,6 +278,7 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
                     }
                   : null
               }
+              onTerugNaarWerkversie={terugNaarWerkversie}
             />
             <TeamDrawer
               open={panelRechts === "teams"}

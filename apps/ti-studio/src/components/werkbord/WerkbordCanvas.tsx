@@ -40,6 +40,7 @@ interface WerkbordCanvasProps {
   werkindelingId: string;
   werkindelingNaam: string;
   variantBadge?: { vraag: string; basisVersieNummer: number } | null;
+  onTerugNaarWerkversie?: () => void;
 }
 
 interface TeamDragState {
@@ -113,6 +114,7 @@ export function WerkbordCanvas({
   werkindelingId,
   werkindelingNaam,
   variantBadge = null,
+  onTerugNaarWerkversie,
 }: WerkbordCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const minimapRef = useRef<HTMLDivElement>(null);
@@ -313,16 +315,27 @@ export function WerkbordCanvas({
         cursor: panState ? "grabbing" : draggingTeam ? "grabbing" : "default",
         background:
           "radial-gradient(circle at 50% 50%, rgba(255,107,0,.02) 0%, transparent 60%), var(--bg-0)",
-        boxShadow: variantBadge ? "inset 0 0 0 3px var(--accent)" : undefined,
       }}
     >
+      {variantBadge && (
+        <div
+          aria-hidden
+          style={{
+            position: "absolute",
+            inset: 0,
+            pointerEvents: "none",
+            border: "3px solid var(--accent)",
+            zIndex: 50,
+          }}
+        />
+      )}
       {variantBadge && (
         <div
           style={{
             position: "absolute",
             top: 12,
             left: 12,
-            zIndex: 40,
+            zIndex: 60,
             display: "flex",
             alignItems: "center",
             gap: 8,
@@ -363,6 +376,27 @@ export function WerkbordCanvas({
           <span style={{ fontSize: 10, color: "var(--text-3)" }}>
             gebaseerd op v{variantBadge.basisVersieNummer}
           </span>
+          {onTerugNaarWerkversie && (
+            <button
+              onClick={onTerugNaarWerkversie}
+              style={{
+                marginLeft: 4,
+                fontSize: 11,
+                fontWeight: 700,
+                padding: "4px 10px",
+                borderRadius: 5,
+                background: "var(--bg-0)",
+                color: "var(--text-1)",
+                border: "1px solid var(--border-1)",
+                cursor: "pointer",
+                fontFamily: "inherit",
+                whiteSpace: "nowrap",
+              }}
+              title="Sluit deze variant en ga terug naar de werkversie"
+            >
+              ← Terug naar werkversie
+            </button>
+          )}
         </div>
       )}
       {/* Achtergrond dot-patroon — pan-zone */}

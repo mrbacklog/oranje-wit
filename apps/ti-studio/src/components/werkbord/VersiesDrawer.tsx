@@ -1009,22 +1009,46 @@ function ConfirmDialog({
     bezig || (isPromoveer && (validatieLaadt || heeftHardefouten || toelichtingOntbreekt));
 
   if (confirm.type === "promoveer-whatif") {
-    titel = "What-If promoveren?";
+    titel = "Deze variant overnemen als werkindeling?";
     body = (
       <>
+        <div
+          style={{
+            padding: "10px 12px",
+            background: "rgba(255,107,0,.08)",
+            border: "1px solid rgba(255,107,0,.25)",
+            borderRadius: 6,
+            marginBottom: 12,
+          }}
+        >
+          <p
+            style={{
+              fontSize: 11,
+              fontWeight: 700,
+              color: "var(--accent)",
+              textTransform: "uppercase",
+              letterSpacing: ".6px",
+              marginBottom: 6,
+            }}
+          >
+            Let op — dit vervangt de huidige werkindeling
+          </p>
+          <p style={{ fontSize: 12, color: "var(--text-1)", lineHeight: 1.5 }}>
+            Alle wijzigingen uit deze variant worden de nieuwe werkversie. De huidige werkversie
+            wordt automatisch in het archief bewaard en blijft altijd terug te zetten.
+          </p>
+        </div>
         <p style={{ fontSize: 12, color: "var(--text-2)", lineHeight: 1.6 }}>
-          <strong style={{ color: "var(--text-1)" }}>"{confirm.vraag}"</strong>
+          Variant: <strong style={{ color: "var(--text-1)" }}>"{confirm.vraag}"</strong>
           <br />
           <span style={{ fontSize: 11, color: "var(--info)" }}>
             gebaseerd op v{confirm.basisVersieNummer}
           </span>
         </p>
-        <p style={{ fontSize: 11, color: "var(--text-3)", margin: "8px 0 4px" }}>
-          wordt de nieuwe werkversie:
-        </p>
+        <p style={{ fontSize: 11, color: "var(--text-3)", margin: "10px 0 4px" }}>Na overnemen:</p>
         <p
           style={{
-            fontSize: 12,
+            fontSize: 13,
             color: "var(--accent)",
             fontWeight: 700,
           }}
@@ -1032,7 +1056,7 @@ function ConfirmDialog({
           v{nieuweNummer} — nieuwe werkversie
         </p>
         <p style={{ fontSize: 11, color: "var(--text-3)", marginTop: 4 }}>
-          v{huidigVersieNummer} blijft bewaard in het archief
+          v{huidigVersieNummer} → archief (terug te zetten via "Herstel")
         </p>
 
         {validatieLaadt && (
@@ -1180,28 +1204,55 @@ function ConfirmDialog({
       </>
     );
   } else if (confirm.type === "herstel-versie") {
-    titel = `Versie v${confirm.nummer} terugzetten?`;
+    titel = `Oude versie v${confirm.nummer} terugzetten als werkindeling?`;
     body = (
       <>
+        <div
+          style={{
+            padding: "10px 12px",
+            background: "rgba(255,107,0,.08)",
+            border: "1px solid rgba(255,107,0,.25)",
+            borderRadius: 6,
+            marginBottom: 12,
+          }}
+        >
+          <p
+            style={{
+              fontSize: 11,
+              fontWeight: 700,
+              color: "var(--accent)",
+              textTransform: "uppercase",
+              letterSpacing: ".6px",
+              marginBottom: 6,
+            }}
+          >
+            Let op — dit vervangt de huidige werkindeling
+          </p>
+          <p style={{ fontSize: 12, color: "var(--text-1)", lineHeight: 1.5 }}>
+            De archiefversie wordt gekopieerd naar een nieuwe werkversie. De huidige werkversie
+            verhuist naar het archief en blijft altijd terug te zetten.
+          </p>
+        </div>
         <p style={{ fontSize: 12, color: "var(--text-2)", lineHeight: 1.6 }}>
-          Nieuwe versie aanmaken als kopie van
-          <br />
+          Bron:{" "}
           <strong style={{ color: "var(--text-1)" }}>
             v{confirm.nummer} "{confirm.naam ?? `Versie ${confirm.nummer}`}"
           </strong>
         </p>
+        <p style={{ fontSize: 11, color: "var(--text-3)", margin: "10px 0 4px" }}>
+          Na terugzetten:
+        </p>
         <p
           style={{
-            fontSize: 12,
+            fontSize: 13,
             color: "var(--accent)",
             fontWeight: 700,
-            marginTop: 8,
           }}
         >
           v{nieuweNummer} — nieuwe werkversie
         </p>
         <p style={{ fontSize: 11, color: "var(--text-3)", marginTop: 4 }}>
-          Eerdere versies blijven bewaard in het archief
+          v{huidigVersieNummer} → archief
         </p>
       </>
     );
