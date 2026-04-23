@@ -186,12 +186,37 @@ jobs:
     steps:
       - name: Trigger Railway deploy (web)
         run: |
-          RESULT=$(curl -s -X POST "https://backboard.railway.com/graphql/v2" \
-            -H "Authorization: Bearer ${{ secrets.RAILWAY_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            -d "{\"query\":\"mutation { serviceInstanceDeploy(environmentId: \\\"${{ secrets.RAILWAY_ENVIRONMENT_ID }}\\\", serviceId: \\\"${{ secrets.RAILWAY_SERVICE_WEB }}\\\", commitSha: \\\"${{ github.sha }}\\\") }\"}")
-          echo "Railway response: $RESULT"
-          echo "$RESULT" | grep -q '"serviceInstanceDeploy":true' && echo "Deploy getriggerd (${{ github.sha }})" || (echo "Deploy mislukt" && exit 1)
+          deploy_with_retry() {
+            local SERVICE_ID="$1"
+            local LABEL="$2"
+            local ATTEMPT=1
+            local MAX_ATTEMPTS=4
+            while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
+              RESULT=$(curl -s -X POST "https://backboard.railway.com/graphql/v2" \
+                -H "Authorization: Bearer ${{ secrets.RAILWAY_TOKEN }}" \
+                -H "Content-Type: application/json" \
+                -d "{\"query\":\"mutation { serviceInstanceDeploy(environmentId: \\\"${{ secrets.RAILWAY_ENVIRONMENT_ID }}\\\", serviceId: \\\"$SERVICE_ID\\\", commitSha: \\\"${{ github.sha }}\\\") }\"}")
+              echo "Railway $LABEL response (poging $ATTEMPT): $RESULT"
+              if echo "$RESULT" | grep -q '"serviceInstanceDeploy":true'; then
+                echo "$LABEL deploy getriggerd (${{ github.sha }})"
+                return 0
+              fi
+              # Rate limit? Parse het aantal seconden en wacht.
+              WAIT=$(echo "$RESULT" | grep -oE 'try again in [0-9]+' | grep -oE '[0-9]+' | head -1)
+              if [ -n "$WAIT" ]; then
+                WAIT=$((WAIT + 5))
+                echo "Rate limit — wacht ${WAIT}s voordat we opnieuw proberen"
+                sleep "$WAIT"
+              else
+                echo "Onbekende fout — wacht 30s"
+                sleep 30
+              fi
+              ATTEMPT=$((ATTEMPT + 1))
+            done
+            echo "$LABEL deploy mislukt na $MAX_ATTEMPTS pogingen"
+            return 1
+          }
+          deploy_with_retry "${{ secrets.RAILWAY_SERVICE_WEB }}" "web"
 
       - name: Trigger Railway deploy (ti-studio)
         env:
@@ -201,12 +226,36 @@ jobs:
             echo "RAILWAY_SERVICE_TI_STUDIO niet ingesteld — ti-studio deploy overgeslagen"
             exit 0
           fi
-          RESULT=$(curl -s -X POST "https://backboard.railway.com/graphql/v2" \
-            -H "Authorization: Bearer ${{ secrets.RAILWAY_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            -d "{\"query\":\"mutation { serviceInstanceDeploy(environmentId: \\\"${{ secrets.RAILWAY_ENVIRONMENT_ID }}\\\", serviceId: \\\"$RAILWAY_SERVICE_TI_STUDIO\\\", commitSha: \\\"${{ github.sha }}\\\") }\"}")
-          echo "Railway ti-studio response: $RESULT"
-          echo "$RESULT" | grep -q '"serviceInstanceDeploy":true' && echo "TI-Studio deploy getriggerd (${{ github.sha }})" || (echo "TI-Studio deploy mislukt" && exit 1)
+          deploy_with_retry() {
+            local SERVICE_ID="$1"
+            local LABEL="$2"
+            local ATTEMPT=1
+            local MAX_ATTEMPTS=4
+            while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
+              RESULT=$(curl -s -X POST "https://backboard.railway.com/graphql/v2" \
+                -H "Authorization: Bearer ${{ secrets.RAILWAY_TOKEN }}" \
+                -H "Content-Type: application/json" \
+                -d "{\"query\":\"mutation { serviceInstanceDeploy(environmentId: \\\"${{ secrets.RAILWAY_ENVIRONMENT_ID }}\\\", serviceId: \\\"$SERVICE_ID\\\", commitSha: \\\"${{ github.sha }}\\\") }\"}")
+              echo "Railway $LABEL response (poging $ATTEMPT): $RESULT"
+              if echo "$RESULT" | grep -q '"serviceInstanceDeploy":true'; then
+                echo "$LABEL deploy getriggerd (${{ github.sha }})"
+                return 0
+              fi
+              WAIT=$(echo "$RESULT" | grep -oE 'try again in [0-9]+' | grep -oE '[0-9]+' | head -1)
+              if [ -n "$WAIT" ]; then
+                WAIT=$((WAIT + 5))
+                echo "Rate limit — wacht ${WAIT}s voordat we opnieuw proberen"
+                sleep "$WAIT"
+              else
+                echo "Onbekende fout — wacht 30s"
+                sleep 30
+              fi
+              ATTEMPT=$((ATTEMPT + 1))
+            done
+            echo "$LABEL deploy mislukt na $MAX_ATTEMPTS pogingen"
+            return 1
+          }
+          deploy_with_retry "$RAILWAY_SERVICE_TI_STUDIO" "ti-studio"
 
       - name: Wacht op Railway deployment (90s)
         run: sleep 90
