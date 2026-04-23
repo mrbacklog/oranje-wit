@@ -73,32 +73,14 @@ export async function pasWhatIfToe(
     const session = await requireTC();
 
     // --- Validatie vóór de merge ---
+    // De werkindeling is een OPBOUW-fase. Validatie-meldingen (inclusief
+    // kritieke) blokkeren de promotie niet — ze worden meegenomen als
+    // aandachtspunten voor later. TC kan de variant altijd overnemen als
+    // werkversie om daar verder aan te werken.
     const validatie = await valideerWhatIfVoorToepassen(whatIfId);
 
-    if (validatie.heeftHardefouten) {
-      const fouten = [
-        ...validatie.crossTeamMeldingen.filter((m) => m.ernst === "kritiek").map((m) => m.bericht),
-        ...Object.values(validatie.teamValidaties)
-          .flatMap((v) => v.meldingen)
-          .filter((m) => m.ernst === "kritiek")
-          .map((m) => m.bericht),
-      ];
-      return {
-        ok: false,
-        error: `What-if kan niet worden toegepast — harde fouten:\n${fouten.join("\n")}`,
-      };
-    }
-
-    if (validatie.heeftAfwijkingen && !toelichtingAfwijking?.trim()) {
-      const afwijkingen = validatie.kaderAfwijkingen.map(
-        (a) =>
-          `${a.categorie}: verwacht ${a.verwachtAantal}, werkelijk ${a.werkelijkAantal} (${a.verschil > 0 ? "+" : ""}${a.verschil})`
-      );
-      return {
-        ok: false,
-        error: `What-if wijkt af van blauwdruk-kaders. Geef een toelichting mee:\n${afwijkingen.join("\n")}`,
-      };
-    }
+    // Kader-afwijkingen blokkeren niet meer. Toelichting is optioneel —
+    // wordt bewaard in KadersBesluit als de gebruiker er één invult.
     // --- Einde validatie ---
 
     const whatIf = await prisma.whatIf.findUniqueOrThrow({

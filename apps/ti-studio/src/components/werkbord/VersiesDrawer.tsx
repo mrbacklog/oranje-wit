@@ -1021,9 +1021,10 @@ function ConfirmDialog({
             .map((m) => m.bericht),
         ]
       : [];
-  const toelichtingOntbreekt = heeftAfwijkingen && !toelichting.trim();
-  const knopDisabled =
-    bezig || (isPromoveer && (validatieLaadt || heeftHardefouten || toelichtingOntbreekt));
+  // Geen enkele validatie-regel blokkeert nog de promotie — TC kan de variant
+  // altijd overnemen als werkversie. Afwijkingen + kritieke meldingen worden
+  // zichtbaar getoond en kunnen later in de werkversie worden opgelost.
+  const knopDisabled = bezig || (isPromoveer && validatieLaadt);
 
   if (confirm.type === "promoveer-whatif") {
     titel = "Deze variant overnemen als werkindeling?";
@@ -1094,8 +1095,8 @@ function ConfirmDialog({
             style={{
               marginTop: 10,
               padding: "8px 10px",
-              background: "rgba(239,68,68,.08)",
-              border: "1px solid rgba(239,68,68,.25)",
+              background: "rgba(234,179,8,.08)",
+              border: "1px solid rgba(234,179,8,.25)",
               borderRadius: 6,
             }}
           >
@@ -1103,11 +1104,22 @@ function ConfirmDialog({
               style={{
                 fontSize: 11,
                 fontWeight: 700,
-                color: "#ef4444",
+                color: "#b45309",
                 marginBottom: 4,
               }}
             >
-              Harde fouten — promotie geblokkeerd
+              Aandachtspunten — later oplossen
+            </p>
+            <p
+              style={{
+                fontSize: 10,
+                color: "var(--text-3)",
+                lineHeight: 1.4,
+                marginBottom: 6,
+              }}
+            >
+              Deze punten blokkeren de promotie niet. Ze worden meegenomen in de nieuwe werkversie
+              en kun je daar rustig oplossen.
             </p>
             <ul
               style={{
@@ -1123,7 +1135,7 @@ function ConfirmDialog({
               ))}
               {hardeFoutmeldingen.length > 5 && (
                 <li style={{ color: "var(--text-3)" }}>
-                  …en nog {hardeFoutmeldingen.length - 5} fout(en)
+                  …en nog {hardeFoutmeldingen.length - 5} punt(en)
                 </li>
               )}
             </ul>
