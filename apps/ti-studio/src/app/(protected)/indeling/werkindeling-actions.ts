@@ -112,9 +112,11 @@ export async function getAlleSpelers() {
     },
   });
 
-  // Haal tussenvoegsels en USS-scores parallel op
+  // Haal tussenvoegsels, USS-scores, foto's en actuele competitie-team parallel op.
+  // De actuele competitie-team (CompetitieSpeler voor HUIDIG_SEIZOEN + veld_voorjaar)
+  // overschrijft Speler.huidig.team voor de UI-badge. Speler.huidig blijft intact.
   const relCodes = spelers.map((s) => s.id);
-  const [leden, ussScores, fotos] = await Promise.all([
+  const [leden, ussScores, fotos, competitieTeams] = await Promise.all([
     prisma.lid.findMany({
       where: { relCode: { in: relCodes } },
       select: { relCode: true, tussenvoegsel: true },
@@ -126,6 +128,14 @@ export async function getAlleSpelers() {
     prisma.lidFoto.findMany({
       where: { relCode: { in: relCodes } },
       select: { relCode: true },
+    }),
+    prisma.competitieSpeler.findMany({
+      where: {
+        relCode: { in: relCodes },
+        seizoen: HUIDIG_SEIZOEN,
+        competitie: "veld_voorjaar",
+      },
+      select: { relCode: true, team: true },
     }),
   ]);
 
@@ -142,13 +152,23 @@ export async function getAlleSpelers() {
     ])
   );
   const fotoSet = new Set<string>(fotos.map((f: { relCode: string }) => f.relCode));
+  const competitieTeamMap = new Map<string, string>(
+    competitieTeams.map((c: { relCode: string; team: string }) => [c.relCode, c.team])
+  );
 
-  return spelers.map((s) => ({
-    ...s,
-    tussenvoegsel: tussenvoegelMap.get(s.id) ?? null,
-    ussScore: ussMap.get(s.id) ?? null,
-    heeftFoto: fotoSet.has(s.id),
-  }));
+  return spelers.map((s) => {
+    const actueelTeam = competitieTeamMap.get(s.id);
+    const huidigGeupdate = actueelTeam
+      ? { ...((s.huidig as Record<string, unknown> | null) ?? {}), team: actueelTeam }
+      : s.huidig;
+    return {
+      ...s,
+      huidig: huidigGeupdate,
+      tussenvoegsel: tussenvoegelMap.get(s.id) ?? null,
+      ussScore: ussMap.get(s.id) ?? null,
+      heeftFoto: fotoSet.has(s.id),
+    };
+  });
 }
 
 export async function getPosities(versieId: string) {

@@ -324,9 +324,11 @@ export async function getWhatIfVoorCanvas(
       },
     });
 
-    // Join tussenvoegsel uit Lid + ussScore + fotocheck, zoals getAlleSpelers.
+    // Join tussenvoegsel uit Lid + ussScore + fotocheck + actuele competitie-team
+    // (CompetitieSpeler voor HUIDIG_SEIZOEN + veld_voorjaar) — zelfde bron als
+    // werkversie. Overschrijft Speler.huidig.team voor de UI-badge.
     const spelerIds = extraSpelers.map((s) => s.id);
-    const [leden, ussScores, fotos] = await Promise.all([
+    const [leden, ussScores, fotos, competitieTeams] = await Promise.all([
       prisma.lid.findMany({
         where: { relCode: { in: spelerIds } },
         select: { relCode: true, tussenvoegsel: true },
@@ -338,6 +340,14 @@ export async function getWhatIfVoorCanvas(
       prisma.lidFoto.findMany({
         where: { relCode: { in: spelerIds } },
         select: { relCode: true },
+      }),
+      prisma.competitieSpeler.findMany({
+        where: {
+          relCode: { in: spelerIds },
+          seizoen: HUIDIG_SEIZOEN,
+          competitie: "veld_voorjaar",
+        },
+        select: { relCode: true, team: true },
       }),
     ]);
     const tussenvoegselMap = new Map<string, string | null>(
@@ -353,6 +363,9 @@ export async function getWhatIfVoorCanvas(
       ])
     );
     const fotoSet = new Set<string>(fotos.map((f: { relCode: string }) => f.relCode));
+    const competitieTeamMap = new Map<string, string>(
+      competitieTeams.map((c: { relCode: string; team: string }) => [c.relCode, c.team])
+    );
 
     // Open memo-count per speler (zelfde bron als werkversie-page)
     const kadersId = werkindeling.kaders.id;
@@ -399,7 +412,10 @@ export async function getWhatIfVoorCanvas(
       teamNaam: string
     ): WerkbordSpelerInTeam {
       const effectieveStatus = mapStatus(spelerData.status);
-      const huidigTeam = (spelerData.huidig as { team?: string } | null | undefined)?.team ?? null;
+      const huidigTeam =
+        competitieTeamMap.get(spelerData.id) ??
+        (spelerData.huidig as { team?: string } | null | undefined)?.team ??
+        null;
       const werkbordSpeler: WerkbordSpeler = {
         id: spelerData.id,
         roepnaam: spelerData.roepnaam,
@@ -772,7 +788,8 @@ export async function getWhatIfVoorCanvas(
         openMemoCount: memoCountMap.get(sp.id) ?? 0,
         ussScore: ussMap.get(sp.id) ?? null,
         fotoUrl: fotoSet.has(sp.id) ? `/api/scouting/spelers/${sp.id}/foto` : null,
-        huidigTeam: (sp.huidig as { team?: string } | null)?.team ?? null,
+        huidigTeam:
+          competitieTeamMap.get(sp.id) ?? (sp.huidig as { team?: string } | null)?.team ?? null,
         ingedeeldTeamNaam: spelerTeamNaamInVariant.get(sp.id) ?? null,
         selectieGroepId: null,
       };
