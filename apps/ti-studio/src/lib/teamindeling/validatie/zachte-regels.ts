@@ -79,14 +79,17 @@ export function valideerGender(
       });
     }
 
-    // A-categorie: verplicht 4V + 4M (KNKV-regel)
+    // A-categorie: verplicht 4V + 4M (KNKV-regel bij opstelling).
+    // In werkindeling-fase is dit 'aandacht' — de TC mag teams met scheve
+    // genderverhouding plannen; pas bij daadwerkelijke wedstrijd-opstelling
+    // moeten 4V+4M aanwezig zijn. Blokkeert promotie niet meer.
     if (isACat && aantalM > 0 && aantalV > 0) {
       const ratio = Math.min(aantalM, aantalV) / Math.max(aantalM, aantalV);
       if (ratio < 0.75) {
         meldingen.push({
           regel: "gender_balans",
           bericht: `${team.naam}: ${aantalM}M + ${aantalV}V — KNKV vereist 4V+4M in A-categorie`,
-          ernst: "kritiek",
+          ernst: "aandacht",
         });
       }
     }

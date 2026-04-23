@@ -37,19 +37,21 @@ export function valideerBCategorie(
     (kaders && getTeamgrootteUitKaders(team, kaders)) ?? getTeamgrootte(format, false, overrides);
   const aantalSpelers = team.spelers.length;
 
-  // Teamgrootte — skip bij gebundelde selectiepools (TC managet pool-niveau)
+  // Teamgrootte — skip bij gebundelde selectiepools (TC managet pool-niveau).
+  // Min/max zijn 'aandacht': werkindeling-fase is opbouw waar teams onder-/
+  // over-vol mogen staan. KNKV dwingt dit pas af bij competitie-inschrijving.
   if (!team.gebundeld) {
     if (aantalSpelers < grootte.min) {
       meldingen.push({
         regel: "teamgrootte",
         bericht: `${team.naam}: ${aantalSpelers} spelers, minimum is ${grootte.min}`,
-        ernst: "kritiek",
+        ernst: "aandacht",
       });
     } else if (aantalSpelers > grootte.max) {
       meldingen.push({
         regel: "teamgrootte",
         bericht: `${team.naam}: ${aantalSpelers} spelers, maximum is ${grootte.max}`,
-        ernst: "kritiek",
+        ernst: "aandacht",
       });
     } else if (aantalSpelers < grootte.ideaalMin || aantalSpelers > grootte.ideaalMax) {
       meldingen.push({
@@ -164,19 +166,20 @@ export function valideerACategorie(
   const grootte =
     (kaders && getTeamgrootteUitKaders(team, kaders)) ?? getTeamgrootte("achttal", true, overrides);
 
-  // Teamgrootte — skip bij gebundelde selectiepools (TC managet pool-niveau)
+  // Teamgrootte — skip bij gebundelde selectiepools (TC managet pool-niveau).
+  // Min/max zijn 'aandacht' in opbouwfase — zie valideerBCategorie voor uitleg.
   if (!team.gebundeld) {
     if (aantalSpelers < grootte.min) {
       meldingen.push({
         regel: "teamgrootte",
         bericht: `${team.naam}: ${aantalSpelers} spelers, minimum is ${grootte.min}`,
-        ernst: "kritiek",
+        ernst: "aandacht",
       });
     } else if (aantalSpelers > grootte.max) {
       meldingen.push({
         regel: "teamgrootte",
         bericht: `${team.naam}: ${aantalSpelers} spelers, maximum is ${grootte.max}`,
-        ernst: "kritiek",
+        ernst: "aandacht",
       });
     } else if (aantalSpelers < grootte.ideaalMin || aantalSpelers > grootte.ideaalMax) {
       meldingen.push({
@@ -224,19 +227,20 @@ export function valideerSenioren(
     (kaders && getTeamgrootteUitKaders(team, kaders)) ??
     getTeamgrootte("achttal", false, overrides);
 
-  // Teamgrootte — skip bij gebundelde selectiepools (TC managet pool-niveau)
+  // Teamgrootte — skip bij gebundelde selectiepools (TC managet pool-niveau).
+  // Min/max zijn 'aandacht' in opbouwfase — zie valideerBCategorie voor uitleg.
   if (!team.gebundeld) {
     if (aantalSpelers < grootte.min) {
       meldingen.push({
         regel: "teamgrootte",
         bericht: `${team.naam}: ${aantalSpelers} spelers, minimum is ${grootte.min}`,
-        ernst: "kritiek",
+        ernst: "aandacht",
       });
     } else if (aantalSpelers > grootte.max) {
       meldingen.push({
         regel: "teamgrootte",
         bericht: `${team.naam}: ${aantalSpelers} spelers, maximum is ${grootte.max}`,
-        ernst: "kritiek",
+        ernst: "aandacht",
       });
     } else if (aantalSpelers < grootte.ideaalMin || aantalSpelers > grootte.ideaalMax) {
       meldingen.push({
