@@ -314,22 +314,29 @@ export async function pasWhatIfToe(
         }
 
         // 4. Kopieer what-if teams (als nieuw of als vervanging).
-        // Als een what-if-team gebundeld was: reconstrueer de pool — verhuis de
-        // spelers/staf naar SelectieSpeler/SelectieStaf i.p.v. TeamSpeler.
-        // We houden bij welke spelers al per (poolId, spelerId) in de pool zitten
-        // om dubbele rijen te voorkomen wanneer meerdere what-if-teams dezelfde
-        // bron-pool delen.
-        const poolSpelerSet = new Set<string>(); // key: `${nieuwPoolId}:${spelerId}`
+        // Selectie-pool reconstructie:
+        //   - Gekoppelde pool (selectieGroepBronId): team krijgt selectieGroepId
+        //     in v2 gelinkt (bewaart de gekoppelde relatie, ook als niet gebundeld).
+        //   - Gebundeld (gebundeld=true): spelers/staf zitten in de pool, dus
+        //     verhuizen naar SelectieSpeler/SelectieStaf i.p.v. TeamSpeler.
+        //   - Niet-gebundeld (gebundeld=false): spelers/staf blijven per team
+        //     in TeamSpeler/TeamStaf (elk team heeft eigen samenstelling), de
+        //     pool is slechts een label.
+        // poolSpelerSet voorkomt dubbele rijen als meerdere what-if-teams
+        // dezelfde bron-pool delen (alleen relevant bij gebundeld=true).
+        const poolSpelerSet = new Set<string>();
         const poolStafSet = new Set<string>();
 
         for (const wiTeam of whatIfTeams) {
-          const nieuwPoolId =
-            wiTeam.gebundeld && wiTeam.selectieGroepBronId
-              ? (selectieGroepIdMap.get(wiTeam.selectieGroepBronId) ?? null)
-              : null;
+          const nieuwPoolId = wiTeam.selectieGroepBronId
+            ? (selectieGroepIdMap.get(wiTeam.selectieGroepBronId) ?? null)
+            : null;
+          const isGebundeld = wiTeam.gebundeld === true && nieuwPoolId !== null;
 
-          const teamSpelers = nieuwPoolId ? [] : wiTeam.spelers;
-          const teamStaf = nieuwPoolId ? [] : wiTeam.staf;
+          // Bij gebundeld: spelers/staf naar SelectieSpeler/SelectieStaf,
+          // team zelf heeft geen eigen TeamSpeler/TeamStaf-set.
+          const teamSpelers = isGebundeld ? [] : wiTeam.spelers;
+          const teamStaf = isGebundeld ? [] : wiTeam.staf;
 
           const nieuwTeamId = await kopieerTeamNaarVersie(tx, nieuweVersie.id, {
             naam: wiTeam.naam,
@@ -347,8 +354,8 @@ export async function pasWhatIfToe(
             teamIdMap.set(wiTeam.bronTeamId, nieuwTeamId);
           }
 
-          // Verhuis spelers/staf naar de pool
-          if (nieuwPoolId) {
+          // Verhuis spelers/staf naar de pool — alleen bij gebundeld=true
+          if (isGebundeld && nieuwPoolId) {
             for (const s of wiTeam.spelers) {
               const key = `${nieuwPoolId}:${s.spelerId}`;
               if (poolSpelerSet.has(key)) continue;
