@@ -243,7 +243,9 @@ export async function pasWhatIfToe(
           data: {
             werkindelingId: whatIf.werkindelingId,
             nummer: huidigeVersie.nummer + 1,
-            naam: `What-if toegepast: "${whatIf.vraag}"`,
+            // Geen versie-naam — versies krijgen alleen een opvolgnummer (v1, v2, …).
+            // De what-if-vraag is context en hoort niet in de versie-naam.
+            naam: null,
             auteur: "systeem",
           },
         });
