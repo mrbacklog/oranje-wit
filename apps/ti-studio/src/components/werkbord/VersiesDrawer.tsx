@@ -112,12 +112,8 @@ export function VersiesDrawer({
     setConfirmFout(null);
     try {
       if (confirm.type === "promoveer-whatif") {
-        const heeftAfwijkingen = validatie?.heeftAfwijkingen ?? false;
-        const toelichtingArg = heeftAfwijkingen ? toelichting.trim() : undefined;
-        if (heeftAfwijkingen && !toelichtingArg) {
-          setConfirmFout("Vul een toelichting in voor de kaderafwijking.");
-          return;
-        }
+        // Toelichting is optioneel — blokkeert niets meer.
+        const toelichtingArg = toelichting.trim() || undefined;
         const result = await pasWhatIfToe(confirm.whatIfId, toelichtingArg);
         if (!result.ok) {
           setConfirmFout(result.error);
