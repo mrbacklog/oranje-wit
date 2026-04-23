@@ -688,6 +688,68 @@ export async function getWhatIfVoorCanvas(
       });
     });
 
+    // Post-processing voor gebundelde pools — zelfde logica als werkversie page.tsx:
+    // Primary team (laagste volgorde) toont selectieDames/-Heren; secundaire teams
+    // in dezelfde pool krijgen gebundeld=true maar lege spelers-lijsten (canvas
+    // dedupliceert ze). Werkt ook voor oude what-ifs waar pool-spelers per team
+    // waren platgeslagen — we voegen samen op poolId.
+    const poolGroepen = new Map<string, number[]>(); // selectieGroepBronId → canvasTeam-indices
+    canvasTeams.forEach((t, idx) => {
+      const wit = t.id ? bronIdToWhatIfTeam.get(t.id) : null;
+      if (wit?.gebundeld && wit.selectieGroepBronId) {
+        const lijst = poolGroepen.get(wit.selectieGroepBronId) ?? [];
+        lijst.push(idx);
+        poolGroepen.set(wit.selectieGroepBronId, lijst);
+      }
+    });
+    for (const indices of poolGroepen.values()) {
+      indices.sort((a, b) => canvasTeams[a].volgorde - canvasTeams[b].volgorde);
+      const primaryIdx = indices[0];
+      const primary = canvasTeams[primaryIdx];
+
+      // Voeg spelers van alle teams in deze pool samen (dedupe op spelerId).
+      const spelerSeen = new Set<string>();
+      const samengevoegdeDames: WerkbordSpelerInTeam[] = [];
+      const samengevoegdeHeren: WerkbordSpelerInTeam[] = [];
+      for (const idx of indices) {
+        for (const s of canvasTeams[idx].dames) {
+          if (spelerSeen.has(s.spelerId)) continue;
+          spelerSeen.add(s.spelerId);
+          samengevoegdeDames.push(s);
+        }
+        for (const s of canvasTeams[idx].heren) {
+          if (spelerSeen.has(s.spelerId)) continue;
+          spelerSeen.add(s.spelerId);
+          samengevoegdeHeren.push(s);
+        }
+      }
+
+      // Primary: toon pool via selectieDames/-Heren, maak eigen dames/heren leeg,
+      // synchroniseer canvas-positie. Werkversie-canvas doet dit identiek.
+      canvasTeams[primaryIdx] = {
+        ...primary,
+        selectieDames: samengevoegdeDames,
+        selectieHeren: samengevoegdeHeren,
+        gebundeld: true,
+        dames: [],
+        heren: [],
+      };
+
+      // Secundaire teams: gebundeld=true, leeg, gelijkstaande positie
+      for (const idx of indices.slice(1)) {
+        canvasTeams[idx] = {
+          ...canvasTeams[idx],
+          gebundeld: true,
+          dames: [],
+          heren: [],
+          selectieDames: [],
+          selectieHeren: [],
+          canvasX: primary.canvasX,
+          canvasY: primary.canvasY,
+        };
+      }
+    }
+
     // Bouw alleSpelers: iedereen, met correct teamId in variant-context
     const alleSpelers: WerkbordSpeler[] = extraSpelers.map((sp) => {
       const effectieveStatus = mapStatus(sp.status);

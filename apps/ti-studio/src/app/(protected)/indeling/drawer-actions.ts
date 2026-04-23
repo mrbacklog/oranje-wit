@@ -143,14 +143,29 @@ export async function createWhatIfVanHuidigeVersie(
   const sgById = new Map<string, BronSG>();
   for (const sg of hoogsteVersie.selectieGroepen ?? []) sgById.set(sg.id, sg);
 
-  // Voor elk team dat bij een gebundelde pool hoort: plat de pool-spelers/staf
-  // mee in de what-if-team. Bij promotie reconstrueren we de pool weer in v2.
+  // Bepaal primary team per gebundelde pool (laagste volgorde). Pool-spelers
+  // worden alléén op dat primary team platgeslagen — net zoals werkversie-UI
+  // deduplicateert (page.tsx: selectieDames/-Heren alleen op primaryTeam).
+  const primaryIdPerPool = new Map<string, string>();
+  for (const sg of hoogsteVersie.selectieGroepen ?? []) {
+    if (!sg.gebundeld) continue;
+    const teamsInPool = hoogsteVersie.teams
+      .filter((t: BronTeam) => t.selectieGroepId === sg.id)
+      .sort((a: BronTeam, b: BronTeam) => a.volgorde - b.volgorde);
+    if (teamsInPool[0]) primaryIdPerPool.set(sg.id, teamsInPool[0].id);
+  }
+
+  // Voor elk team: plat de pool-spelers/staf alléén op het primary team van
+  // een gebundelde pool. Andere teams in dezelfde pool krijgen hun eigen
+  // (meestal lege) TeamSpeler/TeamStaf-set. Bij promotie reconstrueren we
+  // de pool weer in v2 op basis van het primary team.
   const teamsData = hoogsteVersie.teams.map((team: BronTeam) => {
     const sg = team.selectieGroepId ? sgById.get(team.selectieGroepId) : null;
     const gebundeld = sg?.gebundeld ?? false;
+    const isPrimary = sg && gebundeld && primaryIdPerPool.get(sg.id) === team.id;
 
-    const extraSpelers = gebundeld && sg ? sg.spelers : [];
-    const extraStaf = gebundeld && sg ? sg.staf : [];
+    const extraSpelers = isPrimary && sg ? sg.spelers : [];
+    const extraStaf = isPrimary && sg ? sg.staf : [];
 
     // Ontdubbel: een speler mag niet twee keer in hetzelfde team zitten
     const spelerIds = new Set(team.spelers.map((s: { spelerId: string }) => s.spelerId));
