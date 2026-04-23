@@ -59,6 +59,7 @@ type MinSpelerData = {
   geboortedatum: Date | null;
   geslacht: string;
   status: string | null;
+  huidig?: unknown;
 };
 
 type MinSpelerInTeam = {
@@ -156,6 +157,7 @@ export async function getWhatIfVoorCanvas(
                     geboortedatum: true,
                     geslacht: true,
                     status: true,
+                    huidig: true,
                   },
                 },
               },
@@ -209,6 +211,7 @@ export async function getWhatIfVoorCanvas(
                         geboortedatum: true,
                         geslacht: true,
                         status: true,
+                        huidig: true,
                       },
                     },
                   },
@@ -240,6 +243,7 @@ export async function getWhatIfVoorCanvas(
                         geboortedatum: true,
                         geslacht: true,
                         status: true,
+                        huidig: true,
                       },
                     },
                   },
@@ -350,6 +354,26 @@ export async function getWhatIfVoorCanvas(
     );
     const fotoSet = new Set<string>(fotos.map((f: { relCode: string }) => f.relCode));
 
+    // Open memo-count per speler (zelfde bron als werkversie-page)
+    const kadersId = werkindeling.kaders.id;
+    const spelerMemoCounts = await prisma.werkitem.groupBy({
+      by: ["spelerId"],
+      where: {
+        kadersId,
+        type: "MEMO",
+        status: { in: ["OPEN", "IN_BESPREKING"] },
+        spelerId: { not: null },
+      },
+      _count: { id: true },
+    });
+    const memoCountMap = new Map<string, number>();
+    for (const row of spelerMemoCounts as Array<{
+      spelerId: string | null;
+      _count: { id: number };
+    }>) {
+      if (row.spelerId) memoCountMap.set(row.spelerId, row._count.id);
+    }
+
     // Effectieve teamId per speler in variant-context
     const spelerTeamInVariant = new Map<string, string>();
     const spelerTeamNaamInVariant = new Map<string, string>();
@@ -369,11 +393,13 @@ export async function getWhatIfVoorCanvas(
         geboortedatum: Date | null;
         geslacht: string;
         status: string | null;
+        huidig?: unknown;
       },
       teamId: string,
       teamNaam: string
     ): WerkbordSpelerInTeam {
       const effectieveStatus = mapStatus(spelerData.status);
+      const huidigTeam = (spelerData.huidig as { team?: string } | null | undefined)?.team ?? null;
       const werkbordSpeler: WerkbordSpeler = {
         id: spelerData.id,
         roepnaam: spelerData.roepnaam,
@@ -391,10 +417,10 @@ export async function getWhatIfVoorCanvas(
         afmelddatum: null,
         teamId,
         isNieuw: false,
-        openMemoCount: 0,
-        ussScore: null,
-        fotoUrl: null,
-        huidigTeam: null,
+        openMemoCount: memoCountMap.get(spelerData.id) ?? 0,
+        ussScore: ussMap.get(spelerData.id) ?? null,
+        fotoUrl: fotoSet.has(spelerData.id) ? `/api/scouting/spelers/${spelerData.id}/foto` : null,
+        huidigTeam,
         ingedeeldTeamNaam: teamNaam,
         selectieGroepId: null,
       };
@@ -681,7 +707,7 @@ export async function getWhatIfVoorCanvas(
         afmelddatum: null,
         teamId: effectieveStatus === "ALGEMEEN_RESERVE" ? null : inVariantTeamId,
         isNieuw: sp.seizoenenActief === 1,
-        openMemoCount: 0,
+        openMemoCount: memoCountMap.get(sp.id) ?? 0,
         ussScore: ussMap.get(sp.id) ?? null,
         fotoUrl: fotoSet.has(sp.id) ? `/api/scouting/spelers/${sp.id}/foto` : null,
         huidigTeam: (sp.huidig as { team?: string } | null)?.team ?? null,
