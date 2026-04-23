@@ -155,6 +155,19 @@ export async function createWhatIfVanHuidigeVersie(
     if (teamsInPool[0]) primaryIdPerPool.set(sg.id, teamsInPool[0].id);
   }
 
+  // Cross-team-dedupe: spelers/staf die in een gebundelde SelectieGroep staan
+  // ZIJN al geplaatst via de pool — ze horen niet óók als TeamSpeler/TeamStaf
+  // in een ander team te staan. De werkversie-invariant zegt dit al, maar
+  // legacy data kan geschonden zijn. Hier filteren we pool-spelers uit
+  // team.spelers van ELK ander team, zodat de what-if geen duplicaten krijgt.
+  const spelersInGebundeldePool = new Set<string>();
+  const stafInGebundeldePool = new Set<string>();
+  for (const sg of hoogsteVersie.selectieGroepen ?? []) {
+    if (!sg.gebundeld) continue;
+    for (const s of sg.spelers) spelersInGebundeldePool.add(s.spelerId);
+    for (const s of sg.staf) stafInGebundeldePool.add(s.stafId);
+  }
+
   // Voor elk team: plat de pool-spelers/staf alléén op het primary team van
   // een gebundelde pool. Andere teams in dezelfde pool krijgen hun eigen
   // (meestal lege) TeamSpeler/TeamStaf-set. Bij promotie reconstrueren we
@@ -164,12 +177,23 @@ export async function createWhatIfVanHuidigeVersie(
     const gebundeld = sg?.gebundeld ?? false;
     const isPrimary = sg && gebundeld && primaryIdPerPool.get(sg.id) === team.id;
 
+    // Filter bron-TeamSpelers: spelers die in een gebundelde pool zitten
+    // horen niet (ook) in een team als TeamSpeler te staan (invariant). Op
+    // het primary team worden ze via extraSpelers geplaatst; op andere
+    // teams worden ze gewoon weggelaten.
+    const teamSpelersGefilterd = team.spelers.filter(
+      (s: { spelerId: string }) => !spelersInGebundeldePool.has(s.spelerId)
+    );
+    const teamStafGefilterd = team.staf.filter(
+      (s: { stafId: string }) => !stafInGebundeldePool.has(s.stafId)
+    );
+
     const extraSpelers = isPrimary && sg ? sg.spelers : [];
     const extraStaf = isPrimary && sg ? sg.staf : [];
 
     // Ontdubbel: een speler mag niet twee keer in hetzelfde team zitten
-    const spelerIds = new Set(team.spelers.map((s: { spelerId: string }) => s.spelerId));
-    const stafIds = new Set(team.staf.map((s: { stafId: string }) => s.stafId));
+    const spelerIds = new Set(teamSpelersGefilterd.map((s: { spelerId: string }) => s.spelerId));
+    const stafIds = new Set(teamStafGefilterd.map((s: { stafId: string }) => s.stafId));
     const extraSpelersGefilterd = extraSpelers.filter(
       (s: { spelerId: string }) => !spelerIds.has(s.spelerId)
     );
@@ -186,8 +210,8 @@ export async function createWhatIfVanHuidigeVersie(
       selectieGroepBronId: team.selectieGroepId,
       selectieNaam: sg?.naam ?? null,
       gebundeld,
-      spelers: { create: [...team.spelers, ...extraSpelersGefilterd] },
-      staf: { create: [...team.staf, ...extraStafGefilterd] },
+      spelers: { create: [...teamSpelersGefilterd, ...extraSpelersGefilterd] },
+      staf: { create: [...teamStafGefilterd, ...extraStafGefilterd] },
     };
   });
 
