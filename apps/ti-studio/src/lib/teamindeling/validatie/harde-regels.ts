@@ -37,25 +37,27 @@ export function valideerBCategorie(
     (kaders && getTeamgrootteUitKaders(team, kaders)) ?? getTeamgrootte(format, false, overrides);
   const aantalSpelers = team.spelers.length;
 
-  // Teamgrootte
-  if (aantalSpelers < grootte.min) {
-    meldingen.push({
-      regel: "teamgrootte",
-      bericht: `${team.naam}: ${aantalSpelers} spelers, minimum is ${grootte.min}`,
-      ernst: "kritiek",
-    });
-  } else if (aantalSpelers > grootte.max) {
-    meldingen.push({
-      regel: "teamgrootte",
-      bericht: `${team.naam}: ${aantalSpelers} spelers, maximum is ${grootte.max}`,
-      ernst: "kritiek",
-    });
-  } else if (aantalSpelers < grootte.ideaalMin || aantalSpelers > grootte.ideaalMax) {
-    meldingen.push({
-      regel: "teamgrootte",
-      bericht: `${team.naam}: ${aantalSpelers} spelers, ideaal is ${grootte.ideaalMin}-${grootte.ideaalMax}`,
-      ernst: "aandacht",
-    });
+  // Teamgrootte — skip bij gebundelde selectiepools (TC managet pool-niveau)
+  if (!team.gebundeld) {
+    if (aantalSpelers < grootte.min) {
+      meldingen.push({
+        regel: "teamgrootte",
+        bericht: `${team.naam}: ${aantalSpelers} spelers, minimum is ${grootte.min}`,
+        ernst: "kritiek",
+      });
+    } else if (aantalSpelers > grootte.max) {
+      meldingen.push({
+        regel: "teamgrootte",
+        bericht: `${team.naam}: ${aantalSpelers} spelers, maximum is ${grootte.max}`,
+        ernst: "kritiek",
+      });
+    } else if (aantalSpelers < grootte.ideaalMin || aantalSpelers > grootte.ideaalMax) {
+      meldingen.push({
+        regel: "teamgrootte",
+        bericht: `${team.naam}: ${aantalSpelers} spelers, ideaal is ${grootte.ideaalMin}-${grootte.ideaalMax}`,
+        ernst: "aandacht",
+      });
+    }
   }
 
   // Leeftijdsspreiding (precieze onafgeronde korfballeeftijd)
@@ -162,25 +164,27 @@ export function valideerACategorie(
   const grootte =
     (kaders && getTeamgrootteUitKaders(team, kaders)) ?? getTeamgrootte("achttal", true, overrides);
 
-  // Teamgrootte
-  if (aantalSpelers < grootte.min) {
-    meldingen.push({
-      regel: "teamgrootte",
-      bericht: `${team.naam}: ${aantalSpelers} spelers, minimum is ${grootte.min}`,
-      ernst: "kritiek",
-    });
-  } else if (aantalSpelers > grootte.max) {
-    meldingen.push({
-      regel: "teamgrootte",
-      bericht: `${team.naam}: ${aantalSpelers} spelers, maximum is ${grootte.max}`,
-      ernst: "kritiek",
-    });
-  } else if (aantalSpelers < grootte.ideaalMin || aantalSpelers > grootte.ideaalMax) {
-    meldingen.push({
-      regel: "teamgrootte",
-      bericht: `${team.naam}: ${aantalSpelers} spelers, ideaal is ${grootte.ideaalMin}-${grootte.ideaalMax}`,
-      ernst: "aandacht",
-    });
+  // Teamgrootte — skip bij gebundelde selectiepools (TC managet pool-niveau)
+  if (!team.gebundeld) {
+    if (aantalSpelers < grootte.min) {
+      meldingen.push({
+        regel: "teamgrootte",
+        bericht: `${team.naam}: ${aantalSpelers} spelers, minimum is ${grootte.min}`,
+        ernst: "kritiek",
+      });
+    } else if (aantalSpelers > grootte.max) {
+      meldingen.push({
+        regel: "teamgrootte",
+        bericht: `${team.naam}: ${aantalSpelers} spelers, maximum is ${grootte.max}`,
+        ernst: "kritiek",
+      });
+    } else if (aantalSpelers < grootte.ideaalMin || aantalSpelers > grootte.ideaalMax) {
+      meldingen.push({
+        regel: "teamgrootte",
+        bericht: `${team.naam}: ${aantalSpelers} spelers, ideaal is ${grootte.ideaalMin}-${grootte.ideaalMax}`,
+        ernst: "aandacht",
+      });
+    }
   }
 
   // Bandbreedte: 2 geboortejaren per A-categorie
@@ -191,10 +195,13 @@ export function valideerACategorie(
 
       for (const speler of team.spelers) {
         if (speler.geboortejaar < minJaar || speler.geboortejaar > maxJaar) {
+          // Aandacht i.p.v. kritiek: doorstromers (speler buiten eigen
+          // categorie-bandbreedte) zijn een bewuste TC-keuze — blokkeert
+          // promotie niet, maar blijft zichtbaar als signaal.
           meldingen.push({
             regel: "bandbreedte",
             bericht: `${speler.roepnaam} (${speler.geboortejaar}) valt buiten ${categorie}-bandbreedte (${minJaar}-${maxJaar})`,
-            ernst: "kritiek",
+            ernst: "aandacht",
           });
         }
       }
@@ -217,23 +224,26 @@ export function valideerSenioren(
     (kaders && getTeamgrootteUitKaders(team, kaders)) ??
     getTeamgrootte("achttal", false, overrides);
 
-  if (aantalSpelers < grootte.min) {
-    meldingen.push({
-      regel: "teamgrootte",
-      bericht: `${team.naam}: ${aantalSpelers} spelers, minimum is ${grootte.min}`,
-      ernst: "kritiek",
-    });
-  } else if (aantalSpelers > grootte.max) {
-    meldingen.push({
-      regel: "teamgrootte",
-      bericht: `${team.naam}: ${aantalSpelers} spelers, maximum is ${grootte.max}`,
-      ernst: "kritiek",
-    });
-  } else if (aantalSpelers < grootte.ideaalMin || aantalSpelers > grootte.ideaalMax) {
-    meldingen.push({
-      regel: "teamgrootte",
-      bericht: `${team.naam}: ${aantalSpelers} spelers, ideaal is ${grootte.ideaalMin}-${grootte.ideaalMax}`,
-      ernst: "aandacht",
-    });
+  // Teamgrootte — skip bij gebundelde selectiepools (TC managet pool-niveau)
+  if (!team.gebundeld) {
+    if (aantalSpelers < grootte.min) {
+      meldingen.push({
+        regel: "teamgrootte",
+        bericht: `${team.naam}: ${aantalSpelers} spelers, minimum is ${grootte.min}`,
+        ernst: "kritiek",
+      });
+    } else if (aantalSpelers > grootte.max) {
+      meldingen.push({
+        regel: "teamgrootte",
+        bericht: `${team.naam}: ${aantalSpelers} spelers, maximum is ${grootte.max}`,
+        ernst: "kritiek",
+      });
+    } else if (aantalSpelers < grootte.ideaalMin || aantalSpelers > grootte.ideaalMax) {
+      meldingen.push({
+        regel: "teamgrootte",
+        bericht: `${team.naam}: ${aantalSpelers} spelers, ideaal is ${grootte.ideaalMin}-${grootte.ideaalMax}`,
+        ernst: "aandacht",
+      });
+    }
   }
 }

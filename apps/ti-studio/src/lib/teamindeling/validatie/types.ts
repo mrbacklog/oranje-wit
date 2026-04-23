@@ -22,6 +22,13 @@ export interface TeamData {
   kleur?: "PAARS" | "BLAUW" | "GROEN" | "GEEL" | "ORANJE" | "ROOD" | null;
   niveau?: string | null;
   spelers: SpelerData[];
+  /**
+   * Team hoort bij een gebundelde selectiepool.
+   * Voor zulke teams slaan we teamgrootte-checks over: de pool wordt op
+   * pool-niveau gemanaged door de TC en de wedstrijdteam-grenzen (min/max)
+   * gelden niet op het gebundelde primary/secundair team.
+   */
+  gebundeld?: boolean;
 }
 
 export interface SpelerData {

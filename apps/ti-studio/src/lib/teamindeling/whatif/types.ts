@@ -20,6 +20,7 @@ export interface WhatIfTeamData {
   kleur: Kleur | null;
   teamType: TeamType | null;
   volgorde: number;
+  gebundeld?: boolean;
   spelers: WhatIfTeamSpelerData[];
   staf: WhatIfTeamStafData[];
 }

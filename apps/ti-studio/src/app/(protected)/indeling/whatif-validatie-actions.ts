@@ -39,6 +39,7 @@ export async function valideerWhatIfVoorToepassen(
           kleur: true,
           teamType: true,
           volgorde: true,
+          gebundeld: true,
           spelers: {
             select: { id: true, spelerId: true, statusOverride: true, notitie: true },
           },
@@ -92,6 +93,7 @@ export async function valideerWhatIfVoorToepassen(
     kleur: t.kleur,
     teamType: t.teamType,
     volgorde: t.volgorde,
+    gebundeld: t.gebundeld ?? false,
     spelers: t.spelers.map((s: any) => ({
       id: s.id,
       spelerId: s.spelerId,

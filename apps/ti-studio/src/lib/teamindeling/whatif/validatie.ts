@@ -45,6 +45,7 @@ export function whatIfTeamNaarTeamData(
     categorie: mapCategorie(wiTeam.categorie),
     kleur: wiTeam.kleur as TeamData["kleur"],
     niveau: null,
+    gebundeld: wiTeam.gebundeld ?? false,
     spelers: wiTeam.spelers
       .map((wis) => {
         const speler = spelerLookup.get(wis.spelerId);
