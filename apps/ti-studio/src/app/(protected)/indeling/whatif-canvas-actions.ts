@@ -127,6 +127,7 @@ export async function getWhatIfVoorCanvas(
       select: {
         id: true,
         werkindelingId: true,
+        basisVersieNummer: true,
         posities: true,
         teams: {
           orderBy: { volgorde: "asc" as const },
@@ -179,14 +180,18 @@ export async function getWhatIfVoorCanvas(
       return { ok: false, error: "What-if niet gevonden" };
     }
 
-    // Haal de huidige werkversie van de werkindeling op
+    // Haal de BASIS-versie van de what-if op (de versie waarop de what-if is
+    // gebaseerd), niet de huidige werkversie. Zo blijft de canvas-weergave
+    // consistent met wat de TC heeft ingericht — ook als de werkversie
+    // ondertussen is gewijzigd (bv. een andere what-if is gepromoveerd).
+    // Valt terug op de hoogste versie als basisVersie niet meer bestaat.
     const werkindeling = await prisma.werkindeling.findUniqueOrThrow({
       where: { id: whatIf.werkindelingId },
       select: {
         id: true,
         kaders: { select: { id: true, seizoen: true } },
         versies: {
-          orderBy: { nummer: "desc" as const },
+          where: { nummer: whatIf.basisVersieNummer },
           take: 1,
           select: {
             id: true,
@@ -265,7 +270,10 @@ export async function getWhatIfVoorCanvas(
 
     const versie = werkindeling.versies[0];
     if (!versie) {
-      return { ok: false, error: "Werkindeling heeft geen werkversie" };
+      return {
+        ok: false,
+        error: `Basis-versie v${whatIf.basisVersieNummer} niet gevonden`,
+      };
     }
 
     const seizoen = werkindeling.kaders.seizoen as Seizoen;
