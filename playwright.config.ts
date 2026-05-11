@@ -78,6 +78,21 @@ export default defineConfig({
       },
       dependencies: ["ti-studio-production-setup"],
     },
+    {
+      name: "ti-studio-v2",
+      testDir: "./e2e/ti-studio-v2",
+      use: {
+        ...devices["Desktop Chrome"],
+        storageState: "./e2e/.auth/user.json",
+        baseURL: process.env.V2_BASE_URL ?? "http://localhost:3002",
+        extraHTTPHeaders: {
+          Authorization: `Basic ${Buffer.from(
+            `${process.env.BASIC_AUTH_USER ?? ""}:${process.env.BASIC_AUTH_PASS ?? ""}`
+          ).toString("base64")}`,
+        },
+      },
+      dependencies: ["setup"],
+    },
   ],
   webServer: [
     {
@@ -90,6 +105,13 @@ export default defineConfig({
     {
       command: "pnpm dev:ti-studio",
       port: 3001,
+      reuseExistingServer: !process.env.CI,
+      timeout: 120000,
+      env: { E2E_TEST: "true" },
+    },
+    {
+      command: "pnpm --filter @oranje-wit/ti-studio-v2 dev",
+      port: 3002,
       reuseExistingServer: !process.env.CI,
       timeout: 120000,
       env: { E2E_TEST: "true" },
