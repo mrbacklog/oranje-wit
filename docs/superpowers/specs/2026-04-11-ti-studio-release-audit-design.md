@@ -23,6 +23,7 @@ De TI Studio werkindeling-app is functioneel grotendeels klaar maar heeft nog no
 2. **Versie-cyclus** — indeling laden → wijziging maken → opslaan → SSE-stream triggered
 3. **Memo** — memo aanmaken → kaart bewerken → memo sluiten met besluit
 4. **Validatie** — V/M-balans check → leeftijdscategorie check → feedback zichtbaar in ValidatieDrawer
+5. **Personen + werkbord koppeling** — speler pinnen in personen → gepinde speler verschijnt in SpelersPool drawer op werkbord
 
 ---
 

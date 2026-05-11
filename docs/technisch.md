@@ -91,7 +91,7 @@ oranje-wit/
 |---|---|---|
 | Competitie-data | 2 | CompetitieSpeler, CompetitieRonde |
 | Verenigingsmonitor | 12 | Lid, LidFoto, Seizoen, OWTeam, TeamAlias, TeamPeriode, Ledenverloop, CohortSeizoen, Signalering, Streefmodel, PoolStand, PoolStandRegel |
-| Team-Indeling | 24 | User, Speler, Staf, StafToewijzing, Blauwdruk, BlauwdrukSpeler, BlauwdrukBesluit, StandaardVraag, Concept, Scenario, ScenarioSnapshot, Versie, Team, SelectieGroep, SelectieSpeler, SelectieStaf, TeamSpeler, TeamStaf, Evaluatie, LogEntry, Import, ReferentieTeam, Werkitem, Actiepunt, Activiteit |
+| Team-Indeling | 25+ | User, Speler, Staf, StafToewijzing, Blauwdruk, BlauwdrukSpeler, BlauwdrukBesluit, StandaardVraag, Pin, Concept, Scenario, ScenarioSnapshot, Versie, Team, SelectieGroep, SelectieSpeler, SelectieStaf, TeamSpeler, TeamStaf, Evaluatie, LogEntry, Import, ReferentieTeam, Werkitem, Actiepunt, Activiteit |
 | Evaluatie | 6 | EvaluatieRonde, Coordinator, CoordinatorTeam, EvaluatieUitnodiging, SpelerZelfEvaluatie, EmailTemplate |
 | Scouting | 10+ | Scout, ScoutingRapport, TeamScoutingSessie, ScoutBadge, ScoutChallenge, ScoutingVerzoek, ScoutToewijzing, SpelersKaart, ScoutingVergelijking, ScoutingVergelijkingPositie, FysiekProfiel, SpelerUSS |
 | Jeugdontwikkeling | 4 | RaamwerkVersie, Leeftijdsgroep, Pijler, OntwikkelItem |
@@ -512,6 +512,7 @@ Inclusief rapport CRUD, verzoeken, toewijzingen, team-/spelersdata, kaarten, ver
 | `blauwdruk/actions.ts` | Blauwdruk CRUD, besluiten, speerpunten, gezien-status |
 | `dashboard/actions.ts` | Dashboard data loading |
 | `instellingen/actions.ts` | Instellingen, gebruikersbeheer |
+| `pins/actions.ts` | Pin CRUD |
 | `rating/actions.ts` | Rating-berekeningen |
 | `scenarios/actions.ts` | Scenario CRUD, versies, teams, spelers, staf, snapshots |
 | `werkbord/actions.ts` | Werkitems, actiepunten, activiteiten |
@@ -805,7 +806,7 @@ ux-designer (UX) ← escalates-to: ontwikkelaar
 
 | Categorie | Skills |
 |---|---|
-| **Domein** (23) | advies, batch-plaats, blauwdruk, concept, database, deployment, e2e-testing, evaluatie, exporteer, import, jeugdmodel, knkv-api, ledenverloop, lid-monitor, oranje-draad, railway, scenario, scenario-analyse, score-model, start, teamsamenstelling, validatie, vergelijk |
+| **Domein** (24) | advies, batch-plaats, blauwdruk, concept, database, deployment, e2e-testing, evaluatie, exporteer, import, jeugdmodel, knkv-api, ledenverloop, lid-monitor, oranje-draad, pin, railway, scenario, scenario-analyse, score-model, start, teamsamenstelling, validatie, vergelijk |
 | **Infra** (4) | audit, ci-status, health-check, deploy |
 | **Agent Teams** (11) | team-seizoensindeling, team-seizoensanalyse, team-release, team-e2e, team-documentatie, team-kwaliteit, team-devops, team-jeugdontwikkeling, team-ux, team-beheer, team-product |
 

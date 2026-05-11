@@ -19,7 +19,7 @@
  * ║             Naam: "Freek vd L." (roepnaam + tvs-kort + achternaam afk.)    ║
  * ║                                                                             ║
  * ║  pool     — 2-regelige rij, 40px hoog (spelerspool drawer)                 ║
- * ║             [avatar 22px] [naam-kolom flex]                                ║
+ * ║             [pin-slot 14px] [avatar 22px] [naam-kolom flex]                ║
  * ║             Regel 1: [naam + badges] [spacer]                              ║
  * ║             Regel 2: [team-badge] [spacer] [▲ 14px] [leeftijd #ddd]        ║
  * ║             Naam: "Freek van der Laban" (volledig, of afg. bij >22 tekens) ║
@@ -727,7 +727,7 @@ function NormaalRij({
 
 // ── Pool rij ─────────────────────────────────────────────────────────────────
 // 2-regelige rij, 40px hoog. Gebruikt in SpelersPoolDrawer.
-// [avatar 22px] [naam-kolom flex]
+// [pin-slot 14px] [avatar 22px] [naam-kolom flex]
 
 function PoolRij({
   spelerInTeam,

@@ -9,6 +9,7 @@ import { WerkbordCanvas } from "./WerkbordCanvas";
 import { TeamDrawer } from "./TeamDrawer";
 import { VersiesDrawer } from "./VersiesDrawer";
 import SpelerProfielDialog from "../SpelerProfielDialog";
+import StafProfielDialog from "../StafProfielDialog";
 import { TeamDialog } from "../TeamDialog";
 import { useZoom } from "./hooks/useZoom";
 import { useWerkbordState, type WerkbordMode } from "./hooks/useWerkbordState";
@@ -17,6 +18,7 @@ import type { DrawerData } from "@/app/(protected)/indeling/drawer-actions";
 import { getVersiesVoorDrawer } from "@/app/(protected)/indeling/drawer-actions";
 import { getWhatIfVoorCanvas } from "@/app/(protected)/indeling/whatif-canvas-actions";
 import { HoverKaartProvider } from "./HoverSpelersKaart";
+import { HoverStafKaartProvider } from "./HoverStafKaart";
 import { PeildatumProvider } from "./peildatum-context";
 
 type PanelLinks = "pool" | "staf" | null;
@@ -31,6 +33,7 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
   const [drawerRefreshTeller, setDrawerRefreshTeller] = useState(0);
   const [profielSpelerId, setProfielSpelerId] = useState<string | null>(null);
   const [profielTeamId, setProfielTeamId] = useState<string | null>(null);
+  const [profielStafId, setProfielStafId] = useState<string | null>(null);
 
   const [actieveWhatIfId, setActieveWhatIfId] = useState<string | null>(null);
   const [actieveWhatIfMeta, setActieveWhatIfMeta] = useState<{
@@ -155,6 +158,10 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
     setProfielTeamId(teamId);
   }
 
+  const openStafProfiel = useCallback((stafId: string) => {
+    setProfielStafId(stafId);
+  }, []);
+
   const alleReserveringen = initieleState.alleReserveringen ?? [];
 
   const arCount = alleSpelers.filter((s) => s.status === "ALGEMEEN_RESERVE").length;
@@ -171,161 +178,171 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
 
   return (
     <PeildatumProvider value={peildatum}>
-      <HoverKaartProvider>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateRows: "var(--toolbar) 1fr",
-            flex: 1,
-            minHeight: 0,
-            overflow: "hidden",
-          }}
-        >
-          <Toolbar
-            naam={initieleState.naam}
-            versieNaam={initieleState.versieNaam}
-            versieNummer={initieleState.versieNummer}
-            totalSpelers={inTeDelenTotaal}
-            arCount={arCount}
-            ingeplandSpelers={ingeplandSpelers}
-            panelLinks={panelLinks}
-            panelRechts={panelRechts}
-            onTogglePanelLinks={togglePanelLinks}
-            onTogglePanelRechts={togglePanelRechts}
-            onVersiesOpen={() => togglePanelRechts("versies")}
-            variantActief={actieveWhatIfId !== null}
-            variantVraag={actieveWhatIfMeta?.vraag ?? null}
-            variantBasis={actieveWhatIfMeta?.basisVersieNummer ?? null}
-            onTerugNaarWerkversie={terugNaarWerkversie}
-          />
-          <div style={{ display: "flex", overflow: "hidden", position: "relative" }}>
-            {opslaanStatus === "bezig" && (
-              <div
-                style={{
-                  position: "absolute",
-                  bottom: 12,
-                  right: 12,
-                  zIndex: 100,
-                  background: "var(--bg-2)",
-                  border: "1px solid var(--border-1)",
-                  borderRadius: 6,
-                  padding: "4px 10px",
-                  fontSize: 11,
-                  color: "var(--text-2)",
-                }}
-              >
-                Opslaan...
-              </div>
-            )}
-            {opslaanStatus === "fout" && (
-              <div
-                style={{
-                  position: "absolute",
-                  bottom: 12,
-                  right: 12,
-                  zIndex: 100,
-                  background: "rgba(239,68,68,.15)",
-                  border: "1px solid rgba(239,68,68,.4)",
-                  borderRadius: 6,
-                  padding: "4px 10px",
-                  fontSize: 11,
-                  color: "#ef4444",
-                }}
-              >
-                Opslaan mislukt
-              </div>
-            )}
-            <SpelersPoolDrawer
-              open={panelLinks === "pool"}
-              spelers={alleSpelers}
-              reserveringen={alleReserveringen}
-              onClose={() => setPanelLinks(null)}
-            />
-            <StafPoolDrawer
-              open={panelLinks === "staf"}
-              staf={initieleState.alleStaf}
-              onClose={() => setPanelLinks(null)}
-            />
-            <WerkbordCanvas
-              teams={teams}
-              zoomLevel={zoomLevel}
-              zoom={zoom}
-              zoomPercent={zoomPercent}
-              showScores={showScores}
-              onToggleScores={() => setShowScores((v) => !v)}
-              onZoomIn={zoomIn}
-              onZoomOut={zoomOut}
-              onZoomReset={resetZoom}
-              onZoomChange={setZoom}
-              onOpenTeamDrawer={openTeamDrawer}
-              onDropSpelerOpTeam={verplaatsSpeler}
-              onReturneerNaarPool={(spelerData, vanTeamId) =>
-                verwijderSpelerUitTeam(spelerData.id, vanTeamId)
-              }
-              onTeamPositionChange={verplaatsTeamKaart}
-              onTeamDragEnd={slaTeamPositieOp}
-              onSpelerClick={openProfiel}
-              onDropSpelerOpSelectie={onDropSpelerOpSelectieFn}
-              onTitelKlik={openTeamDialog}
-              versieId={versieId}
-              werkindelingId={initieleState.werkindelingId}
-              werkindelingNaam={initieleState.naam}
-              variantBadge={
-                actieveWhatIfId && actieveWhatIfMeta
-                  ? {
-                      vraag: actieveWhatIfMeta.vraag,
-                      basisVersieNummer: actieveWhatIfMeta.basisVersieNummer,
-                    }
-                  : null
-              }
+      <HoverStafKaartProvider>
+        <HoverKaartProvider>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateRows: "var(--toolbar) 1fr",
+              flex: 1,
+              minHeight: 0,
+              overflow: "hidden",
+            }}
+          >
+            <Toolbar
+              naam={initieleState.naam}
+              versieNaam={initieleState.versieNaam}
+              versieNummer={initieleState.versieNummer}
+              totalSpelers={inTeDelenTotaal}
+              arCount={arCount}
+              ingeplandSpelers={ingeplandSpelers}
+              panelLinks={panelLinks}
+              panelRechts={panelRechts}
+              onTogglePanelLinks={togglePanelLinks}
+              onTogglePanelRechts={togglePanelRechts}
+              onVersiesOpen={() => togglePanelRechts("versies")}
+              variantActief={actieveWhatIfId !== null}
+              variantVraag={actieveWhatIfMeta?.vraag ?? null}
+              variantBasis={actieveWhatIfMeta?.basisVersieNummer ?? null}
               onTerugNaarWerkversie={terugNaarWerkversie}
             />
-            <TeamDrawer
-              open={panelRechts === "teams"}
-              geselecteerdTeamId={geselecteerdTeamId}
+            <div style={{ display: "flex", overflow: "hidden", position: "relative" }}>
+              {opslaanStatus === "bezig" && (
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: 12,
+                    right: 12,
+                    zIndex: 100,
+                    background: "var(--bg-2)",
+                    border: "1px solid var(--border-1)",
+                    borderRadius: 6,
+                    padding: "4px 10px",
+                    fontSize: 11,
+                    color: "var(--text-2)",
+                  }}
+                >
+                  Opslaan...
+                </div>
+              )}
+              {opslaanStatus === "fout" && (
+                <div
+                  style={{
+                    position: "absolute",
+                    bottom: 12,
+                    right: 12,
+                    zIndex: 100,
+                    background: "rgba(239,68,68,.15)",
+                    border: "1px solid rgba(239,68,68,.4)",
+                    borderRadius: 6,
+                    padding: "4px 10px",
+                    fontSize: 11,
+                    color: "#ef4444",
+                  }}
+                >
+                  Opslaan mislukt
+                </div>
+              )}
+              <SpelersPoolDrawer
+                open={panelLinks === "pool"}
+                spelers={alleSpelers}
+                reserveringen={alleReserveringen}
+                onClose={() => setPanelLinks(null)}
+              />
+              <StafPoolDrawer
+                open={panelLinks === "staf"}
+                staf={initieleState.alleStaf}
+                onClose={() => setPanelLinks(null)}
+                onStafClick={openStafProfiel}
+              />
+              <WerkbordCanvas
+                teams={teams}
+                zoomLevel={zoomLevel}
+                zoom={zoom}
+                zoomPercent={zoomPercent}
+                showScores={showScores}
+                onToggleScores={() => setShowScores((v) => !v)}
+                onZoomIn={zoomIn}
+                onZoomOut={zoomOut}
+                onZoomReset={resetZoom}
+                onZoomChange={setZoom}
+                onOpenTeamDrawer={openTeamDrawer}
+                onDropSpelerOpTeam={verplaatsSpeler}
+                onReturneerNaarPool={(spelerData, vanTeamId) =>
+                  verwijderSpelerUitTeam(spelerData.id, vanTeamId)
+                }
+                onTeamPositionChange={verplaatsTeamKaart}
+                onTeamDragEnd={slaTeamPositieOp}
+                onSpelerClick={openProfiel}
+                onDropSpelerOpSelectie={onDropSpelerOpSelectieFn}
+                onTitelKlik={openTeamDialog}
+                onStafClick={openStafProfiel}
+                versieId={versieId}
+                werkindelingId={initieleState.werkindelingId}
+                werkindelingNaam={initieleState.naam}
+                variantBadge={
+                  actieveWhatIfId && actieveWhatIfMeta
+                    ? {
+                        vraag: actieveWhatIfMeta.vraag,
+                        basisVersieNummer: actieveWhatIfMeta.basisVersieNummer,
+                      }
+                    : null
+                }
+                onTerugNaarWerkversie={terugNaarWerkversie}
+              />
+              <TeamDrawer
+                open={panelRechts === "teams"}
+                geselecteerdTeamId={geselecteerdTeamId}
+                teams={teams}
+                validatie={validatie}
+                versieId={versieId}
+                onClose={() => setPanelRechts(null)}
+                onTeamSelect={setGeselecteerdTeamId}
+                onNieuwTeam={voegTeamLokaalToe}
+                onConfigUpdated={updateTeamLokaal}
+                onValidatieUpdated={(update) => updateValidatieLokaal([update])}
+                onTeamVerwijderd={verwijderTeamLokaal}
+                onSelectieGekoppeld={koppelSelectieLokaal}
+                onSelectieOntkoppeld={ontkoppelSelectieLokaal}
+                onSelectieNaamUpdated={updateSelectieNaamLokaal}
+                onToggleBundeling={toggleBundeling}
+                onTeamsHerordend={herorderTeamsLokaal}
+              />
+              <VersiesDrawer
+                open={panelRechts === "versies"}
+                data={drawerData}
+                werkindelingId={initieleState.werkindelingId}
+                gebruikerEmail={gebruikerEmail}
+                onClose={() => setPanelRechts(null)}
+                onRefresh={() => setDrawerRefreshTeller((n) => n + 1)}
+                actieveWhatIfId={actieveWhatIfId}
+                onOpenWhatIfOpCanvas={openWhatIfOpCanvas}
+              />
+            </div>
+            <SpelerProfielDialog
+              spelerId={profielSpelerId}
+              open={profielSpelerId !== null}
+              onClose={() => setProfielSpelerId(null)}
+              teamId={profielTeamId ?? undefined}
+              kadersId={initieleState.kadersId}
+            />
+            <StafProfielDialog
+              stafId={profielStafId}
+              open={profielStafId !== null}
+              onClose={() => setProfielStafId(null)}
+              kadersId={initieleState.kadersId}
+            />
+            <TeamDialog
+              teamId={dialogTeamId}
               teams={teams}
               validatie={validatie}
-              versieId={versieId}
-              onClose={() => setPanelRechts(null)}
-              onTeamSelect={setGeselecteerdTeamId}
-              onNieuwTeam={voegTeamLokaalToe}
-              onConfigUpdated={updateTeamLokaal}
-              onValidatieUpdated={(update) => updateValidatieLokaal([update])}
-              onTeamVerwijderd={verwijderTeamLokaal}
-              onSelectieGekoppeld={koppelSelectieLokaal}
-              onSelectieOntkoppeld={ontkoppelSelectieLokaal}
-              onSelectieNaamUpdated={updateSelectieNaamLokaal}
-              onToggleBundeling={toggleBundeling}
-              onTeamsHerordend={herorderTeamsLokaal}
-            />
-            <VersiesDrawer
-              open={panelRechts === "versies"}
-              data={drawerData}
+              onClose={() => setDialogTeamId(null)}
+              kadersId={initieleState.kadersId}
               werkindelingId={initieleState.werkindelingId}
-              gebruikerEmail={gebruikerEmail}
-              onClose={() => setPanelRechts(null)}
-              onRefresh={() => setDrawerRefreshTeller((n) => n + 1)}
-              actieveWhatIfId={actieveWhatIfId}
-              onOpenWhatIfOpCanvas={openWhatIfOpCanvas}
             />
           </div>
-          <SpelerProfielDialog
-            spelerId={profielSpelerId}
-            open={profielSpelerId !== null}
-            onClose={() => setProfielSpelerId(null)}
-            teamId={profielTeamId ?? undefined}
-            kadersId={initieleState.kadersId}
-          />
-          <TeamDialog
-            teamId={dialogTeamId}
-            teams={teams}
-            validatie={validatie}
-            onClose={() => setDialogTeamId(null)}
-            kadersId={initieleState.kadersId}
-            werkindelingId={initieleState.werkindelingId}
-          />
-        </div>
-      </HoverKaartProvider>
+        </HoverKaartProvider>
+      </HoverStafKaartProvider>
     </PeildatumProvider>
   );
 }

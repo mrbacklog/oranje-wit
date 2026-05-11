@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { WerkbordTeam, WerkbordValidatieItem } from "@/components/werkbord/types";
 import { WerkitemPanel } from "./WerkitemPanel";
 import { TeamKaartSpelerRij } from "./werkbord/TeamKaartSpelerRij";
+import { KLEUR_GRADIENT as KLEUR_GRADIENT_IMPORT } from "./werkbord/team-gradients";
 
 // ──────────────────────────────────────────────────────────
 // Design tokens
@@ -32,14 +33,7 @@ const T = {
   errBorder: "rgba(239,68,68,.3)",
 };
 
-const KLEUR_GRADIENT: Record<string, string> = {
-  blauw: "linear-gradient(135deg, rgba(59,130,246,.3) 0%, rgba(59,130,246,.05) 100%)",
-  groen: "linear-gradient(135deg, rgba(34,197,94,.3) 0%, rgba(34,197,94,.05) 100%)",
-  geel: "linear-gradient(135deg, rgba(234,179,8,.3) 0%, rgba(234,179,8,.05) 100%)",
-  oranje: "linear-gradient(135deg, rgba(249,115,22,.3) 0%, rgba(249,115,22,.05) 100%)",
-  rood: "linear-gradient(135deg, rgba(239,68,68,.3) 0%, rgba(239,68,68,.05) 100%)",
-  senior: "linear-gradient(135deg, rgba(129,140,248,.3) 0%, rgba(129,140,248,.05) 100%)",
-};
+const KLEUR_GRADIENT = KLEUR_GRADIENT_IMPORT;
 
 const VAL_KLEUR: Record<string, string> = {
   ok: T.ok,

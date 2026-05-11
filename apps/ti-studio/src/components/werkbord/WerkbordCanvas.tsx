@@ -36,6 +36,7 @@ interface WerkbordCanvasProps {
     geslacht: "V" | "M"
   ) => void;
   onTitelKlik?: (teamId: string) => void;
+  onStafClick?: (stafId: string) => void;
   versieId: string;
   werkindelingId: string;
   werkindelingNaam: string;
@@ -110,6 +111,7 @@ export function WerkbordCanvas({
   onSpelerClick,
   onDropSpelerOpSelectie,
   onTitelKlik,
+  onStafClick,
   versieId,
   werkindelingId,
   werkindelingNaam,
@@ -487,6 +489,7 @@ export function WerkbordCanvas({
                     }
                   : undefined
               }
+              onStafClick={onStafClick}
             />
           );
         })}

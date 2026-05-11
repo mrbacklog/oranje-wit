@@ -1,9 +1,3 @@
-/**
- * ARCHIEF (2026-05-11): Dit script werd eenmalig in mei 2026 gedraaid om rel_codes
- * te herstellen in Speler/TeamSpeler/Evaluatie/Pin records.
- * Pin-tabel is verwijderd (migratie 20260415000000_drop_pin).
- * Bestand blijft voor historische referentie; niet opnieuw draaien.
- */
 const { Client } = require("pg");
 require("dotenv").config();
 

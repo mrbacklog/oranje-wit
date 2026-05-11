@@ -74,11 +74,34 @@ export interface WerkbordStafTeamrol {
   rol: string;
 }
 
+export interface WerkbordStafKoppeling {
+  teamId: string;
+  teamNaam: string;
+  teamKleur: string;
+  rol: string;
+}
+
+export interface WerkbordStafHistorie {
+  seizoen: string;
+  teamNaam: string;
+  teamKleur: string;
+  rol: string;
+}
+
 export interface WerkbordStaf {
   id: string;
   naam: string;
   rollen: string[]; // globale rollen uit Staf.rollen
   teams: WerkbordStafTeamrol[]; // per team welke rol
+  // TODO: data-laag uitbreiden
+  type?: "technisch" | "medisch" | "ondersteunend";
+  fotoUrl?: string | null;
+  isSpeler?: boolean;
+  spelerTeamNaam?: string | null;
+  memoCount?: number;
+  memoRisico?: boolean;
+  koppelingen?: WerkbordStafKoppeling[];
+  historie?: WerkbordStafHistorie[];
 }
 
 export interface WerkbordReservering {

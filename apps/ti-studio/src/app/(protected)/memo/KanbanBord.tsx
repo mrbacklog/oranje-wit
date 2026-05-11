@@ -7,6 +7,7 @@ import {
 } from "@/app/(protected)/indeling/werkitem-actions";
 import { filterWerkitems, type FilterType } from "./kanban-filter";
 import { MemoDrawer, type DrawerWerkitem } from "@/components/MemoDrawer";
+import { NieuweMemoDialog } from "@/components/NieuweMemoDialog";
 import { useSession } from "next-auth/react";
 
 // ──────────────────────────────────────────────────────────
@@ -371,11 +372,18 @@ function KanbanKolom({
 // KanbanBord — hoofd client component
 // ──────────────────────────────────────────────────────────
 
-export default function KanbanBord({ initialItems }: { initialItems: KanbanWerkitem[] }) {
+export default function KanbanBord({
+  initialItems,
+  kadersId,
+}: {
+  initialItems: KanbanWerkitem[];
+  kadersId: string;
+}) {
   const [items, setItems] = useState<KanbanWerkitem[]>(initialItems);
   const [dragOverStatus, setDragOverStatus] = useState<string | null>(null);
   const [actieveFilter, setActieveFilter] = useState<FilterType>("alles");
   const [geselecteerdId, setGeselecteerdId] = useState<string | null>(null);
+  const [nieuweMemoOpen, setNieuweMemoOpen] = useState(false);
   const { data: session } = useSession();
   const gebruikerNaam = (session?.user?.name ?? session?.user?.email ?? "Onbekend") as string;
 
@@ -504,11 +512,28 @@ export default function KanbanBord({ initialItems }: { initialItems: KanbanWerki
           gap: 8,
         }}
       >
-        <div style={{ display: "flex", alignItems: "baseline", gap: 12 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <h2 style={{ fontSize: 18, fontWeight: 700, color: "var(--text-1)", margin: 0 }}>
             Memo&apos;s
           </h2>
           <span style={{ fontSize: 12, color: "var(--text-3)" }}>{totaal} werkitems</span>
+          <button
+            onClick={() => setNieuweMemoOpen(true)}
+            style={{
+              background: "#ff6b00",
+              border: "none",
+              borderRadius: 7,
+              color: "#fff",
+              fontSize: 12,
+              fontWeight: 700,
+              padding: "6px 14px",
+              cursor: "pointer",
+              fontFamily: "Inter, system-ui, sans-serif",
+              whiteSpace: "nowrap",
+            }}
+          >
+            + Nieuwe memo
+          </button>
         </div>
         {/* Filter chips */}
         <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
@@ -596,6 +621,37 @@ export default function KanbanBord({ initialItems }: { initialItems: KanbanWerki
           )
         }
         huidigeGebruikerNaam={gebruikerNaam}
+      />
+
+      <NieuweMemoDialog
+        open={nieuweMemoOpen}
+        onClose={() => setNieuweMemoOpen(false)}
+        kadersId={kadersId}
+        onCreated={(item) => {
+          // Voeg toe aan OPEN lane
+          setItems((prev) => [
+            {
+              id: item.id,
+              status: item.status,
+              prioriteit: item.prioriteit,
+              beschrijving: item.beschrijving,
+              volgorde: item.volgorde,
+              createdAt: item.createdAt,
+              teamId: null,
+              spelerId: null,
+              stafId: null,
+              doelgroep: null,
+              team: null,
+              speler: null,
+              staf: null,
+              resolutie: item.resolutie,
+              toelichtingen: [],
+              activiteiten: [],
+            },
+            ...prev,
+          ]);
+          setNieuweMemoOpen(false);
+        }}
       />
     </div>
   );

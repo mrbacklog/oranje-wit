@@ -94,5 +94,5 @@ export default async function MemoKanbanPage() {
     ),
   }));
 
-  return <KanbanBord initialItems={geserialiseerd} />;
+  return <KanbanBord initialItems={geserialiseerd} kadersId={kaders.id} />;
 }

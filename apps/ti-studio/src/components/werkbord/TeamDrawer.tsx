@@ -1,7 +1,7 @@
-// apps/web/src/components/ti-studio/werkbord/TeamDrawer.tsx
 "use client";
 import { useState, useRef, useTransition } from "react";
 import "./tokens.css";
+import { KLEUR_BAND, KLEUR_HERO_GRADIENT } from "./team-gradients";
 import type {
   WerkbordTeam,
   WerkbordValidatieItem,
@@ -1199,6 +1199,140 @@ function SelectieKoppeling({
   );
 }
 
+function TeamDetailHero({ team }: { team: WerkbordTeam }) {
+  const bandKleur = KLEUR_BAND[team.kleur] ?? KLEUR_BAND.senior;
+  const heroGradient = KLEUR_HERO_GRADIENT[team.kleur] ?? KLEUR_HERO_GRADIENT.senior;
+
+  const valDotKleur = VAL_KLEUR[team.validatieStatus];
+
+  // Subtitel: formaat · niveau · kleur
+  const formaatLabel =
+    team.formaat === "viertal" ? "4-tal" : team.formaat === "achtal" ? "8-tal" : "selectie";
+  const niveauLabel = team.niveau ?? null;
+  const kleurLabel = team.kleur !== "senior" ? team.kleur : null;
+  const subtitelParts = [formaatLabel, niveauLabel, kleurLabel].filter(Boolean);
+
+  return (
+    <div
+      style={{
+        position: "relative",
+        padding: "18px 22px 16px 28px",
+        borderBottom: "1px solid var(--border-0)",
+        background: heroGradient,
+        flexShrink: 0,
+      }}
+    >
+      {/* 5px kleurband links */}
+      <div
+        style={{
+          position: "absolute",
+          left: 0,
+          top: 0,
+          bottom: 0,
+          width: 5,
+          background: bandKleur,
+          borderRadius: "0 0 0 0",
+        }}
+      />
+
+      {/* Teamnaam */}
+      <div
+        style={{
+          fontSize: 22,
+          fontWeight: 800,
+          color: "var(--text-1)",
+          letterSpacing: "-0.01em",
+          lineHeight: 1,
+        }}
+      >
+        {team.naam}
+      </div>
+
+      {/* Subtitel */}
+      {subtitelParts.length > 0 && (
+        <div
+          style={{
+            fontSize: 11,
+            color: "var(--text-3)",
+            marginTop: 4,
+            textTransform: "uppercase",
+            letterSpacing: "0.08em",
+            fontWeight: 600,
+          }}
+        >
+          {subtitelParts.join(" · ")}
+        </div>
+      )}
+
+      {/* Meta-rij: ♀ dames, ♂ heren, memo-vlag, validatie-dot */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+          marginTop: 12,
+        }}
+      >
+        <span style={{ display: "flex", alignItems: "center", gap: 4 }}>
+          <VenusIcon size={12} />
+          <span style={{ fontSize: 12, fontWeight: 800, color: "var(--pink)" }}>
+            {team.dames.length}
+          </span>
+        </span>
+        <span style={{ display: "flex", alignItems: "center", gap: 4 }}>
+          <MarsIcon size={12} />
+          <span style={{ fontSize: 12, fontWeight: 800, color: "var(--blue)" }}>
+            {team.heren.length}
+          </span>
+        </span>
+
+        <span style={{ flex: 1 }} />
+
+        {team.openMemoCount > 0 && (
+          <span
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 4,
+              fontSize: 11,
+              color: "var(--warn)",
+              fontWeight: 700,
+            }}
+          >
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
+              <path d="M5 3h10l4 4v14H5z" />
+              <path d="M15 3v4h4" />
+              <path d="M8 12h8M8 15h8M8 18h5" />
+            </svg>
+            ▲ {team.openMemoCount}
+          </span>
+        )}
+
+        {/* Validatie-dot */}
+        <div
+          style={{
+            width: 14,
+            height: 14,
+            borderRadius: "50%",
+            background: valDotKleur,
+            boxShadow: `0 0 5px 1px ${valDotKleur}60`,
+            flexShrink: 0,
+          }}
+          title={`Validatie: ${team.validatieStatus}`}
+        />
+      </div>
+    </div>
+  );
+}
+
 function TeamDetailPanel({
   team,
   alleTeams,
@@ -1374,6 +1508,7 @@ function TeamDetailPanel({
           </button>
         )}
       </div>
+      <TeamDetailHero team={team} />
       <ConfiguratieForm
         team={team}
         onConfigUpdated={onConfigUpdated}

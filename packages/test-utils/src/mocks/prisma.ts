@@ -52,6 +52,7 @@ export function createMockPrisma() {
     kadersBesluit: mockModel(),
     standaardVraag: mockModel(),
     werkindeling: mockModel(),
+    pin: mockModel(),
     concept: mockModel(),
     scenario: mockModel(),
     versie: mockModel(),

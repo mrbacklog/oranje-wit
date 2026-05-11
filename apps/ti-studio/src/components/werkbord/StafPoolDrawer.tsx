@@ -11,9 +11,10 @@ interface StafPoolDrawerProps {
   open: boolean;
   staf: WerkbordStaf[];
   onClose: () => void;
+  onStafClick?: (stafId: string) => void;
 }
 
-export function StafPoolDrawer({ open, staf, onClose }: StafPoolDrawerProps) {
+export function StafPoolDrawer({ open, staf, onClose, onStafClick }: StafPoolDrawerProps) {
   const [zoek, setZoek] = useState("");
   const [filter, setFilter] = useState<StafFilter>("alle");
 
@@ -182,7 +183,13 @@ export function StafPoolDrawer({ open, staf, onClose }: StafPoolDrawerProps) {
 
         <div style={{ display: "flex", flexDirection: "column", gap: 6, padding: "4px 8px 12px" }}>
           {gefilterd.map((s) => (
-            <StafKaart key={s.id} staf={s} />
+            <div
+              key={s.id}
+              onClick={() => onStafClick?.(s.id)}
+              style={{ cursor: onStafClick ? "pointer" : "default" }}
+            >
+              <StafKaart staf={s} />
+            </div>
           ))}
         </div>
 

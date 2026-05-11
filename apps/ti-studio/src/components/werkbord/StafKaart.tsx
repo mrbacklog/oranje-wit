@@ -1,7 +1,9 @@
 // apps/web/src/components/ti-studio/werkbord/StafKaart.tsx
 "use client";
 
+import { useCallback } from "react";
 import type { WerkbordStaf } from "./types";
+import { useHoverStafKaart } from "./HoverStafKaart";
 
 const KLEUR_DOT: Record<string, string> = {
   blauw: "#6b7cf6",
@@ -17,6 +19,22 @@ interface StafKaartProps {
 }
 
 export function StafKaart({ staf }: StafKaartProps) {
+  const { registerHover, cancelHover, updatePos } = useHoverStafKaart();
+
+  const handleMouseEnter = useCallback(
+    (e: React.MouseEvent) => {
+      registerHover(staf, e.clientX, e.clientY);
+    },
+    [staf, registerHover]
+  );
+
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent) => {
+      updatePos(e.clientX, e.clientY);
+    },
+    [updatePos]
+  );
+
   const initialen = staf.naam
     .split(" ")
     .filter((w) => w.length > 0 && w[0] === w[0].toUpperCase())
@@ -27,6 +45,9 @@ export function StafKaart({ staf }: StafKaartProps) {
 
   return (
     <div
+      onMouseEnter={handleMouseEnter}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={cancelHover}
       style={{
         background: "var(--bg-2)",
         border: "1px solid var(--border-0)",
@@ -35,6 +56,7 @@ export function StafKaart({ staf }: StafKaartProps) {
         display: "flex",
         gap: 10,
         alignItems: "flex-start",
+        cursor: "default",
       }}
     >
       {/* Avatar */}

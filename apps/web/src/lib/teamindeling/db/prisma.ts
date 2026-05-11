@@ -50,6 +50,7 @@ type AnyPrismaModels = {
   staf: AnyModel;
   kaders: AnyModel;
   werkindeling: AnyModel;
+  pin: AnyModel;
   versie: AnyModel;
   team: AnyModel;
   teamSpeler: AnyModel;

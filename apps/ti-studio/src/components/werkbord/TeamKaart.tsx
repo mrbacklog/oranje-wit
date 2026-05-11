@@ -1,15 +1,17 @@
 // apps/web/src/components/ti-studio/werkbord/TeamKaart.tsx
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import "./tokens.css";
 import { TeamKaartSpelerRij, SPELER_RIJ_HOOGTE } from "./TeamKaartSpelerRij";
 import type {
   WerkbordTeam,
   WerkbordSpeler,
   WerkbordSpelerInTeam,
+  WerkbordStafInTeam,
   KaartFormaat,
   ZoomLevel,
 } from "./types";
+import { useHoverStafKaart } from "./HoverStafKaart";
 
 // ── Kaartverhoudingen ───────────────────────────────────────────────────────
 // Elke kolom is 180px breed. Aantal kolommen bepaalt kaartbreedte:
@@ -74,6 +76,7 @@ interface TeamKaartProps {
     geslacht: "V" | "M"
   ) => void;
   onTitelKlik?: (teamId: string) => void;
+  onStafClick?: (stafId: string) => void;
 }
 
 export function TeamKaart({
@@ -90,6 +93,7 @@ export function TeamKaart({
   onDropSpelerOpSelectie,
   onDropSpelerOpTeamDirect,
   onTitelKlik,
+  onStafClick,
 }: TeamKaartProps) {
   const breedte = KAART_BREEDTE[team.formaat];
   const isSelectieGebundeld = team.formaat === "selectie" && team.gebundeld;
@@ -330,12 +334,14 @@ export function TeamKaart({
           {team.staf.map((s) => (
             <div
               key={s.id}
+              onClick={onStafClick ? () => onStafClick(s.stafId) : undefined}
               style={{
                 display: "flex",
                 alignItems: "center",
                 gap: 6,
                 padding: "0 8px 0 14px",
                 height: 20,
+                cursor: onStafClick ? "pointer" : "default",
               }}
             >
               <div
@@ -1124,6 +1130,70 @@ function SelectieBundelDropzone({
             />
           );
         })}
+      </div>
+    </div>
+  );
+}
+
+// ── StafRij — hover-enabled staf-rij in TeamKaart ───────────────────────────
+
+function StafRij({ stafInTeam }: { stafInTeam: WerkbordStafInTeam }) {
+  const { registerHover, cancelHover, updatePos } = useHoverStafKaart();
+
+  const handleMouseEnter = useCallback(
+    (e: React.MouseEvent) => {
+      // WerkbordStafInTeam heeft geen volledig WerkbordStaf object — bouw minimaal object
+      registerHover(
+        { id: stafInTeam.stafId, naam: stafInTeam.naam, rollen: [stafInTeam.rol], teams: [] },
+        e.clientX,
+        e.clientY
+      );
+    },
+    [stafInTeam, registerHover]
+  );
+
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent) => {
+      updatePos(e.clientX, e.clientY);
+    },
+    [updatePos]
+  );
+
+  return (
+    <div
+      onMouseEnter={handleMouseEnter}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={cancelHover}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 6,
+        padding: "0 8px 0 14px",
+        height: 20,
+        cursor: "default",
+      }}
+    >
+      <div
+        style={{
+          width: 5,
+          height: 5,
+          borderRadius: 2,
+          background: "var(--purple)",
+          opacity: 0.7,
+          flexShrink: 0,
+        }}
+      />
+      <div
+        style={{
+          fontSize: 9.5,
+          color: "rgba(168,85,247,.85)",
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          flex: 1,
+        }}
+      >
+        {stafInTeam.naam} — {stafInTeam.rol}
       </div>
     </div>
   );

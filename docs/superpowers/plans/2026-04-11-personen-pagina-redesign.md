@@ -1,7 +1,5 @@
 # Personen-pagina Redesign — Implementatieplan
 
-> **Status: ARCHIEF (2026-05-11)** — Pin-functionaliteit is volledig uit de software verwijderd (migratie `20260415000000_drop_pin`). Dit plan beschrijft een feature die niet meer bestaat. Lees dit voor historische context, maar implementeer niets hiervan.
-
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** De personen-pagina (spelers + staf tabs) ombouwen tot een rijke beheertabel die het verlengstuk is van de werkbord-drawers, inclusief nieuw Reserveringsspeler-entiteit.

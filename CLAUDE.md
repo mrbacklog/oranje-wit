@@ -131,9 +131,11 @@ Push naar `main` → CI → Railway deploy. Automatisch. Geen handmatige stappen
 
 ### Wie deployt
 
-**Alleen `team-release` deployt.** Andere agents: VERBODEN — escaleer naar `product-owner`.
+- **Patch/fix (`patch:` of `fix:`)** — elke agent mag direct pushen naar main. Fast-gate + build is de enige gate, geen E2E. Gebruik voor urgente fixes en kleine correcties.
+- **Feature (geen prefix)** — via PR; merge door `product-owner` of `team-release`.
+- **Release (`release:`)** — uitsluitend via `team-release`. Andere agents: VERBODEN — escaleer naar `product-owner`.
 
-`Antjan → product-owner → /team-release patch|release <scope>`
+`Antjan → product-owner → /team-release release <scope>`  (alleen voor release-bundels)
 
 ### Monitoring
 
@@ -165,7 +167,7 @@ Gebruik `/team-devops` voor health checks en CI status (observatie, geen deploys
 
 **Error handling** — geen lege catch blocks, altijd loggen met `logger.warn("context:", error)`.
 
-**Deploy** — Alleen `team-release` deployt. Alle andere agents: VERBODEN. Escaleer naar `product-owner`.
+**Deploy** — `patch:`/`fix:` commits mogen door elke agent gepusht worden naar main (auto-deploy via fast-gate). `release:` commits uitsluitend via `team-release`.
 
 ## Database
 

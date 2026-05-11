@@ -48,7 +48,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo 'HERINNERING: logger uit @oranje-wit/types (NOOIT console.log) | rel_code is enige speler-sleutel | NOOIT pnpm db:push | Deploy: alleen via team-release | Taal: altijd Nederlands'"
+            "command": "echo 'HERINNERING: logger uit @oranje-wit/types (NOOIT console.log) | rel_code is enige speler-sleutel | NOOIT pnpm db:push | Deploy: patch/fix direct naar main, release via team-release | Taal: altijd Nederlands'"
           }
         ]
       }
