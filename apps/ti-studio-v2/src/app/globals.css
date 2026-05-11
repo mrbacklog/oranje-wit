@@ -1,0 +1,9 @@
+/* globals.css — TI Studio v2 — importeer UI tokens (bevat tailwindcss + tokens.css al) */
+@import "@oranje-wit/ui/tokens/globals.css";
+
+/* Dark-first body defaults */
+body {
+  background-color: var(--surface-page);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+}
