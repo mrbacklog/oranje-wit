@@ -23,7 +23,7 @@ apps/web/src/
         design-system/              # Design system showcase (met dark override)
         instellingen/               # Instellingen pagina + actions
         over/                       # Over pagina
-        pins/                       # Pin actions
+        # [pin/ route — verwijderd 2026-04-14]
         rating/                     # Rating actions
         scenarios/                  # Scenarios pagina + [id] + actions
         vergelijk/                  # Vergelijk pagina

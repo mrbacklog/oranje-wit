@@ -360,11 +360,6 @@ server.tool(
       [blauwdruk.id]
     );
 
-    const pinsRes = await pool.query(
-      `SELECT COUNT(*) AS aantal FROM "Pin" WHERE "blauwdrukId" = $1`,
-      [blauwdruk.id]
-    );
-
     return {
       content: [
         {
@@ -377,7 +372,6 @@ server.tool(
                 isWerkseizoen: blauwdruk.isWerkseizoen,
                 toelichting: blauwdruk.toelichting,
                 speerpunten: blauwdruk.speerpunten,
-                aantalPins: parseInt(pinsRes.rows[0].aantal),
               },
               concepten: cRes.rows,
             },
