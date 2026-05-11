@@ -28,8 +28,6 @@ export async function berekenDiff(leden: SportlinkLid[]): Promise<SyncDiff> {
       // Spelers die al een niet-actieve status hebben hoeven niet opnieuw als afgemeld gemeld
       const alNietActief = [
         "GAAT_STOPPEN",
-        "NIEUW_DEFINITIEF",
-        "NIEUW_POTENTIEEL",
         "NIET_SPELEND",
         "RECREANT",
         "ALGEMEEN_RESERVE",
@@ -82,14 +80,9 @@ export async function berekenDiff(leden: SportlinkLid[]): Promise<SyncDiff> {
   // Spelers die in de database staan met Sportlink relCode maar NIET meer in
   // Sportlink voorkomen — waarschijnlijk afgemeld tussen syncs in
   for (const speler of spelers) {
-    const alNietActief = [
-      "GAAT_STOPPEN",
-      "NIEUW_DEFINITIEF",
-      "NIEUW_POTENTIEEL",
-      "NIET_SPELEND",
-      "RECREANT",
-      "ALGEMEEN_RESERVE",
-    ].includes(speler.status);
+    const alNietActief = ["GAAT_STOPPEN", "NIET_SPELEND", "RECREANT", "ALGEMEEN_RESERVE"].includes(
+      speler.status
+    );
     if (speler.id.match(/^[A-Z]{1,3}\w+$/) && !gezienInSportlink.has(speler.id) && !alNietActief) {
       afgemeld.push({
         lid: {
