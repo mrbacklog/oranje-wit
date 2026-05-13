@@ -184,6 +184,561 @@ body {
   color: var(--staf-accent);
 }
 
+/* ── Memo design tokens ── */
+:root {
+  --prio-blocker: #ef4444;
+  --prio-hoog: #f97316;
+  --prio-middel: #eab308;
+  --prio-laag: #3b82f6;
+  --prio-info: #8b5cf6;
+
+  --lane-dot-open: #eab308;
+  --lane-dot-bespreking: #60a5fa;
+  --lane-dot-opgelost: #22c55e;
+  --lane-dot-risico: #f59e0b;
+  --lane-dot-archief: #64748b;
+}
+
+/* Kanban pagina layout */
+.kanban-page {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.kanban-header {
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--border-light);
+  flex-shrink: 0;
+}
+
+.kh-links {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+/* Zoekbalk */
+.memo-zoek {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.memo-zoek input {
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: 7px;
+  color: var(--text-primary);
+  font-size: 12px;
+  font-family: inherit;
+  padding: 5px 10px 5px 28px;
+  outline: none;
+  width: 180px;
+  transition:
+    border-color 120ms,
+    width 200ms;
+}
+.memo-zoek input:focus {
+  border-color: rgba(255, 107, 0, 0.4);
+  width: 220px;
+}
+.memo-zoek input::placeholder {
+  color: var(--text-muted);
+}
+.memo-zoek svg {
+  position: absolute;
+  left: 8px;
+  width: 13px;
+  height: 13px;
+  stroke: var(--text-muted);
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  pointer-events: none;
+}
+
+/* Filter chips */
+.kanban-filters {
+  display: flex;
+  gap: 6px;
+}
+.kanban-filter {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  border: 1px solid var(--border-default);
+  background: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 120ms;
+}
+.kanban-filter.active {
+  border-color: var(--ow-accent);
+  background: rgba(255, 107, 0, 0.08);
+  color: var(--ow-accent);
+}
+.kanban-filter:hover:not(.active) {
+  border-color: var(--text-muted);
+  color: var(--text-secondary);
+}
+
+/* Nieuwe memo knop */
+.btn-nieuwe-memo {
+  padding: 6px 14px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid var(--border-default);
+  background: none;
+  color: var(--text-muted);
+  cursor: not-allowed;
+  font-family: inherit;
+  white-space: nowrap;
+  flex-shrink: 0;
+  opacity: 0.5;
+}
+
+/* Kanban area (board + drawer naast elkaar) */
+.kanban-area {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.kanban-board {
+  flex: 1;
+  display: flex;
+  gap: 1px;
+  overflow-x: auto;
+  min-height: 0;
+  background: var(--border-light);
+}
+
+/* Lane */
+.kanban-lane {
+  flex: 1;
+  min-width: 240px;
+  max-width: 320px;
+  background: var(--surface-sunken);
+  display: flex;
+  flex-direction: column;
+}
+.lane-header {
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--border-light);
+  flex-shrink: 0;
+}
+.lane-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.lane-dot.open {
+  background: var(--lane-dot-open);
+}
+.lane-dot.bespreking {
+  background: var(--lane-dot-bespreking);
+}
+.lane-dot.opgelost {
+  background: var(--lane-dot-opgelost);
+}
+.lane-dot.risico {
+  background: var(--lane-dot-risico);
+}
+.lane-dot.archief {
+  background: var(--lane-dot-archief);
+}
+.lane-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+  flex: 1;
+}
+.lane-count {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-tertiary);
+  background: var(--surface-card);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+.lane-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.lane-leeg {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 16px 8px;
+  border: 1px dashed var(--border-light);
+  border-radius: 6px;
+}
+
+/* Memo-kaart */
+.memo-kaart {
+  display: flex;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--surface-card);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  border-left: 3px solid var(--prio-kleur, var(--border-default));
+  cursor: pointer;
+  transition:
+    border-color 150ms,
+    background 150ms,
+    opacity 150ms;
+  user-select: none;
+  outline: none;
+}
+.memo-kaart:hover {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: var(--border-default);
+}
+.memo-kaart:focus-visible {
+  outline: 2px solid var(--ow-accent);
+  outline-offset: 1px;
+}
+.kanban-lane.done .memo-kaart {
+  opacity: 0.6;
+}
+.kanban-lane.done .memo-kaart:hover {
+  opacity: 0.85;
+}
+
+.mk-prio {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  font-weight: 900;
+  color: #fff;
+  margin-top: 1px;
+}
+.mk-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.mk-titel {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+.mk-beschrijving {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.mk-meta {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+.mk-entiteit {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 8px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.mk-entiteit.SPELER {
+  color: var(--sexe-h);
+  background: rgba(37, 99, 235, 0.08);
+  border: 1px solid rgba(37, 99, 235, 0.15);
+}
+.mk-entiteit.STAF {
+  color: var(--staf-accent);
+  background: var(--staf-accent-dim);
+  border: 1px solid var(--staf-border);
+}
+.mk-entiteit.TEAM {
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-light);
+}
+.mk-entiteit.TC,
+.mk-entiteit.ENTITEIT_TC,
+.mk-entiteit.BLAUWDRUK {
+  color: var(--ow-accent);
+  background: rgba(255, 107, 0, 0.06);
+  border: 1px solid rgba(255, 107, 0, 0.12);
+}
+.mk-naam {
+  font-size: 9px;
+  color: var(--text-tertiary);
+  font-weight: 500;
+}
+
+/* Memo Drawer */
+.memo-drawer {
+  width: 0;
+  overflow: hidden;
+  opacity: 0;
+  background: var(--surface-page);
+  border-left: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  transition:
+    width 200ms ease,
+    opacity 200ms ease;
+  flex-shrink: 0;
+}
+.memo-drawer.open {
+  width: 380px;
+  opacity: 1;
+  overflow: hidden;
+}
+.drawer-header {
+  padding: 12px 14px 10px;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  gap: 8px;
+}
+.drawer-header-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+.drawer-entiteit-naam {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.drawer-sluit-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid var(--border-default);
+  background: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 120ms;
+}
+.drawer-sluit-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--text-muted);
+}
+.drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 16px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.drawer-laden {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 0;
+}
+.drawer-laden-tekst {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.drawer-fout {
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  font-size: 12px;
+}
+.drawer-badges {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.drawer-prio-badge {
+  padding: 3px 8px;
+  border-radius: 5px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+  text-transform: uppercase;
+}
+.drawer-status-badge {
+  padding: 3px 8px;
+  border-radius: 5px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+}
+.drawer-titel {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.4;
+  margin: 0;
+}
+.drawer-sectie {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.drawer-sectie-resolutie {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+.drawer-sectie-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+}
+.drawer-beschrijving {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+.drawer-muted {
+  color: var(--text-muted);
+  font-style: italic;
+}
+.drawer-toelichting-stub {
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-light);
+}
+.drawer-toelichting-input {
+  width: 100%;
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: 7px;
+  color: var(--text-primary);
+  font-size: 12px;
+  font-family: inherit;
+  padding: 8px 10px;
+  resize: none;
+  opacity: 0.4;
+  cursor: not-allowed;
+  box-sizing: border-box;
+}
+
+/* Tijdlijn */
+.tl-lijst {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.tl-item {
+  display: flex;
+  gap: 10px;
+}
+.tl-lijn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 16px;
+  flex-shrink: 0;
+}
+.tl-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ow-accent);
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+.tl-dot-log {
+  background: var(--text-muted);
+}
+.tl-streep {
+  width: 1px;
+  flex: 1;
+  background: var(--border-default);
+  margin: 4px 0;
+  min-height: 12px;
+}
+.tl-content {
+  flex: 1;
+  padding-bottom: 12px;
+}
+.tl-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.tl-auteur {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.tl-tijd {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+.tl-tekst {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+.tl-log-actie {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  font-style: italic;
+  margin: 0;
+}
+.tl-log-detail {
+  color: var(--text-muted);
+}
+
 /* ── Werkbord design tokens ── */
 :root {
   /* Canvas-achtergrond (zie WerkbordCanvas) */
