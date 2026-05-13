@@ -444,28 +444,56 @@ export async function updateSpelerStatus(
 
 // ─── Selectie-bundeling actions ──────────────────────────────────────────────
 
+async function notifyWerkbord(versieId: string, payload: Record<string, unknown>) {
+  const kanaal = `ti_studio_${versieId}`.slice(0, 63);
+  const json = JSON.stringify(payload);
+  try {
+    await prisma.$executeRaw`SELECT pg_notify(${kanaal}, ${json})`;
+  } catch (error) {
+    logger.warn("notifyWerkbord pg_notify mislukt:", error);
+  }
+}
+
 export async function voegSelectieSpelerToe(
   selectieGroepId: string,
-  spelerId: string
+  spelerId: string,
+  sessionId?: string
 ): Promise<import("@oranje-wit/types").ActionResult<{ id: string }>> {
   await requireTC();
   try {
     const selectieGroep = await prisma.selectieGroep.findUniqueOrThrow({
       where: { id: selectieGroepId },
-      select: {
-        versieId: true,
-        teams: { select: { id: true } },
-      },
+      select: { versieId: true },
     });
-    const teamIds = selectieGroep.teams.map((t: { id: string }) => t.id);
-    await prisma.teamSpeler.deleteMany({
-      where: { spelerId, teamId: { in: teamIds } },
-    });
-    const selectieSpeler = await prisma.selectieSpeler.upsert({
-      where: { selectieGroepId_spelerId: { selectieGroepId, spelerId } },
-      create: { selectieGroepId, spelerId },
-      update: {},
-      select: { id: true },
+    const versieId = selectieGroep.versieId;
+
+    // Invariant: een speler mag nooit tegelijk in TeamSpeler én SelectieSpeler
+    // voor dezelfde versie zitten. Ruim daarom alle bestaande plaatsingen in
+    // deze versie op vóór we toevoegen — niet alleen binnen de doel-selectie.
+    const [, , selectieSpeler] = await prisma.$transaction([
+      prisma.teamSpeler.deleteMany({
+        where: { spelerId, team: { versieId } },
+      }),
+      prisma.selectieSpeler.deleteMany({
+        where: {
+          spelerId,
+          selectieGroepId: { not: selectieGroepId },
+          selectieGroep: { versieId },
+        },
+      }),
+      prisma.selectieSpeler.upsert({
+        where: { selectieGroepId_spelerId: { selectieGroepId, spelerId } },
+        create: { selectieGroepId, spelerId },
+        update: {},
+        select: { id: true },
+      }),
+    ]);
+
+    await notifyWerkbord(versieId, {
+      type: "selectie_speler_toegevoegd",
+      selectieGroepId,
+      spelerId,
+      sessionId: sessionId ?? null,
     });
     revalidatePath("/indeling");
     return { ok: true, data: { id: selectieSpeler.id } };
@@ -477,11 +505,24 @@ export async function voegSelectieSpelerToe(
 
 export async function verwijderSelectieSpeler(
   selectieGroepId: string,
-  spelerId: string
+  spelerId: string,
+  sessionId?: string
 ): Promise<import("@oranje-wit/types").ActionResult<void>> {
   await requireTC();
   try {
+    const selectieGroep = await prisma.selectieGroep.findUnique({
+      where: { id: selectieGroepId },
+      select: { versieId: true },
+    });
     await prisma.selectieSpeler.deleteMany({ where: { selectieGroepId, spelerId } });
+    if (selectieGroep) {
+      await notifyWerkbord(selectieGroep.versieId, {
+        type: "selectie_speler_verwijderd",
+        selectieGroepId,
+        spelerId,
+        sessionId: sessionId ?? null,
+      });
+    }
     revalidatePath("/indeling");
     return { ok: true, data: undefined };
   } catch (error) {

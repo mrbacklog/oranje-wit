@@ -349,13 +349,17 @@ export function useWerkbordState(
             };
           })
         );
-        void verwijderSelectieSpeler(huidigSelectieGroepId, spelerData.id);
+        void verwijderSelectieSpeler(huidigSelectieGroepId, spelerData.id, sessionId.current);
       }
 
       voegSelectieSpelerToeLokaal(naarSelectieGroepId, spelerData, geslacht);
-      const result = await voegSelectieSpelerToe(naarSelectieGroepId, spelerData.id);
+      const result = await voegSelectieSpelerToe(
+        naarSelectieGroepId,
+        spelerData.id,
+        sessionId.current
+      );
       if (!result.ok) {
-        void verwijderSelectieSpeler(naarSelectieGroepId, spelerData.id);
+        void verwijderSelectieSpeler(naarSelectieGroepId, spelerData.id, sessionId.current);
       }
     },
     [verwijderSpelerUitTeamLokaal, voegSelectieSpelerToeLokaal]
@@ -527,6 +531,34 @@ export function useWerkbordState(
           );
       } else if (event.type === "speler_naar_pool") {
         verwijderSpelerUitTeamLokaal(event.spelerId as string, event.vanTeamId as string);
+      } else if (event.type === "selectie_speler_toegevoegd") {
+        const sp = alleSpelersRef.current.find((s) => s.id === event.spelerId);
+        if (sp)
+          voegSelectieSpelerToeLokaal(
+            event.selectieGroepId as string,
+            sp,
+            sp.geslacht as "V" | "M"
+          );
+      } else if (event.type === "selectie_speler_verwijderd") {
+        const spelerId = event.spelerId as string;
+        const selectieGroepId = event.selectieGroepId as string;
+        setTeams((prev) =>
+          prev.map((t) => {
+            if (t.selectieGroepId !== selectieGroepId) return t;
+            return {
+              ...t,
+              selectieDames: t.selectieDames.filter((s) => s.spelerId !== spelerId),
+              selectieHeren: t.selectieHeren.filter((s) => s.spelerId !== spelerId),
+            };
+          })
+        );
+        setAlleSpelers((prev) =>
+          prev.map((s) =>
+            s.id === spelerId && s.selectieGroepId === selectieGroepId
+              ? { ...s, selectieGroepId: null }
+              : s
+          )
+        );
       } else if (event.type === "team_positie") {
         verplaatsTeamKaartLokaal(event.teamId as string, event.x as number, event.y as number);
       }
@@ -538,6 +570,7 @@ export function useWerkbordState(
     verplaatsSpelerLokaal,
     verwijderSpelerUitTeamLokaal,
     verplaatsTeamKaartLokaal,
+    voegSelectieSpelerToeLokaal,
   ]);
 
   return {
