@@ -1,6 +1,9 @@
 "use client";
 
 import type { TeamKaartData, TeamKaartSpeler } from "./werkbord-types";
+import { useWerkbordDropTarget } from "./hooks/useWerkbordDropTarget";
+import { useWerkbordDraggable, type DragBron } from "./hooks/useWerkbordDraggable";
+import type { WerkbordDragData } from "./hooks/useWerkbordDraggable";
 
 function cx(...args: (string | false | null | undefined)[]): string {
   return args.filter(Boolean).join(" ");
@@ -38,15 +41,42 @@ function leeftijdKleur(leeftijd: number): string {
 
 interface CompactChipProps {
   speler: TeamKaartSpeler;
+  teamId: string;
   onClick: (spelerId: string) => void;
+  onDrop: (data: WerkbordDragData) => void;
 }
 
-function CompactChip({ speler, onClick }: CompactChipProps) {
+function CompactChip({ speler, teamId, onClick, onDrop }: CompactChipProps) {
   const isVrouw = speler.geslacht === "V";
+  const bron: DragBron = `team-${teamId}`;
+  const { ref: dragRef, isDragging } = useWerkbordDraggable({
+    rel_code: speler.spelerId,
+    bron,
+  });
+
+  // CompactChip is ook drop-target zodat team→team werkt
+  const { ref: dropRef, isOver } = useWerkbordDropTarget({
+    doelBron: bron,
+    onDrop,
+  });
+
+  // Combineer beide refs
+  const combinedRef = (el: HTMLDivElement | null) => {
+    (dragRef as React.MutableRefObject<HTMLDivElement | null>).current = el;
+    (dropRef as React.MutableRefObject<HTMLDivElement | null>).current = el;
+  };
+
   return (
     <div
-      className={cx("compact-chip", isVrouw && "vrouw")}
-      style={{ cursor: "pointer" }}
+      ref={combinedRef}
+      className={cx("compact-chip", isVrouw && "vrouw", isOver && "drop-over")}
+      data-testid={`speler-card-${speler.spelerId}-team-${teamId}`}
+      style={{
+        cursor: isDragging ? "grabbing" : "grab",
+        opacity: isDragging ? 0.4 : 1,
+        outline: isOver ? "1px solid var(--val-ok)" : "none",
+        outlineOffset: 1,
+      }}
       onClick={() => onClick(speler.spelerId)}
       title={`${speler.roepnaam} ${speler.achternaam} (${speler.korfbalLeeftijd.toFixed(1)} jr)`}
     >
@@ -66,6 +96,7 @@ interface TeamKaartProps {
   onHeaderClick: (teamId: string) => void;
   onSpelerClick: (spelerId: string) => void;
   onStafClick: (stafId: string) => void;
+  onDropSpeler?: (data: WerkbordDragData, naarTeamId: string) => void;
 }
 
 export function TeamKaart({
@@ -74,6 +105,7 @@ export function TeamKaart({
   onHeaderClick,
   onSpelerClick,
   onStafClick,
+  onDropSpeler,
 }: TeamKaartProps) {
   const kleur = catKleur(team);
   const valKleur = VAL_KLEUREN[team.validatieStatus] ?? "var(--border-default)";
@@ -81,10 +113,24 @@ export function TeamKaart({
   const aantalHeren = team.spelersHeren.length;
   const totaal = aantalDames + aantalHeren;
 
+  const doelBron: DragBron = `team-${team.id}`;
+  const { ref: dropRef, isOver } = useWerkbordDropTarget({
+    doelBron,
+    onDrop: (data) => onDropSpeler?.(data, team.id),
+  });
+
+  function handleDropOpChip(data: WerkbordDragData) {
+    onDropSpeler?.(data, team.id);
+  }
+
   return (
     <div
+      ref={dropRef}
       className="team-kaart"
       data-team-id={team.id}
+      data-testid={`team-kaart-${team.id}-huidig`}
+      // drop-zone testid op hetzelfde element
+      data-drop-testid={`drop-zone-team-${team.id}`}
       style={{
         display: "flex",
         flexDirection: "column",
@@ -93,8 +139,8 @@ export function TeamKaart({
         overflow: "hidden",
         position: "relative",
         flexShrink: 0,
-        border: "1px solid var(--border-light)",
-        boxShadow: "0 2px 12px rgba(0,0,0,.3)",
+        border: isOver ? "1px solid var(--val-ok)" : "1px solid var(--border-light)",
+        boxShadow: isOver ? "0 0 0 2px var(--val-ok)" : "0 2px 12px rgba(0,0,0,.3)",
       }}
     >
       {/* Gekleurde linker-accent-band */}
@@ -215,7 +261,13 @@ export function TeamKaart({
                 }}
               >
                 {team.spelersDames.map((s) => (
-                  <CompactChip key={s.spelerId} speler={s} onClick={onSpelerClick} />
+                  <CompactChip
+                    key={s.spelerId}
+                    speler={s}
+                    teamId={team.id}
+                    onClick={onSpelerClick}
+                    onDrop={handleDropOpChip}
+                  />
                 ))}
               </div>
             </div>
@@ -255,7 +307,13 @@ export function TeamKaart({
                 }}
               >
                 {team.spelersHeren.map((s) => (
-                  <CompactChip key={s.spelerId} speler={s} onClick={onSpelerClick} />
+                  <CompactChip
+                    key={s.spelerId}
+                    speler={s}
+                    teamId={team.id}
+                    onClick={onSpelerClick}
+                    onDrop={handleDropOpChip}
+                  />
                 ))}
               </div>
             </div>
@@ -275,6 +333,7 @@ export function TeamKaart({
             {[...team.spelersDames, ...team.spelersHeren].map((s) => (
               <div
                 key={s.spelerId}
+                data-testid={`speler-card-${s.spelerId}-team-${team.id}`}
                 style={{
                   display: "flex",
                   alignItems: "center",
