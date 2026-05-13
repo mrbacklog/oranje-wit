@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { updateSpelerIndeling } from "@/app/(personen)/personen/actions";
+import { updateSpelerIndeling } from "@/app/(app)/(personen)/personen/actions";
 import { logger } from "@oranje-wit/types";
 
 interface IndelingCelProps {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { updateGezienStatus } from "@/app/(personen)/personen/actions";
+import { updateGezienStatus } from "@/app/(app)/(personen)/personen/actions";
 import { logger } from "@oranje-wit/types";
 
 const GEZIEN_CONFIG: Record<string, { label: string; kleur: string }> = {

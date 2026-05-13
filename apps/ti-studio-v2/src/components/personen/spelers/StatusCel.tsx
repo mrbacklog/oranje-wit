@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { updateSpelerStatus } from "@/app/(personen)/personen/actions";
+import { updateSpelerStatus } from "@/app/(app)/(personen)/personen/actions";
 import { logger } from "@oranje-wit/types";
 
 const STATUS_CONFIG: Record<string, { label: string; kleur: string }> = {

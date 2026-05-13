@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { createPortal } from "react-dom";
-import { maakNieuweStaf } from "@/app/(personen)/personen/actions";
+import { maakNieuweStaf } from "@/app/(app)/(personen)/personen/actions";
 import { logger } from "@oranje-wit/types";
 
 interface NieuweStafDialogProps {
