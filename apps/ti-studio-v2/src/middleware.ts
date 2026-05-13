@@ -1,32 +1,46 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 
-function isValidBasicAuth(authHeader: string | null): boolean {
-  if (!authHeader || !authHeader.startsWith("Basic ")) return false;
-
-  const credentials = Buffer.from(authHeader.slice(6), "base64").toString();
-  const [user, pass] = credentials.split(":");
-
-  return user === process.env.BASIC_AUTH_USER && pass === process.env.BASIC_AUTH_PASS;
-}
-
+/**
+ * Basic-Auth middleware voor de TI Studio v2 test-instantie.
+ *
+ * Activatie: `BASIC_AUTH_ENABLED=true`. Credentials komen uit
+ * `BASIC_AUTH_USER` en `BASIC_AUTH_PASS`. Op v2-prod is de variabele
+ * niet (of op `false`) gezet en wordt de check overgeslagen.
+ *
+ * Het `/api/health` endpoint en de NextAuth-routes (`/api/auth/*`)
+ * worden expliciet uitgezonderd via de matcher hieronder.
+ */
 export function middleware(request: NextRequest) {
-  if (request.nextUrl.pathname === "/api/health") {
+  if (process.env.BASIC_AUTH_ENABLED !== "true") {
     return NextResponse.next();
   }
 
-  if (process.env.BASIC_AUTH_ENABLED === "true") {
-    const auth = request.headers.get("authorization");
-    if (!isValidBasicAuth(auth)) {
-      return new NextResponse("Unauthorized", {
-        status: 401,
-        headers: { "WWW-Authenticate": 'Basic realm="TI Studio v2 Test"' },
-      });
+  const expectedUser = process.env.BASIC_AUTH_USER ?? "";
+  const expectedPass = process.env.BASIC_AUTH_PASS ?? "";
+
+  const header = request.headers.get("authorization");
+  if (header && header.toLowerCase().startsWith("basic ")) {
+    const encoded = header.slice(6).trim();
+    try {
+      const decoded = atob(encoded);
+      const sep = decoded.indexOf(":");
+      const user = sep === -1 ? decoded : decoded.slice(0, sep);
+      const pass = sep === -1 ? "" : decoded.slice(sep + 1);
+      if (user === expectedUser && pass === expectedPass && expectedUser !== "") {
+        return NextResponse.next();
+      }
+    } catch {
+      // negeer decode-fouten, val door naar 401
     }
   }
 
-  return NextResponse.next();
+  return new NextResponse("Unauthorized", {
+    status: 401,
+    headers: { "WWW-Authenticate": 'Basic realm="TI Studio v2 Test"' },
+  });
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  // Skip Basic-Auth voor health endpoint, NextAuth-routes en Next.js statics.
+  matcher: ["/((?!api/health|api/auth|_next/static|_next/image|favicon.ico).*)"],
 };

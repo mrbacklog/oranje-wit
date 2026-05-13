@@ -1,11 +1,29 @@
 import type { NextConfig } from "next";
 
-const config: NextConfig = {
-  reactStrictMode: true,
-  experimental: {
-    serverComponentsExternalPackages: ["@prisma/client"],
+const nextConfig: NextConfig = {
+  output: process.platform === "win32" ? undefined : "standalone",
+  transpilePackages: [
+    "@oranje-wit/database",
+    "@oranje-wit/types",
+    "@oranje-wit/auth",
+    "@oranje-wit/ui",
+  ],
+  serverExternalPackages: ["pg", "pg-connection-string", "pgpass"],
+  // TypeScript checking gebeurt al via `pnpm typecheck` in CI;
+  // in de Docker build is het overbodig.
+  typescript: {
+    ignoreBuildErrors: true,
   },
-  output: "standalone",
+  turbopack: {},
+  experimental: {
+    serverActions: {
+      allowedOrigins: [
+        "studio-test.ckvoranjewit.app",
+        "studio-v2.ckvoranjewit.app",
+        "localhost:3002",
+      ],
+    },
+  },
 };
 
-export default config;
+export default nextConfig;
