@@ -12,6 +12,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@atlaskit/pragmatic-drag-and-drop": "^1.8.1",
     "@oranje-wit/auth": "workspace:*",
     "@oranje-wit/database": "workspace:*",
     "@oranje-wit/types": "workspace:*",
