@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import {
   getSpelerProfiel,
@@ -621,6 +622,13 @@ export default function SpelerProfielDialog({
   const [openGroepen, setOpenGroepen] = useState<Set<string>>(new Set());
 
   const statusMenuRef = useRef<HTMLDivElement>(null);
+  const statusButtonRef = useRef<HTMLButtonElement>(null);
+  const statusPopoverRef = useRef<HTMLDivElement>(null);
+  const [statusMenuPos, setStatusMenuPos] = useState<{
+    top: number;
+    left: number;
+    width: number;
+  } | null>(null);
   const router = useRouter();
   const peildatum = usePeildatum();
 
@@ -696,12 +704,33 @@ export default function SpelerProfielDialog({
   useEffect(() => {
     if (!statusMenuOpen) return;
     const handler = (e: MouseEvent) => {
-      if (statusMenuRef.current && !statusMenuRef.current.contains(e.target as Node)) {
-        setStatusMenuOpen(false);
-      }
+      const target = e.target as Node;
+      if (statusMenuRef.current?.contains(target)) return;
+      if (statusPopoverRef.current?.contains(target)) return;
+      setStatusMenuOpen(false);
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
+  }, [statusMenuOpen]);
+
+  // Bereken positie voor portal-rendered dropdown
+  useLayoutEffect(() => {
+    if (!statusMenuOpen || !statusButtonRef.current) {
+      setStatusMenuPos(null);
+      return;
+    }
+    function bereken() {
+      const r = statusButtonRef.current?.getBoundingClientRect();
+      if (!r) return;
+      setStatusMenuPos({ top: r.bottom + 5, left: r.left, width: r.width });
+    }
+    bereken();
+    window.addEventListener("scroll", bereken, true);
+    window.addEventListener("resize", bereken);
+    return () => {
+      window.removeEventListener("scroll", bereken, true);
+      window.removeEventListener("resize", bereken);
+    };
   }, [statusMenuOpen]);
 
   async function selecteerStatus(nieuweStatus: StatusKey | null) {
@@ -978,6 +1007,7 @@ export default function SpelerProfielDialog({
             >
               {/* TC-status knop */}
               <button
+                ref={statusButtonRef}
                 onClick={() => setStatusMenuOpen((v) => !v)}
                 disabled={statusBezig || !kadersId}
                 title={!kadersId ? "Kaders niet beschikbaar" : undefined}
@@ -1037,74 +1067,79 @@ export default function SpelerProfielDialog({
                 </div>
               )}
 
-              {statusMenuOpen && (
-                <div
-                  style={{
-                    position: "absolute",
-                    top: "calc(100% + 5px)",
-                    left: 0,
-                    width: "100%",
-                    background: T.bg2,
-                    border: `1px solid ${T.border1}`,
-                    borderRadius: 10,
-                    overflow: "hidden",
-                    zIndex: 200,
-                    boxShadow: "0 8px 24px rgba(0,0,0,0.6)",
-                  }}
-                >
-                  {TC_STATUSSEN.map((s) => {
-                    const cfg = STATUS_CONFIG[s];
-                    return (
+              {statusMenuOpen &&
+                statusMenuPos &&
+                typeof window !== "undefined" &&
+                createPortal(
+                  <div
+                    ref={statusPopoverRef}
+                    style={{
+                      position: "fixed",
+                      top: statusMenuPos.top,
+                      left: statusMenuPos.left,
+                      width: statusMenuPos.width,
+                      background: T.bg2,
+                      border: `1px solid ${T.border1}`,
+                      borderRadius: 10,
+                      overflow: "hidden",
+                      zIndex: 10000,
+                      boxShadow: "0 8px 24px rgba(0,0,0,0.6)",
+                    }}
+                  >
+                    {TC_STATUSSEN.map((s) => {
+                      const cfg = STATUS_CONFIG[s];
+                      return (
+                        <div
+                          key={s}
+                          onClick={() => selecteerStatus(s)}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 8,
+                            padding: "9px 12px",
+                            fontSize: 12,
+                            fontWeight: 600,
+                            cursor: "pointer",
+                            color: cfg.kleur,
+                            background: s === huidigStatus ? T.bg3 : "transparent",
+                            fontFamily: "Inter, system-ui, sans-serif",
+                          }}
+                        >
+                          <span
+                            style={{
+                              width: 7,
+                              height: 7,
+                              borderRadius: "50%",
+                              background: cfg.kleur,
+                              flexShrink: 0,
+                            }}
+                          />
+                          {cfg.label}
+                        </div>
+                      );
+                    })}
+                    {/* Reset naar Sportlink — alleen tonen als er een override is */}
+                    {heeftOverride && (
                       <div
-                        key={s}
-                        onClick={() => selecteerStatus(s)}
+                        onClick={() => selecteerStatus(null)}
                         style={{
                           display: "flex",
                           alignItems: "center",
                           gap: 8,
                           padding: "9px 12px",
-                          fontSize: 12,
-                          fontWeight: 600,
+                          fontSize: 11,
                           cursor: "pointer",
-                          color: cfg.kleur,
-                          background: s === huidigStatus ? T.bg3 : "transparent",
+                          color: T.text3,
+                          borderTop: `1px solid ${T.border0}`,
                           fontFamily: "Inter, system-ui, sans-serif",
                         }}
                       >
-                        <span
-                          style={{
-                            width: 7,
-                            height: 7,
-                            borderRadius: "50%",
-                            background: cfg.kleur,
-                            flexShrink: 0,
-                          }}
-                        />
-                        {cfg.label}
+                        ↺ Reset naar Sportlink
                       </div>
-                    );
-                  })}
-                  {/* Reset naar Sportlink — alleen tonen als er een override is */}
-                  {heeftOverride && (
-                    <div
-                      onClick={() => selecteerStatus(null)}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 8,
-                        padding: "9px 12px",
-                        fontSize: 11,
-                        cursor: "pointer",
-                        color: T.text3,
-                        borderTop: `1px solid ${T.border0}`,
-                        fontFamily: "Inter, system-ui, sans-serif",
-                      }}
-                    >
-                      ↺ Reset naar Sportlink
-                    </div>
-                  )}
-                </div>
-              )}
+                    )}
+                  </div>,
+                  document.body
+                )}
             </div>
           </div>
 
