@@ -184,6 +184,602 @@ body {
   color: var(--staf-accent);
 }
 
+/* ── Werkbord design tokens ── */
+:root {
+  /* Canvas-achtergrond (zie WerkbordCanvas) */
+  --surface-sunken: #090910;
+
+  /* Team-kaart afmetingen */
+  --card-height: 576px;
+  --col-basis: 185px;
+  --team-card-radius: 12px;
+  --team-card-header-h: 56px;
+  --team-card-footer-h: 56px;
+  --team-band-width: 4px;
+  --team-drawer-width: 280px;
+
+  /* Categorie-kleuren (aanvulling) */
+  --cat-paars: #7e22ce;
+
+  /* Validatie-kleuren */
+  --val-ok: #10b981;
+  --val-warn: #f59e0b;
+  --val-err: #ef4444;
+}
+
+/* Werkbord pagina wrapper */
+.werkbord-page {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Werkbord toolbar */
+.werkbord-toolbar {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--border-light);
+  flex-shrink: 0;
+  gap: 0;
+}
+
+.wb-versie {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.wb-versie .v-badge {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  color: #60a5fa;
+}
+
+.wb-stats {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+.wb-stats .val {
+  font-weight: 700;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.wb-toggles-links,
+.wb-toggles-rechts {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.wb-sep {
+  width: 1px;
+  height: 20px;
+  background: var(--border-default);
+  margin: 0 8px;
+  flex-shrink: 0;
+}
+
+.wb-toggle {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  border: 1px solid var(--border-default);
+  background: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 120ms;
+}
+.wb-toggle:hover {
+  border-color: var(--text-muted);
+  color: var(--text-secondary);
+}
+.wb-toggle.active {
+  border-color: var(--ow-accent);
+  background: rgba(255, 107, 0, 0.08);
+  color: var(--ow-accent);
+}
+
+/* Werkbord area */
+.werkbord-area {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Drawers */
+.wb-drawer {
+  width: 0;
+  overflow: hidden;
+  opacity: 0;
+  background: var(--surface-page);
+  display: flex;
+  flex-direction: column;
+  transition:
+    width 200ms ease,
+    opacity 200ms ease;
+  flex-shrink: 0;
+}
+.wb-drawer.open {
+  width: var(--drawer-width, 260px);
+  opacity: 1;
+}
+.wb-drawer.links {
+  border-right: 1px solid var(--border-light);
+}
+.wb-drawer.rechts {
+  border-left: 1px solid var(--border-light);
+}
+
+/* Drawer header */
+.wb-drawer-header {
+  padding: 12px 14px 10px;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  gap: 8px;
+}
+.wb-drawer-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+}
+.wb-drawer-title .count {
+  color: var(--text-primary);
+  font-weight: 800;
+  margin-left: 6px;
+}
+
+/* Drawer zoekbalk */
+.wb-drawer-search {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-light);
+  flex-shrink: 0;
+}
+.wb-drawer-search input {
+  width: 100%;
+  background: var(--surface-sunken);
+  border: 1px solid var(--border-default);
+  border-radius: 7px;
+  color: var(--text-primary);
+  font-size: 12px;
+  font-family: inherit;
+  padding: 7px 12px;
+  outline: none;
+  box-sizing: border-box;
+}
+.wb-drawer-search input:focus {
+  border-color: rgba(255, 107, 0, 0.4);
+}
+.wb-drawer-search input::placeholder {
+  color: var(--text-muted);
+}
+
+/* Drawer filters */
+.wb-drawer-filters {
+  padding: 8px 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  border-bottom: 1px solid var(--border-light);
+  flex-shrink: 0;
+}
+.wb-filter-chip {
+  padding: 3px 8px;
+  border-radius: 5px;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  background: var(--surface-card);
+  color: var(--text-tertiary);
+  border: 1px solid var(--border-default);
+}
+.wb-filter-chip.active {
+  background: rgba(255, 107, 0, 0.1);
+  color: var(--ow-accent);
+  border-color: rgba(255, 107, 0, 0.3);
+}
+
+/* Drawer lijst */
+.wb-drawer-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 6px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Speler rij in drawer */
+.wb-speler-rij {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 48px;
+  padding: 0;
+  border: 1.5px solid var(--status-color, rgba(255, 255, 255, 0.3));
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.wb-speler-rij:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+.wb-speler-rij .av {
+  width: 36px;
+  height: 100%;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-right: 1.5px solid var(--status-color, rgba(255, 255, 255, 0.3));
+  border-radius: 4px 0 0 4px;
+}
+.wb-speler-rij .info {
+  flex: 1;
+  min-width: 0;
+  padding: 0 6px;
+}
+.wb-speler-rij .nm {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.wb-speler-rij .sub {
+  font-size: 8px;
+  color: var(--text-tertiary);
+  display: flex;
+  gap: 4px;
+}
+.wb-speler-rij .sub .tb {
+  padding: 1px 4px;
+  border: 1px solid var(--border-default);
+  border-radius: 3px;
+  font-weight: 600;
+}
+.wb-speler-rij .leeft {
+  width: 36px;
+  height: 100%;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0 4px 4px 0;
+  line-height: 1;
+}
+.wb-speler-rij .leeft .lb {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 800;
+}
+.wb-speler-rij .leeft .ld {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 8px;
+  font-weight: 700;
+}
+
+/* Staf rij in drawer */
+.wb-staf-rij {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 48px;
+  padding: 0;
+  border: 1.5px solid rgba(255, 140, 0, 0.4);
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.wb-staf-rij:hover {
+  background: rgba(255, 140, 0, 0.04);
+}
+.wb-staf-rij .av {
+  width: 36px;
+  height: 100%;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-right: 1.5px solid rgba(255, 140, 0, 0.4);
+  border-radius: 4px 0 0 4px;
+  background: var(--staf-accent-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--staf-accent);
+}
+.wb-staf-rij .info {
+  flex: 1;
+  min-width: 0;
+  padding: 0 8px;
+}
+.wb-staf-rij .nm {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.wb-staf-rij .rol {
+  font-size: 8px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin-top: 2px;
+}
+
+/* Team rij in drawer */
+.wb-team-rij {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 120ms;
+  position: relative;
+  flex-shrink: 0;
+}
+.wb-team-rij:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+.wb-team-rij.active {
+  background: rgba(255, 107, 0, 0.06);
+  border-color: rgba(255, 107, 0, 0.3);
+}
+.wb-team-rij::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  border-radius: 0 2px 2px 0;
+  background: var(--team-kleur, var(--border-default));
+}
+.wb-team-rij .t-naam {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.wb-team-rij .t-count {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+.wb-team-rij .t-val {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Canvas */
+.werkbord-canvas {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  position: relative;
+  background:
+    radial-gradient(circle at 15% 25%, rgba(255, 107, 0, 0.02), transparent 45%),
+    radial-gradient(circle at 85% 75%, rgba(59, 130, 246, 0.015), transparent 45%),
+    var(--surface-sunken);
+}
+
+/* Map surface */
+.map-surface {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  padding: 32px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: flex-start;
+  align-content: flex-start;
+  min-width: 1400px;
+}
+
+/* Zoom controls */
+.zoom-controls {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 50;
+  display: flex;
+  gap: 4px;
+}
+.zoom-btn {
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  color: var(--text-tertiary);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: inherit;
+  transition: all 120ms;
+}
+.zoom-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--text-muted);
+}
+.zoom-btn.active {
+  color: var(--ow-accent);
+  border-color: var(--ow-accent);
+  background: rgba(255, 107, 0, 0.08);
+}
+
+/* Compact-chip (speler op canvas) */
+.compact-chip {
+  display: inline-flex;
+  align-items: stretch;
+  height: 52px;
+  background: transparent;
+  border: 1.5px solid var(--status-color, rgba(255, 255, 255, 0.3));
+  border-radius: 6px;
+  overflow: visible;
+  width: 100%;
+}
+.compact-chip .inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px 0 6px;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+.compact-chip .g-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--sexe-h);
+  flex-shrink: 0;
+}
+.compact-chip.vrouw .g-dot {
+  background: var(--sexe-v);
+}
+.compact-chip .nm {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.compact-chip .leeft-bar {
+  width: 5px;
+  flex-shrink: 0;
+  border-radius: 0 4px 4px 0;
+}
+
+/* Compact sexe tellers */
+.compact-sexe-teller {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 0 6px;
+  gap: 2px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  flex-shrink: 0;
+  margin-bottom: 6px;
+}
+.compact-sexe-teller .st-val {
+  font-size: 56px;
+  font-weight: 900;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.compact-sexe-teller.v .st-val {
+  color: rgba(236, 72, 153, 0.75);
+}
+.compact-sexe-teller.h .st-val {
+  color: rgba(96, 165, 250, 0.75);
+}
+
+/* Save indicator */
+.save-indicator {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  opacity: 0;
+  transition: opacity 300ms;
+  pointer-events: none;
+}
+.save-indicator.visible {
+  opacity: 1;
+}
+.save-indicator.saving {
+  color: var(--ow-accent);
+  border-color: rgba(255, 107, 0, 0.3);
+}
+.save-indicator.error {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+.save-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+  flex-shrink: 0;
+}
+.save-indicator.saving .save-dot {
+  background: var(--ow-accent);
+  animation: pulse-dot 1s ease infinite;
+}
+.save-indicator.error .save-dot {
+  background: #ef4444;
+}
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+/* Selectie-groep in Teams-drawer */
+.td-selectie {
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  border-radius: 10px;
+  background: rgba(148, 163, 184, 0.04);
+  margin: 6px 2px 8px;
+  padding: 26px 8px 8px;
+  position: relative;
+}
+.td-selectie.gebundeld {
+  background: rgba(59, 130, 246, 0.08);
+}
+
 /* ow-scroll */
 .ow-scroll {
   scrollbar-width: thin;
