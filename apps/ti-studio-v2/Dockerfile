@@ -41,6 +41,15 @@ ENV HOSTNAME="0.0.0.0"
 COPY --from=builder /app/apps/ti-studio-v2/.next/standalone ./
 COPY --from=builder /app/apps/ti-studio-v2/.next/static apps/ti-studio-v2/.next/static
 
+# Prisma CLI + engines + schema, alleen gebruikt als AUTO_SCHEMA_SYNC=true
+# (test-only — productie heeft READ_ONLY en doet dit niet)
+COPY --from=builder /app/node_modules/prisma node_modules/prisma
+COPY --from=builder /app/node_modules/@prisma node_modules/@prisma
+COPY --from=builder /app/packages/database/prisma packages/database/prisma
+
+COPY apps/ti-studio-v2/start.sh /start.sh
+RUN chmod +x /start.sh
+
 EXPOSE 3002
 
-CMD ["node", "apps/ti-studio-v2/server.js"]
+CMD ["/start.sh"]
