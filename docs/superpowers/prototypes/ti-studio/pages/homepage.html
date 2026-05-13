@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Homepage — TI Studio</title>
+  <link rel="stylesheet" href="../shared/tokens.css">
+  <style>
+    :root {
+      --card-radius: 14px;
+      --info: #3b82f6;
+    }
+
+    .home { max-width: 640px; }
+
+    /* ─── Groet (onder page-header) ──────────────────────────────── */
+    .home-groet {
+      font-size: 15px; font-weight: 600; color: var(--text-secondary);
+      margin: 0 0 20px; display: flex; align-items: center; gap: 10px;
+    }
+    .seizoen-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 3px 10px; background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08); border-radius: 6px;
+      font-size: 11px; font-weight: 600; color: var(--text-secondary);
+    }
+    .seizoen-badge .dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--color-success-500); flex-shrink: 0;
+    }
+
+    /* ─── Tiles ──────────────────────────────────────────────────── */
+    .tiles { display: flex; flex-direction: column; gap: 10px; }
+
+    .tile-primary {
+      display: flex; align-items: center; gap: 18px;
+      padding: 20px 24px;
+      background: linear-gradient(135deg, rgba(59,130,246,.06) 0%, rgba(59,130,246,.02) 100%);
+      border: 1px solid rgba(59,130,246,.2);
+      border-radius: var(--card-radius);
+      text-decoration: none; color: inherit;
+      transition: border-color 180ms, background 180ms; cursor: pointer;
+    }
+    .tile-primary:hover {
+      border-color: rgba(59,130,246,.4);
+      background: linear-gradient(135deg, rgba(59,130,246,.1) 0%, rgba(59,130,246,.04) 100%);
+    }
+    .ring-wrap {
+      position: relative; width: 52px; height: 52px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .ring-wrap svg { position: absolute; top: 0; left: 0; transform: rotate(-90deg); }
+    .ring-pct { font-size: 12px; font-weight: 800; color: var(--info); z-index: 1; letter-spacing: -0.03em; }
+    .tile-primary-text { flex: 1; min-width: 0; }
+    .tile-primary-title { font-size: 17px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.01em; margin-bottom: 2px; }
+    .tile-primary-desc { font-size: 12px; color: var(--text-secondary); }
+    .tile-primary-stats { text-align: right; flex-shrink: 0; }
+    .tile-primary-num { font-size: 22px; font-weight: 800; color: var(--info); line-height: 1; }
+    .tile-primary-label { font-size: 10px; color: var(--text-tertiary); margin-top: 2px; }
+    .tile-arrow {
+      width: 28px; height: 28px; border-radius: 8px;
+      background: rgba(59,130,246,.08);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; color: var(--info);
+    }
+
+    .tiles-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .tile-sec {
+      display: flex; flex-direction: column; justify-content: space-between;
+      gap: 14px; padding: 18px 20px;
+      background: var(--surface-card); border: 1px solid var(--border-light);
+      border-radius: var(--card-radius);
+      text-decoration: none; color: inherit;
+      transition: border-color 180ms, background 180ms; cursor: pointer;
+    }
+    .tile-sec:hover { border-color: var(--border-default); background: #1f1f23; }
+    .tile-sec-icon {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .tile-sec-title { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
+    .tile-sec-desc { font-size: 11px; color: var(--text-tertiary); line-height: 1.4; }
+
+    .tile-memo { grid-column: 1 / -1; flex-direction: row; align-items: center; gap: 16px; }
+    .tile-memo .tile-sec-icon { background: rgba(234,179,8,.06); border-color: rgba(234,179,8,.15); }
+    .tile-memo-content { flex: 1; min-width: 0; }
+    .memo-badges { display: flex; align-items: center; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+    .memo-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 8px; border-radius: 5px; font-size: 10px; font-weight: 600;
+    }
+    .memo-badge.open { background: rgba(251,191,36,.08); color: #fbbf24; border: 1px solid rgba(251,191,36,.18); }
+    .memo-badge.bespreking { background: rgba(96,165,250,.08); color: #60a5fa; border: 1px solid rgba(96,165,250,.18); }
+    .memo-badge.urgent { background: rgba(239,68,68,.08); color: #ef4444; border: 1px solid rgba(239,68,68,.2); }
+    .tile-arrow-sm {
+      width: 24px; height: 24px; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; color: var(--text-tertiary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Shell container — wordt gevuld door shell.js -->
+  <div id="app"></div>
+
+  <!-- Pagina-inhoud als template -->
+  <template id="page-content">
+    <div class="home">
+      <div class="page-header">
+        <h1>Home</h1>
+        <p class="page-sub">TI Studio · c.k.v. Oranje Wit</p>
+      </div>
+      <div class="home-groet">
+        Goedemiddag, Antjan
+        <span class="seizoen-badge"><span class="dot" style="width:5px;height:5px;border-radius:50%;background:#22c55e"></span> 2026–2027</span>
+      </div>
+
+      <div class="tiles">
+        <a class="tile-primary" href="personen.html">
+          <div class="ring-wrap">
+            <svg width="52" height="52" viewBox="0 0 52 52">
+              <circle cx="26" cy="26" r="22" fill="rgba(59,130,246,.06)" stroke="rgba(59,130,246,.15)" stroke-width="1"/>
+              <circle cx="26" cy="26" r="12" fill="none" stroke="rgba(59,130,246,.15)" stroke-width="3"/>
+              <circle cx="26" cy="26" r="12" fill="none" stroke="#3b82f6" stroke-width="3" stroke-dasharray="75.4" stroke-dashoffset="18.85" stroke-linecap="round" class="ring-progress"/>
+            </svg>
+            <span class="ring-pct">75%</span>
+          </div>
+          <div class="tile-primary-text">
+            <div class="tile-primary-title">Werkbord</div>
+            <div class="tile-primary-desc">Visuele editor voor teamopstelling</div>
+          </div>
+          <div class="tile-primary-stats">
+            <div class="tile-primary-num">84</div>
+            <div class="tile-primary-label">/ 112 spelers</div>
+          </div>
+          <div class="tile-arrow">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+          </div>
+        </a>
+
+        <div class="tiles-grid">
+          <a class="tile-sec" href="personen.html">
+            <div class="tile-sec-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="9" cy="7" r="3"/><path d="M3 20c0-4 2.7-6 6-6s6 2 6 6"/><circle cx="17" cy="8" r="2.5"/><path d="M16 20c0-2.5 1.5-4 4-4"/>
+              </svg>
+            </div>
+            <div><div class="tile-sec-title">Personen</div><div class="tile-sec-desc">Spelers, staf en reserveringen</div></div>
+          </a>
+          <a class="tile-sec" href="#">
+            <div class="tile-sec-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/>
+              </svg>
+            </div>
+            <div><div class="tile-sec-title">Kaders</div><div class="tile-sec-desc">Seizoenskader per team beheren</div></div>
+          </a>
+          <a class="tile-sec tile-memo" href="#">
+            <div class="tile-sec-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#eab308" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+                <line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/>
+              </svg>
+            </div>
+            <div class="tile-memo-content">
+              <div class="tile-sec-title">Memo-items</div>
+              <div class="memo-badges">
+                <span class="memo-badge open">2 open</span>
+                <span class="memo-badge bespreking">1 in bespreking</span>
+                <span class="memo-badge urgent"><span class="memo-attention risico" style="width:10px;height:10px"><svg viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8 12h8M8 15h8M8 18h5"/></svg></span> 1 hoge prio</span>
+              </div>
+            </div>
+            <div class="tile-arrow-sm">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <script type="module">
+    import { shell } from '../shared/shell.js';
+    import { SPELERS, TEAMS, MEMOS } from '../shared/mock-data.js';
+
+    // ── Statistieken berekenen ─────────────────────────────────────────────────
+    const aantalTeams     = TEAMS.length;
+    const aantalSpelers   = SPELERS.length;
+    const openMemos       = MEMOS.filter(m => m.status === 'OPEN').length;
+    const inBespreking    = MEMOS.filter(m => m.status === 'IN_BESPREKING').length;
+    const urgentMemos     = MEMOS.filter(m => m.prioriteit === 'BLOCKER' && (m.status === 'OPEN' || m.status === 'IN_BESPREKING')).length;
+    const ingedeeld       = SPELERS.filter(s => s.ingedeeldTeam !== null).length;
+    const pct             = Math.round((ingedeeld / aantalSpelers) * 100);
+
+    // SVG ring: r=12, omtrek = 2*pi*12 ≈ 75.4
+    const omtrek = 2 * Math.PI * 12;
+    const dashOffset = omtrek * (1 - pct / 100);
+
+    shell('app', { activePage: 'home', memoCount: openMemos });
+
+    // Wacht tot shell de template heeft geinjecteerd
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      // Voortgangsring
+      const ringCircle = document.querySelector('.ring-progress');
+      if (ringCircle) {
+        ringCircle.setAttribute('stroke-dashoffset', dashOffset.toFixed(2));
+      }
+      const ringPct = document.querySelector('.ring-pct');
+      if (ringPct) ringPct.textContent = pct + '%';
+
+      // Speler-teller
+      const numEl = document.querySelector('.tile-primary-num');
+      if (numEl) numEl.textContent = ingedeeld;
+      const labelEl = document.querySelector('.tile-primary-label');
+      if (labelEl) labelEl.textContent = `/ ${aantalSpelers} spelers`;
+
+      // Werkbord beschrijving
+      const descEl = document.querySelector('.tile-primary-desc');
+      if (descEl) descEl.textContent = `${aantalTeams} teams · seizoensindeling`;
+
+      // Memo-badges
+      const badgeContainer = document.querySelector('.memo-badges');
+      if (badgeContainer) {
+        badgeContainer.innerHTML = [
+          openMemos > 0      ? `<span class="memo-badge open">${openMemos} open</span>` : '',
+          inBespreking > 0   ? `<span class="memo-badge bespreking">${inBespreking} in bespreking</span>` : '',
+          urgentMemos > 0    ? `<span class="memo-badge urgent">${urgentMemos} hoge prio</span>` : '',
+        ].join('');
+      }
+
+      // Navigatie: werkbord-tile → werkbord.html
+      const werkbordTile = document.querySelector('.tile-primary');
+      if (werkbordTile) {
+        werkbordTile.addEventListener('click', (e) => {
+          e.preventDefault();
+          location.href = 'werkbord.html';
+        });
+      }
+
+      // Navigatie: memo-tile → memo.html
+      const memoTile = document.querySelector('.tile-memo');
+      if (memoTile) {
+        memoTile.addEventListener('click', (e) => {
+          e.preventDefault();
+          location.href = 'memo.html';
+        });
+      }
+    }));
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Rijke-rij · Staf-weergave</title>
+  <link rel="stylesheet" href="tokens.css">
+  <style>
+    :root {
+      --rij-width: 320px; --rij-height: 52px; --rij-avatar: 40px;
+      --rij-gap: 10px; --rij-border-radius: 6px; --rij-border-width: 1.5px;
+    }
+
+    .rijke-rij {
+      position: relative; display: flex; align-items: center;
+      gap: var(--rij-gap); width: var(--rij-width); height: var(--rij-height);
+      background: transparent;
+      border: var(--rij-border-width) solid rgba(255, 140, 0, .4);
+      border-radius: var(--rij-border-radius); overflow: visible;
+    }
+    .rijke-rij .staf-av {
+      width: var(--rij-avatar); height: 100%; align-self: stretch;
+      border-radius: calc(var(--rij-border-radius) - var(--rij-border-width)) 0 0 calc(var(--rij-border-radius) - var(--rij-border-width));
+      border-right: var(--rij-border-width) solid rgba(255, 140, 0, .4);
+      box-sizing: border-box; overflow: hidden; flex-shrink: 0;
+    }
+    .rijke-rij .staf-av img {
+      width: 100%; height: 100%; object-fit: cover; object-position: center 25%;
+      filter: grayscale(1); border-radius: inherit;
+      transform: scale(1.15); transform-origin: center 35%;
+    }
+    .rijke-rij .staf-av::before { border-radius: inherit; }
+    .rijke-rij .staf-av .initialen { font-size: 13px; }
+    .rijke-rij .col { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; padding-right: 8px; }
+    .rijke-rij .nm-row { display: flex; align-items: center; gap: 5px; }
+    .rijke-rij .nm { font-size: 13px; font-weight: 700; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .rijke-rij .row2 { display: flex; align-items: center; gap: 4px; }
+
+    /* Rol-mini — klikbaar voor quick-edit */
+    .rijke-rij .rol-mini {
+      display: inline-flex; align-items: center; gap: 3px;
+      font-size: 9px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.03em;
+      color: var(--staf-rol-text);
+      padding: 1px 5px; border: 1px solid rgba(255, 140, 0, .15);
+      border-radius: 3px; background: rgba(255, 140, 0, .06);
+      cursor: pointer; transition: background 120ms, border-color 120ms;
+    }
+    .rijke-rij .rol-mini:hover {
+      background: rgba(255, 140, 0, .12); border-color: rgba(255, 140, 0, .3);
+    }
+    .rijke-rij .rol-mini::after {
+      content: '▾'; font-size: 7px; opacity: 0; margin-left: 1px;
+      transition: opacity 120ms;
+    }
+    .rijke-rij .rol-mini:hover::after { opacity: 0.6; }
+
+    /* Speler-badge — shirt + teamnaam */
+    .rijke-rij .speler-badge {
+      display: inline-flex; align-items: center; gap: 3px;
+      font-size: 9px; font-weight: 600;
+      color: var(--text-secondary);
+      padding: 1px 5px; border: 1px solid var(--border-default);
+      border-radius: 3px; background: rgba(255,255,255,.03);
+    }
+    .rijke-rij .speler-badge .shirt-sm {
+      width: 10px; height: 10px;
+      display: inline-flex; align-items: center; justify-content: center;
+      color: var(--text-secondary);
+    }
+    .rijke-rij .speler-badge .shirt-sm svg {
+      width: 100%; height: 100%; stroke: currentColor; fill: none;
+      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    /* Memo */
+    .rijke-rij .memo-attention {
+      width: 16px; height: 16px;
+      display: inline-flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,.5));
+    }
+    .rijke-rij .memo-attention svg {
+      width: 100%; height: 100%; display: block;
+      stroke: currentColor; fill: none;
+      stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+    }
+    .rijke-rij .memo-attention.open       { color: #eab308; }
+    .rijke-rij .memo-attention.bespreking { color: #facc15; }
+    .rijke-rij .memo-attention.risico     { color: #ef4444; }
+
+    .rijke-rij.inactief { opacity: var(--staf-inactief-opacity); border-color: rgba(148,163,184,.3); }
+    .rijke-rij.inactief .staf-av { border-color: rgba(148,163,184,.3); }
+    .rijke-rij.inactief .staf-av img { filter: grayscale(1) brightness(0.6); }
+
+    .type-icoon { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .type-icoon svg { width: 100%; height: 100%; display: block; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .type-icoon.technisch    { color: var(--type-technisch); }
+    .type-icoon.medisch      { color: var(--type-medisch); }
+    .type-icoon.ondersteunend { color: var(--type-ondersteunend); }
+
+    /* Quick-edit popover (demo, altijd zichtbaar) */
+    .edit-popover {
+      position: absolute; top: 100%; left: 40px; margin-top: 6px; z-index: 50;
+      background: var(--surface-card); border: 1px solid var(--border-default);
+      border-radius: 8px; padding: 10px; min-width: 200px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.5);
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .edit-popover .edit-label {
+      font-size: 8px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-muted);
+    }
+    .edit-popover .edit-row { display: flex; gap: 6px; }
+    .edit-popover select {
+      flex: 1; background: var(--surface-page); border: 1px solid var(--border-default);
+      border-radius: 5px; padding: 4px 8px; color: var(--text-primary);
+      font-size: 11px; outline: none; font-family: inherit;
+    }
+
+    .wrapper { margin-bottom: 12px; }
+    .context-box { background: var(--surface-card); border: 1px solid var(--border-default); border-radius: 10px; padding: 16px 20px; max-width: 400px; }
+    .context-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Rijke-rij</h1>
+  <p class="subtitle">Speler rijke-rij structuur · sq-av links · Naam + memo · Rol-mini klikbaar (quick-edit) · Speler-badge</p>
+
+  <h2>Basis — alle types</h2>
+  <div class="wrapper"><div class="rijke-rij">
+    <div class="staf-av"><img src="https://randomuser.me/api/portraits/men/52.jpg" alt=""></div>
+    <div class="col">
+      <div class="nm-row"><span class="nm">Jan Vermeer</span></div>
+      <div class="row2"><span class="rol-mini"><span class="type-icoon technisch" style="width:8px;height:8px"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span> Hoofdtrainer</span></div>
+    </div>
+  </div></div>
+
+  <div class="wrapper"><div class="rijke-rij">
+    <div class="staf-av"><span class="initialen">LS</span></div>
+    <div class="col">
+      <div class="nm-row"><span class="nm">Laura Smit</span></div>
+      <div class="row2"><span class="rol-mini"><span class="type-icoon medisch" style="width:8px;height:8px"><svg viewBox="0 0 24 24"><path d="M12 11v4"/><path d="M14 13h-4"/><path d="M16 6V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><path d="M18 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Z"/></svg></span> Verzorger</span></div>
+    </div>
+  </div></div>
+
+  <div class="wrapper"><div class="rijke-rij">
+    <div class="staf-av"><span class="initialen">HV</span></div>
+    <div class="col">
+      <div class="nm-row"><span class="nm">Henk Vos</span></div>
+      <div class="row2"><span class="rol-mini"><span class="type-icoon ondersteunend" style="width:8px;height:8px"><svg viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span> Leider</span></div>
+    </div>
+  </div></div>
+
+  <h2>Met memo + speler-badge</h2>
+  <div class="wrapper"><div class="rijke-rij">
+    <div class="staf-av"><img src="https://randomuser.me/api/portraits/men/67.jpg" alt=""></div>
+    <div class="col">
+      <div class="nm-row">
+        <span class="nm">Peter Brouwer</span>
+        <span class="memo-attention open"><svg viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8 12h8M8 15h8M8 18h5"/></svg></span>
+      </div>
+      <div class="row2">
+        <span class="rol-mini"><span class="type-icoon technisch" style="width:8px;height:8px"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span> Trainer</span>
+      </div>
+    </div>
+  </div></div>
+
+  <!-- Met speler-badge -->
+  <div class="wrapper"><div class="rijke-rij">
+    <div class="staf-av"><img src="https://randomuser.me/api/portraits/women/65.jpg" alt=""></div>
+    <div class="col">
+      <div class="nm-row">
+        <span class="nm">Karin Dijkstra</span>
+        <span class="memo-attention bespreking"><svg viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8 12h8M8 15h8M8 18h5"/></svg></span>
+      </div>
+      <div class="row2">
+        <span class="rol-mini"><span class="type-icoon technisch" style="width:8px;height:8px"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span> Coach</span>
+        <span class="speler-badge"><span class="shirt-sm"><svg viewBox="0 0 24 24"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg></span> OW 2</span>
+      </div>
+    </div>
+  </div></div>
+
+  <div class="wrapper"><div class="rijke-rij">
+    <div class="staf-av"><span class="initialen">RO</span></div>
+    <div class="col">
+      <div class="nm-row"><span class="nm">Rob Overbeek</span></div>
+      <div class="row2">
+        <span class="rol-mini"><span class="type-icoon technisch" style="width:8px;height:8px"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span> Trainer</span>
+        <span class="speler-badge"><span class="shirt-sm"><svg viewBox="0 0 24 24"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg></span> Selectie A</span>
+      </div>
+    </div>
+  </div></div>
+
+  <!-- ═══ Quick-edit popover demo ══════════════════════════════ -->
+  <h2>Quick-edit — klik op rol-mini</h2>
+  <p style="font-size:11px;color:var(--text-tertiary);margin:-8px 0 16px">Dropdown voor type + rolnaam. Default is laatste bekende rol.</p>
+  <div style="margin-bottom:120px">
+    <div class="rijke-rij" style="overflow:visible">
+      <div class="staf-av"><img src="https://randomuser.me/api/portraits/men/67.jpg" alt=""></div>
+      <div class="col">
+        <div class="nm-row"><span class="nm">Peter Brouwer</span></div>
+        <div class="row2"><span class="rol-mini" style="background:rgba(255,140,0,.12);border-color:rgba(255,140,0,.3)"><span class="type-icoon technisch" style="width:8px;height:8px"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span> Trainer ▾</span></div>
+      </div>
+      <div class="edit-popover">
+        <div class="edit-label">Type</div>
+        <div class="edit-row">
+          <select>
+            <option selected>Technische staf</option>
+            <option>Medische staf</option>
+            <option>Ondersteunende staf</option>
+          </select>
+        </div>
+        <div class="edit-label">Rol</div>
+        <div class="edit-row">
+          <select>
+            <option>Hoofdtrainer</option>
+            <option selected>Trainer</option>
+            <option>Assistent-trainer</option>
+            <option>Coach</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2>In context — team-drawer</h2>
+  <div class="context-box">
+    <div class="context-label">Staf · OW 2</div>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <div class="rijke-rij" style="width:100%">
+        <div class="staf-av"><img src="https://randomuser.me/api/portraits/men/67.jpg" alt=""></div>
+        <div class="col">
+          <div class="nm-row"><span class="nm">Peter Brouwer</span><span class="memo-attention open"><svg viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8 12h8M8 15h8M8 18h5"/></svg></span></div>
+          <div class="row2"><span class="rol-mini"><span class="type-icoon technisch" style="width:8px;height:8px"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span> Trainer</span></div>
+        </div>
+      </div>
+      <div class="rijke-rij" style="width:100%">
+        <div class="staf-av"><img src="https://randomuser.me/api/portraits/women/65.jpg" alt=""></div>
+        <div class="col">
+          <div class="nm-row"><span class="nm">Karin Dijkstra</span></div>
+          <div class="row2">
+            <span class="rol-mini"><span class="type-icoon technisch" style="width:8px;height:8px"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span> Coach</span>
+            <span class="speler-badge"><span class="shirt-sm"><svg viewBox="0 0 24 24"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg></span> OW 2</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

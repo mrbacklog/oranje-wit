@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Werkbord — TI Studio</title>
+  <link rel="stylesheet" href="../shared/tokens.css">
+  <style>
+    .werkbord-page { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+
+    /* Toolbar */
+    .werkbord-toolbar {
+      display: flex; align-items: center;
+      padding: 8px 0; margin-bottom: 0;
+      border-bottom: 1px solid var(--border-light);
+      flex-shrink: 0;
+    }
+    .wb-versie {
+      font-size: 12px; font-weight: 600; color: var(--text-primary);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .wb-versie .v-badge {
+      font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 4px;
+      background: rgba(59,130,246,.1); border: 1px solid rgba(59,130,246,.2); color: #60a5fa;
+    }
+    .wb-stats {
+      display: flex; align-items: center; gap: 12px;
+      font-size: 11px; color: var(--text-tertiary);
+      margin: 0 auto;
+    }
+    .wb-stats .val { font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+
+    /* Toggle-groepen links en rechts */
+    .wb-toggles-links, .wb-toggles-rechts {
+      display: flex; align-items: center; gap: 4px;
+    }
+    .wb-toggles-links { margin-right: auto; }
+    .wb-toggles-rechts { margin-left: auto; }
+    .wb-sep { width: 1px; height: 20px; background: var(--border-default); margin: 0 8px; flex-shrink: 0; }
+
+    .wb-toggle {
+      padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 600;
+      border: 1px solid var(--border-default); background: none; color: var(--text-tertiary);
+      cursor: pointer; font-family: inherit; transition: all 120ms;
+    }
+    .wb-toggle:hover { border-color: var(--text-muted); color: var(--text-secondary); }
+    .wb-toggle.active { border-color: var(--ow-accent); background: rgba(255,107,0,.08); color: var(--ow-accent); }
+
+    /* Werkbord area: links drawer + canvas + rechts drawer */
+    .werkbord-area {
+      flex: 1; min-height: 0; display: flex; overflow: hidden;
+    }
+
+    /* Drawers */
+    .wb-drawer {
+      width: 0; overflow: hidden; opacity: 0;
+      background: var(--surface-page);
+      display: flex; flex-direction: column;
+      transition: width 200ms ease, opacity 200ms ease;
+      flex-shrink: 0;
+    }
+    .wb-drawer.open { width: var(--drawer-width, 260px); opacity: 1; }
+    .wb-drawer.links { border-right: 1px solid var(--border-light); }
+    .wb-drawer.rechts { border-left: 1px solid var(--border-light); }
+
+    /* Drawer header */
+    .wb-drawer-header {
+      padding: 12px 14px 10px; border-bottom: 1px solid var(--border-light);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .wb-drawer-title {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-tertiary);
+    }
+    .wb-drawer-title .count { color: var(--text-primary); font-weight: 800; margin-left: 6px; }
+
+    /* Drawer zoekbalk */
+    .wb-drawer-search {
+      padding: 8px 12px; border-bottom: 1px solid var(--border-light); flex-shrink: 0;
+    }
+    .wb-drawer-search input {
+      width: 100%; background: var(--surface-sunken); border: 1px solid var(--border-default);
+      border-radius: 7px; color: var(--text-primary); font-size: 12px;
+      font-family: inherit; padding: 7px 12px; outline: none; box-sizing: border-box;
+    }
+    .wb-drawer-search input:focus { border-color: rgba(255,107,0,.4); }
+    .wb-drawer-search input::placeholder { color: var(--text-muted); }
+
+    /* Drawer filters */
+    .wb-drawer-filters {
+      padding: 8px 12px; display: flex; flex-wrap: wrap; gap: 4px;
+      border-bottom: 1px solid var(--border-light); flex-shrink: 0;
+    }
+    .wb-filter-chip {
+      padding: 3px 8px; border-radius: 5px; font-size: 10px; font-weight: 600;
+      cursor: pointer; font-family: inherit;
+      background: var(--surface-card); color: var(--text-tertiary); border: 1px solid var(--border-default);
+    }
+    .wb-filter-chip.active { background: rgba(255,107,0,.1); color: var(--ow-accent); border-color: rgba(255,107,0,.3); }
+
+    /* Drawer lijst */
+    .wb-drawer-list {
+      flex: 1; overflow-y: auto; padding: 6px 10px;
+      display: flex; flex-direction: column; gap: 4px;
+      scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.1) transparent;
+    }
+
+    /* Speler rijke-rij in drawer */
+    .wb-speler-rij {
+      display: flex; align-items: center; gap: 8px;
+      height: 48px; padding: 0;
+      border: 1.5px solid var(--status-color);
+      border-radius: 6px; overflow: hidden; cursor: grab;
+    }
+    .wb-speler-rij:hover { background: rgba(255,255,255,.02); }
+    .wb-speler-rij .av {
+      width: 36px; height: 100%; flex-shrink: 0; overflow: hidden;
+      border-right: 1.5px solid var(--status-color);
+      border-radius: 4px 0 0 4px;
+    }
+    .wb-speler-rij .av img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1); transform: scale(1.15); transform-origin: center 35%; }
+    .wb-speler-rij .info { flex: 1; min-width: 0; padding: 0 6px; }
+    .wb-speler-rij .nm { font-size: 12px; font-weight: 700; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .wb-speler-rij .sub { font-size: 8px; color: var(--text-tertiary); display: flex; gap: 4px; }
+    .wb-speler-rij .sub .tb { padding: 1px 4px; border: 1px solid var(--border-default); border-radius: 3px; font-weight: 600; }
+    .wb-speler-rij .leeft {
+      width: 36px; height: 100%; flex-shrink: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      border-radius: 0 4px 4px 0; line-height: 1;
+    }
+    .wb-speler-rij .leeft .lb { color: #fff; font-size: 14px; font-weight: 800; }
+    .wb-speler-rij .leeft .ld { color: rgba(255,255,255,.7); font-size: 8px; font-weight: 700; }
+
+    /* Staf rijke-rij in drawer */
+    .wb-staf-rij {
+      display: flex; align-items: center; gap: 8px;
+      height: 48px; padding: 0;
+      border: 1.5px solid rgba(255,140,0,.4);
+      border-radius: 6px; overflow: hidden; cursor: grab;
+    }
+    .wb-staf-rij:hover { background: rgba(255,140,0,.04); }
+    .wb-staf-rij .av {
+      width: 36px; height: 100%; flex-shrink: 0; overflow: hidden;
+      border-right: 1.5px solid rgba(255,140,0,.4);
+      border-radius: 4px 0 0 4px;
+      background: var(--staf-accent-dim);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 800; color: var(--staf-accent);
+    }
+    .wb-staf-rij .av img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1); transform: scale(1.15); transform-origin: center 35%; }
+    .wb-staf-rij .info { flex: 1; min-width: 0; padding: 0 8px; }
+    .wb-staf-rij .nm { font-size: 12px; font-weight: 700; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .wb-staf-rij .rol { font-size: 8px; display: flex; align-items: center; gap: 3px; }
+
+    /* Team-rij in drawer */
+    .wb-team-rij {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 10px; border-radius: 6px;
+      cursor: pointer; border: 1px solid transparent;
+      transition: background 120ms;
+      position: relative;
+    }
+    .wb-team-rij:hover { background: rgba(255,255,255,.03); }
+    .wb-team-rij.active { background: rgba(255,107,0,.06); border-color: rgba(255,107,0,.3); }
+    .wb-team-rij::before {
+      content: ''; position: absolute; left: 0; top: 8px; bottom: 8px;
+      width: 3px; border-radius: 0 2px 2px 0; background: var(--team-kleur);
+    }
+    .wb-team-rij .t-naam { flex: 1; font-size: 13px; font-weight: 700; color: var(--text-primary); }
+    .wb-team-rij .t-count { font-size: 10px; color: var(--text-tertiary); font-variant-numeric: tabular-nums; }
+    .wb-team-rij .t-val { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+    /* Configuratie-knoppen in detail-drawer */
+    .cfg-btn {
+      flex: 1; padding: 5px 8px; font-size: 10px; font-weight: 600;
+      border-radius: 6px; cursor: pointer; font-family: inherit;
+      border: 1px solid var(--border-default); background: var(--surface-card); color: var(--text-tertiary);
+      transition: all 100ms;
+    }
+    .cfg-btn:hover { border-color: var(--text-muted); color: var(--text-secondary); }
+    .cfg-btn.active { border-color: var(--ow-accent); background: rgba(255,107,0,.1); color: var(--ow-accent); font-weight: 700; }
+
+    /* Opslaan indicator */
+    .save-indicator {
+      position: absolute; bottom: 12px; right: 12px; z-index: 100;
+      display: flex; align-items: center; gap: 6px;
+      background: var(--surface-card); border: 1px solid var(--border-default);
+      border-radius: 6px; padding: 5px 12px;
+      font-size: 11px; color: var(--text-secondary); font-weight: 500;
+      opacity: 0; transition: opacity 300ms;
+      pointer-events: none;
+    }
+    .save-indicator.visible { opacity: 1; }
+    .save-indicator.saving { color: var(--ow-accent); border-color: rgba(255,107,0,.3); }
+    .save-indicator.error { color: #ef4444; background: rgba(239,68,68,.1); border-color: rgba(239,68,68,.3); }
+    .save-dot {
+      width: 6px; height: 6px; border-radius: 50%; background: #22c55e; flex-shrink: 0;
+    }
+    .save-indicator.saving .save-dot { background: var(--ow-accent); animation: pulse-dot 1s ease infinite; }
+    .save-indicator.error .save-dot { background: #ef4444; }
+    @keyframes pulse-dot { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
+
+    /* Canvas */
+    .werkbord-canvas {
+      flex: 1; min-width: 0; overflow: hidden; position: relative;
+      cursor: grab;
+      background:
+        radial-gradient(circle at 15% 25%, rgba(255,107,0,.02), transparent 45%),
+        radial-gradient(circle at 85% 75%, rgba(59,130,246,.015), transparent 45%),
+        var(--surface-sunken);
+    }
+    .werkbord-canvas:active { cursor: grabbing; }
+
+    .map-surface {
+      position: absolute; top: 0; left: 0;
+      transform-origin: 0 0;
+      padding: 32px;
+      display: flex; flex-wrap: wrap; gap: 24px;
+      align-items: flex-start; align-content: flex-start;
+      min-width: 1400px;
+    }
+
+    .zoom-controls {
+      position: absolute; top: 10px; right: 10px; z-index: 50;
+      display: flex; gap: 4px;
+    }
+    .zoom-btn {
+      height: 30px; padding: 0 12px; border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--surface-card); border: 1px solid var(--border-default);
+      color: var(--text-tertiary); cursor: pointer; font-size: 11px;
+      font-weight: 600; font-family: inherit; transition: all 120ms;
+    }
+    .zoom-btn:hover { color: var(--text-primary); border-color: var(--text-muted); }
+    .zoom-btn.active { color: var(--ow-accent); border-color: var(--ow-accent); background: rgba(255,107,0,.08); }
+
+    /* Team-kaart variabelen */
+    :root { --card-height: 576px; --col-basis: 185px; }
+    .team-kaart { height: var(--card-height); }
+    .team-kaart.viertal { width: calc(var(--col-basis) + 24px); }
+    .team-kaart.achttal { width: calc(var(--col-basis) * 2 + 1px + 24px); }
+
+    .zoom-compact .tk-col { gap: 0; padding: 0 6px 6px; justify-content: flex-start; }
+    .compact-sexe-teller {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 8px 0 6px; gap: 2px;
+      border-bottom: 1px solid rgba(255,255,255,.06); flex-shrink: 0; margin-bottom: 6px;
+    }
+    .compact-sexe-teller .st-val { font-size: 56px; font-weight: 900; line-height: 1; font-variant-numeric: tabular-nums; }
+    .compact-sexe-teller.v .st-val { color: rgba(236,72,153,.75); }
+    .compact-sexe-teller.h .st-val { color: rgba(96,165,250,.75); }
+
+    .compact-chip {
+      display: inline-flex; align-items: stretch; height: 52px;
+      background: transparent; border: 1.5px solid var(--status-color);
+      border-radius: 6px; overflow: visible; cursor: grab;
+    }
+    .compact-chip .inner { display: inline-flex; align-items: center; gap: 8px; padding: 0 10px 0 6px; flex: 1; min-width: 0; overflow: hidden; }
+    .compact-chip .g-dot { width: 8px; height: 8px; border-radius: 2px; background: var(--sexe-h); flex-shrink: 0; }
+    .compact-chip.vrouw .g-dot { background: var(--sexe-v); }
+    .compact-chip .nm { font-size: 17px; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .compact-chip .leeft-bar { width: 5px; flex-shrink: 0; border-radius: 0 4px 4px 0; }
+    .tk-header-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .tk-body { flex: 1; overflow: hidden; }
+    .tk-footer-spacer { flex: 1; }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <template id="page-content">
+    <div class="werkbord-page">
+      <div class="page-header">
+        <h1>Werkbord</h1>
+        <p class="page-sub">Visuele editor voor teamopstelling en spelersverdeling</p>
+      </div>
+
+      <div class="werkbord-toolbar">
+        <div class="wb-toggles-links">
+          <button class="wb-toggle active" data-side="links" data-drawer="pool" onclick="toggle(this)">Pool</button>
+          <button class="wb-toggle" data-side="links" data-drawer="staf" onclick="toggle(this)">Staf</button>
+        </div>
+
+        <span class="wb-sep"></span>
+        <span class="wb-versie">Hoofdindeling <span class="v-badge">v3</span></span>
+        <span style="flex:1"></span>
+
+        <div class="wb-stats">
+          <span><span class="val" id="stat-ingedeeld">—</span> / <span id="stat-totaal">—</span> ingedeeld</span>
+          <span><span class="val" id="stat-teams">—</span> teams</span>
+        </div>
+        <span class="wb-sep"></span>
+
+        <div class="wb-toggles-rechts">
+          <button class="wb-toggle" data-side="rechts" onclick="openNieuweMemoToolbar()" title="Nieuwe memo aanmaken" style="padding:4px 8px">▲ Memo</button>
+          <span class="wb-sep" style="height:16px"></span>
+          <button class="wb-toggle active" data-side="rechts" data-drawer="teams" onclick="toggle(this)">Teams</button>
+          <button class="wb-toggle" data-side="rechts" data-drawer="versies" onclick="toggle(this)">Versies</button>
+        </div>
+      </div>
+
+      <div class="werkbord-area">
+        <!-- Linker drawers -->
+        <div class="wb-drawer links open" id="drawer-pool" style="--drawer-width:260px">
+          <div class="wb-drawer-header">
+            <span class="wb-drawer-title">Spelerspool <span class="count" id="pool-count">—</span></span>
+          </div>
+          <div class="wb-drawer-search">
+            <input type="text" id="pool-zoek" placeholder="Zoek speler..." oninput="filterPool()">
+          </div>
+          <div class="wb-drawer-filters" id="pool-filters">
+            <button class="wb-filter-chip active" data-filter="zonder" onclick="setPoolFilter(this,'zonder')">Zonder team</button>
+            <button class="wb-filter-chip" data-filter="ingedeeld" onclick="setPoolFilter(this,'ingedeeld')">Ingedeeld</button>
+            <button class="wb-filter-chip" data-filter="alle" onclick="setPoolFilter(this,'alle')">Alle</button>
+          </div>
+          <div class="wb-drawer-list" id="pool-lijst"></div>
+        </div>
+
+        <div class="wb-drawer links" id="drawer-staf" style="--drawer-width:260px">
+          <div class="wb-drawer-header">
+            <span class="wb-drawer-title">Staf <span class="count" id="staf-count">—</span></span>
+          </div>
+          <div class="wb-drawer-search">
+            <input type="text" id="staf-zoek" placeholder="Zoek staf..." oninput="filterStaf()">
+          </div>
+          <div class="wb-drawer-filters">
+            <button class="wb-filter-chip active" data-filter="alle" onclick="setStafFilter(this,'alle')">Alle</button>
+            <button class="wb-filter-chip" data-filter="zonder" onclick="setStafFilter(this,'zonder')">Zonder team</button>
+          </div>
+          <div class="wb-drawer-list" id="staf-lijst"></div>
+        </div>
+
+        <!-- Canvas -->
+        <div class="werkbord-canvas" id="canvas">
+          <!-- Zoom controls -->
+          <div class="zoom-controls">
+            <button class="zoom-btn active" id="zbtn-compact" onclick="setZoom('compact')">Compact</button>
+            <button class="zoom-btn" id="zbtn-detail" onclick="setZoom('detail')">Detail</button>
+            <button class="zoom-btn" onclick="resetPan()">⌂</button>
+          </div>
+
+          <!-- Map surface — gevuld via team-components.js -->
+          <div class="map-surface zoom-compact" id="map-surface"></div>
+
+          <!-- Opslaan indicator -->
+          <div class="save-indicator" id="save-indicator"><span class="save-dot"></span> Opgeslagen</div>
+        </div>
+        <!-- Rechter drawers -->
+        <div class="wb-drawer rechts open" id="drawer-teams">
+          <div class="wb-drawer-header">
+            <span class="wb-drawer-title">Teams <span class="count" id="teams-count">—</span></span>
+          </div>
+          <div class="wb-drawer-list" id="teams-lijst"></div>
+          <!-- Footer -->
+          <div style="padding:10px 14px;border-top:1px solid var(--border-light);display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text-tertiary);flex-shrink:0">
+            <span>Ingedeeld <span style="font-weight:700;color:var(--text-primary)" id="teams-footer-ingedeeld">—</span></span>
+          </div>
+        </div>
+
+        <!-- Team-detail drawer (verborgen, verschijnt bij klik op team) -->
+        <div class="wb-drawer rechts" id="drawer-team-detail" data-team-id="">
+          <div class="wb-drawer-header">
+            <button style="background:none;border:1px solid var(--border-default);border-radius:6px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-tertiary);font-size:12px" onclick="sluitDetail()">←</button>
+            <span style="flex:1;margin-left:8px;display:flex;align-items:center;gap:4px;cursor:text" onclick="this.querySelector('span').contentEditable=true;this.querySelector('span').focus()" title="Klik om naam te wijzigen">
+              <span id="td-naam" style="font-size:13px;font-weight:700;color:var(--text-primary);outline:none;border-radius:3px;padding:0 2px" onblur="this.contentEditable=false" onkeydown="if(event.key==='Enter'){this.blur();event.preventDefault()}">—</span>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:.4;flex-shrink:0"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </span>
+            <span class="t-val" id="td-val-dot" style="width:10px;height:10px;background:var(--val-ok)"></span>
+          </div>
+
+          <div class="wb-drawer-list" style="padding:10px 12px">
+
+            <!-- ═══ INRICHTING ═══ -->
+            <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-tertiary);margin-bottom:8px">Inrichting</div>
+
+            <div style="display:flex;gap:10px;margin-bottom:10px">
+              <div style="flex:1">
+                <div style="font-size:10px;color:var(--text-tertiary);margin-bottom:5px;font-weight:600">Type</div>
+                <div style="display:flex;gap:4px" id="cfg-type">
+                  <button class="cfg-btn" onclick="selectType('senioren')">Senioren</button>
+                  <button class="cfg-btn active" onclick="selectType('jeugd')">Jeugd</button>
+                </div>
+              </div>
+              <div style="flex:1">
+                <div style="font-size:10px;color:var(--text-tertiary);margin-bottom:5px;font-weight:600">Categorie</div>
+                <div style="display:flex;gap:4px" id="cfg-ab">
+                  <button class="cfg-btn active" onclick="selectAB('a')">A</button>
+                  <button class="cfg-btn" onclick="selectAB('b')">B</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Stap 3: afhankelijk van keuze -->
+
+            <!-- Senioren A -->
+            <div id="cfg-sub-senioren-a" style="display:none;margin-bottom:10px">
+              <div style="font-size:10px;color:var(--text-tertiary);margin-top:6px">8-tal · Verplicht 4+4 · Topsport / Wedstrijdsport</div>
+            </div>
+
+            <!-- Senioren B -->
+            <div id="cfg-sub-senioren-b" style="display:none;margin-bottom:10px">
+              <div style="font-size:10px;color:var(--text-tertiary);margin-top:6px">8-tal · Gender vrij · Korfbalplezier / Recreant</div>
+            </div>
+
+            <!-- Jeugd A → U-teams -->
+            <div id="cfg-sub-jeugd-a" style="margin-bottom:10px">
+              <div style="font-size:10px;color:var(--text-tertiary);margin-bottom:5px;font-weight:600">Leeftijdscategorie</div>
+              <div style="display:flex;gap:4px">
+                <button class="cfg-btn" onclick="toggleSub(this)">U15</button>
+                <button class="cfg-btn active" onclick="toggleSub(this)">U17</button>
+                <button class="cfg-btn" onclick="toggleSub(this)">U19</button>
+              </div>
+              <div style="font-size:10px;color:var(--text-tertiary);margin-top:6px">8-tal · Verplicht 4+4 · Max 17,00</div>
+            </div>
+
+            <!-- Jeugd B → Kleuren -->
+            <div id="cfg-sub-jeugd-b" style="display:none;margin-bottom:10px">
+              <div style="font-size:10px;color:var(--text-tertiary);margin-bottom:5px;font-weight:600">Kleur</div>
+              <div style="display:flex;gap:4px;flex-wrap:wrap">
+                <button class="cfg-btn" onclick="toggleSub(this)" style="flex:none;padding:5px 10px"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--cat-geel);margin-right:4px"></span>Geel</button>
+                <button class="cfg-btn" onclick="toggleSub(this)" style="flex:none;padding:5px 10px"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--cat-oranje);margin-right:4px"></span>Oranje</button>
+                <button class="cfg-btn active" onclick="toggleSub(this)" style="flex:none;padding:5px 10px"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--cat-rood);margin-right:4px"></span>Rood</button>
+                <button class="cfg-btn" onclick="toggleSub(this)" style="flex:none;padding:5px 10px"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--cat-groen);margin-right:4px"></span>Groen</button>
+                <button class="cfg-btn" onclick="toggleSub(this)" style="flex:none;padding:5px 10px"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--cat-blauw);margin-right:4px"></span>Blauw</button>
+              </div>
+              <div id="cfg-geel-formaat" style="display:none;margin-top:8px">
+                <div style="font-size:10px;color:var(--text-tertiary);margin-bottom:5px;font-weight:600">Formaat</div>
+                <div style="display:flex;gap:4px">
+                  <button class="cfg-btn active" onclick="toggleSub(this)">8-tal</button>
+                  <button class="cfg-btn" onclick="toggleSub(this)">4-tal</button>
+                </div>
+              </div>
+              <div style="font-size:10px;color:var(--text-tertiary);margin-top:6px" id="cfg-jeugdb-info">8-tal · Gender vrij · Max 3 jaar bandbreedte</div>
+            </div>
+
+            <!-- ═══ VALIDATIE ═══ -->
+            <div style="height:1px;background:var(--border-light);margin:8px 0"></div>
+            <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-tertiary);margin-bottom:8px">Validatie</div>
+            <div id="td-validatie"></div>
+
+            <!-- ═══ SELECTIE-KOPPELING ═══ -->
+            <div style="height:1px;background:var(--border-light);margin:8px 0"></div>
+            <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-tertiary);margin-bottom:8px">Selectie-koppeling</div>
+
+            <!-- Visueel selectie-blok -->
+            <div style="border:1px solid rgba(59,130,246,.35);border-radius:8px;overflow:hidden;background:rgba(59,130,246,.03);margin-bottom:10px">
+              <div style="display:flex;align-items:center;gap:6px;padding:6px 10px;background:rgba(59,130,246,.07);border-bottom:1px solid rgba(59,130,246,.25)">
+                <span style="font-size:8px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:#3b82f6;background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.3);border-radius:4px;padding:1px 5px">Sel</span>
+                <span style="font-size:11px;font-weight:700;color:var(--text-primary);flex:1">Selectie A · U17</span>
+                <span style="font-size:10px;color:var(--sexe-v);font-weight:700">♀7</span>
+                <span style="font-size:10px;color:var(--sexe-h);font-weight:700">♂8</span>
+              </div>
+              <div style="display:flex;align-items:center;padding:6px 10px;border-bottom:1px solid rgba(255,255,255,.05)">
+                <span style="font-size:12px;font-weight:700;color:var(--ow-accent)">A1</span>
+                <span style="margin-left:auto;font-size:10px;color:var(--sexe-v);font-weight:700">♀4</span>
+                <span style="margin-left:6px;font-size:10px;color:var(--sexe-h);font-weight:700">♂4</span>
+                <span style="margin-left:8px;width:7px;height:7px;border-radius:50%;background:var(--val-ok)"></span>
+              </div>
+              <div style="display:flex;align-items:center;padding:6px 10px">
+                <span style="font-size:12px;font-weight:600;color:var(--text-primary)">A2</span>
+                <span style="margin-left:auto;font-size:10px;color:var(--sexe-v);font-weight:700">♀3</span>
+                <span style="margin-left:6px;font-size:10px;color:var(--sexe-h);font-weight:700">♂4</span>
+                <span style="margin-left:8px;width:7px;height:7px;border-radius:50%;background:var(--val-warn)"></span>
+              </div>
+            </div>
+
+            <div style="font-size:11px;color:var(--text-secondary);margin-bottom:6px">Gekoppeld aan: <strong>A2</strong></div>
+            <div style="margin-bottom:8px">
+              <div style="font-size:10px;color:var(--text-tertiary);margin-bottom:4px;font-weight:600">Selectienaam</div>
+              <div style="display:flex;gap:6px">
+                <input style="flex:1;padding:5px 8px;font-size:11px;border-radius:6px;border:1px solid var(--border-default);background:var(--surface-card);color:var(--text-primary);font-family:inherit;outline:none" value="Selectie A · U17">
+                <button style="padding:5px 9px;font-size:11px;font-weight:700;border-radius:6px;border:1px solid var(--ow-accent);background:rgba(255,107,0,.1);color:var(--ow-accent);cursor:pointer;font-family:inherit;flex-shrink:0">OK</button>
+              </div>
+            </div>
+
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;padding:8px 0;border-top:1px solid var(--border-light)">
+              <div>
+                <div style="font-size:11px;font-weight:600;color:var(--text-primary);margin-bottom:2px">Gecombineerde pool</div>
+                <div style="font-size:10px;color:var(--text-tertiary);line-height:1.4">Spelers van beide teams in één pool.</div>
+              </div>
+              <button style="flex-shrink:0;padding:4px 10px;font-size:11px;font-weight:700;border-radius:6px;border:1px solid var(--ow-accent);background:rgba(255,107,0,.1);color:var(--ow-accent);cursor:pointer;font-family:inherit">Aan</button>
+            </div>
+
+            <!-- ═══ DANGER ZONE ═══ -->
+            <div style="height:1px;background:var(--border-light);margin:12px 0 8px"></div>
+            <div style="padding:10px 12px;border-radius:8px;border:1px solid rgba(239,68,68,.18);background:rgba(239,68,68,.04)">
+              <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--val-err);margin-bottom:6px;opacity:.7">Danger zone</div>
+              <button style="width:100%;padding:6px;border-radius:6px;background:none;border:1px solid rgba(239,68,68,.3);color:var(--val-err);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">Team verwijderen</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="wb-drawer rechts" id="drawer-versies">
+          <div class="wb-drawer-header"><span class="wb-drawer-title">Versies</span></div>
+          <div class="wb-drawer-list">
+            <div class="wb-team-rij active" style="--team-kleur:var(--ow-accent)"><span class="t-naam">v3 — Hoofdindeling</span><span style="font-size:9px;padding:1px 5px;border-radius:3px;background:rgba(34,197,94,.1);color:#4ade80;font-weight:700">Actief</span></div>
+            <div class="wb-team-rij" style="--team-kleur:var(--border-default);opacity:.6"><span class="t-naam">v2 — Concept B</span><span class="t-count">12 apr</span></div>
+            <div class="wb-team-rij" style="--team-kleur:var(--border-default);opacity:.4"><span class="t-naam">v1 — Eerste opzet</span><span class="t-count">5 apr</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    // Zoom en pan
+    let currentZoom = 0.6, panX = 0, panY = 0, isPan = false, sx, sy;
+    const canvasEl = document.getElementById('canvas');
+    const surfaceEl = document.getElementById('map-surface');
+
+    function applyTf() { if (surfaceEl) surfaceEl.style.transform = `translate(${panX}px,${panY}px) scale(${currentZoom})`; }
+    function setZoom(m) {
+      currentZoom = m === 'compact' ? 0.6 : 1.0;
+      document.getElementById('zbtn-compact')?.classList.toggle('active', m === 'compact');
+      document.getElementById('zbtn-detail')?.classList.toggle('active', m === 'detail');
+      if (surfaceEl) { surfaceEl.style.transition = 'transform 300ms ease'; applyTf(); setTimeout(() => surfaceEl.style.transition = 'none', 300); }
+    }
+    function resetPan() { panX = 0; panY = 0; if (surfaceEl) { surfaceEl.style.transition = 'transform 300ms ease'; applyTf(); setTimeout(() => surfaceEl.style.transition = 'none', 300); } }
+
+    document.addEventListener('mousedown', (e) => {
+      if (!e.target.closest('#canvas') || e.target.closest('.zoom-controls,.team-kaart,.save-indicator')) return;
+      isPan = true; sx = e.clientX - panX; sy = e.clientY - panY;
+    });
+    document.addEventListener('mousemove', (e) => { if (!isPan) return; panX = e.clientX - sx; panY = e.clientY - sy; applyTf(); });
+    document.addEventListener('mouseup', () => { isPan = false; });
+    setTimeout(applyTf, 100);
+
+    function toggle(btn) {
+      const side = btn.dataset.side;
+      const drawerId = btn.dataset.drawer;
+      const wasActive = btn.classList.contains('active');
+
+      // Alle toggles van dezelfde kant uitzetten
+      document.querySelectorAll(`.wb-toggle[data-side="${side}"]`).forEach(b => b.classList.remove('active'));
+      // Alle drawers van dezelfde kant sluiten
+      document.querySelectorAll(`.wb-drawer.${side}`).forEach(d => d.classList.remove('open'));
+
+      // Als het niet al actief was, open deze
+      if (!wasActive) {
+        btn.classList.add('active');
+        document.getElementById('drawer-' + drawerId)?.classList.add('open');
+      }
+    }
+
+    // Klik op team-rij → open detail drawer
+    document.addEventListener('click', (e) => {
+      const rij = e.target.closest('.wb-team-rij');
+      if (!rij || !rij.closest('#drawer-teams')) return;
+      // Sluit teams-drawer, open detail
+      document.getElementById('drawer-teams').classList.remove('open');
+      document.getElementById('drawer-team-detail').classList.add('open');
+    });
+
+    // Inrichting: type + AB + sub
+    let currentType = 'jeugd';
+    let currentAB = 'a';
+
+    function updateSubs() {
+      ['senioren-a','senioren-b','jeugd-a','jeugd-b'].forEach(id => {
+        document.getElementById('cfg-sub-' + id).style.display = 'none';
+      });
+      document.getElementById('cfg-sub-' + currentType + '-' + currentAB).style.display = 'block';
+    }
+
+    function selectType(type) {
+      currentType = type;
+      document.querySelectorAll('#cfg-type .cfg-btn').forEach(b => b.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+      updateSubs();
+      showSaveIndicator();
+    }
+
+    function selectAB(ab) {
+      currentAB = ab;
+      document.querySelectorAll('#cfg-ab .cfg-btn').forEach(b => b.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+      updateSubs();
+      showSaveIndicator();
+    }
+
+    function toggleSub(btn) {
+      btn.parentElement.querySelectorAll('.cfg-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      // Toon geel-formaat als Geel geselecteerd in jeugd-b
+      const geelFormaat = document.getElementById('cfg-geel-formaat');
+      if (geelFormaat && btn.closest('#cfg-sub-jeugd-b')) {
+        const isGeel = btn.textContent.trim().includes('Geel');
+        geelFormaat.style.display = isGeel ? 'block' : 'none';
+      }
+      showSaveIndicator();
+    }
+
+    function sluitDetail() {
+      document.getElementById('drawer-team-detail').classList.remove('open');
+      document.getElementById('drawer-teams').classList.add('open');
+    }
+  </script>
+
+  <script type="module">
+    import { shell } from '../shared/shell.js';
+    import { renderCanvas } from '../shared/team-components.js';
+    import {
+      SPELERS, STAF, TEAMS, SELECTIES,
+      getSpeler, getStaf, getTeam, getSelectie, getMemosVoor,
+      leeftijdKlasse, teamsGegroepeerd, verplaatsSpeler, openMemosVoorTeam
+    } from '../shared/mock-data.js';
+    import {
+      initDragDrop, showSpelerHoverKaart, hideSpelerHoverKaart,
+      showStafHoverKaart, hideStafHoverKaart,
+      openSpelerDialog, openTeamDialog, openStafDialog,
+      openMemoDrawer, openNieuweMemoDialog
+    } from '../shared/interactions.js';
+
+    // Totaal open memos in mock
+    const totaalMemos = TEAMS.reduce((acc, t) => acc + t.openMemos, 0);
+    shell('app', { activePage: 'werkbord', memoCount: totaalMemos });
+
+    // ── Statistieken bijwerken ──────────────────────────────────────────────
+    function updateStats() {
+      const totaal = SPELERS.length;
+      const ingedeeld = SPELERS.filter(s => s.ingedeeldTeam).length;
+      document.getElementById('stat-ingedeeld').textContent = ingedeeld;
+      document.getElementById('stat-totaal').textContent = totaal;
+      document.getElementById('stat-teams').textContent = TEAMS.length;
+      // Teams-drawer footer + teller
+      const tc = document.getElementById('teams-count');
+      const tf = document.getElementById('teams-footer-ingedeeld');
+      if (tc) tc.textContent = TEAMS.length;
+      if (tf) tf.textContent = `${ingedeeld} / ${totaal}`;
+    }
+
+    // ── Leeftijdkleur (integer) ────────────────────────────────────────────
+    function leeftijdCssVar(leeftijd) {
+      const geheel = Math.floor(leeftijd);
+      const map = {4:'#581c87',5:'#581c87',6:'#1d4ed8',7:'#1d4ed8',8:'#047857',9:'#047857',10:'#facc15',11:'#facc15',12:'#facc15',13:'#f97316',14:'#f97316',15:'#f97316',16:'#dc2626',17:'#dc2626',18:'#dc2626'};
+      return map[geheel] ?? '#94a3b8';
+    }
+
+    // ── Pool renderen ──────────────────────────────────────────────────────
+    let poolFilter = 'zonder';
+    let poolZoek = '';
+
+    function renderPool() {
+      const lijst = document.getElementById('pool-lijst');
+      if (!lijst) return;
+      const zoek = poolZoek.toLowerCase();
+      const spelers = SPELERS.filter(sp => {
+        const naam = [sp.roepnaam, sp.tussenvoegsel, sp.achternaam].filter(Boolean).join(' ').toLowerCase();
+        if (zoek && !naam.includes(zoek)) return false;
+        if (poolFilter === 'zonder') return !sp.ingedeeldTeam;
+        if (poolFilter === 'ingedeeld') return !!sp.ingedeeldTeam;
+        return true;
+      });
+
+      document.getElementById('pool-count').textContent = spelers.length;
+
+      lijst.innerHTML = spelers.map(sp => {
+        const geheel = Math.floor(sp.leeftijd);
+        const dec = (sp.leeftijd - geheel).toFixed(2).slice(1);
+        const statusKlasse = sp.status === 'TWIJFELT' ? 'st-twijfelt' : sp.status === 'GAAT_STOPPEN' ? 'st-stopt' : sp.status === 'AR' ? 'st-ar' : sp.status === 'NIEUW' ? 'st-nieuw' : '';
+        const leeftKleur = leeftijdCssVar(sp.leeftijd);
+        const teamLabel = sp.huidigTeam ? sp.huidigTeam.replace('team-', '') : sp.ingedeeldTeam ? sp.ingedeeldTeam.replace('team-', '') : '—';
+        // Zoek teamnaam via TEAMS
+        const huidigTeamObj = TEAMS.find(t => t.id === sp.huidigTeam);
+        const teamnaam = huidigTeamObj ? huidigTeamObj.naam : (sp.huidigTeam ?? '—');
+
+        return `<div class="wb-speler-rij ${statusKlasse}"
+          draggable="true"
+          data-drag-type="speler"
+          data-drag-id="${sp.id}"
+          data-speler-id="${sp.id}"
+          style="cursor:grab">
+          <div class="av">
+            ${sp.fotoUrl ? `<img src="${sp.fotoUrl}" alt="${sp.roepnaam}">` : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--surface-card);font-size:11px;font-weight:800;color:var(--text-muted)">${sp.roepnaam[0]}</div>`}
+          </div>
+          <div class="info" data-speler-naam="${sp.id}">
+            <div class="nm">${sp.roepnaam} ${[sp.tussenvoegsel, sp.achternaam].filter(Boolean).join(' ')}</div>
+            <div class="sub"><span class="tb">${teamnaam}</span>${sp.memoCount > 0 ? ` <span style="color:var(--memo-open);font-size:9px;font-weight:800">▲${sp.memoCount}</span>` : ''}</div>
+          </div>
+          <div class="leeft" style="background:${leeftKleur}">
+            <span class="lb">${geheel}</span>
+            <span class="ld">${dec}</span>
+          </div>
+        </div>`;
+      }).join('');
+
+      // Events op pool-rijen
+      lijst.querySelectorAll('.wb-speler-rij').forEach(rij => {
+        const id = rij.dataset.spelerId;
+        const sp = getSpeler(id);
+        if (!sp) return;
+
+        // Hover-kaart
+        rij.addEventListener('mouseenter', (e) => showSpelerHoverKaart(sp, e.clientX, e.clientY));
+        rij.addEventListener('mouseleave', () => hideSpelerHoverKaart());
+        rij.addEventListener('mousemove', (e) => {
+          // Pas positie aan als muis beweegt
+          if (document.querySelector('.ia-hover-kaart.visible')) {
+            showSpelerHoverKaart(sp, e.clientX, e.clientY);
+          }
+        });
+
+        // Klik op naam → speler-dialog
+        rij.querySelector('[data-speler-naam]')?.addEventListener('click', (e) => {
+          e.stopPropagation();
+          openSpelerDialog(id);
+        });
+      });
+    }
+
+    window.filterPool = function() {
+      poolZoek = document.getElementById('pool-zoek')?.value ?? '';
+      renderPool();
+    };
+    window.setPoolFilter = function(btn, filter) {
+      poolFilter = filter;
+      document.querySelectorAll('#pool-filters .wb-filter-chip').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderPool();
+    };
+
+    // ── Staf renderen ──────────────────────────────────────────────────────
+    let stafFilter = 'alle';
+    let stafZoek = '';
+
+    const STAF_ICONEN = {
+      technisch: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>`,
+      medisch: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 11v4"/><path d="M14 13h-4"/><path d="M16 6V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><path d="M18 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Z"/></svg>`,
+      ondersteunend: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>`,
+    };
+
+    function renderStaf() {
+      const lijst = document.getElementById('staf-lijst');
+      if (!lijst) return;
+      const zoek = stafZoek.toLowerCase();
+      const stafLeden = STAF.filter(s => {
+        if (zoek && !s.naam.toLowerCase().includes(zoek)) return false;
+        if (stafFilter === 'zonder') return s.koppelingen.length === 0;
+        return true;
+      });
+      document.getElementById('staf-count').textContent = stafLeden.length;
+
+      lijst.innerHTML = stafLeden.map(s => {
+        const initialen = s.naam.split(' ').map(w => w[0]).slice(0, 2).join('');
+        const icoon = STAF_ICONEN[s.type] ?? STAF_ICONEN.technisch;
+        return `<div class="wb-staf-rij"
+          draggable="true"
+          data-drag-type="staf"
+          data-drag-id="${s.id}"
+          data-staf-id="${s.id}">
+          <div class="av">
+            ${s.fotoUrl ? `<img src="${s.fotoUrl}" alt="${s.naam}">` : initialen}
+          </div>
+          <div class="info">
+            <div class="nm">${s.naam}</div>
+            <div class="rol">
+              <span class="rol-mini">
+                <span class="type-icoon ${s.type}" style="width:8px;height:8px">${icoon}</span>
+                ${s.rol}
+              </span>
+              ${s.memoCount > 0 ? `<span style="margin-left:4px;color:var(--memo-open);font-size:9px;font-weight:800">▲${s.memoCount}</span>` : ''}
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+
+      lijst.querySelectorAll('.wb-staf-rij').forEach(rij => {
+        const id = rij.dataset.stafId;
+        const s = getStaf(id);
+        if (!s) return;
+        rij.addEventListener('mouseenter', (e) => showStafHoverKaart(s, e.clientX, e.clientY));
+        rij.addEventListener('mouseleave', () => hideStafHoverKaart());
+        rij.addEventListener('click', () => openStafDialog(id));
+      });
+    }
+
+    window.filterStaf = function() {
+      stafZoek = document.getElementById('staf-zoek')?.value ?? '';
+      renderStaf();
+    };
+    window.setStafFilter = function(btn, filter) {
+      stafFilter = filter;
+      btn.closest('.wb-drawer-filters')?.querySelectorAll('.wb-filter-chip').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderStaf();
+    };
+
+    // ── Toolbar: nieuwe memo knop ──────────────────────────────────────────
+    window.openNieuweMemoToolbar = function() {
+      openNieuweMemoDialog({});
+    };
+
+    // ── Teams-drawer renderen (selecties + losse groepen) ───────────────────
+    const VAL_KLEUR = { ok: 'var(--val-ok)', warn: 'var(--val-warn)', err: 'var(--val-err)' };
+    const CAT_CSS = { senior: 'var(--cat-senior)', rood: 'var(--cat-rood)', oranje: 'var(--cat-oranje)', geel: 'var(--cat-geel)', groen: 'var(--cat-groen)', blauw: 'var(--cat-blauw)', paars: 'var(--cat-paars)' };
+    const CAT_LABEL = { senior: 'Senioren · 19+', rood: 'Rood · 16–18', oranje: 'Oranje · 13–15', geel: 'Geel · 10–12', groen: 'Groen · 8–9', blauw: 'Blauw · 6–7', paars: 'Paars · 4–5' };
+
+    function teamRijHtml(team, isActief = false) {
+      return `<div class="wb-team-rij${isActief ? ' active' : ''}" data-team-rij="${team.id}" style="--team-kleur:${CAT_CSS[team.kleur] ?? 'var(--cat-senior)'};border-radius:${team.selectieId ? '0' : '6px'}">
+        <span class="t-naam">${team.naam.replace(/^OW /, '')}</span>
+        <span style="font-size:11px;color:var(--sexe-v);font-weight:700">♀${team.dames.length}</span>
+        <span style="font-size:10px;color:var(--text-tertiary)">/</span>
+        <span style="font-size:11px;color:var(--sexe-h);font-weight:700">♂${team.heren.length}</span>
+        ${team.openMemos > 0 ? `<span data-memo-indicator title="${team.openMemos} open memo" style="color:var(--memo-open);font-size:10px;font-weight:800">▲${team.openMemos}</span>` : ''}
+        <span class="t-val" style="background:${VAL_KLEUR[team.validatie]}"></span>
+      </div>`;
+    }
+
+    function renderTeamsDrawer() {
+      const lijst = document.getElementById('teams-lijst');
+      if (!lijst) return;
+      const { selecties, groepen } = teamsGegroepeerd();
+
+      const selectiesHtml = selecties.map(sel => {
+        const totV = sel.teams.reduce((a, t) => a + t.dames.length, 0);
+        const totH = sel.teams.reduce((a, t) => a + t.heren.length, 0);
+        const bundelBadge = sel.gebundeld
+          ? `<span title="Gecombineerde pool" style="font-size:8px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:#3b82f6;background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.3);border-radius:4px;padding:1px 5px">⇌</span>`
+          : '';
+        return `<div style="margin:3px 8px 8px">
+          <div style="border:1px solid rgba(59,130,246,.35);border-radius:11px;overflow:hidden;background:rgba(59,130,246,.03)">
+            <div style="display:flex;align-items:center;gap:7px;padding:8px 10px 7px;background:rgba(59,130,246,.07);border-bottom:1px solid rgba(59,130,246,.25)">
+              ${bundelBadge}
+              <span style="font-size:12px;font-weight:700;color:var(--text-primary);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${sel.naam}</span>
+              <span style="font-size:10px;color:var(--sexe-v);opacity:.6">♀</span><span style="font-size:12px;font-weight:800;color:var(--sexe-v)">${totV}</span>
+              <span style="font-size:10px;color:var(--sexe-h);opacity:.6;margin-left:2px">♂</span><span style="font-size:12px;font-weight:800;color:var(--sexe-h)">${totH}</span>
+            </div>
+            ${sel.teams.map(t => teamRijHtml(t)).join('<div style="height:1px;background:rgba(255,255,255,.05)"></div>')}
+          </div>
+        </div>`;
+      }).join('');
+
+      const groepenHtml = groepen.map(g => `
+        <div style="padding:10px 8px 4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-tertiary);display:flex;align-items:center;gap:6px">
+          <span style="width:10px;height:3px;border-radius:2px;background:${CAT_CSS[g.kleur]}"></span> ${CAT_LABEL[g.kleur]}
+        </div>
+        ${g.teams.map(t => teamRijHtml(t)).join('')}`).join('');
+
+      lijst.innerHTML = selectiesHtml + groepenHtml;
+
+      // Events
+      lijst.querySelectorAll('[data-team-rij]').forEach(rij => {
+        rij.addEventListener('click', (e) => {
+          if (e.target.closest('[data-memo-indicator]')) {
+            const team = getTeam(rij.dataset.teamRij);
+            const openMemos = openMemosVoorTeam(team.id);
+            if (openMemos[0]) openMemoDrawer(openMemos[0].id);
+            return;
+          }
+          openTeamDetail(rij.dataset.teamRij);
+        });
+      });
+    }
+
+    // ── Team-detail drawer renderen voor specifiek team ─────────────────────
+    function openTeamDetail(teamId) {
+      const team = getTeam(teamId);
+      if (!team) return;
+      const drawer = document.getElementById('drawer-team-detail');
+      drawer.dataset.teamId = teamId;
+
+      document.getElementById('td-naam').textContent = team.naam;
+      document.getElementById('td-val-dot').style.background = VAL_KLEUR[team.validatie];
+
+      // Validatie-items
+      const valEl = document.getElementById('td-validatie');
+      if (team.valMeldingen.length === 0) {
+        valEl.innerHTML = `<div class="val-item ok" style="margin-bottom:4px"><div class="icn">✓</div><div class="body"><div class="regel">Alle validaties oké</div><div class="desc">Team voldoet aan de regels.</div></div></div>`;
+      } else {
+        valEl.innerHTML = team.valMeldingen.map(m => `<div class="val-item ${team.validatie}" style="margin-bottom:4px"><div class="icn">${team.validatie === 'err' ? '✕' : '⚠'}</div><div class="body"><div class="regel">${m}</div></div></div>`).join('');
+      }
+
+      document.getElementById('drawer-teams').classList.remove('open');
+      drawer.classList.add('open');
+    }
+    window.openTeamDetail = openTeamDetail;
+
+    // ── Canvas: teams uit mock-data ────────────────────────────────────────
+    // Vertaal mock-data naar het formaat dat renderCanvas verwacht
+    function mockTeamNaarCanvas(team) {
+      const dames = team.dames.map(id => getSpeler(id)).filter(Boolean).map(sp => ({
+        naam: sp.roepnaam + ' ' + [sp.tussenvoegsel, sp.achternaam].filter(Boolean).join(' '),
+        leeftijd: sp.leeftijd,
+        spId: sp.id,
+      }));
+      const heren = team.heren.map(id => getSpeler(id)).filter(Boolean).map(sp => ({
+        naam: sp.roepnaam + ' ' + [sp.tussenvoegsel, sp.achternaam].filter(Boolean).join(' '),
+        leeftijd: sp.leeftijd,
+        spId: sp.id,
+      }));
+      const stafLeden = team.staf.map(id => getStaf(id)).filter(Boolean).map(s => ({
+        naam: s.naam,
+        type: s.type,
+        stafId: s.id,
+      }));
+      const teamMemos = getMemosVoor('TEAM', team.id);
+      const eersteMemo = teamMemos[0] ?? null;
+      return {
+        id: team.id,
+        naam: team.naam,
+        sub: team.sub,
+        type: team.type,
+        kleur: team.kleur,
+        validatie: team.validatie,
+        memo: team.openMemos > 0 ? 'open' : null,
+        memoCount: team.openMemos,
+        memoId: eersteMemo?.id ?? null,
+        dames,
+        heren,
+        staf: stafLeden,
+      };
+    }
+
+    // ── Drag-drop initialiseren ────────────────────────────────────────────
+    function herRender() {
+      // Volledige re-render van pool, teams-drawer, canvas
+      renderPool();
+      renderStaf();
+      renderTeamsDrawer();
+      updateStats();
+      const canvasTeams = TEAMS.map(mockTeamNaarCanvas);
+      renderCanvas('map-surface', canvasTeams);
+      setTimeout(wireCanvasInteracties, 50);
+    }
+
+    initDragDrop({
+      dragSelector: '[data-drag-id]',
+      dropZones: [
+        {
+          selector: '.team-kaart[data-team-id]',
+          onDrop(data, zone) {
+            if (data.type !== 'speler') return;
+            const teamId = zone.dataset.teamId;
+            const ok = verplaatsSpeler(data.id, teamId);
+            if (ok) {
+              showSaveIndicator();
+              herRender();
+            }
+          },
+        },
+        {
+          selector: '#pool-lijst',
+          onDrop(data) {
+            if (data.type !== 'speler') return;
+            const ok = verplaatsSpeler(data.id, null);
+            if (ok) {
+              showSaveIndicator();
+              herRender();
+            }
+          },
+        },
+      ],
+    });
+
+    // Memo-wijziging (via memo-drawer status-knop) → update teams-drawer indicator
+    document.addEventListener('memo-wijziging', () => herRender());
+
+    // ── Canvas team-interacties na render ──────────────────────────────────
+    function wireCanvasInteracties() {
+      // Team-kaart header klik → team-dialog
+      document.querySelectorAll('.team-kaart[data-team-id]').forEach(kaart => {
+        const teamId = kaart.dataset.teamId;
+        const header = kaart.querySelector('.tk-header');
+        if (!header) return;
+        header.style.cursor = 'pointer';
+        header.addEventListener('click', (e) => {
+          if (e.target.closest('[data-memo-indicator]')) return; // memo-knop zelf afhandelen
+          openTeamDialog(teamId);
+        });
+      });
+
+      // Memo-indicator (▲) op teamkaart → memo-drawer
+      document.querySelectorAll('[data-memo-id]').forEach(el => {
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          openMemoDrawer(el.dataset.memoId);
+        });
+      });
+
+      // Staf chips op canvas → hover + click
+      document.querySelectorAll('.staf-compact[data-staf-id], .staf-chip[data-staf-id]').forEach(chip => {
+        const id = chip.dataset.stafId;
+        const s = getStaf(id);
+        if (!s) return;
+        chip.addEventListener('mouseenter', (e) => showStafHoverKaart(s, e.clientX, e.clientY));
+        chip.addEventListener('mouseleave', () => hideStafHoverKaart());
+        chip.addEventListener('click', () => openStafDialog(id));
+      });
+
+      // Speler compact-chips op canvas → hover + click
+      document.querySelectorAll('.compact-chip[data-speler-id]').forEach(chip => {
+        const id = chip.dataset.spelerId;
+        const sp = getSpeler(id);
+        if (!sp) return;
+        chip.addEventListener('mouseenter', (e) => showSpelerHoverKaart(sp, e.clientX, e.clientY));
+        chip.addEventListener('mouseleave', () => hideSpelerHoverKaart());
+        chip.querySelector('.nm')?.addEventListener('click', (e) => {
+          e.stopPropagation();
+          openSpelerDialog(id);
+        });
+      });
+    }
+
+    // ── Init ───────────────────────────────────────────────────────────────
+    setTimeout(() => {
+      updateStats();
+      renderPool();
+      renderStaf();
+      renderTeamsDrawer();
+
+      // Render canvas met mock-data
+      const canvasTeams = TEAMS.map(mockTeamNaarCanvas);
+      renderCanvas('map-surface', canvasTeams);
+
+      // Wire canvas interacties na render
+      setTimeout(wireCanvasInteracties, 100);
+    }, 50);
+  </script>
+</body>
+</html>

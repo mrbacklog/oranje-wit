@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Hover-kaart · Speler-weergave</title>
+  <link rel="stylesheet" href="../../shared/tokens.css">
+  <style>
+    body { background: #050507; padding: 48px 40px; }
+    .row { display: flex; gap: 32px; flex-wrap: wrap; align-items: flex-start; }
+    .variant-label { font-size: 11px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.07em; margin-top: 10px; text-align: center; }
+
+    /* ══════════════════════════════════════════════════════════
+       HOVER-KAART · Leeftijdkleur als visuele uitstraling
+       200×300px · status+memo links · leeftijd rechts
+       foto centraal · naam over foto · teams footer
+       ══════════════════════════════════════════════════════════ */
+    .hk-c {
+      position: relative;
+      width: 200px;
+      height: 300px;
+      border-radius: 12px;
+      overflow: visible;
+      cursor: pointer;
+    }
+
+    /* Gradient border via pseudo-element — leeftijdkleur, 3px breed */
+    .hk-c::before {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 15px;
+      background: var(--c-border-grad);
+      z-index: 0;
+    }
+
+    /* Idle pulse-glow op de border */
+    @keyframes idle-pulse {
+      0%, 100% { opacity: 0.7; }
+      50%       { opacity: 1; }
+    }
+    .hk-c::after {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 15px;
+      background: var(--c-border-grad);
+      z-index: 0;
+      filter: blur(8px);
+      opacity: 0.35;
+      animation: idle-pulse 3s ease-in-out infinite;
+    }
+
+    /* Glow-pulse animatie op hover */
+    @keyframes glow-pulse {
+      0%, 100% { box-shadow: 0 0 18px var(--c-glow), 0 8px 32px rgba(0,0,0,.7); }
+      50%       { box-shadow: 0 0 40px var(--c-glow), 0 0 70px var(--c-glow), 0 12px 40px rgba(0,0,0,.8); }
+    }
+    .hk-c:hover {
+      animation: glow-pulse 1.8s ease-in-out infinite;
+    }
+    .hk-c:hover::after {
+      opacity: 0.6;
+      filter: blur(12px);
+    }
+
+    /* Inner card */
+    .hk-c .c-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      background: linear-gradient(160deg, #1a1a1e 0%, #0c0c0f 55%, #121216 100%);
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Noise texture overlay */
+    .hk-c .c-inner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 30;
+      pointer-events: none;
+      border-radius: 12px;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 120px 120px;
+    }
+
+    /* Leeftijdkleur als subtiele achtergrond-tint */
+    .hk-c .c-bg-tint {
+      position: absolute;
+      inset: 0;
+      opacity: 0.18;
+      mix-blend-mode: overlay;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Radiale glow vanuit rechtsboven (leeftijdkleur) */
+    .hk-c .c-corner-glow {
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: var(--c-accent-color, rgba(255,255,255,.1));
+      opacity: 0.12;
+      filter: blur(24px);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Sheen effect */
+    @keyframes c-sheen {
+      0%   { opacity: 0; transform: rotate(-35deg) translateX(-80%); }
+      15%  { opacity: 1; }
+      85%  { opacity: 1; }
+      100% { opacity: 0; transform: rotate(-35deg) translateX(200%); }
+    }
+    .hk-c .c-sheen {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      border-radius: 12px;
+      z-index: 25;
+      pointer-events: none;
+    }
+    .hk-c .c-sheen::before {
+      content: '';
+      position: absolute;
+      top: -50%; left: -50%;
+      width: 60%;
+      height: 200%;
+      background: linear-gradient(90deg, transparent, var(--c-sheen-color, rgba(255,255,255,.05)), rgba(255,255,255,.12), var(--c-sheen-color, rgba(255,255,255,.05)), transparent);
+      animation: c-sheen 5s ease-in-out infinite;
+      animation-delay: 0.5s;
+    }
+
+    /* ── Header: [memo+status links] · [leeftijd rechts] ── */
+    .hk-c .c-header {
+      position: relative;
+      z-index: 5;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 11px 11px 8px;
+      gap: 6px;
+      border-bottom: 1px solid var(--c-accent-color, rgba(255,255,255,.1));
+      background: linear-gradient(180deg, var(--c-header-bg, rgba(255,255,255,.03)) 0%, transparent 100%);
+    }
+
+    /* Links: memo boven, status-chip eronder */
+    .hk-c .c-header-left {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      margin-top: 10px;
+    }
+
+    /* Status chip */
+    .hk-c .c-chip {
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 8px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border: 1px solid var(--status-color);
+      color: var(--text-primary);
+      background: rgba(255,255,255,.07);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* Leeftijd — rechts, groot */
+    .hk-c .c-leeft {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .hk-c .c-leeft .cl {
+      font-size: 38px;
+      font-weight: 900;
+      line-height: 1;
+      color: #fff;
+      font-variant-numeric: tabular-nums;
+      text-shadow: 0 0 24px var(--c-glow), 0 0 8px var(--c-glow);
+    }
+    .hk-c .c-leeft .cd {
+      font-size: 13px;
+      font-weight: 800;
+      color: rgba(255,255,255,.7);
+      line-height: 1;
+      margin-top: -2px;
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+    }
+    .hk-c .c-leeft .cjr {
+      font-size: 8px;
+      font-weight: 600;
+      color: rgba(255,255,255,.35);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-align: right;
+      margin-top: 1px;
+    }
+
+    /* Foto — edge-to-edge, geen margin, geen border-radius */
+    .hk-c .c-foto {
+      position: relative;
+      z-index: 2;
+      flex: 1;
+      margin: 0;
+      border-radius: 0;
+      overflow: hidden;
+    }
+    .hk-c .c-foto img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 15%;
+      filter: none;
+      display: block;
+      transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .hk-c:hover .c-foto img {
+      transform: scale(1.03);
+    }
+
+    /* Inner glow op de foto (leeftijdkleur) — verwijderd, te veel filters */
+    .hk-c .c-foto .c-foto-glow {
+      display: none;
+    }
+
+    /* Gradient bovenaan foto — header-content leesbaar over foto */
+    .hk-c .c-foto::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 40%;
+      background: linear-gradient(180deg, rgba(8,8,12,.45) 0%, rgba(8,8,12,.15) 50%, transparent 100%);
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    /* Gradient onderkant foto — vloeiende overgang naar footer */
+    .hk-c .c-foto::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 72%;
+      background: linear-gradient(180deg, transparent 0%, rgba(10,10,14,.75) 45%, rgba(8,8,12,.98) 100%);
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    /* Sexe-tint overlay op foto — verwijderd, te veel filters */
+    .hk-c .c-sexe-tint {
+      display: none;
+    }
+
+    /* Sexe icoon — links-onder in het foto-vlak */
+    .hk-c .c-foto .c-sexe {
+      position: absolute;
+      bottom: 54px;
+      left: 8px;
+      z-index: 6;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    /* Blessure badge — rechts-onder op foto, zelfde hoogte als sexe-icoon */
+    .hk-c .c-foto .c-blessure {
+      position: absolute;
+      right: 10px;
+      bottom: 58px;
+      width: 18px;
+      height: 18px;
+      z-index: 6;
+      opacity: 0.85;
+      pointer-events: none;
+    }
+    .hk-c .c-foto .c-blessure svg path { fill: #ef4444; }
+
+    /* Nieuw-sparkle badge — rechts-boven op foto, 4× groter */
+    @keyframes sparkle-glow {
+      0%, 100% { filter: drop-shadow(0 0 4px rgba(251,146,60,.4)); opacity: 0.85; }
+      50%      { filter: drop-shadow(0 0 14px rgba(251,146,60,.8)) drop-shadow(0 0 28px rgba(255,200,100,.5)); opacity: 1; }
+    }
+    .hk-c .c-foto .c-sparkle {
+      position: absolute;
+      right: 6px;
+      top: 6px;
+      width: 56px;
+      height: 56px;
+      z-index: 6;
+      pointer-events: none;
+      animation: sparkle-glow 2.5s ease-in-out infinite;
+    }
+    .hk-c .c-foto .c-sparkle svg path { fill: #fbbf24; }
+
+    /* Naam hoog in foto (over gradient) */
+    .hk-c .c-roep {
+      position: absolute;
+      bottom: 52px;
+      left: 0; right: 0;
+      text-align: center;
+      z-index: 5;
+      transition: text-shadow 300ms ease;
+    }
+    .hk-c .c-roep .cr {
+      font-size: 28px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #fff;
+      text-shadow: 0 2px 12px rgba(0,0,0,.9), 0 4px 24px rgba(0,0,0,.8);
+      line-height: 1;
+    }
+    .hk-c:hover .c-roep .cr {
+      text-shadow: 0 2px 12px rgba(0,0,0,.9), 0 4px 24px rgba(0,0,0,.8), 0 0 20px var(--c-glow);
+    }
+    .hk-c .c-roep .cas {
+      font-size: 11px;
+      color: rgba(255,255,255,.65);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+
+    /* USS — linksboven op foto */
+    .hk-c .c-foto .c-uss {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      z-index: 6;
+    }
+
+    /* Footer: huidig team links · toekomstig team rechts — glassmorphism over foto */
+    .hk-c .c-footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 5;
+      padding: 8px 12px 11px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      border-top: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.06);
+      backdrop-filter: blur(12px) saturate(140%);
+      -webkit-backdrop-filter: blur(12px) saturate(140%);
+      border-radius: 0 0 12px 12px;
+    }
+    .hk-c .c-footer .tb {
+      color: rgba(255,255,255,.65);
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 4px;
+      padding: 4px 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 11px;
+      white-space: nowrap;
+    }
+    .hk-c .c-footer .tb-i {
+      color: var(--indeling-text);
+      border: 1px solid var(--indeling-border);
+      background: var(--indeling-bg);
+      border-radius: 4px;
+      padding: 4px 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 11px;
+      white-space: nowrap;
+    }
+    /* Lege/geen-team staat */
+    .hk-c .c-footer .tb-empty {
+      opacity: 0.3;
+    }
+
+    /* ── Leeftijd-configuraties (border + glow) ─────────────────────── */
+
+    /* Paars (4-5 jaar) */
+    .hk-c.leeft-paars {
+      --c-border-grad: linear-gradient(135deg, #3b0764 0%, #7c3aed 40%, #a78bfa 60%, #7c3aed 80%, #3b0764 100%);
+      --c-glow: rgba(124,58,237,.50);
+      --c-sheen-color: rgba(124,58,237,.10);
+      --c-accent-color: rgba(124,58,237,.6);
+      --c-header-bg: rgba(124,58,237,.15);
+    }
+    /* Rood (16-18 jaar) */
+    .hk-c.leeft-rood {
+      --c-border-grad: linear-gradient(135deg, #7f1d1d 0%, #dc2626 40%, #ef4444 60%, #dc2626 80%, #7f1d1d 100%);
+      --c-glow: rgba(220,38,38,.50);
+      --c-sheen-color: rgba(220,38,38,.09);
+      --c-accent-color: rgba(220,38,38,.6);
+      --c-header-bg: rgba(220,38,38,.15);
+    }
+    /* Oranje (13-15 jaar) */
+    .hk-c.leeft-oranje {
+      --c-border-grad: linear-gradient(135deg, #7c2d12 0%, #f97316 40%, #fb923c 60%, #f97316 80%, #7c2d12 100%);
+      --c-glow: rgba(249,115,22,.50);
+      --c-sheen-color: rgba(249,115,22,.09);
+      --c-accent-color: rgba(249,115,22,.6);
+      --c-header-bg: rgba(249,115,22,.15);
+    }
+    /* Geel (10-12 jaar) */
+    .hk-c.leeft-geel {
+      --c-border-grad: linear-gradient(135deg, #713f12 0%, #facc15 40%, #fde047 60%, #facc15 80%, #713f12 100%);
+      --c-glow: rgba(250,204,21,.45);
+      --c-sheen-color: rgba(250,204,21,.08);
+      --c-accent-color: rgba(250,204,21,.6);
+      --c-header-bg: rgba(250,204,21,.12);
+    }
+    /* Blauw (5-9 jaar) */
+    .hk-c.leeft-blauw {
+      --c-border-grad: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 40%, #60a5fa 60%, #3b82f6 80%, #1e3a8a 100%);
+      --c-glow: rgba(59,130,246,.50);
+      --c-sheen-color: rgba(59,130,246,.09);
+      --c-accent-color: rgba(59,130,246,.6);
+      --c-header-bg: rgba(59,130,246,.15);
+    }
+    /* Grijs/senior (19+) */
+    .hk-c.leeft-senior {
+      --c-border-grad: linear-gradient(135deg, #374151 0%, #9ca3af 40%, #d1d5db 60%, #9ca3af 80%, #374151 100%);
+      --c-glow: rgba(156,163,175,.35);
+      --c-sheen-color: rgba(156,163,175,.07);
+      --c-accent-color: rgba(156,163,175,.5);
+      --c-header-bg: rgba(156,163,175,.10);
+    }
+
+    /* ── Club-watermerk (OW-schildje) ───────────────────────────────── */
+    .hk-c .c-club-mark {
+      position: absolute;
+      top: 28px;
+      right: -10px;
+      width: 120px;
+      height: 144px;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0.13;
+      color: var(--c-accent-color, rgba(255,255,255,0.5));
+      mix-blend-mode: overlay;
+    }
+    .hk-c .c-club-mark svg {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════
+       SCHILDJE REVIEW · 3 maten op donker
+       ═══════════════════════════════════════════════════ -->
+  <div style="background:#0a0a0a; padding:32px; margin-bottom:48px; border-radius:16px; border:1px solid #262626;">
+    <div style="font-size:11px; color:#666; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:24px;">OW Schildje — SVG review</div>
+    <div style="display:flex; gap:48px; align-items:flex-end; flex-wrap:wrap;">
+
+      <!-- 200px review -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+        <svg width="200" height="240" viewBox="0 0 80 96" fill="none" xmlns="http://www.w3.org/2000/svg" style="color:#ff6b00;">
+          <!-- Schildvorm: klassiek heraldisch, bézier-curves, symmetrisch -->
+          <path d="M4 7 C4 5 6 4 8 4 L40 2 L72 4 C74 4 76 5 76 7 L76 52 C76 68 60 82 40 94 C20 82 4 68 4 52 Z"
+                stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/>
+          <!-- Sierlijke binnenrand — kleine marge -->
+          <path d="M9 10 C9 8.5 10.5 7.5 12 7.5 L40 5.5 L68 7.5 C69.5 7.5 71 8.5 71 10 L71 51 C71 65 56 78 40 89 C24 78 9 65 9 51 Z"
+                stroke="currentColor" stroke-width="0.75" fill="none" opacity="0.4" stroke-linejoin="round"/>
+
+          <!-- OW — verweven monoline paths -->
+          <!-- De O: elegante ovaal, gecentreerd iets naar links -->
+          <ellipse cx="34" cy="52" rx="14" ry="18"
+                   stroke="currentColor" stroke-width="2.2" fill="none"/>
+          <!-- De W: begint onderin de O, loopt erdoorheen naar rechts -->
+          <!-- W linker-buitenbeen: van linkerkant O omlaag -->
+          <path d="M22 42 L26 68 L34 52 L42 68 L52 38"
+                stroke="currentColor" stroke-width="2.2" fill="none"
+                stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- Kleine decoratieve boogjes boven de O — art-deco detail -->
+          <path d="M28 34 Q34 30 40 34"
+                stroke="currentColor" stroke-width="1" fill="none" opacity="0.6" stroke-linecap="round"/>
+        </svg>
+        <span style="font-size:11px;color:#666;">200px · review</span>
+      </div>
+
+      <!-- 100px kaart-schaal -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+        <svg width="100" height="120" viewBox="0 0 80 96" fill="none" xmlns="http://www.w3.org/2000/svg" style="color:#ff6b00;">
+          <path d="M4 7 C4 5 6 4 8 4 L40 2 L72 4 C74 4 76 5 76 7 L76 52 C76 68 60 82 40 94 C20 82 4 68 4 52 Z"
+                stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/>
+          <path d="M9 10 C9 8.5 10.5 7.5 12 7.5 L40 5.5 L68 7.5 C69.5 7.5 71 8.5 71 10 L71 51 C71 65 56 78 40 89 C24 78 9 65 9 51 Z"
+                stroke="currentColor" stroke-width="0.75" fill="none" opacity="0.4" stroke-linejoin="round"/>
+          <ellipse cx="34" cy="52" rx="14" ry="18" stroke="currentColor" stroke-width="2.2" fill="none"/>
+          <path d="M22 42 L26 68 L34 52 L42 68 L52 38"
+                stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M28 34 Q34 30 40 34" stroke="currentColor" stroke-width="1" fill="none" opacity="0.6" stroke-linecap="round"/>
+        </svg>
+        <span style="font-size:11px;color:#666;">100px · kaart</span>
+      </div>
+
+      <!-- 50px klein -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+        <svg width="50" height="60" viewBox="0 0 80 96" fill="none" xmlns="http://www.w3.org/2000/svg" style="color:#ff6b00;">
+          <path d="M4 7 C4 5 6 4 8 4 L40 2 L72 4 C74 4 76 5 76 7 L76 52 C76 68 60 82 40 94 C20 82 4 68 4 52 Z"
+                stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/>
+          <path d="M9 10 C9 8.5 10.5 7.5 12 7.5 L40 5.5 L68 7.5 C69.5 7.5 71 8.5 71 10 L71 51 C71 65 56 78 40 89 C24 78 9 65 9 51 Z"
+                stroke="currentColor" stroke-width="0.75" fill="none" opacity="0.4" stroke-linejoin="round"/>
+          <ellipse cx="34" cy="52" rx="14" ry="18" stroke="currentColor" stroke-width="2.2" fill="none"/>
+          <path d="M22 42 L26 68 L34 52 L42 68 L52 38"
+                stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M28 34 Q34 30 40 34" stroke="currentColor" stroke-width="1" fill="none" opacity="0.6" stroke-linecap="round"/>
+        </svg>
+        <span style="font-size:11px;color:#666;">50px · klein</span>
+      </div>
+
+      <!-- Wit op donker — watermerk simulatie -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+        <div style="background:#1a1a1e;border-radius:8px;padding:16px;position:relative;width:100px;height:120px;display:flex;align-items:center;justify-content:center;">
+          <svg width="90" height="108" viewBox="0 0 80 96" fill="none" xmlns="http://www.w3.org/2000/svg" style="color:white;opacity:0.08;position:absolute;">
+            <path d="M4 7 C4 5 6 4 8 4 L40 2 L72 4 C74 4 76 5 76 7 L76 52 C76 68 60 82 40 94 C20 82 4 68 4 52 Z"
+                  stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/>
+            <path d="M9 10 C9 8.5 10.5 7.5 12 7.5 L40 5.5 L68 7.5 C69.5 7.5 71 8.5 71 10 L71 51 C71 65 56 78 40 89 C24 78 9 65 9 51 Z"
+                  stroke="currentColor" stroke-width="0.75" fill="none" opacity="0.4" stroke-linejoin="round"/>
+            <ellipse cx="34" cy="52" rx="14" ry="18" stroke="currentColor" stroke-width="2.2" fill="none"/>
+            <path d="M22 42 L26 68 L34 52 L42 68 L52 38"
+                  stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M28 34 Q34 30 40 34" stroke="currentColor" stroke-width="1" fill="none" opacity="0.6" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span style="font-size:11px;color:#666;">watermerk · 0.08</span>
+      </div>
+    </div>
+  </div>
+
+  <h1>Hover-kaart · Speler-weergave</h1>
+  <p class="subtitle">Leeftijdkleur als visuele uitstraling · memo+status links · leeftijd rechts · teams footer</p>
+
+  <div class="row">
+
+    <!-- 1: Heer · 17 jaar (rood) · beschikbaar · USS zilver · memo -->
+    <div>
+      <div class="hover-kaart hk-c leeft-rood" style="--status-color: var(--status-beschikbaar-outline);">
+        <div class="c-inner">
+          <div class="c-club-mark" aria-hidden="true">
+            <svg viewBox="0 0 80 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Schildvorm: buitenrand -->
+              <path d="M4 7 C4 5 6 4 8 4 L40 2 L72 4 C74 4 76 5 76 7 L76 52 C76 68 60 82 40 94 C20 82 4 68 4 52 Z"
+                    stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/>
+              <!-- Schildvorm: binnenrand (subtiel) -->
+              <path d="M9 10 C9 8.5 10.5 7.5 12 7.5 L40 5.5 L68 7.5 C69.5 7.5 71 8.5 71 10 L71 51 C71 65 56 78 40 89 C24 78 9 65 9 51 Z"
+                    stroke="currentColor" stroke-width="0.75" fill="none" opacity="0.4" stroke-linejoin="round"/>
+              <!-- O: elegante ovaal, iets naar links gecentreerd -->
+              <ellipse cx="34" cy="52" rx="14" ry="18" stroke="currentColor" stroke-width="2.2" fill="none"/>
+              <!-- W: verweven door de O, twee dalen, drie pieken -->
+              <path d="M22 42 L26 68 L34 52 L42 68 L52 38"
+                    stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- Art-deco boog boven de O -->
+              <path d="M28 34 Q34 30 40 34" stroke="currentColor" stroke-width="1" fill="none" opacity="0.6" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="c-bg-tint" style="background: #dc2626;"></div>
+          <div class="c-corner-glow"></div>
+          <div class="c-sheen"></div>
+          <div class="c-header">
+            <div class="c-header-left">
+              <span class="c-chip">Beschikbaar</span>
+              <span class="memo-attention open" style="width:18px;height:18px;">
+                <svg viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8 12h8M8 15h8M8 18h5"/></svg>
+              </span>
+            </div>
+            <div class="c-leeft">
+              <span class="cl">17</span>
+              <span class="cd">.41</span>
+              <span class="cjr">jr</span>
+            </div>
+          </div>
+          <div class="c-foto">
+            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="">
+            <div class="c-sexe-tint" style="background: var(--sexe-h);"></div>
+            <div class="c-foto-glow"></div>
+            <div class="c-uss">
+              <span class="uss-hex zilver" style="width:40px;height:35px;"><span style="font-size:13px;">84</span></span>
+            </div>
+            <div class="c-sexe">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round"><circle cx="10" cy="14" r="6" stroke="#000" stroke-width="3.5"/><line x1="21" y1="3" x2="15" y2="9" stroke="#000" stroke-width="3.5"/><polyline points="16 3 21 3 21 8" stroke="#000" stroke-width="3.5"/><circle cx="10" cy="14" r="6" stroke="#fff" stroke-width="2"/><line x1="21" y1="3" x2="15" y2="9" stroke="#fff" stroke-width="2"/><polyline points="16 3 21 3 21 8" stroke="#fff" stroke-width="2"/></svg>
+            </div>
+            <div class="c-roep">
+              <div class="cr">FREEK</div>
+              <div class="cas">van der Laban</div>
+            </div>
+          </div>
+          <div class="c-footer">
+            <span class="tb">A1</span>
+            <span class="tb-i">A1</span>
+          </div>
+        </div>
+      </div>
+      <div class="variant-label">Heer · 17 · beschikbaar · USS</div>
+    </div>
+
+    <!-- 2: Dame · 14 jaar (oranje) · beschikbaar -->
+    <div>
+      <div class="hover-kaart hk-c leeft-oranje" style="--status-color: var(--status-beschikbaar-outline);">
+        <div class="c-inner">
+          <div class="c-club-mark" aria-hidden="true">
+            <svg viewBox="0 0 80 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Schildvorm: buitenrand -->
+              <path d="M4 7 C4 5 6 4 8 4 L40 2 L72 4 C74 4 76 5 76 7 L76 52 C76 68 60 82 40 94 C20 82 4 68 4 52 Z"
+                    stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/>
+              <!-- Schildvorm: binnenrand (subtiel) -->
+              <path d="M9 10 C9 8.5 10.5 7.5 12 7.5 L40 5.5 L68 7.5 C69.5 7.5 71 8.5 71 10 L71 51 C71 65 56 78 40 89 C24 78 9 65 9 51 Z"
+                    stroke="currentColor" stroke-width="0.75" fill="none" opacity="0.4" stroke-linejoin="round"/>
+              <!-- O: elegante ovaal, iets naar links gecentreerd -->
+              <ellipse cx="34" cy="52" rx="14" ry="18" stroke="currentColor" stroke-width="2.2" fill="none"/>
+              <!-- W: verweven door de O, twee dalen, drie pieken -->
+              <path d="M22 42 L26 68 L34 52 L42 68 L52 38"
+                    stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- Art-deco boog boven de O -->
+              <path d="M28 34 Q34 30 40 34" stroke="currentColor" stroke-width="1" fill="none" opacity="0.6" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="c-bg-tint" style="background: #f97316;"></div>
+          <div class="c-corner-glow"></div>
+          <div class="c-sheen"></div>
+          <div class="c-header">
+            <div class="c-header-left">
+              <span class="c-chip">Beschikbaar</span>
+            </div>
+            <div class="c-leeft">
+              <span class="cl">14</span>
+              <span class="cd">.08</span>
+              <span class="cjr">jr</span>
+            </div>
+          </div>
+          <div class="c-foto">
+            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="">
+            <div class="c-sexe-tint" style="background: var(--sexe-v);"></div>
+            <div class="c-foto-glow"></div>
+            <div class="c-sexe">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round"><circle cx="12" cy="8" r="6" stroke="#000" stroke-width="3.5"/><line x1="12" y1="14" x2="12" y2="22" stroke="#000" stroke-width="3.5"/><line x1="9" y1="19" x2="15" y2="19" stroke="#000" stroke-width="3.5"/><circle cx="12" cy="8" r="6" stroke="#fff" stroke-width="2"/><line x1="12" y1="14" x2="12" y2="22" stroke="#fff" stroke-width="2"/><line x1="9" y1="19" x2="15" y2="19" stroke="#fff" stroke-width="2"/></svg>
+            </div>
+            <div class="c-roep">
+              <div class="cr">SARA</div>
+              <div class="cas">de Bruin</div>
+            </div>
+          </div>
+          <div class="c-footer">
+            <span class="tb">B1</span>
+            <span class="tb-i">B1</span>
+          </div>
+        </div>
+      </div>
+      <div class="variant-label">Dame · 14 · beschikbaar</div>
+    </div>
+
+    <!-- 3: Heer · 10 jaar (geel) · twijfelt · geblesseerd -->
+    <div>
+      <div class="hover-kaart hk-c leeft-geel" style="--status-color: var(--status-twijfelt-outline);">
+        <div class="c-inner">
+          <div class="c-club-mark" aria-hidden="true">
+            <svg viewBox="0 0 80 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Schildvorm: buitenrand -->
+              <path d="M4 7 C4 5 6 4 8 4 L40 2 L72 4 C74 4 76 5 76 7 L76 52 C76 68 60 82 40 94 C20 82 4 68 4 52 Z"
+                    stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/>
+              <!-- Schildvorm: binnenrand (subtiel) -->
+              <path d="M9 10 C9 8.5 10.5 7.5 12 7.5 L40 5.5 L68 7.5 C69.5 7.5 71 8.5 71 10 L71 51 C71 65 56 78 40 89 C24 78 9 65 9 51 Z"
+                    stroke="currentColor" stroke-width="0.75" fill="none" opacity="0.4" stroke-linejoin="round"/>
+              <!-- O: elegante ovaal, iets naar links gecentreerd -->
+              <ellipse cx="34" cy="52" rx="14" ry="18" stroke="currentColor" stroke-width="2.2" fill="none"/>
+              <!-- W: verweven door de O, twee dalen, drie pieken -->
+              <path d="M22 42 L26 68 L34 52 L42 68 L52 38"
+                    stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- Art-deco boog boven de O -->
+              <path d="M28 34 Q34 30 40 34" stroke="currentColor" stroke-width="1" fill="none" opacity="0.6" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="c-bg-tint" style="background: #facc15;"></div>
+          <div class="c-corner-glow"></div>
+          <div class="c-sheen"></div>
+          <div class="c-header">
+            <div class="c-header-left">
+              <span class="c-chip" style="border-color: var(--status-twijfelt-outline); color: var(--status-twijfelt);">Twijfelt</span>
+            </div>
+            <div class="c-leeft">
+              <span class="cl">10</span>
+              <span class="cd">.62</span>
+              <span class="cjr">jr</span>
+            </div>
+          </div>
+          <div class="c-foto">
+            <img src="https://randomuser.me/api/portraits/men/67.jpg" alt="">
+            <div class="c-sexe-tint" style="background: var(--sexe-h);"></div>
+            <div class="c-foto-glow"></div>
+            <div class="c-blessure">
+              <svg viewBox="0 0 24 24" width="24" height="24"><path d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z" fill="#ef4444"/></svg>
+            </div>
+            <div class="c-sexe">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round"><circle cx="10" cy="14" r="6" stroke="#000" stroke-width="3.5"/><line x1="21" y1="3" x2="15" y2="9" stroke="#000" stroke-width="3.5"/><polyline points="16 3 21 3 21 8" stroke="#000" stroke-width="3.5"/><circle cx="10" cy="14" r="6" stroke="#fff" stroke-width="2"/><line x1="21" y1="3" x2="15" y2="9" stroke="#fff" stroke-width="2"/><polyline points="16 3 21 3 21 8" stroke="#fff" stroke-width="2"/></svg>
+            </div>
+            <div class="c-roep">
+              <div class="cr">TOM</div>
+              <div class="cas">Pietersen</div>
+            </div>
+          </div>
+          <div class="c-footer">
+            <span class="tb">C2</span>
+            <span class="tb-i">C1</span>
+          </div>
+        </div>
+      </div>
+      <div class="variant-label">Heer · 10 · twijfelt · geblesseerd</div>
+    </div>
+
+    <!-- 4: Dame · 7 jaar (blauw) · nieuw lid · sparkle -->
+    <div>
+      <div class="hover-kaart hk-c leeft-blauw" style="--status-color: var(--status-nieuw-outline);">
+        <div class="c-inner">
+          <div class="c-club-mark" aria-hidden="true">
+            <svg viewBox="0 0 80 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Schildvorm: buitenrand -->
+              <path d="M4 7 C4 5 6 4 8 4 L40 2 L72 4 C74 4 76 5 76 7 L76 52 C76 68 60 82 40 94 C20 82 4 68 4 52 Z"
+                    stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/>
+              <!-- Schildvorm: binnenrand (subtiel) -->
+              <path d="M9 10 C9 8.5 10.5 7.5 12 7.5 L40 5.5 L68 7.5 C69.5 7.5 71 8.5 71 10 L71 51 C71 65 56 78 40 89 C24 78 9 65 9 51 Z"
+                    stroke="currentColor" stroke-width="0.75" fill="none" opacity="0.4" stroke-linejoin="round"/>
+              <!-- O: elegante ovaal, iets naar links gecentreerd -->
+              <ellipse cx="34" cy="52" rx="14" ry="18" stroke="currentColor" stroke-width="2.2" fill="none"/>
+              <!-- W: verweven door de O, twee dalen, drie pieken -->
+              <path d="M22 42 L26 68 L34 52 L42 68 L52 38"
+                    stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- Art-deco boog boven de O -->
+              <path d="M28 34 Q34 30 40 34" stroke="currentColor" stroke-width="1" fill="none" opacity="0.6" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="c-bg-tint" style="background: #3b82f6;"></div>
+          <div class="c-corner-glow"></div>
+          <div class="c-sheen"></div>
+          <div class="c-header">
+            <div class="c-header-left">
+              <span class="c-chip">Nieuw lid</span>
+            </div>
+            <div class="c-leeft">
+              <span class="cl">7</span>
+              <span class="cd">.18</span>
+              <span class="cjr">jr</span>
+            </div>
+          </div>
+          <div class="c-foto">
+            <img src="https://randomuser.me/api/portraits/women/18.jpg" alt="">
+            <div class="c-sexe-tint" style="background: var(--sexe-v);"></div>
+            <div class="c-foto-glow"></div>
+            <div class="c-sparkle">
+              <svg viewBox="0 0 24 24" width="56" height="56"><path d="M12 1l2 9 9 2-9 2-2 9-2-9-9-2 9-2z" fill="#fb923c"/></svg>
+            </div>
+            <div class="c-sexe">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round"><circle cx="12" cy="8" r="6" stroke="#000" stroke-width="3.5"/><line x1="12" y1="14" x2="12" y2="22" stroke="#000" stroke-width="3.5"/><line x1="9" y1="19" x2="15" y2="19" stroke="#000" stroke-width="3.5"/><circle cx="12" cy="8" r="6" stroke="#fff" stroke-width="2"/><line x1="12" y1="14" x2="12" y2="22" stroke="#fff" stroke-width="2"/><line x1="9" y1="19" x2="15" y2="19" stroke="#fff" stroke-width="2"/></svg>
+            </div>
+            <div class="c-roep">
+              <div class="cr">LENA</div>
+              <div class="cas">Janssen</div>
+            </div>
+          </div>
+          <div class="c-footer">
+            <span class="tb tb-empty">—</span>
+            <span class="tb-i">F2</span>
+          </div>
+        </div>
+      </div>
+      <div class="variant-label">Dame · 7 · nieuw lid · sparkle</div>
+    </div>
+
+    <!-- 5: Heer · 19 jaar (grijs/senior) · stopt -->
+    <div>
+      <div class="hover-kaart hk-c leeft-senior" style="--status-color: var(--status-stopt-outline);">
+        <div class="c-inner">
+          <div class="c-club-mark" aria-hidden="true">
+            <svg viewBox="0 0 80 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Schildvorm: buitenrand -->
+              <path d="M4 7 C4 5 6 4 8 4 L40 2 L72 4 C74 4 76 5 76 7 L76 52 C76 68 60 82 40 94 C20 82 4 68 4 52 Z"
+                    stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/>
+              <!-- Schildvorm: binnenrand (subtiel) -->
+              <path d="M9 10 C9 8.5 10.5 7.5 12 7.5 L40 5.5 L68 7.5 C69.5 7.5 71 8.5 71 10 L71 51 C71 65 56 78 40 89 C24 78 9 65 9 51 Z"
+                    stroke="currentColor" stroke-width="0.75" fill="none" opacity="0.4" stroke-linejoin="round"/>
+              <!-- O: elegante ovaal, iets naar links gecentreerd -->
+              <ellipse cx="34" cy="52" rx="14" ry="18" stroke="currentColor" stroke-width="2.2" fill="none"/>
+              <!-- W: verweven door de O, twee dalen, drie pieken -->
+              <path d="M22 42 L26 68 L34 52 L42 68 L52 38"
+                    stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- Art-deco boog boven de O -->
+              <path d="M28 34 Q34 30 40 34" stroke="currentColor" stroke-width="1" fill="none" opacity="0.6" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="c-bg-tint" style="background: #9ca3af;"></div>
+          <div class="c-corner-glow"></div>
+          <div class="c-sheen"></div>
+          <div class="c-header">
+            <div class="c-header-left">
+              <span class="c-chip" style="border-color: var(--status-stopt-outline); color: var(--status-stopt);">Stopt</span>
+            </div>
+            <div class="c-leeft">
+              <span class="cl">19</span>
+              <span class="cd">.35</span>
+              <span class="cjr">jr</span>
+            </div>
+          </div>
+          <div class="c-foto">
+            <img src="https://randomuser.me/api/portraits/men/51.jpg" alt="">
+            <div class="c-sexe-tint" style="background: var(--sexe-h);"></div>
+            <div class="c-foto-glow"></div>
+            <div class="c-sexe">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round"><circle cx="10" cy="14" r="6" stroke="#000" stroke-width="3.5"/><line x1="21" y1="3" x2="15" y2="9" stroke="#000" stroke-width="3.5"/><polyline points="16 3 21 3 21 8" stroke="#000" stroke-width="3.5"/><circle cx="10" cy="14" r="6" stroke="#fff" stroke-width="2"/><line x1="21" y1="3" x2="15" y2="9" stroke="#fff" stroke-width="2"/><polyline points="16 3 21 3 21 8" stroke="#fff" stroke-width="2"/></svg>
+            </div>
+            <div class="c-roep">
+              <div class="cr">JORIS</div>
+              <div class="cas">van Dijk</div>
+            </div>
+          </div>
+          <div class="c-footer">
+            <span class="tb">A2</span>
+            <span class="tb tb-empty">—</span>
+          </div>
+        </div>
+      </div>
+      <div class="variant-label">Heer · 19 · stopt</div>
+    </div>
+
+    <!-- 6: Dame · 5 jaar (paars) · beschikbaar · geen USS · geen team -->
+    <div>
+      <div class="hover-kaart hk-c leeft-paars" style="--status-color: var(--status-beschikbaar-outline);">
+        <div class="c-inner">
+          <div class="c-club-mark" aria-hidden="true">
+            <svg viewBox="0 0 80 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Schildvorm: buitenrand -->
+              <path d="M4 7 C4 5 6 4 8 4 L40 2 L72 4 C74 4 76 5 76 7 L76 52 C76 68 60 82 40 94 C20 82 4 68 4 52 Z"
+                    stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/>
+              <!-- Schildvorm: binnenrand (subtiel) -->
+              <path d="M9 10 C9 8.5 10.5 7.5 12 7.5 L40 5.5 L68 7.5 C69.5 7.5 71 8.5 71 10 L71 51 C71 65 56 78 40 89 C24 78 9 65 9 51 Z"
+                    stroke="currentColor" stroke-width="0.75" fill="none" opacity="0.4" stroke-linejoin="round"/>
+              <!-- O: elegante ovaal, iets naar links gecentreerd -->
+              <ellipse cx="34" cy="52" rx="14" ry="18" stroke="currentColor" stroke-width="2.2" fill="none"/>
+              <!-- W: verweven door de O, twee dalen, drie pieken -->
+              <path d="M22 42 L26 68 L34 52 L42 68 L52 38"
+                    stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- Art-deco boog boven de O -->
+              <path d="M28 34 Q34 30 40 34" stroke="currentColor" stroke-width="1" fill="none" opacity="0.6" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="c-bg-tint" style="background: #7c3aed;"></div>
+          <div class="c-corner-glow"></div>
+          <div class="c-sheen"></div>
+          <div class="c-header">
+            <div class="c-header-left">
+              <span class="c-chip">Beschikbaar</span>
+            </div>
+            <div class="c-leeft">
+              <span class="cl">5</span>
+              <span class="cd">.91</span>
+              <span class="cjr">jr</span>
+            </div>
+          </div>
+          <div class="c-foto">
+            <img src="https://randomuser.me/api/portraits/women/62.jpg" alt="">
+            <div class="c-sexe-tint" style="background: var(--sexe-v);"></div>
+            <div class="c-foto-glow"></div>
+            <div class="c-sexe">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-linecap="round"><circle cx="12" cy="8" r="6" stroke="#000" stroke-width="3.5"/><line x1="12" y1="14" x2="12" y2="22" stroke="#000" stroke-width="3.5"/><line x1="9" y1="19" x2="15" y2="19" stroke="#000" stroke-width="3.5"/><circle cx="12" cy="8" r="6" stroke="#fff" stroke-width="2"/><line x1="12" y1="14" x2="12" y2="22" stroke="#fff" stroke-width="2"/><line x1="9" y1="19" x2="15" y2="19" stroke="#fff" stroke-width="2"/></svg>
+            </div>
+            <div class="c-roep">
+              <div class="cr">MIA</div>
+              <div class="cas">van den Berg</div>
+            </div>
+          </div>
+          <div class="c-footer">
+            <span class="tb tb-empty">—</span>
+            <span class="tb tb-empty">—</span>
+          </div>
+        </div>
+      </div>
+      <div class="variant-label">Dame · 5 · beschikbaar · geen team</div>
+    </div>
+
+  </div>
+
+</body>
+</html>

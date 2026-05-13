@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Team-dialog · Team-weergave</title>
+  <link rel="stylesheet" href="tokens.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      padding: 0;
+      background: rgba(0,0,0,.6);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ═══ Dialog ═══ */
+    .team-dialog {
+      width: 560px;
+      height: 640px;
+      max-width: 96vw;
+      background: var(--surface-page);
+      border: 1px solid var(--border-light);
+      border-radius: 14px;
+      box-shadow: 0 32px 80px rgba(0,0,0,.75), 0 8px 20px rgba(0,0,0,.5);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      font-family: var(--font-body);
+      position: relative;
+    }
+
+    /* ─── Hero met kleur-gradient ─────────────────────────────── */
+    .td-hero {
+      position: relative;
+      padding: 22px 28px 18px 30px;
+      border-bottom: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    /* Kleur-gradient achtergrond per categorie */
+    .team-dialog.grad-rood .td-hero {
+      background: linear-gradient(135deg, rgba(220,38,38,.15), rgba(185,28,28,.08) 60%, transparent);
+    }
+    .team-dialog.grad-oranje .td-hero {
+      background: linear-gradient(135deg, rgba(249,115,22,.15), rgba(234,88,12,.08) 60%, transparent);
+    }
+    .team-dialog.grad-geel .td-hero {
+      background: linear-gradient(135deg, rgba(234,179,8,.12), rgba(202,138,4,.06) 60%, transparent);
+    }
+    .team-dialog.grad-groen .td-hero {
+      background: linear-gradient(135deg, rgba(4,120,87,.12), rgba(6,95,70,.06) 60%, transparent);
+    }
+    .team-dialog.grad-blauw .td-hero {
+      background: linear-gradient(135deg, rgba(29,78,216,.12), rgba(30,64,175,.06) 60%, transparent);
+    }
+    .team-dialog.grad-senior .td-hero {
+      background: linear-gradient(135deg, rgba(148,163,184,.12), rgba(100,116,139,.06) 60%, transparent);
+    }
+
+    .td-hero::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 6px;
+      background: var(--team-band-color, var(--cat-rood));
+    }
+    .team-dialog.cat-rood   { --team-band-color: var(--cat-rood); }
+    .team-dialog.cat-oranje { --team-band-color: var(--cat-oranje); }
+    .team-dialog.cat-geel   { --team-band-color: var(--cat-geel); }
+    .team-dialog.cat-groen  { --team-band-color: var(--cat-groen); }
+    .team-dialog.cat-blauw  { --team-band-color: var(--cat-blauw); }
+    .team-dialog.cat-senior { --team-band-color: var(--cat-senior); }
+
+    .td-hero-body { flex: 1; min-width: 0; }
+    .td-hero-naam {
+      font-size: 20px; font-weight: 800; color: var(--text-primary);
+      letter-spacing: -0.01em; line-height: 1.3;
+    }
+    .td-hero-sub {
+      font-size: 11px; color: var(--text-tertiary); margin-top: 4px;
+      text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600;
+    }
+    .td-hero-stats {
+      display: flex; align-items: center; gap: 10px; margin-top: 8px;
+      font-size: 11px;
+    }
+    .td-hero-stats .stat {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-weight: 600;
+    }
+    .td-hero-stats .stat.pink { color: var(--sexe-v); }
+    .td-hero-stats .stat.blue { color: var(--sexe-h); }
+    .td-hero-stats .stat.val  { font-weight: 700; }
+    .td-hero-stats .val-badge {
+      display: inline-flex; align-items: center; gap: 3px;
+      padding: 2px 6px; border-radius: 4px;
+      font-size: 10px; font-weight: 700;
+    }
+    .td-hero-stats .val-badge.warn {
+      background: rgba(234,179,8,.1);
+      color: var(--val-warn);
+    }
+    .td-hero-stats .val-badge.ok {
+      background: rgba(16,185,129,.1);
+      color: var(--val-ok);
+    }
+
+    .td-hero .tk-val-dot { width: 20px; height: 20px; }
+
+    .td-close {
+      position: absolute; top: 16px; right: 16px;
+      width: 32px; height: 32px; border-radius: 7px;
+      background: rgba(0,0,0,.4);
+      border: 1px solid rgba(255,255,255,.08);
+      color: var(--text-secondary); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 30;
+    }
+    .td-close:hover { background: rgba(0,0,0,.6); color: var(--text-primary); }
+    .td-close svg { width: 16px; height: 16px; }
+
+    /* ─── Tabs (radio-based CSS toggle) ───────────────────────── */
+    .td-tabs {
+      display: flex;
+      padding: 0 26px;
+      border-bottom: 1px solid var(--border-light);
+      background: var(--surface-sunken);
+      flex-shrink: 0;
+    }
+    .td-tab {
+      position: relative;
+      padding: 0 18px; height: 42px;
+      background: none; border: none;
+      color: var(--text-tertiary); font-size: 13px; font-weight: 600;
+      cursor: pointer; font-family: inherit;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .td-tab.active { color: var(--text-primary); font-weight: 700; }
+    .td-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 6px; right: 6px;
+      height: 2px; background: var(--ow-accent);
+    }
+    .td-tab .count {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 20px; height: 18px; padding: 0 6px;
+      border-radius: 9px;
+      background: var(--surface-card); color: var(--text-secondary);
+      font-size: 10px; font-weight: 800;
+    }
+    .td-tab.active .count { background: rgba(255,107,0,.15); color: var(--ow-accent); }
+
+    /* ─── Body ────────────────────────────────────────────────── */
+    .td-body {
+      flex: 1; overflow-y: auto;
+      padding: 20px 24px;
+    }
+
+    /* Panel label */
+    .panel-label {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--text-tertiary);
+      margin: 0 0 12px;
+    }
+
+    /* ─── Tab: Overzicht ──────────────────────────────────────── */
+    .td-overzicht { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .td-col-title {
+      font-size: 10px; font-weight: 700; color: var(--text-tertiary);
+      text-transform: uppercase; letter-spacing: 0.08em;
+      display: flex; align-items: center; justify-content: space-between;
+      padding-bottom: 6px; border-bottom: 1px solid var(--border-light);
+      margin-bottom: 6px;
+    }
+    .td-col-title .cnt { color: var(--text-primary); font-weight: 800; }
+    .td-ov-spelers { display: flex; flex-direction: column; gap: 3px; }
+    .td-ov-rij {
+      display: flex; align-items: center; gap: 8px;
+      padding: 5px 6px; border-radius: 5px;
+    }
+    .td-ov-rij:hover { background: rgba(255,255,255,.03); cursor: pointer; }
+    .td-ov-av {
+      width: 28px; height: 28px;
+      border-radius: 4px; overflow: hidden;
+      position: relative; flex-shrink: 0;
+    }
+    .td-ov-av img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center 25%;
+      filter: grayscale(1);
+    }
+    .td-ov-av::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: var(--sexe-h);
+      opacity: 0.15; mix-blend-mode: color;
+    }
+    .td-ov-rij.vrouw .td-ov-av::after { background: var(--sexe-v); }
+    .td-ov-naam { flex: 1; font-size: 12px; font-weight: 600; color: var(--text-primary); }
+    .td-ov-age {
+      font-size: 10px; font-weight: 700; color: #fff;
+      padding: 2px 5px; border-radius: 3px;
+      font-variant-numeric: tabular-nums;
+    }
+    .td-ov-memo { color: var(--ow-accent); font-size: 10px; font-weight: 900; }
+    .td-ov-badge { font-size: 8px; flex-shrink: 0; }
+    .td-ov-badge.geblesseerd { color: #ef4444; }
+    .td-ov-badge.nieuw { color: #22c55e; }
+
+    /* Staf-blok in overzicht */
+    .td-staf {
+      grid-column: 1 / -1;
+      padding-top: 12px;
+      border-top: 1px dashed var(--border-light);
+      display: flex; flex-wrap: wrap; gap: 10px;
+      font-size: 10px; color: #c4b5fd;
+    }
+    .td-staf .chip {
+      display: inline-flex; align-items: center; gap: 4px; font-weight: 600;
+    }
+    .td-staf .chip::before {
+      content: ''; width: 5px; height: 5px; border-radius: 2px; background: #a78bfa;
+    }
+
+    /* Footer stats */
+    .td-footer-stats {
+      grid-column: 1 / -1;
+      display: flex; gap: 14px;
+      font-size: 11px; color: var(--text-tertiary);
+      padding-top: 8px;
+    }
+    .td-footer-stats .val { color: var(--text-primary); font-weight: 700; }
+
+    /* ─── Tab: Validatie ──────────────────────────────────────── */
+    .td-val-empty {
+      padding: 20px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--val-ok);
+      font-weight: 600;
+    }
+
+    /* ─── Tab: Notities (WerkitemPanel) ────────────────────────── */
+    .td-werkitems { display: flex; flex-direction: column; gap: 8px; }
+    .td-wi-item {
+      display: flex; gap: 10px;
+      padding: 10px 12px;
+      background: var(--surface-sunken);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+    }
+    .td-wi-body { flex: 1; }
+    .td-wi-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 3px; }
+    .td-wi-titel { font-size: 12px; font-weight: 700; color: var(--text-primary); }
+    .td-wi-status {
+      padding: 2px 7px; border-radius: 4px; font-size: 8px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .td-wi-status.open { background: rgba(234,179,8,.12); color: var(--memo-bespreking); border: 1px solid rgba(234,179,8,.3); }
+    .td-wi-status.bespreking { background: rgba(249,115,22,.12); color: #f97316; border: 1px solid rgba(249,115,22,.3); }
+    .td-wi-status.opgelost { background: rgba(16,185,129,.12); color: var(--val-ok); border: 1px solid rgba(16,185,129,.3); }
+    .td-wi-desc { font-size: 11px; color: var(--text-secondary); line-height: 1.5; }
+
+    /* Nieuw werkitem formulier */
+    .td-wi-form {
+      display: flex; gap: 6px; margin-top: 4px;
+    }
+    .td-wi-form textarea {
+      flex: 1; padding: 7px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border-default);
+      background: var(--surface-sunken);
+      color: var(--text-primary);
+      font-size: 11px; font-family: inherit;
+      resize: none; min-height: 32px;
+    }
+    .td-wi-form button {
+      padding: 7px 12px; border-radius: 6px;
+      border: 1px solid rgba(255,107,0,.45);
+      background: rgba(255,107,0,.12);
+      color: var(--ow-accent);
+      font-size: 10px; font-weight: 700;
+      cursor: pointer; font-family: inherit;
+      align-self: flex-start;
+    }
+  </style>
+</head>
+<body>
+  <div class="team-dialog cat-rood grad-rood">
+    <button class="td-close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+
+    <!-- Hero met kleur-gradient -->
+    <div class="td-hero">
+      <div class="td-hero-body">
+        <div class="td-hero-naam">A1 · senioren</div>
+        <div class="td-hero-sub">Achttal · rood · Hoofdklasse</div>
+        <div class="td-hero-stats">
+          <span class="stat pink">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="6"/><path d="M12 14v6M9 17h6"/></svg>
+            4 dames
+          </span>
+          <span class="stat blue">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10" cy="14" r="6"/><path d="M20 4l-6 6M14 4h6v6"/></svg>
+            4 heren
+          </span>
+          <span class="val-badge warn">⚠ 2</span>
+          <span class="tk-memo-flag">▲ 2</span>
+        </div>
+      </div>
+      <span class="tk-val-dot warn"></span>
+    </div>
+
+    <!-- Tabs: Overzicht · Validatie · Notities -->
+    <div class="td-tabs">
+      <button class="td-tab active">Overzicht</button>
+      <button class="td-tab">Validatie <span class="count">2</span></button>
+      <button class="td-tab">Notities <span class="count">2</span></button>
+    </div>
+
+    <!-- Body — alle 3 tabs demo'd -->
+    <div class="td-body ow-scroll">
+
+      <!-- ═══ TAB: OVERZICHT ═══ -->
+      <div class="panel-label">8 spelers · gem. leeftijd 17.4 · USS 45.3</div>
+
+      <div class="td-overzicht">
+        <div>
+          <div class="td-col-title">♀ Dames <span class="cnt">4</span></div>
+          <div class="td-ov-spelers">
+            <div class="td-ov-rij vrouw">
+              <div class="td-ov-av"><img src="https://randomuser.me/api/portraits/women/44.jpg" alt=""></div>
+              <span class="td-ov-naam">Noor van der Bos</span>
+              <span class="td-ov-memo">▲</span>
+              <span class="td-ov-age" style="background: var(--leeftijd-17);">17</span>
+            </div>
+            <div class="td-ov-rij vrouw">
+              <div class="td-ov-av"><img src="https://randomuser.me/api/portraits/women/12.jpg" alt=""></div>
+              <span class="td-ov-naam">Emma van Dijk</span>
+              <span class="td-ov-age" style="background: var(--leeftijd-17);">17</span>
+            </div>
+            <div class="td-ov-rij vrouw">
+              <div class="td-ov-av"><img src="https://randomuser.me/api/portraits/women/21.jpg" alt=""></div>
+              <span class="td-ov-naam">Lisa Meijer</span>
+              <span class="td-ov-age" style="background: var(--leeftijd-16);">16</span>
+            </div>
+            <div class="td-ov-rij vrouw">
+              <div class="td-ov-av"><img src="https://randomuser.me/api/portraits/women/33.jpg" alt=""></div>
+              <span class="td-ov-naam">Sara Jansen</span>
+              <span class="td-ov-age" style="background: var(--leeftijd-17);">17</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="td-col-title">♂ Heren <span class="cnt">4</span></div>
+          <div class="td-ov-spelers">
+            <div class="td-ov-rij">
+              <div class="td-ov-av"><img src="https://randomuser.me/api/portraits/men/32.jpg" alt=""></div>
+              <span class="td-ov-naam">Freek van der Laban</span>
+              <span class="td-ov-memo">▲</span>
+              <span class="td-ov-age" style="background: var(--leeftijd-17);">17</span>
+            </div>
+            <div class="td-ov-rij">
+              <div class="td-ov-av"><img src="https://randomuser.me/api/portraits/men/45.jpg" alt=""></div>
+              <span class="td-ov-naam">Tom Jansen</span>
+              <span class="td-ov-age" style="background: var(--leeftijd-17);">17</span>
+            </div>
+            <div class="td-ov-rij">
+              <div class="td-ov-av"><img src="https://randomuser.me/api/portraits/men/72.jpg" alt=""></div>
+              <span class="td-ov-naam">Sven Kuipers</span>
+              <span class="td-ov-badge geblesseerd">✕</span>
+              <span class="td-ov-age" style="background: var(--leeftijd-17);">17</span>
+            </div>
+            <div class="td-ov-rij">
+              <div class="td-ov-av"><img src="https://randomuser.me/api/portraits/men/18.jpg" alt=""></div>
+              <span class="td-ov-naam">Milan de Wit</span>
+              <span class="td-ov-badge nieuw">✦</span>
+              <span class="td-ov-age" style="background: var(--leeftijd-17);">17</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Staf -->
+        <div class="td-staf">
+          <span class="chip">Joris Klaassen — hoofdcoach</span>
+          <span class="chip">Eva Meijer — assistent</span>
+        </div>
+
+        <!-- Footer stats -->
+        <div class="td-footer-stats">
+          <span>Totaal <span class="val">8</span></span>
+          <span>USS <span class="val">45.3</span></span>
+          <span>Gem. <span class="val">17.4j</span></span>
+        </div>
+      </div>
+
+      <!-- ═══ TAB: VALIDATIE (demo) ═══ -->
+      <div style="margin-top: 28px;">
+        <div class="panel-label">Validatie-meldingen</div>
+        <div class="val-item warn">
+          <div class="icn">⚠</div>
+          <div class="body">
+            <div class="regel">Onder ideaalgrootte</div>
+            <div style="display: inline-flex; gap: 4px; margin: 3px 0;">
+              <span style="font-size: 8px; padding: 1px 5px; border-radius: 3px; background: var(--surface-card); color: var(--text-tertiary); font-weight: 700; text-transform: uppercase;">TC</span>
+            </div>
+            <div class="desc">Team heeft 8 spelers, ideaal is 10 (kader A-selectie).</div>
+          </div>
+        </div>
+        <div class="val-item warn">
+          <div class="icn">⚠</div>
+          <div class="body">
+            <div class="regel">Gem. leeftijd aan bovenkant</div>
+            <div style="display: inline-flex; gap: 4px; margin: 3px 0;">
+              <span style="font-size: 8px; padding: 1px 5px; border-radius: 3px; background: var(--surface-card); color: var(--text-tertiary); font-weight: 700; text-transform: uppercase;">KNKV</span>
+            </div>
+            <div class="desc">Gemiddelde 17.4 ligt dicht bij het maximum 17.5 voor U17.</div>
+          </div>
+        </div>
+        <div class="val-item ok">
+          <div class="icn">✓</div>
+          <div class="body">
+            <div class="regel">Geslachtsverdeling oké</div>
+            <div class="desc">4 dames, 4 heren — perfect voor achttal.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ TAB: NOTITIES / WERKITEMS (demo) ═══ -->
+      <div style="margin-top: 28px;">
+        <div class="panel-label">Notities / werkitems</div>
+
+        <div class="td-wi-form">
+          <textarea placeholder="Nieuwe notitie…"></textarea>
+          <button>Toevoegen</button>
+        </div>
+
+        <div class="td-werkitems" style="margin-top: 10px;">
+          <div class="td-wi-item">
+            <span class="memo-attention open"><svg viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8 12h8M8 15h8M8 18h5"/></svg></span>
+            <div class="td-wi-body">
+              <div class="td-wi-top">
+                <div class="td-wi-titel">Doorschuiven naar senior A</div>
+                <div class="td-wi-status open">Open</div>
+              </div>
+              <div class="td-wi-desc">Bespreking over doorschuiving van 3 spelers naar senioren-niveau volgend seizoen.</div>
+            </div>
+          </div>
+          <div class="td-wi-item">
+            <span class="memo-attention open"><svg viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8 12h8M8 15h8M8 18h5"/></svg></span>
+            <div class="td-wi-body">
+              <div class="td-wi-top">
+                <div class="td-wi-titel">Sven — blessure herstel</div>
+                <div class="td-wi-status bespreking">In bespreking</div>
+              </div>
+              <div class="td-wi-desc">Knie-blessure. Verwacht terug maart 2027. Risico op uitval.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

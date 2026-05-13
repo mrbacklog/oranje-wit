@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Navigatie prototype — TI Studio</title>
+  <link rel="stylesheet" href="tokens.css">
+  <style>
+    .page { display: grid; grid-template-columns: var(--ribbon) 1fr; height: 100vh; overflow: hidden; }
+
+    /* ─── Ribbon ─────────────────────────────────────────────────── */
+    .ribbon {
+      background: var(--surface-page);
+      border-right: 1px solid var(--border-light);
+      display: flex; flex-direction: column; align-items: center;
+      padding: 10px 0 8px; gap: 2px;
+    }
+    .ribbon-logo {
+      width: 30px; height: 30px; margin-bottom: 12px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      border-radius: 9px;
+      transition: background 120ms;
+    }
+    .ribbon-logo:hover { background: rgba(59,130,246,.08); }
+    .ribbon-logo svg { width: 24px; height: 24px; }
+    .ribbon-btn {
+      width: 36px; height: 36px; border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; background: none; border: none;
+      color: var(--text-tertiary); position: relative; flex-shrink: 0;
+      transition: background 120ms, color 120ms;
+    }
+    .ribbon-btn:hover { color: var(--text-secondary); background: rgba(255,255,255,.04); }
+    .ribbon-btn.active { background: var(--accent-dim); color: var(--ow-accent); }
+    .ribbon-btn.active:hover { background: var(--accent-dim); color: var(--ow-accent); }
+    .ribbon-btn.active::before {
+      content: ''; position: absolute; left: -1px; top: 7px; bottom: 7px;
+      width: 3px; background: var(--ow-accent); border-radius: 0 2px 2px 0;
+    }
+    .ribbon-sep { width: 22px; height: 1px; background: var(--border-light); margin: 4px 0; }
+    .ribbon-group { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .ribbon-footer { margin-top: auto; display: flex; flex-direction: column; align-items: center; gap: 6; }
+    .ribbon-avatar {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: #2a1a0a; border: 2px solid rgba(255,107,0,.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; color: var(--ow-accent); cursor: pointer;
+      transition: border-color 120ms;
+    }
+    .ribbon-avatar:hover { border-color: rgba(255,107,0,.6); }
+
+    /* Memo badge */
+    .ribbon-memo-wrap { position: relative; }
+    .ribbon-badge {
+      position: absolute; top: 3px; right: 3px;
+      width: 14px; height: 14px; border-radius: 50%;
+      background: var(--ow-accent); color: #fff;
+      font-size: 8px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      line-height: 1; pointer-events: none;
+    }
+
+    /* ─── Content ────────────────────────────────────────────────── */
+    .content {
+      display: flex; flex-direction: column; overflow-y: auto;
+      padding: 24px 28px;
+    }
+    .content h1 {
+      font-size: 18px; font-weight: 700; color: var(--text-primary);
+      margin: 0 0 6px;
+    }
+    .content .sub {
+      font-size: 12px; color: var(--text-tertiary); margin: 0 0 24px;
+    }
+    .fake-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+    }
+    .fake-card {
+      height: 100px; background: var(--surface-card);
+      border: 1px solid var(--border-default); border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+  <!-- ── Ribbon ────────────────────────────────────────────────── -->
+  <nav class="ribbon" aria-label="Hoofdnavigatie">
+
+    <!-- TI Studio logo → link naar home -->
+    <a class="ribbon-logo" href="#" title="TI Studio — Home">
+      <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="2" width="14" height="14" rx="1.5" stroke="#3b82f6" stroke-width="1.5" opacity="0.4"/>
+        <line x1="2" y1="6.7" x2="16" y2="6.7" stroke="#3b82f6" stroke-width="0.8" opacity="0.3"/>
+        <line x1="2" y1="11.3" x2="16" y2="11.3" stroke="#3b82f6" stroke-width="0.8" opacity="0.3"/>
+        <line x1="6.7" y1="2" x2="6.7" y2="16" stroke="#3b82f6" stroke-width="0.8" opacity="0.3"/>
+        <line x1="11.3" y1="2" x2="11.3" y2="16" stroke="#3b82f6" stroke-width="0.8" opacity="0.3"/>
+        <path d="M16 10l-4 4h4v-4z" fill="#3b82f6" opacity="0.15"/>
+        <path d="M16.5 5.5l-2-2-6 6-.5 2.5 2.5-.5 6-6zM14.5 7.5l-2-2" stroke="#3b82f6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+
+    <!-- Hoofdgroep: Werkbord, Personen, Memo's -->
+    <div class="ribbon-group">
+      <button class="ribbon-btn" title="Werkbord">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+          <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+        </svg>
+      </button>
+
+      <button class="ribbon-btn active" title="Personen">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="7" r="3"/><path d="M3 20c0-4 2.7-6 6-6s6 2 6 6"/><circle cx="17" cy="8" r="2.5"/><path d="M16 20c0-2.5 1.5-4 4-4"/>
+        </svg>
+      </button>
+
+      <div class="ribbon-memo-wrap">
+        <button class="ribbon-btn" title="Memo's">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+          </svg>
+        </button>
+        <span class="ribbon-badge">3</span>
+      </div>
+    </div>
+
+    <div class="ribbon-sep"></div>
+
+    <!-- Beheergroep: Kader, KNKV Sync -->
+    <div class="ribbon-group">
+      <button class="ribbon-btn" title="Kader">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          <polyline points="9 12 11 14 15 10"/>
+        </svg>
+      </button>
+
+      <button class="ribbon-btn" title="KNKV Sync">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Footer: avatar → uitloggen -->
+    <div class="ribbon-footer">
+      <div class="ribbon-sep"></div>
+      <div class="ribbon-avatar" title="Uitloggen">AL</div>
+    </div>
+  </nav>
+
+  <!-- ── Paginacontent (optie C: geen header) ──────────────────── -->
+  <div class="content">
+    <h1>Personen</h1>
+    <p class="sub">Spelers, staf en reserveringen beheren</p>
+    <div class="fake-grid">
+      <div class="fake-card"></div>
+      <div class="fake-card"></div>
+      <div class="fake-card"></div>
+      <div class="fake-card"></div>
+      <div class="fake-card"></div>
+      <div class="fake-card"></div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

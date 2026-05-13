@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Compact chip · Speler-weergave</title>
+  <link rel="stylesheet" href="../../shared/tokens.css">
+  <style>
+    .compact-chip {
+      position: relative;
+      display: inline-flex;
+      align-items: stretch;
+      height: 34px;
+      background: transparent;
+      border: 1.5px solid var(--status-color);
+      border-radius: 6px;
+      overflow: visible;
+    }
+    .compact-chip .inner {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 10px 0 6px;
+    }
+    .compact-chip .g-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      background: var(--sexe-h);
+    }
+    .compact-chip.vrouw .g-dot { background: var(--sexe-v); }
+    .compact-chip .nm {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .compact-chip .leeft-bar {
+      width: 5px;
+      background: var(--leeftijd-17);
+      flex-shrink: 0;
+      border-radius: 0 4px 4px 0;
+    }
+    .compact-chip.st-stopt .nm { text-decoration: line-through; opacity: 0.7; }
+    .compact-chip.st-ar .nm    { color: #a8a8ad; }
+
+    /* Inline mini-icons (geblesseerd en nieuw-lid zonder witte plaat) */
+    .mini-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 12px;
+      height: 12px;
+      margin-left: -1px;
+      flex-shrink: 0;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,.6));
+    }
+    .mini-icon svg { width: 12px; height: 12px; display: block; }
+    .mini-icon.kruis svg path { fill: #ef4444; }
+    .mini-icon.sparkle svg path { fill: #fb923c; }
+  </style>
+</head>
+<body>
+  <h1>Compact chip</h1>
+  <p class="subtitle">Dropzone van werkbord bij uitgezoomd zoom-level · dense chips die wrappen · geen avatar, geen leeftijd-getal (alleen kleurbar rechts)</p>
+
+  <h2>Basis-states (status-outline)</h2>
+  <div class="demo-grid">
+    <div>
+      <div class="demo-lbl">Beschikbaar</div>
+      <div class="compact-chip">
+        <div class="inner"><span class="g-dot"></span><span class="nm">Freek vd L.</span></div>
+        <div class="leeft-bar"></div>
+      </div>
+    </div>
+    <div>
+      <div class="demo-lbl">Nieuw</div>
+      <div class="compact-chip st-nieuw">
+        <div class="inner"><span class="g-dot"></span><span class="nm">Tom Jansen</span></div>
+        <div class="leeft-bar" style="background: var(--leeftijd-10);"></div>
+      </div>
+    </div>
+    <div>
+      <div class="demo-lbl">Twijfelt / geblesseerd</div>
+      <div class="compact-chip st-twijfelt">
+        <div class="inner"><span class="g-dot"></span><span class="nm">Lars vd V.</span></div>
+        <div class="leeft-bar" style="background: var(--leeftijd-14);"></div>
+      </div>
+    </div>
+    <div>
+      <div class="demo-lbl">Stopt</div>
+      <div class="compact-chip st-stopt">
+        <div class="inner"><span class="g-dot"></span><span class="nm">Sven Kuipers</span></div>
+        <div class="leeft-bar" style="background: var(--leeftijd-17);"></div>
+      </div>
+    </div>
+    <div>
+      <div class="demo-lbl">Algemeen reserve</div>
+      <div class="compact-chip st-ar vrouw">
+        <div class="inner"><span class="g-dot"></span><span class="nm">Anna Meijer</span></div>
+        <div class="leeft-bar" style="background: var(--leeftijd-19);"></div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Geblesseerd — mini-kruis (geen witte plaat)</h2>
+  <div class="demo-grid">
+    <div>
+      <div class="compact-chip st-twijfelt">
+        <div class="inner">
+          <span class="g-dot"></span>
+          <span class="mini-icon kruis"><svg viewBox="0 0 24 24"><path d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z"/></svg></span>
+          <span class="nm">Freek vd L.</span>
+        </div>
+        <div class="leeft-bar" style="background: var(--leeftijd-17);"></div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Nieuw lid — mini-sparkle (geen witte plaat)</h2>
+  <div class="demo-grid">
+    <div>
+      <div class="compact-chip st-nieuw">
+        <div class="inner">
+          <span class="g-dot"></span>
+          <span class="mini-icon sparkle"><svg viewBox="0 0 24 24"><path d="M12 1l2 9 9 2-9 2-2 9-2-9-9-2 9-2z"/></svg></span>
+          <span class="nm">Tom Jansen</span>
+        </div>
+        <div class="leeft-bar" style="background: var(--leeftijd-10);"></div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Memo — memo-attention (4 statussen)</h2>
+  <div class="demo-grid">
+    <div>
+      <div class="demo-lbl">Open</div>
+      <div class="compact-chip">
+        <div class="inner">
+          <span class="g-dot"></span>
+          <span class="nm">Freek vd L.</span>
+          <span class="memo-attention open">
+            <svg viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8 12h8M8 15h8M8 18h5"/></svg>
+          </span>
+        </div>
+        <div class="leeft-bar" style="background: var(--leeftijd-17);"></div>
+      </div>
+    </div>
+    <div>
+      <div class="demo-lbl">In bespreking</div>
+      <div class="compact-chip">
+        <div class="inner">
+          <span class="g-dot"></span>
+          <span class="nm">Freek vd L.</span>
+          <span class="memo-attention bespreking">
+            <svg viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8 12h8M8 15h8M8 18h5"/></svg>
+          </span>
+        </div>
+        <div class="leeft-bar" style="background: var(--leeftijd-17);"></div>
+      </div>
+    </div>
+    <div>
+      <div class="demo-lbl">Risico</div>
+      <div class="compact-chip">
+        <div class="inner">
+          <span class="g-dot"></span>
+          <span class="nm">Freek vd L.</span>
+          <span class="memo-attention risico">
+            <svg viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8 12h8M8 15h8M8 18h5"/></svg>
+          </span>
+        </div>
+        <div class="leeft-bar" style="background: var(--leeftijd-17);"></div>
+      </div>
+    </div>
+    <div>
+      <div class="demo-lbl">Opgelost</div>
+      <div class="compact-chip">
+        <div class="inner">
+          <span class="g-dot"></span>
+          <span class="nm">Freek vd L.</span>
+          <span class="memo-attention opgelost">
+            <svg viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8 12h8M8 15h8M8 18h5"/></svg>
+          </span>
+        </div>
+        <div class="leeft-bar" style="background: var(--leeftijd-17);"></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

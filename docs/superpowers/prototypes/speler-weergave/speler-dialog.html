@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Spelerdialoog · Speler-weergave</title>
+  <link rel="stylesheet" href="tokens.css">
+  <style>
+    body {
+      padding: 0;
+      background: #050507;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ═══ DIALOG CONTAINER ═══ */
+    .speler-dialog {
+      width: 760px;
+      max-width: 96vw;
+      max-height: 88vh;
+      background: var(--surface-page);
+      border: 1px solid var(--border-light);
+      border-radius: 14px;
+      box-shadow: 0 32px 80px rgba(0,0,0,.75), 0 8px 20px rgba(0,0,0,.5);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      font-family: var(--font-body);
+    }
+
+    .dialog-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 32px;
+      height: 32px;
+      border-radius: 7px;
+      background: rgba(0, 0, 0, .4);
+      border: 1px solid rgba(255, 255, 255, .08);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 30;
+      backdrop-filter: blur(4px);
+      transition: background 150ms, color 150ms;
+    }
+    .dialog-close:hover { background: rgba(0,0,0,.6); color: var(--text-primary); }
+    .dialog-close svg { width: 16px; height: 16px; }
+
+    /* ═══ HERO HEADER — exact dezelfde specs als hero-header.html ═══ */
+    .hero-header {
+      position: relative;
+      display: flex;
+      align-items: stretch;
+      min-height: 200px;
+      background: transparent;
+      border: none;           /* dialog-container levert de border */
+      border-bottom: 1px solid var(--border-light);
+      border-radius: 0;        /* dialog levert de border-radius */
+      overflow: visible;
+      flex-shrink: 0;
+    }
+    .hero-header .hero-content { flex: 1; display: flex; gap: 24px; padding: 24px 28px; align-items: center; position: relative; }
+    .hero-header .sq-av { width: 152px; height: 152px; border-radius: 8px; flex-shrink: 0; }
+    .hero-header .sq-av::after { border-width: 3px; border-radius: 8px; }
+    .hero-header .hero-body { flex: 1; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+    .hero-header .hero-nm { font-size: 28px; font-weight: 800; color: var(--text-primary); line-height: 1; letter-spacing: -0.01em; }
+    .hero-header .hero-sub { font-size: 13px; color: var(--text-tertiary); margin-top: -2px; }
+    .hero-header .hero-meta { display: flex; align-items: center; gap: 12px; margin-top: 4px; font-size: 11px; }
+    .hero-header .status-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 3px 8px 3px 10px; border-radius: 999px;
+      background: rgba(16,185,129,.15); color: var(--status-beschikbaar);
+      border: 1px solid var(--status-beschikbaar-outline); font-weight: 700;
+      cursor: pointer; transition: background 180ms;
+    }
+    .hero-header .status-chip:hover { background: rgba(16,185,129,.22); }
+    .hero-header .status-chip::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--status-beschikbaar); }
+    .hero-header .status-chip::after { content: '▾'; font-size: 10px; opacity: 0.75; margin-left: 2px; }
+    .hero-header .hero-teams { display: flex; align-items: center; gap: 6px; font-size: 10px; }
+    .hero-header .hero-teams .lbl { color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; font-size: 8px; }
+    .hero-header .hero-teams .tb {
+      color: var(--text-secondary); border: 1px solid var(--team-border); border-radius: 4px;
+      padding: 2px 6px; font-weight: 600;
+      display: inline-flex; align-items: center; gap: 4px; cursor: pointer;
+    }
+    .hero-header .hero-teams .tb::after { content: '▾'; font-size: 9px; opacity: 0.6; }
+    .hero-header .hero-teams .tb-i {
+      color: var(--indeling-text); border: 1px solid var(--indeling-border); border-radius: 4px;
+      padding: 2px 6px; background: var(--indeling-bg); font-weight: 600;
+      display: inline-flex; align-items: center; gap: 4px; cursor: pointer;
+    }
+    .hero-header .hero-teams .tb-i::after { content: '▾'; font-size: 9px; opacity: 0.7; }
+    .hero-header .hero-leeft-col {
+      width: 92px;
+      background: var(--leeftijd-17);
+      border-radius: 0 14px 0 0;   /* volgt dialog top-right radius */
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      flex-shrink: 0; padding: 20px 0;
+    }
+    .hero-header .hero-leeft-col .lb { color: #fff; font-size: 64px; font-weight: 900; line-height: 1; text-shadow: 0 2px 8px rgba(0,0,0,.5); font-variant-numeric: tabular-nums; }
+    .hero-header .hero-leeft-col .ld { color: rgba(255,255,255,.8); font-size: 18px; font-weight: 800; margin-top: 2px; font-variant-numeric: tabular-nums; text-shadow: 0 1px 3px rgba(0,0,0,.5); }
+    .hero-header .hero-leeft-col .lbl { color: rgba(255,255,255,.55); font-size: 8px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; margin-top: 8px; }
+
+    /* ═══ TAB BAR ═══ */
+    .dialog-tabs {
+      display: flex;
+      padding: 0 22px;
+      border-bottom: 1px solid var(--border-light);
+      background: var(--surface-sunken);
+      flex-shrink: 0;
+    }
+    .dialog-tab {
+      position: relative;
+      padding: 0 18px;
+      height: 46px;
+      background: none;
+      border: none;
+      color: var(--text-tertiary);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 150ms;
+    }
+    .dialog-tab:hover { color: var(--text-secondary); }
+    .dialog-tab.active {
+      color: var(--text-primary);
+      font-weight: 700;
+    }
+    .dialog-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 6px;
+      right: 6px;
+      height: 2px;
+      background: var(--ow-accent);
+      border-radius: 2px 2px 0 0;
+    }
+    .dialog-tab .count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 20px;
+      height: 18px;
+      padding: 0 6px;
+      border-radius: 9px;
+      background: var(--surface-card);
+      color: var(--text-secondary);
+      font-size: 10px;
+      font-weight: 800;
+    }
+    .dialog-tab.active .count {
+      background: rgba(255,107,0,.15);
+      color: var(--ow-accent);
+    }
+    .dialog-tab.alert .count {
+      background: rgba(253, 224, 71, .15);
+      color: var(--memo-open);
+    }
+
+    /* ═══ TAB BODY ═══ */
+    .dialog-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 28px;
+      background: var(--surface-page);
+      min-height: 280px;
+      max-height: 420px;
+    }
+
+    /* ══ Tab paneel toggle via CSS ══ */
+    .tab-panel { display: none; }
+    body:has(#tab-pad:checked) #panel-pad,
+    body:has(#tab-eval:checked) #panel-eval,
+    body:has(#tab-wi:checked) #panel-wi,
+    body:has(#tab-kenmerken:checked) #panel-kenmerken { display: block; }
+    /* Default (pad) */
+    body:not(:has(input[name="tab"]:checked)) #panel-pad { display: block; }
+
+    /* Radio inputs verborgen */
+    input[name="tab"] { position: absolute; opacity: 0; pointer-events: none; }
+
+    /* Tab labels als clickable */
+    .dialog-tab-label {
+      position: relative;
+      padding: 0 18px;
+      height: 46px;
+      background: none;
+      border: none;
+      color: var(--text-tertiary);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 150ms;
+      user-select: none;
+    }
+    .dialog-tab-label:hover { color: var(--text-secondary); }
+    #tab-pad:checked ~ * label[for=tab-pad],
+    #tab-kenmerken:checked ~ * label[for=tab-kenmerken],
+    #tab-eval:checked ~ * label[for=tab-eval],
+    #tab-wi:checked ~ * label[for=tab-wi] {
+      color: var(--text-primary);
+      font-weight: 700;
+    }
+    #tab-pad:checked ~ * label[for=tab-pad]::after,
+    #tab-kenmerken:checked ~ * label[for=tab-kenmerken]::after,
+    #tab-eval:checked ~ * label[for=tab-eval]::after,
+    #tab-wi:checked ~ * label[for=tab-wi]::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 6px; right: 6px;
+      height: 2px;
+      background: var(--ow-accent);
+      border-radius: 2px 2px 0 0;
+    }
+    body:has(#tab-pad:checked) #panel-pad { display: block; }
+    body:has(#tab-kenmerken:checked) #panel-kenmerken { display: block; }
+    body:has(#tab-eval:checked) #panel-eval { display: block; }
+    body:has(#tab-wi:checked) #panel-wi { display: block; }
+    /* Fallback default als geen checked */
+    body:not(:has(#tab-pad:checked)):not(:has(#tab-kenmerken:checked)):not(:has(#tab-eval:checked)):not(:has(#tab-wi:checked)) #panel-pad { display: block; }
+
+    .panel-title {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-tertiary);
+      margin: 0 0 14px;
+    }
+
+    /* ══ KENMERKEN TAB ══ */
+    .kenmerk-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .kenmerk-row:last-child { border-bottom: none; }
+    .kenmerk-lbl {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      width: 140px;
+      flex-shrink: 0;
+    }
+    .kenmerk-val {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    /* ══ SPELERSPAD TAB ══ */
+    .spelerspad {
+      display: flex;
+      flex-direction: column;
+    }
+    .spelerspad-item {
+      display: flex;
+      align-items: stretch;
+      min-height: 36px;
+    }
+    .spelerspad-gutter {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 22px;
+      flex-shrink: 0;
+      padding-top: 4px;
+    }
+    .spelerspad-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 0 6px currentColor;
+    }
+    .spelerspad-line {
+      flex: 1;
+      width: 1.5px;
+      background: var(--border-light);
+      margin-top: 3px;
+    }
+    .spelerspad-content {
+      flex: 1;
+      padding: 2px 0 14px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .spelerspad-seizoen {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      font-weight: 500;
+      width: 72px;
+      flex-shrink: 0;
+    }
+    .spelerspad-team {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      flex: 1;
+    }
+    .spelerspad-kleur-chip {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    /* ══ EVALUATIES TAB ══ */
+    .eval-seizoen {
+      margin-bottom: 18px;
+    }
+    .eval-seizoen-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      cursor: pointer;
+      user-select: none;
+      margin-bottom: 10px;
+    }
+    .eval-seizoen-header::before {
+      content: '▶';
+      font-size: 9px;
+      color: var(--text-tertiary);
+      transition: transform 150ms;
+    }
+    .eval-seizoen.open .eval-seizoen-header::before { transform: rotate(90deg); }
+    .eval-seizoen-header .divider { flex: 1; height: 1px; background: var(--border-light); }
+    .eval-seizoen-header .count { font-size: 10px; color: var(--text-tertiary); font-weight: 500; }
+    .eval-item {
+      background: var(--surface-sunken);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-bottom: 8px;
+    }
+    .eval-item-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .eval-item-ronde {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .eval-item-meta {
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+    /* ══ Evaluatie · 3 onderwerpen met sterren ══ */
+    .eval-rows { display: flex; flex-direction: column; }
+    .eval-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .eval-row:last-child { border-bottom: none; }
+    .eval-row-lbl {
+      width: 72px;
+      font-size: 10px;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      flex-shrink: 0;
+    }
+    .stars { display: inline-flex; align-items: center; gap: 4px; }
+    .star { width: 18px; height: 18px; display: inline-block; }
+    .star svg { width: 100%; height: 100%; display: block; }
+    .star svg path {
+      stroke: rgba(255, 255, 255, .22);
+      stroke-width: 1.6;
+      fill: transparent;
+      stroke-linejoin: round;
+    }
+    .star.filled svg path {
+      fill: #facc15;
+      stroke: #eab308;
+    }
+    .eval-row-val {
+      margin-left: auto;
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
+    }
+    .eval-row-val .label {
+      color: var(--text-tertiary);
+      font-weight: 500;
+      margin-left: 4px;
+    }
+    .eval-coach {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border-light);
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      font-style: italic;
+    }
+    .eval-coach::before { content: '"'; opacity: 0.4; margin-right: 2px; }
+    .eval-coach::after { content: '"'; opacity: 0.4; margin-left: 2px; }
+
+    /* ══ WERKITEMS TAB ══ */
+    .werkitem-add {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      background: rgba(255,107,0,.12);
+      color: var(--ow-accent);
+      border: 1px solid var(--indeling-border);
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-bottom: 14px;
+    }
+    .werkitem-add:hover { background: rgba(255,107,0,.2); }
+    .werkitem-add::before { content: '+'; font-size: 16px; font-weight: 900; line-height: 1; }
+
+    .werkitem {
+      display: flex;
+      gap: 12px;
+      padding: 12px 14px;
+      background: var(--surface-sunken);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+    .werkitem-icon {
+      flex-shrink: 0;
+      padding-top: 2px;
+    }
+    .werkitem-body { flex: 1; min-width: 0; }
+    .werkitem-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .werkitem-titel {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .werkitem-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      flex-shrink: 0;
+    }
+    .werkitem-status.open { background: rgba(253, 224, 71, .12); color: var(--memo-open); border: 1px solid rgba(253, 224, 71, .3); }
+    .werkitem-status.bespreking { background: rgba(250, 204, 21, .12); color: var(--memo-bespreking); border: 1px solid rgba(250, 204, 21, .3); }
+    .werkitem-status.opgelost { background: rgba(100, 100, 100, .2); color: var(--text-tertiary); border: 1px solid var(--border-default); }
+    .werkitem-beschrijving {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.55;
+      margin-bottom: 8px;
+    }
+    .werkitem-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 10px;
+      color: var(--text-tertiary);
+    }
+    .werkitem-meta .tag {
+      padding: 1px 6px;
+      border-radius: 3px;
+      background: var(--surface-card);
+      border: 1px solid var(--border-default);
+      font-weight: 600;
+      font-size: 9px;
+      text-transform: uppercase;
+    }
+    .werkitem-meta .tag.prio-hoog { color: var(--status-twijfelt); border-color: var(--status-twijfelt); }
+    .werkitem-meta .tag.prio-middel { color: var(--text-secondary); }
+  </style>
+</head>
+<body>
+  <!-- Radio inputs sturen actieve tab -->
+  <input type="radio" name="tab" id="tab-pad" checked>
+  <input type="radio" name="tab" id="tab-kenmerken">
+  <input type="radio" name="tab" id="tab-eval">
+  <input type="radio" name="tab" id="tab-wi">
+
+  <div class="speler-dialog">
+
+    <!-- ═══ HERO HEADER ═══ -->
+    <div class="hero-header">
+      <button class="dialog-close" aria-label="Sluiten">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+
+      <div class="hero-content">
+        <div class="sq-av xl">
+          <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="">
+        </div>
+        <div class="hero-body">
+          <div class="hero-nm">Freek <span style="color: var(--text-tertiary); font-weight: 600;">van der</span> Laban</div>
+          <div class="hero-sub">lid sinds 2018 · 7 seizoenen actief · rel-code 123456</div>
+          <div class="hero-meta">
+            <span class="status-chip">Beschikbaar</span>
+            <span class="memo-attention open">
+              <svg viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8 12h8M8 15h8M8 18h5"/></svg>
+            </span>
+          </div>
+          <div class="hero-teams">
+            <span class="lbl">Huidig</span><span class="tb">A1</span>
+            <span class="lbl" style="margin-left: 8px;">Indeling</span><span class="tb-i">A1</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-leeft-col">
+        <span class="lb">17</span>
+        <span class="ld">.41</span>
+        <span class="lbl">jaar</span>
+      </div>
+    </div>
+
+    <!-- ═══ TAB BAR ═══ -->
+    <div class="dialog-tabs">
+      <label for="tab-pad" class="dialog-tab-label">
+        Spelerspad
+      </label>
+      <label for="tab-kenmerken" class="dialog-tab-label">
+        Kenmerken
+      </label>
+      <label for="tab-eval" class="dialog-tab-label">
+        Evaluaties <span class="count" style="background: var(--surface-card); color: var(--text-secondary); display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 18px; padding: 0 6px; border-radius: 9px; font-size: 10px; font-weight: 800;">12</span>
+      </label>
+      <label for="tab-wi" class="dialog-tab-label">
+        Werkitems
+        <span class="count" style="background: rgba(253,224,71,.15); color: var(--memo-open); display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 18px; padding: 0 6px; border-radius: 9px; font-size: 10px; font-weight: 800;">3</span>
+      </label>
+    </div>
+
+    <!-- ═══ TAB BODY ═══ -->
+    <div class="dialog-body ow-scroll">
+
+      <!-- PANEL: SPELERSPAD -->
+      <div class="tab-panel" id="panel-pad">
+        <div class="panel-title">Spelerspad · seizoen 2019/20 → heden</div>
+        <div class="spelerspad">
+          <div class="spelerspad-item">
+            <div class="spelerspad-gutter">
+              <div class="spelerspad-dot" style="background: #dc2626; color: #dc2626;"></div>
+              <div class="spelerspad-line"></div>
+            </div>
+            <div class="spelerspad-content">
+              <span class="spelerspad-seizoen">2026/27</span>
+              <span class="spelerspad-team">A1 (indeling)</span>
+              <span class="spelerspad-kleur-chip" style="background: rgba(220,38,38,.15); color: #dc2626; border: 1px solid rgba(220,38,38,.3);">Rood</span>
+            </div>
+          </div>
+          <div class="spelerspad-item">
+            <div class="spelerspad-gutter">
+              <div class="spelerspad-dot" style="background: #dc2626; color: #dc2626;"></div>
+              <div class="spelerspad-line"></div>
+            </div>
+            <div class="spelerspad-content">
+              <span class="spelerspad-seizoen">2025/26</span>
+              <span class="spelerspad-team">A1</span>
+              <span class="spelerspad-kleur-chip" style="background: rgba(220,38,38,.15); color: #dc2626; border: 1px solid rgba(220,38,38,.3);">Rood</span>
+            </div>
+          </div>
+          <div class="spelerspad-item">
+            <div class="spelerspad-gutter">
+              <div class="spelerspad-dot" style="background: #f97316; color: #f97316;"></div>
+              <div class="spelerspad-line"></div>
+            </div>
+            <div class="spelerspad-content">
+              <span class="spelerspad-seizoen">2024/25</span>
+              <span class="spelerspad-team">A2</span>
+              <span class="spelerspad-kleur-chip" style="background: rgba(249,115,22,.15); color: #f97316; border: 1px solid rgba(249,115,22,.3);">Oranje</span>
+            </div>
+          </div>
+          <div class="spelerspad-item">
+            <div class="spelerspad-gutter">
+              <div class="spelerspad-dot" style="background: #f97316; color: #f97316;"></div>
+              <div class="spelerspad-line"></div>
+            </div>
+            <div class="spelerspad-content">
+              <span class="spelerspad-seizoen">2023/24</span>
+              <span class="spelerspad-team">B1</span>
+              <span class="spelerspad-kleur-chip" style="background: rgba(249,115,22,.15); color: #f97316; border: 1px solid rgba(249,115,22,.3);">Oranje</span>
+            </div>
+          </div>
+          <div class="spelerspad-item">
+            <div class="spelerspad-gutter">
+              <div class="spelerspad-dot" style="background: #facc15; color: #facc15;"></div>
+              <div class="spelerspad-line"></div>
+            </div>
+            <div class="spelerspad-content">
+              <span class="spelerspad-seizoen">2022/23</span>
+              <span class="spelerspad-team">B2</span>
+              <span class="spelerspad-kleur-chip" style="background: rgba(250,204,21,.15); color: #facc15; border: 1px solid rgba(250,204,21,.3);">Geel</span>
+            </div>
+          </div>
+          <div class="spelerspad-item">
+            <div class="spelerspad-gutter">
+              <div class="spelerspad-dot" style="background: #16a34a; color: #16a34a;"></div>
+              <div class="spelerspad-line"></div>
+            </div>
+            <div class="spelerspad-content">
+              <span class="spelerspad-seizoen">2021/22</span>
+              <span class="spelerspad-team">C1</span>
+              <span class="spelerspad-kleur-chip" style="background: rgba(22,163,74,.15); color: #16a34a; border: 1px solid rgba(22,163,74,.3);">Groen</span>
+            </div>
+          </div>
+          <div class="spelerspad-item">
+            <div class="spelerspad-gutter">
+              <div class="spelerspad-dot" style="background: #2563eb; color: #2563eb;"></div>
+            </div>
+            <div class="spelerspad-content">
+              <span class="spelerspad-seizoen">2020/21</span>
+              <span class="spelerspad-team">D2</span>
+              <span class="spelerspad-kleur-chip" style="background: rgba(37,99,235,.15); color: #2563eb; border: 1px solid rgba(37,99,235,.3);">Blauw</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL: KENMERKEN -->
+      <div class="tab-panel" id="panel-kenmerken">
+        <div class="panel-title">Persoonsgegevens</div>
+        <div>
+          <div class="kenmerk-row">
+            <div class="kenmerk-lbl">Geboortedatum</div>
+            <div class="kenmerk-val">14 november 2008 · 17 jaar</div>
+          </div>
+          <div class="kenmerk-row">
+            <div class="kenmerk-lbl">Korfballeeftijd</div>
+            <div class="kenmerk-val">17.41</div>
+          </div>
+          <div class="kenmerk-row">
+            <div class="kenmerk-lbl">Sportlink rel-code</div>
+            <div class="kenmerk-val">123456</div>
+          </div>
+          <div class="kenmerk-row">
+            <div class="kenmerk-lbl">Lid sinds</div>
+            <div class="kenmerk-val">2018 · 7 seizoenen actief</div>
+          </div>
+          <div class="kenmerk-row">
+            <div class="kenmerk-lbl">Laatst gezien</div>
+            <div class="kenmerk-val">3 dagen geleden</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL: EVALUATIES -->
+      <div class="tab-panel" id="panel-eval">
+        <div class="panel-title">Evaluaties · 12 rondes verspreid over 3 seizoenen</div>
+
+        <div class="eval-seizoen open">
+          <div class="eval-seizoen-header">
+            Seizoen 2025/26
+            <div class="divider"></div>
+            <span class="count">4 rondes</span>
+          </div>
+
+          <div class="eval-item">
+            <div class="eval-item-top">
+              <div class="eval-item-ronde">Ronde 3 · najaar</div>
+              <div class="eval-item-meta">Jan de Vries · A1</div>
+            </div>
+            <div class="eval-rows">
+              <div class="eval-row">
+                <div class="eval-row-lbl">Niveau</div>
+                <div class="stars">
+                  <span class="star filled"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.9.8-5.2 4.7 1.5 6.8L12 17.5l-6.1 3.1 1.5-6.8L2.2 9.1l6.9-.8z"/></svg></span>
+                  <span class="star filled"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.9.8-5.2 4.7 1.5 6.8L12 17.5l-6.1 3.1 1.5-6.8L2.2 9.1l6.9-.8z"/></svg></span>
+                  <span class="star filled"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.9.8-5.2 4.7 1.5 6.8L12 17.5l-6.1 3.1 1.5-6.8L2.2 9.1l6.9-.8z"/></svg></span>
+                  <span class="star filled"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.9.8-5.2 4.7 1.5 6.8L12 17.5l-6.1 3.1 1.5-6.8L2.2 9.1l6.9-.8z"/></svg></span>
+                  <span class="star"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.9.8-5.2 4.7 1.5 6.8L12 17.5l-6.1 3.1 1.5-6.8L2.2 9.1l6.9-.8z"/></svg></span>
+                </div>
+                <div class="eval-row-val">4<span class="label">/ 5</span></div>
+              </div>
+              <div class="eval-row">
+                <div class="eval-row-lbl">Inzet</div>
+                <div class="stars">
+                  <span class="star filled"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.9.8-5.2 4.7 1.5 6.8L12 17.5l-6.1 3.1 1.5-6.8L2.2 9.1l6.9-.8z"/></svg></span>
+                  <span class="star filled"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.9.8-5.2 4.7 1.5 6.8L12 17.5l-6.1 3.1 1.5-6.8L2.2 9.1l6.9-.8z"/></svg></span>
+                  <span class="star filled"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.9.8-5.2 4.7 1.5 6.8L12 17.5l-6.1 3.1 1.5-6.8L2.2 9.1l6.9-.8z"/></svg></span>
+                </div>
+                <div class="eval-row-val">Meer<span class="label">· 3 / 3</span></div>
+              </div>
+              <div class="eval-row">
+                <div class="eval-row-lbl">Groei</div>
+                <div class="stars">
+                  <span class="star filled"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.9.8-5.2 4.7 1.5 6.8L12 17.5l-6.1 3.1 1.5-6.8L2.2 9.1l6.9-.8z"/></svg></span>
+                  <span class="star filled"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.9.8-5.2 4.7 1.5 6.8L12 17.5l-6.1 3.1 1.5-6.8L2.2 9.1l6.9-.8z"/></svg></span>
+                  <span class="star filled"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.9.8-5.2 4.7 1.5 6.8L12 17.5l-6.1 3.1 1.5-6.8L2.2 9.1l6.9-.8z"/></svg></span>
+                  <span class="star"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.9.8-5.2 4.7 1.5 6.8L12 17.5l-6.1 3.1 1.5-6.8L2.2 9.1l6.9-.8z"/></svg></span>
+                </div>
+                <div class="eval-row-val">Normaal<span class="label">· 3 / 4</span></div>
+              </div>
+            </div>
+            <div class="eval-coach">Freek laat goede ontwikkeling zien in zijn schotselectie en begint beter te anticiperen in de verdediging. Werkpunt blijft de consistentie tijdens de tweede helft.</div>
+          </div>
+
+          <div class="eval-item">
+            <div class="eval-item-top">
+              <div class="eval-item-ronde">Ronde 2 · najaar</div>
+              <div class="eval-item-meta">Jan de Vries · A1</div>
+            </div>
+            <div class="eval-rows">
+              <div class="eval-row">
+                <div class="eval-row-lbl">Niveau</div>
+                <div class="stars">
+                  <span class="star filled"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.9.8-5.2 4.7 1.5 6.8L12 17.5l-6.1 3.1 1.5-6.8L2.2 9.1l6.9-.8z"/></svg></span>
+                  <span class="star filled"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.9.8-5.2 4.7 1.5 6.8L12 17.5l-6.1 3.1 1.5-6.8L2.2 9.1l6.9-.8z"/></svg></span>
+                  <span class="star filled"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.9.8-5.2 4.7 1.5 6.8L12 17.5l-6.1 3.1 1.5-6.8L2.2 9.1l6.9-.8z"/></svg></span>
+                  <span class="star"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.9.8-5.2 4.7 1.5 6.8L12 17.5l-6.1 3.1 1.5-6.8L2.2 9.1l6.9-.8z"/></svg></span>
+                  <span class="star"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.9.8-5.2 4.7 1.5 6.8L12 17.5l-6.1 3.1 1.5-6.8L2.2 9.1l6.9-.8z"/></svg></span>
+                </div>
+                <div class="eval-row-val">3<span class="label">/ 5</span></div>
+              </div>
+              <div class="eval-row">
+                <div class="eval-row-lbl">Inzet</div>
+                <div class="stars">
+                  <span class="star filled"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.9.8-5.2 4.7 1.5 6.8L12 17.5l-6.1 3.1 1.5-6.8L2.2 9.1l6.9-.8z"/></svg></span>
+                  <span class="star filled"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.9.8-5.2 4.7 1.5 6.8L12 17.5l-6.1 3.1 1.5-6.8L2.2 9.1l6.9-.8z"/></svg></span>
+                  <span class="star"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.9.8-5.2 4.7 1.5 6.8L12 17.5l-6.1 3.1 1.5-6.8L2.2 9.1l6.9-.8z"/></svg></span>
+                </div>
+                <div class="eval-row-val">Normaal<span class="label">· 2 / 3</span></div>
+              </div>
+              <div class="eval-row">
+                <div class="eval-row-lbl">Groei</div>
+                <div class="stars">
+                  <span class="star filled"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.9.8-5.2 4.7 1.5 6.8L12 17.5l-6.1 3.1 1.5-6.8L2.2 9.1l6.9-.8z"/></svg></span>
+                  <span class="star filled"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.9.8-5.2 4.7 1.5 6.8L12 17.5l-6.1 3.1 1.5-6.8L2.2 9.1l6.9-.8z"/></svg></span>
+                  <span class="star"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.9.8-5.2 4.7 1.5 6.8L12 17.5l-6.1 3.1 1.5-6.8L2.2 9.1l6.9-.8z"/></svg></span>
+                  <span class="star"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.9.8-5.2 4.7 1.5 6.8L12 17.5l-6.1 3.1 1.5-6.8L2.2 9.1l6.9-.8z"/></svg></span>
+                </div>
+                <div class="eval-row-val">Weinig<span class="label">· 2 / 4</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="eval-seizoen">
+          <div class="eval-seizoen-header">
+            Seizoen 2024/25
+            <div class="divider"></div>
+            <span class="count">5 rondes</span>
+          </div>
+        </div>
+
+        <div class="eval-seizoen">
+          <div class="eval-seizoen-header">
+            Seizoen 2023/24
+            <div class="divider"></div>
+            <span class="count">3 rondes</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL: WERKITEMS -->
+      <div class="tab-panel" id="panel-wi">
+        <div class="panel-title">Werkitems · 3 open, 2 opgelost</div>
+
+        <button class="werkitem-add">Nieuw werkitem</button>
+
+        <div class="werkitem">
+          <div class="werkitem-icon">
+            <span class="memo-attention open" style="width: 22px; height: 20px;">
+              <svg viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8 12h8M8 15h8M8 18h5"/></svg>
+            </span>
+          </div>
+          <div class="werkitem-body">
+            <div class="werkitem-top">
+              <div class="werkitem-titel">Doorschuiven naar A1 volgend seizoen</div>
+              <div class="werkitem-status open">Open</div>
+            </div>
+            <div class="werkitem-beschrijving">
+              Freek heeft technisch het niveau van A1 bereikt. Moet nog even wachten op fysieke groei voordat we kunnen besluiten. In lente-evaluatie terugkomen.
+            </div>
+            <div class="werkitem-meta">
+              <span class="tag">Speler</span>
+              <span class="tag prio-hoog">Hoog</span>
+              <span>3 dagen geleden · Jan de Vries</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="werkitem">
+          <div class="werkitem-icon">
+            <span class="memo-attention bespreking" style="width: 22px; height: 20px;">
+              <svg viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8 12h8M8 15h8M8 18h5"/></svg>
+            </span>
+          </div>
+          <div class="werkitem-body">
+            <div class="werkitem-top">
+              <div class="werkitem-titel">Blessure links heup opvolgen</div>
+              <div class="werkitem-status bespreking">In bespreking</div>
+            </div>
+            <div class="werkitem-beschrijving">
+              Freek meldde vorige week klachten aan de linker heup. Fysio ingeschakeld, eerste behandeling afgerond. Wachten op tweede sessie.
+            </div>
+            <div class="werkitem-meta">
+              <span class="tag">Speler</span>
+              <span class="tag prio-middel">Middel</span>
+              <span>1 week geleden · Staff</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="werkitem">
+          <div class="werkitem-icon">
+            <span class="memo-attention open" style="width: 22px; height: 20px;">
+              <svg viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8 12h8M8 15h8M8 18h5"/></svg>
+            </span>
+          </div>
+          <div class="werkitem-body">
+            <div class="werkitem-top">
+              <div class="werkitem-titel">Gesprek met ouders over trainingsuren</div>
+              <div class="werkitem-status open">Open</div>
+            </div>
+            <div class="werkitem-beschrijving">
+              Ouders willen bespreken of Freek een extra training per week kan doen. Planning nog afstemmen.
+            </div>
+            <div class="werkitem-meta">
+              <span class="tag">Speler</span>
+              <span class="tag prio-middel">Middel</span>
+              <span>5 dagen geleden · TC</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

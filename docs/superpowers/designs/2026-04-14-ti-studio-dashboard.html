@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="nl" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TI Studio · Dashboard</title>
+  <style>
+    :root {
+      --surface-page:   #0f0f1a;
+      --surface-drawer: #13131f;
+      --surface-card:   #1a1a2e;
+      --surface-raised: #20203a;
+      --surface-hover:  #22223a;
+
+      --accent:         #3b82f6;
+      --accent-dim:     rgba(59,130,246,.12);
+      --accent-line:    rgba(59,130,246,.35);
+
+      --oranje:         #ff6b00;
+      --oranje-dim:     rgba(255,107,0,.10);
+      --oranje-line:    rgba(255,107,0,.35);
+
+      --ok:             #22c55e;
+      --warn:           #f59e0b;
+      --err:            #ef4444;
+
+      --text-1:         #f5f5f5;
+      --text-2:         #a3a3a3;
+      --text-3:         #555570;
+
+      --border-0:       rgba(255,255,255,.06);
+      --border-1:       rgba(255,255,255,.10);
+      --border-2:       rgba(255,255,255,.16);
+
+      --radius-sm:  8px;
+      --radius-md:  12px;
+      --radius-lg:  16px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--surface-page);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      color: var(--text-1);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 1.5rem;
+    }
+
+    /* ─── SHELL ──────────────────────────────────────── */
+    .shell {
+      width: 100%;
+      max-width: 720px;
+      display: flex;
+      flex-direction: column;
+      gap: 3rem;
+    }
+
+    /* ─── HEADER ─────────────────────────────────────── */
+    .header {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    .logo-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-mark {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-line);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .logo-mark svg {
+      width: 18px;
+      height: 18px;
+      color: var(--accent);
+    }
+
+    .logo-title {
+      font-size: 1.375rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-1);
+    }
+
+    .logo-title span {
+      color: var(--accent);
+    }
+
+    .season-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.25rem 0.625rem;
+      background: var(--surface-raised);
+      border: 1px solid var(--border-1);
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-2);
+      letter-spacing: 0.01em;
+    }
+
+    .season-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--ok);
+      flex-shrink: 0;
+    }
+
+    .header-sub {
+      font-size: 0.9rem;
+      color: var(--text-3);
+      font-weight: 400;
+      padding-left: 2px;
+    }
+
+    /* ─── DIVIDER ────────────────────────────────────── */
+    .divider {
+      height: 1px;
+      background: var(--border-0);
+    }
+
+    /* ─── GRID ───────────────────────────────────────── */
+    .tiles-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    /* Werkbord: spans both columns */
+    .tile-primary {
+      grid-column: 1 / -1;
+    }
+
+    /* ─── TILE BASE ──────────────────────────────────── */
+    .tile {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.125rem;
+      padding: 1.25rem 1.375rem;
+      background: var(--surface-card);
+      border: 1px solid var(--border-0);
+      border-radius: var(--radius-lg);
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+      transition:
+        background 160ms ease,
+        border-color 160ms ease,
+        box-shadow 160ms ease,
+        transform 160ms ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tile::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      opacity: 0;
+      transition: opacity 160ms ease;
+    }
+
+    .tile:hover {
+      background: var(--surface-hover);
+      transform: translateY(-1px);
+    }
+
+    .tile:active {
+      transform: translateY(0);
+    }
+
+    /* ─── PRIMARY TILE (Werkbord) ────────────────────── */
+    .tile-primary .tile {
+      padding: 1.625rem 1.75rem;
+      background: linear-gradient(135deg, #1a1a2e 0%, #1c1c35 100%);
+      border-color: var(--accent-line);
+    }
+
+    .tile-primary .tile::before {
+      background: radial-gradient(ellipse at top left, rgba(59,130,246,.08) 0%, transparent 60%);
+      opacity: 1;
+    }
+
+    .tile-primary .tile:hover {
+      border-color: rgba(59,130,246,.55);
+      box-shadow: 0 0 0 1px rgba(59,130,246,.15), 0 8px 32px rgba(0,0,0,.5);
+    }
+
+    /* ─── SECONDARY TILES ────────────────────────────── */
+    .tile-secondary .tile:hover {
+      border-color: var(--border-2);
+      box-shadow: 0 4px 16px rgba(0,0,0,.35);
+    }
+
+    /* ─── TILE ICON ──────────────────────────────────── */
+    .tile-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 1.25rem;
+    }
+
+    .tile-primary .tile-icon {
+      width: 52px;
+      height: 52px;
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-line);
+      font-size: 1.5rem;
+    }
+
+    .tile-secondary .tile-icon {
+      background: var(--surface-raised);
+      border: 1px solid var(--border-1);
+      font-size: 1.125rem;
+    }
+
+    /* ─── TILE CONTENT ───────────────────────────────── */
+    .tile-body {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      flex: 1;
+      min-width: 0;
+      padding-top: 2px;
+    }
+
+    .tile-name {
+      font-size: 1.0625rem;
+      font-weight: 600;
+      color: var(--text-1);
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+    }
+
+    .tile-primary .tile-name {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .tile-desc {
+      font-size: 0.875rem;
+      color: var(--text-2);
+      font-weight: 400;
+      line-height: 1.4;
+    }
+
+    .tile-primary .tile-desc {
+      font-size: 0.9375rem;
+      color: var(--text-2);
+    }
+
+    /* ─── ARROW INDICATOR ────────────────────────────── */
+    .tile-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--text-3);
+      flex-shrink: 0;
+      align-self: center;
+      transition: color 160ms ease, background 160ms ease;
+    }
+
+    .tile:hover .tile-arrow {
+      color: var(--text-2);
+      background: var(--surface-raised);
+    }
+
+    .tile-primary .tile .tile-arrow {
+      color: var(--accent);
+      background: var(--accent-dim);
+    }
+
+    .tile-primary .tile:hover .tile-arrow {
+      color: var(--text-1);
+      background: var(--accent);
+    }
+
+    /* ─── FOOTER ─────────────────────────────────────── */
+    .footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .footer-left {
+      font-size: 0.75rem;
+      color: var(--text-3);
+      line-height: 1.5;
+    }
+
+    .footer-left strong {
+      color: var(--text-2);
+      font-weight: 500;
+    }
+
+    .footer-right {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .footer-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.375rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-3);
+      text-decoration: none;
+      border: 1px solid var(--border-0);
+      transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+
+    .footer-link:hover {
+      color: var(--text-2);
+      border-color: var(--border-1);
+      background: var(--surface-raised);
+    }
+
+    /* ─── RESPONSIVE ─────────────────────────────────── */
+    @media (max-width: 560px) {
+      body {
+        justify-content: flex-start;
+        padding: 2rem 1rem;
+      }
+
+      .tiles-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .tile-primary {
+        grid-column: 1;
+      }
+
+      .logo-title {
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<main class="shell">
+
+  <!-- ─── HEADER ──────────────────────────────────────── -->
+  <header class="header">
+    <div class="logo-row">
+      <div class="logo-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+          <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+          <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+          <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+        </svg>
+      </div>
+      <span class="logo-title">TI<span> Studio</span></span>
+      <span class="season-badge">
+        <span class="season-dot"></span>
+        2025–2026
+      </span>
+    </div>
+    <p class="header-sub">Teamindelingsomgeving · c.k.v. Oranje Wit</p>
+  </header>
+
+  <div class="divider"></div>
+
+  <!-- ─── TILES ────────────────────────────────────────── -->
+  <nav class="tiles-grid" aria-label="Navigatie">
+
+    <!-- WERKBORD — primaire actie -->
+    <div class="tile-primary" data-href="/indeling">
+      <a class="tile" href="/indeling" aria-label="Naar Werkbord">
+        <div class="tile-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="9" height="9" rx="2"/>
+            <rect x="13" y="3" width="9" height="9" rx="2"/>
+            <rect x="2" y="14" width="9" height="7" rx="2"/>
+            <rect x="13" y="14" width="9" height="7" rx="2"/>
+          </svg>
+        </div>
+        <div class="tile-body">
+          <span class="tile-name">Werkbord</span>
+          <span class="tile-desc">Visuele editor voor teamopstelling en spelersverdeling</span>
+        </div>
+        <div class="tile-arrow">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 8h10M9 4l4 4-4 4"/>
+          </svg>
+        </div>
+      </a>
+    </div>
+
+    <!-- KADERS -->
+    <div class="tile-secondary" data-href="/kader">
+      <a class="tile" href="/kader" aria-label="Naar Kaders">
+        <div class="tile-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a3a3a3" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
+            <rect x="9" y="3" width="6" height="4" rx="1.5"/>
+            <line x1="9" y1="12" x2="15" y2="12"/>
+            <line x1="9" y1="16" x2="13" y2="16"/>
+          </svg>
+        </div>
+        <div class="tile-body">
+          <span class="tile-name">Kaders</span>
+          <span class="tile-desc">Seizoenskader per team beheren</span>
+        </div>
+        <div class="tile-arrow">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 8h10M9 4l4 4-4 4"/>
+          </svg>
+        </div>
+      </a>
+    </div>
+
+    <!-- PERSONEN -->
+    <div class="tile-secondary" data-href="/personen">
+      <a class="tile" href="/personen" aria-label="Naar Personen">
+        <div class="tile-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a3a3a3" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="7" r="3"/>
+            <path d="M3 20c0-4 2.7-6 6-6s6 2 6 6"/>
+            <circle cx="17" cy="8" r="2.5"/>
+            <path d="M16 20c0-2.5 1.5-4 4-4"/>
+          </svg>
+        </div>
+        <div class="tile-body">
+          <span class="tile-name">Personen</span>
+          <span class="tile-desc">Spelers, staf en reserveringen</span>
+        </div>
+        <div class="tile-arrow">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 8h10M9 4l4 4-4 4"/>
+          </svg>
+        </div>
+      </a>
+    </div>
+
+    <!-- MEMO-ITEMS -->
+    <div class="tile-secondary" data-href="/memo">
+      <a class="tile" href="/memo" aria-label="Naar Memo-items">
+        <div class="tile-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a3a3a3" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="8" y1="13" x2="16" y2="13"/>
+            <line x1="8" y1="17" x2="13" y2="17"/>
+          </svg>
+        </div>
+        <div class="tile-body">
+          <span class="tile-name">Memo-items</span>
+          <span class="tile-desc">Openstaande acties en notities</span>
+        </div>
+        <div class="tile-arrow">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 8h10M9 4l4 4-4 4"/>
+          </svg>
+        </div>
+      </a>
+    </div>
+
+  </nav>
+
+  <!-- ─── FOOTER ────────────────────────────────────────── -->
+  <footer class="footer">
+    <p class="footer-left">
+      <strong>c.k.v. Oranje Wit</strong> · Technische Commissie
+    </p>
+    <div class="footer-right">
+      <a class="footer-link" href="#" title="Instellingen">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+        Instellingen
+      </a>
+    </div>
+  </footer>
+
+</main>
+
+</body>
+</html>

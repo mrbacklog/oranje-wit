@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Spelerpool drawer · Speler-weergave</title>
+  <link rel="stylesheet" href="../../shared/tokens.css">
+  <style>
+    body { padding: 0; background: #050507; }
+
+    /* Werkbord-mockup als achtergrond zodat de drawer in context zichtbaar is */
+    .workbench {
+      display: flex;
+      height: 100vh;
+      min-height: 760px;
+    }
+
+    /* ─── DRAWER ─────────────────────────────────────────── */
+    .pool-drawer {
+      width: var(--drawer-width);
+      background: var(--surface-page);
+      border-right: 1px solid var(--border-light);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 20;
+    }
+
+    /* Header */
+    .pool-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 14px 10px;
+      border-bottom: 1px solid var(--border-light);
+      flex-shrink: 0;
+    }
+    .pool-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--text-tertiary);
+    }
+    .pool-title .count {
+      color: var(--text-primary);
+      font-weight: 800;
+      margin-left: 6px;
+    }
+    .pool-icon-btns {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .icon-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 5px;
+      border: 1px solid var(--border-default);
+      background: var(--surface-card);
+      color: var(--text-tertiary);
+      cursor: pointer;
+      padding: 0;
+      transition: background 150ms, color 150ms, border-color 150ms;
+    }
+    .icon-btn:hover { background: var(--surface-card); color: var(--text-primary); }
+    .icon-btn.active { background: rgba(255,107,0,.12); color: var(--ow-accent); border-color: rgba(255,107,0,.35); }
+    .icon-btn svg { width: 13px; height: 13px; display: block; }
+
+    /* Zoekbalk */
+    .pool-search {
+      padding: 10px 12px;
+      position: relative;
+      border-bottom: 1px solid var(--border-light);
+      flex-shrink: 0;
+    }
+    .pool-search svg {
+      position: absolute;
+      left: 22px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-tertiary);
+    }
+    .pool-search input {
+      width: 100%;
+      background: var(--surface-sunken);
+      border: 1px solid var(--border-default);
+      border-radius: 7px;
+      color: var(--text-primary);
+      font-size: 12px;
+      font-family: inherit;
+      padding: 8px 12px 8px 32px;
+      outline: none;
+      box-sizing: border-box;
+    }
+    .pool-search input:focus { border-color: rgba(255,107,0,.4); }
+
+    /* Filter chips */
+    .pool-filters {
+      padding: 9px 12px 9px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      border-bottom: 1px solid var(--border-light);
+      flex-shrink: 0;
+    }
+
+    /* Niet-draggable items (AR, stopt) */
+    .pool-item.not-draggable .rijke-rij {
+      cursor: not-allowed;
+      position: relative;
+    }
+    .pool-item.not-draggable .rijke-rij::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 6px;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent 0,
+        transparent 8px,
+        rgba(255, 255, 255, .015) 8px,
+        rgba(255, 255, 255, .015) 16px
+      );
+      pointer-events: none;
+    }
+
+    /* Sort-toggle: aan → groepen weg, flat op leeftijd */
+    body.sort-age .pool-list { display: flex; flex-direction: column; }
+    body.sort-age .group-header { display: none; }
+    body.sort-age .pool-item { order: var(--order, 0); }
+    .filter-chip {
+      padding: 4px 10px;
+      border-radius: 5px;
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      background: var(--surface-card);
+      color: var(--text-tertiary);
+      border: 1px solid var(--border-default);
+      transition: background 150ms, color 150ms, border-color 150ms;
+    }
+    .filter-chip:hover { color: var(--text-primary); }
+    .filter-chip.active {
+      background: rgba(255, 107, 0, .12);
+      color: var(--ow-accent);
+      border-color: rgba(255, 107, 0, .35);
+    }
+
+    /* Lijst */
+    .pool-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 4px var(--drawer-padding-x) 12px;
+    }
+    .group-header {
+      padding: 14px 2px 6px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--text-tertiary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .group-header:first-child { padding-top: 8px; }
+    .group-header .group-count { color: var(--text-secondary); font-weight: 700; }
+
+    .pool-item {
+      margin-bottom: 5px;
+    }
+    .pool-item:last-child { margin-bottom: 0; }
+
+    /* ─── RIJKE RIJ (volgt tokens) ─── */
+    .rijke-rij {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: var(--rij-gap);
+      width: var(--rij-width);
+      height: var(--rij-height);
+      padding: 0 0 0 var(--rij-padding-left);
+      background: transparent;
+      border: 1.5px solid var(--status-color);
+      border-radius: 6px;
+      overflow: visible;
+    }
+    /* Avatar size komt uit tokens.css (rijke-rij .sq-av stretch) */
+    .rijke-rij .col { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+    .rijke-rij .nm { font-size: 13px; font-weight: 700; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .rijke-rij .row2 { display: flex; align-items: center; gap: 4px; font-size: 8px; }
+    .rijke-rij .tb { color: var(--text-secondary); border: 1px solid var(--team-border); border-radius: 3px; padding: 1px 5px; font-weight: 600; }
+    .rijke-rij .tb-i { color: var(--indeling-text); border: 1px solid var(--indeling-border); border-radius: 3px; padding: 1px 5px; background: var(--indeling-bg); font-weight: 600; }
+    .rijke-rij .leeft-col {
+      width: var(--rij-leeftcol); height: 100%;
+      background: var(--leeftijd-17);
+      border-radius: 0 4px 4px 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      flex-shrink: 0; line-height: 1;
+    }
+    .rijke-rij .leeft-col .lb { color: #fff; font-size: 15px; font-weight: 800; text-shadow: 0 1px 2px rgba(0,0,0,.5); font-variant-numeric: tabular-nums; }
+    .rijke-rij .leeft-col .ld { color: rgba(255,255,255,.7); font-size: 9px; font-weight: 700; margin-top: 1px; font-variant-numeric: tabular-nums; }
+    .rijke-rij.st-stopt .nm { text-decoration: line-through; opacity: 0.7; }
+    .rijke-rij.st-ar .nm { color: #a8a8ad; }
+
+    /* Werkbord placeholder rechts */
+    .workbench-area {
+      flex: 1;
+      background: var(--surface-sunken);
+      padding: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    /* Scroll styling komt uit tokens.css .ow-scroll utility */
+  </style>
+</head>
+<body>
+  <div class="workbench">
+    <!-- ═══ DRAWER LINKS ═══ -->
+    <aside class="pool-drawer">
+      <!-- Header -->
+      <div class="pool-header">
+        <div class="pool-title">Spelerspool <span class="count">23</span></div>
+        <div class="pool-icon-btns">
+          <button class="icon-btn" title="Alleen dames">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <circle cx="12" cy="8" r="6"/>
+              <path d="M12 14v6M9 17h6"/>
+            </svg>
+          </button>
+          <button class="icon-btn" title="Alleen heren">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <circle cx="10" cy="14" r="6"/>
+              <path d="M20 4l-6 6M14 4h6v6"/>
+            </svg>
+          </button>
+          <button class="icon-btn" id="sort-btn" title="Sorteer op leeftijd" onclick="this.classList.toggle('active'); document.body.classList.toggle('sort-age');">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M7 4v16M4 7l3-3 3 3"/>
+              <path d="M17 20V4M14 17l3 3 3-3"/>
+            </svg>
+          </button>
+          <button class="icon-btn" title="Sluiten">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Zoekbalk -->
+      <div class="pool-search">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="text" placeholder="Zoek speler...">
+      </div>
+
+      <!-- Filter chips -->
+      <div class="pool-filters">
+        <button class="filter-chip active">Zonder team</button>
+        <button class="filter-chip">Ingedeeld</button>
+        <button class="filter-chip">AR</button>
+        <button class="filter-chip">Stoppers</button>
+        <button class="filter-chip">Alle</button>
+      </div>
+
+      <!-- Lijst -->
+      <div class="pool-list ow-scroll">
+        <div class="group-header">
+          <span>Dames</span>
+          <span class="group-count">8</span>
+        </div>
+
+        <div class="pool-item" style="--order: 1412;">
+          <div class="rijke-rij st-twijfelt">
+            <div class="sq-av vrouw">
+              <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="">
+              <div class="blessure"><svg viewBox="0 0 24 24"><path d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z"/></svg></div>
+            </div>
+            <div class="col">
+              <div class="nm">Noor de Bos</div>
+              <div class="row2"><span class="tb">B1</span><span class="tb-i">A1</span></div>
+            </div>
+            <span class="memo-attention bespreking">
+              <svg viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8 12h8M8 15h8M8 18h5"/></svg>
+            </span>
+            <div class="leeft-col" style="background: var(--leeftijd-14);"><span class="lb">14</span><span class="ld">.12</span></div>
+          </div>
+        </div>
+
+        <div class="pool-item" style="--order: 1603;">
+          <div class="rijke-rij">
+            <div class="sq-av vrouw"><img src="https://randomuser.me/api/portraits/women/12.jpg" alt=""></div>
+            <div class="col">
+              <div class="nm">Emma van Dijk</div>
+              <div class="row2"><span class="tb">A1</span><span class="tb-i">A1</span></div>
+            </div>
+            <div class="leeft-col" style="background: var(--leeftijd-16);"><span class="lb">16</span><span class="ld">.03</span></div>
+          </div>
+        </div>
+
+        <div class="pool-item" style="--order: 1267;">
+          <div class="rijke-rij">
+            <div class="sq-av vrouw">
+              <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="">
+              <div class="nieuw-sparkle"><svg viewBox="0 0 24 24"><path d="M12 1l2 9 9 2-9 2-2 9-2-9-9-2 9-2z"/></svg></div>
+            </div>
+            <div class="col">
+              <div class="nm">Lisa Meijer</div>
+              <div class="row2"><span class="tb">—</span><span class="tb-i">B2</span></div>
+            </div>
+            <div class="leeft-col" style="background: var(--leeftijd-12);"><span class="lb">12</span><span class="ld">.67</span></div>
+          </div>
+        </div>
+
+        <div class="group-header">
+          <span>Heren</span>
+          <span class="group-count">15</span>
+        </div>
+
+        <div class="pool-item" style="--order: 1741;">
+          <div class="rijke-rij">
+            <div class="sq-av"><img src="https://randomuser.me/api/portraits/men/32.jpg" alt=""></div>
+            <div class="col">
+              <div class="nm">Freek van der Laban</div>
+              <div class="row2"><span class="tb">A1</span><span class="tb-i">A1</span></div>
+            </div>
+            <span class="memo-attention open">
+              <svg viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8 12h8M8 15h8M8 18h5"/></svg>
+            </span>
+            <div class="leeft-col"><span class="lb">17</span><span class="ld">.41</span></div>
+          </div>
+        </div>
+
+        <div class="pool-item" style="--order: 873;">
+          <div class="rijke-rij">
+            <div class="sq-av"><img src="https://randomuser.me/api/portraits/men/45.jpg" alt=""></div>
+            <div class="col">
+              <div class="nm">Jens Klein</div>
+              <div class="row2"><span class="tb">E3</span><span class="tb-i">E3</span></div>
+            </div>
+            <div class="leeft-col" style="background: var(--leeftijd-8);"><span class="lb">8</span><span class="ld">.73</span></div>
+          </div>
+        </div>
+
+        <div class="pool-item not-draggable" style="--order: 1788;">
+          <div class="rijke-rij st-stopt">
+            <div class="sq-av"><img src="https://randomuser.me/api/portraits/men/72.jpg" alt=""></div>
+            <div class="col">
+              <div class="nm">Sven Kuipers</div>
+              <div class="row2"><span class="tb">A1</span><span class="tb-i">—</span></div>
+            </div>
+            <span class="memo-attention risico">
+              <svg viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8 12h8M8 15h8M8 18h5"/></svg>
+            </span>
+            <div class="leeft-col" style="background: var(--leeftijd-17);"><span class="lb">17</span><span class="ld">.88</span></div>
+          </div>
+        </div>
+
+        <div class="pool-item" style="--order: 1024;">
+          <div class="rijke-rij">
+            <div class="sq-av">
+              <img src="https://randomuser.me/api/portraits/men/18.jpg" alt="">
+              <div class="nieuw-sparkle"><svg viewBox="0 0 24 24"><path d="M12 1l2 9 9 2-9 2-2 9-2-9-9-2 9-2z"/></svg></div>
+            </div>
+            <div class="col">
+              <div class="nm">Tom Jansen</div>
+              <div class="row2"><span class="tb">—</span><span class="tb-i">E2</span></div>
+            </div>
+            <div class="leeft-col" style="background: var(--leeftijd-10);"><span class="lb">10</span><span class="ld">.24</span></div>
+          </div>
+        </div>
+
+        <div class="pool-item not-draggable" style="--order: 2458;">
+          <div class="rijke-rij st-ar">
+            <div class="sq-av"><img src="https://randomuser.me/api/portraits/men/68.jpg" alt=""></div>
+            <div class="col">
+              <div class="nm">Paul Bakker</div>
+              <div class="row2"><span class="tb">—</span><span class="tb-i">—</span></div>
+            </div>
+            <div class="leeft-col" style="background: var(--leeftijd-19);"><span class="lb">24</span><span class="ld">.58</span></div>
+          </div>
+        </div>
+
+        <div class="pool-item" style="--order: 1391;">
+          <div class="rijke-rij">
+            <div class="sq-av"><img src="https://randomuser.me/api/portraits/men/22.jpg" alt=""></div>
+            <div class="col">
+              <div class="nm">Mark van Beek</div>
+              <div class="row2"><span class="tb">C2</span><span class="tb-i">C1</span></div>
+            </div>
+            <span class="memo-attention opgelost">
+              <svg viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8 12h8M8 15h8M8 18h5"/></svg>
+            </span>
+            <div class="leeft-col" style="background: var(--leeftijd-13);"><span class="lb">13</span><span class="ld">.91</span></div>
+          </div>
+        </div>
+
+        <div class="pool-item" style="--order: 1532;">
+          <div class="rijke-rij">
+            <div class="sq-av"><img src="https://randomuser.me/api/portraits/men/55.jpg" alt=""></div>
+            <div class="col">
+              <div class="nm">Ruben Hoekstra</div>
+              <div class="row2"><span class="tb">A1</span><span class="tb-i">A1</span></div>
+            </div>
+            <div class="leeft-col" style="background: var(--leeftijd-15);"><span class="lb">15</span><span class="ld">.32</span></div>
+          </div>
+        </div>
+
+        <div class="pool-item" style="--order: 1147;">
+          <div class="rijke-rij">
+            <div class="sq-av"><img src="https://randomuser.me/api/portraits/men/8.jpg" alt=""></div>
+            <div class="col">
+              <div class="nm">Daan Vermeer</div>
+              <div class="row2"><span class="tb">B1</span><span class="tb-i">B1</span></div>
+            </div>
+            <div class="leeft-col" style="background: var(--leeftijd-11);"><span class="lb">11</span><span class="ld">.47</span></div>
+          </div>
+        </div>
+
+        <div class="pool-item" style="--order: 908;">
+          <div class="rijke-rij">
+            <div class="sq-av"><img src="https://randomuser.me/api/portraits/men/33.jpg" alt=""></div>
+            <div class="col">
+              <div class="nm">Niels Visser</div>
+              <div class="row2"><span class="tb">C1</span><span class="tb-i">C1</span></div>
+            </div>
+            <span class="memo-attention open">
+              <svg viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8 12h8M8 15h8M8 18h5"/></svg>
+            </span>
+            <div class="leeft-col" style="background: var(--leeftijd-9);"><span class="lb">9</span><span class="ld">.08</span></div>
+          </div>
+        </div>
+
+        <div class="pool-item" style="--order: 1675;">
+          <div class="rijke-rij">
+            <div class="sq-av"><img src="https://randomuser.me/api/portraits/men/12.jpg" alt=""></div>
+            <div class="col">
+              <div class="nm">Joris Smit</div>
+              <div class="row2"><span class="tb">A2</span><span class="tb-i">A1</span></div>
+            </div>
+            <div class="leeft-col" style="background: var(--leeftijd-16);"><span class="lb">16</span><span class="ld">.75</span></div>
+          </div>
+        </div>
+
+        <div class="pool-item" style="--order: 1822;">
+          <div class="rijke-rij st-twijfelt">
+            <div class="sq-av"><img src="https://randomuser.me/api/portraits/men/77.jpg" alt=""></div>
+            <div class="col">
+              <div class="nm">Kees Bakker</div>
+              <div class="row2"><span class="tb">A1</span><span class="tb-i">A1</span></div>
+            </div>
+            <div class="leeft-col" style="background: var(--leeftijd-18);"><span class="lb">18</span><span class="ld">.22</span></div>
+          </div>
+        </div>
+
+        <div class="pool-item" style="--order: 1304;">
+          <div class="rijke-rij">
+            <div class="sq-av"><img src="https://randomuser.me/api/portraits/men/40.jpg" alt=""></div>
+            <div class="col">
+              <div class="nm">Bas de Jong</div>
+              <div class="row2"><span class="tb">B2</span><span class="tb-i">B2</span></div>
+            </div>
+            <span class="memo-attention bespreking">
+              <svg viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8 12h8M8 15h8M8 18h5"/></svg>
+            </span>
+            <div class="leeft-col" style="background: var(--leeftijd-13);"><span class="lb">13</span><span class="ld">.04</span></div>
+          </div>
+        </div>
+
+        <div class="pool-item" style="--order: 761;">
+          <div class="rijke-rij">
+            <div class="sq-av"><img src="https://randomuser.me/api/portraits/men/91.jpg" alt=""></div>
+            <div class="col">
+              <div class="nm">Stijn Mulder</div>
+              <div class="row2"><span class="tb">D1</span><span class="tb-i">D1</span></div>
+            </div>
+            <div class="leeft-col" style="background: var(--leeftijd-7);"><span class="lb">7</span><span class="ld">.61</span></div>
+          </div>
+        </div>
+
+        <div class="pool-item" style="--order: 689;">
+          <div class="rijke-rij">
+            <div class="sq-av"><img src="https://randomuser.me/api/portraits/men/25.jpg" alt=""></div>
+            <div class="col">
+              <div class="nm">Lars Kok</div>
+              <div class="row2"><span class="tb">E1</span><span class="tb-i">E1</span></div>
+            </div>
+            <div class="leeft-col" style="background: var(--leeftijd-6);"><span class="lb">6</span><span class="ld">.89</span></div>
+          </div>
+        </div>
+
+        <div class="pool-item" style="--order: 1712;">
+          <div class="rijke-rij">
+            <div class="sq-av"><img src="https://randomuser.me/api/portraits/men/61.jpg" alt=""></div>
+            <div class="col">
+              <div class="nm">Milan de Wit</div>
+              <div class="row2"><span class="tb">A1</span><span class="tb-i">A1</span></div>
+            </div>
+            <span class="memo-attention open">
+              <svg viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8 12h8M8 15h8M8 18h5"/></svg>
+            </span>
+            <div class="leeft-col" style="background: var(--leeftijd-17);"><span class="lb">17</span><span class="ld">.12</span></div>
+          </div>
+        </div>
+
+        <div class="pool-item not-draggable" style="--order: 1894;">
+          <div class="rijke-rij st-stopt">
+            <div class="sq-av"><img src="https://randomuser.me/api/portraits/men/85.jpg" alt=""></div>
+            <div class="col">
+              <div class="nm">Thijs Graaf</div>
+              <div class="row2"><span class="tb">A1</span><span class="tb-i">—</span></div>
+            </div>
+            <div class="leeft-col" style="background: var(--leeftijd-18);"><span class="lb">18</span><span class="ld">.94</span></div>
+          </div>
+        </div>
+
+        <div class="pool-item" style="--order: 1233;">
+          <div class="rijke-rij">
+            <div class="sq-av"><img src="https://randomuser.me/api/portraits/men/50.jpg" alt=""></div>
+            <div class="col">
+              <div class="nm">Bram Peters</div>
+              <div class="row2"><span class="tb">C2</span><span class="tb-i">C2</span></div>
+            </div>
+            <div class="leeft-col" style="background: var(--leeftijd-12);"><span class="lb">12</span><span class="ld">.33</span></div>
+          </div>
+        </div>
+
+        <div class="pool-item" style="--order: 1456;">
+          <div class="rijke-rij">
+            <div class="sq-av"><img src="https://randomuser.me/api/portraits/men/17.jpg" alt=""></div>
+            <div class="col">
+              <div class="nm">Finn van Loon</div>
+              <div class="row2"><span class="tb">B3</span><span class="tb-i">B2</span></div>
+            </div>
+            <div class="leeft-col" style="background: var(--leeftijd-14);"><span class="lb">14</span><span class="ld">.56</span></div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Werkbord-placeholder -->
+    <div class="workbench-area">
+      Werkbord-canvas (context voor de drawer)
+    </div>
+  </div>
+</body>
+</html>

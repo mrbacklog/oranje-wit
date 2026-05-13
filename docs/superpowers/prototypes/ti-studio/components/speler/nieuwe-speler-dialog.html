@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Nieuwe speler dialog · Speler-weergave</title>
+  <link rel="stylesheet" href="../../shared/tokens.css">
+  <style>
+    body { background: rgba(0,0,0,.7); display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+
+    /* ═══ Dialog ════════════════════════════════════════════════════ */
+    .dialog {
+      width: 400px; background: var(--surface-page);
+      border: 1px solid var(--border-default); border-radius: 14px;
+      overflow: hidden; box-shadow: 0 24px 80px rgba(0,0,0,.7);
+    }
+    .dlg-header {
+      padding: 18px 22px 14px;
+      border-bottom: 1px solid var(--border-light);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .dlg-header h2 { font-size: 16px; font-weight: 700; color: var(--text-primary); margin: 0; }
+    .dlg-close {
+      width: 28px; height: 28px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      background: none; border: 1px solid var(--border-default); color: var(--text-tertiary);
+      cursor: pointer; font-size: 14px; font-family: inherit;
+    }
+    .dlg-close:hover { background: rgba(255,255,255,.06); color: var(--text-primary); }
+
+    .dlg-body { padding: 18px 22px; display: flex; flex-direction: column; gap: 14px; }
+
+    .dlg-info {
+      padding: 10px 14px; border-radius: 8px;
+      background: rgba(59,130,246,.04); border: 1px solid rgba(59,130,246,.15);
+      font-size: 11px; color: var(--text-secondary); line-height: 1.5;
+    }
+
+    /* Form */
+    .form-field { display: flex; flex-direction: column; gap: 4px; }
+    .form-label {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--text-muted);
+    }
+    .form-input {
+      background: var(--surface-card); border: 1px solid var(--border-default); border-radius: 7px;
+      padding: 8px 12px; color: var(--text-primary); font-size: 13px;
+      outline: none; font-family: inherit; width: 100%; box-sizing: border-box;
+    }
+    .form-input:focus { border-color: rgba(255,107,0,.4); }
+    .form-input::placeholder { color: var(--text-muted); }
+
+    .form-row { display: flex; gap: 10px; }
+    .form-row .form-field { flex: 1; }
+
+    /* Gender toggle */
+    .gender-toggle { display: flex; gap: 0; }
+    .gender-btn {
+      flex: 1; padding: 8px; border: 1px solid var(--border-default);
+      background: var(--surface-card); color: var(--text-tertiary);
+      font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit;
+      transition: all 120ms; text-align: center;
+    }
+    .gender-btn:first-child { border-radius: 7px 0 0 7px; }
+    .gender-btn:last-child { border-radius: 0 7px 7px 0; border-left: none; }
+    .gender-btn.active.heer {
+      background: rgba(37,99,235,.12); border-color: rgba(37,99,235,.4);
+      color: var(--sexe-h);
+    }
+    .gender-btn.active.dame {
+      background: rgba(217,70,239,.12); border-color: rgba(217,70,239,.4);
+      color: var(--sexe-v);
+    }
+
+    /* Footer */
+    .dlg-footer {
+      padding: 14px 22px; border-top: 1px solid var(--border-light);
+      display: flex; align-items: center; justify-content: flex-end; gap: 8px;
+    }
+    .btn-cancel {
+      padding: 8px 16px; border-radius: 7px;
+      border: 1px solid var(--border-default); background: none;
+      color: var(--text-secondary); font-size: 12px; font-weight: 600;
+      cursor: pointer; font-family: inherit;
+    }
+    .btn-cancel:hover { background: rgba(255,255,255,.04); }
+    .btn-create {
+      padding: 8px 20px; border-radius: 7px; border: none;
+      background: var(--ow-accent); color: #fff;
+      font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit;
+    }
+    .btn-create:hover { background: #ff8533; }
+
+    /* Error */
+    .form-error {
+      padding: 8px 12px; border-radius: 6px;
+      background: rgba(239,68,68,.08); border: 1px solid rgba(239,68,68,.2);
+      color: #f87171; font-size: 12px; display: none;
+    }
+    .form-error.visible { display: block; }
+  </style>
+</head>
+<body>
+
+  <div class="dialog">
+    <div class="dlg-header">
+      <h2>Nieuwe speler</h2>
+      <button class="dlg-close">×</button>
+    </div>
+
+    <div class="dlg-body">
+      <div class="dlg-info">
+        Handmatig aangemaakt — deze speler staat niet in Sportlink. Gebruik dit voor potentiële nieuwe leden of gastspelers. Bij de volgende leden-sync wordt gekoppeld als de speler dan in Sportlink staat.
+      </div>
+
+      <div class="form-row">
+        <div class="form-field">
+          <span class="form-label">Roepnaam *</span>
+          <input class="form-input" placeholder="Bijv. Tim" value="Tim">
+        </div>
+        <div class="form-field" style="flex:.6">
+          <span class="form-label">Tussenvoegsel</span>
+          <input class="form-input" placeholder="Bijv. van der" value="van der">
+        </div>
+        <div class="form-field">
+          <span class="form-label">Achternaam *</span>
+          <input class="form-input" placeholder="Bijv. Berg" value="Berg">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-field">
+          <span class="form-label">Geboortedatum *</span>
+          <input class="form-input" type="date" value="2016-03-15">
+        </div>
+        <div class="form-field">
+          <span class="form-label">Geslacht *</span>
+          <div class="gender-toggle">
+            <button class="gender-btn heer active" onclick="selectGender(this,'heer')">Heer</button>
+            <button class="gender-btn dame" onclick="selectGender(this,'dame')">Dame</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-error" id="form-error">Vul alle verplichte velden in.</div>
+    </div>
+
+    <div class="dlg-footer">
+      <button class="btn-cancel">Annuleren</button>
+      <button class="btn-create">Aanmaken</button>
+    </div>
+  </div>
+
+  <script>
+    function selectGender(btn, type) {
+      document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+  </script>
+</body>
+</html>

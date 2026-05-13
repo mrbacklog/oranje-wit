@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Hover-card · Staf-weergave</title>
+  <link rel="stylesheet" href="tokens.css">
+  <style>
+    body { background: #050507; padding: 48px 40px; }
+    .row { display: flex; gap: 32px; flex-wrap: wrap; align-items: flex-start; }
+
+    .type-icoon { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .type-icoon svg { width: 100%; height: 100%; display: block; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .type-icoon.technisch    { color: var(--type-technisch); }
+    .type-icoon.medisch      { color: var(--type-medisch); }
+    .type-icoon.ondersteunend { color: var(--type-ondersteunend); }
+
+    /* ═══ STAF HOVER-CARD ═══════════════════════════════════════════ */
+    .shk {
+      width: 220px; border-radius: 12px; overflow: hidden;
+      background: linear-gradient(160deg, #1a1a1e 0%, #0c0c0f 55%, #121216 100%);
+      border: 2px solid rgba(255, 140, 0, .25);
+      box-shadow: 0 8px 32px rgba(0,0,0,.6), 0 0 20px rgba(255, 140, 0, .08);
+    }
+
+    /* Foto */
+    .shk-foto { position: relative; width: 100%; height: 160px; overflow: hidden; }
+    .shk-foto img { width: 100%; height: 100%; object-fit: cover; object-position: center 20%; filter: grayscale(1); display: block; }
+    .shk-foto::before { content: ''; position: absolute; inset: 0; background: var(--staf-accent); opacity: 0.1; mix-blend-mode: color; z-index: 1; pointer-events: none; }
+    .shk-foto::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 60%; background: linear-gradient(transparent, #0c0c0f); z-index: 2; pointer-events: none; }
+    .shk-foto .initialen-groot { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 48px; font-weight: 900; color: rgba(255, 140, 0, .2); background: var(--surface-card); }
+
+    /* Type-badge rechtsboven */
+    .shk-type-badge {
+      position: absolute; top: 10px; right: 10px; z-index: 5;
+      width: 28px; height: 28px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,.6); backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,.1);
+    }
+    .shk-type-badge .type-icoon { width: 16px; height: 16px; }
+
+    /* Memo linksboven */
+    .shk-memo { position: absolute; top: 10px; left: 10px; z-index: 5; }
+    .shk-memo .memo-attention { width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; filter: drop-shadow(0 1px 2px rgba(0,0,0,.5)); }
+    .shk-memo .memo-attention svg { width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .shk-memo .memo-attention.open { color: #eab308; }
+    .shk-memo .memo-attention.risico { color: #ef4444; }
+
+    /* Info */
+    .shk-info { position: relative; z-index: 1; padding: 12px 14px 14px; }
+    .shk-naam { font-size: 17px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.02em; margin-bottom: 4px; }
+    .shk-rol { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--staf-rol-text); margin-bottom: 10px; }
+    .shk-rol .type-icoon { width: 13px; height: 13px; }
+
+    /* Koppelingen */
+    .shk-section-title { font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 5px; }
+    .shk-koppelingen { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border-light); }
+    .shk-koppeling { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-primary); font-weight: 500; }
+    .shk-koppeling .dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+    .shk-koppeling .krol { font-size: 9px; color: var(--text-tertiary); margin-left: auto; display: flex; align-items: center; gap: 3px; }
+    .shk-koppeling .type-icoon { width: 10px; height: 10px; }
+
+    /* Historie — ruimte voor 5 rijen */
+    .shk-historie { display: flex; flex-direction: column; gap: 0; }
+    .shk-hist-entry { display: flex; align-items: baseline; gap: 8px; padding: 3px 0; border-bottom: 1px solid var(--border-light); font-size: 10px; }
+    .shk-hist-entry:last-child { border-bottom: none; }
+    .shk-hist-seizoen { color: var(--text-tertiary); font-variant-numeric: tabular-nums; min-width: 52px; flex-shrink: 0; font-weight: 600; }
+    .shk-hist-teams { display: flex; flex-direction: column; gap: 1px; flex: 1; }
+    .shk-hist-line { display: flex; align-items: center; gap: 4px; color: var(--text-secondary); }
+    .shk-hist-line .dot { width: 4px; height: 4px; border-radius: 50%; flex-shrink: 0; }
+    .shk-hist-line .hrol { font-size: 8px; color: var(--text-tertiary); margin-left: auto; display: flex; align-items: center; gap: 2px; }
+    .shk-hist-line .type-icoon { width: 8px; height: 8px; }
+
+    /* Speler-badge op hover-card */
+    .shk-speler-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 7px; border-radius: 4px;
+      font-size: 10px; font-weight: 500; color: var(--text-secondary);
+      background: rgba(255,255,255,.03); border: 1px solid var(--border-default);
+      margin-top: 6px;
+    }
+    .shk-speler-badge .shirt-sm {
+      width: 11px; height: 11px;
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+    .shk-speler-badge .shirt-sm svg {
+      width: 100%; height: 100%; stroke: currentColor; fill: none;
+      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    }
+  </style>
+</head>
+<body>
+  <h1>Hover-card</h1>
+  <p class="subtitle">Grote foto + type-badge + naam + rol + koppelingen + 5 seizoenen historie</p>
+
+  <h2>Voorbeelden</h2>
+  <div class="row">
+
+    <!-- ═══ Jan Vermeer — technisch, foto, 5 seizoenen ═══════════ -->
+    <div class="shk">
+      <div class="shk-foto">
+        <img src="https://randomuser.me/api/portraits/men/52.jpg" alt="">
+        <div class="shk-type-badge"><span class="type-icoon technisch"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span></div>
+      </div>
+      <div class="shk-info">
+        <div class="shk-naam">Jan Vermeer</div>
+        <div class="shk-rol"><span class="type-icoon technisch"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span> Hoofdtrainer</div>
+        <div class="shk-section-title">Huidige koppeling</div>
+        <div class="shk-koppelingen">
+          <div class="shk-koppeling"><span class="dot" style="background:var(--cat-blauw)"></span> OW 1 <span class="krol"><span class="type-icoon technisch"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span> Hoofdtrainer</span></div>
+        </div>
+        <div class="shk-section-title">Historie · 5 seizoenen</div>
+        <div class="shk-historie">
+          <div class="shk-hist-entry"><span class="shk-hist-seizoen">2025–26</span><div class="shk-hist-teams"><div class="shk-hist-line"><span class="dot" style="background:var(--cat-blauw)"></span> OW 1 <span class="hrol"><span class="type-icoon technisch"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span> Hoofdtr.</span></div></div></div>
+          <div class="shk-hist-entry"><span class="shk-hist-seizoen">2024–25</span><div class="shk-hist-teams"><div class="shk-hist-line"><span class="dot" style="background:var(--cat-blauw)"></span> OW 1 <span class="hrol"><span class="type-icoon technisch"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span> Hoofdtr.</span></div></div></div>
+          <div class="shk-hist-entry"><span class="shk-hist-seizoen">2023–24</span><div class="shk-hist-teams"><div class="shk-hist-line"><span class="dot" style="background:var(--cat-groen)"></span> OW 2 <span class="hrol"><span class="type-icoon technisch"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span> Coach</span></div></div></div>
+          <div class="shk-hist-entry"><span class="shk-hist-seizoen">2022–23</span><div class="shk-hist-teams"><div class="shk-hist-line"><span class="dot" style="background:var(--cat-groen)"></span> OW 2 <span class="hrol"><span class="type-icoon technisch"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span> Ass.</span></div></div></div>
+          <div class="shk-hist-entry"><span class="shk-hist-seizoen">2021–22</span><div class="shk-hist-teams"><div class="shk-hist-line"><span class="dot" style="background:var(--cat-senior)"></span> OW 3 <span class="hrol"><span class="type-icoon technisch"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span> Trainer</span></div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ Karin — technisch, meerdere teams, memo ══════════════ -->
+    <div class="shk">
+      <div class="shk-foto">
+        <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="">
+        <div class="shk-type-badge"><span class="type-icoon technisch"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span></div>
+        <div class="shk-memo"><span class="memo-attention open"><svg viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8 12h8M8 15h8M8 18h5"/></svg></span></div>
+      </div>
+      <div class="shk-info">
+        <div class="shk-naam">Karin Dijkstra</div>
+        <div class="shk-rol"><span class="type-icoon technisch"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span> Assistent-trainer</div>
+        <div class="shk-speler-badge"><span class="shirt-sm"><svg viewBox="0 0 24 24"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg></span> OW 2</div>
+        <div class="shk-section-title">Huidige koppelingen</div>
+        <div class="shk-koppelingen">
+          <div class="shk-koppeling"><span class="dot" style="background:var(--cat-blauw)"></span> OW 1 <span class="krol"><span class="type-icoon technisch"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span> Ass.</span></div>
+          <div class="shk-koppeling"><span class="dot" style="background:var(--cat-groen)"></span> OW 2 <span class="krol"><span class="type-icoon technisch"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span> Coach</span></div>
+        </div>
+        <div class="shk-section-title">Historie · 4 seizoenen</div>
+        <div class="shk-historie">
+          <div class="shk-hist-entry"><span class="shk-hist-seizoen">2025–26</span><div class="shk-hist-teams"><div class="shk-hist-line"><span class="dot" style="background:var(--cat-blauw)"></span> OW 1 <span class="hrol"><span class="type-icoon technisch"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span> Ass.</span></div></div></div>
+          <div class="shk-hist-entry"><span class="shk-hist-seizoen">2024–25</span><div class="shk-hist-teams"><div class="shk-hist-line"><span class="dot" style="background:var(--cat-groen)"></span> OW 2 <span class="hrol"><span class="type-icoon technisch"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span> Trainer</span></div></div></div>
+          <div class="shk-hist-entry"><span class="shk-hist-seizoen">2023–24</span><div class="shk-hist-teams"><div class="shk-hist-line"><span class="dot" style="background:var(--cat-senior)"></span> OW 3 <span class="hrol"><span class="type-icoon technisch"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span> Coach</span></div></div></div>
+          <div class="shk-hist-entry"><span class="shk-hist-seizoen">2022–23</span><div class="shk-hist-teams"><div class="shk-hist-line"><span class="dot" style="background:var(--cat-senior)"></span> OW 3 <span class="hrol"><span class="type-icoon ondersteunend"><svg viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span> Leider</span></div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ Laura — medisch, initialen, memo risico ══════════════ -->
+    <div class="shk">
+      <div class="shk-foto">
+        <div class="initialen-groot">LS</div>
+        <div class="shk-type-badge"><span class="type-icoon medisch"><svg viewBox="0 0 24 24"><path d="M12 11v4"/><path d="M14 13h-4"/><path d="M16 6V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><path d="M18 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Z"/></svg></span></div>
+        <div class="shk-memo"><span class="memo-attention risico"><svg viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8 12h8M8 15h8M8 18h5"/></svg></span></div>
+      </div>
+      <div class="shk-info">
+        <div class="shk-naam">Laura Smit</div>
+        <div class="shk-rol"><span class="type-icoon medisch"><svg viewBox="0 0 24 24"><path d="M12 11v4"/><path d="M14 13h-4"/><path d="M16 6V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><path d="M18 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Z"/></svg></span> Verzorger</div>
+        <div class="shk-section-title">Huidige koppeling</div>
+        <div class="shk-koppelingen">
+          <div class="shk-koppeling"><span class="dot" style="background:var(--cat-blauw)"></span> OW 1 <span class="krol"><span class="type-icoon medisch"><svg viewBox="0 0 24 24"><path d="M12 11v4"/><path d="M14 13h-4"/><path d="M16 6V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><path d="M18 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Z"/></svg></span> Verzorger</span></div>
+        </div>
+        <div class="shk-section-title">Historie · 2 seizoenen</div>
+        <div class="shk-historie">
+          <div class="shk-hist-entry"><span class="shk-hist-seizoen">2025–26</span><div class="shk-hist-teams"><div class="shk-hist-line"><span class="dot" style="background:var(--cat-blauw)"></span> OW 1 <span class="hrol"><span class="type-icoon medisch"><svg viewBox="0 0 24 24"><path d="M12 11v4"/><path d="M14 13h-4"/><path d="M16 6V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><path d="M18 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2Z"/></svg></span> Verzorger</span></div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ Henk — ondersteunend, foto ═══════════════════════════ -->
+    <div class="shk">
+      <div class="shk-foto">
+        <img src="https://randomuser.me/api/portraits/men/41.jpg" alt="">
+        <div class="shk-type-badge"><span class="type-icoon ondersteunend"><svg viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span></div>
+      </div>
+      <div class="shk-info">
+        <div class="shk-naam">Henk Vos</div>
+        <div class="shk-rol"><span class="type-icoon ondersteunend"><svg viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span> Leider</div>
+        <div class="shk-speler-badge"><span class="shirt-sm"><svg viewBox="0 0 24 24"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg></span> OW A1</div>
+        <div class="shk-section-title">Huidige koppelingen</div>
+        <div class="shk-koppelingen">
+          <div class="shk-koppeling"><span class="dot" style="background:var(--cat-geel)"></span> OW A1 <span class="krol"><span class="type-icoon ondersteunend"><svg viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span> Leider</span></div>
+          <div class="shk-koppeling"><span class="dot" style="background:var(--cat-oranje)"></span> OW B1 <span class="krol"><span class="type-icoon ondersteunend"><svg viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span> Leider</span></div>
+        </div>
+        <div class="shk-section-title">Historie · 5 seizoenen</div>
+        <div class="shk-historie">
+          <div class="shk-hist-entry"><span class="shk-hist-seizoen">2025–26</span><div class="shk-hist-teams"><div class="shk-hist-line"><span class="dot" style="background:var(--cat-oranje)"></span> OW B1 <span class="hrol"><span class="type-icoon technisch"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span> Trainer</span></div></div></div>
+          <div class="shk-hist-entry"><span class="shk-hist-seizoen">2024–25</span><div class="shk-hist-teams"><div class="shk-hist-line"><span class="dot" style="background:var(--cat-rood)"></span> OW C1 <span class="hrol"><span class="type-icoon technisch"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span> Coach</span></div></div></div>
+          <div class="shk-hist-entry"><span class="shk-hist-seizoen">2023–24</span><div class="shk-hist-teams"><div class="shk-hist-line"><span class="dot" style="background:var(--cat-rood)"></span> OW C1 <span class="hrol"><span class="type-icoon ondersteunend"><svg viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span> Leider</span></div></div></div>
+          <div class="shk-hist-entry"><span class="shk-hist-seizoen">2022–23</span><div class="shk-hist-teams"><div class="shk-hist-line"><span class="dot" style="background:var(--cat-geel)"></span> OW A1 <span class="hrol"><span class="type-icoon ondersteunend"><svg viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span> Leider</span></div></div></div>
+          <div class="shk-hist-entry"><span class="shk-hist-seizoen">2021–22</span><div class="shk-hist-teams"><div class="shk-hist-line"><span class="dot" style="background:var(--cat-geel)"></span> OW A1 <span class="hrol"><span class="type-icoon ondersteunend"><svg viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span> Begeleider</span></div></div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

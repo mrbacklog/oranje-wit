@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Team detail-drawer · Team-weergave</title>
+  <link rel="stylesheet" href="../../shared/tokens.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      padding: 0;
+      background: #050507;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    /* Detail-drawer — dit is het detail-panel BINNEN de TeamDrawer
+       wanneer een team geselecteerd is. Toont:
+       1. Statistiekstrip (PlatteTeamKaart)
+       2. ConfiguratieForm (categorie / kleur / niveau)
+       3. ValidatieLijst
+       4. SelectieKoppeling (als gekoppeld: naam, bundel-toggle, ontkoppel)
+       5. Acties (hernoemen, verwijderen) */
+    .team-detail-drawer {
+      width: 420px;
+      height: 100vh;
+      max-height: 720px;
+      background: var(--surface-page);
+      border: 1px solid var(--border-light);
+      border-radius: 0 14px 14px 0;
+      display: flex;
+      flex-direction: column;
+      font-family: var(--font-body);
+      box-shadow: 20px 0 60px rgba(0, 0, 0, .7);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Hero-strook */
+    .tdd-hero {
+      position: relative;
+      padding: 18px 22px 16px 28px;
+      border-bottom: 1px solid var(--border-light);
+      background: linear-gradient(180deg, rgba(220, 38, 38, .12) 0%, transparent 100%);
+    }
+    .tdd-hero::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 5px;
+      background: var(--team-band-color, var(--cat-rood));
+    }
+    .team-detail-drawer.cat-rood { --team-band-color: var(--cat-rood); }
+    .team-detail-drawer.cat-oranje { --team-band-color: var(--cat-oranje); }
+    .tdd-hero-naam {
+      font-size: 22px; font-weight: 800; color: var(--text-primary);
+      letter-spacing: -0.01em; line-height: 1;
+    }
+    .tdd-hero-sub {
+      font-size: 11px; color: var(--text-tertiary); margin-top: 4px;
+      text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600;
+    }
+    .tdd-hero-meta {
+      display: flex; align-items: center; gap: 10px; margin-top: 12px;
+    }
+    .tdd-hero-meta .tk-gender-count { font-size: 12px; padding: 3px 8px; }
+    .tdd-hero-meta .tk-gender-count svg { width: 12px; height: 12px; }
+    .tdd-hero-meta .tk-val-dot { width: 14px; height: 14px; }
+
+    .tdd-close {
+      position: absolute; top: 14px; right: 14px;
+      width: 28px; height: 28px; border-radius: 6px;
+      background: rgba(0,0,0,.4);
+      border: 1px solid rgba(255,255,255,.08);
+      color: var(--text-secondary); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .tdd-close svg { width: 14px; height: 14px; }
+
+    /* Body */
+    .tdd-body {
+      flex: 1; padding: 18px 20px; overflow-y: auto;
+    }
+
+    .tdd-section {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-tertiary);
+      margin: 14px 0 10px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .tdd-section:first-child { margin-top: 0; }
+    .tdd-section .cnt { color: var(--text-primary); font-weight: 800; }
+
+    .team-detail-drawer .normaal-rij { margin-bottom: 4px; }
+
+    /* Actie-knoppen */
+    .tdd-actions {
+      padding: 14px 20px;
+      border-top: 1px solid var(--border-light);
+      display: flex; gap: 8px;
+    }
+    .tdd-btn {
+      flex: 1; padding: 9px 12px; border-radius: 7px;
+      background: var(--surface-card); border: 1px solid var(--border-default);
+      color: var(--text-secondary); font-size: 12px; font-weight: 700;
+      cursor: pointer; font-family: inherit;
+    }
+    .tdd-btn.primary {
+      background: rgba(255,107,0,.15);
+      border-color: rgba(255,107,0,.45);
+      color: var(--ow-accent);
+    }
+    .tdd-btn:hover { background: rgba(255,255,255,.05); }
+    .tdd-btn.primary:hover { background: rgba(255,107,0,.22); }
+
+    .tdd-divider { height: 1px; background: var(--border-light); margin: 14px 0; }
+  </style>
+</head>
+<body>
+  <div class="team-detail-drawer cat-rood">
+    <button class="tdd-close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+
+    <!-- Hero -->
+    <div class="tdd-hero">
+      <div class="tdd-hero-naam">A1 · senioren</div>
+      <div class="tdd-hero-sub">Hoofdklasse · rood · achttal</div>
+      <div class="tdd-hero-meta">
+        <span class="tk-gender-count vrouw"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="6"/><path d="M12 14v6M9 17h6"/></svg>4</span>
+        <span class="tk-gender-count heer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10" cy="14" r="6"/><path d="M20 4l-6 6M14 4h6v6"/></svg>4</span>
+        <span style="flex: 1"></span>
+        <span class="tk-memo-flag"><span class="memo-attention open" style="width:12px;height:12px"><svg viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8 12h8M8 15h8M8 18h5"/></svg></span> 2</span>
+        <span class="tk-val-dot warn" title="Onder ideaalgrootte"></span>
+      </div>
+    </div>
+
+    <!-- Body: spelerslijst + validatie -->
+    <div class="tdd-body ow-scroll">
+
+      <div class="tdd-section">Dames <span class="cnt">4</span></div>
+      <div class="normaal-rij">
+        <div class="sq-av vrouw"><img src="https://randomuser.me/api/portraits/women/44.jpg" alt=""></div>
+        <span class="nm" style="flex:1; font-size:14px; font-weight:700; color:var(--text-primary);">Noor vd Bos</span>
+        <div class="leeft-col"><span class="lb">17</span><span class="ld">.41</span></div>
+      </div>
+      <div class="normaal-rij">
+        <div class="sq-av vrouw"><img src="https://randomuser.me/api/portraits/women/12.jpg" alt=""></div>
+        <span class="nm" style="flex:1; font-size:14px; font-weight:700; color:var(--text-primary);">Emma v Dijk</span>
+        <div class="leeft-col"><span class="lb">17</span><span class="ld">.88</span></div>
+      </div>
+      <div class="normaal-rij">
+        <div class="sq-av vrouw"><img src="https://randomuser.me/api/portraits/women/21.jpg" alt=""></div>
+        <span class="nm" style="flex:1; font-size:14px; font-weight:700; color:var(--text-primary);">Lisa Meijer</span>
+        <div class="leeft-col" style="background: var(--leeftijd-16);"><span class="lb">16</span><span class="ld">.03</span></div>
+      </div>
+      <div class="normaal-rij">
+        <div class="sq-av vrouw"><img src="https://randomuser.me/api/portraits/women/33.jpg" alt=""></div>
+        <span class="nm" style="flex:1; font-size:14px; font-weight:700; color:var(--text-primary);">Sara Jansen</span>
+        <div class="leeft-col"><span class="lb">17</span><span class="ld">.14</span></div>
+      </div>
+
+      <div class="tdd-section">Heren <span class="cnt">4</span></div>
+      <div class="normaal-rij">
+        <div class="sq-av"><img src="https://randomuser.me/api/portraits/men/32.jpg" alt=""></div>
+        <span class="nm" style="flex:1; font-size:14px; font-weight:700; color:var(--text-primary);">Freek vd Laban</span>
+        <span class="memo-attention open"><svg viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8 12h8M8 15h8M8 18h5"/></svg></span>
+        <div class="leeft-col"><span class="lb">17</span><span class="ld">.41</span></div>
+      </div>
+      <div class="normaal-rij">
+        <div class="sq-av"><img src="https://randomuser.me/api/portraits/men/45.jpg" alt=""></div>
+        <span class="nm" style="flex:1; font-size:14px; font-weight:700; color:var(--text-primary);">Tom Jansen</span>
+        <div class="leeft-col"><span class="lb">17</span><span class="ld">.62</span></div>
+      </div>
+      <div class="normaal-rij st-twijfelt">
+        <div class="sq-av">
+          <img src="https://randomuser.me/api/portraits/men/72.jpg" alt="">
+          <div class="blessure"><svg viewBox="0 0 24 24"><path d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z"/></svg></div>
+        </div>
+        <span class="nm" style="flex:1; font-size:14px; font-weight:700; color:var(--text-primary);">Sven Kuipers</span>
+        <div class="leeft-col"><span class="lb">17</span><span class="ld">.88</span></div>
+      </div>
+      <div class="normaal-rij">
+        <div class="sq-av">
+          <img src="https://randomuser.me/api/portraits/men/18.jpg" alt="">
+          <div class="nieuw-sparkle"><svg viewBox="0 0 24 24"><path d="M12 2l2 7h7l-5.5 4 2 7L12 16l-5.5 4 2-7L3 9h7z"/></svg></div>
+        </div>
+        <span class="nm" style="flex:1; font-size:14px; font-weight:700; color:var(--text-primary);">Milan de Wit</span>
+        <div class="leeft-col"><span class="lb">17</span><span class="ld">.12</span></div>
+      </div>
+
+      <div class="tdd-divider"></div>
+
+      <!-- Staf -->
+      <div class="tdd-section">Staf <span class="cnt">2</span></div>
+      <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px;">
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 11px;">
+          <span style="width: 6px; height: 6px; border-radius: 2px; background: #a78bfa; flex-shrink: 0;"></span>
+          <span style="color: var(--text-primary); font-weight: 600;">Joris Klaassen</span>
+          <span style="color: var(--text-tertiary);">— hoofdcoach</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 11px;">
+          <span style="width: 6px; height: 6px; border-radius: 2px; background: #a78bfa; flex-shrink: 0;"></span>
+          <span style="color: var(--text-primary); font-weight: 600;">Eva Meijer</span>
+          <span style="color: var(--text-tertiary);">— assistent</span>
+        </div>
+      </div>
+
+      <div class="tdd-divider"></div>
+
+      <!-- Validatie -->
+      <div class="tdd-section">Validatie <span class="cnt">2</span></div>
+      <div class="val-item warn">
+        <div class="icn">⚠</div>
+        <div class="body">
+          <div class="regel">Onder ideaalgrootte</div>
+          <div class="desc">Team heeft 8 spelers, ideaal is 10.</div>
+        </div>
+      </div>
+      <div class="val-item ok">
+        <div class="icn">✓</div>
+        <div class="body">
+          <div class="regel">Geslachtsverdeling oké</div>
+          <div class="desc">4 dames, 4 heren — perfect voor achttal.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="tdd-actions">
+      <button class="tdd-btn">Bewerken</button>
+      <button class="tdd-btn primary">Team openen</button>
+    </div>
+  </div>
+</body>
+</html>

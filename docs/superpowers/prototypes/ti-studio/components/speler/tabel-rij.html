@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Tabel-rij · Speler-weergave</title>
+  <link rel="stylesheet" href="../../shared/tokens.css">
+  <style>
+    .tabel-wrap {
+      background: var(--surface-page);
+      border-radius: 8px;
+      padding: 18px 22px;
+      max-width: 980px;
+    }
+    .tabel-header {
+      display: grid;
+      grid-template-columns: 60px 1fr 130px 90px 90px 110px 56px 60px;
+      gap: 14px;
+      padding: 10px 16px;
+      font-size: 9px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+      border-bottom: 1px solid var(--surface-card);
+    }
+    .tabel-rij {
+      position: relative;
+      display: grid;
+      grid-template-columns: 60px 1fr 130px 90px 90px 110px 56px 60px;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 16px;
+      background: transparent;
+      border-left: 3px solid var(--status-color);
+      border-bottom: 1px solid var(--border-light);
+      overflow: visible;
+    }
+    .tabel-rij .sq-av { width: 46px; height: 46px; }
+    .tabel-rij .nm { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+    .tabel-rij .team {
+      font-size: 12px; color: var(--text-secondary);
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 8px; border-radius: 4px; cursor: pointer;
+    }
+    .tabel-rij .team::after { content: '▾'; font-size: 10px; opacity: 0.6; margin-left: 2px; }
+    .tabel-rij .team:hover { background: rgba(255,255,255,.06); }
+    .tabel-rij .tb-ind-empty {
+      color: rgba(255,107,0,.7);
+      border: 1px dashed rgba(255,107,0,.4);
+      padding: 1px 6px; border-radius: 3px;
+      font-weight: 700; font-size: 11px;
+    }
+    .tabel-rij .tb-ind-empty::before { content: '+'; margin-right: 2px; font-weight: 800; }
+    .tabel-rij .status-txt {
+      font-size: 12px; color: var(--status-beschikbaar); font-weight: 600;
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 8px; border-radius: 4px; cursor: pointer;
+    }
+    .tabel-rij .status-txt::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--status-beschikbaar); }
+    .tabel-rij .status-txt::after { content: '▾'; font-size: 10px; opacity: 0.6; margin-left: 2px; }
+    .tabel-rij .status-txt:hover { background: rgba(255,255,255,.06); }
+    .tabel-rij .gezien { font-size: 16px; color: var(--status-beschikbaar); text-align: center; }
+    .tabel-rij .leeft-col {
+      height: 44px; width: 54px;
+      background: var(--leeftijd-17);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      border-radius: 3px;
+      line-height: 1;
+    }
+    .tabel-rij .leeft-col .lb { color: #fff; font-size: 16px; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .tabel-rij .leeft-col .ld { color: rgba(255,255,255,.7); font-size: 9px; font-weight: 700; margin-top: 1px; font-variant-numeric: tabular-nums; }
+
+    /* Memo-cell (kolom) */
+    .tabel-rij .memo-cell {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-size: 12px; font-weight: 600;
+      padding: 4px 10px; border-radius: 4px; line-height: 1;
+    }
+    .tabel-rij .memo-cell .icn { width: 14px; height: 14px; font-size: 13px; flex-shrink: 0; text-align: center; }
+    .tabel-rij .memo-cell.geen { color: var(--text-muted); padding-left: 0; }
+    .tabel-rij .memo-cell.open { color: var(--memo-open); background: rgba(253,224,71,.1); border: 1px solid rgba(253,224,71,.3); }
+    .tabel-rij .memo-cell.bespreking { color: var(--memo-bespreking); background: rgba(250,204,21,.12); border: 1px solid rgba(250,204,21,.4); }
+    .tabel-rij .memo-cell.risico { color: #c29a5c; background: rgba(194,154,92,.1); border: 1px solid rgba(225,29,72,.4); }
+    .tabel-rij .memo-cell.opgelost { color: #8a7a5c; background: rgba(68,64,60,.4); border: 1px solid rgba(255,255,255,.08); }
+
+    /* Status-varianten */
+    .tabel-rij.st-nieuw { border-left-color: var(--status-nieuw); }
+    .tabel-rij.st-nieuw .status-txt { color: var(--status-nieuw); }
+    .tabel-rij.st-nieuw .status-txt::before { background: var(--status-nieuw); }
+    .tabel-rij.st-twijfelt { border-left-color: var(--status-twijfelt); }
+    .tabel-rij.st-twijfelt .status-txt { color: var(--status-twijfelt); }
+    .tabel-rij.st-twijfelt .status-txt::before { background: var(--status-twijfelt); }
+    .tabel-rij.st-stopt { border-left-color: var(--status-stopt); }
+    .tabel-rij.st-stopt .status-txt { color: var(--status-stopt); }
+    .tabel-rij.st-stopt .status-txt::before { background: var(--status-stopt); }
+    .tabel-rij.st-stopt .nm { text-decoration: line-through; opacity: 0.7; }
+    .tabel-rij.st-ar { border-left-color: var(--status-ar); }
+    .tabel-rij.st-ar .status-txt { color: var(--status-ar); }
+    .tabel-rij.st-ar .status-txt::before { background: var(--status-ar); }
+    .tabel-rij.st-ar .nm { color: #a8a8ad; }
+    .tabel-rij.st-ar .sq-av { opacity: 0.85; }
+  </style>
+</head>
+<body>
+  <h1>Tabel-rij</h1>
+  <p class="subtitle">Dense data-view op /personen · 8 kolommen: Foto · Naam · Status · Huidig · Indeling · Memo · Gezien · Leeftijd · inline bewerkbaar</p>
+
+  <h2>Volledige tabel · 5 voorbeeldspelers</h2>
+  <div class="tabel-wrap">
+    <div class="tabel-header">
+      <div>Foto</div><div>Naam</div><div>Status</div><div>Huidig</div><div>Indeling</div><div>Memo</div><div>Gezien</div><div style="text-align:right">Leeft.</div>
+    </div>
+
+    <div class="tabel-rij">
+      <div class="sq-av"><img src="https://randomuser.me/api/portraits/men/32.jpg" alt=""></div>
+      <div class="nm">Freek van der Laban</div>
+      <div class="status-txt">Beschikbaar</div>
+      <div class="team">A1</div>
+      <div class="team">A1</div>
+      <div class="memo-cell open"><span class="icn">●</span>Open</div>
+      <div class="gezien">●</div>
+      <div class="leeft-col"><span class="lb">17</span><span class="ld">.41</span></div>
+    </div>
+
+    <div class="tabel-rij st-twijfelt">
+      <div class="sq-av vrouw"><img src="https://randomuser.me/api/portraits/women/44.jpg" alt=""></div>
+      <div class="nm">Noor de Bos</div>
+      <div class="status-txt">Twijfelt</div>
+      <div class="team">B1</div>
+      <div class="tb-ind-empty">Indeling</div>
+      <div class="memo-cell bespreking"><span class="icn">◐</span>Bespreking</div>
+      <div class="gezien">●</div>
+      <div class="leeft-col" style="background: var(--leeftijd-14);"><span class="lb">14</span><span class="ld">.12</span></div>
+    </div>
+
+    <div class="tabel-rij st-nieuw">
+      <div class="sq-av">
+        <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="">
+        <div class="nieuw-sparkle"><svg viewBox="0 0 24 24"><path d="M12 1l2 9 9 2-9 2-2 9-2-9-9-2 9-2z"/></svg></div>
+      </div>
+      <div class="nm">Tom Jansen</div>
+      <div class="status-txt">Nieuw</div>
+      <div class="team">—</div>
+      <div class="team">E2</div>
+      <div class="memo-cell geen">—</div>
+      <div class="gezien">●</div>
+      <div class="leeft-col" style="background: var(--leeftijd-10);"><span class="lb">10</span><span class="ld">.24</span></div>
+    </div>
+
+    <div class="tabel-rij">
+      <div class="sq-av"><img src="https://randomuser.me/api/portraits/men/72.jpg" alt=""></div>
+      <div class="nm">Jens Klein</div>
+      <div class="status-txt">Beschikbaar</div>
+      <div class="team">E3</div>
+      <div class="team">E3</div>
+      <div class="memo-cell risico"><span class="icn">⚠</span>Risico</div>
+      <div class="gezien">●</div>
+      <div class="leeft-col" style="background: var(--leeftijd-8);"><span class="lb">8</span><span class="ld">.73</span></div>
+    </div>
+
+    <div class="tabel-rij st-ar">
+      <div class="sq-av vrouw"><img src="https://randomuser.me/api/portraits/women/12.jpg" alt=""></div>
+      <div class="nm">Anna Meijer</div>
+      <div class="status-txt">Reserve</div>
+      <div class="team">—</div>
+      <div class="tb-ind-empty">Indeling</div>
+      <div class="memo-cell opgelost"><span class="icn">✓</span>Opgelost</div>
+      <div class="gezien">●</div>
+      <div class="leeft-col" style="background: var(--leeftijd-19);"><span class="lb">23</span><span class="ld">.14</span></div>
+    </div>
+  </div>
+</body>
+</html>

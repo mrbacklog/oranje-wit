@@ -42,8 +42,8 @@
 
 body {
   font-family: 'Inter', system-ui, sans-serif;
-  background: var(--bg-0);
-  color: var(--text-1);
+  background: var(--surface-sunken);
+  color: var(--text-primary);
   min-height: 100vh;
   padding: 48px 40px 120px;
   line-height: 1.4;
@@ -55,7 +55,7 @@ body {
 .page-header {
   max-width: 1280px;
   margin: 0 auto 56px;
-  border-bottom: 1px solid var(--border-0);
+  border-bottom: 1px solid var(--border-light);
   padding-bottom: 28px;
 }
 .page-header .badge {
@@ -74,12 +74,12 @@ body {
 .page-header h1 {
   font-size: 28px;
   font-weight: 700;
-  color: var(--text-1);
+  color: var(--text-primary);
   margin-bottom: 8px;
 }
 .page-header p {
   font-size: 14px;
-  color: var(--text-2);
+  color: var(--text-secondary);
 }
 .page-header .decision {
   margin-top: 16px;
@@ -94,7 +94,7 @@ body {
   border-radius: 20px;
   background: rgba(34,197,94,.12);
   border: 1px solid rgba(34,197,94,.3);
-  color: var(--ok);
+  color: var(--color-success-500);
 }
 
 /* ================================================================
@@ -109,24 +109,24 @@ body {
   font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: var(--text-3);
+  color: var(--text-tertiary);
   margin-bottom: 4px;
 }
 .section-title {
   font-size: 20px;
   font-weight: 600;
-  color: var(--text-1);
+  color: var(--text-primary);
   margin-bottom: 6px;
 }
 .section-desc {
   font-size: 13px;
-  color: var(--text-2);
+  color: var(--text-secondary);
   margin-bottom: 28px;
   max-width: 640px;
 }
 .section-divider {
   height: 1px;
-  background: var(--border-0);
+  background: var(--border-light);
   margin-bottom: 28px;
 }
 
@@ -146,12 +146,12 @@ body {
 }
 .anno-label {
   font-size: 10px;
-  color: var(--text-3);
+  color: var(--text-tertiary);
   font-family: 'Inter', monospace;
   white-space: nowrap;
 }
 .anno-label b {
-  color: var(--text-2);
+  color: var(--text-secondary);
   font-weight: 600;
 }
 .anno-arrow {
@@ -159,11 +159,11 @@ body {
   align-items: center;
   gap: 6px;
   font-size: 10px;
-  color: var(--text-3);
+  color: var(--text-tertiary);
 }
 .anno-line {
   width: 1px;
-  background: var(--border-1);
+  background: var(--border-default);
   flex-shrink: 0;
 }
 .anno-brace {
@@ -180,13 +180,13 @@ body {
 }
 .anno-bracket-body {
   width: 1px;
-  background: var(--border-1);
+  background: var(--border-default);
   flex: 1;
 }
 .anno-bracket-tip {
   width: 8px;
   height: 1px;
-  background: var(--border-1);
+  background: var(--border-default);
 }
 
 /* ================================================================
@@ -212,15 +212,15 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: var(--bg-1);
-  border-bottom: 1px solid var(--border-0);
+  background: var(--surface-page);
+  border-bottom: 1px solid var(--border-light);
   position: relative;
   cursor: pointer;
   transition: background 150ms ease;
   overflow: hidden;
 }
 .speler-kaart:hover {
-  background: var(--bg-2);
+  background: var(--surface-card);
 }
 .speler-kaart:last-child {
   border-bottom: none;
@@ -281,7 +281,7 @@ body {
 .sk-naam {
   font-size: 13px;
   font-weight: 600;
-  color: var(--text-1);
+  color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -291,7 +291,7 @@ body {
 }
 .sk-naam.doorgestreept {
   text-decoration: line-through;
-  color: var(--text-3);
+  color: var(--text-tertiary);
 }
 .sk-badges {
   display: flex;
@@ -307,7 +307,7 @@ body {
   line-height: 1.4;
   letter-spacing: .3px;
 }
-.sk-badge.nieuw    { background: rgba(34,197,94,.15); color: var(--ok); border: 1px solid rgba(34,197,94,.3); }
+.sk-badge.nieuw    { background: rgba(34,197,94,.15); color: var(--color-success-500); border: 1px solid rgba(34,197,94,.3); }
 .sk-badge.twijfelt { background: rgba(234,179,8,.15); color: var(--warn); border: 1px solid rgba(234,179,8,.3); }
 .sk-badge.afgemeld { background: rgba(239,68,68,.15); color: var(--err); border: 1px solid rgba(239,68,68,.3); }
 .sk-badge.gepind   { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent-border); }
@@ -327,7 +327,7 @@ body {
 }
 .sk-leeftijd {
   font-size: 10px;
-  color: var(--text-3);
+  color: var(--text-tertiary);
   font-weight: 400;
   line-height: 1;
   flex-shrink: 0;
@@ -348,8 +348,8 @@ body {
 /* Huidig team: neutraal grijs */
 .sk-chip.huidig {
   background: transparent;
-  border: 1px solid var(--border-1);
-  color: var(--text-3);
+  border: 1px solid var(--border-default);
+  color: var(--text-tertiary);
 }
 /* Ingedeeld in: oranje accent */
 .sk-chip.ingedeeld {
@@ -360,8 +360,8 @@ body {
 /* Niet ingedeeld */
 .sk-chip.leeg {
   background: transparent;
-  border: 1px dashed var(--border-0);
-  color: var(--text-3);
+  border: 1px dashed var(--border-light);
+  color: var(--text-tertiary);
   letter-spacing: 0;
 }
 
@@ -374,8 +374,8 @@ body {
    TEAMKAART
    ================================================================ */
 .team-kaart {
-  background: var(--bg-1);
-  border: 1px solid var(--border-0);
+  background: var(--surface-page);
+  border: 1px solid var(--border-light);
   border-radius: 10px;
   overflow: hidden;
   display: flex;
@@ -388,14 +388,14 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: var(--bg-2);
-  border-bottom: 1px solid var(--border-0);
+  background: var(--surface-card);
+  border-bottom: 1px solid var(--border-light);
   flex-shrink: 0;
 }
 .tk-teamnaam {
   font-size: 13px;
   font-weight: 700;
-  color: var(--text-1);
+  color: var(--text-primary);
   display: flex;
   align-items: center;
   gap: 5px;
@@ -404,14 +404,14 @@ body {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--ok);
+  background: var(--color-success-500);
   flex-shrink: 0;
 }
 .tk-tellers {
   display: flex;
   gap: 8px;
   font-size: 11px;
-  color: var(--text-2);
+  color: var(--text-secondary);
 }
 .tk-teller { display: flex; align-items: center; gap: 3px; }
 
@@ -420,8 +420,8 @@ body {
   padding: 0 10px;
   display: flex;
   align-items: center;
-  background: var(--bg-0);
-  border-bottom: 1px solid var(--border-0);
+  background: var(--surface-sunken);
+  border-bottom: 1px solid var(--border-light);
   flex-shrink: 0;
 }
 .tk-sub-label {
@@ -429,7 +429,7 @@ body {
   font-weight: 700;
   letter-spacing: .6px;
   text-transform: uppercase;
-  color: var(--text-3);
+  color: var(--text-tertiary);
 }
 
 .tk-footer {
@@ -438,13 +438,13 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: var(--bg-2);
-  border-top: 1px solid var(--border-0);
+  background: var(--surface-card);
+  border-top: 1px solid var(--border-light);
   flex-shrink: 0;
 }
 .tk-footer-stat {
   font-size: 11px;
-  color: var(--text-2);
+  color: var(--text-secondary);
 }
 
 /* Achtal: twee kolommen naast elkaar */
@@ -458,7 +458,7 @@ body {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  border-right: 1px solid var(--border-0);
+  border-right: 1px solid var(--border-light);
 }
 .tk-kolom:last-child {
   border-right: none;
@@ -470,8 +470,8 @@ body {
 .spelerspool {
   width: 224px;
   height: 600px;
-  background: var(--bg-1);
-  border: 1px solid var(--border-0);
+  background: var(--surface-page);
+  border: 1px solid var(--border-light);
   border-radius: 10px;
   overflow: hidden;
   display: flex;
@@ -479,13 +479,13 @@ body {
 }
 .pool-header {
   padding: 10px 12px 8px;
-  border-bottom: 1px solid var(--border-0);
+  border-bottom: 1px solid var(--border-light);
   flex-shrink: 0;
 }
 .pool-title {
   font-size: 13px;
   font-weight: 700;
-  color: var(--text-1);
+  color: var(--text-primary);
   margin-bottom: 8px;
 }
 .pool-filters {
@@ -498,8 +498,8 @@ body {
   font-weight: 600;
   padding: 2px 8px;
   border-radius: 20px;
-  border: 1px solid var(--border-1);
-  color: var(--text-3);
+  border: 1px solid var(--border-default);
+  color: var(--text-tertiary);
   background: transparent;
   letter-spacing: .2px;
 }
@@ -518,9 +518,9 @@ body {
   font-weight: 700;
   letter-spacing: .6px;
   text-transform: uppercase;
-  color: var(--text-3);
-  background: var(--bg-0);
-  border-bottom: 1px solid var(--border-0);
+  color: var(--text-tertiary);
+  background: var(--surface-sunken);
+  border-bottom: 1px solid var(--border-light);
   position: sticky;
   top: 0;
 }
@@ -559,25 +559,25 @@ body {
 .maten-tabel th, .maten-tabel td {
   padding: 8px 16px;
   text-align: left;
-  border-bottom: 1px solid var(--border-0);
+  border-bottom: 1px solid var(--border-light);
 }
 .maten-tabel th {
   font-size: 10px;
   font-weight: 700;
   letter-spacing: .8px;
   text-transform: uppercase;
-  color: var(--text-3);
+  color: var(--text-tertiary);
 }
 .maten-tabel td:first-child {
-  color: var(--text-2);
+  color: var(--text-secondary);
 }
 .maten-tabel td:last-child {
   font-weight: 600;
-  color: var(--text-1);
+  color: var(--text-primary);
   font-variant-numeric: tabular-nums;
 }
 .maten-tabel tr:hover td {
-  background: var(--bg-2);
+  background: var(--surface-card);
 }
 
 /* ================================================================
@@ -590,7 +590,7 @@ body {
 }
 .anno-sidebar {
   font-size: 10px;
-  color: var(--text-3);
+  color: var(--text-tertiary);
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -602,37 +602,37 @@ body {
   align-items: center;
   gap: 6px;
   height: 48px; /* zelfde als spelerskaart */
-  border-left: 2px solid var(--border-1);
+  border-left: 2px solid var(--border-default);
   padding-left: 6px;
   font-size: 10px;
-  color: var(--text-3);
+  color: var(--text-tertiary);
   line-height: 1.3;
 }
 .anno-row b {
-  color: var(--text-2);
+  color: var(--text-secondary);
   font-weight: 600;
 }
 .anno-row.header-row {
   height: 36px;
-  border-left-color: var(--border-0);
+  border-left-color: var(--border-light);
 }
 .anno-row.sub-row {
   height: 22px;
-  border-left-color: var(--border-0);
+  border-left-color: var(--border-light);
 }
 .anno-row.footer-row {
   height: 28px;
-  border-left-color: var(--border-0);
+  border-left-color: var(--border-light);
 }
 .anno-total {
   margin-top: 6px;
   padding: 6px 8px;
-  background: var(--bg-2);
+  background: var(--surface-card);
   border-radius: 6px;
   font-size: 11px;
   font-weight: 600;
-  color: var(--text-1);
-  border: 1px solid var(--border-1);
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
 }
 
 /* Kaart-inline annotaties */
@@ -653,17 +653,17 @@ body {
   align-items: center;
   gap: 6px;
   font-size: 10px;
-  color: var(--text-3);
+  color: var(--text-tertiary);
   white-space: nowrap;
   line-height: 1.3;
 }
 .anno-kaart-label::before {
   content: '←';
-  color: var(--border-1);
+  color: var(--border-default);
   font-size: 10px;
 }
 .anno-kaart-label b {
-  color: var(--text-2);
+  color: var(--text-secondary);
 }
 
 /* ================================================================
@@ -674,7 +674,7 @@ body {
 .mt-8  { margin-top: 8px; }
 .mt-16 { margin-top: 16px; }
 .mt-24 { margin-top: 24px; }
-.text-muted { font-size: 12px; color: var(--text-3); }
+.text-muted { font-size: 12px; color: var(--text-tertiary); }
 
 </style>
 </head>
@@ -710,7 +710,7 @@ body {
 
   <div class="flex-row">
     <!-- Kaarten -->
-    <div style="width: 320px; background: var(--bg-1); border-radius: 10px; overflow: hidden; border: 1px solid var(--border-0);">
+    <div style="width: 320px; background: var(--surface-page); border-radius: 10px; overflow: hidden; border: 1px solid var(--border-light);">
 
       <!-- Lotte — nieuw, V, U19-1 → U17-1 -->
       <div class="speler-kaart vrouw">
@@ -862,7 +862,7 @@ body {
 
       <div class="anno-total mt-8">
         Totale kaartrij: <b>48px</b><br>
-        <span style="font-size: 10px; color: var(--text-3); font-weight: 400;">inclusief 1px border-bottom</span>
+        <span style="font-size: 10px; color: var(--text-tertiary); font-weight: 400;">inclusief 1px border-bottom</span>
       </div>
     </div>
   </div><!-- /flex-row -->
@@ -873,13 +873,13 @@ body {
       <p class="text-muted" style="margin-bottom: 8px; font-weight: 600;">Badges (rechts in regel 1)</p>
       <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
         <span class="sk-badge nieuw">N</span><span class="text-muted">Nieuw lid</span>
-        <span style="color: var(--border-1);">|</span>
+        <span style="color: var(--border-default);">|</span>
         <span class="sk-badge twijfelt">?</span><span class="text-muted">Twijfelt</span>
-        <span style="color: var(--border-1);">|</span>
+        <span style="color: var(--border-default);">|</span>
         <span class="sk-badge afgemeld">⚠</span><span class="text-muted">Afgemeld</span>
-        <span style="color: var(--border-1);">|</span>
+        <span style="color: var(--border-default);">|</span>
         <span class="sk-badge gepind">📌</span><span class="text-muted">Gepind</span>
-        <span style="color: var(--border-1);">|</span>
+        <span style="color: var(--border-default);">|</span>
         <span class="sk-badge afgemeld">✕</span><span class="text-muted">Gaat stoppen</span>
       </div>
     </div>
@@ -887,9 +887,9 @@ body {
       <p class="text-muted" style="margin-bottom: 8px; font-weight: 600;">Team-chips (Optie B)</p>
       <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
         <span class="sk-chip huidig">Sen 2</span><span class="text-muted">Huidig team (neutraal)</span>
-        <span style="color: var(--border-1);">|</span>
+        <span style="color: var(--border-default);">|</span>
         <span class="sk-chip ingedeeld">Sen 1</span><span class="text-muted">Ingedeeld in (oranje)</span>
-        <span style="color: var(--border-1);">|</span>
+        <span style="color: var(--border-default);">|</span>
         <span class="sk-chip leeg">—</span><span class="text-muted">Niet ingedeeld</span>
       </div>
     </div>
@@ -990,7 +990,7 @@ body {
       <div class="pool-section-header">Heren (2)</div>
 
       <!-- Hover-state gesimuleerd -->
-      <div class="speler-kaart man" style="background: var(--bg-2);">
+      <div class="speler-kaart man" style="background: var(--surface-card);">
         <div class="sk-avatar man">JK</div>
         <div class="sk-content">
           <div class="sk-row1">
@@ -1037,7 +1037,7 @@ body {
   <h2 class="section-title">TeamKaart detail — viertal</h2>
   <p class="section-desc">
     140px breed. 5 spelers (fictief extremum). Hoogte-berekening:
-    header 36px + sub-header dames 22px + 2 dames × 48px + sub-header heren 22px + 3 heren × 48px + footer 28px = <strong style="color: var(--text-1);">420px</strong>.
+    header 36px + sub-header dames 22px + 2 dames × 48px + sub-header heren 22px + 3 heren × 48px + footer 28px = <strong style="color: var(--text-primary);">420px</strong>.
     Geen scroll nodig.
   </p>
   <div class="section-divider"></div>
@@ -1186,10 +1186,10 @@ body {
       </div>
       <div class="anno-total">
         Totaal: 36 + 22 + 96 + 22 + 144 + 28 = <b>420px</b><br>
-        <span style="font-size: 10px; color: var(--text-3); font-weight: 400;">Maximale belasting: 8 spelers = 512px totaal</span>
+        <span style="font-size: 10px; color: var(--text-tertiary); font-weight: 400;">Maximale belasting: 8 spelers = 512px totaal</span>
       </div>
 
-      <div class="mt-16" style="font-size: 11px; color: var(--text-3); max-width: 200px; line-height: 1.5;">
+      <div class="mt-16" style="font-size: 11px; color: var(--text-tertiary); max-width: 200px; line-height: 1.5;">
         In een viertal staan dames en heren verticaal gestapeld. De 5-spelersvariant (2D+3H) past in 420px. De maximale 8-spelersvariant (4D+4H) zou 512px worden — dat overstijgt een typisch viewport-hoogte en vraagt om scroll. De standaard per team is 4 spelers (2+2), dat past altijd in 276px.
       </div>
     </div>
@@ -1205,7 +1205,7 @@ body {
   <div class="section-label">Sectie 4 van 6</div>
   <h2 class="section-title">TeamKaart detail — achtal</h2>
   <p class="section-desc">
-    280px breed (2× 140px kolommen). Dames links, heren rechts. Zelfde hoogte als viertal: <strong style="color: var(--text-1);">420px</strong>.
+    280px breed (2× 140px kolommen). Dames links, heren rechts. Zelfde hoogte als viertal: <strong style="color: var(--text-primary);">420px</strong>.
   </p>
   <div class="section-divider"></div>
 
@@ -1336,7 +1336,7 @@ body {
   </p>
   <div class="section-divider"></div>
 
-  <div style="padding: 48px; background: var(--bg-0); border-radius: 12px; border: 1px solid var(--border-0); display: inline-block;">
+  <div style="padding: 48px; background: var(--surface-sunken); border-radius: 12px; border: 1px solid var(--border-light); display: inline-block;">
     <div class="drag-ghost">
       <div class="speler-kaart man" style="border-radius: 0;">
         <div class="sk-avatar man">JK</div>
@@ -1359,7 +1359,7 @@ body {
 
   <div class="mt-16 text-muted" style="max-width: 400px; line-height: 1.6;">
     CSS:<br>
-    <code style="font-size: 11px; color: var(--text-2); background: var(--bg-2); padding: 8px 12px; border-radius: 6px; display: block; margin-top: 6px; line-height: 1.8;">
+    <code style="font-size: 11px; color: var(--text-secondary); background: var(--surface-card); padding: 8px 12px; border-radius: 6px; display: block; margin-top: 6px; line-height: 1.8;">
       transform: rotate(2deg);<br>
       box-shadow: 0 0 0 2px var(--accent),<br>
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0 8px 24px rgba(0,0,0,.7),<br>
@@ -1422,7 +1422,7 @@ body {
       </tr>
       <tr><td>Drag ghost rotatie</td><td>2deg</td></tr>
       <tr><td>Drag ghost opacity</td><td>0.95</td></tr>
-      <tr><td>Hover achtergrond</td><td>var(--bg-2) = #1e1e1e</td></tr>
+      <tr><td>Hover achtergrond</td><td>var(--surface-card) = #1e1e1e</td></tr>
       <tr><td>Transition hover</td><td>background 150ms ease</td></tr>
     </tbody>
   </table>

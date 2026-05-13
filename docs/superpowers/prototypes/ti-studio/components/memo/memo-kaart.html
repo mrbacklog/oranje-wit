@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Memo-kaart · Memo-weergave</title>
+  <link rel="stylesheet" href="../../shared/tokens.css">
+  <style>
+    body { max-width: 900px; }
+
+    /* ═══ Memo-kaart — kanban-kaart formaat ═══════════════════════════
+       Prioriteit-indicator links · entiteit-badge · beschrijving · naam
+       Klikbaar → opent MemoDrawer
+       ════════════════════════════════════════════════════════════════ */
+    .memo-kaart {
+      display: flex; gap: 10px;
+      padding: 10px 12px;
+      background: var(--surface-card);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      border-left: 3px solid var(--prio-kleur, var(--border-default));
+      cursor: pointer;
+      transition: border-color 150ms, background 150ms;
+      max-width: 320px;
+    }
+    .memo-kaart:hover { background: rgba(255,255,255,.03); border-color: var(--border-default); }
+
+    /* Prioriteit-kleuren */
+    .memo-kaart.prio-blocker { --prio-kleur: #ef4444; }
+    .memo-kaart.prio-hoog    { --prio-kleur: #f97316; }
+    .memo-kaart.prio-middel  { --prio-kleur: #eab308; }
+    .memo-kaart.prio-laag    { --prio-kleur: #3b82f6; }
+    .memo-kaart.prio-info    { --prio-kleur: #8b5cf6; }
+
+    /* Prioriteit-icoon */
+    .mk-prio {
+      width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9px; font-weight: 900; color: #fff;
+      background: var(--prio-kleur);
+      margin-top: 1px;
+    }
+    .mk-prio.blocker { font-size: 12px; }
+
+    /* Content */
+    .mk-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+    .mk-beschrijving {
+      font-size: 12px; color: var(--text-primary); line-height: 1.5;
+      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .mk-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+    /* Entiteit-badge */
+    .mk-entiteit {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 1px 6px; border-radius: 4px;
+      font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .mk-entiteit.speler { color: var(--sexe-h); background: rgba(37,99,235,.1); border: 1px solid rgba(37,99,235,.2); }
+    .mk-entiteit.staf { color: var(--staf-accent); background: var(--staf-accent-dim); border: 1px solid var(--staf-border); }
+    .mk-entiteit.team { color: var(--text-secondary); background: rgba(255,255,255,.04); border: 1px solid var(--border-default); }
+    .mk-entiteit.tc { color: var(--ow-accent); background: rgba(255,107,0,.08); border: 1px solid rgba(255,107,0,.15); }
+
+    /* Entiteit-naam */
+    .mk-naam { font-size: 10px; color: var(--text-tertiary); font-weight: 500; }
+
+    /* Toelichting-count */
+    .mk-comments {
+      display: inline-flex; align-items: center; gap: 3px;
+      font-size: 9px; color: var(--text-muted); margin-left: auto;
+    }
+    .mk-comments svg { width: 10px; height: 10px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+
+    /* Status-dot (klein, voor in meta-rij) */
+    .mk-status-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .mk-status-dot.open { background: #eab308; }
+    .mk-status-dot.bespreking { background: #60a5fa; }
+    .mk-status-dot.opgelost { background: #22c55e; }
+    .mk-status-dot.risico { background: #f59e0b; }
+    .mk-status-dot.archief { background: #64748b; }
+
+    /* Demo grid */
+    .kaart-grid { display: flex; flex-direction: column; gap: 8px; max-width: 320px; }
+    .kaart-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+  <h1>Memo-kaart</h1>
+  <p class="subtitle">Kanban-kaart formaat · Prioriteit links · Entiteit-badge + beschrijving + naam · Alle prioriteiten en entiteiten</p>
+
+  <h2>Per prioriteit</h2>
+  <div class="kaart-grid">
+    <div class="memo-kaart prio-blocker">
+      <div class="mk-prio blocker">!</div>
+      <div class="mk-body">
+        <div class="mk-beschrijving">Trainer OW 1 heeft aangegeven per direct te stoppen — vervanger nodig voor komend seizoen</div>
+        <div class="mk-meta">
+          <span class="mk-entiteit staf"><span class="type-icoon technisch" style="width:8px;height:8px"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span> Staf</span>
+          <span class="mk-naam">Jan Vermeer</span>
+          <span class="mk-comments"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> 4</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="memo-kaart prio-hoog">
+      <div class="mk-prio">H</div>
+      <div class="mk-body">
+        <div class="mk-beschrijving">Noor de Bos twijfelt over doorgaan — gesprek plannen voor eind april</div>
+        <div class="mk-meta">
+          <span class="mk-entiteit speler">Speler</span>
+          <span class="mk-naam">Noor de Bos</span>
+          <span class="mk-comments"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> 2</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="memo-kaart prio-middel">
+      <div class="mk-prio">M</div>
+      <div class="mk-body">
+        <div class="mk-beschrijving">Trainingsuren verdelen tussen Peter en Karin voor OW 2</div>
+        <div class="mk-meta">
+          <span class="mk-entiteit team"><span style="width:5px;height:5px;border-radius:50%;background:var(--cat-groen);flex-shrink:0"></span> Team</span>
+          <span class="mk-naam">OW 2</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="memo-kaart prio-laag">
+      <div class="mk-prio">L</div>
+      <div class="mk-body">
+        <div class="mk-beschrijving">VOG-verklaring nog niet ingeleverd</div>
+        <div class="mk-meta">
+          <span class="mk-entiteit staf"><span class="type-icoon ondersteunend" style="width:8px;height:8px"><svg viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span> Staf</span>
+          <span class="mk-naam">Henk Vos</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="memo-kaart prio-info">
+      <div class="mk-prio">i</div>
+      <div class="mk-body">
+        <div class="mk-beschrijving">KNKV deadline teamopgave is 15 mei — 3 weken</div>
+        <div class="mk-meta">
+          <span class="mk-entiteit tc">TC</span>
+          <span class="mk-naam">TC-algemeen</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Per entiteit-type</h2>
+  <div class="kaart-row">
+    <div class="kaart-grid">
+      <div class="demo-lbl">Speler</div>
+      <div class="memo-kaart prio-hoog">
+        <div class="mk-prio">H</div>
+        <div class="mk-body">
+          <div class="mk-beschrijving">Geblesseerd — wordt pas na kerst fit verwacht</div>
+          <div class="mk-meta">
+            <span class="mk-entiteit speler">Speler</span>
+            <span class="mk-naam">Freek van der Laban</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="kaart-grid">
+      <div class="demo-lbl">Staf</div>
+      <div class="memo-kaart prio-middel">
+        <div class="mk-prio">M</div>
+        <div class="mk-body">
+          <div class="mk-beschrijving">Beschikbaarheid dinsdag onzeker</div>
+          <div class="mk-meta">
+            <span class="mk-entiteit staf"><span class="type-icoon technisch" style="width:8px;height:8px"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span> Staf</span>
+            <span class="mk-naam">Karin Dijkstra</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="kaart-grid">
+      <div class="demo-lbl">Team</div>
+      <div class="memo-kaart prio-middel">
+        <div class="mk-prio">M</div>
+        <div class="mk-body">
+          <div class="mk-beschrijving">Tekort aan heren — scouting nodig</div>
+          <div class="mk-meta">
+            <span class="mk-entiteit team"><span style="width:5px;height:5px;border-radius:50%;background:var(--cat-blauw);flex-shrink:0"></span> Team</span>
+            <span class="mk-naam">OW 1</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="kaart-grid">
+      <div class="demo-lbl">TC-algemeen</div>
+      <div class="memo-kaart prio-laag">
+        <div class="mk-prio">L</div>
+        <div class="mk-body">
+          <div class="mk-beschrijving">Evaluatieformulier bijwerken voor komend seizoen</div>
+          <div class="mk-meta">
+            <span class="mk-entiteit tc">TC</span>
+            <span class="mk-naam">TC-algemeen</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Met status-dot (in bespreking / opgelost)</h2>
+  <div class="kaart-grid">
+    <div class="memo-kaart prio-middel">
+      <div class="mk-prio">M</div>
+      <div class="mk-body">
+        <div class="mk-beschrijving">Leiderschap OW A1 + OW B1 combineren — haalbaar?</div>
+        <div class="mk-meta">
+          <span class="mk-status-dot bespreking"></span>
+          <span class="mk-entiteit staf"><span class="type-icoon ondersteunend" style="width:8px;height:8px"><svg viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span> Staf</span>
+          <span class="mk-naam">Rob Overbeek</span>
+          <span class="mk-comments"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> 3</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="memo-kaart prio-laag" style="opacity:.6">
+      <div class="mk-prio">L</div>
+      <div class="mk-body">
+        <div class="mk-beschrijving">VOG Henk Vos — inmiddels ontvangen</div>
+        <div class="mk-meta">
+          <span class="mk-status-dot opgelost"></span>
+          <span class="mk-entiteit staf"><span class="type-icoon ondersteunend" style="width:8px;height:8px"><svg viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span> Staf</span>
+          <span class="mk-naam">Henk Vos</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

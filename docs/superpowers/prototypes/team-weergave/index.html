@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Team-weergave · Catalogus</title>
+  <link rel="stylesheet" href="tokens.css">
+  <style>
+    body { padding: 32px; max-width: 1200px; margin: 0 auto; }
+    .catalogus-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+    .cat-card {
+      background: var(--surface-page);
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 22px 24px;
+      text-decoration: none;
+      color: var(--text-primary);
+      transition: border-color 180ms, transform 180ms;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .cat-card:hover { border-color: var(--ow-accent); transform: translateY(-2px); }
+    .cat-label { font-size: 10px; color: var(--ow-accent); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; }
+    .cat-title { font-size: 16px; font-weight: 700; margin: 2px 0 4px; }
+    .cat-desc { font-size: 12px; color: var(--text-tertiary); line-height: 1.5; }
+    .cat-file { font-family: var(--font-stat); font-size: 10px; color: var(--text-muted); margin-top: auto; padding-top: 10px; }
+
+    .section-header {
+      background: var(--surface-page);
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 24px 30px;
+      margin-bottom: 24px;
+    }
+    .meta { font-size: 11px; color: var(--text-tertiary); margin-top: 6px; }
+    .meta a { color: var(--ow-accent); text-decoration: none; }
+    .meta a:hover { text-decoration: underline; }
+
+    .resources {
+      margin-top: 32px;
+      padding: 20px 24px;
+      background: var(--surface-page);
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+    }
+    .resources h3 { font-size: 13px; color: var(--ow-accent); text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 10px; }
+    .resources ul { margin: 0; padding-left: 18px; color: var(--text-secondary); font-size: 12px; line-height: 1.8; }
+    .resources code { font-family: var(--font-stat); color: #ffb96b; background: var(--surface-card); padding: 1px 5px; border-radius: 3px; font-size: 11px; }
+  </style>
+</head>
+<body>
+  <div class="section-header">
+    <h1>Team-weergave · Catalogus</h1>
+    <p class="subtitle">Unificatie van alle teamweergaven in TI Studio · 4 contexten, gedeeld DNA met speler-weergave</p>
+    <div class="meta">
+      Tokens: <code>tokens.css</code> (importeert <code>../speler-weergave/tokens.css</code>) ·
+      Selectie: gebundeld / niet-gebundeld · OWTeamType: Jeugd / Selectie / Senioren / Overig
+    </div>
+  </div>
+
+  <div class="catalogus-grid">
+    <a href="team-kaart.html" class="cat-card">
+      <div class="cat-label">Context 1</div>
+      <div class="cat-title">Team-kaart</div>
+      <div class="cat-desc">Canvas-tegel · 3 zoom-varianten (compact/normaal/detail) + viertal/achttal + selectie-frame (gebundeld + niet-gebundeld)</div>
+      <div class="cat-file">team-kaart.html</div>
+    </a>
+    <a href="team-drawer.html" class="cat-card">
+      <div class="cat-label">Context 2</div>
+      <div class="cat-title">Team-drawer</div>
+      <div class="cat-desc">280px linker-drawer · lijst-modus (categorie-groepen + selectie-blokken) + detail-panel (inrichting, validatie, selectie-koppeling, bundel-toggle)</div>
+      <div class="cat-file">team-drawer.html</div>
+    </a>
+    <a href="team-detail-drawer.html" class="cat-card">
+      <div class="cat-label">Context 3</div>
+      <div class="cat-title">Team detail-drawer</div>
+      <div class="cat-desc">420px zijbalk · hero + spelerlijst (normaal-rij) + staf + validatie · bewerken/openen acties</div>
+      <div class="cat-file">team-detail-drawer.html</div>
+    </a>
+    <a href="team-dialog.html" class="cat-card">
+      <div class="cat-label">Context 4</div>
+      <div class="cat-title">Team-dialoog</div>
+      <div class="cat-desc">560x640 modal · kleur-gradient hero + 3 tabs (Overzicht, Validatie, Notities/Werkitems) · staf + USS + werkitem-formulier</div>
+      <div class="cat-file">team-dialog.html</div>
+    </a>
+  </div>
+
+  <div class="resources">
+    <h3>Resources</h3>
+    <ul>
+      <li><strong>Design tokens</strong>: <code>tokens.css</code> — KNKV-categoriekleuren, team-kaart afmetingen, selectie-accent, validatiekleuren, primitives (team-kaart, team-rij, selectie-frame, val-item)</li>
+      <li><strong>Gedeeld met speler-weergave</strong>: alle sexe/leeftijd/status/memo tokens en speler-rij primitives (normaal-rij) komen uit <code>../speler-weergave/tokens.css</code></li>
+      <li><strong>Selectie-model</strong>: <code>gebundeld: false</code> = losse teams in selectie-frame · <code>gebundeld: true</code> = gedeelde spelerspool</li>
+      <li><strong>OWTeamType</strong>: JEUGD / SELECTIE / SENIOREN / OVERIG — bepaalt categorie-kleur en groepering in drawer</li>
+    </ul>
+  </div>
+</body>
+</html>

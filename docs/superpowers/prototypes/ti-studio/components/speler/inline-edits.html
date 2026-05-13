@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Inline-edits · Speler tabel-rij</title>
+  <link rel="stylesheet" href="../../shared/tokens.css">
+  <style>
+    body { max-width: 800px; }
+
+    /* ═══ Status-editor ══════════════════════════════════════════════
+       Klikbaar status-label → popover met alle statussen
+       ════════════════════════════════════════════════════════════════ */
+    .status-trigger {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 12px; font-weight: 600; cursor: pointer;
+      padding: 4px 8px; border-radius: 5px;
+      transition: background 120ms;
+      position: relative;
+    }
+    .status-trigger:hover { background: rgba(255,255,255,.06); }
+    .status-trigger .s-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .status-trigger::after { content: '▾'; font-size: 9px; opacity: 0.5; margin-left: 2px; }
+
+    /* Status kleuren */
+    .status-trigger.beschikbaar { color: #22c55e; }
+    .status-trigger.beschikbaar .s-dot { background: #22c55e; }
+    .status-trigger.twijfelt { color: #f59e0b; }
+    .status-trigger.twijfelt .s-dot { background: #f59e0b; }
+    .status-trigger.geblesseerd { color: #f97316; }
+    .status-trigger.geblesseerd .s-dot { background: #f97316; }
+    .status-trigger.stopt { color: #ef4444; }
+    .status-trigger.stopt .s-dot { background: #ef4444; }
+    .status-trigger.nieuw { color: #3b82f6; }
+    .status-trigger.nieuw .s-dot { background: #3b82f6; }
+    .status-trigger.reserve { color: #6b7280; }
+    .status-trigger.reserve .s-dot { background: #6b7280; }
+
+    /* Popover */
+    .popover {
+      position: absolute; top: 100%; left: 0; margin-top: 4px;
+      z-index: 50; background: var(--surface-card);
+      border: 1px solid var(--border-default); border-radius: 8px;
+      padding: 4px; min-width: 180; max-height: 260px; overflow-y: auto;
+      box-shadow: 0 8px 24px rgba(0,0,0,.5);
+      display: none; flex-direction: column; gap: 2px;
+    }
+    .popover.visible { display: flex; }
+    .popover-item {
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px 10px; border-radius: 6px;
+      font-size: 12px; cursor: pointer; border: none;
+      background: transparent; color: var(--text-primary);
+      font-family: inherit; text-align: left;
+      transition: background 100ms;
+    }
+    .popover-item:hover { background: rgba(255,255,255,.06); }
+    .popover-item.actief { background: rgba(255,107,0,.1); color: var(--ow-accent); }
+    .popover-item .p-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+    /* ═══ Indeling-editor ═════════════════════════════════════════════
+       Team-chip (klikbaar) of + knop → popover met teams/selecties
+       ════════════════════════════════════════════════════════════════ */
+    .indeling-chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 2px 2px 8px; border-radius: 6px;
+      font-size: 12px; font-weight: 500; cursor: pointer;
+      background: rgba(34,197,94,.08); border: 1px solid rgba(34,197,94,.2);
+      color: #4ade80; position: relative;
+      transition: background 120ms;
+    }
+    .indeling-chip:hover { background: rgba(34,197,94,.14); }
+    .indeling-chip .i-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .indeling-chip .i-remove {
+      width: 16px; height: 16px; border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; line-height: 1; border: none; padding: 0;
+      background: rgba(34,197,94,.15); color: #4ade80;
+      cursor: pointer; font-family: inherit;
+      transition: background 100ms, color 100ms;
+    }
+    .indeling-chip .i-remove:hover { background: rgba(239,68,68,.2); color: #f87171; }
+
+    .indeling-leeg {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 24px; height: 24px; border-radius: 6px;
+      border: 1px dashed var(--border-default); color: var(--text-muted);
+      font-size: 15px; cursor: pointer;
+      transition: border-color 120ms, color 120ms;
+      position: relative;
+    }
+    .indeling-leeg:hover { border-color: var(--ow-accent); color: var(--ow-accent); }
+
+    /* Indeling popover */
+    .indeling-popover {
+      position: absolute; top: 100%; left: 0; margin-top: 4px;
+      z-index: 50; background: var(--surface-card);
+      border: 1px solid var(--border-default); border-radius: 8px;
+      padding: 4px; min-width: 200px; max-height: 300px; overflow-y: auto;
+      box-shadow: 0 8px 24px rgba(0,0,0,.5);
+      display: none; flex-direction: column; gap: 2px;
+    }
+    .indeling-popover.visible { display: flex; }
+    .indeling-popover .groep-label {
+      font-size: 9px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--text-muted);
+      padding: 6px 10px 2px; margin-top: 4px;
+      border-top: 1px solid var(--border-light);
+    }
+    .indeling-popover .groep-label:first-child { border-top: none; margin-top: 0; }
+
+    /* ═══ Gezien-toggle ═══════════════════════════════════════════════ */
+    .gezien-btn {
+      background: none; border: none; padding: 4px 6px;
+      font-size: 16px; font-weight: 700; cursor: pointer;
+      font-family: inherit; transition: color 120ms;
+    }
+    .gezien-btn.ja { color: #22c55e; }
+    .gezien-btn.nee { color: #4b5563; opacity: 0.35; }
+    .gezien-btn:hover { opacity: 1; }
+
+    /* Demo layout */
+    .demo-wrap {
+      background: var(--surface-page); border-radius: 10px; padding: 20px;
+      border: 1px solid var(--border-light);
+    }
+    .demo-inline { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
+    .demo-inline .label { font-size: 11px; color: var(--text-tertiary); min-width: 80px; }
+    .combo-demo {
+      background: var(--surface-page); border-radius: 8px;
+      border: 1px solid var(--border-light); overflow: hidden;
+    }
+    .combo-rij {
+      display: grid; grid-template-columns: 50px 1fr 130px 100px 100px 50px;
+      align-items: center; gap: 12px; padding: 10px 14px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .combo-rij:last-child { border-bottom: none; }
+    .combo-rij .sq-av { width: 40px; height: 40px; }
+    .combo-rij .nm { font-size: 13px; font-weight: 700; color: var(--text-primary); }
+  </style>
+</head>
+<body>
+  <h1>Inline-edits</h1>
+  <p class="subtitle">Inline bewerkbare elementen op de speler/staf tabel-rij · Status, indeling, gezien</p>
+
+  <!-- ═══ STATUS EDITOR ═══════════════════════════════════════════ -->
+  <h2>Status-editor</h2>
+  <p style="font-size:11px;color:var(--text-tertiary);margin:-8px 0 16px">Klik op de status → popover met alle opties. Directe opslag bij keuze.</p>
+
+  <div class="demo-wrap">
+    <div class="demo-inline">
+      <span class="label">Beschikbaar</span>
+      <span class="status-trigger beschikbaar" onclick="togglePop(this)">
+        <span class="s-dot"></span> Beschikbaar
+        <div class="popover" id="pop-1">
+          <button class="popover-item actief"><span class="p-dot" style="background:#22c55e"></span> Beschikbaar</button>
+          <button class="popover-item"><span class="p-dot" style="background:#f59e0b"></span> Twijfelt</button>
+          <button class="popover-item"><span class="p-dot" style="background:#f97316"></span> Geblesseerd</button>
+          <button class="popover-item"><span class="p-dot" style="background:#ef4444"></span> Gaat stoppen</button>
+          <button class="popover-item"><span class="p-dot" style="background:#3b82f6"></span> Nieuw potentieel</button>
+          <button class="popover-item"><span class="p-dot" style="background:#3b82f6"></span> Nieuw definitief</button>
+          <button class="popover-item"><span class="p-dot" style="background:#6b7280"></span> Reserve</button>
+        </div>
+      </span>
+    </div>
+
+    <div class="demo-inline">
+      <span class="label">Twijfelt</span>
+      <span class="status-trigger twijfelt"><span class="s-dot"></span> Twijfelt</span>
+    </div>
+    <div class="demo-inline">
+      <span class="label">Geblesseerd</span>
+      <span class="status-trigger geblesseerd"><span class="s-dot"></span> Geblesseerd</span>
+    </div>
+    <div class="demo-inline">
+      <span class="label">Gaat stoppen</span>
+      <span class="status-trigger stopt"><span class="s-dot"></span> Gaat stoppen</span>
+    </div>
+    <div class="demo-inline">
+      <span class="label">Nieuw</span>
+      <span class="status-trigger nieuw"><span class="s-dot"></span> Nieuw</span>
+    </div>
+    <div class="demo-inline">
+      <span class="label">Reserve</span>
+      <span class="status-trigger reserve"><span class="s-dot"></span> Reserve</span>
+    </div>
+  </div>
+
+  <!-- ═══ INDELING EDITOR ═════════════════════════════════════════ -->
+  <h2>Indeling-editor</h2>
+  <p style="font-size:11px;color:var(--text-tertiary);margin:-8px 0 16px">Team-chip met × om te verwijderen + klik om te wijzigen. Of + knop om een nieuwe toewijzing te maken.</p>
+
+  <div class="demo-wrap">
+    <div class="demo-inline">
+      <span class="label">Ingedeeld</span>
+      <span class="indeling-chip" onclick="togglePop(this)">
+        <span class="i-dot" style="background:var(--cat-blauw)"></span>
+        OW 1
+        <button class="i-remove" onclick="event.stopPropagation();verwijderIndeling(this)">×</button>
+        <div class="indeling-popover">
+          <button class="popover-item" style="font-style:italic;color:var(--text-tertiary)">— geen indeling —</button>
+          <div class="groep-label">Teams</div>
+          <button class="popover-item actief"><span class="p-dot" style="background:var(--cat-blauw)"></span> OW 1</button>
+          <button class="popover-item"><span class="p-dot" style="background:var(--cat-groen)"></span> OW 2</button>
+          <button class="popover-item"><span class="p-dot" style="background:var(--cat-senior)"></span> OW 3</button>
+          <button class="popover-item"><span class="p-dot" style="background:var(--cat-geel)"></span> OW A1</button>
+          <button class="popover-item"><span class="p-dot" style="background:var(--cat-oranje)"></span> OW B1</button>
+          <button class="popover-item"><span class="p-dot" style="background:var(--cat-rood)"></span> OW C1</button>
+          <div class="groep-label">Selecties</div>
+          <button class="popover-item"><span class="p-dot" style="background:var(--cat-oranje)"></span> Selectie A <span style="font-size:8px;padding:1px 4px;border-radius:3px;background:rgba(59,130,246,.15);color:#60a5fa;font-weight:700;margin-left:auto">SEL</span></button>
+        </div>
+      </span>
+    </div>
+
+    <div class="demo-inline">
+      <span class="label">Niet ingedeeld</span>
+      <span class="indeling-leeg" onclick="togglePop(this)">
+        +
+        <div class="indeling-popover">
+          <button class="popover-item" style="font-style:italic;color:var(--text-tertiary)">— geen indeling —</button>
+          <div class="groep-label">Teams</div>
+          <button class="popover-item"><span class="p-dot" style="background:var(--cat-blauw)"></span> OW 1</button>
+          <button class="popover-item"><span class="p-dot" style="background:var(--cat-groen)"></span> OW 2</button>
+          <button class="popover-item"><span class="p-dot" style="background:var(--cat-senior)"></span> OW 3</button>
+          <button class="popover-item"><span class="p-dot" style="background:var(--cat-geel)"></span> OW A1</button>
+          <button class="popover-item"><span class="p-dot" style="background:var(--cat-oranje)"></span> OW B1</button>
+          <div class="groep-label">Selecties</div>
+          <button class="popover-item"><span class="p-dot" style="background:var(--cat-oranje)"></span> Selectie A <span style="font-size:8px;padding:1px 4px;border-radius:3px;background:rgba(59,130,246,.15);color:#60a5fa;font-weight:700;margin-left:auto">SEL</span></button>
+        </div>
+      </span>
+    </div>
+  </div>
+
+  <!-- ═══ GEZIEN TOGGLE ═══════════════════════════════════════════ -->
+  <h2>Gezien-toggle</h2>
+  <p style="font-size:11px;color:var(--text-tertiary);margin:-8px 0 16px">Klik om te wisselen tussen gezien (groen ✓) en niet-gezien (grijs ✓).</p>
+
+  <div class="demo-wrap">
+    <div class="demo-inline">
+      <span class="label">Gezien</span>
+      <button class="gezien-btn ja" onclick="this.classList.toggle('ja');this.classList.toggle('nee')">✓</button>
+    </div>
+    <div class="demo-inline">
+      <span class="label">Niet gezien</span>
+      <button class="gezien-btn nee" onclick="this.classList.toggle('ja');this.classList.toggle('nee')">✓</button>
+    </div>
+  </div>
+
+  <!-- ═══ IN CONTEXT: TABEL-RIJ ══════════════════════════════════ -->
+  <h2>In context — tabel-rij met alle inline-edits</h2>
+  <div class="combo-demo">
+    <div class="combo-rij">
+      <div class="sq-av"><img src="https://randomuser.me/api/portraits/men/32.jpg" alt=""></div>
+      <div class="nm">Freek van der Laban</div>
+      <span class="status-trigger beschikbaar" onclick="togglePop(this)">
+        <span class="s-dot"></span> Beschikbaar
+        <div class="popover">
+          <button class="popover-item actief"><span class="p-dot" style="background:#22c55e"></span> Beschikbaar</button>
+          <button class="popover-item"><span class="p-dot" style="background:#f59e0b"></span> Twijfelt</button>
+          <button class="popover-item"><span class="p-dot" style="background:#f97316"></span> Geblesseerd</button>
+          <button class="popover-item"><span class="p-dot" style="background:#ef4444"></span> Gaat stoppen</button>
+          <button class="popover-item"><span class="p-dot" style="background:#3b82f6"></span> Nieuw</button>
+          <button class="popover-item"><span class="p-dot" style="background:#6b7280"></span> Reserve</button>
+        </div>
+      </span>
+      <span class="indeling-chip" onclick="togglePop(this)">
+        <span class="i-dot" style="background:var(--cat-blauw)"></span> OW 1
+        <button class="i-remove" onclick="event.stopPropagation();verwijderIndeling(this)">×</button>
+        <div class="indeling-popover">
+          <button class="popover-item" style="font-style:italic;color:var(--text-tertiary)">— geen —</button>
+          <button class="popover-item actief"><span class="p-dot" style="background:var(--cat-blauw)"></span> OW 1</button>
+          <button class="popover-item"><span class="p-dot" style="background:var(--cat-groen)"></span> OW 2</button>
+          <button class="popover-item"><span class="p-dot" style="background:var(--cat-senior)"></span> OW 3</button>
+        </div>
+      </span>
+      <button class="gezien-btn ja" onclick="this.classList.toggle('ja');this.classList.toggle('nee')">✓</button>
+    </div>
+
+    <div class="combo-rij">
+      <div class="sq-av vrouw"><img src="https://randomuser.me/api/portraits/women/44.jpg" alt=""></div>
+      <div class="nm">Noor de Bos</div>
+      <span class="status-trigger twijfelt" onclick="togglePop(this)">
+        <span class="s-dot"></span> Twijfelt
+        <div class="popover">
+          <button class="popover-item"><span class="p-dot" style="background:#22c55e"></span> Beschikbaar</button>
+          <button class="popover-item actief"><span class="p-dot" style="background:#f59e0b"></span> Twijfelt</button>
+          <button class="popover-item"><span class="p-dot" style="background:#f97316"></span> Geblesseerd</button>
+          <button class="popover-item"><span class="p-dot" style="background:#ef4444"></span> Gaat stoppen</button>
+          <button class="popover-item"><span class="p-dot" style="background:#3b82f6"></span> Nieuw</button>
+          <button class="popover-item"><span class="p-dot" style="background:#6b7280"></span> Reserve</button>
+        </div>
+      </span>
+      <span class="indeling-leeg" onclick="togglePop(this)">
+        +
+        <div class="indeling-popover">
+          <button class="popover-item"><span class="p-dot" style="background:var(--cat-blauw)"></span> OW 1</button>
+          <button class="popover-item"><span class="p-dot" style="background:var(--cat-groen)"></span> OW 2</button>
+          <button class="popover-item"><span class="p-dot" style="background:var(--cat-senior)"></span> OW 3</button>
+        </div>
+      </span>
+      <button class="gezien-btn nee" onclick="this.classList.toggle('ja');this.classList.toggle('nee')">✓</button>
+    </div>
+  </div>
+
+  <script>
+    function togglePop(trigger) {
+      const pop = trigger.querySelector('.popover, .indeling-popover');
+      if (!pop) return;
+      // Sluit alle andere popovers
+      document.querySelectorAll('.popover.visible, .indeling-popover.visible').forEach(p => {
+        if (p !== pop) p.classList.remove('visible');
+      });
+      pop.classList.toggle('visible');
+    }
+    // Verwijder indeling (× knop)
+    function verwijderIndeling(btn) {
+      const chip = btn.closest('.indeling-chip');
+      if (!chip) return;
+      const leeg = document.createElement('span');
+      leeg.className = 'indeling-leeg';
+      leeg.onclick = function() { togglePop(this); };
+      leeg.innerHTML = '+' + chip.querySelector('.indeling-popover').outerHTML;
+      chip.replaceWith(leeg);
+    }
+    window.verwijderIndeling = verwijderIndeling;
+
+    // Sluit bij klik buiten
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.status-trigger, .indeling-chip, .indeling-leeg')) {
+        document.querySelectorAll('.popover.visible, .indeling-popover.visible').forEach(p => p.classList.remove('visible'));
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KNKV Sync — TI Studio</title>
+  <link rel="stylesheet" href="../shared/tokens.css">
+  <style>
+    .sync-page { max-width: 640px; }
+    .sync-page h1 { font-size: 18px; font-weight: 700; margin: 0 0 4px; }
+    .sync-page .sub { font-size: 12px; color: var(--text-tertiary); margin: 0 0 24px; }
+
+    /* ─── Sync-kaarten ───────────────────────────────────────────── */
+    .sync-grid { display: flex; flex-direction: column; gap: 10px; }
+
+    .sync-card {
+      padding: 16px 20px; border-radius: 12px;
+      border: 1px solid var(--border-light); background: var(--surface-card);
+      display: flex; align-items: center; gap: 16px;
+      transition: border-color 180ms;
+    }
+    .sync-card:hover { border-color: var(--border-default); }
+    .sync-card .sync-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .sync-card .sync-icon svg {
+      width: 20px; height: 20px; stroke: var(--text-secondary); fill: none;
+      stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;
+    }
+    .sync-card .sync-info { flex: 1; min-width: 0; }
+    .sync-card .sync-titel { font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
+    .sync-card .sync-meta { font-size: 11px; color: var(--text-tertiary); display: flex; align-items: center; gap: 8px; }
+    .sync-card .sync-meta .dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+    .sync-card .sync-meta .dot.ok { background: #22c55e; }
+    .sync-card .sync-meta .dot.stale { background: #fbbf24; }
+    .sync-card .sync-btn {
+      padding: 7px 14px; border-radius: 7px; border: none;
+      background: rgba(255,255,255,.06); color: var(--text-primary);
+      font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit;
+      transition: background 120ms;
+      flex-shrink: 0;
+    }
+    .sync-card .sync-btn:hover { background: rgba(255,255,255,.1); }
+
+    /* ─── Overlay backdrop ────────────────────────────────────────── */
+    .overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.6); z-index: 100;
+      align-items: center; justify-content: center;
+    }
+    .overlay.visible { display: flex; }
+
+    /* ─── Voorbereidingsvenster ───────────────────────────────────── */
+    .prep-dialog {
+      width: 420px; background: var(--surface-page);
+      border: 1px solid var(--border-default); border-radius: 14px;
+      overflow: hidden; box-shadow: 0 24px 80px rgba(0,0,0,.7);
+    }
+    .prep-header {
+      padding: 18px 22px 14px;
+      border-bottom: 1px solid var(--border-light);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .prep-header h2 { font-size: 16px; font-weight: 700; color: var(--text-primary); margin: 0; }
+    .prep-close {
+      width: 28px; height: 28px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      background: none; border: 1px solid var(--border-default); color: var(--text-tertiary);
+      cursor: pointer; font-size: 14px; font-family: inherit;
+    }
+    .prep-close:hover { background: rgba(255,255,255,.06); color: var(--text-primary); }
+    .prep-body { padding: 18px 22px; display: flex; flex-direction: column; gap: 14px; }
+    .prep-footer {
+      padding: 14px 22px; border-top: 1px solid var(--border-light);
+      display: flex; align-items: center; justify-content: flex-end; gap: 8px;
+    }
+
+    /* Form elements */
+    .prep-field { display: flex; flex-direction: column; gap: 4px; }
+    .prep-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); }
+    .prep-select {
+      background: var(--surface-card); border: 1px solid var(--border-default); border-radius: 7px;
+      padding: 7px 12px; color: var(--text-primary); font-size: 13px; outline: none;
+      font-family: inherit; cursor: pointer;
+    }
+    .prep-select:focus { border-color: rgba(255,107,0,.4); }
+    .prep-info {
+      padding: 10px 14px; border-radius: 8px;
+      background: rgba(255,255,255,.03); border: 1px solid var(--border-light);
+      font-size: 12px; color: var(--text-secondary); line-height: 1.5;
+    }
+    .prep-info .val { font-weight: 700; color: var(--text-primary); }
+    .prep-info .muted { color: var(--text-tertiary); }
+    .prep-check {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 12px; color: var(--text-secondary); cursor: pointer;
+    }
+    .prep-check input { accent-color: var(--ow-accent); width: 15px; height: 15px; cursor: pointer; }
+
+    /* Buttons */
+    .btn-cancel {
+      padding: 7px 14px; border-radius: 7px;
+      border: 1px solid var(--border-default); background: none;
+      color: var(--text-secondary); font-size: 12px; font-weight: 600;
+      cursor: pointer; font-family: inherit;
+    }
+    .btn-cancel:hover { background: rgba(255,255,255,.04); }
+    .btn-start {
+      padding: 7px 16px; border-radius: 7px; border: none;
+      background: var(--ow-accent); color: #fff;
+      font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit;
+    }
+    .btn-start:hover { background: #ff8533; }
+
+    /* Radio groep */
+    .prep-radio-group { display: flex; flex-direction: column; gap: 6px; }
+    .prep-radio {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 12px; border-radius: 7px;
+      border: 1px solid var(--border-light); background: transparent;
+      font-size: 12px; color: var(--text-secondary); cursor: pointer;
+      transition: border-color 120ms, background 120ms;
+    }
+    .prep-radio:hover { border-color: var(--border-default); background: rgba(255,255,255,.02); }
+    .prep-radio.selected { border-color: rgba(255,107,0,.4); background: rgba(255,107,0,.04); color: var(--text-primary); }
+    .prep-radio.recommended .radio-desc { color: var(--ow-accent); font-weight: 600; }
+    .prep-radio input { accent-color: var(--ow-accent); width: 14px; height: 14px; cursor: pointer; }
+    .prep-radio .radio-label { font-weight: 600; }
+    .prep-radio .radio-desc { font-size: 11px; color: var(--text-tertiary); margin-left: auto; }
+
+    /* ─── Voortgangsstaat ─────────────────────────────────────────── */
+    .progress-section { display: flex; flex-direction: column; gap: 10px; }
+    .progress-bar-wrap {
+      height: 6px; border-radius: 3px; background: var(--surface-card);
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%; border-radius: 3px;
+      background: var(--ow-accent);
+      transition: width 300ms ease;
+    }
+    .progress-status { font-size: 12px; color: var(--text-secondary); }
+    .progress-detail { font-size: 11px; color: var(--text-tertiary); line-height: 1.5; }
+
+    /* ─── Resultaat ───────────────────────────────────────────────── */
+    .result-section { display: flex; flex-direction: column; gap: 8px; }
+    .result-item {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 12px; color: var(--text-secondary);
+    }
+    .result-item .r-val { font-weight: 700; color: var(--text-primary); min-width: 24px; text-align: right; }
+    .result-item .r-icon { width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .result-item .r-icon.ok { color: #22c55e; }
+    .result-item .r-icon.warn { color: #fbbf24; }
+    .result-item .r-icon.new { color: #60a5fa; }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+
+  <template id="page-content">
+    <div class="sync-page">
+      <div class="page-header">
+        <h1>KNKV Sync</h1>
+        <p class="page-sub">Sportlink API synchronisatie — leden, teamindeling en competitie</p>
+      </div>
+
+      <div class="sync-grid">
+        <!-- ═══ Leden ═══════════════════════════════════════════════ -->
+        <div class="sync-card">
+          <div class="sync-icon">
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div class="sync-info">
+            <div class="sync-titel">Leden</div>
+            <div class="sync-meta">
+              <span class="dot ok"></span>
+              Laatste sync: 15 apr 2026 · 142 leden
+            </div>
+          </div>
+          <button class="sync-btn" onclick="openOverlay('leden')">Synchroniseer</button>
+        </div>
+
+        <!-- ═══ Teamindeling ═══════════════════════════════════════ -->
+        <div class="sync-card">
+          <div class="sync-icon">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          </div>
+          <div class="sync-info">
+            <div class="sync-titel">Teamindeling</div>
+            <div class="sync-meta">
+              <span class="dot stale"></span>
+              Laatste sync: 10 apr 2026 · Veld najaar
+            </div>
+          </div>
+          <button class="sync-btn" onclick="openOverlay('team')">Synchroniseer</button>
+        </div>
+
+        <!-- ═══ Competitie ═════════════════════════════════════════ -->
+        <div class="sync-card">
+          <div class="sync-icon">
+            <svg viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+          </div>
+          <div class="sync-info">
+            <div class="sync-titel">Competitie</div>
+            <div class="sync-meta">
+              <span class="dot ok"></span>
+              Laatste sync: 14 apr 2026 · 12 teams
+            </div>
+          </div>
+          <button class="sync-btn" onclick="openOverlay('competitie')">Synchroniseer</button>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- ═══ OVERLAY: Leden sync ═════════════════════════════════════ -->
+  <div class="overlay" id="overlay-leden">
+    <div class="prep-dialog">
+      <div class="prep-header">
+        <h2>Leden synchroniseren</h2>
+        <button class="prep-close" onclick="closeOverlay('leden')">×</button>
+      </div>
+
+      <!-- Stap 1: Voorbereiding -->
+      <div class="prep-body" id="leden-prep">
+        <div class="prep-info">
+          Volledige sync van alle leden via Sportlink API.<br>
+          <span class="muted">Laatste succesvolle sync:</span> <span class="val">15 apr 2026, 09:14</span>
+        </div>
+
+        <label class="prep-check">
+          <input type="checkbox" checked>
+          Mutatie-historie meenemen (sinds laatste sync)
+        </label>
+
+        <div class="prep-info">
+          <span class="muted">Verwacht:</span> <span class="val">142</span> leden ophalen, mutaties sinds <span class="val">15 apr</span>
+        </div>
+      </div>
+
+      <!-- Stap 2: Voortgang (verborgen, voorbeeld) -->
+      <div class="prep-body" id="leden-progress" style="display:none">
+        <div class="progress-section">
+          <div class="progress-status">Leden ophalen van Sportlink API...</div>
+          <div class="progress-bar-wrap"><div class="progress-bar" style="width:65%"></div></div>
+          <div class="progress-detail">92 / 142 leden verwerkt</div>
+        </div>
+      </div>
+
+      <!-- Stap 3: Resultaat (verborgen, voorbeeld) -->
+      <div class="prep-body" id="leden-result" style="display:none">
+        <div class="prep-info" style="border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.04)">
+          Synchronisatie voltooid
+        </div>
+        <div class="result-section">
+          <div class="result-item"><span class="r-icon ok"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span><span class="r-val">142</span> leden gesynchroniseerd</div>
+          <div class="result-item"><span class="r-icon new"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span><span class="r-val">3</span> nieuwe leden</div>
+          <div class="result-item"><span class="r-icon warn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 9v4M12 17h.01"/></svg></span><span class="r-val">1</span> uitgeschreven</div>
+          <div class="result-item"><span class="r-icon ok"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span><span class="r-val">8</span> mutaties verwerkt</div>
+        </div>
+      </div>
+
+      <div class="prep-footer">
+        <button class="btn-cancel" onclick="closeOverlay('leden')">Annuleren</button>
+        <button class="btn-start" onclick="showStep('leden', 'progress')">Starten</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ OVERLAY: Teamindeling sync ══════════════════════════════ -->
+  <div class="overlay" id="overlay-team">
+    <div class="prep-dialog">
+      <div class="prep-header">
+        <h2>Teamindeling synchroniseren</h2>
+        <button class="prep-close" onclick="closeOverlay('team')">×</button>
+      </div>
+
+      <div class="prep-body" id="team-prep">
+        <div class="prep-info">
+          Snapshot ophalen van bondsteams uit Sportlink.<br>
+          <span class="muted">Seizoen:</span> <span class="val">2026–2027</span> · <span class="muted">Laatste sync:</span> <span class="val">10 apr 2026</span>
+        </div>
+
+        <div class="prep-field">
+          <span class="prep-label">Competitieperiode</span>
+          <div class="prep-radio-group">
+            <label class="prep-radio selected recommended">
+              <input type="radio" name="comp" checked>
+              <span class="radio-label">Veld voorjaar</span>
+              <span class="radio-desc">mrt – jun · aanbevolen</span>
+            </label>
+            <label class="prep-radio">
+              <input type="radio" name="comp">
+              <span class="radio-label">Veld najaar</span>
+              <span class="radio-desc">sep – dec</span>
+            </label>
+            <label class="prep-radio">
+              <input type="radio" name="comp">
+              <span class="radio-label">Zaal 1</span>
+              <span class="radio-desc">nov – feb</span>
+            </label>
+            <label class="prep-radio">
+              <input type="radio" name="comp">
+              <span class="radio-label">Zaal 2</span>
+              <span class="radio-desc">jan – mrt</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="prep-info">
+          <span class="muted">Verwacht:</span> teams + speelgerechtigde spelers voor <span class="val">Veld voorjaar 2026–2027</span>
+        </div>
+      </div>
+
+      <div class="prep-body" id="team-progress" style="display:none">
+        <div class="progress-section">
+          <div class="progress-status">Bondsteams ophalen...</div>
+          <div class="progress-bar-wrap"><div class="progress-bar" style="width:40%"></div></div>
+          <div class="progress-detail">5 / 12 teams verwerkt</div>
+        </div>
+      </div>
+
+      <div class="prep-body" id="team-result" style="display:none">
+        <div class="prep-info" style="border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.04)">
+          Synchronisatie voltooid
+        </div>
+        <div class="result-section">
+          <div class="result-item"><span class="r-icon ok"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span><span class="r-val">12</span> teams gesynchroniseerd</div>
+          <div class="result-item"><span class="r-icon ok"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span><span class="r-val">138</span> spelerkoppelingen</div>
+          <div class="result-item"><span class="r-icon new"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span><span class="r-val">2</span> nieuwe teams</div>
+        </div>
+      </div>
+
+      <div class="prep-footer">
+        <button class="btn-cancel" onclick="closeOverlay('team')">Annuleren</button>
+        <button class="btn-start" onclick="showStep('team', 'progress')">Starten</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ OVERLAY: Competitie sync ════════════════════════════════ -->
+  <div class="overlay" id="overlay-competitie">
+    <div class="prep-dialog">
+      <div class="prep-header">
+        <h2>Competitie synchroniseren</h2>
+        <button class="prep-close" onclick="closeOverlay('competitie')">×</button>
+      </div>
+
+      <div class="prep-body" id="competitie-prep">
+        <div class="prep-info">
+          Haal rankings en standen op van de KNKV competitie.<br>
+          <span class="muted">Laatste sync:</span> <span class="val">14 apr 2026</span> · Veld voorjaar 2025–2026
+        </div>
+
+        <div class="prep-field">
+          <span class="prep-label">Seizoen</span>
+          <select class="prep-select">
+            <option selected>2025–2026 (huidig)</option>
+            <option>2024–2025</option>
+            <option>2023–2024</option>
+          </select>
+        </div>
+
+        <div class="prep-field">
+          <span class="prep-label">Competitieperiode</span>
+          <div class="prep-radio-group">
+            <label class="prep-radio selected recommended">
+              <input type="radio" name="comp-type" checked>
+              <span class="radio-label">Veld voorjaar</span>
+              <span class="radio-desc">mrt – jun · aanbevolen</span>
+            </label>
+            <label class="prep-radio">
+              <input type="radio" name="comp-type">
+              <span class="radio-label">Zaal</span>
+              <span class="radio-desc">nov – mrt</span>
+            </label>
+            <label class="prep-radio">
+              <input type="radio" name="comp-type">
+              <span class="radio-label">Veld najaar</span>
+              <span class="radio-desc">sep – dec</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="prep-info">
+          <span class="muted">Rankings ophalen voor</span> <span class="val">12 teams</span><br>
+          <span class="muted">Teamkoppeling via Sportlink team-ID's — sommige teams spelen meerdere zaalcompetities</span>
+        </div>
+      </div>
+
+      <div class="prep-body" id="competitie-progress" style="display:none">
+        <div class="progress-section">
+          <div class="progress-status">Rankings ophalen...</div>
+          <div class="progress-bar-wrap"><div class="progress-bar" style="width:80%"></div></div>
+          <div class="progress-detail">10 / 12 teams verwerkt</div>
+        </div>
+      </div>
+
+      <div class="prep-body" id="competitie-result" style="display:none">
+        <div class="prep-info" style="border-color:rgba(34,197,94,.3);background:rgba(34,197,94,.04)">
+          Synchronisatie voltooid
+        </div>
+        <div class="result-section">
+          <div class="result-item"><span class="r-icon ok"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span><span class="r-val">12</span> teamrankings bijgewerkt</div>
+          <div class="result-item"><span class="r-icon ok"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></span><span class="r-val">12</span> teams gekoppeld</div>
+          <div class="result-item"><span class="r-icon warn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 9v4M12 17h.01"/></svg></span><span class="r-val">1</span> team niet gekoppeld</div>
+        </div>
+      </div>
+
+      <div class="prep-footer">
+        <button class="btn-cancel" onclick="closeOverlay('competitie')">Annuleren</button>
+        <button class="btn-start" onclick="showStep('competitie', 'progress')">Starten</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Shell
+    import('../shared/shell.js').then(m => m.shell('app', { activePage: 'sync', memoCount: 3 }));
+
+    // Overlay open/close
+    function openOverlay(id) {
+      document.getElementById('overlay-' + id).classList.add('visible');
+    }
+    function closeOverlay(id) {
+      document.getElementById('overlay-' + id).classList.remove('visible');
+      // Reset naar prep
+      showStep(id, 'prep');
+    }
+
+    // Stap-navigatie binnen overlay
+    function showStep(id, step) {
+      ['prep', 'progress', 'result'].forEach(s => {
+        const el = document.getElementById(id + '-' + s);
+        if (el) el.style.display = s === step ? 'flex' : 'none';
+      });
+      // Simuleer voortgang → resultaat na 2s
+      if (step === 'progress') {
+        setTimeout(() => showStep(id, 'result'), 2000);
+      }
+      // Update footer buttons
+      const footer = document.getElementById('overlay-' + id).querySelector('.prep-footer');
+      if (step === 'progress') {
+        footer.style.display = 'none';
+      } else if (step === 'result') {
+        footer.style.display = 'flex';
+        footer.innerHTML = '<button class="btn-start" onclick="closeOverlay(\'' + id + '\')">Sluiten</button>';
+      }
+    }
+
+    // Radio select styling
+    document.querySelectorAll('.prep-radio').forEach(r => {
+      r.addEventListener('click', () => {
+        r.closest('.prep-radio-group').querySelectorAll('.prep-radio').forEach(p => p.classList.remove('selected'));
+        r.classList.add('selected');
+      });
+    });
+
+    // Make functions global
+    window.openOverlay = openOverlay;
+    window.closeOverlay = closeOverlay;
+    window.showStep = showStep;
+  </script>
+</body>
+</html>

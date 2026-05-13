@@ -1,0 +1,43 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   Navigatie · Design Tokens
+   Traject: navigatie-prototype TI Studio
+   ══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ─── Brand ────────────────────────────────────────────────────────── */
+  --ow-accent: #ff6b00;
+  --accent-dim: rgba(255, 107, 0, .12);
+
+  /* ─── Neutraal / UI ────────────────────────────────────────────────── */
+  --bg-0: #0a0a0c;
+  --bg-1: #0f0f11;
+  --bg-2: #1a1a1e;
+  --border-0: #18181c;
+  --border-1: #2a2a2e;
+  --text-1: #f5f5f7;
+  --text-2: #b8b8bd;
+  --text-3: #8a8a90;
+  --text-muted: #555;
+
+  /* ─── Ribbon ───────────────────────────────────────────────────────── */
+  --ribbon: 48px;
+
+  /* ─── Seizoen ──────────────────────────────────────────────────────── */
+  --ok: #22c55e;
+
+  /* ─── Typografie ───────────────────────────────────────────────────── */
+  --font-sans: Inter, -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--surface-sunken);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  font-size: 13px;
+  line-height: 1.5;
+}

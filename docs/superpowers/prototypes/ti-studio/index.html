@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>TI Studio · Design Prototypes</title>
+  <link rel="stylesheet" href="shared/tokens.css">
+  <style>
+    body { padding: 40px 32px; max-width: 1200px; margin: 0 auto; }
+
+    .header { margin-bottom: 40px; }
+    .header h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 6px; }
+    .header .sub { font-size: 13px; color: var(--text-tertiary); margin: 0; }
+    .header .app-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 3px 10px; background: rgba(59,130,246,.08);
+      border: 1px solid rgba(59,130,246,.2); border-radius: 6px;
+      font-size: 11px; font-weight: 600; color: #60a5fa; margin-top: 8px;
+    }
+
+    .section { margin-bottom: 40px; }
+    .section-header {
+      display: flex; align-items: baseline; gap: 12px;
+      margin-bottom: 12px; padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .section-title { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ow-accent); }
+    .section-type { font-size: 10px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 8px; background: var(--surface-card); border-radius: 4px; }
+    .section-desc { font-size: 12px; color: var(--text-tertiary); margin: -4px 0 16px; }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+    .card {
+      background: var(--surface-page); border: 1px solid var(--border-light);
+      border-radius: 10px; overflow: hidden; transition: border-color 180ms;
+    }
+    .card:hover { border-color: var(--border-default); }
+    .card-header {
+      padding: 12px 16px; border-bottom: 1px solid var(--border-light);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .card-title { font-size: 13px; font-weight: 700; color: var(--text-primary); }
+    .card-badge { font-size: 9px; font-weight: 600; padding: 1px 6px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .card-badge.component { color: #60a5fa; background: rgba(59,130,246,.1); border: 1px solid rgba(59,130,246,.2); }
+    .card-badge.composite { color: #a78bfa; background: rgba(167,139,250,.1); border: 1px solid rgba(167,139,250,.2); }
+    .card-badge.page { color: #4ade80; background: rgba(74,222,128,.1); border: 1px solid rgba(74,222,128,.2); }
+    .card-link { font-size: 11px; color: var(--ow-accent); text-decoration: none; font-weight: 600; }
+    .card-link:hover { text-decoration: underline; }
+    .card-desc { padding: 10px 16px; font-size: 11px; color: var(--text-tertiary); line-height: 1.5; }
+
+    .shared-grid { display: flex; gap: 12px; flex-wrap: wrap; }
+    .shared-card {
+      background: var(--surface-card); border: 1px solid var(--border-light);
+      border-radius: 8px; padding: 12px 16px; max-width: 280px;
+    }
+    .shared-card .fname { font-size: 12px; font-weight: 700; color: #60a5fa; font-family: var(--font-stat); }
+    .shared-card .fdesc { font-size: 11px; color: var(--text-tertiary); margin-top: 4px; line-height: 1.4; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>TI Studio · Design Prototypes</h1>
+    <p class="sub">Componenten en pagina's voor de Team-Indeling werkplaats</p>
+    <div class="app-badge">
+      <svg viewBox="0 0 18 18" width="14" height="14" fill="none">
+        <rect x="2" y="2" width="14" height="14" rx="1.5" stroke="#3b82f6" stroke-width="1.5" opacity="0.4"/>
+        <line x1="6.7" y1="2" x2="6.7" y2="16" stroke="#3b82f6" stroke-width="0.8" opacity="0.3"/>
+        <line x1="11.3" y1="2" x2="11.3" y2="16" stroke="#3b82f6" stroke-width="0.8" opacity="0.3"/>
+      </svg>
+      teamindeling.ckvoranjewit.app
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       PAGES — Echte pagina-prototypes
+       ═══════════════════════════════════════════════════════════════ -->
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Pages</span>
+      <span class="section-type">Pagina-prototypes</span>
+    </div>
+    <div class="section-desc">Echte pagina-layouts — hoe componenten samenkomen in de app</div>
+    <div class="grid">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Homepage</span>
+          <span class="card-badge page">Page</span>
+        </div>
+        <div class="card-desc">Dashboard met groet, seizoen-badge, werkbord-tile met volledigheidsring, navigatie-tiles.</div>
+        <div class="card-header" style="border-top:1px solid var(--border-light);border-bottom:none"><a class="card-link" href="pages/homepage.html">Open →</a></div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Werkbord</span>
+          <span class="card-badge page">Page</span>
+        </div>
+        <div class="card-desc">Visuele editor voor teamopstelling. Drag & drop teamkaarten, spelerpool, staf-drawer.</div>
+        <div class="card-header" style="border-top:1px solid var(--border-light);border-bottom:none"><a class="card-link" href="pages/werkbord.html">Open →</a></div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Personen</span>
+          <span class="card-badge page">Page</span>
+        </div>
+        <div class="card-desc">Spelers + Staf tabs met filterbalk, tabel-rij componenten.</div>
+        <div class="card-header" style="border-top:1px solid var(--border-light);border-bottom:none"><a class="card-link" href="pages/personen.html">Open →</a></div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Memo's</span>
+          <span class="card-badge page">Page</span>
+        </div>
+        <div class="card-desc">Werkitems en aandachtspunten. Status-dots, team-context, prioriteit.</div>
+        <div class="card-header" style="border-top:1px solid var(--border-light);border-bottom:none"><a class="card-link" href="pages/memo.html">Open →</a></div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Kader</span>
+          <span class="card-badge page">Page</span>
+        </div>
+        <div class="card-desc">Seizoenskader per doelgroep. Categorie-kleurbanden, team- en spelertelling.</div>
+        <div class="card-header" style="border-top:1px solid var(--border-light);border-bottom:none"><a class="card-link" href="pages/kader.html">Open →</a></div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">KNKV Sync</span>
+          <span class="card-badge page">Page</span>
+        </div>
+        <div class="card-desc">Sportlink synchronisatie. Leden-import, teamregistraties, competitie-indeling.</div>
+        <div class="card-header" style="border-top:1px solid var(--border-light);border-bottom:none"><a class="card-link" href="pages/sync.html">Open →</a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       COMPONENTS — Memo
+       ═══════════════════════════════════════════════════════════════ -->
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Memo</span>
+      <span class="section-type">Components</span>
+    </div>
+    <div class="section-desc">Werkitems/memo's — van kanban-kaart tot detail-drawer</div>
+    <div class="grid">
+      <div class="card">
+        <div class="card-header"><span class="card-title">Memo-kaart</span><span class="card-badge component">Component</span></div>
+        <div class="card-desc">Kanban-kaart formaat. Prioriteit-indicator + entiteit-badge + beschrijving + naam. Alle prioriteiten en entiteiten.</div>
+        <div class="card-header" style="border-top:1px solid var(--border-light);border-bottom:none"><a class="card-link" href="components/memo/memo-kaart.html">Open →</a></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Memo-rij</span><span class="card-badge component">Component</span></div>
+        <div class="card-desc">Compact formaat voor panels en drawers. Status-dot + prioriteit + beschrijving + entiteit + datum.</div>
+        <div class="card-header" style="border-top:1px solid var(--border-light);border-bottom:none"><a class="card-link" href="components/memo/memo-rij.html">Open →</a></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Nieuwe memo</span><span class="card-badge composite">Composite</span></div>
+        <div class="card-desc">Aanmaak-dialog. Context-aware: entiteit vooraf ingevuld vanuit speler/staf/team. 4 varianten.</div>
+        <div class="card-header" style="border-top:1px solid var(--border-light);border-bottom:none"><a class="card-link" href="components/memo/nieuwe-memo-dialog.html">Open →</a></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Memo-drawer</span><span class="card-badge composite">Composite</span></div>
+        <div class="card-desc">Detail-editor. Status/prioriteit dropdowns, beschrijving, resolutie, tijdlijn met toelichtingen + activiteitenlog.</div>
+        <div class="card-header" style="border-top:1px solid var(--border-light);border-bottom:none"><a class="card-link" href="components/memo/memo-drawer.html">Open →</a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       COMPONENTS — Shell
+       ═══════════════════════════════════════════════════════════════ -->
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Shell</span>
+      <span class="section-type">Components</span>
+    </div>
+    <div class="section-desc">App-schil componenten — worden automatisch geladen via shell.js in elke pagina</div>
+    <div class="grid">
+      <div class="card">
+        <div class="card-header"><span class="card-title">Ribbon</span><span class="card-badge component">Component</span></div>
+        <div class="card-desc">Verticale navigatie: TI Studio logo → Werkbord → Personen → Memo's | Kader → Sync | Avatar. Referentie-weergave in isolatie.</div>
+        <div class="card-header" style="border-top:1px solid var(--border-light);border-bottom:none"><a class="card-link" href="components/shell/ribbon.html">Open →</a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       COMPONENTS — Speler
+       ═══════════════════════════════════════════════════════════════ -->
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Speler</span>
+      <span class="section-type">Components</span>
+    </div>
+    <div class="section-desc">Alle speler-weergave componenten — van compact-chip tot dialog</div>
+    <div class="grid">
+      <div class="card">
+        <div class="card-header"><span class="card-title">Compact-chip</span><span class="card-badge component">Component</span></div>
+        <div class="card-desc">Geslacht-dot + naam + memo + leeftijd-bar. Dense chip voor uitgezoomd werkbord.</div>
+        <div class="card-header" style="border-top:1px solid var(--border-light);border-bottom:none"><a class="card-link" href="components/speler/compact-chip.html">Open →</a></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Rijke-rij</span><span class="card-badge component">Component</span></div>
+        <div class="card-desc">Vierkante foto + naam + team-badges + leeftijd-kolom. Pool-drawer formaat.</div>
+        <div class="card-header" style="border-top:1px solid var(--border-light);border-bottom:none"><a class="card-link" href="components/speler/rijke-rij.html">Open →</a></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Tabel-rij</span><span class="card-badge component">Component</span></div>
+        <div class="card-desc">8-kolom data-tabel. Foto + naam + status + huidig + indeling + memo + gezien + leeftijd.</div>
+        <div class="card-header" style="border-top:1px solid var(--border-light);border-bottom:none"><a class="card-link" href="components/speler/tabel-rij.html">Open →</a></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Hover-kaart</span><span class="card-badge component">Component</span></div>
+        <div class="card-desc">200×300px kaart. Leeftijdkleur-gradient, grote foto, status, USS score.</div>
+        <div class="card-header" style="border-top:1px solid var(--border-light);border-bottom:none"><a class="card-link" href="components/speler/hover-kaart.html">Open →</a></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Spelerpool-drawer</span><span class="card-badge composite">Composite</span></div>
+        <div class="card-desc">Zijpaneel met alle spelers. Zoek, filter, sorteer, rijke-rij kaarten.</div>
+        <div class="card-header" style="border-top:1px solid var(--border-light);border-bottom:none"><a class="card-link" href="components/speler/spelerpool-drawer.html">Open →</a></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Inline-edits</span><span class="card-badge component">Component</span></div>
+        <div class="card-desc">Status-editor, indeling-editor, gezien-toggle. Inline bewerkbare elementen op de tabel-rij.</div>
+        <div class="card-header" style="border-top:1px solid var(--border-light);border-bottom:none"><a class="card-link" href="components/speler/inline-edits.html">Open →</a></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Nieuwe speler</span><span class="card-badge composite">Composite</span></div>
+        <div class="card-desc">Dialog voor handmatig aanmaken van potentiële/gastspelers. Naam, geboortedatum, geslacht.</div>
+        <div class="card-header" style="border-top:1px solid var(--border-light);border-bottom:none"><a class="card-link" href="components/speler/nieuwe-speler-dialog.html">Open →</a></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Speler-dialog</span><span class="card-badge composite">Composite</span></div>
+        <div class="card-desc">Volledig profiel. Grote foto, alle data, memo's, evaluaties.</div>
+        <div class="card-header" style="border-top:1px solid var(--border-light);border-bottom:none"><a class="card-link" href="components/speler/speler-dialog.html">Open →</a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       COMPONENTS — Staf
+       ═══════════════════════════════════════════════════════════════ -->
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Staf</span>
+      <span class="section-type">Components</span>
+    </div>
+    <div class="section-desc">Alle staf-componenten — 3 types (compass · briefcase-medical · shield), vrije rolnamen</div>
+    <div class="grid">
+      <div class="card">
+        <div class="card-header"><span class="card-title">Compact-chip</span><span class="card-badge component">Component</span></div>
+        <div class="card-desc">Type-icoon + naam + memo + shirt-icoon. Oranje border-left.</div>
+        <div class="card-header" style="border-top:1px solid var(--border-light);border-bottom:none"><a class="card-link" href="components/staf/compact-chip.html">Open →</a></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Rijke-rij</span><span class="card-badge component">Component</span></div>
+        <div class="card-desc">Vierkante foto + naam + memo + rol-mini. Quick-edit popover, speler-badge.</div>
+        <div class="card-header" style="border-top:1px solid var(--border-light);border-bottom:none"><a class="card-link" href="components/staf/rijke-rij.html">Open →</a></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Tabel-rij</span><span class="card-badge component">Component</span></div>
+        <div class="card-desc">6-kolom tabel. Foto + naam + team+rol + memo + speelt + actief toggle.</div>
+        <div class="card-header" style="border-top:1px solid var(--border-light);border-bottom:none"><a class="card-link" href="components/staf/tabel-rij.html">Open →</a></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Hover-card</span><span class="card-badge component">Component</span></div>
+        <div class="card-desc">Grote foto + type-badge + koppelingen + 5 seizoenen historie.</div>
+        <div class="card-header" style="border-top:1px solid var(--border-light);border-bottom:none"><a class="card-link" href="components/staf/hover-card.html">Open →</a></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Staf-drawer</span><span class="card-badge composite">Composite</span></div>
+        <div class="card-desc">Werkbord zijpaneel met rijke-rij kaarten. Zoek/filter inclusief inactief.</div>
+        <div class="card-header" style="border-top:1px solid var(--border-light);border-bottom:none"><a class="card-link" href="components/staf/staf-drawer.html">Open →</a></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Staf-dialog</span><span class="card-badge composite">Composite</span></div>
+        <div class="card-desc">Volledig profiel. Header met foto + rol-edit + koppelingen. Tabs: historie + memo's.</div>
+        <div class="card-header" style="border-top:1px solid var(--border-light);border-bottom:none"><a class="card-link" href="components/staf/staf-dialog.html">Open →</a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       COMPONENTS — Team
+       ═══════════════════════════════════════════════════════════════ -->
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Team</span>
+      <span class="section-type">Components</span>
+    </div>
+    <div class="section-desc">Teamkaarten op het werkbord, drawers, dialogen</div>
+    <div class="grid">
+      <div class="card">
+        <div class="card-header"><span class="card-title">Team-kaart</span><span class="card-badge component">Component</span></div>
+        <div class="card-desc">Alle zoomniveaus × teamtypes. Categorie-kleurbanden, validatie-hoek, staf compact-chips.</div>
+        <div class="card-header" style="border-top:1px solid var(--border-light);border-bottom:none"><a class="card-link" href="components/team/team-kaart.html">Open →</a></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Team-drawer</span><span class="card-badge composite">Composite</span></div>
+        <div class="card-desc">Zijpaneel met teamlijst, zoek/filter, validatie-status per team.</div>
+        <div class="card-header" style="border-top:1px solid var(--border-light);border-bottom:none"><a class="card-link" href="components/team/team-drawer.html">Open →</a></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Team-dialog</span><span class="card-badge composite">Composite</span></div>
+        <div class="card-desc">Volledig team-overzicht. Samenstelling, validatie, staf, instellingen.</div>
+        <div class="card-header" style="border-top:1px solid var(--border-light);border-bottom:none"><a class="card-link" href="components/team/team-dialog.html">Open →</a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SHARED
+       ═══════════════════════════════════════════════════════════════ -->
+
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Shared</span>
+      <span class="section-type">Modules</span>
+    </div>
+    <div class="section-desc">Gedeelde tokens + JS-modules voor alle prototypes</div>
+    <div class="shared-grid">
+      <div class="shared-card">
+        <div class="fname">tokens.css</div>
+        <div class="fdesc">Alle design tokens, avatar primitives, memo-attention, team-kaart CSS, staf-compact, scroll utility.</div>
+      </div>
+      <div class="shared-card">
+        <div class="fname">shell.js</div>
+        <div class="fdesc">Ribbon + grid-layout als JS-module. Elke pagina importeert shell() — wijzig de ribbon op één plek.</div>
+      </div>
+      <div class="shared-card">
+        <div class="fname">icons.js</div>
+        <div class="fdesc">Lucide SVG-paden: compass, briefcase-medical, shield, shirt, memo. Render helpers: svg(), memoSvg(), spelerBadge().</div>
+      </div>
+      <div class="shared-card">
+        <div class="fname">staf-components.js</div>
+        <div class="fdesc">stafChip(), stafRijkeRij(), stafSectie() — staf-elementen als herbruikbare functies.</div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Speler-weergave · Catalogus</title>
+  <link rel="stylesheet" href="tokens.css">
+  <style>
+    body { padding: 32px; max-width: 1200px; margin: 0 auto; }
+    .catalogus-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+    .cat-card {
+      background: var(--surface-page);
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 22px 24px;
+      text-decoration: none;
+      color: var(--text-primary);
+      transition: border-color 180ms, transform 180ms;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .cat-card:hover { border-color: var(--ow-accent); transform: translateY(-2px); }
+    .cat-label { font-size: 10px; color: var(--ow-accent); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; }
+    .cat-title { font-size: 16px; font-weight: 700; margin: 2px 0 4px; }
+    .cat-desc { font-size: 12px; color: var(--text-tertiary); line-height: 1.5; }
+    .cat-file { font-family: var(--font-stat); font-size: 10px; color: var(--text-muted); margin-top: auto; padding-top: 10px; }
+
+    .section-header {
+      background: var(--surface-page);
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 24px 30px;
+      margin-bottom: 24px;
+    }
+    .meta { font-size: 11px; color: var(--text-tertiary); margin-top: 6px; }
+    .meta a { color: var(--ow-accent); text-decoration: none; }
+    .meta a:hover { text-decoration: underline; }
+
+    .resources {
+      margin-top: 32px;
+      padding: 20px 24px;
+      background: var(--surface-page);
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+    }
+    .resources h3 { font-size: 13px; color: var(--ow-accent); text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 10px; }
+    .resources ul { margin: 0; padding-left: 18px; color: var(--text-secondary); font-size: 12px; line-height: 1.8; }
+    .resources code { font-family: var(--font-stat); color: #ffb96b; background: var(--surface-card); padding: 1px 5px; border-radius: 3px; font-size: 11px; }
+  </style>
+</head>
+<body>
+  <div class="section-header">
+    <h1>Speler-weergave · Catalogus</h1>
+    <p class="subtitle">Unificatie van alle spelerweergaven in TI Studio · 6 contexten, één DNA</p>
+    <div class="meta">
+      Spec: <a href="../../specs/2026-04-15-speler-weergave-unificatie.md">2026-04-15-speler-weergave-unificatie.md</a> ·
+      Tokens: <code style="font-family: var(--font-stat); font-size: 10px; color: #ffb96b;">tokens.css</code>
+    </div>
+  </div>
+
+  <div class="catalogus-grid">
+    <a href="compact-chip.html" class="cat-card">
+      <div class="cat-label">Context 1</div>
+      <div class="cat-title">Compact chip</div>
+      <div class="cat-desc">Dense chip in dropzone · uitgezoomd werkbord · geen avatar, geen leeftijd-getal</div>
+      <div class="cat-file">compact-chip.html</div>
+    </a>
+    <a href="rijke-rij.html" class="cat-card">
+      <div class="cat-label">Context 2</div>
+      <div class="cat-title">Rijke rij</div>
+      <div class="cat-desc">Pool-drawer + zoom-detail + drag-image · 54px hoog · volledige naam + team-badges</div>
+      <div class="cat-file">rijke-rij.html</div>
+    </a>
+    <a href="speler-dialog.html" class="cat-card">
+      <div class="cat-label">Context 4</div>
+      <div class="cat-title">Speler-dialoog</div>
+      <div class="cat-desc">Volledige SpelerProfielDialog · hero-header + tabs (spelerspad, kenmerken, evaluaties, werkitems)</div>
+      <div class="cat-file">speler-dialog.html</div>
+    </a>
+    <a href="hover-kaart.html" class="cat-card">
+      <div class="cat-label">Context 5</div>
+      <div class="cat-title">Hover-kaart</div>
+      <div class="cat-desc">Zwevende 180×270 kaart bij hover op werkbord-rijen · FIFA-stijl</div>
+      <div class="cat-file">hover-kaart.html</div>
+    </a>
+    <a href="tabel-rij.html" class="cat-card">
+      <div class="cat-label">Context 6</div>
+      <div class="cat-title">Tabel-rij</div>
+      <div class="cat-desc">Dense data-view op /personen · 8 kolommen · inline bewerkbaar</div>
+      <div class="cat-file">tabel-rij.html</div>
+    </a>
+  </div>
+
+  <div class="resources">
+    <h3>Resources</h3>
+    <ul>
+      <li><strong>Design tokens</strong>: <code>tokens.css</code> — alle kleuren, sizes en gradient-strings (15 leeftijden, 5 statussen, 2 sexe, 4 memo, 4 USS-tiers)</li>
+      <li><strong>Master spec</strong>: <code>docs/superpowers/specs/2026-04-15-speler-weergave-unificatie.md</code> — beslissingsdocument met alle regels</li>
+      <li><strong>Legacy preview</strong>: fundament-v22.html (in brainstorm-sessie) — volledige preview met alle contexten op één pagina</li>
+    </ul>
+  </div>
+</body>
+</html>

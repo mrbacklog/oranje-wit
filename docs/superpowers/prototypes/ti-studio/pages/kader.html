@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kader — TI Studio</title>
+  <link rel="stylesheet" href="../shared/tokens.css">
+  <style>
+    .kader-page { max-width: 960px; }
+
+    /* ─── Header ─────────────────────────────────────────────────── */
+    .kader-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .kader-header h1 { font-size: 18px; font-weight: 700; margin: 0; }
+    .kader-header .sub { font-size: 12px; color: var(--text-tertiary); margin: 2px 0 0; }
+    .kader-header .seizoen-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 3px 10px; background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08); border-radius: 6px;
+      font-size: 11px; font-weight: 600; color: var(--text-secondary);
+    }
+    .kader-tabs {
+      display: flex; gap: 2px; border-bottom: 1px solid var(--border-light);
+      margin-bottom: 20px;
+    }
+    .kader-tab {
+      padding: 8px 16px; font-size: 13px; font-weight: 600;
+      color: var(--text-tertiary); cursor: pointer; border: none; background: none;
+      border-bottom: 2px solid transparent; margin-bottom: -1px;
+      font-family: inherit; transition: color 120ms;
+    }
+    .kader-tab:hover { color: var(--text-secondary); }
+    .kader-tab.active { color: var(--ow-accent); border-bottom-color: var(--ow-accent); }
+    .kader-tab .badge {
+      font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 8px;
+      background: rgba(255,107,0,.1); color: var(--ow-accent); margin-left: 6px;
+    }
+
+    /* ─── Groep ──────────────────────────────────────────────────── */
+    .groep { margin-bottom: 24px; }
+    .groep-header {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 10px; padding-bottom: 6px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .groep-label {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-muted);
+    }
+    .groep-desc { font-size: 11px; color: var(--text-tertiary); margin-left: auto; }
+
+    /* ─── Kader-kaart ────────────────────────────────────────────── */
+    .groep-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 10px;
+      align-items: start;
+    }
+    .kader-kaart {
+      background: var(--surface-card); border: 1px solid var(--border-light);
+      border-radius: 10px; overflow: hidden;
+      border-left: 4px solid var(--kaart-kleur);
+      transition: border-color 180ms;
+    }
+    .kader-kaart:hover { border-color: var(--border-default); }
+    .kader-kaart.gewijzigd { border-color: rgba(255,107,0,.3); }
+
+    /* Kaart header */
+    .kk-header {
+      padding: 10px 14px; display: flex; align-items: center; gap: 10px;
+      cursor: pointer;
+    }
+    .kk-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; background: var(--kaart-kleur); }
+    .kk-naam { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+    .kk-meta {
+      display: flex; align-items: center; gap: 6px; margin-left: auto;
+      font-size: 10px; color: var(--text-tertiary);
+    }
+    .kk-meta .tag {
+      padding: 2px 7px; border-radius: 4px;
+      background: rgba(255,255,255,.04); border: 1px solid var(--border-light);
+      font-weight: 500;
+    }
+    .kk-meta .doelgroep {
+      padding: 2px 7px; border-radius: 4px;
+      background: color-mix(in srgb, var(--kaart-kleur) 10%, transparent);
+      border: 1px solid color-mix(in srgb, var(--kaart-kleur) 25%, transparent);
+      color: var(--kaart-kleur); font-weight: 600;
+    }
+    .kk-wijzig-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--ow-accent); flex-shrink: 0;
+    }
+
+    /* Kaart body — compacte waarden-grid */
+    .kk-body {
+      padding: 0 14px 12px;
+      display: none; /* standaard ingeklapt */
+    }
+    .kader-kaart.open .kk-body { display: block; }
+
+    /* Compacte summary (altijd zichtbaar) */
+    .kk-summary {
+      padding: 0 14px 10px;
+      display: flex; gap: 12px; font-size: 11px;
+    }
+    .kader-kaart.open .kk-summary { display: none; }
+    .kk-summary .sv {
+      display: flex; align-items: center; gap: 4px; color: var(--text-tertiary);
+    }
+    .kk-summary .sv .val { font-weight: 700; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+    .kk-summary .sv.gewijzigd .val { color: var(--ow-accent); }
+
+    /* Waarden-rij */
+    .kk-rij {
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px 0; border-bottom: 1px solid var(--border-light);
+    }
+    .kk-rij:last-child { border-bottom: none; }
+    .kk-rij .label { flex: 1; font-size: 11px; color: var(--text-tertiary); }
+    .kk-rij .inputs { display: flex; gap: 4px; }
+    .kk-rij .col-header {
+      width: 46px; text-align: center; font-size: 9px;
+      text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted);
+    }
+    .kk-input {
+      width: 46px; padding: 3px 4px; border-radius: 4px; text-align: center;
+      font-size: 11px; font-family: inherit; outline: none;
+      background: var(--surface-page); border: 1px solid var(--border-default); color: var(--text-primary);
+    }
+    .kk-input:focus { border-color: rgba(255,107,0,.5); }
+    .kk-input.gewijzigd { background: rgba(255,107,0,.06); border-color: var(--ow-accent); }
+
+    /* KNKV info (collapsed) */
+    .kk-knkv {
+      margin-top: 8px; padding: 8px 10px; border-radius: 6px;
+      background: rgba(255,255,255,.02); border: 1px solid var(--border-light);
+      font-size: 10px; color: var(--text-tertiary); line-height: 1.6;
+    }
+    .kk-knkv .kv { color: var(--text-secondary); font-weight: 600; }
+
+    /* ─── Memo-rij ─────────────────────────────────────────────────── */
+    .memo-rij {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 12px; border-bottom: 1px solid var(--border-light);
+      cursor: pointer; transition: background 100ms;
+    }
+    .memo-rij:hover { background: rgba(255,255,255,.03); }
+    .memo-rij:last-child { border-bottom: none; }
+    .mr-status { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .mr-status.open { background: #eab308; }
+    .mr-status.bespreking { background: #60a5fa; }
+    .mr-prio { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 7px; font-weight: 900; color: #fff; }
+    .mr-prio.middel { background: #eab308; }
+    .mr-prio.info { background: #8b5cf6; }
+    .mr-tekst { flex: 1; min-width: 0; font-size: 12px; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mr-entiteit { display: inline-flex; align-items: center; gap: 3px; padding: 1px 5px; border-radius: 3px; font-size: 9px; font-weight: 600; color: var(--text-tertiary); background: rgba(255,255,255,.04); border: 1px solid var(--border-light); flex-shrink: 0; }
+    .mr-entiteit .dot { width: 4px; height: 4px; border-radius: 50%; }
+    .mr-datum { font-size: 10px; color: var(--text-muted); flex-shrink: 0; }
+
+    /* ─── Tab toggle ─────────────────────────────────────────────── */
+    .tab-content { display: none; }
+    .tab-content.visible { display: block; }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+
+  <template id="page-content">
+    <div class="kader-page">
+      <div class="page-header" style="display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <h1>Kader</h1>
+          <p class="page-sub">Teamkaders en doelgroep-aandachtspunten</p>
+        </div>
+        <span class="seizoen-badge"><span style="width:5px;height:5px;border-radius:50%;background:#22c55e;flex-shrink:0"></span> 2026–2027</span>
+      </div>
+
+      <div class="kader-tabs">
+        <button class="kader-tab active" onclick="switchKaderTab('kaders')">Teamkaders</button>
+        <button class="kader-tab" onclick="switchKaderTab('memos')">Memo's<span class="badge"><span class="memo-attention open" style="width:10px;height:10px"><svg viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8 12h8M8 15h8M8 18h5"/></svg></span> 4</span></button>
+        <span class="auto-save-status" id="save-status" style="margin-left:auto;font-size:11px;color:var(--text-muted)"></span>
+      </div>
+
+      <!-- ═══ KADERS TAB ═══════════════════════════════════════════ -->
+      <div class="tab-content visible" id="tab-kaders">
+
+        <!-- ── Wedstrijdsport & Topsport doelgroep-secties ──────── -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px">
+          <div data-doelgroep="Wedstrijdsport" style="background:var(--surface-card);border:1px solid var(--border-light);border-radius:10px;padding:12px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+              <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#94a3b8">Wedstrijdsport</span>
+              <button class="doelgroep-memo-btn" style="font-size:10px;padding:2px 8px;border-radius:5px;border:1px solid var(--border-default);background:none;color:var(--text-tertiary);cursor:pointer;font-family:inherit">+ Memo</button>
+            </div>
+            <div class="doelgroep-teams"></div>
+          </div>
+          <div data-doelgroep="Topsport" style="background:var(--surface-card);border:1px solid var(--border-light);border-radius:10px;padding:12px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+              <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#8b5cf6">Topsport</span>
+              <button class="doelgroep-memo-btn" style="font-size:10px;padding:2px 8px;border-radius:5px;border:1px solid var(--border-default);background:none;color:var(--text-tertiary);cursor:pointer;font-family:inherit">+ Memo</button>
+            </div>
+            <div class="doelgroep-teams"></div>
+          </div>
+          <div data-doelgroep="Opleidingshart" style="background:var(--surface-card);border:1px solid var(--border-light);border-radius:10px;padding:12px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+              <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#f97316">Opleidingshart</span>
+              <button class="doelgroep-memo-btn" style="font-size:10px;padding:2px 8px;border-radius:5px;border:1px solid var(--border-default);background:none;color:var(--text-tertiary);cursor:pointer;font-family:inherit">+ Memo</button>
+            </div>
+            <div class="doelgroep-teams"></div>
+          </div>
+          <div data-doelgroep="Kweekvijver" style="background:var(--surface-card);border:1px solid var(--border-light);border-radius:10px;padding:12px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+              <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#22c55e">Kweekvijver</span>
+              <button class="doelgroep-memo-btn" style="font-size:10px;padding:2px 8px;border-radius:5px;border:1px solid var(--border-default);background:none;color:var(--text-tertiary);cursor:pointer;font-family:inherit">+ Memo</button>
+            </div>
+            <div class="doelgroep-teams"></div>
+          </div>
+          <div data-doelgroep="Korfbalplezier" style="background:var(--surface-card);border:1px solid var(--border-light);border-radius:10px;padding:12px;grid-column:1/-1">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+              <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#64748b">Korfbalplezier</span>
+              <button class="doelgroep-memo-btn" style="font-size:10px;padding:2px 8px;border-radius:5px;border:1px solid var(--border-default);background:none;color:var(--text-tertiary);cursor:pointer;font-family:inherit">+ Memo</button>
+            </div>
+            <div class="doelgroep-teams"></div>
+          </div>
+        </div>
+
+        <!-- ── Senioren ──────────────────────────────────────────── -->
+        <div class="groep">
+          <div class="groep-header">
+            <span class="groep-label">Senioren</span>
+            <span class="groep-desc">19+ · 8-tal</span>
+          </div>
+          <div class="groep-grid">
+            <!-- Sen A -->
+            <div class="kader-kaart" style="--kaart-kleur:#94a3b8" onclick="toggleKaart(this)">
+              <div class="kk-header">
+                <span class="kk-dot"></span>
+                <span class="kk-naam">Senioren A</span>
+                <div class="kk-meta"><span class="doelgroep">Wedstrijdsport</span></div>
+              </div>
+              <div class="kk-summary">
+                <span class="sv">Team: <span class="val">10–12–14</span></span>
+                <span class="sv">♀: <span class="val">4–6–7</span></span>
+                <span class="sv">♂: <span class="val">4–6–7</span></span>
+              </div>
+              <div class="kk-body">
+                <div class="kk-rij"><span class="label"></span><div class="inputs"><span class="col-header">Min</span><span class="col-header">Ideaal</span><span class="col-header">Max</span></div></div>
+                <div class="kk-rij"><span class="label">Teamgrootte</span><div class="inputs"><input class="kk-input" value="10"><input class="kk-input" value="12"><input class="kk-input" value="14"></div></div>
+                <div class="kk-rij"><span class="label">Dames</span><div class="inputs"><input class="kk-input" value="4"><input class="kk-input" value="6"><input class="kk-input" value="7"></div></div>
+                <div class="kk-rij"><span class="label">Heren</span><div class="inputs"><input class="kk-input" value="4"><input class="kk-input" value="6"><input class="kk-input" value="7"></div></div>
+                <div class="kk-knkv">
+                  <span class="kv">KNKV:</span> Paal 3,5m · Bal 5 · 2×30m · Max 8 wissels · Verplicht 4+4 · Vakwissel na 2 doelpunten
+                </div>
+              </div>
+            </div>
+
+            <!-- Sen B -->
+            <div class="kader-kaart" style="--kaart-kleur:#64748b" onclick="toggleKaart(this)">
+              <div class="kk-header">
+                <span class="kk-dot"></span>
+                <span class="kk-naam">Senioren B</span>
+                <div class="kk-meta"><span class="doelgroep">Korfbalplezier</span></div>
+              </div>
+              <div class="kk-summary">
+                <span class="sv">Team: <span class="val">10–12–16</span></span>
+                <span class="sv">♀: <span class="val">3–6–10</span></span>
+                <span class="sv">♂: <span class="val">3–6–10</span></span>
+              </div>
+              <div class="kk-body">
+                <div class="kk-rij"><span class="label"></span><div class="inputs"><span class="col-header">Min</span><span class="col-header">Ideaal</span><span class="col-header">Max</span></div></div>
+                <div class="kk-rij"><span class="label">Teamgrootte</span><div class="inputs"><input class="kk-input" value="10"><input class="kk-input" value="12"><input class="kk-input" value="16"></div></div>
+                <div class="kk-rij"><span class="label">Dames</span><div class="inputs"><input class="kk-input" value="3"><input class="kk-input" value="6"><input class="kk-input" value="10"></div></div>
+                <div class="kk-rij"><span class="label">Heren</span><div class="inputs"><input class="kk-input" value="3"><input class="kk-input" value="6"><input class="kk-input" value="10"></div></div>
+                <div class="kk-knkv">
+                  <span class="kv">KNKV:</span> Paal 3,5m · Bal 5 · 2×30m · Onbeperkt wissels · Gender vrij · Vakwissel na 2 doelpunten
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── A-categorie ───────────────────────────────────────── -->
+        <div class="groep">
+          <div class="groep-header">
+            <span class="groep-label">A-categorie</span>
+            <span class="groep-desc">Leeftijdsbegrensd · 8-tal</span>
+          </div>
+          <div class="groep-grid">
+            <div class="kader-kaart gewijzigd" style="--kaart-kleur:#8b5cf6" onclick="toggleKaart(this)">
+              <div class="kk-header">
+                <span class="kk-dot"></span>
+                <span class="kk-naam">U19</span>
+                <div class="kk-meta"><span class="doelgroep">Topsport</span><span class="kk-wijzig-dot"></span></div>
+              </div>
+              <div class="kk-summary">
+                <span class="sv">Team: <span class="val">10–12–14</span></span>
+                <span class="sv gewijzigd">Max: <span class="val">19.00</span></span>
+              </div>
+              <div class="kk-body">
+                <div class="kk-rij"><span class="label"></span><div class="inputs"><span class="col-header">Min</span><span class="col-header">Ideaal</span><span class="col-header">Max</span></div></div>
+                <div class="kk-rij"><span class="label">Teamgrootte</span><div class="inputs"><input class="kk-input" value="10"><input class="kk-input" value="12"><input class="kk-input" value="14"></div></div>
+                <div class="kk-rij"><span class="label">Dames</span><div class="inputs"><input class="kk-input" value="4"><input class="kk-input" value="6"><input class="kk-input" value="7"></div></div>
+                <div class="kk-rij"><span class="label">Heren</span><div class="inputs"><input class="kk-input" value="4"><input class="kk-input" value="6"><input class="kk-input" value="7"></div></div>
+                <div class="kk-rij"><span class="label">Max leeftijd per speler</span><div class="inputs"><input class="kk-input gewijzigd" value="19.00"></div></div>
+                <div class="kk-knkv"><span class="kv">KNKV:</span> Max 19,00 · Verplicht 4+4 · 2×25m · Max 8 wissels</div>
+              </div>
+            </div>
+
+            <div class="kader-kaart" style="--kaart-kleur:#8b5cf6" onclick="toggleKaart(this)">
+              <div class="kk-header">
+                <span class="kk-dot"></span>
+                <span class="kk-naam">U17</span>
+                <div class="kk-meta"><span class="doelgroep">Topsport</span></div>
+              </div>
+              <div class="kk-summary">
+                <span class="sv">Team: <span class="val">10–12–14</span></span>
+                <span class="sv">Max: <span class="val">17.00</span></span>
+              </div>
+              <div class="kk-body">
+                <div class="kk-rij"><span class="label"></span><div class="inputs"><span class="col-header">Min</span><span class="col-header">Ideaal</span><span class="col-header">Max</span></div></div>
+                <div class="kk-rij"><span class="label">Teamgrootte</span><div class="inputs"><input class="kk-input" value="10"><input class="kk-input" value="12"><input class="kk-input" value="14"></div></div>
+                <div class="kk-rij"><span class="label">Dames</span><div class="inputs"><input class="kk-input" value="4"><input class="kk-input" value="6"><input class="kk-input" value="7"></div></div>
+                <div class="kk-rij"><span class="label">Heren</span><div class="inputs"><input class="kk-input" value="4"><input class="kk-input" value="6"><input class="kk-input" value="7"></div></div>
+                <div class="kk-rij"><span class="label">Max leeftijd per speler</span><div class="inputs"><input class="kk-input" value="17.00"></div></div>
+                <div class="kk-knkv"><span class="kv">KNKV:</span> Max 17,00 · Verplicht 4+4 · 2×25m · Max 8 wissels</div>
+              </div>
+            </div>
+
+            <div class="kader-kaart" style="--kaart-kleur:#8b5cf6" onclick="toggleKaart(this)">
+              <div class="kk-header">
+                <span class="kk-dot"></span>
+                <span class="kk-naam">U15</span>
+                <div class="kk-meta"><span class="doelgroep">Topsport</span></div>
+              </div>
+              <div class="kk-summary">
+                <span class="sv">Team: <span class="val">10–12–14</span></span>
+                <span class="sv">Max: <span class="val">15.00</span></span>
+              </div>
+              <div class="kk-body">
+                <div class="kk-rij"><span class="label"></span><div class="inputs"><span class="col-header">Min</span><span class="col-header">Ideaal</span><span class="col-header">Max</span></div></div>
+                <div class="kk-rij"><span class="label">Teamgrootte</span><div class="inputs"><input class="kk-input" value="10"><input class="kk-input" value="12"><input class="kk-input" value="14"></div></div>
+                <div class="kk-rij"><span class="label">Dames</span><div class="inputs"><input class="kk-input" value="4"><input class="kk-input" value="6"><input class="kk-input" value="7"></div></div>
+                <div class="kk-rij"><span class="label">Heren</span><div class="inputs"><input class="kk-input" value="4"><input class="kk-input" value="6"><input class="kk-input" value="7"></div></div>
+                <div class="kk-rij"><span class="label">Max leeftijd per speler</span><div class="inputs"><input class="kk-input" value="15.00"></div></div>
+                <div class="kk-knkv"><span class="kv">KNKV:</span> Max 15,00 · Verplicht 4+4 · 2×25m · Max 8 wissels</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── B-categorie 8-tal ─────────────────────────────────── -->
+        <div class="groep">
+          <div class="groep-header">
+            <span class="groep-label">B-categorie · 8-tal</span>
+            <span class="groep-desc">Leeftijdsbandbreedte · Gender vrij</span>
+          </div>
+          <div class="groep-grid">
+            <div class="kader-kaart" style="--kaart-kleur:#ef4444" onclick="toggleKaart(this)">
+              <div class="kk-header">
+                <span class="kk-dot"></span>
+                <span class="kk-naam">Rood</span>
+                <div class="kk-meta"><span class="tag">13–19</span><span class="doelgroep">Korfbalplezier</span></div>
+              </div>
+              <div class="kk-summary">
+                <span class="sv">Team: <span class="val">10–12–16</span></span>
+                <span class="sv">Band: <span class="val">≤3 jr</span></span>
+              </div>
+              <div class="kk-body">
+                <div class="kk-rij"><span class="label"></span><div class="inputs"><span class="col-header">Min</span><span class="col-header">Ideaal</span><span class="col-header">Max</span></div></div>
+                <div class="kk-rij"><span class="label">Teamgrootte</span><div class="inputs"><input class="kk-input" value="10"><input class="kk-input" value="12"><input class="kk-input" value="16"></div></div>
+                <div class="kk-rij"><span class="label">Dames</span><div class="inputs"><input class="kk-input" value="3"><input class="kk-input" value="6"><input class="kk-input" value="10"></div></div>
+                <div class="kk-rij"><span class="label">Heren</span><div class="inputs"><input class="kk-input" value="3"><input class="kk-input" value="6"><input class="kk-input" value="10"></div></div>
+                <div class="kk-rij"><span class="label">Gem. leeftijd</span><div class="inputs"><input class="kk-input" value="14"><input class="kk-input" value="18"></div></div>
+                <div class="kk-rij"><span class="label">Max bandbreedte</span><div class="inputs"><input class="kk-input" value="3"></div></div>
+                <div class="kk-knkv"><span class="kv">KNKV:</span> Max 3 jaar bandbreedte · Gender vrij · 2×30m · Onbeperkt wissels</div>
+              </div>
+            </div>
+
+            <div class="kader-kaart" style="--kaart-kleur:#f97316" onclick="toggleKaart(this)">
+              <div class="kk-header">
+                <span class="kk-dot"></span>
+                <span class="kk-naam">Oranje</span>
+                <div class="kk-meta"><span class="tag">11–14</span><span class="doelgroep">Opleidingshart</span></div>
+              </div>
+              <div class="kk-summary">
+                <span class="sv">Team: <span class="val">10–12–16</span></span>
+                <span class="sv">Band: <span class="val">≤3 jr</span></span>
+              </div>
+              <div class="kk-body">
+                <div class="kk-rij"><span class="label"></span><div class="inputs"><span class="col-header">Min</span><span class="col-header">Ideaal</span><span class="col-header">Max</span></div></div>
+                <div class="kk-rij"><span class="label">Teamgrootte</span><div class="inputs"><input class="kk-input" value="10"><input class="kk-input" value="12"><input class="kk-input" value="16"></div></div>
+                <div class="kk-rij"><span class="label">Dames</span><div class="inputs"><input class="kk-input" value="3"><input class="kk-input" value="6"><input class="kk-input" value="10"></div></div>
+                <div class="kk-rij"><span class="label">Heren</span><div class="inputs"><input class="kk-input" value="3"><input class="kk-input" value="6"><input class="kk-input" value="10"></div></div>
+                <div class="kk-rij"><span class="label">Gem. leeftijd</span><div class="inputs"><input class="kk-input" value="11"><input class="kk-input" value="14"></div></div>
+                <div class="kk-rij"><span class="label">Max bandbreedte</span><div class="inputs"><input class="kk-input" value="3"></div></div>
+                <div class="kk-knkv"><span class="kv">KNKV:</span> Max 3 jaar · Gender vrij · 2×25m · Vakwissel op tijd</div>
+              </div>
+            </div>
+
+            <div class="kader-kaart" style="--kaart-kleur:#eab308" onclick="toggleKaart(this)">
+              <div class="kk-header">
+                <span class="kk-dot"></span>
+                <span class="kk-naam">Geel 8-tal</span>
+                <div class="kk-meta"><span class="tag">9–12</span><span class="doelgroep">Opleidingshart</span></div>
+              </div>
+              <div class="kk-summary">
+                <span class="sv">Team: <span class="val">10–12–16</span></span>
+                <span class="sv">Band: <span class="val">≤3 jr</span></span>
+              </div>
+              <div class="kk-body">
+                <div class="kk-rij"><span class="label"></span><div class="inputs"><span class="col-header">Min</span><span class="col-header">Ideaal</span><span class="col-header">Max</span></div></div>
+                <div class="kk-rij"><span class="label">Teamgrootte</span><div class="inputs"><input class="kk-input" value="10"><input class="kk-input" value="12"><input class="kk-input" value="16"></div></div>
+                <div class="kk-rij"><span class="label">Dames</span><div class="inputs"><input class="kk-input" value="3"><input class="kk-input" value="6"><input class="kk-input" value="10"></div></div>
+                <div class="kk-rij"><span class="label">Heren</span><div class="inputs"><input class="kk-input" value="3"><input class="kk-input" value="6"><input class="kk-input" value="10"></div></div>
+                <div class="kk-rij"><span class="label">Gem. leeftijd</span><div class="inputs"><input class="kk-input" value="9"><input class="kk-input" value="12"></div></div>
+                <div class="kk-rij"><span class="label">Max bandbreedte</span><div class="inputs"><input class="kk-input" value="3"></div></div>
+                <div class="kk-knkv"><span class="kv">KNKV:</span> Paal 3,0m · Bal 4 · Max 3 jaar · Gender vrij · 2×25m</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── B-categorie 4-tal ─────────────────────────────────── -->
+        <div class="groep">
+          <div class="groep-header">
+            <span class="groep-label">B-categorie · 4-tal</span>
+            <span class="groep-desc">Kleinveld · Kweekvijver + Opleidingshart</span>
+          </div>
+          <div class="groep-grid">
+            <div class="kader-kaart" style="--kaart-kleur:#eab308" onclick="toggleKaart(this)">
+              <div class="kk-header">
+                <span class="kk-dot"></span>
+                <span class="kk-naam">Geel 4-tal</span>
+                <div class="kk-meta"><span class="tag">9–12</span><span class="doelgroep">Opleidingshart</span></div>
+              </div>
+              <div class="kk-summary">
+                <span class="sv">Team: <span class="val">6–8–10</span></span>
+                <span class="sv">Band: <span class="val">≤3 jr</span></span>
+              </div>
+              <div class="kk-body">
+                <div class="kk-rij"><span class="label"></span><div class="inputs"><span class="col-header">Min</span><span class="col-header">Ideaal</span><span class="col-header">Max</span></div></div>
+                <div class="kk-rij"><span class="label">Teamgrootte</span><div class="inputs"><input class="kk-input" value="6"><input class="kk-input" value="8"><input class="kk-input" value="10"></div></div>
+                <div class="kk-rij"><span class="label">Dames</span><div class="inputs"><input class="kk-input" value="2"><input class="kk-input" value="4"><input class="kk-input" value="6"></div></div>
+                <div class="kk-rij"><span class="label">Heren</span><div class="inputs"><input class="kk-input" value="2"><input class="kk-input" value="4"><input class="kk-input" value="6"></div></div>
+                <div class="kk-rij"><span class="label">Max bandbreedte</span><div class="inputs"><input class="kk-input" value="3"></div></div>
+                <div class="kk-knkv"><span class="kv">KNKV:</span> Paal 3,0m · Bal 4 · 4×12,5m · Max 3 jaar · Gender vrij</div>
+              </div>
+            </div>
+
+            <div class="kader-kaart" style="--kaart-kleur:#22c55e" onclick="toggleKaart(this)">
+              <div class="kk-header">
+                <span class="kk-dot"></span>
+                <span class="kk-naam">Groen</span>
+                <div class="kk-meta"><span class="tag">7–10</span><span class="doelgroep">Kweekvijver</span></div>
+              </div>
+              <div class="kk-summary">
+                <span class="sv">Team: <span class="val">6–8–10</span></span>
+                <span class="sv">Band: <span class="val">≤2 jr</span></span>
+              </div>
+              <div class="kk-body">
+                <div class="kk-rij"><span class="label"></span><div class="inputs"><span class="col-header">Min</span><span class="col-header">Ideaal</span><span class="col-header">Max</span></div></div>
+                <div class="kk-rij"><span class="label">Teamgrootte</span><div class="inputs"><input class="kk-input" value="6"><input class="kk-input" value="8"><input class="kk-input" value="10"></div></div>
+                <div class="kk-rij"><span class="label">Dames</span><div class="inputs"><input class="kk-input" value="2"><input class="kk-input" value="4"><input class="kk-input" value="6"></div></div>
+                <div class="kk-rij"><span class="label">Heren</span><div class="inputs"><input class="kk-input" value="2"><input class="kk-input" value="4"><input class="kk-input" value="6"></div></div>
+                <div class="kk-rij"><span class="label">Max bandbreedte</span><div class="inputs"><input class="kk-input" value="2"></div></div>
+                <div class="kk-knkv"><span class="kv">KNKV:</span> Paal 3,0m · Bal 4 · 4×12,5m · Max 2 jaar · 2+2 / 4V / 4M</div>
+              </div>
+            </div>
+
+            <div class="kader-kaart" style="--kaart-kleur:#3b82f6" onclick="toggleKaart(this)">
+              <div class="kk-header">
+                <span class="kk-dot"></span>
+                <span class="kk-naam">Blauw</span>
+                <div class="kk-meta"><span class="tag">5–8</span><span class="doelgroep">Kweekvijver</span></div>
+              </div>
+              <div class="kk-summary">
+                <span class="sv">Team: <span class="val">6–8–10</span></span>
+                <span class="sv">Band: <span class="val">≤2 jr</span></span>
+              </div>
+              <div class="kk-body">
+                <div class="kk-rij"><span class="label"></span><div class="inputs"><span class="col-header">Min</span><span class="col-header">Ideaal</span><span class="col-header">Max</span></div></div>
+                <div class="kk-rij"><span class="label">Teamgrootte</span><div class="inputs"><input class="kk-input" value="6"><input class="kk-input" value="8"><input class="kk-input" value="10"></div></div>
+                <div class="kk-rij"><span class="label">Dames</span><div class="inputs"><input class="kk-input" value="2"><input class="kk-input" value="4"><input class="kk-input" value="6"></div></div>
+                <div class="kk-rij"><span class="label">Heren</span><div class="inputs"><input class="kk-input" value="2"><input class="kk-input" value="4"><input class="kk-input" value="6"></div></div>
+                <div class="kk-rij"><span class="label">Max bandbreedte</span><div class="inputs"><input class="kk-input" value="2"></div></div>
+                <div class="kk-knkv"><span class="kv">KNKV:</span> Paal 2,5m · Bal 3 · 4×10m · Max 2 jaar · Geen genderonderscheid</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ MEMO TAB ═════════════════════════════════════════════ -->
+      <div class="tab-content" id="tab-memos">
+        <!-- TC-algemeen -->
+        <div style="margin-bottom:20px">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--border-light)">TC-algemeen</div>
+          <div class="memo-rij" onclick="openMemoDrawer({entiteit:'TC',entiteitNaam:'TC-algemeen',status:'open',prioriteit:'info',beschrijving:'KNKV deadline voor teamopgave is 15 mei.',tijdlijn:[{type:'aangemaakt',auteur:'Systeem',datum:'1 apr, 08:00',tekst:'Memo aangemaakt'}]})">
+            <span class="mr-status open"></span><span class="mr-prio info">i</span>
+            <span class="mr-tekst">KNKV deadline teamopgave 15 mei</span>
+            <span class="mr-datum">1 apr</span>
+          </div>
+        </div>
+
+        <!-- Wedstrijdsport -->
+        <div style="margin-bottom:20px">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--border-light)">Wedstrijdsport <span style="font-weight:400;color:var(--ow-accent)">· 2 open</span></div>
+          <div class="memo-rij" onclick="openMemoDrawer({entiteit:'Staf',entiteitNaam:'Jan Vermeer',entiteitIcon:'technisch',status:'open',prioriteit:'blocker',beschrijving:'Trainer OW 1 stopt — vervanger nodig.',tijdlijn:[{type:'toelichting',auteur:'Antjan',datum:'14 apr, 16:30',tekst:'Contact opgenomen met Pieter Vermeulen.'},{type:'aangemaakt',auteur:'Antjan',datum:'12 apr, 19:40',tekst:'Memo aangemaakt'}]})">
+            <span class="mr-status open"></span><span class="mr-prio" style="background:#ef4444">!</span>
+            <span class="mr-tekst">Trainer OW 1 stopt — vervanger nodig</span>
+            <span class="mr-entiteit"><span class="type-icoon technisch" style="width:8px;height:8px"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span> Jan Vermeer</span>
+            <span class="mr-datum">14 apr</span>
+          </div>
+          <div class="memo-rij" onclick="openMemoDrawer({entiteit:'Team',entiteitNaam:'OW 1',status:'risico',prioriteit:'middel',beschrijving:'Tekort heren OW 1 — bewust risico, scouting loopt.',tijdlijn:[{type:'status',auteur:'Systeem',datum:'10 apr',tekst:'Status: Geaccepteerd risico'},{type:'aangemaakt',auteur:'Antjan',datum:'8 apr',tekst:'Memo aangemaakt'}]})">
+            <span class="mr-status" style="background:#f59e0b"></span><span class="mr-prio middel">M</span>
+            <span class="mr-tekst">Tekort heren OW 1 — geaccepteerd risico</span>
+            <span class="mr-entiteit"><span class="dot" style="background:var(--cat-blauw)"></span> OW 1</span>
+            <span class="mr-datum">10 apr</span>
+          </div>
+        </div>
+
+        <!-- Opleidingshart -->
+        <div style="margin-bottom:20px">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--border-light)">Opleidingshart <span style="font-weight:400;color:var(--ow-accent)">· 1 open</span></div>
+          <div class="memo-rij" onclick="openMemoDrawer({entiteit:'Staf',entiteitNaam:'Rob Overbeek',entiteitIcon:'ondersteunend',status:'bespreking',prioriteit:'middel',beschrijving:'Leiderschap OW A1 + B1 combineren — haalbaar?',tijdlijn:[{type:'toelichting',auteur:'Rob',datum:'10 apr',tekst:'Kan het proberen maar overlappende wedstrijden zijn een probleem.'},{type:'aangemaakt',auteur:'Antjan',datum:'8 apr',tekst:'Memo aangemaakt'}]})">
+            <span class="mr-status bespreking"></span><span class="mr-prio middel">M</span>
+            <span class="mr-tekst">Leiderschap A1+B1 combineren — haalbaar?</span>
+            <span class="mr-entiteit"><span class="type-icoon ondersteunend" style="width:8px;height:8px"><svg viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span> Rob Overbeek</span>
+            <span class="mr-datum">8 apr</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    function toggleKaart(el) {
+      if (event.target.tagName === 'INPUT') return;
+      el.classList.toggle('open');
+    }
+    function switchKaderTab(tab) {
+      document.querySelectorAll('.kader-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('visible'));
+      event.currentTarget.classList.add('active');
+      document.getElementById('tab-' + tab).classList.add('visible');
+    }
+    // Auto-save bij wijziging
+    let saveTimer = null;
+    document.addEventListener('input', (e) => {
+      if (!e.target.classList.contains('kk-input')) return;
+      const status = document.getElementById('save-status');
+      status.textContent = 'Wijziging...';
+      status.style.color = 'var(--ow-accent)';
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(() => {
+        status.textContent = 'Opgeslagen';
+        status.style.color = '#22c55e';
+        setTimeout(() => { status.textContent = ''; }, 2000);
+      }, 800);
+    });
+
+    window.toggleKaart = toggleKaart;
+    window.switchKaderTab = switchKaderTab;
+  </script>
+
+  <script type="module">
+    import { shell } from '../shared/shell.js';
+    import { TEAMS, MEMOS } from '../shared/mock-data.js';
+    import { openTeamDialog, openMemoDrawer, openNieuweMemoDialog } from '../shared/interactions.js';
+
+    // ── Doelgroep → team mapping ──────────────────────────────────────────────
+    // Kweekvijver  : Blauw (5-8), Groen (7-10) — kleine viertalteams
+    // Opleidingshart: Geel 8-tal, Geel 4-tal, Oranje — B-cat jeugd
+    // Wedstrijdsport: Senioren A, OW A1 — competitieve teams
+    // Topsport      : U15, U17, U19 — leeftijdsbegrensd
+    // Korfbalplezier: Senioren B, Rood, overige teams
+
+    const DOELGROEP_TEAMS = {
+      Kweekvijver:    ['team-007', 'team-003'],      // OW F1 (Groen), OW D1 (Groen)
+      Opleidingshart: ['team-004', 'team-002'],      // OW E1 (Geel), OW B1 (Oranje)
+      Wedstrijdsport: ['team-001', 'team-005'],      // OW A1, Senioren A
+      Topsport:       ['team-001'],                  // OW A1 (U17-leeftijdsgroep)
+      Korfbalplezier: ['team-005', 'team-006'],      // Senioren A & B
+    };
+
+    // kleurmap voor doelgroepen
+    const DOELGROEP_KLEUR = {
+      Kweekvijver:    '#22c55e',
+      Opleidingshart: '#f97316',
+      Wedstrijdsport: '#94a3b8',
+      Topsport:       '#8b5cf6',
+      Korfbalplezier: '#64748b',
+    };
+
+    function memoStatusDot(status) {
+      if (status === 'OPEN') return '#eab308';
+      if (status === 'IN_BESPREKING') return '#60a5fa';
+      if (status === 'RISICO') return '#f59e0b';
+      return '#6b7280';
+    }
+
+    function renderDoelgroepMemoLijst(doelgroep, container) {
+      const memosVoorDoelgroep = MEMOS.filter(
+        m => m.entiteitType === 'TC' && m.doelgroep === doelgroep
+      );
+      let sectie = container.querySelector('.doelgroep-memos');
+      if (!sectie) {
+        sectie = document.createElement('div');
+        sectie.className = 'doelgroep-memos';
+        sectie.style.cssText = 'margin-top:8px;border-top:1px solid var(--border-light);padding-top:6px';
+        container.appendChild(sectie);
+      }
+      if (memosVoorDoelgroep.length === 0) {
+        sectie.innerHTML = '';
+        return;
+      }
+      sectie.innerHTML = memosVoorDoelgroep.map(m => `
+        <div class="memo-rij" data-memo-id="${m.id}" style="padding:6px 0;border-bottom:none">
+          <span class="mr-status" style="background:${memoStatusDot(m.status)}"></span>
+          <span class="mr-tekst">${m.titel}</span>
+        </div>`).join('');
+      sectie.querySelectorAll('[data-memo-id]').forEach(el => {
+        el.addEventListener('click', () => openMemoDrawer(el.dataset.memoId));
+      });
+    }
+
+    function updateDoelgroepMemos() {
+      document.querySelectorAll('[data-doelgroep]').forEach(groepEl => {
+        const doelgroep = groepEl.dataset.doelgroep;
+        renderDoelgroepMemoLijst(doelgroep, groepEl);
+      });
+      // update memo-count in shell
+      const openMemos = MEMOS.filter(m => m.status === 'OPEN').length;
+      const badge = document.querySelector('.nav-memo-badge');
+      if (badge) badge.textContent = openMemos;
+    }
+
+    function renderTeamRijen(doelgroep, container) {
+      const teamIds = DOELGROEP_TEAMS[doelgroep] ?? [];
+      const teams = teamIds.map(id => TEAMS.find(t => t.id === id)).filter(Boolean);
+      container.innerHTML = '';
+      teams.forEach(team => {
+        const openMemos = MEMOS.filter(
+          m => m.entiteitType === 'TEAM' && m.entiteitId === team.id && m.status === 'OPEN'
+        );
+        const eersteOpenMemo = openMemos[0] ?? null;
+        const rij = document.createElement('div');
+        rij.style.cssText = 'display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:6px;cursor:pointer;transition:background 100ms;font-size:12px';
+        rij.innerHTML = `
+          <span style="width:6px;height:6px;border-radius:50%;background:${DOELGROEP_KLEUR[doelgroep]};flex-shrink:0"></span>
+          <span style="flex:1;font-weight:600;color:var(--text-primary)">${team.naam}</span>
+          <span style="font-size:10px;color:var(--text-tertiary)">${team.sub}</span>
+          ${eersteOpenMemo ? `<span title="${eersteOpenMemo.titel}" data-memo-id="${eersteOpenMemo.id}" style="color:var(--ow-accent);font-size:10px;font-weight:800;cursor:pointer" aria-label="Open memo">▲</span>` : ''}
+        `;
+        rij.addEventListener('mouseenter', () => rij.style.background = 'rgba(255,255,255,.04)');
+        rij.addEventListener('mouseleave', () => rij.style.background = '');
+        // Klik op rij → team-dialog (maar niet als de ▲-indicator geklikte)
+        rij.addEventListener('click', (e) => {
+          if (e.target.dataset.memoId) { openMemoDrawer(e.target.dataset.memoId); return; }
+          openTeamDialog(team.id);
+        });
+        container.appendChild(rij);
+      });
+    }
+
+    function renderKaderInteracties() {
+      // Zoek alle doelgroepen-secties op via data-doelgroep
+      document.querySelectorAll('[data-doelgroep]').forEach(groepEl => {
+        const doelgroep = groepEl.dataset.doelgroep;
+        const teamContainer = groepEl.querySelector('.doelgroep-teams');
+        if (teamContainer) renderTeamRijen(doelgroep, teamContainer);
+        // "+ Memo" knop
+        const memoBtn = groepEl.querySelector('.doelgroep-memo-btn');
+        if (memoBtn) {
+          memoBtn.addEventListener('click', () => {
+            openNieuweMemoDialog({
+              context: { type: 'TC', id: null, label: 'TC', doelgroep },
+              onCreate: (m) => { MEMOS.push(m); updateDoelgroepMemos(); },
+            });
+          });
+        }
+        renderDoelgroepMemoLijst(doelgroep, groepEl);
+      });
+    }
+
+    shell('app', { activePage: 'kader', memoCount: MEMOS.filter(m => m.status === 'OPEN').length });
+    // Wacht tot shell de template heeft geinjecteerd
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        renderKaderInteracties();
+      });
+    });
+  </script>
+</body>
+</html>

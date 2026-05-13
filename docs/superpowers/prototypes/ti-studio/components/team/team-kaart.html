@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Team-kaart · alle varianten × zoomniveaus</title>
+  <link rel="stylesheet" href="../../shared/tokens.css">
+  <style>
+    body {
+      padding: 40px 32px 80px;
+      background: #050507;
+      display: flex;
+      flex-direction: column;
+      gap: 72px;
+      font-family: var(--font-body);
+      min-width: 1400px;
+    }
+
+    /* ─── Pagina-header ─────────────────────────────────────────────── */
+    .page-header { display: flex; flex-direction: column; gap: 4px; margin-bottom: -16px; }
+    .page-header h1 { font-size: 22px; font-weight: 800; color: var(--text-primary); margin: 0; letter-spacing: -0.02em; }
+    .page-header p  { font-size: 12px; color: var(--text-tertiary); margin: 0; }
+
+    /* ─── Zoom-sectie ───────────────────────────────────────────────── */
+    .zoom-sectie { display: flex; flex-direction: column; gap: 16px; }
+    .zoom-label {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--ow-accent);
+    }
+    .zoom-label .sub {
+      color: var(--text-tertiary);
+      font-weight: 500;
+      margin-left: 10px;
+      letter-spacing: 0.04em;
+      text-transform: none;
+    }
+
+    /* Canvas-achtergrond per zoom-sectie */
+    .canvas-bg {
+      background:
+        radial-gradient(circle at 15% 25%, rgba(255,107,0,.035), transparent 45%),
+        radial-gradient(circle at 85% 75%, rgba(59,130,246,.03), transparent 45%),
+        #0a0a0c;
+      padding: 32px 28px;
+      border-radius: 16px;
+      border: 1px dashed rgba(255,255,255,.06);
+      overflow-x: auto;
+    }
+
+    /* Row per zoom-sectie */
+    .zoom-row {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+    }
+
+    /* Kaart-wrapper met label */
+    .kaart-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .kaart-wrap-label {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       VASTE KAARTHOOGTE
+       Hoogte = header(56) + center(8×52 + 7×4 gaps + 20 padding) + footer(56)
+             = 56 + (416 + 28 + 20) + 56 = 576px
+       ════════════════════════════════════════════════════════════════════ */
+    :root {
+      --card-height: 576px;
+      --col-basis: 185px;  /* basis kolombreedte */
+    }
+
+    /* Alle kaarten identieke hoogte */
+    .team-kaart {
+      height: var(--card-height);
+    }
+
+    /* Breedte per variant */
+    .team-kaart.viertal  { width: calc(var(--col-basis) + 24px); }
+    .team-kaart.achttal  { width: calc(var(--col-basis) * 2 + 1px + 24px); }
+
+    /* ─── Header ──────────────────────────────────────────────────────── */
+    .tk-header-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    /* ─── Body (center) ──────────────────────────────────────────────── */
+    .tk-body {
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ─── Staf-strook (normaal zoomniveau) ──────────────────────────── */
+    .tk-staf {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 12px 0 18px;
+      height: 28px;
+      border-top: 1px solid var(--border-light);
+      background: rgba(255,255,255,.015);
+      flex-shrink: 0;
+    }
+    .tk-staf-label {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-muted);
+    }
+    .tk-staf-naam {
+      font-size: 10px;
+      color: var(--text-tertiary);
+      font-weight: 600;
+    }
+
+    /* ─── Footer ──────────────────────────────────────────────────────── */
+    .tk-footer-spacer { flex: 1; }
+
+    /* ════════════════════════════════════════════════════════════════════
+       COMPACT STIJL — productie-stijl: kolommen per geslacht
+       SVG icoon + groot getal per kolom, chips in flex-wrap
+       ════════════════════════════════════════════════════════════════════ */
+
+    /* Compact body: kolommen naast elkaar (zoals detail) */
+    .zoom-compact .tk-col {
+      gap: 0;
+      padding: 0 6px 6px;
+      justify-content: flex-start;
+    }
+
+    /* Sexe-teller: SVG icoon + groot getal, gecentreerd per kolom */
+    .compact-sexe-teller {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 0 6px;
+      gap: 2px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      flex-shrink: 0;
+      margin-bottom: 6px;
+    }
+    .compact-sexe-teller .st-val {
+      font-size: 56px;
+      font-weight: 900;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .compact-sexe-teller.v .st-val { color: rgba(236,72,153,.75); }
+    .compact-sexe-teller.h .st-val { color: rgba(96,165,250,.75); }
+
+    /* Groep-label (selectie teamnaam boven kolom) */
+    .compact-groep-label {
+      font-size: 8px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 3px 8px 2px;
+      border-bottom: 1px solid rgba(255,255,255,.04);
+      flex-shrink: 0;
+      margin-bottom: 0;
+    }
+    .compact-groep-label.sel { color: var(--selectie-badge-text); }
+
+    /* Flow-zone: chips wrappen inline */
+    .compact-flow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3px;
+      padding: 6px 6px;
+      align-content: flex-start;
+      flex: 1;
+    }
+
+    /* compact-chip — prototype-stijl met leeft-bar */
+    .compact-chip {
+      position: relative;
+      display: inline-flex;
+      align-items: stretch;
+      height: 52px;
+      background: transparent;
+      border: 1.5px solid var(--status-color);
+      border-radius: 6px;
+      overflow: visible;
+      width: auto;
+      cursor: grab;
+    }
+    .compact-chip .inner {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 10px 0 6px;
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+    }
+    .compact-chip .g-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      background: var(--sexe-h);
+      flex-shrink: 0;
+    }
+    .compact-chip.vrouw .g-dot { background: var(--sexe-v); }
+    .compact-chip .nm {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .compact-chip .leeft-bar {
+      width: 5px;
+      background: var(--leeftijd-17);
+      flex-shrink: 0;
+      border-radius: 0 4px 4px 0;
+    }
+    .compact-chip.st-stopt .nm { text-decoration: line-through; opacity: 0.7; }
+    .compact-chip.st-ar .nm    { color: #a8a8ad; }
+
+    /* ════════════════════════════════════════════════════════════════════
+       DETAIL STIJL
+       Center: volledige rijke-rij (52px) — reuse rijke-rij classes
+       ════════════════════════════════════════════════════════════════════ */
+    .zoom-detail .tk-col {
+      gap: 4px;
+      padding: 8px 8px;
+      justify-content: flex-start;
+    }
+
+    /* Rijke rij inline in team-kaart — compactere variant zonder breedte-lock */
+    .tk-rijke-rij {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 52px;
+      padding: 0;
+      background: transparent;
+      border: 1.5px solid var(--status-color);
+      border-radius: 6px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .tk-rijke-rij .sq-av {
+      width: 40px;
+      height: 52px;
+      border-radius: 4px 0 0 4px;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: var(--surface-card);
+      position: relative;
+      border-right: 1.5px solid var(--status-color);
+    }
+    .tk-rijke-rij .sq-av img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 25%;
+      display: block;
+      filter: grayscale(1);
+      transform: scale(1.15);
+      transform-origin: center 35%;
+    }
+    .tk-rijke-rij .sq-av::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--sexe);
+      opacity: 0.15;
+      mix-blend-mode: color;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .tk-rijke-rij.vrouw { --sexe: var(--sexe-v); }
+    .tk-rijke-rij.heer  { --sexe: var(--sexe-h); }
+    .tk-rijke-rij .col  { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+    .tk-rijke-rij .nm   { font-size: 13px; font-weight: 700; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tk-rijke-rij .row2 { display: flex; align-items: center; gap: 4px; font-size: 8px; }
+    .tk-rijke-rij .tb   { color: var(--text-secondary); border: 1px solid var(--team-border); border-radius: 3px; padding: 1px 5px; font-weight: 600; }
+    .tk-rijke-rij .tb-i { color: var(--indeling-text); border: 1px solid var(--indeling-border); border-radius: 3px; padding: 1px 5px; background: var(--indeling-bg); font-weight: 600; }
+    .tk-rijke-rij .leeft-col {
+      width: 40px;
+      height: 100%;
+      background: var(--leeftijd-bg, var(--leeftijd-17));
+      border-radius: 0 4px 4px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+    .tk-rijke-rij .leeft-col .lb { color: #fff; font-size: 15px; font-weight: 800; text-shadow: 0 1px 2px rgba(0,0,0,.5); font-variant-numeric: tabular-nums; }
+    .tk-rijke-rij .leeft-col .ld { color: rgba(255,255,255,.7); font-size: 9px; font-weight: 700; margin-top: 1px; font-variant-numeric: tabular-nums; }
+
+    /* ════════════════════════════════════════════════════════════════════
+       SELECTIE-KAART — wrapper rond 4 kolommen
+       Gebruik selectie-frame als buitenste container + inner met 4 tk-col
+       ════════════════════════════════════════════════════════════════════ */
+    .selectie-kaart {
+      height: var(--card-height);
+      width: var(--team-card-selectie);
+      display: flex;
+      flex-direction: column;
+      border: 1.5px solid var(--selectie-border);
+      border-radius: 14px;
+      background: var(--selectie-bg);
+      box-shadow: var(--selectie-frame-shadow);
+      overflow: hidden;
+      position: relative;
+      font-family: var(--font-body);
+    }
+
+    /* SEL badge: absoluut in header */
+    .selectie-kaart .sel-badge {
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: var(--selectie-badge-bg);
+      color: var(--selectie-badge-text);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    /* Selectie-kaart header */
+    .selectie-kaart .sk-header {
+      height: var(--team-card-header-h);
+      padding: 0 14px 0 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid var(--selectie-border);
+      flex-shrink: 0;
+    }
+    .selectie-kaart .sk-naam {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+      flex: 1;
+    }
+    .selectie-kaart .sk-naam-sub {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--selectie-badge-text);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-top: 2px;
+    }
+    .selectie-kaart .sk-naam-wrap {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Selectie-kaart body: 4 kolommen */
+    .selectie-kaart .sk-body {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* Kolom-scheiding: tussen kolommen 1px border */
+    .selectie-kaart .tk-col {
+      border-right: 1px solid var(--border-light);
+    }
+    .selectie-kaart .tk-col:last-child {
+      border-right: none;
+    }
+
+    /* ─── Info-strook tussen header en spelers ────────────────────────── */
+    .tk-info-strook {
+      display: flex;
+      align-items: center;
+      height: 24px;
+      padding: 0 14px 0 18px;
+      border-bottom: 1px solid var(--border-light);
+      flex-shrink: 0;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-tertiary);
+    }
+    .tk-info-strook .info-spacer { flex: 1; }
+    .tk-info-strook .info-count {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-variant-numeric: tabular-nums;
+    }
+    .tk-info-strook .info-count.v { color: var(--sexe-v); }
+    .tk-info-strook .info-count.h { color: var(--sexe-h); }
+    .tk-info-strook .info-count svg {
+      width: 11px; height: 11px;
+      stroke: currentColor; fill: none;
+      stroke-width: 2; stroke-linecap: round;
+    }
+    .tk-info-strook .info-team {
+      font-size: 9px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--selectie-badge-text);
+    }
+    /* Selectie info-strook border */
+    .selectie-kaart .tk-info-strook {
+      border-bottom: 1px solid var(--selectie-border);
+    }
+    /* Gebundeld info-strook: gecentreerd */
+    .selectie-kaart.gebundeld .tk-info-strook {
+      justify-content: center;
+      gap: 10px;
+    }
+
+    /* Gebundeld detail: 2 kolommen, rijen in paren naast elkaar */
+    .zoom-detail .selectie-kaart.gebundeld .tk-col {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 4px;
+      padding: 8px 6px;
+      align-content: flex-start;
+    }
+    .zoom-detail .selectie-kaart.gebundeld .sk-col-header {
+      width: 100%;
+    }
+    .zoom-detail .selectie-kaart.gebundeld .tk-rijke-rij {
+      width: calc(50% - 2px);
+      flex-shrink: 0;
+    }
+
+    /* Selectie-kaart footer */
+    .selectie-kaart .sk-footer {
+      height: var(--team-card-footer-h);
+      padding: 0 14px 0 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-top: 1px solid var(--selectie-border);
+      font-size: 10px;
+      color: var(--text-tertiary);
+      flex-shrink: 0;
+    }
+    .selectie-kaart .sk-footer .stat {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-weight: 600;
+    }
+    .selectie-kaart .sk-footer .stat .val {
+      color: var(--text-primary);
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Groep-labels boven de kolommen (gebundeld) */
+    .sk-col-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2px 2px 6px;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      font-weight: 700;
+      border-bottom: 1px solid var(--border-light);
+      margin-bottom: 4px;
+    }
+    .sk-col-header .count {
+      color: var(--text-secondary);
+      font-variant-numeric: tabular-nums;
+    }
+    .sk-col-header.v { color: var(--sexe-v); opacity: 0.8; }
+    .sk-col-header.h { color: var(--sexe-h); opacity: 0.8; }
+
+    /* Drop-zone indicator (lege ruimte onderaan) */
+    .drop-hint {
+      margin-top: auto;
+      padding: 8px 6px;
+      border: 1.5px dashed rgba(255,107,0,.18);
+      border-radius: 6px;
+      font-size: 9px;
+      color: var(--text-muted);
+      text-align: center;
+      letter-spacing: 0.05em;
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       STAF-FOOTER — footer volledig gereserveerd voor staf
+       Compact: staf-chips inline · Detail: staf-rijen gestapeld
+       ════════════════════════════════════════════════════════════════════ */
+    .tk-staf-footer {
+      border-top: 1px solid var(--border-light);
+      padding: 6px 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    /* Detail zoom: rijen naast elkaar, wrap als het niet past */
+    .zoom-detail .tk-staf-footer {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 4px;
+      padding: 6px 8px;
+    }
+    /* Selectie-kaart staf-footer */
+    .selectie-kaart .tk-staf-footer {
+      border-top: 1px solid var(--selectie-border);
+    }
+
+    /* Groep-labels voor selectie gebundeld */
+    .sk-groep-label {
+      font-size: 9px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--selectie-badge-text);
+      padding: 0 2px 5px;
+      border-bottom: 1px solid var(--selectie-border);
+      margin-bottom: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page-header">
+    <h1>Team-kaart</h1>
+    <p>4 varianten × 2 zoomniveaus (compact + detail) — alle kaarten identieke hoogte (576px) — breedte vast per variant</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       COMPACT — kolommen per geslacht, SVG icoon + groot getal, prototype chips met leeft-bar
+       ══════════════════════════════════════════════════════════════════════ -->
+  <div class="zoom-sectie zoom-compact">
+    <div class="zoom-label">Compact <span class="sub">Uitgezoomd — kolommen per geslacht, SVG icoon + teller, compact-chips</span></div>
+    <div class="canvas-bg">
+      <div class="zoom-row">
+
+        <!-- VIERTAL compact — 1 kolom, chips achter elkaar (♀ eerst, dan ♂) -->
+        <div class="kaart-wrap">
+          <div class="kaart-wrap-label">Viertal · 4-korfbal</div>
+          <div class="team-kaart viertal cat-oranje">
+            <div class="tk-header">
+              <div class="tk-naam-wrap">
+                <div class="tk-naam">OW D1</div>
+                <div class="tk-naam-sub">Oranje 13–15</div>
+              </div>
+              <div class="tk-header-right"></div>
+              <div class="val-hoek ok"></div>
+            </div>
+            <div class="tk-body">
+              <div class="tk-col">
+                <div class="compact-sexe-teller v" style="flex-direction:row; gap:16px; justify-content:center;">
+                  <div style="display:flex; flex-direction:column; align-items:center; gap:2px;">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="rgba(236,72,153,.8)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="6"/><line x1="12" y1="14" x2="12" y2="22"/><line x1="9" y1="19" x2="15" y2="19"/></svg>
+                    <span class="st-val" style="color:rgba(236,72,153,.75);">2</span>
+                  </div>
+                  <div style="display:flex; flex-direction:column; align-items:center; gap:2px;">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="rgba(96,165,250,.8)" stroke-width="2" stroke-linecap="round"><circle cx="10" cy="14" r="6"/><line x1="21" y1="3" x2="15" y2="9"/><polyline points="16 3 21 3 21 8"/></svg>
+                    <span class="st-val" style="color:rgba(96,165,250,.75);">2</span>
+                  </div>
+                </div>
+                <div class="compact-flow">
+                  <div class="compact-chip vrouw"><div class="inner"><span class="g-dot"></span><span class="nm">Lisanne B.</span></div><div class="leeft-bar" style="background: var(--leeftijd-14);"></div></div>
+                  <div class="compact-chip vrouw"><div class="inner"><span class="g-dot"></span><span class="nm">Roos S.</span></div><div class="leeft-bar" style="background: var(--leeftijd-13);"></div></div>
+                  <div class="compact-chip"><div class="inner"><span class="g-dot"></span><span class="nm">Daan V.</span></div><div class="leeft-bar" style="background: var(--leeftijd-15);"></div></div>
+                  <div class="compact-chip"><div class="inner"><span class="g-dot"></span><span class="nm">Lars S.</span></div><div class="leeft-bar" style="background: var(--leeftijd-14);"></div></div>
+                </div>
+              </div>
+            </div>
+            <div class="tk-staf-footer">
+              <div class="staf-compact"><div class="inner"><span class="type-icoon technisch" style="width:10px;height:10px"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span><span class="nm">Petra K.</span></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ACHTTAL compact — 2 kolommen ♀|♂ -->
+        <div class="kaart-wrap">
+          <div class="kaart-wrap-label">Achttal · 8-korfbal</div>
+          <div class="team-kaart achttal cat-geel">
+            <div class="tk-header">
+              <div class="tk-naam-wrap">
+                <div class="tk-naam">OW C1 <span class="memo-attention open" style="width:16px;height:16px;display:inline-flex;vertical-align:middle;margin-left:4px;"><svg viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8 12h8M8 15h8M8 18h5"/></svg></span></div>
+                <div class="tk-naam-sub">Geel 10–12</div>
+              </div>
+              <div class="tk-header-right"></div>
+              <div class="val-hoek warn"><div class="val-sym">
+                <span class="vi"><svg viewBox="0 0 24 24"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></svg></span>
+                <span class="vi filled"><svg viewBox="0 0 24 24"><text x="12" y="19" text-anchor="middle" font-size="22" font-weight="900" font-family="serif">⚥</text></svg></span>
+              </div></div>
+            </div>
+            <div class="tk-body">
+              <div class="tk-col">
+                <div class="compact-sexe-teller v">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="rgba(236,72,153,.8)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="6"/><line x1="12" y1="14" x2="12" y2="22"/><line x1="9" y1="19" x2="15" y2="19"/></svg>
+                  <span class="st-val">4</span>
+                </div>
+                <div class="compact-flow">
+                  <div class="compact-chip vrouw"><div class="inner"><span class="g-dot"></span><span class="nm">Emma d.V.</span></div><div class="leeft-bar" style="background: var(--leeftijd-11);"></div></div>
+                  <div class="compact-chip vrouw"><div class="inner"><span class="g-dot"></span><span class="nm">Noor H.</span></div><div class="leeft-bar" style="background: var(--leeftijd-10);"></div></div>
+                  <div class="compact-chip vrouw"><div class="inner"><span class="g-dot"></span><span class="nm">Fien B.</span></div><div class="leeft-bar" style="background: var(--leeftijd-12);"></div></div>
+                  <div class="compact-chip vrouw"><div class="inner"><span class="g-dot"></span><span class="nm">Julie M.</span></div><div class="leeft-bar" style="background: var(--leeftijd-11);"></div></div>
+                </div>
+              </div>
+              <div class="tk-col">
+                <div class="compact-sexe-teller h">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="rgba(96,165,250,.8)" stroke-width="2" stroke-linecap="round"><circle cx="10" cy="14" r="6"/><line x1="21" y1="3" x2="15" y2="9"/><polyline points="16 3 21 3 21 8"/></svg>
+                  <span class="st-val">4</span>
+                </div>
+                <div class="compact-flow">
+                  <div class="compact-chip"><div class="inner"><span class="g-dot"></span><span class="nm">Sem P.</span></div><div class="leeft-bar" style="background: var(--leeftijd-12);"></div></div>
+                  <div class="compact-chip"><div class="inner"><span class="g-dot"></span><span class="nm">Bram v.D.</span></div><div class="leeft-bar" style="background: var(--leeftijd-10);"></div></div>
+                  <div class="compact-chip"><div class="inner"><span class="g-dot"></span><span class="nm">Tim W.</span></div><div class="leeft-bar" style="background: var(--leeftijd-11);"></div></div>
+                  <div class="compact-chip"><div class="inner"><span class="g-dot"></span><span class="nm">Joris L.</span></div><div class="leeft-bar" style="background: var(--leeftijd-10);"></div></div>
+                </div>
+              </div>
+            </div>
+            <div class="tk-staf-footer">
+              <div class="staf-compact"><div class="inner"><span class="type-icoon technisch" style="width:10px;height:10px"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span><span class="nm">Mark H.</span></div></div>
+              <div class="staf-compact"><div class="inner"><span class="type-icoon ondersteunend" style="width:10px;height:10px"><svg viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span><span class="nm">Sandra V.</span></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SELECTIE NIET-GEBUNDELD compact — 2 kolommen: T1 (♀|♂) links, T2 (♀|♂) rechts -->
+        <div class="kaart-wrap">
+          <div class="kaart-wrap-label">Selectie niet-gebundeld</div>
+          <div class="selectie-kaart sel-zilver">
+            <div class="sk-header">
+              <div class="sk-naam-wrap">
+                <div class="sk-naam">Selectie A <span style="color:var(--text-tertiary);font-weight:600;">· OW H1 + OW H2</span></div>
+                <div class="sk-naam-sub">Senioren selectie</div>
+              </div>
+              <div class="val-hoek ok"></div>
+            </div>
+            <div class="sk-body">
+              <!-- T1: ♀ kolom -->
+              <div class="tk-col">
+                <div class="compact-sexe-teller v">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="rgba(236,72,153,.8)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="6"/><line x1="12" y1="14" x2="12" y2="22"/><line x1="9" y1="19" x2="15" y2="19"/></svg>
+                  <span class="st-val">4</span>
+                </div>
+                <div class="compact-flow">
+                  <div class="compact-chip vrouw"><div class="inner"><span class="g-dot"></span><span class="nm">Sara D.</span></div><div class="leeft-bar" style="background: var(--leeftijd-19);"></div></div>
+                  <div class="compact-chip vrouw"><div class="inner"><span class="g-dot"></span><span class="nm">Lotte v.A.</span></div><div class="leeft-bar" style="background: var(--leeftijd-19);"></div></div>
+                  <div class="compact-chip vrouw"><div class="inner"><span class="g-dot"></span><span class="nm">Kim V.</span></div><div class="leeft-bar" style="background: var(--leeftijd-19);"></div></div>
+                  <div class="compact-chip vrouw"><div class="inner"><span class="g-dot"></span><span class="nm">Anna G.</span></div><div class="leeft-bar" style="background: var(--leeftijd-19);"></div></div>
+                </div>
+              </div>
+              <!-- T1: ♂ kolom -->
+              <div class="tk-col" style="border-right: 1px solid var(--border-light);">
+                <div class="compact-sexe-teller h">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="rgba(96,165,250,.8)" stroke-width="2" stroke-linecap="round"><circle cx="10" cy="14" r="6"/><line x1="21" y1="3" x2="15" y2="9"/><polyline points="16 3 21 3 21 8"/></svg>
+                  <span class="st-val">4</span>
+                </div>
+                <div class="compact-flow">
+                  <div class="compact-chip"><div class="inner"><span class="g-dot"></span><span class="nm">Bas V.</span></div><div class="leeft-bar" style="background: var(--leeftijd-19);"></div></div>
+                  <div class="compact-chip"><div class="inner"><span class="g-dot"></span><span class="nm">Rick B.</span></div><div class="leeft-bar" style="background: var(--leeftijd-19);"></div></div>
+                  <div class="compact-chip"><div class="inner"><span class="g-dot"></span><span class="nm">Stan M.</span></div><div class="leeft-bar" style="background: var(--leeftijd-19);"></div></div>
+                  <div class="compact-chip"><div class="inner"><span class="g-dot"></span><span class="nm">Niels K.</span></div><div class="leeft-bar" style="background: var(--leeftijd-19);"></div></div>
+                </div>
+              </div>
+              <!-- T2: ♀ kolom -->
+              <div class="tk-col">
+                <div class="compact-sexe-teller v">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="rgba(236,72,153,.8)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="6"/><line x1="12" y1="14" x2="12" y2="22"/><line x1="9" y1="19" x2="15" y2="19"/></svg>
+                  <span class="st-val">4</span>
+                </div>
+                <div class="compact-flow">
+                  <div class="compact-chip vrouw"><div class="inner"><span class="g-dot"></span><span class="nm">Maud P.</span></div><div class="leeft-bar" style="background: var(--leeftijd-19);"></div></div>
+                  <div class="compact-chip vrouw"><div class="inner"><span class="g-dot"></span><span class="nm">Iris B.</span></div><div class="leeft-bar" style="background: var(--leeftijd-19);"></div></div>
+                  <div class="compact-chip vrouw"><div class="inner"><span class="g-dot"></span><span class="nm">Fleur K.</span></div><div class="leeft-bar" style="background: var(--leeftijd-19);"></div></div>
+                  <div class="compact-chip vrouw"><div class="inner"><span class="g-dot"></span><span class="nm">Tara W.</span></div><div class="leeft-bar" style="background: var(--leeftijd-19);"></div></div>
+                </div>
+              </div>
+              <!-- T2: ♂ kolom -->
+              <div class="tk-col">
+                <div class="compact-sexe-teller h">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="rgba(96,165,250,.8)" stroke-width="2" stroke-linecap="round"><circle cx="10" cy="14" r="6"/><line x1="21" y1="3" x2="15" y2="9"/><polyline points="16 3 21 3 21 8"/></svg>
+                  <span class="st-val">4</span>
+                </div>
+                <div class="compact-flow">
+                  <div class="compact-chip"><div class="inner"><span class="g-dot"></span><span class="nm">Tom B.</span></div><div class="leeft-bar" style="background: var(--leeftijd-19);"></div></div>
+                  <div class="compact-chip"><div class="inner"><span class="g-dot"></span><span class="nm">Koen R.</span></div><div class="leeft-bar" style="background: var(--leeftijd-19);"></div></div>
+                  <div class="compact-chip"><div class="inner"><span class="g-dot"></span><span class="nm">Max Z.</span></div><div class="leeft-bar" style="background: var(--leeftijd-19);"></div></div>
+                  <div class="compact-chip"><div class="inner"><span class="g-dot"></span><span class="nm">Job L.</span></div><div class="leeft-bar" style="background: var(--leeftijd-19);"></div></div>
+                </div>
+              </div>
+            </div>
+            <div class="tk-staf-footer">
+              <div class="staf-compact"><div class="inner"><span class="type-icoon technisch" style="width:10px;height:10px"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span><span class="nm">Joost B.</span></div></div>
+              <div class="staf-compact"><div class="inner"><span class="type-icoon ondersteunend" style="width:10px;height:10px"><svg viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span><span class="nm">Linda M.</span></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SELECTIE GEBUNDELD compact — 2 kolommen ♀|♂, samengevoegd -->
+        <div class="kaart-wrap">
+          <div class="kaart-wrap-label">Selectie gebundeld · U19 rood</div>
+          <div class="selectie-kaart sel-rood gebundeld">
+            <div class="sk-header">
+              <div class="sk-naam-wrap">
+                <div class="sk-naam">Selectie U19 <span style="color:var(--text-tertiary);font-weight:600;">· OW A1 &amp; OW A2</span></div>
+                <div class="sk-naam-sub">A-categorie 16–18</div>
+              </div>
+              <div class="val-hoek warn"><div class="val-sym">
+                <span class="vi"><svg viewBox="0 0 24 24"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></svg></span>
+              </div></div>
+            </div>
+            <div class="sk-body">
+              <!-- ♀ alle -->
+              <div class="tk-col">
+                <div class="compact-sexe-teller v">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="rgba(236,72,153,.8)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="6"/><line x1="12" y1="14" x2="12" y2="22"/><line x1="9" y1="19" x2="15" y2="19"/></svg>
+                  <span class="st-val">8</span>
+                </div>
+                <div class="compact-flow">
+                  <div class="compact-chip vrouw"><div class="inner"><span class="g-dot"></span><span class="nm">Sara D.</span></div><div class="leeft-bar" style="background: var(--leeftijd-19);"></div></div>
+                  <div class="compact-chip vrouw"><div class="inner"><span class="g-dot"></span><span class="nm">Lotte v.A.</span></div><div class="leeft-bar" style="background: var(--leeftijd-19);"></div></div>
+                  <div class="compact-chip vrouw"><div class="inner"><span class="g-dot"></span><span class="nm">Kim V.</span></div><div class="leeft-bar" style="background: var(--leeftijd-19);"></div></div>
+                  <div class="compact-chip vrouw"><div class="inner"><span class="g-dot"></span><span class="nm">Anna G.</span></div><div class="leeft-bar" style="background: var(--leeftijd-19);"></div></div>
+                  <div class="compact-chip vrouw"><div class="inner"><span class="g-dot"></span><span class="nm">Maud P.</span></div><div class="leeft-bar" style="background: var(--leeftijd-19);"></div></div>
+                  <div class="compact-chip vrouw"><div class="inner"><span class="g-dot"></span><span class="nm">Iris B.</span></div><div class="leeft-bar" style="background: var(--leeftijd-19);"></div></div>
+                  <div class="compact-chip vrouw"><div class="inner"><span class="g-dot"></span><span class="nm">Fleur K.</span></div><div class="leeft-bar" style="background: var(--leeftijd-19);"></div></div>
+                  <div class="compact-chip vrouw"><div class="inner"><span class="g-dot"></span><span class="nm">Tara W.</span></div><div class="leeft-bar" style="background: var(--leeftijd-19);"></div></div>
+                </div>
+              </div>
+              <!-- ♂ alle -->
+              <div class="tk-col">
+                <div class="compact-sexe-teller h">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="rgba(96,165,250,.8)" stroke-width="2" stroke-linecap="round"><circle cx="10" cy="14" r="6"/><line x1="21" y1="3" x2="15" y2="9"/><polyline points="16 3 21 3 21 8"/></svg>
+                  <span class="st-val">8</span>
+                </div>
+                <div class="compact-flow">
+                  <div class="compact-chip"><div class="inner"><span class="g-dot"></span><span class="nm">Bas V.</span></div><div class="leeft-bar" style="background: var(--leeftijd-19);"></div></div>
+                  <div class="compact-chip"><div class="inner"><span class="g-dot"></span><span class="nm">Rick B.</span></div><div class="leeft-bar" style="background: var(--leeftijd-19);"></div></div>
+                  <div class="compact-chip"><div class="inner"><span class="g-dot"></span><span class="nm">Stan M.</span></div><div class="leeft-bar" style="background: var(--leeftijd-19);"></div></div>
+                  <div class="compact-chip"><div class="inner"><span class="g-dot"></span><span class="nm">Niels K.</span></div><div class="leeft-bar" style="background: var(--leeftijd-19);"></div></div>
+                  <div class="compact-chip"><div class="inner"><span class="g-dot"></span><span class="nm">Tom B.</span></div><div class="leeft-bar" style="background: var(--leeftijd-19);"></div></div>
+                  <div class="compact-chip"><div class="inner"><span class="g-dot"></span><span class="nm">Koen R.</span></div><div class="leeft-bar" style="background: var(--leeftijd-19);"></div></div>
+                  <div class="compact-chip"><div class="inner"><span class="g-dot"></span><span class="nm">Max Z.</span></div><div class="leeft-bar" style="background: var(--leeftijd-19);"></div></div>
+                  <div class="compact-chip"><div class="inner"><span class="g-dot"></span><span class="nm">Job L.</span></div><div class="leeft-bar" style="background: var(--leeftijd-19);"></div></div>
+                </div>
+              </div>
+            </div>
+            <div class="tk-staf-footer">
+              <div class="staf-compact"><div class="inner"><span class="type-icoon technisch" style="width:10px;height:10px"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span><span class="nm">Joost B.</span></div></div>
+              <div class="staf-compact"><div class="inner"><span class="type-icoon ondersteunend" style="width:10px;height:10px"><svg viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span><span class="nm">Linda M.</span></div></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       DETAIL
+       ══════════════════════════════════════════════════════════════════════ -->
+  <div class="zoom-sectie zoom-detail">
+    <div class="zoom-label">Detail <span class="sub">Ingezoomd — rijke rij (52px), avatar + naam + team-badges + leeftijdkolom</span></div>
+    <div class="canvas-bg">
+      <div class="zoom-row">
+
+        <!-- VIERTAL detail -->
+        <div class="kaart-wrap">
+          <div class="kaart-wrap-label">Viertal · 4-korfbal</div>
+          <div class="team-kaart viertal cat-oranje">
+            <div class="tk-header">
+              <div class="tk-naam-wrap">
+                <div class="tk-naam">OW D1</div>
+                <div class="tk-naam-sub">Oranje 13–15</div>
+              </div>
+              <div class="tk-header-right"></div>
+              <div class="val-hoek ok"></div>
+            </div>
+            <div class="tk-info-strook">
+              <div class="info-spacer"></div>
+              <span class="info-count v">2 <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><line x1="12" y1="14" x2="12" y2="22"/><line x1="9" y1="19" x2="15" y2="19"/></svg></span>
+              <span style="margin:0 4px;color:var(--text-muted);">·</span>
+              <span class="info-count h">2 <svg viewBox="0 0 24 24"><circle cx="10" cy="14" r="6"/><line x1="21" y1="3" x2="15" y2="9"/><polyline points="16 3 21 3 21 8"/></svg></span>
+            </div>
+            <div class="tk-body">
+              <div class="tk-col">
+                <div class="tk-rijke-rij vrouw">
+                  <div class="sq-av" style="--sexe: var(--sexe-v);"><img src="https://randomuser.me/api/portraits/women/21.jpg" alt=""></div>
+                  <div class="col">
+                    <div class="nm">Lisanne Bos</div>
+                    <div class="row2"><span class="tb">D1</span><span class="tb-i">D1</span></div>
+                  </div>
+                  <div class="leeft-col" style="--leeftijd-bg: var(--leeftijd-14);"><span class="lb">14</span><span class="ld">.23</span></div>
+                </div>
+                <div class="tk-rijke-rij vrouw">
+                  <div class="sq-av" style="--sexe: var(--sexe-v);"><img src="https://randomuser.me/api/portraits/women/34.jpg" alt=""></div>
+                  <div class="col">
+                    <div class="nm">Roos Slagter</div>
+                    <div class="row2"><span class="tb">D1</span><span class="tb-i">D1</span></div>
+                  </div>
+                  <div class="leeft-col" style="--leeftijd-bg: var(--leeftijd-13);"><span class="lb">13</span><span class="ld">.88</span></div>
+                </div>
+                <div class="tk-rijke-rij heer">
+                  <div class="sq-av" style="--sexe: var(--sexe-h);"><img src="https://randomuser.me/api/portraits/men/18.jpg" alt=""></div>
+                  <div class="col">
+                    <div class="nm">Daan Verhoef</div>
+                    <div class="row2"><span class="tb">D1</span><span class="tb-i">D1</span></div>
+                  </div>
+                  <div class="leeft-col" style="--leeftijd-bg: var(--leeftijd-15);"><span class="lb">15</span><span class="ld">.11</span></div>
+                </div>
+                <div class="tk-rijke-rij heer">
+                  <div class="sq-av" style="--sexe: var(--sexe-h);"><img src="https://randomuser.me/api/portraits/men/22.jpg" alt=""></div>
+                  <div class="col">
+                    <div class="nm">Lars Smit</div>
+                    <div class="row2"><span class="tb">D1</span><span class="tb-i">D1</span></div>
+                  </div>
+                  <div class="leeft-col" style="--leeftijd-bg: var(--leeftijd-14);"><span class="lb">14</span><span class="ld">.67</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="tk-staf-footer">
+              <div class="staf-compact"><div class="inner"><span class="type-icoon technisch" style="width:10px;height:10px"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span><span class="nm">Petra Klaassen</span></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ACHTTAL detail -->
+        <div class="kaart-wrap">
+          <div class="kaart-wrap-label">Achttal · 8-korfbal</div>
+          <div class="team-kaart achttal cat-geel">
+            <div class="tk-header">
+              <div class="tk-naam-wrap">
+                <div class="tk-naam">OW C1 <span class="memo-attention open" style="width:16px;height:16px;display:inline-flex;vertical-align:middle;margin-left:4px;"><svg viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8 12h8M8 15h8M8 18h5"/></svg></span></div>
+                <div class="tk-naam-sub">Geel 10–12</div>
+              </div>
+              <div class="tk-header-right"></div>
+              <div class="val-hoek err"><div class="val-sym">
+                <span class="vi"><svg viewBox="0 0 24 24"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></svg></span>
+                <span class="vi"><svg viewBox="0 0 24 24"><polyline points="7 4 12 1 17 4"/><line x1="12" y1="1" x2="12" y2="23"/><polyline points="7 20 12 23 17 20"/></svg></span>
+              </div></div>
+            </div>
+            <div class="tk-info-strook" style="gap:0;">
+              <span style="flex:1;display:flex;justify-content:flex-end;padding-right:10px;"><span class="info-count v">4 <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><line x1="12" y1="14" x2="12" y2="22"/><line x1="9" y1="19" x2="15" y2="19"/></svg></span></span>
+              <span style="flex:1;display:flex;justify-content:flex-end;padding-right:10px;"><span class="info-count h">4 <svg viewBox="0 0 24 24"><circle cx="10" cy="14" r="6"/><line x1="21" y1="3" x2="15" y2="9"/><polyline points="16 3 21 3 21 8"/></svg></span></span>
+            </div>
+            <div class="tk-body">
+              <div class="tk-col">
+                <div class="tk-rijke-rij vrouw">
+                  <div class="sq-av" style="--sexe: var(--sexe-v);"><img src="https://randomuser.me/api/portraits/women/11.jpg" alt=""></div>
+                  <div class="col"><div class="nm">Emma de Vries</div><div class="row2"><span class="tb">C1</span><span class="tb-i">C1</span></div></div>
+                  <div class="leeft-col" style="--leeftijd-bg: var(--leeftijd-11);"><span class="lb">11</span><span class="ld">.45</span></div>
+                </div>
+                <div class="tk-rijke-rij vrouw">
+                  <div class="sq-av" style="--sexe: var(--sexe-v);"><img src="https://randomuser.me/api/portraits/women/23.jpg" alt=""></div>
+                  <div class="col"><div class="nm">Noor Hendriks</div><div class="row2"><span class="tb">C1</span><span class="tb-i">C1</span></div></div>
+                  <div class="leeft-col" style="--leeftijd-bg: var(--leeftijd-10);"><span class="lb">10</span><span class="ld">.92</span></div>
+                </div>
+                <div class="tk-rijke-rij vrouw">
+                  <div class="sq-av" style="--sexe: var(--sexe-v);"><img src="https://randomuser.me/api/portraits/women/42.jpg" alt=""></div>
+                  <div class="col"><div class="nm">Fien Bakker</div><div class="row2"><span class="tb">C1</span><span class="tb-i">C1</span></div></div>
+                  <div class="leeft-col" style="--leeftijd-bg: var(--leeftijd-12);"><span class="lb">12</span><span class="ld">.34</span></div>
+                </div>
+                <div class="tk-rijke-rij vrouw">
+                  <div class="sq-av" style="--sexe: var(--sexe-v);"><img src="https://randomuser.me/api/portraits/women/55.jpg" alt=""></div>
+                  <div class="col"><div class="nm">Julie Maas</div><div class="row2"><span class="tb">C1</span><span class="tb-i">C1</span></div></div>
+                  <div class="leeft-col" style="--leeftijd-bg: var(--leeftijd-11);"><span class="lb">11</span><span class="ld">.78</span></div>
+                </div>
+              </div>
+              <div class="tk-col">
+                <div class="tk-rijke-rij heer">
+                  <div class="sq-av" style="--sexe: var(--sexe-h);"><img src="https://randomuser.me/api/portraits/men/33.jpg" alt=""></div>
+                  <div class="col"><div class="nm">Sem Peters</div><div class="row2"><span class="tb">C1</span><span class="tb-i">C1</span></div></div>
+                  <div class="leeft-col" style="--leeftijd-bg: var(--leeftijd-12);"><span class="lb">12</span><span class="ld">.05</span></div>
+                </div>
+                <div class="tk-rijke-rij heer">
+                  <div class="sq-av" style="--sexe: var(--sexe-h);"><img src="https://randomuser.me/api/portraits/men/41.jpg" alt=""></div>
+                  <div class="col"><div class="nm">Bram van Dijk</div><div class="row2"><span class="tb">C1</span><span class="tb-i">C1</span></div></div>
+                  <div class="leeft-col" style="--leeftijd-bg: var(--leeftijd-10);"><span class="lb">10</span><span class="ld">.56</span></div>
+                </div>
+                <div class="tk-rijke-rij heer">
+                  <div class="sq-av" style="--sexe: var(--sexe-h);"><img src="https://randomuser.me/api/portraits/men/52.jpg" alt=""></div>
+                  <div class="col"><div class="nm">Tim Wessels</div><div class="row2"><span class="tb">C1</span><span class="tb-i">C1</span></div></div>
+                  <div class="leeft-col" style="--leeftijd-bg: var(--leeftijd-11);"><span class="lb">11</span><span class="ld">.23</span></div>
+                </div>
+                <div class="tk-rijke-rij heer">
+                  <div class="sq-av" style="--sexe: var(--sexe-h);"><img src="https://randomuser.me/api/portraits/men/61.jpg" alt=""></div>
+                  <div class="col"><div class="nm">Joris Laan</div><div class="row2"><span class="tb">C1</span><span class="tb-i">C1</span></div></div>
+                  <div class="leeft-col" style="--leeftijd-bg: var(--leeftijd-10);"><span class="lb">10</span><span class="ld">.89</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="tk-staf-footer">
+              <div class="staf-compact"><div class="inner"><span class="type-icoon technisch" style="width:10px;height:10px"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span><span class="nm">Mark Huisman</span></div></div>
+              <div class="staf-compact"><div class="inner"><span class="type-icoon ondersteunend" style="width:10px;height:10px"><svg viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span><span class="nm">Sandra Visser</span></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SELECTIE NIET-GEBUNDELD detail — U17 oranje-rood — 2 team-headers -->
+        <div class="kaart-wrap">
+          <div class="kaart-wrap-label">Selectie niet-gebundeld · U17 oranje-rood</div>
+          <div class="selectie-kaart sel-oranje-rood">
+            <div class="sk-header">
+              <div class="sk-naam-wrap">
+                <div class="sk-naam">Selectie U17 <span style="color:var(--text-tertiary);font-weight:600;">· OW A1 + OW A2</span></div>
+                <div class="sk-naam-sub">A-categorie 16–17</div>
+              </div>
+              <div class="val-hoek err"><div class="val-sym">
+                <span class="vi"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg></span>
+              </div></div>
+            </div>
+            <div class="tk-info-strook" style="gap:0;">
+              <span style="flex:1;display:flex;align-items:center;padding-left:10px;"><span class="info-team">OW A1</span><span class="info-spacer" style="flex:1;"></span><span class="info-count v">4 <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><line x1="12" y1="14" x2="12" y2="22"/><line x1="9" y1="19" x2="15" y2="19"/></svg></span></span>
+              <span style="flex:1;display:flex;align-items:center;justify-content:flex-end;padding-right:10px;"><span class="info-count h">4 <svg viewBox="0 0 24 24"><circle cx="10" cy="14" r="6"/><line x1="21" y1="3" x2="15" y2="9"/><polyline points="16 3 21 3 21 8"/></svg></span></span>
+              <span style="flex:1;display:flex;align-items:center;padding-left:10px;"><span class="info-team">OW A2</span><span class="info-spacer" style="flex:1;"></span><span class="info-count v">4 <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><line x1="12" y1="14" x2="12" y2="22"/><line x1="9" y1="19" x2="15" y2="19"/></svg></span></span>
+              <span style="flex:1;display:flex;align-items:center;justify-content:flex-end;padding-right:10px;"><span class="info-count h">4 <svg viewBox="0 0 24 24"><circle cx="10" cy="14" r="6"/><line x1="21" y1="3" x2="15" y2="9"/><polyline points="16 3 21 3 21 8"/></svg></span></span>
+            </div>
+            <div class="sk-body">
+              <!-- Team 1 ♀ -->
+              <div class="tk-col">
+                <div class="tk-rijke-rij vrouw"><div class="sq-av" style="--sexe:var(--sexe-v)"><img src="https://randomuser.me/api/portraits/women/31.jpg" alt=""></div><div class="col"><div class="nm">Sara Dekker</div><div class="row2"><span class="tb">A1</span><span class="tb-i">A1</span></div></div><div class="leeft-col" style="--leeftijd-bg:var(--leeftijd-17)"><span class="lb">17</span><span class="ld">.14</span></div></div>
+                <div class="tk-rijke-rij vrouw"><div class="sq-av" style="--sexe:var(--sexe-v)"><img src="https://randomuser.me/api/portraits/women/44.jpg" alt=""></div><div class="col"><div class="nm">Lotte van As</div><div class="row2"><span class="tb">A1</span><span class="tb-i">A1</span></div></div><div class="leeft-col" style="--leeftijd-bg:var(--leeftijd-16)"><span class="lb">16</span><span class="ld">.67</span></div></div>
+                <div class="tk-rijke-rij vrouw"><div class="sq-av" style="--sexe:var(--sexe-v)"><img src="https://randomuser.me/api/portraits/women/57.jpg" alt=""></div><div class="col"><div class="nm">Kim Vliet</div><div class="row2"><span class="tb">A1</span><span class="tb-i">A1</span></div></div><div class="leeft-col" style="--leeftijd-bg:var(--leeftijd-17)"><span class="lb">17</span><span class="ld">.33</span></div></div>
+                <div class="tk-rijke-rij vrouw"><div class="sq-av" style="--sexe:var(--sexe-v)"><img src="https://randomuser.me/api/portraits/women/68.jpg" alt=""></div><div class="col"><div class="nm">Anna Groot</div><div class="row2"><span class="tb">A1</span><span class="tb-i">A1</span></div></div><div class="leeft-col" style="--leeftijd-bg:var(--leeftijd-16)"><span class="lb">16</span><span class="ld">.88</span></div></div>
+              </div>
+              <!-- Team 1 ♂ -->
+              <div class="tk-col">
+                <div class="tk-rijke-rij heer"><div class="sq-av" style="--sexe:var(--sexe-h)"><img src="https://randomuser.me/api/portraits/men/14.jpg" alt=""></div><div class="col"><div class="nm">Bas Vos</div><div class="row2"><span class="tb">A1</span><span class="tb-i">A1</span></div></div><div class="leeft-col" style="--leeftijd-bg:var(--leeftijd-17)"><span class="lb">17</span><span class="ld">.45</span></div></div>
+                <div class="tk-rijke-rij heer"><div class="sq-av" style="--sexe:var(--sexe-h)"><img src="https://randomuser.me/api/portraits/men/27.jpg" alt=""></div><div class="col"><div class="nm">Rick Bol</div><div class="row2"><span class="tb">A1</span><span class="tb-i">A1</span></div></div><div class="leeft-col" style="--leeftijd-bg:var(--leeftijd-16)"><span class="lb">16</span><span class="ld">.02</span></div></div>
+                <div class="tk-rijke-rij heer"><div class="sq-av" style="--sexe:var(--sexe-h)"><img src="https://randomuser.me/api/portraits/men/38.jpg" alt=""></div><div class="col"><div class="nm">Stan Mulder</div><div class="row2"><span class="tb">A1</span><span class="tb-i">A1</span></div></div><div class="leeft-col" style="--leeftijd-bg:var(--leeftijd-17)"><span class="lb">17</span><span class="ld">.78</span></div></div>
+                <div class="tk-rijke-rij heer"><div class="sq-av" style="--sexe:var(--sexe-h)"><img src="https://randomuser.me/api/portraits/men/46.jpg" alt=""></div><div class="col"><div class="nm">Niels Kok</div><div class="row2"><span class="tb">A1</span><span class="tb-i">A1</span></div></div><div class="leeft-col" style="--leeftijd-bg:var(--leeftijd-16)"><span class="lb">16</span><span class="ld">.56</span></div></div>
+              </div>
+              <!-- Team 2 ♀ -->
+              <div class="tk-col">
+                <div class="tk-rijke-rij vrouw"><div class="sq-av" style="--sexe:var(--sexe-v)"><img src="https://randomuser.me/api/portraits/women/72.jpg" alt=""></div><div class="col"><div class="nm">Maud Prins</div><div class="row2"><span class="tb">A2</span><span class="tb-i">A2</span></div></div><div class="leeft-col" style="--leeftijd-bg:var(--leeftijd-17)"><span class="lb">17</span><span class="ld">.44</span></div></div>
+                <div class="tk-rijke-rij vrouw"><div class="sq-av" style="--sexe:var(--sexe-v)"><img src="https://randomuser.me/api/portraits/women/83.jpg" alt=""></div><div class="col"><div class="nm">Iris Boer</div><div class="row2"><span class="tb">A2</span><span class="tb-i">A2</span></div></div><div class="leeft-col" style="--leeftijd-bg:var(--leeftijd-16)"><span class="lb">16</span><span class="ld">.19</span></div></div>
+                <div class="tk-rijke-rij vrouw"><div class="sq-av" style="--sexe:var(--sexe-v)"><img src="https://randomuser.me/api/portraits/women/91.jpg" alt=""></div><div class="col"><div class="nm">Fleur Kuipers</div><div class="row2"><span class="tb">A2</span><span class="tb-i">A2</span></div></div><div class="leeft-col" style="--leeftijd-bg:var(--leeftijd-17)"><span class="lb">17</span><span class="ld">.91</span></div></div>
+                <div class="tk-rijke-rij vrouw"><div class="sq-av" style="--sexe:var(--sexe-v)"><img src="https://randomuser.me/api/portraits/women/16.jpg" alt=""></div><div class="col"><div class="nm">Tara Wolf</div><div class="row2"><span class="tb">A2</span><span class="tb-i">A2</span></div></div><div class="leeft-col" style="--leeftijd-bg:var(--leeftijd-16)"><span class="lb">16</span><span class="ld">.37</span></div></div>
+              </div>
+              <!-- Team 2 ♂ -->
+              <div class="tk-col">
+                <div class="tk-rijke-rij heer"><div class="sq-av" style="--sexe:var(--sexe-h)"><img src="https://randomuser.me/api/portraits/men/55.jpg" alt=""></div><div class="col"><div class="nm">Tom Berg</div><div class="row2"><span class="tb">A2</span><span class="tb-i">A2</span></div></div><div class="leeft-col" style="--leeftijd-bg:var(--leeftijd-17)"><span class="lb">17</span><span class="ld">.62</span></div></div>
+                <div class="tk-rijke-rij heer"><div class="sq-av" style="--sexe:var(--sexe-h)"><img src="https://randomuser.me/api/portraits/men/63.jpg" alt=""></div><div class="col"><div class="nm">Koen Roos</div><div class="row2"><span class="tb">A2</span><span class="tb-i">A2</span></div></div><div class="leeft-col" style="--leeftijd-bg:var(--leeftijd-16)"><span class="lb">16</span><span class="ld">.08</span></div></div>
+                <div class="tk-rijke-rij heer"><div class="sq-av" style="--sexe:var(--sexe-h)"><img src="https://randomuser.me/api/portraits/men/74.jpg" alt=""></div><div class="col"><div class="nm">Max Zand</div><div class="row2"><span class="tb">A2</span><span class="tb-i">A2</span></div></div><div class="leeft-col" style="--leeftijd-bg:var(--leeftijd-17)"><span class="lb">17</span><span class="ld">.53</span></div></div>
+                <div class="tk-rijke-rij heer"><div class="sq-av" style="--sexe:var(--sexe-h)"><img src="https://randomuser.me/api/portraits/men/82.jpg" alt=""></div><div class="col"><div class="nm">Job Laan</div><div class="row2"><span class="tb">A2</span><span class="tb-i">A2</span></div></div><div class="leeft-col" style="--leeftijd-bg:var(--leeftijd-16)"><span class="lb">16</span><span class="ld">.29</span></div></div>
+              </div>
+            </div>
+            <div class="tk-staf-footer">
+              <div class="staf-compact"><div class="inner"><span class="type-icoon technisch" style="width:10px;height:10px"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span><span class="nm">Joost Bakker</span></div></div>
+              <div class="staf-compact"><div class="inner"><span class="type-icoon ondersteunend" style="width:10px;height:10px"><svg viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span><span class="nm">Linda Meerman</span></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SELECTIE GEBUNDELD detail — U15 oranje — 2 kolommen ♀|♂ -->
+        <div class="kaart-wrap">
+          <div class="kaart-wrap-label">Selectie gebundeld · U15 oranje</div>
+          <div class="selectie-kaart sel-oranje gebundeld">
+            <div class="sk-header">
+              <div class="sk-naam-wrap">
+                <div class="sk-naam">Selectie U15 <span style="color:var(--text-tertiary);font-weight:600;">· OW D1 &amp; OW D2</span></div>
+                <div class="sk-naam-sub">A-categorie 13–15</div>
+              </div>
+              <div class="val-hoek ok"></div>
+            </div>
+            <div class="tk-info-strook" style="justify-content:center;gap:10px;">
+              <span class="info-count v">8 <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><line x1="12" y1="14" x2="12" y2="22"/><line x1="9" y1="19" x2="15" y2="19"/></svg></span>
+              <span style="color:var(--text-muted);">·</span>
+              <span class="info-team">OW D1</span>
+              <span style="color:var(--text-muted);">&amp;</span>
+              <span class="info-team">OW D2</span>
+              <span style="color:var(--text-muted);">·</span>
+              <span class="info-count h">8 <svg viewBox="0 0 24 24"><circle cx="10" cy="14" r="6"/><line x1="21" y1="3" x2="15" y2="9"/><polyline points="16 3 21 3 21 8"/></svg></span>
+            </div>
+            <div class="sk-body">
+              <!-- ♀ alle -->
+              <div class="tk-col">
+                <div class="tk-rijke-rij vrouw"><div class="sq-av" style="--sexe:var(--sexe-v)"><img src="https://randomuser.me/api/portraits/women/31.jpg" alt=""></div><div class="col"><div class="nm">Sara Dekker</div><div class="row2"><span class="tb">D1</span><span class="tb-i">D1</span></div></div><div class="leeft-col" style="--leeftijd-bg:var(--leeftijd-14)"><span class="lb">14</span><span class="ld">.14</span></div></div>
+                <div class="tk-rijke-rij vrouw"><div class="sq-av" style="--sexe:var(--sexe-v)"><img src="https://randomuser.me/api/portraits/women/44.jpg" alt=""></div><div class="col"><div class="nm">Lotte van As</div><div class="row2"><span class="tb">D1</span><span class="tb-i">D1</span></div></div><div class="leeft-col" style="--leeftijd-bg:var(--leeftijd-15)"><span class="lb">15</span><span class="ld">.67</span></div></div>
+                <div class="tk-rijke-rij vrouw"><div class="sq-av" style="--sexe:var(--sexe-v)"><img src="https://randomuser.me/api/portraits/women/57.jpg" alt=""></div><div class="col"><div class="nm">Kim Vliet</div><div class="row2"><span class="tb">D1</span><span class="tb-i">D2</span></div></div><div class="leeft-col" style="--leeftijd-bg:var(--leeftijd-13)"><span class="lb">13</span><span class="ld">.33</span></div></div>
+                <div class="tk-rijke-rij vrouw"><div class="sq-av" style="--sexe:var(--sexe-v)"><img src="https://randomuser.me/api/portraits/women/68.jpg" alt=""></div><div class="col"><div class="nm">Anna Groot</div><div class="row2"><span class="tb">D2</span><span class="tb-i">D2</span></div></div><div class="leeft-col" style="--leeftijd-bg:var(--leeftijd-14)"><span class="lb">14</span><span class="ld">.88</span></div></div>
+                <div class="tk-rijke-rij vrouw"><div class="sq-av" style="--sexe:var(--sexe-v)"><img src="https://randomuser.me/api/portraits/women/72.jpg" alt=""></div><div class="col"><div class="nm">Maud Prins</div><div class="row2"><span class="tb">D2</span><span class="tb-i">D1</span></div></div><div class="leeft-col" style="--leeftijd-bg:var(--leeftijd-15)"><span class="lb">15</span><span class="ld">.44</span></div></div>
+                <div class="tk-rijke-rij vrouw"><div class="sq-av" style="--sexe:var(--sexe-v)"><img src="https://randomuser.me/api/portraits/women/83.jpg" alt=""></div><div class="col"><div class="nm">Iris Boer</div><div class="row2"><span class="tb">D2</span><span class="tb-i">D2</span></div></div><div class="leeft-col" style="--leeftijd-bg:var(--leeftijd-13)"><span class="lb">13</span><span class="ld">.19</span></div></div>
+                <div class="tk-rijke-rij vrouw"><div class="sq-av" style="--sexe:var(--sexe-v)"><img src="https://randomuser.me/api/portraits/women/91.jpg" alt=""></div><div class="col"><div class="nm">Fleur Kuipers</div><div class="row2"><span class="tb">D2</span><span class="tb-i">D2</span></div></div><div class="leeft-col" style="--leeftijd-bg:var(--leeftijd-14)"><span class="lb">14</span><span class="ld">.91</span></div></div>
+                <div class="tk-rijke-rij vrouw"><div class="sq-av" style="--sexe:var(--sexe-v)"><img src="https://randomuser.me/api/portraits/women/16.jpg" alt=""></div><div class="col"><div class="nm">Tara Wolf</div><div class="row2"><span class="tb">D1</span><span class="tb-i">D1</span></div></div><div class="leeft-col" style="--leeftijd-bg:var(--leeftijd-15)"><span class="lb">15</span><span class="ld">.37</span></div></div>
+              </div>
+              <!-- ♂ alle -->
+              <div class="tk-col">
+                <div class="tk-rijke-rij heer"><div class="sq-av" style="--sexe:var(--sexe-h)"><img src="https://randomuser.me/api/portraits/men/14.jpg" alt=""></div><div class="col"><div class="nm">Bas Vos</div><div class="row2"><span class="tb">D1</span><span class="tb-i">D1</span></div></div><div class="leeft-col" style="--leeftijd-bg:var(--leeftijd-15)"><span class="lb">15</span><span class="ld">.45</span></div></div>
+                <div class="tk-rijke-rij heer"><div class="sq-av" style="--sexe:var(--sexe-h)"><img src="https://randomuser.me/api/portraits/men/27.jpg" alt=""></div><div class="col"><div class="nm">Rick Bol</div><div class="row2"><span class="tb">D1</span><span class="tb-i">D1</span></div></div><div class="leeft-col" style="--leeftijd-bg:var(--leeftijd-14)"><span class="lb">14</span><span class="ld">.02</span></div></div>
+                <div class="tk-rijke-rij heer"><div class="sq-av" style="--sexe:var(--sexe-h)"><img src="https://randomuser.me/api/portraits/men/38.jpg" alt=""></div><div class="col"><div class="nm">Stan Mulder</div><div class="row2"><span class="tb">D1</span><span class="tb-i">D2</span></div></div><div class="leeft-col" style="--leeftijd-bg:var(--leeftijd-13)"><span class="lb">13</span><span class="ld">.78</span></div></div>
+                <div class="tk-rijke-rij heer"><div class="sq-av" style="--sexe:var(--sexe-h)"><img src="https://randomuser.me/api/portraits/men/46.jpg" alt=""></div><div class="col"><div class="nm">Niels Kok</div><div class="row2"><span class="tb">D2</span><span class="tb-i">D2</span></div></div><div class="leeft-col" style="--leeftijd-bg:var(--leeftijd-14)"><span class="lb">14</span><span class="ld">.56</span></div></div>
+                <div class="tk-rijke-rij heer"><div class="sq-av" style="--sexe:var(--sexe-h)"><img src="https://randomuser.me/api/portraits/men/55.jpg" alt=""></div><div class="col"><div class="nm">Tom Berg</div><div class="row2"><span class="tb">D2</span><span class="tb-i">D1</span></div></div><div class="leeft-col" style="--leeftijd-bg:var(--leeftijd-15)"><span class="lb">15</span><span class="ld">.62</span></div></div>
+                <div class="tk-rijke-rij heer"><div class="sq-av" style="--sexe:var(--sexe-h)"><img src="https://randomuser.me/api/portraits/men/63.jpg" alt=""></div><div class="col"><div class="nm">Koen Roos</div><div class="row2"><span class="tb">D2</span><span class="tb-i">D2</span></div></div><div class="leeft-col" style="--leeftijd-bg:var(--leeftijd-13)"><span class="lb">13</span><span class="ld">.08</span></div></div>
+                <div class="tk-rijke-rij heer"><div class="sq-av" style="--sexe:var(--sexe-h)"><img src="https://randomuser.me/api/portraits/men/74.jpg" alt=""></div><div class="col"><div class="nm">Max Zand</div><div class="row2"><span class="tb">D2</span><span class="tb-i">D2</span></div></div><div class="leeft-col" style="--leeftijd-bg:var(--leeftijd-14)"><span class="lb">14</span><span class="ld">.53</span></div></div>
+                <div class="tk-rijke-rij heer"><div class="sq-av" style="--sexe:var(--sexe-h)"><img src="https://randomuser.me/api/portraits/men/82.jpg" alt=""></div><div class="col"><div class="nm">Job Laan</div><div class="row2"><span class="tb">D1</span><span class="tb-i">D1</span></div></div><div class="leeft-col" style="--leeftijd-bg:var(--leeftijd-15)"><span class="lb">15</span><span class="ld">.29</span></div></div>
+              </div>
+            </div>
+            <div class="tk-staf-footer">
+              <div class="staf-compact"><div class="inner"><span class="type-icoon technisch" style="width:10px;height:10px"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span><span class="nm">Joost Bakker</span></div></div>
+              <div class="staf-compact"><div class="inner"><span class="type-icoon ondersteunend" style="width:10px;height:10px"><svg viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span><span class="nm">Linda Meerman</span></div></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

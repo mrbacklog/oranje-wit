@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personen — TI Studio</title>
+  <link rel="stylesheet" href="../shared/tokens.css">
+  <style>
+    /* ─── Sub-navigatie tabs ─────────────────────────────────────────────────── */
+    .sub-nav {
+      display: flex; gap: 2px; border-bottom: 1px solid var(--border-light);
+      margin-bottom: 16px;
+    }
+    .sub-nav-tab {
+      padding: 8px 16px; font-size: 13px; font-weight: 600;
+      color: var(--text-tertiary); cursor: pointer; border: none; background: none;
+      border-bottom: 2px solid transparent; margin-bottom: -1px;
+      transition: color 120ms; font-family: inherit;
+    }
+    .sub-nav-tab:hover { color: var(--text-secondary); }
+    .sub-nav-tab.active { color: var(--ow-accent); border-bottom-color: var(--ow-accent); }
+
+    /* ─── Filter bar ─────────────────────────────────────────────────────────── */
+    .filter-bar {
+      display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+      margin-bottom: 12px;
+    }
+    .search-input {
+      background: var(--surface-card); border: 1px solid var(--border-default);
+      border-radius: 8px; padding: 6px 12px; color: var(--text-primary);
+      font-size: 13px; outline: none; width: 200px; font-family: inherit;
+    }
+    .search-input::placeholder { color: var(--text-muted); }
+    .search-input:focus { border-color: rgba(255,107,0,.4); }
+    .filter-chip {
+      padding: 4px 10px; border-radius: 99px; font-size: 12px; font-weight: 500;
+      cursor: pointer; border: 1px solid var(--border-default);
+      background: var(--surface-card); color: var(--text-tertiary);
+      font-family: inherit; transition: all 120ms;
+    }
+    .filter-chip:hover { border-color: var(--text-muted); color: var(--text-secondary); }
+    .filter-chip.active {
+      border-color: var(--ow-accent); background: rgba(255,107,0,.1);
+      color: var(--ow-accent);
+    }
+    .filter-select {
+      background: var(--surface-card); border: 1px solid var(--border-default);
+      border-radius: 8px; padding: 5px 10px; color: var(--text-primary);
+      font-size: 12px; outline: none; cursor: pointer; font-family: inherit;
+    }
+    .filter-count { margin-left: auto; font-size: 12px; color: var(--text-tertiary); }
+
+    /* ─── Spelers tabel ──────────────────────────────────────────────────────── */
+    .tabel-wrap {
+      background: var(--surface-page); border-radius: 8px; overflow: hidden;
+    }
+    .tabel-header {
+      display: grid;
+      grid-template-columns: 60px 1fr 150px 90px 130px 110px 44px 60px 44px;
+      gap: 14px; padding: 10px 16px;
+      font-size: 9px; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700;
+      border-bottom: 1px solid var(--surface-card); user-select: none;
+    }
+    .tabel-rij {
+      position: relative; display: grid;
+      grid-template-columns: 60px 1fr 150px 90px 130px 110px 44px 60px 44px;
+      align-items: center; gap: 14px; padding: 10px 16px;
+      background: transparent;
+      border-left: 3px solid var(--status-color, var(--status-beschikbaar-outline));
+      border-bottom: 1px solid var(--border-light);
+      overflow: visible; transition: background 100ms;
+    }
+    .tabel-rij:last-child { border-bottom: none; }
+    .tabel-rij:hover { background: rgba(255,255,255,.02); }
+    .tabel-rij .sq-av { width: 46px; height: 46px; }
+    .tabel-rij .nm { font-size: 14px; font-weight: 600; color: var(--text-primary); cursor: pointer; }
+    .tabel-rij .nm:hover { color: var(--ow-accent); }
+    .tabel-rij .leeft-col {
+      height: 44px; width: 54px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      border-radius: 3px; line-height: 1;
+    }
+    .tabel-rij .leeft-col .lb { color: #fff; font-size: 16px; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .tabel-rij .leeft-col .ld { color: rgba(255,255,255,.7); font-size: 9px; font-weight: 700; margin-top: 1px; font-variant-numeric: tabular-nums; }
+
+    /* Memo-cell */
+    .tabel-rij .memo-cell {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-size: 12px; font-weight: 600;
+      padding: 4px 10px; border-radius: 4px; line-height: 1;
+      cursor: pointer;
+    }
+    .tabel-rij .memo-cell .icn { width: 14px; height: 14px; font-size: 13px; flex-shrink: 0; text-align: center; }
+    .tabel-rij .memo-cell.geen { color: var(--text-muted); padding-left: 0; cursor: default; }
+    .tabel-rij .memo-cell.open { color: var(--memo-open); background: rgba(253,224,71,.1); border: 1px solid rgba(253,224,71,.3); }
+    .tabel-rij .memo-cell.bespreking { color: var(--memo-bespreking); background: rgba(250,204,21,.12); border: 1px solid rgba(250,204,21,.4); }
+    .tabel-rij .memo-cell.risico { color: #c29a5c; background: rgba(194,154,92,.1); border: 1px solid rgba(225,29,72,.4); }
+    .tabel-rij .memo-cell.opgelost { color: #8a7a5c; background: rgba(68,64,60,.4); border: 1px solid rgba(255,255,255,.08); }
+
+    /* Status-variants */
+    .tabel-rij.st-nieuw    { --status-color: var(--status-nieuw-outline); }
+    .tabel-rij.st-twijfelt { --status-color: var(--status-twijfelt-outline); }
+    .tabel-rij.st-stopt    { --status-color: var(--status-stopt-outline); }
+    .tabel-rij.st-ar       { --status-color: var(--status-ar-outline); }
+    .tabel-rij.st-geblesseerd { --status-color: rgba(249,115,22,.7); }
+    .tabel-rij.st-stopt .nm { text-decoration: line-through; opacity: 0.7; }
+    .tabel-rij.st-ar .nm { color: #a8a8ad; }
+    .tabel-rij.st-ar .sq-av { opacity: 0.85; }
+
+    /* ─── Inline-edits: status-editor ───────────────────────────────────────── */
+    .status-trigger {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 12px; font-weight: 600; cursor: pointer;
+      padding: 4px 8px; border-radius: 5px;
+      transition: background 120ms; position: relative;
+      white-space: nowrap;
+    }
+    .status-trigger:hover { background: rgba(255,255,255,.06); }
+    .status-trigger .s-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .status-trigger::after { content: '▾'; font-size: 9px; opacity: 0.5; margin-left: 2px; }
+
+    .status-trigger.beschikbaar { color: #22c55e; }
+    .status-trigger.beschikbaar .s-dot { background: #22c55e; }
+    .status-trigger.twijfelt { color: #f59e0b; }
+    .status-trigger.twijfelt .s-dot { background: #f59e0b; }
+    .status-trigger.geblesseerd { color: #f97316; }
+    .status-trigger.geblesseerd .s-dot { background: #f97316; }
+    .status-trigger.stopt { color: #ef4444; }
+    .status-trigger.stopt .s-dot { background: #ef4444; }
+    .status-trigger.nieuw { color: #3b82f6; }
+    .status-trigger.nieuw .s-dot { background: #3b82f6; }
+    .status-trigger.reserve { color: #6b7280; }
+    .status-trigger.reserve .s-dot { background: #6b7280; }
+
+    /* ─── Inline-edits: indeling-chip / leeg-knop ───────────────────────────── */
+    .indeling-chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 2px 2px 8px; border-radius: 6px;
+      font-size: 12px; font-weight: 500; cursor: pointer;
+      background: rgba(34,197,94,.08); border: 1px solid rgba(34,197,94,.2);
+      color: #4ade80; position: relative;
+      transition: background 120ms; white-space: nowrap;
+    }
+    .indeling-chip:hover { background: rgba(34,197,94,.14); }
+    .indeling-chip .i-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .indeling-chip .i-remove {
+      width: 16px; height: 16px; border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; line-height: 1; border: none; padding: 0;
+      background: rgba(34,197,94,.15); color: #4ade80;
+      cursor: pointer; font-family: inherit;
+      transition: background 100ms, color 100ms;
+    }
+    .indeling-chip .i-remove:hover { background: rgba(239,68,68,.2); color: #f87171; }
+
+    .indeling-leeg {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 24px; height: 24px; border-radius: 6px;
+      border: 1px dashed var(--border-default); color: var(--text-muted);
+      font-size: 15px; cursor: pointer;
+      transition: border-color 120ms, color 120ms;
+      position: relative; background: none;
+      font-family: inherit;
+    }
+    .indeling-leeg:hover { border-color: var(--ow-accent); color: var(--ow-accent); }
+
+    /* ─── Gezien-toggle ──────────────────────────────────────────────────────── */
+    .gezien-btn {
+      background: none; border: none; padding: 4px 6px;
+      font-size: 16px; font-weight: 700; cursor: pointer;
+      font-family: inherit; transition: color 120ms;
+    }
+    .gezien-btn.ja  { color: #22c55e; }
+    .gezien-btn.nee { color: #4b5563; opacity: 0.35; }
+    .gezien-btn:hover { opacity: 1; }
+
+    /* ─── Memo-knop ──────────────────────────────────────────────────────────── */
+    .memo-actie-btn {
+      background: none; border: none; padding: 4px 6px;
+      color: var(--text-muted); cursor: pointer; font-size: 13px;
+      border-radius: 5px; transition: color 120ms, background 120ms;
+      font-family: inherit; display: flex; align-items: center; justify-content: center;
+    }
+    .memo-actie-btn:hover { color: var(--ow-accent); background: rgba(255,107,0,.1); }
+
+    /* ─── Popovers ───────────────────────────────────────────────────────────── */
+    .popover, .indeling-popover {
+      position: fixed; z-index: 9980;
+      background: var(--surface-card); border: 1px solid var(--border-default);
+      border-radius: 8px; padding: 4px;
+      min-width: 180px; max-height: 280px; overflow-y: auto;
+      box-shadow: 0 8px 24px rgba(0,0,0,.6);
+      display: none; flex-direction: column; gap: 2px;
+    }
+    .popover.visible, .indeling-popover.visible { display: flex; }
+    .popover-item {
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px 10px; border-radius: 6px;
+      font-size: 12px; cursor: pointer; border: none;
+      background: transparent; color: var(--text-primary);
+      font-family: inherit; text-align: left;
+      transition: background 100ms;
+    }
+    .popover-item:hover { background: rgba(255,255,255,.06); }
+    .popover-item.actief { background: rgba(255,107,0,.1); color: var(--ow-accent); }
+    .popover-item .p-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .indeling-popover { min-width: 200px; }
+    .indeling-popover .groep-label {
+      font-size: 9px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--text-muted);
+      padding: 6px 10px 2px; margin-top: 4px;
+      border-top: 1px solid var(--border-light);
+    }
+    .indeling-popover .groep-label:first-child { border-top: none; margin-top: 0; }
+
+    /* ─── Staf tabel ─────────────────────────────────────────────────────────── */
+    .staf-tabel-wrap {
+      background: var(--surface-page); border-radius: 8px; overflow: hidden;
+    }
+    .staf-header {
+      display: grid;
+      grid-template-columns: 50px 1fr 1fr 100px 50px 60px 44px;
+      gap: 14px; padding: 10px 16px;
+      font-size: 9px; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700;
+      border-bottom: 1px solid var(--surface-card); user-select: none;
+    }
+    .staf-tabel-rij {
+      display: grid;
+      grid-template-columns: 50px 1fr 1fr 100px 50px 60px 44px;
+      align-items: center; gap: 14px; padding: 10px 16px;
+      border-left: 3px solid rgba(255,140,0,.5);
+      border-bottom: 1px solid var(--border-light);
+      transition: background 100ms; position: relative;
+    }
+    .staf-tabel-rij:last-child { border-bottom: none; }
+    .staf-tabel-rij:hover { background: rgba(255,255,255,.02); }
+    .staf-tabel-rij .staf-av { width: 40px; height: 40px; }
+    .staf-tabel-rij .staf-av .initialen { font-size: 13px; }
+    .staf-tabel-rij .nm { font-size: 14px; font-weight: 600; color: var(--text-primary); cursor: pointer; }
+    .staf-tabel-rij .nm:hover { color: var(--ow-accent); }
+    .staf-tabel-rij .teams-col { display: flex; flex-direction: column; gap: 3px; }
+    .staf-tabel-rij .team-entry { display: flex; align-items: center; gap: 5px; }
+    .staf-tabel-rij.inactief { opacity: var(--staf-inactief-opacity); border-left-color: rgba(148,163,184,.4); }
+    .staf-tabel-rij .no-badge { color: var(--text-muted); font-size: 11px; }
+    .memo-ind { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; line-height: 1; }
+    .memo-ind.open { color: var(--memo-open); background: rgba(253,224,71,.1); border: 1px solid rgba(253,224,71,.3); }
+    .memo-ind.bespreking { color: var(--memo-bespreking); background: rgba(250,204,21,.1); border: 1px solid rgba(250,204,21,.35); }
+    .memo-ind.geen { color: var(--text-muted); }
+    .actief-toggle {
+      width: 36px; height: 20px; border-radius: 999px; border: none;
+      position: relative; cursor: pointer; transition: background 150ms;
+      outline: none; padding: 0;
+    }
+    .actief-toggle.aan { background: rgba(34,197,94,.55); }
+    .actief-toggle.uit { background: rgba(148,163,184,.35); }
+    .actief-toggle .knob {
+      position: absolute; top: 2px; width: 16px; height: 16px;
+      border-radius: 50%; background: #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,.3); transition: left 150ms;
+    }
+    .actief-toggle.aan .knob { left: 18px; }
+    .actief-toggle.uit .knob { left: 2px; }
+    .btn-primary {
+      padding: 6px 12px; border-radius: 7px; border: none;
+      background: var(--ow-accent); color: #fff;
+      font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit;
+    }
+
+    /* ─── Tab toggle ─────────────────────────────────────────────────────────── */
+    .tab-content { display: none; }
+    .tab-content.visible { display: block; }
+  </style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<template id="page-content">
+  <div class="page-header">
+    <h1>Personen</h1>
+    <p class="page-sub">Spelers en staf beheren</p>
+  </div>
+  <nav class="sub-nav" aria-label="Personen sub-navigatie">
+    <button class="sub-nav-tab active" id="tab-spelers" data-tab="spelers">Spelers</button>
+    <button class="sub-nav-tab" id="tab-staf" data-tab="staf">Staf</button>
+  </nav>
+
+  <!-- ═══ SPELERS TAB ══════════════════════════════════════════════════════ -->
+  <div class="tab-content visible" id="content-spelers">
+    <div class="filter-bar" id="speler-filter-bar">
+      <input class="search-input" type="search" placeholder="Zoek op naam..." id="speler-zoek">
+      <button class="filter-chip active" data-status="">Allen</button>
+      <button class="filter-chip" data-status="BESCHIKBAAR">Beschikbaar</button>
+      <button class="filter-chip" data-status="TWIJFELT">Twijfelt</button>
+      <button class="filter-chip" data-status="GAAT_STOPPEN">Gaat stoppen</button>
+      <button class="filter-chip" data-status="NIEUW">Nieuw</button>
+      <button class="filter-chip" data-status="AR">Reserve</button>
+      <span class="filter-count" id="speler-count"></span>
+    </div>
+    <div class="tabel-wrap">
+      <div class="tabel-header">
+        <div>Foto</div><div>Naam</div><div>Status</div><div>Huidig</div><div>Indeling</div><div>Memo</div><div>✓</div><div style="text-align:right">Leeft.</div><div></div>
+      </div>
+      <div id="speler-tabel-body"></div>
+    </div>
+  </div>
+
+  <!-- ═══ STAF TAB ════════════════════════════════════════════════════════ -->
+  <div class="tab-content" id="content-staf">
+    <div class="filter-bar">
+      <input class="search-input" type="search" placeholder="Zoek op naam..." id="staf-zoek">
+      <span class="filter-count" id="staf-count"></span>
+      <button class="btn-primary">+ Nieuw staflid</button>
+    </div>
+    <div class="staf-tabel-wrap">
+      <div class="staf-header">
+        <div></div><div>Naam</div><div>Team + rol</div><div>Memo</div><div>Speelt</div><div style="text-align:center">Actief</div><div></div>
+      </div>
+      <div id="staf-tabel-body"></div>
+    </div>
+  </div>
+</template>
+
+<script type="module">
+import { SPELERS, STAF, TEAMS, getTeam, getMemosVoor, leeftijdKlasse } from '../shared/mock-data.js';
+import {
+  showSpelerHoverKaart, hideSpelerHoverKaart,
+  showStafHoverKaart,   hideStafHoverKaart,
+  openSpelerDialog, openStafDialog,
+  openNieuweMemoDialog,
+} from '../shared/interactions.js';
+import { shell } from '../shared/shell.js';
+import '../shared/memo-drawer.js';
+
+shell('app', { activePage: 'personen', memoCount: 3 });
+
+// ── State ──────────────────────────────────────────────────────────────────────
+// Werkkopieën zodat inline-edits in-memory worden bijgehouden
+const spelers = SPELERS.map(s => ({ ...s }));
+const staf    = STAF.map(s => ({ ...s }));
+
+let spelerFilter = '';  // statusfilter
+let spelerZoek   = '';  // zoekterm
+
+// ── Helpers ────────────────────────────────────────────────────────────────────
+const TEAM_NAMEN = Object.fromEntries(TEAMS.map(t => [t.id, t.naam]));
+const TEAM_KLEUREN = Object.fromEntries(TEAMS.map(t => [t.id, t.kleur]));
+
+const STATUSSEN = [
+  { code: 'BESCHIKBAAR', label: 'Beschikbaar', kleur: '#22c55e',  css: 'beschikbaar' },
+  { code: 'TWIJFELT',    label: 'Twijfelt',    kleur: '#f59e0b',  css: 'twijfelt'    },
+  { code: 'GEBLESSEERD', label: 'Geblesseerd', kleur: '#f97316',  css: 'geblesseerd' },
+  { code: 'GAAT_STOPPEN',label: 'Gaat stoppen',kleur: '#ef4444',  css: 'stopt'       },
+  { code: 'NIEUW',       label: 'Nieuw',       kleur: '#3b82f6',  css: 'nieuw'       },
+  { code: 'AR',          label: 'Reserve',     kleur: '#6b7280',  css: 'reserve'     },
+];
+
+function statusInfo(code) {
+  return STATUSSEN.find(s => s.code === code) ?? STATUSSEN[0];
+}
+
+function rij_css(code) {
+  const map = { TWIJFELT:'st-twijfelt', GAAT_STOPPEN:'st-stopt', NIEUW:'st-nieuw', AR:'st-ar', GEBLESSEERD:'st-geblesseerd' };
+  return map[code] ?? '';
+}
+
+function catKleur(kleur) {
+  const map = { rood:'#dc2626', oranje:'#f97316', geel:'#eab308', groen:'#047857', blauw:'#1d4ed8', senior:'#94a3b8', paars:'#7e22ce' };
+  return map[kleur] ?? '#666';
+}
+
+function vollNaam(s) {
+  return [s.roepnaam, s.tussenvoegsel, s.achternaam].filter(Boolean).join(' ');
+}
+
+function leeftBg(leeftijd) {
+  const k = Math.floor(leeftijd);
+  return `var(--leeftijd-${Math.min(Math.max(k, 4), 19)})`;
+}
+
+function leeftDeel(leeftijd) {
+  const g = Math.floor(leeftijd);
+  const d = (leeftijd - g).toFixed(2).slice(1);
+  return { geheel: g, dec: d };
+}
+
+function teamNaam(id) { return id ? (TEAM_NAMEN[id] ?? id) : null; }
+function teamKleur(id) { return id ? (TEAM_KLEUREN[id] ?? 'senior') : null; }
+
+// ── Popover-systeem ─────────────────────────────────────────────────────────
+let _actievePopover = null;
+
+function sluitAllePopovers() {
+  document.querySelectorAll('.popover.visible, .indeling-popover.visible').forEach(p => {
+    p.classList.remove('visible');
+  });
+  _actievePopover = null;
+}
+
+function positioneerPopover(pop, trigger) {
+  const rect = trigger.getBoundingClientRect();
+  pop.style.top  = `${rect.bottom + 4}px`;
+  pop.style.left = `${rect.left}px`;
+  // Zorg dat popover binnen viewport blijft
+  requestAnimationFrame(() => {
+    const pr = pop.getBoundingClientRect();
+    if (pr.right > window.innerWidth - 8) {
+      pop.style.left = `${window.innerWidth - pr.width - 8}px`;
+    }
+    if (pr.bottom > window.innerHeight - 8) {
+      pop.style.top = `${rect.top - pr.height - 4}px`;
+    }
+  });
+}
+
+function openPopover(pop, trigger) {
+  if (_actievePopover && _actievePopover !== pop) {
+    _actievePopover.classList.remove('visible');
+  }
+  document.body.appendChild(pop);
+  positioneerPopover(pop, trigger);
+  pop.classList.add('visible');
+  _actievePopover = pop;
+}
+
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.status-trigger, .indeling-chip, .indeling-leeg')) {
+    sluitAllePopovers();
+  }
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') sluitAllePopovers();
+});
+
+// ── Status-popover bouw ───────────────────────────────────────────────────────
+function maakStatusPopover(speler, onKies) {
+  const pop = document.createElement('div');
+  pop.className = 'popover';
+  pop.innerHTML = STATUSSEN.map(s => `
+    <button class="popover-item${speler.status === s.code ? ' actief' : ''}" data-code="${s.code}">
+      <span class="p-dot" style="background:${s.kleur}"></span> ${s.label}
+    </button>`).join('');
+  pop.querySelectorAll('[data-code]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      onKies(btn.dataset.code);
+      sluitAllePopovers();
+    });
+  });
+  return pop;
+}
+
+// ── Indeling-popover bouw ─────────────────────────────────────────────────────
+function maakIndelingPopover(speler, onKies) {
+  const regulier = TEAMS.filter(t => !t.sel);
+  const selecties = TEAMS.filter(t => t.sel);
+
+  const pop = document.createElement('div');
+  pop.className = 'indeling-popover';
+
+  let html = `<button class="popover-item" data-teamid="" style="font-style:italic;color:var(--text-tertiary)">— geen indeling —</button>`;
+  html += `<div class="groep-label">Teams</div>`;
+  html += regulier.map(t => `
+    <button class="popover-item${speler.ingedeeldTeam === t.id ? ' actief' : ''}" data-teamid="${t.id}">
+      <span class="p-dot" style="background:${catKleur(t.kleur)}"></span> ${t.naam}
+    </button>`).join('');
+  if (selecties.length) {
+    html += `<div class="groep-label">Selecties</div>`;
+    html += selecties.map(t => `
+      <button class="popover-item${speler.ingedeeldTeam === t.id ? ' actief' : ''}" data-teamid="${t.id}">
+        <span class="p-dot" style="background:${catKleur(t.kleur)}"></span> ${t.naam}
+        <span style="font-size:8px;padding:1px 4px;border-radius:3px;background:rgba(59,130,246,.15);color:#60a5fa;font-weight:700;margin-left:auto">SEL</span>
+      </button>`).join('');
+  }
+  pop.innerHTML = html;
+
+  pop.querySelectorAll('[data-teamid]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      onKies(btn.dataset.teamid || null);
+      sluitAllePopovers();
+    });
+  });
+  return pop;
+}
+
+// ── Render: speler-rij ────────────────────────────────────────────────────────
+function renderSpelerRij(speler) {
+  const si = statusInfo(speler.status);
+  const tn = teamNaam(speler.huidigTeam);
+  const ind = speler.ingedeeldTeam ? teamNaam(speler.ingedeeldTeam) : null;
+  const { geheel, dec } = leeftDeel(speler.leeftijd);
+  const naam = vollNaam(speler);
+
+  const rij = document.createElement('div');
+  rij.className = `tabel-rij ${rij_css(speler.status)}`;
+  rij.dataset.spelerId = speler.id;
+
+  // Avatar
+  const avatarDiv = document.createElement('div');
+  avatarDiv.className = `sq-av${speler.geslacht === 'V' ? ' vrouw' : ''}`;
+  if (speler.fotoUrl) {
+    const img = document.createElement('img');
+    img.src = speler.fotoUrl; img.alt = naam;
+    avatarDiv.appendChild(img);
+  } else {
+    avatarDiv.style.cssText = 'display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:rgba(255,255,255,.2);background:var(--surface-card)';
+    avatarDiv.textContent = speler.roepnaam.charAt(0);
+  }
+  if (speler.status === 'NIEUW') {
+    const spark = document.createElement('div');
+    spark.className = 'nieuw-sparkle';
+    spark.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 1l2 9 9 2-9 2-2 9-2-9-9-2 9-2z"/></svg>';
+    avatarDiv.appendChild(spark);
+  }
+
+  // Naam
+  const naamDiv = document.createElement('div');
+  naamDiv.className = 'nm';
+  naamDiv.textContent = naam;
+  naamDiv.addEventListener('mouseenter', (e) => showSpelerHoverKaart(speler, e.clientX, e.clientY));
+  naamDiv.addEventListener('mousemove',  (e) => showSpelerHoverKaart(speler, e.clientX, e.clientY));
+  naamDiv.addEventListener('mouseleave', () => hideSpelerHoverKaart());
+  naamDiv.addEventListener('click', () => { hideSpelerHoverKaart(); openSpelerDialog(speler.id); });
+
+  // Status-trigger
+  const statusEl = document.createElement('span');
+  statusEl.className = `status-trigger ${si.css}`;
+  statusEl.innerHTML = `<span class="s-dot"></span> ${si.label}`;
+  statusEl.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const pop = maakStatusPopover(speler, (code) => {
+      speler.status = code;
+      herRenderSpelerRij(rij, speler);
+    });
+    openPopover(pop, statusEl);
+  });
+
+  // Huidig team
+  const huidigDiv = document.createElement('div');
+  huidigDiv.style.cssText = 'font-size:12px;color:var(--text-secondary)';
+  huidigDiv.textContent = tn ?? '—';
+
+  // Indeling
+  const indelingContainer = document.createElement('div');
+  renderIndelingCell(indelingContainer, speler);
+
+  // Memo
+  const memoDiv = document.createElement('div');
+  renderMemoCel(memoDiv, speler);
+
+  // Gezien
+  const gezienBtn = document.createElement('button');
+  gezienBtn.className = `gezien-btn ${speler.gezien ? 'ja' : 'nee'}`;
+  gezienBtn.textContent = '✓';
+  gezienBtn.title = speler.gezien ? 'Gezien — klik om te wisselen' : 'Niet gezien — klik om te wisselen';
+  gezienBtn.addEventListener('click', () => {
+    speler.gezien = !speler.gezien;
+    gezienBtn.className = `gezien-btn ${speler.gezien ? 'ja' : 'nee'}`;
+    gezienBtn.title = speler.gezien ? 'Gezien — klik om te wisselen' : 'Niet gezien — klik om te wisselen';
+  });
+
+  // Leeftijd
+  const leeftDiv = document.createElement('div');
+  leeftDiv.className = 'leeft-col';
+  leeftDiv.style.background = leeftBg(speler.leeftijd);
+  leeftDiv.innerHTML = `<span class="lb">${geheel}</span><span class="ld">${dec}</span>`;
+
+  // Memo-actie knop
+  const memoActieBtn = document.createElement('button');
+  memoActieBtn.className = 'memo-actie-btn';
+  memoActieBtn.title = 'Nieuwe memo';
+  memoActieBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/><line x1="12" y1="8" x2="12" y2="8"/></svg>`;
+  memoActieBtn.addEventListener('click', () => {
+    openNieuweMemoDialog({
+      context: { type: 'SPELER', id: speler.id, label: naam },
+      onCreate: (m) => { console.log('[mock] nieuwe memo:', m); }, // eslint-disable-line no-console
+    });
+  });
+
+  rij.appendChild(avatarDiv);
+  rij.appendChild(naamDiv);
+  rij.appendChild(statusEl);
+  rij.appendChild(huidigDiv);
+  rij.appendChild(indelingContainer);
+  rij.appendChild(memoDiv);
+  rij.appendChild(gezienBtn);
+  rij.appendChild(leeftDiv);
+  rij.appendChild(memoActieBtn);
+
+  return rij;
+}
+
+function renderIndelingCell(container, speler) {
+  container.innerHTML = '';
+  const ind = speler.ingedeeldTeam;
+  const kl  = teamKleur(ind);
+  const nm  = teamNaam(ind);
+
+  if (ind) {
+    const chip = document.createElement('span');
+    chip.className = 'indeling-chip';
+    chip.innerHTML = `<span class="i-dot" style="background:${catKleur(kl)}"></span>${nm}<button class="i-remove" title="Verwijder indeling">×</button>`;
+
+    chip.querySelector('.i-remove').addEventListener('click', (e) => {
+      e.stopPropagation();
+      speler.ingedeeldTeam = null;
+      renderIndelingCell(container, speler);
+    });
+    chip.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const pop = maakIndelingPopover(speler, (teamId) => {
+        speler.ingedeeldTeam = teamId;
+        renderIndelingCell(container, speler);
+      });
+      openPopover(pop, chip);
+    });
+    container.appendChild(chip);
+  } else {
+    const btn = document.createElement('button');
+    btn.className = 'indeling-leeg';
+    btn.textContent = '+';
+    btn.title = 'Indelen';
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const pop = maakIndelingPopover(speler, (teamId) => {
+        speler.ingedeeldTeam = teamId;
+        renderIndelingCell(container, speler);
+      });
+      openPopover(pop, btn);
+    });
+    container.appendChild(btn);
+  }
+}
+
+function renderMemoCel(cel, speler) {
+  cel.innerHTML = '';
+  const memos = getMemosVoor('SPELER', speler.id);
+  if (memos.length === 0) {
+    cel.innerHTML = `<span class="memo-cell geen">—</span>`;
+    return;
+  }
+  // Hoogste prioriteit = eerst RISICO, dan OPEN, dan IN_BESPREKING, dan OPGELOST
+  const statusCssMap = { OPEN:'open', IN_BESPREKING:'bespreking', RISICO:'risico', OPGELOST:'opgelost' };
+  const icoonMap = { open:'●', bespreking:'◐', risico:'⚠', opgelost:'✓' };
+  const labelMap = { open:'Open', bespreking:'Bespreking', risico:'Risico', opgelost:'Opgelost' };
+  const statusPrio = ['RISICO', 'OPEN', 'IN_BESPREKING', 'OPGELOST'];
+  const hoogste = statusPrio.find(s => memos.some(m => m.status === s)) ?? 'OPEN';
+  const css = statusCssMap[hoogste];
+  const mc = document.createElement('div');
+  mc.className = `memo-cell ${css}`;
+  mc.innerHTML = `<span class="icn">${icoonMap[css]}</span>${labelMap[css]}`;
+  if (memos.length > 1) mc.innerHTML += ` <span style="font-size:9px;opacity:.6">(${memos.length})</span>`;
+  cel.appendChild(mc);
+}
+
+function herRenderSpelerRij(rij, speler) {
+  const si = statusInfo(speler.status);
+  // Update klasse op rij
+  rij.className = `tabel-rij ${rij_css(speler.status)}`;
+  // Update status-trigger
+  const st = rij.querySelector('.status-trigger');
+  if (st) {
+    st.className = `status-trigger ${si.css}`;
+    st.querySelector('.s-dot').style.background = '';
+    st.childNodes[0].textContent = ''; // dot heeft background via css class
+    // Herplaats tekst
+    st.innerHTML = `<span class="s-dot"></span> ${si.label}`;
+    // Opnieuw event koppelen
+    st.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const pop = maakStatusPopover(speler, (code) => {
+        speler.status = code;
+        herRenderSpelerRij(rij, speler);
+      });
+      openPopover(pop, st);
+    });
+  }
+}
+
+// ── Render: staf-rij ──────────────────────────────────────────────────────────
+function renderStafRij(lid) {
+  const rij = document.createElement('div');
+  rij.className = `staf-tabel-rij${lid.actief === false ? ' inactief' : ''}`;
+  rij.dataset.stafId = lid.id;
+
+  // Avatar
+  const av = document.createElement('div');
+  av.className = 'staf-av';
+  if (lid.fotoUrl) {
+    const img = document.createElement('img');
+    img.src = lid.fotoUrl; img.alt = lid.naam;
+    av.appendChild(img);
+  } else {
+    const ini = document.createElement('span');
+    ini.className = 'initialen';
+    ini.textContent = lid.naam.split(' ').filter(w => /[A-Z]/.test(w[0])).slice(0, 2).map(w => w[0]).join('');
+    av.appendChild(ini);
+  }
+
+  // Naam
+  const naamDiv = document.createElement('div');
+  naamDiv.className = 'nm';
+  naamDiv.textContent = lid.naam;
+  naamDiv.addEventListener('mouseenter', (e) => showStafHoverKaart(lid, e.clientX, e.clientY));
+  naamDiv.addEventListener('mousemove',  (e) => showStafHoverKaart(lid, e.clientX, e.clientY));
+  naamDiv.addEventListener('mouseleave', () => hideStafHoverKaart());
+  naamDiv.addEventListener('click', () => { hideStafHoverKaart(); openStafDialog(lid.id); });
+
+  // Teams-col
+  const teamsCol = document.createElement('div');
+  teamsCol.className = 'teams-col';
+  teamsCol.innerHTML = lid.koppelingen.map(k => `
+    <div class="team-entry">
+      <span class="team-ref"><span class="dot" style="background:${catKleur(k.teamKleur)};display:inline-block;width:5px;height:5px;border-radius:50%;margin-right:3px"></span>${k.teamNaam}</span>
+      <span class="rol-mini" style="font-size:10px;color:var(--text-tertiary);margin-left:4px">${k.rol}</span>
+    </div>`).join('');
+
+  // Memo
+  const memoDiv = document.createElement('div');
+  if (lid.memoCount > 0) {
+    memoDiv.innerHTML = `<span class="memo-ind open" style="cursor:pointer">● Open</span>`;
+    memoDiv.querySelector('.memo-ind').addEventListener('click', () => openStafDialog(lid.id));
+  } else {
+    memoDiv.innerHTML = `<span class="memo-ind geen">—</span>`;
+  }
+
+  // Speelt
+  const speeltDiv = document.createElement('div');
+  speeltDiv.innerHTML = lid.isSpeler
+    ? `<span class="speler-badge" style="font-size:11px;color:var(--ow-accent)">Ja</span>`
+    : `<span class="no-badge">—</span>`;
+
+  // Actief-toggle
+  const toggleWrap = document.createElement('div');
+  toggleWrap.style.textAlign = 'center';
+  const actief = lid.actief !== false;
+  const toggle = document.createElement('button');
+  toggle.className = `actief-toggle ${actief ? 'aan' : 'uit'}`;
+  toggle.innerHTML = `<span class="knob"></span>`;
+  toggle.addEventListener('click', () => {
+    lid.actief = !lid.actief;
+    toggle.className = `actief-toggle ${lid.actief ? 'aan' : 'uit'}`;
+    rij.classList.toggle('inactief', !lid.actief);
+  });
+  toggleWrap.appendChild(toggle);
+
+  // Memo-actie knop
+  const memoActieBtn = document.createElement('button');
+  memoActieBtn.className = 'memo-actie-btn';
+  memoActieBtn.title = 'Nieuwe memo';
+  memoActieBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>`;
+  memoActieBtn.addEventListener('click', () => {
+    openNieuweMemoDialog({
+      context: { type: 'STAF', id: lid.id, label: lid.naam },
+      onCreate: (m) => { console.log('[mock] nieuwe memo:', m); }, // eslint-disable-line no-console
+    });
+  });
+
+  rij.appendChild(av);
+  rij.appendChild(naamDiv);
+  rij.appendChild(teamsCol);
+  rij.appendChild(memoDiv);
+  rij.appendChild(speeltDiv);
+  rij.appendChild(toggleWrap);
+  rij.appendChild(memoActieBtn);
+
+  return rij;
+}
+
+// ── Render speler-tabel ───────────────────────────────────────────────────────
+function renderSpelers() {
+  const body = document.getElementById('speler-tabel-body');
+  if (!body) return;
+
+  const gefilterd = spelers.filter(s => {
+    const matchStatus = !spelerFilter || s.status === spelerFilter;
+    const naam = vollNaam(s).toLowerCase();
+    const matchZoek = !spelerZoek || naam.includes(spelerZoek.toLowerCase());
+    return matchStatus && matchZoek;
+  });
+
+  body.innerHTML = '';
+  gefilterd.forEach(s => body.appendChild(renderSpelerRij(s)));
+
+  const count = document.getElementById('speler-count');
+  if (count) count.textContent = `${gefilterd.length} speler${gefilterd.length !== 1 ? 's' : ''}`;
+}
+
+// ── Render staf-tabel ─────────────────────────────────────────────────────────
+function renderStaf() {
+  const body = document.getElementById('staf-tabel-body');
+  if (!body) return;
+
+  const zoek = document.getElementById('staf-zoek')?.value.toLowerCase() ?? '';
+  const gefilterd = staf.filter(s => !zoek || s.naam.toLowerCase().includes(zoek));
+
+  body.innerHTML = '';
+  gefilterd.forEach(s => body.appendChild(renderStafRij(s)));
+
+  const count = document.getElementById('staf-count');
+  if (count) count.textContent = `${gefilterd.length} staflid${gefilterd.length !== 1 ? 'den' : ''}`;
+}
+
+// ── Event-binding ─────────────────────────────────────────────────────────────
+function bindEvents() {
+  // Tab-wisseling
+  document.querySelectorAll('.sub-nav-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const naam = tab.dataset.tab;
+      document.querySelectorAll('.sub-nav-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('visible'));
+      tab.classList.add('active');
+      document.getElementById(`content-${naam}`)?.classList.add('visible');
+      if (naam === 'staf') renderStaf();
+    });
+  });
+
+  // Speler zoekbalk
+  document.getElementById('speler-zoek')?.addEventListener('input', (e) => {
+    spelerZoek = e.target.value;
+    renderSpelers();
+  });
+
+  // Speler status-filterchips
+  document.querySelectorAll('#speler-filter-bar .filter-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('#speler-filter-bar .filter-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      spelerFilter = chip.dataset.status;
+      renderSpelers();
+    });
+  });
+
+  // Staf zoekbalk
+  document.getElementById('staf-zoek')?.addEventListener('input', renderStaf);
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+// shell() vult #shell-content synchroon, module-script draait daarna
+bindEvents();
+renderSpelers();
+</script>
+
+</body>
+</html>

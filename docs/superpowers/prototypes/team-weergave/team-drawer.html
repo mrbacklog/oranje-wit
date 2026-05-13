@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Team-drawer · lijst + detail-panel</title>
+  <link rel="stylesheet" href="tokens.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { padding: 0; background: #050507; }
+    .workbench { display: flex; height: 100vh; min-height: 760px; }
+
+    .team-drawer {
+      width: var(--team-drawer-width);
+      background: var(--surface-page);
+      border-right: 1px solid var(--border-light);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      font-family: var(--font-body);
+    }
+
+    /* ─── Header ──────────────────────────────────────────────── */
+    .td-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 14px 10px;
+      border-bottom: 1px solid var(--border-light);
+      flex-shrink: 0;
+    }
+    .td-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--text-tertiary);
+    }
+    .td-title .count { color: var(--text-primary); font-weight: 800; margin-left: 6px; }
+    .icon-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 26px; height: 26px; border-radius: 5px;
+      border: 1px solid var(--border-default); background: var(--surface-card);
+      color: var(--text-tertiary); cursor: pointer; padding: 0;
+    }
+    .icon-btn:hover { color: var(--text-primary); }
+    .icon-btn svg { width: 13px; height: 13px; }
+
+    /* ─── Groep-header ────────────────────────────────────────── */
+    .td-group {
+      padding: 12px 10px 4px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--text-tertiary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .td-group::before {
+      content: '';
+      width: 10px; height: 3px;
+      border-radius: 1.5px;
+      background: var(--group-color, var(--cat-blauw));
+    }
+    .td-group.cat-rood::before   { background: var(--cat-rood); }
+    .td-group.cat-oranje::before { background: var(--cat-oranje); }
+    .td-group.cat-geel::before   { background: var(--cat-geel); }
+    .td-group.cat-groen::before  { background: var(--cat-groen); }
+    .td-group.cat-blauw::before  { background: var(--cat-blauw); }
+    .td-group.cat-senior::before { background: var(--cat-senior); }
+
+    /* ─── Team-rij stat-uitbreiding (♀ + ♂ counts, USS, gem.) ── */
+    .team-rij .tr-stats {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+    }
+    .team-rij .tr-stats .pink { color: var(--sexe-v); font-weight: 700; }
+    .team-rij .tr-stats .blue { color: var(--sexe-h); font-weight: 700; }
+    .team-rij .tr-stats .uss  { color: var(--text-secondary); font-weight: 700; }
+    .team-rij .tr-stats .gem  { color: var(--text-secondary); font-weight: 700; }
+
+    /* ─── Lijst ───────────────────────────────────────────────── */
+    .td-list {
+      flex: 1;
+      padding: 4px 8px 12px;
+    }
+
+    /* ─── Selectie-blok ───────────────────────────────────────── */
+    .td-selectie {
+      position: relative;
+      padding: 26px 8px 8px;
+      margin: 6px 2px 8px;
+      border: 1px solid var(--selectie-border);
+      border-radius: 10px;
+      background: var(--selectie-bg);
+    }
+    .td-selectie::before {
+      content: attr(data-naam);
+      position: absolute;
+      top: 6px; left: 10px;
+      font-size: 9px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--selectie-accent);
+    }
+    .td-selectie-badge {
+      position: absolute;
+      top: 4px; right: 6px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: var(--selectie-badge-bg);
+      color: var(--selectie-badge-text);
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    /* Gebundelde selectie met ♀♂ totalen in header */
+    .td-sel-header-stats {
+      position: absolute;
+      top: 5px;
+      right: 50px;
+      display: flex;
+      gap: 6px;
+      font-size: 9px;
+      font-weight: 700;
+    }
+    .td-sel-header-stats .pink { color: rgba(236,72,153,.7); }
+    .td-sel-header-stats .blue { color: rgba(96,165,250,.7); }
+
+    /* ─── Footer ──────────────────────────────────────────────── */
+    .td-footer {
+      padding: 12px 14px;
+      border-top: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+    .td-footer .stat { display: inline-flex; align-items: center; gap: 5px; font-weight: 600; }
+    .td-footer .stat .val { color: var(--text-primary); font-weight: 700; font-variant-numeric: tabular-nums; }
+
+    .workbench-area {
+      flex: 1; background: var(--surface-sunken); padding: 40px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted); font-size: 14px;
+    }
+
+    /* ─── DEMO: 2 drawers naast elkaar ────────────────────────── */
+    .demo-label {
+      position: absolute;
+      top: 8px; left: 8px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: rgba(255,107,0,.12);
+      color: var(--ow-accent);
+      font-size: 9px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      z-index: 10;
+    }
+    .drawers-demo {
+      display: flex;
+      height: 100vh;
+      min-height: 760px;
+    }
+    .drawer-col {
+      position: relative;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="drawers-demo">
+    <!-- ═══ LIJST-MODUS ═══ -->
+    <div class="drawer-col">
+      <span class="demo-label">Lijst-modus</span>
+      <aside class="team-drawer">
+        <div class="td-header">
+          <div class="td-title">Teams <span class="count">11</span></div>
+          <div style="display: flex; gap: 4px;">
+            <button class="icon-btn" title="Nieuw team">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+            </button>
+            <button class="icon-btn" title="Sluiten">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="td-list ow-scroll">
+          <!-- Selectie niet-gebundeld -->
+          <div class="td-selectie" data-naam="Selectie A · U17">
+            <span class="td-selectie-badge">SEL</span>
+            <div class="td-sel-header-stats"><span class="pink">♀ 7</span><span class="blue">♂ 8</span></div>
+            <div class="team-rij cat-rood active">
+              <div class="tr-naam">A1</div>
+              <div class="tr-stats"><span class="pink">♀4</span><span class="blue">♂4</span></div>
+              <span class="tk-val-dot ok"></span>
+            </div>
+            <div class="team-rij cat-rood">
+              <div class="tr-naam">A2</div>
+              <div class="tr-stats"><span class="pink">♀3</span><span class="blue">♂4</span></div>
+              <span class="tk-val-dot warn"></span>
+            </div>
+          </div>
+
+          <!-- Selectie gebundeld -->
+          <div class="td-selectie" data-naam="Selectie B · U15" style="background: rgba(59,130,246,.08);">
+            <span class="td-selectie-badge">SEL ⇌</span>
+            <div class="td-sel-header-stats"><span class="pink">♀ 7</span><span class="blue">♂ 8</span></div>
+            <div class="team-rij cat-oranje">
+              <div class="tr-naam">B1 + B2 · pool</div>
+              <span class="tr-count">15</span>
+              <span class="tk-val-dot ok"></span>
+            </div>
+          </div>
+
+          <div class="td-group cat-geel">Geel · 10-12</div>
+          <div class="team-rij cat-geel">
+            <div class="tr-naam">E1</div>
+            <div class="tr-stats"><span class="pink">♀3</span><span class="blue">♂0</span><span class="gem">11.2</span></div>
+            <span class="tk-val-dot warn"></span>
+          </div>
+          <div class="team-rij cat-geel">
+            <div class="tr-naam">E2</div>
+            <div class="tr-stats"><span class="pink">♀2</span><span class="blue">♂2</span><span class="gem">11.5</span></div>
+            <span class="tk-val-dot ok"></span>
+          </div>
+
+          <div class="td-group cat-groen">Groen · 8-9</div>
+          <div class="team-rij cat-groen">
+            <div class="tr-naam">D1</div>
+            <span class="tr-count">4</span>
+            <span class="tk-val-dot ok"></span>
+          </div>
+          <div class="team-rij cat-groen">
+            <div class="tr-naam">D2</div>
+            <span class="tr-count">2</span>
+            <span class="tk-val-dot err"></span>
+          </div>
+
+          <div class="td-group cat-blauw">Blauw · 6-7</div>
+          <div class="team-rij cat-blauw">
+            <div class="tr-naam">F1</div>
+            <span class="tr-count">1</span>
+            <span class="tk-val-dot err"></span>
+          </div>
+
+          <div class="td-group cat-senior">Senioren · 19+</div>
+          <div class="team-rij cat-senior">
+            <div class="tr-naam">Senioren A</div>
+            <div class="tr-stats"><span class="pink">♀6</span><span class="blue">♂6</span><span class="uss">USS 52</span></div>
+            <span class="tk-val-dot ok"></span>
+          </div>
+          <div class="team-rij cat-senior">
+            <div class="tr-naam">Senioren B</div>
+            <div class="tr-stats"><span class="pink">♀5</span><span class="blue">♂4</span></div>
+            <span class="tk-val-dot warn"></span>
+          </div>
+        </div>
+
+        <div class="td-footer">
+          <span class="stat">Spelers ingedeeld <span class="val">68 / 92</span></span>
+        </div>
+      </aside>
+    </div>
+
+    <!-- ═══ DETAIL-PANEL MODUS ═══ -->
+    <div class="drawer-col" style="margin-left: 2px;">
+      <span class="demo-label">Detail-panel (team geselecteerd)</span>
+      <aside class="team-drawer" style="width: 290px;">
+        <div class="td-header">
+          <button class="icon-btn" title="Terug naar lijst" style="margin-right: 8px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+          </button>
+          <div class="td-title" style="flex: 1;">A1 · senioren</div>
+          <span class="tk-val-dot warn" style="width: 10px; height: 10px;"></span>
+        </div>
+
+        <div class="td-list ow-scroll" style="padding: 10px 12px;">
+
+          <!-- Platte statistiekstrip -->
+          <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; border: 1px solid rgba(255,107,0,.35); border-radius: 8px; background: rgba(255,107,0,.05); margin-bottom: 14px; position: relative;">
+            <div style="position: absolute; left: 0; top: 10px; bottom: 10px; width: 3px; border-radius: 0 2px 2px 0; background: var(--cat-rood);"></div>
+            <span style="flex: 1; font-size: 13px; font-weight: 700; color: var(--text-primary); padding-left: 8px;">A1</span>
+            <span style="font-size: 10px; color: var(--sexe-v); font-weight: 700;">♀4</span>
+            <span style="font-size: 10px; color: var(--sexe-h); font-weight: 700;">♂4</span>
+            <span style="font-size: 10px; color: var(--text-secondary); font-weight: 700;">USS 45</span>
+            <span style="font-size: 10px; color: var(--text-secondary); font-weight: 700;">17.4j</span>
+          </div>
+
+          <!-- INRICHTING SECTIE -->
+          <div style="font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-tertiary); margin-bottom: 10px;">Inrichting</div>
+
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 10px; color: var(--text-tertiary); margin-bottom: 6px; font-weight: 600;">Categorie</div>
+            <div style="display: flex; gap: 4px;">
+              <button style="flex: 1; padding: 6px; border-radius: 5px; border: 1px solid var(--border-default); background: var(--surface-card); color: var(--text-tertiary); font-size: 10px; font-weight: 600; cursor: pointer; font-family: inherit;">Senioren</button>
+              <button style="flex: 1; padding: 6px; border-radius: 5px; border: 1px solid rgba(255,107,0,.45); background: rgba(255,107,0,.1); color: var(--ow-accent); font-size: 10px; font-weight: 700; cursor: pointer; font-family: inherit;">Jeugd A</button>
+              <button style="flex: 1; padding: 6px; border-radius: 5px; border: 1px solid var(--border-default); background: var(--surface-card); color: var(--text-tertiary); font-size: 10px; font-weight: 600; cursor: pointer; font-family: inherit;">Jeugd B</button>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <div style="font-size: 10px; color: var(--text-tertiary); margin-bottom: 6px; font-weight: 600;">Niveau</div>
+            <div style="display: flex; gap: 4px;">
+              <button style="flex: 1; padding: 6px; border-radius: 5px; border: 1px solid var(--border-default); background: var(--surface-card); color: var(--text-tertiary); font-size: 10px; font-weight: 600; cursor: pointer; font-family: inherit;">U15</button>
+              <button style="flex: 1; padding: 6px; border-radius: 5px; border: 1px solid rgba(255,107,0,.45); background: rgba(255,107,0,.1); color: var(--ow-accent); font-size: 10px; font-weight: 700; cursor: pointer; font-family: inherit;">U17</button>
+              <button style="flex: 1; padding: 6px; border-radius: 5px; border: 1px solid var(--border-default); background: var(--surface-card); color: var(--text-tertiary); font-size: 10px; font-weight: 600; cursor: pointer; font-family: inherit;">U19</button>
+            </div>
+            <div style="font-size: 9px; color: var(--text-muted); margin-top: 4px;">8-tal</div>
+          </div>
+
+          <div style="height: 1px; background: var(--border-light); margin: 14px 0;"></div>
+
+          <!-- VALIDATIE SECTIE -->
+          <div style="font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-tertiary); margin-bottom: 10px;">Validatie</div>
+
+          <div class="val-item warn" style="margin-bottom: 6px; padding: 8px 10px;">
+            <div class="icn" style="width: 14px; height: 14px; font-size: 9px;">⚠</div>
+            <div class="body">
+              <div class="regel" style="font-size: 11px;">Onder ideaalgrootte</div>
+              <div style="display: flex; gap: 6px; margin-top: 2px;">
+                <span style="font-size: 8px; padding: 1px 5px; border-radius: 3px; background: var(--surface-card); color: var(--text-tertiary); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">TC</span>
+              </div>
+              <div class="desc" style="font-size: 10px;">8 spelers, ideaal 10</div>
+            </div>
+          </div>
+          <div class="val-item warn" style="margin-bottom: 6px; padding: 8px 10px;">
+            <div class="icn" style="width: 14px; height: 14px; font-size: 9px;">⚠</div>
+            <div class="body">
+              <div class="regel" style="font-size: 11px;">Gem. leeftijd hoog</div>
+              <div style="display: flex; gap: 6px; margin-top: 2px;">
+                <span style="font-size: 8px; padding: 1px 5px; border-radius: 3px; background: var(--surface-card); color: var(--text-tertiary); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">KNKV</span>
+              </div>
+              <div class="desc" style="font-size: 10px;">17.4 dicht bij max 17.5</div>
+            </div>
+          </div>
+          <div class="val-item ok" style="margin-bottom: 6px; padding: 8px 10px;">
+            <div class="icn" style="width: 14px; height: 14px; font-size: 9px;">✓</div>
+            <div class="body">
+              <div class="regel" style="font-size: 11px;">Geslachtsverdeling oké</div>
+            </div>
+          </div>
+
+          <div style="height: 1px; background: var(--border-light); margin: 14px 0;"></div>
+
+          <!-- SELECTIE-KOPPELING SECTIE -->
+          <div style="font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-tertiary); margin-bottom: 10px;">Selectie-koppeling</div>
+
+          <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 8px;">
+            Gekoppeld aan: <span style="color: var(--text-primary); font-weight: 700;">A2</span>
+          </div>
+
+          <!-- Selectienaam -->
+          <div style="margin-bottom: 10px;">
+            <div style="font-size: 10px; color: var(--text-tertiary); margin-bottom: 4px; font-weight: 600;">Selectienaam</div>
+            <div style="display: flex; gap: 4px;">
+              <input type="text" value="Selectie A" style="flex: 1; padding: 5px 8px; border-radius: 5px; border: 1px solid var(--border-default); background: var(--surface-sunken); color: var(--text-primary); font-size: 11px; font-family: inherit;">
+              <button style="padding: 5px 10px; border-radius: 5px; border: 1px solid rgba(255,107,0,.45); background: rgba(255,107,0,.1); color: var(--ow-accent); font-size: 10px; font-weight: 700; cursor: pointer; font-family: inherit;">OK</button>
+            </div>
+            <div style="font-size: 9px; color: var(--text-muted); margin-top: 3px;">Leeg = A1 ↔ A2</div>
+          </div>
+
+          <!-- Bundeling toggle -->
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+            <div>
+              <div style="font-size: 10px; color: var(--text-secondary); font-weight: 600;">Gecombineerde spelerspool</div>
+              <div style="font-size: 9px; color: var(--text-muted); margin-top: 2px;">Dames en heren samen op één kaart</div>
+            </div>
+            <button style="padding: 4px 10px; border-radius: 5px; border: 1px solid var(--border-default); background: var(--surface-card); color: var(--text-tertiary); font-size: 10px; font-weight: 700; cursor: pointer; font-family: inherit;">Uit</button>
+          </div>
+
+          <!-- Ontkoppel knop -->
+          <button style="width: 100%; padding: 7px; border-radius: 5px; border: 1px solid rgba(220,38,38,.3); background: rgba(220,38,38,.06); color: #ef4444; font-size: 10px; font-weight: 700; cursor: pointer; font-family: inherit; margin-top: 6px;">Koppeling verwijderen</button>
+
+          <div style="height: 1px; background: var(--border-light); margin: 14px 0;"></div>
+
+          <!-- Verwijder + hernoem -->
+          <div style="display: flex; gap: 6px;">
+            <button style="flex: 1; padding: 7px; border-radius: 5px; border: 1px solid var(--border-default); background: var(--surface-card); color: var(--text-secondary); font-size: 10px; font-weight: 600; cursor: pointer; font-family: inherit;">Hernoemen</button>
+            <button style="flex: 1; padding: 7px; border-radius: 5px; border: 1px solid rgba(220,38,38,.3); background: rgba(220,38,38,.06); color: #ef4444; font-size: 10px; font-weight: 700; cursor: pointer; font-family: inherit;">Verwijderen</button>
+          </div>
+
+        </div>
+      </aside>
+    </div>
+
+    <div class="workbench-area">Werkbord-canvas (links: lijst-modus, rechts: detail-panel na selectie)</div>
+  </div>
+</body>
+</html>

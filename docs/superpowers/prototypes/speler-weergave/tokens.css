@@ -1,0 +1,406 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   Speler-weergave · Design Tokens
+   Traject: unificatie spelerweergaven TI Studio
+   Spec: docs/superpowers/specs/2026-04-15-speler-weergave-unificatie.md
+   ══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ─── Brand ────────────────────────────────────────────────────────── */
+  --ow-accent: #ff6b00;
+
+  /* ─── Neutraal / UI ────────────────────────────────────────────────── */
+  --bg-0: #0a0a0c;         /* deepest background */
+  --bg-1: #0f0f11;         /* raised panel */
+  --bg-2: #1a1a1e;         /* widget panel */
+  --border-0: #18181c;     /* subtle divider */
+  --border-1: #2a2a2e;     /* standard border */
+  --text-1: #f5f5f7;       /* primary text */
+  --text-2: #b8b8bd;       /* secondary text */
+  --text-3: #8a8a90;       /* tertiary text */
+  --text-muted: #555;      /* labels, placeholders */
+
+  /* ─── Sexe ─────────────────────────────────────────────────────────── */
+  --sexe-h: #2563eb;       /* heer — blue-600 */
+  --sexe-v: #d946ef;       /* dame — fuchsia-500 */
+
+  /* ─── Status (outline + text) ──────────────────────────────────────── */
+  --status-beschikbaar: #f5f5f7;       /* neutraal wit */
+  --status-beschikbaar-outline: rgba(255, 255, 255, .70);
+  --status-nieuw: #ffffff;              /* helder wit */
+  --status-nieuw-outline: rgba(255, 255, 255, .85);
+  --status-twijfelt: #fdba74;           /* orange-300 — lichter oranje */
+  --status-twijfelt-outline: rgba(253, 186, 116, .8);
+  --status-stopt: #dc2626;              /* red-600 — echt rood, minder magenta */
+  --status-stopt-outline: rgba(220, 38, 38, .75);
+  --status-ar: #94a3b8;                 /* slate-400 */
+  --status-ar-outline: rgba(148, 163, 184, .55);
+
+  /* ─── Validatie (team-level) ─────────────────────────────────────────── */
+  --val-ok:          #10b981;                      /* emerald-500 */
+  --val-ok-bg:       rgba(16, 185, 129, .08);
+  --val-ok-border:   rgba(16, 185, 129, .35);
+  --val-warn:        #f59e0b;                      /* amber-500 */
+  --val-warn-bg:     rgba(245, 158, 11, .08);
+  --val-warn-border: rgba(245, 158, 11, .40);
+  --val-err:         #ef4444;                      /* red-500 */
+  --val-err-bg:      rgba(239, 68, 68, .08);
+  --val-err-border:  rgba(239, 68, 68, .40);
+
+  /* ─── Memo-corner (post-it) ────────────────────────────────────────── */
+  --memo-open: #fde047;             /* yellow-300 */
+  --memo-bespreking: #facc15;       /* yellow-400 */
+  --memo-risico: #a16207;           /* yellow-700 */
+  --memo-opgelost: #44403c;         /* stone-700 */
+
+  /* Corner groottes per context */
+  --corner-compact: 13px;
+  --corner-normaal: 18px;
+  --corner-rijk: 22px;
+  --corner-hero: 36px;
+  --corner-hover: 28px;
+
+  /* ─── Leeftijdkleuren (19 jaren, diagonale 135° gradient) ───────────── */
+  --leeftijd-4:  #581c87;
+  --leeftijd-5:  linear-gradient(135deg, #581c87 0%, #581c87 70%, #1d4ed8 100%);
+  --leeftijd-6:  linear-gradient(135deg, #581c87 0%, #1d4ed8 30%, #1d4ed8 100%);
+  --leeftijd-7:  linear-gradient(135deg, #1d4ed8 0%, #1d4ed8 70%, #047857 100%);
+  --leeftijd-8:  linear-gradient(135deg, #1d4ed8 0%, #047857 30%, #047857 100%);
+  --leeftijd-9:  linear-gradient(135deg, #047857 0%, #047857 70%, #facc15 100%);
+  --leeftijd-10: linear-gradient(135deg, #047857 0%, #facc15 30%, #facc15 100%);
+  --leeftijd-11: #facc15;
+  --leeftijd-12: linear-gradient(135deg, #facc15 0%, #facc15 70%, #f97316 100%);
+  --leeftijd-13: linear-gradient(135deg, #facc15 0%, #f97316 30%, #f97316 100%);
+  --leeftijd-14: #f97316;
+  --leeftijd-15: linear-gradient(135deg, #f97316 0%, #f97316 70%, #dc2626 100%);
+  --leeftijd-16: linear-gradient(135deg, #f97316 0%, #dc2626 30%, #dc2626 100%);
+  --leeftijd-17: #dc2626;
+  --leeftijd-18: linear-gradient(135deg, #dc2626 0%, #dc2626 70%, #94a3b8 100%);
+  --leeftijd-19: linear-gradient(135deg, #cbd5e1 0%, #94a3b8 50%, #64748b 100%);
+
+  /* ─── USS hexagon — tier-chip stijl ────────────────────────────────── */
+  --uss-goud-border: rgba(255, 215, 0, .65);
+  --uss-goud-fill: #3a2e0a;
+  --uss-goud-text: #ffd700;
+
+  --uss-zilver-border: rgba(220, 220, 220, .6);
+  --uss-zilver-fill: #2a2a30;
+  --uss-zilver-text: #e5e7eb;
+
+  --uss-brons-border: rgba(205, 127, 50, .65);
+  --uss-brons-fill: #2e1e0c;
+  --uss-brons-text: #e8a957;
+
+  --uss-geen-border: rgba(255, 107, 0, .6);
+  --uss-geen-fill: #2a1a0a;
+  --uss-geen-text: #ff8c3a;
+
+  /* ─── Accenten (team-badges, bookmark-remnants) ────────────────────── */
+  --team-border: #2a2a2e;
+  --team-text: #b8b8bd;
+  --indeling-border: rgba(255, 107, 0, .4);
+  --indeling-bg: rgba(255, 107, 0, .12);
+  --indeling-text: #ff6b00;
+
+  /* ─── Typografie ───────────────────────────────────────────────────── */
+  --font-sans: -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* ─── Status-color variable (default = beschikbaar) ────────────────── */
+  --status-color: var(--status-beschikbaar-outline);
+
+  /* ─── Rij dimensies (normaal + rijk, identiek!) ────────────────────── */
+  --rij-width: 320px;
+  --rij-height: 52px;
+  --rij-avatar: 40px;
+  --rij-leeftcol: 40px;
+  --rij-gap: 10px;
+  --rij-padding-left: 0px;
+  --rij-border-radius: 6px;
+  --rij-border-width: 1.5px;
+
+  /* ─── Drawer ───────────────────────────────────────────────────────── */
+  --drawer-padding-x: 10px;
+  --drawer-scrollbar: 7px;
+  --drawer-width: calc(var(--rij-width) + var(--drawer-padding-x) * 2 + var(--drawer-scrollbar));
+}
+
+/* Status-overrides — werkt via CSS custom property inheritance naar sq-av::after */
+.st-nieuw    { --status-color: var(--status-nieuw-outline); }
+.st-twijfelt { --status-color: var(--status-twijfelt-outline); }
+.st-stopt    { --status-color: var(--status-stopt-outline); }
+.st-ar       { --status-color: var(--status-ar-outline); }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Shared primitives — importeer in elke prototype-file
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Globale box-sizing: border-box — zodat height/width inclusief border zijn */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* ─── Scroll utility (.ow-scroll) ──────────────────────────────────────
+   Nette dunne scrollbar voor drawers, lijsten en panelen.
+   Werkt in Firefox (scrollbar-width/color) én Webkit/Chromium.
+   Usage:
+     <div class="ow-scroll">…</div>
+     of
+     <div class="ow-scroll ow-scroll--hover">…</div>  (alleen zichtbaar bij hover)
+   ──────────────────────────────────────────────────────────────────── */
+.ow-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, .14) transparent;
+  scrollbar-gutter: stable;
+}
+.ow-scroll::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+.ow-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.ow-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, .14);
+  border-radius: 4px;
+  border: 1px solid transparent;
+  background-clip: padding-box;
+  transition: background 180ms;
+}
+.ow-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, .28);
+  background-clip: padding-box;
+}
+.ow-scroll::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Variant: alleen zichtbaar bij hover op de container (desktop) */
+.ow-scroll--hover {
+  scrollbar-color: transparent transparent;
+}
+.ow-scroll--hover::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+.ow-scroll--hover:hover {
+  scrollbar-color: rgba(255, 255, 255, .14) transparent;
+}
+.ow-scroll--hover:hover::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, .14);
+  background-clip: padding-box;
+}
+.ow-scroll--hover:hover::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, .28);
+}
+
+
+/* ─── Vierkante avatar met gender-L in hoek ──────────────────────────── */
+.sq-av {
+  --sexe: var(--sexe-h);
+  position: relative;
+  border-radius: 4px;
+  overflow: visible;
+  flex-shrink: 0;
+  background: var(--surface-card);
+  z-index: 1;
+}
+.sq-av.vrouw { --sexe: var(--sexe-v); }
+.sq-av img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 25%;
+  display: block;
+  border-radius: 4px;
+  filter: grayscale(1);
+}
+.sq-av::after {
+  /* Outline neemt status-kleur over van de container */
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--status-color);
+  border-radius: 4px;
+  pointer-events: none;
+  box-sizing: border-box;
+  z-index: 2;
+}
+.sq-av::before {
+  /* Heel subtiele sexe-tint over de hele (grayscale) foto */
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 3;
+  background: var(--sexe);
+  opacity: 0.15;
+  mix-blend-mode: color;
+}
+.sq-av.xl { border-radius: 6px; }
+.sq-av.xl img { border-radius: 6px; }
+.sq-av.xl::after { border-width: 3px; border-radius: 6px; }
+.sq-av.xl::before {
+  border-radius: inherit;
+  background: radial-gradient(circle at 0% 100%, var(--sexe) 0%, var(--sexe) 12%, transparent 65%);
+}
+
+/* ─── Avatar in normaal-rij + rijke-rij — vult de content-area,
+       rij-border blijft zichtbaar rondom (voor de outline) ─── */
+.normaal-rij .sq-av,
+.rijke-rij .sq-av {
+  width: var(--rij-avatar);
+  height: 100%;
+  align-self: stretch;
+  border-radius: calc(var(--rij-border-radius) - var(--rij-border-width)) 0 0 calc(var(--rij-border-radius) - var(--rij-border-width));
+  border-right: var(--rij-border-width) solid var(--status-color);
+  box-sizing: border-box;
+  margin: 0 var(--rij-gap) 0 0;
+  overflow: hidden;
+}
+.normaal-rij .sq-av img,
+.rijke-rij .sq-av img {
+  border-radius: inherit;
+  transform: scale(1.15);
+  transform-origin: center 35%;
+}
+.normaal-rij .sq-av::after,
+.rijke-rij .sq-av::after {
+  display: none;
+}
+.normaal-rij .sq-av::before,
+.rijke-rij .sq-av::before {
+  border-radius: inherit;
+}
+
+/* ─── Geblesseerd-icoon (rechts-onder, direct op foto, transparant) ─── */
+.sq-av .blessure {
+  position: absolute;
+  right: 6%;
+  bottom: 6%;
+  width: 46%;
+  height: 46%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  z-index: 4;
+  pointer-events: none;
+  opacity: 0.88;
+}
+.sq-av .blessure svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .9)) drop-shadow(0 0 4px rgba(0, 0, 0, .6));
+}
+.sq-av .blessure svg path { fill: #ef4444; }
+
+/* ─── Nieuw-lid sparkle (rechts-boven, direct op foto, transparant) ─── */
+.sq-av .nieuw-sparkle {
+  position: absolute;
+  right: 6%;
+  top: 6%;
+  width: 46%;
+  height: 46%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  z-index: 4;
+  pointer-events: none;
+  opacity: 0.9;
+}
+.sq-av .nieuw-sparkle svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .9)) drop-shadow(0 0 4px rgba(0, 0, 0, .6));
+}
+.sq-av .nieuw-sparkle svg path { fill: #fb923c; }
+
+/* ─── Memo-indicator — notitieblok-icoon (inline in rij, links van octogon) ─── */
+.memo-attention {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .5));
+  color: #eab308;             /* default = OPEN (amber) */
+}
+.memo-attention svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Status-varianten — kleur van het icoon */
+.memo-attention.open       { color: #eab308; }
+.memo-attention.bespreking { color: #facc15; }
+.memo-attention.risico     { color: #ef4444; }
+.memo-attention.opgelost   { color: #78716c; opacity: 0.75; }
+
+/* Per context groottes */
+.normaal-rij .memo-attention { width: 20px; height: 20px; }
+.rijke-rij   .memo-attention { width: 24px; height: 24px; }
+.hero-header .memo-attention { width: 28px; height: 28px; }
+.hover-kaart .memo-attention { width: 18px; height: 18px; }
+.compact-chip .memo-attention { width: 14px; height: 14px; margin-left: -1px; }
+
+/* ─── USS hexagon (score 0-99) ───────────────────────────────────────── */
+.uss-hex {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .5));
+}
+.uss-hex::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+  background: var(--hex-border);
+}
+.uss-hex::after {
+  content: '';
+  position: absolute;
+  inset: 1.5px;
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+  background: linear-gradient(135deg, var(--surface-sunken) 0%, var(--hex-fill) 100%);
+  pointer-events: none;
+}
+.uss-hex > span {
+  position: relative;
+  z-index: 3;
+  font-weight: 900;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  color: var(--hex-text);
+  font-family: var(--font-body);
+}
+.uss-hex.goud   { --hex-border: var(--uss-goud-border);   --hex-fill: var(--uss-goud-fill);   --hex-text: var(--uss-goud-text); }
+.uss-hex.zilver { --hex-border: var(--uss-zilver-border); --hex-fill: var(--uss-zilver-fill); --hex-text: var(--uss-zilver-text); }
+.uss-hex.brons  { --hex-border: var(--uss-brons-border);  --hex-fill: var(--uss-brons-fill);  --hex-text: var(--uss-brons-text); }
+.uss-hex.geen   { --hex-border: var(--uss-geen-border);   --hex-fill: var(--uss-geen-fill);   --hex-text: var(--uss-geen-text); }
+
+/* ─── Body styling voor prototype-files ──────────────────────────────── */
+body {
+  margin: 0;
+  padding: 24px;
+  background: var(--surface-sunken);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  min-height: 100vh;
+}
+h1 { font-size: 20px; color: var(--text-primary); margin: 0 0 4px; }
+h2 { font-size: 14px; color: var(--ow-accent); margin: 24px 0 12px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
+.subtitle { font-size: 12px; color: var(--text-tertiary); margin: 0 0 20px; }
+.demo-grid { display: flex; flex-direction: column; gap: 16px; }
+.demo-lbl { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }

@@ -1,0 +1,230 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   Staf-weergave · Design Tokens
+   Traject: staf-weergave prototypes TI Studio
+   ══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ─── Brand ────────────────────────────────────────────────────────── */
+  --ow-accent: #ff6b00;
+
+  /* ─── Neutraal / UI ────────────────────────────────────────────────── */
+  --bg-0: #0a0a0c;
+  --bg-1: #0f0f11;
+  --bg-2: #1a1a1e;
+  --border-0: #18181c;
+  --border-1: #2a2a2e;
+  --text-1: #f5f5f7;
+  --text-2: #b8b8bd;
+  --text-3: #8a8a90;
+  --text-muted: #555;
+
+  /* ─── Staf-specifiek ───────────────────────────────────────────────── */
+  --staf-accent: #ff8c00;
+  --staf-accent-dim: rgba(255, 140, 0, .12);
+  --staf-accent-border: rgba(255, 140, 0, .35);
+  --staf-bg: rgba(255, 140, 0, .04);
+  --staf-border: rgba(255, 140, 0, .15);
+  --staf-naam-color: var(--text-primary);
+  --staf-rol-text: rgba(255, 180, 100, .7);
+  --staf-inactief-opacity: 0.45;
+
+  /* ─── Team kleuren ─────────────────────────────────────────────────── */
+  --cat-blauw: #3b82f6;
+  --cat-groen: #22c55e;
+  --cat-geel: #eab308;
+  --cat-oranje: #f97316;
+  --cat-rood: #ef4444;
+  --cat-senior: #94a3b8;
+
+  /* ─── Memo (standaard OW memo-attention) ───────────────────────────── */
+  --memo-open: #eab308;
+  --memo-bespreking: #facc15;
+  --memo-risico: #ef4444;
+  --memo-opgelost: #78716c;
+
+  /* ─── Typografie ───────────────────────────────────────────────────── */
+  --font-sans: -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 24px;
+  background: var(--surface-sunken);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  min-height: 100vh;
+}
+h1 { font-size: 20px; color: var(--text-primary); margin: 0 0 4px; }
+h2 { font-size: 14px; color: var(--ow-accent); margin: 24px 0 12px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
+.subtitle { font-size: 12px; color: var(--text-tertiary); margin: 0 0 20px; }
+.demo-grid { display: flex; flex-direction: column; gap: 16px; }
+.demo-row { display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap; }
+.demo-lbl { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+
+/* ═══ Staf avatar — vierkant, consistent met speler sq-av ════════════════ */
+.staf-av {
+  position: relative;
+  border-radius: 4px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--staf-accent-dim);
+  border: 2px solid var(--staf-accent-border);
+}
+.staf-av img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center 25%;
+  display: block; border-radius: 2px;
+  filter: grayscale(1);
+}
+/* Subtiele oranje tint over grayscale foto (zoals sexe-tint bij spelers) */
+.staf-av::before {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+  background: var(--staf-accent);
+  opacity: 0.12;
+  mix-blend-mode: color;
+}
+.staf-av .initialen {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; color: var(--staf-accent);
+}
+.staf-av.inactief {
+  opacity: var(--staf-inactief-opacity);
+  border-color: rgba(148, 163, 184, .3);
+}
+.staf-av.inactief .initialen { color: var(--text-tertiary); }
+
+/* ═══ Memo-attention — standaard OW notitieblok-icoon ════════════════════
+   Exacte kopie uit speler-weergave/tokens.css
+   ════════════════════════════════════════════════════════════════════════ */
+.memo-attention {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .5));
+  color: var(--memo-open);
+}
+.memo-attention svg {
+  width: 100%; height: 100%;
+  display: block;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.memo-attention.open       { color: var(--memo-open); }
+.memo-attention.bespreking { color: var(--memo-bespreking); }
+.memo-attention.risico     { color: var(--memo-risico); }
+.memo-attention.opgelost   { color: var(--memo-opgelost); opacity: 0.75; }
+
+/* Staf-context groottes */
+.staf-compact .memo-attention  { width: 14px; height: 14px; }
+.staf-rijk .memo-attention     { width: 18px; height: 18px; }
+
+/* ═══ Staftypes — 3 typen met vast icoon ═════════════════════════════════
+   Het icoon representeert het TYPE, niet de specifieke rolnaam.
+   Rolnamen zijn vrij (incl. Sportlink-match).
+
+   Type                  Icoon (Lucide)       Kleur
+   ───────────────────── ─────────────────── ──────────────────────────
+   Technische staf       compass             oranje (staf-accent)
+   Medische staf         briefcase-medical   rood
+   Ondersteunende staf   shield              blauw
+
+   Rolnamen per type (vrij, suggesties):
+   - Technisch:      Hoofdtrainer, Trainer, Assistent-trainer, Coach, Hoofdcoach
+   - Medisch:        Verzorger, Fysiotherapeut
+   - Ondersteunend:  Leider, Teammanager, Grensrechter, Begeleider
+   ═══════════════════════════════════════════════════════════════════════ */
+
+  --type-technisch: var(--staf-accent);
+  --type-medisch: #ef4444;
+  --type-ondersteunend: #60a5fa;
+
+.rol-icoon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--staf-rol-text);
+}
+.rol-icoon svg {
+  width: 100%; height: 100%;
+  display: block;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+/* Type-icoon kleur per staftype */
+.type-icoon.technisch { color: var(--type-technisch); }
+.type-icoon.medisch   { color: var(--type-medisch); }
+.type-icoon.ondersteunend { color: var(--type-ondersteunend); }
+
+/* Compact chip: 14px icoon */
+.staf-compact .type-icoon { width: 14px; height: 14px; }
+/* Rijke rij swatch: 14px icoon */
+.rol-swatch .type-icoon   { width: 14px; height: 14px; }
+
+/* Backward compat */
+.staf-compact .rol-icoon { width: 14px; height: 14px; }
+.rol-swatch .rol-icoon   { width: 14px; height: 14px; }
+
+/* ═══ Rol-swatch — los koppelelement voor rijke-rij ══════════════════════ */
+.rol-swatch {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--staf-rol-text);
+  background: rgba(255, 140, 0, .06);
+  border: 1px solid rgba(255, 140, 0, .15);
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 120ms, color 120ms;
+}
+.rol-swatch:hover {
+  background: rgba(255, 140, 0, .12);
+  color: var(--ow-accent);
+}
+
+/* ═══ Team-ref (voor hover-historie) ═════════════════════════════════════ */
+.team-ref {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+.team-ref .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%; flex-shrink: 0;
+}
+.sel-badge {
+  font-size: 8px; padding: 1px 4px; border-radius: 3px;
+  background: rgba(59, 130, 246, .15);
+  color: #60a5fa; font-weight: 700;
+}
+.rol-chip {
+  font-size: 10px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.04em;
+  color: var(--staf-rol-text);
+  background: rgba(255, 140, 0, .06);
+  border: 1px solid rgba(255, 140, 0, .15);
+  border-radius: 4px; padding: 1px 6px;
+  white-space: nowrap;
+}

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Memo-rij · Memo-weergave</title>
+  <link rel="stylesheet" href="../../shared/tokens.css">
+  <style>
+    body { max-width: 700px; }
+
+    /* ═══ Memo-rij — compact formaat voor panels, drawers, tabel ═══
+       Status-dot · prioriteit · beschrijving · entiteit · datum
+       ═════════════════════════════════════════════════════════════ */
+    .memo-rij {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border-light);
+      cursor: pointer;
+      transition: background 100ms;
+    }
+    .memo-rij:hover { background: rgba(255,255,255,.02); }
+    .memo-rij:last-child { border-bottom: none; }
+
+    /* Status-dot */
+    .mr-status { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .mr-status.open { background: #eab308; }
+    .mr-status.bespreking { background: #60a5fa; }
+    .mr-status.opgelost { background: #22c55e; }
+    .mr-status.risico { background: #f59e0b; }
+    .mr-status.archief { background: #64748b; }
+
+    /* Prioriteit-pip */
+    .mr-prio {
+      width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 7px; font-weight: 900; color: #fff;
+    }
+    .mr-prio.blocker { background: #ef4444; }
+    .mr-prio.hoog { background: #f97316; }
+    .mr-prio.middel { background: #eab308; }
+    .mr-prio.laag { background: #3b82f6; }
+    .mr-prio.info { background: #8b5cf6; }
+
+    /* Beschrijving */
+    .mr-tekst {
+      flex: 1; min-width: 0; font-size: 12px; color: var(--text-primary);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .memo-rij.opgelost .mr-tekst { color: var(--text-tertiary); text-decoration: line-through; }
+
+    /* Entiteit-badge (mini) */
+    .mr-entiteit {
+      display: inline-flex; align-items: center; gap: 3px;
+      padding: 1px 5px; border-radius: 3px;
+      font-size: 9px; font-weight: 600; color: var(--text-tertiary);
+      background: rgba(255,255,255,.04); border: 1px solid var(--border-light);
+      flex-shrink: 0;
+    }
+    .mr-entiteit .dot { width: 4px; height: 4px; border-radius: 50%; flex-shrink: 0; }
+
+    /* Datum */
+    .mr-datum { font-size: 10px; color: var(--text-muted); flex-shrink: 0; font-variant-numeric: tabular-nums; }
+
+    /* Comments count */
+    .mr-comments {
+      display: inline-flex; align-items: center; gap: 2px;
+      font-size: 9px; color: var(--text-muted); flex-shrink: 0;
+    }
+    .mr-comments svg { width: 10px; height: 10px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+
+    /* Wrapper */
+    .rij-wrap {
+      background: var(--surface-page); border-radius: 8px;
+      border: 1px solid var(--border-light); overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <h1>Memo-rij</h1>
+  <p class="subtitle">Compact formaat voor panels, drawers, tabellen · Status-dot + prioriteit + beschrijving + entiteit + datum</p>
+
+  <h2>In lijst-context (WerkitemPanel)</h2>
+  <div class="rij-wrap">
+    <div class="memo-rij">
+      <span class="mr-status open"></span>
+      <span class="mr-prio blocker">!</span>
+      <span class="mr-tekst">Trainer OW 1 stopt — vervanger nodig</span>
+      <span class="mr-entiteit"><span class="type-icoon technisch" style="width:8px;height:8px"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span> Jan Vermeer</span>
+      <span class="mr-comments"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> 4</span>
+      <span class="mr-datum">14 apr</span>
+    </div>
+
+    <div class="memo-rij">
+      <span class="mr-status open"></span>
+      <span class="mr-prio hoog">H</span>
+      <span class="mr-tekst">Noor de Bos twijfelt over doorgaan — gesprek plannen</span>
+      <span class="mr-entiteit">Noor de Bos</span>
+      <span class="mr-comments"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> 2</span>
+      <span class="mr-datum">12 apr</span>
+    </div>
+
+    <div class="memo-rij">
+      <span class="mr-status bespreking"></span>
+      <span class="mr-prio middel">M</span>
+      <span class="mr-tekst">Leiderschap OW A1 + B1 combineren — haalbaar?</span>
+      <span class="mr-entiteit"><span class="type-icoon ondersteunend" style="width:8px;height:8px"><svg viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span> Rob Overbeek</span>
+      <span class="mr-comments"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> 3</span>
+      <span class="mr-datum">8 apr</span>
+    </div>
+
+    <div class="memo-rij">
+      <span class="mr-status open"></span>
+      <span class="mr-prio middel">M</span>
+      <span class="mr-tekst">Trainingsuren verdelen Peter en Karin</span>
+      <span class="mr-entiteit"><span class="dot" style="background:var(--cat-groen)"></span> OW 2</span>
+      <span class="mr-datum">10 apr</span>
+    </div>
+
+    <div class="memo-rij">
+      <span class="mr-status open"></span>
+      <span class="mr-prio laag">L</span>
+      <span class="mr-tekst">VOG-verklaring Henk Vos nog niet ingeleverd</span>
+      <span class="mr-entiteit"><span class="type-icoon ondersteunend" style="width:8px;height:8px"><svg viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span> Henk Vos</span>
+      <span class="mr-datum">5 apr</span>
+    </div>
+
+    <div class="memo-rij">
+      <span class="mr-status open"></span>
+      <span class="mr-prio info">i</span>
+      <span class="mr-tekst">KNKV deadline teamopgave 15 mei</span>
+      <span class="mr-entiteit" style="color:var(--ow-accent);border-color:rgba(255,107,0,.15)">TC</span>
+      <span class="mr-datum">1 apr</span>
+    </div>
+  </div>
+
+  <h2>Opgeloste items (doorgestreept)</h2>
+  <div class="rij-wrap">
+    <div class="memo-rij opgelost">
+      <span class="mr-status opgelost"></span>
+      <span class="mr-prio laag">L</span>
+      <span class="mr-tekst">VOG Henk Vos — inmiddels ontvangen</span>
+      <span class="mr-entiteit"><span class="type-icoon ondersteunend" style="width:8px;height:8px;opacity:.5"><svg viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span> Henk Vos</span>
+      <span class="mr-datum">14 apr</span>
+    </div>
+    <div class="memo-rij opgelost">
+      <span class="mr-status risico"></span>
+      <span class="mr-prio middel">M</span>
+      <span class="mr-tekst">Tekort heren OW 1 — geaccepteerd risico</span>
+      <span class="mr-entiteit"><span class="dot" style="background:var(--cat-blauw)"></span> OW 1</span>
+      <span class="mr-datum">10 apr</span>
+    </div>
+  </div>
+
+  <h2>Context: speler-profiel (gefilterd op 1 speler)</h2>
+  <div class="rij-wrap">
+    <div class="memo-rij">
+      <span class="mr-status open"></span>
+      <span class="mr-prio hoog">H</span>
+      <span class="mr-tekst">Twijfelt over doorgaan — gesprek plannen</span>
+      <span class="mr-comments"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> 2</span>
+      <span class="mr-datum">12 apr</span>
+    </div>
+    <div class="memo-rij opgelost">
+      <span class="mr-status opgelost"></span>
+      <span class="mr-prio laag">L</span>
+      <span class="mr-tekst">Blessure linkerknie — revalidatie loopt</span>
+      <span class="mr-datum">2 mrt</span>
+    </div>
+  </div>
+</body>
+</html>

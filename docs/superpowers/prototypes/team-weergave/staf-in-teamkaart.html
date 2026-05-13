@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Staf in teamkaart · Team-weergave</title>
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="../staf-weergave/tokens.css">
+  <style>
+    body { background: #050507; padding: 40px 32px; font-family: var(--font-body); }
+
+    /* ─── Staf compact-chip (uit staf-weergave) ──────────────────── */
+    .compact-chip {
+      display: inline-flex; align-items: stretch; height: 34px;
+      background: transparent; border: 1.5px solid rgba(255,140,0,.45);
+      border-radius: 6px; overflow: visible;
+    }
+    .compact-chip .inner {
+      display: inline-flex; align-items: center; gap: 6px; padding: 0 8px 0 6px;
+    }
+    .compact-chip .nm { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+    .compact-chip .memo-attention {
+      width: 14px; height: 14px; display: inline-flex; align-items: center;
+      justify-content: center; flex-shrink: 0;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,.5));
+    }
+    .compact-chip .memo-attention svg {
+      width: 100%; height: 100%; stroke: currentColor; fill: none;
+      stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+    }
+    .compact-chip .memo-attention.open { color: #eab308; }
+    .compact-chip .shirt-icoon {
+      width: 12px; height: 12px; display: inline-flex; align-items: center;
+      justify-content: center; color: var(--text-secondary);
+      filter: drop-shadow(0 1px 1px rgba(0,0,0,.4));
+    }
+    .compact-chip .shirt-icoon svg {
+      width: 100%; height: 100%; stroke: currentColor; fill: none;
+      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    }
+    .type-icoon {
+      display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .type-icoon svg {
+      width: 100%; height: 100%; display: block; stroke: currentColor; fill: none;
+      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    }
+    .type-icoon.technisch    { color: var(--type-technisch); }
+    .type-icoon.medisch      { color: var(--type-medisch); }
+    .type-icoon.ondersteunend { color: var(--type-ondersteunend); }
+
+    /* ─── Demo teamkaart footer ──────────────────────────────────── */
+    .tk-demo {
+      background: linear-gradient(160deg, #1a1a1e, #0f0f12);
+      border: 1.5px solid var(--border-default); border-radius: 14px;
+      overflow: hidden; max-width: 380px;
+    }
+    .tk-demo-header {
+      padding: 14px 16px; border-bottom: 1px solid var(--border-light);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .tk-demo-naam { font-size: 16px; font-weight: 800; color: var(--text-primary); }
+    .tk-demo-sub { font-size: 10px; color: var(--text-tertiary); }
+    .tk-demo-body {
+      padding: 12px 16px; min-height: 60px;
+      color: var(--text-muted); font-size: 11px; font-style: italic;
+    }
+    .tk-staf-footer {
+      padding: 10px 14px;
+      border-top: 1px solid var(--border-light);
+      display: flex; flex-direction: column; gap: 5px;
+    }
+    .tk-staf-label {
+      font-size: 8px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 2px;
+    }
+
+    .demo-row { display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-start; }
+    .variant-label {
+      font-size: 9px; color: var(--text-muted); text-transform: uppercase;
+      letter-spacing: 0.06em; margin-bottom: 8px;
+    }
+    h1 { font-size: 20px; color: var(--text-primary); margin: 0 0 4px; }
+    h2 { font-size: 14px; color: #ff6b00; margin: 28px 0 12px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
+    .subtitle { font-size: 12px; color: var(--text-tertiary); margin: 0 0 24px; }
+  </style>
+</head>
+<body>
+  <h1>Staf in teamkaart</h1>
+  <p class="subtitle">TI Studio staf compact-chips in de teamkaart footer · Vervangt de oude staf-chip/staf-rij</p>
+
+  <h2>Teamkaart met staf — senioren</h2>
+  <div class="demo-row">
+    <div>
+      <div class="variant-label">1 staf · technisch</div>
+      <div class="tk-demo">
+        <div class="tk-demo-header">
+          <span class="tk-demo-naam">OW 1</span>
+          <span class="tk-demo-sub">Blauw · Senioren</span>
+        </div>
+        <div class="tk-demo-body">[ spelers ]</div>
+        <div class="tk-staf-footer" id="staf-1"></div>
+      </div>
+    </div>
+    <div>
+      <div class="variant-label">2 staf · technisch + ondersteunend</div>
+      <div class="tk-demo">
+        <div class="tk-demo-header">
+          <span class="tk-demo-naam">OW 2</span>
+          <span class="tk-demo-sub">Groen · Senioren</span>
+        </div>
+        <div class="tk-demo-body">[ spelers ]</div>
+        <div class="tk-staf-footer" id="staf-2"></div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Teamkaart met staf — jeugd + memo + speelt-ook</h2>
+  <div class="demo-row">
+    <div>
+      <div class="variant-label">3 staf · mix van types</div>
+      <div class="tk-demo">
+        <div class="tk-demo-header">
+          <span class="tk-demo-naam">OW A1</span>
+          <span class="tk-demo-sub">Geel · 10–12</span>
+        </div>
+        <div class="tk-demo-body">[ spelers ]</div>
+        <div class="tk-staf-footer" id="staf-3"></div>
+      </div>
+    </div>
+    <div>
+      <div class="variant-label">1 staf · medisch</div>
+      <div class="tk-demo">
+        <div class="tk-demo-header">
+          <span class="tk-demo-naam">OW B1</span>
+          <span class="tk-demo-sub">Oranje · 8–10</span>
+        </div>
+        <div class="tk-demo-body">[ spelers ]</div>
+        <div class="tk-staf-footer" id="staf-4"></div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Vergelijking: oud vs nieuw</h2>
+  <div class="demo-row">
+    <div>
+      <div class="variant-label">Oud (naam-only chip)</div>
+      <div class="tk-staf-footer" style="background:var(--surface-card);border-radius:8px;max-width:300px">
+        <div class="tk-staf-label">Staf</div>
+        <div style="display:inline-flex;align-items:center;height:36px;border:1.5px solid rgba(255,140,0,.15);border-left:3px solid rgba(255,140,0,.5);border-radius:6px;background:rgba(255,140,0,.04);padding:0 14px">
+          <span style="font-size:14px;font-weight:700;color:var(--text-primary)">Joost Bakker</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="variant-label">Nieuw (type-icoon + naam + memo + shirt)</div>
+      <div class="tk-staf-footer" style="background:var(--surface-card);border-radius:8px;max-width:300px" id="staf-vergelijk"></div>
+    </div>
+  </div>
+
+<script type="module">
+  import { stafChip } from '../shared/staf-components.js';
+
+  // OW 1 — 1 technisch
+  document.getElementById('staf-1').innerHTML =
+    stafChip({ naam: 'Jan Vermeer', type: 'technisch' });
+
+  // OW 2 — 2 staf
+  document.getElementById('staf-2').innerHTML = [
+    stafChip({ naam: 'Peter Brouwer', type: 'technisch', memo: 'open' }),
+    stafChip({ naam: 'Henk Vos', type: 'ondersteunend' }),
+  ].join('');
+
+  // OW A1 — 3 staf mix
+  document.getElementById('staf-3').innerHTML = [
+    stafChip({ naam: 'Rob Overbeek', type: 'technisch', speeltOok: true }),
+    stafChip({ naam: 'Karin Dijkstra', type: 'technisch', memo: 'open', speeltOok: true }),
+    stafChip({ naam: 'Mieke Zwart', type: 'ondersteunend' }),
+  ].join('');
+
+  // OW B1 — 1 medisch
+  document.getElementById('staf-4').innerHTML =
+    stafChip({ naam: 'Laura Smit', type: 'medisch', memo: 'risico' });
+
+  // Vergelijking nieuw
+  document.getElementById('staf-vergelijk').innerHTML =
+    '<div class="tk-staf-label">Staf</div>' +
+    stafChip({ naam: 'Joost Bakker', type: 'technisch', memo: 'open', speeltOok: true });
+</script>
+
+</body>
+</html>

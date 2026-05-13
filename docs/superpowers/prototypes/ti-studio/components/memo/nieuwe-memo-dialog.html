@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Nieuwe memo dialog · Memo-weergave</title>
+  <link rel="stylesheet" href="../../shared/tokens.css">
+  <style>
+    body { background: rgba(0,0,0,.7); display: flex; align-items: flex-start; justify-content: center; min-height: 100vh; padding: 60px 24px; gap: 32px; flex-wrap: wrap; }
+
+    /* ═══ Dialog ════════════════════════════════════════════════════ */
+    .dialog {
+      width: 440px; background: var(--surface-page);
+      border: 1px solid var(--border-default); border-radius: 14px;
+      overflow: hidden; box-shadow: 0 24px 80px rgba(0,0,0,.7);
+    }
+    .dlg-header {
+      padding: 18px 22px 14px;
+      border-bottom: 1px solid var(--border-light);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .dlg-header h2 { font-size: 16px; font-weight: 700; color: var(--text-primary); margin: 0; }
+    .dlg-close {
+      width: 28px; height: 28px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      background: none; border: 1px solid var(--border-default); color: var(--text-tertiary);
+      cursor: pointer; font-size: 14px; font-family: inherit;
+    }
+    .dlg-close:hover { background: rgba(255,255,255,.06); color: var(--text-primary); }
+
+    .dlg-body { padding: 18px 22px; display: flex; flex-direction: column; gap: 14px; }
+    .dlg-footer {
+      padding: 14px 22px; border-top: 1px solid var(--border-light);
+      display: flex; align-items: center; justify-content: flex-end; gap: 8px;
+    }
+
+    /* Context-badge — toont vooraf ingevulde entiteit */
+    .context-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 12px; border-radius: 8px;
+      background: rgba(255,255,255,.03); border: 1px solid var(--border-light);
+      font-size: 12px; color: var(--text-primary); font-weight: 500;
+    }
+    .context-badge .cb-type {
+      font-size: 9px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.04em; padding: 1px 6px; border-radius: 4px;
+    }
+    .context-badge .cb-type.speler { color: var(--sexe-h); background: rgba(37,99,235,.1); border: 1px solid rgba(37,99,235,.2); }
+    .context-badge .cb-type.staf { color: var(--staf-accent); background: var(--staf-accent-dim); border: 1px solid var(--staf-border); }
+    .context-badge .cb-type.team { color: var(--text-secondary); background: rgba(255,255,255,.04); border: 1px solid var(--border-default); }
+    .context-badge .cb-type.tc { color: var(--ow-accent); background: rgba(255,107,0,.08); border: 1px solid rgba(255,107,0,.15); }
+    .context-badge .cb-naam { font-weight: 600; }
+    .context-badge .dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+    .context-badge .wijzig {
+      font-size: 10px; color: var(--text-muted); cursor: pointer;
+      margin-left: auto; text-decoration: underline;
+    }
+    .context-badge .wijzig:hover { color: var(--text-secondary); }
+
+    /* Form */
+    .form-field { display: flex; flex-direction: column; gap: 4px; }
+    .form-label {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--text-muted);
+    }
+    .form-input, .form-textarea, .form-select {
+      background: var(--surface-card); border: 1px solid var(--border-default); border-radius: 7px;
+      padding: 8px 12px; color: var(--text-primary); font-size: 13px;
+      outline: none; font-family: inherit; width: 100%; box-sizing: border-box;
+    }
+    .form-input:focus, .form-textarea:focus, .form-select:focus { border-color: rgba(255,107,0,.4); }
+    .form-input::placeholder, .form-textarea::placeholder { color: var(--text-muted); }
+    .form-textarea { min-height: 80px; resize: vertical; line-height: 1.5; }
+    .form-select { cursor: pointer; }
+    .form-row { display: flex; gap: 10px; }
+    .form-row .form-field { flex: 1; }
+
+    /* Prioriteit-knoppen */
+    .prio-group { display: flex; gap: 4px; }
+    .prio-btn {
+      flex: 1; padding: 6px; border-radius: 6px; text-align: center;
+      font-size: 11px; font-weight: 600; cursor: pointer;
+      border: 1px solid var(--border-default); background: var(--surface-card);
+      color: var(--text-tertiary); font-family: inherit;
+      transition: all 120ms;
+    }
+    .prio-btn:hover { border-color: var(--text-muted); }
+    .prio-btn.active { color: #fff; }
+    .prio-btn.active.blocker { background: var(--prio-blocker); border-color: var(--prio-blocker); }
+    .prio-btn.active.hoog { background: var(--prio-hoog); border-color: var(--prio-hoog); }
+    .prio-btn.active.middel { background: var(--prio-middel); border-color: var(--prio-middel); color: #1a1a00; }
+    .prio-btn.active.laag { background: var(--prio-laag); border-color: var(--prio-laag); }
+    .prio-btn.active.info { background: var(--prio-info); border-color: var(--prio-info); }
+
+    /* Entiteit-keuze (als geen context vooraf ingevuld) */
+    .entiteit-group { display: flex; gap: 4px; }
+    .entiteit-btn {
+      flex: 1; padding: 8px; border-radius: 7px; text-align: center;
+      font-size: 11px; font-weight: 600; cursor: pointer;
+      border: 1px solid var(--border-default); background: var(--surface-card);
+      color: var(--text-tertiary); font-family: inherit;
+      transition: all 120ms;
+    }
+    .entiteit-btn:hover { border-color: var(--text-muted); color: var(--text-secondary); }
+    .entiteit-btn.active { border-color: rgba(255,107,0,.4); background: rgba(255,107,0,.06); color: var(--ow-accent); }
+
+    /* Buttons */
+    .btn-cancel {
+      padding: 8px 16px; border-radius: 7px;
+      border: 1px solid var(--border-default); background: none;
+      color: var(--text-secondary); font-size: 12px; font-weight: 600;
+      cursor: pointer; font-family: inherit;
+    }
+    .btn-cancel:hover { background: rgba(255,255,255,.04); }
+    .btn-create {
+      padding: 8px 20px; border-radius: 7px; border: none;
+      background: var(--ow-accent); color: #fff;
+      font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit;
+    }
+    .btn-create:hover { background: #ff8533; }
+
+    /* Demo labels */
+    .variant-label {
+      font-size: 10px; color: var(--text-muted); text-transform: uppercase;
+      letter-spacing: 0.06em; margin-bottom: 6px; text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ VARIANT 1: Vanuit speler-context ═══════════════════════ -->
+  <div>
+    <div class="variant-label">Vanuit speler-dialog</div>
+    <div class="dialog">
+      <div class="dlg-header">
+        <h2>Nieuwe memo</h2>
+        <button class="dlg-close">×</button>
+      </div>
+      <div class="dlg-body">
+        <div class="context-badge">
+          <span class="cb-type speler">Speler</span>
+          <span class="cb-naam">Noor de Bos</span>
+          <span class="wijzig">wijzig</span>
+        </div>
+
+        <div class="form-field">
+          <span class="form-label">Beschrijving *</span>
+          <textarea class="form-textarea" placeholder="Wat is het aandachtspunt?"></textarea>
+        </div>
+
+        <div class="form-field">
+          <span class="form-label">Prioriteit</span>
+          <div class="prio-group">
+            <button class="prio-btn blocker" onclick="selectPrio(this)">Blocker</button>
+            <button class="prio-btn hoog" onclick="selectPrio(this)">Hoog</button>
+            <button class="prio-btn middel active" onclick="selectPrio(this)">Middel</button>
+            <button class="prio-btn laag" onclick="selectPrio(this)">Laag</button>
+            <button class="prio-btn info" onclick="selectPrio(this)">Info</button>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <span class="form-label">Doelgroep</span>
+          <select class="form-select">
+            <option>— automatisch —</option>
+            <option>Kweekvijver</option>
+            <option>Opleidingshart</option>
+            <option>Topsport</option>
+            <option>Wedstrijdsport</option>
+            <option>Korfbalplezier</option>
+            <option>Alle (TC-algemeen)</option>
+          </select>
+        </div>
+      </div>
+      <div class="dlg-footer">
+        <button class="btn-cancel">Annuleren</button>
+        <button class="btn-create">Aanmaken</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ VARIANT 2: Vanuit staf-context ═════════════════════════ -->
+  <div>
+    <div class="variant-label">Vanuit staf-dialog</div>
+    <div class="dialog">
+      <div class="dlg-header">
+        <h2>Nieuwe memo</h2>
+        <button class="dlg-close">×</button>
+      </div>
+      <div class="dlg-body">
+        <div class="context-badge">
+          <span class="cb-type staf"><span class="type-icoon technisch" style="width:8px;height:8px"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span> Staf</span>
+          <span class="cb-naam">Jan Vermeer</span>
+          <span class="wijzig">wijzig</span>
+        </div>
+
+        <div class="form-field">
+          <span class="form-label">Beschrijving *</span>
+          <textarea class="form-textarea" placeholder="Wat is het aandachtspunt?">Trainer OW 1 heeft aangegeven te willen stoppen.</textarea>
+        </div>
+
+        <div class="form-field">
+          <span class="form-label">Prioriteit</span>
+          <div class="prio-group">
+            <button class="prio-btn blocker active" onclick="selectPrio(this)">Blocker</button>
+            <button class="prio-btn hoog" onclick="selectPrio(this)">Hoog</button>
+            <button class="prio-btn middel" onclick="selectPrio(this)">Middel</button>
+            <button class="prio-btn laag" onclick="selectPrio(this)">Laag</button>
+            <button class="prio-btn info" onclick="selectPrio(this)">Info</button>
+          </div>
+        </div>
+      </div>
+      <div class="dlg-footer">
+        <button class="btn-cancel">Annuleren</button>
+        <button class="btn-create">Aanmaken</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ VARIANT 3: Vanuit kanban (geen context) ════════════════ -->
+  <div>
+    <div class="variant-label">Vanuit kanban-bord (leeg)</div>
+    <div class="dialog">
+      <div class="dlg-header">
+        <h2>Nieuwe memo</h2>
+        <button class="dlg-close">×</button>
+      </div>
+      <div class="dlg-body">
+        <div class="form-field">
+          <span class="form-label">Koppel aan</span>
+          <div class="entiteit-group">
+            <button class="entiteit-btn" onclick="selectEntiteit(this)">Speler</button>
+            <button class="entiteit-btn" onclick="selectEntiteit(this)">Staf</button>
+            <button class="entiteit-btn" onclick="selectEntiteit(this)">Team</button>
+            <button class="entiteit-btn active" onclick="selectEntiteit(this)">TC-algemeen</button>
+          </div>
+        </div>
+
+        <!-- Zoek-veld (verschijnt bij Speler/Staf/Team) -->
+        <div class="form-field" id="zoek-veld" style="display:none">
+          <span class="form-label">Zoek persoon of team</span>
+          <input class="form-input" placeholder="Typ een naam...">
+        </div>
+
+        <div class="form-field">
+          <span class="form-label">Beschrijving *</span>
+          <textarea class="form-textarea" placeholder="Wat is het aandachtspunt?"></textarea>
+        </div>
+
+        <div class="form-field">
+          <span class="form-label">Prioriteit</span>
+          <div class="prio-group">
+            <button class="prio-btn blocker" onclick="selectPrio(this)">Blocker</button>
+            <button class="prio-btn hoog" onclick="selectPrio(this)">Hoog</button>
+            <button class="prio-btn middel active" onclick="selectPrio(this)">Middel</button>
+            <button class="prio-btn laag" onclick="selectPrio(this)">Laag</button>
+            <button class="prio-btn info" onclick="selectPrio(this)">Info</button>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <span class="form-label">Doelgroep</span>
+          <select class="form-select">
+            <option selected>Alle (TC-algemeen)</option>
+            <option>Kweekvijver</option>
+            <option>Opleidingshart</option>
+            <option>Topsport</option>
+            <option>Wedstrijdsport</option>
+            <option>Korfbalplezier</option>
+          </select>
+        </div>
+      </div>
+      <div class="dlg-footer">
+        <button class="btn-cancel">Annuleren</button>
+        <button class="btn-create">Aanmaken</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ VARIANT 4: Vanuit team-context ═════════════════════════ -->
+  <div>
+    <div class="variant-label">Vanuit team-kaart</div>
+    <div class="dialog">
+      <div class="dlg-header">
+        <h2>Nieuwe memo</h2>
+        <button class="dlg-close">×</button>
+      </div>
+      <div class="dlg-body">
+        <div class="context-badge">
+          <span class="cb-type team"><span class="dot" style="background:var(--cat-blauw)"></span> Team</span>
+          <span class="cb-naam">OW 1</span>
+          <span class="wijzig">wijzig</span>
+        </div>
+
+        <div class="form-field">
+          <span class="form-label">Beschrijving *</span>
+          <textarea class="form-textarea" placeholder="Wat is het aandachtspunt?"></textarea>
+        </div>
+
+        <div class="form-field">
+          <span class="form-label">Prioriteit</span>
+          <div class="prio-group">
+            <button class="prio-btn blocker" onclick="selectPrio(this)">Blocker</button>
+            <button class="prio-btn hoog" onclick="selectPrio(this)">Hoog</button>
+            <button class="prio-btn middel active" onclick="selectPrio(this)">Middel</button>
+            <button class="prio-btn laag" onclick="selectPrio(this)">Laag</button>
+            <button class="prio-btn info" onclick="selectPrio(this)">Info</button>
+          </div>
+        </div>
+      </div>
+      <div class="dlg-footer">
+        <button class="btn-cancel">Annuleren</button>
+        <button class="btn-create">Aanmaken</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ VARIANT 5: Vanuit kader memo-tab (doelgroep-context) ═══ -->
+  <div>
+    <div class="variant-label">Vanuit kader · Wedstrijdsport</div>
+    <div class="dialog">
+      <div class="dlg-header">
+        <h2>Nieuwe memo</h2>
+        <button class="dlg-close">×</button>
+      </div>
+      <div class="dlg-body">
+        <div class="context-badge">
+          <span class="cb-type tc">Doelgroep</span>
+          <span class="cb-naam">Wedstrijdsport</span>
+          <span class="wijzig">wijzig</span>
+        </div>
+
+        <div class="form-field">
+          <span class="form-label">Koppel aan (optioneel)</span>
+          <div class="entiteit-group">
+            <button class="entiteit-btn active" onclick="selectEntiteit(this)">TC-algemeen</button>
+            <button class="entiteit-btn" onclick="selectEntiteit(this)">Speler</button>
+            <button class="entiteit-btn" onclick="selectEntiteit(this)">Staf</button>
+            <button class="entiteit-btn" onclick="selectEntiteit(this)">Team</button>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <span class="form-label">Beschrijving *</span>
+          <textarea class="form-textarea" placeholder="Wat is het aandachtspunt?"></textarea>
+        </div>
+
+        <div class="form-field">
+          <span class="form-label">Prioriteit</span>
+          <div class="prio-group">
+            <button class="prio-btn blocker" onclick="selectPrio(this)">Blocker</button>
+            <button class="prio-btn hoog" onclick="selectPrio(this)">Hoog</button>
+            <button class="prio-btn middel active" onclick="selectPrio(this)">Middel</button>
+            <button class="prio-btn laag" onclick="selectPrio(this)">Laag</button>
+            <button class="prio-btn info" onclick="selectPrio(this)">Info</button>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <span class="form-label">Doelgroep</span>
+          <select class="form-select">
+            <option>— automatisch —</option>
+            <option>Kweekvijver</option>
+            <option>Opleidingshart</option>
+            <option>Topsport</option>
+            <option selected>Wedstrijdsport</option>
+            <option>Korfbalplezier</option>
+            <option>Alle (TC-algemeen)</option>
+          </select>
+        </div>
+      </div>
+      <div class="dlg-footer">
+        <button class="btn-cancel">Annuleren</button>
+        <button class="btn-create">Aanmaken</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function selectPrio(btn) {
+      btn.closest('.prio-group').querySelectorAll('.prio-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+    function selectEntiteit(btn) {
+      btn.closest('.entiteit-group').querySelectorAll('.entiteit-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      // Toon zoek-veld als Speler/Staf/Team, verberg bij TC-algemeen
+      const label = btn.textContent.trim();
+      const zoek = document.getElementById('zoek-veld');
+      if (zoek) zoek.style.display = label === 'TC-algemeen' ? 'none' : 'flex';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personen — TI Studio</title>
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="../speler-weergave/tokens.css">
+  <style>
+    .page { display: grid; grid-template-columns: var(--ribbon) 1fr; height: 100vh; overflow: hidden; }
+
+    /* ─── Ribbon ─────────────────────────────────────────────────── */
+    .ribbon {
+      background: var(--surface-page); border-right: 1px solid var(--border-light);
+      display: flex; flex-direction: column; align-items: center;
+      padding: 10px 0 8px; gap: 2px;
+    }
+    .ribbon-logo {
+      width: 30px; height: 30px; margin-bottom: 12px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; border-radius: 9px; transition: background 120ms;
+    }
+    .ribbon-logo:hover { background: rgba(59,130,246,.08); }
+    .ribbon-logo svg { width: 24px; height: 24px; }
+    .ribbon-btn {
+      width: 36px; height: 36px; border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; background: none; border: none;
+      color: var(--text-tertiary); position: relative; flex-shrink: 0;
+      transition: background 120ms, color 120ms;
+    }
+    .ribbon-btn:hover { color: var(--text-secondary); background: rgba(255,255,255,.04); }
+    .ribbon-btn.active { background: rgba(255,107,0,.12); color: var(--ow-accent); }
+    .ribbon-btn.active::before {
+      content: ''; position: absolute; left: -1px; top: 7px; bottom: 7px;
+      width: 3px; background: var(--ow-accent); border-radius: 0 2px 2px 0;
+    }
+    .ribbon-sep { width: 22px; height: 1px; background: var(--border-light); margin: 4px 0; }
+    .ribbon-group { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .ribbon-footer { margin-top: auto; display: flex; flex-direction: column; align-items: center; gap: 6; }
+    .ribbon-avatar {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: #2a1a0a; border: 2px solid rgba(255,107,0,.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; color: var(--ow-accent); cursor: pointer;
+    }
+    .ribbon-avatar:hover { border-color: rgba(255,107,0,.6); }
+    .ribbon-memo-wrap { position: relative; }
+    .ribbon-badge {
+      position: absolute; top: 3px; right: 3px;
+      width: 14px; height: 14px; border-radius: 50%;
+      background: var(--ow-accent); color: #fff;
+      font-size: 8px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      line-height: 1; pointer-events: none;
+    }
+
+    /* ─── Content ────────────────────────────────────────────────── */
+    .content {
+      display: flex; flex-direction: column; overflow-y: auto;
+      padding: 24px 28px; min-height: 0;
+    }
+
+    /* ─── Sub-navigatie tabs ─────────────────────────────────────── */
+    .sub-nav {
+      display: flex; gap: 2px; border-bottom: 1px solid var(--border-light);
+      margin-bottom: 16px;
+    }
+    .sub-nav-tab {
+      padding: 8px 16px; font-size: 13px; font-weight: 600;
+      color: var(--text-tertiary); cursor: pointer; border: none; background: none;
+      border-bottom: 2px solid transparent; margin-bottom: -1px;
+      transition: color 120ms; font-family: inherit;
+    }
+    .sub-nav-tab:hover { color: var(--text-secondary); }
+    .sub-nav-tab.active { color: var(--ow-accent); border-bottom-color: var(--ow-accent); }
+
+    /* ─── Filter bar ─────────────────────────────────────────────── */
+    .filter-bar {
+      display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+      margin-bottom: 12px;
+    }
+    .search-input {
+      background: var(--surface-card); border: 1px solid var(--border-default);
+      border-radius: 8px; padding: 6px 12px; color: var(--text-primary);
+      font-size: 13px; outline: none; width: 200px; font-family: inherit;
+    }
+    .search-input::placeholder { color: var(--text-muted); }
+    .search-input:focus { border-color: rgba(255,107,0,.4); }
+    .filter-chip {
+      padding: 4px 10px; border-radius: 99px; font-size: 12px; font-weight: 500;
+      cursor: pointer; border: 1px solid var(--border-default);
+      background: var(--surface-card); color: var(--text-tertiary);
+      font-family: inherit; transition: all 120ms;
+    }
+    .filter-chip:hover { border-color: var(--text-muted); color: var(--text-secondary); }
+    .filter-chip.active {
+      border-color: var(--ow-accent); background: rgba(255,107,0,.1);
+      color: var(--ow-accent);
+    }
+    .filter-select {
+      background: var(--surface-card); border: 1px solid var(--border-default);
+      border-radius: 8px; padding: 5px 10px; color: var(--text-primary);
+      font-size: 12px; outline: none; cursor: pointer; font-family: inherit;
+    }
+    .filter-count { margin-left: auto; font-size: 12px; color: var(--text-tertiary); }
+
+    /* ─── Spelers tabel (gebaseerd op speler-weergave tabel-rij) ── */
+    .tabel-wrap {
+      background: var(--surface-page); border-radius: 8px; overflow: hidden;
+    }
+    .tabel-header {
+      display: grid;
+      grid-template-columns: 60px 1fr 130px 90px 90px 110px 56px 60px;
+      gap: 14px; padding: 10px 16px;
+      font-size: 9px; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700;
+      border-bottom: 1px solid var(--surface-card); cursor: pointer; user-select: none;
+    }
+    .tabel-header div:hover { color: var(--text-tertiary); }
+    .tabel-header .sorted { color: var(--ow-accent); }
+    .tabel-rij {
+      position: relative; display: grid;
+      grid-template-columns: 60px 1fr 130px 90px 90px 110px 56px 60px;
+      align-items: center; gap: 14px; padding: 10px 16px;
+      background: transparent;
+      border-left: 3px solid var(--status-color);
+      border-bottom: 1px solid var(--border-light);
+      overflow: visible; transition: background 100ms;
+    }
+    .tabel-rij:last-child { border-bottom: none; }
+    .tabel-rij:hover { background: rgba(255,255,255,.02); }
+    .tabel-rij .sq-av { width: 46px; height: 46px; }
+    .tabel-rij .nm { font-size: 14px; font-weight: 600; color: var(--text-primary); cursor: pointer; }
+    .tabel-rij .nm:hover { color: var(--ow-accent); }
+    .tabel-rij .team {
+      font-size: 12px; color: var(--text-secondary);
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 8px; border-radius: 4px; cursor: pointer;
+    }
+    .tabel-rij .team::after { content: '▾'; font-size: 10px; opacity: 0.6; margin-left: 2px; }
+    .tabel-rij .team:hover { background: rgba(255,255,255,.06); }
+    .tabel-rij .tb-ind-empty {
+      color: rgba(255,107,0,.7);
+      border: 1px dashed rgba(255,107,0,.4);
+      padding: 1px 6px; border-radius: 3px;
+      font-weight: 700; font-size: 11px; cursor: pointer;
+    }
+    .tabel-rij .tb-ind-empty::before { content: '+'; margin-right: 2px; font-weight: 800; }
+    .tabel-rij .tb-ind-empty:hover { background: rgba(255,107,0,.08); }
+    .tabel-rij .status-txt {
+      font-size: 12px; color: var(--status-beschikbaar); font-weight: 600;
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 8px; border-radius: 4px; cursor: pointer;
+    }
+    .tabel-rij .status-txt::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--status-beschikbaar); }
+    .tabel-rij .status-txt::after { content: '▾'; font-size: 10px; opacity: 0.6; margin-left: 2px; }
+    .tabel-rij .status-txt:hover { background: rgba(255,255,255,.06); }
+    .tabel-rij .gezien { font-size: 16px; color: var(--status-beschikbaar); text-align: center; }
+    .tabel-rij .gezien.nee { color: #4b5563; opacity: 0.35; }
+    .tabel-rij .leeft-col {
+      height: 44px; width: 54px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      border-radius: 3px; line-height: 1;
+    }
+    .tabel-rij .leeft-col .lb { color: #fff; font-size: 16px; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .tabel-rij .leeft-col .ld { color: rgba(255,255,255,.7); font-size: 9px; font-weight: 700; margin-top: 1px; font-variant-numeric: tabular-nums; }
+
+    /* Memo-cell */
+    .tabel-rij .memo-cell {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-size: 12px; font-weight: 600;
+      padding: 4px 10px; border-radius: 4px; line-height: 1;
+    }
+    .tabel-rij .memo-cell .icn { width: 14px; height: 14px; font-size: 13px; flex-shrink: 0; text-align: center; }
+    .tabel-rij .memo-cell.geen { color: var(--text-muted); padding-left: 0; }
+    .tabel-rij .memo-cell.open { color: var(--memo-open); background: rgba(253,224,71,.1); border: 1px solid rgba(253,224,71,.3); }
+    .tabel-rij .memo-cell.bespreking { color: var(--memo-bespreking); background: rgba(250,204,21,.12); border: 1px solid rgba(250,204,21,.4); }
+    .tabel-rij .memo-cell.risico { color: #c29a5c; background: rgba(194,154,92,.1); border: 1px solid rgba(225,29,72,.4); }
+    .tabel-rij .memo-cell.opgelost { color: #8a7a5c; background: rgba(68,64,60,.4); border: 1px solid rgba(255,255,255,.08); }
+
+    /* Status-varianten */
+    .tabel-rij.st-nieuw { border-left-color: var(--status-nieuw); }
+    .tabel-rij.st-nieuw .status-txt { color: var(--status-nieuw); }
+    .tabel-rij.st-nieuw .status-txt::before { background: var(--status-nieuw); }
+    .tabel-rij.st-twijfelt { border-left-color: var(--status-twijfelt); }
+    .tabel-rij.st-twijfelt .status-txt { color: var(--status-twijfelt); }
+    .tabel-rij.st-twijfelt .status-txt::before { background: var(--status-twijfelt); }
+    .tabel-rij.st-stopt { border-left-color: var(--status-stopt); }
+    .tabel-rij.st-stopt .status-txt { color: var(--status-stopt); }
+    .tabel-rij.st-stopt .status-txt::before { background: var(--status-stopt); }
+    .tabel-rij.st-stopt .nm { text-decoration: line-through; opacity: 0.7; }
+    .tabel-rij.st-ar { border-left-color: var(--status-ar); }
+    .tabel-rij.st-ar .status-txt { color: var(--status-ar); }
+    .tabel-rij.st-ar .status-txt::before { background: var(--status-ar); }
+    .tabel-rij.st-ar .nm { color: #a8a8ad; }
+    .tabel-rij.st-ar .sq-av { opacity: 0.85; }
+
+    /* ─── Staf tabel ─────────────────────────────────────────────── */
+    .staf-tabel-wrap {
+      background: var(--surface-page); border-radius: 8px; overflow: hidden;
+    }
+    .staf-header {
+      display: grid;
+      grid-template-columns: 50px 1fr 1fr 70px;
+      gap: 14px; padding: 10px 16px;
+      font-size: 9px; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700;
+      border-bottom: 1px solid var(--surface-card); cursor: pointer; user-select: none;
+    }
+    .staf-rij {
+      display: grid;
+      grid-template-columns: 50px 1fr 1fr 70px;
+      align-items: center; gap: 14px; padding: 10px 16px;
+      border-bottom: 1px solid var(--border-light);
+      transition: background 100ms;
+    }
+    .staf-rij:last-child { border-bottom: none; }
+    .staf-rij:hover { background: rgba(255,255,255,.02); }
+    .staf-rij.inactief { opacity: 0.5; }
+    .staf-avatar {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: rgba(255,107,0,.12); border: 1.5px solid rgba(255,107,0,.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 800; color: var(--ow-accent); flex-shrink: 0;
+    }
+    .staf-naam { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+    .staf-team-rij {
+      display: flex; align-items: center; gap: 6px; font-size: 12px;
+      color: var(--text-primary); font-weight: 500;
+    }
+    .team-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .rol-chip {
+      font-size: 11px; color: var(--text-secondary);
+      background: rgba(255,255,255,.04); border: 1px solid var(--border-default);
+      border-radius: 4px; padding: 1px 6px;
+    }
+    .sel-badge {
+      font-size: 9px; padding: 1px 5px; border-radius: 3px;
+      background: rgba(59,130,246,.15); color: #60a5fa; font-weight: 700;
+    }
+    .actief-toggle {
+      width: 36px; height: 20px; border-radius: 999px; border: none;
+      position: relative; cursor: pointer; transition: background 150ms;
+      outline: none; padding: 0;
+    }
+    .actief-toggle.aan { background: rgba(34,197,94,.55); }
+    .actief-toggle.uit { background: rgba(148,163,184,.35); }
+    .actief-toggle .knob {
+      position: absolute; top: 2px; width: 16px; height: 16px;
+      border-radius: 50%; background: #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,.3); transition: left 150ms;
+    }
+    .actief-toggle.aan .knob { left: 18px; }
+    .actief-toggle.uit .knob { left: 2px; }
+    .btn-primary {
+      padding: 6px 12px; border-radius: 7px; border: none;
+      background: var(--ow-accent); color: #fff;
+      font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit;
+    }
+
+    /* ─── Tab toggle ─────────────────────────────────────────────── */
+    .tab-content { display: none; }
+    .tab-content.visible { display: block; }
+  </style>
+</head>
+<body>
+
+<div class="page">
+  <!-- ── Ribbon ────────────────────────────────────────────────── -->
+  <nav class="ribbon" aria-label="Hoofdnavigatie">
+    <a class="ribbon-logo" href="homepage.html" title="TI Studio — Home">
+      <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="2" width="14" height="14" rx="1.5" stroke="#3b82f6" stroke-width="1.5" opacity="0.4"/>
+        <line x1="2" y1="6.7" x2="16" y2="6.7" stroke="#3b82f6" stroke-width="0.8" opacity="0.3"/>
+        <line x1="2" y1="11.3" x2="16" y2="11.3" stroke="#3b82f6" stroke-width="0.8" opacity="0.3"/>
+        <line x1="6.7" y1="2" x2="6.7" y2="16" stroke="#3b82f6" stroke-width="0.8" opacity="0.3"/>
+        <line x1="11.3" y1="2" x2="11.3" y2="16" stroke="#3b82f6" stroke-width="0.8" opacity="0.3"/>
+        <path d="M16 10l-4 4h4v-4z" fill="#3b82f6" opacity="0.15"/>
+        <path d="M16.5 5.5l-2-2-6 6-.5 2.5 2.5-.5 6-6zM14.5 7.5l-2-2" stroke="#3b82f6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+    <div class="ribbon-group">
+      <button class="ribbon-btn" title="Werkbord">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+          <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+        </svg>
+      </button>
+      <button class="ribbon-btn active" title="Personen">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="7" r="3"/><path d="M3 20c0-4 2.7-6 6-6s6 2 6 6"/><circle cx="17" cy="8" r="2.5"/><path d="M16 20c0-2.5 1.5-4 4-4"/>
+        </svg>
+      </button>
+      <div class="ribbon-memo-wrap">
+        <button class="ribbon-btn" title="Memo's">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+          </svg>
+        </button>
+        <span class="ribbon-badge">3</span>
+      </div>
+    </div>
+    <div class="ribbon-sep"></div>
+    <div class="ribbon-group">
+      <button class="ribbon-btn" title="Kader">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/>
+        </svg>
+      </button>
+      <button class="ribbon-btn" title="KNKV Sync">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+        </svg>
+      </button>
+    </div>
+    <div class="ribbon-footer">
+      <div class="ribbon-sep"></div>
+      <div class="ribbon-avatar" title="Uitloggen">AL</div>
+    </div>
+  </nav>
+
+  <!-- ── Content ───────────────────────────────────────────────── -->
+  <div class="content">
+
+    <nav class="sub-nav" aria-label="Personen sub-navigatie">
+      <button class="sub-nav-tab active" id="tab-spelers" onclick="switchTab('spelers')">Spelers</button>
+      <button class="sub-nav-tab" id="tab-staf" onclick="switchTab('staf')">Staf</button>
+    </nav>
+
+    <!-- ═══ SPELERS TAB ══════════════════════════════════════════ -->
+    <div class="tab-content visible" id="content-spelers">
+      <div class="filter-bar">
+        <input class="search-input" type="search" placeholder="Zoek op naam...">
+        <button class="filter-chip active">Allen</button>
+        <button class="filter-chip">Beschikbaar</button>
+        <button class="filter-chip">Twijfelt</button>
+        <button class="filter-chip">Gaat stoppen</button>
+        <button class="filter-chip">Nieuw</button>
+        <button class="filter-chip">Reserve</button>
+        <select class="filter-select">
+          <option>Huidig team: Allen</option>
+          <option>OW 1</option><option>OW 2</option><option>OW 3</option>
+          <option>OW A1</option><option>OW B1</option>
+        </select>
+        <select class="filter-select">
+          <option>Indeling: Allen</option>
+          <option>OW 1</option><option>OW 2</option>
+        </select>
+        <button class="filter-chip">▲ Memo</button>
+        <span class="filter-count">112 spelers</span>
+      </div>
+
+      <div class="tabel-wrap">
+        <div class="tabel-header">
+          <div>Foto</div><div class="sorted">Naam ↑</div><div>Status</div><div>Huidig</div><div>Indeling</div><div>Memo</div><div>Gezien</div><div style="text-align:right">Leeft.</div>
+        </div>
+
+        <!-- Beschikbaar, heer -->
+        <div class="tabel-rij">
+          <div class="sq-av"><img src="https://randomuser.me/api/portraits/men/32.jpg" alt=""></div>
+          <div class="nm">Freek van der Laban</div>
+          <div class="status-txt">Beschikbaar</div>
+          <div class="team">OW 1</div>
+          <div class="team">OW 1</div>
+          <div class="memo-cell open"><span class="icn">●</span>Open</div>
+          <div class="gezien">●</div>
+          <div class="leeft-col" style="background:var(--leeftijd-17)"><span class="lb">17</span><span class="ld">.41</span></div>
+        </div>
+
+        <!-- Beschikbaar, dame -->
+        <div class="tabel-rij">
+          <div class="sq-av vrouw"><img src="https://randomuser.me/api/portraits/women/68.jpg" alt=""></div>
+          <div class="nm">Lisa Bakker</div>
+          <div class="status-txt">Beschikbaar</div>
+          <div class="team">OW 1</div>
+          <div class="team">OW 1</div>
+          <div class="memo-cell geen">—</div>
+          <div class="gezien">●</div>
+          <div class="leeft-col" style="background:var(--leeftijd-18)"><span class="lb">18</span><span class="ld">.22</span></div>
+        </div>
+
+        <!-- Twijfelt -->
+        <div class="tabel-rij st-twijfelt">
+          <div class="sq-av vrouw"><img src="https://randomuser.me/api/portraits/women/44.jpg" alt=""></div>
+          <div class="nm">Noor de Bos</div>
+          <div class="status-txt">Twijfelt</div>
+          <div class="team">OW 2</div>
+          <div class="tb-ind-empty">Indeling</div>
+          <div class="memo-cell bespreking"><span class="icn">◐</span>Bespreking</div>
+          <div class="gezien">●</div>
+          <div class="leeft-col" style="background:var(--leeftijd-14)"><span class="lb">14</span><span class="ld">.12</span></div>
+        </div>
+
+        <!-- Nieuw -->
+        <div class="tabel-rij st-nieuw">
+          <div class="sq-av">
+            <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="">
+            <div class="nieuw-sparkle"><svg viewBox="0 0 24 24"><path d="M12 1l2 9 9 2-9 2-2 9-2-9-9-2 9-2z"/></svg></div>
+          </div>
+          <div class="nm">Tim Jansen</div>
+          <div class="status-txt">Nieuw</div>
+          <div class="team">—</div>
+          <div class="team">OW A1</div>
+          <div class="memo-cell geen">—</div>
+          <div class="gezien nee">●</div>
+          <div class="leeft-col" style="background:var(--leeftijd-10)"><span class="lb">10</span><span class="ld">.24</span></div>
+        </div>
+
+        <!-- Beschikbaar, jeugd -->
+        <div class="tabel-rij">
+          <div class="sq-av"><img src="https://randomuser.me/api/portraits/men/72.jpg" alt=""></div>
+          <div class="nm">Jens Klein</div>
+          <div class="status-txt">Beschikbaar</div>
+          <div class="team">OW B1</div>
+          <div class="team">OW B1</div>
+          <div class="memo-cell risico"><span class="icn">⚠</span>Risico</div>
+          <div class="gezien">●</div>
+          <div class="leeft-col" style="background:var(--leeftijd-8)"><span class="lb">8</span><span class="ld">.73</span></div>
+        </div>
+
+        <!-- Gaat stoppen -->
+        <div class="tabel-rij st-stopt">
+          <div class="sq-av vrouw"><img src="https://randomuser.me/api/portraits/women/55.jpg" alt=""></div>
+          <div class="nm">Anna de Wit</div>
+          <div class="status-txt">Gaat stoppen</div>
+          <div class="team">OW 2</div>
+          <div class="tb-ind-empty">Indeling</div>
+          <div class="memo-cell open"><span class="icn">●</span>Open</div>
+          <div class="gezien">●</div>
+          <div class="leeft-col" style="background:var(--leeftijd-17)"><span class="lb">17</span><span class="ld">.88</span></div>
+        </div>
+
+        <!-- Beschikbaar -->
+        <div class="tabel-rij">
+          <div class="sq-av vrouw"><img src="https://randomuser.me/api/portraits/women/33.jpg" alt=""></div>
+          <div class="nm">Eva Mulder</div>
+          <div class="status-txt">Beschikbaar</div>
+          <div class="team">OW B1</div>
+          <div class="team">OW B1</div>
+          <div class="memo-cell geen">—</div>
+          <div class="gezien nee">●</div>
+          <div class="leeft-col" style="background:var(--leeftijd-11)"><span class="lb">11</span><span class="ld">.05</span></div>
+        </div>
+
+        <!-- Reserve -->
+        <div class="tabel-rij st-ar">
+          <div class="sq-av vrouw"><img src="https://randomuser.me/api/portraits/women/12.jpg" alt=""></div>
+          <div class="nm">Sara Meijer</div>
+          <div class="status-txt">Reserve</div>
+          <div class="team">—</div>
+          <div class="tb-ind-empty">Indeling</div>
+          <div class="memo-cell opgelost"><span class="icn">✓</span>Opgelost</div>
+          <div class="gezien">●</div>
+          <div class="leeft-col" style="background:var(--leeftijd-19)"><span class="lb">23</span><span class="ld">.14</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ STAF TAB ═════════════════════════════════════════════ -->
+    <div class="tab-content" id="content-staf">
+      <div class="filter-bar">
+        <input class="search-input" type="search" placeholder="Zoek op naam...">
+        <select class="filter-select">
+          <option>Team: Allen</option>
+          <option>OW 1</option><option>OW 2</option><option>OW 3</option>
+          <option>OW A1</option><option>OW B1</option>
+        </select>
+        <button class="filter-chip">Toon inactief</button>
+        <span class="filter-count">6 stafleden</span>
+        <button class="btn-primary">+ Nieuw staflid</button>
+      </div>
+
+      <div class="staf-tabel-wrap">
+        <div class="staf-header">
+          <div></div><div>Naam ↑</div><div>Team + rol</div><div style="text-align:center">Actief</div>
+        </div>
+
+        <div class="staf-rij">
+          <div class="staf-avatar">JV</div>
+          <div class="staf-naam">Jan Vermeer</div>
+          <div>
+            <div class="staf-team-rij"><span class="team-dot" style="background:#3b82f6"></span> OW 1 <span class="rol-chip">Trainer/Coach</span></div>
+          </div>
+          <div style="text-align:center"><button class="actief-toggle aan"><span class="knob"></span></button></div>
+        </div>
+
+        <div class="staf-rij">
+          <div class="staf-avatar">KD</div>
+          <div class="staf-naam">Karin Dijkstra</div>
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div class="staf-team-rij"><span class="team-dot" style="background:#3b82f6"></span> OW 1 <span class="rol-chip">Assistent</span></div>
+            <div class="staf-team-rij"><span class="team-dot" style="background:#22c55e"></span> OW 2 <span class="rol-chip">Coach</span></div>
+          </div>
+          <div style="text-align:center"><button class="actief-toggle aan"><span class="knob"></span></button></div>
+        </div>
+
+        <div class="staf-rij">
+          <div class="staf-avatar">PB</div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span class="staf-naam">Peter Brouwer</span>
+            <span style="font-size:11px;color:var(--ow-accent);font-weight:700">▲</span>
+          </div>
+          <div>
+            <div class="staf-team-rij"><span class="team-dot" style="background:#22c55e"></span> OW 2 <span class="rol-chip">Trainer</span></div>
+          </div>
+          <div style="text-align:center"><button class="actief-toggle aan"><span class="knob"></span></button></div>
+        </div>
+
+        <div class="staf-rij">
+          <div class="staf-avatar">RO</div>
+          <div class="staf-naam">Rob Overbeek</div>
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div class="staf-team-rij"><span class="team-dot" style="background:#eab308"></span> OW A1 <span class="rol-chip">Trainer</span></div>
+            <div class="staf-team-rij"><span class="team-dot" style="background:#f97316"></span> OW B1 <span class="sel-badge">SEL</span> <span class="rol-chip">Coach</span></div>
+          </div>
+          <div style="text-align:center"><button class="actief-toggle aan"><span class="knob"></span></button></div>
+        </div>
+
+        <div class="staf-rij">
+          <div class="staf-avatar">MZ</div>
+          <div class="staf-naam">Mieke Zwart</div>
+          <div>
+            <div class="staf-team-rij"><span class="team-dot" style="background:#94a3b8"></span> OW 3 <span class="rol-chip">Trainer/Coach</span></div>
+          </div>
+          <div style="text-align:center"><button class="actief-toggle aan"><span class="knob"></span></button></div>
+        </div>
+
+        <div class="staf-rij">
+          <div class="staf-avatar">HV</div>
+          <div class="staf-naam">Henk Vos</div>
+          <div>
+            <div class="staf-team-rij"><span class="team-dot" style="background:#ef4444"></span> OW C1 <span class="rol-chip">Begeleider</span></div>
+          </div>
+          <div style="text-align:center"><button class="actief-toggle aan"><span class="knob"></span></button></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function switchTab(tab) {
+  document.querySelectorAll('.sub-nav-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('visible'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.getElementById('content-' + tab).classList.add('visible');
+}
+</script>
+
+</body>
+</html>

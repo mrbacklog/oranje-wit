@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Rijke rij · Speler-weergave</title>
+  <link rel="stylesheet" href="../../shared/tokens.css">
+  <style>
+    .rijke-rij {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: var(--rij-gap);
+      width: var(--rij-width);
+      height: var(--rij-height);
+      padding: 0 0 0 var(--rij-padding-left);
+      background: transparent;
+      border: 1.5px solid var(--status-color);
+      border-radius: 6px;
+      overflow: visible;
+    }
+    /* Avatar size komt uit tokens.css (rijke-rij .sq-av stretch) */
+    .rijke-rij .col { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+    .rijke-rij .nm { font-size: 13px; font-weight: 700; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .rijke-rij .row2 { display: flex; align-items: center; gap: 4px; font-size: 8px; }
+    .rijke-rij .tb { color: var(--text-secondary); border: 1px solid var(--team-border); border-radius: 3px; padding: 1px 5px; font-weight: 600; }
+    .rijke-rij .tb-i { color: var(--indeling-text); border: 1px solid var(--indeling-border); border-radius: 3px; padding: 1px 5px; background: var(--indeling-bg); font-weight: 600; }
+    .rijke-rij .leeft-col {
+      width: var(--rij-leeftcol); height: 100%;
+      background: var(--leeftijd-17);
+      border-radius: 0 4px 4px 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      flex-shrink: 0; line-height: 1;
+    }
+    .rijke-rij .leeft-col .lb { color: #fff; font-size: 15px; font-weight: 800; text-shadow: 0 1px 2px rgba(0,0,0,.5); font-variant-numeric: tabular-nums; }
+    .rijke-rij .leeft-col .ld { color: rgba(255,255,255,.7); font-size: 9px; font-weight: 700; margin-top: 1px; font-variant-numeric: tabular-nums; }
+
+    .rijke-rij.st-stopt .nm { text-decoration: line-through; opacity: 0.7; }
+    .rijke-rij.st-ar .nm   { color: #a8a8ad; }
+  </style>
+</head>
+<body>
+  <h1>Rijke rij</h1>
+  <p class="subtitle">Pool-drawer, zoom-detail in werkbord, drag-image ghost · ~54px hoog · grotere foto, volledige naam, beide team-badges op regel 2</p>
+
+  <h2>Basis (beschikbaar)</h2>
+  <div class="demo-grid">
+    <div>
+      <div class="rijke-rij">
+        <div class="sq-av"><img src="https://randomuser.me/api/portraits/men/32.jpg" alt=""></div>
+        <div class="col">
+          <div class="nm">Freek van der Laban</div>
+          <div class="row2"><span class="tb">A1</span><span class="tb-i">A1</span></div>
+        </div>
+        <div class="leeft-col"><span class="lb">17</span><span class="ld">.41</span></div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Met memo-attention + USS-hexagon + geblesseerd</h2>
+  <div class="demo-grid">
+    <div>
+      <div class="rijke-rij st-twijfelt">
+        <div class="sq-av">
+          <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="">
+          <div class="blessure"><svg viewBox="0 0 24 24"><path d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z"/></svg></div>
+        </div>
+        <div class="col">
+          <div class="nm">Freek van der Laban</div>
+          <div class="row2"><span class="tb">A1</span><span class="tb-i">A1</span></div>
+        </div>
+        <span class="memo-attention open">
+          <svg viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8 12h8M8 15h8M8 18h5"/></svg>
+        </span>
+        <span class="uss-hex zilver" style="width: 38px; height: 34px;"><span style="font-size: 14px;">78</span></span>
+        <div class="leeft-col"><span class="lb">17</span><span class="ld">.41</span></div>
+      </div>
+    </div>
+  </div>
+
+  <h2>4 memo-varianten naast elkaar</h2>
+  <div class="demo-grid">
+    <div>
+      <div class="rijke-rij">
+        <div class="sq-av"><img src="https://randomuser.me/api/portraits/men/32.jpg" alt=""></div>
+        <div class="col">
+          <div class="nm">Freek van der Laban</div>
+          <div class="row2"><span class="tb">A1</span><span class="tb-i">A1</span></div>
+        </div>
+        <span class="memo-attention open">
+          <svg viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8 12h8M8 15h8M8 18h5"/></svg>
+        </span>
+        <div class="leeft-col"><span class="lb">17</span><span class="ld">.41</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="rijke-rij">
+        <div class="sq-av"><img src="https://randomuser.me/api/portraits/men/32.jpg" alt=""></div>
+        <div class="col">
+          <div class="nm">Freek van der Laban</div>
+          <div class="row2"><span class="tb">A1</span><span class="tb-i">A1</span></div>
+        </div>
+        <span class="memo-attention bespreking">
+          <svg viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8 12h8M8 15h8M8 18h5"/></svg>
+        </span>
+        <div class="leeft-col"><span class="lb">17</span><span class="ld">.41</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="rijke-rij">
+        <div class="sq-av"><img src="https://randomuser.me/api/portraits/men/32.jpg" alt=""></div>
+        <div class="col">
+          <div class="nm">Freek van der Laban</div>
+          <div class="row2"><span class="tb">A1</span><span class="tb-i">A1</span></div>
+        </div>
+        <span class="memo-attention risico">
+          <svg viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8 12h8M8 15h8M8 18h5"/></svg>
+        </span>
+        <div class="leeft-col"><span class="lb">17</span><span class="ld">.41</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="rijke-rij">
+        <div class="sq-av"><img src="https://randomuser.me/api/portraits/men/32.jpg" alt=""></div>
+        <div class="col">
+          <div class="nm">Freek van der Laban</div>
+          <div class="row2"><span class="tb">A1</span><span class="tb-i">A1</span></div>
+        </div>
+        <span class="memo-attention opgelost">
+          <svg viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8 12h8M8 15h8M8 18h5"/></svg>
+        </span>
+        <div class="leeft-col"><span class="lb">17</span><span class="ld">.41</span></div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Alle status-varianten</h2>
+  <div class="demo-grid">
+    <div>
+      <div class="rijke-rij st-nieuw">
+        <div class="sq-av"><img src="https://randomuser.me/api/portraits/men/45.jpg" alt=""></div>
+        <div class="col">
+          <div class="nm">Tom Jansen</div>
+          <div class="row2"><span class="tb">—</span><span class="tb-i">E2</span></div>
+        </div>
+        <div class="leeft-col" style="background: var(--leeftijd-10);"><span class="lb">10</span><span class="ld">.24</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="rijke-rij st-twijfelt">
+        <div class="sq-av vrouw"><img src="https://randomuser.me/api/portraits/women/44.jpg" alt=""></div>
+        <div class="col">
+          <div class="nm">Noor de Bos</div>
+          <div class="row2"><span class="tb">B1</span><span class="tb-i">B1</span></div>
+        </div>
+        <div class="leeft-col" style="background: var(--leeftijd-14);"><span class="lb">14</span><span class="ld">.12</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="rijke-rij st-stopt">
+        <div class="sq-av"><img src="https://randomuser.me/api/portraits/men/72.jpg" alt=""></div>
+        <div class="col">
+          <div class="nm">Sven Kuipers</div>
+          <div class="row2"><span class="tb">A1</span><span class="tb-i">—</span></div>
+        </div>
+        <div class="leeft-col" style="background: var(--leeftijd-17);"><span class="lb">17</span><span class="ld">.88</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="rijke-rij st-ar">
+        <div class="sq-av vrouw"><img src="https://randomuser.me/api/portraits/women/12.jpg" alt=""></div>
+        <div class="col">
+          <div class="nm">Anna Meijer</div>
+          <div class="row2"><span class="tb">—</span><span class="tb-i">—</span></div>
+        </div>
+        <div class="leeft-col" style="background: var(--leeftijd-19);"><span class="lb">23</span><span class="ld">.14</span></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

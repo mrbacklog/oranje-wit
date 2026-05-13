@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Staf-weergave · Catalogus</title>
+  <link rel="stylesheet" href="tokens.css">
+  <style>
+    body { padding: 32px; max-width: 1200px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .card {
+      background: var(--surface-page);
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .card-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-light);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .card-title { font-size: 13px; font-weight: 700; color: var(--text-primary); }
+    .card-link {
+      font-size: 11px; color: var(--ow-accent); text-decoration: none; font-weight: 600;
+    }
+    .card-link:hover { text-decoration: underline; }
+    .card-body { height: 280px; overflow: hidden; }
+    .card-body iframe {
+      border: none; transform-origin: top left;
+      transform: scale(0.7); width: 143%; height: 143%;
+    }
+  </style>
+</head>
+<body>
+  <h1>Staf-weergave</h1>
+  <p class="subtitle">Alle staf-componenten voor TI Studio — van compact-chip tot drawer</p>
+
+  <div class="grid">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Compact-chip</span>
+        <a class="card-link" href="compact-chip.html">Open →</a>
+      </div>
+      <div class="card-body"><iframe src="compact-chip.html"></iframe></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Rijke-rij</span>
+        <a class="card-link" href="rijke-rij.html">Open →</a>
+      </div>
+      <div class="card-body"><iframe src="rijke-rij.html"></iframe></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Tabel-rij</span>
+        <a class="card-link" href="tabel-rij.html">Open →</a>
+      </div>
+      <div class="card-body"><iframe src="tabel-rij.html"></iframe></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Hover-historie</span>
+        <a class="card-link" href="hover-historie.html">Open →</a>
+      </div>
+      <div class="card-body"><iframe src="hover-historie.html"></iframe></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Staf-dialog</span>
+        <a class="card-link" href="staf-dialog.html">Open →</a>
+      </div>
+      <div class="card-body"><iframe src="staf-dialog.html"></iframe></div>
+    </div>
+
+    <div class="card" style="grid-column: 1 / -1;">
+      <div class="card-header">
+        <span class="card-title">Staf-drawer</span>
+        <a class="card-link" href="staf-drawer.html">Open →</a>
+      </div>
+      <div class="card-body" style="height:360px"><iframe src="staf-drawer.html"></iframe></div>
+    </div>
+  </div>
+</body>
+</html>

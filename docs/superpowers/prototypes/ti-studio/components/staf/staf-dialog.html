@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Staf-dialog · Staf-weergave</title>
+  <link rel="stylesheet" href="../../shared/tokens.css">
+  <style>
+    body { background: rgba(0,0,0,.7); display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; }
+
+    .type-icoon { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .type-icoon svg { width: 100%; height: 100%; display: block; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .type-icoon.technisch    { color: var(--type-technisch); }
+    .type-icoon.medisch      { color: var(--type-medisch); }
+    .type-icoon.ondersteunend { color: var(--type-ondersteunend); }
+
+    /* ═══ Dialog ════════════════════════════════════════════════════ */
+    .dialog {
+      width: 480px;
+      background: var(--surface-page);
+      border: 1px solid var(--border-default);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 24px 80px rgba(0,0,0,.7);
+    }
+
+    /* ── Header: foto + info + koppelingen + edit ────────────────── */
+    .dlg-header {
+      display: flex; gap: 16px;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border-light);
+      background: linear-gradient(160deg, rgba(255,140,0,.04) 0%, transparent 60%);
+    }
+    .dlg-foto {
+      width: 80px; height: 80px;
+      border-radius: 6px; overflow: hidden; flex-shrink: 0;
+      background: var(--staf-accent-dim);
+      border: 2px solid var(--staf-accent-border);
+    }
+    .dlg-foto img {
+      width: 100%; height: 100%; object-fit: cover; object-position: center 25%;
+      filter: grayscale(1); border-radius: 4px;
+    }
+    .dlg-foto::before {
+      content: ''; position: absolute; inset: 0;
+      background: var(--staf-accent); opacity: 0.1; mix-blend-mode: color;
+      z-index: 1; pointer-events: none; border-radius: inherit;
+    }
+    .dlg-foto .initialen {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; font-weight: 900; color: rgba(255,140,0,.3);
+    }
+
+    .dlg-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+    .dlg-naam-row { display: flex; align-items: center; gap: 8px; }
+    .dlg-naam { font-size: 20px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.02em; }
+    .dlg-close {
+      margin-left: auto; width: 28px; height: 28px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      background: none; border: 1px solid var(--border-default); color: var(--text-tertiary);
+      cursor: pointer; font-size: 14px; font-family: inherit;
+      transition: all 120ms;
+    }
+    .dlg-close:hover { background: rgba(255,255,255,.06); color: var(--text-primary); }
+
+    /* Rol-edit in header */
+    .dlg-rol-row {
+      display: flex; align-items: center; gap: 6px;
+    }
+    .dlg-rol-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 10px; border-radius: 5px;
+      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+      color: var(--staf-rol-text);
+      background: rgba(255,140,0,.06); border: 1px solid rgba(255,140,0,.15);
+      cursor: pointer; transition: all 120ms;
+    }
+    .dlg-rol-badge:hover { background: rgba(255,140,0,.12); border-color: rgba(255,140,0,.3); }
+    .dlg-rol-badge .type-icoon { width: 14px; height: 14px; }
+    .dlg-rol-badge::after { content: '▾'; font-size: 8px; opacity: 0.5; margin-left: 2px; }
+
+    /* Koppelingen in header */
+    .dlg-koppelingen { display: flex; gap: 6px; flex-wrap: wrap; }
+    .dlg-koppeling {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 8px; border-radius: 5px;
+      font-size: 11px; font-weight: 500; color: var(--text-primary);
+      background: rgba(255,255,255,.04); border: 1px solid var(--border-default);
+    }
+    .dlg-koppeling .dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+    .dlg-koppeling .krol { font-size: 9px; color: var(--text-tertiary); margin-left: 2px; }
+
+    /* Speler-badge */
+    .dlg-speler-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 8px; border-radius: 5px;
+      font-size: 11px; font-weight: 500; color: var(--text-secondary);
+      background: rgba(255,255,255,.03); border: 1px solid var(--border-default);
+    }
+    .dlg-speler-badge .shirt-sm {
+      width: 12px; height: 12px;
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+    .dlg-speler-badge .shirt-sm svg {
+      width: 100%; height: 100%; stroke: currentColor; fill: none;
+      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    /* Memo in header */
+    .dlg-header .memo-attention {
+      width: 20px; height: 20px;
+      display: inline-flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,.5));
+    }
+    .dlg-header .memo-attention svg {
+      width: 100%; height: 100%; stroke: currentColor; fill: none;
+      stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+    }
+    .dlg-header .memo-attention.open { color: #eab308; }
+
+    /* ── Tabs ─────────────────────────────────────────────────────── */
+    .dlg-tabs {
+      display: flex; border-bottom: 1px solid var(--border-light);
+      padding: 0 24px;
+    }
+    .dlg-tab {
+      padding: 10px 16px; font-size: 12px; font-weight: 600;
+      color: var(--text-tertiary); cursor: pointer; border: none; background: none;
+      border-bottom: 2px solid transparent; margin-bottom: -1px;
+      font-family: inherit; transition: color 120ms;
+    }
+    .dlg-tab:hover { color: var(--text-secondary); }
+    .dlg-tab.active { color: var(--ow-accent); border-bottom-color: var(--ow-accent); }
+
+    /* ── Tab content ──────────────────────────────────────────────── */
+    .dlg-body { padding: 16px 24px 24px; min-height: 260px; }
+    .tab-content { display: none; }
+    .tab-content.visible { display: block; }
+
+    /* Historie tab */
+    .hist-entry {
+      display: flex; align-items: baseline; gap: 10px;
+      padding: 6px 0; border-bottom: 1px solid var(--border-light); font-size: 12px;
+    }
+    .hist-entry:last-child { border-bottom: none; }
+    .hist-seizoen {
+      font-size: 11px; color: var(--text-tertiary); font-variant-numeric: tabular-nums;
+      min-width: 65px; flex-shrink: 0; font-weight: 600;
+    }
+    .hist-teams { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+    .hist-team-line {
+      display: flex; align-items: center; gap: 5px; color: var(--text-secondary);
+    }
+    .hist-team-line .dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+    .hist-team-line .hrol {
+      font-size: 10px; color: var(--text-tertiary); margin-left: auto;
+      display: flex; align-items: center; gap: 3px;
+    }
+    .hist-team-line .type-icoon { width: 10px; height: 10px; }
+
+    /* Memo tab — memo-rij */
+    .memo-rij {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 12px; border-bottom: 1px solid var(--border-light);
+      cursor: pointer; transition: background 100ms;
+    }
+    .memo-rij:hover { background: rgba(255,255,255,.03); }
+    .memo-rij:last-child { border-bottom: none; }
+    .mr-status { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .mr-status.open { background: #eab308; }
+    .mr-status.bespreking { background: #60a5fa; }
+    .mr-status.opgelost { background: #22c55e; }
+    .mr-prio { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 7px; font-weight: 900; color: #fff; }
+    .mr-prio.hoog { background: #f97316; }
+    .mr-prio.middel { background: #eab308; }
+    .mr-prio.laag { background: #3b82f6; }
+    .mr-tekst { flex: 1; min-width: 0; font-size: 12px; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .memo-rij.opgelost .mr-tekst { color: var(--text-tertiary); text-decoration: line-through; }
+    .mr-datum { font-size: 10px; color: var(--text-muted); flex-shrink: 0; }
+    .mr-team { display: inline-flex; align-items: center; gap: 3px; font-size: 9px; color: var(--text-tertiary); flex-shrink: 0; }
+    .mr-team .dot { width: 4px; height: 4px; border-radius: 50%; }
+
+    .section-title { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+
+  <div class="dialog">
+    <!-- ── Header ──────────────────────────────────────────────── -->
+    <div class="dlg-header">
+      <div class="dlg-foto" style="position:relative">
+        <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="">
+      </div>
+      <div class="dlg-info">
+        <div class="dlg-naam-row">
+          <span class="dlg-naam">Karin Dijkstra</span>
+          <span class="memo-attention open"><svg viewBox="0 0 24 24"><path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8 12h8M8 15h8M8 18h5"/></svg></span>
+          <button class="dlg-close">×</button>
+        </div>
+
+        <!-- Rol quick-edit -->
+        <div class="dlg-rol-row">
+          <span class="dlg-rol-badge">
+            <span class="type-icoon technisch"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span>
+            Assistent-trainer
+          </span>
+        </div>
+
+        <!-- Koppelingen + speler-badge -->
+        <div class="dlg-koppelingen">
+          <span class="dlg-koppeling"><span class="dot" style="background:var(--cat-blauw)"></span> OW 1 <span class="krol">Ass.</span></span>
+          <span class="dlg-koppeling"><span class="dot" style="background:var(--cat-groen)"></span> OW 2 <span class="krol">Coach</span></span>
+          <span class="dlg-speler-badge"><span class="shirt-sm"><svg viewBox="0 0 24 24"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg></span> OW 2</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Tabs ────────────────────────────────────────────────── -->
+    <div class="dlg-tabs">
+      <button class="dlg-tab active" id="tab-historie" onclick="switchTab('historie')">Historie</button>
+      <button class="dlg-tab" id="tab-memo" onclick="switchTab('memo')">Memo's</button>
+    </div>
+
+    <!-- ── Tab: Historie ───────────────────────────────────────── -->
+    <div class="dlg-body">
+      <div class="tab-content visible" id="content-historie">
+        <div class="section-title">Seizoenshistorie · 4 seizoenen bij OW</div>
+        <div class="hist-entry">
+          <span class="hist-seizoen">2025–26</span>
+          <div class="hist-teams">
+            <div class="hist-team-line"><span class="dot" style="background:var(--cat-blauw)"></span> OW 1 <span class="hrol"><span class="type-icoon technisch"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span> Assistent-trainer</span></div>
+          </div>
+        </div>
+        <div class="hist-entry">
+          <span class="hist-seizoen">2024–25</span>
+          <div class="hist-teams">
+            <div class="hist-team-line"><span class="dot" style="background:var(--cat-groen)"></span> OW 2 <span class="hrol"><span class="type-icoon technisch"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span> Trainer</span></div>
+          </div>
+        </div>
+        <div class="hist-entry">
+          <span class="hist-seizoen">2023–24</span>
+          <div class="hist-teams">
+            <div class="hist-team-line"><span class="dot" style="background:var(--cat-senior)"></span> OW 3 <span class="hrol"><span class="type-icoon technisch"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span> Coach</span></div>
+          </div>
+        </div>
+        <div class="hist-entry">
+          <span class="hist-seizoen">2022–23</span>
+          <div class="hist-teams">
+            <div class="hist-team-line"><span class="dot" style="background:var(--cat-senior)"></span> OW 3 <span class="hrol"><span class="type-icoon ondersteunend"><svg viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg></span> Leider</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Tab: Memo's ─────────────────────────────────────────── -->
+      <div class="tab-content" id="content-memo">
+        <div class="memo-rij" data-memo="karin-training" onclick="openMemoDrawer({entiteit:'Staf',entiteitNaam:'Karin Dijkstra',entiteitIcon:'technisch',status:'open',prioriteit:'middel',beschrijving:'Beschikbaarheid voor training op dinsdag is onzeker. Overleggen met Karin over verdeling trainingsuren met Peter.',tijdlijn:[{type:'toelichting',auteur:'Antjan',datum:'14 apr, 10:00',tekst:'Mail gestuurd naar Karin en Peter om beschikbaarheid te checken.'},{type:'aangemaakt',auteur:'Antjan',datum:'12 apr, 09:00',tekst:'Memo aangemaakt'}]})">
+          <span class="mr-status open"></span>
+          <span class="mr-prio middel">M</span>
+          <span class="mr-tekst">Beschikbaarheid training dinsdag onzeker — overleg met Peter</span>
+          <span class="mr-team"><span class="dot" style="background:var(--cat-blauw)"></span> OW 1</span>
+          <span class="mr-datum">14 apr</span>
+        </div>
+        <div class="memo-rij opgelost" data-memo="karin-vog" onclick="openMemoDrawer({entiteit:'Staf',entiteitNaam:'Karin Dijkstra',entiteitIcon:'technisch',status:'opgelost',prioriteit:'laag',beschrijving:'VOG-verklaring nog niet ingeleverd. Herinnering gestuurd — inmiddels ontvangen.',tijdlijn:[{type:'status',auteur:'Systeem',datum:'5 mrt, 10:00',tekst:'Status gewijzigd: Open → Opgelost'},{type:'toelichting',auteur:'Antjan',datum:'5 mrt, 09:50',tekst:'VOG ontvangen per mail.'},{type:'aangemaakt',auteur:'Antjan',datum:'2 mrt, 11:00',tekst:'Memo aangemaakt'}]})">
+          <span class="mr-status opgelost"></span>
+          <span class="mr-prio laag">L</span>
+          <span class="mr-tekst">VOG-verklaring — inmiddels ontvangen</span>
+          <span class="mr-team"><span class="dot" style="background:var(--cat-groen)"></span> OW 2</span>
+          <span class="mr-datum">2 mrt</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+function switchTab(tab) {
+  document.querySelectorAll('.dlg-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('visible'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.getElementById('content-' + tab).classList.add('visible');
+}
+</script>
+<script type="module">
+  import '../../shared/memo-drawer.js';
+</script>
+
+</body>
+</html>
