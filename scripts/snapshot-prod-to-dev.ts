@@ -1,15 +1,23 @@
 /**
- * Productie → dev snapshot voor blocker-A historisch dry-run.
+ * Productie → dev/test snapshot met flexibele target-selectie.
  *
  * Kopieert 7 teamindeling-tabellen via twee gelijktijdige pg.Client connecties.
  * Geen pg_dump nodig; geen bestanden op disk.
  *
  * Productie: ALLEEN SELECT (read-only).
- * Dev: TRUNCATE in omgekeerde FK-volgorde, daarna INSERT in FK-volgorde.
+ * Dev/Test: TRUNCATE in omgekeerde FK-volgorde, daarna INSERT in FK-volgorde.
  *
- * Gebruik:
- *   PROD_DATABASE_URL="postgresql://..." DEV_DATABASE_URL="postgresql://..." \
+ * Target-selectie via env-var SNAPSHOT_TARGET:
+ *   - docker-dev (default): naar localhost:5434/oranjewit_dev
+ *   - railway-test: naar Railway TEST_DATABASE_URL
+ *
+ * Lokaal gebruik (docker):
+ *   PROD_DATABASE_URL="postgresql://..." DEV_DATABASE_URL="postgresql://localhost:5434/oranjewit_dev" \
  *     npx tsx scripts/snapshot-prod-to-dev.ts
+ *
+ * Railway test-DB:
+ *   PROD_DATABASE_URL="postgresql://..." TEST_DATABASE_URL="postgresql://..." \
+ *     npx tsx scripts/snapshot-prod-to-dev.ts --target=railway-test
  */
 
 import "dotenv/config";
@@ -31,11 +39,36 @@ const TABELLEN_INSERT_VOLGORDE = [
 
 const TABELLEN_TRUNCATE_VOLGORDE = [...TABELLEN_INSERT_VOLGORDE].reverse();
 
+// Bepaal target via env-var (default: docker-dev)
+const SNAPSHOT_TARGET = (process.env.SNAPSHOT_TARGET || "docker-dev").toLowerCase();
+
+if (!["docker-dev", "railway-test"].includes(SNAPSHOT_TARGET)) {
+  logger.error(`SNAPSHOT_TARGET="${SNAPSHOT_TARGET}" ongeldig. Keuzes: docker-dev, railway-test`);
+  process.exit(1);
+}
+
+// Selecteer dev-DB URL op basis van target
+let DEV_URL: string | undefined;
+if (SNAPSHOT_TARGET === "docker-dev") {
+  DEV_URL = process.env.DEV_DATABASE_URL;
+  if (!DEV_URL) {
+    logger.error("docker-dev target vereist DEV_DATABASE_URL env-var");
+    process.exit(1);
+  }
+} else if (SNAPSHOT_TARGET === "railway-test") {
+  DEV_URL = process.env.TEST_DATABASE_URL;
+  if (!DEV_URL) {
+    logger.error("railway-test target vereist TEST_DATABASE_URL env-var");
+    process.exit(1);
+  }
+}
+
 const PROD_URL = process.env.PROD_DATABASE_URL;
-const DEV_URL = process.env.DEV_DATABASE_URL;
 
 if (!PROD_URL || !DEV_URL) {
-  logger.error("PROD_DATABASE_URL en DEV_DATABASE_URL beide vereist");
+  logger.error(
+    `PROD_DATABASE_URL vereist. Dev-URL bepaald door SNAPSHOT_TARGET="${SNAPSHOT_TARGET}"`
+  );
   process.exit(1);
 }
 
@@ -117,7 +150,7 @@ async function main() {
   await prod.connect();
   await dev.connect();
 
-  logger.info("=== Snapshot prod → dev ===");
+  logger.info(`=== Snapshot prod → ${SNAPSHOT_TARGET} ===`);
 
   // Productie counts (voor verificatie)
   const prodCounts: Record<string, number> = {};
@@ -127,7 +160,7 @@ async function main() {
   logger.info("Productie-rijen:", prodCounts);
 
   // TRUNCATE dev in omgekeerde FK-volgorde
-  logger.info("Truncate dev-tabellen...");
+  logger.info(`Truncate ${SNAPSHOT_TARGET}-tabellen...`);
   // Eén TRUNCATE met CASCADE op alle 7 tabellen tegelijk — atomair en veilig.
   await dev.query(
     `TRUNCATE TABLE ${TABELLEN_TRUNCATE_VOLGORDE.map((t) => `"${t}"`).join(", ")} RESTART IDENTITY CASCADE`
@@ -140,17 +173,17 @@ async function main() {
     devCounts[tabel] = n;
     logger.info(`[${tabel}] ${n} rijen gekopieerd (prod had ${prodCounts[tabel]})`);
     if (n !== prodCounts[tabel]) {
-      logger.warn(`[${tabel}] MISMATCH: dev=${n} vs prod=${prodCounts[tabel]}`);
+      logger.warn(`[${tabel}] MISMATCH: ${SNAPSHOT_TARGET}=${n} vs prod=${prodCounts[tabel]}`);
     }
   }
 
   await prod.end();
   await dev.end();
 
-  logger.info("=== Snapshot voltooid ===", devCounts);
+  logger.info(`=== Snapshot voltooid (${SNAPSHOT_TARGET}) ===`, devCounts);
 }
 
 main().catch((err) => {
-  logger.error("Snapshot mislukt:", err);
+  logger.error(`Snapshot (${SNAPSHOT_TARGET}) mislukt:`, err);
   process.exit(1);
 });

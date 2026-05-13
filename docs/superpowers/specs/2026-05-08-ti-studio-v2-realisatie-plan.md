@@ -1,11 +1,31 @@
 # TI Studio v2 — Realisatieplan
 
-**Datum**: 2026-05-08  
-**Status**: Ter goedkeuring  
+**Datum**: 2026-05-08, bijgewerkt 2026-05-13  
+**Status**: Architectuur verfijnd — Railway test-DB voorbereiding  
 **Auteur**: Product Owner  
 **Gerelateerd**: `2026-05-08-ti-studio-v2-deployment-plan.md` (infra/Railway/cutover)
 
 > **Archief-marker pin-eliminatie (2026-05-11)**: Verwijzingen naar pin-functie in dit document zijn historisch — de pin-functionaliteit is volledig uit de software verwijderd (migratie `20260415000000_drop_pin`). Zie `docs/superpowers/specs/2026-05-11-pin-cleanup-plan.md`.
+
+> **Architectuur-verfijning (2026-05-13)**: Twee aparte Railway-services (`studio-test` en `studio-next`) in plaats van één service met DNS-swap. Test-DB opzet (`oranjewit-test`) inclusief `snapshot-prod-to-dev.ts` env-var integratie. Zie sectie 0-A hieronder.
+
+---
+
+## Architectuur Verfijning (2026-05-13)
+
+Definitieve setup per fase:
+
+| Fase | Domein | Railway-service | Database | Doel |
+|---|---|---|---|---|
+| **0-2: Bouw** | `studio-test.ckvoranjewit.app` | `studio-test` | PostgreSQL `oranjewit-test` (snapshot) | Veilig bouwen + testen |
+| **3: Parallel-test** | `studio-next.ckvoranjewit.app` | `studio-next` | PostgreSQL `oranjewit` (productie) | TC-test naast v1 |
+| **4: Cutover** | `teamindeling.ckvoranjewit.app` | `studio-next` | PostgreSQL `oranjewit` | Live |
+| **1 fallback** | `teamindeling-oud.ckvoranjewit.app` | `ti-studio` (v1) | PostgreSQL `oranjewit` | Rollback |
+
+**Kritieke besluiten:**
+1. **Twee services, niet één**: `studio-test` en `studio-next` zijn afzonderlijke Railway-services. Dit vermijdt downtime bij redeploys en houdt sandbox actief ná cutover.
+2. **Test-DB aparte instance**: `oranjewit-test` PostgreSQL op Railway, gevoed via `snapshot-prod-to-dev.ts` met env-var `SNAPSHOT_TARGET=railway-test`.
+3. **Sportlink per fase**: Fase 0-2 UIT (test-DB), Fase 3 UIT (TC-test), Fase 4+ AAN (v2 primair).
 
 ---
 
@@ -229,8 +249,9 @@ De homepage is bereikbaar via klik op het TI-logo bovenaan de ribbon (niet als r
 - `package.json` met naam `@oranje-wit/ti-studio-v2`, port 3002 lokaal
 - Dockerfile kopiëren van v1 (paden aanpassen naar `ti-studio-v2`)
 - `pnpm-workspace.yaml` uitbreiden met de nieuwe app
-- CI bijwerken: `fast-gate` + `build` + `deploy` voor v2 (zie deployment-plan sectie 4)
-- Railway service `ti-studio-v2` aanmaken + `teamindeling-next.ckvoranjewit.app`
+- CI bijwerken: `fast-gate` + `build` + `deploy` voor v2 (zie deployment-plan sectie 5)
+- Railway service `studio-test` aanmaken + `studio-test.ckvoranjewit.app`
+- PostgreSQL `oranjewit-test` aanmaken en initialiseren
 - Auth-guards, Prisma-client, `@oranje-wit/teamindeling-shared` importeren
 - Lege shell: Ribbon + TiStudioPageShell conform prototype `shell.js`
 - `globals.css` met tokens (kopieer uit v1 `tokens.css`)
@@ -240,8 +261,9 @@ De homepage is bereikbaar via klik op het TI-logo bovenaan de ribbon (niet als r
 **Exit-criteria:**
 - `pnpm --filter @oranje-wit/ti-studio-v2 build` slaagt
 - CI groen
-- `teamindeling-next.ckvoranjewit.app` bereikbaar, login werkt
+- `studio-test.ckvoranjewit.app` bereikbaar, login werkt
 - Leeg werkbord (geen content) zichtbaar na login
+- `oranjewit-test` DB schema deployed
 
 ---
 
@@ -268,8 +290,8 @@ daarna de andere pagina's door-refereren (memo-count, kader-data, etc.).
 ### Fase 2 — Parallel-test Antjan (1-2 weken)
 
 **Wat:**
-- Antjan test `teamindeling-next.ckvoranjewit.app` naast v1
-- Beide apps draaien op gedeelde productie-DB
+- Antjan test `studio-test.ckvoranjewit.app` naast v1
+- v2 gebruikt aparte `oranjewit-test` DB
 - v1 is bevroren (geen features)
 - Antjan rapporteert bugs → v2-fixes via `patch:` commits
 
@@ -281,40 +303,43 @@ daarna de andere pagina's door-refereren (memo-count, kader-data, etc.).
 - Kader: kaders opslaan, memo's per doelgroep
 - Sync: leden-sync uitvoerbaar (prep-dialog → voortgang → resultaat)
 - Daisy-widget reageert
-- Geen data-verlies bij simultaan gebruik v1+v2
+- Data is consistent tussen studio-test en productie (snapshot geldig)
 
 ---
 
 ### Fase 3 — TC-breed (1 week)
 
 **Wat:**
-- Twee of drie andere TC-leden (max 3 personen) testen op `teamindeling-next`
+- Twee of drie andere TC-leden (max 3 personen) testen op `studio-next.ckvoranjewit.app`
+- v2 (`studio-next`) gebruikt nu productie-DB `oranjewit` (NOT test-DB)
+- Nieuwe service aanmaken: `studio-next` (zelfde codebase, andere Railway-service)
 - v1 is nog primair productie-domein
 - Feedback-ronde: max 5 werkdagen
 
 **Exit-criteria:**
 - Geen blocker-bugs gerapporteerd door TC-leden
 - Performance: pagina-laadtijd < 2s (cold load)
-- Sportlink-sync: uitgeschakeld op v2 tot cutover (env var)
+- Sportlink-sync: uitgeschakeld op studio-next (env var `SPORTLINK_ENABLED=false`)
 
 ---
 
 ### Fase 4 — Cutover
 
-**Wat:** Zie `2026-05-08-ti-studio-v2-deployment-plan.md` sectie 5 voor de volledige procedure.
+**Wat:** Zie `2026-05-08-ti-studio-v2-deployment-plan.md` sectie 6 voor de volledige procedure.
 
 **Samengevat:**
-1. DNS: `teamindeling.ckvoranjewit.app` → v2 service
-2. v1 naar `teamindeling-legacy.ckvoranjewit.app`
-3. Sportlink-sync: v1 uitzetten, v2 aanzetten
-4. 24u monitoring
-5. Na 7 dagen: beslissing v1 afsluiten
+1. DNS: `teamindeling.ckvoranjewit.app` → studio-next service
+2. v1 naar `teamindeling-oud.ckvoranjewit.app`
+3. Sportlink-sync: v1 uitzetten, studio-next aanzetten
+4. `studio-test` blijft als sandbox
+5. 24u monitoring
+6. Na 7 dagen: beslissing v1 afzetten
 
 **Exit-criteria:**
 - Health check v2: `200 OK`
 - Login werkt op primair domein
 - Daisy reageert op `teamindeling.ckvoranjewit.app`
-- Sportlink-sync draait op v2
+- Sportlink-sync draait op studio-next
 
 ---
 
@@ -370,16 +395,22 @@ cross-app imports maar wel business logic die exact overkomt moet zijn.
 
 ---
 
-### 5.2 Sportlink Sync
+### 5.2 Sportlink Sync per fase
 
 **Locatie v1**: `apps/ti-studio/src/components/sportlink/` + API routes + `@oranje-wit/sportlink` package
 
-**Risico**: Twee apps tegelijk syncen → Sportlink API rate limit (zie deployment-plan sectie 6.5).
+**Fase 0-2 (studio-test)**:
+- `SPORTLINK_ENABLED=false` (test-DB, geen Sportlink-koppeling)
+- Geen sync-pagina nodig in UI
 
-**Aanpak:**
-- `SPORTLINK_ENABLED=false` env var op v2 tijdens Fase 1-3
-- Na cutover: v2 krijgt `SPORTLINK_ENABLED=true`, v1 krijgt `false`
-- Prototype hernoemt de pagina "KNKV Sync" — functioneel identiek, UI herbouwt
+**Fase 3 (studio-next)**:
+- `SPORTLINK_ENABLED=false` (TC-test parallel met v1, voorkomen rate limit)
+- Sync-pagina zichtbaar maar read-only
+
+**Fase 4+ (studio-next primair)**:
+- `SPORTLINK_ENABLED=true` op studio-next
+- `SPORTLINK_ENABLED=false` op v1
+- Stagger sync-crons: studio-next uur 01:30 UTC (v1 is 01:00 UTC)
 
 **Open vraag voor Antjan**: Moet de route `/sportlink` → `/sync` redirect ook in v1
 toegevoegd worden (voor bookmark-compatibiliteit) of pas bij cutover?
@@ -388,11 +419,12 @@ toegevoegd worden (voor bookmark-compatibiliteit) of pas bij cutover?
 
 ### 5.3 Werkbord en versies
 
-**Risico**: v1 en v2 draaien parallel op dezelfde DB. Beide kunnen tegelijk naar
-`Werkindeling`, `Versie`, `Team`, `TeamSpeler` schrijven.
+**Risico fase 2**: studio-test en v1 draaien op aparte DBs — geen conflict.
 
-**Aanpak (Fase 2 parallel-test):**
-- Antjan test met één sessie tegelijk (niet beide apps gelijktijdig editen)
+**Risico fase 3**: studio-next en v1 draaien parallel op dezelfde productie-DB.
+
+**Aanpak (Fase 3 parallel-test):**
+- TC-leden testen met één sessie tegelijk (niet beide apps gelijktijdig editen)
 - Geen optimistic locking nodig voor de test-fase (3 TC-leden, geen echte multi-user)
 - Bij cutover is v1 legacy-only → geen simultane writes meer
 
@@ -402,10 +434,12 @@ toegevoegd worden (voor bookmark-compatibiliteit) of pas bij cutover?
 
 **Schema**: `Werkitem` (type=MEMO) + `WerkitemToelichting` + `WerkitemActiviteit`
 
-**Risico**: Memo's aangemaakt in v2 zijn direct zichtbaar in v1 (gedeelde DB).
+**Fase 2**: studio-test en v1 op aparte DBs — memos zijn apart per database.
+
+**Fase 3**: studio-next en v1 op dezelfde productie-DB. Memos aangemaakt in studio-next zijn direct zichtbaar in v1.
 Dit is gewenst — beide apps tonen dezelfde memo-werkelijkheid.
 
-**Aanpak**: Geen extra actie. Gedeelde DB is hier een voordeel.
+**Aanpak**: Geen extra actie nodig.
 
 ---
 
@@ -437,8 +471,8 @@ de juiste alias-mapping heeft. Coördineer via `team-planner` agent.
 
 ## 6. Open vragen voor Antjan
 
-1. **Subdomein bevestigen**: `teamindeling-next.ckvoranjewit.app` als bouw-domein —
-   akkoord? (zie deployment-plan sectie 7 voor alternatieven)
+1. **Architectuur bevestigen**: `studio-test` (fase 0-2) + `studio-next` (fase 3+) als
+   aparte services, met `oranjewit-test` DB voor fase 0-2 — akkoord?
 
 2. **Route `/sportlink` → `/sync`**: Redirect in v1 toevoegen zodat bestaande
    bookmarks blijven werken, of pas bij cutover?
@@ -449,14 +483,14 @@ de juiste alias-mapping heeft. Coördineer via `team-planner` agent.
 4. **Teams-anomalie timing**: Migratiescripts draaien vóór Fase 2 of kan dat later?
    (raakt werkbord-weergave van teamkleuren en alias-namen)
 
-5. **Sportlink-sync uitschakelen op v2**: Via env var `SPORTLINK_ENABLED=false`
-   is de eenvoudigste aanpak — akkoord? Of liever de sync-pagina verbergen in de UI?
+5. **Sportlink-sync per fase**: Via env var `SPORTLINK_ENABLED` per fase — akkoord?
+   Fase 0-2: FALSE, Fase 3: FALSE, Fase 4+: TRUE?
 
 6. **v1 bevriezingsdatum**: Wanneer geldt de bevriezing? Direct bij start Fase 0,
    of bij start bouw Fase 1 (werkbord)? Dit bepaalt of er lopende feature-branches
    nog mogen landen in v1.
 
-7. **Test-scenario's Fase 2**: Wil je een gestructureerde testscript (scenario 1: login,
+7. **Test-scenario's Fase 2 en 3**: Wil je een gestructureerde testscript (scenario 1: login,
    scenario 2: werkbord indeling, etc.) of ad-hoc testen?
 
 ---
@@ -467,22 +501,14 @@ de juiste alias-mapping heeft. Coördineer via `team-planner` agent.
 
 | Stap | Agent | Taak |
 |---|---|---|
-| 1 | `ontwikkelaar` | `apps/ti-studio-v2` scaffolding (Fase 0): lege Next.js app, Dockerfile, CI-aanpassing |
-| 2 | `team-devops` | Railway service `ti-studio-v2` aanmaken, `teamindeling-next.ckvoranjewit.app` domein, env vars |
-| 3 | `ontwikkelaar` | Homepage + Ribbon bouwen (visuele pariteit met prototype) |
-| 4 | `ontwikkelaar` | Werkbord migreren (grootste blok — alles uit `/indeling`) |
-| 5 | `ontwikkelaar` | Daisy AI-plugin aansluiten na Werkbord |
-| 6 | `ontwikkelaar` | Personen, Memo, Kader, Sync (pagina voor pagina) |
-| 7 | `daisy-coach` | Verificatie tool-descriptions na migratie naar v2 |
-| 8 | `product-owner` | Fase 2-briefing voor Antjan (testscript + parallel-test starten) |
+| 1 | `team-devops` | Railway services `studio-test` en `studio-next` aanmaken, PostgreSQL `oranjewit-test` opzetten, env vars |
+| 2 | `team-devops` | Cloudflare DNS records: `studio-test.ckvoranjewit.app`, `studio-next.ckvoranjewit.app` |
+| 3 | `operator` | `snapshot-prod-to-dev.ts` aanpassen met `SNAPSHOT_TARGET` env-var (zie `2026-05-13-railway-test-db-setup.md`) |
+| 4 | `ontwikkelaar` | CI bijwerken met studio-test deploy-triggers |
+| 5 | `antjan` | Fase 0-2 testen op `studio-test.ckvoranjewit.app` |
 
-**Parallelle taken (kunnen gelijktijdig):**
-- `team-devops` regelt Railway + domein (stap 2) terwijl `ontwikkelaar` scaffold bouwt (stap 1)
-- Teams-anomalie migratiescripts (`team-planner`) zodra Fase 0 klaar is
-
-**Merge-regie**: Product Owner neemt merge-regie voor PR's van v2 naar main.
-Elke fase-afronding gaat via `release:` commit (want nieuwe functionaliteit).
-Werkbord-migratie is de eerste `release:` commit.
+**Parallelle taken:**
+- team-devops regelt Railway + DNS (stap 1-2) terwijl operator snapshot-script aanpast (stap 3)
 
 ---
 
