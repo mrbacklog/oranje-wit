@@ -53,6 +53,11 @@ blob-report/
 e2e/screenshots/
 e2e/verify/
 
+# Snapshot dumps (blocker-a + toekomstig pg_dump werk)
+scripts/*-snapshot.sql
+scripts/*-snapshot.sql.gz
+scripts/*-snapshot.dump
+
 # Misc
 *.log
 next-env.d.ts

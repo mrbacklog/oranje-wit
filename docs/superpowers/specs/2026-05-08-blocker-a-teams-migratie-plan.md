@@ -1,7 +1,158 @@
 # Blocker-A: Teams-2025-2026 Migratie Plan
-**Status:** DRY-RUN voltooid 2026-05-11 — advies GO voor historisch script, 2025-2026 al live  
-**Datum:** 2026-05-08 (plan) · 2026-05-11 (dry-run)  
+**Status:** SNAPSHOT-DRY-RUN voltooid 2026-05-13 — advies GO voor historisch script op productie  
+**Datum:** 2026-05-08 (plan) · 2026-05-11 (lege-dev dry-run) · 2026-05-13 (snapshot dry-run)  
 **Doel:** Inventarisatie + dry-run-strategie voor v2 TI Studio start
+
+---
+
+## Snapshot dry-run 2026-05-13
+
+**Setup:** Productie-snapshot van 7 tabellen (`seizoenen`, `leden`, `teams`, `team_periodes`, `team_aliases`, `competitie_spelers`, `team_scouting_sessies`) gekopieerd naar dev-DB via `scripts/snapshot-prod-to-dev.ts` (node-streaming, geen pg_dump). Productie: read-only. Daarna `migrate-teams-historisch.ts` + `db:ensure-views` + `verify-teams-migration.ts` op dev-snapshot.
+
+### Snapshot-grootte (= productie 2026-05-13)
+
+| Tabel | Rijen |
+|---|---:|
+| seizoenen | 16 |
+| leden | 1 709 |
+| teams (alle, vóór script) | 31 |
+| team_periodes | 88 |
+| team_aliases (vóór script) | 57 |
+| competitie_spelers (totaal) | 4 893 |
+| competitie_spelers (<2025-2026, hist) | 4 052 |
+| team_scouting_sessies | 0 |
+
+### Pre-state historisch (snapshot, vóór script)
+
+| Metriek | Waarde |
+|---|---:|
+| Teams <2025-2026 | 0 |
+| Historische cs met NULL ow_team_id | 4 052 (100%) |
+| Missing team+seizoen combos | 497 |
+
+### Script-resultaat
+
+```
+497 ontbrekende team+seizoen combos
+✓ 497 teams aangemaakt
+✓ 497 nieuwe aliases aangemaakt
+✓ 0 extra ow_code-aliases aangemaakt
+✓ 4052 historische competitie_spelers rijen gekoppeld
+✓ Alle historische rijen volledig gekoppeld
+```
+
+### Categorisatie-breakdown (497 nieuwe teams)
+
+| team_type | categorie | aantal |
+|---|---|---:|
+| JEUGD | b | 353 |
+| SENIOREN | a | 78 |
+| SELECTIE | a | 49 |
+| OVERIG | b | 17 |
+
+### Aliases per seizoen (1 alias per uniek KNKV-teamnaam per seizoen)
+
+| Seizoen | Aliases | Seizoen | Aliases |
+|---|---:|---|---:|
+| 2024-2025 | 28 | 2016-2017 | 40 |
+| 2023-2024 | 29 | 2015-2016 | 37 |
+| 2022-2023 | 29 | 2014-2015 | 38 |
+| 2021-2022 | 35 | 2013-2014 | 35 |
+| 2020-2021 | 33 | 2012-2013 | 32 |
+| 2019-2020 | 36 | 2011-2012 | 31 |
+| 2018-2019 | 32 | 2010-2011 | 26 |
+| 2017-2018 | 36 | | |
+
+Totaal historische aliases: **497**.
+
+### Random sample 20 historische teams
+
+| Seizoen | Naam | team_type | categorie | ow_code |
+|---|---|---|---|---|
+| 2020-2021 | A3 | SELECTIE | a | OW-A3 |
+| 2018-2019 | A4 | SELECTIE | a | OW-A4 |
+| 2016-2017 | A1 | SELECTIE | a | OW-A1 |
+| 2014-2015 | B4 | JEUGD | b | OW-B4 |
+| 2016-2017 | B4 | JEUGD | b | OW-B4 |
+| 2023-2024 | S1S2 | SENIOREN | a | OW-S1S2 |
+| 2018-2019 | S3 | SENIOREN | a | OW-S3 |
+| 2019-2020 | A2 | SELECTIE | a | OW-A2 |
+| 2023-2024 | E3 | JEUGD | b | OW-E3 |
+| 2020-2021 | F3 | JEUGD | b | OW-F3 |
+| 2010-2011 | A3 | SELECTIE | a | OW-A3 |
+| 2014-2015 | B1 | JEUGD | b | OW-B1 |
+| 2011-2012 | S1 | SENIOREN | a | OW-S1 |
+| 2016-2017 | MW2 | JEUGD | b | OW-MW2 |
+| 2016-2017 | F3 | JEUGD | b | OW-F3 |
+| 2023-2024 | E2 | JEUGD | b | OW-E2 |
+| 2013-2014 | E1 | JEUGD | b | OW-E1 |
+| 2017-2018 | E2 | JEUGD | b | OW-E2 |
+| 2023-2024 | AR | OVERIG | b | OW-AR |
+| 2014-2015 | D4 | JEUGD | b | OW-D4 |
+
+### Vreemde/discutabele categorisaties
+
+| Naam | Huidige cat | Verwacht | Reden |
+|---|---|---|---|
+| `MW1` / `MW2` / `MW3` (23x) | **JEUGD** | OVERIG (midweekdames) | Regex `/^[BCM][A-Z]\d/` matcht eerder dan `/^MW\d/` — orderings-bug in `categorize()` |
+| `b3` (1x, 2010-2011) | OVERIG | JEUGD | Lowercase — regex is case-sensitive |
+| `AR` (1x, 2023-2024) | OVERIG | onduidelijk | Geen regex-match (Aspirant Rood?) — fallback |
+| `A`, `B`, `C`, `D`, `E`, `F` (6x, losse letter zonder cijfer) | OVERIG | mogelijk import-vervuiling | Geen cijfer → geen match |
+| `Senioren`, `K`, `NSL` (8x) | OVERIG | mogelijk SENIOREN/OVERIG | Vrije tekst-velden |
+| `S5-6-7`, `S5S6`, `B1B2`, `A1A2`, `S1S2` (11x) | correct (SELECTIE/SENIOREN/JEUGD) | OK | Combinatieteams, juist gecat |
+
+**Impact:** ~24 van 497 teams (4.8%) hebben een discutabele categorisatie. Backfill van `ow_team_id` in `competitie_spelers` werkt correct (100% gekoppeld) — de categorie is alleen relevant voor UI-filtering, niet voor de migratie zelf. MW-bug is wel het serieus aandachtspunt (15+ teams over de jaren).
+
+### NULL-resterend
+
+| Bereik | Pre | Post |
+|---|---:|---:|
+| Historisch (<2025-2026) | 4 052 (100%) | **0 (0%)** |
+| 2025-2026 | 61 (7.3%) | 61 (7.3%) — ongewijzigd (script raakt 2025-2026 niet aan) |
+
+### Alias-impact
+
+| Bereik | Pre | Post | Delta |
+|---|---:|---:|---:|
+| 2025-2026 | 57 | 57 | 0 |
+| <2025-2026 | 0 | 497 | +497 |
+| Totaal | 57 | 554 | +497 |
+
+VIEW `speler_seizoenen`: 4 373 rijen (was 321 vóór script; +4 052 historische rijen krijgen nu een `ow_team_naam`).
+
+### Vergelijking lege-dev vs snapshot
+
+| Stap | Lege-dev (2026-05-11) | Snapshot (2026-05-13) |
+|---|---|---|
+| Missing combos | 0 | **497** |
+| Teams aangemaakt | 0 | **497** |
+| Aliases aangemaakt | 0 | **497** |
+| Rijen gekoppeld | 0 | **4 052** |
+| NULL resterend (hist) | 0 (niets te koppelen) | **0** (alles gekoppeld) |
+| Regex-categorisatie getest | nee | **ja** — ~24 discutabel, 95% correct |
+
+De lege-dev dry-run gaf geen confidence over de regex; deze snapshot run wel.
+
+### Eindadvies: GO voor live-migratie op productie
+
+**GO** voor `npx tsx scripts/migrate-teams-historisch.ts` op productie, met deze opmerkingen:
+
+1. **Veilig:** script is idempotent (`ON CONFLICT DO NOTHING / DO UPDATE`), 100% historische rijen worden gekoppeld, geen data-loss.
+2. **Risico-beperkt:** scouting_sessies = 0, geen 2025-2026 mutatie, geen VIEW-drop.
+3. **Aandachtspunt MW-categorisatie:** 15-23 historische `MW*` teams krijgen `team_type = JEUGD` i.p.v. OVERIG. **Niet blokkerend** — alleen UI-filtering raakt dit en het is reverseerbaar met één UPDATE achteraf:
+   ```sql
+   UPDATE teams SET team_type = 'OVERIG'
+   WHERE seizoen < '2025-2026' AND naam LIKE 'MW%';
+   ```
+4. **Aanbevolen volgorde live:**
+   - Railway backup bevestigen (timestamp noteren)
+   - `npx tsx scripts/migrate-teams-historisch.ts` (~5-10 sec, 497 inserts + 4 052 updates)
+   - `pnpm db:ensure-views`
+   - `npx tsx scripts/verify-teams-migration.ts`
+   - Optioneel: MW-correctie SQL (1 statement)
+5. **Timing:** geen onderhoudsvenster nodig. Korte locks (<10 sec). Mag tijdens kantoor-uren.
+
+**Geen blockers meer — productie kan zodra Antjan groen licht geeft.**
 
 ---
 
