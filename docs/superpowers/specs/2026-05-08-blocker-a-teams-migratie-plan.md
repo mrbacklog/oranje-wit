@@ -1,7 +1,94 @@
 # Blocker-A: Teams-2025-2026 Migratie Plan
-**Status:** SNAPSHOT-DRY-RUN voltooid 2026-05-13 — advies GO voor historisch script op productie  
-**Datum:** 2026-05-08 (plan) · 2026-05-11 (lege-dev dry-run) · 2026-05-13 (snapshot dry-run)  
+**Status:** RE-DRY-RUN met regex-fix voltooid 2026-05-13 — wacht op Antjans GO voor live  
+**Datum:** 2026-05-08 (plan) · 2026-05-11 (lege-dev) · 2026-05-13 (snapshot) · 2026-05-13 (re-dry-run)  
 **Doel:** Inventarisatie + dry-run-strategie voor v2 TI Studio start
+
+---
+
+## Re-dry-run 2026-05-13 (na regex-fix)
+
+**Setup:** verse productie-snapshot via `scripts/snapshot-prod-to-dev.ts`, daarna gerepareerd `migrate-teams-historisch.ts` gedraaid.
+
+### Regex-fix `categorize()`
+
+Vier wijzigingen:
+1. **MW-check vooraan** — vóór `^[BCM][A-Z]\d` zodat `MW1/2/3` niet meer als JEUGD wordt gecat (was 23 teams fout).
+2. **Uppercase-normalisatie** — `naam.toUpperCase()` aan het begin, zodat `b3` ook als JEUGD wordt gecat (case-insensitive).
+3. **Senioren als woord** — `n === "SENIOREN"` → SENIOREN i.p.v. OVERIG (was 2 teams fout).
+4. **S-regex uitgebreid** — `^S[\d/-]` accepteert ook `S5-6-7` expliciet (was al toevallig goed via fallback).
+
+Comments toegevoegd; functioneel gedrag voor alle correcte teams ongewijzigd.
+
+### Categorisatie-breakdown na fix
+
+| team_type | aantal | Δ vs vorige run |
+|---|---:|---:|
+| JEUGD | 331 | −22 (MW1/2/3 weg, b3 erbij) |
+| SENIOREN | 80 | +2 ("Senioren" string) |
+| SELECTIE | 49 | 0 |
+| OVERIG | 37 | +20 (MW1/2/3 erin, "Senioren" eruit) |
+| **Totaal** | **497** | 0 |
+
+### Resterende OVERIG-cases (14 unieke namen, 37 records)
+
+| Naam | Records | Beoordeling |
+|---|---:|---|
+| MW1 | 15 | Correct OVERIG (midweek-dames) |
+| MW2 | 7 | Correct OVERIG |
+| MW3 | 1 | Correct OVERIG |
+| K | 5 | Onbekend (Kangoeroes-afkorting?) — OVERIG terecht |
+| NSL | 2 | Onbekend — OVERIG terecht |
+| AR | 1 | Onbekend — OVERIG terecht |
+| A / B / C / D / E / F (losse letters, 2019-2020) | 7 | Import-vervuiling — OVERIG correct |
+
+**Vreemde categorisaties nu: 0 echte bugs.** Alle resterende OVERIG-records zijn ofwel correct (MW) ofwel legitiem onbekend (K/NSL/AR/losse letters).
+
+### Side-effect-signaal in data
+
+`b3` (lowercase) bestaat in 2014-2015 naast `B3` (uppercase) — beide nu JEUGD gecat, beide aliases aangemaakt. Data-kwaliteits-signaal in oude `competitie_spelers` import — niet blokkerend, PO kan deze record-duplicatie achteraf opschonen.
+
+### Sample 20 random teams (na fix)
+
+| Seizoen | Naam | team_type | categorie |
+|---|---|---|---|
+| 2024-2025 | B3 | JEUGD | b |
+| 2016-2017 | F3 | JEUGD | b |
+| 2016-2017 | S7 | SENIOREN | a |
+| 2014-2015 | E4 | JEUGD | b |
+| 2016-2017 | A2 | SELECTIE | a |
+| 2023-2024 | E5 | JEUGD | b |
+| 2010-2011 | F2 | JEUGD | b |
+| 2016-2017 | B3 | JEUGD | b |
+| 2022-2023 | E1 | JEUGD | b |
+| 2014-2015 | B2 | JEUGD | b |
+| 2021-2022 | C1 | JEUGD | b |
+| 2023-2024 | B2 | JEUGD | b |
+| 2015-2016 | **MW1** | **OVERIG** | b |
+| 2023-2024 | A1 | SELECTIE | a |
+| 2011-2012 | D3 | JEUGD | b |
+| 2014-2015 | A3 | SELECTIE | a |
+| 2014-2015 | D5 | JEUGD | b |
+| 2012-2013 | F3 | JEUGD | b |
+| 2011-2012 | C5 | JEUGD | b |
+| 2015-2016 | A3 | SELECTIE | a |
+
+### Backfill (ongewijzigd, 100% gekoppeld)
+
+| Bereik | Pre | Post |
+|---|---:|---:|
+| Historisch (<2025-2026) | 4 052 NULL | 0 NULL |
+| 2025-2026 | 61 NULL (7.3%) | 61 NULL (7.3%) — script raakt niet aan |
+| VIEW speler_seizoenen | 321 rijen | 4 373 rijen |
+
+### Eindadvies (re-bevestigd)
+
+**GO voor live-migratie op productie** — geen blocker, geen MW-correctie SQL meer nodig achteraf, categorisatie is nu correct. Volgorde:
+1. Railway backup-timestamp noteren
+2. `npx tsx scripts/migrate-teams-historisch.ts` (~5-10 sec)
+3. `pnpm db:ensure-views`
+4. `npx tsx scripts/verify-teams-migration.ts`
+
+Wacht op Antjans expliciete GO.
 
 ---
 

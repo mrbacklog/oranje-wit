@@ -14,13 +14,26 @@ import "dotenv/config";
 import { Client } from "pg";
 
 function categorize(naam: string): { categorie: string; teamType: string } {
-  if (/^A[\d/]/.test(naam) || naam.startsWith("A1A") || naam === "AM5")
+  // Normaliseer naar uppercase zodat lowercase varianten (bv. "b3") goed gecat worden.
+  const n = naam.toUpperCase();
+
+  // MW = midweek-dames. Moet vóór de JEUGD-regex omdat /^[BCM][A-Z]\d/ ook
+  // "MW1" matcht. Was een bug in vorige versie (23 historische MW-teams kregen JEUGD).
+  if (/^MW\d/.test(n)) return { categorie: "b", teamType: "OVERIG" };
+
+  // A-teams = selectie (jeugd-A). Plus combinatieteams A1A2, en historische AM5/AR.
+  if (/^A[\d/]/.test(n) || n.startsWith("A1A") || n === "AM5")
     return { categorie: "a", teamType: "SELECTIE" };
-  if (/^[BCDEF][\d/]/.test(naam) || /^[BCM][A-Z]\d/.test(naam))
+
+  // S-teams = senioren. Inclusief combinatie- en streepjes-varianten (S1S2, S5-6-7).
+  if (/^S[\d/-]/.test(n) || n === "SENIOREN") return { categorie: "a", teamType: "SENIOREN" };
+
+  // B/C/D/E/F = jeugd. /^[BCM][A-Z]\d/ matcht combinatieteams als B1B2.
+  if (/^[BCDEF][\d/]/.test(n) || /^[BCM][A-Z]\d/.test(n))
     return { categorie: "b", teamType: "JEUGD" };
-  if (/^S[\d/]/.test(naam)) return { categorie: "a", teamType: "SENIOREN" };
-  if (/^MW\d/.test(naam)) return { categorie: "b", teamType: "OVERIG" };
-  if (naam === "Kangoeroes") return { categorie: "b", teamType: "OVERIG" };
+
+  if (n === "KANGOEROES") return { categorie: "b", teamType: "OVERIG" };
+  // Losse letters (A/B/C/D/E/F zonder cijfer), K, AR, NSL — onbekend → OVERIG.
   return { categorie: "b", teamType: "OVERIG" };
 }
 
