@@ -51,3 +51,13 @@ en deep-links blijven werken.
 
 Beide services worden parallel gebouwd. CI (ci.yml) draait typecheck/lint/tests
 over de hele monorepo; E2E test verifieert beide hostings.
+
+## Drag-drop conventies
+
+| App | Library | Patroon | Testid-conventie |
+|---|---|---|---|
+| `apps/ti-studio` (v1) | HTML5 native | `draggable` attr, `dataTransfer` events | `data-testid="speler-card-{rel_code}"` |
+| `apps/ti-studio-v2` | `@atlaskit/pragmatic-drag-and-drop` | PDND, HTML5 onder motorkap | `data-testid="speler-card-{rel_code}-{context}"`, `team-kaart-{owCode}-{versie}`, `drop-zone-{type}-{target}` |
+
+E2E testing: beide apps gebruiken `page.dragTo()` — PDND is native HTML5 compatible.
+Details: `docs/superpowers/specs/2026-05-13-drag-drop-library-research.md` + `fase-0-richtlijnen.md`

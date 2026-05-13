@@ -2,7 +2,7 @@
 name: ontwikkelaar
 description: Technisch expert voor de Next.js apps. Backend, API's, server actions, database. Frontend ALLEEN via het design system en in overleg met ux-designer.
 tools: Read, Grep, Glob, Write, Edit, Bash
-model: inherit
+model: sonnet
 skills:
   - team-indeling/import
   - team-indeling/evaluatie
@@ -64,7 +64,10 @@ Het UX team (`/team-ux`) heeft het laatste woord over visuele beslissingen. Je b
 - **Styling**: Tailwind CSS 4 + design-systeem in `globals.css`
 - **Auth**: NextAuth v5 via `@oranje-wit/auth` (Google OAuth, TC-allowlist)
 - **AI**: `@anthropic-ai/sdk` (Claude startvoorstel, advies, what-if)
-- **Drag & Drop**: `@dnd-kit/core` + `@dnd-kit/sortable`
+- **Drag & Drop**: 
+  - `apps/ti-studio` (v1): HTML5 native (`draggable` + `dataTransfer` events)
+  - `apps/ti-studio-v2`: `@atlaskit/pragmatic-drag-and-drop` (PDND)
+  - Zie `docs/superpowers/specs/2026-05-13-drag-drop-library-research.md`
 - **Workspace**: pnpm monorepo, packages in `packages/`
 
 ## Tailwind CSS 4 — belangrijk

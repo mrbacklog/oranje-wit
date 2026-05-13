@@ -19,6 +19,14 @@ Twee Next.js 16 apps met een duidelijke scheiding:
 - Bij meerdere stappen: rapporteer alleen afwijkingen of fouten, niet elke stap
 - Sub-agents rapporteren alleen: wat is gewijzigd, welke tests falen, welke beslissing is genomen
 
+## Model-strategie
+
+- **Hoofdchat = Opus** (beste model) — orkestratie, review, eindbeslissingen, synthese
+- **Subagents = Sonnet/Haiku** — uitvoerend werk (lezen, schrijven, zoeken, testen, data crunchen)
+- **Default: delegeer** naar een subagent. Hoofdchat doet zelf alleen 1-3 bekende bestanden of korte reviews.
+- **Output van subagents** komt altijd terug naar Opus voor review/integratie vóór actie.
+- Modeltoewijzing per agent staat in de `model:` frontmatter van `.claude/agents/*.md`. Zwaar werk (code, design, advies) = sonnet; mechanisch werk (data, deploy, tests, regels checken) = haiku.
+
 ## Agent Routing
 
 Gebruik ingebouwde agents voor generiek werk — zij laden geen project-context:
@@ -30,6 +38,16 @@ Gebruik eigen agents voor projectspecifiek werk:
 - Korfbal-logica, seizoensindeling, spelersbeheer → korfbal, team-planner, speler-scout
 - Code schrijven/reviewen volgens OW-patronen → ontwikkelaar, regel-checker
 - Data-analyse op OW-database → data-analist
+
+## Parallelle sessies
+
+Meerdere Claude-sessies kunnen tegelijk in dit project werken. Coördinatie loopt via git, niet via tooling.
+
+**Bij start van elke sessie**, draai eenmalig:
+```
+git fetch && git log --all --since='2 hours ago' --oneline
+```
+Zo zie je wat andere sessies recent hebben gecommit. Werk altijd in een **eigen worktree/branch** (zie `feedback_worktree-isolation.md`) — dat is de enige echte bescherming tegen conflicten. Scope-afspraken (welke sessie raakt welke paden) maakt Antjan vooraf; agents bewaken dat ze binnen hun scope blijven.
 
 ## Compaction Voorkeuren
 
@@ -168,6 +186,11 @@ Gebruik `/team-devops` voor health checks en CI status (observatie, geen deploys
 **Error handling** — geen lege catch blocks, altijd loggen met `logger.warn("context:", error)`.
 
 **Deploy** — `patch:`/`fix:` commits mogen door elke agent gepusht worden naar main (auto-deploy via fast-gate). `release:` commits uitsluitend via `team-release`.
+
+**Drag-drop per app** — 
+- **`apps/ti-studio` (v1)**: HTML5 native (`draggable` attr + `dataTransfer` events)
+- **`apps/ti-studio-v2`**: `@atlaskit/pragmatic-drag-and-drop` (PDND). E2E: `page.locator(source).dragTo(page.locator(target))` werkt out-of-the-box. Data-testid: `speler-card-{rel_code}`, `team-kaart-{owCode}`, `drop-zone-{type}`.
+- Zie `docs/superpowers/specs/2026-05-13-drag-drop-library-research.md` voor onderzoek + richtlijnen.
 
 ## Database
 

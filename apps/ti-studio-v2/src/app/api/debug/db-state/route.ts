@@ -19,8 +19,8 @@ export async function GET() {
       db.team.count(),
       db.werkitem.count(),
       db.seizoen.findMany({
-        select: { naam: true, actief: true },
-        orderBy: { naam: "desc" },
+        select: { seizoen: true, status: true },
+        orderBy: { seizoen: "desc" },
         take: 10,
       }),
     ]);

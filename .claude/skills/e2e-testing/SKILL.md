@@ -90,6 +90,8 @@ Gebruik de Playwright MCP tools voor interactieve browser-controle:
 | Groepering | Per feature, niet per pagina |
 | Auth | Automatisch via storageState (setup project) |
 | Mutaties tegen productie | NOOIT — alleen read-only navigatie |
+| **Drag-drop v1** (ti-studio) | HTML5 native: `page.locator(source).dragTo(page.locator(target))` |
+| **Drag-drop v2** (ti-studio-v2) | PDND native: `page.locator(source).dragTo(page.locator(target))`. Data-testid: `speler-card-{rel_code}-{context}`, `team-kaart-{owCode}-{versie}`, `drop-zone-{type}-{target}` |
 
 ## Teststructuur
 
