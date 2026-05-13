@@ -27,9 +27,11 @@ function formatTijdstip(d: Date): string {
 
 export function TijdlijnItemComponent({ item, isLaatste }: TijdlijnItemProps) {
   return (
-    <div className={`tl-item${isLaatste ? "laatste" : ""}`}>
+    <div className={["tl-item", isLaatste ? "laatste" : ""].filter(Boolean).join(" ")}>
       <div className="tl-lijn">
-        <div className={`tl-dot${item.type === "log" ? "tl-dot-log" : ""}`} />
+        <div
+          className={["tl-dot", item.type === "log" ? "tl-dot-log" : ""].filter(Boolean).join(" ")}
+        />
         {!isLaatste && <div className="tl-streep" />}
       </div>
       <div className="tl-content">

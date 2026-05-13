@@ -47,8 +47,10 @@ export function KanbanLane({
 }: KanbanLaneProps) {
   const zichtbareMemos = memos.filter((m) => isZichtbaar(m, zoekterm, catFilter));
 
+  const laneKlasse = ["kanban-lane", isDone ? "done" : ""].filter(Boolean).join(" ");
+
   return (
-    <div className={`kanban-lane${isDone ? "done" : ""}`} data-status={status}>
+    <div className={laneKlasse} data-status={status}>
       <div className="lane-header">
         <span className={`lane-dot ${dotVariant}`} />
         <span className="lane-title">{label}</span>

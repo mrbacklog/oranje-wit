@@ -49,7 +49,7 @@ export function MemoDrawer({ memoId, onSluiten }: MemoDrawerProps) {
 
   return (
     <div
-      className={`memo-drawer${isOpen ? "open" : ""}`}
+      className={["memo-drawer", isOpen ? "open" : ""].filter(Boolean).join(" ")}
       role="complementary"
       aria-label="Memo detail"
       aria-hidden={!isOpen}

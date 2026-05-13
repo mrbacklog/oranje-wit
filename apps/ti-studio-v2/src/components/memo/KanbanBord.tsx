@@ -64,7 +64,9 @@ export function KanbanBord({ memos }: KanbanBordProps) {
             {CAT_FILTER_OPTIES.map((opt) => (
               <button
                 key={opt.value}
-                className={`kanban-filter${catFilter === opt.value ? "active" : ""}`}
+                className={["kanban-filter", catFilter === opt.value ? "active" : ""]
+                  .filter(Boolean)
+                  .join(" ")}
                 onClick={() => setCatFilter(opt.value)}
                 aria-pressed={catFilter === opt.value}
               >
