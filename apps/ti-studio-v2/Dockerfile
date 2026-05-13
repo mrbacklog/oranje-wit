@@ -41,12 +41,8 @@ ENV HOSTNAME="0.0.0.0"
 COPY --from=builder /app/apps/ti-studio-v2/.next/standalone ./
 COPY --from=builder /app/apps/ti-studio-v2/.next/static apps/ti-studio-v2/.next/static
 
-# Prisma CLI + engines + schema, alleen gebruikt als AUTO_SCHEMA_SYNC=true
-# (test-only — productie heeft READ_ONLY en doet dit niet)
-COPY --from=builder /app/node_modules/prisma node_modules/prisma
-COPY --from=builder /app/node_modules/@prisma node_modules/@prisma
-COPY --from=builder /app/packages/database/prisma packages/database/prisma
-
+# Auto-schema-sync uitgeschakeld in Dockerfile (was gebroken op pnpm-paden).
+# Test-DB schema wordt handmatig gesynced via Railway shell wanneer nodig.
 COPY apps/ti-studio-v2/start.sh /start.sh
 RUN chmod +x /start.sh
 

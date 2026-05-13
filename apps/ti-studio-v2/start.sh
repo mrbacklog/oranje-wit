@@ -14,11 +14,15 @@ set -e
 cd /app
 
 if [ "$AUTO_SCHEMA_SYNC" = "true" ]; then
-  echo "[start] AUTO_SCHEMA_SYNC=true — prisma db push tegen DATABASE_URL..."
-  node node_modules/prisma/build/index.js db push \
-    --schema=packages/database/prisma/schema.prisma \
-    --accept-data-loss
-  echo "[start] schema sync klaar."
+  if [ -f node_modules/prisma/build/index.js ]; then
+    echo "[start] AUTO_SCHEMA_SYNC=true — prisma db push tegen DATABASE_URL..."
+    node node_modules/prisma/build/index.js db push \
+      --schema=packages/database/prisma/schema.prisma \
+      --accept-data-loss
+    echo "[start] schema sync klaar."
+  else
+    echo "[start] AUTO_SCHEMA_SYNC=true maar prisma CLI niet aanwezig in image — sync overgeslagen."
+  fi
 fi
 
 exec node apps/ti-studio-v2/server.js
