@@ -9,17 +9,21 @@
 
 /**
  * Lijkt deze URL op de productie-database?
- * We zijn bewust streng: bij twijfel weigeren.
+ *
+ * Detectie op specifieke productie-indicatoren — niet op generieke
+ * Railway-patronen (rlwy.net/railway.app), want de test-database draait
+ * ook achter een Railway TCP-proxy.
+ *
+ * Productie heeft database-naam `oranjewit`; test-DB heet `postgres`.
  */
 export function lijktOpProductie(url: string | undefined): boolean {
   if (!url) return false;
   const lower = url.toLowerCase();
-  // Bekende productie-indicatoren
+  // Hostname van productie (shinkansen-proxy) + productie-DB naam
   const verdachtePatronen = [
-    "railway.app",
-    "rlwy.net",
+    "shinkansen.proxy.rlwy.net",
+    "/oranjewit",
     "ckvoranjewit",
-    "oranjewit",
     "production",
     "prod-",
     ".prod.",

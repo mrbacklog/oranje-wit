@@ -140,6 +140,37 @@ function runPnpmScript(scriptNaam: string, env: Record<string, string>): void {
   }
 }
 
+/**
+ * Schema-sync via `prisma db push` — ALLEEN voor de test-database.
+ *
+ * Waarom geen `migrate deploy`?
+ * Migratie 20260402100000_add_gepland_seizoen_status doet `ALTER TYPE …
+ * ADD VALUE; COMMIT; BEGIN;` om Postgres-transactie-beperkingen te
+ * omzeilen. Op een schone test-DB geeft dat een gefaalde-maar-stille
+ * staat in `_prisma_migrations` waarna alle volgende migraties worden
+ * overgeslagen. Het seed-script wist target elke run sowieso, dus
+ * `db push` (snapshot van het Prisma-schema) is hier veilig en correct.
+ *
+ * `db push` blijft strikt verboden voor productie (zie package.json
+ * gating + READ_ONLY-middleware op v2-prod).
+ */
+function pushSchemaToTarget(targetUrl: string): void {
+  // Draai vanuit packages/database zodat de lokaal geïnstalleerde prisma-binary
+  // (devDependency van @oranje-wit/database) gevonden wordt door pnpm exec.
+  const result = spawnSync(
+    "pnpm",
+    ["--filter", "@oranje-wit/database", "exec", "prisma", "db", "push", "--accept-data-loss"],
+    {
+      env: { ...process.env, DATABASE_URL: targetUrl },
+      stdio: "inherit",
+      shell: process.platform === "win32",
+    }
+  );
+  if (result.status !== 0) {
+    throw new Error(`prisma db push faalde (exit ${result.status})`);
+  }
+}
+
 // ────────────────────────────────────────────────────────────────────
 // Per-tabel anonimisatie. Volgorde respecteert FK's:
 //
@@ -990,8 +1021,8 @@ async function main(): Promise<void> {
   logger.info("Stap 1: target-schema droppen + opnieuw aanmaken...");
   await dropTargetSchema(targetUrl);
 
-  logger.info("Stap 2: migraties draaien op target...");
-  runPnpmScript("db:migrate:deploy", { DATABASE_URL: targetUrl });
+  logger.info("Stap 2: schema syncen op target via 'prisma db push' (test-only)...");
+  pushSchemaToTarget(targetUrl);
 
   logger.info("Stap 3: Prisma-clients openen (source + target)...");
   const sourceConn = maakClient(sourceUrl);
