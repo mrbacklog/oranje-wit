@@ -18,10 +18,12 @@ test.describe("TI Studio v2 pagina's — Smoke", () => {
     { path: "/indeling", name: "Werkbord" },
     { path: "/kader", name: "Kader" },
     { path: "/memo", name: "Memo" },
+    { path: "/sync", name: "Sync", skip: true }, // Route B: nog niet geïmplementeerd
   ];
 
   for (const route of routes) {
-    test(`laadt ${route.name} zonder kritieke console errors`, async ({ page }) => {
+    const testFn = route.skip ? test.skip : test;
+    testFn(`laadt ${route.name} zonder kritieke console errors`, async ({ page }) => {
       const consoleErrors: string[] = [];
 
       page.on("console", (msg) => {
