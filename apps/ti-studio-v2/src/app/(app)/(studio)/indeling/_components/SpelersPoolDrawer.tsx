@@ -75,7 +75,9 @@ export function SpelersPoolDrawer({ spelers, open, onSpelerClick }: SpelersPoolD
             Geen spelers
           </span>
         ) : (
-          gefilterd.map((s) => <WbSpelerRij key={s.spelerId} speler={s} onClick={onSpelerClick} />)
+          gefilterd.map((s) => (
+            <WbSpelerRij key={s.spelerId} speler={s} bron="spelerpool" onClick={onSpelerClick} />
+          ))
         )}
       </div>
     </div>

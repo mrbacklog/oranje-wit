@@ -1,6 +1,7 @@
 "use client";
 
 import type { PoolSpeler } from "./werkbord-types";
+import { useWerkbordDraggable, type DragBron } from "./hooks/useWerkbordDraggable";
 
 const CAT_KLEUREN: Record<string, string> = {
   blauw: "var(--cat-blauw)",
@@ -13,20 +14,25 @@ const CAT_KLEUREN: Record<string, string> = {
 
 interface WbSpelerRijProps {
   speler: PoolSpeler;
+  bron: DragBron;
   onClick: (spelerId: string) => void;
 }
 
-export function WbSpelerRij({ speler, onClick }: WbSpelerRijProps) {
+export function WbSpelerRij({ speler, bron, onClick }: WbSpelerRijProps) {
   const catKleur = CAT_KLEUREN[speler.leeftijdCategorie] ?? "var(--cat-senior)";
   const isVrouw = speler.geslacht === "V";
+  const { ref, isDragging } = useWerkbordDraggable({ rel_code: speler.spelerId, bron });
 
   return (
     <div
+      ref={ref}
       className="wb-speler-rij"
+      data-testid={`speler-card-${speler.spelerId}-${bron}`}
       style={
         {
           "--status-color": isVrouw ? "var(--sexe-v)" : "var(--sexe-h)",
-          cursor: "pointer",
+          cursor: isDragging ? "grabbing" : "grab",
+          opacity: isDragging ? 0.5 : 1,
         } as React.CSSProperties
       }
       onClick={() => onClick(speler.spelerId)}
