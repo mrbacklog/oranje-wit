@@ -35,6 +35,21 @@ export function korfbalPeildatum(seizoen: Seizoen): Date {
 }
 
 /**
+ * Startdatum van een seizoen: 1 juli van het startjaar.
+ *
+ * Gebruik om te bepalen of een lidmaatschap *tijdens* een seizoen is
+ * gestart (bv. "nieuw lid dit seizoen").
+ *
+ * Voorbeelden:
+ *   "2025-2026" → 01-07-2025
+ *   "2026-2027" → 01-07-2026
+ */
+export function seizoenStart(seizoen: Seizoen): Date {
+  const startjaar = parseInt(seizoen.split("-")[0], 10);
+  return new Date(startjaar, 6, 1);
+}
+
+/**
  * Normaliseer geboortedatum-input naar een Date, of null als leeg.
  */
 function toDate(input: Date | string | null | undefined): Date | null {

@@ -5,6 +5,7 @@ import { requireTC } from "@oranje-wit/auth/checks";
 import {
   logger,
   korfbalPeildatum,
+  seizoenStart,
   berekenKorfbalLeeftijd,
   HUIDIG_SEIZOEN,
   type Seizoen,
@@ -283,6 +284,7 @@ export async function getWhatIfVoorCanvas(
 
     const seizoen = werkindeling.kaders.seizoen as Seizoen;
     const peildatum = korfbalPeildatum(seizoen);
+    const startSeizoen = seizoenStart(seizoen);
     const huidigeJaar = new Date().getFullYear();
 
     // Posities: what-if eigen posities hebben voorrang, anders val terug op de
@@ -333,6 +335,7 @@ export async function getWhatIfVoorCanvas(
         geslacht: true,
         status: true,
         seizoenenActief: true,
+        lidSinds: true,
         huidig: true,
       },
     });
@@ -797,7 +800,7 @@ export async function getWhatIfVoorCanvas(
         notitie: null,
         afmelddatum: null,
         teamId: effectieveStatus === "ALGEMEEN_RESERVE" ? null : inVariantTeamId,
-        isNieuw: sp.seizoenenActief === 1,
+        isNieuw: sp.lidSinds ? new Date(sp.lidSinds) >= startSeizoen : false,
         openMemoCount: memoCountMap.get(sp.id) ?? 0,
         ussScore: ussMap.get(sp.id) ?? null,
         fotoUrl: fotoSet.has(sp.id) ? `/api/scouting/spelers/${sp.id}/foto` : null,

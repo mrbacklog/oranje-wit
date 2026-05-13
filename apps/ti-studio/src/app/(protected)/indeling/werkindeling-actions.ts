@@ -109,6 +109,7 @@ export async function getAlleSpelers() {
       huidig: true,
       spelerspad: true,
       seizoenenActief: true,
+      lidSinds: true,
     },
   });
 

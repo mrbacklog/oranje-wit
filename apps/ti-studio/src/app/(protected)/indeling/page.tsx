@@ -11,7 +11,12 @@ import {
 import { getTeamtypeKaders } from "@/app/(protected)/kader/actions";
 import { mergeMetDefaults } from "@/app/(protected)/kader/kader-defaults";
 import { berekenTeamValidatie, berekenValidatieStatus } from "@/lib/teamindeling/validatie-engine";
-import { korfbalPeildatum, berekenKorfbalLeeftijd, type Seizoen } from "@oranje-wit/types";
+import {
+  korfbalPeildatum,
+  seizoenStart,
+  berekenKorfbalLeeftijd,
+  type Seizoen,
+} from "@oranje-wit/types";
 import { effectieveSpelerStatus } from "@/lib/teamindeling/speler-status";
 import { TiStudioShell } from "@/components/werkbord/TiStudioShell";
 import type {
@@ -104,6 +109,7 @@ export default async function IndelingPage() {
   // Kaders laden en peildatum bepalen
   const seizoen = volledig.kaders.seizoen; // bijv. "2025-2026"
   const peildatum = korfbalPeildatum(seizoen as Seizoen);
+  const startSeizoen = seizoenStart(seizoen as Seizoen);
   const opgeslagenKaders = await getTeamtypeKaders(seizoen);
   const tcKaders = mergeMetDefaults(opgeslagenKaders);
 
@@ -168,7 +174,7 @@ export default async function IndelingPage() {
       notitie: null,
       afmelddatum: null,
       teamId: effectieveStatus === "ALGEMEEN_RESERVE" ? null : (spelerTeamMap.get(sp.id) ?? null),
-      isNieuw: sp.seizoenenActief === 1,
+      isNieuw: sp.lidSinds ? new Date(sp.lidSinds) >= startSeizoen : false,
       openMemoCount: openMemoPerSpeler[sp.id] ?? 0,
       ussScore: sp.ussScore ?? null,
       fotoUrl: sp.heeftFoto ? `/api/scouting/spelers/${sp.id}/foto` : null,
