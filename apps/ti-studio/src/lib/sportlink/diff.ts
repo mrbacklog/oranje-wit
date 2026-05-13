@@ -34,7 +34,12 @@ export async function berekenDiff(leden: SportlinkLid[]): Promise<SyncDiff> {
       ].includes(speler.status);
       if (alNietActief) continue;
 
-      // Alleen voor actieve spelers (BESCHIKBAAR, TWIJFELT, GEBLESSEERD) controleren
+      // Kandidaat-leden (NIEUW_POTENTIEEL/NIEUW_DEFINITIEF) worden bewust door TC
+      // gemonitord — die hoeven niet als 'afgemeld' gemeld te worden enkel omdat ze
+      // (nog) geen Veld/Zaal-spelactiviteit hebben (Kangoeroe Klup, leeg, etc.).
+      // Voor hen tellen alleen echte signalen: een afmelddatum of inactieve status.
+      const isKandidaat =
+        speler.status === "NIEUW_POTENTIEEL" || speler.status === "NIEUW_DEFINITIEF";
       const act = lid.KernelGameActivities ?? "";
       const heeftSpelactiviteit = act.includes("Veld") || act.includes("Zaal");
       const reden =
@@ -42,7 +47,7 @@ export async function berekenDiff(leden: SportlinkLid[]): Promise<SyncDiff> {
           ? ("afmelddatum" as const)
           : lid.MemberStatus !== "ACTIVE"
             ? ("niet-actief" as const)
-            : !heeftSpelactiviteit
+            : !heeftSpelactiviteit && !isKandidaat
               ? ("niet-spelend" as const)
               : null;
 
