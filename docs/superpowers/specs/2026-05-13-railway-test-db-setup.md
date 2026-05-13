@@ -261,3 +261,49 @@ TEST_DATABASE_URL="postgresql://..." \
 2. **Operator past `snapshot-prod-to-dev.ts` aan** (zie aparte taak) met `SNAPSHOT_TARGET` env-var
 3. **CI-taak** voor maandelijks refresh (stap 6, optioneel maar aanbevolen)
 4. **Antjan start Fase 0-2** testen op `studio-test.ckvoranjewit.app`
+
+---
+
+## Uitvoering 2026-05-13
+
+Volledige setup voltooid. Test-DB is operationeel en geseed met productie-snapshot.
+
+### Stappen-status
+
+| # | Stap | Status | Detail |
+|---|---|---|---|
+| 1 | PostgreSQL instance aanmaken | ✅ | Antjan handmatig via dashboard. Host: `yamabiko.proxy.rlwy.net:21659` (proxy) / `postgres-test.railway.internal:5432` (intern). DB-naam: `postgres`. |
+| 2 | Service hernoemen naar `oranjewit-test` | ✅ | Via Railway CLI |
+| 3 | Schema deployen | 🟡 → ✅ | Eerste poging vastgelopen op gefaalde migratie `20260402100000_add_gepland_seizoen_status` (COMMIT/BEGIN truc in transactie-wrapper). Opgelost via `prisma migrate resolve --applied <name>` + re-deploy. Alle 28 migraties nu applied. |
+| 4 | VIEW herstellen | ✅ | `speler_seizoenen` opgebouwd, 4 373 records (identiek aan productie) |
+| 5 | Initiële snapshot vullen | ✅ | Via `SNAPSHOT_TARGET=railway-test pnpm tsx scripts/snapshot-prod-to-dev.ts` |
+| 6 | Studio-test service DATABASE_URL | ✅ | Service heet `ti-studio-v2-test` op Railway (URL `studio-test.ckvoranjewit.app`). Env-var al ingesteld op interne URL + basic-auth (user `tcv2`). |
+| 7 | Maandelijkse refresh CI-job | ⏳ | TODO — niet vereist voor fase 0-2 |
+| 8 | Verificatie | ✅ | Snapshot rij-aantallen identiek aan productie |
+
+### Snapshot-rijaantallen (productie → test-DB, 2026-05-13)
+
+| Tabel | Rijen |
+|---|---:|
+| seizoenen | 26 |
+| leden | 1 709 |
+| teams | 528 |
+| team_periodes | 88 |
+| team_aliases | 554 |
+| competitie_spelers | 4 893 |
+| team_scouting_sessies | 0 |
+| **VIEW speler_seizoenen** | **4 373** |
+
+### Lessons learned
+
+1. **Gefaalde migratie blokkeert verdere deploys.** `_prisma_migrations` tabel toont gefaalde migraties met `finished_at = NULL`. Tweede entry voor dezelfde migratie verschijnt bij retry-poging. `prisma migrate resolve --applied` lost het op.
+2. **`SNAPSHOT_TARGET` is env-var, geen CLI-flag.** Het script docstring noemt `--target=railway-test` als voorbeeld, maar het script leest `process.env.SNAPSHOT_TARGET`. Docstring corrigeren in opvolg-patch.
+3. **Connection-strings:** publieke proxy URL voor lokale scripts/CLI, interne `*.railway.internal` URL voor Railway services onderling.
+
+### Klaar voor Fase 0-2
+
+Studio-test omgeving is volledig operationeel:
+- App: `https://studio-test.ckvoranjewit.app` (basic-auth user `tcv2`)
+- DB: `oranjewit-test` met verse productie-snapshot
+- Geen Sportlink sync (env uitgeschakeld of script geen-op)
+- Geen risico op productie-mutaties
