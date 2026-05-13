@@ -121,4 +121,47 @@ ORDER BY geboortejaar, seizoen;
 - `.env` — DATABASE_URL (gitignored)
 - `.mcp.json` — MCP server registratie
 - `apps/mcp/oranje-wit-db/server.js` — MCP server
-- Railway: `shinkansen.proxy.rlwy.net:18957`, database: `oranjewit`
+- Railway prod: `shinkansen.proxy.rlwy.net:18957`, database `oranjewit`
+- Railway test: `postgres-test.railway.internal` (internal-only tenzij Pad A actief)
+
+## Test-database (postgres-test) — toegangsprotocol
+
+De v2-test omgeving (`studio-test.ckvoranjewit.app`) draait tegen een aparte
+Railway PostgreSQL instance `postgres-test`. Standaard is die alleen vanuit
+het Railway-interne netwerk bereikbaar.
+
+### Pad A — Lokaal queryen of seeden vanaf laptop (aanbevolen)
+
+1. Railway dashboard → project `oranje-wit-db` → service `postgres-test` →
+   **Settings → Networking → Public Networking → Enable TCP Proxy**.
+2. Kopieer de publieke URL die verschijnt (`monorail.proxy.rlwy.net:<port>`).
+3. Zet in `.env.local`:
+   ```
+   DATABASE_URL_TARGET=postgresql://postgres:<pw>@<host>:<port>/postgres
+   ```
+   Wachtwoord via `railway variables --service ti-studio-v2-test --json | grep DATABASE_URL`.
+4. Vanaf laptop:
+   - `pnpm tsx -r dotenv/config scripts/seed-test-db.ts` — volledige anonimisatie-seed
+   - Of ad-hoc Prisma-scripts tegen `DATABASE_URL_TARGET`.
+
+Eenmalig setup, daarna voor altijd open.
+
+### Pad B — Eenmalige seed via debug-endpoint (geen lokale setup)
+
+Voor scenario's waar Pad A niet (nog) beschikbaar is:
+
+- `POST /api/debug/seed-minimal` met header `x-seed-secret: $AGENT_SECRET`
+  triggert een idempotente minimale seed (seizoen 2025-2026 + Kaders met
+  isWerkseizoen + werkindeling + 30 dummy spelers + 10 staf + 8 memos).
+  Voldoende voor visuele beoordeling, niet voor realistische ledenanalyse.
+- `GET /api/debug/db-state` toont counts + huidige Kaders/Seizoenen.
+
+Beide beveiligd via basic-auth (`tcv2`/Railway-pw) plus `AGENT_SECRET` header
+voor de POST.
+
+### Diagnose
+
+```bash
+curl -u "tcv2:<pw>" https://studio-test.ckvoranjewit.app/api/debug/db-state
+railway variables --service ti-studio-v2-test --json | grep DATABASE_URL
+```
