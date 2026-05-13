@@ -3,6 +3,8 @@
 import { useState } from "react";
 import type { PoolSpeler } from "./werkbord-types";
 import { WbSpelerRij } from "./WbSpelerRij";
+import { useWerkbordDropTarget } from "./hooks/useWerkbordDropTarget";
+import type { WerkbordDragData } from "./hooks/useWerkbordDraggable";
 
 type PoolFilter = "zonder" | "ingedeeld" | "alle";
 
@@ -15,11 +17,24 @@ interface SpelersPoolDrawerProps {
   open: boolean;
   peildatum: Date;
   onSpelerClick: (spelerId: string) => void;
+  onDropNaarPool?: (data: WerkbordDragData) => void;
 }
 
-export function SpelersPoolDrawer({ spelers, open, onSpelerClick }: SpelersPoolDrawerProps) {
+export function SpelersPoolDrawer({
+  spelers,
+  open,
+  onSpelerClick,
+  onDropNaarPool,
+}: SpelersPoolDrawerProps) {
   const [zoek, setZoek] = useState("");
   const [filter, setFilter] = useState<PoolFilter>("zonder");
+
+  const { ref: dropRef, isOver } = useWerkbordDropTarget({
+    doelBron: "spelerpool",
+    onDrop: (data) => onDropNaarPool?.(data),
+    // Drawer alleen actief als open
+    disabled: !open,
+  });
 
   const gefilterd = spelers.filter((s) => {
     const zoekMatch =
@@ -39,8 +54,16 @@ export function SpelersPoolDrawer({ spelers, open, onSpelerClick }: SpelersPoolD
 
   return (
     <div
+      ref={dropRef}
       className={cx("wb-drawer", "links", open && "open")}
-      style={{ "--drawer-width": "260px" } as React.CSSProperties}
+      data-testid="drop-zone-spelerpool"
+      style={
+        {
+          "--drawer-width": "260px",
+          outline: isOver ? "2px solid var(--val-ok)" : "none",
+          outlineOffset: -2,
+        } as React.CSSProperties
+      }
     >
       <div className="wb-drawer-header">
         <span className="wb-drawer-title">
