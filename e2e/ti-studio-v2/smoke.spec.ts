@@ -15,6 +15,7 @@ test.describe("TI Studio v2 pagina's — Smoke", () => {
     { path: "/personen/staf", name: "Personen — Staf" },
     { path: "/personen/reserveringen", name: "Personen — Reserveringen" },
     { path: "/indeling", name: "Werkbord" },
+    { path: "/kader", name: "Kader" },
   ];
 
   for (const route of routes) {
