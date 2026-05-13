@@ -11,6 +11,7 @@ test.describe("TI Studio v2 pagina's — Smoke", () => {
   test.setTimeout(60_000);
 
   const routes = [
+    { path: "/", name: "Homepage" },
     { path: "/personen/spelers", name: "Personen — Spelers" },
     { path: "/personen/staf", name: "Personen — Staf" },
     { path: "/personen/reserveringen", name: "Personen — Reserveringen" },
