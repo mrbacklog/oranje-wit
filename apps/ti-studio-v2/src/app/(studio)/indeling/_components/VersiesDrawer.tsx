@@ -2,6 +2,10 @@
 
 import type { VersieMeta } from "./werkbord-types";
 
+function cx(...args: (string | false | null | undefined)[]): string {
+  return args.filter(Boolean).join(" ");
+}
+
 interface VersiesDrawerProps {
   versies: VersieMeta[];
   actieveVersieId: string;
@@ -17,7 +21,7 @@ export function VersiesDrawer({
 }: VersiesDrawerProps) {
   return (
     <div
-      className={`wb-drawer rechts${open ? "open" : ""}`}
+      className={cx("wb-drawer", "rechts", open && "open")}
       style={{ "--drawer-width": "280px" } as React.CSSProperties}
     >
       <div className="wb-drawer-header">
@@ -30,7 +34,7 @@ export function VersiesDrawer({
           return (
             <div
               key={v.id}
-              className={`wb-team-rij${isActief ? "active" : ""}`}
+              className={cx("wb-team-rij", isActief && "active")}
               style={
                 {
                   "--team-kleur": isActief ? "var(--ow-accent)" : "var(--border-default)",

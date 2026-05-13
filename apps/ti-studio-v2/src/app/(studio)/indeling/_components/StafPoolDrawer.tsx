@@ -6,6 +6,10 @@ import { WbStafRij } from "./WbStafRij";
 
 type StafFilter = "alle" | "zonder";
 
+function cx(...args: (string | false | null | undefined)[]): string {
+  return args.filter(Boolean).join(" ");
+}
+
 interface StafPoolDrawerProps {
   staf: StafLid[];
   open: boolean;
@@ -24,7 +28,7 @@ export function StafPoolDrawer({ staf, open, onStafClick }: StafPoolDrawerProps)
 
   return (
     <div
-      className={`wb-drawer links${open ? "open" : ""}`}
+      className={cx("wb-drawer", "links", open && "open")}
       style={{ "--drawer-width": "260px" } as React.CSSProperties}
     >
       <div className="wb-drawer-header">
@@ -46,7 +50,7 @@ export function StafPoolDrawer({ staf, open, onStafClick }: StafPoolDrawerProps)
         {(["alle", "zonder"] as StafFilter[]).map((f) => (
           <button
             key={f}
-            className={`wb-filter-chip${filter === f ? "active" : ""}`}
+            className={cx("wb-filter-chip", filter === f && "active")}
             onClick={() => setFilter(f)}
           >
             {f === "alle" ? "Alle" : "Zonder team"}

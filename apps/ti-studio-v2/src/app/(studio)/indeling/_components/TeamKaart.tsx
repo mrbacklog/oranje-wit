@@ -2,15 +2,12 @@
 
 import type { TeamKaartData, TeamKaartSpeler } from "./werkbord-types";
 
-// Categorie → CSS custom property
+function cx(...args: (string | false | null | undefined)[]): string {
+  return args.filter(Boolean).join(" ");
+}
+
 const CAT_KLEUREN: Record<string, string> = {
   SENIOR: "var(--cat-senior)",
-  ROO: "var(--cat-rood)",
-  ORA: "var(--cat-oranje)",
-  GEE: "var(--cat-geel)",
-  GRO: "var(--cat-groen)",
-  BLA: "var(--cat-blauw)",
-  PAA: "var(--cat-paars)",
   rood: "var(--cat-rood)",
   oranje: "var(--cat-oranje)",
   geel: "var(--cat-geel)",
@@ -48,7 +45,7 @@ function CompactChip({ speler, onClick }: CompactChipProps) {
   const isVrouw = speler.geslacht === "V";
   return (
     <div
-      className={`compact-chip${isVrouw ? "vrouw" : ""}`}
+      className={cx("compact-chip", isVrouw && "vrouw")}
       style={{ cursor: "pointer" }}
       onClick={() => onClick(speler.spelerId)}
       title={`${speler.roepnaam} ${speler.achternaam} (${speler.korfbalLeeftijd.toFixed(1)} jr)`}
@@ -142,7 +139,6 @@ export function TeamKaart({
           {team.alias ?? team.naam}
         </span>
         <div className="tk-header-right">
-          {/* Memo-indicator */}
           {team.openMemoCount > 0 && (
             <span
               style={{
@@ -158,7 +154,6 @@ export function TeamKaart({
               ▲ {team.openMemoCount}
             </span>
           )}
-          {/* Validatie-dot */}
           <span
             style={{
               width: 8,
@@ -168,7 +163,6 @@ export function TeamKaart({
               flexShrink: 0,
             }}
           />
-          {/* Teller */}
           <span
             style={{
               fontSize: 11,
@@ -184,15 +178,7 @@ export function TeamKaart({
       {/* Body */}
       <div className="tk-body" style={{ flex: 1, display: "flex", overflow: "hidden" }}>
         {zoom === "compact" ? (
-          /* Compact modus: 2 kolommen (♀ / ♂) met chips */
-          <div
-            style={{
-              flex: 1,
-              display: "flex",
-              gap: 0,
-              overflow: "hidden",
-            }}
-          >
+          <div style={{ flex: 1, display: "flex", gap: 0, overflow: "hidden" }}>
             {/* Dames-kolom */}
             <div
               className="tk-col"
@@ -205,7 +191,6 @@ export function TeamKaart({
                 minWidth: 0,
               }}
             >
-              {/* Teller */}
               <div className="compact-sexe-teller v" style={{ flexShrink: 0 }}>
                 <span className="st-val">{aantalDames}</span>
                 <span
@@ -219,7 +204,6 @@ export function TeamKaart({
                   ♀
                 </span>
               </div>
-              {/* Chips */}
               <div
                 style={{
                   flex: 1,
@@ -277,7 +261,6 @@ export function TeamKaart({
             </div>
           </div>
         ) : (
-          /* Detail modus: volledige rijen */
           <div
             style={{
               flex: 1,

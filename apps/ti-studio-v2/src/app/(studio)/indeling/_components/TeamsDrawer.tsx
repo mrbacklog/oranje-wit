@@ -3,6 +3,10 @@
 import type { TeamKaartData, SelectieGroepMeta } from "./werkbord-types";
 import { WbTeamRij } from "./WbTeamRij";
 
+function cx(...args: (string | false | null | undefined)[]): string {
+  return args.filter(Boolean).join(" ");
+}
+
 interface TeamsDrawerProps {
   teams: TeamKaartData[];
   selectieGroepen: SelectieGroepMeta[];
@@ -20,13 +24,12 @@ export function TeamsDrawer({
   open,
   onTeamClick,
 }: TeamsDrawerProps) {
-  // Groepeer teams per selectieGroep
   const groepTeamIds = new Set(selectieGroepen.flatMap((sg) => sg.teamIds));
   const losseTeams = teams.filter((t) => !groepTeamIds.has(t.id));
 
   return (
     <div
-      className={`wb-drawer rechts${open ? "open" : ""}`}
+      className={cx("wb-drawer", "rechts", open && "open")}
       style={{ "--drawer-width": "280px" } as React.CSSProperties}
     >
       <div className="wb-drawer-header">
@@ -36,12 +39,10 @@ export function TeamsDrawer({
       </div>
 
       <div className="wb-drawer-list ow-scroll" style={{ padding: "6px 8px" }}>
-        {/* Selectie-groepen */}
         {selectieGroepen.map((sg) => {
           const sgTeams = teams.filter((t) => sg.teamIds.includes(t.id));
           return (
-            <div key={sg.id} className={`td-selectie${sg.gebundeld ? "gebundeld" : ""}`}>
-              {/* Groep-header */}
+            <div key={sg.id} className={cx("td-selectie", sg.gebundeld && "gebundeld")}>
               <div
                 style={{
                   position: "absolute",
@@ -79,13 +80,11 @@ export function TeamsDrawer({
           );
         })}
 
-        {/* Losse teams */}
         {losseTeams.map((team) => (
           <WbTeamRij key={team.id} team={team} onClick={() => onTeamClick(team.id)} />
         ))}
       </div>
 
-      {/* Footer */}
       <div
         style={{
           padding: "10px 14px",

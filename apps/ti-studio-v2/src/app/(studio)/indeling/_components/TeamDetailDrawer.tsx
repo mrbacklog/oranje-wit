@@ -2,6 +2,10 @@
 
 import type { TeamKaartData } from "./werkbord-types";
 
+function cx(...args: (string | false | null | undefined)[]): string {
+  return args.filter(Boolean).join(" ");
+}
+
 const VAL_KLEUREN: Record<string, string> = {
   OK: "var(--val-ok)",
   WAARSCHUWING: "var(--val-warn)",
@@ -20,12 +24,11 @@ export function TeamDetailDrawer({ team, open, onTerug }: TeamDetailDrawerProps)
 
   return (
     <div
-      className={`wb-drawer rechts${open && team ? "open" : ""}`}
+      className={cx("wb-drawer", "rechts", open && team && "open")}
       style={{ "--drawer-width": "290px" } as React.CSSProperties}
     >
       {team && (
         <>
-          {/* Header */}
           <div className="wb-drawer-header">
             <button
               onClick={onTerug}
@@ -73,9 +76,7 @@ export function TeamDetailDrawer({ team, open, onTerug }: TeamDetailDrawerProps)
             />
           </div>
 
-          {/* Body */}
           <div className="wb-drawer-list ow-scroll" style={{ padding: "10px 12px" }}>
-            {/* Validatie-meldingen */}
             {team.validatieMeldingen && team.validatieMeldingen.length > 0 && (
               <div style={{ marginBottom: 12 }}>
                 <div
@@ -109,7 +110,6 @@ export function TeamDetailDrawer({ team, open, onTerug }: TeamDetailDrawerProps)
               </div>
             )}
 
-            {/* Dames */}
             <div style={{ marginBottom: 10 }}>
               <div
                 style={{
@@ -155,7 +155,6 @@ export function TeamDetailDrawer({ team, open, onTerug }: TeamDetailDrawerProps)
               ))}
             </div>
 
-            {/* Heren */}
             <div style={{ marginBottom: 10 }}>
               <div
                 style={{
@@ -201,7 +200,6 @@ export function TeamDetailDrawer({ team, open, onTerug }: TeamDetailDrawerProps)
               ))}
             </div>
 
-            {/* Staf */}
             {team.staf.length > 0 && (
               <div style={{ marginBottom: 10 }}>
                 <div
@@ -250,7 +248,6 @@ export function TeamDetailDrawer({ team, open, onTerug }: TeamDetailDrawerProps)
               </div>
             )}
 
-            {/* Statistieken */}
             <div
               style={{
                 display: "flex",

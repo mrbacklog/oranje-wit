@@ -6,6 +6,10 @@ import { WbSpelerRij } from "./WbSpelerRij";
 
 type PoolFilter = "zonder" | "ingedeeld" | "alle";
 
+function cx(...args: (string | false | null | undefined)[]): string {
+  return args.filter(Boolean).join(" ");
+}
+
 interface SpelersPoolDrawerProps {
   spelers: PoolSpeler[];
   open: boolean;
@@ -35,7 +39,7 @@ export function SpelersPoolDrawer({ spelers, open, onSpelerClick }: SpelersPoolD
 
   return (
     <div
-      className={`wb-drawer links${open ? "open" : ""}`}
+      className={cx("wb-drawer", "links", open && "open")}
       style={{ "--drawer-width": "260px" } as React.CSSProperties}
     >
       <div className="wb-drawer-header">
@@ -57,7 +61,7 @@ export function SpelersPoolDrawer({ spelers, open, onSpelerClick }: SpelersPoolD
         {(["zonder", "ingedeeld", "alle"] as PoolFilter[]).map((f) => (
           <button
             key={f}
-            className={`wb-filter-chip${filter === f ? "active" : ""}`}
+            className={cx("wb-filter-chip", filter === f && "active")}
             onClick={() => setFilter(f)}
           >
             {f === "zonder" ? "Zonder team" : f === "ingedeeld" ? "Ingedeeld" : "Alle"}

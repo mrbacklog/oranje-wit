@@ -1,5 +1,9 @@
 "use client";
 
+function cx(...args: (string | false | null | undefined)[]): string {
+  return args.filter(Boolean).join(" ");
+}
+
 interface WerkbordToolbarProps {
   werkindelingNaam: string;
   versieNummer: number;
@@ -37,10 +41,10 @@ export function WerkbordToolbar({
     <div className="werkbord-toolbar">
       {/* Links: Pool + Staf */}
       <div className="wb-toggles-links">
-        <button className={`wb-toggle${poolOpen ? "active" : ""}`} onClick={onTogglePool}>
+        <button className={cx("wb-toggle", poolOpen && "active")} onClick={onTogglePool}>
           Pool
         </button>
-        <button className={`wb-toggle${stafOpen ? "active" : ""}`} onClick={onToggleStaf}>
+        <button className={cx("wb-toggle", stafOpen && "active")} onClick={onToggleStaf}>
           Staf
         </button>
       </div>
@@ -68,10 +72,10 @@ export function WerkbordToolbar({
 
       {/* Rechts: Teams + Versies */}
       <div className="wb-toggles-rechts">
-        <button className={`wb-toggle${teamsOpen ? "active" : ""}`} onClick={onToggleTeams}>
+        <button className={cx("wb-toggle", teamsOpen && "active")} onClick={onToggleTeams}>
           Teams
         </button>
-        <button className={`wb-toggle${versiesOpen ? "active" : ""}`} onClick={onToggleVersies}>
+        <button className={cx("wb-toggle", versiesOpen && "active")} onClick={onToggleVersies}>
           Versies
         </button>
       </div>

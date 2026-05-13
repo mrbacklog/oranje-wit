@@ -2,6 +2,10 @@
 
 import type { TeamKaartData } from "./werkbord-types";
 
+function cx(...args: (string | false | null | undefined)[]): string {
+  return args.filter(Boolean).join(" ");
+}
+
 const CAT_KLEUREN: Record<string, string> = {
   SENIOR: "var(--cat-senior)",
   rood: "var(--cat-rood)",
@@ -34,7 +38,7 @@ export function WbTeamRij({ team, actief = false, onClick }: WbTeamRijProps) {
 
   return (
     <div
-      className={`wb-team-rij${actief ? "active" : ""}`}
+      className={cx("wb-team-rij", actief && "active")}
       style={{ "--team-kleur": teamKleur } as React.CSSProperties}
       onClick={onClick}
     >

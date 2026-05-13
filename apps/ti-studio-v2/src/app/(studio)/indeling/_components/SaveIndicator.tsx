@@ -2,6 +2,10 @@
 
 import type { SaveState } from "./werkbord-types";
 
+function cx(...args: (string | false | null | undefined)[]): string {
+  return args.filter(Boolean).join(" ");
+}
+
 interface SaveIndicatorProps {
   state: SaveState;
 }
@@ -11,7 +15,12 @@ export function SaveIndicator({ state }: SaveIndicatorProps) {
 
   return (
     <div
-      className={`save-indicator${visible ? "visible" : ""}${state === "saving" ? "saving" : ""}${state === "error" ? "error" : ""}`}
+      className={cx(
+        "save-indicator",
+        visible && "visible",
+        state === "saving" && "saving",
+        state === "error" && "error"
+      )}
     >
       <span className="save-dot" />
       {state === "saving"
