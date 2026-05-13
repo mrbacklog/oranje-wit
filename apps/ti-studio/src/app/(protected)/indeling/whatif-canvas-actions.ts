@@ -285,6 +285,8 @@ export async function getWhatIfVoorCanvas(
     const seizoen = werkindeling.kaders.seizoen as Seizoen;
     const peildatum = korfbalPeildatum(seizoen);
     const startSeizoen = seizoenStart(seizoen);
+    // Nieuw = ingestroomd vanaf start van vorig seizoen (zie page.tsx).
+    const nieuwGrens = new Date(startSeizoen.getFullYear() - 1, 6, 1);
     const huidigeJaar = new Date().getFullYear();
 
     // Posities: what-if eigen posities hebben voorrang, anders val terug op de
@@ -800,7 +802,7 @@ export async function getWhatIfVoorCanvas(
         notitie: null,
         afmelddatum: null,
         teamId: effectieveStatus === "ALGEMEEN_RESERVE" ? null : inVariantTeamId,
-        isNieuw: sp.lidSinds ? new Date(sp.lidSinds) >= startSeizoen : false,
+        isNieuw: sp.lidSinds ? new Date(sp.lidSinds) >= nieuwGrens : false,
         openMemoCount: memoCountMap.get(sp.id) ?? 0,
         ussScore: ussMap.get(sp.id) ?? null,
         fotoUrl: fotoSet.has(sp.id) ? `/api/scouting/spelers/${sp.id}/foto` : null,

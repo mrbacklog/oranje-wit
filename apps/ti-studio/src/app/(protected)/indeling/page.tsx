@@ -109,7 +109,11 @@ export default async function IndelingPage() {
   // Kaders laden en peildatum bepalen
   const seizoen = volledig.kaders.seizoen; // bijv. "2025-2026"
   const peildatum = korfbalPeildatum(seizoen as Seizoen);
+  // "Nieuw" = ingestroomd vanaf de start van het vorige seizoen. Een TC werkt
+  // typisch aan het volgende seizoen (bv. 2026-2027) en wil daar de instromers
+  // van het lopende seizoen (vanaf 2025-07-01) als nieuw zien.
   const startSeizoen = seizoenStart(seizoen as Seizoen);
+  const nieuwGrens = new Date(startSeizoen.getFullYear() - 1, 6, 1);
   const opgeslagenKaders = await getTeamtypeKaders(seizoen);
   const tcKaders = mergeMetDefaults(opgeslagenKaders);
 
@@ -174,7 +178,7 @@ export default async function IndelingPage() {
       notitie: null,
       afmelddatum: null,
       teamId: effectieveStatus === "ALGEMEEN_RESERVE" ? null : (spelerTeamMap.get(sp.id) ?? null),
-      isNieuw: sp.lidSinds ? new Date(sp.lidSinds) >= startSeizoen : false,
+      isNieuw: sp.lidSinds ? new Date(sp.lidSinds) >= nieuwGrens : false,
       openMemoCount: openMemoPerSpeler[sp.id] ?? 0,
       ussScore: sp.ussScore ?? null,
       fotoUrl: sp.heeftFoto ? `/api/scouting/spelers/${sp.id}/foto` : null,
