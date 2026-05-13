@@ -40,7 +40,7 @@ export async function getMemoKaarten(kadersId: string): Promise<MemoKaartData[]>
       spelerId: true,
       stafId: true,
       teamId: true,
-      speler: { select: { naam: true } },
+      speler: { select: { roepnaam: true, achternaam: true } },
       staf: { select: { naam: true } },
       team: { select: { naam: true } },
       _count: { select: { toelichtingen: true } },
@@ -59,7 +59,7 @@ export async function getMemoKaarten(kadersId: string): Promise<MemoKaartData[]>
       status: string;
       doelgroep: string | null;
       entiteit: string | null;
-      speler: { naam: string } | null;
+      speler: { roepnaam: string; achternaam: string } | null;
       staf: { naam: string } | null;
       team: { naam: string } | null;
       _count: { toelichtingen: number };
@@ -73,7 +73,11 @@ export async function getMemoKaarten(kadersId: string): Promise<MemoKaartData[]>
       status: item.status as MemoStatus,
       doelgroep: item.doelgroep as MemoDoelgroep | null,
       entiteit: item.entiteit as MemoEntiteitType | null,
-      entiteitLabel: item.speler?.naam ?? item.staf?.naam ?? item.team?.naam ?? null,
+      entiteitLabel:
+        (item.speler ? `${item.speler.roepnaam} ${item.speler.achternaam}` : null) ??
+        item.staf?.naam ??
+        item.team?.naam ??
+        null,
       aantalToelichtingen: item._count.toelichtingen,
       createdAt: item.createdAt,
       updatedAt: item.updatedAt,
@@ -88,7 +92,7 @@ export async function getMemoDetailData(memoId: string): Promise<MemoDetailData 
   const item = await db.werkitem.findUnique({
     where: { id: memoId },
     include: {
-      speler: { select: { naam: true } },
+      speler: { select: { roepnaam: true, achternaam: true } },
       staf: { select: { naam: true } },
       team: { select: { naam: true } },
       toelichtingen: { orderBy: { timestamp: "asc" } },
@@ -135,7 +139,11 @@ export async function getMemoDetailData(memoId: string): Promise<MemoDetailData 
     status: item.status as MemoStatus,
     doelgroep: item.doelgroep as MemoDoelgroep | null,
     entiteit: item.entiteit as MemoEntiteitType | null,
-    entiteitLabel: item.speler?.naam ?? item.staf?.naam ?? item.team?.naam ?? null,
+    entiteitLabel:
+      (item.speler ? `${item.speler.roepnaam} ${item.speler.achternaam}` : null) ??
+      item.staf?.naam ??
+      item.team?.naam ??
+      null,
     aantalToelichtingen: item._count.toelichtingen,
     createdAt: item.createdAt,
     updatedAt: item.updatedAt,
