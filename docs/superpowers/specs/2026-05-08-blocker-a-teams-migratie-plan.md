@@ -1,7 +1,64 @@
 # Blocker-A: Teams-2025-2026 Migratie Plan
-**Status:** RE-DRY-RUN met regex-fix voltooid 2026-05-13 — wacht op Antjans GO voor live  
-**Datum:** 2026-05-08 (plan) · 2026-05-11 (lege-dev) · 2026-05-13 (snapshot) · 2026-05-13 (re-dry-run)  
+**Status:** ✅ LIVE-MIGRATIE UITGEVOERD 2026-05-13 — Blocker A volledig opgelost  
+**Datum:** 2026-05-08 (plan) · 2026-05-11 (lege-dev) · 2026-05-13 (snapshot) · 2026-05-13 (re-dry-run) · 2026-05-13 (live)  
 **Doel:** Inventarisatie + dry-run-strategie voor v2 TI Studio start
+
+---
+
+## Live-migratie 2026-05-13
+
+**Tijdvenster:** 08:37–08:42 UTC (5 minuten totaal, incl. pre-snapshot + verify).
+
+### Rollback-bronnen
+
+| Bron | Tijdstip | Locatie |
+|---|---|---|
+| Pre-migratie node-snapshot | 2026-05-13 08:37:37 UTC | `localhost:5434/oranjewit_dev` (Docker container `ow-postgres`) |
+| Railway automatic backup | dagelijks, laatste check 2026-05-13 | Railway dashboard → oranje-wit-db → Postgres → Backups |
+
+Railway CLI heeft geen `backup`-subcommand (v4.40.0); backup-verificatie via dashboard. De pre-migratie snapshot in dev is een tweede onafhankelijke rollback-bron.
+
+### Uitvoer
+
+```
+=== LIVE-MIGRATIE START 2026-05-13T08:40:50Z ===
+=== Historische alias-backfill ===
+497 ontbrekende team+seizoen combos
+✓ 497 ontbrekende teams aangemaakt
+✓ 497 nieuwe aliases aangemaakt
+✓ 0 extra ow_code-aliases aangemaakt
+✓ 4052 historische competitie_spelers rijen gekoppeld
+✓ Alle historische rijen volledig gekoppeld
+=== Klaar ===
+=== EINDE 2026-05-13T08:41:32Z ===
+```
+
+**Duur:** 42 seconden. `pnpm db:ensure-views` daarna: `VIEW speler_seizoenen: OK (4373 records)`.
+
+### Verificatie-queries (pre vs post op productie)
+
+| Query | Verwacht | Werkelijk | Status |
+|---|---:|---:|:--:|
+| `teams` totaal | 528 (31 + 497) | **528** | ✅ |
+| `teams` waar seizoen<2025-2026 | 497 | **497** | ✅ |
+| `team_aliases` totaal | 554 (57 + 497) | **554** | ✅ |
+| `cs.ow_team_id IS NULL` waar seizoen≠2025-2026 | 0 | **0** | ✅ |
+| `cs.ow_team_id IS NULL` waar seizoen=2025-2026 | 61 (ongewijzigd) | **61** | ✅ |
+| `speler_seizoenen` totaal | 4 373 | **4 373** | ✅ |
+| VIEW sample 2024-2025 (5 rijen) | `ow_team_naam` gevuld | MW1/NSL/etc. correct | ✅ |
+
+`verify-teams-migration.ts` op productie: alle historische checks groen; alleen bekende 2025-2026 NULL warning (7.3%, K/onbekend/S1S2 — afzonderlijk PO-issue).
+
+### Eindstatus: ✅ Blocker A volledig opgelost
+
+- 497 historische teams aangemaakt + 497 aliases (categorisatie: 331 JEUGD / 80 SENIOREN / 49 SELECTIE / 37 OVERIG)
+- 4 052 historische `competitie_spelers` rijen gekoppeld (100%)
+- VIEW `speler_seizoenen` werkt; historische monitor-queries hebben nu volledige `ow_team_naam`
+- Geen `team_scouting_sessies` impact
+- Geen mutatie op 2025-2026 data
+- 2025-2026 NULL (61 rijen, 7.3%) blijft open PO-issue — niet onderdeel van deze migratie
+
+**v2 TI Studio fase-0 kan starten.**
 
 ---
 
