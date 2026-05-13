@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { TeamKaartData } from "./werkbord-types";
 import { TeamKaart } from "./TeamKaart";
 import { ZoomControls } from "./ZoomControls";
+import type { WerkbordDragData } from "./hooks/useWerkbordDraggable";
 
 interface WerkbordCanvasProps {
   teams: TeamKaartData[];
@@ -11,6 +12,7 @@ interface WerkbordCanvasProps {
   zoom: "compact" | "detail";
   onZoomChange: (zoom: "compact" | "detail") => void;
   onTeamClick: (teamId: string) => void;
+  onDropSpelerOpTeam?: (data: WerkbordDragData, naarTeamId: string) => void;
 }
 
 export function WerkbordCanvas({
@@ -19,6 +21,7 @@ export function WerkbordCanvas({
   zoom,
   onZoomChange,
   onTeamClick,
+  onDropSpelerOpTeam,
 }: WerkbordCanvasProps) {
   const canvasRef = useRef<HTMLDivElement>(null);
   const surfaceRef = useRef<HTMLDivElement>(null);
@@ -96,6 +99,7 @@ export function WerkbordCanvas({
             onStafClick={() => {
               /* fase 2: StafDialog openen */
             }}
+            onDropSpeler={onDropSpelerOpTeam}
           />
         ))}
       </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import type {
   WerkindelingMeta,
   VersieMeta,
@@ -16,7 +16,10 @@ import { TeamsDrawer } from "./TeamsDrawer";
 import { VersiesDrawer } from "./VersiesDrawer";
 import { TeamDetailDrawer } from "./TeamDetailDrawer";
 import { SaveIndicator } from "./SaveIndicator";
-import type { TeamKaartData } from "./werkbord-types";
+import type { TeamKaartData, SaveState } from "./werkbord-types";
+import { verplaatsSpeler } from "@/actions/werkbord/verplaats-speler";
+import type { WerkbordDragData } from "./hooks/useWerkbordDraggable";
+import { logger } from "@oranje-wit/types";
 
 interface WerkbordShellProps {
   werkindeling: WerkindelingMeta;
@@ -47,6 +50,7 @@ export function WerkbordShell({
   const [rechtsOpen, setRechtsOpen] = useState<RechtsDrawer>("teams");
   const [zoom, setZoom] = useState<ZoomMode>("compact");
   const [geselecteerdTeam, setGeselecteerdTeam] = useState<TeamKaartData | null>(null);
+  const [saveState, setSaveState] = useState<SaveState>("idle");
 
   function handleTogglePool() {
     setLinksOpen((prev) => (prev === "pool" ? null : "pool"));
@@ -83,6 +87,44 @@ export function WerkbordShell({
     window.location.href = url.toString();
   }
 
+  const handleDropSpelerOpTeam = useCallback(
+    async (data: WerkbordDragData, naarTeamId: string) => {
+      setSaveState("saving");
+      const result = await verplaatsSpeler({
+        versieId: actieveVersie.versieId,
+        rel_code: data.rel_code,
+        naarTeamId,
+      });
+      if (result.ok) {
+        setSaveState("saved");
+        setTimeout(() => setSaveState("idle"), 2000);
+      } else {
+        setSaveState("error");
+        logger.warn("handleDropSpelerOpTeam mislukt:", result.error);
+      }
+    },
+    [actieveVersie.versieId]
+  );
+
+  const handleDropNaarPool = useCallback(
+    async (data: WerkbordDragData) => {
+      setSaveState("saving");
+      const result = await verplaatsSpeler({
+        versieId: actieveVersie.versieId,
+        rel_code: data.rel_code,
+        naarTeamId: null,
+      });
+      if (result.ok) {
+        setSaveState("saved");
+        setTimeout(() => setSaveState("idle"), 2000);
+      } else {
+        setSaveState("error");
+        logger.warn("handleDropNaarPool mislukt:", result.error);
+      }
+    },
+    [actieveVersie.versieId]
+  );
+
   const detailOpen = geselecteerdTeam !== null;
 
   return (
@@ -113,6 +155,7 @@ export function WerkbordShell({
           onSpelerClick={() => {
             /* fase 2 */
           }}
+          onDropNaarPool={handleDropNaarPool}
         />
         <StafPoolDrawer
           staf={allStaf}
@@ -129,6 +172,7 @@ export function WerkbordShell({
           zoom={zoom}
           onZoomChange={setZoom}
           onTeamClick={handleTeamClick}
+          onDropSpelerOpTeam={handleDropSpelerOpTeam}
         />
 
         {/* Rechter drawers */}
@@ -153,7 +197,7 @@ export function WerkbordShell({
         />
       </div>
 
-      <SaveIndicator state="idle" />
+      <SaveIndicator state={saveState} />
     </div>
   );
 }
