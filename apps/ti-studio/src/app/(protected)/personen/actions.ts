@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/teamindeling/db/prisma";
 import { requireTC } from "@oranje-wit/auth/checks";
 import { logger } from "@oranje-wit/types";
+import { effectieveSpelerStatus } from "@/lib/teamindeling/speler-status";
 
 export async function getSpelersVoorStudio() {
   await requireTC();
@@ -139,7 +140,7 @@ export async function getSpelersVoorStudio() {
       achternaam: s.achternaam as string,
       geboortejaar: s.geboortejaar as number,
       geslacht: s.geslacht as "M" | "V",
-      status: (gezien?.statusOverride ?? s.status) as string,
+      status: effectieveSpelerStatus(s.status, gezien?.statusOverride),
       gezienStatus: (gezien?.gezienStatus ?? "ONGEZIEN") as
         | "ONGEZIEN"
         | "GROEN"

@@ -10,6 +10,7 @@ import { logger, berekenKorfbalLeeftijd, formatKorfbalLeeftijd } from "@oranje-w
 import type { EvaluatieScore, TeamGemiddelde } from "@oranje-wit/types";
 import { WerkitemPanel } from "@/components/WerkitemPanel";
 import { usePeildatum } from "@/components/werkbord/peildatum-context";
+import { effectieveSpelerStatus, isAfmeldStatus } from "@/lib/teamindeling/speler-status";
 
 // ──────────────────────────────────────────────────────────
 // Types
@@ -638,9 +639,12 @@ export default function SpelerProfielDialog({
         setProfiel(data);
         const sl = (data?.status as StatusKey) ?? "BESCHIKBAAR";
         const override = data?.statusOverride as StatusKey | null | undefined;
+        // Sportlink-afmelding wint van TC-override (anders kan een legacy override
+        // een echte bondsafmelding maskeren).
+        const effectief = effectieveSpelerStatus(sl, override) as StatusKey;
         setSportlinkStatus(sl);
-        setHeeftOverride(!!override);
-        setHuidigStatus(override ?? sl);
+        setHeeftOverride(!!override && !isAfmeldStatus(sl));
+        setHuidigStatus(effectief);
       })
       .catch((err: unknown) => {
         logger.error("SpelerProfielDialog: fout bij ophalen profiel", err);

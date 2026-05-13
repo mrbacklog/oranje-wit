@@ -12,6 +12,7 @@ import { getTeamtypeKaders } from "@/app/(protected)/kader/actions";
 import { mergeMetDefaults } from "@/app/(protected)/kader/kader-defaults";
 import { berekenTeamValidatie, berekenValidatieStatus } from "@/lib/teamindeling/validatie-engine";
 import { korfbalPeildatum, berekenKorfbalLeeftijd, type Seizoen } from "@oranje-wit/types";
+import { effectieveSpelerStatus } from "@/lib/teamindeling/speler-status";
 import { TiStudioShell } from "@/components/werkbord/TiStudioShell";
 import type {
   WerkbordState,
@@ -49,13 +50,15 @@ function mapStatus(s: string | null | undefined): WerkbordSpeler["status"] {
   return "BESCHIKBAAR";
 }
 
-// Geeft de effectieve status: TC-override als gezet, anders Sportlink
+// Geeft de effectieve status. Afmeldstatussen vanuit Sportlink (GAAT_STOPPEN,
+// NIET_SPELEND) winnen altijd van een TC-override — een handmatige keuze mag
+// een bondsafmelding niet maskeren.
 function effectief(
   spelerId: string,
   sportlinkStatus: string | null | undefined,
   overrideMap: Record<string, string>
 ): WerkbordSpeler["status"] {
-  return mapStatus(overrideMap[spelerId] ?? sportlinkStatus);
+  return mapStatus(effectieveSpelerStatus(sportlinkStatus, overrideMap[spelerId]));
 }
 
 export default async function IndelingPage() {

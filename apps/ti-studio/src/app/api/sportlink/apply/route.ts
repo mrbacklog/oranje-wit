@@ -80,6 +80,12 @@ export async function POST(req: NextRequest) {
         where: { id: spelerId },
         data: { status: "GAAT_STOPPEN" },
       });
+      // TC-statusOverrides voor alle seizoenen leegmaken — een bondsafmelding
+      // mag niet door een legacy override gemaskeerd worden in de indeling.
+      await prisma.kadersSpeler.updateMany({
+        where: { spelerId, statusOverride: { not: null } },
+        data: { statusOverride: null },
+      });
       afgemeldCount++;
     }
 
