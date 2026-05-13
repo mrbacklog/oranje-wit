@@ -1,3 +1,5 @@
+"use client";
+
 interface MemoBadgeStats {
   open: number;
   inBespreking: number;
