@@ -41,9 +41,6 @@ ENV HOSTNAME="0.0.0.0"
 COPY --from=builder /app/apps/ti-studio-v2/.next/standalone ./
 COPY --from=builder /app/apps/ti-studio-v2/.next/static apps/ti-studio-v2/.next/static
 
-COPY apps/ti-studio-v2/start.sh /start.sh
-RUN chmod +x /start.sh
-
 EXPOSE 3002
 
-CMD ["/start.sh"]
+CMD ["node", "apps/ti-studio-v2/server.js"]
