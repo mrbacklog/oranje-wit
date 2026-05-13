@@ -703,8 +703,11 @@ function SpelerStatusBadge({ status }: { status: string }) {
     GEBLESSEERD: { label: "Geblesseerd", kleur: "rgba(249,115,22,.7)" },
     GAAT_STOPPEN: { label: "Gaat stoppen", kleur: "rgba(239,68,68,.7)" },
     GESTOPT: { label: "Gestopt", kleur: "rgba(239,68,68,.7)" },
-    AFGEMELD: { label: "Afgemeld", kleur: "rgba(239,68,68,.7)" },
+    NIEUW_POTENTIEEL: { label: "Nieuw potentieel", kleur: "rgba(96,165,250,.7)" },
+    NIEUW_DEFINITIEF: { label: "Nieuw definitief", kleur: "rgba(96,165,250,.85)" },
     ALGEMEEN_RESERVE: { label: "AR", kleur: "rgba(255,255,255,.3)" },
+    RECREANT: { label: "Recreant", kleur: "rgba(255,255,255,.3)" },
+    NIET_SPELEND: { label: "Niet spelend", kleur: "rgba(255,255,255,.3)" },
   };
   const c = config[status] ?? { label: status, kleur: "rgba(255,255,255,.3)" };
   return (

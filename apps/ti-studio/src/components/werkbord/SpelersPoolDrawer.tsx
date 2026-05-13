@@ -39,16 +39,17 @@ export function SpelersPoolDrawer({
       return `${sp.roepnaam} ${sp.achternaam}`.toLowerCase().includes(zoek.toLowerCase());
     });
 
+  // Niet beschikbaar voor team-indeling: afgemeld of bewust niet-spelend.
+  // NIEUW_POTENTIEEL / NIEUW_DEFINITIEF tonen we wél — die zijn juist kandidaat.
+  const NIET_INDEELBAAR = new Set<string>(["GAAT_STOPPEN", "GESTOPT", "NIET_SPELEND", "RECREANT"]);
+
   const gefilterd = spelers.filter((sp) => {
     if (sp.status === "ALGEMEEN_RESERVE") return false;
     if (sp.selectieGroepId !== null) return false;
     const naam = `${sp.roepnaam} ${sp.achternaam}`.toLowerCase();
     if (zoek && !naam.includes(zoek.toLowerCase())) return false;
     if (geslachtFilter !== "alle" && sp.geslacht.toLowerCase() !== geslachtFilter) return false;
-    if (
-      filter === "zonder_team" &&
-      (sp.teamId !== null || sp.status === "GAAT_STOPPEN" || sp.status === "GESTOPT")
-    )
+    if (filter === "zonder_team" && (sp.teamId !== null || NIET_INDEELBAAR.has(sp.status)))
       return false;
     if (filter === "ingedeeld" && sp.teamId === null) return false;
     return true;

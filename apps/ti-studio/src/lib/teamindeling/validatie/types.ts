@@ -43,6 +43,7 @@ export interface SpelerData {
     | "TWIJFELT"
     | "GEBLESSEERD"
     | "GAAT_STOPPEN"
+    | "GESTOPT"
     | "NIEUW_POTENTIEEL"
     | "NIEUW_DEFINITIEF"
     | "ALGEMEEN_RESERVE"

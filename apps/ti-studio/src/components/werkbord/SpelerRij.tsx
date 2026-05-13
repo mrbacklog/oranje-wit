@@ -167,7 +167,7 @@ function naamPool(roepnaam: string, tussenvoegsel: string | null, achternaam: st
 
 /** Geeft de waas-kleur terug op basis van status en isNieuw */
 function waasKleur(status: string, isNieuw: boolean): { normaal: string; hover: string } | null {
-  if (status === "GAAT_STOPPEN" || status === "GESTOPT" || status === "AFGEMELD") {
+  if (status === "GAAT_STOPPEN" || status === "GESTOPT") {
     return { normaal: WAAS_STOPT, hover: WAAS_STOPT_H };
   }
   if (status === "GEBLESSEERD") return { normaal: WAAS_GEBLESSEERD, hover: WAAS_GEBLESSEERD_H };
@@ -341,8 +341,7 @@ function CompactChip({
   const ghostRef = useRef<HTMLDivElement>(null);
   const { isDragging, isLanding, setIsDragging, setIsLanding } = useDragState();
   const isAR = speler.status === "ALGEMEEN_RESERVE";
-  const isStopt =
-    speler.status === "GAAT_STOPPEN" || speler.status === "GESTOPT" || speler.status === "AFGEMELD";
+  const isStopt = speler.status === "GAAT_STOPPEN" || speler.status === "GESTOPT";
   const waas = waasKleur(speler.status, speler.isNieuw);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -530,8 +529,7 @@ function NormaalRij({
     [updatePos]
   );
   const isAR = speler.status === "ALGEMEEN_RESERVE";
-  const isStopt =
-    speler.status === "GAAT_STOPPEN" || speler.status === "GESTOPT" || speler.status === "AFGEMELD";
+  const isStopt = speler.status === "GAAT_STOPPEN" || speler.status === "GESTOPT";
   const waas = waasKleur(speler.status, speler.isNieuw);
 
   const geslacht = speler.geslacht.toLowerCase() as "v" | "m";
@@ -768,8 +766,7 @@ function PoolRij({
     [updatePos]
   );
   const isAR = speler.status === "ALGEMEEN_RESERVE";
-  const isStopt =
-    speler.status === "GAAT_STOPPEN" || speler.status === "GESTOPT" || speler.status === "AFGEMELD";
+  const isStopt = speler.status === "GAAT_STOPPEN" || speler.status === "GESTOPT";
   const waas = waasKleur(speler.status, speler.isNieuw);
 
   const geslacht = speler.geslacht.toLowerCase() as "v" | "m";

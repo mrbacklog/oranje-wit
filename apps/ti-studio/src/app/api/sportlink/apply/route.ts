@@ -75,10 +75,25 @@ export async function POST(req: NextRequest) {
       aangemaakt++;
     }
 
+    // Afmelddatum bepaalt: in verleden of geen actief lid → GESTOPT (echt weg).
+    // In toekomst → GAAT_STOPPEN (speelt nog dit seizoen uit).
+    const vandaag = new Date();
+    vandaag.setHours(0, 0, 0, 0);
+
     for (const spelerId of afgemeld) {
+      const lid = await prisma.lid.findUnique({
+        where: { relCode: spelerId },
+        select: { afmelddatum: true, lidStatus: true },
+      });
+      const isGestopt =
+        !lid ||
+        lid.lidStatus !== "ACTIVE" ||
+        (lid.afmelddatum !== null && lid.afmelddatum <= vandaag);
+      const nieuweStatus: SpelerStatus = isGestopt ? "GESTOPT" : "GAAT_STOPPEN";
+
       await prisma.speler.update({
         where: { id: spelerId },
-        data: { status: "GAAT_STOPPEN" },
+        data: { status: nieuweStatus },
       });
       // TC-statusOverrides voor alle seizoenen leegmaken — een bondsafmelding
       // mag niet door een legacy override gemaskeerd worden in de indeling.

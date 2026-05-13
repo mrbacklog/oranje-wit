@@ -2,14 +2,18 @@
 // Lokale types voor het werkbord — gebaseerd op bestaande types in components/teamindeling/scenario/types.ts
 
 export type Geslacht = "V" | "M";
+// Komt overeen met @oranje-wit/database SpelerStatus enum.
 export type SpelerStatus =
   | "BESCHIKBAAR"
   | "TWIJFELT"
   | "GEBLESSEERD"
   | "GAAT_STOPPEN"
   | "GESTOPT"
-  | "AFGEMELD"
-  | "ALGEMEEN_RESERVE";
+  | "NIEUW_POTENTIEEL"
+  | "NIEUW_DEFINITIEF"
+  | "ALGEMEEN_RESERVE"
+  | "RECREANT"
+  | "NIET_SPELEND";
 
 export type ZoomLevel = "compact" | "normaal" | "detail";
 export type KaartFormaat = "viertal" | "achtal" | "selectie";

@@ -35,18 +35,23 @@ const KLEUR_MAP: Record<string, string> = {
   ROOD: "rood",
 };
 
-const TOEGESTANE_STATUSSEN = new Set([
+const TOEGESTANE_STATUSSEN = new Set<WerkbordSpeler["status"]>([
   "BESCHIKBAAR",
   "TWIJFELT",
+  "GEBLESSEERD",
   "GAAT_STOPPEN",
   "GESTOPT",
-  "AFGEMELD",
+  "NIEUW_POTENTIEEL",
+  "NIEUW_DEFINITIEF",
   "ALGEMEEN_RESERVE",
-  "GEBLESSEERD",
+  "RECREANT",
+  "NIET_SPELEND",
 ]);
 
 function mapStatus(s: string | null | undefined): WerkbordSpeler["status"] {
-  if (s && TOEGESTANE_STATUSSEN.has(s)) return s as WerkbordSpeler["status"];
+  if (s && TOEGESTANE_STATUSSEN.has(s as WerkbordSpeler["status"])) {
+    return s as WerkbordSpeler["status"];
+  }
   return "BESCHIKBAAR";
 }
 

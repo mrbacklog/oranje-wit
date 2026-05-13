@@ -41,8 +41,7 @@ export function SpelerKaart({
 
   const stopGezet = speler.status === "GAAT_STOPPEN";
   const isAR = speler.status === "ALGEMEEN_RESERVE";
-  const isStopt =
-    speler.status === "GAAT_STOPPEN" || speler.status === "GESTOPT" || speler.status === "AFGEMELD";
+  const isStopt = speler.status === "GAAT_STOPPEN" || speler.status === "GESTOPT";
 
   const waasAchtergrond = speler.isNieuw
     ? "rgba(34,197,94,.07)"
@@ -251,7 +250,7 @@ export function SpelerKaart({
                   </svg>
                 </span>
               )}
-              {speler.status === "AFGEMELD" && (
+              {speler.status === "GESTOPT" && (
                 <span style={{ fontSize: 8, color: "var(--err)" }}>⚠</span>
               )}
             </div>
@@ -443,7 +442,7 @@ export function SpelerKaart({
           {speler.status === "TWIJFELT" && (
             <span style={{ fontSize: 10, fontWeight: 700, color: "var(--warn)" }}>?</span>
           )}
-          {speler.status === "AFGEMELD" && (
+          {speler.status === "GESTOPT" && (
             <span style={{ fontSize: 10, color: "var(--err)" }}>⚠</span>
           )}
         </div>

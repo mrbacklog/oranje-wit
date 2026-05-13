@@ -4,7 +4,7 @@
  * een handmatige TC-keuze mag een afmelding niet maskeren — de teamindeling
  * moet direct zien dat een speler niet beschikbaar is.
  */
-const AFMELD_STATUSSEN = new Set<string>(["GAAT_STOPPEN", "NIET_SPELEND"]);
+const AFMELD_STATUSSEN = new Set<string>(["GAAT_STOPPEN", "GESTOPT", "NIET_SPELEND"]);
 
 export function effectieveSpelerStatus(
   spelerStatus: string | null | undefined,
