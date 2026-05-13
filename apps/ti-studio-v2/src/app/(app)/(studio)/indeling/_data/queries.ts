@@ -246,7 +246,7 @@ export async function haalPoolSpelers(
     where: {
       kadersId,
       speler: {
-        status: { notIn: ["GESTOPT", "NIET_SPELEND", "BEDANKT"] },
+        status: { notIn: ["GESTOPT", "NIET_SPELEND"] },
       },
     },
     include: {

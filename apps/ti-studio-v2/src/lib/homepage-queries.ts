@@ -40,8 +40,10 @@ export async function getHomepageStats(): Promise<HomepageStats> {
               take: 1,
               select: {
                 id: true,
-                teamSpelers: {
-                  select: { spelerId: true },
+                teams: {
+                  select: {
+                    _count: { select: { teamSpelers: true } },
+                  },
                 },
               },
             },
@@ -67,7 +69,7 @@ export async function getHomepageStats(): Promise<HomepageStats> {
     const [spelersCount, memoItems] = await Promise.all([
       db.speler.count({
         where: {
-          status: { not: "STOPT" },
+          status: { not: "GESTOPT" },
         },
       }),
       db.werkitem.findMany({
@@ -84,7 +86,11 @@ export async function getHomepageStats(): Promise<HomepageStats> {
     ]);
 
     const actieveVersie = kaders.werkindelingen?.[0]?.versies?.[0];
-    const ingedeeld = actieveVersie?.teamSpelers?.length ?? 0;
+    const ingedeeld =
+      actieveVersie?.teams?.reduce(
+        (sum: number, t: { _count: { teamSpelers: number } }) => sum + t._count.teamSpelers,
+        0
+      ) ?? 0;
     const pct = spelersCount > 0 ? Math.round((ingedeeld / spelersCount) * 100) : 0;
 
     type MemoItem = { status: unknown; prioriteit: unknown };
