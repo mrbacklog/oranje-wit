@@ -33,25 +33,23 @@ export async function getHomepageStats(): Promise<HomepageStats> {
         seizoen: true,
         werkindelingen: {
           where: { status: "ACTIEF" },
-          select: {
-            id: true,
-            versies: {
-              orderBy: { nummer: "desc" as const },
-              take: 1,
-              select: {
-                id: true,
-                teams: {
-                  select: {
-                    _count: { select: { teamSpelers: true } },
-                  },
-                },
-              },
-            },
-          },
+          select: { id: true },
           take: 1,
         },
       },
     });
+
+    // Pak unieke ingedeelde spelers over alle versies van de actieve werkindeling.
+    // Versie-nummer is geen betrouwbare proxy voor "huidige indeling" (what-if
+    // versies kunnen hoger nummer maar minder teams hebben).
+    const werkindelingId = kaders?.werkindelingen?.[0]?.id;
+    const ingedeeldeSpelers = werkindelingId
+      ? await db.teamSpeler.findMany({
+          where: { team: { versie: { werkindelingId } } },
+          select: { spelerId: true },
+          distinct: ["spelerId"],
+        })
+      : [];
 
     if (!kaders) {
       logger.warn("getHomepageStats: geen actief kaders gevonden");
@@ -85,12 +83,7 @@ export async function getHomepageStats(): Promise<HomepageStats> {
       }),
     ]);
 
-    const actieveVersie = kaders.werkindelingen?.[0]?.versies?.[0];
-    const ingedeeld =
-      actieveVersie?.teams?.reduce(
-        (sum: number, t: { _count: { teamSpelers: number } }) => sum + t._count.teamSpelers,
-        0
-      ) ?? 0;
+    const ingedeeld = ingedeeldeSpelers.length;
     const pct = spelersCount > 0 ? Math.round((ingedeeld / spelersCount) * 100) : 0;
 
     type MemoItem = { status: unknown; prioriteit: unknown };
@@ -110,7 +103,7 @@ export async function getHomepageStats(): Promise<HomepageStats> {
       ingedeeld,
       pct,
       memos: { open, inBespreking, hogePrio },
-      heeftWerkindeling: !!actieveVersie,
+      heeftWerkindeling: !!werkindelingId,
     };
   } catch (err) {
     logger.error("getHomepageStats fout:", err);
