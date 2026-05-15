@@ -15,7 +15,12 @@ export default defineConfig({
   projects: [
     {
       name: "setup",
-      testMatch: /.*\.setup\.ts/,
+      // Excludeert studio-test-auth.setup.ts — die heeft een eigen project
+      testMatch: /(?<!studio-test-auth)\.setup\.ts/,
+    },
+    {
+      name: "studio-test-auth-setup",
+      testMatch: /studio-test-auth\.setup\.ts/,
     },
     {
       name: "web",
@@ -92,6 +97,21 @@ export default defineConfig({
         },
       },
       dependencies: ["setup"],
+    },
+    {
+      name: "ti-studio-v2-remote",
+      testDir: "./e2e/ti-studio-v2",
+      use: {
+        ...devices["Desktop Chrome"],
+        storageState: "./e2e/.auth/studio-test.json",
+        baseURL: process.env.STUDIO_TEST_URL ?? "https://studio-test.ckvoranjewit.app",
+        extraHTTPHeaders: {
+          Authorization: `Basic ${Buffer.from(
+            `${process.env.STUDIO_TEST_BASIC_AUTH_USER ?? ""}:${process.env.STUDIO_TEST_BASIC_AUTH_PASS ?? ""}`
+          ).toString("base64")}`,
+        },
+      },
+      dependencies: ["studio-test-auth-setup"],
     },
   ],
   webServer: [
