@@ -41,6 +41,7 @@ export interface TeamKaartData {
   categorie: string;
   kleur: string | null;
   teamType: string | null;
+  niveau: string | null;
   validatieStatus: string;
   validatieMeldingen: string[] | null;
   spelersDames: TeamKaartSpeler[];

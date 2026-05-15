@@ -219,6 +219,7 @@ export async function haalVersieData(
       categorie: team.categorie as string,
       kleur: (team.kleur as string | null) ?? null,
       teamType: (team.teamType as string | null) ?? null,
+      niveau: (team.niveau as string | null) ?? null,
       validatieStatus: (team.validatieStatus as string) ?? "ONBEKEND",
       validatieMeldingen,
       spelersDames: spelersRaw.filter((s) => s.geslacht === "V"),

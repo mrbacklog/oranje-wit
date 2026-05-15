@@ -21,16 +21,6 @@ const CAT_KLEUREN: Record<string, string> = {
   paars: "var(--cat-paars)",
 };
 
-// Label voor categorie-driehoek subtitle
-const CAT_LABELS: Record<string, string> = {
-  SENIOR: "SENIOR",
-  rood: "ROOD",
-  oranje: "ORANJE",
-  geel: "GEEL",
-  groen: "GROEN",
-  blauw: "BLAUW",
-  paars: "PAARS",
-};
 
 const VAL_KLEUREN: Record<string, string> = {
   OK: "var(--val-ok)",
@@ -238,14 +228,41 @@ interface TeamKaartHeaderProps {
   onClick: () => void;
 }
 
+// Mapping B-categorie kleur → KNKV leeftijdsbereik
+const B_KLEUR_KLASSE: Record<string, string> = {
+  ROOD: "13–19",
+  ORANJE: "11–14",
+  GEEL: "8–12",
+  GROEN: "6–9",
+  BLAUW: "5–7",
+  PAARS: "5–7",
+};
+
+function bouwSubtitel(team: TeamKaartData): string {
+  const cat = team.categorie;
+
+  if (cat === "SENIOREN") return "SENIOR · 19+";
+
+  const kleurLabel = team.kleur ? team.kleur.toUpperCase() : null;
+
+  if (cat === "A_CATEGORIE") {
+    const klasse = team.niveau ?? null;
+    if (kleurLabel && klasse) return `${kleurLabel} · ${klasse}`;
+    if (kleurLabel) return kleurLabel;
+    return "A-CATEGORIE";
+  }
+
+  if (cat === "B_CATEGORIE") {
+    if (!kleurLabel) return "B-CATEGORIE";
+    const klasse = B_KLEUR_KLASSE[kleurLabel] ?? null;
+    return klasse ? `${kleurLabel} · ${klasse}` : kleurLabel;
+  }
+
+  return cat;
+}
+
 function TeamKaartHeader({ team, kleur, valKleur, totaal, onClick }: TeamKaartHeaderProps) {
-  // Subtitle: "ROOD · U17" of "GROEN · 8–9"
-  const catLabel =
-    (team.kleur ? CAT_LABELS[team.kleur] : null) ??
-    CAT_LABELS[team.categorie] ??
-    team.categorie.toUpperCase();
-  const klasseSuffix = team.teamType ?? null;
-  const subtitle = klasseSuffix ? `${catLabel} · ${klasseSuffix}` : catLabel;
+  const subtitle = bouwSubtitel(team);
 
   return (
     <div
