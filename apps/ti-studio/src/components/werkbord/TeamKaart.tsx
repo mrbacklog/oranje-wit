@@ -48,6 +48,36 @@ const VAL_KLEUR: Record<string, string> = {
   err: "var(--err)",
 };
 
+// Bouw de header-subtitle op basis van teamconfiguratie
+function bouwSubtitel(team: WerkbordTeam): string {
+  const kleurLabel = team.kleur !== "senior" ? team.kleur.toUpperCase() : null;
+  if (team.teamCategorie === "SENIOREN") {
+    return "SENIOREN · 19+";
+  }
+  if (team.teamCategorie === "A_CATEGORIE") {
+    const niveau = team.niveau ?? afkortLeeftijdUitNaam(team.naam);
+    if (kleurLabel && niveau) return `${kleurLabel} · ${niveau}`;
+    if (niveau) return niveau;
+    if (kleurLabel) return kleurLabel;
+    return "A-CATEGORIE";
+  }
+  // B_CATEGORIE — jeugd (GEEL/BLAUW/GROEN)
+  const leeftijd = afkortLeeftijdUitNaam(team.naam);
+  if (kleurLabel && leeftijd) return `${kleurLabel} · ${leeftijd}`;
+  if (kleurLabel) return kleurLabel;
+  return "JEUGD";
+}
+
+/** Haal leeftijdsklasse-afkorting uit teamnaam: "OW C1-U17-1" → "U17" */
+function afkortLeeftijdUitNaam(naam: string): string | null {
+  const m = naam.match(/\b(U\d{2})\b/i);
+  if (m) return m[1].toUpperCase();
+  // Getal 8-9, 10-12 enz. als leeftijdsindicator in naam
+  const bereik = naam.match(/\b(\d{1,2}[-–]\d{1,2})\b/);
+  if (bereik) return bereik[1];
+  return null;
+}
+
 interface TeamKaartProps {
   team: WerkbordTeam;
   zoomLevel: ZoomLevel;
@@ -192,22 +222,71 @@ export function TeamKaart({
           borderBottom: "1px solid var(--border-0)",
           flexShrink: 0,
           cursor: "grab",
+          position: "relative",
+          overflow: "hidden",
         }}
       >
+        {/* Categorie-driehoek rechtsboven — 56×56px, kleur uit team.kleur */}
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+            onOpenTeamDrawer(team.id);
+          }}
+          title="Team details"
+          style={{
+            position: "absolute",
+            top: 0,
+            right: 0,
+            width: 0,
+            height: 0,
+            borderStyle: "solid",
+            borderWidth: "0 56px 56px 0",
+            borderColor: `transparent ${KNKV_KLEUR[team.kleur] ?? "var(--cat-senior)"} transparent transparent`,
+            cursor: "pointer",
+            zIndex: 3,
+            pointerEvents: "auto",
+          }}
+        />
+
+        {/* Naam + subtitle */}
         <div
           onClick={() => onTitelKlik?.(team.id)}
           style={{
-            fontSize: zoomLevel === "compact" ? 22 : 13,
-            fontWeight: 700,
             flex: 1,
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
+            minWidth: 0,
+            display: "flex",
+            flexDirection: "column",
             cursor: onTitelKlik ? "pointer" : "inherit",
           }}
         >
-          {selectieLabel}
+          <div
+            style={{
+              fontSize: zoomLevel === "compact" ? 22 : 13,
+              fontWeight: 700,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {selectieLabel}
+          </div>
+          <div
+            style={{
+              fontSize: 10,
+              fontWeight: 600,
+              color: "var(--text-3)",
+              textTransform: "uppercase",
+              letterSpacing: "0.06em",
+              marginTop: 2,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {bouwSubtitel(team)}
+          </div>
         </div>
+
         {openMemoCount > 0 && (
           <span
             style={{
@@ -266,22 +345,6 @@ export function TeamKaart({
             </span>
           </div>
         )}
-        <div
-          onClick={(e) => {
-            e.stopPropagation();
-            onOpenTeamDrawer(team.id);
-          }}
-          title="Team details"
-          style={{
-            width: 14,
-            height: 14,
-            borderRadius: "50%",
-            flexShrink: 0,
-            background: VAL_KLEUR[team.validatieStatus],
-            boxShadow: `0 0 6px 1px ${VAL_KLEUR[team.validatieStatus]}50`,
-            cursor: "pointer",
-          }}
-        />
       </div>
 
       {/* ── DROPZONE ───────────────────────────────────────────────────── */}
