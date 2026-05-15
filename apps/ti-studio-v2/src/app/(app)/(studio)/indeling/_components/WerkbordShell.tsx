@@ -214,6 +214,12 @@ export function WerkbordShell({
 
   return (
     <div className="werkbord-page">
+      {/* Page-header boven toolbar */}
+      <div className="wb-page-header">
+        <h1 className="wb-page-title">Werkbord</h1>
+        <p className="wb-page-sub">Visuele editor voor teamopstelling en spelersverdeling</p>
+      </div>
+
       <WerkbordToolbar
         werkindelingNaam={werkindeling.naam}
         versieNummer={actieveVersieMeta.nummer}

@@ -43,21 +43,36 @@ export function WbTeamRij({ team, actief = false, onClick }: WbTeamRijProps) {
       onClick={onClick}
     >
       <span className="t-naam">{team.alias ?? team.naam}</span>
-      <span className="t-count">
-        ♀{team.spelersDames.length} ♂{team.spelersHeren.length}
-        {aantalSpelers > 0 && <span style={{ marginLeft: 4 }}>({aantalSpelers})</span>}
+      <span
+        style={{
+          fontSize: 11,
+          color: "var(--sexe-v)",
+          fontWeight: 700,
+          fontVariantNumeric: "tabular-nums",
+        }}
+      >
+        ♀{team.spelersDames.length}
+      </span>
+      <span style={{ fontSize: 10, color: "var(--text-tertiary)" }}>/</span>
+      <span
+        style={{
+          fontSize: 11,
+          color: "var(--sexe-h)",
+          fontWeight: 700,
+          fontVariantNumeric: "tabular-nums",
+        }}
+      >
+        ♂{team.spelersHeren.length}
       </span>
       {team.openMemoCount > 0 && (
         <span
+          data-memo-indicator
           style={{
-            fontSize: 9,
-            color: "#eab308",
-            background: "rgba(234,179,8,.12)",
-            border: "1px solid rgba(234,179,8,.3)",
-            borderRadius: 3,
-            padding: "1px 4px",
-            fontWeight: 700,
+            fontSize: 10,
+            color: "var(--memo-open)",
+            fontWeight: 800,
           }}
+          title={`${team.openMemoCount} open memo`}
         >
           ▲{team.openMemoCount}
         </span>
