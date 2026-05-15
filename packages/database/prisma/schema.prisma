@@ -2111,6 +2111,23 @@ model DaisyActie {
 }
 
 // ============================================================
+// AGENT AUDIT TRAIL — mutaties per agent-run (voor cleanup/rollback)
+// ============================================================
+
+model AgentMutatie {
+  id           String    @id @default(cuid())
+  agentRunId   String
+  type         String    // "speler_verplaats"
+  payload      Json
+  inverse      Json
+  createdAt    DateTime  @default(now())
+  rolledBackAt DateTime?
+
+  @@index([agentRunId])
+  @@map("agent_mutaties")
+}
+
+// ============================================================
 // PLAATSRESERVERING (naamloze placeholder in team)
 // ============================================================
 
