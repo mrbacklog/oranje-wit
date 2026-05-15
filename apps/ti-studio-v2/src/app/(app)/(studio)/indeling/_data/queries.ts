@@ -35,6 +35,7 @@ export async function haalActieveWerkindeling(): Promise<{
   versies: VersieMeta[];
   kadersId: string;
   seizoen: string;
+  aanbevolenVersieId: string;
 } | null> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const kaders = await prisma.kaders.findFirst({
@@ -45,7 +46,13 @@ export async function haalActieveWerkindeling(): Promise<{
         include: {
           versies: {
             orderBy: { nummer: "desc" },
-            select: { id: true, nummer: true, naam: true, createdAt: true },
+            select: {
+              id: true,
+              nummer: true,
+              naam: true,
+              createdAt: true,
+              _count: { select: { teams: true } },
+            },
           },
         },
         take: 1,
@@ -60,12 +67,22 @@ export async function haalActieveWerkindeling(): Promise<{
 
   const wi = kaders.werkindelingen[0];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const versies: VersieMeta[] = wi.versies.map((v: any, idx: number) => ({
+  const versiesRaw: any[] = wi.versies;
+
+  // Kies versie met meeste teams (tiebreak: hoogste nummer)
+  const aanbevolen = [...versiesRaw].sort(
+    (a, b) => (b._count?.teams ?? 0) - (a._count?.teams ?? 0) || b.nummer - a.nummer
+  )[0];
+
+  const aanbevolenVersieId = aanbevolen?.id as string;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const versies: VersieMeta[] = versiesRaw.map((v: any) => ({
     id: v.id as string,
     nummer: v.nummer as number,
     naam: (v.naam as string | null) ?? null,
     createdAt: v.createdAt as Date,
-    isActief: idx === 0, // hoogste nummer = actief
+    isActief: v.id === aanbevolenVersieId,
   }));
 
   return {
@@ -78,6 +95,7 @@ export async function haalActieveWerkindeling(): Promise<{
     versies,
     kadersId: kaders.id as string,
     seizoen: kaders.seizoen as string,
+    aanbevolenVersieId,
   };
 }
 

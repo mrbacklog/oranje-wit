@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
     "@oranje-wit/types",
     "@oranje-wit/auth",
     "@oranje-wit/ui",
+    "@atlaskit/pragmatic-drag-and-drop",
   ],
   serverExternalPackages: ["pg", "pg-connection-string", "pgpass"],
   // TypeScript checking gebeurt al via `pnpm typecheck` in CI;

@@ -34,10 +34,10 @@ export default async function IndelingPage({ searchParams }: IndelingPageProps) 
     );
   }
 
-  const { werkindeling, versies, kadersId, seizoen } = wiData;
+  const { werkindeling, versies, kadersId, seizoen, aanbevolenVersieId } = wiData;
 
-  // Bepaal actieve versie: via query-param of hoogste nummer
-  const actieveVersieId = params.versieId ?? versies[0]?.id;
+  // Bepaal actieve versie: via query-param of versie met meeste teams
+  const actieveVersieId = params.versieId ?? aanbevolenVersieId ?? versies[0]?.id;
   if (!actieveVersieId) {
     return (
       <div
