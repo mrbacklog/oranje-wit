@@ -70,8 +70,19 @@ export function WerkbordToolbar({
 
       <span className="wb-sep" />
 
-      {/* Rechts: Teams + Versies */}
+      {/* Rechts: Memo + separator + Teams + Versies */}
       <div className="wb-toggles-rechts">
+        <button
+          className="wb-toggle"
+          title="Nieuwe memo aanmaken"
+          style={{ padding: "4px 8px" }}
+          onClick={() => {
+            /* fase 3: NieuweMemoDialog */
+          }}
+        >
+          ▲ Memo
+        </button>
+        <span className="wb-sep" style={{ height: 16 }} />
         <button className={cx("wb-toggle", teamsOpen && "active")} onClick={onToggleTeams}>
           Teams
         </button>

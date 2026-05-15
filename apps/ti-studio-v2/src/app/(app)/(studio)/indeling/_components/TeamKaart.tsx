@@ -21,6 +21,17 @@ const CAT_KLEUREN: Record<string, string> = {
   paars: "var(--cat-paars)",
 };
 
+// Label voor categorie-driehoek subtitle
+const CAT_LABELS: Record<string, string> = {
+  SENIOR: "SENIOR",
+  rood: "ROOD",
+  oranje: "ORANJE",
+  geel: "GEEL",
+  groen: "GROEN",
+  blauw: "BLAUW",
+  paars: "PAARS",
+};
+
 const VAL_KLEUREN: Record<string, string> = {
   OK: "var(--val-ok)",
   WAARSCHUWING: "var(--val-warn)",
@@ -227,60 +238,108 @@ interface TeamKaartHeaderProps {
   onClick: () => void;
 }
 
-function TeamKaartHeader({ team, valKleur, totaal, onClick }: TeamKaartHeaderProps) {
+function TeamKaartHeader({ team, kleur, valKleur, totaal, onClick }: TeamKaartHeaderProps) {
+  // Subtitle: "ROOD · U17" of "GROEN · 8–9"
+  const catLabel =
+    (team.kleur ? CAT_LABELS[team.kleur] : null) ??
+    CAT_LABELS[team.categorie] ??
+    team.categorie.toUpperCase();
+  const klasseSuffix = team.teamType ?? null;
+  const subtitle = klasseSuffix ? `${catLabel} · ${klasseSuffix}` : catLabel;
+
   return (
     <div
       className="tk-header"
       style={{
-        height: "var(--team-card-header-h)",
+        minHeight: "var(--team-card-header-h)",
         display: "flex",
         alignItems: "center",
-        padding: "0 12px 0 16px",
+        padding: "10px 14px 10px 18px",
         borderBottom: "1px solid var(--border-light)",
-        gap: 6,
+        gap: 10,
         cursor: "pointer",
         flexShrink: 0,
+        position: "relative",
+        zIndex: 1,
       }}
       onClick={onClick}
     >
-      <span
+      {/* Naam + subtitle */}
+      <div className="tk-naam-wrap" style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
+        <span
+          className="tk-naam"
+          style={{
+            fontSize: 18,
+            fontWeight: 800,
+            color: "var(--text-primary)",
+            letterSpacing: "-0.01em",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {team.alias ?? team.naam}
+        </span>
+        <span
+          className="tk-naam-sub"
+          style={{
+            fontSize: 10,
+            fontWeight: 600,
+            color: "var(--text-tertiary)",
+            textTransform: "uppercase",
+            letterSpacing: "0.06em",
+            marginTop: 2,
+          }}
+        >
+          {subtitle}
+        </span>
+      </div>
+
+      {/* Memo-icoon */}
+      {team.openMemoCount > 0 && (
+        <span
+          data-memo-indicator
+          style={{
+            fontSize: 10,
+            fontWeight: 800,
+            color: "var(--memo-open)",
+          }}
+          title={`${team.openMemoCount} open memo`}
+        >
+          ▲{team.openMemoCount}
+        </span>
+      )}
+
+      {/* Categorie-driehoek rechtsboven */}
+      <div
+        className="val-hoek"
         style={{
-          flex: 1,
-          fontSize: 13,
-          fontWeight: 700,
-          color: "var(--text-primary)",
+          position: "absolute",
+          top: 0,
+          right: 0,
+          width: "var(--team-card-header-h)",
+          height: "var(--team-card-header-h)",
           overflow: "hidden",
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
+          pointerEvents: "none",
+          zIndex: 3,
         }}
       >
-        {team.alias ?? team.naam}
-      </span>
-      <div className="tk-header-right">
-        {team.openMemoCount > 0 && (
-          <span
-            style={{
-              fontSize: 9,
-              fontWeight: 700,
-              color: "#eab308",
-              background: "rgba(234,179,8,.12)",
-              border: "1px solid rgba(234,179,8,.3)",
-              borderRadius: 4,
-              padding: "1px 5px",
-            }}
-          >
-            ▲ {team.openMemoCount}
-          </span>
-        )}
-        <span
+        <div
           style={{
-            width: 8,
-            height: 8,
-            borderRadius: "50%",
-            background: valKleur,
-            flexShrink: 0,
+            position: "absolute",
+            top: 0,
+            right: 0,
+            width: 0,
+            height: 0,
+            borderStyle: "solid",
+            borderWidth: `0 var(--team-card-header-h) var(--team-card-header-h) 0`,
+            borderColor: `transparent ${valKleur} transparent transparent`,
           }}
         />
+      </div>
+
+      {/* Speler-tellers (totaal) */}
+      <div className="tk-header-right" style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
         <span
           style={{
             fontSize: 11,
@@ -305,51 +364,48 @@ interface TeamKaartFooterProps {
 function TeamKaartFooter({ team, onStafClick }: TeamKaartFooterProps) {
   return (
     <div
-      className="tk-footer"
+      className="tk-staf-footer"
       style={{
-        height: "var(--team-card-footer-h)",
+        minHeight: "var(--team-card-footer-h)",
         borderTop: "1px solid var(--border-light)",
         display: "flex",
         alignItems: "center",
-        gap: 4,
-        padding: "0 10px",
+        flexWrap: "wrap",
+        gap: 5,
+        padding: "8px 14px 8px 18px",
         flexShrink: 0,
         overflow: "hidden",
+        background: "rgba(255,255,255,.015)",
       }}
     >
-      {team.staf.length === 0 ? (
-        <span style={{ fontSize: 10, color: "var(--text-muted)" }}>Geen staf</span>
-      ) : (
-        team.staf.slice(0, 3).map((stafLid) => (
-          <button
-            key={stafLid.stafId}
-            onClick={(e) => {
-              e.stopPropagation();
-              onStafClick(stafLid.stafId);
-            }}
-            style={{
-              padding: "2px 7px",
-              borderRadius: 5,
-              fontSize: 10,
-              fontWeight: 600,
-              border: "1px solid var(--staf-accent-border)",
-              background: "var(--staf-accent-dim)",
-              color: "var(--staf-accent)",
-              cursor: "pointer",
-              fontFamily: "inherit",
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              maxWidth: 80,
-            }}
-            title={stafLid.naam}
-          >
-            {stafLid.naam.split(" ")[0]}
-          </button>
-        ))
-      )}
-      {team.staf.length > 3 && (
-        <span style={{ fontSize: 10, color: "var(--text-muted)" }}>+{team.staf.length - 3}</span>
+      {team.staf.slice(0, 4).map((stafLid) => (
+        <button
+          key={stafLid.stafId}
+          onClick={(e) => {
+            e.stopPropagation();
+            onStafClick(stafLid.stafId);
+          }}
+          className="staf-compact"
+          title={stafLid.naam}
+          style={{ cursor: "pointer", fontFamily: "inherit", background: "transparent" }}
+        >
+          <div className="inner">
+            <span
+              style={{
+                width: 7,
+                height: 7,
+                borderRadius: "50%",
+                background: "var(--staf-accent)",
+                flexShrink: 0,
+                display: "inline-block",
+              }}
+            />
+            <span className="nm">{stafLid.naam.split(" ").slice(0, 2).join(" ")}</span>
+          </div>
+        </button>
+      ))}
+      {team.staf.length > 4 && (
+        <span style={{ fontSize: 10, color: "var(--text-muted)" }}>+{team.staf.length - 4}</span>
       )}
     </div>
   );
@@ -391,18 +447,28 @@ function SpelerKolom({
         minWidth: 0,
       }}
     >
-      {/* Sexe-teller */}
+      {/* Sexe-teller: groot icoon boven getal, driehoekje eronder */}
       <div className={cx("compact-sexe-teller", isVrouw ? "v" : "h")} style={{ flexShrink: 0 }}>
+        <span
+          style={{
+            fontSize: 20,
+            fontWeight: 700,
+            color: isVrouw ? "rgba(217,70,239,.7)" : "rgba(37,99,235,.7)",
+            lineHeight: 1,
+          }}
+        >
+          {isVrouw ? "♀" : "♂"}
+        </span>
         <span className="st-val">{aantalLabel}</span>
         <span
           style={{
             fontSize: 9,
-            color: "rgba(255,255,255,.4)",
+            color: "rgba(255,255,255,.3)",
             fontWeight: 700,
-            letterSpacing: "0.04em",
+            lineHeight: 1,
           }}
         >
-          {isVrouw ? "♀" : "♂"}
+          ▾
         </span>
       </div>
 
