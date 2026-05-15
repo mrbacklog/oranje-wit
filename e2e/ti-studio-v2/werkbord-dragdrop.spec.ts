@@ -15,7 +15,71 @@ import { test, expect } from "./fixtures/base";
  * Opgelet: tests werken tegen de live test-DB (studio-test.ckvoranjewit.app).
  * Happy-path tests gaan ervan uit dat er minstens 1 team + 1 ongekoppelde speler zijn.
  * Na elke mutatie wordt de pagina opnieuw geladen voor de persist-test.
+ *
+ * Cleanup:
+ *   afterAll roept /api/agent/cleanup aan met de agentRunId uit de cookie.
+ *   Zo worden alle mutaties van deze testrun teruggedraaid.
+ *   PDND-Playwright-blokker: drag-drop tests in headless mode skippen (zie erratum 2026-05-15).
  */
+
+// agentRunId wordt opgehaald in beforeAll en hergebruikt in afterAll
+let capturedAgentRunId: string | null = null;
+
+test.beforeAll(async ({ browser }) => {
+  // Lees agentRunId uit de opgeslagen storage state (cookie)
+  const context = await browser.newContext({
+    storageState: "./e2e/.auth/studio-test.json",
+  });
+  const cookies = await context.cookies();
+  const agentCookie = cookies.find((c) => c.name === "__ow_agent_run_id");
+  capturedAgentRunId = agentCookie?.value ?? null;
+  if (capturedAgentRunId) {
+    console.log(`[werkbord-dragdrop] agentRunId voor cleanup: ${capturedAgentRunId}`);
+  } else {
+    console.log("[werkbord-dragdrop] Geen agentRunId gevonden in cookies — cleanup overgeslagen");
+  }
+  await context.close();
+});
+
+test.afterAll(async ({ request }) => {
+  if (!capturedAgentRunId) {
+    console.log("[werkbord-dragdrop] afterAll: geen agentRunId — cleanup overgeslagen");
+    return;
+  }
+
+  const baseURL = process.env.STUDIO_TEST_URL ?? "https://studio-test.ckvoranjewit.app";
+  const secret = process.env.STUDIO_TEST_AGENT_SECRET ?? "";
+
+  if (!secret) {
+    console.log(
+      "[werkbord-dragdrop] afterAll: STUDIO_TEST_AGENT_SECRET niet gezet — cleanup overgeslagen"
+    );
+    return;
+  }
+
+  try {
+    const response = await request.post(`${baseURL}/api/agent/cleanup`, {
+      data: { secret, agentRunId: capturedAgentRunId },
+      headers: {
+        Authorization: `Basic ${Buffer.from(
+          `${process.env.STUDIO_TEST_BASIC_AUTH_USER ?? ""}:${process.env.STUDIO_TEST_BASIC_AUTH_PASS ?? ""}`
+        ).toString("base64")}`,
+      },
+    });
+
+    if (response.ok()) {
+      const body = (await response.json()) as { ok: boolean; rolledBack: number };
+      console.log(
+        `[werkbord-dragdrop] afterAll cleanup geslaagd: ${body.rolledBack} mutaties teruggedraaid`
+      );
+    } else {
+      console.warn(`[werkbord-dragdrop] afterAll cleanup mislukt: HTTP ${response.status()}`);
+    }
+  } catch (error) {
+    // Cleanup mag nooit de testrun laten falen
+    console.warn("[werkbord-dragdrop] afterAll cleanup fout (genegeerd):", error);
+  }
+});
 
 test.describe("Werkbord DnD — Happy path", () => {
   test.setTimeout(90_000);
