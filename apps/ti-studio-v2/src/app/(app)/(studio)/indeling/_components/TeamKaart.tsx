@@ -59,12 +59,6 @@ function statusKleur(status: string): string {
   }
 }
 
-function avatarInitialen(roepnaam: string, achternaam: string): string {
-  const r = roepnaam.trim()[0]?.toUpperCase() ?? "";
-  const a = achternaam.trim()[0]?.toUpperCase() ?? "";
-  return r + a;
-}
-
 // ── isAchttal — viertal = ≤6 per geslacht, achttal = meer ───────────────────
 function isAchttal(team: TeamKaartData): boolean {
   if (team.teamType) {
@@ -158,29 +152,18 @@ function DetailRij({ speler, teamId, onClick, onDrop }: DetailRijProps) {
       onClick={() => onClick(speler.spelerId)}
       title={`${speler.roepnaam} ${speler.achternaam} (${speler.korfbalLeeftijd.toFixed(1)} jr)`}
     >
-      {/* Avatar — initialen only */}
+      {/* Smal verticaal geslachtsblokje — 8px breed, full-height */}
       <div
-        className="sq-av"
         style={{
-          width: 40,
-          height: "100%",
-          borderRadius: "4px 0 0 4px",
-          overflow: "hidden",
+          width: 8,
+          alignSelf: "stretch",
           flexShrink: 0,
-          background: isVrouw ? "rgba(217,70,239,.12)" : "rgba(37,99,235,.12)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: 12,
-          fontWeight: 800,
-          color: isVrouw ? "var(--sexe-v)" : "var(--sexe-h)",
-          borderRight: `1.5px solid ${statusKleur(speler.status)}`,
+          background: isVrouw ? "#ec4899" : "#3b82f6",
+          borderRadius: "4px 0 0 4px",
         }}
-      >
-        {avatarInitialen(speler.roepnaam, speler.achternaam)}
-      </div>
+      />
 
-      {/* Naam + sub */}
+      {/* Naam + status-dot */}
       <div
         className="col"
         style={{
@@ -189,17 +172,27 @@ function DetailRij({ speler, teamId, onClick, onDrop }: DetailRijProps) {
           flexDirection: "column",
           gap: 3,
           minWidth: 0,
-          padding: "0 4px",
+          padding: "0 6px",
         }}
       >
-        <span className="nm">
-          {speler.roepnaam} {speler.achternaam}
+        <span
+          className="nm"
+          style={{
+            fontSize: 13,
+            fontWeight: 700,
+            color: "var(--text-primary)",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {speler.roepnaam} {speler.tussenvoegsel ? `${speler.tussenvoegsel} ` : ""}{speler.achternaam}
         </span>
         <div className="row2">
           <span
             style={{
-              width: 7,
-              height: 7,
+              width: 6,
+              height: 6,
               borderRadius: "50%",
               background: statusKleur(speler.status),
               flexShrink: 0,
@@ -249,6 +242,10 @@ function bouwSubtitel(team: TeamKaartData): string {
     const klasse = team.niveau ?? null;
     if (kleurLabel && klasse) return `${kleurLabel} · ${klasse}`;
     if (kleurLabel) return kleurLabel;
+    // Leid klasse af uit teamnaam als kleur ontbreekt (bv. "OW U17 Meisjes" → "U17")
+    const naamMatch = team.naam.match(/\b(U\d{1,2})\b/i);
+    if (naamMatch) return `A · ${naamMatch[1].toUpperCase()}`;
+    if (klasse) return `A · ${klasse}`;
     return "A-CATEGORIE";
   }
 
