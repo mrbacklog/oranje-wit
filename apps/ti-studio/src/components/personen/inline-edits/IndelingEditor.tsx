@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { zetSpelerIndeling } from "@/app/(protected)/personen/speler-edit-actions";
 
 export type IndelingsDoel = {
@@ -30,11 +31,8 @@ function kleurVoor(kleur: string | null | undefined): string {
 }
 
 const popoverStyle: React.CSSProperties = {
-  position: "absolute",
-  top: "100%",
-  left: 0,
-  marginTop: 4,
-  zIndex: 50,
+  position: "fixed",
+  zIndex: 9999,
   background: "var(--surface-card)",
   border: "1px solid var(--border-default)",
   borderRadius: 8,
@@ -92,15 +90,39 @@ export function IndelingEditor({
   spelernaam,
 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
+  const [popoverPos, setPopoverPos] = useState<{ top: number; left: number } | null>(null);
 
   useEffect(() => {
     if (!open) return;
     function handler(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) onClose();
+      const target = e.target as Node;
+      if (ref.current?.contains(target)) return;
+      if (popoverRef.current?.contains(target)) return;
+      onClose();
     }
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, [open, onClose]);
+
+  useLayoutEffect(() => {
+    if (!open || !ref.current) {
+      setPopoverPos(null);
+      return;
+    }
+    function bereken() {
+      const r = ref.current?.getBoundingClientRect();
+      if (!r) return;
+      setPopoverPos({ top: r.bottom + 4, left: r.left });
+    }
+    bereken();
+    window.addEventListener("scroll", bereken, true);
+    window.addEventListener("resize", bereken);
+    return () => {
+      window.removeEventListener("scroll", bereken, true);
+      window.removeEventListener("resize", bereken);
+    };
+  }, [open]);
 
   const losseTeams = teams.filter((t) => t.type === "team");
   const selecties = teams.filter((t) => t.type === "selectie");
@@ -120,8 +142,12 @@ export function IndelingEditor({
     }
   }
 
-  const popover = open ? (
-    <div style={popoverStyle} onClick={(e) => e.stopPropagation()}>
+  const popoverInner = open ? (
+    <div
+      ref={popoverRef}
+      style={{ ...popoverStyle, top: popoverPos?.top ?? 0, left: popoverPos?.left ?? 0 }}
+      onClick={(e) => e.stopPropagation()}
+    >
       <button type="button" onClick={() => kies(null)} style={itemStyle(huidigId === null)}>
         <span style={{ fontStyle: "italic", color: "var(--text-secondary)" }}>
           — geen indeling —
@@ -360,7 +386,9 @@ export function IndelingEditor({
           +
         </button>
       )}
-      {popover}
+      {open && popoverPos && typeof window !== "undefined"
+        ? createPortal(popoverInner, document.body)
+        : null}
     </div>
   );
 }
