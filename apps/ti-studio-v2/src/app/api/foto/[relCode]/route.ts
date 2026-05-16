@@ -1,6 +1,6 @@
 import { type NextRequest } from "next/server";
 import { guardTC } from "@oranje-wit/auth/checks";
-import { db } from "@oranje-wit/database";
+import { db } from "@/lib/db";
 import { logger } from "@oranje-wit/types";
 
 export async function GET(
