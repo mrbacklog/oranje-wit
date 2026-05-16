@@ -59,7 +59,7 @@ export function SpelersPoolDrawer({
       data-testid="drop-zone-spelerpool"
       style={
         {
-          "--drawer-width": "260px",
+          "--drawer-width": "357px",
           outline: isOver ? "2px solid var(--val-ok)" : "none",
           outlineOffset: -2,
         } as React.CSSProperties

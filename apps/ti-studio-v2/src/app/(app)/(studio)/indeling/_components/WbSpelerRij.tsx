@@ -2,15 +2,12 @@
 
 import type { PoolSpeler } from "./werkbord-types";
 import { useWerkbordDraggable, type DragBron } from "./hooks/useWerkbordDraggable";
+import { SpelerAvatar } from "@/components/shared/SpelerAvatar";
 
-const CAT_KLEUREN: Record<string, string> = {
-  blauw: "var(--cat-blauw)",
-  groen: "var(--cat-groen)",
-  geel: "var(--cat-geel)",
-  oranje: "var(--cat-oranje)",
-  rood: "var(--cat-rood)",
-  senior: "var(--cat-senior)",
-};
+function leeftijdGradient(leeftijd: number): string {
+  const jaar = Math.max(4, Math.min(19, Math.floor(leeftijd)));
+  return `var(--leeftijd-${jaar})`;
+}
 
 interface WbSpelerRijProps {
   speler: PoolSpeler;
@@ -19,9 +16,10 @@ interface WbSpelerRijProps {
 }
 
 export function WbSpelerRij({ speler, bron, onClick }: WbSpelerRijProps) {
-  const catKleur = CAT_KLEUREN[speler.leeftijdCategorie] ?? "var(--cat-senior)";
   const isVrouw = speler.geslacht === "V";
   const { ref, isDragging } = useWerkbordDraggable({ rel_code: speler.spelerId, bron });
+
+  const statusKleur = isVrouw ? "var(--status-color, var(--sexe-v))" : "var(--status-color, var(--sexe-h))";
 
   return (
     <div
@@ -33,44 +31,54 @@ export function WbSpelerRij({ speler, bron, onClick }: WbSpelerRijProps) {
           "--status-color": isVrouw ? "var(--sexe-v)" : "var(--sexe-h)",
           cursor: isDragging ? "grabbing" : "grab",
           opacity: isDragging ? 0.5 : 1,
+          height: 54,
         } as React.CSSProperties
       }
       onClick={() => onClick(speler.spelerId)}
       title={`${speler.roepnaam} ${speler.achternaam}`}
     >
-      {/* Avatar placeholder */}
-      <div
-        className="av"
+      {/* Foto-avatar met fallback naar initialen */}
+      <SpelerAvatar
+        relCode={speler.spelerId}
+        roepnaam={speler.roepnaam}
+        achternaam={speler.achternaam}
+        geslacht={speler.geslacht}
+        size="md"
         style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: isVrouw ? "rgba(217,70,239,.12)" : "rgba(37,99,235,.12)",
-          fontSize: 12,
-          fontWeight: 800,
-          color: isVrouw ? "var(--sexe-v)" : "var(--sexe-h)",
+          width: 40,
+          height: 52,
+          borderRadius: "4px 0 0 4px",
+          outline: "none",
+          boxShadow: `inset 0 0 0 1.5px ${statusKleur}`,
         }}
-      >
-        {speler.roepnaam[0]?.toUpperCase()}
-      </div>
+      />
 
-      {/* Info */}
-      <div className="info">
+      {/* Info-kolom */}
+      <div className="info" style={{ flex: 1, minWidth: 0, padding: "0 6px" }}>
         <div className="nm">
           {speler.roepnaam} {speler.tussenvoegsel ? `${speler.tussenvoegsel} ` : ""}
           {speler.achternaam}
         </div>
         <div className="sub">
           {speler.huidigTeamNaam && <span className="tb">{speler.huidigTeamNaam}</span>}
-          {speler.ingedeeldTeamId && <span style={{ color: "#4ade80" }}>✓</span>}
-          {speler.openMemoCount > 0 && <span style={{ color: "#eab308" }}>▲</span>}
+          {speler.ingedeeldTeamId && (
+            <span
+              className="tb-i"
+              style={{ color: "var(--indeling-text, #ff6b00)" }}
+            >
+              ingedeeld
+            </span>
+          )}
+          {speler.openMemoCount > 0 && (
+            <span style={{ color: "var(--memo-open)" }}>▲{speler.openMemoCount}</span>
+          )}
         </div>
       </div>
 
-      {/* Leeftijdsbalk */}
-      <div className="leeft" style={{ background: catKleur }}>
+      {/* Leeftijdsbalk — gradient conform prototype */}
+      <div className="leeft" style={{ background: leeftijdGradient(speler.korfbalLeeftijd) }}>
         <span className="lb">{Math.floor(speler.korfbalLeeftijd)}</span>
-        <span className="ld">jr</span>
+        <span className="ld">.{String(Math.round((speler.korfbalLeeftijd % 1) * 10))}</span>
       </div>
     </div>
   );

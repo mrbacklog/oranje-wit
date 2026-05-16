@@ -1096,12 +1096,12 @@ body {
   gap: 4px;
 }
 
-/* Speler rij in drawer */
+/* Speler rij in drawer — rijke-rij stijl (54px, foto-avatar) */
 .wb-speler-rij {
   display: flex;
   align-items: center;
-  gap: 8px;
-  height: 48px;
+  gap: 0;
+  height: 54px;
   padding: 0;
   border: 1.5px solid var(--status-color, rgba(255, 255, 255, 0.3));
   border-radius: 6px;
@@ -1112,7 +1112,7 @@ body {
   background: rgba(255, 255, 255, 0.02);
 }
 .wb-speler-rij .av {
-  width: 36px;
+  width: 40px;
   height: 100%;
   flex-shrink: 0;
   overflow: hidden;
@@ -1463,6 +1463,159 @@ body {
 }
 .td-selectie.gebundeld {
   background: rgba(59, 130, 246, 0.08);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+/* Categorie-groep header in Teams-drawer */
+.td-group {
+  padding: 10px 4px 4px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.td-group::before {
+  content: "";
+  width: 10px;
+  height: 3px;
+  border-radius: 1.5px;
+  background: var(--cat-senior);
+  flex-shrink: 0;
+}
+.td-group.cat-rood::before {
+  background: var(--cat-rood);
+}
+.td-group.cat-oranje::before {
+  background: var(--cat-oranje);
+}
+.td-group.cat-geel::before {
+  background: var(--cat-geel);
+}
+.td-group.cat-groen::before {
+  background: var(--cat-groen);
+}
+.td-group.cat-blauw::before {
+  background: var(--cat-blauw);
+}
+.td-group.cat-senior::before {
+  background: var(--cat-senior);
+}
+
+/* Normaal-rij — rijke-rij in detail-drawer (conform proto) */
+.normaal-rij {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 52px;
+  background: transparent;
+  border: 1.5px solid var(--status-color, rgba(255, 255, 255, 0.15));
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+  cursor: default;
+  margin-bottom: 4px;
+}
+.normaal-rij:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+.normaal-rij .sq-av {
+  width: 40px;
+  height: 52px;
+  border-radius: 4px 0 0 4px;
+  flex-shrink: 0;
+}
+.normaal-rij .nm {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 4px;
+}
+.normaal-rij .leeft-col {
+  width: 40px;
+  height: 100%;
+  background: var(--leeftijd-17);
+  border-radius: 0 4px 4px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.normaal-rij .leeft-col .lb {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+.normaal-rij .leeft-col .ld {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 9px;
+  font-weight: 700;
+  margin-top: 1px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* val-item kaartje — ok/warn/err variant */
+.val-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  border: 1px solid var(--val-item-border, var(--border-default));
+  background: var(--val-item-bg, transparent);
+}
+.val-item .icn {
+  width: 16px;
+  height: 16px;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--val-item-color, var(--text-tertiary));
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.val-item .body {
+  flex: 1;
+  min-width: 0;
+}
+.val-item .regel {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--val-item-color, var(--text-primary));
+}
+.val-item .desc {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  margin-top: 2px;
+}
+.val-item.ok {
+  --val-item-bg: var(--val-ok-bg);
+  --val-item-border: var(--val-ok-border);
+  --val-item-color: var(--val-ok);
+}
+.val-item.warn {
+  --val-item-bg: var(--val-warn-bg);
+  --val-item-border: var(--val-warn-border);
+  --val-item-color: var(--val-warn);
+}
+.val-item.err {
+  --val-item-bg: var(--val-err-bg);
+  --val-item-border: var(--val-err-border);
+  --val-item-color: var(--val-err);
 }
 
 /* ── Team-kaart breedte per variant ── */
