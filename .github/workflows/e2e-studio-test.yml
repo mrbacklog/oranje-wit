@@ -1,0 +1,41 @@
+name: E2E tegen studio-test
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 4 * * *" # dagelijks 04:00 UTC
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Dependencies installeren
+        run: pnpm install --frozen-lockfile
+
+      - name: Playwright browsers installeren
+        run: pnpm exec playwright install chromium
+
+      - name: E2E tests uitvoeren tegen studio-test
+        run: pnpm exec playwright test --project=studio-test-auth-setup --project=ti-studio-v2-remote --reporter=html
+        env:
+          STUDIO_TEST_URL: https://studio-test.ckvoranjewit.app
+          STUDIO_TEST_BASIC_AUTH_USER: ${{ secrets.STUDIO_TEST_BASIC_AUTH_USER }}
+          STUDIO_TEST_BASIC_AUTH_PASS: ${{ secrets.STUDIO_TEST_BASIC_AUTH_PASS }}
+          STUDIO_TEST_AGENT_SECRET: ${{ secrets.STUDIO_TEST_AGENT_SECRET }}
+
+      - name: Playwright rapport uploaden
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-studio-test
+          path: playwright-report/
+          retention-days: 14
