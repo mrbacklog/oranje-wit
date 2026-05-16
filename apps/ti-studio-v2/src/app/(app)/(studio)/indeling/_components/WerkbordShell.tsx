@@ -282,6 +282,7 @@ export function WerkbordShell({
         {/* Canvas */}
         <WerkbordCanvas
           teams={teams}
+          selectieGroepen={actieveVersie.selectieGroepen}
           peildatum={actieveVersie.peildatum}
           zoom={zoom}
           onZoomChange={setZoom}

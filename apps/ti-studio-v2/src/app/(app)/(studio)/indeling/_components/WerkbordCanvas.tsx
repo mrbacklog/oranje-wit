@@ -1,13 +1,14 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import type { TeamKaartData } from "./werkbord-types";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import type { TeamKaartData, SelectieGroepMeta } from "./werkbord-types";
 import { TeamKaart } from "./TeamKaart";
 import { ZoomControls } from "./ZoomControls";
 import type { WerkbordDragData } from "./hooks/useWerkbordDraggable";
 
 interface WerkbordCanvasProps {
   teams: TeamKaartData[];
+  selectieGroepen: SelectieGroepMeta[];
   peildatum: Date;
   zoom: "compact" | "detail";
   onZoomChange: (zoom: "compact" | "detail") => void;
@@ -15,8 +16,104 @@ interface WerkbordCanvasProps {
   onDropSpelerOpTeam?: (data: WerkbordDragData, naarTeamId: string) => void;
 }
 
+// Bepaal selectie-frame kleur-variant obv de naam van de selectiegroep
+function selectieFrameKlasse(naam: string | null): string {
+  const n = naam?.toUpperCase() ?? "";
+  if (n.includes("U15") || n.includes("U13")) return "sel-oranje";
+  if (n.includes("U17")) return "sel-oranje-rood";
+  if (n.includes("U19") || n.includes("U18")) return "sel-rood";
+  return "sel-zilver";
+}
+
+function renderTeamsMetSelectieFrames(
+  teams: TeamKaartData[],
+  selectieGroepen: SelectieGroepMeta[],
+  zoom: "compact" | "detail",
+  peildatum: Date,
+  onTeamClick: (teamId: string) => void,
+  onDropSpelerOpTeam: ((data: WerkbordDragData, naarTeamId: string) => void) | undefined
+): React.ReactNode {
+  // Bouw een map: teamId → selectieGroep (voor gebundelde frames)
+  const teamInSelectie = new Map<string, SelectieGroepMeta>();
+  const gebundeldFrames = new Set<string>(); // selectieGroep.id
+
+  for (const sg of selectieGroepen) {
+    if (sg.gebundeld) {
+      for (const teamId of sg.teamIds) {
+        teamInSelectie.set(teamId, sg);
+        gebundeldFrames.add(sg.id);
+      }
+    }
+  }
+
+  const gerendered = new Set<string>();
+  const nodes: React.ReactNode[] = [];
+
+  for (const team of teams) {
+    if (gerendered.has(team.id)) continue;
+
+    const sg = teamInSelectie.get(team.id);
+
+    if (sg && sg.gebundeld) {
+      // Render alle teams van deze selectiegroep samen in een selectie-frame
+      const frameTeams = sg.teamIds
+        .map((id) => teams.find((t) => t.id === id))
+        .filter((t): t is TeamKaartData => t !== undefined);
+
+      for (const ft of frameTeams) gerendered.add(ft.id);
+
+      nodes.push(
+        <div
+          key={`selectie-frame-${sg.id}`}
+          className={`selectie-frame ${selectieFrameKlasse(sg.naam)} gebundeld`}
+          data-naam={sg.naam ?? "Selectie"}
+        >
+          <span className="sel-badge">Gebundeld</span>
+          {frameTeams.map((t) => (
+            <TeamKaart
+              key={t.id}
+              team={t}
+              zoom={zoom}
+              peildatum={peildatum}
+              onHeaderClick={onTeamClick}
+              onSpelerClick={() => {
+                /* fase 2 */
+              }}
+              onStafClick={() => {
+                /* fase 2 */
+              }}
+              onDropSpeler={onDropSpelerOpTeam}
+            />
+          ))}
+        </div>
+      );
+    } else {
+      gerendered.add(team.id);
+      nodes.push(
+        <TeamKaart
+          key={team.id}
+          team={team}
+          zoom={zoom}
+          peildatum={peildatum}
+          onHeaderClick={onTeamClick}
+          onSpelerClick={() => {
+            /* fase 2 */
+          }}
+          onStafClick={() => {
+            /* fase 2 */
+          }}
+          onDropSpeler={onDropSpelerOpTeam}
+        />
+      );
+    }
+  }
+
+  return nodes;
+}
+
 export function WerkbordCanvas({
   teams,
+  selectieGroepen,
   peildatum,
   zoom,
   onZoomChange,
@@ -86,22 +183,14 @@ export function WerkbordCanvas({
           transition: "none",
         }}
       >
-        {teams.map((team) => (
-          <TeamKaart
-            key={team.id}
-            team={team}
-            zoom={zoom}
-            peildatum={peildatum}
-            onHeaderClick={onTeamClick}
-            onSpelerClick={() => {
-              /* fase 2: SpelerDialog openen */
-            }}
-            onStafClick={() => {
-              /* fase 2: StafDialog openen */
-            }}
-            onDropSpeler={onDropSpelerOpTeam}
-          />
-        ))}
+        {renderTeamsMetSelectieFrames(
+          teams,
+          selectieGroepen,
+          zoom,
+          peildatum,
+          onTeamClick,
+          onDropSpelerOpTeam
+        )}
       </div>
 
       <div className="save-indicator" />

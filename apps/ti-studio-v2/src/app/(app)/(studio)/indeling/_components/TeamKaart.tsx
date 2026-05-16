@@ -13,14 +13,28 @@ function cx(...args: (string | false | null | undefined)[]): string {
 
 const CAT_KLEUREN: Record<string, string> = {
   SENIOR: "var(--cat-senior)",
+  SENIOREN: "var(--cat-senior)",
   rood: "var(--cat-rood)",
+  ROOD: "var(--cat-rood)",
   oranje: "var(--cat-oranje)",
+  ORANJE: "var(--cat-oranje)",
   geel: "var(--cat-geel)",
+  GEEL: "var(--cat-geel)",
   groen: "var(--cat-groen)",
+  GROEN: "var(--cat-groen)",
   blauw: "var(--cat-blauw)",
+  BLAUW: "var(--cat-blauw)",
   paars: "var(--cat-paars)",
+  PAARS: "var(--cat-paars)",
 };
 
+// OWTeamType → categorie-CSS-klasse (voor kleurband)
+const OW_TYPE_CAT_CLASS: Record<string, string> = {
+  JEUGD: "cat-blauw",
+  SELECTIE: "cat-oranje",
+  SENIOREN: "cat-senior",
+  OVERIG: "cat-senior",
+};
 
 const VAL_KLEUREN: Record<string, string> = {
   OK: "var(--val-ok)",
@@ -30,32 +44,85 @@ const VAL_KLEUREN: Record<string, string> = {
 };
 
 function catKleur(team: TeamKaartData): string {
-  if (team.kleur) return CAT_KLEUREN[team.kleur] ?? "var(--cat-senior)";
-  return CAT_KLEUREN[team.categorie] ?? "var(--cat-senior)";
+  if (team.kleur) return CAT_KLEUREN[team.kleur.toUpperCase()] ?? "var(--cat-senior)";
+  return CAT_KLEUREN[team.categorie?.toUpperCase()] ?? "var(--cat-senior)";
 }
 
-function leeftijdKleur(leeftijd: number): string {
-  if (leeftijd <= 7) return "var(--cat-blauw)";
-  if (leeftijd <= 9) return "var(--cat-groen)";
-  if (leeftijd <= 12) return "var(--cat-geel)";
-  if (leeftijd <= 15) return "var(--cat-oranje)";
-  if (leeftijd <= 18) return "var(--cat-rood)";
-  return "var(--cat-senior)";
+// Bepaal CSS-klasse voor kleurband obv OWTeamType of categorie
+function catClass(team: TeamKaartData): string {
+  // Probeer eerst via kleur-token
+  const kleurUpper = team.kleur?.toUpperCase();
+  if (kleurUpper) {
+    const map: Record<string, string> = {
+      PAARS: "cat-paars",
+      BLAUW: "cat-blauw",
+      GROEN: "cat-groen",
+      GEEL: "cat-geel",
+      ORANJE: "cat-oranje",
+      ROOD: "cat-rood",
+      SENIOR: "cat-senior",
+      SENIOREN: "cat-senior",
+    };
+    if (map[kleurUpper]) return map[kleurUpper];
+  }
+  // Valt terug op categorie of teamType
+  const cat = team.categorie?.toUpperCase();
+  if (cat === "SENIOREN") return "cat-senior";
+  if (cat === "A_CATEGORIE") return "cat-rood";
+  if (cat === "B_CATEGORIE") return "cat-blauw";
+  // OWTeamType als fallback
+  const owType = (team as TeamKaartData & { owTeamType?: string }).owTeamType?.toUpperCase();
+  if (owType && OW_TYPE_CAT_CLASS[owType]) return OW_TYPE_CAT_CLASS[owType];
+  return "cat-senior";
+}
+
+// Leeftijdgradient — retourneert CSS var-referentie
+function leeftijdGradient(leeftijd: number): string {
+  const jaar = Math.max(4, Math.min(19, Math.floor(leeftijd)));
+  return `var(--leeftijd-${jaar})`;
+}
+
+// Compact naam-formaat: "Roepnaam [tvs-afk.] A." (spec §3.1)
+function compactNaam(speler: TeamKaartSpeler): string {
+  const initiaal = speler.achternaam ? speler.achternaam[0].toUpperCase() + "." : "";
+  if (speler.tussenvoegsel) {
+    // Afkort tussenvoegsel: eerste woord, max 3 chars + "."
+    const tvsDelen = speler.tussenvoegsel.split(" ");
+    const tvsAfk = tvsDelen[0].substring(0, 3);
+    return `${speler.roepnaam} ${tvsAfk} ${initiaal}`;
+  }
+  return `${speler.roepnaam} ${initiaal}`;
+}
+
+function statusKlasseChip(status: string): string {
+  switch (status) {
+    case "NIEUW":
+      return "st-nieuw";
+    case "TWIJFELT":
+      return "st-twijfelt";
+    case "STOPT":
+      return "st-stopt";
+    case "AR":
+    case "ALGEMEEN_RESERVE":
+      return "st-ar";
+    default:
+      return "";
+  }
 }
 
 function statusKleur(status: string): string {
   switch (status) {
     case "NIEUW":
-      return "rgba(255,255,255,.85)";
+      return "var(--status-nieuw-outline)";
     case "TWIJFELT":
-      return "rgba(253,186,116,.8)";
+      return "var(--status-twijfelt-outline)";
     case "STOPT":
-      return "rgba(220,38,38,.75)";
+      return "var(--status-stopt-outline)";
     case "AR":
     case "ALGEMEEN_RESERVE":
-      return "rgba(148,163,184,.55)";
+      return "var(--status-ar-outline)";
     default:
-      return "rgba(255,255,255,.7)";
+      return "var(--status-beschikbaar-outline)";
   }
 }
 
@@ -92,7 +159,12 @@ function CompactChip({ speler, teamId, onClick, onDrop }: CompactChipProps) {
   return (
     <div
       ref={combinedRef}
-      className={cx("compact-chip", isVrouw && "vrouw", isOver && "drop-over")}
+      className={cx(
+        "compact-chip",
+        isVrouw && "vrouw",
+        isOver && "drop-over",
+        statusKlasseChip(speler.status)
+      )}
       data-testid={`speler-card-${speler.spelerId}-team-${teamId}`}
       style={
         {
@@ -104,13 +176,13 @@ function CompactChip({ speler, teamId, onClick, onDrop }: CompactChipProps) {
         } as React.CSSProperties
       }
       onClick={() => onClick(speler.spelerId)}
-      title={`${speler.roepnaam} ${speler.achternaam} (${speler.korfbalLeeftijd.toFixed(1)} jr)`}
+      title={`${speler.roepnaam} ${speler.tussenvoegsel ? speler.tussenvoegsel + " " : ""}${speler.achternaam} (${speler.korfbalLeeftijd.toFixed(1)} jr)`}
     >
       <div className="inner">
         <span className="g-dot" />
-        <span className="nm">{speler.roepnaam}</span>
+        <span className="nm">{compactNaam(speler)}</span>
       </div>
-      <div className="leeft-bar" style={{ background: leeftijdKleur(speler.korfbalLeeftijd) }} />
+      <div className="leeft-bar" style={{ background: leeftijdGradient(speler.korfbalLeeftijd) }} />
     </div>
   );
 }
@@ -186,7 +258,8 @@ function DetailRij({ speler, teamId, onClick, onDrop }: DetailRijProps) {
             textOverflow: "ellipsis",
           }}
         >
-          {speler.roepnaam} {speler.tussenvoegsel ? `${speler.tussenvoegsel} ` : ""}{speler.achternaam}
+          {speler.roepnaam} {speler.tussenvoegsel ? `${speler.tussenvoegsel} ` : ""}
+          {speler.achternaam}
         </span>
         <div className="row2">
           <span
@@ -202,10 +275,10 @@ function DetailRij({ speler, teamId, onClick, onDrop }: DetailRijProps) {
         </div>
       </div>
 
-      {/* Leeftijdscel */}
-      <div className="leeft-col" style={{ background: leeftijdKleur(speler.korfbalLeeftijd) }}>
+      {/* Leeftijdscel — groot getal + decimaal */}
+      <div className="leeft-col" style={{ background: leeftijdGradient(speler.korfbalLeeftijd) }}>
         <span className="lb">{Math.floor(speler.korfbalLeeftijd)}</span>
-        <span className="ld">jr</span>
+        <span className="ld">.{String(Math.round((speler.korfbalLeeftijd % 1) * 10))}</span>
       </div>
     </div>
   );
@@ -217,7 +290,8 @@ interface TeamKaartHeaderProps {
   team: TeamKaartData;
   kleur: string;
   valKleur: string;
-  totaal: number;
+  aantalDames: number;
+  aantalHeren: number;
   onClick: () => void;
 }
 
@@ -258,7 +332,14 @@ function bouwSubtitel(team: TeamKaartData): string {
   return cat;
 }
 
-function TeamKaartHeader({ team, kleur, valKleur, totaal, onClick }: TeamKaartHeaderProps) {
+function TeamKaartHeader({
+  team,
+  kleur,
+  valKleur,
+  aantalDames,
+  aantalHeren,
+  onClick,
+}: TeamKaartHeaderProps) {
   const subtitle = bouwSubtitel(team);
 
   return (
@@ -279,7 +360,10 @@ function TeamKaartHeader({ team, kleur, valKleur, totaal, onClick }: TeamKaartHe
       onClick={onClick}
     >
       {/* Naam + subtitle */}
-      <div className="tk-naam-wrap" style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
+      <div
+        className="tk-naam-wrap"
+        style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}
+      >
         <span
           className="tk-naam"
           style={{
@@ -352,16 +436,44 @@ function TeamKaartHeader({ team, kleur, valKleur, totaal, onClick }: TeamKaartHe
         />
       </div>
 
-      {/* Speler-tellers (totaal) */}
-      <div className="tk-header-right" style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
+      {/* Geslacht-tellers ♀/♂ apart */}
+      <div
+        className="tk-header-right"
+        style={{ display: "flex", alignItems: "center", gap: 4, flexShrink: 0 }}
+      >
         <span
+          className="tk-gender-count vrouw"
           style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 3,
+            padding: "2px 6px",
+            borderRadius: 5,
+            background: "rgba(255,255,255,.04)",
             fontSize: 11,
-            color: "var(--text-tertiary)",
+            fontWeight: 700,
             fontVariantNumeric: "tabular-nums",
+            color: "var(--sexe-v)",
           }}
         >
-          {totaal}
+          ♀{aantalDames}
+        </span>
+        <span
+          className="tk-gender-count heer"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 3,
+            padding: "2px 6px",
+            borderRadius: 5,
+            background: "rgba(255,255,255,.04)",
+            fontSize: 11,
+            fontWeight: 700,
+            fontVariantNumeric: "tabular-nums",
+            color: "var(--sexe-h)",
+          }}
+        >
+          ♂{aantalHeren}
         </span>
       </div>
     </div>
@@ -543,10 +655,10 @@ export function TeamKaart({
   onDropSpeler,
 }: TeamKaartProps) {
   const kleur = catKleur(team);
+  const kleurKlasse = catClass(team);
   const valKleur = VAL_KLEUREN[team.validatieStatus] ?? "var(--border-default)";
   const aantalDames = team.spelersDames.length;
   const aantalHeren = team.spelersHeren.length;
-  const totaal = aantalDames + aantalHeren;
   const achttal = isAchttal(team);
 
   const doelBron: DragBron = `team-${team.id}`;
@@ -560,75 +672,82 @@ export function TeamKaart({
   }
 
   return (
-    <div
-      ref={dropRef}
-      className={cx("team-kaart", achttal ? "achttal" : "viertal")}
-      data-team-id={team.id}
-      data-testid={`team-kaart-${team.id}-huidig`}
-      data-drop-testid={`drop-zone-team-${team.id}`}
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        background: "var(--surface-card)",
-        borderRadius: "var(--team-card-radius)",
-        overflow: "hidden",
-        position: "relative",
-        flexShrink: 0,
-        height: "var(--card-height)",
-        border: isOver ? "1px solid var(--val-ok)" : "1px solid var(--border-light)",
-        boxShadow: isOver ? "0 0 0 2px var(--val-ok)" : "0 2px 12px rgba(0,0,0,.3)",
-      }}
-    >
-      {/* Gekleurde linker-accent-band */}
+    <div className="kaart-wrap">
+      {/* Team-kaart */}
       <div
+        ref={dropRef}
+        className={cx("team-kaart", achttal ? "achttal" : "viertal", kleurKlasse)}
+        data-team-id={team.id}
+        data-testid={`team-kaart-${team.id}-huidig`}
+        data-drop-testid={`drop-zone-team-${team.id}`}
         style={{
-          position: "absolute",
-          left: 0,
-          top: 0,
-          bottom: 0,
-          width: "var(--team-band-width)",
-          background: kleur,
-          borderRadius: "var(--team-card-radius) 0 0 var(--team-card-radius)",
-          zIndex: 1,
+          display: "flex",
+          flexDirection: "column",
+          background: "var(--surface-card)",
+          borderRadius: "var(--team-card-radius)",
+          overflow: "hidden",
+          position: "relative",
+          flexShrink: 0,
+          height: "var(--card-height)",
+          border: isOver ? "1px solid var(--val-ok)" : "1px solid var(--border-light)",
+          boxShadow: isOver ? "0 0 0 2px var(--val-ok)" : "0 2px 12px rgba(0,0,0,.3)",
         }}
-      />
-
-      {/* Header */}
-      <TeamKaartHeader
-        team={team}
-        kleur={kleur}
-        valKleur={valKleur}
-        totaal={totaal}
-        onClick={() => onHeaderClick(team.id)}
-      />
-
-      {/* Body */}
-      <div className="tk-body" style={{ flex: 1, display: "flex", overflow: "hidden" }}>
-        {/* Dames-kolom */}
-        <SpelerKolom
-          spelers={team.spelersDames}
-          geslacht="V"
-          teamId={team.id}
-          zoom={zoom}
-          isLaatste={false}
-          onClick={onSpelerClick}
-          onDrop={handleDropOpKolom}
+      >
+        {/* Gekleurde linker-accent-band */}
+        <div
+          style={{
+            position: "absolute",
+            left: 0,
+            top: 0,
+            bottom: 0,
+            width: "var(--team-band-width)",
+            background: kleur,
+            borderRadius: "var(--team-card-radius) 0 0 var(--team-card-radius)",
+            zIndex: 1,
+          }}
         />
 
-        {/* Heren-kolom */}
-        <SpelerKolom
-          spelers={team.spelersHeren}
-          geslacht="M"
-          teamId={team.id}
-          zoom={zoom}
-          isLaatste={true}
-          onClick={onSpelerClick}
-          onDrop={handleDropOpKolom}
+        {/* Header */}
+        <TeamKaartHeader
+          team={team}
+          kleur={kleur}
+          valKleur={valKleur}
+          aantalDames={aantalDames}
+          aantalHeren={aantalHeren}
+          onClick={() => onHeaderClick(team.id)}
         />
+
+        {/* Body */}
+        <div className="tk-body" style={{ flex: 1, display: "flex", overflow: "hidden" }}>
+          {/* Dames-kolom */}
+          <SpelerKolom
+            spelers={team.spelersDames}
+            geslacht="V"
+            teamId={team.id}
+            zoom={zoom}
+            isLaatste={false}
+            onClick={onSpelerClick}
+            onDrop={handleDropOpKolom}
+          />
+
+          {/* Heren-kolom */}
+          <SpelerKolom
+            spelers={team.spelersHeren}
+            geslacht="M"
+            teamId={team.id}
+            zoom={zoom}
+            isLaatste={true}
+            onClick={onSpelerClick}
+            onDrop={handleDropOpKolom}
+          />
+        </div>
+
+        {/* Footer: staf */}
+        <TeamKaartFooter team={team} onStafClick={onStafClick} />
       </div>
 
-      {/* Footer: staf */}
-      <TeamKaartFooter team={team} onStafClick={onStafClick} />
+      {/* Kaart-label onder de kaart */}
+      <div className="kaart-wrap-label">{team.alias ?? team.naam}</div>
     </div>
   );
 }

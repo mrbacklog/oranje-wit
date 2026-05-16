@@ -756,13 +756,118 @@ body {
   --team-band-width: 4px;
   --team-drawer-width: 280px;
 
-  /* Categorie-kleuren (aanvulling) */
-  --cat-paars: #7e22ce;
+  /* Team-kaart varianten (prototype-exact) */
+  --team-card-viertal: 220px;
+  --team-card-achttal: 380px;
+  --team-card-selectie: 760px;
+
+  /* Categorie-kleuren — compleet (KNKV leeftijdsklassen) */
+  --cat-paars: #7e22ce; /* kangoeroe 4-5 */
+  /* --cat-blauw al aanwezig bovenaan, maar waarde wijkt af van proto: override naar proto */
+  --cat-blauw: #1d4ed8; /* 6-7 */
+  --cat-groen: #047857; /* 8-9 */
+  --cat-geel: #eab308; /* 10-12 */
+  --cat-oranje: #f97316; /* 13-15 */
+  --cat-rood: #dc2626; /* 16-18 */
+  --cat-senior: #94a3b8; /* 19+ */
 
   /* Validatie-kleuren */
   --val-ok: #10b981;
+  --val-ok-bg: rgba(16, 185, 129, 0.08);
+  --val-ok-border: rgba(16, 185, 129, 0.35);
   --val-warn: #f59e0b;
+  --val-warn-bg: rgba(245, 158, 11, 0.08);
+  --val-warn-border: rgba(245, 158, 11, 0.4);
   --val-err: #ef4444;
+  --val-err-bg: rgba(239, 68, 68, 0.08);
+  --val-err-border: rgba(239, 68, 68, 0.4);
+
+  /* Status-vulkleuren (naast de outline-variants boven) */
+  --status-beschikbaar: #f5f5f7;
+  --status-nieuw: #ffffff;
+  --status-twijfelt: #fdba74;
+  --status-stopt: #dc2626;
+  --status-ar: #94a3b8;
+
+  /* Selectie-frame tokens */
+  --selectie-accent: #94a3b8;
+  --selectie-border: rgba(148, 163, 184, 0.45);
+  --selectie-bg: rgba(148, 163, 184, 0.04);
+  --selectie-frame-shadow:
+    0 0 0 1px rgba(148, 163, 184, 0.15), 0 0 24px -8px rgba(148, 163, 184, 0.25);
+  --selectie-badge-bg: rgba(148, 163, 184, 0.12);
+  --selectie-badge-text: #cbd5e1;
+
+  /* Staf-naam kleur (proto: slate-200) */
+  --staf-naam-color: #e2e8f0;
+
+  /* Team/indeling badge tokens */
+  --team-border: #2a2a2e;
+  --team-text: #b8b8bd;
+  --indeling-border: rgba(255, 107, 0, 0.4);
+  --indeling-bg: rgba(255, 107, 0, 0.12);
+  --indeling-text: #ff6b00;
+
+  /* Memo-risico + opgelost (uit speler-weergave tokens) */
+  --memo-risico: #a16207;
+  --memo-opgelost: #44403c;
+
+  /* Memo-corner groottes per context */
+  --corner-compact: 13px;
+  --corner-normaal: 18px;
+  --corner-rijk: 22px;
+  --corner-hero: 36px;
+  --corner-hover: 28px;
+
+  /* Rij-dimensies (normaal + rijke rij) */
+  --rij-width: 320px;
+  --rij-height: 52px;
+  --rij-avatar: 40px;
+  --rij-leeftcol: 40px;
+  --rij-gap: 10px;
+  --rij-border-radius: 6px;
+  --rij-border-width: 1.5px;
+
+  /* Drawer dimensies */
+  --drawer-padding-x: 10px;
+  --drawer-scrollbar: 7px;
+
+  /* Typografie-tokens */
+  --font-body: -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
+  --font-sans: -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* USS hexagon tier-tokens */
+  --uss-goud-border: rgba(255, 215, 0, 0.65);
+  --uss-goud-fill: #3a2e0a;
+  --uss-goud-text: #ffd700;
+  --uss-zilver-border: rgba(220, 220, 220, 0.6);
+  --uss-zilver-fill: #2a2a30;
+  --uss-zilver-text: #e5e7eb;
+  --uss-brons-border: rgba(205, 127, 50, 0.65);
+  --uss-brons-fill: #2e1e0c;
+  --uss-brons-text: #e8a957;
+  --uss-geen-border: rgba(255, 107, 0, 0.6);
+  --uss-geen-fill: #2a1a0a;
+  --uss-geen-text: #ff8c3a;
+
+  /* Leeftijdgradient-tokens (19 jaar, 135° gradient) */
+  --leeftijd-4: #581c87;
+  --leeftijd-5: linear-gradient(135deg, #581c87 0%, #581c87 70%, #1d4ed8 100%);
+  --leeftijd-6: linear-gradient(135deg, #581c87 0%, #1d4ed8 30%, #1d4ed8 100%);
+  --leeftijd-7: linear-gradient(135deg, #1d4ed8 0%, #1d4ed8 70%, #047857 100%);
+  --leeftijd-8: linear-gradient(135deg, #1d4ed8 0%, #047857 30%, #047857 100%);
+  --leeftijd-9: linear-gradient(135deg, #047857 0%, #047857 70%, #eab308 100%);
+  --leeftijd-10: linear-gradient(135deg, #047857 0%, #eab308 30%, #eab308 100%);
+  --leeftijd-11: #eab308;
+  --leeftijd-12: linear-gradient(135deg, #eab308 0%, #eab308 70%, #f97316 100%);
+  --leeftijd-13: linear-gradient(135deg, #eab308 0%, #f97316 30%, #f97316 100%);
+  --leeftijd-14: #f97316;
+  --leeftijd-15: linear-gradient(135deg, #f97316 0%, #f97316 70%, #dc2626 100%);
+  --leeftijd-16: linear-gradient(135deg, #f97316 0%, #dc2626 30%, #dc2626 100%);
+  --leeftijd-17: #dc2626;
+  --leeftijd-18: linear-gradient(135deg, #dc2626 0%, #dc2626 70%, #94a3b8 100%);
+  --leeftijd-19: linear-gradient(135deg, #cbd5e1 0%, #94a3b8 50%, #64748b 100%);
 }
 
 /* Werkbord pagina wrapper */
@@ -1484,4 +1589,109 @@ body {
 .ow-scroll::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.14);
   border-radius: 4px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Selectie-frame — koppelt meerdere team-kaarten op canvas
+   ══════════════════════════════════════════════════════════════════════════ */
+.selectie-frame {
+  position: relative;
+  padding: 14px;
+  padding-top: 36px;
+  border: 1.5px solid var(--selectie-border);
+  border-radius: 16px;
+  background: var(--selectie-bg);
+  box-shadow: var(--selectie-frame-shadow);
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+.selectie-frame::before {
+  content: attr(data-naam);
+  position: absolute;
+  top: 10px;
+  left: 16px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--selectie-accent);
+}
+.selectie-frame .sel-badge {
+  position: absolute;
+  top: 10px;
+  right: 16px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--selectie-badge-bg);
+  color: var(--selectie-badge-text);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Selectie-frame kleur-varianten */
+.selectie-frame.sel-oranje {
+  --selectie-accent: #f97316;
+  --selectie-border: rgba(249, 115, 22, 0.45);
+  --selectie-bg: rgba(249, 115, 22, 0.05);
+  --selectie-frame-shadow:
+    0 0 0 1px rgba(249, 115, 22, 0.15), 0 0 24px -8px rgba(249, 115, 22, 0.3);
+  --selectie-badge-bg: rgba(249, 115, 22, 0.12);
+  --selectie-badge-text: #fb923c;
+}
+.selectie-frame.sel-oranje-rood {
+  --selectie-accent: #ea580c;
+  --selectie-border: rgba(234, 88, 12, 0.45);
+  --selectie-bg: rgba(234, 88, 12, 0.05);
+  --selectie-frame-shadow: 0 0 0 1px rgba(234, 88, 12, 0.15), 0 0 24px -8px rgba(234, 88, 12, 0.3);
+  --selectie-badge-bg: rgba(234, 88, 12, 0.12);
+  --selectie-badge-text: #f97316;
+}
+.selectie-frame.sel-rood {
+  --selectie-accent: #dc2626;
+  --selectie-border: rgba(220, 38, 38, 0.45);
+  --selectie-bg: rgba(220, 38, 38, 0.05);
+  --selectie-frame-shadow: 0 0 0 1px rgba(220, 38, 38, 0.15), 0 0 24px -8px rgba(220, 38, 38, 0.3);
+  --selectie-badge-bg: rgba(220, 38, 38, 0.12);
+  --selectie-badge-text: #f87171;
+}
+.selectie-frame.sel-zilver {
+  --selectie-accent: #94a3b8;
+  --selectie-border: rgba(148, 163, 184, 0.45);
+  --selectie-bg: rgba(148, 163, 184, 0.04);
+  --selectie-frame-shadow:
+    0 0 0 1px rgba(148, 163, 184, 0.15), 0 0 24px -8px rgba(148, 163, 184, 0.25);
+  --selectie-badge-bg: rgba(148, 163, 184, 0.12);
+  --selectie-badge-text: #cbd5e1;
+}
+.selectie-frame.gebundeld {
+  background: color-mix(in srgb, var(--selectie-accent) 8%, transparent);
+}
+
+/* Kaart-wrap: label onder team-kaart */
+.kaart-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.kaart-wrap-label {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* Status-klassen op compact-chip voor stopt/ar-styling */
+.compact-chip.st-stopt .nm {
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+.compact-chip.st-ar .nm {
+  color: #a8a8ad;
 }
