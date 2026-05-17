@@ -18,7 +18,10 @@ import { StafPoolDrawer } from "./StafPoolDrawer";
 import { TeamsDrawer } from "./TeamsDrawer";
 import { VersiesDrawer } from "./VersiesDrawer";
 import { TeamDetailDrawer } from "./TeamDetailDrawer";
+import { TeamDialog } from "./TeamDialog";
+import { SpelerDialog } from "@/components/personen/spelers/SpelerDialog";
 import { SaveIndicator } from "./SaveIndicator";
+import type { SpelerRijData, LeeftijdCategorie } from "@/components/personen/types";
 import { verplaatsSpeler } from "@/actions/werkbord/verplaats-speler";
 import type { WerkbordDragData } from "./hooks/useWerkbordDraggable";
 import { logger } from "@oranje-wit/types";
@@ -95,6 +98,8 @@ export function WerkbordShell({
   const [rechtsOpen, setRechtsOpen] = useState<RechtsDrawer>("teams");
   const [zoom, setZoom] = useState<ZoomMode>("compact");
   const [geselecteerdTeam, setGeselecteerdTeam] = useState<TeamKaartData | null>(null);
+  const [teamDialogOpen, setTeamDialogOpen] = useState(false);
+  const [geselecteerdeSpelerId, setGeselecteerdeSpelerId] = useState<string | null>(null);
   const [saveState, setSaveState] = useState<SaveState>("idle");
   const [foutTekst, setFoutTekst] = useState<string | null>(null);
 
@@ -129,6 +134,22 @@ export function WerkbordShell({
   function handleTeamDetailTerug() {
     setGeselecteerdTeam(null);
     setRechtsOpen("teams");
+  }
+
+  function handleOpenTeamDialog() {
+    setTeamDialogOpen(true);
+  }
+
+  function handleCloseTeamDialog() {
+    setTeamDialogOpen(false);
+  }
+
+  function handleSpelerClick(spelerId: string) {
+    setGeselecteerdeSpelerId(spelerId);
+  }
+
+  function handleCloseSpelerDialog() {
+    setGeselecteerdeSpelerId(null);
   }
 
   function handleVersieSelect(versieId: string) {
@@ -266,9 +287,7 @@ export function WerkbordShell({
           spelers={poolSpelers}
           open={linksOpen === "pool"}
           peildatum={actieveVersie.peildatum}
-          onSpelerClick={() => {
-            /* fase 3: SpelerDialog */
-          }}
+          onSpelerClick={handleSpelerClick}
           onDropNaarPool={handleDropNaarPool}
         />
         <StafPoolDrawer
@@ -309,10 +328,52 @@ export function WerkbordShell({
           team={geselecteerdTeam}
           open={detailOpen}
           onTerug={handleTeamDetailTerug}
+          onOpenDialog={handleOpenTeamDialog}
         />
       </div>
 
       <SaveIndicator state={saveState} />
+
+      {/* TeamDialog modal */}
+      <TeamDialog
+        team={geselecteerdTeam}
+        open={teamDialogOpen}
+        onClose={handleCloseTeamDialog}
+      />
+
+      {/* SpelerDialog modal */}
+      {geselecteerdeSpelerId && (() => {
+        const poolSpeler = poolSpelers.find((s) => s.spelerId === geselecteerdeSpelerId);
+        if (!poolSpeler) return null;
+        const indelingTeam = poolSpeler.ingedeeldTeamId
+          ? teams.find((t) => t.id === poolSpeler.ingedeeldTeamId) ?? null
+          : null;
+        const spelerData: SpelerRijData = {
+          id: poolSpeler.spelerId,
+          roepnaam: poolSpeler.roepnaam,
+          achternaam: poolSpeler.achternaam,
+          geslacht: poolSpeler.geslacht,
+          geboortedatum: null,
+          geboortejaar: new Date().getFullYear() - Math.floor(poolSpeler.korfbalLeeftijd),
+          status: poolSpeler.status,
+          gezienStatus: "ONGEZIEN",
+          huidigTeam: poolSpeler.huidigTeamNaam,
+          indelingTeamNaam: indelingTeam ? (indelingTeam.alias ?? indelingTeam.naam) : null,
+          indelingTeamId: poolSpeler.ingedeeldTeamId,
+          heeftOpenMemo: poolSpeler.openMemoCount > 0,
+          memoBadge: poolSpeler.openMemoCount > 0 ? "open" : "geen",
+          leeftijdscategorie: poolSpeler.leeftijdCategorie as LeeftijdCategorie,
+          korfbalLeeftijd: poolSpeler.korfbalLeeftijd.toFixed(2),
+          kadersSpelerId: null,
+          kadersId: "",
+        };
+        return (
+          <SpelerDialog
+            speler={spelerData}
+            onClose={handleCloseSpelerDialog}
+          />
+        );
+      })()}
     </div>
   );
 }

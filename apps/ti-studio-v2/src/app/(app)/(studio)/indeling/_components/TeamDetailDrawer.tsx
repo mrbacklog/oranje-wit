@@ -53,6 +53,7 @@ interface TeamDetailDrawerProps {
   team: TeamKaartData | null;
   open: boolean;
   onTerug: () => void;
+  onOpenDialog?: () => void;
 }
 
 // Bepaal hex-kleur voor het hero-gradient (eenvoudige lookup)
@@ -66,7 +67,7 @@ const HERO_HEX: Record<string, string> = {
   "var(--cat-paars)": "126,34,206",
 };
 
-export function TeamDetailDrawer({ team, open, onTerug }: TeamDetailDrawerProps) {
+export function TeamDetailDrawer({ team, open, onTerug, onOpenDialog }: TeamDetailDrawerProps) {
   const valKleur = VAL_KLEUREN[team?.validatieStatus ?? "ONBEKEND"] ?? "var(--border-default)";
   const kleur = team ? teamKleurVar(team) : "var(--cat-senior)";
   const heroRgb = HERO_HEX[kleur] ?? "94,163,184";
@@ -472,6 +473,7 @@ export function TeamDetailDrawer({ team, open, onTerug }: TeamDetailDrawerProps)
               Bewerken
             </button>
             <button
+              onClick={onOpenDialog}
               style={{
                 flex: 1,
                 padding: "9px 12px",
@@ -481,12 +483,12 @@ export function TeamDetailDrawer({ team, open, onTerug }: TeamDetailDrawerProps)
                 color: "var(--ow-accent)",
                 fontSize: 12,
                 fontWeight: 700,
-                cursor: "not-allowed",
+                cursor: onOpenDialog ? "pointer" : "not-allowed",
                 fontFamily: "inherit",
-                opacity: 0.5,
+                opacity: onOpenDialog ? 1 : 0.5,
               }}
-              disabled
-              title="Beschikbaar in iteratie C"
+              disabled={!onOpenDialog}
+              title="Open team in dialog"
             >
               Team openen
             </button>
