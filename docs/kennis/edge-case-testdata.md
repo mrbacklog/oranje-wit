@@ -173,7 +173,53 @@ Twee scenario's tegelijk in test-DB om beide transitie-states te valideren (zie 
 
 **Staf-namen** volgen hetzelfde patroon — zie sectie 2.
 
-### 1.9 What-if versie scenario's
+### 1.9 Fictieve profielfoto's — sexe + leeftijd-aware
+
+> **Doel:** UI-rendering van foto's testen (avatar in HoverKaart, SpelerRij thumbnail, fallback-initialen, broken-image). Privacy-veilig want geen echte ledenfoto's.
+
+**Opslag:** `LidFoto`-tabel (`bronUrl` + `imageWebp` blob, FK naar `Lid.relCode`). Seed downloadt extern, converteert naar WebP via `sharp`, INSERT in `LidFoto`.
+
+**Bron:** [DiceBear v9 personas](https://www.dicebear.com/styles/personas/) — gegenereerde foto-stijl avatars, **deterministisch** per seed (rel_code), **geslacht**- en **leeftijd**-aware via accessoire-instellingen.
+
+URL-patroon:
+```
+https://api.dicebear.com/9.x/personas/png?seed=<rel_code>&size=256
+  &hair=<keuze>           # afhankelijk van leeftijd + geslacht
+  &facialHair=<keuze>     # alleen mannen ≥16 jr
+  &accessories=<keuze>    # bril/oorbel (random 15-20%)
+```
+
+**Verdeling per categorie:**
+
+| Categorie | Sexe | Hair-set | Facial hair | Accessoires |
+|---|---|---|---|---|
+| Senioren M | M | short01–10 | 30% beard/stubble | 15% glasses |
+| Senioren V | V | long01–10 | n.v.t. | 15% glasses, 10% earrings |
+| U17–U19 | M/V | short01–05 / long01–05 | 5% bij U19-jongens | 20% glasses |
+| U15 en jonger | M/V | short01–03 / long01–03 | 0% | 0% bril (kinderlijker) |
+
+**Dekking in seed:**
+- **80%** van spelers krijgt foto (~140 van 175)
+- **20%** krijgt **geen foto** → test "initialen fallback" UI-pad
+- Alle 23 edge-case-fixtures krijgen wél foto
+- 1 extra fixture `990050000001` met `bronUrl` maar `imageWebp = null` → test "broken image" fallback
+
+**Staf-foto's:** ~70% met foto, vergelijkbaar patroon (zie sectie 2).
+
+**E2E-checks die hierdoor mogelijk worden:**
+- HoverKaart toont foto bij fixture met foto, initialen bij fixture zonder
+- SpelerRij avatar-thumbnail correct ratio
+- Broken-image fallback werkt
+- Visuele inspectie: geslacht-correctheid van avatar (M-stijl vs V-stijl)
+- Visuele inspectie: leeftijdspassende uitstraling (kinderen versus volwassenen)
+
+**Seed-implementatie (volgende batch):**
+1. `scripts/seed/seed-fotos.ts` — voor elke speler in scope: bereken DiceBear-URL → fetch PNG → convert WebP via `sharp` → upsert `LidFoto`
+2. Idempotent: skip als `LidFoto` al bestaat voor relCode (tenzij `--force` flag)
+3. Rate-limit op DiceBear (1 req/100ms) — voor 140 spelers ~14 sec extra in seed-run
+4. CI-fallback: als DiceBear onbereikbaar → genereer 1×1 grijze WebP placeholder zodat tests niet op netwerk falen
+
+### 1.10 What-if versie scenario's
 
 Op werkindeling `wi-edge-cases-2026-2027`:
 
