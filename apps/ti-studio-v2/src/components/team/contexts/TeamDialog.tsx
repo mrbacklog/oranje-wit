@@ -2,62 +2,41 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import type { TeamKaartData } from "./werkbord-types";
+import type { TeamKaartData } from "@/app/(app)/(studio)/indeling/_components/werkbord-types";
+import type { SpelerWerkitemDetail } from "@/components/personen/types";
 import { SpelerAvatar } from "@/components/shared/SpelerAvatar";
+import { logger } from "@oranje-wit/types";
 
-function cx(...args: (string | false | null | undefined)[]): string {
-  return args.filter(Boolean).join(" ");
-}
-
-// ── Helpers ─────────────────────────────────────────────────────────────────
+// ── Helpers ──────────────────────────────────────────────────────────────────
 
 const HERO_RGB: Record<string, string> = {
   rood: "220,38,38",
-  ROOD: "220,38,38",
   oranje: "249,115,22",
-  ORANJE: "249,115,22",
   geel: "234,179,8",
-  GEEL: "234,179,8",
   groen: "4,120,87",
-  GROEN: "4,120,87",
   blauw: "29,78,216",
-  BLAUW: "29,78,216",
   senior: "148,163,184",
-  SENIOR: "148,163,184",
-  SENIOREN: "148,163,184",
+  senioren: "148,163,184",
 };
 
 const BAND_KLEUR: Record<string, string> = {
   rood: "var(--cat-rood)",
-  ROOD: "var(--cat-rood)",
   oranje: "var(--cat-oranje)",
-  ORANJE: "var(--cat-oranje)",
   geel: "var(--cat-geel)",
-  GEEL: "var(--cat-geel)",
   groen: "var(--cat-groen)",
-  GROEN: "var(--cat-groen)",
   blauw: "var(--cat-blauw)",
-  BLAUW: "var(--cat-blauw)",
   senior: "var(--cat-senior)",
-  SENIOR: "var(--cat-senior)",
-  SENIOREN: "var(--cat-senior)",
-};
-
-const VAL_KLEUREN: Record<string, string> = {
-  OK: "var(--val-ok)",
-  WAARSCHUWING: "var(--val-warn)",
-  FOUT: "var(--val-err)",
-  ONBEKEND: "var(--border-default)",
+  senioren: "var(--cat-senior)",
 };
 
 function teamKleurRgb(team: TeamKaartData): string {
-  const k = team.kleur?.toUpperCase() ?? team.categorie?.toUpperCase() ?? "SENIOR";
-  return HERO_RGB[k] ?? HERO_RGB[team.kleur ?? ""] ?? "148,163,184";
+  const k = (team.kleur ?? team.categorie ?? "senior").toLowerCase();
+  return HERO_RGB[k] ?? "148,163,184";
 }
 
 function teamBandKleur(team: TeamKaartData): string {
-  const k = team.kleur ?? team.categorie ?? "senior";
-  return BAND_KLEUR[k] ?? BAND_KLEUR[k.toUpperCase()] ?? "var(--cat-senior)";
+  const k = (team.kleur ?? team.categorie ?? "senior").toLowerCase();
+  return BAND_KLEUR[k] ?? "var(--cat-senior)";
 }
 
 function leeftijdGradient(leeftijd: number): string {
@@ -67,9 +46,101 @@ function leeftijdGradient(leeftijd: number): string {
 
 function valVariant(melding: string): "ok" | "warn" | "err" {
   const lower = melding.toLowerCase();
-  if (lower.includes("fout") || lower.includes("niet") || lower.includes("te weinig")) return "err";
+  if (lower.includes("fout") || lower.includes("niet") || lower.includes("te weinig"))
+    return "err";
   if (lower.startsWith("ok") || lower.startsWith("✓") || lower.startsWith("goed")) return "ok";
   return "warn";
+}
+
+function werkitemStatusLabel(status: string): string {
+  switch (status) {
+    case "OPEN":
+      return "Open";
+    case "IN_BESPREKING":
+      return "In bespreking";
+    case "OPGELOST":
+      return "Opgelost";
+    case "RISICO":
+      return "Risico";
+    default:
+      return status;
+  }
+}
+
+function werkitemStatusStijl(status: string): { bg: string; border: string; color: string } {
+  switch (status) {
+    case "OPEN":
+      return {
+        bg: "rgba(234,179,8,.12)",
+        border: "rgba(234,179,8,.3)",
+        color: "var(--memo-bespreking, #fde047)",
+      };
+    case "IN_BESPREKING":
+      return {
+        bg: "rgba(249,115,22,.12)",
+        border: "rgba(249,115,22,.3)",
+        color: "#f97316",
+      };
+    case "OPGELOST":
+      return {
+        bg: "rgba(16,185,129,.12)",
+        border: "rgba(16,185,129,.3)",
+        color: "var(--val-ok, #10b981)",
+      };
+    case "RISICO":
+      return {
+        bg: "rgba(239,68,68,.12)",
+        border: "rgba(239,68,68,.3)",
+        color: "var(--val-err, #ef4444)",
+      };
+    default:
+      return {
+        bg: "rgba(100,100,100,.2)",
+        border: "var(--border-default, rgba(255,255,255,.12))",
+        color: "var(--text-tertiary)",
+      };
+  }
+}
+
+function werkitemIconKleur(status: string): string {
+  switch (status) {
+    case "OPEN":
+      return "var(--memo-open, #fde047)";
+    case "IN_BESPREKING":
+      return "var(--memo-bespreking, #facc15)";
+    case "RISICO":
+      return "var(--val-err, #ef4444)";
+    default:
+      return "var(--text-tertiary)";
+  }
+}
+
+function MemoIcon({ kleur }: { kleur: string }) {
+  return (
+    <span
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        width: 22,
+        height: 20,
+        color: kleur,
+        flexShrink: 0,
+        paddingTop: 2,
+      }}
+    >
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+        <path d="M5 3h10l4 4v14H5z" />
+        <path
+          d="M15 3v4h4M8 12h8M8 15h8M8 18h5"
+          stroke="var(--surface-sunken, #090910)"
+          strokeWidth="1.5"
+          fill="none"
+          strokeLinecap="round"
+        />
+      </svg>
+    </span>
+  );
 }
 
 type TabId = "overzicht" | "validatie" | "notities";
@@ -101,7 +172,7 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
     return () => document.removeEventListener("keydown", handle);
   }, [open, onClose]);
 
-  // Focus trap
+  // Focus bij open
   useEffect(() => {
     if (open) dialogRef.current?.focus();
   }, [open]);
@@ -110,12 +181,31 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
 
   const rgb = teamKleurRgb(team);
   const bandKleur = teamBandKleur(team);
-  const valKleur = VAL_KLEUREN[team.validatieStatus ?? "ONBEKEND"] ?? "var(--border-default)";
   const valVariantHero =
     team.validatieStatus === "OK" ? "ok" : team.validatieStatus === "FOUT" ? "err" : "warn";
   const aantalSpelers = team.spelersDames.length + team.spelersHeren.length;
   const aantalValidatie = team.validatieMeldingen?.length ?? 0;
-  const aantalNotities = team.openMemoCount;
+  const werkitems: SpelerWerkitemDetail[] = team.werkitemsDetail ?? [];
+  const aantalNotities = werkitems.length > 0 ? werkitems.length : team.openMemoCount;
+
+  // Berekende stats
+  const gemLeeftijd =
+    team.gemKorfbalLeeftijd ??
+    (aantalSpelers > 0
+      ? [...team.spelersDames, ...team.spelersHeren].reduce(
+          (acc, s) => acc + s.korfbalLeeftijd,
+          0
+        ) / aantalSpelers
+      : null);
+
+  const panelLabelStyle: React.CSSProperties = {
+    fontSize: 10,
+    fontWeight: 700,
+    textTransform: "uppercase",
+    letterSpacing: "0.1em",
+    color: "var(--text-tertiary)",
+    marginBottom: 12,
+  };
 
   return createPortal(
     <>
@@ -195,7 +285,7 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
           </svg>
         </button>
 
-        {/* Hero */}
+        {/* ─── Hero met kleur-gradient ─── */}
         <div
           style={{
             position: "relative",
@@ -208,7 +298,7 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
             flexShrink: 0,
           }}
         >
-          {/* Kleurband links */}
+          {/* 6px kleurband links */}
           <div
             style={{
               position: "absolute",
@@ -221,6 +311,7 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
           />
 
           <div style={{ flex: 1, minWidth: 0 }}>
+            {/* Naam */}
             <div
               style={{
                 fontSize: 20,
@@ -232,6 +323,8 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
             >
               {team.alias ?? team.naam}
             </div>
+
+            {/* Sub-line: achttal · kleur · niveau */}
             <div
               style={{
                 fontSize: 11,
@@ -242,9 +335,10 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
                 fontWeight: 600,
               }}
             >
-              {[team.categorie, team.niveau].filter(Boolean).join(" · ")}
+              {["Achttal", team.kleur, team.niveau].filter(Boolean).join(" · ")}
             </div>
 
+            {/* Stats-rij */}
             <div
               style={{
                 display: "flex",
@@ -254,6 +348,7 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
                 fontSize: 11,
               }}
             >
+              {/* Dames */}
               <span
                 style={{
                   display: "inline-flex",
@@ -277,6 +372,8 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
                 </svg>
                 {team.spelersDames.length} dames
               </span>
+
+              {/* Heren */}
               <span
                 style={{
                   display: "inline-flex",
@@ -300,6 +397,8 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
                 </svg>
                 {team.spelersHeren.length} heren
               </span>
+
+              {/* Validatie-badge */}
               {aantalValidatie > 0 && (
                 <span
                   style={{
@@ -318,6 +417,8 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
                   ⚠ {aantalValidatie}
                 </span>
               )}
+
+              {/* Memo-flag */}
               {team.openMemoCount > 0 && (
                 <span
                   style={{
@@ -334,13 +435,13 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
 
           {/* Val-dot */}
           <span
-            className={cx("tk-val-dot", valVariantHero)}
-            style={{ width: 20, height: 20 }}
+            className={`tk-val-dot ${valVariantHero}`}
+            style={{ width: 20, height: 20, flexShrink: 0 }}
             title={`Validatie: ${team.validatieStatus}`}
           />
         </div>
 
-        {/* Tab-balk */}
+        {/* ─── Tab-balk ─── */}
         <div
           style={{
             display: "flex",
@@ -352,7 +453,7 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
         >
           {(
             [
-              { id: "overzicht", label: "Overzicht", count: aantalSpelers },
+              { id: "overzicht", label: "Overzicht", count: 0 },
               { id: "validatie", label: "Validatie", count: aantalValidatie },
               { id: "notities", label: "Notities", count: aantalNotities },
             ] as { id: TabId; label: string; count: number }[]
@@ -413,44 +514,22 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
           ))}
         </div>
 
-        {/* Tab body */}
+        {/* ─── Tab body ─── */}
         <div className="ow-scroll" style={{ flex: 1, overflowY: "auto", padding: "20px 24px" }}>
-          {/* ═══ OVERZICHT ═══ */}
+          {/* ═══ TAB: OVERZICHT ═══ */}
           {actieveTab === "overzicht" && (
             <>
-              <div
-                style={{
-                  fontSize: 10,
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.1em",
-                  color: "var(--text-tertiary)",
-                  marginBottom: 12,
-                }}
-              >
+              {/* Panel-label */}
+              <div style={panelLabelStyle}>
                 {aantalSpelers} spelers
-                {aantalSpelers > 0 && (
-                  <>
-                    {" "}
-                    · gem.{" "}
-                    {(
-                      [...team.spelersDames, ...team.spelersHeren].reduce(
-                        (acc, s) => acc + s.korfbalLeeftijd,
-                        0
-                      ) / aantalSpelers
-                    ).toFixed(1)}
-                  </>
-                )}
+                {gemLeeftijd != null && ` · gem. leeftijd ${gemLeeftijd.toFixed(1)}`}
+                {team.ussScore != null && ` · USS ${team.ussScore.toFixed(1)}`}
               </div>
 
               <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr",
-                  gap: 16,
-                }}
+                style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}
               >
-                {/* Dames */}
+                {/* Dames-kolom */}
                 <div>
                   <div
                     style={{
@@ -490,12 +569,7 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
                           achternaam={s.achternaam}
                           geslacht={s.geslacht}
                           size="sm"
-                          style={{
-                            width: 28,
-                            height: 28,
-                            borderRadius: 4,
-                            flexShrink: 0,
-                          }}
+                          style={{ width: 28, height: 28, borderRadius: 4, flexShrink: 0 }}
                         />
                         <span
                           style={{
@@ -510,6 +584,13 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
                         >
                           {s.roepnaam} {s.achternaam}
                         </span>
+                        {s.memoStatus && (
+                          <span
+                            style={{ fontSize: 10, color: "var(--ow-accent)", fontWeight: 900 }}
+                          >
+                            ▲
+                          </span>
+                        )}
                         <span
                           style={{
                             fontSize: 10,
@@ -519,6 +600,7 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
                             borderRadius: 3,
                             background: leeftijdGradient(s.korfbalLeeftijd),
                             fontVariantNumeric: "tabular-nums",
+                            flexShrink: 0,
                           }}
                         >
                           {Math.floor(s.korfbalLeeftijd)}
@@ -528,7 +610,7 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
                   </div>
                 </div>
 
-                {/* Heren */}
+                {/* Heren-kolom */}
                 <div>
                   <div
                     style={{
@@ -568,12 +650,7 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
                           achternaam={s.achternaam}
                           geslacht={s.geslacht}
                           size="sm"
-                          style={{
-                            width: 28,
-                            height: 28,
-                            borderRadius: 4,
-                            flexShrink: 0,
-                          }}
+                          style={{ width: 28, height: 28, borderRadius: 4, flexShrink: 0 }}
                         />
                         <span
                           style={{
@@ -588,6 +665,13 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
                         >
                           {s.roepnaam} {s.achternaam}
                         </span>
+                        {s.memoStatus && (
+                          <span
+                            style={{ fontSize: 10, color: "var(--ow-accent)", fontWeight: 900 }}
+                          >
+                            ▲
+                          </span>
+                        )}
                         <span
                           style={{
                             fontSize: 10,
@@ -597,6 +681,7 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
                             borderRadius: 3,
                             background: leeftijdGradient(s.korfbalLeeftijd),
                             fontVariantNumeric: "tabular-nums",
+                            flexShrink: 0,
                           }}
                         >
                           {Math.floor(s.korfbalLeeftijd)}
@@ -606,7 +691,7 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
                   </div>
                 </div>
 
-                {/* Staf */}
+                {/* Staf-blok */}
                 {team.staf.length > 0 && (
                   <div
                     style={{
@@ -662,38 +747,32 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
                       {aantalSpelers}
                     </span>
                   </span>
-                  <span>
-                    Dames{" "}
-                    <span style={{ color: "var(--text-primary)", fontWeight: 700 }}>
-                      {team.spelersDames.length}
+                  {team.ussScore != null && (
+                    <span>
+                      USS{" "}
+                      <span style={{ color: "var(--text-primary)", fontWeight: 700 }}>
+                        {team.ussScore.toFixed(1)}
+                      </span>
                     </span>
-                  </span>
-                  <span>
-                    Heren{" "}
-                    <span style={{ color: "var(--text-primary)", fontWeight: 700 }}>
-                      {team.spelersHeren.length}
+                  )}
+                  {gemLeeftijd != null && (
+                    <span>
+                      Gem.{" "}
+                      <span style={{ color: "var(--text-primary)", fontWeight: 700 }}>
+                        {gemLeeftijd.toFixed(1)}j
+                      </span>
                     </span>
-                  </span>
+                  )}
                 </div>
               </div>
             </>
           )}
 
-          {/* ═══ VALIDATIE ═══ */}
+          {/* ═══ TAB: VALIDATIE ═══ */}
           {actieveTab === "validatie" && (
             <>
-              <div
-                style={{
-                  fontSize: 10,
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.1em",
-                  color: "var(--text-tertiary)",
-                  marginBottom: 12,
-                }}
-              >
-                Validatie-meldingen
-              </div>
+              <div style={panelLabelStyle}>Validatie-meldingen</div>
+
               {aantalValidatie === 0 ? (
                 <div
                   style={{
@@ -704,61 +783,176 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
                     fontWeight: 600,
                   }}
                 >
-                  ✓ Geen validatie-problemen
+                  ✓ Geen validatie-meldingen
                 </div>
               ) : (
-                team.validatieMeldingen?.map((m, i) => {
-                  const v = valVariant(m);
-                  return (
-                    <div key={i} className={cx("val-item", v)}>
-                      <div className="icn">{v === "ok" ? "✓" : v === "err" ? "✕" : "⚠"}</div>
-                      <div className="body">
-                        <div className="regel">{m}</div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                  {team.validatieMeldingen?.map((m, i) => {
+                    const v = valVariant(m);
+                    return (
+                      <div
+                        key={i}
+                        style={{
+                          display: "flex",
+                          gap: 10,
+                          padding: "10px 12px",
+                          background: "var(--surface-sunken)",
+                          border: "1px solid var(--border-light)",
+                          borderRadius: 8,
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontSize: 14,
+                            lineHeight: 1.4,
+                            flexShrink: 0,
+                            color:
+                              v === "ok"
+                                ? "var(--val-ok)"
+                                : v === "err"
+                                  ? "var(--val-err)"
+                                  : "var(--val-warn)",
+                          }}
+                        >
+                          {v === "ok" ? "✓" : v === "err" ? "✕" : "⚠"}
+                        </div>
+                        <div style={{ flex: 1 }}>
+                          <div
+                            style={{
+                              fontSize: 12,
+                              fontWeight: 700,
+                              color: "var(--text-primary)",
+                            }}
+                          >
+                            {m}
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  );
-                })
+                    );
+                  })}
+                </div>
               )}
             </>
           )}
 
-          {/* ═══ NOTITIES / WERKITEMS ═══ */}
+          {/* ═══ TAB: NOTITIES / WERKITEMS ═══ */}
           {actieveTab === "notities" && (
             <>
-              <div
+              <div style={panelLabelStyle}>Notities / werkitems</div>
+
+              {/* + Nieuw werkitem knop */}
+              <button
+                onClick={() => logger.info("team-werkitem-create: backlog-punt 3")}
                 style={{
-                  fontSize: 10,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  padding: "7px 14px",
+                  background: "rgba(255,107,0,.12)",
+                  color: "var(--ow-accent)",
+                  border: "1px solid rgba(255,107,0,.3)",
+                  borderRadius: 7,
+                  fontSize: 12,
                   fontWeight: 700,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.1em",
-                  color: "var(--text-tertiary)",
-                  marginBottom: 12,
+                  cursor: "pointer",
+                  marginBottom: 14,
+                  fontFamily: "inherit",
                 }}
               >
-                Notities / werkitems
-              </div>
-              {team.openMemoCount === 0 ? (
+                <span style={{ fontSize: 16, fontWeight: 900, lineHeight: 1 }}>+</span>
+                Nieuw werkitem
+              </button>
+
+              {werkitems.length === 0 ? (
                 <div
                   style={{
-                    padding: "20px 0",
+                    padding: "16px 0",
                     fontSize: 12,
                     color: "var(--text-tertiary)",
-                    fontWeight: 500,
                   }}
                 >
                   Geen werkitems voor dit team.
                 </div>
               ) : (
-                <div
-                  style={{
-                    padding: "10px 0",
-                    fontSize: 12,
-                    color: "var(--text-secondary)",
-                    fontWeight: 500,
-                  }}
-                >
-                  {team.openMemoCount} open werkitem(s) — koppeling via memo-module beschikbaar in
-                  een volgende iteratie.
+                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                  {werkitems.map((item) => {
+                    const statusStijl = werkitemStatusStijl(item.status);
+                    const iconKleur = werkitemIconKleur(item.status);
+
+                    return (
+                      <div
+                        key={item.id}
+                        style={{
+                          display: "flex",
+                          gap: 10,
+                          padding: "10px 12px",
+                          background: "var(--surface-sunken)",
+                          border: "1px solid var(--border-light)",
+                          borderRadius: 8,
+                        }}
+                      >
+                        {/* Memo-icon */}
+                        <div style={{ flexShrink: 0, paddingTop: 2 }}>
+                          <MemoIcon kleur={iconKleur} />
+                        </div>
+
+                        {/* Body */}
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          {/* Titel + status-pill */}
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "space-between",
+                              gap: 8,
+                              marginBottom: 3,
+                            }}
+                          >
+                            <div
+                              style={{
+                                fontSize: 12,
+                                fontWeight: 700,
+                                color: "var(--text-primary)",
+                              }}
+                            >
+                              {item.titel}
+                            </div>
+                            <span
+                              style={{
+                                display: "inline-flex",
+                                alignItems: "center",
+                                padding: "2px 7px",
+                                borderRadius: 4,
+                                fontSize: 8,
+                                fontWeight: 700,
+                                textTransform: "uppercase",
+                                letterSpacing: "0.06em",
+                                flexShrink: 0,
+                                background: statusStijl.bg,
+                                color: statusStijl.color,
+                                border: `1px solid ${statusStijl.border}`,
+                              }}
+                            >
+                              {werkitemStatusLabel(item.status)}
+                            </span>
+                          </div>
+
+                          {/* Beschrijving */}
+                          {item.beschrijving && (
+                            <div
+                              style={{
+                                fontSize: 11,
+                                color: "var(--text-secondary)",
+                                lineHeight: 1.5,
+                              }}
+                            >
+                              {item.beschrijving}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </>

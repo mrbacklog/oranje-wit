@@ -18,7 +18,7 @@ import { StafPoolDrawer } from "./StafPoolDrawer";
 import { TeamsDrawer } from "./TeamsDrawer";
 import { VersiesDrawer } from "./VersiesDrawer";
 import { TeamDetailDrawer } from "./TeamDetailDrawer";
-import { TeamDialog } from "./TeamDialog";
+import { TeamDialog } from "@/components/team/contexts/TeamDialog";
 import { useSpelerDialog } from "@/components/speler/contexts/SpelerDialogProvider";
 import { SaveIndicator } from "./SaveIndicator";
 import { verplaatsSpeler } from "@/actions/werkbord/verplaats-speler";
