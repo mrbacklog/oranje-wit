@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useTransition } from "react";
 import type { SpelerRijData } from "@/components/personen/types";
 import { HeroHeader } from "@/components/speler/contexts/HeroHeader";
 import { createPortal } from "react-dom";
-import { updateSpelerStatus, updateSpelerIndeling } from "@/app/(app)/(personen)/personen/actions";
+import { updateSpelerStatus, updateSpelerIndeling } from "@/actions/speler-actions";
 import { logger } from "@oranje-wit/types";
 
 // ── Helpers ──────────────────────────────────────────────────────────────────

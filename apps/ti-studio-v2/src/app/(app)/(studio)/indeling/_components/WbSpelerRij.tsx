@@ -60,6 +60,14 @@ export function WbSpelerRij({ speler, bron, onClick }: WbSpelerRijProps) {
         <div className="nm">
           {speler.roepnaam} {speler.tussenvoegsel ? `${speler.tussenvoegsel} ` : ""}
           {speler.achternaam}
+          {speler.isNieuw && (
+            <span
+              title="Nieuw lid"
+              style={{ marginLeft: 4, fontSize: 10, color: "var(--ok, #22c55e)" }}
+            >
+              ✦
+            </span>
+          )}
         </div>
         <div className="sub">
           {speler.huidigTeamNaam && <span className="tb">{speler.huidigTeamNaam}</span>}

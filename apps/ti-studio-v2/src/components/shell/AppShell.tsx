@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { SpelerDialogProvider } from "@/components/speler/contexts/SpelerDialogProvider";
 
 interface NavItem {
   href: string;
@@ -158,210 +159,212 @@ export function AppShell({ children, userName }: AppShellProps) {
     : "TC";
 
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "46px 1fr",
-        height: "100vh",
-        overflow: "hidden",
-        background: "var(--bg-0)",
-      }}
-    >
-      {/* Ribbon */}
-      <nav
-        aria-label="Hoofdnavigatie"
+    <SpelerDialogProvider>
+      <div
         style={{
-          background: "var(--surface-page)",
-          borderRight: "1px solid var(--border-light)",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          padding: "10px 0 8px",
-          gap: 2,
+          display: "grid",
+          gridTemplateColumns: "46px 1fr",
+          height: "100vh",
+          overflow: "hidden",
+          background: "var(--bg-0)",
         }}
       >
-        {/* Logo → Home */}
-        <Link
-          href="/"
-          title="TI Studio — Home"
-          aria-label="TI Studio — Home"
+        {/* Ribbon */}
+        <nav
+          aria-label="Hoofdnavigatie"
           style={{
-            width: 30,
-            height: 30,
-            marginBottom: 12,
-            flexShrink: 0,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            borderRadius: 9,
-            transition: "background 120ms",
-            textDecoration: "none",
-          }}
-        >
-          <svg
-            viewBox="0 0 18 18"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            width={24}
-            height={24}
-          >
-            <rect
-              x="2"
-              y="2"
-              width="14"
-              height="14"
-              rx="1.5"
-              stroke="#3b82f6"
-              strokeWidth="1.5"
-              opacity="0.4"
-            />
-            <line
-              x1="2"
-              y1="6.7"
-              x2="16"
-              y2="6.7"
-              stroke="#3b82f6"
-              strokeWidth="0.8"
-              opacity="0.3"
-            />
-            <line
-              x1="2"
-              y1="11.3"
-              x2="16"
-              y2="11.3"
-              stroke="#3b82f6"
-              strokeWidth="0.8"
-              opacity="0.3"
-            />
-            <line
-              x1="6.7"
-              y1="2"
-              x2="6.7"
-              y2="16"
-              stroke="#3b82f6"
-              strokeWidth="0.8"
-              opacity="0.3"
-            />
-            <line
-              x1="11.3"
-              y1="2"
-              x2="11.3"
-              y2="16"
-              stroke="#3b82f6"
-              strokeWidth="0.8"
-              opacity="0.3"
-            />
-            <path d="M16 10l-4 4h4v-4z" fill="#3b82f6" opacity="0.15" />
-            <path
-              d="M16.5 5.5l-2-2-6 6-.5 2.5 2.5-.5 6-6zM14.5 7.5l-2-2"
-              stroke="#3b82f6"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </Link>
-
-        {/* Nav items */}
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
-          {NAV_ITEMS.map((item) => {
-            const active = isActive(pathname, item.href, item.exact);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                title={item.label}
-                aria-label={item.label}
-                aria-current={active ? "page" : undefined}
-                style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: 9,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
-                  textDecoration: "none",
-                  position: "relative",
-                  flexShrink: 0,
-                  transition: "background 120ms, color 120ms",
-                  background: active ? "var(--accent-dim, rgba(255,107,0,0.12))" : "none",
-                  color: active ? "var(--ow-accent)" : "var(--text-tertiary)",
-                }}
-              >
-                {active && (
-                  <span
-                    aria-hidden="true"
-                    style={{
-                      position: "absolute",
-                      left: -1,
-                      top: 7,
-                      bottom: 7,
-                      width: 3,
-                      background: "var(--ow-accent)",
-                      borderRadius: "0 2px 2px 0",
-                    }}
-                  />
-                )}
-                {item.icon}
-              </Link>
-            );
-          })}
-        </div>
-
-        {/* Footer: avatar */}
-        <div
-          style={{
-            marginTop: "auto",
+            background: "var(--surface-page)",
+            borderRight: "1px solid var(--border-light)",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            gap: 6,
+            padding: "10px 0 8px",
+            gap: 2,
           }}
         >
-          <div
+          {/* Logo → Home */}
+          <Link
+            href="/"
+            title="TI Studio — Home"
+            aria-label="TI Studio — Home"
             style={{
-              width: 22,
-              height: 1,
-              background: "var(--border-light)",
-              margin: "4px 0",
-            }}
-          />
-          <div
-            title={userName ?? "TC-lid"}
-            style={{
-              width: 28,
-              height: 28,
-              borderRadius: "50%",
-              background: "#2a1a0a",
-              border: "2px solid rgba(255,107,0,.3)",
+              width: 30,
+              height: 30,
+              marginBottom: 12,
+              flexShrink: 0,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: 10,
-              fontWeight: 700,
-              color: "var(--ow-accent)",
-              cursor: "default",
-              userSelect: "none",
+              cursor: "pointer",
+              borderRadius: 9,
+              transition: "background 120ms",
+              textDecoration: "none",
             }}
           >
-            {initials}
-          </div>
-        </div>
-      </nav>
+            <svg
+              viewBox="0 0 18 18"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              width={24}
+              height={24}
+            >
+              <rect
+                x="2"
+                y="2"
+                width="14"
+                height="14"
+                rx="1.5"
+                stroke="#3b82f6"
+                strokeWidth="1.5"
+                opacity="0.4"
+              />
+              <line
+                x1="2"
+                y1="6.7"
+                x2="16"
+                y2="6.7"
+                stroke="#3b82f6"
+                strokeWidth="0.8"
+                opacity="0.3"
+              />
+              <line
+                x1="2"
+                y1="11.3"
+                x2="16"
+                y2="11.3"
+                stroke="#3b82f6"
+                strokeWidth="0.8"
+                opacity="0.3"
+              />
+              <line
+                x1="6.7"
+                y1="2"
+                x2="6.7"
+                y2="16"
+                stroke="#3b82f6"
+                strokeWidth="0.8"
+                opacity="0.3"
+              />
+              <line
+                x1="11.3"
+                y1="2"
+                x2="11.3"
+                y2="16"
+                stroke="#3b82f6"
+                strokeWidth="0.8"
+                opacity="0.3"
+              />
+              <path d="M16 10l-4 4h4v-4z" fill="#3b82f6" opacity="0.15" />
+              <path
+                d="M16.5 5.5l-2-2-6 6-.5 2.5 2.5-.5 6-6zM14.5 7.5l-2-2"
+                stroke="#3b82f6"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </Link>
 
-      {/* Page content */}
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          overflow: "hidden",
-          minHeight: 0,
-        }}
-      >
-        {children}
+          {/* Nav items */}
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
+            {NAV_ITEMS.map((item) => {
+              const active = isActive(pathname, item.href, item.exact);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  title={item.label}
+                  aria-label={item.label}
+                  aria-current={active ? "page" : undefined}
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: 9,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                    textDecoration: "none",
+                    position: "relative",
+                    flexShrink: 0,
+                    transition: "background 120ms, color 120ms",
+                    background: active ? "var(--accent-dim, rgba(255,107,0,0.12))" : "none",
+                    color: active ? "var(--ow-accent)" : "var(--text-tertiary)",
+                  }}
+                >
+                  {active && (
+                    <span
+                      aria-hidden="true"
+                      style={{
+                        position: "absolute",
+                        left: -1,
+                        top: 7,
+                        bottom: 7,
+                        width: 3,
+                        background: "var(--ow-accent)",
+                        borderRadius: "0 2px 2px 0",
+                      }}
+                    />
+                  )}
+                  {item.icon}
+                </Link>
+              );
+            })}
+          </div>
+
+          {/* Footer: avatar */}
+          <div
+            style={{
+              marginTop: "auto",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 6,
+            }}
+          >
+            <div
+              style={{
+                width: 22,
+                height: 1,
+                background: "var(--border-light)",
+                margin: "4px 0",
+              }}
+            />
+            <div
+              title={userName ?? "TC-lid"}
+              style={{
+                width: 28,
+                height: 28,
+                borderRadius: "50%",
+                background: "#2a1a0a",
+                border: "2px solid rgba(255,107,0,.3)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 10,
+                fontWeight: 700,
+                color: "var(--ow-accent)",
+                cursor: "default",
+                userSelect: "none",
+              }}
+            >
+              {initials}
+            </div>
+          </div>
+        </nav>
+
+        {/* Page content */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            overflow: "hidden",
+            minHeight: 0,
+          }}
+        >
+          {children}
+        </div>
       </div>
-    </div>
+    </SpelerDialogProvider>
   );
 }

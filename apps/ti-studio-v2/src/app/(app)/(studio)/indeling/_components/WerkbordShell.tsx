@@ -19,12 +19,11 @@ import { TeamsDrawer } from "./TeamsDrawer";
 import { VersiesDrawer } from "./VersiesDrawer";
 import { TeamDetailDrawer } from "./TeamDetailDrawer";
 import { TeamDialog } from "./TeamDialog";
-import { SpelerDialog } from "@/components/personen/spelers/SpelerDialog";
+import { useSpelerDialog } from "@/components/speler/contexts/SpelerDialogProvider";
 import { SaveIndicator } from "./SaveIndicator";
-import type { SpelerRijData, LeeftijdCategorie } from "@/components/personen/types";
 import { verplaatsSpeler } from "@/actions/werkbord/verplaats-speler";
 import type { WerkbordDragData } from "./hooks/useWerkbordDraggable";
-import { logger, formatKorfbalLeeftijd } from "@oranje-wit/types";
+import { logger } from "@oranje-wit/types";
 
 interface WerkbordShellProps {
   werkindeling: WerkindelingMeta;
@@ -102,7 +101,6 @@ export function WerkbordShell({
   const [zoom, setZoom] = useState<ZoomMode>("compact");
   const [geselecteerdTeam, setGeselecteerdTeam] = useState<TeamKaartData | null>(null);
   const [teamDialogOpen, setTeamDialogOpen] = useState(false);
-  const [geselecteerdeSpelerId, setGeselecteerdeSpelerId] = useState<string | null>(null);
   const [saveState, setSaveState] = useState<SaveState>("idle");
   const [foutTekst, setFoutTekst] = useState<string | null>(null);
 
@@ -147,12 +145,13 @@ export function WerkbordShell({
     setTeamDialogOpen(false);
   }
 
-  function handleSpelerClick(spelerId: string) {
-    setGeselecteerdeSpelerId(spelerId);
-  }
+  const { open: openSpelerDialog } = useSpelerDialog();
 
-  function handleCloseSpelerDialog() {
-    setGeselecteerdeSpelerId(null);
+  function handleSpelerClick(spelerId: string) {
+    openSpelerDialog(spelerId, {
+      actieveVersieId: actieveVersieMeta.id,
+      teams: teams.map((t) => ({ id: t.id, naam: t.alias ?? t.naam, kleur: t.kleur })),
+    });
   }
 
   function handleVersieSelect(versieId: string) {
@@ -348,40 +347,7 @@ export function WerkbordShell({
       {/* TeamDialog modal */}
       <TeamDialog team={geselecteerdTeam} open={teamDialogOpen} onClose={handleCloseTeamDialog} />
 
-      {/* SpelerDialog modal */}
-      {geselecteerdeSpelerId &&
-        (() => {
-          const poolSpeler = poolSpelers.find((s) => s.spelerId === geselecteerdeSpelerId);
-          if (!poolSpeler) return null;
-          const indelingTeam = poolSpeler.ingedeeldTeamId
-            ? (teams.find((t) => t.id === poolSpeler.ingedeeldTeamId) ?? null)
-            : null;
-          const spelerData: SpelerRijData = {
-            id: poolSpeler.spelerId,
-            roepnaam: poolSpeler.roepnaam,
-            tussenvoegsel: null,
-            achternaam: poolSpeler.achternaam,
-            geslacht: poolSpeler.geslacht,
-            geboortedatum: null,
-            geboortejaar: new Date().getFullYear() - Math.floor(poolSpeler.korfbalLeeftijd),
-            status: poolSpeler.status,
-            gezienStatus: "ONGEZIEN",
-            huidigTeam: poolSpeler.huidigTeamNaam,
-            indelingTeamNaam: indelingTeam ? (indelingTeam.alias ?? indelingTeam.naam) : null,
-            indelingTeamId: poolSpeler.ingedeeldTeamId,
-            heeftOpenMemo: poolSpeler.openMemoCount > 0,
-            memoBadge: poolSpeler.openMemoCount > 0 ? "open" : "geen",
-            memoStatus: poolSpeler.openMemoCount > 0 ? "OPEN" : null,
-            leeftijdscategorie: poolSpeler.leeftijdCategorie as LeeftijdCategorie,
-            leeftijd: poolSpeler.korfbalLeeftijd,
-            korfbalLeeftijd: formatKorfbalLeeftijd(poolSpeler.korfbalLeeftijd),
-            isNieuw: false,
-            hasFoto: false,
-            kadersSpelerId: null,
-            kadersId: "",
-          };
-          return <SpelerDialog speler={spelerData} onClose={handleCloseSpelerDialog} />;
-        })()}
+      {/* SpelerDialog wordt gemonteerd door SpelerDialogProvider (AppShell). */}
     </div>
   );
 }
