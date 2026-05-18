@@ -624,6 +624,248 @@ git add e2e/ti-studio-v2/smoke.spec.ts && git commit -m "patch: smoke.spec — h
 
 ---
 
+## Task 9a: Mutatie-respons mechanisme — schema/UI-changes triggeren updates
+
+**Probleem:** zonder dit mechanisme drift de catalogus + seed + tests langzaam los van de werkelijkheid. Een nieuwe `SpelerStatus`-waarde, een nieuw verplicht veld op `Speler`, of een nieuwe pagina met `data-testid`'s wordt nu makkelijk vergeten in seed/tests → false-green of false-skip.
+
+**Doel:** drie soorten mutaties hebben automatische detectie + duidelijke respons-procedure:
+
+| Mutatie | Detectiemechanisme | Respons |
+|---|---|---|
+| **Schema-wijziging** (Prisma migratie) | CI-step "dekking-check" faalt | Dev/agent voegt fixture toe aan catalog + seed |
+| **Nieuwe enum-waarde** | Dekking-check: vergelijkt enum-leden met seed-coverage | Catalog row + seed-fixture |
+| **Nieuwe UI met `data-testid`** | Optioneel: grep-check in CI | Spec uitbreiden, eventueel catalog |
+| **Nieuwe mutatie-server-action** | Code-review + skill-trigger | `AgentMutatie`-type + cleanup-handler + test |
+
+**Files:**
+- Create: `scripts/seed/coverage-check.ts`
+- Modify: `.github/workflows/e2e-studio-test.yml` (extra step)
+- Modify: `.github/workflows/ci.yml` (pre-deploy gate bij schema-wijziging)
+- Modify: `docs/kennis/edge-case-testdata.md` (mutatie-respons protocol)
+- Modify: `.claude/skills/e2e-studio-test/SKILL.md` (vermelding mutatie-flow)
+
+### Stappen
+
+- [ ] **Stap 9a.1: Dekking-check script schrijven**
+
+`scripts/seed/coverage-check.ts`:
+
+```typescript
+#!/usr/bin/env tsx
+/**
+ * Vergelijkt Prisma enum-leden met seed-coverage.
+ * Faalt met exit 1 + concrete diff als seed niet alle enum-waardes dekt.
+ * Draait in CI vóór seed-run zodat nightly direct faalt bij drift.
+ */
+import {
+  Prisma,
+  SpelerStatus,
+  GezienStatus,
+  ValidatieStatus,
+  WerkitemStatus,
+  WerkitemPrioriteit,
+  Doelgroep,
+  Kleur,
+  TeamCategorie,
+  OWTeamType,
+  TeamType,
+} from "@oranje-wit/database";
+import { TEAM_DEFS } from "./seed-teams";
+import { logger } from "@oranje-wit/types";
+
+// Importeer fixtures-arrays uit elke seed-file (re-exported)
+import { STATUS_FIXTURES } from "./seed-status-edge";
+import { LEEFTIJD_FIXTURES } from "./seed-leeftijd-edge";
+
+interface CoverageGap {
+  enum: string;
+  ontbreekt: string[];
+}
+
+function checkEnumCoverage<T extends Record<string, string>>(
+  naam: string,
+  enumObj: T,
+  fixtureValues: string[]
+): CoverageGap | null {
+  const verwacht = Object.values(enumObj);
+  const ontbreekt = verwacht.filter((v) => !fixtureValues.includes(v));
+  if (ontbreekt.length === 0) return null;
+  return { enum: naam, ontbreekt };
+}
+
+async function main(): Promise<void> {
+  const gaps: CoverageGap[] = [];
+
+  // SpelerStatus — verwacht 1 fixture per enum-waarde in seed-status-edge
+  gaps.push(
+    checkEnumCoverage(
+      "SpelerStatus",
+      SpelerStatus,
+      STATUS_FIXTURES.map((f) => f.status)
+    )!
+  );
+
+  // Kleur — verwacht in TEAM_DEFS minimaal 1 team per kleur (PAARS=Kangoeroes etc.)
+  gaps.push(
+    checkEnumCoverage(
+      "Kleur",
+      Kleur,
+      TEAM_DEFS.map((t) => t.kleur).filter((k): k is string => k !== null)
+    )!
+  );
+
+  // TeamCategorie
+  gaps.push(
+    checkEnumCoverage(
+      "TeamCategorie",
+      TeamCategorie,
+      TEAM_DEFS.map((t) => t.categorie)
+    )!
+  );
+
+  // OWTeamType
+  gaps.push(
+    checkEnumCoverage(
+      "OWTeamType",
+      OWTeamType,
+      TEAM_DEFS.map((t) => t.owTeamType)
+    )!
+  );
+
+  // TeamType
+  gaps.push(
+    checkEnumCoverage(
+      "TeamType",
+      TeamType,
+      TEAM_DEFS.map((t) => t.teamType)
+    )!
+  );
+
+  // Filter null entries
+  const echteGaps = gaps.filter((g): g is CoverageGap => g !== null);
+
+  if (echteGaps.length === 0) {
+    logger.info("[coverage-check] alle enums gedekt");
+    return;
+  }
+
+  logger.error("[coverage-check] dekking-gaten gevonden:");
+  for (const gap of echteGaps) {
+    logger.error(`  ${gap.enum}: mist fixtures voor ${gap.ontbreekt.join(", ")}`);
+  }
+  logger.error("");
+  logger.error("Actie: voeg fixtures toe aan docs/kennis/edge-case-testdata.md");
+  logger.error("       én aan scripts/seed/seed-*.ts");
+  logger.error("       (zie 'Mutatie-respons protocol' in catalogus)");
+  process.exit(1);
+}
+
+main().catch((error) => {
+  logger.error("[coverage-check] crash:", error);
+  process.exit(1);
+});
+```
+
+- [ ] **Stap 9a.2: Voeg coverage-check toe aan E2E workflow**
+
+In `.github/workflows/e2e-studio-test.yml`, **vóór** de seed-step:
+
+```yaml
+      - name: Dekking-check (catalog vs schema)
+        run: pnpm tsx scripts/seed/coverage-check.ts
+
+      - name: Seed edge-case test-data
+        run: pnpm tsx scripts/seed-edge-cases.ts
+        env:
+          DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
+```
+
+Effect: nightly faalt **eerder** met duidelijke melding wanneer iemand een nieuwe enum-waarde toevoegt zonder de catalogus bij te werken.
+
+- [ ] **Stap 9a.3: Pre-deploy gate in main CI bij schema-wijziging**
+
+In `.github/workflows/ci.yml`, voeg een job toe die alleen draait wanneer `schema.prisma` of `e2e/ti-studio-v2/**` of `apps/ti-studio-v2/**/components/**` raakt:
+
+```yaml
+  catalog-drift-check:
+    if: contains(github.event.pull_request.changed_files, 'schema.prisma') || contains(github.event.pull_request.changed_files, 'ti-studio-v2')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22', cache: 'pnpm' }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm db:generate
+      - name: Dekking-check
+        run: pnpm tsx scripts/seed/coverage-check.ts
+```
+
+Effect: een PR die `SpelerStatus` uitbreidt zonder catalogus-update wordt rood. Geen merge mogelijk zonder mee-update.
+
+- [ ] **Stap 9a.4: Mutatie-respons protocol documenteren**
+
+Voeg sectie toe aan `docs/kennis/edge-case-testdata.md`:
+
+```markdown
+## Mutatie-respons protocol
+
+Bij elke wijziging die de test-state of testkeuze raakt, doorloop deze checklist:
+
+### Schema-wijziging (Prisma migratie)
+
+1. Migratie toevoegen via `pnpm db:migrate` (NOOIT `db:push`)
+2. Run `pnpm tsx scripts/seed/coverage-check.ts` lokaal — als rood:
+   - Voor elke ontbrekende enum-waarde: voeg een rij toe aan de juiste sectie van deze catalogus
+   - Voeg fixture toe aan `scripts/seed/seed-*.ts`
+3. Run `pnpm tsx scripts/seed-edge-cases.ts` lokaal tegen test-DB — bevestig geen Prisma-errors
+4. Commit alles in één PR (`patch: schema X + catalog + seed`)
+
+### Nieuwe UI met `data-testid` of `data-testid`-conventie
+
+1. Component toevoegen met `data-testid` volgens conventie (zie skill `e2e-studio-test`)
+2. Catalogus uitbreiden als er nieuwe scenario-fixture nodig is
+3. Spec uitbreiden met `expect(page.locator('[data-testid="..."]')).toBeVisible()`
+4. Lokaal verifieren met `--headed`
+
+### Nieuwe server-action met mutatie
+
+1. Action implementeren — als er een DB-write is, log `AgentMutatie` (zie `verplaats-speler.ts` als referentie)
+2. Voeg nieuwe `type`-waarde toe in `AgentMutatie.type` (string-veld, geen enum)
+3. Cleanup-endpoint uitbreiden in `apps/ti-studio-v2/src/app/api/agent/cleanup/route.ts` — switch over type
+4. Test schrijven die de actie uitvoert en cleanup verifieert
+```
+
+- [ ] **Stap 9a.5: Skill bijwerken met mutatie-flow-verwijzing**
+
+In `.claude/skills/e2e-studio-test/SKILL.md`, voeg sectie toe:
+
+```markdown
+## Bij schema- of UI-wijzigingen
+
+Loop het mutatie-respons protocol af (zie kennisdoc sectie "Mutatie-respons protocol").
+Skip dit niet — coverage-check faalt anders nightly E2E.
+```
+
+- [ ] **Stap 9a.6: Commit**
+
+```bash
+git add scripts/seed/coverage-check.ts \
+        .github/workflows/e2e-studio-test.yml \
+        .github/workflows/ci.yml \
+        docs/kennis/edge-case-testdata.md \
+        .claude/skills/e2e-studio-test/SKILL.md
+git commit -m "patch: mutatie-respons mechanisme — coverage-check + protocol"
+git push origin main
+```
+
+- [ ] **Stap 9a.7: Verifieer**
+
+1. **Happy path:** trigger E2E workflow, dekking-check moet groen zijn (alle huidige enum-waardes gedekt door seed)
+2. **Drift simuleren:** voeg tijdelijk een fake enum-waarde toe aan `schema.prisma`, run `pnpm db:generate`, run `pnpm tsx scripts/seed/coverage-check.ts` lokaal — verwacht exit 1 met duidelijke gat-melding. Revert.
+
+---
+
 ## Task 9: Final verifieer + nightly groen
 
 - [ ] **Stap 9.1: Push alle commits**
@@ -667,6 +909,10 @@ Sla project-memory op met huidige stand (single source of truth catalogus + werk
 - [ ] Geen `tabelRijen.first()` of `text=/.../` selectors meer in specs
 - [ ] Nightly run groen — 0 failed
 - [ ] Skip-rate <10% (alleen scenarios die nog niet geseed zijn)
+- [ ] `coverage-check.ts` faalt bij gesimuleerde enum-drift (Task 9a.7 verifieerd)
+- [ ] CI `catalog-drift-check` job draait bij PR die `schema.prisma` raakt
+- [ ] Mutatie-respons protocol staat in catalogus
+- [ ] Skill `e2e-studio-test` verwijst naar mutatie-flow
 
 ---
 
