@@ -53,13 +53,15 @@ export async function createWerkitem(
     const auteurNaamCreate = (session.user?.name as string | undefined) ?? email;
     const auteurEmailCreate = email;
 
-    const gebruiker = await prisma.user.findUnique({
+    if (!email) {
+      return { ok: false, error: "Geen e-mailadres in sessie" };
+    }
+    const gebruiker = await prisma.user.upsert({
       where: { email },
+      update: {},
+      create: { email, naam: auteurNaamCreate || email },
       select: { id: true },
     });
-    if (!gebruiker) {
-      return { ok: false, error: `Gebruiker '${email}' niet gevonden in de database` };
-    }
     const auteurId = gebruiker.id;
     const entiteit = leidEntiteitAf(input);
 
