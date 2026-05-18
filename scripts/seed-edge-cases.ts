@@ -16,6 +16,8 @@ import { seedStatusEdge } from "./seed/seed-status-edge";
 import { seedLeeftijdEdge } from "./seed/seed-leeftijd-edge";
 import { seedDataIncomplete } from "./seed/seed-data-incomplete";
 import { seedMultiTeam } from "./seed/seed-multi-team";
+import { seedSelectiegroepen } from "./seed/seed-selectiegroepen";
+import { seedFotos } from "./seed/seed-fotos";
 
 async function main(): Promise<void> {
   const start = Date.now();
@@ -44,6 +46,12 @@ async function main(): Promise<void> {
 
   // Sectie 1.6: 2 multi-team illegal fixtures
   await seedMultiTeam();
+
+  // Sectie 1.7: selectiegroepen (na spelers — spelers moeten bestaan)
+  await seedSelectiegroepen();
+
+  // Sectie 1.9: fictieve profielfoto's (na alle spelers, voor cleanup)
+  await seedFotos();
 
   const duur = Date.now() - start;
   logger.info(`[seed-edge-cases] klaar in ${duur}ms`);
