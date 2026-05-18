@@ -210,6 +210,35 @@ Wat het doet:
 
 ---
 
+## Mutatie-respons protocol
+
+Bij elke wijziging die de test-state of testkeuze raakt, doorloop deze checklist:
+
+### Schema-wijziging (Prisma migratie)
+
+1. Migratie toevoegen via `pnpm db:migrate` (NOOIT `db:push`)
+2. Run `pnpm tsx scripts/seed/coverage-check.ts` lokaal — als rood:
+   - Voor elke ontbrekende enum-waarde: voeg een rij toe aan de juiste sectie van deze catalogus
+   - Voeg fixture toe aan `scripts/seed/seed-*.ts`
+3. Run `pnpm tsx scripts/seed-edge-cases.ts` lokaal tegen test-DB — bevestig geen Prisma-errors
+4. Commit alles in één PR (`patch: schema X + catalog + seed`)
+
+### Nieuwe UI met `data-testid` of `data-testid`-conventie
+
+1. Component toevoegen met `data-testid` volgens conventie (zie skill `e2e-studio-test`)
+2. Catalogus uitbreiden als er nieuwe scenario-fixture nodig is
+3. Spec uitbreiden met `expect(page.locator('[data-testid="..."]')).toBeVisible()`
+4. Lokaal verifieren met `--headed`
+
+### Nieuwe server-action met mutatie
+
+1. Action implementeren — als er een DB-write is, log `AgentMutatie` (zie `verplaats-speler.ts` als referentie)
+2. Voeg nieuwe `type`-waarde toe in `AgentMutatie.type` (string-veld, geen enum)
+3. Cleanup-endpoint uitbreiden in `apps/ti-studio-v2/src/app/api/agent/cleanup/route.ts` — switch over type
+4. Test schrijven die de actie uitvoert en cleanup verifieert
+
+---
+
 ## Beslissingen (2026-05-18)
 
 | Onderwerp | Beslissing |
