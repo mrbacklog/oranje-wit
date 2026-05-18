@@ -1700,9 +1700,19 @@ body {
 /* ── Team-kaart breedte per variant ── */
 .team-kaart.viertal {
   width: calc(var(--col-basis) + 24px); /* ~209px */
+  flex-shrink: 0;
 }
 .team-kaart.achttal {
   width: calc(var(--col-basis) * 2 + 1px + 24px); /* ~395px */
+  flex-shrink: 0;
+}
+
+/* Selectie-frame neemt eigen rij in canvas-flow zodat de kaarten niet
+   krimpen om naast losse teams te passen — gebundelde en niet-gebundelde
+   selecties krijgen zo altijd dezelfde breedte als hun content. */
+.selectie-frame {
+  flex-basis: 100%;
+  flex-shrink: 0;
 }
 
 /* ── Detail-modus: rijke rij per speler (52px) ── */
