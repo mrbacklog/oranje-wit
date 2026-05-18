@@ -359,6 +359,7 @@ export function WerkbordShell({
           const spelerData: SpelerRijData = {
             id: poolSpeler.spelerId,
             roepnaam: poolSpeler.roepnaam,
+            tussenvoegsel: null,
             achternaam: poolSpeler.achternaam,
             geslacht: poolSpeler.geslacht,
             geboortedatum: null,
@@ -370,8 +371,12 @@ export function WerkbordShell({
             indelingTeamId: poolSpeler.ingedeeldTeamId,
             heeftOpenMemo: poolSpeler.openMemoCount > 0,
             memoBadge: poolSpeler.openMemoCount > 0 ? "open" : "geen",
+            memoStatus: poolSpeler.openMemoCount > 0 ? "OPEN" : null,
             leeftijdscategorie: poolSpeler.leeftijdCategorie as LeeftijdCategorie,
+            leeftijd: poolSpeler.korfbalLeeftijd,
             korfbalLeeftijd: formatKorfbalLeeftijd(poolSpeler.korfbalLeeftijd),
+            isNieuw: false,
+            hasFoto: false,
             kadersSpelerId: null,
             kadersId: "",
           };

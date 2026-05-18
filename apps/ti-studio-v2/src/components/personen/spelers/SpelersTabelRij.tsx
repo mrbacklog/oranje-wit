@@ -2,12 +2,12 @@
 
 import { useRef, useState } from "react";
 import type { SpelerRijData } from "@/components/personen/types";
+import { HoverKaart } from "@/components/speler/contexts/HoverKaart";
 import { LeeftijdsCel } from "./LeeftijdsCel";
 import { StatusCel } from "./StatusCel";
 import { GezienCel } from "./GezienCel";
 import { IndelingCel } from "./IndelingCel";
 import { MemoCel } from "./MemoCel";
-import { HoverKaartSpeler } from "./HoverKaartSpeler";
 
 const STATUS_CSS_MAP: Record<string, string> = {
   BESCHIKBAAR: "",
@@ -38,6 +38,7 @@ export function SpelersTabelRij({
 }: SpelersTabelRijProps) {
   const naamRef = useRef<HTMLSpanElement>(null);
   const [hoverOpen, setHoverOpen] = useState(false);
+  const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null);
   const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -45,7 +46,12 @@ export function SpelersTabelRij({
 
   const handleMouseEnterNaam = () => {
     if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
-    hoverTimerRef.current = setTimeout(() => setHoverOpen(true), 300);
+    hoverTimerRef.current = setTimeout(() => {
+      if (naamRef.current) {
+        setAnchorRect(naamRef.current.getBoundingClientRect());
+      }
+      setHoverOpen(true);
+    }, 400);
   };
 
   const handleMouseLeaveNaam = () => {
@@ -58,7 +64,7 @@ export function SpelersTabelRij({
   };
 
   const handleMouseLeaveCard = () => {
-    closeTimerRef.current = setTimeout(() => setHoverOpen(false), 150);
+    setHoverOpen(false);
   };
 
   const initials = `${speler.roepnaam[0] ?? ""}${speler.achternaam[0] ?? ""}`.toUpperCase();
@@ -206,15 +212,29 @@ export function SpelersTabelRij({
         ⋯
       </button>
 
-      {/* HoverKaart */}
-      {hoverOpen && (
-        <HoverKaartSpeler
-          speler={speler}
-          anchorRef={naamRef}
-          onMouseEnter={handleMouseEnterCard}
-          onMouseLeave={handleMouseLeaveCard}
-        />
-      )}
+      {/* HoverKaart — FIFA-stijl via primitives */}
+      <HoverKaart
+        speler={{
+          relCode: speler.id,
+          roepnaam: speler.roepnaam,
+          tussenvoegsel: speler.tussenvoegsel,
+          achternaam: speler.achternaam,
+          geslacht: speler.geslacht,
+          leeftijd: speler.leeftijd,
+          leeftijdscategorie: speler.leeftijdscategorie,
+          status: speler.status,
+          isNieuw: speler.isNieuw,
+          hasFoto: speler.hasFoto,
+          memoStatus: speler.memoStatus,
+          huidigTeam: speler.huidigTeam,
+          indelingTeam: speler.indelingTeamNaam,
+        }}
+        anchorRect={anchorRect}
+        open={hoverOpen}
+        onMouseEnter={handleMouseEnterCard}
+        onMouseLeave={handleMouseLeaveCard}
+        onClick={() => onOpenDialog(speler.id)}
+      />
     </div>
   );
 }

@@ -5,11 +5,19 @@
 
 export type MemoBadge = "open" | "bespreking" | "risico" | "opgelost" | "geen";
 
-export type LeeftijdCategorie = "blauw" | "groen" | "geel" | "oranje" | "rood" | "senior";
+export type LeeftijdCategorie =
+  | "kangoeroe"
+  | "blauw"
+  | "groen"
+  | "geel"
+  | "oranje"
+  | "rood"
+  | "senior";
 
 export interface SpelerRijData {
   id: string; // rel_code — React key + server action identifier
   roepnaam: string;
+  tussenvoegsel: string | null;
   achternaam: string;
   geslacht: "M" | "V";
   geboortedatum: Date | null;
@@ -21,8 +29,12 @@ export interface SpelerRijData {
   indelingTeamId: string | null;
   heeftOpenMemo: boolean;
   memoBadge: MemoBadge;
+  memoStatus: import("@oranje-wit/database").WerkitemStatus | null; // hoogste actieve WerkitemStatus
   leeftijdscategorie: LeeftijdCategorie;
+  leeftijd: number; // exacte korfbal-leeftijd als decimaal getal
   korfbalLeeftijd: string; // output van formatKorfbalLeeftijd()
+  isNieuw: boolean; // nieuw lid (lidSinds >= seizoenStart)
+  hasFoto: boolean; // heeft een foto in de foto-store
   kadersSpelerId: string | null; // id van KadersSpeler-rij, nodig voor gezien-update
   kadersId: string;
 }

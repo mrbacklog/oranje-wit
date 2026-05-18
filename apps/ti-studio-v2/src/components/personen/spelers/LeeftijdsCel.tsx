@@ -3,6 +3,7 @@
 import type { LeeftijdCategorie } from "@/components/personen/types";
 
 const CAT_KLEUREN: Record<LeeftijdCategorie, string> = {
+  kangoeroe: "#7c3aed",
   blauw: "#3b82f6",
   groen: "#22c55e",
   geel: "#eab308",
