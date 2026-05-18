@@ -41,8 +41,20 @@ export async function wipeAll(): Promise<void> {
   await prisma.selectieStaf.deleteMany({});
   await prisma.selectieGroep.deleteMany({});
 
-  // Speler-kinderen (evaluaties, werkitems etc. staan hiervoor al leeg na actiepunt/activiteit)
+  // WhatIf-keten (vóór team en speler)
+  await prisma.whatIfTeamSpeler.deleteMany({});
+  await prisma.whatIfTeamStaf.deleteMany({});
+  await prisma.whatIfTeam.deleteMany({});
+  await prisma.whatIf.deleteMany({});
+
+  // Speler-kinderen
   await prisma.spelerZelfEvaluatie.deleteMany({});
+  await prisma.evaluatie.deleteMany({});
+  await prisma.scoutingVergelijkingPositie.deleteMany({});
+  await prisma.scoutingRapport.deleteMany({});
+  await prisma.spelersKaart.deleteMany({});
+  await prisma.fysiekProfiel.deleteMany({});
+  await prisma.spelerUSS.deleteMany({});
   await prisma.werkitem.deleteMany({});
 
   // Teams, versies, werkindelingen
@@ -60,7 +72,10 @@ export async function wipeAll(): Promise<void> {
   await prisma.stafToewijzing.deleteMany({});
   await prisma.staf.deleteMany({});
 
-  // Lid-gerelateerd (monitor-tabellen)
+  // Lid-gerelateerd (monitor-tabellen) — kinderen vóór ouder
+  await prisma.competitieSpeler.deleteMany({});
+  await prisma.ledenverloop.deleteMany({});
+  await prisma.sportlinkNotificatie.deleteMany({});
   await prisma.lidFoto.deleteMany({});
   await prisma.lid.deleteMany({});
 
