@@ -24,7 +24,7 @@ import { SaveIndicator } from "./SaveIndicator";
 import type { SpelerRijData, LeeftijdCategorie } from "@/components/personen/types";
 import { verplaatsSpeler } from "@/actions/werkbord/verplaats-speler";
 import type { WerkbordDragData } from "./hooks/useWerkbordDraggable";
-import { logger } from "@oranje-wit/types";
+import { logger, formatKorfbalLeeftijd } from "@oranje-wit/types";
 
 interface WerkbordShellProps {
   werkindeling: WerkindelingMeta;
@@ -360,7 +360,7 @@ export function WerkbordShell({
             heeftOpenMemo: poolSpeler.openMemoCount > 0,
             memoBadge: poolSpeler.openMemoCount > 0 ? "open" : "geen",
             leeftijdscategorie: poolSpeler.leeftijdCategorie as LeeftijdCategorie,
-            korfbalLeeftijd: poolSpeler.korfbalLeeftijd.toFixed(2),
+            korfbalLeeftijd: formatKorfbalLeeftijd(poolSpeler.korfbalLeeftijd),
             kadersSpelerId: null,
             kadersId: "",
           };

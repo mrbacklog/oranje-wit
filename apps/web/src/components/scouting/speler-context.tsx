@@ -1,5 +1,6 @@
 "use client";
 
+import { formatKorfbalLeeftijd } from "@oranje-wit/types";
 import { SpelerAvatar } from "./speler-avatar";
 import { LeeftijdsgroepBadge } from "./leeftijdsgroep-badge";
 
@@ -43,7 +44,7 @@ export function SpelerContext({
     ? `${roepnaam} ${tussenvoegsel} ${achternaam}`
     : `${roepnaam} ${achternaam}`;
 
-  const leeftijdTekst = `${korfbalLeeftijd.toFixed(1)} jr`;
+  const leeftijdTekst = `${formatKorfbalLeeftijd(korfbalLeeftijd)} jr`;
   const jarenActief =
     seizoenenActief != null
       ? `${seizoenenActief} seizoen${seizoenenActief !== 1 ? "en" : ""} actief`

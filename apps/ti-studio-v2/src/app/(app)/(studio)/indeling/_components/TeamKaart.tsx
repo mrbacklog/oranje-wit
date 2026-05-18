@@ -1,5 +1,6 @@
 "use client";
 
+import { formatKorfbalLeeftijd } from "@oranje-wit/types";
 import type { TeamKaartData, TeamKaartSpeler } from "./werkbord-types";
 import { useWerkbordDropTarget } from "./hooks/useWerkbordDropTarget";
 import { useWerkbordDraggable, type DragBron } from "./hooks/useWerkbordDraggable";
@@ -176,7 +177,7 @@ function CompactChip({ speler, teamId, onClick, onDrop }: CompactChipProps) {
         } as React.CSSProperties
       }
       onClick={() => onClick(speler.spelerId)}
-      title={`${speler.roepnaam} ${speler.tussenvoegsel ? speler.tussenvoegsel + " " : ""}${speler.achternaam} (${speler.korfbalLeeftijd.toFixed(1)} jr)`}
+      title={`${speler.roepnaam} ${speler.tussenvoegsel ? speler.tussenvoegsel + " " : ""}${speler.achternaam} (${formatKorfbalLeeftijd(speler.korfbalLeeftijd)} jr)`}
     >
       <div className="inner">
         <span className="g-dot" />
@@ -222,7 +223,7 @@ function DetailRij({ speler, teamId, onClick, onDrop }: DetailRijProps) {
         } as React.CSSProperties
       }
       onClick={() => onClick(speler.spelerId)}
-      title={`${speler.roepnaam} ${speler.achternaam} (${speler.korfbalLeeftijd.toFixed(1)} jr)`}
+      title={`${speler.roepnaam} ${speler.achternaam} (${formatKorfbalLeeftijd(speler.korfbalLeeftijd)} jr)`}
     >
       {/* Smal verticaal geslachtsblokje — 8px breed, full-height */}
       <div
@@ -260,6 +261,14 @@ function DetailRij({ speler, teamId, onClick, onDrop }: DetailRijProps) {
         >
           {speler.roepnaam} {speler.tussenvoegsel ? `${speler.tussenvoegsel} ` : ""}
           {speler.achternaam}
+          {speler.isNieuw && (
+            <span
+              title="Nieuw lid"
+              style={{ marginLeft: 4, fontSize: 10, color: "var(--ok, #22c55e)" }}
+            >
+              ✦
+            </span>
+          )}
         </span>
         <div className="row2">
           <span
