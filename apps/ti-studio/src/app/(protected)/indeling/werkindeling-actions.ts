@@ -364,7 +364,7 @@ export async function getStafProfiel(stafId: string, kadersId?: string) {
 
 export async function getSpelerProfiel(spelerId: string, kadersId?: string) {
   await requireTC();
-  const [speler, competitieHistorie, kadersSpeler, ussRecord] = await Promise.all([
+  const [speler, competitieHistorie, kadersSpeler, ussRecord, werkitems] = await Promise.all([
     prisma.speler.findUnique({
       where: { id: spelerId },
       select: {
@@ -399,6 +399,23 @@ export async function getSpelerProfiel(spelerId: string, kadersId?: string) {
       where: { spelerId, seizoen: HUIDIG_SEIZOEN },
       select: { ussOverall: true },
     }),
+    kadersId
+      ? prisma.werkitem.findMany({
+          where: { spelerId, kadersId },
+          select: {
+            id: true,
+            titel: true,
+            beschrijving: true,
+            type: true,
+            status: true,
+            prioriteit: true,
+            volgorde: true,
+            resolutie: true,
+            createdAt: true,
+          },
+          orderBy: [{ volgorde: "asc" }, { createdAt: "desc" }],
+        })
+      : Promise.resolve([]),
   ]);
   if (!speler) return null;
   return {
@@ -406,6 +423,13 @@ export async function getSpelerProfiel(spelerId: string, kadersId?: string) {
     competitieHistorie,
     statusOverride: kadersSpeler?.statusOverride ?? null,
     ussScore: ussRecord?.ussOverall ?? null,
+    werkitems: werkitems.map((w) => ({
+      ...w,
+      type: String(w.type),
+      status: String(w.status),
+      prioriteit: String(w.prioriteit),
+      createdAt: w.createdAt.toISOString(),
+    })),
   };
 }
 
