@@ -1,5 +1,6 @@
 import { TEAM_DEFS } from "./seed-teams";
 import { prisma, relCode, teamId } from "./types";
+import { RANDOM_NAAM } from "./seed-namen";
 import { logger } from "@oranje-wit/types";
 
 function geboortejaarVoorTeam(alias: string): number {
@@ -32,21 +33,24 @@ export async function seedDefaultSpelers(): Promise<void> {
     for (let i = 1; i <= team.defaultOmvang; i++) {
       const code = relCode(team.nr, i);
       const isVrouw = i % 2 === 1;
+      const geslacht = isVrouw ? "V" : "M";
+      const naam = RANDOM_NAAM(code, geslacht);
 
       await prisma.speler.upsert({
         where: { id: code },
         create: {
           id: code,
-          roepnaam: `Speler-${alias}-${String(i).padStart(2, "0")}`,
-          achternaam: "Test",
-          geslacht: isVrouw ? "V" : "M",
+          roepnaam: naam.roepnaam,
+          achternaam: naam.achternaam,
+          geslacht,
           geboortejaar,
           geboortedatum: new Date(`${geboortejaar}-06-15`),
           status: "BESCHIKBAAR",
         },
         update: {
-          roepnaam: `Speler-${alias}-${String(i).padStart(2, "0")}`,
-          geslacht: isVrouw ? "V" : "M",
+          roepnaam: naam.roepnaam,
+          achternaam: naam.achternaam,
+          geslacht,
           geboortejaar,
           geboortedatum: new Date(`${geboortejaar}-06-15`),
           status: "BESCHIKBAAR",
