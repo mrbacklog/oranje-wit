@@ -232,4 +232,5 @@ Detail-informatie staat in path-scoped rules en docs:
 | `rules/beheer.md` | 9 TC-domeinen, autorisatie, temporeel model |
 | `rules/teamindeling-scheiding.md` | Desktop/mobile scheiding TI |
 | `docs/kennis/tc-doelgroepen.md` | 5 TC-doelgroepen (Single Source of Truth voor POP-ratio's) |
+| `docs/kennis/e2e-testen-tegen-studio-test.md` | E2E-tests tegen studio-test.ckvoranjewit.app (architecture, lokaal/CI, PDND-nuances) |
 | `docs/kennis/` | Seizoenscyclus, TC-beleid, TC-organisatie, KNKV-competitie |
