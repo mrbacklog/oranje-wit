@@ -1,24 +1,41 @@
 "use client";
 
 import { useRef, useState } from "react";
+import type { SpelerStatus } from "@oranje-wit/database";
 import type { SpelerRijData } from "@/components/personen/types";
+import { SpelerAvatar } from "@/components/speler/primitives/SpelerAvatar";
 import { HoverKaart } from "@/components/speler/contexts/HoverKaart";
 import { LeeftijdsCel } from "./LeeftijdsCel";
 import { StatusCel } from "./StatusCel";
 import { GezienCel } from "./GezienCel";
 import { IndelingCel } from "./IndelingCel";
 import { MemoCel } from "./MemoCel";
+import { formatSpelerNaam } from "@/lib/format/speler";
+
+const STATUS_BORDER_MAP: Record<string, string> = {
+  BESCHIKBAAR: "var(--status-beschikbaar-outline)",
+  NIEUW_POTENTIEEL: "#a3e635",
+  NIEUW_DEFINITIEF: "#a3e635",
+  TWIJFELT: "#fb923c",
+  GEBLESSEERD: "#fb923c",
+  GAAT_STOPPEN: "#e11d48",
+  GESTOPT: "#e11d48",
+  RECREANT: "#e11d48",
+  NIET_SPELEND: "#e11d48",
+  ALGEMEEN_RESERVE: "#84a98c",
+};
 
 const STATUS_CSS_MAP: Record<string, string> = {
-  BESCHIKBAAR: "",
+  BESCHIKBAAR: "st-beschikbaar",
   TWIJFELT: "st-twijfelt",
+  GEBLESSEERD: "st-twijfelt",
   GAAT_STOPPEN: "st-stopt",
-  GEBLESSEERD: "st-geblesseerd",
+  GESTOPT: "st-stopt",
   NIEUW_POTENTIEEL: "st-nieuw",
   NIEUW_DEFINITIEF: "st-nieuw",
   ALGEMEEN_RESERVE: "st-ar",
-  RECREANT: "",
-  NIET_SPELEND: "",
+  RECREANT: "st-stopt",
+  NIET_SPELEND: "st-stopt",
 };
 
 interface SpelersTabelRijProps {
@@ -43,6 +60,16 @@ export function SpelersTabelRij({
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const statusCss = STATUS_CSS_MAP[speler.status] ?? "";
+  const borderKleur = STATUS_BORDER_MAP[speler.status] ?? "var(--status-beschikbaar-outline)";
+
+  const volledigeNaam = formatSpelerNaam(
+    {
+      roepnaam: speler.roepnaam,
+      tussenvoegsel: speler.tussenvoegsel,
+      achternaam: speler.achternaam,
+    },
+    "tabel"
+  ) as string;
 
   const handleMouseEnterNaam = () => {
     if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
@@ -67,18 +94,14 @@ export function SpelersTabelRij({
     setHoverOpen(false);
   };
 
-  const initials = `${speler.roepnaam[0] ?? ""}${speler.achternaam[0] ?? ""}`.toUpperCase();
-  const geslachtCss = speler.geslacht === "V" ? "vrouw" : "";
-  const isStopt = speler.status === "GAAT_STOPPEN";
-
   return (
     <div
       className={`spelers-tabel-rij ${statusCss}`}
       style={{
         position: "relative",
         background: "transparent",
-        borderLeft: `3px solid var(--status-color, var(--status-beschikbaar-outline))`,
-        borderBottom: "1px solid var(--border-0)",
+        borderLeft: `3px solid ${borderKleur}`,
+        borderBottom: "1px solid var(--border-light)",
         overflow: "visible",
         transition: "background 100ms",
       }}
@@ -89,89 +112,88 @@ export function SpelersTabelRij({
         (e.currentTarget as HTMLDivElement).style.background = "transparent";
       }}
     >
-      {/* REL-code kolom */}
-      <span
-        style={{
-          fontSize: 11,
-          color: "var(--text-muted)",
-          fontVariantNumeric: "tabular-nums",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
-        }}
-        title={speler.id}
-      >
-        {speler.id.startsWith("OW-") ? "—" : speler.id}
-      </span>
-
-      {/* Naam + avatar */}
-      <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
-        {/* Avatar */}
-        <div className={`sq-av ${geslachtCss}`} style={{ width: 36, height: 36, flexShrink: 0 }}>
-          <div
-            style={{
-              width: "100%",
-              height: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 11,
-              fontWeight: 700,
-              color: "var(--text-2)",
-              background: "var(--surface-card)",
-              borderRadius: 4,
-            }}
-          >
-            {initials}
-          </div>
-        </div>
-
-        {/* Naam */}
-        <div style={{ minWidth: 0 }}>
-          <span
-            ref={naamRef}
-            className="nm"
-            style={{
-              fontSize: 14,
-              fontWeight: 600,
-              color: "var(--text-1)",
-              cursor: "pointer",
-              textDecoration: isStopt ? "line-through" : "none",
-              opacity: speler.status === "ALGEMEEN_RESERVE" ? 0.7 : 1,
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-              display: "block",
-            }}
-            onMouseEnter={handleMouseEnterNaam}
-            onMouseLeave={handleMouseLeaveNaam}
-            onClick={() => onOpenDialog(speler.id)}
-          >
-            {speler.roepnaam} {speler.achternaam}
-          </span>
-        </div>
+      {/* Kolom 1: Foto / Avatar */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-start" }}>
+        <SpelerAvatar
+          relCode={speler.id}
+          roepnaam={speler.roepnaam}
+          achternaam={speler.achternaam}
+          geslacht={speler.geslacht}
+          size="sm"
+          hasFoto={speler.hasFoto}
+          status={speler.status as SpelerStatus}
+          isNieuw={speler.isNieuw}
+          memoStatus={speler.memoStatus}
+          style={{ width: 46, height: 46 }}
+        />
       </div>
 
-      {/* Huidig team */}
+      {/* Kolom 2: Naam */}
+      <div style={{ minWidth: 0 }}>
+        <span
+          ref={naamRef}
+          className="tr-naam"
+          style={{
+            fontSize: 14,
+            fontWeight: 600,
+            color: "var(--text-1)",
+            cursor: "pointer",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            display: "block",
+          }}
+          onMouseEnter={handleMouseEnterNaam}
+          onMouseLeave={handleMouseLeaveNaam}
+          onClick={() => onOpenDialog(speler.id)}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") onOpenDialog(speler.id);
+          }}
+          aria-label={`Bekijk ${volledigeNaam}`}
+        >
+          {volledigeNaam}
+        </span>
+      </div>
+
+      {/* Kolom 3: Status */}
+      <StatusCel spelerId={speler.id} huidigeStatus={speler.status} />
+
+      {/* Kolom 4: Huidig team */}
       <span
         style={{
           fontSize: 12,
-          color: "var(--text-3)",
+          color: "var(--text-2)",
+          fontWeight: 500,
           overflow: "hidden",
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
         }}
       >
-        {speler.huidigTeam ?? "—"}
+        {speler.huidigTeam ? (
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 4,
+              padding: "3px 8px",
+              borderRadius: 3,
+              border: "1px solid var(--border-1)",
+              color: "var(--text-2)",
+              fontSize: 12,
+              fontWeight: 500,
+              cursor: "default",
+            }}
+          >
+            {speler.huidigTeam}
+          </span>
+        ) : (
+          <span style={{ color: "var(--text-muted)" }}>—</span>
+        )}
       </span>
 
-      {/* Leeftijdscel */}
-      <LeeftijdsCel
-        leeftijdscategorie={speler.leeftijdscategorie}
-        korfbalLeeftijd={speler.korfbalLeeftijd}
-      />
-
-      {/* Indelingcel */}
+      {/* Kolom 5: Indeling */}
       <IndelingCel
         spelerId={speler.id}
         versieId={actieveVersieId}
@@ -180,37 +202,19 @@ export function SpelersTabelRij({
         teams={teams}
       />
 
-      {/* Statuscel */}
-      <StatusCel spelerId={speler.id} huidigeStatus={speler.status} />
-
-      {/* Memocel */}
+      {/* Kolom 6: Memo */}
       <MemoCel badge={speler.memoBadge} />
 
-      {/* Gezien */}
+      {/* Kolom 7: Gezien */}
       <GezienCel kadersId={kadersId} spelerId={speler.id} huidigeStatus={speler.gezienStatus} />
 
-      {/* Actie */}
-      <button
-        onClick={() => onOpenDialog(speler.id)}
-        style={{
-          background: "none",
-          border: "none",
-          cursor: "pointer",
-          color: "var(--text-3)",
-          padding: "4px 6px",
-          borderRadius: "var(--radius-sm)",
-          fontSize: 16,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          width: 32,
-          height: 32,
-        }}
-        aria-label={`Bekijk ${speler.roepnaam} ${speler.achternaam}`}
-        title="Openen"
-      >
-        ⋯
-      </button>
+      {/* Kolom 8: Leeftijd */}
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <LeeftijdsCel
+          leeftijdscategorie={speler.leeftijdscategorie}
+          korfbalLeeftijd={speler.korfbalLeeftijd}
+        />
+      </div>
 
       {/* HoverKaart — FIFA-stijl via primitives */}
       <HoverKaart

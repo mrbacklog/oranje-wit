@@ -97,13 +97,37 @@ body {
     sans-serif;
 }
 
-/* Spelers tabel grid */
+/* Spelers tabel grid — 8 kolommen: Foto · Naam · Status · Huidig · Indeling · Memo · Gezien · Leeftijd */
 .spelers-tabel-rij {
   display: grid;
-  grid-template-columns: 60px 1fr 150px 90px 130px 110px 44px 60px 44px;
+  grid-template-columns: 60px 1fr 130px 90px 90px 110px 56px 60px;
   gap: 14px;
   align-items: center;
   padding: 10px 16px;
+}
+
+/* Status-varianten op tabel-rij */
+.spelers-tabel-rij.st-beschikbaar {
+  border-left-color: var(--status-beschikbaar-outline);
+}
+.spelers-tabel-rij.st-nieuw {
+  border-left-color: #a3e635;
+}
+.spelers-tabel-rij.st-twijfelt {
+  border-left-color: #fb923c;
+}
+.spelers-tabel-rij.st-stopt {
+  border-left-color: #e11d48;
+}
+.spelers-tabel-rij.st-ar {
+  border-left-color: #84a98c;
+}
+.spelers-tabel-rij.st-stopt .tr-naam {
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+.spelers-tabel-rij.st-ar .tr-naam {
+  color: #a8a8ad;
 }
 
 /* Staf tabel grid */

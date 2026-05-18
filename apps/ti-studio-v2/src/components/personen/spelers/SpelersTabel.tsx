@@ -13,15 +13,14 @@ interface SpelersTabelProps {
 }
 
 const KOLOMMEN = [
-  { label: "REL", align: "left" },
+  { label: "Foto", align: "left" },
   { label: "Naam", align: "left" },
-  { label: "Huidig team", align: "left" },
-  { label: "Leeftijd", align: "center" },
-  { label: "Indeling", align: "left" },
   { label: "Status", align: "left" },
-  { label: "Memo", align: "center" },
+  { label: "Huidig", align: "left" },
+  { label: "Indeling", align: "left" },
+  { label: "Memo", align: "left" },
   { label: "Gezien", align: "center" },
-  { label: "", align: "center" },
+  { label: "Leeft.", align: "right" },
 ];
 
 export function SpelersTabel({ data, actieveVersieId, kadersId, teams }: SpelersTabelProps) {
