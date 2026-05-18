@@ -11,6 +11,17 @@ import { logger } from "@oranje-wit/types";
 
 export type TabId = "pad" | "kenmerken" | "evaluaties" | "werkitems";
 
+export interface SpelerWerkitemDetail {
+  id: string;
+  titel: string;
+  beschrijving: string | null;
+  status: string; // WerkitemStatus enum value
+  prioriteit: "HOOG" | "MIDDEL" | "LAAG";
+  type: string;
+  auteurNaam: string;
+  createdAt: Date;
+}
+
 const STATUS_LABELS: Record<string, string> = {
   BESCHIKBAAR: "Beschikbaar",
   TWIJFELT: "Twijfelt",
@@ -38,10 +49,178 @@ const STATUS_CONFIG_HERO: Record<string, { label: string }> = {
   NIET_SPELEND: { label: "Niet spelend" },
 };
 
+// ── Lokale helpers ────────────────────────────────────────────────────────────
+
+const MAANDEN_NL = [
+  "januari",
+  "februari",
+  "maart",
+  "april",
+  "mei",
+  "juni",
+  "juli",
+  "augustus",
+  "september",
+  "oktober",
+  "november",
+  "december",
+];
+
+function formatGeboortedatum(datum: Date, leeftijd: number): string {
+  const dag = datum.getDate();
+  const maand = MAANDEN_NL[datum.getMonth()];
+  const jaar = datum.getFullYear();
+  const leeftijdJaren = Math.floor(leeftijd);
+  return `${dag} ${maand} ${jaar} · ${leeftijdJaren} jaar`;
+}
+
+function relatiefDatum(datum: Date): string {
+  const nu = new Date();
+  const diffMs = nu.getTime() - datum.getTime();
+  const diffDagen = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffDagen < 7) return `${diffDagen} dag${diffDagen === 1 ? "" : "en"} geleden`;
+  if (diffDagen < 14) return "vorige week";
+  const diffWeken = Math.floor(diffDagen / 7);
+  if (diffDagen < 365) return `${diffWeken} weken geleden`;
+  return "langer dan een jaar";
+}
+
+function werkitemStatusLabel(status: string): string {
+  switch (status) {
+    case "OPEN":
+      return "Open";
+    case "IN_BESPREKING":
+      return "In bespreking";
+    case "OPGELOST":
+      return "Opgelost";
+    case "RISICO":
+      return "Risico";
+    default:
+      return status;
+  }
+}
+
+function werkitemStatusStijl(status: string): {
+  bg: string;
+  border: string;
+  color: string;
+  cssClass: string;
+} {
+  switch (status) {
+    case "OPEN":
+      return {
+        bg: "rgba(253,224,71,.12)",
+        border: "rgba(253,224,71,.3)",
+        color: "var(--memo-open, #fde047)",
+        cssClass: "open",
+      };
+    case "IN_BESPREKING":
+      return {
+        bg: "rgba(250,204,21,.12)",
+        border: "rgba(250,204,21,.3)",
+        color: "var(--memo-bespreking, #facc15)",
+        cssClass: "bespreking",
+      };
+    case "OPGELOST":
+      return {
+        bg: "rgba(100,100,100,.2)",
+        border: "var(--border-default, rgba(255,255,255,.12))",
+        color: "var(--text-tertiary)",
+        cssClass: "opgelost",
+      };
+    case "RISICO":
+      return {
+        bg: "rgba(239,68,68,.12)",
+        border: "rgba(239,68,68,.3)",
+        color: "var(--val-err, #ef4444)",
+        cssClass: "risico",
+      };
+    default:
+      return {
+        bg: "rgba(100,100,100,.2)",
+        border: "var(--border-default, rgba(255,255,255,.12))",
+        color: "var(--text-tertiary)",
+        cssClass: "opgelost",
+      };
+  }
+}
+
+function werkitemIconKleur(status: string): string {
+  switch (status) {
+    case "OPEN":
+      return "var(--memo-open, #fde047)";
+    case "IN_BESPREKING":
+      return "var(--memo-bespreking, #facc15)";
+    case "RISICO":
+      return "var(--val-err, #ef4444)";
+    default:
+      return "var(--text-tertiary)";
+  }
+}
+
+// ── Hero subtitle helper ───────────────────────────────────────────────────────
+
+function buildHeroSubtitle(
+  id: string,
+  lidSinds?: string | null,
+  seizoenenActief?: number | null
+): string {
+  const parts: string[] = [];
+
+  if (lidSinds) {
+    // Jaar extracten uit ISO-string of jaar-string
+    const jaar = lidSinds.includes("-") ? lidSinds.split("-")[0] : lidSinds;
+    let deel = `lid sinds ${jaar}`;
+    if (seizoenenActief != null) {
+      deel += ` · ${seizoenenActief} seizoenen actief`;
+    }
+    parts.push(deel);
+  }
+
+  parts.push(`rel-code ${id}`);
+  return parts.join(" · ");
+}
+
+// ── Memo-icon SVG ─────────────────────────────────────────────────────────────
+
+function MemoIcon({ kleur }: { kleur: string }) {
+  return (
+    <span
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        width: 22,
+        height: 20,
+        color: kleur,
+        flexShrink: 0,
+        paddingTop: 2,
+      }}
+    >
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+        <path d="M5 3h10l4 4v14H5z" />
+        <path
+          d="M15 3v4h4M8 12h8M8 15h8M8 18h5"
+          stroke="var(--surface-sunken, #090910)"
+          strokeWidth="1.5"
+          fill="none"
+          strokeLinecap="round"
+        />
+      </svg>
+    </span>
+  );
+}
+
 // ── Component ────────────────────────────────────────────────────────────────
 
 interface SpelerDialogProps {
-  speler: SpelerRijData;
+  speler: SpelerRijData & {
+    lidSinds?: string | null;
+    seizoenenActief?: number | null;
+    laatstGezien?: Date | null;
+    werkitemsDetail?: SpelerWerkitemDetail[];
+  };
   initialTab?: TabId;
   actieveVersieId?: string;
   teams?: Array<{ id: string; naam: string; kleur: string | null }>;
@@ -122,6 +301,42 @@ export function SpelerDialog({
   };
 
   const aantalMemos = speler.heeftOpenMemo ? 1 : 0;
+  const werkitems = speler.werkitemsDetail ?? [];
+  const heroSubtitle = buildHeroSubtitle(speler.id, speler.lidSinds, speler.seizoenenActief);
+
+  // Panel-stijl helpers
+  const panelTitleStyle: React.CSSProperties = {
+    fontSize: 10,
+    fontWeight: 700,
+    textTransform: "uppercase",
+    letterSpacing: "0.1em",
+    color: "var(--text-tertiary)",
+    margin: "0 0 14px",
+  };
+
+  const kenmerkRowStyle: React.CSSProperties = {
+    display: "flex",
+    alignItems: "center",
+    gap: 12,
+    padding: "10px 0",
+    borderBottom: "1px solid var(--border-light)",
+  };
+
+  const kenmerkLblStyle: React.CSSProperties = {
+    fontSize: 10,
+    fontWeight: 700,
+    textTransform: "uppercase",
+    letterSpacing: "0.08em",
+    color: "var(--text-tertiary)",
+    width: 140,
+    flexShrink: 0,
+  };
+
+  const kenmerkValStyle: React.CSSProperties = {
+    fontSize: 13,
+    fontWeight: 600,
+    color: "var(--text-primary)",
+  };
 
   return createPortal(
     <>
@@ -233,6 +448,18 @@ export function SpelerDialog({
             }
             onMemoClick={() => setActieveTab("werkitems")}
           />
+
+          {/* Hero subtitle: lid sinds · seizoenen · rel-code */}
+          <div
+            style={{
+              fontSize: 13,
+              color: "var(--text-tertiary)",
+              marginTop: -2,
+              padding: "0 28px 12px",
+            }}
+          >
+            {heroSubtitle}
+          </div>
 
           {/* Status-dropdown — inline onder de hero chip */}
           {statusEdit && (
@@ -430,18 +657,7 @@ export function SpelerDialog({
           {/* ── SPELERSPAD ── */}
           {actieveTab === "pad" && (
             <div>
-              <div
-                style={{
-                  fontSize: 10,
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.1em",
-                  color: "var(--text-tertiary)",
-                  marginBottom: 14,
-                }}
-              >
-                Spelerspad
-              </div>
+              <div style={panelTitleStyle}>Spelerspad</div>
               <div
                 style={{
                   display: "flex",
@@ -500,91 +716,59 @@ export function SpelerDialog({
           {/* ── KENMERKEN ── */}
           {actieveTab === "kenmerken" && (
             <div>
-              <div
-                style={{
-                  fontSize: 10,
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.1em",
-                  color: "var(--text-tertiary)",
-                  marginBottom: 14,
-                }}
-              >
-                Persoonsgegevens
+              <div style={panelTitleStyle}>Persoonsgegevens</div>
+
+              {/* Geboortedatum */}
+              <div style={kenmerkRowStyle}>
+                <div style={kenmerkLblStyle}>Geboortedatum</div>
+                <div style={kenmerkValStyle}>
+                  {speler.geboortedatum
+                    ? formatGeboortedatum(speler.geboortedatum, speler.leeftijd)
+                    : `${Math.floor(speler.leeftijd)} jaar`}
+                </div>
               </div>
-              {[
-                { label: "Geslacht", waarde: speler.geslacht === "M" ? "Heer" : "Dame" },
-                { label: "Korfballeeftijd", waarde: speler.korfbalLeeftijd },
-                { label: "Geboortejaar", waarde: String(speler.geboortejaar) },
-                {
-                  label: "Status",
-                  waarde: STATUS_LABELS[speler.status] ?? speler.status,
-                },
-                {
-                  label: "Huidig team",
-                  waarde: speler.huidigTeam ?? "—",
-                },
-                {
-                  label: "Indeling",
-                  waarde: speler.indelingTeamNaam ?? "Niet ingedeeld",
-                },
-                {
-                  label: "Leeftijdscategorie",
-                  waarde: speler.leeftijdscategorie,
-                },
-              ].map(({ label, waarde }) => (
-                <div
-                  key={label}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 12,
-                    padding: "10px 0",
-                    borderBottom: "1px solid var(--border-light)",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: 10,
-                      fontWeight: 700,
-                      textTransform: "uppercase",
-                      letterSpacing: "0.08em",
-                      color: "var(--text-tertiary)",
-                      width: 140,
-                      flexShrink: 0,
-                    }}
-                  >
-                    {label}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 13,
-                      fontWeight: 600,
-                      color: "var(--text-primary)",
-                    }}
-                  >
-                    {waarde}
+
+              {/* Korfballeeftijd */}
+              <div style={kenmerkRowStyle}>
+                <div style={kenmerkLblStyle}>Korfballeeftijd</div>
+                <div style={kenmerkValStyle}>{speler.korfbalLeeftijd}</div>
+              </div>
+
+              {/* Sportlink rel-code */}
+              <div style={kenmerkRowStyle}>
+                <div style={kenmerkLblStyle}>Sportlink rel-code</div>
+                <div style={kenmerkValStyle}>{speler.id.startsWith("OW-") ? "—" : speler.id}</div>
+              </div>
+
+              {/* Lid sinds — alleen tonen als lidSinds beschikbaar */}
+              {speler.lidSinds && (
+                <div style={kenmerkRowStyle}>
+                  <div style={kenmerkLblStyle}>Lid sinds</div>
+                  <div style={kenmerkValStyle}>
+                    {speler.lidSinds.includes("-")
+                      ? speler.lidSinds.split("-")[0]
+                      : speler.lidSinds}
+                    {speler.seizoenenActief != null
+                      ? ` · ${speler.seizoenenActief} seizoenen actief`
+                      : ""}
                   </div>
                 </div>
-              ))}
+              )}
+
+              {/* Laatst gezien — alleen tonen als data beschikbaar, geen border-bottom op laatste rij */}
+              {speler.laatstGezien && (
+                <div style={{ ...kenmerkRowStyle, borderBottom: "none" }}>
+                  <div style={kenmerkLblStyle}>Laatst gezien</div>
+                  <div style={kenmerkValStyle}>{relatiefDatum(speler.laatstGezien)}</div>
+                </div>
+              )}
             </div>
           )}
 
           {/* ── EVALUATIES ── */}
           {actieveTab === "evaluaties" && (
             <div>
-              <div
-                style={{
-                  fontSize: 10,
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.1em",
-                  color: "var(--text-tertiary)",
-                  marginBottom: 14,
-                }}
-              >
-                Evaluaties
-              </div>
+              <div style={panelTitleStyle}>Evaluaties</div>
               <div
                 style={{
                   padding: "16px 0",
@@ -602,101 +786,37 @@ export function SpelerDialog({
           {/* ── WERKITEMS ── */}
           {actieveTab === "werkitems" && (
             <div>
-              <div
-                style={{
-                  fontSize: 10,
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.1em",
-                  color: "var(--text-tertiary)",
-                  marginBottom: 14,
-                }}
-              >
-                Werkitems · {aantalMemos > 0 ? `${aantalMemos} open` : "geen open"}
+              <div style={panelTitleStyle}>
+                Werkitems
+                {werkitems.length > 0
+                  ? ` · ${werkitems.filter((w) => w.status === "OPEN" || w.status === "IN_BESPREKING").length} open`
+                  : ""}
               </div>
 
-              {speler.heeftOpenMemo ? (
-                <div
-                  style={{
-                    display: "flex",
-                    gap: 12,
-                    padding: "12px 14px",
-                    background: "var(--surface-sunken)",
-                    border: "1px solid var(--border-light)",
-                    borderRadius: 8,
-                    marginBottom: 8,
-                  }}
-                >
-                  <span
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: 22,
-                      height: 20,
-                      color: "var(--memo-open, #fde047)",
-                      flexShrink: 0,
-                      paddingTop: 2,
-                    }}
-                  >
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-                      <path d="M5 3h10l4 4v14H5z" />
-                      <path
-                        d="M15 3v4h4M8 12h8M8 15h8M8 18h5"
-                        stroke="var(--surface-sunken, #090910)"
-                        strokeWidth="1.5"
-                        fill="none"
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                  </span>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        gap: 8,
-                        marginBottom: 4,
-                      }}
-                    >
-                      <div
-                        style={{
-                          fontSize: 13,
-                          fontWeight: 700,
-                          color: "var(--text-primary)",
-                        }}
-                      >
-                        Open werkitem
-                      </div>
-                      <span
-                        style={{
-                          padding: "2px 7px",
-                          borderRadius: 4,
-                          fontSize: 9,
-                          fontWeight: 700,
-                          textTransform: "uppercase",
-                          letterSpacing: "0.06em",
-                          background: "rgba(253,224,71,.12)",
-                          color: "var(--memo-open, #fde047)",
-                          border: "1px solid rgba(253,224,71,.3)",
-                        }}
-                      >
-                        Open
-                      </span>
-                    </div>
-                    <div
-                      style={{
-                        fontSize: 12,
-                        color: "var(--text-secondary)",
-                        lineHeight: 1.55,
-                      }}
-                    >
-                      Dit lid heeft een of meer open werkitems. Bekijk details in de memo-module.
-                    </div>
-                  </div>
-                </div>
-              ) : (
+              {/* + Nieuw werkitem knop */}
+              <button
+                onClick={() => logger.info("werkitem-create: backlog-punt 3")}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  padding: "7px 14px",
+                  background: "rgba(255,107,0,.12)",
+                  color: "var(--ow-accent)",
+                  border: "1px solid var(--indeling-border, rgba(255,107,0,.3))",
+                  borderRadius: 7,
+                  fontSize: 12,
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  marginBottom: 14,
+                  fontFamily: "inherit",
+                }}
+              >
+                <span style={{ fontSize: 16, fontWeight: 900, lineHeight: 1 }}>+</span>
+                Nieuw werkitem
+              </button>
+
+              {werkitems.length === 0 ? (
                 <div
                   style={{
                     padding: "16px 0",
@@ -704,8 +824,149 @@ export function SpelerDialog({
                     color: "var(--text-tertiary)",
                   }}
                 >
-                  Geen open werkitems voor deze speler.
+                  Geen werkitems voor deze speler.
                 </div>
+              ) : (
+                werkitems.map((item) => {
+                  const statusStijl = werkitemStatusStijl(item.status);
+                  const iconKleur = werkitemIconKleur(item.status);
+                  const prioPrio = item.prioriteit === "HOOG" ? "prio-hoog" : "prio-middel";
+
+                  return (
+                    <div
+                      key={item.id}
+                      style={{
+                        display: "flex",
+                        gap: 12,
+                        padding: "12px 14px",
+                        background: "var(--surface-sunken)",
+                        border: "1px solid var(--border-light)",
+                        borderRadius: 8,
+                        marginBottom: 8,
+                      }}
+                    >
+                      {/* Memo-icon */}
+                      <div style={{ flexShrink: 0, paddingTop: 2 }}>
+                        <MemoIcon kleur={iconKleur} />
+                      </div>
+
+                      {/* Body */}
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        {/* Titel + status-pill */}
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            gap: 10,
+                            marginBottom: 4,
+                          }}
+                        >
+                          <div
+                            style={{
+                              fontSize: 13,
+                              fontWeight: 700,
+                              color: "var(--text-primary)",
+                            }}
+                          >
+                            {item.titel}
+                          </div>
+                          <span
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: 5,
+                              padding: "2px 8px",
+                              borderRadius: 4,
+                              fontSize: 9,
+                              fontWeight: 700,
+                              textTransform: "uppercase",
+                              letterSpacing: "0.06em",
+                              flexShrink: 0,
+                              background: statusStijl.bg,
+                              color: statusStijl.color,
+                              border: `1px solid ${statusStijl.border}`,
+                            }}
+                          >
+                            {werkitemStatusLabel(item.status)}
+                          </span>
+                        </div>
+
+                        {/* Beschrijving */}
+                        {item.beschrijving && (
+                          <div
+                            style={{
+                              fontSize: 12,
+                              color: "var(--text-secondary)",
+                              lineHeight: 1.55,
+                              marginBottom: 8,
+                            }}
+                          >
+                            {item.beschrijving}
+                          </div>
+                        )}
+
+                        {/* Meta: type-tag, prio-tag, auteur, datum */}
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 10,
+                            fontSize: 10,
+                            color: "var(--text-tertiary)",
+                          }}
+                        >
+                          {/* Type-tag */}
+                          <span
+                            style={{
+                              padding: "1px 6px",
+                              borderRadius: 3,
+                              background: "var(--surface-card)",
+                              border: "1px solid var(--border-default, rgba(255,255,255,.12))",
+                              fontWeight: 600,
+                              fontSize: 9,
+                              textTransform: "uppercase",
+                            }}
+                          >
+                            {item.type}
+                          </span>
+
+                          {/* Prioriteit-tag */}
+                          <span
+                            style={{
+                              padding: "1px 6px",
+                              borderRadius: 3,
+                              background: "var(--surface-card)",
+                              border:
+                                item.prioriteit === "HOOG"
+                                  ? "1px solid var(--status-twijfelt, #f59e0b)"
+                                  : "1px solid var(--border-default, rgba(255,255,255,.12))",
+                              color:
+                                item.prioriteit === "HOOG"
+                                  ? "var(--status-twijfelt, #f59e0b)"
+                                  : "var(--text-secondary)",
+                              fontWeight: 600,
+                              fontSize: 9,
+                              textTransform: "uppercase",
+                            }}
+                            data-prio={prioPrio}
+                          >
+                            {item.prioriteit === "HOOG"
+                              ? "Hoog"
+                              : item.prioriteit === "MIDDEL"
+                                ? "Middel"
+                                : "Laag"}
+                          </span>
+
+                          {/* Auteur + datum */}
+                          <span>
+                            {relatiefDatum(item.createdAt)} · {item.auteurNaam}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
               )}
             </div>
           )}
