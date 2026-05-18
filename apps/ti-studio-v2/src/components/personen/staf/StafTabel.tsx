@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { StafRijData } from "@/components/personen/types";
 import { StafTabelRij } from "./StafTabelRij";
-import { StafDialog } from "./StafDialog";
+import { StafDialog } from "@/components/staf/contexts";
 
 interface StafTabelProps {
   data: StafRijData[];
@@ -75,7 +75,11 @@ export function StafTabel({ data }: StafTabelProps) {
         ))}
       </div>
 
-      {selectedStaf && <StafDialog staflid={selectedStaf} onClose={() => setOpenDialogId(null)} />}
+      <StafDialog
+        staflid={selectedStaf ?? { id: "", naam: "", rollen: [], teamKoppelingen: [], heeftOpenMemo: false, memoBadge: "geen", email: null, geboortejaar: null }}
+        open={selectedStaf !== null}
+        onClose={() => setOpenDialogId(null)}
+      />
     </>
   );
 }
