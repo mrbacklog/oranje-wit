@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import type { TeamKaartData, SelectieGroepMeta } from "./werkbord-types";
 import { TeamKaart } from "./TeamKaart";
+import { SelectieKaart } from "./SelectieKaart";
 import { ZoomControls } from "./ZoomControls";
 import type { WerkbordDragData } from "./hooks/useWerkbordDraggable";
 
@@ -16,16 +17,7 @@ interface WerkbordCanvasProps {
   onDropSpelerOpTeam?: (data: WerkbordDragData, naarTeamId: string) => void;
 }
 
-// Bepaal selectie-frame kleur-variant obv de naam van de selectiegroep
-function selectieFrameKlasse(naam: string | null): string {
-  const n = naam?.toUpperCase() ?? "";
-  if (n.includes("U15") || n.includes("U13")) return "sel-oranje";
-  if (n.includes("U17")) return "sel-oranje-rood";
-  if (n.includes("U19") || n.includes("U18")) return "sel-rood";
-  return "sel-zilver";
-}
-
-function renderTeamsMetSelectieFrames(
+function renderKaarten(
   teams: TeamKaartData[],
   selectieGroepen: SelectieGroepMeta[],
   zoom: "compact" | "detail",
@@ -33,16 +25,12 @@ function renderTeamsMetSelectieFrames(
   onTeamClick: (teamId: string) => void,
   onDropSpelerOpTeam: ((data: WerkbordDragData, naarTeamId: string) => void) | undefined
 ): React.ReactNode {
-  // Bouw een map: teamId → selectieGroep (voor gebundelde frames)
+  // Bouw map: teamId → selectieGroep (voor alle groepen, gebundeld én niet)
   const teamInSelectie = new Map<string, SelectieGroepMeta>();
-  const gebundeldFrames = new Set<string>(); // selectieGroep.id
 
   for (const sg of selectieGroepen) {
-    if (sg.gebundeld) {
-      for (const teamId of sg.teamIds) {
-        teamInSelectie.set(teamId, sg);
-        gebundeldFrames.add(sg.id);
-      }
+    for (const teamId of sg.teamIds) {
+      teamInSelectie.set(teamId, sg);
     }
   }
 
@@ -54,38 +42,33 @@ function renderTeamsMetSelectieFrames(
 
     const sg = teamInSelectie.get(team.id);
 
-    if (sg && sg.gebundeld) {
-      // Render alle teams van deze selectiegroep samen in een selectie-frame
-      const frameTeams = sg.teamIds
+    if (sg) {
+      // Render één SelectieKaart voor de hele groep (gebundeld OF niet-gebundeld)
+      const groepTeams = sg.teamIds
         .map((id) => teams.find((t) => t.id === id))
         .filter((t): t is TeamKaartData => t !== undefined);
 
-      for (const ft of frameTeams) gerendered.add(ft.id);
+      for (const ft of groepTeams) gerendered.add(ft.id);
 
       nodes.push(
-        <div
-          key={`selectie-frame-${sg.id}`}
-          className={`selectie-frame ${selectieFrameKlasse(sg.naam)} gebundeld`}
-          data-naam={sg.naam ?? "Selectie"}
-        >
-          <span className="sel-badge">Gebundeld</span>
-          {frameTeams.map((t) => (
-            <TeamKaart
-              key={t.id}
-              team={t}
-              zoom={zoom}
-              peildatum={peildatum}
-              onHeaderClick={onTeamClick}
-              onSpelerClick={() => {
-                /* fase 2 */
-              }}
-              onStafClick={() => {
-                /* fase 2 */
-              }}
-              onDropSpeler={onDropSpelerOpTeam}
-            />
-          ))}
-        </div>
+        <SelectieKaart
+          key={`selectie-kaart-${sg.id}`}
+          groep={sg}
+          teams={groepTeams}
+          zoom={zoom}
+          peildatum={peildatum}
+          onHeaderClick={() => {
+            /* fase 2: open selectie-drawer */
+          }}
+          onTeamHeaderClick={onTeamClick}
+          onSpelerClick={() => {
+            /* fase 2 */
+          }}
+          onStafClick={() => {
+            /* fase 2 */
+          }}
+          onDropSpeler={onDropSpelerOpTeam}
+        />
       );
     } else {
       gerendered.add(team.id);
@@ -134,7 +117,7 @@ export function WerkbordCanvas({
 
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
-    if (target.closest(".zoom-controls,.team-kaart,.save-indicator")) return;
+    if (target.closest(".zoom-controls,.team-kaart,.selectie-kaart,.save-indicator")) return;
     panRef.current.isPanning = true;
     panRef.current.sx = e.clientX - panRef.current.x;
     panRef.current.sy = e.clientY - panRef.current.y;
@@ -183,14 +166,7 @@ export function WerkbordCanvas({
           transition: "none",
         }}
       >
-        {renderTeamsMetSelectieFrames(
-          teams,
-          selectieGroepen,
-          zoom,
-          peildatum,
-          onTeamClick,
-          onDropSpelerOpTeam
-        )}
+        {renderKaarten(teams, selectieGroepen, zoom, peildatum, onTeamClick, onDropSpelerOpTeam)}
       </div>
 
       <div className="save-indicator" />

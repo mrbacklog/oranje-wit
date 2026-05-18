@@ -1834,48 +1834,12 @@ body {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   Selectie-frame — koppelt meerdere team-kaarten op canvas
+   Selectie-kaart — één gefuseerde kaart per selectiegroep
+   Vervangt het oude selectie-frame wrapper-patroon.
    ══════════════════════════════════════════════════════════════════════════ */
-.selectie-frame {
-  position: relative;
-  padding: 14px;
-  padding-top: 36px;
-  border: 1.5px solid var(--selectie-border);
-  border-radius: 16px;
-  background: var(--selectie-bg);
-  box-shadow: var(--selectie-frame-shadow);
-  display: flex;
-  gap: 14px;
-  flex-wrap: wrap;
-  align-items: flex-start;
-}
-.selectie-frame::before {
-  content: attr(data-naam);
-  position: absolute;
-  top: 10px;
-  left: 16px;
-  font-size: 11px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--selectie-accent);
-}
-.selectie-frame .sel-badge {
-  position: absolute;
-  top: 10px;
-  right: 16px;
-  padding: 2px 8px;
-  border-radius: 4px;
-  background: var(--selectie-badge-bg);
-  color: var(--selectie-badge-text);
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
 
-/* Selectie-frame kleur-varianten */
-.selectie-frame.sel-oranje {
+/* Kleur-varianten (selectie-accent / border / bg) */
+.selectie-kaart.sel-oranje {
   --selectie-accent: #f97316;
   --selectie-border: rgba(249, 115, 22, 0.45);
   --selectie-bg: rgba(249, 115, 22, 0.05);
@@ -1884,7 +1848,7 @@ body {
   --selectie-badge-bg: rgba(249, 115, 22, 0.12);
   --selectie-badge-text: #fb923c;
 }
-.selectie-frame.sel-oranje-rood {
+.selectie-kaart.sel-oranje-rood {
   --selectie-accent: #ea580c;
   --selectie-border: rgba(234, 88, 12, 0.45);
   --selectie-bg: rgba(234, 88, 12, 0.05);
@@ -1892,7 +1856,7 @@ body {
   --selectie-badge-bg: rgba(234, 88, 12, 0.12);
   --selectie-badge-text: #f97316;
 }
-.selectie-frame.sel-rood {
+.selectie-kaart.sel-rood {
   --selectie-accent: #dc2626;
   --selectie-border: rgba(220, 38, 38, 0.45);
   --selectie-bg: rgba(220, 38, 38, 0.05);
@@ -1900,7 +1864,7 @@ body {
   --selectie-badge-bg: rgba(220, 38, 38, 0.12);
   --selectie-badge-text: #f87171;
 }
-.selectie-frame.sel-zilver {
+.selectie-kaart.sel-zilver {
   --selectie-accent: #94a3b8;
   --selectie-border: rgba(148, 163, 184, 0.45);
   --selectie-bg: rgba(148, 163, 184, 0.04);
@@ -1909,8 +1873,13 @@ body {
   --selectie-badge-bg: rgba(148, 163, 184, 0.12);
   --selectie-badge-text: #cbd5e1;
 }
-.selectie-frame.gebundeld {
-  background: color-mix(in srgb, var(--selectie-accent) 8%, transparent);
+/* Gebundeld: lichte glow-achtergrond */
+.selectie-kaart.gebundeld {
+  background: color-mix(in srgb, var(--selectie-accent) 6%, var(--surface-card)) !important;
+}
+/* Validatie-hoek past binnen border-radius van selectie-kaart */
+.selectie-kaart .val-hoek {
+  border-radius: 0 var(--team-card-radius) 0 0;
 }
 
 /* Kaart-wrap: label onder team-kaart */
