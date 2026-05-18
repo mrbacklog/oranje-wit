@@ -6,13 +6,57 @@
 
 ---
 
-## Aanpak
+## Aanpak — beslist 2026-05-18
 
-1. **Synthetisch `rel_code`-bereik:** `9900-9999-NNNN` (12 cijfers met `9900` prefix). Buiten Sportlink-bereik, gegarandeerd geen conflict met productie-data.
-2. **Idempotent seed:** alle fixtures worden door `scripts/seed-edge-cases.ts` aangemaakt of bijgewerkt — script kan elk moment opnieuw draaien zonder duplicaten.
-3. **Tests gebruiken exact deze `rel_code`'s of `data-testid`'s** — geen "eerste rij in de tabel" assumpties.
-4. **Niet-test data:** Sportlink-snapshot blijft de werkelijke bulk; edge-case fixtures zijn additief.
-5. **Aparte test-werkindeling:** alle scenario's leven in werkindeling `wi-edge-cases-2026-2027`, niet in de productie-werkindeling.
+1. **Test-DB = volledig synthetische ideale state.** Geen productie-snapshot meer op `oranjewit-test`. Bij elke reset wipe + reseed naar **dezelfde** reproduceerbare state.
+2. **Volledige schaal:** ~150 spelers, 25 teams, alle KNKV-categorieën 1× (Kangoeroes t/m Senioren A). Realistische omvang voor E2E zonder afhankelijkheid van Sportlink-data.
+3. **Reset-cadans:** vóór **elke** E2E workflow-run (`scripts/seed-edge-cases.ts` als step). Garantie: state altijd vers, tests altijd reproduceerbaar.
+4. **Seed-update flow:** developer voegt fixture toe = single PR met (a) catalogus-update + (b) seed-script-update + (c) optioneel test-update. Bij merge gaat het automatisch mee in volgende run. Zo blijft de catalogus altijd in sync met wat er werkelijk in test-DB staat.
+5. **Synthetisch `rel_code`-bereik:** `9900xxxxxxxx` (12 cijfers, `9900` prefix). Geen conflict-risico, leesbaar groeperend.
+6. **Werkindeling:** bestaande werkindeling op `oranjewit-test` wordt hergebruikt — naam volgt productie-conventie (`wi-2026-2027` o.i.d.), seed-script upsert.
+7. **Tests doen harde assertions** op exacte `rel_code`'s en aantallen — geen `tabelRijen.first()`, geen graceful skip "geen data".
+
+**Privacy-bonus:** synth-data heeft geen echte ledennamen → studio-test mag breder gedeeld worden (TC + agents) zonder privacy-risico.
+
+**Trade-off:** Sportlink-sync kan niet meer tegen `oranjewit-test` getest worden — apart smoke-mechanisme nodig (later).
+
+---
+
+## 0. De 25 teams — volledige schaal
+
+| # | Naam | OWTeamType | Categorie | Kleur | Type | Default omvang | Bedoeld voor scenario |
+|---|---|---|---|---|---|---|---|
+| 01 | Senioren 1 | SENIOREN | SENIOREN | — | ACHTTAL | 10 | Standaard vol team |
+| 02 | Senioren 2 | SENIOREN | SENIOREN | — | ACHTTAL | 8 | Net-aan |
+| 03 | Senioren 3 (A) | SENIOREN | A_CATEGORIE | — | ACHTTAL | 10 | Wedstrijdsport-doelgroep |
+| 04 | Senioren 4 (B) | SENIOREN | B_CATEGORIE | — | ACHTTAL | 9 | Korfbalplezier-doelgroep |
+| 05 | Recreanten | OVERIG | B_CATEGORIE | — | ACHTTAL | 8 | `RECREANT` status |
+| 06 | Midweek 1 | OVERIG | B_CATEGORIE | — | ACHTTAL | 8 | OVERIG type |
+| 07 | U19-1 | JEUGD/SELECTIE | A_CATEGORIE | — | ACHTTAL | 10 | TOP-doelgroep |
+| 08 | U19-2 | JEUGD | B_CATEGORIE | — | ACHTTAL | 9 | Standaard jeugd |
+| 09 | U17-1 | JEUGD/SELECTIE | A_CATEGORIE | — | ACHTTAL | 10 | TOP-doelgroep |
+| 10 | U17-2 | JEUGD | B_CATEGORIE | — | ACHTTAL | 8 | Standaard jeugd |
+| 11 | U15-1 | JEUGD/SELECTIE | A_CATEGORIE | — | ACHTTAL | 10 | TOP-doelgroep |
+| 12 | U15-2 | JEUGD | B_CATEGORIE | — | ACHTTAL | 8 | Standaard jeugd |
+| 13 | Rood-1 | JEUGD | B_CATEGORIE | ROOD | ACHTTAL | 9 | Korfbalplezier-doelgroep |
+| 14 | Rood-2 | JEUGD | B_CATEGORIE | ROOD | ACHTTAL | 8 | Standaard jeugd |
+| 15 | Oranje-1 | JEUGD | B_CATEGORIE | ORANJE | ACHTTAL | 9 | Ontwikkelhart-doelgroep |
+| 16 | Oranje-2 | JEUGD | B_CATEGORIE | ORANJE | ACHTTAL | 9 | Standaard jeugd |
+| 17 | Geel-1 | JEUGD | B_CATEGORIE | GEEL | ACHTTAL | 9 | Ontwikkelhart-doelgroep |
+| 18 | Geel-2 | JEUGD | B_CATEGORIE | GEEL | ACHTTAL | 8 | Standaard jeugd |
+| 19 | Groen-1 | JEUGD | B_CATEGORIE | GROEN | VIERTAL | 6 | Kweekvijver-doelgroep |
+| 20 | Groen-2 | JEUGD | B_CATEGORIE | GROEN | VIERTAL | 5 | Standaard jeugd |
+| 21 | Blauw-1 | JEUGD | B_CATEGORIE | BLAUW | VIERTAL | 6 | Kweekvijver-doelgroep |
+| 22 | Blauw-2 | JEUGD | B_CATEGORIE | BLAUW | VIERTAL | 4 | Standaard jeugd |
+| 23 | Kangoeroes | JEUGD | B_CATEGORIE | PAARS | VIERTAL | 8 | Kweekvijver-doelgroep (jongste) |
+| 24 | **EDGE-LEEG** | SENIOREN | SENIOREN | — | ACHTTAL | **0** | Validatie ORANJE (sectie 1.1) |
+| 25 | **EDGE-ONDER** | SENIOREN | SENIOREN | — | ACHTTAL | **6** | Validatie ROOD onder-min (sectie 1.1) |
+
+**Synthetische team-ID's:** `team-edge-{nummer}` (bv. `team-edge-01` t/m `team-edge-25`).
+
+**Default vulling van spelers per team:** `9900-NN-XXXX` waarbij `NN` = team-nummer, `XXXX` = volgnummer in team. Genaamd `Speler-{TeamCode}-{NN}` (bv. `Speler-S1-01`, `Speler-U17-1-05`). Standaard `SpelerStatus = BESCHIKBAAR`, gezond verdeeld M/V volgens KNKV-conventie (gemixte teams 50/50, indien viertal 2D+2H of 3D+1H).
+
+**Totaal default omvang:** ~190 speler-slots, waarvan ~150 unieke spelers (sommige edge-case-spelers uit sectie 1.3 en 1.4 vullen reguliere teamposities). Plus 25 edge-case-spelers met expliciete fixtures.
 
 ---
 
@@ -166,13 +210,30 @@ Wat het doet:
 
 ---
 
-## Open vragen voor Antjan vóór seed-script
+## Beslissingen (2026-05-18)
 
-1. **`rel_code` bereik:** akkoord met `9900-xxxx-xxxx`? Of liever ander prefix (bv. `9999`)?
-2. **Werkindeling-naam:** `wi-edge-cases-2026-2027` of pak liever de naam over van de huidige test-werkindeling?
-3. **Reset-strategie:** seed-script moet de fixtures bij elke run **upsertten** (idempotent) maar wat doen we als productie-snapshot wordt versterkt? Behouden of mee-resetten?
-4. **Multi-team scenario (1.6.1):** willen we daadwerkelijk een illegale state in test-DB hebben staan, of liever simuleren we het in de test zelf (toewijzing toevoegen + cleanup)? Mijn voorkeur: in test-DB laten staan zodat validator-coverage hard is.
-5. **Volgorde Fase 2/3:** seed eerst en daarna tests, of TDD-stijl (tests die op fixtures wijzen schrijven, dan seed bouwen tot ze groen worden)?
+| Onderwerp | Beslissing |
+|---|---|
+| Schaal | **Volledig** — 25 teams, ~150 spelers + 25 expliciete edge-fixtures = ~175 spelers totaal |
+| Reset-cadans | **Vóór elke E2E workflow-run** (nightly + on-demand). Workflow-step `pnpm tsx scripts/seed-edge-cases.ts` voor de Playwright-step |
+| `rel_code`-bereik | `9900xxxxxxxx` (12 cijfers, `9900` prefix) |
+| Werkindeling | Bestaande op `oranjewit-test` hergebruiken, seed-script upsert |
+| Productie-snapshot op test-DB | **Wordt vervangen** door synthetische state — geen hybride |
+| Multi-team scenario (sectie 1.6) | Permanent in test-DB (synthetisch, geen privacy-issue meer) |
+| Volgorde | Seed eerst (anders breken alle bestaande tests bij wipe), dan specs aanpassen om op fixtures te wijzen |
+| Sportlink-sync testen | Apart: niet via `oranjewit-test`, eigen smoke-test (later in te richten) |
+
+## Seed-update flow voor agents/devs
+
+Nieuwe scenario toevoegen aan test-data = single-PR met drie files:
+
+1. `docs/kennis/edge-case-testdata.md` — voeg fixture toe aan juiste sectie + tabel
+2. `scripts/seed-edge-cases.ts` — voeg upsert-call toe in juiste sectie van het script
+3. `e2e/ti-studio-v2/<spec>.spec.ts` — voeg test toe die de fixture verifieert (optioneel, maar aanbevolen)
+
+Bij merge naar main → volgende E2E workflow-run wipe + reseed automatisch → nieuwe fixture is meteen aanwezig in test-DB → test draait er meteen op.
+
+**Eis aan seed-script:** elke sectie van de catalogus moet 1-op-1 aanwezig zijn als functie in het script, in dezelfde volgorde, met dezelfde sectienaam in kommentaar. Maakt traceability triviaal.
 
 ---
 
