@@ -6,7 +6,10 @@ import { LEEFTIJD_FIXTURES } from "./seed-leeftijd-edge";
 import { logger } from "@oranje-wit/types";
 
 /**
- * Sectie 1.9 — Fictieve profielfoto's via DiceBear v9 Personas.
+ * Sectie 1.9 — Fictieve profielfoto's via DiceBear v9 Lorelei.
+ *
+ * Stijl: lorelei — realistischer geïllustreerd portret dan personas-stijl.
+ * Sexe-suggestie via haar-keuze (variant01-48), deterministisch via rel_code.
  *
  * Dekking:
  *   80% van default spelers krijgt foto (deterministisch via rel_code % 5 !== 0)
@@ -23,71 +26,27 @@ const GRIJS_WEBP_1X1 = Buffer.from(
   "base64"
 );
 
-const DICEBEAR_BASE = "https://api.dicebear.com/9.x/personas/png";
+const DICEBEAR_BASE = "https://api.dicebear.com/9.x/lorelei/png";
 const FETCH_TIMEOUT_MS = 3000;
 const RATE_LIMIT_MS = 100;
 
-// DiceBear v9 personas — werkelijke enum-waarden
-// Bron: https://api.dicebear.com/9.x/personas/schema.json
-const HAAR_LANG = [
-  "long",
-  "pigtails",
-  "curlyBun",
-  "bobBangs",
-  "bunUndercut",
-  "straightBun",
-  "extraLong",
-  "bobCut",
-  "curly",
-];
-const HAAR_KORT_M = [
-  "buzzcut",
-  "sideShave",
-  "shortCombover",
-  "curlyHighTop",
-  "fade",
-  "bald",
-  "balding",
-  "shortComboverChops",
-  "mohawk",
-];
-const HAAR_NEUTRAAL = ["cap", "beanie"];
-const FACIAL_HAAR = ["beardMustache", "pyramid", "walrus", "goatee", "shadow", "soulPatch"];
-
-/** Bepaal haar-opties op basis van leeftijdscategorie en geslacht */
-function hairOpties(geslacht: "M" | "V"): string[] {
-  if (geslacht === "V") return HAAR_LANG;
-  return [...HAAR_KORT_M, ...HAAR_NEUTRAAL];
+// Lorelei variant-namen: variant01..variant48 (48 stuks)
+// Bron: https://api.dicebear.com/9.x/lorelei/schema.json
+// Lagere variant-nummers neigen vaker naar lang haar; hogere nummers vaker kort.
+// Empirische split: V krijgt variants 01-30 (langer haar), M krijgt 31-48 (korter haar).
+function loreleiHair(relCode: string, geslacht: "M" | "V"): string {
+  const seed = parseInt(relCode.slice(-2), 10);
+  const num = geslacht === "V" ? 1 + (seed % 30) : 31 + (seed % 18);
+  return `variant${String(num).padStart(2, "0")}`;
 }
 
-/** Deterministisch: geeft true als rel_code facial hair krijgt */
-function heeftFacialHair(relCode: string, geslacht: "M" | "V", geboortejaar: number): boolean {
-  if (geslacht === "V") return false;
-  const leeftijd = 2027 - geboortejaar;
-  if (leeftijd < 18) return false; // jonger dan U19: nooit
-  if (leeftijd < 20) {
-    // U19 jongens: 5% kans
-    return parseInt(relCode.slice(-2), 10) % 20 === 0;
-  }
-  // Senioren: 30%
-  return parseInt(relCode.slice(-2), 10) % 10 < 3;
-}
-
-function bouwDiceBearUrl(relCode: string, geslacht: "M" | "V", geboortejaar: number): string {
-  // DiceBear v9 personas API — array params als herhaalde query-params
-  const parts: string[] = [`seed=${encodeURIComponent(relCode)}`, `size=256`];
-
-  // Haar: kies één waarde deterministisch
-  const opties = hairOpties(geslacht);
-  const haarKeuze = opties[parseInt(relCode.slice(-2), 10) % opties.length];
-  parts.push(`hair=${encodeURIComponent(haarKeuze)}`);
-
-  if (heeftFacialHair(relCode, geslacht, geboortejaar)) {
-    const stijl = FACIAL_HAAR[parseInt(relCode.slice(-1), 10) % FACIAL_HAAR.length];
-    parts.push(`facialHair=${encodeURIComponent(stijl)}`);
-  }
-
-  // Personas heeft geen 'accessories' param — weglaten
+function bouwDiceBearUrl(relCode: string, geslacht: "M" | "V", _geboortejaar: number): string {
+  // DiceBear v9 lorelei API — query-params
+  const parts: string[] = [
+    `seed=${encodeURIComponent(relCode)}`,
+    `size=256`,
+    `hair=${encodeURIComponent(loreleiHair(relCode, geslacht))}`,
+  ];
 
   return `${DICEBEAR_BASE}?${parts.join("&")}`;
 }
