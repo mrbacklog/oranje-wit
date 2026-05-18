@@ -97,7 +97,9 @@ export function SpelerAvatar({
 
   return (
     <div
-      className={`sq-av${isVrouw ? "vrouw" : ""}${statusKlasse ? ` ${statusKlasse}` : ""}${className ? ` ${className}` : ""}`}
+      className={["sq-av", isVrouw ? "vrouw" : "", statusKlasse, className]
+        .filter(Boolean)
+        .join(" ")}
       style={{
         width: px,
         height: px,
