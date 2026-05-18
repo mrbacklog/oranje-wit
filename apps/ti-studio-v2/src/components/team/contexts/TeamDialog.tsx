@@ -1,11 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { createPortal } from "react-dom";
-import type { TeamKaartData } from "@/app/(app)/(studio)/indeling/_components/werkbord-types";
+import type {
+  TeamKaartData,
+  TeamReservering,
+} from "@/app/(app)/(studio)/indeling/_components/werkbord-types";
 import type { SpelerWerkitemDetail } from "@/components/personen/types";
 import { SpelerAvatar } from "@/components/shared/SpelerAvatar";
 import { logger } from "@oranje-wit/types";
+import { maakReserveringInTeam, verwijderReservering } from "@/actions/reservering-actions";
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -46,8 +50,7 @@ function leeftijdGradient(leeftijd: number): string {
 
 function valVariant(melding: string): "ok" | "warn" | "err" {
   const lower = melding.toLowerCase();
-  if (lower.includes("fout") || lower.includes("niet") || lower.includes("te weinig"))
-    return "err";
+  if (lower.includes("fout") || lower.includes("niet") || lower.includes("te weinig")) return "err";
   if (lower.startsWith("ok") || lower.startsWith("✓") || lower.startsWith("goed")) return "ok";
   return "warn";
 }
@@ -145,6 +148,176 @@ function MemoIcon({ kleur }: { kleur: string }) {
 
 type TabId = "overzicht" | "validatie" | "notities";
 
+// ── Reservering sub-componenten ───────────────────────────────────────────────
+
+function ReserveringRij({
+  reservering,
+  onVerwijder,
+  isPending,
+}: {
+  reservering: import("@/app/(app)/(studio)/indeling/_components/werkbord-types").TeamReservering;
+  onVerwijder: (id: string) => void;
+  isPending: boolean;
+}) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 8,
+        padding: "4px 6px",
+        borderRadius: 5,
+        border: "1px dashed rgba(255,255,255,.12)",
+        background: "rgba(255,255,255,.02)",
+        opacity: isPending ? 0.5 : 1,
+        transition: "opacity 0.15s",
+      }}
+    >
+      {/* Placeholder-avatar */}
+      <div
+        style={{
+          width: 28,
+          height: 28,
+          borderRadius: 4,
+          background: "rgba(255,255,255,.06)",
+          border: "1px dashed rgba(255,255,255,.12)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+          fontSize: 10,
+          color: "var(--text-muted)",
+        }}
+      >
+        ?
+      </div>
+
+      {/* Naam italic */}
+      <span
+        style={{
+          flex: 1,
+          fontSize: 12,
+          fontWeight: 500,
+          fontStyle: "italic",
+          color: "var(--text-tertiary)",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {reservering.titel}
+      </span>
+
+      {/* RES-badge */}
+      <span
+        style={{
+          fontSize: 8,
+          fontWeight: 800,
+          letterSpacing: "0.06em",
+          textTransform: "uppercase",
+          color: "var(--text-muted)",
+          padding: "1px 4px",
+          borderRadius: 3,
+          border: "1px dashed rgba(255,255,255,.15)",
+          flexShrink: 0,
+        }}
+      >
+        RES
+      </span>
+
+      {/* × verwijder-knop */}
+      <button
+        onClick={() => onVerwijder(reservering.id)}
+        disabled={isPending}
+        aria-label="Reservering verwijderen"
+        style={{
+          width: 20,
+          height: 20,
+          borderRadius: 4,
+          background: "none",
+          border: "none",
+          color: "var(--text-muted)",
+          cursor: isPending ? "not-allowed" : "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: 0,
+          flexShrink: 0,
+          transition: "color 0.1s",
+        }}
+        onMouseEnter={(e) => {
+          (e.currentTarget as HTMLButtonElement).style.color = "var(--val-err, #ef4444)";
+        }}
+        onMouseLeave={(e) => {
+          (e.currentTarget as HTMLButtonElement).style.color = "var(--text-muted)";
+        }}
+      >
+        <svg
+          width="12"
+          height="12"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+    </div>
+  );
+}
+
+function ReserveringToevoegenKnop({
+  geslacht,
+  onToevoegen,
+  isPending,
+}: {
+  geslacht: "M" | "V";
+  onToevoegen: (geslacht: "M" | "V") => void;
+  isPending: boolean;
+}) {
+  return (
+    <button
+      onClick={() => onToevoegen(geslacht)}
+      disabled={isPending}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 5,
+        marginTop: 6,
+        padding: "4px 8px",
+        background: "none",
+        border: "1px dashed rgba(255,255,255,.15)",
+        borderRadius: 5,
+        color: "var(--text-tertiary)",
+        fontSize: 11,
+        fontWeight: 600,
+        cursor: isPending ? "not-allowed" : "pointer",
+        fontFamily: "inherit",
+        width: "100%",
+        justifyContent: "center",
+        opacity: isPending ? 0.5 : 1,
+        transition: "border-color 0.1s, color 0.1s, opacity 0.15s",
+      }}
+      onMouseEnter={(e) => {
+        if (!isPending) {
+          (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,.3)";
+          (e.currentTarget as HTMLButtonElement).style.color = "var(--text-secondary)";
+        }
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,.15)";
+        (e.currentTarget as HTMLButtonElement).style.color = "var(--text-tertiary)";
+      }}
+    >
+      <span style={{ fontSize: 14, lineHeight: 1, fontWeight: 700 }}>+</span>
+      Reservering
+    </button>
+  );
+}
+
 // ── Component ────────────────────────────────────────────────────────────────
 
 interface TeamDialogProps {
@@ -156,11 +329,16 @@ interface TeamDialogProps {
 export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
   const [actieveTab, setActieveTab] = useState<TabId>("overzicht");
   const dialogRef = useRef<HTMLDivElement>(null);
+  const [reserveringen, setReserveringen] = useState<TeamReservering[]>(team?.reserveringen ?? []);
+  const [isPending, startTransition] = useTransition();
 
-  // Reset tab bij nieuw team
+  // Reset tab en reserveringen bij nieuw team
   useEffect(() => {
-    if (open) setActieveTab("overzicht");
-  }, [open, team?.id]);
+    if (open) {
+      setActieveTab("overzicht");
+      setReserveringen(team?.reserveringen ?? []);
+    }
+  }, [open, team?.id, team?.reserveringen]);
 
   // Escape sluit
   useEffect(() => {
@@ -176,6 +354,40 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
   useEffect(() => {
     if (open) dialogRef.current?.focus();
   }, [open]);
+
+  function handleVoegReserveringToe(geslacht: "M" | "V") {
+    if (!team) return;
+    // Optimistische placeholder
+    const placeholder: TeamReservering = {
+      id: `_opt_${Date.now()}`,
+      titel: geslacht === "V" ? "Reservering dames" : "Reservering heren",
+      geslacht,
+    };
+    setReserveringen((prev) => [...prev, placeholder]);
+
+    startTransition(async () => {
+      const result = await maakReserveringInTeam({ teamId: team.id, geslacht });
+      if (result.ok) {
+        setReserveringen((prev) => prev.map((r) => (r.id === placeholder.id ? result.data : r)));
+      } else {
+        logger.warn("maakReserveringInTeam mislukt:", result.error);
+        setReserveringen((prev) => prev.filter((r) => r.id !== placeholder.id));
+      }
+    });
+  }
+
+  function handleVerwijderReservering(id: string) {
+    // Optimistisch verwijderen
+    setReserveringen((prev) => prev.filter((r) => r.id !== id));
+
+    startTransition(async () => {
+      const result = await verwijderReservering(id);
+      if (!result.ok) {
+        logger.warn("verwijderReservering mislukt:", result.error);
+        // Kan niet terugzetten zonder de originele data — log volstaat
+      }
+    });
+  }
 
   if (!open || !team) return null;
 
@@ -526,9 +738,7 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
                 {team.ussScore != null && ` · USS ${team.ussScore.toFixed(1)}`}
               </div>
 
-              <div
-                style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}
-              >
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
                 {/* Dames-kolom */}
                 <div>
                   <div
@@ -607,7 +817,26 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
                         </span>
                       </div>
                     ))}
+
+                    {/* Reservering-rijen dames */}
+                    {reserveringen
+                      .filter((r) => r.geslacht === "V")
+                      .map((r) => (
+                        <ReserveringRij
+                          key={r.id}
+                          reservering={r}
+                          onVerwijder={handleVerwijderReservering}
+                          isPending={isPending && r.id.startsWith("_opt_")}
+                        />
+                      ))}
                   </div>
+
+                  {/* + Reservering knop dames */}
+                  <ReserveringToevoegenKnop
+                    geslacht="V"
+                    onToevoegen={handleVoegReserveringToe}
+                    isPending={isPending}
+                  />
                 </div>
 
                 {/* Heren-kolom */}
@@ -688,7 +917,26 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
                         </span>
                       </div>
                     ))}
+
+                    {/* Reservering-rijen heren */}
+                    {reserveringen
+                      .filter((r) => r.geslacht === "M")
+                      .map((r) => (
+                        <ReserveringRij
+                          key={r.id}
+                          reservering={r}
+                          onVerwijder={handleVerwijderReservering}
+                          isPending={isPending && r.id.startsWith("_opt_")}
+                        />
+                      ))}
                   </div>
+
+                  {/* + Reservering knop heren */}
+                  <ReserveringToevoegenKnop
+                    geslacht="M"
+                    onToevoegen={handleVoegReserveringToe}
+                    isPending={isPending}
+                  />
                 </div>
 
                 {/* Staf-blok */}
