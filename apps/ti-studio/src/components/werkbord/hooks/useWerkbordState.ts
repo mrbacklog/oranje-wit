@@ -383,6 +383,48 @@ export function useWerkbordState(
     );
   }, []);
 
+  // ─── Memo-count synchronisatie (event van WerkitemPanel) ───
+  useEffect(() => {
+    function handler(e: Event) {
+      const detail = (e as CustomEvent).detail as
+        | { entiteit: "SPELER" | "STAF" | "TEAM"; id: string; delta: number }
+        | undefined;
+      if (!detail || detail.delta === 0) return;
+      const { entiteit, id, delta } = detail;
+      const bump = (n: number) => Math.max(0, n + delta);
+
+      if (entiteit === "SPELER") {
+        setAlleSpelers((prev) =>
+          prev.map((sp) => (sp.id === id ? { ...sp, openMemoCount: bump(sp.openMemoCount) } : sp))
+        );
+        setTeams((prev) =>
+          prev.map((t) => {
+            const updateRij = (rij: typeof t.dames) =>
+              rij.map((r) =>
+                r.spelerId === id
+                  ? { ...r, speler: { ...r.speler, openMemoCount: bump(r.speler.openMemoCount) } }
+                  : r
+              );
+            return {
+              ...t,
+              dames: updateRij(t.dames),
+              heren: updateRij(t.heren),
+              selectieDames: updateRij(t.selectieDames),
+              selectieHeren: updateRij(t.selectieHeren),
+            };
+          })
+        );
+      } else if (entiteit === "TEAM") {
+        setTeams((prev) =>
+          prev.map((t) => (t.id === id ? { ...t, openMemoCount: bump(t.openMemoCount) } : t))
+        );
+      }
+      // STAF: WerkbordStaf gebruikt memoCount via aparte data-laag, niet via werkbord-state.
+    }
+    window.addEventListener("werkbord:memo-delta", handler);
+    return () => window.removeEventListener("werkbord:memo-delta", handler);
+  }, []);
+
   // ─── Herlaad-helper: volledig nieuwe snapshot (bv. na mode-switch) ───
   const herlaadStaat = useCallback(
     (

@@ -84,6 +84,20 @@ const PRIORITEIT_KLEUR: Record<Prioriteit, string> = {
 const STATUSSEN = Object.keys(STATUS_CONFIG) as Status[];
 const PRIORITEITEN = Object.keys(PRIORITEIT_LABELS) as Prioriteit[];
 
+// "Open" voor de werkbord-indicator = OPEN of IN_BESPREKING (idem als TeamKaart/SpelerProfielDialog)
+function isOpenStatus(status: string): boolean {
+  return status === "OPEN" || status === "IN_BESPREKING";
+}
+
+function dispatchMemoDelta(
+  entiteit: "SPELER" | "STAF" | "TEAM",
+  id: string | undefined,
+  delta: number
+): void {
+  if (!id || delta === 0 || typeof window === "undefined") return;
+  window.dispatchEvent(new CustomEvent("werkbord:memo-delta", { detail: { entiteit, id, delta } }));
+}
+
 // ──────────────────────────────────────────────────────────
 // WerkitemPanel
 // ──────────────────────────────────────────────────────────
@@ -126,6 +140,9 @@ export function WerkitemPanel({
         setNieuweBeschrijving("");
         setNieuwePrioriteit("MIDDEL");
         setFormulierOpen(false);
+        if (isOpenStatus(result.data.status)) {
+          dispatchMemoDelta(entiteitType, spelerId ?? stafId ?? teamId, +1);
+        }
       } else if (!result.ok) {
         logger.warn("WerkitemPanel: aanmaken mislukt", result.error);
       }
@@ -139,9 +156,14 @@ export function WerkitemPanel({
   async function handleStatusWijzig(id: string, nieuweStatus: string) {
     setStatusBezig(id);
     try {
+      const huidig = werkitems.find((w) => w.id === id);
+      const oudOpen = huidig ? isOpenStatus(huidig.status) : false;
+      const nieuwOpen = isOpenStatus(nieuweStatus);
       const result = await updateWerkitemStatus(id, nieuweStatus);
       if (result.ok) {
         setWerkitems((prev) => prev.map((w) => (w.id === id ? { ...w, status: nieuweStatus } : w)));
+        const delta = (nieuwOpen ? 1 : 0) - (oudOpen ? 1 : 0);
+        dispatchMemoDelta(entiteitType, spelerId ?? stafId ?? teamId, delta);
       } else {
         logger.warn("WerkitemPanel: status-update mislukt", result.error);
       }
@@ -155,9 +177,14 @@ export function WerkitemPanel({
   async function handleVerwijder(id: string) {
     setVerwijderBezig(id);
     try {
+      const huidig = werkitems.find((w) => w.id === id);
+      const wasOpen = huidig ? isOpenStatus(huidig.status) : false;
       const result = await verwijderWerkitem(id);
       if (result.ok) {
         setWerkitems((prev) => prev.filter((w) => w.id !== id));
+        if (wasOpen) {
+          dispatchMemoDelta(entiteitType, spelerId ?? stafId ?? teamId, -1);
+        }
       } else {
         logger.warn("WerkitemPanel: verwijderen mislukt", result.error);
       }
