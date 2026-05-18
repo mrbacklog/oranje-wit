@@ -96,6 +96,31 @@ jobs:
       - name: Build (ti-studio)
         run: pnpm --filter @oranje-wit/ti-studio build
 
+  # ── Job 2b: Catalog drift-check (alleen bij schema/TI-wijzigingen in PR) ────
+  catalog-drift-check:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm db:generate
+
+      - name: Dekking-check — catalog vs schema
+        run: pnpm tsx scripts/seed/coverage-check.ts
+
   # ── Job 3: E2E Tests (na build + fast-gate, met PostgreSQL service container) ──────────
   e2e:
     needs: [build, fast-gate]
