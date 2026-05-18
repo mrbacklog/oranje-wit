@@ -27,6 +27,9 @@ jobs:
       - name: Prisma client genereren
         run: pnpm db:generate
 
+      - name: Dekking-check (catalog vs schema)
+        run: pnpm tsx scripts/seed/coverage-check.ts
+
       - name: Seed edge-case test-data
         run: pnpm tsx scripts/seed-edge-cases.ts
         env:
