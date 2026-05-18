@@ -9,7 +9,49 @@ import { test, expect } from "./fixtures/base";
  * 2. Filter-chip activeren: klik op een chip (status of prioriteit), verwacht visuele active-state (class change of aria-pressed)
  * 3. Search-input typen: typ in de zoek-input, input behoudt waarde
  * 4. Memo-klik opent detail/drawer: klik op eerste memo-rij → detail-panel of drawer zichtbaar
+ *
+ * Draait tegen studio-test.ckvoranjewit.app (production-like data).
+ * AgentMutatie cleanup: afterAll zoekt agentRunId in cookie en
+ * roept POST /api/agent/cleanup aan in reverse-chronologische volgorde.
  */
+
+let capturedAgentRunId: string | null = null;
+
+test.beforeAll(async ({ browser }) => {
+  const context = await browser.newContext({
+    storageState: "./e2e/.auth/studio-test.json",
+  });
+  const cookies = await context.cookies();
+  const agentCookie = cookies.find((c) => c.name === "__ow_agent_run_id");
+  capturedAgentRunId = agentCookie?.value ?? null;
+  if (capturedAgentRunId) {
+    console.log(`[memo] agentRunId voor cleanup: ${capturedAgentRunId}`);
+  }
+  await context.close();
+});
+
+test.afterAll(async ({ request }) => {
+  if (!capturedAgentRunId) return;
+  const baseURL = process.env.STUDIO_TEST_URL ?? "https://studio-test.ckvoranjewit.app";
+  const secret = process.env.STUDIO_TEST_AGENT_SECRET ?? "";
+  if (!secret) return;
+  try {
+    const response = await request.post(`${baseURL}/api/agent/cleanup`, {
+      data: { secret, agentRunId: capturedAgentRunId },
+      headers: {
+        Authorization: `Basic ${Buffer.from(
+          `${process.env.STUDIO_TEST_BASIC_AUTH_USER ?? ""}:${process.env.STUDIO_TEST_BASIC_AUTH_PASS ?? ""}`
+        ).toString("base64")}`,
+      },
+    });
+    if (response.ok()) {
+      const body = (await response.json()) as { ok: boolean; rolledBack: number };
+      console.log(`[memo] Cleanup: ${body.rolledBack} mutaties teruggedraaid`);
+    }
+  } catch (error) {
+    console.warn("[memo] Cleanup fout (genegeerd):", error);
+  }
+});
 
 test.describe("Memo pagina — Smoke", () => {
   test.setTimeout(60_000);
@@ -18,11 +60,11 @@ test.describe("Memo pagina — Smoke", () => {
     // Spec sectie 1: route-pad = /memo
     await page.goto("/memo", { timeout: 30_000 });
 
-    // Verifieer correct URL
-    expect(page.url()).toContain("/memo");
+    // Verifieer correct URL via waitForURL i.p.v. expect(page.url())
+    await page.waitForURL(/\/memo/, { timeout: 10_000 });
 
     // Spec sectie 2: KanbanBord renders paginaheader met titel
-    const pageTitle = page.locator("h1, h2, [role='heading']");
+    const pageTitle = page.getByRole("heading", { level: 1 }).or(page.getByRole("heading", { level: 2 }));
     const titleExists = await pageTitle.count();
     expect(titleExists).toBeGreaterThan(0);
 
@@ -149,7 +191,7 @@ test.describe("Memo pagina — Zoekbalk interactie", () => {
   test.setTimeout(60_000);
 
   test("zoek-input accepteert tekst en behoudt waarde", async ({ page }) => {
-    // Spec sectie 3: MemoZoekbalk (teil van KanbanHeader)
+    // Spec sectie 3: MemoZoekbalk (deel van KanbanHeader)
     // Input mag typen aanvaarden en state behouden
     await page.goto("/memo", { timeout: 30_000 });
 
