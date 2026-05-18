@@ -457,6 +457,7 @@ interface SpelerKolomProps {
   teamNaam: string;
   zoom: "compact" | "detail";
   isLaatste: boolean;
+  volledigeBreedte?: boolean; // true voor viertal (gestapelde blokken)
   onClick: (spelerId: string) => void;
   onDrop: (data: WerkbordDragData) => void;
 }
@@ -468,6 +469,7 @@ function SpelerKolom({
   teamNaam,
   zoom,
   isLaatste,
+  volledigeBreedte = false,
   onClick,
   onDrop,
 }: SpelerKolomProps) {
@@ -479,7 +481,9 @@ function SpelerKolom({
       className="tk-col"
       style={{
         flex: 1,
-        borderRight: isLaatste ? "none" : "1px solid var(--border-light)",
+        width: volledigeBreedte ? "100%" : undefined,
+        borderRight: volledigeBreedte || isLaatste ? "none" : "1px solid var(--border-light)",
+        borderBottom: volledigeBreedte && !isLaatste ? "1px solid var(--border-light)" : "none",
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
@@ -631,9 +635,17 @@ export function TeamKaart({
           onClick={() => onHeaderClick(team.id)}
         />
 
-        {/* Body */}
-        <div className="tk-body" style={{ flex: 1, display: "flex", overflow: "hidden" }}>
-          {/* Dames-kolom */}
+        {/* Body — viertal = dames boven, heren onder (gestapeld); achttal = naast elkaar */}
+        <div
+          className="tk-body"
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: achttal ? "row" : "column",
+            overflow: "hidden",
+          }}
+        >
+          {/* Dames-blok */}
           <SpelerKolom
             spelers={team.spelersDames}
             geslacht="V"
@@ -641,11 +653,12 @@ export function TeamKaart({
             teamNaam={team.alias ?? team.naam}
             zoom={zoom}
             isLaatste={false}
+            volledigeBreedte={!achttal}
             onClick={onSpelerClick}
             onDrop={handleDropOpKolom}
           />
 
-          {/* Heren-kolom */}
+          {/* Heren-blok */}
           <SpelerKolom
             spelers={team.spelersHeren}
             geslacht="M"
@@ -653,6 +666,7 @@ export function TeamKaart({
             teamNaam={team.alias ?? team.naam}
             zoom={zoom}
             isLaatste={true}
+            volledigeBreedte={!achttal}
             onClick={onSpelerClick}
             onDrop={handleDropOpKolom}
           />
