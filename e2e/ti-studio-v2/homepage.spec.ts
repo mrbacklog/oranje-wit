@@ -84,9 +84,12 @@ test.describe("Homepage — Smoke en ladingtijd", () => {
 
     // Zoek zichtbare tiles/widgets door aria-labels of role
     // Minimaal 4 tiles verwacht: Personen, Werkbord, Kader, Memo
-    const tiles = page.getByRole("link").or(page.getByRole("button")).filter({
-      has: page.locator("text=/personen|werkbord|kader|memo/i"),
-    });
+    const tiles = page
+      .getByRole("link")
+      .or(page.getByRole("button"))
+      .filter({
+        has: page.locator("text=/personen|werkbord|kader|memo/i"),
+      });
 
     const tileCount = await tiles.count();
     expect(tileCount).toBeGreaterThanOrEqual(1);
@@ -185,15 +188,16 @@ test.describe("Homepage — Widget-data zichtbaarheid", () => {
   test("lege-staat werkbord-widget toont placeholder of count", async ({ page }) => {
     await page.goto("/", { timeout: 30_000 });
 
-    // Zoek werkbord-widget via data-testid of tekst — gebruik .or() i.p.v. CSS-OR-chain
+    // Werkbord-widget is een <a>-link naar /indeling in <main>, bevat "Werkbord" tekst
+    // Filter main > a elementen die "werkbord" bevatten
     const werkbordWidget = page
-      .locator('[data-testid="widget-werkbord"]')
-      .or(page.locator("text=/werkbord|indeling/i"))
+      .locator("main a")
+      .filter({ has: page.locator("text=/werkbord/i") })
       .first();
 
     await expect(werkbordWidget).toBeVisible({ timeout: 10_000 });
 
-    // Tolerant: widget toont '\d+' (count) of placeholder
+    // Widget bevat tekstcontent met nummers (bijv. "229/ 327 spelers")
     const text = await werkbordWidget.textContent();
     const hasCount = /\d+/.test(text || "");
     const hasPlaceholder = /geen|empty|placeholder/i.test(text || "");
