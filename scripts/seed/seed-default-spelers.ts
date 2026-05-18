@@ -1,6 +1,6 @@
 import { TEAM_DEFS } from "./seed-teams";
 import { prisma, relCode, teamId } from "./types";
-import { RANDOM_NAAM } from "./seed-namen";
+import { getUniekeNaam } from "./namen-pool";
 import { logger } from "@oranje-wit/types";
 
 function geboortejaarVoorTeam(alias: string): number {
@@ -24,6 +24,9 @@ export async function seedDefaultSpelers(): Promise<void> {
   logger.info("[seed-default-spelers] starten");
   let totaal = 0;
 
+  // Set bijgehouden over de gehele functie-aanroep: garandeert cross-team uniciteit
+  const gebruikteNamen = new Set<string>();
+
   for (const team of TEAM_DEFS) {
     if (team.defaultOmvang === 0) continue;
 
@@ -34,14 +37,24 @@ export async function seedDefaultSpelers(): Promise<void> {
       const code = relCode(team.nr, i);
       const isVrouw = i % 2 === 1;
       const geslacht = isVrouw ? "V" : "M";
-      const naam = RANDOM_NAAM(code, geslacht);
+      const naam = getUniekeNaam(gebruikteNamen, geslacht);
+
+      if (!naam) {
+        logger.warn(`[seed-default-spelers] namen-pool uitgeput bij speler ${code} — sla over`);
+        continue;
+      }
+
+      // Tussenvoegsel verwerken in achternaam-string (Speler-model heeft geen apart veld)
+      const achternaamVolledig = naam.tussenvoegsel
+        ? `${naam.tussenvoegsel} ${naam.achternaam}`
+        : naam.achternaam;
 
       await prisma.speler.upsert({
         where: { id: code },
         create: {
           id: code,
           roepnaam: naam.roepnaam,
-          achternaam: naam.achternaam,
+          achternaam: achternaamVolledig,
           geslacht,
           geboortejaar,
           geboortedatum: new Date(`${geboortejaar}-06-15`),
@@ -49,7 +62,7 @@ export async function seedDefaultSpelers(): Promise<void> {
         },
         update: {
           roepnaam: naam.roepnaam,
-          achternaam: naam.achternaam,
+          achternaam: achternaamVolledig,
           geslacht,
           geboortejaar,
           geboortedatum: new Date(`${geboortejaar}-06-15`),

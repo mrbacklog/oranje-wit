@@ -8,65 +8,15 @@
  *    5% streepjesnamen
  *    3% lengte-extremen
  *    2% naam-collisies (zelfde voor+achternaam, ander rel_code)
+ *
+ * OPMERKING: RANDOM_NAAM() is deterministisch maar garandeert GEEN uniciteit
+ * bij grote aantallen spelers. Gebruik voor bulk-seeding getUniekeNaam() uit
+ * namen-pool.ts.
  */
 
-// -- Naam-pools per categorie ------------------------------------------------
+import { VOORNAMEN_V, VOORNAMEN_M, ACHTERNAMEN, TUSSENVOEGSELS } from "./namen-pool";
 
-const VOORNAMEN_STANDAARD_V = [
-  "Yara",
-  "Lotte",
-  "Sanne",
-  "Tess",
-  "Sophie",
-  "Emma",
-  "Lisa",
-  "Nina",
-  "Floor",
-  "Roos",
-  "Inge",
-  "Femke",
-  "Manon",
-  "Laura",
-  "Anne",
-];
-
-const VOORNAMEN_STANDAARD_M = [
-  "Mees",
-  "Bram",
-  "Lucas",
-  "Daan",
-  "Stijn",
-  "Tom",
-  "Luc",
-  "Joep",
-  "Pim",
-  "Lars",
-  "Tim",
-  "Quint",
-  "Jesse",
-  "Niek",
-  "Ruben",
-];
-
-const ACHTERNAMEN_STANDAARD = [
-  "Bakker",
-  "Visser",
-  "Mulder",
-  "Smit",
-  "Heeren",
-  "Janssens",
-  "Pluim",
-  "Olsen",
-  "Timmer",
-  "Dijkstra",
-  "Peters",
-  "Hendriks",
-  "Vermeer",
-  "Hoekstra",
-  "Boer",
-];
-
-const TUSSENVOEGSELS = ["de", "van", "van der", "van den", "den", "ter"];
+// -- Speciale naam-pools (edge-case categorieën) ------------------------------
 
 // Diakritisch + apostrof
 const VOORNAMEN_DIAK_V = ["Renée", "Noëlle", "Zoë", "Léa", "Anouk"];
@@ -92,7 +42,6 @@ const VOORNAMEN_LANG_M = ["M"];
 const ACHTERNAMEN_LANG = ["Li", "Vandenberghe-Vanderhaeghen"];
 
 // Naam-collisies: zelfde naam, ander rel_code
-// Worden als collisie behandeld in de pick-functie (zie pool-index-berekening)
 const COLLISION_NAMEN = [
   { roepnaam: "Sanne", tussenvoegsel: null, achternaam: "Bakker" },
   { roepnaam: "Tom", tussenvoegsel: null, achternaam: "Visser" },
@@ -101,7 +50,6 @@ const COLLISION_NAMEN = [
 // -- Deterministische pick via lineaire seed ---------------------------------
 
 function seed(relCode: string): number {
-  // Eenvoudige hash: som van charCodes * positie
   let h = 0;
   for (let i = 0; i < relCode.length; i++) {
     h = (h * 31 + relCode.charCodeAt(i)) >>> 0;
@@ -134,6 +82,9 @@ export interface NaamResult {
  *   90–94 → streepje
  *   95–97 → lengte-extremen
  *   98–99 → naam-collisie
+ *
+ * Let op: deterministisch maar NIET uniek bij grote aantallen.
+ * Gebruik getUniekeNaam() uit namen-pool.ts voor bulk-seeding.
  */
 export function RANDOM_NAAM(relCode: string, geslacht: "M" | "V"): NaamResult {
   const s = seed(relCode);
@@ -172,15 +123,16 @@ export function RANDOM_NAAM(relCode: string, geslacht: "M" | "V"): NaamResult {
     };
   }
 
-  // Standaard (80%)
-  const vnamen = geslacht === "V" ? VOORNAMEN_STANDAARD_V : VOORNAMEN_STANDAARD_M;
+  // Standaard (80%) — gebruik de grote pool uit namen-pool.ts
+  const vnamen = geslacht === "V" ? VOORNAMEN_V : VOORNAMEN_M;
   const roepnaam = pick(vnamen, s >> 4);
-  const basisAchternaam = pick(ACHTERNAMEN_STANDAARD, (s >> 8) % ACHTERNAMEN_STANDAARD.length);
+  const basisAchternaam = pick(ACHTERNAMEN, (s >> 8) % ACHTERNAMEN.length);
 
-  // ~30% kans op tussenvoegsel — opgenomen in achternaam-string (Speler heeft geen apart veld)
+  // ~30% kans op tussenvoegsel — opgenomen in achternaam-string
   const metTussenvoegsel = (s >> 16) % 10 < 3;
+  const tussenvoegselOpties = TUSSENVOEGSELS.filter((t) => t !== null) as string[];
   const achternaam = metTussenvoegsel
-    ? `${pick(TUSSENVOEGSELS, (s >> 20) % TUSSENVOEGSELS.length)} ${basisAchternaam}`
+    ? `${pick(tussenvoegselOpties, (s >> 20) % tussenvoegselOpties.length)} ${basisAchternaam}`
     : basisAchternaam;
 
   return { roepnaam, achternaam };
