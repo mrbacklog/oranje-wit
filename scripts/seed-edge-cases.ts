@@ -17,6 +17,7 @@ import { seedLeeftijdEdge } from "./seed/seed-leeftijd-edge";
 import { seedDataIncomplete } from "./seed/seed-data-incomplete";
 import { seedMultiTeam } from "./seed/seed-multi-team";
 import { seedSelectiegroepen } from "./seed/seed-selectiegroepen";
+import { seedKadersSpelers } from "./seed/seed-kaders-spelers";
 import { seedFotos } from "./seed/seed-fotos";
 
 async function main(): Promise<void> {
@@ -49,6 +50,14 @@ async function main(): Promise<void> {
 
   // Sectie 1.7: selectiegroepen (na spelers — spelers moeten bestaan)
   await seedSelectiegroepen();
+
+  // Sectie 1.8: KadersSpeler-records voor alle spelers in het actieve Kaders.
+  // Vereist voor de spelerspool-query op /indeling.
+  const kaders = await prisma.kaders.findFirstOrThrow({
+    where: { isWerkseizoen: true },
+    select: { id: true },
+  });
+  await seedKadersSpelers(kaders.id);
 
   // Sectie 1.9: fictieve profielfoto's (na alle spelers, voor cleanup)
   await seedFotos();
