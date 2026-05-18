@@ -208,6 +208,11 @@ Vereiste env vars: `STUDIO_TEST_BASIC_AUTH_USER`, `STUDIO_TEST_BASIC_AUTH_PASS`,
 - **PDND-erratum:** `docs/superpowers/specs/2026-05-13-drag-drop-library-research.md`
 - **Werkende referentie:** `e2e/ti-studio-v2/werkbord-dragdrop.spec.ts`
 - **CI workflow:** `.github/workflows/e2e-studio-test.yml`
+- **Edge-case catalogus:** `docs/kennis/edge-case-testdata.md`
+
+## Bij schema- of UI-wijzigingen
+
+Loop het mutatie-respons protocol af (zie kennisdoc sectie "Mutatie-respons protocol" in `docs/kennis/edge-case-testdata.md`). Skip dit niet — coverage-check faalt anders nightly E2E.
 
 ## STRIKT
 
