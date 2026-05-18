@@ -63,10 +63,12 @@ test.describe("Memo pagina — Smoke", () => {
     // Verifieer correct URL via waitForURL i.p.v. expect(page.url())
     await page.waitForURL(/\/memo/, { timeout: 10_000 });
 
-    // Spec sectie 2: KanbanBord renders paginaheader met titel
-    const pageTitle = page.getByRole("heading", { level: 1 }).or(page.getByRole("heading", { level: 2 }));
-    const titleExists = await pageTitle.count();
-    expect(titleExists).toBeGreaterThan(0);
+    // Spec sectie 2: KanbanBord renders paginaheader (geen semantic heading, maar kanban-header div)
+    const kanbanHeader = page
+      .locator(".kanban-header")
+      .or(page.locator('[data-testid="kanban-header"]'));
+    const headerExists = await kanbanHeader.count();
+    expect(headerExists).toBeGreaterThan(0);
 
     // Spec sectie 3: KanbanFilterChips zichtbaar (status en entiteit filter-chips)
     const filterChips = page.locator(
