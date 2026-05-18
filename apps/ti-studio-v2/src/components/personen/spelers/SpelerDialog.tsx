@@ -1,13 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import type { SpelerRijData } from "@/components/personen/types";
 import { HeroHeader } from "@/components/speler/contexts/HeroHeader";
 import { createPortal } from "react-dom";
+import { updateSpelerStatus, updateSpelerIndeling } from "@/app/(app)/(personen)/personen/actions";
+import { logger } from "@oranje-wit/types";
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
-type TabId = "pad" | "kenmerken" | "evaluaties" | "werkitems";
+export type TabId = "pad" | "kenmerken" | "evaluaties" | "werkitems";
 
 const STATUS_LABELS: Record<string, string> = {
   BESCHIKBAAR: "Beschikbaar",
@@ -21,25 +23,103 @@ const STATUS_LABELS: Record<string, string> = {
   NIET_SPELEND: "Niet spelend",
 };
 
+// ── Status config (gedeeld met StatusCel) ─────────────────────────────────
+
+const STATUS_CONFIG_HERO: Record<string, { label: string }> = {
+  BESCHIKBAAR: { label: "Beschikbaar" },
+  TWIJFELT: { label: "Twijfelt" },
+  GEBLESSEERD: { label: "Geblesseerd" },
+  GAAT_STOPPEN: { label: "Stopt" },
+  GESTOPT: { label: "Gestopt" },
+  NIEUW_POTENTIEEL: { label: "Nieuw potentieel" },
+  NIEUW_DEFINITIEF: { label: "Nieuw definitief" },
+  ALGEMEEN_RESERVE: { label: "Alg. reserve" },
+  RECREANT: { label: "Recreant" },
+  NIET_SPELEND: { label: "Niet spelend" },
+};
+
 // ── Component ────────────────────────────────────────────────────────────────
 
 interface SpelerDialogProps {
   speler: SpelerRijData;
+  initialTab?: TabId;
+  actieveVersieId?: string;
+  teams?: Array<{ id: string; naam: string; kleur: string | null }>;
   onClose: () => void;
 }
 
-export function SpelerDialog({ speler, onClose }: SpelerDialogProps) {
-  const [actieveTab, setActieveTab] = useState<TabId>("pad");
+export function SpelerDialog({
+  speler,
+  initialTab = "pad",
+  actieveVersieId,
+  teams = [],
+  onClose,
+}: SpelerDialogProps) {
+  const [actieveTab, setActieveTab] = useState<TabId>(initialTab);
+  const [statusEdit, setStatusEdit] = useState(false);
+  const [huidigStatus, setHuidigStatus] = useState(speler.status);
+  const [indelingEdit, setIndelingEdit] = useState(false);
+  const [huidigIndelingTeamId, setHuidigIndelingTeamId] = useState(speler.indelingTeamId);
+  const [huidigIndelingTeamNaam, setHuidigIndelingTeamNaam] = useState(speler.indelingTeamNaam);
+  const [isPending, startTransition] = useTransition();
   const dialogRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        if (statusEdit) {
+          setStatusEdit(false);
+          return;
+        }
+        if (indelingEdit) {
+          setIndelingEdit(false);
+          return;
+        }
+        onClose();
+      }
     };
     document.addEventListener("keydown", handleKeyDown);
     dialogRef.current?.focus();
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [onClose]);
+  }, [onClose, statusEdit, indelingEdit]);
+
+  const handleStatusChange = (newStatus: string) => {
+    const vorige = huidigStatus;
+    setHuidigStatus(newStatus);
+    setStatusEdit(false);
+    startTransition(async () => {
+      const result = await updateSpelerStatus({
+        spelerId: speler.id,
+        status: newStatus as never,
+      });
+      if (!result.ok) {
+        logger.warn("SpelerDialog: status update mislukt:", result.error);
+        setHuidigStatus(vorige);
+      }
+    });
+  };
+
+  const handleIndelingChange = (newTeamId: string) => {
+    if (!actieveVersieId) return;
+    const vorigeId = huidigIndelingTeamId;
+    const vorigeNaam = huidigIndelingTeamNaam;
+    const nyNaam = teams.find((t) => t.id === newTeamId)?.naam ?? null;
+    setHuidigIndelingTeamId(newTeamId || null);
+    setHuidigIndelingTeamNaam(nyNaam);
+    setIndelingEdit(false);
+    startTransition(async () => {
+      const result = await updateSpelerIndeling({
+        spelerId: speler.id,
+        versieId: actieveVersieId,
+        teamId: newTeamId || null,
+      });
+      if (!result.ok) {
+        logger.warn("SpelerDialog: indeling update mislukt:", result.error);
+        setHuidigIndelingTeamId(vorigeId);
+        setHuidigIndelingTeamNaam(vorigeNaam);
+      }
+    });
+  };
 
   const aantalMemos = speler.heeftOpenMemo ? 1 : 0;
 
@@ -132,14 +212,132 @@ export function SpelerDialog({ speler, onClose }: SpelerDialogProps) {
               geslacht: speler.geslacht,
               leeftijd: speler.leeftijd,
               leeftijdscategorie: speler.leeftijdscategorie,
-              status: speler.status as import("@oranje-wit/database").SpelerStatus,
+              status: huidigStatus as import("@oranje-wit/database").SpelerStatus,
               isNieuw: speler.isNieuw,
               hasFoto: speler.hasFoto,
               memoStatus: speler.memoStatus,
               huidigTeam: speler.huidigTeam,
-              indelingTeam: speler.indelingTeamNaam,
+              indelingTeam: huidigIndelingTeamNaam,
             }}
+            onStatusClick={() => {
+              setIndelingEdit(false);
+              setStatusEdit((v) => !v);
+            }}
+            onIndelingClick={
+              actieveVersieId && teams.length > 0
+                ? () => {
+                    setStatusEdit(false);
+                    setIndelingEdit((v) => !v);
+                  }
+                : undefined
+            }
+            onMemoClick={() => setActieveTab("werkitems")}
           />
+
+          {/* Status-dropdown — inline onder de hero chip */}
+          {statusEdit && (
+            <div
+              style={{
+                position: "absolute",
+                top: 76,
+                left: 152,
+                zIndex: 50,
+                background: "var(--surface-card, #1a1a2e)",
+                border: "1px solid var(--ow-accent)",
+                borderRadius: 8,
+                padding: "6px 0",
+                minWidth: 180,
+                boxShadow: "0 8px 24px rgba(0,0,0,.6)",
+              }}
+            >
+              {Object.entries(STATUS_CONFIG_HERO).map(([key, cfg]) => (
+                <button
+                  key={key}
+                  onClick={() => handleStatusChange(key)}
+                  disabled={isPending}
+                  style={{
+                    display: "block",
+                    width: "100%",
+                    textAlign: "left",
+                    padding: "7px 16px",
+                    background: huidigStatus === key ? "rgba(255,107,0,.12)" : "none",
+                    border: "none",
+                    color: huidigStatus === key ? "var(--ow-accent)" : "var(--text-secondary)",
+                    fontSize: 13,
+                    fontWeight: huidigStatus === key ? 700 : 500,
+                    cursor: "pointer",
+                    fontFamily: "inherit",
+                  }}
+                >
+                  {cfg.label}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Indeling-dropdown — inline onder de indeling badge */}
+          {indelingEdit && actieveVersieId && (
+            <div
+              style={{
+                position: "absolute",
+                top: 120,
+                left: 152,
+                zIndex: 50,
+                background: "var(--surface-card, #1a1a2e)",
+                border: "1px solid var(--ow-accent)",
+                borderRadius: 8,
+                padding: "6px 0",
+                minWidth: 180,
+                boxShadow: "0 8px 24px rgba(0,0,0,.6)",
+                maxHeight: 280,
+                overflowY: "auto",
+              }}
+            >
+              <button
+                onClick={() => handleIndelingChange("")}
+                disabled={isPending}
+                style={{
+                  display: "block",
+                  width: "100%",
+                  textAlign: "left",
+                  padding: "7px 16px",
+                  background: !huidigIndelingTeamId ? "rgba(255,107,0,.12)" : "none",
+                  border: "none",
+                  borderBottom: "1px solid var(--border-light)",
+                  color: !huidigIndelingTeamId ? "var(--ow-accent)" : "var(--text-muted)",
+                  fontSize: 12,
+                  fontWeight: 500,
+                  cursor: "pointer",
+                  fontFamily: "inherit",
+                }}
+              >
+                — geen team —
+              </button>
+              {teams.map((t) => (
+                <button
+                  key={t.id}
+                  onClick={() => handleIndelingChange(t.id)}
+                  disabled={isPending}
+                  style={{
+                    display: "block",
+                    width: "100%",
+                    textAlign: "left",
+                    padding: "7px 16px",
+                    background: huidigIndelingTeamId === t.id ? "rgba(255,107,0,.12)" : "none",
+                    border: "none",
+                    color:
+                      huidigIndelingTeamId === t.id ? "var(--ow-accent)" : "var(--text-secondary)",
+                    fontSize: 13,
+                    fontWeight: huidigIndelingTeamId === t.id ? 700 : 500,
+                    cursor: "pointer",
+                    fontFamily: "inherit",
+                  }}
+                >
+                  {t.naam}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* ═══ TAB BAR ═══ */}

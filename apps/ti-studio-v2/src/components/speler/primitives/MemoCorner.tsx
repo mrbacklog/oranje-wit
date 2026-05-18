@@ -1,3 +1,4 @@
+import type { MouseEvent } from "react";
 import type { WerkitemStatus } from "@oranje-wit/database";
 
 export type MemoGrootte = "compact" | "normaal" | "rijk" | "hero" | "hover";
@@ -20,14 +21,10 @@ const STATUS_KLEUR: Record<Exclude<WerkitemStatus, "GEARCHIVEERD">, string> = {
 interface MemoCornerProps {
   status: WerkitemStatus | "geen";
   size?: MemoGrootte;
-  onClick?: () => void;
+  onClick?: (e: MouseEvent) => void;
 }
 
-export function MemoCorner({
-  status,
-  size = "normaal",
-  onClick,
-}: MemoCornerProps) {
+export function MemoCorner({ status, size = "normaal", onClick }: MemoCornerProps) {
   if (status === "geen" || status === "GEARCHIVEERD") return null;
 
   const kleur = STATUS_KLEUR[status as Exclude<WerkitemStatus, "GEARCHIVEERD">];

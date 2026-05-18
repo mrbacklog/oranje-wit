@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import type { SpelerRijData } from "@/components/personen/types";
 import { SpelersTabelRij } from "./SpelersTabelRij";
 import { SpelerDialog } from "./SpelerDialog";
+import type { TabId } from "./SpelerDialog";
 
 interface SpelersTabelProps {
   data: SpelerRijData[];
@@ -25,8 +26,15 @@ const KOLOMMEN = [
 
 export function SpelersTabel({ data, actieveVersieId, kadersId, teams }: SpelersTabelProps) {
   const [openDialogId, setOpenDialogId] = useState<string | null>(null);
+  const [openDialogTab, setOpenDialogTab] = useState<TabId>("pad");
 
   const handleOpenDialog = useCallback((spelerId: string) => {
+    setOpenDialogTab("pad");
+    setOpenDialogId(spelerId);
+  }, []);
+
+  const handleOpenWerkitems = useCallback((spelerId: string) => {
+    setOpenDialogTab("werkitems");
     setOpenDialogId(spelerId);
   }, []);
 
@@ -92,12 +100,19 @@ export function SpelersTabel({ data, actieveVersieId, kadersId, teams }: Spelers
             kadersId={kadersId}
             teams={teams}
             onOpenDialog={handleOpenDialog}
+            onOpenWerkitems={handleOpenWerkitems}
           />
         ))}
       </div>
 
       {selectedSpeler && (
-        <SpelerDialog speler={selectedSpeler} onClose={() => setOpenDialogId(null)} />
+        <SpelerDialog
+          speler={selectedSpeler}
+          initialTab={openDialogTab}
+          actieveVersieId={actieveVersieId}
+          teams={teams}
+          onClose={() => setOpenDialogId(null)}
+        />
       )}
     </>
   );

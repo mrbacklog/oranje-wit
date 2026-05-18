@@ -44,6 +44,7 @@ interface SpelersTabelRijProps {
   kadersId: string;
   teams: Array<{ id: string; naam: string; kleur: string | null }>;
   onOpenDialog: (spelerId: string) => void;
+  onOpenWerkitems: (spelerId: string) => void;
 }
 
 export function SpelersTabelRij({
@@ -52,6 +53,7 @@ export function SpelersTabelRij({
   kadersId,
   teams,
   onOpenDialog,
+  onOpenWerkitems,
 }: SpelersTabelRijProps) {
   const naamRef = useRef<HTMLSpanElement>(null);
   const [hoverOpen, setHoverOpen] = useState(false);
@@ -124,6 +126,7 @@ export function SpelersTabelRij({
           status={speler.status as SpelerStatus}
           isNieuw={speler.isNieuw}
           memoStatus={speler.memoStatus}
+          onMemoClick={() => onOpenWerkitems(speler.id)}
           style={{ width: 46, height: 46 }}
         />
       </div>

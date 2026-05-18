@@ -32,6 +32,7 @@ interface SpelerAvatarProps {
   status?: SpelerStatus;
   isNieuw?: boolean;
   memoStatus?: WerkitemStatus | null;
+  onMemoClick?: (e: React.MouseEvent) => void;
   className?: string;
   style?: React.CSSProperties;
 }
@@ -67,6 +68,7 @@ export function SpelerAvatar({
   status,
   isNieuw = false,
   memoStatus,
+  onMemoClick,
   className,
   style,
 }: SpelerAvatarProps) {
@@ -74,8 +76,7 @@ export function SpelerAvatar({
 
   const px = SIZE_PX[size];
   const fontSize = FONT_SIZE[size];
-  const initials =
-    (roepnaam[0] ?? "").toUpperCase() + (achternaam[0] ?? "").toUpperCase();
+  const initials = (roepnaam[0] ?? "").toUpperCase() + (achternaam[0] ?? "").toUpperCase();
 
   const isVrouw = geslacht === "V";
   const sexeKleur = isVrouw ? "var(--sexe-v)" : "var(--sexe-h)";
@@ -92,17 +93,11 @@ export function SpelerAvatar({
   const fotoOpacity = isStopt ? 0.75 : isAR ? 0.85 : 1;
 
   const memoGrootte =
-    size === "hero"
-      ? "hero"
-      : size === "hover"
-        ? "hover"
-        : size === "lg"
-          ? "rijk"
-          : "normaal";
+    size === "hero" ? "hero" : size === "hover" ? "hover" : size === "lg" ? "rijk" : "normaal";
 
   return (
     <div
-      className={`sq-av${isVrouw ? " vrouw" : ""}${statusKlasse ? ` ${statusKlasse}` : ""}${className ? ` ${className}` : ""}`}
+      className={`sq-av${isVrouw ? "vrouw" : ""}${statusKlasse ? ` ${statusKlasse}` : ""}${className ? ` ${className}` : ""}`}
       style={{
         width: px,
         height: px,
@@ -179,7 +174,18 @@ export function SpelerAvatar({
 
       {/* Memo-corner — linksboven */}
       {memoStatus && memoStatus !== "GEARCHIVEERD" && (
-        <MemoCorner status={memoStatus} size={memoGrootte} />
+        <MemoCorner
+          status={memoStatus}
+          size={memoGrootte}
+          onClick={
+            onMemoClick
+              ? (e: React.MouseEvent) => {
+                  e.stopPropagation();
+                  onMemoClick(e);
+                }
+              : undefined
+          }
+        />
       )}
     </div>
   );

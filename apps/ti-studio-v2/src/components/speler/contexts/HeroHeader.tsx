@@ -98,6 +98,7 @@ interface HeroHeaderProps {
   onStatusClick?: () => void;
   onTeamClick?: () => void;
   onIndelingClick?: () => void;
+  onMemoClick?: () => void;
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -107,6 +108,7 @@ export function HeroHeader({
   onStatusClick,
   onTeamClick,
   onIndelingClick,
+  onMemoClick,
 }: HeroHeaderProps) {
   const naam = formatSpelerNaam(speler, "hero") as { hoofd: string; sub: string };
   const stijl = statusStijl(speler.status);
@@ -144,6 +146,7 @@ export function HeroHeader({
           status={speler.status}
           isNieuw={speler.isNieuw}
           memoStatus={speler.memoStatus}
+          onMemoClick={onMemoClick ? () => onMemoClick() : undefined}
           style={{ borderRadius: 8, flexShrink: 0 }}
         />
 
