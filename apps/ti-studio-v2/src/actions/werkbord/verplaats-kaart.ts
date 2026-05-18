@@ -50,7 +50,7 @@ export async function verplaatsKaartInternal(
     const nieuw = { ...huidig, [kaartKey]: positie };
     await prisma.versie.update({ where: { id: versieId }, data: { posities: nieuw } });
     logger.info(
-      `verplaatsKaartInternal: ${kaartKey} → (${positie.x}, ${positie.y}) (versie ${versieId})`
+      `verplaatsKaartInternal: ${kaartKey} -> (${positie.x}, ${positie.y}) (versie ${versieId})`
     );
   }
 }
@@ -100,7 +100,7 @@ export async function verplaatsKaart(
             actie: "verplaats",
             kaartKey,
             versieId,
-            positie: huidigePositie, // null = geen opgeslagen positie vóór de mutatie
+            positie: huidigePositie, // null = geen opgeslagen positie voor de mutatie
           },
         },
       });
