@@ -25,7 +25,7 @@ export async function seedDefaultSpelers(): Promise<void> {
   let totaal = 0;
 
   // Set bijgehouden over de gehele functie-aanroep: garandeert cross-team uniciteit
-  const gebruikteNamen = new Set<string>();
+  
 
   for (const team of TEAM_DEFS) {
     if (team.defaultOmvang === 0) continue;
@@ -37,7 +37,7 @@ export async function seedDefaultSpelers(): Promise<void> {
       const code = relCode(team.nr, i);
       const isVrouw = i % 2 === 1;
       const geslacht = isVrouw ? "V" : "M";
-      const naam = getUniekeNaam(gebruikteNamen, geslacht);
+      const naam = getUniekeNaam(geslacht);
 
       if (!naam) {
         logger.warn(`[seed-default-spelers] namen-pool uitgeput bij speler ${code} — sla over`);

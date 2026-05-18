@@ -42,12 +42,15 @@ export const ACHTERNAMEN: string[] = [
   "Vrolijk", "Cornelissen", "Stevens", "Roelofs",
 ];
 
+// Geldige Nederlandse tussenvoegsels. "der" / "ten" / "te" zijn alleen als
+// onderdeel van "van der" / "ten X" — nooit op zichzelf vóór een achternaam.
 export const TUSSENVOEGSELS: Array<string | null> = [
-  null, null, null, null, // ~50% geen tussenvoegsel
-  "van", "van", "de", "de",
-  "van der", "van de",
-  "ten", "te",
-  "der", "den",
+  null, null, null, null, null, null, // ~60% geen tussenvoegsel
+  "van", "van", "van",
+  "de", "de", "de",
+  "van der", "van der",
+  "van de",
+  "den",
 ];
 
 // -- Unieke naam picker -------------------------------------------------------
@@ -59,19 +62,35 @@ export interface NaamResultFull {
   achternaam: string;
 }
 
+// Module-level Set zodat ALLE seed-scripts (default-spelers, status-edge,
+// leeftijd-edge, data-incomplete, multi-team, staf, etc) cross-script unieke
+// namen krijgen. Orchestrator roept `resetUniekeNamen()` aan het begin.
+const globaalUsedSet = new Set<string>();
+
+export function resetUniekeNamen(): void {
+  globaalUsedSet.clear();
+}
+
+export function getGedeeldeUsedSet(): Set<string> {
+  return globaalUsedSet;
+}
+
 /**
  * Trekt een unieke roepnaam+achternaam combinatie uit de pool.
  * Uniciteit wordt bewaakt via `usedSet` (roepnaam + "·" + achternaam).
  * Tussenvoegsel telt NIET mee voor uniciteit.
  *
- * @param usedSet  Set die bijgehouden wordt over de gehele seed-run
+ * @param usedSet  Set die bijgehouden wordt over de gehele seed-run (default: module-state)
  * @param geslacht "M" of "V" — bepaalt welke voornamen gebruikt worden
  * @returns        NaamResultFull of null als de pool uitgeput is (>4800 spelers)
  */
 export function getUniekeNaam(
-  usedSet: Set<string>,
-  geslacht: "M" | "V"
+  usedSetOrGeslacht: Set<string> | "M" | "V",
+  geslachtArg?: "M" | "V"
 ): NaamResultFull | null {
+  // Overload: getUniekeNaam("M") gebruikt module-state; oude signature blijft werken.
+  const usedSet = typeof usedSetOrGeslacht === "string" ? globaalUsedSet : usedSetOrGeslacht;
+  const geslacht = typeof usedSetOrGeslacht === "string" ? usedSetOrGeslacht : geslachtArg!;
   const vnamen = geslacht === "V" ? VOORNAMEN_V : VOORNAMEN_M;
   const maxPogingen = vnamen.length * ACHTERNAMEN.length;
 
@@ -82,8 +101,13 @@ export function getUniekeNaam(
 
     if (!usedSet.has(key)) {
       usedSet.add(key);
-      const tussenvoegsel =
-        TUSSENVOEGSELS[Math.floor(Math.random() * TUSSENVOEGSELS.length)];
+      // Achternaam met ingebouwd tussenvoegsel (start met lowercase: "de Vries",
+      // "van der Meer", "van Dam") krijgt geen extra losse tussenvoegsel — anders
+      // ontstaat "Lieke de van der Meer".
+      const heeftIngebouwd = /^[a-z]/.test(achternaam);
+      const tussenvoegsel = heeftIngebouwd
+        ? null
+        : TUSSENVOEGSELS[Math.floor(Math.random() * TUSSENVOEGSELS.length)];
       return { roepnaam, tussenvoegsel, achternaam };
     }
   }

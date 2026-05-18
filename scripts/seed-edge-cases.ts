@@ -20,13 +20,15 @@ import { seedSelectiegroepen } from "./seed/seed-selectiegroepen";
 import { seedKadersSpelers } from "./seed/seed-kaders-spelers";
 import { seedStaf } from "./seed/seed-staf";
 import { seedFotos } from "./seed/seed-fotos";
+import { resetUniekeNamen } from "./seed/namen-pool";
 
 async function main(): Promise<void> {
   const start = Date.now();
   logger.info("[seed-edge-cases] starten");
 
-  // Sectie 0: opschonen
+  // Sectie 0: opschonen + uniciteit-Set resetten zodat alle namen cross-script uniek zijn
   await wipeAll();
+  resetUniekeNamen();
 
   // Sectie 1.7: werkindeling + versies (vóór teams — teams hangen aan versie)
   const { actieveVersieId } = await seedWerkindelingEnVersies();

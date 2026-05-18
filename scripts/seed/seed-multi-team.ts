@@ -1,5 +1,6 @@
 import { prisma, teamId } from "./types";
 import { logger } from "@oranje-wit/types";
+import { getUniekeNaam } from "./namen-pool";
 
 /**
  * Sectie 1.6: Multi-team illegal-state fixtures.
@@ -12,8 +13,8 @@ export async function seedMultiTeam(): Promise<void> {
   logger.info("[seed-multi-team] 2 multi-team illegal fixtures");
 
   const multiTeamSpelers = [
-    { code: "990040000001", naam: "Edge-MultiTeam-1-V", geslacht: "V" as const },
-    { code: "990040000002", naam: "Edge-MultiTeam-2-M", geslacht: "M" as const },
+    { code: "990040000001", geslacht: "V" as const },
+    { code: "990040000002", geslacht: "M" as const },
   ];
 
   // Teams waar deze spelers dubbel aan toegewezen worden
@@ -21,18 +22,25 @@ export async function seedMultiTeam(): Promise<void> {
   const team2 = teamId(2); // Senioren 2
 
   for (const s of multiTeamSpelers) {
+    const naam = getUniekeNaam(s.geslacht);
+    const roepnaam = naam?.roepnaam ?? "Speler";
+    const achternaam = naam
+      ? naam.tussenvoegsel
+        ? `${naam.tussenvoegsel} ${naam.achternaam}`
+        : naam.achternaam
+      : "Onbekend";
     await prisma.speler.upsert({
       where: { id: s.code },
       create: {
         id: s.code,
-        roepnaam: s.naam,
-        achternaam: "Edge",
+        roepnaam,
+        achternaam,
         geslacht: s.geslacht,
         geboortejaar: 2000,
         geboortedatum: new Date("2000-06-15"),
         status: "BESCHIKBAAR",
       },
-      update: { roepnaam: s.naam },
+      update: { roepnaam, achternaam },
     });
 
     // Toewijzing aan team 1
