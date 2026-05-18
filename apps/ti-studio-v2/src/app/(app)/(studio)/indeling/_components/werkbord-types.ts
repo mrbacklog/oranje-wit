@@ -64,6 +64,8 @@ export interface VersieData {
   selectieGroepen: SelectieGroepMeta[];
   peildatum: Date;
   seizoen: string; // "2025-2026"
+  /** Canvas-posities per kaart-sleutel. Sleutelconventie: "team-{id}" of "sg-{id}" */
+  posities: Record<string, { x: number; y: number }>;
 }
 
 export interface PoolSpeler {

@@ -288,12 +288,16 @@ export async function haalVersieData(
     spelersHeren: team.spelersHeren.map((s) => ({ ...s, hasFoto: metFoto.has(s.spelerId) })),
   }));
 
+  // Posities — opgeslagen canvas-posities (Json veld, lege map als null)
+  const posities = (versie.posities ?? {}) as Record<string, { x: number; y: number }>;
+
   return {
     versieId,
     teams: teamsMetFoto,
     selectieGroepen,
     peildatum,
     seizoen,
+    posities,
   };
 }
 
