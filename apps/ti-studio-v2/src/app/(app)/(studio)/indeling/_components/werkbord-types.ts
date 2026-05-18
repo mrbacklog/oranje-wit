@@ -51,6 +51,11 @@ export interface TeamKaartData {
   spelersHeren: TeamKaartSpeler[];
   staf: TeamKaartStaf[];
   openMemoCount: number;
+  // ── Velden voor TeamDialog-tabs (optioneel; werkbord-mapper laat ze leeg,
+  // dialog-data-loader vult ze) ──
+  werkitemsDetail?: import("@/components/personen/types").SpelerWerkitemDetail[]; // hergebruik shape
+  gemKorfbalLeeftijd?: number; // gemiddelde korfbal-leeftijd (voor hero-stats)
+  ussScore?: number | null; // som van USS-scores (indien beschikbaar)
 }
 
 export interface VersieData {
