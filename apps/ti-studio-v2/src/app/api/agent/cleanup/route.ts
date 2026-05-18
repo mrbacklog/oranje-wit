@@ -86,7 +86,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         await verplaatsKaartInternal(inverse.versieId, inverse.kaartKey, inverse.positie);
 
         logger.info(
-          `agent/cleanup: mutatie ${mutatie.id} teruggedraaid — kaartKey=${inverse.kaartKey} → ${inverse.positie ? `(${inverse.positie.x}, ${inverse.positie.y})` : "verwijderd"}`
+          `agent/cleanup: mutatie ${mutatie.id} teruggedraaid — kaartKey=${inverse.kaartKey} → ${
+            inverse.positie ? `(${inverse.positie.x}, ${inverse.positie.y})` : "verwijderd"
+          }`
         );
       } else {
         logger.warn(`agent/cleanup: onbekend mutatie-type "${mutatie.type}" — overgeslagen`);
