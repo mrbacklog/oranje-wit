@@ -38,6 +38,10 @@
           {
             "type": "command",
             "command": "bash -c 'INPUT=$(cat); FILE=$(echo \"$INPUT\" | jq -r \".tool_input.file_path // empty\"); for p in .env package-lock.json pnpm-lock.yaml .git/; do if [[ \"$FILE\" == *\"$p\"* ]]; then echo \"Geblokkeerd: $FILE matcht beschermd patroon $p\" >&2; exit 2; fi; done; exit 0'"
+          },
+          {
+            "type": "command",
+            "command": "bash -c 'INPUT=$(cat); FILE=$(echo \"$INPUT\" | grep -oE \"\\\"file_path\\\":\\\"[^\\\"]+\\\"\" | head -1 | sed -e \"s/\\\"file_path\\\":\\\"//\" -e \"s/\\\"$//\"); [ -z \"$FILE\" ] && exit 0; BASE=$(basename \"$FILE\"); case \"$FILE\" in *apps/ti-studio-v2/src/components/personen/*Dialog.tsx|*apps/ti-studio-v2/src/components/personen/*HoverKaart*.tsx|*apps/ti-studio-v2/src/app/*indeling/_components/TeamDialog.tsx|*apps/ti-studio-v2/src/app/*indeling/_components/SpelerDialog.tsx|*apps/ti-studio-v2/src/app/*indeling/_components/StafDialog.tsx) echo \"Dialoog-canon geschonden: $FILE. Entiteit-dialogen en hover-kaarten horen onder apps/ti-studio-v2/src/components/<entiteit>/contexts/. Zie .claude/rules/dialoog-canon.md\" >&2; exit 2 ;; esac; case \"$BASE\" in HoverKaartSpeler.tsx) case \"$FILE\" in *apps/ti-studio-v2/*) echo \"Dubbeling geblokkeerd: $FILE - canon is components/speler/contexts/HoverKaart.tsx. Uitbreiden, niet dupliceren.\" >&2; exit 2 ;; esac ;; esac; exit 0'"
           }
         ]
       }
@@ -48,7 +52,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo 'HERINNERING: logger uit @oranje-wit/types (NOOIT console.log) | rel_code is enige speler-sleutel | NOOIT pnpm db:push | Deploy: patch/fix direct naar main, release via team-release | Taal: altijd Nederlands'"
+            "command": "echo 'HERINNERING: logger uit @oranje-wit/types (NOOIT console.log) | rel_code is enige speler-sleutel | NOOIT pnpm db:push | Deploy: patch/fix direct naar main, release via team-release | Taal: altijd Nederlands | ti-studio-v2 dialogen onder components/<entiteit>/contexts/ — NOOIT dupliceren, grep eerst (.claude/rules/dialoog-canon.md)'"
           }
         ]
       }

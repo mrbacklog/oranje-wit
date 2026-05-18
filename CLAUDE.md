@@ -187,6 +187,8 @@ Gebruik `/team-devops` voor health checks en CI status (observatie, geen deploys
 
 **Deploy** — `patch:`/`fix:` commits mogen door elke agent gepusht worden naar main (auto-deploy via fast-gate). `release:` commits uitsluitend via `team-release`.
 
+**Dialoog-canon (ti-studio-v2)** — entiteit-dialogen en hover-kaarten leven onder `apps/ti-studio-v2/src/components/<entiteit>/contexts/`, NIET in een pagina-tree. Entiteit-server-actions onder `apps/ti-studio-v2/src/actions/<entiteit>-actions.ts`. Voor een `*Dialog.tsx` of `HoverKaart*.tsx` aanmaken: eerst `grep` of een canon bestaat — uitbreiden, niet dupliceren. Volledige regel: `.claude/rules/dialoog-canon.md`.
+
 **Drag-drop per app** — 
 - **`apps/ti-studio` (v1)**: HTML5 native (`draggable` attr + `dataTransfer` events)
 - **`apps/ti-studio-v2`**: `@atlaskit/pragmatic-drag-and-drop` (PDND). E2E: `page.locator(source).dragTo(page.locator(target))` werkt out-of-the-box. Data-testid: `speler-card-{rel_code}`, `team-kaart-{owCode}`, `drop-zone-{type}`.
@@ -231,6 +233,7 @@ Detail-informatie staat in path-scoped rules en docs:
 | `rules/score-model.md` | USS schaal, speler/team score formules |
 | `rules/beheer.md` | 9 TC-domeinen, autorisatie, temporeel model |
 | `rules/teamindeling-scheiding.md` | Desktop/mobile scheiding TI |
+| `.claude/rules/dialoog-canon.md` | TI Studio v2 — één code-werkelijkheid per entiteit-dialoog/hover-kaart |
 | `docs/kennis/tc-doelgroepen.md` | 5 TC-doelgroepen (Single Source of Truth voor POP-ratio's) |
 | `docs/kennis/e2e-testen-tegen-studio-test.md` | E2E-tests tegen studio-test.ckvoranjewit.app (architecture, lokaal/CI, PDND-nuances) |
 | `docs/kennis/` | Seizoenscyclus, TC-beleid, TC-organisatie, KNKV-competitie |

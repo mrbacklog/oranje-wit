@@ -269,21 +269,76 @@ De homepage is bereikbaar via klik op het TI-logo bovenaan de ribbon (niet als r
 
 ### Fase 1 — Pagina-voor-pagina (week 1-3)
 
-Volgorde: Homepage → Werkbord → Personen → Memo → Kader → Sync
+> **Bijgewerkt 2026-05-18 — Route B-parallel.** De oorspronkelijke strikte
+> sequentie (Homepage → Werkbord → Personen → Memo → Kader → Sync) is op
+> 2026-05-13 doorbroken: alle zes pagina's hebben binnen één week hun
+> visueel/structureel skelet (Route B) gekregen via parallelle commits.
+> In de praktijk bleek dat personen/memo/kader/sync hun eigen queries hebben
+> en níet refereren naar werkbord-runtime-state — de oorspronkelijke
+> volgorde-rationale gold dus alleen voor schema-coupling en die is er niet.
+>
+> **Werkwijze vanaf 18 mei:** Fase 1 splitst in twee sub-fases die parallel
+> mogen lopen door aparte agents in eigen worktrees (zie
+> `feedback_worktree-isolation`):
+>
+> - **1a — Route B (visueel/structureel)**: gedaan voor alle zes pagina's.
+> - **1b — Functionaliteit-laag**: per pagina aan een eigen agent
+>   delegeerbaar zodra Route B af is. Geen onderlinge wachtrij meer.
+>
+> Werkbord behoudt prioriteit als meest complexe pagina, maar blokkeert
+> personen/memo/kader/sync niet langer.
 
 Per pagina: bouw conform prototype, kopieer server actions/API routes uit v1,
 gebruik gedeeld Prisma-schema. CI moet groen blijven na elke pagina.
 
-**Per pagina exit-criteria:**
+**Per pagina exit-criteria (geldt voor 1b):**
 - Pagina laadt zonder runtime errors
 - Primaire flow werkt (lezen + schrijven)
 - Geen `console.log` (logger-patroon uit v1 meenemen)
 - TypeScript compile errors: nul
 
 **Tussenmijlpaal na Werkbord**: Daisy AI-plugin aansluiten (zie sectie 4).
+Daisy mag pas worden aangesloten zodra werkbord-1b functioneel klaar is —
+de andere pagina's hoeven daar niet op te wachten.
 
-**Volgorde-rationale:** Werkbord als tweede omdat het het meest complexe stuk is en
-daarna de andere pagina's door-refereren (memo-count, kader-data, etc.).
+**Voorwaarde voor 1b: dialoog-consolidatie eerst.** Cross-page dialogen
+(`SpelerDialog`, `StafDialog`, `TeamDialog`, hover-kaarten, nieuw-…-dialogen)
+en hun server actions moeten één code-werkelijkheid per entiteit hebben
+vóórdat pagina-agents er functionaliteit aan toevoegen. Anders zet elke
+agent z'n eigen variant vast. Plan en stappen: zie
+[2026-05-18-dialoog-consolidatie-v2.md](2026-05-18-dialoog-consolidatie-v2.md).
+Eén korte refactor-agent doet dit; pas daarna mogen pagina-agents starten.
+
+**Spelregels voor parallelle agents in 1b:**
+
+1. **Worktree-isolatie verplicht** — elke pagina-agent op eigen branch
+   `lab/v2-<pagina>-<scope>` met `isolation: worktree`. PO neemt merge-regie.
+2. **Scope-afspraak vooraf**: een agent mag schrijven binnen zijn pagina-tree
+   (`apps/ti-studio-v2/src/app/(app)/(<pagina>)/`) plus z'n eigen
+   pagina-`actions.ts` (pagina-compositie, niet entiteit-CRUD). Buiten die
+   scope: alleen lezen tenzij vooraf afgestemd met PO.
+3. **Dialoog-canon respecteren** — entiteit-dialogen leven onder
+   `apps/ti-studio-v2/src/components/<entiteit>/contexts/` (speler, staf,
+   team, reservering). Wijzigingen aan die componenten of aan hun
+   server-action-bestanden in `apps/ti-studio-v2/src/actions/<entiteit>-actions.ts`
+   gaan via PO, niet per pagina-agent. Pagina-agent mag importeren, niet
+   uitbreiden zonder afstemming.
+4. **Verboden zonder PO-afstemming**: wijzigingen aan
+   `packages/database/prisma/schema.prisma`, `packages/types/src/`,
+   `werkbord-types.ts`, of een entiteit-dialoog/hover-kaart onder
+   `components/<entiteit>/contexts/`.
+5. **Backlog-items eerbiedigen**: zie
+   `docs/superpowers/specs/2026-05-18-v1-fixes-naar-v2-backlog.md`. Punten 3
+   (`memo-create` + live-update event) en 4 (`effectieveSpelerStatus`) zijn
+   cross-pagina-helpers die centraal moeten landen; niet per pagina
+   improviseren.
+6. **Patch-deploys via main**: elke 1b-agent commit met `patch:`-prefix,
+   geen feature-PR's nodig (zie CLAUDE.md deploy-tabel).
+
+**Volgorde-rationale (historisch):** Werkbord stond oorspronkelijk als tweede
+omdat het het meest complexe stuk is. Bij schema-coupling-risico zou dat
+gegolden hebben, maar in de feitelijke Route B-aanpak gebruikt elke pagina
+eigen queries — daarmee verviel die afhankelijkheid.
 
 ---
 
