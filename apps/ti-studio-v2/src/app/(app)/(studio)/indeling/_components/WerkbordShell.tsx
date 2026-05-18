@@ -79,9 +79,12 @@ function verplaatsSpelerOptimistisch(
 function verplaatsSpelerInPool(
   spelers: PoolSpeler[],
   rel_code: string,
-  naarTeamId: string | null
+  naarTeamId: string | null,
+  teamNaam: string | null = null
 ): PoolSpeler[] {
-  return spelers.map((s) => (s.spelerId === rel_code ? { ...s, ingedeeldTeamId: naarTeamId } : s));
+  return spelers.map((s) =>
+    s.spelerId === rel_code ? { ...s, ingedeeldTeamId: naarTeamId, ingedeeldTeamNaam: teamNaam } : s
+  );
 }
 
 export function WerkbordShell({
@@ -168,7 +171,15 @@ export function WerkbordShell({
 
       // Optimistische update
       setTeams(verplaatsSpelerOptimistisch(teams, data.rel_code, naarTeamId));
-      setPoolSpelers(verplaatsSpelerInPool(poolSpelers, data.rel_code, naarTeamId));
+      const naarTeam = teams.find((t) => t.id === naarTeamId) ?? null;
+      setPoolSpelers(
+        verplaatsSpelerInPool(
+          poolSpelers,
+          data.rel_code,
+          naarTeamId,
+          naarTeam ? (naarTeam.alias ?? naarTeam.naam) : null
+        )
+      );
       setSaveState("saving");
       setFoutTekst(null);
 
@@ -203,7 +214,7 @@ export function WerkbordShell({
       const snapshotPool = poolSpelers;
 
       setTeams(verplaatsSpelerOptimistisch(teams, data.rel_code, null));
-      setPoolSpelers(verplaatsSpelerInPool(poolSpelers, data.rel_code, null));
+      setPoolSpelers(verplaatsSpelerInPool(poolSpelers, data.rel_code, null, null));
       setSaveState("saving");
       setFoutTekst(null);
 

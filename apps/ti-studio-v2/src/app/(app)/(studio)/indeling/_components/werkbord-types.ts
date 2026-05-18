@@ -26,6 +26,9 @@ export interface TeamKaartSpeler {
   korfbalLeeftijd: number; // berekenKorfbalLeeftijdExact()
   geslacht: "M" | "V";
   status: string;
+  isNieuw: boolean; // lidSinds >= 1 juli van scenario-startjaar-1
+  hasFoto: boolean;
+  memoStatus?: string | null;
 }
 
 export interface TeamKaartStaf {
@@ -55,6 +58,7 @@ export interface VersieData {
   teams: TeamKaartData[];
   selectieGroepen: SelectieGroepMeta[];
   peildatum: Date;
+  seizoen: string; // "2025-2026"
 }
 
 export interface PoolSpeler {
@@ -67,8 +71,12 @@ export interface PoolSpeler {
   leeftijdCategorie: string;
   huidigTeamNaam: string | null;
   ingedeeldTeamId: string | null;
+  ingedeeldTeamNaam: string | null;
   status: string;
   openMemoCount: number;
+  isNieuw: boolean; // lidSinds >= 1 juli van scenario-startjaar-1
+  hasFoto: boolean;
+  memoStatus?: string | null;
 }
 
 export interface StafLid {

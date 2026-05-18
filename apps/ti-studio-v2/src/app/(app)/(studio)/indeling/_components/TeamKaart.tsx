@@ -5,6 +5,8 @@ import type { TeamKaartData, TeamKaartSpeler } from "./werkbord-types";
 import { useWerkbordDropTarget } from "./hooks/useWerkbordDropTarget";
 import { useWerkbordDraggable, type DragBron } from "./hooks/useWerkbordDraggable";
 import type { WerkbordDragData } from "./hooks/useWerkbordDraggable";
+import { RijkeRij } from "@/components/speler/contexts/RijkeRij";
+import type { SpelerStatus, WerkitemStatus } from "@oranje-wit/database";
 
 function cx(...args: (string | false | null | undefined)[]): string {
   return args.filter(Boolean).join(" ");
@@ -193,15 +195,17 @@ function CompactChip({ speler, teamId, onClick, onDrop }: CompactChipProps) {
 interface DetailRijProps {
   speler: TeamKaartSpeler;
   teamId: string;
+  teamNaam: string;
   onClick: (spelerId: string) => void;
   onDrop: (data: WerkbordDragData) => void;
 }
 
-function DetailRij({ speler, teamId, onClick, onDrop }: DetailRijProps) {
-  const isVrouw = speler.geslacht === "V";
+function DetailRij({ speler, teamId, teamNaam, onClick, onDrop }: DetailRijProps) {
   const bron: DragBron = `team-${teamId}`;
   const { ref: dragRef, isDragging } = useWerkbordDraggable({ rel_code: speler.spelerId, bron });
   const { ref: dropRef, isOver } = useWerkbordDropTarget({ doelBron: bron, onDrop });
+
+  const isAR = speler.status === "ALGEMEEN_RESERVE";
 
   const combinedRef = (el: HTMLDivElement | null) => {
     (dragRef as React.MutableRefObject<HTMLDivElement | null>).current = el;
@@ -211,84 +215,35 @@ function DetailRij({ speler, teamId, onClick, onDrop }: DetailRijProps) {
   return (
     <div
       ref={combinedRef}
-      className={cx("tk-rijke-rij", isVrouw ? "vrouw" : "heer")}
       data-testid={`speler-card-${speler.spelerId}-team-${teamId}`}
-      style={
-        {
-          "--status-color": statusKleur(speler.status),
-          cursor: isDragging ? "grabbing" : "grab",
-          opacity: isDragging ? 0.4 : 1,
-          outline: isOver ? "1px solid var(--val-ok)" : "none",
-          outlineOffset: 1,
-        } as React.CSSProperties
-      }
-      onClick={() => onClick(speler.spelerId)}
+      style={{
+        cursor: isDragging ? "grabbing" : isAR ? "pointer" : "grab",
+        opacity: isDragging ? 0.4 : 1,
+        outline: isOver ? "1px solid var(--val-ok)" : "none",
+        outlineOffset: 1,
+        borderRadius: 6,
+      }}
       title={`${speler.roepnaam} ${speler.achternaam} (${formatKorfbalLeeftijd(speler.korfbalLeeftijd)} jr)`}
     >
-      {/* Smal verticaal geslachtsblokje — 8px breed, full-height */}
-      <div
-        style={{
-          width: 8,
-          alignSelf: "stretch",
-          flexShrink: 0,
-          background: isVrouw ? "#ec4899" : "#3b82f6",
-          borderRadius: "4px 0 0 4px",
+      <RijkeRij
+        speler={{
+          relCode: speler.spelerId,
+          roepnaam: speler.roepnaam,
+          tussenvoegsel: speler.tussenvoegsel,
+          achternaam: speler.achternaam,
+          geslacht: speler.geslacht,
+          leeftijd: speler.korfbalLeeftijd,
+          status: speler.status as SpelerStatus,
+          isNieuw: speler.isNieuw,
+          hasFoto: speler.hasFoto,
+          memoStatus: (speler.memoStatus as WerkitemStatus | null | undefined) ?? null,
+          huidigTeam: null,
+          indelingTeam: teamNaam,
         }}
+        variant="team-kaart"
+        draggable={!isAR}
+        onClick={() => onClick(speler.spelerId)}
       />
-
-      {/* Naam + status-dot */}
-      <div
-        className="col"
-        style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          gap: 3,
-          minWidth: 0,
-          padding: "0 6px",
-        }}
-      >
-        <span
-          className="nm"
-          style={{
-            fontSize: 13,
-            fontWeight: 700,
-            color: "var(--text-primary)",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
-          {speler.roepnaam} {speler.tussenvoegsel ? `${speler.tussenvoegsel} ` : ""}
-          {speler.achternaam}
-          {speler.isNieuw && (
-            <span
-              title="Nieuw lid"
-              style={{ marginLeft: 4, fontSize: 10, color: "var(--ok, #22c55e)" }}
-            >
-              ✦
-            </span>
-          )}
-        </span>
-        <div className="row2">
-          <span
-            style={{
-              width: 6,
-              height: 6,
-              borderRadius: "50%",
-              background: statusKleur(speler.status),
-              flexShrink: 0,
-              display: "inline-block",
-            }}
-          />
-        </div>
-      </div>
-
-      {/* Leeftijdscel — groot getal + decimaal */}
-      <div className="leeft-col" style={{ background: leeftijdGradient(speler.korfbalLeeftijd) }}>
-        <span className="lb">{Math.floor(speler.korfbalLeeftijd)}</span>
-        <span className="ld">.{String(Math.round((speler.korfbalLeeftijd % 1) * 10))}</span>
-      </div>
     </div>
   );
 }
@@ -552,6 +507,7 @@ interface SpelerKolomProps {
   spelers: TeamKaartSpeler[];
   geslacht: "V" | "M";
   teamId: string;
+  teamNaam: string;
   zoom: "compact" | "detail";
   isLaatste: boolean;
   onClick: (spelerId: string) => void;
@@ -562,6 +518,7 @@ function SpelerKolom({
   spelers,
   geslacht,
   teamId,
+  teamNaam,
   zoom,
   isLaatste,
   onClick,
@@ -633,6 +590,7 @@ function SpelerKolom({
               key={s.spelerId}
               speler={s}
               teamId={teamId}
+              teamNaam={teamNaam}
               onClick={onClick}
               onDrop={onDrop}
             />
@@ -733,6 +691,7 @@ export function TeamKaart({
             spelers={team.spelersDames}
             geslacht="V"
             teamId={team.id}
+            teamNaam={team.alias ?? team.naam}
             zoom={zoom}
             isLaatste={false}
             onClick={onSpelerClick}
@@ -744,6 +703,7 @@ export function TeamKaart({
             spelers={team.spelersHeren}
             geslacht="M"
             teamId={team.id}
+            teamNaam={team.alias ?? team.naam}
             zoom={zoom}
             isLaatste={true}
             onClick={onSpelerClick}

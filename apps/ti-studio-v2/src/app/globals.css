@@ -1902,3 +1902,27 @@ body {
 .compact-chip.st-ar .nm {
   color: #a8a8ad;
 }
+
+/* ── Status-outline utility-klassen (rijke-rij container) ── */
+.rijke-rij.st-beschikbaar {
+  border-color: #10b981;
+}
+.rijke-rij.st-nieuw {
+  border-color: #a3e635;
+}
+.rijke-rij.st-twijfelt {
+  border-color: #fb923c;
+}
+.rijke-rij.st-stopt {
+  border-color: #e11d48;
+}
+.rijke-rij.st-ar {
+  border-color: #84a98c;
+}
+.rijke-rij.st-stopt .nm {
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+.rijke-rij.st-ar .nm {
+  color: #a8a8ad;
+}

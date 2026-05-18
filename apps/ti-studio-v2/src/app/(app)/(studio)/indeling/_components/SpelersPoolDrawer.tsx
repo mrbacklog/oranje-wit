@@ -2,15 +2,71 @@
 
 import { useState } from "react";
 import type { PoolSpeler } from "./werkbord-types";
-import { WbSpelerRij } from "./WbSpelerRij";
+import { RijkeRij } from "@/components/speler/contexts/RijkeRij";
 import { useWerkbordDropTarget } from "./hooks/useWerkbordDropTarget";
+import { useWerkbordDraggable } from "./hooks/useWerkbordDraggable";
 import type { WerkbordDragData } from "./hooks/useWerkbordDraggable";
+import type { SpelerStatus, WerkitemStatus } from "@oranje-wit/database";
 
 type PoolFilter = "zonder" | "ingedeeld" | "alle";
 
 function cx(...args: (string | false | null | undefined)[]): string {
   return args.filter(Boolean).join(" ");
 }
+
+// Niet beschikbaar voor team-indeling: afgemeld of bewust niet-spelend.
+// NIEUW_POTENTIEEL / NIEUW_DEFINITIEF tonen we wél — die zijn juist kandidaat.
+// Geport uit v1 (commit a3ba7609).
+const NIET_INDEELBAAR = new Set<string>(["GAAT_STOPPEN", "GESTOPT", "NIET_SPELEND", "RECREANT"]);
+
+// ── PoolRijWrapper — combineert drag-logica met RijkeRij ────────────────────
+
+interface PoolRijWrapperProps {
+  speler: PoolSpeler;
+  onClick: (spelerId: string) => void;
+}
+
+function PoolRijWrapper({ speler, onClick }: PoolRijWrapperProps) {
+  const { ref, isDragging } = useWerkbordDraggable({
+    rel_code: speler.spelerId,
+    bron: "spelerpool",
+  });
+
+  const isNietIndeelbaar = NIET_INDEELBAAR.has(speler.status);
+
+  return (
+    <div
+      ref={ref}
+      data-testid={`speler-card-${speler.spelerId}-spelerpool`}
+      style={{
+        cursor: isDragging ? "grabbing" : isNietIndeelbaar ? "pointer" : "grab",
+        opacity: isDragging ? 0.5 : 1,
+      }}
+    >
+      <RijkeRij
+        speler={{
+          relCode: speler.spelerId,
+          roepnaam: speler.roepnaam,
+          tussenvoegsel: speler.tussenvoegsel,
+          achternaam: speler.achternaam,
+          geslacht: speler.geslacht,
+          leeftijd: speler.korfbalLeeftijd,
+          status: speler.status as SpelerStatus,
+          isNieuw: speler.isNieuw,
+          hasFoto: speler.hasFoto,
+          memoStatus: (speler.memoStatus as WerkitemStatus | null | undefined) ?? null,
+          huidigTeam: speler.huidigTeamNaam,
+          indelingTeam: speler.ingedeeldTeamNaam,
+        }}
+        variant="pool"
+        draggable={!isNietIndeelbaar}
+        onClick={() => onClick(speler.spelerId)}
+      />
+    </div>
+  );
+}
+
+// ── SpelersPoolDrawer ───────────────────────────────────────────────────────
 
 interface SpelersPoolDrawerProps {
   spelers: PoolSpeler[];
@@ -46,7 +102,7 @@ export function SpelersPoolDrawer({
       filter === "alle"
         ? true
         : filter === "zonder"
-          ? s.ingedeeldTeamId === null
+          ? s.ingedeeldTeamId === null && !NIET_INDEELBAAR.has(s.status)
           : s.ingedeeldTeamId !== null;
 
     return zoekMatch && filterMatch;
@@ -99,7 +155,7 @@ export function SpelersPoolDrawer({
           </span>
         ) : (
           gefilterd.map((s) => (
-            <WbSpelerRij key={s.spelerId} speler={s} bron="spelerpool" onClick={onSpelerClick} />
+            <PoolRijWrapper key={s.spelerId} speler={s} onClick={onSpelerClick} />
           ))
         )}
       </div>

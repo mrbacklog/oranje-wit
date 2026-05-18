@@ -3,8 +3,11 @@ import {
   korfbalPeildatum,
   berekenKorfbalLeeftijdExact,
   grofKorfbalLeeftijd,
+  seizoenStart,
 } from "@oranje-wit/types";
 import { logger } from "@oranje-wit/types";
+import type { Seizoen } from "@oranje-wit/types";
+import { getSpelersMetFoto } from "@/lib/queries/spelers-foto";
 import type {
   WerkindelingMeta,
   VersieMeta,
@@ -18,6 +21,23 @@ import type {
 } from "../_components/werkbord-types";
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
+
+/**
+ * "Nieuw" grens — 1 juli van het seizoen ervoor.
+ * TC werkt typisch aan het komende seizoen (bv. 2026-2027) en wil daar de
+ * instromers van het lopende seizoen (vanaf 2025-07-01) als nieuw zien.
+ * Geport uit v1 (commits e619fcde + 3a94bb0a).
+ */
+function nieuwGrensVoorSeizoen(seizoen: string): Date {
+  const start = seizoenStart(seizoen as Seizoen);
+  return new Date(start.getFullYear() - 1, 6, 1);
+}
+
+function bepaalIsNieuw(lidSinds: string | null, grens: Date): boolean {
+  if (!lidSinds) return false;
+  const d = new Date(lidSinds);
+  return !isNaN(d.getTime()) && d >= grens;
+}
 
 function catKleurFromGrof(grof: number): string {
   if (grof <= 7) return "blauw";
@@ -106,6 +126,7 @@ export async function haalVersieData(
   seizoen: string
 ): Promise<VersieData | null> {
   const peildatum = korfbalPeildatum(seizoen as `${number}-${number}`);
+  const nieuwGrens = nieuwGrensVoorSeizoen(seizoen);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const versie = await prisma.versie.findUnique({
@@ -126,6 +147,7 @@ export async function haalVersieData(
                   geboortedatum: true,
                   geslacht: true,
                   status: true,
+                  lidSinds: true,
                 },
               },
             },
@@ -151,6 +173,18 @@ export async function haalVersieData(
                   geboortedatum: true,
                   geslacht: true,
                   status: true,
+                  lidSinds: true,
+                  werkitems: {
+                    where: {
+                      type: "MEMO",
+                      status: {
+                        in: ["OPEN", "IN_BESPREKING", "OPGELOST", "GEACCEPTEERD_RISICO"],
+                      },
+                    },
+                    select: { status: true },
+                    orderBy: { updatedAt: "desc" },
+                    take: 1,
+                  },
                 },
               },
             },
@@ -188,6 +222,8 @@ export async function haalVersieData(
         s.geboortejaar as number,
         peildatum
       );
+      // Hoogste actieve memo-status (eerste na orderBy desc)
+      const memoStatus = (s.werkitems as Array<{ status: string }>)?.[0]?.status ?? null;
       return {
         spelerId: s.id as string,
         roepnaam: s.roepnaam as string,
@@ -196,6 +232,9 @@ export async function haalVersieData(
         korfbalLeeftijd: leeftijd,
         geslacht: s.geslacht as "M" | "V",
         status: s.status as string,
+        isNieuw: bepaalIsNieuw((s.lidSinds as string | null) ?? null, nieuwGrens),
+        hasFoto: false, // wordt hieronder ingevuld
+        memoStatus,
       };
     });
 
@@ -237,11 +276,24 @@ export async function haalVersieData(
     teamIds: (sg.teams as Array<{ id: string }>).map((t) => t.id),
   }));
 
+  // Foto-injectie voor alle team-spelers
+  const alleTeamSpelerIds = teams.flatMap((t) => [
+    ...t.spelersDames.map((s) => s.spelerId),
+    ...t.spelersHeren.map((s) => s.spelerId),
+  ]);
+  const metFoto = await getSpelersMetFoto(alleTeamSpelerIds);
+  const teamsMetFoto = teams.map((team) => ({
+    ...team,
+    spelersDames: team.spelersDames.map((s) => ({ ...s, hasFoto: metFoto.has(s.spelerId) })),
+    spelersHeren: team.spelersHeren.map((s) => ({ ...s, hasFoto: metFoto.has(s.spelerId) })),
+  }));
+
   return {
     versieId,
-    teams,
+    teams: teamsMetFoto,
     selectieGroepen,
     peildatum,
+    seizoen,
   };
 }
 
@@ -252,10 +304,13 @@ export async function haalPoolSpelers(
   versieData: VersieData
 ): Promise<PoolSpeler[]> {
   const peildatum = versieData.peildatum;
+  const nieuwGrens = nieuwGrensVoorSeizoen(versieData.seizoen);
 
-  // Verzamel ingedeelde speler-IDs
+  // Verzamel ingedeelde speler-IDs + teamnaam
   const ingedeeldeMap = new Map<string, string>(); // spelerId → teamId
+  const teamNaamMap = new Map<string, string>(); // teamId → alias/naam
   for (const team of versieData.teams) {
+    teamNaamMap.set(team.id, team.alias ?? team.naam);
     for (const s of team.spelersDames) ingedeeldeMap.set(s.spelerId, team.id);
     for (const s of team.spelersHeren) ingedeeldeMap.set(s.spelerId, team.id);
   }
@@ -265,6 +320,9 @@ export async function haalPoolSpelers(
     where: {
       kadersId,
       speler: {
+        // Sluit alleen "echt weg" statussen uit op DB-niveau.
+        // RECREANT / GAAT_STOPPEN tonen we onder filter "alle" — drawer-filter
+        // "zonder team" sluit ze daar alsnog uit (NIET_INDEELBAAR-set).
         status: { notIn: ["GESTOPT", "NIET_SPELEND"] },
       },
     },
@@ -280,12 +338,16 @@ export async function haalPoolSpelers(
           geslacht: true,
           status: true,
           huidig: true,
+          lidSinds: true,
           werkitems: {
             where: {
               type: "MEMO",
-              status: { in: ["OPEN", "IN_BESPREKING"] },
+              status: {
+                in: ["OPEN", "IN_BESPREKING", "OPGELOST", "GEACCEPTEERD_RISICO"],
+              },
             },
-            select: { id: true },
+            select: { status: true },
+            orderBy: { updatedAt: "desc" },
             take: 1,
           },
         },
@@ -294,7 +356,7 @@ export async function haalPoolSpelers(
   });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return kadersSpelers.map((ks: any) => {
+  const poolSpelers: PoolSpeler[] = kadersSpelers.map((ks: any) => {
     const s = ks.speler;
     const leeftijd = berekenKorfbalLeeftijdExact(
       s.geboortedatum ?? null,
@@ -303,6 +365,7 @@ export async function haalPoolSpelers(
     );
     const grof = grofKorfbalLeeftijd(s.geboortejaar as number, peildatum);
     const huidigJson = s.huidig as Record<string, unknown> | null;
+    const memoStatus = (s.werkitems as Array<{ status: string }>)?.[0]?.status ?? null;
 
     return {
       spelerId: s.id as string,
@@ -314,10 +377,21 @@ export async function haalPoolSpelers(
       leeftijdCategorie: catKleurFromGrof(grof),
       huidigTeamNaam: huidigJson?.team ? String(huidigJson.team) : null,
       ingedeeldTeamId: ingedeeldeMap.get(s.id as string) ?? null,
+      ingedeeldTeamNaam: ingedeeldeMap.has(s.id as string)
+        ? (teamNaamMap.get(ingedeeldeMap.get(s.id as string)!) ?? null)
+        : null,
       status: s.status as string,
       openMemoCount: (s.werkitems as Array<unknown>).length,
+      isNieuw: bepaalIsNieuw((s.lidSinds as string | null) ?? null, nieuwGrens),
+      hasFoto: false, // wordt hieronder ingevuld
+      memoStatus,
     };
   });
+
+  // Foto-injectie
+  const relCodes = poolSpelers.map((s) => s.spelerId);
+  const metFotoPool = await getSpelersMetFoto(relCodes);
+  return poolSpelers.map((s) => ({ ...s, hasFoto: metFotoPool.has(s.spelerId) }));
 }
 
 // ── Staf ophalen ─────────────────────────────────────────────────────────────
