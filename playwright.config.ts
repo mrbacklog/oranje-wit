@@ -114,27 +114,29 @@ export default defineConfig({
       dependencies: ["studio-test-auth-setup"],
     },
   ],
-  webServer: [
-    {
-      command: "pnpm dev:web",
-      port: 3000,
-      reuseExistingServer: !process.env.CI,
-      timeout: 120000,
-      env: { E2E_TEST: "true" },
-    },
-    {
-      command: "pnpm dev:ti-studio",
-      port: 3001,
-      reuseExistingServer: !process.env.CI,
-      timeout: 120000,
-      env: { E2E_TEST: "true" },
-    },
-    {
-      command: "pnpm --filter @oranje-wit/ti-studio-v2 dev",
-      port: 3002,
-      reuseExistingServer: !process.env.CI,
-      timeout: 120000,
-      env: { E2E_TEST: "true" },
-    },
-  ],
+  webServer: process.env.STUDIO_TEST_URL
+    ? undefined
+    : [
+        {
+          command: "pnpm dev:web",
+          port: 3000,
+          reuseExistingServer: !process.env.CI,
+          timeout: 120000,
+          env: { E2E_TEST: "true" },
+        },
+        {
+          command: "pnpm dev:ti-studio",
+          port: 3001,
+          reuseExistingServer: !process.env.CI,
+          timeout: 120000,
+          env: { E2E_TEST: "true" },
+        },
+        {
+          command: "pnpm --filter @oranje-wit/ti-studio-v2 dev",
+          port: 3002,
+          reuseExistingServer: !process.env.CI,
+          timeout: 120000,
+          env: { E2E_TEST: "true" },
+        },
+      ],
 });
