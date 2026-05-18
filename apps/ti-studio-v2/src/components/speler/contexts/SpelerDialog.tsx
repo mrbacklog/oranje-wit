@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useTransition } from "react";
-import type { SpelerRijData } from "@/components/personen/types";
+import type { SpelerRijData, SpelerWerkitemDetail } from "@/components/personen/types";
 import { HeroHeader } from "@/components/speler/contexts/HeroHeader";
 import { createPortal } from "react-dom";
 import { updateSpelerStatus, updateSpelerIndeling } from "@/actions/speler-actions";
@@ -10,17 +10,6 @@ import { logger } from "@oranje-wit/types";
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
 export type TabId = "pad" | "kenmerken" | "evaluaties" | "werkitems";
-
-export interface SpelerWerkitemDetail {
-  id: string;
-  titel: string;
-  beschrijving: string | null;
-  status: string; // WerkitemStatus enum value
-  prioriteit: "HOOG" | "MIDDEL" | "LAAG";
-  type: string;
-  auteurNaam: string;
-  createdAt: Date;
-}
 
 const STATUS_LABELS: Record<string, string> = {
   BESCHIKBAAR: "Beschikbaar",
