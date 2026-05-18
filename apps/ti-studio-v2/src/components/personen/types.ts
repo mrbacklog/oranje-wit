@@ -59,6 +59,14 @@ export interface SpelerRijData {
   werkitemsDetail?: SpelerWerkitemDetail[]; // detail voor werkitems-tab
 }
 
+/**
+ * Seizoenshistorie-rij voor StafDialog historie-tab.
+ */
+export interface StafSeizoenHistorie {
+  seizoen: string; // "2025-2026"
+  teamKoppelingen: Array<{ teamNaam: string; teamKleur: string | null; rol: string }>;
+}
+
 export interface StafRijData {
   id: string; // Staf.id (stafCode: STAF-001)
   naam: string;
@@ -73,6 +81,12 @@ export interface StafRijData {
   memoBadge: MemoBadge;
   email: string | null;
   geboortejaar: number | null;
+  // ── Velden voor StafDialog-tabs (optioneel; tabel-mapper laat ze leeg, dialog-data-loader vult ze) ──
+  relCode?: string | null; // optionele koppeling naar Lid (Staf.relCode)
+  hasFoto?: boolean; // foto beschikbaar via Lid.relCode
+  speelteamNaam?: string | null; // Speler-tegen (staflid speelt ook in een team)
+  werkitemsDetail?: SpelerWerkitemDetail[]; // detail voor memo-tab (zelfde shape)
+  seizoenshistorie?: StafSeizoenHistorie[]; // detail voor historie-tab
 }
 
 export interface ReserveringRijData {
