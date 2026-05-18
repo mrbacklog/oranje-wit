@@ -3,18 +3,14 @@
 import type { SpelerStatus, WerkitemStatus } from "@oranje-wit/database";
 import { MemoCorner } from "../primitives/MemoCorner";
 import { formatSpelerNaam } from "@/lib/format/speler";
-import { useWerkbordDraggable, type DragBron } from "@/app/(app)/(studio)/indeling/_components/hooks/useWerkbordDraggable";
+import {
+  useWerkbordDraggable,
+  type DragBron,
+} from "@/app/(app)/(studio)/indeling/_components/hooks/useWerkbordDraggable";
 
 // ── Leeftijdscategorie → CSS-var ─────────────────────────────────────────────
 
-type LeeftijdCategorie =
-  | "kangoeroe"
-  | "blauw"
-  | "groen"
-  | "geel"
-  | "oranje"
-  | "rood"
-  | "senior";
+type LeeftijdCategorie = "kangoeroe" | "blauw" | "groen" | "geel" | "oranje" | "rood" | "senior";
 
 function catKleurVar(categorie: LeeftijdCategorie): string {
   switch (categorie) {
@@ -117,12 +113,7 @@ function NieuwSparkle() {
       }}
       aria-hidden="true"
     >
-      <svg
-        width={12}
-        height={12}
-        viewBox="0 0 24 24"
-        style={{ display: "block" }}
-      >
+      <svg width={12} height={12} viewBox="0 0 24 24" style={{ display: "block" }}>
         <path d="M12 1l2 9 9 2-9 2-2 9-2-9-9-2 9-2z" fill="#ff6b00" />
       </svg>
     </span>
@@ -158,14 +149,12 @@ export function CompactChip({
   const stKlasse = statusKlasse(speler.status);
   const isVrouw = speler.geslacht === "V";
   const leeftijdKleur = catKleurVar(speler.leeftijdscategorie);
-  const heeftMemo =
-    speler.memoStatus &&
-    speler.memoStatus !== "GEARCHIVEERD";
+  const heeftMemo = speler.memoStatus && speler.memoStatus !== "GEARCHIVEERD";
 
   return (
     <div
       ref={dragRef}
-      className={`compact-chip${isVrouw ? " vrouw" : ""} ${stKlasse}`}
+      className={`compact-chip${isVrouw ? "vrouw" : ""} ${stKlasse}`}
       data-testid={`speler-card-${speler.relCode}`}
       style={
         {

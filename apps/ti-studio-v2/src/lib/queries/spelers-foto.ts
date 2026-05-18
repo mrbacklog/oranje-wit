@@ -1,8 +1,6 @@
 import { db } from "@/lib/db";
 
-export async function getSpelersMetFoto(
-  relCodes: string[],
-): Promise<Set<string>> {
+export async function getSpelersMetFoto(relCodes: string[]): Promise<Set<string>> {
   if (relCodes.length === 0) return new Set();
   const rows = await db.$queryRaw<{ rel_code: string }[]>`
     SELECT rel_code FROM lid_fotos

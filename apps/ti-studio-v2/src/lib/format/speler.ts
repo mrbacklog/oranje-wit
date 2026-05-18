@@ -29,7 +29,7 @@ type NaamVariant = CompactVariant | ObjectVariant;
 
 export function formatSpelerNaam(
   speler: { roepnaam: string; tussenvoegsel?: string | null; achternaam: string },
-  variant: NaamVariant,
+  variant: NaamVariant
 ): string | { hoofd: string; sub: string } {
   const { roepnaam, tussenvoegsel, achternaam } = speler;
   const tvs = tussenvoegsel?.trim() ?? "";
@@ -71,10 +71,7 @@ export function formatSpelerNaam(
 
 // ── Nieuw-lid helper ──────────────────────────────────────────────────────────
 
-export function isNieuwLid(
-  lidSinds: string | null,
-  seizoenStart: Date,
-): boolean {
+export function isNieuwLid(lidSinds: string | null, seizoenStart: Date): boolean {
   if (!lidSinds) return false;
 
   const parsed = new Date(lidSinds);

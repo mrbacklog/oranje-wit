@@ -53,10 +53,7 @@ function leeftijdGradientVar(jaren: number): string {
   return `var(--leeftijd-${j})`;
 }
 
-export function LeeftijdKolom({
-  leeftijd,
-  size = "normaal",
-}: LeeftijdKolomProps) {
+export function LeeftijdKolom({ leeftijd, size = "normaal" }: LeeftijdKolomProps) {
   const { jaren, decimalen } = splitLeeftijd(leeftijd);
   const jarenNum = parseInt(jaren, 10);
   const gradient = leeftijdGradientVar(jarenNum);
