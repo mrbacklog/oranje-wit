@@ -22,6 +22,7 @@ import { TeamDialog } from "@/components/team/contexts/TeamDialog";
 import { useSpelerDialog } from "@/components/speler/contexts/SpelerDialogProvider";
 import { SaveIndicator } from "./SaveIndicator";
 import { verplaatsSpeler } from "@/actions/werkbord/verplaats-speler";
+import { verplaatsKaart } from "@/actions/werkbord/verplaats-kaart";
 import type { WerkbordDragData } from "./hooks/useWerkbordDraggable";
 import { logger } from "@oranje-wit/types";
 
@@ -107,6 +108,9 @@ export function WerkbordShell({
   // Optimistische state
   const [teams, setTeams] = useState<TeamKaartData[]>(actieveVersie.teams);
   const [poolSpelers, setPoolSpelers] = useState<PoolSpeler[]>(allSpelers);
+  const [posities, setPosities] = useState<Record<string, { x: number; y: number }>>(
+    actieveVersie.posities
+  );
 
   function handleTogglePool() {
     setLinksOpen((prev) => (prev === "pool" ? null : "pool"));
@@ -161,6 +165,29 @@ export function WerkbordShell({
   }
 
   const statsIngedeeldLive = poolSpelers.filter((s) => s.ingedeeldTeamId !== null).length;
+
+  const handleDropKaart = useCallback(
+    async (kaartKey: string, x: number, y: number) => {
+      // Optimistische update
+      setPosities((prev) => ({ ...prev, [kaartKey]: { x, y } }));
+
+      const result = await verplaatsKaart({
+        versieId: actieveVersie.versieId,
+        kaartKey,
+        x,
+        y,
+      });
+
+      if (result.ok) {
+        setPosities(result.data.posities);
+      } else {
+        // Rollback naar server-staat
+        setPosities(actieveVersie.posities);
+        logger.warn("handleDropKaart mislukt:", result.error);
+      }
+    },
+    [actieveVersie.versieId, actieveVersie.posities]
+  );
 
   const handleDropSpelerOpTeam = useCallback(
     async (data: WerkbordDragData, naarTeamId: string) => {
@@ -318,6 +345,8 @@ export function WerkbordShell({
           onZoomChange={setZoom}
           onTeamClick={handleTeamClick}
           onDropSpelerOpTeam={handleDropSpelerOpTeam}
+          posities={posities}
+          onKaartDrop={handleDropKaart}
         />
 
         {/* Rechter drawers */}
