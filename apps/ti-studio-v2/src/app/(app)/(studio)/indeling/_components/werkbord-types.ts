@@ -37,6 +37,16 @@ export interface TeamKaartStaf {
   rollen: string[];
 }
 
+/**
+ * Reservering = fictieve plek in een team voor een nog-onbekende speler.
+ * Heeft alleen titel + geslacht, geen leeftijd of status.
+ */
+export interface TeamReservering {
+  id: string;
+  titel: string;
+  geslacht: "M" | "V";
+}
+
 export interface TeamKaartData {
   id: string;
   naam: string;
@@ -50,6 +60,7 @@ export interface TeamKaartData {
   spelersDames: TeamKaartSpeler[];
   spelersHeren: TeamKaartSpeler[];
   staf: TeamKaartStaf[];
+  reserveringen?: TeamReservering[]; // fictieve plekken; werkbord-mapper laat default leeg, getTeamDialogData vult
   openMemoCount: number;
   // ── Velden voor TeamDialog-tabs (optioneel; werkbord-mapper laat ze leeg,
   // dialog-data-loader vult ze) ──

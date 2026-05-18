@@ -340,12 +340,11 @@ export function WerkbordShell({
           teams={teams}
           selectieGroepen={actieveVersie.selectieGroepen}
           peildatum={actieveVersie.peildatum}
-          posities={actieveVersie.posities ?? {}}
+          posities={posities}
           zoom={zoom}
           onZoomChange={setZoom}
           onTeamClick={handleTeamClick}
           onDropSpelerOpTeam={handleDropSpelerOpTeam}
-          posities={posities}
           onKaartDrop={handleDropKaart}
         />
 
