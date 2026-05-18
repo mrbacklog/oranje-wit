@@ -59,7 +59,7 @@ function PoolRijWrapper({ speler, onClick }: PoolRijWrapperProps) {
           indelingTeam: speler.ingedeeldTeamNaam,
         }}
         variant="pool"
-        draggable={!isNietIndeelbaar}
+        draggable={false}
         onClick={() => onClick(speler.spelerId)}
       />
     </div>
