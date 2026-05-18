@@ -10,7 +10,9 @@ export async function GET(
   const guard = await guardTC();
   if (!guard.ok) return guard.response;
 
-  const { relCode } = await params;
+  const { relCode: relCodeParam } = await params;
+  // SpelerAvatar vraagt /api/foto/${relCode}.webp — strip de extensie
+  const relCode = relCodeParam.replace(/\.webp$/i, "");
 
   try {
     const foto = await db.lidFoto.findUnique({
