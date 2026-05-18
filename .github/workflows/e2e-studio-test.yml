@@ -25,7 +25,10 @@ jobs:
         run: pnpm exec playwright install chromium
 
       - name: E2E tests uitvoeren tegen studio-test
-        run: pnpm exec playwright test --project=studio-test-auth-setup --project=ti-studio-v2-remote --reporter=html
+        # Beperkt tot werkbord-dragdrop spec — die is bewezen robuust voor remote.
+        # Andere v2-specs (homepage, smoke, memo, personen, werkbord) zijn lokaal-geschreven
+        # en moeten apart voor remote worden aangepast (open punt).
+        run: pnpm exec playwright test --project=studio-test-auth-setup --project=ti-studio-v2-remote e2e/ti-studio-v2/werkbord-dragdrop.spec.ts --reporter=html
         env:
           STUDIO_TEST_URL: https://studio-test.ckvoranjewit.app
           STUDIO_TEST_BASIC_AUTH_USER: ${{ secrets.STUDIO_TEST_BASIC_AUTH_USER }}
