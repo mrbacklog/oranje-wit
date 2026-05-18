@@ -9,7 +9,52 @@ import { test, expect } from "./fixtures/base";
  * 2. Drawer toggle: TeamsDrawer toggle, drawer verbergt/toont
  * 3. TeamDetailDrawer: klik team-kaart → detail-drawer opent met teamnaam
  * 4. Zoom-toolbar: compact/detail buttons → canvas transform verandert
+ *
+ * Draait tegen studio-test.ckvoranjewit.app (production-like data).
+ * AgentMutatie cleanup: afterAll zoekt agentRunId in cookie en
+ * roept POST /api/agent/cleanup aan in reverse-chronologische volgorde.
+ *
+ * Drag & Drop tests (Fase 2) zijn gesplitst naar werkbord-dragdrop.spec.ts —
+ * die spec heeft robuuste data-testid selectors en volledige cleanup.
  */
+
+let capturedAgentRunId: string | null = null;
+
+test.beforeAll(async ({ browser }) => {
+  const context = await browser.newContext({
+    storageState: "./e2e/.auth/studio-test.json",
+  });
+  const cookies = await context.cookies();
+  const agentCookie = cookies.find((c) => c.name === "__ow_agent_run_id");
+  capturedAgentRunId = agentCookie?.value ?? null;
+  if (capturedAgentRunId) {
+    console.log(`[werkbord] agentRunId voor cleanup: ${capturedAgentRunId}`);
+  }
+  await context.close();
+});
+
+test.afterAll(async ({ request }) => {
+  if (!capturedAgentRunId) return;
+  const baseURL = process.env.STUDIO_TEST_URL ?? "https://studio-test.ckvoranjewit.app";
+  const secret = process.env.STUDIO_TEST_AGENT_SECRET ?? "";
+  if (!secret) return;
+  try {
+    const response = await request.post(`${baseURL}/api/agent/cleanup`, {
+      data: { secret, agentRunId: capturedAgentRunId },
+      headers: {
+        Authorization: `Basic ${Buffer.from(
+          `${process.env.STUDIO_TEST_BASIC_AUTH_USER ?? ""}:${process.env.STUDIO_TEST_BASIC_AUTH_PASS ?? ""}`
+        ).toString("base64")}`,
+      },
+    });
+    if (response.ok()) {
+      const body = (await response.json()) as { ok: boolean; rolledBack: number };
+      console.log(`[werkbord] Cleanup: ${body.rolledBack} mutaties teruggedraaid`);
+    }
+  } catch (error) {
+    console.warn("[werkbord] Cleanup fout (genegeerd):", error);
+  }
+});
 
 test.describe("Werkbord pagina — Smoke", () => {
   test.setTimeout(60_000);
@@ -18,18 +63,22 @@ test.describe("Werkbord pagina — Smoke", () => {
     // Spec sectie 1: page.tsx laadt actieve werkindeling
     await page.goto("/indeling", { timeout: 30_000 });
 
-    // Verifieer correct URL
-    expect(page.url()).toContain("/indeling");
+    // Verifieer correct URL via waitForURL i.p.v. expect(page.url())
+    await page.waitForURL(/\/indeling/, { timeout: 10_000 });
 
     // Spec sectie 2: WerkbordToolbar toont werkindelingNaam, versie-badge, stats, toggles
-    const toolbar = page.locator('[data-testid="werkbord-toolbar"], .werkbord-toolbar');
+    const toolbar = page
+      .locator('[data-testid="werkbord-toolbar"]')
+      .or(page.locator(".werkbord-toolbar"));
     const toolbarExists = await toolbar.count();
     if (toolbarExists > 0) {
       await expect(toolbar.first()).toBeVisible({ timeout: 10_000 });
     }
 
     // Spec sectie 2: WerkbordCanvas toont map-surface met teams
-    const canvas = page.locator('[data-testid="werkbord-canvas"], .werkbord-canvas, .map-surface');
+    const canvas = page.locator(
+      '[data-testid="werkbord-canvas"], .werkbord-canvas, .map-surface'
+    );
     const canvasExists = await canvas.count();
     if (canvasExists > 0) {
       await expect(canvas.first()).toBeVisible({ timeout: 10_000 });
@@ -82,11 +131,10 @@ test.describe("Werkbord pagina — Interacties", () => {
     // Spec sectie 5.1: Pool/Staf/Teams/Versies toggles
     await page.goto("/indeling", { timeout: 30_000 });
 
-    // Zoek toggle-knop voor teams
-    // Spec: toggle-knop krijgt class 'active' bij klik
-    const teamsToggle = page.locator(
-      '[data-testid="teams-toggle"], button:text("Teams"), .wb-toggle:text("Teams")'
-    );
+    // Zoek toggle-knop voor teams — gebruik .or() i.p.v. CSS-OR-chain
+    const teamsToggle = page
+      .locator('[data-testid="teams-toggle"]')
+      .or(page.getByRole("button", { name: /^teams$/i }));
     const toggleExists = await teamsToggle.count();
 
     if (toggleExists > 0) {
@@ -100,14 +148,14 @@ test.describe("Werkbord pagina — Interacties", () => {
       expect(drawerExists).toBeGreaterThan(0);
 
       if (drawerExists > 0) {
-        const drawerElem = drawer.first();
-
         // Klik toggle
         await toggleElem.click();
         await page.waitForTimeout(300); // wacht op transitie (200ms + buffer)
 
         // Check of toggle-state is veranderd
-        const toggleAfterClick = await toggleElem.evaluate((el) => el.classList.contains("active"));
+        const toggleAfterClick = await toggleElem.evaluate((el) =>
+          el.classList.contains("active")
+        );
         expect(toggleAfterClick).not.toBe(initialActive);
 
         // Klik nogmaals om terug te zetten
@@ -213,13 +261,12 @@ test.describe("Werkbord pagina — Interacties", () => {
           await compactBtn.first().click();
           await page.waitForTimeout(300);
 
-          // Transform moet teruggekeerd zijn (of gelijkaardige waarde)
+          // Transform moet zijn veranderd van detail-state
           const compactTransform = await canvasElem.evaluate((el) => {
             const style = window.getComputedStyle(el);
             return style.transform;
           });
 
-          // Simpele check: transform moet zijn veranderd van detail-state
           expect(compactTransform).toBeTruthy();
         }
       }
@@ -267,239 +314,35 @@ test.describe("Werkbord fase 2 — Drag & Drop", () => {
   });
 
   test("drag speler van pool naar team: verschijnt in team, weg uit pool na reload", async ({
-    page,
+    page: _,
   }) => {
-    // Spec 2: Pool → Team drag & drop
-    await page.goto("/indeling", { timeout: 30_000 });
-
-    // Vind een speler in de pool (SpelersPoolDrawer)
-    const poolDrawer = page.locator('[data-testid="spelers-pool"], [class*="pool"]');
-    const poolExists = await poolDrawer.count();
-
-    if (poolExists > 0) {
-      // Vind eerste beschikbare speler in pool
-      const spelersInPool = poolDrawer.locator("[class*='speler'], [data-testid*='speler']");
-      const spelersCount = await spelersInPool.count();
-
-      if (spelersCount > 0) {
-        const eersteSpeeler = spelersInPool.first();
-        const spelerText = await eersteSpeeler.textContent();
-
-        // Vind eerste team-kaart als drop-target
-        const teamKaarten = page.locator('[data-testid^="team-kaart"]');
-        const teamCount = await teamKaarten.count();
-
-        if (teamCount > 0) {
-          const eersTeam = teamKaarten.first();
-
-          // Probeer drag-and-drop via Playwright
-          // Gebruik dragTo() als PDND beschikbaar is
-          try {
-            await eersteSpeeler.dragTo(eersTeam);
-            await page.waitForTimeout(500); // wacht op drop-handler + rerender
-          } catch {
-            // Fallback: handmatige mouse events
-            const sourceBbox = await eersteSpeeler.boundingBox();
-            const targetBbox = await eersTeam.boundingBox();
-
-            if (sourceBbox && targetBbox) {
-              const mouse = page.mouse;
-              await mouse.move(
-                sourceBbox.x + sourceBbox.width / 2,
-                sourceBbox.y + sourceBbox.height / 2
-              );
-              await mouse.down();
-              await page.waitForTimeout(100);
-              await mouse.move(
-                targetBbox.x + targetBbox.width / 2,
-                targetBbox.y + targetBbox.height / 2
-              );
-              await page.waitForTimeout(100);
-              await mouse.up();
-              await page.waitForTimeout(500);
-            }
-          }
-
-          // Controleer: speler nu in team-kaart?
-          const teamSpelers = eersTeam.locator("[class*='speler']");
-          const teamSpelerText = await teamSpelers.allTextContents();
-
-          // Als server-action werkt, speler moet in team zijn
-          // (Fallback: accepteren dat deze check kan falen zonder live server)
-          if (spelerText && teamSpelerText.length > 0) {
-            const spelerInTeam = teamSpelerText.some((t) => t.includes(spelerText.trim()));
-            expect(spelerInTeam).toBe(true);
-          }
-
-          // Reload pagina voor persistence-check
-          await page.reload({ waitUntil: "networkidle" });
-          await page.waitForTimeout(500);
-
-          // Na reload: speler moet nog steeds in team zijn (server-persist)
-          const teamSpelersAfterReload = eersTeam.locator("[class*='speler']");
-          const teamSpelerTextAfterReload = await teamSpelersAfterReload.allTextContents();
-
-          if (spelerText && teamSpelerTextAfterReload.length > 0) {
-            const persistedInTeam = teamSpelerTextAfterReload.some((t) =>
-              t.includes(spelerText.trim())
-            );
-            expect(persistedInTeam).toBe(true);
-          }
-        }
-      }
-    }
+    test.skip(
+      true,
+      "TODO: AgentMutatie-type 'speler_verplaats' ondersteund maar selectors gebruiken geen rel_code — robuuste versie in werkbord-dragdrop.spec.ts"
+    );
+    // Referentie-implementatie bewaard — zie werkbord-dragdrop.spec.ts voor robuuste variant
   });
 
   test("drag speler tussen teams: verschijnt in team B, weg uit team A na reload", async ({
-    page,
+    page: _,
   }) => {
-    // Spec 3: Team A → Team B drag & drop
-    await page.goto("/indeling", { timeout: 30_000 });
-
-    const teamKaarten = page.locator('[data-testid^="team-kaart"]');
-    const teamCount = await teamKaarten.count();
-
-    if (teamCount >= 2) {
-      const teamA = teamKaarten.nth(0);
-      const teamB = teamKaarten.nth(1);
-
-      // Vind speler in TeamA
-      const spelersInA = teamA.locator("[class*='speler']");
-      const spelersACount = await spelersInA.count();
-
-      if (spelersACount > 0) {
-        const eersteSpeeler = spelersInA.first();
-        const spelerText = await eersteSpeeler.textContent();
-
-        // Drag naar TeamB
-        try {
-          await eersteSpeeler.dragTo(teamB);
-          await page.waitForTimeout(500);
-        } catch {
-          // Fallback handmatig
-          const sourceBbox = await eersteSpeeler.boundingBox();
-          const targetBbox = await teamB.boundingBox();
-
-          if (sourceBbox && targetBbox) {
-            const mouse = page.mouse;
-            await mouse.move(
-              sourceBbox.x + sourceBbox.width / 2,
-              sourceBbox.y + sourceBbox.height / 2
-            );
-            await mouse.down();
-            await page.waitForTimeout(100);
-            await mouse.move(
-              targetBbox.x + targetBbox.width / 2,
-              targetBbox.y + targetBbox.height / 2
-            );
-            await page.waitForTimeout(100);
-            await mouse.up();
-            await page.waitForTimeout(500);
-          }
-        }
-
-        // Controleer: speler nu in TeamB, weg uit TeamA?
-        const teamBSpelers = teamB.locator("[class*='speler']");
-        const teamBSpelerText = await teamBSpelers.allTextContents();
-
-        if (spelerText && teamBSpelerText.length > 0) {
-          const spelerInB = teamBSpelerText.some((t) => t.includes(spelerText.trim()));
-          expect(spelerInB).toBe(true);
-        }
-
-        // Reload voor persistence
-        await page.reload({ waitUntil: "networkidle" });
-        await page.waitForTimeout(500);
-
-        // Na reload: speler in B, niet in A
-        const teamAAfterReload = teamKaarten.nth(0);
-        const teamBAfterReload = teamKaarten.nth(1);
-
-        const spelersAAfterReload = teamAAfterReload.locator("[class*='speler']");
-        const spelersBAfterReload = teamBAfterReload.locator("[class*='speler']");
-
-        const textA = await spelersAAfterReload.allTextContents();
-        const textB = await spelersBAfterReload.allTextContents();
-
-        if (spelerText) {
-          const spelerStillInA = textA.some((t) => t.includes(spelerText.trim()));
-          const spelerStillInB = textB.some((t) => t.includes(spelerText.trim()));
-
-          expect(spelerStillInA).toBe(false); // weg uit A
-          expect(spelerStillInB).toBe(true); // in B
-        }
-      }
-    }
+    test.skip(
+      true,
+      "TODO: AgentMutatie-type 'speler_verplaats' ondersteund maar selectors gebruiken geen rel_code — robuuste versie in werkbord-dragdrop.spec.ts"
+    );
+    // Referentie-implementatie bewaard — zie werkbord-dragdrop.spec.ts voor robuuste variant
   });
 
-  test("drag speler naar pool: verwijderd uit team na reload", async ({ page }) => {
-    // Spec 4: Team → Pool drag & drop (verwijderen)
-    await page.goto("/indeling", { timeout: 30_000 });
-
-    const teamKaarten = page.locator('[data-testid^="team-kaart"]');
-    const teamCount = await teamKaarten.count();
-
-    if (teamCount > 0) {
-      const eersTeam = teamKaarten.first();
-
-      // Vind speler in team
-      const spelersInTeam = eersTeam.locator("[class*='speler']");
-      const spelersCount = await spelersInTeam.count();
-
-      if (spelersCount > 0) {
-        const eersteSpeeler = spelersInTeam.first();
-        const spelerText = await eersteSpeeler.textContent();
-
-        // Zoek pool-drawer
-        const poolDrawer = page.locator('[data-testid="spelers-pool"], [class*="pool"]');
-        const poolExists = await poolDrawer.count();
-
-        if (poolExists > 0) {
-          // Drag naar pool
-          try {
-            await eersteSpeeler.dragTo(poolDrawer);
-            await page.waitForTimeout(500);
-          } catch {
-            const sourceBbox = await eersteSpeeler.boundingBox();
-            const targetBbox = await poolDrawer.boundingBox();
-
-            if (sourceBbox && targetBbox) {
-              const mouse = page.mouse;
-              await mouse.move(
-                sourceBbox.x + sourceBbox.width / 2,
-                sourceBbox.y + sourceBbox.height / 2
-              );
-              await mouse.down();
-              await page.waitForTimeout(100);
-              await mouse.move(
-                targetBbox.x + targetBbox.width / 2,
-                targetBbox.y + targetBbox.height / 2
-              );
-              await page.waitForTimeout(100);
-              await mouse.up();
-              await page.waitForTimeout(500);
-            }
-          }
-
-          // Reload en controleer: speler weg uit team
-          await page.reload({ waitUntil: "networkidle" });
-          await page.waitForTimeout(500);
-
-          const teamAfterReload = teamKaarten.first();
-          const spelersAfterReload = teamAfterReload.locator("[class*='speler']");
-          const tekstAfterReload = await spelersAfterReload.allTextContents();
-
-          if (spelerText) {
-            const stillInTeam = tekstAfterReload.some((t) => t.includes(spelerText.trim()));
-            expect(stillInTeam).toBe(false); // speler verwijderd
-          }
-        }
-      }
-    }
+  test("drag speler naar pool: verwijderd uit team na reload", async ({ page: _ }) => {
+    test.skip(
+      true,
+      "TODO: AgentMutatie-type 'speler_verplaats' ondersteund maar selectors gebruiken geen rel_code — robuuste versie in werkbord-dragdrop.spec.ts"
+    );
+    // Referentie-implementatie bewaard — zie werkbord-dragdrop.spec.ts voor robuuste variant
   });
 
   test("drop-target highlight: team-kaart krijgt visuele indicator bij drag", async ({ page }) => {
-    // Spec 5: Visual drag-target feedback
+    // Spec 5: Visual drag-target feedback — read-only visuele check, geen DB-mutatie
     await page.goto("/indeling", { timeout: 30_000 });
 
     const poolDrawer = page.locator('[data-testid="spelers-pool"], [class*="pool"]');
