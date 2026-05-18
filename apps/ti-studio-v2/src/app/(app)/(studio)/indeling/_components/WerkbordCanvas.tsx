@@ -39,7 +39,7 @@ interface WerkbordCanvasProps {
   onKaartDrop?: (kaartKey: string, x: number, y: number) => void;
 }
 
-// ── KaartWrapper — individu wrapping per visuele kaart ───────────────────────
+// ── KaartWrapper -- individuele wrapper per visuele kaart ─────────────────────
 
 interface KaartWrapperProps {
   kaartKey: string;
@@ -47,7 +47,8 @@ interface KaartWrapperProps {
   posities: Record<string, { x: number; y: number }>;
   schaal: number;
   onKaartDrop?: (kaartKey: string, x: number, y: number) => void;
-  headerSelector: string; // CSS selector waarop het slepen wordt geactiveerd
+  /** CSS selector waarop het slepen wordt geactiveerd (header van de kaart) */
+  headerSelector: string;
   children: React.ReactNode;
   testId?: string;
 }
@@ -204,7 +205,6 @@ export function WerkbordCanvas({
           posities={posities}
           schaal={scale}
           onKaartDrop={onKaartDrop}
-          // Sleep activeren via de header van de selectie-kaart
           headerSelector=".sk-header"
           testId={`kaart-wrap-sg-${sg.id}`}
         >
@@ -241,7 +241,6 @@ export function WerkbordCanvas({
           posities={posities}
           schaal={scale}
           onKaartDrop={onKaartDrop}
-          // Sleep activeren via de header van de team-kaart
           headerSelector=".tk-header"
           testId={`kaart-wrap-${team.id}`}
         >

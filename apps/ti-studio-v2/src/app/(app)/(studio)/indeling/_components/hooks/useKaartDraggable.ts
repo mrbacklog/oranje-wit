@@ -1,11 +1,11 @@
 "use client";
 
 /**
- * useKaartDraggable — muis-gebaseerde kaart-positionering op het werkbord-canvas
+ * useKaartDraggable -- muis-gebaseerde kaart-positionering op het werkbord-canvas
  *
  * Kaart-drag werkt via mouse-events (niet PDND) omdat canvas-positionering
- * pixel-coördinaten vereist die PDND niet levert. Speler-drag blijft PDND
- * (useWerkbordDraggable) en werkt onafhankelijk via stopPropagation op de header.
+ * pixel-coordinaten vereist die PDND niet levert. Speler-drag blijft PDND
+ * (useWerkbordDraggable) en werkt onafhankelijk via e.stopPropagation() op de header.
  *
  * Gebruik:
  *   const { handleMouseDown, isDragging } = useKaartDraggable({
@@ -48,12 +48,12 @@ export function useKaartDraggable({
     startPosY: number;
   } | null>(null);
 
+  // Houd refs in sync om stale-closure te vermijden
   const onMoveRef = useRef(onMove);
   const onDropRef = useRef(onDrop);
   const huidigePoRef = useRef(huidigePos);
   const schaalRef = useRef(schaal);
 
-  // Houd refs in sync om stale-closure te vermijden
   onMoveRef.current = onMove;
   onDropRef.current = onDrop;
   huidigePoRef.current = huidigePos;
@@ -70,7 +70,7 @@ export function useKaartDraggable({
       };
       setIsDragging(true);
     },
-    [] // kaartKey niet nodig — refs bewaken het
+    [] // kaartKey niet nodig -- refs bewaken het
   );
 
   useEffect(() => {
