@@ -55,7 +55,7 @@ test.describe("StafDialog — Personen/Staf tabel opent dialoog", () => {
     // Klik op eerste data-rij (index 1, na header)
     const eersteStafRij = page.locator(".staf-tabel-rij").nth(1);
     await expect(eersteStafRij).toBeVisible({ timeout: 10_000 });
-    await eersteStafRij.click();
+    await eersteStafRij.locator(".staf-naam").first().click();
     await page.waitForTimeout(300);
 
     // Verifieer dialog verschijnt met role=dialog
@@ -101,7 +101,7 @@ test.describe("StafDialog — Personen/Staf tabel opent dialoog", () => {
 
     const eersteStafRij = page.locator(".staf-tabel-rij").nth(1);
     await expect(eersteStafRij).toBeVisible({ timeout: 10_000 });
-    await eersteStafRij.click();
+    await eersteStafRij.locator(".staf-naam").first().click();
     await page.waitForTimeout(300);
 
     const dialog = page.locator('[role="dialog"]');
@@ -149,7 +149,7 @@ test.describe("StafDialog — Personen/Staf tabel opent dialoog", () => {
 
     const eersteStafRij = page.locator(".staf-tabel-rij").nth(1);
     await expect(eersteStafRij).toBeVisible({ timeout: 10_000 });
-    await eersteStafRij.click();
+    await eersteStafRij.locator(".staf-naam").first().click();
     await page.waitForTimeout(300);
 
     const dialog = page.locator('[role="dialog"]');
@@ -206,7 +206,7 @@ test.describe("StafDialog — Personen/Staf tabel opent dialoog", () => {
 
     const eersteStafRij = page.locator(".staf-tabel-rij").nth(1);
     await expect(eersteStafRij).toBeVisible({ timeout: 10_000 });
-    await eersteStafRij.click();
+    await eersteStafRij.locator(".staf-naam").first().click();
     await page.waitForTimeout(300);
 
     const dialog = page.locator('[role="dialog"]');

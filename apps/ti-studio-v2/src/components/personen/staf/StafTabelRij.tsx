@@ -59,6 +59,9 @@ export function StafTabelRij({ staflid, onOpenDialog }: StafTabelRijProps) {
         </div>
         <span
           ref={naamRef}
+          className="staf-naam"
+          role="button"
+          tabIndex={0}
           style={{
             fontSize: 14,
             fontWeight: 600,

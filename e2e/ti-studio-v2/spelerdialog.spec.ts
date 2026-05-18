@@ -116,8 +116,11 @@ test.describe("SpelerDialog — Personen/Spelers tabel opent dialoog", () => {
     await kenmerkenTabButton.click();
     await page.waitForTimeout(200);
 
-    // Verifieer tab content verandert (zoek naar persoonsgegevens-labels)
-    const kenmerkContent = dialog.locator("text=/Geslacht|Leeftijd|Status/");
+    // Verifieer tab content verandert. Kenmerken-tab toont prototype-labels:
+    // Geboortedatum, Korfballeeftijd, Sportlink rel-code, Lid sinds, Laatst gezien.
+    const kenmerkContent = dialog.locator(
+      "text=/Geboortedatum|Korfballeeftijd|PERSOONSGEGEVENS|Sportlink/i"
+    );
     await expect(kenmerkContent).toBeVisible({ timeout: 3_000 });
 
     // Test tab "Evaluaties"
