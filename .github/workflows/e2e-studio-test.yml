@@ -24,6 +24,14 @@ jobs:
       - name: Playwright browsers installeren
         run: pnpm exec playwright install chromium
 
+      - name: Prisma client genereren
+        run: pnpm db:generate
+
+      - name: Seed edge-case test-data
+        run: pnpm tsx scripts/seed-edge-cases.ts
+        env:
+          DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
+
       - name: E2E tests uitvoeren tegen studio-test
         run: pnpm exec playwright test --project=studio-test-auth-setup --project=ti-studio-v2-remote --reporter=html
         env:
