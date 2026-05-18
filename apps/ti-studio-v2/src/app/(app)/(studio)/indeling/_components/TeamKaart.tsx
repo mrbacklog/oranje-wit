@@ -201,8 +201,6 @@ interface TeamKaartHeaderProps {
   team: TeamKaartData;
   kleur: string;
   valKleur: string;
-  aantalDames: number;
-  aantalHeren: number;
   onClick: () => void;
 }
 
@@ -243,14 +241,7 @@ function bouwSubtitel(team: TeamKaartData): string {
   return cat;
 }
 
-function TeamKaartHeader({
-  team,
-  kleur,
-  valKleur,
-  aantalDames,
-  aantalHeren,
-  onClick,
-}: TeamKaartHeaderProps) {
+function TeamKaartHeader({ team, kleur, valKleur, onClick }: TeamKaartHeaderProps) {
   const subtitle = bouwSubtitel(team);
 
   return (
@@ -347,46 +338,8 @@ function TeamKaartHeader({
         />
       </div>
 
-      {/* Geslacht-tellers ♀/♂ apart */}
-      <div
-        className="tk-header-right"
-        style={{ display: "flex", alignItems: "center", gap: 4, flexShrink: 0 }}
-      >
-        <span
-          className="tk-gender-count vrouw"
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 3,
-            padding: "2px 6px",
-            borderRadius: 5,
-            background: "rgba(255,255,255,.04)",
-            fontSize: 11,
-            fontWeight: 700,
-            fontVariantNumeric: "tabular-nums",
-            color: "var(--sexe-v)",
-          }}
-        >
-          ♀{aantalDames}
-        </span>
-        <span
-          className="tk-gender-count heer"
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 3,
-            padding: "2px 6px",
-            borderRadius: 5,
-            background: "rgba(255,255,255,.04)",
-            fontSize: 11,
-            fontWeight: 700,
-            fontVariantNumeric: "tabular-nums",
-            color: "var(--sexe-h)",
-          }}
-        >
-          ♂{aantalHeren}
-        </span>
-      </div>
+      {/* tk-header-right: prototype heeft hier geen sexe-tellers (die staan in body) */}
+      <div className="tk-header-right" />
     </div>
   );
 }
@@ -457,7 +410,6 @@ interface SpelerKolomProps {
   teamNaam: string;
   zoom: "compact" | "detail";
   isLaatste: boolean;
-  volledigeBreedte?: boolean; // true voor viertal (gestapelde blokken)
   onClick: (spelerId: string) => void;
   onDrop: (data: WerkbordDragData) => void;
 }
@@ -469,7 +421,6 @@ function SpelerKolom({
   teamNaam,
   zoom,
   isLaatste,
-  volledigeBreedte = false,
   onClick,
   onDrop,
 }: SpelerKolomProps) {
@@ -481,9 +432,7 @@ function SpelerKolom({
       className="tk-col"
       style={{
         flex: 1,
-        width: volledigeBreedte ? "100%" : undefined,
-        borderRight: volledigeBreedte || isLaatste ? "none" : "1px solid var(--border-light)",
-        borderBottom: volledigeBreedte && !isLaatste ? "1px solid var(--border-light)" : "none",
+        borderRight: isLaatste ? "none" : "1px solid var(--border-light)",
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
@@ -552,6 +501,120 @@ function SpelerKolom({
   );
 }
 
+// ── ViertalKolom — gestapelde 4-tal layout (♀ + ♂ samen) ─────────────────────
+
+interface ViertalKolomProps {
+  dames: TeamKaartSpeler[];
+  heren: TeamKaartSpeler[];
+  teamId: string;
+  teamNaam: string;
+  zoom: "compact" | "detail";
+  onClick: (spelerId: string) => void;
+  onDrop: (data: WerkbordDragData) => void;
+}
+
+function ViertalKolom({
+  dames,
+  heren,
+  teamId,
+  teamNaam,
+  zoom,
+  onClick,
+  onDrop,
+}: ViertalKolomProps) {
+  // ♀ eerst, dan ♂ — één doorlopende lijst
+  const alleSpelers = [...dames, ...heren];
+
+  return (
+    <div
+      className="tk-col"
+      style={{
+        flex: 1,
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+        minWidth: 0,
+      }}
+    >
+      {/* Gedeelde sexe-teller bovenin: ♀N + ♂N naast elkaar */}
+      <div
+        className="compact-sexe-teller"
+        style={{
+          flexShrink: 0,
+          flexDirection: "row",
+          gap: 16,
+          justifyContent: "center",
+        }}
+      >
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
+          <span
+            style={{
+              fontSize: 20,
+              fontWeight: 700,
+              color: "rgba(217,70,239,.7)",
+              lineHeight: 1,
+            }}
+          >
+            ♀
+          </span>
+          <span className="st-val" style={{ color: "rgba(236,72,153,.75)" }}>
+            {dames.length}
+          </span>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
+          <span
+            style={{
+              fontSize: 20,
+              fontWeight: 700,
+              color: "rgba(37,99,235,.7)",
+              lineHeight: 1,
+            }}
+          >
+            ♂
+          </span>
+          <span className="st-val" style={{ color: "rgba(96,165,250,.75)" }}>
+            {heren.length}
+          </span>
+        </div>
+      </div>
+
+      {/* Speler-lijst: alle 4 spelers in één flow */}
+      <div
+        style={{
+          flex: 1,
+          overflowY: "auto",
+          display: "flex",
+          flexDirection: "column",
+          gap: zoom === "detail" ? 4 : 2,
+          padding: zoom === "detail" ? "8px 8px" : "0 4px 6px",
+        }}
+        className="ow-scroll"
+      >
+        {alleSpelers.map((s) =>
+          zoom === "compact" ? (
+            <CompactChipWrapper
+              key={s.spelerId}
+              speler={s}
+              teamId={teamId}
+              onClick={onClick}
+              onDrop={onDrop}
+            />
+          ) : (
+            <DetailRij
+              key={s.spelerId}
+              speler={s}
+              teamId={teamId}
+              teamNaam={teamNaam}
+              onClick={onClick}
+              onDrop={onDrop}
+            />
+          )
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ── TeamKaart ────────────────────────────────────────────────────────────────
 
 interface TeamKaartProps {
@@ -575,8 +638,6 @@ export function TeamKaart({
   const kleur = catKleur(team);
   const kleurKlasse = catClass(team);
   const valKleur = VAL_KLEUREN[team.validatieStatus] ?? "var(--border-default)";
-  const aantalDames = team.spelersDames.length;
-  const aantalHeren = team.spelersHeren.length;
   const achttal = isAchttal(team);
 
   const doelBron: DragBron = `team-${team.id}`;
@@ -630,46 +691,45 @@ export function TeamKaart({
           team={team}
           kleur={kleur}
           valKleur={valKleur}
-          aantalDames={aantalDames}
-          aantalHeren={aantalHeren}
           onClick={() => onHeaderClick(team.id)}
         />
 
-        {/* Body — viertal = dames boven, heren onder (gestapeld); achttal = naast elkaar */}
-        <div
-          className="tk-body"
-          style={{
-            flex: 1,
-            display: "flex",
-            flexDirection: achttal ? "row" : "column",
-            overflow: "hidden",
-          }}
-        >
-          {/* Dames-blok */}
-          <SpelerKolom
-            spelers={team.spelersDames}
-            geslacht="V"
-            teamId={team.id}
-            teamNaam={team.alias ?? team.naam}
-            zoom={zoom}
-            isLaatste={false}
-            volledigeBreedte={!achttal}
-            onClick={onSpelerClick}
-            onDrop={handleDropOpKolom}
-          />
-
-          {/* Heren-blok */}
-          <SpelerKolom
-            spelers={team.spelersHeren}
-            geslacht="M"
-            teamId={team.id}
-            teamNaam={team.alias ?? team.naam}
-            zoom={zoom}
-            isLaatste={true}
-            volledigeBreedte={!achttal}
-            onClick={onSpelerClick}
-            onDrop={handleDropOpKolom}
-          />
+        {/* Body — viertal = 1 kolom met gedeelde teller; achttal = 2 kolommen ♀|♂ */}
+        <div className="tk-body" style={{ flex: 1, display: "flex", overflow: "hidden" }}>
+          {achttal ? (
+            <>
+              <SpelerKolom
+                spelers={team.spelersDames}
+                geslacht="V"
+                teamId={team.id}
+                teamNaam={team.alias ?? team.naam}
+                zoom={zoom}
+                isLaatste={false}
+                onClick={onSpelerClick}
+                onDrop={handleDropOpKolom}
+              />
+              <SpelerKolom
+                spelers={team.spelersHeren}
+                geslacht="M"
+                teamId={team.id}
+                teamNaam={team.alias ?? team.naam}
+                zoom={zoom}
+                isLaatste={true}
+                onClick={onSpelerClick}
+                onDrop={handleDropOpKolom}
+              />
+            </>
+          ) : (
+            <ViertalKolom
+              dames={team.spelersDames}
+              heren={team.spelersHeren}
+              teamId={team.id}
+              teamNaam={team.alias ?? team.naam}
+              zoom={zoom}
+              onClick={onSpelerClick}
+              onDrop={handleDropOpKolom}
+            />
+          )}
         </div>
 
         {/* Footer: staf */}
