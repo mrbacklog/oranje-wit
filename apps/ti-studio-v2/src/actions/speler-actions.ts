@@ -246,12 +246,22 @@ export async function getSpelerDialogData(spelerId: string): Promise<ActionResul
         geboortedatum: true,
         status: true,
         lidSinds: true,
+        seizoenenActief: true,
         heeftFoto: true,
         huidig: true,
         werkitems: {
-          where: { type: "MEMO", status: { in: ["OPEN", "IN_BESPREKING"] } },
-          select: { status: true },
-          orderBy: { createdAt: "desc" },
+          select: {
+            id: true,
+            titel: true,
+            beschrijving: true,
+            status: true,
+            prioriteit: true,
+            type: true,
+            createdAt: true,
+            auteur: { select: { naam: true, email: true } },
+          },
+          orderBy: [{ status: "asc" }, { createdAt: "desc" }],
+          take: 50,
         },
         teams: {
           where: { team: { versie: { werkindeling: { kadersId: kaders.id } } } },
@@ -264,7 +274,7 @@ export async function getSpelerDialogData(spelerId: string): Promise<ActionResul
         },
         kaders: {
           where: { kadersId: kaders.id },
-          select: { id: true, gezienStatus: true },
+          select: { id: true, gezienStatus: true, gezienOp: true, updatedAt: true },
           take: 1,
         },
       },
@@ -284,11 +294,52 @@ export async function getSpelerDialogData(spelerId: string): Promise<ActionResul
     const teamRel = (
       speler.teams as Array<{ team: { id: string; naam: string; alias: string | null } }>
     )[0];
-    const kadersSpeler = (speler.kaders as Array<{ id: string; gezienStatus: string | null }>)[0];
-    const werkitemsArr = speler.werkitems as Array<{ status: string }>;
-    const memoStatus = werkitemsArr[0]?.status ?? null;
+    const kadersSpeler = (
+      speler.kaders as Array<{
+        id: string;
+        gezienStatus: string | null;
+        gezienOp: Date | null;
+        updatedAt: Date;
+      }>
+    )[0];
+    const werkitemsArr = speler.werkitems as Array<{
+      id: string;
+      titel: string | null;
+      beschrijving: string;
+      status: string;
+      prioriteit: string;
+      type: string;
+      createdAt: Date;
+      auteur: { naam: string; email: string };
+    }>;
+
+    // memo-badge: alleen MEMO-type items in actieve status
+    const memoItem = werkitemsArr.find(
+      (w) => w.type === "MEMO" && (w.status === "OPEN" || w.status === "IN_BESPREKING")
+    );
+    const memoStatus = memoItem?.status ?? null;
+
     const lidSindsStr = speler.lidSinds as string | null;
     const lidSindsDate = lidSindsStr ? new Date(lidSindsStr) : null;
+
+    // laatstGezien: gezienOp als gezienStatus !== ONGEZIEN, anders updatedAt als fallback
+    // GezienHistorie-tabel bestaat niet in het schema — KadersSpeler is de enige bron
+    let laatstGezien: Date | null = null;
+    if (kadersSpeler && kadersSpeler.gezienStatus !== "ONGEZIEN") {
+      laatstGezien = kadersSpeler.gezienOp ?? kadersSpeler.updatedAt;
+    }
+
+    const werkitemsDetail: import("@/components/personen/types").SpelerWerkitemDetail[] =
+      werkitemsArr.map((w) => ({
+        id: w.id,
+        titel: w.titel ?? "",
+        beschrijving: w.beschrijving,
+        status: w.status as import("@oranje-wit/database").WerkitemStatus,
+        prioriteit: w.prioriteit,
+        type: w.type,
+        auteurNaam: w.auteur?.naam ?? w.auteur?.email ?? null,
+        createdAt: w.createdAt,
+      }));
 
     const data: SpelerRijData = {
       id: speler.id as string,
@@ -303,7 +354,9 @@ export async function getSpelerDialogData(spelerId: string): Promise<ActionResul
       huidigTeam: huidigJson?.team ? String(huidigJson.team) : null,
       indelingTeamNaam: teamRel ? (teamRel.team.alias ?? teamRel.team.naam) : null,
       indelingTeamId: teamRel?.team.id ?? null,
-      heeftOpenMemo: werkitemsArr.length > 0,
+      heeftOpenMemo: werkitemsArr.some(
+        (w) => w.type === "MEMO" && (w.status === "OPEN" || w.status === "IN_BESPREKING")
+      ),
       memoBadge: memoBadgeFromStatus(memoStatus),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       memoStatus: (memoStatus as any) ?? null,
@@ -314,8 +367,17 @@ export async function getSpelerDialogData(spelerId: string): Promise<ActionResul
       hasFoto: Boolean(speler.heeftFoto),
       kadersSpelerId: kadersSpeler?.id ?? null,
       kadersId: kaders.id as string,
+      lidSinds: lidSindsStr,
+      seizoenenActief: (speler.seizoenenActief as number | null) ?? null,
+      laatstGezien,
+      werkitemsDetail,
     };
 
+    logger.info("getSpelerDialogData:", {
+      spelerId,
+      status: "ok",
+      werkitemsDetail: werkitemsDetail.length,
+    });
     return { ok: true, data };
   } catch (error) {
     logger.warn("getSpelerDialogData mislukt:", error);
