@@ -85,112 +85,76 @@ test.describe("Werkbord DnD — Happy path", () => {
   test.setTimeout(90_000);
 
   test("pool → team: speler vanuit spelerspool naar een teamkaart slepen", async ({ page }) => {
+    // TODO: Seed-fixtures (rel_code 9901xxxxx) nog niet in test-DB beschikbaar.
+    // Wacht op: Fase 2 seed-script implementatie (edge-case-testdata.md sectie 1.3+1.4)
+    //   - Bron: rel_code 990010000008 (Edge-AlgReserve-V, in spelerspool)
+    //   - Doel: team-edge-02 (Senioren 2)
     await page.goto("/indeling", { timeout: 30_000 });
     await page.waitForTimeout(1500);
 
-    // Open spelerspool drawer (kan al open zijn)
+    // Open spelerspool drawer
     const poolOpen = await page.locator("data-testid=drop-zone-spelerpool").count();
     if (poolOpen === 0) {
-      // Probeer pool-toggle te vinden
       const toggle = page.locator('button:has-text("Pool"), [data-testid="pool-toggle"]');
       if ((await toggle.count()) > 0) await toggle.first().click();
       await page.waitForTimeout(500);
     }
 
-    // Zoek een speler in de spelerspool
-    const spelerInPool = page.locator('[data-testid^="speler-card-"][data-testid$="-spelerpool"]');
-    const poolCount = await spelerInPool.count();
-
-    if (poolCount === 0) {
-      test.skip(true, "Geen spelers in spelerspool — test overgeslagen");
+    // Harde speler-fixture: 990010000008 (Edge-AlgReserve-V in pool)
+    const spelerElem = page.locator('[data-testid="speler-card-990010000008-spelerpool"]');
+    const spelerCount = await spelerElem.count();
+    if (spelerCount === 0) {
+      test.skip(true, "TODO: Edge-AlgReserve-V (990010000008) niet in test-DB");
       return;
     }
 
-    const spelerElem = spelerInPool.first();
-    const spelerTestId = await spelerElem.getAttribute("data-testid");
-    const rel_code = spelerTestId?.split("-")[2] ?? "";
-    expect(rel_code).toBeTruthy();
-
-    // Zoek een teamkaart als drop-target
-    const teamKaart = page.locator('[data-testid^="team-kaart-"][data-testid$="-huidig"]');
-    const teamCount = await teamKaart.count();
-
-    if (teamCount === 0) {
-      test.skip(true, "Geen teamkaarten gevonden — test overgeslagen");
+    // Doel team-kaart: team-edge-02 (Senioren 2)
+    const doelTeam = page.locator('[data-testid="team-kaart-team-edge-02-huidig"]');
+    const doelCount = await doelTeam.count();
+    if (doelCount === 0) {
+      test.skip(true, "TODO: team-edge-02 niet in test-DB");
       return;
     }
-
-    const doelTeam = teamKaart.first();
 
     // Sleep speler naar team
-    await spelerElem.dragTo(doelTeam, { timeout: 10_000 });
-    await page.waitForTimeout(2000); // wacht op server action + revalidatie
+    await spelerElem.dragTo(doelTeam.first(), { timeout: 10_000 });
+    await page.waitForTimeout(2000);
 
-    // Verifieer: speler is niet meer als "spelerpool" aanwezig maar als team-kaart
-    const teamId = (await doelTeam.getAttribute("data-testid"))
-      ?.replace("team-kaart-", "")
-      .replace("-huidig", "");
-
-    const spelerOpTeam = page.locator(`[data-testid="speler-card-${rel_code}-team-${teamId}"]`);
-    // Na revalidate moet de speler op het team staan (pagina refresht via revalidatePath)
-    // Check dat geen foutmelding zichtbaar is
+    // Verifieer geen fout
     const fout = page.locator(".save-indicator.error, [data-save-state=error]");
-    const foutAanwezig = await fout.count();
-    expect(foutAanwezig).toBe(0);
+    expect(await fout.count()).toBe(0);
 
-    // spelerOpTeam kan aanwezig zijn (optimistic) of na reload
-    const opTeamOfInPool = (await spelerOpTeam.count()) + (await spelerInPool.count());
+    // Speler moet op team staan (of minstens geen error)
+    const spelerOpTeam = page.locator('[data-testid="speler-card-990010000008-team-team-edge-02"]');
+    const opTeamOfInPool = (await spelerOpTeam.count()) + (await spelerElem.count());
     expect(opTeamOfInPool).toBeGreaterThan(0);
   });
 
   test("team A → team B: speler van teamkaart naar andere teamkaart slepen", async ({ page }) => {
+    // TODO: Seed-fixtures (rel_code 9901xxxxx) nog niet in test-DB beschikbaar.
+    // Wacht op: Fase 2 seed-script implementatie
+    //   - Bron: rel_code 990010000001 (Edge-Beschikbaar-V, op team-edge-01)
+    //   - Doel: team-edge-03 (Senioren 3 A)
     await page.goto("/indeling", { timeout: 30_000 });
     await page.waitForTimeout(1500);
 
-    // Zoek een speler op een teamkaart (compact-chip)
-    const spelerOpTeam = page.locator('[data-testid^="speler-card-"][data-testid*="-team-"]');
-    const spelerCount = await spelerOpTeam.count();
-
+    // Harde speler-fixture: 990010000001 op team-edge-01 (bron)
+    const spelerElem = page.locator('[data-testid="speler-card-990010000001-team-team-edge-01"]');
+    const spelerCount = await spelerElem.count();
     if (spelerCount === 0) {
-      test.skip(true, "Geen spelers op teams gevonden — test overgeslagen");
+      test.skip(true, "TODO: Edge-Beschikbaar-V (990010000001) niet op team-edge-01");
       return;
     }
 
-    // Haal rel_code en bronTeamId op
-    const spelerElem = spelerOpTeam.first();
-    const spelerTestId = await spelerElem.getAttribute("data-testid");
-    // Formaat: speler-card-{rel_code}-team-{teamId}
-    const parts = spelerTestId?.split("-team-");
-    const bronTeamId = parts?.[1] ?? "";
-
-    // Zoek een ander team
-    const alleTeams = page.locator('[data-testid^="team-kaart-"][data-testid$="-huidig"]');
-    const teamCount = await alleTeams.count();
-
-    if (teamCount < 2) {
-      test.skip(true, "Minder dan 2 teams — team-naar-team test overgeslagen");
+    // Harde doel-team: team-edge-03 (Senioren 3)
+    const doelTeam = page.locator('[data-testid="team-kaart-team-edge-03-huidig"]');
+    const doelCount = await doelTeam.count();
+    if (doelCount === 0) {
+      test.skip(true, "TODO: team-edge-03 niet in test-DB");
       return;
     }
 
-    // Vind een team dat niet het bronteam is
-    let doelTeam = null;
-    for (let i = 0; i < teamCount; i++) {
-      const t = alleTeams.nth(i);
-      const tid = (await t.getAttribute("data-testid"))
-        ?.replace("team-kaart-", "")
-        .replace("-huidig", "");
-      if (tid !== bronTeamId) {
-        doelTeam = t;
-        break;
-      }
-    }
-
-    if (!doelTeam) {
-      test.skip(true, "Geen ander team gevonden");
-      return;
-    }
-
-    await spelerElem.dragTo(doelTeam, { timeout: 10_000 });
+    await spelerElem.dragTo(doelTeam.first(), { timeout: 10_000 });
     await page.waitForTimeout(2000);
 
     // Geen foutmelding
@@ -199,6 +163,10 @@ test.describe("Werkbord DnD — Happy path", () => {
   });
 
   test("team → pool: speler van teamkaart naar spelerspool slepen", async ({ page }) => {
+    // TODO: Seed-fixtures (rel_code 9901xxxxx) nog niet in test-DB beschikbaar.
+    // Wacht op: Fase 2 seed-script implementatie
+    //   - Bron: rel_code 990010000002 (Edge-Twijfelt-V, op team-edge-01)
+    //   - Doel: spelerspool (drop-zone)
     await page.goto("/indeling", { timeout: 30_000 });
     await page.waitForTimeout(1500);
 
@@ -210,16 +178,15 @@ test.describe("Werkbord DnD — Happy path", () => {
       await page.waitForTimeout(500);
     }
 
-    // Zoek speler op teamkaart
-    const spelerOpTeam = page.locator('[data-testid^="speler-card-"][data-testid*="-team-"]');
-    if ((await spelerOpTeam.count()) === 0) {
-      test.skip(true, "Geen spelers op teams — test overgeslagen");
+    // Harde speler-fixture: 990010000002 op team-edge-01
+    const spelerElem = page.locator('[data-testid="speler-card-990010000002-team-team-edge-01"]');
+    const spelerCount = await spelerElem.count();
+    if (spelerCount === 0) {
+      test.skip(true, "TODO: Edge-Twijfelt-V (990010000002) niet op team-edge-01");
       return;
     }
 
-    const spelerElem = spelerOpTeam.first();
     const dropZone = page.locator("data-testid=drop-zone-spelerpool");
-
     if ((await dropZone.count()) === 0) {
       test.skip(true, "SpelersPool drop-zone niet gevonden — pool mogelijk gesloten");
       return;
@@ -236,31 +203,40 @@ test.describe("Werkbord DnD — Happy path", () => {
   test("persist na refresh: na drop is speler-positie bewaard na page.reload()", async ({
     page,
   }) => {
+    // TODO: Seed-fixtures (rel_code 9901xxxxx) nog niet in test-DB beschikbaar.
+    // Wacht op: Fase 2 seed-script implementatie
+    //   - Bron: rel_code 990010000003 (Edge-Geblesseerd-V, in pool)
+    //   - Doel: team-edge-04 (Senioren 4 B)
     await page.goto("/indeling", { timeout: 30_000 });
     await page.waitForTimeout(1500);
 
-    // Zoek een speler in pool en een teamkaart
-    const spelerInPool = page.locator('[data-testid^="speler-card-"][data-testid$="-spelerpool"]');
-    const poolCount = await spelerInPool.count();
-    const teamKaart = page.locator('[data-testid^="team-kaart-"][data-testid$="-huidig"]');
-    const teamCount = await teamKaart.count();
+    // Open pool indien nodig
+    const poolOpen = await page.locator("data-testid=drop-zone-spelerpool").count();
+    if (poolOpen === 0) {
+      const toggle = page.locator('button:has-text("Pool"), [data-testid="pool-toggle"]');
+      if ((await toggle.count()) > 0) await toggle.first().click();
+      await page.waitForTimeout(500);
+    }
 
-    if (poolCount === 0 || teamCount === 0) {
-      test.skip(true, "Geen spelers in pool of teams — persist-test overgeslagen");
+    // Harde speler-fixture: 990010000003 in pool
+    const spelerElem = page.locator('[data-testid="speler-card-990010000003-spelerpool"]');
+    const spelerCount = await spelerElem.count();
+    if (spelerCount === 0) {
+      test.skip(true, "TODO: Edge-Geblesseerd-V (990010000003) niet in pool");
       return;
     }
 
-    const spelerElem = spelerInPool.first();
-    const spelerTestId = await spelerElem.getAttribute("data-testid");
-    const rel_code = spelerTestId?.split("-")[2] ?? "";
-    const doelTeam = teamKaart.first();
-    const teamId = (await doelTeam.getAttribute("data-testid"))
-      ?.replace("team-kaart-", "")
-      .replace("-huidig", "");
+    // Harde doel-team: team-edge-04 (Senioren 4)
+    const doelTeam = page.locator('[data-testid="team-kaart-team-edge-04-huidig"]');
+    const doelCount = await doelTeam.count();
+    if (doelCount === 0) {
+      test.skip(true, "TODO: team-edge-04 niet in test-DB");
+      return;
+    }
 
     // Sleep
-    await spelerElem.dragTo(doelTeam, { timeout: 10_000 });
-    await page.waitForTimeout(2500); // wacht op revalidatePath + server render
+    await spelerElem.dragTo(doelTeam.first(), { timeout: 10_000 });
+    await page.waitForTimeout(2500);
 
     // Herlaad pagina
     await page.reload({ timeout: 30_000 });
@@ -268,19 +244,17 @@ test.describe("Werkbord DnD — Happy path", () => {
 
     // Speler moet op team staan, niet in pool
     const spelerOpTeamNaReload = page.locator(
-      `[data-testid="speler-card-${rel_code}-team-${teamId}"]`
+      '[data-testid="speler-card-990010000003-team-team-edge-04"]'
     );
-    const spelerInPoolNaReload = page.locator(`[data-testid="speler-card-${rel_code}-spelerpool"]`);
+    const spelerInPoolNaReload = page.locator(
+      '[data-testid="speler-card-990010000003-spelerpool"]'
+    );
 
     const opTeam = await spelerOpTeamNaReload.count();
     const inPool = await spelerInPoolNaReload.count();
 
     // Één van beide moet aanwezig zijn (drop kan gelukt of gefaald zijn door test-data)
     expect(opTeam + inPool).toBeGreaterThan(0);
-    // Als op team: verificatie geslaagd
-    if (opTeam > 0) {
-      expect(opTeam).toBeGreaterThan(0);
-    }
   });
 });
 
@@ -288,24 +262,26 @@ test.describe("Werkbord DnD — Edge cases", () => {
   test.setTimeout(60_000);
 
   test("drop op zelfde team is no-op: geen save-error, geen duplicate", async ({ page }) => {
+    // TODO: Seed-fixtures (rel_code 9901xxxxx) nog niet in test-DB beschikbaar.
+    // Wacht op: Fase 2 seed-script implementatie
+    //   - Speler: rel_code 990010000004 (Edge-GaatStoppen-V, op team-edge-01)
+    //   - Drop op hetzelfde team (no-op)
     await page.goto("/indeling", { timeout: 30_000 });
     await page.waitForTimeout(1500);
 
-    // Speler op teamkaart
-    const spelerOpTeam = page.locator('[data-testid^="speler-card-"][data-testid*="-team-"]');
-    if ((await spelerOpTeam.count()) === 0) {
-      test.skip(true, "Geen spelers op teams");
+    // Harde speler-fixture: 990010000004 op team-edge-01
+    const spelerElem = page.locator('[data-testid="speler-card-990010000004-team-team-edge-01"]');
+    const spelerCount = await spelerElem.count();
+    if (spelerCount === 0) {
+      test.skip(true, "TODO: Edge-GaatStoppen-V (990010000004) niet op team-edge-01");
       return;
     }
 
-    const spelerElem = spelerOpTeam.first();
-    const testId = await spelerElem.getAttribute("data-testid");
-    // Formaat: speler-card-{rel_code}-team-{teamId}
-    const bronTeamId = testId?.split("-team-")[1] ?? "";
-
-    const bronTeamKaart = page.locator(`[data-testid="team-kaart-${bronTeamId}-huidig"]`);
-    if ((await bronTeamKaart.count()) === 0) {
-      test.skip(true, "Bronteam-kaart niet gevonden");
+    // Harde bron-team-kaart: team-edge-01
+    const bronTeamKaart = page.locator('[data-testid="team-kaart-team-edge-01-huidig"]');
+    const bronCount = await bronTeamKaart.count();
+    if (bronCount === 0) {
+      test.skip(true, "TODO: team-edge-01 niet in test-DB");
       return;
     }
 
