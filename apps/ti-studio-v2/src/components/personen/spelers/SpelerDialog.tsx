@@ -63,7 +63,13 @@ const STATUS_KLEUR: Record<string, { bg: string; border: string; text: string }>
 };
 
 function statusStijl(status: string) {
-  return STATUS_KLEUR[status] ?? { bg: "rgba(255,255,255,.06)", border: "rgba(255,255,255,.2)", text: "var(--text-secondary)" };
+  return (
+    STATUS_KLEUR[status] ?? {
+      bg: "rgba(255,255,255,.06)",
+      border: "rgba(255,255,255,.2)",
+      text: "var(--text-secondary)",
+    }
+  );
 }
 
 // ── Component ────────────────────────────────────────────────────────────────
@@ -87,7 +93,9 @@ export function SpelerDialog({ speler, onClose }: SpelerDialogProps) {
   }, [onClose]);
 
   const leeftijdJaar = speler.korfbalLeeftijd.split(".")[0] ?? "—";
-  const leeftijdDec = speler.korfbalLeeftijd.split(".")[1] ? `.${speler.korfbalLeeftijd.split(".")[1]}` : "";
+  const leeftijdDec = speler.korfbalLeeftijd.split(".")[1]
+    ? `.${speler.korfbalLeeftijd.split(".")[1]}`
+    : "";
   const leeftijdGrad = LEEFTIJD_GRADIENT[speler.leeftijdscategorie] ?? LEEFTIJD_GRADIENT.senior;
   const statusStijlObj = statusStijl(speler.status);
   const aantalMemos = speler.heeftOpenMemo ? 1 : 0;
@@ -167,7 +175,15 @@ export function SpelerDialog({ speler, onClose }: SpelerDialogProps) {
               backdropFilter: "blur(4px)",
             }}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            >
               <line x1="18" y1="6" x2="6" y2="18" />
               <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
@@ -223,17 +239,24 @@ export function SpelerDialog({ speler, onClose }: SpelerDialogProps) {
                 }}
               >
                 {speler.roepnaam}{" "}
-                <span style={{ color: "var(--text-primary)" }}>
-                  {speler.achternaam}
-                </span>
+                <span style={{ color: "var(--text-primary)" }}>{speler.achternaam}</span>
               </div>
 
               <div style={{ fontSize: 13, color: "var(--text-tertiary)", marginTop: -2 }}>
-                {speler.geslacht === "M" ? "Heer" : "Dame"} · Korfballeeftijd {speler.korfbalLeeftijd}
+                {speler.geslacht === "M" ? "Heer" : "Dame"} · Korfballeeftijd{" "}
+                {speler.korfbalLeeftijd}
               </div>
 
               {/* Status-chip */}
-              <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 4, fontSize: 11 }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  marginTop: 4,
+                  fontSize: 11,
+                }}
+              >
                 <span
                   style={{
                     display: "inline-flex",
@@ -448,10 +471,7 @@ export function SpelerDialog({ speler, onClose }: SpelerDialogProps) {
                     height: 18,
                     padding: "0 6px",
                     borderRadius: 9,
-                    background:
-                      actieveTab === id
-                        ? "rgba(253,224,71,.15)"
-                        : "var(--surface-card)",
+                    background: actieveTab === id ? "rgba(253,224,71,.15)" : "var(--surface-card)",
                     color:
                       actieveTab === id ? "var(--memo-open, #fde047)" : "var(--text-secondary)",
                     fontSize: 10,
@@ -554,8 +574,8 @@ export function SpelerDialog({ speler, onClose }: SpelerDialogProps) {
                   fontStyle: "italic",
                 }}
               >
-                Historische seizoensdata wordt opgehaald via Sportlink-koppeling. Volledig spelerspad
-                beschikbaar na data-koppeling in een volgende iteratie.
+                Historische seizoensdata wordt opgehaald via Sportlink-koppeling. Volledig
+                spelerspad beschikbaar na data-koppeling in een volgende iteratie.
               </div>
             </div>
           )}
@@ -656,8 +676,8 @@ export function SpelerDialog({ speler, onClose }: SpelerDialogProps) {
                   fontStyle: "italic",
                 }}
               >
-                Evaluaties worden via de evaluatie-module bijgehouden in apps/web. Koppeling naar
-                TI Studio beschikbaar in een volgende iteratie.
+                Evaluaties worden via de evaluatie-module bijgehouden in apps/web. Koppeling naar TI
+                Studio beschikbaar in een volgende iteratie.
               </div>
             </div>
           )}

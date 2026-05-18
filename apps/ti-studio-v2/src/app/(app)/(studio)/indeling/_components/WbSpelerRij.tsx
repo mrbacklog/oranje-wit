@@ -19,7 +19,9 @@ export function WbSpelerRij({ speler, bron, onClick }: WbSpelerRijProps) {
   const isVrouw = speler.geslacht === "V";
   const { ref, isDragging } = useWerkbordDraggable({ rel_code: speler.spelerId, bron });
 
-  const statusKleur = isVrouw ? "var(--status-color, var(--sexe-v))" : "var(--status-color, var(--sexe-h))";
+  const statusKleur = isVrouw
+    ? "var(--status-color, var(--sexe-v))"
+    : "var(--status-color, var(--sexe-h))";
 
   return (
     <div
@@ -62,10 +64,7 @@ export function WbSpelerRij({ speler, bron, onClick }: WbSpelerRijProps) {
         <div className="sub">
           {speler.huidigTeamNaam && <span className="tb">{speler.huidigTeamNaam}</span>}
           {speler.ingedeeldTeamId && (
-            <span
-              className="tb-i"
-              style={{ color: "var(--indeling-text, #ff6b00)" }}
-            >
+            <span className="tb-i" style={{ color: "var(--indeling-text, #ff6b00)" }}>
               ingedeeld
             </span>
           )}

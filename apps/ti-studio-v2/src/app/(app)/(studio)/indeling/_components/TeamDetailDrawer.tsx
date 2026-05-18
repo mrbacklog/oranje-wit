@@ -222,10 +222,7 @@ export function TeamDetailDrawer({ team, open, onTerug, onOpenDialog }: TeamDeta
           </div>
 
           {/* Body */}
-          <div
-            className="ow-scroll"
-            style={{ flex: 1, padding: "18px 20px", overflowY: "auto" }}
-          >
+          <div className="ow-scroll" style={{ flex: 1, padding: "18px 20px", overflowY: "auto" }}>
             {/* Dames */}
             {team.spelersDames.length > 0 && (
               <>
@@ -242,7 +239,10 @@ export function TeamDetailDrawer({ team, open, onTerug, onOpenDialog }: TeamDeta
                     justifyContent: "space-between",
                   }}
                 >
-                  Dames <span style={{ color: "var(--text-primary)", fontWeight: 800 }}>{team.spelersDames.length}</span>
+                  Dames{" "}
+                  <span style={{ color: "var(--text-primary)", fontWeight: 800 }}>
+                    {team.spelersDames.length}
+                  </span>
                 </div>
                 {team.spelersDames.map((s) => (
                   <div
@@ -302,7 +302,10 @@ export function TeamDetailDrawer({ team, open, onTerug, onOpenDialog }: TeamDeta
                     justifyContent: "space-between",
                   }}
                 >
-                  Heren <span style={{ color: "var(--text-primary)", fontWeight: 800 }}>{team.spelersHeren.length}</span>
+                  Heren{" "}
+                  <span style={{ color: "var(--text-primary)", fontWeight: 800 }}>
+                    {team.spelersHeren.length}
+                  </span>
                 </div>
                 {team.spelersHeren.map((s) => (
                   <div
@@ -368,7 +371,10 @@ export function TeamDetailDrawer({ team, open, onTerug, onOpenDialog }: TeamDeta
                     justifyContent: "space-between",
                   }}
                 >
-                  Staf <span style={{ color: "var(--text-primary)", fontWeight: 800 }}>{team.staf.length}</span>
+                  Staf{" "}
+                  <span style={{ color: "var(--text-primary)", fontWeight: 800 }}>
+                    {team.staf.length}
+                  </span>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                   {team.staf.map((s) => (
@@ -390,7 +396,9 @@ export function TeamDetailDrawer({ team, open, onTerug, onOpenDialog }: TeamDeta
                           flexShrink: 0,
                         }}
                       />
-                      <span style={{ color: "var(--text-primary)", fontWeight: 600 }}>{s.naam}</span>
+                      <span style={{ color: "var(--text-primary)", fontWeight: 600 }}>
+                        {s.naam}
+                      </span>
                       <span style={{ color: "var(--text-tertiary)" }}>— {s.rollen[0] ?? "—"}</span>
                     </div>
                   ))}

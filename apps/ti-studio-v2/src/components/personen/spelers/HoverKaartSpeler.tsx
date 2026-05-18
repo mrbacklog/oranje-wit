@@ -153,7 +153,15 @@ export function HoverKaartSpeler({
         opacity={0.4}
         strokeLinejoin="round"
       />
-      <ellipse cx="34" cy="52" rx="14" ry="18" stroke="currentColor" strokeWidth="2.2" fill="none" />
+      <ellipse
+        cx="34"
+        cy="52"
+        rx="14"
+        ry="18"
+        stroke="currentColor"
+        strokeWidth="2.2"
+        fill="none"
+      />
       <path
         d="M22 42 L26 68 L34 52 L42 68 L52 38"
         stroke="currentColor"
@@ -436,7 +444,8 @@ export function HoverKaartSpeler({
               left: 0,
               right: 0,
               height: "40%",
-              background: "linear-gradient(180deg, rgba(8,8,12,.45) 0%, rgba(8,8,12,.15) 50%, transparent 100%)",
+              background:
+                "linear-gradient(180deg, rgba(8,8,12,.45) 0%, rgba(8,8,12,.15) 50%, transparent 100%)",
               zIndex: 3,
               pointerEvents: "none",
             }}

@@ -108,10 +108,7 @@ export function TeamsDrawer({
             const sgHeren = sgTeams.reduce((s, t) => s + t.spelersHeren.length, 0);
 
             elementen.push(
-              <div
-                key={sg.id}
-                className={cx("td-selectie", sg.gebundeld && "gebundeld")}
-              >
+              <div key={sg.id} className={cx("td-selectie", sg.gebundeld && "gebundeld")}>
                 {/* Selectienaam */}
                 <div
                   style={{
@@ -168,9 +165,7 @@ export function TeamsDrawer({
 
                 {sgTeams.map((t) => {
                   verwerktTeamIds.add(t.id);
-                  return (
-                    <WbTeamRij key={t.id} team={t} onClick={() => onTeamClick(t.id)} />
-                  );
+                  return <WbTeamRij key={t.id} team={t} onClick={() => onTeamClick(t.id)} />;
                 })}
               </div>
             );
@@ -189,9 +184,7 @@ export function TeamsDrawer({
           return (
             <div key={groepNaam}>
               {/* Categorie-header */}
-              <div className={cx("td-group", GROEP_CSS[groepNaam])}>
-                {GROEP_LABEL[groepNaam]}
-              </div>
+              <div className={cx("td-group", GROEP_CSS[groepNaam])}>{GROEP_LABEL[groepNaam]}</div>
               {elementen}
             </div>
           );

@@ -335,45 +335,37 @@ export function WerkbordShell({
       <SaveIndicator state={saveState} />
 
       {/* TeamDialog modal */}
-      <TeamDialog
-        team={geselecteerdTeam}
-        open={teamDialogOpen}
-        onClose={handleCloseTeamDialog}
-      />
+      <TeamDialog team={geselecteerdTeam} open={teamDialogOpen} onClose={handleCloseTeamDialog} />
 
       {/* SpelerDialog modal */}
-      {geselecteerdeSpelerId && (() => {
-        const poolSpeler = poolSpelers.find((s) => s.spelerId === geselecteerdeSpelerId);
-        if (!poolSpeler) return null;
-        const indelingTeam = poolSpeler.ingedeeldTeamId
-          ? teams.find((t) => t.id === poolSpeler.ingedeeldTeamId) ?? null
-          : null;
-        const spelerData: SpelerRijData = {
-          id: poolSpeler.spelerId,
-          roepnaam: poolSpeler.roepnaam,
-          achternaam: poolSpeler.achternaam,
-          geslacht: poolSpeler.geslacht,
-          geboortedatum: null,
-          geboortejaar: new Date().getFullYear() - Math.floor(poolSpeler.korfbalLeeftijd),
-          status: poolSpeler.status,
-          gezienStatus: "ONGEZIEN",
-          huidigTeam: poolSpeler.huidigTeamNaam,
-          indelingTeamNaam: indelingTeam ? (indelingTeam.alias ?? indelingTeam.naam) : null,
-          indelingTeamId: poolSpeler.ingedeeldTeamId,
-          heeftOpenMemo: poolSpeler.openMemoCount > 0,
-          memoBadge: poolSpeler.openMemoCount > 0 ? "open" : "geen",
-          leeftijdscategorie: poolSpeler.leeftijdCategorie as LeeftijdCategorie,
-          korfbalLeeftijd: poolSpeler.korfbalLeeftijd.toFixed(2),
-          kadersSpelerId: null,
-          kadersId: "",
-        };
-        return (
-          <SpelerDialog
-            speler={spelerData}
-            onClose={handleCloseSpelerDialog}
-          />
-        );
-      })()}
+      {geselecteerdeSpelerId &&
+        (() => {
+          const poolSpeler = poolSpelers.find((s) => s.spelerId === geselecteerdeSpelerId);
+          if (!poolSpeler) return null;
+          const indelingTeam = poolSpeler.ingedeeldTeamId
+            ? (teams.find((t) => t.id === poolSpeler.ingedeeldTeamId) ?? null)
+            : null;
+          const spelerData: SpelerRijData = {
+            id: poolSpeler.spelerId,
+            roepnaam: poolSpeler.roepnaam,
+            achternaam: poolSpeler.achternaam,
+            geslacht: poolSpeler.geslacht,
+            geboortedatum: null,
+            geboortejaar: new Date().getFullYear() - Math.floor(poolSpeler.korfbalLeeftijd),
+            status: poolSpeler.status,
+            gezienStatus: "ONGEZIEN",
+            huidigTeam: poolSpeler.huidigTeamNaam,
+            indelingTeamNaam: indelingTeam ? (indelingTeam.alias ?? indelingTeam.naam) : null,
+            indelingTeamId: poolSpeler.ingedeeldTeamId,
+            heeftOpenMemo: poolSpeler.openMemoCount > 0,
+            memoBadge: poolSpeler.openMemoCount > 0 ? "open" : "geen",
+            leeftijdscategorie: poolSpeler.leeftijdCategorie as LeeftijdCategorie,
+            korfbalLeeftijd: poolSpeler.korfbalLeeftijd.toFixed(2),
+            kadersSpelerId: null,
+            kadersId: "",
+          };
+          return <SpelerDialog speler={spelerData} onClose={handleCloseSpelerDialog} />;
+        })()}
     </div>
   );
 }

@@ -67,8 +67,7 @@ function leeftijdGradient(leeftijd: number): string {
 
 function valVariant(melding: string): "ok" | "warn" | "err" {
   const lower = melding.toLowerCase();
-  if (lower.includes("fout") || lower.includes("niet") || lower.includes("te weinig"))
-    return "err";
+  if (lower.includes("fout") || lower.includes("niet") || lower.includes("te weinig")) return "err";
   if (lower.startsWith("ok") || lower.startsWith("✓") || lower.startsWith("goed")) return "ok";
   return "warn";
 }
@@ -113,11 +112,7 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
   const bandKleur = teamBandKleur(team);
   const valKleur = VAL_KLEUREN[team.validatieStatus ?? "ONBEKEND"] ?? "var(--border-default)";
   const valVariantHero =
-    team.validatieStatus === "OK"
-      ? "ok"
-      : team.validatieStatus === "FOUT"
-        ? "err"
-        : "warn";
+    team.validatieStatus === "OK" ? "ok" : team.validatieStatus === "FOUT" ? "err" : "warn";
   const aantalSpelers = team.spelersDames.length + team.spelersHeren.length;
   const aantalValidatie = team.validatieMeldingen?.length ?? 0;
   const aantalNotities = team.openMemoCount;
@@ -186,7 +181,15 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
             zIndex: 30,
           }}
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+          >
             <line x1="18" y1="6" x2="6" y2="18" />
             <line x1="6" y1="6" x2="18" y2="18" />
           </svg>
@@ -260,7 +263,15 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
                   color: "var(--sexe-v)",
                 }}
               >
-                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <svg
+                  viewBox="0 0 24 24"
+                  width="12"
+                  height="12"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                >
                   <circle cx="12" cy="8" r="6" />
                   <path d="M12 14v6M9 17h6" />
                 </svg>
@@ -275,7 +286,15 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
                   color: "var(--sexe-h)",
                 }}
               >
-                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <svg
+                  viewBox="0 0 24 24"
+                  width="12"
+                  height="12"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                >
                   <circle cx="10" cy="14" r="6" />
                   <path d="M20 4l-6 6M14 4h6v6" />
                 </svg>
@@ -292,9 +311,7 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
                     fontSize: 10,
                     fontWeight: 700,
                     background:
-                      valVariantHero === "err"
-                        ? "rgba(239,68,68,.1)"
-                        : "rgba(234,179,8,.1)",
+                      valVariantHero === "err" ? "rgba(239,68,68,.1)" : "rgba(234,179,8,.1)",
                     color: valVariantHero === "err" ? "var(--val-err)" : "var(--val-warn)",
                   }}
                 >
@@ -370,8 +387,7 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
                     height: 18,
                     padding: "0 6px",
                     borderRadius: 9,
-                    background:
-                      actieveTab === id ? "rgba(255,107,0,.15)" : "var(--surface-card)",
+                    background: actieveTab === id ? "rgba(255,107,0,.15)" : "var(--surface-card)",
                     color: actieveTab === id ? "var(--ow-accent)" : "var(--text-secondary)",
                     fontSize: 10,
                     fontWeight: 800,
@@ -398,10 +414,7 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
         </div>
 
         {/* Tab body */}
-        <div
-          className="ow-scroll"
-          style={{ flex: 1, overflowY: "auto", padding: "20px 24px" }}
-        >
+        <div className="ow-scroll" style={{ flex: 1, overflowY: "auto", padding: "20px 24px" }}>
           {/* ═══ OVERZICHT ═══ */}
           {actieveTab === "overzicht" && (
             <>
