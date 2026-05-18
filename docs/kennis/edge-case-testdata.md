@@ -128,7 +128,52 @@ Korfballeeftijd op exact de KNKV-overgangen (peildatum 1 januari, kalenderjaar-a
 | 990040000001 | Speler in **2** teams in zelfde versie | KNKV-validator markeert beide teams `ROOD` met melding "dubbel ingedeeld" |
 | 990040000002 | Speler in pool **én** team-toewijzing | Werkbord toont in team; pool filtert hem eruit |
 
-### 1.7 What-if versie scenario's
+### 1.7 Selectiegroepen — gebundeld én ongebundeld
+
+Twee scenario's tegelijk in test-DB om beide transitie-states te valideren (zie `SelectieGroep` model in `schema.prisma:830`).
+
+| ID | Naam | Teams | `gebundeld` | Spelers-locatie | Doel |
+|---|---|---|---|---|---|
+| `sg-senioren-a` | Senioren A (gebundeld) | `team-edge-01` (S1) + `team-edge-02` (S2) | **true** | `SelectieSpeler`-rijen | Bundle-flow, gemeenschappelijke spelerspool over 2 teams |
+| `sg-u17` | U17 (ongebundeld) | `team-edge-09` (U17-1) + `team-edge-10` (U17-2) | **false** | `TeamSpeler`-rijen per team | Ongebundelde-flow, individuele team-pools |
+
+**Transitie-invariant:** wanneer `gebundeld=true`, leven spelers collectief op `SelectieGroep.spelers` (via `SelectieSpeler`). `TeamSpeler`-rijen voor die teams zijn LEEG. Bundel/ontbundel-actie in UI verhuist atomair tussen `TeamSpeler` ↔ `SelectieSpeler`.
+
+**Seed-volgorde:**
+1. Maak `sg-senioren-a` + `sg-u17` aan op `versie-edge-actief`
+2. Koppel teams via `Team.selectieGroepId` (2× per selectiegroep)
+3. Voor `sg-senioren-a`: verhuis `TeamSpeler`-rijen van S1 + S2 → `SelectieSpeler` (statusOverride = null), verwijder de oude `TeamSpeler`-rijen
+4. Voor `sg-u17`: `TeamSpeler` ongemoeid, geen `SelectieSpeler`
+
+**Impact op SQL-counts na seed:** `team_spelers` daalt met ~18 (S1+S2 spelers), `selectie_spelers` stijgt met ~18, `selectie_groepen` = 2.
+
+### 1.8 Naamweergave-patronen — fictieve namen met variatie
+
+> **Doel:** UI-rendering van namen testen onder verschillende structuren (tussenvoegsel, diakritisch teken, apostrof, streepje, ongebruikelijke lengte). Vervangt de techn. naam-conventie `Speler-{TeamCode}-{NN}` uit eerste seed-versie.
+
+**Naam-pool voor default vulling** — synth Nederlandse korfbalnamen, ~80 unieke combinaties die de seed cycleerd over teams:
+
+| Categorie | Voorbeelden roepnaam | Voorbeelden achternaam | Tussenvoegsel-rate |
+|---|---|---|---|
+| **Standaard** | Yara, Mees, Lotte, Bram, Sanne, Lucas, Tess, Daan, Sophie, Stijn | Bakker, Visser, de Jong, Mulder, Smit, Heeren, Janssens, Pluim, Olsen, Timmer | ~30% (`de`, `van`, `van der`) |
+| **Met diakritisch** | Renée, Léon, Noëlle, Iñaki, Zoë | Möller, García, Çelik, Brugière | n.v.t. |
+| **Met apostrof** | Quint, Anouk, Lars | d'Hondt, d'Anvers, O'Brien | n.v.t. |
+| **Met streepje** | Eva-Marie, Jan-Willem, Anne-Sophie | Jansen-de Vries, Bakker-Smits, van der Berg-Mulder | n.v.t. |
+| **Lengte-extremen** | "M" (1 letter), "Alexandrina-Maximiliana" (zeer lang) | "Li" (2 letters), "Vandenberghe-Vanderhaeghen" (zeer lang) | n.v.t. |
+| **Naam-collisies** | 2× "Sanne Bakker" verschillende `rel_code` | Test: UI moet onderscheid maken via `rel_code` of leeftijd | n.v.t. |
+
+**Verdeling in seed:**
+- 80% standaard (alle 25 teams gevuld met variatie)
+- 10% diakritisch + apostrof (~15 spelers verspreid)
+- 5% streepje (~7 spelers)
+- 3% lengte-extremen (~5 spelers)
+- 2% naam-collisies (~3 paren)
+
+**Edge-case fixtures (sectie 1.3–1.6) BEHOUDEN hun expliciete naam** (`Edge-Beschikbaar-V` etc.) zodat ze in tests via die roepnaam findbaar blijven naast hun `rel_code`.
+
+**Staf-namen** volgen hetzelfde patroon — zie sectie 2.
+
+### 1.9 What-if versie scenario's
 
 Op werkindeling `wi-edge-cases-2026-2027`:
 
