@@ -101,7 +101,7 @@ export default async function SpelersPage() {
           status: { notIn: ["OPGELOST", "GEARCHIVEERD"] },
         },
         select: { id: true, status: true, prioriteit: true },
-        orderBy: { aangemaaktOp: "desc" },
+        orderBy: { createdAt: "desc" },
         take: 5,
       },
     },
