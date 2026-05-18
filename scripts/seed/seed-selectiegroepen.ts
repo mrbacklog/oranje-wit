@@ -34,20 +34,24 @@ export async function seedSelectiegroepen(): Promise<void> {
   });
 
   await prisma.selectieGroep.upsert({
-    where: { id: "sg-u17" },
-    create: {
-      id: "sg-u17",
-      versieId,
-      naam: "U17",
-      gebundeld: false,
-    },
-    update: {
-      naam: "U17",
-      gebundeld: false,
-    },
+    where: { id: "sg-u19" },
+    create: { id: "sg-u19", versieId, naam: "U19", gebundeld: false },
+    update: { naam: "U19", gebundeld: false },
   });
 
-  logger.info("[seed-selectiegroepen] 2 selectiegroepen aangemaakt");
+  await prisma.selectieGroep.upsert({
+    where: { id: "sg-u17" },
+    create: { id: "sg-u17", versieId, naam: "U17", gebundeld: false },
+    update: { naam: "U17", gebundeld: false },
+  });
+
+  await prisma.selectieGroep.upsert({
+    where: { id: "sg-u15" },
+    create: { id: "sg-u15", versieId, naam: "U15", gebundeld: false },
+    update: { naam: "U15", gebundeld: false },
+  });
+
+  logger.info("[seed-selectiegroepen] 4 selectiegroepen aangemaakt");
 
   // 2. Koppel teams aan selectiegroepen via selectieGroepId
   await prisma.team.update({
@@ -59,6 +63,14 @@ export async function seedSelectiegroepen(): Promise<void> {
     data: { selectieGroepId: "sg-senioren-a" },
   });
   await prisma.team.update({
+    where: { id: teamId(7) },
+    data: { selectieGroepId: "sg-u19" },
+  });
+  await prisma.team.update({
+    where: { id: teamId(8) },
+    data: { selectieGroepId: "sg-u19" },
+  });
+  await prisma.team.update({
     where: { id: teamId(9) },
     data: { selectieGroepId: "sg-u17" },
   });
@@ -66,8 +78,16 @@ export async function seedSelectiegroepen(): Promise<void> {
     where: { id: teamId(10) },
     data: { selectieGroepId: "sg-u17" },
   });
+  await prisma.team.update({
+    where: { id: teamId(11) },
+    data: { selectieGroepId: "sg-u15" },
+  });
+  await prisma.team.update({
+    where: { id: teamId(12) },
+    data: { selectieGroepId: "sg-u15" },
+  });
 
-  logger.info("[seed-selectiegroepen] 4 teams gekoppeld aan selectiegroepen");
+  logger.info("[seed-selectiegroepen] 8 teams gekoppeld aan 4 selectiegroepen");
 
   // 3. sg-senioren-a (gebundeld): verhuis TeamSpeler van S1+S2 naar SelectieSpeler
   //    Haal alle huidige TeamSpeler-rijen op voor team-edge-01 en team-edge-02
@@ -122,12 +142,14 @@ export async function seedSelectiegroepen(): Promise<void> {
       `${verwijderd} TeamSpeler-rijen verwijderd`
   );
 
-  // 4. sg-u17 (ongebundeld): TeamSpeler ongemoeid, geen SelectieSpeler
-  const teamSpelersU17 = await prisma.teamSpeler.count({
-    where: { teamId: { in: [teamId(9), teamId(10)] } },
+  // 4. sg-u19/sg-u17/sg-u15 (ongebundeld): TeamSpeler ongemoeid, geen SelectieSpeler
+  const teamSpelersOngeb = await prisma.teamSpeler.count({
+    where: {
+      teamId: { in: [teamId(7), teamId(8), teamId(9), teamId(10), teamId(11), teamId(12)] },
+    },
   });
   logger.info(
-    `[seed-selectiegroepen] sg-u17: ${teamSpelersU17} TeamSpeler-rijen intact (ongebundeld)`
+    `[seed-selectiegroepen] sg-u19/u17/u15: ${teamSpelersOngeb} TeamSpeler-rijen intact (ongebundeld)`
   );
 
   logger.info("[seed-selectiegroepen] klaar");

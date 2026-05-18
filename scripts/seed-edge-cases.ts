@@ -20,6 +20,7 @@ import { seedSelectiegroepen } from "./seed/seed-selectiegroepen";
 import { seedKadersSpelers } from "./seed/seed-kaders-spelers";
 import { seedStaf } from "./seed/seed-staf";
 import { seedFotos } from "./seed/seed-fotos";
+import { seedPosities } from "./seed/seed-posities";
 import { resetUniekeNamen } from "./seed/namen-pool";
 
 async function main(): Promise<void> {
@@ -67,6 +68,9 @@ async function main(): Promise<void> {
 
   // Sectie 1.9: fictieve profielfoto's (na alle spelers, voor cleanup)
   await seedFotos();
+
+  // Sectie 1.11: canvas-posities voor teams + selectiegroepen (logische TC-layout)
+  await seedPosities();
 
   const duur = Date.now() - start;
   logger.info(`[seed-edge-cases] klaar in ${duur}ms`);
