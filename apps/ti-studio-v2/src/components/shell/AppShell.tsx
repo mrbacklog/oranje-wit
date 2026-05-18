@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { SpelerDialogProvider } from "@/components/speler/contexts/SpelerDialogProvider";
 import { TeamDialogProvider } from "@/components/team/contexts/TeamDialogProvider";
+import { StafDialogProvider } from "@/components/staf/contexts/StafDialogProvider";
 
 interface NavItem {
   href: string;
@@ -162,6 +163,7 @@ export function AppShell({ children, userName }: AppShellProps) {
   return (
     <SpelerDialogProvider>
       <TeamDialogProvider>
+        <StafDialogProvider>
       <div
         style={{
           display: "grid",
@@ -367,6 +369,7 @@ export function AppShell({ children, userName }: AppShellProps) {
           {children}
         </div>
       </div>
+        </StafDialogProvider>
       </TeamDialogProvider>
     </SpelerDialogProvider>
   );
