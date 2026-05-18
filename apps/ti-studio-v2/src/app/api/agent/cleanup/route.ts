@@ -14,6 +14,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { logger } from "@oranje-wit/types";
 import { db as prisma } from "@/lib/db";
 import { verplaatsSpelerInternal } from "@/actions/werkbord/verplaats-speler";
+import { verplaatsKaartInternal } from "@/actions/werkbord/verplaats-kaart";
 
 interface CleanupBody {
   secret: string;
@@ -73,6 +74,19 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
         logger.info(
           `agent/cleanup: mutatie ${mutatie.id} teruggedraaid — rel_code=${inverse.rel_code} → ${inverse.doel ?? "pool"}`
+        );
+      } else if (mutatie.type === "kaart_verplaats") {
+        const inverse = mutatie.inverse as {
+          actie: string;
+          kaartKey: string;
+          versieId: string;
+          positie: { x: number; y: number } | null;
+        };
+
+        await verplaatsKaartInternal(inverse.versieId, inverse.kaartKey, inverse.positie);
+
+        logger.info(
+          `agent/cleanup: mutatie ${mutatie.id} teruggedraaid — kaartKey=${inverse.kaartKey} → ${inverse.positie ? `(${inverse.positie.x}, ${inverse.positie.y})` : "verwijderd"}`
         );
       } else {
         logger.warn(`agent/cleanup: onbekend mutatie-type "${mutatie.type}" — overgeslagen`);
