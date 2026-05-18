@@ -82,7 +82,7 @@ export default async function SpelersPage() {
     select: {
       id: true,
       roepnaam: true,
-      tussenvoegsel: true,
+      // tussenvoegsel zit op Lid (Sportlink-bron), niet op Speler — null in SpelerRijData
       achternaam: true,
       geslacht: true,
       geboortedatum: true,
@@ -199,7 +199,7 @@ export default async function SpelersPage() {
     return {
       id: s.id,
       roepnaam: s.roepnaam as string,
-      tussenvoegsel: (s.tussenvoegsel as string | null) ?? null,
+      tussenvoegsel: null, // niet in Speler-schema; uit Lid ophalen indien nodig
       achternaam: s.achternaam as string,
       geslacht: s.geslacht as "M" | "V",
       geboortedatum: s.geboortedatum,
