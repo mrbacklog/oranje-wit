@@ -25,11 +25,7 @@ jobs:
         run: pnpm exec playwright install chromium
 
       - name: E2E tests uitvoeren tegen studio-test
-        # Tijdelijk beperkt tot werkbord-dragdrop — andere specs hebben DOM-assertions die
-        # op studio-test niet kloppen (homepage widgets, /personen tabel-rijen, memo headings).
-        # Aanpak: spec-voor-spec lokaal headed onderzoeken en assertions hardenen.
-        # Cleanup-template + selector-syntax fixes zijn al doorgevoerd (commit c4bd7fa3).
-        run: pnpm exec playwright test --project=studio-test-auth-setup --project=ti-studio-v2-remote e2e/ti-studio-v2/werkbord-dragdrop.spec.ts --reporter=html
+        run: pnpm exec playwright test --project=studio-test-auth-setup --project=ti-studio-v2-remote --reporter=html
         env:
           STUDIO_TEST_URL: https://studio-test.ckvoranjewit.app
           STUDIO_TEST_BASIC_AUTH_USER: ${{ secrets.STUDIO_TEST_BASIC_AUTH_USER }}
