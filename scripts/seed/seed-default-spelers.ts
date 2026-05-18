@@ -24,6 +24,24 @@ export async function seedDefaultSpelers(): Promise<void> {
   logger.info("[seed-default-spelers] starten");
   let totaal = 0;
 
+  // Verificeer dat alle teams die spelers moeten krijgen werkelijk bestaan in de DB.
+  // Dit garandeert zichtbaarheid na seedTeams, ook bij connection-pool-variatie op een
+  // remote DB (Railway) waar een net-gecommitte rij nog niet zichtbaar kan zijn op een
+  // andere pooled verbinding.
+  const benodigdeTeamIds = TEAM_DEFS.filter((t) => t.defaultOmvang > 0).map((t) => teamId(t.nr));
+  const bestaandeTeams = await prisma.team.findMany({
+    where: { id: { in: benodigdeTeamIds } },
+    select: { id: true },
+  });
+  const bestaandeTeamSet = new Set(bestaandeTeams.map((t) => t.id));
+  const ontbrekend = benodigdeTeamIds.filter((id) => !bestaandeTeamSet.has(id));
+  if (ontbrekend.length > 0) {
+    throw new Error(
+      `[seed-default-spelers] FK-precheck mislukt — ontbrekende teams: ${ontbrekend.join(", ")}`
+    );
+  }
+  logger.info(`[seed-default-spelers] precheck OK — ${bestaandeTeams.length} teams geverifieerd`);
+
   // Set bijgehouden over de gehele functie-aanroep: garandeert cross-team uniciteit
   
 

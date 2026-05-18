@@ -4,9 +4,11 @@ import { PrismaClient } from "@oranje-wit/database";
 
 // Maak een verse client-instantie (niet de globale singleton) zodat het
 // seed-script de DATABASE_URL leest die op het moment van aanroep actief is.
+// max: 1 — single connection garandeert dat alle commits direct zichtbaar zijn
+// voor volgende queries; voorkomt FK-visibility-gap op remote DB (Railway).
 function maakSeedClient() {
   const url = process.env.DATABASE_URL ?? "";
-  const pool = new Pool({ connectionString: url, max: 3 });
+  const pool = new Pool({ connectionString: url, max: 1 });
   const adapter = new PrismaPg(pool);
   return new PrismaClient({ adapter });
 }
