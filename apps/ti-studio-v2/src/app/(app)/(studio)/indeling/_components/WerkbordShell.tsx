@@ -313,6 +313,7 @@ export function WerkbordShell({
           teams={teams}
           selectieGroepen={actieveVersie.selectieGroepen}
           peildatum={actieveVersie.peildatum}
+          posities={actieveVersie.posities ?? {}}
           zoom={zoom}
           onZoomChange={setZoom}
           onTeamClick={handleTeamClick}
