@@ -511,9 +511,18 @@ export function SelectieKaart({
   }
 
   // ── Gebundeld: 2 kolommen alle-♀ | alle-♂ ──────────────────────────────
+  // Gebundelde selecties: spelers zitten in SelectieSpeler (groep.gedeeldeDames/Heren)
+  // — niet in TeamSpeler. Voor backward-compat alsnog fallback naar team-spelers
+  // als beide leeg zijn.
   function renderGebundeldBody() {
-    const alleDames = teams.flatMap((t) => t.spelersDames);
-    const alleHeren = teams.flatMap((t) => t.spelersHeren);
+    const alleDames =
+      groep.gedeeldeDames.length > 0
+        ? groep.gedeeldeDames
+        : teams.flatMap((t) => t.spelersDames);
+    const alleHeren =
+      groep.gedeeldeHeren.length > 0
+        ? groep.gedeeldeHeren
+        : teams.flatMap((t) => t.spelersHeren);
 
     return (
       <>

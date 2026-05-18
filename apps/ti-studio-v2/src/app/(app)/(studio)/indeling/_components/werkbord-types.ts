@@ -111,6 +111,10 @@ export interface SelectieGroepMeta {
   naam: string | null;
   gebundeld: boolean;
   teamIds: string[];
+  // Voor gebundelde selecties: spelers zitten in SelectieSpeler i.p.v. TeamSpeler.
+  // Gesplitst op geslacht voor directe render in SelectieKaart (gebundeld-modus).
+  gedeeldeDames: TeamKaartSpeler[];
+  gedeeldeHeren: TeamKaartSpeler[];
 }
 
 export type SaveState = "idle" | "saving" | "saved" | "error";

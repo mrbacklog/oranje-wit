@@ -277,23 +277,61 @@ export async function haalVersieData(
   });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const selectieGroepen: SelectieGroepMeta[] = versie.selectieGroepen.map((sg: any) => ({
-    id: sg.id as string,
-    naam: (sg.naam as string | null) ?? null,
-    gebundeld: sg.gebundeld as boolean,
-    teamIds: (sg.teams as Array<{ id: string }>).map((t) => t.id),
-  }));
+  const selectieGroepen: SelectieGroepMeta[] = versie.selectieGroepen.map((sg: any) => {
+    // SelectieSpeler-records → TeamKaartSpeler-shape (alleen relevant voor gebundeld)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const gedeeldeSpelers: TeamKaartSpeler[] = (sg.spelers as Array<any>).map((ss) => {
+      const s = ss.speler;
+      const leeftijd = berekenKorfbalLeeftijdExact(
+        s.geboortedatum ?? null,
+        s.geboortejaar as number,
+        peildatum
+      );
+      return {
+        spelerId: s.id as string,
+        roepnaam: s.roepnaam as string,
+        achternaam: s.achternaam as string,
+        tussenvoegsel: null,
+        korfbalLeeftijd: leeftijd,
+        geslacht: s.geslacht as "M" | "V",
+        status: s.status as string,
+        isNieuw: bepaalIsNieuw((s.lidSinds as string | null) ?? null, nieuwGrens),
+        hasFoto: false, // hieronder ingevuld
+        memoStatus: null,
+      };
+    });
 
-  // Foto-injectie voor alle team-spelers
-  const alleTeamSpelerIds = teams.flatMap((t) => [
-    ...t.spelersDames.map((s) => s.spelerId),
-    ...t.spelersHeren.map((s) => s.spelerId),
-  ]);
-  const metFoto = await getSpelersMetFoto(alleTeamSpelerIds);
+    return {
+      id: sg.id as string,
+      naam: (sg.naam as string | null) ?? null,
+      gebundeld: sg.gebundeld as boolean,
+      teamIds: (sg.teams as Array<{ id: string }>).map((t) => t.id),
+      gedeeldeDames: gedeeldeSpelers.filter((s) => s.geslacht === "V"),
+      gedeeldeHeren: gedeeldeSpelers.filter((s) => s.geslacht === "M"),
+    };
+  });
+
+  // Foto-injectie voor alle team-spelers + gedeelde selectie-spelers
+  const alleSpelerIds = [
+    ...teams.flatMap((t) => [
+      ...t.spelersDames.map((s) => s.spelerId),
+      ...t.spelersHeren.map((s) => s.spelerId),
+    ]),
+    ...selectieGroepen.flatMap((sg) => [
+      ...sg.gedeeldeDames.map((s) => s.spelerId),
+      ...sg.gedeeldeHeren.map((s) => s.spelerId),
+    ]),
+  ];
+  const metFoto = await getSpelersMetFoto(alleSpelerIds);
   const teamsMetFoto = teams.map((team) => ({
     ...team,
     spelersDames: team.spelersDames.map((s) => ({ ...s, hasFoto: metFoto.has(s.spelerId) })),
     spelersHeren: team.spelersHeren.map((s) => ({ ...s, hasFoto: metFoto.has(s.spelerId) })),
+  }));
+  const selectieGroepenMetFoto = selectieGroepen.map((sg) => ({
+    ...sg,
+    gedeeldeDames: sg.gedeeldeDames.map((s) => ({ ...s, hasFoto: metFoto.has(s.spelerId) })),
+    gedeeldeHeren: sg.gedeeldeHeren.map((s) => ({ ...s, hasFoto: metFoto.has(s.spelerId) })),
   }));
 
   // Posities — opgeslagen canvas-posities (Json veld, lege map als null)
@@ -302,7 +340,7 @@ export async function haalVersieData(
   return {
     versieId,
     teams: teamsMetFoto,
-    selectieGroepen,
+    selectieGroepen: selectieGroepenMetFoto,
     peildatum,
     seizoen,
     posities,
