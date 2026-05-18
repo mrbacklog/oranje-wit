@@ -159,6 +159,56 @@ body {
   mix-blend-mode: color;
 }
 
+/* ─── Geblesseerd-badge (rechtsonder op sq-av) ─── */
+.sq-av .blessure {
+  position: absolute;
+  right: 6%;
+  bottom: 6%;
+  width: 46%;
+  height: 46%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  z-index: 4;
+  pointer-events: none;
+  opacity: 0.88;
+}
+.sq-av .blessure svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 4px rgba(0, 0, 0, 0.6));
+}
+.sq-av .blessure svg path {
+  fill: #ef4444;
+}
+
+/* ─── Nieuw-lid sparkle (rechtsboven op sq-av) ─── */
+.sq-av .nieuw-sparkle {
+  position: absolute;
+  right: 6%;
+  top: 6%;
+  width: 46%;
+  height: 46%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  z-index: 4;
+  pointer-events: none;
+  opacity: 0.9;
+}
+.sq-av .nieuw-sparkle svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 4px rgba(0, 0, 0, 0.6));
+}
+.sq-av .nieuw-sparkle svg path {
+  fill: #ff6b00;
+}
+
 /* staf-av avatar */
 .staf-av {
   position: relative;
@@ -766,7 +816,7 @@ body {
   /* --cat-blauw al aanwezig bovenaan, maar waarde wijkt af van proto: override naar proto */
   --cat-blauw: #1d4ed8; /* 6-7 */
   --cat-groen: #047857; /* 8-9 */
-  --cat-geel: #eab308; /* 10-12 */
+  --cat-geel: #facc15; /* 10-12 — yellow-300, conform tokens.css */
   --cat-oranje: #f97316; /* 13-15 */
   --cat-rood: #dc2626; /* 16-18 */
   --cat-senior: #94a3b8; /* 19+ */
@@ -837,6 +887,10 @@ body {
   --font-sans: -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
   --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
 
+  /* Geslacht-tint tekst (voor compact-chip sexe-vierkant) */
+  --sexe-h-text: #2563eb;
+  --sexe-v-text: #d946ef;
+
   /* USS hexagon tier-tokens */
   --uss-goud-border: rgba(255, 215, 0, 0.65);
   --uss-goud-fill: #3a2e0a;
@@ -857,11 +911,11 @@ body {
   --leeftijd-6: linear-gradient(135deg, #581c87 0%, #1d4ed8 30%, #1d4ed8 100%);
   --leeftijd-7: linear-gradient(135deg, #1d4ed8 0%, #1d4ed8 70%, #047857 100%);
   --leeftijd-8: linear-gradient(135deg, #1d4ed8 0%, #047857 30%, #047857 100%);
-  --leeftijd-9: linear-gradient(135deg, #047857 0%, #047857 70%, #eab308 100%);
-  --leeftijd-10: linear-gradient(135deg, #047857 0%, #eab308 30%, #eab308 100%);
-  --leeftijd-11: #eab308;
-  --leeftijd-12: linear-gradient(135deg, #eab308 0%, #eab308 70%, #f97316 100%);
-  --leeftijd-13: linear-gradient(135deg, #eab308 0%, #f97316 30%, #f97316 100%);
+  --leeftijd-9: linear-gradient(135deg, #047857 0%, #047857 70%, #facc15 100%);
+  --leeftijd-10: linear-gradient(135deg, #047857 0%, #facc15 30%, #facc15 100%);
+  --leeftijd-11: #facc15;
+  --leeftijd-12: linear-gradient(135deg, #facc15 0%, #facc15 70%, #f97316 100%);
+  --leeftijd-13: linear-gradient(135deg, #facc15 0%, #f97316 30%, #f97316 100%);
   --leeftijd-14: #f97316;
   --leeftijd-15: linear-gradient(135deg, #f97316 0%, #f97316 70%, #dc2626 100%);
   --leeftijd-16: linear-gradient(135deg, #f97316 0%, #dc2626 30%, #dc2626 100%);
