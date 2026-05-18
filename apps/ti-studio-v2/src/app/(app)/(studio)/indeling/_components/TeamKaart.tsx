@@ -6,6 +6,8 @@ import { useWerkbordDropTarget } from "./hooks/useWerkbordDropTarget";
 import { useWerkbordDraggable, type DragBron } from "./hooks/useWerkbordDraggable";
 import type { WerkbordDragData } from "./hooks/useWerkbordDraggable";
 import { RijkeRij } from "@/components/speler/contexts/RijkeRij";
+import { CompactChip } from "@/components/speler/contexts/CompactChip";
+import { leeftijdscategorie } from "@/lib/format/speler";
 import type { SpelerStatus, WerkitemStatus } from "@oranje-wit/database";
 
 function cx(...args: (string | false | null | undefined)[]): string {
@@ -79,56 +81,6 @@ function catClass(team: TeamKaartData): string {
   return "cat-senior";
 }
 
-// Leeftijdgradient — retourneert CSS var-referentie
-function leeftijdGradient(leeftijd: number): string {
-  const jaar = Math.max(4, Math.min(19, Math.floor(leeftijd)));
-  return `var(--leeftijd-${jaar})`;
-}
-
-// Compact naam-formaat: "Roepnaam [tvs-afk.] A." (spec §3.1)
-function compactNaam(speler: TeamKaartSpeler): string {
-  const initiaal = speler.achternaam ? speler.achternaam[0].toUpperCase() + "." : "";
-  if (speler.tussenvoegsel) {
-    // Afkort tussenvoegsel: eerste woord, max 3 chars + "."
-    const tvsDelen = speler.tussenvoegsel.split(" ");
-    const tvsAfk = tvsDelen[0].substring(0, 3);
-    return `${speler.roepnaam} ${tvsAfk} ${initiaal}`;
-  }
-  return `${speler.roepnaam} ${initiaal}`;
-}
-
-function statusKlasseChip(status: string): string {
-  switch (status) {
-    case "NIEUW":
-      return "st-nieuw";
-    case "TWIJFELT":
-      return "st-twijfelt";
-    case "STOPT":
-      return "st-stopt";
-    case "AR":
-    case "ALGEMEEN_RESERVE":
-      return "st-ar";
-    default:
-      return "";
-  }
-}
-
-function statusKleur(status: string): string {
-  switch (status) {
-    case "NIEUW":
-      return "var(--status-nieuw-outline)";
-    case "TWIJFELT":
-      return "var(--status-twijfelt-outline)";
-    case "STOPT":
-      return "var(--status-stopt-outline)";
-    case "AR":
-    case "ALGEMEEN_RESERVE":
-      return "var(--status-ar-outline)";
-    default:
-      return "var(--status-beschikbaar-outline)";
-  }
-}
-
 // ── isAchttal — viertal = ≤6 per geslacht, achttal = meer ───────────────────
 function isAchttal(team: TeamKaartData): boolean {
   if (team.teamType) {
@@ -139,53 +91,48 @@ function isAchttal(team: TeamKaartData): boolean {
   return team.spelersDames.length + team.spelersHeren.length > 8;
 }
 
-// ── CompactChip ──────────────────────────────────────────────────────────────
+// ── CompactChipWrapper — verbindt TeamKaartSpeler aan gedeelde CompactChip ───
 
-interface CompactChipProps {
+interface CompactChipWrapperProps {
   speler: TeamKaartSpeler;
   teamId: string;
   onClick: (spelerId: string) => void;
   onDrop: (data: WerkbordDragData) => void;
 }
 
-function CompactChip({ speler, teamId, onClick, onDrop }: CompactChipProps) {
-  const isVrouw = speler.geslacht === "V";
+function CompactChipWrapper({ speler, teamId, onClick, onDrop }: CompactChipWrapperProps) {
   const bron: DragBron = `team-${teamId}`;
-  const { ref: dragRef, isDragging } = useWerkbordDraggable({ rel_code: speler.spelerId, bron });
   const { ref: dropRef, isOver } = useWerkbordDropTarget({ doelBron: bron, onDrop });
 
-  const combinedRef = (el: HTMLDivElement | null) => {
-    (dragRef as React.MutableRefObject<HTMLDivElement | null>).current = el;
-    (dropRef as React.MutableRefObject<HTMLDivElement | null>).current = el;
-  };
+  const jaren = Math.floor(speler.korfbalLeeftijd);
+  const categorie = leeftijdscategorie(jaren);
 
   return (
     <div
-      ref={combinedRef}
-      className={cx(
-        "compact-chip",
-        isVrouw && "vrouw",
-        isOver && "drop-over",
-        statusKlasseChip(speler.status)
-      )}
+      ref={dropRef}
       data-testid={`speler-card-${speler.spelerId}-team-${teamId}`}
-      style={
-        {
-          "--status-color": statusKleur(speler.status),
-          cursor: isDragging ? "grabbing" : "grab",
-          opacity: isDragging ? 0.4 : 1,
-          outline: isOver ? "1px solid var(--val-ok)" : "none",
-          outlineOffset: 1,
-        } as React.CSSProperties
-      }
-      onClick={() => onClick(speler.spelerId)}
-      title={`${speler.roepnaam} ${speler.tussenvoegsel ? speler.tussenvoegsel + " " : ""}${speler.achternaam} (${formatKorfbalLeeftijd(speler.korfbalLeeftijd)} jr)`}
+      style={{
+        outline: isOver ? "1px solid var(--val-ok)" : "none",
+        outlineOffset: 1,
+        borderRadius: 6,
+      }}
     >
-      <div className="inner">
-        <span className="g-dot" />
-        <span className="nm">{compactNaam(speler)}</span>
-      </div>
-      <div className="leeft-bar" style={{ background: leeftijdGradient(speler.korfbalLeeftijd) }} />
+      <CompactChip
+        speler={{
+          relCode: speler.spelerId,
+          roepnaam: speler.roepnaam,
+          tussenvoegsel: speler.tussenvoegsel,
+          achternaam: speler.achternaam,
+          geslacht: speler.geslacht,
+          leeftijdscategorie: categorie,
+          status: speler.status as SpelerStatus,
+          isNieuw: speler.isNieuw,
+          memoStatus: (speler.memoStatus as WerkitemStatus | null | undefined) ?? null,
+        }}
+        dragBron={bron}
+        draggable={speler.status !== "ALGEMEEN_RESERVE"}
+        onClick={() => onClick(speler.spelerId)}
+      />
     </div>
   );
 }
@@ -578,7 +525,7 @@ function SpelerKolom({
       >
         {spelers.map((s) =>
           zoom === "compact" ? (
-            <CompactChip
+            <CompactChipWrapper
               key={s.spelerId}
               speler={s}
               teamId={teamId}

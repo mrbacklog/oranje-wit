@@ -812,7 +812,8 @@ body {
   --team-card-selectie: 760px;
 
   /* Categorie-kleuren — compleet (KNKV leeftijdsklassen) */
-  --cat-paars: #7e22ce; /* kangoeroe 4-5 */
+  --cat-kangoeroe: #581c87; /* kangoeroe 4-5, violet-900 conform spec */
+  --cat-paars: #7e22ce; /* alias kangoeroe (legacy) */
   /* --cat-blauw al aanwezig bovenaan, maar waarde wijkt af van proto: override naar proto */
   --cat-blauw: #1d4ed8; /* 6-7 */
   --cat-groen: #047857; /* 8-9 */
