@@ -18,6 +18,7 @@ import { seedDataIncomplete } from "./seed/seed-data-incomplete";
 import { seedMultiTeam } from "./seed/seed-multi-team";
 import { seedSelectiegroepen } from "./seed/seed-selectiegroepen";
 import { seedKadersSpelers } from "./seed/seed-kaders-spelers";
+import { seedStaf } from "./seed/seed-staf";
 import { seedFotos } from "./seed/seed-fotos";
 
 async function main(): Promise<void> {
@@ -58,6 +59,9 @@ async function main(): Promise<void> {
     select: { id: true },
   });
   await seedKadersSpelers(kaders.id);
+
+  // Sectie 1.8b: 100 stafleden (onafhankelijk van spelers/teams)
+  await seedStaf(100);
 
   // Sectie 1.9: fictieve profielfoto's (na alle spelers, voor cleanup)
   await seedFotos();
