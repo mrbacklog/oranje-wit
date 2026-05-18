@@ -247,7 +247,6 @@ export async function getSpelerDialogData(spelerId: string): Promise<ActionResul
         status: true,
         lidSinds: true,
         seizoenenActief: true,
-        heeftFoto: true,
         huidig: true,
         werkitems: {
           select: {
@@ -283,6 +282,13 @@ export async function getSpelerDialogData(spelerId: string): Promise<ActionResul
     if (!speler) {
       return { ok: false, error: "Speler niet gevonden" };
     }
+
+    // Controleer of er een LidFoto bestaat (heeftFoto bestaat niet in Speler-model)
+    const lidFoto = await db.lidFoto.findUnique({
+      where: { relCode: speler.id },
+      select: { relCode: true },
+    });
+    const hasFoto = Boolean(lidFoto);
 
     const leeftijd = berekenKorfbalLeeftijdExact(
       (speler.geboortedatum as Date | null) ?? null,
@@ -364,7 +370,7 @@ export async function getSpelerDialogData(spelerId: string): Promise<ActionResul
       leeftijd,
       korfbalLeeftijd: formatKorfbalLeeftijd(leeftijd),
       isNieuw: lidSindsDate ? !isNaN(lidSindsDate.getTime()) && lidSindsDate >= nieuwGrens : false,
-      hasFoto: Boolean(speler.heeftFoto),
+      hasFoto,
       kadersSpelerId: kadersSpeler?.id ?? null,
       kadersId: kaders.id as string,
       lidSinds: lidSindsStr,
