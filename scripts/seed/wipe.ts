@@ -1,5 +1,6 @@
 import { prisma } from "./types";
 import { logger } from "@oranje-wit/types";
+import { wisSeedSha } from "./seed-state";
 
 /**
  * Verwijdert ALLE test-data uit oranjewit-test in FK-veilige volgorde.
@@ -78,6 +79,9 @@ export async function wipeAll(): Promise<void> {
   await prisma.sportlinkNotificatie.deleteMany({});
   await prisma.lidFoto.deleteMany({});
   await prisma.lid.deleteMany({});
+
+  // Reset seed-fingerprint: handmatige wipe forceert volgende run tot reseed
+  await wisSeedSha();
 
   logger.info("[wipe] klaar");
 }
