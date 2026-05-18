@@ -13,6 +13,7 @@ import type {
   TeamKaartData,
   TeamKaartSpeler,
   TeamKaartStaf,
+  TeamReservering,
 } from "@/app/(app)/(studio)/indeling/_components/werkbord-types";
 import type { SpelerWerkitemDetail } from "@/components/personen/types";
 import { getSpelersMetFoto } from "@/lib/queries/spelers-foto";
@@ -86,6 +87,7 @@ export async function getTeamDialogData(teamId: string): Promise<ActionResult<Te
             auteur: { select: { naam: true, email: true } },
           },
         },
+        reserveringen: { select: { id: true, titel: true, geslacht: true } },
       },
     });
 
@@ -201,6 +203,14 @@ export async function getTeamDialogData(teamId: string): Promise<ActionResult<Te
 
     // ── Samenstellen ─────────────────────────────────────────────────────────
 
+    const reserveringen: TeamReservering[] = (
+      team.reserveringen as Array<{ id: string; titel: string; geslacht: string }>
+    ).map((r) => ({
+      id: r.id,
+      titel: r.titel,
+      geslacht: r.geslacht as "M" | "V",
+    }));
+
     const result: TeamKaartData = {
       id: team.id as string,
       naam: team.naam as string,
@@ -214,6 +224,7 @@ export async function getTeamDialogData(teamId: string): Promise<ActionResult<Te
       spelersDames: spelersMetFoto.filter((s) => s.geslacht === "V"),
       spelersHeren: spelersMetFoto.filter((s) => s.geslacht === "M"),
       staf: stafRaw,
+      reserveringen,
       openMemoCount,
       werkitemsDetail,
       gemKorfbalLeeftijd,

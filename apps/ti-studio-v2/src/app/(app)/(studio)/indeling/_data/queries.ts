@@ -201,6 +201,7 @@ export async function haalVersieData(
             },
             select: { id: true },
           },
+          reserveringen: { select: { id: true, titel: true, geslacht: true } },
         },
         orderBy: { volgorde: "asc" },
       },
@@ -264,6 +265,13 @@ export async function haalVersieData(
       spelersDames: spelersRaw.filter((s) => s.geslacht === "V"),
       spelersHeren: spelersRaw.filter((s) => s.geslacht === "M"),
       staf: stafRaw,
+      reserveringen: (
+        team.reserveringen as Array<{ id: string; titel: string; geslacht: string }>
+      ).map((r) => ({
+        id: r.id,
+        titel: r.titel,
+        geslacht: r.geslacht as "M" | "V",
+      })),
       openMemoCount: (team.werkitems as Array<unknown>).length,
     };
   });
