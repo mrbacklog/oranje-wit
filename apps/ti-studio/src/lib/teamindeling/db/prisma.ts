@@ -84,6 +84,8 @@ type AnyPrismaModels = {
   mijlpaal: AnyModel;
   // Snapshots
   werkindelingSnapshot: AnyModel;
+  // Audit
+  werkbordMutatie: AnyModel;
   // Team-aliassen (KNKV-competitienamen)
   teamAlias: AnyModel;
   // AI
