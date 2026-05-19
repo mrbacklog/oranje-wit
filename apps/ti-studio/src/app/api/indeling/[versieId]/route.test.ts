@@ -51,7 +51,9 @@ function makeRequest(body: unknown) {
 }
 
 describe("POST /api/indeling/[versieId]", () => {
-  beforeEach(() => log.mockReset());
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   it("logt speler_verplaatst", async () => {
     await POST(

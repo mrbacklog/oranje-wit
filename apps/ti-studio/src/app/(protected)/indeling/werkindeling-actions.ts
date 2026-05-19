@@ -488,6 +488,7 @@ export async function voegSelectieSpelerToe(
 ): Promise<import("@oranje-wit/types").ActionResult<{ id: string }>> {
   await requireTC();
   try {
+    const doorId = await huidigeUserId();
     const selectieGroep = await prisma.selectieGroep.findUniqueOrThrow({
       where: { id: selectieGroepId },
       select: { versieId: true },
@@ -525,7 +526,7 @@ export async function voegSelectieSpelerToe(
     await logWerkbordMutatie({
       versieId,
       type: "selectie_speler_toegevoegd",
-      doorId: await huidigeUserId(),
+      doorId,
       spelerId,
       selectieGroepId,
       sessionId: sessionId ?? null,
@@ -547,6 +548,7 @@ export async function verwijderSelectieSpeler(
 ): Promise<import("@oranje-wit/types").ActionResult<void>> {
   await requireTC();
   try {
+    const doorId = await huidigeUserId();
     const selectieGroep = await prisma.selectieGroep.findUnique({
       where: { id: selectieGroepId },
       select: { versieId: true },
@@ -562,7 +564,7 @@ export async function verwijderSelectieSpeler(
       await logWerkbordMutatie({
         versieId: selectieGroep.versieId,
         type: "selectie_speler_verwijderd",
-        doorId: await huidigeUserId(),
+        doorId,
         spelerId,
         selectieGroepId,
         sessionId: sessionId ?? null,
@@ -591,18 +593,19 @@ export async function toggleSelectieBundeling(
 > {
   await requireTC();
   try {
+    const doorId = await huidigeUserId();
     const selectieGroep = await prisma.selectieGroep.findUniqueOrThrow({
       where: { id: selectieGroepId },
       select: {
         teams: {
-          select: { id: true, naam: true },
+          select: { id: true, naam: true, versieId: true },
           orderBy: { volgorde: "asc" },
         },
         spelers: { select: { spelerId: true, statusOverride: true, notitie: true } },
         staf: { select: { stafId: true, rol: true } },
       },
     });
-    type GroepTeam = { id: string; naam: string };
+    type GroepTeam = { id: string; naam: string; versieId: string };
     type GroepSpeler = { spelerId: string; statusOverride: string | null; notitie: string | null };
     type GroepStaf = { stafId: string; rol: string };
     const groepTeams = selectieGroep.teams as GroepTeam[];
@@ -707,19 +710,12 @@ export async function toggleSelectieBundeling(
     }
 
     // versieId via groepTeams (alle teams van een selectie horen bij dezelfde versie)
-    const versieId = groepTeams[0]
-      ? (
-          await prisma.team.findUniqueOrThrow({
-            where: { id: groepTeams[0].id },
-            select: { versieId: true },
-          })
-        ).versieId
-      : null;
-    if (versieId) {
+    const bundelingVersieId = groepTeams[0]?.versieId ?? null;
+    if (bundelingVersieId) {
       await logWerkbordMutatie({
-        versieId,
+        versieId: bundelingVersieId,
         type: "selectie_bundeling_toggle",
-        doorId: await huidigeUserId(),
+        doorId,
         selectieGroepId,
         payload: {
           selectieGroepId,
