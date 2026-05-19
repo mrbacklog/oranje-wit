@@ -510,37 +510,63 @@ export function SelectieKaart({
     return kolommen;
   }
 
-  // ── Gebundeld: 2 kolommen alle-♀ | alle-♂ ──────────────────────────────
-  // Gebundelde selecties: spelers zitten in SelectieSpeler (groep.gedeeldeDames/Heren)
-  // — niet in TeamSpeler. Voor backward-compat alsnog fallback naar team-spelers
-  // als beide leeg zijn.
+  // ── Gebundeld: 4 kolommen ♀ | ♀ | ♂ | ♂ ─────────────────────────────────
+  // Spelers in gebundelde selectie zijn nog niet aan een team toegewezen —
+  // toon ze daarom verdeeld over 2 dame-kolommen + 2 heer-kolommen (zelfde
+  // totale breedte als ongebundeld). Geen team-scheiding zichtbaar.
+  // Backward-compat: fallback naar team-spelers als groep.gedeeldeDames/Heren leeg.
   function renderGebundeldBody() {
     const alleDames =
-      groep.gedeeldeDames.length > 0
-        ? groep.gedeeldeDames
-        : teams.flatMap((t) => t.spelersDames);
+      groep.gedeeldeDames.length > 0 ? groep.gedeeldeDames : teams.flatMap((t) => t.spelersDames);
     const alleHeren =
-      groep.gedeeldeHeren.length > 0
-        ? groep.gedeeldeHeren
-        : teams.flatMap((t) => t.spelersHeren);
+      groep.gedeeldeHeren.length > 0 ? groep.gedeeldeHeren : teams.flatMap((t) => t.spelersHeren);
+
+    const damesHelft = Math.ceil(alleDames.length / 2);
+    const damesK1 = alleDames.slice(0, damesHelft);
+    const damesK2 = alleDames.slice(damesHelft);
+    const herenHelft = Math.ceil(alleHeren.length / 2);
+    const herenK1 = alleHeren.slice(0, herenHelft);
+    const herenK2 = alleHeren.slice(herenHelft);
+
+    const bundelLabel = teams.map((t) => t.alias ?? t.naam).join(" & ");
 
     return (
       <>
         <SpelerKolom
-          spelers={alleDames}
+          spelers={damesK1}
           geslacht="V"
           teamId={primaireTeamId}
-          teamNaam={teams.map((t) => t.alias ?? t.naam).join(" & ")}
+          teamNaam={bundelLabel}
           zoom={zoom}
           isLaatste={false}
           onClick={onSpelerClick}
           onDrop={(data) => handleDropOpKolom(data, primaireTeamId)}
         />
         <SpelerKolom
-          spelers={alleHeren}
+          spelers={damesK2}
+          geslacht="V"
+          teamId={primaireTeamId}
+          teamNaam={bundelLabel}
+          zoom={zoom}
+          isLaatste={false}
+          onClick={onSpelerClick}
+          onDrop={(data) => handleDropOpKolom(data, primaireTeamId)}
+        />
+        <SpelerKolom
+          spelers={herenK1}
           geslacht="M"
           teamId={primaireTeamId}
-          teamNaam={teams.map((t) => t.alias ?? t.naam).join(" & ")}
+          teamNaam={bundelLabel}
+          zoom={zoom}
+          isLaatste={false}
+          onClick={onSpelerClick}
+          onDrop={(data) => handleDropOpKolom(data, primaireTeamId)}
+        />
+        <SpelerKolom
+          spelers={herenK2}
+          geslacht="M"
+          teamId={primaireTeamId}
+          teamNaam={bundelLabel}
           zoom={zoom}
           isLaatste={true}
           onClick={onSpelerClick}
@@ -566,7 +592,7 @@ export function SelectieKaart({
           position: "relative",
           flexShrink: 0,
           boxShadow: isOver ? "0 0 0 2px var(--val-ok)" : "var(--selectie-frame-shadow)",
-          width: groep.gebundeld ? 480 : Math.max(720, teams.length * 360),
+          width: Math.max(720, teams.length * 360),
         }}
       >
         {/* Gekleurde accent-band links */}

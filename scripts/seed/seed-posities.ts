@@ -6,7 +6,7 @@ import { logger } from "@oranje-wit/types";
  *
  * Layout volgens TC-voorkeur (top-down, links-rechts):
  *
- *   Rij 0:  [sg-senioren-a 480px] [S3 380] [S4 380] [Rec 380] [MW1 380]
+ *   Rij 0:  [sg-senioren-a 720px] [S3 380] [S4 380] [Rec 380] [MW1 380]
  *   Rij 1:  [sg-u19 720px]        [Rood-1 380] [Rood-2 380]
  *   Rij 2:  [sg-u17 720px]        [Oranje-1 380] [Oranje-2 380]
  *   Rij 3:  [sg-u15 720px]        [Geel-1 380] [Geel-2 380]
@@ -23,10 +23,12 @@ import { logger } from "@oranje-wit/types";
 const VERSIE_ID = "versie-edge-actief";
 
 // Exacte breedtes uit globals.css + SelectieKaart.tsx (regel 569)
+// Gebundeld en ongebundeld hebben nu DEZELFDE breedte (720px voor 2 teams).
+// Visueel verschil: gebundeld = D-D-H-H (4 kol over alle spelers),
+//                   ongebundeld = D-H-D-H (4 kol per team).
 const BR_VIERTAL = 220;
 const BR_ACHTTAL = 380;
-const BR_SG_GEBUNDELD = 480;
-const BR_SG_ONGEBUNDELD = 720; // 2 teams: max(720, 2*360)
+const BR_SG = 720; // 2 teams: max(720, 2*360) — geldt voor zowel gebundeld als ongebundeld
 
 const GAP_X = 40;
 const RIJ_HOOGTE = 440; // ruim genoeg voor compact-mode kaart (~360-400px)
@@ -57,7 +59,7 @@ export async function seedPosities(): Promise<void> {
     // Rij 0: Senioren-rij — sg-senioren-a (gebundeld) + 4× ACHTTAL
     ...plaatsRij(
       [
-        { key: "sg-sg-senioren-a", breedte: BR_SG_GEBUNDELD },
+        { key: "sg-sg-senioren-a", breedte: BR_SG },
         { key: `team-${teamId(3)}`, breedte: BR_ACHTTAL }, // S3
         { key: `team-${teamId(4)}`, breedte: BR_ACHTTAL }, // S4
         { key: `team-${teamId(5)}`, breedte: BR_ACHTTAL }, // Recreanten
@@ -69,7 +71,7 @@ export async function seedPosities(): Promise<void> {
     // Rij 1: U19 (ongebundeld) + Rood
     ...plaatsRij(
       [
-        { key: "sg-sg-u19", breedte: BR_SG_ONGEBUNDELD },
+        { key: "sg-sg-u19", breedte: BR_SG },
         { key: `team-${teamId(13)}`, breedte: BR_ACHTTAL }, // Rood-1
         { key: `team-${teamId(14)}`, breedte: BR_ACHTTAL }, // Rood-2
       ],
@@ -79,7 +81,7 @@ export async function seedPosities(): Promise<void> {
     // Rij 2: U17 (ongebundeld) + Oranje
     ...plaatsRij(
       [
-        { key: "sg-sg-u17", breedte: BR_SG_ONGEBUNDELD },
+        { key: "sg-sg-u17", breedte: BR_SG },
         { key: `team-${teamId(15)}`, breedte: BR_ACHTTAL }, // Oranje-1
         { key: `team-${teamId(16)}`, breedte: BR_ACHTTAL }, // Oranje-2
       ],
@@ -89,7 +91,7 @@ export async function seedPosities(): Promise<void> {
     // Rij 3: U15 (ongebundeld) + Geel
     ...plaatsRij(
       [
-        { key: "sg-sg-u15", breedte: BR_SG_ONGEBUNDELD },
+        { key: "sg-sg-u15", breedte: BR_SG },
         { key: `team-${teamId(17)}`, breedte: BR_ACHTTAL }, // Geel-1
         { key: `team-${teamId(18)}`, breedte: BR_ACHTTAL }, // Geel-2
       ],
