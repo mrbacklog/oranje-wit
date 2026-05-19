@@ -9,6 +9,17 @@ import { haalValidatieUpdate } from "@/lib/teamindeling/validatie-update";
 import type { ValidatieUpdate } from "@/components/werkbord/types";
 import { logWerkbordMutatie } from "@/lib/teamindeling/audit/log-werkbord-mutatie";
 import { huidigeUserId } from "@/lib/teamindeling/audit/huidige-user";
+import {
+  bepaalHuidigeLocatie,
+  vergelijkLocatie,
+  laatsteMutatieVoor,
+} from "@/lib/teamindeling/audit/huidige-locatie";
+
+const SpelerLocatieSchema = z.discriminatedUnion("soort", [
+  z.object({ soort: z.literal("pool") }),
+  z.object({ soort: z.literal("team"), teamId: z.string() }),
+  z.object({ soort: z.literal("selectie"), selectieGroepId: z.string() }),
+]);
 
 const SpelerVerplaatst = z.object({
   type: z.literal("speler_verplaatst"),
@@ -17,6 +28,7 @@ const SpelerVerplaatst = z.object({
   naarTeamId: z.string(),
   naarGeslacht: z.enum(["V", "M"]),
   sessionId: z.string(),
+  verwachteLocatie: SpelerLocatieSchema.optional(),
 });
 
 const SpelerNaarPool = z.object({
@@ -24,6 +36,7 @@ const SpelerNaarPool = z.object({
   spelerId: z.string(),
   vanTeamId: z.string(),
   sessionId: z.string(),
+  verwachteLocatie: SpelerLocatieSchema.optional(),
 });
 
 const TeamPositie = z.object({
@@ -43,8 +56,6 @@ export async function POST(
   const auth = await guardTC();
   if (!auth.ok) return auth.response;
 
-  const doorId = await huidigeUserId();
-
   const { versieId } = await params;
   const kanaal = `ti_studio_${versieId}`.slice(0, 63);
 
@@ -52,6 +63,30 @@ export async function POST(
   if (!parsed.ok) return parsed.response;
 
   const event = parsed.data;
+
+  // Compare-and-swap: alleen voor speler-verplaatsing (niet voor team_positie)
+  if (
+    (event.type === "speler_verplaatst" || event.type === "speler_naar_pool") &&
+    event.verwachteLocatie
+  ) {
+    const werkelijk = await bepaalHuidigeLocatie(versieId, event.spelerId);
+    if (!vergelijkLocatie(event.verwachteLocatie, werkelijk)) {
+      const laatste = await laatsteMutatieVoor(versieId, event.spelerId);
+      return new Response(
+        JSON.stringify({
+          ok: false,
+          conflict: {
+            verwacht: event.verwachteLocatie,
+            werkelijk,
+            doorWie: laatste,
+          },
+        }),
+        { status: 409, headers: { "content-type": "application/json" } }
+      );
+    }
+  }
+
+  const doorId = await huidigeUserId();
 
   try {
     if (event.type === "speler_verplaatst") {
