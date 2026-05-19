@@ -24,3 +24,15 @@ export interface LogInput {
   selectieGroepId?: string | null;
   sessionId?: string | null;
 }
+
+export type SpelerLocatie =
+  | { soort: "pool" }
+  | { soort: "team"; teamId: string }
+  | { soort: "selectie"; selectieGroepId: string };
+
+export interface ConflictResult {
+  conflict: true;
+  verwacht: SpelerLocatie;
+  werkelijk: SpelerLocatie;
+  doorWie?: { naam: string; sessionId: string | null; tijdstip: Date };
+}
