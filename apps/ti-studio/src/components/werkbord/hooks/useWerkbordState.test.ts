@@ -1,5 +1,5 @@
 // apps/web/src/components/ti-studio/werkbord/hooks/useWerkbordState.test.ts
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { useWerkbordState } from "./useWerkbordState";
 import type { WerkbordTeam, WerkbordSpeler, WerkbordValidatieItem } from "../types";
@@ -374,5 +374,161 @@ describe("bundelSelectieLokaal (via toggleBundeling)", () => {
     expect(bijgewerktPrimary.selectieHeren).toHaveLength(1); // heer1
     expect(bijgewerktPrimary.dames).toHaveLength(0);
     expect(bijgewerktPrimary.heren).toHaveLength(0);
+  });
+});
+
+describe("verwachteLocatie + 409 conflict", () => {
+  const origFetch = global.fetch;
+
+  afterEach(() => {
+    global.fetch = origFetch;
+  });
+
+  it("stuurt verwachteLocatie mee bij speler_verplaatst (speler zit al in team)", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: vi.fn().mockResolvedValue({ validatieUpdates: [] }),
+    });
+    global.fetch = fetchMock;
+
+    const spelerInTeamA = {
+      id: "sit-s1-tA",
+      spelerId: "s1",
+      speler: maakSpeler("s1", "V", { teamId: "t-A" }),
+      notitie: null,
+    };
+    const teamA = maakTeam("t-A", { dames: [spelerInTeamA] });
+    const teamB = maakTeam("t-B");
+    const speler = maakSpeler("s1", "V", { teamId: "t-A" });
+
+    const { result } = renderHook(() => useWerkbordState("versie-1", [teamA, teamB], [speler], []));
+
+    await act(async () => {
+      result.current.verplaatsSpeler(speler, "t-A", "t-B", "V");
+    });
+
+    const call = fetchMock.mock.calls.find((c: unknown[]) =>
+      (c[0] as string).includes("/api/indeling/")
+    );
+    expect(call).toBeDefined();
+    const body = JSON.parse((call![1] as RequestInit).body as string);
+    expect(body.type).toBe("speler_verplaatst");
+    expect(body.verwachteLocatie).toEqual({ soort: "team", teamId: "t-A" });
+  });
+
+  it("stuurt verwachteLocatie mee bij speler_naar_pool (speler zit al in team)", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: vi.fn().mockResolvedValue({ validatieUpdates: [] }),
+    });
+    global.fetch = fetchMock;
+
+    const spelerInTeamA = {
+      id: "sit-s2-tA",
+      spelerId: "s2",
+      speler: maakSpeler("s2", "M", { teamId: "t-A" }),
+      notitie: null,
+    };
+    const teamA = maakTeam("t-A", { heren: [spelerInTeamA] });
+    const speler = maakSpeler("s2", "M", { teamId: "t-A" });
+
+    const { result } = renderHook(() => useWerkbordState("versie-1", [teamA], [speler], []));
+
+    await act(async () => {
+      result.current.verwijderSpelerUitTeam("s2", "t-A");
+    });
+
+    const call = fetchMock.mock.calls.find((c: unknown[]) =>
+      (c[0] as string).includes("/api/indeling/")
+    );
+    expect(call).toBeDefined();
+    const body = JSON.parse((call![1] as RequestInit).body as string);
+    expect(body.type).toBe("speler_naar_pool");
+    expect(body.verwachteLocatie).toEqual({ soort: "team", teamId: "t-A" });
+  });
+
+  it("stuurt verwachteLocatie pool mee als speler nergens zit", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: vi.fn().mockResolvedValue({ validatieUpdates: [] }),
+    });
+    global.fetch = fetchMock;
+
+    const teamB = maakTeam("t-B");
+    const speler = maakSpeler("s3", "V", { teamId: null });
+
+    const { result } = renderHook(() => useWerkbordState("versie-1", [teamB], [speler], []));
+
+    await act(async () => {
+      result.current.verplaatsSpeler(speler, null, "t-B", "V");
+    });
+
+    const call = fetchMock.mock.calls.find((c: unknown[]) =>
+      (c[0] as string).includes("/api/indeling/")
+    );
+    expect(call).toBeDefined();
+    const body = JSON.parse((call![1] as RequestInit).body as string);
+    expect(body.verwachteLocatie).toEqual({ soort: "pool" });
+  });
+
+  it("roept onConflict aan bij 409 response", async () => {
+    const onConflict = vi.fn();
+    const conflictPayload = {
+      conflict: true as const,
+      verwacht: { soort: "pool" as const },
+      werkelijk: { soort: "team" as const, teamId: "t-sen2" },
+      doorWie: { naam: "Merel van Gurp", tijdstip: new Date(), sessionId: null },
+    };
+
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 409,
+      json: vi.fn().mockResolvedValue({ conflict: conflictPayload }),
+    });
+
+    const teamB = maakTeam("t-B");
+    const speler = maakSpeler("s4", "V", { teamId: null });
+
+    const { result } = renderHook(() =>
+      useWerkbordState("versie-1", [teamB], [speler], [], { kind: "werkversie" }, { onConflict })
+    );
+
+    await act(async () => {
+      result.current.verplaatsSpeler(speler, null, "t-B", "V");
+    });
+
+    expect(onConflict).toHaveBeenCalledWith(
+      expect.objectContaining({
+        werkelijk: { soort: "team", teamId: "t-sen2" },
+      })
+    );
+  });
+
+  it("zet opslaanStatus op fout bij 409", async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 409,
+      json: vi.fn().mockResolvedValue({
+        conflict: {
+          conflict: true,
+          verwacht: { soort: "pool" },
+          werkelijk: { soort: "team", teamId: "t-x" },
+        },
+      }),
+    });
+
+    const teamB = maakTeam("t-B");
+    const speler = maakSpeler("s5", "V", { teamId: null });
+
+    const { result } = renderHook(() => useWerkbordState("versie-1", [teamB], [speler], []));
+
+    await act(async () => {
+      result.current.verplaatsSpeler(speler, null, "t-B", "V");
+    });
+
+    expect(result.current.opslaanStatus).toBe("fout");
   });
 });
