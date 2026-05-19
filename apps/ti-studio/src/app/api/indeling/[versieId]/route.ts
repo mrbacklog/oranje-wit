@@ -81,7 +81,7 @@ export async function POST(
         vanTeamId: event.vanTeamId,
         naarTeamId: event.naarTeamId,
         sessionId: event.sessionId,
-        payload: event as unknown as Record<string, unknown>,
+        payload: { ...event },
         inverse: event.vanTeamId
           ? { type: "speler_verplaatst", spelerId: event.spelerId, naarTeamId: event.vanTeamId }
           : { type: "speler_naar_pool", spelerId: event.spelerId, vanTeamId: event.naarTeamId },
@@ -103,7 +103,7 @@ export async function POST(
         spelerId: event.spelerId,
         vanTeamId: event.vanTeamId,
         sessionId: event.sessionId,
-        payload: event as unknown as Record<string, unknown>,
+        payload: { ...event },
         inverse: {
           type: "speler_verplaatst",
           spelerId: event.spelerId,
@@ -124,7 +124,7 @@ export async function POST(
         type: "team_positie",
         doorId: huidigeUser.id,
         sessionId: event.sessionId,
-        payload: event as unknown as Record<string, unknown>,
+        payload: { ...event },
         inverse: oudePositie
           ? { type: "team_positie", teamId: event.teamId, ...oudePositie }
           : null,
