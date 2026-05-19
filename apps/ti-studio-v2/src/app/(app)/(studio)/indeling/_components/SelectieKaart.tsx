@@ -217,32 +217,34 @@ function SpelerKolom({
         </div>
       )}
 
-      {/* Sexe-teller — optioneel via tellerOverride (null = niet tonen) */}
-      {toonTeller && (
-        <div className={cx("compact-sexe-teller", isVrouw ? "v" : "h")} style={{ flexShrink: 0 }}>
-          <span
-            style={{
-              fontSize: 20,
-              fontWeight: 700,
-              color: isVrouw ? "rgba(217,70,239,.7)" : "rgba(37,99,235,.7)",
-              lineHeight: 1,
-            }}
-          >
-            {isVrouw ? "♀" : "♂"}
-          </span>
-          <span className="st-val">{tellerWaarde}</span>
-          <span
-            style={{
-              fontSize: 9,
-              color: "rgba(255,255,255,.3)",
-              fontWeight: 700,
-              lineHeight: 1,
-            }}
-          >
-            ▾
-          </span>
-        </div>
-      )}
+      {/* Sexe-teller — bij tellerOverride=null onzichtbaar maar wel ruimte (visibility:hidden) zodat layout-hoogte gelijk blijft */}
+      <div
+        className={cx("compact-sexe-teller", isVrouw ? "v" : "h")}
+        style={{ flexShrink: 0, visibility: toonTeller ? "visible" : "hidden" }}
+        aria-hidden={!toonTeller}
+      >
+        <span
+          style={{
+            fontSize: 20,
+            fontWeight: 700,
+            color: isVrouw ? "rgba(217,70,239,.7)" : "rgba(37,99,235,.7)",
+            lineHeight: 1,
+          }}
+        >
+          {isVrouw ? "♀" : "♂"}
+        </span>
+        <span className="st-val">{toonTeller ? tellerWaarde : 0}</span>
+        <span
+          style={{
+            fontSize: 9,
+            color: "rgba(255,255,255,.3)",
+            fontWeight: 700,
+            lineHeight: 1,
+          }}
+        >
+          ▾
+        </span>
+      </div>
 
       {/* Speler-lijst */}
       <div
