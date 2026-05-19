@@ -6,9 +6,15 @@ vi.mock("@/lib/teamindeling/db/prisma", () => ({
 }));
 
 import { logWerkbordMutatie } from "./log-werkbord-mutatie";
+import { logger } from "@oranje-wit/types";
 
 describe("logWerkbordMutatie", () => {
-  beforeEach(() => create.mockReset());
+  const warnSpy = vi.spyOn(logger, "warn").mockImplementation(() => {});
+
+  beforeEach(() => {
+    create.mockReset();
+    warnSpy.mockReset();
+  });
 
   it("schrijft een row met alle velden", async () => {
     create.mockResolvedValue({ id: "x" });
@@ -31,6 +37,9 @@ describe("logWerkbordMutatie", () => {
     expect(arg.data.naarTeamId).toBe("t-sen2");
     expect(arg.data.sessionId).toBe("sess-1");
     expect(arg.data.payload).toEqual({ type: "speler_verplaatst", spelerId: "HANDMATIG-tycho" });
+    expect(arg.data.vanTeamId).toBeNull();
+    expect(arg.data.inverse).toBeNull();
+    expect(arg.data.selectieGroepId).toBeNull();
   });
 
   it("gooit niet als prisma faalt (audit mag nooit een mutatie blokkeren)", async () => {
@@ -43,5 +52,6 @@ describe("logWerkbordMutatie", () => {
         payload: {},
       })
     ).resolves.toBeUndefined();
+    expect(warnSpy).toHaveBeenCalledWith("logWerkbordMutatie kon niet opslaan:", expect.any(Error));
   });
 });

@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/teamindeling/db/prisma";
 import { logger } from "@oranje-wit/types";
+import type { Prisma } from "@oranje-wit/database";
 import type { LogInput } from "./types";
 
 export async function logWerkbordMutatie(input: LogInput): Promise<void> {
@@ -9,8 +10,8 @@ export async function logWerkbordMutatie(input: LogInput): Promise<void> {
         versieId: input.versieId,
         type: input.type,
         doorId: input.doorId,
-        payload: input.payload as never,
-        inverse: (input.inverse ?? null) as never,
+        payload: input.payload as unknown as Prisma.InputJsonValue,
+        inverse: (input.inverse ?? null) as unknown as Prisma.InputJsonValue,
         spelerId: input.spelerId ?? null,
         vanTeamId: input.vanTeamId ?? null,
         naarTeamId: input.naarTeamId ?? null,
