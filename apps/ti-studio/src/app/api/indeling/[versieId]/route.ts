@@ -8,6 +8,7 @@ import { z } from "zod";
 import { haalValidatieUpdate } from "@/lib/teamindeling/validatie-update";
 import type { ValidatieUpdate } from "@/components/werkbord/types";
 import { logWerkbordMutatie } from "@/lib/teamindeling/audit/log-werkbord-mutatie";
+import { huidigeUserId } from "@/lib/teamindeling/audit/huidige-user";
 
 const SpelerVerplaatst = z.object({
   type: z.literal("speler_verplaatst"),
@@ -42,10 +43,7 @@ export async function POST(
   const auth = await guardTC();
   if (!auth.ok) return auth.response;
 
-  const huidigeUser = await prisma.user.findUniqueOrThrow({
-    where: { email: auth.session.user.email },
-    select: { id: true },
-  });
+  const doorId = await huidigeUserId();
 
   const { versieId } = await params;
   const kanaal = `ti_studio_${versieId}`.slice(0, 63);
@@ -76,7 +74,7 @@ export async function POST(
       await logWerkbordMutatie({
         versieId,
         type: "speler_verplaatst",
-        doorId: huidigeUser.id,
+        doorId: doorId,
         spelerId: event.spelerId,
         vanTeamId: event.vanTeamId,
         naarTeamId: event.naarTeamId,
@@ -99,7 +97,7 @@ export async function POST(
       await logWerkbordMutatie({
         versieId,
         type: "speler_naar_pool",
-        doorId: huidigeUser.id,
+        doorId: doorId,
         spelerId: event.spelerId,
         vanTeamId: event.vanTeamId,
         sessionId: event.sessionId,
@@ -122,7 +120,7 @@ export async function POST(
       await logWerkbordMutatie({
         versieId,
         type: "team_positie",
-        doorId: huidigeUser.id,
+        doorId: doorId,
         sessionId: event.sessionId,
         payload: { ...event },
         inverse: oudePositie

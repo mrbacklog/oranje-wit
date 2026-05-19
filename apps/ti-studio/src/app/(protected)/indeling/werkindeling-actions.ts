@@ -10,6 +10,8 @@ import { maakWerkindelingSnapshot } from "@/lib/teamindeling/db/werkindeling-sna
 import { requireTC } from "@oranje-wit/auth/checks";
 import type { ActionResult } from "@oranje-wit/types";
 import { HUIDIG_SEIZOEN } from "@oranje-wit/types";
+import { logWerkbordMutatie } from "@/lib/teamindeling/audit/log-werkbord-mutatie";
+import { huidigeUserId } from "@/lib/teamindeling/audit/huidige-user";
 
 const NIET_VERWIJDERD = { verwijderdOp: null } as const;
 
@@ -520,6 +522,16 @@ export async function voegSelectieSpelerToe(
       spelerId,
       sessionId: sessionId ?? null,
     });
+    await logWerkbordMutatie({
+      versieId,
+      type: "selectie_speler_toegevoegd",
+      doorId: await huidigeUserId(),
+      spelerId,
+      selectieGroepId,
+      sessionId: sessionId ?? null,
+      payload: { selectieGroepId, spelerId, sessionId: sessionId ?? null },
+      inverse: { type: "selectie_speler_verwijderd", selectieGroepId, spelerId },
+    });
     revalidatePath("/indeling");
     return { ok: true, data: { id: selectieSpeler.id } };
   } catch (error) {
@@ -546,6 +558,16 @@ export async function verwijderSelectieSpeler(
         selectieGroepId,
         spelerId,
         sessionId: sessionId ?? null,
+      });
+      await logWerkbordMutatie({
+        versieId: selectieGroep.versieId,
+        type: "selectie_speler_verwijderd",
+        doorId: await huidigeUserId(),
+        spelerId,
+        selectieGroepId,
+        sessionId: sessionId ?? null,
+        payload: { selectieGroepId, spelerId, sessionId: sessionId ?? null },
+        inverse: { type: "selectie_speler_toegevoegd", selectieGroepId, spelerId },
       });
     }
     revalidatePath("/indeling");
@@ -684,6 +706,30 @@ export async function toggleSelectieBundeling(
       stafVerplaatst = groepStaf.length;
     }
 
+    // versieId via groepTeams (alle teams van een selectie horen bij dezelfde versie)
+    const versieId = groepTeams[0]
+      ? (
+          await prisma.team.findUniqueOrThrow({
+            where: { id: groepTeams[0].id },
+            select: { versieId: true },
+          })
+        ).versieId
+      : null;
+    if (versieId) {
+      await logWerkbordMutatie({
+        versieId,
+        type: "selectie_bundeling_toggle",
+        doorId: await huidigeUserId(),
+        selectieGroepId,
+        payload: {
+          selectieGroepId,
+          gebundeld,
+          primaryTeamId: primaryTeamId ?? null,
+          spelersVerplaatst,
+          stafVerplaatst,
+        },
+      });
+    }
     revalidatePath("/indeling");
     return {
       ok: true,

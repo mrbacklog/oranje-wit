@@ -3,6 +3,9 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 vi.mock("@/lib/teamindeling/audit/log-werkbord-mutatie", () => ({
   logWerkbordMutatie: vi.fn(),
 }));
+vi.mock("@/lib/teamindeling/audit/huidige-user", () => ({
+  huidigeUserId: vi.fn().mockResolvedValue("u1"),
+}));
 vi.mock("@oranje-wit/auth/checks", () => ({
   guardTC: vi.fn().mockResolvedValue({
     ok: true,
@@ -31,7 +34,6 @@ vi.mock("@/lib/teamindeling/db/prisma", () => ({
       update: vi.fn().mockResolvedValue({}),
     },
     $executeRaw: vi.fn().mockResolvedValue(0),
-    user: { findUniqueOrThrow: vi.fn().mockResolvedValue({ id: "u1" }) },
   },
 }));
 
