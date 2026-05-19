@@ -439,7 +439,7 @@ function SpelerKolom({
         minWidth: 0,
       }}
     >
-      {/* Sexe-teller: groot icoon boven getal, driehoekje eronder */}
+      {/* Sexe-teller: groot icoon boven getal */}
       <div className={cx("compact-sexe-teller", isVrouw ? "v" : "h")} style={{ flexShrink: 0 }}>
         <span
           style={{
@@ -452,16 +452,6 @@ function SpelerKolom({
           {isVrouw ? "♀" : "♂"}
         </span>
         <span className="st-val">{aantalLabel}</span>
-        <span
-          style={{
-            fontSize: 9,
-            color: "rgba(255,255,255,.3)",
-            fontWeight: 700,
-            lineHeight: 1,
-          }}
-        >
-          ▾
-        </span>
       </div>
 
       {/* Speler-lijst */}
