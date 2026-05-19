@@ -1,6 +1,7 @@
 "use client";
 
 import type { TeamKaartData } from "./werkbord-types";
+import { MemoIcon } from "@/components/memo/MemoIcon";
 
 function cx(...args: (string | false | null | undefined)[]): string {
   return args.filter(Boolean).join(" ");
@@ -65,16 +66,8 @@ export function WbTeamRij({ team, actief = false, onClick }: WbTeamRijProps) {
         ♂{team.spelersHeren.length}
       </span>
       {team.openMemoCount > 0 && (
-        <span
-          data-memo-indicator
-          style={{
-            fontSize: 10,
-            color: "var(--memo-open)",
-            fontWeight: 800,
-          }}
-          title={`${team.openMemoCount} open memo`}
-        >
-          ▲{team.openMemoCount}
+        <span data-memo-indicator>
+          <MemoIcon count={team.openMemoCount} size={11} style={{ fontSize: 10 }} />
         </span>
       )}
       <span

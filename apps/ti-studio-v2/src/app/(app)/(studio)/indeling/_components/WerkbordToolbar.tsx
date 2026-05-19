@@ -1,5 +1,7 @@
 "use client";
 
+import { MemoIcon } from "@/components/memo/MemoIcon";
+
 function cx(...args: (string | false | null | undefined)[]): string {
   return args.filter(Boolean).join(" ");
 }
@@ -75,12 +77,13 @@ export function WerkbordToolbar({
         <button
           className="wb-toggle"
           title="Nieuwe memo aanmaken"
-          style={{ padding: "4px 8px" }}
+          style={{ padding: "4px 8px", display: "inline-flex", alignItems: "center", gap: 5 }}
           onClick={() => {
             /* fase 3: NieuweMemoDialog */
           }}
         >
-          ▲ Memo
+          <MemoIcon size={12} kleur="currentColor" />
+          Memo
         </button>
         <span className="wb-sep" style={{ height: 16 }} />
         <button className={cx("wb-toggle", teamsOpen && "active")} onClick={onToggleTeams}>

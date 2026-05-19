@@ -7,6 +7,7 @@ import { useWerkbordDraggable, type DragBron } from "./hooks/useWerkbordDraggabl
 import type { WerkbordDragData } from "./hooks/useWerkbordDraggable";
 import { RijkeRij } from "@/components/speler/contexts/RijkeRij";
 import { CompactChip } from "@/components/speler/contexts/CompactChip";
+import { MemoIcon } from "@/components/memo/MemoIcon";
 import { leeftijdscategorie } from "@/lib/format/speler";
 import type { SpelerStatus, WerkitemStatus } from "@oranje-wit/database";
 
@@ -297,16 +298,8 @@ function TeamKaartHeader({ team, kleur, valKleur, onClick }: TeamKaartHeaderProp
 
       {/* Memo-icoon */}
       {team.openMemoCount > 0 && (
-        <span
-          data-memo-indicator
-          style={{
-            fontSize: 10,
-            fontWeight: 800,
-            color: "var(--memo-open)",
-          }}
-          title={`${team.openMemoCount} open memo`}
-        >
-          ▲{team.openMemoCount}
+        <span data-memo-indicator>
+          <MemoIcon count={team.openMemoCount} size={12} style={{ fontSize: 10 }} />
         </span>
       )}
 

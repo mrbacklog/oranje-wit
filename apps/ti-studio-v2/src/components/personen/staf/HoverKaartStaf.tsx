@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { StafRijData } from "@/components/personen/types";
+import { MemoIcon } from "@/components/memo/MemoIcon";
 
 interface HoverKaartStafProps {
   staflid: StafRijData;
@@ -100,15 +101,24 @@ export function HoverKaartStaf({
               top: 10,
               left: 10,
               zIndex: 5,
-              display: "flex",
-              alignItems: "center",
-              gap: 4,
-              fontSize: 10,
-              color: staflid.memoBadge === "risico" ? "#ef4444" : "#eab308",
               filter: "drop-shadow(0 1px 2px rgba(0,0,0,.5))",
             }}
           >
-            ▲ {staflid.memoBadge}
+            <MemoIcon
+              kleur={staflid.memoBadge === "risico" ? "#ef4444" : "#eab308"}
+              size={12}
+              title={staflid.memoBadge ?? undefined}
+              style={{ fontSize: 10, gap: 4 }}
+            />
+            <span
+              style={{
+                marginLeft: 4,
+                fontSize: 10,
+                color: staflid.memoBadge === "risico" ? "#ef4444" : "#eab308",
+              }}
+            >
+              {staflid.memoBadge}
+            </span>
           </div>
         )}
 

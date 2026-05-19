@@ -2,6 +2,7 @@
 
 import type { TeamKaartData } from "./werkbord-types";
 import { SpelerAvatar } from "@/components/shared/SpelerAvatar";
+import { MemoIcon } from "@/components/memo/MemoIcon";
 
 function cx(...args: (string | false | null | undefined)[]): string {
   return args.filter(Boolean).join(" ");
@@ -198,15 +199,7 @@ export function TeamDetailDrawer({ team, open, onTerug, onOpenDialog }: TeamDeta
               </span>
               <span style={{ flex: 1 }} />
               {team.openMemoCount > 0 && (
-                <span
-                  style={{
-                    fontSize: 11,
-                    color: "var(--memo-open)",
-                    fontWeight: 800,
-                  }}
-                >
-                  ▲ {team.openMemoCount}
-                </span>
+                <MemoIcon count={team.openMemoCount} size={12} style={{ fontSize: 11 }} />
               )}
               <span
                 style={{

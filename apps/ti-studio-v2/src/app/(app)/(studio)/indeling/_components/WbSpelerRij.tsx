@@ -3,6 +3,7 @@
 import type { PoolSpeler } from "./werkbord-types";
 import { useWerkbordDraggable, type DragBron } from "./hooks/useWerkbordDraggable";
 import { SpelerAvatar } from "@/components/shared/SpelerAvatar";
+import { MemoIcon } from "@/components/memo/MemoIcon";
 
 function leeftijdGradient(leeftijd: number): string {
   const jaar = Math.max(4, Math.min(19, Math.floor(leeftijd)));
@@ -76,9 +77,7 @@ export function WbSpelerRij({ speler, bron, onClick }: WbSpelerRijProps) {
               ingedeeld
             </span>
           )}
-          {speler.openMemoCount > 0 && (
-            <span style={{ color: "var(--memo-open)" }}>▲{speler.openMemoCount}</span>
-          )}
+          {speler.openMemoCount > 0 && <MemoIcon count={speler.openMemoCount} size={11} />}
         </div>
       </div>
 

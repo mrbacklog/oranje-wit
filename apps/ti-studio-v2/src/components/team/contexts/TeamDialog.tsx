@@ -8,6 +8,7 @@ import type {
 } from "@/app/(app)/(studio)/indeling/_components/werkbord-types";
 import type { SpelerWerkitemDetail } from "@/components/personen/types";
 import { SpelerAvatar } from "@/components/shared/SpelerAvatar";
+import { MemoIcon } from "@/components/memo/MemoIcon";
 import { logger } from "@oranje-wit/types";
 import { maakReserveringInTeam, verwijderReservering } from "@/actions/reservering-actions";
 
@@ -116,34 +117,6 @@ function werkitemIconKleur(status: string): string {
     default:
       return "var(--text-tertiary)";
   }
-}
-
-function MemoIcon({ kleur }: { kleur: string }) {
-  return (
-    <span
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        width: 22,
-        height: 20,
-        color: kleur,
-        flexShrink: 0,
-        paddingTop: 2,
-      }}
-    >
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-        <path d="M5 3h10l4 4v14H5z" />
-        <path
-          d="M15 3v4h4M8 12h8M8 15h8M8 18h5"
-          stroke="var(--surface-sunken, #090910)"
-          strokeWidth="1.5"
-          fill="none"
-          strokeLinecap="round"
-        />
-      </svg>
-    </span>
-  );
 }
 
 type TabId = "overzicht" | "validatie" | "notities";
@@ -632,15 +605,12 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
 
               {/* Memo-flag */}
               {team.openMemoCount > 0 && (
-                <span
-                  style={{
-                    fontSize: 11,
-                    color: "var(--ow-accent)",
-                    fontWeight: 900,
-                  }}
-                >
-                  ▲ {team.openMemoCount}
-                </span>
+                <MemoIcon
+                  count={team.openMemoCount}
+                  kleur="var(--ow-accent)"
+                  size={13}
+                  style={{ fontSize: 11, fontWeight: 900 }}
+                />
               )}
             </div>
           </div>
@@ -794,13 +764,7 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
                         >
                           {s.roepnaam} {s.achternaam}
                         </span>
-                        {s.memoStatus && (
-                          <span
-                            style={{ fontSize: 10, color: "var(--ow-accent)", fontWeight: 900 }}
-                          >
-                            ▲
-                          </span>
-                        )}
+                        {s.memoStatus && <MemoIcon kleur="var(--ow-accent)" size={11} />}
                         <span
                           style={{
                             fontSize: 10,
@@ -894,13 +858,7 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
                         >
                           {s.roepnaam} {s.achternaam}
                         </span>
-                        {s.memoStatus && (
-                          <span
-                            style={{ fontSize: 10, color: "var(--ow-accent)", fontWeight: 900 }}
-                          >
-                            ▲
-                          </span>
-                        )}
+                        {s.memoStatus && <MemoIcon kleur="var(--ow-accent)" size={11} />}
                         <span
                           style={{
                             fontSize: 10,
@@ -1141,7 +1099,7 @@ export function TeamDialog({ team, open, onClose }: TeamDialogProps) {
                       >
                         {/* Memo-icon */}
                         <div style={{ flexShrink: 0, paddingTop: 2 }}>
-                          <MemoIcon kleur={iconKleur} />
+                          <MemoIcon kleur={iconKleur} size={18} />
                         </div>
 
                         {/* Body */}

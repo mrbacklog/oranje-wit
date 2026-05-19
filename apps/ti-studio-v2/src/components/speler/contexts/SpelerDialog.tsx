@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useTransition } from "react";
 import type { SpelerRijData, SpelerWerkitemDetail } from "@/components/personen/types";
 import { HeroHeader } from "@/components/speler/contexts/HeroHeader";
+import { MemoIcon } from "@/components/memo/MemoIcon";
 import { createPortal } from "react-dom";
 import { updateSpelerStatus, updateSpelerIndeling } from "@/actions/speler-actions";
 import { logger } from "@oranje-wit/types";
@@ -169,36 +170,6 @@ function buildHeroSubtitle(
 
   parts.push(`rel-code ${id}`);
   return parts.join(" · ");
-}
-
-// ── Memo-icon SVG ─────────────────────────────────────────────────────────────
-
-function MemoIcon({ kleur }: { kleur: string }) {
-  return (
-    <span
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        width: 22,
-        height: 20,
-        color: kleur,
-        flexShrink: 0,
-        paddingTop: 2,
-      }}
-    >
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-        <path d="M5 3h10l4 4v14H5z" />
-        <path
-          d="M15 3v4h4M8 12h8M8 15h8M8 18h5"
-          stroke="var(--surface-sunken, #090910)"
-          strokeWidth="1.5"
-          fill="none"
-          strokeLinecap="round"
-        />
-      </svg>
-    </span>
-  );
 }
 
 // ── Component ────────────────────────────────────────────────────────────────
@@ -836,7 +807,7 @@ export function SpelerDialog({
                     >
                       {/* Memo-icon */}
                       <div style={{ flexShrink: 0, paddingTop: 2 }}>
-                        <MemoIcon kleur={iconKleur} />
+                        <MemoIcon kleur={iconKleur} size={18} />
                       </div>
 
                       {/* Body */}
