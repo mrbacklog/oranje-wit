@@ -17,5 +17,11 @@ export default defineConfig({
     // waardoor de globalForPrisma singleton uit @oranje-wit/database lekt tussen
     // test-bestanden. forks geeft elk bestand een eigen process en echte isolatie.
     pool: "forks",
+    // Windows start OS-processen trager dan Linux; met 16 parallelle forks kan de
+    // jsdom-setup (1-2s) + module-resolutie de standaard 5s timeout raken.
+    // 15s geeft genoeg ruimte zonder de suite significant te vertragen.
+    testTimeout: 15000,
+    // Begrens het aantal gelijktijdige forks (Vitest 4 top-level optie).
+    maxWorkers: 4,
   },
 });

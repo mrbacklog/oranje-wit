@@ -34,6 +34,10 @@ vi.mock("@/lib/teamindeling/db/prisma", () => ({
   anyTeam: {},
 }));
 
+vi.mock("@oranje-wit/teamindeling-shared/seizoen", () => ({
+  assertBewerkbaar: vi.fn().mockResolvedValue(undefined),
+}));
+
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 
 describe("voegSelectieSpelerToe — invariant", () => {
