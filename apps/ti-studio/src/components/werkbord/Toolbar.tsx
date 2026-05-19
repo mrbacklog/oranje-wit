@@ -25,7 +25,7 @@ export function Toolbar({
   naam,
   versieNaam,
   versieNummer,
-  isWhatIf = false,
+  isWhatIf: _isWhatIf = false,
   totalSpelers,
   ingeplandSpelers,
   arCount = 0,
@@ -39,6 +39,7 @@ export function Toolbar({
   variantBasis = null,
   onTerugNaarWerkversie,
 }: ToolbarProps) {
+  void _isWhatIf;
   const pct = totalSpelers > 0 ? Math.round((ingeplandSpelers / totalSpelers) * 100) : 0;
   const circumference = 75.4;
   const offset = circumference - (circumference * pct) / 100;
@@ -72,145 +73,162 @@ export function Toolbar({
         }}
       />
 
-      {/* Links: naam + versie-badge — klikbaar opent versies-drawer */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 8,
-          minWidth: 0,
-          width: 260,
-          cursor: "pointer",
-        }}
-        onClick={onVersiesOpen}
-        title="Versies & What-If openen"
-      >
-        <div style={{ minWidth: 0 }}>
-          <div
-            style={{
-              fontSize: 15,
-              fontWeight: 700,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-          >
-            {naam}
-          </div>
-          <div style={{ fontSize: 11, color: "var(--text-3)" }}>
-            v{versieNummer}
-            {versieNaam ? ` — ${versieNaam}` : ""}
-          </div>
-        </div>
-
-        {/* Versie-type badge */}
-        {isWhatIf ? (
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 5,
-              padding: "2px 8px",
-              borderRadius: 5,
-              fontSize: 10,
-              fontWeight: 600,
-              background: "rgba(139,92,246,.12)",
-              color: "var(--purple, #8b5cf6)",
-              border: "1px solid rgba(139,92,246,.2)",
-              whiteSpace: "nowrap",
-            }}
-          >
-            <svg width="7" height="7" viewBox="0 0 8 8">
-              <circle cx="4" cy="4" r="4" fill="currentColor" />
-            </svg>
-            What-if
-          </div>
-        ) : (
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 5,
-              padding: "2px 8px",
-              borderRadius: 5,
-              fontSize: 10,
-              fontWeight: 600,
-              background: "rgba(255,107,0,.1)",
-              color: "var(--accent)",
-              border: "1px solid rgba(255,107,0,.2)",
-              whiteSpace: "nowrap",
-            }}
-          >
-            <svg width="7" height="7" viewBox="0 0 8 8">
-              <circle cx="4" cy="4" r="4" fill="currentColor" />
-            </svg>
-            Werkversie
-          </div>
-        )}
-      </div>
-
-      {variantActief && (
+      {/* Links: context-blok — één rustige hiërarchie:
+          - Bij werkversie: modus-stip + werkindeling-naam, daaronder "Werkversie · v{n}{naam}"
+          - Bij what-if:    modus-stip + variant-vraag,    daaronder "What-if · gebaseerd op v{basis}" + terug-knop
+          Geen dubbele badge, geen versienummer dat onder de variant-chip nog eens herhaald wordt. */}
+      {variantActief ? (
         <div
           style={{
             display: "flex",
             alignItems: "center",
-            gap: 8,
-            marginLeft: 12,
-            padding: "4px 10px",
-            borderRadius: 6,
-            background: "var(--accent-dim)",
-            border: "1px solid rgba(255,107,0,.35)",
+            gap: 10,
+            minWidth: 0,
+            maxWidth: 520,
+            paddingRight: 12,
+            borderRight: "1px solid var(--border-1)",
           }}
         >
-          <span
-            style={{
-              fontSize: 10,
-              fontWeight: 800,
-              textTransform: "uppercase",
-              letterSpacing: ".6px",
-              color: "var(--accent)",
-            }}
-          >
-            Variant
-          </span>
-          <span
-            style={{
-              fontSize: 11,
-              color: "var(--text-1)",
-              maxWidth: 240,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-            title={variantVraag ?? ""}
-          >
-            {variantVraag ?? ""}
-          </span>
-          {variantBasis !== null && (
-            <span style={{ fontSize: 10, color: "var(--text-3)" }}>
-              (gebaseerd op v{variantBasis})
-            </span>
-          )}
+          <ModusStip kleur="var(--purple, #8b5cf6)" />
+          <div style={{ minWidth: 0, display: "flex", flexDirection: "column", gap: 1 }}>
+            <div
+              style={{
+                fontSize: 14,
+                fontWeight: 700,
+                color: "var(--text-1)",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                lineHeight: 1.2,
+              }}
+              title={variantVraag ?? "What-if"}
+            >
+              {variantVraag ?? "What-if"}
+            </div>
+            <div
+              style={{
+                fontSize: 10,
+                color: "var(--text-3)",
+                whiteSpace: "nowrap",
+                lineHeight: 1.2,
+                letterSpacing: ".2px",
+              }}
+            >
+              <span style={{ color: "var(--purple, #8b5cf6)", fontWeight: 700 }}>What-if</span>
+              {variantBasis !== null && (
+                <>
+                  <span style={{ margin: "0 5px", opacity: 0.5 }}>·</span>
+                  <span>gebaseerd op v{variantBasis}</span>
+                </>
+              )}
+              <span style={{ margin: "0 5px", opacity: 0.5 }}>·</span>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onVersiesOpen();
+                }}
+                style={{
+                  background: "transparent",
+                  border: 0,
+                  padding: 0,
+                  color: "var(--text-3)",
+                  cursor: "pointer",
+                  fontFamily: "inherit",
+                  fontSize: 10,
+                  textDecoration: "underline",
+                  textUnderlineOffset: 2,
+                }}
+                title="Versies & What-If openen"
+              >
+                {naam}
+              </button>
+            </div>
+          </div>
           <button
             onClick={onTerugNaarWerkversie}
             style={{
-              fontSize: 10,
-              fontWeight: 700,
-              padding: "3px 9px",
-              borderRadius: 5,
+              fontSize: 11,
+              fontWeight: 600,
+              padding: "5px 10px",
+              borderRadius: 6,
               background: "var(--bg-2)",
               color: "var(--text-1)",
               border: "1px solid var(--border-1)",
               cursor: "pointer",
               fontFamily: "inherit",
               whiteSpace: "nowrap",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 5,
+              flexShrink: 0,
             }}
             title="Terug naar werkversie"
           >
-            ← Werkversie
+            <svg
+              width="11"
+              height="11"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+            Werkversie
           </button>
         </div>
+      ) : (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            minWidth: 0,
+            width: 280,
+            cursor: "pointer",
+            paddingRight: 12,
+            borderRight: "1px solid var(--border-1)",
+          }}
+          onClick={onVersiesOpen}
+          title="Versies & What-If openen"
+        >
+          <ModusStip kleur="var(--accent)" />
+          <div style={{ minWidth: 0, display: "flex", flexDirection: "column", gap: 1 }}>
+            <div
+              style={{
+                fontSize: 14,
+                fontWeight: 700,
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                lineHeight: 1.2,
+              }}
+            >
+              {naam}
+            </div>
+            <div
+              style={{
+                fontSize: 10,
+                color: "var(--text-3)",
+                whiteSpace: "nowrap",
+                lineHeight: 1.2,
+                letterSpacing: ".2px",
+              }}
+            >
+              <span style={{ color: "var(--accent)", fontWeight: 700 }}>Werkversie</span>
+              <span style={{ margin: "0 5px", opacity: 0.5 }}>·</span>
+              <span>
+                v{versieNummer}
+                {versieNaam ? ` — ${versieNaam}` : ""}
+              </span>
+            </div>
+          </div>
+        </div>
       )}
+
+      {/* isWhatIf prop is bewaard voor backwards-compat, niet apart gerenderd (variantActief is leidend) */}
 
       <div style={{ flex: 1 }} />
 
@@ -410,6 +428,21 @@ export function Toolbar({
         </span>
       </div>
     </header>
+  );
+}
+
+function ModusStip({ kleur }: { kleur: string }) {
+  return (
+    <div
+      style={{
+        width: 8,
+        height: 8,
+        borderRadius: 999,
+        background: kleur,
+        boxShadow: `0 0 0 3px ${kleur}22`,
+        flexShrink: 0,
+      }}
+    />
   );
 }
 

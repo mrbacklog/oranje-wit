@@ -193,6 +193,7 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
               naam={initieleState.naam}
               versieNaam={initieleState.versieNaam}
               versieNummer={initieleState.versieNummer}
+              isWhatIf={actieveWhatIfId !== null}
               totalSpelers={inTeDelenTotaal}
               arCount={arCount}
               ingeplandSpelers={ingeplandSpelers}
@@ -288,7 +289,6 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
                       }
                     : null
                 }
-                onTerugNaarWerkversie={terugNaarWerkversie}
               />
               <TeamDrawer
                 open={panelRechts === "teams"}

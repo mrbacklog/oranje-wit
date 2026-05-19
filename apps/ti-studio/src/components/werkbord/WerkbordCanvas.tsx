@@ -41,7 +41,6 @@ interface WerkbordCanvasProps {
   werkindelingId: string;
   werkindelingNaam: string;
   variantBadge?: { vraag: string; basisVersieNummer: number } | null;
-  onTerugNaarWerkversie?: () => void;
 }
 
 interface TeamDragState {
@@ -116,7 +115,6 @@ export function WerkbordCanvas({
   werkindelingId,
   werkindelingNaam,
   variantBadge = null,
-  onTerugNaarWerkversie,
 }: WerkbordCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const minimapRef = useRef<HTMLDivElement>(null);
@@ -331,76 +329,7 @@ export function WerkbordCanvas({
           }}
         />
       )}
-      {variantBadge && (
-        <div
-          style={{
-            position: "absolute",
-            top: 12,
-            left: 12,
-            zIndex: 60,
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            padding: "6px 12px",
-            borderRadius: 6,
-            background: "var(--bg-2)",
-            border: "1px solid var(--accent)",
-            boxShadow: "var(--sh-card)",
-            fontFamily: "inherit",
-            pointerEvents: "none",
-          }}
-        >
-          <span
-            style={{
-              fontSize: 9,
-              fontWeight: 800,
-              textTransform: "uppercase",
-              letterSpacing: ".6px",
-              color: "var(--accent)",
-            }}
-          >
-            Variant
-          </span>
-          <span
-            style={{
-              fontSize: 12,
-              fontWeight: 600,
-              color: "var(--text-1)",
-              maxWidth: 320,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-            title={variantBadge.vraag}
-          >
-            {variantBadge.vraag}
-          </span>
-          <span style={{ fontSize: 10, color: "var(--text-3)" }}>
-            gebaseerd op v{variantBadge.basisVersieNummer}
-          </span>
-          {onTerugNaarWerkversie && (
-            <button
-              onClick={onTerugNaarWerkversie}
-              style={{
-                marginLeft: 4,
-                fontSize: 11,
-                fontWeight: 700,
-                padding: "4px 10px",
-                borderRadius: 5,
-                background: "var(--bg-0)",
-                color: "var(--text-1)",
-                border: "1px solid var(--border-1)",
-                cursor: "pointer",
-                fontFamily: "inherit",
-                whiteSpace: "nowrap",
-              }}
-              title="Sluit deze variant en ga terug naar de werkversie"
-            >
-              ← Terug naar werkversie
-            </button>
-          )}
-        </div>
-      )}
+      {/* Variant-chip verwijderd — header toont de vraag, basis en terug-knop al */}
       {/* Achtergrond dot-patroon — pan-zone */}
       <div
         onMouseDown={handleBgMouseDown}
