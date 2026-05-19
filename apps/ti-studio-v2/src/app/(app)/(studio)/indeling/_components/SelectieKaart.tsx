@@ -488,7 +488,6 @@ export function SelectieKaart({
           geslacht="V"
           teamId={team.id}
           teamNaam={teamNaam}
-          kolomLabel={zoom === "detail" ? `${teamNaam} ♀` : undefined}
           zoom={zoom}
           isLaatste={kolomIndex === totaal - 1}
           onClick={onSpelerClick}
@@ -504,7 +503,6 @@ export function SelectieKaart({
           geslacht="M"
           teamId={team.id}
           teamNaam={teamNaam}
-          kolomLabel={zoom === "detail" ? `${teamNaam} ♂` : undefined}
           zoom={zoom}
           isLaatste={kolomIndex === totaal - 1}
           onClick={onSpelerClick}
