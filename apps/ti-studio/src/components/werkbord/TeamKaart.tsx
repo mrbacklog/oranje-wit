@@ -480,7 +480,7 @@ export function TeamKaart({
           <div style={{ fontSize: zoomLevel === "compact" ? 26 : 13, color: "var(--text-3)" }}>
             {zoomLevel !== "compact" && "Gem. "}
             <span style={{ color: "var(--text-2)", fontWeight: 700 }}>
-              {team.gemiddeldeLeeftijd.toFixed(1)}j
+              {team.gemiddeldeLeeftijd.toFixed(2)}j
             </span>
           </div>
         )}

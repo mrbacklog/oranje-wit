@@ -3,6 +3,11 @@
 import { useState } from "react";
 import type { SyncDiff, NieuwLid, AfgemeldLid, FuzzyMatch, LidType } from "@/lib/sportlink/types";
 import { useSportlinkCredentials } from "./SportlinkAuth";
+import {
+  HUIDIGE_PEILDATUM,
+  berekenKorfbalLeeftijd,
+  formatKorfbalLeeftijd,
+} from "@oranje-wit/types";
 
 type State = "start" | "loading" | "diff" | "done";
 
@@ -43,8 +48,9 @@ function geboortejaar(dob: string): number {
   return new Date(dob).getFullYear();
 }
 
-function korfbalLeeftijd(dob: string): number {
-  return new Date().getFullYear() - new Date(dob).getFullYear();
+function korfbalLeeftijd(dob: string): string {
+  const jaar = new Date(dob).getFullYear();
+  return formatKorfbalLeeftijd(berekenKorfbalLeeftijd(dob, jaar, HUIDIGE_PEILDATUM));
 }
 
 function lidTypeLabel(type: LidType): string {

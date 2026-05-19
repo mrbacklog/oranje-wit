@@ -71,7 +71,7 @@
  */
 
 import { useRef, useState, useCallback } from "react";
-import { berekenKorfbalLeeftijd } from "@oranje-wit/types";
+import { berekenKorfbalLeeftijd, formatKorfbalLeeftijd } from "@oranje-wit/types";
 import { leeftijdsKleur } from "./leeftijds-kleuren";
 import "./tokens.css";
 import { SpelerKaart } from "./SpelerKaart";
@@ -677,7 +677,7 @@ function NormaalRij({
 
         {/* Leeftijd */}
         <span style={{ fontSize: 9.5, color: "var(--text-3)", flexShrink: 0 }}>
-          {leeftijd.toFixed(1)}
+          {formatKorfbalLeeftijd(leeftijd)}
         </span>
 
         {/* USS score — octagon badge, alleen als showScores=true en score beschikbaar */}
@@ -963,7 +963,7 @@ function PoolRij({
             </div>
             {/* Leeftijd */}
             <span style={{ fontSize: 8.5, color: "#ddd", flexShrink: 0 }}>
-              {leeftijd.toFixed(1)}
+              {formatKorfbalLeeftijd(leeftijd)}
             </span>
 
             {/* USS score — octagon badge, helemaal rechts als showScores=true */}

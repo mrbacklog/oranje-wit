@@ -21,7 +21,7 @@
 import { createContext, useCallback, useContext, useRef, useState, useEffect } from "react";
 import type { ReactNode } from "react";
 import type { WerkbordSpeler } from "./types";
-import { berekenKorfbalLeeftijd } from "@oranje-wit/types";
+import { berekenKorfbalLeeftijd, formatKorfbalLeeftijd } from "@oranje-wit/types";
 import { leeftijdsGradient, leeftijdsKleur } from "./leeftijds-kleuren";
 import { usePeildatum } from "./peildatum-context";
 
@@ -381,7 +381,7 @@ function KaartVoorkant({
           {/* Leeftijd */}
           <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
             <span style={{ fontSize: 22, fontWeight: 800, color: "var(--text-1)", lineHeight: 1 }}>
-              {Math.floor(leeftijd)}
+              {formatKorfbalLeeftijd(leeftijd)}
             </span>
             <span style={{ fontSize: 8, color: "rgba(255,255,255,.35)", marginTop: 1 }}>
               leeftijd
@@ -624,7 +624,7 @@ function KaartAchterkant({
 
         {/* Kerndata */}
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-          <AchterkantRij label="Leeftijd" waarde={`${leeftijd.toFixed(1)} jr`} />
+          <AchterkantRij label="Leeftijd" waarde={`${formatKorfbalLeeftijd(leeftijd)} jr`} />
           <AchterkantRij label="Geslacht" waarde={speler.geslacht === "V" ? "Dames" : "Heren"} />
           <AchterkantRij label="Ingedeeld in" waarde={teamLabel} />
           {speler.ussScore !== null && (

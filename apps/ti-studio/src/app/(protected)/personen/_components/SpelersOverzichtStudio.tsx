@@ -2,6 +2,11 @@
 
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import {
+  HUIDIGE_PEILDATUM,
+  berekenKorfbalLeeftijd,
+  formatKorfbalLeeftijd,
+} from "@oranje-wit/types";
 import type { StudioSpeler } from "../actions";
 import {
   StatusEditor,
@@ -455,7 +460,13 @@ export default function SpelersOverzichtStudio({
                       }}
                     >
                       {speler.geboortejaar} ·{" "}
-                      {new Date().getFullYear() - (speler.geboortejaar ?? 0)}
+                      {formatKorfbalLeeftijd(
+                        berekenKorfbalLeeftijd(
+                          speler.geboortedatum,
+                          speler.geboortejaar ?? 0,
+                          HUIDIGE_PEILDATUM
+                        )
+                      )}
                     </span>
                   </td>
 

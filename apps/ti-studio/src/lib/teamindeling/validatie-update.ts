@@ -147,7 +147,7 @@ export async function haalValidatieUpdate(teamId: string): Promise<ValidatieUpda
     staf: [],
     werkitems: [],
     ussScore: null,
-    gemiddeldeLeeftijd: gemLeeftijd !== null ? Math.round(gemLeeftijd * 10) / 10 : null,
+    gemiddeldeLeeftijd: gemLeeftijd !== null ? Math.round(gemLeeftijd * 100) / 100 : null,
     validatieStatus: "ok" as const,
     validatieCount: 0,
     teamCategorie: (teamData.categorie ?? "SENIOREN") as "SENIOREN" | "A_CATEGORIE" | "B_CATEGORIE",

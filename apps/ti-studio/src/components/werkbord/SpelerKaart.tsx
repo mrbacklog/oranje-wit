@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import "./tokens.css";
 import type { WerkbordSpeler } from "./types";
 import { leeftijdsKleur } from "./leeftijds-kleuren";
-import { berekenKorfbalLeeftijd } from "@oranje-wit/types";
+import { berekenKorfbalLeeftijd, formatKorfbalLeeftijd } from "@oranje-wit/types";
 import { usePeildatum } from "./peildatum-context";
 
 interface SpelerKaartProps {
@@ -274,7 +274,7 @@ export function SpelerKaart({
             <span
               style={{ fontSize: 8, color: "var(--text-3)", flexShrink: 0, marginLeft: "auto" }}
             >
-              {leeftijd.toFixed(1)}
+              {formatKorfbalLeeftijd(leeftijd)}
             </span>
           </div>
         </div>
@@ -373,7 +373,7 @@ export function SpelerKaart({
                 ))}
             </div>
             <span style={{ fontSize: 9, color: "var(--text-3)", flexShrink: 0 }}>
-              {leeftijd.toFixed(2)}
+              {formatKorfbalLeeftijd(leeftijd)}
             </span>
           </div>
         </div>

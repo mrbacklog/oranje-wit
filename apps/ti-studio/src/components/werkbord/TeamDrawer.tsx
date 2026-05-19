@@ -589,7 +589,7 @@ function PlatteTeamKaart({
             <span style={{ fontSize: 10, color: "var(--text-3)" }}>
               Gem.{" "}
               <span style={{ color: "var(--text-2)", fontWeight: 600 }}>
-                {team.gemiddeldeLeeftijd.toFixed(1)}j
+                {team.gemiddeldeLeeftijd.toFixed(2)}j
               </span>
             </span>
           )}

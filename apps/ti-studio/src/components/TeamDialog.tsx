@@ -410,7 +410,7 @@ export function TeamDialog({
                 {team.gemiddeldeLeeftijd !== null && (
                   <span>
                     Gem. leeftijd{" "}
-                    <strong style={{ color: T.text1 }}>{team.gemiddeldeLeeftijd.toFixed(1)}</strong>
+                    <strong style={{ color: T.text1 }}>{team.gemiddeldeLeeftijd.toFixed(2)}</strong>
                   </span>
                 )}
               </div>

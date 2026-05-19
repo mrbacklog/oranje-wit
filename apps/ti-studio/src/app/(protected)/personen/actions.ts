@@ -35,6 +35,7 @@ export async function getSpelersVoorStudio() {
         roepnaam: true,
         achternaam: true,
         geboortejaar: true,
+        geboortedatum: true,
         geslacht: true,
         status: true,
         huidig: true,
@@ -139,6 +140,7 @@ export async function getSpelersVoorStudio() {
       roepnaam: s.roepnaam as string,
       achternaam: s.achternaam as string,
       geboortejaar: s.geboortejaar as number,
+      geboortedatum: (s.geboortedatum ?? null) as Date | null,
       geslacht: s.geslacht as "M" | "V",
       status: effectieveSpelerStatus(s.status, gezien?.statusOverride),
       gezienStatus: (gezien?.gezienStatus ?? "ONGEZIEN") as

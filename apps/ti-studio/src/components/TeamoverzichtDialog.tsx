@@ -127,7 +127,7 @@ function SpelerRij({
             color: "var(--text-secondary)",
           }}
         >
-          {leeftijd} jr
+          {leeftijd.toFixed(2)} jr
         </div>
       </div>
 

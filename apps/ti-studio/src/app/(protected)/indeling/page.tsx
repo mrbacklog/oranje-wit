@@ -320,7 +320,7 @@ export default async function IndelingPage() {
         totaalSpelers > 0
           ? Math.round((6.2 + ((team.volgorde * 0.17 + i * 0.31) % 2.1)) * 100) / 100
           : null,
-      gemiddeldeLeeftijd: totaalSpelers > 0 ? Math.round(gemLeeftijd * 10) / 10 : null,
+      gemiddeldeLeeftijd: totaalSpelers > 0 ? Math.round(gemLeeftijd * 100) / 100 : null,
       validatieStatus: "ok" as const,
       validatieCount: 0,
       teamCategorie: (team.categorie ?? "SENIOREN") as "SENIOREN" | "A_CATEGORIE" | "B_CATEGORIE",
