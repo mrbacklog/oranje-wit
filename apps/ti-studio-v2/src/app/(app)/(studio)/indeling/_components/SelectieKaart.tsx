@@ -155,6 +155,8 @@ interface SpelerKolomProps {
   isLaatste: boolean;
   onClick: (spelerId: string) => void;
   onDrop: (data: WerkbordDragData) => void;
+  // Teller-override: undefined = spelers.length, number = die waarde, null = geen teller
+  tellerOverride?: number | null;
 }
 
 function SpelerKolom({
@@ -167,8 +169,11 @@ function SpelerKolom({
   isLaatste,
   onClick,
   onDrop,
+  tellerOverride,
 }: SpelerKolomProps) {
   const isVrouw = geslacht === "V";
+  const tellerWaarde = tellerOverride === undefined ? spelers.length : tellerOverride;
+  const toonTeller = tellerWaarde !== null;
 
   return (
     <div
@@ -212,30 +217,32 @@ function SpelerKolom({
         </div>
       )}
 
-      {/* Sexe-teller */}
-      <div className={cx("compact-sexe-teller", isVrouw ? "v" : "h")} style={{ flexShrink: 0 }}>
-        <span
-          style={{
-            fontSize: 20,
-            fontWeight: 700,
-            color: isVrouw ? "rgba(217,70,239,.7)" : "rgba(37,99,235,.7)",
-            lineHeight: 1,
-          }}
-        >
-          {isVrouw ? "♀" : "♂"}
-        </span>
-        <span className="st-val">{spelers.length}</span>
-        <span
-          style={{
-            fontSize: 9,
-            color: "rgba(255,255,255,.3)",
-            fontWeight: 700,
-            lineHeight: 1,
-          }}
-        >
-          ▾
-        </span>
-      </div>
+      {/* Sexe-teller — optioneel via tellerOverride (null = niet tonen) */}
+      {toonTeller && (
+        <div className={cx("compact-sexe-teller", isVrouw ? "v" : "h")} style={{ flexShrink: 0 }}>
+          <span
+            style={{
+              fontSize: 20,
+              fontWeight: 700,
+              color: isVrouw ? "rgba(217,70,239,.7)" : "rgba(37,99,235,.7)",
+              lineHeight: 1,
+            }}
+          >
+            {isVrouw ? "♀" : "♂"}
+          </span>
+          <span className="st-val">{tellerWaarde}</span>
+          <span
+            style={{
+              fontSize: 9,
+              color: "rgba(255,255,255,.3)",
+              fontWeight: 700,
+              lineHeight: 1,
+            }}
+          >
+            ▾
+          </span>
+        </div>
+      )}
 
       {/* Speler-lijst */}
       <div
@@ -541,6 +548,7 @@ export function SelectieKaart({
           isLaatste={false}
           onClick={onSpelerClick}
           onDrop={(data) => handleDropOpKolom(data, primaireTeamId)}
+          tellerOverride={alleDames.length}
         />
         <SpelerKolom
           spelers={damesK2}
@@ -551,6 +559,7 @@ export function SelectieKaart({
           isLaatste={false}
           onClick={onSpelerClick}
           onDrop={(data) => handleDropOpKolom(data, primaireTeamId)}
+          tellerOverride={null}
         />
         <SpelerKolom
           spelers={herenK1}
@@ -561,6 +570,7 @@ export function SelectieKaart({
           isLaatste={false}
           onClick={onSpelerClick}
           onDrop={(data) => handleDropOpKolom(data, primaireTeamId)}
+          tellerOverride={alleHeren.length}
         />
         <SpelerKolom
           spelers={herenK2}
@@ -571,6 +581,7 @@ export function SelectieKaart({
           isLaatste={true}
           onClick={onSpelerClick}
           onDrop={(data) => handleDropOpKolom(data, primaireTeamId)}
+          tellerOverride={null}
         />
       </>
     );
