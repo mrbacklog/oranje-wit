@@ -7,6 +7,7 @@ import { prisma } from "@/lib/teamindeling/db/prisma";
 import { z } from "zod";
 import { haalValidatieUpdate } from "@/lib/teamindeling/validatie-update";
 import type { ValidatieUpdate } from "@/components/werkbord/types";
+import { logWerkbordMutatie } from "@/lib/teamindeling/audit/log-werkbord-mutatie";
 
 const SpelerVerplaatst = z.object({
   type: z.literal("speler_verplaatst"),
@@ -41,6 +42,11 @@ export async function POST(
   const auth = await guardTC();
   if (!auth.ok) return auth.response;
 
+  const huidigeUser = await prisma.user.findUniqueOrThrow({
+    where: { email: auth.session.user.email },
+    select: { id: true },
+  });
+
   const { versieId } = await params;
   const kanaal = `ti_studio_${versieId}`.slice(0, 63);
 
@@ -67,6 +73,19 @@ export async function POST(
         create: { teamId: event.naarTeamId, spelerId: event.spelerId },
         update: {},
       });
+      await logWerkbordMutatie({
+        versieId,
+        type: "speler_verplaatst",
+        doorId: huidigeUser.id,
+        spelerId: event.spelerId,
+        vanTeamId: event.vanTeamId,
+        naarTeamId: event.naarTeamId,
+        sessionId: event.sessionId,
+        payload: event as unknown as Record<string, unknown>,
+        inverse: event.vanTeamId
+          ? { type: "speler_verplaatst", spelerId: event.spelerId, naarTeamId: event.vanTeamId }
+          : { type: "speler_naar_pool", spelerId: event.spelerId, vanTeamId: event.naarTeamId },
+      });
     } else if (event.type === "speler_naar_pool") {
       // Verwijder uit alle teams én selectiegroepen in deze versie
       await prisma.$transaction([
@@ -77,14 +96,39 @@ export async function POST(
           where: { spelerId: event.spelerId, selectieGroep: { versieId } },
         }),
       ]);
+      await logWerkbordMutatie({
+        versieId,
+        type: "speler_naar_pool",
+        doorId: huidigeUser.id,
+        spelerId: event.spelerId,
+        vanTeamId: event.vanTeamId,
+        sessionId: event.sessionId,
+        payload: event as unknown as Record<string, unknown>,
+        inverse: {
+          type: "speler_verplaatst",
+          spelerId: event.spelerId,
+          naarTeamId: event.vanTeamId,
+        },
+      });
     } else if (event.type === "team_positie") {
       const versie = await prisma.versie.findUniqueOrThrow({
         where: { id: versieId },
         select: { posities: true },
       });
       const posities = (versie.posities as Record<string, { x: number; y: number }>) ?? {};
+      const oudePositie = posities[event.teamId] ?? null;
       posities[event.teamId] = { x: Math.round(event.x), y: Math.round(event.y) };
       await prisma.versie.update({ where: { id: versieId }, data: { posities } });
+      await logWerkbordMutatie({
+        versieId,
+        type: "team_positie",
+        doorId: huidigeUser.id,
+        sessionId: event.sessionId,
+        payload: event as unknown as Record<string, unknown>,
+        inverse: oudePositie
+          ? { type: "team_positie", teamId: event.teamId, ...oudePositie }
+          : null,
+      });
     }
 
     const payload = JSON.stringify({
