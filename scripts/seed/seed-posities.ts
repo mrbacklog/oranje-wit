@@ -6,13 +6,13 @@ import { logger } from "@oranje-wit/types";
  *
  * Layout volgens TC-voorkeur (top-down, links-rechts):
  *
- *   Rij 0:  [sg-senioren-a] [S3] [S4] [Rec] [MW1]
- *   Rij 1:  [sg-u19] [Rood-1] [Rood-2]
- *   Rij 2:  [sg-u17] [Oranje-1] [Oranje-2]
- *   Rij 3:  [sg-u15] [Geel-1] [Geel-2]
- *   Rij 4:  [Groen-1] [Groen-2]
- *   Rij 5:  [Blauw-1] [Blauw-2] [Kangoeroes]
- *   Rij 6:  [EDGE-LEEG] [EDGE-ONDER]
+ *   Rij 0:  [sg-senioren-a 480px] [S3 380] [S4 380] [Rec 380] [MW1 380]
+ *   Rij 1:  [sg-u19 720px]        [Rood-1 380] [Rood-2 380]
+ *   Rij 2:  [sg-u17 720px]        [Oranje-1 380] [Oranje-2 380]
+ *   Rij 3:  [sg-u15 720px]        [Geel-1 380] [Geel-2 380]
+ *   Rij 4:  [Groen-1 220] [Groen-2 220]
+ *   Rij 5:  [Blauw-1 220] [Blauw-2 220] [Kangoeroes 220]
+ *   Rij 6:  [EDGE-LEEG 380] [EDGE-ONDER 380]
  *
  * Schrijft Versie.posities als Record<kaartKey, {x, y}>.
  * KaartKey-conventie (matchend met team-drag B1):
@@ -22,61 +22,107 @@ import { logger } from "@oranje-wit/types";
 
 const VERSIE_ID = "versie-edge-actief";
 
-// Layout-constanten
-const KOL_BREEDTE = 320; // pixels (team-kaart ~280 + 40 gap)
-const RIJ_HOOGTE = 360; // pixels (kaart ~320 + 40 gap)
-const SG_BREEDTE_FACTOR = 1.8; // selectiekaart ~580px (1.8 × team-kaart)
+// Exacte breedtes uit globals.css + SelectieKaart.tsx (regel 569)
+const BR_VIERTAL = 220;
+const BR_ACHTTAL = 380;
+const BR_SG_GEBUNDELD = 480;
+const BR_SG_ONGEBUNDELD = 720; // 2 teams: max(720, 2*360)
 
-function pos(kolom: number, rij: number): { x: number; y: number } {
-  return { x: kolom * KOL_BREEDTE, y: rij * RIJ_HOOGTE };
+const GAP_X = 40;
+const RIJ_HOOGTE = 440; // ruim genoeg voor compact-mode kaart (~360-400px)
+
+interface Plaatsing {
+  key: string;
+  breedte: number;
 }
 
-function posNaSg(naSgKolom: number, rij: number): { x: number; y: number } {
-  // Na een selectiegroep start de volgende kaart op kolom 1.8 (vanwege bredere selectiekaart)
-  return {
-    x: Math.round(SG_BREEDTE_FACTOR * KOL_BREEDTE) + naSgKolom * KOL_BREEDTE,
-    y: rij * RIJ_HOOGTE,
-  };
+function plaatsRij(
+  plaatsingen: Plaatsing[],
+  rij: number
+): Record<string, { x: number; y: number }> {
+  const result: Record<string, { x: number; y: number }> = {};
+  let xCursor = 0;
+  const y = rij * RIJ_HOOGTE;
+  for (const p of plaatsingen) {
+    result[p.key] = { x: xCursor, y };
+    xCursor += p.breedte + GAP_X;
+  }
+  return result;
 }
 
 export async function seedPosities(): Promise<void> {
   logger.info("[seed-posities] starten");
 
   const posities: Record<string, { x: number; y: number }> = {
-    // Rij 0: Senioren-rij
-    "sg-sg-senioren-a": pos(0, 0),
-    [`team-${teamId(3)}`]: posNaSg(0, 0), // S3
-    [`team-${teamId(4)}`]: posNaSg(1, 0), // S4
-    [`team-${teamId(5)}`]: posNaSg(2, 0), // Recreanten
-    [`team-${teamId(6)}`]: posNaSg(3, 0), // MW1
+    // Rij 0: Senioren-rij — sg-senioren-a (gebundeld) + 4× ACHTTAL
+    ...plaatsRij(
+      [
+        { key: "sg-sg-senioren-a", breedte: BR_SG_GEBUNDELD },
+        { key: `team-${teamId(3)}`, breedte: BR_ACHTTAL }, // S3
+        { key: `team-${teamId(4)}`, breedte: BR_ACHTTAL }, // S4
+        { key: `team-${teamId(5)}`, breedte: BR_ACHTTAL }, // Recreanten
+        { key: `team-${teamId(6)}`, breedte: BR_ACHTTAL }, // MW1
+      ],
+      0
+    ),
 
-    // Rij 1: U19 + Rood
-    "sg-sg-u19": pos(0, 1),
-    [`team-${teamId(13)}`]: posNaSg(0, 1), // Rood-1
-    [`team-${teamId(14)}`]: posNaSg(1, 1), // Rood-2
+    // Rij 1: U19 (ongebundeld) + Rood
+    ...plaatsRij(
+      [
+        { key: "sg-sg-u19", breedte: BR_SG_ONGEBUNDELD },
+        { key: `team-${teamId(13)}`, breedte: BR_ACHTTAL }, // Rood-1
+        { key: `team-${teamId(14)}`, breedte: BR_ACHTTAL }, // Rood-2
+      ],
+      1
+    ),
 
-    // Rij 2: U17 + Oranje
-    "sg-sg-u17": pos(0, 2),
-    [`team-${teamId(15)}`]: posNaSg(0, 2), // Oranje-1
-    [`team-${teamId(16)}`]: posNaSg(1, 2), // Oranje-2
+    // Rij 2: U17 (ongebundeld) + Oranje
+    ...plaatsRij(
+      [
+        { key: "sg-sg-u17", breedte: BR_SG_ONGEBUNDELD },
+        { key: `team-${teamId(15)}`, breedte: BR_ACHTTAL }, // Oranje-1
+        { key: `team-${teamId(16)}`, breedte: BR_ACHTTAL }, // Oranje-2
+      ],
+      2
+    ),
 
-    // Rij 3: U15 + Geel
-    "sg-sg-u15": pos(0, 3),
-    [`team-${teamId(17)}`]: posNaSg(0, 3), // Geel-1
-    [`team-${teamId(18)}`]: posNaSg(1, 3), // Geel-2
+    // Rij 3: U15 (ongebundeld) + Geel
+    ...plaatsRij(
+      [
+        { key: "sg-sg-u15", breedte: BR_SG_ONGEBUNDELD },
+        { key: `team-${teamId(17)}`, breedte: BR_ACHTTAL }, // Geel-1
+        { key: `team-${teamId(18)}`, breedte: BR_ACHTTAL }, // Geel-2
+      ],
+      3
+    ),
 
-    // Rij 4: Groen (volledig links)
-    [`team-${teamId(19)}`]: pos(0, 4),
-    [`team-${teamId(20)}`]: pos(1, 4),
+    // Rij 4: Groen (VIERTAL)
+    ...plaatsRij(
+      [
+        { key: `team-${teamId(19)}`, breedte: BR_VIERTAL }, // Groen-1
+        { key: `team-${teamId(20)}`, breedte: BR_VIERTAL }, // Groen-2
+      ],
+      4
+    ),
 
-    // Rij 5: Blauw + Kangoeroes
-    [`team-${teamId(21)}`]: pos(0, 5),
-    [`team-${teamId(22)}`]: pos(1, 5),
-    [`team-${teamId(23)}`]: pos(2, 5), // Kangoeroes
+    // Rij 5: Blauw + Kangoeroes (VIERTAL)
+    ...plaatsRij(
+      [
+        { key: `team-${teamId(21)}`, breedte: BR_VIERTAL }, // Blauw-1
+        { key: `team-${teamId(22)}`, breedte: BR_VIERTAL }, // Blauw-2
+        { key: `team-${teamId(23)}`, breedte: BR_VIERTAL }, // Kangoeroes
+      ],
+      5
+    ),
 
     // Rij 6: Edge-cases apart onderaan
-    [`team-${teamId(24)}`]: pos(0, 6), // EDGE-LEEG
-    [`team-${teamId(25)}`]: pos(1, 6), // EDGE-ONDER
+    ...plaatsRij(
+      [
+        { key: `team-${teamId(24)}`, breedte: BR_ACHTTAL }, // EDGE-LEEG
+        { key: `team-${teamId(25)}`, breedte: BR_ACHTTAL }, // EDGE-ONDER
+      ],
+      6
+    ),
   };
 
   await prisma.versie.update({
