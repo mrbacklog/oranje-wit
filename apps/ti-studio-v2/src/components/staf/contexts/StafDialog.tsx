@@ -2,7 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import type { StafRijData, SpelerWerkitemDetail, StafSeizoenHistorie } from "@/components/personen/types";
+import type {
+  StafRijData,
+  SpelerWerkitemDetail,
+  StafSeizoenHistorie,
+} from "@/components/personen/types";
 import { SpelerAvatar } from "@/components/shared/SpelerAvatar";
 import { logger } from "@oranje-wit/types";
 
@@ -375,12 +379,10 @@ export function StafDialog({ staflid, open, onClose }: StafDialogProps) {
             flexShrink: 0,
           }}
         >
-          {(
-            [
-              { id: "historie" as TabId, label: "Historie" },
-              { id: "memo" as TabId, label: "Memo's" },
-            ]
-          ).map(({ id, label }) => (
+          {[
+            { id: "historie" as TabId, label: "Historie" },
+            { id: "memo" as TabId, label: "Memo's" },
+          ].map(({ id, label }) => (
             <button
               key={id}
               onClick={() => setActieveTab(id)}
@@ -478,9 +480,7 @@ export function StafDialog({ staflid, open, onClose }: StafDialogProps) {
                         >
                           {entry.seizoen.replace("-", "–")}
                         </span>
-                        <div
-                          style={{ display: "flex", flexDirection: "column", gap: 2, flex: 1 }}
-                        >
+                        <div style={{ display: "flex", flexDirection: "column", gap: 2, flex: 1 }}>
                           {entry.teamKoppelingen.map((tk, i) => (
                             <div
                               key={i}

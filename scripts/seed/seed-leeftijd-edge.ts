@@ -13,14 +13,62 @@ interface LeeftijdEdgeFixture {
 
 // 8 leeftijdsgrens-scenario's — naam wordt dynamisch getrokken uit namen-pool.
 export const LEEFTIJD_FIXTURES: LeeftijdEdgeFixture[] = [
-  { volgnr: 1, geboortedatum: "2020-01-01", geboortejaar: 2020, geslacht: "V", omschrijving: "Kangoeroe / Blauw-1 grens" },
-  { volgnr: 2, geboortedatum: "2018-01-01", geboortejaar: 2018, geslacht: "V", omschrijving: "Blauw / Groen-1 grens" },
-  { volgnr: 3, geboortedatum: "2016-01-01", geboortejaar: 2016, geslacht: "M", omschrijving: "Groen / Geel-1 grens" },
-  { volgnr: 4, geboortedatum: "2014-01-01", geboortejaar: 2014, geslacht: "M", omschrijving: "Geel / Oranje-1 grens" },
-  { volgnr: 5, geboortedatum: "2012-01-01", geboortejaar: 2012, geslacht: "V", omschrijving: "Oranje / Rood-1 grens" },
-  { volgnr: 6, geboortedatum: "2010-01-01", geboortejaar: 2010, geslacht: "V", omschrijving: "Rood / U17-1 grens" },
-  { volgnr: 7, geboortedatum: "2008-01-01", geboortejaar: 2008, geslacht: "M", omschrijving: "U17 / U19-1 grens" },
-  { volgnr: 8, geboortedatum: "2006-01-01", geboortejaar: 2006, geslacht: "M", omschrijving: "U19 / Senior-1 grens" },
+  {
+    volgnr: 1,
+    geboortedatum: "2020-01-01",
+    geboortejaar: 2020,
+    geslacht: "V",
+    omschrijving: "Kangoeroe / Blauw-1 grens",
+  },
+  {
+    volgnr: 2,
+    geboortedatum: "2018-01-01",
+    geboortejaar: 2018,
+    geslacht: "V",
+    omschrijving: "Blauw / Groen-1 grens",
+  },
+  {
+    volgnr: 3,
+    geboortedatum: "2016-01-01",
+    geboortejaar: 2016,
+    geslacht: "M",
+    omschrijving: "Groen / Geel-1 grens",
+  },
+  {
+    volgnr: 4,
+    geboortedatum: "2014-01-01",
+    geboortejaar: 2014,
+    geslacht: "M",
+    omschrijving: "Geel / Oranje-1 grens",
+  },
+  {
+    volgnr: 5,
+    geboortedatum: "2012-01-01",
+    geboortejaar: 2012,
+    geslacht: "V",
+    omschrijving: "Oranje / Rood-1 grens",
+  },
+  {
+    volgnr: 6,
+    geboortedatum: "2010-01-01",
+    geboortejaar: 2010,
+    geslacht: "V",
+    omschrijving: "Rood / U17-1 grens",
+  },
+  {
+    volgnr: 7,
+    geboortedatum: "2008-01-01",
+    geboortejaar: 2008,
+    geslacht: "M",
+    omschrijving: "U17 / U19-1 grens",
+  },
+  {
+    volgnr: 8,
+    geboortedatum: "2006-01-01",
+    geboortejaar: 2006,
+    geslacht: "M",
+    omschrijving: "U19 / Senior-1 grens",
+  },
 ];
 
 export async function seedLeeftijdEdge(): Promise<void> {

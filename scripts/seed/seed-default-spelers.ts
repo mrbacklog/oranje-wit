@@ -43,7 +43,6 @@ export async function seedDefaultSpelers(): Promise<void> {
   logger.info(`[seed-default-spelers] precheck OK — ${bestaandeTeams.length} teams geverifieerd`);
 
   // Set bijgehouden over de gehele functie-aanroep: garandeert cross-team uniciteit
-  
 
   for (const team of TEAM_DEFS) {
     if (team.defaultOmvang === 0) continue;

@@ -55,8 +55,6 @@ function bouwEmail(roepnaam: string, achternaam: string): string {
 export async function seedStaf(aantal: number = 100): Promise<void> {
   logger.info(`[seed-staf] ${aantal} stafleden aanmaken`);
 
-  
-
   for (let i = 1; i <= aantal; i++) {
     const id = `STAF-${String(i).padStart(3, "0")}`;
     const geslacht: "M" | "V" = Math.random() < 0.5 ? "M" : "V";

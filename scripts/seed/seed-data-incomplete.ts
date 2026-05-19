@@ -35,7 +35,12 @@ export async function seedDataIncomplete(): Promise<void> {
       geboortedatum: null,
       status: "BESCHIKBAAR",
     },
-    update: { roepnaam: n1.roepnaam, achternaam: n1.achternaam, geboortejaar: 0, geboortedatum: null },
+    update: {
+      roepnaam: n1.roepnaam,
+      achternaam: n1.achternaam,
+      geboortejaar: 0,
+      geboortedatum: null,
+    },
   });
 
   // 990030000002 — geslacht onbekend (schema vereist non-null; M als placeholder)

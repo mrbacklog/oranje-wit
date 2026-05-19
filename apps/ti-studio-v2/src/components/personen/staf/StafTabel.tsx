@@ -76,7 +76,18 @@ export function StafTabel({ data }: StafTabelProps) {
       </div>
 
       <StafDialog
-        staflid={selectedStaf ?? { id: "", naam: "", rollen: [], teamKoppelingen: [], heeftOpenMemo: false, memoBadge: "geen", email: null, geboortejaar: null }}
+        staflid={
+          selectedStaf ?? {
+            id: "",
+            naam: "",
+            rollen: [],
+            teamKoppelingen: [],
+            heeftOpenMemo: false,
+            memoBadge: "geen",
+            email: null,
+            geboortejaar: null,
+          }
+        }
         open={selectedStaf !== null}
         onClose={() => setOpenDialogId(null)}
       />
