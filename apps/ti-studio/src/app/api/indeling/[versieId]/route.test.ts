@@ -73,6 +73,35 @@ describe("POST /api/indeling/[versieId]", () => {
         sessionId: "s1",
       })
     );
+    const arg = log.mock.calls[0][0];
+    expect(arg.inverse).toEqual({
+      type: "speler_naar_pool",
+      spelerId: "HANDMATIG-tycho",
+      vanTeamId: "t-sen2",
+    });
+  });
+
+  it("logt speler_verplaatst met inverse naar oorspronkelijk team", async () => {
+    await POST(
+      makeRequest({
+        type: "speler_verplaatst",
+        spelerId: "HANDMATIG-tycho",
+        vanTeamId: "t-sen1",
+        naarTeamId: "t-sen2",
+        naarGeslacht: "M",
+        sessionId: "s1",
+      }),
+      { params: Promise.resolve({ versieId: "v1" }) }
+    );
+    const arg = log.mock.calls[0][0];
+    expect(arg.type).toBe("speler_verplaatst");
+    expect(arg.vanTeamId).toBe("t-sen1");
+    expect(arg.naarTeamId).toBe("t-sen2");
+    expect(arg.inverse).toEqual({
+      type: "speler_verplaatst",
+      spelerId: "HANDMATIG-tycho",
+      naarTeamId: "t-sen1",
+    });
   });
 
   it("logt speler_naar_pool", async () => {
@@ -92,6 +121,12 @@ describe("POST /api/indeling/[versieId]", () => {
         vanTeamId: "t-sen2",
       })
     );
+    const arg = log.mock.calls[0][0];
+    expect(arg.inverse).toEqual({
+      type: "speler_verplaatst",
+      spelerId: "HANDMATIG-tycho",
+      naarTeamId: "t-sen2",
+    });
   });
 
   it("logt team_positie", async () => {
@@ -110,5 +145,26 @@ describe("POST /api/indeling/[versieId]", () => {
         type: "team_positie",
       })
     );
+    const arg = log.mock.calls[0][0];
+    expect(arg.inverse).toBeNull();
+  });
+
+  it("logt team_positie met inverse naar oude positie", async () => {
+    const { prisma } = await import("@/lib/teamindeling/db/prisma");
+    vi.mocked(prisma.versie.findUniqueOrThrow).mockResolvedValueOnce({
+      posities: { "t-sen2": { x: 50, y: 75 } },
+    } as never);
+    await POST(
+      makeRequest({
+        type: "team_positie",
+        teamId: "t-sen2",
+        x: 100,
+        y: 200,
+        sessionId: "s1",
+      }),
+      { params: Promise.resolve({ versieId: "v1" }) }
+    );
+    const arg = log.mock.calls[0][0];
+    expect(arg.inverse).toEqual({ type: "team_positie", teamId: "t-sen2", x: 50, y: 75 });
   });
 });
