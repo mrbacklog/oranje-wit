@@ -234,16 +234,6 @@ function SpelerKolom({
           {isVrouw ? "♀" : "♂"}
         </span>
         <span className="st-val">{toonTeller ? tellerWaarde : 0}</span>
-        <span
-          style={{
-            fontSize: 9,
-            color: "rgba(255,255,255,.3)",
-            fontWeight: 700,
-            lineHeight: 1,
-          }}
-        >
-          ▾
-        </span>
       </div>
 
       {/* Speler-lijst */}

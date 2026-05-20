@@ -432,11 +432,20 @@ function SpelerKolom({
         minWidth: 0,
       }}
     >
-      {/* Sexe-teller: groot icoon boven getal */}
-      <div className={cx("compact-sexe-teller", isVrouw ? "v" : "h")} style={{ flexShrink: 0 }}>
+      {/* Sexe-teller: compact, symbool + getal op één regel */}
+      <div
+        className={cx("compact-sexe-teller", "tk-sexe-row", isVrouw ? "v" : "h")}
+        style={{
+          flexShrink: 0,
+          flexDirection: "row",
+          gap: 5,
+          padding: "4px 0 3px",
+          marginBottom: 4,
+        }}
+      >
         <span
           style={{
-            fontSize: 20,
+            fontSize: 13,
             fontWeight: 700,
             color: isVrouw ? "rgba(217,70,239,.7)" : "rgba(37,99,235,.7)",
             lineHeight: 1,
@@ -444,7 +453,9 @@ function SpelerKolom({
         >
           {isVrouw ? "♀" : "♂"}
         </span>
-        <span className="st-val">{aantalLabel}</span>
+        <span className="st-val" style={{ fontSize: 14, fontWeight: 700, lineHeight: 1 }}>
+          {aantalLabel}
+        </span>
       </div>
 
       {/* Speler-lijst */}
@@ -519,20 +530,22 @@ function ViertalKolom({
         minWidth: 0,
       }}
     >
-      {/* Gedeelde sexe-teller bovenin: ♀N + ♂N naast elkaar */}
+      {/* Gedeelde sexe-teller bovenin: ♀N + ♂N — symbool + getal inline */}
       <div
-        className="compact-sexe-teller"
+        className="compact-sexe-teller tk-sexe-row"
         style={{
           flexShrink: 0,
           flexDirection: "row",
-          gap: 16,
+          gap: 12,
           justifyContent: "center",
+          padding: "4px 0 3px",
+          marginBottom: 4,
         }}
       >
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
+        <span style={{ display: "inline-flex", alignItems: "baseline", gap: 4 }}>
           <span
             style={{
-              fontSize: 20,
+              fontSize: 13,
               fontWeight: 700,
               color: "rgba(217,70,239,.7)",
               lineHeight: 1,
@@ -540,14 +553,17 @@ function ViertalKolom({
           >
             ♀
           </span>
-          <span className="st-val" style={{ color: "rgba(236,72,153,.75)" }}>
+          <span
+            className="st-val"
+            style={{ fontSize: 14, fontWeight: 700, lineHeight: 1, color: "rgba(236,72,153,.85)" }}
+          >
             {dames.length}
           </span>
-        </div>
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
+        </span>
+        <span style={{ display: "inline-flex", alignItems: "baseline", gap: 4 }}>
           <span
             style={{
-              fontSize: 20,
+              fontSize: 13,
               fontWeight: 700,
               color: "rgba(37,99,235,.7)",
               lineHeight: 1,
@@ -555,10 +571,13 @@ function ViertalKolom({
           >
             ♂
           </span>
-          <span className="st-val" style={{ color: "rgba(96,165,250,.75)" }}>
+          <span
+            className="st-val"
+            style={{ fontSize: 14, fontWeight: 700, lineHeight: 1, color: "rgba(96,165,250,.85)" }}
+          >
             {heren.length}
           </span>
-        </div>
+        </span>
       </div>
 
       {/* Speler-lijst: alle 4 spelers in één flow */}
