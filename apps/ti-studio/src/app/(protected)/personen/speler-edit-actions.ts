@@ -5,6 +5,8 @@ import { requireTC } from "@oranje-wit/auth/checks";
 import { revalidatePath } from "next/cache";
 import { logger } from "@oranje-wit/types";
 import type { GezienStatus } from "@oranje-wit/database";
+import { logWerkbordMutatie } from "@/lib/teamindeling/audit/log-werkbord-mutatie";
+import { huidigeUserId } from "@/lib/teamindeling/audit/huidige-user";
 
 /**
  * Indelingsdoel: team (zonder combinatie-pool) of selectie (mét combinatie-pool).
@@ -202,6 +204,16 @@ export async function zetSpelerIndeling(
         ? [prisma.selectieSpeler.create({ data: { spelerId, selectieGroepId: doel.id } })]
         : []),
     ]);
+
+    await logWerkbordMutatie({
+      versieId,
+      type: "speler_indeling_gezet",
+      doorId: await huidigeUserId(),
+      spelerId,
+      naarTeamId: doel?.type === "team" ? doel.id : null,
+      selectieGroepId: doel?.type === "selectie" ? doel.id : null,
+      payload: { spelerId, versieId, doel },
+    });
 
     revalidatePath("/personen/spelers");
     revalidatePath("/indeling");

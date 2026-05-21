@@ -14,6 +14,8 @@ import { TeamDialog } from "../TeamDialog";
 import { useZoom } from "./hooks/useZoom";
 import { useWerkbordState, type WerkbordMode } from "./hooks/useWerkbordState";
 import type { TiStudioShellProps } from "./types";
+import type { ConflictResult } from "@/lib/teamindeling/audit/types";
+import { ConflictToast } from "./ConflictToast";
 import type { DrawerData } from "@/app/(protected)/indeling/drawer-actions";
 import { getVersiesVoorDrawer } from "@/app/(protected)/indeling/drawer-actions";
 import { getWhatIfVoorCanvas } from "@/app/(protected)/indeling/whatif-canvas-actions";
@@ -40,6 +42,7 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
     vraag: string;
     basisVersieNummer: number;
   } | null>(null);
+  const [conflict, setConflict] = useState<ConflictResult | null>(null);
 
   const { zoom, setZoom, zoomIn, zoomOut, resetZoom, zoomLevel, zoomPercent } = useZoom();
 
@@ -74,7 +77,8 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
     initieleState.teams,
     initieleState.alleSpelers,
     initieleState.validatie,
-    werkbordMode
+    werkbordMode,
+    { onConflict: setConflict }
   );
 
   const [dialogTeamId, setDialogTeamId] = useState<string | null>(null);
@@ -175,6 +179,20 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
     () => korfbalPeildatum(initieleState.seizoen as Seizoen),
     [initieleState.seizoen]
   );
+
+  const teamNamen = useMemo(() => {
+    const map: Record<string, string> = {};
+    for (const t of teams) map[t.id] = t.naam;
+    return map;
+  }, [teams]);
+
+  const selectieNamen = useMemo(() => {
+    const map: Record<string, string> = {};
+    for (const t of teams) {
+      if (t.selectieGroepId && t.selectieNaam) map[t.selectieGroepId] = t.selectieNaam;
+    }
+    return map;
+  }, [teams]);
 
   return (
     <PeildatumProvider value={peildatum}>
@@ -343,6 +361,14 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
           </div>
         </HoverKaartProvider>
       </HoverStafKaartProvider>
+      {conflict && (
+        <ConflictToast
+          conflict={conflict}
+          teamNamen={teamNamen}
+          selectieNamen={selectieNamen}
+          onSluit={() => setConflict(null)}
+        />
+      )}
     </PeildatumProvider>
   );
 }

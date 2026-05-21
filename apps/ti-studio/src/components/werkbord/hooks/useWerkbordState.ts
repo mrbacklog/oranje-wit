@@ -8,6 +8,7 @@ import type {
   WerkbordValidatieItem,
   ValidatieUpdate,
 } from "../types";
+import type { SpelerLocatie, ConflictResult } from "@/lib/teamindeling/audit/types";
 import {
   voegSelectieSpelerToe,
   verwijderSelectieSpeler,
@@ -19,14 +20,28 @@ import {
   slaWhatIfTeamPositieOp,
 } from "@/app/(protected)/indeling/whatif-edit-actions";
 
+function huidigeLocatieVoorSpeler(alleSpelers: WerkbordSpeler[], spelerId: string): SpelerLocatie {
+  const speler = alleSpelers.find((s) => s.id === spelerId);
+  if (!speler) return { soort: "pool" };
+  if (speler.teamId !== null) return { soort: "team", teamId: speler.teamId };
+  if (speler.selectieGroepId !== null)
+    return { soort: "selectie", selectieGroepId: speler.selectieGroepId };
+  return { soort: "pool" };
+}
+
 export type WerkbordMode = { kind: "werkversie" } | { kind: "whatif"; whatIfId: string };
+
+export interface WerkbordStateOptions {
+  onConflict?: (conflict: ConflictResult) => void;
+}
 
 export function useWerkbordState(
   versieId: string,
   initieleTeams: WerkbordTeam[],
   initieleSpelers: WerkbordSpeler[],
   initieleValidatie: WerkbordValidatieItem[],
-  mode: WerkbordMode = { kind: "werkversie" }
+  mode: WerkbordMode = { kind: "werkversie" },
+  options: WerkbordStateOptions = {}
 ) {
   const [teams, setTeams] = useState<WerkbordTeam[]>(initieleTeams);
   const [alleSpelers, setAlleSpelers] = useState<WerkbordSpeler[]>(initieleSpelers);
@@ -39,6 +54,10 @@ export function useWerkbordState(
   }, [alleSpelers]);
 
   const sessionId = useRef<string>(crypto.randomUUID());
+  const onConflictRef = useRef(options.onConflict);
+  useEffect(() => {
+    onConflictRef.current = options.onConflict;
+  }, [options.onConflict]);
 
   // ─── Lokale mutaties ─────────────────────────────────────────
 
@@ -455,6 +474,14 @@ export function useWerkbordState(
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...body, sessionId: sessionId.current }),
       });
+      if (resp.status === 409) {
+        const payload = (await resp.json()) as { conflict?: ConflictResult };
+        if (payload.conflict) {
+          onConflictRef.current?.(payload.conflict);
+        }
+        setOpslaanStatus("fout");
+        return;
+      }
       if (resp.ok) {
         const data = (await resp.json()) as { validatieUpdates?: ValidatieUpdate[] };
         if (data.validatieUpdates?.length) {
@@ -489,6 +516,7 @@ export function useWerkbordState(
       naarTeamId: string,
       naarGeslacht: "V" | "M"
     ) => {
+      const verwachteLocatie = huidigeLocatieVoorSpeler(alleSpelersRef.current, spelerData.id);
       verplaatsSpelerLokaal(spelerData, vanTeamId, naarTeamId, naarGeslacht);
       const huidigMode = modeRef.current;
       if (huidigMode.kind === "whatif") {
@@ -505,6 +533,7 @@ export function useWerkbordState(
         vanTeamId,
         naarTeamId,
         naarGeslacht,
+        verwachteLocatie,
       });
     },
     [verplaatsSpelerLokaal]
@@ -512,6 +541,7 @@ export function useWerkbordState(
 
   const verwijderSpelerUitTeam = useCallback(
     (spelerId: string, vanTeamId: string) => {
+      const verwachteLocatie = huidigeLocatieVoorSpeler(alleSpelersRef.current, spelerId);
       verwijderSpelerUitTeamLokaal(spelerId, vanTeamId);
       const huidigMode = modeRef.current;
       if (huidigMode.kind === "whatif") {
@@ -522,7 +552,7 @@ export function useWerkbordState(
         );
         return;
       }
-      stuurMutatie({ type: "speler_naar_pool", spelerId, vanTeamId });
+      stuurMutatie({ type: "speler_naar_pool", spelerId, vanTeamId, verwachteLocatie });
     },
     [verwijderSpelerUitTeamLokaal]
   );

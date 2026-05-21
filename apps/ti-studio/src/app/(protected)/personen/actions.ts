@@ -5,6 +5,8 @@ import { prisma } from "@/lib/teamindeling/db/prisma";
 import { requireTC } from "@oranje-wit/auth/checks";
 import { logger } from "@oranje-wit/types";
 import { effectieveSpelerStatus } from "@/lib/teamindeling/speler-status";
+import { logWerkbordMutatie } from "@/lib/teamindeling/audit/log-werkbord-mutatie";
+import { huidigeUserId } from "@/lib/teamindeling/audit/huidige-user";
 
 export async function getSpelersVoorStudio() {
   await requireTC();
@@ -206,6 +208,27 @@ export async function maakHandmatigeSpelerAan(data: {
         },
       }),
     ]);
+
+    const huidigeVersie = await prisma.versie.findFirst({
+      where: { werkindeling: { kaders: { isWerkseizoen: true }, status: "ACTIEF" } },
+      orderBy: [{ werkindeling: { updatedAt: "desc" } }, { nummer: "desc" }],
+      select: { id: true },
+    });
+    if (huidigeVersie) {
+      await logWerkbordMutatie({
+        versieId: huidigeVersie.id,
+        type: "speler_handmatig_aangemaakt",
+        doorId: await huidigeUserId(),
+        spelerId: handmatigeId,
+        payload: {
+          handmatigeId,
+          roepnaam: data.roepnaam,
+          achternaam: data.achternaam,
+          geslacht: data.geslacht,
+          geboortedatum: data.geboortedatum,
+        },
+      });
+    }
 
     revalidatePath("/personen/spelers");
     return { ok: true };

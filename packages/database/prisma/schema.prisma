@@ -373,6 +373,7 @@ model User {
   scoutingVerzoeken     ScoutingVerzoek[]
   gezienMarkeringen     KadersSpeler[] @relation("GezienDoor")
   besluitenGemaakt      KadersBesluit[] @relation("BesluitAuteur")
+  werkbordMutaties      WerkbordMutatie[]
 }
 
 enum Rol {
@@ -493,6 +494,7 @@ model Speler {
   vergelijkingPosities ScoutingVergelijkingPositie[]
   kadersStatussen   KadersSpeler[]
   whatIfPlaatsingen     WhatIfTeamSpeler[]
+  werkbordMutaties      WerkbordMutatie[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -781,6 +783,7 @@ model Versie {
   teams           Team[]
   selectieGroepen SelectieGroep[]
   logItems        LogEntry[]
+  werkbordMutaties WerkbordMutatie[]
 
   createdAt DateTime @default(now())
 
@@ -2125,6 +2128,37 @@ model AgentMutatie {
 
   @@index([agentRunId])
   @@map("agent_mutaties")
+}
+
+model WerkbordMutatie {
+  id              String   @id @default(cuid())
+  versie          Versie   @relation(fields: [versieId], references: [id], onDelete: Cascade)
+  versieId        String
+
+  // Discriminator + payload
+  type            String   // "speler_verplaatst" | "speler_naar_pool" | "team_positie" | "selectie_speler_toegevoegd" | "selectie_speler_verwijderd" | "selectie_bundeling_toggle" | "speler_indeling_gezet" | "speler_handmatig_aangemaakt"
+  payload         Json     // Volledige request-payload na auth+parse
+  inverse         Json?    // Hoe deze actie ongedaan te maken (optioneel — alleen bij koppelacties)
+
+  // Subject (waar mogelijk)
+  speler          Speler?  @relation(fields: [spelerId], references: [id], onDelete: SetNull)
+  spelerId        String?
+  // Geen FK — audit-row mag team/selectiegroep overleven (versie-cascade dekt verwijdering)
+  vanTeamId       String?
+  naarTeamId      String?
+  selectieGroepId String?
+
+  // Door wie
+  door            User     @relation(fields: [doorId], references: [id])
+  doorId          String
+  sessionId       String?  // Browser-sessie-id (al in werkbord-events aanwezig)
+
+  createdAt       DateTime @default(now())
+
+  @@index([versieId, createdAt])
+  @@index([spelerId, createdAt])
+  @@index([doorId, createdAt])
+  @@map("werkbord_mutaties")
 }
 
 // ============================================================

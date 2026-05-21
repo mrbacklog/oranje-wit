@@ -10,6 +10,8 @@ import { maakWerkindelingSnapshot } from "@/lib/teamindeling/db/werkindeling-sna
 import { requireTC } from "@oranje-wit/auth/checks";
 import type { ActionResult } from "@oranje-wit/types";
 import { HUIDIG_SEIZOEN } from "@oranje-wit/types";
+import { logWerkbordMutatie } from "@/lib/teamindeling/audit/log-werkbord-mutatie";
+import { huidigeUserId } from "@/lib/teamindeling/audit/huidige-user";
 
 const NIET_VERWIJDERD = { verwijderdOp: null } as const;
 
@@ -486,6 +488,7 @@ export async function voegSelectieSpelerToe(
 ): Promise<import("@oranje-wit/types").ActionResult<{ id: string }>> {
   await requireTC();
   try {
+    const doorId = await huidigeUserId();
     const selectieGroep = await prisma.selectieGroep.findUniqueOrThrow({
       where: { id: selectieGroepId },
       select: { versieId: true },
@@ -520,6 +523,16 @@ export async function voegSelectieSpelerToe(
       spelerId,
       sessionId: sessionId ?? null,
     });
+    await logWerkbordMutatie({
+      versieId,
+      type: "selectie_speler_toegevoegd",
+      doorId,
+      spelerId,
+      selectieGroepId,
+      sessionId: sessionId ?? null,
+      payload: { selectieGroepId, spelerId, sessionId: sessionId ?? null },
+      inverse: { type: "selectie_speler_verwijderd", selectieGroepId, spelerId },
+    });
     revalidatePath("/indeling");
     return { ok: true, data: { id: selectieSpeler.id } };
   } catch (error) {
@@ -535,6 +548,7 @@ export async function verwijderSelectieSpeler(
 ): Promise<import("@oranje-wit/types").ActionResult<void>> {
   await requireTC();
   try {
+    const doorId = await huidigeUserId();
     const selectieGroep = await prisma.selectieGroep.findUnique({
       where: { id: selectieGroepId },
       select: { versieId: true },
@@ -546,6 +560,16 @@ export async function verwijderSelectieSpeler(
         selectieGroepId,
         spelerId,
         sessionId: sessionId ?? null,
+      });
+      await logWerkbordMutatie({
+        versieId: selectieGroep.versieId,
+        type: "selectie_speler_verwijderd",
+        doorId,
+        spelerId,
+        selectieGroepId,
+        sessionId: sessionId ?? null,
+        payload: { selectieGroepId, spelerId, sessionId: sessionId ?? null },
+        inverse: { type: "selectie_speler_toegevoegd", selectieGroepId, spelerId },
       });
     }
     revalidatePath("/indeling");
@@ -569,18 +593,19 @@ export async function toggleSelectieBundeling(
 > {
   await requireTC();
   try {
+    const doorId = await huidigeUserId();
     const selectieGroep = await prisma.selectieGroep.findUniqueOrThrow({
       where: { id: selectieGroepId },
       select: {
         teams: {
-          select: { id: true, naam: true },
+          select: { id: true, naam: true, versieId: true },
           orderBy: { volgorde: "asc" },
         },
         spelers: { select: { spelerId: true, statusOverride: true, notitie: true } },
         staf: { select: { stafId: true, rol: true } },
       },
     });
-    type GroepTeam = { id: string; naam: string };
+    type GroepTeam = { id: string; naam: string; versieId: string };
     type GroepSpeler = { spelerId: string; statusOverride: string | null; notitie: string | null };
     type GroepStaf = { stafId: string; rol: string };
     const groepTeams = selectieGroep.teams as GroepTeam[];
@@ -684,6 +709,23 @@ export async function toggleSelectieBundeling(
       stafVerplaatst = groepStaf.length;
     }
 
+    // versieId via groepTeams (alle teams van een selectie horen bij dezelfde versie)
+    const bundelingVersieId = groepTeams[0]?.versieId ?? null;
+    if (bundelingVersieId) {
+      await logWerkbordMutatie({
+        versieId: bundelingVersieId,
+        type: "selectie_bundeling_toggle",
+        doorId,
+        selectieGroepId,
+        payload: {
+          selectieGroepId,
+          gebundeld,
+          primaryTeamId: primaryTeamId ?? null,
+          spelersVerplaatst,
+          stafVerplaatst,
+        },
+      });
+    }
     revalidatePath("/indeling");
     return {
       ok: true,

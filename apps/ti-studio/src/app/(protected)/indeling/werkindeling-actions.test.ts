@@ -4,6 +4,14 @@ vi.mock("@oranje-wit/auth/checks", () => ({
   requireTC: vi.fn().mockResolvedValue({ user: { email: "tc@ow.nl" } }),
 }));
 
+vi.mock("@/lib/teamindeling/audit/log-werkbord-mutatie", () => ({
+  logWerkbordMutatie: vi.fn().mockResolvedValue(undefined),
+}));
+
+vi.mock("@/lib/teamindeling/audit/huidige-user", () => ({
+  huidigeUserId: vi.fn().mockResolvedValue("u1"),
+}));
+
 const teamSpelerDeleteMany = vi.fn().mockResolvedValue({ count: 0 });
 const selectieSpelerDeleteMany = vi.fn().mockResolvedValue({ count: 0 });
 const selectieSpelerUpsert = vi.fn().mockResolvedValue({ id: "ss-1" });
@@ -24,6 +32,10 @@ vi.mock("@/lib/teamindeling/db/prisma", () => ({
     $executeRaw: executeRaw,
   },
   anyTeam: {},
+}));
+
+vi.mock("@oranje-wit/teamindeling-shared/seizoen", () => ({
+  assertBewerkbaar: vi.fn().mockResolvedValue(undefined),
 }));
 
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
@@ -99,6 +111,64 @@ describe("verwijderSelectieSpeler", () => {
       selectieGroepId: "groep-1",
       spelerId: "rel-1",
       sessionId: "sess-B",
+    });
+  });
+});
+
+describe("audit-trail", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    selectieGroepFindUniqueOrThrow.mockResolvedValue({ versieId: "versie-1" });
+    selectieGroepFindUnique.mockResolvedValue({ versieId: "versie-1" });
+    transaction.mockImplementation(async (ops: unknown[]) => {
+      return ops.map(() => ({ id: "ss-1" }));
+    });
+  });
+
+  it("voegSelectieSpelerToe logt selectie_speler_toegevoegd", async () => {
+    const { logWerkbordMutatie } = await import("@/lib/teamindeling/audit/log-werkbord-mutatie");
+    const log = vi.mocked(logWerkbordMutatie);
+
+    const { voegSelectieSpelerToe } = await import("./werkindeling-actions");
+    await voegSelectieSpelerToe("sg-1", "HANDMATIG-tycho", "sess-1");
+
+    expect(log).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: "selectie_speler_toegevoegd",
+        selectieGroepId: "sg-1",
+        spelerId: "HANDMATIG-tycho",
+        sessionId: "sess-1",
+        doorId: "u1",
+      })
+    );
+    const arg = log.mock.calls[0][0];
+    expect(arg.inverse).toEqual({
+      type: "selectie_speler_verwijderd",
+      selectieGroepId: "sg-1",
+      spelerId: "HANDMATIG-tycho",
+    });
+  });
+
+  it("verwijderSelectieSpeler logt selectie_speler_verwijderd met inverse", async () => {
+    const { logWerkbordMutatie } = await import("@/lib/teamindeling/audit/log-werkbord-mutatie");
+    const log = vi.mocked(logWerkbordMutatie);
+
+    const { verwijderSelectieSpeler } = await import("./werkindeling-actions");
+    await verwijderSelectieSpeler("sg-1", "HANDMATIG-tycho", "sess-1");
+
+    expect(log).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: "selectie_speler_verwijderd",
+        selectieGroepId: "sg-1",
+        spelerId: "HANDMATIG-tycho",
+        doorId: "u1",
+      })
+    );
+    const arg = log.mock.calls[0][0];
+    expect(arg.inverse).toEqual({
+      type: "selectie_speler_toegevoegd",
+      selectieGroepId: "sg-1",
+      spelerId: "HANDMATIG-tycho",
     });
   });
 });
