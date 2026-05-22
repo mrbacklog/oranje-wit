@@ -132,8 +132,11 @@ test.describe("SpelerDialog — Personen/Spelers tabel opent dialoog", () => {
     await evaluatiesTabButton.click();
     await page.waitForTimeout(200);
 
-    // Verifieer tab content (placeholder-tekst is OK)
-    const evaluatiesContent = dialog.locator("text=/Evaluaties/");
+    // Verifieer tab content via placeholder-zin (button + tab-label heten ook "Evaluaties",
+    // dus zonder voldoende context matcht de selector er 3 → strict-mode violation).
+    const evaluatiesContent = dialog
+      .locator("text=/Evaluaties worden via de evaluatie-module/i")
+      .first();
     await expect(evaluatiesContent).toBeVisible({ timeout: 3_000 });
 
     // Test tab "Werkitems"
