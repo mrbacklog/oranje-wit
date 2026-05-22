@@ -37,11 +37,12 @@ import { test, expect } from "./fixtures/base";
 // Edge-NieuwPotent-M (990010000006) is in spelerspool per sectie 1.3 van de catalogus
 const CONFLICT_SPELER_REL_CODE = "990010000006";
 
-// Team waar context A de speler heen sleept
-const TEAM_A_ID = "team-edge-01";
-
-// Team waar context B de speler heen wil slepen (conflicteert met A)
-const TEAM_B_ID = "team-edge-02";
+// Team waar context A de speler heen sleept.
+// We gebruiken ongebundelde teams: Senioren 1+2 (team-edge-01/02) en Senioren 3+4
+// (team-edge-03/04) renderen als gebundelde SelectieKaart en hebben geen
+// team-kaart-{teamId}-huidig testid. U19-1/U19-2 zijn wel losse team-kaarten.
+const TEAM_A_ID = "team-edge-07"; // U19-1
+const TEAM_B_ID = "team-edge-08"; // U19-2
 
 // SSE endpoint patroon — blokkeer op context B zodat hij A's update mist
 const SSE_PATH_PATTERN = "**/api/indeling/*/sse";
@@ -199,7 +200,7 @@ test.describe("Werkbord-conflict — parallelle sessies (Tycho-scenario)", () =>
       });
       console.log("[werkbord-conflict] SSE geblokkeerd op context B");
 
-      // ─── Stap 2: Context A sleept speler naar team-edge-01 ───────────────────
+      // ─── Stap 2: Context A sleept speler naar TEAM_A (U19-1) ─────────────────
       // Wacht op een 200 response van de verplaats-API voordat we doorgaan
       const aResponsePromise = pageA.waitForResponse(
         (resp) =>
@@ -218,10 +219,10 @@ test.describe("Werkbord-conflict — parallelle sessies (Tycho-scenario)", () =>
         `[werkbord-conflict] Context A: speler ${CONFLICT_SPELER_REL_CODE} → ${TEAM_A_ID} geslaagd`
       );
 
-      // ─── Stap 3: Context B probeert dezelfde speler naar team-edge-02 ─────────
+      // ─── Stap 3: Context B probeert dezelfde speler naar TEAM_B (U19-2) ──────
       // B's UI heeft de speler nog in de spelerspool (SSE geblokkeerd).
-      // B stuurt `verwachteLocatie: { soort: "pool" }` maar DB heeft `{ soort: "team", teamId: "team-edge-01" }`.
-      // Server retourneert 409.
+      // B stuurt `verwachteLocatie: { soort: "pool" }` maar DB heeft
+      // `{ soort: "team", teamId: TEAM_A_ID }`. Server retourneert 409.
 
       // Wacht op de 409-response van context B — dit is de kernassertion
       const bConflictResponsePromise = pageB.waitForResponse(
@@ -255,34 +256,34 @@ test.describe("Werkbord-conflict — parallelle sessies (Tycho-scenario)", () =>
       });
       console.log("[werkbord-conflict] Conflict-toast verschijnt in context B");
 
-      // ─── Stap 5: Context A is ongewijzigd — speler staat op team-edge-01 ─────
+      // ─── Stap 5: Context A is ongewijzigd — speler staat op TEAM_A ───────────
       const spelerOpTeamA = pageA.locator(
         `[data-testid="speler-card-${CONFLICT_SPELER_REL_CODE}-team-${TEAM_A_ID}"]`
       );
       await expect(spelerOpTeamA).toBeVisible({ timeout: 5_000 });
-      console.log("[werkbord-conflict] Context A: speler correct op team-edge-01");
+      console.log(`[werkbord-conflict] Context A: speler correct op ${TEAM_A_ID}`);
 
       // ─── Stap 6: Na SSE-deblokkering synchroniseert context B ────────────────
       // Deblokkeer SSE zodat context B de actuele staat kan ophalen
       await pageB.unroute(SSE_PATH_PATTERN);
 
       // Na conflict triggert useWerkbordState een herlaad via onConflict → herlaadStaat.
-      // Context B toont uiteindelijk de speler op team-edge-01 (A's locatie), NIET team-edge-02.
+      // Context B toont uiteindelijk de speler op TEAM_A (A's locatie), NIET TEAM_B.
       //
       // Timing: herlaadStaat is synchronisch (setState), maar het impliciete
       // herlaad-mechanisme loopt via de SSE die we net deblokkeerden of via de
       // conflict-callback in TiStudioShell. Geef 5s voor de UI-synchronisatie.
       //
-      // Acceptabel resultaat: speler NIET op team-edge-02 (B's fout-doel).
-      // De speler kan op team-edge-01 staan (als SSE aankomt) OF nog in pool
-      // tonen (als herlaad nog niet compleet is). Het KRITIEKE is dat hij niet
-      // op team-edge-02 staat.
+      // Acceptabel resultaat: speler NIET op TEAM_B (B's fout-doel).
+      // De speler kan op TEAM_A staan (als SSE aankomt) OF nog in pool tonen
+      // (als herlaad nog niet compleet is). Het KRITIEKE is dat hij niet op
+      // TEAM_B staat.
       await expect(
         pageB.locator(`[data-testid="speler-card-${CONFLICT_SPELER_REL_CODE}-team-${TEAM_B_ID}"]`)
       ).not.toBeVisible({ timeout: 5_000 });
 
       console.log(
-        "[werkbord-conflict] Context B: speler NIET op team-edge-02 (correcte afwijzing)"
+        `[werkbord-conflict] Context B: speler NIET op ${TEAM_B_ID} (correcte afwijzing)`
       );
 
       // Bonus-assert: speler staat uiteindelijk op team-edge-01 in context B
@@ -315,16 +316,18 @@ test.describe("Werkbord-conflict — parallelle sessies (Tycho-scenario)", () =>
     // Draait alleen als seed beschikbaar is.
     //
     // Stappen:
-    // 1. Context A plaatst speler op team-edge-03
-    // 2. Context B (SSE geblokkeerd) probeert dezelfde speler naar team-edge-04
+    // 1. Context A plaatst speler op TEAM_C (U17-1, ongebundeld)
+    // 2. Context B (SSE geblokkeerd) probeert dezelfde speler naar TEAM_D (U17-2)
     // 3. Verifieer 409-body: conflict.verwacht, conflict.werkelijk, conflict.doorWie
     //
     // Separate speler om interferentie met test 1 te vermijden:
     // 990010000007 (Edge-NieuwDef-M) is ook in spelerspool per catalogus sectie 1.3
 
     const SPELER2 = "990010000007";
-    const TEAM_C_ID = "team-edge-03";
-    const TEAM_D_ID = "team-edge-04";
+    // Ongebundelde teams (U17-1 + U17-2). team-edge-03/04 zijn als gebundelde
+    // SelectieKaart "Senioren B" geseed en hebben geen team-kaart-testid.
+    const TEAM_C_ID = "team-edge-09"; // U17-1
+    const TEAM_D_ID = "team-edge-10"; // U17-2
 
     const ctxA = await browser.newContext({ storageState: "./e2e/.auth/studio-test.json" });
     const ctxB = await browser.newContext({ storageState: "./e2e/.auth/studio-test.json" });

@@ -67,7 +67,9 @@ test.describe("Werkbord pagina — Smoke", () => {
   test.setTimeout(60_000);
 
   test("laadt /indeling route, toolbar en canvas zichtbaar", async ({ page }) => {
-    // Seed: team-edge-01 (Senioren 1) moet zichtbaar zijn
+    // Seed: team-edge-07 (U19-1) moet zichtbaar zijn als ongebundelde team-kaart
+    // (Senioren 1+2 zijn gebundeld in een SelectieKaart en hebben dus geen
+    // team-kaart-{teamId}-huidig testid.)
     await page.goto("/indeling", { timeout: 30_000, waitUntil: "load" });
 
     // Graceful skip als auth faalt
@@ -78,8 +80,8 @@ test.describe("Werkbord pagina — Smoke", () => {
 
     expect(page.url()).toContain("/indeling");
 
-    // Hard assert: team-edge-01 kaart moet zichtbaar zijn
-    const teamKaart = page.locator('[data-testid="team-kaart-team-edge-01-huidig"]');
+    // Hard assert: team-edge-07 kaart moet zichtbaar zijn
+    const teamKaart = page.locator('[data-testid="team-kaart-team-edge-07-huidig"]');
     await expect(teamKaart).toBeVisible({ timeout: 10_000 });
 
     // Hard assert: speler-cards in seed moeten bestaan
@@ -168,9 +170,10 @@ test.describe("Werkbord pagina — Interacties", () => {
     expect(finalClasses).toBeDefined();
   });
 
-  test("klik op team-kaart (Senioren 1) opent detail-drawer met teamnaam", async ({ page }) => {
+  test("klik op team-kaart (U19-1) opent detail-drawer met teamnaam", async ({ page }) => {
     // Spec sectie 5.5: TeamKaart header klik → TeamDetailDrawer opent
-    // Seed: team-edge-01 = Senioren 1 (10 spelers)
+    // Seed: team-edge-07 = U19-1 (10 spelers, ongebundeld — Senioren 1+2 zijn als
+    // gebundelde selectie geseed en rendern niet als team-kaart)
     await page.goto("/indeling", { timeout: 30_000, waitUntil: "load" });
     await page.waitForTimeout(1000);
 
@@ -179,12 +182,12 @@ test.describe("Werkbord pagina — Interacties", () => {
       return;
     }
 
-    // Hard assert: team-edge-01 kaart moet zichtbaar zijn
-    const senioren1Kaart = page.locator('[data-testid="team-kaart-team-edge-01-huidig"]');
-    await expect(senioren1Kaart).toBeVisible({ timeout: 10_000 });
+    // Hard assert: team-edge-07 kaart moet zichtbaar zijn
+    const u19Kaart = page.locator('[data-testid="team-kaart-team-edge-07-huidig"]');
+    await expect(u19Kaart).toBeVisible({ timeout: 10_000 });
 
     // Klik op team-kaart
-    await senioren1Kaart.click();
+    await u19Kaart.click();
     await page.waitForTimeout(500);
 
     // Hard assert: drawer of dialog moet content tonen
@@ -198,7 +201,7 @@ test.describe("Werkbord pagina — Interacties", () => {
 
     // Verifieer teamnaam in drawer
     const drawerContent = await drawer.first().textContent();
-    expect(drawerContent?.toUpperCase()).toContain("SENIOREN");
+    expect(drawerContent?.toUpperCase()).toContain("U19");
   });
 
   test("zoom buttons wijzigen canvas-schaal (compact/detail)", async ({ page }) => {
@@ -260,8 +263,8 @@ test.describe("Werkbord pagina — Validatie & Multi-Team", () => {
       return;
     }
 
-    // Seed: team-edge-01 moet zichtbaar zijn
-    const teamKaart = page.locator('[data-testid="team-kaart-team-edge-01-huidig"]');
+    // Seed: team-edge-07 (U19-1) is een ongebundeld team met team-kaart-testid
+    const teamKaart = page.locator('[data-testid="team-kaart-team-edge-07-huidig"]');
     await expect(teamKaart).toBeVisible({ timeout: 10_000 });
 
     // Hard assert: kaart hoogte >= 300px
@@ -373,7 +376,7 @@ test.describe("Werkbord pagina — Validatie & Multi-Team", () => {
     // Als speler op beide teams zichtbaar: validator moet aan staan
     if (existsTeam1 > 0 && existsTeam2 > 0) {
       // Teams moeten signalering hebben
-      const roodSignal1 = page.locator('[data-testid="team-kaart-team-edge-01-huidig"]');
+      const roodSignal1 = page.locator('[data-testid="team-kaart-team-edge-07-huidig"]');
       const roodSignal2 = page.locator('[data-testid="team-kaart-team-edge-02-huidig"]');
 
       const team1Visible = await roodSignal1.count();
