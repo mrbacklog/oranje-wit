@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useTransition, useEffect, useRef } from "react";
+import { useState, useMemo, useTransition, useEffect, useLayoutEffect, useRef } from "react";
 import type { BeheerStaf } from "../staf-actions";
 import {
   setStafActief,
@@ -513,6 +513,7 @@ function TeamRolEditor({
   const [isPending, startTransition] = useTransition();
   const [nieuwDoelId, setNieuwDoelId] = useState<string>("");
   const [nieuwRol, setNieuwRol] = useState<string>("Trainer");
+  const [openUp, setOpenUp] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -523,6 +524,14 @@ function TeamRolEditor({
     document.addEventListener("mousedown", handleDocClick);
     return () => document.removeEventListener("mousedown", handleDocClick);
   }, [onClose]);
+
+  // Klap omhoog als de popover onderaan buiten beeld zou vallen (laatste rijen).
+  useLayoutEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    if (rect.bottom > window.innerHeight - 8) setOpenUp(true);
+  }, [staf.teams.length]);
 
   // Bepaal reeds-gekoppelde doelen (team-id of selectie-id via teamId legacy alias)
   const huidigeIds = new Set(staf.teams.map((t) => t.teamId));
@@ -575,9 +584,8 @@ function TeamRolEditor({
       onClick={(e) => e.stopPropagation()}
       style={{
         position: "absolute",
-        top: "100%",
+        ...(openUp ? { bottom: "100%", marginBottom: 4 } : { top: "100%", marginTop: 4 }),
         left: 0,
-        marginTop: 4,
         zIndex: 50,
         background: "var(--surface-card)",
         border: "1px solid var(--border-default)",
