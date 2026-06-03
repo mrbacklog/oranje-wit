@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
         achternaam: speler.achternaam,
         geboortejaar: speler.geboortejaar,
         geboortedatum: new Date(speler.geboortedatum),
-        geslacht: speler.geslacht === "M" ? "MAN" : "VROUW",
+        geslacht: speler.geslacht,
         status: lidTypeNaarStatus(speler.lidType ?? "korfbalspeler"),
       } as const;
       await prisma.speler.upsert({

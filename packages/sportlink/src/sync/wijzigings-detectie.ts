@@ -167,17 +167,17 @@ export async function detecteerWijzigingen(): Promise<WijzigingsSignaal[]> {
       achternaam: string | null;
     }[]
   >`
-    SELECT n."relCode" AS rel_code,
+    SELECT n.rel_code,
            n.entiteit,
            n.actie,
            n.beschrijving,
            n.datum,
            l.roepnaam,
            l.achternaam
-    FROM "SportlinkNotificatie" n
-    LEFT JOIN leden l ON l.rel_code = n."relCode"
+    FROM sportlink_notificaties n
+    LEFT JOIN leden l ON l.rel_code = n.rel_code
     WHERE n.entiteit IN ('membership', 'player')
-      AND n."gesyncOp" >= ${sindsDatum}
+      AND n.gesynct_op >= ${sindsDatum}
     ORDER BY n.datum DESC
     LIMIT 50
   `;
