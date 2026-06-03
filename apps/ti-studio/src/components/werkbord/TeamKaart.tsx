@@ -1,12 +1,14 @@
 // apps/web/src/components/ti-studio/werkbord/TeamKaart.tsx
 "use client";
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import "./tokens.css";
 import { TeamKaartSpelerRij, SPELER_RIJ_HOOGTE } from "./TeamKaartSpelerRij";
 import type {
   WerkbordTeam,
   WerkbordSpeler,
   WerkbordSpelerInTeam,
+  WerkbordStafInTeam,
   KaartFormaat,
   ZoomLevel,
 } from "./types";
@@ -399,6 +401,11 @@ export function TeamKaart({
           flexShrink: 0,
         }}
       >
+        {/* Staf-icoon — altijd zichtbaar, vóór de warnings, op alle zooms */}
+        <StafFooterIcoon
+          staf={partnerTeam ? dedupeStaf([...team.staf, ...partnerTeam.staf]) : team.staf}
+          onStafClick={onStafClick}
+        />
         {team.validatieCount > 0 && (
           <div
             style={{
@@ -428,32 +435,7 @@ export function TeamKaart({
             ▲
           </div>
         )}
-        {/* Staf — alleen subtiel in detail-zoom, enkel de namen */}
-        <div style={{ flex: 1, minWidth: 0 }}>
-          {zoomLevel === "detail" && team.staf.length > 0 && (
-            <div
-              title={team.staf.map((s) => `${s.naam}${s.rol ? ` — ${s.rol}` : ""}`).join(", ")}
-              style={{
-                fontSize: 10,
-                color: "var(--text-3)",
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
-            >
-              {team.staf.map((s, i) => (
-                <span
-                  key={s.id}
-                  onClick={onStafClick ? () => onStafClick(s.stafId) : undefined}
-                  style={{ cursor: onStafClick ? "pointer" : "default" }}
-                >
-                  {i > 0 && <span style={{ opacity: 0.4 }}> · </span>}
-                  {s.naam}
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
+        <div style={{ flex: 1, minWidth: 0 }} />
         {team.gemiddeldeLeeftijd !== null && (
           <div style={{ fontSize: zoomLevel === "compact" ? 26 : 13, color: "var(--text-3)" }}>
             {zoomLevel !== "compact" && "Gem. "}
@@ -481,6 +463,219 @@ export function TeamKaart({
         }
       `}</style>
     </div>
+  );
+}
+
+// ── Staf-icoon in de footer ─────────────────────────────────────────────────
+// Trainer-icoon (zelfde als de staf-drawer toggle): grijs als er niemand
+// gekoppeld is, groen + teller zodra er staf is. Hover toont de stafleden in
+// een zwevend paneeltje (portal → blijft buiten de card-overflow en in beeld).
+
+function dedupeStaf(staf: WerkbordStafInTeam[]): WerkbordStafInTeam[] {
+  const gezien = new Set<string>();
+  return staf.filter((s) => {
+    if (gezien.has(s.stafId)) return false;
+    gezien.add(s.stafId);
+    return true;
+  });
+}
+
+function TrainerIcoon({ size = 15 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+      <circle cx="12" cy="9" r="3" />
+      <path d="M7.5 6.5h9" />
+      <path d="M9.5 6.5V5a2.5 2.5 0 0 1 5 0v1.5" />
+    </svg>
+  );
+}
+
+function StafFooterIcoon({
+  staf,
+  onStafClick,
+}: {
+  staf: WerkbordStafInTeam[];
+  onStafClick?: (stafId: string) => void;
+}) {
+  const [pos, setPos] = useState<{ left: number; top: number } | null>(null);
+  const ankerRef = useRef<HTMLDivElement>(null);
+  const sluitTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const heeftStaf = staf.length > 0;
+
+  const PANEEL_BREEDTE = 220;
+
+  function open() {
+    if (sluitTimer.current) {
+      clearTimeout(sluitTimer.current);
+      sluitTimer.current = null;
+    }
+    if (!heeftStaf || !ankerRef.current) return;
+    const r = ankerRef.current.getBoundingClientRect();
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    // Geschatte hoogte: kop (26) + rijen (24) + padding (20)
+    const hoogte = 46 + staf.length * 24;
+    let left = r.left + r.width / 2 - PANEEL_BREEDTE / 2;
+    left = Math.max(8, Math.min(left, vw - PANEEL_BREEDTE - 8));
+    let top = r.top - hoogte - 8; // standaard: boven het icoon
+    if (top < 8) top = Math.min(r.bottom + 8, vh - hoogte - 8); // anders eronder
+    setPos({ left, top });
+  }
+
+  function planSluiten() {
+    sluitTimer.current = setTimeout(() => setPos(null), 120);
+  }
+
+  return (
+    <>
+      <div
+        ref={ankerRef}
+        onMouseEnter={open}
+        onMouseLeave={planSluiten}
+        title={
+          heeftStaf
+            ? `${staf.length} staflid${staf.length !== 1 ? "en" : ""}`
+            : "Geen staf gekoppeld"
+        }
+        style={{
+          position: "relative",
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: 30,
+          height: 26,
+          borderRadius: 7,
+          flexShrink: 0,
+          cursor: heeftStaf ? "pointer" : "default",
+          border: heeftStaf ? "1px solid rgba(34,197,94,.35)" : "1px solid var(--border-0)",
+          background: heeftStaf ? "rgba(34,197,94,.10)" : "var(--bg-2)",
+          color: heeftStaf ? "var(--ok)" : "var(--text-3)",
+          opacity: heeftStaf ? 1 : 0.55,
+          transition: "background 140ms ease, color 140ms ease, border-color 140ms ease",
+        }}
+      >
+        <TrainerIcoon size={15} />
+        {heeftStaf && (
+          <span
+            style={{
+              position: "absolute",
+              top: -6,
+              right: -6,
+              minWidth: 16,
+              height: 16,
+              padding: "0 4px",
+              borderRadius: 9,
+              background: "var(--ok)",
+              color: "#06140a",
+              fontSize: 10,
+              fontWeight: 800,
+              lineHeight: "16px",
+              textAlign: "center",
+              border: "2px solid var(--bg-1)",
+            }}
+          >
+            {staf.length}
+          </span>
+        )}
+      </div>
+
+      {pos &&
+        heeftStaf &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <div
+            onMouseEnter={() => {
+              if (sluitTimer.current) {
+                clearTimeout(sluitTimer.current);
+                sluitTimer.current = null;
+              }
+            }}
+            onMouseLeave={() => setPos(null)}
+            style={{
+              position: "fixed",
+              left: pos.left,
+              top: pos.top,
+              width: PANEEL_BREEDTE,
+              zIndex: 9999,
+              background: "linear-gradient(160deg,#1a1a1e,#0c0c0f 60%)",
+              border: "1px solid var(--border-1)",
+              borderRadius: 10,
+              boxShadow: "0 8px 32px rgba(0,0,0,.6)",
+              padding: "10px 12px",
+            }}
+          >
+            <div
+              style={{
+                fontSize: 8,
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: "0.1em",
+                color: "var(--text-3)",
+                marginBottom: 8,
+              }}
+            >
+              Staf · {staf.length}
+            </div>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              {staf.map((s, i) => (
+                <div
+                  key={s.id}
+                  onClick={onStafClick ? () => onStafClick(s.stafId) : undefined}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 7,
+                    padding: "4px 0",
+                    borderTop: i > 0 ? "1px solid var(--border-0)" : "none",
+                    cursor: onStafClick ? "pointer" : "default",
+                  }}
+                >
+                  <span style={{ color: "var(--text-3)", display: "inline-flex", flexShrink: 0 }}>
+                    <TrainerIcoon size={13} />
+                  </span>
+                  <span
+                    style={{
+                      fontSize: 12,
+                      fontWeight: 600,
+                      color: "var(--text-1)",
+                      flex: 1,
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {s.naam}
+                  </span>
+                  {s.rol && (
+                    <span
+                      style={{
+                        fontSize: 9,
+                        color: "var(--text-3)",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.04em",
+                        flexShrink: 0,
+                      }}
+                    >
+                      {s.rol}
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>,
+          document.body
+        )}
+    </>
   );
 }
 
