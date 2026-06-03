@@ -1,24 +1,61 @@
 // apps/web/src/components/ti-studio/werkbord/StafPoolDrawer.tsx
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import "./tokens.css";
-import type { WerkbordStaf } from "./types";
+import type { WerkbordStaf, WerkbordStafTeamrol, StafKoppelDoel } from "./types";
+import type { StafKoppelingView } from "@/components/staf/staf-koppel-types";
 import { StafKaart } from "./StafKaart";
+import { StafKoppelEditor } from "@/components/staf/StafKoppelEditor";
+import { NieuweStafDialog } from "@/app/(protected)/personen/_components/NieuweStafDialog";
 
 type StafFilter = "alle" | "zonder_team" | "ingedeeld";
 
 interface StafPoolDrawerProps {
   open: boolean;
   staf: WerkbordStaf[];
+  alleDoelen: StafKoppelDoel[];
   onClose: () => void;
   onStafClick?: (stafId: string) => void;
+  /** Optimistische sync naar de kaart-footer na een koppelwijziging. */
+  onKoppelingGewijzigd?: (stafId: string, naam: string, nieuweTeams: WerkbordStafTeamrol[]) => void;
+  /** Aangeroepen na het aanmaken van een nieuw staflid (host ververst de lijst). */
+  onNieuwStaflid?: () => void;
 }
 
-export function StafPoolDrawer({ open, staf, onClose, onStafClick }: StafPoolDrawerProps) {
+export function StafPoolDrawer({
+  open,
+  staf,
+  alleDoelen,
+  onClose,
+  onStafClick,
+  onKoppelingGewijzigd,
+  onNieuwStaflid,
+}: StafPoolDrawerProps) {
   const [zoek, setZoek] = useState("");
   const [filter, setFilter] = useState<StafFilter>("alle");
+  const [dialogOpen, setDialogOpen] = useState(false);
+  // Lokale kopie voor optimistische koppel-updates; herseed bij verse props.
+  const [lokaleStaf, setLokaleStaf] = useState<WerkbordStaf[]>(staf);
+  useEffect(() => {
+    setLokaleStaf(staf);
+  }, [staf]);
+  // Welke staf-popover open is + waar (fixed coords, buiten de smalle drawer).
+  const [editor, setEditor] = useState<{ stafId: string; x: number; y: number } | null>(null);
 
-  const gefilterd = staf
+  function pasKoppelingenAan(stafId: string, nieuw: StafKoppelingView[]) {
+    const genormaliseerd: WerkbordStafTeamrol[] = nieuw.map((k) => ({
+      ...k,
+      kleur: k.kleur ?? "",
+    }));
+    setLokaleStaf((prev) =>
+      prev.map((s) => (s.id === stafId ? { ...s, teams: genormaliseerd } : s))
+    );
+    const naam = lokaleStaf.find((s) => s.id === stafId)?.naam ?? "";
+    onKoppelingGewijzigd?.(stafId, naam, genormaliseerd);
+  }
+
+  const gefilterd = lokaleStaf
     .filter((s) => {
       if (zoek && !s.naam.toLowerCase().includes(zoek.toLowerCase())) return false;
       if (filter === "zonder_team" && s.teams.length > 0) return false;
@@ -26,6 +63,8 @@ export function StafPoolDrawer({ open, staf, onClose, onStafClick }: StafPoolDra
       return true;
     })
     .sort((a, b) => a.naam.localeCompare(b.naam, "nl"));
+
+  const editorStaf = editor ? lokaleStaf.find((s) => s.id === editor.stafId) : null;
 
   return (
     <aside
@@ -162,6 +201,29 @@ export function StafPoolDrawer({ open, staf, onClose, onStafClick }: StafPoolDra
         ))}
       </div>
 
+      {/* Nieuw staflid */}
+      <div
+        style={{ padding: "8px 10px", borderBottom: "1px solid var(--border-0)", flexShrink: 0 }}
+      >
+        <button
+          onClick={() => setDialogOpen(true)}
+          style={{
+            width: "100%",
+            padding: "7px 10px",
+            borderRadius: 7,
+            border: "1px dashed var(--border-1)",
+            background: "var(--bg-2)",
+            color: "var(--text-2)",
+            fontSize: 12,
+            fontWeight: 600,
+            cursor: "pointer",
+            fontFamily: "inherit",
+          }}
+        >
+          + Nieuw staflid
+        </button>
+      </div>
+
       {/* Staflijst */}
       <div style={{ flex: 1, overflowY: "auto" }}>
         <div
@@ -183,12 +245,40 @@ export function StafPoolDrawer({ open, staf, onClose, onStafClick }: StafPoolDra
 
         <div style={{ display: "flex", flexDirection: "column", gap: 6, padding: "4px 8px 12px" }}>
           {gefilterd.map((s) => (
-            <div
-              key={s.id}
-              onClick={() => onStafClick?.(s.id)}
-              style={{ cursor: onStafClick ? "pointer" : "default" }}
-            >
-              <StafKaart staf={s} />
+            <div key={s.id} style={{ display: "flex", alignItems: "stretch", gap: 4 }}>
+              <div
+                onClick={() => onStafClick?.(s.id)}
+                style={{ flex: 1, minWidth: 0, cursor: onStafClick ? "pointer" : "default" }}
+              >
+                <StafKaart staf={s} />
+              </div>
+              <button
+                title="Koppel aan team of selectie"
+                aria-label={`Koppel ${s.naam} aan team of selectie`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const r = (e.currentTarget as HTMLButtonElement).getBoundingClientRect();
+                  setEditor(
+                    editor?.stafId === s.id ? null : { stafId: s.id, x: r.right + 8, y: r.top }
+                  );
+                }}
+                style={{
+                  flexShrink: 0,
+                  width: 26,
+                  alignSelf: "center",
+                  height: 26,
+                  borderRadius: 6,
+                  border: `1px solid ${editor?.stafId === s.id ? "var(--accent)" : "var(--border-1)"}`,
+                  background: editor?.stafId === s.id ? "var(--accent-dim)" : "var(--bg-2)",
+                  color: editor?.stafId === s.id ? "var(--accent)" : "var(--text-3)",
+                  cursor: "pointer",
+                  fontSize: 15,
+                  lineHeight: 1,
+                  fontFamily: "inherit",
+                }}
+              >
+                +
+              </button>
             </div>
           ))}
         </div>
@@ -206,6 +296,28 @@ export function StafPoolDrawer({ open, staf, onClose, onStafClick }: StafPoolDra
           </div>
         )}
       </div>
+
+      {/* Koppel-popover — via portal + fixed positie zodat hij niet door de
+          smalle drawer (overflow:hidden) wordt geclipt. */}
+      {editor &&
+        editorStaf &&
+        createPortal(
+          <div style={{ position: "fixed", left: editor.x, top: editor.y, zIndex: 1000 }}>
+            <StafKoppelEditor
+              staf={{ id: editorStaf.id, naam: editorStaf.naam, teams: editorStaf.teams }}
+              alleDoelen={alleDoelen}
+              onClose={() => setEditor(null)}
+              onGewijzigd={(nieuw) => pasKoppelingenAan(editorStaf.id, nieuw)}
+            />
+          </div>,
+          document.body
+        )}
+
+      <NieuweStafDialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        onAangemaakt={() => onNieuwStaflid?.()}
+      />
     </aside>
   );
 }

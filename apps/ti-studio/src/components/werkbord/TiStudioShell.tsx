@@ -1,6 +1,7 @@
 // apps/web/src/components/ti-studio/werkbord/TiStudioShell.tsx
 "use client";
 import { useState, useCallback, useEffect, useMemo, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { logger, korfbalPeildatum, type Seizoen } from "@oranje-wit/types";
 import { Toolbar } from "./Toolbar";
 import { SpelersPoolDrawer } from "./SpelersPoolDrawer";
@@ -13,7 +14,7 @@ import StafProfielDialog from "../StafProfielDialog";
 import { TeamDialog } from "../TeamDialog";
 import { useZoom } from "./hooks/useZoom";
 import { useWerkbordState, type WerkbordMode } from "./hooks/useWerkbordState";
-import type { TiStudioShellProps } from "./types";
+import type { TiStudioShellProps, WerkbordStafTeamrol } from "./types";
 import type { ConflictResult } from "@/lib/teamindeling/audit/types";
 import { ConflictToast } from "./ConflictToast";
 import type { DrawerData } from "@/app/(protected)/indeling/drawer-actions";
@@ -27,6 +28,7 @@ type PanelLinks = "pool" | "staf" | null;
 type PanelRechts = "teams" | "versies" | null;
 
 export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellProps) {
+  const router = useRouter();
   const [panelLinks, setPanelLinks] = useState<PanelLinks>(null);
   const [panelRechts, setPanelRechts] = useState<PanelRechts>("teams");
   const [geselecteerdTeamId, setGeselecteerdTeamId] = useState<string | null>(null);
@@ -166,6 +168,39 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
     setProfielStafId(stafId);
   }, []);
 
+  // Optimistische sync van een staf-koppelwijziging naar de kaart-footers.
+  // Voor een selectie-doel landt de staf op de primary (laagste volgorde) van de groep.
+  const syncStafOpBord = useCallback(
+    (stafId: string, naam: string, nieuweTeams: WerkbordStafTeamrol[]) => {
+      const resolveTeamId = (k: WerkbordStafTeamrol): string | null => {
+        if (k.doelType === "team") return k.teamId;
+        const groep = teams
+          .filter((t) => t.selectieGroepId === k.teamId)
+          .sort((a, b) => a.volgorde - b.volgorde);
+        return groep[0]?.id ?? null;
+      };
+      const rolPerTeam = new Map<string, string>();
+      for (const k of nieuweTeams) {
+        const id = resolveTeamId(k);
+        if (id) rolPerTeam.set(id, k.rol);
+      }
+      for (const t of teams) {
+        const moetHebben = rolPerTeam.has(t.id);
+        const heeftNu = t.staf.some((s) => s.stafId === stafId);
+        if (moetHebben) {
+          const rol = rolPerTeam.get(t.id) ?? "";
+          const nieuw = heeftNu
+            ? t.staf.map((s) => (s.stafId === stafId ? { ...s, rol } : s))
+            : [...t.staf, { id: `${t.id}:${stafId}`, stafId, naam, rol }];
+          updateTeamLokaal(t.id, { staf: nieuw });
+        } else if (heeftNu) {
+          updateTeamLokaal(t.id, { staf: t.staf.filter((s) => s.stafId !== stafId) });
+        }
+      }
+    },
+    [teams, updateTeamLokaal]
+  );
+
   const alleReserveringen = initieleState.alleReserveringen ?? [];
 
   const arCount = alleSpelers.filter((s) => s.status === "ALGEMEEN_RESERVE").length;
@@ -271,8 +306,11 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
               <StafPoolDrawer
                 open={panelLinks === "staf"}
                 staf={initieleState.alleStaf}
+                alleDoelen={initieleState.alleDoelen}
                 onClose={() => setPanelLinks(null)}
                 onStafClick={openStafProfiel}
+                onKoppelingGewijzigd={syncStafOpBord}
+                onNieuwStaflid={() => router.refresh()}
               />
               <WerkbordCanvas
                 teams={teams}

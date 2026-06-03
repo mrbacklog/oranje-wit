@@ -1,6 +1,10 @@
 // apps/web/src/components/ti-studio/werkbord/types.ts
 // Lokale types voor het werkbord — gebaseerd op bestaande types in components/teamindeling/scenario/types.ts
 
+import type { StafKoppelDoel } from "../staf/staf-koppel-types";
+
+export type { StafKoppelDoel };
+
 export type Geslacht = "V" | "M";
 // Komt overeen met @oranje-wit/database SpelerStatus enum.
 export type SpelerStatus =
@@ -76,6 +80,7 @@ export interface WerkbordStafTeamrol {
   teamNaam: string;
   kleur: string;
   rol: string;
+  doelType: "team" | "selectie";
 }
 
 export interface WerkbordStafKoppeling {
@@ -171,6 +176,7 @@ export interface WerkbordState {
   teams: WerkbordTeam[];
   alleSpelers: WerkbordSpeler[];
   alleStaf: WerkbordStaf[];
+  alleDoelen: StafKoppelDoel[];
   alleReserveringen: WerkbordReservering[];
   validatie: WerkbordValidatieItem[];
   werkindelingId: string;

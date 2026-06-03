@@ -6,6 +6,8 @@ import { maakStafAan } from "../staf-actions";
 interface Props {
   open: boolean;
   onClose: () => void;
+  /** Aangeroepen na een geslaagde aanmaak (bv. om een lijst te verversen). */
+  onAangemaakt?: () => void;
 }
 
 const inputStyle: React.CSSProperties = {
@@ -31,7 +33,7 @@ const labelStyle: React.CSSProperties = {
   display: "block",
 };
 
-export function NieuweStafDialog({ open, onClose }: Props) {
+export function NieuweStafDialog({ open, onClose, onAangemaakt }: Props) {
   const [naam, setNaam] = useState("");
   const [fout, setFout] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -56,6 +58,7 @@ export function NieuweStafDialog({ open, onClose }: Props) {
       const result = await maakStafAan({ naam: naam.trim() });
       if (result.ok) {
         reset();
+        onAangemaakt?.();
         onClose();
       } else {
         setFout(result.error);

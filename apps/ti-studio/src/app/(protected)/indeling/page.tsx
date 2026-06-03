@@ -9,6 +9,7 @@ import {
   getKadersStatusOverrides,
 } from "./werkindeling-actions";
 import { getTeamtypeKaders } from "@/app/(protected)/kader/actions";
+import { getDoelenVoorStafKoppeling } from "@/app/(protected)/personen/staf-actions";
 import { mergeMetDefaults } from "@/app/(protected)/kader/kader-defaults";
 import { berekenTeamValidatie, berekenValidatieStatus } from "@/lib/teamindeling/validatie-engine";
 import {
@@ -513,7 +514,13 @@ export default async function IndelingPage() {
       const kleur = KLEUR_MAP[team.kleur ?? ""] ?? "groen";
       for (const ts of team.staf as any[]) {
         const bestaand = stafTeamMap.get(ts.stafId) ?? [];
-        bestaand.push({ teamId: team.id, teamNaam: team.naam, kleur, rol: ts.rol ?? "" });
+        bestaand.push({
+          teamId: team.id,
+          teamNaam: team.naam,
+          kleur,
+          rol: ts.rol ?? "",
+          doelType: "team",
+        });
         stafTeamMap.set(ts.stafId, bestaand);
       }
     }
@@ -528,10 +535,13 @@ export default async function IndelingPage() {
       for (const ss of (sg.staf ?? []) as any[]) {
         const bestaand = stafTeamMap.get(ss.stafId) ?? [];
         bestaand.push({
-          teamId: primary.id,
+          // teamId = selectiegroep-id zodat de koppeleditor de juiste
+          // server-action (type "selectie") raakt; weergave gebruikt sg.naam.
+          teamId: sg.id,
           teamNaam: sg.naam ?? primary.naam,
           kleur,
           rol: ss.rol ?? "",
+          doelType: "selectie",
         });
         stafTeamMap.set(ss.stafId, bestaand);
       }
@@ -582,10 +592,15 @@ export default async function IndelingPage() {
     ingedeeldTeamNaam: r.team?.naam ?? null,
   }));
 
+  // Koppeldoelen (losse teams + gebundelde selecties) voor de [+]-koppeleditor
+  // in de StafPoolDrawer — zelfde bron als Personen → Staf.
+  const alleDoelen = await getDoelenVoorStafKoppeling();
+
   const initieleState: WerkbordState = {
     teams,
     alleSpelers,
     alleStaf,
+    alleDoelen,
     alleReserveringen,
     validatie,
     werkindelingId: volledig.id,
