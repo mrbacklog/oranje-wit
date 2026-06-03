@@ -225,7 +225,7 @@ export function StafPoolDrawer({
       </div>
 
       {/* Staflijst */}
-      <div style={{ flex: 1, overflowY: "auto" }}>
+      <div style={{ flex: 1, minHeight: 0, overflowY: "auto" }}>
         <div
           style={{
             padding: "10px 10px 4px",
@@ -245,40 +245,22 @@ export function StafPoolDrawer({
 
         <div style={{ display: "flex", flexDirection: "column", gap: 6, padding: "4px 8px 12px" }}>
           {gefilterd.map((s) => (
-            <div key={s.id} style={{ display: "flex", alignItems: "stretch", gap: 4 }}>
-              <div
-                onClick={() => onStafClick?.(s.id)}
-                style={{ flex: 1, minWidth: 0, cursor: onStafClick ? "pointer" : "default" }}
-              >
-                <StafKaart staf={s} />
-              </div>
-              <button
-                title="Koppel aan team of selectie"
-                aria-label={`Koppel ${s.naam} aan team of selectie`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  const r = (e.currentTarget as HTMLButtonElement).getBoundingClientRect();
+            <div
+              key={s.id}
+              onClick={() => onStafClick?.(s.id)}
+              style={{ cursor: onStafClick ? "pointer" : "default" }}
+            >
+              <StafKaart
+                staf={s}
+                plusActief={editor?.stafId === s.id}
+                onPlusClick={(rect) =>
                   setEditor(
-                    editor?.stafId === s.id ? null : { stafId: s.id, x: r.right + 8, y: r.top }
-                  );
-                }}
-                style={{
-                  flexShrink: 0,
-                  width: 26,
-                  alignSelf: "center",
-                  height: 26,
-                  borderRadius: 6,
-                  border: `1px solid ${editor?.stafId === s.id ? "var(--accent)" : "var(--border-1)"}`,
-                  background: editor?.stafId === s.id ? "var(--accent-dim)" : "var(--bg-2)",
-                  color: editor?.stafId === s.id ? "var(--accent)" : "var(--text-3)",
-                  cursor: "pointer",
-                  fontSize: 15,
-                  lineHeight: 1,
-                  fontFamily: "inherit",
-                }}
-              >
-                +
-              </button>
+                    editor?.stafId === s.id
+                      ? null
+                      : { stafId: s.id, x: rect.right + 8, y: rect.top }
+                  )
+                }
+              />
             </div>
           ))}
         </div>

@@ -16,9 +16,12 @@ const KLEUR_DOT: Record<string, string> = {
 
 interface StafKaartProps {
   staf: WerkbordStaf;
+  /** Toont een [+]-knop in de kaart om aan een team/selectie te koppelen. */
+  onPlusClick?: (rect: DOMRect) => void;
+  plusActief?: boolean;
 }
 
-export function StafKaart({ staf }: StafKaartProps) {
+export function StafKaart({ staf, onPlusClick, plusActief = false }: StafKaartProps) {
   const { registerHover, cancelHover, updatePos } = useHoverStafKaart();
 
   const handleMouseEnter = useCallback(
@@ -49,16 +52,51 @@ export function StafKaart({ staf }: StafKaartProps) {
       onMouseMove={handleMouseMove}
       onMouseLeave={cancelHover}
       style={{
+        position: "relative",
         background: "var(--bg-2)",
         border: "1px solid var(--border-0)",
         borderRadius: 8,
-        padding: "10px 12px",
+        padding: onPlusClick ? "10px 38px 10px 12px" : "10px 12px",
         display: "flex",
         gap: 10,
         alignItems: "flex-start",
         cursor: "default",
       }}
     >
+      {onPlusClick && (
+        <button
+          type="button"
+          title="Koppel aan team of selectie"
+          aria-label={`Koppel ${staf.naam} aan team of selectie`}
+          onMouseEnter={cancelHover}
+          onClick={(e) => {
+            e.stopPropagation();
+            onPlusClick(e.currentTarget.getBoundingClientRect());
+          }}
+          style={{
+            position: "absolute",
+            top: 6,
+            right: 6,
+            zIndex: 2,
+            width: 24,
+            height: 24,
+            borderRadius: 6,
+            border: `1px solid ${plusActief ? "var(--accent)" : "var(--border-1)"}`,
+            background: plusActief ? "var(--accent-dim)" : "var(--bg-1)",
+            color: plusActief ? "var(--accent)" : "var(--text-3)",
+            cursor: "pointer",
+            fontSize: 15,
+            lineHeight: 1,
+            fontFamily: "inherit",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          +
+        </button>
+      )}
+
       {/* Avatar */}
       <div
         style={{
