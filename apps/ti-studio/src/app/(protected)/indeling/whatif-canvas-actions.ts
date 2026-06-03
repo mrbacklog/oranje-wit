@@ -227,6 +227,14 @@ export async function getWhatIfVoorCanvas(
                     },
                   },
                 },
+                staf: {
+                  select: {
+                    id: true,
+                    stafId: true,
+                    rol: true,
+                    staf: { select: { naam: true } },
+                  },
+                },
               },
             },
             teams: {
@@ -302,6 +310,7 @@ export async function getWhatIfVoorCanvas(
       naam: string | null;
       gebundeld: boolean;
       spelers: MinSpelerInTeam[];
+      staf: MinStafInTeam[];
     };
     const selectieGroepen = (versie.selectieGroepen ?? []) as unknown as MinSelectieGroep[];
     const selectieGroepById = new Map<string, MinSelectieGroep>();
@@ -736,10 +745,16 @@ export async function getWhatIfVoorCanvas(
         poolGroepen.set(wit.selectieGroepBronId, lijst);
       }
     });
-    for (const indices of poolGroepen.values()) {
+    for (const [bronId, indices] of poolGroepen.entries()) {
       indices.sort((a, b) => canvasTeams[a].volgorde - canvasTeams[b].volgorde);
       const primaryIdx = indices[0];
       const primary = canvasTeams[primaryIdx];
+
+      // Selectie-staf (SelectieStaf) van de pool op de primary tonen, ontdubbeld.
+      const reedsAanwezig = new Set(primary.staf.map((s) => s.stafId));
+      const selectieStaf = (selectieGroepById.get(bronId)?.staf ?? [])
+        .filter((ss) => !reedsAanwezig.has(ss.stafId))
+        .map((ss) => bouwStafInTeam(ss.id, ss.stafId, ss.staf?.naam ?? "?", ss.rol));
 
       // Voeg spelers van alle teams in deze pool samen (dedupe op spelerId).
       const spelerSeen = new Set<string>();
@@ -767,6 +782,7 @@ export async function getWhatIfVoorCanvas(
         gebundeld: true,
         dames: [],
         heren: [],
+        staf: [...primary.staf, ...selectieStaf],
       };
 
       // Secundaire teams: gebundeld=true, leeg, gelijkstaande positie

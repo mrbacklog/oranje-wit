@@ -23,6 +23,7 @@ import type {
   WerkbordState,
   WerkbordSpeler,
   WerkbordSpelerInTeam,
+  WerkbordStafInTeam,
   WerkbordTeam,
   WerkbordValidatieItem,
   WerkbordStaf,
@@ -398,9 +399,26 @@ export default async function IndelingPage() {
         }
       }
 
+      // Selectie-staf (SelectieStaf) hoort op de gebundelde pool, niet op een los
+      // team — voeg toe aan de primary-kaart, ontdubbeld met eventuele TeamStaf.
       const teamIdx = teams.findIndex((t) => t.id === primaryTeam.id);
       if (teamIdx >= 0) {
-        teams[teamIdx] = { ...teams[teamIdx], selectieDames, selectieHeren, gebundeld: true };
+        const reedsAanwezig = new Set(teams[teamIdx].staf.map((s) => s.stafId));
+        const selectieStaf: WerkbordStafInTeam[] = ((selectieGroep.staf ?? []) as any[])
+          .filter((ss) => !reedsAanwezig.has(ss.stafId))
+          .map((ss) => ({
+            id: ss.id,
+            stafId: ss.stafId,
+            naam: ss.staf?.naam ?? "?",
+            rol: ss.rol ?? "",
+          }));
+        teams[teamIdx] = {
+          ...teams[teamIdx],
+          selectieDames,
+          selectieHeren,
+          gebundeld: true,
+          staf: [...teams[teamIdx].staf, ...selectieStaf],
+        };
         // Sync canvas-positie naar alle andere teams in de groep (deduplicatie toont alleen primary)
         for (const other of groepTeams.slice(1)) {
           const otherIdx = teams.findIndex((t) => t.id === other.id);
