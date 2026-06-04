@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type CSSProperties } from "react";
 // Swiper CSS — client-side only
 import "swiper/css";
 import "swiper/css/effect-coverflow";
@@ -94,18 +94,19 @@ export function PresentatieCarousel({ teams, peildatum }: PresentatieCarouselPro
               slideShadows: false,
               modifier: 1,
             }}
-            style={{
-              width: "100%",
-              flex: 1,
-              paddingTop: 24,
-              paddingBottom: 48,
-              // Paginatie-puntjes — oranje accent
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              ["--swiper-pagination-color" as any]: "var(--accent)",
-              ["--swiper-pagination-bullet-inactive-color" as any]: "var(--border-1)",
-              ["--swiper-pagination-bullet-inactive-opacity" as any]: "1",
-              ["--swiper-pagination-bullet-size" as any]: "8px",
-            }}
+            style={
+              {
+                width: "100%",
+                flex: 1,
+                paddingTop: 24,
+                paddingBottom: 48,
+                // Paginatie-puntjes — oranje accent (Swiper CSS-vars)
+                "--swiper-pagination-color": "var(--accent)",
+                "--swiper-pagination-bullet-inactive-color": "var(--border-1)",
+                "--swiper-pagination-bullet-inactive-opacity": "1",
+                "--swiper-pagination-bullet-size": "8px",
+              } as CSSProperties
+            }
           >
             {gefilterd.map((team) => (
               <SwiperSlide
