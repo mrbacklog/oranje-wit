@@ -63,7 +63,8 @@ export function TiStudioPageShell({ children }: TiStudioPageShellProps) {
     return () => clearInterval(interval);
   }, []);
 
-  const isWerkbord = pathname.startsWith("/indeling");
+  // Presentatie heeft ook full-bleed nodig (coverflow vult de volledige hoogte/breedte)
+  const isWerkbord = pathname.startsWith("/indeling") || pathname.startsWith("/presentatie");
 
   return (
     <>
@@ -111,6 +112,7 @@ export function TiStudioPageShell({ children }: TiStudioPageShellProps) {
           onNaarIndeling={() => router.push("/indeling")}
           onNaarKader={() => router.push("/kader")}
           onNaarPersonen={() => router.push("/personen")}
+          onNaarPresentatie={() => router.push("/presentatie")}
           onNaarMemo={() => router.push("/memo")}
           openMemoCount={openMemoCount}
           onNaarSportlink={() => router.push("/sportlink")}

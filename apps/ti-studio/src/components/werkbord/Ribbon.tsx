@@ -7,6 +7,7 @@ interface RibbonProps {
   onNaarIndeling: () => void;
   onNaarKader: () => void;
   onNaarPersonen: () => void;
+  onNaarPresentatie: () => void;
   onNaarMemo: () => void;
   openMemoCount: number;
   onNaarSportlink: () => void;
@@ -18,6 +19,7 @@ export function Ribbon({
   onNaarIndeling,
   onNaarKader,
   onNaarPersonen,
+  onNaarPresentatie,
   onNaarMemo,
   openMemoCount,
   onNaarSportlink,
@@ -125,6 +127,28 @@ export function Ribbon({
             <polyline points="3 6 4 7 6 5" />
             <polyline points="3 12 4 13 6 11" />
             <polyline points="3 18 4 19 6 17" />
+          </svg>
+        </RibbonBtn>
+
+        {/* Presentatie */}
+        <RibbonBtn
+          tip="Presentatie"
+          active={activeRoute.includes("/presentatie")}
+          onClick={onNaarPresentatie}
+        >
+          <svg
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <rect x="2" y="3" width="20" height="14" rx="2" />
+            <path d="M8 21h8" />
+            <path d="M12 17v4" />
           </svg>
         </RibbonBtn>
 
