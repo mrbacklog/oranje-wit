@@ -1,0 +1,113 @@
+<h2>Hoe schakel je tussen teams?</h2>
+<p class="subtitle">Drie navigatie-patronen. Alle drie tonen daarna dezelfde verzorgde team-detailweergave (kaart + staf eronder + opmerkingen). Welk schakel-gevoel past het best?</p>
+
+<style>
+  .ow { background:#0c0c0f; border:1px solid #232329; border-radius:10px; padding:10px; color:#e6e6ea; font-size:11px; }
+  .ow .rail { background:#141418; border:1px solid #232329; border-radius:7px; padding:6px; }
+  .ow .chip { background:#1a1a1e; border:1px solid #2a2a31; border-left:3px solid #ff6b00; border-radius:5px; padding:5px 7px; margin-bottom:5px; font-weight:600; }
+  .ow .chip.dim { border-left-color:#3b82f6; opacity:.7; font-weight:500; }
+  .ow .chip.act { background:#241a10; border-left-color:#ff8533; box-shadow:0 0 0 1px rgba(255,133,51,.3); }
+  .ow .detail { background:#141418; border:1px solid #232329; border-radius:7px; padding:10px; }
+  .ow .big { font-weight:800; font-size:14px; }
+  .ow .sub { color:#7a7a85; font-size:8px; text-transform:uppercase; letter-spacing:.08em; margin-top:2px; }
+  .ow .grid { display:grid; grid-template-columns:1fr 1fr; gap:4px; margin-top:8px; }
+  .ow .pl { background:#1a1a1e; border:1px solid #2a2a31; border-radius:4px; padding:4px 6px; display:flex; align-items:center; gap:5px; }
+  .ow .av { width:16px; height:16px; border-radius:50%; background:rgba(236,72,153,.2); border:1.5px solid #ec4899; flex-shrink:0; }
+  .ow .av.m { background:rgba(96,165,250,.2); border-color:#3b82f6; }
+  .ow .staf { margin-top:8px; border-top:1px dashed #2a2a31; padding-top:6px; color:#9a9aa5; font-size:9px; }
+  .ow .arrows { text-align:center; color:#ff8533; font-size:13px; letter-spacing:6px; }
+  .ow .strip { display:flex; gap:5px; overflow:hidden; }
+  .ow .tcard { flex:0 0 70px; background:#1a1a1e; border:1px solid #2a2a31; border-top:3px solid #ff6b00; border-radius:5px; padding:5px; text-align:center; font-size:8px; font-weight:600; }
+  .ow .tcard.act { border-color:#ff8533; background:#241a10; flex-basis:90px; }
+  .ow .feedcard { background:#141418; border:1px solid #232329; border-left:3px solid #ff6b00; border-radius:7px; padding:8px; margin-bottom:6px; }
+</style>
+
+<div class="cards">
+
+  <div class="card" data-choice="master-detail" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="ow" style="display:flex; gap:8px;">
+        <div class="rail" style="flex:0 0 90px;">
+          <div class="chip act">Senioren 1<div class="sub" style="margin-top:1px;">Blauw</div></div>
+          <div class="chip">Senioren 2</div>
+          <div class="chip dim">A1</div>
+          <div class="chip dim">A2</div>
+          <div class="chip dim">B1</div>
+        </div>
+        <div class="detail" style="flex:1;">
+          <div class="big">Senioren 1</div><div class="sub">Achttal · Blauw · Hoofdklasse</div>
+          <div class="grid">
+            <div class="pl"><div class="av"></div>Lisa V.</div>
+            <div class="pl"><div class="av m"></div>Tom B.</div>
+            <div class="pl"><div class="av"></div>Sara K.</div>
+            <div class="pl"><div class="av m"></div>Niek D.</div>
+          </div>
+          <div class="staf">👤 Staf: J. de Vries (HC) · M. Bos · &nbsp; 📝 1 opmerking</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A · Master-detail (lijst links)</h3>
+      <p>Vaste teamlijst links, groot detail rechts. Klik = direct schakelen. Snelst om gericht een team te kiezen; alles in beeld.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="filmstrip" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="ow">
+        <div class="strip">
+          <div class="tcard">Sen 1</div>
+          <div class="tcard act">Sen 2<div class="sub" style="margin-top:1px;">Geel</div></div>
+          <div class="tcard">A1</div>
+          <div class="tcard">A2</div>
+          <div class="tcard">B1</div>
+          <div class="tcard">B2</div>
+        </div>
+        <div class="arrows" style="margin:5px 0;">‹ &nbsp; ● &nbsp; ›</div>
+        <div class="detail">
+          <div class="big">Senioren 2</div><div class="sub">Achttal · Geel · Reserve 1e</div>
+          <div class="grid">
+            <div class="pl"><div class="av"></div>Eva M.</div>
+            <div class="pl"><div class="av m"></div>Daan L.</div>
+            <div class="pl"><div class="av"></div>Roos P.</div>
+            <div class="pl"><div class="av m"></div>Sem J.</div>
+          </div>
+          <div class="staf">👤 Staf: K. Jansen (HC) · &nbsp; 📝 geen opmerkingen</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B · Filmstrip (strip boven)</h3>
+      <p>Horizontale strip met team-thumbnails bovenaan, groot detail eronder. Pijltjes/swipe of klik. Sterk "doorbladeren"-gevoel.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="scroll-feed" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="ow" style="display:flex; gap:8px;">
+        <div style="flex:0 0 40px; display:flex; flex-direction:column; gap:3px; font-size:8px; color:#7a7a85;">
+          <div style="color:#ff8533; font-weight:700;">S1</div>
+          <div style="color:#ff8533; font-weight:700;">S2</div><div>A1</div><div>A2</div><div>B1</div>
+        </div>
+        <div style="flex:1; max-height:185px; overflow:hidden;">
+          <div class="feedcard">
+            <div class="big" style="font-size:12px;">Senioren 1</div><div class="sub">Achttal · Blauw</div>
+            <div class="grid"><div class="pl"><div class="av"></div>Lisa V.</div><div class="pl"><div class="av m"></div>Tom B.</div></div>
+            <div class="staf">👤 J. de Vries (HC) · M. Bos &nbsp; 📝 1</div>
+          </div>
+          <div class="feedcard">
+            <div class="big" style="font-size:12px;">Senioren 2</div><div class="sub">Achttal · Geel</div>
+            <div class="grid"><div class="pl"><div class="av"></div>Eva M.</div><div class="pl"><div class="av m"></div>Daan L.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C · Scroll-feed (alles onder elkaar)</h3>
+      <p>Alle teams als grote kaarten onder elkaar; je scrollt erdoorheen. Sticky sprong-navigatie links. Goed voor "alles in één doorloop".</p>
+    </div>
+  </div>
+
+</div>
+
+<p class="label">Klik je voorkeur aan en laat het in de terminal weten →</p>

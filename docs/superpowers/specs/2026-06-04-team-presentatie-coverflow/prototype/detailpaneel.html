@@ -1,0 +1,94 @@
+<h2>Inhoud van één team-detailpagina</h2>
+<p class="subtitle">De "banner" die centraal staat. V1-kaartstijl: spelers met avatar + leeftijdskleur-ring + ♀/♂ + status, daaronder een duidelijk staf-overzicht, daaronder opmerkingen op teamniveau. Read-only.</p>
+
+<style>
+  .ow{background:#0c0c0f;border:1px solid #232329;border-radius:10px;color:#e6e6ea;font-size:12px;overflow:hidden}
+  .ow .hdr{position:relative;padding:14px 16px 12px;border-bottom:1px solid #1c1c22}
+  .ow .strpe{position:absolute;left:0;top:0;bottom:0;width:5px;background:#eab308}
+  .ow .tri{position:absolute;top:0;right:0;width:0;height:0;border-style:solid;border-width:0 48px 48px 0;border-color:transparent #eab308 transparent transparent}
+  .ow .nm{font-weight:800;font-size:19px;letter-spacing:-.01em}
+  .ow .sb{font-size:9px;color:#7a7a85;text-transform:uppercase;letter-spacing:.09em;margin-top:3px}
+  .ow .hmeta{display:flex;gap:6px;align-items:center;margin-top:10px}
+  .ow .pill{font-size:11px;font-weight:700;padding:4px 9px;border-radius:6px}
+  .ow .pf{background:rgba(236,72,153,.12);color:#f0609b} .ow .pm{background:rgba(96,165,250,.12);color:#7ab0fb}
+  .ow .pg{background:rgba(255,255,255,.05);color:#b8b8c2} .ow .pw{background:rgba(234,179,8,.1);color:#eab308}
+  .ow .body{padding:14px 16px}
+  .ow .cols{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .ow .coltitle{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#7a7a85;margin-bottom:7px;display:flex;justify-content:space-between}
+  .ow .pl{background:#161619;border:1px solid #242430;border-radius:5px;padding:5px 7px;display:flex;align-items:center;gap:8px;margin-bottom:4px;position:relative}
+  .ow .av{width:26px;height:26px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700}
+  .ow .av.v{background:rgba(236,72,153,.18);color:#f0609b}.ow .av.m{background:rgba(96,165,250,.18);color:#7ab0fb}
+  .ow .av.r-young{border:2px solid #22c55e;box-shadow:0 0 6px #22c55e40}.ow .av.r-mid{border:2px solid #eab308;box-shadow:0 0 6px #eab30840}.ow .av.r-old{border:2px solid #f97316;box-shadow:0 0 6px #f9731640}
+  .ow .pn{flex:1;min-width:0}.ow .pn b{font-size:12px;font-weight:600;color:#e6e6ea}.ow .pn .age{font-size:9px;color:#7a7a85;margin-left:5px}
+  .ow .bdg{font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px}
+  .ow .bN{background:rgba(34,197,94,.14);color:#22c55e}.ow .bQ{color:#eab308}.ow .bAR{background:#1a1a1e;border:1px solid #2a2a31;color:#9a9aa5}
+  /* staf */
+  .ow .staf{margin-top:16px;border-top:1px solid #1c1c22;padding-top:12px}
+  .ow .stafhead{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#22c55e;display:flex;align-items:center;gap:6px;margin-bottom:9px}
+  .ow .stafrow{display:flex;gap:10px;flex-wrap:wrap}
+  .ow .sc{display:flex;align-items:center;gap:8px;background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.2);border-radius:7px;padding:6px 11px 6px 7px}
+  .ow .sav{width:28px;height:28px;border-radius:50%;background:rgba(34,197,94,.15);border:1.5px solid #22c55e;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#22c55e}
+  .ow .sc .snm{font-size:12px;font-weight:600}.ow .sc .srol{font-size:9px;color:#7a7a85;text-transform:uppercase;letter-spacing:.06em}
+  /* opmerkingen */
+  .ow .opm{margin-top:16px;border-top:1px solid #1c1c22;padding-top:12px}
+  .ow .opmhead{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#ff8533;display:flex;align-items:center;gap:6px;margin-bottom:9px}
+  .ow .note{background:#141418;border:1px solid #242430;border-left:3px solid #ff6b00;border-radius:6px;padding:8px 11px;margin-bottom:6px}
+  .ow .note .meta{font-size:9px;color:#7a7a85;margin-bottom:3px}
+  .ow .note .txt{font-size:12px;color:#d8d8e0;line-height:1.4}
+</style>
+
+<div class="mockup">
+  <div class="mockup-header">Team-detailpagina (read-only)</div>
+  <div class="mockup-body">
+    <div class="ow">
+      <div class="hdr">
+        <div class="strpe"></div><div class="tri"></div>
+        <div class="nm">Senioren 2 <span style="font-size:11px;color:#ff8533;vertical-align:middle">▲ 1</span></div>
+        <div class="sb">Achttal · Geel · Reserve 1e klasse</div>
+        <div class="hmeta">
+          <span class="pill pf">♀ 7</span><span class="pill pm">♂ 8</span>
+          <span class="pill pg">Gem. 24,3j</span>
+          <span class="pill pw">⚠ 2 aandachtspunten</span>
+        </div>
+      </div>
+
+      <div class="body">
+        <div class="cols">
+          <div>
+            <div class="coltitle"><span>Dames</span><span>7</span></div>
+            <div class="pl"><div class="av v r-mid">EM</div><div class="pn"><b>Eva Mulder</b><span class="age">24j</span></div></div>
+            <div class="pl"><div class="av v r-young">RP</div><div class="pn"><b>Roos Peters</b><span class="age">19j</span></div><span class="bdg bN">N</span></div>
+            <div class="pl"><div class="av v r-mid">AT</div><div class="pn"><b>Anne Timmer</b><span class="age">26j</span></div><span class="bdg bQ">?</span></div>
+            <div class="pl"><div class="av v r-old">KV</div><div class="pn"><b>Kim Visser</b><span class="age">31j</span></div></div>
+            <div class="pl"><div class="av v r-mid">SD</div><div class="pn"><b>Sanne Dekker</b><span class="age">23j</span></div></div>
+          </div>
+          <div>
+            <div class="coltitle"><span>Heren</span><span>8</span></div>
+            <div class="pl"><div class="av m r-mid">DL</div><div class="pn"><b>Daan Linde</b><span class="age">25j</span></div></div>
+            <div class="pl"><div class="av m r-young">SJ</div><div class="pn"><b>Sem Jansen</b><span class="age">18j</span></div><span class="bdg bAR">AR</span></div>
+            <div class="pl"><div class="av m r-mid">BW</div><div class="pn"><b>Bram Wit</b><span class="age">27j</span></div></div>
+            <div class="pl"><div class="av m r-old">Tv</div><div class="pn"><b>Tom Vos</b><span class="age">33j</span></div></div>
+            <div class="pl"><div class="av m r-mid">NB</div><div class="pn"><b>Niek Bos</b><span class="age">22j</span></div></div>
+          </div>
+        </div>
+
+        <div class="staf">
+          <div class="stafhead">👤 Staf — 3</div>
+          <div class="stafrow">
+            <div class="sc"><div class="sav">KJ</div><div><div class="snm">Karin Jansen</div><div class="srol">Hoofdcoach</div></div></div>
+            <div class="sc"><div class="sav">LW</div><div><div class="snm">Lars de Wit</div><div class="srol">Assistent-coach</div></div></div>
+            <div class="sc"><div class="sav">MB</div><div><div class="snm">Mark Bos</div><div class="srol">Verzorger</div></div></div>
+          </div>
+        </div>
+
+        <div class="opm">
+          <div class="opmhead">📝 Opmerkingen — teamniveau</div>
+          <div class="note"><div class="meta">TC · besluit · 12 mei</div><div class="txt">Eva en Roos wisselen mogelijk mee met Senioren 1 bij blessures.</div></div>
+          <div class="note"><div class="meta">Open werkitem · ▲</div><div class="txt">Verzorger voor uitwedstrijden nog niet definitief bevestigd.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:14px;">Spelers in twee kolommen (dames/heren) met leeftijdskleur-ring en status-badges, staf als duidelijke kaartjes met rol, opmerkingen als notitie-blokjes (besluiten + open werkitems uit het memo-systeem). Klopt dit, of mist/over er iets?</p>

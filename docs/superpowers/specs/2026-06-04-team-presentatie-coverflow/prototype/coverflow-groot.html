@@ -1,0 +1,139 @@
+<h2>Coverflow — royaal voor grote schermen</h2>
+<p class="subtitle">Center-kaart als volwaardige presentatie (volledige roster, staf, opmerkingen), zijkaarten ruim en leesbaar. Schaalt mee met de schermbreedte.</p>
+
+<style>
+  .ow{background:#0c0c0f;border:1px solid #232329;border-radius:12px;color:#e6e6ea;font-size:13px;overflow:hidden}
+  .ow .sticky{background:linear-gradient(180deg,#101014,#0c0c0f);border-bottom:1px solid #232329;padding:12px 16px}
+  .ow .filterbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  .ow .sep{width:1px;height:18px;background:#2a2a31;margin:0 4px}
+  .ow .f{background:#161619;border:1px solid #2a2a31;border-radius:999px;padding:5px 13px;font-size:11px;font-weight:600;color:#b8b8c2}
+  .ow .f.on{background:#241a10;border-color:#ff8533;color:#ffb37a}
+  .ow .dot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:5px}
+
+  .ow .stage{position:relative;height:520px;background:radial-gradient(ellipse at center,#131318,#0a0a0d 72%);overflow:hidden;display:flex;align-items:center;justify-content:center;gap:26px}
+  .ow .card{flex-shrink:0;border-radius:14px;border:1px solid #232329;background:#151519;box-shadow:0 18px 50px rgba(0,0,0,.55);overflow:hidden;transition:all .45s cubic-bezier(.22,1,.36,1)}
+  .ow .card.side{width:300px;opacity:.8;transform:scale(.95)}
+  .ow .card.center{width:430px;opacity:1;box-shadow:0 30px 80px rgba(0,0,0,.7),0 0 0 1px rgba(255,133,51,.22)}
+  .ow .peek{position:absolute;top:50%;transform:translateY(-50%);width:90px;height:380px;border-radius:14px;border:1px solid #1c1c22;background:#121216;opacity:.3}
+  .ow .peek.l{left:-26px}.ow .peek.r{right:-26px}
+
+  .ow .ch{position:relative;padding:16px 20px 14px;border-bottom:1px solid #1c1c22}
+  .ow .strpe{position:absolute;left:0;top:0;bottom:0;width:6px}
+  .ow .tri{position:absolute;top:0;right:0;width:0;height:0;border-style:solid;border-width:0 40px 40px 0}
+  .ow .nm{font-weight:800;letter-spacing:-.01em}
+  .ow .card.center .nm{font-size:26px}.ow .card.side .nm{font-size:18px}
+  .ow .sb{font-size:9px;color:#7a7a85;text-transform:uppercase;letter-spacing:.1em;margin-top:4px}
+  .ow .cnt{display:flex;gap:6px;margin-top:11px;flex-wrap:wrap}
+  .ow .pill{font-weight:700;border-radius:7px}
+  .ow .card.center .pill{font-size:13px;padding:5px 11px}.ow .card.side .pill{font-size:11px;padding:3px 8px}
+  .ow .pf{background:rgba(236,72,153,.12);color:#f0609b}.ow .pm{background:rgba(96,165,250,.12);color:#7ab0fb}.ow .pg{background:rgba(255,255,255,.05);color:#b8b8c2}.ow .pw{background:rgba(234,179,8,.1);color:#eab308}
+  .ow .cb{padding:14px 20px}
+  .ow .coltitle{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#7a7a85;margin-bottom:6px;display:flex;justify-content:space-between}
+  .ow .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .ow .card.side .grid{grid-template-columns:1fr;gap:0}
+  .ow .pl{background:#161619;border:1px solid #242430;border-radius:6px;padding:5px 8px;display:flex;align-items:center;gap:9px;margin-bottom:5px;position:relative}
+  .ow .av{border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:700}
+  .ow .card.center .av{width:30px;height:30px;font-size:10px}.ow .card.side .av{width:22px;height:22px;font-size:8px}
+  .ow .av.v{background:rgba(236,72,153,.18);color:#f0609b}.ow .av.m{background:rgba(96,165,250,.18);color:#7ab0fb}
+  .ow .ry{border:2px solid #22c55e}.ow .rm{border:2px solid #eab308}.ow .ro{border:2px solid #f97316}
+  .ow .pn{flex:1;min-width:0}.ow .pn b{font-weight:600}.ow .card.center .pn b{font-size:13px}.ow .card.side .pn b{font-size:11px}
+  .ow .pn .age{font-size:10px;color:#7a7a85;margin-left:6px}
+  .ow .bdg{font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px}.ow .bN{background:rgba(34,197,94,.14);color:#22c55e}.ow .bQ{color:#eab308}.ow .bAR{background:#1a1a1e;border:1px solid #2a2a31;color:#9a9aa5}
+  .ow .staf{margin-top:14px;border-top:1px solid #1c1c22;padding-top:11px}
+  .ow .sh{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#22c55e;margin-bottom:8px}
+  .ow .srow{display:flex;gap:9px;flex-wrap:wrap}
+  .ow .sc{display:flex;align-items:center;gap:9px;background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.2);border-radius:9px;padding:7px 13px 7px 8px}
+  .ow .sav{width:30px;height:30px;border-radius:50%;background:rgba(34,197,94,.15);border:1.5px solid #22c55e;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#22c55e}
+  .ow .sc .snm{font-size:13px;font-weight:600}.ow .sc .srol{font-size:10px;color:#7a7a85}
+  .ow .opm{margin-top:14px;border-top:1px solid #1c1c22;padding-top:11px}
+  .ow .oh{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#ff8533;margin-bottom:8px}
+  .ow .note{background:#141418;border:1px solid #242430;border-left:3px solid #ff6b00;border-radius:7px;padding:9px 13px;margin-bottom:7px}
+  .ow .note .meta{font-size:10px;color:#7a7a85;margin-bottom:3px}.ow .note .txt{font-size:13px;color:#d8d8e0;line-height:1.4}
+  .ow .dots{display:flex;gap:6px;justify-content:center;padding:14px 0}
+  .ow .d{width:8px;height:8px;border-radius:50%;background:#2a2a31}.ow .d.on{background:#ff8533;width:26px;border-radius:4px}
+</style>
+
+<div class="mockup">
+  <div class="mockup-header">Coverflow — grote-scherm formaat (center 430px · zij 300px)</div>
+  <div class="mockup-body">
+    <div class="ow">
+      <div class="sticky">
+        <div class="filterbar">
+          <span class="f on">Alle teams</span><span class="f">Senioren</span><span class="f">Jeugd</span>
+          <span class="sep"></span><span class="f">Selecties</span><span class="f">Sen. selecties</span>
+          <span class="sep"></span>
+          <span class="f"><span class="dot" style="background:#ef4444"></span>Rood</span>
+          <span class="f"><span class="dot" style="background:#eab308"></span>Geel</span>
+          <span class="f"><span class="dot" style="background:#3b82f6"></span>Blauw</span>
+        </div>
+      </div>
+
+      <div class="stage">
+        <div class="peek l"></div>
+
+        <div class="card side">
+          <div class="ch"><div class="strpe" style="background:#3b82f6"></div><div class="tri" style="border-color:transparent #3b82f6 transparent transparent"></div>
+            <div class="nm">Senioren 1</div><div class="sb">Achttal · Blauw · Hoofdklasse</div>
+            <div class="cnt"><span class="pill pf">♀8</span><span class="pill pm">♂8</span><span class="pill pg">26,1j</span></div></div>
+          <div class="cb">
+            <div class="pl"><div class="av v rm">LV</div><div class="pn"><b>Lisa Vink</b><span class="age">27j</span></div></div>
+            <div class="pl"><div class="av m rm">TB</div><div class="pn"><b>Tom Berg</b><span class="age">28j</span></div></div>
+            <div class="pl"><div class="av v ry">SK</div><div class="pn"><b>Sara Kooi</b><span class="age">21j</span></div></div>
+            <div class="staf"><div class="sh">👤 Staf — 2</div><div class="srow"><div class="sc"><div class="sav">JV</div><div><div class="snm">J. de Vries</div><div class="srol">Hoofdcoach</div></div></div></div></div>
+          </div>
+        </div>
+
+        <div class="card center">
+          <div class="ch"><div class="strpe" style="background:#eab308"></div><div class="tri" style="border-color:transparent #eab308 transparent transparent"></div>
+            <div class="nm">Senioren 2 <span style="font-size:14px;color:#ff8533">▲ 1</span></div>
+            <div class="sb">Achttal · Geel · Reserve 1e klasse</div>
+            <div class="cnt"><span class="pill pf">♀ 7</span><span class="pill pm">♂ 8</span><span class="pill pg">Gem. 24,3j</span><span class="pill pw">⚠ 2</span></div></div>
+          <div class="cb">
+            <div class="grid">
+              <div>
+                <div class="coltitle"><span>Dames</span><span>7</span></div>
+                <div class="pl"><div class="av v rm">EM</div><div class="pn"><b>Eva Mulder</b><span class="age">24j</span></div></div>
+                <div class="pl"><div class="av v ry">RP</div><div class="pn"><b>Roos Peters</b><span class="age">19j</span></div><span class="bdg bN">N</span></div>
+                <div class="pl"><div class="av v rm">AT</div><div class="pn"><b>Anne Timmer</b><span class="age">26j</span></div><span class="bdg bQ">?</span></div>
+                <div class="pl"><div class="av v ro">KV</div><div class="pn"><b>Kim Visser</b><span class="age">31j</span></div></div>
+              </div>
+              <div>
+                <div class="coltitle"><span>Heren</span><span>8</span></div>
+                <div class="pl"><div class="av m rm">DL</div><div class="pn"><b>Daan Linde</b><span class="age">25j</span></div></div>
+                <div class="pl"><div class="av m ry">SJ</div><div class="pn"><b>Sem Jansen</b><span class="age">18j</span></div><span class="bdg bAR">AR</span></div>
+                <div class="pl"><div class="av m rm">BW</div><div class="pn"><b>Bram Wit</b><span class="age">27j</span></div></div>
+                <div class="pl"><div class="av m ro">TV</div><div class="pn"><b>Tom Vos</b><span class="age">33j</span></div></div>
+              </div>
+            </div>
+            <div class="staf"><div class="sh">👤 Staf — 3</div><div class="srow">
+              <div class="sc"><div class="sav">KJ</div><div><div class="snm">Karin Jansen</div><div class="srol">Hoofdcoach</div></div></div>
+              <div class="sc"><div class="sav">LW</div><div><div class="snm">Lars de Wit</div><div class="srol">Assistent</div></div></div>
+              <div class="sc"><div class="sav">MB</div><div><div class="snm">Mark Bos</div><div class="srol">Verzorger</div></div></div>
+            </div></div>
+            <div class="opm"><div class="oh">📝 Opmerkingen</div>
+              <div class="note"><div class="meta">TC · besluit · 12 mei</div><div class="txt">Eva en Roos wisselen mogelijk mee met Senioren 1 bij blessures.</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card side">
+          <div class="ch"><div class="strpe" style="background:#3b82f6"></div><div class="tri" style="border-color:transparent #3b82f6 transparent transparent"></div>
+            <div class="nm">A1</div><div class="sb">Achttal · Blauw · 1e klasse jeugd</div>
+            <div class="cnt"><span class="pill pf">♀4</span><span class="pill pm">♂4</span><span class="pill pg">16,1j</span></div></div>
+          <div class="cb">
+            <div class="pl"><div class="av v ry">LD</div><div class="pn"><b>Lot Dekker</b><span class="age">16j</span></div></div>
+            <div class="pl"><div class="av m ry">FK</div><div class="pn"><b>Finn Klein</b><span class="age">15j</span></div></div>
+            <div class="pl"><div class="av v ry">MR</div><div class="pn"><b>Mila Roos</b><span class="age">16j</span></div></div>
+            <div class="staf"><div class="sh">👤 Staf — 1</div><div class="srow"><div class="sc"><div class="sav">PS</div><div><div class="snm">P. Smit</div><div class="srol">Trainer</div></div></div></div></div>
+          </div>
+        </div>
+
+        <div class="peek r"></div>
+      </div>
+
+      <div class="dots"><span class="d"></span><span class="d"></span><span class="d on"></span><span class="d"></span><span class="d"></span><span class="d"></span></div>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:14px;">Center 430px (volledige presentatie), zijkaarten 300px op 95% — alle drie ruim leesbaar, geen overlap. Op nog bredere schermen kan de center groeien tot ~500px. Zit dit qua maatvoering goed? Dan leg ik het volledige design vast.</p>

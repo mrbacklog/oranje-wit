@@ -1,0 +1,74 @@
+<h2>Filmstrip + filterbalk</h2>
+<p class="subtitle">Filter bovenaan (één actief tegelijk, radio-stijl), daaronder de filmstrip met team-thumbnails, daaronder het grote detail. Ziet dit eruit zoals je bedoelt?</p>
+
+<style>
+  .ow { background:#0c0c0f; border:1px solid #232329; border-radius:10px; padding:12px; color:#e6e6ea; font-size:11px; }
+  .ow .filterbar { display:flex; flex-wrap:wrap; gap:5px; align-items:center; margin-bottom:10px; }
+  .ow .grp { display:flex; gap:5px; align-items:center; }
+  .ow .sep { width:1px; height:18px; background:#2a2a31; margin:0 3px; }
+  .ow .f { background:#161619; border:1px solid #2a2a31; border-radius:999px; padding:4px 11px; font-size:10px; font-weight:600; color:#b8b8c2; cursor:default; }
+  .ow .f.on { background:#241a10; border-color:#ff8533; color:#ffb37a; box-shadow:0 0 0 1px rgba(255,133,51,.25); }
+  .ow .f.kl { padding-left:8px; display:flex; align-items:center; gap:5px; }
+  .ow .dot { width:8px; height:8px; border-radius:50%; }
+  .ow .strip { display:flex; gap:6px; overflow:hidden; align-items:stretch; padding-bottom:2px; }
+  .ow .nav { flex:0 0 22px; display:flex; align-items:center; justify-content:center; color:#ff8533; font-size:16px; font-weight:700; }
+  .ow .tcard { flex:0 0 78px; background:#161619; border:1px solid #2a2a31; border-top:3px solid #ff6b00; border-radius:6px; padding:6px 5px; text-align:center; }
+  .ow .tcard .tn { font-size:9px; font-weight:700; }
+  .ow .tcard .ts { font-size:7px; color:#7a7a85; text-transform:uppercase; letter-spacing:.06em; margin-top:2px; }
+  .ow .tcard .tc { font-size:7px; color:#9a9aa5; margin-top:3px; }
+  .ow .tcard.act { flex-basis:96px; border-color:#ff8533; background:#241a10; box-shadow:0 0 0 1px rgba(255,133,51,.3); }
+  .ow .tcard.bl { border-top-color:#3b82f6; }
+  .ow .tcard.ge { border-top-color:#eab308; }
+  .ow .tcard.gr { border-top-color:#22c55e; }
+  .ow .detail { background:#141418; border:1px solid #232329; border-radius:8px; padding:12px; margin-top:10px; }
+</style>
+
+<div class="mockup">
+  <div class="mockup-header">Team-presentatie — filmstrip + filter</div>
+  <div class="mockup-body">
+    <div class="ow">
+
+      <div class="filterbar">
+        <div class="grp">
+          <span class="f on">Alle teams</span>
+          <span class="f">Senioren</span>
+          <span class="f">Jeugd</span>
+        </div>
+        <div class="sep"></div>
+        <div class="grp">
+          <span class="f">Selecties</span>
+          <span class="f">Sen. selecties</span>
+          <span class="f">Jeugd selecties</span>
+        </div>
+        <div class="sep"></div>
+        <div class="grp">
+          <span class="f kl"><span class="dot" style="background:#ef4444"></span>Rood</span>
+          <span class="f kl"><span class="dot" style="background:#f97316"></span>Oranje</span>
+          <span class="f kl"><span class="dot" style="background:#eab308"></span>Geel</span>
+          <span class="f kl"><span class="dot" style="background:#22c55e"></span>Groen</span>
+          <span class="f kl"><span class="dot" style="background:#3b82f6"></span>Blauw</span>
+        </div>
+      </div>
+
+      <div class="strip">
+        <div class="nav">‹</div>
+        <div class="tcard bl"><div class="tn">Senioren 1</div><div class="ts">Achttal</div><div class="tc">8♀ 8♂</div></div>
+        <div class="tcard act ge"><div class="tn">Senioren 2</div><div class="ts">Achttal · Geel</div><div class="tc">7♀ 8♂ · 📝1</div></div>
+        <div class="tcard"><div class="tn">A1</div><div class="ts">Achttal</div><div class="tc">4♀ 4♂</div></div>
+        <div class="tcard gr"><div class="tn">A2</div><div class="ts">Viertal</div><div class="tc">2♀ 2♂</div></div>
+        <div class="tcard"><div class="tn">B1</div><div class="ts">Achttal</div><div class="tc">4♀ 4♂</div></div>
+        <div class="tcard"><div class="tn">B2</div><div class="ts">Viertal</div><div class="tc">2♀ 2♂</div></div>
+        <div class="nav">›</div>
+      </div>
+
+      <div class="detail">
+        <div style="font-weight:800; font-size:15px;">Senioren 2</div>
+        <div style="font-size:8px; color:#7a7a85; text-transform:uppercase; letter-spacing:.08em; margin-top:2px;">Achttal · Geel · Reserve 1e klasse</div>
+        <div style="margin-top:8px; color:#7a7a85; font-size:9px;">↓ hieronder: spelers · staf-overzicht · opmerkingen (volgende stap)</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:14px;">De filter is één rij, gegroepeerd in drie blokjes (categorie · selecties · kleur) met dunne scheidingslijntjes. Eén filter actief tegelijk. Werkt dit, of wil je iets anders in de groepering/opties?</p>

@@ -1,0 +1,82 @@
+<h2>Scroll = sliden · vrij vasthouden = 2 teams in beeld</h2>
+<p class="subtitle">Muiswiel op de kaart schuift de band horizontaal. De band snapt niet hard naar één team, maar kan vrij "blijven hangen" — zo heb je desgewenst twee teams half/half naast elkaar om te vergelijken. Loslaten bij een team = dat team netjes centraal.</p>
+
+<style>
+  .ow{background:#0c0c0f;border:1px solid #232329;border-radius:10px;color:#e6e6ea;font-size:11px;overflow:hidden}
+  .ow .sticky{background:linear-gradient(180deg,#101014,#0c0c0f);border-bottom:1px solid #232329;padding:8px 11px}
+  .ow .filterbar{display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin-bottom:8px}
+  .ow .sep{width:1px;height:14px;background:#2a2a31;margin:0 2px}
+  .ow .f{background:#161619;border:1px solid #2a2a31;border-radius:999px;padding:3px 9px;font-size:9px;font-weight:600;color:#b8b8c2}
+  .ow .f.on{background:#241a10;border-color:#ff8533;color:#ffb37a}
+  .ow .strip{display:flex;gap:5px;align-items:center}
+  .ow .nav{flex:0 0 16px;text-align:center;color:#ff8533;font-size:14px;font-weight:700}
+  .ow .tc{flex:0 0 56px;background:#161619;border:1px solid #2a2a31;border-top:3px solid #ff6b00;border-radius:5px;padding:4px;text-align:center;font-size:8px;font-weight:700;opacity:.6}
+  .ow .tc.bl{border-top-color:#3b82f6}.ow .tc.ge{border-top-color:#eab308}.ow .tc.gr{border-top-color:#22c55e}
+  /* twee actief in de strip omdat er twee in beeld zijn */
+  .ow .tc.half{opacity:1;border-color:#ff8533;background:#1e160d}
+  .ow .stage{position:relative;height:215px;overflow:hidden;background:#0a0a0d}
+  .ow .grab{position:absolute;top:6px;left:50%;transform:translateX(-50%);font-size:8px;color:#7a7a85;background:#161619;border:1px solid #2a2a31;border-radius:999px;padding:2px 8px;z-index:3}
+  .ow .track{display:flex;height:100%;transform:translateX(-46%)}
+  .ow .slide{flex:0 0 80%;margin:12px 1.2%;border-radius:9px;border:1px solid #232329;background:#141418;padding:12px 14px;position:relative}
+  .ow .strpe{position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:9px 0 0 9px}
+  .ow .nm{font-weight:800;font-size:15px}
+  .ow .sb{font-size:8px;color:#7a7a85;text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
+  .ow .grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:8px}
+  .ow .pl{background:#1a1a1e;border:1px solid #2a2a31;border-radius:4px;padding:3px 6px;display:flex;align-items:center;gap:5px;font-size:9px}
+  .ow .av{width:14px;height:14px;border-radius:50%;background:rgba(236,72,153,.2);border:1.5px solid #ec4899;flex-shrink:0}
+  .ow .av.m{background:rgba(96,165,250,.2);border-color:#3b82f6}
+  .ow .staf{margin-top:8px;border-top:1px dashed #2a2a31;padding-top:6px;color:#9a9aa5;font-size:9px}
+</style>
+
+<div class="mockup">
+  <div class="mockup-header">Rust-stand: band vrij gehouden — twee teams half in beeld</div>
+  <div class="mockup-body">
+    <div class="ow">
+      <div class="sticky">
+        <div class="filterbar">
+          <span class="f on">Alle teams</span><span class="f">Senioren</span><span class="f">Jeugd</span>
+          <span class="sep"></span><span class="f">Selecties</span>
+        </div>
+        <div class="strip">
+          <div class="nav">‹</div>
+          <div class="tc bl">Sen 1</div>
+          <div class="tc half ge">Sen 2</div>
+          <div class="tc half">A1</div>
+          <div class="tc gr">A2</div>
+          <div class="tc">B1</div>
+          <div class="nav">›</div>
+        </div>
+      </div>
+
+      <div class="stage">
+        <div class="grab">⇕ scroll = sliden · losgelaten tussen twee = vergelijken</div>
+        <div class="track">
+          <div class="slide" style="opacity:.5">
+            <div class="strpe" style="background:#3b82f6"></div>
+            <div class="nm">Senioren 1</div><div class="sb">Achttal · Blauw</div>
+          </div>
+          <div class="slide">
+            <div class="strpe" style="background:#eab308"></div>
+            <div class="nm">Senioren 2</div><div class="sb">Achttal · Geel · gem 24,3j</div>
+            <div class="grid">
+              <div class="pl"><div class="av"></div>Eva M.</div><div class="pl"><div class="av m"></div>Daan L.</div>
+              <div class="pl"><div class="av"></div>Roos P.</div><div class="pl"><div class="av m"></div>Sem J.</div>
+            </div>
+            <div class="staf">👤 K. Jansen (HC) · L. de Wit &nbsp; 📝 1</div>
+          </div>
+          <div class="slide">
+            <div class="strpe" style="background:#3b82f6"></div>
+            <div class="nm">A1</div><div class="sb">Achttal · Blauw · gem 16,1j</div>
+            <div class="grid">
+              <div class="pl"><div class="av"></div>Lot D.</div><div class="pl"><div class="av m"></div>Finn K.</div>
+              <div class="pl"><div class="av"></div>Mila R.</div><div class="pl"><div class="av m"></div>Joep B.</div>
+            </div>
+            <div class="staf">👤 P. Smit (Trainer) &nbsp; 📝 geen</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:14px;">Twee teams (Sen 2 + A1) half in beeld — beide lichten op in de strip. Muiswiel schuift soepel; je kunt bewust tussen twee teams blijven hangen om te vergelijken, of doorscrollen tot één team centraal "klikt". Past dit bij wat je bedoelt?</p>

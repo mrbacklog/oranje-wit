@@ -1,0 +1,89 @@
+<h2>Coverflow v2 — 3 kaarten, geen overlap, alle drie leesbaar</h2>
+<p class="subtitle">Center groot en vooraan; links en rechts kleiner maar mét ruimte ertussen (geen overlap) en volledig leesbaar. Rand-teams piepen vervaagd langs de zijkant.</p>
+
+<style>
+  .ow{background:#0c0c0f;border:1px solid #232329;border-radius:10px;color:#e6e6ea;font-size:11px;overflow:hidden}
+  .ow .sticky{background:linear-gradient(180deg,#101014,#0c0c0f);border-bottom:1px solid #232329;padding:8px 11px}
+  .ow .filterbar{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+  .ow .sep{width:1px;height:14px;background:#2a2a31;margin:0 2px}
+  .ow .f{background:#161619;border:1px solid #2a2a31;border-radius:999px;padding:3px 9px;font-size:9px;font-weight:600;color:#b8b8c2}
+  .ow .f.on{background:#241a10;border-color:#ff8533;color:#ffb37a}
+  .ow .dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:4px}
+
+  .ow .stage{position:relative;height:300px;background:radial-gradient(ellipse at center,#121217,#0a0a0d 72%);overflow:hidden;display:flex;align-items:center;justify-content:center;gap:16px}
+  .ow .card{flex-shrink:0;border-radius:11px;border:1px solid #232329;background:#151519;box-shadow:0 14px 40px rgba(0,0,0,.55);overflow:hidden;transition:all .45s cubic-bezier(.22,1,.36,1)}
+  .ow .card.side{width:188px;opacity:.78;transform:scale(.94)}
+  .ow .card.center{width:240px;opacity:1;box-shadow:0 22px 60px rgba(0,0,0,.7),0 0 0 1px rgba(255,133,51,.25);z-index:5}
+  .ow .peek{position:absolute;top:50%;transform:translateY(-50%);width:60px;height:200px;border-radius:11px;border:1px solid #1c1c22;background:#121216;opacity:.32}
+  .ow .peek.l{left:-14px} .ow .peek.r{right:-14px}
+
+  .ow .ch{position:relative;padding:11px 13px 9px;border-bottom:1px solid #1c1c22}
+  .ow .strpe{position:absolute;left:0;top:0;bottom:0;width:4px}
+  .ow .nm{font-weight:800}
+  .ow .card.center .nm{font-size:16px} .ow .card.side .nm{font-size:13px}
+  .ow .sb{font-size:7px;color:#7a7a85;text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
+  .ow .cnt{display:flex;gap:4px;margin-top:7px;flex-wrap:wrap}
+  .ow .pill{font-size:9px;font-weight:700;padding:2px 6px;border-radius:5px}
+  .ow .pf{background:rgba(236,72,153,.12);color:#f0609b}.ow .pm{background:rgba(96,165,250,.12);color:#7ab0fb}.ow .pg{background:rgba(255,255,255,.05);color:#b8b8c2}
+  .ow .cb{padding:9px 13px}
+  .ow .grid{display:grid;grid-template-columns:1fr 1fr;gap:3px}
+  .ow .card.side .grid{grid-template-columns:1fr}
+  .ow .pl{background:#1a1a1e;border:1px solid #2a2a31;border-radius:4px;padding:3px 6px;display:flex;align-items:center;gap:5px;font-size:9px}
+  .ow .av{width:14px;height:14px;border-radius:50%;background:rgba(236,72,153,.2);border:1.5px solid #ec4899;flex-shrink:0}
+  .ow .av.m{background:rgba(96,165,250,.2);border-color:#3b82f6}
+  .ow .staf{margin-top:6px;border-top:1px dashed #2a2a31;padding-top:5px;color:#9a9aa5;font-size:8px}
+  .ow .dots{display:flex;gap:5px;justify-content:center;padding:9px 0}
+  .ow .d{width:6px;height:6px;border-radius:50%;background:#2a2a31}.ow .d.on{background:#ff8533;width:18px;border-radius:3px}
+</style>
+
+<div class="mockup">
+  <div class="mockup-header">Coverflow v2 — gescheiden, geen overlap</div>
+  <div class="mockup-body">
+    <div class="ow">
+      <div class="sticky">
+        <div class="filterbar">
+          <span class="f on">Alle teams</span><span class="f">Senioren</span><span class="f">Jeugd</span>
+          <span class="sep"></span><span class="f">Selecties</span>
+          <span class="sep"></span>
+          <span class="f"><span class="dot" style="background:#eab308"></span>Geel</span>
+          <span class="f"><span class="dot" style="background:#3b82f6"></span>Blauw</span>
+        </div>
+      </div>
+
+      <div class="stage">
+        <div class="peek l"></div>
+
+        <div class="card side">
+          <div class="ch"><div class="strpe" style="background:#3b82f6"></div><div class="nm">Senioren 1</div><div class="sb">Achttal · Blauw · Hoofdklasse</div>
+            <div class="cnt"><span class="pill pf">♀8</span><span class="pill pm">♂8</span><span class="pill pg">26,1j</span></div></div>
+          <div class="cb"><div class="grid"><div class="pl"><div class="av"></div>Lisa V.</div><div class="pl"><div class="av m"></div>Tom B.</div><div class="pl"><div class="av"></div>Sara K.</div></div>
+            <div class="staf">👤 J. de Vries (HC) · M. Bos</div></div>
+        </div>
+
+        <div class="card center">
+          <div class="ch"><div class="strpe" style="background:#eab308"></div>
+            <div class="nm">Senioren 2 <span style="font-size:9px;color:#ff8533">▲1</span></div><div class="sb">Achttal · Geel · Reserve 1e klasse</div>
+            <div class="cnt"><span class="pill pf">♀7</span><span class="pill pm">♂8</span><span class="pill pg">24,3j</span></div></div>
+          <div class="cb"><div class="grid">
+            <div class="pl"><div class="av"></div>Eva M.</div><div class="pl"><div class="av m"></div>Daan L.</div>
+            <div class="pl"><div class="av"></div>Roos P.</div><div class="pl"><div class="av m"></div>Sem J.</div>
+            <div class="pl"><div class="av"></div>Anne T.</div><div class="pl"><div class="av m"></div>Bram W.</div>
+          </div><div class="staf">👤 K. Jansen (HC) · L. de Wit (Ass) · M. Bos (Verz) &nbsp; 📝 "Wisselt mogelijk met Sen 1"</div></div>
+        </div>
+
+        <div class="card side">
+          <div class="ch"><div class="strpe" style="background:#3b82f6"></div><div class="nm">A1</div><div class="sb">Achttal · Blauw · Jeugd</div>
+            <div class="cnt"><span class="pill pf">♀4</span><span class="pill pm">♂4</span><span class="pill pg">16,1j</span></div></div>
+          <div class="cb"><div class="grid"><div class="pl"><div class="av"></div>Lot D.</div><div class="pl"><div class="av m"></div>Finn K.</div><div class="pl"><div class="av"></div>Mila R.</div></div>
+            <div class="staf">👤 P. Smit (Trainer)</div></div>
+        </div>
+
+        <div class="peek r"></div>
+      </div>
+
+      <div class="dots"><span class="d"></span><span class="d"></span><span class="d on"></span><span class="d"></span><span class="d"></span></div>
+    </div>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:14px;">Drie kaarten met ruimte ertussen — geen overlap. Center 240px met volledige info; zijkaarten 188px op 94% schaal, nog volledig leesbaar (naam, kleur, ♀/♂, kernspelers, staf). Rand-teams piepen vervaagd langs de randen als hint dat er meer is. Goed zo?</p>
