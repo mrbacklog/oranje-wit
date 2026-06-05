@@ -23,9 +23,9 @@ export function TeamPresentatieKaart({ team, peildatum, fidelity }: TeamPresenta
   const subtitel = bouwSubtitel(team);
   const isCenter = fidelity === "center";
 
-  // Bij center: alle spelers; bij side: maximaal 3 per geslacht
-  const damesVis = isCenter ? team.dames : team.dames.slice(0, 3);
-  const herenVis = isCenter ? team.heren : team.heren.slice(0, 3);
+  // Bij center: alle spelers; bij side: maximaal 5 per geslacht
+  const damesVis = isCenter ? team.dames : team.dames.slice(0, 5);
+  const herenVis = isCenter ? team.heren : team.heren.slice(0, 5);
 
   const heeftOpmerkingen = isCenter && team.opmerkingen.length > 0;
   const heeftSpelers = team.aantalDames + team.aantalHeren > 0;
@@ -33,7 +33,7 @@ export function TeamPresentatieKaart({ team, peildatum, fidelity }: TeamPresenta
   return (
     <div
       style={{
-        width: isCenter ? 430 : 300,
+        width: isCenter ? 580 : 440,
         maxHeight: "100%",
         display: "flex",
         flexDirection: "column",
@@ -308,7 +308,7 @@ export function TeamPresentatieKaart({ team, peildatum, fidelity }: TeamPresenta
                 fidelity="side"
               />
             ))}
-            {team.aantalDames + team.aantalHeren > 6 && (
+            {team.aantalDames + team.aantalHeren > 10 && (
               <div
                 style={{
                   fontSize: 10,
@@ -317,14 +317,11 @@ export function TeamPresentatieKaart({ team, peildatum, fidelity }: TeamPresenta
                   paddingTop: 4,
                 }}
               >
-                + {team.aantalDames + team.aantalHeren - 6} meer
+                + {team.aantalDames + team.aantalHeren - 10} meer
               </div>
             )}
           </div>
         )}
-
-        {/* Staf */}
-        <StafPresentatieLijst staf={team.staf} fidelity={fidelity} />
 
         {/* Opmerkingen — alleen center */}
         {heeftOpmerkingen && (
@@ -382,6 +379,9 @@ export function TeamPresentatieKaart({ team, peildatum, fidelity }: TeamPresenta
           </div>
         )}
       </div>
+
+      {/* ── FOOTER: 8 gereserveerde staf-plaatsen ── */}
+      <StafPresentatieLijst staf={team.staf} fidelity={fidelity} />
     </div>
   );
 }

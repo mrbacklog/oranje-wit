@@ -302,9 +302,14 @@ export async function getTeamsVoorPresentatie(): Promise<ActionResult<Presentati
       );
       const openMemoCount = groepTeams.reduce((sum: number, t: any) => sum + telOpenMemos(t.id), 0);
 
+      const groepNaam =
+        (typeof sg.naam === "string" && sg.naam.trim()) ||
+        groepTeams.map((t: any) => t.naam).join(" / ") ||
+        "Selectie";
+
       teams.push({
         id: sg.id,
-        naam: sg.naam ?? groepTeams.map((t: any) => t.naam).join(" / "),
+        naam: groepNaam,
         kleur: KLEUR_MAP[eersteTeam?.kleur ?? ""] ?? null,
         teamCategorie: eersteTeam?.categorie ? String(eersteTeam.categorie) : null,
         teamType: TEAM_TYPE_MAP[eersteTeam?.teamType ?? ""] ?? null,
