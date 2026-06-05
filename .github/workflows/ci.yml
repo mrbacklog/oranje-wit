@@ -193,7 +193,10 @@ jobs:
         run: npx playwright install-deps chromium
 
       - name: E2E tests
-        run: pnpm test:e2e
+        # Alleen de hermetische projecten die in deze CI thuishoren. De ti-studio-v2
+        # projecten draaien tegen :3002/remote studio-test en hebben hun eigen workflow
+        # (e2e-studio-test.yml met de juiste secrets) — niet hier.
+        run: pnpm exec playwright test --project=web --project=ti-studio --project=smoke --project=design-system
 
       - uses: actions/upload-artifact@v4
         if: failure()
