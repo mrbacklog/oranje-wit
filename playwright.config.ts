@@ -24,7 +24,9 @@ export default defineConfig({
     },
     {
       name: "web",
-      testIgnore: ["**/tests/**", "**/ti-studio/**"],
+      // ti-studio (v1) en ti-studio-v2 hebben eigen projecten; web mag die specs niet draaien
+      // (ti-studio-v2 draait tegen :3002/remote — niet tegen apps/web op :3000).
+      testIgnore: ["**/tests/**", "**/ti-studio/**", "**/ti-studio-v2/**"],
       use: {
         ...devices["Desktop Chrome"],
         storageState: "./e2e/.auth/user.json",
