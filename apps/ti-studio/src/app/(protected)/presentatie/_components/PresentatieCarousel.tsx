@@ -82,15 +82,16 @@ export function PresentatieCarousel({ teams, peildatum }: PresentatieCarouselPro
             grabCursor
             centeredSlides
             slidesPerView="auto"
-            spaceBetween={40}
-            mousewheel={{ forceToAxis: true }}
+            spaceBetween={36}
+            // forceToAxis:false → een verticaal muiswiel slidet de carrousel horizontaal
+            mousewheel={{ forceToAxis: false, sensitivity: 1 }}
             keyboard={{ enabled: true }}
             pagination={{ clickable: true }}
             coverflowEffect={{
-              rotate: 8,
+              rotate: 6,
               stretch: 0,
-              depth: 120,
-              scale: 0.95,
+              depth: 110,
+              scale: 0.92,
               slideShadows: false,
               modifier: 1,
             }}
@@ -112,7 +113,7 @@ export function PresentatieCarousel({ teams, peildatum }: PresentatieCarouselPro
               <SwiperSlide
                 key={team.id}
                 style={{
-                  width: 430,
+                  width: 600,
                   height: "100%",
                   display: "flex",
                   alignItems: "center",

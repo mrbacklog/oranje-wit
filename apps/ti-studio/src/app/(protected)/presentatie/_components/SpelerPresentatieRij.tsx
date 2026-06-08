@@ -121,8 +121,8 @@ export function SpelerPresentatieRij({ speler, peildatum, fidelity }: SpelerPres
             lineHeight: 1.2,
           }}
         >
-          {speler.roepnaam} {speler.tussenvoegsel ? `${speler.tussenvoegsel} ` : ""}
-          {speler.achternaam}
+          {/* achternaam bevat het tussenvoegsel al (zie achternaamKern in werkbord/SpelerRij) */}
+          {speler.roepnaam} {speler.achternaam}
         </span>
       </div>
 
