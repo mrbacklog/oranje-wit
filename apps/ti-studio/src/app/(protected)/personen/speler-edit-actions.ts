@@ -223,3 +223,55 @@ export async function zetSpelerIndeling(
     return { ok: false, error: "Kon indeling niet bijwerken" };
   }
 }
+
+/**
+ * Verwijder een HANDMATIG aangemaakte speler volledig. Alleen toegestaan voor
+ * spelers met een `HANDMATIG-`-id — Sportlink-spelers (echte bondsleden) mogen
+ * nooit via deze weg verwijderd worden; die verdwijnen alleen via de sync.
+ *
+ * Geen enkele speler-relatie cascadeert in het schema, dus alle child-rows
+ * worden expliciet in één transactie verwijderd vóór de speler zelf.
+ */
+export async function verwijderHandmatigeSpeler(
+  spelerId: string
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  try {
+    await requireTC();
+
+    const speler = await prisma.speler.findUnique({
+      where: { id: spelerId },
+      select: { id: true, roepnaam: true, achternaam: true },
+    });
+    if (!speler) return { ok: false, error: "Speler niet gevonden" };
+    if (!spelerId.startsWith("HANDMATIG-")) {
+      return {
+        ok: false,
+        error: "Alleen handmatig aangemaakte spelers kunnen worden verwijderd",
+      };
+    }
+
+    await prisma.$transaction([
+      prisma.teamSpeler.deleteMany({ where: { spelerId } }),
+      prisma.selectieSpeler.deleteMany({ where: { spelerId } }),
+      prisma.whatIfTeamSpeler.deleteMany({ where: { spelerId } }),
+      prisma.evaluatie.deleteMany({ where: { spelerId } }),
+      prisma.spelerZelfEvaluatie.deleteMany({ where: { spelerId } }),
+      prisma.werkitem.deleteMany({ where: { spelerId } }),
+      prisma.activiteit.deleteMany({ where: { spelerId } }),
+      prisma.spelerUSS.deleteMany({ where: { spelerId } }),
+      prisma.kadersSpeler.deleteMany({ where: { spelerId } }),
+      // WerkbordMutatie.spelerId is onDelete: SetNull → audit-trail blijft bestaan.
+      prisma.speler.delete({ where: { id: spelerId } }),
+    ]);
+
+    logger.info(
+      `[personen] Handmatige speler verwijderd: ${speler.roepnaam} ${speler.achternaam} (${spelerId})`
+    );
+    revalidatePath("/personen/spelers");
+    revalidatePath("/indeling");
+    return { ok: true };
+  } catch (err) {
+    logger.warn("verwijderHandmatigeSpeler mislukt:", err);
+    return { ok: false, error: "Kon speler niet verwijderen" };
+  }
+}
