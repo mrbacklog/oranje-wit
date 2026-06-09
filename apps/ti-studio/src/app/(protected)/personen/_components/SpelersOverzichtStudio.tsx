@@ -8,6 +8,7 @@ import {
   formatKorfbalLeeftijd,
 } from "@oranje-wit/types";
 import type { StudioSpeler } from "../actions";
+import { verwijderHandmatigeSpeler } from "../speler-edit-actions";
 import {
   StatusEditor,
   IndelingEditor,
@@ -77,6 +78,24 @@ export default function SpelersOverzichtStudio({
   const [memoFilter, setMemoFilter] = useState(false);
   const [sortKey, setSortKey] = useState<SortKey>("achternaam");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
+  const [verwijderBezig, setVerwijderBezig] = useState<string | null>(null);
+
+  async function handleVerwijder(speler: StudioSpeler) {
+    const ok = window.confirm(
+      `"${speler.roepnaam} ${speler.achternaam}" definitief verwijderen?\n\n` +
+        "Dit verwijdert de handmatig aangemaakte speler en al zijn plaatsingen. " +
+        "Dit kan niet ongedaan worden gemaakt."
+    );
+    if (!ok) return;
+    setVerwijderBezig(speler.id);
+    const res = await verwijderHandmatigeSpeler(speler.id);
+    setVerwijderBezig(null);
+    if (res.ok) {
+      router.refresh();
+    } else {
+      setFoutMelding(res.error);
+    }
+  }
 
   const huidigeTeams = useMemo(
     () => [...new Set(spelers.map((s) => s.huidigTeamNaam).filter(Boolean))].sort() as string[],
@@ -352,13 +371,14 @@ export default function SpelersOverzichtStudio({
                 ▲
                 <SortIcon col="memo" />
               </th>
+              <th style={{ ...thStyle(false), width: 40 }} aria-label="Acties" />
             </tr>
           </thead>
           <tbody>
             {gefilterd.length === 0 && (
               <tr>
                 <td
-                  colSpan={7}
+                  colSpan={8}
                   style={{
                     padding: "2rem",
                     textAlign: "center",
@@ -661,6 +681,41 @@ export default function SpelersOverzichtStudio({
                       >
                         ▲
                       </span>
+                    )}
+                  </td>
+
+                  {/* Verwijderen — alleen voor handmatig aangemaakte spelers */}
+                  <td style={{ padding: "0.625rem 0.5rem", textAlign: "center" }}>
+                    {speler.id.startsWith("HANDMATIG-") && (
+                      <button
+                        onClick={() => handleVerwijder(speler)}
+                        disabled={verwijderBezig === speler.id}
+                        title="Handmatige speler verwijderen"
+                        aria-label={`Verwijder ${speler.roepnaam} ${speler.achternaam}`}
+                        style={{
+                          background: "transparent",
+                          border: "none",
+                          cursor: verwijderBezig === speler.id ? "wait" : "pointer",
+                          color: "var(--text-secondary)",
+                          fontSize: "0.95rem",
+                          lineHeight: 1,
+                          padding: "0.25rem",
+                          borderRadius: 6,
+                          opacity: verwijderBezig === speler.id ? 0.4 : 0.7,
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.color = "#ef4444";
+                          e.currentTarget.style.background = "rgba(239,68,68,0.12)";
+                          e.currentTarget.style.opacity = "1";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.color = "var(--text-secondary)";
+                          e.currentTarget.style.background = "transparent";
+                          e.currentTarget.style.opacity = "0.7";
+                        }}
+                      >
+                        🗑
+                      </button>
                     )}
                   </td>
                 </tr>
