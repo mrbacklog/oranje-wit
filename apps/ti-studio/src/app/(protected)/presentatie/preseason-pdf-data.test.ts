@@ -61,11 +61,14 @@ describe("preseason PDF data", () => {
       team({ id: "j7", naam: "Oranje Wit J7", kleur: "geel", volgorde: 30 }),
     ]);
 
-    expect(secties.map((sectie) => sectie.titel)).toEqual(["Senioren-teams", "Rood", "Geel"]);
-    expect(secties.find((sectie) => sectie.titel === "Rood")?.teams.map((t) => t.naam)).toEqual([
-      "Oranje Wit J1",
-      "Oranje Wit J2",
+    expect(secties.map((sectie) => sectie.titel)).toEqual([
+      "Senioren-teams",
+      "U-19 / Rood",
+      "Geel",
     ]);
+    expect(
+      secties.find((sectie) => sectie.titel === "U-19 / Rood")?.teams.map((t) => t.naam)
+    ).toEqual(["Oranje Wit J1", "Oranje Wit J2"]);
   });
 
   it("publiceert alleen namen en staf, geen geboortedatum of vorig team", () => {
