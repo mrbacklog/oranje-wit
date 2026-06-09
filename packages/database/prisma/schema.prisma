@@ -579,6 +579,7 @@ model Kaders {
 
   // Relaties
   werkindelingen  Werkindeling[]
+  teamindelingPublicatie TeamindelingPublicatie?
   werkitems     Werkitem[]
   actiepunten   Actiepunt[]
   activiteiten  Activiteit[]
@@ -742,6 +743,30 @@ model Werkindeling {
 
   @@index([kadersId])
   @@map("werkindelingen")
+}
+
+model TeamindelingPublicatie {
+  id                 String   @id @default(cuid())
+  kaders             Kaders   @relation(fields: [kadersId], references: [id], onDelete: Cascade)
+  kadersId           String   @unique
+
+  titel              String
+  seizoenLabel       String
+  introTekst         String   @db.Text
+  waaromTekst        String   @db.Text
+  werkwijzeTekst     String   @db.Text
+  competitieTekst    String   @db.Text
+  tcTekst            String   @db.Text
+  kennismakingTekst  String   @db.Text
+  contactTekst       String   @db.Text
+  kangoeroesTekst    String   @db.Text
+  bedankTekst        String   @db.Text
+  sectieVolgorde     Json?
+
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@index([kadersId])
 }
 
 // Snapshot van werkindeling-data voor herstel na verwijdering

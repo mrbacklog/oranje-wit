@@ -49,6 +49,7 @@ type AnyPrismaModels = {
   spelerUSS: AnyModel;
   staf: AnyModel;
   kaders: AnyModel;
+  teamindelingPublicatie: AnyModel;
   werkindeling: AnyModel;
   pin: AnyModel;
   versie: AnyModel;

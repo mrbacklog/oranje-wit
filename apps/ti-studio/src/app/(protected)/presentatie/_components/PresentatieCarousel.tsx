@@ -7,15 +7,22 @@ import "swiper/css/pagination";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { EffectCoverflow, Mousewheel, Keyboard, Pagination } from "swiper/modules";
 import type { PresentatieTeam } from "../presentatie-types";
+import type { PublicatieInstellingen } from "../preseason-pdf-data";
 import { PresentatieFilterBar, filterTeams, type FilterWaarde } from "./PresentatieFilterBar";
+import { PublicatieToolbar } from "./PublicatieToolbar";
 import { TeamPresentatieKaart, kaartBreedte } from "./TeamPresentatieKaart";
 
 interface PresentatieCarouselProps {
   teams: PresentatieTeam[];
   peildatum: string; // ISO-string
+  publicatieInstellingen: PublicatieInstellingen;
 }
 
-export function PresentatieCarousel({ teams, peildatum }: PresentatieCarouselProps) {
+export function PresentatieCarousel({
+  teams,
+  peildatum,
+  publicatieInstellingen,
+}: PresentatieCarouselProps) {
   const [filter, setFilter] = useState<FilterWaarde>("alle");
 
   const peildatumDate = useMemo(() => new Date(peildatum), [peildatum]);
@@ -48,6 +55,8 @@ export function PresentatieCarousel({ teams, peildatum }: PresentatieCarouselPro
         overflow: "hidden",
       }}
     >
+      <PublicatieToolbar instellingen={publicatieInstellingen} />
+
       {/* Sticky filterbalk */}
       <PresentatieFilterBar actief={filter} onChange={setFilter} teams={teams} />
 
