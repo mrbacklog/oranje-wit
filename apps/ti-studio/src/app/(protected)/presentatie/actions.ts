@@ -15,6 +15,7 @@ import type {
   PresentatieTeam,
   PresentatieSpeler,
   PresentatieStaf,
+  PresentatieLidTeam,
   PresentatieOpmerking,
   PresentatiePayload,
   SpelerStatus,
@@ -175,7 +176,7 @@ export async function getTeamsVoorPresentatie(): Promise<ActionResult<Presentati
         geboortejaar: spelerRecord?.geboortejaar ?? peildatum.getFullYear() - 15,
         fotoUrl: heeftFotoSet.has(spelerId) ? `/api/scouting/spelers/${spelerId}/foto` : null,
         status: mapStatus(effectief),
-        isNieuw: false, // fase 2: koppelen aan seizoenStart-grens als nodig
+        isNieuw: false,
         huidigTeam: (spelerRecord?.huidig as { team?: string } | null)?.team ?? null,
       };
     }
@@ -197,21 +198,35 @@ export async function getTeamsVoorPresentatie(): Promise<ActionResult<Presentati
       ).length;
     }
 
-    // Bepaal welke teamIds in een gebundelde selectieGroep zitten (mogen NIET los worden getoond)
-    const gebundeldTeamIds = new Set<string>();
-    for (const sg of (versie as any).selectieGroepen ?? []) {
-      if (sg.gebundeld) {
-        for (const t of sg.teams ?? []) {
-          gebundeldTeamIds.add(t.id);
-        }
+    // Bouw een map van teamId → selectieGroepId voor alle teams in versie.
+    // Zo kunnen we snel bepalen of een team bij een selectiegroep hoort,
+    // ook als sg.teams niet in de query-resultaten zit.
+    const teamNaarSelectieGroep = new Map<string, string>();
+    for (const team of versie.teams as any[]) {
+      if (team.selectieGroepId) {
+        teamNaarSelectieGroep.set(team.id, team.selectieGroepId);
       }
     }
 
-    const teams: PresentatieTeam[] = [];
+    // Alle teamIds die bij ENIGE selectiegroep horen (gebundeld én ongecombineerd).
+    // Deze mogen nooit als losse team-kaart verschijnen.
+    const selectieTeamIds = new Set<string>(teamNaarSelectieGroep.keys());
 
-    // 1. Losse teams (niet in een gebundelde selectie)
+    // Bouw lookup: selectieGroepId → array van teamrecords (voor ongecombineerde selecties)
+    const teamsPerSelectieGroep = new Map<string, any[]>();
     for (const team of versie.teams as any[]) {
-      if (gebundeldTeamIds.has(team.id)) continue;
+      const sgId = team.selectieGroepId;
+      if (!sgId) continue;
+      const arr = teamsPerSelectieGroep.get(sgId) ?? [];
+      arr.push(team);
+      teamsPerSelectieGroep.set(sgId, arr);
+    }
+
+    const kaarten: PresentatieTeam[] = [];
+
+    // 1. Losse teams (geen selectieGroepId)
+    for (const team of versie.teams as any[]) {
+      if (selectieTeamIds.has(team.id)) continue;
 
       const dames: PresentatieSpeler[] = [];
       const heren: PresentatieSpeler[] = [];
@@ -225,10 +240,9 @@ export async function getTeamsVoorPresentatie(): Promise<ActionResult<Presentati
         }
       }
 
-      const alleSpelersVoorLeeftijd = [...dames, ...heren];
       const opmerkingen = bouwOpmerkingen(team.id);
 
-      teams.push({
+      kaarten.push({
         id: team.id,
         naam: team.naam ?? "",
         kleur: KLEUR_MAP[team.kleur ?? ""] ?? null,
@@ -236,11 +250,11 @@ export async function getTeamsVoorPresentatie(): Promise<ActionResult<Presentati
         teamType: TEAM_TYPE_MAP[team.teamType ?? ""] ?? null,
         niveau: team.niveau ?? null,
         volgorde: team.volgorde ?? 0,
-        isSelectie: Boolean(team.selectieGroepId),
+        soort: "team",
         gebundeld: false,
-        selectieNaam: null,
         dames,
         heren,
+        leden: [],
         staf: (team.staf as any[]).map(
           (ts: any): PresentatieStaf => ({
             stafId: ts.stafId,
@@ -251,92 +265,158 @@ export async function getTeamsVoorPresentatie(): Promise<ActionResult<Presentati
         opmerkingen,
         aantalDames: dames.length,
         aantalHeren: heren.length,
-        gemiddeldeLeeftijd: berekenGemiddeldeLeeftijd(alleSpelersVoorLeeftijd, peildatum),
-        validatieCount: 0, // fase 2: koppelen aan validatie-engine
+        gemiddeldeLeeftijd: berekenGemiddeldeLeeftijd([...dames, ...heren], peildatum),
+        validatieCount: 0,
         openMemoCount: telOpenMemos(team.id),
       });
     }
 
-    // 2. Gebundelde selectiegroepen → één kaart per groep
+    // 2. Eén kaart per selectiegroep
     for (const sg of (versie as any).selectieGroepen ?? []) {
-      if (!sg.gebundeld) continue;
+      const groepTeams: any[] = teamsPerSelectieGroep.get(sg.id) ?? [];
 
-      const dames: PresentatieSpeler[] = [];
-      const heren: PresentatieSpeler[] = [];
-
-      for (const ss of (sg.spelers as any[]) ?? []) {
-        const speler = bouwSpeler(ss.spelerId, ss.speler, ss.statusOverride);
-        if (ss.speler?.geslacht === "V") {
-          dames.push(speler);
-        } else {
-          heren.push(speler);
-        }
-      }
-
-      // Staf dedupliceren op stafId
-      const stafGezien = new Set<string>();
-      const staf: PresentatieStaf[] = [];
-      for (const ss of (sg.staf as any[]) ?? []) {
-        if (stafGezien.has(ss.stafId)) continue;
-        stafGezien.add(ss.stafId);
-        staf.push({
-          stafId: ss.stafId,
-          naam: ss.staf?.naam ?? "?",
-          rol: ss.rol ?? "",
-        });
-      }
-
-      // Gebruik de eerste team in de groep als representatief (kleur, categorie, niveau)
-      const groepTeams: any[] = (sg.teams as any[]) ?? [];
+      // Representatief eerste team (kleur, categorie, niveau)
       const eersteTeam = groepTeams[0];
       const minVolgorde = groepTeams.reduce(
         (min: number, t: any) => Math.min(min, t.volgorde ?? 999),
         999
       );
 
-      const alleSpelersVoorLeeftijd = [...dames, ...heren];
-
-      // Memo's van alle teams in de groep samenvoegen
-      const opmerkingen: PresentatieOpmerking[] = groepTeams.flatMap((t: any) =>
-        bouwOpmerkingen(t.id)
-      );
-      const openMemoCount = groepTeams.reduce((sum: number, t: any) => sum + telOpenMemos(t.id), 0);
-
       const groepNaam =
         (typeof sg.naam === "string" && sg.naam.trim()) ||
         groepTeams.map((t: any) => t.naam).join(" / ") ||
         "Selectie";
 
-      teams.push({
-        id: sg.id,
-        naam: groepNaam,
-        kleur: KLEUR_MAP[eersteTeam?.kleur ?? ""] ?? null,
-        teamCategorie: eersteTeam?.categorie ? String(eersteTeam.categorie) : null,
-        teamType: TEAM_TYPE_MAP[eersteTeam?.teamType ?? ""] ?? null,
-        niveau: eersteTeam?.niveau ?? null,
-        volgorde: minVolgorde,
-        isSelectie: true,
-        gebundeld: true,
-        selectieNaam: sg.naam ?? null,
-        dames,
-        heren,
-        staf,
-        opmerkingen,
-        aantalDames: dames.length,
-        aantalHeren: heren.length,
-        gemiddeldeLeeftijd: berekenGemiddeldeLeeftijd(alleSpelersVoorLeeftijd, peildatum),
-        validatieCount: 0, // fase 2: koppelen aan validatie-engine
-        openMemoCount,
-      });
+      // Memo's en openMemoCount van alle lidteams samenvoegen
+      const opmerkingen: PresentatieOpmerking[] = groepTeams.flatMap((t: any) =>
+        bouwOpmerkingen(t.id)
+      );
+      const openMemoCount = groepTeams.reduce((sum: number, t: any) => sum + telOpenMemos(t.id), 0);
+
+      if (sg.gebundeld) {
+        // Gebundelde pool: spelers/staf op selectiegroep-niveau
+        const dames: PresentatieSpeler[] = [];
+        const heren: PresentatieSpeler[] = [];
+
+        for (const ss of (sg.spelers as any[]) ?? []) {
+          const speler = bouwSpeler(ss.spelerId, ss.speler, ss.statusOverride);
+          if (ss.speler?.geslacht === "V") {
+            dames.push(speler);
+          } else {
+            heren.push(speler);
+          }
+        }
+
+        // Staf dedupliceren op stafId
+        const stafGezien = new Set<string>();
+        const staf: PresentatieStaf[] = [];
+        for (const ss of (sg.staf as any[]) ?? []) {
+          if (stafGezien.has(ss.stafId)) continue;
+          stafGezien.add(ss.stafId);
+          staf.push({
+            stafId: ss.stafId,
+            naam: ss.staf?.naam ?? "?",
+            rol: ss.rol ?? "",
+          });
+        }
+
+        kaarten.push({
+          id: sg.id,
+          naam: groepNaam,
+          kleur: KLEUR_MAP[eersteTeam?.kleur ?? ""] ?? null,
+          teamCategorie: eersteTeam?.categorie ? String(eersteTeam.categorie) : null,
+          teamType: TEAM_TYPE_MAP[eersteTeam?.teamType ?? ""] ?? null,
+          niveau: eersteTeam?.niveau ?? null,
+          volgorde: minVolgorde,
+          soort: "selectie",
+          gebundeld: true,
+          dames,
+          heren,
+          leden: [],
+          staf,
+          opmerkingen,
+          aantalDames: dames.length,
+          aantalHeren: heren.length,
+          gemiddeldeLeeftijd: berekenGemiddeldeLeeftijd([...dames, ...heren], peildatum),
+          validatieCount: 0,
+          openMemoCount,
+        });
+      } else {
+        // Ongecombineerd: spelers/staf per lidteam, geaggregeerd op topniveau
+        const ledenKaarten: PresentatieLidTeam[] = [];
+        const alleDames: PresentatieSpeler[] = [];
+        const alleHeren: PresentatieSpeler[] = [];
+
+        // Staf: dedupliceerde unie van alle lidteam-staf
+        const stafGezien = new Set<string>();
+        const staf: PresentatieStaf[] = [];
+
+        for (const team of groepTeams) {
+          const teamDames: PresentatieSpeler[] = [];
+          const teamHeren: PresentatieSpeler[] = [];
+
+          for (const ts of (team.spelers as any[]) ?? []) {
+            const speler = bouwSpeler(ts.spelerId, ts.speler, ts.statusOverride);
+            if (ts.speler?.geslacht === "V") {
+              teamDames.push(speler);
+            } else {
+              teamHeren.push(speler);
+            }
+          }
+
+          alleDames.push(...teamDames);
+          alleHeren.push(...teamHeren);
+
+          ledenKaarten.push({
+            teamId: team.id,
+            naam: team.naam ?? "",
+            kleur: KLEUR_MAP[team.kleur ?? ""] ?? null,
+            dames: teamDames,
+            heren: teamHeren,
+          });
+
+          for (const ts of (team.staf as any[]) ?? []) {
+            if (stafGezien.has(ts.stafId)) continue;
+            stafGezien.add(ts.stafId);
+            staf.push({
+              stafId: ts.stafId,
+              naam: ts.staf?.naam ?? "?",
+              rol: ts.rol ?? "",
+            });
+          }
+        }
+
+        kaarten.push({
+          id: sg.id,
+          naam: groepNaam,
+          kleur: KLEUR_MAP[eersteTeam?.kleur ?? ""] ?? null,
+          teamCategorie: eersteTeam?.categorie ? String(eersteTeam.categorie) : null,
+          teamType: TEAM_TYPE_MAP[eersteTeam?.teamType ?? ""] ?? null,
+          niveau: eersteTeam?.niveau ?? null,
+          volgorde: minVolgorde,
+          soort: "selectie",
+          gebundeld: false,
+          dames: alleDames,
+          heren: alleHeren,
+          leden: ledenKaarten,
+          staf,
+          opmerkingen,
+          aantalDames: alleDames.length,
+          aantalHeren: alleHeren.length,
+          gemiddeldeLeeftijd: berekenGemiddeldeLeeftijd([...alleDames, ...alleHeren], peildatum),
+          validatieCount: 0,
+          openMemoCount,
+        });
+      }
     }
 
     // Sorteer op volgorde
-    teams.sort((a, b) => a.volgorde - b.volgorde);
+    kaarten.sort((a, b) => a.volgorde - b.volgorde);
 
     return {
       ok: true,
       data: {
-        teams,
+        teams: kaarten,
         peildatum: peildatum.toISOString(),
       },
     };

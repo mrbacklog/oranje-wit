@@ -41,13 +41,14 @@ export function filterTeams(teams: PresentatieTeam[], filter: FilterWaarde): Pre
         (t) => t.teamCategorie === "A_CATEGORIE" || t.teamCategorie === "B_CATEGORIE"
       );
     case "selecties":
-      return teams.filter((t) => t.isSelectie);
+      return teams.filter((t) => t.soort === "selectie");
     case "sen-selecties":
-      return teams.filter((t) => t.isSelectie && t.teamCategorie === "SENIOREN");
+      return teams.filter((t) => t.soort === "selectie" && t.teamCategorie === "SENIOREN");
     case "jeugd-selecties":
       return teams.filter(
         (t) =>
-          t.isSelectie && (t.teamCategorie === "A_CATEGORIE" || t.teamCategorie === "B_CATEGORIE")
+          t.soort === "selectie" &&
+          (t.teamCategorie === "A_CATEGORIE" || t.teamCategorie === "B_CATEGORIE")
       );
     default: {
       if (filter.startsWith("kleur-")) {
