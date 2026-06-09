@@ -8,7 +8,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { EffectCoverflow, Mousewheel, Keyboard, Pagination } from "swiper/modules";
 import type { PresentatieTeam } from "../presentatie-types";
 import { PresentatieFilterBar, filterTeams, type FilterWaarde } from "./PresentatieFilterBar";
-import { TeamPresentatieKaart } from "./TeamPresentatieKaart";
+import { TeamPresentatieKaart, kaartBreedte } from "./TeamPresentatieKaart";
 
 interface PresentatieCarouselProps {
   teams: PresentatieTeam[];
@@ -113,20 +113,16 @@ export function PresentatieCarousel({ teams, peildatum }: PresentatieCarouselPro
               <SwiperSlide
                 key={team.id}
                 style={{
-                  width: 600,
+                  // Elke slide krijgt de natuurlijke kaartbreedte — coverflow centreert correct
+                  // door de combinatie van slidesPerView="auto" + centeredSlides.
+                  width: kaartBreedte(team),
                   height: "100%",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
               >
-                {({ isActive }: { isActive: boolean }) => (
-                  <TeamPresentatieKaart
-                    team={team}
-                    peildatum={peildatumDate}
-                    fidelity={isActive ? "center" : "side"}
-                  />
-                )}
+                <TeamPresentatieKaart team={team} peildatum={peildatumDate} />
               </SwiperSlide>
             ))}
           </Swiper>

@@ -1,14 +1,34 @@
 "use client";
+/**
+ * TeamPresentatieKaart — read-only presentatiekaart, gespiegeld op werkbord-TeamKaart.
+ *
+ * Kolom-layout per kaarttype:
+ *   soort="team", teamType="viertal"    → 1 kolom (dames boven, heren onder)
+ *   soort="team", teamType="achttal"    → 2 kolommen: Dames | Heren
+ *   soort="selectie", gebundeld=true    → 2 kolommen: Dames | Heren (gepoolde spelers)
+ *   soort="selectie", gebundeld=false   → per lidteam een blok met teamnaam-kopje
+ *
+ * Geen fidelity-verschil in inhoud — center en side tonen exact hetzelfde.
+ * De visuele schaal wordt uitsluitend door Swiper/coverflow geregeld.
+ */
 import type { PresentatieTeam } from "../presentatie-types";
 import { KNKV_KLEUR, bouwSubtitel } from "./knkv-kleur";
-import { SpelerPresentatieRij } from "./SpelerPresentatieRij";
 import { StafPresentatieLijst } from "./StafPresentatieLijst";
+import { ViertalLayout, TweeKolommenLayout, OngecombineerdLayout } from "./presentatie-layouts";
 
-interface TeamPresentatieKaartProps {
-  team: PresentatieTeam;
-  peildatum: Date;
-  fidelity: "center" | "side";
+// ── Kaartbreedtes (px) ──────────────────────────────────────────────────────
+
+export const KAART_BREEDTE_VIERTAL = 320;
+export const KAART_BREEDTE_ACHTTAL = 560;
+export const KAART_BREEDTE_SELECTIE = 820;
+
+export function kaartBreedte(team: PresentatieTeam): number {
+  if (team.soort === "selectie") return KAART_BREEDTE_SELECTIE;
+  if (team.teamType === "viertal") return KAART_BREEDTE_VIERTAL;
+  return KAART_BREEDTE_ACHTTAL;
 }
+
+const HEADER_HOOGTE = 88;
 
 function formatDatum(iso: string): string {
   try {
@@ -18,60 +38,65 @@ function formatDatum(iso: string): string {
   }
 }
 
-export function TeamPresentatieKaart({ team, peildatum, fidelity }: TeamPresentatieKaartProps) {
+// ── Hoofdcomponent ──────────────────────────────────────────────────────────
+
+interface TeamPresentatieKaartProps {
+  team: PresentatieTeam;
+  peildatum: Date;
+}
+
+export function TeamPresentatieKaart({ team, peildatum }: TeamPresentatieKaartProps) {
   const kleurCss = KNKV_KLEUR[team.kleur ?? ""] ?? "var(--cat-senior)";
   const subtitel = bouwSubtitel(team);
-  const isCenter = fidelity === "center";
-
-  // Bij center: alle spelers; bij side: maximaal 5 per geslacht
-  const damesVis = isCenter ? team.dames : team.dames.slice(0, 5);
-  const herenVis = isCenter ? team.heren : team.heren.slice(0, 5);
-
-  const heeftOpmerkingen = isCenter && team.opmerkingen.length > 0;
+  const breedte = kaartBreedte(team);
   const heeftSpelers = team.aantalDames + team.aantalHeren > 0;
+  const heeftOpmerkingen = team.opmerkingen.length > 0;
 
   return (
     <div
       style={{
-        width: isCenter ? 580 : 440,
+        width: breedte,
         maxHeight: "100%",
         display: "flex",
         flexDirection: "column",
         background: "var(--bg-1)",
-        border: isCenter ? `1px solid rgba(255,133,51,.22)` : "1px solid var(--border-0)",
+        border: "1px solid var(--border-0)",
         borderRadius: 14,
         overflow: "hidden",
-        boxShadow: isCenter
-          ? "0 30px 80px rgba(0,0,0,.7), 0 0 0 1px rgba(255,133,51,.22)"
-          : "0 18px 50px rgba(0,0,0,.55)",
-        opacity: isCenter ? 1 : 0.85,
-        transition: "all .45s cubic-bezier(.22,1,.36,1)",
+        boxShadow: "0 18px 50px rgba(0,0,0,.55)",
         flexShrink: 0,
         userSelect: "none",
+        position: "relative",
       }}
     >
+      {/* Kleurband links — 4px (gespiegeld werkbord) */}
+      <div
+        style={{
+          position: "absolute",
+          left: 0,
+          top: 0,
+          bottom: 0,
+          width: 4,
+          background: kleurCss,
+          zIndex: 1,
+        }}
+      />
+
       {/* ── HEADER ── */}
       <div
         style={{
-          position: "relative",
-          padding: "16px 20px 14px",
+          height: HEADER_HOOGTE,
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          padding: "0 16px 0 20px",
           borderBottom: "1px solid var(--border-0)",
           flexShrink: 0,
+          position: "relative",
+          overflow: "hidden",
         }}
       >
-        {/* Kleurstrip links */}
-        <div
-          style={{
-            position: "absolute",
-            left: 0,
-            top: 0,
-            bottom: 0,
-            width: 6,
-            background: kleurCss,
-          }}
-        />
-
-        {/* Categorie-driehoek rechtsboven */}
+        {/* Categorie-driehoek rechtsboven — 56×56px (gespiegeld werkbord) */}
         <div
           style={{
             position: "absolute",
@@ -80,83 +105,78 @@ export function TeamPresentatieKaart({ team, peildatum, fidelity }: TeamPresenta
             width: 0,
             height: 0,
             borderStyle: "solid",
-            borderWidth: "0 40px 40px 0",
+            borderWidth: "0 56px 56px 0",
             borderColor: `transparent ${kleurCss} transparent transparent`,
+            zIndex: 2,
           }}
         />
 
-        {/* Naam */}
-        <div
-          style={{
-            fontSize: isCenter ? 26 : 18,
-            fontWeight: 800,
-            letterSpacing: "-0.01em",
-            color: "var(--text-1)",
-            paddingLeft: 6,
-            paddingRight: 40,
-            lineHeight: 1.15,
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-          }}
-        >
-          <span
+        {/* Naam + subtitel */}
+        <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
+          <div
             style={{
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-              flex: 1,
-              minWidth: 0,
+              fontSize: 22,
+              fontWeight: 700,
+              letterSpacing: "-0.01em",
+              color: "var(--text-1)",
+              paddingLeft: 4,
+              paddingRight: 56,
+              lineHeight: 1.15,
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
             }}
           >
-            {team.naam}
-          </span>
-          {team.openMemoCount > 0 && (
             <span
               style={{
-                fontSize: isCenter ? 14 : 11,
-                color: "var(--accent)",
-                fontWeight: 700,
-                flexShrink: 0,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                flex: 1,
+                minWidth: 0,
               }}
-              title={`${team.openMemoCount} open memo's`}
             >
-              ▲ {team.openMemoCount}
+              {team.naam}
             </span>
+            {team.openMemoCount > 0 && (
+              <span
+                style={{ fontSize: 12, color: "var(--accent)", fontWeight: 700, flexShrink: 0 }}
+                title={`${team.openMemoCount} open memo's`}
+              >
+                ▲ {team.openMemoCount}
+              </span>
+            )}
+          </div>
+          {subtitel && (
+            <div
+              style={{
+                fontSize: 10,
+                fontWeight: 600,
+                color: "var(--text-3)",
+                textTransform: "uppercase",
+                letterSpacing: "0.06em",
+                marginTop: 3,
+                paddingLeft: 4,
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {subtitel}
+            </div>
           )}
         </div>
 
-        {/* Subtitel */}
-        {subtitel && (
-          <div
-            style={{
-              fontSize: 9,
-              color: "var(--text-3)",
-              textTransform: "uppercase",
-              letterSpacing: "0.1em",
-              marginTop: 4,
-              paddingLeft: 6,
-            }}
-          >
-            {subtitel}
-          </div>
-        )}
-
-        {/* Meta-pills */}
-        <div
-          style={{
-            display: "flex",
-            gap: 6,
-            marginTop: 11,
-            flexWrap: "wrap",
-            paddingLeft: 6,
-          }}
-        >
+        {/* Meta-pills: ♀ / ♂ tellers + gem. leeftijd + validaties */}
+        <div style={{ display: "flex", gap: 5, flexShrink: 0, zIndex: 2 }}>
           <span
             style={{
-              fontSize: isCenter ? 13 : 11,
+              display: "flex",
+              alignItems: "center",
+              gap: 3,
+              fontSize: 13,
               fontWeight: 700,
-              padding: isCenter ? "5px 11px" : "3px 8px",
+              padding: "4px 10px",
               borderRadius: 7,
               background: "rgba(236,72,153,.12)",
               color: "var(--pink)",
@@ -166,9 +186,12 @@ export function TeamPresentatieKaart({ team, peildatum, fidelity }: TeamPresenta
           </span>
           <span
             style={{
-              fontSize: isCenter ? 13 : 11,
+              display: "flex",
+              alignItems: "center",
+              gap: 3,
+              fontSize: 13,
               fontWeight: 700,
-              padding: isCenter ? "5px 11px" : "3px 8px",
+              padding: "4px 10px",
               borderRadius: 7,
               background: "rgba(96,165,250,.12)",
               color: "var(--blue)",
@@ -179,23 +202,23 @@ export function TeamPresentatieKaart({ team, peildatum, fidelity }: TeamPresenta
           {team.gemiddeldeLeeftijd !== null && (
             <span
               style={{
-                fontSize: isCenter ? 13 : 11,
+                fontSize: 13,
                 fontWeight: 700,
-                padding: isCenter ? "5px 11px" : "3px 8px",
+                padding: "4px 10px",
                 borderRadius: 7,
                 background: "rgba(255,255,255,.05)",
                 color: "var(--text-2)",
               }}
             >
-              Gem. {team.gemiddeldeLeeftijd.toFixed(1)}j
+              {team.gemiddeldeLeeftijd.toFixed(1)}j
             </span>
           )}
           {team.validatieCount > 0 && (
             <span
               style={{
-                fontSize: isCenter ? 13 : 11,
+                fontSize: 13,
                 fontWeight: 700,
-                padding: isCenter ? "5px 11px" : "3px 8px",
+                padding: "4px 10px",
                 borderRadius: 7,
                 background: "rgba(234,179,8,.10)",
                 color: "var(--warn)",
@@ -207,16 +230,17 @@ export function TeamPresentatieKaart({ team, peildatum, fidelity }: TeamPresenta
         </div>
       </div>
 
-      {/* ── BODY ── */}
+      {/* ── BODY (scrollbaar) ── */}
       <div
         style={{
-          padding: "14px 20px",
           flex: 1,
           minHeight: 0,
-          overflowY: isCenter ? "auto" : "hidden",
+          overflowY: "auto",
+          display: "flex",
+          flexDirection: "column",
         }}
       >
-        {isCenter && !heeftSpelers ? (
+        {!heeftSpelers ? (
           <div
             style={{
               padding: "28px 0",
@@ -227,114 +251,28 @@ export function TeamPresentatieKaart({ team, peildatum, fidelity }: TeamPresenta
           >
             Nog geen spelers ingedeeld
           </div>
-        ) : isCenter ? (
-          /* Center: 2 kolommen Dames | Heren */
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: 14,
-            }}
-          >
-            {/* Dames */}
-            <div>
-              <div
-                style={{
-                  fontSize: 9,
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.1em",
-                  color: "var(--text-3)",
-                  marginBottom: 6,
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <span>Dames</span>
-                <span>{team.aantalDames}</span>
-              </div>
-              {damesVis.map((sp) => (
-                <SpelerPresentatieRij
-                  key={sp.relCode}
-                  speler={sp}
-                  peildatum={peildatum}
-                  fidelity="center"
-                />
-              ))}
-            </div>
-            {/* Heren */}
-            <div>
-              <div
-                style={{
-                  fontSize: 9,
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.1em",
-                  color: "var(--text-3)",
-                  marginBottom: 6,
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <span>Heren</span>
-                <span>{team.aantalHeren}</span>
-              </div>
-              {herenVis.map((sp) => (
-                <SpelerPresentatieRij
-                  key={sp.relCode}
-                  speler={sp}
-                  peildatum={peildatum}
-                  fidelity="center"
-                />
-              ))}
-            </div>
-          </div>
+        ) : team.soort === "selectie" && !team.gebundeld ? (
+          <OngecombineerdLayout leden={team.leden} peildatum={peildatum} />
+        ) : team.soort === "selectie" && team.gebundeld ? (
+          <TweeKolommenLayout dames={team.dames} heren={team.heren} peildatum={peildatum} />
+        ) : team.teamType === "viertal" ? (
+          <ViertalLayout dames={team.dames} heren={team.heren} peildatum={peildatum} />
         ) : (
-          /* Side: 1 kolom, beknopt (max 3 per geslacht) */
-          <div>
-            {damesVis.map((sp) => (
-              <SpelerPresentatieRij
-                key={sp.relCode}
-                speler={sp}
-                peildatum={peildatum}
-                fidelity="side"
-              />
-            ))}
-            {herenVis.map((sp) => (
-              <SpelerPresentatieRij
-                key={sp.relCode}
-                speler={sp}
-                peildatum={peildatum}
-                fidelity="side"
-              />
-            ))}
-            {team.aantalDames + team.aantalHeren > 10 && (
-              <div
-                style={{
-                  fontSize: 10,
-                  color: "var(--text-3)",
-                  textAlign: "center",
-                  paddingTop: 4,
-                }}
-              >
-                + {team.aantalDames + team.aantalHeren - 10} meer
-              </div>
-            )}
-          </div>
+          <TweeKolommenLayout dames={team.dames} heren={team.heren} peildatum={peildatum} />
         )}
 
-        {/* Opmerkingen — alleen center */}
+        {/* Opmerkingen */}
         {heeftOpmerkingen && (
           <div
             style={{
-              marginTop: 14,
+              margin: "12px 16px 14px",
               borderTop: "1px solid var(--border-0)",
-              paddingTop: 11,
+              paddingTop: 10,
             }}
           >
             <div
               style={{
-                fontSize: 10,
+                fontSize: 9,
                 fontWeight: 700,
                 textTransform: "uppercase",
                 letterSpacing: "0.1em",
@@ -352,26 +290,14 @@ export function TeamPresentatieKaart({ team, peildatum, fidelity }: TeamPresenta
                   border: "1px solid var(--border-0)",
                   borderLeft: "3px solid var(--accent)",
                   borderRadius: 7,
-                  padding: "9px 13px",
-                  marginBottom: 7,
+                  padding: "8px 12px",
+                  marginBottom: 6,
                 }}
               >
-                <div
-                  style={{
-                    fontSize: 10,
-                    color: "var(--text-3)",
-                    marginBottom: 3,
-                  }}
-                >
+                <div style={{ fontSize: 9, color: "var(--text-3)", marginBottom: 3 }}>
                   {op.bron} · {op.type} · {formatDatum(op.datum)}
                 </div>
-                <div
-                  style={{
-                    fontSize: 13,
-                    color: "var(--text-1)",
-                    lineHeight: 1.4,
-                  }}
-                >
+                <div style={{ fontSize: 12, color: "var(--text-1)", lineHeight: 1.4 }}>
                   {op.tekst}
                 </div>
               </div>
@@ -380,8 +306,8 @@ export function TeamPresentatieKaart({ team, peildatum, fidelity }: TeamPresenta
         )}
       </div>
 
-      {/* ── FOOTER: 8 gereserveerde staf-plaatsen ── */}
-      <StafPresentatieLijst staf={team.staf} fidelity={fidelity} />
+      {/* ── FOOTER: aanwezige staf (geen lege slots) ── */}
+      <StafPresentatieLijst staf={team.staf} />
     </div>
   );
 }

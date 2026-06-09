@@ -63,8 +63,21 @@ export interface PresentatieOpmerking {
 }
 
 /**
+ * Eén lidteam binnen een ongecombineerde selectie-kaart.
+ * Alleen aanwezig als soort === "selectie" && gebundeld === false.
+ */
+export interface PresentatieLidTeam {
+  teamId: string;
+  naam: string;
+  kleur: string | null;
+  dames: PresentatieSpeler[];
+  heren: PresentatieSpeler[];
+}
+
+/**
  * Één kaart in de presentatie-carrousel.
- * Kan een regulier team zijn of een gebundelde selectie.
+ * soort === "team"     → regulier los team
+ * soort === "selectie" → selectiegroep-kaart (gebundeld of ongecombineerd)
  */
 export interface PresentatieTeam {
   id: string;
@@ -73,22 +86,35 @@ export interface PresentatieTeam {
   kleur: string | null;
   /** Team-categorie, bijv. "SENIOREN" | "A_CATEGORIE" | "B_CATEGORIE". */
   teamCategorie: string | null;
-  /** Viertal of achttal. */
+  /** "viertal" | "achttal" — alleen voor losse teams. */
   teamType: string | null;
   /** Poule/niveau omschrijving. */
   niveau: string | null;
   /** Sorteervolgorde binnen de versie. */
   volgorde: number;
-  /** True als dit een gebundelde selectiegroep-kaart is. */
-  isSelectie: boolean;
-  /** True als de selectiegroep gebundeld is (pool-modus). */
+  /** Onderscheid los team vs. selectie-kaart. */
+  soort: "team" | "selectie";
+  /**
+   * Alleen relevant als soort === "selectie":
+   * true  = gebundelde pool (spelers/staf op selectiegroep-niveau)
+   * false = ongecombineerd (spelers/staf per lidteam, zichtbaar via `leden`)
+   */
   gebundeld: boolean;
-  /** Naam van de selectiegroep, of null voor losse teams. */
-  selectieNaam: string | null;
-  /** Dameskant. */
+  /**
+   * Dameskant.
+   * Los team of gebundelde selectie: directe spelerslijst.
+   * Ongecombineerde selectie: samengevoegde set van alle lidteams (voor aggregaties).
+   */
   dames: PresentatieSpeler[];
-  /** Herenkant. */
+  /** Herenkant — zelfde semantiek als dames. */
   heren: PresentatieSpeler[];
+  /**
+   * Per-lidteam uitsplitsing.
+   * Alleen gevuld bij soort === "selectie" && gebundeld === false.
+   * Leeg array voor losse teams en gebundelde selecties.
+   */
+  leden: PresentatieLidTeam[];
+  /** Aanwezige staf (geen lege plaatsen). */
   staf: PresentatieStaf[];
   opmerkingen: PresentatieOpmerking[];
   /** Afgeleiden. */
