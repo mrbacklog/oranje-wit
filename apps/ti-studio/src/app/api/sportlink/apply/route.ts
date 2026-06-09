@@ -75,8 +75,12 @@ export async function POST(req: NextRequest) {
       aangemaakt++;
     }
 
-    // Afmelddatum bepaalt: in verleden of geen actief lid → GESTOPT (echt weg).
-    // In toekomst → GAAT_STOPPEN (speelt nog dit seizoen uit).
+    // Status bepalen o.b.v. het Lid-record:
+    //  - geen Lid / niet meer ACTIVE        → GESTOPT (echt weg)
+    //  - afmelddatum in het verleden        → GESTOPT
+    //  - afmelddatum in de toekomst         → GAAT_STOPPEN (speelt seizoen uit)
+    //  - ACTIVE zonder afmelddatum          → NIET_SPELEND (geen Veld/Zaal-activiteit,
+    //                                          GÉÉN afmelding — TC mag dit overriden)
     const vandaag = new Date();
     vandaag.setHours(0, 0, 0, 0);
 
@@ -85,22 +89,30 @@ export async function POST(req: NextRequest) {
         where: { relCode: spelerId },
         select: { afmelddatum: true, lidStatus: true },
       });
-      const isGestopt =
-        !lid ||
-        lid.lidStatus !== "ACTIVE" ||
-        (lid.afmelddatum !== null && lid.afmelddatum <= vandaag);
-      const nieuweStatus: SpelerStatus = isGestopt ? "GESTOPT" : "GAAT_STOPPEN";
+
+      let nieuweStatus: SpelerStatus;
+      if (!lid || lid.lidStatus !== "ACTIVE") {
+        nieuweStatus = "GESTOPT";
+      } else if (lid.afmelddatum !== null) {
+        nieuweStatus = lid.afmelddatum <= vandaag ? "GESTOPT" : "GAAT_STOPPEN";
+      } else {
+        nieuweStatus = "NIET_SPELEND";
+      }
 
       await prisma.speler.update({
         where: { id: spelerId },
         data: { status: nieuweStatus },
       });
-      // TC-statusOverrides voor alle seizoenen leegmaken — een bondsafmelding
-      // mag niet door een legacy override gemaskeerd worden in de indeling.
-      await prisma.kadersSpeler.updateMany({
-        where: { spelerId, statusOverride: { not: null } },
-        data: { statusOverride: null },
-      });
+
+      // Alleen bij een ECHTE bondsafmelding de TC-overrides leegmaken — een
+      // afmelding mag niet door een legacy override gemaskeerd worden. Bij
+      // NIET_SPELEND blijft de override staan (en wint die, zie speler-status.ts).
+      if (nieuweStatus === "GESTOPT" || nieuweStatus === "GAAT_STOPPEN") {
+        await prisma.kadersSpeler.updateMany({
+          where: { spelerId, statusOverride: { not: null } },
+          data: { statusOverride: null },
+        });
+      }
       afgemeldCount++;
     }
 
