@@ -2,11 +2,18 @@ export const dynamic = "force-dynamic";
 
 import { getTeamsVoorPresentatie } from "./actions";
 import { PresentatieCarousel } from "./_components/PresentatieCarousel";
+import { getPublicatieInstellingen } from "./publicatie-actions";
 
 export default async function PresentatiePage() {
-  const result = await getTeamsVoorPresentatie();
+  const [result, publicatieResult] = await Promise.all([
+    getTeamsVoorPresentatie(),
+    getPublicatieInstellingen(),
+  ]);
 
-  if (!result.ok) {
+  if (!result.ok || !publicatieResult.ok) {
+    let error = "Onbekende fout";
+    if (!result.ok) error = result.error;
+    if (!publicatieResult.ok) error = publicatieResult.error;
     return (
       <div
         style={{
@@ -32,7 +39,7 @@ export default async function PresentatiePage() {
             border: "1px solid var(--border-0)",
           }}
         >
-          {result.error}
+          {error}
         </p>
       </div>
     );
@@ -40,5 +47,11 @@ export default async function PresentatiePage() {
 
   const { teams, peildatum } = result.data;
 
-  return <PresentatieCarousel teams={teams} peildatum={peildatum} />;
+  return (
+    <PresentatieCarousel
+      teams={teams}
+      peildatum={peildatum}
+      publicatieInstellingen={publicatieResult.data}
+    />
+  );
 }
