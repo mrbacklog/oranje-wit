@@ -126,6 +126,22 @@ export async function updateSelectieNaam(
   }
 }
 
+export async function updateJNummer(
+  teamId: string,
+  jNummer: string | null
+): Promise<ActionResult<void>> {
+  await requireTC();
+  const waarde = jNummer?.trim() || null;
+  try {
+    await prisma.team.update({ where: { id: teamId }, data: { jNummer: waarde } });
+    logger.info(`Team ${teamId} J-nummer bijgewerkt: ${waarde ?? "(leeg)"}`);
+    return { ok: true, data: undefined };
+  } catch (error) {
+    logger.warn(`Fout bij J-nummer update voor ${teamId}:`, error);
+    return { ok: false, error: error instanceof Error ? error.message : String(error) };
+  }
+}
+
 export async function hernoemTeam(teamId: string, naam: string): Promise<ActionResult<void>> {
   await requireTC();
   const schoon = naam.trim();

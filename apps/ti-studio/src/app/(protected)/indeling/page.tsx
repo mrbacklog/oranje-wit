@@ -303,6 +303,7 @@ export default async function IndelingPage() {
     return {
       id: team.id,
       naam: team.naam,
+      jNummer: team.jNummer ?? null,
       categorie: String(team.categorie),
       kleur,
       formaat,

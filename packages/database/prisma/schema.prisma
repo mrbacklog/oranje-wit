@@ -827,6 +827,7 @@ model Team {
 
   naam      String
   alias     String?
+  jNummer   String?  @map("j_nummer")
   categorie TeamCategorie
   kleur     Kleur?
   teamType  TeamType?

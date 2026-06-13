@@ -85,6 +85,7 @@ type MinStafInTeam = {
 type MinTeamKern = {
   id: string;
   naam: string;
+  jNummer: string | null;
   categorie: string;
   kleur: string | null;
   teamType: string | null;
@@ -589,6 +590,7 @@ export async function getWhatIfVoorCanvas(
         canvasTeams.push({
           id: teamId,
           naam: teamNaam,
+          jNummer: werkTeam.jNummer ?? null,
           categorie: String(whatIfTeam.categorie ?? werkTeam.categorie),
           kleur,
           formaat,
@@ -650,6 +652,7 @@ export async function getWhatIfVoorCanvas(
         canvasTeams.push({
           id: teamId,
           naam: teamNaam,
+          jNummer: werkTeam.jNummer ?? null,
           categorie: String(werkTeam.categorie),
           kleur,
           formaat,
@@ -706,6 +709,7 @@ export async function getWhatIfVoorCanvas(
       canvasTeams.push({
         id: teamId,
         naam: teamNaam,
+        jNummer: null,
         categorie: String(wit.categorie),
         kleur,
         formaat,

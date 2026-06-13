@@ -137,6 +137,7 @@ export interface WerkbordWerkitem {
 export interface WerkbordTeam {
   id: string;
   naam: string;
+  jNummer: string | null;
   categorie: string;
   kleur: KnkvCategorie;
   formaat: KaartFormaat;

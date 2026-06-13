@@ -14,6 +14,7 @@ import type {
 } from "./types";
 import {
   updateTeamConfig,
+  updateJNummer,
   koppelSelectie,
   ontkoppelSelectie,
   updateSelectieNaam,
@@ -609,12 +610,24 @@ function ConfiguratieForm({
   onValidatieUpdated: (update: ValidatieUpdate) => void;
 }) {
   const [isPending, startTransition] = useTransition();
+  const [jNummerWaarde, setJNummerWaarde] = useState(team.jNummer ?? "");
+  const [jNummerBezig, setJNummerBezig] = useState(false);
   const [config, setConfig] = useState<TeamConfigUpdate>({
     hoofdCategorie: team.teamCategorie,
     kleur: team.kleur === "senior" ? null : team.kleur,
     niveau: team.niveau,
     teamType: team.formaat === "viertal" ? "viertal" : team.formaat === "achtal" ? "achtal" : null,
   });
+
+  async function slaJNummer() {
+    const schoon = jNummerWaarde.trim() || null;
+    setJNummerBezig(true);
+    const result = await updateJNummer(team.id, schoon);
+    setJNummerBezig(false);
+    if (result.ok) {
+      onConfigUpdated(team.id, { jNummer: schoon });
+    }
+  }
 
   function sla(update: Partial<TeamConfigUpdate>) {
     const nieuw = { ...config, ...update };
@@ -800,6 +813,57 @@ function ConfiguratieForm({
               8-tal (vast)
             </div>
           )}
+
+          <span style={labelStyle}>J-nummer (bond)</span>
+          <div style={{ display: "flex", gap: 6, alignItems: "center", marginBottom: 12 }}>
+            <input
+              type="text"
+              value={jNummerWaarde}
+              onChange={(e) => setJNummerWaarde(e.target.value)}
+              onBlur={slaJNummer}
+              onKeyDown={(e) => e.key === "Enter" && slaJNummer()}
+              placeholder="bijv. J7"
+              maxLength={6}
+              disabled={jNummerBezig}
+              style={{
+                width: 80,
+                padding: "5px 8px",
+                fontSize: 12,
+                fontWeight: 600,
+                borderRadius: 6,
+                border: "1px solid var(--border-0)",
+                background: "var(--bg-2)",
+                color: "var(--text-1)",
+                fontFamily: "inherit",
+                outline: "none",
+                opacity: jNummerBezig ? 0.5 : 1,
+              }}
+            />
+            {jNummerWaarde && (
+              <button
+                onClick={() => {
+                  setJNummerWaarde("");
+                  void updateJNummer(team.id, null).then(() =>
+                    onConfigUpdated(team.id, { jNummer: null })
+                  );
+                }}
+                style={{
+                  fontSize: 11,
+                  color: "var(--text-3)",
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  padding: 0,
+                  fontFamily: "inherit",
+                }}
+              >
+                wis
+              </button>
+            )}
+          </div>
+          <div style={{ fontSize: 11, color: "var(--text-3)", marginBottom: 8 }}>
+            Toegewezen door de KNKV. Wordt getoond op de teamkaart.
+          </div>
         </>
       )}
     </div>

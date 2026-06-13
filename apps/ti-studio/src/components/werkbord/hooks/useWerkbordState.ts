@@ -167,6 +167,7 @@ export function useWerkbordState(
     (team: Pick<WerkbordTeam, "id" | "naam" | "categorie" | "volgorde">) => {
       const nieuwTeam: WerkbordTeam = {
         ...team,
+        jNummer: null,
         kleur: "senior",
         formaat: "achtal",
         canvasX: 0,

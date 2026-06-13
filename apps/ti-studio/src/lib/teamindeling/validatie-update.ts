@@ -127,6 +127,7 @@ export async function haalValidatieUpdate(teamId: string): Promise<ValidatieUpda
   const teamVoorValidatie = {
     id: teamId,
     naam: "",
+    jNummer: null,
     categorie: String(teamData.categorie),
     kleur: (DB_KLEUR_MAP[teamData.kleur ?? ""] ?? "senior") as
       | "blauw"

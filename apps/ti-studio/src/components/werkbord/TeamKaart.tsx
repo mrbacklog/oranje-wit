@@ -261,14 +261,43 @@ export function TeamKaart({
         >
           <div
             style={{
-              fontSize: zoomLevel === "compact" ? 22 : 13,
-              fontWeight: 700,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
+              display: "flex",
+              alignItems: "baseline",
+              gap: 5,
+              minWidth: 0,
             }}
           >
-            {selectieLabel}
+            <div
+              style={{
+                fontSize: zoomLevel === "compact" ? 22 : 13,
+                fontWeight: 700,
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                minWidth: 0,
+              }}
+            >
+              {selectieLabel}
+            </div>
+            {team.jNummer && zoomLevel !== "compact" && (
+              <span
+                style={{
+                  fontSize: 9,
+                  fontWeight: 700,
+                  letterSpacing: ".04em",
+                  padding: "1px 5px",
+                  borderRadius: 4,
+                  background: "var(--bg-3)",
+                  color: "var(--text-3)",
+                  border: "1px solid var(--border-0)",
+                  flexShrink: 0,
+                  lineHeight: "14px",
+                }}
+                title={`KNKV bondsnummer: ${team.jNummer}`}
+              >
+                {team.jNummer}
+              </span>
+            )}
           </div>
           <div
             style={{
