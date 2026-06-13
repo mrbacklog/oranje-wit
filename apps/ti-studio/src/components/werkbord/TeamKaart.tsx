@@ -84,6 +84,7 @@ interface TeamKaartProps {
   showScores: boolean;
   isDragging?: boolean;
   openMemoCount?: number;
+  jNummer?: string | null;
   onOpenTeamDrawer: (teamId: string) => void;
   onDropSpeler: (
     spelerData: WerkbordSpeler,
@@ -115,6 +116,7 @@ export function TeamKaart({
   showScores,
   isDragging,
   openMemoCount = 0,
+  jNummer,
   onOpenTeamDrawer,
   onDropSpeler,
   onHeaderMouseDown,
@@ -279,7 +281,7 @@ export function TeamKaart({
             >
               {selectieLabel}
             </div>
-            {team.jNummer && zoomLevel !== "compact" && (
+            {jNummer && zoomLevel !== "compact" && (
               <span
                 style={{
                   fontSize: 9,
@@ -293,9 +295,9 @@ export function TeamKaart({
                   flexShrink: 0,
                   lineHeight: "14px",
                 }}
-                title={`KNKV bondsnummer: ${team.jNummer}`}
+                title={`J-nummer op basis van gemiddelde teamleeftijd: ${jNummer}`}
               >
-                {team.jNummer}
+                {jNummer}
               </span>
             )}
           </div>

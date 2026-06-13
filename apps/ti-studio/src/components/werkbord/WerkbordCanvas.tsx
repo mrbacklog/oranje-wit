@@ -41,6 +41,7 @@ interface WerkbordCanvasProps {
   werkindelingId: string;
   werkindelingNaam: string;
   variantBadge?: { vraag: string; basisVersieNummer: number } | null;
+  jNummers?: Map<string, string>;
 }
 
 interface TeamDragState {
@@ -115,6 +116,7 @@ export function WerkbordCanvas({
   werkindelingId,
   werkindelingNaam,
   variantBadge = null,
+  jNummers,
 }: WerkbordCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const minimapRef = useRef<HTMLDivElement>(null);
@@ -419,6 +421,7 @@ export function WerkbordCanvas({
                   : undefined
               }
               onStafClick={onStafClick}
+              jNummer={jNummers?.get(team.id) ?? null}
             />
           );
         })}

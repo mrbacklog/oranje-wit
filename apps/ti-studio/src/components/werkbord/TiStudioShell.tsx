@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { logger, korfbalPeildatum, type Seizoen } from "@oranje-wit/types";
+import { berekenJNummers } from "@/lib/teamindeling/bereken-j-nummers";
 import { Toolbar } from "./Toolbar";
 import { SpelersPoolDrawer } from "./SpelersPoolDrawer";
 import { StafPoolDrawer } from "./StafPoolDrawer";
@@ -215,6 +216,8 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
     [initieleState.seizoen]
   );
 
+  const jNummers = useMemo(() => berekenJNummers(teams, peildatum), [teams, peildatum]);
+
   const teamNamen = useMemo(() => {
     const map: Record<string, string> = {};
     for (const t of teams) map[t.id] = t.naam;
@@ -334,6 +337,7 @@ export function TiStudioShell({ initieleState, gebruikerEmail }: TiStudioShellPr
                 onDropSpelerOpSelectie={onDropSpelerOpSelectieFn}
                 onTitelKlik={openTeamDialog}
                 onStafClick={openStafProfiel}
+                jNummers={jNummers}
                 versieId={versieId}
                 werkindelingId={initieleState.werkindelingId}
                 werkindelingNaam={initieleState.naam}
