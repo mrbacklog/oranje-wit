@@ -10,6 +10,7 @@ export interface StafKoppelingView {
   teamNaam: string;
   kleur: string | null;
   rol: string;
+  rolLabel?: string | null;
   doelType: StafDoelType;
 }
 
@@ -33,6 +34,7 @@ export const ROL_SUGGESTIES = [
   "Trainer/Coach",
   "Coach",
   "Trainer",
+  "Staflid",
   "Assistent",
   "Verzorger",
   "Begeleider",
@@ -53,3 +55,7 @@ export const KLEUR_DOT: Record<string, string> = {
   rood: "#ef4444",
   senior: "#94a3b8",
 };
+
+export function toonRol(koppeling: { rol: string; rolLabel?: string | null }): string {
+  return koppeling.rolLabel?.trim() || koppeling.rol;
+}
