@@ -15,16 +15,21 @@ function gemLeeftijd(team: WerkbordTeam, peildatum: Date): number | null {
 
 /**
  * Rangschikt B-categorie teams op gemiddelde korfballeeftijd (hoog→laag)
- * en kent J1, J2, … toe. Teams zonder spelers krijgen geen J-nummer.
+ * en kent J1, J2, … toe. Teams zonder spelers worden achteraan geplaatst
+ * (op volgorde van team.volgorde) zodat de nummering altijd aaneengesloten is.
  * Retourneert een map van teamId → "J1", "J2", etc.
  */
 export function berekenJNummers(teams: WerkbordTeam[], peildatum: Date): Map<string, string> {
   const bTeams = teams.filter((t) => t.teamCategorie === "B_CATEGORIE");
 
   const metLeeftijd = bTeams
-    .map((t) => ({ id: t.id, leeftijd: gemLeeftijd(t, peildatum) }))
-    .filter((t) => t.leeftijd !== null)
-    .sort((a, b) => (b.leeftijd ?? 0) - (a.leeftijd ?? 0));
+    .map((t) => ({ id: t.id, leeftijd: gemLeeftijd(t, peildatum), volgorde: t.volgorde }))
+    .sort((a, b) => {
+      if (a.leeftijd !== null && b.leeftijd !== null) return b.leeftijd - a.leeftijd;
+      if (a.leeftijd !== null) return -1;
+      if (b.leeftijd !== null) return 1;
+      return a.volgorde - b.volgorde;
+    });
 
   const result = new Map<string, string>();
   metLeeftijd.forEach((t, i) => {
