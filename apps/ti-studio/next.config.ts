@@ -21,6 +21,14 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "ckvoranjewit.nl",
+      },
+    ],
+  },
   experimental: {
     serverActions: {
       allowedOrigins: ["teamindeling.ckvoranjewit.app", "localhost:3001"],

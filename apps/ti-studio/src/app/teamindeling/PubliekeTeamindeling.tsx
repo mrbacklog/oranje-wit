@@ -1,6 +1,7 @@
 /* eslint-disable max-lines -- Publieke teamindeling UI combineert meerdere nauw verwante sub-componenten in één bestand */
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import type {
   PubliekeSpeler,
@@ -513,11 +514,13 @@ function ToelichtingPagina({
         }}
       >
         <div style={{ maxWidth: 720, margin: "0 auto" }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src={LOGO_URL}
             alt="c.k.v. Oranje Wit 100 jaar"
-            style={{ height: 44, width: "auto", display: "block", marginBottom: 20 }}
+            width={160}
+            height={44}
+            style={{ width: "auto", height: 44, display: "block", marginBottom: 20 }}
+            unoptimized
           />
           {toelichting && (
             <div
@@ -693,11 +696,13 @@ export function PubliekeTeamindeling({ data }: { data: PubliekeTeamindelingData 
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src={LOGO_URL}
             alt="c.k.v. Oranje Wit 100 jaar"
-            style={{ height: 44, width: "auto", display: "block" }}
+            width={160}
+            height={44}
+            style={{ width: "auto", height: 44, display: "block" }}
+            unoptimized
           />
           {data.toelichting && (
             <span style={{ fontSize: 13, color: C.subTekst, fontWeight: 500 }}>
