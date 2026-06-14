@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/teamindeling/db/prisma";
 import { getActiefSeizoen } from "@oranje-wit/teamindeling-shared/seizoen";
+import { logger } from "@oranje-wit/types";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -126,7 +127,7 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
     where: { relCode: { in: Array.from(alleRelCodes) } },
     select: { relCode: true, tussenvoegsel: true },
   });
-  const tussenvoegelMap = new Map<string, string | null>(
+  const tussenvoegselMap = new Map<string, string | null>(
     leden.map((l) => [l.relCode, l.tussenvoegsel])
   );
 
@@ -158,7 +159,7 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
     for (const ts of team.spelers) {
       const speler = bouwSpeler({
         ...ts.speler,
-        tussenvoegsel: tussenvoegelMap.get(ts.spelerId) ?? null,
+        tussenvoegsel: tussenvoegselMap.get(ts.spelerId) ?? null,
       });
       if (ts.speler.geslacht === "V") dames.push(speler);
       else heren.push(speler);
@@ -175,7 +176,9 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
       subteams: [],
       uitkomstTeams: [],
       staf: team.staf.map((ts: VersieTeam["staf"][number]) => ({
-        naam: ts.staf?.naam ?? "?",
+        naam:
+          ts.staf?.naam ??
+          (logger.warn("publieke-presentatie: staf zonder naam", { stafId: ts.stafId }), "?"),
         rol: ts.rol ?? "",
       })),
     });
@@ -184,7 +187,10 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
   // 2. Eén kaart per selectiegroep
   for (const sg of versie.selectieGroepen) {
     const groepTeams: VersieTeam[] = teamsPerSelectieGroep.get(sg.id) ?? [];
-    const minVolgorde = groepTeams.reduce((min, t) => Math.min(min, t.volgorde), 999);
+    const minVolgorde =
+      groepTeams.length > 0
+        ? groepTeams.reduce((m, t) => Math.min(m, t.volgorde ?? 0), Infinity)
+        : 0;
     const groepNaam =
       (typeof sg.naam === "string" && sg.naam.trim()) ||
       groepTeams.map((t) => t.naam).join(" / ") ||
@@ -197,7 +203,7 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
       for (const ss of sg.spelers) {
         const speler = bouwSpeler({
           ...ss.speler,
-          tussenvoegsel: tussenvoegelMap.get(ss.spelerId) ?? null,
+          tussenvoegsel: tussenvoegselMap.get(ss.spelerId) ?? null,
         });
         if (ss.speler.geslacht === "V") dames.push(speler);
         else heren.push(speler);
@@ -208,7 +214,12 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
       for (const ss of sg.staf) {
         if (stafGezien.has(ss.stafId)) continue;
         stafGezien.add(ss.stafId);
-        staf.push({ naam: ss.staf?.naam ?? "?", rol: ss.rol ?? "" });
+        staf.push({
+          naam:
+            ss.staf?.naam ??
+            (logger.warn("publieke-presentatie: staf zonder naam", { stafId: ss.stafId }), "?"),
+          rol: ss.rol ?? "",
+        });
       }
 
       kaarten.push({
@@ -237,7 +248,7 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
         for (const ts of team.spelers) {
           const speler = bouwSpeler({
             ...ts.speler,
-            tussenvoegsel: tussenvoegelMap.get(ts.spelerId) ?? null,
+            tussenvoegsel: tussenvoegselMap.get(ts.spelerId) ?? null,
           });
           if (ts.speler.geslacht === "V") teamDames.push(speler);
           else teamHeren.push(speler);
@@ -248,11 +259,22 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
 
         const teamStaf: PubliekeStaf[] = [];
         for (const ts of team.staf) {
+          // Eerste voorkomen per stafId wint — persoon kan in meerdere subteams zitten
           if (!stafGezien.has(ts.stafId)) {
             stafGezien.add(ts.stafId);
-            staf.push({ naam: ts.staf?.naam ?? "?", rol: ts.rol ?? "" });
+            staf.push({
+              naam:
+                ts.staf?.naam ??
+                (logger.warn("publieke-presentatie: staf zonder naam", { stafId: ts.stafId }), "?"),
+              rol: ts.rol ?? "",
+            });
           }
-          teamStaf.push({ naam: ts.staf?.naam ?? "?", rol: ts.rol ?? "" });
+          teamStaf.push({
+            naam:
+              ts.staf?.naam ??
+              (logger.warn("publieke-presentatie: staf zonder naam", { stafId: ts.stafId }), "?"),
+            rol: ts.rol ?? "",
+          });
         }
 
         subteams.push({ naam: team.naam, dames: teamDames, heren: teamHeren, staf: teamStaf });
