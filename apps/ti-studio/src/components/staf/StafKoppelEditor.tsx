@@ -12,6 +12,7 @@ import {
   type StafKoppelingView,
   ROL_SUGGESTIES,
   KLEUR_DOT,
+  toonRol,
 } from "./staf-koppel-types";
 
 interface Props {
@@ -29,6 +30,7 @@ export function StafKoppelEditor({ staf, alleDoelen, onClose, onGewijzigd }: Pro
   const [isPending, startTransition] = useTransition();
   const [nieuwDoelId, setNieuwDoelId] = useState<string>("");
   const [nieuwRol, setNieuwRol] = useState<string>("Trainer");
+  const [nieuwRolLabel, setNieuwRolLabel] = useState<string>("");
   const [openUp, setOpenUp] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -70,7 +72,12 @@ export function StafKoppelEditor({ staf, alleDoelen, onClose, onGewijzigd }: Pro
     const doel = alleDoelen.find((o) => o.id === nieuwDoelId);
     if (!doel || !rol) return;
     startTransition(async () => {
-      const res = await voegStafAanDoelToe(staf.id, { id: doel.id, type: doel.type }, rol);
+      const res = await voegStafAanDoelToe(
+        staf.id,
+        { id: doel.id, type: doel.type },
+        rol,
+        nieuwRolLabel.trim() || undefined
+      );
       if (!res.ok) return;
       commit([
         ...lokaleTeams,
@@ -79,11 +86,13 @@ export function StafKoppelEditor({ staf, alleDoelen, onClose, onGewijzigd }: Pro
           teamNaam: doel.naam,
           kleur: doel.kleur,
           rol,
+          rolLabel: nieuwRolLabel.trim() || null,
           doelType: doel.type,
         },
       ]);
       setNieuwDoelId("");
       setNieuwRol("Trainer");
+      setNieuwRolLabel("");
     });
   }
 
@@ -95,6 +104,25 @@ export function StafKoppelEditor({ staf, alleDoelen, onClose, onGewijzigd }: Pro
       });
       if (!res.ok) return;
       commit(lokaleTeams.filter((t) => t.teamId !== koppeling.teamId));
+    });
+  }
+
+  function handleRolLabelWijzig(koppeling: StafKoppelingView, rolLabel: string) {
+    const schoon = rolLabel.trim();
+    if (schoon === (koppeling.rolLabel ?? "")) return;
+    startTransition(async () => {
+      const res = await updateStafRolOpDoel(
+        staf.id,
+        { id: koppeling.teamId, type: koppeling.doelType },
+        koppeling.rol,
+        schoon || undefined
+      );
+      if (!res.ok) return;
+      commit(
+        lokaleTeams.map((t) =>
+          t.teamId === koppeling.teamId ? { ...t, rolLabel: schoon || null } : t
+        )
+      );
     });
   }
 
@@ -189,6 +217,25 @@ export function StafKoppelEditor({ staf, alleDoelen, onClose, onGewijzigd }: Pro
               list={`rol-suggesties-${staf.id}`}
               style={{
                 flex: 1,
+                background: "var(--surface-sunken)",
+                border: "1px solid var(--border-default)",
+                borderRadius: 6,
+                padding: "0.25rem 0.5rem",
+                color: "var(--text-primary)",
+                fontSize: "0.75rem",
+                outline: "none",
+                fontFamily: "inherit",
+              }}
+            />
+            <input
+              type="text"
+              defaultValue={t.rolLabel ?? ""}
+              disabled={isPending}
+              onBlur={(e) => handleRolLabelWijzig(t, e.target.value)}
+              placeholder="Functietitel (opt.)"
+              style={{
+                flex: "0.8",
+                width: 130,
                 background: "var(--surface-sunken)",
                 border: "1px solid var(--border-default)",
                 borderRadius: 6,
@@ -319,6 +366,24 @@ export function StafKoppelEditor({ staf, alleDoelen, onClose, onGewijzigd }: Pro
           placeholder="Rol"
           style={{
             width: 110,
+            background: "var(--surface-sunken)",
+            border: "1px solid var(--border-default)",
+            borderRadius: 6,
+            padding: "0.25rem 0.5rem",
+            color: "var(--text-primary)",
+            fontSize: "0.75rem",
+            outline: "none",
+            fontFamily: "inherit",
+          }}
+        />
+        <input
+          type="text"
+          value={nieuwRolLabel}
+          onChange={(e) => setNieuwRolLabel(e.target.value)}
+          disabled={isPending}
+          placeholder="Functietitel (opt.)"
+          style={{
+            width: 130,
             background: "var(--surface-sunken)",
             border: "1px solid var(--border-default)",
             borderRadius: 6,
