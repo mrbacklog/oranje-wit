@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   const auth = await guardTC();
   if (!auth.ok) {
-    return NextResponse.json({ error: auth.error }, { status: 401 });
+    return auth.response;
   }
 
   const [teamsResult, instellingenResult] = await Promise.all([
