@@ -79,6 +79,7 @@ type MinStafInTeam = {
   id: string;
   stafId: string;
   rol: string | null;
+  rolLabel: string | null;
   staf: { naam: string } | null;
 };
 
@@ -175,6 +176,7 @@ export async function getWhatIfVoorCanvas(
                 id: true,
                 stafId: true,
                 rol: true,
+                rolLabel: true,
                 staf: { select: { naam: true } },
               },
             },
@@ -482,13 +484,15 @@ export async function getWhatIfVoorCanvas(
       id: string,
       stafId: string,
       naam: string,
-      rol: string | null
+      rol: string | null,
+      rolLabel: string | null = null
     ): WerkbordStafInTeam {
       return {
         id,
         stafId,
         naam,
         rol: rol ?? "",
+        rolLabel,
       };
     }
 
@@ -575,7 +579,7 @@ export async function getWhatIfVoorCanvas(
           bouwSpelerInTeam(s.id, s.spelerId, s.notitie, s.speler, teamId, teamNaam)
         );
         const staf = whatIfTeam.staf.map((st) =>
-          bouwStafInTeam(st.id, st.stafId, st.staf?.naam ?? "?", st.rol)
+          bouwStafInTeam(st.id, st.stafId, st.staf?.naam ?? "?", st.rol, st.rolLabel ?? null)
         );
 
         const formaat: "viertal" | "achtal" | "selectie" = werkTeam.selectieGroepId
@@ -638,7 +642,7 @@ export async function getWhatIfVoorCanvas(
           bouwSpelerInTeam(s.id, s.spelerId, s.notitie, s.speler, teamId, teamNaam)
         );
         const staf = werkTeam.staf.map((st) =>
-          bouwStafInTeam(st.id, st.stafId, st.staf?.naam ?? "?", st.rol)
+          bouwStafInTeam(st.id, st.stafId, st.staf?.naam ?? "?", st.rol, st.rolLabel ?? null)
         );
 
         const formaat: "viertal" | "achtal" | "selectie" = werkTeam.selectieGroepId
@@ -699,7 +703,7 @@ export async function getWhatIfVoorCanvas(
         bouwSpelerInTeam(s.id, s.spelerId, s.notitie, s.speler, teamId, teamNaam)
       );
       const staf = wit.staf.map((st) =>
-        bouwStafInTeam(st.id, st.stafId, st.staf?.naam ?? "?", st.rol)
+        bouwStafInTeam(st.id, st.stafId, st.staf?.naam ?? "?", st.rol, st.rolLabel ?? null)
       );
 
       const formaat: "viertal" | "achtal" | "selectie" =
@@ -758,7 +762,9 @@ export async function getWhatIfVoorCanvas(
       const reedsAanwezig = new Set(primary.staf.map((s) => s.stafId));
       const selectieStaf = (selectieGroepById.get(bronId)?.staf ?? [])
         .filter((ss) => !reedsAanwezig.has(ss.stafId))
-        .map((ss) => bouwStafInTeam(ss.id, ss.stafId, ss.staf?.naam ?? "?", ss.rol));
+        .map((ss) =>
+          bouwStafInTeam(ss.id, ss.stafId, ss.staf?.naam ?? "?", ss.rol, ss.rolLabel ?? null)
+        );
 
       // Voeg spelers van alle teams in deze pool samen (dedupe op spelerId).
       const spelerSeen = new Set<string>();

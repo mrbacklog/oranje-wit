@@ -25,6 +25,7 @@ export interface PublicatieSectieConfig {
 export interface PreseasonPdfStaf {
   naam: string;
   rol: string;
+  rolLabel?: string | null;
 }
 
 export interface PreseasonPdfTeam {
@@ -101,7 +102,7 @@ export function formatPubliekeSpelerNaam(speler: PresentatieSpeler): string {
 function mapStaf(staf: PresentatieStaf[]): PreseasonPdfStaf[] {
   return staf
     .filter((item) => item.naam.trim().length > 0)
-    .map((item) => ({ naam: item.naam, rol: item.rol }));
+    .map((item) => ({ naam: item.naam, rol: item.rol, rolLabel: item.rolLabel ?? null }));
 }
 
 function mapTeam(team: PresentatieTeam): PreseasonPdfTeam {

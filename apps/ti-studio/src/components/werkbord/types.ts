@@ -73,6 +73,7 @@ export interface WerkbordStafInTeam {
   stafId: string;
   naam: string;
   rol: string;
+  rolLabel?: string | null;
 }
 
 export interface WerkbordStafTeamrol {

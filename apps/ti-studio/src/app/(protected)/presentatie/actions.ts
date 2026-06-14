@@ -260,6 +260,7 @@ export async function getTeamsVoorPresentatie(): Promise<ActionResult<Presentati
             stafId: ts.stafId,
             naam: ts.staf?.naam ?? "?",
             rol: ts.rol ?? "",
+            rolLabel: ts.rolLabel ?? null,
           })
         ),
         opmerkingen,
@@ -317,6 +318,7 @@ export async function getTeamsVoorPresentatie(): Promise<ActionResult<Presentati
             stafId: ss.stafId,
             naam: ss.staf?.naam ?? "?",
             rol: ss.rol ?? "",
+            rolLabel: ss.rolLabel ?? null,
           });
         }
 
@@ -382,6 +384,7 @@ export async function getTeamsVoorPresentatie(): Promise<ActionResult<Presentati
               stafId: ts.stafId,
               naam: ts.staf?.naam ?? "?",
               rol: ts.rol ?? "",
+              rolLabel: ts.rolLabel ?? null,
             });
           }
         }

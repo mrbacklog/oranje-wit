@@ -46,6 +46,7 @@ export interface PresentatieStaf {
   naam: string;
   /** Rol in dit team of deze selectie. */
   rol: string;
+  rolLabel?: string | null;
 }
 
 /** Team-memo als opmerking op een presentatie-kaart. */

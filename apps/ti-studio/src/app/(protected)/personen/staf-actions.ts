@@ -137,6 +137,7 @@ export async function getAlleStafVoorBeheer() {
         select: {
           stafId: true,
           rol: true,
+          rolLabel: true,
           team: {
             select: {
               id: true,
@@ -153,6 +154,7 @@ export async function getAlleStafVoorBeheer() {
         select: {
           stafId: true,
           rol: true,
+          rolLabel: true,
           selectieGroep: {
             select: {
               id: true,
@@ -187,6 +189,7 @@ export async function getAlleStafVoorBeheer() {
     naam: string;
     kleur: string;
     rol: string;
+    rolLabel: string | null;
     volgorde: number;
     // Legacy aliassen voor bestaande UI
     teamId: string;
@@ -204,6 +207,7 @@ export async function getAlleStafVoorBeheer() {
       naam: k.team.naam,
       kleur: k.team.kleur ?? "ONBEKEND",
       rol: k.rol,
+      rolLabel: k.rolLabel ?? null,
       volgorde: k.team.volgorde ?? 9999,
       teamId: k.team.id,
       teamNaam: k.team.naam,
@@ -226,6 +230,7 @@ export async function getAlleStafVoorBeheer() {
       naam,
       kleur,
       rol: k.rol,
+      rolLabel: k.rolLabel ?? null,
       volgorde,
       teamId: k.selectieGroep.id,
       teamNaam: naam,
@@ -295,7 +300,8 @@ export async function getDoelenVoorStafKoppeling(): Promise<
 export async function voegStafAanDoelToe(
   stafId: string,
   doel: { id: string; type: "team" | "selectie" },
-  rol: string
+  rol: string,
+  rolLabel?: string
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   try {
     await requireTC();
@@ -304,14 +310,14 @@ export async function voegStafAanDoelToe(
     if (doel.type === "team") {
       await prisma.teamStaf.upsert({
         where: { teamId_stafId: { teamId: doel.id, stafId } },
-        create: { teamId: doel.id, stafId, rol: schoneRol },
-        update: { rol: schoneRol },
+        create: { teamId: doel.id, stafId, rol: schoneRol, rolLabel: rolLabel ?? null },
+        update: { rol: schoneRol, rolLabel: rolLabel ?? null },
       });
     } else {
       await prisma.selectieStaf.upsert({
         where: { selectieGroepId_stafId: { selectieGroepId: doel.id, stafId } },
-        create: { selectieGroepId: doel.id, stafId, rol: schoneRol },
-        update: { rol: schoneRol },
+        create: { selectieGroepId: doel.id, stafId, rol: schoneRol, rolLabel: rolLabel ?? null },
+        update: { rol: schoneRol, rolLabel: rolLabel ?? null },
       });
     }
     revalidatePath("/personen/staf");
@@ -346,7 +352,8 @@ export async function verwijderStafUitDoel(
 export async function updateStafRolOpDoel(
   stafId: string,
   doel: { id: string; type: "team" | "selectie" },
-  rol: string
+  rol: string,
+  rolLabel?: string
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   try {
     await requireTC();
@@ -355,12 +362,12 @@ export async function updateStafRolOpDoel(
     if (doel.type === "team") {
       await prisma.teamStaf.updateMany({
         where: { stafId, teamId: doel.id },
-        data: { rol: schoneRol },
+        data: { rol: schoneRol, rolLabel: rolLabel ?? null },
       });
     } else {
       await prisma.selectieStaf.updateMany({
         where: { stafId, selectieGroepId: doel.id },
-        data: { rol: schoneRol },
+        data: { rol: schoneRol, rolLabel: rolLabel ?? null },
       });
     }
     revalidatePath("/personen/staf");

@@ -248,6 +248,7 @@ export async function getStafProfiel(stafId: string, kadersId?: string) {
         select: {
           id: true,
           rol: true,
+          rolLabel: true,
           team: {
             select: {
               id: true,
@@ -300,6 +301,7 @@ export async function getStafProfiel(stafId: string, kadersId?: string) {
     teamNaam: ts.team.naam,
     teamKleur: (ts.team.kleur as string | null) ?? "grijs",
     rol: ts.rol,
+    rolLabel: ts.rolLabel ?? null,
     seizoen: ts.team.versie?.werkindeling?.kaders?.seizoen ?? null,
   }));
 
@@ -602,12 +604,12 @@ export async function toggleSelectieBundeling(
           orderBy: { volgorde: "asc" },
         },
         spelers: { select: { spelerId: true, statusOverride: true, notitie: true } },
-        staf: { select: { stafId: true, rol: true } },
+        staf: { select: { stafId: true, rol: true, rolLabel: true } },
       },
     });
     type GroepTeam = { id: string; naam: string; versieId: string };
     type GroepSpeler = { spelerId: string; statusOverride: string | null; notitie: string | null };
-    type GroepStaf = { stafId: string; rol: string };
+    type GroepStaf = { stafId: string; rol: string; rolLabel?: string | null };
     const groepTeams = selectieGroep.teams as GroepTeam[];
     const groepSpelers = selectieGroep.spelers as GroepSpeler[];
     const groepStaf = selectieGroep.staf as GroepStaf[];
@@ -629,7 +631,7 @@ export async function toggleSelectieBundeling(
         }),
         prisma.teamStaf.findMany({
           where: { teamId: { in: teamIds } },
-          select: { stafId: true, rol: true },
+          select: { stafId: true, rol: true, rolLabel: true },
         }),
       ]);
 
@@ -659,8 +661,13 @@ export async function toggleSelectieBundeling(
         ...[...uniekeStaf.values()].map((ts) =>
           prisma.selectieStaf.upsert({
             where: { selectieGroepId_stafId: { selectieGroepId, stafId: ts.stafId } },
-            create: { selectieGroepId, stafId: ts.stafId, rol: ts.rol },
-            update: { rol: ts.rol },
+            create: {
+              selectieGroepId,
+              stafId: ts.stafId,
+              rol: ts.rol,
+              rolLabel: ts.rolLabel ?? null,
+            },
+            update: { rol: ts.rol, rolLabel: ts.rolLabel ?? null },
           })
         ),
         prisma.teamSpeler.deleteMany({ where: { teamId: { in: teamIds } } }),
@@ -693,8 +700,13 @@ export async function toggleSelectieBundeling(
         ...groepStaf.map((ss: GroepStaf) =>
           prisma.teamStaf.upsert({
             where: { teamId_stafId: { teamId: primaryId, stafId: ss.stafId } },
-            create: { teamId: primaryId, stafId: ss.stafId, rol: ss.rol },
-            update: { rol: ss.rol },
+            create: {
+              teamId: primaryId,
+              stafId: ss.stafId,
+              rol: ss.rol,
+              rolLabel: ss.rolLabel ?? null,
+            },
+            update: { rol: ss.rol, rolLabel: ss.rolLabel ?? null },
           })
         ),
         prisma.selectieSpeler.deleteMany({ where: { selectieGroepId } }),
