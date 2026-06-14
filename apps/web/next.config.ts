@@ -21,6 +21,14 @@ const nextConfig: NextConfig = {
   // Lege turbopack config zodat Next.js 16 niet faalt wanneer withPWA
   // een webpack-config injecteert.
   turbopack: {},
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "ckvoranjewit.nl",
+      },
+    ],
+  },
   experimental: {
     serverActions: {
       allowedOrigins: ["ckvoranjewit.app", "www.ckvoranjewit.app"],

@@ -11,6 +11,7 @@ import type { NextRequest } from "next/server";
  */
 const PUBLIC_PREFIXES = [
   "/login",
+  "/teamindeling",
   "/api/auth",
   "/api/health",
   "/api/scouting/health",
@@ -45,12 +46,7 @@ export default async function middleware(request: NextRequest) {
     const target = new URL(`https://teamindeling.ckvoranjewit.app${pathname}${search}`);
     return NextResponse.redirect(target, 308);
   }
-  if (pathname === "/teamindeling" || pathname.startsWith("/teamindeling/")) {
-    // Publieke teamindeling — proxy naar ti-studio service zodat de URL behouden blijft
-    const tiStudioBase = "https://teamindeling.ckvoranjewit.app";
-    const target = new URL(`${tiStudioBase}${pathname}${search}`);
-    return NextResponse.rewrite(target);
-  }
+  // /teamindeling is een eigen route in apps/web — geen redirect nodig
 
   // 1. Publieke routes — altijd doorlaten
   if (PUBLIC_PREFIXES.some((p) => pathname.startsWith(p))) {
