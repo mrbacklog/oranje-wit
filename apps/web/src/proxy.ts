@@ -45,10 +45,11 @@ export default async function middleware(request: NextRequest) {
     const target = new URL(`https://teamindeling.ckvoranjewit.app${pathname}${search}`);
     return NextResponse.redirect(target, 308);
   }
-  if (pathname.startsWith("/teamindeling")) {
-    // Mobile TI is weg — stuur naar root van de ti-studio service
-    const target = new URL("https://teamindeling.ckvoranjewit.app/ti-studio");
-    return NextResponse.redirect(target, 308);
+  if (pathname === "/teamindeling" || pathname.startsWith("/teamindeling/")) {
+    // Publieke teamindeling — proxy naar ti-studio service zodat de URL behouden blijft
+    const tiStudioBase = "https://teamindeling.ckvoranjewit.app";
+    const target = new URL(`${tiStudioBase}${pathname}${search}`);
+    return NextResponse.rewrite(target);
   }
 
   // 1. Publieke routes — altijd doorlaten
