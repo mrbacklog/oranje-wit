@@ -1,5 +1,6 @@
 "use client";
 import type { PresentatieStaf } from "../presentatie-types";
+import { toonRol } from "@/components/staf/staf-koppel-types";
 
 interface StafPresentatieLijstProps {
   staf: PresentatieStaf[];
@@ -119,7 +120,7 @@ export function StafPresentatieLijst({ staf }: StafPresentatieLijstProps) {
               >
                 {s.naam}
               </div>
-              {s.rol && (
+              {toonRol(s) && (
                 <div
                   style={{
                     fontSize: 9,
@@ -130,7 +131,7 @@ export function StafPresentatieLijst({ staf }: StafPresentatieLijstProps) {
                     maxWidth: 140,
                   }}
                 >
-                  {s.rol}
+                  {toonRol(s)}
                 </div>
               )}
             </div>

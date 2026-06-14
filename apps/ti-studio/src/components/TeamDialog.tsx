@@ -5,6 +5,7 @@ import type { WerkbordTeam, WerkbordValidatieItem } from "@/components/werkbord/
 import { WerkitemPanel } from "./WerkitemPanel";
 import { TeamKaartSpelerRij } from "./werkbord/TeamKaartSpelerRij";
 import { KLEUR_GRADIENT as KLEUR_GRADIENT_IMPORT } from "./werkbord/team-gradients";
+import { toonRol } from "@/components/staf/staf-koppel-types";
 
 // ──────────────────────────────────────────────────────────
 // Design tokens
@@ -376,7 +377,7 @@ export function TeamDialog({
                         color: T.text2,
                       }}
                     >
-                      <span style={{ color: T.text3, fontSize: 10 }}>{s.rol}</span>
+                      <span style={{ color: T.text3, fontSize: 10 }}>{toonRol(s)}</span>
                       <span>{s.naam}</span>
                     </div>
                   ))}

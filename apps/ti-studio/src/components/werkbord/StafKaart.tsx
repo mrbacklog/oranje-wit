@@ -4,6 +4,7 @@
 import { useCallback } from "react";
 import type { WerkbordStaf } from "./types";
 import { useHoverStafKaart } from "./HoverStafKaart";
+import { toonRol } from "@/components/staf/staf-koppel-types";
 
 const KLEUR_DOT: Record<string, string> = {
   blauw: "#6b7cf6",
@@ -175,7 +176,7 @@ export function StafKaart({ staf, onPlusClick, plusActief = false }: StafKaartPr
                 >
                   {t.teamNaam}
                 </span>
-                {t.rol && (
+                {toonRol({ rol: t.rol, rolLabel: (t as any).rolLabel }) && (
                   <span
                     style={{
                       fontSize: 10,
@@ -188,7 +189,7 @@ export function StafKaart({ staf, onPlusClick, plusActief = false }: StafKaartPr
                       flexShrink: 0,
                     }}
                   >
-                    {t.rol}
+                    {toonRol({ rol: t.rol, rolLabel: (t as any).rolLabel })}
                   </span>
                 )}
               </div>

@@ -15,6 +15,7 @@
 import { createContext, useCallback, useContext, useRef, useState, useEffect } from "react";
 import type { ReactNode } from "react";
 import type { WerkbordStaf } from "./types";
+import { toonRol } from "@/components/staf/staf-koppel-types";
 
 // ── Constanten ──────────────────────────────────────────────────────────────
 
@@ -306,7 +307,12 @@ function StafKaartInhoud({ staf }: { staf: WerkbordStaf }) {
     .slice(0, 2)
     .toUpperCase();
 
-  const eersteRol = staf.rollen[0] ?? staf.teams[0]?.rol ?? "";
+  const eersteRolRaw = staf.teams[0];
+  const eersteRol =
+    staf.rollen[0] ??
+    (eersteRolRaw
+      ? toonRol({ rol: eersteRolRaw.rol, rolLabel: (eersteRolRaw as any).rolLabel })
+      : "");
   const koppelingen = staf.koppelingen ?? [];
   const historie = staf.historie ?? [];
 

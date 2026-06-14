@@ -5,7 +5,7 @@ import type { BeheerStaf } from "../staf-actions";
 import { setStafActief } from "../staf-actions";
 import { NieuweStafDialog } from "./NieuweStafDialog";
 import { StafKoppelEditor } from "@/components/staf/StafKoppelEditor";
-import { KLEUR_DOT, type StafKoppelDoel } from "@/components/staf/staf-koppel-types";
+import { KLEUR_DOT, toonRol, type StafKoppelDoel } from "@/components/staf/staf-koppel-types";
 
 type DoelOptie = StafKoppelDoel;
 
@@ -388,7 +388,7 @@ export function StafOverzicht({ stafLeden, alleDoelen }: Props) {
                                 SEL
                               </span>
                             )}
-                            {t.rol && (
+                            {toonRol(t) && (
                               <span
                                 style={{
                                   fontSize: "0.75rem",
@@ -400,7 +400,7 @@ export function StafOverzicht({ stafLeden, alleDoelen }: Props) {
                                   whiteSpace: "nowrap",
                                 }}
                               >
-                                {t.rol}
+                                {toonRol(t)}
                               </span>
                             )}
                           </div>

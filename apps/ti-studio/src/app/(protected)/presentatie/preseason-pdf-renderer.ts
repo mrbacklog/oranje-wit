@@ -163,7 +163,8 @@ function schrijfTeam(doc: PDFKit.PDFDocument, team: PreseasonPdfTeam) {
     doc.font("Helvetica-Bold").fontSize(10).fillColor(DONKER).text("Staf");
     doc.font("Helvetica").fontSize(9.5).fillColor(DONKER);
     for (const staf of team.staf) {
-      const label = staf.rol ? `${staf.rol} ${staf.naam}` : staf.naam;
+      const rolWeergave = staf.rolLabel?.trim() || staf.rol;
+      const label = rolWeergave ? `${rolWeergave} ${staf.naam}` : staf.naam;
       doc.text(label);
     }
   }

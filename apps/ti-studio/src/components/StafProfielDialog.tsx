@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { logger } from "@oranje-wit/types";
 import { getStafProfiel } from "@/app/(protected)/indeling/werkindeling-actions";
 import { WerkitemPanel } from "@/components/WerkitemPanel";
+import { toonRol } from "@/components/staf/staf-koppel-types";
 
 // ──────────────────────────────────────────────────────────
 // Types
@@ -324,8 +325,10 @@ export default function StafProfielDialog({
                       }}
                     />
                     {k.teamNaam}
-                    {k.rol && (
-                      <span style={{ fontSize: 9, color: T.text3, marginLeft: 2 }}>{k.rol}</span>
+                    {toonRol(k) && (
+                      <span style={{ fontSize: 9, color: T.text3, marginLeft: 2 }}>
+                        {toonRol(k)}
+                      </span>
                     )}
                   </span>
                 ))}
@@ -495,7 +498,7 @@ export default function StafProfielDialog({
                             }}
                           />
                           <span style={{ flex: 1, fontSize: 12 }}>{item.teamNaam}</span>
-                          {item.rol && (
+                          {((item as any).rolLabel?.trim() || item.rol) && (
                             <span
                               style={{
                                 fontSize: 10,
@@ -503,7 +506,7 @@ export default function StafProfielDialog({
                                 marginLeft: "auto",
                               }}
                             >
-                              {item.rol}
+                              {(item as any).rolLabel?.trim() || item.rol}
                             </span>
                           )}
                         </div>
