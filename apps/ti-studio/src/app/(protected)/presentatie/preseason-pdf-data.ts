@@ -93,10 +93,14 @@ export function maakDefaultPublicatieInstellingen(
 }
 
 export function formatPubliekeSpelerNaam(speler: PresentatieSpeler): string {
-  const initiaal = speler.roepnaam.trim().charAt(0).toUpperCase();
+  const roepnaam = speler.roepnaam.trim();
   const tussenvoegsel = speler.tussenvoegsel?.trim();
-  const suffix = tussenvoegsel ? ` ${tussenvoegsel}` : "";
-  return `${speler.achternaam}, ${initiaal}. (${speler.roepnaam})${suffix}`;
+  const achternaam = speler.achternaam.trim();
+  return tussenvoegsel ? `${roepnaam} ${tussenvoegsel} ${achternaam}` : `${roepnaam} ${achternaam}`;
+}
+
+function sorteerOpRoepnaam(namen: PresentatieSpeler[]): PresentatieSpeler[] {
+  return [...namen].sort((a, b) => a.roepnaam.localeCompare(b.roepnaam, "nl"));
 }
 
 function mapStaf(staf: PresentatieStaf[]): PreseasonPdfStaf[] {
@@ -109,14 +113,14 @@ function mapTeam(team: PresentatieTeam): PreseasonPdfTeam {
   return {
     id: team.id,
     naam: team.naam,
-    dames: team.dames.map(formatPubliekeSpelerNaam),
-    heren: team.heren.map(formatPubliekeSpelerNaam),
+    dames: sorteerOpRoepnaam(team.dames).map(formatPubliekeSpelerNaam),
+    heren: sorteerOpRoepnaam(team.heren).map(formatPubliekeSpelerNaam),
     staf: mapStaf(team.staf),
     leden: team.leden.map((lid) => ({
       teamId: lid.teamId,
       naam: lid.naam,
-      dames: lid.dames.map(formatPubliekeSpelerNaam),
-      heren: lid.heren.map(formatPubliekeSpelerNaam),
+      dames: sorteerOpRoepnaam(lid.dames).map(formatPubliekeSpelerNaam),
+      heren: sorteerOpRoepnaam(lid.heren).map(formatPubliekeSpelerNaam),
     })),
   };
 }
@@ -140,7 +144,10 @@ export function bouwPreseasonPdfSecties(
     .map((config) => ({
       key: config.key,
       titel: config.titel,
-      teams: teamsOpVolgorde.filter((team) => sectieKeyVoorTeam(team) === config.key).map(mapTeam),
+      teams: teamsOpVolgorde
+        .filter((team) => sectieKeyVoorTeam(team) === config.key)
+        .filter((team) => team.dames.length > 0 || team.heren.length > 0 || team.leden.length > 0)
+        .map(mapTeam),
     }))
     .filter((sectie) => sectie.teams.length > 0);
 }
