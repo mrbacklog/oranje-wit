@@ -263,35 +263,35 @@ export function TeamKaart({
         >
           <div
             style={{
+              fontSize: zoomLevel === "compact" ? 22 : 13,
+              fontWeight: 700,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {selectieLabel}
+          </div>
+          <div
+            style={{
               display: "flex",
-              alignItems: "baseline",
+              alignItems: "center",
               gap: 5,
+              marginTop: 2,
               minWidth: 0,
             }}
           >
-            <div
-              style={{
-                fontSize: zoomLevel === "compact" ? 22 : 13,
-                fontWeight: 700,
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                minWidth: 0,
-              }}
-            >
-              {selectieLabel}
-            </div>
-            {jNummer && zoomLevel !== "compact" && (
+            {jNummer && (
               <span
                 style={{
                   fontSize: 9,
-                  fontWeight: 700,
-                  letterSpacing: ".04em",
+                  fontWeight: 800,
+                  letterSpacing: ".05em",
                   padding: "1px 5px",
                   borderRadius: 4,
-                  background: "var(--bg-3)",
-                  color: "var(--text-3)",
-                  border: "1px solid var(--border-0)",
+                  background: "rgba(255,107,0,.15)",
+                  color: "var(--accent)",
+                  border: "1px solid rgba(255,107,0,.3)",
                   flexShrink: 0,
                   lineHeight: "14px",
                 }}
@@ -300,21 +300,22 @@ export function TeamKaart({
                 {jNummer}
               </span>
             )}
-          </div>
-          <div
-            style={{
-              fontSize: 10,
-              fontWeight: 600,
-              color: "var(--text-3)",
-              textTransform: "uppercase",
-              letterSpacing: "0.06em",
-              marginTop: 2,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-          >
-            {bouwSubtitel(team)}
+            {zoomLevel !== "compact" && (
+              <div
+                style={{
+                  fontSize: 10,
+                  fontWeight: 600,
+                  color: "var(--text-3)",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.06em",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {bouwSubtitel(team)}
+              </div>
+            )}
           </div>
         </div>
 
