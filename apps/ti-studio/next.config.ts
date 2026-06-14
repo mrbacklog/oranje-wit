@@ -21,7 +21,6 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  turbopack: {},
   experimental: {
     serverActions: {
       allowedOrigins: ["teamindeling.ckvoranjewit.app", "localhost:3001"],
