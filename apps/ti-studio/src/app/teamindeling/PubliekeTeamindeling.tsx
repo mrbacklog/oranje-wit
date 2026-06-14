@@ -1,3 +1,4 @@
+/* eslint-disable max-lines -- Publieke teamindeling UI combineert meerdere nauw verwante sub-componenten in één bestand */
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -6,6 +7,8 @@ import type {
   PubliekeTeamindelingData,
   PubliekTeam,
 } from "@/lib/teamindeling/publieke-presentatie";
+
+const LOGO_URL = "https://ckvoranjewit.nl/wp-content/uploads/2025/12/OW-100-logo-lexvg.webp";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -512,7 +515,7 @@ function ToelichtingPagina({
         <div style={{ maxWidth: 720, margin: "0 auto" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="https://ckvoranjewit.nl/wp-content/uploads/2025/12/OW-100-logo-lexvg.webp"
+            src={LOGO_URL}
             alt="c.k.v. Oranje Wit 100 jaar"
             style={{ height: 44, width: "auto", display: "block", marginBottom: 20 }}
           />
@@ -549,10 +552,12 @@ function ToelichtingPagina({
         >
           {toelichting ? (
             <>
+              {/* Inhoud komt uit TC-beheerd admin-formulier — geen externe gebruikersinvoer */}
               <div
                 style={{ fontSize: 16, lineHeight: 1.7, color: C.tekst, marginBottom: 24 }}
                 dangerouslySetInnerHTML={{ __html: toelichting.introTekst }}
               />
+              {/* Inhoud komt uit TC-beheerd admin-formulier — geen externe gebruikersinvoer */}
               <div
                 style={{ fontSize: 16, lineHeight: 1.7, color: C.tekst, marginBottom: 28 }}
                 dangerouslySetInnerHTML={{ __html: toelichting.tcTekst }}
@@ -690,7 +695,7 @@ export function PubliekeTeamindeling({ data }: { data: PubliekeTeamindelingData 
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="https://ckvoranjewit.nl/wp-content/uploads/2025/12/OW-100-logo-lexvg.webp"
+            src={LOGO_URL}
             alt="c.k.v. Oranje Wit 100 jaar"
             style={{ height: 44, width: "auto", display: "block" }}
           />
