@@ -896,6 +896,7 @@ model SelectieStaf {
   stafId          String
 
   rol             String
+  rolLabel        String?
 
   @@unique([selectieGroepId, stafId])
   @@index([selectieGroepId])
@@ -971,7 +972,8 @@ model TeamStaf {
   staf   Staf   @relation(fields: [stafId], references: [id])
   stafId String
 
-  rol    String
+  rol      String
+  rolLabel String?
 
   @@unique([teamId, stafId])
   @@index([teamId])

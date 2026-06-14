@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import "./tokens.css";
 import { TeamKaartSpelerRij, SPELER_RIJ_HOOGTE } from "./TeamKaartSpelerRij";
+import { toonRol } from "@/components/staf/staf-koppel-types";
 import type {
   WerkbordTeam,
   WerkbordSpeler,
@@ -688,7 +689,7 @@ function StafFooterIcoon({
                   >
                     {s.naam}
                   </span>
-                  {s.rol && (
+                  {toonRol(s) && (
                     <span
                       style={{
                         fontSize: 9,
@@ -698,7 +699,7 @@ function StafFooterIcoon({
                         flexShrink: 0,
                       }}
                     >
-                      {s.rol}
+                      {toonRol(s)}
                     </span>
                   )}
                 </div>

@@ -1,0 +1,639 @@
+[
+  {
+    "relCode": "NFL60Y5",
+    "naam": "Witt, M. (Monique) te",
+    "email": null,
+    "teams": "J9 (Technische staf: Hoofd coach)",
+    "adres": {
+      "straat": "Kromme Zandweg",
+      "huisnummer": "21",
+      "postcode": "3319 GG",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NFS05D0",
+    "naam": "Naaktgeboren, D.J. (Dio)",
+    "email": null,
+    "teams": "4 (Technische staf: Hoofd coach)",
+    "adres": {
+      "straat": "Werf van Schouten",
+      "huisnummer": "1",
+      "postcode": "3313 DB",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NFS68P3",
+    "naam": "Lichteveld, F. (Fred)",
+    "email": null,
+    "teams": "1 (Overige staf: Teammanager) | 2 (Overige staf: Teammanager)",
+    "adres": {
+      "straat": "Visserstuin",
+      "huisnummer": "155",
+      "postcode": "3319 LM",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NFT76J1",
+    "naam": "Koster, R.C.J. (Robert)",
+    "email": null,
+    "teams": "J6 (Technische staf: Hoofd coach)",
+    "adres": {
+      "straat": "Colorado",
+      "huisnummer": "189",
+      "postcode": "3315 WE",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NFV12W2",
+    "naam": "Stomp-Burgt, L (Lianne) vd",
+    "email": null,
+    "teams": "J13 (Technische staf: Hoofd coach) | U19-1 (Technische staf: Assistent coach)",
+    "adres": {
+      "straat": "Stevensweg",
+      "huisnummer": "16",
+      "postcode": "3319 AK",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NFW01R0",
+    "naam": "Kooper, M. (Monique)",
+    "email": null,
+    "teams": "6 (Technische staf: Hoofd coach)",
+    "adres": {
+      "straat": "Jacob Marisstraat",
+      "huisnummer": "90",
+      "postcode": "3314 TK",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NFW15M2",
+    "naam": "Valk-Helsloot, G. (Gunilda)",
+    "email": null,
+    "teams": "5 (Technische staf: Hoofd coach)",
+    "adres": {
+      "straat": "Selma Lagerlof-erf",
+      "huisnummer": "197",
+      "postcode": "3315 AV",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NFW26D7",
+    "naam": "Muller, A.J. (Arthijn)",
+    "email": null,
+    "teams": "U19-1 (Technische staf: Hoofd coach)",
+    "adres": {
+      "straat": "Abeelstraat",
+      "huisnummer": "128",
+      "postcode": "3329 AG",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NFW28G4",
+    "naam": "Bakker-Verwaal, L. (Lieke)",
+    "email": null,
+    "teams": "J11 (Technische staf: Hoofd coach)",
+    "adres": {
+      "straat": "Gemmahof",
+      "huisnummer": "28",
+      "postcode": "3318 RC",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NFW28J5",
+    "naam": "Ameijden, S (Sjoerd) van",
+    "email": null,
+    "teams": "J8 (Technische staf: Hoofd coach)",
+    "adres": {
+      "straat": "Ceramstraat",
+      "huisnummer": "112",
+      "postcode": "3312 SK",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NFW28T5",
+    "naam": "Kleingeld, J (Jasper)",
+    "email": null,
+    "teams": "U17-1 (Technische staf: Hoofd coach)",
+    "adres": {
+      "straat": "Couperusstraat",
+      "huisnummer": "10",
+      "postcode": "3319 RC",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NFW28X3",
+    "naam": "Mastijn, N. (Niels)",
+    "email": null,
+    "teams": "1 (Technische staf: Assistent coach)",
+    "adres": {
+      "straat": "Alver",
+      "huisnummer": "93",
+      "postcode": "3356 EN",
+      "plaats": "PAPENDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NFW29N6",
+    "naam": "Ploeg, H (Henno)",
+    "email": null,
+    "teams": "J15 (Technische staf: Hoofd coach)",
+    "adres": {
+      "straat": "Burg Beelaertspark",
+      "huisnummer": "33",
+      "postcode": "3319 AM",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NFW42M8",
+    "naam": "Boer, A (Alexander) de",
+    "email": null,
+    "teams": "U17-2 (Technische staf: Hoofd coach)",
+    "adres": {
+      "straat": "Steltenpad",
+      "huisnummer": "10",
+      "postcode": "3311 SL",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NFW42R3",
+    "naam": "Dongen, R.J. (Rob) van",
+    "email": null,
+    "teams": "U15-1 (Technische staf: Hoofd coach)",
+    "adres": {
+      "straat": "Dubbelsteynlaan Oost",
+      "huisnummer": "236",
+      "postcode": "3319 EG",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NJC90M5",
+    "naam": "Bouwknegt-Zwijnenburg, I (Ilonka)",
+    "email": null,
+    "teams": "J10 (Technische staf: Hoofd coach)",
+    "adres": {
+      "straat": "Hugo de Grootlaan",
+      "huisnummer": "77",
+      "postcode": "3314 AG",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NJF95V6",
+    "naam": "Ardon, K. (Kim)",
+    "email": null,
+    "teams": "3 (Overige staf: Teammanager)",
+    "adres": {
+      "straat": "Esdoornlaan",
+      "huisnummer": "21",
+      "postcode": "3319 XD",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NJK42C4",
+    "naam": "Kleingeld-Wibbens, L (Liesbeth)",
+    "email": null,
+    "teams": "J9 (Technische staf: Hoofd coach)",
+    "adres": {
+      "straat": "Couperusstraat",
+      "huisnummer": "10",
+      "postcode": "3319 RC",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NKJ95L7",
+    "naam": "Oppe, M. (Milou)",
+    "email": null,
+    "teams": "U15-1 (Technische staf: Hoofd coach)",
+    "adres": {
+      "straat": "Boeroestraat",
+      "huisnummer": "89",
+      "postcode": "3312 HB",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NKK88N6",
+    "naam": "Sint Nicolaas, M. (Marcel)",
+    "email": null,
+    "teams": "J8 (Technische staf: Hoofd coach)",
+    "adres": {
+      "straat": "Vlietzicht",
+      "huisnummer": "30",
+      "postcode": "3319 WJ",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NKN65B6",
+    "naam": "Baars, L.A. (Luuk)",
+    "email": null,
+    "teams": "J1 (Technische staf: Hoofd coach)",
+    "adres": {
+      "straat": "Loudonstraat",
+      "huisnummer": "229",
+      "postcode": "3317 PE",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NKQ13Q3",
+    "naam": "Wit, S.E.E. (Syrah) de",
+    "email": null,
+    "teams": "J7 (Technische staf: Hoofd coach)",
+    "adres": {
+      "straat": "Toulonselaan",
+      "huisnummer": "18",
+      "postcode": "3312 ET",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NKQ14R3",
+    "naam": "Wit, N.M.T. (Nadia) de",
+    "email": null,
+    "teams": "J7 (Technische staf: Hoofd coach)",
+    "adres": {
+      "straat": "Toulonselaan",
+      "huisnummer": "18",
+      "postcode": "3312 ET",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NKT92K1",
+    "naam": "Jongh, A. (Anouk) de",
+    "email": null,
+    "teams": "1 (Medische staf: Fysiotherapeut) | 2 (Medische staf: Fysiotherapeut)",
+    "adres": {
+      "straat": "Azobe",
+      "huisnummer": "156",
+      "postcode": "3315 NC",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NKX36X8",
+    "naam": "Witman, K. (Kimberley)",
+    "email": null,
+    "teams": "J6 (Technische staf: Hoofd coach)",
+    "adres": {
+      "straat": "Lijsterbesstraat",
+      "huisnummer": "12",
+      "postcode": "3319 VK",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NKX66T5",
+    "naam": "Wietses, J. (Joël)",
+    "email": null,
+    "teams": "U19-2 (Technische staf: Hoofd coach)",
+    "adres": {
+      "straat": "Bakema-erf",
+      "huisnummer": "64",
+      "postcode": "3315 JB",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NKZ02T5",
+    "naam": "Trooijen, W.H. (Jet) van",
+    "email": null,
+    "teams": "J12 (Technische staf: Hoofd coach)",
+    "adres": {
+      "straat": "Tesselschadestraat",
+      "huisnummer": "67",
+      "postcode": "3314 ZG",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NKZ28R9",
+    "naam": "Jongh, M. (Matthijs) de",
+    "email": null,
+    "teams": "J11 (Technische staf: Hoofd coach)",
+    "adres": {
+      "straat": "Azobe",
+      "huisnummer": "156",
+      "postcode": "3315 NC",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NLB71D8",
+    "naam": "Boshoven, S.A.E. (Sara)",
+    "email": null,
+    "teams": "J5 (Technische staf: Hoofd coach)",
+    "adres": {
+      "straat": "Noordsigt",
+      "huisnummer": "145",
+      "postcode": "3319 WE",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NLG58W7",
+    "naam": "Vaartmans, J.A. (Jordi)",
+    "email": null,
+    "teams": "J16 (Technische staf: Assistent coach)",
+    "adres": {
+      "straat": "Klein Kruithof",
+      "huisnummer": "3",
+      "postcode": "3319 GX",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NLG58Z8",
+    "naam": "Nobel, M.H.M. (Merle)",
+    "email": null,
+    "teams": "J17 (Technische staf: Hoofd coach)",
+    "adres": {
+      "straat": "Werkenmondestraat",
+      "huisnummer": "8",
+      "postcode": "3312 JW",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NLG59F1",
+    "naam": "Lohuis, J.A. (Jens)",
+    "email": null,
+    "teams": "U19-2 (Technische staf: Hoofd coach)",
+    "adres": {
+      "straat": "Vissersdijk",
+      "huisnummer": "20e",
+      "postcode": "3319 GV",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NLG59G8",
+    "naam": "Koster, S. (Senne)",
+    "email": null,
+    "teams": "J6 (Technische staf: Assistent coach)",
+    "adres": {
+      "straat": "Colorado",
+      "huisnummer": "189",
+      "postcode": "3315 WE",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NLL20B6",
+    "naam": "Wensen, M. (Maud) van",
+    "email": null,
+    "teams": "J1 (Technische staf: Hoofd coach)",
+    "adres": {
+      "straat": "Baron van Boetzelaerlaan",
+      "huisnummer": "56",
+      "postcode": "3319 CM",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NLL20F4",
+    "naam": "Burgt, S. (Seth) van de",
+    "email": null,
+    "teams": "J4 (Technische staf: Hoofd coach)",
+    "adres": {
+      "straat": "Dubbelsteynlaan West",
+      "huisnummer": "30",
+      "postcode": "3319 EL",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NLP77Z4",
+    "naam": "Klooster, D. (Danique) van der",
+    "email": null,
+    "teams": "J16 (Technische staf: Hoofd coach)",
+    "adres": {
+      "straat": "Van Ravesteyn-erf",
+      "huisnummer": "113",
+      "postcode": "3315 DJ",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NLP89W4",
+    "naam": "Volker, T.N. (Tess)",
+    "email": null,
+    "teams": "J18 (Technische staf: Hoofd coach)",
+    "adres": {
+      "straat": "Marnixstraat",
+      "huisnummer": "9",
+      "postcode": "3314 AM",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NLS07R6",
+    "naam": "Vaartmans, I. (Ingrid)",
+    "email": null,
+    "teams": "1 (Overige staf: Teammanager) | 2 (Overige staf: Teammanager)",
+    "adres": {
+      "straat": "Klein Kruithof",
+      "huisnummer": "3",
+      "postcode": "3319 GX",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NLS45N2",
+    "naam": "Kilsdonk, S.A (Sophie)",
+    "email": null,
+    "teams": "J4 (Technische staf: Hoofd coach)",
+    "adres": {
+      "straat": "Bakema-erf",
+      "huisnummer": "111",
+      "postcode": "3315 JC",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NLS54M7",
+    "naam": "Baas, N.J. (Nikki)",
+    "email": null,
+    "teams": "J10 (Technische staf: Assistent coach)",
+    "adres": {
+      "straat": "Maaskant-Erf",
+      "huisnummer": "25",
+      "postcode": "3315 KK",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NLX04H2",
+    "naam": "Post, J.M. (Joaz)",
+    "email": null,
+    "teams": "J10 (Technische staf: Hoofd coach)",
+    "adres": {
+      "straat": "Maaskant-Erf",
+      "huisnummer": "21",
+      "postcode": "3315 KK",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NLX64V0",
+    "naam": "Boer, E.M. (Esmée) de",
+    "email": null,
+    "teams": "J18 (Technische staf: Hoofd coach)",
+    "adres": {
+      "straat": "Steltenpad",
+      "huisnummer": "10",
+      "postcode": "3311 SL",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NLY54F4",
+    "naam": "Vos, J. (Justin)",
+    "email": null,
+    "teams": "J5 (Technische staf: Hoofd coach)",
+    "adres": {
+      "straat": "Hortensiastraat",
+      "huisnummer": "32",
+      "postcode": "3319 HE",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NMF58C3",
+    "naam": "Oosterling, K. (Kimberly)",
+    "email": null,
+    "teams": "J12 (Technische staf: Hoofd coach)",
+    "adres": {
+      "straat": "Weegschaal",
+      "huisnummer": "53",
+      "postcode": "3328 PB",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NMG69P3",
+    "naam": "Ven, T. (Tom) van de",
+    "email": null,
+    "teams": "U17-2 (Technische staf: Hoofd coach)",
+    "adres": {
+      "straat": "Van Doesburg-Erf",
+      "huisnummer": "47",
+      "postcode": "3315 RB",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NMK12K6",
+    "naam": "Vos, T. (Thijs)",
+    "email": null,
+    "teams": "J13 (Technische staf: Assistent coach) | J14 (Technische staf: Hoofd coach)",
+    "adres": {
+      "straat": "Groenhove",
+      "huisnummer": "30",
+      "postcode": "3319 WD",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NMT25X0",
+    "naam": "Klooster, A. (Alex) van der",
+    "email": null,
+    "teams": "U19-2 (Overige staf: Teammanager) | U19-1 (Overige staf: Teammanager)",
+    "adres": {
+      "straat": "Van Ravesteyn-erf",
+      "huisnummer": "113",
+      "postcode": "3315 DJ",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NNC07X6",
+    "naam": "Sempel, M. (Magda)",
+    "email": null,
+    "teams": "U17-1 (Overige staf: Teammanager)",
+    "adres": {
+      "straat": "Burgemeester Beelaertspark",
+      "huisnummer": "14",
+      "postcode": "3319 AV",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  },
+  {
+    "relCode": "NNH53V0",
+    "naam": "Jong, L. (Leander) de",
+    "email": null,
+    "teams": "J14 (Technische staf: Assistent coach)",
+    "adres": {
+      "straat": "Oranjelaan",
+      "huisnummer": "3k4",
+      "postcode": "3311 DH",
+      "plaats": "DORDRECHT",
+      "land": null
+    }
+  }
+]

@@ -571,7 +571,7 @@ function StafKaartInhoud({ staf }: { staf: WerkbordStaf }) {
                     }}
                   >
                     <TypeIcoon type={type} size={10} />
-                    {k.rol}
+                    {toonRol(k)}
                   </span>
                 </div>
               ))}
@@ -642,7 +642,7 @@ function StafKaartInhoud({ staf }: { staf: WerkbordStaf }) {
                     }}
                   >
                     <TypeIcoon type={type} size={10} />
-                    {t.rol}
+                    {toonRol(t)}
                   </span>
                 </div>
               ))}
