@@ -94,9 +94,11 @@ export function maakDefaultPublicatieInstellingen(
 
 export function formatPubliekeSpelerNaam(speler: PresentatieSpeler): string {
   const roepnaam = speler.roepnaam.trim();
+  const initiaal = roepnaam[0]?.toUpperCase() ?? "";
   const tussenvoegsel = speler.tussenvoegsel?.trim();
   const achternaam = speler.achternaam.trim();
-  return tussenvoegsel ? `${roepnaam} ${tussenvoegsel} ${achternaam}` : `${roepnaam} ${achternaam}`;
+  const basis = `${achternaam}, ${initiaal}. (${roepnaam})`;
+  return tussenvoegsel ? `${basis} ${tussenvoegsel}` : basis;
 }
 
 function sorteerOpRoepnaam(namen: PresentatieSpeler[]): PresentatieSpeler[] {
