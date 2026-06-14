@@ -10,7 +10,12 @@ const nextConfig: NextConfig = {
     "@oranje-wit/sportlink",
     "@oranje-wit/teamindeling-shared",
   ],
-  serverExternalPackages: ["pg", "pg-connection-string", "pgpass"],
+  serverExternalPackages: ["pg", "pg-connection-string", "pgpass", "pdfkit"],
+  outputFileTracingIncludes: {
+    "/api/presentatie/preseason-pdf": [
+      "./node_modules/.pnpm/pdfkit@*/node_modules/pdfkit/js/data/**",
+    ],
+  },
   // TypeScript checking wordt al gedaan in CI (GitHub Actions) —
   // in de Docker build is het overbodig en veroorzaakt Prisma type depth errors
   typescript: {

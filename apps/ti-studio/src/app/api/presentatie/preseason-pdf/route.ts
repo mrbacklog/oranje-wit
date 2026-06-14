@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { guardTC } from "@oranje-wit/auth/checks";
 import { getTeamsVoorPresentatie } from "../../../(protected)/presentatie/actions";
 import { getPublicatieInstellingen } from "../../../(protected)/presentatie/publicatie-actions";
 import { bouwPreseasonPdfSecties } from "../../../(protected)/presentatie/preseason-pdf-data";
@@ -8,6 +9,11 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
+  const auth = await guardTC();
+  if (!auth.ok) {
+    return NextResponse.json({ error: auth.error }, { status: 401 });
+  }
+
   const [teamsResult, instellingenResult] = await Promise.all([
     getTeamsVoorPresentatie(),
     getPublicatieInstellingen(),
