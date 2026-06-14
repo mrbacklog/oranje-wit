@@ -498,7 +498,7 @@ export default function StafProfielDialog({
                             }}
                           />
                           <span style={{ flex: 1, fontSize: 12 }}>{item.teamNaam}</span>
-                          {((item as any).rolLabel?.trim() || item.rol) && (
+                          {(item.rolLabel?.trim() || item.rol) && (
                             <span
                               style={{
                                 fontSize: 10,
@@ -506,7 +506,7 @@ export default function StafProfielDialog({
                                 marginLeft: "auto",
                               }}
                             >
-                              {(item as any).rolLabel?.trim() || item.rol}
+                              {item.rolLabel?.trim() || item.rol}
                             </span>
                           )}
                         </div>

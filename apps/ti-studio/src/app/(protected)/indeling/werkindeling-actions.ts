@@ -339,7 +339,13 @@ export async function getStafProfiel(stafId: string, kadersId?: string) {
   // Groepeer toewijzingen per seizoen (deduplicate seizoen+team combo)
   const historieMap = new Map<
     string,
-    { seizoen: string; teamNaam: string; teamKleur: string; rol: string }[]
+    {
+      seizoen: string;
+      teamNaam: string;
+      teamKleur: string;
+      rol: string;
+      rolLabel?: string | null;
+    }[]
   >();
   for (const t of staf.toewijzingen) {
     const arr = historieMap.get(t.seizoen) ?? [];

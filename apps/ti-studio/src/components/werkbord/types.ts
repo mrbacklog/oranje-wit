@@ -81,6 +81,7 @@ export interface WerkbordStafTeamrol {
   teamNaam: string;
   kleur: string;
   rol: string;
+  rolLabel?: string | null;
   doelType: "team" | "selectie";
 }
 
@@ -89,6 +90,7 @@ export interface WerkbordStafKoppeling {
   teamNaam: string;
   teamKleur: string;
   rol: string;
+  rolLabel?: string | null;
 }
 
 export interface WerkbordStafHistorie {
@@ -96,6 +98,7 @@ export interface WerkbordStafHistorie {
   teamNaam: string;
   teamKleur: string;
   rol: string;
+  rolLabel?: string | null;
 }
 
 export interface WerkbordStaf {

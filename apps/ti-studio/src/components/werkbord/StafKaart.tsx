@@ -176,7 +176,7 @@ export function StafKaart({ staf, onPlusClick, plusActief = false }: StafKaartPr
                 >
                   {t.teamNaam}
                 </span>
-                {toonRol({ rol: t.rol, rolLabel: (t as any).rolLabel }) && (
+                {toonRol({ rol: t.rol, rolLabel: t.rolLabel }) && (
                   <span
                     style={{
                       fontSize: 10,
@@ -189,7 +189,7 @@ export function StafKaart({ staf, onPlusClick, plusActief = false }: StafKaartPr
                       flexShrink: 0,
                     }}
                   >
-                    {toonRol({ rol: t.rol, rolLabel: (t as any).rolLabel })}
+                    {toonRol({ rol: t.rol, rolLabel: t.rolLabel })}
                   </span>
                 )}
               </div>

@@ -310,9 +310,7 @@ function StafKaartInhoud({ staf }: { staf: WerkbordStaf }) {
   const eersteRolRaw = staf.teams[0];
   const eersteRol =
     staf.rollen[0] ??
-    (eersteRolRaw
-      ? toonRol({ rol: eersteRolRaw.rol, rolLabel: (eersteRolRaw as any).rolLabel })
-      : "");
+    (eersteRolRaw ? toonRol({ rol: eersteRolRaw.rol, rolLabel: eersteRolRaw.rolLabel }) : "");
   const koppelingen = staf.koppelingen ?? [];
   const historie = staf.historie ?? [];
 

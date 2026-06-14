@@ -317,6 +317,7 @@ export default async function IndelingPage() {
         stafId: ts.stafId,
         naam: ts.staf?.naam ?? "?",
         rol: ts.rol ?? "",
+        rolLabel: ts.rolLabel ?? null,
       })),
       werkitems: [],
       ussScore:
