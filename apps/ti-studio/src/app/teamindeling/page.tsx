@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { getPubliekeTeamindelingData } from "@/lib/teamindeling/publieke-presentatie";
 import { PubliekeTeamindeling } from "./PubliekeTeamindeling";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Teamindeling — c.k.v. Oranje Wit",
   description: "De officiële teamindeling van c.k.v. Oranje Wit",
