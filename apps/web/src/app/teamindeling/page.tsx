@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { getPubliekeTeamindelingData } from "@/lib/teamindeling/publieke-presentatie";
 import { PubliekeTeamindeling } from "./PubliekeTeamindeling";
-import { checkWachtwoord, isGeldig } from "./wachtwoord-action";
+import { checkWachtwoord } from "./wachtwoord-action";
 
 export const dynamic = "force-dynamic";
 
@@ -15,7 +16,7 @@ export default async function PubliekeTeamindelingPage({
 }: {
   searchParams: Promise<{ fout?: string }>;
 }) {
-  const geldig = await isGeldig();
+  const geldig = (await cookies()).get("ti-preview")?.value === "ok";
 
   if (!geldig) {
     const { fout } = await searchParams;

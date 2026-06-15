@@ -19,7 +19,3 @@ export async function checkWachtwoord(formData: FormData) {
   }
   redirect("/teamindeling?fout=1");
 }
-
-export async function isGeldig(): Promise<boolean> {
-  return (await cookies()).get(COOKIE)?.value === "ok";
-}
