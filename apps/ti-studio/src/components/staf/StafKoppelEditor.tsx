@@ -211,7 +211,7 @@ export function StafKoppelEditor({ staf, alleDoelen, onClose, onGewijzigd }: Pro
             </span>
             <input
               type="text"
-              defaultValue={t.rol}
+              defaultValue={t.rol.trim().toLowerCase() === "trainer" ? "Trainer/Coach" : t.rol}
               disabled={isPending}
               onBlur={(e) => handleRolWijzig(t, e.target.value)}
               list={`rol-suggesties-${staf.id}`}
