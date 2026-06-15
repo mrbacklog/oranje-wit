@@ -1,5 +1,4 @@
-// @ts-expect-error — JSON import zonder typedeclaratie
-import rawConfig from "../../../../data/kennismakingstraining.json";
+import rawConfig from "./kennismakingstraining-config.json";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
