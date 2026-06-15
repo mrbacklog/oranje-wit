@@ -108,6 +108,8 @@ export function KennismakingTeamSectie({
 }) {
   if (dagSlots.length === 0) return null;
 
+  const isVast = dagSlots.some((d) => d.vast);
+
   return (
     <div
       style={{
@@ -130,24 +132,42 @@ export function KennismakingTeamSectie({
         }}
       >
         <span>📅</span> Kennismakingstraining
-        <span
-          style={{
-            fontSize: 11,
-            fontWeight: 500,
-            color: C.blauw,
-            background: C.blauwLicht,
-            borderRadius: 99,
-            padding: "1px 8px",
-            textTransform: "none",
-            letterSpacing: 0,
-          }}
-        >
-          {duurMinuten} min
-        </span>
+        {isVast ? (
+          <span
+            style={{
+              fontSize: 11,
+              fontWeight: 600,
+              color: "#7c3aed",
+              background: "rgba(124,58,237,0.08)",
+              border: "1px solid rgba(124,58,237,0.25)",
+              borderRadius: 99,
+              padding: "1px 8px",
+              textTransform: "none",
+              letterSpacing: 0,
+            }}
+          >
+            Vast gereserveerd
+          </span>
+        ) : (
+          <span
+            style={{
+              fontSize: 11,
+              fontWeight: 500,
+              color: C.blauw,
+              background: C.blauwLicht,
+              borderRadius: 99,
+              padding: "1px 8px",
+              textTransform: "none",
+              letterSpacing: 0,
+            }}
+          >
+            {duurMinuten} min
+          </span>
+        )}
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        {dagSlots.map(({ dag, slots }) => (
+        {dagSlots.map(({ dag, slots, vast }) => (
           <div key={dag.datum} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
             <div
               style={{
@@ -170,16 +190,29 @@ export function KennismakingTeamSectie({
                   {slots.map((slot) => (
                     <span
                       key={slot.begin}
-                      style={{
-                        background: C.blauwLicht,
-                        border: `1px solid rgba(29,78,216,0.2)`,
-                        borderRadius: 6,
-                        padding: "2px 8px",
-                        fontSize: 12,
-                        color: C.blauw,
-                        fontWeight: 500,
-                        fontVariantNumeric: "tabular-nums",
-                      }}
+                      style={
+                        vast
+                          ? {
+                              background: "rgba(124,58,237,0.08)",
+                              border: "1px solid rgba(124,58,237,0.25)",
+                              borderRadius: 6,
+                              padding: "2px 8px",
+                              fontSize: 12,
+                              color: "#7c3aed",
+                              fontWeight: 600,
+                              fontVariantNumeric: "tabular-nums",
+                            }
+                          : {
+                              background: C.blauwLicht,
+                              border: `1px solid rgba(29,78,216,0.2)`,
+                              borderRadius: 6,
+                              padding: "2px 8px",
+                              fontSize: 12,
+                              color: C.blauw,
+                              fontWeight: 500,
+                              fontVariantNumeric: "tabular-nums",
+                            }
+                      }
                     >
                       {slot.begin}–{slot.eind}
                     </span>

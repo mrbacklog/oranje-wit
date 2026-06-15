@@ -1,5 +1,5 @@
 {
-  "_uitleg": "Beschikbaarheid voor kennismakingstrainingen juni 2026. Pas 'teams' aan om teams toe te voegen of te verwijderen. duurMinuten bepaalt hoe lang het blok is per team.",
+  "_uitleg": "Beschikbaarheid voor kennismakingstrainingen juni 2026. Pas 'teams' aan om teams toe te voegen of te verwijderen. duurMinuten bepaalt hoe lang het blok is per team. Met 'reservering' kun je een vast blok opgeven (datum, veld, begin, eind) — dan worden geen losse slots berekend.",
   "beschikbaarheid": [
     {
       "datum": "2026-06-22",
@@ -34,6 +34,45 @@
     { "naam": "A1", "duurMinuten": 90 },
     { "naam": "A2", "duurMinuten": 90 },
     { "naam": "B1", "duurMinuten": 90 },
-    { "naam": "B2", "duurMinuten": 90 }
+    { "naam": "B2", "duurMinuten": 90 },
+    {
+      "naam": "U19 Selectie",
+      "duurMinuten": 150,
+      "reservering": [
+        {
+          "datum": "2026-06-24",
+          "label": "Dinsdag 24 juni",
+          "veld": "Veld 1",
+          "begin": "18:30",
+          "eind": "21:00"
+        }
+      ]
+    },
+    {
+      "naam": "U17 Selectie",
+      "duurMinuten": 75,
+      "reservering": [
+        {
+          "datum": "2026-06-24",
+          "label": "Dinsdag 24 juni",
+          "veld": "Veld 2",
+          "begin": "19:45",
+          "eind": "21:00"
+        }
+      ]
+    },
+    {
+      "naam": "U15 Selectie",
+      "duurMinuten": 75,
+      "reservering": [
+        {
+          "datum": "2026-06-24",
+          "label": "Dinsdag 24 juni",
+          "veld": "Veld 2",
+          "begin": "18:30",
+          "eind": "19:45"
+        }
+      ]
+    }
   ]
 }

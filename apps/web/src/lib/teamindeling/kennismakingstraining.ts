@@ -10,9 +10,18 @@ export type KennismakingDag = {
   eind: string;
 };
 
+export type KennismakingReservering = {
+  datum: string;
+  label: string;
+  veld: string;
+  begin: string;
+  eind: string;
+};
+
 export type KennismakingTeam = {
   naam: string;
   duurMinuten: number;
+  reservering?: KennismakingReservering[];
 };
 
 export type KennismakingConfig = {
@@ -28,6 +37,7 @@ export type KennismakingSlot = {
 export type KennismakingDagSlots = {
   dag: KennismakingDag;
   slots: KennismakingSlot[];
+  vast?: boolean; // true = vaste reservering, geen vrije slots
 };
 
 // ── Laden ────────────────────────────────────────────────────────────────────
@@ -63,13 +73,29 @@ export function berekenSlots(dag: KennismakingDag, duurMinuten: number): Kennism
   return slots;
 }
 
-/** Geeft per dag de mogelijke slots voor een team met opgegeven duur. */
+/** Geeft per dag de slots (of vaste reservering) voor een team. */
 export function slotsVoorTeam(
   config: KennismakingConfig,
   teamnaam: string
 ): KennismakingDagSlots[] {
   const team = config.teams.find((t) => t.naam.toLowerCase() === teamnaam.toLowerCase());
   if (!team) return [];
+
+  // Vaste reserveringen: toon alleen die, geen berekende slots
+  if (team.reservering && team.reservering.length > 0) {
+    return team.reservering.map((r) => ({
+      dag: {
+        datum: r.datum,
+        label: r.label,
+        velden: [r.veld],
+        begin: r.begin,
+        eind: r.eind,
+      },
+      slots: [{ begin: r.begin, eind: r.eind }],
+      vast: true,
+    }));
+  }
+
   return config.beschikbaarheid.map((dag) => ({
     dag,
     slots: berekenSlots(dag, team.duurMinuten),
