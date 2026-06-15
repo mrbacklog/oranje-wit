@@ -91,7 +91,7 @@ export function StafKoppelEditor({ staf, alleDoelen, onClose, onGewijzigd }: Pro
         },
       ]);
       setNieuwDoelId("");
-      setNieuwRol("Trainer");
+      setNieuwRol("Trainer/Coach");
       setNieuwRolLabel("");
     });
   }
@@ -357,15 +357,12 @@ export function StafKoppelEditor({ staf, alleDoelen, onClose, onGewijzigd }: Pro
             </optgroup>
           )}
         </select>
-        <input
-          type="text"
+        <select
           value={nieuwRol}
           onChange={(e) => setNieuwRol(e.target.value)}
           disabled={isPending}
-          list={`rol-suggesties-${staf.id}`}
-          placeholder="Rol"
           style={{
-            width: 110,
+            width: 130,
             background: "var(--surface-sunken)",
             border: "1px solid var(--border-default)",
             borderRadius: 6,
@@ -375,7 +372,13 @@ export function StafKoppelEditor({ staf, alleDoelen, onClose, onGewijzigd }: Pro
             outline: "none",
             fontFamily: "inherit",
           }}
-        />
+        >
+          {ROL_SUGGESTIES.map((r) => (
+            <option key={r} value={r}>
+              {r}
+            </option>
+          ))}
+        </select>
         <input
           type="text"
           value={nieuwRolLabel}
