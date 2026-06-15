@@ -1,0 +1,39 @@
+{
+  "_uitleg": "Beschikbaarheid voor kennismakingstrainingen juni 2026. Pas 'teams' aan om teams toe te voegen of te verwijderen. duurMinuten bepaalt hoe lang het blok is per team.",
+  "beschikbaarheid": [
+    {
+      "datum": "2026-06-22",
+      "label": "Zondag 22 juni",
+      "velden": ["Veld 1", "Veld 2"],
+      "begin": "17:30",
+      "eind": "22:30"
+    },
+    {
+      "datum": "2026-06-23",
+      "label": "Maandag 23 juni",
+      "velden": ["Veld 1", "Veld 2"],
+      "begin": "17:30",
+      "eind": "22:30"
+    },
+    {
+      "datum": "2026-06-24",
+      "label": "Dinsdag 24 juni",
+      "velden": ["Veld 1", "Veld 2"],
+      "begin": "17:30",
+      "eind": "22:30"
+    },
+    {
+      "datum": "2026-06-25",
+      "label": "Woensdag 25 juni",
+      "velden": ["Veld 2"],
+      "begin": "17:30",
+      "eind": "22:30"
+    }
+  ],
+  "teams": [
+    { "naam": "A1", "duurMinuten": 90 },
+    { "naam": "A2", "duurMinuten": 90 },
+    { "naam": "B1", "duurMinuten": 90 },
+    { "naam": "B2", "duurMinuten": 90 }
+  ]
+}

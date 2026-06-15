@@ -8,6 +8,9 @@ import type {
   PubliekeTeamindelingData,
   PubliekTeam,
 } from "@/lib/teamindeling/publieke-presentatie";
+import type { KennismakingConfig } from "@/lib/teamindeling/kennismakingstraining";
+import { slotsVoorTeam } from "@/lib/teamindeling/kennismakingstraining";
+import { KennismakingOverzicht, KennismakingTeamSectie } from "./KennismakingOverzicht";
 
 const LOGO_URL = "https://ckvoranjewit.nl/wp-content/uploads/2025/12/OW-100-logo-lexvg.webp";
 
@@ -262,8 +265,18 @@ function InfoBanner({ gebundeld }: { gebundeld: boolean }) {
   );
 }
 
-function TeamKaart({ team }: { team: PubliekTeam }) {
+function TeamKaart({
+  team,
+  kennismaking,
+}: {
+  team: PubliekTeam;
+  kennismaking: KennismakingConfig | null;
+}) {
   const borderKleur = team.soort === "selectie" ? C.geel : C.oranje;
+  const kennismakingTeam = kennismaking?.teams.find(
+    (t) => t.naam.toLowerCase() === team.naam.toLowerCase()
+  );
+  const dagSlots = kennismaking && kennismakingTeam ? slotsVoorTeam(kennismaking, team.naam) : [];
 
   return (
     <div
@@ -319,6 +332,10 @@ function TeamKaart({ team }: { team: PubliekTeam }) {
               </div>
             ))}
           </div>
+        )}
+
+        {kennismakingTeam && dagSlots.length > 0 && (
+          <KennismakingTeamSectie dagSlots={dagSlots} duurMinuten={kennismakingTeam.duurMinuten} />
         )}
       </div>
     </div>
@@ -494,9 +511,11 @@ function ZoekOverlay({
 function ToelichtingPagina({
   toelichting,
   onGaNaar,
+  kennismaking,
 }: {
   toelichting: PubliekeTeamindelingData["toelichting"];
   onGaNaar: () => void;
+  kennismaking: KennismakingConfig | null;
 }) {
   return (
     <div style={{ minHeight: "100vh", background: C.achtergrond }}>
@@ -594,13 +613,25 @@ function ToelichtingPagina({
           </button>
         </div>
       </div>
+
+      {kennismaking && kennismaking.beschikbaarheid.length > 0 && (
+        <div style={{ maxWidth: 720, margin: "0 auto", padding: "0 24px 40px" }}>
+          <KennismakingOverzicht config={kennismaking} />
+        </div>
+      )}
     </div>
   );
 }
 
 // ── Hoofd-component ───────────────────────────────────────────────────────────
 
-export function PubliekeTeamindeling({ data }: { data: PubliekeTeamindelingData }) {
+export function PubliekeTeamindeling({
+  data,
+  kennismaking,
+}: {
+  data: PubliekeTeamindelingData;
+  kennismaking: KennismakingConfig | null;
+}) {
   const [pagina, setPagina] = useState<"toelichting" | "indeling">("toelichting");
   const [teamIdx, setTeamIdx] = useState(0);
   const [zoekOpen, setZoekOpen] = useState(false);
@@ -630,7 +661,11 @@ export function PubliekeTeamindeling({ data }: { data: PubliekeTeamindelingData 
   if (pagina === "toelichting") {
     return (
       <>
-        <ToelichtingPagina toelichting={data.toelichting} onGaNaar={() => setPagina("indeling")} />
+        <ToelichtingPagina
+          toelichting={data.toelichting}
+          onGaNaar={() => setPagina("indeling")}
+          kennismaking={kennismaking}
+        />
         {zoekOpen && (
           <ZoekOverlay
             teams={teams}
@@ -736,7 +771,7 @@ export function PubliekeTeamindeling({ data }: { data: PubliekeTeamindelingData 
       {/* Team-kaart */}
       <div style={{ maxWidth: 720, margin: "0 auto", padding: "24px 20px" }}>
         {huidigTeam ? (
-          <TeamKaart team={huidigTeam} />
+          <TeamKaart team={huidigTeam} kennismaking={kennismaking} />
         ) : (
           <div style={{ textAlign: "center", padding: 60, color: C.subTekst }}>
             Geen teams beschikbaar

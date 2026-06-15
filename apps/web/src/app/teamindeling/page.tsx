@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { getPubliekeTeamindelingData } from "@/lib/teamindeling/publieke-presentatie";
+import {
+  laadKennismakingConfig,
+  type KennismakingConfig,
+} from "@/lib/teamindeling/kennismakingstraining";
 import { PubliekeTeamindeling } from "./PubliekeTeamindeling";
 import { checkWachtwoord } from "./wachtwoord-action";
 
@@ -23,7 +27,10 @@ export default async function PubliekeTeamindelingPage({
     return <WachtwoordScherm fout={fout === "1"} />;
   }
 
-  const data = await getPubliekeTeamindelingData();
+  const [data, kennismaking] = await Promise.all([
+    getPubliekeTeamindelingData(),
+    Promise.resolve(laadKennismakingConfig()),
+  ]);
 
   return (
     <div
@@ -36,7 +43,7 @@ export default async function PubliekeTeamindelingPage({
         color: "#111827",
       }}
     >
-      <PubliekeTeamindeling data={data} />
+      <PubliekeTeamindeling data={data} kennismaking={kennismaking} />
       <footer
         style={{
           background: "#111827",
