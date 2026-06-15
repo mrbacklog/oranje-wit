@@ -287,9 +287,16 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
     }
   }
 
-  kaarten.sort((a, b) => a.volgorde - b.volgorde);
+  const gevuldeKaarten = kaarten.filter((k) => {
+    const totaal = k.dames.length + k.heren.length;
+    if (totaal > 0) return true;
+    // Selectie zonder directe spelers maar met gevulde subteams
+    return k.subteams.some((s) => s.dames.length + s.heren.length > 0);
+  });
 
-  return { toelichting: mapToelichting(publicatie), teams: kaarten };
+  gevuldeKaarten.sort((a, b) => a.volgorde - b.volgorde);
+
+  return { toelichting: mapToelichting(publicatie), teams: gevuldeKaarten };
 }
 
 function mapToelichting(
