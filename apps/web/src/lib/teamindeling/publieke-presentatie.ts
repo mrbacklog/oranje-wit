@@ -56,10 +56,16 @@ function bouwSpeler(r: {
   geslacht: string;
   tussenvoegsel?: string | null;
 }): PubliekeSpeler {
+  const tussenvoegsel = r.tussenvoegsel?.trim() || null;
+  let achternaam = r.achternaam.trim();
+  // Achternaam bevat soms het tussenvoegsel al als prefix — strip het dan
+  if (tussenvoegsel && achternaam.toLowerCase().startsWith(tussenvoegsel.toLowerCase() + " ")) {
+    achternaam = achternaam.slice(tussenvoegsel.length + 1);
+  }
   return {
     roepnaam: r.roepnaam,
-    achternaam: r.achternaam,
-    tussenvoegsel: r.tussenvoegsel ?? null,
+    achternaam,
+    tussenvoegsel,
     geslacht: r.geslacht === "V" ? "V" : "M",
   };
 }
