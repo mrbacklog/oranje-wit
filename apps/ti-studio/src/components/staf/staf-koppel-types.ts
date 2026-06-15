@@ -56,6 +56,11 @@ export const KLEUR_DOT: Record<string, string> = {
   senior: "#94a3b8",
 };
 
+function normaliseerRol(rol: string): string {
+  if (rol.trim().toLowerCase() === "trainer") return "Trainer/Coach";
+  return rol;
+}
+
 export function toonRol(koppeling: { rol: string; rolLabel?: string | null }): string {
-  return koppeling.rolLabel?.trim() || koppeling.rol;
+  return normaliseerRol(koppeling.rolLabel?.trim() || koppeling.rol);
 }

@@ -122,7 +122,9 @@ function StafPills({ staf }: { staf: { naam: string; rol: string }[] }) {
               color: C.tekst,
             }}
           >
-            <span style={{ color: C.subTekst }}>{s.rol}</span>
+            <span style={{ color: C.subTekst }}>
+              {s.rol.trim().toLowerCase() === "trainer" ? "Trainer/Coach" : s.rol}
+            </span>
             {s.rol ? " · " : ""}
             {s.naam}
           </span>
