@@ -33,9 +33,8 @@ export interface StafKoppelDoel {
 export const ROL_SUGGESTIES = [
   "Trainer/Coach",
   "Coach",
-  "Trainer",
-  "Staflid",
   "Assistent",
+  "Staflid",
   "Verzorger",
   "Begeleider",
   "Manager",
