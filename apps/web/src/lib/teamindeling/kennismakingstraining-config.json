@@ -31,12 +31,8 @@
     }
   ],
   "teams": [
-    { "naam": "A1", "duurMinuten": 90 },
-    { "naam": "A2", "duurMinuten": 90 },
-    { "naam": "B1", "duurMinuten": 90 },
-    { "naam": "B2", "duurMinuten": 90 },
     {
-      "naam": "U19 Selectie",
+      "naam": "U19-1",
       "duurMinuten": 150,
       "reservering": [
         {
@@ -49,7 +45,7 @@
       ]
     },
     {
-      "naam": "U17 Selectie",
+      "naam": "U17-1",
       "duurMinuten": 75,
       "reservering": [
         {
@@ -62,7 +58,7 @@
       ]
     },
     {
-      "naam": "U15 Selectie",
+      "naam": "U15-1",
       "duurMinuten": 75,
       "reservering": [
         {
@@ -75,7 +71,7 @@
       ]
     },
     {
-      "naam": "Rood 1",
+      "naam": "Rood-1",
       "duurMinuten": 75,
       "reservering": [
         {
@@ -88,7 +84,7 @@
       ]
     },
     {
-      "naam": "Rood 2",
+      "naam": "Rood-2",
       "duurMinuten": 75,
       "reservering": [
         {
@@ -101,7 +97,7 @@
       ]
     },
     {
-      "naam": "Oranje 1",
+      "naam": "Oranje-1",
       "duurMinuten": 75,
       "reservering": [
         {
@@ -114,7 +110,7 @@
       ]
     },
     {
-      "naam": "Oranje 2",
+      "naam": "Oranje-2",
       "duurMinuten": 75,
       "reservering": [
         {
@@ -127,7 +123,7 @@
       ]
     },
     {
-      "naam": "Oranje 3",
+      "naam": "Oranje-3",
       "duurMinuten": 75,
       "reservering": [
         {
@@ -140,7 +136,7 @@
       ]
     },
     {
-      "naam": "Geel 1",
+      "naam": "Geel-1",
       "duurMinuten": 75,
       "reservering": [
         {
@@ -153,7 +149,7 @@
       ]
     },
     {
-      "naam": "Geel 2",
+      "naam": "Geel-2",
       "duurMinuten": 75,
       "reservering": [
         {
@@ -166,7 +162,7 @@
       ]
     },
     {
-      "naam": "Geel 3",
+      "naam": "Geel-3",
       "duurMinuten": 75,
       "reservering": [
         {
