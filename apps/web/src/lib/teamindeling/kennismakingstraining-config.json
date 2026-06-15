@@ -25,7 +25,7 @@
     {
       "datum": "2026-06-25",
       "label": "Woensdag 25 juni",
-      "velden": ["Veld 2"],
+      "velden": ["Veld 1", "Veld 2"],
       "begin": "17:30",
       "eind": "22:30"
     }
@@ -71,6 +71,110 @@
           "veld": "Veld 2",
           "begin": "18:30",
           "eind": "19:45"
+        }
+      ]
+    },
+    {
+      "naam": "Rood 1",
+      "duurMinuten": 75,
+      "reservering": [
+        {
+          "datum": "2026-06-25",
+          "label": "Woensdag 25 juni",
+          "veld": "Veld 1",
+          "begin": "19:30",
+          "eind": "20:45"
+        }
+      ]
+    },
+    {
+      "naam": "Rood 2",
+      "duurMinuten": 75,
+      "reservering": [
+        {
+          "datum": "2026-06-25",
+          "label": "Woensdag 25 juni",
+          "veld": "Veld 1",
+          "begin": "19:30",
+          "eind": "20:45"
+        }
+      ]
+    },
+    {
+      "naam": "Oranje 1",
+      "duurMinuten": 75,
+      "reservering": [
+        {
+          "datum": "2026-06-25",
+          "label": "Woensdag 25 juni",
+          "veld": "Veld 2",
+          "begin": "19:30",
+          "eind": "20:45"
+        }
+      ]
+    },
+    {
+      "naam": "Oranje 2",
+      "duurMinuten": 75,
+      "reservering": [
+        {
+          "datum": "2026-06-25",
+          "label": "Woensdag 25 juni",
+          "veld": "Veld 2",
+          "begin": "19:30",
+          "eind": "20:45"
+        }
+      ]
+    },
+    {
+      "naam": "Oranje 3",
+      "duurMinuten": 75,
+      "reservering": [
+        {
+          "datum": "2026-06-25",
+          "label": "Woensdag 25 juni",
+          "veld": "Veld 1",
+          "begin": "18:15",
+          "eind": "19:30"
+        }
+      ]
+    },
+    {
+      "naam": "Geel 1",
+      "duurMinuten": 75,
+      "reservering": [
+        {
+          "datum": "2026-06-25",
+          "label": "Woensdag 25 juni",
+          "veld": "Veld 1",
+          "begin": "18:15",
+          "eind": "19:30"
+        }
+      ]
+    },
+    {
+      "naam": "Geel 2",
+      "duurMinuten": 75,
+      "reservering": [
+        {
+          "datum": "2026-06-25",
+          "label": "Woensdag 25 juni",
+          "veld": "Veld 2",
+          "begin": "18:15",
+          "eind": "19:30"
+        }
+      ]
+    },
+    {
+      "naam": "Geel 3",
+      "duurMinuten": 75,
+      "reservering": [
+        {
+          "datum": "2026-06-25",
+          "label": "Woensdag 25 juni",
+          "veld": "Veld 2",
+          "begin": "18:15",
+          "eind": "19:30"
         }
       ]
     }
