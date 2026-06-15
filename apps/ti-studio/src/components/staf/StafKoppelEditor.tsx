@@ -29,7 +29,7 @@ interface Props {
 export function StafKoppelEditor({ staf, alleDoelen, onClose, onGewijzigd }: Props) {
   const [isPending, startTransition] = useTransition();
   const [nieuwDoelId, setNieuwDoelId] = useState<string>("");
-  const [nieuwRol, setNieuwRol] = useState<string>("Trainer");
+  const [nieuwRol, setNieuwRol] = useState<string>("Trainer/Coach");
   const [nieuwRolLabel, setNieuwRolLabel] = useState<string>("");
   const [openUp, setOpenUp] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
