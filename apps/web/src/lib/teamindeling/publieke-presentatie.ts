@@ -179,7 +179,7 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
         naam:
           ts.staf?.naam ??
           (logger.warn("publieke-presentatie: staf zonder naam", { stafId: ts.stafId }), "?"),
-        rol: ts.rol ?? "",
+        rol: mapStafRol(ts.rol),
       })),
     });
   }
@@ -217,7 +217,7 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
           naam:
             ss.staf?.naam ??
             (logger.warn("publieke-presentatie: staf zonder naam", { stafId: ss.stafId }), "?"),
-          rol: ss.rol ?? "",
+          rol: mapStafRol(ss.rol),
         });
       }
 
@@ -264,14 +264,14 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
               naam:
                 ts.staf?.naam ??
                 (logger.warn("publieke-presentatie: staf zonder naam", { stafId: ts.stafId }), "?"),
-              rol: ts.rol ?? "",
+              rol: mapStafRol(ts.rol),
             });
           }
           teamStaf.push({
             naam:
               ts.staf?.naam ??
               (logger.warn("publieke-presentatie: staf zonder naam", { stafId: ts.stafId }), "?"),
-            rol: ts.rol ?? "",
+            rol: mapStafRol(ts.rol),
           });
         }
 
@@ -303,6 +303,12 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
   gevuldeKaarten.sort((a, b) => a.volgorde - b.volgorde);
 
   return { toelichting: mapToelichting(publicatie), teams: gevuldeKaarten };
+}
+
+function mapStafRol(rol: string | null | undefined): string {
+  const r = (rol ?? "").trim().toLowerCase();
+  if (r === "trainer") return "trainer/coach";
+  return rol ?? "";
 }
 
 function mapToelichting(
