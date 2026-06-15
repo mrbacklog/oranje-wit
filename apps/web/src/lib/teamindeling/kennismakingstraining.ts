@@ -1,5 +1,5 @@
-import fs from "fs";
-import path from "path";
+// @ts-expect-error — JSON import zonder typedeclaratie
+import rawConfig from "../../../../data/kennismakingstraining.json";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -34,9 +34,7 @@ export type KennismakingDagSlots = {
 // ── Laden ────────────────────────────────────────────────────────────────────
 
 export function laadKennismakingConfig(): KennismakingConfig {
-  const bestand = path.join(process.cwd(), "../../data/kennismakingstraining.json");
-  const raw = fs.readFileSync(bestand, "utf-8");
-  return JSON.parse(raw) as KennismakingConfig;
+  return rawConfig as KennismakingConfig;
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
