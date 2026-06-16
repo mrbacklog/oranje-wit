@@ -180,7 +180,7 @@ function KennismakingInhoud({ items }: { items: KennismakingItem[] }) {
           borderRadius: 6,
           padding: "8px 12px",
           fontSize: 12,
-          color: "rgba(255,255,255,0.6)",
+          color: "rgba(255,255,255,0.55)",
           marginBottom: 14,
         }}
       >
@@ -293,7 +293,7 @@ function SectieKop({ label, titel }: { label: string; titel: string }) {
       </div>
       <h2
         className="pt-sectie-titel"
-        style={{ margin: 0, fontSize: 20, fontWeight: 800, color: "#111", lineHeight: 1.1 }}
+        style={{ margin: 0, fontSize: 20, fontWeight: 800, color: "#fff", lineHeight: 1.1 }}
       >
         {titel}
       </h2>
@@ -313,166 +313,118 @@ export function ToelichtingPagina({
     null | "startdata" | "kennismaking" | "tcoproep" | "vragen"
   >(null);
 
+  // onGaNaar wordt niet meer gebruikt in de hero maar prop blijft beschikbaar
+  void onGaNaar;
+
   const belangrijkeData = toelichting?.belangrijkeData ?? [];
   const kennismakingstrainingen = toelichting?.kennismakingstrainingen ?? [];
 
   return (
-    <div style={{ minHeight: "100vh", background: "#fff" }}>
-      {/* Achtergrond watermerk — fixed over gehele pagina */}
-      <div
-        style={{
-          position: "fixed",
-          bottom: 0,
-          right: 0,
-          width: 340,
-          height: "auto",
-          opacity: 0.06,
-          pointerEvents: "none",
-          userSelect: "none",
-          zIndex: 0,
-        }}
-      >
-        <Image
-          src={LOGO_URL}
-          alt=""
-          aria-hidden
-          unoptimized
-          width={340}
-          height={340}
-          style={{ width: "100%", height: "auto", objectFit: "contain" }}
-        />
-      </div>
-
-      {/* Hero — sticky, licht grijs met oranje accenten + switch-knop */}
+    <div style={{ minHeight: "100vh", background: "#0f0f0f" }}>
+      {/* Hero — sticky, dark oranje */}
       <div
         className="pt-toel-hero"
         style={{
-          background: "#f5f5f5",
-          borderLeft: "5px solid #FF6600",
-          padding: "12px 20px 20px",
+          background: "#FF6600",
+          padding: "22px 20px 44px",
+          clipPath: "polygon(0 0, 100% 0, 100% 80%, 0 100%)",
           position: "sticky",
           top: 0,
           zIndex: 30,
           overflow: "hidden",
         }}
       >
-        {/* Hoek-driehoek decoratie */}
+        {/* Shimmer */}
         <div
           style={{
             position: "absolute",
-            bottom: -30,
-            right: -30,
-            width: 160,
-            height: 160,
-            background: ORANJE,
-            clipPath: "polygon(100% 0, 100% 100%, 0 100%)",
-            opacity: 0.1,
+            inset: 0,
+            background: "linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 55%)",
             pointerEvents: "none",
           }}
         />
-        <div style={{ maxWidth: 680, margin: "0 auto" }}>
-          {/* Seizoen label + switch-knop */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: 14,
-            }}
-          >
+
+        {/* OW-logo watermerk rechtsboven */}
+        <Image
+          src={LOGO_URL}
+          alt=""
+          aria-hidden={true}
+          unoptimized
+          width={90}
+          height={90}
+          style={{
+            position: "absolute",
+            top: 8,
+            right: 16,
+            width: 90,
+            height: "auto",
+            opacity: 0.18,
+            pointerEvents: "none",
+            userSelect: "none",
+            objectFit: "contain",
+          }}
+        />
+
+        {/* Seizoenrij */}
+        <div style={{ display: "flex", alignItems: "center", marginBottom: 8 }}>
+          {toelichting && (
             <span
               style={{
                 fontSize: 10,
-                fontWeight: 700,
-                color: "#aaa",
-                textTransform: "uppercase",
-                letterSpacing: "0.1em",
-              }}
-            >
-              {toelichting?.seizoenLabel ?? ""}
-            </span>
-            <button
-              onClick={onGaNaar}
-              style={{
-                background: ORANJE,
-                color: "#fff",
-                border: "none",
-                borderRadius: 4,
-                padding: "6px 12px",
-                fontSize: 11,
                 fontWeight: 800,
-                cursor: "pointer",
-                letterSpacing: "0.05em",
-                textTransform: "uppercase",
-              }}
-            >
-              Teamindeling →
-            </button>
-          </div>
-          {/* Titel */}
-          <h1
-            className="pt-toel-titel"
-            style={{ margin: 0, lineHeight: 1, letterSpacing: "-0.02em" }}
-          >
-            <span
-              style={{
-                display: "block",
-                fontSize: 15,
-                fontWeight: 700,
-                fontStyle: "normal",
                 textTransform: "uppercase",
                 letterSpacing: "0.1em",
-                color: "#888",
-                marginBottom: 6,
+                color: "rgba(255,255,255,0.65)",
               }}
             >
-              Voorlopige
+              {toelichting.seizoenLabel}
             </span>
-            <span
-              style={{
-                display: "block",
-                fontSize: 52,
-                fontWeight: 900,
-                fontStyle: "italic",
-                textTransform: "uppercase",
-                color: "#111",
-                lineHeight: 0.88,
-                textShadow: "none",
-              }}
-            >
-              Teamindeling
-            </span>
-            {toelichting && (
-              <span
-                style={{
-                  display: "block",
-                  fontSize: 18,
-                  fontWeight: 700,
-                  fontStyle: "italic",
-                  color: ORANJE,
-                  marginTop: 6,
-                }}
-              >
-                {toelichting.seizoenLabel}
-              </span>
-            )}
-          </h1>
-          {/* Snelkoppeling pills */}
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 14 }}>
-            <button style={pillBtnStyle} onClick={() => setOpenModal("startdata")}>
-              📅 Startdata
-            </button>
-            <button style={pillBtnStyle} onClick={() => setOpenModal("kennismaking")}>
-              🏐 Kennismakingstraining
-            </button>
-            <button style={pillBtnStyle} onClick={() => setOpenModal("tcoproep")}>
-              <Megaphone size={13} /> TC Oproep
-            </button>
-            <button style={pillBtnStyle} onClick={() => setOpenModal("vragen")}>
-              <HelpCircle size={13} /> Vragen
-            </button>
-          </div>
+          )}
         </div>
+
+        {/* Titel */}
+        <h1
+          className="pt-toel-titel"
+          style={{ margin: 0, lineHeight: 1, letterSpacing: "-0.02em" }}
+        >
+          <span
+            style={{
+              display: "block",
+              fontSize: 13,
+              fontWeight: 700,
+              fontStyle: "normal",
+              textTransform: "uppercase",
+              letterSpacing: "0.12em",
+              color: "rgba(255,255,255,0.6)",
+              marginBottom: 4,
+            }}
+          >
+            Voorlopige teamindeling
+          </span>
+          <span
+            style={{
+              display: "block",
+              fontSize: 48,
+              fontWeight: 900,
+              fontStyle: "italic",
+              textTransform: "uppercase",
+              color: "#fff",
+              lineHeight: 0.9,
+            }}
+          >
+            {toelichting?.seizoenLabel ?? "2026–2027"}
+          </span>
+        </h1>
+        <p
+          style={{
+            margin: "10px 0 0",
+            fontSize: 13,
+            color: "rgba(255,255,255,0.55)",
+            fontWeight: 500,
+          }}
+        >
+          c.k.v. Oranje Wit · Dordrecht
+        </p>
       </div>
 
       {/* Inhoud */}
@@ -493,29 +445,58 @@ export function ToelichtingPagina({
               <SectieKop label="Voorwoord" titel="Beste leden, ouders en betrokkenen" />
               <div
                 className="pt-toel-tekst"
-                style={{ fontSize: 15, lineHeight: 1.75, color: "#333", marginTop: 12 }}
+                style={{
+                  fontSize: 15,
+                  lineHeight: 1.75,
+                  color: "rgba(255,255,255,0.75)",
+                  marginTop: 12,
+                }}
                 /* Inhoud uit TC-beheerd admin-formulier — geen externe gebruikersinvoer */
                 dangerouslySetInnerHTML={{ __html: toelichting.introTekst }}
               />
             </div>
 
-            <hr style={{ border: "none", borderTop: "1px solid #eee", margin: "24px 0" }} />
+            {/* Pills — direct na intro-tekst */}
+            <div
+              style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 24, marginTop: 16 }}
+            >
+              <button style={pillBtnStyle} onClick={() => setOpenModal("startdata")}>
+                📅 Data
+              </button>
+              <button style={pillBtnStyle} onClick={() => setOpenModal("kennismaking")}>
+                🏐 Kennismaking
+              </button>
+              <button style={pillBtnStyle} onClick={() => setOpenModal("tcoproep")}>
+                <Megaphone size={13} /> TC Oproep
+              </button>
+              <button style={pillBtnStyle} onClick={() => setOpenModal("vragen")}>
+                <HelpCircle size={13} /> Vragen
+              </button>
+            </div>
+
+            <hr
+              style={{
+                border: "none",
+                borderTop: "1px solid rgba(255,255,255,0.07)",
+                margin: "24px 0",
+              }}
+            />
 
             {/* Voorlopige teamindeling banner */}
             <div
               style={{
-                background: "rgba(255,102,0,0.06)",
+                background: "rgba(255,102,0,0.08)",
                 borderLeft: "3px solid #FF6600",
                 padding: "10px 14px",
                 marginBottom: 24,
                 fontSize: 13,
-                color: "#555",
+                color: "rgba(255,255,255,0.55)",
                 lineHeight: 1.6,
               }}
             >
-              <strong style={{ color: "#333" }}>Voorlopige indeling</strong> — Samenstelling kan nog
-              wijzigen tijdens de voorbereiding en selectiedagen. De definitieve indeling volgt voor
-              aanvang van het seizoen.
+              <strong style={{ color: "rgba(255,255,255,0.88)" }}>Voorlopige indeling</strong> —
+              Samenstelling kan nog wijzigen tijdens de voorbereiding en selectiedagen. De
+              definitieve indeling volgt voor aanvang van het seizoen.
             </div>
 
             {/* TC tekst */}
@@ -523,13 +504,24 @@ export function ToelichtingPagina({
               <SectieKop label="Totstandkoming" titel="Hoe zijn de teams samengesteld?" />
               <div
                 className="pt-toel-tekst"
-                style={{ fontSize: 15, lineHeight: 1.75, color: "#333", marginTop: 12 }}
+                style={{
+                  fontSize: 15,
+                  lineHeight: 1.75,
+                  color: "rgba(255,255,255,0.75)",
+                  marginTop: 12,
+                }}
                 /* Inhoud uit TC-beheerd admin-formulier — geen externe gebruikersinvoer */
                 dangerouslySetInnerHTML={{ __html: toelichting.tcTekst }}
               />
             </div>
 
-            <hr style={{ border: "none", borderTop: "1px solid #eee", margin: "24px 0" }} />
+            <hr
+              style={{
+                border: "none",
+                borderTop: "1px solid rgba(255,255,255,0.07)",
+                margin: "24px 0",
+              }}
+            />
 
             {/* Startdata inline blok */}
             {belangrijkeData.length > 0 && (
@@ -550,42 +542,53 @@ export function ToelichtingPagina({
                     📅 Bekijk alles
                   </button>
                 </div>
-                <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
-                  {belangrijkeData.slice(0, 3).map((item, i) => (
-                    <li
-                      key={i}
-                      style={{
-                        display: "flex",
-                        gap: 10,
-                        alignItems: "flex-start",
-                        padding: "8px 0",
-                        borderBottom:
-                          i < Math.min(belangrijkeData.length, 3) - 1
-                            ? "1px solid #f0f0f0"
-                            : "none",
-                      }}
-                    >
-                      <span
+                <div
+                  style={{
+                    background: "rgba(255,255,255,0.03)",
+                    border: "1px solid rgba(255,255,255,0.07)",
+                    borderRadius: 12,
+                    padding: "14px 16px",
+                  }}
+                >
+                  <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
+                    {belangrijkeData.slice(0, 3).map((item, i) => (
+                      <li
+                        key={i}
                         style={{
-                          width: 8,
-                          height: 8,
-                          borderRadius: "50%",
-                          background: ORANJE,
-                          flexShrink: 0,
-                          marginTop: 5,
+                          display: "flex",
+                          gap: 10,
+                          alignItems: "flex-start",
+                          padding: "8px 0",
+                          borderBottom:
+                            i < Math.min(belangrijkeData.length, 3) - 1
+                              ? "1px solid rgba(255,255,255,0.07)"
+                              : "none",
                         }}
-                      />
-                      <div>
-                        <span style={{ fontWeight: 700, color: "#111", fontSize: 14 }}>
-                          {item.datum}
-                        </span>
-                        <span style={{ fontSize: 14, color: "#444", marginLeft: 8 }}>
-                          {item.omschrijving}
-                        </span>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
+                      >
+                        <span
+                          style={{
+                            width: 8,
+                            height: 8,
+                            borderRadius: "50%",
+                            background: ORANJE,
+                            flexShrink: 0,
+                            marginTop: 5,
+                          }}
+                        />
+                        <div>
+                          <span style={{ fontWeight: 700, color: "#fff", fontSize: 14 }}>
+                            {item.datum}
+                          </span>
+                          <span
+                            style={{ fontSize: 14, color: "rgba(255,255,255,0.55)", marginLeft: 8 }}
+                          >
+                            {item.omschrijving}
+                          </span>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
                 {belangrijkeData.length > 3 && (
                   <button
                     style={{ ...pillBtnStyle, marginTop: 10, fontSize: 11 }}
@@ -623,36 +626,50 @@ export function ToelichtingPagina({
                     borderRadius: 6,
                     padding: "8px 12px",
                     fontSize: 13,
-                    color: "#555",
+                    color: "rgba(255,255,255,0.55)",
                     marginBottom: 12,
                   }}
                 >
                   Alle nieuwe leden zijn welkom bij de kennismakingstraining van hun team.
                 </div>
-                <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
-                  {kennismakingstrainingen.slice(0, 3).map((item, i) => (
-                    <li
-                      key={i}
-                      style={{
-                        padding: "10px 0",
-                        borderBottom:
-                          i < Math.min(kennismakingstrainingen.length, 3) - 1
-                            ? "1px solid #f0f0f0"
-                            : "none",
-                      }}
-                    >
-                      <div
-                        style={{ fontWeight: 700, color: "#111", fontSize: 14, marginBottom: 2 }}
+                <div
+                  style={{
+                    background: "rgba(255,255,255,0.03)",
+                    border: "1px solid rgba(255,255,255,0.07)",
+                    borderRadius: 12,
+                    padding: "14px 16px",
+                  }}
+                >
+                  <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
+                    {kennismakingstrainingen.slice(0, 3).map((item, i) => (
+                      <li
+                        key={i}
+                        style={{
+                          padding: "10px 0",
+                          borderBottom:
+                            i < Math.min(kennismakingstrainingen.length, 3) - 1
+                              ? "1px solid rgba(255,255,255,0.07)"
+                              : "none",
+                        }}
                       >
-                        {item.teamnaam}
-                      </div>
-                      <div style={{ fontSize: 13, color: "#555" }}>
-                        {item.datum} · {item.tijd}
-                        {item.locatie && <span style={{ color: "#888" }}> · {item.locatie}</span>}
-                      </div>
-                    </li>
-                  ))}
-                </ul>
+                        <div
+                          style={{ fontWeight: 700, color: "#fff", fontSize: 14, marginBottom: 2 }}
+                        >
+                          {item.teamnaam}
+                        </div>
+                        <div style={{ fontSize: 13, color: "rgba(255,255,255,0.55)" }}>
+                          {item.datum} · {item.tijd}
+                          {item.locatie && (
+                            <span style={{ color: "rgba(255,255,255,0.35)" }}>
+                              {" "}
+                              · {item.locatie}
+                            </span>
+                          )}
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
                 {kennismakingstrainingen.length > 3 && (
                   <button
                     style={{ ...pillBtnStyle, marginTop: 10, fontSize: 11 }}
@@ -665,13 +682,19 @@ export function ToelichtingPagina({
             )}
 
             {/* TC ondertekening */}
-            <hr style={{ border: "none", borderTop: "1px solid #eee", margin: "24px 0" }} />
+            <hr
+              style={{
+                border: "none",
+                borderTop: "1px solid rgba(255,255,255,0.07)",
+                margin: "24px 0",
+              }}
+            />
             <div
               style={{
                 borderLeft: "3px solid #FF6600",
                 paddingLeft: 14,
                 fontSize: 14,
-                color: "#666",
+                color: "rgba(255,255,255,0.45)",
                 fontStyle: "italic",
                 lineHeight: 1.6,
                 marginBottom: 28,
@@ -682,7 +705,7 @@ export function ToelichtingPagina({
             </div>
           </>
         ) : (
-          <p style={{ fontSize: 15, color: "#999", marginBottom: 28 }}>
+          <p style={{ fontSize: 15, color: "rgba(255,255,255,0.3)", marginBottom: 28 }}>
             De toelichting is nog niet beschikbaar.
           </p>
         )}
