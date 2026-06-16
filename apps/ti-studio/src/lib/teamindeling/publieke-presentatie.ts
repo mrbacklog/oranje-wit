@@ -115,23 +115,6 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
 
   if (!versie) return { toelichting: mapToelichting(publicatie), teams: [] };
 
-  // Verzamel alle relCodes voor batch-tussenvoegsel-lookup
-  const alleRelCodes = new Set<string>();
-  for (const team of versie.teams) {
-    for (const ts of team.spelers) alleRelCodes.add(ts.spelerId);
-  }
-  for (const sg of versie.selectieGroepen) {
-    for (const ss of sg.spelers) alleRelCodes.add(ss.spelerId);
-  }
-
-  const leden = await prisma.lid.findMany({
-    where: { relCode: { in: Array.from(alleRelCodes) } },
-    select: { relCode: true, tussenvoegsel: true },
-  });
-  const tussenvoegselMap = new Map<string, string | null>(
-    leden.map((l) => [l.relCode, l.tussenvoegsel])
-  );
-
   type VersieTeam = (typeof versie.teams)[number];
 
   // Bepaal welke teamIds bij een selectiegroep horen (nooit als losse kaart tonen)
@@ -158,10 +141,7 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
     const heren: PubliekeSpeler[] = [];
 
     for (const ts of team.spelers) {
-      const speler = bouwSpeler({
-        ...ts.speler,
-        tussenvoegsel: tussenvoegselMap.get(ts.spelerId) ?? null,
-      });
+      const speler = bouwSpeler({ ...ts.speler, tussenvoegsel: null });
       if (ts.speler.geslacht === "V") dames.push(speler);
       else heren.push(speler);
     }
@@ -203,10 +183,7 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
       const heren: PubliekeSpeler[] = [];
 
       for (const ss of sg.spelers) {
-        const speler = bouwSpeler({
-          ...ss.speler,
-          tussenvoegsel: tussenvoegselMap.get(ss.spelerId) ?? null,
-        });
+        const speler = bouwSpeler({ ...ss.speler, tussenvoegsel: null });
         if (ss.speler.geslacht === "V") dames.push(speler);
         else heren.push(speler);
       }
@@ -249,10 +226,7 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
         const teamHeren: PubliekeSpeler[] = [];
 
         for (const ts of team.spelers) {
-          const speler = bouwSpeler({
-            ...ts.speler,
-            tussenvoegsel: tussenvoegselMap.get(ts.spelerId) ?? null,
-          });
+          const speler = bouwSpeler({ ...ts.speler, tussenvoegsel: null });
           if (ts.speler.geslacht === "V") teamDames.push(speler);
           else teamHeren.push(speler);
         }
