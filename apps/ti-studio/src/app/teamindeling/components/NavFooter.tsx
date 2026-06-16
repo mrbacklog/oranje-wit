@@ -1,5 +1,6 @@
 "use client";
 
+import { ChevronLeft, ChevronRight, FileText, Megaphone, HelpCircle } from "lucide-react";
 import type { PubliekTeam } from "@/lib/teamindeling/publieke-presentatie";
 
 function Dot({
@@ -65,23 +66,72 @@ function getVisibleRange(
   return { start, end };
 }
 
+const iconBtnStyle: React.CSSProperties = {
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  gap: 3,
+  background: "none",
+  border: "none",
+  cursor: "pointer",
+  color: "rgba(255,255,255,0.4)",
+  padding: "4px 12px",
+};
+
+const iconLabelStyle: React.CSSProperties = {
+  fontSize: 9,
+  fontWeight: 700,
+  textTransform: "uppercase",
+  letterSpacing: "0.06em",
+  color: "rgba(255,255,255,0.35)",
+};
+
 export function NavFooter({
   teams,
   teamIdx,
   onVorig,
   onVolgend,
   onKiesTeam,
+  onToelichting,
+  onTcOproep,
+  onVragen,
 }: {
   teams: PubliekTeam[];
   teamIdx: number;
   onVorig: () => void;
   onVolgend: () => void;
   onKiesTeam: (idx: number) => void;
+  onToelichting: () => void;
+  onTcOproep: () => void;
+  onVragen: () => void;
 }) {
   const { start, end } = getVisibleRange(teams.length, teamIdx);
   const huidigTeam = teams[teamIdx];
   const isVorigDisabled = teamIdx === 0;
   const isVolgendDisabled = teamIdx === teams.length - 1;
+
+  const baseBtn: React.CSSProperties = {
+    borderRadius: 6,
+    padding: "10px 18px",
+    fontSize: 14,
+    fontWeight: 800,
+    flexShrink: 0,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  };
+  const activeBtn: React.CSSProperties = {
+    border: "1px solid rgba(255,102,0,0.4)",
+    background: "rgba(255,102,0,0.12)",
+    color: "#FF6600",
+    cursor: "pointer",
+  };
+  const disabledBtn: React.CSSProperties = {
+    border: "1px solid rgba(255,255,255,0.05)",
+    background: "transparent",
+    color: "rgba(255,255,255,0.12)",
+    cursor: "default",
+  };
 
   return (
     <div
@@ -97,7 +147,7 @@ export function NavFooter({
         paddingBottom: "max(10px, env(safe-area-inset-bottom))",
       }}
     >
-      {/* Navigatierij */}
+      {/* Bovenste rij — navigatie */}
       <div
         style={{
           display: "flex",
@@ -106,25 +156,12 @@ export function NavFooter({
           gap: 8,
         }}
       >
-        {/* Vorig */}
         <button
           onClick={onVorig}
           disabled={isVorigDisabled}
-          style={{
-            border: isVorigDisabled
-              ? "1px solid rgba(255,255,255,0.05)"
-              : "1px solid rgba(255,102,0,0.4)",
-            background: isVorigDisabled ? "transparent" : "rgba(255,102,0,0.12)",
-            color: isVorigDisabled ? "rgba(255,255,255,0.12)" : "#FF6600",
-            padding: "10px 18px",
-            borderRadius: 6,
-            fontSize: 14,
-            fontWeight: 800,
-            cursor: isVorigDisabled ? "default" : "pointer",
-            flexShrink: 0,
-          }}
+          style={{ ...baseBtn, ...(isVorigDisabled ? disabledBtn : activeBtn) }}
         >
-          ←
+          <ChevronLeft size={18} />
         </button>
 
         {/* Windowed dots */}
@@ -143,25 +180,12 @@ export function NavFooter({
           })}
         </div>
 
-        {/* Volgend */}
         <button
           onClick={onVolgend}
           disabled={isVolgendDisabled}
-          style={{
-            border: isVolgendDisabled
-              ? "1px solid rgba(255,255,255,0.05)"
-              : "1px solid rgba(255,102,0,0.4)",
-            background: isVolgendDisabled ? "transparent" : "rgba(255,102,0,0.12)",
-            color: isVolgendDisabled ? "rgba(255,255,255,0.12)" : "#FF6600",
-            padding: "10px 18px",
-            borderRadius: 6,
-            fontSize: 14,
-            fontWeight: 800,
-            cursor: isVolgendDisabled ? "default" : "pointer",
-            flexShrink: 0,
-          }}
+          style={{ ...baseBtn, ...(isVolgendDisabled ? disabledBtn : activeBtn) }}
         >
-          →
+          <ChevronRight size={18} />
         </button>
       </div>
 
@@ -174,7 +198,7 @@ export function NavFooter({
             alignItems: "center",
             gap: 10,
             marginTop: 4,
-            paddingBottom: 8,
+            paddingBottom: 4,
           }}
         >
           <span
@@ -193,6 +217,30 @@ export function NavFooter({
           </span>
         </div>
       )}
+
+      {/* Onderste rij — actieknoppen */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-around",
+          borderTop: "1px solid rgba(255,255,255,0.06)",
+          paddingTop: 8,
+          marginTop: 6,
+        }}
+      >
+        <button onClick={onToelichting} style={iconBtnStyle}>
+          <FileText size={16} />
+          <span style={iconLabelStyle}>Toelichting</span>
+        </button>
+        <button onClick={onTcOproep} style={iconBtnStyle}>
+          <Megaphone size={16} />
+          <span style={iconLabelStyle}>TC Oproep</span>
+        </button>
+        <button onClick={onVragen} style={iconBtnStyle}>
+          <HelpCircle size={16} />
+          <span style={iconLabelStyle}>Vragen</span>
+        </button>
+      </div>
     </div>
   );
 }

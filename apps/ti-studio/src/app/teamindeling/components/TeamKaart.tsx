@@ -1,6 +1,7 @@
 // apps/ti-studio/src/app/teamindeling/components/TeamKaart.tsx
 "use client";
 
+import { Search } from "lucide-react";
 import type {
   PubliekTeam,
   PubliekeSpeler,
@@ -306,13 +307,11 @@ export function TeamKaart({
   team,
   animKlasse,
   onZoek,
-  onToelichting,
   seizoenLabel,
 }: {
   team: PubliekTeam;
   animKlasse: string;
   onZoek: () => void;
-  onToelichting: () => void;
   seizoenLabel: string | null;
 }) {
   const isSelectie = team.soort === "selectie";
@@ -378,30 +377,15 @@ export function TeamKaart({
                 border: "1px solid rgba(255,255,255,0.25)",
                 borderRadius: 4,
                 padding: "6px 10px",
-                fontSize: 14,
                 color: "#fff",
                 cursor: "pointer",
                 lineHeight: 1,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
-              🔍
-            </button>
-            <button
-              onClick={onToelichting}
-              style={{
-                background: "rgba(0,0,0,0.18)",
-                border: "1px solid rgba(255,255,255,0.3)",
-                borderRadius: 4,
-                padding: "6px 12px",
-                fontSize: 11,
-                fontWeight: 700,
-                textTransform: "uppercase",
-                letterSpacing: "0.05em",
-                color: "#fff",
-                cursor: "pointer",
-              }}
-            >
-              ← Toelichting
+              <Search size={16} />
             </button>
           </div>
         </div>

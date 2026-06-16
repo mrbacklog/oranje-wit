@@ -85,7 +85,7 @@ export function PubliekeTeamindeling({ data }: { data: PubliekeTeamindelingData 
   return (
     <div
       className="pt-root"
-      style={{ minHeight: "100vh", background: "#080808", paddingBottom: 60 }}
+      style={{ minHeight: "100vh", background: "#080808", paddingBottom: 90 }}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >
@@ -97,7 +97,6 @@ export function PubliekeTeamindeling({ data }: { data: PubliekeTeamindelingData 
             team={huidigTeam}
             animKlasse="pt-team-in"
             onZoek={() => setZoekOpen(true)}
-            onToelichting={() => setPagina("toelichting")}
             seizoenLabel={data.toelichting?.seizoenLabel ?? null}
           />
         ) : (
@@ -114,6 +113,9 @@ export function PubliekeTeamindeling({ data }: { data: PubliekeTeamindelingData 
         onVorig={gaVorig}
         onVolgend={gaVolgend}
         onKiesTeam={(idx) => naarTeam(idx)}
+        onToelichting={() => setPagina("toelichting")}
+        onTcOproep={() => {}}
+        onVragen={() => {}}
       />
 
       {/* Zoekoverlay */}

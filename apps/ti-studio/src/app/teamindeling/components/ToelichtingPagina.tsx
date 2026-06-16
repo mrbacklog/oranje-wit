@@ -3,6 +3,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { Megaphone, HelpCircle } from "lucide-react";
 import type {
   PubliekeTeamindelingData,
   BelangrijkeDatumItem,
@@ -229,6 +230,60 @@ function KennismakingInhoud({ items }: { items: KennismakingItem[] }) {
   );
 }
 
+// --- TC Oproep modal inhoud ---
+function TcOproepInhoud() {
+  return (
+    <div>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+        <Megaphone size={20} color="#FF6600" />
+        <h3
+          style={{
+            margin: 0,
+            fontSize: 18,
+            fontWeight: 900,
+            fontStyle: "italic",
+            textTransform: "uppercase",
+            color: "#fff",
+            letterSpacing: "-0.01em",
+          }}
+        >
+          Oproep van de TC
+        </h3>
+      </div>
+      <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 14 }}>
+        Tekst volgt. De TC heeft een belangrijke oproep voor alle leden.
+      </p>
+    </div>
+  );
+}
+
+// --- Vragen modal inhoud ---
+function VragenInhoud() {
+  return (
+    <div>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+        <HelpCircle size={20} color="#FF6600" />
+        <h3
+          style={{
+            margin: 0,
+            fontSize: 18,
+            fontWeight: 900,
+            fontStyle: "italic",
+            textTransform: "uppercase",
+            color: "#fff",
+            letterSpacing: "-0.01em",
+          }}
+        >
+          Veelgestelde vragen
+        </h3>
+      </div>
+      <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 14 }}>
+        Tekst volgt. Heb je vragen over de teamindeling? Neem contact op met de TC.
+      </p>
+    </div>
+  );
+}
+
 // --- Sectie kop ---
 function SectieKop({ label, titel }: { label: string; titel: string }) {
   return (
@@ -267,20 +322,47 @@ export function ToelichtingPagina({
   toelichting: PubliekeTeamindelingData["toelichting"];
   onGaNaar: () => void;
 }) {
-  const [openModal, setOpenModal] = useState<null | "startdata" | "kennismaking">(null);
+  const [openModal, setOpenModal] = useState<
+    null | "startdata" | "kennismaking" | "tcoproep" | "vragen"
+  >(null);
 
   const belangrijkeData = toelichting?.belangrijkeData ?? [];
   const kennismakingstrainingen = toelichting?.kennismakingstrainingen ?? [];
 
   return (
     <div style={{ minHeight: "100vh", background: "#fff" }}>
-      {/* Hero — sticky, wit met oranje accenten + switch-knop */}
+      {/* Achtergrond watermerk — fixed over gehele pagina */}
+      <div
+        style={{
+          position: "fixed",
+          bottom: 0,
+          right: 0,
+          width: 340,
+          height: "auto",
+          opacity: 0.06,
+          pointerEvents: "none",
+          userSelect: "none",
+          zIndex: 0,
+        }}
+      >
+        <Image
+          src={LOGO_URL}
+          alt=""
+          aria-hidden
+          unoptimized
+          width={340}
+          height={340}
+          style={{ width: "100%", height: "auto", objectFit: "contain" }}
+        />
+      </div>
+
+      {/* Hero — sticky, licht grijs met oranje accenten + switch-knop */}
       <div
         className="pt-toel-hero"
         style={{
-          background: "#fff",
+          background: "#f5f5f5",
           borderLeft: "5px solid #FF6600",
-          padding: "16px 24px 24px",
+          padding: "12px 20px 20px",
           position: "sticky",
           top: 0,
           zIndex: 30,
@@ -299,26 +381,6 @@ export function ToelichtingPagina({
             clipPath: "polygon(100% 0, 100% 100%, 0 100%)",
             opacity: 0.1,
             pointerEvents: "none",
-          }}
-        />
-        {/* OW 100 jaar logo — decoratief watermerk */}
-        <Image
-          src={LOGO_URL}
-          alt=""
-          aria-hidden="true"
-          unoptimized
-          width={320}
-          height={320}
-          style={{
-            position: "absolute",
-            bottom: -20,
-            right: 12,
-            width: 320,
-            height: "auto",
-            opacity: 0.08,
-            pointerEvents: "none",
-            userSelect: "none",
-            objectFit: "contain",
           }}
         />
         <div style={{ maxWidth: 680, margin: "0 auto" }}>
@@ -360,27 +422,6 @@ export function ToelichtingPagina({
               Teamindeling →
             </button>
           </div>
-          {/* Logo + seizoen */}
-          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-            <img
-              src={LOGO_URL}
-              alt="c.k.v. Oranje Wit 100 jaar"
-              style={{ height: 48, width: "auto", display: "block" }}
-            />
-            {toelichting && (
-              <span
-                style={{
-                  fontSize: 11,
-                  fontWeight: 800,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.1em",
-                  color: ORANJE,
-                }}
-              >
-                {toelichting.seizoenLabel}
-              </span>
-            )}
-          </div>
           {/* Titel */}
           <h1
             className="pt-toel-titel"
@@ -389,42 +430,74 @@ export function ToelichtingPagina({
             <span
               style={{
                 display: "block",
-                fontSize: 13,
+                fontSize: 15,
                 fontWeight: 700,
                 fontStyle: "normal",
                 textTransform: "uppercase",
-                letterSpacing: "0.12em",
-                color: "#aaa",
-                marginBottom: 4,
+                letterSpacing: "0.1em",
+                color: "#888",
+                marginBottom: 6,
               }}
             >
-              Voorlopige teamindeling
+              Voorlopige
             </span>
             <span
               style={{
                 display: "block",
-                fontSize: 48,
+                fontSize: 52,
                 fontWeight: 900,
                 fontStyle: "italic",
                 textTransform: "uppercase",
-                color: ORANJE,
-                lineHeight: 0.9,
-                textShadow: "0 0 40px rgba(255,102,0,0.18)",
+                color: "#111",
+                lineHeight: 0.88,
+                textShadow: "none",
               }}
             >
-              {toelichting?.seizoenLabel ?? "2026–2027"}
+              Teamindeling
             </span>
+            {toelichting && (
+              <span
+                style={{
+                  display: "block",
+                  fontSize: 18,
+                  fontWeight: 700,
+                  fontStyle: "italic",
+                  color: ORANJE,
+                  marginTop: 6,
+                }}
+              >
+                {toelichting.seizoenLabel}
+              </span>
+            )}
           </h1>
-          <p style={{ margin: "10px 0 0", fontSize: 13, color: "#888", fontWeight: 500 }}>
-            c.k.v. Oranje Wit · Dordrecht
-          </p>
+          {/* Snelkoppeling pills */}
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 14 }}>
+            <button style={pillBtnStyle} onClick={() => setOpenModal("startdata")}>
+              📅 Startdata
+            </button>
+            <button style={pillBtnStyle} onClick={() => setOpenModal("kennismaking")}>
+              🏐 Kennismakingstraining
+            </button>
+            <button style={pillBtnStyle} onClick={() => setOpenModal("tcoproep")}>
+              <Megaphone size={13} /> TC Oproep
+            </button>
+            <button style={pillBtnStyle} onClick={() => setOpenModal("vragen")}>
+              <HelpCircle size={13} /> Vragen
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Inhoud */}
       <div
         className="pt-toel-body"
-        style={{ maxWidth: 680, margin: "0 auto", padding: "28px 24px 100px" }}
+        style={{
+          maxWidth: 680,
+          margin: "0 auto",
+          padding: "28px 24px 100px",
+          position: "relative",
+          zIndex: 1,
+        }}
       >
         {toelichting ? (
           <>
@@ -717,6 +790,12 @@ export function ToelichtingPagina({
       </InfoModal>
       <InfoModal open={openModal === "kennismaking"} onSluit={() => setOpenModal(null)}>
         <KennismakingInhoud items={kennismakingstrainingen} />
+      </InfoModal>
+      <InfoModal open={openModal === "tcoproep"} onSluit={() => setOpenModal(null)}>
+        <TcOproepInhoud />
+      </InfoModal>
+      <InfoModal open={openModal === "vragen"} onSluit={() => setOpenModal(null)}>
+        <VragenInhoud />
       </InfoModal>
     </div>
   );
