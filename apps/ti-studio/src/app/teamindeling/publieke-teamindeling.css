@@ -12,27 +12,19 @@
   --pt-subtekst: rgba(255, 255, 255, 0.4);
 }
 
-/* ── Slide animaties (team wisselen) ── */
-@keyframes pt-slide-in-right {
+/* ── Team wissel animatie ── */
+@keyframes pt-team-in {
   from {
-    transform: translateX(60px);
     opacity: 0;
   }
   to {
-    transform: translateX(0);
     opacity: 1;
   }
 }
-@keyframes pt-slide-in-left {
-  from {
-    transform: translateX(-60px);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
+.pt-team-in {
+  animation: pt-team-in 0.22s ease both;
 }
+
 @keyframes pt-fade-in {
   from {
     opacity: 0;
@@ -53,13 +45,6 @@
   100% {
     opacity: 0.08;
   }
-}
-
-.pt-slide-next {
-  animation: pt-slide-in-right 0.3s ease both;
-}
-.pt-slide-prev {
-  animation: pt-slide-in-left 0.3s ease both;
 }
 
 /* Stagger fade-in voor spelers — nth-child delay */
@@ -131,6 +116,7 @@
   }
   .pt-hero-pad {
     padding: 28px 32px 60px !important;
+    will-change: transform;
   }
   .pt-body-pad {
     padding: 24px 32px 100px !important;

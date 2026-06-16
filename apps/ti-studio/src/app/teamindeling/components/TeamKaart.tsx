@@ -13,10 +13,56 @@ function volleNaam(sp: PubliekeSpeler): string {
 function alfa(spelers: PubliekeSpeler[]): PubliekeSpeler[] {
   return [...spelers].sort((a, b) => a.roepnaam.localeCompare(b.roepnaam, "nl"));
 }
+function initialen(sp: PubliekeSpeler): string {
+  return (sp.roepnaam[0] ?? "") + (sp.achternaam[0] ?? "");
+}
+
+function SpelerRij({ sp }: { sp: PubliekeSpeler }) {
+  const isDame = sp.geslacht === "V";
+  return (
+    <div
+      className="pt-speler"
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 10,
+        padding: "5px 8px",
+        borderRadius: 8,
+        marginBottom: 3,
+      }}
+    >
+      <span
+        style={{
+          width: 28,
+          height: 28,
+          borderRadius: "50%",
+          background: isDame
+            ? "linear-gradient(135deg, rgba(147,197,253,0.2) 0%, rgba(147,197,253,0.06) 100%)"
+            : "linear-gradient(135deg, rgba(255,102,0,0.2) 0%, rgba(255,102,0,0.06) 100%)",
+          border: isDame ? "1px solid rgba(147,197,253,0.35)" : "1px solid rgba(255,102,0,0.3)",
+          color: isDame ? "rgba(147,197,253,0.85)" : "rgba(255,102,0,0.85)",
+          fontSize: 10,
+          fontWeight: 700,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+          textTransform: "uppercase",
+        }}
+      >
+        {initialen(sp)}
+      </span>
+      <span style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.88)" }}>
+        {volleNaam(sp)}
+      </span>
+    </div>
+  );
+}
 
 function SpelerLijst({ spelers, geslacht }: { spelers: PubliekeSpeler[]; geslacht: "V" | "M" }) {
   if (spelers.length === 0) return null;
-  const label = geslacht === "V" ? "♀ Dames" : "♂ Heren";
+  const label = geslacht === "V" ? "Dames" : "Heren";
+  const accentKleur = geslacht === "V" ? "rgba(147,197,253,0.7)" : "#FF6600";
   return (
     <div style={{ flex: 1, minWidth: 0 }}>
       <div
@@ -25,23 +71,32 @@ function SpelerLijst({ spelers, geslacht }: { spelers: PubliekeSpeler[]; geslach
           fontWeight: 800,
           textTransform: "uppercase",
           letterSpacing: "0.14em",
-          color: "#FF6600",
-          paddingBottom: 6,
-          marginBottom: 10,
-          borderBottom: "1px solid rgba(255,102,0,0.30)",
+          color: "rgba(255,255,255,0.45)",
+          paddingBottom: 8,
+          marginBottom: 6,
           display: "flex",
           alignItems: "center",
           gap: 6,
         }}
       >
+        <span
+          style={{
+            width: 3,
+            height: 14,
+            borderRadius: 2,
+            background: accentKleur,
+            flexShrink: 0,
+            display: "inline-block",
+          }}
+        />
         {label}
         <span
           style={{
-            background: "rgba(255,102,0,0.15)",
-            color: "#FF6600",
+            background: "rgba(255,255,255,0.07)",
+            color: "rgba(255,255,255,0.4)",
+            borderRadius: 8,
             fontSize: 9,
-            padding: "1px 5px",
-            borderRadius: 10,
+            padding: "1px 6px",
           }}
         >
           {spelers.length}
@@ -49,17 +104,7 @@ function SpelerLijst({ spelers, geslacht }: { spelers: PubliekeSpeler[]; geslach
       </div>
       <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
         {alfa(spelers).map((sp, i) => (
-          <li
-            key={i}
-            className="pt-speler"
-            style={{
-              fontWeight: 500,
-              color: "rgba(255,255,255,0.88)",
-              borderBottom: "1px solid rgba(255,255,255,0.07)",
-            }}
-          >
-            {volleNaam(sp)}
-          </li>
+          <SpelerRij key={i} sp={sp} />
         ))}
       </ul>
     </div>
@@ -77,15 +122,24 @@ function StafKolom({ staf }: { staf: PubliekTeam["staf"] }) {
           fontWeight: 800,
           textTransform: "uppercase",
           letterSpacing: "0.14em",
-          color: "#FF6600",
-          paddingBottom: 6,
-          marginBottom: 10,
-          borderBottom: "1px solid rgba(255,102,0,0.30)",
+          color: "rgba(255,255,255,0.45)",
+          paddingBottom: 8,
+          marginBottom: 6,
           display: "flex",
           alignItems: "center",
           gap: 6,
         }}
       >
+        <span
+          style={{
+            width: 3,
+            height: 14,
+            borderRadius: 2,
+            background: "rgba(255,255,255,0.35)",
+            flexShrink: 0,
+            display: "inline-block",
+          }}
+        />
         Staf
       </div>
       <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
@@ -131,25 +185,38 @@ function StafPills({ staf }: { staf: PubliekTeam["staf"] }) {
         borderTop: "1px solid rgba(255,102,0,0.15)",
         display: "flex",
         flexWrap: "wrap",
-        gap: 6,
+        gap: 8,
       }}
     >
       {staf.map((s, i) => (
-        <span
+        <div
           key={i}
           style={{
-            background: "rgba(255,255,255,0.04)",
-            border: "1px solid rgba(255,255,255,0.09)",
-            borderRadius: 20,
-            padding: "4px 12px",
-            fontSize: 11,
-            color: "rgba(255,255,255,0.6)",
-            fontWeight: 500,
+            background:
+              "linear-gradient(135deg, rgba(255,102,0,0.12) 0%, rgba(255,102,0,0.04) 100%)",
+            border: "1px solid rgba(255,102,0,0.3)",
+            borderRadius: 10,
+            padding: "8px 14px",
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
           }}
         >
-          <span style={{ color: "rgba(255,102,0,0.75)", marginRight: 3 }}>{rolWeergave(s)}</span>
-          {s.naam}
-        </span>
+          <span
+            style={{
+              fontSize: 9,
+              fontWeight: 800,
+              textTransform: "uppercase",
+              letterSpacing: "0.1em",
+              color: "#FF6600",
+            }}
+          >
+            {rolWeergave(s)}
+          </span>
+          <span style={{ fontSize: 13, fontWeight: 600, color: "rgba(255,255,255,0.9)" }}>
+            {s.naam}
+          </span>
+        </div>
       ))}
     </div>
   );

@@ -8,19 +8,10 @@ import { TeamKaart } from "./components/TeamKaart";
 import { ToelichtingPagina } from "./components/ToelichtingPagina";
 import { ZoekOverlay } from "./components/ZoekOverlay";
 
-type AnimRichting = "next" | "prev" | null;
-
-function animKlasse(richting: AnimRichting): string {
-  if (richting === "next") return "pt-slide-next";
-  if (richting === "prev") return "pt-slide-prev";
-  return "";
-}
-
 export function PubliekeTeamindeling({ data }: { data: PubliekeTeamindelingData }) {
   const [pagina, setPagina] = useState<"toelichting" | "indeling">("toelichting");
   const [teamIdx, setTeamIdx] = useState(0);
   const [zoekOpen, setZoekOpen] = useState(false);
-  const [animRichting, setAnimRichting] = useState<AnimRichting>(null);
 
   // Swipe-detectie
   const touchStartX = useRef<number | null>(null);
@@ -28,19 +19,15 @@ export function PubliekeTeamindeling({ data }: { data: PubliekeTeamindelingData 
   const teams = data.teams;
   const huidigTeam = teams[teamIdx];
 
-  function naarTeam(idx: number, richting: AnimRichting) {
-    setAnimRichting(richting);
+  function naarTeam(idx: number) {
     setTeamIdx(idx);
-    if (richting !== null) {
-      setTimeout(() => setAnimRichting(null), 350);
-    }
   }
 
   function gaVorig() {
-    if (teamIdx > 0) naarTeam(teamIdx - 1, "prev");
+    if (teamIdx > 0) naarTeam(teamIdx - 1);
   }
   function gaVolgend() {
-    if (teamIdx < teams.length - 1) naarTeam(teamIdx + 1, "next");
+    if (teamIdx < teams.length - 1) naarTeam(teamIdx + 1);
   }
 
   // Keyboard
@@ -86,7 +73,7 @@ export function PubliekeTeamindeling({ data }: { data: PubliekeTeamindelingData 
             teams={teams}
             onSluit={() => setZoekOpen(false)}
             onKiesTeam={(idx) => {
-              naarTeam(idx, null);
+              naarTeam(idx);
               setPagina("indeling");
             }}
           />
@@ -108,7 +95,7 @@ export function PubliekeTeamindeling({ data }: { data: PubliekeTeamindelingData 
           <TeamKaart
             key={teamIdx}
             team={huidigTeam}
-            animKlasse={animKlasse(animRichting)}
+            animKlasse="pt-team-in"
             onZoek={() => setZoekOpen(true)}
             onToelichting={() => setPagina("toelichting")}
             seizoenLabel={data.toelichting?.seizoenLabel ?? null}
@@ -126,7 +113,7 @@ export function PubliekeTeamindeling({ data }: { data: PubliekeTeamindelingData 
         teamIdx={teamIdx}
         onVorig={gaVorig}
         onVolgend={gaVolgend}
-        onKiesTeam={(idx) => naarTeam(idx, idx > teamIdx ? "next" : "prev")}
+        onKiesTeam={(idx) => naarTeam(idx)}
       />
 
       {/* Zoekoverlay */}
@@ -135,7 +122,7 @@ export function PubliekeTeamindeling({ data }: { data: PubliekeTeamindelingData 
           teams={teams}
           onSluit={() => setZoekOpen(false)}
           onKiesTeam={(idx) => {
-            naarTeam(idx, null);
+            naarTeam(idx);
             setZoekOpen(false);
           }}
         />
