@@ -88,10 +88,33 @@ const KENNISMAKINGSTRAININGEN: Record<string, { datumLabel: string; tijd: string
     "Geel-3": { datumLabel: "Wo 25 juni", tijd: "18:15–19:30", veld: "Veld 2" },
   };
 
+function normaliseerNaam(naam: string): string {
+  return naam
+    .toLowerCase()
+    .replace(/[-\s]+/g, " ")
+    .trim();
+}
+
 function opzoekKennismakingstraining(teamnaam: string): KennismakingItem | null {
-  const k = KENNISMAKINGSTRAININGEN[teamnaam];
-  if (!k) return null;
-  return { teamnaam, datum: k.datumLabel, tijd: k.tijd, locatie: k.veld };
+  // Directe match eerst
+  if (KENNISMAKINGSTRAININGEN[teamnaam]) {
+    return {
+      teamnaam,
+      datum: KENNISMAKINGSTRAININGEN[teamnaam].datumLabel,
+      tijd: KENNISMAKINGSTRAININGEN[teamnaam].tijd,
+      locatie: KENNISMAKINGSTRAININGEN[teamnaam].veld,
+    };
+  }
+  // Genormaliseerde match (spaties vs koppeltekens, hoofdletters)
+  const genorm = normaliseerNaam(teamnaam);
+  const match = Object.entries(KENNISMAKINGSTRAININGEN).find(
+    ([k]) => normaliseerNaam(k) === genorm
+  );
+  if (!match) {
+    logger.warn("publieke-presentatie: geen kennismakingstraining gevonden", { teamnaam, genorm });
+    return null;
+  }
+  return { teamnaam, datum: match[1].datumLabel, tijd: match[1].tijd, locatie: match[1].veld };
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
