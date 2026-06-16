@@ -1,6 +1,7 @@
 /* eslint-disable max-lines -- Publieke teamindeling UI combineert meerdere nauw verwante sub-componenten in één bestand */
 "use client";
 
+import "./publieke-teamindeling.css";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import type {
@@ -258,10 +259,7 @@ function InfoBanner() {
       }}
     >
       <span style={{ fontSize: 16 }}>ℹ️</span>
-      <span>
-        Deze spelers vormen samen één pool. De verdeling over de teams is nog niet definitief en
-        wordt later bekendgemaakt.
-      </span>
+      <span>Verdeling over de teams ontstaat middels selectie tijdens de voorbereiding.</span>
     </div>
   );
 }
@@ -497,6 +495,126 @@ function ZoekOverlay({
   );
 }
 
+// ── Toelichting hulp-componenten ──────────────────────────────────────────────
+
+function TekstSectie({ titel, html, icoon }: { titel: string; html: string; icoon?: string }) {
+  if (!html.trim()) return null;
+  return (
+    <div
+      style={{
+        background: C.wit,
+        borderRadius: 16,
+        boxShadow: "0 2px 12px rgba(0,0,0,0.05)",
+        padding: "24px 28px",
+        marginBottom: 20,
+      }}
+    >
+      <h2
+        style={{
+          margin: "0 0 16px",
+          fontSize: 18,
+          fontWeight: 700,
+          color: C.tekst,
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+        }}
+      >
+        {icoon && <span style={{ fontSize: 20 }}>{icoon}</span>}
+        {titel}
+      </h2>
+      {/* Inhoud komt uit TC-beheerd admin-formulier — geen externe gebruikersinvoer */}
+      <div
+        style={{ fontSize: 15, lineHeight: 1.75, color: C.tekst }}
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
+    </div>
+  );
+}
+
+function KennismakingBlok({ html }: { html: string }) {
+  if (!html.trim()) return null;
+  return (
+    <div
+      style={{
+        background: C.wit,
+        borderRadius: 16,
+        boxShadow: "0 2px 12px rgba(0,0,0,0.05)",
+        overflow: "hidden",
+        marginBottom: 20,
+      }}
+    >
+      <div
+        style={{
+          background: `linear-gradient(135deg, #1f2937 0%, #111827 100%)`,
+          borderBottom: `3px solid ${C.oranje}`,
+          padding: "20px 28px",
+        }}
+      >
+        <h2
+          style={{
+            margin: 0,
+            fontSize: 18,
+            fontWeight: 700,
+            color: C.wit,
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+          }}
+        >
+          <span style={{ fontSize: 20 }}>📅</span>
+          Kennismakingstrainingen
+        </h2>
+        <p style={{ margin: "6px 0 0", fontSize: 13, color: "rgba(255,255,255,0.6)" }}>
+          Leer je nieuwe team kennen vóór de zomervakantie
+        </p>
+      </div>
+      <div style={{ padding: "20px 28px" }}>
+        {/* Inhoud komt uit TC-beheerd admin-formulier — geen externe gebruikersinvoer */}
+        <div
+          style={{ fontSize: 15, lineHeight: 1.75, color: C.tekst }}
+          dangerouslySetInnerHTML={{ __html: html }}
+        />
+      </div>
+    </div>
+  );
+}
+
+function ContactBlok({ html }: { html: string }) {
+  if (!html.trim()) return null;
+  return (
+    <div
+      style={{
+        background: "linear-gradient(135deg, #fff7ed 0%, #fff 100%)",
+        border: `1px solid rgba(255,102,0,0.2)`,
+        borderRadius: 16,
+        padding: "24px 28px",
+        marginBottom: 20,
+      }}
+    >
+      <h2
+        style={{
+          margin: "0 0 12px",
+          fontSize: 18,
+          fontWeight: 700,
+          color: C.tekst,
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+        }}
+      >
+        <span style={{ fontSize: 20 }}>✉️</span>
+        Contact
+      </h2>
+      {/* Inhoud komt uit TC-beheerd admin-formulier — geen externe gebruikersinvoer */}
+      <div
+        style={{ fontSize: 15, lineHeight: 1.75, color: C.tekst }}
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
+    </div>
+  );
+}
+
 // ── Toelichting pagina ────────────────────────────────────────────────────────
 
 function ToelichtingPagina({
@@ -543,66 +661,93 @@ function ToelichtingPagina({
             Teamindeling{" "}
             {toelichting && <span style={{ color: C.oranje }}>{toelichting.seizoenLabel}</span>}
           </h1>
+          {toelichting && (
+            <button
+              onClick={onGaNaar}
+              style={{
+                marginTop: 24,
+                background: C.oranje,
+                color: C.wit,
+                border: "none",
+                borderRadius: 10,
+                padding: "12px 24px",
+                fontSize: 15,
+                fontWeight: 600,
+                cursor: "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+              }}
+            >
+              Ga naar de teamindeling →
+            </button>
+          )}
         </div>
       </div>
 
       {/* Inhoud */}
-      <div style={{ maxWidth: 720, margin: "0 auto", padding: "32px 24px" }}>
-        <div
-          style={{
-            background: C.wit,
-            borderRadius: 16,
-            boxShadow: "0 4px 24px rgba(0,0,0,0.06)",
-            padding: "32px 32px",
-          }}
-        >
-          {toelichting ? (
-            <>
-              {/* Inhoud komt uit TC-beheerd admin-formulier — geen externe gebruikersinvoer */}
-              <div
-                style={{ fontSize: 16, lineHeight: 1.7, color: C.tekst, marginBottom: 24 }}
-                dangerouslySetInnerHTML={{ __html: toelichting.introTekst }}
-              />
-              {/* Inhoud komt uit TC-beheerd admin-formulier — geen externe gebruikersinvoer */}
-              <div
-                style={{ fontSize: 16, lineHeight: 1.7, color: C.tekst, marginBottom: 28 }}
-                dangerouslySetInnerHTML={{ __html: toelichting.tcTekst }}
-              />
-            </>
-          ) : (
-            <p style={{ fontSize: 16, color: C.subTekst, marginBottom: 28 }}>
-              De toelichting bij de teamindeling is nog niet beschikbaar.
-            </p>
-          )}
+      <div style={{ maxWidth: 720, margin: "0 auto", padding: "28px 20px 40px" }}>
+        {toelichting ? (
+          <>
+            <TekstSectie titel="Toelichting" html={toelichting.introTekst} />
+            <TekstSectie
+              titel="Waarom een pre-season indeling?"
+              html={toelichting.waaromTekst}
+              icoon="🏷️"
+            />
+            <TekstSectie
+              titel="Hoe ontstaat een teamsamenstelling?"
+              html={toelichting.werkwijzeTekst}
+              icoon="⚙️"
+            />
+            <TekstSectie titel="Competitie 2.0" html={toelichting.competitieTekst} icoon="🏐" />
+            <TekstSectie
+              titel="TC, Coördinatoren, Begeleiders en Trainers"
+              html={toelichting.tcTekst}
+              icoon="👥"
+            />
+            <KennismakingBlok html={toelichting.kennismakingTekst} />
+            <ContactBlok html={toelichting.contactTekst} />
+            <TekstSectie titel="Kangoeroes" html={toelichting.kangoeroesTekst} icoon="🦘" />
+            <TekstSectie titel="Bedankt!" html={toelichting.bedankTekst} icoon="🙏" />
+          </>
+        ) : (
           <div
             style={{
-              fontSize: 14,
-              color: C.subTekst,
-              fontStyle: "italic",
-              marginBottom: 32,
+              background: C.wit,
+              borderRadius: 16,
+              boxShadow: "0 4px 24px rgba(0,0,0,0.06)",
+              padding: "32px",
             }}
           >
-            — De Technische Commissie, c.k.v. Oranje Wit
+            <p style={{ fontSize: 16, color: C.subTekst, margin: 0 }}>
+              De toelichting bij de teamindeling is nog niet beschikbaar.
+            </p>
           </div>
-          <button
-            onClick={onGaNaar}
-            style={{
-              background: C.oranje,
-              color: C.wit,
-              border: "none",
-              borderRadius: 10,
-              padding: "14px 28px",
-              fontSize: 16,
-              fontWeight: 600,
-              cursor: "pointer",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-            }}
-          >
-            Ga naar de teamindeling →
-          </button>
-        </div>
+        )}
+
+        {toelichting && (
+          <div style={{ textAlign: "center", marginTop: 8, paddingBottom: 16 }}>
+            <button
+              onClick={onGaNaar}
+              style={{
+                background: C.oranje,
+                color: C.wit,
+                border: "none",
+                borderRadius: 10,
+                padding: "14px 32px",
+                fontSize: 16,
+                fontWeight: 600,
+                cursor: "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+              }}
+            >
+              Ga naar de teamindeling →
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,0 +1,106 @@
+/* apps/ti-studio/src/app/teamindeling/publieke-teamindeling.css */
+
+.pt-root {
+  --pt-oranje: #ff6600;
+  --pt-oranje-licht: #ff8833;
+  --pt-oranje-dim: rgba(255, 102, 0, 0.15);
+  --pt-oranje-glow: rgba(255, 102, 0, 0.3);
+  --pt-zwart: #080808;
+  --pt-donker: #0f0f0f;
+  --pt-border: rgba(255, 255, 255, 0.07);
+  --pt-tekst: rgba(255, 255, 255, 0.88);
+  --pt-subtekst: rgba(255, 255, 255, 0.4);
+}
+
+/* ── Slide animaties (team wisselen) ── */
+@keyframes pt-slide-in-right {
+  from {
+    transform: translateX(60px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+@keyframes pt-slide-in-left {
+  from {
+    transform: translateX(-60px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+@keyframes pt-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes pt-shimmer {
+  0% {
+    opacity: 0.08;
+  }
+  50% {
+    opacity: 0.18;
+  }
+  100% {
+    opacity: 0.08;
+  }
+}
+
+.pt-slide-next {
+  animation: pt-slide-in-right 0.3s ease both;
+}
+.pt-slide-prev {
+  animation: pt-slide-in-left 0.3s ease both;
+}
+
+/* Stagger fade-in voor spelers — nth-child delay */
+.pt-speler {
+  opacity: 0;
+  animation: pt-fade-in 0.25s ease forwards;
+}
+.pt-speler:nth-child(1) {
+  animation-delay: 0s;
+}
+.pt-speler:nth-child(2) {
+  animation-delay: 0.04s;
+}
+.pt-speler:nth-child(3) {
+  animation-delay: 0.08s;
+}
+.pt-speler:nth-child(4) {
+  animation-delay: 0.12s;
+}
+.pt-speler:nth-child(5) {
+  animation-delay: 0.16s;
+}
+.pt-speler:nth-child(6) {
+  animation-delay: 0.2s;
+}
+.pt-speler:nth-child(7) {
+  animation-delay: 0.24s;
+}
+.pt-speler:nth-child(8) {
+  animation-delay: 0.28s;
+}
+.pt-speler:nth-child(9) {
+  animation-delay: 0.32s;
+}
+.pt-speler:nth-child(10) {
+  animation-delay: 0.36s;
+}
+.pt-speler:nth-child(n + 11) {
+  animation-delay: 0.4s;
+}
+
+.pt-hero-shimmer {
+  animation: pt-shimmer 2.5s ease 0.2s 1 forwards;
+}
