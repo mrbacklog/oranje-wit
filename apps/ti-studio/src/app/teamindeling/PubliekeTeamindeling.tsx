@@ -6,7 +6,6 @@ import type { PubliekeTeamindelingData } from "@/lib/teamindeling/publieke-prese
 import { AppFooter } from "./components/AppFooter";
 import type { AppPagina } from "./components/AppFooter";
 import { KennismakingPagina } from "./components/KennismakingPagina";
-import { NavHeader } from "./components/NavHeader";
 import { TeamKaart } from "./components/TeamKaart";
 import { TcOproepPagina } from "./components/TcOproepPagina";
 import { ToelichtingPagina } from "./components/ToelichtingPagina";
@@ -81,12 +80,7 @@ export function PubliekeTeamindeling({ data }: { data: PubliekeTeamindelingData 
             onTouchStart={onTouchStart}
             onTouchEnd={onTouchEnd}
           >
-            <NavHeader
-              seizoenLabel={toelichting?.seizoenLabel ?? null}
-              onZoek={() => setZoekOpen(true)}
-              onToelichting={() => setPagina("toelichting")}
-            />
-            <div style={{ maxWidth: 720, margin: "0 auto", paddingTop: 52 }}>
+            <div style={{ maxWidth: 720, margin: "0 auto", paddingTop: 12 }}>
               {huidigTeam ? (
                 <TeamKaart
                   key={teamIdx}

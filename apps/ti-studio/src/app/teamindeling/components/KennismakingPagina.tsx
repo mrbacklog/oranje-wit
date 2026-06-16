@@ -34,67 +34,69 @@ export function KennismakingPagina({
             pointerEvents: "none",
           }}
         />
-        <Image
-          src={LOGO_URL}
-          alt=""
-          aria-hidden={true}
-          unoptimized
-          width={90}
-          height={90}
-          style={{
-            position: "absolute",
-            top: 8,
-            right: 16,
-            width: 90,
-            height: "auto",
-            opacity: 0.18,
-            pointerEvents: "none",
-            userSelect: "none",
-            objectFit: "contain",
-          }}
-        />
-        {seizoenLabel && (
-          <div
+        <div style={{ maxWidth: 720, margin: "0 auto", position: "relative" }}>
+          <Image
+            src={LOGO_URL}
+            alt=""
+            aria-hidden={true}
+            unoptimized
+            width={90}
+            height={90}
             style={{
-              fontSize: 10,
-              fontWeight: 800,
-              textTransform: "uppercase",
-              letterSpacing: "0.1em",
-              color: "rgba(255,255,255,0.65)",
-              marginBottom: 8,
+              position: "absolute",
+              top: 0,
+              right: 0,
+              width: 90,
+              height: "auto",
+              opacity: 0.18,
+              pointerEvents: "none",
+              userSelect: "none",
+              objectFit: "contain",
             }}
-          >
-            {seizoenLabel}
-          </div>
-        )}
-        <h1 style={{ margin: 0, lineHeight: 1, letterSpacing: "-0.02em" }}>
-          <span
-            style={{
-              display: "block",
-              fontSize: 13,
-              fontWeight: 700,
-              textTransform: "uppercase",
-              letterSpacing: "0.12em",
-              color: "rgba(255,255,255,0.6)",
-              marginBottom: 4,
-            }}
-          >
-            Nieuw seizoen
-          </span>
-          <span
-            style={{
-              display: "block",
-              fontSize: 40,
-              fontWeight: 900,
-              fontStyle: "italic",
-              textTransform: "uppercase",
-              color: "#fff",
-              lineHeight: 0.9,
-            }}
-          >
-            Kennismakingstrainingen
-          </span>
-        </h1>
+          />
+          {seizoenLabel && (
+            <div
+              style={{
+                fontSize: 10,
+                fontWeight: 800,
+                textTransform: "uppercase",
+                letterSpacing: "0.1em",
+                color: "rgba(255,255,255,0.65)",
+                marginBottom: 8,
+              }}
+            >
+              {seizoenLabel}
+            </div>
+          )}
+          <h1 style={{ margin: 0, lineHeight: 1, letterSpacing: "-0.02em" }}>
+            <span
+              style={{
+                display: "block",
+                fontSize: 13,
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: "0.12em",
+                color: "rgba(255,255,255,0.6)",
+                marginBottom: 4,
+              }}
+            >
+              Nieuw seizoen
+            </span>
+            <span
+              style={{
+                display: "block",
+                fontSize: 40,
+                fontWeight: 900,
+                fontStyle: "italic",
+                textTransform: "uppercase",
+                color: "#fff",
+                lineHeight: 0.9,
+              }}
+            >
+              Kennismakingstrainingen
+            </span>
+          </h1>
+        </div>
       </div>
 
       {/* Body */}

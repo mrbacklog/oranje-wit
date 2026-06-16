@@ -215,87 +215,90 @@ export function ToelichtingPagina({
           }}
         />
 
-        {/* OW-logo watermerk rechtsboven */}
-        <Image
-          src={LOGO_URL}
-          alt=""
-          aria-hidden={true}
-          unoptimized
-          width={90}
-          height={90}
-          style={{
-            position: "absolute",
-            top: 8,
-            right: 16,
-            width: 90,
-            height: "auto",
-            opacity: 0.18,
-            pointerEvents: "none",
-            userSelect: "none",
-            objectFit: "contain",
-          }}
-        />
+        {/* Inhoud gecentreerd op max 720px */}
+        <div style={{ maxWidth: 720, margin: "0 auto", position: "relative" }}>
+          {/* OW-logo watermerk rechtsboven */}
+          <Image
+            src={LOGO_URL}
+            alt=""
+            aria-hidden={true}
+            unoptimized
+            width={90}
+            height={90}
+            style={{
+              position: "absolute",
+              top: 0,
+              right: 0,
+              width: 90,
+              height: "auto",
+              opacity: 0.18,
+              pointerEvents: "none",
+              userSelect: "none",
+              objectFit: "contain",
+            }}
+          />
 
-        {/* Seizoenrij */}
-        <div style={{ display: "flex", alignItems: "center", marginBottom: 8 }}>
-          {toelichting && (
+          {/* Seizoenrij */}
+          <div style={{ display: "flex", alignItems: "center", marginBottom: 8 }}>
+            {toelichting && (
+              <span
+                style={{
+                  fontSize: 10,
+                  fontWeight: 800,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.1em",
+                  color: "rgba(255,255,255,0.65)",
+                }}
+              >
+                {toelichting.seizoenLabel}
+              </span>
+            )}
+          </div>
+
+          {/* Titel */}
+          <h1
+            className="pt-toel-titel"
+            style={{ margin: 0, lineHeight: 1, letterSpacing: "-0.02em" }}
+          >
             <span
               style={{
-                fontSize: 10,
-                fontWeight: 800,
+                display: "block",
+                fontSize: 13,
+                fontWeight: 700,
+                fontStyle: "normal",
                 textTransform: "uppercase",
-                letterSpacing: "0.1em",
-                color: "rgba(255,255,255,0.65)",
+                letterSpacing: "0.12em",
+                color: "rgba(255,255,255,0.6)",
+                marginBottom: 4,
               }}
             >
-              {toelichting.seizoenLabel}
+              Voorlopige teamindeling
             </span>
-          )}
-        </div>
-
-        {/* Titel */}
-        <h1
-          className="pt-toel-titel"
-          style={{ margin: 0, lineHeight: 1, letterSpacing: "-0.02em" }}
-        >
-          <span
+            <span
+              style={{
+                display: "block",
+                fontSize: 48,
+                fontWeight: 900,
+                fontStyle: "italic",
+                textTransform: "uppercase",
+                color: "#fff",
+                lineHeight: 0.9,
+              }}
+            >
+              {toelichting?.seizoenLabel ?? "2026–2027"}
+            </span>
+          </h1>
+          <p
             style={{
-              display: "block",
+              margin: "10px 0 0",
               fontSize: 13,
-              fontWeight: 700,
-              fontStyle: "normal",
-              textTransform: "uppercase",
-              letterSpacing: "0.12em",
-              color: "rgba(255,255,255,0.6)",
-              marginBottom: 4,
+              color: "rgba(255,255,255,0.55)",
+              fontWeight: 500,
             }}
           >
-            Voorlopige teamindeling
-          </span>
-          <span
-            style={{
-              display: "block",
-              fontSize: 48,
-              fontWeight: 900,
-              fontStyle: "italic",
-              textTransform: "uppercase",
-              color: "#fff",
-              lineHeight: 0.9,
-            }}
-          >
-            {toelichting?.seizoenLabel ?? "2026–2027"}
-          </span>
-        </h1>
-        <p
-          style={{
-            margin: "10px 0 0",
-            fontSize: 13,
-            color: "rgba(255,255,255,0.55)",
-            fontWeight: 500,
-          }}
-        >
-          c.k.v. Oranje Wit · Dordrecht
-        </p>
+            c.k.v. Oranje Wit · Dordrecht
+          </p>
+        </div>
       </div>
 
       {/* Inhoud */}
