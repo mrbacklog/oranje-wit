@@ -41,6 +41,7 @@ const footerBtnStyle: React.CSSProperties = {
   border: "none",
   cursor: "pointer",
   padding: "8px 6px",
+  color: "rgba(255,255,255,0.4)",
 };
 
 // --- Modal ---
@@ -701,7 +702,7 @@ export function ToelichtingPagina({
         )}
       </div>
 
-      {/* Sticky footer */}
+      {/* Sticky footer — zelfde shell als NavFooter */}
       <div
         style={{
           position: "fixed",
@@ -709,24 +710,23 @@ export function ToelichtingPagina({
           left: 0,
           right: 0,
           zIndex: 100,
-          background: "rgba(255,255,255,0.97)",
-          backdropFilter: "blur(12px)",
-          WebkitBackdropFilter: "blur(12px)",
-          borderTop: "1px solid rgba(255,102,0,0.15)",
+          background: "#080808",
+          borderTop: "1px solid rgba(255,102,0,0.25)",
           display: "flex",
           alignItems: "stretch",
-          padding: "8px 0 env(safe-area-inset-bottom, 8px)",
+          padding: "8px 0",
+          paddingBottom: "max(10px, env(safe-area-inset-bottom))",
         }}
       >
         <button style={footerBtnStyle} onClick={() => setOpenModal("startdata")}>
           <span style={{ fontSize: 18, lineHeight: 1 }}>📅</span>
           <span
             style={{
-              fontSize: 10,
+              fontSize: 9,
               fontWeight: 700,
-              color: "#555",
-              letterSpacing: "0.04em",
+              letterSpacing: "0.06em",
               textTransform: "uppercase",
+              color: "rgba(255,255,255,0.35)",
             }}
           >
             Data
@@ -736,47 +736,25 @@ export function ToelichtingPagina({
           <span style={{ fontSize: 18, lineHeight: 1 }}>🏐</span>
           <span
             style={{
-              fontSize: 10,
+              fontSize: 9,
               fontWeight: 700,
-              color: "#555",
-              letterSpacing: "0.04em",
+              letterSpacing: "0.06em",
               textTransform: "uppercase",
+              color: "rgba(255,255,255,0.35)",
             }}
           >
             Kennismaking
           </span>
         </button>
-        <div
-          style={{
-            width: 1,
-            background: "rgba(0,0,0,0.08)",
-            margin: "6px 0",
-            flexShrink: 0,
-          }}
-        />
-        <button
-          onClick={onGaNaar}
-          style={{
-            flex: 2,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 2,
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            padding: "8px 12px",
-          }}
-        >
+        <button onClick={onGaNaar} style={{ ...footerBtnStyle, flex: 2 }}>
           <span style={{ fontSize: 18, lineHeight: 1 }}>🏅</span>
           <span
             style={{
-              fontSize: 10,
+              fontSize: 9,
               fontWeight: 800,
-              color: ORANJE,
-              letterSpacing: "0.04em",
+              letterSpacing: "0.06em",
               textTransform: "uppercase",
+              color: "#FF6600",
             }}
           >
             Teamindeling →
