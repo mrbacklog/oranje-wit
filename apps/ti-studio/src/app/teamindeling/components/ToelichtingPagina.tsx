@@ -313,9 +313,6 @@ export function ToelichtingPagina({
     null | "startdata" | "kennismaking" | "tcoproep" | "vragen"
   >(null);
 
-  // onGaNaar wordt niet meer gebruikt in de hero maar prop blijft beschikbaar
-  void onGaNaar;
-
   const belangrijkeData = toelichting?.belangrijkeData ?? [];
   const kennismakingstrainingen = toelichting?.kennismakingstrainingen ?? [];
 
@@ -454,24 +451,6 @@ export function ToelichtingPagina({
                 /* Inhoud uit TC-beheerd admin-formulier — geen externe gebruikersinvoer */
                 dangerouslySetInnerHTML={{ __html: toelichting.introTekst }}
               />
-            </div>
-
-            {/* Pills — direct na intro-tekst */}
-            <div
-              style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 24, marginTop: 16 }}
-            >
-              <button style={pillBtnStyle} onClick={() => setOpenModal("startdata")}>
-                📅 Data
-              </button>
-              <button style={pillBtnStyle} onClick={() => setOpenModal("kennismaking")}>
-                🏐 Kennismaking
-              </button>
-              <button style={pillBtnStyle} onClick={() => setOpenModal("tcoproep")}>
-                <Megaphone size={13} /> TC Oproep
-              </button>
-              <button style={pillBtnStyle} onClick={() => setOpenModal("vragen")}>
-                <HelpCircle size={13} /> Vragen
-              </button>
             </div>
 
             <hr
@@ -709,6 +688,93 @@ export function ToelichtingPagina({
             De toelichting is nog niet beschikbaar.
           </p>
         )}
+      </div>
+
+      {/* Sticky footer — zelfde shell als NavFooter */}
+      <div
+        style={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          zIndex: 100,
+          background: "#080808",
+          borderTop: "1px solid rgba(255,102,0,0.25)",
+          display: "flex",
+          alignItems: "stretch",
+          padding: "6px 0",
+          paddingBottom: "max(10px, env(safe-area-inset-bottom))",
+        }}
+      >
+        {(
+          [
+            { id: "startdata", icon: "📅", label: "Data" },
+            { id: "kennismaking", icon: "🏐", label: "Kennismaking" },
+            { id: "tcoproep", icon: "📣", label: "TC Oproep" },
+            { id: "vragen", icon: "❓", label: "Vragen" },
+          ] as const
+        ).map(({ id, icon, label }) => (
+          <button
+            key={id}
+            onClick={() => setOpenModal(id)}
+            style={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 3,
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              padding: "6px 4px",
+            }}
+          >
+            <span style={{ fontSize: 17, lineHeight: 1 }}>{icon}</span>
+            <span
+              style={{
+                fontSize: 9,
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: "0.06em",
+                color: "rgba(255,255,255,0.35)",
+              }}
+            >
+              {label}
+            </span>
+          </button>
+        ))}
+        <div
+          style={{ width: 1, background: "rgba(255,255,255,0.06)", margin: "6px 0", flexShrink: 0 }}
+        />
+        <button
+          onClick={onGaNaar}
+          style={{
+            flex: 1.5,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 3,
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            padding: "6px 4px",
+          }}
+        >
+          <span style={{ fontSize: 17, lineHeight: 1 }}>🏅</span>
+          <span
+            style={{
+              fontSize: 9,
+              fontWeight: 800,
+              textTransform: "uppercase",
+              letterSpacing: "0.06em",
+              color: "#FF6600",
+            }}
+          >
+            Teamindeling →
+          </span>
+        </button>
       </div>
 
       {/* Modals */}
