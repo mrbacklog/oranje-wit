@@ -33,6 +33,9 @@ export function PubliekeTeamindeling({ data }: { data: PubliekeTeamindelingData 
   function naarTeam(idx: number, richting: AnimRichting) {
     setAnimRichting(richting);
     setTeamIdx(idx);
+    if (richting !== null) {
+      setTimeout(() => setAnimRichting(null), 350);
+    }
   }
 
   function gaVorig() {

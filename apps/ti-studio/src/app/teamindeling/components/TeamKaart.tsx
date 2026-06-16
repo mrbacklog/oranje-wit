@@ -53,10 +53,8 @@ function SpelerLijst({ spelers, geslacht }: { spelers: PubliekeSpeler[]; geslach
             key={i}
             className="pt-speler"
             style={{
-              fontSize: 13,
               fontWeight: 500,
               color: "rgba(255,255,255,0.88)",
-              padding: "5px 0",
               borderBottom: "1px solid rgba(255,255,255,0.07)",
             }}
           >
