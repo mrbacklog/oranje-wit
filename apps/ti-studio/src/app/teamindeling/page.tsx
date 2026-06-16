@@ -24,18 +24,6 @@ export default async function PubliekeTeamindelingPage() {
       }}
     >
       <PubliekeTeamindeling data={data} />
-      <footer
-        style={{
-          background: "#111827",
-          color: "#9ca3af",
-          textAlign: "center",
-          padding: "16px 24px",
-          fontSize: 12,
-        }}
-      >
-        <strong style={{ color: "white" }}>c.k.v. Oranje Wit</strong> · Dordrecht · Vragen?{" "}
-        <strong style={{ color: "white" }}>tc@ckvoranjewit.nl</strong>
-      </footer>
     </div>
   );
 }

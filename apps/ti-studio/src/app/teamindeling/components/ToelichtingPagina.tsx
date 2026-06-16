@@ -30,20 +30,6 @@ const pillBtnStyle: React.CSSProperties = {
   letterSpacing: "0.03em",
 };
 
-const footerBtnStyle: React.CSSProperties = {
-  flex: 1,
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "center",
-  gap: 3,
-  background: "none",
-  border: "none",
-  cursor: "pointer",
-  padding: "8px 6px",
-  color: "rgba(255,255,255,0.4)",
-};
-
 // --- Modal ---
 function InfoModal({
   open,
@@ -700,66 +686,6 @@ export function ToelichtingPagina({
             De toelichting is nog niet beschikbaar.
           </p>
         )}
-      </div>
-
-      {/* Sticky footer — zelfde shell als NavFooter */}
-      <div
-        style={{
-          position: "fixed",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          zIndex: 100,
-          background: "#080808",
-          borderTop: "1px solid rgba(255,102,0,0.25)",
-          display: "flex",
-          alignItems: "stretch",
-          padding: "8px 0",
-          paddingBottom: "max(10px, env(safe-area-inset-bottom))",
-        }}
-      >
-        <button style={footerBtnStyle} onClick={() => setOpenModal("startdata")}>
-          <span style={{ fontSize: 18, lineHeight: 1 }}>📅</span>
-          <span
-            style={{
-              fontSize: 9,
-              fontWeight: 700,
-              letterSpacing: "0.06em",
-              textTransform: "uppercase",
-              color: "rgba(255,255,255,0.35)",
-            }}
-          >
-            Data
-          </span>
-        </button>
-        <button style={footerBtnStyle} onClick={() => setOpenModal("kennismaking")}>
-          <span style={{ fontSize: 18, lineHeight: 1 }}>🏐</span>
-          <span
-            style={{
-              fontSize: 9,
-              fontWeight: 700,
-              letterSpacing: "0.06em",
-              textTransform: "uppercase",
-              color: "rgba(255,255,255,0.35)",
-            }}
-          >
-            Kennismaking
-          </span>
-        </button>
-        <button onClick={onGaNaar} style={{ ...footerBtnStyle, flex: 2 }}>
-          <span style={{ fontSize: 18, lineHeight: 1 }}>🏅</span>
-          <span
-            style={{
-              fontSize: 9,
-              fontWeight: 800,
-              letterSpacing: "0.06em",
-              textTransform: "uppercase",
-              color: "#FF6600",
-            }}
-          >
-            Teamindeling →
-          </span>
-        </button>
       </div>
 
       {/* Modals */}
