@@ -291,7 +291,7 @@ export default function StafProfielDialog({
                     border: `1px solid ${T.stafAccentBorder}`,
                   }}
                 >
-                  {profiel.rol}
+                  {profiel.rol.trim().toLowerCase() === "trainer" ? "Trainer/Coach" : profiel.rol}
                 </span>
               </div>
             )}
