@@ -159,39 +159,55 @@ function KennismakingBlok({ item }: { item: KennismakingItem }) {
   return (
     <div
       style={{
-        marginTop: 14,
-        paddingTop: 12,
-        borderTop: "1px solid rgba(255,102,0,0.15)",
+        display: "flex",
+        alignItems: "center",
+        gap: 10,
+        marginBottom: 16,
+        padding: "8px 12px",
+        borderLeft: "3px solid #FF6600",
+        background: "rgba(255,102,0,0.06)",
+        borderRadius: "0 6px 6px 0",
+        boxShadow: "-1px 0 12px rgba(255,102,0,0.12)",
       }}
     >
-      <div
-        style={{
-          fontSize: 9,
-          fontWeight: 800,
-          textTransform: "uppercase",
-          letterSpacing: "0.14em",
-          color: "#FF6600",
-          marginBottom: 6,
-        }}
-      >
-        🏐 Kennismakingstraining
-      </div>
-      <div style={{ fontSize: 13, color: "rgba(255,255,255,0.8)", lineHeight: 1.6 }}>
-        <strong style={{ color: "#fff" }}>{item.datum}</strong>
-        {" · "}
-        {item.tijd}
-        {item.locatie && (
-          <span
-            style={{
-              display: "block",
-              fontSize: 12,
-              color: "rgba(255,255,255,0.45)",
-              marginTop: 2,
-            }}
-          >
-            📍 {item.locatie}
-          </span>
-        )}
+      <span style={{ fontSize: 14, lineHeight: 1, flexShrink: 0 }}>📅</span>
+      <div style={{ minWidth: 0 }}>
+        <div
+          style={{
+            fontSize: 8,
+            fontWeight: 800,
+            textTransform: "uppercase",
+            letterSpacing: "0.14em",
+            color: "rgba(255,102,0,0.8)",
+            marginBottom: 2,
+          }}
+        >
+          Kennismakingstraining
+        </div>
+        <div
+          style={{
+            fontSize: 12,
+            fontWeight: 600,
+            color: "rgba(255,255,255,0.88)",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {item.datum}
+          {item.tijd && (
+            <>
+              <span style={{ color: "rgba(255,102,0,0.6)", margin: "0 5px" }}>·</span>
+              {item.tijd}
+            </>
+          )}
+          {item.locatie && (
+            <>
+              <span style={{ color: "rgba(255,102,0,0.6)", margin: "0 5px" }}>·</span>
+              <span style={{ color: "rgba(255,255,255,0.5)" }}>{item.locatie}</span>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -334,6 +350,7 @@ export function TeamKaart({ team, animKlasse }: { team: PubliekTeam; animKlasse:
         {/* Normaal team of gebundelde selectie */}
         {(team.soort === "team" || (team.soort === "selectie" && team.gebundeld)) && (
           <>
+            {team.kennismakingstraining && <KennismakingBlok item={team.kennismakingstraining} />}
             {/* Mobiel: 2 kolommen + pills */}
             <div className="pt-staf-desktop-hide">
               <div style={{ display: "flex", gap: 20 }}>
@@ -359,6 +376,7 @@ export function TeamKaart({ team, animKlasse }: { team: PubliekTeam; animKlasse:
         {/* Gesplitste selectie */}
         {team.soort === "selectie" && !team.gebundeld && (
           <div>
+            {team.kennismakingstraining && <KennismakingBlok item={team.kennismakingstraining} />}
             {team.subteams.map((sub, i) => (
               <div key={i}>
                 {i > 0 && (
@@ -401,9 +419,6 @@ export function TeamKaart({ team, animKlasse }: { team: PubliekTeam; animKlasse:
             ))}
           </div>
         )}
-
-        {/* Kennismakingstraining */}
-        {team.kennismakingstraining && <KennismakingBlok item={team.kennismakingstraining} />}
       </div>
     </div>
   );

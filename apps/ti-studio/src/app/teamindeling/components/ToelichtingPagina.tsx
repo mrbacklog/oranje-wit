@@ -2,6 +2,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import type {
   PubliekeTeamindelingData,
   BelangrijkeDatumItem,
@@ -26,6 +27,19 @@ const pillBtnStyle: React.CSSProperties = {
   color: ORANJE,
   cursor: "pointer",
   letterSpacing: "0.03em",
+};
+
+const footerBtnStyle: React.CSSProperties = {
+  flex: 1,
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: 3,
+  background: "none",
+  border: "none",
+  cursor: "pointer",
+  padding: "8px 6px",
 };
 
 // --- Modal ---
@@ -356,6 +370,26 @@ export function ToelichtingPagina({
             pointerEvents: "none",
           }}
         />
+        {/* OW 100 jaar logo — decoratief watermerk */}
+        <Image
+          src={LOGO_URL}
+          alt=""
+          aria-hidden="true"
+          unoptimized
+          width={320}
+          height={320}
+          style={{
+            position: "absolute",
+            bottom: -20,
+            right: 12,
+            width: 320,
+            height: "auto",
+            opacity: 0.08,
+            pointerEvents: "none",
+            userSelect: "none",
+            objectFit: "contain",
+          }}
+        />
         <div style={{ maxWidth: 680, margin: "0 auto" }}>
           {/* Logo + seizoen */}
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
@@ -381,21 +415,36 @@ export function ToelichtingPagina({
           {/* Titel */}
           <h1
             className="pt-toel-titel"
-            style={{
-              margin: 0,
-              fontSize: 36,
-              fontWeight: 900,
-              fontStyle: "italic",
-              textTransform: "uppercase",
-              color: "#111",
-              lineHeight: 0.95,
-              letterSpacing: "-0.02em",
-            }}
+            style={{ margin: 0, lineHeight: 1, letterSpacing: "-0.02em" }}
           >
-            Voorlopige
-            <br />
-            teamindeling{" "}
-            {toelichting && <span style={{ color: ORANJE }}>{toelichting.seizoenLabel}</span>}
+            <span
+              style={{
+                display: "block",
+                fontSize: 13,
+                fontWeight: 700,
+                fontStyle: "normal",
+                textTransform: "uppercase",
+                letterSpacing: "0.12em",
+                color: "#aaa",
+                marginBottom: 4,
+              }}
+            >
+              Voorlopige teamindeling
+            </span>
+            <span
+              style={{
+                display: "block",
+                fontSize: 48,
+                fontWeight: 900,
+                fontStyle: "italic",
+                textTransform: "uppercase",
+                color: ORANJE,
+                lineHeight: 0.9,
+                textShadow: "0 0 40px rgba(255,102,0,0.18)",
+              }}
+            >
+              {toelichting?.seizoenLabel ?? "2026–2027"}
+            </span>
           </h1>
           <p style={{ margin: "10px 0 0", fontSize: 13, color: "#888", fontWeight: 500 }}>
             c.k.v. Oranje Wit · Dordrecht
@@ -403,29 +452,10 @@ export function ToelichtingPagina({
         </div>
       </div>
 
-      {/* Quick-access pills */}
-      <div
-        style={{
-          display: "flex",
-          gap: 10,
-          padding: "14px 24px",
-          background: "#fafafa",
-          borderBottom: "1px solid #f0f0f0",
-          flexWrap: "wrap",
-        }}
-      >
-        <button style={pillBtnStyle} onClick={() => setOpenModal("startdata")}>
-          📅 Startdata &amp; planning
-        </button>
-        <button style={pillBtnStyle} onClick={() => setOpenModal("kennismaking")}>
-          🏐 Kennismakingstraining
-        </button>
-      </div>
-
       {/* Inhoud */}
       <div
         className="pt-toel-body"
-        style={{ maxWidth: 680, margin: "0 auto", padding: "28px 24px 60px" }}
+        style={{ maxWidth: 680, margin: "0 auto", padding: "28px 24px 100px" }}
       >
         {toelichting ? (
           <>
@@ -627,28 +657,88 @@ export function ToelichtingPagina({
             De toelichting is nog niet beschikbaar.
           </p>
         )}
+      </div>
 
-        {/* CTA */}
+      {/* Sticky footer */}
+      <div
+        style={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          zIndex: 100,
+          background: "rgba(255,255,255,0.97)",
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
+          borderTop: "1px solid rgba(255,102,0,0.15)",
+          display: "flex",
+          alignItems: "stretch",
+          padding: "8px 0 env(safe-area-inset-bottom, 8px)",
+        }}
+      >
+        <button style={footerBtnStyle} onClick={() => setOpenModal("startdata")}>
+          <span style={{ fontSize: 18, lineHeight: 1 }}>📅</span>
+          <span
+            style={{
+              fontSize: 10,
+              fontWeight: 700,
+              color: "#555",
+              letterSpacing: "0.04em",
+              textTransform: "uppercase",
+            }}
+          >
+            Data
+          </span>
+        </button>
+        <button style={footerBtnStyle} onClick={() => setOpenModal("kennismaking")}>
+          <span style={{ fontSize: 18, lineHeight: 1 }}>🏐</span>
+          <span
+            style={{
+              fontSize: 10,
+              fontWeight: 700,
+              color: "#555",
+              letterSpacing: "0.04em",
+              textTransform: "uppercase",
+            }}
+          >
+            Kennismaking
+          </span>
+        </button>
+        <div
+          style={{
+            width: 1,
+            background: "rgba(0,0,0,0.08)",
+            margin: "6px 0",
+            flexShrink: 0,
+          }}
+        />
         <button
           onClick={onGaNaar}
           style={{
-            display: "inline-flex",
+            flex: 2,
+            display: "flex",
+            flexDirection: "column",
             alignItems: "center",
-            gap: 10,
-            background: ORANJE,
-            color: "#fff",
+            justifyContent: "center",
+            gap: 2,
+            background: "none",
             border: "none",
-            borderRadius: 6,
-            padding: "14px 28px",
-            fontSize: 14,
-            fontWeight: 800,
-            textTransform: "uppercase",
-            letterSpacing: "0.08em",
             cursor: "pointer",
-            boxShadow: "0 4px 16px rgba(255,102,0,0.35)",
+            padding: "8px 12px",
           }}
         >
-          Bekijk de teamindeling →
+          <span style={{ fontSize: 18, lineHeight: 1 }}>🏅</span>
+          <span
+            style={{
+              fontSize: 10,
+              fontWeight: 800,
+              color: ORANJE,
+              letterSpacing: "0.04em",
+              textTransform: "uppercase",
+            }}
+          >
+            Teamindeling →
+          </span>
         </button>
       </div>
 

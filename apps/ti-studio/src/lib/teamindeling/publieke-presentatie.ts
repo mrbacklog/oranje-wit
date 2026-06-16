@@ -71,6 +71,29 @@ export type PubliekeTeamindelingData = {
   teams: PubliekTeam[];
 };
 
+// ── Kennismakingstraining lookup (statisch, afgeleid van kennismakingstraining-config.json) ──
+
+const KENNISMAKINGSTRAININGEN: Record<string, { datumLabel: string; tijd: string; veld: string }> =
+  {
+    "U19 Selectie": { datumLabel: "Di 24 juni", tijd: "18:30–21:00", veld: "Veld 1" },
+    "U17 Selectie": { datumLabel: "Di 24 juni", tijd: "19:45–21:00", veld: "Veld 2" },
+    "U15 Selectie": { datumLabel: "Di 24 juni", tijd: "18:30–19:45", veld: "Veld 2" },
+    "Rood-1": { datumLabel: "Wo 25 juni", tijd: "19:30–20:45", veld: "Veld 1" },
+    "Rood-2": { datumLabel: "Wo 25 juni", tijd: "19:30–20:45", veld: "Veld 1" },
+    "Oranje-1": { datumLabel: "Wo 25 juni", tijd: "19:30–20:45", veld: "Veld 2" },
+    "Oranje-2": { datumLabel: "Wo 25 juni", tijd: "19:30–20:45", veld: "Veld 2" },
+    "Oranje-3": { datumLabel: "Wo 25 juni", tijd: "18:15–19:30", veld: "Veld 1" },
+    "Geel-1": { datumLabel: "Wo 25 juni", tijd: "18:15–19:30", veld: "Veld 1" },
+    "Geel-2": { datumLabel: "Wo 25 juni", tijd: "18:15–19:30", veld: "Veld 2" },
+    "Geel-3": { datumLabel: "Wo 25 juni", tijd: "18:15–19:30", veld: "Veld 2" },
+  };
+
+function opzoekKennismakingstraining(teamnaam: string): KennismakingItem | null {
+  const k = KENNISMAKINGSTRAININGEN[teamnaam];
+  if (!k) return null;
+  return { teamnaam, datum: k.datumLabel, tijd: k.tijd, locatie: k.veld };
+}
+
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
 function bouwSpeler(r: {
@@ -197,7 +220,7 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
         rol: ts.rol ?? "",
         rolLabel: ts.rolLabel ?? null,
       })),
-      kennismakingstraining: null, // wordt gevuld zodra DB-kolom beschikbaar is
+      kennismakingstraining: opzoekKennismakingstraining(team.naam),
     });
   }
 
@@ -248,7 +271,7 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
         subteams: [],
         uitkomstTeams: groepTeams.map((t) => t.naam),
         staf,
-        kennismakingstraining: null, // wordt gevuld zodra DB-kolom beschikbaar is
+        kennismakingstraining: opzoekKennismakingstraining(groepNaam),
       });
     } else {
       const alleDames: PubliekeSpeler[] = [];
@@ -306,7 +329,7 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
         subteams,
         uitkomstTeams: [],
         staf,
-        kennismakingstraining: null, // wordt gevuld zodra DB-kolom beschikbaar is
+        kennismakingstraining: opzoekKennismakingstraining(groepNaam),
       });
     }
   }
