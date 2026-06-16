@@ -106,7 +106,7 @@ export async function getPublicatieInstellingen(): Promise<ActionResult<Publicat
       };
     }
 
-    const row = await prisma.teamindelingPublicatie.findUnique({
+    let row = await prisma.teamindelingPublicatie.findUnique({
       where: { kadersId: context.kadersId },
       select: {
         id: true,
@@ -126,6 +126,50 @@ export async function getPublicatieInstellingen(): Promise<ActionResult<Publicat
         kennismakingData: true,
       },
     });
+
+    // Eerste keer: sla defaults op zodat de TC direct kan redigeren
+    if (!row) {
+      const defaults = maakDefaultPublicatieInstellingen(context.kadersId, context.seizoen);
+      row = await prisma.teamindelingPublicatie.upsert({
+        where: { kadersId: context.kadersId },
+        create: {
+          kadersId: context.kadersId,
+          titel: defaults.titel,
+          seizoenLabel: defaults.seizoenLabel,
+          introTekst: defaults.introTekst,
+          waaromTekst: defaults.waaromTekst,
+          werkwijzeTekst: defaults.werkwijzeTekst,
+          competitieTekst: defaults.competitieTekst,
+          tcTekst: defaults.tcTekst,
+          kennismakingTekst: defaults.kennismakingTekst,
+          contactTekst: defaults.contactTekst,
+          kangoeroesTekst: defaults.kangoeroesTekst,
+          bedankTekst: defaults.bedankTekst,
+          sectieVolgorde: defaults.sectieVolgorde,
+          belangrijkeData: defaults.belangrijkeData,
+          kennismakingData: defaults.kennismakingData,
+        },
+        update: {},
+        select: {
+          id: true,
+          titel: true,
+          seizoenLabel: true,
+          introTekst: true,
+          waaromTekst: true,
+          werkwijzeTekst: true,
+          competitieTekst: true,
+          tcTekst: true,
+          kennismakingTekst: true,
+          contactTekst: true,
+          kangoeroesTekst: true,
+          bedankTekst: true,
+          sectieVolgorde: true,
+          belangrijkeData: true,
+          kennismakingData: true,
+        },
+      });
+      revalidatePath("/teamindeling");
+    }
 
     return {
       ok: true,
