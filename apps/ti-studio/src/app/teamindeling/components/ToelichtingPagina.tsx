@@ -274,85 +274,16 @@ export function ToelichtingPagina({
 
   return (
     <div style={{ minHeight: "100vh", background: "#fff" }}>
-      {/* Top-bar met switch-knop */}
-      <div
-        style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 50,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "10px 18px",
-          background: "rgba(255,255,255,0.95)",
-          backdropFilter: "blur(12px)",
-          WebkitBackdropFilter: "blur(12px)",
-          borderBottom: "1px solid rgba(255,102,0,0.12)",
-          gap: 8,
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <div
-            style={{
-              width: 28,
-              height: 28,
-              borderRadius: "50%",
-              background: ORANJE,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 7,
-              fontWeight: 900,
-              color: "#fff",
-              textAlign: "center",
-              lineHeight: 1.15,
-              flexShrink: 0,
-            }}
-          >
-            OW
-            <br />
-            100
-          </div>
-          <span
-            style={{
-              fontSize: 11,
-              fontWeight: 700,
-              color: ORANJE,
-              letterSpacing: "0.06em",
-              textTransform: "uppercase",
-            }}
-          >
-            Toelichting
-          </span>
-        </div>
-        <button
-          onClick={onGaNaar}
-          style={{
-            background: ORANJE,
-            color: "#fff",
-            border: "none",
-            borderRadius: 6,
-            padding: "7px 14px",
-            fontSize: 12,
-            fontWeight: 800,
-            cursor: "pointer",
-            letterSpacing: "0.04em",
-            textTransform: "uppercase",
-            boxShadow: "0 2px 8px rgba(255,102,0,0.35)",
-          }}
-        >
-          Teamindeling →
-        </button>
-      </div>
-
-      {/* Hero — wit met oranje accenten */}
+      {/* Hero — sticky, wit met oranje accenten + switch-knop */}
       <div
         className="pt-toel-hero"
         style={{
           background: "#fff",
           borderLeft: "5px solid #FF6600",
-          padding: "32px 24px 24px",
-          position: "relative",
+          padding: "16px 24px 24px",
+          position: "sticky",
+          top: 0,
+          zIndex: 30,
           overflow: "hidden",
         }}
       >
@@ -391,6 +322,44 @@ export function ToelichtingPagina({
           }}
         />
         <div style={{ maxWidth: 680, margin: "0 auto" }}>
+          {/* Seizoen label + switch-knop */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: 14,
+            }}
+          >
+            <span
+              style={{
+                fontSize: 10,
+                fontWeight: 700,
+                color: "#aaa",
+                textTransform: "uppercase",
+                letterSpacing: "0.1em",
+              }}
+            >
+              {toelichting?.seizoenLabel ?? ""}
+            </span>
+            <button
+              onClick={onGaNaar}
+              style={{
+                background: ORANJE,
+                color: "#fff",
+                border: "none",
+                borderRadius: 4,
+                padding: "6px 12px",
+                fontSize: 11,
+                fontWeight: 800,
+                cursor: "pointer",
+                letterSpacing: "0.05em",
+                textTransform: "uppercase",
+              }}
+            >
+              Teamindeling →
+            </button>
+          </div>
           {/* Logo + seizoen */}
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
             <img

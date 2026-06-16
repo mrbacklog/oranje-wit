@@ -235,7 +235,19 @@ function InfoBanner() {
   );
 }
 
-export function TeamKaart({ team, animKlasse }: { team: PubliekTeam; animKlasse: string }) {
+export function TeamKaart({
+  team,
+  animKlasse,
+  onZoek,
+  onToelichting,
+  seizoenLabel,
+}: {
+  team: PubliekTeam;
+  animKlasse: string;
+  onZoek: () => void;
+  onToelichting: () => void;
+  seizoenLabel: string | null;
+}) {
   const isSelectie = team.soort === "selectie";
 
   return (
@@ -245,17 +257,18 @@ export function TeamKaart({ team, animKlasse }: { team: PubliekTeam; animKlasse:
         background: "var(--pt-donker, #0f0f0f)",
         borderRadius: 0,
         marginBottom: 80,
-        overflow: "hidden",
       }}
     >
-      {/* Oranje diagonale hero */}
+      {/* Oranje diagonale hero — sticky */}
       <div
         className="pt-hero-pad"
         style={{
           background: "#FF6600",
-          padding: "22px 20px 44px",
+          padding: "10px 20px 44px",
           clipPath: "polygon(0 0, 100% 0, 100% 80%, 0 100%)",
-          position: "relative",
+          position: "sticky",
+          top: 0,
+          zIndex: 30,
         }}
       >
         {/* Shimmer overlay */}
@@ -268,6 +281,63 @@ export function TeamKaart({ team, animKlasse }: { team: PubliekTeam; animKlasse:
             pointerEvents: "none",
           }}
         />
+        {/* Seizoenlabel + actieknoppen */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginBottom: 8,
+            position: "relative",
+            zIndex: 2,
+          }}
+        >
+          <span
+            style={{
+              fontSize: 10,
+              fontWeight: 700,
+              color: "rgba(255,255,255,0.65)",
+              textTransform: "uppercase",
+              letterSpacing: "0.08em",
+            }}
+          >
+            {seizoenLabel ?? ""}
+          </span>
+          <div style={{ display: "flex", gap: 6 }}>
+            <button
+              onClick={onZoek}
+              style={{
+                background: "rgba(255,255,255,0.15)",
+                border: "1px solid rgba(255,255,255,0.25)",
+                borderRadius: 4,
+                padding: "6px 10px",
+                fontSize: 14,
+                color: "#fff",
+                cursor: "pointer",
+                lineHeight: 1,
+              }}
+            >
+              🔍
+            </button>
+            <button
+              onClick={onToelichting}
+              style={{
+                background: "rgba(0,0,0,0.18)",
+                border: "1px solid rgba(255,255,255,0.3)",
+                borderRadius: 4,
+                padding: "6px 12px",
+                fontSize: 11,
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: "0.05em",
+                color: "#fff",
+                cursor: "pointer",
+              }}
+            >
+              ← Toelichting
+            </button>
+          </div>
+        </div>
         {/* Badge */}
         {isSelectie ? (
           <span
@@ -282,6 +352,8 @@ export function TeamKaart({ team, animKlasse }: { team: PubliekTeam; animKlasse:
               padding: "3px 9px",
               borderRadius: 3,
               marginBottom: 6,
+              position: "relative",
+              zIndex: 2,
             }}
           >
             Selectie
@@ -299,12 +371,23 @@ export function TeamKaart({ team, animKlasse }: { team: PubliekTeam; animKlasse:
             color: "#fff",
             lineHeight: 0.95,
             letterSpacing: "-0.02em",
+            position: "relative",
+            zIndex: 2,
           }}
         >
           {team.naam}
         </h2>
         {/* Meta */}
-        <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 7 }}>
+        <div
+          style={{
+            display: "flex",
+            gap: 8,
+            alignItems: "center",
+            marginTop: 7,
+            position: "relative",
+            zIndex: 2,
+          }}
+        >
           {team.dames.length > 0 && (
             <span style={{ fontSize: 11, color: "rgba(255,255,255,0.7)", fontWeight: 600 }}>
               {team.dames.length} dames

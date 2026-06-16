@@ -3,7 +3,6 @@
 import "./publieke-teamindeling.css";
 import { useEffect, useRef, useState } from "react";
 import type { PubliekeTeamindelingData } from "@/lib/teamindeling/publieke-presentatie";
-import { NavHeader } from "./components/NavHeader";
 import { NavFooter } from "./components/NavFooter";
 import { TeamKaart } from "./components/TeamKaart";
 import { ToelichtingPagina } from "./components/ToelichtingPagina";
@@ -99,21 +98,21 @@ export function PubliekeTeamindeling({ data }: { data: PubliekeTeamindelingData 
   return (
     <div
       className="pt-root"
-      style={{ minHeight: "100vh", background: "#080808", paddingTop: 52, paddingBottom: 60 }}
+      style={{ minHeight: "100vh", background: "#080808", paddingBottom: 60 }}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >
-      {/* Fixed header */}
-      <NavHeader
-        seizoenLabel={data.toelichting?.seizoenLabel ?? null}
-        onZoek={() => setZoekOpen(true)}
-        onToelichting={() => setPagina("toelichting")}
-      />
-
       {/* Team kaart */}
       <div style={{ maxWidth: 720, margin: "0 auto" }}>
         {huidigTeam ? (
-          <TeamKaart key={teamIdx} team={huidigTeam} animKlasse={animKlasse(animRichting)} />
+          <TeamKaart
+            key={teamIdx}
+            team={huidigTeam}
+            animKlasse={animKlasse(animRichting)}
+            onZoek={() => setZoekOpen(true)}
+            onToelichting={() => setPagina("toelichting")}
+            seizoenLabel={data.toelichting?.seizoenLabel ?? null}
+          />
         ) : (
           <div style={{ textAlign: "center", padding: 60, color: "rgba(255,255,255,0.3)" }}>
             Geen teams beschikbaar
