@@ -1,4 +1,10 @@
 import type { PresentatieSpeler, PresentatieStaf, PresentatieTeam } from "./presentatie-types";
+import type {
+  BelangrijkeDatumItem,
+  KennismakingItem,
+} from "@/lib/teamindeling/publieke-presentatie";
+
+export type { BelangrijkeDatumItem, KennismakingItem };
 
 export interface PublicatieInstellingen {
   id: string | null;
@@ -15,6 +21,8 @@ export interface PublicatieInstellingen {
   kangoeroesTekst: string;
   bedankTekst: string;
   sectieVolgorde: PublicatieSectieConfig[];
+  belangrijkeData: BelangrijkeDatumItem[];
+  kennismakingData: KennismakingItem[];
 }
 
 export interface PublicatieSectieConfig {
@@ -173,6 +181,26 @@ export const DEFAULT_PUBLICATIE_TEKSTEN = {
   bedankTekst: `<p>Tot slot willen we alle coördinatoren, trainers en begeleiders ontzettend bedanken voor hun inzet, betrokkenheid en samenwerking het afgelopen seizoen.</p>
 <p>Het opstellen van deze pre-season teamindeling is geen eenvoudige klus. Het vraagt om tijd, overleg, afstemming én soms lastige keuzes. Dankzij jullie toewijding is het ons opnieuw gelukt om tot een zorgvuldig samengesteld overzicht te komen — met oog voor sportieve ontwikkeling, teamdynamiek en spelplezier.</p>
 <p>Samen maken we het verschil. Op naar een mooi nieuw seizoen!</p>`,
+
+  belangrijkeData: [
+    { datum: "24 – 25 juni 2026", omschrijving: "Kennismakingstrainingen" },
+    { datum: "29 aug 2026", omschrijving: "Start competitieseizoen 2026-2027" },
+    { datum: "Sept – okt 2026", omschrijving: "Selectiedagen jeugd" },
+  ],
+
+  kennismakingData: [
+    { teamnaam: "U19 Selectie", datum: "Di 24 juni", tijd: "18:30–21:00", locatie: "Veld 1" },
+    { teamnaam: "U17 Selectie", datum: "Di 24 juni", tijd: "19:45–21:00", locatie: "Veld 2" },
+    { teamnaam: "U15 Selectie", datum: "Di 24 juni", tijd: "18:30–19:45", locatie: "Veld 2" },
+    { teamnaam: "Geel-1", datum: "Wo 25 juni", tijd: "18:15–19:30", locatie: "Veld 1" },
+    { teamnaam: "Geel-2", datum: "Wo 25 juni", tijd: "18:15–19:30", locatie: "Veld 2" },
+    { teamnaam: "Geel-3", datum: "Wo 25 juni", tijd: "18:15–19:30", locatie: "Veld 2" },
+    { teamnaam: "Oranje-1", datum: "Wo 25 juni", tijd: "19:30–20:45", locatie: "Veld 2" },
+    { teamnaam: "Oranje-2", datum: "Wo 25 juni", tijd: "19:30–20:45", locatie: "Veld 2" },
+    { teamnaam: "Oranje-3", datum: "Wo 25 juni", tijd: "18:15–19:30", locatie: "Veld 1" },
+    { teamnaam: "Rood-1", datum: "Wo 25 juni", tijd: "19:30–20:45", locatie: "Veld 1" },
+    { teamnaam: "Rood-2", datum: "Wo 25 juni", tijd: "19:30–20:45", locatie: "Veld 1" },
+  ],
 } as const;
 
 export function maakDefaultPublicatieInstellingen(
@@ -185,6 +213,8 @@ export function maakDefaultPublicatieInstellingen(
     seizoenLabel,
     sectieVolgorde: DEFAULT_PUBLICATIE_SECTIES,
     ...DEFAULT_PUBLICATIE_TEKSTEN,
+    belangrijkeData: [...DEFAULT_PUBLICATIE_TEKSTEN.belangrijkeData],
+    kennismakingData: [...DEFAULT_PUBLICATIE_TEKSTEN.kennismakingData],
   };
 }
 

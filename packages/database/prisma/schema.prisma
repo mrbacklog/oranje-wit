@@ -762,6 +762,8 @@ model TeamindelingPublicatie {
   kangoeroesTekst    String   @db.Text
   bedankTekst        String   @db.Text
   sectieVolgorde     Json?
+  belangrijkeData    Json?    // BelangrijkeDatumItem[]
+  kennismakingData   Json?    // KennismakingItem[]
 
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt

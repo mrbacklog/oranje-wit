@@ -137,6 +137,8 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
         contactTekst: true,
         kangoeroesTekst: true,
         bedankTekst: true,
+        belangrijkeData: true,
+        kennismakingData: true,
       },
     }),
     prisma.werkindeling.findFirst({
@@ -352,6 +354,30 @@ const DEFAULT_INTRO_TEKST = `<p>Hier is de voorlopige teamindeling voor het seiz
 const DEFAULT_TC_TEKST = `<p>De Technische Commissie (TC) vormt het sportieve hart van de vereniging. Samen met coördinatoren, trainersbegeleiders en trainers zorgen we voor een goede doorstroming, passende teamindelingen en aandacht voor ontwikkeling en plezier op elk niveau.</p>
 <p>Coördinatoren ondersteunen de TC het hele seizoen door en zijn het eerste aanspreekpunt voor trainers, spelers en ouders. Trainersbegeleiders bieden pedagogische en didactische ondersteuning, zodat trainers met vertrouwen en voldoening hun rol kunnen vervullen. Zo bouwen we met elkaar aan een sportieve en betrokken korfbalomgeving.</p>`;
 
+function normaliseerBelangrijkeData(value: unknown): BelangrijkeDatumItem[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter(
+    (item): item is BelangrijkeDatumItem =>
+      item !== null &&
+      typeof item === "object" &&
+      typeof (item as Record<string, unknown>).datum === "string" &&
+      typeof (item as Record<string, unknown>).omschrijving === "string"
+  );
+}
+
+function normaliseerKennismakingData(value: unknown): KennismakingItem[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter(
+    (item): item is KennismakingItem =>
+      item !== null &&
+      typeof item === "object" &&
+      typeof (item as Record<string, unknown>).teamnaam === "string" &&
+      typeof (item as Record<string, unknown>).datum === "string" &&
+      typeof (item as Record<string, unknown>).tijd === "string" &&
+      typeof (item as Record<string, unknown>).locatie === "string"
+  );
+}
+
 function mapToelichting(
   p: {
     titel: string;
@@ -365,6 +391,8 @@ function mapToelichting(
     contactTekst: string;
     kangoeroesTekst: string;
     bedankTekst: string;
+    belangrijkeData?: unknown;
+    kennismakingData?: unknown;
   } | null,
   seizoen?: string
 ): PubliekeToelichtingData {
@@ -380,7 +408,7 @@ function mapToelichting(
     contactTekst: p?.contactTekst ?? "",
     kangoeroesTekst: p?.kangoeroesTekst ?? "",
     bedankTekst: p?.bedankTekst ?? "",
-    belangrijkeData: [],
-    kennismakingstrainingen: [],
+    belangrijkeData: normaliseerBelangrijkeData(p?.belangrijkeData),
+    kennismakingstrainingen: normaliseerKennismakingData(p?.kennismakingData),
   };
 }

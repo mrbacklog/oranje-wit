@@ -13,7 +13,41 @@ import {
   maakDefaultPublicatieInstellingen,
   type PublicatieInstellingen,
   type PublicatieSectieConfig,
+  type BelangrijkeDatumItem,
+  type KennismakingItem,
 } from "./preseason-pdf-data";
+
+function normaliseerBelangrijkeData(value: unknown): BelangrijkeDatumItem[] {
+  if (!Array.isArray(value)) return [...DEFAULT_PUBLICATIE_TEKSTEN.belangrijkeData];
+  const items = value
+    .map((item) => {
+      if (!item || typeof item !== "object") return null;
+      const r = item as Record<string, unknown>;
+      if (typeof r.datum !== "string" || typeof r.omschrijving !== "string") return null;
+      return { datum: r.datum, omschrijving: r.omschrijving };
+    })
+    .filter(Boolean) as BelangrijkeDatumItem[];
+  return items;
+}
+
+function normaliseerKennismakingData(value: unknown): KennismakingItem[] {
+  if (!Array.isArray(value)) return [...DEFAULT_PUBLICATIE_TEKSTEN.kennismakingData];
+  const items = value
+    .map((item) => {
+      if (!item || typeof item !== "object") return null;
+      const r = item as Record<string, unknown>;
+      if (
+        typeof r.teamnaam !== "string" ||
+        typeof r.datum !== "string" ||
+        typeof r.tijd !== "string" ||
+        typeof r.locatie !== "string"
+      )
+        return null;
+      return { teamnaam: r.teamnaam, datum: r.datum, tijd: r.tijd, locatie: r.locatie };
+    })
+    .filter(Boolean) as KennismakingItem[];
+  return items;
+}
 
 function normaliseerSecties(value: unknown): PublicatieSectieConfig[] {
   if (!Array.isArray(value)) return DEFAULT_PUBLICATIE_SECTIES;
@@ -45,6 +79,8 @@ function publicatieUitDb(row: any, kadersId: string, seizoen: string): Publicati
     kangoeroesTekst: row.kangoeroesTekst ?? DEFAULT_PUBLICATIE_TEKSTEN.kangoeroesTekst,
     bedankTekst: row.bedankTekst ?? DEFAULT_PUBLICATIE_TEKSTEN.bedankTekst,
     sectieVolgorde: normaliseerSecties(row.sectieVolgorde),
+    belangrijkeData: normaliseerBelangrijkeData(row.belangrijkeData),
+    kennismakingData: normaliseerKennismakingData(row.kennismakingData),
   };
 }
 
@@ -72,6 +108,23 @@ export async function getPublicatieInstellingen(): Promise<ActionResult<Publicat
 
     const row = await prisma.teamindelingPublicatie.findUnique({
       where: { kadersId: context.kadersId },
+      select: {
+        id: true,
+        titel: true,
+        seizoenLabel: true,
+        introTekst: true,
+        waaromTekst: true,
+        werkwijzeTekst: true,
+        competitieTekst: true,
+        tcTekst: true,
+        kennismakingTekst: true,
+        contactTekst: true,
+        kangoeroesTekst: true,
+        bedankTekst: true,
+        sectieVolgorde: true,
+        belangrijkeData: true,
+        kennismakingData: true,
+      },
     });
 
     return {
@@ -115,6 +168,8 @@ export async function savePublicatieInstellingen(
       kangoeroesTekst: schoonTekst(input.kangoeroesTekst) || defaults.kangoeroesTekst,
       bedankTekst: schoonTekst(input.bedankTekst) || defaults.bedankTekst,
       sectieVolgorde: normaliseerSecties(input.sectieVolgorde),
+      belangrijkeData: normaliseerBelangrijkeData(input.belangrijkeData),
+      kennismakingData: normaliseerKennismakingData(input.kennismakingData),
     };
 
     const row = await prisma.teamindelingPublicatie.upsert({
