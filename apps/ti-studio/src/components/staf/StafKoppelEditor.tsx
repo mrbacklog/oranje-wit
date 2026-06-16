@@ -299,123 +299,127 @@ export function StafKoppelEditor({ staf, alleDoelen, onClose, onGewijzigd }: Pro
           paddingTop: "0.5rem",
           marginTop: "0.25rem",
           display: "flex",
+          flexDirection: "column",
           gap: 6,
-          alignItems: "center",
         }}
       >
-        <div
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: 22,
-            height: 22,
-            borderRadius: 5,
-            border: "1px dashed var(--border-default)",
-            background: "transparent",
-            color: "var(--text-secondary)",
-            fontSize: "0.9rem",
-            flexShrink: 0,
-          }}
-          aria-hidden="true"
-        >
-          +
+        <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+          <div
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: 22,
+              height: 22,
+              borderRadius: 5,
+              border: "1px dashed var(--border-default)",
+              background: "transparent",
+              color: "var(--text-secondary)",
+              fontSize: "0.9rem",
+              flexShrink: 0,
+            }}
+            aria-hidden="true"
+          >
+            +
+          </div>
+          <select
+            value={nieuwDoelId}
+            onChange={(e) => setNieuwDoelId(e.target.value)}
+            disabled={isPending || beschikbareDoelen.length === 0}
+            style={{
+              flex: 1,
+              background: "var(--surface-sunken)",
+              border: "1px solid var(--border-default)",
+              borderRadius: 6,
+              padding: "0.25rem 0.5rem",
+              color: "var(--text-primary)",
+              fontSize: "0.75rem",
+              outline: "none",
+              fontFamily: "inherit",
+            }}
+          >
+            <option value="">Kies team of selectie…</option>
+            {losseTeams.length > 0 && (
+              <optgroup label="Teams">
+                {losseTeams.map((t) => (
+                  <option key={t.id} value={t.id}>
+                    {t.naam}
+                  </option>
+                ))}
+              </optgroup>
+            )}
+            {selecties.length > 0 && (
+              <optgroup label="Selecties (gecombineerd)">
+                {selecties.map((t) => (
+                  <option key={t.id} value={t.id}>
+                    {t.naam}
+                  </option>
+                ))}
+              </optgroup>
+            )}
+          </select>
+          <select
+            value={nieuwRol}
+            onChange={(e) => setNieuwRol(e.target.value)}
+            disabled={isPending}
+            style={{
+              width: 130,
+              background: "var(--surface-sunken)",
+              border: "1px solid var(--border-default)",
+              borderRadius: 6,
+              padding: "0.25rem 0.5rem",
+              color: "var(--text-primary)",
+              fontSize: "0.75rem",
+              outline: "none",
+              fontFamily: "inherit",
+            }}
+          >
+            {ROL_SUGGESTIES.map((r) => (
+              <option key={r} value={r}>
+                {r}
+              </option>
+            ))}
+          </select>
         </div>
-        <select
-          value={nieuwDoelId}
-          onChange={(e) => setNieuwDoelId(e.target.value)}
-          disabled={isPending || beschikbareDoelen.length === 0}
-          style={{
-            flex: 1,
-            background: "var(--surface-sunken)",
-            border: "1px solid var(--border-default)",
-            borderRadius: 6,
-            padding: "0.25rem 0.5rem",
-            color: "var(--text-primary)",
-            fontSize: "0.75rem",
-            outline: "none",
-            fontFamily: "inherit",
-          }}
-        >
-          <option value="">Kies team of selectie…</option>
-          {losseTeams.length > 0 && (
-            <optgroup label="Teams">
-              {losseTeams.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.naam}
-                </option>
-              ))}
-            </optgroup>
-          )}
-          {selecties.length > 0 && (
-            <optgroup label="Selecties (gecombineerd)">
-              {selecties.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.naam}
-                </option>
-              ))}
-            </optgroup>
-          )}
-        </select>
-        <select
-          value={nieuwRol}
-          onChange={(e) => setNieuwRol(e.target.value)}
-          disabled={isPending}
-          style={{
-            width: 130,
-            background: "var(--surface-sunken)",
-            border: "1px solid var(--border-default)",
-            borderRadius: 6,
-            padding: "0.25rem 0.5rem",
-            color: "var(--text-primary)",
-            fontSize: "0.75rem",
-            outline: "none",
-            fontFamily: "inherit",
-          }}
-        >
-          {ROL_SUGGESTIES.map((r) => (
-            <option key={r} value={r}>
-              {r}
-            </option>
-          ))}
-        </select>
-        <input
-          type="text"
-          value={nieuwRolLabel}
-          onChange={(e) => setNieuwRolLabel(e.target.value)}
-          disabled={isPending}
-          placeholder="Functietitel (opt.)"
-          style={{
-            width: 130,
-            background: "var(--surface-sunken)",
-            border: "1px solid var(--border-default)",
-            borderRadius: 6,
-            padding: "0.25rem 0.5rem",
-            color: "var(--text-primary)",
-            fontSize: "0.75rem",
-            outline: "none",
-            fontFamily: "inherit",
-          }}
-        />
-        <button
-          type="button"
-          onClick={handleVoegToe}
-          disabled={isPending || !nieuwDoelId || !nieuwRol.trim()}
-          style={{
-            padding: "0.25rem 0.625rem",
-            borderRadius: 6,
-            border: "none",
-            background: "var(--accent)",
-            color: "#fff",
-            fontSize: "0.75rem",
-            fontWeight: 700,
-            cursor: isPending || !nieuwDoelId ? "not-allowed" : "pointer",
-            fontFamily: "inherit",
-            opacity: isPending || !nieuwDoelId || !nieuwRol.trim() ? 0.6 : 1,
-          }}
-        >
-          Voeg toe
-        </button>
+        <div style={{ display: "flex", gap: 6, alignItems: "center", paddingLeft: 28 }}>
+          <input
+            type="text"
+            value={nieuwRolLabel}
+            onChange={(e) => setNieuwRolLabel(e.target.value)}
+            disabled={isPending}
+            placeholder="Functietitel (opt.)"
+            style={{
+              flex: 1,
+              background: "var(--surface-sunken)",
+              border: "1px solid var(--border-default)",
+              borderRadius: 6,
+              padding: "0.25rem 0.5rem",
+              color: "var(--text-primary)",
+              fontSize: "0.75rem",
+              outline: "none",
+              fontFamily: "inherit",
+            }}
+          />
+          <button
+            type="button"
+            onClick={handleVoegToe}
+            disabled={isPending || !nieuwDoelId || !nieuwRol.trim()}
+            style={{
+              padding: "0.25rem 0.625rem",
+              borderRadius: 6,
+              border: "none",
+              background: "var(--accent)",
+              color: "#fff",
+              fontSize: "0.75rem",
+              fontWeight: 700,
+              cursor: isPending || !nieuwDoelId ? "not-allowed" : "pointer",
+              fontFamily: "inherit",
+              opacity: isPending || !nieuwDoelId || !nieuwRol.trim() ? 0.6 : 1,
+            }}
+          >
+            Voeg toe
+          </button>
+        </div>
       </div>
     </div>
   );
