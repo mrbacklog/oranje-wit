@@ -66,6 +66,59 @@ function SpelerLijst({ spelers, geslacht }: { spelers: PubliekeSpeler[]; geslach
   );
 }
 
+function StafKolom({ staf }: { staf: PubliekTeam["staf"] }) {
+  const rolWeergave = (s: PubliekTeam["staf"][number]) =>
+    s.rolLabel?.trim() || (s.rol.trim().toLowerCase() === "trainer" ? "Trainer/Coach" : s.rol);
+  return (
+    <div style={{ flex: 1, minWidth: 0 }}>
+      <div
+        style={{
+          fontSize: 9,
+          fontWeight: 800,
+          textTransform: "uppercase",
+          letterSpacing: "0.14em",
+          color: "#FF6600",
+          paddingBottom: 6,
+          marginBottom: 10,
+          borderBottom: "1px solid rgba(255,102,0,0.30)",
+          display: "flex",
+          alignItems: "center",
+          gap: 6,
+        }}
+      >
+        Staf
+      </div>
+      <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
+        {staf.map((s, i) => (
+          <li
+            key={i}
+            className="pt-speler"
+            style={{
+              fontWeight: 500,
+              color: "rgba(255,255,255,0.88)",
+              borderBottom: "1px solid rgba(255,255,255,0.07)",
+            }}
+          >
+            <span
+              style={{
+                color: "rgba(255,102,0,0.75)",
+                fontSize: 10,
+                display: "block",
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: "0.08em",
+              }}
+            >
+              {rolWeergave(s)}
+            </span>
+            {s.naam}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 function StafPills({ staf }: { staf: PubliekTeam["staf"] }) {
   if (staf.length === 0) return null;
   const rolWeergave = (s: PubliekTeam["staf"][number]) =>
@@ -281,12 +334,25 @@ export function TeamKaart({ team, animKlasse }: { team: PubliekTeam; animKlasse:
         {/* Normaal team of gebundelde selectie */}
         {(team.soort === "team" || (team.soort === "selectie" && team.gebundeld)) && (
           <>
-            <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
-              <SpelerLijst spelers={team.dames} geslacht="V" />
-              <SpelerLijst spelers={team.heren} geslacht="M" />
+            {/* Mobiel: 2 kolommen + pills */}
+            <div className="pt-staf-desktop-hide">
+              <div style={{ display: "flex", gap: 20 }}>
+                <SpelerLijst spelers={team.dames} geslacht="V" />
+                <SpelerLijst spelers={team.heren} geslacht="M" />
+              </div>
+              {team.soort === "selectie" && team.gebundeld && <InfoBanner />}
+              <StafPills staf={team.staf} />
             </div>
-            {team.soort === "selectie" && team.gebundeld && <InfoBanner />}
-            <StafPills staf={team.staf} />
+
+            {/* Desktop: 3 kolommen */}
+            <div className="pt-staf-desktop-show">
+              <div style={{ display: "flex", gap: 20 }}>
+                <SpelerLijst spelers={team.dames} geslacht="V" />
+                <SpelerLijst spelers={team.heren} geslacht="M" />
+                {team.staf.length > 0 && <StafKolom staf={team.staf} />}
+              </div>
+              {team.soort === "selectie" && team.gebundeld && <InfoBanner />}
+            </div>
           </>
         )}
 

@@ -107,6 +107,23 @@
   animation: pt-shimmer 2.5s ease 0.2s 1 forwards;
 }
 
+/* Staf desktop kolom */
+.pt-staf-desktop-hide {
+  display: block;
+}
+.pt-staf-desktop-show {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .pt-staf-desktop-hide {
+    display: none;
+  }
+  .pt-staf-desktop-show {
+    display: block;
+  }
+}
+
 /* ── Responsive desktop ── */
 @media (min-width: 640px) {
   .pt-hero-naam {

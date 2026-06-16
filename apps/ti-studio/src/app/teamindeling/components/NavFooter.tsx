@@ -23,6 +23,22 @@ function Dot({ active, isSelectie }: { active: boolean; isSelectie: boolean }) {
   );
 }
 
+function getVisibleRange(
+  total: number,
+  active: number,
+  max: number = 7
+): { start: number; end: number } {
+  if (total <= max) return { start: 0, end: total };
+  const half = Math.floor(max / 2);
+  let start = Math.max(0, active - half);
+  let end = start + max;
+  if (end > total) {
+    end = total;
+    start = total - max;
+  }
+  return { start, end };
+}
+
 const activeBtn: React.CSSProperties = {
   background: "#FF6600",
   color: "#fff",
@@ -36,14 +52,11 @@ const disabledBtn: React.CSSProperties = {
 };
 const baseBtn: React.CSSProperties = {
   border: "none",
-  borderRadius: 6,
-  padding: "9px 16px",
-  fontSize: 12,
+  borderRadius: 4,
+  padding: "8px 14px",
+  fontSize: 14,
   fontWeight: 800,
-  textTransform: "uppercase",
-  letterSpacing: "0.06em",
   cursor: "pointer",
-  whiteSpace: "nowrap",
   flexShrink: 0,
 };
 
@@ -60,7 +73,7 @@ export function NavFooter({
   onVolgend: () => void;
   onKiesTeam: (idx: number) => void;
 }) {
-  const huidig = teams[teamIdx];
+  const { start, end } = getVisibleRange(teams.length, teamIdx);
 
   return (
     <div
@@ -70,15 +83,15 @@ export function NavFooter({
         left: 0,
         right: 0,
         zIndex: 40,
-        background: "rgba(8,8,8,0.96)",
+        background: "rgba(8,8,8,0.97)",
         backdropFilter: "blur(16px)",
         WebkitBackdropFilter: "blur(16px)",
         borderTop: "1px solid rgba(255,255,255,0.07)",
-        padding: "11px 18px",
+        padding: "8px 14px",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        gap: 10,
+        gap: 8,
       }}
     >
       {/* Vorig */}
@@ -87,27 +100,14 @@ export function NavFooter({
         disabled={teamIdx === 0}
         style={{ ...baseBtn, ...(teamIdx === 0 ? disabledBtn : activeBtn) }}
       >
-        ← Vorig
+        ←
       </button>
 
-      {/* Midden */}
-      <div style={{ flex: 1, textAlign: "center", minWidth: 0 }}>
-        <div
-          style={{
-            fontSize: 11,
-            fontWeight: 700,
-            fontStyle: "italic",
-            color: "rgba(255,255,255,0.65)",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            marginBottom: 5,
-          }}
-        >
-          {huidig?.naam ?? ""}
-        </div>
-        <div style={{ display: "flex", justifyContent: "center", gap: 4, flexWrap: "wrap" }}>
-          {teams.map((t, i) => (
+      {/* Windowed dots */}
+      <div style={{ display: "flex", justifyContent: "center", gap: 4, flex: 1 }}>
+        {teams.slice(start, end).map((t, offset) => {
+          const i = start + offset;
+          return (
             <button
               key={i}
               title={t.naam}
@@ -116,8 +116,8 @@ export function NavFooter({
             >
               <Dot active={i === teamIdx} isSelectie={t.soort === "selectie"} />
             </button>
-          ))}
-        </div>
+          );
+        })}
       </div>
 
       {/* Volgend */}
@@ -126,7 +126,7 @@ export function NavFooter({
         disabled={teamIdx === teams.length - 1}
         style={{ ...baseBtn, ...(teamIdx === teams.length - 1 ? disabledBtn : activeBtn) }}
       >
-        Volgend →
+        →
       </button>
     </div>
   );

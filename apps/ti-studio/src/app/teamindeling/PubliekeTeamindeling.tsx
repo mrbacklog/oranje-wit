@@ -96,39 +96,14 @@ export function PubliekeTeamindeling({ data }: { data: PubliekeTeamindelingData 
     );
   }
 
-  const voortgang = teams.length > 0 ? ((teamIdx + 1) / teams.length) * 100 : 0;
-
   return (
     <div
       className="pt-root"
-      style={{ minHeight: "100vh", background: "#080808" }}
+      style={{ minHeight: "100vh", background: "#080808", paddingTop: 52, paddingBottom: 60 }}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >
-      {/* Progress bar */}
-      <div
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 50,
-          height: 3,
-          background: "rgba(255,255,255,0.06)",
-        }}
-      >
-        <div
-          style={{
-            height: "100%",
-            width: `${voortgang}%`,
-            background: "linear-gradient(90deg, #FF6600, #ff8833)",
-            boxShadow: "0 0 10px rgba(255,102,0,0.3)",
-            transition: "width 0.4s ease",
-          }}
-        />
-      </div>
-
-      {/* Sticky header */}
+      {/* Fixed header */}
       <NavHeader
         seizoenLabel={data.toelichting?.seizoenLabel ?? null}
         onZoek={() => setZoekOpen(true)}
@@ -136,7 +111,7 @@ export function PubliekeTeamindeling({ data }: { data: PubliekeTeamindelingData 
       />
 
       {/* Team kaart */}
-      <div style={{ maxWidth: 720, margin: "0 auto", padding: "16px 0" }}>
+      <div style={{ maxWidth: 720, margin: "0 auto" }}>
         {huidigTeam ? (
           <TeamKaart key={teamIdx} team={huidigTeam} animKlasse={animKlasse(animRichting)} />
         ) : (
