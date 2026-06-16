@@ -17,6 +17,18 @@ export type PubliekeStaf = {
   rolLabel?: string | null;
 };
 
+export type KennismakingItem = {
+  teamnaam: string;
+  datum: string; // bijv. "za 23 augustus 2026"
+  tijd: string; // bijv. "10:00–12:00"
+  locatie: string; // bijv. "Sporthal De Hollandse IJssel"
+};
+
+export type BelangrijkeDatumItem = {
+  datum: string; // bijv. "za 16 augustus 2026"
+  omschrijving: string; // bijv. "Eerste training senioren"
+};
+
 export type PubliekTeam = {
   id: string;
   naam: string;
@@ -35,13 +47,23 @@ export type PubliekTeam = {
   /** Teamnamen die uit deze selectie-pool voortkomen (gebundeld=true) */
   uitkomstTeams: string[];
   staf: PubliekeStaf[];
+  kennismakingstraining: KennismakingItem | null;
 };
 
 export type PubliekeToelichtingData = {
   titel: string;
   seizoenLabel: string;
   introTekst: string;
+  waaromTekst: string;
+  werkwijzeTekst: string;
+  competitieTekst: string;
   tcTekst: string;
+  kennismakingTekst: string;
+  contactTekst: string;
+  kangoeroesTekst: string;
+  bedankTekst: string;
+  belangrijkeData: BelangrijkeDatumItem[];
+  kennismakingstrainingen: KennismakingItem[];
 };
 
 export type PubliekeTeamindelingData = {
@@ -80,7 +102,19 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
   const [publicatie, werkindeling] = await Promise.all([
     prisma.teamindelingPublicatie.findUnique({
       where: { kadersId: kaders.id },
-      select: { titel: true, seizoenLabel: true, introTekst: true, tcTekst: true },
+      select: {
+        titel: true,
+        seizoenLabel: true,
+        introTekst: true,
+        waaromTekst: true,
+        werkwijzeTekst: true,
+        competitieTekst: true,
+        tcTekst: true,
+        kennismakingTekst: true,
+        contactTekst: true,
+        kangoeroesTekst: true,
+        bedankTekst: true,
+      },
     }),
     prisma.werkindeling.findFirst({
       where: { kadersId: kaders.id, verwijderdOp: null },
@@ -163,6 +197,7 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
         rol: ts.rol ?? "",
         rolLabel: ts.rolLabel ?? null,
       })),
+      kennismakingstraining: null, // wordt gevuld zodra DB-kolom beschikbaar is
     });
   }
 
@@ -213,6 +248,7 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
         subteams: [],
         uitkomstTeams: groepTeams.map((t) => t.naam),
         staf,
+        kennismakingstraining: null, // wordt gevuld zodra DB-kolom beschikbaar is
       });
     } else {
       const alleDames: PubliekeSpeler[] = [];
@@ -270,6 +306,7 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
         subteams,
         uitkomstTeams: [],
         staf,
+        kennismakingstraining: null, // wordt gevuld zodra DB-kolom beschikbaar is
       });
     }
   }
@@ -286,13 +323,34 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
 }
 
 function mapToelichting(
-  p: { titel: string; seizoenLabel: string; introTekst: string; tcTekst: string } | null
+  p: {
+    titel: string;
+    seizoenLabel: string;
+    introTekst: string;
+    waaromTekst: string;
+    werkwijzeTekst: string;
+    competitieTekst: string;
+    tcTekst: string;
+    kennismakingTekst: string;
+    contactTekst: string;
+    kangoeroesTekst: string;
+    bedankTekst: string;
+  } | null
 ): PubliekeToelichtingData | null {
   if (!p) return null;
   return {
     titel: p.titel,
     seizoenLabel: p.seizoenLabel,
     introTekst: p.introTekst,
+    waaromTekst: p.waaromTekst,
+    werkwijzeTekst: p.werkwijzeTekst,
+    competitieTekst: p.competitieTekst,
     tcTekst: p.tcTekst,
+    kennismakingTekst: p.kennismakingTekst,
+    contactTekst: p.contactTekst,
+    kangoeroesTekst: p.kangoeroesTekst,
+    bedankTekst: p.bedankTekst,
+    belangrijkeData: [], // gevuld zodra DB-kolom beschikbaar is
+    kennismakingstrainingen: [], // gevuld zodra DB-kolom beschikbaar is
   };
 }
