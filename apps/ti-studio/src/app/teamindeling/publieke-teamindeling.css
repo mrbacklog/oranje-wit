@@ -104,3 +104,36 @@
 .pt-hero-shimmer {
   animation: pt-shimmer 2.5s ease 0.2s 1 forwards;
 }
+
+/* ── Responsive desktop ── */
+@media (min-width: 640px) {
+  .pt-hero-naam {
+    font-size: 48px !important;
+  }
+  .pt-hero-pad {
+    padding: 28px 32px 60px !important;
+  }
+  .pt-body-pad {
+    padding: 24px 32px 100px !important;
+  }
+  .pt-speler {
+    font-size: 14px !important;
+    padding: 6px 0 !important;
+  }
+
+  .pt-toel-titel {
+    font-size: 48px !important;
+  }
+  .pt-toel-hero {
+    padding: 52px 40px 40px !important;
+  }
+  .pt-toel-body {
+    padding: 32px 40px 60px !important;
+  }
+  .pt-toel-tekst {
+    font-size: 15px !important;
+  }
+  .pt-sectie-titel {
+    font-size: 22px !important;
+  }
+}
