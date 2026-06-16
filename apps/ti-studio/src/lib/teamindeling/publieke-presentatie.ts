@@ -67,7 +67,7 @@ export type PubliekeToelichtingData = {
 };
 
 export type PubliekeTeamindelingData = {
-  toelichting: PubliekeToelichtingData | null;
+  toelichting: PubliekeToelichtingData;
   teams: PubliekTeam[];
 };
 
@@ -119,7 +119,7 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
     where: { seizoen },
     select: { id: true },
   });
-  if (!kaders) return { toelichting: null, teams: [] };
+  if (!kaders) return { toelichting: mapToelichting(null, seizoen), teams: [] };
 
   // Haal publicatie-toelichting en werkindeling parallel op
   const [publicatie, werkindeling] = await Promise.all([
@@ -145,7 +145,7 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
     }),
   ]);
 
-  if (!werkindeling) return { toelichting: mapToelichting(publicatie), teams: [] };
+  if (!werkindeling) return { toelichting: mapToelichting(publicatie, seizoen), teams: [] };
 
   // Meest recente versie ophalen
   const versie = await prisma.versie.findFirst({
@@ -170,7 +170,7 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
     },
   });
 
-  if (!versie) return { toelichting: mapToelichting(publicatie), teams: [] };
+  if (!versie) return { toelichting: mapToelichting(publicatie, seizoen), teams: [] };
 
   type VersieTeam = (typeof versie.teams)[number];
 
@@ -342,8 +342,15 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
     return k.subteams.some((s) => s.dames.length > 0 || s.heren.length > 0);
   });
 
-  return { toelichting: mapToelichting(publicatie), teams: gevuldeKaarten };
+  return { toelichting: mapToelichting(publicatie, seizoen), teams: gevuldeKaarten };
 }
+
+const DEFAULT_INTRO_TEKST = `<p>Hier is de voorlopige teamindeling voor het seizoen 2026-2027.</p>
+<p>Het samenstellen van teams is ieder jaar een uitdaging, maar samen met de trainers en coördinatoren hebben we opnieuw een goed en evenwichtig resultaat weten te bereiken.</p>
+<p>Ook dit jaar zullen er weer blije verrassingen en teleurstellingen in de indelingen zijn. Korfbal blijft een teamsport en soms zijn er minder plaatsen dan er gegadigden zijn. Wij staan altijd klaar om de gemaakte keuzes toe te lichten.</p>`;
+
+const DEFAULT_TC_TEKST = `<p>De Technische Commissie (TC) vormt het sportieve hart van de vereniging. Samen met coördinatoren, trainersbegeleiders en trainers zorgen we voor een goede doorstroming, passende teamindelingen en aandacht voor ontwikkeling en plezier op elk niveau.</p>
+<p>Coördinatoren ondersteunen de TC het hele seizoen door en zijn het eerste aanspreekpunt voor trainers, spelers en ouders. Trainersbegeleiders bieden pedagogische en didactische ondersteuning, zodat trainers met vertrouwen en voldoening hun rol kunnen vervullen. Zo bouwen we met elkaar aan een sportieve en betrokken korfbalomgeving.</p>`;
 
 function mapToelichting(
   p: {
@@ -358,22 +365,22 @@ function mapToelichting(
     contactTekst: string;
     kangoeroesTekst: string;
     bedankTekst: string;
-  } | null
-): PubliekeToelichtingData | null {
-  if (!p) return null;
+  } | null,
+  seizoen?: string
+): PubliekeToelichtingData {
   return {
-    titel: p.titel,
-    seizoenLabel: p.seizoenLabel,
-    introTekst: p.introTekst,
-    waaromTekst: p.waaromTekst,
-    werkwijzeTekst: p.werkwijzeTekst,
-    competitieTekst: p.competitieTekst,
-    tcTekst: p.tcTekst,
-    kennismakingTekst: p.kennismakingTekst,
-    contactTekst: p.contactTekst,
-    kangoeroesTekst: p.kangoeroesTekst,
-    bedankTekst: p.bedankTekst,
-    belangrijkeData: [], // gevuld zodra DB-kolom beschikbaar is
-    kennismakingstrainingen: [], // gevuld zodra DB-kolom beschikbaar is
+    titel: p?.titel ?? "Voorlopige Teamindeling 2026-2027",
+    seizoenLabel: p?.seizoenLabel ?? seizoen ?? "2026-2027",
+    introTekst: p?.introTekst ?? DEFAULT_INTRO_TEKST,
+    waaromTekst: p?.waaromTekst ?? "",
+    werkwijzeTekst: p?.werkwijzeTekst ?? "",
+    competitieTekst: p?.competitieTekst ?? "",
+    tcTekst: p?.tcTekst ?? DEFAULT_TC_TEKST,
+    kennismakingTekst: p?.kennismakingTekst ?? "",
+    contactTekst: p?.contactTekst ?? "",
+    kangoeroesTekst: p?.kangoeroesTekst ?? "",
+    bedankTekst: p?.bedankTekst ?? "",
+    belangrijkeData: [],
+    kennismakingstrainingen: [],
   };
 }
