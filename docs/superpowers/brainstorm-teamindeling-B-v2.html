@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teamindeling B v2 — Mobile + Desktop</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --oranje: #FF6600;
+  --oranje-licht: #ff8833;
+  --oranje-dim: rgba(255,102,0,0.15);
+  --oranje-glow: rgba(255,102,0,0.3);
+  --zwart: #080808;
+  --donker: #0f0f0f;
+  --border: rgba(255,255,255,0.07);
+  --tekst: rgba(255,255,255,0.88);
+  --subtekst: rgba(255,255,255,0.4);
+}
+
+body {
+  background: #1a1a1a;
+  font-family: system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+  color: #fff;
+}
+
+/* ── wrapper ── */
+.preview-wrapper {
+  display: grid;
+  grid-template-columns: 375px 1fr;
+  gap: 0;
+  min-height: 100vh;
+}
+
+/* ── Mobile frame ── */
+.mobile-frame {
+  width: 375px;
+  background: #000;
+  border-right: 1px solid #333;
+  display: flex;
+  flex-direction: column;
+}
+.frame-label {
+  background: #111;
+  border-bottom: 1px solid #222;
+  padding: 10px 16px;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--oranje);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.frame-label span { color: #555; font-weight: 500; }
+
+/* ── Desktop frame ── */
+.desktop-frame {
+  background: #0a0a0a;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ══════════════════════════════════════════
+   SHARED COMPONENTS (used in both frames)
+══════════════════════════════════════════ */
+
+/* Progress bar */
+.progress-bar-outer {
+  height: 3px;
+  background: rgba(255,255,255,0.06);
+  flex-shrink: 0;
+}
+.progress-bar-inner {
+  height: 100%;
+  width: 37.5%;
+  background: linear-gradient(90deg, var(--oranje), var(--oranje-licht));
+  box-shadow: 0 0 10px var(--oranje-glow);
+}
+
+/* Sticky header */
+.sticky-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(8,8,8,0.94);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  gap: 8px;
+}
+.sticky-header.mobile { padding: 10px 14px; }
+.sticky-header.desktop { padding: 10px 28px; }
+
+.sh-logo { display: flex; align-items: center; gap: 8px; }
+.sh-logo-circle {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--oranje);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 7px; font-weight: 900; color: #fff;
+  text-align: center; line-height: 1.15; flex-shrink: 0;
+}
+.sh-seizoen {
+  font-size: 11px; font-weight: 600;
+  color: var(--subtekst); white-space: nowrap;
+}
+.sh-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+/* Consistente header knoppen — zelfde stijl voor beide */
+.sh-btn {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.65);
+  cursor: pointer;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+  transition: all 0.15s;
+}
+.sh-btn.mobile { padding: 5px 9px; font-size: 10px; }
+.sh-btn.desktop { padding: 7px 14px; font-size: 12px; }
+.sh-btn:hover {
+  background: var(--oranje-dim);
+  border-color: rgba(255,102,0,0.35);
+  color: rgba(255,255,255,0.9);
+}
+
+/* Team hero */
+.team-hero {
+  background: var(--oranje);
+  position: relative;
+  flex-shrink: 0;
+}
+.team-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 55%);
+  pointer-events: none;
+}
+.team-hero.mobile {
+  padding: 20px 18px 40px;
+  clip-path: polygon(0 0, 100% 0, 100% 80%, 0 100%);
+  padding-bottom: 48px;
+}
+.team-hero.desktop {
+  padding: 32px 40px 56px;
+  clip-path: polygon(0 0, 100% 0, 100% 82%, 0 100%);
+  padding-bottom: 64px;
+}
+.th-badge {
+  display: inline-block;
+  background: rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.9);
+  font-size: 9px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 0.14em;
+  padding: 3px 9px; border-radius: 3px;
+  margin-bottom: 6px;
+}
+.th-naam {
+  font-weight: 900; font-style: italic;
+  text-transform: uppercase; color: #fff;
+  line-height: 0.95; letter-spacing: -0.02em;
+}
+.th-naam.mobile { font-size: 30px; }
+.th-naam.desktop { font-size: 48px; }
+.th-meta {
+  font-size: 11px; color: rgba(255,255,255,0.65); font-weight: 600;
+  display: flex; gap: 8px; align-items: center;
+}
+.th-meta.mobile { margin-top: 6px; }
+.th-meta.desktop { margin-top: 10px; font-size: 13px; }
+.th-meta-dot { width: 3px; height: 3px; border-radius: 50%; background: rgba(255,255,255,0.4); }
+
+/* Team body */
+.team-body { flex: 1; }
+.team-body.mobile { padding: 16px 18px 80px; }
+.team-body.desktop { padding: 28px 40px 90px; }
+
+.spelers-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.spelers-grid.mobile { gap: 16px; }
+.spelers-grid.desktop { gap: 28px; max-width: 560px; }
+
+.sk-header {
+  font-size: 9px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 0.14em;
+  color: var(--oranje); padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255,102,0,0.3);
+  display: flex; align-items: center; gap: 6px;
+}
+.sk-header.mobile { margin-bottom: 8px; }
+.sk-header.desktop { margin-bottom: 10px; font-size: 10px; }
+.sk-count {
+  background: var(--oranje-dim); color: var(--oranje);
+  font-size: 9px; padding: 1px 5px; border-radius: 10px;
+}
+.speler {
+  font-weight: 500; color: var(--tekst);
+  border-bottom: 1px solid var(--border);
+  padding: 5px 0;
+}
+.speler:last-child { border-bottom: none; }
+.speler.mobile { font-size: 13px; }
+.speler.desktop { font-size: 14px; padding: 6px 0; }
+
+.staf-block {
+  border-top: 1px solid rgba(255,102,0,0.15);
+  display: flex; flex-wrap: wrap; gap: 6px;
+}
+.staf-block.mobile { margin-top: 14px; padding-top: 12px; }
+.staf-block.desktop { margin-top: 20px; padding-top: 16px; max-width: 560px; }
+
+.staf-pill {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 20px;
+  font-weight: 500;
+}
+.staf-pill.mobile { padding: 3px 11px; font-size: 11px; color: rgba(255,255,255,0.6); }
+.staf-pill.desktop { padding: 5px 14px; font-size: 12px; color: rgba(255,255,255,0.65); }
+.staf-pill .rol { color: rgba(255,102,0,0.75); margin-right: 3px; }
+
+/* Footer nav */
+.footer-nav {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(8,8,8,0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.footer-nav.mobile { padding: 10px 14px; }
+.footer-nav.desktop { padding: 14px 28px; }
+
+.fn-btn {
+  background: var(--oranje);
+  color: #fff;
+  font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em;
+  border-radius: 6px; cursor: pointer;
+  box-shadow: 0 2px 12px var(--oranje-glow);
+  white-space: nowrap; flex-shrink: 0;
+}
+.fn-btn.mobile { font-size: 11px; padding: 7px 13px; }
+.fn-btn.desktop { font-size: 13px; padding: 10px 20px; }
+.fn-btn.disabled {
+  background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.2);
+  box-shadow: none; cursor: default;
+}
+.fn-center { flex: 1; text-align: center; min-width: 0; }
+.fn-teamnaam {
+  font-weight: 700; color: rgba(255,255,255,0.65);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font-style: italic;
+}
+.fn-teamnaam.mobile { font-size: 11px; margin-bottom: 5px; }
+.fn-teamnaam.desktop { font-size: 13px; margin-bottom: 6px; }
+.fn-dots { display: flex; justify-content: center; gap: 4px; align-items: center; }
+.fn-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  transition: all 0.25s;
+}
+.fn-dot.active {
+  background: var(--oranje); width: 18px; border-radius: 3px;
+  box-shadow: 0 0 6px var(--oranje-glow);
+}
+
+/* ═══════════════════════════════════════
+   TOELICHTING PAGINA
+═══════════════════════════════════════ */
+.toel-hero {
+  background: #fff;
+  position: relative; overflow: hidden;
+}
+.toel-hero::after {
+  content: '';
+  position: absolute;
+  bottom: -30px; right: -30px;
+  width: 160px; height: 160px;
+  background: var(--oranje);
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+  opacity: 0.1;
+}
+.toel-stripe {
+  position: absolute; top: 0; left: 0;
+  width: 5px; height: 100%;
+  background: var(--oranje);
+}
+.toel-hero.mobile { padding: 40px 20px 28px; }
+.toel-hero.desktop { padding: 52px 48px 40px; }
+
+.toel-logo-row { display: flex; align-items: center; gap: 12px; }
+.toel-logo-row.mobile { margin-bottom: 20px; }
+.toel-logo-row.desktop { margin-bottom: 28px; }
+
+.toel-logo-circle {
+  border-radius: 50%;
+  background: var(--oranje);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; color: #fff;
+  text-align: center; line-height: 1.2; flex-shrink: 0;
+}
+.toel-logo-circle.mobile { width: 48px; height: 48px; font-size: 9px; }
+.toel-logo-circle.desktop { width: 64px; height: 64px; font-size: 11px; }
+
+.toel-seizoen-label {
+  font-weight: 800; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--oranje);
+}
+.toel-seizoen-label.mobile { font-size: 10px; }
+.toel-seizoen-label.desktop { font-size: 12px; }
+
+.toel-titel {
+  font-weight: 900; font-style: italic;
+  text-transform: uppercase; color: #111;
+  line-height: 0.95; letter-spacing: -0.02em;
+}
+.toel-titel.mobile { font-size: 30px; }
+.toel-titel.desktop { font-size: 48px; }
+.toel-titel span { color: var(--oranje); }
+
+.toel-subtitel {
+  color: #888; font-weight: 500;
+}
+.toel-subtitel.mobile { font-size: 12px; margin-top: 6px; }
+.toel-subtitel.desktop { font-size: 14px; margin-top: 10px; }
+
+.toel-body { background: #fff; }
+.toel-body.mobile { padding: 20px 20px 80px; }
+.toel-body.desktop { padding: 32px 48px 60px; max-width: 680px; }
+
+/* Toelichting headers/subtitles */
+.toel-section-label {
+  font-size: 9px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 0.14em;
+  color: var(--oranje); margin-bottom: 6px;
+  display: flex; align-items: center; gap: 6px;
+}
+.toel-section-label::before {
+  content: '';
+  width: 12px; height: 2px;
+  background: var(--oranje);
+  display: inline-block;
+}
+.toel-section-title {
+  font-weight: 800; color: #111;
+  line-height: 1.1;
+}
+.toel-section-title.mobile { font-size: 18px; margin-bottom: 8px; }
+.toel-section-title.desktop { font-size: 22px; margin-bottom: 10px; }
+
+.toel-tekst {
+  line-height: 1.75; color: #333;
+}
+.toel-tekst.mobile { font-size: 14px; margin-bottom: 20px; }
+.toel-tekst.desktop { font-size: 15px; margin-bottom: 24px; }
+
+.toel-info-banner {
+  border-left: 3px solid var(--oranje);
+  padding-left: 14px;
+  font-style: italic; color: #666;
+}
+.toel-info-banner.mobile { font-size: 13px; margin-bottom: 20px; line-height: 1.6; }
+.toel-info-banner.desktop { font-size: 14px; margin-bottom: 28px; line-height: 1.7; }
+
+.toel-divider { border: none; border-top: 1px solid #eee; }
+.toel-divider.mobile { margin: 20px 0; }
+.toel-divider.desktop { margin: 28px 0; }
+
+.toel-cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--oranje); color: #fff;
+  font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em;
+  border-radius: 6px; cursor: pointer;
+  position: relative; overflow: hidden;
+}
+.toel-cta.mobile { font-size: 13px; padding: 12px 22px; }
+.toel-cta.desktop { font-size: 15px; padding: 16px 32px; }
+.toel-cta::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 50%);
+}
+
+/* ── DESKTOP: toelichting layout naast inhoud ── */
+.desktop-toel-wrap {
+  display: flex; flex-direction: column;
+  background: #fff; min-height: 100%;
+}
+
+/* ── Zoek overlay ── */
+.zoek-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 50;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 60px;
+}
+.zoek-modal {
+  background: #1a1a1a;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  width: min(460px, calc(100% - 32px));
+  box-shadow: 0 24px 80px rgba(0,0,0,0.7), 0 0 30px var(--oranje-dim);
+  overflow: hidden;
+}
+.zoek-input-wrap { padding: 14px 14px 0; }
+.zoek-input {
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 2px solid var(--oranje);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 16px; color: #fff; outline: none;
+}
+.zoek-input::placeholder { color: rgba(255,255,255,0.3); }
+.zoek-result {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  cursor: pointer;
+}
+.zoek-result:hover { background: rgba(255,255,255,0.04); }
+.zoek-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--oranje); flex-shrink: 0; }
+.zoek-naam { font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.9); }
+.zoek-team { font-size: 11px; color: var(--subtekst); margin-top: 1px; }
+.zoek-hint { padding: 12px 14px; font-size: 12px; color: var(--subtekst); text-align: center; }
+
+/* Tab toggle */
+.tab-bar {
+  display: flex;
+  background: #111;
+  border-bottom: 1px solid #222;
+  padding: 0 16px;
+}
+.tab {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: #555; cursor: pointer;
+  padding: 10px 14px;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s;
+}
+.tab.active { color: var(--oranje); border-bottom-color: var(--oranje); }
+
+/* Switch between screens in mobile */
+.mobile-content { display: none; }
+.mobile-content.active { display: block; }
+
+/* Desktop page switching */
+.desktop-page { display: none; }
+.desktop-page.active { display: flex; flex-direction: column; flex: 1; }
+
+</style>
+</head>
+<body>
+
+<div class="preview-wrapper">
+
+  <!-- ═══════════════ MOBILE FRAME ═══════════════ -->
+  <div class="mobile-frame">
+    <div class="frame-label">
+      📱 Mobiel <span>375px — Klik tabs om te wisselen</span>
+    </div>
+
+    <!-- Tab toggle -->
+    <div class="tab-bar">
+      <div class="tab active" onclick="switchMobile('toelichting', this)">① Toelichting</div>
+      <div class="tab" onclick="switchMobile('indeling', this)">② Teamkaart</div>
+      <div class="tab" onclick="switchMobile('zoek', this)">③ Zoeken</div>
+    </div>
+
+    <!-- TOELICHTING MOBILE -->
+    <div class="mobile-content active" id="m-toelichting">
+      <div class="toel-hero mobile">
+        <div class="toel-stripe"></div>
+        <div class="toel-logo-row mobile">
+          <div class="toel-logo-circle mobile">OW<br>100</div>
+          <div>
+            <div class="toel-seizoen-label mobile">Seizoen 2026–2027</div>
+          </div>
+        </div>
+        <div class="toel-titel mobile">Voorlopige<br>teamindeling <span>2026–27</span></div>
+        <div class="toel-subtitel mobile">c.k.v. Oranje Wit · Dordrecht</div>
+      </div>
+      <div class="toel-body mobile">
+
+        <div class="toel-section-label">Voorwoord</div>
+        <div class="toel-section-title mobile">Beste leden</div>
+        <div class="toel-tekst mobile">
+          Hierbij presenteren we de <strong>voorlopige teamindeling</strong> voor het nieuwe seizoen 2026–2027.
+          De definitieve indeling volgt na de zomerse voorbereiding en selectiedagen.
+        </div>
+
+        <div class="toel-info-banner mobile">
+          ℹ️ Dit is een voorlopige indeling. Samenstelling kan nog wijzigen tijdens de voorbereiding.
+        </div>
+
+        <hr class="toel-divider mobile">
+
+        <div class="toel-section-label">Totstandkoming</div>
+        <div class="toel-section-title mobile">Hoe zijn de teams samengesteld?</div>
+        <div class="toel-tekst mobile">
+          De Technische Commissie heeft gekeken naar de Oranje Draad: plezier, ontwikkeling
+          en prestatie voor iedere speler op de juiste plek.
+        </div>
+
+        <hr class="toel-divider mobile">
+
+        <div class="toel-cta mobile">
+          Bekijk de indeling →
+        </div>
+      </div>
+    </div>
+
+    <!-- TEAMKAART MOBILE -->
+    <div class="mobile-content" id="m-indeling" style="position:relative;height:680px;overflow:hidden">
+      <div class="progress-bar-outer">
+        <div class="progress-bar-inner"></div>
+      </div>
+      <div class="sticky-header mobile">
+        <div class="sh-logo">
+          <div class="sh-logo-circle">OW<br>100</div>
+          <div class="sh-seizoen">2026–2027</div>
+        </div>
+        <div class="sh-actions">
+          <div class="sh-btn mobile">🔍 Zoek</div>
+          <div class="sh-btn mobile">← Toelichting</div>
+        </div>
+      </div>
+      <div class="team-hero mobile">
+        <div class="th-badge">Senioren</div>
+        <div class="th-naam mobile">Oranje Wit 3</div>
+        <div class="th-meta mobile">
+          <span>7 dames</span><div class="th-meta-dot"></div>
+          <span>7 heren</span>
+        </div>
+      </div>
+      <div class="team-body mobile">
+        <div class="spelers-grid mobile">
+          <div>
+            <div class="sk-header mobile">♀ Dames <span class="sk-count">7</span></div>
+            <div class="speler mobile">Anna de Vries</div>
+            <div class="speler mobile">Lisa Jansen</div>
+            <div class="speler mobile">Mara Smit</div>
+            <div class="speler mobile">Femke Bakker</div>
+          </div>
+          <div>
+            <div class="sk-header mobile">♂ Heren <span class="sk-count">7</span></div>
+            <div class="speler mobile">Tom Mulder</div>
+            <div class="speler mobile">Bas van Dam</div>
+            <div class="speler mobile">Joris Peters</div>
+            <div class="speler mobile">Daan Visser</div>
+          </div>
+        </div>
+        <div class="staf-block mobile">
+          <div class="staf-pill mobile"><span class="rol">Trainer/Coach</span> Jan Pietersen</div>
+        </div>
+      </div>
+      <div class="footer-nav mobile">
+        <div class="fn-btn mobile disabled">← Vorig</div>
+        <div class="fn-center">
+          <div class="fn-teamnaam mobile">Oranje Wit 3</div>
+          <div class="fn-dots">
+            <div class="fn-dot"></div><div class="fn-dot"></div>
+            <div class="fn-dot active"></div><div class="fn-dot"></div>
+            <div class="fn-dot"></div><div class="fn-dot"></div>
+          </div>
+        </div>
+        <div class="fn-btn mobile">Volgend →</div>
+      </div>
+    </div>
+
+    <!-- ZOEK MOBILE -->
+    <div class="mobile-content" id="m-zoek" style="background:#0a0a0a;padding:16px">
+      <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.12em;color:var(--oranje);margin-bottom:12px;">Zoek overlay (over teamkaart)</div>
+      <div class="zoek-modal" style="width:100%">
+        <div class="zoek-input-wrap">
+          <input class="zoek-input" placeholder="Zoek op naam…" value="anna">
+        </div>
+        <div class="zoek-result">
+          <div class="zoek-dot"></div>
+          <div><div class="zoek-naam">Anna de Vries</div><div class="zoek-team">Oranje Wit 3</div></div>
+        </div>
+        <div class="zoek-result">
+          <div class="zoek-dot"></div>
+          <div><div class="zoek-naam">Annelies Smits</div><div class="zoek-team">Oranje Wit 5</div></div>
+        </div>
+        <div class="zoek-hint">Tap buiten dit venster om te sluiten · Ctrl+K</div>
+      </div>
+    </div>
+
+  </div><!-- /mobile-frame -->
+
+
+  <!-- ═══════════════ DESKTOP FRAME ═══════════════ -->
+  <div class="desktop-frame">
+    <div class="frame-label">
+      🖥 Desktop <span>Volledige breedte — Klik tabs</span>
+    </div>
+
+    <div class="tab-bar">
+      <div class="tab active" onclick="switchDesktop('toelichting', this)">① Toelichting</div>
+      <div class="tab" onclick="switchDesktop('indeling', this)">② Teamkaart</div>
+    </div>
+
+    <!-- TOELICHTING DESKTOP -->
+    <div class="desktop-page active" id="d-toelichting">
+      <div class="toel-hero desktop">
+        <div class="toel-stripe"></div>
+        <div class="toel-logo-row desktop">
+          <div class="toel-logo-circle desktop">OW<br>100</div>
+          <div>
+            <div class="toel-seizoen-label desktop">Seizoen 2026–2027</div>
+          </div>
+        </div>
+        <div class="toel-titel desktop">Voorlopige<br>teamindeling <span>2026–27</span></div>
+        <div class="toel-subtitel desktop">c.k.v. Oranje Wit · Dordrecht</div>
+      </div>
+      <div class="toel-body desktop">
+
+        <div class="toel-section-label">Voorwoord</div>
+        <div class="toel-section-title desktop">Beste leden, ouders en betrokkenen</div>
+        <div class="toel-tekst desktop">
+          Hierbij presenteren we de <strong>voorlopige teamindeling</strong> voor het nieuwe seizoen 2026–2027.
+          Na een periode van evaluaties, gesprekken en zorgvuldige overweging hebben we de teams
+          zo samengesteld dat iedere speler op de juiste plek zit.
+          De definitieve indeling volgt na de zomerse voorbereiding en selectiedagen.
+        </div>
+
+        <div class="toel-info-banner desktop">
+          ℹ️ Dit is een <strong>voorlopige</strong> indeling. Samenstelling kan nog wijzigen tijdens de voorbereiding en selectiedagen.
+          De definitieve indeling wordt voor aanvang van het seizoen gecommuniceerd.
+        </div>
+
+        <hr class="toel-divider desktop">
+
+        <div class="toel-section-label">Totstandkoming</div>
+        <div class="toel-section-title desktop">Hoe zijn de teams samengesteld?</div>
+        <div class="toel-tekst desktop">
+          De Technische Commissie heeft bij de indeling gekeken naar de drie pijlers van de Oranje Draad:
+          plezier, ontwikkeling en prestatie. Voor elke speler hebben we gezocht naar de plek waar die
+          combinatie het beste tot zijn recht komt.
+        </div>
+
+        <hr class="toel-divider desktop">
+
+        <div class="toel-section-label">Van de TC</div>
+        <div class="toel-section-title desktop">Een woord van de Technische Commissie</div>
+        <div class="toel-tekst desktop">
+          We wensen alle teams een fantastisch seizoen toe — met mooie wedstrijden, goede trainingen
+          en bovenal veel plezier op en naast het veld.
+        </div>
+        <div class="toel-info-banner desktop" style="margin-bottom:32px">
+          — De Technische Commissie, c.k.v. Oranje Wit
+        </div>
+
+        <div class="toel-cta desktop">Bekijk de teamindeling →</div>
+      </div>
+    </div>
+
+    <!-- TEAMKAART DESKTOP -->
+    <div class="desktop-page" id="d-indeling" style="position:relative;flex:1;min-height:700px;overflow:hidden">
+      <div class="progress-bar-outer">
+        <div class="progress-bar-inner"></div>
+      </div>
+      <div class="sticky-header desktop">
+        <div class="sh-logo">
+          <div class="sh-logo-circle">OW<br>100</div>
+          <div class="sh-seizoen">Voorlopige teamindeling 2026–2027</div>
+        </div>
+        <div class="sh-actions">
+          <div class="sh-btn desktop">🔍 Zoek naam</div>
+          <div class="sh-btn desktop">← Toelichting</div>
+        </div>
+      </div>
+      <div class="team-hero desktop">
+        <div class="th-badge">Senioren</div>
+        <div class="th-naam desktop">Oranje Wit 3</div>
+        <div class="th-meta desktop">
+          <span>7 dames</span><div class="th-meta-dot"></div>
+          <span>7 heren</span><div class="th-meta-dot"></div>
+          <span>Trainer/Coach: Jan Pietersen</span>
+        </div>
+      </div>
+      <div class="team-body desktop">
+        <div class="spelers-grid desktop">
+          <div>
+            <div class="sk-header desktop">♀ Dames <span class="sk-count">7</span></div>
+            <div class="speler desktop">Anna de Vries</div>
+            <div class="speler desktop">Lisa Jansen</div>
+            <div class="speler desktop">Mara Smit</div>
+            <div class="speler desktop">Femke Bakker</div>
+            <div class="speler desktop">Sara van den Berg</div>
+          </div>
+          <div>
+            <div class="sk-header desktop">♂ Heren <span class="sk-count">7</span></div>
+            <div class="speler desktop">Tom Mulder</div>
+            <div class="speler desktop">Bas van Dam</div>
+            <div class="speler desktop">Joris Peters</div>
+            <div class="speler desktop">Daan Visser</div>
+            <div class="speler desktop">Rick de Boer</div>
+          </div>
+        </div>
+        <div class="staf-block desktop">
+          <div class="staf-pill desktop"><span class="rol">Trainer/Coach</span> Jan Pietersen</div>
+          <div class="staf-pill desktop"><span class="rol">Assistent</span> Kim Boer</div>
+        </div>
+      </div>
+      <div class="footer-nav desktop">
+        <div class="fn-btn desktop disabled">← Vorig team</div>
+        <div class="fn-center">
+          <div class="fn-teamnaam desktop">Oranje Wit 3</div>
+          <div class="fn-dots">
+            <div class="fn-dot"></div><div class="fn-dot"></div>
+            <div class="fn-dot active"></div><div class="fn-dot"></div>
+            <div class="fn-dot"></div><div class="fn-dot"></div>
+            <div class="fn-dot"></div><div class="fn-dot"></div>
+          </div>
+        </div>
+        <div class="fn-btn desktop">Volgend team →</div>
+      </div>
+    </div>
+
+  </div><!-- /desktop-frame -->
+
+</div><!-- /preview-wrapper -->
+
+<script>
+function switchMobile(id, el) {
+  document.querySelectorAll('.mobile-content').forEach(e => e.classList.remove('active'));
+  document.getElementById('m-' + id).classList.add('active');
+  el.closest('.tab-bar').querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+function switchDesktop(id, el) {
+  document.querySelectorAll('.desktop-page').forEach(e => e.classList.remove('active'));
+  document.getElementById('d-' + id).classList.add('active');
+  el.closest('.tab-bar').querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+</script>
+</body>
+</html>

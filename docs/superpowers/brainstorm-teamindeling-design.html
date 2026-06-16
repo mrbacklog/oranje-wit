@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teamindeling Presentatie — Design Richtingen</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #111; color: #fff; font-family: system-ui, -apple-system, sans-serif; }
+
+  .header {
+    background: #FF6600;
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .header h1 { font-size: 18px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; }
+  .header p { font-size: 13px; opacity: 0.85; margin-top: 2px; }
+
+  .intro {
+    padding: 24px 32px;
+    max-width: 900px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #aaa;
+  }
+  .intro strong { color: #fff; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2px;
+    padding: 2px;
+  }
+
+  .option {
+    cursor: pointer;
+    border: 3px solid transparent;
+    transition: border-color 0.2s;
+    position: relative;
+  }
+  .option:hover { border-color: #FF6600; }
+  .option.selected { border-color: #FF6600; }
+  .option.selected::after {
+    content: '✓ GEKOZEN';
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: #FF6600;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    padding: 4px 10px;
+    border-radius: 4px;
+  }
+
+  .label {
+    padding: 16px 20px;
+    background: #1a1a1a;
+    border-bottom: 1px solid #333;
+  }
+  .label h2 { font-size: 16px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; }
+  .label p { font-size: 12px; color: #999; margin-top: 4px; line-height: 1.5; }
+  .label .tags { margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap; }
+  .tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 2px 8px; border-radius: 3px; }
+  .tag.oranje { background: rgba(255,102,0,0.2); color: #FF6600; }
+  .tag.wit { background: rgba(255,255,255,0.1); color: #ccc; }
+  .tag.dark { background: rgba(255,255,255,0.05); color: #888; }
+
+  /* ── OPTIE A: "Wedstrijdprogramma" — dark fullscreen ── */
+  .preview-a {
+    background: #0d0d0d;
+    height: 380px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .preview-a .stripe {
+    height: 4px;
+    background: linear-gradient(90deg, #FF6600 0%, #ff8833 100%);
+    width: 100%;
+    position: absolute;
+    top: 0;
+  }
+  .preview-a .progress-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 4px;
+    background: #FF6600;
+    width: 40%;
+    box-shadow: 0 0 12px rgba(255,102,0,0.6);
+  }
+  .preview-a .header-block {
+    padding: 28px 24px 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  .preview-a .season-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #FF6600;
+    margin-bottom: 6px;
+  }
+  .preview-a .team-name {
+    font-size: 36px;
+    font-weight: 900;
+    text-transform: uppercase;
+    font-style: italic;
+    color: #fff;
+    line-height: 1;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+    letter-spacing: -0.02em;
+  }
+  .preview-a .counter-badge {
+    margin-top: 10px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    font-weight: 600;
+  }
+  .preview-a .divider {
+    height: 1px;
+    background: rgba(255,102,0,0.3);
+    margin: 0 24px;
+  }
+  .preview-a .players-block {
+    padding: 16px 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .preview-a .col-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #FF6600;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .preview-a .col-label span {
+    background: rgba(255,102,0,0.15);
+    padding: 1px 6px;
+    border-radius: 10px;
+    font-size: 9px;
+    color: rgba(255,255,255,0.5);
+  }
+  .preview-a .player-name {
+    font-size: 13px;
+    color: rgba(255,255,255,0.9);
+    padding: 3px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-weight: 500;
+  }
+  .preview-a .footer-nav {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 10px 24px;
+    background: #111;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .preview-a .nav-btn {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #fff;
+    background: rgba(255,102,0,0.15);
+    border: 1px solid rgba(255,102,0,0.3);
+    padding: 6px 14px;
+    border-radius: 4px;
+  }
+  .preview-a .nav-btn.disabled { opacity: 0.3; }
+  .preview-a .dots { display: flex; gap: 4px; align-items: center; }
+  .preview-a .dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.2); }
+  .preview-a .dot.active { background: #FF6600; width: 18px; border-radius: 3px; }
+
+  /* ── OPTIE B: "Oranje Explosie" — fullscreen oranje hero ── */
+  .preview-b {
+    height: 380px;
+    position: relative;
+    overflow: hidden;
+    background: #0d0d0d;
+  }
+  .preview-b .hero {
+    background: #FF6600;
+    padding: 28px 24px 20px;
+    position: relative;
+    clip-path: polygon(0 0, 100% 0, 100% 75%, 0 100%);
+    padding-bottom: 40px;
+  }
+  .preview-b .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .preview-b .logo-circle {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; font-weight: 800; color: #fff;
+  }
+  .preview-b .season { font-size: 11px; color: rgba(255,255,255,0.7); font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; }
+  .preview-b .team-name {
+    font-size: 38px;
+    font-weight: 900;
+    font-style: italic;
+    text-transform: uppercase;
+    color: #fff;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+  }
+  .preview-b .content {
+    padding: 20px 24px 0;
+  }
+  .preview-b .players-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .preview-b .col-title {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #FF6600;
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+    border-bottom: 2px solid #FF6600;
+  }
+  .preview-b .pname {
+    font-size: 13px;
+    color: #e0e0e0;
+    padding: 3px 0;
+    font-weight: 500;
+  }
+  .preview-b .footer-nav {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding: 10px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .preview-b .nav-btn {
+    font-size: 13px;
+    font-weight: 800;
+    color: #FF6600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .preview-b .nav-btn.disabled { color: #444; }
+  .preview-b .counter { font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.5); }
+
+  /* ── OPTIE C: "Magazine Slide" — slides met glow ── */
+  .preview-c {
+    height: 380px;
+    position: relative;
+    overflow: hidden;
+    background: #080808;
+  }
+  .preview-c::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(255,102,0,0.25) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .preview-c .top-bar {
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .preview-c .wordmark {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #FF6600;
+  }
+  .preview-c .search-icon {
+    font-size: 14px;
+    color: rgba(255,255,255,0.4);
+  }
+  .preview-c .card-area {
+    padding: 20px 24px;
+  }
+  .preview-c .card-number {
+    font-size: 72px;
+    font-weight: 900;
+    font-style: italic;
+    color: rgba(255,102,0,0.12);
+    line-height: 1;
+    position: absolute;
+    right: 20px;
+    top: 50px;
+  }
+  .preview-c .category-pill {
+    display: inline-block;
+    background: #FF6600;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 3px 10px;
+    border-radius: 3px;
+    margin-bottom: 10px;
+  }
+  .preview-c .team-name {
+    font-size: 30px;
+    font-weight: 900;
+    font-style: italic;
+    text-transform: uppercase;
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .preview-c .team-sub {
+    font-size: 12px;
+    color: rgba(255,255,255,0.35);
+    font-weight: 500;
+    margin-bottom: 16px;
+  }
+  .preview-c .players-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .preview-c .col-hd {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.3);
+    margin-bottom: 8px;
+  }
+  .preview-c .pname {
+    font-size: 13px;
+    color: rgba(255,255,255,0.8);
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .preview-c .staf-row {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255,102,0,0.2);
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .preview-c .staf-pill {
+    font-size: 11px;
+    color: #FF6600;
+    background: rgba(255,102,0,0.1);
+    border: 1px solid rgba(255,102,0,0.2);
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+  .preview-c .footer-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .preview-c .nav-arrow {
+    width: 34px; height: 34px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    color: rgba(255,255,255,0.5);
+  }
+  .preview-c .nav-arrow.active {
+    background: #FF6600;
+    border-color: #FF6600;
+    color: #fff;
+    box-shadow: 0 0 16px rgba(255,102,0,0.4);
+  }
+  .preview-c .progress-dots {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+  }
+  .preview-c .pdot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+  }
+  .preview-c .pdot.active {
+    background: #FF6600;
+    width: 20px;
+    border-radius: 3px;
+    box-shadow: 0 0 8px rgba(255,102,0,0.5);
+  }
+  .preview-c .pos-counter {
+    font-size: 11px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.3);
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>Teamindeling Presentatie — Design Richtingen</h1>
+    <p>Klik op een optie om te kiezen. Alle drie zijn: dark, oranje+wit, geen geel.</p>
+  </div>
+</div>
+
+<div class="intro">
+  <strong>Gebaseerd op:</strong> de website van c.k.v. Oranje Wit — bold oranje, sportieve typografie, actieve uitstraling.
+  Alle drie opties verwijderen geel volledig en gebruiken alleen <strong>#FF6600 oranje + wit</strong> op een donkere achtergrond.
+  Kies de richting die het beste past bij een <em>teampresentatie</em>.
+</div>
+
+<div class="grid">
+
+  <!-- OPTIE A -->
+  <div class="option" onclick="this.classList.toggle('selected')">
+    <div class="label">
+      <h2>A — Wedstrijdprogramma</h2>
+      <p>Volledig donker. Oranje glowing progress bar bovenin. Sportieve bold italic teamnaam. Namen in twee strakke kolommen. Minimale footer met dots-navigatie.</p>
+      <div class="tags">
+        <span class="tag dark">Zwart #0d0d0d</span>
+        <span class="tag oranje">Oranje accenten</span>
+        <span class="tag wit">Wit tekst</span>
+      </div>
+    </div>
+    <div class="preview-a">
+      <div class="progress-bar"></div>
+      <div class="header-block">
+        <div class="season-label">Seizoen 2025–2026</div>
+        <div class="team-name">Oranje Wit 1 &amp; 2</div>
+        <div class="counter-badge">Team 2 van 8</div>
+      </div>
+      <div class="divider"></div>
+      <div class="players-block">
+        <div>
+          <div class="col-label">♀ Dames <span>7</span></div>
+          <div class="player-name">Anna de Vries</div>
+          <div class="player-name">Lisa Jansen</div>
+          <div class="player-name">Mara Smit</div>
+          <div class="player-name">Femke Bakker</div>
+        </div>
+        <div>
+          <div class="col-label">♂ Heren <span>7</span></div>
+          <div class="player-name">Tom Mulder</div>
+          <div class="player-name">Bas van Dam</div>
+          <div class="player-name">Joris Peters</div>
+          <div class="player-name">Daan Visser</div>
+        </div>
+      </div>
+      <div class="footer-nav">
+        <div class="nav-btn disabled">← Vorig</div>
+        <div class="dots">
+          <div class="dot"></div>
+          <div class="dot active"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+        <div class="nav-btn">Volgend →</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPTIE B -->
+  <div class="option" onclick="this.classList.toggle('selected')">
+    <div class="label">
+      <h2>B — Oranje Explosie</h2>
+      <p>Diagonale oranje hero-banner (zoals de website) met teamnaam in wit. Inhoud op donker. Blur-glass footer. Dezelfde energie als de homepage van OW.</p>
+      <div class="tags">
+        <span class="tag oranje">Oranje hero</span>
+        <span class="tag dark">Donker inhoud</span>
+        <span class="tag wit">Glass-footer</span>
+      </div>
+    </div>
+    <div class="preview-b">
+      <div class="hero">
+        <div class="logo-area">
+          <div class="logo-circle">OW</div>
+          <div class="season">Seizoen 2025–2026</div>
+        </div>
+        <div class="team-name">Oranje Wit 3</div>
+      </div>
+      <div class="content">
+        <div class="players-row">
+          <div>
+            <div class="col-title">♀ Dames</div>
+            <div class="pname">Anna de Vries</div>
+            <div class="pname">Lisa Jansen</div>
+            <div class="pname">Mara Smit</div>
+            <div class="pname">Femke Bakker</div>
+          </div>
+          <div>
+            <div class="col-title">♂ Heren</div>
+            <div class="pname">Tom Mulder</div>
+            <div class="pname">Bas van Dam</div>
+            <div class="pname">Joris Peters</div>
+            <div class="pname">Daan Visser</div>
+          </div>
+        </div>
+      </div>
+      <div class="footer-nav">
+        <div class="nav-btn disabled">←</div>
+        <div class="counter">3 / 8</div>
+        <div class="nav-btn">→</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPTIE C -->
+  <div class="option" onclick="this.classList.toggle('selected')">
+    <div class="label">
+      <h2>C — Magazine Slide</h2>
+      <p>Diep zwart met subtiele oranje glow-spotlight. Grote ghost-nummer op achtergrond. Oranje categorie-pill. Ronde nav-knoppen met glow. Staf als oranje pills onderaan.</p>
+      <div class="tags">
+        <span class="tag dark">Diep zwart</span>
+        <span class="tag oranje">Glow spotlight</span>
+        <span class="tag wit">Ghost-typografie</span>
+      </div>
+    </div>
+    <div class="preview-c">
+      <div class="card-number">4</div>
+      <div class="top-bar">
+        <div class="wordmark">c.k.v. Oranje Wit</div>
+        <div class="search-icon">🔍</div>
+      </div>
+      <div class="card-area">
+        <div class="category-pill">Senioren</div>
+        <div class="team-name">Oranje Wit 4</div>
+        <div class="team-sub">Seizoen 2025–2026 · 14 spelers</div>
+        <div class="players-split">
+          <div>
+            <div class="col-hd">Dames</div>
+            <div class="pname">Anna de Vries</div>
+            <div class="pname">Lisa Jansen</div>
+            <div class="pname">Mara Smit</div>
+          </div>
+          <div>
+            <div class="col-hd">Heren</div>
+            <div class="pname">Tom Mulder</div>
+            <div class="pname">Bas van Dam</div>
+            <div class="pname">Joris Peters</div>
+          </div>
+        </div>
+        <div class="staf-row">
+          <div class="staf-pill">Trainer/Coach · Jan Pietersen</div>
+          <div class="staf-pill">Assistent · Kim Boer</div>
+        </div>
+      </div>
+      <div class="footer-bar">
+        <div class="nav-arrow">←</div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+          <div class="progress-dots">
+            <div class="pdot"></div>
+            <div class="pdot"></div>
+            <div class="pdot"></div>
+            <div class="pdot active"></div>
+            <div class="pdot"></div>
+          </div>
+          <div class="pos-counter">4 / 8</div>
+        </div>
+        <div class="nav-arrow active">→</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div style="padding:24px 32px;color:#666;font-size:13px;line-height:1.7;max-width:900px;">
+  <strong style="color:#aaa">Alle drie opties krijgen:</strong><br>
+  • Smooth slide/fade animatie bij navigatie tussen teams<br>
+  • Stagger fade-in voor spelersnamen (per naam, 50ms vertraging)<br>
+  • Swipe-gesture op mobiel<br>
+  • Keyboard navigatie (← →)<br>
+  • Zoekoverlap in OW-oranje stijl<br>
+  • Geen geel, geen lichtgrijs achtergrond
+</div>
+
+</body>
+</html>
