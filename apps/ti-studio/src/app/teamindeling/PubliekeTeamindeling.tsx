@@ -93,8 +93,12 @@ function SpelersKolom({
   );
 }
 
-function StafPills({ staf }: { staf: { naam: string; rol: string }[] }) {
+function StafPills({ staf }: { staf: { naam: string; rol: string; rolLabel?: string | null }[] }) {
   if (staf.length === 0) return null;
+
+  const rolWeergave = (s: { rol: string; rolLabel?: string | null }) =>
+    s.rolLabel?.trim() || (s.rol.trim().toLowerCase() === "trainer" ? "Trainer/Coach" : s.rol);
+
   return (
     <div style={{ marginTop: 20, paddingTop: 16, borderTop: `1px solid ${C.border}` }}>
       <div
@@ -122,9 +126,7 @@ function StafPills({ staf }: { staf: { naam: string; rol: string }[] }) {
               color: C.tekst,
             }}
           >
-            <span style={{ color: C.subTekst }}>
-              {s.rol.trim().toLowerCase() === "trainer" ? "Trainer/Coach" : s.rol}
-            </span>
+            <span style={{ color: C.subTekst }}>{rolWeergave(s)}</span>
             {s.rol ? " · " : ""}
             {s.naam}
           </span>
@@ -238,7 +240,7 @@ function TeamKaartHeader({ team, borderKleur }: { team: PubliekTeam; borderKleur
   );
 }
 
-function InfoBanner({ gebundeld }: { gebundeld: boolean }) {
+function InfoBanner() {
   return (
     <div
       style={{
@@ -246,7 +248,8 @@ function InfoBanner({ gebundeld }: { gebundeld: boolean }) {
         border: `1px solid rgba(234,179,8,0.3)`,
         borderRadius: 8,
         padding: "10px 14px",
-        marginBottom: 20,
+        marginTop: 20,
+        marginBottom: 4,
         fontSize: 13,
         color: "#92400e",
         display: "flex",
@@ -256,9 +259,8 @@ function InfoBanner({ gebundeld }: { gebundeld: boolean }) {
     >
       <span style={{ fontSize: 16 }}>ℹ️</span>
       <span>
-        {gebundeld
-          ? "Uit deze gecombineerde pool worden de teams gevormd. De definitieve verdeling volgt later."
-          : "De verdeling over de onderstaande teams is voorlopig en kan nog wijzigen."}
+        Deze spelers vormen samen één pool. De verdeling over de teams is nog niet definitief en
+        wordt later bekendgemaakt.
       </span>
     </div>
   );
@@ -279,12 +281,11 @@ function TeamKaart({ team }: { team: PubliekTeam }) {
     >
       <TeamKaartHeader team={team} borderKleur={borderKleur} />
       <div style={{ padding: 24 }}>
-        {team.soort === "selectie" && <InfoBanner gebundeld={team.gebundeld} />}
-
         {/* Gebundelde selectie of normaal team: twee kolommen */}
         {(team.soort === "team" || (team.soort === "selectie" && team.gebundeld)) && (
           <>
             <SpelersBlok dames={team.dames} heren={team.heren} />
+            {team.soort === "selectie" && team.gebundeld && <InfoBanner />}
             <StafPills staf={team.staf} />
           </>
         )}

@@ -14,6 +14,7 @@ export type PubliekeSpeler = {
 export type PubliekeStaf = {
   naam: string;
   rol: string;
+  rolLabel?: string | null;
 };
 
 export type PubliekTeam = {
@@ -180,6 +181,7 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
           ts.staf?.naam ??
           (logger.warn("publieke-presentatie: staf zonder naam", { stafId: ts.stafId }), "?"),
         rol: ts.rol ?? "",
+        rolLabel: ts.rolLabel ?? null,
       })),
     });
   }
@@ -219,6 +221,7 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
             ss.staf?.naam ??
             (logger.warn("publieke-presentatie: staf zonder naam", { stafId: ss.stafId }), "?"),
           rol: ss.rol ?? "",
+          rolLabel: ss.rolLabel ?? null,
         });
       }
 
@@ -267,6 +270,7 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
                 ts.staf?.naam ??
                 (logger.warn("publieke-presentatie: staf zonder naam", { stafId: ts.stafId }), "?"),
               rol: ts.rol ?? "",
+              rolLabel: ts.rolLabel ?? null,
             });
           }
           teamStaf.push({
@@ -274,6 +278,7 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
               ts.staf?.naam ??
               (logger.warn("publieke-presentatie: staf zonder naam", { stafId: ts.stafId }), "?"),
             rol: ts.rol ?? "",
+            rolLabel: ts.rolLabel ?? null,
           });
         }
 
@@ -297,7 +302,13 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
 
   kaarten.sort((a, b) => a.volgorde - b.volgorde);
 
-  return { toelichting: mapToelichting(publicatie), teams: kaarten };
+  const gevuldeKaarten = kaarten.filter((k) => {
+    if (k.soort === "team") return k.dames.length > 0 || k.heren.length > 0;
+    if (k.gebundeld) return k.dames.length > 0 || k.heren.length > 0;
+    return k.subteams.some((s) => s.dames.length > 0 || s.heren.length > 0);
+  });
+
+  return { toelichting: mapToelichting(publicatie), teams: gevuldeKaarten };
 }
 
 function mapToelichting(
