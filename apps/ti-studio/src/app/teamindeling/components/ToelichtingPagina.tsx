@@ -3,16 +3,13 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Megaphone, HelpCircle } from "lucide-react";
 import type {
   PubliekeTeamindelingData,
   BelangrijkeDatumItem,
-  KennismakingItem,
 } from "@/lib/teamindeling/publieke-presentatie";
 
 const LOGO_URL = "https://ckvoranjewit.nl/wp-content/uploads/2025/12/OW-100-logo-lexvg.webp";
 
-// --- Gedeelde stijlen ---
 const ORANJE = "#FF6600";
 
 const pillBtnStyle: React.CSSProperties = {
@@ -153,124 +150,6 @@ function StartdataInhoud({ items }: { items: BelangrijkeDatumItem[] }) {
   );
 }
 
-// --- Kennismakingstraining modal inhoud ---
-function KennismakingInhoud({ items }: { items: KennismakingItem[] }) {
-  return (
-    <>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-        <span style={{ fontSize: 20 }}>🏐</span>
-        <h3
-          style={{
-            margin: 0,
-            fontSize: 18,
-            fontWeight: 900,
-            fontStyle: "italic",
-            textTransform: "uppercase",
-            color: "#fff",
-            letterSpacing: "-0.01em",
-          }}
-        >
-          Kennismakingstrainingen
-        </h3>
-      </div>
-      <p
-        style={{
-          background: "rgba(255,102,0,0.1)",
-          border: "1px solid rgba(255,102,0,0.2)",
-          borderRadius: 6,
-          padding: "8px 12px",
-          fontSize: 12,
-          color: "rgba(255,255,255,0.55)",
-          marginBottom: 14,
-        }}
-      >
-        Alle nieuwe leden zijn welkom bij de kennismakingstraining van hun team.
-      </p>
-      {items.length === 0 ? (
-        <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 14 }}>
-          Nog geen trainingen ingepland.
-        </p>
-      ) : (
-        <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
-          {items.map((item, i) => (
-            <li
-              key={i}
-              style={{
-                padding: "10px 0",
-                borderBottom: i < items.length - 1 ? "1px solid rgba(255,255,255,0.07)" : "none",
-              }}
-            >
-              <div style={{ fontWeight: 700, color: "#fff", fontSize: 14, marginBottom: 2 }}>
-                {item.teamnaam}
-              </div>
-              <div style={{ fontSize: 13, color: "rgba(255,255,255,0.55)" }}>
-                {item.datum} · {item.tijd}
-                {item.locatie && (
-                  <span style={{ color: "rgba(255,255,255,0.35)" }}> · {item.locatie}</span>
-                )}
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
-    </>
-  );
-}
-
-// --- TC Oproep modal inhoud ---
-function TcOproepInhoud() {
-  return (
-    <div>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
-        <Megaphone size={20} color="#FF6600" />
-        <h3
-          style={{
-            margin: 0,
-            fontSize: 18,
-            fontWeight: 900,
-            fontStyle: "italic",
-            textTransform: "uppercase",
-            color: "#fff",
-            letterSpacing: "-0.01em",
-          }}
-        >
-          Oproep van de TC
-        </h3>
-      </div>
-      <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 14 }}>
-        Tekst volgt. De TC heeft een belangrijke oproep voor alle leden.
-      </p>
-    </div>
-  );
-}
-
-// --- Vragen modal inhoud ---
-function VragenInhoud() {
-  return (
-    <div>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
-        <HelpCircle size={20} color="#FF6600" />
-        <h3
-          style={{
-            margin: 0,
-            fontSize: 18,
-            fontWeight: 900,
-            fontStyle: "italic",
-            textTransform: "uppercase",
-            color: "#fff",
-            letterSpacing: "-0.01em",
-          }}
-        >
-          Veelgestelde vragen
-        </h3>
-      </div>
-      <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 14 }}>
-        Tekst volgt. Heb je vragen over de teamindeling? Neem contact op met de TC.
-      </p>
-    </div>
-  );
-}
-
 // --- Sectie kop ---
 function SectieKop({ label, titel }: { label: string; titel: string }) {
   return (
@@ -304,17 +183,12 @@ function SectieKop({ label, titel }: { label: string; titel: string }) {
 // --- Hoofd component ---
 export function ToelichtingPagina({
   toelichting,
-  onGaNaar,
 }: {
   toelichting: PubliekeTeamindelingData["toelichting"];
-  onGaNaar: () => void;
 }) {
-  const [openModal, setOpenModal] = useState<
-    null | "startdata" | "kennismaking" | "tcoproep" | "vragen"
-  >(null);
+  const [openModal, setOpenModal] = useState<null | "startdata">(null);
 
   const belangrijkeData = toelichting?.belangrijkeData ?? [];
-  const kennismakingstrainingen = toelichting?.kennismakingstrainingen ?? [];
 
   return (
     <div style={{ minHeight: "100vh", background: "#0f0f0f" }}>
@@ -430,7 +304,8 @@ export function ToelichtingPagina({
         style={{
           maxWidth: 680,
           margin: "0 auto",
-          padding: "28px 24px 100px",
+          padding: "28px 24px",
+          paddingBottom: 120,
           position: "relative",
           zIndex: 1,
         }}
@@ -579,87 +454,6 @@ export function ToelichtingPagina({
               </div>
             )}
 
-            {/* Kennismakingstrainingen inline blok */}
-            {kennismakingstrainingen.length > 0 && (
-              <div style={{ marginBottom: 28 }}>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    marginBottom: 12,
-                  }}
-                >
-                  <SectieKop label="Kennismaking" titel="Kennismakingstrainingen" />
-                  <button
-                    style={{ ...pillBtnStyle, fontSize: 11 }}
-                    onClick={() => setOpenModal("kennismaking")}
-                  >
-                    🏐 Bekijk alles
-                  </button>
-                </div>
-                <div
-                  style={{
-                    background: "rgba(255,102,0,0.06)",
-                    border: "1px solid rgba(255,102,0,0.2)",
-                    borderRadius: 6,
-                    padding: "8px 12px",
-                    fontSize: 13,
-                    color: "rgba(255,255,255,0.55)",
-                    marginBottom: 12,
-                  }}
-                >
-                  Alle nieuwe leden zijn welkom bij de kennismakingstraining van hun team.
-                </div>
-                <div
-                  style={{
-                    background: "rgba(255,255,255,0.03)",
-                    border: "1px solid rgba(255,255,255,0.07)",
-                    borderRadius: 12,
-                    padding: "14px 16px",
-                  }}
-                >
-                  <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
-                    {kennismakingstrainingen.slice(0, 3).map((item, i) => (
-                      <li
-                        key={i}
-                        style={{
-                          padding: "10px 0",
-                          borderBottom:
-                            i < Math.min(kennismakingstrainingen.length, 3) - 1
-                              ? "1px solid rgba(255,255,255,0.07)"
-                              : "none",
-                        }}
-                      >
-                        <div
-                          style={{ fontWeight: 700, color: "#fff", fontSize: 14, marginBottom: 2 }}
-                        >
-                          {item.teamnaam}
-                        </div>
-                        <div style={{ fontSize: 13, color: "rgba(255,255,255,0.55)" }}>
-                          {item.datum} · {item.tijd}
-                          {item.locatie && (
-                            <span style={{ color: "rgba(255,255,255,0.35)" }}>
-                              {" "}
-                              · {item.locatie}
-                            </span>
-                          )}
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                {kennismakingstrainingen.length > 3 && (
-                  <button
-                    style={{ ...pillBtnStyle, marginTop: 10, fontSize: 11 }}
-                    onClick={() => setOpenModal("kennismaking")}
-                  >
-                    +{kennismakingstrainingen.length - 3} meer teams →
-                  </button>
-                )}
-              </div>
-            )}
-
             {/* TC ondertekening */}
             <hr
               style={{
@@ -690,105 +484,9 @@ export function ToelichtingPagina({
         )}
       </div>
 
-      {/* Sticky footer — zelfde shell als NavFooter */}
-      <div
-        style={{
-          position: "fixed",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          zIndex: 100,
-          background: "#080808",
-          borderTop: "1px solid rgba(255,102,0,0.25)",
-          display: "flex",
-          alignItems: "stretch",
-          padding: "6px 0",
-          paddingBottom: "max(10px, env(safe-area-inset-bottom))",
-        }}
-      >
-        {(
-          [
-            { id: "startdata", icon: "📅", label: "Data" },
-            { id: "kennismaking", icon: "🏐", label: "Kennismaking" },
-            { id: "tcoproep", icon: "📣", label: "TC Oproep" },
-            { id: "vragen", icon: "❓", label: "Vragen" },
-          ] as const
-        ).map(({ id, icon, label }) => (
-          <button
-            key={id}
-            onClick={() => setOpenModal(id)}
-            style={{
-              flex: 1,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 3,
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              padding: "6px 4px",
-            }}
-          >
-            <span style={{ fontSize: 17, lineHeight: 1 }}>{icon}</span>
-            <span
-              style={{
-                fontSize: 9,
-                fontWeight: 700,
-                textTransform: "uppercase",
-                letterSpacing: "0.06em",
-                color: "rgba(255,255,255,0.35)",
-              }}
-            >
-              {label}
-            </span>
-          </button>
-        ))}
-        <div
-          style={{ width: 1, background: "rgba(255,255,255,0.06)", margin: "6px 0", flexShrink: 0 }}
-        />
-        <button
-          onClick={onGaNaar}
-          style={{
-            flex: 1.5,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 3,
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            padding: "6px 4px",
-          }}
-        >
-          <span style={{ fontSize: 17, lineHeight: 1 }}>🏅</span>
-          <span
-            style={{
-              fontSize: 9,
-              fontWeight: 800,
-              textTransform: "uppercase",
-              letterSpacing: "0.06em",
-              color: "#FF6600",
-            }}
-          >
-            Teamindeling →
-          </span>
-        </button>
-      </div>
-
-      {/* Modals */}
+      {/* Modal */}
       <InfoModal open={openModal === "startdata"} onSluit={() => setOpenModal(null)}>
         <StartdataInhoud items={belangrijkeData} />
-      </InfoModal>
-      <InfoModal open={openModal === "kennismaking"} onSluit={() => setOpenModal(null)}>
-        <KennismakingInhoud items={kennismakingstrainingen} />
-      </InfoModal>
-      <InfoModal open={openModal === "tcoproep"} onSluit={() => setOpenModal(null)}>
-        <TcOproepInhoud />
-      </InfoModal>
-      <InfoModal open={openModal === "vragen"} onSluit={() => setOpenModal(null)}>
-        <VragenInhoud />
       </InfoModal>
     </div>
   );

@@ -3,21 +3,26 @@
 import "./publieke-teamindeling.css";
 import { useEffect, useRef, useState } from "react";
 import type { PubliekeTeamindelingData } from "@/lib/teamindeling/publieke-presentatie";
-import { NavFooter } from "./components/NavFooter";
+import { AppFooter } from "./components/AppFooter";
+import type { AppPagina } from "./components/AppFooter";
+import { KennismakingPagina } from "./components/KennismakingPagina";
+import { NavHeader } from "./components/NavHeader";
 import { TeamKaart } from "./components/TeamKaart";
+import { TcOproepPagina } from "./components/TcOproepPagina";
 import { ToelichtingPagina } from "./components/ToelichtingPagina";
+import { VragenPagina } from "./components/VragenPagina";
 import { ZoekOverlay } from "./components/ZoekOverlay";
 
 export function PubliekeTeamindeling({ data }: { data: PubliekeTeamindelingData }) {
-  const [pagina, setPagina] = useState<"toelichting" | "indeling">("toelichting");
+  const [pagina, setPagina] = useState<AppPagina>("toelichting");
   const [teamIdx, setTeamIdx] = useState(0);
   const [zoekOpen, setZoekOpen] = useState(false);
 
-  // Swipe-detectie
   const touchStartX = useRef<number | null>(null);
 
   const teams = data.teams;
   const huidigTeam = teams[teamIdx];
+  const toelichting = data.toelichting;
 
   function naarTeam(idx: number) {
     setTeamIdx(idx);
@@ -30,7 +35,6 @@ export function PubliekeTeamindeling({ data }: { data: PubliekeTeamindelingData 
     if (teamIdx < teams.length - 1) naarTeam(teamIdx + 1);
   }
 
-  // Keyboard
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
       if (zoekOpen) {
@@ -50,11 +54,12 @@ export function PubliekeTeamindeling({ data }: { data: PubliekeTeamindelingData 
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [pagina, teamIdx, teams.length, zoekOpen]);
 
-  // Swipe
   function onTouchStart(e: React.TouchEvent) {
+    if (pagina !== "indeling") return;
     touchStartX.current = e.touches[0].clientX;
   }
   function onTouchEnd(e: React.TouchEvent) {
+    if (pagina !== "indeling") return;
     if (touchStartX.current === null) return;
     const delta = touchStartX.current - e.changedTouches[0].clientX;
     if (Math.abs(delta) > 50) {
@@ -64,71 +69,89 @@ export function PubliekeTeamindeling({ data }: { data: PubliekeTeamindelingData 
     touchStartX.current = null;
   }
 
-  if (pagina === "toelichting") {
-    return (
-      <>
-        <ToelichtingPagina toelichting={data.toelichting} onGaNaar={() => setPagina("indeling")} />
-        {zoekOpen && (
-          <ZoekOverlay
-            teams={teams}
-            onSluit={() => setZoekOpen(false)}
-            onKiesTeam={(idx) => {
-              naarTeam(idx);
-              setPagina("indeling");
-            }}
+  function renderPagina() {
+    switch (pagina) {
+      case "toelichting":
+        return <ToelichtingPagina toelichting={toelichting} />;
+      case "indeling":
+        return (
+          <div
+            className="pt-root"
+            style={{ minHeight: "100vh", background: "#080808", paddingBottom: 90 }}
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}
+          >
+            <NavHeader
+              seizoenLabel={toelichting?.seizoenLabel ?? null}
+              onZoek={() => setZoekOpen(true)}
+              onToelichting={() => setPagina("toelichting")}
+            />
+            <div style={{ maxWidth: 720, margin: "0 auto", paddingTop: 52 }}>
+              {huidigTeam ? (
+                <TeamKaart
+                  key={teamIdx}
+                  team={huidigTeam}
+                  animKlasse="pt-team-in"
+                  onZoek={() => setZoekOpen(true)}
+                  seizoenLabel={toelichting?.seizoenLabel ?? null}
+                />
+              ) : (
+                <div style={{ textAlign: "center", padding: 60, color: "rgba(255,255,255,0.3)" }}>
+                  Geen teams beschikbaar
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      case "kennismaking":
+        return (
+          <KennismakingPagina
+            kennismakingstrainingen={toelichting?.kennismakingstrainingen ?? []}
+            seizoenLabel={toelichting?.seizoenLabel}
           />
-        )}
-      </>
-    );
+        );
+      case "tcoproep":
+        return (
+          <TcOproepPagina
+            tcTekst={toelichting?.tcTekst ?? ""}
+            seizoenLabel={toelichting?.seizoenLabel}
+          />
+        );
+      case "vragen":
+        return (
+          <VragenPagina
+            contactTekst={toelichting?.contactTekst ?? ""}
+            seizoenLabel={toelichting?.seizoenLabel}
+          />
+        );
+    }
   }
 
   return (
-    <div
-      className="pt-root"
-      style={{ minHeight: "100vh", background: "#080808", paddingBottom: 90 }}
-      onTouchStart={onTouchStart}
-      onTouchEnd={onTouchEnd}
-    >
-      {/* Team kaart */}
-      <div style={{ maxWidth: 720, margin: "0 auto" }}>
-        {huidigTeam ? (
-          <TeamKaart
-            key={teamIdx}
-            team={huidigTeam}
-            animKlasse="pt-team-in"
-            onZoek={() => setZoekOpen(true)}
-            seizoenLabel={data.toelichting?.seizoenLabel ?? null}
-          />
-        ) : (
-          <div style={{ textAlign: "center", padding: 60, color: "rgba(255,255,255,0.3)" }}>
-            Geen teams beschikbaar
-          </div>
-        )}
-      </div>
+    <>
+      {renderPagina()}
 
-      {/* Footer nav */}
-      <NavFooter
+      <AppFooter
+        pagina={pagina}
+        onNavigeer={setPagina}
         teams={teams}
         teamIdx={teamIdx}
         onVorig={gaVorig}
         onVolgend={gaVolgend}
-        onKiesTeam={(idx) => naarTeam(idx)}
-        onToelichting={() => setPagina("toelichting")}
-        onTcOproep={() => {}}
-        onVragen={() => {}}
+        onKiesTeam={naarTeam}
       />
 
-      {/* Zoekoverlay */}
       {zoekOpen && (
         <ZoekOverlay
           teams={teams}
           onSluit={() => setZoekOpen(false)}
           onKiesTeam={(idx) => {
             naarTeam(idx);
+            setPagina("indeling");
             setZoekOpen(false);
           }}
         />
       )}
-    </div>
+    </>
   );
 }
