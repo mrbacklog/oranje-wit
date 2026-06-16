@@ -156,7 +156,6 @@ export function ToelichtingPagina({
         <div style={{ maxWidth: 680, margin: "0 auto" }}>
           {/* Logo + seizoen */}
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={LOGO_URL}
               alt="c.k.v. Oranje Wit 100 jaar"

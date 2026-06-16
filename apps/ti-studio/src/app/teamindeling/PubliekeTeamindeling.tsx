@@ -1,4 +1,3 @@
-/* eslint-disable max-lines -- Publieke teamindeling UI combineert meerdere nauw verwante sub-componenten */
 "use client";
 
 import "./publieke-teamindeling.css";
@@ -63,7 +62,6 @@ export function PubliekeTeamindeling({ data }: { data: PubliekeTeamindelingData 
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pagina, teamIdx, teams.length, zoekOpen]);
 
   // Swipe
