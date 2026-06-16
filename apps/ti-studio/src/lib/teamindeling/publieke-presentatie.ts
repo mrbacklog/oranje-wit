@@ -333,7 +333,10 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
     }
   }
 
-  kaarten.sort((a, b) => a.volgorde - b.volgorde);
+  kaarten.sort((a, b) => {
+    if (a.volgorde !== b.volgorde) return a.volgorde - b.volgorde;
+    return a.naam.localeCompare(b.naam, "nl", { numeric: true, sensitivity: "base" });
+  });
 
   const gevuldeKaarten = kaarten.filter((k) => {
     if (k.soort === "team") return k.dames.length > 0 || k.heren.length > 0;
