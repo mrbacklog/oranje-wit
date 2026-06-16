@@ -71,22 +71,7 @@ export type PubliekeTeamindelingData = {
   teams: PubliekTeam[];
 };
 
-// ── Kennismakingstraining lookup (statisch, afgeleid van kennismakingstraining-config.json) ──
-
-const KENNISMAKINGSTRAININGEN: Record<string, { datumLabel: string; tijd: string; veld: string }> =
-  {
-    "U19 Selectie": { datumLabel: "Di 24 juni", tijd: "18:30–21:00", veld: "Veld 1" },
-    "U17 Selectie": { datumLabel: "Di 24 juni", tijd: "19:45–21:00", veld: "Veld 2" },
-    "U15 Selectie": { datumLabel: "Di 24 juni", tijd: "18:30–19:45", veld: "Veld 2" },
-    "Rood-1": { datumLabel: "Wo 25 juni", tijd: "19:30–20:45", veld: "Veld 1" },
-    "Rood-2": { datumLabel: "Wo 25 juni", tijd: "19:30–20:45", veld: "Veld 1" },
-    "Oranje-1": { datumLabel: "Wo 25 juni", tijd: "19:30–20:45", veld: "Veld 2" },
-    "Oranje-2": { datumLabel: "Wo 25 juni", tijd: "19:30–20:45", veld: "Veld 2" },
-    "Oranje-3": { datumLabel: "Wo 25 juni", tijd: "18:15–19:30", veld: "Veld 1" },
-    "Geel-1": { datumLabel: "Wo 25 juni", tijd: "18:15–19:30", veld: "Veld 1" },
-    "Geel-2": { datumLabel: "Wo 25 juni", tijd: "18:15–19:30", veld: "Veld 2" },
-    "Geel-3": { datumLabel: "Wo 25 juni", tijd: "18:15–19:30", veld: "Veld 2" },
-  };
+// ── Helpers ──────────────────────────────────────────────────────────────────
 
 function normaliseerNaam(naam: string): string {
   return naam
@@ -95,29 +80,14 @@ function normaliseerNaam(naam: string): string {
     .trim();
 }
 
-function opzoekKennismakingstraining(teamnaam: string): KennismakingItem | null {
-  // Directe match eerst
-  if (KENNISMAKINGSTRAININGEN[teamnaam]) {
-    return {
-      teamnaam,
-      datum: KENNISMAKINGSTRAININGEN[teamnaam].datumLabel,
-      tijd: KENNISMAKINGSTRAININGEN[teamnaam].tijd,
-      locatie: KENNISMAKINGSTRAININGEN[teamnaam].veld,
-    };
+/** Bouw een genormaliseerde lookup-map uit de DB-kennismakingData. */
+function bouwKennismakingLookup(items: KennismakingItem[]): Map<string, KennismakingItem> {
+  const map = new Map<string, KennismakingItem>();
+  for (const item of items) {
+    map.set(normaliseerNaam(item.teamnaam), item);
   }
-  // Genormaliseerde match (spaties vs koppeltekens, hoofdletters)
-  const genorm = normaliseerNaam(teamnaam);
-  const match = Object.entries(KENNISMAKINGSTRAININGEN).find(
-    ([k]) => normaliseerNaam(k) === genorm
-  );
-  if (!match) {
-    logger.warn("publieke-presentatie: geen kennismakingstraining gevonden", { teamnaam, genorm });
-    return null;
-  }
-  return { teamnaam, datum: match[1].datumLabel, tijd: match[1].tijd, locatie: match[1].veld };
+  return map;
 }
-
-// ── Helpers ──────────────────────────────────────────────────────────────────
 
 function bouwSpeler(r: {
   roepnaam: string;
@@ -197,6 +167,10 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
 
   if (!versie) return { toelichting: mapToelichting(publicatie, seizoen), teams: [] };
 
+  // Kennismakingstraining lookup uit DB — TC beheert namen, geen hardcoding
+  const dbKennismaking = mapToelichting(publicatie, seizoen).kennismakingstrainingen;
+  const kennismakingLookup = bouwKennismakingLookup(dbKennismaking);
+
   type VersieTeam = (typeof versie.teams)[number];
 
   // Bepaal welke teamIds bij een selectiegroep horen (nooit als losse kaart tonen)
@@ -245,7 +219,7 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
         rol: ts.rol ?? "",
         rolLabel: ts.rolLabel ?? null,
       })),
-      kennismakingstraining: opzoekKennismakingstraining(team.naam),
+      kennismakingstraining: kennismakingLookup.get(normaliseerNaam(team.naam)) ?? null,
     });
   }
 
@@ -296,7 +270,7 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
         subteams: [],
         uitkomstTeams: groepTeams.map((t) => t.naam),
         staf,
-        kennismakingstraining: opzoekKennismakingstraining(groepNaam),
+        kennismakingstraining: kennismakingLookup.get(normaliseerNaam(groepNaam)) ?? null,
       });
     } else {
       const alleDames: PubliekeSpeler[] = [];
@@ -354,7 +328,7 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
         subteams,
         uitkomstTeams: [],
         staf,
-        kennismakingstraining: opzoekKennismakingstraining(groepNaam),
+        kennismakingstraining: kennismakingLookup.get(normaliseerNaam(groepNaam)) ?? null,
       });
     }
   }
