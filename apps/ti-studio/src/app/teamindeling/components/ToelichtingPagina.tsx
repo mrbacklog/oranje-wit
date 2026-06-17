@@ -197,7 +197,7 @@ export function ToelichtingPagina({
         className="pt-toel-hero"
         style={{
           background: "#FF6600",
-          padding: "22px 20px 44px",
+          padding: "16px 24px 44px",
           clipPath: "polygon(0 0, 100% 0, 100% 80%, 0 100%)",
           position: "sticky",
           top: 0,
@@ -237,23 +237,6 @@ export function ToelichtingPagina({
               objectFit: "contain",
             }}
           />
-
-          {/* Seizoenrij */}
-          <div style={{ display: "flex", alignItems: "center", marginBottom: 8 }}>
-            {toelichting && (
-              <span
-                style={{
-                  fontSize: 10,
-                  fontWeight: 800,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.1em",
-                  color: "rgba(255,255,255,0.65)",
-                }}
-              >
-                {toelichting.seizoenLabel}
-              </span>
-            )}
-          </div>
 
           {/* Titel */}
           <h1

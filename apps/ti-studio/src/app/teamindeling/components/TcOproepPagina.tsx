@@ -17,7 +17,7 @@ export function TcOproepPagina({
       <div
         style={{
           background: "#FF6600",
-          padding: "22px 20px 44px",
+          padding: "16px 24px 44px",
           clipPath: "polygon(0 0, 100% 0, 100% 80%, 0 100%)",
           position: "sticky",
           top: 0,

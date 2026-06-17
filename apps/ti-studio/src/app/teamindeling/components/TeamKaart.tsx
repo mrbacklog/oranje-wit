@@ -330,7 +330,7 @@ export function TeamKaart({
         className="pt-hero-pad"
         style={{
           background: "#FF6600",
-          padding: "10px 20px 44px",
+          padding: "16px 24px 44px",
           clipPath: "polygon(0 0, 100% 0, 100% 80%, 0 100%)",
           position: "sticky",
           top: 0,
@@ -347,69 +347,53 @@ export function TeamKaart({
             pointerEvents: "none",
           }}
         />
-        {/* Seizoenlabel + actieknoppen */}
+        {/* Badge + zoekknop op één rij */}
         <div
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            marginBottom: 8,
+            marginBottom: 6,
             position: "relative",
             zIndex: 2,
           }}
         >
-          <span
-            style={{
-              fontSize: 10,
-              fontWeight: 700,
-              color: "rgba(255,255,255,0.65)",
-              textTransform: "uppercase",
-              letterSpacing: "0.08em",
-            }}
-          >
-            {seizoenLabel ?? ""}
-          </span>
-          <div style={{ display: "flex", gap: 6 }}>
-            <button
-              onClick={onZoek}
+          {isSelectie ? (
+            <span
               style={{
-                background: "rgba(255,255,255,0.15)",
-                border: "1px solid rgba(255,255,255,0.25)",
-                borderRadius: 4,
-                padding: "6px 10px",
+                background: "rgba(255,255,255,0.25)",
                 color: "#fff",
-                cursor: "pointer",
-                lineHeight: 1,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                fontSize: 9,
+                fontWeight: 800,
+                textTransform: "uppercase",
+                letterSpacing: "0.14em",
+                padding: "3px 9px",
+                borderRadius: 3,
               }}
             >
-              <Search size={16} />
-            </button>
-          </div>
-        </div>
-        {/* Badge */}
-        {isSelectie ? (
-          <span
+              Selectie
+            </span>
+          ) : (
+            <span />
+          )}
+          <button
+            onClick={onZoek}
             style={{
-              display: "inline-block",
-              background: "rgba(255,255,255,0.25)",
+              background: "rgba(255,255,255,0.15)",
+              border: "1px solid rgba(255,255,255,0.25)",
+              borderRadius: 4,
+              padding: "6px 10px",
               color: "#fff",
-              fontSize: 9,
-              fontWeight: 800,
-              textTransform: "uppercase",
-              letterSpacing: "0.14em",
-              padding: "3px 9px",
-              borderRadius: 3,
-              marginBottom: 6,
-              position: "relative",
-              zIndex: 2,
+              cursor: "pointer",
+              lineHeight: 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
-            Selectie
-          </span>
-        ) : null}
+            <Search size={16} />
+          </button>
+        </div>
         {/* Teamnaam */}
         <h2
           className="pt-hero-naam"
