@@ -77,7 +77,7 @@ export function PubliekeTeamindeling({ data }: { data: PubliekeTeamindelingData 
         return (
           <div
             className="pt-root"
-            style={{ minHeight: "100vh", background: "#080808" }}
+            style={{ minHeight: "100dvh", background: "#080808" }}
             onTouchStart={onTouchStart}
             onTouchEnd={onTouchEnd}
           >
