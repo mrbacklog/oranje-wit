@@ -1,6 +1,10 @@
 import { prisma } from "@/lib/teamindeling/db/prisma";
 import { getActiefSeizoen } from "@oranje-wit/teamindeling-shared/seizoen";
 import { logger } from "@oranje-wit/types";
+import type { TekstBlok } from "@/app/(protected)/presentatie/preseason-pdf-data";
+import { DEFAULT_BLOKKEN } from "@/app/(protected)/presentatie/preseason-pdf-data";
+
+export type { TekstBlok };
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -53,15 +57,11 @@ export type PubliekTeam = {
 export type PubliekeToelichtingData = {
   titel: string;
   seizoenLabel: string;
-  introTekst: string;
-  waaromTekst: string;
-  werkwijzeTekst: string;
-  competitieTekst: string;
-  tcTekst: string;
-  kennismakingTekst: string;
-  contactTekst: string;
-  kangoeroesTekst: string;
-  bedankTekst: string;
+  toelichtingBlokken: TekstBlok[];
+  kalenderBlokken: TekstBlok[];
+  kennismakingBlokken: TekstBlok[];
+  tcOproepBlokken: TekstBlok[];
+  vragenBlokken: TekstBlok[];
   belangrijkeData: BelangrijkeDatumItem[];
   kennismakingstrainingen: KennismakingItem[];
 };
@@ -121,15 +121,11 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
       select: {
         titel: true,
         seizoenLabel: true,
-        introTekst: true,
-        waaromTekst: true,
-        werkwijzeTekst: true,
-        competitieTekst: true,
-        tcTekst: true,
-        kennismakingTekst: true,
-        contactTekst: true,
-        kangoeroesTekst: true,
-        bedankTekst: true,
+        toelichtingBlokken: true,
+        kalenderBlokken: true,
+        kennismakingBlokken: true,
+        tcOproepBlokken: true,
+        vragenBlokken: true,
         belangrijkeData: true,
         kennismakingData: true,
       },
@@ -378,19 +374,29 @@ function normaliseerKennismakingData(value: unknown): KennismakingItem[] {
   );
 }
 
+function normaliseerBlokken(value: unknown, defaults: TekstBlok[]): TekstBlok[] {
+  if (!Array.isArray(value) || value.length === 0) return defaults;
+  const blokken = value
+    .map((item) => {
+      if (!item || typeof item !== "object") return null;
+      const r = item as Record<string, unknown>;
+      if (typeof r.id !== "string" || typeof r.subtitle !== "string" || typeof r.tekst !== "string")
+        return null;
+      return { id: r.id, subtitle: r.subtitle, tekst: r.tekst };
+    })
+    .filter(Boolean) as TekstBlok[];
+  return blokken.length > 0 ? blokken : defaults;
+}
+
 function mapToelichting(
   p: {
     titel: string;
     seizoenLabel: string;
-    introTekst: string;
-    waaromTekst: string;
-    werkwijzeTekst: string;
-    competitieTekst: string;
-    tcTekst: string;
-    kennismakingTekst: string;
-    contactTekst: string;
-    kangoeroesTekst: string;
-    bedankTekst: string;
+    toelichtingBlokken?: unknown;
+    kalenderBlokken?: unknown;
+    kennismakingBlokken?: unknown;
+    tcOproepBlokken?: unknown;
+    vragenBlokken?: unknown;
     belangrijkeData?: unknown;
     kennismakingData?: unknown;
   } | null,
@@ -399,15 +405,17 @@ function mapToelichting(
   return {
     titel: p?.titel ?? "Voorlopige Teamindeling 2026-2027",
     seizoenLabel: p?.seizoenLabel ?? seizoen ?? "2026-2027",
-    introTekst: p?.introTekst ?? DEFAULT_INTRO_TEKST,
-    waaromTekst: p?.waaromTekst ?? "",
-    werkwijzeTekst: p?.werkwijzeTekst ?? "",
-    competitieTekst: p?.competitieTekst ?? "",
-    tcTekst: p?.tcTekst ?? DEFAULT_TC_TEKST,
-    kennismakingTekst: p?.kennismakingTekst ?? "",
-    contactTekst: p?.contactTekst ?? "",
-    kangoeroesTekst: p?.kangoeroesTekst ?? "",
-    bedankTekst: p?.bedankTekst ?? "",
+    toelichtingBlokken: normaliseerBlokken(
+      p?.toelichtingBlokken,
+      DEFAULT_BLOKKEN.toelichtingBlokken
+    ),
+    kalenderBlokken: normaliseerBlokken(p?.kalenderBlokken, DEFAULT_BLOKKEN.kalenderBlokken),
+    kennismakingBlokken: normaliseerBlokken(
+      p?.kennismakingBlokken,
+      DEFAULT_BLOKKEN.kennismakingBlokken
+    ),
+    tcOproepBlokken: normaliseerBlokken(p?.tcOproepBlokken, DEFAULT_BLOKKEN.tcOproepBlokken),
+    vragenBlokken: normaliseerBlokken(p?.vragenBlokken, DEFAULT_BLOKKEN.vragenBlokken),
     belangrijkeData: normaliseerBelangrijkeData(p?.belangrijkeData),
     kennismakingstrainingen: normaliseerKennismakingData(p?.kennismakingData),
   };

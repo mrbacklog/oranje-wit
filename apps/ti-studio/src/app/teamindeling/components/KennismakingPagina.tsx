@@ -1,15 +1,17 @@
 "use client";
 
 import Image from "next/image";
-import type { KennismakingItem } from "@/lib/teamindeling/publieke-presentatie";
+import type { KennismakingItem, TekstBlok } from "@/lib/teamindeling/publieke-presentatie";
 
 const LOGO_URL = "https://ckvoranjewit.nl/wp-content/uploads/2025/12/OW-100-logo-lexvg.webp";
 
 export function KennismakingPagina({
   kennismakingstrainingen,
+  kennismakingBlokken,
   seizoenLabel,
 }: {
   kennismakingstrainingen: KennismakingItem[];
+  kennismakingBlokken: TekstBlok[];
   seizoenLabel?: string;
 }) {
   return (
@@ -101,19 +103,48 @@ export function KennismakingPagina({
 
       {/* Body */}
       <div style={{ maxWidth: 720, margin: "0 auto", padding: "28px 24px" }}>
-        <div
-          style={{
-            background: "rgba(255,102,0,0.06)",
-            border: "1px solid rgba(255,102,0,0.2)",
-            borderRadius: 6,
-            padding: "8px 12px",
-            fontSize: 13,
-            color: "rgba(255,255,255,0.55)",
-            marginBottom: 20,
-          }}
-        >
-          Alle nieuwe leden zijn welkom bij de kennismakingstraining van hun team.
-        </div>
+        {/* Intro blokken */}
+        {kennismakingBlokken.map((blok) => (
+          <div key={blok.id} style={{ marginBottom: 20 }}>
+            {blok.subtitle && (
+              <h3
+                style={{
+                  margin: "0 0 8px",
+                  fontSize: 15,
+                  fontWeight: 700,
+                  color: "#fff",
+                }}
+              >
+                {blok.subtitle}
+              </h3>
+            )}
+            <div
+              style={{
+                fontSize: 15,
+                lineHeight: 1.75,
+                color: "rgba(255,255,255,0.75)",
+              }}
+              /* Inhoud uit TC-beheerd admin-formulier — geen externe gebruikersinvoer */
+              dangerouslySetInnerHTML={{ __html: blok.tekst }}
+            />
+          </div>
+        ))}
+
+        {kennismakingBlokken.length === 0 && (
+          <div
+            style={{
+              background: "rgba(255,102,0,0.06)",
+              border: "1px solid rgba(255,102,0,0.2)",
+              borderRadius: 6,
+              padding: "8px 12px",
+              fontSize: 13,
+              color: "rgba(255,255,255,0.55)",
+              marginBottom: 20,
+            }}
+          >
+            Alle nieuwe leden zijn welkom bij de kennismakingstraining van hun team.
+          </div>
+        )}
 
         {kennismakingstrainingen.length === 0 ? (
           <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 14 }}>

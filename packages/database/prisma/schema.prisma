@@ -764,6 +764,11 @@ model TeamindelingPublicatie {
   sectieVolgorde     Json?
   belangrijkeData    Json?    // BelangrijkeDatumItem[]
   kennismakingData   Json?    // KennismakingItem[]
+  toelichtingBlokken  Json   @default("[]")
+  kalenderBlokken     Json   @default("[]")
+  kennismakingBlokken Json   @default("[]")
+  tcOproepBlokken     Json   @default("[]")
+  vragenBlokken       Json   @default("[]")
 
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt

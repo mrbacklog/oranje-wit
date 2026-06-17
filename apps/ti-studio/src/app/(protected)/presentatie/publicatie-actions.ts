@@ -10,11 +10,13 @@ import { getWerkindelingVoorEditor } from "../indeling/werkindeling-actions";
 import {
   DEFAULT_PUBLICATIE_SECTIES,
   DEFAULT_PUBLICATIE_TEKSTEN,
+  DEFAULT_BLOKKEN,
   maakDefaultPublicatieInstellingen,
   type PublicatieInstellingen,
   type PublicatieSectieConfig,
   type BelangrijkeDatumItem,
   type KennismakingItem,
+  type TekstBlok,
 } from "./preseason-pdf-data";
 
 function normaliseerBelangrijkeData(value: unknown): BelangrijkeDatumItem[] {
@@ -49,6 +51,20 @@ function normaliseerKennismakingData(value: unknown): KennismakingItem[] {
   return items;
 }
 
+function normaliseerBlokken(value: unknown, defaults: TekstBlok[]): TekstBlok[] {
+  if (!Array.isArray(value) || value.length === 0) return defaults;
+  const blokken = value
+    .map((item) => {
+      if (!item || typeof item !== "object") return null;
+      const r = item as Record<string, unknown>;
+      if (typeof r.id !== "string" || typeof r.subtitle !== "string" || typeof r.tekst !== "string")
+        return null;
+      return { id: r.id, subtitle: r.subtitle, tekst: r.tekst };
+    })
+    .filter(Boolean) as TekstBlok[];
+  return blokken.length > 0 ? blokken : defaults;
+}
+
 function normaliseerSecties(value: unknown): PublicatieSectieConfig[] {
   if (!Array.isArray(value)) return DEFAULT_PUBLICATIE_SECTIES;
   const secties = value
@@ -78,6 +94,17 @@ function publicatieUitDb(row: any, kadersId: string, seizoen: string): Publicati
     contactTekst: row.contactTekst ?? DEFAULT_PUBLICATIE_TEKSTEN.contactTekst,
     kangoeroesTekst: row.kangoeroesTekst ?? DEFAULT_PUBLICATIE_TEKSTEN.kangoeroesTekst,
     bedankTekst: row.bedankTekst ?? DEFAULT_PUBLICATIE_TEKSTEN.bedankTekst,
+    toelichtingBlokken: normaliseerBlokken(
+      row.toelichtingBlokken,
+      DEFAULT_BLOKKEN.toelichtingBlokken
+    ),
+    kalenderBlokken: normaliseerBlokken(row.kalenderBlokken, DEFAULT_BLOKKEN.kalenderBlokken),
+    kennismakingBlokken: normaliseerBlokken(
+      row.kennismakingBlokken,
+      DEFAULT_BLOKKEN.kennismakingBlokken
+    ),
+    tcOproepBlokken: normaliseerBlokken(row.tcOproepBlokken, DEFAULT_BLOKKEN.tcOproepBlokken),
+    vragenBlokken: normaliseerBlokken(row.vragenBlokken, DEFAULT_BLOKKEN.vragenBlokken),
     sectieVolgorde: normaliseerSecties(row.sectieVolgorde),
     belangrijkeData: normaliseerBelangrijkeData(row.belangrijkeData),
     kennismakingData: normaliseerKennismakingData(row.kennismakingData),
@@ -121,6 +148,11 @@ export async function getPublicatieInstellingen(): Promise<ActionResult<Publicat
         contactTekst: true,
         kangoeroesTekst: true,
         bedankTekst: true,
+        toelichtingBlokken: true,
+        kalenderBlokken: true,
+        kennismakingBlokken: true,
+        tcOproepBlokken: true,
+        vragenBlokken: true,
         sectieVolgorde: true,
         belangrijkeData: true,
         kennismakingData: true,
@@ -145,6 +177,11 @@ export async function getPublicatieInstellingen(): Promise<ActionResult<Publicat
           contactTekst: defaults.contactTekst,
           kangoeroesTekst: defaults.kangoeroesTekst,
           bedankTekst: defaults.bedankTekst,
+          toelichtingBlokken: defaults.toelichtingBlokken,
+          kalenderBlokken: defaults.kalenderBlokken,
+          kennismakingBlokken: defaults.kennismakingBlokken,
+          tcOproepBlokken: defaults.tcOproepBlokken,
+          vragenBlokken: defaults.vragenBlokken,
           sectieVolgorde: defaults.sectieVolgorde,
           belangrijkeData: defaults.belangrijkeData,
           kennismakingData: defaults.kennismakingData,
@@ -163,6 +200,11 @@ export async function getPublicatieInstellingen(): Promise<ActionResult<Publicat
           contactTekst: true,
           kangoeroesTekst: true,
           bedankTekst: true,
+          toelichtingBlokken: true,
+          kalenderBlokken: true,
+          kennismakingBlokken: true,
+          tcOproepBlokken: true,
+          vragenBlokken: true,
           sectieVolgorde: true,
           belangrijkeData: true,
           kennismakingData: true,
@@ -211,6 +253,17 @@ export async function savePublicatieInstellingen(
       contactTekst: schoonTekst(input.contactTekst) || defaults.contactTekst,
       kangoeroesTekst: schoonTekst(input.kangoeroesTekst) || defaults.kangoeroesTekst,
       bedankTekst: schoonTekst(input.bedankTekst) || defaults.bedankTekst,
+      toelichtingBlokken: normaliseerBlokken(
+        input.toelichtingBlokken,
+        DEFAULT_BLOKKEN.toelichtingBlokken
+      ),
+      kalenderBlokken: normaliseerBlokken(input.kalenderBlokken, DEFAULT_BLOKKEN.kalenderBlokken),
+      kennismakingBlokken: normaliseerBlokken(
+        input.kennismakingBlokken,
+        DEFAULT_BLOKKEN.kennismakingBlokken
+      ),
+      tcOproepBlokken: normaliseerBlokken(input.tcOproepBlokken, DEFAULT_BLOKKEN.tcOproepBlokken),
+      vragenBlokken: normaliseerBlokken(input.vragenBlokken, DEFAULT_BLOKKEN.vragenBlokken),
       sectieVolgorde: normaliseerSecties(input.sectieVolgorde),
       belangrijkeData: normaliseerBelangrijkeData(input.belangrijkeData),
       kennismakingData: normaliseerKennismakingData(input.kennismakingData),

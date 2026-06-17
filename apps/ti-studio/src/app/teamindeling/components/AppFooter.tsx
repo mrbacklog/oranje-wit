@@ -3,7 +3,13 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { PubliekTeam } from "@/lib/teamindeling/publieke-presentatie";
 
-export type AppPagina = "toelichting" | "indeling" | "kennismaking" | "tcoproep" | "vragen";
+export type AppPagina =
+  | "toelichting"
+  | "indeling"
+  | "kennismaking"
+  | "kalender"
+  | "tcoproep"
+  | "vragen";
 
 export const MAX_WIDTH = 720;
 
@@ -11,6 +17,7 @@ const TABS: { id: AppPagina; icon: string; label: string }[] = [
   { id: "toelichting", icon: "📋", label: "Toelichting" },
   { id: "indeling", icon: "🏅", label: "Indeling" },
   { id: "kennismaking", icon: "🏐", label: "Kennismaking" },
+  { id: "kalender", icon: "📅", label: "Kalender" },
   { id: "tcoproep", icon: "📣", label: "TC Oproep" },
   { id: "vragen", icon: "❓", label: "Vragen" },
 ];

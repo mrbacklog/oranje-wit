@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import type { PubliekeTeamindelingData } from "@/lib/teamindeling/publieke-presentatie";
 import { AppFooter } from "./components/AppFooter";
 import type { AppPagina } from "./components/AppFooter";
+import { KalenderPagina } from "./components/KalenderPagina";
 import { KennismakingPagina } from "./components/KennismakingPagina";
 import { TeamKaart } from "./components/TeamKaart";
 import { TcOproepPagina } from "./components/TcOproepPagina";
@@ -99,20 +100,29 @@ export function PubliekeTeamindeling({ data }: { data: PubliekeTeamindelingData 
         return (
           <KennismakingPagina
             kennismakingstrainingen={toelichting?.kennismakingstrainingen ?? []}
+            kennismakingBlokken={toelichting?.kennismakingBlokken ?? []}
+            seizoenLabel={toelichting?.seizoenLabel}
+          />
+        );
+      case "kalender":
+        return (
+          <KalenderPagina
+            kalenderBlokken={toelichting?.kalenderBlokken ?? []}
+            belangrijkeData={toelichting?.belangrijkeData ?? []}
             seizoenLabel={toelichting?.seizoenLabel}
           />
         );
       case "tcoproep":
         return (
           <TcOproepPagina
-            tcTekst={toelichting?.tcTekst ?? ""}
+            tcOproepBlokken={toelichting?.tcOproepBlokken ?? []}
             seizoenLabel={toelichting?.seizoenLabel}
           />
         );
       case "vragen":
         return (
           <VragenPagina
-            contactTekst={toelichting?.contactTekst ?? ""}
+            vragenBlokken={toelichting?.vragenBlokken ?? []}
             seizoenLabel={toelichting?.seizoenLabel}
           />
         );

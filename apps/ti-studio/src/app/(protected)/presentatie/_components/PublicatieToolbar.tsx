@@ -7,25 +7,12 @@ import type {
   PublicatieInstellingen,
   BelangrijkeDatumItem,
   KennismakingItem,
+  TekstBlok,
 } from "../preseason-pdf-data";
 
 interface PublicatieToolbarProps {
   instellingen: PublicatieInstellingen;
 }
-
-const TEKST_VELDEN: { key: keyof PublicatieInstellingen; label: string; rows: number }[] = [
-  { key: "titel", label: "Titel", rows: 1 },
-  { key: "seizoenLabel", label: "Seizoen", rows: 1 },
-  { key: "introTekst", label: "Intro", rows: 3 },
-  { key: "waaromTekst", label: "Waarom pre-season", rows: 3 },
-  { key: "werkwijzeTekst", label: "Werkwijze", rows: 4 },
-  { key: "competitieTekst", label: "Competitie", rows: 3 },
-  { key: "tcTekst", label: "TC en begeleiding", rows: 3 },
-  { key: "kennismakingTekst", label: "Kennismaking", rows: 3 },
-  { key: "contactTekst", label: "Contact", rows: 3 },
-  { key: "kangoeroesTekst", label: "Kangoeroes", rows: 3 },
-  { key: "bedankTekst", label: "Bedankt", rows: 3 },
-];
 
 const INPUT_STIJL = {
   background: "rgba(255,255,255,0.05)",
@@ -46,6 +33,109 @@ const VERWIJDER_STIJL = {
   padding: "0 4px",
 } as const;
 
+const SECTIE_KOP_STIJL = {
+  color: "rgba(255,165,0,0.8)",
+  fontWeight: 700,
+  fontSize: 12,
+  textTransform: "uppercase" as const,
+  letterSpacing: "0.1em",
+  margin: "16px 0 8px",
+  borderBottom: "1px solid rgba(255,255,255,0.07)",
+  paddingBottom: 4,
+};
+
+function BlokkenEditor({
+  label,
+  blokken,
+  onChange,
+}: {
+  label: string;
+  blokken: TekstBlok[];
+  onChange: (blokken: TekstBlok[]) => void;
+}) {
+  function updateBlok(id: string, field: "subtitle" | "tekst", value: string) {
+    onChange(blokken.map((b) => (b.id === id ? { ...b, [field]: value } : b)));
+  }
+
+  function verwijderBlok(id: string) {
+    onChange(blokken.filter((b) => b.id !== id));
+  }
+
+  function voegBlokToe() {
+    onChange([...blokken, { id: Date.now().toString(), subtitle: "", tekst: "" }]);
+  }
+
+  return (
+    <div>
+      <div style={SECTIE_KOP_STIJL}>{label}</div>
+      {blokken.map((blok, index) => (
+        <div
+          key={blok.id}
+          style={{
+            background: "rgba(255,255,255,0.03)",
+            border: "1px solid rgba(255,255,255,0.08)",
+            borderRadius: 8,
+            padding: "12px 14px",
+            marginBottom: 10,
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: 8,
+            }}
+          >
+            <span style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", fontWeight: 600 }}>
+              Blok {index + 1}
+            </span>
+            <button
+              type="button"
+              onClick={() => verwijderBlok(blok.id)}
+              style={VERWIJDER_STIJL}
+              aria-label="Verwijder blok"
+            >
+              ×
+            </button>
+          </div>
+          <label style={{ display: "flex", flexDirection: "column", gap: 4, marginBottom: 8 }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: "var(--text-3)" }}>Subtitel</span>
+            <input
+              type="text"
+              value={blok.subtitle}
+              onChange={(e) => updateBlok(blok.id, "subtitle", e.target.value)}
+              style={{ ...INPUT_STIJL, width: "100%" }}
+            />
+          </label>
+          <label style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: "var(--text-3)" }}>Tekst</span>
+            <textarea
+              value={blok.tekst}
+              rows={4}
+              onChange={(e) => updateBlok(blok.id, "tekst", e.target.value)}
+              style={{
+                ...INPUT_STIJL,
+                width: "100%",
+                resize: "vertical",
+                lineHeight: 1.45,
+                padding: "6px 8px",
+              }}
+            />
+          </label>
+        </div>
+      ))}
+      <button
+        type="button"
+        onClick={voegBlokToe}
+        style={{ ...knopStijl("secondary"), fontSize: 12, minHeight: 28 }}
+      >
+        + Blok toevoegen
+      </button>
+    </div>
+  );
+}
+
 export function PublicatieToolbar({ instellingen }: PublicatieToolbarProps) {
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState(instellingen);
@@ -53,6 +143,15 @@ export function PublicatieToolbar({ instellingen }: PublicatieToolbarProps) {
     instellingen.belangrijkeData
   );
   const [kennisData, setKennisData] = useState<KennismakingItem[]>(instellingen.kennismakingData);
+  const [toelichtingBlokken, setToelichtingBlokken] = useState<TekstBlok[]>(
+    instellingen.toelichtingBlokken
+  );
+  const [kalenderBlokken, setKalenderBlokken] = useState<TekstBlok[]>(instellingen.kalenderBlokken);
+  const [kennismakingBlokken, setKennismakingBlokken] = useState<TekstBlok[]>(
+    instellingen.kennismakingBlokken
+  );
+  const [tcOproepBlokken, setTcOproepBlokken] = useState<TekstBlok[]>(instellingen.tcOproepBlokken);
+  const [vragenBlokken, setVragenBlokken] = useState<TekstBlok[]>(instellingen.vragenBlokken);
   const [melding, setMelding] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
@@ -65,6 +164,12 @@ export function PublicatieToolbar({ instellingen }: PublicatieToolbarProps) {
     startTransition(async () => {
       const result = await savePublicatieInstellingen({
         ...form,
+        toelichtingBlokken,
+        kalenderBlokken,
+        kennismakingBlokken,
+        tcOproepBlokken,
+        vragenBlokken,
+        sectieVolgorde: form.sectieVolgorde,
         belangrijkeData: belangData,
         kennismakingData: kennisData,
       });
@@ -75,6 +180,11 @@ export function PublicatieToolbar({ instellingen }: PublicatieToolbarProps) {
       setForm(result.data);
       setBelangData(result.data.belangrijkeData);
       setKennisData(result.data.kennismakingData);
+      setToelichtingBlokken(result.data.toelichtingBlokken);
+      setKalenderBlokken(result.data.kalenderBlokken);
+      setKennismakingBlokken(result.data.kennismakingBlokken);
+      setTcOproepBlokken(result.data.tcOproepBlokken);
+      setVragenBlokken(result.data.vragenBlokken);
       setMelding("Opgeslagen");
     });
   }
@@ -95,7 +205,7 @@ export function PublicatieToolbar({ instellingen }: PublicatieToolbarProps) {
       >
         <div style={{ minWidth: 0 }}>
           <div style={{ fontSize: 13, color: "var(--text-2)", fontWeight: 700 }}>
-            Pre-season PDF
+            Presentatieteksten
           </div>
           <div
             style={{
@@ -112,7 +222,7 @@ export function PublicatieToolbar({ instellingen }: PublicatieToolbarProps) {
         <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
           <button type="button" onClick={() => setOpen(true)} style={knopStijl("secondary")}>
             <FileText size={15} />
-            PDF-teksten
+            Presentatieteksten
           </button>
           <a href="/api/presentatie/preseason-pdf" style={knopStijl("primary")}>
             <Download size={15} />
@@ -125,7 +235,7 @@ export function PublicatieToolbar({ instellingen }: PublicatieToolbarProps) {
         <div
           role="dialog"
           aria-modal="true"
-          aria-label="PDF-teksten bewerken"
+          aria-label="Presentatieteksten bewerken"
           style={{
             position: "fixed",
             inset: 0,
@@ -150,6 +260,7 @@ export function PublicatieToolbar({ instellingen }: PublicatieToolbarProps) {
               overflow: "hidden",
             }}
           >
+            {/* Header */}
             <div
               style={{
                 display: "flex",
@@ -161,7 +272,7 @@ export function PublicatieToolbar({ instellingen }: PublicatieToolbarProps) {
             >
               <div>
                 <div style={{ fontSize: 16, fontWeight: 800, color: "var(--text-1)" }}>
-                  PDF-teksten
+                  Presentatieteksten
                 </div>
                 <div style={{ fontSize: 12, color: "var(--text-3)", marginTop: 2 }}>
                   Deze teksten komen in de pre-season publicatie.
@@ -172,66 +283,80 @@ export function PublicatieToolbar({ instellingen }: PublicatieToolbarProps) {
               </button>
             </div>
 
+            {/* Body */}
             <div
-              style={{
-                overflow: "auto",
-                padding: 18,
-                display: "flex",
-                flexDirection: "column",
-                gap: 20,
-              }}
+              style={{ overflow: "auto", padding: 18, display: "flex", flexDirection: "column" }}
             >
-              {/* Tekstvelden */}
+              {/* Sectie: Algemeen */}
+              <div style={SECTIE_KOP_STIJL}>Algemeen</div>
               <div
                 style={{
                   display: "grid",
                   gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
                   gap: 14,
+                  marginBottom: 8,
                 }}
               >
-                {TEKST_VELDEN.map((veld) => (
-                  <label
-                    key={veld.key}
+                <label style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: "var(--text-2)" }}>
+                    Titel
+                  </span>
+                  <input
+                    type="text"
+                    value={form.titel}
+                    onChange={(e) => updateVeld("titel", e.target.value)}
                     style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: 6,
-                      gridColumn: veld.rows > 1 ? "span 2" : undefined,
+                      ...INPUT_STIJL,
+                      width: "100%",
+                      minHeight: 36,
+                      borderRadius: 10,
+                      border: "1px solid var(--border-0)",
+                      background: "var(--bg-0)",
+                      color: "var(--text-1)",
+                      padding: "8px 12px",
                     }}
-                  >
-                    <span style={{ fontSize: 12, fontWeight: 700, color: "var(--text-2)" }}>
-                      {veld.label}
-                    </span>
-                    <textarea
-                      value={String(form[veld.key] ?? "")}
-                      rows={veld.rows}
-                      onChange={(event) => updateVeld(veld.key, event.target.value)}
-                      style={{
-                        resize: "vertical",
-                        minHeight: veld.rows === 1 ? 40 : undefined,
-                        borderRadius: 10,
-                        border: "1px solid var(--border-0)",
-                        background: "var(--bg-0)",
-                        color: "var(--text-1)",
-                        padding: "10px 12px",
-                        fontSize: 13,
-                        lineHeight: 1.45,
-                        outline: "none",
-                      }}
-                    />
-                  </label>
-                ))}
+                  />
+                </label>
+                <label style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: "var(--text-2)" }}>
+                    Seizoen
+                  </span>
+                  <input
+                    type="text"
+                    value={form.seizoenLabel}
+                    onChange={(e) => updateVeld("seizoenLabel", e.target.value)}
+                    style={{
+                      ...INPUT_STIJL,
+                      width: "100%",
+                      minHeight: 36,
+                      borderRadius: 10,
+                      border: "1px solid var(--border-0)",
+                      background: "var(--bg-0)",
+                      color: "var(--text-1)",
+                      padding: "8px 12px",
+                    }}
+                  />
+                </label>
               </div>
 
-              {/* Startdata & planning */}
-              <div>
+              {/* Sectie: Toelichting */}
+              <BlokkenEditor
+                label="Toelichting"
+                blokken={toelichtingBlokken}
+                onChange={setToelichtingBlokken}
+              />
+
+              {/* Sectie: Kalender */}
+              <BlokkenEditor
+                label="Kalender"
+                blokken={kalenderBlokken}
+                onChange={setKalenderBlokken}
+              />
+
+              {/* Startdata & planning tabel — onder Kalender */}
+              <div style={{ marginTop: 12 }}>
                 <div
-                  style={{
-                    fontSize: 13,
-                    fontWeight: 700,
-                    color: "var(--text-2)",
-                    marginBottom: 10,
-                  }}
+                  style={{ fontSize: 12, fontWeight: 700, color: "var(--text-3)", marginBottom: 8 }}
                 >
                   Startdata &amp; planning
                 </div>
@@ -308,26 +433,23 @@ export function PublicatieToolbar({ instellingen }: PublicatieToolbarProps) {
                 <button
                   type="button"
                   onClick={() => setBelangData([...belangData, { datum: "", omschrijving: "" }])}
-                  style={{
-                    ...knopStijl("secondary"),
-                    fontSize: 12,
-                    minHeight: 28,
-                    marginTop: 4,
-                  }}
+                  style={{ ...knopStijl("secondary"), fontSize: 12, minHeight: 28, marginTop: 4 }}
                 >
                   + Datum toevoegen
                 </button>
               </div>
 
-              {/* Kennismakingstrainingen */}
-              <div>
+              {/* Sectie: Kennismaking */}
+              <BlokkenEditor
+                label="Kennismaking"
+                blokken={kennismakingBlokken}
+                onChange={setKennismakingBlokken}
+              />
+
+              {/* Kennismakingstrainingen tabel — onder Kennismaking */}
+              <div style={{ marginTop: 12 }}>
                 <div
-                  style={{
-                    fontSize: 13,
-                    fontWeight: 700,
-                    color: "var(--text-2)",
-                    marginBottom: 10,
-                  }}
+                  style={{ fontSize: 12, fontWeight: 700, color: "var(--text-3)", marginBottom: 8 }}
                 >
                   Kennismakingstrainingen
                 </div>
@@ -390,18 +512,24 @@ export function PublicatieToolbar({ instellingen }: PublicatieToolbarProps) {
                       { teamnaam: "", datum: "", tijd: "", locatie: "" },
                     ])
                   }
-                  style={{
-                    ...knopStijl("secondary"),
-                    fontSize: 12,
-                    minHeight: 28,
-                    marginTop: 4,
-                  }}
+                  style={{ ...knopStijl("secondary"), fontSize: 12, minHeight: 28, marginTop: 4 }}
                 >
                   + Training toevoegen
                 </button>
               </div>
+
+              {/* Sectie: TC Oproep */}
+              <BlokkenEditor
+                label="TC Oproep"
+                blokken={tcOproepBlokken}
+                onChange={setTcOproepBlokken}
+              />
+
+              {/* Sectie: Vragen */}
+              <BlokkenEditor label="Vragen" blokken={vragenBlokken} onChange={setVragenBlokken} />
             </div>
 
+            {/* Footer */}
             <div
               style={{
                 display: "flex",

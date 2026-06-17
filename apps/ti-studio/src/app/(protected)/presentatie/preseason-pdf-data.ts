@@ -6,6 +6,12 @@ import type {
 
 export type { BelangrijkeDatumItem, KennismakingItem };
 
+export type TekstBlok = {
+  id: string;
+  subtitle: string;
+  tekst: string;
+};
+
 export interface PublicatieInstellingen {
   id: string | null;
   kadersId: string;
@@ -20,6 +26,11 @@ export interface PublicatieInstellingen {
   contactTekst: string;
   kangoeroesTekst: string;
   bedankTekst: string;
+  toelichtingBlokken: TekstBlok[];
+  kalenderBlokken: TekstBlok[];
+  kennismakingBlokken: TekstBlok[];
+  tcOproepBlokken: TekstBlok[];
+  vragenBlokken: TekstBlok[];
   sectieVolgorde: PublicatieSectieConfig[];
   belangrijkeData: BelangrijkeDatumItem[];
   kennismakingData: KennismakingItem[];
@@ -203,6 +214,43 @@ export const DEFAULT_PUBLICATIE_TEKSTEN = {
   ],
 } as const;
 
+export const DEFAULT_BLOKKEN = {
+  toelichtingBlokken: [
+    {
+      id: "toel-1",
+      subtitle: "Beste leden, ouders en betrokkenen",
+      tekst: DEFAULT_PUBLICATIE_TEKSTEN.introTekst,
+    },
+    {
+      id: "toel-2",
+      subtitle: "Waarom een pre-season indeling?",
+      tekst: DEFAULT_PUBLICATIE_TEKSTEN.waaromTekst,
+    },
+    {
+      id: "toel-3",
+      subtitle: "Hoe zijn de teams samengesteld?",
+      tekst: DEFAULT_PUBLICATIE_TEKSTEN.werkwijzeTekst,
+    },
+    {
+      id: "toel-4",
+      subtitle: "Competitiestructuur KNKV",
+      tekst: DEFAULT_PUBLICATIE_TEKSTEN.competitieTekst,
+    },
+    { id: "toel-5", subtitle: "Bedankt!", tekst: DEFAULT_PUBLICATIE_TEKSTEN.bedankTekst },
+  ] as TekstBlok[],
+  kalenderBlokken: [] as TekstBlok[],
+  kennismakingBlokken: [
+    { id: "ken-1", subtitle: "", tekst: DEFAULT_PUBLICATIE_TEKSTEN.kennismakingTekst },
+  ] as TekstBlok[],
+  tcOproepBlokken: [
+    { id: "tc-1", subtitle: "TC en begeleiding", tekst: DEFAULT_PUBLICATIE_TEKSTEN.tcTekst },
+  ] as TekstBlok[],
+  vragenBlokken: [
+    { id: "vr-1", subtitle: "Contact", tekst: DEFAULT_PUBLICATIE_TEKSTEN.contactTekst },
+    { id: "vr-2", subtitle: "Kangoeroes", tekst: DEFAULT_PUBLICATIE_TEKSTEN.kangoeroesTekst },
+  ] as TekstBlok[],
+};
+
 export function maakDefaultPublicatieInstellingen(
   kadersId: string,
   seizoenLabel: string
@@ -213,6 +261,7 @@ export function maakDefaultPublicatieInstellingen(
     seizoenLabel,
     sectieVolgorde: DEFAULT_PUBLICATIE_SECTIES,
     ...DEFAULT_PUBLICATIE_TEKSTEN,
+    ...DEFAULT_BLOKKEN,
     belangrijkeData: [...DEFAULT_PUBLICATIE_TEKSTEN.belangrijkeData],
     kennismakingData: [...DEFAULT_PUBLICATIE_TEKSTEN.kennismakingData],
   };

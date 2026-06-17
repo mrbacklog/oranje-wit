@@ -1,154 +1,12 @@
 // apps/ti-studio/src/app/teamindeling/components/ToelichtingPagina.tsx
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
-import type {
-  PubliekeTeamindelingData,
-  BelangrijkeDatumItem,
-} from "@/lib/teamindeling/publieke-presentatie";
+import type { PubliekeTeamindelingData } from "@/lib/teamindeling/publieke-presentatie";
 
 const LOGO_URL = "https://ckvoranjewit.nl/wp-content/uploads/2025/12/OW-100-logo-lexvg.webp";
 
 const ORANJE = "#FF6600";
-
-const pillBtnStyle: React.CSSProperties = {
-  display: "inline-flex",
-  alignItems: "center",
-  gap: 6,
-  background: "rgba(255,102,0,0.08)",
-  border: `1px solid rgba(255,102,0,0.25)`,
-  borderRadius: 20,
-  padding: "7px 14px",
-  fontSize: 12,
-  fontWeight: 700,
-  color: ORANJE,
-  cursor: "pointer",
-  letterSpacing: "0.03em",
-};
-
-// --- Modal ---
-function InfoModal({
-  open,
-  onSluit,
-  children,
-}: {
-  open: boolean;
-  onSluit: () => void;
-  children: React.ReactNode;
-}) {
-  if (!open) return null;
-  return (
-    <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 200,
-        display: "flex",
-        alignItems: "flex-end",
-        justifyContent: "center",
-        background: "rgba(0,0,0,0.65)",
-        backdropFilter: "blur(6px)",
-        WebkitBackdropFilter: "blur(6px)",
-      }}
-      onClick={onSluit}
-    >
-      <div
-        style={{
-          background: "#111",
-          borderRadius: "16px 16px 0 0",
-          padding: "24px 22px 36px",
-          width: "100%",
-          maxWidth: 540,
-          maxHeight: "80vh",
-          overflowY: "auto",
-          position: "relative",
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <button
-          onClick={onSluit}
-          style={{
-            position: "absolute",
-            top: 14,
-            right: 16,
-            background: "rgba(255,255,255,0.08)",
-            border: "none",
-            borderRadius: 20,
-            color: "rgba(255,255,255,0.5)",
-            fontSize: 14,
-            fontWeight: 700,
-            cursor: "pointer",
-            padding: "4px 10px",
-          }}
-        >
-          ✕
-        </button>
-        {children}
-      </div>
-    </div>
-  );
-}
-
-// --- Startdata modal inhoud ---
-function StartdataInhoud({ items }: { items: BelangrijkeDatumItem[] }) {
-  return (
-    <>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
-        <span style={{ fontSize: 20 }}>📅</span>
-        <h3
-          style={{
-            margin: 0,
-            fontSize: 18,
-            fontWeight: 900,
-            fontStyle: "italic",
-            textTransform: "uppercase",
-            color: "#fff",
-            letterSpacing: "-0.01em",
-          }}
-        >
-          Startdata &amp; Planning
-        </h3>
-      </div>
-      {items.length === 0 ? (
-        <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 14 }}>Nog geen data beschikbaar.</p>
-      ) : (
-        <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
-          {items.map((item, i) => (
-            <li
-              key={i}
-              style={{
-                display: "flex",
-                gap: 12,
-                alignItems: "flex-start",
-                padding: "10px 0",
-                borderBottom: i < items.length - 1 ? "1px solid rgba(255,255,255,0.07)" : "none",
-              }}
-            >
-              <span
-                style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: "50%",
-                  background: ORANJE,
-                  flexShrink: 0,
-                  marginTop: 5,
-                  boxShadow: `0 0 6px rgba(255,102,0,0.5)`,
-                }}
-              />
-              <div>
-                <span style={{ fontWeight: 700, color: "#fff", fontSize: 14 }}>{item.datum}</span>
-                <span style={{ fontSize: 13, color: "rgba(255,255,255,0.55)", marginLeft: 10 }}>
-                  {item.omschrijving}
-                </span>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
-    </>
-  );
-}
 
 // --- Sectie kop ---
 function SectieKop({ label, titel }: { label: string; titel: string }) {
@@ -186,9 +44,7 @@ export function ToelichtingPagina({
 }: {
   toelichting: PubliekeTeamindelingData["toelichting"];
 }) {
-  const [openModal, setOpenModal] = useState<null | "startdata">(null);
-
-  const belangrijkeData = toelichting?.belangrijkeData ?? [];
+  const blokken = toelichting?.toelichtingBlokken ?? [];
 
   return (
     <div style={{ minHeight: "100vh", background: "#0f0f0f" }}>
@@ -298,30 +154,6 @@ export function ToelichtingPagina({
       >
         {toelichting ? (
           <>
-            {/* Voorwoord */}
-            <div style={{ marginBottom: 24 }}>
-              <SectieKop label="Voorwoord" titel="Beste leden, ouders en betrokkenen" />
-              <div
-                className="pt-toel-tekst"
-                style={{
-                  fontSize: 15,
-                  lineHeight: 1.75,
-                  color: "rgba(255,255,255,0.75)",
-                  marginTop: 12,
-                }}
-                /* Inhoud uit TC-beheerd admin-formulier — geen externe gebruikersinvoer */
-                dangerouslySetInnerHTML={{ __html: toelichting.introTekst }}
-              />
-            </div>
-
-            <hr
-              style={{
-                border: "none",
-                borderTop: "1px solid rgba(255,255,255,0.07)",
-                margin: "24px 0",
-              }}
-            />
-
             {/* Voorlopige teamindeling banner */}
             <div
               style={{
@@ -339,106 +171,34 @@ export function ToelichtingPagina({
               definitieve indeling volgt voor aanvang van het seizoen.
             </div>
 
-            {/* TC tekst */}
-            <div style={{ marginBottom: 24 }}>
-              <SectieKop label="Totstandkoming" titel="Hoe zijn de teams samengesteld?" />
-              <div
-                className="pt-toel-tekst"
-                style={{
-                  fontSize: 15,
-                  lineHeight: 1.75,
-                  color: "rgba(255,255,255,0.75)",
-                  marginTop: 12,
-                }}
-                /* Inhoud uit TC-beheerd admin-formulier — geen externe gebruikersinvoer */
-                dangerouslySetInnerHTML={{ __html: toelichting.tcTekst }}
-              />
-            </div>
-
-            <hr
-              style={{
-                border: "none",
-                borderTop: "1px solid rgba(255,255,255,0.07)",
-                margin: "24px 0",
-              }}
-            />
-
-            {/* Startdata inline blok */}
-            {belangrijkeData.length > 0 && (
-              <div style={{ marginBottom: 24 }}>
+            {/* Toelichting blokken */}
+            {blokken.map((blok, i) => (
+              <div key={blok.id} style={{ marginBottom: 24 }}>
+                {blok.subtitle && (
+                  <SectieKop label={i === 0 ? "Voorwoord" : "Toelichting"} titel={blok.subtitle} />
+                )}
                 <div
+                  className="pt-toel-tekst"
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    marginBottom: 12,
+                    fontSize: 15,
+                    lineHeight: 1.75,
+                    color: "rgba(255,255,255,0.75)",
+                    marginTop: blok.subtitle ? 12 : 0,
                   }}
-                >
-                  <SectieKop label="Planning" titel="Startdata &amp; belangrijke data" />
-                  <button
-                    style={{ ...pillBtnStyle, fontSize: 11 }}
-                    onClick={() => setOpenModal("startdata")}
-                  >
-                    📅 Bekijk alles
-                  </button>
-                </div>
-                <div
-                  style={{
-                    background: "rgba(255,255,255,0.03)",
-                    border: "1px solid rgba(255,255,255,0.07)",
-                    borderRadius: 12,
-                    padding: "14px 16px",
-                  }}
-                >
-                  <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
-                    {belangrijkeData.slice(0, 3).map((item, i) => (
-                      <li
-                        key={i}
-                        style={{
-                          display: "flex",
-                          gap: 10,
-                          alignItems: "flex-start",
-                          padding: "8px 0",
-                          borderBottom:
-                            i < Math.min(belangrijkeData.length, 3) - 1
-                              ? "1px solid rgba(255,255,255,0.07)"
-                              : "none",
-                        }}
-                      >
-                        <span
-                          style={{
-                            width: 8,
-                            height: 8,
-                            borderRadius: "50%",
-                            background: ORANJE,
-                            flexShrink: 0,
-                            marginTop: 5,
-                          }}
-                        />
-                        <div>
-                          <span style={{ fontWeight: 700, color: "#fff", fontSize: 14 }}>
-                            {item.datum}
-                          </span>
-                          <span
-                            style={{ fontSize: 14, color: "rgba(255,255,255,0.55)", marginLeft: 8 }}
-                          >
-                            {item.omschrijving}
-                          </span>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                {belangrijkeData.length > 3 && (
-                  <button
-                    style={{ ...pillBtnStyle, marginTop: 10, fontSize: 11 }}
-                    onClick={() => setOpenModal("startdata")}
-                  >
-                    +{belangrijkeData.length - 3} meer data →
-                  </button>
+                  /* Inhoud uit TC-beheerd admin-formulier — geen externe gebruikersinvoer */
+                  dangerouslySetInnerHTML={{ __html: blok.tekst }}
+                />
+                {i < blokken.length - 1 && (
+                  <hr
+                    style={{
+                      border: "none",
+                      borderTop: "1px solid rgba(255,255,255,0.07)",
+                      margin: "24px 0 0",
+                    }}
+                  />
                 )}
               </div>
-            )}
+            ))}
 
             {/* TC ondertekening */}
             <hr
@@ -469,11 +229,6 @@ export function ToelichtingPagina({
           </p>
         )}
       </div>
-
-      {/* Modal */}
-      <InfoModal open={openModal === "startdata"} onSluit={() => setOpenModal(null)}>
-        <StartdataInhoud items={belangrijkeData} />
-      </InfoModal>
     </div>
   );
 }
