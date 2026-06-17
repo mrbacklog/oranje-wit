@@ -9,25 +9,27 @@ const LOGO_URL = "https://ckvoranjewit.nl/wp-content/uploads/2025/12/OW-100-logo
 const ORANJE = "#FF6600";
 
 // --- Sectie kop ---
-function SectieKop({ label, titel }: { label: string; titel: string }) {
+function SectieKop({ label, titel }: { label?: string; titel: string }) {
   return (
     <div style={{ marginBottom: 10 }}>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 6,
-          fontSize: 9,
-          fontWeight: 800,
-          textTransform: "uppercase",
-          letterSpacing: "0.14em",
-          color: ORANJE,
-          marginBottom: 5,
-        }}
-      >
-        <span style={{ display: "inline-block", width: 12, height: 2, background: ORANJE }} />
-        {label}
-      </div>
+      {label && (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            fontSize: 9,
+            fontWeight: 800,
+            textTransform: "uppercase",
+            letterSpacing: "0.14em",
+            color: ORANJE,
+            marginBottom: 5,
+          }}
+        >
+          <span style={{ display: "inline-block", width: 12, height: 2, background: ORANJE }} />
+          {label}
+        </div>
+      )}
       <h2
         className="pt-sectie-titel"
         style={{ margin: 0, fontSize: 20, fontWeight: 800, color: "#fff", lineHeight: 1.1 }}
@@ -174,7 +176,7 @@ export function ToelichtingPagina({
             {blokken.map((blok, i) => (
               <div key={blok.id} style={{ marginBottom: 24 }}>
                 {blok.subtitle && (
-                  <SectieKop label={blok.label ?? "Toelichting"} titel={blok.subtitle} />
+                  <SectieKop label={blok.label || undefined} titel={blok.subtitle} />
                 )}
                 <div
                   className="pt-toel-tekst"
