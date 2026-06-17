@@ -130,7 +130,7 @@ export function PubliekeTeamindeling({ data }: { data: PubliekeTeamindelingData 
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", minHeight: "100dvh" }}>
+    <div style={{ display: "flex", flexDirection: "column", height: "100dvh" }}>
       <main style={{ flex: 1, overflowY: "auto" }}>{renderPagina()}</main>
 
       <AppFooter
