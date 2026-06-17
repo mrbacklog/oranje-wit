@@ -13,7 +13,7 @@ export function VragenPagina({
   seizoenLabel?: string;
 }) {
   return (
-    <div style={{ minHeight: "100vh", background: "#0f0f0f", paddingBottom: 120 }}>
+    <div style={{ minHeight: "100vh", background: "#0f0f0f" }}>
       {/* Hero */}
       <div
         style={{

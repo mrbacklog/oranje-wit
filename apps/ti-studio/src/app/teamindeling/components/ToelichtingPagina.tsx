@@ -147,7 +147,6 @@ export function ToelichtingPagina({
           maxWidth: 680,
           margin: "0 auto",
           padding: "28px 24px",
-          paddingBottom: 120,
           position: "relative",
           zIndex: 1,
         }}

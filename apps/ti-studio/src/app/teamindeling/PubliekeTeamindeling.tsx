@@ -77,7 +77,7 @@ export function PubliekeTeamindeling({ data }: { data: PubliekeTeamindelingData 
         return (
           <div
             className="pt-root"
-            style={{ minHeight: "100vh", background: "#080808", paddingBottom: 90 }}
+            style={{ minHeight: "100vh", background: "#080808" }}
             onTouchStart={onTouchStart}
             onTouchEnd={onTouchEnd}
           >
@@ -130,8 +130,8 @@ export function PubliekeTeamindeling({ data }: { data: PubliekeTeamindelingData 
   }
 
   return (
-    <>
-      {renderPagina()}
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100dvh" }}>
+      <main style={{ flex: 1, overflowY: "auto" }}>{renderPagina()}</main>
 
       <AppFooter
         pagina={pagina}
@@ -154,6 +154,6 @@ export function PubliekeTeamindeling({ data }: { data: PubliekeTeamindelingData 
           }}
         />
       )}
-    </>
+    </div>
   );
 }

@@ -135,11 +135,6 @@ export function AppFooter({
   return (
     <div
       style={{
-        position: "fixed",
-        bottom: 0,
-        left: 0,
-        right: 0,
-        zIndex: 50,
         background: "#080808",
         borderTop: "1px solid rgba(255,102,0,0.25)",
       }}
