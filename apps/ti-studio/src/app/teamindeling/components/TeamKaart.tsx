@@ -325,16 +325,17 @@ export function TeamKaart({
         marginBottom: 80,
       }}
     >
-      {/* Oranje diagonale hero — sticky */}
+      {/* Oranje diagonale hero — sticky, vol-breed */}
       <div
         className="pt-hero-pad"
         style={{
           background: "#FF6600",
-          padding: "16px 24px 44px",
+          padding: "16px 0 44px",
           clipPath: "polygon(0 0, 100% 0, 100% 80%, 0 100%)",
           position: "sticky",
           top: 0,
           zIndex: 30,
+          overflow: "hidden",
         }}
       >
         {/* Shimmer overlay */}
@@ -347,105 +348,92 @@ export function TeamKaart({
             pointerEvents: "none",
           }}
         />
-        {/* Badge + zoekknop op één rij */}
+        {/* Inhoud gecentreerd op max 720px */}
         <div
           style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            marginBottom: 6,
+            maxWidth: 720,
+            margin: "0 auto",
+            padding: "0 24px",
             position: "relative",
             zIndex: 2,
           }}
         >
-          {isSelectie ? (
-            <span
-              style={{
-                background: "rgba(255,255,255,0.25)",
-                color: "#fff",
-                fontSize: 9,
-                fontWeight: 800,
-                textTransform: "uppercase",
-                letterSpacing: "0.14em",
-                padding: "3px 9px",
-                borderRadius: 3,
-              }}
-            >
-              Selectie
-            </span>
-          ) : (
-            <span />
-          )}
-          <button
-            onClick={onZoek}
+          {/* Badge + zoekknop op één rij */}
+          <div
             style={{
-              background: "rgba(255,255,255,0.15)",
-              border: "1px solid rgba(255,255,255,0.25)",
-              borderRadius: 4,
-              padding: "6px 10px",
-              color: "#fff",
-              cursor: "pointer",
-              lineHeight: 1,
               display: "flex",
               alignItems: "center",
-              justifyContent: "center",
+              justifyContent: "space-between",
+              marginBottom: 6,
             }}
           >
-            <Search size={16} />
-          </button>
-        </div>
-        {/* Teamnaam */}
-        <h2
-          className="pt-hero-naam"
-          style={{
-            margin: 0,
-            fontSize: 30,
-            fontWeight: 900,
-            fontStyle: "italic",
-            textTransform: "uppercase",
-            color: "#fff",
-            lineHeight: 0.95,
-            letterSpacing: "-0.02em",
-            position: "relative",
-            zIndex: 2,
-          }}
-        >
-          {team.naam}
-        </h2>
-        {/* Meta */}
-        <div
-          style={{
-            display: "flex",
-            gap: 8,
-            alignItems: "center",
-            marginTop: 7,
-            position: "relative",
-            zIndex: 2,
-          }}
-        >
-          {team.dames.length > 0 && (
-            <span style={{ fontSize: 11, color: "rgba(255,255,255,0.7)", fontWeight: 600 }}>
-              {team.dames.length} dames
-            </span>
-          )}
-          {team.dames.length > 0 && team.heren.length > 0 && (
-            <span
+            {isSelectie ? (
+              <span
+                style={{
+                  background: "rgba(255,255,255,0.25)",
+                  color: "#fff",
+                  fontSize: 9,
+                  fontWeight: 800,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.14em",
+                  padding: "3px 9px",
+                  borderRadius: 3,
+                }}
+              >
+                Selectie
+              </span>
+            ) : (
+              <span />
+            )}
+            <button
+              onClick={onZoek}
               style={{
-                width: 3,
-                height: 3,
-                borderRadius: "50%",
-                background: "rgba(255,255,255,0.4)",
-                display: "inline-block",
+                background: "rgba(255,255,255,0.15)",
+                border: "1px solid rgba(255,255,255,0.25)",
+                borderRadius: 4,
+                padding: "6px 10px",
+                color: "#fff",
+                cursor: "pointer",
+                lineHeight: 1,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
               }}
-            />
-          )}
-          {team.heren.length > 0 && (
-            <span style={{ fontSize: 11, color: "rgba(255,255,255,0.7)", fontWeight: 600 }}>
-              {team.heren.length} heren
-            </span>
-          )}
-          {isSelectie && team.uitkomstTeams.length > 0 && (
-            <>
+            >
+              <Search size={16} />
+            </button>
+          </div>
+          {/* Teamnaam */}
+          <h2
+            className="pt-hero-naam"
+            style={{
+              margin: 0,
+              fontSize: 30,
+              fontWeight: 900,
+              fontStyle: "italic",
+              textTransform: "uppercase",
+              color: "#fff",
+              lineHeight: 0.95,
+              letterSpacing: "-0.02em",
+            }}
+          >
+            {team.naam}
+          </h2>
+          {/* Meta */}
+          <div
+            style={{
+              display: "flex",
+              gap: 8,
+              alignItems: "center",
+              marginTop: 7,
+            }}
+          >
+            {team.dames.length > 0 && (
+              <span style={{ fontSize: 11, color: "rgba(255,255,255,0.7)", fontWeight: 600 }}>
+                {team.dames.length} dames
+              </span>
+            )}
+            {team.dames.length > 0 && team.heren.length > 0 && (
               <span
                 style={{
                   width: 3,
@@ -455,16 +443,37 @@ export function TeamKaart({
                   display: "inline-block",
                 }}
               />
+            )}
+            {team.heren.length > 0 && (
               <span style={{ fontSize: 11, color: "rgba(255,255,255,0.7)", fontWeight: 600 }}>
-                → {team.uitkomstTeams.join(", ")}
+                {team.heren.length} heren
               </span>
-            </>
-          )}
+            )}
+            {isSelectie && team.uitkomstTeams.length > 0 && (
+              <>
+                <span
+                  style={{
+                    width: 3,
+                    height: 3,
+                    borderRadius: "50%",
+                    background: "rgba(255,255,255,0.4)",
+                    display: "inline-block",
+                  }}
+                />
+                <span style={{ fontSize: 11, color: "rgba(255,255,255,0.7)", fontWeight: 600 }}>
+                  → {team.uitkomstTeams.join(", ")}
+                </span>
+              </>
+            )}
+          </div>
         </div>
       </div>
 
       {/* Body */}
-      <div className="pt-body-pad" style={{ padding: "18px 20px" }}>
+      <div
+        className="pt-body-pad"
+        style={{ maxWidth: 720, margin: "0 auto", padding: "18px 24px" }}
+      >
         {/* Normaal team of gebundelde selectie */}
         {(team.soort === "team" || (team.soort === "selectie" && team.gebundeld)) && (
           <>

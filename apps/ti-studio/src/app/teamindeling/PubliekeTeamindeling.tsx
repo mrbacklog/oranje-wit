@@ -80,21 +80,19 @@ export function PubliekeTeamindeling({ data }: { data: PubliekeTeamindelingData 
             onTouchStart={onTouchStart}
             onTouchEnd={onTouchEnd}
           >
-            <div style={{ maxWidth: 720, margin: "0 auto", paddingTop: 12 }}>
-              {huidigTeam ? (
-                <TeamKaart
-                  key={teamIdx}
-                  team={huidigTeam}
-                  animKlasse="pt-team-in"
-                  onZoek={() => setZoekOpen(true)}
-                  seizoenLabel={toelichting?.seizoenLabel ?? null}
-                />
-              ) : (
-                <div style={{ textAlign: "center", padding: 60, color: "rgba(255,255,255,0.3)" }}>
-                  Geen teams beschikbaar
-                </div>
-              )}
-            </div>
+            {huidigTeam ? (
+              <TeamKaart
+                key={teamIdx}
+                team={huidigTeam}
+                animKlasse="pt-team-in"
+                onZoek={() => setZoekOpen(true)}
+                seizoenLabel={toelichting?.seizoenLabel ?? null}
+              />
+            ) : (
+              <div style={{ textAlign: "center", padding: 60, color: "rgba(255,255,255,0.3)" }}>
+                Geen teams beschikbaar
+              </div>
+            )}
           </div>
         );
       case "kennismaking":
