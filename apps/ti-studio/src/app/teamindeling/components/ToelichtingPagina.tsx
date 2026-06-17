@@ -173,7 +173,9 @@ export function ToelichtingPagina({
             {/* Toelichting blokken */}
             {blokken.map((blok, i) => (
               <div key={blok.id} style={{ marginBottom: 24 }}>
-                {blok.subtitle && <SectieKop label="Toelichting" titel={blok.subtitle} />}
+                {blok.subtitle && (
+                  <SectieKop label={blok.label ?? "Toelichting"} titel={blok.subtitle} />
+                )}
                 <div
                   className="pt-toel-tekst"
                   style={{

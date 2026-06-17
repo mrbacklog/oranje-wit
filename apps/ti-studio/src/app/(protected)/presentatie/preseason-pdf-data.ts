@@ -8,6 +8,7 @@ export type { BelangrijkeDatumItem, KennismakingItem };
 
 export type TekstBlok = {
   id: string;
+  label?: string;
   subtitle: string;
   tekst: string;
 };

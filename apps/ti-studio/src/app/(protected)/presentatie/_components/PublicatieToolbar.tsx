@@ -53,7 +53,7 @@ function BlokkenEditor({
   blokken: TekstBlok[];
   onChange: (blokken: TekstBlok[]) => void;
 }) {
-  function updateBlok(id: string, field: "subtitle" | "tekst", value: string) {
+  function updateBlok(id: string, field: "label" | "subtitle" | "tekst", value: string) {
     onChange(blokken.map((b) => (b.id === id ? { ...b, [field]: value } : b)));
   }
 
@@ -99,6 +99,16 @@ function BlokkenEditor({
               ×
             </button>
           </div>
+          <label style={{ display: "flex", flexDirection: "column", gap: 4, marginBottom: 8 }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: "var(--text-3)" }}>Label</span>
+            <input
+              type="text"
+              value={blok.label ?? ""}
+              placeholder="Toelichting"
+              onChange={(e) => updateBlok(blok.id, "label", e.target.value)}
+              style={{ ...INPUT_STIJL, width: "100%" }}
+            />
+          </label>
           <label style={{ display: "flex", flexDirection: "column", gap: 4, marginBottom: 8 }}>
             <span style={{ fontSize: 11, fontWeight: 700, color: "var(--text-3)" }}>Subtitel</span>
             <input
