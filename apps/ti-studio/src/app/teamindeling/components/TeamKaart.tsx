@@ -32,27 +32,6 @@ function SpelerRij({ sp }: { sp: PubliekeSpeler }) {
         marginBottom: 3,
       }}
     >
-      <span
-        style={{
-          width: 28,
-          height: 28,
-          borderRadius: "50%",
-          background: isDame
-            ? "linear-gradient(135deg, rgba(147,197,253,0.2) 0%, rgba(147,197,253,0.06) 100%)"
-            : "linear-gradient(135deg, rgba(255,102,0,0.2) 0%, rgba(255,102,0,0.06) 100%)",
-          border: isDame ? "1px solid rgba(147,197,253,0.35)" : "1px solid rgba(255,102,0,0.3)",
-          color: isDame ? "rgba(147,197,253,0.85)" : "rgba(255,102,0,0.85)",
-          fontSize: 10,
-          fontWeight: 700,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexShrink: 0,
-          textTransform: "uppercase",
-        }}
-      >
-        {initialen(sp)}
-      </span>
       <span style={{ fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.88)" }}>
         {volleNaam(sp)}
       </span>
