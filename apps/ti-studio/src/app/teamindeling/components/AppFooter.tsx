@@ -1,6 +1,15 @@
 "use client";
 
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  Calendar,
+  ChevronLeft,
+  ChevronRight,
+  Handshake,
+  HelpCircle,
+  Info,
+  Megaphone,
+  Users,
+} from "lucide-react";
 import type { PubliekTeam } from "@/lib/teamindeling/publieke-presentatie";
 
 export type AppPagina =
@@ -13,13 +22,17 @@ export type AppPagina =
 
 export const MAX_WIDTH = 720;
 
-const TABS: { id: AppPagina; icon: string; label: string }[] = [
-  { id: "toelichting", icon: "📋", label: "Toelichting" },
-  { id: "indeling", icon: "🏅", label: "Indeling" },
-  { id: "kennismaking", icon: "🏐", label: "Kennismaking" },
-  { id: "kalender", icon: "📅", label: "Kalender" },
-  { id: "tcoproep", icon: "📣", label: "TC Oproep" },
-  { id: "vragen", icon: "❓", label: "Vragen" },
+const TABS: {
+  id: AppPagina;
+  Icon: React.ComponentType<{ size?: number; strokeWidth?: number; color?: string }>;
+  label: string;
+}[] = [
+  { id: "toelichting", Icon: Info, label: "Info" },
+  { id: "indeling", Icon: Users, label: "Teams" },
+  { id: "kennismaking", Icon: Handshake, label: "Kennismaking" },
+  { id: "kalender", Icon: Calendar, label: "Kalender" },
+  { id: "tcoproep", Icon: Megaphone, label: "Oproep" },
+  { id: "vragen", Icon: HelpCircle, label: "Vragen" },
 ];
 
 function Dot({
@@ -230,7 +243,7 @@ export function AppFooter({
             marginTop: toonNavRow ? 6 : 0,
           }}
         >
-          {TABS.map(({ id, icon, label }) => {
+          {TABS.map(({ id, Icon, label }) => {
             const isActief = pagina === id;
             return (
               <button
@@ -249,7 +262,11 @@ export function AppFooter({
                   padding: "6px 4px",
                 }}
               >
-                <span style={{ fontSize: 16, lineHeight: 1 }}>{icon}</span>
+                <Icon
+                  size={18}
+                  strokeWidth={1.5}
+                  color={isActief ? "#FF6600" : "rgba(255,255,255,0.35)"}
+                />
                 <span
                   style={{
                     fontSize: 9,
