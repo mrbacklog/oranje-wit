@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import type { TekstBlok } from "@/lib/teamindeling/publieke-presentatie";
+import { TekstBlokkenLijst } from "./TekstBlokkenLijst";
 
 const LOGO_URL = "https://ckvoranjewit.nl/wp-content/uploads/2025/12/OW-100-logo-lexvg.webp";
 
@@ -101,36 +102,10 @@ export function VragenPagina({
 
       {/* Body */}
       <div style={{ maxWidth: 720, margin: "0 auto", padding: "28px 24px" }}>
-        {vragenBlokken.map((blok) => (
-          <div key={blok.id} style={{ marginBottom: 24 }}>
-            {blok.subtitle && (
-              <h3
-                style={{
-                  margin: "0 0 8px",
-                  fontSize: 16,
-                  fontWeight: 700,
-                  color: "#fff",
-                }}
-              >
-                {blok.subtitle}
-              </h3>
-            )}
-            <div
-              style={{
-                fontSize: 15,
-                lineHeight: 1.75,
-                color: "rgba(255,255,255,0.75)",
-              }}
-              /* Inhoud uit TC-beheerd admin-formulier — geen externe gebruikersinvoer */
-              dangerouslySetInnerHTML={{ __html: blok.tekst }}
-            />
-          </div>
-        ))}
-        {vragenBlokken.length === 0 && (
-          <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 14 }}>
-            Nog geen veelgestelde vragen beschikbaar.
-          </p>
-        )}
+        <TekstBlokkenLijst
+          blokken={vragenBlokken}
+          leegLabel="Nog geen veelgestelde vragen beschikbaar."
+        />
       </div>
     </div>
   );

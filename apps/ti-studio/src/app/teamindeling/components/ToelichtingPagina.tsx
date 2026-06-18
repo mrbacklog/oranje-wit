@@ -4,44 +4,11 @@
 import Image from "next/image";
 import type { PubliekeTeamindelingData } from "@/lib/teamindeling/publieke-presentatie";
 import type { AppPagina } from "./AppFooter";
+import { SectieKop } from "./TekstBlokkenLijst";
 
 const LOGO_URL = "https://ckvoranjewit.nl/wp-content/uploads/2025/12/OW-100-logo-lexvg.webp";
 
 const ORANJE = "#FF6600";
-
-// --- Sectie kop ---
-function SectieKop({ label, titel }: { label?: string; titel?: string }) {
-  return (
-    <div style={{ marginBottom: 10 }}>
-      {label && (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-            fontSize: 9,
-            fontWeight: 800,
-            textTransform: "uppercase",
-            letterSpacing: "0.14em",
-            color: ORANJE,
-            marginBottom: 5,
-          }}
-        >
-          <span style={{ display: "inline-block", width: 12, height: 2, background: ORANJE }} />
-          {label}
-        </div>
-      )}
-      {titel && (
-        <h2
-          className="pt-sectie-titel"
-          style={{ margin: 0, fontSize: 20, fontWeight: 800, color: "#fff", lineHeight: 1.1 }}
-        >
-          {titel}
-        </h2>
-      )}
-    </div>
-  );
-}
 
 // --- Hoofd component ---
 const TAB_LINKS: Record<string, string> = {
@@ -203,7 +170,7 @@ export function ToelichtingPagina({
                     fontSize: 15,
                     lineHeight: 1.75,
                     color: "rgba(255,255,255,0.75)",
-                    marginTop: blok.subtitle ? 12 : 0,
+                    marginTop: blok.subtitle || blok.label ? 12 : 0,
                   }}
                   /* Inhoud uit TC-beheerd admin-formulier — geen externe gebruikersinvoer */
                   onClick={(e) => {
