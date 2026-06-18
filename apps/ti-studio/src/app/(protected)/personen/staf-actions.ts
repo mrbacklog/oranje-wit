@@ -420,6 +420,24 @@ export async function updateStafSortOrderInTeam(
   }
 }
 
+export async function updateSelectieStafSortOrder(
+  stafId: string,
+  selectieGroepId: string,
+  sortOrder: number
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  try {
+    await requireTC();
+    await prisma.selectieStaf.updateMany({
+      where: { stafId, selectieGroepId },
+      data: { sortOrder },
+    });
+    return { ok: true };
+  } catch (err) {
+    logger.warn("updateSelectieStafSortOrder mislukt:", err);
+    return { ok: false, error: "Kon volgorde niet bijwerken" };
+  }
+}
+
 export async function maakStafAan(data: {
   naam: string;
   rollen?: string[];

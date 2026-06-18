@@ -75,6 +75,8 @@ export interface WerkbordStafInTeam {
   rol: string;
   rolLabel?: string | null;
   sortOrder?: number;
+  doelType?: "team" | "selectie";
+  doelId?: string;
 }
 
 export interface WerkbordStafTeamrol {

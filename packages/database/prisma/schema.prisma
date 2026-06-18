@@ -906,6 +906,7 @@ model SelectieStaf {
 
   rol             String
   rolLabel        String?
+  sortOrder       Int     @default(0)
 
   @@unique([selectieGroepId, stafId])
   @@index([selectieGroepId])

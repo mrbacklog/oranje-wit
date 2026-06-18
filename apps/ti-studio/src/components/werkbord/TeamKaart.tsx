@@ -5,7 +5,10 @@ import { createPortal } from "react-dom";
 import "./tokens.css";
 import { TeamKaartSpelerRij, SPELER_RIJ_HOOGTE } from "./TeamKaartSpelerRij";
 import { toonRol } from "@/components/staf/staf-koppel-types";
-import { updateStafSortOrderInTeam } from "@/app/(protected)/personen/staf-actions";
+import {
+  updateStafSortOrderInTeam,
+  updateSelectieStafSortOrder,
+} from "@/app/(protected)/personen/staf-actions";
 import type {
   WerkbordTeam,
   WerkbordSpeler,
@@ -603,10 +606,13 @@ function StafFooterIcoon({
       });
     setStaf(bijgewerkt);
     startTransition(async () => {
-      await Promise.all([
-        updateStafSortOrderInTeam(item.stafId, teamId, swapIdx),
-        updateStafSortOrderInTeam(swap.stafId, teamId, idx),
-      ]);
+      function updateVolgorde(s: WerkbordStafInTeam, order: number) {
+        if (s.doelType === "selectie" && s.doelId) {
+          return updateSelectieStafSortOrder(s.stafId, s.doelId, order);
+        }
+        return updateStafSortOrderInTeam(s.stafId, s.doelId ?? teamId, order);
+      }
+      await Promise.all([updateVolgorde(item, swapIdx), updateVolgorde(swap, idx)]);
     });
   }
 

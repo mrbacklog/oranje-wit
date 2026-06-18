@@ -320,6 +320,8 @@ export default async function IndelingPage() {
           rol: ts.rol ?? "",
           rolLabel: ts.rolLabel ?? null,
           sortOrder: ts.sortOrder ?? 0,
+          doelType: "team" as const,
+          doelId: team.id,
         }))
         .sort((a, b) => {
           if (a.sortOrder !== b.sortOrder) return a.sortOrder - b.sortOrder;
@@ -420,6 +422,9 @@ export default async function IndelingPage() {
             stafId: ss.stafId,
             naam: ss.staf?.naam ?? "?",
             rol: ss.rol ?? "",
+            sortOrder: ss.sortOrder ?? 0,
+            doelType: "selectie" as const,
+            doelId: selectieGroep.id,
           }));
         teams[teamIdx] = {
           ...teams[teamIdx],
