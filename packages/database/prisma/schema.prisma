@@ -764,6 +764,8 @@ model TeamindelingPublicatie {
   sectieVolgorde     Json?
   belangrijkeData    Json?    // BelangrijkeDatumItem[]
   kennismakingData   Json?    // KennismakingItem[]
+  statusBanner        String?  @db.Text
+  tcOndertekening     String?  @db.Text
   toelichtingBlokken  Json   @default("[]")
   kalenderBlokken     Json   @default("[]")
   kennismakingBlokken Json   @default("[]")

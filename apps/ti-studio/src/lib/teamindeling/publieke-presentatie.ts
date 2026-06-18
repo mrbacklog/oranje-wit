@@ -57,6 +57,8 @@ export type PubliekTeam = {
 export type PubliekeToelichtingData = {
   titel: string;
   seizoenLabel: string;
+  statusBanner: string | null;
+  tcOndertekening: string | null;
   toelichtingBlokken: TekstBlok[];
   kalenderBlokken: TekstBlok[];
   kennismakingBlokken: TekstBlok[];
@@ -121,6 +123,8 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
       select: {
         titel: true,
         seizoenLabel: true,
+        statusBanner: true,
+        tcOndertekening: true,
         toelichtingBlokken: true,
         kalenderBlokken: true,
         kennismakingBlokken: true,
@@ -392,6 +396,8 @@ function mapToelichting(
   p: {
     titel: string;
     seizoenLabel: string;
+    statusBanner?: string | null;
+    tcOndertekening?: string | null;
     toelichtingBlokken?: unknown;
     kalenderBlokken?: unknown;
     kennismakingBlokken?: unknown;
@@ -405,6 +411,8 @@ function mapToelichting(
   return {
     titel: p?.titel ?? "Voorlopige Teamindeling 2026-2027",
     seizoenLabel: p?.seizoenLabel ?? seizoen ?? "2026-2027",
+    statusBanner: p?.statusBanner ?? null,
+    tcOndertekening: p?.tcOndertekening ?? null,
     toelichtingBlokken: normaliseerBlokken(
       p?.toelichtingBlokken,
       DEFAULT_BLOKKEN.toelichtingBlokken

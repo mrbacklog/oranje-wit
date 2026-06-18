@@ -167,22 +167,27 @@ export function ToelichtingPagina({
       >
         {toelichting ? (
           <>
-            {/* Voorlopige teamindeling banner */}
-            <div
-              style={{
-                background: "rgba(255,102,0,0.08)",
-                borderLeft: "3px solid #FF6600",
-                padding: "10px 14px",
-                marginBottom: 24,
-                fontSize: 13,
-                color: "rgba(255,255,255,0.55)",
-                lineHeight: 1.6,
-              }}
-            >
-              <strong style={{ color: "rgba(255,255,255,0.88)" }}>Voorlopige indeling</strong> —
-              Samenstelling kan nog wijzigen tijdens de voorbereiding en selectiedagen. De
-              definitieve indeling volgt voor aanvang van het seizoen.
-            </div>
+            {/* Statusbanner (configureerbaar in presentatieteksten) */}
+            {toelichting.statusBanner && (
+              <div
+                style={{
+                  background: "rgba(255,102,0,0.08)",
+                  borderLeft: "3px solid #FF6600",
+                  padding: "10px 14px",
+                  marginBottom: 24,
+                  fontSize: 13,
+                  color: "rgba(255,255,255,0.55)",
+                  lineHeight: 1.6,
+                }}
+                /* Inhoud uit TC-beheerd admin-formulier — geen externe gebruikersinvoer */
+                dangerouslySetInnerHTML={{
+                  __html: toelichting.statusBanner.replace(
+                    /\*\*(.+?)\*\*/g,
+                    '<strong style="color:rgba(255,255,255,0.88)">$1</strong>'
+                  ),
+                }}
+              />
+            )}
 
             {/* Toelichting blokken */}
             {blokken.map((blok, i) => (
@@ -222,28 +227,32 @@ export function ToelichtingPagina({
               </div>
             ))}
 
-            {/* TC ondertekening */}
-            <hr
-              style={{
-                border: "none",
-                borderTop: "1px solid rgba(255,255,255,0.07)",
-                margin: "24px 0",
-              }}
-            />
-            <div
-              style={{
-                borderLeft: "3px solid #FF6600",
-                paddingLeft: 14,
-                fontSize: 14,
-                color: "rgba(255,255,255,0.45)",
-                fontStyle: "italic",
-                lineHeight: 1.6,
-                marginBottom: 28,
-              }}
-            >
-              Wij wensen alle teams een fantastisch seizoen toe.
-              <br />— De Technische Commissie, c.k.v. Oranje Wit
-            </div>
+            {/* TC ondertekening (configureerbaar in presentatieteksten) */}
+            {toelichting.tcOndertekening && (
+              <>
+                <hr
+                  style={{
+                    border: "none",
+                    borderTop: "1px solid rgba(255,255,255,0.07)",
+                    margin: "24px 0",
+                  }}
+                />
+                <div
+                  style={{
+                    borderLeft: "3px solid #FF6600",
+                    paddingLeft: 14,
+                    fontSize: 14,
+                    color: "rgba(255,255,255,0.45)",
+                    fontStyle: "italic",
+                    lineHeight: 1.6,
+                    marginBottom: 28,
+                    whiteSpace: "pre-line",
+                  }}
+                >
+                  {toelichting.tcOndertekening}
+                </div>
+              </>
+            )}
           </>
         ) : (
           <p style={{ fontSize: 15, color: "rgba(255,255,255,0.3)", marginBottom: 28 }}>

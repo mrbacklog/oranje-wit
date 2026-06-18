@@ -18,6 +18,8 @@ export interface PublicatieInstellingen {
   kadersId: string;
   titel: string;
   seizoenLabel: string;
+  statusBanner: string | null;
+  tcOndertekening: string | null;
   introTekst: string;
   waaromTekst: string;
   werkwijzeTekst: string;
@@ -260,6 +262,10 @@ export function maakDefaultPublicatieInstellingen(
     id: null,
     kadersId,
     seizoenLabel,
+    statusBanner:
+      "**Voorlopige indeling** — Samenstelling kan nog wijzigen tijdens de voorbereiding en selectiedagen. De definitieve indeling volgt voor aanvang van het seizoen.",
+    tcOndertekening:
+      "Wij wensen alle teams een fantastisch seizoen toe.\n— De Technische Commissie, c.k.v. Oranje Wit",
     sectieVolgorde: DEFAULT_PUBLICATIE_SECTIES,
     ...DEFAULT_PUBLICATIE_TEKSTEN,
     ...DEFAULT_BLOKKEN,

@@ -349,9 +349,58 @@ export function PublicatieToolbar({ instellingen }: PublicatieToolbarProps) {
                 </label>
               </div>
 
-              {/* Sectie: Toelichting */}
+              {/* Sectie: Toelichting — statusbanner en TC-ondertekening */}
+              <div style={SECTIE_KOP_STIJL}>Toelichting</div>
+              <label style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 10 }}>
+                <span style={{ fontSize: 12, fontWeight: 700, color: "var(--text-2)" }}>
+                  Statusbanner (leeg = verborgen)
+                </span>
+                <input
+                  type="text"
+                  value={form.statusBanner ?? ""}
+                  placeholder="Bijv: **Voorlopige indeling** — tekst..."
+                  onChange={(e) => updateVeld("statusBanner", e.target.value)}
+                  style={{
+                    ...INPUT_STIJL,
+                    width: "100%",
+                    minHeight: 36,
+                    borderRadius: 10,
+                    border: "1px solid var(--border-0)",
+                    background: "var(--bg-0)",
+                    color: "var(--text-1)",
+                    padding: "8px 12px",
+                  }}
+                />
+                <span style={{ fontSize: 11, color: "var(--text-3)" }}>
+                  Gebruik **tekst** voor vetgedrukt. Leeg = banner verborgen.
+                </span>
+              </label>
+              <label style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 14 }}>
+                <span style={{ fontSize: 12, fontWeight: 700, color: "var(--text-2)" }}>
+                  TC-ondertekening (leeg = verborgen)
+                </span>
+                <textarea
+                  value={form.tcOndertekening ?? ""}
+                  rows={3}
+                  onChange={(e) => updateVeld("tcOndertekening", e.target.value)}
+                  style={{
+                    ...INPUT_STIJL,
+                    width: "100%",
+                    resize: "vertical",
+                    lineHeight: 1.45,
+                    borderRadius: 10,
+                    border: "1px solid var(--border-0)",
+                    background: "var(--bg-0)",
+                    color: "var(--text-1)",
+                    padding: "8px 12px",
+                  }}
+                />
+                <span style={{ fontSize: 11, color: "var(--text-3)" }}>
+                  Nieuwe regels worden weergegeven als regeleinden. Leeg = ondertekening verborgen.
+                </span>
+              </label>
               <BlokkenEditor
-                label="Toelichting"
+                label="Toelichting (inhoud)"
                 blokken={toelichtingBlokken}
                 onChange={setToelichtingBlokken}
               />
