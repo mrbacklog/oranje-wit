@@ -546,30 +546,18 @@ function StafFooterIcoon({
 }) {
   const [staf, setStaf] = useState(initStaf);
   const [pos, setPos] = useState<{ left: number; top: number } | null>(null);
-  const [gepind, setGepind] = useState(false);
   const [isPending, startTransition] = useTransition();
   const ankerRef = useRef<HTMLDivElement>(null);
   const paneelRef = useRef<HTMLDivElement>(null);
   const sluitTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const heeftStaf = staf.length > 0;
+  const kanSorteren = staf.length > 1;
 
-  const PANEEL_BREEDTE = 240;
+  const PANEEL_BREEDTE = kanSorteren ? 260 : 220;
 
   useEffect(() => {
     setStaf(initStaf);
   }, [initStaf]);
-
-  useEffect(() => {
-    if (!gepind) return;
-    function handleClick(e: MouseEvent) {
-      if (paneelRef.current?.contains(e.target as Node)) return;
-      if (ankerRef.current?.contains(e.target as Node)) return;
-      setGepind(false);
-      setPos(null);
-    }
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, [gepind]);
 
   function berekenPos() {
     if (!ankerRef.current) return null;
@@ -594,8 +582,7 @@ function StafFooterIcoon({
   }
 
   function planSluiten() {
-    if (gepind) return;
-    sluitTimer.current = setTimeout(() => setPos(null), 120);
+    sluitTimer.current = setTimeout(() => setPos(null), 150);
   }
 
   function handleVolgorde(s: WerkbordStafInTeam, richting: "omhoog" | "omlaag") {
@@ -603,27 +590,26 @@ function StafFooterIcoon({
     if (idx < 0) return;
     const swapIdx = richting === "omhoog" ? idx - 1 : idx + 1;
     if (swapIdx < 0 || swapIdx >= staf.length) return;
-    const item = staf[idx];
-    const swap = staf[swapIdx];
-    const itemOrder = item.sortOrder ?? idx;
-    const swapOrder = swap.sortOrder ?? swapIdx;
-    const bijgewerkt = staf
+    // Wijs altijd expliciete unieke orders toe op basis van huidige positie,
+    // zodat we niet afhankelijk zijn van de stored sortOrder-waarden.
+    const genormaliseerd = staf.map((x, i) => ({ ...x, sortOrder: i }));
+    const item = genormaliseerd[idx];
+    const swap = genormaliseerd[swapIdx];
+    const bijgewerkt = genormaliseerd
       .map((x) => {
-        if (x.id === item.id) return { ...x, sortOrder: swapOrder };
-        if (x.id === swap.id) return { ...x, sortOrder: itemOrder };
+        if (x.id === item.id) return { ...x, sortOrder: swapIdx };
+        if (x.id === swap.id) return { ...x, sortOrder: idx };
         return x;
       })
       .sort((a, b) => {
-        const oa = a.sortOrder ?? 0;
-        const ob = b.sortOrder ?? 0;
-        if (oa !== ob) return oa - ob;
+        if (a.sortOrder !== b.sortOrder) return a.sortOrder - b.sortOrder;
         return a.naam.localeCompare(b.naam, "nl");
       });
     setStaf(bijgewerkt);
     startTransition(async () => {
       await Promise.all([
-        updateStafSortOrderInTeam(item.stafId, teamId, swapOrder),
-        updateStafSortOrderInTeam(swap.stafId, teamId, itemOrder),
+        updateStafSortOrderInTeam(item.stafId, teamId, swapIdx),
+        updateStafSortOrderInTeam(swap.stafId, teamId, idx),
       ]);
     });
   }
@@ -634,17 +620,6 @@ function StafFooterIcoon({
         ref={ankerRef}
         onMouseEnter={open}
         onMouseLeave={planSluiten}
-        onClick={(e) => {
-          e.stopPropagation();
-          if (!heeftStaf) return;
-          if (gepind) {
-            setGepind(false);
-            setPos(null);
-          } else {
-            setGepind(true);
-            setPos(berekenPos());
-          }
-        }}
         title={
           heeftStaf
             ? `${staf.length} staflid${staf.length !== 1 ? "en" : ""}`
@@ -704,9 +679,7 @@ function StafFooterIcoon({
                 sluitTimer.current = null;
               }
             }}
-            onMouseLeave={() => {
-              if (!gepind) setPos(null);
-            }}
+            onMouseLeave={planSluiten}
             style={{
               position: "fixed",
               left: pos.left,
@@ -714,7 +687,7 @@ function StafFooterIcoon({
               width: PANEEL_BREEDTE,
               zIndex: 9999,
               background: "linear-gradient(160deg,#1a1a1e,#0c0c0f 60%)",
-              border: `1px solid ${gepind ? "rgba(251,146,60,.4)" : "var(--border-1)"}`,
+              border: "1px solid var(--border-1)",
               borderRadius: 10,
               boxShadow: "0 8px 32px rgba(0,0,0,.6)",
               padding: "10px 12px",
@@ -726,12 +699,11 @@ function StafFooterIcoon({
                 fontWeight: 700,
                 textTransform: "uppercase",
                 letterSpacing: "0.1em",
-                color: gepind ? "rgba(251,146,60,.8)" : "var(--text-3)",
+                color: "var(--text-3)",
                 marginBottom: 8,
               }}
             >
               Staf · {staf.length}
-              {gepind ? " — sleep of klik ▲▼ om te sorteren" : ""}
             </div>
             <div style={{ display: "flex", flexDirection: "column" }}>
               {staf.map((s, i) => (
@@ -745,7 +717,7 @@ function StafFooterIcoon({
                     borderTop: i > 0 ? "1px solid var(--border-0)" : "none",
                   }}
                 >
-                  {gepind && staf.length > 1 && (
+                  {kanSorteren && (
                     <div
                       style={{ display: "flex", flexDirection: "column", gap: 1, flexShrink: 0 }}
                     >
@@ -762,11 +734,11 @@ function StafFooterIcoon({
                           padding: 0,
                           border: "none",
                           background: "transparent",
-                          cursor: i === 0 ? "not-allowed" : "pointer",
+                          cursor: i === 0 ? "default" : "pointer",
                           color: i === 0 ? "var(--text-3)" : "rgba(251,146,60,.8)",
                           fontSize: 8,
                           lineHeight: 1,
-                          opacity: i === 0 ? 0.25 : 1,
+                          opacity: i === 0 ? 0.2 : 1,
                         }}
                       >
                         ▲
@@ -784,11 +756,11 @@ function StafFooterIcoon({
                           padding: 0,
                           border: "none",
                           background: "transparent",
-                          cursor: i === staf.length - 1 ? "not-allowed" : "pointer",
+                          cursor: i === staf.length - 1 ? "default" : "pointer",
                           color: i === staf.length - 1 ? "var(--text-3)" : "rgba(251,146,60,.8)",
                           fontSize: 8,
                           lineHeight: 1,
-                          opacity: i === staf.length - 1 ? 0.25 : 1,
+                          opacity: i === staf.length - 1 ? 0.2 : 1,
                         }}
                       >
                         ▼
