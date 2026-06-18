@@ -293,6 +293,7 @@ export async function savePublicatieInstellingen(
     });
 
     revalidatePath("/presentatie");
+    revalidatePath("/teamindeling");
 
     return {
       ok: true,
