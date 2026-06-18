@@ -19,11 +19,6 @@ export function PubliekeTeamindeling({ data }: { data: PubliekeTeamindelingData 
   const [zoekOpen, setZoekOpen] = useState(false);
 
   const touchStartX = useRef<number | null>(null);
-  const mainRef = useRef<HTMLElement | null>(null);
-
-  function scrollNaarBoven() {
-    mainRef.current?.scrollTo({ top: 0 });
-  }
 
   const teams = data.teams;
   const huidigTeam = teams[teamIdx];
@@ -31,12 +26,10 @@ export function PubliekeTeamindeling({ data }: { data: PubliekeTeamindelingData 
 
   function naarTeam(idx: number) {
     setTeamIdx(idx);
-    scrollNaarBoven();
   }
 
   function naarPagina(p: AppPagina) {
     setPagina(p);
-    scrollNaarBoven();
   }
 
   function gaVorig() {
@@ -142,7 +135,10 @@ export function PubliekeTeamindeling({ data }: { data: PubliekeTeamindelingData 
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100dvh" }}>
-      <main ref={mainRef} style={{ flex: 1, overflowY: "auto", background: "#080808" }}>
+      <main
+        key={`${pagina}-${teamIdx}`}
+        style={{ flex: 1, overflowY: "auto", background: "#080808" }}
+      >
         {renderPagina()}
       </main>
 
