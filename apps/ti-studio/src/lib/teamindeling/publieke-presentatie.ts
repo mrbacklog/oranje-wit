@@ -386,7 +386,12 @@ function normaliseerBlokken(value: unknown, defaults: TekstBlok[]): TekstBlok[] 
       const r = item as Record<string, unknown>;
       if (typeof r.id !== "string" || typeof r.subtitle !== "string" || typeof r.tekst !== "string")
         return null;
-      return { id: r.id, subtitle: r.subtitle, tekst: r.tekst };
+      return {
+        id: r.id,
+        subtitle: r.subtitle,
+        tekst: r.tekst,
+        ...(typeof r.label === "string" && r.label ? { label: r.label } : {}),
+      };
     })
     .filter(Boolean) as TekstBlok[];
   return blokken.length > 0 ? blokken : defaults;
