@@ -41,10 +41,21 @@ function SectieKop({ label, titel }: { label?: string; titel: string }) {
 }
 
 // --- Hoofd component ---
+const TAB_LINKS: Record<string, string> = {
+  "/info": "toelichting",
+  "/teams": "indeling",
+  "/kennismaking": "kennismaking",
+  "/kalender": "kalender",
+  "/oproep": "tcoproep",
+  "/vragen": "vragen",
+};
+
 export function ToelichtingPagina({
   toelichting,
+  onTabNavigeer,
 }: {
   toelichting: PubliekeTeamindelingData["toelichting"];
+  onTabNavigeer?: (tab: string) => void;
 }) {
   const blokken = toelichting?.toelichtingBlokken ?? [];
 
@@ -187,6 +198,15 @@ export function ToelichtingPagina({
                     marginTop: blok.subtitle ? 12 : 0,
                   }}
                   /* Inhoud uit TC-beheerd admin-formulier — geen externe gebruikersinvoer */
+                  onClick={(e) => {
+                    const a = (e.target as HTMLElement).closest("a");
+                    if (!a) return;
+                    const tab = TAB_LINKS[a.getAttribute("href") ?? ""];
+                    if (tab && onTabNavigeer) {
+                      e.preventDefault();
+                      onTabNavigeer(tab);
+                    }
+                  }}
                   dangerouslySetInnerHTML={{ __html: blok.tekst }}
                 />
                 {i < blokken.length - 1 && (

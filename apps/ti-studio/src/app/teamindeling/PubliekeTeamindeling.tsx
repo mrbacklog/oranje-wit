@@ -78,7 +78,7 @@ export function PubliekeTeamindeling({ data }: { data: PubliekeTeamindelingData 
   function renderPagina() {
     switch (pagina) {
       case "toelichting":
-        return <ToelichtingPagina toelichting={toelichting} />;
+        return <ToelichtingPagina toelichting={toelichting} onTabNavigeer={naarPagina} />;
       case "indeling":
         return (
           <div

@@ -12,6 +12,12 @@
   --pt-subtekst: rgba(255, 255, 255, 0.4);
 }
 
+/* ── Inline content links ── */
+.pt-toel-tekst a {
+  color: #ff6600;
+  text-decoration: underline;
+}
+
 /* ── Team wissel animatie ── */
 @keyframes pt-team-in {
   from {
@@ -137,6 +143,10 @@
   }
   .pt-toel-tekst {
     font-size: 15px !important;
+  }
+  .pt-toel-tekst a {
+    color: #ff6600 !important;
+    text-decoration: underline;
   }
   .pt-sectie-titel {
     font-size: 22px !important;
