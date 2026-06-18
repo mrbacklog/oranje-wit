@@ -82,15 +82,14 @@ export const DEFAULT_PUBLICATIE_SECTIES: PublicatieSectieConfig[] = [
 export const DEFAULT_PUBLICATIE_TEKSTEN = {
   titel: "Pre-season Teamindeling 2026-2027",
 
-  introTekst: `<p>Hier is de pre-season teamindeling voor het seizoen 2026-2027.</p>
-<p>Het samenstellen van teams is ieder jaar een uitdaging, maar samen met de trainers en coördinatoren hebben we opnieuw een goed en evenwichtig resultaat weten te bereiken.</p>
-<p>Ook dit jaar zullen er weer blije verrassingen en teleurstellingen in de indelingen zijn. Korfbal blijft een teamsport en soms zijn er minder plaatsen dan er gegadigden zijn. Wij staan altijd klaar om de gemaakte keuzes toe te lichten.</p>`,
+  introTekst: `<p>Fijn dat je er bent. Op deze pagina vind je alles wat je moet weten over de voorlopige teamindeling voor het seizoen 2026–2027.</p>
+<p>Gebruik de knoppen onderaan om te navigeren naar de teamoverzichten, de kennismakingstrainingen, de kalender of om een vraag te stellen.</p>`,
 
-  waaromTekst: `<p>De pre-season indeling is een voorlopige teamindeling, zodat de teams en de staf plannen kunnen maken voor het komende seizoen. Het kan zijn dat er door aanmeldingen of opzeggingen nog enkele wijzigingen worden doorgevoerd, maar de grote lijnen zullen niet meer veranderen.</p>`,
+  waaromTekst: `<p>Elk jaar stellen we vóór de zomervakantie een voorlopige teamindeling op. Zo weten trainers, spelers en ouders tijdig waar ze aan toe zijn en kunnen teams al vóór de zomerstop kennismaken.</p>
+<p>Het is een <em>voorlopige</em> indeling: door aanmeldingen, afmeldingen of selectiedagen kunnen er nog wijzigingen volgen. De definitieve indeling publiceren we voor de start van het seizoen.</p>`,
 
-  werkwijzeTekst: `<p>Vanaf de seizoenstart werkt de Technische Commissie (TC) toe naar de teamindeling voor het nieuwe seizoen. We herzien onze richtlijnen, plannen evaluaties, en spreken gedurende het jaar met trainers, spelers, ouders en coördinatoren — zowel formeel als informeel.</p>
-<p>Na de jaarwisseling brengen we de behoeften in kaart: hoeveel teams zijn er nodig, op welk niveau, en welke staf is passend? Op basis daarvan maken we een eerste opzet, die we bespreken met trainers en coördinatoren. Hun inzichten nemen we mee in het verdere proces.</p>
-<p>Daarna zoeken we passende trainers, coaches en begeleiders, en maken we definitieve keuzes. Deze lichten we zorgvuldig toe aan de betrokkenen. Richting de deadline blijft het altijd even spannend: onverwachte aan- of afmeldingen kunnen nog tot het laatste moment voor wijzigingen zorgen.</p>`,
+  werkwijzeTekst: `<p>Het samenstellen van teams is een zorgvuldig proces dat het hele jaar loopt. We evalueren het afgelopen seizoen, spreken met trainers en coördinatoren, en brengen de wensen en behoeften voor het nieuwe seizoen in kaart.</p>
+<p>Daarna kijken we naar aantallen, niveaus en welke staf het beste bij elk team past. De uiteindelijke keuzes lichten we toe aan de betrokkenen. Tot het laatste moment kunnen onverwachte aan- of afmeldingen nog voor wijzigingen zorgen.</p>`,
 
   competitieTekst: `<p>De KNKV Competitie 2.0 structuur vormt de basis voor onze indeling. De nadruk ligt op plezier, uitdaging en ontwikkeling per leeftijdscategorie.</p>
 <ul>
@@ -99,8 +98,10 @@ export const DEFAULT_PUBLICATIE_TEKSTEN = {
   <li>De <strong>superspeler-regel</strong> geldt ook in Groen (vergelijkbaar met de oude E-leeftijd).</li>
 </ul>`,
 
-  tcTekst: `<p>De Technische Commissie (TC) vormt het sportieve hart van de vereniging. Samen met coördinatoren, trainersbegeleiders en trainers zorgen we voor een goede doorstroming, passende teamindelingen en aandacht voor ontwikkeling en plezier op elk niveau.</p>
-<p>Coördinatoren ondersteunen de TC het hele seizoen door en zijn het eerste aanspreekpunt voor trainers, spelers en ouders. Trainersbegeleiders bieden pedagogische en didactische ondersteuning, zodat trainers met vertrouwen en voldoening hun rol kunnen vervullen. Zo bouwen we met elkaar aan een sportieve en betrokken korfbalomgeving.</p>`,
+  tcTekst: `<p>We zijn als TC altijd op zoek naar mensen die een bijdrage willen leveren aan onze vereniging — als trainer, coach of begeleider. Richting het nieuwe seizoen hebben we nog een aantal openstaande vacatures die we graag willen invullen.</p>
+<p><strong>2e Selectie senioren</strong> — We zoeken een trainer of coach die dit team wil begeleiden. Je werkt samen met enthousiaste senioren die gemotiveerd zijn om zich te ontwikkelen en mee te strijden om de betere plaatsen in de competitie.</p>
+<p><strong>J2 (jeugd)</strong> — Ook voor J2 zijn we nog op zoek naar iemand die de begeleiding op zich wil nemen. Ervaring met jeugdtraining is een pré, maar geen vereiste — enthousiasme en betrokkenheid tellen minstens zo zwaar.</p>
+<p>Heb je interesse, of ken je iemand die dit zou willen doen? Neem dan contact op via <a href="mailto:tc@ckvoranjewit.nl">tc@ckvoranjewit.nl</a>. We vertellen je graag meer over wat de rol inhoudt en wat we jou als vereniging kunnen bieden.</p>`,
 
   kennismakingTekst: `<p>Voor de zomervakantie begint, nodigen we onze oudere jeugd (8-tallen) graag uit voor een training in hun nieuwe samenstelling. Zo leren spelers elkaar alvast kennen, ontstaat er een eerste teamgevoel en kunnen trainers praktische zaken zoals contactgegevens en planningen delen.</p>
 
@@ -226,7 +227,7 @@ export const DEFAULT_BLOKKEN = {
     },
     {
       id: "toel-2",
-      subtitle: "Waarom een pre-season indeling?",
+      subtitle: "Voorlopige indeling — wat betekent dat?",
       tekst: DEFAULT_PUBLICATIE_TEKSTEN.waaromTekst,
     },
     {
@@ -246,7 +247,11 @@ export const DEFAULT_BLOKKEN = {
     { id: "ken-1", subtitle: "", tekst: DEFAULT_PUBLICATIE_TEKSTEN.kennismakingTekst },
   ] as TekstBlok[],
   tcOproepBlokken: [
-    { id: "tc-1", subtitle: "TC en begeleiding", tekst: DEFAULT_PUBLICATIE_TEKSTEN.tcTekst },
+    {
+      id: "tc-1",
+      subtitle: "We zijn op zoek naar trainers en coaches",
+      tekst: DEFAULT_PUBLICATIE_TEKSTEN.tcTekst,
+    },
   ] as TekstBlok[],
   vragenBlokken: [
     { id: "vr-1", subtitle: "Contact", tekst: DEFAULT_PUBLICATIE_TEKSTEN.contactTekst },
