@@ -10,7 +10,7 @@ const LOGO_URL = "https://ckvoranjewit.nl/wp-content/uploads/2025/12/OW-100-logo
 const ORANJE = "#FF6600";
 
 // --- Sectie kop ---
-function SectieKop({ label, titel }: { label?: string; titel: string }) {
+function SectieKop({ label, titel }: { label?: string; titel?: string }) {
   return (
     <div style={{ marginBottom: 10 }}>
       {label && (
@@ -31,12 +31,14 @@ function SectieKop({ label, titel }: { label?: string; titel: string }) {
           {label}
         </div>
       )}
-      <h2
-        className="pt-sectie-titel"
-        style={{ margin: 0, fontSize: 20, fontWeight: 800, color: "#fff", lineHeight: 1.1 }}
-      >
-        {titel}
-      </h2>
+      {titel && (
+        <h2
+          className="pt-sectie-titel"
+          style={{ margin: 0, fontSize: 20, fontWeight: 800, color: "#fff", lineHeight: 1.1 }}
+        >
+          {titel}
+        </h2>
+      )}
     </div>
   );
 }
@@ -192,7 +194,7 @@ export function ToelichtingPagina({
             {/* Toelichting blokken */}
             {blokken.map((blok, i) => (
               <div key={blok.id} style={{ marginBottom: 24 }}>
-                {blok.subtitle && (
+                {(blok.subtitle || blok.label) && (
                   <SectieKop label={blok.label || undefined} titel={blok.subtitle} />
                 )}
                 <div
