@@ -312,13 +312,19 @@ export default async function IndelingPage() {
       canvasY,
       dames,
       heren,
-      staf: (team.staf as any[]).map((ts: any) => ({
-        id: ts.id,
-        stafId: ts.stafId,
-        naam: ts.staf?.naam ?? "?",
-        rol: ts.rol ?? "",
-        rolLabel: ts.rolLabel ?? null,
-      })),
+      staf: (team.staf as any[])
+        .map((ts: any) => ({
+          id: ts.id,
+          stafId: ts.stafId,
+          naam: ts.staf?.naam ?? "?",
+          rol: ts.rol ?? "",
+          rolLabel: ts.rolLabel ?? null,
+          sortOrder: ts.sortOrder ?? 0,
+        }))
+        .sort((a, b) => {
+          if (a.sortOrder !== b.sortOrder) return a.sortOrder - b.sortOrder;
+          return a.naam.localeCompare(b.naam, "nl");
+        }),
       werkitems: [],
       ussScore:
         totaalSpelers > 0
@@ -420,7 +426,12 @@ export default async function IndelingPage() {
           selectieDames,
           selectieHeren,
           gebundeld: true,
-          staf: [...teams[teamIdx].staf, ...selectieStaf],
+          staf: [...teams[teamIdx].staf, ...selectieStaf].sort((a, b) => {
+            const oa = a.sortOrder ?? 0;
+            const ob = b.sortOrder ?? 0;
+            if (oa !== ob) return oa - ob;
+            return a.naam.localeCompare(b.naam, "nl");
+          }),
         };
         // Sync canvas-positie naar alle andere teams in de groep (deduplicatie toont alleen primary)
         for (const other of groepTeams.slice(1)) {
@@ -521,7 +532,9 @@ export default async function IndelingPage() {
           teamNaam: team.naam,
           kleur,
           rol: ts.rol ?? "",
+          rolLabel: ts.rolLabel ?? null,
           doelType: "team",
+          sortOrder: ts.sortOrder ?? 0,
         });
         stafTeamMap.set(ts.stafId, bestaand);
       }

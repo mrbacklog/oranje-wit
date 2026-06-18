@@ -138,6 +138,7 @@ export async function getAlleStafVoorBeheer() {
           stafId: true,
           rol: true,
           rolLabel: true,
+          sortOrder: true,
           team: {
             select: {
               id: true,
@@ -191,6 +192,7 @@ export async function getAlleStafVoorBeheer() {
     rol: string;
     rolLabel: string | null;
     volgorde: number;
+    sortOrder: number;
     // Legacy aliassen voor bestaande UI
     teamId: string;
     teamNaam: string;
@@ -209,6 +211,7 @@ export async function getAlleStafVoorBeheer() {
       rol: k.rol,
       rolLabel: k.rolLabel ?? null,
       volgorde: k.team.volgorde ?? 9999,
+      sortOrder: k.sortOrder,
       teamId: k.team.id,
       teamNaam: k.team.naam,
     });
@@ -232,6 +235,7 @@ export async function getAlleStafVoorBeheer() {
       rol: k.rol,
       rolLabel: k.rolLabel ?? null,
       volgorde,
+      sortOrder: 0,
       teamId: k.selectieGroep.id,
       teamNaam: naam,
     });
@@ -395,6 +399,25 @@ export async function setStafActief(
   } catch (err) {
     logger.warn("setStafActief mislukt:", err);
     return { ok: false, error: "Kon status niet bijwerken" };
+  }
+}
+
+export async function updateStafSortOrderInTeam(
+  stafId: string,
+  teamId: string,
+  sortOrder: number
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  try {
+    await requireTC();
+    await prisma.teamStaf.updateMany({
+      where: { stafId, teamId },
+      data: { sortOrder },
+    });
+    revalidatePath("/personen/staf");
+    return { ok: true };
+  } catch (err) {
+    logger.warn("updateStafSortOrderInTeam mislukt:", err);
+    return { ok: false, error: "Kon volgorde niet bijwerken" };
   }
 }
 

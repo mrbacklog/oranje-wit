@@ -12,6 +12,7 @@ export interface StafKoppelingView {
   rol: string;
   rolLabel?: string | null;
   doelType: StafDoelType;
+  sortOrder?: number;
 }
 
 /** Minimaal staflid-object dat de koppeleditor nodig heeft. */

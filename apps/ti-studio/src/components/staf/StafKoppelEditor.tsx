@@ -5,6 +5,7 @@ import {
   voegStafAanDoelToe,
   verwijderStafUitDoel,
   updateStafRolOpDoel,
+  updateStafSortOrderInTeam,
 } from "@/app/(protected)/personen/staf-actions";
 import {
   type StafKoppelStaf,
@@ -140,6 +141,32 @@ export function StafKoppelEditor({ staf, alleDoelen, onClose, onGewijzigd }: Pro
     });
   }
 
+  function handleVolgorde(koppeling: StafKoppelingView, richting: "omhoog" | "omlaag") {
+    if (koppeling.doelType !== "team") return;
+    const idx = lokaleTeams.findIndex((t) => t.teamId === koppeling.teamId);
+    if (idx < 0) return;
+    const swapIdx = richting === "omhoog" ? idx - 1 : idx + 1;
+    if (swapIdx < 0 || swapIdx >= lokaleTeams.length) return;
+    const item = lokaleTeams[idx];
+    const swap = lokaleTeams[swapIdx];
+    const itemOrder = item.sortOrder ?? idx;
+    const swapOrder = swap.sortOrder ?? swapIdx;
+    const bijgewerkt = lokaleTeams
+      .map((t) => {
+        if (t.teamId === item.teamId) return { ...t, sortOrder: swapOrder };
+        if (t.teamId === swap.teamId) return { ...t, sortOrder: itemOrder };
+        return t;
+      })
+      .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+    commit(bijgewerkt);
+    startTransition(async () => {
+      await Promise.all([
+        updateStafSortOrderInTeam(staf.id, item.teamId, swapOrder),
+        updateStafSortOrderInTeam(staf.id, swap.teamId, itemOrder),
+      ]);
+    });
+  }
+
   return (
     <div
       ref={containerRef}
@@ -246,6 +273,63 @@ export function StafKoppelEditor({ staf, alleDoelen, onClose, onGewijzigd }: Pro
                 fontFamily: "inherit",
               }}
             />
+            {t.doelType === "team" && (
+              <div style={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                <button
+                  type="button"
+                  onClick={() => handleVolgorde(t, "omhoog")}
+                  disabled={isPending || lokaleTeams.indexOf(t) === 0}
+                  aria-label="Staflid omhoog"
+                  title="Omhoog"
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: 16,
+                    height: 14,
+                    borderRadius: 3,
+                    border: "1px solid var(--border-default)",
+                    background: "var(--surface-sunken)",
+                    color: "var(--text-secondary)",
+                    cursor: isPending || lokaleTeams.indexOf(t) === 0 ? "not-allowed" : "pointer",
+                    fontSize: "0.55rem",
+                    padding: 0,
+                    lineHeight: 1,
+                    opacity: lokaleTeams.indexOf(t) === 0 ? 0.3 : 1,
+                  }}
+                >
+                  ▲
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleVolgorde(t, "omlaag")}
+                  disabled={isPending || lokaleTeams.indexOf(t) === lokaleTeams.length - 1}
+                  aria-label="Staflid omlaag"
+                  title="Omlaag"
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: 16,
+                    height: 14,
+                    borderRadius: 3,
+                    border: "1px solid var(--border-default)",
+                    background: "var(--surface-sunken)",
+                    color: "var(--text-secondary)",
+                    cursor:
+                      isPending || lokaleTeams.indexOf(t) === lokaleTeams.length - 1
+                        ? "not-allowed"
+                        : "pointer",
+                    fontSize: "0.55rem",
+                    padding: 0,
+                    lineHeight: 1,
+                    opacity: lokaleTeams.indexOf(t) === lokaleTeams.length - 1 ? 0.3 : 1,
+                  }}
+                >
+                  ▼
+                </button>
+              </div>
+            )}
             <button
               type="button"
               onClick={() => handleVerwijder(t)}

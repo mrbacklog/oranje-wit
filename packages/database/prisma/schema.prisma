@@ -979,8 +979,9 @@ model TeamStaf {
   staf   Staf   @relation(fields: [stafId], references: [id])
   stafId String
 
-  rol      String
-  rolLabel String?
+  rol       String
+  rolLabel  String?
+  sortOrder Int     @default(0)
 
   @@unique([teamId, stafId])
   @@index([teamId])
