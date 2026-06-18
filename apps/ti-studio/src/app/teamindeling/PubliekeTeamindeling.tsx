@@ -26,6 +26,12 @@ export function PubliekeTeamindeling({ data }: { data: PubliekeTeamindelingData 
 
   function naarTeam(idx: number) {
     setTeamIdx(idx);
+    window.scrollTo(0, 0);
+  }
+
+  function naarPagina(p: AppPagina) {
+    setPagina(p);
+    window.scrollTo(0, 0);
   }
 
   function gaVorig() {
@@ -135,7 +141,7 @@ export function PubliekeTeamindeling({ data }: { data: PubliekeTeamindelingData 
 
       <AppFooter
         pagina={pagina}
-        onNavigeer={setPagina}
+        onNavigeer={naarPagina}
         teams={teams}
         teamIdx={teamIdx}
         onVorig={gaVorig}
