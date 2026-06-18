@@ -6,10 +6,10 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Teamindeling — c.k.v. Oranje Wit",
-  description: "Voorlopige teamindeling 2026-2027 van c.k.v. Oranje Wit",
+  description: "Voorlopige indeling 2026-2027 · c.k.v. Oranje Wit",
   openGraph: {
     title: "Teamindeling — c.k.v. Oranje Wit",
-    description: "Voorlopige teamindeling 2026-2027 van c.k.v. Oranje Wit",
+    description: "Voorlopige indeling 2026-2027 · c.k.v. Oranje Wit",
     siteName: "c.k.v. Oranje Wit",
   },
 };
