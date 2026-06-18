@@ -21,7 +21,7 @@ export function KennismakingPagina({
       <div
         style={{
           background: "#FF6600",
-          padding: "16px 24px 44px",
+          padding: "12px 24px 40px",
           clipPath: "polygon(0 0, 100% 0, 100% 80%, 0 100%)",
           position: "sticky",
           top: 0,
@@ -88,7 +88,7 @@ export function KennismakingPagina({
             <span
               style={{
                 display: "block",
-                fontSize: 40,
+                fontSize: 32,
                 fontWeight: 900,
                 fontStyle: "italic",
                 textTransform: "uppercase",

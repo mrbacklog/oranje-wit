@@ -36,7 +36,7 @@ export function ToelichtingPagina({
         className="pt-toel-hero"
         style={{
           background: "#FF6600",
-          padding: "16px 24px 44px",
+          padding: "12px 24px 40px",
           clipPath: "polygon(0 0, 100% 0, 100% 80%, 0 100%)",
           position: "sticky",
           top: 0,
@@ -99,12 +99,12 @@ export function ToelichtingPagina({
             <span
               style={{
                 display: "block",
-                fontSize: 48,
+                fontSize: 32,
                 fontWeight: 900,
                 fontStyle: "italic",
                 textTransform: "uppercase",
                 color: "#fff",
-                lineHeight: 0.9,
+                lineHeight: 0.95,
               }}
             >
               {toelichting?.seizoenLabel ?? "2026–2027"}
