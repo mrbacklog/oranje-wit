@@ -1,10 +1,11 @@
 // apps/web/src/components/ti-studio/werkbord/TeamKaart.tsx
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useTransition } from "react";
 import { createPortal } from "react-dom";
 import "./tokens.css";
 import { TeamKaartSpelerRij, SPELER_RIJ_HOOGTE } from "./TeamKaartSpelerRij";
 import { toonRol } from "@/components/staf/staf-koppel-types";
+import { updateStafSortOrderInTeam } from "@/app/(protected)/personen/staf-actions";
 import type {
   WerkbordTeam,
   WerkbordSpeler,
@@ -437,6 +438,7 @@ export function TeamKaart({
         {/* Staf-icoon — altijd zichtbaar, vóór de warnings, op alle zooms */}
         <StafFooterIcoon
           staf={partnerTeam ? dedupeStaf([...team.staf, ...partnerTeam.staf]) : team.staf}
+          teamId={team.id}
           onStafClick={onStafClick}
         />
         {team.validatieCount > 0 && (
@@ -534,39 +536,96 @@ function TrainerIcoon({ size = 15 }: { size?: number }) {
 }
 
 function StafFooterIcoon({
-  staf,
+  staf: initStaf,
+  teamId,
   onStafClick,
 }: {
   staf: WerkbordStafInTeam[];
+  teamId: string;
   onStafClick?: (stafId: string) => void;
 }) {
+  const [staf, setStaf] = useState(initStaf);
   const [pos, setPos] = useState<{ left: number; top: number } | null>(null);
+  const [gepind, setGepind] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const ankerRef = useRef<HTMLDivElement>(null);
+  const paneelRef = useRef<HTMLDivElement>(null);
   const sluitTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const heeftStaf = staf.length > 0;
 
-  const PANEEL_BREEDTE = 220;
+  const PANEEL_BREEDTE = 240;
+
+  useEffect(() => {
+    setStaf(initStaf);
+  }, [initStaf]);
+
+  useEffect(() => {
+    if (!gepind) return;
+    function handleClick(e: MouseEvent) {
+      if (paneelRef.current?.contains(e.target as Node)) return;
+      if (ankerRef.current?.contains(e.target as Node)) return;
+      setGepind(false);
+      setPos(null);
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [gepind]);
+
+  function berekenPos() {
+    if (!ankerRef.current) return null;
+    const r = ankerRef.current.getBoundingClientRect();
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const hoogte = 46 + staf.length * 32;
+    let left = r.left + r.width / 2 - PANEEL_BREEDTE / 2;
+    left = Math.max(8, Math.min(left, vw - PANEEL_BREEDTE - 8));
+    let top = r.top - hoogte - 8;
+    if (top < 8) top = Math.min(r.bottom + 8, vh - hoogte - 8);
+    return { left, top };
+  }
 
   function open() {
     if (sluitTimer.current) {
       clearTimeout(sluitTimer.current);
       sluitTimer.current = null;
     }
-    if (!heeftStaf || !ankerRef.current) return;
-    const r = ankerRef.current.getBoundingClientRect();
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    // Geschatte hoogte: kop (26) + rijen (24) + padding (20)
-    const hoogte = 46 + staf.length * 24;
-    let left = r.left + r.width / 2 - PANEEL_BREEDTE / 2;
-    left = Math.max(8, Math.min(left, vw - PANEEL_BREEDTE - 8));
-    let top = r.top - hoogte - 8; // standaard: boven het icoon
-    if (top < 8) top = Math.min(r.bottom + 8, vh - hoogte - 8); // anders eronder
-    setPos({ left, top });
+    if (!heeftStaf) return;
+    setPos(berekenPos());
   }
 
   function planSluiten() {
+    if (gepind) return;
     sluitTimer.current = setTimeout(() => setPos(null), 120);
+  }
+
+  function handleVolgorde(s: WerkbordStafInTeam, richting: "omhoog" | "omlaag") {
+    const idx = staf.findIndex((x) => x.id === s.id);
+    if (idx < 0) return;
+    const swapIdx = richting === "omhoog" ? idx - 1 : idx + 1;
+    if (swapIdx < 0 || swapIdx >= staf.length) return;
+    const item = staf[idx];
+    const swap = staf[swapIdx];
+    const itemOrder = item.sortOrder ?? idx;
+    const swapOrder = swap.sortOrder ?? swapIdx;
+    const bijgewerkt = staf
+      .map((x) => {
+        if (x.id === item.id) return { ...x, sortOrder: swapOrder };
+        if (x.id === swap.id) return { ...x, sortOrder: itemOrder };
+        return x;
+      })
+      .sort((a, b) => {
+        const oa = a.sortOrder ?? 0;
+        const ob = b.sortOrder ?? 0;
+        if (oa !== ob) return oa - ob;
+        return a.naam.localeCompare(b.naam, "nl");
+      });
+    setStaf(bijgewerkt);
+    startTransition(async () => {
+      await Promise.all([
+        updateStafSortOrderInTeam(item.stafId, teamId, swapOrder),
+        updateStafSortOrderInTeam(swap.stafId, teamId, itemOrder),
+      ]);
+    });
   }
 
   return (
@@ -575,6 +634,17 @@ function StafFooterIcoon({
         ref={ankerRef}
         onMouseEnter={open}
         onMouseLeave={planSluiten}
+        onClick={(e) => {
+          e.stopPropagation();
+          if (!heeftStaf) return;
+          if (gepind) {
+            setGepind(false);
+            setPos(null);
+          } else {
+            setGepind(true);
+            setPos(berekenPos());
+          }
+        }}
         title={
           heeftStaf
             ? `${staf.length} staflid${staf.length !== 1 ? "en" : ""}`
@@ -627,13 +697,16 @@ function StafFooterIcoon({
         typeof document !== "undefined" &&
         createPortal(
           <div
+            ref={paneelRef}
             onMouseEnter={() => {
               if (sluitTimer.current) {
                 clearTimeout(sluitTimer.current);
                 sluitTimer.current = null;
               }
             }}
-            onMouseLeave={() => setPos(null)}
+            onMouseLeave={() => {
+              if (!gepind) setPos(null);
+            }}
             style={{
               position: "fixed",
               left: pos.left,
@@ -641,7 +714,7 @@ function StafFooterIcoon({
               width: PANEEL_BREEDTE,
               zIndex: 9999,
               background: "linear-gradient(160deg,#1a1a1e,#0c0c0f 60%)",
-              border: "1px solid var(--border-1)",
+              border: `1px solid ${gepind ? "rgba(251,146,60,.4)" : "var(--border-1)"}`,
               borderRadius: 10,
               boxShadow: "0 8px 32px rgba(0,0,0,.6)",
               padding: "10px 12px",
@@ -653,30 +726,80 @@ function StafFooterIcoon({
                 fontWeight: 700,
                 textTransform: "uppercase",
                 letterSpacing: "0.1em",
-                color: "var(--text-3)",
+                color: gepind ? "rgba(251,146,60,.8)" : "var(--text-3)",
                 marginBottom: 8,
               }}
             >
               Staf · {staf.length}
+              {gepind ? " — sleep of klik ▲▼ om te sorteren" : ""}
             </div>
             <div style={{ display: "flex", flexDirection: "column" }}>
               {staf.map((s, i) => (
                 <div
                   key={s.id}
-                  onClick={onStafClick ? () => onStafClick(s.stafId) : undefined}
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    gap: 7,
+                    gap: 6,
                     padding: "4px 0",
                     borderTop: i > 0 ? "1px solid var(--border-0)" : "none",
-                    cursor: onStafClick ? "pointer" : "default",
                   }}
                 >
+                  {gepind && staf.length > 1 && (
+                    <div
+                      style={{ display: "flex", flexDirection: "column", gap: 1, flexShrink: 0 }}
+                    >
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleVolgorde(s, "omhoog");
+                        }}
+                        disabled={isPending || i === 0}
+                        style={{
+                          width: 14,
+                          height: 12,
+                          padding: 0,
+                          border: "none",
+                          background: "transparent",
+                          cursor: i === 0 ? "not-allowed" : "pointer",
+                          color: i === 0 ? "var(--text-3)" : "rgba(251,146,60,.8)",
+                          fontSize: 8,
+                          lineHeight: 1,
+                          opacity: i === 0 ? 0.25 : 1,
+                        }}
+                      >
+                        ▲
+                      </button>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleVolgorde(s, "omlaag");
+                        }}
+                        disabled={isPending || i === staf.length - 1}
+                        style={{
+                          width: 14,
+                          height: 12,
+                          padding: 0,
+                          border: "none",
+                          background: "transparent",
+                          cursor: i === staf.length - 1 ? "not-allowed" : "pointer",
+                          color: i === staf.length - 1 ? "var(--text-3)" : "rgba(251,146,60,.8)",
+                          fontSize: 8,
+                          lineHeight: 1,
+                          opacity: i === staf.length - 1 ? 0.25 : 1,
+                        }}
+                      >
+                        ▼
+                      </button>
+                    </div>
+                  )}
                   <span style={{ color: "var(--text-3)", display: "inline-flex", flexShrink: 0 }}>
                     <TrainerIcoon size={13} />
                   </span>
                   <span
+                    onClick={onStafClick ? () => onStafClick(s.stafId) : undefined}
                     style={{
                       fontSize: 12,
                       fontWeight: 600,
@@ -685,6 +808,7 @@ function StafFooterIcoon({
                       whiteSpace: "nowrap",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
+                      cursor: onStafClick ? "pointer" : "default",
                     }}
                   >
                     {s.naam}
