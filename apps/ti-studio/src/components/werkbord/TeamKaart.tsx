@@ -556,8 +556,8 @@ function StafFooterIcoon({
   const PANEEL_BREEDTE = kanSorteren ? 260 : 220;
 
   useEffect(() => {
-    setStaf(initStaf);
-  }, [initStaf]);
+    if (!isPending) setStaf(initStaf);
+  }, [initStaf, isPending]);
 
   function berekenPos() {
     if (!ankerRef.current) return null;
