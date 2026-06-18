@@ -3,6 +3,7 @@
 
 import Image from "next/image";
 import type { PubliekeTeamindelingData } from "@/lib/teamindeling/publieke-presentatie";
+import type { AppPagina } from "./AppFooter";
 
 const LOGO_URL = "https://ckvoranjewit.nl/wp-content/uploads/2025/12/OW-100-logo-lexvg.webp";
 
@@ -55,7 +56,7 @@ export function ToelichtingPagina({
   onTabNavigeer,
 }: {
   toelichting: PubliekeTeamindelingData["toelichting"];
-  onTabNavigeer?: (tab: string) => void;
+  onTabNavigeer?: (tab: AppPagina) => void;
 }) {
   const blokken = toelichting?.toelichtingBlokken ?? [];
 
@@ -201,7 +202,7 @@ export function ToelichtingPagina({
                   onClick={(e) => {
                     const a = (e.target as HTMLElement).closest("a");
                     if (!a) return;
-                    const tab = TAB_LINKS[a.getAttribute("href") ?? ""];
+                    const tab = TAB_LINKS[a.getAttribute("href") ?? ""] as AppPagina | undefined;
                     if (tab && onTabNavigeer) {
                       e.preventDefault();
                       onTabNavigeer(tab);
