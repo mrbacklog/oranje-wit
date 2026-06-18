@@ -413,7 +413,6 @@ export async function updateStafSortOrderInTeam(
       where: { stafId, teamId },
       data: { sortOrder },
     });
-    revalidatePath("/personen/staf");
     return { ok: true };
   } catch (err) {
     logger.warn("updateStafSortOrderInTeam mislukt:", err);
