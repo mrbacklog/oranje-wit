@@ -18,6 +18,11 @@
   text-decoration: underline;
 }
 
+/* ── Alinea-ruimte in tekst-blokken ── */
+.pt-toel-tekst p + p {
+  margin-top: 0.85em;
+}
+
 /* ── Team wissel animatie ── */
 @keyframes pt-team-in {
   from {
