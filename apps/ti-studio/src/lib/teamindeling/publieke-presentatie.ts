@@ -113,13 +113,13 @@ function bouwSpeler(r: {
 function berekenJNummersPubliek(
   teams: {
     id: string;
-    teamCategorie: string | null;
+    categorie: string | null;
     volgorde: number;
     spelers: { speler: { geboortedatum: Date | null; geboortejaar: number | null } }[];
   }[],
   peildatum: Date
 ): Map<string, string> {
-  const bTeams = teams.filter((t) => t.teamCategorie === "B_CATEGORIE");
+  const bTeams = teams.filter((t) => t.categorie === "B_CATEGORIE");
 
   const metLeeftijd = bTeams.map((t) => {
     const leeftijden = t.spelers
