@@ -191,7 +191,7 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
       selectieGroepen: {
         include: {
           spelers: { include: { speler: true } },
-          staf: { include: { staf: true } },
+          staf: { orderBy: { sortOrder: "asc" }, include: { staf: true } },
           teams: { select: { id: true } },
         },
       },
@@ -199,7 +199,7 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
         orderBy: { volgorde: "asc" },
         include: {
           spelers: { include: { speler: true } },
-          staf: { include: { staf: true } },
+          staf: { orderBy: { sortOrder: "asc" }, include: { staf: true } },
         },
       },
     },
