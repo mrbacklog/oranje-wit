@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useMemo, useTransition } from "react";
+import { useState, useMemo, useTransition, useRef } from "react";
 import type { BeheerStaf } from "../staf-actions";
-import { setStafActief } from "../staf-actions";
+import { setStafActief, hernoemStaf, verwijderStaf } from "../staf-actions";
 import { NieuweStafDialog } from "./NieuweStafDialog";
 import { StafKoppelEditor } from "@/components/staf/StafKoppelEditor";
 import { KLEUR_DOT, toonRol, type StafKoppelDoel } from "@/components/staf/staf-koppel-types";
@@ -31,6 +31,10 @@ export function StafOverzicht({ stafLeden, alleDoelen }: Props) {
   const [sortKey, setSortKey] = useState<SortKey>("naam");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [hernoemId, setHernoemId] = useState<string | null>(null);
+  const [hernoemWaarde, setHernoemWaarde] = useState("");
+  const [verwijderBevestigId, setVerwijderBevestigId] = useState<string | null>(null);
+  const hernoemInputRef = useRef<HTMLInputElement>(null);
   const [isPending, startTransition] = useTransition();
   const [optimistischActief, setOptimistischActief] = useState<Record<string, boolean>>({});
 
@@ -58,6 +62,26 @@ export function StafOverzicht({ stafLeden, alleDoelen }: Props) {
           return kopie;
         });
       }
+    });
+  }
+
+  function startHernoem(staf: BeheerStaf) {
+    setHernoemId(staf.id);
+    setHernoemWaarde(staf.naam);
+    setTimeout(() => hernoemInputRef.current?.select(), 30);
+  }
+
+  function handleHernoemOpslaan(stafId: string) {
+    startTransition(async () => {
+      await hernoemStaf(stafId, hernoemWaarde);
+      setHernoemId(null);
+    });
+  }
+
+  function handleVerwijder(stafId: string) {
+    startTransition(async () => {
+      await verwijderStaf(stafId);
+      setVerwijderBevestigId(null);
     });
   }
 
@@ -291,51 +315,218 @@ export function StafOverzicht({ stafLeden, alleDoelen }: Props) {
                   }}
                 >
                   <td style={{ padding: "0.625rem 0.875rem" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                      <div
-                        style={{
-                          width: 30,
-                          height: 30,
-                          borderRadius: "50%",
-                          background: isInactief ? "rgba(148,163,184,0.15)" : "rgba(255,107,0,.15)",
-                          border: isInactief
-                            ? "1.5px solid rgba(148,163,184,0.3)"
-                            : "1.5px solid rgba(255,107,0,.3)",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          fontSize: "0.6875rem",
-                          fontWeight: 800,
-                          color: isInactief ? "var(--text-secondary)" : "var(--accent)",
-                          flexShrink: 0,
-                        }}
-                      >
-                        {initialen}
-                      </div>
-                      <span
-                        style={{
-                          fontSize: "0.875rem",
-                          fontWeight: 600,
-                          color: "var(--text-primary)",
-                          fontStyle: isInactief ? "italic" : "normal",
-                        }}
-                      >
-                        {staf.naam}
-                      </span>
-                      {staf.openMemoCount > 0 && (
-                        <span
-                          title={`${staf.openMemoCount} open memo${staf.openMemoCount !== 1 ? "'s" : ""}`}
+                    {hernoemId === staf.id ? (
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.375rem" }}>
+                        <input
+                          ref={hernoemInputRef}
+                          value={hernoemWaarde}
+                          onChange={(e) => setHernoemWaarde(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") handleHernoemOpslaan(staf.id);
+                            if (e.key === "Escape") setHernoemId(null);
+                          }}
                           style={{
-                            fontSize: 10,
-                            color: "var(--accent)",
+                            background: "var(--surface-sunken)",
+                            border: "1px solid var(--ow-oranje-500)",
+                            borderRadius: 6,
+                            padding: "3px 8px",
+                            color: "var(--text-primary)",
+                            fontSize: "0.875rem",
+                            fontWeight: 600,
+                            outline: "none",
+                            fontFamily: "inherit",
+                            width: 180,
+                          }}
+                        />
+                        <button
+                          onClick={() => handleHernoemOpslaan(staf.id)}
+                          disabled={isPending}
+                          style={{
+                            background: "transparent",
+                            border: "none",
+                            cursor: "pointer",
+                            color: "var(--ow-oranje-500)",
+                            fontSize: "0.875rem",
+                            padding: "2px 4px",
+                          }}
+                          title="Opslaan"
+                        >
+                          ✓
+                        </button>
+                        <button
+                          onClick={() => setHernoemId(null)}
+                          style={{
+                            background: "transparent",
+                            border: "none",
+                            cursor: "pointer",
+                            color: "var(--text-secondary)",
+                            fontSize: "0.875rem",
+                            padding: "2px 4px",
+                          }}
+                          title="Annuleren"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ) : verwijderBevestigId === staf.id ? (
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.375rem" }}>
+                        <span style={{ fontSize: "0.8125rem", color: "#ef4444" }}>
+                          Verwijder {staf.naam}?
+                        </span>
+                        <button
+                          onClick={() => handleVerwijder(staf.id)}
+                          disabled={isPending}
+                          style={{
+                            background: "rgba(239,68,68,0.15)",
+                            border: "1px solid rgba(239,68,68,0.4)",
+                            borderRadius: 5,
+                            cursor: "pointer",
+                            color: "#ef4444",
+                            fontSize: "0.75rem",
                             fontWeight: 700,
-                            marginLeft: 2,
+                            padding: "2px 8px",
+                            fontFamily: "inherit",
                           }}
                         >
-                          ▲
+                          Ja
+                        </button>
+                        <button
+                          onClick={() => setVerwijderBevestigId(null)}
+                          style={{
+                            background: "transparent",
+                            border: "1px solid var(--border-default)",
+                            borderRadius: 5,
+                            cursor: "pointer",
+                            color: "var(--text-secondary)",
+                            fontSize: "0.75rem",
+                            padding: "2px 8px",
+                            fontFamily: "inherit",
+                          }}
+                        >
+                          Nee
+                        </button>
+                      </div>
+                    ) : (
+                      <div
+                        className="staf-naamrij"
+                        style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
+                        onMouseEnter={(e) => {
+                          const acties = e.currentTarget.querySelector(
+                            ".staf-acties"
+                          ) as HTMLElement | null;
+                          if (acties) acties.style.display = "flex";
+                        }}
+                        onMouseLeave={(e) => {
+                          const acties = e.currentTarget.querySelector(
+                            ".staf-acties"
+                          ) as HTMLElement | null;
+                          if (acties) acties.style.display = "none";
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: 30,
+                            height: 30,
+                            borderRadius: "50%",
+                            background: isInactief
+                              ? "rgba(148,163,184,0.15)"
+                              : "rgba(255,107,0,.15)",
+                            border: isInactief
+                              ? "1.5px solid rgba(148,163,184,0.3)"
+                              : "1.5px solid rgba(255,107,0,.3)",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontSize: "0.6875rem",
+                            fontWeight: 800,
+                            color: isInactief ? "var(--text-secondary)" : "var(--accent)",
+                            flexShrink: 0,
+                          }}
+                        >
+                          {initialen}
+                        </div>
+                        <span
+                          style={{
+                            fontSize: "0.875rem",
+                            fontWeight: 600,
+                            color: "var(--text-primary)",
+                            fontStyle: isInactief ? "italic" : "normal",
+                          }}
+                        >
+                          {staf.naam}
                         </span>
-                      )}
-                    </div>
+                        {staf.openMemoCount > 0 && (
+                          <span
+                            title={`${staf.openMemoCount} open memo${staf.openMemoCount !== 1 ? "'s" : ""}`}
+                            style={{
+                              fontSize: 10,
+                              color: "var(--accent)",
+                              fontWeight: 700,
+                              marginLeft: 2,
+                            }}
+                          >
+                            ▲
+                          </span>
+                        )}
+                        <span
+                          className="staf-acties"
+                          style={{ display: "none", marginLeft: "auto", gap: "0.25rem" }}
+                        >
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              startHernoem(staf);
+                            }}
+                            title="Naam wijzigen"
+                            style={{
+                              background: "transparent",
+                              border: "none",
+                              cursor: "pointer",
+                              color: "var(--text-secondary)",
+                              fontSize: "0.8rem",
+                              padding: "2px 5px",
+                              borderRadius: 4,
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.color = "var(--text-primary)";
+                              e.currentTarget.style.background = "var(--surface-raised)";
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.color = "var(--text-secondary)";
+                              e.currentTarget.style.background = "transparent";
+                            }}
+                          >
+                            ✎
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setVerwijderBevestigId(staf.id);
+                            }}
+                            title="Staflid verwijderen"
+                            style={{
+                              background: "transparent",
+                              border: "none",
+                              cursor: "pointer",
+                              color: "var(--text-secondary)",
+                              fontSize: "0.8rem",
+                              padding: "2px 5px",
+                              borderRadius: 4,
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.color = "#ef4444";
+                              e.currentTarget.style.background = "rgba(239,68,68,0.1)";
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.color = "var(--text-secondary)";
+                              e.currentTarget.style.background = "transparent";
+                            }}
+                          >
+                            🗑
+                          </button>
+                        </span>
+                      </div>
+                    )}
                   </td>
                   <td
                     style={{

@@ -275,3 +275,28 @@ export async function verwijderHandmatigeSpeler(
     return { ok: false, error: "Kon speler niet verwijderen" };
   }
 }
+
+export async function hernoemHandmatigeSpeler(
+  spelerId: string,
+  roepnaam: string,
+  achternaam: string
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  try {
+    await requireTC();
+    if (!spelerId.startsWith("HANDMATIG-"))
+      return { ok: false, error: "Alleen handmatig aangemaakte spelers kunnen hernoemd worden" };
+    const schoneRoepnaam = roepnaam.trim();
+    const schoneAchternaam = achternaam.trim();
+    if (!schoneRoepnaam || !schoneAchternaam)
+      return { ok: false, error: "Roepnaam en achternaam mogen niet leeg zijn" };
+    await prisma.speler.update({
+      where: { id: spelerId },
+      data: { roepnaam: schoneRoepnaam, achternaam: schoneAchternaam },
+    });
+    revalidatePath("/personen/spelers");
+    return { ok: true };
+  } catch (err) {
+    logger.warn("hernoemHandmatigeSpeler mislukt:", err);
+    return { ok: false, error: "Kon naam niet bijwerken" };
+  }
+}

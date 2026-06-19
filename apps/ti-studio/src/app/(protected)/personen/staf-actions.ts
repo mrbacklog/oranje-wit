@@ -455,3 +455,39 @@ export async function maakStafAan(data: {
     return { ok: false, error: "Kon staflid niet aanmaken" };
   }
 }
+
+export async function hernoemStaf(
+  stafId: string,
+  naam: string
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  try {
+    await requireTC();
+    const schoneNaam = naam.trim();
+    if (!schoneNaam) return { ok: false, error: "Naam mag niet leeg zijn" };
+    await prisma.staf.update({ where: { id: stafId }, data: { naam: schoneNaam } });
+    revalidatePath("/personen/staf");
+    return { ok: true };
+  } catch (err) {
+    logger.warn("hernoemStaf mislukt:", err);
+    return { ok: false, error: "Kon naam niet bijwerken" };
+  }
+}
+
+export async function verwijderStaf(
+  stafId: string
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  try {
+    await requireTC();
+    await prisma.$transaction([
+      prisma.teamStaf.deleteMany({ where: { stafId } }),
+      prisma.selectieStaf.deleteMany({ where: { stafId } }),
+      prisma.werkitem.deleteMany({ where: { stafId } }),
+      prisma.staf.delete({ where: { id: stafId } }),
+    ]);
+    revalidatePath("/personen/staf");
+    return { ok: true };
+  } catch (err) {
+    logger.warn("verwijderStaf mislukt:", err);
+    return { ok: false, error: "Kon staflid niet verwijderen" };
+  }
+}

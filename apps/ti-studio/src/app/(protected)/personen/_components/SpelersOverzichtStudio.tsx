@@ -8,7 +8,7 @@ import {
   formatKorfbalLeeftijd,
 } from "@oranje-wit/types";
 import type { StudioSpeler } from "../actions";
-import { verwijderHandmatigeSpeler } from "../speler-edit-actions";
+import { verwijderHandmatigeSpeler, hernoemHandmatigeSpeler } from "../speler-edit-actions";
 import {
   StatusEditor,
   IndelingEditor,
@@ -79,6 +79,9 @@ export default function SpelersOverzichtStudio({
   const [sortKey, setSortKey] = useState<SortKey>("achternaam");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
   const [verwijderBezig, setVerwijderBezig] = useState<string | null>(null);
+  const [hernoemSpelerId, setHernoemSpelerId] = useState<string | null>(null);
+  const [hernoemRoepnaam, setHernoemRoepnaam] = useState("");
+  const [hernoemAchternaam, setHernoemAchternaam] = useState("");
 
   async function handleVerwijder(speler: StudioSpeler) {
     const ok = window.confirm(
@@ -91,6 +94,17 @@ export default function SpelersOverzichtStudio({
     const res = await verwijderHandmatigeSpeler(speler.id);
     setVerwijderBezig(null);
     if (res.ok) {
+      router.refresh();
+    } else {
+      setFoutMelding(res.error);
+    }
+  }
+
+  async function handleHernoemOpslaan() {
+    if (!hernoemSpelerId) return;
+    const res = await hernoemHandmatigeSpeler(hernoemSpelerId, hernoemRoepnaam, hernoemAchternaam);
+    if (res.ok) {
+      setHernoemSpelerId(null);
       router.refresh();
     } else {
       setFoutMelding(res.error);
@@ -224,506 +238,678 @@ export default function SpelersOverzichtStudio({
   });
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-      {foutMelding && (
-        <div
-          style={{
-            padding: "0.5rem 0.75rem",
-            borderRadius: 8,
-            background: "rgba(239,68,68,0.12)",
-            border: "1px solid rgba(239,68,68,0.35)",
-            color: "#f87171",
-            fontSize: "0.8125rem",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: "0.5rem",
-          }}
-        >
-          <span>⚠ {foutMelding}</span>
-          <button
-            type="button"
-            onClick={() => setFoutMelding(null)}
+    <>
+      <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+        {foutMelding && (
+          <div
             style={{
-              background: "none",
-              border: "none",
-              color: "inherit",
-              cursor: "pointer",
-              fontSize: "1rem",
-              padding: 0,
+              padding: "0.5rem 0.75rem",
+              borderRadius: 8,
+              background: "rgba(239,68,68,0.12)",
+              border: "1px solid rgba(239,68,68,0.35)",
+              color: "#f87171",
+              fontSize: "0.8125rem",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "0.5rem",
             }}
           >
-            ×
-          </button>
-        </div>
-      )}
-      {/* Filterbar */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.625rem", alignItems: "center" }}>
-        <input
-          type="search"
-          placeholder="Zoek op naam..."
-          value={zoekterm}
-          onChange={(e) => setZoekterm(e.target.value)}
-          style={{
-            background: "var(--surface-sunken)",
-            border: "1px solid var(--border-default)",
-            borderRadius: 8,
-            padding: "0.375rem 0.75rem",
-            color: "var(--text-primary)",
-            fontSize: "0.875rem",
-            outline: "none",
-            width: 200,
-            fontFamily: "inherit",
-          }}
-        />
-        <div style={{ display: "flex", gap: "0.375rem", flexWrap: "wrap" }}>
-          {(
-            [
-              { value: "allen", label: "Allen" },
-              { value: "BESCHIKBAAR", label: "Beschikbaar" },
-              { value: "TWIJFELT", label: "Twijfelt" },
-              { value: "GAAT_STOPPEN", label: "Gaat stoppen" },
-              { value: "NIEUW", label: "Nieuw" },
-              { value: "ALGEMEEN_RESERVE", label: "Reserve" },
-            ] as const
-          ).map(({ value, label }) => (
+            <span>⚠ {foutMelding}</span>
             <button
-              key={value}
-              onClick={() => setStatusFilter(value)}
-              style={chipStyle(statusFilter === value)}
+              type="button"
+              onClick={() => setFoutMelding(null)}
+              style={{
+                background: "none",
+                border: "none",
+                color: "inherit",
+                cursor: "pointer",
+                fontSize: "1rem",
+                padding: 0,
+              }}
             >
-              {label}
+              ×
             </button>
-          ))}
-        </div>
-        <select
-          value={huidigTeamFilter}
-          onChange={(e) => setHuidigTeamFilter(e.target.value)}
-          style={dropdownStyle}
-        >
-          <option value="allen">Huidig team: Allen</option>
-          {huidigeTeams.map((t) => (
-            <option key={t} value={t}>
-              {t}
-            </option>
-          ))}
-        </select>
-        <select
-          value={indelingFilter}
-          onChange={(e) => setIndelingFilter(e.target.value)}
-          style={dropdownStyle}
-        >
-          <option value="allen">Indeling: Allen</option>
-          {indelingTeams.map((t) => (
-            <option key={t} value={t}>
-              {t}
-            </option>
-          ))}
-        </select>
-        <button onClick={() => setMemoFilter((v) => !v)} style={chipStyle(memoFilter)}>
-          ▲ Memo
-        </button>
-        <span style={{ marginLeft: "auto", fontSize: "0.8125rem", color: "var(--text-secondary)" }}>
-          {gefilterd.length} speler{gefilterd.length !== 1 ? "s" : ""}
-        </span>
-      </div>
-
-      {/* Tabel */}
-      <div
-        style={{
-          background: "var(--surface-card)",
-          borderRadius: 12,
-          overflow: "hidden",
-          border: "1px solid var(--border-default)",
-        }}
-      >
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr style={{ borderBottom: "1px solid var(--border-default)" }}>
-              <th onClick={() => handleSort("achternaam")} style={thStyle(true)}>
-                Naam
-                <SortIcon col="achternaam" />
-              </th>
-              <th onClick={() => handleSort("geboortejaar")} style={thStyle(true)}>
-                Jaar
-                <SortIcon col="geboortejaar" />
-              </th>
-              <th onClick={() => handleSort("status")} style={thStyle(true)}>
-                Status
-                <SortIcon col="status" />
-              </th>
-              <th onClick={() => handleSort("gezienStatus")} style={thStyle(true)}>
-                Gezien
-                <SortIcon col="gezienStatus" />
-              </th>
-              <th onClick={() => handleSort("huidigTeam")} style={thStyle(true)}>
-                Huidig team
-                <SortIcon col="huidigTeam" />
-              </th>
-              <th onClick={() => handleSort("indeling")} style={thStyle(true)}>
-                Indeling
-                <SortIcon col="indeling" />
-              </th>
-              <th
-                onClick={() => handleSort("memo")}
-                style={{ ...thStyle(true), textAlign: "center" }}
+          </div>
+        )}
+        {/* Filterbar */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.625rem", alignItems: "center" }}>
+          <input
+            type="search"
+            placeholder="Zoek op naam..."
+            value={zoekterm}
+            onChange={(e) => setZoekterm(e.target.value)}
+            style={{
+              background: "var(--surface-sunken)",
+              border: "1px solid var(--border-default)",
+              borderRadius: 8,
+              padding: "0.375rem 0.75rem",
+              color: "var(--text-primary)",
+              fontSize: "0.875rem",
+              outline: "none",
+              width: 200,
+              fontFamily: "inherit",
+            }}
+          />
+          <div style={{ display: "flex", gap: "0.375rem", flexWrap: "wrap" }}>
+            {(
+              [
+                { value: "allen", label: "Allen" },
+                { value: "BESCHIKBAAR", label: "Beschikbaar" },
+                { value: "TWIJFELT", label: "Twijfelt" },
+                { value: "GAAT_STOPPEN", label: "Gaat stoppen" },
+                { value: "NIEUW", label: "Nieuw" },
+                { value: "ALGEMEEN_RESERVE", label: "Reserve" },
+              ] as const
+            ).map(({ value, label }) => (
+              <button
+                key={value}
+                onClick={() => setStatusFilter(value)}
+                style={chipStyle(statusFilter === value)}
               >
-                ▲
-                <SortIcon col="memo" />
-              </th>
-              <th style={{ ...thStyle(false), width: 40 }} aria-label="Acties" />
-            </tr>
-          </thead>
-          <tbody>
-            {gefilterd.length === 0 && (
-              <tr>
-                <td
-                  colSpan={8}
-                  style={{
-                    padding: "2rem",
-                    textAlign: "center",
-                    color: "var(--text-secondary)",
-                    fontSize: "0.875rem",
-                  }}
+                {label}
+              </button>
+            ))}
+          </div>
+          <select
+            value={huidigTeamFilter}
+            onChange={(e) => setHuidigTeamFilter(e.target.value)}
+            style={dropdownStyle}
+          >
+            <option value="allen">Huidig team: Allen</option>
+            {huidigeTeams.map((t) => (
+              <option key={t} value={t}>
+                {t}
+              </option>
+            ))}
+          </select>
+          <select
+            value={indelingFilter}
+            onChange={(e) => setIndelingFilter(e.target.value)}
+            style={dropdownStyle}
+          >
+            <option value="allen">Indeling: Allen</option>
+            {indelingTeams.map((t) => (
+              <option key={t} value={t}>
+                {t}
+              </option>
+            ))}
+          </select>
+          <button onClick={() => setMemoFilter((v) => !v)} style={chipStyle(memoFilter)}>
+            ▲ Memo
+          </button>
+          <span
+            style={{ marginLeft: "auto", fontSize: "0.8125rem", color: "var(--text-secondary)" }}
+          >
+            {gefilterd.length} speler{gefilterd.length !== 1 ? "s" : ""}
+          </span>
+        </div>
+
+        {/* Tabel */}
+        <div
+          style={{
+            background: "var(--surface-card)",
+            borderRadius: 12,
+            overflow: "hidden",
+            border: "1px solid var(--border-default)",
+          }}
+        >
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr style={{ borderBottom: "1px solid var(--border-default)" }}>
+                <th onClick={() => handleSort("achternaam")} style={thStyle(true)}>
+                  Naam
+                  <SortIcon col="achternaam" />
+                </th>
+                <th onClick={() => handleSort("geboortejaar")} style={thStyle(true)}>
+                  Jaar
+                  <SortIcon col="geboortejaar" />
+                </th>
+                <th onClick={() => handleSort("status")} style={thStyle(true)}>
+                  Status
+                  <SortIcon col="status" />
+                </th>
+                <th onClick={() => handleSort("gezienStatus")} style={thStyle(true)}>
+                  Gezien
+                  <SortIcon col="gezienStatus" />
+                </th>
+                <th onClick={() => handleSort("huidigTeam")} style={thStyle(true)}>
+                  Huidig team
+                  <SortIcon col="huidigTeam" />
+                </th>
+                <th onClick={() => handleSort("indeling")} style={thStyle(true)}>
+                  Indeling
+                  <SortIcon col="indeling" />
+                </th>
+                <th
+                  onClick={() => handleSort("memo")}
+                  style={{ ...thStyle(true), textAlign: "center" }}
                 >
-                  Geen spelers gevonden
-                </td>
+                  ▲
+                  <SortIcon col="memo" />
+                </th>
+                <th style={{ ...thStyle(false), width: 40 }} aria-label="Acties" />
               </tr>
-            )}
-            {gefilterd.map((speler, i) => {
-              const init =
-                `${speler.roepnaam.charAt(0)}${(speler.achternaam.split(" ").at(-1) ?? speler.achternaam).charAt(0)}`.toUpperCase();
-              const geslachtKleur = speler.geslacht === "V" ? "#f9a8d4" : "#93c5fd";
-              const geslachtBg =
-                speler.geslacht === "V" ? "rgba(236,72,153,0.15)" : "rgba(59,130,246,0.15)";
-              const statusEffectief = optimistischStatus[speler.id] ?? speler.status;
-              const statusDot = STATUS_DOT[statusEffectief] ?? "#6b7280";
-              // Gezien is vereenvoudigd tot ONGEZIEN/GROEN. Legacy waarden
-              // (GEEL/ORANJE/ROOD) worden als "gezien" behandeld.
-              const gezienServer = speler.gezienStatus === "ONGEZIEN" ? "ONGEZIEN" : "GROEN";
-              const gezienEffectief: "ONGEZIEN" | "GROEN" =
-                optimistischGezien[speler.id] ?? gezienServer;
-              const huidigKleur =
-                KLEUR_DOT[speler.huidigTeamKleur?.toLowerCase() ?? ""] ??
-                KLEUR_DOT[speler.huidigTeamKleur ?? ""] ??
-                "#6b7280";
-              // Gebruik optimistische indeling als die bestaat, anders de server-waarde
-              const indelingTeam =
-                speler.id in optimistischIndeling
-                  ? optimistischIndeling[speler.id]
-                  : speler.huidigIndelingTeam;
-              const indelingKleur =
-                KLEUR_DOT[indelingTeam?.kleur?.toLowerCase() ?? ""] ??
-                KLEUR_DOT[indelingTeam?.kleur ?? ""] ??
-                "#6b7280";
-
-              return (
-                <tr
-                  key={speler.id}
-                  style={{
-                    borderBottom:
-                      i < gefilterd.length - 1 ? "1px solid var(--border-default)" : "none",
-                    transition: "background 0.1s",
-                  }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLTableRowElement).style.background =
-                      "var(--surface-raised)";
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLTableRowElement).style.background = "transparent";
-                  }}
-                >
-                  {/* Naam + avatar — klik opent profiel */}
+            </thead>
+            <tbody>
+              {gefilterd.length === 0 && (
+                <tr>
                   <td
-                    style={{ padding: "0.625rem 0.875rem", cursor: "pointer" }}
-                    onClick={() => onOpenProfiel(speler.id)}
-                    title="Open spelerprofiel"
+                    colSpan={8}
+                    style={{
+                      padding: "2rem",
+                      textAlign: "center",
+                      color: "var(--text-secondary)",
+                      fontSize: "0.875rem",
+                    }}
                   >
-                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                      <div
-                        style={{
-                          width: 30,
-                          height: 30,
-                          borderRadius: "50%",
-                          background: geslachtBg,
-                          border: `1.5px solid ${geslachtKleur}`,
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          fontSize: "0.6875rem",
-                          fontWeight: 800,
-                          color: geslachtKleur,
-                          flexShrink: 0,
-                        }}
-                      >
-                        {init}
-                      </div>
-                      <span
-                        style={{
-                          fontSize: "0.875rem",
-                          fontWeight: 600,
-                          color: "var(--text-primary)",
-                        }}
-                      >
-                        {speler.roepnaam} {speler.achternaam}
-                      </span>
-                    </div>
-                  </td>
-
-                  {/* Jaar */}
-                  <td style={{ padding: "0.625rem 0.875rem" }}>
-                    <span
-                      style={{
-                        fontSize: "0.8125rem",
-                        color: "var(--text-secondary)",
-                        fontVariantNumeric: "tabular-nums",
-                      }}
-                    >
-                      {speler.geboortejaar} ·{" "}
-                      {formatKorfbalLeeftijd(
-                        berekenKorfbalLeeftijd(
-                          speler.geboortedatum,
-                          speler.geboortejaar ?? 0,
-                          HUIDIGE_PEILDATUM
-                        )
-                      )}
-                    </span>
-                  </td>
-
-                  {/* Status — inline bewerkbaar */}
-                  <td style={{ padding: "0.625rem 0.875rem" }}>
-                    {kadersId ? (
-                      <StatusEditor
-                        spelerId={speler.id}
-                        huidigeStatus={statusEffectief}
-                        kadersId={kadersId}
-                        open={editorCel?.spelerId === speler.id && editorCel.kolom === "status"}
-                        onOpen={() => setEditorCel({ spelerId: speler.id, kolom: "status" })}
-                        onClose={() => setEditorCel(null)}
-                        onOptimistischUpdate={(nieuw) =>
-                          setOptimistischStatus((prev) => ({ ...prev, [speler.id]: nieuw }))
-                        }
-                        onFout={(fout) => {
-                          setOptimistischStatus((prev) => {
-                            const kopie = { ...prev };
-                            delete kopie[speler.id];
-                            return kopie;
-                          });
-                          setFoutMelding(fout);
-                        }}
-                        onRefresh={() => router.refresh()}
-                      />
-                    ) : (
-                      <span
-                        style={{
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: "0.35rem",
-                          fontSize: "0.75rem",
-                          fontWeight: 600,
-                          color: "var(--text-primary)",
-                        }}
-                      >
-                        <span
-                          style={{
-                            width: 7,
-                            height: 7,
-                            borderRadius: "50%",
-                            background: STATUS_DOT[statusEffectief] ?? "#6b7280",
-                            flexShrink: 0,
-                          }}
-                        />
-                        {STATUS_LABELS[statusEffectief] ?? statusEffectief}
-                      </span>
-                    )}
-                  </td>
-
-                  {/* Gezien — toggle groen/grijs */}
-                  <td style={{ padding: "0.625rem 0.875rem" }}>
-                    {kadersId ? (
-                      <GezienToggle
-                        spelerId={speler.id}
-                        kadersId={kadersId}
-                        gezien={gezienEffectief === "GROEN"}
-                        onOptimistischUpdate={(gezien) =>
-                          setOptimistischGezien((prev) => ({
-                            ...prev,
-                            [speler.id]: gezien ? "GROEN" : "ONGEZIEN",
-                          }))
-                        }
-                        onFout={(fout) => {
-                          setOptimistischGezien((prev) => {
-                            const kopie = { ...prev };
-                            delete kopie[speler.id];
-                            return kopie;
-                          });
-                          setFoutMelding(fout);
-                        }}
-                        onRefresh={() => router.refresh()}
-                      />
-                    ) : (
-                      <span
-                        style={{
-                          fontSize: "0.95rem",
-                          fontWeight: 700,
-                          color: gezienEffectief === "GROEN" ? "#22c55e" : "#4b5563",
-                          opacity: gezienEffectief === "GROEN" ? 1 : 0.35,
-                        }}
-                      >
-                        ✓
-                      </span>
-                    )}
-                  </td>
-
-                  {/* Huidig team */}
-                  <td style={{ padding: "0.625rem 0.875rem" }}>
-                    {speler.huidigTeamNaam ? (
-                      <span
-                        style={{
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: "0.35rem",
-                          background: "var(--surface-raised)",
-                          border: "1px solid var(--border-default)",
-                          borderRadius: 6,
-                          padding: "0.2rem 0.5rem",
-                          fontSize: "0.75rem",
-                          color: "var(--text-primary)",
-                        }}
-                      >
-                        <span
-                          style={{
-                            width: 6,
-                            height: 6,
-                            borderRadius: "50%",
-                            background: huidigKleur,
-                          }}
-                        />
-                        {speler.huidigTeamNaam}
-                      </span>
-                    ) : (
-                      <span style={{ color: "var(--text-secondary)", fontSize: "0.8125rem" }}>
-                        —
-                      </span>
-                    )}
-                  </td>
-
-                  {/* Indelingsteam — inline bewerkbaar */}
-                  <td style={{ padding: "0.625rem 0.875rem" }}>
-                    {versieId ? (
-                      <IndelingEditor
-                        spelerId={speler.id}
-                        versieId={versieId}
-                        teams={versieDoelen}
-                        huidigIndelingTeam={indelingTeam ?? null}
-                        open={editorCel?.spelerId === speler.id && editorCel.kolom === "indeling"}
-                        onOpen={() => setEditorCel({ spelerId: speler.id, kolom: "indeling" })}
-                        onClose={() => setEditorCel(null)}
-                        onOptimistischUpdate={(team) =>
-                          setOptimistischIndeling((prev) => ({ ...prev, [speler.id]: team }))
-                        }
-                        onFout={(fout) => {
-                          setOptimistischIndeling((prev) => {
-                            const kopie = { ...prev };
-                            delete kopie[speler.id];
-                            return kopie;
-                          });
-                          setFoutMelding(fout);
-                        }}
-                        onRefresh={() => router.refresh()}
-                        spelernaam={speler.roepnaam}
-                      />
-                    ) : indelingTeam ? (
-                      <span
-                        style={{
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: "0.35rem",
-                          background: "rgba(34,197,94,0.1)",
-                          border: "1px solid rgba(34,197,94,0.25)",
-                          borderRadius: 6,
-                          padding: "0.15rem 0.5rem",
-                          fontSize: "0.75rem",
-                          color: "#4ade80",
-                          fontWeight: 500,
-                        }}
-                      >
-                        <span
-                          style={{
-                            width: 6,
-                            height: 6,
-                            borderRadius: "50%",
-                            background:
-                              KLEUR_DOT[(indelingTeam.kleur ?? "").toLowerCase()] ??
-                              KLEUR_DOT[indelingTeam.kleur ?? ""] ??
-                              "#6b7280",
-                            flexShrink: 0,
-                          }}
-                        />
-                        {indelingTeam.naam}
-                      </span>
-                    ) : (
-                      <span style={{ color: "var(--text-secondary)", fontSize: "0.8125rem" }}>
-                        —
-                      </span>
-                    )}
-                  </td>
-
-                  {/* Memo indicator */}
-                  <td style={{ padding: "0.625rem 0.875rem", textAlign: "center" }}>
-                    {speler.heeftActiefMemo && (
-                      <span
-                        style={{
-                          fontSize: "0.75rem",
-                          color: "var(--ow-oranje-500)",
-                          fontWeight: 700,
-                        }}
-                      >
-                        ▲
-                      </span>
-                    )}
-                  </td>
-
-                  {/* Verwijderen — alleen voor handmatig aangemaakte spelers */}
-                  <td style={{ padding: "0.625rem 0.5rem", textAlign: "center" }}>
-                    {speler.id.startsWith("HANDMATIG-") && (
-                      <button
-                        onClick={() => handleVerwijder(speler)}
-                        disabled={verwijderBezig === speler.id}
-                        title="Handmatige speler verwijderen"
-                        aria-label={`Verwijder ${speler.roepnaam} ${speler.achternaam}`}
-                        style={{
-                          background: "transparent",
-                          border: "none",
-                          cursor: verwijderBezig === speler.id ? "wait" : "pointer",
-                          color: "var(--text-secondary)",
-                          fontSize: "0.95rem",
-                          lineHeight: 1,
-                          padding: "0.25rem",
-                          borderRadius: 6,
-                          opacity: verwijderBezig === speler.id ? 0.4 : 0.7,
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.color = "#ef4444";
-                          e.currentTarget.style.background = "rgba(239,68,68,0.12)";
-                          e.currentTarget.style.opacity = "1";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.color = "var(--text-secondary)";
-                          e.currentTarget.style.background = "transparent";
-                          e.currentTarget.style.opacity = "0.7";
-                        }}
-                      >
-                        🗑
-                      </button>
-                    )}
+                    Geen spelers gevonden
                   </td>
                 </tr>
-              );
-            })}
-          </tbody>
-        </table>
+              )}
+              {gefilterd.map((speler, i) => {
+                const init =
+                  `${speler.roepnaam.charAt(0)}${(speler.achternaam.split(" ").at(-1) ?? speler.achternaam).charAt(0)}`.toUpperCase();
+                const geslachtKleur = speler.geslacht === "V" ? "#f9a8d4" : "#93c5fd";
+                const geslachtBg =
+                  speler.geslacht === "V" ? "rgba(236,72,153,0.15)" : "rgba(59,130,246,0.15)";
+                const statusEffectief = optimistischStatus[speler.id] ?? speler.status;
+                const statusDot = STATUS_DOT[statusEffectief] ?? "#6b7280";
+                // Gezien is vereenvoudigd tot ONGEZIEN/GROEN. Legacy waarden
+                // (GEEL/ORANJE/ROOD) worden als "gezien" behandeld.
+                const gezienServer = speler.gezienStatus === "ONGEZIEN" ? "ONGEZIEN" : "GROEN";
+                const gezienEffectief: "ONGEZIEN" | "GROEN" =
+                  optimistischGezien[speler.id] ?? gezienServer;
+                const huidigKleur =
+                  KLEUR_DOT[speler.huidigTeamKleur?.toLowerCase() ?? ""] ??
+                  KLEUR_DOT[speler.huidigTeamKleur ?? ""] ??
+                  "#6b7280";
+                // Gebruik optimistische indeling als die bestaat, anders de server-waarde
+                const indelingTeam =
+                  speler.id in optimistischIndeling
+                    ? optimistischIndeling[speler.id]
+                    : speler.huidigIndelingTeam;
+                const indelingKleur =
+                  KLEUR_DOT[indelingTeam?.kleur?.toLowerCase() ?? ""] ??
+                  KLEUR_DOT[indelingTeam?.kleur ?? ""] ??
+                  "#6b7280";
+
+                return (
+                  <tr
+                    key={speler.id}
+                    style={{
+                      borderBottom:
+                        i < gefilterd.length - 1 ? "1px solid var(--border-default)" : "none",
+                      transition: "background 0.1s",
+                    }}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget as HTMLTableRowElement).style.background =
+                        "var(--surface-raised)";
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLTableRowElement).style.background = "transparent";
+                    }}
+                  >
+                    {/* Naam + avatar — klik opent profiel */}
+                    <td
+                      style={{ padding: "0.625rem 0.875rem", cursor: "pointer" }}
+                      onClick={() => onOpenProfiel(speler.id)}
+                      title="Open spelerprofiel"
+                    >
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                        <div
+                          style={{
+                            width: 30,
+                            height: 30,
+                            borderRadius: "50%",
+                            background: geslachtBg,
+                            border: `1.5px solid ${geslachtKleur}`,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontSize: "0.6875rem",
+                            fontWeight: 800,
+                            color: geslachtKleur,
+                            flexShrink: 0,
+                          }}
+                        >
+                          {init}
+                        </div>
+                        <span
+                          style={{
+                            fontSize: "0.875rem",
+                            fontWeight: 600,
+                            color: "var(--text-primary)",
+                          }}
+                        >
+                          {speler.roepnaam} {speler.achternaam}
+                        </span>
+                      </div>
+                    </td>
+
+                    {/* Jaar */}
+                    <td style={{ padding: "0.625rem 0.875rem" }}>
+                      <span
+                        style={{
+                          fontSize: "0.8125rem",
+                          color: "var(--text-secondary)",
+                          fontVariantNumeric: "tabular-nums",
+                        }}
+                      >
+                        {speler.geboortejaar} ·{" "}
+                        {formatKorfbalLeeftijd(
+                          berekenKorfbalLeeftijd(
+                            speler.geboortedatum,
+                            speler.geboortejaar ?? 0,
+                            HUIDIGE_PEILDATUM
+                          )
+                        )}
+                      </span>
+                    </td>
+
+                    {/* Status — inline bewerkbaar */}
+                    <td style={{ padding: "0.625rem 0.875rem" }}>
+                      {kadersId ? (
+                        <StatusEditor
+                          spelerId={speler.id}
+                          huidigeStatus={statusEffectief}
+                          kadersId={kadersId}
+                          open={editorCel?.spelerId === speler.id && editorCel.kolom === "status"}
+                          onOpen={() => setEditorCel({ spelerId: speler.id, kolom: "status" })}
+                          onClose={() => setEditorCel(null)}
+                          onOptimistischUpdate={(nieuw) =>
+                            setOptimistischStatus((prev) => ({ ...prev, [speler.id]: nieuw }))
+                          }
+                          onFout={(fout) => {
+                            setOptimistischStatus((prev) => {
+                              const kopie = { ...prev };
+                              delete kopie[speler.id];
+                              return kopie;
+                            });
+                            setFoutMelding(fout);
+                          }}
+                          onRefresh={() => router.refresh()}
+                        />
+                      ) : (
+                        <span
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "0.35rem",
+                            fontSize: "0.75rem",
+                            fontWeight: 600,
+                            color: "var(--text-primary)",
+                          }}
+                        >
+                          <span
+                            style={{
+                              width: 7,
+                              height: 7,
+                              borderRadius: "50%",
+                              background: STATUS_DOT[statusEffectief] ?? "#6b7280",
+                              flexShrink: 0,
+                            }}
+                          />
+                          {STATUS_LABELS[statusEffectief] ?? statusEffectief}
+                        </span>
+                      )}
+                    </td>
+
+                    {/* Gezien — toggle groen/grijs */}
+                    <td style={{ padding: "0.625rem 0.875rem" }}>
+                      {kadersId ? (
+                        <GezienToggle
+                          spelerId={speler.id}
+                          kadersId={kadersId}
+                          gezien={gezienEffectief === "GROEN"}
+                          onOptimistischUpdate={(gezien) =>
+                            setOptimistischGezien((prev) => ({
+                              ...prev,
+                              [speler.id]: gezien ? "GROEN" : "ONGEZIEN",
+                            }))
+                          }
+                          onFout={(fout) => {
+                            setOptimistischGezien((prev) => {
+                              const kopie = { ...prev };
+                              delete kopie[speler.id];
+                              return kopie;
+                            });
+                            setFoutMelding(fout);
+                          }}
+                          onRefresh={() => router.refresh()}
+                        />
+                      ) : (
+                        <span
+                          style={{
+                            fontSize: "0.95rem",
+                            fontWeight: 700,
+                            color: gezienEffectief === "GROEN" ? "#22c55e" : "#4b5563",
+                            opacity: gezienEffectief === "GROEN" ? 1 : 0.35,
+                          }}
+                        >
+                          ✓
+                        </span>
+                      )}
+                    </td>
+
+                    {/* Huidig team */}
+                    <td style={{ padding: "0.625rem 0.875rem" }}>
+                      {speler.huidigTeamNaam ? (
+                        <span
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "0.35rem",
+                            background: "var(--surface-raised)",
+                            border: "1px solid var(--border-default)",
+                            borderRadius: 6,
+                            padding: "0.2rem 0.5rem",
+                            fontSize: "0.75rem",
+                            color: "var(--text-primary)",
+                          }}
+                        >
+                          <span
+                            style={{
+                              width: 6,
+                              height: 6,
+                              borderRadius: "50%",
+                              background: huidigKleur,
+                            }}
+                          />
+                          {speler.huidigTeamNaam}
+                        </span>
+                      ) : (
+                        <span style={{ color: "var(--text-secondary)", fontSize: "0.8125rem" }}>
+                          —
+                        </span>
+                      )}
+                    </td>
+
+                    {/* Indelingsteam — inline bewerkbaar */}
+                    <td style={{ padding: "0.625rem 0.875rem" }}>
+                      {versieId ? (
+                        <IndelingEditor
+                          spelerId={speler.id}
+                          versieId={versieId}
+                          teams={versieDoelen}
+                          huidigIndelingTeam={indelingTeam ?? null}
+                          open={editorCel?.spelerId === speler.id && editorCel.kolom === "indeling"}
+                          onOpen={() => setEditorCel({ spelerId: speler.id, kolom: "indeling" })}
+                          onClose={() => setEditorCel(null)}
+                          onOptimistischUpdate={(team) =>
+                            setOptimistischIndeling((prev) => ({ ...prev, [speler.id]: team }))
+                          }
+                          onFout={(fout) => {
+                            setOptimistischIndeling((prev) => {
+                              const kopie = { ...prev };
+                              delete kopie[speler.id];
+                              return kopie;
+                            });
+                            setFoutMelding(fout);
+                          }}
+                          onRefresh={() => router.refresh()}
+                          spelernaam={speler.roepnaam}
+                        />
+                      ) : indelingTeam ? (
+                        <span
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "0.35rem",
+                            background: "rgba(34,197,94,0.1)",
+                            border: "1px solid rgba(34,197,94,0.25)",
+                            borderRadius: 6,
+                            padding: "0.15rem 0.5rem",
+                            fontSize: "0.75rem",
+                            color: "#4ade80",
+                            fontWeight: 500,
+                          }}
+                        >
+                          <span
+                            style={{
+                              width: 6,
+                              height: 6,
+                              borderRadius: "50%",
+                              background:
+                                KLEUR_DOT[(indelingTeam.kleur ?? "").toLowerCase()] ??
+                                KLEUR_DOT[indelingTeam.kleur ?? ""] ??
+                                "#6b7280",
+                              flexShrink: 0,
+                            }}
+                          />
+                          {indelingTeam.naam}
+                        </span>
+                      ) : (
+                        <span style={{ color: "var(--text-secondary)", fontSize: "0.8125rem" }}>
+                          —
+                        </span>
+                      )}
+                    </td>
+
+                    {/* Memo indicator */}
+                    <td style={{ padding: "0.625rem 0.875rem", textAlign: "center" }}>
+                      {speler.heeftActiefMemo && (
+                        <span
+                          style={{
+                            fontSize: "0.75rem",
+                            color: "var(--ow-oranje-500)",
+                            fontWeight: 700,
+                          }}
+                        >
+                          ▲
+                        </span>
+                      )}
+                    </td>
+
+                    {/* Bewerken/verwijderen — alleen voor handmatig aangemaakte spelers */}
+                    <td style={{ padding: "0.625rem 0.5rem", textAlign: "center" }}>
+                      {speler.id.startsWith("HANDMATIG-") && (
+                        <div style={{ display: "flex", gap: "0.125rem", justifyContent: "center" }}>
+                          <button
+                            onClick={() => {
+                              setHernoemSpelerId(speler.id);
+                              setHernoemRoepnaam(speler.roepnaam);
+                              setHernoemAchternaam(speler.achternaam);
+                            }}
+                            title="Naam wijzigen"
+                            style={{
+                              background: "transparent",
+                              border: "none",
+                              cursor: "pointer",
+                              color: "var(--text-secondary)",
+                              fontSize: "0.85rem",
+                              padding: "0.25rem",
+                              borderRadius: 6,
+                              opacity: 0.7,
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.color = "var(--text-primary)";
+                              e.currentTarget.style.background = "var(--surface-raised)";
+                              e.currentTarget.style.opacity = "1";
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.color = "var(--text-secondary)";
+                              e.currentTarget.style.background = "transparent";
+                              e.currentTarget.style.opacity = "0.7";
+                            }}
+                          >
+                            ✎
+                          </button>
+                          <button
+                            onClick={() => handleVerwijder(speler)}
+                            disabled={verwijderBezig === speler.id}
+                            title="Handmatige speler verwijderen"
+                            aria-label={`Verwijder ${speler.roepnaam} ${speler.achternaam}`}
+                            style={{
+                              background: "transparent",
+                              border: "none",
+                              cursor: verwijderBezig === speler.id ? "wait" : "pointer",
+                              color: "var(--text-secondary)",
+                              fontSize: "0.95rem",
+                              lineHeight: 1,
+                              padding: "0.25rem",
+                              borderRadius: 6,
+                              opacity: verwijderBezig === speler.id ? 0.4 : 0.7,
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.color = "#ef4444";
+                              e.currentTarget.style.background = "rgba(239,68,68,0.12)";
+                              e.currentTarget.style.opacity = "1";
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.color = "var(--text-secondary)";
+                              e.currentTarget.style.background = "transparent";
+                              e.currentTarget.style.opacity = "0.7";
+                            }}
+                          >
+                            🗑
+                          </button>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
+
+      {/* Naam-wijzig modal voor handmatige spelers */}
+      {hernoemSpelerId && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,.6)",
+            zIndex: 100,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          onClick={() => setHernoemSpelerId(null)}
+        >
+          <div
+            style={{
+              background: "var(--surface-card)",
+              border: "1px solid var(--border-default)",
+              borderRadius: 12,
+              padding: 24,
+              width: 340,
+              display: "flex",
+              flexDirection: "column",
+              gap: 16,
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ fontSize: 15, fontWeight: 700, color: "var(--text-primary)" }}>
+              Naam wijzigen
+            </div>
+            <div>
+              <label
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: "var(--text-secondary)",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.05em",
+                  marginBottom: 4,
+                  display: "block",
+                }}
+              >
+                Roepnaam
+              </label>
+              <input
+                value={hernoemRoepnaam}
+                onChange={(e) => setHernoemRoepnaam(e.target.value)}
+                style={{
+                  background: "var(--surface-sunken)",
+                  border: "1px solid var(--border-default)",
+                  borderRadius: 7,
+                  color: "var(--text-primary)",
+                  fontSize: 13,
+                  padding: "7px 10px",
+                  width: "100%",
+                  outline: "none",
+                  fontFamily: "inherit",
+                  boxSizing: "border-box",
+                }}
+              />
+            </div>
+            <div>
+              <label
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: "var(--text-secondary)",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.05em",
+                  marginBottom: 4,
+                  display: "block",
+                }}
+              >
+                Achternaam
+              </label>
+              <input
+                value={hernoemAchternaam}
+                onChange={(e) => setHernoemAchternaam(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleHernoemOpslaan();
+                  if (e.key === "Escape") setHernoemSpelerId(null);
+                }}
+                style={{
+                  background: "var(--surface-sunken)",
+                  border: "1px solid var(--border-default)",
+                  borderRadius: 7,
+                  color: "var(--text-primary)",
+                  fontSize: 13,
+                  padding: "7px 10px",
+                  width: "100%",
+                  outline: "none",
+                  fontFamily: "inherit",
+                  boxSizing: "border-box",
+                }}
+              />
+            </div>
+            <div style={{ display: "flex", gap: 8 }}>
+              <button
+                onClick={() => setHernoemSpelerId(null)}
+                style={{
+                  flex: 1,
+                  padding: "9px",
+                  borderRadius: 7,
+                  border: "1px solid var(--border-default)",
+                  background: "var(--surface-sunken)",
+                  color: "var(--text-secondary)",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  fontFamily: "inherit",
+                }}
+              >
+                Annuleren
+              </button>
+              <button
+                onClick={handleHernoemOpslaan}
+                style={{
+                  flex: 1,
+                  padding: "9px",
+                  borderRadius: 7,
+                  border: "none",
+                  background: "var(--accent)",
+                  color: "#fff",
+                  fontSize: 13,
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  fontFamily: "inherit",
+                }}
+              >
+                Opslaan
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
