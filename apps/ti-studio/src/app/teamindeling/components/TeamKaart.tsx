@@ -203,6 +203,60 @@ function StafPills({ staf }: { staf: PubliekTeam["staf"] }) {
 }
 
 function KennismakingBlok({ item }: { item: KennismakingItem }) {
+  if (item.cancelled) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+          marginBottom: 16,
+          padding: "8px 12px",
+          borderLeft: "3px solid rgba(255,255,255,0.15)",
+          background: "rgba(255,255,255,0.03)",
+          borderRadius: "0 6px 6px 0",
+        }}
+      >
+        <span style={{ fontSize: 14, lineHeight: 1, flexShrink: 0 }}>📅</span>
+        <div style={{ minWidth: 0 }}>
+          <div
+            style={{
+              fontSize: 8,
+              fontWeight: 800,
+              textTransform: "uppercase",
+              letterSpacing: "0.14em",
+              color: "rgba(255,255,255,0.3)",
+              marginBottom: 2,
+            }}
+          >
+            Kennismakingstraining
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span
+              style={{
+                fontSize: 10,
+                fontWeight: 800,
+                textTransform: "uppercase",
+                letterSpacing: "0.1em",
+                color: "rgba(255,255,255,0.4)",
+                background: "rgba(255,255,255,0.08)",
+                borderRadius: 3,
+                padding: "2px 5px",
+              }}
+            >
+              Vervalt
+            </span>
+            {item.cancelledNote && (
+              <span style={{ fontSize: 12, color: "rgba(255,255,255,0.4)" }}>
+                {item.cancelledNote}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       style={{

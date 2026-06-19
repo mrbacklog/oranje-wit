@@ -26,6 +26,8 @@ export type KennismakingItem = {
   datum: string; // bijv. "za 23 augustus 2026"
   tijd: string; // bijv. "10:00–12:00"
   locatie: string; // bijv. "Sporthal De Hollandse IJssel"
+  cancelled?: boolean;
+  cancelledNote?: string;
 };
 
 export type BelangrijkeDatumItem = {

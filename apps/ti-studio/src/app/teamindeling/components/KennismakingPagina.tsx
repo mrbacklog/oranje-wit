@@ -146,17 +146,54 @@ export function KennismakingPagina({
                       i < kennismakingstrainingen.length - 1
                         ? "1px solid rgba(255,255,255,0.07)"
                         : "none",
+                    opacity: item.cancelled ? 0.5 : 1,
                   }}
                 >
-                  <div style={{ fontWeight: 700, color: "#fff", fontSize: 14, marginBottom: 2 }}>
-                    {item.teamnaam}
-                  </div>
-                  <div style={{ fontSize: 13, color: "rgba(255,255,255,0.55)" }}>
-                    {item.datum} · {item.tijd}
-                    {item.locatie && (
-                      <span style={{ color: "rgba(255,255,255,0.35)" }}> · {item.locatie}</span>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                      fontWeight: 700,
+                      color: item.cancelled ? "rgba(255,255,255,0.4)" : "#fff",
+                      fontSize: 14,
+                      marginBottom: 2,
+                    }}
+                  >
+                    <span style={{ textDecoration: item.cancelled ? "line-through" : "none" }}>
+                      {item.teamnaam}
+                    </span>
+                    {item.cancelled && (
+                      <span
+                        style={{
+                          fontSize: 9,
+                          fontWeight: 800,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.1em",
+                          color: "rgba(255,255,255,0.4)",
+                          background: "rgba(255,255,255,0.08)",
+                          borderRadius: 3,
+                          padding: "2px 5px",
+                        }}
+                      >
+                        Vervalt
+                      </span>
                     )}
                   </div>
+                  {item.cancelled ? (
+                    item.cancelledNote && (
+                      <div style={{ fontSize: 12, color: "rgba(255,255,255,0.3)" }}>
+                        {item.cancelledNote}
+                      </div>
+                    )
+                  ) : (
+                    <div style={{ fontSize: 13, color: "rgba(255,255,255,0.55)" }}>
+                      {item.datum} · {item.tijd}
+                      {item.locatie && (
+                        <span style={{ color: "rgba(255,255,255,0.35)" }}> · {item.locatie}</span>
+                      )}
+                    </div>
+                  )}
                 </li>
               ))}
             </ul>
