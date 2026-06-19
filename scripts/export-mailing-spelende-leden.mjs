@@ -29,11 +29,9 @@ const inputSimple = await simpleRes.json();
 
 if (inputExtended.Error) throw new Error(`Filter-fout: ${inputExtended.Message}`);
 
-// Filter alleen op ACTIVE-status
+// Selecteer alle statussen
 if (inputExtended.MemberStatus?.Options) {
-  for (const opt of inputExtended.MemberStatus.Options) {
-    opt.Selected = opt.Value === "ACTIVE";
-  }
+  for (const opt of inputExtended.MemberStatus.Options) opt.Selected = true;
 }
 
 const searchRes = await fetch(`${NAVAJO_BASE}/member/search/SearchMembers`, {
@@ -50,7 +48,7 @@ console.error(`${alleleden.length} actieve leden opgehaald. Filteren op spelende
 
 const spelenden = alleleden.filter((m) => {
   const type = m[LIDMAATSCHAPSTYPE_VELD] ?? "";
-  return SPELENDE_TYPES.some((t) => type === t);
+  return SPELENDE_TYPES.some((t) => type.toUpperCase() === t.toUpperCase());
 });
 
 console.error(`${spelenden.length} spelende leden gevonden. Emailadressen verzamelen...`);
