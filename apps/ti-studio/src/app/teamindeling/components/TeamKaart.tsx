@@ -407,6 +407,22 @@ export function TeamKaart({
               marginTop: 7,
             }}
           >
+            {team.jNummer && (
+              <span
+                style={{
+                  background: "rgba(255,255,255,0.2)",
+                  color: "#fff",
+                  fontSize: 10,
+                  fontWeight: 800,
+                  letterSpacing: "0.06em",
+                  padding: "2px 8px",
+                  borderRadius: 4,
+                  border: "1px solid rgba(255,255,255,0.35)",
+                }}
+              >
+                {team.jNummer}
+              </span>
+            )}
             {team.dames.length > 0 && (
               <span style={{ fontSize: 11, color: "rgba(255,255,255,0.7)", fontWeight: 600 }}>
                 {team.dames.length} dames
@@ -512,9 +528,26 @@ export function TeamKaart({
                       borderRadius: "50%",
                       background: "#FF6600",
                       display: "inline-block",
+                      flexShrink: 0,
                     }}
                   />
-                  {sub.naam}
+                  <span style={{ flex: 1 }}>{sub.naam}</span>
+                  {sub.jNummer && (
+                    <span
+                      style={{
+                        background: "rgba(255,255,255,0.12)",
+                        color: "#fff",
+                        fontSize: 10,
+                        fontWeight: 800,
+                        letterSpacing: "0.06em",
+                        padding: "2px 8px",
+                        borderRadius: 4,
+                        border: "1px solid rgba(255,255,255,0.25)",
+                      }}
+                    >
+                      {sub.jNummer}
+                    </span>
+                  )}
                 </div>
                 <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
                   <SpelerLijst spelers={sub.dames} geslacht="V" />

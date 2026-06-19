@@ -41,9 +41,11 @@ export type PubliekTeam = {
   gebundeld: boolean;
   dames: PubliekeSpeler[];
   heren: PubliekeSpeler[];
+  jNummer: string | null;
   /** Alleen gevuld als soort=selectie en gebundeld=false */
   subteams: {
     naam: string;
+    jNummer: string | null;
     dames: PubliekeSpeler[];
     heren: PubliekeSpeler[];
     staf: PubliekeStaf[];
@@ -208,6 +210,7 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
       volgorde: team.volgorde,
       soort: "team",
       gebundeld: false,
+      jNummer: team.jNummer ?? null,
       dames,
       heren,
       subteams: [],
@@ -265,6 +268,7 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
         volgorde: minVolgorde,
         soort: "selectie",
         gebundeld: true,
+        jNummer: null,
         dames,
         heren,
         subteams: [],
@@ -314,7 +318,13 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
           });
         }
 
-        subteams.push({ naam: team.naam, dames: teamDames, heren: teamHeren, staf: teamStaf });
+        subteams.push({
+          naam: team.naam,
+          jNummer: team.jNummer ?? null,
+          dames: teamDames,
+          heren: teamHeren,
+          staf: teamStaf,
+        });
       }
 
       kaarten.push({
@@ -323,6 +333,7 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
         volgorde: minVolgorde,
         soort: "selectie",
         gebundeld: false,
+        jNummer: null,
         dames: alleDames,
         heren: alleHeren,
         subteams,
