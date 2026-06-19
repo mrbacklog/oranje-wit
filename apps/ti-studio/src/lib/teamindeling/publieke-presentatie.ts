@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/teamindeling/db/prisma";
 import { getActiefSeizoen } from "@oranje-wit/teamindeling-shared/seizoen";
-import { logger } from "@oranje-wit/types";
+import { logger, berekenKorfbalLeeftijd, korfbalPeildatum, type Seizoen } from "@oranje-wit/types";
 import type { TekstBlok } from "@/app/(protected)/presentatie/preseason-pdf-data";
 import { DEFAULT_BLOKKEN } from "@/app/(protected)/presentatie/preseason-pdf-data";
 
@@ -107,6 +107,42 @@ function bouwSpeler(r: {
   };
 }
 
+/** Berekent J-nummers server-side op basis van gemiddelde korfballeeftijd per B-categorie team. */
+function berekenJNummersPubliek(
+  teams: {
+    id: string;
+    teamCategorie: string | null;
+    volgorde: number;
+    spelers: { speler: { geboortedatum: Date | null; geboortejaar: number | null } }[];
+  }[],
+  peildatum: Date
+): Map<string, string> {
+  const bTeams = teams.filter((t) => t.teamCategorie === "B_CATEGORIE");
+
+  const metLeeftijd = bTeams.map((t) => {
+    const leeftijden = t.spelers
+      .filter((ts) => ts.speler.geboortejaar !== null)
+      .map((ts) =>
+        berekenKorfbalLeeftijd(ts.speler.geboortedatum, ts.speler.geboortejaar!, peildatum)
+      )
+      .filter((l) => l > 0);
+    const gem =
+      leeftijden.length > 0 ? leeftijden.reduce((a, b) => a + b, 0) / leeftijden.length : null;
+    return { id: t.id, leeftijd: gem, volgorde: t.volgorde };
+  });
+
+  metLeeftijd.sort((a, b) => {
+    if (a.leeftijd !== null && b.leeftijd !== null) return b.leeftijd - a.leeftijd;
+    if (a.leeftijd !== null) return -1;
+    if (b.leeftijd !== null) return 1;
+    return a.volgorde - b.volgorde;
+  });
+
+  const result = new Map<string, string>();
+  metLeeftijd.forEach((t, i) => result.set(t.id, `J${i + 1}`));
+  return result;
+}
+
 // ── Hoofdfunctie ─────────────────────────────────────────────────────────────
 
 export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelingData> {
@@ -169,6 +205,9 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
 
   if (!versie) return { toelichting: mapToelichting(publicatie, seizoen), teams: [] };
 
+  const peildatum = korfbalPeildatum(seizoen as Seizoen);
+  const jNummersMap = berekenJNummersPubliek(versie.teams, peildatum);
+
   // Kennismakingstraining lookup uit DB — TC beheert namen, geen hardcoding
   const dbKennismaking = mapToelichting(publicatie, seizoen).kennismakingstrainingen;
   const kennismakingLookup = bouwKennismakingLookup(dbKennismaking);
@@ -210,7 +249,7 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
       volgorde: team.volgorde,
       soort: "team",
       gebundeld: false,
-      jNummer: team.jNummer ?? null,
+      jNummer: jNummersMap.get(team.id) ?? null,
       dames,
       heren,
       subteams: [],
@@ -320,7 +359,7 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
 
         subteams.push({
           naam: team.naam,
-          jNummer: team.jNummer ?? null,
+          jNummer: jNummersMap.get(team.id) ?? null,
           dames: teamDames,
           heren: teamHeren,
           staf: teamStaf,
