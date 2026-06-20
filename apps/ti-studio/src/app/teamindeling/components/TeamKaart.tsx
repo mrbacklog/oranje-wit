@@ -363,7 +363,7 @@ export function TeamKaart({
         className="pt-hero-pad"
         style={{
           background: "#FF6600",
-          padding: "16px 0 44px",
+          padding: "8px 0 28px",
           clipPath: "polygon(0 0, 100% 0, 100% 80%, 0 100%)",
           position: "sticky",
           top: 0,
@@ -391,16 +391,9 @@ export function TeamKaart({
             zIndex: 2,
           }}
         >
-          {/* Badge + zoekknop op één rij */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: 6,
-            }}
-          >
-            {isSelectie ? (
+          {/* Badge */}
+          {isSelectie && (
+            <div style={{ marginBottom: 4 }}>
               <span
                 style={{
                   background: "rgba(255,255,255,0.25)",
@@ -415,9 +408,32 @@ export function TeamKaart({
               >
                 Selectie
               </span>
-            ) : (
-              <span />
-            )}
+            </div>
+          )}
+          {/* Teamnaam + zoekknop */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "flex-end",
+              justifyContent: "space-between",
+              gap: 8,
+            }}
+          >
+            <h2
+              className="pt-hero-naam"
+              style={{
+                margin: 0,
+                fontSize: 30,
+                fontWeight: 900,
+                fontStyle: "italic",
+                textTransform: "uppercase",
+                color: "#fff",
+                lineHeight: 0.95,
+                letterSpacing: "-0.02em",
+              }}
+            >
+              {team.naam}
+            </h2>
             <button
               onClick={onZoek}
               style={{
@@ -431,34 +447,19 @@ export function TeamKaart({
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                flexShrink: 0,
               }}
             >
               <Search size={16} />
             </button>
           </div>
-          {/* Teamnaam */}
-          <h2
-            className="pt-hero-naam"
-            style={{
-              margin: 0,
-              fontSize: 30,
-              fontWeight: 900,
-              fontStyle: "italic",
-              textTransform: "uppercase",
-              color: "#fff",
-              lineHeight: 0.95,
-              letterSpacing: "-0.02em",
-            }}
-          >
-            {team.naam}
-          </h2>
           {/* Meta */}
           <div
             style={{
               display: "flex",
               gap: 8,
               alignItems: "center",
-              marginTop: 7,
+              marginTop: 4,
             }}
           >
             {team.jNummer && (

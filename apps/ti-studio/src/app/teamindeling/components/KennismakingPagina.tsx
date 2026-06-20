@@ -21,7 +21,7 @@ export function KennismakingPagina({
       <div
         style={{
           background: "#FF6600",
-          padding: "12px 24px 40px",
+          padding: "8px 24px 24px",
           clipPath: "polygon(0 0, 100% 0, 100% 80%, 0 100%)",
           position: "sticky",
           top: 0,
@@ -57,20 +57,6 @@ export function KennismakingPagina({
               objectFit: "contain",
             }}
           />
-          {seizoenLabel && (
-            <div
-              style={{
-                fontSize: 10,
-                fontWeight: 800,
-                textTransform: "uppercase",
-                letterSpacing: "0.1em",
-                color: "rgba(255,255,255,0.65)",
-                marginBottom: 8,
-              }}
-            >
-              {seizoenLabel}
-            </div>
-          )}
           <h1 style={{ margin: 0, lineHeight: 1, letterSpacing: "-0.02em" }}>
             <span
               style={{
@@ -96,7 +82,7 @@ export function KennismakingPagina({
                 lineHeight: 0.9,
               }}
             >
-              Kennismakingstrainingen
+              Kennismaking
             </span>
           </h1>
         </div>
