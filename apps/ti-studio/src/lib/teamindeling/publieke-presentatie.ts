@@ -256,13 +256,18 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
       heren,
       subteams: [],
       uitkomstTeams: [],
-      staf: team.staf.map((ts: VersieTeam["staf"][number]) => ({
-        naam:
-          ts.staf?.naam ??
-          (logger.warn("publieke-presentatie: staf zonder naam", { stafId: ts.stafId }), "?"),
-        rol: ts.rol ?? "",
-        rolLabel: ts.rolLabel ?? null,
-      })),
+      staf: [...team.staf]
+        .sort((a, b) => {
+          if (a.sortOrder !== b.sortOrder) return a.sortOrder - b.sortOrder;
+          return (a.staf?.naam ?? "").localeCompare(b.staf?.naam ?? "", "nl");
+        })
+        .map((ts: VersieTeam["staf"][number]) => ({
+          naam:
+            ts.staf?.naam ??
+            (logger.warn("publieke-presentatie: staf zonder naam", { stafId: ts.stafId }), "?"),
+          rol: ts.rol ?? "",
+          rolLabel: ts.rolLabel ?? null,
+        })),
       kennismakingstraining: kennismakingLookup.get(normaliseerNaam(team.naam)) ?? null,
     });
   }
@@ -291,7 +296,11 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
 
       const stafGezien = new Set<string>();
       const staf: PubliekeStaf[] = [];
-      for (const ss of sg.staf) {
+      const gesorteerdeStaf = [...sg.staf].sort((a, b) => {
+        if (a.sortOrder !== b.sortOrder) return a.sortOrder - b.sortOrder;
+        return (a.staf?.naam ?? "").localeCompare(b.staf?.naam ?? "", "nl");
+      });
+      for (const ss of gesorteerdeStaf) {
         if (stafGezien.has(ss.stafId)) continue;
         stafGezien.add(ss.stafId);
         staf.push({
@@ -338,7 +347,11 @@ export async function getPubliekeTeamindelingData(): Promise<PubliekeTeamindelin
         alleHeren.push(...teamHeren);
 
         const teamStaf: PubliekeStaf[] = [];
-        for (const ts of team.staf) {
+        const gesorteerdeTeamStaf = [...team.staf].sort((a, b) => {
+          if (a.sortOrder !== b.sortOrder) return a.sortOrder - b.sortOrder;
+          return (a.staf?.naam ?? "").localeCompare(b.staf?.naam ?? "", "nl");
+        });
+        for (const ts of gesorteerdeTeamStaf) {
           // Eerste voorkomen per stafId wint — persoon kan in meerdere subteams zitten
           if (!stafGezien.has(ts.stafId)) {
             stafGezien.add(ts.stafId);
