@@ -1,0 +1,1637 @@
+[
+  {
+    "team": "Oranje Wit (D) 1",
+    "code": "1",
+    "publicTeamId": "T1827784165",
+    "geslacht": "Gemengd",
+    "aantalVolgensTeam": 10,
+    "spelers": [
+      {
+        "relCode": "NKZ37V9",
+        "naam": "Burgt, I. (India) van de",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NKQ40Q9",
+        "naam": "Driesprong, M. (Meike)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NJF77Y3",
+        "naam": "Klink, M (Marijn)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NJF85B1",
+        "naam": "Klink, X (Xanne)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLN05N7",
+        "naam": "Klooster, C. (Carmen) van der",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLG59G8",
+        "naam": "Koster, S. (Senne)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NJR87G4",
+        "naam": "Schild, S.Y. (Yannick)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NKL26W4",
+        "naam": "Stoop, L.A. (Louise)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NKZ65C5",
+        "naam": "Tamminga, M. (Mik)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLG57L7",
+        "naam": "Valk, J.B. (Jarno)",
+        "rol": "Teamspeler"
+      }
+    ]
+  },
+  {
+    "team": "Oranje Wit (D) 2",
+    "code": "2",
+    "publicTeamId": "T708889502",
+    "geslacht": "Gemengd",
+    "aantalVolgensTeam": 8,
+    "spelers": [
+      {
+        "relCode": "NLF50K8",
+        "naam": "Fasbender, L. (Lindi)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NKK27B9",
+        "naam": "Fernhout, L. (Loïs)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NKY17P6",
+        "naam": "Groeneweg, R.K. (Roos)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NKG59J2",
+        "naam": "Groeneweg, T.D. (Tim)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NKG18N7",
+        "naam": "Teerds, E.L. (Eva)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLL37Q7",
+        "naam": "Timmer, J. (Jordan)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NKY88T2",
+        "naam": "Uijl, D. (Daniel) den",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLG58W7",
+        "naam": "Vaartmans, J.A. (Jordi)",
+        "rol": "Teamspeler"
+      }
+    ]
+  },
+  {
+    "team": "Oranje Wit (D) 3",
+    "code": "3",
+    "publicTeamId": "T1641232659",
+    "geslacht": "Gemengd",
+    "aantalVolgensTeam": 7,
+    "spelers": [
+      {
+        "relCode": "NLB71D8",
+        "naam": "Boshoven, S.A.E. (Sara)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLG57P5",
+        "naam": "Bäcker, C.J. (Tijn)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NJD65S8",
+        "naam": "Dijk, J. (Joeri) van",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLG58X4",
+        "naam": "Dongen, F.P.B. (Freek) van",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLH27P1",
+        "naam": "Haas, A. (Amber) de",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLB70S0",
+        "naam": "Quarré, E.A. (Elena)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NJQ72K1",
+        "naam": "Schot, R. (Robin)",
+        "rol": "Teamspeler"
+      }
+    ]
+  },
+  {
+    "team": "Oranje Wit (D) 4",
+    "code": "4",
+    "publicTeamId": "T1017260164",
+    "geslacht": "Gemengd",
+    "aantalVolgensTeam": 14,
+    "spelers": [
+      {
+        "relCode": "NJK42D1",
+        "naam": "Ardon, L (Linda)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NGG54V3",
+        "naam": "Batenburg, H (Hanneke)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NJC17J5",
+        "naam": "Gent, L (Lex) van",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NJZ00W3",
+        "naam": "Gent, T. (Tim) van",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NJK08X9",
+        "naam": "Gurp, M (Merel) van",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NJC26C8",
+        "naam": "Houwerzijl, E. (Emiel)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NGD51N5",
+        "naam": "Isarin, T P (Thomas)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NJF24X2",
+        "naam": "Kalkeren, R. (Robin) van",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NJF17P0",
+        "naam": "Leijdsman, R. (Robin)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NJF95S5",
+        "naam": "Mans, B. (Bob)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NJK34W5",
+        "naam": "Ploeg, L (Lieke)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NJF53H2",
+        "naam": "Strijen, L.A. (Lars) van",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NGT43N2",
+        "naam": "Visser, H. (Hilde)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NKQ40P2",
+        "naam": "Vlaming, R. (Roy) de",
+        "rol": "Teamspeler"
+      }
+    ]
+  },
+  {
+    "team": "Oranje Wit (D) 5",
+    "code": "5",
+    "publicTeamId": "T63701506",
+    "geslacht": "Gemengd",
+    "aantalVolgensTeam": 11,
+    "spelers": [
+      {
+        "relCode": "NKN65B6",
+        "naam": "Baars, L.A. (Luuk)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLL20F4",
+        "naam": "Burgt, S. (Seth) van de",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NKG59H8",
+        "naam": "Dommisse, K. (Kim)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NKV95Q4",
+        "naam": "Fasbender, T. (Tijmen)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NKT92K1",
+        "naam": "Jongh, A. (Anouk) de",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NJV33D0",
+        "naam": "Knippenberg, R. (Rachel)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLB70Z9",
+        "naam": "Lievaart, C.A. (Carlijn)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLG59F1",
+        "naam": "Lohuis, J.A. (Jens)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NKK48D6",
+        "naam": "Mol, L.N.A. (Laura)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLL20B6",
+        "naam": "Wensen, M. (Maud) van",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NKX66T5",
+        "naam": "Wietses, J. (Joël)",
+        "rol": "Teamspeler"
+      }
+    ]
+  },
+  {
+    "team": "Oranje Wit (D) 6",
+    "code": "6",
+    "publicTeamId": "T1499427255",
+    "geslacht": "Gemengd",
+    "aantalVolgensTeam": 11,
+    "spelers": [
+      {
+        "relCode": "NKT73W8",
+        "naam": "Driel, Q. (Quinten) van",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NKX56P2",
+        "naam": "Flach, J.H. (Joram)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NKC46T4",
+        "naam": "Koote, L.D. (Laura)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NKJ29C1",
+        "naam": "Pierse, A.W. (Anniek)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NKD39Q8",
+        "naam": "Schindler, M. (Mark)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NKC46S7",
+        "naam": "Schram, L.J. (Lara)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NKK27G4",
+        "naam": "Valk, M.E. (Marlies)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NFW26Q8",
+        "naam": "Vos, E. (Egbert)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLR23F9",
+        "naam": "Wijgaart, R.L.H. (Rick) van de",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NKQ14R3",
+        "naam": "Wit, N.M.T. (Nadia) de",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NKQ13Q3",
+        "naam": "Wit, S.E.E. (Syrah) de",
+        "rol": "Teamspeler"
+      }
+    ]
+  },
+  {
+    "team": "Oranje Wit (D) 7",
+    "code": "7",
+    "publicTeamId": "T745705180",
+    "geslacht": "Gemengd",
+    "aantalVolgensTeam": 16,
+    "spelers": [
+      {
+        "relCode": "NKW50C2",
+        "naam": "Boon, T. (Thijs)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLP78G4",
+        "naam": "Bozuwa, J. (Julia)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NJY83B4",
+        "naam": "Dubbeld, R. (Ruben)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLS08G2",
+        "naam": "Dubbeld, S. (Sanne)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NJY82Z9",
+        "naam": "Dubbeld, T. (Tessa)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLB70X5",
+        "naam": "Friebel, A. (Angela)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NKB62K8",
+        "naam": "Hulsker, N.M. (Nina)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NKZ28R9",
+        "naam": "Jongh, M. (Matthijs) de",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NJZ26Z2",
+        "naam": "Kooper, C. (Ché)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLB71B4",
+        "naam": "Koornneef, T.J. (Tommie)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLB71F2",
+        "naam": "Koornneef, W.J. (Wouter)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NKW21H5",
+        "naam": "Kuijper, D.V. (David)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLR06X4",
+        "naam": "Pille, M.A. (Menno)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NKN53B5",
+        "naam": "Versnel, V. (Vivienne)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NKW30G0",
+        "naam": "Vlaming, J.C. (Jens) de",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NKX36X8",
+        "naam": "Witman, K. (Kimberley)",
+        "rol": "Teamspeler"
+      }
+    ]
+  },
+  {
+    "team": "Oranje Wit (D) MW1",
+    "code": "MW1",
+    "publicTeamId": "T518248498",
+    "geslacht": "Gemengd",
+    "aantalVolgensTeam": 10,
+    "spelers": [
+      {
+        "relCode": "NGT42S4",
+        "naam": "Brand, L (Liesbeth)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NGD85T4",
+        "naam": "Heesterbeek, K. (Kim)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NFW42X5",
+        "naam": "Jong, M. (Michiel) 't",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NKH71P1",
+        "naam": "Kooij, C.W. (Wilco)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NGT43H0",
+        "naam": "Noordam, M. (Mirjam)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NFX24T4",
+        "naam": "Opstal-Haksteen, T.K. (Tamara) van",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NGG54S2",
+        "naam": "Ploeg, H (Hans)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NJK09N2",
+        "naam": "Starre-Scheurwater, K. (Kim) van der",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NFY89D8",
+        "naam": "Tol, R.J.P. (Rob) van",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NFW28D3",
+        "naam": "Veld, D. (Dorien) in 't",
+        "rol": "Teamspeler"
+      }
+    ]
+  },
+  {
+    "team": "Oranje Wit (D) U19-1",
+    "code": "U19-1",
+    "publicTeamId": "T338585384",
+    "geslacht": "Gemengd",
+    "aantalVolgensTeam": 8,
+    "spelers": [
+      {
+        "relCode": "NLL20G1",
+        "naam": "Burgt, E. (Elize) van de",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLL37S1",
+        "naam": "Camphens, T. (Tijn)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLS85H0",
+        "naam": "Dekker, O.C. (Onno) den",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLS75Y4",
+        "naam": "Heersping, D.B.A.C. (Dani)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLS45N2",
+        "naam": "Kilsdonk, S.A (Sophie)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLP77Z4",
+        "naam": "Klooster, D. (Danique) van der",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLS08H9",
+        "naam": "Reuvers, L. (Lisa)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLP78Q4",
+        "naam": "Sas, M. (Maarten)",
+        "rol": "Teamspeler"
+      }
+    ]
+  },
+  {
+    "team": "Oranje Wit (D) U19-2",
+    "code": "U19-2",
+    "publicTeamId": "T1404655325",
+    "geslacht": "Gemengd",
+    "aantalVolgensTeam": 8,
+    "spelers": [
+      {
+        "relCode": "NMJ72N6",
+        "naam": "Bemer, J.L.E. (Jarno)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMG85H5",
+        "naam": "Hovestadt, D. (Diederik)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLR34F7",
+        "naam": "Jongkind, F.W.J. (Floortje)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NKT65Z0",
+        "naam": "Kleingeld, J.N. (Julia)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLJ04Z4",
+        "naam": "Lohuis, F.A.C. (Floor)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMK85P5",
+        "naam": "Pichel, T. (Timo)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLP78P7",
+        "naam": "Sas, N. (Niek)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLP78C6",
+        "naam": "Verboom, S. (Stella)",
+        "rol": "Teamspeler"
+      }
+    ]
+  },
+  {
+    "team": "Oranje Wit (D) U17-1",
+    "code": "U17-1",
+    "publicTeamId": "T1926532127",
+    "geslacht": "Gemengd",
+    "aantalVolgensTeam": 10,
+    "spelers": [
+      {
+        "relCode": "NLX64V0",
+        "naam": "Boer, E.M. (Esmée) de",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLL20H8",
+        "naam": "Burgt, F. (Feline) van de",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMC61P5",
+        "naam": "Dekker, T.J. (Tiemen) den",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLX25R5",
+        "naam": "Engelfriet, D. (Demi)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLV80P4",
+        "naam": "Heersping, S. (Sander)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLV80M3",
+        "naam": "Laban, F.C. (Freek)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLN41L1",
+        "naam": "Stomp, N. (Noa)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLY32T6",
+        "naam": "Ven, J. (Jonas) van de",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLP89W4",
+        "naam": "Volker, T.N. (Tess)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMD51K6",
+        "naam": "Vos, T. (Thomas)",
+        "rol": "Teamspeler"
+      }
+    ]
+  },
+  {
+    "team": "Oranje Wit (D) U17-2",
+    "code": "U17-2",
+    "publicTeamId": "T1235743632",
+    "geslacht": "Gemengd",
+    "aantalVolgensTeam": 10,
+    "spelers": [
+      {
+        "relCode": "NLS54M7",
+        "naam": "Baas, N.J. (Nikki)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMG18G2",
+        "naam": "Belder, L. (Lenn)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMP10M9",
+        "naam": "Bergh, M.J. (Marit) van den",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLS34M7",
+        "naam": "Camphens, S. (Saar)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMK74C6",
+        "naam": "Nijman, F.J.J. (Famke)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLX04H2",
+        "naam": "Post, J.M. (Joaz)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMT18Q5",
+        "naam": "Reus, M.F. (Matthijs) de",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMJ53F3",
+        "naam": "Rooij, E.J. (Eva) van",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLM86V5",
+        "naam": "Vaartmans, B. (Britt)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMK12K6",
+        "naam": "Vos, T. (Thijs)",
+        "rol": "Teamspeler"
+      }
+    ]
+  },
+  {
+    "team": "Oranje Wit (D) U15-1",
+    "code": "U15-1",
+    "publicTeamId": "T403752499",
+    "geslacht": "Gemengd",
+    "aantalVolgensTeam": 9,
+    "spelers": [
+      {
+        "relCode": "NMJ72R4",
+        "naam": "Bemer, F.G.L. (Falco)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMJ72P0",
+        "naam": "Bemer, T.R.S (Tygo)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMG13P0",
+        "naam": "Boer, L. (Layla) de",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMB03R4",
+        "naam": "Exalto, L. (Laura)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMN85P8",
+        "naam": "Rijswijk, F. (Fenna) van",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMK12D7",
+        "naam": "Tims, F. (Fay)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLZ21F1",
+        "naam": "Ven, A. (Abel) van de",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMN49T8",
+        "naam": "Verberkt, N. (Nathan)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NML06D5",
+        "naam": "Waard, O.J. (Olivia) de",
+        "rol": "Teamspeler"
+      }
+    ]
+  },
+  {
+    "team": "Oranje Wit (D) J1",
+    "code": "J1",
+    "publicTeamId": "T688407638",
+    "geslacht": "Gemengd",
+    "aantalVolgensTeam": 11,
+    "spelers": [
+      {
+        "relCode": "NLQ98H2",
+        "naam": "Bakker, F. (Femke)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLM40K0",
+        "naam": "Bouwknegt, E.L. (Enora)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NKS93F8",
+        "naam": "Dekker, J. (Jordan)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLL53K3",
+        "naam": "Dongen, M.J. (Madelief) van",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLX08G7",
+        "naam": "Kamerman, Z. (Zoë)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMQ51D0",
+        "naam": "Kerschkamp, M. (Mika)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLN28Y3",
+        "naam": "Kuijper, R.A. (Raoul)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMT44W0",
+        "naam": "Peters, S.N. (Sanne)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLV35B6",
+        "naam": "Quarre, S.M. (Stephan)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLY54F4",
+        "naam": "Vos, J. (Justin)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLP78L9",
+        "naam": "Wiel, D.N. (Danique) van der",
+        "rol": "Teamspeler"
+      }
+    ]
+  },
+  {
+    "team": "Oranje Wit (D) J2",
+    "code": "J2",
+    "publicTeamId": "T577485180",
+    "geslacht": "Gemengd",
+    "aantalVolgensTeam": 12,
+    "spelers": [
+      {
+        "relCode": "NMC41D1",
+        "naam": "Afsharbegloe, P. (Parham)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMZ46V5",
+        "naam": "Croes, A.A. (Aidric)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NNF00X8",
+        "naam": "Grandia, R. (Rolina)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMK12F1",
+        "naam": "Groen, E. (Evie)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMB42C6",
+        "naam": "Heeren, D. (Djess) van",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMN06Y4",
+        "naam": "Jongkind, P. (Pippa)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMV37K2",
+        "naam": "Linden, J.W.P. (Jurre) van der",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMK31G5",
+        "naam": "Littooij, F.R. (Feline)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMP90X6",
+        "naam": "Molendijk, L. (Levi)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLV84L8",
+        "naam": "Vercouteren, N. (Noortje)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMZ41P8",
+        "naam": "Weijde, D. (Daan) van der",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMN48D3",
+        "naam": "Wietses, E.A.E. (Ester)",
+        "rol": "Teamspeler"
+      }
+    ]
+  },
+  {
+    "team": "Oranje Wit (D) J3",
+    "code": "J3",
+    "publicTeamId": "T1115803838",
+    "geslacht": "Gemengd",
+    "aantalVolgensTeam": 10,
+    "spelers": [
+      {
+        "relCode": "NLZ39C9",
+        "naam": "Bakker, A. (Anouk)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMR12K3",
+        "naam": "Bergh, L.J. (Jolijn) van den",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMM85F7",
+        "naam": "Brouwer, E.N. (Noor)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLC78B6",
+        "naam": "Dekker, J. (Jodie)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMQ57X8",
+        "naam": "Driel, S. (Sanne) van",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMK01M2",
+        "naam": "Ehmila, J. (Jenna)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMD34T8",
+        "naam": "Exalto, L.B.C. (Lisa)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMX62K4",
+        "naam": "Markusse, M. (Milou)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMK07T9",
+        "naam": "Naeije, L. (Lisanne)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMP73C8",
+        "naam": "Uljee, T. (Tess)",
+        "rol": "Teamspeler"
+      }
+    ]
+  },
+  {
+    "team": "Oranje Wit (D) J4",
+    "code": "J4",
+    "publicTeamId": "T1474508196",
+    "geslacht": "Gemengd",
+    "aantalVolgensTeam": 11,
+    "spelers": [
+      {
+        "relCode": "NMC41W4",
+        "naam": "Ameijden, J. (Joep) van",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMD22V1",
+        "naam": "Bezemer, E.R. (Eva)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMN09P0",
+        "naam": "Dekker, J (Jorn) den",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMJ35H3",
+        "naam": "Dongen, P. (Pien) van",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMD71P1",
+        "naam": "Kleingeld, E. (Evi)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMN23K7",
+        "naam": "Moniz, D. (Davina)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NND10C4",
+        "naam": "Rooij, N. (Nora) van",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMQ65B3",
+        "naam": "Uljee, C. (Cas)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMC29Z9",
+        "naam": "Vos, J. (Juda)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMH07D4",
+        "naam": "Vos, J. (Jeslynn)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMC85Q4",
+        "naam": "Wiel, Y.J. (Yara) van der",
+        "rol": "Teamspeler"
+      }
+    ]
+  },
+  {
+    "team": "Oranje Wit (D) J5",
+    "code": "J5",
+    "publicTeamId": "T762461017",
+    "geslacht": "Gemengd",
+    "aantalVolgensTeam": 11,
+    "spelers": [
+      {
+        "relCode": "NMZ00X1",
+        "naam": "Dijl, B.E.I. (Benthe) van",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMV92T0",
+        "naam": "Falter, S. (Sterre)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMK07M0",
+        "naam": "Hoedelmans, T. (Tobias)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMN66T9",
+        "naam": "Jongkind, J.M. (Joep)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMN65C7",
+        "naam": "Jongkind, S.C. (Sepp)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMX73J5",
+        "naam": "Josefina, M. (Mayson)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMX53X3",
+        "naam": "Koppelaar, C. (Collin)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMN23L4",
+        "naam": "Kuling, F. (Fynn)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMQ40P6",
+        "naam": "Schot, E. (Emma)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMX35P3",
+        "naam": "Weijde, L. (Lukas) van der",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMN10V0",
+        "naam": "Winter, L.P. (Lars)",
+        "rol": "Teamspeler"
+      }
+    ]
+  },
+  {
+    "team": "Oranje Wit (D) J6",
+    "code": "J6",
+    "publicTeamId": "T642521159",
+    "geslacht": "Gemengd",
+    "aantalVolgensTeam": 10,
+    "spelers": [
+      {
+        "relCode": "NMK59H6",
+        "naam": "Ameijden, M. (Morris) van",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMB99X9",
+        "naam": "Bosch, A. (Ayden) van den",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLJ94L1",
+        "naam": "Dekker, J. (Jaimey)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMJ03L0",
+        "naam": "Everaarts, L. (Levi)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NML53R9",
+        "naam": "Kleingeld, S. (Sofie)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMM97Y1",
+        "naam": "Laban, M. (Maartje)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMH37W2",
+        "naam": "Linden, I. (Ize) van der",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMK64V4",
+        "naam": "Mans, R. (Robin)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMN39T3",
+        "naam": "Ploeg, K.J.A. (Koen)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMN65L0",
+        "naam": "Rest, L.J. (Lucas) van de",
+        "rol": "Teamspeler"
+      }
+    ]
+  },
+  {
+    "team": "Oranje Wit (D) J7",
+    "code": "J7",
+    "publicTeamId": "T2111770616",
+    "geslacht": "Gemengd",
+    "aantalVolgensTeam": 9,
+    "spelers": [
+      {
+        "relCode": "NMW34Q6",
+        "naam": "Arbiati, S. (Sanae) el",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMS40B0",
+        "naam": "Bergh, A.J. (Aniek) van den",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMV01T2",
+        "naam": "Boekee, R.D. (Rens)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMQ45V3",
+        "naam": "Dijkstra, RALF JAN (Ralf)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NNG34S1",
+        "naam": "Ooijen, I. (Ivy)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMS99T8",
+        "naam": "Rebollo, T. (Tess)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NLZ93C1",
+        "naam": "Riet, F. (Feline)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMV70H0",
+        "naam": "Sijde, T. (Timo) van der",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NNC13W2",
+        "naam": "Weijde, J. (Jasper) van der",
+        "rol": "Teamspeler"
+      }
+    ]
+  },
+  {
+    "team": "Oranje Wit (D) J8",
+    "code": "J8",
+    "publicTeamId": "T950959469",
+    "geslacht": "Gemengd",
+    "aantalVolgensTeam": 11,
+    "spelers": [
+      {
+        "relCode": "NMQ48V2",
+        "naam": "Bakker, K. (Karlijn)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMS67Y2",
+        "naam": "Bouman, I. (Imme)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NND85L7",
+        "naam": "Gemert, F. (Fien) van",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NNB02Y7",
+        "naam": "Naeije, E.A. (Eloise)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NNF86D6",
+        "naam": "Okkerman, W. (Wolf)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMX82T7",
+        "naam": "Pee, C.C.N.. (Chloé) de",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NNJ96X5",
+        "naam": "Peters, N. (Nick)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMZ32V8",
+        "naam": "Stel, T. (Tom) van der",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMW98N7",
+        "naam": "Torbali, N. (Nehir)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMS09V7",
+        "naam": "Twist, J.J. (Julia) van",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMW39Z4",
+        "naam": "Verberkt, G.J. (Gideon)",
+        "rol": "Teamspeler"
+      }
+    ]
+  },
+  {
+    "team": "Oranje Wit (D) J9",
+    "code": "J9",
+    "publicTeamId": "T1814530517",
+    "geslacht": "Gemengd",
+    "aantalVolgensTeam": 10,
+    "spelers": [
+      {
+        "relCode": "NMV75Z1",
+        "naam": "Berg, W. (Wies) van den",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NNB63S8",
+        "naam": "Boog, S.L. (Suze)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NNH38X9",
+        "naam": "Bruksvoort, A. (Abigail) van",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NND99W1",
+        "naam": "Gerritsen, J. (Jaylinn)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NNH99C5",
+        "naam": "Goedknegt, F. (Fedde)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NNK06K0",
+        "naam": "Haartsen, L. (Lauren)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMY95H8",
+        "naam": "Hol, L.A. (Lucien)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMM42W7",
+        "naam": "Jacobs, V. (Vive)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NNF11M9",
+        "naam": "Kampman, J.J. (Jalou)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NND82J4",
+        "naam": "Nawar, D. (David)",
+        "rol": "Teamspeler"
+      }
+    ]
+  },
+  {
+    "team": "Oranje Wit (D) J10",
+    "code": "J10",
+    "publicTeamId": "T1627516611",
+    "geslacht": "Gemengd",
+    "aantalVolgensTeam": 5,
+    "spelers": [
+      {
+        "relCode": "NMV71X5",
+        "naam": "Alberts, A. (Amos)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NNF93B8",
+        "naam": "Gast, J. (Joas)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMV77N3",
+        "naam": "Mans, L. (Lara)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMY74T9",
+        "naam": "Ploeg, L. (Luuk)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMV61M3",
+        "naam": "Stomp, A. (Alisa)",
+        "rol": "Teamspeler"
+      }
+    ]
+  },
+  {
+    "team": "Oranje Wit (D) J11",
+    "code": "J11",
+    "publicTeamId": "T1596853174",
+    "geslacht": "Gemengd",
+    "aantalVolgensTeam": 6,
+    "spelers": [
+      {
+        "relCode": "NMM85D3",
+        "naam": "Brouwer, V. (Veerle)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NNB22W3",
+        "naam": "Burgh, J.A. (James) van der",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMV90Z6",
+        "naam": "Burgt, L. (Livia) van de",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NNB62G1",
+        "naam": "Jong, L.T.M. (Louisa) de",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMY97N6",
+        "naam": "Jong, S. (Sepp) de",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMZ21H2",
+        "naam": "Rombouts, T. (Tess)",
+        "rol": "Teamspeler"
+      }
+    ]
+  },
+  {
+    "team": "Oranje Wit (D) J12",
+    "code": "J12",
+    "publicTeamId": "T448362795",
+    "geslacht": "Gemengd",
+    "aantalVolgensTeam": 6,
+    "spelers": [
+      {
+        "relCode": "NNB52J7",
+        "naam": "Groot, F. (Finn) de",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NND77N2",
+        "naam": "Houweling, J. (Jeftha)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMX49N6",
+        "naam": "Nawar, M. (Mayvin)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NND27N7",
+        "naam": "Tol, K. (Karlijn) van",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMW39Y7",
+        "naam": "Verberkt, R.J. (Ruben)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMZ29R6",
+        "naam": "Wingerden, E.J. (Elroy) van",
+        "rol": "Teamspeler"
+      }
+    ]
+  },
+  {
+    "team": "Oranje Wit (D) J13",
+    "code": "J13",
+    "publicTeamId": "T1342728412",
+    "geslacht": "Gemengd",
+    "aantalVolgensTeam": 5,
+    "spelers": [
+      {
+        "relCode": "NNH26Z2",
+        "naam": "Goudriaan, E. (Elise)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NNC40P9",
+        "naam": "Koolstra, H. (Hidde)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NND37V8",
+        "naam": "Nienes, N. (Nova) van",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMY74V3",
+        "naam": "Ploeg, F. (Finn)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NNC46X3",
+        "naam": "Roos, L. (Lucas)",
+        "rol": "Teamspeler"
+      }
+    ]
+  },
+  {
+    "team": "Oranje Wit (D) J14",
+    "code": "J14",
+    "publicTeamId": "T798711377",
+    "geslacht": "Gemengd",
+    "aantalVolgensTeam": 6,
+    "spelers": [
+      {
+        "relCode": "NNF86F0",
+        "naam": "Eefting, A. (Ariadne)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NNK25F2",
+        "naam": "Koeken, J. (Jessy)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NNH73P8",
+        "naam": "Rebollo, B. (Bas)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NND11G5",
+        "naam": "Schaardenburg, L. (Luna) van",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NNH73H2",
+        "naam": "Scheurwater, D. (Daan)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NNF27K8",
+        "naam": "tol, V. (Veerle) van",
+        "rol": "Teamspeler"
+      }
+    ]
+  },
+  {
+    "team": "Oranje Wit (D) J15",
+    "code": "J15",
+    "publicTeamId": "T2118492912",
+    "geslacht": "Gemengd",
+    "aantalVolgensTeam": 6,
+    "spelers": [
+      {
+        "relCode": "NND98S0",
+        "naam": "Burgt, L. (Leah) van de",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMZ53P9",
+        "naam": "Haren, C.M. (Cato) van",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NNJ08Z0",
+        "naam": "Meerman, J. (Jurre)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMZ15W4",
+        "naam": "Merwe, F. (Floor) van de",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NNJ35T4",
+        "naam": "Muller, M. (Moos)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NNF08Z6",
+        "naam": "Struijk, F. (Fay)",
+        "rol": "Teamspeler"
+      }
+    ]
+  },
+  {
+    "team": "Oranje Wit (D) J16",
+    "code": "J16",
+    "publicTeamId": "T903123045",
+    "geslacht": "Gemengd",
+    "aantalVolgensTeam": 6,
+    "spelers": [
+      {
+        "relCode": "NNG40L5",
+        "naam": "Hengel, T. (Tara) van",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NNH26Y5",
+        "naam": "Houweling, S. (Seth)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NNG34T8",
+        "naam": "Jansen, L. (Linne)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NNG41X2",
+        "naam": "Jong, D. (Dani) 't",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NNG44R9",
+        "naam": "Maertzendorff, L. (Levi)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NNK36B2",
+        "naam": "Meer, R. (Rivienna) de",
+        "rol": "Teamspeler"
+      }
+    ]
+  },
+  {
+    "team": "Oranje Wit (D) J17",
+    "code": "J17",
+    "publicTeamId": "T92404484",
+    "geslacht": "Gemengd",
+    "aantalVolgensTeam": 6,
+    "spelers": [
+      {
+        "relCode": "NNG90V0",
+        "naam": "Akkerman, J. (Jinte)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NMY03K8",
+        "naam": "Bezemer, O. (Olle)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NNJ26H8",
+        "naam": "Biemans, Q. (Quinn)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NNJ36M8",
+        "naam": "Mans, L. (Luuk)",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NNG90W7",
+        "naam": "Tol, E. (Elise) van",
+        "rol": "Teamspeler"
+      },
+      {
+        "relCode": "NNG91H5",
+        "naam": "Yildirim, C. (Cemre)",
+        "rol": "Teamspeler"
+      }
+    ]
+  }
+]
