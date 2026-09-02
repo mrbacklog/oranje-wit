@@ -11,6 +11,13 @@ const { Pool } = require("pg");
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
+/**
+ * Zelfde grondslag als bereken-verloop.js: vergelijk seizoenen op dezelfde competitiefase,
+ * anders telt een afgerond seizoen alle fases en een lopend seizoen alleen het najaar.
+ */
+const COMPETITIE =
+  process.argv.find((a) => a.startsWith("--competitie="))?.split("=")[1] ?? "veld_najaar";
+
 function getBand(leeftijd) {
   if (leeftijd >= 6 && leeftijd <= 7) return "Blauw";
   if (leeftijd >= 8 && leeftijd <= 9) return "Groen";
@@ -34,13 +41,32 @@ async function main() {
   );
 
   // Stap 1: Actief-tellingen per seizoen per (geboortejaar, geslacht)
+  //
+  // Bron is ledenverloop, niet competitie_spelers. Daar zit de overbrugging van
+  // eenmalige gaten al in verwerkt (zie bereken-verloop.js), dus zo tellen cohorten
+  // en verloop dezelfde mensen. Rechtstreeks uit competitie_spelers tellen zou zes
+  // spelers schelen die één najaar misten maar wel voorjaar speelden.
   const { rows: actiefRaw } = await pool.query(
-    `SELECT cp.seizoen, l.geboortejaar, COALESCE(cp.geslacht, l.geslacht) as geslacht, COUNT(DISTINCT cp.rel_code)::int as actief
-     FROM competitie_spelers cp
-     JOIN leden l ON cp.rel_code = l.rel_code
-     WHERE l.geboortejaar IS NOT NULL
-     GROUP BY cp.seizoen, l.geboortejaar, COALESCE(cp.geslacht, l.geslacht)`
+    `SELECT seizoen, geboortejaar, geslacht, COUNT(DISTINCT rel_code)::int as actief
+       FROM ledenverloop
+      WHERE geboortejaar IS NOT NULL AND geslacht IS NOT NULL
+        AND status IN ('behouden', 'nieuw', 'herinschrijver')
+      GROUP BY seizoen, geboortejaar, geslacht`
   );
+
+  // Het eerste seizoen heeft geen verloop-records (er is geen voorganger om mee te
+  // vergelijken), dus dat halen we alsnog rechtstreeks op.
+  const { rows: eersteSeizoen } = await pool.query(
+    `SELECT cp.seizoen, l.geboortejaar, COALESCE(cp.geslacht, l.geslacht) as geslacht,
+            COUNT(DISTINCT cp.rel_code)::int as actief
+       FROM competitie_spelers cp
+       JOIN leden l ON cp.rel_code = l.rel_code
+      WHERE l.geboortejaar IS NOT NULL AND cp.competitie = $1
+        AND cp.seizoen NOT IN (SELECT DISTINCT seizoen FROM ledenverloop)
+      GROUP BY cp.seizoen, l.geboortejaar, COALESCE(cp.geslacht, l.geslacht)`,
+    [COMPETITIE]
+  );
+  actiefRaw.push(...eersteSeizoen);
 
   // Bouw lookup: seizoen -> Map("geboortejaar|geslacht" -> actief)
   const actiefPerSeason = {};
