@@ -1,6 +1,7 @@
 "use client";
 
 import { signOut } from "next-auth/react";
+import { HUIDIG_SEIZOEN } from "@oranje-wit/types";
 
 // ── App-definitie ──────────────────────────────────────────────
 
@@ -146,7 +147,7 @@ export function AppLauncher({ userName, userRole }: AppLauncherProps) {
       {/* ── Footer ─────────────────────────────────────────────── */}
       <footer className="mx-auto w-full max-w-3xl px-6 pb-8">
         <p className="text-center text-xs" style={{ color: "var(--text-tertiary)", opacity: 0.6 }}>
-          c.k.v. Oranje Wit &middot; Seizoen 2025-2026 &middot; Dordrecht
+          c.k.v. Oranje Wit &middot; Seizoen {HUIDIG_SEIZOEN} &middot; Dordrecht
         </p>
       </footer>
     </main>

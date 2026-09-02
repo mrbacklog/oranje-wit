@@ -2,7 +2,7 @@ import type { Seizoen } from "./index";
 import { korfbalPeildatum } from "./korfballeeftijd";
 
 /** Huidig seizoen waarvoor indelingen gemaakt worden. */
-export const HUIDIG_SEIZOEN: Seizoen = "2025-2026";
+export const HUIDIG_SEIZOEN: Seizoen = "2026-2027";
 
 /**
  * Peildatum voor het huidige seizoen.

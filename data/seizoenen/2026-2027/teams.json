@@ -1,0 +1,507 @@
+{
+  "_meta": {
+    "seizoen": "2026-2027",
+    "aangemaakt": "2026-09-02",
+    "bron_indeling": "cmobmp2wi000001sdwdzz6gmm",
+    "bron_sportlink": "teams-sportlink.json",
+    "toelichting": "ow_code is de stabiele team-identiteit per seizoen. J-nummers kunnen per periode verschuiven door KNKV-hernummering; ow_code wijzigt niet. De koppeling J-nummer → team is afgeleid uit de spelersbezetting, niet uit de naam."
+  },
+  "teams": [
+    {
+      "ow_code": "OW-S1",
+      "naam": "Senioren 1",
+      "categorie": "a",
+      "kleur": null,
+      "leeftijdsgroep": "A",
+      "spelvorm": null,
+      "team_type": "SENIOREN",
+      "selectie_ow_code": null,
+      "sort_order": 0,
+      "periodes": {
+        "veld_najaar": {
+          "j_nummer": "1"
+        }
+      }
+    },
+    {
+      "ow_code": "OW-S2",
+      "naam": "Senioren 2",
+      "categorie": "a",
+      "kleur": null,
+      "leeftijdsgroep": "A",
+      "spelvorm": null,
+      "team_type": "SENIOREN",
+      "selectie_ow_code": null,
+      "sort_order": 1,
+      "periodes": {
+        "veld_najaar": {
+          "j_nummer": "2"
+        }
+      }
+    },
+    {
+      "ow_code": "OW-S3",
+      "naam": "Senioren 3",
+      "categorie": "a",
+      "kleur": null,
+      "leeftijdsgroep": "A",
+      "spelvorm": "ACHTTAL",
+      "team_type": "SENIOREN",
+      "selectie_ow_code": null,
+      "sort_order": 10,
+      "periodes": {
+        "veld_najaar": {
+          "j_nummer": "3"
+        }
+      }
+    },
+    {
+      "ow_code": "OW-S5",
+      "naam": "Senioren 5",
+      "categorie": "a",
+      "kleur": null,
+      "leeftijdsgroep": "B",
+      "spelvorm": "ACHTTAL",
+      "team_type": "SENIOREN",
+      "selectie_ow_code": null,
+      "sort_order": 11,
+      "periodes": {
+        "veld_najaar": {
+          "j_nummer": "5"
+        }
+      }
+    },
+    {
+      "ow_code": "OW-S4",
+      "naam": "Senioren 4",
+      "categorie": "a",
+      "kleur": null,
+      "leeftijdsgroep": "A",
+      "spelvorm": "ACHTTAL",
+      "team_type": "SENIOREN",
+      "selectie_ow_code": null,
+      "sort_order": 20,
+      "periodes": {
+        "veld_najaar": {
+          "j_nummer": "4"
+        }
+      }
+    },
+    {
+      "ow_code": "OW-S6",
+      "naam": "Senioren 6",
+      "categorie": "a",
+      "kleur": null,
+      "leeftijdsgroep": "A",
+      "spelvorm": "ACHTTAL",
+      "team_type": "SENIOREN",
+      "selectie_ow_code": null,
+      "sort_order": 30,
+      "periodes": {
+        "veld_najaar": {
+          "j_nummer": "6"
+        }
+      }
+    },
+    {
+      "ow_code": "OW-S7",
+      "naam": "Senioren 7",
+      "categorie": "a",
+      "kleur": null,
+      "leeftijdsgroep": "B",
+      "spelvorm": "ACHTTAL",
+      "team_type": "SENIOREN",
+      "selectie_ow_code": null,
+      "sort_order": 40,
+      "periodes": {
+        "veld_najaar": {
+          "j_nummer": "7"
+        }
+      }
+    },
+    {
+      "ow_code": "OW-MW1",
+      "naam": "Midweek 1",
+      "categorie": "a",
+      "kleur": null,
+      "leeftijdsgroep": "B",
+      "spelvorm": "ACHTTAL",
+      "team_type": "OVERIG",
+      "selectie_ow_code": null,
+      "sort_order": 50,
+      "periodes": {
+        "veld_najaar": {
+          "j_nummer": "MW1"
+        }
+      }
+    },
+    {
+      "ow_code": "OW-U19-1",
+      "naam": "U19-1",
+      "categorie": "a",
+      "kleur": null,
+      "leeftijdsgroep": "U19",
+      "spelvorm": null,
+      "team_type": "SELECTIE",
+      "selectie_ow_code": null,
+      "sort_order": 60,
+      "periodes": {
+        "veld_najaar": {
+          "j_nummer": "U19-1"
+        }
+      }
+    },
+    {
+      "ow_code": "OW-U19-2",
+      "naam": "U19-2",
+      "categorie": "a",
+      "kleur": null,
+      "leeftijdsgroep": null,
+      "spelvorm": null,
+      "team_type": "SELECTIE",
+      "selectie_ow_code": null,
+      "sort_order": 61,
+      "periodes": {
+        "veld_najaar": {
+          "j_nummer": "U19-2"
+        }
+      }
+    },
+    {
+      "ow_code": "OW-U17-1",
+      "naam": "U17-1",
+      "categorie": "a",
+      "kleur": null,
+      "leeftijdsgroep": "U17",
+      "spelvorm": null,
+      "team_type": "SELECTIE",
+      "selectie_ow_code": null,
+      "sort_order": 70,
+      "periodes": {
+        "veld_najaar": {
+          "j_nummer": "U17-1"
+        }
+      }
+    },
+    {
+      "ow_code": "OW-U17-2",
+      "naam": "U17-2",
+      "categorie": "a",
+      "kleur": null,
+      "leeftijdsgroep": "U17",
+      "spelvorm": null,
+      "team_type": "SELECTIE",
+      "selectie_ow_code": null,
+      "sort_order": 71,
+      "periodes": {
+        "veld_najaar": {
+          "j_nummer": "U17-2"
+        }
+      }
+    },
+    {
+      "ow_code": "OW-U15-1",
+      "naam": "U15-1",
+      "categorie": "a",
+      "kleur": null,
+      "leeftijdsgroep": "U15",
+      "spelvorm": null,
+      "team_type": "SELECTIE",
+      "selectie_ow_code": null,
+      "sort_order": 80,
+      "periodes": {
+        "veld_najaar": {
+          "j_nummer": "U15-1"
+        }
+      }
+    },
+    {
+      "ow_code": "OW-U15-2",
+      "naam": "U15-2 (J-team)",
+      "categorie": "b",
+      "kleur": "GEEL",
+      "leeftijdsgroep": null,
+      "spelvorm": "ACHTTAL",
+      "team_type": "JEUGD",
+      "selectie_ow_code": "OW-U15-1",
+      "sort_order": 81,
+      "periodes": {
+        "veld_najaar": {
+          "j_nummer": "J4"
+        }
+      }
+    },
+    {
+      "ow_code": "OW-ROOD-1",
+      "naam": "Rood 1",
+      "categorie": "b",
+      "kleur": "ROOD",
+      "leeftijdsgroep": null,
+      "spelvorm": null,
+      "team_type": "JEUGD",
+      "selectie_ow_code": null,
+      "sort_order": 90,
+      "periodes": {
+        "veld_najaar": {
+          "j_nummer": "J1"
+        }
+      }
+    },
+    {
+      "ow_code": "OW-ROOD-2",
+      "naam": "Rood 2",
+      "categorie": "b",
+      "kleur": "ROOD",
+      "leeftijdsgroep": null,
+      "spelvorm": null,
+      "team_type": "JEUGD",
+      "selectie_ow_code": null,
+      "sort_order": 100,
+      "periodes": {
+        "veld_najaar": {
+          "j_nummer": "J2"
+        }
+      }
+    },
+    {
+      "ow_code": "OW-ORANJE-1",
+      "naam": "Oranje 1",
+      "categorie": "b",
+      "kleur": "ORANJE",
+      "leeftijdsgroep": null,
+      "spelvorm": null,
+      "team_type": "JEUGD",
+      "selectie_ow_code": null,
+      "sort_order": 110,
+      "periodes": {
+        "veld_najaar": {
+          "j_nummer": "J3"
+        }
+      }
+    },
+    {
+      "ow_code": "OW-ORANJE-2",
+      "naam": "Oranje 2",
+      "categorie": "b",
+      "kleur": "ORANJE",
+      "leeftijdsgroep": null,
+      "spelvorm": null,
+      "team_type": "JEUGD",
+      "selectie_ow_code": null,
+      "sort_order": 120,
+      "periodes": {
+        "veld_najaar": {
+          "j_nummer": "J5"
+        }
+      }
+    },
+    {
+      "ow_code": "OW-ORANJE-3",
+      "naam": "Oranje 3",
+      "categorie": "b",
+      "kleur": "ORANJE",
+      "leeftijdsgroep": null,
+      "spelvorm": null,
+      "team_type": "JEUGD",
+      "selectie_ow_code": null,
+      "sort_order": 130,
+      "periodes": {
+        "veld_najaar": {
+          "j_nummer": "J6"
+        }
+      }
+    },
+    {
+      "ow_code": "OW-GEEL-1",
+      "naam": "Geel 1",
+      "categorie": "b",
+      "kleur": "GEEL",
+      "leeftijdsgroep": null,
+      "spelvorm": null,
+      "team_type": "JEUGD",
+      "selectie_ow_code": null,
+      "sort_order": 140,
+      "periodes": {
+        "veld_najaar": {
+          "j_nummer": "J7"
+        }
+      }
+    },
+    {
+      "ow_code": "OW-GEEL-2",
+      "naam": "Geel 2",
+      "categorie": "b",
+      "kleur": "GEEL",
+      "leeftijdsgroep": null,
+      "spelvorm": null,
+      "team_type": "JEUGD",
+      "selectie_ow_code": null,
+      "sort_order": 150,
+      "periodes": {
+        "veld_najaar": {
+          "j_nummer": "J8"
+        }
+      }
+    },
+    {
+      "ow_code": "OW-GEEL-3",
+      "naam": "Geel 3",
+      "categorie": "b",
+      "kleur": "GEEL",
+      "leeftijdsgroep": null,
+      "spelvorm": null,
+      "team_type": "JEUGD",
+      "selectie_ow_code": null,
+      "sort_order": 160,
+      "periodes": {
+        "veld_najaar": {
+          "j_nummer": "J9"
+        }
+      }
+    },
+    {
+      "ow_code": "OW-GROEN-1",
+      "naam": "Groen 1",
+      "categorie": "b",
+      "kleur": "GROEN",
+      "leeftijdsgroep": null,
+      "spelvorm": "VIERTAL",
+      "team_type": "JEUGD",
+      "selectie_ow_code": null,
+      "sort_order": 170,
+      "periodes": {
+        "veld_najaar": {
+          "j_nummer": "J11"
+        }
+      }
+    },
+    {
+      "ow_code": "OW-GROEN-2",
+      "naam": "Groen 2",
+      "categorie": "b",
+      "kleur": "GROEN",
+      "leeftijdsgroep": null,
+      "spelvorm": "VIERTAL",
+      "team_type": "JEUGD",
+      "selectie_ow_code": null,
+      "sort_order": 180,
+      "periodes": {
+        "veld_najaar": {
+          "j_nummer": "J10"
+        }
+      }
+    },
+    {
+      "ow_code": "OW-GROEN-3",
+      "naam": "Groen 3",
+      "categorie": "b",
+      "kleur": "GROEN",
+      "leeftijdsgroep": null,
+      "spelvorm": "VIERTAL",
+      "team_type": "JEUGD",
+      "selectie_ow_code": null,
+      "sort_order": 190,
+      "periodes": {
+        "veld_najaar": {
+          "j_nummer": "J12"
+        }
+      }
+    },
+    {
+      "ow_code": "OW-GROEN-4",
+      "naam": "Groen 4",
+      "categorie": "b",
+      "kleur": "GROEN",
+      "leeftijdsgroep": null,
+      "spelvorm": "VIERTAL",
+      "team_type": "JEUGD",
+      "selectie_ow_code": null,
+      "sort_order": 200,
+      "periodes": {
+        "veld_najaar": {
+          "j_nummer": "J13"
+        }
+      }
+    },
+    {
+      "ow_code": "OW-GROEN-5",
+      "naam": "Groen 5",
+      "categorie": "b",
+      "kleur": "GROEN",
+      "leeftijdsgroep": null,
+      "spelvorm": "VIERTAL",
+      "team_type": "JEUGD",
+      "selectie_ow_code": null,
+      "sort_order": 210,
+      "periodes": {
+        "veld_najaar": {
+          "j_nummer": "J14"
+        }
+      }
+    },
+    {
+      "ow_code": "OW-BLAUW-1",
+      "naam": "Blauw 1",
+      "categorie": "b",
+      "kleur": "BLAUW",
+      "leeftijdsgroep": null,
+      "spelvorm": "VIERTAL",
+      "team_type": "JEUGD",
+      "selectie_ow_code": null,
+      "sort_order": 220,
+      "periodes": {
+        "veld_najaar": {
+          "j_nummer": "J15"
+        }
+      }
+    },
+    {
+      "ow_code": "OW-BLAUW-2",
+      "naam": "Blauw 2",
+      "categorie": "b",
+      "kleur": "BLAUW",
+      "leeftijdsgroep": null,
+      "spelvorm": "VIERTAL",
+      "team_type": "JEUGD",
+      "selectie_ow_code": null,
+      "sort_order": 230,
+      "periodes": {
+        "veld_najaar": {
+          "j_nummer": "J16"
+        }
+      }
+    },
+    {
+      "ow_code": "OW-BLAUW-3",
+      "naam": "Blauw 3",
+      "categorie": "b",
+      "kleur": "BLAUW",
+      "leeftijdsgroep": null,
+      "spelvorm": "VIERTAL",
+      "team_type": "JEUGD",
+      "selectie_ow_code": null,
+      "sort_order": 240,
+      "periodes": {
+        "veld_najaar": {
+          "j_nummer": "J17"
+        }
+      }
+    },
+    {
+      "ow_code": "OW-KANGOEROES",
+      "naam": "Kangoeroes",
+      "categorie": "b",
+      "kleur": null,
+      "leeftijdsgroep": null,
+      "spelvorm": null,
+      "team_type": "OVERIG",
+      "selectie_ow_code": null,
+      "sort_order": 250,
+      "periodes": {
+        "veld_najaar": {
+          "j_nummer": null
+        }
+      }
+    }
+  ]
+}

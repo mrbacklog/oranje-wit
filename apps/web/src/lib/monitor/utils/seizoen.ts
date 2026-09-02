@@ -8,6 +8,7 @@ export function isLopendSeizoen(seizoen: string): boolean {
 }
 
 export const SEIZOENEN = [
+  "2026-2027",
   "2025-2026",
   "2024-2025",
   "2023-2024",

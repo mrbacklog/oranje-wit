@@ -1,0 +1,468 @@
+[
+  {
+    "code": "1",
+    "publicTeamId": "T1827784165",
+    "staf": [
+      {
+        "relCode": "NKT92K1",
+        "naam": "Jongh, A. (Anouk) de",
+        "rol": "Fysiotherapeut"
+      },
+      {
+        "relCode": "NFT93T2",
+        "naam": "Kop, M. (Menno)",
+        "rol": "Hoofd coach"
+      },
+      {
+        "relCode": "NFS68P3",
+        "naam": "Lichteveld, F. (Fred)",
+        "rol": "Teammanager"
+      },
+      {
+        "relCode": "NFW28X3",
+        "naam": "Mastijn, N. (Niels)",
+        "rol": "Assistent coach"
+      },
+      {
+        "relCode": "NLS07R6",
+        "naam": "Vaartmans, I. (Ingrid)",
+        "rol": "Teammanager"
+      }
+    ]
+  },
+  {
+    "code": "2",
+    "publicTeamId": "T708889502",
+    "staf": [
+      {
+        "relCode": "NJF69X7",
+        "naam": "Bosch, T. (Thomas) van den",
+        "rol": "Hoofd coach"
+      },
+      {
+        "relCode": "NFS68P3",
+        "naam": "Lichteveld, F. (Fred)",
+        "rol": "Teammanager"
+      },
+      {
+        "relCode": "NLS07R6",
+        "naam": "Vaartmans, I. (Ingrid)",
+        "rol": "Teammanager"
+      }
+    ]
+  },
+  {
+    "code": "3",
+    "publicTeamId": "T1641232659",
+    "staf": [
+      {
+        "relCode": "NFX13H2",
+        "naam": "Burgt, E. (Erik) van de",
+        "rol": "Hoofd coach"
+      }
+    ]
+  },
+  {
+    "code": "4",
+    "publicTeamId": "T1017260164",
+    "staf": []
+  },
+  {
+    "code": "5",
+    "publicTeamId": "T63701506",
+    "staf": []
+  },
+  {
+    "code": "6",
+    "publicTeamId": "T1499427255",
+    "staf": [
+      {
+        "relCode": "NFW15M2",
+        "naam": "Valk-Helsloot, G. (Gunilda)",
+        "rol": "Hoofd coach"
+      }
+    ]
+  },
+  {
+    "code": "7",
+    "publicTeamId": "T745705180",
+    "staf": [
+      {
+        "relCode": "NFW01R0",
+        "naam": "Kooper, M. (Monique)",
+        "rol": "Hoofd coach"
+      }
+    ]
+  },
+  {
+    "code": "MW1",
+    "publicTeamId": "T518248498",
+    "staf": []
+  },
+  {
+    "code": "U19-1",
+    "publicTeamId": "T338585384",
+    "staf": [
+      {
+        "relCode": "NFW29N6",
+        "naam": "Ploeg, H (Henno)",
+        "rol": "Hoofd coach"
+      },
+      {
+        "relCode": "NFV12W2",
+        "naam": "Stomp-Burgt, L (Lianne) vd",
+        "rol": "Assistent coach"
+      }
+    ]
+  },
+  {
+    "code": "U19-2",
+    "publicTeamId": "T1404655325",
+    "staf": [
+      {
+        "relCode": "NLG59F1",
+        "naam": "Lohuis, J.A. (Jens)",
+        "rol": "Hoofd coach"
+      },
+      {
+        "relCode": "NLL20B6",
+        "naam": "Wensen, M. (Maud) van",
+        "rol": "Assistent coach"
+      }
+    ]
+  },
+  {
+    "code": "U17-1",
+    "publicTeamId": "T1926532127",
+    "staf": [
+      {
+        "relCode": "NFW42R3",
+        "naam": "Dongen, R.J. (Rob) van",
+        "rol": "Hoofd coach"
+      },
+      {
+        "relCode": "NKJ95L7",
+        "naam": "Oppe, M. (Milou)",
+        "rol": "Assistent coach"
+      }
+    ]
+  },
+  {
+    "code": "U17-2",
+    "publicTeamId": "T1235743632",
+    "staf": [
+      {
+        "relCode": "NLL20F4",
+        "naam": "Burgt, S. (Seth) van de",
+        "rol": "Hoofd coach"
+      },
+      {
+        "relCode": "NLG57P5",
+        "naam": "Bäcker, C.J. (Tijn)",
+        "rol": "Assistent coach"
+      },
+      {
+        "relCode": "NLD36P9",
+        "naam": "Driesprong, N. (Niek)",
+        "rol": "Technische staf"
+      }
+    ]
+  },
+  {
+    "code": "U15-1",
+    "publicTeamId": "T403752499",
+    "staf": [
+      {
+        "relCode": "NLG59G8",
+        "naam": "Koster, S. (Senne)",
+        "rol": "Assistent coach"
+      },
+      {
+        "relCode": "NJR87G4",
+        "naam": "Schild, S.Y. (Yannick)",
+        "rol": "Hoofd coach"
+      }
+    ]
+  },
+  {
+    "code": "J1",
+    "publicTeamId": "T688407638",
+    "staf": [
+      {
+        "relCode": "NFT76J1",
+        "naam": "Koster, R.C.J. (Robert)",
+        "rol": "Hoofd coach"
+      },
+      {
+        "relCode": "NFW26R5",
+        "naam": "Wiel, M. (Martijn) van der",
+        "rol": "Technische staf"
+      }
+    ]
+  },
+  {
+    "code": "J2",
+    "publicTeamId": "T577485180",
+    "staf": []
+  },
+  {
+    "code": "J3",
+    "publicTeamId": "T1115803838",
+    "staf": [
+      {
+        "relCode": "NKV95Q4",
+        "naam": "Fasbender, T. (Tijmen)",
+        "rol": "Hoofd coach"
+      },
+      {
+        "relCode": "NLB70Z9",
+        "naam": "Lievaart, C.A. (Carlijn)",
+        "rol": "Assistent coach"
+      },
+      {
+        "relCode": "NLY54F4",
+        "naam": "Vos, J. (Justin)",
+        "rol": "Assistent coach"
+      }
+    ]
+  },
+  {
+    "code": "J4",
+    "publicTeamId": "T1474508196",
+    "staf": [
+      {
+        "relCode": "NFW28J5",
+        "naam": "Ameijden, S (Sjoerd) van",
+        "rol": "Hoofd coach"
+      },
+      {
+        "relCode": "NLB71D8",
+        "naam": "Boshoven, S.A.E. (Sara)",
+        "rol": "Assistent coach"
+      },
+      {
+        "relCode": "NLS45N2",
+        "naam": "Kilsdonk, S.A (Sophie)",
+        "rol": "Assistent coach"
+      }
+    ]
+  },
+  {
+    "code": "J5",
+    "publicTeamId": "T762461017",
+    "staf": [
+      {
+        "relCode": "NKQ14R3",
+        "naam": "Wit, N.M.T. (Nadia) de",
+        "rol": "Hoofd coach"
+      },
+      {
+        "relCode": "NKQ13Q3",
+        "naam": "Wit, S.E.E. (Syrah) de",
+        "rol": "Hoofd coach"
+      }
+    ]
+  },
+  {
+    "code": "J6",
+    "publicTeamId": "T642521159",
+    "staf": [
+      {
+        "relCode": "NFW28T5",
+        "naam": "Kleingeld, J (Jasper)",
+        "rol": "Hoofd coach"
+      },
+      {
+        "relCode": "NFW92M3",
+        "naam": "Laban, A.J. (Antjan)",
+        "rol": "Hoofd coach"
+      }
+    ]
+  },
+  {
+    "code": "J7",
+    "publicTeamId": "T2111770616",
+    "staf": [
+      {
+        "relCode": "NLX04H2",
+        "naam": "Post, J.M. (Joaz)",
+        "rol": "Assistent coach"
+      },
+      {
+        "relCode": "NKK88N6",
+        "naam": "Sint Nicolaas, M. (Marcel)",
+        "rol": "Hoofd coach"
+      }
+    ]
+  },
+  {
+    "code": "J8",
+    "publicTeamId": "T950959469",
+    "staf": [
+      {
+        "relCode": "NFW28G4",
+        "naam": "Bakker-Verwaal, L. (Lieke)",
+        "rol": "Assistent coach"
+      },
+      {
+        "relCode": "NJC90M5",
+        "naam": "Bouwknegt-Zwijnenburg, I (Ilonka)",
+        "rol": "Hoofd coach"
+      },
+      {
+        "relCode": "NLX04H2",
+        "naam": "Post, J.M. (Joaz)",
+        "rol": "Assistent coach"
+      }
+    ]
+  },
+  {
+    "code": "J9",
+    "publicTeamId": "T1814530517",
+    "staf": [
+      {
+        "relCode": "NMF58C3",
+        "naam": "Oosterling, K. (Kimberly)",
+        "rol": "Hoofd coach"
+      },
+      {
+        "relCode": "NKZ02T5",
+        "naam": "Trooijen, W.H. (Jet) van",
+        "rol": "Hoofd coach"
+      }
+    ]
+  },
+  {
+    "code": "J10",
+    "publicTeamId": "T1627516611",
+    "staf": [
+      {
+        "relCode": "NFV12W2",
+        "naam": "Stomp-Burgt, L (Lianne) vd",
+        "rol": "Hoofd coach"
+      },
+      {
+        "relCode": "NFL60Y5",
+        "naam": "Witt, M. (Monique) te",
+        "rol": "Assistent coach"
+      }
+    ]
+  },
+  {
+    "code": "J11",
+    "publicTeamId": "T1596853174",
+    "staf": [
+      {
+        "relCode": "NNH53V0",
+        "naam": "Jong, L. (Leander) de",
+        "rol": "Hoofd coach"
+      },
+      {
+        "relCode": "NLX00G3",
+        "naam": "Sempel, J.D. (Jasper)",
+        "rol": "Assistent coach"
+      },
+      {
+        "relCode": "NMK12K6",
+        "naam": "Vos, T. (Thijs)",
+        "rol": "Assistent coach"
+      }
+    ]
+  },
+  {
+    "code": "J12",
+    "publicTeamId": "T448362795",
+    "staf": [
+      {
+        "relCode": "NLS08H9",
+        "naam": "Reuvers, L. (Lisa)",
+        "rol": "Assistent coach"
+      },
+      {
+        "relCode": "NLG58W7",
+        "naam": "Vaartmans, J.A. (Jordi)",
+        "rol": "Hoofd coach"
+      }
+    ]
+  },
+  {
+    "code": "J13",
+    "publicTeamId": "T1342728412",
+    "staf": [
+      {
+        "relCode": "NFW29N6",
+        "naam": "Ploeg, H (Henno)",
+        "rol": "Trainer"
+      }
+    ]
+  },
+  {
+    "code": "J14",
+    "publicTeamId": "T798711377",
+    "staf": [
+      {
+        "relCode": "NLS54M7",
+        "naam": "Baas, N.J. (Nikki)",
+        "rol": "Assistent coach"
+      },
+      {
+        "relCode": "NMP10M9",
+        "naam": "Bergh, M.J. (Marit) van den",
+        "rol": "Assistent coach"
+      },
+      {
+        "relCode": "NGP79X1",
+        "naam": "Tol, W A J (Wout) van",
+        "rol": "Hoofd coach"
+      }
+    ]
+  },
+  {
+    "code": "J15",
+    "publicTeamId": "T2118492912",
+    "staf": [
+      {
+        "relCode": "NLV80P4",
+        "naam": "Heersping, S. (Sander)",
+        "rol": "Assistent coach"
+      },
+      {
+        "relCode": "NLV80M3",
+        "naam": "Laban, F.C. (Freek)",
+        "rol": "Assistent coach"
+      },
+      {
+        "relCode": "NFW26D7",
+        "naam": "Muller, A.J. (Arthijn)",
+        "rol": "Trainer"
+      }
+    ]
+  },
+  {
+    "code": "J16",
+    "publicTeamId": "T903123045",
+    "staf": [
+      {
+        "relCode": "NLX64V0",
+        "naam": "Boer, E.M. (Esmée) de",
+        "rol": "Assistent coach"
+      },
+      {
+        "relCode": "NLP89W4",
+        "naam": "Volker, T.N. (Tess)",
+        "rol": "Hoofd coach"
+      }
+    ]
+  },
+  {
+    "code": "J17",
+    "publicTeamId": "T92404484",
+    "staf": [
+      {
+        "relCode": "NLS34M7",
+        "naam": "Camphens, S. (Saar)",
+        "rol": "Assistent coach"
+      }
+    ]
+  }
+]
