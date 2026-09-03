@@ -268,7 +268,45 @@ smal maar functioneel.
 
 ---
 
-## 9. Wat nog niet vaststaat
+## 9. Breedte en niveau — niet te toetsen met wat we hebben
+
+Het beleid gaat ervan uit dat een breder cohort tot een hoger eindniveau leidt, via
+meer onderlinge concurrentie en differentiatie (zie `rules/oranje-draad.md`).
+
+**Die aanname is met de huidige data niet te toetsen, en een voor de hand liggende
+toets is misleidend.** Het aandeel van een jaargang dat U19-1 of S1 haalt, daalt
+naarmate de jaargang breder is:
+
+| Geboortejaar | Op 11 jaar | Haalde A1/U19-1/S1 |
+|---|---|---|
+| 1999 | 8 | 7 (88%) |
+| 2003 | 23 | 12 (52%) |
+| 2005 | 27 | 5 (19%) |
+| 2006 | 16 | 2 (13%) |
+
+Dat lijkt tegen het beleid te pleiten, maar het is een noemer-effect: U19-1 heeft
+ongeveer tien plekken en S1 acht, ongeacht hoe breed de jaargang is. Bij een smalle
+lichting haalt bijna iedereen de top omdat er niemand anders is. De correlatie tussen
+breedte en aandeel is dan ook negatief (r = −0,41) en zegt niets.
+
+In absolute aantallen is de samenhang zwak positief (r = 0,25): bredere jaargangen
+leveren iets meer topspelers. Dat is consistent met "meer lootjes in dezelfde
+trekking", niet met "concurrentie tilt het niveau op".
+
+**Wat een echte toets zou vragen:** het competitieniveau van de teams zelf — speelde
+U19-1 hoofdklasse of lager in jaren waarin de onderliggende lichting breed was. Die
+data hebben we niet: `team_periodes.pool` is alleen gevuld vanaf 2025-2026 en
+`sterkte` is overal leeg.
+
+**Actie:** wil de vereniging deze beleidspijler onderbouwen, dan moet per team per
+seizoen het competitieniveau worden vastgelegd. Vanaf nu, want met terugwerkende
+kracht kan het niet meer.
+
+Bron: `scripts/analyse-cohortbreedte-versus-niveau.mjs`
+
+---
+
+## 10. Wat nog niet vaststaat
 
 - **Streefaantallen.** In de code staan 24 jongens en 26 meisjes per selectiecategorie
   hardgecodeerd, terwijl `model/jeugdmodel.yaml` een talent-ratio-formule bevat die op

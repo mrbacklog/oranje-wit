@@ -33,6 +33,35 @@ PLEZIER + ONTWIKKELING + PRESTATIE → DUURZAAMHEID
 - Retentie belangrijker dan korte-termijn succes
 - Trainersbelasting bewaken
 
+## Onder 12 jaar: geen wedstrijd of breedte, alleen breedte
+
+Tot en met de leeftijdsgroep van 11 jaar kent Oranje Wit **geen scheiding tussen
+wedstrijd- en breedtekorfbal**. Er zijn wel betere spelers en sterkere teams, maar
+die worden niet als categorie behandeld.
+
+**Waarom breedte de investering krijgt.** Een breder geboortecohort geeft meer
+onderlinge concurrentie en differentiatie, en daarmee een hoger eindniveau. Boven de
+elf jaar loopt de trechter vanzelf smal — daaronder bepaal je hoe breed hij begint.
+
+**Kwaliteit van training geldt over de volle breedte.** Niet de beste trainers
+uitsluitend voor de beste teams. Ontwikkeling en persoonlijkheid verlopen grillig;
+wie op tienjarige leeftijd achterloopt kan op zijn vijftiende vooroplopen. Door de
+trainingskwaliteit gelijk te houden, laat je die grilligheid geen deel worden van de
+ontwikkelcultuur — een kind wordt niet afgeschreven door een momentopname.
+
+Dat is geen pleidooi voor uniformiteit: welke opleider bij welk soort team past,
+verschilt. Een trainer die een breedteteam laat bloeien is niet automatisch de
+trainer voor een selectiegroep, en andersom. Teams worden ook nu al mede gevormd op
+ontwikkeling en beleving — dat mag, zolang het binnen dit kader blijft.
+
+**Het risico waar dit tegen beschermt.** De feitenbasis laat zien dat de route naar
+het eerste team in de praktijk vrijwel volledig via U19-1 loopt: 94% van de
+S1-spelers kwam uit A1 of U19-1. Dat is een constatering over 17- en 18-jarigen, geen
+rechtvaardiging om op tienjarige leeftijd te gaan sorteren. Wie vroeg selecteert,
+maakt die route zelfbevestigend in plaats van verdiend.
+
+Onderbouwing en cijfers: `docs/kennis/spelersstromen.md`
+
 ## Toetsingsvragen bij teamindeling
 1. Heeft elk team voldoende sociale cohesie? (Plezier)
 2. Worden spelers uitgedaagd op hun niveau? (Ontwikkeling)
