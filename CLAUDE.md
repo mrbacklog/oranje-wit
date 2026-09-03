@@ -235,5 +235,6 @@ Detail-informatie staat in path-scoped rules en docs:
 | `rules/teamindeling-scheiding.md` | Desktop/mobile scheiding TI |
 | `.claude/rules/dialoog-canon.md` | TI Studio v2 — één code-werkelijkheid per entiteit-dialoog/hover-kaart |
 | `docs/kennis/tc-doelgroepen.md` | 5 TC-doelgroepen (Single Source of Truth voor POP-ratio's) |
+| `docs/kennis/spelersstromen.md` | Feitenbasis ledenstromen: meetregels, doorstroom per leeftijd, gender, talentroute, U19-ambitie |
 | `docs/kennis/e2e-testen-tegen-studio-test.md` | E2E-tests tegen studio-test.ckvoranjewit.app (architecture, lokaal/CI, PDND-nuances) |
 | `docs/kennis/` | Seizoenscyclus, TC-beleid, TC-organisatie, KNKV-competitie |
