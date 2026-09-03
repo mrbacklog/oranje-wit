@@ -46,26 +46,111 @@ Bron: `scripts/js/bereken-verloop.js`, `scripts/js/bereken-cohorten.js`
 
 ---
 
-## 2. De vereniging is het breedst op elfjarige leeftijd
+## 1b. Waarschuwing: de historie vóór 2017-2018 is onvolledig
 
-Gemiddeld over 16 seizoenen, per leeftijd:
+De seizoenen tot en met 2016-2017 zijn gereconstrueerd uit spelerspaden, niet uit een
+registratie van dat seizoen zelf. Bij het inladen viel een groot deel weg, en dat deel
+is **niet willekeurig**: het zijn juist de mensen die later niet meer traceerbaar waren.
+
+| Seizoen | In de snapshot | In de analyse | Verlies |
+|---|---|---|---|
+| 2010-2011 | 400 | 176 | **56%** |
+| 2011-2012 | 409 | 212 | 48% |
+| 2012-2013 | 411 | 243 | 41% |
+| 2013-2014 | 359 | 238 | 34% |
+| 2015-2016 | 370 | 300 | 19% |
+| 2016-2017 | 352 | 322 | 9% |
+| 2017-2018 en later | 345 | 344 | **0%** |
+
+**Oorzaak:** 381 personen hebben een rel_code van de vorm `OW-0329` — een verzonnen
+code omdat het echte Sportlink-nummer onbekend was. Die zijn uit de `leden`-tabel
+verwijderd (`sync-leden-csv.ts` verwijdert leden die niet in het CSV staan, inclusief
+`OW-xxxx`), waarna hun competitie-rijen niet meer aangemaakt konden worden.
+
+**Niet herstelbaar.** Van die 381 heeft 1% een geboortejaar. Zonder geboortejaar zijn
+ze voor elke leeftijdsanalyse onbruikbaar.
+
+**Wat dit omdraait.** De werkelijke ledenaantallen uit de snapshots: 400 (2010),
+411 (2012), 352 (2016), 282 (2018), 243 (2024), 262 (2025). **De vereniging is tussen
+2012 en 2024 met veertig procent gekrompen.** Onze eigen reeks liet groei zien van 176
+naar 322 — dat was de dekking die verbeterde, niet de club die groeide.
+
+**Regel:** gebruik voor trendanalyses uitsluitend seizoenen vanaf 2017-2018. Alles wat
+op de volledige historie leunt is survivorship-biased, met een vertekening die
+oploopt naarmate je verder terugkijkt.
+
+Elke sectie hieronder is gelabeld met de periode waarop hij rust.
+
+---
+
+## 1c. Competitieniveaus zijn niet vergelijkbaar over de jaren
+
+**De top van de piramide verschilt tussen veld en zaal.** Dat is geen detail maar
+bepaalt of twee niveaus überhaupt vergelijkbaar zijn.
+
+**Zaal, senioren:**
+- **Korfbal League** — hoogste niveau, sinds 2005
+- **Korfbal League 2** — sinds **2022-2023**, dit is pas het vierde seizoen
+- **Hoofdklasse** — daaronder
+
+**Veld, senioren:**
+- **Ereklasse** — hoogste niveau
+- **Hoofdklasse** — daaronder
+
+Er is dus geen League 1 of 2 op het veld. Wie zaal- en veldniveaus door elkaar haalt,
+vergelijkt twee verschillende piramides.
+
+In de zaal betekent dit binnen ons meetvenster: de hoofdklasse was tot en met
+2021-2022 het tweede niveau en is sinds 2022-2023 het derde. Een team dat in 2015
+zaalhoofdklasse speelde en nu nog steeds, is feitelijk een niveau gezakt zonder ooit
+te degraderen.
+
+Daar komt **Competitie 2.0** bij vanaf 2025-2026, met de indeling topkorfbal /
+A-categorie / B-categorie.
+
+Bij de **jeugd** is de niveaustructuur ongewijzigd gebleven. Jeugdvergelijkingen over
+de jaren zijn dus wél zuiver; seniorenvergelijkingen niet zonder correctie.
+
+**Het niveau van één team verschilt per competitiefase.** Promotie en degradatie lopen
+per competitie apart:
+
+- **veld en zaal** kunnen van elkaar afwijken — het zijn aparte piramides met een
+  eigen top
+- **en sinds 2024 wijkt ook veld-najaar af van veld-voorjaar** — die zijn sindsdien
+  twee losse competities met een eigen indeling
+
+"Het niveau van team X in seizoen Y" is dus geen enkele waarde, maar er zijn er drie:
+veld_najaar, zaal en veld_voorjaar. Daarom heeft `team_periodes` een rij per periode
+met een eigen `pool`.
+
+Wie het niveau van een team over de jaren volgt, moet dezelfde fase met zichzelf
+vergelijken — dezelfde regel als bij de ledentellingen in 1a, en om dezelfde reden.
+
+---
+
+## 2. De vereniging is het breedst rond twaalf jaar
+*Periode: 2017-2018 en later (schone data)*
+
+Gemiddelde bezetting per leeftijd per seizoen:
 
 | Leeftijd | Gemiddeld per seizoen |
 |---|---|
-| 8 | 14,8 |
+| 8 | 13,7 |
 | 10 | 18,5 |
-| **11** | **18,7 — piek** |
-| 12 | 18,3 |
-| 15 | 15,1 |
-| 17 | 11,0 (59% van de piek) |
-| 18 | 9,4 (50% van de piek) |
+| 11 | 18,8 |
+| **12** | **19,5 — piek** |
+| 13 | 18,8 |
+| 15 | 16,9 |
+| 17 | 12,7 (65% van de piek) |
+| 18 | 11,3 (58% van de piek) |
 
-Acht jaargangen die van 8 tot 16 gevolgd konden worden pieken zelf gemiddeld op
-**11,0 jaar**, het vaakst op 10. Van die piek is op 17-jarige leeftijd nog 25% tot 80%
-over — sterk wisselend per lichting.
+Tussen 10 en 13 jaar ligt een plateau van 18,5 tot 19,5 — de piek op 12 is geen
+scherpe top. Groep 8 (elf jaar) blijft daarmee een bruikbaar ijkpunt: wat daar staat,
+bepaalt grotendeels wat er zes jaar later staat.
 
-Elf jaar is ook de leeftijd van groep 8. Dat maakt het een bruikbaar ijkpunt: wat er
-op dat moment staat, bepaalt grotendeels wat er zes jaar later staat.
+> Een eerdere versie noemde 11 jaar als piek met 18,7. Dat was gerekend over alle 16
+> seizoenen, inclusief de onvolledige jaren vóór 2017-2018 (zie 1b). De vorm van de
+> curve verandert nauwelijks; de niveaus liggen op schone data hoger.
 
 Bron: `scripts/analyse-breedste-leeftijd.mjs`
 
