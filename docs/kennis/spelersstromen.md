@@ -37,6 +37,16 @@ evenzoveel valse "herinschrijvers" een jaar later.
 verbloemen een recente verslechtering. Over de hele historie levert een jaargang van
 25 elfjarigen er 19 op hun zeventiende; over de laatste vijf jaar zijn het er 15.
 
+**Er zijn twee verenigingen die Oranje Wit heten.** In KNKV-bronnen worden ze
+onderscheiden met een achtervoegsel:
+
+- **Oranje Wit (D)** — Dordrecht, club-id `NCX19J3`. Dat zijn wij.
+- **Oranje Wit (L)** — Leunen, een veel kleinere vereniging. Niet wij.
+
+Bij elke externe bron — KNKV-ledencijfers, uitslagensites, archieven — moet je
+controleren welke van de twee je te pakken hebt. Op bronnen zonder achtervoegsel is
+de plaats de enige betrouwbare check.
+
 **Let op links-censuur bij jeugdanalyses.** De reeks begint in 2010-2011. Van wie
 vóór ongeveer 2000 geboren is, zijn de jeugdjaren niet gemeten. Analyses over
 instroomleeftijd moeten daarom beperkt worden tot jaargangen waarvan de hele jeugd

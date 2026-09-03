@@ -6,7 +6,7 @@
     "peildatum": "2025-12-01",
     "kwartaal": "2025-Q4",
     "ingevoerd_op": "2026-02-24",
-    "opmerking": "Uitgelezen via browser-screenshot van KNKV SharePoint PDF-viewer (canvas-rendering, geen tekst-extractie mogelijk). Kolommen in bron: SP (spelende leden) en NSP (niet-spelende leden) per kwartaal — jun-23 t/m dec-25. Totaal = SP + NSP. De %-kolom in de bron = groei t.o.v. referentieperiode 2022-2023. Oranje Wit staat in de bron als 'Oranje Wit (D)' (D = district Zuid-Holland). Op pagina 8 staat ook 'Oranje Wit (L)' — dat is een andere club in een ander district. Let op: DeetosSnel staat in de bron als 'DeetosSnel/OLS' (fusie 2018, voetnoot *10).",
+    "opmerking": "Uitgelezen via browser-screenshot van KNKV SharePoint PDF-viewer (canvas-rendering, geen tekst-extractie mogelijk). Kolommen in bron: SP (spelende leden) en NSP (niet-spelende leden) per kwartaal — jun-23 t/m dec-25. Totaal = SP + NSP. De %-kolom in de bron = groei t.o.v. referentieperiode 2022-2023. Oranje Wit staat in de bron als 'Oranje Wit (D)' (D = Dordrecht). Op pagina 8 staat ook 'Oranje Wit (L)' — dat is de veel kleinere vereniging uit Leunen, niet onze club. Let op: DeetosSnel staat in de bron als 'DeetosSnel/OLS' (fusie 2018, voetnoot *10).",
     "kolommen_bron": {
       "SP": "Spelende leden (wedstrijdspelers)",
       "NSP": "Niet-Spelende leden (ondersteunend)",
