@@ -150,10 +150,12 @@ model TeamPeriode {
   teamId        Int      @map("team_id")
   periode       String   // "veld_najaar" | "zaal_deel1" | "zaal_deel2" | "veld_voorjaar"
   jNummer       String?  @map("j_nummer")
-  pool          String?
+  pool          String? // poulecode, bv. "HK-08", "Ro-135" — ook gebruikt voor historisch geoogste poulecodes
   sterkte       Int?
   gemLeeftijd   Decimal? @map("gem_leeftijd") @db.Decimal(5, 2)
   aantalSpelers Int?     @map("aantal_spelers")
+  klasse        String?  @map("klasse") // competitieklasse, bv. "Overgangsklasse C" — geoogst uit gearchiveerde standenpagina's
+  klasseBron    String?  @map("klasse_bron") // bron-URL van de geoogste klasse, voor herleidbaarheid
 
   // Relaties
   owTeam OWTeam @relation(fields: [teamId], references: [id])
