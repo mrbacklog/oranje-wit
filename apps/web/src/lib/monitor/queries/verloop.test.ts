@@ -10,6 +10,7 @@ import {
   getInstroomUitstroom,
   getInstroomPerSeizoenMV,
   getUitstroomPerSeizoenMV,
+  getInstroomUitstroomPerSeizoen,
   getAankomstigeUitstroom,
   getIntraSeizoenFlow,
 } from "./verloop";
@@ -291,6 +292,35 @@ describe("getUitstroomPerSeizoenMV", () => {
 
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual({ seizoen: "2023-2024", M: 5, V: 7, totaal: 12 });
+  });
+});
+
+describe("getInstroomUitstroomPerSeizoen", () => {
+  beforeEach(() => {
+    mockPrisma.$queryRaw.mockReset();
+  });
+
+  it("retourneert lege array als er geen data is", async () => {
+    mockPrisma.$queryRaw.mockResolvedValueOnce([]);
+    const result = await getInstroomUitstroomPerSeizoen();
+    expect(result).toEqual([]);
+  });
+
+  it("mapt rijen uit ledenverloop naar seizoen-tijdreeks met isLopend", async () => {
+    mockPrisma.$queryRaw.mockResolvedValueOnce([
+      { seizoen: "2024-2025", instroom: 27, uitstroom: 29 },
+      { seizoen: "2025-2026", instroom: 41, uitstroom: 20 },
+    ]);
+
+    const result = await getInstroomUitstroomPerSeizoen();
+
+    expect(result).toHaveLength(2);
+    expect(result[0]).toEqual({
+      seizoen: "2024-2025",
+      isLopend: false,
+      instroom: 27,
+      uitstroom: 29,
+    });
   });
 });
 

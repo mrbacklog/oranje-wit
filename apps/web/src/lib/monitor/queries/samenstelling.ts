@@ -73,6 +73,15 @@ type GroeiFactoren = { M: Record<number, number>; V: Record<number, number> };
  * Factor = gemiddelde(actief bij leeftijd L / actief bij leeftijd L-1) per cohort.
  * Factor > 1 = cohort groeit (instroom > uitstroom), < 1 = cohort krimpt.
  * COVID-seizoenen (2020-2022) worden uitgesloten.
+ *
+ * Grondslag: `cohort_seizoenen` is zelf een aggregatie van `ledenverloop`
+ * (zie `scripts/js/bereken-cohorten.js`), dus dezelfde canonieke bron en
+ * dezelfde correcties (competitiefase-mismatch, eenmalige meetgaten) als
+ * `queries/verloop.ts`. De aparte tabel bestaat omdat projecties een andere
+ * vorm nodig hebben dan instroom/uitstroom-tellingen: een ratio "actief bij
+ * leeftijd L" t.o.v. "actief bij leeftijd L-1" per geboortejaar-cohort, niet
+ * een telling van transitiestatussen per seizoen. Niet rechtstreeks op
+ * `ledenverloop` herberekenen — dat zou dezelfde join-logica dupliceren.
  */
 export async function getGroeiFactoren(): Promise<GroeiFactoren> {
   const rows = await prisma.$queryRaw<

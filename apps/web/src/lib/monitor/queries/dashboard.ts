@@ -1,6 +1,6 @@
 // @ts-nocheck — Prisma 7 type-recursie workaround (TS2321)
 import { prisma } from "@/lib/db/prisma";
-import { isLopendSeizoen } from "@/lib/monitor/utils/seizoen";
+import { getInstroomUitstroomPerSeizoen } from "@/lib/monitor/queries/verloop";
 
 // ---------------------------------------------------------------------------
 // Leden trend (unieke rel_codes per seizoen uit competitie_spelers)
@@ -17,7 +17,7 @@ export async function getLedenTrend(): Promise<LedenTrendPunt[]> {
 }
 
 // ---------------------------------------------------------------------------
-// Instroom/uitstroom (unieke rel_codes vergelijken tussen opeenvolgende seizoenen)
+// Instroom/uitstroom per seizoen (canonieke bron: ledenverloop, zie queries/verloop.ts)
 // ---------------------------------------------------------------------------
 
 export type InstroomUitstroomPunt = {
@@ -27,31 +27,14 @@ export type InstroomUitstroomPunt = {
   uitstroom: number;
 };
 
+/**
+ * Instroom/uitstroom per seizoen voor de dashboard-grafiek. Leest uit `ledenverloop`
+ * via `getInstroomUitstroomPerSeizoen()` — niet rechtstreeks op `competitie_spelers`,
+ * dat omzeilt de correcties uit `bereken-verloop.js` (competitiefase-mismatch tussen
+ * afgeronde en lopende seizoenen, eenmalige meetgaten) en levert valse uitstroom op.
+ */
 export async function getInstroomUitstroom(): Promise<InstroomUitstroomPunt[]> {
-  const rows = await prisma.$queryRaw<{ seizoen: string; instroom: number; uitstroom: number }[]>`
-    WITH per_seizoen AS (
-      SELECT seizoen, array_agg(DISTINCT rel_code) AS codes
-      FROM competitie_spelers
-      GROUP BY seizoen
-    ),
-    paren AS (
-      SELECT
-        cur.seizoen,
-        (SELECT COUNT(*) FROM unnest(cur.codes) c WHERE NOT c = ANY(prev.codes))::int AS instroom,
-        (SELECT COUNT(*) FROM unnest(prev.codes) p WHERE NOT p = ANY(cur.codes))::int AS uitstroom
-      FROM per_seizoen cur
-      JOIN per_seizoen prev ON prev.seizoen = (
-        (SPLIT_PART(cur.seizoen, '-', 1)::int - 1)::text || '-' || SPLIT_PART(cur.seizoen, '-', 1)
-      )
-    )
-    SELECT * FROM paren ORDER BY seizoen`;
-
-  return rows.map((r) => ({
-    seizoen: r.seizoen,
-    isLopend: isLopendSeizoen(r.seizoen),
-    instroom: Number(r.instroom),
-    uitstroom: Number(r.uitstroom),
-  }));
+  return getInstroomUitstroomPerSeizoen();
 }
 
 // ---------------------------------------------------------------------------

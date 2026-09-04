@@ -60,7 +60,7 @@ export function InstroomUitstroom({ data }: InstroomUitstroomProps) {
             labelFormatter={(_label, payload) => {
               const item = payload?.[0]?.payload;
               const seizoen = item?.seizoenVol ?? _label;
-              return item?.isLopend ? `${seizoen} (lopend \u2014 voorlopig)` : seizoen;
+              return item?.isLopend ? `${seizoen} (t.o.v. vorig najaar)` : seizoen;
             }}
           />
           <Legend wrapperStyle={{ color: "var(--text-secondary)" }} />
@@ -88,7 +88,7 @@ export function InstroomUitstroom({ data }: InstroomUitstroomProps) {
       </ResponsiveContainer>
       {data.some((d) => d.isLopend) && (
         <p className="text-text-muted mt-1 text-xs">
-          * Lopend seizoen \u2014 cijfers zijn voorlopig
+          * Lopend seizoen — vergeleken t.o.v. vorig najaar
         </p>
       )}
     </>

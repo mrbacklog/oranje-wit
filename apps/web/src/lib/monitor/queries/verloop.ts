@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db/prisma";
 import { HUIDIG_SEIZOEN } from "@oranje-wit/types";
+import { isLopendSeizoen } from "@/lib/monitor/utils/seizoen";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -310,6 +311,41 @@ export async function getInstroomPerSeizoenMV(): Promise<SeizoenMVRow[]> {
     M: Number(r.m),
     V: Number(r.v),
     totaal: Number(r.totaal),
+  }));
+}
+
+// ---------------------------------------------------------------------------
+// Instroom + uitstroom per seizoen (tijdreeks, canonieke bron voor dashboard-grafiek)
+// ---------------------------------------------------------------------------
+
+export type SeizoenInstroomUitstroomRow = {
+  seizoen: string;
+  isLopend: boolean;
+  instroom: number;
+  uitstroom: number;
+};
+
+/**
+ * Instroom + uitstroom per seizoen, over de volledige historie. Canonieke bron:
+ * `ledenverloop` (al gecorrigeerd voor competitiefase-mismatch en meetgaten,
+ * zie `bereken-verloop.js` en `docs/kennis/spelersstromen.md` §1). Niet op
+ * `competitie_spelers` herberekenen — dat levert voor een lopend seizoen valse
+ * uitstroom op.
+ */
+export async function getInstroomUitstroomPerSeizoen(): Promise<SeizoenInstroomUitstroomRow[]> {
+  const rows = await prisma.$queryRaw<{ seizoen: string; instroom: number; uitstroom: number }[]>`
+    SELECT seizoen,
+      COUNT(*) FILTER (WHERE status IN ('nieuw', 'herinschrijver'))::int AS instroom,
+      COUNT(*) FILTER (WHERE status IN ('uitgestroomd', 'niet_spelend_geworden'))::int AS uitstroom
+    FROM ledenverloop
+    GROUP BY seizoen
+    ORDER BY seizoen`;
+
+  return rows.map((r) => ({
+    seizoen: r.seizoen,
+    isLopend: isLopendSeizoen(r.seizoen),
+    instroom: Number(r.instroom),
+    uitstroom: Number(r.uitstroom),
   }));
 }
 

@@ -1,6 +1,7 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { mockPrisma } from "@/test/mock-prisma";
-import { getDashboardKPIs } from "./dashboard";
+import { getDashboardKPIs, getInstroomUitstroom } from "./dashboard";
+import * as verloop from "./verloop";
 
 describe("getDashboardKPIs", () => {
   beforeEach(() => {
@@ -72,5 +73,22 @@ describe("getDashboardKPIs", () => {
 
     expect(result.geslacht).toEqual({ M: 0, V: 0 });
     expect(result.totaal_teams).toBe(2);
+  });
+});
+
+describe("getInstroomUitstroom", () => {
+  it("delegeert naar de canonieke ledenverloop-query in queries/verloop", async () => {
+    const spy = vi.spyOn(verloop, "getInstroomUitstroomPerSeizoen").mockResolvedValueOnce([
+      { seizoen: "2024-2025", isLopend: false, instroom: 27, uitstroom: 29 },
+      { seizoen: "2025-2026", isLopend: true, instroom: 41, uitstroom: 20 },
+    ]);
+
+    const result = await getInstroomUitstroom();
+
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(result).toEqual([
+      { seizoen: "2024-2025", isLopend: false, instroom: 27, uitstroom: 29 },
+      { seizoen: "2025-2026", isLopend: true, instroom: 41, uitstroom: 20 },
+    ]);
   });
 });
