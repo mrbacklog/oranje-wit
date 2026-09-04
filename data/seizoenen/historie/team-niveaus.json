@@ -1,0 +1,3567 @@
+{
+  "_meta": {
+    "beschrijving": "Competitieniveau per Oranje Wit-team per seizoen en competitiefase, geoogst uit gearchiveerde standenpagina's van ckvoranjewit.nl.",
+    "geoogst_op": "2026-09-04",
+    "let_op": "Veld-najaar, zaal en veld-voorjaar zijn aparte competities; vergelijk alleen dezelfde fase met zichzelf. Klassenamen wisselen over de jaren: vanaf 2019 gaat de breedtejeugd over op poulenummers in plaats van klassenamen.",
+    "positie_waarschuwing": "De klasse is betrouwbaar, de positie niet. Elke pagina is een momentopname van de datum waarop het archief hem ophaalde — soms halverwege het seizoen. Gebruik `positie` niet als eindstand zonder controle.",
+    "dekking": "Alleen fases waarvan een standenpagina gearchiveerd is. Niet gedekt: 2009-2010 t/m 2011-2012, 2013-2014 zaal en voorjaar, 2016-2017 zaal en voorjaar, heel 2017-2018, en 2018-2019 najaar.",
+    "aantal": 395
+  },
+  "niveaus": [
+    {
+      "seizoen": "2012-2013",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit 1",
+      "klasse": "Overgangsklasse C",
+      "poulecode": null,
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20130807181743/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2012-2013",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit 2",
+      "klasse": "Reserve Overgangsklasse C",
+      "poulecode": null,
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20130807181743/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2012-2013",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit 3",
+      "klasse": "KNKV Reserveklasse 2O",
+      "poulecode": null,
+      "positie": 5,
+      "bron": "https://web.archive.org/web/20130807181743/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2012-2013",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit 4",
+      "klasse": "KNKV Reserveklasse 3R",
+      "poulecode": null,
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20130807181743/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2012-2013",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit 5",
+      "klasse": "KNKV Reserveklasse 3V",
+      "poulecode": null,
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20130807181743/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2012-2013",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit 6",
+      "klasse": "KNKV Reserveklasse 4R",
+      "poulecode": null,
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20130807181743/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2012-2013",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit 7",
+      "klasse": "ZuidWest Reserveklasse 5A",
+      "poulecode": null,
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20130807181743/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2012-2013",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit 8",
+      "klasse": "ZuidWest Reserveklasse 6F",
+      "poulecode": null,
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20130807181743/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2012-2013",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit 9",
+      "klasse": "ZuidWest Reserveklasse 7F",
+      "poulecode": null,
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20130807181743/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2012-2013",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit A1",
+      "klasse": "A-junioren Overgangskl D",
+      "poulecode": null,
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20130807181743/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2012-2013",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit A2",
+      "klasse": "A-junioren klasse 2L",
+      "poulecode": null,
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20130807181743/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2012-2013",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit A3",
+      "klasse": "ZuidWest A-junioren klasse 5D",
+      "poulecode": null,
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20130807181743/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2012-2013",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit B1",
+      "klasse": "B-aspiranten Hoofdklasse D",
+      "poulecode": null,
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20130807181743/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2012-2013",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit B2",
+      "klasse": "B-aspiranten klasse 2P",
+      "poulecode": null,
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20130807181743/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2012-2013",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit B3",
+      "klasse": "ZuidWest B-aspiranten klasse 4C",
+      "poulecode": null,
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20130807181743/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2012-2013",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit B4",
+      "klasse": "ZuidWest B-aspiranten klasse 5E",
+      "poulecode": null,
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20130807181743/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2012-2013",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit C1",
+      "klasse": "C-aspiranten Hoofdklasse B",
+      "poulecode": null,
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20130807181743/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2012-2013",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit C2",
+      "klasse": "C-aspiranten klasse 2O",
+      "poulecode": null,
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20130807181743/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2012-2013",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit C3",
+      "klasse": "ZuidWest C-aspiranten klasse 4D",
+      "poulecode": null,
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20130807181743/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2012-2013",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit C4",
+      "klasse": "ZuidWest C-aspiranten klasse 4E",
+      "poulecode": null,
+      "positie": 5,
+      "bron": "https://web.archive.org/web/20130807181743/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2012-2013",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit C5",
+      "klasse": "ZuidWest C-aspiranten klasse 5A",
+      "poulecode": null,
+      "positie": 7,
+      "bron": "https://web.archive.org/web/20130807181743/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2012-2013",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit D1",
+      "klasse": "D-pupillen Hoofdklasse G-E",
+      "poulecode": null,
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20130807181743/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2012-2013",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit D2",
+      "klasse": "ZuidWest D-pupillen klasse 1E",
+      "poulecode": null,
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20130807181743/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2012-2013",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit D3",
+      "klasse": "ZuidWest D-pupillen klasse 2G",
+      "poulecode": null,
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20130807181743/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2012-2013",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit D4",
+      "klasse": "ZuidWest D-pupillen klasse 3J",
+      "poulecode": null,
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20130807181743/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2012-2013",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit D5",
+      "klasse": "ZuidWest D-pupillen klasse 3P",
+      "poulecode": null,
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20130807181743/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2012-2013",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit E1",
+      "klasse": "ZuidWest E-pupillen 8tal klasse 1A",
+      "poulecode": null,
+      "positie": 5,
+      "bron": "https://web.archive.org/web/20130807181743/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2012-2013",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit E2",
+      "klasse": "ZuidWest E-pupillen 8tal klasse 2F",
+      "poulecode": null,
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20130807181743/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2012-2013",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit E3",
+      "klasse": "ZuidWest E-pupillen 8tal klasse 3A",
+      "poulecode": null,
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20130807181743/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2012-2013",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit E4",
+      "klasse": "ZuidWest E-pupillen 8tal klasse 3B",
+      "poulecode": null,
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20130807181743/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2012-2013",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit E5",
+      "klasse": "ZuidWest E-pupillen 8tal klasse 3C",
+      "poulecode": null,
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20130807181743/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2012-2013",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit F1",
+      "klasse": "ZuidWest F-pupillen 4tal klasse 1B",
+      "poulecode": null,
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20130807181743/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2012-2013",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit F2",
+      "klasse": "ZuidWest F-pupillen 4tal klasse 2J",
+      "poulecode": null,
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20130807181743/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2012-2013",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit F3",
+      "klasse": "ZuidWest F-pupillen 4tal klasse 3D",
+      "poulecode": null,
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20130807181743/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2012-2013",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit F4",
+      "klasse": "ZuidWest F-pupillen 4tal klasse 3F",
+      "poulecode": null,
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20130807181743/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2012-2013",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit F5",
+      "klasse": "ZuidWest F-pupillen 4tal klasse 3E",
+      "poulecode": null,
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20130807181743/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2013-2014",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit 1",
+      "klasse": "Hoofdklasse B",
+      "poulecode": null,
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20130821085327/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2013-2014",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit 2",
+      "klasse": "Reserve Overgangsklasse D",
+      "poulecode": null,
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20130821085327/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2013-2014",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit 3",
+      "klasse": "KNKV Reserveklasse 2N",
+      "poulecode": null,
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20130821085327/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2013-2014",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit 4",
+      "klasse": "KNKV Reserveklasse 2M",
+      "poulecode": null,
+      "positie": 5,
+      "bron": "https://web.archive.org/web/20130821085327/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2013-2014",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit 5",
+      "klasse": "KNKV Reserveklasse 3W",
+      "poulecode": null,
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20130821085327/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2013-2014",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit 6",
+      "klasse": "KNKV Reserveklasse 4S",
+      "poulecode": null,
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20130821085327/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2013-2014",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit A1",
+      "klasse": "A-junioren Overgangskl C",
+      "poulecode": null,
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20130821085327/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2013-2014",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit A2",
+      "klasse": "A-junioren klasse 1F",
+      "poulecode": null,
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20130821085327/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2013-2014",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit B1",
+      "klasse": "B-aspiranten Hoofdklasse C",
+      "poulecode": null,
+      "positie": 7,
+      "bron": "https://web.archive.org/web/20130821085327/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2013-2014",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit C1",
+      "klasse": "C-aspiranten Hoofdklasse B",
+      "poulecode": null,
+      "positie": 8,
+      "bron": "https://web.archive.org/web/20130821085327/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit 1",
+      "klasse": "Hoofdklasse A",
+      "poulecode": null,
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20141003174252/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit 2",
+      "klasse": "Reserve Overgangsklasse C",
+      "poulecode": null,
+      "positie": 7,
+      "bron": "https://web.archive.org/web/20141003174252/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit 3",
+      "klasse": "KNKV Reserve 2e klasse N",
+      "poulecode": null,
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20141003174252/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit 4",
+      "klasse": "KNKV Reserve 2e klasse O",
+      "poulecode": null,
+      "positie": 8,
+      "bron": "https://web.archive.org/web/20141003174252/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit 5",
+      "klasse": "KNKV Reserve 2e klasse P",
+      "poulecode": null,
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20141003174252/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit 6",
+      "klasse": "ZuidWest Reserve 5e klasse B",
+      "poulecode": null,
+      "positie": 7,
+      "bron": "https://web.archive.org/web/20141003174252/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit 7",
+      "klasse": "ZuidWest Reserve 5e klasse E",
+      "poulecode": null,
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20141003174252/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit 8",
+      "klasse": "ZuidWest Reserve 6e klasse D",
+      "poulecode": null,
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20141003174252/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit 9",
+      "klasse": "ZuidWest Reserve 6e klasse G",
+      "poulecode": null,
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20141003174252/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit A1",
+      "klasse": "A-junioren Overgangsklasse D",
+      "poulecode": null,
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20141003174252/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit A2",
+      "klasse": "A-junioren 1e klasse H",
+      "poulecode": null,
+      "positie": 5,
+      "bron": "https://web.archive.org/web/20141003174252/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit A3",
+      "klasse": "ZuidWest A-junioren 3e klasse D",
+      "poulecode": null,
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20141003174252/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit B1",
+      "klasse": "B-aspiranten Hoofdklasse D",
+      "poulecode": null,
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20141003174252/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit B2",
+      "klasse": "B-aspiranten 1e klasse N",
+      "poulecode": null,
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20141003174252/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit B3",
+      "klasse": "ZuidWest B-aspiranten 3e klasse D",
+      "poulecode": null,
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20141003174252/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit B4",
+      "klasse": "ZuidWest B-aspiranten 5e klasse D",
+      "poulecode": null,
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20141003174252/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit C1",
+      "klasse": "C-aspiranten Hoofdklasse D",
+      "poulecode": null,
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20141003174252/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit C2",
+      "klasse": "C-aspiranten 1e klasse L",
+      "poulecode": null,
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20141003174252/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit C3",
+      "klasse": "ZuidWest C-aspiranten 3e klasse E",
+      "poulecode": null,
+      "positie": 5,
+      "bron": "https://web.archive.org/web/20141003174252/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit C4",
+      "klasse": "ZuidWest C-aspiranten 4e klasse I",
+      "poulecode": null,
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20141003174252/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit C5",
+      "klasse": "ZuidWest C-aspiranten 5e klasse G",
+      "poulecode": null,
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20141003174252/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit D1",
+      "klasse": "D-pupillen Hoofdklasse H",
+      "poulecode": null,
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20141003174252/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit D2",
+      "klasse": "ZuidWest D-pupillen 1e klasse D",
+      "poulecode": null,
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20141003174252/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit D3",
+      "klasse": "ZuidWest D-pupillen 2e klasse K",
+      "poulecode": null,
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20141003174252/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit D4",
+      "klasse": "ZuidWest D-pupillen 2e klasse L",
+      "poulecode": null,
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20141003174252/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit D5",
+      "klasse": "ZuidWest D-pupillen 3e klasse F",
+      "poulecode": null,
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20141003174252/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit E1",
+      "klasse": "ZuidWest E-pupillen 1e klasse I",
+      "poulecode": null,
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20141003174252/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit E2",
+      "klasse": "ZuidWest E-pupillen 1e klasse H",
+      "poulecode": null,
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20141003174252/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit E3",
+      "klasse": "ZuidWest E-pupillen 2e klasse N",
+      "poulecode": null,
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20141003174252/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit E4",
+      "klasse": "ZuidWest E-pupillen 2e klasse P",
+      "poulecode": null,
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20141003174252/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit E5",
+      "klasse": "ZuidWest E-pupillen 2e klasse O",
+      "poulecode": null,
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20141003174252/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit E6",
+      "klasse": "ZuidWest E-pupillen 2e klasse Q",
+      "poulecode": null,
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20141003174252/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit F1",
+      "klasse": "ZuidWest F-pupillen 1e klasse C",
+      "poulecode": null,
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20141003174252/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit F2",
+      "klasse": "ZuidWest F-pupillen 2e klasse I",
+      "poulecode": null,
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20141003174252/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit F3",
+      "klasse": "ZuidWest F-pupillen 2e klasse J",
+      "poulecode": null,
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20141003174252/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit F4",
+      "klasse": "ZuidWest F-pupillen 3e klasse I",
+      "poulecode": null,
+      "positie": 5,
+      "bron": "https://web.archive.org/web/20141003174252/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "zaal",
+      "team": "Oranje Wit 1",
+      "klasse": "Hoofdklasse B",
+      "poulecode": null,
+      "positie": 5,
+      "bron": "https://web.archive.org/web/20150215235359/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "zaal",
+      "team": "Oranje Wit 2",
+      "klasse": "KNKV Reserve 1e klasse H",
+      "poulecode": null,
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20150215235359/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "zaal",
+      "team": "Oranje Wit 3",
+      "klasse": "KNKV Reserve 2e klasse N",
+      "poulecode": null,
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20150215235359/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "zaal",
+      "team": "Oranje Wit 4",
+      "klasse": "KNKV Reserve 2e klasse O",
+      "poulecode": null,
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20150215235359/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "zaal",
+      "team": "Oranje Wit 5",
+      "klasse": "KNKV Reserve 3e klasse U",
+      "poulecode": null,
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20150215235359/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "zaal",
+      "team": "Oranje Wit 6",
+      "klasse": "ZuidWest Reserve 5e klasse B",
+      "poulecode": null,
+      "positie": 7,
+      "bron": "https://web.archive.org/web/20150215235359/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "zaal",
+      "team": "Oranje Wit 7",
+      "klasse": "ZuidWest Reserve 5e klasse D",
+      "poulecode": null,
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20150215235359/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "zaal",
+      "team": "Oranje Wit 8",
+      "klasse": "ZuidWest Reserve 6e klasse D",
+      "poulecode": null,
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20150215235359/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "zaal",
+      "team": "Oranje Wit 9",
+      "klasse": "ZuidWest Reserve 6e klasse F",
+      "poulecode": null,
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20150215235359/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "zaal",
+      "team": "Oranje Wit A1",
+      "klasse": "A-junioren Overgangsklasse C",
+      "poulecode": null,
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20150215235359/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "zaal",
+      "team": "Oranje Wit A2",
+      "klasse": "A-junioren 1e klasse G",
+      "poulecode": null,
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20150215235359/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "zaal",
+      "team": "Oranje Wit A3",
+      "klasse": "ZuidWest A-junioren 3e klasse D",
+      "poulecode": null,
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20150215235359/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "zaal",
+      "team": "Oranje Wit B1",
+      "klasse": "B-aspiranten Hoofdklasse B",
+      "poulecode": null,
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20150215235359/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "zaal",
+      "team": "Oranje Wit B2",
+      "klasse": "B-aspiranten 1e klasse G",
+      "poulecode": null,
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20150215235359/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "zaal",
+      "team": "Oranje Wit B3",
+      "klasse": "ZuidWest B-aspiranten 3e klasse D",
+      "poulecode": null,
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20150215235359/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "zaal",
+      "team": "Oranje Wit B4",
+      "klasse": "ZuidWest B-aspiranten 5e klasse D",
+      "poulecode": null,
+      "positie": 7,
+      "bron": "https://web.archive.org/web/20150215235359/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "zaal",
+      "team": "Oranje Wit C1",
+      "klasse": "C-aspiranten Hoofdklasse D",
+      "poulecode": null,
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20150215235359/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "zaal",
+      "team": "Oranje Wit C2",
+      "klasse": "C-aspiranten 1e klasse G",
+      "poulecode": null,
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20150215235359/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "zaal",
+      "team": "Oranje Wit C3",
+      "klasse": "ZuidWest C-aspiranten 3e klasse E",
+      "poulecode": null,
+      "positie": 5,
+      "bron": "https://web.archive.org/web/20150215235359/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "zaal",
+      "team": "Oranje Wit C4",
+      "klasse": "ZuidWest C-aspiranten 4e klasse G",
+      "poulecode": null,
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20150215235359/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "zaal",
+      "team": "Oranje Wit C5",
+      "klasse": "ZuidWest C-aspiranten 5e klasse E",
+      "poulecode": null,
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20150215235359/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "zaal",
+      "team": "Oranje Wit D1",
+      "klasse": "D-pupillen Hoofdklasse E",
+      "poulecode": null,
+      "positie": 5,
+      "bron": "https://web.archive.org/web/20150215235359/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "zaal",
+      "team": "Oranje Wit D2",
+      "klasse": "ZuidWest D-pupillen 1e klasse D",
+      "poulecode": null,
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20150215235359/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "zaal",
+      "team": "Oranje Wit D3",
+      "klasse": "ZuidWest D-pupillen 2e klasse J",
+      "poulecode": null,
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20150215235359/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "zaal",
+      "team": "Oranje Wit D4",
+      "klasse": "ZuidWest D-pupillen 2e klasse F",
+      "poulecode": null,
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20150215235359/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "zaal",
+      "team": "Oranje Wit D5",
+      "klasse": "ZuidWest D-pupillen 3e klasse F",
+      "poulecode": null,
+      "positie": 7,
+      "bron": "https://web.archive.org/web/20150215235359/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "zaal",
+      "team": "Oranje Wit E1",
+      "klasse": "ZuidWest E-pupillen 1e klasse E",
+      "poulecode": null,
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20150215235359/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "zaal",
+      "team": "Oranje Wit E2",
+      "klasse": "ZuidWest E-pupillen 1e klasse G",
+      "poulecode": null,
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20150215235359/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "zaal",
+      "team": "Oranje Wit E3",
+      "klasse": "ZuidWest E-pupillen 2e klasse H",
+      "poulecode": null,
+      "positie": 7,
+      "bron": "https://web.archive.org/web/20150215235359/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "zaal",
+      "team": "Oranje Wit E4",
+      "klasse": "ZuidWest E-pupillen 2e klasse J",
+      "poulecode": null,
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20150215235359/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "zaal",
+      "team": "Oranje Wit E5",
+      "klasse": "ZuidWest E-pupillen 2e klasse K",
+      "poulecode": null,
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20150215235359/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "zaal",
+      "team": "Oranje Wit E6",
+      "klasse": "ZuidWest E-pupillen 3e klasse G",
+      "poulecode": null,
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20150215235359/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "zaal",
+      "team": "Oranje Wit F1",
+      "klasse": "ZuidWest F-pupillen 1e klasse C",
+      "poulecode": null,
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20150215235359/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "zaal",
+      "team": "Oranje Wit F2",
+      "klasse": "ZuidWest F-pupillen 2e klasse H",
+      "poulecode": null,
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20150215235359/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "zaal",
+      "team": "Oranje Wit F3",
+      "klasse": "ZuidWest F-pupillen 2e klasse I",
+      "poulecode": null,
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20150215235359/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "zaal",
+      "team": "Oranje Wit F4",
+      "klasse": "ZuidWest F-pupillen 3e klasse I",
+      "poulecode": null,
+      "positie": 5,
+      "bron": "https://web.archive.org/web/20150215235359/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "zaal",
+      "team": "Oranje Wit F5",
+      "klasse": "ZuidWest F-pupillen 3e klasse J",
+      "poulecode": null,
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20150215235359/http://ckvoranjewit.nl/content/standen"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit 1",
+      "klasse": "Hoofdklasse A",
+      "poulecode": "HKA",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit 2",
+      "klasse": "Reserve Overgangsklasse C",
+      "poulecode": "ROKC",
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit A1",
+      "klasse": "A-junioren Overgangsklasse D",
+      "poulecode": "AOKD",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit B1",
+      "klasse": "B-aspiranten Hoofdklasse Play Off",
+      "poulecode": "BHKFinale",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit B1",
+      "klasse": "B-aspiranten Hoofdklasse D",
+      "poulecode": "BHKD",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit C1",
+      "klasse": "C-aspiranten Hoofdklasse D",
+      "poulecode": "CHKD",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit 3",
+      "klasse": "KNKV Reserve 2e klasse N",
+      "poulecode": "R2N",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit 4",
+      "klasse": "KNKV Reserve 2e klasse O",
+      "poulecode": "R2O",
+      "positie": 8,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit 5",
+      "klasse": "KNKV Reserve 2e klasse P",
+      "poulecode": "R2P",
+      "positie": 5,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit 6",
+      "klasse": "ZuidWest Reserve 5e klasse D",
+      "poulecode": "ZW_R5D",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit 7",
+      "klasse": "ZuidWest Reserve 6e klasse D",
+      "poulecode": "ZW_R6D",
+      "positie": 7,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit 8",
+      "klasse": "ZuidWest Reserve 6e klasse E",
+      "poulecode": "ZW_R6E",
+      "positie": 5,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit 9",
+      "klasse": "ZuidWest Reserve 6e klasse F",
+      "poulecode": "ZW_R6F",
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit MW1",
+      "klasse": "ZuidWest Midweek klasse A",
+      "poulecode": "ZW_MWA",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit MW2",
+      "klasse": "ZuidWest Midweek klasse B",
+      "poulecode": "ZW_MWB",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit MW1",
+      "klasse": "ZuidWest Midweek klasse A",
+      "poulecode": "ZW_MWA",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit MW2",
+      "klasse": "ZuidWest Midweek klasse B",
+      "poulecode": "ZW_MWB",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit A2",
+      "klasse": "A-junioren 1e klasse H",
+      "poulecode": "A1H",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit A4",
+      "klasse": "ZuidWest A-junioren 5e klasse C",
+      "poulecode": "ZW_A5C",
+      "positie": 5,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit A3",
+      "klasse": "ZuidWest A-junioren 3e klasse B",
+      "poulecode": "ZW_A3B",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit A4",
+      "klasse": "ZuidWest A-junioren 5e klasse B",
+      "poulecode": "ZW_A5B",
+      "positie": 5,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit B2",
+      "klasse": "B-aspiranten 2e klasse N",
+      "poulecode": "B2N",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit B3",
+      "klasse": "ZuidWest B-aspiranten 3e klasse A",
+      "poulecode": "ZW_B3A",
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit B4",
+      "klasse": "ZuidWest B-aspiranten 5e klasse D",
+      "poulecode": "ZW_B5D",
+      "positie": 5,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit C2",
+      "klasse": "C-aspiranten 2e klasse O",
+      "poulecode": "C2O",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit C3",
+      "klasse": "ZuidWest C-aspiranten 3e klasse E",
+      "poulecode": "ZW_C3E",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit C4",
+      "klasse": "ZuidWest C-aspiranten 4e klasse A",
+      "poulecode": "ZW_C4A",
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit C5",
+      "klasse": "ZuidWest C-aspiranten 5e klasse F",
+      "poulecode": "ZW_C5F",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit D1",
+      "klasse": "D-pupillen Hoofdklasse G-F",
+      "poulecode": "DHK-GF",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit D2",
+      "klasse": "ZuidWest D-pupillen 1e klasse D",
+      "poulecode": "ZW_D1D",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit D3",
+      "klasse": "ZuidWest D-pupillen 2e klasse D",
+      "poulecode": "ZW_D2D",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit D5",
+      "klasse": "ZuidWest D-pupillen 3e klasse B",
+      "poulecode": "ZW_D3B",
+      "positie": 7,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit D4",
+      "klasse": "ZuidWest D-pupillen 3e klasse C",
+      "poulecode": "ZW_D3C",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit D6",
+      "klasse": "ZuidWest D-pupillen 3e klasse D",
+      "poulecode": "ZW_D3D",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit E8",
+      "klasse": "ZuidWest E-pupillen 3e klasse L",
+      "poulecode": "ZW_E3L",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit E9",
+      "klasse": "ZuidWest E-pupillen 3e klasse M",
+      "poulecode": "ZW_E3M",
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit E1",
+      "klasse": "ZuidWest E-pupillen 1e klasse F",
+      "poulecode": "ZW_E1F",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit E3",
+      "klasse": "ZuidWest E-pupillen 2e klasse G",
+      "poulecode": "ZW_E2G",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit E4",
+      "klasse": "ZuidWest E-pupillen 2e klasse H",
+      "poulecode": "ZW_E2H",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit E2",
+      "klasse": "ZuidWest E-pupillen 2e klasse L",
+      "poulecode": "ZW_E2L",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit E5",
+      "klasse": "ZuidWest E-pupillen 3e klasse G",
+      "poulecode": "ZW_E3G",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit E6",
+      "klasse": "ZuidWest E-pupillen 3e klasse I",
+      "poulecode": "ZW_E3I",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit F1",
+      "klasse": "ZuidWest F-pupillen 1e klasse F",
+      "poulecode": "ZW_F1F",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit F2",
+      "klasse": "ZuidWest F-pupillen 2e klasse F",
+      "poulecode": "ZW_F2F",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit F3",
+      "klasse": "ZuidWest F-pupillen 3e klasse A",
+      "poulecode": "ZW_F3A",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit F4",
+      "klasse": "ZuidWest F-pupillen 3e klasse F",
+      "poulecode": "ZW_F3F",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2014-2015",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit F5",
+      "klasse": "ZuidWest F-pupillen 3e klasse G",
+      "poulecode": "ZW_F3G",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20150702192743/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit 1",
+      "klasse": "Hoofdklasse A",
+      "poulecode": "HKA",
+      "positie": 8,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit 2",
+      "klasse": "KNKV Reserve 1e klasse E",
+      "poulecode": "R1E",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit 3",
+      "klasse": "KNKV Reserve 1e klasse G",
+      "poulecode": "R1G",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit 4",
+      "klasse": "KNKV Reserve 2e klasse P",
+      "poulecode": "R2P",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit 5",
+      "klasse": "KNKV Reserve 3e klasse V",
+      "poulecode": "R3V",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit 6",
+      "klasse": "ZuidWest Reserve 5e klasse E",
+      "poulecode": "ZW_R5E",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit 8",
+      "klasse": "ZuidWest Reserve 6e klasse B",
+      "poulecode": "ZW_R6B",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit 7",
+      "klasse": "ZuidWest Reserve 6e klasse D",
+      "poulecode": "ZW_R6D",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit 9",
+      "klasse": "ZuidWest Reserve 6e klasse F",
+      "poulecode": "ZW_R6F",
+      "positie": 5,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit A1",
+      "klasse": "A-junioren Hoofdklasse A",
+      "poulecode": "AHKA",
+      "positie": 5,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit A2",
+      "klasse": "A-junioren 1e klasse H",
+      "poulecode": "A1H",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit A3",
+      "klasse": "ZuidWest A-junioren 3e klasse B",
+      "poulecode": "ZW_A3B",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit A4",
+      "klasse": "ZuidWest A-junioren 5e klasse A",
+      "poulecode": "ZW_A5A",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit B1",
+      "klasse": "B-aspiranten Hoofdklasse B",
+      "poulecode": "BHKB",
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit B2",
+      "klasse": "B-aspiranten 1e klasse H",
+      "poulecode": "B1H",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit B3",
+      "klasse": "ZuidWest B-aspiranten 3e klasse B",
+      "poulecode": "ZW_B3B",
+      "positie": 5,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit B4",
+      "klasse": "ZuidWest B-aspiranten 5e klasse D",
+      "poulecode": "ZW_B5D",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit C1",
+      "klasse": "C-aspiranten Hoofdklasse D",
+      "poulecode": "CHKD",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit C2",
+      "klasse": "C-aspiranten 1e klasse H",
+      "poulecode": "C1H",
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit C3",
+      "klasse": "ZuidWest C-aspiranten 4e klasse A",
+      "poulecode": "ZW_C4A",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit C4",
+      "klasse": "ZuidWest C-aspiranten 4e klasse E",
+      "poulecode": "ZW_C4E",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit C5",
+      "klasse": "ZuidWest C-aspiranten 5e klasse E",
+      "poulecode": "ZW_C5E",
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit D1",
+      "klasse": "D-pupillen Hoofdklasse E",
+      "poulecode": "DHKE",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit D2",
+      "klasse": "ZuidWest D-pupillen 1e klasse D",
+      "poulecode": "ZW_D1D",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit D3",
+      "klasse": "ZuidWest D-pupillen 2e klasse A",
+      "poulecode": "ZW_D2A",
+      "positie": 5,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit D4",
+      "klasse": "ZuidWest D-pupillen 2e klasse C",
+      "poulecode": "ZW_D2C",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit D5",
+      "klasse": "ZuidWest D-pupillen 3e klasse D",
+      "poulecode": "ZW_D3D",
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit E1",
+      "klasse": "ZuidWest E-pupillen 1e klasse C",
+      "poulecode": "ZW_E1C",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit E2",
+      "klasse": "ZuidWest E-pupillen 1e klasse D",
+      "poulecode": "ZW_E1D",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit E3",
+      "klasse": "ZuidWest E-pupillen 2e klasse H",
+      "poulecode": "ZW_E2H",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit E4",
+      "klasse": "ZuidWest E-pupillen 2e klasse K",
+      "poulecode": "ZW_E2K",
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit E5",
+      "klasse": "ZuidWest E-pupillen 2e klasse L",
+      "poulecode": "ZW_E2L",
+      "positie": 5,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit E6",
+      "klasse": "ZuidWest E-pupillen 3e klasse K",
+      "poulecode": "ZW_E3K",
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit E7",
+      "klasse": "ZuidWest E-pupillen 3e klasse M",
+      "poulecode": "ZW_E3M",
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit F1",
+      "klasse": "ZuidWest F-pupillen 1e klasse C",
+      "poulecode": "ZW_F1C",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit F2",
+      "klasse": "ZuidWest F-pupillen 2e klasse E",
+      "poulecode": "ZW_F2E",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit F3",
+      "klasse": "ZuidWest F-pupillen 2e klasse G",
+      "poulecode": "ZW_F2G",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "zaal",
+      "team": "Oranje Wit F4",
+      "klasse": "ZuidWest F-pupillen 3e klasse D",
+      "poulecode": "ZW_F3D",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20160218101629/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit 1",
+      "klasse": "Ereklasse B",
+      "poulecode": "EKB",
+      "positie": 5,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit 2",
+      "klasse": "Reserve Overgangsklasse D",
+      "poulecode": "ROKD",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit 3",
+      "klasse": "KNKV Reserve 2e klasse M",
+      "poulecode": "R2M",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit 4",
+      "klasse": "KNKV Reserve 2e klasse O",
+      "poulecode": "R2O",
+      "positie": 7,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit 5",
+      "klasse": "KNKV Reserve 3e klasse W",
+      "poulecode": "R3W",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit 6",
+      "klasse": "ZuidWest Reserve 5e klasse E",
+      "poulecode": "ZW_R5E",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit 6",
+      "klasse": "ZuidWest Reserve 5e klasse C",
+      "poulecode": "ZW_R5C",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit 8",
+      "klasse": "ZuidWest Reserve 6e klasse A",
+      "poulecode": "ZW_R6A",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit 7",
+      "klasse": "ZuidWest Reserve 6e klasse C",
+      "poulecode": "ZW_R6C",
+      "positie": 5,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit 9",
+      "klasse": "ZuidWest Reserve 6e klasse D",
+      "poulecode": "ZW_R6D",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit 7",
+      "klasse": "ZuidWest Reserve 6e klasse B",
+      "poulecode": "ZW_R6B",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit 9",
+      "klasse": "ZuidWest Reserve 6e klasse C",
+      "poulecode": "ZW_R6C",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit 8",
+      "klasse": "ZuidWest Reserve 6e klasse E",
+      "poulecode": "ZW_R6E",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit MW1",
+      "klasse": "ZuidWest Midweek klasse A",
+      "poulecode": "ZW_MWA",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit MW2",
+      "klasse": "ZuidWest Midweek klasse C",
+      "poulecode": "ZW_MWC",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit MW1",
+      "klasse": "ZuidWest Midweek klasse B",
+      "poulecode": "ZW_MWB",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit MW2",
+      "klasse": "ZuidWest Midweek klasse C",
+      "poulecode": "ZW_MWC",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit A1",
+      "klasse": "A-junioren Overgangsklasse D",
+      "poulecode": "AOKD",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit A2",
+      "klasse": "A-junioren 1e klasse G",
+      "poulecode": "A1G",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit A3",
+      "klasse": "ZuidWest A-junioren 3e klasse B",
+      "poulecode": "ZW_A3B",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit A3",
+      "klasse": "ZuidWest A-junioren 3e klasse Q",
+      "poulecode": "ZW_A3Q",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit A4",
+      "klasse": "ZuidWest A-junioren 5e klasse B",
+      "poulecode": "ZW_A5B",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit A4",
+      "klasse": "ZuidWest A-junioren 5e klasse Y",
+      "poulecode": "ZW_A5Y",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit B1",
+      "klasse": "B-aspiranten Hoofdklasse C",
+      "poulecode": "BHKC",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit B2",
+      "klasse": "B-aspiranten 1e klasse M",
+      "poulecode": "B1M",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit B2",
+      "klasse": "B-aspiranten 2e klasse P",
+      "poulecode": "B2P",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit B3",
+      "klasse": "ZuidWest B-aspiranten 3e klasse B",
+      "poulecode": "ZW_B3B",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit B3",
+      "klasse": "ZuidWest B-aspiranten 3e klasse C",
+      "poulecode": "ZW_B3C",
+      "positie": 5,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit B4",
+      "klasse": "ZuidWest B-aspiranten 5e klasse C",
+      "poulecode": "ZW_B5C",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit B4",
+      "klasse": "ZuidWest B-aspiranten 5e klasse B",
+      "poulecode": "ZW_B5B",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit C1",
+      "klasse": "C-aspiranten Hoofdklasse D",
+      "poulecode": "CHKD",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit C2",
+      "klasse": "C-aspiranten 1e klasse L",
+      "poulecode": "C1L",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit C2",
+      "klasse": "C-aspiranten 2e klasse O",
+      "poulecode": "C2O",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit C3",
+      "klasse": "ZuidWest C-aspiranten 3e klasse D",
+      "poulecode": "ZW_C3D",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit C3",
+      "klasse": "ZuidWest C-aspiranten 3e klasse A",
+      "poulecode": "ZW_C3A",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit C4",
+      "klasse": "ZuidWest C-aspiranten 3e klasse E",
+      "poulecode": "ZW_C3E",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit C4",
+      "klasse": "ZuidWest C-aspiranten 4e klasse D",
+      "poulecode": "ZW_C4D",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit C5",
+      "klasse": "ZuidWest C-aspiranten 5e klasse F",
+      "poulecode": "ZW_C5F",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit C5",
+      "klasse": "ZuidWest C-aspiranten 5e klasse C",
+      "poulecode": "ZW_C5C",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit D1",
+      "klasse": "D-pupillen Hoofdklasse F",
+      "poulecode": "DHKF",
+      "positie": 5,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit D1",
+      "klasse": "D-pupillen Hoofdklasse G-C",
+      "poulecode": "DHK-GC",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit D2",
+      "klasse": "ZuidWest D-pupillen 1e klasse D",
+      "poulecode": "ZW_D1D",
+      "positie": 5,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit D2",
+      "klasse": "ZuidWest D-pupillen 1e klasse A",
+      "poulecode": "ZW_D1A",
+      "positie": 7,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit D3",
+      "klasse": "ZuidWest D-pupillen 2e klasse D",
+      "poulecode": "ZW_D2D",
+      "positie": 5,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit D4",
+      "klasse": "ZuidWest D-pupillen 2e klasse E",
+      "poulecode": "ZW_D2E",
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit D4",
+      "klasse": "ZuidWest D-pupillen 2e klasse D",
+      "poulecode": "ZW_D2D",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit D3",
+      "klasse": "ZuidWest D-pupillen 2e klasse G",
+      "poulecode": "ZW_D2G",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit D5",
+      "klasse": "ZuidWest D-pupillen 3e klasse G",
+      "poulecode": "ZW_D3G",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit D5",
+      "klasse": "ZuidWest D-pupillen 3e klasse E",
+      "poulecode": "ZW_D3E",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit E1",
+      "klasse": "ZuidWest E-pupillen 1e klasse F",
+      "poulecode": "ZW_E1F",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit E2",
+      "klasse": "ZuidWest E-pupillen 1e klasse G",
+      "poulecode": "ZW_E1G",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit E1",
+      "klasse": "ZuidWest E-pupillen 1e klasse A",
+      "poulecode": "ZW_E1A",
+      "positie": 5,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit E2",
+      "klasse": "ZuidWest E-pupillen 1e klasse F",
+      "poulecode": "ZW_E1F",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit E3",
+      "klasse": "ZuidWest E-pupillen 1e klasse G",
+      "poulecode": "ZW_E1G",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit E3",
+      "klasse": "ZuidWest E-pupillen 2e klasse I",
+      "poulecode": "ZW_E2I",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit E4",
+      "klasse": "ZuidWest E-pupillen 2e klasse Q",
+      "poulecode": "ZW_E2Q",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit E4",
+      "klasse": "ZuidWest E-pupillen 2e klasse F",
+      "poulecode": "ZW_E2F",
+      "positie": 7,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit E5",
+      "klasse": "ZuidWest E-pupillen 3e klasse J",
+      "poulecode": "ZW_E3J",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit E6",
+      "klasse": "ZuidWest E-pupillen 3e klasse K",
+      "poulecode": "ZW_E3K",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit E7",
+      "klasse": "ZuidWest E-pupillen 3e klasse L",
+      "poulecode": "ZW_E3L",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit E5",
+      "klasse": "ZuidWest E-pupillen 3e klasse H",
+      "poulecode": "ZW_E3H",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit E6",
+      "klasse": "ZuidWest E-pupillen 3e klasse I",
+      "poulecode": "ZW_E3I",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit E7",
+      "klasse": "ZuidWest E-pupillen 3e klasse J",
+      "poulecode": "ZW_E3J",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit E8",
+      "klasse": "ZuidWest E-pupillen 3e klasse M",
+      "poulecode": "ZW_E3M",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit F1",
+      "klasse": "ZuidWest F-pupillen 1e klasse C",
+      "poulecode": "ZW_F1C",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit F2",
+      "klasse": "ZuidWest F-pupillen 1e klasse D",
+      "poulecode": "ZW_F1D",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit F1",
+      "klasse": "ZuidWest F-pupillen 2e klasse I",
+      "poulecode": "ZW_F2I",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit F2",
+      "klasse": "ZuidWest F-pupillen 2e klasse K",
+      "poulecode": "ZW_F2K",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit F3",
+      "klasse": "ZuidWest F-pupillen 2e klasse E",
+      "poulecode": "ZW_F2E",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit F4",
+      "klasse": "ZuidWest F-pupillen 2e klasse F",
+      "poulecode": "ZW_F2F",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit F3",
+      "klasse": "ZuidWest F-pupillen 3e klasse E",
+      "poulecode": "ZW_F3E",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit F4",
+      "klasse": "ZuidWest F-pupillen 3e klasse G",
+      "poulecode": "ZW_F3G",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2015-2016",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit F5",
+      "klasse": "ZuidWest F-pupillen 3e klasse G",
+      "poulecode": "ZW_F3G",
+      "positie": 5,
+      "bron": "https://web.archive.org/web/20160407013228/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit 1",
+      "klasse": "Ereklasse A",
+      "poulecode": "EKA",
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit 2",
+      "klasse": "Reserve Overgangsklasse C",
+      "poulecode": "ROKC",
+      "positie": 7,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit 3",
+      "klasse": "KNKV Reserve 2e klasse M",
+      "poulecode": "R2M",
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit 4",
+      "klasse": "KNKV Reserve 2e klasse P",
+      "poulecode": "R2P",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit 7",
+      "klasse": "ZuidWest Reserve 5e klasse A",
+      "poulecode": "ZW_R5A",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit 6",
+      "klasse": "ZuidWest Reserve 5e klasse E",
+      "poulecode": "ZW_R5E",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit 8",
+      "klasse": "ZuidWest Reserve 6e klasse F",
+      "poulecode": "ZW_R6F",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit 9",
+      "klasse": "ZuidWest Reserve 7e klasse E",
+      "poulecode": "ZW_R7E",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit MW2",
+      "klasse": "ZuidWest Midweek klasse A",
+      "poulecode": "ZW_MWA",
+      "positie": 7,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit MW1",
+      "klasse": "ZuidWest Midweek klasse C",
+      "poulecode": "ZW_MWC",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit A1",
+      "klasse": "A-junioren Hoofdklasse B",
+      "poulecode": "AHKB",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit A2",
+      "klasse": "A-junioren 1e klasse H",
+      "poulecode": "A1H",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit A3",
+      "klasse": "A-junioren 2e klasse K",
+      "poulecode": "A2K",
+      "positie": 7,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit A5",
+      "klasse": "ZuidWest A-junioren 5e klasse C",
+      "poulecode": "ZW_A5C",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit B1",
+      "klasse": "B-aspiranten Hoofdklasse D",
+      "poulecode": "BHKD",
+      "positie": 5,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit B2",
+      "klasse": "B-aspiranten 1e klasse O",
+      "poulecode": "B1O",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit B3",
+      "klasse": "ZuidWest B-aspiranten 3e klasse F",
+      "poulecode": "ZW_B3F",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit B4",
+      "klasse": "ZuidWest B-aspiranten 4e klasse K",
+      "poulecode": "ZW_B4K",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit B5",
+      "klasse": "ZuidWest B-aspiranten 5e klasse I",
+      "poulecode": "ZW_B5I",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit C1",
+      "klasse": "C-aspiranten Hoofdklasse D",
+      "poulecode": "CHKD",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit C2",
+      "klasse": "C-aspiranten 2e klasse H",
+      "poulecode": "C2H",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit C3",
+      "klasse": "ZuidWest C-aspiranten 3e klasse D",
+      "poulecode": "ZW_C3D",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit C4",
+      "klasse": "ZuidWest C-aspiranten 5e klasse C",
+      "poulecode": "ZW_C5C",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit C5",
+      "klasse": "ZuidWest C-aspiranten 5e klasse D",
+      "poulecode": "ZW_C5D",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit D1",
+      "klasse": "D-pupillen Hoofdklasse H",
+      "poulecode": "DHKH",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit D2",
+      "klasse": "ZuidWest D-pupillen 1e klasse C",
+      "poulecode": "ZW_D1C",
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit D3",
+      "klasse": "ZuidWest D-pupillen 2e klasse G",
+      "poulecode": "ZW_D2G",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit D5",
+      "klasse": "ZuidWest D-pupillen 3e klasse H",
+      "poulecode": "ZW_D3H",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit D4",
+      "klasse": "ZuidWest D-pupillen 3e klasse I",
+      "poulecode": "ZW_D3I",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit E1",
+      "klasse": "ZuidWest E-pupillen 1e klasse A",
+      "poulecode": "ZW_E1A",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit E2",
+      "klasse": "ZuidWest E-pupillen 1e klasse E",
+      "poulecode": "ZW_E1E",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit E4",
+      "klasse": "ZuidWest E-pupillen 2e klasse C",
+      "poulecode": "ZW_E2C",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit E3",
+      "klasse": "ZuidWest E-pupillen 2e klasse I",
+      "poulecode": "ZW_E2I",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit E5",
+      "klasse": "ZuidWest E-pupillen 2e klasse K",
+      "poulecode": "ZW_E2K",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit E7",
+      "klasse": "ZuidWest E-pupillen 3e klasse A",
+      "poulecode": "ZW_E3A",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit E6",
+      "klasse": "ZuidWest E-pupillen 3e klasse B",
+      "poulecode": "ZW_E3B",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit E8",
+      "klasse": "ZuidWest E-pupillen 3e klasse M",
+      "poulecode": "ZW_E3M",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit F1",
+      "klasse": "ZuidWest F-pupillen 1e klasse E",
+      "poulecode": "ZW_F1E",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit F2",
+      "klasse": "ZuidWest F-pupillen 2e klasse A",
+      "poulecode": "ZW_F2A",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit F4",
+      "klasse": "ZuidWest F-pupillen 3e klasse B",
+      "poulecode": "ZW_F3B",
+      "positie": 7,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2016-2017",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit F3",
+      "klasse": "ZuidWest F-pupillen 3e klasse C",
+      "poulecode": "ZW_F3C",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20161018085746/http://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2018-2019",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit 1",
+      "klasse": "Overgangsklasse D",
+      "poulecode": "OKD",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20190719055321/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2018-2019",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit 2",
+      "klasse": "Reserve Overgangsklasse D",
+      "poulecode": "ROKD",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20190719055321/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2018-2019",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit 3",
+      "klasse": "KNKV Reserve 1e klasse F",
+      "poulecode": "R1F",
+      "positie": 5,
+      "bron": "https://web.archive.org/web/20190719055321/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2018-2019",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit 4",
+      "klasse": "KNKV Reserve 2e klasse P",
+      "poulecode": "R2P",
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20190719055321/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2018-2019",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit 5",
+      "klasse": "Breedtekorfbal Senioren poule 011",
+      "poulecode": "S-011",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20190719055321/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2018-2019",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit MW1",
+      "klasse": "Midweek poule 013",
+      "poulecode": "M-013",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20190719055321/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2018-2019",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit A1",
+      "klasse": "A-junioren Hoofdklasse B",
+      "poulecode": "AHKB",
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20190719055321/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2018-2019",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit A2",
+      "klasse": "A-junioren 1e klasse H",
+      "poulecode": "A1H",
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20190719055321/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2018-2019",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit A3",
+      "klasse": "Breedtekorfbal Junioren poule 010",
+      "poulecode": "A-010",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20190719055321/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2018-2019",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit A4",
+      "klasse": "Breedtekorfbal Junioren poule 088",
+      "poulecode": "A-088",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20190719055321/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2018-2019",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit B1",
+      "klasse": "B-aspiranten Hoofdklasse B",
+      "poulecode": "BHKB",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20190719055321/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2018-2019",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit B2",
+      "klasse": "B-aspiranten 2e klasse F",
+      "poulecode": "B2F",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20190719055321/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2018-2019",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit B3",
+      "klasse": "Breedtekorfbal B-aspiranten poule 042",
+      "poulecode": "B-042",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20190719055321/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2018-2019",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit B4",
+      "klasse": "Breedtekorfbal B-aspiranten poule 086",
+      "poulecode": "B-086",
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20190719055321/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2018-2019",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit C1",
+      "klasse": "C-aspiranten Hoofdklasse B",
+      "poulecode": "CHKB",
+      "positie": 7,
+      "bron": "https://web.archive.org/web/20190719055321/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2018-2019",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit C2",
+      "klasse": "C-aspiranten 2e klasse G-D",
+      "poulecode": "C2-GD",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20190719055321/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2018-2019",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit C3",
+      "klasse": "Breedtekorfbal C-aspiranten poule 058",
+      "poulecode": "C-058",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20190719055321/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2018-2019",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit C4",
+      "klasse": "Breedtekorfbal C-aspiranten poule 073",
+      "poulecode": "C-073",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20190719055321/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2018-2019",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit D1",
+      "klasse": "D-pupillen Hoofdklasse D",
+      "poulecode": "DHKD",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20190719055321/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2018-2019",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit D2",
+      "klasse": "Breedtekorfbal D-pupillen poule 022",
+      "poulecode": "D-022",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20190719055321/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2018-2019",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit D3",
+      "klasse": "Breedtekorfbal D-pupillen poule 040",
+      "poulecode": "D-040",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20190719055321/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2018-2019",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit D4",
+      "klasse": "Breedtekorfbal D-pupillen poule 108",
+      "poulecode": "D-108",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20190719055321/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2018-2019",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit E1",
+      "klasse": "E-pupillen poule 012",
+      "poulecode": "E-012",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20190719055321/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2018-2019",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit E2",
+      "klasse": "E-pupillen poule 029",
+      "poulecode": "E-029",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20190719055321/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2018-2019",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit E3",
+      "klasse": "E-pupillen poule 030",
+      "poulecode": "E-030",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20190719055321/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2018-2019",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit E4",
+      "klasse": "E-pupillen poule 081",
+      "poulecode": "E-081",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20190719055321/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2018-2019",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit E5",
+      "klasse": "E-pupillen poule 142",
+      "poulecode": "E-142",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20190719055321/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2018-2019",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit E6",
+      "klasse": "E-pupillen poule 159",
+      "poulecode": "E-159",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20190719055321/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2018-2019",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit F1",
+      "klasse": "F-pupillen poule 001",
+      "poulecode": "F-001",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20190719055321/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2018-2019",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit F3",
+      "klasse": "F-pupillen poule 035",
+      "poulecode": "F-035",
+      "positie": 7,
+      "bron": "https://web.archive.org/web/20190719055321/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2018-2019",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit F2",
+      "klasse": "F-pupillen poule 059",
+      "poulecode": "F-059",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20190719055321/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2018-2019",
+      "periode": "veld_voorjaar",
+      "team": "Oranje Wit F4",
+      "klasse": "F-pupillen poule 128",
+      "poulecode": "F-128",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20190719055321/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit 1",
+      "klasse": "Overgangsklasse D",
+      "poulecode": "OKD",
+      "positie": 8,
+      "bron": "https://web.archive.org/web/20190921023535/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit 2",
+      "klasse": "Reserve Overgangsklasse C",
+      "poulecode": "ROKC",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20190921023535/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit 3",
+      "klasse": "KNKV Reserve 2e klasse N",
+      "poulecode": "R2N",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20190921023535/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit 4",
+      "klasse": "KNKV Reserve 2e klasse O",
+      "poulecode": "R2O",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20190921023535/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit 5",
+      "klasse": "KNKV Reserve 4e klasse M",
+      "poulecode": "R4M",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20190921023535/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit A1",
+      "klasse": "A-junioren Hoofdklasse A",
+      "poulecode": "AHKA",
+      "positie": 7,
+      "bron": "https://web.archive.org/web/20190921023535/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit A2",
+      "klasse": "A-junioren 1e klasse G",
+      "poulecode": "A1G",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20190921023535/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit B1",
+      "klasse": "B-aspiranten Hoofdklasse D",
+      "poulecode": "BHKD",
+      "positie": 8,
+      "bron": "https://web.archive.org/web/20190921023535/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "zaal",
+      "team": "Oranje Wit 1",
+      "klasse": "Overgangsklasse C",
+      "poulecode": "OKC",
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20191113042355/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "zaal",
+      "team": "Oranje Wit 2",
+      "klasse": "Reserve Overgangsklasse B",
+      "poulecode": "ROKB",
+      "positie": 5,
+      "bron": "https://web.archive.org/web/20191113042355/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "zaal",
+      "team": "Oranje Wit 3",
+      "klasse": "KNKV Reserve 1e klasse H",
+      "poulecode": "R1H",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20191113042355/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "zaal",
+      "team": "Oranje Wit 4",
+      "klasse": "KNKV Reserve 2e klasse P",
+      "poulecode": "R2P",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20191113042355/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "zaal",
+      "team": "Oranje Wit 5",
+      "klasse": "KNKV Reserve 4e klasse S",
+      "poulecode": "R4S",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20191113042355/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "zaal",
+      "team": "Oranje Wit 6",
+      "klasse": "Breedtekorfbal Senioren poule 056",
+      "poulecode": "S-056",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20191113042355/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "zaal",
+      "team": "Oranje Wit A1",
+      "klasse": "A-junioren Overgangsklasse D",
+      "poulecode": "AOKD",
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20191113042355/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "zaal",
+      "team": "Oranje Wit A2",
+      "klasse": "A-junioren 1e klasse G",
+      "poulecode": "A1G",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20191113042355/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "zaal",
+      "team": "Oranje Wit A4",
+      "klasse": "Breedtekorfbal Junioren poule 043",
+      "poulecode": "A-043",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20191113042355/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "zaal",
+      "team": "Oranje Wit A3",
+      "klasse": "Breedtekorfbal Junioren poule 045",
+      "poulecode": "A-045",
+      "positie": 5,
+      "bron": "https://web.archive.org/web/20191113042355/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "zaal",
+      "team": "Oranje Wit B1",
+      "klasse": "B-aspiranten Hoofdklasse C",
+      "poulecode": "BHKC",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20191113042355/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "zaal",
+      "team": "Oranje Wit B2",
+      "klasse": "Breedtekorfbal B-aspiranten poule 044",
+      "poulecode": "B-044",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20191113042355/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "zaal",
+      "team": "Oranje Wit B4",
+      "klasse": "Breedtekorfbal B-aspiranten poule 046",
+      "poulecode": "B-046",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20191113042355/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "zaal",
+      "team": "Oranje Wit B3",
+      "klasse": "Breedtekorfbal B-aspiranten poule 047",
+      "poulecode": "B-047",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20191113042355/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "zaal",
+      "team": "Oranje Wit C1",
+      "klasse": "C-aspiranten Hoofdklasse D",
+      "poulecode": "CHKD",
+      "positie": 1,
+      "bron": "https://web.archive.org/web/20191113042355/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "zaal",
+      "team": "Oranje Wit C3",
+      "klasse": "Breedtekorfbal C-aspiranten poule 058",
+      "poulecode": "C-058",
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20191113042355/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "zaal",
+      "team": "Oranje Wit C2",
+      "klasse": "Breedtekorfbal C-aspiranten poule 059",
+      "poulecode": "C-059",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20191113042355/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "zaal",
+      "team": "Oranje Wit D2",
+      "klasse": "Breedtekorfbal D-pupillen poule 064",
+      "poulecode": "D-064",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20191113042355/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "zaal",
+      "team": "Oranje Wit D3",
+      "klasse": "Breedtekorfbal D-pupillen poule 065",
+      "poulecode": "D-065",
+      "positie": 7,
+      "bron": "https://web.archive.org/web/20191113042355/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "zaal",
+      "team": "Oranje Wit D1",
+      "klasse": "Breedtekorfbal D-pupillen poule 067",
+      "poulecode": "D-067",
+      "positie": 7,
+      "bron": "https://web.archive.org/web/20191113042355/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "zaal",
+      "team": "Oranje Wit E2",
+      "klasse": "E-pupillen poule 097",
+      "poulecode": "E-097",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20191113042355/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "zaal",
+      "team": "Oranje Wit E7",
+      "klasse": "E-pupillen poule 098",
+      "poulecode": "E-098",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20191113042355/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "zaal",
+      "team": "Oranje Wit E1",
+      "klasse": "E-pupillen poule 100",
+      "poulecode": "E-100",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20191113042355/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "zaal",
+      "team": "Oranje Wit E3",
+      "klasse": "E-pupillen poule 101",
+      "poulecode": "E-101",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20191113042355/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "zaal",
+      "team": "Oranje Wit E6",
+      "klasse": "E-pupillen poule 103",
+      "poulecode": "E-103",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20191113042355/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "zaal",
+      "team": "Oranje Wit E5",
+      "klasse": "E-pupillen poule 104",
+      "poulecode": "E-104",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20191113042355/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "zaal",
+      "team": "Oranje Wit E4",
+      "klasse": "E-pupillen poule 109",
+      "poulecode": "E-109",
+      "positie": 2,
+      "bron": "https://web.archive.org/web/20191113042355/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "zaal",
+      "team": "Oranje Wit F2",
+      "klasse": "F-pupillen poule 041",
+      "poulecode": "F-041",
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20191113042355/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "zaal",
+      "team": "Oranje Wit F1",
+      "klasse": "F-pupillen poule 048",
+      "poulecode": "F-048",
+      "positie": 4,
+      "bron": "https://web.archive.org/web/20191113042355/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2019-2020",
+      "periode": "zaal",
+      "team": "Oranje Wit F3",
+      "klasse": "F-pupillen poule 049",
+      "poulecode": "F-049",
+      "positie": 3,
+      "bron": "https://web.archive.org/web/20191113042355/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2020-2021",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit 1",
+      "klasse": "Overgangsklasse D",
+      "poulecode": "OKD",
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20200928212813/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2020-2021",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit 2",
+      "klasse": "Reserve Overgangsklasse D",
+      "poulecode": "ROKD",
+      "positie": 5,
+      "bron": "https://web.archive.org/web/20200928212813/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2020-2021",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit 3",
+      "klasse": "KNKV Reserve 1e klasse H",
+      "poulecode": "R1H",
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20200928212813/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2020-2021",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit 4",
+      "klasse": "KNKV Reserve 2e klasse O",
+      "poulecode": "R2O",
+      "positie": 5,
+      "bron": "https://web.archive.org/web/20200928212813/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2020-2021",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit 5",
+      "klasse": "KNKV Reserve 3e klasse V",
+      "poulecode": "R3V",
+      "positie": 5,
+      "bron": "https://web.archive.org/web/20200928212813/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2020-2021",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit A1",
+      "klasse": "A-junioren Hoofdklasse A",
+      "poulecode": "AHKA",
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20200928212813/https://ckvoranjewit.nl/standen/"
+    },
+    {
+      "seizoen": "2020-2021",
+      "periode": "veld_najaar",
+      "team": "Oranje Wit A2",
+      "klasse": "A-junioren 1e klasse H",
+      "poulecode": "A1H",
+      "positie": 6,
+      "bron": "https://web.archive.org/web/20200928212813/https://ckvoranjewit.nl/standen/"
+    }
+  ]
+}
